@@ -1,0 +1,21 @@
+J2ObjC: Java to Objective-C Translator and Runtime
+==================================================
+
+Requires:
+
+  * JDK 1.6 or higher
+  * Xcode 4 or higher
+  * Mac OS X 10.7 or higher
+
+Project page:
+  http://j2objc.googlecode.com
+
+Report a defect or feature request here:
+  http://code.google.com/p/j2objc/issues/entry
+
+Questions and discussion:
+  http://groups.google.com/group/j2objc-discuss
+
+This package contains a tool for translating Java source files to Objective-C
+sources.  It's scope is limited to non-GUI classes that don't need low-level
+JRE support, such as serialization or reflection.

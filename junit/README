@@ -1,0 +1,3 @@
+This package provides an Objective-C library of JUnit's framework classes,
+and a simple unit test runner.  This library is used with JUnit test source
+files translated with J2ObjC.

@@ -1,0 +1,34 @@
+This package contains the Java and Objective-C source files to build the JRE
+emulation library for J2ObjC.  The Objective-C sources are all in the Classes
+directory, like most Xcode projects.  All Objective-C sources were created for
+this project.
+
+Java source files come from four sources:
+
+* Apache Harmony Project: these files are rooted in the apache_harmony
+  directory, and have the same directory structure as that project.  Some of
+  these files have been modified for use by this project, including some that
+  have Objective-C native code.
+
+* Google Web Toolkit (GWT): these are in the Classes directory, with their
+  packages as their directories (ie, java.util.regex.PatternSyntaxException
+  is in Classes/java/util/regex/PatternSyntaxException.java).  GWT sources
+  were sometimes preferred over Apache Harmony Project versions if they had
+  an implementation that had reduced dependencies on other sources, to keep
+  mobile client code compact.
+
+* Android Open Source: these are in the Classes directory, like GWT.  In
+  general, we only included Android source files when they were not
+  implemented by the Apache Harmony Project, mostly new classes from Java 6.
+
+* Created for this project: also in the Classes directory.
+
+The reason the Apache Harmony Project's files are separate is simple: give 
+credit where it's due.  The GWT, Android, and J2ObjC sources are all from
+Google, and the Apache Harmony team is a separate, equally respected team.
+We appreciate the hard work that went into all these projects.
+
+Finally, there are some files in Classes that look like Java classes, but
+have Objective-C suffixes.  These are drop-in replacements for translated
+classes; for example, Classes/java/util/HashMap.h (and .m) defines a faster
+implementation than its translated code equivalent.
