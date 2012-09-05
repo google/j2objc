@@ -1,0 +1,26 @@
+Build Requirements
+==================
+
+This package must be built on a Mac OS X system, with:
+
+ * Xcode 4 or higher (https://developer.apple.com/xcode/index.php)
+ * Java for OS X (http://support.apple.com/downloads/#java)
+ * Apache Maven (http://maven.apache.org/)
+
+Build Instructions
+==================
+
+The simplest way to build this package is to run "make dist" from its
+top directory.  This builds the translator, JRE emulation and JUnit
+libraries, and creates a "dist/" directory with commands, libraries
+and include files.
+
+Running "make" in each project directory will build just that project.
+The J2ObjC translator is the main project, so running just "make" in
+it will only build the translator.  While this is useful for developing
+the translator, "make dist" is recommended for developers who just want
+to use the tool.  Apache Maven is used to copy the translator's
+dependent jars from the Maven Repository.
+
+Running "make clean" removes all files created by the build, including
+the "dist/" directory.
