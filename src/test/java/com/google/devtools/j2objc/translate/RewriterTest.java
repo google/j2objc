@@ -51,6 +51,7 @@ import java.util.List;
 /**
  * Unit tests for {@link Rewriter}.
  *
+ * @author Tom Ball
  */
 @SuppressWarnings("unchecked")
 public class RewriterTest extends GenerationTest {

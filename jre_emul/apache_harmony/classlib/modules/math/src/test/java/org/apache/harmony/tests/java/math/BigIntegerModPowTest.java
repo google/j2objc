@@ -15,6 +15,7 @@
  *  limitations under the License.
  */
 /**
+ * @author Elena Semukhina
  */
 
 package org.apache.harmony.tests.java.math;
@@ -24,7 +25,7 @@ import java.math.BigInteger;
 
 /**
  * Class:   java.math.BigInteger
- * Methods: modPow, modInverse, and gcd
+ * Methods: modPow, modInverse, and gcd 
  */
 public class BigIntegerModPowTest extends TestCase {
 	/**
@@ -35,8 +36,8 @@ public class BigIntegerModPowTest extends TestCase {
 		byte eBytes[] = {1, 2, 3, 4, 5};
 		byte mBytes[] = {1, 2, 3};
 		int aSign = 1;
-		int eSign = 1;
-		int mSign = -1;
+		int eSign = 1;		
+		int mSign = -1;		
 		BigInteger aNumber = new BigInteger(aSign, aBytes);
 		BigInteger exp = new BigInteger(eSign, eBytes);
 		BigInteger modulus = new BigInteger(mSign, mBytes);
@@ -63,8 +64,8 @@ public class BigIntegerModPowTest extends TestCase {
 		byte eBytes[] = {27, -15, 65, 39};
 		byte mBytes[] = {-128, 2, 3, 4, 5};
 		int aSign = 1;
-		int eSign = 1;
-		int mSign = 1;
+		int eSign = 1;		
+		int mSign = 1;		
 		byte rBytes[] = {113, 100, -84, -28, -85};
 		BigInteger aNumber = new BigInteger(aSign, aBytes);
 		BigInteger exp = 	 new BigInteger(eSign, eBytes);
@@ -77,7 +78,7 @@ public class BigIntegerModPowTest extends TestCase {
 		}
 		assertEquals("incorrect sign", 1, result.signum());
 	}
-
+	
 	/**
 	 * modPow: negative exponent
 	 */
@@ -86,8 +87,8 @@ public class BigIntegerModPowTest extends TestCase {
 		byte eBytes[] = {27, -15, 65, 39};
 		byte mBytes[] = {-128, 2, 3, 4, 5};
 		int aSign = 1;
-		int eSign = -1;
-		int mSign = 1;
+		int eSign = -1;		
+		int mSign = 1;		
 		byte rBytes[] = {12, 118, 46, 86, 92};
 		BigInteger aNumber = new BigInteger(aSign, aBytes);
 		BigInteger exp = 	 new BigInteger(eSign, eBytes);
@@ -131,7 +132,7 @@ public class BigIntegerModPowTest extends TestCase {
 		byte aBytes[] = {1, 2, 3, 4, 5, 6, 7};
 		byte mBytes[] = {1, 2, 3};
 		int aSign = 1;
-		int mSign = -1;
+		int mSign = -1;		
 		BigInteger aNumber = new BigInteger(aSign, aBytes);
 		BigInteger modulus = new BigInteger(mSign, mBytes);
 		try {
@@ -141,7 +142,7 @@ public class BigIntegerModPowTest extends TestCase {
 			assertEquals("Improper exception message", "BigInteger: modulus not positive", e.getMessage());
 		}
 	}
-
+	
 	/**
 	 * modInverse: non-invertible number
 	 */
@@ -149,7 +150,7 @@ public class BigIntegerModPowTest extends TestCase {
 		byte aBytes[] = {-15, 24, 123, 56, -11, -112, -34, -98, 8, 10, 12, 14, 25, 125, -15, 28, -127};
 		byte mBytes[] = {-12, 1, 0, 0, 0, 23, 44, 55, 66};
 		int aSign = 1;
-		int mSign = 1;
+		int mSign = 1;		
 		BigInteger aNumber = new BigInteger(aSign, aBytes);
 		BigInteger modulus = new BigInteger(mSign, mBytes);
 		try {
@@ -167,7 +168,7 @@ public class BigIntegerModPowTest extends TestCase {
 		byte aBytes[] = {24, 123, 56, -11, -112, -34, -98, 8, 10, 12, 14, 25, 125, -15, 28, -127};
 		byte mBytes[] = {122, 45, 36, 100, 122, 45};
 		int aSign = 1;
-		int mSign = 1;
+		int mSign = 1;		
 		byte rBytes[] = {47, 3, 96, 62, 87, 19};
 		BigInteger aNumber = new BigInteger(aSign, aBytes);
 		BigInteger modulus = new BigInteger(mSign, mBytes);
@@ -187,7 +188,7 @@ public class BigIntegerModPowTest extends TestCase {
 		byte aBytes[] = {15, 24, 123, 56, -11, -112, -34, -98, 8, 10, 12, 14, 25, 125, -15, 28, -127};
 		byte mBytes[] = {2, 122, 45, 36, 100};
 		int aSign = 1;
-		int mSign = 1;
+		int mSign = 1;		
 		byte rBytes[] = {1, -93, 40, 127, 73};
 		BigInteger aNumber = new BigInteger(aSign, aBytes);
 		BigInteger modulus = new BigInteger(mSign, mBytes);
@@ -207,7 +208,7 @@ public class BigIntegerModPowTest extends TestCase {
 		byte aBytes[] = {15, 24, 123, 56, -11, -112, -34, -98, 8, 10, 12, 14, 25, 125, -15, 28, -127};
 		byte mBytes[] = {2, 122, 45, 36, 100};
 		int aSign = -1;
-		int mSign = 1;
+		int mSign = 1;		
 		byte rBytes[] = {0, -41, 4, -91, 27};
 		BigInteger aNumber = new BigInteger(aSign, aBytes);
 		BigInteger modulus = new BigInteger(mSign, mBytes);
@@ -237,7 +238,7 @@ public class BigIntegerModPowTest extends TestCase {
 		}
 		assertEquals("incorrect sign", 1, result.signum());
 	}
-
+	
 	/**
 	 * gcd: the second number is zero
 	 */
@@ -277,7 +278,7 @@ public class BigIntegerModPowTest extends TestCase {
 		}
 		assertEquals("incorrect sign", 1, result.signum());
 	}
-
+	
 	/**
 	 * gcd: the first number is ZERO
 	 */

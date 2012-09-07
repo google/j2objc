@@ -19,6 +19,7 @@ package java.lang;
 /**
  * Simple iOS version of java.lang.StackTraceElement.
  *
+ * @author Pankaj Kakkar
  */
 public class StackTraceElement {
 

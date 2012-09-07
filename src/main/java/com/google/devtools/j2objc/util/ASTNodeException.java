@@ -22,6 +22,7 @@ import org.eclipse.jdt.core.dom.ASTNode;
  * Reports an exception in an ASTNode, which adds the information needed
  * to report where the problem occurred in the source file being translated.
  *
+ * @author Tom Ball
  */
 public class ASTNodeException extends RuntimeException {
   private final ASTNode node;

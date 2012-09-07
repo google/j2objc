@@ -23,6 +23,7 @@ import org.eclipse.jdt.core.dom.IVariableBinding;
 /**
  * A symbol for a variable and its binding.
  *
+ * @author Tom Ball
  */
 public class VariableSymbol extends Symbol {
 

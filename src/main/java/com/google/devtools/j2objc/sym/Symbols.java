@@ -35,6 +35,7 @@ import java.util.Set;
  * Symbol related utility methods, using a symbol table created from the
  * JDT bindings of the compiled sources.
  *
+ * @author Tom Ball
  */
 public class Symbols {
 

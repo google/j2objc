@@ -44,6 +44,7 @@ import java.util.List;
 /**
  * Unit tests for {@link InitializationNormalization} phase.
  *
+ * @author Tom Ball
  */
 @SuppressWarnings("unchecked")  // JDT lists are raw, but still safely typed.
 public class InitializationNormalizerTest extends GenerationTest {

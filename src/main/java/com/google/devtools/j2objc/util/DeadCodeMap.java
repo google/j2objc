@@ -30,6 +30,7 @@ import java.util.Set;
 /**
  * Tracks dead classes and methods that can be ignored during translation.
  *
+ * @author Daniel Connelly
  */
 public class DeadCodeMap {
 

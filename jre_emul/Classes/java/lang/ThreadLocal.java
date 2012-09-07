@@ -21,6 +21,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 /**
  * Simple iOS version of java.lang.ThreadLocal.
  *
+ * @author Pankaj Kakkar
  */
 public class ThreadLocal<T> {
 

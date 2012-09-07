@@ -79,6 +79,7 @@ import java.util.Map;
  * separate map, both ASTNodes and IOS synthetic nodes can be
  * resolved.
  *
+ * @author Tom Ball
  */
 class BindingMapBuilder extends ErrorReportingASTVisitor {
 

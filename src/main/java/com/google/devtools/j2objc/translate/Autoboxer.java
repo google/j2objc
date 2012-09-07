@@ -49,6 +49,7 @@ import java.util.List;
 /**
  * Adds support for boxing and unboxing numeric primitive values.
  *
+ * @author Tom Ball
  */
 public class Autoboxer extends ErrorReportingASTVisitor {
   private final AST ast;

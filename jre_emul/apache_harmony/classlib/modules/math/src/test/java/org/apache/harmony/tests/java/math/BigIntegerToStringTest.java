@@ -15,6 +15,7 @@
  *  limitations under the License.
  */
 /**
+ * @author Elena Semukhina
  */
 
 package org.apache.harmony.tests.java.math;

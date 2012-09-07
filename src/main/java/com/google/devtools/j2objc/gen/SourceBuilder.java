@@ -28,6 +28,7 @@ import java.io.StringReader;
  * Builds source text.  This is similar to a StringBuilder, but tracks line
  * numbers and outputs them as CPP line directives when directed.
  *
+ * @author Tom Ball
  */
 public class SourceBuilder {
   private final StringBuilder buffer = new StringBuilder();

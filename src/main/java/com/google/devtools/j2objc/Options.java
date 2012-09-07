@@ -39,6 +39,7 @@ import java.util.logging.Logger;
  * This class was extracted from the main class, to make it easier for
  * other classes to access options.
  *
+ * @author Tom Ball
  */
 public class Options {
 

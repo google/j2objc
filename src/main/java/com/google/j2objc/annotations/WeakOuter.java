@@ -26,6 +26,7 @@ import static java.lang.annotation.RetentionPolicy.*;
  * Annotation that indicates an inner class has a weak relationship
  * to its owning class.
  *
+ * @author Tom Ball
  */
 @Target(TYPE)
 @Retention(SOURCE)

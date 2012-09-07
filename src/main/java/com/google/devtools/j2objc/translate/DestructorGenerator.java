@@ -53,6 +53,7 @@ import java.util.List;
  * fields can be released regardless of whether they currently reference
  * data.
  *
+ * @author Tom Ball
  */
 public class DestructorGenerator extends ErrorReportingASTVisitor {
   private final String destructorName;

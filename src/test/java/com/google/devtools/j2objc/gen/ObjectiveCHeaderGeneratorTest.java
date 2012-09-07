@@ -30,6 +30,7 @@ import java.util.Set;
 /**
  * Tests for {@link ObjectiveCHeaderGenerator}.
  *
+ * @author Tom Ball
  */
 public class ObjectiveCHeaderGeneratorTest extends GenerationTest {
 

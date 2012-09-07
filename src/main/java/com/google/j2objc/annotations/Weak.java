@@ -25,6 +25,7 @@ import static java.lang.annotation.RetentionPolicy.*;
 /**
  * Annotation that indicates a variable has a weak relationship to its owner.
  *
+ * @author Tom Ball
  */
 @Target({FIELD, LOCAL_VARIABLE})
 @Retention(CLASS)

@@ -23,6 +23,7 @@ import java.io.IOException;
 /**
  * Unit tests for the {@link ImplementationImportCollector} class.
  *
+ * @author Tom Ball
  */
 public class ImplementationImportCollectorTest extends GenerationTest {
 

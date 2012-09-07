@@ -27,6 +27,7 @@ import org.eclipse.jdt.core.dom.ITypeBinding;
  * use to equivalent iOS methods.
  *
  * @see IOSMethod
+ * @author Tom Ball
  */
 public class JavaMethod {
   private final String clazz;

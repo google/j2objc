@@ -35,6 +35,7 @@ import java.util.List;
 /**
  * Binding class for methods created during translation.
  *
+ * @author Tom Ball
  */
 public class GeneratedMethodBinding implements IMethodBinding {
   private final String name;

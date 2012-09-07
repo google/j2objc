@@ -25,6 +25,7 @@ import java.util.logging.LogRecord;
  * support filters, formatters, or multiple loggers, but instead directly
  * calls NSLog().
  *
+ * @author Tom Ball
  */
 public class Logger {
   private List<Handler> handlers;

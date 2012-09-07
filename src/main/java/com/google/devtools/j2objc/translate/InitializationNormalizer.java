@@ -61,6 +61,7 @@ import java.util.List;
  * any constructors but does have instance initialization statements,
  * a default constructor is added to run them.
  *
+ * @author Tom Ball
  */
 public class InitializationNormalizer extends ErrorReportingASTVisitor {
 

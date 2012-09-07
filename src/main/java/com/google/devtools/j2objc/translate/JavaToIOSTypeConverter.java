@@ -47,6 +47,7 @@ import java.util.List;
  * String to NSString. Arrays are also converted, but because their contents are
  * fixed-size and contain nulls, custom classes are used.
  *
+ * @author Tom Ball
  */
 public class JavaToIOSTypeConverter extends ErrorReportingASTVisitor {
 

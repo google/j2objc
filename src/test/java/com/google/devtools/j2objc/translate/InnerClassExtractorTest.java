@@ -44,6 +44,7 @@ import java.util.List;
 /**
  * Unit tests for {@link InnerClassExtractor}.
  *
+ * @author Tom Ball
  */
 @SuppressWarnings("unchecked")  // JDT lists are raw, but still safely typed.
 public class InnerClassExtractorTest extends GenerationTest {

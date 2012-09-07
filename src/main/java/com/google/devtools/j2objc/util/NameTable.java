@@ -53,6 +53,7 @@ import java.util.logging.Logger;
 /**
  * Singleton service for type/method/variable name support.
  *
+ * @author Tom Ball
  */
 public class NameTable {
 

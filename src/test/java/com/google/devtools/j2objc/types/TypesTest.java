@@ -30,6 +30,7 @@ import java.io.IOException;
 /**
  * UnitTests for the {@link Types} class.
  *
+ * @author Tom Ball
  */
 public class TypesTest extends GenerationTest {
   private CompilationUnit unit;

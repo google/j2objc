@@ -60,6 +60,7 @@ import java.util.Set;
 /**
  * Generates Objective-C header files from compilation units.
  *
+ * @author Tom Ball
  */
 public class ObjectiveCHeaderGenerator extends ObjectiveCSourceFileGenerator {
 

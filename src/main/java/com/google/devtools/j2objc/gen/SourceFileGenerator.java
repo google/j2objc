@@ -32,6 +32,7 @@ import java.nio.charset.Charset;
  * This class handles common actions shared by the header, implementation, and
  * statement generators.
  *
+ * @author Tom Ball
  */
 public abstract class SourceFileGenerator {
   private final SourceBuilder builder;

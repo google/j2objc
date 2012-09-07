@@ -28,6 +28,7 @@ import java.util.regex.Pattern;
 /**
  * Unit tests for DeadCodeEliminator.
  *
+ * @author Daniel Connelly
  */
 public class DeadCodeEliminatorTest extends GenerationTest {
 

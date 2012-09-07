@@ -25,6 +25,7 @@ import java.io.IOException;
 /**
  * Unit tests for {@link DestructorGenerator}.
  *
+ * @author Tom Ball
  */
 public class DestructorGeneratorTest extends GenerationTest {
 

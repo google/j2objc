@@ -33,6 +33,7 @@ import javax.annotation.Nullable;
 /**
  * Binding class for variables and parameters created during translation.
  *
+ * @author Tom Ball
  */
 public class GeneratedVariableBinding implements IVariableBinding {
   private final String name;

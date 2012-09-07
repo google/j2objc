@@ -54,6 +54,7 @@ import java.util.Set;
 /**
  * Generates Objective-C implementation (.m) files from compilation units.
  *
+ * @author Tom Ball
  */
 public class ObjectiveCImplementationGenerator extends ObjectiveCSourceFileGenerator {
   private Set<IVariableBinding> fieldHiders;

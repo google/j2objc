@@ -20,6 +20,7 @@ package java.lang;
 /**
  * iOS version of java.lang.Math, based on the Apache Harmony version.
  *
+ * @author Tom Ball
  */
 public final class Math {
 
@@ -52,7 +53,7 @@ public final class Math {
    * <li>{@code abs(-infinity) = +infinity}</li>
    * <li>{@code abs(NaN) = NaN}</li>
    * </ul>
-   *
+   * 
    * @param d
    *            the value whose absolute value has to be computed.
    * @return the absolute value of the argument.
@@ -73,7 +74,7 @@ public final class Math {
    * <li>{@code abs(-infinity) = +infinity}</li>
    * <li>{@code abs(NaN) = NaN}</li>
    * </ul>
-   *
+   * 
    * @param f
    *            the value whose absolute value has to be computed.
    * @return the argument if it is positive, otherwise the negation of the
@@ -90,7 +91,7 @@ public final class Math {
    * <p>
    * If the argument is {@code Integer.MIN_VALUE}, {@code Integer.MIN_VALUE}
    * is returned.
-   *
+   * 
    * @param i
    *            the value whose absolute value has to be computed.
    * @return the argument if it is positive, otherwise the negation of the
@@ -103,7 +104,7 @@ public final class Math {
   /**
    * Returns the absolute value of the argument. If the argument is {@code
    * Long.MIN_VALUE}, {@code Long.MIN_VALUE} is returned.
-   *
+   * 
    * @param l
    *            the value whose absolute value has to be computed.
    * @return the argument if it is positive, otherwise the negation of the
@@ -124,7 +125,7 @@ public final class Math {
    * <li>{@code acos((anything < -1) = NaN}</li>
    * <li>{@code acos(NaN) = NaN}</li>
    * </ul>
-   *
+   * 
    * @param d
    *            the value to compute arc cosine of.
    * @return the arc cosine of the argument.
@@ -144,7 +145,7 @@ public final class Math {
    * <li>{@code asin((anything < -1)) = NaN}</li>
    * <li>{@code asin(NaN) = NaN}</li>
    * </ul>
-   *
+   * 
    * @param d
    *            the value whose arc sine has to be computed.
    * @return the arc sine of the argument.
@@ -166,7 +167,7 @@ public final class Math {
    * <li>{@code atan(-infinity) = -pi/2}</li>
    * <li>{@code atan(NaN) = NaN}</li>
    * </ul>
-   *
+   * 
    * @param d
    *            the value whose arc tangent has to be computed.
    * @return the arc tangent of the argument.
@@ -206,7 +207,7 @@ public final class Math {
    * <li>{@code atan2(-infinity, (anything but,0, NaN, and infinity))} {@code
    * =} {@code -pi/2}</li>
    * </ul>
-   *
+   * 
    * @param y
    *            the numerator of the value whose atan has to be computed.
    * @param x
@@ -229,7 +230,7 @@ public final class Math {
    * <li>{@code cbrt(-infinity) = -infinity}</li>
    * <li>{@code cbrt(NaN) = NaN}</li>
    * </ul>
-   *
+   * 
    * @param d
    *            the value whose cube root has to be computed.
    * @return the cube root of the argument.
@@ -251,7 +252,7 @@ public final class Math {
    * <li>{@code ceil(-infinity) = -infinity}</li>
    * <li>{@code ceil(NaN) = NaN}</li>
    * </ul>
-   *
+   * 
    * @param d
    *            the value whose closest integer value has to be computed.
    * @return the ceiling of the argument.
@@ -271,7 +272,7 @@ public final class Math {
    * <li>{@code cos(-infinity) = NaN}</li>
    * <li>{@code cos(NaN) = NaN}</li>
    * </ul>
-   *
+   * 
    * @param d
    *            the angle whose cosine has to be computed, in radians.
    * @return the cosine of the argument.
@@ -291,7 +292,7 @@ public final class Math {
    * <li>{@code cosh(-infinity) = +infinity}</li>
    * <li>{@code cosh(NaN) = NaN}</li>
    * </ul>
-   *
+   * 
    * @param d
    *            the value whose hyperbolic cosine has to be computed.
    * @return the hyperbolic cosine of the argument.
@@ -311,7 +312,7 @@ public final class Math {
    * <li>{@code exp(-infinity) = +0.0}</li>
    * <li>{@code exp(NaN) = NaN}</li>
    * </ul>
-   *
+   * 
    * @param d
    *            the value whose exponential has to be computed.
    * @return the exponential of the argument.
@@ -338,7 +339,7 @@ public final class Math {
    * <li>{@code expm1(-infinity) = -1.0}</li>
    * <li>{@code expm1(NaN) = NaN}</li>
    * </ul>
-   *
+   * 
    * @param d
    *            the value to compute the <i>{@code e}</i><sup>{@code d} </sup>
    *            {@code - 1} of.
@@ -361,7 +362,7 @@ public final class Math {
    * <li>{@code floor(-infinity) = -infinity}</li>
    * <li>{@code floor(NaN) = NaN}</li>
    * </ul>
-   *
+   * 
    * @param d
    *            the value whose closest integer value has to be computed.
    * @return the floor of the argument.
@@ -385,7 +386,7 @@ public final class Math {
    * <li>{@code hypot((anything including NaN), -infinity) = +infinity}</li>
    * <li>{@code hypot(NaN, NaN) = NaN}</li>
    * </ul>
-   *
+   * 
    * @param x
    *            a double number.
    * @param y
@@ -416,7 +417,7 @@ public final class Math {
    * <li>{@code IEEEremainder(x, -infinity) = x } where x is anything but
    * +/-infinity</li>
    * </ul>
-   *
+   * 
    * @param x
    *            the numerator of the operation.
    * @param y
@@ -443,7 +444,7 @@ public final class Math {
    * <li>{@code log(-infinity) = NaN}</li>
    * <li>{@code log(NaN) = NaN}</li>
    * </ul>
-   *
+   * 
    * @param d
    *            the value whose log has to be computed.
    * @return the natural logarithm of the argument.
@@ -466,7 +467,7 @@ public final class Math {
    * <li>{@code log10(-infinity) = NaN}</li>
    * <li>{@code log10(NaN) = NaN}</li>
    * </ul>
-   *
+   * 
    * @param d
    *            the value whose base 10 log has to be computed.
    * @return the natural logarithm of the argument.
@@ -492,7 +493,7 @@ public final class Math {
    * <li>{@code log1p(-infinity) = NaN}</li>
    * <li>{@code log1p(NaN) = NaN}</li>
    * </ul>
-   *
+   * 
    * @param d
    *            the value to compute the {@code ln(1+d)} of.
    * @return the natural logarithm of the sum of the argument and 1.
@@ -512,7 +513,7 @@ public final class Math {
    * <li>{@code max(+0.0, -0.0) = +0.0}</li>
    * <li>{@code max(-0.0, +0.0) = +0.0}</li>
    * </ul>
-   *
+   * 
    * @param d1
    *            the first argument.
    * @param d2
@@ -534,7 +535,7 @@ public final class Math {
    * <li>{@code max(+0.0, -0.0) = +0.0}</li>
    * <li>{@code max(-0.0, +0.0) = +0.0}</li>
    * </ul>
-   *
+   * 
    * @param f1
    *            the first argument.
    * @param f2
@@ -548,7 +549,7 @@ public final class Math {
   /**
    * Returns the most positive (closest to positive infinity) of the two
    * arguments.
-   *
+   * 
    * @param i1
    *            the first argument.
    * @param i2
@@ -562,7 +563,7 @@ public final class Math {
   /**
    * Returns the most positive (closest to positive infinity) of the two
    * arguments.
-   *
+   * 
    * @param l1
    *            the first argument.
    * @param l2
@@ -584,7 +585,7 @@ public final class Math {
    * <li>{@code min(+0.0, -0.0) = -0.0}</li>
    * <li>{@code min(-0.0, +0.0) = -0.0}</li>
    * </ul>
-   *
+   * 
    * @param d1
    *            the first argument.
    * @param d2
@@ -606,7 +607,7 @@ public final class Math {
    * <li>{@code min(+0.0, -0.0) = -0.0}</li>
    * <li>{@code min(-0.0, +0.0) = -0.0}</li>
    * </ul>
-   *
+   * 
    * @param f1
    *            the first argument.
    * @param f2
@@ -620,7 +621,7 @@ public final class Math {
   /**
    * Returns the most negative (closest to negative infinity) of the two
    * arguments.
-   *
+   * 
    * @param i1
    *            the first argument.
    * @param i2
@@ -634,7 +635,7 @@ public final class Math {
   /**
    * Returns the most negative (closest to negative infinity) of the two
    * arguments.
-   *
+   * 
    * @param l1
    *            the first argument.
    * @param l2
@@ -675,7 +676,7 @@ public final class Math {
    * pow(-1,(integer))*pow(+anything,integer) }</li>
    * <li>{@code pow((-anything except 0 and inf), (non-integer)) = NAN}</li>
    * </ul>
-   *
+   * 
    * @param x
    *            the base of the operation.
    * @param y
@@ -685,7 +686,7 @@ public final class Math {
   public static native double pow(double x, double y) /*-{
     return pow(x, y);
   }-*/;
-
+ 
   /**
    * Returns the double conversion of the result of rounding the argument to
    * an integer. Tie breaks are rounded towards even.
@@ -698,7 +699,7 @@ public final class Math {
    * <li>{@code rint(-infinity) = -infinity}</li>
    * <li>{@code rint(NaN) = NaN}</li>
    * </ul>
-   *
+   * 
    * @param d
    *            the value to be rounded.
    * @return the closest integer to the argument (as a double).
@@ -721,7 +722,7 @@ public final class Math {
    * <li>{@code round(-infintiy) = Long.MIN_VALUE}</li>
    * <li>{@code round(NaN) = +0.0}</li>
    * </ul>
-   *
+   * 
    * @param d
    *            the value to be rounded.
    * @return the closest integer to the argument.
@@ -748,7 +749,7 @@ public final class Math {
    * <li>{@code round(-infintiy) = Integer.MIN_VALUE}</li>
    * <li>{@code round(NaN) = +0.0}</li>
    * </ul>
-   *
+   * 
    * @param f
    *            the value to be rounded.
    * @return the closest integer to the argument.
@@ -775,7 +776,7 @@ public final class Math {
    * <li>{@code signum(-infinity) = -1.0}</li>
    * <li>{@code signum(NaN) = NaN}</li>
    * </ul>
-   *
+   * 
    * @param d
    *            the value whose signum has to be computed.
    * @return the value of the signum function.
@@ -798,7 +799,7 @@ public final class Math {
    * <li>{@code signum(-infinity) = -1.0}</li>
    * <li>{@code signum(NaN) = NaN}</li>
    * </ul>
-   *
+   * 
    * @param f
    *            the value whose signum has to be computed.
    * @return the value of the signum function.
@@ -820,7 +821,7 @@ public final class Math {
    * <li>{@code sin(-infinity) = NaN}</li>
    * <li>{@code sin(NaN) = NaN}</li>
    * </ul>
-   *
+   * 
    * @param d
    *            the angle whose sin has to be computed, in radians.
    * @return the sine of the argument.
@@ -842,7 +843,7 @@ public final class Math {
    * <li>{@code sinh(-infinity) = -infinity}</li>
    * <li>{@code sinh(NaN) = NaN}</li>
    * </ul>
-   *
+   * 
    * @param d
    *            the value whose hyperbolic sine has to be computed.
    * @return the hyperbolic sine of the argument.
@@ -863,7 +864,7 @@ public final class Math {
    * <li>{@code sqrt(+infinity) = +infinity}</li>
    * <li>{@code sqrt(NaN) = NaN}</li>
    * </ul>
-   *
+   * 
    * @param d
    *            the value whose square root has to be computed.
    * @return the square root of the argument.
@@ -885,7 +886,7 @@ public final class Math {
    * <li>{@code tan(-infinity) = NaN}</li>
    * <li>{@code tan(NaN) = NaN}</li>
    * </ul>
-   *
+   * 
    * @param d
    *            the angle whose tangens has to be computed, in radians.
    * @return the tangent of the argument.
@@ -909,7 +910,7 @@ public final class Math {
    * <li>{@code tanh(-infinity) = -1.0}</li>
    * <li>{@code tanh(NaN) = NaN}</li>
    * </ul>
-   *
+   * 
    * @param d
    *            the value whose hyperbolic tangent has to be computed.
    * @return the hyperbolic tangent of the argument.
@@ -921,7 +922,7 @@ public final class Math {
   /**
    * Returns a pseudo-random number between 0.0 (inclusive) and 1.0
    * (exclusive).
-   *
+   * 
    * @return a pseudo-random number.
    */
   public static double random() {
@@ -943,7 +944,7 @@ public final class Math {
    * <li>{@code toRadians(-infinity) = -infinity}</li>
    * <li>{@code toRadians(NaN) = NaN}</li>
    * </ul>
-   *
+   * 
    * @param angdeg
    *            an angle in degrees.
    * @return the radian measure of the angle.
@@ -964,7 +965,7 @@ public final class Math {
    * <li>{@code toDegrees(-infinity) = -infinity}</li>
    * <li>{@code toDegrees(NaN) = NaN}</li>
    * </ul>
-   *
+   * 
    * @param angrad
    *            an angle in radians.
    * @return the degree measure of the angle.
@@ -987,7 +988,7 @@ public final class Math {
    * <li>{@code ulp(-infintiy) = infinity}</li>
    * <li>{@code ulp(NaN) = NaN}</li>
    * </ul>
-   *
+   * 
    * @param d
    *            the floating-point value to compute ulp of.
    * @return the size of a ulp of the argument.
@@ -1017,7 +1018,7 @@ public final class Math {
    * <li>{@code ulp(-infintiy) = infinity}</li>
    * <li>{@code ulp(NaN) = NaN}</li>
    * </ul>
-   *
+   * 
    * @param f
    *            the floating-point value to compute ulp of.
    * @return the size of a ulp of the argument.

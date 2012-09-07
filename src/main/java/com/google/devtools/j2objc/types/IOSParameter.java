@@ -30,6 +30,7 @@ import java.util.regex.Pattern;
  * method -- this supports reordering parameters when needed.
  *
  * @see IOSMethod
+ * @author Tom Ball
  */
 public class IOSParameter {
     private final String name;

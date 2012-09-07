@@ -28,6 +28,7 @@ import java.io.Serializable;
  * NOTE: most of java.util.Date is deprecated, so only the non-deprecated
  * public API is implemented.
  *
+ * @author Tom Ball
  */
 public class Date implements Cloneable, Comparable<Date>, Serializable {
   private long milliseconds;

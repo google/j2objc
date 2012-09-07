@@ -26,6 +26,7 @@ import java.util.List;
  * Verifies that array creation, with or without initializer expressions, are
  * translated corrected.
  *
+ * @author Tom Ball
  */
 public class ArrayCreationTest extends GenerationTest {
 

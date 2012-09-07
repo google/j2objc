@@ -17,11 +17,12 @@
 package java.util;
 
 /**
- * iOS version of java.util.Properties.  No code was shared, just its public
+ * iOS version of java.util.Properties.  No code was shared, just its public 
  * API.  There is currently no support for loading from or storing to the
  * filesystem.  It's primary use here is to support several Apache Harmony
  * tests, which store temporary test data in System.properties.
  *
+ * @author Tom Ball
  */
 public class Properties extends Hashtable<String, String> {
 

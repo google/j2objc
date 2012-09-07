@@ -26,6 +26,7 @@ import org.eclipse.jdt.core.dom.IVariableBinding;
  * created when determining fix-ups that need to be made after converting an
  * anonymous class or extracting an inner class.
  *
+ * @author Tom Ball
  */
 class ReferenceDescription {
   final ASTNode node;

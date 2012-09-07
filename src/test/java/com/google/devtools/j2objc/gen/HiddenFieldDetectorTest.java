@@ -26,6 +26,7 @@ import java.util.Set;
 /**
  * Unit tests for {@link HiddenFieldDetector}.
  *
+ * @author Tom Ball
  */
 public class HiddenFieldDetectorTest extends GenerationTest {
 

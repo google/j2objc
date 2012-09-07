@@ -26,6 +26,7 @@ import java.util.List;
 /**
  * Unit tests for {@link Autoboxer} class.
  *
+ * @author Tom Ball
  */
 public class AutoboxerTest extends GenerationTest {
 

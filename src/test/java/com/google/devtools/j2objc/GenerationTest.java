@@ -50,6 +50,7 @@ import java.util.List;
  * statements is parsed and translated, then iOS code is generated for one or
  * more of those statements for comparison in a specific generation test.
  *
+ * @author Tom Ball
  */
 public abstract class GenerationTest extends TestCase {
   protected File tempDir;

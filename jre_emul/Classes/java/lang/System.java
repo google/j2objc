@@ -39,7 +39,8 @@ import java.util.Properties;
 /**
  * Simple iOS version of java.lang.System.  No code was shared, just its
  * public API.
- *
+ * 
+ * @author Tom Ball
  */
 public class System {
   private static Properties props;
@@ -56,7 +57,7 @@ public class System {
   public static native int identityHashCode(Object anObject) /*-{
     return (int) (intptr_t) anObject;
   }-*/;
-
+  
   public static native void arraycopy(Object src, int srcPos, Object dest, int destPos,
       int length) /*-{
     id exception = nil;
