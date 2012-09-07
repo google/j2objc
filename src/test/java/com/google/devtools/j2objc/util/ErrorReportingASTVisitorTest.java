@@ -24,6 +24,7 @@ import org.eclipse.jdt.core.dom.ReturnStatement;
 /**
  * Unit tests for {@link ErrorReportingASTVisitor}.
  *
+ * @author Tom Ball
  */
 public class ErrorReportingASTVisitorTest extends GenerationTest {
 

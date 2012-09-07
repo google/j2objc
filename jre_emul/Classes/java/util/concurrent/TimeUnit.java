@@ -22,6 +22,7 @@ package java.util.concurrent;
  * This class is not translated by J2ObjC, due to incorrect enum
  * translation bug.
  *
+ * @author Pankaj Kakkar
  */
 public enum TimeUnit {
   // TODO(user): update bug id in comments to public issue numbers when

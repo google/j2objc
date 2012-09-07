@@ -20,6 +20,7 @@ package java.util.concurrent.atomic;
  * GWT emulated version of {@link AtomicLong}.  It's a thin wrapper
  * around the primitive {@code long}.
  *
+ * @author Jige Yu
  */
 public class AtomicLong extends Number implements java.io.Serializable {
 

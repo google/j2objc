@@ -67,6 +67,7 @@ import java.util.List;
  * top-level classes (also like class files). This is similar to how Java
  * compilers convert inner classes into class files, which are all top-level.
  *
+ * @author Tom Ball
  */
 public class InnerClassExtractor extends ClassConverter {
   private final List<AbstractTypeDeclaration> unitTypes;

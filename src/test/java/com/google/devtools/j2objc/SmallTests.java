@@ -50,6 +50,7 @@ import junit.framework.TestSuite;
 /**
  * Returns a suite of all small tests in this package.
  *
+ * @author Tom Ball
  */
 public class SmallTests {
 

@@ -74,6 +74,7 @@ import java.util.List;
  * bindings for each node.  It extends ASTMatcher, but for its
  * one-for-one node serving rather than any matching functionality.
  *
+ * @author Tom Ball
  */
 public class NodeCopier extends ASTMatcher {
   private static NodeCopier instance = new NodeCopier();

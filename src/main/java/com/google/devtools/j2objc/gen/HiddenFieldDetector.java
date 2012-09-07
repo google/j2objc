@@ -40,6 +40,7 @@ import java.util.Set;
  * Scans for parameters and local variable declarations that hide
  * fields.  Java allows this, but gcc warns loudly.
  *
+ * @author Tom Ball
  */
 public class HiddenFieldDetector extends ErrorReportingASTVisitor {
   private final Set<IVariableBinding> fieldNameConflicts = Sets.newLinkedHashSet();

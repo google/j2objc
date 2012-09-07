@@ -34,6 +34,7 @@ import java.util.Set;
  * type references. Subclasses collect specific imports and super types needed
  * for header and implementation source files.
  *
+ * @author Tom Ball
  */
 public class ImportCollector extends ErrorReportingASTVisitor {
 

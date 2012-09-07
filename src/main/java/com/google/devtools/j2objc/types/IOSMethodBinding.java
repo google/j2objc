@@ -27,6 +27,7 @@ import org.eclipse.jdt.core.dom.ITypeBinding;
 /**
  * IOSMethodBinding: synthetic binding for an iOS method.
  *
+ * @author Tom Ball
  */
 public class IOSMethodBinding implements IMethodBinding {
   private final String name;

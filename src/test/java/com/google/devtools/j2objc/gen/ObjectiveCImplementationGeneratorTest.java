@@ -25,6 +25,7 @@ import java.io.StringWriter;
 /**
  * Tests for {@link ObjectiveCImplementationGenerator}.
  *
+ * @author Tom Ball
  */
 public class ObjectiveCImplementationGeneratorTest extends GenerationTest {
 

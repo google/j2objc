@@ -27,6 +27,7 @@ import java.lang.reflect.Proxy;
  * with a different name, and optionally specify a different declaring
  * (outer) class.
  *
+ * @author Tom Ball
  */
 public class RenamedTypeBinding implements InvocationHandler {
   private final String newName;

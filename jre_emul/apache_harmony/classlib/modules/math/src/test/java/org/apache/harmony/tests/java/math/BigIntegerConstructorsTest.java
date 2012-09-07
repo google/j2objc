@@ -15,6 +15,7 @@
  *  limitations under the License.
  */
 /**
+ * @author Elena Semukhina
  */
 
 package org.apache.harmony.tests.java.math;
@@ -25,7 +26,7 @@ import java.util.Random;
 
 /**
  * Class:   java.math.BigInteger
- * Constructors: BigInteger(byte[] a), BigInteger(int sign, byte[] a),
+ * Constructors: BigInteger(byte[] a), BigInteger(int sign, byte[] a), 
  *               BigInteger(String val, int radix)
  */
 public class BigIntegerConstructorsTest extends TestCase {
@@ -42,7 +43,7 @@ public class BigIntegerConstructorsTest extends TestCase {
             assertEquals("Improper exception message", "Zero length BigInteger", e.getMessage());
         }
     }
-
+    
     /**
      * Create a positive number from an array of bytes.
      * The number fits in an array of integers.
@@ -154,7 +155,7 @@ public class BigIntegerConstructorsTest extends TestCase {
         }
         assertEquals("incorrect sign", -1, aNumber.signum());
     }
-
+    
     /**
      * Create a negative number from an array of bytes.
      * The number of bytes is multiple of 4.
@@ -200,10 +201,10 @@ public class BigIntegerConstructorsTest extends TestCase {
             assertEquals("Improper exception message", "Invalid signum value", e.getMessage());
         }
     }
-
+    
     /**
      * Create a number from a sign and an array of bytes.
-     * Verify an exception thrown if the array contains non-zero bytes while the sign is 0.
+     * Verify an exception thrown if the array contains non-zero bytes while the sign is 0. 
      */
     public void testConstructorSignBytesException2() {
         byte aBytes[] = {123, 45, -3, -76};
@@ -233,7 +234,7 @@ public class BigIntegerConstructorsTest extends TestCase {
         }
         assertEquals("incorrect sign", 1, aNumber.signum());
     }
-
+    
     /**
      * Create a positive number from a sign and an array of bytes.
      * The number fits in an array of integers.
@@ -304,7 +305,7 @@ public class BigIntegerConstructorsTest extends TestCase {
         }
         assertEquals("incorrect sign", 1, aNumber.signum());
     }
-
+    
     /**
      * Create a positive number from a sign and an array of bytes.
      * The number of bytes is multiple of 4.
@@ -340,7 +341,7 @@ public class BigIntegerConstructorsTest extends TestCase {
         }
         assertEquals("incorrect sign", 1, aNumber.signum());
     }
-
+    
     /**
      * Create a negative number from a sign and an array of bytes.
      * The number fits in an array of integers.
@@ -358,7 +359,7 @@ public class BigIntegerConstructorsTest extends TestCase {
         }
         assertEquals("incorrect sign", -1, aNumber.signum());
     }
-
+    
     /**
      * Create a negative number from a sign and an array of bytes.
      * The number fits in an array of integers.
@@ -429,7 +430,7 @@ public class BigIntegerConstructorsTest extends TestCase {
         }
         assertEquals("incorrect sign", -1, aNumber.signum());
     }
-
+    
     /**
      * Create a negative number from a sign and an array of bytes.
      * The number of bytes is multiple of 4.
@@ -582,7 +583,7 @@ public class BigIntegerConstructorsTest extends TestCase {
             assertEquals("Improper exception message", "Radix out of range", e.getMessage());
         }
     }
-
+    
     /**
      * Create a number from a string value and radix.
      * Verify an exception thrown if the string starts with a space.
@@ -596,7 +597,7 @@ public class BigIntegerConstructorsTest extends TestCase {
         } catch (NumberFormatException e) {
         }
     }
-
+    
     /**
      * Create a number from a string value and radix.
      * Verify an exception thrown if the string contains improper characters.
@@ -610,7 +611,7 @@ public class BigIntegerConstructorsTest extends TestCase {
         } catch (NumberFormatException e) {
         }
     }
-
+    
     /**
      * Create a number from a string value and radix.
      * Verify an exception thrown if some digits are greater than radix.
@@ -640,7 +641,7 @@ public class BigIntegerConstructorsTest extends TestCase {
         }
         assertEquals("incorrect sign", 1, aNumber.signum());
     }
-
+    
     /**
      * Create a positive number from a string value and radix 8.
      */

@@ -16,6 +16,7 @@
  */
 
 /**
+ * @author Serguei S.Zapreyev
  * 
  * This ArrayTest class ("Software") is furnished under license and may only be
  * used or copied in accordance with the terms of that license.

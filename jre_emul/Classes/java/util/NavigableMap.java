@@ -58,6 +58,8 @@ package java.util;
  * {@code NavigableMap}.  Similarly,
  * {@link #keySet()} can be overriden to return {@code NavigableSet}.
  *
+ * @author Doug Lea
+ * @author Josh Bloch
  * @param <K> the type of keys maintained by this map
  * @param <V> the type of mapped values
  * @since 1.6

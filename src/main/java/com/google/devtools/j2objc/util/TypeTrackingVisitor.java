@@ -32,6 +32,7 @@ import java.util.Stack;
  * is more efficient than backtracking through each parent node, testing
  * its type.
  *
+ * @author Tom Ball
  */
 public abstract class TypeTrackingVisitor extends ErrorReportingASTVisitor {
   private final Stack<ASTNode> typeIndex = new Stack<ASTNode>();

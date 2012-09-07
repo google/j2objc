@@ -60,6 +60,7 @@ import java.util.Map;
  * code is too lengthy, though, a call to an emulation library is substituted to
  * prevent code bloat.
  *
+ * @author Tom Ball
  */
 public class JavaToIOSMethodTranslator extends ErrorReportingASTVisitor {
   private AST ast;

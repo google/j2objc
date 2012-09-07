@@ -26,6 +26,7 @@ import org.eclipse.jdt.core.dom.IBinding;
  * references to declarations.  This makes it easier to do global changes,
  * such as changing names and adding method parameters.
  *
+ * @author Tom Ball
  */
 public abstract class Symbol {
 

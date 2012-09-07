@@ -30,6 +30,7 @@ package java.lang;
  * This allows threads to be fetched without the need for a global map, and
  * avoids issues synchronizing iOS thread attributes with this wrapper.
  *
+ * @author Tom Ball
  */
 public class Thread implements Runnable {
 

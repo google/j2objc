@@ -48,6 +48,7 @@ import java.io.*;
  * <em>optional</em> methods of the {@link Collection} and {@link
  * Iterator} interfaces.
  *
+ * @author  Josh Bloch and Doug Lea
  * @since   1.6
  * @param <E> the type of elements held in this collection
  */

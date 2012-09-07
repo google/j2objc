@@ -30,6 +30,7 @@ import java.lang.reflect.Modifier;
 /**
  * IOSVariableBinding: synthetic binding for an iOS variable or parameter.
  *
+ * @author Tom Ball
  */
 public class IOSVariableBinding implements IVariableBinding {
   private final String name;

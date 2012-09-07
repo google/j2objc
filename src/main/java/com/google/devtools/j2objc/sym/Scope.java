@@ -32,6 +32,7 @@ import java.util.Map;
  * down to blocks.  Java packages are not included, since Objective-C doesn't
  * have namespaces.
  *
+ * @author Tom Ball
  */
 public class Scope {
 

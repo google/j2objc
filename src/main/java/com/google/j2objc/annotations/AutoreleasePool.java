@@ -25,6 +25,7 @@ import java.lang.annotation.Target;
  * Annotation that indicates the translator should inject an autorelease pool
  * around the method body. Only valid on methods that don't return anything.
  *
+ * @author Pankaj Kakkar
  */
 @Target({ElementType.METHOD, ElementType.LOCAL_VARIABLE})
 @Retention(RetentionPolicy.CLASS)

@@ -47,6 +47,7 @@ import java.util.Stack;
 /**
  * Builds a symbol table by walking a source file's AST.
  *
+ * @author Tom Ball
  */
 class SymbolTableBuilder extends ASTVisitor {
   private Stack<Scope> scopeStack = new Stack<Scope>();

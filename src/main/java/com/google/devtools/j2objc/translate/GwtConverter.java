@@ -51,6 +51,7 @@ import java.util.Set;
  * Updates the Java AST to remove methods annotated with GwtIncompatible,
  * and code bound by GWT.isClient and GWT.isScript tests.
  *
+ * @author Tom Ball
  */
 public class GwtConverter extends ErrorReportingASTVisitor {
 

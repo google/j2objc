@@ -8,6 +8,7 @@ package java.util.concurrent;
 import java.util.List;
 import java.util.Collection;
 import java.security.PrivilegedAction;
+import java.security.PrivilegedExceptionAction;
 
 /**
  * An {@link Executor} that provides methods to manage termination and
@@ -106,6 +107,7 @@ import java.security.PrivilegedAction;
  * result is retrieved via {@code Future.get()}.
  *
  * @since 1.5
+ * @author Doug Lea
  */
 public interface ExecutorService extends Executor {
 

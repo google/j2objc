@@ -15,6 +15,7 @@
  *  limitations under the License.
  */
 /**
+ * @author Elena Semukhina
  */
 
 package org.apache.harmony.tests.java.math;
@@ -24,7 +25,7 @@ import java.math.*;
 
 /**
  * Class:  java.math.BigDecimal
- * Methods: movePointLeft, movePointRight, scale, setScale, unscaledValue *
+ * Methods: movePointLeft, movePointRight, scale, setScale, unscaledValue * 
  */
 public class BigDecimalScaleOperationsTest extends TestCase {
     /**
@@ -80,7 +81,7 @@ public class BigDecimalScaleOperationsTest extends TestCase {
         BigDecimal aNumber = new BigDecimal(bNumber, aScale);
         assertTrue("incorrect unscaled value", aNumber.unscaledValue().equals(bNumber));
     }
-
+    
     /**
      * Set a greater new scale
      */
@@ -232,7 +233,7 @@ public class BigDecimalScaleOperationsTest extends TestCase {
         assertTrue("incorrect scale", bNumber.scale() == newScale);
         assertTrue("incorrect value", bNumber.unscaledValue().toString().equals(b));
     }
-
+    
     /**
      * SetScale(int, RoundingMode)
      */
@@ -247,7 +248,7 @@ public class BigDecimalScaleOperationsTest extends TestCase {
         assertEquals("incorrect value", res, result.toString());
         assertEquals("incorrect scale", resScale, result.scale());
     }
-
+    
     /**
      * Move the decimal point to the left; the shift value is positive
      */
@@ -261,7 +262,7 @@ public class BigDecimalScaleOperationsTest extends TestCase {
         assertTrue("incorrect scale", bNumber.scale() == resScale);
         assertTrue("incorrect value", bNumber.unscaledValue().toString().equals(a));
     }
-
+        
     /**
      * Move the decimal point to the left; the shift value is positive
      */
@@ -289,7 +290,7 @@ public class BigDecimalScaleOperationsTest extends TestCase {
         assertTrue("incorrect scale", bNumber.scale() == resScale);
         assertTrue("incorrect value", bNumber.unscaledValue().toString().equals(a));
     }
-
+        
     /**
      * Move the decimal point to the right; the shift value is positive
      */
@@ -304,7 +305,7 @@ public class BigDecimalScaleOperationsTest extends TestCase {
         assertTrue("incorrect scale", bNumber.scale() == resScale);
         assertTrue("incorrect value", bNumber.unscaledValue().toString().equals(b));
     }
-
+        
     /**
      * Move the decimal point to the right; the shift value is positive
      */

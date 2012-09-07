@@ -43,6 +43,7 @@ import java.util.List;
 /**
  * Unit tests for {@link AnonymousClassConverter}.
  *
+ * @author Tom Ball
  */
 @SuppressWarnings("unchecked")  // JDT lists are raw, but still safely typed.
 public class AnonymousClassConverterTest extends GenerationTest {

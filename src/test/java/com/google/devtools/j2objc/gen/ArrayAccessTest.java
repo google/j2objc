@@ -25,6 +25,7 @@ import java.util.List;
 /**
  * Verifies access to elements in IOS array types.
  *
+ * @author Tom Ball
  */
 public class ArrayAccessTest extends GenerationTest {
 

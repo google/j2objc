@@ -15,6 +15,7 @@
  *  limitations under the License.
  */
 /**
+ * @author Elena Semukhina
  */
 
 package org.apache.harmony.tests.java.math;
@@ -24,7 +25,7 @@ import java.math.BigInteger;
 
 /**
  * Class:   java.math.BigInteger
- * Methods: divide, remainder, mod, and divideAndRemainder
+ * Methods: divide, remainder, mod, and divideAndRemainder 
  */
 public class BigIntegerDivideTest extends TestCase {
     /**
@@ -34,7 +35,7 @@ public class BigIntegerDivideTest extends TestCase {
         byte aBytes[] = {1, 2, 3, 4, 5, 6, 7};
         byte bBytes[] = {0};
         int aSign = 1;
-        int bSign = 0;
+        int bSign = 0;        
         BigInteger aNumber = new BigInteger(aSign, aBytes);
         BigInteger bNumber = new BigInteger(bSign, bBytes);
         try {
@@ -68,7 +69,7 @@ public class BigIntegerDivideTest extends TestCase {
         byte aBytes[] = {-127, 100, 56, 7, 98, -1, 39, -128, 127};
         byte bBytes[] = {-127, 100, 56, 7, 98, -1, 39, -128, 127};
         int aSign = 1;
-        int bSign = 1;
+        int bSign = 1;        
         byte rBytes[] = {1};
         BigInteger aNumber = new BigInteger(aSign, aBytes);
         BigInteger bNumber = new BigInteger(bSign, bBytes);
@@ -88,7 +89,7 @@ public class BigIntegerDivideTest extends TestCase {
         byte aBytes[] = {-127, 100, 56, 7, 98, -1, 39, -128, 127};
         byte bBytes[] = {-127, 100, 56, 7, 98, -1, 39, -128, 127};
         int aSign = -1;
-        int bSign = 1;
+        int bSign = 1;        
         byte rBytes[] = {-1};
         BigInteger aNumber = new BigInteger(aSign, aBytes);
         BigInteger bNumber = new BigInteger(bSign, bBytes);
@@ -109,7 +110,7 @@ public class BigIntegerDivideTest extends TestCase {
         byte aBytes[] = {-127, 100, 56, 7, 98, -1, 39, -128, 127};
         byte bBytes[] = {-127, 100, 56, 7, 98, -1, 39, -128, 127, 1, 2, 3, 4, 5};
         int aSign = -1;
-        int bSign = 1;
+        int bSign = 1;        
         byte rBytes[] = {0};
         BigInteger aNumber = new BigInteger(aSign, aBytes);
         BigInteger bNumber = new BigInteger(bSign, bBytes);
@@ -130,7 +131,7 @@ public class BigIntegerDivideTest extends TestCase {
         byte aBytes[] = {1, 100, 56, 7, 98, -1, 39, -128, 127};
         byte bBytes[] = {15, 100, 56, 7, 98, -1, 39, -128, 127};
         int aSign = 1;
-        int bSign = 1;
+        int bSign = 1;        
         byte rBytes[] = {0};
         BigInteger aNumber = new BigInteger(aSign, aBytes);
         BigInteger bNumber = new BigInteger(bSign, bBytes);
@@ -150,7 +151,7 @@ public class BigIntegerDivideTest extends TestCase {
         byte aBytes[] = {1, 100, 56, 7, 98, -1, 39, -128, 127, 5, 6, 7, 8, 9};
         byte bBytes[] = {15, 48, -29, 7, 98, -1, 39, -128};
         int aSign = 1;
-        int bSign = 1;
+        int bSign = 1;        
         byte rBytes[] = {23, 115, 11, 78, 35, -11};
         BigInteger aNumber = new BigInteger(aSign, aBytes);
         BigInteger bNumber = new BigInteger(bSign, bBytes);
@@ -170,7 +171,7 @@ public class BigIntegerDivideTest extends TestCase {
         byte aBytes[] = {1, 100, 56, 7, 98, -1, 39, -128, 127, 5, 6, 7, 8, 9};
         byte bBytes[] = {15, 48, -29, 7, 98, -1, 39, -128};
         int aSign = 1;
-        int bSign = -1;
+        int bSign = -1;        
         byte rBytes[] = {-24, -116, -12, -79, -36, 11};
         BigInteger aNumber = new BigInteger(aSign, aBytes);
         BigInteger bNumber = new BigInteger(bSign, bBytes);
@@ -190,7 +191,7 @@ public class BigIntegerDivideTest extends TestCase {
         byte aBytes[] = {1, 100, 56, 7, 98, -1, 39, -128, 127, 5, 6, 7, 8, 9};
         byte bBytes[] = {15, 48, -29, 7, 98, -1, 39, -128};
         int aSign = -1;
-        int bSign = 1;
+        int bSign = 1;        
         byte rBytes[] = {-24, -116, -12, -79, -36, 11};
         BigInteger aNumber = new BigInteger(aSign, aBytes);
         BigInteger bNumber = new BigInteger(bSign, bBytes);
@@ -210,7 +211,7 @@ public class BigIntegerDivideTest extends TestCase {
         byte aBytes[] = {1, 100, 56, 7, 98, -1, 39, -128, 127, 5, 6, 7, 8, 9};
         byte bBytes[] = {15, 48, -29, 7, 98, -1, 39, -128};
         int aSign = -1;
-        int bSign = -1;
+        int bSign = -1;        
         byte rBytes[] = {23, 115, 11, 78, 35, -11};
         BigInteger aNumber = new BigInteger(aSign, aBytes);
         BigInteger bNumber = new BigInteger(bSign, bBytes);
@@ -230,7 +231,7 @@ public class BigIntegerDivideTest extends TestCase {
         byte aBytes[] = {0};
         byte bBytes[] = {15, 48, -29, 7, 98, -1, 39, -128};
         int aSign = 0;
-        int bSign = -1;
+        int bSign = -1;        
         byte rBytes[] = {0};
         BigInteger aNumber = new BigInteger(aSign, aBytes);
         BigInteger bNumber = new BigInteger(bSign, bBytes);
@@ -242,13 +243,13 @@ public class BigIntegerDivideTest extends TestCase {
         }
         assertEquals("incorrect sign", 0, result.signum());
     }
-
+    
     /**
      * Divide ZERO by a negative number.
      */
     public void testCase12() {
         byte bBytes[] = {15, 48, -29, 7, 98, -1, 39, -128};
-        int bSign = -1;
+        int bSign = -1;        
         byte rBytes[] = {0};
         BigInteger aNumber = BigInteger.ZERO;
         BigInteger bNumber = new BigInteger(bSign, bBytes);
@@ -266,7 +267,7 @@ public class BigIntegerDivideTest extends TestCase {
      */
     public void testCase13() {
         byte aBytes[] = {15, 48, -29, 7, 98, -1, 39, -128};
-        int aSign = 1;
+        int aSign = 1;        
         byte rBytes[] = {15, 48, -29, 7, 98, -1, 39, -128};
         BigInteger aNumber = new BigInteger(aSign, aBytes);
         BigInteger bNumber = BigInteger.ONE;
@@ -294,7 +295,7 @@ public class BigIntegerDivideTest extends TestCase {
         }
         assertEquals("incorrect sign", 1, result.signum());
     }
-
+    
     /**
      * Verifies the case when borrow != 0 in the private divide method.
      */
@@ -302,7 +303,7 @@ public class BigIntegerDivideTest extends TestCase {
         byte aBytes[] = {-7, -6, -5, -4, -3, -2, -1, 0, 1, 2, 3, 4, 5, 6, 7};
         byte bBytes[] = {-3, -3, -3, -3};
         int aSign = 1;
-        int bSign = 1;
+        int bSign = 1;        
         byte rBytes[] = {0, -5, -12, -33, -96, -36, -105, -56, 92, 15, 48, -109};
         BigInteger aNumber = new BigInteger(aSign, aBytes);
         BigInteger bNumber = new BigInteger(bSign, bBytes);
@@ -322,7 +323,7 @@ public class BigIntegerDivideTest extends TestCase {
         byte aBytes[] = {-9, -8, -7, -6, -5, -4, -3, -2, -1, 0, 1, 2, 3, 4, 5};
         byte bBytes[] = {-1, -1, -1, -1, -1, -1, -1, -1};
         int aSign = -1;
-        int bSign = -1;
+        int bSign = -1;        
         byte rBytes[] = {0, -9, -8, -7, -6, -5, -4, -3};
         BigInteger aNumber = new BigInteger(aSign, aBytes);
         BigInteger bNumber = new BigInteger(bSign, bBytes);
@@ -343,7 +344,7 @@ public class BigIntegerDivideTest extends TestCase {
         byte aBytes[] = {2, -3, -4, -5, -1, -5, -4, -3, -2, -1, 0, 1, 2, 3, 4, 5};
         byte bBytes[] = {2, -3, -4, -5, -1, -1, -1, -1};
         int aSign = -1;
-        int bSign = -1;
+        int bSign = -1;        
         byte rBytes[] = {0, -1, -1, -1, -1, -2, -88, -60, 41};
         BigInteger aNumber = new BigInteger(aSign, aBytes);
         BigInteger bNumber = new BigInteger(bSign, bBytes);
@@ -357,13 +358,13 @@ public class BigIntegerDivideTest extends TestCase {
     }
 
     /**
-     * Divide the number of one digit by the number of one digit
+     * Divide the number of one digit by the number of one digit 
      */
     public void testDivisionKnuthOneDigitByOneDigit() {
         byte aBytes[] = {113, -83, 123, -5};
         byte bBytes[] = {2, -3, -4, -5};
         int aSign = 1;
-        int bSign = -1;
+        int bSign = -1;        
         byte rBytes[] = {-37};
         BigInteger aNumber = new BigInteger(aSign, aBytes);
         BigInteger bNumber = new BigInteger(bSign, bBytes);
@@ -377,13 +378,13 @@ public class BigIntegerDivideTest extends TestCase {
     }
 
     /**
-     * Divide the number of multi digits by the number of one digit
+     * Divide the number of multi digits by the number of one digit 
      */
     public void testDivisionKnuthMultiDigitsByOneDigit() {
         byte aBytes[] = {113, -83, 123, -5, 18, -34, 67, 39, -29};
         byte bBytes[] = {2, -3, -4, -5};
         int aSign = 1;
-        int bSign = -1;
+        int bSign = -1;        
         byte rBytes[] = {-38, 2, 7, 30, 109, -43};
         BigInteger aNumber = new BigInteger(aSign, aBytes);
         BigInteger bNumber = new BigInteger(bSign, bBytes);
@@ -403,7 +404,7 @@ public class BigIntegerDivideTest extends TestCase {
         byte aBytes[] = {1, 2, 3, 4, 5, 6, 7};
         byte bBytes[] = {0};
         int aSign = 1;
-        int bSign = 0;
+        int bSign = 0;        
         BigInteger aNumber = new BigInteger(aSign, aBytes);
         BigInteger bNumber = new BigInteger(bSign, bBytes);
         try {
@@ -421,7 +422,7 @@ public class BigIntegerDivideTest extends TestCase {
         byte aBytes[] = {-127, 100, 56, 7, 98, -1, 39, -128, 127};
         byte bBytes[] = {-127, 100, 56, 7, 98, -1, 39, -128, 127};
         int aSign = 1;
-        int bSign = 1;
+        int bSign = 1;        
         byte rBytes[] = {0};
         BigInteger aNumber = new BigInteger(aSign, aBytes);
         BigInteger bNumber = new BigInteger(bSign, bBytes);
@@ -441,7 +442,7 @@ public class BigIntegerDivideTest extends TestCase {
         byte aBytes[] = {-127, 100, 56, 7, 98, -1, 39, -128, 127, 75};
         byte bBytes[] = {27, -15, 65, 39, 100};
         int aSign = 1;
-        int bSign = 1;
+        int bSign = 1;        
         byte rBytes[] = {12, -21, 73, 56, 27};
         BigInteger aNumber = new BigInteger(aSign, aBytes);
         BigInteger bNumber = new BigInteger(bSign, bBytes);
@@ -461,7 +462,7 @@ public class BigIntegerDivideTest extends TestCase {
         byte aBytes[] = {-127, 100, 56, 7, 98, -1, 39, -128, 127, 75};
         byte bBytes[] = {27, -15, 65, 39, 100};
         int aSign = -1;
-        int bSign = -1;
+        int bSign = -1;        
         byte rBytes[] = {-13, 20, -74, -57, -27};
         BigInteger aNumber = new BigInteger(aSign, aBytes);
         BigInteger bNumber = new BigInteger(bSign, bBytes);
@@ -482,7 +483,7 @@ public class BigIntegerDivideTest extends TestCase {
         byte aBytes[] = {-127, 100, 56, 7, 98, -1, 39, -128, 127, 75};
         byte bBytes[] = {27, -15, 65, 39, 100};
         int aSign = 1;
-        int bSign = -1;
+        int bSign = -1;        
         byte rBytes[] = {12, -21, 73, 56, 27};
         BigInteger aNumber = new BigInteger(aSign, aBytes);
         BigInteger bNumber = new BigInteger(bSign, bBytes);
@@ -494,7 +495,7 @@ public class BigIntegerDivideTest extends TestCase {
         }
         assertEquals("incorrect sign", 1, result.signum());
     }
-
+    
     /**
      * Remainder of division of two numbers of different signs.
      * The first is negative.
@@ -503,7 +504,7 @@ public class BigIntegerDivideTest extends TestCase {
         byte aBytes[] = {-127, 100, 56, 7, 98, -1, 39, -128, 127, 75};
         byte bBytes[] = {27, -15, 65, 39, 100};
         int aSign = -1;
-        int bSign = 1;
+        int bSign = 1;        
         byte rBytes[] = {-13, 20, -74, -57, -27};
         BigInteger aNumber = new BigInteger(aSign, aBytes);
         BigInteger bNumber = new BigInteger(bSign, bBytes);
@@ -523,7 +524,7 @@ public class BigIntegerDivideTest extends TestCase {
         byte aBytes[] = {-9, -8, -7, -6, -5, -4, -3, -2, -1, 0, 1};
         byte bBytes[] = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
         int aSign = 1;
-        int bSign = 1;
+        int bSign = 1;        
         byte rBytes[] = {1, 2, 3, 4, 5, 6, 7, 7, 18, -89};
         BigInteger aNumber = new BigInteger(aSign, aBytes);
         BigInteger bNumber = new BigInteger(bSign, bBytes);
@@ -537,13 +538,13 @@ public class BigIntegerDivideTest extends TestCase {
     }
 
     /**
-     * Divide the number of one digit by the number of one digit
+     * Divide the number of one digit by the number of one digit 
      */
     public void testRemainderKnuthOneDigitByOneDigit() {
         byte aBytes[] = {113, -83, 123, -5};
         byte bBytes[] = {2, -3, -4, -50};
         int aSign = 1;
-        int bSign = -1;
+        int bSign = -1;        
         byte rBytes[] = {2, -9, -14, 53};
         BigInteger aNumber = new BigInteger(aSign, aBytes);
         BigInteger bNumber = new BigInteger(bSign, bBytes);
@@ -557,13 +558,13 @@ public class BigIntegerDivideTest extends TestCase {
     }
 
     /**
-     * Divide the number of multi digits by the number of one digit
+     * Divide the number of multi digits by the number of one digit 
      */
     public void testRemainderKnuthMultiDigitsByOneDigit() {
         byte aBytes[] = {113, -83, 123, -5, 18, -34, 67, 39, -29};
         byte bBytes[] = {2, -3, -4, -50};
         int aSign = 1;
-        int bSign = -1;
+        int bSign = -1;        
         byte rBytes[] = {2, -37, -60, 59};
         BigInteger aNumber = new BigInteger(aSign, aBytes);
         BigInteger bNumber = new BigInteger(bSign, bBytes);
@@ -584,7 +585,7 @@ public class BigIntegerDivideTest extends TestCase {
         byte aBytes[] = {-127, 100, 56, 7, 98, -1, 39, -128, 127, 75};
         byte bBytes[] = {27, -15, 65, 39, 100};
         int aSign = -1;
-        int bSign = 1;
+        int bSign = 1;        
         byte rBytes[][] = {
                 {-5, 94, -115, -74, -85, 84},
                 {-13, 20, -74, -57, -27}
@@ -608,7 +609,7 @@ public class BigIntegerDivideTest extends TestCase {
             assertEquals(-1, result[1].signum());
         }
     }
-
+    
     /**
      * mod when modulus is negative
      */
@@ -616,7 +617,7 @@ public class BigIntegerDivideTest extends TestCase {
         byte aBytes[] = {1, 2, 3, 4, 5, 6, 7};
         byte bBytes[] = {1, 30, 40, 56, -1, 45};
         int aSign = 1;
-        int bSign = -1;
+        int bSign = -1;        
         BigInteger aNumber = new BigInteger(aSign, aBytes);
         BigInteger bNumber = new BigInteger(bSign, bBytes);
         try {
@@ -634,7 +635,7 @@ public class BigIntegerDivideTest extends TestCase {
         byte aBytes[] = {-127, 100, 56, 7, 98, -1, 39, -128, 127, 75};
         byte bBytes[] = {27, -15, 65, 39, 100};
         int aSign = 1;
-        int bSign = 1;
+        int bSign = 1;        
         byte rBytes[] = {12, -21, 73, 56, 27};
         BigInteger aNumber = new BigInteger(aSign, aBytes);
         BigInteger bNumber = new BigInteger(bSign, bBytes);
@@ -654,7 +655,7 @@ public class BigIntegerDivideTest extends TestCase {
         byte aBytes[] = {-127, 100, 56, 7, 98, -1, 39, -128, 127, 75};
         byte bBytes[] = {27, -15, 65, 39, 100};
         int aSign = -1;
-        int bSign = 1;
+        int bSign = 1;        
         byte rBytes[] = {15, 5, -9, -17, 73};
         BigInteger aNumber = new BigInteger(aSign, aBytes);
         BigInteger bNumber = new BigInteger(bSign, bBytes);

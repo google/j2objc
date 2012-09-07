@@ -111,6 +111,7 @@ import java.util.Stack;
 /**
  * Returns an Objective-C equivalent of a Java AST node.
  *
+ * @author Tom Ball
  */
 public class StatementGenerator extends ErrorReportingASTVisitor {
   private final SourceBuilder buffer;

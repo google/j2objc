@@ -27,6 +27,7 @@ import java.util.List;
 /**
  * Unit tests for {@link JavaToIOSMethodTranslatorTest}.
  *
+ * @author Tom Ball
  */
 public class JavaToIOSMethodTranslatorTest extends GenerationTest {
 

@@ -33,6 +33,7 @@ import java.util.Set;
 /**
  * IOSTypeBinding: synthetic binding for an iOS type
  *
+ * @author Tom Ball
  */
 public class IOSTypeBinding implements ITypeBinding {
 

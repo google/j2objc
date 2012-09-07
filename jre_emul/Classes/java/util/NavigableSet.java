@@ -50,6 +50,8 @@ package java.util;
  * of this interface are encouraged to override these methods to return
  * {@code NavigableSet}.
  *
+ * @author Doug Lea
+ * @author Josh Bloch
  * @param <E> the type of elements maintained by this set
  * @since 1.6
  */

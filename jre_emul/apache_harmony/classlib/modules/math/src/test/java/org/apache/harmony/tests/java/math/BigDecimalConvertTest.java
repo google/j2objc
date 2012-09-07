@@ -15,6 +15,7 @@
  *  limitations under the License.
  */
 /**
+ * @author Elena Semukhina
  */
 
 package org.apache.harmony.tests.java.math;
@@ -25,7 +26,7 @@ import java.math.BigInteger;
 
 /**
  * Class:  java.math.BigDecimal
- * Methods: doubleValue, floatValue, intValue, longValue,
+ * Methods: doubleValue, floatValue, intValue, longValue,  
  * valueOf, toString, toBigInteger
  */
 public class BigDecimalConvertTest extends TestCase {

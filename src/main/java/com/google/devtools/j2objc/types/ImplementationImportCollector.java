@@ -61,6 +61,7 @@ import java.util.List;
  * Collects the set of imports needed to resolve type references in an
  * implementation (.m) file.
  *
+ * @author Tom Ball
  */
 public class ImplementationImportCollector extends HeaderImportCollector {
   private final List<Import> declaredTypes = Lists.newArrayList();

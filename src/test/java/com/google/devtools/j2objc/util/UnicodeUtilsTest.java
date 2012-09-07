@@ -22,6 +22,7 @@ import com.google.devtools.j2objc.J2ObjC;
 /**
  * Unit tests for {@link UnicodeUtils}.
  *
+ * @author Tom Ball
  */
 public class UnicodeUtilsTest extends GenerationTest {
 

@@ -22,6 +22,7 @@ import junit.framework.TestCase;
 /**
  * Command-line tests for java.lang.Class support (IOSClass)
  *
+ * @author Tom Ball
  */
 public class ClassTest extends TestCase {
 

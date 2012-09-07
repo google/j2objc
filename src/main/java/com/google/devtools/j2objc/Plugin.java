@@ -28,6 +28,7 @@ import java.util.Map;
 /**
  * A plugin invoked to do custom processing not part of J2ObjC.
  *
+ * @author Pankaj Kakkar
  */
 public abstract class Plugin {
 

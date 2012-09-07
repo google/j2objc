@@ -25,6 +25,7 @@ import org.eclipse.jdt.core.dom.TypeDeclaration;
 /**
  * Unit tests for the {@link ModifiedTypeBinding} class.
  *
+ * @author Tom Ball
  */
 public class ModifiedTypeBindingTest extends GenerationTest {
 
@@ -56,3 +57,4 @@ public class ModifiedTypeBindingTest extends GenerationTest {
     assertEquals("Serializable", interfaces[0].getName());
   }
 }
+

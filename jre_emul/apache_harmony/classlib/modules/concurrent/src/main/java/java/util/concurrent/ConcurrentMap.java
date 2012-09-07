@@ -23,6 +23,7 @@ import java.util.Map;
  * Java Collections Framework</a>.
  *
  * @since 1.5
+ * @author Doug Lea
  * @param <K> the type of keys maintained by this map
  * @param <V> the type of mapped values
  */

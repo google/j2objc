@@ -27,6 +27,7 @@ import java.io.IOException;
 /**
  * Unit tests for the {@link RenamedTypeBinding} class.
  *
+ * @author Tom Ball
  */
 public class RenamedTypeBindingTest extends GenerationTest {
   private CompilationUnit unit;

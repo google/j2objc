@@ -31,6 +31,7 @@ import java.util.List;
  * {@link com.google.devtools.j2objc.DeadCodeEliminator} updates the types
  * it changed using bindings returned by this class.
  *
+ * @author Tom Ball
  */
 public class ModifiedTypeBinding implements InvocationHandler {
   ITypeBinding original;

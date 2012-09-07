@@ -68,6 +68,7 @@ import java.util.Stack;
  * anonymous class conversion from inner class extraction, each step can
  * be separately and more thoroughly verified.
  *
+ * @author Tom Ball
  */
 public class AnonymousClassConverter extends ClassConverter {
 

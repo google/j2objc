@@ -157,6 +157,8 @@ package java.util;
  * methods, but instead inherit the identity-based versions from class
  * <tt>Object</tt>.
  *
+ * @author Doug Lea
+ * @author Josh Bloch
  * @since  1.6
  * @param <E> the type of elements held in this collection
  */

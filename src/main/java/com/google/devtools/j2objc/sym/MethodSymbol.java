@@ -29,6 +29,7 @@ import java.util.List;
 /**
  * A symbol for a method and its binding.
  *
+ * @author Tom Ball
  */
 public class MethodSymbol extends Symbol {
   private final List<VariableSymbol> parameters = Lists.newArrayList();

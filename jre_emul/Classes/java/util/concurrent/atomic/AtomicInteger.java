@@ -20,6 +20,7 @@ package java.util.concurrent.atomic;
  * GWT emulated version of {@link AtomicInteger}.  It's a thin wrapper
  * around the primitive {@code int}.
  *
+ * @author Hayward Chan
  */
 public class AtomicInteger extends Number implements java.io.Serializable {
 

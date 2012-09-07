@@ -22,6 +22,7 @@ import com.google.devtools.j2objc.util.NameTable;
 /**
  * Tests for {@link ObjectiveCSourceFileGenerator}.
  *
+ * @author Tom Ball
  */
 public class ObjectiveCSourceFileGeneratorTest extends GenerationTest {
 

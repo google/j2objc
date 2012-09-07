@@ -24,6 +24,7 @@ import java.io.UnsupportedEncodingException;
 /**
  * Utility methods for translating Unicode strings to Objective-C.
  *
+ * @author Tom Ball
  */
 public final class UnicodeUtils {
 

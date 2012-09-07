@@ -69,6 +69,7 @@ import java.util.Map;
  * Walks an AST and asserts there is a resolved binding for every ASTNode type
  * that is supposed to have one.
  *
+ * @author Tom Ball
  */
 class BindingMapVerifier extends ErrorReportingASTVisitor {
   private final Map<Object, IBinding> bindingMap;

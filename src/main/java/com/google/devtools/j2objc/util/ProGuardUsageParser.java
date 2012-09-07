@@ -53,6 +53,7 @@ import java.util.regex.Pattern;
  * }
  * </code></pre>
  *
+ * @author Daniel Connelly
  */
 public class ProGuardUsageParser {
 

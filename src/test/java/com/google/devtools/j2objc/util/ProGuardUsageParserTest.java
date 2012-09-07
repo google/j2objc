@@ -25,6 +25,7 @@ import java.io.IOException;
 /**
  * Unit tests for the ProGuardUsageParser.
  *
+ * @author Daniel Connelly
  */
 public class ProGuardUsageParserTest extends TestCase {
 

@@ -93,6 +93,7 @@ import java.util.logging.Logger;
  * the concept of class variables, so they need to be replaced with static
  * accessor methods referencing private static data.
  *
+ * @author Tom Ball
  */
 public class Rewriter extends ErrorReportingASTVisitor {
 

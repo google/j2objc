@@ -15,6 +15,7 @@
  *  limitations under the License.
  */
 /**
+ * @author Elena Semukhina
  */
 
 package org.apache.harmony.tests.java.math;
@@ -75,5 +76,5 @@ public class BigIntegerHashCodeTest extends TestCase {
         if (!aNumber1.equals(aNumber2)) {
             assertTrue("hash codes for unequal objects are equal", code1 != code2);
         }
-    }
+    }      
 }

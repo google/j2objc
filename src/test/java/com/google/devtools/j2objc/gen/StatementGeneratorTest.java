@@ -26,6 +26,7 @@ import java.util.List;
 /**
  * Tests for {@link StatementGenerator}.
  *
+ * @author Tom Ball
  */
 public class StatementGeneratorTest extends GenerationTest {
   // TODO(user): update bug id in comments to public issue numbers when

@@ -55,6 +55,7 @@ import java.util.Set;
 /*
  * Types is a singleton service class for type-related operations.
  *
+ * @author Tom Ball
  */
 // TODO(user): convert to injectable implementation, to allow translator
 // core to be reused for other languages.

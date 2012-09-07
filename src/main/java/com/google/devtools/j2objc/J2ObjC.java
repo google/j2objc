@@ -82,6 +82,7 @@ import java.util.zip.ZipFile;
  * run natively on iOS.  In particular, no attempt is made to translate Java
  * UI framework code to any iOS frameworks.
  *
+ * @author Tom Ball
  */
 public class J2ObjC {
   private static String currentFileName;

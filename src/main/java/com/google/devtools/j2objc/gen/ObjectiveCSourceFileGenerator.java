@@ -44,6 +44,7 @@ import java.util.List;
  * Generates source files from AST types.  This class handles common actions
  * shared by the header and implementation generators.
  *
+ * @author Tom Ball
  */
 public abstract class ObjectiveCSourceFileGenerator extends SourceFileGenerator {
 

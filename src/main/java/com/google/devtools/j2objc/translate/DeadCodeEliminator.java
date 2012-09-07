@@ -76,6 +76,7 @@ import java.util.Set;
  * Updates the Java AST to remove methods and classes reported as dead
  * by a ProGuard usage report.
  *
+ * @author Daniel Connelly
  */
 public class DeadCodeEliminator extends ErrorReportingASTVisitor {
 

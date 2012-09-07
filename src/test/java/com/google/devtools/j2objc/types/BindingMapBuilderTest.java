@@ -21,6 +21,7 @@ import com.google.devtools.j2objc.GenerationTest;
 /**
  * Unit tests for the {@link BindingMapBuilder} class.
  *
+ * @author Tom Ball
  */
 public class BindingMapBuilderTest extends GenerationTest {
 

@@ -25,6 +25,7 @@ import org.eclipse.jdt.core.dom.ITypeBinding;
 /**
  * A symbol for a class, interface, enum or annotation type.
  *
+ * @author Tom Ball
  */
 public class TypeSymbol extends Symbol {
   private final Scope scope;

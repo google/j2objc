@@ -32,6 +32,7 @@ import java.util.Iterator;
 /**
  * Collects the set of imports needed to resolve type references in a header.
  *
+ * @author Tom Ball
  */
 public class HeaderImportCollector extends ImportCollector {
   protected String mainTypeName;

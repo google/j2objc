@@ -24,6 +24,7 @@ import java.io.IOException;
 /**
  * Unit tests for CPP line directive generation, used to support debugging.
  *
+ * @author Tom Ball
  */
 public class LineDirectivesTest extends GenerationTest {
 

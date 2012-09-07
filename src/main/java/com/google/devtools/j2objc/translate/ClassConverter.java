@@ -59,6 +59,7 @@ import java.util.Set;
  * Base class for the anonymous class converter and inner class extractor,
  * containing shared methods.
  *
+ * @author Tom Ball
  */
 public abstract class ClassConverter extends TypeTrackingVisitor {
   protected final CompilationUnit unit;

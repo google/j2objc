@@ -34,6 +34,7 @@ import java.util.List;
 /**
  * Unit tests for {@link Scope}.
  *
+ * @author Tom Ball
  */
 public class ScopeTest extends GenerationTest {
   private CompilationUnit unit;

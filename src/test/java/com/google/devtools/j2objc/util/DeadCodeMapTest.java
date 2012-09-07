@@ -21,6 +21,7 @@ import junit.framework.TestCase;
 /**
  * Unit tests for DeadCodeReport.
  *
+ * @author Daniel Connelly
  */
 public class DeadCodeMapTest extends TestCase {
 

@@ -27,6 +27,7 @@ import java.util.Stack;
  * Extends ASTVisitor to report uncaught exceptions in subclasses as
  * errors with the ASTNode where the error was thrown.
  *
+ * @author Tom Ball
  */
 public class ErrorReportingASTVisitor extends ASTVisitor {
   private Stack<ASTNode> stack = new Stack<ASTNode>();

@@ -30,6 +30,7 @@ import java.util.List;
  * use to equivalent iOS methods.
  *
  * @see JavaMethod
+ * @author Tom Ball
  */
 public class IOSMethod {
   private final String name;

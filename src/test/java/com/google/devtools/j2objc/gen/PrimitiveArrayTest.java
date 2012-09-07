@@ -26,6 +26,7 @@ import java.util.List;
  * Verifies that primitive arrays such as byte[] are converted into IOS
  * equivalents, and their access and methods mapped correctly.
  *
+ * @author Tom Ball
  */
 public class PrimitiveArrayTest extends GenerationTest {
 

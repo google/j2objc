@@ -21,6 +21,7 @@ import org.eclipse.jdt.core.dom.ITypeBinding;
 /**
  * IOSTypeBinding: synthetic binding for an iOS array type.
  *
+ * @author Tom Ball
  */
 public class IOSArrayTypeBinding extends IOSTypeBinding {
   private final String initMethod;

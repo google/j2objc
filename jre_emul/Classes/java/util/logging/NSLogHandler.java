@@ -23,6 +23,7 @@ package java.util.logging;
 /**
  * Handler implementation that calls iOS NSLog().
  *
+ * @author Tom Ball
  */
 class NSLogHandler extends Handler {
 

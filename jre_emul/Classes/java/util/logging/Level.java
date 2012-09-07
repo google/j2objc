@@ -19,10 +19,11 @@ package java.util.logging;
 import java.util.ArrayList;
 
 /**
- * Simplified Level class for use with iOS apps.  See
- *  <a href="http://java.sun.com/j2se/1.4.2/docs/api/java/util/logging/Formatter.html">
+ * Simplified Level class for use with iOS apps.  See 
+ *  <a href="http://java.sun.com/j2se/1.4.2/docs/api/java/util/logging/Formatter.html"> 
  *  The Java API doc for details</a>.
  *
+ * @author Tom Ball
  */
 public class Level {
   private static ArrayList<Level> known = new ArrayList<Level>();
