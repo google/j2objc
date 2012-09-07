@@ -151,7 +151,13 @@ public class ImplementationImportCollector extends HeaderImportCollector {
     if (binding != null) {
       ITypeBinding[] parameterTypes = binding.getParameterTypes();
       for (int i = 0; i < node.arguments().size(); i++) {
-        ITypeBinding parameterType = parameterTypes[i];
+
+        ITypeBinding parameterType;
+        if (i < parameterTypes.length) {
+          parameterType = parameterTypes[i];
+        } else {
+          parameterType = parameterTypes[parameterTypes.length - 1];
+        }
         ITypeBinding actualType = Types.getTypeBinding(node.arguments().get(i));
         if (!parameterType.equals(actualType) &&
             actualType.isAssignmentCompatible(parameterType)) {
