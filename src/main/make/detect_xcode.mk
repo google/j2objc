@@ -22,6 +22,7 @@ ifdef CONFIGURATION_BUILD_DIR
 
 BUILD_DIR = $(TARGET_TEMP_DIR)
 DIST_DIR = $(CONFIGURATION_BUILD_DIR)
+DIST_MACOS_DIR = $(SYMROOT)/$(CONFIGURATION)
 DIST_INCLUDE_DIR = $(DIST_DIR)/Headers
 DIST_LIB_DIR = $(DIST_DIR)
 ARCH_FLAGS = $(ARCHS:%=-arch %)
@@ -40,6 +41,7 @@ else
 DIST_DIR = $(J2OBJC_ROOT)/dist
 endif
 
+DIST_MACOS_DIR = $(DIST_DIR)
 DIST_INCLUDE_DIR = $(DIST_DIR)/include
 DIST_LIB_DIR = $(DIST_DIR)/lib
 ARCH_FLAGS =
@@ -49,12 +51,6 @@ dep_build_dir = $(word 2,$(1))/$(BUILD_DIR_NAME)
 
 endif
 
-EXTRA_CLASS_PATH := \
-  $(EXTRA_CLASS_PATH)$(foreach dep,$(DEPENDENCIES),:$(call dep_build_dir,$(subst $(comma), ,$(dep)))/classes:$(call dep_build_dir,$(subst $(comma), ,$(dep)))/proto/classes)
-PROTO_CLASS_PATH = \
-  $(foreach dep,$(DEPENDENCIES),$(call dep_build_dir,$(subst $(comma), ,$(dep)))/proto/classes)
-EXTRA_INCLUDE_DIRS := \
-  $(EXTRA_INCLUDE_DIRS)$(foreach dep,$(DEPENDENCIES), $(call dep_build_dir,$(subst $(comma), ,$(dep)))/objc $(call dep_build_dir,$(subst $(comma), ,$(dep)))/proto/objc)
 
 ifeq ($(DEBUGGING_SYMBOLS), YES)
 # Enable when statement line numbers are supported.
