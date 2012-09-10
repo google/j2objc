@@ -16,6 +16,7 @@
 
 package com.google.devtools.j2objc;
 
+import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Splitter;
 import com.google.common.collect.Lists;
@@ -25,6 +26,7 @@ import com.google.devtools.j2objc.J2ObjC.Language;
 import com.google.devtools.j2objc.util.DeadCodeMap;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
@@ -75,6 +77,7 @@ public class Options {
   private static String temporaryDirectory;
   private static final String XBOOTCLASSPATH = "-Xbootclasspath:";
   private static String bootclasspath = null;
+  private static Map<String, String> packagePrefixes = Maps.newHashMap();
 
   static {
     // Load string resources.
@@ -157,6 +160,16 @@ public class Options {
           usage();
         }
         proGuardUsageFile = new File(args[nArg]);
+      } else if (arg.equals("--prefix")) {
+        if (++nArg == args.length) {
+          usage();
+        }
+        addPrefixOption(args[nArg]);
+      } else if (arg.equals("--prefixes")) {
+        if (++nArg == args.length) {
+          usage();
+        }
+        addPrefixesFile(args[nArg]);
       } else if (arg.equals("-x")) {
         if (++nArg == args.length) {
           usage();
@@ -223,6 +236,35 @@ public class Options {
       files[i] = path;
     }
     return files;
+  }
+
+  /**
+   * Add prefix option, which has a format of "<package>=<prefix>".
+   */
+  private static void addPrefixOption(String arg) {
+    int i = arg.indexOf('=');
+
+    // Make sure key and value are at least 1 character.
+    if (i < 1 || i >= arg.length() - 1) {
+      usage();
+    }
+    String pkg = arg.substring(0, i);
+    String prefix = arg.substring(i + 1);
+    addPackagePrefix(pkg, prefix);
+  }
+
+  /**
+   * Add a file map of packages to their respective prefixes, using the
+   * Properties file format.
+   */
+  private static void addPrefixesFile(String filename) throws IOException {
+    Properties props = new Properties();
+    FileInputStream fis = new FileInputStream(filename);
+    props.load(fis);
+    fis.close();
+    for (String pkg : props.stringPropertyNames()) {
+      addPackagePrefix(pkg, props.getProperty(pkg));
+    }
   }
 
   /**
@@ -392,6 +434,19 @@ public class Options {
 
   public static String getBootClasspath() {
     return bootclasspath != null ? bootclasspath : System.getProperty("sun.boot.class.path");
+  }
+
+  public static Map<String, String> getPackagePrefixes() {
+    return packagePrefixes;
+  }
+
+  public static void addPackagePrefix(String pkg, String prefix) {
+    packagePrefixes.put(pkg, prefix);
+  }
+
+  @VisibleForTesting
+  public static void clearPackagePrefixes() {
+    packagePrefixes.clear();
   }
 
   public static String getTemporaryDirectory() throws IOException {

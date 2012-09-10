@@ -195,7 +195,7 @@ junit_dist: translator_dist jre_emul_dist
 dist: translator_dist jre_emul_dist junit_dist
 
 j2objc_clean:
-	@rm -rf $(BUILD_DIR) $(DIST_DIR)
+	@rm -rf $(BUILD_DIR) $(DIST_DIR) $(TEST_DIR)
 
 clean: j2objc_clean
 	@cd $(CWD)/jre_emul && make clean

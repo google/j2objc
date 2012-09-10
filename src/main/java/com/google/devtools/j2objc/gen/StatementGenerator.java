@@ -1436,8 +1436,7 @@ public class StatementGenerator extends ErrorReportingASTVisitor {
         }
       } else {
         if ((binding.getModifiers() & Modifier.STATIC) > 0) {
-          String fqn = NameTable.getFullName(typeBinding);
-          buffer.append(NameTable.camelCaseQualifiedName(fqn));
+          buffer.append(NameTable.getFullName(typeBinding));
         } else {
           buffer.append("self");
         }
@@ -1750,9 +1749,7 @@ public class StatementGenerator extends ErrorReportingASTVisitor {
   public boolean visit(QualifiedType node) {
     ITypeBinding binding = node.resolveBinding();
     if (binding != null) {
-      String name =
-          NameTable.camelCaseQualifiedName(binding.getQualifiedName());
-      buffer.append(name);
+      buffer.append(NameTable.getFullName(binding));
       return false;
     }
     return true;
