@@ -18,6 +18,7 @@ package com.google.devtools.j2objc.util;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
+import com.google.devtools.j2objc.Options;
 import com.google.devtools.j2objc.types.IOSTypeBinding;
 import com.google.devtools.j2objc.types.Types;
 
@@ -28,6 +29,7 @@ import org.eclipse.jdt.core.dom.ArrayType;
 import org.eclipse.jdt.core.dom.CompilationUnit;
 import org.eclipse.jdt.core.dom.IBinding;
 import org.eclipse.jdt.core.dom.IMethodBinding;
+import org.eclipse.jdt.core.dom.IPackageBinding;
 import org.eclipse.jdt.core.dom.ITypeBinding;
 import org.eclipse.jdt.core.dom.IVariableBinding;
 import org.eclipse.jdt.core.dom.MethodDeclaration;
@@ -155,14 +157,22 @@ public class NameTable {
       "superclass", "toManyRelationshipKeys", "toOneRelationshipKeys",
       "version");
 
-  private NameTable() {
+  /**
+   * Map of package names to their specified prefixes.  Multiple packages
+   * can share a prefix; for example, the com.google.common packages in
+   * Guava could share a "GG" (Google Guava) or simply "Guava" prefix.
+   */
+  private final Map<String, String> prefixMap;
+
+  private NameTable(Map<String, String> prefixMap) {
+    this.prefixMap = prefixMap;
   }
 
   /**
    * Initialize this service using the AST returned by the parser.
    */
   public static void initialize(CompilationUnit unit) {
-    instance = new NameTable();
+    instance = new NameTable(Options.getPackagePrefixes());
   }
 
   public static void cleanup() {
@@ -325,7 +335,6 @@ public class NameTable {
   }
 
   public static String javaTypeToObjC(ITypeBinding binding, boolean includeInterfaces) {
-    String typeName;
     if (binding.isInterface() && !includeInterfaces || binding == Types.resolveIOSType("id") ||
         binding == Types.resolveIOSType("NSObject")) {
       return NameTable.ID_TYPE;
@@ -337,8 +346,7 @@ public class NameTable {
       }
       // otherwise fall-through
     }
-    typeName = getFullName(binding);
-    return camelCaseQualifiedName(typeName);
+    return getFullName(binding);
   }
 
   /**
@@ -404,6 +412,9 @@ public class NameTable {
   }
 
   public static String getFullName(ITypeBinding binding) {
+    if (binding.isPrimitive()) {
+      return primitiveTypeToObjC(binding.getName());
+    }
     binding = Types.mapType(binding.getErasure());  // Make sure type variables aren't included.
     String suffix = binding.isEnum() ? "Enum" : "";
     String prefix = "";
@@ -420,7 +431,9 @@ public class NameTable {
       String baseName = getFullName(outerBinding) + prefix + '_' + getName(binding);
       return outerBinding.isEnum() ? baseName : baseName + suffix;
     }
-    return camelCaseQualifiedName(binding.getQualifiedName()) + suffix;
+    IPackageBinding pkg = binding.getPackage();
+    String pkgName = pkg != null ? getPrefix(pkg.getName()) : "";
+    return pkgName + binding.getName() + suffix;
   }
 
   /**
@@ -485,10 +498,7 @@ public class NameTable {
    * Returns the fully-qualified main class for a given compilation unit.
    */
   public static String getMainJavaName(CompilationUnit node, String sourceFileName) {
-    int begin = sourceFileName.lastIndexOf(File.separatorChar) + 1;
-    int end = sourceFileName.lastIndexOf(".java");
-    String className = sourceFileName.substring(begin, end);
-
+    String className = getClassNameFromSourceFileName(sourceFileName);
     PackageDeclaration pkgDecl = node.getPackage();
     if (pkgDecl != null) {
       className = pkgDecl.getName().getFullyQualifiedName()  + '.' + className;
@@ -496,8 +506,22 @@ public class NameTable {
     return className;
   }
 
+  private static String getClassNameFromSourceFileName(String sourceFileName) {
+    int begin = sourceFileName.lastIndexOf(File.separatorChar) + 1;
+    int end = sourceFileName.lastIndexOf(".java");
+    String className = sourceFileName.substring(begin, end);
+    return className;
+  }
+
   public static String getMainTypeName(CompilationUnit node, String sourceFileName) {
-    return camelCaseQualifiedName(getMainJavaName(node, sourceFileName));
+    String className = getClassNameFromSourceFileName(sourceFileName);
+    PackageDeclaration pkgDecl = node.getPackage();
+    if (pkgDecl != null) {
+      String pkgName = getPrefix(pkgDecl.getName().getFullyQualifiedName());
+      return pkgName + className;
+    } else {
+      return className;
+    }
   }
 
   public static String getStaticAccessorName(String varName) {
@@ -542,5 +566,29 @@ public class NameTable {
 
   public static String javaFieldToObjC(String fieldName) {
     return fieldName + "_";
+  }
+
+  public static void mapPackageToPrefix(String packageName, String prefix) {
+    instance.prefixMap.put(packageName, prefix);
+  }
+
+  /**
+   * Return the prefix for a specified package.  If a prefix was specified
+   * for the package on the command-line, then that prefix is returned.
+   * Otherwise, a camel-cased prefix is created from the package name.
+   */
+  public static String getPrefix(String packageName) {
+    if (hasPrefix(packageName)) {
+      return instance.prefixMap.get(packageName);
+    }
+    StringBuilder sb = new StringBuilder();
+    for (String part : packageName.split("\\.")) {
+      sb.append(capitalize(part));
+    }
+    return sb.toString();
+  }
+
+  public static boolean hasPrefix(String packageName) {
+    return instance.prefixMap.containsKey(packageName);
   }
 }

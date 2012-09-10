@@ -41,6 +41,7 @@ import com.google.devtools.j2objc.types.RenamedTypeBindingTest;
 import com.google.devtools.j2objc.types.TypesTest;
 import com.google.devtools.j2objc.util.DeadCodeMapTest;
 import com.google.devtools.j2objc.util.ErrorReportingASTVisitorTest;
+import com.google.devtools.j2objc.util.NameTableTest;
 import com.google.devtools.j2objc.util.ProGuardUsageParserTest;
 import com.google.devtools.j2objc.util.UnicodeUtilsTest;
 
@@ -71,6 +72,7 @@ public class SmallTests {
     JavaToIOSMethodTranslatorTest.class,
     LineDirectivesTest.class,
     ModifiedTypeBindingTest.class,
+    NameTableTest.class,
     ObjectiveCHeaderGeneratorTest.class,
     ObjectiveCImplementationGeneratorTest.class,
     ObjectiveCSourceFileGeneratorTest.class,
