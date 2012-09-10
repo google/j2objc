@@ -118,6 +118,9 @@ CLASSES = \
 RESOURCES = J2ObjC.properties JRE.mappings
 RESOURCE_DIR = $(SOURCE_DIR)/resources
 
+MAN_DIR = $(SOURCE_DIR)/man
+MAN_PAGES = $(MAN_DIR)/j2objc.1 $(MAN_DIR)/j2objcc.1
+
 SOURCE_FILES = $(foreach f, $(CLASSES), $(JAVA_SOURCE_DIR)/$(BASE_PACKAGE)/$f)
 CLASSFILES = $(foreach c, $(CLASSES:.java=.class), $(CLASS_DIR)/$(BASE_PACKAGE)/$c)
 RESOURCE_FILES = $(foreach f, $(RESOURCES), $(CLASS_DIR)/$(BASE_PACKAGE)/$f)
@@ -167,6 +170,10 @@ $(DIST_DIR)/j2objc: $(SOURCE_DIR)/bin/j2objc.sh
 	@cp $(SOURCE_DIR)/bin/j2objc.sh $(DIST_DIR)/j2objc
 	@chmod 755 $(DIST_DIR)/j2objc
 
+install-man-pages: $(MAN_PAGES)
+	@mkdir -p $(DIST_DIR)/man/man1
+	install -C -m 0644 $? $(DIST_DIR)/man/man1
+
 $(DIST_DIR)/j2objcc: $(SOURCE_DIR)/bin/j2objcc.sh
 	cp $(SOURCE_DIR)/bin/j2objcc.sh $(DIST_DIR)/j2objcc
 	@chmod 755 $(DIST_DIR)/j2objcc
@@ -175,7 +182,8 @@ install-libs:  $(LIB_DIR)/j2objc.jar
 	@mkdir -p $(DIST_LIB_DIR)
 	install -C -m 0644 $(LIB_DIR)/* $(DIST_LIB_DIR)
 
-translator_dist: jar install-libs $(DIST_DIR)/j2objc $(DIST_DIR)/j2objcc
+translator_dist: jar install-libs $(DIST_DIR)/j2objc $(DIST_DIR)/j2objcc \
+	  install-man-pages
 	@:
 
 jre_emul_dist: translator_dist
