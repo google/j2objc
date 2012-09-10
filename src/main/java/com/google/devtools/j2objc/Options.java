@@ -73,6 +73,8 @@ public class Options {
   private static final String USAGE_MSG_KEY = "usage-message";
   private static final String HELP_MSG_KEY = "help-message";
   private static String temporaryDirectory;
+  private static final String XBOOTCLASSPATH = "-Xbootclasspath:";
+  private static String bootclasspath = null;
 
   static {
     // Load string resources.
@@ -195,6 +197,8 @@ public class Options {
         logger.setLevel(Level.FINE);
       } else if (arg.equals("-v") || arg.equals("--verbose")) {
         logger.setLevel(Level.FINEST);
+      } else if (arg.startsWith(XBOOTCLASSPATH)) {
+        bootclasspath = arg.substring(XBOOTCLASSPATH.length());
       } else if (arg.startsWith("-h") || arg.equals("--help")) {
         help();
       } else if (arg.startsWith("-")) {
@@ -384,6 +388,10 @@ public class Options {
 
   public static void setDeadCodeMap(DeadCodeMap map) {
     deadCodeMap = map;
+  }
+
+  public static String getBootClasspath() {
+    return bootclasspath != null ? bootclasspath : System.getProperty("sun.boot.class.path");
   }
 
   public static String getTemporaryDirectory() throws IOException {
