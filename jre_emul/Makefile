@@ -160,6 +160,7 @@ OBJS = \
 	$(CLASS_DIR)/java/lang/reflect/InvocationTargetException.o \
 	$(CLASS_DIR)/java/lang/reflect/Modifier.o \
 	$(CLASS_DIR)/java/lang/RuntimeException.o \
+	$(CLASS_DIR)/java/lang/SecurityException.o \
 	$(CLASS_DIR)/java/lang/Short.o \
 	$(CLASS_DIR)/java/lang/StackTraceElement.o \
 	$(CLASS_DIR)/java/lang/StrictMath.o \

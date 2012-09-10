@@ -55,17 +55,18 @@ EMULATION_LIB = $(BUILD_DIR)/libjre_emul.a
 EMULATION_CLASS_DIR = $(CWD)/Classes
 INCLUDE_DIR = $(BUILD_DIR)/include
 TESTS_DIR = $(BUILD_DIR)/tests
+STUBS_DIR = $(CWD)/stub_classes
 
 JRE_SRC = $(JRE_ROOT):$(JRE_ANNOTATION_ROOT):$(JRE_CONCURRENT_ROOT):$(JRE_KERNEL_ROOT):$(JRE_MATH_ROOT):$(JRE_NIO_ROOT):$(EMULATION_CLASS_DIR)
-JRE_SRC_ROOTS = $(subst :, ,$(JRE_SRC))
+JRE_SRC_ROOTS = $(subst :, ,$(JRE_SRC)) $(STUBS_DIR)
 TEST_SRC = $(JRE_TEST_ROOT):$(JRE_MATH_TEST_ROOT):$(JRE_NIO_TEST_ROOT):$(TEST_SUPPORT_ROOT):$(MATH_TEST_SUPPORT_ROOT):$(MISC_TEST_ROOT)
 vpath %.java $(JRE_SRC) $(TEST_SRC)
 
 CLANG=clang
 
 # J2ObjC settings
-J2OBJC := $(DIST_DIR)/j2objc -classpath $(EMULATION_JAR) \
-  -d $(CLASS_DIR) $(J2OBJC_DEBUGFLAGS)
+J2OBJC := USE_SYSTEM_BOOT_PATH=TRUE $(DIST_DIR)/j2objc \
+   -classpath $(EMULATION_JAR) -d $(CLASS_DIR) $(J2OBJC_DEBUGFLAGS)
 
 # GCC settings, based on Xcode log output
 WARNINGS := $(WARNINGS) -Wno-trigraphs -Wunused-variable -Werror \

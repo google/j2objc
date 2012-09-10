@@ -14,9 +14,14 @@ else
 fi
 
 if [ -e ${DIR}/j2objc.jar ]; then
-  readonly JAR=${DIR}/j2objc.jar
+  readonly LIB_DIR=${DIR}
 else
-  readonly JAR=${DIR}/lib/j2objc.jar
+  readonly LIB_DIR=${DIR}/lib
+fi
+readonly JAR=${LIB_DIR}/j2objc.jar
+
+if [ x${USE_SYSTEM_BOOT_PATH} == x ]; then
+  readonly BOOT_PATH=-Xbootclasspath:${LIB_DIR}/jre_emul.jar
 fi
 
-java -jar ${JAR} $*
+java -jar ${JAR} ${BOOT_PATH} $*

@@ -414,7 +414,8 @@ public class J2ObjC {
     for (int i = 0; i < classpathEntries.length; i++) {
       fullClasspath.add(classpathEntries[i]);
     }
-    for (String path : System.getProperty("sun.boot.class.path").split(":")) {
+    String bootclasspath = Options.getBootClasspath();
+    for (String path : bootclasspath.split(":")) {
       // JDT requires that all path elements exist and can hold class files.
       File f = new File(path);
       if (f.exists() && (f.isDirectory() || path.endsWith(".jar"))) {
