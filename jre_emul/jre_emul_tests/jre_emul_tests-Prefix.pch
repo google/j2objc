@@ -1,7 +1,0 @@
-//
-// Prefix header for all source files of the 'jre_emul_tests' target in the 'jre_emul_tests' project
-//
-
-#ifdef __OBJC__
-  #import "JreEmulation.h"
-#endif
