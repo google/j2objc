@@ -105,7 +105,7 @@ destinationBegin:(int)dstBegin;
                             offset:(int)offset
                             length:(int)count;
 
-// String(int, int, char[]) 
+// String(int, int, char[])
 + (NSString *)stringWithOffset:(int)offset
                         length:(int)length
                     characters:(IOSCharArray *)value;
@@ -211,8 +211,8 @@ destinationBegin:(int)dstBegin;
 - (BOOL)equalsIgnoreCase:(NSString *)aString;
 
 // String.toLowerCase(Locale), toUpperCase(Locale)
-- (NSString *)lowercaseStringWithLocale:(JavaUtilLocale *)locale;
-- (NSString *)uppercaseStringWithLocale:(JavaUtilLocale *)locale;
+- (NSString *)lowercaseStringWithJRELocale:(JavaUtilLocale *)locale;
+- (NSString *)uppercaseStringWithJRELocale:(JavaUtilLocale *)locale;
 
 // String.regionMatches(...)
 - (BOOL)regionMatches:(int)thisOffset

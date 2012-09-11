@@ -671,7 +671,7 @@ NSStringEncoding parseCharsetName(NSString *charset) {
   return result == NSOrderedSame;
 }
 
-- (NSString *)lowercaseStringWithLocale:(JavaUtilLocale *)javaLocale {
+- (NSString *)lowercaseStringWithJRELocale:(JavaUtilLocale *)javaLocale {
   NSLocale* locale =
       [[NSLocale alloc] initWithLocaleIdentifier:[javaLocale description]];
 #if ! __has_feature(objc_arc)
@@ -688,7 +688,7 @@ NSStringEncoding parseCharsetName(NSString *charset) {
   return result;
 }
 
-- (NSString *)uppercaseStringWithLocale:(JavaUtilLocale *)javaLocale {
+- (NSString *)uppercaseStringWithJRELocale:(JavaUtilLocale *)javaLocale {
   NSLocale* locale =
       [[NSLocale alloc] initWithLocaleIdentifier:[javaLocale description]];
 #if ! __has_feature(objc_arc)
