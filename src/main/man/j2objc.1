@@ -1,0 +1,105 @@
+.\" Copyright 2012 Google Inc. All Rights Reserved.
+.\"
+.\" Licensed under the Apache License, Version 2.0 (the "License");
+.\" you may not use this file except in compliance with the License.
+.\" You may obtain a copy of the License at
+.\"
+.\" http://www.apache.org/licenses/LICENSE-2.0
+.\"
+.\" Unless required by applicable law or agreed to in writing, software
+.\" distributed under the License is distributed on an "AS IS" BASIS,
+.\" WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+.\" See the License for the specific language governing permissions and
+.\" limitations under the License.
+.TH J2OBJC "1" "September 2012" "j2objc 0.8" "User Commands"
+.SH NAME
+.B j2objc
+\- translate Java source files to Objective-C
+.SH SYNOPSIS
+.B j2objc
+[
+.I options
+] \fIfile1.java\fR ...
+.SH DESCRIPTION
+The
+.B j2objc
+tool translates specified Java source files into either Objective-C or
+Objective-C++ sources for use in an iOS application.
+
+The following options are available:
+.TP \w'\fB\-copyright\fP\fI\ nnnn\fP'u+10n
+.BI \-sourcepath " path "
+Specify where to find input source files
+.TP
+.BI \-classpath " path "
+Specify where to find user class files
+.TP
+.BI \-d " directory "
+Specify where to place generated Objective\-C files
+.TP
+.BI \-g
+Generate debugging support
+.TP
+.BI \-x " language "
+Specify what language to output.  Possible values
+are objective\-c (default) and objective\-c++
+.TP
+.BI \-use\-gc
+Generate Objective\-C code to support garbage collection (requires libjre_emul.a rebuild)
+.TP
+.BI \-use\-arc
+Generate Objective\-C code to support Automatic Reference Counting (ARC)
+.TP
+.BI \-\-ignore\-missing\-imports
+Continue translation if an imported class is not found on the class or source paths.
+.TP
+.BI \-Werror
+Make all warnings into errors
+.TP
+\fB\-q\fR, \fB\-\-quiet\fR
+Do not print status messages
+.TP
+\fB\-v\fR, \fB\-\-verbose
+Output messages about what the translator is doing
+.TP
+.BI \-use\-reference\-counting
+Generate Objective\-C code to support iOS manual
+reference counting (default)
+.TP
+.BI -pluginpath " path "
+Specify where to find plugin class files
+.TP
+.BI \-pluginoptions " options "
+Comma separated key=value pairs passed to all plugins
+.TP
+.BI \-\-mapping " file "
+Add a method mapping file
+.TP
+.BI \-\-dead\-code\-report " file "
+Specify a ProGuard usage report for dead code elimination.
+.TP
+\fB\-\-no\-inline\-field\-access\fR
+Turn off in\-lining of generated field accessors.
+.TP
+\fB\-\-no\-generate\-test\-main\fR
+Turn off automatically generated main method for JUnit tests.
+.TP
+\fB\-\-print\-converted\-sources\fR
+Print input source files after initial conversion
+.TP
+\fB\-t\fR, \fB\-\-timing\-info\fR
+Print time spent in translation steps
+.TP
+.BI \-Xbootclasspath\fR:\fIpath
+Boot path used by translation (not the tool itself).
+.TP
+\fB\-h\fR, \fB\-\-help\fR
+Print this message.
+.SH "SEE ALSO"
+.BR j2objcc (1)
+.PP
+The full documentation for
+.B j2objc
+is maintained on the project site at
+\fIhttp://j2objc.googlecode.com/\fR.
+

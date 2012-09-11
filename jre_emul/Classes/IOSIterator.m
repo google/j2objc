@@ -82,7 +82,7 @@
 
 - (NSString *)description {
   return
-      [NSString stringWithFormat:@"[size=%d, available=%d, lastPosition=%d]",
+      [NSString stringWithFormat:@"[size=%ld, available=%d, lastPosition=%d]",
        [list_ count], available_, lastPosition_];
 }
 
