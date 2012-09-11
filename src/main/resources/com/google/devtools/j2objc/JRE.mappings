@@ -213,11 +213,11 @@ java.lang.String.substring(II)Ljava/lang/String; = \
 java.lang.String.toCharArray()[C = NSString toCharArray
 java.lang.String.toLowerCase()Ljava/lang/String; = NSString lowercaseString
 java.lang.String.toLowerCase(Ljava/util/Locale;)Ljava/lang/String; = \
-    NSString lowercaseStringWithLocale:(JavaUtilLocale *)locale
+    NSString lowercaseStringWithJRELocale:(JavaUtilLocale *)locale
 java.lang.String.toString()Ljava/lang/String; = NSString description
 java.lang.String.toUpperCase()Ljava/lang/String; = NSString uppercaseString
 java.lang.String.toUpperCase(Ljava/util/Locale;)Ljava/lang/String; = \
-    NSString uppercaseStringWithLocale:(JavaUtilLocale *)locale
+    NSString uppercaseStringWithJRELocale:(JavaUtilLocale *)locale
 java.lang.String.trim()Ljava/lang/String; = NSString trim
 java.lang.String.valueOf(Ljava/lang/Object;)Ljava/lang/String; = NSString valueOf:(id)obj
 java.lang.String.valueOf(Z)Ljava/lang/String; = NSString valueOfBool:(BOOL)value

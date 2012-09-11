@@ -349,6 +349,10 @@ $(EMULATION_JAR): $(JRE_ROOT)/java/*/*.java | $(BUILD_DIR)
 	  `find $(JRE_SRC_ROOTS) -name '*.java'`
 	jar cf $(EMULATION_JAR) -C $(EMULATION_STAGE) .
 
+$(CLASS_DIR)/NSObject+JavaObject.o: $(EMULATION_CLASS_DIR)/NSObject+JavaObject.m
+	$(CLANG) -c $? -o $@ $(OBJCFLAGS) -I$(EMULATION_CLASS_DIR) -I$(CLASS_DIR) \
+	    -Wno-deprecated-declarations
+
 $(CLASS_DIR)/java/lang/Math.h $(CLASS_DIR)/java/lang/Math.m: \
 	  $(EMULATION_CLASS_DIR)/java/lang/Math.java
 	$(J2OBJC) $?
