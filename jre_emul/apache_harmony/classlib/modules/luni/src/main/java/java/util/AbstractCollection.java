@@ -344,7 +344,7 @@ public abstract class AbstractCollection<E> implements Collection<E> {
           [[IOSObjectArray alloc] initWithLength:[self size]
                                             type:[IOSClass classWithClass:[NSObject class]]];
 #if ! __has_feature(objc_arc)
-      [contents result];
+      [result autorelease];
 #endif
       return [self toArrayWithNSObjectArray:result];
     }-*/;
