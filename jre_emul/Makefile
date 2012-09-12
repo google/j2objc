@@ -120,6 +120,7 @@ OBJS = \
 	$(CLASS_DIR)/java/io/Reader.o \
 	$(CLASS_DIR)/java/io/StringReader.o \
 	$(CLASS_DIR)/java/io/StringWriter.o \
+	$(CLASS_DIR)/java/io/SyncFailedException.o \
 	$(CLASS_DIR)/java/io/UnsupportedEncodingException.o \
 	$(CLASS_DIR)/java/io/Writer.o \
 	$(CLASS_DIR)/java/lang/ArithmeticException.o \
