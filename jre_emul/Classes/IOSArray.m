@@ -81,7 +81,7 @@
   if (index >= size_) {
     NSString *msg = [NSString stringWithFormat:
         @"index out of range: %ld for array containing %ld elements",
-        index, size_];
+        (long)index, (long)size_];
     id exception = [[JavaLangArrayIndexOutOfBoundsException alloc]
                     initWithNSString:msg];
 #if ! __has_feature(objc_arc)
@@ -98,7 +98,7 @@
     if (bounds > size_) {
       NSString *msg = [NSString stringWithFormat:
                        @"length out of range: %ld for array of %ld elements",
-                       bounds, size_];
+                       (long)bounds, (long)size_];
       id exception = [[JavaLangArrayIndexOutOfBoundsException alloc]
                       initWithNSString:msg];
 #if ! __has_feature(objc_arc)
