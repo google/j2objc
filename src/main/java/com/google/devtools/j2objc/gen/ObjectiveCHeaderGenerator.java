@@ -142,7 +142,7 @@ public class ObjectiveCHeaderGenerator extends ObjectiveCSourceFileGenerator {
 
     ITypeBinding binding = Types.getTypeBinding(node);
     String pkg = binding.getPackage().getName();
-    if (NameTable.hasPrefix(pkg)) {
+    if (NameTable.hasPrefix(pkg) && binding.isTopLevel()) {
       String unprefixedName = NameTable.camelCaseQualifiedName(binding.getQualifiedName());
       if (binding.isInterface()) {
         // Protocols can't be used in typedefs.
