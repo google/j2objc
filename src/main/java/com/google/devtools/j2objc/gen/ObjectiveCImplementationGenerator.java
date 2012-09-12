@@ -216,6 +216,17 @@ public class ObjectiveCImplementationGenerator extends ObjectiveCSourceFileGener
         println("- (NSString *)description {\n  return [self sequenceDescription];\n}\n");
       }
     }
+
+    // If node defines a primitive number wrapper, add a getValue() method.
+    // This is required by iOS 5.0 to support cloning these types.
+    if (Types.isJavaNumberType(binding)) {
+      ITypeBinding primitiveType = Types.getPrimitiveType(binding);
+      if (primitiveType != null) {
+        // All java.lang primitive type wrappers have a "value" field.
+        printf("- (void)getValue:(void *)buffer {\n  *((%s *) buffer) = value_;\n}\n\n",
+            NameTable.getFullName(primitiveType));
+      }
+    }
   }
 
   private void printStaticInterface(TypeDeclaration node) {
