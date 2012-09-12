@@ -305,7 +305,13 @@ id denullify(id object) {
 
 - (id<JavaUtilIterator>)iterator {
   NSMutableArray *keyList = [[self.map.dictionary allKeys] mutableCopy];
+#if ! __has_feature(objc_arc)
+  [keyList autorelease];
+#endif
   IOSIterator *keyIterator = [[IOSIterator alloc] initWithList:keyList];
+#if ! __has_feature(objc_arc)
+  [keyIterator autorelease];
+#endif
   id iterator =
       [[JavaUtilHashMap_KeySetIterator alloc]
        initWithJavaUtilHashMap:self.map withIterator:keyIterator];
@@ -337,7 +343,13 @@ id denullify(id object) {
 
 - (id<JavaUtilIterator>)iterator {
   NSMutableArray *keyList = [[self.map.dictionary allKeys] mutableCopy];
+#if ! __has_feature(objc_arc)
+  [keyList autorelease];
+#endif
   IOSIterator *keyIterator = [[IOSIterator alloc] initWithList:keyList];
+#if ! __has_feature(objc_arc)
+  [keyIterator autorelease];
+#endif
   id iterator =
       [[JavaUtilHashMap_EntrySetIterator alloc]
        initWithJavaUtilHashMap:self.map withIterator:keyIterator];
@@ -430,7 +442,13 @@ id denullify(id object) {
 
 - (id<JavaUtilIterator>)iterator {
   NSMutableArray *valueList = [[self.map.dictionary allValues] mutableCopy];
+#if ! __has_feature(objc_arc)
+  [valueList autorelease];
+#endif
   IOSIterator *valueIterator = [[IOSIterator alloc] initWithList:valueList];
+#if ! __has_feature(objc_arc)
+  [valueIterator autorelease];
+#endif
   id iterator = [[JavaUtilHashMap_ValuesIterator alloc]
                  initWithJavaUtilHashMap:self.map withIterator:valueIterator];
 #if ! __has_feature(objc_arc)

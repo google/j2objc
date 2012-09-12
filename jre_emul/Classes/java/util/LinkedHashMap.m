@@ -16,9 +16,6 @@
 - (id)initWithInt:(int)capacity {
   if ((self = [super initWithInt:capacity])) {
     index_ = [[NSMutableArray alloc] initWithCapacity:capacity];
-#if ! __has_feature(objc_arc)
-    [index_ retain];
-#endif
     lastAccessedOrder_ = NO;
   }
   return self;
@@ -132,7 +129,13 @@
 - (id<JavaUtilIterator>)iterator {
   JavaUtilLinkedHashMap *linkedMap = (JavaUtilLinkedHashMap *) self.map;
   NSMutableArray *keyList = [linkedMap.index mutableCopy];
+#if ! __has_feature(objc_arc)
+  [keyList autorelease];
+#endif
   IOSIterator *keyIterator = [[IOSIterator alloc] initWithList:keyList];
+#if ! __has_feature(objc_arc)
+  [keyIterator autorelease];
+#endif
   id iterator =
       [[JavaUtilLinkedHashMap_KeySetIterator alloc]
        initWithJavaUtilHashMap:self.map withIterator:keyIterator];
@@ -162,7 +165,13 @@
 - (id<JavaUtilIterator>)iterator {
   JavaUtilLinkedHashMap *linkedMap = (JavaUtilLinkedHashMap *) self.map;
   NSMutableArray *keyList = [linkedMap.index mutableCopy];
+#if ! __has_feature(objc_arc)
+  [keyList autorelease];
+#endif
   IOSIterator *keyIterator = [[IOSIterator alloc] initWithList:keyList];
+#if ! __has_feature(objc_arc)
+  [keyIterator autorelease];
+#endif
   id iterator =
       [[JavaUtilLinkedHashMap_EntrySetIterator alloc]
        initWithJavaUtilHashMap:linkedMap withIterator:keyIterator];
@@ -192,7 +201,13 @@
 - (id<JavaUtilIterator>)iterator {
   JavaUtilLinkedHashMap *linkedMap = (JavaUtilLinkedHashMap *) self.map;
   NSMutableArray *keyList = [linkedMap.index mutableCopy];
+#if ! __has_feature(objc_arc)
+  [keyList autorelease];
+#endif
   IOSIterator *keyIterator = [[IOSIterator alloc] initWithList:keyList];
+#if ! __has_feature(objc_arc)
+  [keyIterator autorelease];
+#endif
   id iterator =
       [[JavaUtilLinkedHashMap_ValuesIterator alloc]
        initWithJavaUtilHashMap:linkedMap withIterator:keyIterator];

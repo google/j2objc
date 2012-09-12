@@ -83,7 +83,7 @@
 - (NSString *)description {
   return
       [NSString stringWithFormat:@"[size=%ld, available=%d, lastPosition=%d]",
-       [list_ count], available_, lastPosition_];
+       (long)[list_ count], (int)available_, (int)lastPosition_];
 }
 
 #if ! __has_feature(objc_arc)
