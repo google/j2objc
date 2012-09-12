@@ -344,11 +344,14 @@ dist: lib includes $(EMULATION_JAR)
 	install -m 0644 $(EMULATION_LIB) $(EMULATION_JAR) $(DIST_LIB_DIR)
 
 $(EMULATION_JAR): $(JRE_ROOT)/java/*/*.java | $(BUILD_DIR)
+	@echo "building jre_emul.jar"
 	@rm -rf $(EMULATION_STAGE)
 	@mkdir $(EMULATION_STAGE)
 	@javac -d $(EMULATION_STAGE) -sourcepath $(JRE_SRC) \
 	  `find $(JRE_SRC_ROOTS) -name '*.java'`
-	jar cf $(EMULATION_JAR) -C $(EMULATION_STAGE) .
+	@javac -d $(EMULATION_STAGE) -sourcepath ../src/main/java \
+		  ../src/main/java/com/google/j2objc/annotations/*.java
+	@jar cf $(EMULATION_JAR) -C $(EMULATION_STAGE) .
 
 $(CLASS_DIR)/NSObject+JavaObject.o: $(EMULATION_CLASS_DIR)/NSObject+JavaObject.m
 	$(CLANG) -c $? -o $@ $(OBJCFLAGS) -I$(EMULATION_CLASS_DIR) -I$(CLASS_DIR) \
