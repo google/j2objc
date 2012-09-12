@@ -274,6 +274,7 @@ $(TESTS_DIR)/%.h $(TESTS_DIR)/%.m: $(MISC_TEST_ROOT)/%.java
 $(TESTS_DIR)/%.o: $(TESTS_DIR)/%.m
 	@mkdir -p `dirname $@`
 	../dist/j2objcc -g -I$(TESTS_DIR) -c $? -o $@ \
+	  -Wno-objc-redundant-literal-use -Wno-format \
 	  -Werror -Wno-parentheses -I$(EMULATION_TESTS_DIR) -I$(TESTS_DIR)
 
 $(TESTS_DIR)/%: $(TESTS_DIR)/%.o
