@@ -1,0 +1,4 @@
+This directory contains image files for J2ObjC's wiki at
+https://code.google.com/p/j2objc/wiki/.  Image files cannot be
+accessed from the wiki's git repository because of https
+restrictions.  These files are not referenced by the build.
