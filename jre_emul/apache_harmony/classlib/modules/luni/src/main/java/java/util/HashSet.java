@@ -27,6 +27,7 @@ public class HashSet<E> extends AbstractSet<E> implements Set<E>, Cloneable,
         Serializable {
 
     private static final long serialVersionUID = -5024744406713321676L;
+    private final HashSet<E> dummyKey = (HashSet<E>) new Object();
 
     transient HashMap<E, HashSet<E>> backingMap;
 
@@ -89,7 +90,7 @@ public class HashSet<E> extends AbstractSet<E> implements Set<E>, Cloneable,
      */
     @Override
     public boolean add(E object) {
-        return backingMap.put(object, this) == null;
+        return backingMap.put(object, dummyKey) == null;
     }
 
     /**

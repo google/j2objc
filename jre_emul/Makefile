@@ -347,10 +347,10 @@ $(EMULATION_JAR): $(JRE_ROOT)/java/*/*.java | $(BUILD_DIR)
 	@echo "building jre_emul.jar"
 	@rm -rf $(EMULATION_STAGE)
 	@mkdir $(EMULATION_STAGE)
-	@javac -d $(EMULATION_STAGE) -sourcepath $(JRE_SRC) \
-	  `find $(JRE_SRC_ROOTS) -name '*.java'`
 	@javac -d $(EMULATION_STAGE) -sourcepath ../src/main/java \
 		  ../src/main/java/com/google/j2objc/annotations/*.java
+	@javac -classpath $(EMULATION_STAGE) -d $(EMULATION_STAGE) -sourcepath $(JRE_SRC) \
+	  `find $(JRE_SRC_ROOTS) -name '*.java'`
 	@jar cf $(EMULATION_JAR) -C $(EMULATION_STAGE) .
 
 $(CLASS_DIR)/NSObject+JavaObject.o: $(EMULATION_CLASS_DIR)/NSObject+JavaObject.m
