@@ -18,6 +18,7 @@
 package java.util;
 
 import java.io.Serializable;
+import com.google.j2objc.annotations.Weak;
 
 /**
  * LinkedList is an implementation of List, backed by a linked list. All
@@ -38,7 +39,8 @@ public class LinkedList<E> extends AbstractSequentialList<E> implements
     private static final class Link<ET> {
         ET data;
 
-        Link<ET> previous, next;
+        @Weak Link<ET> previous;
+        Link<ET> next;
 
         Link(ET o, Link<ET> p, Link<ET> n) {
             data = o;
