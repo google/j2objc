@@ -280,6 +280,23 @@ OBJS = \
 JAVA_SOURCE_LIST = $(BUILD_DIR)/jre_emul.classes.list
 OBJC_OUT_LIST = $(BUILD_DIR)/jre_emul.objc.list
 
+ifndef CONFIGURATION_BUILD_DIR
+# Settings for building both i386 and armv7 libraries.
+BUILD_FAT_LIBARY = YES
+EMULATION_I386_LIB = $(BUILD_DIR)/i386-libjre_emul.a
+EMULATION_ARMV7_LIB = $(BUILD_DIR)/armv7-libjre_emul.a
+ALT_BUILD_DIR = $(BUILD_DIR)/armv7
+ALT_OBJS = $(OBJS:$(CLASS_DIR)/%=$(ALT_BUILD_DIR)/%) \
+  $(IOS_OBJS:$(CLASS_DIR)/%=$(ALT_BUILD_DIR)/%)
+
+# TODO(user): determine this directory during build.
+IPHONE_SDK_DIR = \
+  /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS5.1.sdk
+
+export ALT_ARCH_FLAGS
+export ALT_SDK_FLAGS
+endif
+
 # translate is the default so that Xcode can build its own object files
 default: lib includes
 	@: # suppress make's "nothing to be done" message
@@ -298,7 +315,20 @@ lib: translate $(EMULATION_LIB)
 	@:
 
 $(EMULATION_LIB): $(IOS_OBJS) $(OBJS)
-	libtool -static -o $(EMULATION_LIB) `find $(CLASS_DIR) -name '*.o'`
+	@echo BUILD_FAT_LIBRARY: $(BUILD_FAT_LIBARY)
+	@if [ "x$(BUILD_FAT_LIBARY)" == "xYES" ] ; then \
+	  echo "building i386 library" ; \
+	  libtool -static -o $(EMULATION_I386_LIB) `find $(CLASS_DIR) -name '*.o'` ; \
+	  echo "building armv7 library" ; \
+	  env ALT_ARCH_FLAGS="-arch armv7" ALT_SDK_FLAGS="-isysroot $(IPHONE_SDK_DIR)" make ios_lib ; \
+	  lipo -create $(EMULATION_I386_LIB) $(EMULATION_ARMV7_LIB) \
+	    -output $(EMULATION_LIB) ; \
+	else \
+	  libtool -static -o $(EMULATION_LIB) `find $(CLASS_DIR) -name '*.o'` ; \
+	fi
+
+ios_lib: $(ALT_OBJS)
+	libtool -static -o $(EMULATION_ARMV7_LIB) `find $(ALT_BUILD_DIR) -name '*.o'` ; \
 
 # Copy top-level class headers to include directory.
 includes: $(INCLUDE_DIR)/java/lang/reflect
@@ -322,6 +352,14 @@ $(CLASS_DIR)/%.o: $(CLASS_DIR)/%.m
 	$(CLANG) -c '$?' -o '$@' $(OBJCFLAGS) -I$(EMULATION_CLASS_DIR) -I$(CLASS_DIR)
 
 $(CLASS_DIR)/%.o: $(EMULATION_CLASS_DIR)/%.m
+	@mkdir -p `dirname $@`
+	$(CLANG) -c $? -o $@ $(OBJCFLAGS) -I$(EMULATION_CLASS_DIR) -I$(CLASS_DIR)
+
+$(ALT_BUILD_DIR)/%.o: $(CLASS_DIR)/%.m
+	@mkdir -p `dirname $@`
+	$(CLANG) -c '$?' -o '$@' $(OBJCFLAGS) -I$(EMULATION_CLASS_DIR) -I$(CLASS_DIR)
+
+$(ALT_BUILD_DIR)/%.o: $(EMULATION_CLASS_DIR)/%.m
 	@mkdir -p `dirname $@`
 	$(CLANG) -c $? -o $@ $(OBJCFLAGS) -I$(EMULATION_CLASS_DIR) -I$(CLASS_DIR)
 
