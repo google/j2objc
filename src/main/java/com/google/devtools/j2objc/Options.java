@@ -52,6 +52,7 @@ public class Options {
   private static String pluginOptionString = "";
   private static List<Plugin> plugins = new ArrayList<Plugin>();
   private static File outputDirectory = new File(".");
+  private static boolean usePackageDirectories = true;
   private static Language language = Language.OBJECTIVE_C;
   private static boolean printConvertedSources = false;
   private static boolean ignoreMissingImports = false;
@@ -84,7 +85,7 @@ public class Options {
     URL propertiesUrl = Resources.getResource(J2ObjC.class, "J2ObjC.properties");
     Properties properties = new Properties();
     try {
-        properties.load(propertiesUrl.openStream());
+      properties.load(propertiesUrl.openStream());
     } catch (IOException e) {
       System.err.println("unable to access tool properties: " + e);
       System.exit(1);
@@ -95,6 +96,17 @@ public class Options {
     Preconditions.checkNotNull(usageMessage);
     helpMessage = properties.getProperty(HELP_MSG_KEY);
     Preconditions.checkNotNull(helpMessage);
+    properties.clear();
+
+    // Set JRE prefixes.
+    propertiesUrl = Resources.getResource(J2ObjC.class, "JRE.properties");
+    try {
+      properties.load(propertiesUrl.openStream());
+    } catch (IOException e) {
+      System.err.println("unable to access JRE package properties: " + e);
+      System.exit(1);
+    }
+    addPrefixProperties(properties);
   }
 
   public static enum MemoryManagementOption { REFERENCE_COUNTING, GC, ARC }
@@ -132,47 +144,47 @@ public class Options {
         classPathEntries = getPathArgument(args[nArg]);
       } else if (arg.equals("-sourcepath")) {
         if (++nArg == args.length) {
-          usage();
+          usage("-sourcepath requires an argument");
         }
         sourcePathEntries.addAll(getPathArgument(args[nArg]));
       } else if (arg.equals("-pluginpath")) {
         if (++nArg == args.length) {
-          usage();
+          usage("-pluginpath requires an argument");
         }
         pluginPathEntries = getPathArgument(args[nArg]);
       } else if (arg.equals("-pluginoptions")) {
         if (++nArg == args.length){
-          usage();
+          usage("-pluginoptions requires an argument");
         }
         pluginOptionString = args[nArg];
       } else if (arg.equals("-d")) {
         if (++nArg == args.length) {
-          usage();
+          usage("-d requires an argument");
         }
         outputDirectory = new File(args[nArg]);
       } else if (arg.equals("--mapping")) {
         if (++nArg == args.length) {
-          usage();
+          usage("--mapping requires an argument");
         }
         mappingFiles.add(args[nArg]);
       } else if (arg.equals("--dead-code-report")) {
         if (++nArg == args.length) {
-          usage();
+          usage("--dead-code-report requires an argument");
         }
         proGuardUsageFile = new File(args[nArg]);
       } else if (arg.equals("--prefix")) {
         if (++nArg == args.length) {
-          usage();
+          usage("--prefix requires an argument");
         }
         addPrefixOption(args[nArg]);
       } else if (arg.equals("--prefixes")) {
         if (++nArg == args.length) {
-          usage();
+          usage("--prefixes requires an argument");
         }
         addPrefixesFile(args[nArg]);
       } else if (arg.equals("-x")) {
         if (++nArg == args.length) {
-          usage();
+          usage("-x requires an argument");
         }
         String s = args[nArg];
         if (s.equals("objective-c")) {
@@ -180,7 +192,7 @@ public class Options {
         } else if (s.equals("objective-c++")) {
           language = Language.OBJECTIVE_CPP;
         } else {
-          usage();
+          usage("unsupported language: " + s);
         }
       } else if (arg.equals("--print-converted-sources")) {
         printConvertedSources = true;
@@ -196,6 +208,8 @@ public class Options {
         generateTestMain = true;
       } else if (arg.equals("--no-generate-test-main")) {
         generateTestMain = false;
+      } else if (arg.equals("--no-package-directories")) {
+        usePackageDirectories = false;
       } else if (arg.equals("-use-gc")) {
         checkMemoryManagementOption(MemoryManagementOption.GC);
       } else if (arg.equals("-use-arc")) {
@@ -215,7 +229,7 @@ public class Options {
       } else if (arg.startsWith("-h") || arg.equals("--help")) {
         help();
       } else if (arg.startsWith("-")) {
-        usage();
+        usage("invalid flag: " + arg);
       } else {
         break;
       }
@@ -227,6 +241,9 @@ public class Options {
     }
 
     int nFiles = args.length - nArg;
+    if (nFiles == 0) {
+      help(); // No files specified.
+    }
     String[] files = new String[nFiles];
     for (int i = 0; i < nFiles; i++) {
       String path = args[i + nArg];
@@ -246,7 +263,7 @@ public class Options {
 
     // Make sure key and value are at least 1 character.
     if (i < 1 || i >= arg.length() - 1) {
-      usage();
+      usage("invalid prefix format");
     }
     String pkg = arg.substring(0, i);
     String prefix = arg.substring(i + 1);
@@ -262,6 +279,10 @@ public class Options {
     FileInputStream fis = new FileInputStream(filename);
     props.load(fis);
     fis.close();
+    addPrefixProperties(props);
+  }
+
+  private static void addPrefixProperties(Properties props) {
     for (String pkg : props.stringPropertyNames()) {
       addPackagePrefix(pkg, props.getProperty(pkg));
     }
@@ -274,13 +295,13 @@ public class Options {
   private static void checkMemoryManagementOption(MemoryManagementOption option) {
     if (memoryManagementOption != null &&
         memoryManagementOption != option) {
-      System.err.println("Multiple memory management options cannot be set.");
-      usage();
+      usage("Multiple memory management options cannot be set.");
     }
     setMemoryManagementOption(option);
   }
 
-  private static void usage() {
+  private static void usage(String invalidUseMsg) {
+    System.err.println("j2objc: " + invalidUseMsg);
     System.err.println(usageMessage);
     System.exit(1);
   }
@@ -341,6 +362,14 @@ public class Options {
 
   public static File getOutputDirectory() {
     return outputDirectory;
+  }
+
+  /**
+   * If true, put output files in sub-directories defined by
+   * package declaration (like javac does).
+   */
+  public static boolean usePackageDirectories() {
+    return usePackageDirectories;
   }
 
   public static Language getLanguage() {
