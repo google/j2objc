@@ -23,6 +23,7 @@ import com.google.devtools.j2objc.util.NameTable;
 
 import org.eclipse.jdt.core.dom.ASTNode;
 import org.eclipse.jdt.core.dom.CompilationUnit;
+import org.eclipse.jdt.core.dom.PackageDeclaration;
 
 import java.io.File;
 import java.io.IOException;
@@ -52,13 +53,20 @@ public abstract class SourceFileGenerator {
   /**
    * Returns the name this source file should be saved as.  For example,
    * foo/bar/Mumble.java translates to $(OUTPUT_DIR)/foo/bar/Mumble.m for
-   * Objective-C implementation files.
+   * Objective-C implementation files.  If --no-package-directories is
+   * specified, though, the output file is $(OUTPUT_DIR)/Mumble.m.
    * <p>
    * Note: class names are still camel-cased to avoid name collisions.
    */
   protected String getOutputFileName(CompilationUnit node) {
     String javaName = NameTable.getMainJavaName(node, sourceFileName);
-    return javaName.replace('.', '/') + getSuffix();
+    PackageDeclaration pkg = node.getPackage();
+    if (Options.usePackageDirectories() || pkg == null) {
+      return javaName.replace('.', '/') + getSuffix();
+    } else {
+      String pkgName = pkg.getName().getFullyQualifiedName();
+      return javaName.substring(pkgName.length() + 1) + getSuffix();
+    }
   }
 
   /**

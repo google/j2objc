@@ -17,6 +17,7 @@
 package com.google.devtools.j2objc.types;
 
 import com.google.common.collect.Sets;
+import com.google.devtools.j2objc.Options;
 import com.google.devtools.j2objc.util.ErrorReportingASTVisitor;
 import com.google.devtools.j2objc.util.NameTable;
 
@@ -187,7 +188,11 @@ public class ImportCollector extends ErrorReportingASTVisitor {
     }
 
     public String getImportFileName() {
-      return javaFileName.replace('.', '/');
+      // Always use JRE package directories.
+      if (Options.usePackageDirectories() || javaFileName.startsWith("java")) {
+        return javaFileName.replace('.', '/');
+      }
+      return javaFileName.substring(javaFileName.lastIndexOf('.') + 1);
     }
 
     public boolean isInterface() {
