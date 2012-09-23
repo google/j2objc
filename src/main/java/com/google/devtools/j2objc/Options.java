@@ -96,17 +96,6 @@ public class Options {
     Preconditions.checkNotNull(usageMessage);
     helpMessage = properties.getProperty(HELP_MSG_KEY);
     Preconditions.checkNotNull(helpMessage);
-    properties.clear();
-
-    // Set JRE prefixes.
-    propertiesUrl = Resources.getResource(J2ObjC.class, "JRE.properties");
-    try {
-      properties.load(propertiesUrl.openStream());
-    } catch (IOException e) {
-      System.err.println("unable to access JRE package properties: " + e);
-      System.exit(1);
-    }
-    addPrefixProperties(properties);
   }
 
   public static enum MemoryManagementOption { REFERENCE_COUNTING, GC, ARC }
