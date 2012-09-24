@@ -733,6 +733,9 @@ public class J2ObjC {
     String[] files = null;
     try {
       files = Options.load(args);
+      if (nFiles == 0) {
+        Options.help(); // Exits, due to no files specified.
+      }
     } catch (IOException e) {
       error(e.getMessage());
       System.exit(1);
