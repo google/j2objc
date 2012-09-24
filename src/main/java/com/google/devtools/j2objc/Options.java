@@ -230,9 +230,6 @@ public class Options {
     }
 
     int nFiles = args.length - nArg;
-    if (nFiles == 0) {
-      help(); // No files specified.
-    }
     String[] files = new String[nFiles];
     for (int i = 0; i < nFiles; i++) {
       String path = args[i + nArg];
@@ -289,13 +286,13 @@ public class Options {
     setMemoryManagementOption(option);
   }
 
-  private static void usage(String invalidUseMsg) {
+  public static void usage(String invalidUseMsg) {
     System.err.println("j2objc: " + invalidUseMsg);
     System.err.println(usageMessage);
     System.exit(1);
   }
 
-  private static void help() {
+  public static void help() {
     System.err.println(helpMessage);
     System.exit(0);
   }
