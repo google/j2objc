@@ -223,7 +223,7 @@ public class ObjectiveCImplementationGeneratorTest extends GenerationTest {
     assertTranslation(translation, "@implementation ColorEnum");
     assertTranslation(translation, "return ColorEnum_RED;");
     assertTranslation(translation,
-        "ColorEnum_RED = [[ColorEnum alloc] initWithNSString:@\"Color_RED\" withInt:0];");
+        "ColorEnum_RED = [[ColorEnum alloc] initWithNSString:@\"RED\" withInt:0];");
     assertTranslation(translation,
         "ColorEnum_values = [[IOSObjectArray alloc] initWithObjects:(id[]){ " +
         "ColorEnum_RED, ColorEnum_WHITE, ColorEnum_BLUE, nil } " +
