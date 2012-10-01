@@ -128,6 +128,7 @@ TEST_OBJS = \
 	$(TESTS_DIR)/org/apache/harmony/luni/tests/java/util/BitSetTest.o \
 	$(TESTS_DIR)/org/apache/harmony/luni/tests/java/util/DateTest.o \
 	$(TESTS_DIR)/org/apache/harmony/luni/tests/java/util/EmptyStackExceptionTest.o \
+	$(TESTS_DIR)/org/apache/harmony/luni/tests/java/util/EventObjectTest.o \
 	$(TESTS_DIR)/org/apache/harmony/luni/tests/java/util/HashMapTest.o \
 	$(TESTS_DIR)/org/apache/harmony/luni/tests/java/util/HashSetTest.o \
 	$(TESTS_DIR)/org/apache/harmony/luni/tests/java/util/HashtableTest.o \
@@ -208,7 +209,8 @@ JAVA_SOURCE_LIST = $(TMPDIR).tests.list
 #	$(TESTS_DIR)/org/apache/harmony/luni/tests/java/util/TreeSetTest.o                     b/5754676
 #
 
-JUNIT_JAR = ../dist/lib/junit-4.10.jar
+JUNIT_JAR = $../dist/lib/junit-4.10.jar
+
 TEST_SOURCE_PATH = \
   $(JRE_TEST_ROOT):$(JRE_MATH_TEST_ROOT):$(JRE_NIO_TEST_ROOT):$(TEST_SUPPORT_ROOT):$(MATH_TEST_SUPPORT_ROOT)
 TEST_JOC = ../dist/j2objc -classpath $(JUNIT_JAR) -Werror \
