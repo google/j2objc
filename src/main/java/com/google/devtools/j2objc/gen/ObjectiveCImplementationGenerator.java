@@ -315,7 +315,7 @@ public class ObjectiveCImplementationGenerator extends ObjectiveCSourceFileGener
 
       // Common-case: no extra fields and no constant anonymous classes.
       if (args.isEmpty() && isSimpleEnum) {
-        printf("WithNSString:@\"%s_%s\" withInt:%d];\n", typeName.replace("Enum", ""), name, i);
+        printf("WithNSString:@\"%s\" withInt:%d];\n", name, i);
       } else {
         String argString = StatementGenerator.generateArguments(Types.getMethodBinding(constant),
             args, fieldHiders, getBuilder().getCurrentLine());
