@@ -277,4 +277,11 @@ public class AutoboxerTest extends GenerationTest {
         "[[TestEnum alloc] initWithId:[JavaLangBoolean valueOfWithBOOL:NO] " +
         "withNSString:@\"Test_BOOLEAN\" withInt:1]");
   }
+
+  public void testBoxedBoolInIf() throws IOException {
+    String source = "public class Test { Boolean b = false; void foo() { if (b) foo(); } }";
+    String translation = translateSourceFile(source, "Test", "Test.m");
+
+    assertTranslation(translation, "if ([((JavaLangBoolean *) NIL_CHK(b_)) booleanValue])");
+  }
 }
