@@ -172,7 +172,7 @@ $(DIST_DIR)/j2objc: $(SOURCE_DIR)/bin/j2objc.sh
 
 install-man-pages: $(MAN_PAGES)
 	@mkdir -p $(DIST_DIR)/man/man1
-	install -C -m 0644 $? $(DIST_DIR)/man/man1
+	@install -C -m 0644 $? $(DIST_DIR)/man/man1
 
 $(DIST_DIR)/j2objcc: $(SOURCE_DIR)/bin/j2objcc.sh
 	cp $(SOURCE_DIR)/bin/j2objcc.sh $(DIST_DIR)/j2objcc
@@ -180,7 +180,7 @@ $(DIST_DIR)/j2objcc: $(SOURCE_DIR)/bin/j2objcc.sh
 
 install-libs:  $(LIB_DIR)/j2objc.jar
 	@mkdir -p $(DIST_LIB_DIR)
-	install -C -m 0644 $(LIB_DIR)/* $(DIST_LIB_DIR)
+	install -C -m 0644 $(LIB_DIR)/* $(JUNIT_JAR) $(DIST_LIB_DIR)
 
 translator_dist: jar install-libs $(DIST_DIR)/j2objc $(DIST_DIR)/j2objcc \
 	  install-man-pages jre_emul_jar_dist

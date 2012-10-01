@@ -243,6 +243,7 @@ OBJS = \
 	$(CLASS_DIR)/java/util/Date.o \
 	$(CLASS_DIR)/java/util/Dictionary.o \
 	$(CLASS_DIR)/java/util/EventListener.o \
+	$(CLASS_DIR)/java/util/EventObject.o \
 	$(CLASS_DIR)/java/util/EmptyStackException.o \
 	$(CLASS_DIR)/java/util/HashSet.o \
 	$(CLASS_DIR)/java/util/Hashtable.o \
