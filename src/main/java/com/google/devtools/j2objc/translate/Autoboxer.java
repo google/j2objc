@@ -34,6 +34,7 @@ import org.eclipse.jdt.core.dom.IBinding;
 import org.eclipse.jdt.core.dom.IMethodBinding;
 import org.eclipse.jdt.core.dom.ITypeBinding;
 import org.eclipse.jdt.core.dom.IVariableBinding;
+import org.eclipse.jdt.core.dom.IfStatement;
 import org.eclipse.jdt.core.dom.InfixExpression;
 import org.eclipse.jdt.core.dom.MethodDeclaration;
 import org.eclipse.jdt.core.dom.MethodInvocation;
@@ -215,6 +216,16 @@ public class Autoboxer extends ErrorReportingASTVisitor {
           args.set(i, unbox(arg));
         }
       }
+    }
+  }
+
+  @Override
+  public void endVisit(IfStatement node) {
+    Expression expr = node.getExpression();
+    ITypeBinding binding = getBoxType(expr);
+
+    if (!binding.isPrimitive()) {
+      node.setExpression(unbox(expr));
     }
   }
 
