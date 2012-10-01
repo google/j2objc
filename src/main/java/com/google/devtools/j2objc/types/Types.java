@@ -725,6 +725,12 @@ public class Types {
     return nullLiteral;
   }
 
+  public static SimpleName newLabel(String identifier) {
+    SimpleName node = instance.ast.newSimpleName(identifier);
+    addBinding(node, new IOSTypeBinding(identifier, false));
+    return node;
+  }
+
   public static boolean isJUnitTest(ITypeBinding type) {
     // Skip JUnit framework classes.
     if (type.getPackage().getName().equals("junit.framework")) {

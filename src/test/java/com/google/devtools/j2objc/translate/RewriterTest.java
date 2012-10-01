@@ -23,7 +23,9 @@ import com.google.devtools.j2objc.types.Types;
 import org.eclipse.jdt.core.dom.Assignment;
 import org.eclipse.jdt.core.dom.Block;
 import org.eclipse.jdt.core.dom.BodyDeclaration;
+import org.eclipse.jdt.core.dom.BreakStatement;
 import org.eclipse.jdt.core.dom.CompilationUnit;
+import org.eclipse.jdt.core.dom.ContinueStatement;
 import org.eclipse.jdt.core.dom.EmptyStatement;
 import org.eclipse.jdt.core.dom.Expression;
 import org.eclipse.jdt.core.dom.ExpressionStatement;
@@ -32,6 +34,7 @@ import org.eclipse.jdt.core.dom.ForStatement;
 import org.eclipse.jdt.core.dom.IBinding;
 import org.eclipse.jdt.core.dom.ITypeBinding;
 import org.eclipse.jdt.core.dom.IVariableBinding;
+import org.eclipse.jdt.core.dom.IfStatement;
 import org.eclipse.jdt.core.dom.LabeledStatement;
 import org.eclipse.jdt.core.dom.MethodDeclaration;
 import org.eclipse.jdt.core.dom.MethodInvocation;
@@ -55,6 +58,47 @@ import java.util.List;
  */
 @SuppressWarnings("unchecked")
 public class RewriterTest extends GenerationTest {
+
+  public void testContinueAndBreakUsingSameLabel() {
+    List<Statement> stmts = translateStatements(
+        "int i = 0; outer: for (; i < 10; i++) { " +
+        "for (int j = 0; j < 10; j++) { " +
+          "int n = i + j; " +
+          "if (n == 5) continue outer; " +
+          "else break outer; }}");
+    assertEquals(3, stmts.size());
+    Statement s = stmts.get(1);
+    assertTrue(s instanceof ForStatement);  // not LabeledStatement
+    ForStatement fs = (ForStatement) s;
+    Statement forStmt = fs.getBody();
+    assertTrue(forStmt instanceof Block);
+    List<Statement> innerStmts = ((Block) forStmt).statements();
+    assertEquals(2, innerStmts.size());
+    Statement innerForLoop = innerStmts.get(0);
+    assertTrue(innerForLoop instanceof ForStatement);
+    Statement innerForBlock = ((ForStatement) innerForLoop).getBody();
+    assertTrue(innerForBlock instanceof Block);
+    List<Statement> innerStmts2 = ((Block) innerForBlock).statements();
+    assertEquals(2, innerStmts2.size());
+    Statement ifStmt = innerStmts2.get(1);
+    assertTrue(ifStmt instanceof IfStatement);
+    Statement continueStmt = ((IfStatement) ifStmt).getThenStatement();
+    assertTrue(continueStmt instanceof ContinueStatement);
+    assertEquals("continue_outer", ((ContinueStatement) continueStmt).getLabel().getIdentifier());
+    Statement breakStmt = ((IfStatement) ifStmt).getElseStatement();
+    assertTrue(breakStmt instanceof BreakStatement);
+    assertEquals("break_outer", ((BreakStatement) breakStmt).getLabel().getIdentifier());
+    Statement lastInnerStmt = innerStmts.get(1);
+    assertTrue(lastInnerStmt instanceof LabeledStatement);
+    LabeledStatement continueLabel = (LabeledStatement) lastInnerStmt;
+    assertEquals("continue_outer", continueLabel.getLabel().getIdentifier());
+    assertTrue(continueLabel.getBody() instanceof EmptyStatement);
+    Statement lastStmt = stmts.get(2);
+    assertTrue(lastStmt instanceof LabeledStatement);
+    LabeledStatement breakLabel = (LabeledStatement) lastStmt;
+    assertEquals("break_outer", breakLabel.getLabel().getIdentifier());
+    assertTrue(breakLabel.getBody() instanceof EmptyStatement);
+  }
 
   public void testLabeledContinue() throws IOException {
     List<Statement> stmts = translateStatements(
@@ -87,6 +131,28 @@ public class RewriterTest extends GenerationTest {
     Statement lastStmt = stmts.get(2);
     assertTrue(lastStmt instanceof LabeledStatement);
     assertTrue(((LabeledStatement) lastStmt).getBody() instanceof EmptyStatement);
+  }
+
+  public void testLabeledBreakWithNonBlockParent() throws IOException {
+    List<Statement> stmts = translateStatements(
+        "int i = 0; if (i == 0) outer: for (; i < 10; i++) { " +
+        "for (int j = 0; j < 10; j++) { break outer; }}");
+    assertEquals(2, stmts.size());
+    Statement s = stmts.get(1);
+    assertTrue(s instanceof IfStatement);
+    s = ((IfStatement) s).getThenStatement();
+    assertTrue(s instanceof Block);
+    stmts = ((Block) s).statements();
+    assertEquals(2, stmts.size());
+    s = stmts.get(0);
+    assertTrue(s instanceof ForStatement);  // not LabeledStatement
+    ForStatement fs = (ForStatement) s;
+    Statement forStmt = fs.getBody();
+    assertTrue(forStmt instanceof Block);
+    assertEquals(1, ((Block) forStmt).statements().size());
+    Statement labelStmt = stmts.get(1);
+    assertTrue(labelStmt instanceof LabeledStatement);
+    assertTrue(((LabeledStatement) labelStmt).getBody() instanceof EmptyStatement);
   }
 
   public void testStaticReaderAdded() {
