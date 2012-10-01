@@ -138,7 +138,7 @@ compile: plugins $(CLASSFILES)
 	@:
 
 $(CLASS_DIR)/$(BASE_PACKAGE)/%.class: $(JAVA_SOURCE_DIR)/$(BASE_PACKAGE)/%.java
-	javac -sourcepath $(SOURCEPATH) -classpath $(CLASSPATH) -d $(CLASS_DIR) $(SOURCE_FILES)
+	javac -Xlint:unchecked -sourcepath $(SOURCEPATH) -classpath $(CLASSPATH) -d $(CLASS_DIR) $(SOURCE_FILES)
 
 $(MANIFEST): $(CLASSFILES)
 	@echo creating $@
@@ -183,8 +183,11 @@ install-libs:  $(LIB_DIR)/j2objc.jar
 	install -C -m 0644 $(LIB_DIR)/* $(DIST_LIB_DIR)
 
 translator_dist: jar install-libs $(DIST_DIR)/j2objc $(DIST_DIR)/j2objcc \
-	  install-man-pages
+	  install-man-pages jre_emul_jar_dist
 	@:
+
+jre_emul_jar_dist:
+	@cd $(CWD)/jre_emul && make emul_jar_dist
 
 jre_emul_dist: translator_dist
 	@cd $(CWD)/jre_emul && make dist

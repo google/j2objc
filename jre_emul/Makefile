@@ -394,12 +394,15 @@ clean:
 	@rm -f $(JAVA_SOURCE_LIST)
 	@rm -rf $(BUILD_DIR)
 
-dist: lib includes $(EMULATION_JAR)
+dist: lib includes emul_jar_dist
 	@mkdir -p $(DIST_LIB_DIR)
 	@mkdir -p $(DIST_INCLUDE_DIR)
 	cp -r $(INCLUDE_DIR)/* $(DIST_INCLUDE_DIR)
 	@find $(DIST_INCLUDE_DIR) -type f | xargs chmod 0644
-	install -m 0644 $(EMULATION_LIB) $(EMULATION_JAR) $(DIST_LIB_DIR)
+	install -m 0644 $(EMULATION_LIB) $(DIST_LIB_DIR)
+
+emul_jar_dist: $(EMULATION_JAR)
+	install -m 0644 $(EMULATION_JAR) $(DIST_LIB_DIR)
 
 $(EMULATION_JAR): $(JRE_ROOT)/java/*/*.java | $(BUILD_DIR)
 	@echo "building jre_emul.jar"
