@@ -234,7 +234,7 @@ destinationBegin:(int)destinationBegin {
   if (![another isKindOfClass:[NSString class]]) {
     @throw makeException([JavaLangClassCastException class]);
   }
-  return [self compare:(NSString *) another];
+  return [self compare:(NSString *) another options:NSLiteralSearch];
 }
 
 - (int)compareToIgnoreCase:(NSString *)another {
