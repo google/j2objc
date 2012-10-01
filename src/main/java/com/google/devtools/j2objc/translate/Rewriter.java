@@ -395,96 +395,99 @@ public class Rewriter extends ErrorReportingASTVisitor {
     return true;
   }
 
+  private static Statement getLoopBody(Statement s) {
+    if (s instanceof DoStatement) {
+      return ((DoStatement) s).getBody();
+    } else if (s instanceof EnhancedForStatement) {
+      return ((EnhancedForStatement) s).getBody();
+    } else if (s instanceof ForStatement) {
+      return ((ForStatement) s).getBody();
+    } else if (s instanceof WhileStatement) {
+      return ((WhileStatement) s).getBody();
+    }
+    return null;
+  }
+
+  /**
+   * Inserts a new statement after a given node. If node is a Block, appends
+   * toInsert to the end of the block. If node's parent is a Block, inserts
+   * directly after node. Otherwise, creates a new Block with node and toInsert
+   * as the only two statements.
+   */
+  @SuppressWarnings("unchecked")
+  private static <E extends Statement> E insertStatement(E node, Statement toInsert) {
+    if (node instanceof Block) {
+      ((Block) node).statements().add(toInsert);
+      return node;
+    } else if (node.getParent() instanceof Block) {
+      List<Statement> stmts = ((Block) node.getParent()).statements();
+      // Find node in statement list, and add given statement after it.
+      for (int i = 0; i < stmts.size(); i++) {
+        if (stmts.get(i) == node) {
+          stmts.add(i + 1, toInsert);
+          break;
+        }
+      }
+    } else {
+      AST ast = node.getAST();
+      Block block = ast.newBlock();
+      List<Statement> stmts = block.statements();
+      E oldNode = node;
+      node = NodeCopier.copySubtree(ast, node);
+      stmts.add(node);
+      stmts.add(toInsert);
+      ClassConverter.setProperty(oldNode, block);
+    }
+    return node;
+  }
+
   @SuppressWarnings("unchecked")
   @Override
   public boolean visit(LabeledStatement node) {
-    Statement s = node.getBody();
-    Statement statementBody = null;
-    if (s instanceof DoStatement) {
-      statementBody = ((DoStatement) s).getBody();
-    } else if (s instanceof EnhancedForStatement) {
-      statementBody = ((EnhancedForStatement) s).getBody();
-    } else if (s instanceof ForStatement) {
-      statementBody = ((ForStatement) s).getBody();
-    } else if (s instanceof WhileStatement) {
-      statementBody = ((WhileStatement) s).getBody();
+    Statement loopBody = getLoopBody(node.getBody());
+    if (loopBody == null) {
+      return true;
     }
-    if (statementBody != null) {
-      AST ast = node.getAST();
 
-      final boolean[] hasContinue = new boolean[1];
-      final boolean[] hasBreak = new boolean[1];
-      node.accept(new ASTVisitor() {
-        @Override
-        public void endVisit(ContinueStatement node) {
-          if (node.getLabel() != null) {
-            hasContinue[0] = true;
-          }
-        }
-        @Override
-        public void endVisit(BreakStatement node) {
-          if (node.getLabel() != null) {
-            hasBreak[0] = true;
-          }
-        }
-      });
+    AST ast = node.getAST();
+    final String labelIdentifier = node.getLabel().getIdentifier();
 
-      List<Statement> stmts = null;
-      if (hasContinue[0]) {
-        if (statementBody instanceof Block) {
-          // Add empty labeled statement as last block statement.
-          stmts = ((Block) statementBody).statements();
-          LabeledStatement newLabel = ast.newLabeledStatement();
-          newLabel.setLabel(NodeCopier.copySubtree(ast, node.getLabel()));
-          newLabel.setBody(ast.newEmptyStatement());
-          stmts.add(newLabel);
+    final boolean[] hasContinue = new boolean[1];
+    final boolean[] hasBreak = new boolean[1];
+    node.accept(new ASTVisitor() {
+      @Override
+      public void endVisit(ContinueStatement node) {
+        if (node.getLabel() != null && node.getLabel().getIdentifier().equals(labelIdentifier)) {
+          hasContinue[0] = true;
+          node.setLabel(Types.newLabel("continue_" + labelIdentifier));
         }
       }
-      if (hasBreak[0]) {
-        ASTNode parent = node.getParent();
-        if (parent instanceof Block) {
-          stmts = ((Block) parent).statements();
-        } else {
-          // Surround parent with block.
-          Block block = ast.newBlock();
-          stmts = block.statements();
-          stmts.add((Statement) parent);
-
-          // Replace parent in its statement list with new block.
-          List<Statement> superStmts = ((Block) parent.getParent()).statements();
-          for (int i = 0; i < superStmts.size(); i++) {
-            if (superStmts.get(i) == parent) {
-              superStmts.set(i, block);
-              break;
-            }
-          }
-          stmts = block.statements();
-        }
-        // Find node in statement list, and add empty labeled statement after it.
-        for (int i = 0; i < stmts.size(); i++) {
-          if (stmts.get(i) == node) {
-            LabeledStatement newLabel = ast.newLabeledStatement();
-            newLabel.setLabel(NodeCopier.copySubtree(ast, node.getLabel()));
-            newLabel.setBody(ast.newEmptyStatement());
-            stmts.add(i + 1, newLabel);
-            break;
-          }
+      @Override
+      public void endVisit(BreakStatement node) {
+        if (node.getLabel() != null && node.getLabel().getIdentifier().equals(labelIdentifier)) {
+          hasBreak[0] = true;
+          node.setLabel(Types.newLabel("break_" + labelIdentifier));
         }
       }
+    });
 
-      if (hasContinue[0] || hasBreak[0]) {
-        // Replace this node with its statement, thus deleting the label.
-        ASTNode parent = node.getParent();
-        if (parent instanceof Block) {
-          stmts = ((Block) parent).statements();
-          for (int i = 0; i < stmts.size(); i++) {
-            if (stmts.get(i) == node) {
-              stmts.set(i, NodeCopier.copySubtree(ast, node.getBody()));
-              break;
-            }
-          }
-        }
-      }
+    List<Statement> stmts = null;
+    if (hasContinue[0]) {
+      LabeledStatement newLabelStmt = ast.newLabeledStatement();
+      newLabelStmt.setLabel(Types.newLabel("continue_" + labelIdentifier));
+      newLabelStmt.setBody(ast.newEmptyStatement());
+      loopBody = insertStatement(loopBody, newLabelStmt);
+    }
+    if (hasBreak[0]) {
+      LabeledStatement newLabelStmt = ast.newLabeledStatement();
+      newLabelStmt.setLabel(Types.newLabel("break_" + labelIdentifier));
+      newLabelStmt.setBody(ast.newEmptyStatement());
+      node = insertStatement(node, newLabelStmt);
+    }
+
+    if (hasContinue[0] || hasBreak[0]) {
+      // Replace this node with its statement, thus deleting the label.
+      ClassConverter.setProperty(node, NodeCopier.copySubtree(ast, node.getBody()));
     }
     return true;
   }
