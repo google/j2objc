@@ -48,8 +48,11 @@ public class IOSMethod {
       s = s.substring(0, s.length() -1 );
     }
     int i = s.indexOf(' ');
-    IOSTypeBinding clazz = Types.resolveIOSType(s.substring(0, i));
-    assert clazz != null;
+    String className = s.substring(0, i);
+    IOSTypeBinding clazz = Types.resolveIOSType(className);
+    if (clazz == null) {
+      clazz = new IOSTypeBinding(className, false);
+    }
     declaringClass = clazz.getName();
     s = s.substring(i + 1);
 
