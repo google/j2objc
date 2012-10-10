@@ -398,13 +398,19 @@ public class ObjectiveCImplementationGenerator extends ObjectiveCSourceFileGener
     // generate a normal method body
     String methodBody = generateStatement(m.getBody(), false);
     if (Types.hasAutoreleasePoolAnnotation(Types.getBinding(m))) {
-      return reindent(
-          "{\nNSAutoreleasePool *pool__ = [[NSAutoreleasePool alloc] init];\n" +
-          methodBody +
-          "[pool__ release];\n}");
-    } else {
-      return methodBody;
+      if (Options.useReferenceCounting()) {
+        // TODO(user): use @autoreleasepool like ARC when iOS 5 is minimum.
+        return reindent(
+            "{\nNSAutoreleasePool *pool__ = [[NSAutoreleasePool alloc] init];\n" +
+            methodBody +
+            "[pool__ release];\n}");
+      } else if (Options.useARC()) {
+        return reindent("{\n@autoreleasepool {\n" + methodBody + "}\n}");
+      } else {
+        J2ObjC.warning(m, "@AutoreleasePool ignored in GC mode");
+      }
     }
+    return methodBody;
   }
 
   @Override
@@ -524,9 +530,16 @@ public class ObjectiveCImplementationGenerator extends ObjectiveCSourceFileGener
       return;
     }
     indent();
+    printIndent();
+    println("int exitCode = 0;");
     if (Options.useReferenceCounting()) {
+        // TODO(user): use @autoreleasepool like ARC when iOS 5 is minimum.
       printIndent();
       println("NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];");
+    } else if (Options.useARC()) {
+      printIndent();
+      println("@autoreleasepool {");
+      indent();
     }
 
     if (m != null) {
@@ -540,19 +553,20 @@ public class ObjectiveCImplementationGenerator extends ObjectiveCSourceFileGener
     }
     if (testMethods != null) {
       printIndent();
-      printf("int exitCode = [JUnitRunner runTests:[%s class]", typeName);
+      printf("exitCode = [JUnitRunner runTests:[%s class]", typeName);
       for (IMethodBinding test : testMethods) {
         printf(", @\"%s\"", test.getName());
       }
       println(", nil];");
-    } else {
-      printIndent();
-      println("int exitCode = 0;");
     }
     if (Options.useReferenceCounting()) {
       print('\n');
       printIndent();
       println("[pool release];");
+    } else if (Options.useARC()) {
+      unindent();
+      printIndent();
+      println("}");
     }
     printIndent();
     println("return exitCode;");
