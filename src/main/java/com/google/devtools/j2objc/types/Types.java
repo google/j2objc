@@ -1071,7 +1071,9 @@ public class Types {
       appendParameterSignature(parameter.getErasure(), sb);
     }
     sb.append(')');
-    appendParameterSignature(binding.getReturnType().getErasure(), sb);
+    if (binding.getReturnType() != null) {
+      appendParameterSignature(binding.getReturnType().getErasure(), sb);
+    }
     return sb.toString();
   }
 

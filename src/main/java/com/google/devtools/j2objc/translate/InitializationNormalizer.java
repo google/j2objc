@@ -280,11 +280,13 @@ public class InitializationNormalizer extends ErrorReportingASTVisitor {
       stmts.add(newStmt);
     }
     MethodDeclaration method = ast.newMethodDeclaration();
-    GeneratedMethodBinding binding =
-        new GeneratedMethodBinding(name, modifiers, null, type, isConstructor, false, true);
-    Types.addBinding(method, binding);
     Type returnType = ast.newPrimitiveType(PrimitiveType.VOID);
-    Types.addBinding(returnType, ast.resolveWellKnownType("void"));
+    ITypeBinding voidType = ast.resolveWellKnownType("void");
+    Types.addBinding(returnType, voidType);
+    ITypeBinding returnBinding = isConstructor ? null : voidType;
+    GeneratedMethodBinding binding = new GeneratedMethodBinding(
+        name, modifiers, returnBinding, type, isConstructor, false, true);
+    Types.addBinding(method, binding);
     method.setReturnType2(returnType);
     method.setBody(body);
     method.setConstructor(isConstructor);

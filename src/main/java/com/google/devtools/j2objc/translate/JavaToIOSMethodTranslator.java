@@ -130,54 +130,66 @@ public class JavaToIOSMethodTranslator extends ErrorReportingASTVisitor {
 
   @Override
   public boolean visit(MethodDeclaration node) {
-    if (node.getBody() != null) {
-      visit(node.getBody());
-    }
+    // See if method has been directly mapped.
     IMethodBinding binding = Types.getMethodBinding(node);
+    JavaMethod desc = getDescription(binding);
+    if (desc != null) {
+      mapMethod(node, binding, methodMappings.get(desc.getKey()));
+      return true;
+    }
+
+    // See if an overrideable superclass method has been mapped.
     for (IMethodBinding overridable : overridableMethods) {
       if (!binding.isConstructor() &&
           (binding.isEqualTo(overridable) || binding.overrides(overridable))) {
         JavaMethod md = getDescription(overridable);
+        if (md == null) {
+          continue;
+        }
         String key = md.getKey();
         String value = methodMappings.get(key);
         if (value != null) {
-          IOSMethod iosMethod = new IOSMethod(value, binding, ast);
-          node.setName(ast.newSimpleName(iosMethod.getName()));
-          Types.addBinding(node.getName(), iosMethod.resolveBinding());
-          Types.addMappedIOSMethod(binding, iosMethod);
-
-          // Map parameters, if any.
-          @SuppressWarnings("unchecked")
-          List<SingleVariableDeclaration> parameters = node.parameters();
-          int n = parameters.size();
-          if (n > 0) {
-            List<IOSParameter> iosArgs = iosMethod.getParameters();
-            assert n == iosArgs.size() || iosMethod.isVarArgs();
-
-            // Pull parameters out of list, so they can be reordered.
-            SingleVariableDeclaration[] params =
-                parameters.toArray(new SingleVariableDeclaration[n]);
-
-            for (int i = 0; i < n; i++) {
-              SingleVariableDeclaration var = params[i];
-              IVariableBinding varBinding = Types.getVariableBinding(var);
-              IOSParameter iosArg = iosArgs.get(i);
-              SimpleType paramType =
-                  ast.newSimpleType(NameTable.unsafeSimpleName(iosArg.getType(), ast));
-              Types.addBinding(paramType, varBinding);
-              Types.addBinding(paramType.getName(), varBinding);
-              var.setType(paramType);
-              Types.addBinding(var.getName(), varBinding);
-              parameters.set(iosArg.getIndex(), var);
-            }
-          }
-
-          Types.addMappedIOSMethod(binding, iosMethod);
+          mapMethod(node, binding, value);
         }
-        return false;
+        return true;
       }
     }
-    return false;
+    return true;
+  }
+
+  private void mapMethod(MethodDeclaration node, IMethodBinding binding, String value) {
+    IOSMethod iosMethod = new IOSMethod(value, binding, ast);
+    node.setName(ast.newSimpleName(iosMethod.getName()));
+    Types.addBinding(node.getName(), iosMethod.resolveBinding());
+    Types.addMappedIOSMethod(binding, iosMethod);
+
+    // Map parameters, if any.
+    @SuppressWarnings("unchecked")
+    List<SingleVariableDeclaration> parameters = node.parameters();
+    int n = parameters.size();
+    if (n > 0) {
+      List<IOSParameter> iosArgs = iosMethod.getParameters();
+      assert n == iosArgs.size() || iosMethod.isVarArgs();
+
+      // Pull parameters out of list, so they can be reordered.
+      SingleVariableDeclaration[] params =
+          parameters.toArray(new SingleVariableDeclaration[n]);
+
+      for (int i = 0; i < n; i++) {
+        SingleVariableDeclaration var = params[i];
+        IVariableBinding varBinding = Types.getVariableBinding(var);
+        IOSParameter iosArg = iosArgs.get(i);
+        SimpleType paramType =
+            ast.newSimpleType(NameTable.unsafeSimpleName(iosArg.getType(), ast));
+        Types.addBinding(paramType, varBinding);
+        Types.addBinding(paramType.getName(), varBinding);
+        var.setType(paramType);
+        Types.addBinding(var.getName(), varBinding);
+        parameters.set(iosArg.getIndex(), var);
+      }
+    }
+
+    Types.addMappedIOSMethod(binding, iosMethod);
   }
 
   @Override
@@ -219,7 +231,7 @@ public class JavaToIOSMethodTranslator extends ErrorReportingASTVisitor {
         J2ObjC.error(node, createMissingMethodMessage(binding));
       }
     }
-    return false;
+    return true;
   }
 
   @Override
@@ -248,7 +260,7 @@ public class JavaToIOSMethodTranslator extends ErrorReportingASTVisitor {
     }
 
     IMethodBinding binding = Types.getMethodBinding(node);
-    JavaMethod md = descriptions.get(binding);
+    JavaMethod md = getDescription(binding);
     if (md == null && !binding.getName().equals("clone")) { // never map clone()
       IVariableBinding receiver =
           node.getExpression() != null ? Types.getVariableBinding(node.getExpression()) : null;
@@ -298,7 +310,7 @@ public class JavaToIOSMethodTranslator extends ErrorReportingASTVisitor {
         }
       }
     }
-    return false;
+    return true;
   }
 
   public MethodInvocation createMappedInvocation(IOSMethod iosMethod,
@@ -341,7 +353,7 @@ public class JavaToIOSMethodTranslator extends ErrorReportingASTVisitor {
     }
 
     IMethodBinding binding = Types.getMethodBinding(node);
-    JavaMethod md = descriptions.get(binding);
+    JavaMethod md = getDescription(binding);
     if (md != null) {
       String key = md.getKey();
       String value = methodMappings.get(key);
@@ -379,7 +391,7 @@ public class JavaToIOSMethodTranslator extends ErrorReportingASTVisitor {
         }
       }
     }
-    return false;
+    return true;
   }
 
   private JavaMethod getDescription(IMethodBinding binding) {
@@ -391,8 +403,11 @@ public class JavaToIOSMethodTranslator extends ErrorReportingASTVisitor {
 
   private JavaMethod addDescription(IMethodBinding binding) {
     JavaMethod desc = JavaMethod.getJavaMethod(binding);
-    descriptions.put(binding, desc);
-    return desc;
+    if (desc != null && methodMappings.containsKey(desc.getKey())) {
+      descriptions.put(binding, desc);
+      return desc;
+    }
+    return null;  // binding isn't mapped.
   }
 
   /**

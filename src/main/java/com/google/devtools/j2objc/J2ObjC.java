@@ -52,7 +52,9 @@ import org.eclipse.text.edits.TextEdit;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileReader;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.lang.reflect.Constructor;
@@ -601,7 +603,26 @@ public class J2ObjC {
     for (String resourceName : Options.getMappingFiles()) {
       Properties mappings = new Properties();
       try {
-        mappings.load(J2ObjC.class.getResourceAsStream(resourceName));
+        File f = new File(resourceName);
+        if (f.exists()) {
+          FileReader reader = new FileReader(f);
+          try {
+            mappings.load(reader);
+          } finally {
+            reader.close();
+          }
+        } else {
+          InputStream stream = J2ObjC.class.getResourceAsStream(resourceName);
+          if (stream == null) {
+            error(resourceName + " not found");
+          } else {
+            try {
+              mappings.load(stream);
+            } finally {
+              stream.close();
+            }
+          }
+        }
       } catch (IOException e) {
         throw new AssertionError(e);
       }
