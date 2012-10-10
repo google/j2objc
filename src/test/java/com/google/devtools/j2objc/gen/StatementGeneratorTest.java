@@ -17,6 +17,8 @@
 package com.google.devtools.j2objc.gen;
 
 import com.google.devtools.j2objc.GenerationTest;
+import com.google.devtools.j2objc.Options;
+import com.google.devtools.j2objc.Options.MemoryManagementOption;
 
 import org.eclipse.jdt.core.dom.Statement;
 
@@ -31,6 +33,12 @@ import java.util.List;
 public class StatementGeneratorTest extends GenerationTest {
   // TODO(user): update bug id in comments to public issue numbers when
   // issue tracking is sync'd.
+
+  @Override
+  protected void tearDown() throws Exception {
+    Options.resetMemoryManagementOption();
+    super.tearDown();
+  }
 
   // Verify that return statements output correctly for reserved words.
   public void testReturnReservedWord() throws IOException {
@@ -1120,6 +1128,38 @@ public class StatementGeneratorTest extends GenerationTest {
         "Test", "Test.m");
     assertTranslation(translation, "NSAutoreleasePool *pool__ = [[NSAutoreleasePool alloc] init]");
     assertTranslation(translation, "[pool__ release]");
+  }
+
+  public void testARCAutoreleasePoolForStatement() throws IOException {
+    Options.setMemoryManagementOption(MemoryManagementOption.ARC);
+    String translation = translateSourceFile(
+        "import com.google.j2objc.annotations.AutoreleasePool;" +
+        "public class Test {" +
+        "  public void foo() {" +
+        "    for (@AutoreleasePool int i = 0; i < 10; i++) {" +
+        "    }" +
+        "  }" +
+        "}",
+        "Test", "Test.m");
+    assertTranslation(translation, "  for (int i = 0; i < 10; i++) {\n" +
+        "    @autoreleasepool {\n" +
+        "      {\n      }\n" +
+        "    }\n" +
+        "  }");
+  }
+
+  public void testARCAutoreleasePoolEnhancedForStatement() throws IOException {
+    Options.setMemoryManagementOption(MemoryManagementOption.ARC);
+    String translation = translateSourceFile(
+        "import com.google.j2objc.annotations.AutoreleasePool;" +
+        "public class Test {" +
+        "  public void foo(String[] strings) {" +
+        "    for (@AutoreleasePool String s : strings) {" +
+        "    }" +
+        "  }" +
+        "}",
+        "Test", "Test.m");
+    assertTranslation(translation, "@autoreleasepool {");
   }
 
   public void testShiftAssignArrayElement() throws IOException {

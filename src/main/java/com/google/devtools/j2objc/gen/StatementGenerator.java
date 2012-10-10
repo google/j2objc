@@ -1008,9 +1008,7 @@ public class StatementGenerator extends ErrorReportingASTVisitor {
       buffer.append(arrayExpr);
       buffer.append(" count];\n");
       buffer.append("for (int i__ = 0; i__ < n__; i__++) {\n");
-      if (emitAutoreleasePool) {
-        buffer.append("NSAutoreleasePool *pool__ = [[NSAutoreleasePool alloc] init];\n");
-      }
+      printAutoreleasePoolStart(emitAutoreleasePool);
       buffer.append(NameTable.javaRefToObjC(var.getType()));
       buffer.append(' ');
       buffer.append(varName);
@@ -1030,9 +1028,7 @@ public class StatementGenerator extends ErrorReportingASTVisitor {
       } else {
         body.accept(this);
       }
-      if (emitAutoreleasePool) {
-        buffer.append("[pool__ release];\n");
-      }
+      printAutoreleasePoolEnd(emitAutoreleasePool);
       buffer.append("}\n}\n");
     } else {
       // var must be an instance of an Iterable class.
@@ -1048,9 +1044,7 @@ public class StatementGenerator extends ErrorReportingASTVisitor {
       }
       buffer.append("id<JavaUtilIterator> iter__ = [array__ iterator];\n");
       buffer.append("while ([iter__ hasNext]) {\n");
-      if (emitAutoreleasePool) {
-        buffer.append("NSAutoreleasePool *pool__ = [[NSAutoreleasePool alloc] init];\n");
-      }
+      printAutoreleasePoolStart(emitAutoreleasePool);
       buffer.append(objcType);
       buffer.append(' ');
       buffer.append(varName);
@@ -1064,12 +1058,31 @@ public class StatementGenerator extends ErrorReportingASTVisitor {
       } else {
         body.accept(this);
       }
-      if (emitAutoreleasePool) {
-        buffer.append("[pool__ release];\n");
-      }
+      printAutoreleasePoolEnd(emitAutoreleasePool);
       buffer.append("}\n}\n");
     }
     return false;
+  }
+
+  private void printAutoreleasePoolStart(boolean emitAutoreleasePool) {
+    if (emitAutoreleasePool) {
+      // TODO(user): use @autoreleasepool like ARC when iOS 5 is minimum.
+      if (Options.useReferenceCounting()) {
+        buffer.append("{\nNSAutoreleasePool *pool__ = [[NSAutoreleasePool alloc] init];\n");
+      } else if (Options.useARC()) {
+        buffer.append("{\n@autoreleasepool {\n");
+      }
+    }
+  }
+
+  private void printAutoreleasePoolEnd(boolean emitAutoreleasePool) {
+    if (emitAutoreleasePool) {
+      if (Options.useReferenceCounting()) {
+        buffer.append("[pool__ release];\n}\n");
+      } else if (Options.useARC()) {
+        buffer.append("}\n}\n");
+      }
+    }
   }
 
   @Override
@@ -1136,13 +1149,9 @@ public class StatementGenerator extends ErrorReportingASTVisitor {
       }
     }
     buffer.append(") ");
-    if (emitAutoreleasePool) {
-      buffer.append("{\nNSAutoreleasePool *pool__ = [[NSAutoreleasePool alloc] init];\n");
-    }
+    printAutoreleasePoolStart(emitAutoreleasePool);
     node.getBody().accept(this);
-    if (emitAutoreleasePool) {
-      buffer.append("[pool__ release];\n}\n");
-    }
+    printAutoreleasePoolEnd(emitAutoreleasePool);
     return false;
   }
 

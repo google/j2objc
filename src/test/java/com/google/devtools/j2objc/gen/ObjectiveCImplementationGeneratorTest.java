@@ -17,6 +17,8 @@
 package com.google.devtools.j2objc.gen;
 
 import com.google.devtools.j2objc.GenerationTest;
+import com.google.devtools.j2objc.Options;
+import com.google.devtools.j2objc.Options.MemoryManagementOption;
 
 import java.io.IOException;
 import java.io.PrintStream;
@@ -28,6 +30,12 @@ import java.io.StringWriter;
  * @author Tom Ball
  */
 public class ObjectiveCImplementationGeneratorTest extends GenerationTest {
+
+  @Override
+  protected void tearDown() throws Exception {
+    Options.resetMemoryManagementOption();
+    super.tearDown();
+  }
 
   public void testOuterVariableAccess() throws IOException {
     String translation = translateSourceFile(
@@ -426,6 +434,22 @@ public class ObjectiveCImplementationGeneratorTest extends GenerationTest {
         "  NSAutoreleasePool *pool__ = [[NSAutoreleasePool alloc] init];\n" +
         "  {\n  }\n" +
         "  [pool__ release];\n" +
+        "}");
+  }
+
+  public void testARCAutoreleasePoolMethod() throws IOException {
+    Options.setMemoryManagementOption(MemoryManagementOption.ARC);
+    String translation = translateSourceFile(
+      "import com.google.j2objc.annotations.AutoreleasePool;" +
+      "public class Test {" +
+      "  @AutoreleasePool\n" +
+      "  public void foo() { }" +
+      "}",
+      "Test", "Test.m");
+    assertTranslation(translation, "- (void)foo {\n" +
+        "  @autoreleasepool {\n" +
+        "    {\n    }\n" +
+        "  }\n" +
         "}");
   }
 }
