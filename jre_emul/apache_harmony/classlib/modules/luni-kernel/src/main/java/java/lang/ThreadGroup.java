@@ -115,12 +115,6 @@ public class ThreadGroup implements Thread.UncaughtExceptionHandler {
      */
     public ThreadGroup(ThreadGroup parent, String name) {
         super();
-        if (Thread.currentThread() != null) {
-            // If parent is null we must throw NullPointerException, but that
-            // will be done "for free" with the message send below
-            parent.checkAccess();
-        }
-
         this.name = name;
         this.setParent(parent);
         if (parent != null) {
