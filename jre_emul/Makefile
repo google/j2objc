@@ -344,14 +344,21 @@ simulator_lib: $(SIMULATOR_OBJS)
 	libtool -static -o $(EMULATION_SIMULATOR_LIB) `find $(SIMULATOR_BUILD_DIR) -name '*.o'` ; \
 
 # Copy top-level class headers to include directory.
-includes: $(INCLUDE_DIR)/java/lang/reflect
+includes: $(BUILD_DIR)/.jre_includes
+
+$(BUILD_DIR)/.jre_includes: $(EMULATION_CLASS_DIR)
+	mkdir -p $(INCLUDE_DIR)
 	install -C $(EMULATION_CLASS_DIR)/*.h $(INCLUDE_DIR)
 	cd $(CLASS_DIR) && tar cf - --exclude '*.[mo]' * | ( cd $(INCLUDE_DIR); tar xfp - )
+	mkdir -p $(INCLUDE_DIR)/java/lang/
 	install -C $(EMULATION_CLASS_DIR)/java/lang/*.h $(INCLUDE_DIR)/java/lang/
+	mkdir -p $(INCLUDE_DIR)/java/lang/reflect/
 	install -C $(EMULATION_CLASS_DIR)/java/lang/reflect/*.h \
 	  $(INCLUDE_DIR)/java/lang/reflect/
+	mkdir -p $(INCLUDE_DIR)/java/util/
 	install -C $(EMULATION_CLASS_DIR)/java/util/*.h $(INCLUDE_DIR)/java/util/
 	find $(INCLUDE_DIR) -type f | xargs chmod 444
+	touch $(BUILD_DIR)/.jre_includes
 
 $(BUILD_DIR) $(INCLUDE_DIR)/java/lang/reflect:
 	@mkdir -p $@
@@ -395,14 +402,20 @@ clean:
 	@rm -f $(JAVA_SOURCE_LIST)
 	@rm -rf $(BUILD_DIR)
 
-dist: lib includes emul_jar_dist
+dist: lib includes emul_jar_dist dist_includes
 	@mkdir -p $(DIST_LIB_DIR)
+	install -m 0644 $(EMULATION_LIB) $(DIST_LIB_DIR)
+
+dist_includes: $(BUILD_DIR)/.jre_dist_includes
+
+$(BUILD_DIR)/.jre_dist_includes: $(INCLUDE_DIR)
 	@mkdir -p $(DIST_INCLUDE_DIR)
 	cp -r $(INCLUDE_DIR)/* $(DIST_INCLUDE_DIR)
 	@find $(DIST_INCLUDE_DIR) -type f | xargs chmod 0644
-	install -m 0644 $(EMULATION_LIB) $(DIST_LIB_DIR)
+	touch $(BUILD_DIR)/.jre_dist_includes
 
 emul_jar_dist: $(EMULATION_JAR)
+	@mkdir -p $(DIST_LIB_DIR)
 	install -m 0644 $(EMULATION_JAR) $(DIST_LIB_DIR)
 
 $(EMULATION_JAR): $(JRE_ROOT)/java/*/*.java | $(BUILD_DIR)
