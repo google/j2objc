@@ -236,7 +236,7 @@ public class InnerClassExtractor extends ClassConverter {
 
     @Override
     public boolean visit(ClassInstanceCreation node) {
-      IMethodBinding binding = Types.getMethodBinding(node);
+      IMethodBinding binding = Types.getMethodBinding(node).getMethodDeclaration();
       ITypeBinding newType = Types.getTypeBinding(node);
       Expression outer = node.getExpression();
       ITypeBinding outerType = outer == null ? null : Types.getTypeBinding(outer);

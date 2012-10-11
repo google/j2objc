@@ -785,4 +785,16 @@ public class InnerClassExtractorTest extends GenerationTest {
     String translation = translateSourceFile(source, "A", "A.m");
     assertTranslation(translation, "[[B_C alloc] initWithB:self]");
   }
+
+  public void testCallInnerConstructorOfParameterizedOuterClass() throws IOException {
+    String outerSource = "abstract class Outer<T> { " +
+        "class Inner { public Inner(T t) {} }}";
+    String callerSource = "class A extends Outer<String> { public void foo() { " +
+        "new Inner(\"test\"); } }";
+    addSourceFile(outerSource, "Outer.java");
+    addSourceFile(callerSource, "A.java");
+    String translation = translateSourceFile("A", "A.m");
+    assertTranslation(translation,
+        "[[[Outer_Inner alloc] initWithOuter:self withId:@\"test\"] autorelease];");
+  }
 }
