@@ -429,8 +429,7 @@ $(EMULATION_JAR): $(JRE_ROOT)/java/*/*.java | $(BUILD_DIR)
 	@jar cf $(EMULATION_JAR) -C $(EMULATION_STAGE) .
 
 $(CLASS_DIR)/NSObject+JavaObject.o: $(EMULATION_CLASS_DIR)/NSObject+JavaObject.m
-	$(CLANG) -c $? -o $@ $(OBJCFLAGS) -I$(EMULATION_CLASS_DIR) -I$(CLASS_DIR) \
-	    -Wno-deprecated-declarations
+	$(CLANG) -c $? -o $@ $(OBJCFLAGS) -I$(EMULATION_CLASS_DIR) -I$(CLASS_DIR)
 
 $(CLASS_DIR)/java/lang/Math.h $(CLASS_DIR)/java/lang/Math.m: \
 	  $(EMULATION_CLASS_DIR)/java/lang/Math.java

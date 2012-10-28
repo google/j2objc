@@ -42,7 +42,12 @@
   [self doesNotRecognizeSelector:_cmd];
   return 0;
 #else
+// Disable clang warning (treated as an error), since the following call is
+// deprecated as of OS X v10.8 (Mountain Lion)
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wdeprecated-declarations"
   return NSCopyObject(self, 0, NULL);
+#pragma clang diagnostic pop
 #endif
 }
 
