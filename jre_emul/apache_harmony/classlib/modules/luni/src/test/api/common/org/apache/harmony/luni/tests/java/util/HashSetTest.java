@@ -117,15 +117,12 @@ public class HashSetTest extends junit.framework.TestCase {
 	/**
 	 * @tests java.util.HashSet#clone()
 	 */
-	/* TODO(user): enable when Object.clone supports objects that don't
-	 * implement the NSCopying protocol.
 	public void test_clone() {
 		// Test for method java.lang.Object java.util.HashSet.clone()
 		HashSet hs2 = (HashSet) hs.clone();
 		assertTrue("clone returned an equivalent HashSet", hs != hs2);
 		assertTrue("clone did not return an equal HashSet", hs.equals(hs2));
 	}
-	*/
 
 	/**
 	 * @tests java.util.HashSet#contains(java.lang.Object)
@@ -193,7 +190,7 @@ public class HashSetTest extends junit.framework.TestCase {
 		hs.clear();
 		assertEquals("Cleared set returned non-zero size", 0, hs.size());
 	}
-
+	
     /**
      * @tests java.util.AbstractCollection#toString()
      */

@@ -75,7 +75,7 @@ public class LinkedListTest extends junit.framework.TestCase {
 				ll.get(51) == objArray[50] && (ll.get(52) == objArray[51]));
 		ll.add(50, null);
 		assertNull("Did not add null correctly", ll.get(50));
-
+        
         try {
             ll.add(-1, "Test");
             fail("Should throw IndexOutOfBoundsException");
@@ -142,13 +142,13 @@ public class LinkedListTest extends junit.framework.TestCase {
 		myList.add(null);
 		ll.addAll(50, myList);
 		assertNull("a) List w/nulls not added correctly", ll.get(50));
-		assertEquals("b) List w/nulls not added correctly",
+		assertEquals("b) List w/nulls not added correctly", 
 				"Blah", ll.get(51));
 		assertNull("c) List w/nulls not added correctly", ll.get(52));
-		assertEquals("d) List w/nulls not added correctly",
+		assertEquals("d) List w/nulls not added correctly", 
 				"Booga", ll.get(53));
 		assertNull("e) List w/nulls not added correctly", ll.get(54));
-
+        
         try {
             ll.addAll(50, null);
             fail("Should throw NullPointerException");
@@ -198,13 +198,13 @@ public class LinkedListTest extends junit.framework.TestCase {
 		myList.add(null);
 		ll.addAll(myList);
 		assertNull("a) List w/nulls not added correctly", ll.get(200));
-		assertEquals("b) List w/nulls not added correctly",
+		assertEquals("b) List w/nulls not added correctly", 
 				"Blah", ll.get(201));
 		assertNull("c) List w/nulls not added correctly", ll.get(202));
-		assertEquals("d) List w/nulls not added correctly",
+		assertEquals("d) List w/nulls not added correctly", 
 				"Booga", ll.get(203));
 		assertNull("e) List w/nulls not added correctly", ll.get(204));
-
+        
         try {
             ll.addAll(null);
             fail("Should throw NullPointerException");
@@ -266,8 +266,6 @@ public class LinkedListTest extends junit.framework.TestCase {
 	/**
 	 * @tests java.util.LinkedList#clone()
 	 */
-	/* TODO(user): enable when Object.clone supports objects that don't
-	 * implement the NSCopying protocol.
 	public void test_clone() {
 		// Test for method java.lang.Object java.util.LinkedList.clone()
 		Object x = ll.clone();
@@ -279,7 +277,6 @@ public class LinkedListTest extends junit.framework.TestCase {
 		x = ll.clone();
 		assertTrue("List with a null did not clone properly", ll.equals(x));
 	}
-	*/
 
 	/**
 	 * @tests java.util.LinkedList#contains(java.lang.Object)
@@ -310,7 +307,7 @@ public class LinkedListTest extends junit.framework.TestCase {
 		} catch (IndexOutOfBoundsException e) {
 		}
 	}
-
+    
     /**
      * @tests {@link java.util.LinkedList#peek()}
      */
@@ -330,7 +327,7 @@ public class LinkedListTest extends junit.framework.TestCase {
 		// Test for method java.lang.Object java.util.LinkedList.getFirst()
 		assertTrue("Returned incorrect first element", ll.getFirst().equals(
 				objArray[0]));
-
+        
         LinkedList list = new LinkedList();
         try {
             list.getFirst();
@@ -347,7 +344,7 @@ public class LinkedListTest extends junit.framework.TestCase {
 		// Test for method java.lang.Object java.util.LinkedList.getLast()
 		assertTrue("Returned incorrect first element", ll.getLast().equals(
 				objArray[objArray.length - 1]));
-
+        
         LinkedList list = new LinkedList();
         try {
             list.getLast();
@@ -451,7 +448,7 @@ public class LinkedListTest extends junit.framework.TestCase {
 		} catch (IndexOutOfBoundsException e) {
 			// Correct
 		}
-
+		
 		ll.add(20, null);
 		ll.remove(20);
 		assertNotNull("Should have removed null", ll.get(20));
@@ -478,7 +475,7 @@ public class LinkedListTest extends junit.framework.TestCase {
 		ll.removeFirst();
 		assertTrue("Failed to remove first element",
 				ll.getFirst() != objArray[0]);
-
+        
         LinkedList list = new LinkedList();
         try {
             list.removeFirst();
@@ -496,7 +493,7 @@ public class LinkedListTest extends junit.framework.TestCase {
 		ll.removeLast();
 		assertTrue("Failed to remove last element",
 				ll.getLast() != objArray[objArray.length - 1]);
-
+        
         LinkedList list = new LinkedList();
         try {
             list.removeLast();
@@ -535,7 +532,7 @@ public class LinkedListTest extends junit.framework.TestCase {
 		ll.add(null);
 		Object[] obj = ll.toArray();
 		assertEquals("Returned array of incorrect size", objArray.length + 1, obj.length);
-
+		
 		for (int i = 0; i < obj.length - 1; i++)
 			assertTrue("Returned incorrect array: " + i, obj[i] == objArray[i]);
 		assertNull("Returned incorrect array--end isn't null",

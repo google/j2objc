@@ -227,6 +227,36 @@ public class ObjectiveCImplementationGenerator extends ObjectiveCSourceFileGener
             NameTable.getFullName(primitiveType));
       }
     }
+
+    List<VariableDeclarationFragment> properties = getProperties(node.getFields());
+    if (properties.size() > 0) {
+      printCopyAllPropertiesMethod(NameTable.getFullName(node), properties);
+    }
+  }
+
+  private List<VariableDeclarationFragment> getProperties(FieldDeclaration[] fields) {
+    List<VariableDeclarationFragment> properties = Lists.newArrayList();
+    for (FieldDeclaration field : fields) {
+      if (!Modifier.isStatic(field.getModifiers())) {
+        @SuppressWarnings("unchecked")
+        List<VariableDeclarationFragment> fragments = field.fragments(); // safe by definition
+        properties.addAll(fragments);
+      }
+    }
+    return properties;
+  }
+
+  private void printCopyAllPropertiesMethod(
+      String typeName, List<VariableDeclarationFragment> properties) {
+    println("- (void)copyAllPropertiesTo:(id)copy {");
+    println("  [super copyAllPropertiesTo:copy];");
+    println(String.format("  %s *typedCopy = (%s *) copy;", typeName, typeName));
+    for (VariableDeclarationFragment property : properties) {
+      String propName = NameTable.getName(property.getName());
+      String objCFieldName = NameTable.javaFieldToObjC(propName);
+      println(String.format("  typedCopy.%s = %s;", propName, objCFieldName));
+    }
+    println("}\n");
   }
 
   private void printStaticInterface(TypeDeclaration node) {

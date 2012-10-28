@@ -39,6 +39,10 @@
 
 + (id)throwNullPointerException;
 
+// Should be implemented by any class that needs to support Java's clone
+// behavior for itself or its subclasses.
+- (void)copyAllPropertiesTo:(id)copy;
+
 @end
 
 // Marked as unused to avoid a clang warning when this file is included
