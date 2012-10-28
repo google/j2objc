@@ -49,9 +49,11 @@
 #if __has_feature(objc_arc)
   #define AUTORELEASE(x) x
   #define ARCBRIDGE __bridge
+  #define ARCBRIDGE_TRANSFER __bridge_transfer
 #else
   #define AUTORELEASE(x) [x autorelease]
   #define ARCBRIDGE
+  #define ARCBRIDGE_TRANSFER
 #endif
 
 // Converts main() arguments into an IOSObjectArray of NSStrings.

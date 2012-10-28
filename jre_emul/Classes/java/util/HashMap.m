@@ -36,10 +36,9 @@
   }
   self = [super init];
   if (self) {
-    dictionary_ = [NSMutableDictionary dictionaryWithCapacity:capacity];
-#if ! __has_feature(objc_arc)
-    [dictionary_ retain];
-#endif
+    dictionary_ = (ARCBRIDGE_TRANSFER NSMutableDictionary *)
+        CFDictionaryCreateMutable(NULL, capacity,
+        &kCFTypeDictionaryKeyCallBacks, &kCFTypeDictionaryValueCallBacks);
   }
   return self;
 }
@@ -68,8 +67,13 @@
   if (self) {
     if ([map isMemberOfClass:[JavaUtilHashMap class]]) {
       JavaUtilHashMap *other = (JavaUtilHashMap *) map;
-      dictionary_ =
-          [[NSMutableDictionary alloc] initWithDictionary:other->dictionary_];
+#if ! __has_feature(objc_arc)
+      [dictionary_ release];
+#endif
+      dictionary_ = (ARCBRIDGE_TRANSFER NSMutableDictionary *)
+          CFDictionaryCreateMutable(NULL, size,
+          &kCFTypeDictionaryKeyCallBacks, &kCFTypeDictionaryValueCallBacks);
+      [dictionary_ addEntriesFromDictionary:other->dictionary_];
     } else {
       [self putAllImpl:map];
     }
