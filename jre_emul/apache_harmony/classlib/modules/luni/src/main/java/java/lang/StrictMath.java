@@ -498,6 +498,10 @@ public final class StrictMath {
      * @return the natural logarithm of the sum of the argument and 1.
      */
     public static native double log1p(double d) /*-{
+      // Mac docs state that log1p(-0.0) is -0.0, but actually returns 0.0.
+      if (d == -0.0) {
+        return d;
+      }
       return log1p(d);
     }-*/;
 
