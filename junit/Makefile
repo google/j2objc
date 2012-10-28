@@ -65,7 +65,7 @@ $(JAVA_SOURCES): $(JUNIT_SRC_JAR)
 	@unzip -q -o -d $(JAVA_SRC_DIR) $(JUNIT_SRC_JAR) $(JAVA_SOURCES)
 
 $(JUNIT_LIB): $(OBJS)
-	libtool -static -o $(JUNIT_LIB) `find $(BUILD_DIR) -name '*.o'`
+	$(LIBTOOL) -static -o $(JUNIT_LIB) `find $(BUILD_DIR) -name '*.o'`
 
 # Copy top-level class headers to include directory.
 includes:

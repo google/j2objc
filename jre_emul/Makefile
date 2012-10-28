@@ -294,11 +294,8 @@ SIMULATOR_BUILD_DIR = $(BUILD_DIR)/simulator
 SIMULATOR_OBJS = $(OBJS:$(CLASS_DIR)/%=$(SIMULATOR_BUILD_DIR)/%) \
   $(IOS_OBJS:$(CLASS_DIR)/%=$(SIMULATOR_BUILD_DIR)/%)
 
-# TODO(user): determine thes directories during build.
-IPHONE_SDK_DIR = \
-  /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS5.1.sdk
-SIMULATOR_SDK_DIR = \
-  /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator5.1.sdk
+IPHONE_SDK_DIR = $(shell ../src/main/make/sysroot_path --iphoneos)
+SIMULATOR_SDK_DIR = $(shell ../src/main/make/sysroot_path --iphonesimulator)
 
 export ALT_ARCH_FLAGS
 export ALT_SDK_FLAGS
@@ -324,24 +321,24 @@ lib: translate $(EMULATION_LIB)
 $(EMULATION_LIB): $(IOS_OBJS) $(OBJS)
 	@if [ "x$(BUILD_FAT_LIBARY)" == "xYES" ] ; then \
 	  echo "building Mac OS X library" ; \
-	  libtool -static -o $(EMULATION_MACOSX_LIB) `find $(CLASS_DIR) -name '*.o'` ; \
+	  $(LIBTOOL) -static -o $(EMULATION_MACOSX_LIB) `find $(CLASS_DIR) -name '*.o'` ; \
 	  echo "building iPhoneOS library" ; \
 	  env ALT_ARCH_FLAGS="-arch armv7" ALT_SDK_FLAGS="-isysroot $(IPHONE_SDK_DIR)" \
-	    make iphone_lib ; \
+	    $(MAKE) iphone_lib ; \
 	  echo "building iPhoneSimulator library" ; \
 	  env ALT_ARCH_FLAGS="-arch i386" ALT_SDK_FLAGS="-isysroot $(SIMULATOR_SDK_DIR)" \
-	    make simulator_lib ; \
-	  lipo -create $(EMULATION_MACOSX_LIB) $(EMULATION_IPHONE_LIB) \
+	    $(MAKE) simulator_lib ; \
+	  $(LIPO) -create $(EMULATION_MACOSX_LIB) $(EMULATION_IPHONE_LIB) \
 	    $(EMULATION_SIMULATOR_LIB) -output $(EMULATION_LIB) ; \
 	else \
-	  libtool -static -o $(EMULATION_LIB) `find $(CLASS_DIR) -name '*.o'` ; \
+	  $(LIBTOOL) -static -o $(EMULATION_LIB) `find $(CLASS_DIR) -name '*.o'` ; \
 	fi
 
 iphone_lib: $(IPHONE_OBJS)
-	libtool -static -o $(EMULATION_IPHONE_LIB) `find $(IPHONE_BUILD_DIR) -name '*.o'` ; \
+	$(LIBTOOL) -static -o $(EMULATION_IPHONE_LIB) `find $(IPHONE_BUILD_DIR) -name '*.o'` ; \
 
 simulator_lib: $(SIMULATOR_OBJS)
-	libtool -static -o $(EMULATION_SIMULATOR_LIB) `find $(SIMULATOR_BUILD_DIR) -name '*.o'` ; \
+	$(LIBTOOL) -static -o $(EMULATION_SIMULATOR_LIB) `find $(SIMULATOR_BUILD_DIR) -name '*.o'` ; \
 
 # Copy top-level class headers to include directory.
 includes: $(BUILD_DIR)/.jre_includes

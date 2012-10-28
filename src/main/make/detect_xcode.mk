@@ -26,7 +26,6 @@ DIST_MACOS_DIR = $(SYMROOT)/$(CONFIGURATION)
 DIST_INCLUDE_DIR = $(DIST_DIR)/Headers
 DIST_LIB_DIR = $(DIST_DIR)
 ARCH_FLAGS = $(ARCHS:%=-arch %)
-SDK_FLAGS = -isysroot $(SDKROOT)
 
 dep_build_dir = $(TEMP_ROOT)/$(word 3,$(1)).build/$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME)/$(word 1,$(1)).build
 
@@ -45,11 +44,24 @@ DIST_MACOS_DIR = $(DIST_DIR)
 DIST_INCLUDE_DIR = $(DIST_DIR)/include
 DIST_LIB_DIR = $(DIST_DIR)/lib
 ARCH_FLAGS =
-SDK_FLAGS =
+
+# Determine this makefile's path.
+THIS_FILE = $(word $(words $(MAKEFILE_LIST)),$(MAKEFILE_LIST))
+SYSROOT_SCRIPT = $(shell dirname ${THIS_FILE})/sysroot_path
+SDKROOT = $(shell ${SYSROOT_SCRIPT})
 
 dep_build_dir = $(word 2,$(1))/$(BUILD_DIR_NAME)
 
 endif
+
+SDK_FLAGS = -isysroot $(SDKROOT)
+
+# xcrun finds a specified tool in the current SDK /usr/bin directory.
+XCRUN = $(shell if test -f /usr/bin/xcrun; then echo xcrun; else echo ""; fi)
+MAKE = $(XCRUN) make
+CLANG = $(XCRUN) clang
+LIBTOOL = $(XCRUN) libtool
+LIPO = $(XCRUN) lipo
 
 
 ifeq ($(DEBUGGING_SYMBOLS), YES)

@@ -187,13 +187,13 @@ translator_dist: jar install-libs $(DIST_DIR)/j2objc $(DIST_DIR)/j2objcc \
 	@:
 
 jre_emul_jar_dist:
-	@cd $(CWD)/jre_emul && make emul_jar_dist
+	@cd $(CWD)/jre_emul && $(MAKE) emul_jar_dist
 
 jre_emul_dist: translator_dist
-	@cd $(CWD)/jre_emul && make dist
+	@cd $(CWD)/jre_emul && $(MAKE) dist
 
 junit_dist: translator_dist jre_emul_dist
-	@cd $(CWD)/junit && make dist
+	@cd $(CWD)/junit && $(MAKE) dist
 
 dist: translator_dist jre_emul_dist junit_dist
 
@@ -201,14 +201,14 @@ j2objc_clean:
 	@rm -rf $(BUILD_DIR) $(DIST_DIR) $(TEST_DIR)
 
 clean: j2objc_clean
-	@cd $(CWD)/jre_emul && make clean
-	@cd $(CWD)/junit && make clean
+	@cd $(CWD)/jre_emul && $(MAKE) clean
+	@cd $(CWD)/junit && $(MAKE) clean
 
 test: default compile-tests
 	java -classpath $(TEST_CLASSPATH) junit.textui.TestRunner com.google.devtools.j2objc.SmallTests
 
 test_all: test
-	@cd $(CWD)/jre_emul && make -f tests.mk
+	@cd $(CWD)/jre_emul && $(MAKE) -f tests.mk
 
 compile-tests:
 	@rm -rf $(TEST_DIR)
