@@ -230,7 +230,7 @@ public class AutoboxerTest extends GenerationTest {
     // is boxed.
     String translation = translateSourceFile(
       "public class Test { private Integer i = 1; " +
-      "  public Integer values[] = new Integer[] { 1, 2, i }; }",
+      "  public void test() { Integer values[] = new Integer[] { 1, 2, i }; }}",
       "Test", "Test.m");
     assertTranslation(translation,
         "[IOSObjectArray arrayWithObjects:(id[]){ [JavaLangInteger valueOfWithInt:1], " +
@@ -239,6 +239,31 @@ public class AutoboxerTest extends GenerationTest {
   }
 
   public void testArrayInitializerUnboxed() throws IOException {
+    // Verify that an int array with an initializer that has Integer elements
+    // is unboxed.
+    String translation = translateSourceFile(
+      "public class Test { private Integer i = 1; private Integer j = 2;" +
+      "  public void test() { int values[] = new int[] { i, j, 3 }; }}",
+      "Test", "Test.m");
+    assertTranslation(translation,
+        "[IOSIntArray arrayWithInts:(int[]){ [((JavaLangInteger *) NIL_CHK(i_)) intValue], " +
+        "[((JavaLangInteger *) NIL_CHK(j_)) intValue], 3 } count:3]");
+  }
+
+  public void testFieldArrayInitializerBoxed() throws IOException {
+    // Verify that an Integer array with an initializer that has int elements
+    // is boxed.
+    String translation = translateSourceFile(
+      "public class Test { private Integer i = 1; " +
+      "  public Integer values[] = new Integer[] { 1, 2, i }; }",
+      "Test", "Test.m");
+    assertTranslation(translation,
+        "[IOSObjectArray arrayWithObjects:(id[]){ [JavaLangInteger valueOfWithInt:1], " +
+        "[JavaLangInteger valueOfWithInt:2], i_ } count:3 " +
+        "type:[IOSClass classWithClass:[JavaLangInteger class]]]");
+  }
+
+  public void testFieldArrayInitializerUnboxed() throws IOException {
     // Verify that an int array with an initializer that has Integer elements
     // is unboxed.
     String translation = translateSourceFile(
@@ -253,8 +278,7 @@ public class AutoboxerTest extends GenerationTest {
   public void testBoxedTypeLiteral() throws IOException {
     String source = "public class Test { Class c = int.class; }";
     String translation = translateSourceFile(source, "Test", "Test.m");
-    assertTranslation(translation,
-        "c_ = [[IOSClass classWithClass:[JavaLangInteger class]] retain]");
+    assertTranslation(translation, "c_ = [[JavaLangInteger TYPE] retain]");
   }
 
   public void testBoxedLhsOperatorAssignment() throws IOException {

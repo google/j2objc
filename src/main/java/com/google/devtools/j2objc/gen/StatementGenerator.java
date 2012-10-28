@@ -2120,7 +2120,13 @@ public class StatementGenerator extends ErrorReportingASTVisitor {
   public boolean visit(TypeLiteral node) {
     Type type = node.getType();
     ITypeBinding typeBinding = Types.getTypeBinding(type);
-    if (typeBinding != null && typeBinding.isInterface()) {
+    if (typeBinding != null && typeBinding.isPrimitive()) {
+      // Use the wrapper class's TYPE variable.
+      ITypeBinding wrapperType = Types.getWrapperType(typeBinding);
+      buffer.append('[');
+      buffer.append(NameTable.getFullName(wrapperType));
+      buffer.append(" TYPE]");
+    } else if (typeBinding != null && typeBinding.isInterface()) {
       buffer.append("[IOSClass classWithProtocol:@protocol(");
       type.accept(this);
       buffer.append(")]");

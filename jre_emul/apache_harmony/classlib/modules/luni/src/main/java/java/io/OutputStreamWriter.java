@@ -156,6 +156,9 @@ public class OutputStreamWriter extends Writer {
     private native void convert(char[] buf, int offset, int count) /*-{
       unichar *chars = [buf getChars];
       NSString *s = [[NSString alloc] initWithCharacters:(chars + offset) length:count];
+#if ! __has_feature(objc_arc)
+      [s autorelease];
+#endif
       free(chars);
       NSUInteger nBytes = [s lengthOfBytesUsingEncoding:NSUTF8StringEncoding];
       void *bytes = malloc(nBytes);
@@ -170,15 +173,15 @@ public class OutputStreamWriter extends Writer {
 #if ! __has_feature(objc_arc)
         [e autorelease];
 #endif
-        [s release];
         free(bytes);
         @throw e;
       }
-      [s release];
       IOSByteArray *array = [[IOSByteArray alloc] initWithBytes:bytes count:nBytes];
       free(bytes);
       [out_ writeWithJavaLangByteArray:array];
+#if ! __has_feature(objc_arc)
       [array release];
+#endif
     }-*/;
 
     /**
