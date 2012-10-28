@@ -1832,12 +1832,26 @@ public class StatementGenerator extends ErrorReportingASTVisitor {
               method.getMethodDeclaration().getReturnType().isTypeVariable();
         }
       }
+      MethodDeclaration method = getOwningMethod(node);
+      boolean shouldRetainResult = false;
+
+      // In manual reference counting mode, per convention, -copyWithZone: should return
+      // an object with a reference count of +1.
+      if (method.getName().getIdentifier().equals("copyWithZone") && useReferenceCounting) {
+        shouldRetainResult = true;
+      }
       if (needsCast) {
         buffer.append('(');
         buffer.append(NameTable.javaRefToObjC(expressionType));
         buffer.append(") ");
       }
+      if (shouldRetainResult) {
+        buffer.append("[");
+      }
       expr.accept(this);
+      if (shouldRetainResult) {
+        buffer.append(" retain]");
+      }
     } else if (Types.getMethodBinding(getOwningMethod(node)).isConstructor()) {
       // A return statement without any expression is allowed in constructors.
       buffer.append(" self");
