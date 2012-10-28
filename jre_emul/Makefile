@@ -305,6 +305,8 @@ endif
 default: lib includes
 	@: # suppress make's "nothing to be done" message
 
+analyze: $(OBJS:.o=.plist)
+
 translate: j2objc $(EMULATION_JAR) pre_translate $(JRE_INTERFACES) $(OBJS:.o=.m)
 	@if [ `cat $(JAVA_SOURCE_LIST) | wc -l` -ge 1 ] ; then \
 	  rm -f `cat $(OBJC_OUT_LIST)`; \
@@ -387,6 +389,29 @@ $(SIMULATOR_BUILD_DIR)/%.o: $(CLASS_DIR)/%.m
 $(SIMULATOR_BUILD_DIR)/%.o: $(EMULATION_CLASS_DIR)/%.m
 	@mkdir -p `dirname $@`
 	$(CLANG) -c $? -o $@ $(OBJCFLAGS) -I$(EMULATION_CLASS_DIR) -I$(CLASS_DIR)
+
+$(CLASS_DIR)/%.plist: $(CLASS_DIR)/%.m
+	$(CLANG) -c '$?' -o '$@' $(OBJCFLAGS) $(STATIC_ANALYZER_FLAGS) -I$(EMULATION_CLASS_DIR) -I$(CLASS_DIR)
+
+$(CLASS_DIR)/%.plist: $(EMULATION_CLASS_DIR)/%.m
+	@mkdir -p `dirname $@`
+	$(CLANG) -c $? -o $@ $(OBJCFLAGS) $(STATIC_ANALYZER_FLAGS) -I$(EMULATION_CLASS_DIR) -I$(CLASS_DIR)
+
+$(IPHONE_BUILD_DIR)/%.plist: $(CLASS_DIR)/%.m
+	@mkdir -p `dirname $@`
+	$(CLANG) -c '$?' -o '$@' $(OBJCFLAGS) $(STATIC_ANALYZER_FLAGS) -I$(EMULATION_CLASS_DIR) -I$(CLASS_DIR)
+
+$(IPHONE_BUILD_DIR)/%.plist: $(EMULATION_CLASS_DIR)/%.m
+	@mkdir -p `dirname $@`
+	$(CLANG) -c $? -o $@ $(OBJCFLAGS) $(STATIC_ANALYZER_FLAGS) -I$(EMULATION_CLASS_DIR) -I$(CLASS_DIR)
+
+$(SIMULATOR_BUILD_DIR)/%.plist: $(CLASS_DIR)/%.m
+	@mkdir -p `dirname $@`
+	$(CLANG) -c '$?' -o '$@' $(OBJCFLAGS) $(STATIC_ANALYZER_FLAGS) -I$(EMULATION_CLASS_DIR) -I$(CLASS_DIR)
+
+$(SIMULATOR_BUILD_DIR)/%.plist: $(EMULATION_CLASS_DIR)/%.m
+	@mkdir -p `dirname $@`
+	$(CLANG) -c $? -o $@ $(OBJCFLAGS) $(STATIC_ANALYZER_FLAGS) -I$(EMULATION_CLASS_DIR) -I$(CLASS_DIR)
 
 test: default
 	$(MAKE) -f tests.mk test
