@@ -28,6 +28,7 @@ import org.eclipse.jdt.core.dom.Assignment;
 import org.eclipse.jdt.core.dom.ClassInstanceCreation;
 import org.eclipse.jdt.core.dom.ConditionalExpression;
 import org.eclipse.jdt.core.dom.ConstructorInvocation;
+import org.eclipse.jdt.core.dom.DoStatement;
 import org.eclipse.jdt.core.dom.EnumConstantDeclaration;
 import org.eclipse.jdt.core.dom.Expression;
 import org.eclipse.jdt.core.dom.IBinding;
@@ -38,12 +39,14 @@ import org.eclipse.jdt.core.dom.IfStatement;
 import org.eclipse.jdt.core.dom.InfixExpression;
 import org.eclipse.jdt.core.dom.MethodDeclaration;
 import org.eclipse.jdt.core.dom.MethodInvocation;
+import org.eclipse.jdt.core.dom.PrefixExpression;
 import org.eclipse.jdt.core.dom.ReturnStatement;
 import org.eclipse.jdt.core.dom.SimpleName;
 import org.eclipse.jdt.core.dom.SuperConstructorInvocation;
 import org.eclipse.jdt.core.dom.Type;
 import org.eclipse.jdt.core.dom.TypeLiteral;
 import org.eclipse.jdt.core.dom.VariableDeclarationFragment;
+import org.eclipse.jdt.core.dom.WhileStatement;
 
 import java.util.List;
 
@@ -192,10 +195,42 @@ public class Autoboxer extends ErrorReportingASTVisitor {
   }
 
   @Override
+  public void endVisit(ConditionalExpression node) {
+    ITypeBinding nodeType = getBoxType(node);
+
+    Expression thenExpr = node.getThenExpression();
+    ITypeBinding thenType = getBoxType(thenExpr);
+
+    Expression elseExpr = node.getElseExpression();
+    ITypeBinding elseType = getBoxType(elseExpr);
+
+    if (thenType.isPrimitive() && !nodeType.isPrimitive()) {
+      node.setThenExpression(box(thenExpr));
+    } else if (!thenType.isPrimitive() && nodeType.isPrimitive()) {
+      node.setThenExpression(unbox(thenExpr));
+    }
+
+    if (elseType.isPrimitive() && !nodeType.isPrimitive()) {
+      node.setElseExpression(box(elseExpr));
+    } else if (!elseType.isPrimitive() && nodeType.isPrimitive()) {
+      node.setElseExpression(unbox(elseExpr));
+    }
+  }
+
+  @Override
   public void endVisit(ConstructorInvocation node) {
     @SuppressWarnings("unchecked")
     List<Expression> args = node.arguments(); // safe by definition
     convertArguments(Types.getMethodBinding(node), args);
+  }
+
+  @Override
+  public void endVisit(DoStatement node) {
+    Expression expression = node.getExpression();
+    ITypeBinding exprType = getBoxType(expression);
+    if (!exprType.isPrimitive()) {
+      node.setExpression(unbox(expression));
+    }
   }
 
   @Override
@@ -257,6 +292,16 @@ public class Autoboxer extends ErrorReportingASTVisitor {
   }
 
   @Override
+  public void endVisit(PrefixExpression node) {
+    Expression operand = node.getOperand();
+    PrefixExpression.Operator op = node.getOperator();
+
+    if (op == PrefixExpression.Operator.NOT && !getBoxType(operand).isPrimitive()) {
+      node.setOperand(unbox(operand));
+    }
+  }
+
+  @Override
   public void endVisit(ReturnStatement node) {
     Expression expr = node.getExpression();
     if (expr != null) {
@@ -306,25 +351,11 @@ public class Autoboxer extends ErrorReportingASTVisitor {
   }
 
   @Override
-  public void endVisit(ConditionalExpression node) {
-    ITypeBinding nodeType = getBoxType(node);
-
-    Expression thenExpr = node.getThenExpression();
-    ITypeBinding thenType = getBoxType(thenExpr);
-
-    Expression elseExpr = node.getElseExpression();
-    ITypeBinding elseType = getBoxType(elseExpr);
-
-    if (thenType.isPrimitive() && !nodeType.isPrimitive()) {
-      node.setThenExpression(box(thenExpr));
-    } else if (!thenType.isPrimitive() && nodeType.isPrimitive()) {
-      node.setThenExpression(unbox(thenExpr));
-    }
-
-    if (elseType.isPrimitive() && !nodeType.isPrimitive()) {
-      node.setElseExpression(box(elseExpr));
-    } else if (!elseType.isPrimitive() && nodeType.isPrimitive()) {
-      node.setElseExpression(unbox(elseExpr));
+  public void endVisit(WhileStatement node) {
+    Expression expression = node.getExpression();
+    ITypeBinding exprType = getBoxType(expression);
+    if (!exprType.isPrimitive()) {
+      node.setExpression(unbox(expression));
     }
   }
 

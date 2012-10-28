@@ -284,4 +284,26 @@ public class AutoboxerTest extends GenerationTest {
 
     assertTranslation(translation, "if ([((JavaLangBoolean *) NIL_CHK(b_)) booleanValue])");
   }
+
+  public void testBoxedBoolInWhile() throws IOException {
+    String source = "public class Test { Boolean b = false; void foo() { while (b) foo(); } }";
+    String translation = translateSourceFile(source, "Test", "Test.m");
+
+    assertTranslation(translation, "while ([((JavaLangBoolean *) NIL_CHK(b_)) booleanValue])");
+  }
+
+  public void testBoxedBoolInDoWhile() throws IOException {
+    String source = "public class Test { " +
+        "  Boolean b = false; void foo() { do { foo(); } while (b); } }";
+    String translation = translateSourceFile(source, "Test", "Test.m");
+
+    assertTranslation(translation, "while ([((JavaLangBoolean *) NIL_CHK(b_)) booleanValue])");
+  }
+
+  public void testBoxedBoolNegatedInWhile() throws IOException {
+    String source = "public class Test { Boolean b = false; void foo() { while (!b) foo(); } }";
+    String translation = translateSourceFile(source, "Test", "Test.m");
+
+    assertTranslation(translation, "while (![((JavaLangBoolean *) NIL_CHK(b_)) booleanValue])");
+  }
 }
