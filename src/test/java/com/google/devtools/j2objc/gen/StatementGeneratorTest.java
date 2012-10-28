@@ -239,7 +239,7 @@ public class StatementGeneratorTest extends GenerationTest {
       "public class Example { static class Bar { public static final String FOO=\"Mumble\"; } "
       + "String foo; { foo = Bar.FOO; } }",
       "Example", "Example.m");
-    assertTranslation(translation, "foo_ = [[Example_Bar FOO] retain]");
+    assertTranslation(translation, "JreOperatorRetainedAssign(&foo_, [Example_Bar FOO])");
     assertTranslation(translation, "static NSString * Example_Bar_FOO_ = @\"Mumble\";");
     assertTranslation(translation, "+ (NSString *)FOO {");
     assertTranslation(translation, "return Example_Bar_FOO_;");
@@ -257,8 +257,8 @@ public class StatementGeneratorTest extends GenerationTest {
     String translation = translateSourceFile(
         "public class Example { Boolean b1 = Boolean.TRUE; Boolean b2 = Boolean.FALSE; }",
         "Example", "Example.m");
-    assertTranslation(translation, "b1_ = [[JavaLangBoolean getTRUE] retain]");
-    assertTranslation(translation, "b2_ = [[JavaLangBoolean getFALSE] retain]");
+    assertTranslation(translation, "JreOperatorRetainedAssign(&b1_, [JavaLangBoolean getTRUE])");
+    assertTranslation(translation, "JreOperatorRetainedAssign(&b2_, [JavaLangBoolean getFALSE])");
   }
 
   public void testStringConcatenation() throws IOException {
@@ -294,7 +294,8 @@ public class StatementGeneratorTest extends GenerationTest {
       "public class Example<K,V> { String s = \"hello, \" + 50 + \"% of the world\\n\"; }",
       "Example", "Example.m");
     //TODO(user): should copy the string below, not retain it.
-    assertTranslation(translation, "s_ = [@\"hello, 50% of the world\\n\" retain]");
+    assertTranslation(translation,
+        "JreOperatorRetainedAssign(&s_, @\"hello, 50% of the world\\n\")");
   }
 
   public void testVarargsMethodInvocation() throws IOException {
@@ -525,9 +526,11 @@ public class StatementGeneratorTest extends GenerationTest {
         "public class Test { static int[] a = { 1, 2, 3 }; static char b[] = { '4', '5' }; }",
         "Test", "Test.m");
     assertTranslation(translation,
-        "a_ = [[IOSIntArray arrayWithInts:(int[]){ 1, 2, 3 } count:3] retain];");
+        "JreOperatorRetainedAssign(&Test_a_, " +
+        "[IOSIntArray arrayWithInts:(int[]){ 1, 2, 3 } count:3]);");
     assertTranslation(translation,
-        "b_ = [[IOSCharArray arrayWithCharacters:(unichar[]){ '4', '5' } count:2] retain];");
+        "JreOperatorRetainedAssign(&Test_b_, " +
+        "[IOSCharArray arrayWithCharacters:(unichar[]){ '4', '5' } count:2]);");
   }
 
   public void testLocalArrayCreation() throws IOException {
@@ -602,7 +605,8 @@ public class StatementGeneratorTest extends GenerationTest {
     String translation = translateSourceFile(
       "import java.util.*; public class A { Map map; A() { map = new HashMap(); }}",
       "A", "A.m");
-    assertTranslation(translation, "map_ = [[JavaUtilHashMap alloc] init]");
+    assertTranslation(translation,
+        "JreOperatorRetainedAssign(&map_, [[[JavaUtilHashMap alloc] init] autorelease])");
   }
 
   public void testPrimitiveConstantInSwitchCase() throws IOException {
@@ -738,7 +742,8 @@ public class StatementGeneratorTest extends GenerationTest {
     // field in its superclass.
     assertTranslation(translation, "@property (nonatomic, retain) Test_B *other_;");
     translation = getTranslatedFile("Test.m");
-    assertTranslation(translation, "other__ = [((Test_B *) [self getOther]) retain]");
+    assertTranslation(translation,
+        "JreOperatorRetainedAssign(&other__, ((Test_B *) [self getOther]))");
   }
 
   public void testArrayInstanceOfTranslation() throws IOException {
@@ -1053,11 +1058,11 @@ public class StatementGeneratorTest extends GenerationTest {
       "public class A { String s1 = \"\\177\"; String s2 = \"\\200\"; String s3 = \"\\377\"; }",
       "A", "A.m");
     // \177 (0x7f) is the highest legal octal value in C99.
-    assertTranslation(translation, "s1_ = [@\"\\177\" retain]");
+    assertTranslation(translation, "@\"\\177\"");
 
     // \200-\377 (0x80-0xFF) is the illegal octal value range in C99.
-    assertFalse(translation.contains("s2_ = [@\"\\200\" retain]"));
-    assertFalse(translation.contains("s3_ = [@\"\\377\" retain]"));
+    assertFalse(translation.contains("@\"\\200\""));
+    assertFalse(translation.contains("@\"\\377\""));
     assertTranslation(translation,
         "[NSString stringWithCharacters:(unichar[]) { (int) 0x80 } length:1]");
     assertTranslation(translation,

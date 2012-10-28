@@ -273,7 +273,7 @@ public class AnonymousClassConverterTest extends GenerationTest {
     // Test_$: since bar_ is an unshadowed field, the parameter name is
     // unchanged.
     assertTranslation(translation, "[this$0_ logWithInt:1 withId:val$bar__];");
-    assertTranslation(translation, "val$bar__ = [outer$0 retain]");
+    assertTranslation(translation, "JreOperatorRetainedAssign(&val$bar__, outer$0);");
   }
 
   public void testExternalReferenceAsQualifier() throws IOException {
@@ -479,10 +479,10 @@ public class AnonymousClassConverterTest extends GenerationTest {
 
   public void testAnonymousClassInStaticBlock() throws IOException {
     String translation = translateSourceFile("class Test { " +
-    		"  static class A {" +
-    		"    static abstract class Inner { Inner(int i) { } abstract int foo(); } } " +
-    		"  static A.Inner inner = new A.Inner(1) { int foo() { return 2; } }; }",
-    		"Test", "Test.m");
+        "  static class A {" +
+        "    static abstract class Inner { Inner(int i) { } abstract int foo(); } } " +
+        "  static A.Inner inner = new A.Inner(1) { int foo() { return 2; } }; }",
+        "Test", "Test.m");
     // This is probably not the right output - but it compiles and works.
     assertTranslation(translation, "[[Test_$1 alloc] initWithInt:1");
   }
@@ -523,7 +523,7 @@ public class AnonymousClassConverterTest extends GenerationTest {
         "           withNSString:(NSString *)name\n" +
         "                withInt:(int)ordinal {\n" +
         "  if ((self = [super initWithInt:arg$0 withNSString:name withInt:ordinal])) {\n" +
-        "    ([this$0_ autorelease], this$0_ = [outer$1 retain]);\n" +
+        "    JreOperatorRetainedAssign(&this$0_, outer$1);\n" +
         "  }\n" +
         "  return self;\n}");
 
