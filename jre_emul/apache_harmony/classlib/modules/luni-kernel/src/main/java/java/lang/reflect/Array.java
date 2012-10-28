@@ -81,9 +81,6 @@ public final class Array {
         if ([[array class] isSubclassOfClass:[IOSObjectArray class]]) {
           IOSObjectArray *objectArray = (IOSObjectArray *) array;
           result = [objectArray objectAtIndex:index];
-#if ! __has_feature(objc_arc)
-          [result retain];
-#endif
         } else if ([[array class] isSubclassOfClass:[IOSArray class]]) {
           // Return a wrapped instance of primitive element.
           IOSPrimitiveClass *elementType = (IOSPrimitiveClass *) [array elementType];
@@ -127,6 +124,9 @@ public final class Array {
               exception = [[JavaLangAssertionError alloc] initWithNSString:@"invalid JVM type"];
               break;
           }
+#if ! __has_feature(objc_arc)
+          [result autorelease];
+#endif
         } else {
           // Object isn't an array.
           exception = [[JavaLangIllegalArgumentException alloc] init];
@@ -138,7 +138,6 @@ public final class Array {
       }
 
 #if ! __has_feature(objc_arc)
-      [result autorelease];
       [exception autorelease];
 #endif
 
@@ -551,25 +550,23 @@ public final class Array {
       }
       NSString *type = [componentType getName];
       id result;
-      if ([type isEqualToString:@"JavaLangBoolean"]) {
+      if ([type isEqualToString:@"boolean"]) {
         result = [[IOSBooleanArray alloc] initWithLength:size];
-      } else if ([type isEqualToString:@"JavaLangByte"]) {
+      } else if ([type isEqualToString:@"byte"]) {
         result = [[IOSByteArray alloc] initWithLength:size];
-      } else if ([type isEqualToString:@"JavaLangCharacter"]) {
+      } else if ([type isEqualToString:@"char"]) {
         result = [[IOSCharArray alloc] initWithLength:size];
-      } else if ([type isEqualToString:@"JavaLangDouble"]) {
+      } else if ([type isEqualToString:@"double"]) {
         result = [[IOSDoubleArray alloc] initWithLength:size];
-      } else if ([type isEqualToString:@"JavaLangFloat"]) {
+      } else if ([type isEqualToString:@"float"]) {
         result = [[IOSFloatArray alloc] initWithLength:size];
-      } else if ([type isEqualToString:@"JavaLangInteger"]) {
+      } else if ([type isEqualToString:@"int"]) {
         result = [[IOSIntArray alloc] initWithLength:size];
-      } else if ([type isEqualToString:@"JavaLangLong"]) {
+      } else if ([type isEqualToString:@"long"]) {
         result = [[IOSLongArray alloc] initWithLength:size];
-      } else if ([type isEqualToString:@"JavaLangShort"]) {
+      } else if ([type isEqualToString:@"short"]) {
         result = [[IOSShortArray alloc] initWithLength:size];
       } else {
-        // TODO(user): If autorelease'd below, ArrayTest fails with a
-        // "message sent to deallocated instance" error.
       	result = [[IOSObjectArray alloc] initWithLength:size type:componentType];
       }
 #if ! __has_feature(objc_arc)
@@ -607,7 +604,7 @@ public final class Array {
         // It's an array, check index.
         if (index < 0 || index >= [(IOSArray *) array count]) {
           exception = [[JavaLangArrayIndexOutOfBoundsException alloc] init];
-        }
+        } 
       } else {
         // It's not an array.
         exception = [[JavaLangIllegalArgumentException alloc] init];
@@ -618,13 +615,13 @@ public final class Array {
 #endif
         @throw exception;
       }
-
+      
       if ([[value class] isSubclassOfClass:[JavaLangBoolean class]]) {
         [self setBooleanWithId:array
                        withInt:index
                       withBOOL:[(JavaLangBoolean *) value booleanValue]];
         return;
-      }
+      }      
       if ([[value class] isSubclassOfClass:[JavaLangByte class]]) {
         [self setByteWithId:array
                     withInt:index

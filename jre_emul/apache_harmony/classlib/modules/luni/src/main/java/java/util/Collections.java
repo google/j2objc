@@ -1166,6 +1166,9 @@ public class Collections {
                   contents =
                       [[IOSObjectArray alloc] initWithLength:[self size]
                                                         type:[IOSClass classWithClass:[NSObject class]]];
+#if ! __has_feature(objc_arc)
+                  [contents autorelease];
+#endif
                 }
                 NSUInteger i = 0;
                 id<JavaUtilIterator> it = [self iterator];

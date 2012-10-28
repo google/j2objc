@@ -45,8 +45,6 @@ import org.eclipse.jdt.core.dom.ReturnStatement;
 import org.eclipse.jdt.core.dom.SimpleName;
 import org.eclipse.jdt.core.dom.StringLiteral;
 import org.eclipse.jdt.core.dom.SuperConstructorInvocation;
-import org.eclipse.jdt.core.dom.Type;
-import org.eclipse.jdt.core.dom.TypeLiteral;
 import org.eclipse.jdt.core.dom.VariableDeclarationFragment;
 import org.eclipse.jdt.core.dom.WhileStatement;
 
@@ -194,7 +192,19 @@ public class Autoboxer extends ErrorReportingASTVisitor {
   public void endVisit(CastExpression node) {
     Expression expr = boxOrUnboxExpression(node.getExpression(), Types.getTypeBinding(node));
     if (expr != node.getExpression()) {
-      if (node.getParent() instanceof Expression) {
+      ASTNode parent = node.getParent();
+      if (parent instanceof Expression) {
+        // Check if this cast is an argument or the invocation's expression.
+        if (parent instanceof MethodInvocation) {
+          @SuppressWarnings("unchecked")
+          List<Expression> args = ((MethodInvocation) parent).arguments();
+          for (int i = 0; i < args.size(); i++) {
+            if (node.equals(args.get(i))) {
+              args.set(i, expr);
+              return;
+            }
+          }
+        }
         ClassConverter.setProperty(node.getParent(), expr);
       }
     }
@@ -338,15 +348,6 @@ public class Autoboxer extends ErrorReportingASTVisitor {
     @SuppressWarnings("unchecked")
     List<Expression> args = node.arguments(); // safe by definition
     convertArguments(Types.getMethodBinding(node), args);
-  }
-
-  @Override
-  public void endVisit(TypeLiteral node) {
-    ITypeBinding binding = Types.getTypeBinding(node.getType());
-    if (binding.isPrimitive() && !Types.isVoidType(binding)) {
-      Type boxedType = Types.makeType(Types.getWrapperType(binding));
-      node.setType(boxedType);
-    }
   }
 
   @Override
