@@ -431,7 +431,7 @@ public class StatementGenerator extends ErrorReportingASTVisitor {
 
       // New array needs to be retained if it's a new assignment, since the
       // arrayWith* methods return an autoreleased object.
-      boolean shouldRetain = useReferenceCounting && isNewAssignment(node);
+      boolean shouldRetain = useReferenceCounting && isNewAssignment(node.getParent());
       if (shouldRetain) {
         buffer.append("[[");
       } else {
@@ -460,7 +460,7 @@ public class StatementGenerator extends ErrorReportingASTVisitor {
     } else {
       assert dimensions.size() == 1;
       printSingleDimArray(Types.getTypeBinding(node).getElementType(),
-          dimensions.get(0), useReferenceCounting && !isNewAssignment(node));
+          dimensions.get(0), useReferenceCounting && !isNewAssignment(node.getParent()));
     }
     return false;
   }
@@ -656,6 +656,9 @@ public class StatementGenerator extends ErrorReportingASTVisitor {
           buffer.append('[');
           rhs.accept(this);
           buffer.append(" retain]");
+          if (needClosingParen) {
+            buffer.append(")");
+          }
         } else {
           boolean needRetainRhs = needClosingParen && !isNewAssignment(node) &&
               !Types.isWeakReference(var);
@@ -754,12 +757,18 @@ public class StatementGenerator extends ErrorReportingASTVisitor {
       IVariableBinding var = Types.getVariableBinding(lhs);
       ITypeBinding type = Types.getTypeBinding(lhs);
       if (Options.useReferenceCounting() && !type.isPrimitive() &&
-          lhs instanceof SimpleName && isProperty((SimpleName) lhs) &&
-          !isNewAssignment(lhs.getParent()) && !Types.hasWeakAnnotation(var.getDeclaringClass())) {
-        String name = NameTable.getName((SimpleName) lhs);
-        String nativeName = NameTable.javaFieldToObjC(name);
-        buffer.append(String.format("([%s autorelease], ", nativeName));
-        needClosingParen = true;
+          lhs instanceof SimpleName) {
+        if (isProperty((SimpleName) lhs) && !Types.hasWeakAnnotation(var.getDeclaringClass())) {
+          String name = NameTable.getName((SimpleName) lhs);
+          String nativeName = NameTable.javaFieldToObjC(name);
+          buffer.append(String.format("([%s autorelease], ", nativeName));
+          needClosingParen = true;
+        }
+        else if (isStaticVariableAccess(lhs)) {
+          String name = NameTable.getName((SimpleName) lhs);
+          buffer.append(String.format("([%s autorelease], ", name));
+          needClosingParen = true;
+        }
       }
     }
 
@@ -817,21 +826,25 @@ public class StatementGenerator extends ErrorReportingASTVisitor {
   }
 
   /**
-   * Returns true if a node defines or is a sub-node of an assignment of a
-   * new instance to a instance or static field.  This test is used when
-   * generating referencing counting code to see if autorelease and retain
-   * messages are necessary.
+   * Returns true if a node defines an assignment of a new instance to a instance or static
+   * field.  This test is used when generating referencing counting code to see if autorelease
+   * and retain messages are necessary.
    */
   private boolean isNewAssignment(ASTNode node) {
-    while (node != null) {
-      if (node instanceof Assignment) {
-        Assignment assign = (Assignment) node;
-        IVariableBinding var = Types.getVariableBinding(assign.getLeftHandSide());
-        Expression rhs = assign.getRightHandSide();
-        return var != null && var.isField() &&
-            (rhs instanceof ClassInstanceCreation || rhs instanceof ArrayCreation);
+    if (node instanceof Assignment) {
+      Assignment assign = (Assignment) node;
+      Expression lhs = assign.getLeftHandSide();
+      Expression rhs = assign.getRightHandSide();
+      boolean instanceCreation = (rhs instanceof ClassInstanceCreation
+                               || rhs instanceof ArrayCreation);
+      if (lhs instanceof FieldAccess) {
+        return false;
       }
-      node = node.getParent();
+      if (isStaticVariableAccess(lhs)) {
+        return instanceCreation;
+      }
+      IVariableBinding var = Types.getVariableBinding(lhs);
+      return var != null && var.isField() && instanceCreation;
     }
     return false;
   }
@@ -887,7 +900,7 @@ public class StatementGenerator extends ErrorReportingASTVisitor {
   @SuppressWarnings("unchecked")
   @Override
   public boolean visit(ClassInstanceCreation node) {
-    boolean addAutorelease = useReferenceCounting && !isNewAssignment(node);
+    boolean addAutorelease = useReferenceCounting && !isNewAssignment(node.getParent());
     buffer.append(addAutorelease ? "[[[" : "[[");
     ITypeBinding type = Types.getTypeBinding(node.getType());
     ITypeBinding outerType = type.getDeclaringClass();
@@ -1632,6 +1645,20 @@ public class StatementGenerator extends ErrorReportingASTVisitor {
   @Override
   public boolean visit(PrimitiveType node) {
     buffer.append(NameTable.primitiveTypeToObjC(node));
+    return false;
+  }
+
+  /**
+   * Returns true if a node defines a reference to a static variable.
+   */
+  private boolean isStaticVariableAccess(Expression node) {
+    IBinding binding = Types.getBinding(node);
+    if (binding instanceof IVariableBinding) {
+      IVariableBinding var = (IVariableBinding) binding;
+      if (Types.isStaticVariable(var)) {
+        return true;
+      }
+    }
     return false;
   }
 
