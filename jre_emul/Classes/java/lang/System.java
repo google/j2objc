@@ -33,22 +33,35 @@ package java.lang;
 #include "mach/mach_time.h"
 }-*/
 
+import java.io.OutputStream;
 import java.io.PrintStream;
 import java.util.Properties;
 
 /**
  * Simple iOS version of java.lang.System.  No code was shared, just its
  * public API.
- * 
+ *
  * @author Tom Ball
  */
 public class System {
   private static Properties props;
 
-  // Currently, calls to these print streams are replaced with NSLog messages,
-  // so are only declared to resolve references during translation.
-  public static final PrintStream out = null;
-  public static final PrintStream err = null;
+  // The following two, implemented this way, might be slow, but it works.
+  // TODO(user,user,user): Replace with real implementation from Harmony.
+
+  public static final PrintStream out = new PrintStream(new OutputStream() {
+    @Override
+    public native void write(int b) /*-{
+      putc(b, stdout);
+    }-*/;
+  });
+
+  public static final PrintStream err = new PrintStream(new OutputStream() {
+    @Override
+    public native void write(int b) /*-{
+      putc(b, stderr);
+    }-*/;
+  });
 
   public static native long currentTimeMillis() /*-{
     return (long long) ([[NSDate date] timeIntervalSince1970] * 1000);
@@ -57,7 +70,7 @@ public class System {
   public static native int identityHashCode(Object anObject) /*-{
     return (int) (intptr_t) anObject;
   }-*/;
-  
+
   public static native void arraycopy(Object src, int srcPos, Object dest, int destPos,
       int length) /*-{
     id exception = nil;
