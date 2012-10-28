@@ -25,6 +25,7 @@ import org.eclipse.jdt.core.dom.AST;
 import org.eclipse.jdt.core.dom.ASTNode;
 import org.eclipse.jdt.core.dom.ArrayInitializer;
 import org.eclipse.jdt.core.dom.Assignment;
+import org.eclipse.jdt.core.dom.CastExpression;
 import org.eclipse.jdt.core.dom.ClassInstanceCreation;
 import org.eclipse.jdt.core.dom.ConditionalExpression;
 import org.eclipse.jdt.core.dom.ConstructorInvocation;
@@ -42,12 +43,14 @@ import org.eclipse.jdt.core.dom.MethodInvocation;
 import org.eclipse.jdt.core.dom.PrefixExpression;
 import org.eclipse.jdt.core.dom.ReturnStatement;
 import org.eclipse.jdt.core.dom.SimpleName;
+import org.eclipse.jdt.core.dom.StringLiteral;
 import org.eclipse.jdt.core.dom.SuperConstructorInvocation;
 import org.eclipse.jdt.core.dom.Type;
 import org.eclipse.jdt.core.dom.TypeLiteral;
 import org.eclipse.jdt.core.dom.VariableDeclarationFragment;
 import org.eclipse.jdt.core.dom.WhileStatement;
 
+import java.util.BitSet;
 import java.util.List;
 
 /**
@@ -183,6 +186,16 @@ public class Autoboxer extends ErrorReportingASTVisitor {
       Expression result = boxOrUnboxExpression(expr, type);
       if (expr != result) {
         expressions.set(i, result);
+      }
+    }
+  }
+
+  @Override
+  public void endVisit(CastExpression node) {
+    Expression expr = boxOrUnboxExpression(node.getExpression(), Types.getTypeBinding(node));
+    if (expr != node.getExpression()) {
+      if (node.getParent() instanceof Expression) {
+        ClassConverter.setProperty(node.getParent(), expr);
       }
     }
   }
@@ -409,19 +422,31 @@ public class Autoboxer extends ErrorReportingASTVisitor {
       ITypeBinding[] paramTypes = methodBinding.getParameterTypes();
       int explicitArgs = paramTypes.length - 1;  // the last arg is the varargs array
 
+      // Bit set for each primitive format argument (if any).
+      BitSet primitiveFormatArgs = new BitSet();
+
+      // Check if last explicit arg is a format string.
+      if (explicitArgs > 0 && args.size() >= explicitArgs &&
+          args.get(explicitArgs - 1) instanceof StringLiteral) {
+        getFormatPrimitiveArgs(args, explicitArgs - 1, primitiveFormatArgs);
+      }
+
       for (int i = 0; i < args.size(); i++) {
         Expression arg = args.get(i);
         if (i < explicitArgs) {
           // Only box/unbox explicit args if necessary.
           Expression replacementArg = boxOrUnboxExpression(arg, argTypes[i]);
           if (replacementArg != arg) {
-            args.set(i,  replacementArg);
+            args.set(i, replacementArg);
           }
         } else {
-          // Always box varargs, since they are passed as an object array.
+          // Box varargs since they are passed as an object array, unless a format
+          // specifier needs a primitive.
           ITypeBinding argBinding = getBoxType(arg);
-          if (argBinding.isPrimitive()) {
+          if (argBinding.isPrimitive() && !primitiveFormatArgs.get(i)) {
             args.set(i, box(arg));
+          } else if (!argBinding.isPrimitive() && primitiveFormatArgs.get(i)) {
+            args.set(i, unbox(arg));
           }
         }
       }
@@ -430,9 +455,39 @@ public class Autoboxer extends ErrorReportingASTVisitor {
         Expression arg = args.get(i);
         Expression replacementArg = boxOrUnboxExpression(arg, argTypes[i]);
         if (replacementArg != arg) {
-          args.set(i,  replacementArg);
+          args.set(i, replacementArg);
         }
       }
+    }
+  }
+
+  /**
+   * Scan a possible format string, and update a bit set of which subsequent
+   * arguments are primitive.
+   */
+  private void getFormatPrimitiveArgs(List<Expression> args, int formatArg,
+      BitSet primitiveFormatArgs) {
+    String str = ((StringLiteral) args.get(formatArg)).getLiteralValue();
+    int currentArgument = formatArg + 1;
+    int i = 0;
+    while ((i = str.indexOf('%', i)) > 0) {
+      if (++i == str.length()) {
+        continue;  // "%%", skip to next specifier.
+      }
+      char c = str.charAt(i);
+
+      // Skip specifier flags, width, and precision characters.
+      while (Character.isDigit(c) || c == '-' || c == '#' || c == '+' || c == ' ' ||
+          c == ',' || c == '(' || c == '+' || c == '.') {
+        ++i;
+      }
+
+      // Set if specifier requires a primitive argument.
+      if (c == 'c' || c == 'd' || c == 'o' || c == 'x' || c == 'X' || c == 'e' || c == 'f' ||
+          c == 'g' || c == 'a' || c == 'A') {
+        primitiveFormatArgs.set(currentArgument);
+      }
+      currentArgument++;
     }
   }
 

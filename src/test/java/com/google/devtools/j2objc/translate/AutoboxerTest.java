@@ -306,4 +306,24 @@ public class AutoboxerTest extends GenerationTest {
 
     assertTranslation(translation, "while (![((JavaLangBoolean *) NIL_CHK(b_)) booleanValue])");
   }
+
+  public void testAutoboxCast() throws IOException {
+    String source = "public class Test { double doubleValue; " +
+        "public int hashCode() { return ((Double) doubleValue).hashCode(); } }";
+    String translation = translateSourceFile(source, "Test", "Test.m");
+
+    assertTranslation(translation, "[[JavaLangDouble valueOfWithDouble:doubleValue_] hash]");
+  }
+
+  public void testNoBoxingFormatParameter() throws IOException {
+    String source = "public class Test { public int size() { return 3; } " +
+        "public String toString() { " +
+        "return String.format(\"<ByteString.Output@%s size=%d>\", " +
+        "Integer.toHexString(System.identityHashCode(this)), size()); }}";
+    String translation = translateSourceFile(source, "Test", "Test.m");
+
+    assertTranslation(translation,
+        "[JavaLangInteger toHexStringWithInt:[JavaLangSystem identityHashCodeWithId:self]], " +
+        "[self size], nil]");
+  }
 }
