@@ -226,7 +226,11 @@ id denullify(id object) {
 }
 
 - (id)clone {
-  return [self mutableCopy];
+  id result = [self mutableCopy];
+#if ! __has_feature(objc_arc)
+  [result autorelease];
+#endif
+  return result;
 }
 
 - (NSString *)description {

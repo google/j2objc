@@ -81,6 +81,9 @@ public final class Array {
         if ([[array class] isSubclassOfClass:[IOSObjectArray class]]) {
           IOSObjectArray *objectArray = (IOSObjectArray *) array;
           result = [objectArray objectAtIndex:index];
+#if ! __has_feature(objc_arc)
+          [result retain];
+#endif
         } else if ([[array class] isSubclassOfClass:[IOSArray class]]) {
           // Return a wrapped instance of primitive element.
           IOSPrimitiveClass *elementType = (IOSPrimitiveClass *) [array elementType];
@@ -567,7 +570,7 @@ public final class Array {
       } else {
         // TODO(user): If autorelease'd below, ArrayTest fails with a
         // "message sent to deallocated instance" error.
-      	return [[IOSObjectArray alloc] initWithLength:size type:componentType];
+      	result = [[IOSObjectArray alloc] initWithLength:size type:componentType];
       }
 #if ! __has_feature(objc_arc)
       [result autorelease];

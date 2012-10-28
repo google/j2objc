@@ -72,7 +72,12 @@
 }
 
 static IOSObjectArray *emptyArray(IOSClass *arrayType) {
-  return [[IOSObjectArray alloc] initWithLength:0 type:arrayType];
+  IOSObjectArray *result =
+      [[IOSObjectArray alloc] initWithLength:0 type:arrayType];
+#if ! __has_feature(objc_arc)
+  [result autorelease];
+#endif
+  return result;
 }
 
 - (IOSObjectArray *)getDeclaredMethods {

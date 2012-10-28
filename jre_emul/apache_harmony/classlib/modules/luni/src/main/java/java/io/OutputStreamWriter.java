@@ -170,6 +170,8 @@ public class OutputStreamWriter extends Writer {
 #if ! __has_feature(objc_arc)
         [e autorelease];
 #endif
+        [s release];
+        free(bytes);
         @throw e;
       }
       [s release];

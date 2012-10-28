@@ -82,7 +82,7 @@ public class FileOutputStream extends OutputStream implements Closeable {
     
     private native long open(String path, boolean append) throws FileNotFoundException /*-{
       int flags = O_WRONLY | O_CREAT | (append ? O_APPEND : O_TRUNC);
-      return (long long) open([path UTF8String], flags);
+      return (long long) open([path UTF8String], flags, 0644);
     }-*/;
     
     /**

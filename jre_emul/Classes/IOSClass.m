@@ -676,6 +676,9 @@ void getFieldsFromClass(Class clazz, NSMutableDictionary *fields) {
                  initWithNSString:@"interface constants not implemented"];
   }
   if (!field) {
+#if ! __has_feature(objc_arc)
+    [exception autorelease];
+#endif
     exception = [[JavaLangNoSuchFieldException alloc] initWithNSString:name];
   }
   if (exception) {

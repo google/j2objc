@@ -646,7 +646,12 @@ NSStringEncoding parseCharsetName(NSString *charset) {
 
   IOSClass *stringClass = [IOSClass classWithClass:[NSString class]];
   if (resultCount < 1) {
-    return [[IOSObjectArray alloc] initWithLength:0 type:stringClass];
+    IOSObjectArray *result =
+        [[IOSObjectArray alloc] initWithLength:0 type:stringClass];
+#if !__has_feature(objc_arc)
+    [result autorelease];
+#endif
+    return result;
   }
 
   int startIndex = beginningOccurrencesCount;
