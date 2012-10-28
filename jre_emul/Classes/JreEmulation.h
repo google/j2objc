@@ -60,6 +60,10 @@
 FOUNDATION_EXPORT
     IOSObjectArray *JreEmulationMainArguments(int argc, const char *argv[]);
 
+#if !__has_feature(objc_arc)
+FOUNDATION_EXPORT id JreOperatorRetainedAssign(id *pIvar, id value);
+#endif
+
 #define IOSCOLLECTION(c) [IOSCollection collectionWithJavaUtilCollection:c]
 
 #endif // __OBJC__

@@ -431,12 +431,7 @@ public class StatementGenerator extends ErrorReportingASTVisitor {
 
       // New array needs to be retained if it's a new assignment, since the
       // arrayWith* methods return an autoreleased object.
-      boolean shouldRetain = useReferenceCounting && isNewAssignment(node.getParent());
-      if (shouldRetain) {
-        buffer.append("[[");
-      } else {
-        buffer.append('[');
-      }
+      buffer.append('[');
       String elementType = at.getElementType().toString();
       buffer.append(elementType);
       buffer.append(' ');
@@ -452,15 +447,12 @@ public class StatementGenerator extends ErrorReportingASTVisitor {
         printObjectArrayType(componentType);
       }
       buffer.append(']');
-      if (shouldRetain) {
-        buffer.append(" retain]");
-      }
     } else if (node.dimensions().size() > 1) {
       printMultiDimArray(Types.getTypeBinding(node).getElementType(), dimensions);
     } else {
       assert dimensions.size() == 1;
       printSingleDimArray(Types.getTypeBinding(node).getElementType(),
-          dimensions.get(0), useReferenceCounting && !isNewAssignment(node.getParent()));
+          dimensions.get(0), useReferenceCounting);
     }
     return false;
   }
@@ -612,7 +604,7 @@ public class StatementGenerator extends ErrorReportingASTVisitor {
       lhs.accept(this);
       buffer.append(" = ");
       printUnsignedRightShift(lhs, rhs);
-    } else {
+    } else if (op == Operator.ASSIGN) {
       IVariableBinding var = Types.getVariableBinding(lhs);
       boolean useWriter = false;
       if (var != null && var.getDeclaringClass() != null) {
@@ -640,44 +632,31 @@ public class StatementGenerator extends ErrorReportingASTVisitor {
         buffer.append(']');
         return false;
       } else {
-        boolean needClosingParen = printAssignmentLhs(lhs);
-        buffer.append(' ');
-        buffer.append(op.toString());
-        buffer.append(' ');
-        if (Types.isJavaObjectType(Types.getTypeBinding(lhs)) &&
-            Types.getTypeBinding(rhs).isInterface()) {
-          // The compiler doesn't know that NSObject is the root of all
-          // objects used by transpiled code, so add a cast.
-          buffer.append("(NSObject *) ");
+        if (isLeftHandSideRetainedProperty(lhs)) {
+          String name = leftHandSideInstanceVariableName(lhs);
+          buffer.append("JreOperatorRetainedAssign(&" + name);
+          buffer.append(", ");
+          rhs.accept(this);
+          buffer.append(")");
         }
-        if (useReferenceCounting && !isNewAssignment(node) && var != null &&
-            Types.isStaticVariable(var) && !var.getType().isPrimitive() &&
-            !Types.isWeakReference(var) && rhs.getNodeType() != ASTNode.NULL_LITERAL) {
-          buffer.append('[');
+        else {
+          lhs.accept(this);
+          buffer.append(" = ");
           rhs.accept(this);
-          buffer.append(" retain]");
-          if (needClosingParen) {
-            buffer.append(")");
-          }
-        } else {
-          boolean needRetainRhs = needClosingParen && !isNewAssignment(node) &&
-              !Types.isWeakReference(var);
-          if (rhs instanceof NullLiteral) {
-            needRetainRhs = false;
-          }
-          if (needRetainRhs) {
-            buffer.append("[");
-          }
-          rhs.accept(this);
-          if (needRetainRhs) {
-            buffer.append(" retain]");
-          }
-          if (needClosingParen) {
-            buffer.append(")");
-          }
         }
         return false;
       }
+    } else {
+      // Handles the case for the following operators:
+      // BIT_AND_ASSIGN, BIT_OR_ASSIGN, BIT_XOR_ASSIGN, DIVIDE_ASSIGN,
+      // LEFT_SHIFT_ASSIGN, MINUS_ASSIGN, PLUS_ASSIGN, REMAINDER_ASSIGN,
+      // RIGHT_SHIFT_SIGNED_ASSIGN, RIGHT_SHIFT_UNSIGNED_ASSIGN and
+      // TIMES_ASSIGN.
+      printAssignmentLhs(lhs);
+      buffer.append(' ');
+      buffer.append(op.toString());
+      buffer.append(' ');
+      rhs.accept(this);
     }
     return false;
   }
@@ -749,8 +728,11 @@ public class StatementGenerator extends ErrorReportingASTVisitor {
     return kind;
   }
 
-  private boolean printAssignmentLhs(Expression lhs) {
-    boolean needClosingParen = false;
+  /*
+   * Returns true if the expression is a retained property.
+   */
+  private boolean isLeftHandSideRetainedProperty(Expression lhs) {
+    boolean isRetainedProperty = false;
 
     if (Options.inlineFieldAccess()) {
       // Inline the setter for a property.
@@ -759,17 +741,48 @@ public class StatementGenerator extends ErrorReportingASTVisitor {
       if (Options.useReferenceCounting() && !type.isPrimitive() &&
           lhs instanceof SimpleName) {
         if (isProperty((SimpleName) lhs) && !Types.hasWeakAnnotation(var.getDeclaringClass())) {
-          String name = NameTable.getName((SimpleName) lhs);
-          String nativeName = NameTable.javaFieldToObjC(name);
-          buffer.append(String.format("([%s autorelease], ", nativeName));
-          needClosingParen = true;
+          isRetainedProperty = true;
         }
         else if (isStaticVariableAccess(lhs)) {
-          String name = NameTable.getName((SimpleName) lhs);
-          buffer.append(String.format("([%s autorelease], ", name));
-          needClosingParen = true;
+          isRetainedProperty = true;
         }
       }
+    }
+
+    return isRetainedProperty;
+  }
+
+  /*
+   * Returns the Objective-C instance variable name if the expression
+   * is a property. Returns null in other cases.
+   */
+  private String leftHandSideInstanceVariableName(Expression lhs) {
+    String nativeName = null;
+
+    if (Options.inlineFieldAccess()) {
+      // Inline the setter for a property.
+      IVariableBinding var = Types.getVariableBinding(lhs);
+      if (lhs instanceof SimpleName) {
+        if (isProperty((SimpleName) lhs)) {
+          String name = NameTable.getName((SimpleName) lhs);
+          nativeName = NameTable.javaFieldToObjC(name);
+        }
+        else if (isStaticVariableAccess(lhs)) {
+          nativeName = NameTable.getName((SimpleName) lhs);
+        }
+      }
+    }
+
+    return nativeName;
+  }
+
+  private boolean printAssignmentLhs(Expression lhs) {
+    boolean needClosingParen = false;
+    String nativeName = leftHandSideInstanceVariableName(lhs);
+
+    if ((nativeName != null) && (isLeftHandSideRetainedProperty(lhs))) {
+      buffer.append(String.format("([%s autorelease], ", nativeName));
+      needClosingParen = true;
     }
 
     lhs.accept(this);
@@ -900,7 +913,7 @@ public class StatementGenerator extends ErrorReportingASTVisitor {
   @SuppressWarnings("unchecked")
   @Override
   public boolean visit(ClassInstanceCreation node) {
-    boolean addAutorelease = useReferenceCounting && !isNewAssignment(node.getParent());
+    boolean addAutorelease = useReferenceCounting;
     buffer.append(addAutorelease ? "[[[" : "[[");
     ITypeBinding type = Types.getTypeBinding(node.getType());
     ITypeBinding outerType = type.getDeclaringClass();

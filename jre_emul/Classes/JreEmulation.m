@@ -43,3 +43,12 @@ FOUNDATION_EXPORT
   }
   return args;
 }
+
+#if !__has_feature(objc_arc)
+FOUNDATION_EXPORT id JreOperatorRetainedAssign(id *pIvar, id value) {
+  [* pIvar autorelease];
+  * pIvar = [value retain];
+
+  return value;
+}
+#endif
