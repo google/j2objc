@@ -578,6 +578,9 @@ public class Thread implements Runnable {
       }
       if ([thread isCancelled]) {
         JavaLangInterruptedException *npe = [[JavaLangInterruptedException alloc] init];
+#if !__has_feature(objc_arc)
+        [npe autorelease];
+#endif
         @throw (ARCBRIDGE JavaLangInterruptedException *) npe;
       }
     ]-*/;

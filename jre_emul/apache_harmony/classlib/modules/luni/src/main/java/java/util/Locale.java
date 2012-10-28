@@ -153,9 +153,6 @@ public final class Locale implements Cloneable, Serializable {
       if (language == nil) {
         language = @"";
       }
-#if ! __has_feature(objc_arc)
-      [language autorelease];
-#endif
       return language;
     }-*/;
     
@@ -164,9 +161,6 @@ public final class Locale implements Cloneable, Serializable {
       if (region == nil) {
         region = @"";
       }
-#if ! __has_feature(objc_arc)
-      [region autorelease];
-#endif
       return region;
     }-*/;
 
@@ -175,9 +169,6 @@ public final class Locale implements Cloneable, Serializable {
       if (variant == nil) {
       	variant = @"";
       }
-#if ! __has_feature(objc_arc)
-      [variant autorelease];
-#endif
       return variant;
     }-*/;
   
@@ -327,6 +318,9 @@ public final class Locale implements Cloneable, Serializable {
             JavaUtilLocale *javaLocale = [[JavaUtilLocale alloc] initWithNSString:language
                                                                      withNSString:country
                                                                      withNSString:variant];
+#if ! __has_feature(objc_arc)
+            [javaLocale autorelease];
+#endif
             [result replaceObjectAtIndex:i withObject:javaLocale];
         }
 #if ! __has_feature(objc_arc)
