@@ -250,9 +250,6 @@ pre_translate:
 	@rm -f $(JAVA_SOURCE_LIST)
 	@touch $(JAVA_SOURCE_LIST)
 
-foo:
-	@echo JRE_MATH_TEST_ROOT=$(JRE_MATH_TEST_ROOT)
-
 $(TESTS_DIR):
 	@mkdir -p $@
 
