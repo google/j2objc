@@ -3249,6 +3249,7 @@ public class Collections {
               IOSClass *type = [IOSClass classWithClass:[NSObject class]];
               IOSObjectArray *result =
                   [[IOSObjectArray alloc] initWithLength:[self size] type:type];
+              AUTORELEASE(result);
               return [self toArrayWithNSObjectArray:result];
             }-*/;
 
