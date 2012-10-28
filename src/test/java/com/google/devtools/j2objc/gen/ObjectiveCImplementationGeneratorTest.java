@@ -452,4 +452,20 @@ public class ObjectiveCImplementationGeneratorTest extends GenerationTest {
         "  }\n" +
         "}");
   }
+
+  public void testCopyAllPropertiesMethod() throws IOException {
+    String translation = translateSourceFile(
+        "public class Test {" +
+        "  int var1, var2;" +
+        "  static int var3;" +
+        "}",
+        "Test", "Test.m");
+    assertTranslation(translation,
+        "- (void)copyAllPropertiesTo:(id)copy {\n" +
+        "  [super copyAllPropertiesTo:copy];\n" +
+        "  Test *typedCopy = (Test *) copy;\n" +
+        "  typedCopy.var1 = var1_;\n" +
+        "  typedCopy.var2 = var2_;\n" +
+        "}\n");
+  }
 }

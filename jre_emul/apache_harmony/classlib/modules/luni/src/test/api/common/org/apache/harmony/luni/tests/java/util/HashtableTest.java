@@ -129,8 +129,6 @@ public class HashtableTest extends junit.framework.TestCase {
 	/**
 	 * @tests java.util.Hashtable#clone()
 	 */
-	/* TODO(user): enable when Object.clone supports objects that don't
-	 * implement the NSCopying protocol.
 	public void test_clone() {
 		// Test for method java.lang.Object java.util.Hashtable.clone()
 
@@ -150,7 +148,6 @@ public class HashtableTest extends junit.framework.TestCase {
 		}
 		assertTrue("Copy has more keys than original", !cpy.hasMoreElements());
 	}
-	*/
 
 	/**
 	 * @tests java.util.Hashtable#contains(java.lang.Object)
