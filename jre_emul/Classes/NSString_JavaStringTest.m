@@ -98,30 +98,57 @@
 
 - (void)testReplaceFirst {
   NSString *s = @"red-yellow-green-yellow";
-
+  NSString *replacement = [s replaceFirst:@"yellow" withReplacement:@"blue"];
   // Regular string replacement.
-  STAssertEquals(@"red-blue-green-yellow",
-      [s replaceFirst:@"yellow" withReplacement:@"blue"],
-      @"Incorrect replacement");
+  STAssertTrue([@"red-blue-green-yellow" isEqualToString:replacement],
+               @"Incorrect replacement");
 
+  replacement = [s replaceFirst:@"y[a-z]+w" withReplacement:@"blue"];
   // Regex string replacement.
-  STAssertEquals(@"red-blue-green-yellow",
-                 [s replaceFirst:@"y[a-z]+w" withReplacement:@"blue"],
-                 @"Incorrect replacement");
+  STAssertTrue([@"red-blue-green-yellow" isEqualToString:replacement],
+               @"Incorrect replacement");
 }
 
 - (void)testReplaceAll {
   NSString *s = @"red-yellow-green-yellow";
+  NSString *replacement = [s replaceAll:@"yellow" withReplacement:@"blue"];
 
   // Regular string replacement.
-  STAssertEquals(@"red-blue-green-blue",
-                 [s replaceFirst:@"yellow" withReplacement:@"blue"],
-                 @"Incorrect replacement");
+  STAssertTrue([@"red-blue-green-blue" isEqualToString:replacement],
+               @"Incorrect replacement");
 
+  replacement = [s replaceAll:@"y[a-z]+w" withReplacement:@"blue"];
   // Regex string replacement.
-  STAssertEquals(@"red-blue-green-blue",
-                 [s replaceFirst:@"y[a-z]+w" withReplacement:@"blue"],
-                 @"Incorrect replacement");
+  STAssertTrue([@"red-blue-green-blue" isEqualToString:replacement],
+               @"Incorrect replacement");
+}
+
+- (void)testIndexOfCharacters {
+  // Single character.
+  STAssertEquals(0, [@"a" indexOf:'a'], @"Wrong index.");
+  STAssertEquals(-1, [@"a" indexOf:'b'], @"Wrong index.");
+
+  // Not single characters
+  STAssertEquals(0, [@"ab" indexOf:'a'], @"Wrong index.");
+  STAssertEquals(1, [@"ab" indexOf:'b'], @"Wrong index.");
+  STAssertEquals(-1, [@"ab" indexOf:'c'], @"Wrong index.");
+
+  // Finds first occurrence properly.
+  STAssertEquals(0, [@"aba" indexOf:'a'], @"Wrong index.");
+}
+
+- (void)testLastIndexOfCharacters {
+  // Single character.
+  STAssertEquals(0, [@"a" lastIndexOf:'a'], @"Wrong index.");
+  STAssertEquals(-1, [@"a" lastIndexOf:'b'], @"Wrong index.");
+
+  // Not single characters
+  STAssertEquals(0, [@"ab" lastIndexOf:'a'], @"Wrong index.");
+  STAssertEquals(1, [@"ab" lastIndexOf:'b'], @"Wrong index.");
+  STAssertEquals(-1, [@"ab" lastIndexOf:'c'], @"Wrong index.");
+
+  // Finds last occurrence properly.
+  STAssertEquals(2, [@"aba" lastIndexOf:'a'], @"Wrong index.");
 }
 
 @end

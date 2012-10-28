@@ -67,7 +67,6 @@
 		066193EA155849F80004DAFE /* NSString+JavaString.h in Headers */ = {isa = PBXBuildFile; fileRef = 066193E6155849F80004DAFE /* NSString+JavaString.h */; };
 		066193EB155849F80004DAFE /* NSString+JavaString.m in Sources */ = {isa = PBXBuildFile; fileRef = 066193E7155849F80004DAFE /* NSString+JavaString.m */; };
 		0672178415587E2C00645E1B /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 06619388155848D70004DAFE /* Foundation.framework */; };
-		0672178A15587E2C00645E1B /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 0672178815587E2C00645E1B /* InfoPlist.strings */; };
 		067217D315587FC600645E1B /* IOSArrayTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 067217CD15587FC600645E1B /* IOSArrayTest.m */; };
 		067217D415587FC600645E1B /* IOSObjectArrayTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 067217CE15587FC600645E1B /* IOSObjectArrayTest.m */; };
 		067217D515587FC600645E1B /* IOSPrimitiveClassTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 067217CF15587FC600645E1B /* IOSPrimitiveClassTest.m */; };
@@ -224,6 +223,8 @@
 		0697F61515D190580027A7E4 /* TypeVariable.m in Sources */ = {isa = PBXBuildFile; fileRef = 0697F60A15D190580027A7E4 /* TypeVariable.m */; };
 		06C6B7FD159BCBD1004B800C /* PatternSyntaxException.h in Headers */ = {isa = PBXBuildFile; fileRef = 06C6B7FB159BCBD1004B800C /* PatternSyntaxException.h */; };
 		06C6B7FE159BCBD1004B800C /* PatternSyntaxException.m in Sources */ = {isa = PBXBuildFile; fileRef = 06C6B7FC159BCBD1004B800C /* PatternSyntaxException.m */; };
+		A34A99ED1630A9DA006DEC32 /* Tests-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = A34A99EB1630A9DA006DEC32 /* Tests-Info.plist */; };
+		A34A99F11630A9E7006DEC32 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = A34A99EF1630A9E7006DEC32 /* InfoPlist.strings */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -297,9 +298,6 @@
 		066193E6155849F80004DAFE /* NSString+JavaString.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSString+JavaString.h"; sourceTree = "<group>"; };
 		066193E7155849F80004DAFE /* NSString+JavaString.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSString+JavaString.m"; sourceTree = "<group>"; };
 		0672177F15587E2C00645E1B /* jre_emul_tests.octest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = jre_emul_tests.octest; sourceTree = BUILT_PRODUCTS_DIR; };
-		0672178715587E2C00645E1B /* jre_emul_tests-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "jre_emul_tests-Info.plist"; sourceTree = "<group>"; };
-		0672178915587E2C00645E1B /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
-		0672178E15587E2C00645E1B /* jre_emul_tests-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "jre_emul_tests-Prefix.pch"; sourceTree = "<group>"; };
 		067217CD15587FC600645E1B /* IOSArrayTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = IOSArrayTest.m; path = Classes/IOSArrayTest.m; sourceTree = SOURCE_ROOT; };
 		067217CE15587FC600645E1B /* IOSObjectArrayTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = IOSObjectArrayTest.m; path = Classes/IOSObjectArrayTest.m; sourceTree = SOURCE_ROOT; };
 		067217CF15587FC600645E1B /* IOSPrimitiveClassTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = IOSPrimitiveClassTest.m; path = Classes/IOSPrimitiveClassTest.m; sourceTree = SOURCE_ROOT; };
@@ -596,6 +594,9 @@
 		0697F60A15D190580027A7E4 /* TypeVariable.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = TypeVariable.m; path = build_result/Classes/java/lang/reflect/TypeVariable.m; sourceTree = "<group>"; };
 		06C6B7FB159BCBD1004B800C /* PatternSyntaxException.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PatternSyntaxException.h; path = build_result/Classes/java/util/regex/PatternSyntaxException.h; sourceTree = "<group>"; };
 		06C6B7FC159BCBD1004B800C /* PatternSyntaxException.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = PatternSyntaxException.m; path = build_result/Classes/java/util/regex/PatternSyntaxException.m; sourceTree = "<group>"; };
+		A34A99EB1630A9DA006DEC32 /* Tests-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = "Tests-Info.plist"; path = "Tests/Tests-Info.plist"; sourceTree = SOURCE_ROOT; };
+		A34A99EC1630A9DA006DEC32 /* Tests-Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "Tests-Prefix.pch"; path = "Tests/Tests-Prefix.pch"; sourceTree = SOURCE_ROOT; };
+		A34A99F01630A9E7006DEC32 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = Tests/en.lproj/InfoPlist.strings; sourceTree = SOURCE_ROOT; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -730,9 +731,9 @@
 		0672178615587E2C00645E1B /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
-				0672178715587E2C00645E1B /* jre_emul_tests-Info.plist */,
-				0672178815587E2C00645E1B /* InfoPlist.strings */,
-				0672178E15587E2C00645E1B /* jre_emul_tests-Prefix.pch */,
+				A34A99EF1630A9E7006DEC32 /* InfoPlist.strings */,
+				A34A99EB1630A9DA006DEC32 /* Tests-Info.plist */,
+				A34A99EC1630A9DA006DEC32 /* Tests-Prefix.pch */,
 			);
 			name = "Supporting Files";
 			sourceTree = "<group>";
@@ -1110,7 +1111,6 @@
 				0672177A15587E2C00645E1B /* Sources */,
 				0672177B15587E2C00645E1B /* Frameworks */,
 				0672177C15587E2C00645E1B /* Resources */,
-				0672177D15587E2C00645E1B /* ShellScript */,
 			);
 			buildRules = (
 			);
@@ -1155,7 +1155,8 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				0672178A15587E2C00645E1B /* InfoPlist.strings in Resources */,
+				A34A99ED1630A9DA006DEC32 /* Tests-Info.plist in Resources */,
+				A34A99F11630A9E7006DEC32 /* InfoPlist.strings in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1188,19 +1189,6 @@
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "set -e\nset +u\n# Avoid recursively calling this script.\nif [[ $SF_MASTER_SCRIPT_RUNNING ]]\nthen\nexit 0\nfi\nset -u\nexport SF_MASTER_SCRIPT_RUNNING=1\n\nSF_TARGET_NAME=jre_emul\nSF_EXECUTABLE_PATH=\"lib${SF_TARGET_NAME}.a\"\nSF_WRAPPER_NAME=\"${SF_TARGET_NAME}.framework\"\n\n# The following conditionals come from\n# https://github.com/kstenerud/iOS-Universal-Framework\n\nif [[ \"$SDK_NAME\" =~ ([A-Za-z]+) ]]\nthen\nSF_SDK_PLATFORM=${BASH_REMATCH[1]}\nelse\necho \"Could not find platform name from SDK_NAME: $SDK_NAME\"\nexit 1\nfi\n\nif [[ \"$SDK_NAME\" =~ ([0-9]+.*$) ]]\nthen\nSF_SDK_VERSION=${BASH_REMATCH[1]}\nelse\necho \"Could not find sdk version from SDK_NAME: $SDK_NAME\"\nexit 1\nfi\n\nif [[ \"$SF_SDK_PLATFORM\" = \"iphoneos\" ]]\nthen\nSF_OTHER_PLATFORM=iphonesimulator\nelse\nSF_OTHER_PLATFORM=iphoneos\nfi\n\nif [[ \"$BUILT_PRODUCTS_DIR\" =~ (.*)$SF_SDK_PLATFORM$ ]]\nthen\nSF_OTHER_BUILT_PRODUCTS_DIR=\"${BASH_REMATCH[1]}${SF_OTHER_PLATFORM}\"\nelse\necho \"Could not find platform name from build products directory: $BUILT_PRODUCTS_DIR\"\nexit 1\nfi\n\n# Build the other platform.\nxcodebuild -project \"${PROJECT_FILE_PATH}\" -target \"${TARGET_NAME}\" -configuration \"${CONFIGURATION}\" -sdk ${SF_OTHER_PLATFORM}${SF_SDK_VERSION} BUILD_DIR=\"${BUILD_DIR}\" OBJROOT=\"${OBJROOT}\" BUILD_ROOT=\"${BUILD_ROOT}\" SYMROOT=\"${SYMROOT}\" $ACTION\n\n# Smash the two static libraries into one fat binary and store it in the .framework\nlipo -create \"${BUILT_PRODUCTS_DIR}/${SF_EXECUTABLE_PATH}\" \"${SF_OTHER_BUILT_PRODUCTS_DIR}/${SF_EXECUTABLE_PATH}\" -output \"${BUILT_PRODUCTS_DIR}/${SF_WRAPPER_NAME}/Versions/A/${SF_TARGET_NAME}\"\n\n# Copy the binary to the other architecture folder to have a complete framework in both.\ncp -a \"${BUILT_PRODUCTS_DIR}/${SF_WRAPPER_NAME}/Versions/A/${SF_TARGET_NAME}\" \"${SF_OTHER_BUILT_PRODUCTS_DIR}/${SF_WRAPPER_NAME}/Versions/A/${SF_TARGET_NAME}\"\n";
-		};
-		0672177D15587E2C00645E1B /* ShellScript */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-			);
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "# Run the unit tests in this test bundle.\n\"${SYSTEM_DEVELOPER_DIR}/Tools/RunUnitTests\"\n";
 		};
 /* End PBXShellScriptBuildPhase section */
 
@@ -1402,10 +1390,10 @@
 /* End PBXTargetDependency section */
 
 /* Begin PBXVariantGroup section */
-		0672178815587E2C00645E1B /* InfoPlist.strings */ = {
+		A34A99EF1630A9E7006DEC32 /* InfoPlist.strings */ = {
 			isa = PBXVariantGroup;
 			children = (
-				0672178915587E2C00645E1B /* en */,
+				A34A99F01630A9E7006DEC32 /* en */,
 			);
 			name = InfoPlist.strings;
 			sourceTree = "<group>";
@@ -1553,10 +1541,10 @@
 					"$(BUILT_PRODUCTS_DIR)",
 				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = "jre_emul_tests/jre_emul_tests-Prefix.pch";
+				GCC_PREFIX_HEADER = "Tests/Tests-Prefix.pch";
 				GCC_THUMB_SUPPORT = NO;
 				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
-				INFOPLIST_FILE = "jre_emul_tests/jre_emul_tests-Info.plist";
+				INFOPLIST_FILE = "Tests/Tests-Info.plist";
 				LIBRARY_SEARCH_PATHS = "";
 				OTHER_LDFLAGS = "";
 				PRODUCT_NAME = "$(TARGET_NAME)";
