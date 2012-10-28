@@ -355,7 +355,13 @@ public class ObjectiveCImplementationGenerator extends ObjectiveCSourceFileGener
     printf("      return e;\n");
     printf("    }\n");
     printf("  }\n");
-    printf("  @throw [[JavaLangIllegalArgumentException alloc] initWithNSString:name];\n");
+    if (Options.useReferenceCounting()) {
+      printf("  @throw [[[JavaLangIllegalArgumentException alloc] initWithNSString:name]"
+           + " autorelease];\n");
+    }
+    else {
+      printf("  @throw [[JavaLangIllegalArgumentException alloc] initWithNSString:name];\n");
+    }
     printf("  return nil;\n");
     println("}\n");
 
