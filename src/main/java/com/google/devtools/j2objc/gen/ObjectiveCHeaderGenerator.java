@@ -234,19 +234,6 @@ public class ObjectiveCHeaderGenerator extends ObjectiveCSourceFileGenerator {
   @Override
   protected String methodDeclaration(MethodDeclaration m) {
     String result = super.methodDeclaration(m);
-    String methodName = m.getName().getIdentifier();
-    if (methodName.startsWith("new") || methodName.startsWith("alloc")) {
-      // Getting around a clang warning.
-      // clang assumes that methods with names starting with new or alloc
-      // return objects of the same type as the receiving class, regardless of
-      // the actual declared return type. This attribute tells clang to not do
-      // that, please.
-      // See http://clang.llvm.org/docs/AutomaticReferenceCounting.html
-      // Sections 5.1 (Explicit method family control)
-      // and 5.2.2 (Related result types)
-      // TODO(user,user): Rename method instead of using the attribute.
-      result += " OBJC_METHOD_FAMILY_NONE";
-    }
     return result + ";\n";
   }
 
