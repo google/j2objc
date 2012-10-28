@@ -258,7 +258,7 @@ destinationBegin:(int)destinationBegin {
 - (int)indexOf:(int)ch fromIndex:(int)index {
   unichar c = (unichar) ch;
   NSString *s = [NSString stringWithCharacters:&c length:1];
-  return [self lastIndexOfString:s fromIndex:(int)index];
+  return [self indexOfString:s fromIndex:(int)index];
 }
 
 - (int)indexOfString:(NSString *)s {
@@ -321,7 +321,7 @@ destinationBegin:(int)destinationBegin {
   if ([s length] == 0) {
     return [self length];
   }
-  NSRange searchRange = NSMakeRange((NSUInteger) index, (NSUInteger) index);
+  NSRange searchRange = NSMakeRange((NSUInteger) index, (NSUInteger) [self length]);
   NSRange range = [self rangeOfString:s
                               options:NSBackwardsSearch
                                 range:searchRange];
