@@ -219,9 +219,7 @@ id denullify(id object) {
 }
 
 - (id)mutableCopyWithZone:(NSZone *)zone {
-  JavaUtilHashMap *copy =
-      [[[self class] alloc] initWithInt:[dictionary_ count]];
-  copy->dictionary_ = [dictionary_ mutableCopy];
+  JavaUtilHashMap *copy = [[[self class] alloc] initWithJavaUtilMap:self];
   return copy;
 }
 
@@ -231,6 +229,10 @@ id denullify(id object) {
   [result autorelease];
 #endif
   return result;
+}
+
+- (id)copyWithZone:(NSZone *)zone {
+  return [self mutableCopyWithZone:zone];
 }
 
 - (NSString *)description {
