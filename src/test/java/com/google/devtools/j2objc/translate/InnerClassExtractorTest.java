@@ -20,6 +20,7 @@ import com.google.devtools.j2objc.GenerationTest;
 import com.google.devtools.j2objc.Options;
 import com.google.devtools.j2objc.Options.MemoryManagementOption;
 import com.google.devtools.j2objc.gen.SourceBuilder;
+import com.google.devtools.j2objc.gen.SourcePosition;
 import com.google.devtools.j2objc.gen.StatementGenerator;
 import com.google.devtools.j2objc.util.NameTable;
 
@@ -539,7 +540,7 @@ public class InnerClassExtractorTest extends GenerationTest {
         (VariableDeclarationStatement) method.getBody().statements().get(0);
     assertEquals("Test_B", NameTable.javaTypeToObjC(field.getType(), false));
     String result = StatementGenerator.generate(field, Collections.EMPTY_SET, false,
-        SourceBuilder.BEGINNING_OF_FILE).trim();
+        new SourcePosition(null, SourceBuilder.BEGINNING_OF_FILE, null)).trim();
     assertEquals("Test_B *b = " +
         "[[[Test_B alloc] initWithTest:[[[Test alloc] init] autorelease]] autorelease];", result);
 
@@ -594,7 +595,7 @@ public class InnerClassExtractorTest extends GenerationTest {
         (VariableDeclarationStatement) method.getBody().statements().get(0);
     assertEquals("Test_B", NameTable.javaTypeToObjC(field.getType(), false));
     String result = StatementGenerator.generate(field, Collections.EMPTY_SET, false,
-        SourceBuilder.BEGINNING_OF_FILE).trim();
+        new SourcePosition(null, SourceBuilder.BEGINNING_OF_FILE, null)).trim();
     assertEquals("Test_B *b = " +
         "[[[Test_B alloc] initWithTest:[[[Test alloc] init] autorelease]] autorelease];", result);
 

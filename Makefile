@@ -66,6 +66,7 @@ CLASSES = \
 	gen/ObjectiveCImplementationGenerator.java \
 	gen/ObjectiveCSourceFileGenerator.java \
 	gen/SourceFileGenerator.java \
+	gen/SourcePosition.java \
 	gen/StatementGenerator.java \
 	sym/MethodSymbol.java \
 	sym/Scope.java \
