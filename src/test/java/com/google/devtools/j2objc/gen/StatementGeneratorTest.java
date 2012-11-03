@@ -609,6 +609,14 @@ public class StatementGeneratorTest extends GenerationTest {
         "JreOperatorRetainedAssign(&map_, [[[JavaUtilHashMap alloc] init] autorelease])");
   }
 
+  public void testStringAddOperator() throws IOException {
+    String translation = translateSourceFile(
+      "import java.util.*; public class A { String myString; A() { myString = \"Foo\"; myString += \"Bar\"; }}",
+      "A", "A.m");
+    assertTranslation(translation,
+        "JreOperatorRetainedAssign(&myString_, [NSString stringWithFormat:@\"%@Bar\", myString_]);");
+  }
+
   public void testPrimitiveConstantInSwitchCase() throws IOException {
     String translation = translateSourceFile(
       "public class A { public static final char PREFIX = 'p';" +
