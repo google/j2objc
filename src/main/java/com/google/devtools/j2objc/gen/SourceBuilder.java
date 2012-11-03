@@ -34,6 +34,8 @@ public class SourceBuilder {
   private final StringBuilder buffer = new StringBuilder();
   private final CompilationUnit unit;
   private int indention = 0;
+  private String filename = null;
+  private String source = null;
   private int currentLine = -1;
 
   /**
@@ -52,8 +54,8 @@ public class SourceBuilder {
    * @param unit the compilation unit this source is based upon
    * @param emitLineDirectives if true, generate CPP line directives
    */
-  public SourceBuilder(CompilationUnit unit, boolean emitLineDirectives) {
-    this(unit, emitLineDirectives, BEGINNING_OF_FILE);
+  public SourceBuilder(CompilationUnit unit, String filename, String source, boolean emitLineDirectives) {
+    this(unit, emitLineDirectives, new SourcePosition(filename, BEGINNING_OF_FILE, source));
   }
 
   /**
@@ -65,24 +67,27 @@ public class SourceBuilder {
    * @param emitLineDirectives if true, generate CPP line directives
    * @param int startLine the initial line number, or -1 if at start of file
    */
-  public SourceBuilder(CompilationUnit unit, boolean emitLineDirectives, int startLine) {
+  public SourceBuilder(CompilationUnit unit, boolean emitLineDirectives,
+                       SourcePosition sourcePosition) {
     this.unit = unit;
     this.emitLineDirectives = emitLineDirectives;
-    this.currentLine = startLine;
+    this.source = sourcePosition.getSource();
+    this.filename = sourcePosition.getFilename();
+    this.currentLine = sourcePosition.getLineNumber();
   }
 
   /**
    * Constructor used when line numbers are never needed, such as tests.
    */
   public SourceBuilder() {
-    this(null, false);
+    this(null, null, null, false);
   }
 
   /**
    * Copy constructor.
    */
   public SourceBuilder(SourceBuilder original) {
-    this(original.unit, original.emitLineDirectives, original.currentLine);
+    this(original.unit, original.emitLineDirectives, original.getSourcePosition());
   }
 
   @Override
@@ -251,7 +256,16 @@ public class SourceBuilder {
     }
   }
 
-  public int getCurrentLine() {
-    return currentLine;
+  public int getLineNumber(ASTNode node) {
+    int position = node.getStartPosition();
+    if (position == -1) {
+      return -1;
+    }
+    int sourceLine = unit.getLineNumber(position);
+    return sourceLine;
+  }
+
+  public SourcePosition getSourcePosition() {
+    return new SourcePosition(filename, currentLine, source);
   }
 }

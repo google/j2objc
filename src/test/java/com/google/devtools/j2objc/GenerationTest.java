@@ -22,6 +22,7 @@ import com.google.devtools.j2objc.J2ObjC.Language;
 import com.google.devtools.j2objc.gen.ObjectiveCHeaderGenerator;
 import com.google.devtools.j2objc.gen.ObjectiveCImplementationGenerator;
 import com.google.devtools.j2objc.gen.SourceBuilder;
+import com.google.devtools.j2objc.gen.SourcePosition;
 import com.google.devtools.j2objc.gen.StatementGenerator;
 
 import junit.framework.TestCase;
@@ -180,7 +181,8 @@ public abstract class GenerationTest extends TestCase {
 
   protected String generateStatement(Statement statement) {
     return StatementGenerator.generate(statement,
-        Collections.<IVariableBinding>emptySet(), false, SourceBuilder.BEGINNING_OF_FILE).trim();
+        Collections.<IVariableBinding>emptySet(), false,
+        new SourcePosition(null, SourceBuilder.BEGINNING_OF_FILE, null)).trim();
   }
 
   /**

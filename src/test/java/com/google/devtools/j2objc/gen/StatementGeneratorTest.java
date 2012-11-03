@@ -1191,4 +1191,22 @@ public class StatementGeneratorTest extends GenerationTest {
     assertTranslation(translation, "withInt:[array intAtIndex:1] >> 4");
     assertTranslation(translation, "withInt:[array intAtIndex:2] << 5");
   }
+
+  public void testAssertWithoutDescription() throws IOException {
+    String translation = translateSourceFile(
+        "public class Test { void test() {\n" +
+        "int a = 5;\nint b = 6;\nassert a < b;\n}\n}\n",
+        "Test", "Test.m");
+    assertTranslation(translation,
+        "NSAssert(a < b, @\"Test.java:4 condition failed: assert a < b;\")");
+  }
+
+  public void testAssertWithDescription() throws IOException {
+    String translation = translateSourceFile(
+        "public class Test { void test() { " +
+        "int a = 5; int b = 6; assert a < b : \"a should be lower than b\";}}",
+        "Test", "Test.m");
+    assertTranslation(translation,
+      "NSAssert(a < b, @\"a should be lower than b\")");
+  }
 }

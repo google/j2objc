@@ -43,7 +43,7 @@ public abstract class SourceFileGenerator {
   private final String source;
 
   public SourceFileGenerator(String sourceFileName, String source, CompilationUnit unit, boolean emitLineDirectives) {
-    builder = new SourceBuilder(unit, emitLineDirectives);
+    builder = new SourceBuilder(unit, sourceFileName, source, emitLineDirectives);
     this.sourceFileName = sourceFileName;
     this.source = source;
     this.unit = unit;

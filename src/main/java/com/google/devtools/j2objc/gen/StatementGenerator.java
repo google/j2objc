@@ -17,6 +17,7 @@
 package com.google.devtools.j2objc.gen;
 
 import com.google.common.annotations.VisibleForTesting;
+import com.google.common.base.CharMatcher;
 import com.google.common.collect.Lists;
 import com.google.devtools.j2objc.J2ObjC;
 import com.google.devtools.j2objc.Options;
@@ -127,15 +128,17 @@ public class StatementGenerator extends ErrorReportingASTVisitor {
   private static final String HEX_LITERAL_REGEX = "0[xX].*";
 
   public static String generate(ASTNode node, Set<IVariableBinding> fieldHiders,
-      boolean asFunction, int startLine) throws ASTNodeException {
-    StatementGenerator generator = new StatementGenerator(node, fieldHiders, asFunction, startLine);
+      boolean asFunction, SourcePosition sourcePosition) throws ASTNodeException {
+    StatementGenerator generator = new StatementGenerator(node, fieldHiders, asFunction,
+        sourcePosition);
     generator.run(node);
     return generator.getResult();
   }
 
   public static String generateArguments(IMethodBinding method, List<Expression> args,
-      Set<IVariableBinding> fieldHiders, int startLine) {
-    StatementGenerator generator = new StatementGenerator(null, fieldHiders, false, startLine);
+      Set<IVariableBinding> fieldHiders, SourcePosition sourcePosition) {
+    StatementGenerator generator = new StatementGenerator(null, fieldHiders, false,
+        sourcePosition);
     if (method.isVarargs()) {
       generator.printVarArgs(method, args);
     } else {
@@ -152,9 +155,9 @@ public class StatementGenerator extends ErrorReportingASTVisitor {
   }
 
   private StatementGenerator(ASTNode node, Set<IVariableBinding> fieldHiders, boolean asFunction,
-                             int startLine) {
+                             SourcePosition sourcePosition) {
     CompilationUnit unit = node != null ? (CompilationUnit) node.getRoot() : null;
-    buffer = new SourceBuilder(unit, Options.emitLineDirectives(), startLine);
+    buffer = new SourceBuilder(unit, Options.emitLineDirectives(), sourcePosition);
     this.fieldHiders = fieldHiders;
     this.asFunction = asFunction;
     useReferenceCounting = !Options.useARC();
@@ -571,7 +574,15 @@ public class StatementGenerator extends ErrorReportingASTVisitor {
         buffer.append(" description]");
       }
     } else {
-      buffer.append("@\"\""); // empty string
+      String assertStatementString =
+          extractNodeCode(buffer.getSourcePosition().getSource(), node);
+      assertStatementString = CharMatcher.WHITESPACE.trimFrom(assertStatementString);
+      assertStatementString = makeQuotedString(assertStatementString);
+      // Generates the following string:
+      // filename.java:456 condition failed: foobar != fish.
+      buffer.append("@\"" + buffer.getSourcePosition().getFilename() + ":"
+                  + buffer.getLineNumber(node)
+                  + " condition failed: " + assertStatementString + "\"");
     }
     buffer.append(");\n");
     return false;
@@ -1033,7 +1044,7 @@ public class StatementGenerator extends ErrorReportingASTVisitor {
       NameTable.rename(Types.getBinding(var.getName()), varName);
     }
     String arrayExpr = generate(node.getExpression(), fieldHiders, asFunction,
-      buffer.getCurrentLine());
+        buffer.getSourcePosition());
     ITypeBinding arrayType = Types.getTypeBinding(node.getExpression());
     if (arrayType.isArray()) {
       buffer.append("{\nint n__ = [");
@@ -2235,5 +2246,32 @@ public class StatementGenerator extends ErrorReportingASTVisitor {
     // All Initializer nodes should have been converted during initialization
     // normalization.
     throw new AssertionError("initializer node not converted");
+  }
+
+  // Returns a string of the source at the location given by offset of the given length.
+  private static String extractCode(String source, int offset, int length) {
+    return source.substring(offset, offset + length);
+  }
+
+  // Returns a string of the code referenced by the given node.
+  private static String extractNodeCode(String source, ASTNode node) {
+    return extractCode(source, node.getStartPosition(), node.getLength());
+  }
+
+  // Returns a string where all characters that will interfer in
+  // a valid Objective-C string are quoted.
+  private static String makeQuotedString(String originalString) {
+    int location;
+    StringBuffer buffer = new StringBuffer(originalString);
+    while ((location = buffer.indexOf("\\")) != -1) {
+      buffer.replace(location, location + 1, "\\\\");
+    }
+    while ((location = buffer.indexOf("\"")) != -1) {
+      buffer.replace(location, location + 1, "\\\"");
+    }
+    while ((location = buffer.indexOf("\n")) != -1) {
+      buffer.replace(location, location + 1, "\\n");
+    }
+    return buffer.toString();
   }
 }

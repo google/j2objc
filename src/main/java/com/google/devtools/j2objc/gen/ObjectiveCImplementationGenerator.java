@@ -348,7 +348,7 @@ public class ObjectiveCImplementationGenerator extends ObjectiveCSourceFileGener
         printf("WithNSString:@\"%s\" withInt:%d];\n", name, i);
       } else {
         String argString = StatementGenerator.generateArguments(Types.getMethodBinding(constant),
-            args, fieldHiders, getBuilder().getCurrentLine());
+            args, fieldHiders, getBuilder().getSourcePosition());
         print(argString);
         if (args.isEmpty()) {
           print("With");
@@ -369,7 +369,7 @@ public class ObjectiveCImplementationGenerator extends ObjectiveCSourceFileGener
       List<Statement> stmts = initializeMethod.getBody().statements(); // safe by definition
       for (Statement s : stmts) {
         printf("    %s", StatementGenerator.generate(s, fieldHiders, false,
-            getBuilder().getCurrentLine()));
+            getBuilder().getSourcePosition()));
       }
     }
     println("  }\n}\n");
@@ -543,16 +543,17 @@ public class ObjectiveCImplementationGenerator extends ObjectiveCSourceFileGener
 
   private String generateStatement(Statement stmt, boolean asFunction, boolean inConstructor) {
     return StatementGenerator.generate(stmt, fieldHiders, asFunction,
-        getBuilder().getCurrentLine());
+        getBuilder().getSourcePosition());
   }
 
   private String generateStatement(Statement stmt, boolean asFunction) {
     return StatementGenerator.generate(stmt, fieldHiders, asFunction,
-        getBuilder().getCurrentLine());
+        getBuilder().getSourcePosition());
   }
 
   private String generateExpression(Expression expr) {
-    return StatementGenerator.generate(expr, fieldHiders, false, getBuilder().getCurrentLine());
+    return StatementGenerator.generate(expr, fieldHiders, false,
+        getBuilder().getSourcePosition());
   }
 
   private void printMainMethod(MethodDeclaration m, String typeName,
