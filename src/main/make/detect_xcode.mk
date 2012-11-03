@@ -47,7 +47,7 @@ ARCH_FLAGS =
 
 # Determine this makefile's path.
 THIS_FILE = $(word $(words $(MAKEFILE_LIST)),$(MAKEFILE_LIST))
-SYSROOT_SCRIPT = $(shell dirname ${THIS_FILE})/sysroot_path
+SYSROOT_SCRIPT = $(shell dirname ${THIS_FILE})/sysroot_path.sh
 SDKROOT = $(shell ${SYSROOT_SCRIPT})
 
 dep_build_dir = $(word 2,$(1))/$(BUILD_DIR_NAME)
