@@ -584,12 +584,18 @@ public class StatementGenerator extends ErrorReportingASTVisitor {
     Expression rhs = node.getRightHandSide();
     if (op == Operator.PLUS_ASSIGN &&
         Types.isJavaStringType(lhs.resolveTypeBinding())) {
-      boolean needClosingParen = printAssignmentLhs(lhs);
-      // Change "str1 += str2" to "str1 = str1 + str2".
-      buffer.append(" = ");
-      printStringConcatenation(lhs, rhs, Collections.<Expression>emptyList(), needClosingParen);
-      if (needClosingParen) {
+      if (Options.useReferenceCounting() && isLeftHandSideRetainedProperty(lhs)) {
+        String name = leftHandSideInstanceVariableName(lhs);
+        buffer.append("JreOperatorRetainedAssign(&" + name);
+        buffer.append(", ");
+        printStringConcatenation(lhs, rhs, Collections.<Expression>emptyList());
         buffer.append(")");
+      }
+      else {
+        printAssignmentLhs(lhs);
+        // Change "str1 += str2" to "str1 = str1 + str2".
+        buffer.append(" = ");
+        printStringConcatenation(lhs, rhs, Collections.<Expression>emptyList());
       }
     } else if (op == Operator.REMAINDER_ASSIGN && (isFloatingPoint(lhs) || isFloatingPoint(rhs))) {
       lhs.accept(this);
@@ -632,7 +638,7 @@ public class StatementGenerator extends ErrorReportingASTVisitor {
         buffer.append(']');
         return false;
       } else {
-        if (isLeftHandSideRetainedProperty(lhs)) {
+        if (Options.useReferenceCounting() && isLeftHandSideRetainedProperty(lhs)) {
           String name = leftHandSideInstanceVariableName(lhs);
           buffer.append("JreOperatorRetainedAssign(&" + name);
           buffer.append(", ");
@@ -738,8 +744,7 @@ public class StatementGenerator extends ErrorReportingASTVisitor {
       // Inline the setter for a property.
       IVariableBinding var = Types.getVariableBinding(lhs);
       ITypeBinding type = Types.getTypeBinding(lhs);
-      if (Options.useReferenceCounting() && !type.isPrimitive() &&
-          lhs instanceof SimpleName) {
+      if (!type.isPrimitive() && lhs instanceof SimpleName) {
         if (isProperty((SimpleName) lhs) && !Types.hasWeakAnnotation(var.getDeclaringClass())) {
           isRetainedProperty = true;
         }
@@ -780,7 +785,8 @@ public class StatementGenerator extends ErrorReportingASTVisitor {
     boolean needClosingParen = false;
     String nativeName = leftHandSideInstanceVariableName(lhs);
 
-    if ((nativeName != null) && (isLeftHandSideRetainedProperty(lhs))) {
+    if ((nativeName != null) && Options.useReferenceCounting() &&
+        isLeftHandSideRetainedProperty(lhs)) {
       buffer.append(String.format("([%s autorelease], ", nativeName));
       needClosingParen = true;
     }
@@ -1202,7 +1208,7 @@ public class StatementGenerator extends ErrorReportingASTVisitor {
     if (Types.isJavaStringType(type) &&
         op.equals(InfixExpression.Operator.PLUS)) {
       printStringConcatenation(node.getLeftOperand(), node.getRightOperand(),
-          node.extendedOperands(), false);
+          node.extendedOperands());
     } else if (op.equals(InfixExpression.Operator.RIGHT_SHIFT_UNSIGNED)) {
       printUnsignedRightShift(node.getLeftOperand(), node.getRightOperand());
     } else if (op.equals(InfixExpression.Operator.REMAINDER) && isFloatingPoint(node)) {
@@ -1238,7 +1244,7 @@ public class StatementGenerator extends ErrorReportingASTVisitor {
    */
   @SuppressWarnings("fallthrough")
   private void printStringConcatenation(Expression leftOperand, Expression rightOperand,
-      List<Expression> extendedOperands, boolean needRetainRhs) {
+      List<Expression> extendedOperands) {
     // Copy all operands into a single list.
     List<Expression> operands = Lists.newArrayList(leftOperand, rightOperand);
     operands.addAll(extendedOperands);
@@ -1306,11 +1312,7 @@ public class StatementGenerator extends ErrorReportingASTVisitor {
       return;
     }
 
-    if (needRetainRhs) {
-      buffer.append("[[NSString alloc] initWithFormat:");
-    } else {
-      buffer.append("[NSString stringWithFormat:");
-    }
+    buffer.append("[NSString stringWithFormat:");
     buffer.append(format);
     buffer.append(", ");
     for (Iterator<Expression> iter = args.iterator(); iter.hasNext(); ) {
