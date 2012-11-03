@@ -294,8 +294,8 @@ SIMULATOR_BUILD_DIR = $(BUILD_DIR)/simulator
 SIMULATOR_OBJS = $(OBJS:$(CLASS_DIR)/%=$(SIMULATOR_BUILD_DIR)/%) \
   $(IOS_OBJS:$(CLASS_DIR)/%=$(SIMULATOR_BUILD_DIR)/%)
 
-IPHONE_SDK_DIR = $(shell ../src/main/make/sysroot_path --iphoneos)
-SIMULATOR_SDK_DIR = $(shell ../src/main/make/sysroot_path --iphonesimulator)
+IPHONE_SDK_DIR = $(shell ../src/main/make/sysroot_path.sh --iphoneos)
+SIMULATOR_SDK_DIR = $(shell ../src/main/make/sysroot_path.sh --iphonesimulator)
 
 export ALT_ARCH_FLAGS
 export ALT_SDK_FLAGS
