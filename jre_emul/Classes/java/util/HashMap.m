@@ -22,11 +22,9 @@
 
 @synthesize dictionary = dictionary_;
 
-- (id)init {
-  return [self initWithInt:JavaUtilHashMap_DEFAULT_SIZE];
-}
-
-- (id)initWithInt:(int)capacity {
+// Private initializer.
+// We need this with a unique name to avoid clashing with subclasses.
+- (id)initJavaUtilHashMapWithCapacity:(int)capacity {
   if (capacity < 0) {
     id exception = [[JavaLangIllegalArgumentException alloc] init];
 #if ! __has_feature(objc_arc)
@@ -37,10 +35,18 @@
   self = [super init];
   if (self) {
     dictionary_ = (ARCBRIDGE_TRANSFER NSMutableDictionary *)
-        CFDictionaryCreateMutable(NULL, capacity,
-        &kCFTypeDictionaryKeyCallBacks, &kCFTypeDictionaryValueCallBacks);
+    CFDictionaryCreateMutable(NULL, capacity,
+                              &kCFTypeDictionaryKeyCallBacks, &kCFTypeDictionaryValueCallBacks);
   }
   return self;
+}
+
+- (id)init {
+  return [self initJavaUtilHashMapWithCapacity:JavaUtilHashMap_DEFAULT_SIZE];
+}
+
+- (id)initWithInt:(int)capacity {
+  return [self initJavaUtilHashMapWithCapacity:capacity];
 }
 
 - (id)initWithInt:(int)capacity withFloat:(float)loadFactor {
@@ -51,7 +57,7 @@
 #endif
     @throw exception;
   }
-  return [self initWithInt:capacity];
+  return [self initJavaUtilHashMapWithCapacity:capacity];
 }
 
 - (id)initWithJavaUtilMap:(id<JavaUtilMap>)map {
@@ -63,7 +69,7 @@
     @throw exception;
   }
   int size = [map size];
-  self = [self initWithInt:size];
+  self = [self initJavaUtilHashMapWithCapacity:size];
   if (self) {
     if ([map isMemberOfClass:[JavaUtilHashMap class]]) {
       JavaUtilHashMap *other = (JavaUtilHashMap *) map;

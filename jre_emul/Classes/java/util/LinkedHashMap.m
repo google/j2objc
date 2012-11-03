@@ -13,7 +13,9 @@
 @synthesize index = index_;
 @synthesize lastAccessedOrder = lastAccessedOrder_;
 
-- (id)initWithInt:(int)capacity {
+// Private initializer.
+// We need this with a unique name to avoid clashing with subclasses.
+- (id)initJavaUtilLinkedHashMapWithCapacity:(int)capacity {
   if ((self = [super initWithInt:capacity])) {
     index_ = [[NSMutableArray alloc] initWithCapacity:capacity];
     lastAccessedOrder_ = NO;
@@ -21,10 +23,15 @@
   return self;
 }
 
+- (id)initWithInt:(int)capacity {
+  return [self initJavaUtilLinkedHashMapWithCapacity:capacity];
+}
+
 - (id)initWithInt:(int)capacity
         withFloat:(float)loadFactor
-  withBOOL:(BOOL)lastAccessedOrder {
-  if ((self = [self initWithInt:capacity])) {
+         withBOOL:(BOOL)lastAccessedOrder {
+  if ((self = [self initJavaUtilLinkedHashMapWithCapacity:capacity])) {
+    index_ = [[NSMutableArray alloc] initWithCapacity:capacity];
     lastAccessedOrder_ = lastAccessedOrder;
   }
   return self;
