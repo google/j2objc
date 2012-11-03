@@ -242,10 +242,12 @@ public class ObjectiveCImplementationGeneratorTest extends GenerationTest {
   }
 
   public void testEnumWithParameters() throws IOException {
-    String translation = translateSourceFile(
-      "public enum Color { RED(0xff0000), WHITE(0xffffff), BLUE(0x0000ff); " +
-      "private int rgb; private Color(int rgb) { this.rgb = rgb; } " +
-      "public int getRgb() { return rgb; }}",
+    String sourceContent =
+        "public enum Color { RED(0xff0000), WHITE(0xffffff), BLUE(0x0000ff); "
+        + "private int rgb; private int newValue;"
+        + "private Color(int rgb) { this.rgb = rgb; } "
+        + "public int getRgb() { return rgb; }}";
+    String translation = translateSourceFile(sourceContent,
       "Color", "Color.m");
     assertTranslation(translation, "ColorEnum *ColorEnum_RED;");
     assertTranslation(translation, "@implementation ColorEnum");
@@ -261,10 +263,42 @@ public class ObjectiveCImplementationGeneratorTest extends GenerationTest {
       "initWithInt:(int) 0x0000ff withNSString:@\"Color_BLUE\" withInt:2];");
     assertTranslation(translation, "- (int)getRgb {");
     assertTranslation(translation, "return rgb_;");
-    assertTranslation(translation, "- (int)rgb {");
-    assertTranslation(translation, "return rgb_;");
-    assertTranslation(translation, "- (void)setRgb:(int)newRgb {");
-    assertTranslation(translation, "rgb_ = newRgb;");
+    assertTranslation(translation, "@synthesize rgb = rgb_;");
+    assertTranslation(translation, "@synthesize newValue = newValue_;");
+    translation = getTranslatedFile("Color.h");
+    assertTranslation(translation, "@property (nonatomic, assign) int newValue;");
+    assertTranslation(translation, "- (int)newValue OBJC_METHOD_FAMILY_NONE;");
+  }
+
+  public void testClassField() throws IOException {
+    String sourceContent =
+        "import com.google.j2objc.annotations.Weak;"
+        + "public class FooBar {"
+        + "private static int fieldPhi;"
+        + "private Object fieldFoo;"
+        + "@Weak private Object fieldJar;"
+        + "private int newFieldBar;"
+        + "}";
+    String translation = translateSourceFile(sourceContent,
+      "FooBar", "FooBar.m");
+    assertTranslation(translation, "@synthesize fieldFoo = fieldFoo_;");
+    assertTranslation(translation, "@synthesize fieldJar = fieldJar_;");
+    assertTranslation(translation, "@synthesize newFieldBar = newFieldBar_;");
+    assertTranslation(translation, "static int FooBar_fieldPhi_;");
+    assertTranslation(translation, "+ (int)fieldPhi {");
+    assertTranslation(translation, "return FooBar_fieldPhi_;");
+    assertTranslation(translation, "+ (void)setFieldPhiWithInt:(int)fieldPhi {");
+    assertTranslation(translation, "FooBar_fieldPhi_ = fieldPhi;");
+    translation = getTranslatedFile("FooBar.h");
+    assertTranslation(translation, "NSObject *fieldFoo_;");
+    assertTranslation(translation, "NSObject *fieldJar_;");
+    assertTranslation(translation, "int newFieldBar_;");
+    assertTranslation(translation, "@property (nonatomic, retain) id fieldFoo;");
+    assertTranslation(translation, "@property (nonatomic, assign) id fieldJar;");
+    assertTranslation(translation, "@property (nonatomic, assign) int newFieldBar;");
+    assertTranslation(translation, "- (int)newFieldBar OBJC_METHOD_FAMILY_NONE;");
+    assertTranslation(translation, "+ (int)fieldPhi;");
+    assertTranslation(translation, "+ (void)setFieldPhiWithInt:(int)fieldPhi;");
   }
 
   public void testEmptyInterfaceGeneration() throws IOException {

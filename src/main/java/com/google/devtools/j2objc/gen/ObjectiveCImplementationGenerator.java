@@ -697,45 +697,9 @@ public class ObjectiveCImplementationGenerator extends ObjectiveCSourceFileGener
             typeString += " ";
           }
 
-          // Don't emit the getter when there is already a method with the
-          // same name.
-          // TODO(user,user): Update when getters are merged with property
-          // accessors (see issues).
-          boolean noGetter = false;
-          ITypeBinding declaringClass = Types.getTypeBinding(field.getParent());
-          if (declaringClass != null) {
-            IMethodBinding[] methods = declaringClass.getDeclaredMethods();
-            for (IMethodBinding method : methods) {
-              if (method.getName().equals(name) && method.getParameterTypes().length == 0) {
-                noGetter = true;
-                break;
-              }
-            }
-          }
-
           String objCFieldName = NameTable.javaFieldToObjC(name);
 
-          // Getter
-          if (!noGetter) {
-            printf(String.format("- (%s)%s {\n  return %s;\n}\n\n",
-                typeString.trim(), name, objCFieldName));
-          }
-
-          // Setter
-          printf(String.format("- (void)set%s:(%s)new%s {\n",
-              NameTable.capitalize(name), typeString.trim(), NameTable.capitalize(name)));
-          if (type.isPrimitive()) {
-            printf(String.format("  %s = new%s;\n}\n\n",
-                objCFieldName, NameTable.capitalize(name)));
-          } else if (Options.useReferenceCounting() &&
-              !Types.isWeakReference(Types.getVariableBinding(var))) {
-            String retentionMethod = type.isEqualTo(Types.getNSString()) ? "copy" : "retain";
-            printf(String.format("  [%s autorelease];\n  %s = [new%s %s];\n}\n\n",
-                objCFieldName, objCFieldName, NameTable.capitalize(name), retentionMethod));
-          } else {
-            printf(String.format("  %s = new%s;\n}\n\n",
-              objCFieldName, NameTable.capitalize(name)));
-          }
+          printf(String.format("@synthesize %s = %s;\n", name, objCFieldName));
           nPrinted++;
         }
       }
