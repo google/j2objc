@@ -79,7 +79,7 @@ public class InitializationNormalizerTest extends GenerationTest {
         "Test() { this(true); b2 = true; }" +
         "Test(boolean b) { b1 = b; }}";
     String translation = translateSourceFile(source, "Test", "Test.m");
-    assertTranslation(translation, "if ((self = [self initTestWithBOOL:YES])) {");
+    assertTranslation(translation, "if ((self = [self initWithBOOL:YES])) {");
   }
 
   /**
