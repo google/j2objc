@@ -87,6 +87,10 @@ WARNINGS := $(WARNINGS) -Wreturn-type
 endif
 endif
 
+# Make sure we aren't relying on auto-synthesis for compatibility with older
+# versions of clang.
+WARNINGS := $(WARNINGS) -Wobjc-missing-property-synthesis \
+
 # The -fobjc flags match XCode (a link fails without them because of
 # missing symbols of the form OBJC_CLASS_$_[classname]).
 OBJCFLAGS := -ObjC $(WARNINGS) $(SDK_FLAGS) $(ALT_SDK_FLAGS) \
