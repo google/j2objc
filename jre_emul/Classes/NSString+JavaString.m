@@ -39,11 +39,11 @@
 }
 - (int)compareWithId:(NSString *)o1
               withId:(NSString *)o2;
+
++ (id<JavaUtilComparator>)CASE_INSENSITIVE_ORDER;
 @end
 
 @implementation NSString (JavaString)
-
-static id<JavaUtilComparator> CaseInsensitiveComparator_CASE_INSENSITIVE_ORDER_;
 
 id makeException(Class exceptionClass) {
   id exception = [[exceptionClass alloc] init];
@@ -821,24 +821,31 @@ NSStringEncoding parseCharsetName(NSString *charset) {
 }
 
 + (id<JavaUtilComparator>)CASE_INSENSITIVE_ORDER {
-  return CaseInsensitiveComparator_CASE_INSENSITIVE_ORDER_;
-}
-
-+ (void)initialize {
-  if (self == [CaseInsensitiveComparator class]) {
-    JreOperatorRetainedAssign(
-        &CaseInsensitiveComparator_CASE_INSENSITIVE_ORDER_, 
-        AUTORELEASE([[CaseInsensitiveComparator alloc] init]));
-  }
+  // Use accessor to force comparator's class initialization
+  return [CaseInsensitiveComparator CASE_INSENSITIVE_ORDER];
 }
 
 @end
 
 @implementation CaseInsensitiveComparator
 
+static id<JavaUtilComparator> CaseInsensitiveComparator_CASE_INSENSITIVE_ORDER_;
+
 - (int)compareWithId:(NSString *)o1
               withId:(NSString *)o2 {
   return [NIL_CHK(o1) compareToIgnoreCase:o2];
+}
+
++ (id<JavaUtilComparator>)CASE_INSENSITIVE_ORDER {
+  return CaseInsensitiveComparator_CASE_INSENSITIVE_ORDER_;
+}
+
++ (void)initialize {
+  if (self == [CaseInsensitiveComparator class]) {
+    JreOperatorRetainedAssign(
+        &CaseInsensitiveComparator_CASE_INSENSITIVE_ORDER_,
+        AUTORELEASE([[CaseInsensitiveComparator alloc] init]));
+  }
 }
 
 @end
