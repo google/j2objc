@@ -2,510 +2,240 @@
 //  LinkedHashMap.m
 //  JreEmulation
 //
-//  Created by Keith Stanger on 11/06/12.
-//  Copyright 2012 Google, Inc. All rights reserved.
+//  Created by Tom Ball on 2/17/12.
+//  Copyright (c) 2012 Google, Inc. All rights reserved.
 //
 
-#import "IOSClass.h"
-#import "java/lang/IllegalStateException.h"
-#import "java/util/Collection.h"
-#import "java/util/ConcurrentModificationException.h"
-#import "java/util/HashMap.h"
-#import "java/util/Iterator.h"
-#import "java/util/LinkedHashMap_PackagePrivate.h"
-#import "java/util/Map.h"
-#import "java/util/NoSuchElementException.h"
-#import "java/util/Set.h"
+#import "LinkedHashMap_PackagePrivate.h"
 
 @implementation JavaUtilLinkedHashMap
 
-@synthesize accessOrder = accessOrder_;
-@synthesize head = head_;
-@synthesize tail = tail_;
+@synthesize index = index_;
+@synthesize lastAccessedOrder = lastAccessedOrder_;
 
-- (id)init {
-  if ((self = [super init])) {
-    accessOrder_ = NO;
-    ([head_ autorelease], head_ = nil);
+// Private initializer.
+// We need this with a unique name to avoid clashing with subclasses.
+- (id)initJavaUtilLinkedHashMapWithCapacity:(int)capacity {
+  if ((self = [super initWithInt:capacity])) {
+    index_ = [[NSMutableArray alloc] initWithCapacity:capacity];
+    lastAccessedOrder_ = NO;
   }
   return self;
 }
 
-- (id)initWithInt:(int)s {
-  if ((self = [super initWithInt:s])) {
-    accessOrder_ = NO;
-    ([head_ autorelease], head_ = nil);
+- (id)initWithInt:(int)capacity {
+  return [self initJavaUtilLinkedHashMapWithCapacity:capacity];
+}
+
+- (id)initWithInt:(int)capacity
+        withFloat:(float)loadFactor
+         withBOOL:(BOOL)lastAccessedOrder {
+  if ((self = [self initJavaUtilLinkedHashMapWithCapacity:capacity])) {
+    lastAccessedOrder_ = lastAccessedOrder;
   }
   return self;
 }
 
-- (id)initWithInt:(int)s
-        withFloat:(float)lf {
-  if ((self = [super initWithInt:s withFloat:lf])) {
-    accessOrder_ = NO;
-    ([head_ autorelease], head_ = nil);
-    ([tail_ autorelease], tail_ = nil);
+- (id)initWithJavaUtilMap:(id<JavaUtilMap>)map {
+  if ((self = [super initWithJavaUtilMap:map])) {
+    index_ = [[NSMutableArray alloc] initWithCapacity:[map size]];
   }
   return self;
 }
 
-- (id)initWithInt:(int)s
-        withFloat:(float)lf
-         withBOOL:(BOOL)order {
-  if ((self = [super initWithInt:s withFloat:lf])) {
-    accessOrder_ = order;
-    ([head_ autorelease], head_ = nil);
-    ([tail_ autorelease], tail_ = nil);
-  }
-  return self;
+#pragma mark -
+
+- (void)clear {
+  [super clear];
+  [index_ removeAllObjects];
 }
 
-- (id)initWithJavaUtilMap:(id<JavaUtilMap>)m {
-  if ((self = [super init])) {
-    accessOrder_ = NO;
-    ([head_ autorelease], head_ = nil);
-    ([tail_ autorelease], tail_ = nil);
-    [self putAllWithJavaUtilMap:m];
-  }
-  return self;
-}
-
-- (BOOL)containsValueWithId:(id)value {
-  JavaUtilLinkedHashMap_LinkedHashMapEntry *entry = head_;
-  if (nil == value) {
-    while (nil != entry) {
-      if (nil == entry->value_) {
-        return YES;
-      }
-      entry = entry->chainForward_;
-    }
-  }
-  else {
-    while (nil != entry) {
-      if ([value isEqual:entry->value_]) {
-        return YES;
-      }
-      entry = entry->chainForward_;
-    }
-  }
-  return NO;
+- (id<JavaUtilSet>)entrySet {
+  id result = [[JavaUtilLinkedHashMap_EntrySet alloc]
+               initWithJavaUtilHashMap:self];
+#if ! __has_feature(objc_arc)
+  [result autorelease];
+#endif
+  return result;
 }
 
 - (id)getWithId:(id)key {
-  JavaUtilLinkedHashMap_LinkedHashMapEntry *m;
-  if (key == nil) {
-    m = (JavaUtilLinkedHashMap_LinkedHashMapEntry *) [self findNullKeyEntry];
+  key = denullify(key);
+  id result = [super getWithId:key];
+  if (lastAccessedOrder_ && result != nil) {
+    [index_ removeObject:key];
+    [index_ addObject:key];
   }
-  else {
-    int hash_ = [key hash];
-    int index = (hash_ & (int) 0x7FFFFFFF) % elementDataLength_;
-    m = (JavaUtilLinkedHashMap_LinkedHashMapEntry *)
-        [self findNonNullKeyEntryWithId:key withInt:index withInt:hash_];
-  }
-  if (m == nil) {
-    return nil;
-  }
-  if (accessOrder_ && tail_ != m) {
-    JavaUtilLinkedHashMap_LinkedHashMapEntry *p = m->chainBackward_;
-    JavaUtilLinkedHashMap_LinkedHashMapEntry *n = m->chainForward_;
-    n->chainBackward_ = p;
-    if (p != nil) {
-      p->chainForward_ = n;
-    }
-    else {
-      head_ = n;
-    }
-    m->chainForward_ = nil;
-    m->chainBackward_ = tail_;
-    tail_->chainForward_ = m;
-    tail_ = m;
-  }
-  return m->value_;
+  return nullify(result);
 }
 
-- (JavaUtilHashMap_Entry *)createHashedEntryWithId:(id)key
-                                           withInt:(int)index
-                                           withInt:(int)hash_ {
-  JavaUtilLinkedHashMap_LinkedHashMapEntry *m =
-      [[JavaUtilLinkedHashMap_LinkedHashMapEntry alloc] initWithId:key withInt:hash_];
-  m->next_ = elementData_[index];
-  elementData_[index] = m;
-  [self linkEntryWithJavaUtilLinkedHashMap_LinkedHashMapEntry:m];
-  return m;
+- (BOOL)isEqual:(id)object {
+  return [object isKindOfClass:[JavaUtilLinkedHashMap class]] &&
+      [super isEqual:object];
+}
+
+- (id<JavaUtilSet>)keySet {
+  id keySet =
+      [[JavaUtilLinkedHashMap_KeySet alloc] initWithJavaUtilHashMap:self];
+#if ! __has_feature(objc_arc)
+  [keySet autorelease];
+#endif
+  return keySet;
 }
 
 - (id)putWithId:(id)key
          withId:(id)value {
-  id result = [self putImplWithId:key withId:value];
-  if ([self removeEldestEntryWithJavaUtilMap_Entry:head_]) {
-    [self removeWithId:head_->key_];
-  }
-  return result;
-}
-
-- (id)putImplWithId:(id)key
-             withId:(id)value {
-  JavaUtilLinkedHashMap_LinkedHashMapEntry *m;
-  if (elementCount_ == 0) {
-    head_ = tail_ = nil;
-  }
-  if (key == nil) {
-    m = (JavaUtilLinkedHashMap_LinkedHashMapEntry *) [self findNullKeyEntry];
-    if (m == nil) {
-      modCount_++;
-      if (++elementCount_ > threshold_) {
-        [self rehash];
-      }
-      m = (JavaUtilLinkedHashMap_LinkedHashMapEntry *)
-          [self createHashedEntryWithId:nil withInt:0 withInt:0];
+  key = denullify(key);
+  id previous = [super putWithId:key withId:value];
+  if (lastAccessedOrder_) {
+    if (previous) {
+      [index_ removeObject:key];
     }
-    else {
-      [self linkEntryWithJavaUtilLinkedHashMap_LinkedHashMapEntry:m];
-    }
+    [index_ addObject:key];
+  } else if (!previous) {
+    [index_ addObject:key];
   }
-  else {
-    int hash_ = [key hash];
-    int index = (hash_ & (int) 0x7FFFFFFF) % elementDataLength_;
-    m = (JavaUtilLinkedHashMap_LinkedHashMapEntry *)
-        [self findNonNullKeyEntryWithId:key withInt:index withInt:hash_];
-    if (m == nil) {
-      modCount_++;
-      if (++elementCount_ > threshold_) {
-        [self rehash];
-        index = (hash_ & (int) 0x7FFFFFFF) % elementDataLength_;
-      }
-      m = (JavaUtilLinkedHashMap_LinkedHashMapEntry *)
-          [self createHashedEntryWithId:key withInt:index withInt:hash_];
-    }
-    else {
-      [self linkEntryWithJavaUtilLinkedHashMap_LinkedHashMapEntry:m];
-    }
-  }
-  id result = [m->value_ autorelease];
-  m->value_ = [value retain];
-  return result;
-}
-
-- (void)linkEntryWithJavaUtilLinkedHashMap_LinkedHashMapEntry:(JavaUtilLinkedHashMap_LinkedHashMapEntry *)m {
-  if (tail_ == m) {
-    return;
-  }
-  if (head_ == nil) {
-    head_ = tail_ = m;
-    return;
-  }
-  JavaUtilLinkedHashMap_LinkedHashMapEntry *p = m->chainBackward_;
-  JavaUtilLinkedHashMap_LinkedHashMapEntry *n = m->chainForward_;
-  if (p == nil) {
-    if (n != nil) {
-      if (accessOrder_) {
-        head_ = n;
-        n->chainBackward_ = nil;
-        m->chainBackward_ = tail_;
-        m->chainForward_ = nil;
-        tail_->chainForward_ = m;
-        tail_ = m;
-      }
-    }
-    else {
-      m->chainBackward_ = tail_;
-      m->chainForward_ = nil;
-      tail_->chainForward_ = m;
-      tail_ = m;
-    }
-    return;
-  }
-  if (n == nil) {
-    return;
-  }
-  if (accessOrder_) {
-    p->chainForward_ = n;
-    n->chainBackward_ = p;
-    m->chainForward_ = nil;
-    m->chainBackward_ = tail_;
-    tail_->chainForward_ = m;
-    tail_ = m;
-  }
-}
-
-- (id<JavaUtilSet>)entrySet {
-  return [[[JavaUtilLinkedHashMap_LinkedHashMapEntrySet alloc] initWithJavaUtilLinkedHashMap:self] autorelease];
-}
-
-- (id<JavaUtilSet>)keySet {
-  if (keySet__ == nil) {
-    keySet__ = [[JavaUtilLinkedHashMap_KeySet alloc] initWithJavaUtilLinkedHashMap:self];
-  }
-  return keySet__;
-}
-
-- (id<JavaUtilCollection>)values {
-  if (valuesCollection_ == nil) {
-    valuesCollection_ =
-        [[JavaUtilLinkedHashMap_ValuesCollection alloc] initWithJavaUtilLinkedHashMap:self];
-  }
-  return valuesCollection_;
+  return previous;  // already nullified by superclass.
 }
 
 - (id)removeWithId:(id)key {
-  JavaUtilLinkedHashMap_LinkedHashMapEntry *m =
-      (JavaUtilLinkedHashMap_LinkedHashMapEntry *) [self removeEntryWithId:key];
-  if (m == nil) {
-    return nil;
-  }
-  JavaUtilLinkedHashMap_LinkedHashMapEntry *p = m->chainBackward_;
-  JavaUtilLinkedHashMap_LinkedHashMapEntry *n = m->chainForward_;
-  if (p != nil) {
-    p->chainForward_ = n;
-  } else {
-    head_ = n;
-  }
-  if (n != nil) {
-    n->chainBackward_ = p;
-  }
-  else {
-    tail_ = p;
-  }
-  return m->value_;
+  id result = [super removeWithId:key];
+  [index_ removeObject:denullify(key)];
+  return result;  // already nullified by superclass.
 }
 
-- (BOOL)removeEldestEntryWithJavaUtilMap_Entry:(id<JavaUtilMap_Entry>)eldest {
-  return NO;
+- (id<JavaUtilCollection>)values {
+  id result = [[JavaUtilLinkedHashMap_Values alloc]
+               initWithJavaUtilHashMap:self];
+#if ! __has_feature(objc_arc)
+  [result autorelease];
+#endif
+  return result;
 }
 
-- (void)clear {
-  [super clear];
-  head_ = tail_ = nil;
+- (id)mutableCopyWithZone:(NSZone *)zone {
+  JavaUtilLinkedHashMap *copy = [super mutableCopyWithZone:zone];
+  copy->index_ = [index_ mutableCopy];
+  return copy;
 }
 
-- (void)copyAllPropertiesTo:(id)copy {
-  [super copyAllPropertiesTo:copy];
-  JavaUtilLinkedHashMap *typedCopy = (JavaUtilLinkedHashMap *) copy;
-  typedCopy.accessOrder = accessOrder_;
-}
-
-@end
-
-
-@implementation JavaUtilLinkedHashMap_AbstractMapIterator
-
-- (id)initWithJavaUtilLinkedHashMap:(JavaUtilLinkedHashMap *)map {
-  if ((self = [super init])) {
-    expectedModCount_ = map.modCount;
-    futureEntry_ = map.head;
-    [associatedMap_ autorelease];
-    associatedMap_ = [map retain];
-  }
-  return self;
-}
-
-- (BOOL)hasNext {
-  return (futureEntry_ != nil);
-}
-
-- (void)checkConcurrentMod {
-  if (expectedModCount_ != associatedMap_.modCount) {
-    @throw [[[JavaUtilConcurrentModificationException alloc] init] autorelease];
-  }
-}
-
-- (void)makeNext {
-  [self checkConcurrentMod];
-  if (![self hasNext]) {
-    @throw [[[JavaUtilNoSuchElementException alloc] init] autorelease];
-  }
-  currentEntry_ = futureEntry_;
-  futureEntry_ = futureEntry_->chainForward_;
-}
-
-- (void)remove {
-  [self checkConcurrentMod];
-  if (currentEntry_ == nil) {
-    @throw [[[JavaLangIllegalStateException alloc] init] autorelease];
-  }
-  [associatedMap_ removeEntryWithJavaUtilHashMap_Entry:currentEntry_];
-  JavaUtilLinkedHashMap_LinkedHashMapEntry *lhme = currentEntry_;
-  JavaUtilLinkedHashMap_LinkedHashMapEntry *p = lhme->chainBackward_;
-  JavaUtilLinkedHashMap_LinkedHashMapEntry *n = lhme->chainForward_;
-  JavaUtilLinkedHashMap *lhm = associatedMap_;
-  if (p != nil) {
-    p->chainForward_ = n;
-    if (n != nil) {
-      n->chainBackward_ = p;
-    }
-    else {
-      lhm.tail = p;
-    }
-  }
-  else {
-    lhm.head = n;
-    if (n != nil) {
-      n->chainBackward_ = nil;
-    } else {
-      lhm.tail = nil;
-    }
-  }
-  currentEntry_ = nil;
-  expectedModCount_++;
-}
-
+#if ! __has_feature(objc_arc)
 - (void)dealloc {
-  [associatedMap_ autorelease];
+  [index_ release];
   [super dealloc];
 }
+#endif
+
+#pragma mark -
 
 @end
-
-
-@implementation JavaUtilLinkedHashMap_EntryIterator
-
-- (id)initWithJavaUtilLinkedHashMap:(JavaUtilLinkedHashMap *)map {
-  return [super initWithJavaUtilLinkedHashMap:map];
-}
-
-- (id<JavaUtilMap_Entry>)next {
-  [self makeNext];
-  return currentEntry_;
-}
-
-@end
-
-
-@implementation JavaUtilLinkedHashMap_KeyIterator
-
-- (id)initWithJavaUtilLinkedHashMap:(JavaUtilLinkedHashMap *)map {
-  return [super initWithJavaUtilLinkedHashMap:map];
-}
-
-- (id)next {
-  [self makeNext];
-  return ((JavaUtilLinkedHashMap_LinkedHashMapEntry *) NIL_CHK(currentEntry_)).key;
-}
-
-@end
-
-
-@implementation JavaUtilLinkedHashMap_ValueIterator
-
-- (id)initWithJavaUtilLinkedHashMap:(JavaUtilLinkedHashMap *)map {
-  return [super initWithJavaUtilLinkedHashMap:map];
-}
-
-- (id)next {
-  [self makeNext];
-  return ((JavaUtilLinkedHashMap_LinkedHashMapEntry *) NIL_CHK(currentEntry_)).value;
-}
-
-@end
-
-
-@implementation JavaUtilLinkedHashMap_LinkedHashMapEntrySet
-
-- (id)initWithJavaUtilLinkedHashMap:(JavaUtilLinkedHashMap *)lhm {
-  return [super initWithJavaUtilHashMap:lhm];
-}
-
-- (id<JavaUtilIterator>)iterator {
-  return [[[JavaUtilLinkedHashMap_EntryIterator alloc] initWithJavaUtilLinkedHashMap:(JavaUtilLinkedHashMap *) ((JavaUtilHashMap *) [self hashMap])] autorelease];
-}
-
-@end
-
-
-@implementation JavaUtilLinkedHashMap_LinkedHashMapEntry
-
-- (id)initWithId:(id)theKey
-          withId:(id)theValue {
-  if ((self = [super initWithId:theKey withId:theValue])) {
-    chainForward_ = nil;
-    chainBackward_ = nil;
-  }
-  return self;
-}
-
-- (id)initWithId:(id)theKey
-         withInt:(int)hash_ {
-  if ((self = [super initWithId:theKey withInt:hash_])) {
-    chainForward_ = nil;
-    chainBackward_ = nil;
-  }
-  return self;
-}
-
-@end
-
 
 @implementation JavaUtilLinkedHashMap_KeySet
 
-- (BOOL)containsWithId:(id)object {
-  return [outer_ containsKeyWithId:object];
-}
-
-- (int)size {
-  return [outer_ size];
-}
-
-- (void)clear {
-  [outer_ clear];
-}
-
-- (BOOL)removeWithId:(id)key {
-  if ([outer_ containsKeyWithId:key]) {
-    [outer_ removeWithId:key];
-    return YES;
-  }
-  return NO;
-}
-
 - (id<JavaUtilIterator>)iterator {
-  return [[[JavaUtilLinkedHashMap_KeyIterator alloc] initWithJavaUtilLinkedHashMap:outer_] autorelease];
-}
-
-- (id)initWithJavaUtilLinkedHashMap:(JavaUtilLinkedHashMap *)outer {
-  if ((self = [super init])) {
-    [outer_ autorelease];
-    outer_ = [outer retain];
-  }
-  return self;
-}
-
-- (void)dealloc {
-  [outer_ autorelease];
-  [super dealloc];
+  JavaUtilLinkedHashMap *linkedMap = (JavaUtilLinkedHashMap *) self.map;
+  NSMutableArray *keyList = [linkedMap.index mutableCopy];
+#if ! __has_feature(objc_arc)
+  [keyList autorelease];
+#endif
+  IOSIterator *keyIterator = [[IOSIterator alloc] initWithList:keyList];
+#if ! __has_feature(objc_arc)
+  [keyIterator autorelease];
+#endif
+  id iterator =
+      [[JavaUtilLinkedHashMap_KeySetIterator alloc]
+       initWithJavaUtilHashMap:self.map withIterator:keyIterator];
+#if ! __has_feature(objc_arc)
+  [iterator autorelease];
+#endif
+  return iterator;
 }
 
 @end
 
+@implementation JavaUtilLinkedHashMap_KeySetIterator
 
-@implementation JavaUtilLinkedHashMap_ValuesCollection
-
-- (BOOL)containsWithId:(id)object {
-  return [outer_ containsValueWithId:object];
+- (id)next {
+  id key = [super next];
+  JavaUtilLinkedHashMap *linkedMap = (JavaUtilLinkedHashMap *) self.map;
+  if (linkedMap.lastAccessedOrder) {
+    [self.map getWithId:key];
+  }
+  return key;
 }
 
-- (int)size {
-  return [outer_ size];
-}
+@end
 
-- (void)clear {
-  [outer_ clear];
-}
+@implementation JavaUtilLinkedHashMap_EntrySet
 
 - (id<JavaUtilIterator>)iterator {
-  return [[[JavaUtilLinkedHashMap_ValueIterator alloc] initWithJavaUtilLinkedHashMap:outer_] autorelease];
+  JavaUtilLinkedHashMap *linkedMap = (JavaUtilLinkedHashMap *) self.map;
+  NSMutableArray *keyList = [linkedMap.index mutableCopy];
+#if ! __has_feature(objc_arc)
+  [keyList autorelease];
+#endif
+  IOSIterator *keyIterator = [[IOSIterator alloc] initWithList:keyList];
+#if ! __has_feature(objc_arc)
+  [keyIterator autorelease];
+#endif
+  id iterator =
+      [[JavaUtilLinkedHashMap_EntrySetIterator alloc]
+       initWithJavaUtilHashMap:linkedMap withIterator:keyIterator];
+#if ! __has_feature(objc_arc)
+  [iterator autorelease];
+#endif
+  return iterator;
 }
 
-- (id)initWithJavaUtilLinkedHashMap:(JavaUtilLinkedHashMap *)outer {
-  if ((self = [super init])) {
-    [outer_ autorelease];
-    outer_ = [outer retain];
+@end
+
+@implementation JavaUtilLinkedHashMap_EntrySetIterator
+
+- (id)next {
+  id key = [super next];
+  JavaUtilLinkedHashMap *linkedMap = (JavaUtilLinkedHashMap *) self.map;
+  if (linkedMap.lastAccessedOrder) {
+    [self.map getWithId:key];
   }
-  return self;
+  return key;
 }
 
-- (void)dealloc {
-  [outer_ autorelease];
-  [super dealloc];
+@end
+
+@implementation JavaUtilLinkedHashMap_Values
+
+- (id<JavaUtilIterator>)iterator {
+  JavaUtilLinkedHashMap *linkedMap = (JavaUtilLinkedHashMap *) self.map;
+  NSMutableArray *keyList = [linkedMap.index mutableCopy];
+#if ! __has_feature(objc_arc)
+  [keyList autorelease];
+#endif
+  IOSIterator *keyIterator = [[IOSIterator alloc] initWithList:keyList];
+#if ! __has_feature(objc_arc)
+  [keyIterator autorelease];
+#endif
+  id iterator =
+      [[JavaUtilLinkedHashMap_ValuesIterator alloc]
+       initWithJavaUtilHashMap:linkedMap withIterator:keyIterator];
+#if ! __has_feature(objc_arc)
+  [iterator autorelease];
+#endif
+  return iterator;
+}
+
+@end
+
+@implementation JavaUtilLinkedHashMap_ValuesIterator
+
+- (id)next {
+  id key = [super next];
+  id value = [self.map getWithId:key];
+  JavaUtilLinkedHashMap *linkedMap = (JavaUtilLinkedHashMap *) self.map;
+  if (linkedMap.lastAccessedOrder) {
+    // Side-effect of get is that it updates the index ordering.
+    [self.map getWithId:key];
+  }
+  return value;
 }
 
 @end
