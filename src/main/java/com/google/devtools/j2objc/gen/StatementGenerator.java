@@ -1274,7 +1274,7 @@ public class StatementGenerator extends ErrorReportingASTVisitor {
         format += operand.toString();
       } else if (operand instanceof StringLiteral) {
         StringLiteral literal = (StringLiteral) operand;
-        if (isValidCppString(literal)) {
+        if (UnicodeUtils.isValidCppString(literal)) {
           String s = (((StringLiteral) operand).getEscapedValue());
           s = s.substring(1, s.length() - 1); // remove surrounding double-quotes
           s = UnicodeUtils.escapeUnicodeSequences(s);
@@ -1978,20 +1978,13 @@ public class StatementGenerator extends ErrorReportingASTVisitor {
 
   @Override
   public boolean visit(StringLiteral node) {
-    if (isValidCppString(node)) {
+    if (UnicodeUtils.isValidCppString(node)) {
       buffer.append('@');
       buffer.append(UnicodeUtils.escapeUnicodeSequences(node.getEscapedValue()));
     } else {
       buffer.append(buildStringFromChars(node.getLiteralValue()));
     }
     return false;
-  }
-
-  // Checks that there aren't any invalid characters or octal escape
-  // sequences, from a C99 perspective.
-  static boolean isValidCppString(StringLiteral node) {
-    return UnicodeUtils.hasValidCppCharacters(node.getLiteralValue())
-        && !node.getEscapedValue().matches("\".*\\\\[2-3][0-9][0-9].*\"");
   }
 
   @VisibleForTesting

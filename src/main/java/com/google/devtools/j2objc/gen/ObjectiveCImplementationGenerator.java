@@ -173,7 +173,7 @@ public class ObjectiveCImplementationGenerator extends ObjectiveCSourceFileGener
     } else {
       String typeName = NameTable.getFullName(node);
       printf("@implementation %s\n\n", typeName);
-      printStaticVars(Lists.newArrayList(node.getFields()));
+      printStaticVars(Lists.newArrayList(node.getFields()), /* isInterface */ false);
       printProperties(node.getFields());
       printMethods(node);
       printObjCTypeMethod(node);
@@ -285,7 +285,7 @@ public class ObjectiveCImplementationGenerator extends ObjectiveCSourceFileGener
 
     if (needsPrinting) {
       printf("\n@implementation %s\n\n", NameTable.getFullName(node));
-      printStaticVars(Lists.newArrayList(node.getFields()));
+      printStaticVars(Lists.newArrayList(node.getFields()), /* isInterface */ true);
       for (MethodDeclaration m : methods) {
         IMethodBinding binding = Types.getMethodBinding(m);
         if (binding.isSynthetic() || isInterfaceConstantAccessor(binding)) {
@@ -327,7 +327,7 @@ public class ObjectiveCImplementationGenerator extends ObjectiveCSourceFileGener
     newline();
 
     printf("@implementation %s\n\n", typeName);
-    printStaticVars(fields);
+    printStaticVars(fields, /* isInterface */ false);
 
     for (EnumConstantDeclaration constant : constants) {
       String name = NameTable.getName(constant.getName());
@@ -688,10 +688,10 @@ public class ObjectiveCImplementationGenerator extends ObjectiveCSourceFileGener
     }
   }
 
-  private void printStaticVars(List<FieldDeclaration> fields) {
+  private void printStaticVars(List<FieldDeclaration> fields, boolean isInterface) {
     boolean hadStaticVar = false;
     for (FieldDeclaration f : fields) {
-      if (Modifier.isStatic(f.getModifiers())) {
+      if (Modifier.isStatic(f.getModifiers()) || isInterface) {
         @SuppressWarnings("unchecked")
         List<VariableDeclarationFragment> fragments = f.fragments(); // safe by specification
         for (VariableDeclarationFragment var : fragments) {

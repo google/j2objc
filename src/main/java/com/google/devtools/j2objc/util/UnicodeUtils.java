@@ -19,6 +19,8 @@ package com.google.devtools.j2objc.util;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.devtools.j2objc.J2ObjC;
 
+import org.eclipse.jdt.core.dom.StringLiteral;
+
 import java.io.UnsupportedEncodingException;
 
 /**
@@ -80,6 +82,13 @@ public final class UnicodeUtils {
     } else {
       return s;
     }
+  }
+
+  // Checks that there aren't any invalid characters or octal escape
+  // sequences, from a C99 perspective.
+  public static boolean isValidCppString(StringLiteral node) {
+    return hasValidCppCharacters(node.getLiteralValue())
+        && !node.getEscapedValue().matches("\".*\\\\[2-3][0-7][0-7].*\"");
   }
 
   /**
