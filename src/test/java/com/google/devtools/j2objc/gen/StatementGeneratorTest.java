@@ -1033,7 +1033,7 @@ public class StatementGeneratorTest extends GenerationTest {
         "    public Inner() { }" +
         "    public Inner(int foo) { this(); int i = foo; }}}",
         "Test", "Test.m");
-    assertTranslation(translation, "self = [self initWithTest:outer$1]");
+    assertTranslation(translation, "self = [self initTest_InnerWithTest:outer$1]");
   }
 
   public void testDoubleModulo() throws IOException {
