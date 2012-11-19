@@ -221,6 +221,7 @@ OBJS = \
 	$(CLASS_DIR)/java/nio/ReadWriteShortArrayBuffer.o \
 	$(CLASS_DIR)/java/nio/ShortArrayBuffer.o \
 	$(CLASS_DIR)/java/nio/ShortBuffer.o \
+	$(CLASS_DIR)/java/text/ParseException.o \
 	$(CLASS_DIR)/java/util/AbstractCollection.o \
 	$(CLASS_DIR)/java/util/AbstractList.o \
 	$(CLASS_DIR)/java/util/AbstractMap.o \
