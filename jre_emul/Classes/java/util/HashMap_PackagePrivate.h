@@ -142,8 +142,6 @@
   JavaUtilHashMap *associatedMap_;
 }
 
-@property (nonatomic, retain) JavaUtilHashMap *associatedMap;
-
 - (id)initWithJavaUtilHashMap:(JavaUtilHashMap *)hm;
 - (JavaUtilHashMap *)hashMap;
 - (int)size;
