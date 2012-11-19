@@ -29,6 +29,7 @@
 @class JavaLangStringBuffer;
 @class JavaLangStringBuilder;
 @class JavaUtilLocale;
+@protocol JavaUtilComparator;
 
 // A category that adds java.lang.String-like methods to NSString.  The method
 // list is not exhaustive, since methods that can be directly substituted are
@@ -243,5 +244,7 @@ destinationBegin:(int)dstBegin;
 // String.matches(), split(String, int)
 - (BOOL)matches:(NSString *)regex;
 - (IOSObjectArray *)split:(NSString *)regex limit:(int)limit;
+
++ (id<JavaUtilComparator>)CASE_INSENSITIVE_ORDER;
 
 @end
