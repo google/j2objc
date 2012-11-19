@@ -166,17 +166,10 @@
     }
   } else {
     id<JavaUtilIterator> iterator = [collection iterator];
-    @try {
-      while ([iterator hasNext]) {
-        if (![delegate_ containsObject:[iterator next]]) {
-          return NO;
-        }
+    while ([iterator hasNext]) {
+      if (![delegate_ containsObject:[iterator next]]) {
+        return NO;
       }
-    }
-    @finally {
-#if ! __has_feature(objc_arc)
-      [iterator release];
-#endif
     }
   }
   return YES;
@@ -224,19 +217,12 @@
     }
   } else {
     id<JavaUtilIterator> iterator = [collection iterator];
-    @try {
-      while ([iterator hasNext]) {
-        id element = [iterator next];
-        if ([delegate_ containsObject:element]) {
-          [delegate_ removeObject:element];
-          modified = YES;
-        }
+    while ([iterator hasNext]) {
+      id element = [iterator next];
+      if ([delegate_ containsObject:element]) {
+        [delegate_ removeObject:element];
+        modified = YES;
       }
-    }
-    @finally {
-#if ! __has_feature(objc_arc)
-      [iterator release];
-#endif
     }
   }
   return modified;
@@ -253,19 +239,12 @@
     }
   } else {
     id<JavaUtilIterator> iterator = [collection iterator];
-    @try {
-      while ([iterator hasNext]) {
-        id element = [iterator next];
-        if (![delegate_ containsObject:element]) {
-          [delegate_ removeObject:element];
-          modified = YES;
-        }
+    while ([iterator hasNext]) {
+      id element = [iterator next];
+      if (![delegate_ containsObject:element]) {
+        [delegate_ removeObject:element];
+        modified = YES;
       }
-    }
-    @finally {
-#if ! __has_feature(objc_arc)
-      [iterator release];
-#endif
     }
   }
   return modified;
@@ -307,9 +286,6 @@ static IOSObjectArray *makeEmptyObjectArray(NSUInteger size) {
     @throw exception;
   }
   if ([array count] < [self size]) {
-#if ! __has_feature(objc_arc)
-    [array release];
-#endif
     array = makeEmptyObjectArray([self size]);
   }
   NSUInteger i = 0;
