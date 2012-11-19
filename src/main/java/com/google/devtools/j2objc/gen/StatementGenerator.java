@@ -156,10 +156,7 @@ public class StatementGenerator extends ErrorReportingASTVisitor {
 
   private StatementGenerator(ASTNode node, Set<IVariableBinding> fieldHiders, boolean asFunction,
                              SourcePosition sourcePosition) {
-    CompilationUnit unit = null;
-    if (node != null && node.getRoot() instanceof CompilationUnit) {
-      unit = (CompilationUnit) node.getRoot();
-    }
+    CompilationUnit unit = node != null ? (CompilationUnit) node.getRoot() : null;
     buffer = new SourceBuilder(unit, Options.emitLineDirectives(), sourcePosition);
     this.fieldHiders = fieldHiders;
     this.asFunction = asFunction;
@@ -1003,9 +1000,8 @@ public class StatementGenerator extends ErrorReportingASTVisitor {
   @SuppressWarnings("unchecked")
   @Override
   public boolean visit(ConstructorInvocation node) {
-    IMethodBinding binding = Types.getMethodBinding(node);
-    buffer.append("[self init" + NameTable.getFullName(binding.getDeclaringClass()));
-    printArguments(binding, node.arguments());
+    buffer.append("[self init");
+    printArguments(Types.getMethodBinding(node), node.arguments());
     buffer.append("]");
     return false;
   }
