@@ -629,6 +629,25 @@ public class LinkedHashMapTest extends junit.framework.TestCase {
     }
     */
 
+  public void test_removeEldestEntry() {
+    final String[] expectedEldest = { "key1" };
+    Map<String, String> m = new LinkedHashMap<String, String>() {
+      protected boolean removeEldestEntry(Map.Entry<String, String> eldest) {
+        assertEquals("Wrong eldest entry", expectedEldest[0], eldest.getKey());
+        return size() > 10;
+      }
+    };
+    for (int i = 1; i <= 10; i++) {
+      m.put("key" + i, "value" + i);
+      assertEquals("Wrong map size", i, m.size());
+    }
+    m.put("key11", "value11");
+    assertEquals("Eldest was not removed", 10, m.size());
+    expectedEldest[0] = "key2";
+    m.put("key5", "value5-new");
+    assertEquals("Eldest was removed", 10, m.size());
+  }
+
 	/**
 	 * Sets up the fixture, for example, open a network connection. This method
 	 * is called before a test is executed.

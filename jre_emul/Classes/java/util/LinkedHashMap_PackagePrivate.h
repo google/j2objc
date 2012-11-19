@@ -2,40 +2,122 @@
 //  LinkedHashMap_PackagePrivate.h
 //  JreEmulation
 //
-//  Created by Tom Ball on 2/23/12.
+//  Created by Keith Stanger on 11/06/12.
 //  Copyright 2012 Google, Inc. All rights reserved.
 //
 
-#import "java/util/LinkedHashMap.h"
+@class JavaUtilLinkedHashMap_LinkedHashMapEntry;
+
+#import "JreEmulation.h"
+#import "java/util/AbstractCollection.h"
+#import "java/util/AbstractSet.h"
 #import "java/util/HashMap_PackagePrivate.h"
+#import "java/util/Iterator.h"
+#import "java/util/LinkedHashMap.h"
+#import "java/util/Map.h"
+
+#define JavaUtilLinkedHashMap_serialVersionUID 3801124242820219131
 
 // Non-public classes, methods and properties for LinkedHashMap.
 @interface JavaUtilLinkedHashMap ()
 
-@property (readonly) NSMutableArray *index;
-@property (readonly) BOOL lastAccessedOrder;
+@property (nonatomic, assign) BOOL accessOrder;
+@property (nonatomic, assign) JavaUtilLinkedHashMap_LinkedHashMapEntry *head;
+@property (nonatomic, assign) JavaUtilLinkedHashMap_LinkedHashMapEntry *tail;
 
+- (BOOL)containsValueWithId:(id)value;
+- (id)getWithId:(id)key;
+- (JavaUtilHashMap_Entry *)createHashedEntryWithId:(id)key
+                                           withInt:(int)index
+                                           withInt:(int)hash_;
+- (id)putWithId:(id)key
+         withId:(id)value;
+- (id)putImplWithId:(id)key
+             withId:(id)value;
+- (void)linkEntryWithJavaUtilLinkedHashMap_LinkedHashMapEntry:(JavaUtilLinkedHashMap_LinkedHashMapEntry *)m;
+- (id<JavaUtilSet>)entrySet;
+- (id<JavaUtilSet>)keySet;
+- (id<JavaUtilCollection>)values;
+- (id)removeWithId:(id)key;
+- (BOOL)removeEldestEntryWithJavaUtilMap_Entry:(id<JavaUtilMap_Entry>)eldest;
+- (void)clear;
 @end
 
-@interface JavaUtilLinkedHashMap_KeySet : JavaUtilHashMap_KeySet
+@interface JavaUtilLinkedHashMap_AbstractMapIterator : NSObject {
+ @public
+  int expectedModCount_;
+  JavaUtilLinkedHashMap_LinkedHashMapEntry *futureEntry_;
+  JavaUtilLinkedHashMap_LinkedHashMapEntry *currentEntry_;
+  JavaUtilLinkedHashMap *associatedMap_;
+}
+
+- (id)initWithJavaUtilLinkedHashMap:(JavaUtilLinkedHashMap *)map;
+- (BOOL)hasNext;
+- (void)checkConcurrentMod;
+- (void)makeNext;
+- (void)remove;
 @end
 
-@interface JavaUtilLinkedHashMap_KeySetIterator :
-    JavaUtilHashMap_KeySetIterator
+@interface JavaUtilLinkedHashMap_EntryIterator : JavaUtilLinkedHashMap_AbstractMapIterator < JavaUtilIterator > {
+}
+
+- (id)initWithJavaUtilLinkedHashMap:(JavaUtilLinkedHashMap *)map;
+- (id<JavaUtilMap_Entry>)next;
 @end
 
+@interface JavaUtilLinkedHashMap_KeyIterator : JavaUtilLinkedHashMap_AbstractMapIterator < JavaUtilIterator > {
+}
 
-@interface JavaUtilLinkedHashMap_EntrySet : JavaUtilHashMap_EntrySet
+- (id)initWithJavaUtilLinkedHashMap:(JavaUtilLinkedHashMap *)map;
+- (id)next;
 @end
 
-@interface JavaUtilLinkedHashMap_EntrySetIterator :
-    JavaUtilHashMap_EntrySetIterator
+@interface JavaUtilLinkedHashMap_ValueIterator : JavaUtilLinkedHashMap_AbstractMapIterator < JavaUtilIterator > {
+}
+
+- (id)initWithJavaUtilLinkedHashMap:(JavaUtilLinkedHashMap *)map;
+- (id)next;
 @end
 
+@interface JavaUtilLinkedHashMap_LinkedHashMapEntrySet : JavaUtilHashMap_HashMapEntrySet {
+}
 
-@interface JavaUtilLinkedHashMap_Values : JavaUtilHashMap_Values
+- (id)initWithJavaUtilLinkedHashMap:(JavaUtilLinkedHashMap *)lhm;
+- (id<JavaUtilIterator>)iterator;
 @end
 
-@interface JavaUtilLinkedHashMap_ValuesIterator :
-    JavaUtilHashMap_ValuesIterator
+@interface JavaUtilLinkedHashMap_LinkedHashMapEntry : JavaUtilHashMap_Entry {
+ @public
+  JavaUtilLinkedHashMap_LinkedHashMapEntry *chainForward_, *chainBackward_;
+}
+
+- (id)initWithId:(id)theKey
+          withId:(id)theValue;
+- (id)initWithId:(id)theKey
+         withInt:(int)hash_;
+@end
+
+@interface JavaUtilLinkedHashMap_KeySet : JavaUtilAbstractSet {
+ @public
+  JavaUtilLinkedHashMap *outer_;
+}
+
+- (BOOL)containsWithId:(id)object;
+- (int)size;
+- (void)clear;
+- (BOOL)removeWithId:(id)key;
+- (id<JavaUtilIterator>)iterator;
+- (id)initWithJavaUtilLinkedHashMap:(JavaUtilLinkedHashMap *)outer;
+@end
+
+@interface JavaUtilLinkedHashMap_ValuesCollection : JavaUtilAbstractCollection {
+ @public
+  JavaUtilLinkedHashMap *outer_;
+}
+
+- (BOOL)containsWithId:(id)object;
+- (int)size;
+- (void)clear;
+- (id<JavaUtilIterator>)iterator;
+- (id)initWithJavaUtilLinkedHashMap:(JavaUtilLinkedHashMap *)outer;
 @end
