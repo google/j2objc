@@ -31,7 +31,6 @@
         withFloat:(float)loadFactor
          withBOOL:(BOOL)lastAccessedOrder {
   if ((self = [self initJavaUtilLinkedHashMapWithCapacity:capacity])) {
-    index_ = [[NSMutableArray alloc] initWithCapacity:capacity];
     lastAccessedOrder_ = lastAccessedOrder;
   }
   return self;
