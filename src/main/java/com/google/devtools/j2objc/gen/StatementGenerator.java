@@ -756,7 +756,8 @@ public class StatementGenerator extends ErrorReportingASTVisitor {
       IVariableBinding var = Types.getVariableBinding(lhs);
       ITypeBinding type = Types.getTypeBinding(lhs);
       if (!type.isPrimitive() && lhs instanceof SimpleName) {
-        if (isProperty((SimpleName) lhs) && !Types.hasWeakAnnotation(var.getDeclaringClass())) {
+        if (isProperty((SimpleName) lhs) && !Types.hasWeakAnnotation(var.getDeclaringClass()) &&
+            !Types.isWeakReference(var)) {
           isRetainedProperty = true;
         }
         else if (isStaticVariableAccess(lhs)) {
