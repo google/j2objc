@@ -298,6 +298,28 @@ public class StatementGeneratorTest extends GenerationTest {
         "JreOperatorRetainedAssign(&s_, @\"hello, 50% of the world\\n\")");
   }
 
+  public void testStringConcatenationMethodInvocation() throws IOException {
+    String translation = translateSourceFile(
+        "public class Test { " +
+        "  String getStr() { return \"str\"; } " +
+        "  int getInt() { return 42; } " +
+        "  void test() { " +
+        "    String a = \"foo\" + getStr() + \"bar\" + getInt() + \"baz\"; } }",
+        "Test", "Test.m");
+    assertTranslation(translation,
+        "[NSString stringWithFormat:@\"foo%@bar%dbaz\", [self getStr], [self getInt]]");
+  }
+
+  public void testHashIsCastToIntInStringConcatenation() throws IOException {
+    String translation = translateSourceFile(
+        "public class Test { void test() { " +
+        "  String a = \"abc\"; " +
+        "  String b = \"foo\" + a.hashCode() + \"bar\"; } }",
+        "Test", "Test.m");
+    assertTranslation(translation,
+        "[NSString stringWithFormat:@\"foo%dbar\", (int) [NIL_CHK(a) hash]]");
+  }
+
   public void testVarargsMethodInvocation() throws IOException {
     String translation = translateSourceFile("public class Example { "
       + "public void call() { foo(null); bar(\"\", null, null); }"
@@ -1225,15 +1247,5 @@ public class StatementGeneratorTest extends GenerationTest {
         "Test", "Test.m");
     assertTranslation(translation,
       "NSAssert(a < b, @\"a should be lower than b\")");
-  }
-
-  public void testHashIsCastToIntInStringConcatenation() throws IOException {
-    String translation = translateSourceFile(
-        "public class Test { void test() { " +
-        "  String a = \"abc\"; " +
-        "  String b = \"foo\" + a.hashCode() + \"bar\"; } }",
-        "Test", "Test.m");
-    assertTranslation(translation,
-        "[NSString stringWithFormat:@\"foo%dbar\", (int) [NIL_CHK(a) hash]]");
   }
 }
