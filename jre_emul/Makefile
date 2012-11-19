@@ -69,7 +69,7 @@ JRE_INTERFACES = \
 	$(CLASS_DIR)/java/lang/reflect/TypeVariable.h \
 	$(CLASS_DIR)/java/util/Collection.h \
 	$(CLASS_DIR)/java/util/Comparator.h \
-	$(CLASS_DIR)/java/util/Deque.o \
+	$(CLASS_DIR)/java/util/Deque.h \
 	$(CLASS_DIR)/java/util/Dictionary.h \
 	$(CLASS_DIR)/java/util/Enumeration.h \
 	$(CLASS_DIR)/java/util/EventListener.h \
@@ -461,28 +461,8 @@ $(CLASS_DIR)/java/lang/System.h $(CLASS_DIR)/java/lang/System.m: \
 	  $(EMULATION_CLASS_DIR)/java/lang/System.java
 	$(J2OBJC) $?
 
-$(CLASS_DIR)/java/util/ArrayDeque.h $(CLASS_DIR)/java/util/ArrayDeque.m: \
-	  $(EMULATION_CLASS_DIR)/java/util/ArrayDeque.java
-	$(J2OBJC) $?
-
 $(CLASS_DIR)/java/util/Date.h $(CLASS_DIR)/java/util/Date.m: \
 	  $(EMULATION_CLASS_DIR)/java/util/Date.java
-	$(J2OBJC) $?
-
-$(CLASS_DIR)/java/util/Deque.h $(CLASS_DIR)/java/util/Deque.m: \
-	  $(EMULATION_CLASS_DIR)/java/util/Deque.java
-	$(J2OBJC) $?
-
-$(CLASS_DIR)/java/util/EventListener.h $(CLASS_DIR)/java/util/EventListener.m: \
-	  $(EMULATION_CLASS_DIR)/java/util/EventListener.java
-	$(J2OBJC) $?
-
-$(CLASS_DIR)/java/util/NavigableMap.h $(CLASS_DIR)/java/util/NavigableMap.m: \
-	  $(EMULATION_CLASS_DIR)/java/util/NavigableMap.java
-	$(J2OBJC) $?
-
-$(CLASS_DIR)/java/util/NavigableSet.h $(CLASS_DIR)/java/util/NavigableSet.m: \
-	  $(EMULATION_CLASS_DIR)/java/util/NavigableSet.java
 	$(J2OBJC) $?
 
 $(CLASS_DIR)/java/util/concurrent/Future.h $(CLASS_DIR)/java/util/concurrent/Future.m: \
@@ -495,9 +475,4 @@ $(CLASS_DIR)/java/util/concurrent/Executor.h $(CLASS_DIR)/java/util/concurrent/E
 
 $(CLASS_DIR)/java/util/concurrent/ExecutorService.h $(CLASS_DIR)/java/util/concurrent/ExecutorService.m: \
 	  $(EMULATION_CLASS_DIR)/java/util/concurrent/ExecutorService.java
-	$(J2OBJC) $?
-
-$(CLASS_DIR)/java/util/regex/PatternSyntaxException.h \
-    $(CLASS_DIR)/java/util/regex/PatternSyntaxException.m: \
-	  $(EMULATION_CLASS_DIR)/java/util/regex/PatternSyntaxException.java
 	$(J2OBJC) $?
