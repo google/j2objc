@@ -36,13 +36,13 @@
   if (self) {
     dictionary_ = (ARCBRIDGE_TRANSFER NSMutableDictionary *)
     CFDictionaryCreateMutable(NULL, capacity,
-                              &kCFTypeDictionaryKeyCallBacks, &kCFTypeDictionaryValueCallBacks);
+        &kCFTypeDictionaryKeyCallBacks, &kCFTypeDictionaryValueCallBacks);
   }
   return self;
 }
 
 - (id)init {
-  return [self initJavaUtilHashMapWithCapacity:JavaUtilHashMap_DEFAULT_SIZE];
+  return [self initWithInt:JavaUtilHashMap_DEFAULT_SIZE];
 }
 
 - (id)initWithInt:(int)capacity {
