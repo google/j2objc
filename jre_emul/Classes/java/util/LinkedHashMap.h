@@ -3,23 +3,27 @@
 //  JreEmulation
 //
 //  Created by Tom Ball on 2/17/12.
-//  Copyright (c) 2012 Google, Inc. All rights reserved.
+//  Copyright 2012 Google, Inc. All rights reserved.
 //
 
-#import <Foundation/Foundation.h>
-#import "java/util/HashMap.h"
-#import "IOSIterator.h"
-#import "IOSList.h"
+@class JavaUtilLinkedHashMap_LinkedHashMapEntry;
 
-// An ordered dictionary, which is a replacement for java.util.LinkedHashMap.
-@interface JavaUtilLinkedHashMap : JavaUtilHashMap {
- @private
-  NSMutableArray *index_;
-  BOOL lastAccessedOrder_;
+#import "JreEmulation.h"
+#import "java/util/AbstractCollection.h"
+#import "java/util/AbstractSet.h"
+#import "java/util/HashMap_PackagePrivate.h"
+#import "java/util/Iterator.h"
+#import "java/util/LinkedHashMap.h"
+#import "java/util/Map.h"
+
+@interface JavaUtilLinkedHashMap : JavaUtilHashMap < JavaUtilMap > {
+ @public
+  BOOL accessOrder_;
+  JavaUtilLinkedHashMap_LinkedHashMapEntry *head_, *tail_;
 }
 
 - (id)initWithInt:(int)capacity
         withFloat:(float)loadFactor
-         withBOOL:(BOOL)lastAccessedOrder;
+         withBOOL:(BOOL)accessOrder;
 
 @end
