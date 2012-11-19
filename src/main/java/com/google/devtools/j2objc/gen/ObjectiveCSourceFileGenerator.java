@@ -183,7 +183,7 @@ public abstract class ObjectiveCSourceFileGenerator extends SourceFileGenerator 
     StringBuffer sb = new StringBuffer();
     boolean isStatic = Modifier.isStatic(m.getModifiers());
     IMethodBinding binding = Types.getMethodBinding(m);
-    String  methodName = NameTable.getName(binding);
+    String methodName = NameTable.getName(binding);
     String baseDeclaration = String.format("%c (%s)%s", isStatic ? '+' : '-',
         NameTable.javaRefToObjC(m.getReturnType2()), methodName);
     sb.append(baseDeclaration);
@@ -210,13 +210,21 @@ public abstract class ObjectiveCSourceFileGenerator extends SourceFileGenerator 
    * Create an Objective-C constructor declaration string.
    */
   protected String constructorDeclaration(MethodDeclaration m) {
+    return constructorDeclaration(m, /* isInner */ false);
+  }
+
+  protected String constructorDeclaration(MethodDeclaration m, boolean isInner) {
     assert m.isConstructor();
     StringBuffer sb = new StringBuffer();
+    IMethodBinding binding = Types.getMethodBinding(m);
     String baseDeclaration = "- (id)init";
+    if (isInner) {
+      baseDeclaration += NameTable.getFullName(binding.getDeclaringClass());
+    }
     sb.append(baseDeclaration);
     @SuppressWarnings("unchecked")
     List<SingleVariableDeclaration> params = m.parameters(); // safe by definition
-    parametersDeclaration(Types.getMethodBinding(m), params, baseDeclaration, sb);
+    parametersDeclaration(binding, params, baseDeclaration, sb);
     return sb.toString();
   }
 
