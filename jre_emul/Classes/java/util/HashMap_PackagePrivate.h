@@ -2,94 +2,180 @@
 //  HashMap_PackagePrivate.h
 //  JreEmulation
 //
-//  Created by Tom Ball on 2/23/12.
+//  Created by Keith Stanger on 10/19/12.
 //  Copyright 2012 Google, Inc. All rights reserved.
 //
 
-#import "java/util/HashMap.h"
+#import "JreEmulation.h"
+
+#if __has_feature(objc_arc)
+#error This header cannot be compiled with ARC enabled.
+#endif
+
+#import "java/io/Serializable.h"
 #import "java/util/AbstractCollection.h"
+#import "java/util/AbstractMap.h"
 #import "java/util/AbstractSet.h"
-#import "java/util/Collection.h"
+#import "java/util/HashMap.h"
 #import "java/util/Iterator.h"
+#import "java/util/Map.h"
 #import "java/util/MapEntry.h"
-#import "java/util/Set.h"
-#import "IOSIterator.h"
 
-// Non-public classes, methods and properties shared by HashMap and
-// LinkedHashMap.
+#define JavaUtilHashMap_DEFAULT_SIZE 16
+#define JavaUtilHashMap_DEFAULT_LOAD_FACTOR 0.75f
+#define JavaUtilHashMap_serialVersionUID 362498820763181265
 
-@interface JavaUtilHashMap ()
+@interface JavaUtilHashMap () {
+@public
+  int elementCount_;
+  JavaUtilHashMap_Entry **elementData_;
+  int elementDataLength_;
+  int modCount_;
+  float loadFactor_;
+  int threshold_;
+}
 
-@property (readonly) NSMutableDictionary *dictionary;
+@property (nonatomic, assign) int elementCount;
+@property (nonatomic, assign) int elementDataLength;
+@property (nonatomic, assign) int modCount;
+@property (nonatomic, assign) float loadFactor;
+@property (nonatomic, assign) int threshold;
 
-- (JavaUtilHashMap_Entry *)entry:(id)key;
-- (void)putAllImpl:(id<JavaUtilMap>)map;
-
++ (int)calculateCapacityWithInt:(int)x;
+- (void)clear;
+- (id)clone;
+- (void)computeThreshold;
+- (BOOL)containsKeyWithId:(id)key;
+- (BOOL)containsValueWithId:(id)value;
+- (id<JavaUtilSet>)entrySet;
+- (id)getWithId:(id)key;
+- (JavaUtilHashMap_Entry *)getEntryWithId:(id)key;
+- (JavaUtilHashMap_Entry *)findNonNullKeyEntryWithId:(id)key
+                                             withInt:(int)index
+                                             withInt:(int)keyHash;
+- (JavaUtilHashMap_Entry *)findNullKeyEntry;
+- (BOOL)isEmpty;
+- (id<JavaUtilSet>)keySet;
+- (id)putWithId:(id)key
+         withId:(id)value;
+- (id)putImplWithId:(id)key
+             withId:(id)value;
+- (JavaUtilHashMap_Entry *)createHashedEntryWithId:(id)key
+                                           withInt:(int)index
+                                           withInt:(int)hash_;
+- (void)putAllWithJavaUtilMap:(id<JavaUtilMap>)map;
+- (void)putAllImplWithJavaUtilMap:(id<JavaUtilMap>)map;
+- (void)rehashWithInt:(int)capacity;
+- (void)rehash;
+- (id)removeWithId:(id)key;
+- (void)removeEntryWithJavaUtilHashMap_Entry:(JavaUtilHashMap_Entry *)entry;
+- (JavaUtilHashMap_Entry *)removeEntryWithId:(id)key;
+- (int)size;
+- (id<JavaUtilCollection>)values;
++ (int)computeHashCodeWithId:(id)key;
++ (BOOL)areEqualKeysWithId:(id)key1
+                    withId:(id)key2;
++ (BOOL)areEqualValuesWithId:(id)value1
+                      withId:(id)value2;
+- (id)copyWithZone:(NSZone *)zone;
 @end
 
-@interface JavaUtilHashMap_Entry : JavaUtilMapEntry
+@interface JavaUtilHashMap_Entry : JavaUtilMapEntry {
+ @public
+  int origKeyHash_;
+  JavaUtilHashMap_Entry *next_;
+}
 
-- (id)initWithKey:(id)key value:(id)value;
+- (id)initWithId:(id)theKey
+         withInt:(int)hash_;
+- (id)initWithId:(id)theKey
+          withId:(id)theValue;
+@end
 
+@interface JavaUtilHashMap_AbstractMapIterator : NSObject {
+ @public
+  int position_;
+  int expectedModCount_;
+  JavaUtilHashMap_Entry *futureEntry_;
+  JavaUtilHashMap_Entry *currentEntry_;
+  JavaUtilHashMap_Entry *prevEntry_;
+  JavaUtilHashMap *associatedMap_;
+}
+
+@property (nonatomic, assign) int position;
+@property (nonatomic, assign) int expectedModCount;
+@property (nonatomic, assign) JavaUtilHashMap_Entry *futureEntry;
+@property (nonatomic, assign) JavaUtilHashMap_Entry *currentEntry;
+@property (nonatomic, assign) JavaUtilHashMap_Entry *prevEntry;
+@property (nonatomic, retain) JavaUtilHashMap *associatedMap;
+
+- (id)initWithJavaUtilHashMap:(JavaUtilHashMap *)hm;
+- (BOOL)hasNext;
+- (void)checkConcurrentMod;
+- (void)makeNext;
+- (void)remove;
+@end
+
+@interface JavaUtilHashMap_EntryIterator : JavaUtilHashMap_AbstractMapIterator < JavaUtilIterator > {
+}
+
+- (id)initWithJavaUtilHashMap:(JavaUtilHashMap *)map;
+- (id<JavaUtilMap_Entry>)next;
+@end
+
+@interface JavaUtilHashMap_KeyIterator : JavaUtilHashMap_AbstractMapIterator < JavaUtilIterator > {
+}
+
+- (id)initWithJavaUtilHashMap:(JavaUtilHashMap *)map;
+- (id)next;
+@end
+
+@interface JavaUtilHashMap_ValueIterator : JavaUtilHashMap_AbstractMapIterator < JavaUtilIterator > {
+}
+
+- (id)initWithJavaUtilHashMap:(JavaUtilHashMap *)map;
+- (id)next;
+@end
+
+@interface JavaUtilHashMap_HashMapEntrySet : JavaUtilAbstractSet {
+ @public
+  JavaUtilHashMap *associatedMap_;
+}
+
+@property (nonatomic, retain) JavaUtilHashMap *associatedMap;
+
+- (id)initWithJavaUtilHashMap:(JavaUtilHashMap *)hm;
+- (JavaUtilHashMap *)hashMap;
+- (int)size;
+- (void)clear;
+- (BOOL)removeWithId:(id)object;
+- (BOOL)containsWithId:(id)object;
++ (BOOL)valuesEqWithJavaUtilHashMap_Entry:(JavaUtilHashMap_Entry *)entry
+                    withJavaUtilMap_Entry:(id<JavaUtilMap_Entry>)oEntry;
+- (id<JavaUtilIterator>)iterator;
 @end
 
 @interface JavaUtilHashMap_KeySet : JavaUtilAbstractSet {
-@private
-  JavaUtilHashMap *map_;
+ @public
+  JavaUtilHashMap *outer_;
 }
 
-@property (readonly) JavaUtilHashMap *map;
-
-- (id)initWithJavaUtilHashMap:(JavaUtilHashMap *)map;
-
+- (BOOL)containsWithId:(id)object;
+- (int)size;
+- (void)clear;
+- (BOOL)removeWithId:(id)key;
+- (id<JavaUtilIterator>)iterator;
+- (id)initWithJavaUtilHashMap:(JavaUtilHashMap *)outer;
 @end
 
-@interface JavaUtilHashMap_EntrySet : JavaUtilHashMap_KeySet
-@end
-
-@interface JavaUtilHashMap_KeySetIterator : NSObject < JavaUtilIterator > {
-@private
-  JavaUtilHashMap *map_;
-  IOSIterator *iterator_;
-  id lastKey_;
+@interface JavaUtilHashMap_ValuesCollection : JavaUtilAbstractCollection {
+ @public
+  JavaUtilHashMap *outer_;
 }
 
-@property (readonly) JavaUtilHashMap *map;
-@property (readonly) IOSIterator *iterator;
-
-- (id)initWithJavaUtilHashMap:(JavaUtilHashMap *)map
-                 withIterator:(IOSIterator *)iterator;
-
+- (BOOL)containsWithId:(id)object;
+- (int)size;
+- (void)clear;
+- (id<JavaUtilIterator>)iterator;
+- (id)initWithJavaUtilHashMap:(JavaUtilHashMap *)outer;
 @end
-
-@interface JavaUtilHashMap_EntrySetIterator : JavaUtilHashMap_KeySetIterator
-@end
-
-@interface JavaUtilHashMap_Values : JavaUtilAbstractCollection {
-@private
-  JavaUtilHashMap *map_;
-}
-
-@property (readonly) JavaUtilHashMap *map;
-
-- (id)initWithJavaUtilHashMap:(JavaUtilHashMap *)map;
-
-@end
-
-@interface JavaUtilHashMap_ValuesIterator : NSObject < JavaUtilIterator > {
-@private
-  JavaUtilHashMap *map_;
-  IOSIterator *iterator_;
-  id lastValue_;
-}
-
-@property (readonly) JavaUtilHashMap *map;
-
-- (id)initWithJavaUtilHashMap:(JavaUtilHashMap *)map
-                 withIterator:(IOSIterator *)iterator;
-
-@end
-
-// Functions that convert between NSNull and nil references.
-extern id nullify(id object);
-extern id denullify(id object);

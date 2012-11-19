@@ -7,17 +7,15 @@
 //
 
 #import <Foundation/Foundation.h>
+#import "java/io/Serializable.h"
+#import "java/util/AbstractMap.h"
 #import "java/util/Map.h"
 
 @class JavaUtilHashMap_Entry;
 
-// An implementation for the java.util.Map protocol, using a
-// NSMutableDictionary delegate. Its constructors are defined by HashMap, so
-// that this class can potentially be a drop-in replacement.
-@interface JavaUtilHashMap : NSObject < JavaUtilMap, NSMutableCopying > {
- @private
-  NSMutableDictionary *dictionary_;
-}
+// An implementation for the java.util.Map protocol, based on the java harmony
+// implementation.
+@interface JavaUtilHashMap : JavaUtilAbstractMap < JavaUtilMap, NSCopying, JavaIoSerializable >
 
 - (id)initWithInt:(int)capacity;
 - (id)initWithInt:(int)capacity withFloat:(float)loadFactor;
