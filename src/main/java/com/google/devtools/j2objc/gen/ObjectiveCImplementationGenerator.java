@@ -693,13 +693,29 @@ public class ObjectiveCImplementationGenerator extends ObjectiveCSourceFileGener
           String name = NameTable.getName(var.getName());
           ITypeBinding type = Types.getTypeBinding(field.getType());
           String typeString = NameTable.javaRefToObjC(type);
-          if (!typeString.endsWith("*")) {
-            typeString += " ";
-          }
-
           String objCFieldName = NameTable.javaFieldToObjC(name);
 
+          // Don't emit the getter when there is already a method with the
+          // same name.
+          boolean noGetter = false;
+          ITypeBinding declaringClass = Types.getTypeBinding(field.getParent());
+          if (declaringClass != null) {
+            IMethodBinding[] methods = declaringClass.getDeclaredMethods();
+            for (IMethodBinding method : methods) {
+              if (method.getName().equals(name) && method.getParameterTypes().length == 0) {
+                noGetter = true;
+                break;
+              }
+            }
+          }
+
           printf(String.format("@synthesize %s = %s;\n", name, objCFieldName));
+          if (!noGetter && Options.useReferenceCounting() && !type.isPrimitive()) {
+            // Generates a getter that will make sure the returned object is still valid
+            // if it's used after it's unreferenced by the instance.
+            printf(String.format("- (%s)%s {\n  return [[%s retain] autorelease];\n}\n",
+                typeString, name, objCFieldName));
+          }
           nPrinted++;
         }
       }
