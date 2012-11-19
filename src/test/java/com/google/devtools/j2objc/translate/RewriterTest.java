@@ -515,4 +515,17 @@ public class RewriterTest extends GenerationTest {
     assertTranslation(translation, "NSLog(@\"%@\", @\"foo\")");
     assertTranslation(translation, "NSLog(@\"\")");
   }
+
+  public void testAddsAbstractMethodsToEnum() throws IOException {
+    String interfaceSource = "interface I { public int foo(); }";
+    String enumSource =
+        "enum E implements I { " +
+        "  A { public int foo() { return 42; } }," +
+        "  B { public int foo() { return -1; } } }";
+    addSourceFile(interfaceSource, "I.java");
+    addSourceFile(enumSource, "E.java");
+    String translation = translateSourceFile("E", "E.m");
+    assertTranslation(translation, "- (int)foo {");
+    assertTranslation(translation, "[self doesNotRecognizeSelector:_cmd];");
+  }
 }

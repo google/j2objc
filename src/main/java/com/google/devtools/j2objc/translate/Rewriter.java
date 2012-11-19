@@ -45,6 +45,7 @@ import org.eclipse.jdt.core.dom.CharacterLiteral;
 import org.eclipse.jdt.core.dom.ContinueStatement;
 import org.eclipse.jdt.core.dom.DoStatement;
 import org.eclipse.jdt.core.dom.EnhancedForStatement;
+import org.eclipse.jdt.core.dom.EnumDeclaration;
 import org.eclipse.jdt.core.dom.Expression;
 import org.eclipse.jdt.core.dom.ExpressionStatement;
 import org.eclipse.jdt.core.dom.FieldDeclaration;
@@ -112,6 +113,13 @@ public class Rewriter extends ErrorReportingASTVisitor {
 
   @SuppressWarnings("unchecked")
   @Override
+  public boolean visit(EnumDeclaration node) {
+    return visitType(
+        node.getAST(), Types.getTypeBinding(node), node.bodyDeclarations(), node.getModifiers());
+  }
+
+  @SuppressWarnings("unchecked")
+  @Override
   public boolean visit(AnonymousClassDeclaration node) {
     return visitType(
         node.getAST(), Types.getTypeBinding(node), node.bodyDeclarations(), Modifier.NONE);
@@ -121,7 +129,7 @@ public class Rewriter extends ErrorReportingASTVisitor {
       AST ast, ITypeBinding typeBinding, List<BodyDeclaration> members, int modifiers) {
     ITypeBinding[] interfaces = typeBinding.getInterfaces();
     if (interfaces.length > 0) {
-      if (Modifier.isAbstract(modifiers)) {
+      if (Modifier.isAbstract(modifiers) || typeBinding.isEnum()) {
 
         // Add any interface methods that aren't defined by this abstract type.
         // Obj-C needs these to verify that the generated class implements the
