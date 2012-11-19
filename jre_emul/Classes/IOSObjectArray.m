@@ -181,9 +181,6 @@
   [self checkIndex:(length - 1)];
   for (NSUInteger i = 0; i < length; i++) {
     id element = buffer_[i];
-#if ! __has_feature(objc_arc)
-    [element retain];
-#endif
     buffer[i] = element;
   }
 }
