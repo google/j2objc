@@ -528,4 +528,11 @@ public class RewriterTest extends GenerationTest {
     assertTranslation(translation, "- (int)foo {");
     assertTranslation(translation, "[self doesNotRecognizeSelector:_cmd];");
   }
+
+  public void testInterfaceFieldsAreStaticFinal() throws IOException {
+    String source = "interface Test { String foo = \"bar\"; }";
+    String translation = translateSourceFile(source, "Test", "Test.m");
+    assertTranslation(translation, "+ (NSString *)foo {");
+    assertFalse(translation.contains("setFoo"));
+  }
 }

@@ -23,6 +23,7 @@ import com.google.devtools.j2objc.types.NodeCopier;
 import com.google.devtools.j2objc.types.Types;
 import com.google.devtools.j2objc.util.ErrorReportingASTVisitor;
 import com.google.devtools.j2objc.util.NameTable;
+import com.google.devtools.j2objc.util.UnicodeUtils;
 
 import org.eclipse.jdt.core.dom.AST;
 import org.eclipse.jdt.core.dom.ASTNode;
@@ -46,6 +47,7 @@ import org.eclipse.jdt.core.dom.Modifier;
 import org.eclipse.jdt.core.dom.PrimitiveType;
 import org.eclipse.jdt.core.dom.SimpleName;
 import org.eclipse.jdt.core.dom.Statement;
+import org.eclipse.jdt.core.dom.StringLiteral;
 import org.eclipse.jdt.core.dom.SuperConstructorInvocation;
 import org.eclipse.jdt.core.dom.Type;
 import org.eclipse.jdt.core.dom.TypeDeclaration;
@@ -104,9 +106,7 @@ public class InitializationNormalizer extends ErrorReportingASTVisitor {
           iterator.remove();
           break;
         case ASTNode.FIELD_DECLARATION:
-          if (!binding.isInterface()) { // All interface fields are constants.
-            addFieldInitializer(member, initStatements, classInitStatements);
-          }
+          addFieldInitializer(member, binding.isInterface(), initStatements, classInitStatements);
           break;
       }
     }
@@ -149,7 +149,8 @@ public class InitializationNormalizer extends ErrorReportingASTVisitor {
    * Strip field initializers, convert them to assignment statements, and
    * add them to the appropriate list of initialization statements.
    */
-  private void addFieldInitializer(BodyDeclaration member, List<Statement> initStatements,
+  private void addFieldInitializer(
+      BodyDeclaration member, boolean isInterface, List<Statement> initStatements,
       List<Statement> classInitStatements) {
     FieldDeclaration field = (FieldDeclaration) member;
     @SuppressWarnings("unchecked")
@@ -157,9 +158,8 @@ public class InitializationNormalizer extends ErrorReportingASTVisitor {
     for (VariableDeclarationFragment frag : fragments) {
       if (frag.getInitializer() != null) {
         Statement assignStmt = makeAssignmentStatement(frag);
-        if (Modifier.isStatic(field.getModifiers())) {
-          IVariableBinding binding = Types.getVariableBinding(frag);
-          if (binding.getConstantValue() == null) { // constants don't need initialization
+        if (Modifier.isStatic(field.getModifiers()) || isInterface) {
+          if (requiresInitializer(frag)) {
             classInitStatements.add(assignStmt);
             frag.setInitializer(null);
           }
@@ -170,6 +170,22 @@ public class InitializationNormalizer extends ErrorReportingASTVisitor {
         }
       }
     }
+  }
+
+  /**
+   * Determines if a variable declaration requires initialization. (ie. cannot
+   * be assigned to a literal value in ObjC.
+   */
+  private boolean requiresInitializer(VariableDeclarationFragment frag) {
+    IVariableBinding binding = Types.getVariableBinding(frag);
+    if (binding.getConstantValue() == null) { // constants don't need initialization
+      return true;
+    }
+    Expression initializer = frag.getInitializer();
+    if (initializer instanceof StringLiteral) {
+      return !UnicodeUtils.isValidCppString((StringLiteral) initializer);
+    }
+    return false;
   }
 
   private ExpressionStatement makeAssignmentStatement(VariableDeclarationFragment fragment) {

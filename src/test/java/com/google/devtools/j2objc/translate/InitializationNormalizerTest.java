@@ -328,4 +328,13 @@ public class InitializationNormalizerTest extends GenerationTest {
     String translation = translateSourceFile(source, "Mouse", "Mouse.h");
     assertTranslation(translation, "#define Mouse_BUTTON_LEFT 0");
   }
+
+  public void testStringWithInvalidCppCharacters() throws IOException {
+    String source = "class Test { static final String foo = \"\\uffff\"; }";
+    String translation = translateSourceFile(source, "Test", "test.m");
+    assertTranslation(translation, "static NSString * Test_foo_;");
+    assertTranslation(translation,
+        "JreOperatorRetainedAssign(&Test_foo_, [NSString stringWithCharacters:(unichar[]) { "
+        + "(int) 0xffff } length:1]);");
+  }
 }

@@ -272,8 +272,12 @@ public class Rewriter extends ErrorReportingASTVisitor {
   @Override
   public boolean visit(FieldDeclaration node) {
     int mods = node.getModifiers();
+    ASTNode parent = node.getParent();
+    if (parent instanceof TypeDeclaration && ((TypeDeclaration) parent).isInterface()) {
+      // Interface fields are implicitly static and final.
+      mods |= Modifier.STATIC | Modifier.FINAL;
+    }
     if (Modifier.isStatic(mods)) {
-      ASTNode parent = node.getParent();
       @SuppressWarnings("unchecked")
       List<BodyDeclaration> classMembers =
           parent instanceof AbstractTypeDeclaration ?
@@ -303,7 +307,7 @@ public class Rewriter extends ErrorReportingASTVisitor {
         if (needsReader(var, classMembers)) {
           classMembers.add(indexOfNewMember++, makeStaticReader(var, mods));
         }
-        if (!Modifier.isFinal(node.getModifiers()) && needsWriter(var, classMembers)) {
+        if (!Modifier.isFinal(mods) && needsWriter(var, classMembers)) {
           classMembers.add(
               indexOfNewMember++,
               makeStaticWriter(var, oldName.getIdentifier(), node.getType(), mods));
