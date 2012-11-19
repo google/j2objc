@@ -1328,30 +1328,37 @@ public class StatementGenerator extends ErrorReportingASTVisitor {
     buffer.append(format);
     buffer.append(", ");
     for (Iterator<Expression> iter = args.iterator(); iter.hasNext(); ) {
-      Expression arg = iter.next();
-      if (Types.getTypeBinding(arg).isEqualTo(arg.getAST().resolveWellKnownType("boolean"))) {
-        buffer.append("[JavaLangBoolean toStringWithBOOL:");
-        arg.accept(this);
-        buffer.append(']');
-      } else if (arg instanceof StringLiteral) {
-        // Strings with all valid C99 characters were previously converted,
-        // so this literal needs to be defined with a char array.
-        buffer.append(buildStringFromChars(((StringLiteral) arg).getLiteralValue()));
-      } else if (arg instanceof MethodInvocation) {
-        IMethodBinding methodBinding = Types.getMethodBinding(arg);
-        if (methodBinding.getName().equals("hash")) {
-          // "hash" in objective-c is declared to return NSUInteger.
-          buffer.append("(int) ");
-          arg.accept(this);
-        }
-      } else {
-        arg.accept(this);
-      }
+      printStringConcatenationArg(iter.next());
       if (iter.hasNext()) {
         buffer.append(", ");
       }
     }
     buffer.append(']');
+  }
+
+  private void printStringConcatenationArg(Expression arg) {
+    if (Types.getTypeBinding(arg).isEqualTo(arg.getAST().resolveWellKnownType("boolean"))) {
+      buffer.append("[JavaLangBoolean toStringWithBOOL:");
+      arg.accept(this);
+      buffer.append(']');
+      return;
+    }
+    if (arg instanceof StringLiteral) {
+      // Strings with all valid C99 characters were previously converted,
+      // so this literal needs to be defined with a char array.
+      buffer.append(buildStringFromChars(((StringLiteral) arg).getLiteralValue()));
+      return;
+    }
+    if (arg instanceof MethodInvocation) {
+      IMethodBinding methodBinding = Types.getMethodBinding(arg);
+      if (methodBinding.getName().equals("hash")) {
+        // "hash" in objective-c is declared to return NSUInteger.
+        buffer.append("(int) ");
+        arg.accept(this);
+        return;
+      }
+    }
+    arg.accept(this);
   }
 
   @Override
