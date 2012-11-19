@@ -1226,4 +1226,14 @@ public class StatementGeneratorTest extends GenerationTest {
     assertTranslation(translation,
       "NSAssert(a < b, @\"a should be lower than b\")");
   }
+
+  public void testHashIsCastToIntInStringConcatenation() throws IOException {
+    String translation = translateSourceFile(
+        "public class Test { void test() { " +
+        "  String a = \"abc\"; " +
+        "  String b = \"foo\" + a.hashCode() + \"bar\"; } }",
+        "Test", "Test.m");
+    assertTranslation(translation,
+        "[NSString stringWithFormat:@\"foo%dbar\", (int) [NIL_CHK(a) hash]]");
+  }
 }
