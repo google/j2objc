@@ -286,10 +286,14 @@ ifndef CONFIGURATION_BUILD_DIR
 BUILD_FAT_LIBARY = YES
 EMULATION_MACOSX_LIB = $(BUILD_DIR)/macosx-libjre_emul.a
 EMULATION_IPHONE_LIB = $(BUILD_DIR)/iphone-libjre_emul.a
+EMULATION_IPHONEV7S_LIB = $(BUILD_DIR)/iphonev7s-libjre_emul.a
 EMULATION_SIMULATOR_LIB = $(BUILD_DIR)/simulator-libjre_emul.a
 IPHONE_BUILD_DIR = $(BUILD_DIR)/iphone
 IPHONE_OBJS = $(OBJS:$(CLASS_DIR)/%=$(IPHONE_BUILD_DIR)/%) \
   $(IOS_OBJS:$(CLASS_DIR)/%=$(IPHONE_BUILD_DIR)/%)
+IPHONEV7S_BUILD_DIR = $(BUILD_DIR)/iphonev7s
+IPHONEV7S_OBJS = $(OBJS:$(CLASS_DIR)/%=$(IPHONEV7S_BUILD_DIR)/%) \
+  $(IOS_OBJS:$(CLASS_DIR)/%=$(IPHONEV7S_BUILD_DIR)/%)
 SIMULATOR_BUILD_DIR = $(BUILD_DIR)/simulator
 SIMULATOR_OBJS = $(OBJS:$(CLASS_DIR)/%=$(SIMULATOR_BUILD_DIR)/%) \
   $(IOS_OBJS:$(CLASS_DIR)/%=$(SIMULATOR_BUILD_DIR)/%)
@@ -327,17 +331,23 @@ $(EMULATION_LIB): $(IOS_OBJS) $(OBJS)
 	  echo "building iPhoneOS library" ; \
 	  env ALT_ARCH_FLAGS="-arch armv7" ALT_SDK_FLAGS="-isysroot $(IPHONE_SDK_DIR)" \
 	    $(MAKE) iphone_lib ; \
+	  echo "building iPhonev7S library" ; \
+		env ALT_ARCH_FLAGS="-arch armv7s" ALT_SDK_FLAGS="-isysroot $(IPHONE_SDK_DIR)" \
+		  $(MAKE) iphonev7s_lib ; \
 	  echo "building iPhoneSimulator library" ; \
 	  env ALT_ARCH_FLAGS="-arch i386" ALT_SDK_FLAGS="-isysroot $(SIMULATOR_SDK_DIR)" \
 	    $(MAKE) simulator_lib ; \
 	  $(LIPO) -create $(EMULATION_MACOSX_LIB) $(EMULATION_IPHONE_LIB) \
-	    $(EMULATION_SIMULATOR_LIB) -output $(EMULATION_LIB) ; \
+	    $(EMULATION_SIMULATOR_LIB) $(EMULATION_IPHONEV7S_LIB) -output $(EMULATION_LIB) ; \
 	else \
 	  $(LIBTOOL) -static -o $(EMULATION_LIB) `find $(CLASS_DIR) -name '*.o'` ; \
 	fi
 
 iphone_lib: $(IPHONE_OBJS)
 	$(LIBTOOL) -static -o $(EMULATION_IPHONE_LIB) `find $(IPHONE_BUILD_DIR) -name '*.o'` ; \
+
+iphonev7s_lib: $(IPHONEV7S_OBJS)
+	$(LIBTOOL) -static -o $(EMULATION_IPHONEV7S_LIB) `find $(IPHONEV7S_BUILD_DIR) -name '*.o'` ; \
 
 simulator_lib: $(SIMULATOR_OBJS)
 	$(LIBTOOL) -static -o $(EMULATION_SIMULATOR_LIB) `find $(SIMULATOR_BUILD_DIR) -name '*.o'` ; \
@@ -382,6 +392,14 @@ $(IPHONE_BUILD_DIR)/%.o: $(EMULATION_CLASS_DIR)/%.m
 	@mkdir -p `dirname $@`
 	$(CLANG) -c $? -o $@ $(OBJCFLAGS) -I$(EMULATION_CLASS_DIR) -I$(CLASS_DIR)
 
+$(IPHONEV7S_BUILD_DIR)/%.o: $(CLASS_DIR)/%.m
+	@mkdir -p `dirname $@`
+	$(CLANG) -c '$?' -o '$@' $(OBJCFLAGS) -I$(EMULATION_CLASS_DIR) -I$(CLASS_DIR)
+
+$(IPHONEV7S_BUILD_DIR)/%.o: $(EMULATION_CLASS_DIR)/%.m
+	@mkdir -p `dirname $@`
+	$(CLANG) -c $? -o $@ $(OBJCFLAGS) -I$(EMULATION_CLASS_DIR) -I$(CLASS_DIR)
+
 $(SIMULATOR_BUILD_DIR)/%.o: $(CLASS_DIR)/%.m
 	@mkdir -p `dirname $@`
 	$(CLANG) -c '$?' -o '$@' $(OBJCFLAGS) -I$(EMULATION_CLASS_DIR) -I$(CLASS_DIR)
@@ -402,6 +420,14 @@ $(IPHONE_BUILD_DIR)/%.plist: $(CLASS_DIR)/%.m
 	$(CLANG) -c '$?' -o '$@' $(OBJCFLAGS) $(STATIC_ANALYZER_FLAGS) -I$(EMULATION_CLASS_DIR) -I$(CLASS_DIR)
 
 $(IPHONE_BUILD_DIR)/%.plist: $(EMULATION_CLASS_DIR)/%.m
+	@mkdir -p `dirname $@`
+	$(CLANG) -c $? -o $@ $(OBJCFLAGS) $(STATIC_ANALYZER_FLAGS) -I$(EMULATION_CLASS_DIR) -I$(CLASS_DIR)
+
+$(IPHONEV7S_BUILD_DIR)/%.plist: $(CLASS_DIR)/%.m
+	@mkdir -p `dirname $@`
+	$(CLANG) -c '$?' -o '$@' $(OBJCFLAGS) $(STATIC_ANALYZER_FLAGS) -I$(EMULATION_CLASS_DIR) -I$(CLASS_DIR)
+
+$(IPHONEV7S_BUILD_DIR)/%.plist: $(EMULATION_CLASS_DIR)/%.m
 	@mkdir -p `dirname $@`
 	$(CLANG) -c $? -o $@ $(OBJCFLAGS) $(STATIC_ANALYZER_FLAGS) -I$(EMULATION_CLASS_DIR) -I$(CLASS_DIR)
 
