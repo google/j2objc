@@ -79,7 +79,11 @@
       dictionary_ = (ARCBRIDGE_TRANSFER NSMutableDictionary *)
           CFDictionaryCreateMutable(NULL, size,
           &kCFTypeDictionaryKeyCallBacks, &kCFTypeDictionaryValueCallBacks);
-      [dictionary_ addEntriesFromDictionary:other->dictionary_];
+      for(id key in [other->dictionary_ allKeys]) {
+        CFDictionarySetValue((ARCBRIDGE CFMutableDictionaryRef) dictionary_,
+            (ARCBRIDGE void *) key,
+            (ARCBRIDGE void *) [other->dictionary_ objectForKey:key]);
+      }
     } else {
       [self putAllImpl:map];
     }
