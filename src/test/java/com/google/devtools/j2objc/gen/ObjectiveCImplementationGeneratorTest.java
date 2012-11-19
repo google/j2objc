@@ -507,4 +507,15 @@ public class ObjectiveCImplementationGeneratorTest extends GenerationTest {
         "  typedCopy.var2 = var2_;\n" +
         "}\n");
   }
+
+  public void testInnerConstructorGenerated() throws IOException {
+    String translation = translateSourceFile(
+        "public class Test {" +
+        "  public Test() { this(42); };" +
+        "  public Test(int i) {}; }",
+        "Test", "Test.m");
+    assertTranslation(translation, "- (id)initWithInt:(int)i {");
+    assertTranslation(translation, "- (id)initTestWithInt:(int)i {");
+    assertTranslation(translation, "[self initTestWithInt:42];");
+  }
 }
