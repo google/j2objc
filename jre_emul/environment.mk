@@ -75,7 +75,8 @@ J2OBJC := USE_SYSTEM_BOOT_PATH=TRUE $(DIST_DIR)/j2objc \
 
 # GCC settings, based on Xcode log output
 WARNINGS := $(WARNINGS) -Wno-trigraphs -Wunused-variable -Werror \
-  -Wno-logical-op-parentheses -Wno-bitwise-op-parentheses -Wreturn-type
+  -Wno-logical-op-parentheses -Wno-bitwise-op-parentheses -Wreturn-type\
+  -Wno-error=unknown-warning-option
 
 # Don't warn for logical/bitwise op precedence
 WARNINGS := $(WARNINGS) -Wno-parentheses
