@@ -1337,6 +1337,13 @@ public class StatementGenerator extends ErrorReportingASTVisitor {
         // Strings with all valid C99 characters were previously converted,
         // so this literal needs to be defined with a char array.
         buffer.append(buildStringFromChars(((StringLiteral) arg).getLiteralValue()));
+      } else if (arg instanceof MethodInvocation) {
+        IMethodBinding methodBinding = Types.getMethodBinding(arg);
+        if (methodBinding.getName().equals("hash")) {
+          // "hash" in objective-c is declared to return NSUInteger.
+          buffer.append("(int) ");
+          arg.accept(this);
+        }
       } else {
         arg.accept(this);
       }
