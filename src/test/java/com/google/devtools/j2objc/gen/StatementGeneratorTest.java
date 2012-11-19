@@ -799,7 +799,8 @@ public class StatementGeneratorTest extends GenerationTest {
     assertEquals(2, stmts.size());
     String result = generateStatement(stmts.get(1));
     assertEquals(
-        "if ([[(IOSArray *) args elementType] isEqual:[NSString class]]) {\n}", result);
+        "if ([args isKindOfClass:[IOSArray class]] ? " +
+        "[[(IOSArray *) args elementType] isEqual:[NSString class]] : NO) {\n}", result);
   }
 
   public void testObjectArrayInitializer() throws IOException {
