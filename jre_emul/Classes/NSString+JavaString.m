@@ -21,6 +21,7 @@
 
 #import "NSString+JavaString.h"
 #import "JreEmulation.h"
+#import "java/io/Serializable.h"
 #import "java/io/UnsupportedEncodingException.h"
 #import "java/lang/AssertionError.h"
 #import "java/lang/Character.h"
@@ -29,10 +30,20 @@
 #import "java/lang/StringBuffer.h"
 #import "java/lang/StringBuilder.h"
 #import "java/lang/StringIndexOutOfBoundsException.h"
+#import "java/util/Comparator.h"
 #import "java/util/Locale.h"
 #import "java/util/regex/PatternSyntaxException.h"
 
+@interface CaseInsensitiveComparator :
+    NSObject < JavaUtilComparator, JavaIoSerializable > {
+}
+- (int)compareWithId:(NSString *)o1
+              withId:(NSString *)o2;
+@end
+
 @implementation NSString (JavaString)
+
+static id<JavaUtilComparator> CaseInsensitiveComparator_CASE_INSENSITIVE_ORDER_;
 
 id makeException(Class exceptionClass) {
   id exception = [[exceptionClass alloc] init];
@@ -807,6 +818,27 @@ NSStringEncoding parseCharsetName(NSString *charset) {
     [result replaceObjectAtIndex:i withObject:part];
   }
   return result;
+}
+
++ (id<JavaUtilComparator>)CASE_INSENSITIVE_ORDER {
+  return CaseInsensitiveComparator_CASE_INSENSITIVE_ORDER_;
+}
+
++ (void)initialize {
+  if (self == [CaseInsensitiveComparator class]) {
+    JreOperatorRetainedAssign(
+        &CaseInsensitiveComparator_CASE_INSENSITIVE_ORDER_, 
+        AUTORELEASE([[CaseInsensitiveComparator alloc] init]));
+  }
+}
+
+@end
+
+@implementation CaseInsensitiveComparator
+
+- (int)compareWithId:(NSString *)o1
+              withId:(NSString *)o2 {
+  return [NIL_CHK(o1) compareToIgnoreCase:o2];
 }
 
 @end
