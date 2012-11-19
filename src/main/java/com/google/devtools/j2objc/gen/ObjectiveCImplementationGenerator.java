@@ -59,6 +59,7 @@ import java.util.Set;
 public class ObjectiveCImplementationGenerator extends ObjectiveCSourceFileGenerator {
   private Set<IVariableBinding> fieldHiders;
   private final String suffix;
+  private Set<IMethodBinding> invokedConstructors = Sets.newHashSet();
 
   /**
    * Generate an Objective-C implementation file for each type declared in a
@@ -86,6 +87,7 @@ public class ObjectiveCImplementationGenerator extends ObjectiveCSourceFileGener
   public void generate(CompilationUnit unit) {
     println(J2ObjC.getFileHeader(getSourceFileName()));
     if (needsPrinting(unit)) {
+      findInvokedConstructors(unit);
       printStart(getSourceFileName());
       printImports(unit);
       unit.accept(new ErrorReportingASTVisitor() {
@@ -144,6 +146,16 @@ public class ObjectiveCImplementationGenerator extends ObjectiveCSourceFileGener
       }
     });
     return result[0];
+  }
+
+  private void findInvokedConstructors(CompilationUnit unit) {
+    unit.accept(new ErrorReportingASTVisitor() {
+      @Override
+      public boolean visit(ConstructorInvocation node) {
+        invokedConstructors.add(Types.getMethodBinding(node).getMethodDeclaration());
+        return false;
+      }
+    });
   }
 
   @Override
@@ -489,7 +501,26 @@ public class ObjectiveCImplementationGenerator extends ObjectiveCSourceFileGener
       sb.append("}\nreturn self;\n}");
       methodBody = sb.toString();
     }
-    return super.constructorDeclaration(m) + " " + reindent(methodBody) + "\n\n";
+    if (invokedConstructors.contains(binding)) {
+      return super.constructorDeclaration(m, true) + " " + reindent(methodBody) + "\n\n"
+          + super.constructorDeclaration(m, false) + " {\n  return "
+          + generateStatement(createInnerConstructorInvocation(m), false) + ";\n}\n\n";
+    } else {
+      return super.constructorDeclaration(m, false) + " " + reindent(methodBody) + "\n\n";
+    }
+  }
+
+  private Statement createInnerConstructorInvocation(MethodDeclaration m) {
+    ConstructorInvocation invocation = m.getAST().newConstructorInvocation();
+    Types.addBinding(invocation, Types.getBinding(m));
+    @SuppressWarnings("unchecked")
+    List<Expression> arguments = invocation.arguments();
+    @SuppressWarnings("unchecked")
+    List<SingleVariableDeclaration> params = m.parameters();
+    for (SingleVariableDeclaration param : params) {
+      arguments.add(Types.newLabel(param.getName().getIdentifier()));
+    }
+    return invocation;
   }
 
   private String enumConstructorDeclaration(MethodDeclaration m, List<Statement> statements,
