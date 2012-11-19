@@ -271,6 +271,9 @@ $(TESTS_DIR)/%.h $(TESTS_DIR)/%.m: $(MATH_TEST_SUPPORT_ROOT)/%.java
 $(TESTS_DIR)/%.h $(TESTS_DIR)/%.m: $(MISC_TEST_ROOT)/%.java
 	@echo $? >> $(JAVA_SOURCE_LIST)
 
+$(TESTS_DIR)/%.h $(TESTS_DIR)/%.m: $(ANDROID_JRE_TEST_ROOT)/%.java
+	@echo $? >> $(JAVA_SOURCE_LIST)
+
 $(TESTS_DIR)/%.o: $(TESTS_DIR)/%.m
 	@mkdir -p `dirname $@`
 	../dist/j2objcc -g -I$(TESTS_DIR) -c $? -o $@ \
