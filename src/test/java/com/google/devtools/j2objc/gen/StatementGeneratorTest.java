@@ -347,6 +347,23 @@ public class StatementGeneratorTest extends GenerationTest {
     assertTranslation(translation, "return inArg + outArg;");
   }
 
+  public void testFieldAccess() throws IOException {
+    String translation = translateSourceFile(
+      "import com.google.j2objc.annotations.Weak;"
+      + "public class Test { "
+      + "  Object i;"
+      + "  @Weak Object j;"
+      + "  Test(Object otherI, Object otherJ) {"
+      + "    i = otherI;"
+      + "    j = otherJ;"
+      + "  }"
+      + "}",
+      "Test", "Test.m");
+    assertTranslation(translation, "JreOperatorRetainedAssign(&i_, otherI);");
+    assertTranslation(translation, "j_ = otherJ;");
+    assertTranslation(translation, "JreOperatorRetainedAssign(&i_, nil);");
+  }
+
   public void testInnerInnerClassFieldAccess() throws IOException {
     String translation = translateSourceFile(
       "public class Test { static class One {} static class Two extends Test { " +
