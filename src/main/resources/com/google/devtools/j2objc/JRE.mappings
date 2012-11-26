@@ -229,6 +229,7 @@ java.lang.String.valueOf(J)Ljava/lang/String; = NSString valueOfLong:(long long 
 java.lang.String.valueOf([C)Ljava/lang/String; = NSString valueOfChars:(IOSCharArray *)data
 java.lang.String.valueOf([CII)Ljava/lang/String; = \
     NSString valueOfChars:(IOSCharArray *)data offset:(int)offset count:(int)count
+java.lang.String.copyValueOf([C)Ljava/lang/String; = NSString valueOfChars:(IOSCharArray *)data
 java.lang.String.copyValueOf([CII)Ljava/lang/String; = \
     NSString valueOfChars:(IOSCharArray *)data offset:(int)offset count:(int)count
 
