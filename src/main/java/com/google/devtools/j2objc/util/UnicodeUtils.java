@@ -58,12 +58,12 @@ public final class UnicodeUtils {
 
         // Convert hex Unicode number; format valid due to compiler check.
         if (s.length() >= i + 6) {
-          int value = Integer.parseInt(s.substring(i + 2, i + 6), 16);
+          char value = (char) Integer.parseInt(s.substring(i + 2, i + 6), 16);
           String convertedChar = escapeCharacter(value);
           if (convertedChar != null) {
             buffer.append(convertedChar);
           } else {
-            if (!isValidCppCharacter((char) value)) {
+            if (!isValidCppCharacter(value)) {
               if (logErrorMessage) {
                 J2ObjC.error(String.format("Illegal C/C++ Unicode character \\u%4x in \"%s\"",
                     value, s));
@@ -99,7 +99,7 @@ public final class UnicodeUtils {
     StringBuffer sb = new StringBuffer();
     while (matcher.find()) {
       matcher.appendReplacement(sb, "");
-      sb.append(escapeUtf8(Integer.parseInt(matcher.group(1), 8)));
+      sb.append(escapeUtf8((char) Integer.parseInt(matcher.group(1), 8)));
     }
     matcher.appendTail(sb);
     return sb.toString();
@@ -124,11 +124,10 @@ public final class UnicodeUtils {
    * by ISO 14882, section 2.2. Returns the converted character as a String,
    * or null if the given value was not handled.
    */
-  public static String escapeCharacter(int value) {
-    assert (value & 0xffff0000) == 0;
+  public static String escapeCharacter(char value) {
     if (value >= 0x20 && value <= 0x7E) {
       // Printable ASCII character.
-      return new String(new char[]{ (char) value });
+      return Character.toString(value);
     } else if (value < 0x20 || (value >= 0x7F && value < 0xA0)) {
       // Invalid C++ Unicode number, convert to UTF-8 sequence.
       return escapeUtf8(value);
@@ -137,9 +136,9 @@ public final class UnicodeUtils {
     }
   }
 
-  private static String escapeUtf8(int value) {
+  private static String escapeUtf8(char value) {
     StringBuilder buffer = new StringBuilder();
-    String charString = new String(new char[]{ (char) value });
+    String charString = Character.toString(value);
     try {
       for (byte b : charString.getBytes("UTF-8")) {
         int unsignedByte = b & 0xFF;
