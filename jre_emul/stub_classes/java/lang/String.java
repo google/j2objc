@@ -50,6 +50,10 @@ public class String implements CharSequence, Comparable<String> {
 
   public String(StringBuilder sb) {}
 
+  public static String copyValueOf(char[] chars) {
+    return null;
+  }
+
   public static String copyValueOf(char[] chars, int i, int j) {
     return null;
   }
@@ -278,7 +282,6 @@ public class String implements CharSequence, Comparable<String> {
   String(byte[] bytes, int i, int j, java.nio.charset.Charset charset)
   String(byte[] bytes, java.nio.charset.Charset charset)
   String(int[] ints, int i, int j)
-  String copyValueOf(char[] chars)
   boolean contentEquals(CharSequence cs)
   boolean contentEquals(StringBuffer sb)
   getBytes(int i, int j, byte[] bytes, int k)
