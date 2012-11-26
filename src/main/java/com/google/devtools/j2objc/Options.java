@@ -274,9 +274,10 @@ public class Options {
     addPrefixProperties(props);
   }
 
-  private static void addPrefixProperties(Properties props) {
+  @VisibleForTesting
+  static void addPrefixProperties(Properties props) {
     for (String pkg : props.stringPropertyNames()) {
-      addPackagePrefix(pkg, props.getProperty(pkg));
+      addPackagePrefix(pkg, props.getProperty(pkg).trim());
     }
   }
 
