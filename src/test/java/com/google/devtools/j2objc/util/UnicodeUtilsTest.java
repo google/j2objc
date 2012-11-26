@@ -50,6 +50,12 @@ public class UnicodeUtilsTest extends GenerationTest {
     assertEquals(fragment, escaped);
   }
 
+  public void testEscapeOctalSequences() {
+    String fragment = "abc\\200def\\377ghi\\177jkl\\30";
+    String escaped = UnicodeUtils.escapeOctalSequences(fragment);
+    assertEquals("abc\\xc2\\x80def\\xc3\\xbfghi\\177jkl\\30", escaped);
+  }
+
   public void testHasValidCppCharacters() {
     String fragment = "\u1234";
     assertTrue(UnicodeUtils.hasValidCppCharacters(fragment));

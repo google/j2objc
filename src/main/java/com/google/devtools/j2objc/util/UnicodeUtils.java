@@ -19,9 +19,9 @@ package com.google.devtools.j2objc.util;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.devtools.j2objc.J2ObjC;
 
-import org.eclipse.jdt.core.dom.StringLiteral;
-
 import java.io.UnsupportedEncodingException;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * Utility methods for translating Unicode strings to Objective-C.
@@ -32,6 +32,10 @@ public final class UnicodeUtils {
 
   private UnicodeUtils() {
     // Don't instantiate.
+  }
+
+  public static String escapeStringLiteral(String s) {
+    return escapeOctalSequences(escapeUnicodeSequences(s));
   }
 
   /**
@@ -84,11 +88,21 @@ public final class UnicodeUtils {
     }
   }
 
-  // Checks that there aren't any invalid characters or octal escape
-  // sequences, from a C99 perspective.
-  public static boolean isValidCppString(StringLiteral node) {
-    return hasValidCppCharacters(node.getLiteralValue())
-        && !node.getEscapedValue().matches("\".*\\\\[2-3][0-7][0-7].*\"");
+  private static final Pattern INVALID_OCTAL = Pattern.compile("\\\\([2-3][0-7][0-7])");
+
+  /**
+   * Replaces invalid octal escape sequences, from a C99 perspective.
+   */
+  @VisibleForTesting
+  static String escapeOctalSequences(String s) {
+    Matcher matcher = INVALID_OCTAL.matcher(s);
+    StringBuffer sb = new StringBuffer();
+    while (matcher.find()) {
+      matcher.appendReplacement(sb, "");
+      sb.append(escapeUtf8(Integer.parseInt(matcher.group(1), 8)));
+    }
+    matcher.appendTail(sb);
+    return sb.toString();
   }
 
   /**
@@ -111,27 +125,32 @@ public final class UnicodeUtils {
    * or null if the given value was not handled.
    */
   public static String escapeCharacter(int value) {
-    StringBuilder buffer = new StringBuilder();
+    assert (value & 0xffff0000) == 0;
     if (value >= 0x20 && value <= 0x7E) {
       // Printable ASCII character.
-      buffer.append((char) value);
+      return new String(new char[]{ (char) value });
     } else if (value < 0x20 || (value >= 0x7F && value < 0xA0)) {
       // Invalid C++ Unicode number, convert to UTF-8 sequence.
-      String charString = new String(new char[]{ (char) value });
-      try {
-        for (byte b : charString.getBytes("UTF-8")) {
-          int unsignedByte = b & 0xFF;
-          buffer.append("\\x");
-          if (unsignedByte < 16) {
-            buffer.append('0');
-          }
-          buffer.append(Integer.toHexString(unsignedByte));
-        }
-      } catch (UnsupportedEncodingException e) {
-        throw new AssertionError("UTF-8 is an unsupported encoding");
-      }
+      return escapeUtf8(value);
     } else {
       return null;
+    }
+  }
+
+  private static String escapeUtf8(int value) {
+    StringBuilder buffer = new StringBuilder();
+    String charString = new String(new char[]{ (char) value });
+    try {
+      for (byte b : charString.getBytes("UTF-8")) {
+        int unsignedByte = b & 0xFF;
+        buffer.append("\\x");
+        if (unsignedByte < 16) {
+          buffer.append('0');
+        }
+        buffer.append(Integer.toHexString(unsignedByte));
+      }
+    } catch (UnsupportedEncodingException e) {
+      throw new AssertionError("UTF-8 is an unsupported encoding");
     }
     return buffer.toString();
   }
