@@ -38,6 +38,8 @@ import org.eclipse.jdt.core.dom.Statement;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.PrintStream;
+import java.io.StringWriter;
 import java.io.UnsupportedEncodingException;
 import java.net.URL;
 import java.net.URLClassLoader;
@@ -55,17 +57,20 @@ import java.util.List;
  */
 public abstract class GenerationTest extends TestCase {
   protected File tempDir;
+  private String lastLog;
 
   @Override
   protected void setUp() throws IOException {
     tempDir = createTempDir();
     Options.load(new String[] { "-d", tempDir.getAbsolutePath() });
+    lastLog = "";
   }
 
   @Override
   protected void tearDown() throws Exception {
     deleteTempDir(tempDir);
     J2ObjC.reset();
+    lastLog = "";
   }
 
   /**
@@ -113,11 +118,25 @@ public abstract class GenerationTest extends TestCase {
    * @return the translated compilation unit
    */
   protected CompilationUnit translateType(String name, String source, boolean assertErrors) {
-    CompilationUnit unit = compileType(name, source, assertErrors);
-    J2ObjC.initializeTranslation(unit);
-    J2ObjC.removeDeadCode(unit, source);
-    J2ObjC.translate(unit, source);
-    return unit;
+    PrintStream errStream = System.err;
+    try {
+      // Capture error and warning message text.
+      final StringWriter stringWriter = new StringWriter();
+      System.setErr(new PrintStream(System.err) {
+        @Override
+        public void println(String msg) {
+          stringWriter.append(msg);
+        }
+      });
+      CompilationUnit unit = compileType(name, source, assertErrors);
+      J2ObjC.initializeTranslation(unit);
+      J2ObjC.removeDeadCode(unit, source);
+      J2ObjC.translate(unit, source);
+      lastLog = stringWriter.toString();
+      return unit;
+    } finally {
+      System.setErr(errStream);
+    }
   }
 
   /**
@@ -278,12 +297,26 @@ public abstract class GenerationTest extends TestCase {
    */
   protected String translateSourceFile(String source, String typeName, String fileName)
       throws IOException {
-    CompilationUnit unit = translateType(typeName, source);
-    assertNoCompilationErrors(unit);
-    String sourceName = typeName + ".java";
-    ObjectiveCHeaderGenerator.generate(sourceName, source, unit);
-    ObjectiveCImplementationGenerator.generate(sourceName, Language.OBJECTIVE_C, unit, source);
-    return getTranslatedFile(fileName);
+    PrintStream errStream = System.err;
+    try {
+      // Append any error or warning messages from generation.
+      final StringWriter stringWriter = new StringWriter();
+      System.setErr(new PrintStream(System.err) {
+        @Override
+        public void println(String msg) {
+          stringWriter.append(msg);
+        }
+      });
+      CompilationUnit unit = translateType(typeName, source);
+      assertNoCompilationErrors(unit);
+      String sourceName = typeName + ".java";
+      ObjectiveCHeaderGenerator.generate(sourceName, source, unit);
+      ObjectiveCImplementationGenerator.generate(sourceName, Language.OBJECTIVE_C, unit, source);
+      lastLog += stringWriter.toString();
+      return getTranslatedFile(fileName);
+    } finally {
+      System.setErr(errStream);
+    }
   }
 
   protected void addSourceFile(String source, String fileName) throws IOException {
@@ -299,5 +332,31 @@ public abstract class GenerationTest extends TestCase {
     File f = new File(tempDir, fileName);
     assertTrue(f.exists());
     return Files.toString(f, Charset.defaultCharset());
+  }
+
+  /**
+   * Asserts that the correct number of warnings were reported during the
+   * last translation.
+   */
+  protected void assertWarningCount(int expectedCount) {
+    assertEquals(expectedCount, J2ObjC.getWarningCount());
+  }
+
+  /**
+   * Asserts that the correct number of errors were reported during the
+   * last translation.
+   */
+  protected void assertErrorCount(int expectedCount) {
+    assertEquals(expectedCount, J2ObjC.getErrorCount());
+  }
+
+  /**
+   * Asserts that the last translation log output contains a specified
+   * string fragment.
+   */
+  protected void assertTranslationLog(String expectedText) {
+    if (!lastLog.contains(expectedText)) {
+      fail("expected:\"" + expectedText + "\" in:\n" + lastLog);
+    }
   }
 }
