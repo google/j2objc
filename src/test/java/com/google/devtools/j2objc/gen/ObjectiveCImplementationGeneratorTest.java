@@ -17,6 +17,7 @@
 package com.google.devtools.j2objc.gen;
 
 import com.google.devtools.j2objc.GenerationTest;
+import com.google.devtools.j2objc.J2ObjC;
 import com.google.devtools.j2objc.Options;
 import com.google.devtools.j2objc.Options.MemoryManagementOption;
 
@@ -382,8 +383,9 @@ public class ObjectiveCImplementationGeneratorTest extends GenerationTest {
       String translation = translateSourceFile(
           "public class Example { native void test() /* -[ ]-*/; }",
           "Example", "Example.m");
-      assertTranslation(translation, "- (void)test ERROR");
-      assertTrue(stringWriter.toString().contains("no native code found"));
+      assertFalse(translation.contains("- (void)test"));
+      assertEquals(1, J2ObjC.getWarningCount()); // No native code for jsni().
+      assertTrue(stringWriter.toString().contains("no native code"));
     } finally {
       System.setErr(errStream);
     }
