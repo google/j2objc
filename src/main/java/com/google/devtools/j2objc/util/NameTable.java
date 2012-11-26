@@ -429,7 +429,7 @@ public class NameTable {
         outerBinding = outerBinding.getDeclaringClass();
       }
       String baseName = getFullName(outerBinding) + prefix + '_' + getName(binding);
-      return outerBinding.isEnum() ? baseName : baseName + suffix;
+      return (outerBinding.isEnum() && binding.isAnonymous()) ? baseName : baseName + suffix;
     }
     IPackageBinding pkg = binding.getPackage();
     String pkgName = pkg != null ? getPrefix(pkg.getName()) : "";
