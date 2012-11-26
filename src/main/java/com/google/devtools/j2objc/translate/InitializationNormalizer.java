@@ -178,12 +178,12 @@ public class InitializationNormalizer extends ErrorReportingASTVisitor {
    */
   private boolean requiresInitializer(VariableDeclarationFragment frag) {
     IVariableBinding binding = Types.getVariableBinding(frag);
-    if (binding.getConstantValue() == null) { // constants don't need initialization
+    Object constantValue = binding.getConstantValue();
+    if (constantValue == null) { // constants don't need initialization
       return true;
     }
-    Expression initializer = frag.getInitializer();
-    if (initializer instanceof StringLiteral) {
-      return !UnicodeUtils.isValidCppString((StringLiteral) initializer);
+    if (constantValue instanceof String) {
+      return !UnicodeUtils.hasValidCppCharacters((String) constantValue);
     }
     return false;
   }

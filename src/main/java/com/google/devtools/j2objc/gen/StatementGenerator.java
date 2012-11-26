@@ -1274,13 +1274,13 @@ public class StatementGenerator extends ErrorReportingASTVisitor {
         format += operand.toString();
       } else if (operand instanceof StringLiteral) {
         StringLiteral literal = (StringLiteral) operand;
-        if (UnicodeUtils.isValidCppString(literal)) {
-          String s = (((StringLiteral) operand).getEscapedValue());
+        if (UnicodeUtils.hasValidCppCharacters(literal.getLiteralValue())) {
+          String s = literal.getEscapedValue();
           s = s.substring(1, s.length() - 1); // remove surrounding double-quotes
-          s = UnicodeUtils.escapeUnicodeSequences(s);
+          s = UnicodeUtils.escapeStringLiteral(s);
           format += s.replace("%", "%%");     // escape % character
         } else {
-       // Convert to NSString invocation when printing args.
+          // Convert to NSString invocation when printing args.
           format += "%@";
           args.add(operand);
         }
@@ -1978,9 +1978,9 @@ public class StatementGenerator extends ErrorReportingASTVisitor {
 
   @Override
   public boolean visit(StringLiteral node) {
-    if (UnicodeUtils.isValidCppString(node)) {
+    if (UnicodeUtils.hasValidCppCharacters(node.getLiteralValue())) {
       buffer.append('@');
-      buffer.append(UnicodeUtils.escapeUnicodeSequences(node.getEscapedValue()));
+      buffer.append(UnicodeUtils.escapeStringLiteral(node.getEscapedValue()));
     } else {
       buffer.append(buildStringFromChars(node.getLiteralValue()));
     }

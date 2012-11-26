@@ -1109,12 +1109,8 @@ public class StatementGeneratorTest extends GenerationTest {
     assertTranslation(translation, "@\"\\177\"");
 
     // \200-\377 (0x80-0xFF) is the illegal octal value range in C99.
-    assertFalse(translation.contains("@\"\\200\""));
-    assertFalse(translation.contains("@\"\\377\""));
-    assertTranslation(translation,
-        "[NSString stringWithCharacters:(unichar[]) { (int) 0x80 } length:1]");
-    assertTranslation(translation,
-        "[NSString stringWithCharacters:(unichar[]) { (int) 0xff } length:1]");
+    assertTranslation(translation, "@\"\\xc2\\x80\"");
+    assertTranslation(translation, "@\"\\xc3\\xbf\"");
   }
 
   public void testCharLiteralsAreEscaped() throws IOException {
