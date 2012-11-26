@@ -66,6 +66,10 @@ public class Options {
   private static DeadCodeMap deadCodeMap = null;
   private static File proGuardUsageFile = null;
 
+  // TODO(user): next step will make this false, then later remove it
+  // when all internal source uses OCNI.
+  private static boolean acceptJsniDelimiters = true;
+
   private static final String JRE_MAPPINGS_FILE = "JRE.mappings";
   private static final List<String> mappingFiles = Lists.newArrayList(JRE_MAPPINGS_FILE);
 
@@ -215,6 +219,8 @@ public class Options {
         logger.setLevel(Level.FINEST);
       } else if (arg.startsWith(XBOOTCLASSPATH)) {
         bootclasspath = arg.substring(XBOOTCLASSPATH.length());
+      } else if (arg.equals("-Xno-jsni-delimiters")) {
+        acceptJsniDelimiters = false;
       } else if (arg.startsWith("-h") || arg.equals("--help")) {
         help();
       } else if (arg.startsWith("-")) {
@@ -348,6 +354,16 @@ public class Options {
 
   public static File getOutputDirectory() {
     return outputDirectory;
+  }
+
+  /* TODO(user): remove when all internal source uses OCNI delimiters. */
+  public static boolean acceptJsniDelimiters() {
+    return acceptJsniDelimiters;
+  }
+
+  /* TODO(user): remove when all internal source uses OCNI delimiters. */
+  public static void setAcceptJsniDelimiters(boolean value) {
+    acceptJsniDelimiters = value;
   }
 
   /**

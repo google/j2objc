@@ -23,6 +23,8 @@ import com.google.devtools.j2objc.util.NameTable;
 
 import org.eclipse.jdt.core.dom.ASTNode;
 import org.eclipse.jdt.core.dom.CompilationUnit;
+import org.eclipse.jdt.core.dom.MethodDeclaration;
+import org.eclipse.jdt.core.dom.Modifier;
 import org.eclipse.jdt.core.dom.PackageDeclaration;
 
 import java.io.File;
@@ -75,6 +77,16 @@ public abstract class SourceFileGenerator {
   protected abstract String getSuffix();
 
   /**
+   * Returns true if a native method has an OCNI block, or
+   * temporarily if it has a JSNI block.
+   */
+  protected boolean hasNativeCode(MethodDeclaration m) {
+    assert (m.getModifiers() & Modifier.NATIVE) > 0;
+    String nativeCode = extractNativeCode(m.getStartPosition(), m.getLength());
+    return nativeCode != null;
+  }
+
+  /**
    * Returns text from within a source code range, where that text is
    * surrounded by JSNI-like tokens ("/&#42;-[" and "]-&#42;/").
    *
@@ -90,7 +102,7 @@ public abstract class SourceFileGenerator {
     int end = text.lastIndexOf("]-*/");
 
     //TODO(user): remove after everyone has updated to use the new delimiters.
-    if (start == -1 || end <= start) {
+    if ((start == -1 || end <= start) && Options.acceptJsniDelimiters()) {
       // Check for soon-to-be obsolete GWT JSNI tokens.
       start = text.indexOf("/*-{");
       end = text.lastIndexOf("}-*/");
