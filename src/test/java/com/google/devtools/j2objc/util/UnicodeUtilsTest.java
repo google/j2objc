@@ -17,7 +17,6 @@
 package com.google.devtools.j2objc.util;
 
 import com.google.devtools.j2objc.GenerationTest;
-import com.google.devtools.j2objc.J2ObjC;
 
 /**
  * Unit tests for {@link UnicodeUtils}.
@@ -45,7 +44,7 @@ public class UnicodeUtilsTest extends GenerationTest {
   public void testIllegalUnicodeEscapeSequence() {
     String fragment = "abc\\uffff";
     String escaped = UnicodeUtils.escapeUnicodeSequences(fragment, false);
-    assertEquals(1, J2ObjC.getErrorCount());
+    assertErrorCount(1);
 
     // Verify string wasn't modified (it's useful as a diagnostic).
     assertEquals(fragment, escaped);

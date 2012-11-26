@@ -17,13 +17,10 @@
 package com.google.devtools.j2objc.gen;
 
 import com.google.devtools.j2objc.GenerationTest;
-import com.google.devtools.j2objc.J2ObjC;
 import com.google.devtools.j2objc.Options;
 import com.google.devtools.j2objc.Options.MemoryManagementOption;
 
 import java.io.IOException;
-import java.io.PrintStream;
-import java.io.StringWriter;
 
 /**
  * Tests for {@link ObjectiveCImplementationGenerator}.
@@ -370,25 +367,12 @@ public class ObjectiveCImplementationGeneratorTest extends GenerationTest {
   }
 
   public void testBadNativeCodeBlock() throws IOException {
-    PrintStream errStream = System.err;
-    try {
-      // Capture error message.
-      final StringWriter stringWriter = new StringWriter();
-      System.setErr(new PrintStream(System.err) {
-        @Override
-        public void println(String msg) {
-          stringWriter.append(msg);
-        }
-      });
-      String translation = translateSourceFile(
-          "public class Example { native void test() /* -[ ]-*/; }",
-          "Example", "Example.m");
-      assertFalse(translation.contains("- (void)test"));
-      assertEquals(1, J2ObjC.getWarningCount()); // No native code for jsni().
-      assertTrue(stringWriter.toString().contains("no native code"));
-    } finally {
-      System.setErr(errStream);
-    }
+    String translation = translateSourceFile(
+        "public class Example { native void test() /* -[ ]-*/; }",
+        "Example", "Example.m");
+    assertFalse(translation.contains("- (void)test"));
+    assertWarningCount(1);
+    assertTranslationLog("no native code");
   }
 
   public void testImportDerivedTypeInMethodParams() throws IOException {

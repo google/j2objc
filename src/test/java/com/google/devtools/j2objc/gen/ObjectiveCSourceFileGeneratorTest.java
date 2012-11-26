@@ -17,13 +17,10 @@
 package com.google.devtools.j2objc.gen;
 
 import com.google.devtools.j2objc.GenerationTest;
-import com.google.devtools.j2objc.J2ObjC;
 import com.google.devtools.j2objc.Options;
 import com.google.devtools.j2objc.util.NameTable;
 
 import java.io.IOException;
-import java.io.PrintStream;
-import java.io.StringWriter;
 
 /**
  * Tests for {@link ObjectiveCSourceFileGenerator}.
@@ -65,27 +62,13 @@ public class ObjectiveCSourceFileGeneratorTest extends GenerationTest {
 
     // Now rebuild with option set.
     Options.setAcceptJsniDelimiters(false);
-    PrintStream errStream = System.err;
-    try {
-      // Capture error message.
-      final StringWriter stringWriter = new StringWriter();
-      System.setErr(new PrintStream(System.err) {
-        @Override
-        public void println(String msg) {
-          stringWriter.append(msg);
-        }
-      });
-      translation = translateSourceFile(source, "Example", "Example.m");
-      assertTranslation(translation, "ocni();");
-      assertFalse(translation.contains("jsni();"));
-      assertFalse(translation.contains("test2"));
-      translation = getTranslatedFile("Example.h");
-      assertFalse(translation.contains("test2"));
-      assertEquals(1, J2ObjC.getWarningCount()); // No native code for jsni().
-      assertTrue(stringWriter.toString().contains("no native code"));
-    } finally {
-      System.setErr(errStream);
-    }
+    translation = translateSourceFile(source, "Example", "Example.m");
+    assertTranslation(translation, "ocni();");
+    assertFalse(translation.contains("jsni();"));
+    assertFalse(translation.contains("test2"));
+    translation = getTranslatedFile("Example.h");
+    assertFalse(translation.contains("test2"));
+    assertWarningCount(1); // No native code for jsni().
+    assertTranslationLog("no native code");
   }
-
 }
