@@ -233,6 +233,10 @@ public class ObjectiveCHeaderGenerator extends ObjectiveCSourceFileGenerator {
 
   @Override
   protected String methodDeclaration(MethodDeclaration m) {
+    if ((m.getModifiers() & Modifier.NATIVE) > 0 && !hasNativeCode(m)) {
+      J2ObjC.warning(m, "no native code");
+      return "";
+    }
     String result = super.methodDeclaration(m);
     return result + ";\n";
   }

@@ -415,7 +415,12 @@ public class ObjectiveCImplementationGenerator extends ObjectiveCSourceFileGener
   protected String methodDeclaration(MethodDeclaration m) {
     int modifiers = m.getModifiers();
     if ((modifiers & Modifier.NATIVE) > 0) {
-      return super.methodDeclaration(m) + " " + extractNativeMethodBody(m) + "\n\n";
+      if (hasNativeCode(m)) {
+        return super.methodDeclaration(m) + " " + extractNativeMethodBody(m) + "\n\n";
+      } else {
+        // Warning reported in header generator.
+        return "";
+      }
     }
     String methodBody = generateMethodBody(m);
     return super.methodDeclaration(m) + " " + reindent(methodBody) + "\n\n";
@@ -425,7 +430,12 @@ public class ObjectiveCImplementationGenerator extends ObjectiveCSourceFileGener
   protected String mappedMethodDeclaration(MethodDeclaration method, IOSMethod mappedMethod) {
     String methodBody;
     if ((method.getModifiers() & Modifier.NATIVE) > 0) {
-      methodBody = extractNativeMethodBody(method);
+      if (hasNativeCode(method)) {
+        methodBody = extractNativeMethodBody(method);
+      } else {
+        // Warning reported in header generator.
+        return "";
+      }
     } else {
       methodBody = generateMethodBody(method);
     }
@@ -598,7 +608,7 @@ public class ObjectiveCImplementationGenerator extends ObjectiveCSourceFileGener
       Types.addFunction(Types.getMethodBinding(m));
     }
     println("int main( int argc, const char *argv[] ) {");
-    if (m != null && (m.getModifiers() & Modifier.NATIVE) > 0) {
+    if (m != null && (m.getModifiers() & Modifier.NATIVE) > 0 && hasNativeCode(m)) {
       println(extractNativeMethodBody(m));
       return;
     }
@@ -662,8 +672,8 @@ public class ObjectiveCImplementationGenerator extends ObjectiveCSourceFileGener
     assert (m.getModifiers() & Modifier.NATIVE) > 0;
     String nativeCode = extractNativeCode(m.getStartPosition(), m.getLength());
     if (nativeCode == null) {
-      J2ObjC.error(m, "no native code found");
-      return "ERROR";
+      J2ObjC.warning(m, "no native code found");
+      return "";
     }
     indent();
     String code = reindent('{' + nativeCode + '}');
