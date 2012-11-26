@@ -192,7 +192,7 @@ public class IOSMethodBinding implements IMethodBinding {
 
   @Override
   public boolean overrides(IMethodBinding method) {
-    return delegate.overrides(method);
+    return delegate.equals(method) || delegate.overrides(method);
   }
 
   public IMethodBinding getDelegate() {
