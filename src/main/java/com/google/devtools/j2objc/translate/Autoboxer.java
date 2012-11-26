@@ -478,9 +478,8 @@ public class Autoboxer extends ErrorReportingASTVisitor {
       char c = str.charAt(i);
 
       // Skip specifier flags, width, and precision characters.
-      while (Character.isDigit(c) || c == '-' || c == '#' || c == '+' || c == ' ' ||
-          c == ',' || c == '(' || c == '+' || c == '.') {
-        ++i;
+      while (isFormatFlagCharacter(c) && ++i < str.length()) {
+        c = str.charAt(i);
       }
 
       // Set if specifier requires a primitive argument.
@@ -490,6 +489,16 @@ public class Autoboxer extends ErrorReportingASTVisitor {
       }
       currentArgument++;
     }
+  }
+
+  /**
+   * Returns true if a specified character can be used as part of a format
+   * specifier flag.  For example, "%-02d" has '-', '0' and '2' characters
+   * to define the specifier flag for "%d".
+   */
+  private boolean isFormatFlagCharacter(char c) {
+    return Character.isDigit(c) || c == '-' || c == '#' || c == '+' || c == ' ' ||
+        c == ',' || c == '(' || c == '+' || c == '.';
   }
 
   private Expression boxOrUnboxExpression(Expression arg, ITypeBinding argType) {
