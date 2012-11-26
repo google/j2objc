@@ -76,6 +76,7 @@ public class SmallTests {
     ObjectiveCHeaderGeneratorTest.class,
     ObjectiveCImplementationGeneratorTest.class,
     ObjectiveCSourceFileGeneratorTest.class,
+    OptionsTest.class,
     PrimitiveArrayTest.class,
     ProGuardUsageParserTest.class,
     RenamedTypeBindingTest.class,
