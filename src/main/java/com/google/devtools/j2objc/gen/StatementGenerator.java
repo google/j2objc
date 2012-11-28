@@ -1371,14 +1371,18 @@ public class StatementGenerator extends ErrorReportingASTVisitor {
     ITypeBinding rightBinding = Types.getTypeBinding(node.getRightOperand());
 
     if (rightBinding.isArray()) {
-      buffer.append('[');
-      node.getLeftOperand().accept(this);
-      buffer.append(" isKindOfClass:[IOSArray class]] ? [[(IOSArray *) ");
-      node.getLeftOperand().accept(this);
-      buffer.append(" elementType] isEqual:[");
-      buffer.append(NameTable.getFullName(rightBinding.getElementType()));
-      buffer.append(" class]] : NO");
-      return false;
+      ITypeBinding elementType = rightBinding.getElementType();
+      assert elementType != null;
+      if (!elementType.isPrimitive()) {
+        buffer.append("([");
+        node.getLeftOperand().accept(this);
+        buffer.append(" isKindOfClass:[IOSObjectArray class]] ? [[(IOSObjectArray *) ");
+        node.getLeftOperand().accept(this);
+        buffer.append(" elementType] isEqual:");
+        printObjectArrayType(elementType);
+        buffer.append("] : NO)");
+        return false;
+      }
     }
 
     buffer.append('[');
