@@ -351,4 +351,17 @@ public class AutoboxerTest extends GenerationTest {
         "[JavaLangInteger toHexStringWithInt:[JavaLangSystem identityHashCodeWithId:self]], " +
         "[self size], nil]");
   }
+
+  public void testNoBoxingFormatPrimitiveParameter() throws IOException {
+    String source = "public class Test { " +
+    	"boolean b; byte b2; char c; double d; float f; int i; long l; short s;" +
+        "public String toString() { " +
+        "return String.format(\"b=%d b2=%d c=%c d=%f f=%f i=%d l=%d s=%d\", " +
+        "  b, b2, c, d, f, i, l, s); }}";
+    String translation = translateSourceFile(source, "Test", "Test.m");
+
+    assertTranslation(translation,
+        "stringWithFormat:@\"b=%d b2=%d c=%C d=%f f=%f i=%d l=%d s=%d\" , " +
+        "b_, b2_, c_, d_, f_, i_, l_, s_, nil];");
+  }
 }
