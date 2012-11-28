@@ -110,7 +110,9 @@ public class ImplementationImportCollector extends HeaderImportCollector {
 
   @Override
   public boolean visit(ArrayAccess node) {
-    addReference(Types.getTypeBinding(node));
+    ITypeBinding componentType = Types.getTypeBinding(node);
+    addReference(componentType);
+    addReference(Types.resolveArrayType(componentType));
     return super.visit(node);
   }
 
