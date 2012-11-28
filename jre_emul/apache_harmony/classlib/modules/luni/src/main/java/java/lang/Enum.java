@@ -168,7 +168,7 @@ public abstract class Enum<E extends Enum<E>> implements Serializable,
             throw new IllegalArgumentException(enumType.getSimpleName() + " is not an enum type");
         }
         for (T enumConst : values) {
-            if (enumConst.name.equals(name)) {
+            if (enumConst.name().equals(name)) {
                 return enumConst;
             }
         }
