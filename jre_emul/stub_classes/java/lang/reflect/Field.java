@@ -42,51 +42,52 @@ public class Field extends AccessibleObject {
     return null;
   }
   
-  public Object get() {
+  public Object get(Object o) throws IllegalArgumentException, IllegalAccessException {
     return null;
   }
   
-  public boolean getBoolean() {
+  public boolean getBoolean(Object o) throws IllegalArgumentException, IllegalAccessException {
     return false;
   }
   
-  public byte getByte() {
+  public byte getByte(Object o) throws IllegalArgumentException, IllegalAccessException {
     return 0;
   }
   
-  public char getChar() {
+  public char getChar(Object o) throws IllegalArgumentException, IllegalAccessException {
     return 0;
   }
   
-  public double getDouble() {
+  public double getDouble(Object o) throws IllegalArgumentException, IllegalAccessException {
     return 0.0;
   }
   
-  public float getFloat() {
+  public float getFloat(Object o) throws IllegalArgumentException, IllegalAccessException {
     return 0.0f;
   }
   
-  public int getInt() {
+  public int getInt(Object o) throws IllegalArgumentException, IllegalAccessException {
     return 0;
   }
   
-  public long getLong() {
+  public long getLong(Object o) throws IllegalArgumentException, IllegalAccessException {
     return 0L;
   }
   
-  public short getShort() {
+  public short getShort(Object o) throws IllegalArgumentException, IllegalAccessException {
     return 0;
   }
   
-  public void set(Object o, Object value) {}
-  public void set(Object o, boolean b) {}
-  public void set(Object o, byte b) {}
-  public void set(Object o, char c) {}
-  public void set(Object o, double d) {}
-  public void set(Object o, float f) {}
-  public void set(Object o, int i) {}
-  public void set(Object o, long l) {}
-  public void set(Object o, short s) {}
+  public void set(Object o, Object value) throws IllegalArgumentException,
+      IllegalAccessException {}
+  public void set(Object o, boolean b) throws IllegalArgumentException, IllegalAccessException {}
+  public void set(Object o, byte b) throws IllegalArgumentException, IllegalAccessException {}
+  public void set(Object o, char c) throws IllegalArgumentException, IllegalAccessException {}
+  public void set(Object o, double d) throws IllegalArgumentException, IllegalAccessException {}
+  public void set(Object o, float f) throws IllegalArgumentException, IllegalAccessException {}
+  public void set(Object o, int i) throws IllegalArgumentException, IllegalAccessException {}
+  public void set(Object o, long l) throws IllegalArgumentException, IllegalAccessException {}
+  public void set(Object o, short s) throws IllegalArgumentException, IllegalAccessException {}
   
   /* Not implemented
   public annotation.Annotation getAnnotation(Class);
