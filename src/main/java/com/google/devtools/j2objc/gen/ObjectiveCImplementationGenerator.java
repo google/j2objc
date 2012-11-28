@@ -28,9 +28,12 @@ import com.google.devtools.j2objc.types.Types;
 import com.google.devtools.j2objc.util.ErrorReportingASTVisitor;
 import com.google.devtools.j2objc.util.NameTable;
 
+import org.eclipse.jdt.core.dom.ASTNode;
 import org.eclipse.jdt.core.dom.AbstractTypeDeclaration;
 import org.eclipse.jdt.core.dom.AnnotationTypeDeclaration;
+import org.eclipse.jdt.core.dom.BlockComment;
 import org.eclipse.jdt.core.dom.BodyDeclaration;
+import org.eclipse.jdt.core.dom.Comment;
 import org.eclipse.jdt.core.dom.CompilationUnit;
 import org.eclipse.jdt.core.dom.ConstructorInvocation;
 import org.eclipse.jdt.core.dom.EnumConstantDeclaration;
@@ -694,6 +697,25 @@ public class ObjectiveCImplementationGenerator extends ObjectiveCSourceFileGener
       for (String stmt : importStmts) {
         println(stmt);
       }
+
+      // Print native imports.
+      int endOfImportText = node.types().isEmpty() ? node.getLength()
+          : ((ASTNode) node.types().get(0)).getStartPosition();
+      @SuppressWarnings("unchecked")
+      List<Comment> comments = node.getCommentList(); // safe by definition
+      for (Comment c : comments) {
+        int start = c.getStartPosition();
+        if (start >= endOfImportText) {
+          break;
+        }
+        if (c instanceof BlockComment) {
+          String nativeImport = extractNativeCode(start, c.getLength());
+          if (nativeImport != null) {  // if it has a JSNI section
+            println(nativeImport.trim());
+          }
+        }
+      }
+
       newline();
     }
   }
