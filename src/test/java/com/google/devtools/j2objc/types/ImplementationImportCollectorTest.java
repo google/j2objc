@@ -53,4 +53,11 @@ public class ImplementationImportCollectorTest extends GenerationTest {
         "Test", "Test.m");
     // Nothing to do; Successful translation is the test.
   }
+
+  public void testArrayImport() throws IOException {
+    addSourceFile("class A { boolean[] b; }", "A.java");
+    String translation = translateSourceFile(
+        "class B { int test() { return new A().b.length; }}", "B", "B.m");
+    assertTranslation(translation, "#import \"IOSBooleanArray.h\"");
+  }
 }
