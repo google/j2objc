@@ -31,11 +31,8 @@ import com.google.devtools.j2objc.util.ErrorReportingASTVisitor;
 import com.google.devtools.j2objc.util.NameTable;
 import com.google.devtools.j2objc.util.UnicodeUtils;
 
-import org.eclipse.jdt.core.dom.ASTNode;
 import org.eclipse.jdt.core.dom.AbstractTypeDeclaration;
 import org.eclipse.jdt.core.dom.AnnotationTypeDeclaration;
-import org.eclipse.jdt.core.dom.BlockComment;
-import org.eclipse.jdt.core.dom.Comment;
 import org.eclipse.jdt.core.dom.CompilationUnit;
 import org.eclipse.jdt.core.dom.EnumConstantDeclaration;
 import org.eclipse.jdt.core.dom.EnumDeclaration;
@@ -235,7 +232,6 @@ public class ObjectiveCHeaderGenerator extends ObjectiveCSourceFileGenerator {
   protected String methodDeclaration(MethodDeclaration m) {
     if ((m.getModifiers() & Modifier.NATIVE) > 0 && !hasNativeCode(m)) {
       J2ObjC.warning(m, "no native code");
-      return "";
     }
     String result = super.methodDeclaration(m);
     return result + ";\n";
@@ -284,24 +280,6 @@ public class ObjectiveCHeaderGenerator extends ObjectiveCSourceFileGenerator {
         println(stmt);
       }
       newline();
-    }
-
-    // Print native imports.
-    int endOfImportText = unit.types().isEmpty() ? unit.getLength()
-        : ((ASTNode) unit.types().get(0)).getStartPosition();
-    @SuppressWarnings("unchecked")
-    List<Comment> comments = unit.getCommentList(); // safe by definition
-    for (Comment c : comments) {
-      int start = c.getStartPosition();
-      if (start >= endOfImportText) {
-        break;
-      }
-      if (c instanceof BlockComment) {
-        String nativeImport = extractNativeCode(start, c.getLength());
-        if (nativeImport != null) {  // if it has a JSNI section
-          println(nativeImport.trim());
-        }
-      }
     }
 
     // Print collected imports.
