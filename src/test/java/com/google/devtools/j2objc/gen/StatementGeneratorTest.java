@@ -799,8 +799,30 @@ public class StatementGeneratorTest extends GenerationTest {
     assertEquals(2, stmts.size());
     String result = generateStatement(stmts.get(1));
     assertEquals(
-        "if ([args isKindOfClass:[IOSArray class]] ? " +
-        "[[(IOSArray *) args elementType] isEqual:[NSString class]] : NO) {\n}", result);
+        "if (([args isKindOfClass:[IOSObjectArray class]] ? " +
+        "[[(IOSObjectArray *) args elementType] isEqual:" +
+        "[IOSClass classWithClass:[NSString class]]] : " +
+        "NO)) {\n}", result);
+  }
+
+  public void testInterfaceArrayInstanceOfTranslation() throws IOException {
+    String source = "Object args = new Readable[0]; if (args instanceof Readable[]) {}";
+    List<Statement> stmts = translateStatements(source);
+    assertEquals(2, stmts.size());
+    String result = generateStatement(stmts.get(1));
+    assertEquals(
+        "if (([args isKindOfClass:[IOSObjectArray class]] ? " +
+        "[[(IOSObjectArray *) args elementType] isEqual:" +
+        "[IOSClass classWithProtocol:@protocol(JavaLangReadable)]] : " +
+        "NO)) {\n}", result);
+  }
+
+  public void testPrimitiveArrayInstanceOfTranslation() throws IOException {
+    String source = "Object args = new int[0]; if (args instanceof int[]) {}";
+    List<Statement> stmts = translateStatements(source);
+    assertEquals(2, stmts.size());
+    String result = generateStatement(stmts.get(1));
+    assertEquals("if ([args isKindOfClass:[IOSIntArray class]]) {\n}", result);
   }
 
   public void testObjectArrayInitializer() throws IOException {
