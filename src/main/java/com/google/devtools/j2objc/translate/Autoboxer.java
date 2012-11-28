@@ -483,8 +483,8 @@ public class Autoboxer extends ErrorReportingASTVisitor {
       }
 
       // Set if specifier requires a primitive argument.
-      if (c == 'c' || c == 'd' || c == 'o' || c == 'x' || c == 'X' || c == 'e' || c == 'f' ||
-          c == 'g' || c == 'a' || c == 'A') {
+      if (c == 'c' || c == 'C' || c == 'd' || c == 'o' || c == 'x' || c == 'X' || c == 'e' ||
+          c == 'f' || c == 'g' || c == 'a' || c == 'A') {
         primitiveFormatArgs.set(currentArgument);
       }
       currentArgument++;

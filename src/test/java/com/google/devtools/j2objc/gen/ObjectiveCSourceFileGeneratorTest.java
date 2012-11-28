@@ -66,8 +66,6 @@ public class ObjectiveCSourceFileGeneratorTest extends GenerationTest {
     assertTranslation(translation, "ocni();");
     assertFalse(translation.contains("jsni();"));
     assertFalse(translation.contains("test2"));
-    translation = getTranslatedFile("Example.h");
-    assertFalse(translation.contains("test2"));
     assertWarningCount(1); // No native code for jsni().
     assertTranslationLog("no native code");
   }
