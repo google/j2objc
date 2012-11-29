@@ -117,6 +117,14 @@ public final class Locale implements Cloneable, Serializable {
     public static final Locale PRC = new Locale("zh", "CN"); //$NON-NLS-1$//$NON-NLS-2$
 
     /**
+     * Locale constant for the root locale. The root locale has an empty language,
+     * country, and variant.
+     *
+     * @since 1.6
+     */
+    public static final Locale ROOT = new Locale("", "");
+
+    /**
      * Locale constant for zh_CN.
      */
     public static final Locale SIMPLIFIED_CHINESE = new Locale("zh", "CN"); //$NON-NLS-1$//$NON-NLS-2$
