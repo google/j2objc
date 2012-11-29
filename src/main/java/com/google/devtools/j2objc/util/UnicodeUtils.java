@@ -66,7 +66,7 @@ public final class UnicodeUtils {
             if (!isValidCppCharacter(value)) {
               if (logErrorMessage) {
                 J2ObjC.error(String.format("Illegal C/C++ Unicode character \\u%4x in \"%s\"",
-                    value, s));
+                    (int) value, s));
               } else {
                 J2ObjC.error();
               }
