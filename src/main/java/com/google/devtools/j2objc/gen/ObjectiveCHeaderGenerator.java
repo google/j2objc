@@ -31,6 +31,7 @@ import com.google.devtools.j2objc.util.ErrorReportingASTVisitor;
 import com.google.devtools.j2objc.util.NameTable;
 import com.google.devtools.j2objc.util.UnicodeUtils;
 
+import org.eclipse.jdt.core.dom.ASTVisitor;
 import org.eclipse.jdt.core.dom.AbstractTypeDeclaration;
 import org.eclipse.jdt.core.dom.AnnotationTypeDeclaration;
 import org.eclipse.jdt.core.dom.CompilationUnit;
@@ -148,12 +149,33 @@ public class ObjectiveCHeaderGenerator extends ObjectiveCSourceFileGenerator {
         printf("\ntypedef %s %s;\n", typeName, unprefixedName);
       }
     }
+    printExternalNativeMethodCategory(node, typeName);
   }
 
   @Override
   protected void generate(AnnotationTypeDeclaration node) {
     String typeName = NameTable.getFullName(node);
     printf("@protocol %s < NSObject >\n@end\n", typeName);
+  }
+
+  private void printExternalNativeMethodCategory(TypeDeclaration node, String typeName) {
+    final List<MethodDeclaration> externalMethods = Lists.newArrayList();
+    node.accept(new ASTVisitor() {
+      @Override
+      public void endVisit(MethodDeclaration node) {
+        if ((node.getModifiers() & Modifier.NATIVE) > 0 && !hasNativeCode(node)) {
+          externalMethods.add(node);
+        }
+      }
+    });
+    if (!externalMethods.isEmpty()) {
+      printf("\n@interface %s (NativeMethods)\n", typeName);
+      for (MethodDeclaration m : externalMethods) {
+        print(super.methodDeclaration(m));
+        println(";");
+      }
+      println("@end");
+    }
   }
 
   private void printStaticInterface(String typeName, List<MethodDeclaration> methods) {
@@ -231,7 +253,7 @@ public class ObjectiveCHeaderGenerator extends ObjectiveCSourceFileGenerator {
   @Override
   protected String methodDeclaration(MethodDeclaration m) {
     if ((m.getModifiers() & Modifier.NATIVE) > 0 && !hasNativeCode(m)) {
-      J2ObjC.warning(m, "no native code");
+      return "";
     }
     String result = super.methodDeclaration(m);
     return result + ";\n";

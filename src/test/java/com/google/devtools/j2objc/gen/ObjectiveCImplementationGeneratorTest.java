@@ -367,12 +367,13 @@ public class ObjectiveCImplementationGeneratorTest extends GenerationTest {
   }
 
   public void testBadNativeCodeBlock() throws IOException {
+    // Bad native code blocks should just be ignored comments.
     String translation = translateSourceFile(
         "public class Example { native void test() /* -[ ]-*/; }",
-        "Example", "Example.m");
-    assertFalse(translation.contains("- (void)test"));
-    assertWarningCount(1);
-    assertTranslationLog("no native code");
+        "Example", "Example.h");
+
+    // Instead, a native method declaration should be created.
+    assertTranslation(translation, "@interface Example (NativeMethods)\n- (void)test;");
   }
 
   public void testImportDerivedTypeInMethodParams() throws IOException {

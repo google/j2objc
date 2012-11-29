@@ -440,4 +440,24 @@ public class ObjectiveCHeaderGeneratorTest extends GenerationTest {
         "@interface A_FooEnum : JavaLangEnum < NSCopying, A_I, JavaLangRunnable >");
     assertTranslation(translation, "#import \"java/lang/Runnable.h\"");
   }
+
+  public void testExternalNativeMethod() throws IOException {
+    String translation = translateSourceFile(
+        "package foo; class Example { native void external(String s); " +
+        "  void test(String str) { external(str); }}", "Example", "foo/Example.h");
+
+    // Verify test() is in main interface.
+    assertTranslation(translation,
+        "@interface FooExample : NSObject {\n}\n\n- (void)testWithNSString:(NSString *)str;");
+
+    // Verify external() is in native methods interface.
+    assertTranslation(translation,
+        "@interface FooExample (NativeMethods)\n- (void)externalWithNSString:(NSString *)s;");
+
+    // Verify category method isn't implemented, but is invoked.
+    translation = getTranslatedFile("foo/Example.m");
+    assertTranslation(translation, "@implementation FooExample\n");
+    assertFalse(translation.contains("- (void)externalWithNSString:(NSString *)s"));
+    assertTranslation(translation, "[self externalWithNSString:str];");
+  }
 }
