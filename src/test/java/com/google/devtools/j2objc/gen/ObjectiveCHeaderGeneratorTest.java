@@ -122,7 +122,7 @@ public class ObjectiveCHeaderGeneratorTest extends GenerationTest {
     String translation = translateSourceFile(
         "package unit.test; public interface Example extends Bar {} interface Bar {}",
         "Example", "unit/test/Example.h");
-    assertTranslation(translation, "@protocol UnitTestExample < UnitTestBar >");
+    assertTranslation(translation, "@protocol UnitTestExample < UnitTestBar, NSObject >");
   }
 
   public void testConstTranslation() throws IOException {

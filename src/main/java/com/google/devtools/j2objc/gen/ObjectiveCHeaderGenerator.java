@@ -118,7 +118,7 @@ public class ObjectiveCHeaderGenerator extends ObjectiveCSourceFileGenerator {
           print(", ");
         }
       }
-      print(" >");
+      print(node.isInterface() ? ", NSObject >" : " >");
     } else if (node.isInterface()) {
       print(" < NSObject >");
     }
