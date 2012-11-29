@@ -18,6 +18,8 @@
 package java.util;
 
 import java.io.Serializable;
+import com.google.j2objc.annotations.Weak;
+import com.google.j2objc.annotations.WeakOuter;
 
 /**
  * TreeMap is an implementation of SortedMap. All optional operations (adding
@@ -119,8 +121,11 @@ class MapEntry implements Map.Entry<K, V>, Cloneable {
 
     static class Node <K,V> implements Cloneable {
         static final int NODE_SIZE = 64;
-        Node<K, V> prev, next;
-        Node<K, V> parent, left, right;
+        @Weak Node<K, V> prev;
+        Node<K, V> next;
+        @Weak Node<K, V> parent;
+        Node<K, V> left;
+        Node<K, V> right;
         V[] values;
         K[] keys;
         int left_idx = 0;
@@ -854,7 +859,7 @@ class MapEntry implements Map.Entry<K, V>, Cloneable {
     }
 
     static class SubMapKeySet <K,V> extends AbstractSet<K> implements Set<K> {
-        SubMap<K, V> subMap;
+        @Weak SubMap<K, V> subMap;
 
         SubMapKeySet(SubMap<K, V> map) {
             subMap = map;
@@ -909,7 +914,7 @@ class MapEntry implements Map.Entry<K, V>, Cloneable {
     }
 
     static class SubMapValuesCollection <K,V> extends AbstractCollection<V> {
-        SubMap<K, V> subMap;
+        @Weak SubMap<K, V> subMap;
 
         public SubMapValuesCollection(SubMap<K, V> subMap) {
             this.subMap = subMap;
@@ -1349,38 +1354,46 @@ class MapEntry implements Map.Entry<K, V>, Cloneable {
     @Override
     public Set<K> keySet() {
         if (keySet == null) {
-            keySet = new AbstractSet<K>() {
-                @Override
-                public boolean contains(Object object) {
-                    return TreeMap.this.containsKey(object);
-                }
-
-                @Override
-                public int size() {
-                    return TreeMap.this.size;
-                }
-
-                @Override
-                public void clear() {
-                    TreeMap.this.clear();
-                }
-
-                @Override
-                public boolean remove(Object object) {
-                    if (contains(object)) {
-                        TreeMap.this.remove(object);
-                        return true;
-                    }
-                    return false;
-                }
-
-                @Override
-                public Iterator<K> iterator() {
-                    return new UnboundedKeyIterator<K, V>(TreeMap.this);
-                }
-            };
+            keySet = new KeySet<K,V>(this);
         }
         return keySet;
+    }
+
+    private static class KeySet<K,V> extends AbstractSet<K> {
+        @Weak TreeMap<K,V> map;
+
+        KeySet(TreeMap<K,V> map) {
+          this.map = map;
+        }
+
+        @Override
+        public boolean contains(Object object) {
+            return map.containsKey(object);
+        }
+
+        @Override
+        public int size() {
+            return map.size;
+        }
+
+        @Override
+        public void clear() {
+            map.clear();
+        }
+
+        @Override
+        public boolean remove(Object object) {
+            if (contains(object)) {
+                map.remove(object);
+                return true;
+            }
+            return false;
+        }
+
+        @Override
+        public Iterator<K> iterator() {
+            return new UnboundedKeyIterator<K, V>(map);
+        }
     }
 
     /**
@@ -2346,29 +2359,37 @@ class MapEntry implements Map.Entry<K, V>, Cloneable {
     @Override
     public Collection<V> values() {
         if (valuesCollection == null) {
-            valuesCollection = new AbstractCollection<V>() {
-                @Override
-                public boolean contains(Object object) {
-                    return containsValue(object);
-                }
-
-                @Override
-                public int size() {
-                    return size;
-                }
-
-                @Override
-                public void clear() {
-                    TreeMap.this.clear();
-                }
-
-                @Override
-                public Iterator<V> iterator() {
-                    return new UnboundedValueIterator<K, V>(TreeMap.this);
-                }
-            };
+            valuesCollection = new ValuesCollection<K, V>(TreeMap.this);
         }
         return valuesCollection;
+    }
+    
+    private static class ValuesCollection<K,V> extends AbstractCollection<V> {
+      @Weak TreeMap<K,V> map;
+      
+      public ValuesCollection(TreeMap<K,V> map) {
+        this.map = map;
+      }
+      
+      @Override
+      public boolean contains(Object object) {
+          return map.containsValue(object);
+      }
+
+      @Override
+      public int size() {
+          return map.size;
+      }
+
+      @Override
+      public void clear() {
+          map.clear();
+      }
+
+      @Override
+      public Iterator<V> iterator() {
+          return new UnboundedValueIterator<K, V>(map);
+      }
     }
 
     /**
