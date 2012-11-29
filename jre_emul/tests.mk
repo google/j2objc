@@ -210,7 +210,7 @@ JAVA_SOURCE_LIST = $(TMPDIR).tests.list
 #	$(TESTS_DIR)/org/apache/harmony/luni/tests/java/util/TreeSetTest.o                     b/5754676
 #
 
-JUNIT_JAR = $../dist/lib/junit-4.10.jar
+JUNIT_JAR = ../dist/lib/junit-4.10.jar
 
 TEST_SOURCE_PATH = \
   $(JRE_TEST_ROOT):$(JRE_MATH_TEST_ROOT):$(JRE_NIO_TEST_ROOT):$(TEST_SUPPORT_ROOT):$(MATH_TEST_SUPPORT_ROOT)
