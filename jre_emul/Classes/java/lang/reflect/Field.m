@@ -95,90 +95,90 @@ typedef union {
     return [self getName];
 }
 
-- (id)get:(id)object {
+- (id)getWithId:(id)object {
   return object_getIvar(object, ivar_);
 }
 
-- (BOOL)getBoolean:(id)object {
+- (BOOL)getBooleanWithId:(id)object {
   BOOL *field = ((BOOL *) object) + ivar_getOffset(ivar_);
   return *field;
 }
 
-- (char)getByte:(id)object {
+- (char)getByteWithId:(id)object {
   char *field = ((char *) object) + ivar_getOffset(ivar_);
   return *field;
 }
 
-- (unichar)getChar:(id)object {
+- (unichar)getCharWithId:(id)object {
   unichar *field = ((unichar *) object) + ivar_getOffset(ivar_);
   return *field;
 }
 
-- (double)getDouble:(id)object {
+- (double)getDoubleWithId:(id)object {
   double *field = ((double *) object) + ivar_getOffset(ivar_);
   return *field;
 }
 
-- (float)getFloat:(id)object {
+- (float)getFloatWithId:(id)object {
   float *field = ((float *) object) + ivar_getOffset(ivar_);
   return *field;
 }
 
-- (int)getInt:(id)object {
+- (int)getIntWithId:(id)object {
   int *field = ((int *) object) + ivar_getOffset(ivar_);
   return *field;
 }
 
-- (long long)getLong:(id)object {
+- (long long)getLongWithId:(id)object {
   long long *field = ((long long *) object) + ivar_getOffset(ivar_);
   return *field;
 }
 
-- (short)getShort:(id)object {
+- (short)getShortWithId:(id)object {
   short *field = ((short *) object) + ivar_getOffset(ivar_);
   return *field;
 }
 
-- (void)set:(id)object value:(id)value {
+- (void)setWithId:(id)object withId:(id)value {
   object_setIvar(object, ivar_, value);
 }
 
-- (void)setBoolean:(id)object value:(BOOL)value {
+- (void)setBooleanWithId:(id)object withBOOL:(BOOL)value {
   BOOL *field = ((BOOL *) object) + ivar_getOffset(ivar_);
   *field = value;
 }
 
-- (void)setByte:(id)object value:(char)value {
+- (void)setByteWithId:(id)object withChar:(char)value {
   char *field = ((char *) object) + ivar_getOffset(ivar_);
   *field = value;
 }
 
-- (void)setChar:(id)object value:(unichar)value {
+- (void)setCharWithId:(id)object withUnichar:(unichar)value {
   unichar *field = ((unichar *) object) + ivar_getOffset(ivar_);
   *field = value;
 }
 
-- (void)setDouble:(id)object value:(double)value {
+- (void)setDoubleWithId:(id)object withDouble:(double)value {
   double *field = ((double *) object) + ivar_getOffset(ivar_);
   *field = value;
 }
 
-- (void)setFloat:(id)object value:(float)value {
+- (void)setFloatWithId:(id)object withFloat:(float)value {
   float *field = ((float *) object) + ivar_getOffset(ivar_);
   *field = value;
 }
 
-- (void)setInt:(id)object value:(int)value {
+- (void)setIntWithId:(id)object withInt:(int)value {
   int *field = ((int *) object) + ivar_getOffset(ivar_);
   *field = value;
 }
 
-- (void)setLong:(id)object value:(long long)value {
+- (void)setLongWithId:(id)object withLongInt:(long long)value {
   long long *field = ((long long *) object) + ivar_getOffset(ivar_);
   *field = value;
 }
 
-- (void)setShort:(id)object value:(short)value {
+- (void)setShortWithId:(id)object withShortInt:(short)value {
   short *field = ((short *) object) + ivar_getOffset(ivar_);
   *field = value;
 }

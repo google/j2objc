@@ -25,7 +25,7 @@
 @class IOSClass;
 @class IOSObjectArray;
 
-// A native implementation of java.lang.reflect.Field.  Its methods are 
+// A native implementation of java.lang.reflect.Field.  Its methods are
 // limited to those that can be derived from the Objective-C runtime,
 // so instances can be created and released as needed.
 @interface JavaLangReflectField : AccessibleObject {
@@ -43,26 +43,26 @@
 - (NSString *)getName;
 
 // Field.get(Object), etc.
-- (id)get:(id)object;
-- (BOOL)getBoolean:(id)object;
-- (char)getByte:(id)object;
-- (unichar)getChar:(id)object;
-- (double)getDouble:(id)object;
-- (float)getFloat:(id)object;
-- (int)getInt:(id)object;
-- (long long)getLong:(id)object;
-- (short)getShort:(id)object;
+- (id)getWithId:(id)object;
+- (BOOL)getBooleanWithId:(id)object;
+- (char)getByteWithId:(id)object;
+- (unichar)getCharWithId:(id)object;
+- (double)getDoubleWithId:(id)object;
+- (float)getFloatWithId:(id)object;
+- (int)getIntWithId:(id)object;
+- (long long)getLongWithId:(id)object;
+- (short)getShortWithId:(id)object;
 
 // Field.set(Object, Object), etc.
-- (void)set:(id)object value:(id)value;
-- (void)setBoolean:(id)object value:(BOOL)value;
-- (void)setByte:(id)object value:(char)value;
-- (void)setChar:(id)object value:(unichar)value;
-- (void)setDouble:(id)object value:(double)value;
-- (void)setFloat:(id)object value:(float)value;
-- (void)setInt:(id)object value:(int)value;
-- (void)setLong:(id)object value:(long long)value;
-- (void)setShort:(id)object value:(short)value;
+- (void)setWithId:(id)object withId:(id)value;
+- (void)setBooleanWithId:(id)object withBOOL:(BOOL)value;
+- (void)setByteWithId:(id)object withChar:(char)value;
+- (void)setCharWithId:(id)object withUnichar:(unichar)value;
+- (void)setDoubleWithId:(id)object withDouble:(double)value;
+- (void)setFloatWithId:(id)object withFloat:(float)value;
+- (void)setIntWithId:(id)object withInt:(int)value;
+- (void)setLongWithId:(id)object withLongInt:(long long)value;
+- (void)setShortWithId:(id)object withShortInt:(short)value;
 
 - (IOSClass *)getDeclaringClass;
 - (int)getModifiers;
