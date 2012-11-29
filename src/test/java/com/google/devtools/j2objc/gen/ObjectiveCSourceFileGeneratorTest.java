@@ -62,11 +62,13 @@ public class ObjectiveCSourceFileGeneratorTest extends GenerationTest {
 
     // Now rebuild with option set.
     Options.setAcceptJsniDelimiters(false);
-    translation = translateSourceFile(source, "Example", "Example.m");
+    translation = translateSourceFile(source, "Example", "Example.h");
+
+    // Verify JSNI method is declared in a native methods category,
+    // and not implemented.
+    assertTranslation(translation, "@interface Example (NativeMethods)\n- (void)test2");
+    translation = getTranslatedFile("Example.m");
     assertTranslation(translation, "ocni();");
     assertFalse(translation.contains("jsni();"));
-    assertFalse(translation.contains("test2"));
-    assertWarningCount(1); // No native code for jsni().
-    assertTranslationLog("no native code");
   }
 }

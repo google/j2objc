@@ -181,7 +181,7 @@ public class ObjectiveCImplementationGenerator extends ObjectiveCSourceFileGener
       printMethods(node);
       printObjCTypeMethod(node);
 
-      println("@end\n");
+      println("@end");
 
       // Generate main method, if declared.
       MethodDeclaration main = null;
@@ -191,8 +191,8 @@ public class ObjectiveCImplementationGenerator extends ObjectiveCSourceFileGener
           break;
         }
       }
-      newline();
       if (main != null || (testMethods != null && Options.generateTestMain())) {
+        newline();
         printMainMethod(main, typeName, testMethods);
       }
     }
@@ -421,7 +421,6 @@ public class ObjectiveCImplementationGenerator extends ObjectiveCSourceFileGener
       if (hasNativeCode(m)) {
         return super.methodDeclaration(m) + " " + extractNativeMethodBody(m) + "\n\n";
       } else {
-        // Warning reported in header generator.
         return "";
       }
     }
