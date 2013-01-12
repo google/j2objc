@@ -56,6 +56,13 @@ public final class UnicodeUtils {
         String chunk = s.substring(lastIndex, i);
         buffer.append(chunk);
 
+        if (i > 0 && s.charAt(i - 1) == '\\') {
+          // Escaped back slash, ignore.
+          buffer.append("\\u");
+          lastIndex = i + 2;
+          continue;
+        }
+
         // Convert hex Unicode number; format valid due to compiler check.
         if (s.length() >= i + 6) {
           char value = (char) Integer.parseInt(s.substring(i + 2, i + 6), 16);
