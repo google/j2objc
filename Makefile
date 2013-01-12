@@ -211,7 +211,6 @@ test: default compile-tests
 
 test_all: test
 	@cd $(CWD)/jre_emul && $(MAKE) -f tests.mk
-	@cd $(CWD)/protoc/tests && $(MAKE) test
 
 compile-tests:
 	@rm -rf $(TEST_DIR)
