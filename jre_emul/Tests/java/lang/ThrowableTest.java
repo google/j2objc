@@ -16,6 +16,11 @@
 
 package java.lang;
 
+import java.io.ByteArrayOutputStream;
+import java.io.PrintStream;
+import java.io.PrintWriter;
+import java.io.StringWriter;
+
 import junit.framework.TestCase;
 
 /**
@@ -53,5 +58,25 @@ public class ThrowableTest extends TestCase {
     assertEquals("method", stackTraceOut[0].getMethodName());
     assertEquals("file", stackTraceOut[0].getFileName());
     assertEquals(42, stackTraceOut[0].getLineNumber());
+  }
+
+  public void testStackTraceWithPrintStream() throws Exception {
+    Exception testException = new Exception("test exception");
+    ByteArrayOutputStream baos = new ByteArrayOutputStream();
+    PrintStream out = new PrintStream(baos);
+    testException.printStackTrace(out);
+    out.flush();
+    String trace = baos.toString("UTF-8");
+    assertTrue(trace.contains("[JavaLangThrowableTest testStackTraceWithPrintStream]"));
+  }
+
+  public void testStackTraceWithPrintWriter() throws Exception {
+    Exception testException = new Exception("test exception");
+    StringWriter sw = new StringWriter();
+    PrintWriter out = new PrintWriter(sw);
+    testException.printStackTrace(out);
+    out.flush();
+    String trace = sw.toString();
+    assertTrue(trace.contains("[JavaLangThrowableTest testStackTraceWithPrintWriter]"));
   }
 }

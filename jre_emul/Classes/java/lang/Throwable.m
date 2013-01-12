@@ -21,19 +21,19 @@
 
 #import "IOSClass.h"
 #import "IOSObjectArray.h"
+#import "java/io/PrintStream.h"
 #import "java/io/PrintWriter.h"
 #import "java/lang/Throwable.h"
 #import "java/lang/AssertionError.h"
 #import "java/lang/IllegalStateException.h"
 #import "java/lang/IllegalArgumentException.h"
 #import "java/lang/StackTraceElement.h"
+#import "java/lang/System.h"
 
 #import <TargetConditionals.h>
 #ifndef TARGET_OS_IPHONE
 #import <NSExceptionHandler.h>
 #endif
-
-#import "NSException+StackTrace.h"
 
 @implementation JavaLangThrowable
 
@@ -94,7 +94,6 @@
   return stackTrace;
 }
 
-// The following message implementations are unmodified translator output.
 - (JavaLangThrowable *)fillInStackTrace {
   return self;
 }
@@ -138,11 +137,23 @@
 }
 
 - (void)printStackTrace {
-  [super printStackTrace];
+  [self printStackTraceWithJavaIoPrintStream:[JavaLangSystem err]];
 }
 
-- (void)printStackTraceWithJavaIoPrintWriter:(JavaIoPrintWriter *)writer {
-  // Not implemented until there is similar support in NSException+StackTrace.
+- (void)printStackTraceWithJavaIoPrintWriter:(JavaIoPrintWriter *)pw {
+  NSUInteger nFrames = [stackTrace count];
+  for (NSUInteger i = 0; i < nFrames; i++) {
+    id trace = [stackTrace objectAtIndex:i];
+    [pw printlnWithId:trace];
+  }
+}
+
+- (void)printStackTraceWithJavaIoPrintStream:(JavaIoPrintStream *)ps {
+  NSUInteger nFrames = [stackTrace count];
+  for (NSUInteger i = 0; i < nFrames; i++) {
+    id trace = [stackTrace objectAtIndex:i];
+    [ps printlnWithId:trace];
+  }
 }
 
 - (void)setStackTraceWithJavaLangStackTraceElementArray:(IOSObjectArray *)stackTraceArg {

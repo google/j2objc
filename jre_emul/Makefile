@@ -51,7 +51,6 @@ IOS_OBJS = \
 	$(CLASS_DIR)/JreEmulation.o \
 	$(CLASS_DIR)/JreMemDebug.o \
 	$(CLASS_DIR)/JreMemDebugStrongReference.o \
-	$(CLASS_DIR)/NSException+StackTrace.o \
 	$(CLASS_DIR)/NSObject+JavaObject.o \
 	$(CLASS_DIR)/NSString+JavaString.o
 
