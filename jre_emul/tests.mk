@@ -95,6 +95,7 @@ TEST_OBJS = \
 	$(TESTS_DIR)/org/apache/harmony/luni/tests/java/lang/StringTest.o \
 	$(TESTS_DIR)/org/apache/harmony/luni/tests/java/lang/ThreadDeathTest.o \
 	$(TESTS_DIR)/org/apache/harmony/luni/tests/java/lang/ThreadTest.o \
+	$(TESTS_DIR)/java/lang/ThrowableTest.o \
 	$(TESTS_DIR)/org/apache/harmony/luni/tests/java/lang/UnsupportedOperationExceptionTest.o \
 	$(TESTS_DIR)/org/apache/harmony/tests/java/math/BigIntegerAddTest.o \
 	$(TESTS_DIR)/org/apache/harmony/tests/java/math/BigIntegerAndTest.o \

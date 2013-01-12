@@ -19,11 +19,14 @@
 //  Created by Tom Ball on 6/21/11, using j2objc.
 //
 
+#import "IOSClass.h"
+#import "IOSObjectArray.h"
 #import "java/io/PrintWriter.h"
 #import "java/lang/Throwable.h"
 #import "java/lang/AssertionError.h"
 #import "java/lang/IllegalStateException.h"
 #import "java/lang/IllegalArgumentException.h"
+#import "java/lang/StackTraceElement.h"
 
 #import <TargetConditionals.h>
 #ifndef TARGET_OS_IPHONE
@@ -34,62 +37,61 @@
 
 @implementation JavaLangThrowable
 
-// These init message implementations are hand-modified to
+// This init message implementation is hand-modified to
 // invoke NSException.initWithName:reason:userInfo:.  This
 // is necessary so that JRE exceptions can be caught by
 // class name.
+- (id)initJavaLangThrowableWithNSString:(NSString *)message
+                  withJavaLangThrowable:(JavaLangThrowable *)causeArg {
+  if ((self = [super initWithName:[[self class] description]
+                           reason:message
+                         userInfo:nil])) {
+    JreMemDebugAdd(self);
+#if __has_feature(objc_arc)
+    cause = causeArg;
+    detailMessage = message;
+    stackTrace = [JavaLangThrowable stackTraceWithSymbols:[NSThread callStackSymbols]];
+#else
+    cause = [causeArg retain];
+    detailMessage = [message retain];
+    stackTrace =
+        [[JavaLangThrowable stackTraceWithSymbols:[NSThread callStackSymbols]] retain];
+#endif
+  }
+  return self;
+}
+
 - (id)init {
-  return JreMemDebugAdd(self = [super initWithName:[[self class] description]
-                              reason:detailMessage
-                            userInfo:nil]);
+  return [self initJavaLangThrowableWithNSString:nil withJavaLangThrowable:nil];
 }
 
 - (id)initWithNSString:(NSString *)message {
-  if ((self = [super initWithName:[[self class] description]
-                           reason:message
-                         userInfo:nil])) {
-    JreMemDebugAdd(self);
-#if __has_feature(objc_arc)
-    detailMessage = message;
-#else
-    detailMessage = [message retain];
-#endif
-  }
-  return self;
+  return [self initJavaLangThrowableWithNSString:message withJavaLangThrowable:nil];
 }
 
 - (id)initWithNSString:(NSString *)message
- withJavaLangThrowable:(JavaLangThrowable *)causeArg {
-  if ((self = [super initWithName:[[self class] description]
-                           reason:message
-                         userInfo:nil])) {
-      JreMemDebugAdd(self);
-#if __has_feature(objc_arc)
-      self->cause = causeArg;
-      detailMessage = message;
-#else
-    self->cause = [causeArg retain];
-    detailMessage = [message retain];
-#endif
-  }
-  return self;
+    withJavaLangThrowable:(JavaLangThrowable *)causeArg {
+  return [self initJavaLangThrowableWithNSString:message withJavaLangThrowable:causeArg];
 }
 
 - (id)initWithJavaLangThrowable:(JavaLangThrowable *)causeArg {
-  if ((self = [super initWithName:[[self class] description]
-                           reason:[NSString stringWithFormat:@"cause: %@",
-                                   [causeArg description]]
-                         userInfo:nil])) {
-    JreMemDebugAdd(self);
-    detailMessage = (causeArg == nil) ? nil : [causeArg description];
-#if __has_feature(objc_arc)
-    self->cause = causeArg;
-#else
-    self->cause = [causeArg retain];
-    [detailMessage retain];
-#endif
+  return [self initJavaLangThrowableWithNSString:causeArg ? [causeArg description] : nil
+                           withJavaLangThrowable:causeArg];
+}
+
++ (IOSObjectArray *)stackTraceWithSymbols:(NSArray *)symbols {
+  IOSObjectArray *stackTrace = [IOSObjectArray arrayWithLength:[symbols count] type:
+      [IOSClass classWithClass:[JavaLangStackTraceElement class]]];
+  for (int i = 0; i < [symbols count]; i++) {
+    NSString *symbol = [symbols objectAtIndex:i];
+    JavaLangStackTraceElement *element =
+        [[[JavaLangStackTraceElement alloc] initWithNSString:nil
+                                                withNSString:symbol
+                                                withNSString:nil
+                                                     withInt:-1] autorelease];
+    [stackTrace replaceObjectAtIndex:i withObject:element];
   }
-  return self;
+  return stackTrace;
 }
 
 // The following message implementations are unmodified translator output.
@@ -109,12 +111,8 @@
   return detailMessage;
 }
 
-- (NSMutableArray *)getStackTrace {
-  id exception = [[JavaLangAssertionError alloc] initWithId:@"not implemented"];
-#if ! __has_feature(objc_arc)
-  [exception autorelease];
-#endif
-  @throw exception;
+- (IOSObjectArray *)getStackTrace {
+  return stackTrace;
 }
 
 - (JavaLangThrowable *)initCauseWithJavaLangThrowable:
@@ -147,12 +145,13 @@
   // Not implemented until there is similar support in NSException+StackTrace.
 }
 
-- (void)setStackTraceWithJavaLangStackTraceElementArray:(IOSObjectArray *)stackTrace {
-  id exception = [[JavaLangAssertionError alloc] initWithId:@"not implemented"];
-#if ! __has_feature(objc_arc)
-  [exception autorelease];
+- (void)setStackTraceWithJavaLangStackTraceElementArray:(IOSObjectArray *)stackTraceArg {
+#if __has_feature(objc_arc)
+  stackTrace = stackTraceArg;
+#else
+  [stackTrace autorelease];
+  stackTrace = [stackTraceArg retain];
 #endif
-  @throw exception;
 }
 
 - (NSString *)description {

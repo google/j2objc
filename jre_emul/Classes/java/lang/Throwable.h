@@ -23,13 +23,17 @@
 #import "java/io/Serializable.h"
 
 @class JavaIoPrintWriter;
+@class IOSObjectArray;
 
 @interface JavaLangThrowable : NSException < JavaIoSerializable > {
  @private
   JavaLangThrowable *cause;
   NSString *detailMessage;
+  IOSObjectArray *stackTrace;
 }
 - (id)init;
+- (id)initJavaLangThrowableWithNSString:(NSString *)message
+                  withJavaLangThrowable:(JavaLangThrowable *)causeArg;
 - (id)initWithNSString:(NSString *)message;
 - (id)initWithNSString:(NSString *)message
  withJavaLangThrowable:(JavaLangThrowable *)cause;
@@ -38,7 +42,7 @@
 - (JavaLangThrowable *)getCause;
 - (NSString *)getLocalizedMessage;
 - (NSString *)getMessage;
-- (NSMutableArray *)getStackTrace;
+- (IOSObjectArray *)getStackTrace;
 - (JavaLangThrowable *)initCauseWithJavaLangThrowable:
     (JavaLangThrowable *)cause;
 - (void)printStackTrace;

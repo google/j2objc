@@ -50,4 +50,11 @@ public class StackTraceElement {
     this.fileName = fileName;
     this.lineNumber = lineNumber;
   }
+
+  public String toString() {
+    return (className != null ? className + "." : "")
+        + (methodName != null ? methodName : "")
+        + "(" + (fileName != null ? fileName : "")
+        + ":" + lineNumber + ")";
+  }
 }
