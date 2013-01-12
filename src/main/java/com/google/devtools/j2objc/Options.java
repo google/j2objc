@@ -63,6 +63,7 @@ public class Options {
   private static Map<String, String> methodMappings = Maps.newLinkedHashMap();
   private static boolean generateTestMain = true;
   private static boolean memoryDebug = false;
+  private static boolean generateNativeStubs = false;
 
   private static DeadCodeMap deadCodeMap = null;
   private static File proGuardUsageFile = null;
@@ -224,6 +225,8 @@ public class Options {
         acceptJsniDelimiters = false;
       } else if (arg.equals("--mem-debug")) {
         memoryDebug = true;
+      } else if (arg.equals("--generate-native-stubs")) {
+        generateNativeStubs = true;
       } else if (arg.startsWith("-h") || arg.equals("--help")) {
         help();
       } else if (arg.startsWith("-")) {
@@ -376,6 +379,14 @@ public class Options {
 
   public static void setMemoryDebug(boolean value) {
     memoryDebug = value;
+  }
+
+  public static boolean generateNativeStubs() {
+    return generateNativeStubs;
+  }
+
+  public static void setGenerateNativeStubs(boolean value) {
+    generateNativeStubs = value;
   }
 
   /**

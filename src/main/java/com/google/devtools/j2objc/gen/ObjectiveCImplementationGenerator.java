@@ -527,12 +527,20 @@ public class ObjectiveCImplementationGenerator extends ObjectiveCSourceFileGener
     if ((modifiers & Modifier.NATIVE) > 0) {
       if (hasNativeCode(m)) {
         return super.methodDeclaration(m) + " " + extractNativeMethodBody(m) + "\n\n";
+      } else if (Options.generateNativeStubs()) {
+        return super.methodDeclaration(m) + " " + generateNativeStub(m) + "\n\n";
       } else {
         return "";
       }
     }
     String methodBody = generateMethodBody(m);
     return super.methodDeclaration(m) + " " + reindent(methodBody) + "\n\n";
+  }
+
+  private String generateNativeStub(MethodDeclaration m) {
+    IMethodBinding binding = Types.getMethodBinding(m);
+    String methodName = NameTable.getName(binding);
+    return String.format("{\n  @throw \"%s method not implemented\";\n}", methodName);
   }
 
   @Override
@@ -542,7 +550,6 @@ public class ObjectiveCImplementationGenerator extends ObjectiveCSourceFileGener
       if (hasNativeCode(method)) {
         methodBody = extractNativeMethodBody(method);
       } else {
-        // Warning reported in header generator.
         return "";
       }
     } else {
