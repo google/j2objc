@@ -39,15 +39,15 @@
   if ([c isKindOfClass:[IOSCollection class]]) {
     return (IOSCollection *)c;
   }
-  
+
   if ([c conformsToProtocol:@protocol(JavaUtilList)]) {
     return [IOSList listWithJavaUtilList:(id<JavaUtilList>)c];
   }
-  
+
   if ([c conformsToProtocol:@protocol(JavaUtilSet)]) {
     return [IOSSet setWithJavaUtilSet:(id<JavaUtilSet>)c];
   }
-  
+
   id exception = [[JavaLangIllegalArgumentException alloc] init];
 #if ! __has_feature(objc_arc)
   [exception autorelease];
@@ -72,7 +72,7 @@
   if (self) {
     [self addAllWithJavaUtilCollection:collection];
   }
-  return self;  
+  return self;
 }
 
 - (id)initWithNSArray:(NSMutableArray *)array {
@@ -85,7 +85,7 @@
     delegate_ = [array retain];
 #endif
   }
-  return self;  
+  return self;
 }
 
 #pragma mark -

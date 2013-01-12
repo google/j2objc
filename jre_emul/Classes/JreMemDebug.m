@@ -183,7 +183,7 @@ FOUNDATION_EXPORT void JreMemDebugGenerateAllocationsReport(void) {
   JreMemDebugLock();
 
   [[NSFileManager defaultManager] createDirectoryAtPath:memDebugSessionFolder
-      withIntermediateDirectories:YES attributes:nil error:NULL]; 
+      withIntermediateDirectories:YES attributes:nil error:NULL];
 
   // We generate the name of the .log file to write.
   struct timeval tv;

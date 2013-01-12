@@ -36,7 +36,7 @@
 
 // These init message implementations are hand-modified to
 // invoke NSException.initWithName:reason:userInfo:.  This
-// is necessary so that JRE exceptions can be caught by 
+// is necessary so that JRE exceptions can be caught by
 // class name.
 - (id)init {
   return JreMemDebugAdd(self = [super initWithName:[[self class] description]
