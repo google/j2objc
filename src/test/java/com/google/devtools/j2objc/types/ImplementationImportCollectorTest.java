@@ -60,4 +60,20 @@ public class ImplementationImportCollectorTest extends GenerationTest {
         "class B { int test() { return new A().b.length; }}", "B", "B.m");
     assertTranslation(translation, "#import \"IOSBooleanArray.h\"");
   }
+
+  public void testObjectArrayImport() throws IOException {
+    String translation = translateSourceFile(
+        "import java.util.BitSet; class A { public BitSet[] test = new BitSet[3]; }", "A", "A.m");
+    assertTranslation(translation, "#import \"IOSObjectArray.h\"");
+    assertTranslation(translation, "#import \"java/util/BitSet.h\"");
+  }
+
+  public void testEnhancedForMethodInvocation() throws IOException {
+    addSourceFile("import java.util.*; class A { " +
+    	"final Map<String,String> map; }", "A.java");
+    String translation = translateSourceFile(
+        "import java.util.*; class B extends A { " +
+        "void test() { for (String s : map.keySet()) {}}}", "B", "B.m");
+    assertTranslation(translation, "#import \"java/util/Map.h\"");
+  }
 }

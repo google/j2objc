@@ -130,7 +130,7 @@ public class ImplementationImportCollector extends HeaderImportCollector {
 
   @Override
   public boolean visit(ArrayType node) {
-    addReference(Types.getTypeBinding(node.getComponentType()));
+    addReference(Types.getTypeBinding(node).getComponentType());
     return super.visit(node);
   }
 
@@ -293,6 +293,8 @@ public class ImplementationImportCollector extends HeaderImportCollector {
         IVariableBinding var = Types.getVariableBinding(expr);
         if (var == null || var.isEnumConstant()) {
           addReference(Types.getTypeBinding(expr));
+        } else {
+          addReference(var.getType());
         }
       }
     }
