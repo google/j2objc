@@ -426,10 +426,12 @@ public class RewriterTest extends GenerationTest {
           assertEquals(2, stmts.size());
           foundInitStatements = true;
 
+          List<Statement> blockStmts = ((Block) stmts.get(0)).statements();
           assertEquals("Test_a_=IOSIntArray.arrayWithInts({1,2,3},3);",
-              stmts.get(0).toString().trim());
+              blockStmts.get(0).toString().trim());
+          blockStmts = ((Block) stmts.get(1)).statements();
           assertEquals("Test_b_=IOSCharArray.arrayWithCharacters({'4','5'},2);",
-            stmts.get(1).toString().trim());
+            blockStmts.get(0).toString().trim());
         }
       }
     }
@@ -490,6 +492,9 @@ public class RewriterTest extends GenerationTest {
 
     // Test_iSet_ = new ...
     Statement first = statements.get(0);
+    assertTrue(first instanceof Block);
+    Block b = (Block) first;
+    first = (Statement) b.statements().get(0);
     assertTrue(first instanceof ExpressionStatement);
     Expression firstExpr = ((ExpressionStatement) first).getExpression();
     assertTrue(firstExpr instanceof Assignment);
@@ -498,12 +503,18 @@ public class RewriterTest extends GenerationTest {
 
     // iSet.add(...)
     Statement second = statements.get(1);
+    assertTrue(second instanceof Block);
+    b = (Block) second;
+    second = (Statement) b.statements().get(0);
     assertTrue(second instanceof ExpressionStatement);
     Expression secondExpr = ((ExpressionStatement) second).getExpression();
     assertTrue(secondExpr instanceof MethodInvocation);
 
     // Test_iSetSize_ = ...
     Statement third = statements.get(2);
+    assertTrue(third instanceof Block);
+    b = (Block) third;
+    third = (Statement) b.statements().get(0);
     assertTrue(third instanceof ExpressionStatement);
     Expression thirdExpr = ((ExpressionStatement) third).getExpression();
     assertTrue(thirdExpr instanceof Assignment);

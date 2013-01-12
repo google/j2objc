@@ -48,7 +48,6 @@ import org.eclipse.jdt.core.dom.Modifier;
 import org.eclipse.jdt.core.dom.PrimitiveType;
 import org.eclipse.jdt.core.dom.SimpleName;
 import org.eclipse.jdt.core.dom.Statement;
-import org.eclipse.jdt.core.dom.StringLiteral;
 import org.eclipse.jdt.core.dom.SuperConstructorInvocation;
 import org.eclipse.jdt.core.dom.Type;
 import org.eclipse.jdt.core.dom.TypeDeclaration;
@@ -141,9 +140,7 @@ public class InitializationNormalizer extends ErrorReportingASTVisitor {
     Initializer initializer = (Initializer) member;
     List<Statement> l =
         Modifier.isStatic(initializer.getModifiers()) ? classInitStatements : initStatements;
-    @SuppressWarnings("unchecked")
-    List<Statement> stmts = initializer.getBody().statements(); // safe by specification
-    l.addAll(stmts);
+    l.add(initializer.getBody());
   }
 
   /**
