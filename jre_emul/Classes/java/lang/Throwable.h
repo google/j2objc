@@ -22,6 +22,7 @@
 #import <Foundation/Foundation.h>
 #import "java/io/Serializable.h"
 
+@class JavaIoPrintStream;
 @class JavaIoPrintWriter;
 @class IOSObjectArray;
 
@@ -46,6 +47,7 @@
 - (JavaLangThrowable *)initCauseWithJavaLangThrowable:
     (JavaLangThrowable *)cause;
 - (void)printStackTrace;
-- (void)printStackTraceWithJavaIoPrintWriter:(JavaIoPrintWriter *)writer;
+- (void)printStackTraceWithJavaIoPrintStream:(JavaIoPrintStream *)ps;
+- (void)printStackTraceWithJavaIoPrintWriter:(JavaIoPrintWriter *)w;
 - (void)setStackTraceWithJavaLangStackTraceElementArray:(IOSObjectArray *)stackTrace;
 @end
