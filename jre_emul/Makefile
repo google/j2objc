@@ -243,6 +243,7 @@ OBJS = \
 	$(CLASS_DIR)/java/util/concurrent/ExecutorService.o \
 	$(CLASS_DIR)/java/util/concurrent/Future.o \
 	$(CLASS_DIR)/java/util/concurrent/TimeUnit.o \
+	$(CLASS_DIR)/java/util/Currency.o \
 	$(CLASS_DIR)/java/util/Date.o \
 	$(CLASS_DIR)/java/util/Dictionary.o \
 	$(CLASS_DIR)/java/util/EnumSet.o \
