@@ -207,7 +207,7 @@ FOUNDATION_EXPORT void JreMemDebugGenerateAllocationsReport(void) {
   fprintf(f, "-- classes --\n");
   NSMutableSet *resultSet = [memDebugAllocations mutableCopy];
   [resultSet minusSet:memDebugMarkedAllocations];
-  fprintf(f, "%i objects\n", [resultSet count]);
+  fprintf(f, "%i objects\n", (int)[resultSet count]);
 
   fprintf(f, "----\n");
 
