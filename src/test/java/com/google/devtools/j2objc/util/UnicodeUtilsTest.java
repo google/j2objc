@@ -64,4 +64,10 @@ public class UnicodeUtilsTest extends GenerationTest {
     fragment = "123\uffff";
     assertFalse(UnicodeUtils.hasValidCppCharacters(fragment));
   }
+
+  public void testEscapedBackSlashesIgnored() {
+    String fragment = "abc\\\\u1234def\\\\x20ghi";
+    String escaped = UnicodeUtils.escapeUnicodeSequences(fragment);
+    assertEquals(fragment, escaped);
+  }
 }
