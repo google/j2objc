@@ -288,7 +288,6 @@ public class AnonymousClassConverter extends ClassConverter {
       BodyDeclaration decl = (BodyDeclaration) bodyDecl;
       typeDecl.bodyDeclarations().add(NodeCopier.copySubtree(ast, decl));
     }
-    typeDecl.accept(new InitializationNormalizer());
 
     // Fix up references to external types, if necessary.
     Set<IVariableBinding> methodVars = getMethodVars(node);
@@ -382,18 +381,8 @@ public class AnonymousClassConverter extends ClassConverter {
     }
     ASTNode parent = node.getParent();
     while (parent != null) {
-      if (parent instanceof Assignment) {
-        Assignment assign = (Assignment) parent;
-        IVariableBinding field = Types.getVariableBinding(assign.getLeftHandSide());
-        if (field != null) {
-          return Modifier.isStatic(field.getModifiers());
-        }
-      } else if (parent instanceof MethodDeclaration) {
-        // TODO(user): Should set the declaringMethod on the expression
-        // instead. See InnerClassExtractorTest.testNoOuterInStaticInitializer.
-        assert ((MethodDeclaration) parent).getName().getIdentifier().equals("initialize");
-        assert Modifier.isStatic(((MethodDeclaration) parent).getModifiers());
-        return true;
+      if (parent instanceof BodyDeclaration) {
+        return Modifier.isStatic(((BodyDeclaration) parent).getModifiers());
       }
       parent = parent.getParent();
     }
@@ -436,83 +425,26 @@ public class AnonymousClassConverter extends ClassConverter {
       }
     }
 
-    // Insert new parameters into constructor, if one was added by the
-    // InitializationNormalizer from initializer blocks.
-    boolean needsConstructor = true;
-    GeneratedMethodBinding defaultConstructor = null;
-    List<MethodDeclaration> enumConstructors = Lists.newArrayList();
-    ITypeBinding enclosingClass = clazz.getDeclaringClass();
-    for (BodyDeclaration member : members) {
-      if (member instanceof MethodDeclaration && ((MethodDeclaration) member).isConstructor()) {
-        if (argsMatch(invocationArguments, Types.getMethodBinding(member).getParameterTypes())) {
-          MethodDeclaration constructor = (MethodDeclaration) member;
-          needsConstructor = false;
-          IMethodBinding oldBinding = Types.getMethodBinding(constructor);
-          GeneratedMethodBinding newBinding = new GeneratedMethodBinding(oldBinding);
-          Types.addBinding(constructor, newBinding);
-          addInnerParameters(constructor, newBinding, innerFields, ast, true);
-          defaultConstructor = newBinding;
-          Symbols.scanAST(constructor);
-          assert constructor.parameters().size() == defaultConstructor.getParameterTypes().length;
-        }
-        if (enclosingClass.isEnum()) {
-          enumConstructors.add((MethodDeclaration) member);
-        }
-      }
+    MethodDeclaration constructor = ast.newMethodDeclaration();
+    constructor.setConstructor(true);
+    ITypeBinding voidType = ast.resolveWellKnownType("void");
+    GeneratedMethodBinding binding = new GeneratedMethodBinding("init", 0,
+        voidType, clazz, true, false, true);
+    Types.addBinding(constructor, binding);
+    Types.addBinding(constructor.getReturnType2(), voidType);
+    SimpleName name = ast.newSimpleName("init");
+    Types.addBinding(name, binding);
+    constructor.setName(name);
+    constructor.setBody(ast.newBlock());
+    if (!invocationArguments.isEmpty()) {
+      addArguments(invocationArguments, ast, clazz, constructor, binding);
     }
+    addInnerParameters(constructor, binding, innerFields, ast, true);
+    members.add(constructor);
+    Symbols.scanAST(constructor);
+    assert constructor.parameters().size() == binding.getParameterTypes().length;
 
-    if (!enumConstructors.isEmpty()) {
-      for (MethodDeclaration constructor : enumConstructors) {
-        GeneratedMethodBinding binding =
-            new GeneratedMethodBinding(Types.getMethodBinding(constructor));
-        if (!invocationArguments.isEmpty()) {
-          // Remove super invocation added by InitializationNormalizer.
-          @SuppressWarnings("unchecked")
-          List<Statement> stmts = constructor.getBody().statements(); // safe by definition
-          for (int i = 0; i < stmts.size(); i++) {
-            if (stmts.get(i) instanceof SuperConstructorInvocation) {
-              stmts.remove(i);
-              break;
-            }
-          }
-
-          // Update the binding to include the arguments,
-          addArguments(invocationArguments, ast, clazz, constructor, binding);
-          addInnerParameters(constructor, binding, innerFields, ast, true);
-          Symbols.scanAST(constructor);
-          Types.addBinding(constructor, binding);
-        } else {
-          defaultConstructor = binding;
-        }
-      }
-      if (defaultConstructor == null) {
-        defaultConstructor =
-            new GeneratedMethodBinding(Types.getMethodBinding(enumConstructors.get(0)));
-      }
-    } else if (needsConstructor) {
-      MethodDeclaration constructor = ast.newMethodDeclaration();
-      constructor.setConstructor(true);
-      ITypeBinding voidType = ast.resolveWellKnownType("void");
-      GeneratedMethodBinding binding = new GeneratedMethodBinding("init", 0,
-          voidType, clazz, true, false, true);
-      Types.addBinding(constructor, binding);
-      Types.addBinding(constructor.getReturnType2(), voidType);
-      SimpleName name = ast.newSimpleName("init");
-      Types.addBinding(name, binding);
-      constructor.setName(name);
-      constructor.setBody(ast.newBlock());
-      if (!invocationArguments.isEmpty()) {
-        addArguments(invocationArguments, ast, clazz, constructor, binding);
-      }
-      addInnerParameters(constructor, binding, innerFields, ast, true);
-      members.add(constructor);
-      Symbols.scanAST(constructor);
-      defaultConstructor = binding;
-      assert constructor.parameters().size() == defaultConstructor.getParameterTypes().length;
-    }
-
-    assert defaultConstructor != null;
-    return defaultConstructor;
+    return binding;
   }
 
   private void addArguments(List<Expression> invocationArguments, AST ast, ITypeBinding clazz,
@@ -703,6 +635,11 @@ public class AnonymousClassConverter extends ClassConverter {
 
     @Override
     public void endVisit(TypeDeclaration node) {
+      classIndex.pop();
+    }
+
+    @Override
+    public void endVisit(EnumDeclaration node) {
       classIndex.pop();
     }
 

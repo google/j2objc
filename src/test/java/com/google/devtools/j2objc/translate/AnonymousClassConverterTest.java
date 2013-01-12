@@ -550,4 +550,24 @@ public class AnonymousClassConverterTest extends GenerationTest {
     assertTranslation(impl,
         "[[OuterValueEnum_InnerValueEnum alloc] initWithNSString:@\"VALUE1\" withInt:0]");
   }
+
+  // Tests a field initialized with an anonymous class and multiple
+  // constructors. Field initialization is moved to the constructors,
+  // duplicating the initialization statement, but we do not want to duplicate
+  // the implementation.
+  public void testAnonymousClassNotDuplicated() throws IOException {
+    String impl = translateSourceFile(
+        "public class A { " +
+        "  interface I { public int getInt(); } " +
+        "  private I my_i = new I() { public int getInt() { return 42; } }; " +
+        "  A() {} " +
+        "  A(String foo) {} }",
+        "A", "A.m");
+    assertTranslation(impl, "@implementation A_$1");
+    assertTranslation(impl, "[[A_$1 alloc] initWithA:self]");
+    int idx = impl.indexOf("@implementation A_$1");
+    assertEquals(-1, impl.indexOf("@implementation A_$1", idx + 1));
+    idx = impl.indexOf("[[A_$1 alloc] initWithA:self]");
+    assertTrue(impl.indexOf("[[A_$1 alloc] initWithA:self]", idx + 1) > 0);
+  }
 }
