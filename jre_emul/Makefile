@@ -50,7 +50,6 @@ IOS_OBJS = \
 	$(CLASS_DIR)/java/util/LinkedHashMap.o \
 	$(CLASS_DIR)/JreEmulation.o \
 	$(CLASS_DIR)/NSException+StackTrace.o \
-	$(CLASS_DIR)/NSData+IOSByteArray.o \
 	$(CLASS_DIR)/NSObject+JavaObject.o \
 	$(CLASS_DIR)/NSString+JavaString.o
 
