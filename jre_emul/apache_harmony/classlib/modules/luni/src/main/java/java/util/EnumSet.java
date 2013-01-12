@@ -43,7 +43,7 @@ public abstract class EnumSet<E extends Enum<E>> extends AbstractSet<E>
      *             if the specified element type is not and enum type.
      */
     public static <E extends Enum<E>> EnumSet<E> noneOf(Class<E> elementType) {
-        if (!elementType.isEnum()) {
+        if (!elementType.isEnum() || elementType.equals(Enum.class)) {
             throw new ClassCastException();
         }
         if (elementType.getEnumConstants().length <= 64) {
@@ -100,6 +100,9 @@ public abstract class EnumSet<E extends Enum<E>> extends AbstractSet<E>
      *             if {@code c} is {@code null}.
      */
     public static <E extends Enum<E>> EnumSet<E> copyOf(Collection<E> c) {
+        if (c == null) {
+            throw new NullPointerException();
+        }
         if (c instanceof EnumSet) {
             return copyOf((EnumSet<E>) c);
         }
@@ -108,6 +111,10 @@ public abstract class EnumSet<E extends Enum<E>> extends AbstractSet<E>
         }
         Iterator<E> iterator = c.iterator();
         E element = iterator.next();
+        if (!(element instanceof Enum)) {
+           // Violates method's generic signature.
+            throw new ClassCastException();
+        }
         EnumSet<E> set = EnumSet.noneOf(element.getDeclaringClass());
         set.add(element);
         while (iterator.hasNext()) {
@@ -149,6 +156,13 @@ public abstract class EnumSet<E extends Enum<E>> extends AbstractSet<E>
      *             if {@code e} is {@code null}.
      */
     public static <E extends Enum<E>> EnumSet<E> of(E e) {
+        if (e == null) {
+            throw new NullPointerException();
+        }
+        if (!(e instanceof Enum)) {
+            // Violates method's generic signature.
+             throw new ClassCastException();
+         }
         EnumSet<E> set = EnumSet.noneOf(e.getDeclaringClass());
         set.add(e);
         return set;
@@ -260,6 +274,9 @@ public abstract class EnumSet<E extends Enum<E>> extends AbstractSet<E>
      *             if any of the specified elements is {@code null}.
      */
     public static <E extends Enum<E>> EnumSet<E> of(E start, E... others) {
+        if (others == null) {
+            throw new NullPointerException();
+        }
         EnumSet<E> set = of(start);
         for (E e : others) {
             set.add(e);
@@ -283,9 +300,16 @@ public abstract class EnumSet<E extends Enum<E>> extends AbstractSet<E>
      *             if {@code start} is behind {@code end}.
      */
     public static <E extends Enum<E>> EnumSet<E> range(E start, E end) {
+        if (start == null || end == null) {
+            throw new NullPointerException();
+        }
         if (start.compareTo(end) > 0) {
             throw new IllegalArgumentException();
         }
+        if (!(start instanceof Enum) || !(end instanceof Enum)) {
+            // Violates method's generic signature.
+             throw new ClassCastException();
+         }
         EnumSet<E> set = EnumSet.noneOf(start.getDeclaringClass());
         set.setRange(start, end);
         return set;
@@ -311,6 +335,6 @@ public abstract class EnumSet<E extends Enum<E>> extends AbstractSet<E>
     }
 
     boolean isValidType(Class<?> cls) {
-        return cls == elementClass || cls.getSuperclass() == elementClass;
+        return cls.equals(elementClass) || cls.getSuperclass().equals(elementClass);
     }
 }

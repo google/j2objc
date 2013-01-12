@@ -128,6 +128,7 @@ TEST_OBJS = \
 	$(TESTS_DIR)/org/apache/harmony/luni/tests/java/util/BitSetTest.o \
 	$(TESTS_DIR)/org/apache/harmony/luni/tests/java/util/DateTest.o \
 	$(TESTS_DIR)/org/apache/harmony/luni/tests/java/util/EmptyStackExceptionTest.o \
+	$(TESTS_DIR)/org/apache/harmony/luni/tests/java/util/EnumSetTest.o \
 	$(TESTS_DIR)/org/apache/harmony/luni/tests/java/util/EventObjectTest.o \
 	$(TESTS_DIR)/org/apache/harmony/luni/tests/java/util/HashMapTest.o \
 	$(TESTS_DIR)/org/apache/harmony/luni/tests/java/util/HashSetTest.o \

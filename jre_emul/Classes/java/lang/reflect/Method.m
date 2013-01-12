@@ -98,7 +98,7 @@ static id Box(JavaResult *value, const char *type);
     NSObject *arg = [arguments objectAtIndex:i];
     [invocation setArgument:&arg atIndex:i + SKIPPED_ARGUMENTS];
   }
-  if (object == nil) {
+  if (object == nil || [object isKindOfClass:[IOSClass class]]) {
     [invocation setTarget:class_];
   } else {
     [invocation setTarget:object];
