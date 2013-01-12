@@ -19,6 +19,7 @@ package com.google.devtools.j2objc.translate;
 import com.google.common.collect.Lists;
 import com.google.devtools.j2objc.sym.Symbols;
 import com.google.devtools.j2objc.types.GeneratedMethodBinding;
+import com.google.devtools.j2objc.types.GeneratedVariableBinding;
 import com.google.devtools.j2objc.types.NodeCopier;
 import com.google.devtools.j2objc.types.Types;
 import com.google.devtools.j2objc.util.ErrorReportingASTVisitor;
@@ -241,10 +242,35 @@ public class InitializationNormalizer extends ErrorReportingASTVisitor {
         Types.addBinding(superCall, newBinding);
         stmts.add(0, superCall);
       }
+
+      // Insert initializer statements after any outer reference fields that may
+      // have been added by InnerClassExtractor or AnonymousClassConverter
+      // because initializers might reference these outer fields.
+      int insertionIdx = 1;
+      while (insertionIdx < stmts.size() && isOuterAssignment(stmts.get(insertionIdx))) {
+        insertionIdx++;
+      }
       List<Statement> unparentedStmts =
           NodeCopier.copySubtrees(node.getAST(), initStatements); // safe by specification
-      stmts.addAll(1, unparentedStmts);
+      stmts.addAll(insertionIdx, unparentedStmts);
     }
+  }
+
+  private boolean isOuterAssignment(Statement stmt) {
+    if (stmt == null) {
+      return false;
+    }
+    if (!(stmt instanceof ExpressionStatement)) {
+      return false;
+    }
+    Expression expression = ((ExpressionStatement) stmt).getExpression();
+    if (!(expression instanceof Assignment)) {
+      return false;
+    }
+    IVariableBinding rhsBinding = Types.getVariableBinding(
+        ((Assignment) expression).getRightHandSide());
+    return rhsBinding != null && (rhsBinding instanceof GeneratedVariableBinding)
+        && rhsBinding.getName().startsWith("outer$");
   }
 
   /**
