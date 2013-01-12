@@ -917,7 +917,7 @@ public class StatementGeneratorTest extends GenerationTest {
         "public class B extends A { B() {} public void init(int b) { super.init(b); }}", "B.java");
     String translation = translateSourceFile("A", "A.h");
     assertTranslation(translation, "- (id)init;");
-    assertTranslation(translation, "- (void)init__WithInt:(int)a;");
+    assertTranslation(translation, "- (void)init__WithInt:(int)a");
     translation = translateSourceFile("B", "B.m");
     assertTranslation(translation, "return (self = JreMemDebugAdd([super init]));");
     assertTranslation(translation, "[super init__WithInt:b];");

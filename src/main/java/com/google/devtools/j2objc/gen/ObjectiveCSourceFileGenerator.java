@@ -201,7 +201,7 @@ public abstract class ObjectiveCSourceFileGenerator extends SourceFileGenerator 
       // Sections 5.1 (Explicit method family control)
       // and 5.2.2 (Related result types)
       // TODO(user,user): Rename method instead of using the attribute.
-      sb.append(" OBJC_METHOD_FAMILY_NONE ");
+      sb.append(" OBJC_METHOD_FAMILY_NONE");
     }
     return sb.toString();
   }
