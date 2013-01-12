@@ -115,7 +115,7 @@
 }
 
 + (id)arrayWithArray:(IOSObjectArray *)array {
-  return [IOSObjectArray arrayWithObjects:array->buffer_ 
+  return [IOSObjectArray arrayWithObjects:array->buffer_
                                     count:array->size_
                                      type:array->elementType_];
 }
@@ -219,7 +219,7 @@
 
 - (id)copyWithZone:(NSZone *)zone {
   IOSObjectArray *result =
-      [[IOSObjectArray allocWithZone:zone] initWithLength:size_ 
+      [[IOSObjectArray allocWithZone:zone] initWithLength:size_
                                                      type:elementType_];
   for (NSUInteger i = 0; i < size_; i++) {
     id element = buffer_[i];
