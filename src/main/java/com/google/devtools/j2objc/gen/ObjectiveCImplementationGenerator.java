@@ -574,6 +574,15 @@ public class ObjectiveCImplementationGenerator extends ObjectiveCSourceFileGener
         J2ObjC.warning(m, "@AutoreleasePool ignored in GC mode");
       }
     }
+
+    boolean isStatic = (m.getModifiers() & Modifier.STATIC) != 0;
+    boolean isSynchronized = (m.getModifiers() & Modifier.SYNCHRONIZED) != 0;
+    if (isStatic && isSynchronized) {
+      methodBody = reindent("{\n@synchronized([self class]) {\n" + methodBody + "}\n}\n");
+    } else if (isSynchronized) {
+      methodBody = reindent("{\n@synchronized(self) {\n" + methodBody + "}\n}\n");
+    }
+
     return methodBody;
   }
 
