@@ -498,11 +498,22 @@ public class ObjectiveCImplementationGeneratorTest extends GenerationTest {
   public void testInnerConstructorGenerated() throws IOException {
     String translation = translateSourceFile(
         "public class Test {" +
-        "  public Test() { this(42); };" +
-        "  public Test(int i) {}; }",
+        "  public Test() { this(42); }" +
+        "  public Test(int i) {} }",
         "Test", "Test.m");
     assertTranslation(translation, "- (id)initWithInt:(int)i {");
     assertTranslation(translation, "- (id)initTestWithInt:(int)i {");
     assertTranslation(translation, "[self initTestWithInt:42];");
+  }
+
+  public void testInnerConstructorGeneratedForNonStaticInnerClass() throws IOException {
+    String translation = translateSourceFile(
+        "public class Test {" +
+        "  class Inner {" +
+        "    public Inner() { this(42); }" +
+        "    public Inner(int i) {} } }",
+        "Test", "Test.m");
+    assertTranslation(translation, "- (id)initTest_InnerWithTest:(Test *)");
+    assertTranslation(translation, "[self initTest_InnerWithTest:");
   }
 }

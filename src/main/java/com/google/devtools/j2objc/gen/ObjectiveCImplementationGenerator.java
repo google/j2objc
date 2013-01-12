@@ -63,7 +63,7 @@ import java.util.Set;
 public class ObjectiveCImplementationGenerator extends ObjectiveCSourceFileGenerator {
   private Set<IVariableBinding> fieldHiders;
   private final String suffix;
-  private Set<IMethodBinding> invokedConstructors = Sets.newHashSet();
+  private Set<String> invokedConstructors = Sets.newHashSet();
 
   /**
    * Generate an Objective-C implementation file for each type declared in a
@@ -152,11 +152,19 @@ public class ObjectiveCImplementationGenerator extends ObjectiveCSourceFileGener
     return result[0];
   }
 
+  private String constructorKey(IMethodBinding constructor) {
+    StringBuilder sb = new StringBuilder();
+    for (ITypeBinding type : constructor.getParameterTypes()) {
+      sb.append(NameTable.javaRefToObjC(type) + ":");
+    }
+    return sb.toString();
+  }
+
   private void findInvokedConstructors(CompilationUnit unit) {
     unit.accept(new ErrorReportingASTVisitor() {
       @Override
       public boolean visit(ConstructorInvocation node) {
-        invokedConstructors.add(Types.getMethodBinding(node).getMethodDeclaration());
+        invokedConstructors.add(constructorKey(Types.getMethodBinding(node)));
         return false;
       }
     });
@@ -514,7 +522,7 @@ public class ObjectiveCImplementationGenerator extends ObjectiveCSourceFileGener
       sb.append("}\nreturn self;\n}");
       methodBody = sb.toString();
     }
-    if (invokedConstructors.contains(binding)) {
+    if (invokedConstructors.contains(constructorKey(binding))) {
       return super.constructorDeclaration(m, true) + " " + reindent(methodBody) + "\n\n"
           + super.constructorDeclaration(m, false) + " {\n  return "
           + generateStatement(createInnerConstructorInvocation(m), false) + ";\n}\n\n";
