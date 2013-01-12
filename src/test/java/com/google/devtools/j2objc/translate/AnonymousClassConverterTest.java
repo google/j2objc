@@ -531,4 +531,23 @@ public class AnonymousClassConverterTest extends GenerationTest {
     assertTranslation(impl,
         "[[ColorEnum_$1 alloc] initWithInt:42 withNSString:@\"Color_RED\" withInt:0]");
   }
+
+  public void testEnumWithInnerEnum() throws IOException {
+    String impl = translateSourceFile(
+      "public enum OuterValue {\n" +
+      "  VALUE1, VALUE2, VALUE3;\n" +
+      "  public enum InnerValue {\n" +
+      "    VALUE1, VALUE2, VALUE3;\n" +
+      "  }\n" +
+      "}\n",
+      "OuterValue", "OuterValue.m");
+
+    // Verify OuterValue constant initialization.
+    assertTranslation(impl,
+        "[[OuterValueEnum alloc] initWithNSString:@\"VALUE1\" withInt:0]");
+
+    // Verify InnerValue constant initialization.
+    assertTranslation(impl,
+        "[[OuterValueEnum_InnerValueEnum alloc] initWithNSString:@\"VALUE1\" withInt:0]");
+  }
 }
