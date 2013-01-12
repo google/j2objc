@@ -840,8 +840,9 @@ public class StatementGenerator extends ErrorReportingASTVisitor {
           SuperMethodInvocation invocation = (SuperMethodInvocation) subnode;
           IMethodBinding binding = Types.getMethodBinding(invocation);
           String methodName = NameTable.getName(binding);
-          if ((methodName.equals(DestructorGenerator.FINALIZE_METHOD)) ||
-              (methodName.equals(DestructorGenerator.DEALLOC_METHOD))) {
+          if (Options.memoryDebug() &&
+              ((methodName.equals(DestructorGenerator.FINALIZE_METHOD)) ||
+               (methodName.equals(DestructorGenerator.DEALLOC_METHOD)))) {
             buffer.append("JreMemDebugRemove(self);\n");
           }
         }

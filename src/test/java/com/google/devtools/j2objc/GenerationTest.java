@@ -63,7 +63,10 @@ public abstract class GenerationTest extends TestCase {
   @Override
   protected void setUp() throws IOException {
     tempDir = createTempDir();
-    Options.load(new String[] { "-d", tempDir.getAbsolutePath() });
+    Options.load(new String[] {
+      "-d", tempDir.getAbsolutePath(),
+      "--mem-debug" // Run tests with memory debugging by default.
+    });
     lastLog = "";
   }
 
