@@ -523,9 +523,7 @@ public class ObjectiveCHeaderGenerator extends ObjectiveCSourceFileGenerator {
           IVariableBinding varBinding = Types.getVariableBinding(var);
           if (type.isPrimitive()) {
             print("assign");
-          } else if (Types.isWeakReference(varBinding) ||
-              (varBinding.getName().startsWith("this$") &&
-                  Types.hasWeakAnnotation(varBinding.getDeclaringClass()))) {
+          } else if (Types.isWeakReference(varBinding)) {
             print(Options.useARC() ? "weak" : "assign");
           } else if (type.isEqualTo(Types.getNSString())) {
             print("copy");
