@@ -28,11 +28,6 @@ public final class Matcher implements MatchResult {
     private Pattern pattern;
 
     /**
-     * Holds the handle for the native version of the pattern.
-     */
-    private int address;
-
-    /**
      * Holds the input text.
      */
     private String input;
@@ -79,6 +74,11 @@ public final class Matcher implements MatchResult {
      * Reflects whether the bounds of the region are transparent.
      */
     private boolean transparentBounds;
+
+    /**
+     * Progress state from last match.
+     */
+    private int progressFlags;
 
     /**
      * Creates a matcher for a given combination of pattern and input. Both
@@ -209,7 +209,6 @@ public final class Matcher implements MatchResult {
         this.input = input.toString();
         this.regionStart = start;
         this.regionEnd = end;
-        resetForInput();
 
         matchFound = false;
         findPos = regionStart;
@@ -235,25 +234,12 @@ public final class Matcher implements MatchResult {
 
         this.pattern = pattern;
 
-        if (address != 0) {
-            closeImpl(address);
-            address = 0;
-        }
-        address = openImpl(pattern.address);
-
-        if (input != null) {
-            resetForInput();
-        }
-
         matchOffsets = new int[(groupCount() + 1) * 2];
         matchFound = false;
-        return this;
-    }
 
-    private void resetForInput() {
-        setInputImpl(address, input, regionStart, regionEnd);
-        useAnchoringBoundsImpl(address, anchoringBounds);
-        useTransparentBoundsImpl(address, transparentBounds);
+        // If the pattern matches multiple lines, turn off anchoring bounds.
+        anchoringBounds = (pattern.flags() & Pattern.MULTILINE) == 0;
+        return this;
     }
 
     /**
@@ -397,7 +383,7 @@ public final class Matcher implements MatchResult {
             return false;
         }
 
-        matchFound = findImpl(address, input, findPos, matchOffsets);
+        matchFound = findImpl(findPos, false);
         if (matchFound) {
             findPos = matchOffsets[1];
         }
@@ -413,7 +399,7 @@ public final class Matcher implements MatchResult {
      * @return true if (and only if) a match has been found.
      */
     public boolean find() {
-        matchFound = findNextImpl(address, input, matchOffsets);
+        matchFound = findImpl(findPos, true);
         if (matchFound) {
             findPos = matchOffsets[1];
         }
@@ -428,7 +414,7 @@ public final class Matcher implements MatchResult {
      * @return true if (and only if) the {@code Pattern} matches.
      */
     public boolean lookingAt() {
-        matchFound = lookingAtImpl(address, input, matchOffsets);
+        matchFound = findImpl(0, false);
         if (matchFound) {
             findPos = matchOffsets[1];
         }
@@ -443,7 +429,7 @@ public final class Matcher implements MatchResult {
      *         region.
      */
     public boolean matches() {
-        matchFound = matchesImpl(address, input, matchOffsets);
+        matchFound = matchesImpl();
         if (matchFound) {
             findPos = matchOffsets[1];
         }
@@ -522,7 +508,7 @@ public final class Matcher implements MatchResult {
      * @return the number of groups.
      */
     public int groupCount() {
-        return groupCountImpl(address);
+        return groupCountImpl();
     }
 
     /**
@@ -563,7 +549,6 @@ public final class Matcher implements MatchResult {
      */
     public Matcher useAnchoringBounds(boolean value) {
         anchoringBounds = value;
-        useAnchoringBoundsImpl(address, value);
         return this;
     }
 
@@ -591,7 +576,6 @@ public final class Matcher implements MatchResult {
      */
     public Matcher useTransparentBounds(boolean value) {
         transparentBounds = value;
-        useTransparentBoundsImpl(address, value);
         return this;
     }
 
@@ -648,7 +632,7 @@ public final class Matcher implements MatchResult {
      *         into an unsuccessful one.
      */
     public boolean requireEnd() {
-        return requireEndImpl(address);
+        return requireEndImpl();
     }
 
     /**
@@ -657,59 +641,94 @@ public final class Matcher implements MatchResult {
      * @return true if (and only if) the last match hit the end of the input.
      */
     public boolean hitEnd() {
-        return hitEndImpl(address);
+        return hitEndImpl();
     }
 
-    @Override protected void finalize() throws Throwable {
-        try {
-            closeImpl(address);
-        } finally {
-            super.finalize();
+    private native boolean findImpl(int start, boolean continuing) /*-[
+      NSRegularExpression *regex =
+          (NSRegularExpression *) self->pattern__->nativePattern_;
+      NSMatchingOptions options = 0;
+      if (!continuing) {
+        if (self->anchoringBounds_) {
+          options |= NSMatchingAnchored;
         }
-    }
+        if (self->transparentBounds_) {
+          options |= NSMatchingWithTransparentBounds;
+        }
+      }
+      NSRange range = NSMakeRange(start, self->regionEnd__ - start);
 
-    private static native void closeImpl(int addr) /*-[
-  	[self doesNotRecognizeSelector:_cmd];
+      // Use enumerateMatchesInString to get progress state.
+      __block BOOL matched = NO;
+      [regex enumerateMatchesInString:self->input_
+                              options:options
+                                range:range
+                           usingBlock:^(NSTextCheckingResult *match,
+                                        NSMatchingFlags flags,
+                                        BOOL *stop) {
+        self->progressFlags_ = flags;
+
+        // Update offsets.
+        NSUInteger nGroups = [match numberOfRanges];
+        for (NSUInteger i = 0; i < nGroups; i++) {
+          NSRange matchRange = [match rangeAtIndex:i];
+          [self->matchOffsets_ replaceIntAtIndex:i * 2
+                                         withInt:matchRange.location];
+          [self->matchOffsets_
+              replaceIntAtIndex:(i * 2) + 1
+                        withInt:matchRange.location + matchRange.length];
+        }
+
+        matched = [match range].length > 0;  // No match if length is zero.
+        *stop = YES;
+      }];
+      
+      return matched;
     ]-*/;
-    private static native boolean findImpl(int addr, String s, int startIndex, int[] offsets) /*-[
-  	[self doesNotRecognizeSelector:_cmd];
-  	return 0;
+
+    private native int groupCountImpl() /*-[
+      NSRegularExpression *regex =
+          (NSRegularExpression *) self->pattern__->nativePattern_;
+      return regex.numberOfCaptureGroups;
     ]-*/;
-    private static native boolean findNextImpl(int addr, String s, int[] offsets) /*-[
-      [self doesNotRecognizeSelector:_cmd];
-      return 0;
+
+    private native boolean hitEndImpl() /*-[
+      return (self->progressFlags_ | NSMatchingHitEnd) > 0;
     ]-*/;
-    private static native int groupCountImpl(int addr) /*-[
-      [self doesNotRecognizeSelector:_cmd];
-      return 0;
+
+    private native boolean matchesImpl() /*-[
+      NSRegularExpression *regex =
+          (NSRegularExpression *) self->pattern__->nativePattern_;
+      NSUInteger patternFlags = [regex options];
+      NSMatchingOptions options = 0;
+      if (self->anchoringBounds_) {
+        options |= NSMatchingAnchored;
+      }
+      if (self->transparentBounds_ ||
+          (patternFlags & NSRegularExpressionAnchorsMatchLines) > 0) {
+        options |= NSMatchingWithTransparentBounds;
+      }
+      NSUInteger length = [self->input_ length];
+      NSTextCheckingResult *match =
+          [regex firstMatchInString:self->input_
+                            options:options
+                              range:NSMakeRange(0, length)];
+
+      // Update offsets.
+      NSUInteger nGroups = [match numberOfRanges];
+      for (NSUInteger i = 0; i < nGroups; i++) {
+        NSRange matchRange = [match rangeAtIndex:i];
+        [self->matchOffsets_ replaceIntAtIndex:i * 2
+                                       withInt:matchRange.location];
+        [self->matchOffsets_
+            replaceIntAtIndex:(i * 2) + 1
+                      withInt:matchRange.location + matchRange.length];
+      }
+      NSRange range = [match range];
+      return range.location == 0 && range.length == length;
     ]-*/;
-    private static native boolean hitEndImpl(int addr) /*-[
-      [self doesNotRecognizeSelector:_cmd];
-      return 0;
-    ]-*/;
-    private static native boolean lookingAtImpl(int addr, String s, int[] offsets) /*-[
-      [self doesNotRecognizeSelector:_cmd];
-      return 0;
-    ]-*/;
-    private static native boolean matchesImpl(int addr, String s, int[] offsets) /*-[
-      [self doesNotRecognizeSelector:_cmd];
-      return 0;
-    ]-*/;
-    private static native int openImpl(int patternAddr) /*-[
-      [self doesNotRecognizeSelector:_cmd];
-      return 0;
-    ]-*/;
-    private static native boolean requireEndImpl(int addr) /*-[
-      [self doesNotRecognizeSelector:_cmd];
-      return 0;
-    ]-*/;
-    private static native void setInputImpl(int addr, String s, int start, int end) /*-[
-      [self doesNotRecognizeSelector:_cmd];
-    ]-*/;
-    private static native void useAnchoringBoundsImpl(int addr, boolean value) /*-[
-      [self doesNotRecognizeSelector:_cmd];
-    ]-*/;
-    private static native void useTransparentBoundsImpl(int addr, boolean value) /*-[
-      [self doesNotRecognizeSelector:_cmd];
+
+    private native boolean requireEndImpl() /*-[
+      return (self->progressFlags_ | NSMatchingRequiredEnd) > 0;
     ]-*/;
 }
