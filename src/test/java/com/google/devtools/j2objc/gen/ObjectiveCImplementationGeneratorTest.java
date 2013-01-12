@@ -503,7 +503,7 @@ public class ObjectiveCImplementationGeneratorTest extends GenerationTest {
         "Test", "Test.m");
     assertTranslation(translation, "- (id)initWithInt:(int)i {");
     assertTranslation(translation, "- (id)initTestWithInt:(int)i {");
-    assertTranslation(translation, "[self initTestWithInt:42];");
+    assertTranslation(translation, "[self initTestWithInt:42]");
   }
 
   public void testInnerConstructorGeneratedForNonStaticInnerClass() throws IOException {

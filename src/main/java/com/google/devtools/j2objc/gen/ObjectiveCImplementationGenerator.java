@@ -615,7 +615,7 @@ public class ObjectiveCImplementationGenerator extends ObjectiveCSourceFileGener
       for (int i = firstPrinted ? 1 : 0; i < statements.size(); i++) {
         sb.append(generateStatement(statements.get(i), false, true));
       }
-      sb.append("JreMemDebugAdd(self);");
+      sb.append("JreMemDebugAdd(self);\n");
       sb.append("}\nreturn self;\n}");
       methodBody = sb.toString();
     }
@@ -673,7 +673,7 @@ public class ObjectiveCImplementationGenerator extends ObjectiveCSourceFileGener
       for (int i = 1; i < statements.size(); i++) {
         sb.append(generateStatement(statements.get(i), false, true));
       }
-      sb.append("JreMemDebugAdd(self);");
+      sb.append("JreMemDebugAdd(self);\n");
       sb.append("}\nreturn self;\n}");
     }
     String result = super.constructorDeclaration(m) + " " + reindent(sb.toString()) + "\n\n";

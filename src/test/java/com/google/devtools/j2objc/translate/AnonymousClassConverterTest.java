@@ -514,7 +514,7 @@ public class AnonymousClassConverterTest extends GenerationTest {
         "- (id)initWithInt:(int)n\n" +
         "     withNSString:(NSString *)name\n" +
         "          withInt:(int)ordinal {\n" +
-        "  return [super initWithNSString:name withInt:ordinal];\n}");
+        "  return JreMemDebugAdd([super initWithNSString:name withInt:ordinal]);\n}");
 
     // Verify ColorEnum_$1 constructor.
     assertTranslation(impl,
@@ -524,6 +524,7 @@ public class AnonymousClassConverterTest extends GenerationTest {
         "                withInt:(int)ordinal {\n" +
         "  if ((self = [super initWithInt:arg$0 withNSString:name withInt:ordinal])) {\n" +
         "    JreOperatorRetainedAssign(&this$0_, outer$1);\n" +
+        "    JreMemDebugAdd(self);\n" +
         "  }\n" +
         "  return self;\n}");
 
