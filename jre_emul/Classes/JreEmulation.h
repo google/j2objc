@@ -31,7 +31,6 @@
 # import "NSObject+JavaObject.h"
 # import "NSString+JavaString.h"
 # import "IOSClass.h"
-# import "IOSCollection.h"
 # import <fcntl.h>
 # import "JreMemDebug.h"
 
@@ -64,7 +63,5 @@ FOUNDATION_EXPORT
 # if !__has_feature(objc_arc)
 FOUNDATION_EXPORT id JreOperatorRetainedAssign(id *pIvar, id value);
 # endif
-
-# define IOSCOLLECTION(c) [IOSCollection collectionWithJavaUtilCollection:c]
 
 #endif // __OBJC__
