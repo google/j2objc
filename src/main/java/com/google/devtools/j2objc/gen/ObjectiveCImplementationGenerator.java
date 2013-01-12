@@ -511,8 +511,7 @@ public class ObjectiveCImplementationGenerator extends ObjectiveCSourceFileGener
     if (Options.useReferenceCounting()) {
       printf("  @throw [[[JavaLangIllegalArgumentException alloc] initWithNSString:name]"
            + " autorelease];\n");
-    }
-    else {
+    } else {
       printf("  @throw [[JavaLangIllegalArgumentException alloc] initWithNSString:name];\n");
     }
     printf("  return nil;\n");
@@ -572,19 +571,6 @@ public class ObjectiveCImplementationGenerator extends ObjectiveCSourceFileGener
     }
     // generate a normal method body
     String methodBody = generateStatement(m.getBody(), false);
-    if (Types.hasAutoreleasePoolAnnotation(Types.getBinding(m))) {
-      if (Options.useReferenceCounting()) {
-        // TODO(user): use @autoreleasepool like ARC when iOS 5 is minimum.
-        return reindent(
-            "{\nNSAutoreleasePool *pool__ = [[NSAutoreleasePool alloc] init];\n" +
-            methodBody +
-            "[pool__ release];\n}");
-      } else if (Options.useARC()) {
-        return reindent("{\n@autoreleasepool {\n" + methodBody + "}\n}");
-      } else {
-        J2ObjC.warning(m, "@AutoreleasePool ignored in GC mode");
-      }
-    }
 
     boolean isStatic = (m.getModifiers() & Modifier.STATIC) != 0;
     boolean isSynchronized = (m.getModifiers() & Modifier.SYNCHRONIZED) != 0;

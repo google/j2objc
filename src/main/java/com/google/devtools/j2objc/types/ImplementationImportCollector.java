@@ -30,7 +30,6 @@ import org.eclipse.jdt.core.dom.CastExpression;
 import org.eclipse.jdt.core.dom.CatchClause;
 import org.eclipse.jdt.core.dom.ClassInstanceCreation;
 import org.eclipse.jdt.core.dom.CompilationUnit;
-import org.eclipse.jdt.core.dom.EnhancedForStatement;
 import org.eclipse.jdt.core.dom.EnumDeclaration;
 import org.eclipse.jdt.core.dom.Expression;
 import org.eclipse.jdt.core.dom.FieldAccess;
@@ -179,14 +178,6 @@ public class ImplementationImportCollector extends HeaderImportCollector {
   }
 
   @Override
-  public boolean visit(EnhancedForStatement node) {
-    addReference(node.getParameter().getType());
-    addReference("JavaLangNullPointerException", "java.lang.NullPointerException", true);
-    addReference("JavaUtilIterator", "java.util.Iterator", true);
-    return super.visit(node);
-  }
-
-  @Override
   public boolean visit(EnumDeclaration node) {
     addReference(Types.getTypeBinding(node));
     addReference("JavaLangIllegalArgumentException", "java.lang.IllegalArgumentException", false);
@@ -317,7 +308,7 @@ public class ImplementationImportCollector extends HeaderImportCollector {
         break;
       }
       if (expr instanceof QualifiedName) {
-        expr = ((QualifiedName)expr).getQualifier();
+        expr = ((QualifiedName) expr).getQualifier();
         if (expr.resolveTypeBinding() == null) {
           break;
         }

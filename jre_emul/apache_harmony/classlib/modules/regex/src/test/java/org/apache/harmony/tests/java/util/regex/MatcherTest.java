@@ -37,10 +37,6 @@ public class MatcherTest extends TestCase {
     String[] groupPatterns = { "(a|b)*aabb", "((a)|b)*aabb", "((a|b)*)a(abb)",
             "(((a)|(b))*)aabb", "(((a)|(b))*)aa(b)b", "(((a)|(b))*)a(a(b)b)" };
 
-    public MatcherTest(String name) {
-        super(name);
-    }
-    
     public void testAppendReplacement() {
         Pattern pat = Pattern.compile("XX");
         Matcher m = pat.matcher("Today is XX-XX-XX ...");
