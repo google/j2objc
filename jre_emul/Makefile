@@ -28,16 +28,12 @@ IOS_OBJS = \
 	$(CLASS_DIR)/IOSByteArray.o \
 	$(CLASS_DIR)/IOSCharArray.o \
 	$(CLASS_DIR)/IOSClass.o \
-	$(CLASS_DIR)/IOSCollection.o \
 	$(CLASS_DIR)/IOSDoubleArray.o \
 	$(CLASS_DIR)/IOSFloatArray.o \
 	$(CLASS_DIR)/IOSIntArray.o \
-	$(CLASS_DIR)/IOSIterator.o \
-	$(CLASS_DIR)/IOSList.o \
 	$(CLASS_DIR)/IOSLongArray.o \
 	$(CLASS_DIR)/IOSObjectArray.o \
 	$(CLASS_DIR)/IOSPrimitiveClass.o \
-	$(CLASS_DIR)/IOSSet.o \
 	$(CLASS_DIR)/IOSShortArray.o \
 	$(CLASS_DIR)/java/lang/System.o \
 	$(CLASS_DIR)/java/lang/Throwable.o \
