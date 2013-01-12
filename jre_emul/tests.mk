@@ -89,7 +89,6 @@ TEST_OBJS = \
 	$(TESTS_DIR)/org/apache/harmony/luni/tests/java/lang/reflect/ModifierTest.o \
 	$(TESTS_DIR)/org/apache/harmony/luni/tests/java/lang/RuntimeExceptionTest.o \
 	$(TESTS_DIR)/org/apache/harmony/luni/tests/java/lang/ShortTest.o \
-	$(TESTS_DIR)/java/lang/SplitTest.o \
 	$(TESTS_DIR)/org/apache/harmony/luni/tests/java/lang/StrictMathTest.o \
 	$(TESTS_DIR)/org/apache/harmony/luni/tests/java/lang/StringBufferTest.o \
 	$(TESTS_DIR)/org/apache/harmony/luni/tests/java/lang/StringIndexOutOfBoundsExceptionTest.o \
@@ -141,7 +140,15 @@ TEST_OBJS = \
 	$(TESTS_DIR)/org/apache/harmony/luni/tests/java/util/PriorityQueueTest.o \
 	$(TESTS_DIR)/org/apache/harmony/luni/tests/java/util/RandomTest.o \
 	$(TESTS_DIR)/org/apache/harmony/luni/tests/java/util/StackTest.o \
-	$(TESTS_DIR)/org/apache/harmony/luni/tests/java/util/VectorTest.o
+	$(TESTS_DIR)/org/apache/harmony/luni/tests/java/util/VectorTest.o \
+	$(TESTS_DIR)/org/apache/harmony/tests/java/util/regex/Matcher2Test.o \
+	$(TESTS_DIR)/org/apache/harmony/tests/java/util/regex/MatcherTest.o \
+	$(TESTS_DIR)/org/apache/harmony/tests/java/util/regex/Pattern2Test.o \
+	$(TESTS_DIR)/org/apache/harmony/tests/java/util/regex/PatternErrorTest.o \
+	$(TESTS_DIR)/org/apache/harmony/tests/java/util/regex/PatternSyntaxExceptionTest.o \
+	$(TESTS_DIR)/org/apache/harmony/tests/java/util/regex/PatternTest.o \
+	$(TESTS_DIR)/org/apache/harmony/tests/java/util/regex/ReplaceTest.o \
+	$(TESTS_DIR)/org/apache/harmony/tests/java/util/regex/SplitTest.o
 
 FAILING_TESTS = \
 	$(TESTS_DIR)/org/apache/harmony/luni/tests/java/io/FileTest.o \
@@ -155,6 +162,7 @@ FAILING_TESTS = \
 	$(TESTS_DIR)/org/apache/harmony/luni/tests/java/util/CollectionsTest.o \
 	$(TESTS_DIR)/org/apache/harmony/luni/tests/java/util/TreeSetTest.o \
 	$(TESTS_DIR)/org/apache/harmony/luni/tests/java/util/TreeMapTest.o \
+	$(TESTS_DIR)/org/apache/harmony/tests/java/util/regex/ModeTest.o \
 
 # These tests fail because they subclass other tests, so linking fails
 # because the binary has multiple main() functions.
@@ -272,6 +280,9 @@ $(TESTS_DIR)/%.h $(TESTS_DIR)/%.m: $(MISC_TEST_ROOT)/%.java
 	@echo $? >> $(JAVA_SOURCE_LIST)
 
 $(TESTS_DIR)/%.h $(TESTS_DIR)/%.m: $(ANDROID_JRE_TEST_ROOT)/%.java
+	@echo $? >> $(JAVA_SOURCE_LIST)
+
+$(TESTS_DIR)/%.h $(TESTS_DIR)/%.m: $(REGEX_TEST_ROOT)/%.java
 	@echo $? >> $(JAVA_SOURCE_LIST)
 
 $(TESTS_DIR)/%.o: $(TESTS_DIR)/%.m

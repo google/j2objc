@@ -213,6 +213,27 @@
 		067228FB158FB0B3005318BD /* AccessibleObject.h in Headers */ = {isa = PBXBuildFile; fileRef = 067228F9158FB0B3005318BD /* AccessibleObject.h */; };
 		067228FC158FB0B3005318BD /* AccessibleObject.m in Sources */ = {isa = PBXBuildFile; fileRef = 067228FA158FB0B3005318BD /* AccessibleObject.m */; };
 		06722900158FD6AF005318BD /* NoSuchFieldException.m in Sources */ = {isa = PBXBuildFile; fileRef = 067228FE158FD6AF005318BD /* NoSuchFieldException.m */; };
+		068677D6166C342C005A5AD7 /* ArrayDeque.h in Headers */ = {isa = PBXBuildFile; fileRef = 068677CB166C342C005A5AD7 /* ArrayDeque.h */; };
+		068677D7166C342C005A5AD7 /* ArrayDeque.m in Sources */ = {isa = PBXBuildFile; fileRef = 068677CC166C342C005A5AD7 /* ArrayDeque.m */; };
+		068677D8166C342C005A5AD7 /* Deque.h in Headers */ = {isa = PBXBuildFile; fileRef = 068677CD166C342C005A5AD7 /* Deque.h */; };
+		068677D9166C342C005A5AD7 /* EventListener.h in Headers */ = {isa = PBXBuildFile; fileRef = 068677CE166C342C005A5AD7 /* EventListener.h */; };
+		068677DA166C342C005A5AD7 /* EventListener.m in Sources */ = {isa = PBXBuildFile; fileRef = 068677CF166C342C005A5AD7 /* EventListener.m */; };
+		068677DB166C342C005A5AD7 /* EventObject.h in Headers */ = {isa = PBXBuildFile; fileRef = 068677D0166C342C005A5AD7 /* EventObject.h */; };
+		068677DC166C342C005A5AD7 /* EventObject.m in Sources */ = {isa = PBXBuildFile; fileRef = 068677D1166C342C005A5AD7 /* EventObject.m */; };
+		068677DD166C342C005A5AD7 /* NavigableMap.h in Headers */ = {isa = PBXBuildFile; fileRef = 068677D2166C342C005A5AD7 /* NavigableMap.h */; };
+		068677DE166C342C005A5AD7 /* NavigableMap.m in Sources */ = {isa = PBXBuildFile; fileRef = 068677D3166C342C005A5AD7 /* NavigableMap.m */; };
+		068677DF166C342C005A5AD7 /* NavigableSet.h in Headers */ = {isa = PBXBuildFile; fileRef = 068677D4166C342C005A5AD7 /* NavigableSet.h */; };
+		068677E0166C342C005A5AD7 /* NavigableSet.m in Sources */ = {isa = PBXBuildFile; fileRef = 068677D5166C342C005A5AD7 /* NavigableSet.m */; };
+		068677EC166C345F005A5AD7 /* Matcher.h in Headers */ = {isa = PBXBuildFile; fileRef = 068677E2166C345F005A5AD7 /* Matcher.h */; };
+		068677ED166C345F005A5AD7 /* Matcher.m in Sources */ = {isa = PBXBuildFile; fileRef = 068677E3166C345F005A5AD7 /* Matcher.m */; };
+		068677EE166C345F005A5AD7 /* MatchResult.h in Headers */ = {isa = PBXBuildFile; fileRef = 068677E4166C345F005A5AD7 /* MatchResult.h */; };
+		068677EF166C345F005A5AD7 /* MatchResult.m in Sources */ = {isa = PBXBuildFile; fileRef = 068677E5166C345F005A5AD7 /* MatchResult.m */; };
+		068677F0166C345F005A5AD7 /* MatchResultImpl.h in Headers */ = {isa = PBXBuildFile; fileRef = 068677E6166C345F005A5AD7 /* MatchResultImpl.h */; };
+		068677F1166C345F005A5AD7 /* MatchResultImpl.m in Sources */ = {isa = PBXBuildFile; fileRef = 068677E7166C345F005A5AD7 /* MatchResultImpl.m */; };
+		068677F2166C345F005A5AD7 /* Pattern.h in Headers */ = {isa = PBXBuildFile; fileRef = 068677E8166C345F005A5AD7 /* Pattern.h */; };
+		068677F3166C345F005A5AD7 /* Pattern.m in Sources */ = {isa = PBXBuildFile; fileRef = 068677E9166C345F005A5AD7 /* Pattern.m */; };
+		068677F4166C345F005A5AD7 /* Splitter.h in Headers */ = {isa = PBXBuildFile; fileRef = 068677EA166C345F005A5AD7 /* Splitter.h */; };
+		068677F5166C345F005A5AD7 /* Splitter.m in Sources */ = {isa = PBXBuildFile; fileRef = 068677EB166C345F005A5AD7 /* Splitter.m */; };
 		0697F60B15D190580027A7E4 /* Array.h in Headers */ = {isa = PBXBuildFile; fileRef = 0697F60315D190580027A7E4 /* Array.h */; };
 		0697F60C15D190580027A7E4 /* Array.m in Sources */ = {isa = PBXBuildFile; fileRef = 0697F60415D190580027A7E4 /* Array.m */; };
 		0697F60E15D190580027A7E4 /* GenericDeclaration.h in Headers */ = {isa = PBXBuildFile; fileRef = 0697F60515D190580027A7E4 /* GenericDeclaration.h */; };
@@ -223,7 +244,6 @@
 		0697F61515D190580027A7E4 /* TypeVariable.m in Sources */ = {isa = PBXBuildFile; fileRef = 0697F60A15D190580027A7E4 /* TypeVariable.m */; };
 		06C6B7FD159BCBD1004B800C /* PatternSyntaxException.h in Headers */ = {isa = PBXBuildFile; fileRef = 06C6B7FB159BCBD1004B800C /* PatternSyntaxException.h */; };
 		06C6B7FE159BCBD1004B800C /* PatternSyntaxException.m in Sources */ = {isa = PBXBuildFile; fileRef = 06C6B7FC159BCBD1004B800C /* PatternSyntaxException.m */; };
-		A34A99ED1630A9DA006DEC32 /* Tests-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = A34A99EB1630A9DA006DEC32 /* Tests-Info.plist */; };
 		A34A99F11630A9E7006DEC32 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = A34A99EF1630A9E7006DEC32 /* InfoPlist.strings */; };
 /* End PBXBuildFile section */
 
@@ -584,6 +604,27 @@
 		067228FA158FB0B3005318BD /* AccessibleObject.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = AccessibleObject.m; path = java/lang/reflect/AccessibleObject.m; sourceTree = "<group>"; };
 		067228FD158FD6AF005318BD /* NoSuchFieldException.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = NoSuchFieldException.h; path = build_result/Classes/java/lang/NoSuchFieldException.h; sourceTree = "<group>"; };
 		067228FE158FD6AF005318BD /* NoSuchFieldException.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = NoSuchFieldException.m; path = build_result/Classes/java/lang/NoSuchFieldException.m; sourceTree = "<group>"; };
+		068677CB166C342C005A5AD7 /* ArrayDeque.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ArrayDeque.h; path = build_result/Classes/java/util/ArrayDeque.h; sourceTree = "<group>"; };
+		068677CC166C342C005A5AD7 /* ArrayDeque.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ArrayDeque.m; path = build_result/Classes/java/util/ArrayDeque.m; sourceTree = "<group>"; };
+		068677CD166C342C005A5AD7 /* Deque.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Deque.h; path = build_result/Classes/java/util/Deque.h; sourceTree = "<group>"; };
+		068677CE166C342C005A5AD7 /* EventListener.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = EventListener.h; path = build_result/Classes/java/util/EventListener.h; sourceTree = "<group>"; };
+		068677CF166C342C005A5AD7 /* EventListener.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = EventListener.m; path = build_result/Classes/java/util/EventListener.m; sourceTree = "<group>"; };
+		068677D0166C342C005A5AD7 /* EventObject.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = EventObject.h; path = build_result/Classes/java/util/EventObject.h; sourceTree = "<group>"; };
+		068677D1166C342C005A5AD7 /* EventObject.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = EventObject.m; path = build_result/Classes/java/util/EventObject.m; sourceTree = "<group>"; };
+		068677D2166C342C005A5AD7 /* NavigableMap.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = NavigableMap.h; path = build_result/Classes/java/util/NavigableMap.h; sourceTree = "<group>"; };
+		068677D3166C342C005A5AD7 /* NavigableMap.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = NavigableMap.m; path = build_result/Classes/java/util/NavigableMap.m; sourceTree = "<group>"; };
+		068677D4166C342C005A5AD7 /* NavigableSet.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = NavigableSet.h; path = build_result/Classes/java/util/NavigableSet.h; sourceTree = "<group>"; };
+		068677D5166C342C005A5AD7 /* NavigableSet.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = NavigableSet.m; path = build_result/Classes/java/util/NavigableSet.m; sourceTree = "<group>"; };
+		068677E2166C345F005A5AD7 /* Matcher.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Matcher.h; path = build_result/Classes/java/util/regex/Matcher.h; sourceTree = "<group>"; };
+		068677E3166C345F005A5AD7 /* Matcher.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = Matcher.m; path = build_result/Classes/java/util/regex/Matcher.m; sourceTree = "<group>"; };
+		068677E4166C345F005A5AD7 /* MatchResult.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MatchResult.h; path = build_result/Classes/java/util/regex/MatchResult.h; sourceTree = "<group>"; };
+		068677E5166C345F005A5AD7 /* MatchResult.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MatchResult.m; path = build_result/Classes/java/util/regex/MatchResult.m; sourceTree = "<group>"; };
+		068677E6166C345F005A5AD7 /* MatchResultImpl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MatchResultImpl.h; path = build_result/Classes/java/util/regex/MatchResultImpl.h; sourceTree = "<group>"; };
+		068677E7166C345F005A5AD7 /* MatchResultImpl.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MatchResultImpl.m; path = build_result/Classes/java/util/regex/MatchResultImpl.m; sourceTree = "<group>"; };
+		068677E8166C345F005A5AD7 /* Pattern.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Pattern.h; path = build_result/Classes/java/util/regex/Pattern.h; sourceTree = "<group>"; };
+		068677E9166C345F005A5AD7 /* Pattern.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = Pattern.m; path = build_result/Classes/java/util/regex/Pattern.m; sourceTree = "<group>"; };
+		068677EA166C345F005A5AD7 /* Splitter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Splitter.h; path = build_result/Classes/java/util/regex/Splitter.h; sourceTree = "<group>"; };
+		068677EB166C345F005A5AD7 /* Splitter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = Splitter.m; path = build_result/Classes/java/util/regex/Splitter.m; sourceTree = "<group>"; };
 		0697F60315D190580027A7E4 /* Array.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Array.h; path = build_result/Classes/java/lang/reflect/Array.h; sourceTree = "<group>"; };
 		0697F60415D190580027A7E4 /* Array.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = Array.m; path = build_result/Classes/java/lang/reflect/Array.m; sourceTree = "<group>"; };
 		0697F60515D190580027A7E4 /* GenericDeclaration.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = GenericDeclaration.h; path = build_result/Classes/java/lang/reflect/GenericDeclaration.h; sourceTree = "<group>"; };
@@ -741,6 +782,27 @@
 		067219221559B9D200645E1B /* Transpiled Classes */ = {
 			isa = PBXGroup;
 			children = (
+				068677E2166C345F005A5AD7 /* Matcher.h */,
+				068677E3166C345F005A5AD7 /* Matcher.m */,
+				068677E4166C345F005A5AD7 /* MatchResult.h */,
+				068677E5166C345F005A5AD7 /* MatchResult.m */,
+				068677E6166C345F005A5AD7 /* MatchResultImpl.h */,
+				068677E7166C345F005A5AD7 /* MatchResultImpl.m */,
+				068677E8166C345F005A5AD7 /* Pattern.h */,
+				068677E9166C345F005A5AD7 /* Pattern.m */,
+				068677EA166C345F005A5AD7 /* Splitter.h */,
+				068677EB166C345F005A5AD7 /* Splitter.m */,
+				068677CB166C342C005A5AD7 /* ArrayDeque.h */,
+				068677CC166C342C005A5AD7 /* ArrayDeque.m */,
+				068677CD166C342C005A5AD7 /* Deque.h */,
+				068677CE166C342C005A5AD7 /* EventListener.h */,
+				068677CF166C342C005A5AD7 /* EventListener.m */,
+				068677D0166C342C005A5AD7 /* EventObject.h */,
+				068677D1166C342C005A5AD7 /* EventObject.m */,
+				068677D2166C342C005A5AD7 /* NavigableMap.h */,
+				068677D3166C342C005A5AD7 /* NavigableMap.m */,
+				068677D4166C342C005A5AD7 /* NavigableSet.h */,
+				068677D5166C342C005A5AD7 /* NavigableSet.m */,
 				06721AC51559CB4200645E1B /* AbstractCollection.h */,
 				06721A291559C91600645E1B /* AbstractCollection.m */,
 				06721AC61559CB4200645E1B /* AbstractList.h */,
@@ -1062,6 +1124,17 @@
 				0697F60E15D190580027A7E4 /* GenericDeclaration.h in Headers */,
 				0697F61115D190580027A7E4 /* Type.h in Headers */,
 				0697F61415D190580027A7E4 /* TypeVariable.h in Headers */,
+				068677D6166C342C005A5AD7 /* ArrayDeque.h in Headers */,
+				068677D8166C342C005A5AD7 /* Deque.h in Headers */,
+				068677D9166C342C005A5AD7 /* EventListener.h in Headers */,
+				068677DB166C342C005A5AD7 /* EventObject.h in Headers */,
+				068677DD166C342C005A5AD7 /* NavigableMap.h in Headers */,
+				068677DF166C342C005A5AD7 /* NavigableSet.h in Headers */,
+				068677EC166C345F005A5AD7 /* Matcher.h in Headers */,
+				068677EE166C345F005A5AD7 /* MatchResult.h in Headers */,
+				068677F0166C345F005A5AD7 /* MatchResultImpl.h in Headers */,
+				068677F2166C345F005A5AD7 /* Pattern.h in Headers */,
+				068677F4166C345F005A5AD7 /* Splitter.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1155,7 +1228,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				A34A99ED1630A9DA006DEC32 /* Tests-Info.plist in Resources */,
 				A34A99F11630A9E7006DEC32 /* InfoPlist.strings in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -1351,6 +1423,16 @@
 				0697F60F15D190580027A7E4 /* GenericDeclaration.m in Sources */,
 				0697F61215D190580027A7E4 /* Type.m in Sources */,
 				0697F61515D190580027A7E4 /* TypeVariable.m in Sources */,
+				068677D7166C342C005A5AD7 /* ArrayDeque.m in Sources */,
+				068677DA166C342C005A5AD7 /* EventListener.m in Sources */,
+				068677DC166C342C005A5AD7 /* EventObject.m in Sources */,
+				068677DE166C342C005A5AD7 /* NavigableMap.m in Sources */,
+				068677E0166C342C005A5AD7 /* NavigableSet.m in Sources */,
+				068677ED166C345F005A5AD7 /* Matcher.m in Sources */,
+				068677EF166C345F005A5AD7 /* MatchResult.m in Sources */,
+				068677F1166C345F005A5AD7 /* MatchResultImpl.m in Sources */,
+				068677F3166C345F005A5AD7 /* Pattern.m in Sources */,
+				068677F5166C345F005A5AD7 /* Splitter.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

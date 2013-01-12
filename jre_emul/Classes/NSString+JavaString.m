@@ -32,6 +32,7 @@
 #import "java/lang/StringIndexOutOfBoundsException.h"
 #import "java/util/Comparator.h"
 #import "java/util/Locale.h"
+#import "java/util/regex/Pattern.h"
 #import "java/util/regex/PatternSyntaxException.h"
 
 @interface CaseInsensitiveComparator :
@@ -569,117 +570,12 @@ NSStringEncoding parseCharsetName(NSString *charset) {
 }
 
 - (IOSObjectArray *)split:(NSString *)str {
-  NSArray *components = nil;
+  return [self split:str limit:0];
+}
 
-  NSCharacterSet *regexChars =
-      [NSCharacterSet characterSetWithCharactersInString:@"?*+."];
-  NSRange range = [str rangeOfCharacterFromSet:regexChars];
-
-#if TARGET_OS_IPHONE || MAC_OS_X_VERSION_MIN_REQUIRED >= 1070
-  NSError *error = nil;
-
-  // NSRegularExpression is only available on iOS > 5.0 and OSX > 10.7
-  NSRegularExpression *regex =
-      [NSRegularExpression regularExpressionWithPattern:str
-                                                options:0
-                                                  error:&error];
-
-  if (range.location != NSNotFound && error == nil) {
-    // Regex parsed correctly.
-    NSMutableArray *mutableComponents = [NSMutableArray array];
-    components = mutableComponents;
-    __block NSInteger lastMatchEnd = 0;
-    [regex enumerateMatchesInString:self
-                            options:0
-                              range:NSMakeRange(0, [self length])
-                         usingBlock:
-        ^(NSTextCheckingResult *matchResult, NSMatchingFlags flags,
-              BOOL *stop) {
-            NSRange matchRange = matchResult.range;
-            NSInteger start = lastMatchEnd;
-            if (start == matchRange.location) {
-              lastMatchEnd += matchRange.length;
-              return;
-            }
-            NSInteger length = matchRange.location - start;
-            NSRange nextComponent = NSMakeRange(start, length);
-            lastMatchEnd = matchRange.location + matchRange.length;
-            [mutableComponents
-                addObject:[self substringWithRange:nextComponent]];
-
-        }];
-    [mutableComponents addObject:[self substringFromIndex:lastMatchEnd]];
-  }
-
-#else
-  // Warn if there are regex chars.
-  if (range.location != NSNotFound) {
-    NSLog(@"Warning: possible regex characters in separator: %@", str);
-  }
-
-  if (NO) {  // Awkward ... but keeps the rest of the code pretty.
-  }
-
-#endif  // !TARGET_OS_MAC || MAC_OS_X_VERSION_MIN_REQUIRED >= 1070
-  else {
-    // Either had no regex characters (simple case), or there was an error
-    // parsing the regex, or NSRegularExpression not available in SDK being
-    // targeted.
-    components = [self componentsSeparatedByString:str];
-  }
-
-  // String.split spec says that trailing empty strings are not to be included
-  // in the result.
-  int count = [components count];
-  int trailingEmptyStringCount = 0;
-  for (int i = count - 1; i >= 0; i--) {
-    NSString *component = [components objectAtIndex:i];
-    if ([component length] > 0) {
-      break;
-    }
-
-    trailingEmptyStringCount++;
-  }
-
-  // componentsSeparatedByString returns empty strings if there are matches
-  // at the beginning.
-  int beginningOccurrencesCount = 0;
-  for (int i = 0; i < count; i++) {
-    NSString *component = [components objectAtIndex:i];
-    if (![component isEqualToString:@""]) {
-      break;
-    }
-    beginningOccurrencesCount++;
-  }
-
-  int resultCount = count - trailingEmptyStringCount -
-      beginningOccurrencesCount;
-
-  IOSClass *stringClass = [IOSClass classWithClass:[NSString class]];
-  if (resultCount < 1) {
-    IOSObjectArray *result =
-        [[IOSObjectArray alloc] initWithLength:0 type:stringClass];
-#if !__has_feature(objc_arc)
-    [result autorelease];
-#endif
-    return result;
-  }
-
-  int startIndex = beginningOccurrencesCount;
-  int endIndex = beginningOccurrencesCount + resultCount;
-  IOSObjectArray *result =
-      [[IOSObjectArray alloc] initWithLength:resultCount
-                                        type:stringClass];
-  for (int i = startIndex; i < endIndex; i++) {
-    [result replaceObjectAtIndex:i - startIndex
-                      withObject:[components objectAtIndex:i]];
-  }
-
-#if !__has_feature(objc_arc)
-  [result autorelease];
-#endif
-
-  return result;
+- (IOSObjectArray *)split:(NSString *)str limit:(int)n {
+  JavaUtilRegexPattern *p = [JavaUtilRegexPattern compileWithNSString:str];
+  return [p splitWithJavaLangCharSequence:self withInt:n];
 }
 
 - (BOOL)equalsIgnoreCase:(NSString *)aString {
@@ -804,20 +700,6 @@ NSStringEncoding parseCharsetName(NSString *charset) {
                                   options:0
                                     range:NSMakeRange(0, [self length])];
   return result != nil;
-}
-
-- (IOSObjectArray *)split:(NSString *)regex limit:(int)limit {
-  IOSObjectArray *parts = [self split:regex];
-  if (limit == 0 || [parts count] <= limit) {
-    return parts;
-  }
-  IOSObjectArray *result = [IOSObjectArray arrayWithType:[parts elementType]
-                                                   count:limit];
-  for (int i = 0; i < limit; i++) {
-    id part = [parts objectAtIndex:i];
-    [result replaceObjectAtIndex:i withObject:part];
-  }
-  return result;
 }
 
 + (id<JavaUtilComparator>)CASE_INSENSITIVE_ORDER {
