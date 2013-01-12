@@ -350,12 +350,12 @@ public class J2ObjC {
     // Add auto-boxing conversions.
     new Autoboxer(unit.getAST()).run(unit);
 
+    // Normalize init statements
+    new InitializationNormalizer().run(unit);
+
     // Extract inner and anonymous classes
     new AnonymousClassConverter(unit).run(unit);
     new InnerClassExtractor(unit).run(unit);
-
-    // Normalize init statements
-    new InitializationNormalizer().run(unit);
 
     // Translate core Java type use to similar iOS types
     new JavaToIOSTypeConverter().run(unit);
