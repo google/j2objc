@@ -535,4 +535,13 @@ public class RewriterTest extends GenerationTest {
     assertTranslation(translation, "+ (NSString *)foo {");
     assertFalse(translation.contains("setFoo"));
   }
+
+  // Regression test: the wrong method name used for "f.group()" translation.
+  public void testNSLogWithMethodInvocation() throws IOException {
+    String source = "public class A { " +
+        "String group() { return \"foo\"; } " +
+        "void test() { A a = new A(); System.out.println(a.group()); }}";
+    String translation = translateSourceFile(source, "A", "A.m");
+    assertTranslation(translation, "NSLog(@\"%@\", [((A *) NIL_CHK(a)) group]);");
+  }
 }
