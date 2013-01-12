@@ -22,48 +22,49 @@
 #endif
 
 #ifdef __OBJC__
-    #import <Foundation/Foundation.h>
-    #import "IOSArray.h"
-    #import "java/lang/CharSequence.h"
-    #import "java/lang/Comparable.h"
-    #import "IOSClass.h"
-    #import "JavaObject.h"
-    #import "NSObject+JavaObject.h"
-    #import "NSString+JavaString.h"
-    #import "IOSClass.h"
-    #import "IOSCollection.h"
-    #import <fcntl.h>
+# import <Foundation/Foundation.h>
+# import "IOSArray.h"
+# import "java/lang/CharSequence.h"
+# import "java/lang/Comparable.h"
+# import "IOSClass.h"
+# import "JavaObject.h"
+# import "NSObject+JavaObject.h"
+# import "NSString+JavaString.h"
+# import "IOSClass.h"
+# import "IOSCollection.h"
+# import <fcntl.h>
+# import "JreMemDebug.h"
 
-#ifndef __has_attribute
-  #define __has_attribute(x) 0 // Compatibility with non-clang compilers.
-#endif // __has_attribute
+# ifndef __has_attribute
+#  define __has_attribute(x) 0 // Compatibility with non-clang compilers.
+# endif // __has_attribute
 
-#ifndef OBJC_METHOD_FAMILY_NONE
-  #if __has_attribute(objc_method_family)
-    #define OBJC_METHOD_FAMILY_NONE __attribute__((objc_method_family(none)))
-  #else
-    #define OBJC_METHOD_FAMILY_NONE
-  #endif
-#endif
+# ifndef OBJC_METHOD_FAMILY_NONE
+#  if __has_attribute(objc_method_family)
+#   define OBJC_METHOD_FAMILY_NONE __attribute__((objc_method_family(none)))
+#  else
+#   define OBJC_METHOD_FAMILY_NONE
+#  endif
+# endif
 
-#if __has_feature(objc_arc)
-  #define AUTORELEASE(x) x
-  #define ARCBRIDGE __bridge
-  #define ARCBRIDGE_TRANSFER __bridge_transfer
-#else
-  #define AUTORELEASE(x) [x autorelease]
-  #define ARCBRIDGE
-  #define ARCBRIDGE_TRANSFER
-#endif
+# if __has_feature(objc_arc)
+#  define AUTORELEASE(x) x
+#  define ARCBRIDGE __bridge
+#  define ARCBRIDGE_TRANSFER __bridge_transfer
+# else
+#  define AUTORELEASE(x) [x autorelease]
+#  define ARCBRIDGE
+#  define ARCBRIDGE_TRANSFER
+# endif
 
 // Converts main() arguments into an IOSObjectArray of NSStrings.
 FOUNDATION_EXPORT
     IOSObjectArray *JreEmulationMainArguments(int argc, const char *argv[]);
 
-#if !__has_feature(objc_arc)
+# if !__has_feature(objc_arc)
 FOUNDATION_EXPORT id JreOperatorRetainedAssign(id *pIvar, id value);
-#endif
+# endif
 
-#define IOSCOLLECTION(c) [IOSCollection collectionWithJavaUtilCollection:c]
+# define IOSCOLLECTION(c) [IOSCollection collectionWithJavaUtilCollection:c]
 
 #endif // __OBJC__

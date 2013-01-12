@@ -59,6 +59,7 @@
 - (id)initJavaUtilHashMapWithInt:(int)capacity
                        withFloat:(float)loadFactor {
   if ((self = [super init])) {
+    JreMemDebugAdd(self);
     modCount_ = 0;
     if (capacity >= 0 && loadFactor > 0) {
       capacity = [JavaUtilHashMap calculateCapacityWithInt:capacity];
@@ -400,10 +401,25 @@
 }
 
 - (void)dealloc {
+  JreMemDebugRemove(self);
   [self clear];
   free(elementData_);
   elementData_ = nil;
   [super dealloc];
+}
+
+- (NSArray *)memDebugStrongReferences {
+  NSMutableArray *result =
+      [[[super memDebugStrongReferences] mutableCopy] autorelease];
+  for (int i = 0; i < elementDataLength_; i++) {
+    JavaUtilHashMap_Entry *entry = elementData_[i];
+    while (entry != nil) {
+      [result addObject:[JreMemDebugStrongReference
+          strongReferenceWithObject:entry name:@"elementData"]];
+      entry = entry->next_;
+    }
+  }
+  return result;
 }
 
 @end

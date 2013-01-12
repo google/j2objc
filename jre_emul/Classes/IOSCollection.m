@@ -78,6 +78,7 @@
 - (id)initWithNSArray:(NSMutableArray *)array {
   self = [super init];
   if (self) {
+    JreMemDebugAdd(self);
 #if __has_feature(objc_arc)
     delegate_ = array;
 #else
@@ -311,6 +312,7 @@ static IOSObjectArray *makeEmptyObjectArray(NSUInteger size) {
 
 #if ! __has_feature(objc_arc)
 - (void)dealloc {
+  JreMemDebugRemove(self);
   [delegate_ release];
   [super dealloc];
 }

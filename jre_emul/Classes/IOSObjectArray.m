@@ -248,4 +248,12 @@
 #endif
 }
 
+- (NSArray *)memDebugStrongReferences {
+  NSMutableArray *result = [NSMutableArray array];
+  for (NSUInteger i = 0; i < size_; i++) {
+    [result addObject:[JreMemDebugStrongReference strongReferenceWithObject:buffer_[i] name:@"element"]];
+  }
+  return result;
+}
+
 @end

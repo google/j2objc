@@ -29,6 +29,7 @@
 - (id)initWithList:(NSMutableArray *)list {
   self = [super init];
   if (self) {
+    JreMemDebugAdd(self);
 #if ! __has_feature(objc_arc)
     list_ = [list retain];
 #endif
@@ -88,6 +89,7 @@
 
 #if ! __has_feature(objc_arc)
 - (void)dealloc {
+  JreMemDebugRemove(self);
   [list_ autorelease];
   [super dealloc];
 }
