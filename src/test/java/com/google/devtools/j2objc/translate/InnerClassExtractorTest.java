@@ -799,4 +799,12 @@ public class InnerClassExtractorTest extends GenerationTest {
     assertTranslation(translation,
         "[[[Outer_Inner alloc] initWithOuter:self withId:@\"test\"] autorelease];");
   }
+
+  public void testNoOuterFieldAssignmentWhenCallingOtherConstructor() throws IOException {
+    String source = "class Outer { class Inner { " +
+        "Inner(int i) {} Inner() { this(42); } } }";
+    String translation = translateSourceFile(source, "Outer", "Outer.m");
+    assertTranslation(translation, "- (id)initWithOuter:(Outer *)outer$0 {\n" +
+        "  return [self initOuter_InnerWithOuter:outer$0 withInt:42];\n}");
+  }
 }

@@ -152,6 +152,7 @@ public abstract class ClassConverter extends TypeTrackingVisitor {
     List<SingleVariableDeclaration> parameters = constructor.parameters();
     List<SingleVariableDeclaration> newParams = createConstructorArguments(innerFields,
         Types.getMethodBinding(constructor), ast, "outer$");
+    List<IVariableBinding> passedToOtherConstructor = Lists.newArrayList();
     Block body = constructor.getBody();
     @SuppressWarnings("unchecked") // safe by definition
     List<Statement> statements = body.statements();
@@ -178,6 +179,7 @@ public abstract class ClassConverter extends TypeTrackingVisitor {
           IVariableBinding paramBinding = Types.getVariableBinding(param);
           newCons.addParameter(index, Types.getTypeBinding(param));
           args.add(index++, makeFieldRef(paramBinding, ast));
+          passedToOtherConstructor.add(paramBinding);
         }
         Types.addBinding(thisCall, newCons);
       } else {
@@ -243,20 +245,20 @@ public abstract class ClassConverter extends TypeTrackingVisitor {
 
     for (int i = 0; i < newParams.size(); i++) {
       SingleVariableDeclaration parameter = newParams.get(i);
+      IVariableBinding paramBinding = Types.getVariableBinding(parameter);
 
       // Only add an assignment statement for fields.
-      if (innerFields.get(i).isField()) {
-        statements.add(i + offset, createAssignment(innerFields.get(i),
-            Types.getVariableBinding(parameter), ast));
+      if (innerFields.get(i).isField() && !passedToOtherConstructor.contains(paramBinding)) {
+        statements.add(i + offset, createAssignment(innerFields.get(i), paramBinding, ast));
       }
 
       // Add methodVars at the end of the method invocation.
       if (methodVars) {
         parameters.add(parameter);
-        binding.addParameter(Types.getVariableBinding(parameter));
+        binding.addParameter(paramBinding);
       } else {
         parameters.add(i, parameter);
-        binding.addParameter(i, Types.getVariableBinding(parameter));
+        binding.addParameter(i, paramBinding);
       }
     }
 
