@@ -292,8 +292,8 @@ public class ObjectiveCImplementationGeneratorTest extends GenerationTest {
     assertTranslation(translation, "+ (void)setFieldPhiWithInt:(int)fieldPhi {");
     assertTranslation(translation, "FooBar_fieldPhi_ = fieldPhi;");
     translation = getTranslatedFile("FooBar.h");
-    assertTranslation(translation, "NSObject *fieldFoo_;");
-    assertTranslation(translation, "NSObject *fieldJar_;");
+    assertTranslation(translation, "id fieldFoo_;");
+    assertTranslation(translation, "id fieldJar_;");
     assertTranslation(translation, "int newFieldBar_;");
     assertTranslation(translation, "@property (nonatomic, retain) id fieldFoo;");
     assertTranslation(translation, "@property (nonatomic, assign) id fieldJar;");

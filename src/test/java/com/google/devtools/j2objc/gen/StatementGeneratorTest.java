@@ -246,11 +246,18 @@ public class StatementGeneratorTest extends GenerationTest {
   }
 
   public void testMultipleVariableDeclarations() throws IOException {
-    String source = "Object one, two;";
+    String source = "String one, two;";
     List<Statement> stmts = translateStatements(source);
     assertEquals(1, stmts.size());
     String result = generateStatement(stmts.get(0));
-    assertEquals("NSObject *one, *two;", result);
+    assertEquals("NSString *one, *two;", result);
+  }
+
+  public void testObjectDeclaration() throws IOException {
+    List<Statement> stmts = translateStatements("Object o;");
+    assertEquals(1, stmts.size());
+    String result = generateStatement(stmts.get(0));
+    assertEquals("id o;", result);
   }
 
   public void testStaticBooleanFields() throws IOException {

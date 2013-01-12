@@ -336,7 +336,7 @@ public class NameTable {
 
   public static String javaTypeToObjC(ITypeBinding binding, boolean includeInterfaces) {
     if (binding.isInterface() && !includeInterfaces || binding == Types.resolveIOSType("id") ||
-        binding == Types.resolveIOSType("NSObject")) {
+        binding == Types.resolveIOSType("NSObject") || Types.isJavaObjectType(binding)) {
       return NameTable.ID_TYPE;
     }
     if (binding.isTypeVariable()) {
