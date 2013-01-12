@@ -275,6 +275,18 @@ public class StatementGeneratorTest extends GenerationTest {
     assertTranslation(translation, "NSString *s = @\"hello, world\"");
   }
 
+  public void testStringConcatenation2() throws IOException {
+    String source = "class A { " +
+        "private static final String A = \"bob\"; " +
+        "private static final char SPACE = ' '; " +
+        "private static final double ANSWER = 22.0 / 2; " +
+        "private static final boolean B = false; " +
+        "private static final String C = " +
+        "\"hello \" + A + ' ' + 3 + SPACE + true + ' ' + ANSWER + ' ' + B; }";
+    String translation = translateSourceFile(source, "A", "A.m");
+    assertTranslation(translation, "\"hello bob 3 true 11.0 false\"");
+  }
+
   public void testStringConcatenationTypes() throws IOException {
     String translation = translateSourceFile(
       "public class Example<K,V> { Object obj; boolean b; char c; double d; float f; int i; " +
@@ -293,7 +305,7 @@ public class StatementGeneratorTest extends GenerationTest {
       "return \"literals: \" + true + \", \" + 'c' + \", \" + 1.0d + \", \" + 3.14 + \", \"" +
       " + 42 + \", \" + 123L + \", \" + 1; }}",
       "Example", "Example.m");
-    assertTranslation(translation, "return @\"literals: true, 'c', 1.0d, 3.14, 42, 123L, 1\";");
+    assertTranslation(translation, "return @\"literals: true, c, 1.0d, 3.14, 42, 123L, 1\";");
   }
 
   public void testStringConcatenationEscaping() throws IOException {
@@ -1083,7 +1095,7 @@ public class StatementGeneratorTest extends GenerationTest {
       "public class A { String prefix(Object o) { return new String(o + B.separator); }}",
       "A", "A.m");
     assertTranslation(translation,
-        "[NSString stringWithString:[NSString stringWithFormat:@\"%@%@\", o, [B separator]]];");
+        "[NSString stringWithString:[NSString stringWithFormat:@\"%@/\", o]];");
   }
 
   public void testStringConcatWithBoolean() throws IOException {
@@ -1273,5 +1285,15 @@ public class StatementGeneratorTest extends GenerationTest {
         "Test", "Test.m");
     assertTranslation(translation,
       "NSAssert(a < b, @\"a should be lower than b\")");
+  }
+
+  // Verify that a Unicode escape sequence is preserved with string
+  // concatenation.
+  public void testUnicodeStringConcat() throws IOException {
+    String translation = translateSourceFile(
+      "class Test { static final String NAME = \"\\u4e2d\\u56fd\";" +
+      " static final String CAPTION = \"China's name is \";" +
+      " static final String TEST = CAPTION + NAME; }", "Test", "Test.m");
+    assertTranslation(translation, "Test_TEST_ = @\"China's name is \\u4e2d\\u56fd\"");
   }
 }

@@ -780,7 +780,6 @@ public class StatementGenerator extends ErrorReportingASTVisitor {
 
     if (Options.inlineFieldAccess()) {
       // Inline the setter for a property.
-      IVariableBinding var = Types.getVariableBinding(lhs);
       if (lhs instanceof SimpleName) {
         if (isProperty((SimpleName) lhs)) {
           String name = NameTable.getName((SimpleName) lhs);
@@ -860,31 +859,6 @@ public class StatementGenerator extends ErrorReportingASTVisitor {
       s.accept(this);
     }
   }
-
-  /**
-   * Returns true if a node defines an assignment of a new instance to a instance or static
-   * field.  This test is used when generating referencing counting code to see if autorelease
-   * and retain messages are necessary.
-   */
-  private boolean isNewAssignment(ASTNode node) {
-    if (node instanceof Assignment) {
-      Assignment assign = (Assignment) node;
-      Expression lhs = assign.getLeftHandSide();
-      Expression rhs = assign.getRightHandSide();
-      boolean instanceCreation = (rhs instanceof ClassInstanceCreation
-                               || rhs instanceof ArrayCreation);
-      if (lhs instanceof FieldAccess) {
-        return false;
-      }
-      if (isStaticVariableAccess(lhs)) {
-        return instanceCreation;
-      }
-      IVariableBinding var = Types.getVariableBinding(lhs);
-      return var != null && var.isField() && instanceCreation;
-    }
-    return false;
-  }
-
   @Override
   public boolean visit(BooleanLiteral node) {
     buffer.append(node.booleanValue() ? "YES" : "NO");
@@ -1266,26 +1240,49 @@ public class StatementGenerator extends ErrorReportingASTVisitor {
     // Copy all operands into a single list.
     List<Expression> operands = Lists.newArrayList(leftOperand, rightOperand);
     operands.addAll(extendedOperands);
-
     String format = "@\"";
+
+    AST ast = leftOperand.getAST();
     List<Expression> args = Lists.newArrayList();
     for (Expression operand : operands) {
-      if (operand instanceof BooleanLiteral
-          || operand instanceof CharacterLiteral
-          || operand instanceof NullLiteral) {
-        format += operand.toString();
-      } else if (operand instanceof StringLiteral) {
+      IBinding binding = Types.getBinding(operand);
+      if (binding instanceof IVariableBinding) {
+        IVariableBinding var = (IVariableBinding) binding;
+        var = var.getVariableDeclaration();
+        Object value = var.getConstantValue();
+        if (value instanceof String) {
+          String s = (String) value;
+          StringLiteral literal = ast.newStringLiteral();
+          literal.setLiteralValue(s);
+          if (UnicodeUtils.hasValidCppCharacters(s)) {
+            s = unquoteAndEscape(literal.getEscapedValue());
+            s = UnicodeUtils.escapeNonLatinCharacters(s);
+            format += UnicodeUtils.escapeStringLiteral(s);
+          } else {
+            J2ObjC.error(operand,
+                "String constant has Unicode or octal escape sequences that are not valid in " +
+                "Objective-C.\nEither make string non-final, or remove characters.");
+          }
+          continue;
+        } else if (value != null){
+          format += value.toString();
+          continue;
+        } // else fall through to next section.
+      }
+      if (operand instanceof StringLiteral) {
         StringLiteral literal = (StringLiteral) operand;
         if (UnicodeUtils.hasValidCppCharacters(literal.getLiteralValue())) {
-          String s = literal.getEscapedValue();
-          s = s.substring(1, s.length() - 1); // remove surrounding double-quotes
-          s = UnicodeUtils.escapeStringLiteral(s);
-          format += s.replace("%", "%%");     // escape % character
+          String s = unquoteAndEscape(literal.getEscapedValue());
+          format += UnicodeUtils.escapeStringLiteral(s);
         } else {
           // Convert to NSString invocation when printing args.
           format += "%@";
           args.add(operand);
         }
+      } else if (operand instanceof BooleanLiteral) {
+        format += String.valueOf(((BooleanLiteral) operand).booleanValue());
+      } else if (operand instanceof CharacterLiteral) {
+        format += unquoteAndEscape(((CharacterLiteral) operand).getEscapedValue());
       } else if (operand instanceof NumberLiteral) {
         format += ((NumberLiteral) operand).getToken();
       } else {
@@ -1340,6 +1337,20 @@ public class StatementGenerator extends ErrorReportingASTVisitor {
       }
     }
     buffer.append(']');
+  }
+
+  // Remove surrounding single or double-quotes, and escape sequences.
+  private String unquoteAndEscape(String s) {
+    if (s == null || s.length() < 2) {
+      return s;
+    }
+    int len = s.length();
+    char start = s.charAt(0);
+    char end = s.charAt(len - 1);
+    assert (start == '\'' || start == '"');
+    assert (start == end);
+    s = s.substring(1, len - 1);
+    return s.replace("%", "%%");     // escape % character
   }
 
   private void printStringConcatenationArg(Expression arg) {

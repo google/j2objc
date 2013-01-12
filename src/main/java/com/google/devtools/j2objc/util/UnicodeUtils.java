@@ -126,6 +126,22 @@ public final class UnicodeUtils {
   }
 
   /**
+   * Restore Unicode escape sequences to a string that has non-ASCII
+   * characters.
+   */
+  public static String escapeNonLatinCharacters(String s) {
+    String result = "";
+    for (char c : s.toCharArray()) {
+      if (c <= 0x7f) {
+        result += c;
+      } else {
+        result += "\\u" + String.format("%04x", (int) c);
+      }
+    }
+    return result;
+  }
+
+  /**
    * Converts a character into either a character or a hexadecimal sequence,
    * depending on whether it is a valid C++ universal character, as defined
    * by ISO 14882, section 2.2. Returns the converted character as a String,
