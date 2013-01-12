@@ -1107,7 +1107,7 @@ public class Rewriter extends ErrorReportingASTVisitor {
         String name = var.getName();
         IVariableBinding field = fields.get(name);
         if (field != null) {
-          name += '_';
+          name += '_' + typeBinding.getName();
           NameTable.rename(var, name);
           fields.put(name, var);
         }

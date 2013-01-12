@@ -361,12 +361,15 @@ public class ObjectiveCHeaderGeneratorTest extends GenerationTest {
   public void testOverriddenFieldTranslation() throws IOException {
     String translation = translateSourceFile(
         "public class Example { int size; } " +
-        "class Subclass extends Example { int size; }",
+        "class Subclass extends Example { int size; }" +
+        "class Subsubclass extends Subclass { int size; }",
         "Example", "Example.h");
     assertTranslation(translation, "int size_;");
     assertTranslation(translation, "@property (nonatomic, assign) int size;");
-    assertTranslation(translation, "int size__;");
-    assertTranslation(translation, "@property (nonatomic, assign) int size_;");
+    assertTranslation(translation, "int size_Subclass_;");
+    assertTranslation(translation, "@property (nonatomic, assign) int size_Subclass;");
+    assertTranslation(translation, "int size_Subsubclass_;");
+    assertTranslation(translation, "@property (nonatomic, assign) int size_Subsubclass;");
   }
 
   public void testOverriddenNameTranslation() throws IOException {
@@ -376,8 +379,8 @@ public class ObjectiveCHeaderGeneratorTest extends GenerationTest {
         "Example", "Example.h");
     assertTranslation(translation, "int size__;");
     assertTranslation(translation, "@property (nonatomic, assign) int size_;");
-    assertTranslation(translation, "int size___;");
-    assertTranslation(translation, "@property (nonatomic, assign) int size__;");
+    assertTranslation(translation, "int size_Subclass_;");
+    assertTranslation(translation, "@property (nonatomic, assign) int size_Subclass;");
   }
 
   public void testEnumNaming() throws IOException {

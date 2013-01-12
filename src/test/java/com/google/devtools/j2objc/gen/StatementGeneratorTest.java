@@ -820,10 +820,10 @@ public class StatementGeneratorTest extends GenerationTest {
       "Test", "Test.h");
     // Test_B's "other" needs a trailing underscore, since there is an "other"
     // field in its superclass.
-    assertTranslation(translation, "@property (nonatomic, retain) Test_B *other_;");
+    assertTranslation(translation, "@property (nonatomic, retain) Test_B *other_B;");
     translation = getTranslatedFile("Test.m");
     assertTranslation(translation,
-        "JreOperatorRetainedAssign(&other__, ((Test_B *) [self getOther]))");
+        "JreOperatorRetainedAssign(&other_B_, ((Test_B *) [self getOther]))");
   }
 
   public void testArrayInstanceOfTranslation() throws IOException {
