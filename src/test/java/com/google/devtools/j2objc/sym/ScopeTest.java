@@ -20,6 +20,7 @@ import com.google.devtools.j2objc.GenerationTest;
 import com.google.devtools.j2objc.types.GeneratedVariableBinding;
 import com.google.devtools.j2objc.types.Types;
 
+import org.eclipse.jdt.core.dom.Block;
 import org.eclipse.jdt.core.dom.CompilationUnit;
 import org.eclipse.jdt.core.dom.ForStatement;
 import org.eclipse.jdt.core.dom.IMethodBinding;
@@ -97,7 +98,8 @@ public class ScopeTest extends GenerationTest {
     TypeDeclaration decl = (TypeDeclaration) unit.types().get(0);
     MethodDeclaration init = (MethodDeclaration) decl.bodyDeclarations().get(0);
     assertEquals("initialize", init.getName().getIdentifier());
-    ForStatement stmt = (ForStatement) init.getBody().statements().get(0);
+    Block b = (Block) init.getBody().statements().get(0);
+    ForStatement stmt = (ForStatement) b.statements().get(0);
     Scope forScope = Symbols.getScope(stmt);
     VariableSymbol var = (VariableSymbol) forScope.getMembers().get(0);
     assertEquals("i", var.getName());

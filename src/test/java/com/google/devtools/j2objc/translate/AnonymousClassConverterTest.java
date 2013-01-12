@@ -24,6 +24,7 @@ import com.google.devtools.j2objc.util.NameTable;
 
 import org.eclipse.jdt.core.dom.ASTVisitor;
 import org.eclipse.jdt.core.dom.Assignment;
+import org.eclipse.jdt.core.dom.Block;
 import org.eclipse.jdt.core.dom.BodyDeclaration;
 import org.eclipse.jdt.core.dom.ClassInstanceCreation;
 import org.eclipse.jdt.core.dom.CompilationUnit;
@@ -130,8 +131,9 @@ public class AnonymousClassConverterTest extends GenerationTest {
       if (member instanceof MethodDeclaration) {
         MethodDeclaration m = (MethodDeclaration) member;
         if (m.getName().getIdentifier().equals("initialize")) {
-          ExpressionStatement stmt = (ExpressionStatement) m.getBody().statements().get(0);
-          Assignment assign = (Assignment) stmt.getExpression();
+          Block b = (Block) m.getBody().statements().get(0);
+          ExpressionStatement expStmt = (ExpressionStatement) b.statements().get(0);
+          Assignment assign = (Assignment) expStmt.getExpression();
           ClassInstanceCreation create = (ClassInstanceCreation) assign.getRightHandSide();
           assertTrue(create.arguments().get(0) instanceof TypeLiteral);
         }
