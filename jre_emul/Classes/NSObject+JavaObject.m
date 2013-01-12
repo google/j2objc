@@ -71,4 +71,12 @@
 - (void)copyAllPropertiesTo:(id)copy {
 }
 
+- (NSArray *)memDebugStrongReferences {
+  return [NSArray array];
+}
+
++ (NSArray *)memDebugStaticReferences {
+  return nil;
+}
+
 @end

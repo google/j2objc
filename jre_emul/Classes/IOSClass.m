@@ -66,6 +66,7 @@ static NSString *getTranslatedMethodName(NSString *name,
 
 - (id)initWithClass:(Class)cls {
   if ((self = [super init])) {
+    JreMemDebugAdd(self);
     class_ = cls;
 #if ! __has_feature(objc_arc)
     [class_ retain];
@@ -763,6 +764,7 @@ IOSObjectArray *copyFieldsToObjectArray(NSArray *fields) {
 
 - (void)dealloc {
 #if ! __has_feature(objc_arc)
+  JreMemDebugRemove(self);
   [class_ release];
   [protocol_ release];
   class_ = nil;

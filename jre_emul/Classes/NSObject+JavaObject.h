@@ -43,6 +43,10 @@
 // behavior for itself or its subclasses.
 - (void)copyAllPropertiesTo:(id)copy;
 
+- (NSArray *)memDebugStrongReferences;
+
++ (NSArray *)memDebugStaticReferences;
+
 @end
 
 // Marked as unused to avoid a clang warning when this file is included

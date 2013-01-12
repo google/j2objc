@@ -29,9 +29,15 @@
 
 - (id)initWithLength:(NSUInteger)length {
   if ((self = [super init])) {
+    JreMemDebugAdd(self);
     size_ = length;
   }
   return self;
+}
+
+- (void)dealloc {
+  JreMemDebugRemove(self);
+  [super dealloc];
 }
 
 + (id)arrayWithDimensions:(NSUInteger)dimensionCount

@@ -39,7 +39,7 @@
 // is necessary so that JRE exceptions can be caught by 
 // class name.
 - (id)init {
-  return (self = [super initWithName:[[self class] description]
+  return JreMemDebugAdd(self = [super initWithName:[[self class] description]
                               reason:detailMessage
                             userInfo:nil]);
 }
@@ -48,6 +48,7 @@
   if ((self = [super initWithName:[[self class] description]
                            reason:message
                          userInfo:nil])) {
+    JreMemDebugAdd(self);
 #if __has_feature(objc_arc)
     detailMessage = message;
 #else
@@ -62,6 +63,7 @@
   if ((self = [super initWithName:[[self class] description]
                            reason:message
                          userInfo:nil])) {
+      JreMemDebugAdd(self);
 #if __has_feature(objc_arc)
       self->cause = causeArg;
       detailMessage = message;
@@ -78,6 +80,7 @@
                            reason:[NSString stringWithFormat:@"cause: %@",
                                    [causeArg description]]
                          userInfo:nil])) {
+    JreMemDebugAdd(self);
     detailMessage = (causeArg == nil) ? nil : [causeArg description];
 #if __has_feature(objc_arc)
     self->cause = causeArg;
@@ -165,6 +168,7 @@
 
 #if ! __has_feature(objc_arc)
 - (void)dealloc {
+  JreMemDebugRemove(self);
   [cause release];
   [detailMessage release];
   [super dealloc];

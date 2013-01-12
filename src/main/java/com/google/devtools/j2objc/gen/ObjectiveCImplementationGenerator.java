@@ -184,6 +184,8 @@ public class ObjectiveCImplementationGenerator extends ObjectiveCSourceFileGener
     } else {
       String typeName = NameTable.getFullName(node);
       printf("@implementation %s\n\n", typeName);
+      List<FieldDeclaration> fields = Lists.newArrayList(node.getFields());
+      printStaticReferencesMethod(fields);
       printStaticVars(Lists.newArrayList(node.getFields()), /* isInterface */ false);
       printProperties(node.getFields());
       printMethods(node);
@@ -255,6 +257,7 @@ public class ObjectiveCImplementationGenerator extends ObjectiveCSourceFileGener
     List<VariableDeclarationFragment> properties = getProperties(node.getFields());
     if (properties.size() > 0) {
       printCopyAllPropertiesMethod(NameTable.getFullName(node), properties);
+      printStrongReferencesMethod(properties);
     }
   }
 
@@ -280,6 +283,97 @@ public class ObjectiveCImplementationGenerator extends ObjectiveCSourceFileGener
       String objCFieldName = NameTable.javaFieldToObjC(propName);
       println(String.format("  typedCopy.%s = %s;", propName, objCFieldName));
     }
+    println("}\n");
+  }
+
+  // Returns whether the property is a strong reference.
+  private boolean isStrongReferenceProperty(VariableDeclarationFragment property) {
+    IVariableBinding varBinding = Types.getVariableBinding(property);
+    ITypeBinding type = Types.getTypeBinding(property);
+    return !type.isPrimitive() && !Types.hasWeakAnnotation(varBinding.getDeclaringClass()) &&
+        !Types.isWeakReference(varBinding);
+  }
+
+  // We generate the runtime debug method -memDebugStrongReferences.
+  // This method will return an array of information about a strong reference,
+  // including pointer to object and name.
+  private void printStrongReferencesMethod(List<VariableDeclarationFragment> properties) {
+    if (!Options.useReferenceCounting()) {
+      println("- (NSArray *)memDebugStrongReferences {");
+      println("  return nil;");
+      println("}");
+      return;
+    }
+    println("- (NSArray *)memDebugStrongReferences {");
+    println("  NSMutableArray *result =");
+    println("      [[[super memDebugStrongReferences] mutableCopy] autorelease];");
+    for (VariableDeclarationFragment property : properties) {
+      String propName = NameTable.getName(property.getName());
+      String objCFieldName = NameTable.javaFieldToObjC(propName);
+      if (isStrongReferenceProperty(property)) {
+        println(String.format("  [result addObject:[JreMemDebugStrongReference " +
+            "strongReferenceWithObject:%s name:@\"%s\"]];", objCFieldName, propName));
+      }
+    }
+    println("  return result;");
+    println("}\n");
+  }
+
+  // Returns whether the static property a strong reference.
+  private boolean isStrongStaticProperty(VariableDeclarationFragment var) {
+    IVariableBinding binding = Types.getVariableBinding(var);
+    if (!Types.isPrimitiveConstant(binding)) {
+      if (!Types.isWeakReference(binding)) {
+        ITypeBinding type = Types.getTypeBinding(var);
+        if (!type.isPrimitive()) {
+          return true;
+        }
+      }
+    }
+    return false;
+  }
+
+  private void printStaticReferencesMethod(List<FieldDeclaration> fields) {
+    printStaticReferencesMethod(fields, null);
+  }
+
+  // We generate the runtime debug method +memDebugStaticReferences.
+  // This method will return an array of NSNumber containing pointers (casted into unsigned long)
+  // to the objects referenced by a class variable with a strong reference.
+  // It will be useful for debug purpose.
+  //
+  // Arrays returned by -memDebugStaticReferences and -memDebugStaticReferencesNames (see below)
+  // must be the same size.
+  //
+  // In case of a Java enum, valuesVarNameis the name of the array of enum values.
+  private void printStaticReferencesMethod(List<FieldDeclaration> fields, String valuesVarName) {
+    if (!Options.useReferenceCounting()) {
+      println("+ (NSArray *)memDebugStaticReferences {");
+      println("  return nil;");
+      println("}");
+      return;
+    }
+    println("+ (NSArray *)memDebugStaticReferences {");
+    println("  NSMutableArray *result = [NSMutableArray array];");
+    for (FieldDeclaration f : fields) {
+      if (Modifier.isStatic(f.getModifiers())) {
+        @SuppressWarnings("unchecked")
+        List<VariableDeclarationFragment> fragments = f.fragments(); // safe by specification
+        for (VariableDeclarationFragment var : fragments) {
+          if (isStrongStaticProperty(var)) {
+            IVariableBinding binding = Types.getVariableBinding(var);
+            String name = NameTable.getName(binding);
+            println(String.format("  [result addObject:[JreMemDebugStrongReference " +
+                "strongReferenceWithObject:%s name:@\"%s\"]];", name, name));
+          }
+        }
+      }
+    }
+    if (valuesVarName != null) {
+      println(String.format("  [result addObject:[JreMemDebugStrongReference " +
+          "strongReferenceWithObject:%s name:@\"enumValues\"]];", valuesVarName));
+    }
+    println("  return result;");
     println("}\n");
   }
 
@@ -339,6 +433,7 @@ public class ObjectiveCImplementationGenerator extends ObjectiveCSourceFileGener
 
     printf("@implementation %s\n\n", typeName);
     printStaticVars(fields, /* isInterface */ false);
+    printStaticReferencesMethod(fields, typeName + "_values");
 
     for (EnumConstantDeclaration constant : constants) {
       String name = NameTable.getName(constant.getName());
@@ -498,11 +593,12 @@ public class ObjectiveCImplementationGenerator extends ObjectiveCSourceFileGener
     if (binding.getDeclaringClass().isEnum()) {
       return enumConstructorDeclaration(m, statements, binding);
     } else if (statements.isEmpty()) {
-      methodBody = "{\nreturn (self = [super init]);\n}";
+      methodBody = "{\nreturn (self = JreMemDebugAdd([super init]));\n}";
     } else if (statements.size() == 1 &&
         (statements.get(0) instanceof ConstructorInvocation ||
          statements.get(0) instanceof SuperConstructorInvocation)) {
-      methodBody = "{\nreturn " + generateStatement(statements.get(0), false, true) + ";\n}";
+      methodBody = "{\nreturn JreMemDebugAdd(" +
+          generateStatement(statements.get(0), false, true) + ");\n}";
     } else {
       StringBuffer sb = new StringBuffer();
       Statement first = statements.get(0);
@@ -519,6 +615,7 @@ public class ObjectiveCImplementationGenerator extends ObjectiveCSourceFileGener
       for (int i = firstPrinted ? 1 : 0; i < statements.size(); i++) {
         sb.append(generateStatement(statements.get(i), false, true));
       }
+      sb.append("JreMemDebugAdd(self);");
       sb.append("}\nreturn self;\n}");
       methodBody = sb.toString();
     }
@@ -567,7 +664,7 @@ public class ObjectiveCImplementationGenerator extends ObjectiveCSourceFileGener
     StringBuffer sb = new StringBuffer();
     if (statements.size() == 1) {
       sb.append("{\nreturn ");
-      sb.append(invocation);
+      sb.append("JreMemDebugAdd(" + invocation + ")");
       sb.append(";\n}");
     } else {
       sb.append("{\nif ((self = ");
@@ -576,6 +673,7 @@ public class ObjectiveCImplementationGenerator extends ObjectiveCSourceFileGener
       for (int i = 1; i < statements.size(); i++) {
         sb.append(generateStatement(statements.get(i), false, true));
       }
+      sb.append("JreMemDebugAdd(self);");
       sb.append("}\nreturn self;\n}");
     }
     String result = super.constructorDeclaration(m) + " " + reindent(sb.toString()) + "\n\n";
@@ -772,24 +870,36 @@ public class ObjectiveCImplementationGenerator extends ObjectiveCSourceFileGener
 
           // Don't emit the getter when there is already a method with the
           // same name.
-          boolean noGetter = false;
+          boolean hasGetter = false;
+          boolean hasSetter = false;
           ITypeBinding declaringClass = Types.getTypeBinding(field.getParent());
           if (declaringClass != null) {
             IMethodBinding[] methods = declaringClass.getDeclaredMethods();
             for (IMethodBinding method : methods) {
               if (method.getName().equals(name) && method.getParameterTypes().length == 0) {
-                noGetter = true;
+                hasGetter = true;
                 break;
               }
             }
           }
 
-          printf(String.format("@synthesize %s = %s;\n", name, objCFieldName));
-          if (!noGetter && Options.useReferenceCounting() && !type.isPrimitive()) {
+          if (!hasGetter && Options.useReferenceCounting() && !type.isPrimitive()) {
             // Generates a getter that will make sure the returned object is still valid
             // if it's used after it's unreferenced by the instance.
             printf(String.format("- (%s)%s {\n  return [[%s retain] autorelease];\n}\n",
                 typeString, name, objCFieldName));
+            hasGetter = true;
+          }
+          IVariableBinding binding = Types.getVariableBinding(var);
+          if (Options.useReferenceCounting() && !type.isPrimitive() &&
+              !Types.isWeakReference(binding)) {
+            // Setter can always be generated and won't collide with a transpiled method name.
+            String setterName = "set" + NameTable.capitalize(name);
+            printf(String.format("- (void)%s:(%s)%s {\n  JreOperatorRetainedAssign(&%s, %s);\n}\n",
+                setterName, typeString, name, objCFieldName, name));
+          }
+          if (!hasGetter || !hasSetter) {
+            printf(String.format("@synthesize %s = %s;\n", name, objCFieldName));
           }
           nPrinted++;
         }

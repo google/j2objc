@@ -83,7 +83,8 @@ public class DestructorGenerator extends ErrorReportingASTVisitor {
         varFinder.run(field);
       }
     }
-    if (!releaseableFields.isEmpty()) {
+    // We always generate a destructor method except if the type is an interface.
+    if (!node.isInterface()) {
       Types.addReleaseableFields(releaseableFields);
 
       boolean foundDestructor = false;

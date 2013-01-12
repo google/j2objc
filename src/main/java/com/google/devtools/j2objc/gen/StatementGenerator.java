@@ -21,6 +21,7 @@ import com.google.common.base.CharMatcher;
 import com.google.common.collect.Lists;
 import com.google.devtools.j2objc.J2ObjC;
 import com.google.devtools.j2objc.Options;
+import com.google.devtools.j2objc.translate.DestructorGenerator;
 import com.google.devtools.j2objc.types.GeneratedMethodBinding;
 import com.google.devtools.j2objc.types.IOSArrayTypeBinding;
 import com.google.devtools.j2objc.types.IOSMethod;
@@ -830,6 +831,23 @@ public class StatementGenerator extends ErrorReportingASTVisitor {
   public boolean visit(Block node) {
     buffer.append("{\n");
     List<?> stmts = node.statements();
+    // In case it's the body of a dealloc method, we generate the debug statement.
+    // If we detect a -[super dealloc] method call, we are in a dealloc method.
+    int size = stmts.size();
+    if (size > 0) {
+      if (stmts.get(size - 1) instanceof ExpressionStatement) {
+        ASTNode subnode = ((ExpressionStatement) stmts.get(size - 1)).getExpression();
+        if (subnode instanceof SuperMethodInvocation) {
+          SuperMethodInvocation invocation = (SuperMethodInvocation) subnode;
+          IMethodBinding binding = Types.getMethodBinding(invocation);
+          String methodName = NameTable.getName(binding);
+          if ((methodName.equals(DestructorGenerator.FINALIZE_METHOD)) ||
+              (methodName.equals(DestructorGenerator.DEALLOC_METHOD))) {
+            buffer.append("JreMemDebugRemove(self);\n");
+          }
+        }
+      }
+    }
     printStatements(stmts);
     buffer.append("}\n");
     return false;
