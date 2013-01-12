@@ -72,7 +72,7 @@ static void memDebugInit(void) {
   static dispatch_once_t once;
   dispatch_once(&once,
       ^{
-           NSString *memDebugBaseFolder = [@"~/Library/Logs/BigtopLogs"
+           NSString *memDebugBaseFolder = [@"~/Library/Logs/J2Objc"
                stringByExpandingTildeInPath];
 
            unsigned int count =  1;
@@ -101,9 +101,6 @@ static NSData* currentStackTraceData(void) {
 }
 
 FOUNDATION_EXPORT id JreMemDebugAddInternal(id obj) {
-  if (!JreMemDebugEnabled)
-    return obj;
-
   // Avoid tracking an overwhelming number of objects.
   // They don't have any links. Therefore, it's not interesting to track
   // them and leaks of those objects can be tracked easily in Instruments.
@@ -122,9 +119,6 @@ FOUNDATION_EXPORT id JreMemDebugAddInternal(id obj) {
 }
 
 FOUNDATION_EXPORT void JreMemDebugRemoveInternal(id obj) {
-  if (!JreMemDebugEnabled)
-    return;
-
   memDebugInit();
   NSNumber *value = [NSNumber numberWithUnsignedLong:(unsigned long) obj];
   JreMemDebugLock();
@@ -192,7 +186,7 @@ FOUNDATION_EXPORT void JreMemDebugGenerateAllocationsReport(void) {
   localtime_r(&tv.tv_sec, &tm_value);
   NSString *dateString = [NSString stringWithFormat:@"%02u-%02u-%02u",
       tm_value.tm_hour, tm_value.tm_min, tm_value.tm_sec];
-  NSString *filename = [NSString stringWithFormat:@"%@/bigtop-memdebug-%@.log",
+  NSString *filename = [NSString stringWithFormat:@"%@/j2objc-memdebug-%@.log",
       memDebugSessionFolder, dateString];
 
   NSLog(@"write file to %@", filename);
@@ -396,7 +390,7 @@ FOUNDATION_EXPORT void JreMemDebugGenerateAllocationsReport(void) {
   }
 
   // We write .dot file (graphviz).
-  filename = [NSString stringWithFormat:@"%@/bigtop-memdebug-%@.dot",
+  filename = [NSString stringWithFormat:@"%@/j2objc-memdebug-%@.dot",
       memDebugSessionFolder, dateString];
   FILE *dotF = fopen([filename fileSystemRepresentation], "w");
 
