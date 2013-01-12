@@ -164,6 +164,8 @@ public class ImplementationImportCollector extends HeaderImportCollector {
         if (!parameterType.equals(actualType) &&
             actualType.isAssignmentCompatible(parameterType)) {
           addReference(actualType);
+        } else {
+          addReference(parameterType);
         }
       }
     }
