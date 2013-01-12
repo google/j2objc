@@ -453,7 +453,6 @@ public class Rewriter extends ErrorReportingASTVisitor {
     return node;
   }
 
-  @SuppressWarnings("unchecked")
   @Override
   public boolean visit(LabeledStatement node) {
     Statement loopBody = getLoopBody(node.getBody());
@@ -483,7 +482,6 @@ public class Rewriter extends ErrorReportingASTVisitor {
       }
     });
 
-    List<Statement> stmts = null;
     if (hasContinue[0]) {
       LabeledStatement newLabelStmt = ast.newLabeledStatement();
       newLabelStmt.setLabel(Types.newLabel("continue_" + labelIdentifier));
@@ -770,7 +768,8 @@ public class Rewriter extends ErrorReportingASTVisitor {
             ASTNode newArg = NodeCopier.copySubtree(ast, arg);
             if (arg instanceof MethodInvocation) {
               IMethodBinding argBinding = ((MethodInvocation) arg).resolveMethodBinding();
-              if (!argBinding.getReturnType().isPrimitive()) {
+              if (!argBinding.getReturnType().isPrimitive() &&
+                  !Types.isJavaStringType(argBinding.getReturnType())) {
                 IOSMethodBinding newBinding =
                     new IOSMethodBinding("format", argBinding, Types.getNSString());
                 Types.addMappedInvocation((MethodInvocation) newArg, newBinding);
