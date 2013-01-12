@@ -621,7 +621,7 @@ NSStringEncoding parseCharsetName(NSString *charset) {
               aString:(NSString *)aString
           otherOffset:(int)otherOffset
                 count:(int)count {
-  return [self regionMatches:YES
+  return [self regionMatches:NO
                   thisOffset:thisOffset
                      aString:aString
                  otherOffset:otherOffset
@@ -633,15 +633,22 @@ NSStringEncoding parseCharsetName(NSString *charset) {
               aString:(NSString *)aString
           otherOffset:(int)otherOffset
                 count:(int)count {
-  NSString *other = otherOffset == 0 ? aString :
-      [aString substringFromIndex:otherOffset];
+  if (thisOffset < 0 || count > [self length] - thisOffset) {
+    return NO;
+  }
+  if (otherOffset < 0 || count > [aString length] - otherOffset) {
+    return NO;
+  }
+  NSString *this = (thisOffset == 0 && count == [self length])
+      ? self : [self substringWithRange:NSMakeRange(thisOffset, count)];
+  NSString *other = (otherOffset == 0 && count == [aString length])
+      ? aString : [aString substringWithRange:NSMakeRange(otherOffset, count)];
   NSUInteger options = NSLiteralSearch;
   if (caseInsensitive) {
     options |= NSCaseInsensitiveSearch;
   }
-  return [self compare:other
-               options:options
-                 range:NSMakeRange(thisOffset, count)];
+  return [this compare:other
+               options:options] == NSOrderedSame;
 }
 
 - (NSString *)intern {

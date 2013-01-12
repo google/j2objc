@@ -28,6 +28,7 @@ SUPPORT_OBJS = \
 	$(TESTS_DIR)/tests/support/Support_SetTest.o \
 	$(TESTS_DIR)/tests/support/Support_StringReader.o \
 	$(TESTS_DIR)/tests/support/Support_StringWriter.o \
+	$(TESTS_DIR)/tests/support/Support_TimeZone.o \
 	$(TESTS_DIR)/tests/support/Support_UnmodifiableCollectionTest.o \
 	$(TESTS_DIR)/tests/support/Support_UnmodifiableMapTest.o
 
@@ -127,10 +128,12 @@ TEST_OBJS = \
 	$(TESTS_DIR)/org/apache/harmony/luni/tests/java/util/ArrayListTest.o \
 	$(TESTS_DIR)/org/apache/harmony/luni/tests/java/util/ArraysTest.o \
 	$(TESTS_DIR)/org/apache/harmony/luni/tests/java/util/BitSetTest.o \
+	$(TESTS_DIR)/org/apache/harmony/luni/tests/java/util/CalendarTest.o \
 	$(TESTS_DIR)/org/apache/harmony/luni/tests/java/util/DateTest.o \
 	$(TESTS_DIR)/org/apache/harmony/luni/tests/java/util/EmptyStackExceptionTest.o \
 	$(TESTS_DIR)/org/apache/harmony/luni/tests/java/util/EnumSetTest.o \
 	$(TESTS_DIR)/org/apache/harmony/luni/tests/java/util/EventObjectTest.o \
+	$(TESTS_DIR)/org/apache/harmony/luni/tests/java/util/GregorianCalendarTest.o \
 	$(TESTS_DIR)/org/apache/harmony/luni/tests/java/util/HashMapTest.o \
 	$(TESTS_DIR)/org/apache/harmony/luni/tests/java/util/HashSetTest.o \
 	$(TESTS_DIR)/org/apache/harmony/luni/tests/java/util/HashtableTest.o \
@@ -141,7 +144,9 @@ TEST_OBJS = \
 	$(TESTS_DIR)/org/apache/harmony/luni/tests/java/util/NoSuchElementExceptionTest.o \
 	$(TESTS_DIR)/org/apache/harmony/luni/tests/java/util/PriorityQueueTest.o \
 	$(TESTS_DIR)/org/apache/harmony/luni/tests/java/util/RandomTest.o \
+	$(TESTS_DIR)/org/apache/harmony/luni/tests/java/util/SimpleTimeZoneTest.o \
 	$(TESTS_DIR)/org/apache/harmony/luni/tests/java/util/StackTest.o \
+	$(TESTS_DIR)/org/apache/harmony/luni/tests/java/util/TimeZoneTest.o \
 	$(TESTS_DIR)/org/apache/harmony/luni/tests/java/util/VectorTest.o \
 	$(TESTS_DIR)/org/apache/harmony/tests/java/util/regex/Matcher2Test.o \
 	$(TESTS_DIR)/org/apache/harmony/tests/java/util/regex/MatcherTest.o \
