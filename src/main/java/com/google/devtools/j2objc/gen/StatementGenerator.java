@@ -1264,7 +1264,14 @@ public class StatementGenerator extends ErrorReportingASTVisitor {
                 "Objective-C.\nEither make string non-final, or remove characters.");
           }
           continue;
-        } else if (value != null){
+        } else if (value instanceof Character) {
+          char c = (Character) value;
+          if (c == '"') {
+            format += '\\';
+          }
+          format += c;
+          continue;
+        } else if (value != null) {
           format += value.toString();
           continue;
         } // else fall through to next section.

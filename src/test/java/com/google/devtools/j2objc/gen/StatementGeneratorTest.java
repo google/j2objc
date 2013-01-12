@@ -1113,6 +1113,15 @@ public class StatementGeneratorTest extends GenerationTest {
     assertTranslation(translation, "return [NSString stringWithFormat:@\"foo: %c\", c];");
   }
 
+  // Verify that double quote character constants are concatenated correctly.
+  public void testConcatDoubleQuoteChar() throws IOException {
+    String translation = translateSourceFile(
+        "public class Test { " +
+        "static final char QUOTE = '\"'; static final String TEST = QUOTE + \"\"; }",
+        "Test", "Test.m");
+    assertTranslation(translation, "Test_TEST_ = @\"\\\"\";");
+  }
+
   /**
    * Verify that when a the last switch case is empty (no statement),
    * an empty statement is added.  Java doesn't require an empty statement
