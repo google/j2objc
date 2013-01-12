@@ -174,9 +174,9 @@ public class ObjectiveCHeaderGeneratorTest extends GenerationTest {
 
   public void testMultipleObjectDeclaration() throws IOException {
     String translation = translateSourceFile(
-      "public class Example { Object one, two, three; }",
+      "public class Example { String one, two, three; }",
       "Example", "Example.h");
-    assertTranslation(translation, "NSObject *one_, *two_, *three_;");
+    assertTranslation(translation, "NSString *one_, *two_, *three_;");
   }
 
   public void testMultiplePrimitiveDeclaration() throws IOException {
