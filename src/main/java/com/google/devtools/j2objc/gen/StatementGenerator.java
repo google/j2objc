@@ -644,7 +644,7 @@ public class StatementGenerator extends ErrorReportingASTVisitor {
         }
         buffer.append(" set");
         buffer.append(NameTable.capitalize(var.getName()));
-        String typeName = NameTable.javaTypeToObjC(var.getType(), false);
+        String typeName = NameTable.javaTypeToObjC(var.getType(), true);
         String param = ObjectiveCSourceFileGenerator.parameterKeyword(typeName, var.getType());
         buffer.append(NameTable.capitalize(param));
         buffer.append(':');

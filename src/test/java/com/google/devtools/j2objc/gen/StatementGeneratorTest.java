@@ -260,6 +260,20 @@ public class StatementGeneratorTest extends GenerationTest {
     assertEquals("id o;", result);
   }
 
+  public void testInterfaceTypeReferencesWithinGenericClassesResolveCorrectly() throws IOException {
+    String translation = translateSourceFile(
+      " public class Example<S> { " +
+      "   private Example() {} " +
+      "   private static final Foo DEFAULT = new Foo() { " +
+      "       @Override public <S> void run(Example<S> e){} " +
+      "   }; " +
+      "   private static Foo var = DEFAULT; " +
+      "   public static final void setVarForTest(Foo param) { var = param; } " +
+      "   interface Foo { <S> void run(Example<S> e); } } ",
+      "Example", "Example.m");
+    assertTranslation(translation, "[Example setVarWithExample_Foo:");
+  }
+
   public void testStaticBooleanFields() throws IOException {
     String translation = translateSourceFile(
         "public class Example { Boolean b1 = Boolean.TRUE; Boolean b2 = Boolean.FALSE; }",
