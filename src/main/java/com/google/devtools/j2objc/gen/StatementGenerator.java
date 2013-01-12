@@ -604,9 +604,8 @@ public class StatementGenerator extends ErrorReportingASTVisitor {
         buffer.append(", ");
         printStringConcatenation(lhs, rhs, Collections.<Expression>emptyList());
         buffer.append(")");
-      }
-      else {
-        printAssignmentLhs(lhs);
+      } else {
+        lhs.accept(this);
         // Change "str1 += str2" to "str1 = str1 + str2".
         buffer.append(" = ");
         printStringConcatenation(lhs, rhs, Collections.<Expression>emptyList());
@@ -672,7 +671,7 @@ public class StatementGenerator extends ErrorReportingASTVisitor {
       // LEFT_SHIFT_ASSIGN, MINUS_ASSIGN, PLUS_ASSIGN, REMAINDER_ASSIGN,
       // RIGHT_SHIFT_SIGNED_ASSIGN, RIGHT_SHIFT_UNSIGNED_ASSIGN and
       // TIMES_ASSIGN.
-      printAssignmentLhs(lhs);
+      lhs.accept(this);
       buffer.append(' ');
       buffer.append(op.toString());
       buffer.append(' ');
@@ -794,20 +793,6 @@ public class StatementGenerator extends ErrorReportingASTVisitor {
     }
 
     return nativeName;
-  }
-
-  private boolean printAssignmentLhs(Expression lhs) {
-    boolean needClosingParen = false;
-    String nativeName = leftHandSideInstanceVariableName(lhs);
-
-    if ((nativeName != null) && Options.useReferenceCounting() &&
-        isLeftHandSideRetainedProperty(lhs)) {
-      buffer.append(String.format("([%s autorelease], ", nativeName));
-      needClosingParen = true;
-    }
-
-    lhs.accept(this);
-    return needClosingParen;
   }
 
   private void printUnsignedRightShift(Expression lhs, Expression rhs) {
