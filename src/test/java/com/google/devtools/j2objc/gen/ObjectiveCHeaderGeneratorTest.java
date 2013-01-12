@@ -156,13 +156,13 @@ public class ObjectiveCHeaderGeneratorTest extends GenerationTest {
   public void testInitMessageTranslation() throws IOException {
     String translation = translateSourceFile(
         "public class Example { void init() {} }", "Example", "Example.h");
-    assertTranslation(translation, "- (void)init__;");
+    assertTranslation(translation, "- (void)init__ OBJC_METHOD_FAMILY_NONE;");
   }
 
   public void testInitializeMessageTranslation() throws IOException {
     String translation = translateSourceFile(
         "public class Example { void initialize() {} }", "Example", "Example.h");
-    assertTranslation(translation, "- (void)initialize__;");
+    assertTranslation(translation, "- (void)initialize__ OBJC_METHOD_FAMILY_NONE;");
   }
 
   public void testToStringRenaming() throws IOException {
