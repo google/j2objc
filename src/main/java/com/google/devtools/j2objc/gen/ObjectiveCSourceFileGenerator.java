@@ -191,7 +191,7 @@ public abstract class ObjectiveCSourceFileGenerator extends SourceFileGenerator 
     List<SingleVariableDeclaration> params = m.parameters(); // safe by definition
     parametersDeclaration(Types.getOriginalMethodBinding(binding), params, baseDeclaration, sb);
     if (methodName.startsWith("new") || methodName.startsWith("copy")
-     || methodName.startsWith("alloc")) {
+     || methodName.startsWith("alloc") || methodName.startsWith("init")) {
       // Getting around a clang warning.
       // clang assumes that methods with names starting with new, alloc or copy
       // return objects of the same type as the receiving class, regardless of
