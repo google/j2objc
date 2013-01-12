@@ -346,4 +346,15 @@ public class InitializationNormalizerTest extends GenerationTest {
         "JreOperatorRetainedAssign(&Test_foo_, [NSString stringWithFormat:@\"hello%@\", "
         + "[NSString stringWithCharacters:(unichar[]) { (int) 0xffff } length:1]]);");
   }
+
+  public void testInitializersPlacedAfterOuterAssignments() throws IOException {
+    String source = "class Test { "
+         + "  int outerVar = 1; "
+         + "  class Inner { int innerVar = outerVar; } }";
+    String translation = translateSourceFile(source, "Test", "Test.m");
+    assertTranslation(translation, "JreOperatorRetainedAssign(&this$0_, outer$0);");
+    assertTranslation(translation, "innerVar_ = this$0_.outerVar;");
+    assertTrue(translation.indexOf("JreOperatorRetainedAssign(&this$0_, outer$0);")
+               < translation.indexOf("innerVar_ = this$0_.outerVar;"));
+  }
 }
