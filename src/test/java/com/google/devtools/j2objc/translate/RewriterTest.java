@@ -18,6 +18,7 @@ package com.google.devtools.j2objc.translate;
 
 import com.google.devtools.j2objc.GenerationTest;
 import com.google.devtools.j2objc.J2ObjC;
+import com.google.devtools.j2objc.translate.DestructorGenerator;
 import com.google.devtools.j2objc.types.Types;
 
 import org.eclipse.jdt.core.dom.Assignment;
@@ -238,18 +239,21 @@ public class RewriterTest extends GenerationTest {
     assertTrue(types.get(0) instanceof TypeDeclaration);
     TypeDeclaration testType = (TypeDeclaration) types.get(0);
     MethodDeclaration[] methods = testType.getMethods();
-    assertEquals(3, methods.length);
+    assertEquals(4, methods.length);
 
     // verify added methods are abstract, and that existing method wasn't changed
     for (MethodDeclaration m : methods) {
       int modifiers = m.getModifiers();
-      if (m.getName().getIdentifier().equals("hasNext")) {
+      String name = m.getName().getIdentifier();
+      if (name.equals("hasNext")) {
         assertFalse(Modifier.isAbstract(modifiers));
+      } else if (name.equals(DestructorGenerator.FINALIZE_METHOD)
+          || name.equals(DestructorGenerator.DEALLOC_METHOD)) {
+        // it's ok.
       } else {
         // it's an added method
         assertTrue(Modifier.isAbstract(modifiers));
         assertEquals(0, m.parameters().size());
-        String name = m.getName().getIdentifier();
         if (name.equals("next")) {
           assertEquals(testType.resolveBinding(), Types.getBinding(m.getReturnType2()));
         } else if (name.equals("remove")) {
@@ -275,18 +279,21 @@ public class RewriterTest extends GenerationTest {
     assertTrue(types.get(0) instanceof TypeDeclaration);
     TypeDeclaration testType = (TypeDeclaration) types.get(0);
     MethodDeclaration[] methods = testType.getMethods();
-    assertEquals(25, methods.length);
+    assertEquals(26, methods.length);
 
     // verify added methods are abstract, and that existing method wasn't changed
     for (MethodDeclaration m : methods) {
       int modifiers = m.getModifiers();
-      if (m.getName().getIdentifier().equals("isEmpty")) {
+      String name = m.getName().getIdentifier();
+      if (name.equals("isEmpty")) {
         assertFalse(Modifier.isAbstract(modifiers));
+      } else if (name.equals(DestructorGenerator.FINALIZE_METHOD)
+          || name.equals(DestructorGenerator.DEALLOC_METHOD)) {
+        // it's ok.
       } else {
         // it's an added method
         assertTrue(Modifier.isAbstract(modifiers));
         ITypeBinding returnType = Types.getTypeBinding(m.getReturnType2());
-        String name = m.getName().getIdentifier();
         if (name.equals("toArray")) {
           assertTrue(returnType.isArray());
           ITypeBinding componentType = returnType.getComponentType();
@@ -343,7 +350,7 @@ public class RewriterTest extends GenerationTest {
     assertEquals("Test", innerType.getName().toString());
 
     MethodDeclaration[] methods = innerType.getMethods();
-    assertEquals(1, methods.length);
+    assertEquals(2, methods.length);
     MethodDeclaration equalsMethod = methods[0];
     assertEquals("isEqual", equalsMethod.getName().getIdentifier());
     assertEquals(1, equalsMethod.parameters().size());
@@ -451,7 +458,7 @@ public class RewriterTest extends GenerationTest {
     assertEquals(9, members.size());
     J2ObjC.initializeTranslation(unit);
     J2ObjC.translate(unit, source);
-    assertEquals(3, members.size());
+    assertEquals(4, members.size());
     FieldDeclaration f = (FieldDeclaration) members.get(0);
     VariableDeclarationFragment var = (VariableDeclarationFragment) f.fragments().get(0);
     assertEquals("foo", var.getName().getIdentifier());
@@ -472,7 +479,7 @@ public class RewriterTest extends GenerationTest {
     J2ObjC.initializeTranslation(unit);
     J2ObjC.translate(unit, source);
     List<BodyDeclaration> classMembers = ((TypeDeclaration) unit.types().get(0)).bodyDeclarations();
-    assertEquals(7, classMembers.size()); // 3 fields + 3 getters + 1 clInit
+    assertEquals(8, classMembers.size()); // 3 fields + 3 getters + 1 clInit + 1 dealloc
 
     // Test that the clInit has the right statements in order.
     MethodDeclaration clInit = (MethodDeclaration) classMembers.get(6);

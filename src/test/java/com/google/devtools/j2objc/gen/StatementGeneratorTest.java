@@ -408,7 +408,7 @@ public class StatementGeneratorTest extends GenerationTest {
       "static class Two extends One { Two(int i) { super(i); }}}",
       "Test", "Test.m");
     assertTranslation(translation, "- (id)initWithInt:(int)i");
-    assertTranslation(translation, "return [super initWithInt:i];");
+    assertTranslation(translation, "[super initWithInt:i]");
   }
 
   public void testStaticInnerClassSuperFieldAccess() throws IOException {
@@ -892,7 +892,7 @@ public class StatementGeneratorTest extends GenerationTest {
     assertTranslation(translation, "- (id)init;");
     assertTranslation(translation, "- (void)init__WithInt:(int)a;");
     translation = translateSourceFile("B", "B.m");
-    assertTranslation(translation, "return (self = [super init]);");
+    assertTranslation(translation, "return (self = JreMemDebugAdd([super init]));");
     assertTranslation(translation, "[super init__WithInt:b];");
   }
 

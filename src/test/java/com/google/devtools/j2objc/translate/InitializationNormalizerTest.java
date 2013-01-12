@@ -106,7 +106,7 @@ public class InitializationNormalizerTest extends GenerationTest {
     TypeDeclaration clazz =
         translateClassBody("static java.util.Date date = new java.util.Date();");
     List<BodyDeclaration> classMembers = clazz.bodyDeclarations();
-    assertEquals(4, classMembers.size()); // added two accessors and initialize method
+    assertEquals(5, classMembers.size()); // added two accessors and initialize method
 
     // test that initializer was stripped from the declaration
     BodyDeclaration decl = classMembers.get(0);
@@ -224,7 +224,7 @@ public class InitializationNormalizerTest extends GenerationTest {
   public void testStaticInitializerBlock() {
     TypeDeclaration clazz = translateClassBody("static { System.out.println(\"foo\"); }");
     List<BodyDeclaration> classMembers = clazz.bodyDeclarations();
-    assertEquals(1, classMembers.size());
+    assertEquals(2, classMembers.size());
 
     // test that a static initialize() method was created
     BodyDeclaration decl = classMembers.get(0);
@@ -246,7 +246,7 @@ public class InitializationNormalizerTest extends GenerationTest {
     TypeDeclaration clazz = translateClassBody(
         "Test() { this(42); } Test(int i) {} Test(int i, byte b) { System.out.print(b); }");
     List<BodyDeclaration> classMembers = clazz.bodyDeclarations();
-    assertEquals(3, classMembers.size());
+    assertEquals(4, classMembers.size());
 
     BodyDeclaration decl = classMembers.get(0);
     assertTrue(decl instanceof MethodDeclaration);
