@@ -364,4 +364,30 @@ public class AutoboxerTest extends GenerationTest {
         "stringWithFormat:@\"b=%d b2=%d c=%C d=%f f=%f i=%d l=%d s=%d\" , " +
         "b_, b2_, c_, d_, f_, i_, l_, s_, nil];");
   }
+
+  public void testAutoboxArrayIndex() throws IOException {
+    String source =
+        "public class Test { " +
+        "  Integer index() { return 1; }" +
+        "  void test() {" +
+        "    int[] array = new int[3];" +
+        "    array[index()] = 2; }}";
+    String translation = translateSourceFile(source, "Test", "Test.m");
+    assertTranslation(translation, "replaceIntAtIndex:[[self index] intValue]");
+  }
+
+  public void testPrefixExpression() throws IOException {
+    String source =
+        "public class Test { void test() { " +
+        "  Integer iMinutes = new Integer(1); " +
+        "  Double iSeconds = new Double(0);" +
+        "  iMinutes = -iMinutes; iSeconds = -iSeconds; }}";
+    String translation = translateSourceFile(source, "Test", "Test.m");
+    assertTranslation(translation,
+        "iMinutes = [JavaLangInteger valueOfWithInt:" +
+        "-[((JavaLangInteger *) NIL_CHK(iMinutes)) intValue]];");
+    assertTranslation(translation,
+        "iSeconds = [JavaLangDouble valueOfWithDouble:" +
+        "-[((JavaLangDouble *) NIL_CHK(iSeconds)) doubleValue]];");
+  }
 }

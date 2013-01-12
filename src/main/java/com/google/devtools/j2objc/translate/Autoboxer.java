@@ -23,6 +23,7 @@ import com.google.devtools.j2objc.util.ErrorReportingASTVisitor;
 
 import org.eclipse.jdt.core.dom.AST;
 import org.eclipse.jdt.core.dom.ASTNode;
+import org.eclipse.jdt.core.dom.ArrayAccess;
 import org.eclipse.jdt.core.dom.ArrayInitializer;
 import org.eclipse.jdt.core.dom.Assignment;
 import org.eclipse.jdt.core.dom.CastExpression;
@@ -175,6 +176,14 @@ public class Autoboxer extends ErrorReportingASTVisitor {
   }
 
   @Override
+  public void endVisit(ArrayAccess node) {
+    Expression index = node.getIndex();
+    if (!getBoxType(index).isPrimitive()) {
+      node.setIndex(unbox(index));
+    }
+  }
+
+  @Override
   public void endVisit(ArrayInitializer node) {
     ITypeBinding type = Types.getTypeBinding(node).getElementType();
     @SuppressWarnings("unchecked")
@@ -317,9 +326,7 @@ public class Autoboxer extends ErrorReportingASTVisitor {
   @Override
   public void endVisit(PrefixExpression node) {
     Expression operand = node.getOperand();
-    PrefixExpression.Operator op = node.getOperator();
-
-    if (op == PrefixExpression.Operator.NOT && !getBoxType(operand).isPrimitive()) {
+    if (!getBoxType(operand).isPrimitive()) {
       node.setOperand(unbox(operand));
     }
   }
