@@ -41,6 +41,8 @@
 @synthesize objcClass = class_;
 @synthesize objcProtocol = protocol_;
 
+static NSMutableDictionary *IOSClass_classCache;
+
 // Function forwards.
 static JavaLangReflectMethod *getClassMethod(NSString *name,
                                              IOSObjectArray *parameterTypes,
@@ -56,12 +58,13 @@ static NSString *getTranslatedMethodName(NSString *name,
                                          IOSObjectArray *parameterTypes);
 
 + (IOSClass *)classWithClass:(Class)cls {
-  IOSClass *clazz = [[IOSClass alloc] initWithClass:cls];
-#if __has_feature(objc_arc)
+  NSString *classKey = NSStringFromClass(cls);
+  IOSClass *clazz = [IOSClass_classCache objectForKey:classKey];
+  if (!clazz) {
+    clazz = AUTORELEASE([[IOSClass alloc] initWithClass:cls]);
+    [IOSClass_classCache setObject:clazz forKey:classKey];
+  }
   return clazz;
-#else
-  return [clazz autorelease];
-#endif
 }
 
 - (id)initWithClass:(Class)cls {
@@ -88,12 +91,13 @@ static NSString *getTranslatedMethodName(NSString *name,
 }
 
 + (IOSClass *)classWithProtocol:(Protocol *)protocol {
-  IOSClass *clazz = [[IOSClass alloc] initWithProtocol:protocol];
-#if __has_feature(objc_arc)
+  NSString *protocolKey = NSStringFromProtocol(protocol);
+  IOSClass *clazz = [IOSClass_classCache objectForKey:protocolKey];
+  if (!clazz) {
+    clazz = AUTORELEASE([[IOSClass alloc] initWithProtocol:protocol]);
+    [IOSClass_classCache setObject:clazz forKey:protocolKey];
+  }
   return clazz;
-#else
-  return [clazz autorelease];
-#endif
 }
 
 - (id)newInstance {
@@ -784,6 +788,10 @@ IOSObjectArray *copyFieldsToObjectArray(NSArray *fields) {
        @"NSString",  @"java.lang.String",
        @"NSString",  @"java.lang.CharSequence",
        @"NSCopying", @"java.lang.Cloneable", nil];
+  IOSClass_classCache = [NSMutableDictionary dictionary];
+#if ! __has_feature(objc_arc)
+  [IOSClass_classCache retain];
+#endif
 }
 
 @end
