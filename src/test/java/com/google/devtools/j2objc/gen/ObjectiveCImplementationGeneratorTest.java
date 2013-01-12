@@ -516,4 +516,22 @@ public class ObjectiveCImplementationGeneratorTest extends GenerationTest {
     assertTranslation(translation, "- (id)initTest_InnerWithTest:(Test *)");
     assertTranslation(translation, "[self initTest_InnerWithTest:");
   }
+
+  public void testSynchronizedMethod() throws IOException {
+    String translation = translateSourceFile(
+        "public class Test {" +
+        "  public synchronized void foo() {} }",
+        "Test", "Test.m");
+    assertTranslation(translation, "- (void)foo {\n" +
+        "  @synchronized(self) {");
+  }
+
+  public void testStaticSynchronizedMethod() throws IOException {
+    String translation = translateSourceFile(
+        "public class Test {" +
+        "  public static synchronized void foo() {} }",
+        "Test", "Test.m");
+    assertTranslation(translation, "+ (void)foo {\n" +
+        "  @synchronized([self class]) {");
+  }
 }
