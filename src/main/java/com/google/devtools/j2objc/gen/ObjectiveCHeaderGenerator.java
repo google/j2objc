@@ -537,7 +537,7 @@ public class ObjectiveCHeaderGenerator extends ObjectiveCSourceFileGenerator {
           String propertyName = NameTable.getName(var.getName());
           println(String.format(") %s%s;", typeString, propertyName));
           if (propertyName.startsWith("new") || propertyName.startsWith("copy")
-              || propertyName.startsWith("alloc")) {
+              || propertyName.startsWith("alloc") || propertyName.startsWith("init")) {
             println(String.format("- (%s)%s OBJC_METHOD_FAMILY_NONE;",
                 NameTable.javaRefToObjC(type), propertyName));
           }
