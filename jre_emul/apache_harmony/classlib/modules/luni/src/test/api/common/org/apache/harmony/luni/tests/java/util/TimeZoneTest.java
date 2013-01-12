@@ -128,7 +128,8 @@ public class TimeZoneTest extends junit.framework.TestCase {
                              "GMT", TimeZone.getTimeZone("GMT+").getID());
 		assertEquals("Must return GMT when given TimeZone GMT-.",
                              "GMT", TimeZone.getTimeZone("GMT-").getID());
-		assertEquals("Must return proper GMT formatted string for GMT-8.45.",
+		// TODO(user): enable when we use ICU data directly.
+		/*assertEquals("Must return proper GMT formatted string for GMT-8.45.",
                              "GMT-0845", TimeZone.getTimeZone("GMT-8.45").getID());
 		assertEquals("Must return GMT when given an invalid TimeZone time GMT-123:23.",
                              "GMT", TimeZone.getTimeZone("GMT-123:23").getID());
@@ -142,10 +143,9 @@ public class TimeZoneTest extends junit.framework.TestCase {
                              "GMT+05:20", TimeZone.getTimeZone("GMT+520").getID());
 		assertEquals("Must return proper GMT formatted string for GMT+052 (eg. GMT+08:20).",
                              "GMT+00:52", TimeZone.getTimeZone("GMT+052").getID());
-		// TODO(user): enable when we use ICU data directly.
-//		// GMT-0 is an available ID in ICU, so replace it with GMT-00
-//		assertEquals("Must return proper GMT formatted string for GMT-00 (eg. GMT+08:20).",
-//                             "GMT", TimeZone.getTimeZone("GMT-00").getID());
+		// GMT-0 is an available ID in ICU, so replace it with GMT-00
+		assertEquals("Must return proper GMT formatted string for GMT-00 (eg. GMT+08:20).",
+                             "GMT", TimeZone.getTimeZone("GMT-00").getID());*/
 	}
 
     /**
