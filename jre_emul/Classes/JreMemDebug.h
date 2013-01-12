@@ -19,7 +19,7 @@
 // Set JREMEMDEBUG_OVERHEAD_ENABLED to 1 to allow overhead of memory debugging.
 // Keeping this value to 0 will completely disable it at compile time
 // And will avoid any (even unsignificant) overhead.
-#define JREMEMDEBUG_OVERHEAD_ENABLED 0
+#define JREMEMDEBUG_OVERHEAD_ENABLED 1
 
 #ifdef __OBJC__
 # import <Foundation/Foundation.h>
@@ -42,6 +42,9 @@
     // allocated objects.
     static inline id JreMemDebugAdd(id obj) {
 # if JREMEMDEBUG_OVERHEAD_ENABLED
+      if (!JreMemDebugEnabled)
+        return obj;
+
       return JreMemDebugAddInternal(obj);
 # else
       return obj;
@@ -52,6 +55,9 @@
     // allocated objects.
     static inline void JreMemDebugRemove(id obj) {
 # if JREMEMDEBUG_OVERHEAD_ENABLED
+      if (!JreMemDebugEnabled)
+        return;
+
       JreMemDebugRemoveInternal(obj);
 # endif
     }
@@ -59,6 +65,9 @@
     // This function is a global lock on the memory debugging tool.
     static inline void JreMemDebugLock(void) {
 # if JREMEMDEBUG_OVERHEAD_ENABLED
+      if (!JreMemDebugEnabled)
+        return;
+
       JreMemDebugLockInternal();
 # endif
     }
@@ -66,6 +75,9 @@
     // This function is a global unlock on the memory debugging tool.
     static inline void JreMemDebugUnlock(void) {
 # if JREMEMDEBUG_OVERHEAD_ENABLED
+      if (!JreMemDebugEnabled)
+        return;
+
       JreMemDebugUnlockInternal();
 # endif
     }
