@@ -112,7 +112,10 @@ final class HugeEnumSet<E extends Enum<E>> extends EnumSet<E> {
     
     @Override
     public boolean add(E element) {
-        if (!isValidType(element.getDeclaringClass())) {
+	if (element == null) {
+	    throw new NullPointerException();
+	}
+        if (!(element instanceof Enum) || !isValidType(element.getDeclaringClass())) {
             throw new ClassCastException();
         }
 
@@ -131,6 +134,9 @@ final class HugeEnumSet<E extends Enum<E>> extends EnumSet<E> {
     
     @Override
     public boolean addAll(Collection<? extends E> collection) {
+	if (collection == null) {
+	    throw new NullPointerException();
+	}
         if (collection.isEmpty() || collection == this) {
             return false;
         }
@@ -206,6 +212,9 @@ final class HugeEnumSet<E extends Enum<E>> extends EnumSet<E> {
     
     @Override
     public boolean containsAll(Collection<?> collection) {
+	if (collection == null) {
+	    throw new NullPointerException();
+	}
         if (collection.isEmpty()) {
             return true;
         }
@@ -262,6 +271,9 @@ final class HugeEnumSet<E extends Enum<E>> extends EnumSet<E> {
     
     @Override
     public boolean removeAll(Collection<?> collection) {
+	if (collection == null) {
+	    throw new NullPointerException();
+	}
         if (collection.isEmpty()) {
             return false;
         }
@@ -319,6 +331,9 @@ final class HugeEnumSet<E extends Enum<E>> extends EnumSet<E> {
     
     @Override
     void setRange(E start, E end) {
+	if (start == null || end == null) {
+	    throw new NullPointerException();
+	}
         int startOrdinal = start.ordinal();
         int startIndex = startOrdinal / BIT_IN_LONG;
         int startInBits = startOrdinal % BIT_IN_LONG;

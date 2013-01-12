@@ -80,7 +80,7 @@ java.lang.Class.getEnclosingClass()Ljava/lang/Class; = IOSClass getEnclosingClas
 java.lang.Class.getEnclosingConstructor()Ljava/lang/reflect/Constructor; = \
     IOSClass getEnclosingConstructor
 java.lang.Class.getEnclosingMethod()Ljava/lang/reflect/Method; = IOSClass getEnclosingMethod
-java.lang.Class.getEnumConstants()Ljava/lang/Object; = IOSClass getEnumConstants
+java.lang.Class.getEnumConstants()[Ljava/lang/Object; = IOSClass getEnumConstants
 java.lang.Class.getField(Ljava/lang/String;)Ljava/lang/reflect/Field; = \
     IOSClass getField:(NSString *)name;
 java.lang.Class.getFields()[Ljava/lang/reflect/Field; = IOSClass getFields;

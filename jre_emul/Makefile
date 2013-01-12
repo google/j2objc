@@ -242,11 +242,13 @@ OBJS = \
 	$(CLASS_DIR)/java/util/concurrent/TimeUnit.o \
 	$(CLASS_DIR)/java/util/Date.o \
 	$(CLASS_DIR)/java/util/Dictionary.o \
+	$(CLASS_DIR)/java/util/EnumSet.o \
 	$(CLASS_DIR)/java/util/EventListener.o \
 	$(CLASS_DIR)/java/util/EventObject.o \
 	$(CLASS_DIR)/java/util/EmptyStackException.o \
 	$(CLASS_DIR)/java/util/HashSet.o \
 	$(CLASS_DIR)/java/util/Hashtable.o \
+	$(CLASS_DIR)/java/util/HugeEnumSet.o \
 	$(CLASS_DIR)/java/util/IdentityHashMap.o \
 	$(CLASS_DIR)/java/util/InputMismatchException.o \
 	$(CLASS_DIR)/java/util/LinkedList.o \
@@ -260,6 +262,7 @@ OBJS = \
 	$(CLASS_DIR)/java/util/logging/LogRecord.o \
 	$(CLASS_DIR)/java/util/logging/NSLogHandler.o \
 	$(CLASS_DIR)/java/util/MapEntry.o \
+	$(CLASS_DIR)/java/util/MiniEnumSet.o \
 	$(CLASS_DIR)/java/util/NavigableMap.o \
 	$(CLASS_DIR)/java/util/NavigableSet.o \
 	$(CLASS_DIR)/java/util/NoSuchElementException.o \
