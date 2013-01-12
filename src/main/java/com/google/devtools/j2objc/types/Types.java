@@ -778,10 +778,11 @@ public class Types {
   }
 
   public static boolean isWeakReference(IVariableBinding var) {
-    if (hasWeakAnnotation(var)) {
-      return true;
-    }
-    return hasWeakAnnotation(var.getType());
+    return hasWeakAnnotation(var) || isWeakOuterReference(var);
+  }
+
+  private static boolean isWeakOuterReference(IVariableBinding var) {
+    return var.getName().startsWith("this$") && hasWeakAnnotation(var.getDeclaringClass());
   }
 
   public static boolean hasAnyAnnotation(IBinding binding, Class<?>[] annotations) {

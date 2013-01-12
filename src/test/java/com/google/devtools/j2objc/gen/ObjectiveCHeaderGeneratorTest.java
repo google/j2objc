@@ -460,4 +460,21 @@ public class ObjectiveCHeaderGeneratorTest extends GenerationTest {
     assertFalse(translation.contains("- (void)externalWithNSString:(NSString *)s"));
     assertTranslation(translation, "[self externalWithNSString:str];");
   }
+
+  public void testPropertiesOfTypeWeakOuter() throws IOException {
+    String sourceContent =
+        "  import com.google.j2objc.annotations.Weak;"
+        + "import com.google.j2objc.annotations.WeakOuter;"
+        + "public class FooBar {"
+        + "  @Weak private Internal fieldBar;"
+        + "  private Internal fieldFoo;"
+        + "  @WeakOuter"
+        + "  private class Internal {"
+        + "  }"
+        + "}";
+    String translation = translateSourceFile(sourceContent,
+      "FooBar", "FooBar.h");
+    assertTranslation(translation, "@property (nonatomic, assign) FooBar_Internal *fieldBar;");
+    assertTranslation(translation, "@property (nonatomic, retain) FooBar_Internal *fieldFoo;");
+  }
 }
