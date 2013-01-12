@@ -952,10 +952,10 @@ public class StatementGeneratorTest extends GenerationTest {
       "    a[0][0] = \"42\"; System.out.println(a[0].length); }}",
       "Test", "Test.m");
     assertTranslation(translation,
-        "[(IOSObjectArray *) [((IOSObjectArray *) NIL_CHK([Test a])) objectAtIndex:0] " +
+        "[((IOSObjectArray *) [((IOSObjectArray *) NIL_CHK([Test a])) objectAtIndex:0]) " +
         "replaceObjectAtIndex:0 withObject:@\"42\"];");
     assertTranslation(translation,
-        "[(IOSObjectArray *) [((IOSObjectArray *) NIL_CHK([Test a])) objectAtIndex:0] count]");
+        "[((IOSObjectArray *) [((IOSObjectArray *) NIL_CHK([Test a])) objectAtIndex:0]) count]");
   }
 
   public void testMultiDimArray() throws IOException {
@@ -972,7 +972,7 @@ public class StatementGeneratorTest extends GenerationTest {
 
   public void testObjectMultiDimArray() throws IOException {
     String source = "class Test { Integer i = new Integer(1); Integer j = new Integer(2);" +
-    	"void test() { Integer[][] a = new Integer[][] { null, { i, j }, { j, i }}; }}";
+        "void test() { Integer[][] a = new Integer[][] { null, { i, j }, { j, i }}; }}";
     String translation = translateSourceFile(source, "Test", "Test.m");
     assertTranslation(translation,
         "IOSObjectArray *a = [IOSObjectArray arrayWithObjects:(id[]){ nil, " +

@@ -403,26 +403,30 @@ public class StatementGenerator extends ErrorReportingASTVisitor {
 
   @Override
   public boolean visit(ArrayAccess node) {
+    ITypeBinding elementType = Types.getTypeBinding(node);
+    boolean castPrinted = false;
+    if (!elementType.isPrimitive()) {
+      castPrinted = printCast(elementType);
+    }
     buffer.append('[');
     printNilCheck(node.getArray(), true);
     buffer.append(' ');
 
-    ITypeBinding binding = node.resolveTypeBinding();
-    if (binding == null) {
-      binding = Types.getTypeBinding(node);
-    }
-    IOSTypeBinding arrayBinding = Types.resolveArrayType(binding);
-    if (arrayBinding == null) {
-      J2ObjC.error(node, "No IOSArrayBinding for " + binding.getName());
+    IOSTypeBinding iosArrayType = Types.resolveArrayType(elementType);
+    if (iosArrayType == null) {
+      J2ObjC.error(node, "No IOSArrayBinding for " + elementType.getName());
     } else {
-      assert(arrayBinding instanceof IOSArrayTypeBinding);
-      IOSArrayTypeBinding primitiveArray = (IOSArrayTypeBinding) arrayBinding;
+      assert(iosArrayType instanceof IOSArrayTypeBinding);
+      IOSArrayTypeBinding primitiveArray = (IOSArrayTypeBinding) iosArrayType;
       buffer.append(primitiveArray.getAccessMethod());
     }
 
     buffer.append(':');
     node.getIndex().accept(this);
     buffer.append(']');
+    if (castPrinted) {
+      buffer.append(')');
+    }
     return false;
   }
 
@@ -689,9 +693,6 @@ public class StatementGenerator extends ErrorReportingASTVisitor {
     ArrayAccess aa = (ArrayAccess) lhs;
     String kind = getArrayAccessKind(aa);
     buffer.append('[');
-    if (aa.getArray() instanceof ArrayAccess) {
-      buffer.append(String.format("(IOS%sArray *) ", kind));
-    }
     printNilCheck(aa.getArray(), true);
     buffer.append(" replace");
     buffer.append(kind);
@@ -1766,10 +1767,6 @@ public class StatementGenerator extends ErrorReportingASTVisitor {
   private boolean maybePrintArrayLength(String name, Expression qualifier) {
     if (name.equals("length") && Types.getTypeBinding(qualifier).isArray()) {
       buffer.append("(int) ["); // needs cast: count returns an unsigned value
-      if (qualifier instanceof ArrayAccess) {
-        String kind = getArrayAccessKind((ArrayAccess) qualifier);
-        buffer.append(String.format("(IOS%sArray *) ", kind));
-      }
       printNilCheck(qualifier, true);
       buffer.append(" count]");
       return true;
