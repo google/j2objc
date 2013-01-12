@@ -31,6 +31,24 @@ public class OptionsTest extends GenerationTest {
     Options.clearPackagePrefixes();
   }
 
+  public void testMemDebug() throws IOException {
+    Options.setMemoryDebug(true);
+    String translation = translateSourceFile(
+      "class Test { private Exception e; }", "Test", "Test.m");
+    assertTranslation(translation, "memDebugStaticReferences");
+    assertTranslation(translation, "memDebugStrongReferences");
+    assertTranslation(translation, "JreMemDebugRemove(self)");
+}
+
+  public void testNoMemDebug() throws IOException {
+    Options.setMemoryDebug(false);
+    String translation = translateSourceFile(
+      "class Test { private Exception e; }", "Test", "Test.m");
+    assertFalse(translation.contains("memDebugStaticReferences"));
+    assertFalse(translation.contains("memDebugStrongReferences"));
+    assertFalse(translation.contains("JreMemDebugRemove(self)"));
+  }
+
   /**
    * Regression test for http://code.google.com/p/j2objc/issues/detail?id=100.
    */

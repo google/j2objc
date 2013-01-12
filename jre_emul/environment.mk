@@ -71,7 +71,7 @@ vpath %.java $(JRE_SRC) $(TEST_SRC)
 CLANG=$(XCRUN) clang
 
 # J2ObjC settings
-J2OBJC := USE_SYSTEM_BOOT_PATH=TRUE $(DIST_DIR)/j2objc \
+J2OBJC := USE_SYSTEM_BOOT_PATH=TRUE $(DIST_DIR)/j2objc --mem-debug \
    -classpath $(EMULATION_JAR) -d $(CLASS_DIR) $(J2OBJC_DEBUGFLAGS)
 
 # GCC settings, based on Xcode log output
