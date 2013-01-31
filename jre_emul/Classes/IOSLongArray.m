@@ -40,7 +40,7 @@
 - (id)initWithLongs:(const long long *)longs count:(NSUInteger)count {
   if ((self = [self initWithLength:count])) {
     if (longs != nil) {
-      memcpy(buffer_, longs, count * sizeof(long));
+      memcpy(buffer_, longs, count * sizeof(long long));
     }
   }
   return self;
