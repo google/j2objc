@@ -85,10 +85,10 @@
   for (int i = 0; i < [symbols count]; i++) {
     NSString *symbol = [symbols objectAtIndex:i];
     JavaLangStackTraceElement *element =
-        [[[JavaLangStackTraceElement alloc] initWithNSString:nil
-                                                withNSString:symbol
-                                                withNSString:nil
-                                                     withInt:-1] autorelease];
+        AUTORELEASE([[JavaLangStackTraceElement alloc] initWithNSString:nil
+                                                           withNSString:symbol
+                                                           withNSString:nil
+                                                                withInt:-1]);
     [stackTrace replaceObjectAtIndex:i withObject:element];
   }
   return stackTrace;
@@ -115,7 +115,7 @@
 }
 
 - (JavaLangThrowable *)initCauseWithJavaLangThrowable:
-    (JavaLangThrowable *)causeArg {
+    (JavaLangThrowable *)causeArg OBJC_METHOD_FAMILY_NONE {
   if (self->cause != nil) {
     id exception = [[JavaLangIllegalStateException alloc]
                     initWithNSString:@"Can't overwrite cause"];

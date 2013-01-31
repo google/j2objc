@@ -285,7 +285,7 @@ public final class Pattern implements Serializable {
     private final int flags;
 
     // NSRegularExpression instance.
-    long nativePattern;
+    Object nativePattern;
 
     /**
      * Returns a {@link Matcher} for this pattern applied to the given {@code input}.
@@ -495,12 +495,12 @@ public final class Pattern implements Serializable {
 #if ! __has_feature(objc_arc)
       [regex retain];
 #endif
-      nativePattern_ = (long long) regex;
+      nativePattern_ = regex;
     ]-*/;
 
     native void releaseNativePattern() /*-[
 #if ! __has_feature(objc_arc)
-      [(id) nativePattern_ release];
+      [nativePattern_ release];
 #endif
       nativePattern_ = 0;
     ]-*/;

@@ -50,18 +50,44 @@
 #  define AUTORELEASE(x) x
 #  define ARCBRIDGE __bridge
 #  define ARCBRIDGE_TRANSFER __bridge_transfer
+#  define ARC_CONSUME_PARAMETER __attribute((ns_consumed))
 # else
 #  define AUTORELEASE(x) [x autorelease]
 #  define ARCBRIDGE
 #  define ARCBRIDGE_TRANSFER
+#  define ARC_CONSUME_PARAMETER
 # endif
+
+
+static inline id JreOperatorRetainedAssign(id *pIvar, id value) {
+  // We need a lock here because during
+  // JreMemDebugGenerateAllocationsReport(), we want the list of links
+  // of the graph to be consistent.
+#if JREMEMDEBUG_ENABLED
+  if (JreMemDebugEnabled) {
+    JreMemDebugLock();
+  }
+#endif // JREMEMDEBUG_ENABLED
+#if __has_feature(objc_arc)
+  * pIvar = value;
+#else
+  [* pIvar autorelease];
+  * pIvar = [value retain];
+#endif // __has_feature(objc_arc)
+#if JREMEMDEBUG_ENABLED
+  if (JreMemDebugEnabled) {
+    JreMemDebugUnlock();
+  }
+#endif // JREMEMDEBUG_ENABLED
+
+  return value;
+}
+
 
 // Converts main() arguments into an IOSObjectArray of NSStrings.
 FOUNDATION_EXPORT
     IOSObjectArray *JreEmulationMainArguments(int argc, const char *argv[]);
 
-# if !__has_feature(objc_arc)
 FOUNDATION_EXPORT id JreOperatorRetainedAssign(id *pIvar, id value);
-# endif
 
 #endif // __OBJC__

@@ -37,7 +37,9 @@
 
 - (void)dealloc {
   JreMemDebugRemove(self);
+#if ! __has_feature(objc_arc)
   [super dealloc];
+#endif
 }
 
 + (id)arrayWithDimensions:(NSUInteger)dimensionCount

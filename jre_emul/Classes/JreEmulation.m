@@ -43,25 +43,3 @@ FOUNDATION_EXPORT
   }
   return args;
 }
-
-#if !__has_feature(objc_arc)
-FOUNDATION_EXPORT id JreOperatorRetainedAssign(id *pIvar, id value) {
-  // We need a lock here because during
-  // JreMemDebugGenerateAllocationsReport(), we want the list of links
-  // of the graph to be consistent.
-#if JREMEMDEBUG_ENABLED
-  if (JreMemDebugEnabled) {
-    JreMemDebugLock();
-  }
-#endif
-  [* pIvar autorelease];
-  * pIvar = [value retain];
-#if JREMEMDEBUG_ENABLED
-  if (JreMemDebugEnabled) {
-    JreMemDebugUnlock();
-  }
-#endif
-
-  return value;
-}
-#endif

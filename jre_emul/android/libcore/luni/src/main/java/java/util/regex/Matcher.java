@@ -645,8 +645,7 @@ public final class Matcher implements MatchResult {
     }
 
     private native boolean findImpl(int start, boolean continuing) /*-[
-      NSRegularExpression *regex =
-          (NSRegularExpression *) self->pattern__->nativePattern_;
+      NSRegularExpression *regex = (NSRegularExpression *) self->pattern__->nativePattern_;
       NSMatchingOptions options = 0;
       if (!continuing) {
         if (self->anchoringBounds_) {
@@ -687,8 +686,7 @@ public final class Matcher implements MatchResult {
     ]-*/;
 
     private native int groupCountImpl() /*-[
-      NSRegularExpression *regex =
-          (NSRegularExpression *) self->pattern__->nativePattern_;
+      NSRegularExpression *regex = (NSRegularExpression *) self->pattern__->nativePattern_;
       return regex.numberOfCaptureGroups;
     ]-*/;
 
@@ -697,8 +695,7 @@ public final class Matcher implements MatchResult {
     ]-*/;
 
     private native boolean matchesImpl() /*-[
-      NSRegularExpression *regex =
-          (NSRegularExpression *) self->pattern__->nativePattern_;
+      NSRegularExpression *regex = (NSRegularExpression *) self->pattern__->nativePattern_;
       NSUInteger patternFlags = [regex options];
       NSMatchingOptions options = 0;
       if (self->anchoringBounds_) {

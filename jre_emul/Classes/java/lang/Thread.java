@@ -336,7 +336,10 @@ public class Thread implements Runnable {
     [self setPriority0WithInt:priority];
 
     [group addWithJavaLangThread:self];
-    nsThread_ = [thread retain];
+    nsThread_ = thread;
+#if !__has_feature(objc_arc)
+    [thread retain];
+#endif
     [newThreadData setObject:self forKey:JavaLangThread_JAVA_THREAD_];
   }-*/;
   
@@ -581,7 +584,7 @@ public class Thread implements Runnable {
 #if !__has_feature(objc_arc)
         [npe autorelease];
 #endif
-        @throw (ARCBRIDGE JavaLangInterruptedException *) npe;
+        @throw npe;
       }
     ]-*/;
 
