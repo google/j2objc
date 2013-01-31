@@ -21,272 +21,296 @@
 
 include environment.mk
 
+# Native obj-c sources that do not emulate a specific java class.
 IOS_OBJS = \
-	$(CLASS_DIR)/IOSArray.o \
-	$(CLASS_DIR)/IOSArrayClass.o \
-	$(CLASS_DIR)/IOSBooleanArray.o \
-	$(CLASS_DIR)/IOSByteArray.o \
-	$(CLASS_DIR)/IOSCharArray.o \
-	$(CLASS_DIR)/IOSClass.o \
-	$(CLASS_DIR)/IOSDoubleArray.o \
-	$(CLASS_DIR)/IOSFloatArray.o \
-	$(CLASS_DIR)/IOSIntArray.o \
-	$(CLASS_DIR)/IOSLongArray.o \
-	$(CLASS_DIR)/IOSObjectArray.o \
-	$(CLASS_DIR)/IOSPrimitiveClass.o \
-	$(CLASS_DIR)/IOSShortArray.o \
-	$(CLASS_DIR)/java/lang/System.o \
-	$(CLASS_DIR)/java/lang/Throwable.o \
-	$(CLASS_DIR)/java/lang/reflect/AccessibleObject.o \
-	$(CLASS_DIR)/java/lang/reflect/Constructor.o \
-	$(CLASS_DIR)/java/lang/reflect/ExecutableMember.o \
-	$(CLASS_DIR)/java/lang/reflect/Field.o \
-	$(CLASS_DIR)/java/lang/reflect/Method.o \
-	$(CLASS_DIR)/java/util/HashMap.o \
-	$(CLASS_DIR)/java/util/LinkedHashMap.o \
-	$(CLASS_DIR)/JreEmulation.o \
-	$(CLASS_DIR)/JreMemDebug.o \
-	$(CLASS_DIR)/JreMemDebugStrongReference.o \
-	$(CLASS_DIR)/NSObject+JavaObject.o \
-	$(CLASS_DIR)/NSString+JavaString.o
+	IOSArray.o \
+	IOSArrayClass.o \
+	IOSBooleanArray.o \
+	IOSByteArray.o \
+	IOSCharArray.o \
+	IOSClass.o \
+	IOSDoubleArray.o \
+	IOSFloatArray.o \
+	IOSIntArray.o \
+	IOSLongArray.o \
+	IOSObjectArray.o \
+	IOSPrimitiveClass.o \
+	IOSShortArray.o \
+	JreEmulation.o \
+	JreMemDebug.o \
+	JreMemDebugStrongReference.o \
+	NSObject+JavaObject.o \
+	NSString+JavaString.o \
+	java/lang/reflect/ExecutableMember.o
 
+# Java classes with hand written obj-c implementations. Shouldn't be translated,
+# but need to include the .java file in jre_emul.jar and the .m file in
+# libjre_emul.a.
+IOS_JAVA_OBJS = \
+	java/lang/Throwable.o \
+	java/lang/reflect/AccessibleObject.o \
+	java/lang/reflect/Constructor.o \
+	java/lang/reflect/Field.o \
+	java/lang/reflect/Method.o \
+	java/util/HashMap.o \
+	java/util/LinkedHashMap.o
+
+# Java interfaces with hand written obj-c headers. Don't need to be translated,
+# but need to be included in the jre_emul.jar.
+IOS_INTERFACES = \
+	java/lang/CharSequence.h \
+	java/lang/Cloneable.h \
+	java/lang/Comparable.h
+
+# Java interfaces that will generate empty .m files.
 JRE_INTERFACES = \
-	$(CLASS_DIR)/java/io/Closeable.h \
-	$(CLASS_DIR)/java/io/FileFilter.h \
-	$(CLASS_DIR)/java/io/FilenameFilter.h \
-	$(CLASS_DIR)/java/io/Flushable.h \
-	$(CLASS_DIR)/java/io/Serializable.h \
-	$(CLASS_DIR)/java/lang/Appendable.h \
-	$(CLASS_DIR)/java/lang/Iterable.h \
-	$(CLASS_DIR)/java/lang/Runnable.h \
-	$(CLASS_DIR)/java/lang/annotation/Annotation.h \
-	$(CLASS_DIR)/java/lang/reflect/GenericDeclaration.h \
-	$(CLASS_DIR)/java/lang/reflect/Type.h \
-	$(CLASS_DIR)/java/lang/reflect/TypeVariable.h \
-	$(CLASS_DIR)/java/util/Collection.h \
-	$(CLASS_DIR)/java/util/Comparator.h \
-	$(CLASS_DIR)/java/util/Deque.h \
-	$(CLASS_DIR)/java/util/Dictionary.h \
-	$(CLASS_DIR)/java/util/Enumeration.h \
-	$(CLASS_DIR)/java/util/EventListener.h \
-	$(CLASS_DIR)/java/util/Iterator.h \
-	$(CLASS_DIR)/java/util/List.h \
-	$(CLASS_DIR)/java/util/ListIterator.h \
-	$(CLASS_DIR)/java/util/Map.h \
-	$(CLASS_DIR)/java/util/NavigableMap.h \
-	$(CLASS_DIR)/java/util/NavigableSet.h \
-	$(CLASS_DIR)/java/util/Queue.h \
-	$(CLASS_DIR)/java/util/RandomAccess.h \
-	$(CLASS_DIR)/java/util/Set.h \
-	$(CLASS_DIR)/java/util/SortedMap.h \
-	$(CLASS_DIR)/java/util/SortedSet.h \
-	$(CLASS_DIR)/java/util/concurrent/ConcurrentMap.h \
-	$(CLASS_DIR)/java/util/concurrent/Executor.h \
-	$(CLASS_DIR)/java/util/concurrent/ExecutorService.h \
-	$(CLASS_DIR)/java/util/concurrent/Future.h
+	java/io/Closeable.h \
+	java/io/FileFilter.h \
+	java/io/FilenameFilter.h \
+	java/io/Flushable.h \
+	java/io/Serializable.h \
+	java/lang/Appendable.h \
+	java/lang/Iterable.h \
+	java/lang/Runnable.h \
+	java/lang/annotation/Annotation.h \
+	java/lang/reflect/GenericDeclaration.h \
+	java/lang/reflect/Type.h \
+	java/lang/reflect/TypeVariable.h \
+	java/util/Collection.h \
+	java/util/Comparator.h \
+	java/util/Deque.h \
+	java/util/Dictionary.h \
+	java/util/Enumeration.h \
+	java/util/EventListener.h \
+	java/util/Iterator.h \
+	java/util/List.h \
+	java/util/ListIterator.h \
+	java/util/Map.h \
+	java/util/NavigableMap.h \
+	java/util/NavigableSet.h \
+	java/util/Queue.h \
+	java/util/RandomAccess.h \
+	java/util/Set.h \
+	java/util/SortedMap.h \
+	java/util/SortedSet.h \
+	java/util/concurrent/ConcurrentMap.h \
+	java/util/concurrent/Executor.h \
+	java/util/concurrent/ExecutorService.h \
+	java/util/concurrent/Future.h
 
-OBJS = \
-	$(CLASS_DIR)/java/io/BufferedInputStream.o \
-	$(CLASS_DIR)/java/io/BufferedOutputStream.o \
-	$(CLASS_DIR)/java/io/BufferedReader.o \
-	$(CLASS_DIR)/java/io/BufferedWriter.o \
-	$(CLASS_DIR)/java/io/ByteArrayInputStream.o \
-	$(CLASS_DIR)/java/io/ByteArrayOutputStream.o \
-	$(CLASS_DIR)/java/io/CharArrayReader.o \
-	$(CLASS_DIR)/java/io/CharArrayWriter.o \
-	$(CLASS_DIR)/java/io/File.o \
-	$(CLASS_DIR)/java/io/FileDescriptor.o \
-	$(CLASS_DIR)/java/io/FileInputStream.o \
-	$(CLASS_DIR)/java/io/FileNotFoundException.o \
-	$(CLASS_DIR)/java/io/FileOutputStream.o \
-	$(CLASS_DIR)/java/io/FileReader.o \
-	$(CLASS_DIR)/java/io/FileWriter.o \
-	$(CLASS_DIR)/java/io/FilterInputStream.o \
-	$(CLASS_DIR)/java/io/FilterOutputStream.o \
-	$(CLASS_DIR)/java/io/InputStream.o \
-	$(CLASS_DIR)/java/io/InputStreamReader.o \
-	$(CLASS_DIR)/java/io/InterruptedIOException.o \
-	$(CLASS_DIR)/java/io/InvalidObjectException.o \
-	$(CLASS_DIR)/java/io/IOException.o \
-	$(CLASS_DIR)/java/io/ObjectStreamException.o \
-	$(CLASS_DIR)/java/io/OutputStream.o \
-	$(CLASS_DIR)/java/io/OutputStreamWriter.o \
-	$(CLASS_DIR)/java/io/PrintStream.o \
-	$(CLASS_DIR)/java/io/PrintWriter.o \
-	$(CLASS_DIR)/java/io/Reader.o \
-	$(CLASS_DIR)/java/io/StringReader.o \
-	$(CLASS_DIR)/java/io/StringWriter.o \
-	$(CLASS_DIR)/java/io/SyncFailedException.o \
-	$(CLASS_DIR)/java/io/UnsupportedEncodingException.o \
-	$(CLASS_DIR)/java/io/Writer.o \
-	$(CLASS_DIR)/java/lang/ArithmeticException.o \
-	$(CLASS_DIR)/java/lang/AssertionError.o \
-	$(CLASS_DIR)/java/lang/ArrayIndexOutOfBoundsException.o \
-	$(CLASS_DIR)/java/lang/ArrayStoreException.o \
-	$(CLASS_DIR)/java/lang/Boolean.o \
-	$(CLASS_DIR)/java/lang/Byte.o \
-	$(CLASS_DIR)/java/lang/Character.o \
-	$(CLASS_DIR)/java/lang/ClassCastException.o \
-	$(CLASS_DIR)/java/lang/ClassNotFoundException.o \
-	$(CLASS_DIR)/java/lang/CloneNotSupportedException.o \
-	$(CLASS_DIR)/java/lang/Double.o \
-	$(CLASS_DIR)/java/lang/Enum.o \
-	$(CLASS_DIR)/java/lang/Error.o \
-	$(CLASS_DIR)/java/lang/Exception.o \
-	$(CLASS_DIR)/java/lang/ExceptionInInitializerError.o \
-	$(CLASS_DIR)/java/lang/Float.o \
-	$(CLASS_DIR)/java/lang/IllegalAccessException.o \
-	$(CLASS_DIR)/java/lang/IllegalArgumentException.o \
-	$(CLASS_DIR)/java/lang/IllegalStateException.o \
-	$(CLASS_DIR)/java/lang/IllegalThreadStateException.o \
-	$(CLASS_DIR)/java/lang/InstantiationException.o \
-	$(CLASS_DIR)/java/lang/InternalError.o \
-	$(CLASS_DIR)/java/lang/IndexOutOfBoundsException.o \
-	$(CLASS_DIR)/java/lang/Integer.o \
-	$(CLASS_DIR)/java/lang/InterruptedException.o \
-	$(CLASS_DIR)/java/lang/LinkageError.o \
-	$(CLASS_DIR)/java/lang/Long.o \
-	$(CLASS_DIR)/java/lang/Math.o \
-	$(CLASS_DIR)/java/lang/NegativeArraySizeException.o \
-	$(CLASS_DIR)/java/lang/NoSuchFieldException.o \
-	$(CLASS_DIR)/java/lang/NoSuchMethodException.o \
-	$(CLASS_DIR)/java/lang/NullPointerException.o \
-	$(CLASS_DIR)/java/lang/NumberFormatException.o \
-	$(CLASS_DIR)/java/lang/Readable.o \
-	$(CLASS_DIR)/java/lang/reflect/Array.o \
-	$(CLASS_DIR)/java/lang/reflect/InvocationTargetException.o \
-	$(CLASS_DIR)/java/lang/reflect/Modifier.o \
-	$(CLASS_DIR)/java/lang/RuntimeException.o \
-	$(CLASS_DIR)/java/lang/SecurityException.o \
-	$(CLASS_DIR)/java/lang/Short.o \
-	$(CLASS_DIR)/java/lang/StackTraceElement.o \
-	$(CLASS_DIR)/java/lang/StrictMath.o \
-	$(CLASS_DIR)/java/lang/StringBuffer.o \
-	$(CLASS_DIR)/java/lang/StringBuilder.o \
-	$(CLASS_DIR)/java/lang/StringIndexOutOfBoundsException.o \
-	$(CLASS_DIR)/java/lang/Thread.o \
-	$(CLASS_DIR)/java/lang/ThreadDeath.o \
-	$(CLASS_DIR)/java/lang/ThreadGroup.o \
-	$(CLASS_DIR)/java/lang/ThreadLocal.o \
-	$(CLASS_DIR)/java/lang/UnsupportedOperationException.o \
-	$(CLASS_DIR)/java/lang/Void.o \
-	$(CLASS_DIR)/java/math/BigDecimal.o \
-	$(CLASS_DIR)/java/math/BigInteger.o \
-	$(CLASS_DIR)/java/math/BitLevel.o \
-	$(CLASS_DIR)/java/math/Conversion.o \
-	$(CLASS_DIR)/java/math/Division.o \
-	$(CLASS_DIR)/java/math/Elementary.o \
-	$(CLASS_DIR)/java/math/Logical.o \
-	$(CLASS_DIR)/java/math/MathContext.o \
-	$(CLASS_DIR)/java/math/Multiplication.o \
-	$(CLASS_DIR)/java/math/Primality.o \
-	$(CLASS_DIR)/java/math/RoundingMode.o \
-	$(CLASS_DIR)/java/nio/Buffer.o \
-	$(CLASS_DIR)/java/nio/BufferFactory.o \
-	$(CLASS_DIR)/java/nio/BufferOverflowException.o \
-	$(CLASS_DIR)/java/nio/BufferUnderflowException.o \
-	$(CLASS_DIR)/java/nio/ByteBuffer.o \
-	$(CLASS_DIR)/java/nio/ByteOrder.o \
-	$(CLASS_DIR)/java/nio/CharArrayBuffer.o \
-	$(CLASS_DIR)/java/nio/CharBuffer.o \
-	$(CLASS_DIR)/java/nio/CharSequenceAdapter.o \
-	$(CLASS_DIR)/java/nio/DoubleArrayBuffer.o \
-	$(CLASS_DIR)/java/nio/DoubleBuffer.o \
-	$(CLASS_DIR)/java/nio/FloatArrayBuffer.o \
-	$(CLASS_DIR)/java/nio/FloatBuffer.o \
-	$(CLASS_DIR)/java/nio/HeapByteBuffer.o \
-	$(CLASS_DIR)/java/nio/IntArrayBuffer.o \
-	$(CLASS_DIR)/java/nio/IntBuffer.o \
-	$(CLASS_DIR)/java/nio/InvalidMarkException.o \
-	$(CLASS_DIR)/java/nio/LongArrayBuffer.o \
-	$(CLASS_DIR)/java/nio/LongBuffer.o \
-	$(CLASS_DIR)/java/nio/ReadOnlyBufferException.o \
-	$(CLASS_DIR)/java/nio/ReadOnlyCharArrayBuffer.o \
-	$(CLASS_DIR)/java/nio/ReadOnlyDoubleArrayBuffer.o \
-	$(CLASS_DIR)/java/nio/ReadOnlyFloatArrayBuffer.o \
-	$(CLASS_DIR)/java/nio/ReadOnlyHeapByteBuffer.o \
-	$(CLASS_DIR)/java/nio/ReadOnlyIntArrayBuffer.o \
-	$(CLASS_DIR)/java/nio/ReadOnlyLongArrayBuffer.o \
-	$(CLASS_DIR)/java/nio/ReadOnlyShortArrayBuffer.o \
-	$(CLASS_DIR)/java/nio/ReadWriteCharArrayBuffer.o \
-	$(CLASS_DIR)/java/nio/ReadWriteDoubleArrayBuffer.o \
-	$(CLASS_DIR)/java/nio/ReadWriteFloatArrayBuffer.o \
-	$(CLASS_DIR)/java/nio/ReadWriteHeapByteBuffer.o \
-	$(CLASS_DIR)/java/nio/ReadWriteIntArrayBuffer.o \
-	$(CLASS_DIR)/java/nio/ReadWriteLongArrayBuffer.o \
-	$(CLASS_DIR)/java/nio/ReadWriteShortArrayBuffer.o \
-	$(CLASS_DIR)/java/nio/ShortArrayBuffer.o \
-	$(CLASS_DIR)/java/nio/ShortBuffer.o \
-	$(CLASS_DIR)/java/text/ParseException.o \
-	$(CLASS_DIR)/java/util/AbstractCollection.o \
-	$(CLASS_DIR)/java/util/AbstractList.o \
-	$(CLASS_DIR)/java/util/AbstractMap.o \
-	$(CLASS_DIR)/java/util/AbstractQueue.o \
-	$(CLASS_DIR)/java/util/AbstractSequentialList.o \
-	$(CLASS_DIR)/java/util/AbstractSet.o \
-	$(CLASS_DIR)/java/util/ArrayDeque.o \
-	$(CLASS_DIR)/java/util/ArrayList.o \
-	$(CLASS_DIR)/java/util/Arrays.o \
-	$(CLASS_DIR)/java/util/BitSet.o \
-	$(CLASS_DIR)/java/util/Calendar.o \
-	$(CLASS_DIR)/java/util/Collections.o \
-	$(CLASS_DIR)/java/util/ConcurrentModificationException.o \
-	$(CLASS_DIR)/java/util/concurrent/atomic/AtomicInteger.o \
-	$(CLASS_DIR)/java/util/concurrent/atomic/AtomicLong.o \
-	$(CLASS_DIR)/java/util/concurrent/ConcurrentHashMap.o \
-	$(CLASS_DIR)/java/util/concurrent/Executor.o \
-	$(CLASS_DIR)/java/util/concurrent/ExecutorService.o \
-	$(CLASS_DIR)/java/util/concurrent/Future.o \
-	$(CLASS_DIR)/java/util/concurrent/TimeUnit.o \
-	$(CLASS_DIR)/java/util/Currency.o \
-	$(CLASS_DIR)/java/util/Date.o \
-	$(CLASS_DIR)/java/util/Dictionary.o \
-	$(CLASS_DIR)/java/util/EnumSet.o \
-	$(CLASS_DIR)/java/util/EventListener.o \
-	$(CLASS_DIR)/java/util/EventObject.o \
-	$(CLASS_DIR)/java/util/EmptyStackException.o \
-	$(CLASS_DIR)/java/util/Grego.o \
-	$(CLASS_DIR)/java/util/GregorianCalendar.o \
-	$(CLASS_DIR)/java/util/HashSet.o \
-	$(CLASS_DIR)/java/util/Hashtable.o \
-	$(CLASS_DIR)/java/util/HugeEnumSet.o \
-	$(CLASS_DIR)/java/util/IdentityHashMap.o \
-	$(CLASS_DIR)/java/util/InputMismatchException.o \
-	$(CLASS_DIR)/java/util/LinkedList.o \
-	$(CLASS_DIR)/java/util/LinkedHashSet.o \
-	$(CLASS_DIR)/java/util/Locale.o \
-	$(CLASS_DIR)/java/util/logging/Formatter.o \
-	$(CLASS_DIR)/java/util/logging/Handler.o \
-	$(CLASS_DIR)/java/util/logging/Level.o \
-	$(CLASS_DIR)/java/util/logging/Logger.o \
-	$(CLASS_DIR)/java/util/logging/LogManager.o \
-	$(CLASS_DIR)/java/util/logging/LogRecord.o \
-	$(CLASS_DIR)/java/util/logging/NSLogHandler.o \
-	$(CLASS_DIR)/java/util/MapEntry.o \
-	$(CLASS_DIR)/java/util/MiniEnumSet.o \
-	$(CLASS_DIR)/java/util/NavigableMap.o \
-	$(CLASS_DIR)/java/util/NavigableSet.o \
-	$(CLASS_DIR)/java/util/NoSuchElementException.o \
-	$(CLASS_DIR)/java/util/PriorityQueue.o \
-	$(CLASS_DIR)/java/util/Properties.o \
-	$(CLASS_DIR)/java/util/Random.o \
-	$(CLASS_DIR)/java/util/SimpleTimeZone.o \
-	$(CLASS_DIR)/java/util/Stack.o \
-	$(CLASS_DIR)/java/util/StringTokenizer.o \
-	$(CLASS_DIR)/java/util/TimeZone.o \
-	$(CLASS_DIR)/java/util/TreeMap.o \
-	$(CLASS_DIR)/java/util/TreeSet.o \
-	$(CLASS_DIR)/java/util/Vector.o \
-	$(CLASS_DIR)/java/util/regex/Matcher.o \
-	$(CLASS_DIR)/java/util/regex/MatchResult.o \
-	$(CLASS_DIR)/java/util/regex/MatchResultImpl.o \
-	$(CLASS_DIR)/java/util/regex/Pattern.o \
-	$(CLASS_DIR)/java/util/regex/PatternSyntaxException.o \
-	$(CLASS_DIR)/java/util/regex/Splitter.o \
-	$(CLASS_DIR)/org/apache/harmony/luni/platform/Endianness.o
+# Java sources to be translated normally.
+JAVA_SOURCES = \
+	java/io/BufferedInputStream.java \
+	java/io/BufferedOutputStream.java \
+	java/io/BufferedReader.java \
+	java/io/BufferedWriter.java \
+	java/io/ByteArrayInputStream.java \
+	java/io/ByteArrayOutputStream.java \
+	java/io/CharArrayReader.java \
+	java/io/CharArrayWriter.java \
+	java/io/File.java \
+	java/io/FileDescriptor.java \
+	java/io/FileInputStream.java \
+	java/io/FileNotFoundException.java \
+	java/io/FileOutputStream.java \
+	java/io/FileReader.java \
+	java/io/FileWriter.java \
+	java/io/FilterInputStream.java \
+	java/io/FilterOutputStream.java \
+	java/io/InputStream.java \
+	java/io/InputStreamReader.java \
+	java/io/InterruptedIOException.java \
+	java/io/InvalidObjectException.java \
+	java/io/IOException.java \
+	java/io/ObjectStreamException.java \
+	java/io/OutputStream.java \
+	java/io/OutputStreamWriter.java \
+	java/io/PrintStream.java \
+	java/io/PrintWriter.java \
+	java/io/Reader.java \
+	java/io/StringReader.java \
+	java/io/StringWriter.java \
+	java/io/SyncFailedException.java \
+	java/io/UnsupportedEncodingException.java \
+	java/io/Writer.java \
+	java/lang/ArithmeticException.java \
+	java/lang/AssertionError.java \
+	java/lang/ArrayIndexOutOfBoundsException.java \
+	java/lang/ArrayStoreException.java \
+	java/lang/Boolean.java \
+	java/lang/Byte.java \
+	java/lang/Character.java \
+	java/lang/ClassCastException.java \
+	java/lang/ClassNotFoundException.java \
+	java/lang/CloneNotSupportedException.java \
+	java/lang/Double.java \
+	java/lang/Enum.java \
+	java/lang/Error.java \
+	java/lang/Exception.java \
+	java/lang/ExceptionInInitializerError.java \
+	java/lang/Float.java \
+	java/lang/IllegalAccessException.java \
+	java/lang/IllegalArgumentException.java \
+	java/lang/IllegalStateException.java \
+	java/lang/IllegalThreadStateException.java \
+	java/lang/InstantiationException.java \
+	java/lang/InternalError.java \
+	java/lang/IndexOutOfBoundsException.java \
+	java/lang/Integer.java \
+	java/lang/InterruptedException.java \
+	java/lang/LinkageError.java \
+	java/lang/Long.java \
+	java/lang/Math.java \
+	java/lang/NegativeArraySizeException.java \
+	java/lang/NoSuchFieldException.java \
+	java/lang/NoSuchMethodException.java \
+	java/lang/NullPointerException.java \
+	java/lang/NumberFormatException.java \
+	java/lang/Readable.java \
+	java/lang/reflect/Array.java \
+	java/lang/reflect/InvocationTargetException.java \
+	java/lang/reflect/Modifier.java \
+	java/lang/RuntimeException.java \
+	java/lang/SecurityException.java \
+	java/lang/Short.java \
+	java/lang/StackTraceElement.java \
+	java/lang/StrictMath.java \
+	java/lang/StringBuffer.java \
+	java/lang/StringBuilder.java \
+	java/lang/StringIndexOutOfBoundsException.java \
+	java/lang/System.java \
+	java/lang/Thread.java \
+	java/lang/ThreadDeath.java \
+	java/lang/ThreadGroup.java \
+	java/lang/ThreadLocal.java \
+	java/lang/UnsupportedOperationException.java \
+	java/lang/Void.java \
+	java/math/BigDecimal.java \
+	java/math/BigInteger.java \
+	java/math/BitLevel.java \
+	java/math/Conversion.java \
+	java/math/Division.java \
+	java/math/Elementary.java \
+	java/math/Logical.java \
+	java/math/MathContext.java \
+	java/math/Multiplication.java \
+	java/math/Primality.java \
+	java/math/RoundingMode.java \
+	java/nio/Buffer.java \
+	java/nio/BufferFactory.java \
+	java/nio/BufferOverflowException.java \
+	java/nio/BufferUnderflowException.java \
+	java/nio/ByteBuffer.java \
+	java/nio/ByteOrder.java \
+	java/nio/CharArrayBuffer.java \
+	java/nio/CharBuffer.java \
+	java/nio/CharSequenceAdapter.java \
+	java/nio/DoubleArrayBuffer.java \
+	java/nio/DoubleBuffer.java \
+	java/nio/FloatArrayBuffer.java \
+	java/nio/FloatBuffer.java \
+	java/nio/HeapByteBuffer.java \
+	java/nio/IntArrayBuffer.java \
+	java/nio/IntBuffer.java \
+	java/nio/InvalidMarkException.java \
+	java/nio/LongArrayBuffer.java \
+	java/nio/LongBuffer.java \
+	java/nio/ReadOnlyBufferException.java \
+	java/nio/ReadOnlyCharArrayBuffer.java \
+	java/nio/ReadOnlyDoubleArrayBuffer.java \
+	java/nio/ReadOnlyFloatArrayBuffer.java \
+	java/nio/ReadOnlyHeapByteBuffer.java \
+	java/nio/ReadOnlyIntArrayBuffer.java \
+	java/nio/ReadOnlyLongArrayBuffer.java \
+	java/nio/ReadOnlyShortArrayBuffer.java \
+	java/nio/ReadWriteCharArrayBuffer.java \
+	java/nio/ReadWriteDoubleArrayBuffer.java \
+	java/nio/ReadWriteFloatArrayBuffer.java \
+	java/nio/ReadWriteHeapByteBuffer.java \
+	java/nio/ReadWriteIntArrayBuffer.java \
+	java/nio/ReadWriteLongArrayBuffer.java \
+	java/nio/ReadWriteShortArrayBuffer.java \
+	java/nio/ShortArrayBuffer.java \
+	java/nio/ShortBuffer.java \
+	java/text/ParseException.java \
+	java/util/AbstractCollection.java \
+	java/util/AbstractList.java \
+	java/util/AbstractMap.java \
+	java/util/AbstractQueue.java \
+	java/util/AbstractSequentialList.java \
+	java/util/AbstractSet.java \
+	java/util/ArrayDeque.java \
+	java/util/ArrayList.java \
+	java/util/Arrays.java \
+	java/util/BitSet.java \
+	java/util/Calendar.java \
+	java/util/Collections.java \
+	java/util/ConcurrentModificationException.java \
+	java/util/concurrent/atomic/AtomicInteger.java \
+	java/util/concurrent/atomic/AtomicLong.java \
+	java/util/concurrent/ConcurrentHashMap.java \
+	java/util/concurrent/Executor.java \
+	java/util/concurrent/ExecutorService.java \
+	java/util/concurrent/Future.java \
+	java/util/concurrent/TimeUnit.java \
+	java/util/Currency.java \
+	java/util/Date.java \
+	java/util/Dictionary.java \
+	java/util/EnumSet.java \
+	java/util/EventListener.java \
+	java/util/EventObject.java \
+	java/util/EmptyStackException.java \
+	java/util/Grego.java \
+	java/util/GregorianCalendar.java \
+	java/util/HashSet.java \
+	java/util/Hashtable.java \
+	java/util/HugeEnumSet.java \
+	java/util/IdentityHashMap.java \
+	java/util/InputMismatchException.java \
+	java/util/LinkedList.java \
+	java/util/LinkedHashSet.java \
+	java/util/Locale.java \
+	java/util/logging/Formatter.java \
+	java/util/logging/Handler.java \
+	java/util/logging/Level.java \
+	java/util/logging/Logger.java \
+	java/util/logging/LogManager.java \
+	java/util/logging/LogRecord.java \
+	java/util/logging/NSLogHandler.java \
+	java/util/MapEntry.java \
+	java/util/MiniEnumSet.java \
+	java/util/NavigableMap.java \
+	java/util/NavigableSet.java \
+	java/util/NoSuchElementException.java \
+	java/util/PriorityQueue.java \
+	java/util/Properties.java \
+	java/util/Random.java \
+	java/util/SimpleTimeZone.java \
+	java/util/Stack.java \
+	java/util/StringTokenizer.java \
+	java/util/TimeZone.java \
+	java/util/TreeMap.java \
+	java/util/TreeSet.java \
+	java/util/Vector.java \
+	java/util/regex/Matcher.java \
+	java/util/regex/MatchResult.java \
+	java/util/regex/MatchResultImpl.java \
+	java/util/regex/Pattern.java \
+	java/util/regex/PatternSyntaxException.java \
+	java/util/regex/Splitter.java \
+	org/apache/harmony/luni/platform/Endianness.java
 
 JAVA_SOURCE_LIST = $(BUILD_DIR)/jre_emul.classes.list
 OBJC_OUT_LIST = $(BUILD_DIR)/jre_emul.objc.list
+
+STUB_JAVA_SOURCES = $(shell find $(STUBS_DIR) -name *.java)
+J2OBJC_ANNOTATION_SOURCES = \
+    $(shell find $(J2OBJC_SRC_ROOT)/com/google/j2objc/annotations -name *.java)
+ALL_JAVA_SOURCES = $(JAVA_SOURCES) $(IOS_JAVA_OBJS:.o=.java) $(IOS_INTERFACES:.h=.java) \
+    $(JRE_INTERFACES:.h=.java) $(STUB_JAVA_SOURCES:$(STUBS_DIR)/%=%) \
+    $(J2OBJC_ANNOTATION_SOURCES:$(J2OBJC_SRC_ROOT)/%=%)
+TRANSLATED_OBJC = $(JRE_INTERFACES:%=$(CLASS_DIR)/%) $(JAVA_SOURCES:%.java=$(CLASS_DIR)/%.m)
+ALL_OBJS = $(JAVA_SOURCES:.java=.o) $(IOS_OBJS) $(IOS_JAVA_OBJS)
 
 ifndef CONFIGURATION_BUILD_DIR
 # Settings for building both Mac OS X, iPhone, and iPhone simulator libraries.
@@ -296,14 +320,11 @@ EMULATION_IPHONE_LIB = $(BUILD_DIR)/iphone-libjre_emul.a
 EMULATION_IPHONEV7S_LIB = $(BUILD_DIR)/iphonev7s-libjre_emul.a
 EMULATION_SIMULATOR_LIB = $(BUILD_DIR)/simulator-libjre_emul.a
 IPHONE_BUILD_DIR = $(BUILD_DIR)/iphone
-IPHONE_OBJS = $(OBJS:$(CLASS_DIR)/%=$(IPHONE_BUILD_DIR)/%) \
-  $(IOS_OBJS:$(CLASS_DIR)/%=$(IPHONE_BUILD_DIR)/%)
+IPHONE_OBJS = $(ALL_OBJS:%=$(IPHONE_BUILD_DIR)/%)
 IPHONEV7S_BUILD_DIR = $(BUILD_DIR)/iphonev7s
-IPHONEV7S_OBJS = $(OBJS:$(CLASS_DIR)/%=$(IPHONEV7S_BUILD_DIR)/%) \
-  $(IOS_OBJS:$(CLASS_DIR)/%=$(IPHONEV7S_BUILD_DIR)/%)
+IPHONEV7S_OBJS = $(ALL_OBJS:%=$(IPHONEV7S_BUILD_DIR)/%)
 SIMULATOR_BUILD_DIR = $(BUILD_DIR)/simulator
-SIMULATOR_OBJS = $(OBJS:$(CLASS_DIR)/%=$(SIMULATOR_BUILD_DIR)/%) \
-  $(IOS_OBJS:$(CLASS_DIR)/%=$(SIMULATOR_BUILD_DIR)/%)
+SIMULATOR_OBJS = $(ALL_OBJS:%=$(SIMULATOR_BUILD_DIR)/%)
 
 IPHONE_SDK_DIR = $(shell bash ../src/main/make/sysroot_path.sh --iphoneos)
 SIMULATOR_SDK_DIR = $(shell bash ../src/main/make/sysroot_path.sh --iphonesimulator)
@@ -316,9 +337,9 @@ endif
 default: lib includes
 	@: # suppress make's "nothing to be done" message
 
-analyze: $(OBJS:.o=.plist)
+analyze: $(OBJS:%.o=$(CLASS_DIR)%.plist)
 
-translate: j2objc $(EMULATION_JAR) pre_translate $(JRE_INTERFACES) $(OBJS:.o=.m)
+translate: j2objc $(EMULATION_JAR) pre_translate $(TRANSLATED_OBJC)
 	@if [ `cat $(JAVA_SOURCE_LIST) | wc -l` -ge 1 ] ; then \
 	  rm -f `cat $(OBJC_OUT_LIST)`; \
 	  $(J2OBJC) --inline-field-access -sourcepath .:$(JRE_SRC) `cat $(JAVA_SOURCE_LIST)` ; \
@@ -331,10 +352,10 @@ pre_translate:
 lib: translate $(EMULATION_LIB)
 	@:
 
-$(EMULATION_LIB): $(IOS_OBJS) $(OBJS)
+$(EMULATION_LIB): $(ALL_OBJS:%=$(CLASS_DIR)/%)
 	@if [ "x$(BUILD_FAT_LIBARY)" == "xYES" ] ; then \
 	  echo "building Mac OS X library" ; \
-	  $(LIBTOOL) -static -o $(EMULATION_MACOSX_LIB) `find $(CLASS_DIR) -name '*.o'` ; \
+	  $(LIBTOOL) -static -o $(EMULATION_MACOSX_LIB) $^ ; \
 	  echo "building iPhoneOS library" ; \
 	  env ALT_ARCH_FLAGS="-arch armv7" ALT_SDK_FLAGS="-isysroot $(IPHONE_SDK_DIR)" \
 	    $(MAKE) iphone_lib ; \
@@ -347,17 +368,17 @@ $(EMULATION_LIB): $(IOS_OBJS) $(OBJS)
 	  $(LIPO) -create $(EMULATION_MACOSX_LIB) $(EMULATION_IPHONE_LIB) \
 	    $(EMULATION_SIMULATOR_LIB) $(EMULATION_IPHONEV7S_LIB) -output $(EMULATION_LIB) ; \
 	else \
-	  $(LIBTOOL) -static -o $(EMULATION_LIB) `find $(CLASS_DIR) -name '*.o'` ; \
+	  $(LIBTOOL) -static -o $(EMULATION_LIB) $^ ; \
 	fi
 
 iphone_lib: $(IPHONE_OBJS)
-	$(LIBTOOL) -static -o $(EMULATION_IPHONE_LIB) `find $(IPHONE_BUILD_DIR) -name '*.o'` ; \
+	$(LIBTOOL) -static -o $(EMULATION_IPHONE_LIB) $^ ; \
 
 iphonev7s_lib: $(IPHONEV7S_OBJS)
-	$(LIBTOOL) -static -o $(EMULATION_IPHONEV7S_LIB) `find $(IPHONEV7S_BUILD_DIR) -name '*.o'` ; \
+	$(LIBTOOL) -static -o $(EMULATION_IPHONEV7S_LIB) $^ ; \
 
 simulator_lib: $(SIMULATOR_OBJS)
-	$(LIBTOOL) -static -o $(EMULATION_SIMULATOR_LIB) `find $(SIMULATOR_BUILD_DIR) -name '*.o'` ; \
+	$(LIBTOOL) -static -o $(EMULATION_SIMULATOR_LIB) $^ ; \
 
 # Copy top-level class headers to include directory.
 includes: $(BUILD_DIR)/.jre_includes
@@ -473,35 +494,9 @@ emul_jar_dist: $(EMULATION_JAR)
 	@mkdir -p $(DIST_LIB_DIR)
 	install -m 0644 $(EMULATION_JAR) $(DIST_LIB_DIR)
 
-$(EMULATION_JAR): $(JRE_ROOT)/java/*/*.java | $(BUILD_DIR)
+$(EMULATION_JAR): $(ALL_JAVA_SOURCES) | $(BUILD_DIR)
 	@echo "building jre_emul.jar"
 	@rm -rf $(EMULATION_STAGE)
 	@mkdir $(EMULATION_STAGE)
-	@javac -d $(EMULATION_STAGE) -sourcepath ../src/main/java \
-		  ../src/main/java/com/google/j2objc/annotations/*.java
-	@javac -classpath $(EMULATION_STAGE) -d $(EMULATION_STAGE) -sourcepath $(JRE_SRC) \
-	  `find $(JRE_SRC_ROOTS) -name '*.java'`
+	@javac -classpath $(EMULATION_STAGE) -d $(EMULATION_STAGE) $^
 	@jar cf $(EMULATION_JAR) -C $(EMULATION_STAGE) .
-
-$(CLASS_DIR)/NSObject+JavaObject.o: $(EMULATION_CLASS_DIR)/NSObject+JavaObject.m
-	$(CLANG) -c $? -o $@ $(OBJCFLAGS) -I$(EMULATION_CLASS_DIR) -I$(CLASS_DIR)
-
-$(CLASS_DIR)/java/lang/Math.h $(CLASS_DIR)/java/lang/Math.m: \
-	  $(EMULATION_CLASS_DIR)/java/lang/Math.java
-	$(J2OBJC) $?
-
-$(CLASS_DIR)/java/lang/System.h $(CLASS_DIR)/java/lang/System.m: \
-	  $(EMULATION_CLASS_DIR)/java/lang/System.java
-	$(J2OBJC) $?
-
-$(CLASS_DIR)/java/util/concurrent/Future.h $(CLASS_DIR)/java/util/concurrent/Future.m: \
-	  $(EMULATION_CLASS_DIR)/java/util/concurrent/Future.java
-	$(J2OBJC) $?
-
-$(CLASS_DIR)/java/util/concurrent/Executor.h $(CLASS_DIR)/java/util/concurrent/Executor.m: \
-	  $(EMULATION_CLASS_DIR)/java/util/concurrent/Executor.java
-	$(J2OBJC) $?
-
-$(CLASS_DIR)/java/util/concurrent/ExecutorService.h $(CLASS_DIR)/java/util/concurrent/ExecutorService.m: \
-	  $(EMULATION_CLASS_DIR)/java/util/concurrent/ExecutorService.java
-	$(J2OBJC) $?
