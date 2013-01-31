@@ -446,10 +446,10 @@ public class RewriterTest extends GenerationTest {
         "private int foo; " +
 
         "private static long serialVersionUID; " +
-        "private void readObject(ObjectInputStream in) {} " +
-        "private void writeObject(ObjectOutputStream out) {} " +
-        "private void readObjectNoData() {} " +
-        "private Object readResolve() { return null; } " +
+  		"private void readObject(ObjectInputStream in) {} " +
+  		"private void writeObject(ObjectOutputStream out) {} " +
+  		"private void readObjectNoData() {} " +
+  		"private Object readResolve() { return null; } " +
         "private Object writeResolve() { return null;} " +
 
         "public Test() {} " +
@@ -561,17 +561,5 @@ public class RewriterTest extends GenerationTest {
         "void test() { A a = new A(); System.out.println(a.group()); }}";
     String translation = translateSourceFile(source, "A", "A.m");
     assertTranslation(translation, "NSLog(@\"%@\", [((A *) NIL_CHK(a)) group]);");
-  }
-
-  // Regression test: Must call "charValue" on boxed type returned from iterator.
-  public void testEnhancedForWithBoxedType() throws IOException {
-    String source = "import java.util.List;" +
-        "public class A { " +
-        "List<Character> chars; " +
-        "void test() { for (char c : chars) {} } }";
-    String translation = translateSourceFile(source, "A", "A.m");
-    assertTranslation(translation,
-        "unichar c = [((JavaLangCharacter *) [((id<JavaUtilIterator>) NIL_CHK(iter__)) next]) " +
-        "charValue];");
   }
 }

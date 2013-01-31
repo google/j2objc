@@ -602,7 +602,7 @@ public class StatementGenerator extends ErrorReportingASTVisitor {
     Expression lhs = node.getLeftHandSide();
     Expression rhs = node.getRightHandSide();
     if (op == Operator.PLUS_ASSIGN &&
-        Types.isJavaStringType(Types.getTypeBinding(lhs))) {
+        Types.isJavaStringType(lhs.resolveTypeBinding())) {
       if (Options.useReferenceCounting() && isLeftHandSideRetainedProperty(lhs)) {
         String name = leftHandSideInstanceVariableName(lhs);
         buffer.append("JreOperatorRetainedAssign(&" + name);
@@ -662,7 +662,8 @@ public class StatementGenerator extends ErrorReportingASTVisitor {
           buffer.append(", ");
           rhs.accept(this);
           buffer.append(")");
-        } else {
+        }
+        else {
           lhs.accept(this);
           buffer.append(" = ");
           rhs.accept(this);
@@ -761,7 +762,8 @@ public class StatementGenerator extends ErrorReportingASTVisitor {
       if (!type.isPrimitive() && lhs instanceof SimpleName) {
         if (isProperty((SimpleName) lhs) && !Types.isWeakReference(var)) {
           isRetainedProperty = true;
-        } else if (isStaticVariableAccess(lhs)) {
+        }
+        else if (isStaticVariableAccess(lhs)) {
           isRetainedProperty = true;
         }
       }
@@ -783,7 +785,8 @@ public class StatementGenerator extends ErrorReportingASTVisitor {
         if (isProperty((SimpleName) lhs)) {
           String name = NameTable.getName((SimpleName) lhs);
           nativeName = NameTable.javaFieldToObjC(name);
-        } else if (isStaticVariableAccess(lhs)) {
+        }
+        else if (isStaticVariableAccess(lhs)) {
           nativeName = NameTable.getName((SimpleName) lhs);
         }
       }
@@ -807,10 +810,9 @@ public class StatementGenerator extends ErrorReportingASTVisitor {
   }
 
   private String getRightShiftType(Expression node) {
-    ITypeBinding binding = Types.getTypeBinding(node);
-    assert binding != null;
+    ITypeBinding binding = node.resolveTypeBinding();
     AST ast = node.getAST();
-    if (ast.resolveWellKnownType("int").equals(binding)) {
+    if (binding == null || ast.resolveWellKnownType("int").equals(binding)) {
       return "int";
     } else if (ast.resolveWellKnownType("long").equals(binding)) {
       return "long long";
@@ -827,14 +829,6 @@ public class StatementGenerator extends ErrorReportingASTVisitor {
 
   @Override
   public boolean visit(Block node) {
-    if (Types.hasAutoreleasePool(node)) {
-      if (Options.useReferenceCounting()) {
-        // TODO(user): use @autoreleasepool like ARC when iOS 5 is minimum.
-        buffer.append("{\nNSAutoreleasePool *pool__ = [[NSAutoreleasePool alloc] init];\n");
-      } else if (Options.useARC()) {
-        buffer.append("{\n@autoreleasepool ");
-      }
-    }
     buffer.append("{\n");
     List<?> stmts = node.statements();
     // In case it's the body of a dealloc method, we generate the debug statement.
@@ -857,13 +851,6 @@ public class StatementGenerator extends ErrorReportingASTVisitor {
     }
     printStatements(stmts);
     buffer.append("}\n");
-    if (Types.hasAutoreleasePool(node)) {
-      if (Options.useReferenceCounting()) {
-        buffer.append("[pool__ release];\n}\n");
-      } else if (Options.useARC()) {
-        buffer.append("}\n");
-      }
-    }
     return false;
   }
 
@@ -1032,9 +1019,96 @@ public class StatementGenerator extends ErrorReportingASTVisitor {
 
   @Override
   public boolean visit(EnhancedForStatement node) {
-    // Enhanced for loops should be rewritten prior to code generation.
-    assert false;
+    SingleVariableDeclaration var = node.getParameter();
+    boolean emitAutoreleasePool = Types.hasAutoreleasePoolAnnotation(Types.getBinding(var));
+    String varName = NameTable.getName(var.getName());
+    if (NameTable.isReservedName(varName)) {
+      varName += "__";
+      NameTable.rename(Types.getBinding(var.getName()), varName);
+    }
+    String arrayExpr = generate(node.getExpression(), fieldHiders, asFunction,
+        buffer.getSourcePosition());
+    ITypeBinding arrayType = Types.getTypeBinding(node.getExpression());
+    if (arrayType.isArray()) {
+      buffer.append("{\nint n__ = [");
+      buffer.append(arrayExpr);
+      buffer.append(" count];\n");
+      buffer.append("for (int i__ = 0; i__ < n__; i__++) {\n");
+      printAutoreleasePoolStart(emitAutoreleasePool);
+      buffer.append(NameTable.javaRefToObjC(var.getType()));
+      buffer.append(' ');
+      buffer.append(varName);
+      buffer.append(" = [");
+      buffer.append(arrayExpr);
+      buffer.append(' ');
+      if (arrayType.getComponentType().isPrimitive()) {
+        buffer.append(var.getType().toString());
+      } else {
+        buffer.append("object");
+      }
+      buffer.append("AtIndex:i__];\n");
+      Statement body = node.getBody();
+      if (body instanceof Block) {
+        // strip surrounding braces
+        printStatements(((Block) body).statements());
+      } else {
+        body.accept(this);
+      }
+      printAutoreleasePoolEnd(emitAutoreleasePool);
+      buffer.append("}\n}\n");
+    } else {
+      // var must be an instance of an Iterable class.
+      String objcType = NameTable.javaRefToObjC(var.getType());
+      buffer.append("{\nid<JavaLangIterable> array__ = (id<JavaLangIterable>) ");
+      buffer.append(arrayExpr);
+      buffer.append(";\n");
+      buffer.append("if (!array__) {\n");
+      if (useReferenceCounting) {
+        buffer.append("@throw [[[JavaLangNullPointerException alloc] init] autorelease];\n}\n");
+      } else {
+        buffer.append("@throw [[JavaLangNullPointerException alloc] init];\n}\n");
+      }
+      buffer.append("id<JavaUtilIterator> iter__ = [array__ iterator];\n");
+      buffer.append("while ([iter__ hasNext]) {\n");
+      printAutoreleasePoolStart(emitAutoreleasePool);
+      buffer.append(objcType);
+      buffer.append(' ');
+      buffer.append(varName);
+      buffer.append(" = (");
+      buffer.append(objcType);
+      buffer.append(") [iter__ next];\n");
+      Statement body = node.getBody();
+      if (body instanceof Block) {
+        // strip surrounding braces
+        printStatements(((Block) body).statements());
+      } else {
+        body.accept(this);
+      }
+      printAutoreleasePoolEnd(emitAutoreleasePool);
+      buffer.append("}\n}\n");
+    }
     return false;
+  }
+
+  private void printAutoreleasePoolStart(boolean emitAutoreleasePool) {
+    if (emitAutoreleasePool) {
+      // TODO(user): use @autoreleasepool like ARC when iOS 5 is minimum.
+      if (Options.useReferenceCounting()) {
+        buffer.append("{\nNSAutoreleasePool *pool__ = [[NSAutoreleasePool alloc] init];\n");
+      } else if (Options.useARC()) {
+        buffer.append("{\n@autoreleasepool {\n");
+      }
+    }
+  }
+
+  private void printAutoreleasePoolEnd(boolean emitAutoreleasePool) {
+    if (emitAutoreleasePool) {
+      if (Options.useReferenceCounting()) {
+        buffer.append("[pool__ release];\n}\n");
+      } else if (Options.useARC()) {
+        buffer.append("}\n}\n");
+      }
+    }
   }
 
   @Override
@@ -1101,7 +1175,9 @@ public class StatementGenerator extends ErrorReportingASTVisitor {
       }
     }
     buffer.append(") ");
+    printAutoreleasePoolStart(emitAutoreleasePool);
     node.getBody().accept(this);
+    printAutoreleasePoolEnd(emitAutoreleasePool);
     return false;
   }
 
@@ -1557,7 +1633,8 @@ public class StatementGenerator extends ErrorReportingASTVisitor {
       if (kind == 'F') {
         token += 'f';
       }
-    } else if (kind == 'J') {
+    }
+    else if (kind == 'J') {
       if (token.equals("0x8000000000000000L") || token.equals("-9223372036854775808L")) {
         // Convert min long literal to an expression
         token = "-0x7fffffffffffffffLL - 1";
@@ -1602,8 +1679,7 @@ public class StatementGenerator extends ErrorReportingASTVisitor {
   public boolean visit(PostfixExpression node) {
     if (node.getOperand() instanceof ArrayAccess) {
       PostfixExpression.Operator op = node.getOperator();
-      if (op == PostfixExpression.Operator.INCREMENT
-          || op == PostfixExpression.Operator.DECREMENT) {
+      if (op == PostfixExpression.Operator.INCREMENT || op == PostfixExpression.Operator.DECREMENT) {
         String methodName = op == PostfixExpression.Operator.INCREMENT ? "postIncr" : "postDecr";
         printArrayIncrementOrDecrement((ArrayAccess) node.getOperand(), methodName);
         return false;

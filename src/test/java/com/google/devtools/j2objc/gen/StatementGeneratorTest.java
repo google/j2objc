@@ -630,8 +630,7 @@ public class StatementGeneratorTest extends GenerationTest {
     List<Statement> stmts = translateStatements(source);
     assertEquals(2, stmts.size());
     String result = generateStatement(stmts.get(1));
-    assertTranslation(result, "int n__ = ");
-    assertTranslation(result, "for (int i__ = 0; i__ < n__; i__++) {");
+    assertTrue(result.contains("{\nint n__"));
   }
 
   public void testSwitchStatementWithExpression() throws IOException {
@@ -1257,6 +1256,7 @@ public class StatementGeneratorTest extends GenerationTest {
         "Test", "Test.m");
     assertTranslation(translation, "  for (int i = 0; i < 10; i++) {\n" +
         "    @autoreleasepool {\n" +
+        "      {\n      }\n" +
         "    }\n" +
         "  }");
   }

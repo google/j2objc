@@ -474,6 +474,7 @@ public class ObjectiveCImplementationGeneratorTest extends GenerationTest {
       "Test", "Test.m");
     assertTranslation(translation, "- (void)foo {\n" +
         "  @autoreleasepool {\n" +
+        "    {\n    }\n" +
         "  }\n" +
         "}");
   }
