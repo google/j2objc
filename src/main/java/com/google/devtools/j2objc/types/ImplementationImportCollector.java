@@ -251,6 +251,8 @@ public class ImplementationImportCollector extends HeaderImportCollector {
 
   @Override
   public boolean visit(MethodInvocation node) {
+    IMethodBinding methodBinding = Types.getMethodBinding(node);
+    addReference(methodBinding.getReturnType());
     // Check for vararg method
     IMethodBinding binding = Types.getMethodBinding(node);
     if (binding != null && binding.isVarargs()) {
@@ -292,7 +294,6 @@ public class ImplementationImportCollector extends HeaderImportCollector {
       }
     }
     while (expr != null && expr instanceof Name) {
-      IMethodBinding methodBinding = Types.getMethodBinding(node);
       if (methodBinding instanceof IOSMethodBinding) {
         // true for mapped methods
         IMethodBinding resolvedBinding = Types.resolveInvocationBinding(node);
@@ -301,7 +302,6 @@ public class ImplementationImportCollector extends HeaderImportCollector {
           break;
         }
       }
-      addReference(methodBinding.getReturnType());
       ITypeBinding typeBinding = Types.getTypeBinding(expr);
       if (typeBinding != null && typeBinding.isClass()) { // if class literal
         addReference(typeBinding);
