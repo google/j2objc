@@ -4,7 +4,7 @@
 # Run j2objc translation tool.
 #
 # Usage:
-#   j2objc [-classpath path] [-sourcepath path] [-d outputDirectory] <file.java> ...
+#   j2objc [java_options] [-classpath path] [-sourcepath path] [-d outputDirectory] <file.java> ...
 #
 
 if [ -L "$0" ]; then
@@ -24,4 +24,16 @@ if [ x${USE_SYSTEM_BOOT_PATH} == x ]; then
   readonly BOOT_PATH=-Xbootclasspath:${LIB_DIR}/jre_emul.jar
 fi
 
-java -jar ${JAR} ${BOOT_PATH} $*
+# Java arguments beginning with -X must go first in the argument list.
+JAVA_ARGS=""
+J2OBJC_ARGS=""
+for ARG in $@; do
+  if [[ ${ARG} == -X* ]]; then
+    JAVA_ARGS="${JAVA_ARGS} ${ARG}"
+  else
+    J2OBJC_ARGS="${J2OBJC_ARGS} ${ARG}"
+  fi
+done
+
+java ${JAVA_ARGS} -jar ${JAR} ${BOOT_PATH} ${J2OBJC_ARGS}
+
