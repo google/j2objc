@@ -78,10 +78,19 @@ public class ImplementationImportCollectorTest extends GenerationTest {
 
   public void testEnhancedForMethodInvocation() throws IOException {
     addSourceFile("import java.util.*; class A { " +
-    	"final Map<String,String> map; }", "A.java");
+        "final Map<String,String> map; }", "A.java");
     String translation = translateSourceFile(
         "import java.util.*; class B extends A { " +
         "void test() { for (String s : map.keySet()) {}}}", "B", "B.m");
     assertTranslation(translation, "#import \"java/util/Map.h\"");
+  }
+
+  public void testReturnTypeOfSuperclassMethod() throws IOException {
+    addSourceFile("interface I {}", "I.java");
+    addSourceFile("class A implements I {}", "A.java");
+    addSourceFile("class B { A getAnA() { return new A(); } }", "B.java");
+    String translation = translateSourceFile(
+        "class C extends B { void test() { I i = getAnA(); } }", "C", "C.m");
+    assertTranslation(translation, "#import \"A.h\"");
   }
 }
