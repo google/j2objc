@@ -8,10 +8,6 @@
 
 #import "JreEmulation.h"
 
-#if __has_feature(objc_arc)
-#error This header cannot be compiled with ARC enabled.
-#endif
-
 #import "java/io/Serializable.h"
 #import "java/util/AbstractCollection.h"
 #import "java/util/AbstractMap.h"
@@ -28,7 +24,11 @@
 @interface JavaUtilHashMap () {
 @public
   int elementCount_;
-  JavaUtilHashMap_Entry **elementData_;
+  // TODO(user): a CF version of JavaUtilHashMap_Entry should be used
+  // instead (CFEntry **elementData_), so we can retain/release in ARC
+  // using __bridge_retain and __bridge_transfer casts, rather than
+  // use __unsafe_unretained.
+  JavaUtilHashMap_Entry * __unsafe_unretained *elementData_;
   int elementDataLength_;
   int modCount_;
   float loadFactor_;
@@ -96,9 +96,9 @@
  @public
   int position_;
   int expectedModCount_;
-  JavaUtilHashMap_Entry *futureEntry_;
-  JavaUtilHashMap_Entry *currentEntry_;
-  JavaUtilHashMap_Entry *prevEntry_;
+  JavaUtilHashMap_Entry __unsafe_unretained *futureEntry_;
+  JavaUtilHashMap_Entry __unsafe_unretained *currentEntry_;
+  JavaUtilHashMap_Entry __unsafe_unretained *prevEntry_;
   JavaUtilHashMap *associatedMap_;
 }
 
@@ -107,7 +107,7 @@
 @property (nonatomic, assign) JavaUtilHashMap_Entry *futureEntry;
 @property (nonatomic, assign) JavaUtilHashMap_Entry *currentEntry;
 @property (nonatomic, assign) JavaUtilHashMap_Entry *prevEntry;
-@property (nonatomic, retain) JavaUtilHashMap *associatedMap;
+@property (nonatomic, strong) JavaUtilHashMap *associatedMap;
 
 - (id)initWithJavaUtilHashMap:(JavaUtilHashMap *)hm;
 - (BOOL)hasNext;

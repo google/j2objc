@@ -6,10 +6,6 @@
 //  Copyright 2012 Google, Inc. All rights reserved.
 //
 
-#if __has_feature(objc_arc)
-#error This class cannot be built with ARC enabled.
-#endif
-
 #import "java/lang/CloneNotSupportedException.h"
 #import "java/lang/IllegalArgumentException.h"
 #import "java/lang/IllegalStateException.h"
@@ -65,13 +61,14 @@
       capacity = [JavaUtilHashMap calculateCapacityWithInt:capacity];
       elementCount_ = 0;
       free(elementData_);
-      elementData_ = (JavaUtilHashMap_Entry **) calloc(capacity, sizeof(JavaUtilHashMap_Entry *));
+      elementData_ = (JavaUtilHashMap_Entry * __unsafe_unretained *)
+          calloc(capacity, sizeof(JavaUtilHashMap_Entry *));
       elementDataLength_ = capacity;
       self.loadFactor = loadFactor;
       [self computeThreshold];
     }
     else {
-      @throw [[[JavaLangIllegalArgumentException alloc] init] autorelease];
+      @throw AUTORELEASE([[JavaLangIllegalArgumentException alloc] init]);
     }
   }
   return self;
@@ -99,7 +96,9 @@
       elementData_[i] = nil;
       while (entry != nil) {
         JavaUtilHashMap_Entry *next = entry->next_;
+#if ! __has_feature(objc_arc)
         [entry release];
+#endif
         entry = next;
       }
     }
@@ -120,8 +119,8 @@
     JavaUtilHashMap *map = (JavaUtilHashMap *) [super clone];
     map.elementCount = 0;
     // map->elementData_ is NULL at this point.
-    map->elementData_ =
-        (JavaUtilHashMap_Entry **) calloc(elementDataLength_, sizeof(JavaUtilHashMap_Entry *));
+    map->elementData_ = (JavaUtilHashMap_Entry * __unsafe_unretained *)
+        calloc(elementDataLength_, sizeof(JavaUtilHashMap_Entry *));
     map.elementDataLength = elementDataLength_;
     [map putAllWithJavaUtilMap:self];
     return map;
@@ -167,7 +166,8 @@
 }
 
 - (id<JavaUtilSet>)entrySet {
-  return [[[JavaUtilHashMap_HashMapEntrySet alloc] initWithJavaUtilHashMap:self] autorelease];
+  return AUTORELEASE([[JavaUtilHashMap_HashMapEntrySet alloc]
+                      initWithJavaUtilHashMap:self]);
 }
 
 - (id)getWithId:(id)key {
@@ -249,8 +249,13 @@
       }
     }
   }
+#if __has_feature(objc_arc)
+  id result = entry->value_;
+  entry->value_ = value;
+#else
   id result = [entry->value_ autorelease];
   entry->value_ = [value retain];
+#endif
   return result;
 }
 
@@ -277,7 +282,7 @@
   {
     id<JavaLangIterable> array__ = (id<JavaLangIterable>) [((id<JavaUtilMap>) NIL_CHK(map)) entrySet];
     if (!array__) {
-      @throw [[[JavaLangNullPointerException alloc] init] autorelease];
+      @throw AUTORELEASE([[JavaLangNullPointerException alloc] init]);
     }
     id<JavaUtilIterator> iter__ = [array__ iterator];
     while ([iter__ hasNext]) {
@@ -289,7 +294,9 @@
 
 - (void)rehashWithInt:(int)capacity {
   int length = [JavaUtilHashMap calculateCapacityWithInt:(capacity == 0 ? 1 : capacity << 1)];
-  JavaUtilHashMap_Entry **newData = calloc(length, sizeof(JavaUtilHashMap_Entry *));
+  JavaUtilHashMap_Entry * __unsafe_unretained *newData =
+      (JavaUtilHashMap_Entry * __unsafe_unretained *)
+      calloc(length, sizeof(JavaUtilHashMap_Entry *));
   for (int i = 0; i < elementDataLength_; i++) {
     JavaUtilHashMap_Entry *entry = elementData_[i];
     elementData_[i] = nil;
@@ -333,7 +340,9 @@
   }
   modCount_++;
   elementCount_--;
+#if ! __has_feature(objc_arc)
   [entry autorelease];
+#endif
 }
 
 - (JavaUtilHashMap_Entry *)removeEntryWithId:(id)key {
@@ -368,7 +377,7 @@
   }
   modCount_++;
   elementCount_--;
-  return [entry autorelease];
+  return AUTORELEASE(entry);
 }
 
 - (int)size {
@@ -397,7 +406,11 @@
 }
 
 - (id)copyWithZone:(NSZone *)zone {
-  return [[self clone] retain];
+  id clone = [self clone];
+#if ! __has_feature(objc_arc)
+  [clone retain];
+#endif
+  return clone;
 }
 
 - (void)dealloc {
@@ -405,12 +418,14 @@
   [self clear];
   free(elementData_);
   elementData_ = nil;
+#if ! __has_feature(objc_arc)
   [super dealloc];
+#endif
 }
 
 - (NSArray *)memDebugStrongReferences {
   NSMutableArray *result =
-      [[[super memDebugStrongReferences] mutableCopy] autorelease];
+      AUTORELEASE([[super memDebugStrongReferences] mutableCopy]);
   for (int i = 0; i < elementDataLength_; i++) {
     JavaUtilHashMap_Entry *entry = elementData_[i];
     while (entry != nil) {
@@ -459,8 +474,13 @@
 - (id)initWithJavaUtilHashMap:(JavaUtilHashMap *)hm {
   if ((self = [super init])) {
     position_ = 0;
+#if ! __has_feature(objc_arc)
     [associatedMap_ autorelease];
-    associatedMap_ = [hm retain];
+#endif
+    associatedMap_ = hm;
+#if ! __has_feature(objc_arc)
+    [associatedMap_  retain];
+#endif
     expectedModCount_ = ((JavaUtilHashMap *) NIL_CHK(hm)).modCount;
     futureEntry_ = nil;
   }
@@ -484,14 +504,14 @@
 
 - (void)checkConcurrentMod {
   if (expectedModCount_ != ((JavaUtilHashMap *) NIL_CHK(associatedMap_)).modCount) {
-    @throw [[[JavaUtilConcurrentModificationException alloc] init] autorelease];
+    @throw AUTORELEASE([[JavaUtilConcurrentModificationException alloc] init]);
   }
 }
 
 - (void)makeNext {
   [self checkConcurrentMod];
   if (![self hasNext]) {
-    @throw [[[JavaUtilNoSuchElementException alloc] init] autorelease];
+    @throw AUTORELEASE([[JavaUtilNoSuchElementException alloc] init]);
   }
   if (futureEntry_ == nil) {
     currentEntry_ = associatedMap_->elementData_[position_++];
@@ -510,7 +530,7 @@
 - (void)remove {
   [self checkConcurrentMod];
   if (currentEntry_ == nil) {
-    @throw [[[JavaLangIllegalStateException alloc] init] autorelease];
+    @throw AUTORELEASE([[JavaLangIllegalStateException alloc] init]);
   }
   if (prevEntry_ == nil) {
     int index = currentEntry_->origKeyHash_ & (associatedMap_.elementDataLength - 1);
@@ -519,17 +539,21 @@
   else {
     prevEntry_->next_ = currentEntry_->next_;
   }
+#if ! __has_feature(objc_arc)
   [currentEntry_ autorelease];
+#endif
   currentEntry_ = nil;
   expectedModCount_++;
   associatedMap_.modCount++;
   associatedMap_.elementCount--;
 }
 
+#if ! __has_feature(objc_arc)
 - (void)dealloc {
   [associatedMap_ autorelease];
   [super dealloc];
 }
+#endif
 
 @end
 
@@ -628,11 +652,8 @@
 }
 
 - (id<JavaUtilIterator>)iterator {
-  return [[[JavaUtilHashMap_EntryIterator alloc] initWithJavaUtilHashMap:associatedMap_] autorelease];
-}
-
-- (void)dealloc {
-  [super dealloc];
+  return AUTORELEASE([[JavaUtilHashMap_EntryIterator alloc]
+                      initWithJavaUtilHashMap:associatedMap_]);
 }
 
 @end
@@ -658,7 +679,8 @@
 }
 
 - (id<JavaUtilIterator>)iterator {
-  return [[[JavaUtilHashMap_KeyIterator alloc] initWithJavaUtilHashMap:outer_] autorelease];
+  return AUTORELEASE([[JavaUtilHashMap_KeyIterator alloc]
+                      initWithJavaUtilHashMap:outer_]);
 }
 
 - (id)initWithJavaUtilHashMap:(JavaUtilHashMap *)outer {
@@ -666,10 +688,6 @@
     outer_ = outer;
   }
   return self;
-}
-
-- (void)dealloc {
-  [super dealloc];
 }
 
 @end
@@ -690,7 +708,8 @@
 }
 
 - (id<JavaUtilIterator>)iterator {
-  return [[[JavaUtilHashMap_ValueIterator alloc] initWithJavaUtilHashMap:outer_] autorelease];
+  return AUTORELEASE([[JavaUtilHashMap_ValueIterator alloc]
+                      initWithJavaUtilHashMap:outer_]);
 }
 
 - (id)initWithJavaUtilHashMap:(JavaUtilHashMap *)outer {
@@ -698,10 +717,6 @@
     outer_ = outer;
   }
   return self;
-}
-
-- (void)dealloc {
-  [super dealloc];
 }
 
 @end

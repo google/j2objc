@@ -44,10 +44,16 @@
 - (NSString *)getLocalizedMessage;
 - (NSString *)getMessage;
 - (IOSObjectArray *)getStackTrace;
-- (JavaLangThrowable *)initCauseWithJavaLangThrowable:
-    (JavaLangThrowable *)cause;
 - (void)printStackTrace;
 - (void)printStackTraceWithJavaIoPrintStream:(JavaIoPrintStream *)ps;
 - (void)printStackTraceWithJavaIoPrintWriter:(JavaIoPrintWriter *)w;
 - (void)setStackTraceWithJavaLangStackTraceElementArray:(IOSObjectArray *)stackTrace;
+
+// Throwable.initCause() is a public method in the Java API.  The clang
+// compiler assumes methods starting with "init" are constructors, which
+// when compiled with ARC restricts what code can be in that method.  The
+// following forces clang to treat initCause() as a normal method, by
+// unsetting its method family.
+- (JavaLangThrowable *)initCauseWithJavaLangThrowable:
+    (JavaLangThrowable *)cause __attribute__((objc_method_family(none)));
 @end

@@ -122,7 +122,8 @@
 
 + (id)arrayWithNSArray:(NSArray *)array type:(IOSClass *)type {
   NSUInteger count = [array count];
-  id *objects = malloc(sizeof(id) * count);
+  id __unsafe_unretained *objects =
+      (id __unsafe_unretained *) malloc(sizeof(id) * count);
   [array getObjects:objects range:NSMakeRange(0, count)];
   id result = [IOSObjectArray arrayWithObjects:objects count:count type:type];
   free(objects);

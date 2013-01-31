@@ -100,86 +100,113 @@ typedef union {
 }
 
 - (BOOL)getBooleanWithId:(id)object {
-  BOOL *field = ((BOOL *) object) + ivar_getOffset(ivar_);
+  void *p = (ARCBRIDGE void *) object;
+  BOOL *field = ((BOOL *) p) + ivar_getOffset(ivar_);
   return *field;
 }
 
 - (char)getByteWithId:(id)object {
-  char *field = ((char *) object) + ivar_getOffset(ivar_);
+  void *p = (ARCBRIDGE void *) object;
+  char *field = ((char *) p) + ivar_getOffset(ivar_);
   return *field;
 }
 
 - (unichar)getCharWithId:(id)object {
-  unichar *field = ((unichar *) object) + ivar_getOffset(ivar_);
+  void *p = (ARCBRIDGE void *) object;
+  unichar *field = ((unichar *) p) + ivar_getOffset(ivar_);
   return *field;
 }
 
 - (double)getDoubleWithId:(id)object {
-  double *field = ((double *) object) + ivar_getOffset(ivar_);
+  void *p = (ARCBRIDGE void *) object;
+  double *field = ((double *) p) + ivar_getOffset(ivar_);
   return *field;
 }
 
 - (float)getFloatWithId:(id)object {
-  float *field = ((float *) object) + ivar_getOffset(ivar_);
+  void *p = (ARCBRIDGE void *) object;
+  float *field = ((float *) p) + ivar_getOffset(ivar_);
   return *field;
 }
 
 - (int)getIntWithId:(id)object {
-  int *field = ((int *) object) + ivar_getOffset(ivar_);
+  void *p = (ARCBRIDGE void *) object;
+  int *field = ((int *) p) + ivar_getOffset(ivar_);
   return *field;
 }
 
 - (long long)getLongWithId:(id)object {
-  long long *field = ((long long *) object) + ivar_getOffset(ivar_);
+  void *p = (ARCBRIDGE void *) object;
+  long long *field = ((long long *) p) + ivar_getOffset(ivar_);
   return *field;
 }
 
 - (short)getShortWithId:(id)object {
-  short *field = ((short *) object) + ivar_getOffset(ivar_);
+  void *p = (ARCBRIDGE void *) object;
+  short *field = ((short *) p) + ivar_getOffset(ivar_);
   return *field;
 }
 
-- (void)setWithId:(id)object withId:(id)value {
+- (void)setAndRetain:(id)object withId:(id) ARC_CONSUME_PARAMETER value {
   object_setIvar(object, ivar_, value);
 }
 
+- (void)setWithId:(id)object withId:(id) value {
+  // Test for nil, since calling a method that consumes its parameters
+  // with nil causes a leak.
+  // http://clang.llvm.org/docs/AutomaticReferenceCounting.html#retain-count-semantics
+  if (value) {
+    [self setAndRetain:object withId:value];
+  } else {
+    object_setIvar(object, ivar_, value);
+  }
+}
+
 - (void)setBooleanWithId:(id)object withBOOL:(BOOL)value {
-  BOOL *field = ((BOOL *) object) + ivar_getOffset(ivar_);
+  void *p = (ARCBRIDGE void *) object;
+  BOOL *field = ((BOOL *) p) + ivar_getOffset(ivar_);
   *field = value;
 }
 
 - (void)setByteWithId:(id)object withChar:(char)value {
-  char *field = ((char *) object) + ivar_getOffset(ivar_);
+  void *p = (ARCBRIDGE void *) object;
+  char *field = ((char *) p) + ivar_getOffset(ivar_);
   *field = value;
 }
 
 - (void)setCharWithId:(id)object withUnichar:(unichar)value {
-  unichar *field = ((unichar *) object) + ivar_getOffset(ivar_);
+  void *p = (ARCBRIDGE void *) object;
+  unichar *field = ((unichar *) p) + ivar_getOffset(ivar_);
   *field = value;
 }
 
 - (void)setDoubleWithId:(id)object withDouble:(double)value {
-  double *field = ((double *) object) + ivar_getOffset(ivar_);
+  void *p = (ARCBRIDGE void *) object;
+  double *field = ((double *) p) + ivar_getOffset(ivar_);
   *field = value;
 }
 
 - (void)setFloatWithId:(id)object withFloat:(float)value {
-  float *field = ((float *) object) + ivar_getOffset(ivar_);
+  void *p = (ARCBRIDGE void *) object;
+  float *field = ((float *) p) + ivar_getOffset(ivar_);
   *field = value;
 }
 
 - (void)setIntWithId:(id)object withInt:(int)value {
-  int *field = ((int *) object) + ivar_getOffset(ivar_);
+  void *p = (ARCBRIDGE void *) object;
+  int *field = ((int *) p) + ivar_getOffset(ivar_);
   *field = value;
 }
 
 - (void)setLongWithId:(id)object withLongInt:(long long)value {
-  long long *field = ((long long *) object) + ivar_getOffset(ivar_);
+  void *p = (ARCBRIDGE void *) object;
+  long long *field = ((long long *) p) + ivar_getOffset(ivar_);
   *field = value;
 }
 
 - (void)setShortWithId:(id)object withShortInt:(short)value {
-  short *field = ((short *) object) + ivar_getOffset(ivar_);
+  void *p = (ARCBRIDGE void *) object;
+  short *field = ((short *) p) + ivar_getOffset(ivar_);
   *field = value;
 }
 

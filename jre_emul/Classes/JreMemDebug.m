@@ -36,8 +36,6 @@ FOUNDATION_EXPORT void JreMemDebugRemoveInternal(id obj) {
 }
 FOUNDATION_EXPORT void JreMemDebugLockInternal(void) {
 }
-FOUNDATION_EXPORT void JreMemDebugUnlock(void) {
-}
 FOUNDATION_EXPORT void JreMemDebugMarkAllocations(void) {
   NSLog(@"J2Objc MemDebug: Not implemented when ARC is enabled.");
 }

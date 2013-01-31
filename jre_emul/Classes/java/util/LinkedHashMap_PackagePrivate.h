@@ -6,10 +6,6 @@
 //  Copyright 2012 Google, Inc. All rights reserved.
 //
 
-#if __has_feature(objc_arc)
-#error This header cannot be compiled with ARC enabled.
-#endif
-
 @class JavaUtilLinkedHashMap_LinkedHashMapEntry;
 
 #import "JreEmulation.h"
@@ -26,7 +22,12 @@
 @interface JavaUtilLinkedHashMap () {
 @public
   BOOL accessOrder_;
-  JavaUtilLinkedHashMap_LinkedHashMapEntry *head_, *tail_;
+  // TODO(user): a CF version of LinkedHashMapEntry should be used
+  // instead (CFLinkedHashMapEntry), so we can retain/release in ARC
+  // using __bridge_retain and __bridge_transfer casts, rather than
+  // use __unsafe_unretained.
+  JavaUtilLinkedHashMap_LinkedHashMapEntry __unsafe_unretained *head_,
+                                           __unsafe_unretained *tail_;
 }
 
 @property (nonatomic, assign) BOOL accessOrder;
@@ -54,9 +55,9 @@
 @interface JavaUtilLinkedHashMap_AbstractMapIterator : NSObject {
  @public
   int expectedModCount_;
-  JavaUtilLinkedHashMap_LinkedHashMapEntry *futureEntry_;
-  JavaUtilLinkedHashMap_LinkedHashMapEntry *currentEntry_;
-  JavaUtilLinkedHashMap *associatedMap_;
+  JavaUtilLinkedHashMap_LinkedHashMapEntry __unsafe_unretained *futureEntry_;
+  JavaUtilLinkedHashMap_LinkedHashMapEntry __unsafe_unretained *currentEntry_;
+  JavaUtilLinkedHashMap __unsafe_unretained *associatedMap_;
 }
 
 - (id)initWithJavaUtilLinkedHashMap:(JavaUtilLinkedHashMap *)map;

@@ -26,7 +26,9 @@ import com.google.devtools.j2objc.util.NameTable;
 import org.eclipse.jdt.core.dom.AST;
 import org.eclipse.jdt.core.dom.ASTVisitor;
 import org.eclipse.jdt.core.dom.Assignment;
+import org.eclipse.jdt.core.dom.Block;
 import org.eclipse.jdt.core.dom.BodyDeclaration;
+import org.eclipse.jdt.core.dom.Expression;
 import org.eclipse.jdt.core.dom.ExpressionStatement;
 import org.eclipse.jdt.core.dom.FieldDeclaration;
 import org.eclipse.jdt.core.dom.IMethodBinding;
@@ -92,6 +94,9 @@ public class DestructorGenerator extends ErrorReportingASTVisitor {
       // If a destructor method already exists, append release statements.
       for (MethodDeclaration method : node.getMethods()) {
         if (FINALIZE_METHOD.equals(method.getName().getIdentifier())) {
+          if (Options.useARC()) {
+            removeSuperFinalizeStatement(method.getBody());
+          }
           addReleaseStatements(method, releaseableFields);
           foundDestructor = true;
         }
@@ -116,6 +121,27 @@ public class DestructorGenerator extends ErrorReportingASTVisitor {
       }
     }
     return super.visit(node);
+  }
+
+  private void removeSuperFinalizeStatement(Block body) {
+    body.accept(new ASTVisitor() {
+      @Override
+      public boolean visit(final ExpressionStatement node) {
+        Expression e = node.getExpression();
+        if (e instanceof SuperMethodInvocation) {
+          IMethodBinding m = Types.getMethodBinding(e);
+          if (!Modifier.isStatic(m.getModifiers()) && m.getName().equals("finalize") &&
+              m.getParameterTypes().length == 0) {
+            assert node.getParent() instanceof Block;
+            @SuppressWarnings("unchecked")
+            List<Statement> parentStatements = ((Block) node.getParent()).statements();
+            parentStatements.remove(node);
+            return false;
+          }
+        }
+        return true;
+      }
+    });
   }
 
   @Override

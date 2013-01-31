@@ -6,10 +6,6 @@
 //  Copyright 2012 Google, Inc. All rights reserved.
 //
 
-#if __has_feature(objc_arc)
-#error This class cannot be built with ARC enabled.
-#endif
-
 #import "IOSClass.h"
 #import "java/lang/IllegalStateException.h"
 #import "java/util/Collection.h"
@@ -31,7 +27,10 @@
 - (id)init {
   if ((self = [super init])) {
     accessOrder_ = NO;
-    ([head_ autorelease], head_ = nil);
+#if ! __has_feature(objc_arc)
+    [head_ autorelease];
+#endif
+    head_ = nil;
   }
   return self;
 }
@@ -39,7 +38,10 @@
 - (id)initWithInt:(int)s {
   if ((self = [super initWithInt:s])) {
     accessOrder_ = NO;
-    ([head_ autorelease], head_ = nil);
+#if ! __has_feature(objc_arc)
+    [head_ autorelease];
+#endif
+    head_ = nil;
   }
   return self;
 }
@@ -48,8 +50,12 @@
         withFloat:(float)lf {
   if ((self = [super initWithInt:s withFloat:lf])) {
     accessOrder_ = NO;
-    ([head_ autorelease], head_ = nil);
-    ([tail_ autorelease], tail_ = nil);
+#if ! __has_feature(objc_arc)
+    [head_ autorelease];
+    [tail_ autorelease];
+#endif
+    head_ = nil;
+    tail_ = nil;
   }
   return self;
 }
@@ -59,8 +65,12 @@
          withBOOL:(BOOL)order {
   if ((self = [super initWithInt:s withFloat:lf])) {
     accessOrder_ = order;
-    ([head_ autorelease], head_ = nil);
-    ([tail_ autorelease], tail_ = nil);
+#if ! __has_feature(objc_arc)
+    [head_ autorelease];
+    [tail_ autorelease];
+#endif
+    head_ = nil;
+    tail_ = nil;
   }
   return self;
 }
@@ -68,8 +78,12 @@
 - (id)initWithJavaUtilMap:(id<JavaUtilMap>)m {
   if ((self = [super init])) {
     accessOrder_ = NO;
-    ([head_ autorelease], head_ = nil);
-    ([tail_ autorelease], tail_ = nil);
+#if ! __has_feature(objc_arc)
+    [head_ autorelease];
+    [tail_ autorelease];
+#endif
+    head_ = nil;
+    tail_ = nil;
     [self putAllWithJavaUtilMap:m];
   }
   return self;
@@ -186,8 +200,12 @@
       [self linkEntryWithJavaUtilLinkedHashMap_LinkedHashMapEntry:m];
     }
   }
-  id result = [m->value_ autorelease];
-  m->value_ = [value retain];
+  id result = m->value_;
+#if ! __has_feature(objc_arc)
+  [result autorelease];
+  [value retain];
+#endif
+  m->value_ = value;
   return result;
 }
 
@@ -234,7 +252,8 @@
 }
 
 - (id<JavaUtilSet>)entrySet {
-  return [[[JavaUtilLinkedHashMap_LinkedHashMapEntrySet alloc] initWithJavaUtilLinkedHashMap:self] autorelease];
+  return AUTORELEASE([[JavaUtilLinkedHashMap_LinkedHashMapEntrySet alloc]
+                      initWithJavaUtilLinkedHashMap:self]);
 }
 
 - (id<JavaUtilSet>)keySet {
@@ -298,8 +317,10 @@
   if ((self = [super init])) {
     expectedModCount_ = map.modCount;
     futureEntry_ = map.head;
+#if ! __has_feature(objc_arc)
     [associatedMap_ autorelease];
     associatedMap_ = [map retain];
+#endif
   }
   return self;
 }
@@ -310,14 +331,14 @@
 
 - (void)checkConcurrentMod {
   if (expectedModCount_ != associatedMap_.modCount) {
-    @throw [[[JavaUtilConcurrentModificationException alloc] init] autorelease];
+    @throw AUTORELEASE([[JavaUtilConcurrentModificationException alloc] init]);
   }
 }
 
 - (void)makeNext {
   [self checkConcurrentMod];
   if (![self hasNext]) {
-    @throw [[[JavaUtilNoSuchElementException alloc] init] autorelease];
+    @throw AUTORELEASE([[JavaUtilNoSuchElementException alloc] init]);
   }
   currentEntry_ = futureEntry_;
   futureEntry_ = futureEntry_->chainForward_;
@@ -326,7 +347,7 @@
 - (void)remove {
   [self checkConcurrentMod];
   if (currentEntry_ == nil) {
-    @throw [[[JavaLangIllegalStateException alloc] init] autorelease];
+    @throw AUTORELEASE([[JavaLangIllegalStateException alloc] init]);
   }
   [associatedMap_ removeEntryWithJavaUtilHashMap_Entry:currentEntry_];
   JavaUtilLinkedHashMap_LinkedHashMapEntry *lhme = currentEntry_;
@@ -354,10 +375,12 @@
   expectedModCount_++;
 }
 
+#if ! __has_feature(objc_arc)
 - (void)dealloc {
   [associatedMap_ autorelease];
   [super dealloc];
 }
+#endif
 
 @end
 
@@ -411,7 +434,8 @@
 }
 
 - (id<JavaUtilIterator>)iterator {
-  return [[[JavaUtilLinkedHashMap_EntryIterator alloc] initWithJavaUtilLinkedHashMap:(JavaUtilLinkedHashMap *) ((JavaUtilHashMap *) [self hashMap])] autorelease];
+  return AUTORELEASE([[JavaUtilLinkedHashMap_EntryIterator alloc]
+                      initWithJavaUtilLinkedHashMap:(JavaUtilLinkedHashMap *) [self hashMap]]);
 }
 
 @end
@@ -463,21 +487,29 @@
 }
 
 - (id<JavaUtilIterator>)iterator {
-  return [[[JavaUtilLinkedHashMap_KeyIterator alloc] initWithJavaUtilLinkedHashMap:outer_] autorelease];
+  return AUTORELEASE([[JavaUtilLinkedHashMap_KeyIterator alloc]
+                      initWithJavaUtilLinkedHashMap:outer_]);
 }
 
 - (id)initWithJavaUtilLinkedHashMap:(JavaUtilLinkedHashMap *)outer {
   if ((self = [super init])) {
+#if ! __has_feature(objc_arc)
     [outer_ autorelease];
-    outer_ = [outer retain];
+#endif
+    outer_ = outer;
+#if ! __has_feature(objc_arc)
+    [outer retain];
+#endif
   }
   return self;
 }
 
+#if ! __has_feature(objc_arc)
 - (void)dealloc {
   [outer_ autorelease];
   [super dealloc];
 }
+#endif
 
 @end
 
@@ -497,20 +529,28 @@
 }
 
 - (id<JavaUtilIterator>)iterator {
-  return [[[JavaUtilLinkedHashMap_ValueIterator alloc] initWithJavaUtilLinkedHashMap:outer_] autorelease];
+  return AUTORELEASE([[JavaUtilLinkedHashMap_ValueIterator alloc]
+                      initWithJavaUtilLinkedHashMap:outer_]);
 }
 
 - (id)initWithJavaUtilLinkedHashMap:(JavaUtilLinkedHashMap *)outer {
   if ((self = [super init])) {
+#if ! __has_feature(objc_arc)
     [outer_ autorelease];
-    outer_ = [outer retain];
+#endif
+    outer_ = outer;
+#if ! __has_feature(objc_arc)
+    [outer retain];
+#endif
   }
   return self;
 }
 
+#if ! __has_feature(objc_arc)
 - (void)dealloc {
   [outer_ autorelease];
   [super dealloc];
 }
+#endif
 
 @end

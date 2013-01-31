@@ -460,7 +460,7 @@ JavaLangReflectConstructor *getConstructorImpl(IOSClass *cls,
   } else {
     return cls->class_ != nil
         ? [cls->class_ conformsToProtocol:protocol_]
-        : [cls->protocol_ conformsToProtocol:protocol_];
+        : [(id) cls->protocol_ conformsToProtocol:protocol_];
   }
 }
 
@@ -489,7 +489,7 @@ JavaLangReflectConstructor *getConstructorImpl(IOSClass *cls,
   if (class_ != nil) {
     return [class_ isEqual:other.objcClass];
   } else {
-    return [protocol_ isEqual:other.objcProtocol];
+    return [(id) protocol_ isEqual:other.objcProtocol];
   }
 }
 
@@ -586,12 +586,14 @@ static IOSObjectArray *getClassInterfaces(IOSClass *cls, IOSClass *arrayType) {
     return[IOSObjectArray arrayWithLength:0 type:arrayType];
   }
   unsigned int outCount;
-  Protocol **interfaces = class_copyProtocolList(cls.class, &outCount);
+  Protocol *__unsafe_unretained *interfaces =
+      class_copyProtocolList(cls.class, &outCount);
   result = [IOSObjectArray arrayWithLength:outCount type:arrayType];
   for (unsigned i = 0; i < outCount; i++) {
     [result replaceObjectAtIndex:i
                       withObject:[IOSClass classWithProtocol:interfaces[i]]];
   }
+  free(interfaces);
   return result;
 }
 

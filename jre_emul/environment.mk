@@ -102,7 +102,8 @@ OBJCFLAGS := -ObjC $(WARNINGS) $(SDK_FLAGS) $(ALT_SDK_FLAGS) \
 
 ifdef CLANG_ENABLE_OBJC_ARC
 J2OBJC := $(J2OBJC) -use-arc
-OBJCFLAGS := $(OBJCFLAGS) -fobjc-arc -fobjc-arc-exceptions
+OBJCFLAGS := $(OBJCFLAGS) -fobjc-arc -fobjc-arc-exceptions \
+  -Wno-unused-value -Wno-arc-bridge-casts-disallowed-in-nonarc
 endif
 
 # Flags for the static analyzer.
