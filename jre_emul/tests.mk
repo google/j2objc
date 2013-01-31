@@ -146,6 +146,7 @@ TEST_OBJS = \
 	$(TESTS_DIR)/org/apache/harmony/luni/tests/java/util/RandomTest.o \
 	$(TESTS_DIR)/org/apache/harmony/luni/tests/java/util/SimpleTimeZoneTest.o \
 	$(TESTS_DIR)/org/apache/harmony/luni/tests/java/util/StackTest.o \
+	$(TESTS_DIR)/org/apache/harmony/luni/tests/java/util/StringTokenizerTest.o \
 	$(TESTS_DIR)/org/apache/harmony/luni/tests/java/util/TimeZoneTest.o \
 	$(TESTS_DIR)/org/apache/harmony/luni/tests/java/util/VectorTest.o \
 	$(TESTS_DIR)/org/apache/harmony/tests/java/util/regex/Matcher2Test.o \
