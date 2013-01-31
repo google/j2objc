@@ -272,6 +272,7 @@ OBJS = \
 	$(CLASS_DIR)/java/util/Random.o \
 	$(CLASS_DIR)/java/util/SimpleTimeZone.o \
 	$(CLASS_DIR)/java/util/Stack.o \
+	$(CLASS_DIR)/java/util/StringTokenizer.o \
 	$(CLASS_DIR)/java/util/TimeZone.o \
 	$(CLASS_DIR)/java/util/TreeMap.o \
 	$(CLASS_DIR)/java/util/TreeSet.o \
