@@ -20,7 +20,6 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 import com.google.devtools.j2objc.J2ObjC;
-import com.google.devtools.j2objc.Options;
 import com.google.devtools.j2objc.util.NameTable;
 import com.google.j2objc.annotations.AutoreleasePool;
 import com.google.j2objc.annotations.Weak;
@@ -29,7 +28,6 @@ import com.google.j2objc.annotations.WeakOuter;
 import org.eclipse.jdt.core.IJavaElement;
 import org.eclipse.jdt.core.dom.AST;
 import org.eclipse.jdt.core.dom.ASTNode;
-import org.eclipse.jdt.core.dom.Block;
 import org.eclipse.jdt.core.dom.CompilationUnit;
 import org.eclipse.jdt.core.dom.Expression;
 import org.eclipse.jdt.core.dom.IAnnotationBinding;
@@ -117,8 +115,6 @@ public class Types {
   private final Map<String, IOSArrayTypeBinding> arrayTypeMap = Maps.newHashMap();
   private final Map<ITypeBinding, IOSArrayTypeBinding> arrayBindingMap = Maps.newHashMap();
   private final Map<IOSArrayTypeBinding, ITypeBinding> componentTypeMap = Maps.newHashMap();
-
-  private final Set<Block> autoreleasePoolBlocks = Sets.newHashSet();
 
   // The first argument of a iOS method isn't named, but Java requires some sort of valid parameter
   // name.  The method mapper therefore uses this string, which the generators ignore.
@@ -323,7 +319,14 @@ public class Types {
         }
       }
 
-      for (ITypeBinding interfaceBinding : getAllInterfaces(clazz)) {
+      // Collect all interfaces implemented by this class.
+      Set<ITypeBinding> allInterfaces = Sets.newHashSet();
+      while (clazz != null) {
+        allInterfaces.addAll(getAllInterfaces(clazz));
+        clazz = clazz.getSuperclass();
+      }
+
+      for (ITypeBinding interfaceBinding : allInterfaces) {
         for (IMethodBinding interfaceMethod : interfaceBinding.getDeclaredMethods()) {
           if (method.overrides(interfaceMethod)) {
             IMethodBinding decl = interfaceMethod.getMethodDeclaration();
@@ -342,60 +345,17 @@ public class Types {
    */
   private static Set<ITypeBinding> getAllInterfaces(ITypeBinding type) {
     Set<ITypeBinding> allInterfaces = Sets.newHashSet();
-    Deque<ITypeBinding> typeQueue = Lists.newLinkedList();
+    Deque<ITypeBinding> interfaceQueue = Lists.newLinkedList();
 
-    if (type.isInterface()) {
-      allInterfaces.add(type);
-    }
-
-    while (type != null) {
-      typeQueue.add(type);
-      type = type.getSuperclass();
-    }
-
-    while (!typeQueue.isEmpty()) {
-      ITypeBinding nextType = typeQueue.poll();
-      List<ITypeBinding> newInterfaces = Arrays.asList(nextType.getInterfaces());
-      allInterfaces.addAll(newInterfaces);
-      typeQueue.addAll(newInterfaces);
+    interfaceQueue.addAll(Arrays.asList(type.getInterfaces()));
+    while (!interfaceQueue.isEmpty()) {
+      ITypeBinding intrface = interfaceQueue.poll();
+      allInterfaces.add(intrface);
+      interfaceQueue.addAll(Arrays.asList(intrface.getInterfaces()));
     }
 
     return allInterfaces;
   }
-
-  /**
-   * Returns the type binding for a specific interface of a specific type.
-   */
-  public static ITypeBinding findInterface(ITypeBinding implementingType, String qualifiedName) {
-    for (ITypeBinding interfaze : getAllInterfaces(implementingType)) {
-      if (interfaze.getErasure().getQualifiedName().equals(qualifiedName)) {
-        return interfaze;
-      }
-    }
-    return null;
-  }
-
-  /**
-   * Returns the method binding for a specific method of a specific type.
-   */
-  public static IMethodBinding findDeclaredMethod(
-      ITypeBinding type, String methodName, String... paramTypes) {
-    outer: for (IMethodBinding method : type.getDeclaredMethods()) {
-      if (method.getName().equals(methodName)) {
-        ITypeBinding[] foundParamTypes = method.getParameterTypes();
-        if (paramTypes.length == foundParamTypes.length) {
-          for (int i = 0; i < paramTypes.length; i++) {
-            if (!paramTypes[i].equals(foundParamTypes[i].getQualifiedName())) {
-              continue outer;
-            }
-          }
-          return method;
-        }
-      }
-    }
-    return null;
-  }
-
   /**
    * Returns true if the specified binding is for a static final variable.
    */
@@ -857,17 +817,6 @@ public class Types {
     }
 
     return hasAnnotation;
-  }
-
-  public static void addAutoreleasePool(Block block) {
-    if (Options.useGC()) {
-      J2ObjC.warning(block, "@AutoreleasePool ignored in GC mode");
-    }
-    instance.autoreleasePoolBlocks.add(block);
-  }
-
-  public static boolean hasAutoreleasePool(Block block) {
-    return instance.autoreleasePoolBlocks.contains(block);
   }
 
   // JDT doesn't have any way to dynamically create a null literal binding.

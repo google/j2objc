@@ -75,7 +75,6 @@ CLASSES = \
 	sym/SymbolTableBuilder.java \
 	sym/TypeSymbol.java \
 	sym/VariableSymbol.java \
-	translate/ASTFactory.java \
 	translate/AnonymousClassConverter.java \
 	translate/Autoboxer.java \
 	translate/ClassConverter.java \
@@ -149,7 +148,7 @@ $(MANIFEST): $(CLASSFILES)
 	@echo "Class-Path:" $(MANIFEST_PATH) >> $@
 
 $(CLASS_DIR)/%: $(RESOURCE_DIR)/%
-	@cp -f $< $@
+	@cp $< $@
 
 dirs: $(CLASS_DIR)/$(BASE_PACKAGE) $(LIB_DIR)
 	@:
