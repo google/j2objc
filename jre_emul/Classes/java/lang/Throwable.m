@@ -141,18 +141,28 @@
 }
 
 - (void)printStackTraceWithJavaIoPrintWriter:(JavaIoPrintWriter *)pw {
+  [pw printlnWithNSString:[self description]];
   NSUInteger nFrames = [stackTrace count];
   for (NSUInteger i = 0; i < nFrames; i++) {
     id trace = [stackTrace objectAtIndex:i];
     [pw printlnWithId:trace];
   }
+  if (self->cause) {
+    [pw printWithNSString:@"Caused by: "];
+    [self->cause printStackTraceWithJavaIoPrintWriter:pw];
+  }
 }
 
 - (void)printStackTraceWithJavaIoPrintStream:(JavaIoPrintStream *)ps {
+  [ps printlnWithNSString:[self description]];
   NSUInteger nFrames = [stackTrace count];
   for (NSUInteger i = 0; i < nFrames; i++) {
     id trace = [stackTrace objectAtIndex:i];
     [ps printlnWithId:trace];
+  }
+  if (self->cause) {
+    [ps printWithNSString:@"Caused by: "];
+    [self->cause printStackTraceWithJavaIoPrintStream:ps];
   }
 }
 
@@ -168,10 +178,12 @@
 - (NSString *)description {
   NSString *className = [[self class] description];
   NSString *msg = [self getMessage];
-  if (msg != nil) {
+  if (msg) {
     return [NSString stringWithFormat:@"%@: %@", className, msg];
-  }
-  else {
+  } else if (cause) {
+    return [NSString stringWithFormat:@"%@: %@",
+            className, [cause description]];
+  } else {
     return className;
   }
 }
