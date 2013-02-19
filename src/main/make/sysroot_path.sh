@@ -32,19 +32,34 @@ if [ ! -d /Applications/Xcode.app ]; then
   exit 1
 fi
 
+# Try looking in the install directory for Xcode 4.x.
 PLATFORM_ROOT=/Applications/Xcode.app/Contents/Developer/Platforms/${SDK_TYPE}.platform
-if [ ! -d ${PLATFORM_ROOT} ]; then
-  echo "There are no ${SDK_TYPE} SDKs installed."
-  exit 1
+if [ -d ${PLATFORM_ROOT} ]; then
+  SDKS_ROOT=${PLATFORM_ROOT}/Developer/SDKs
+  if [ -d ${SDKS_ROOT} ]; then
+    # Return the alphabetically last SDK in the directory, which should be the
+    # latest version.  This will need to be improved if iOS 10 ever releases.
+    SDK_PATH=$(ls -rd ${SDKS_ROOT}/${SDK_TYPE}* | head -1)
+  fi
 fi
 
-SDKS_ROOT=${PLATFORM_ROOT}/Developer/SDKs
-if [ ! -d ${SDKS_ROOT} ]; then
-  echo "There are no ${SDK_TYPE} SDKs installed."
-  exit 1
+if [ "x${SDK_PATH}" = "x" ]; then
+  # SDKs aren't in standard location, so ask xcodebuild to look up a common
+  # library, and then remove the library path.
+  if [ ${SDK_TYPE} == "iphoneos" ]; then
+    SDK_TYPE=iphoneos
+  elif [ ${SDK_TYPE} == "iphonesimulator" ]; then
+    SDK_TYPE=iphonesimulator
+  else
+    SDK_TYPE=macosx
+  fi
+
+  SDK_PATH=$(xcodebuild -sdk ${SDK_TYPE} -find-library system | sed 's/\/usr\/lib\/libsystem.dylib//')
 fi
 
-# Return the alphabetically last SDK in the directory, which should be the
-# latest version.  This will need to be improved if iOS 10 ever releases.
-ls -rd ${SDKS_ROOT}/${SDK_TYPE}* | head -1
-exit $?
+if [ "x${SDK_PATH}" = "x" ]; then
+  echo "No iOS SDKs located."
+  exit 1;
+fi
+echo ${SDK_PATH}
+exit 0
