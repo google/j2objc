@@ -265,7 +265,7 @@ public class Rewriter extends ErrorReportingASTVisitor {
    * checking.
    */
   private void handleCompareToMethod(MethodDeclaration node, IMethodBinding binding) {
-    if (!binding.getName().equals("compareTo")) {
+    if (!binding.getName().equals("compareTo") || node.getBody() == null) {
       return;
     }
     ITypeBinding comparableType =
