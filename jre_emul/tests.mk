@@ -138,6 +138,7 @@ TEST_OBJS = \
 	$(TESTS_DIR)/org/apache/harmony/luni/tests/java/util/HashMapTest.o \
 	$(TESTS_DIR)/org/apache/harmony/luni/tests/java/util/HashSetTest.o \
 	$(TESTS_DIR)/org/apache/harmony/luni/tests/java/util/HashtableTest.o \
+	$(TESTS_DIR)/org/apache/harmony/luni/tests/java/util/IdentityHashMapTest.o \
 	$(TESTS_DIR)/org/apache/harmony/luni/tests/java/util/LinkedHashMapTest.o \
 	$(TESTS_DIR)/org/apache/harmony/luni/tests/java/util/LinkedHashSetTest.o \
 	$(TESTS_DIR)/org/apache/harmony/luni/tests/java/util/LinkedListTest.o \
