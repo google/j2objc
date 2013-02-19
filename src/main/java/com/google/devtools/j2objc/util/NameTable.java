@@ -139,6 +139,9 @@ public class NameTable {
       // Core Foundation definitions
       "BIG_ENDIAN", "BYTE_ORDER", "LITTLE_ENDIAN", "PDP_ENDIAN",
 
+      // Common preprocessor definitions.
+      "DEBUG", "NDEBUG",
+
       // Foundation methods with conflicting return types
       "scale");
 
