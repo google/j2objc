@@ -20,6 +20,7 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.devtools.j2objc.sym.Symbols;
 import com.google.devtools.j2objc.types.GeneratedMethodBinding;
+import com.google.devtools.j2objc.types.GeneratedTypeBinding;
 import com.google.devtools.j2objc.types.GeneratedVariableBinding;
 import com.google.devtools.j2objc.types.IOSArrayTypeBinding;
 import com.google.devtools.j2objc.types.IOSMethodBinding;
@@ -42,6 +43,7 @@ import org.eclipse.jdt.core.dom.BodyDeclaration;
 import org.eclipse.jdt.core.dom.BooleanLiteral;
 import org.eclipse.jdt.core.dom.BreakStatement;
 import org.eclipse.jdt.core.dom.CharacterLiteral;
+import org.eclipse.jdt.core.dom.ClassInstanceCreation;
 import org.eclipse.jdt.core.dom.ContinueStatement;
 import org.eclipse.jdt.core.dom.DoStatement;
 import org.eclipse.jdt.core.dom.EnhancedForStatement;
@@ -56,8 +58,10 @@ import org.eclipse.jdt.core.dom.IMethodBinding;
 import org.eclipse.jdt.core.dom.IPackageBinding;
 import org.eclipse.jdt.core.dom.ITypeBinding;
 import org.eclipse.jdt.core.dom.IVariableBinding;
+import org.eclipse.jdt.core.dom.IfStatement;
 import org.eclipse.jdt.core.dom.InfixExpression;
 import org.eclipse.jdt.core.dom.Initializer;
+import org.eclipse.jdt.core.dom.InstanceofExpression;
 import org.eclipse.jdt.core.dom.LabeledStatement;
 import org.eclipse.jdt.core.dom.MethodDeclaration;
 import org.eclipse.jdt.core.dom.MethodInvocation;
@@ -66,6 +70,7 @@ import org.eclipse.jdt.core.dom.Modifier.ModifierKeyword;
 import org.eclipse.jdt.core.dom.Name;
 import org.eclipse.jdt.core.dom.NumberLiteral;
 import org.eclipse.jdt.core.dom.PostfixExpression;
+import org.eclipse.jdt.core.dom.PrefixExpression;
 import org.eclipse.jdt.core.dom.PrimitiveType;
 import org.eclipse.jdt.core.dom.QualifiedName;
 import org.eclipse.jdt.core.dom.ReturnStatement;
@@ -74,6 +79,7 @@ import org.eclipse.jdt.core.dom.SingleVariableDeclaration;
 import org.eclipse.jdt.core.dom.Statement;
 import org.eclipse.jdt.core.dom.StringLiteral;
 import org.eclipse.jdt.core.dom.SuperMethodInvocation;
+import org.eclipse.jdt.core.dom.ThrowStatement;
 import org.eclipse.jdt.core.dom.Type;
 import org.eclipse.jdt.core.dom.TypeDeclaration;
 import org.eclipse.jdt.core.dom.TypeLiteral;
@@ -238,8 +244,9 @@ public class Rewriter extends ErrorReportingASTVisitor {
     String name = binding.getName();
     renameReservedNames(name, binding);
 
-    @SuppressWarnings("unchecked")
-    List<SingleVariableDeclaration> params = node.parameters();
+    handleCompareToMethod(node, binding);
+
+    List<SingleVariableDeclaration> params = getParameters(node);
     for (int i = 0; i < params.size(); i++) {
       // Change the names of any parameters that are type qualifier keywords.
       SingleVariableDeclaration param = params.get(i);
@@ -250,6 +257,61 @@ public class Rewriter extends ErrorReportingASTVisitor {
       }
     }
     return true;
+  }
+
+  /**
+   * Adds an instanceof check to compareTo methods. This helps Comparable types
+   * behave well in sorted collections which rely on Java's runtime type
+   * checking.
+   */
+  private void handleCompareToMethod(MethodDeclaration node, IMethodBinding binding) {
+    if (!binding.getName().equals("compareTo")) {
+      return;
+    }
+    ITypeBinding comparableType =
+        Types.findInterface(binding.getDeclaringClass(), "java.lang.Comparable");
+    if (comparableType == null) {
+      return;
+    }
+    ITypeBinding[] typeArguments = comparableType.getTypeArguments();
+    ITypeBinding[] parameterTypes = binding.getParameterTypes();
+    if (typeArguments.length != 1 || parameterTypes.length != 1
+        || !typeArguments[0].isEqualTo(parameterTypes[0])) {
+      return;
+    }
+
+    AST ast = node.getAST();
+
+    InstanceofExpression instanceofExpr = ast.newInstanceofExpression();
+    instanceofExpr.setLeftOperand(ASTFactory.newSimpleName(ast,
+        Types.getVariableBinding(getParameters(node).get(0))));
+    instanceofExpr.setRightOperand(Types.makeType(typeArguments[0]));
+    Types.addBinding(instanceofExpr, ast.resolveWellKnownType("boolean"));
+
+    PrefixExpression negation = ast.newPrefixExpression();
+    negation.setOperator(PrefixExpression.Operator.NOT);
+    negation.setOperand(instanceofExpr);
+    Types.addBinding(negation, ast.resolveWellKnownType("boolean"));
+
+    ITypeBinding cceType = GeneratedTypeBinding.newTypeBinding(
+        "java.lang.ClassCastException", ast.resolveWellKnownType("java.lang.RuntimeException"),
+        false);
+    ClassInstanceCreation newCce = ast.newClassInstanceCreation();
+    newCce.setType(Types.makeType(cceType));
+    Types.addBinding(newCce, new GeneratedMethodBinding(
+        "ClassCastException", 0, cceType, cceType, true, false, false));
+
+    ThrowStatement throwStmt = ast.newThrowStatement();
+    throwStmt.setExpression(newCce);
+
+    Block ifBlock = ast.newBlock();
+    getStatements(ifBlock).add(throwStmt);
+
+    IfStatement ifStmt = ast.newIfStatement();
+    ifStmt.setExpression(negation);
+    ifStmt.setThenStatement(ifBlock);
+
+    getStatements(node.getBody()).add(0, ifStmt);
   }
 
   @Override
@@ -652,6 +714,11 @@ public class Rewriter extends ErrorReportingASTVisitor {
     return block.statements();
   }
 
+  @SuppressWarnings("unchecked")
+  private static List<SingleVariableDeclaration> getParameters(MethodDeclaration method) {
+    return method.parameters();
+  }
+
   /**
    * Returns true if a reader method is needed for a specified field.  The
    * heuristic used is to find a method that has the same name, returns the
@@ -829,13 +896,11 @@ public class Rewriter extends ErrorReportingASTVisitor {
     Type paramType = NodeCopier.copySubtree(ast, type);
     param.setType(paramType);
     Types.addBinding(paramType, type.resolveBinding());
-    @SuppressWarnings("unchecked")
-    List<SingleVariableDeclaration> parameters = accessor.parameters(); // safe by definition
     GeneratedVariableBinding paramBinding = new GeneratedVariableBinding(paramName, 0,
         type.resolveBinding(), false, true, varBinding.getDeclaringClass(), binding);
     Types.addBinding(param, paramBinding);
     Types.addBinding(param.getName(), paramBinding);
-    parameters.add(param);
+    getParameters(accessor).add(param);
     binding.addParameter(paramBinding);
 
     Assignment assign = ast.newAssignment();
@@ -1075,7 +1140,8 @@ public class Rewriter extends ErrorReportingASTVisitor {
           case 't':
           case 'T':
           case 'n':
-            result.append('%'); // and fall-through
+            result.append('%');
+            // falls through
           default:
             result.append(part.charAt(0));
         }
@@ -1124,10 +1190,8 @@ public class Rewriter extends ErrorReportingASTVisitor {
     superInvocation.setName(NodeCopier.copySubtree(ast, method.getName()));
 
     @SuppressWarnings("unchecked")
-    List<SingleVariableDeclaration> parameters = method.parameters(); // safe by design
-    @SuppressWarnings("unchecked")
     List<Expression> args = superInvocation.arguments();  // safe by definition
-    for (SingleVariableDeclaration param : parameters) {
+    for (SingleVariableDeclaration param : getParameters(method)) {
       Expression arg = NodeCopier.copySubtree(ast, param.getName());
       args.add(arg);
     }
@@ -1156,8 +1220,6 @@ public class Rewriter extends ErrorReportingASTVisitor {
     List<Modifier> modifiers = method.modifiers();
     modifiers.add(ast.newModifier(ModifierKeyword.PUBLIC_KEYWORD));
 
-    @SuppressWarnings("unchecked")
-    List<SingleVariableDeclaration> parameters = method.parameters(); // safe by design
     ITypeBinding[] parameterTypes = interfaceMethod.getParameterTypes();
     for (int i = 0; i < parameterTypes.length; i++) {
       ITypeBinding paramType = parameterTypes[i];
@@ -1170,7 +1232,7 @@ public class Rewriter extends ErrorReportingASTVisitor {
       param.setName(ast.newSimpleName(paramName));
       Types.addBinding(param.getName(), paramBinding);
       param.setType(Types.makeType(paramType));
-      parameters.add(param);
+      getParameters(method).add(param);
     }
     Symbols.scanAST(method);
     return method;
