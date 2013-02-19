@@ -23,7 +23,7 @@ import org.eclipse.jdt.core.dom.ASTNode;
 import org.eclipse.jdt.core.dom.ASTVisitor;
 import org.eclipse.jdt.core.dom.AbstractTypeDeclaration;
 import org.eclipse.jdt.core.dom.ArrayAccess;
-import org.eclipse.jdt.core.dom.ArrayType;
+import org.eclipse.jdt.core.dom.ArrayCreation;
 import org.eclipse.jdt.core.dom.Assignment;
 import org.eclipse.jdt.core.dom.Assignment.Operator;
 import org.eclipse.jdt.core.dom.CastExpression;
@@ -128,8 +128,14 @@ public class ImplementationImportCollector extends HeaderImportCollector {
   }
 
   @Override
-  public boolean visit(ArrayType node) {
-    addReference(Types.getTypeBinding(node).getComponentType());
+  public boolean visit(ArrayCreation node) {
+    ITypeBinding type = Types.getTypeBinding(node);
+    addReference(type);
+    int dim = node.dimensions().size();
+    for (int i = 0; i < dim; i++) {
+      type = type.getComponentType();
+      addReference(type);
+    }
     return super.visit(node);
   }
 

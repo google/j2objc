@@ -684,10 +684,12 @@ public class StatementGeneratorTest extends GenerationTest {
 
   public void testStringAddOperator() throws IOException {
     String translation = translateSourceFile(
-      "import java.util.*; public class A { String myString; A() { myString = \"Foo\"; myString += \"Bar\"; }}",
+      "import java.util.*; public class A { String myString;" +
+      "  A() { myString = \"Foo\"; myString += \"Bar\"; }}",
       "A", "A.m");
     assertTranslation(translation,
-        "JreOperatorRetainedAssign(&myString_, [NSString stringWithFormat:@\"%@Bar\", myString_]);");
+        "JreOperatorRetainedAssign(&myString_, " +
+        "[NSString stringWithFormat:@\"%@Bar\", myString_]);");
   }
 
   public void testPrimitiveConstantInSwitchCase() throws IOException {
@@ -1314,9 +1316,28 @@ public class StatementGeneratorTest extends GenerationTest {
   // concatenation.
   public void testUnicodeStringConcat() throws IOException {
     String translation = translateSourceFile(
-      "class Test { static final String NAME = \"\\u4e2d\\u56fd\";" +
-      " static final String CAPTION = \"China's name is \";" +
-      " static final String TEST = CAPTION + NAME; }", "Test", "Test.m");
+        "class Test { static final String NAME = \"\\u4e2d\\u56fd\";" +
+        " static final String CAPTION = \"China's name is \";" +
+        " static final String TEST = CAPTION + NAME; }", "Test", "Test.m");
     assertTranslation(translation, "Test_TEST_ = @\"China's name is \\u4e2d\\u56fd\"");
+  }
+
+  public void testPartialArrayCreation2D() throws IOException {
+    String translation = translateSourceFile(
+        "class Test { void foo() { char[][] c = new char[3][]; } }", "Test", "Test.m");
+    assertTranslation(translation, "#import \"IOSObjectArray.h\"");
+    assertTranslation(translation, "#import \"IOSCharArray.h\"");
+    assertTranslation(translation,
+        "IOSObjectArray *c = [[[IOSObjectArray alloc] initWithLength:3" +
+        " type:[IOSClass classWithClass:[IOSCharArray class]]] autorelease]");
+  }
+
+  public void testPartialArrayCreation3D() throws IOException {
+    String translation = translateSourceFile(
+        "class Test { void foo() { char[][][] c = new char[3][][]; } }", "Test", "Test.m");
+    assertTranslation(translation, "#import \"IOSObjectArray.h\"");
+    assertTranslation(translation,
+        "IOSObjectArray *c = [[[IOSObjectArray alloc] initWithLength:3" +
+        " type:[IOSClass classWithClass:[IOSObjectArray class]]] autorelease]");
   }
 }
