@@ -91,6 +91,8 @@ CLASSES = \
 	types/BindingMapBuilder.java \
 	types/BindingMapVerifier.java \
 	types/GeneratedMethodBinding.java \
+	types/GeneratedPackageBinding.java \
+	types/GeneratedTypeBinding.java \
 	types/GeneratedVariableBinding.java \
 	types/HeaderImportCollector.java \
 	types/ImplementationImportCollector.java \

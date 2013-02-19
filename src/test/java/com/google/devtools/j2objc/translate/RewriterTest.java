@@ -18,7 +18,6 @@ package com.google.devtools.j2objc.translate;
 
 import com.google.devtools.j2objc.GenerationTest;
 import com.google.devtools.j2objc.J2ObjC;
-import com.google.devtools.j2objc.translate.DestructorGenerator;
 import com.google.devtools.j2objc.types.Types;
 
 import org.eclipse.jdt.core.dom.Assignment;
@@ -193,7 +192,7 @@ public class RewriterTest extends GenerationTest {
   public void testExistingStaticWriterDetected() {
     String source = "class Test { private static int foo;" +
         "public static void setFoo(int newFoo) { foo = newFoo; }}";
-    assertEquals(1, methodCount(source, "setFoo", new String[] { "int" } ));
+    assertEquals(1, methodCount(source, "setFoo", new String[] { "int" }));
   }
 
   private int methodCount(String source, String methodName, String[] paramTypes) {
@@ -586,5 +585,15 @@ public class RewriterTest extends GenerationTest {
         "1.2413915592536073E61, 1.2688693218588417E89, 7.156945704626381E118, " +
         "9.916779348709496E149, 1.974506857221074E182, 3.856204823625804E215, " +
         "5.5502938327393044E249, 4.7147236359920616E284 }");
+  }
+
+  public void testTypeCheckInCompareToMethod() throws IOException {
+    String translation = translateSourceFile(
+        "class Test implements Comparable<Test> { int i; " +
+        "  public int compareTo(Test t) { return i - t.i; } }", "Test", "Test.m");
+    assertTranslation(translation, "#import \"java/lang/ClassCastException.h\"");
+    assertTranslation(translation, "if (![t isKindOfClass:[Test class]])");
+    assertTranslation(translation,
+        "@throw [[[JavaLangClassCastException alloc] init] autorelease]");
   }
 }
