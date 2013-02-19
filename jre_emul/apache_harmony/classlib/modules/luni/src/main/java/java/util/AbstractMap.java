@@ -17,6 +17,8 @@
 
 package java.util;
 
+import com.google.j2objc.annotations.WeakOuter;
+
 /**
  * This class is an abstract implementation of the {@code Map} interface. This
  * implementation does not support adding. A subclass must implement the
@@ -221,39 +223,42 @@ public abstract class AbstractMap<K, V> implements Map<K, V> {
      */
     public Set<K> keySet() {
         if (keySet == null) {
-            keySet = new AbstractSet<K>() {
-                @Override
-                public boolean contains(Object object) {
-                    return containsKey(object);
+            keySet = new KeySet();
+        }
+        return keySet;
+    }
+
+    @WeakOuter
+    private class KeySet extends AbstractSet<K> {
+        @Override
+        public boolean contains(Object object) {
+            return containsKey(object);
+        }
+
+        @Override
+        public int size() {
+            return AbstractMap.this.size();
+        }
+
+        @Override
+        public Iterator<K> iterator() {
+            return new Iterator<K>() {
+                Iterator<Map.Entry<K, V>> setIterator = entrySet()
+                        .iterator();
+
+                public boolean hasNext() {
+                    return setIterator.hasNext();
                 }
 
-                @Override
-                public int size() {
-                    return AbstractMap.this.size();
+                public K next() {
+                    return setIterator.next().getKey();
                 }
 
-                @Override
-                public Iterator<K> iterator() {
-                    return new Iterator<K>() {
-                        Iterator<Map.Entry<K, V>> setIterator = entrySet()
-                                .iterator();
-
-                        public boolean hasNext() {
-                            return setIterator.hasNext();
-                        }
-
-                        public K next() {
-                            return setIterator.next().getKey();
-                        }
-
-                        public void remove() {
-                            setIterator.remove();
-                        }
-                    };
+                public void remove() {
+                    setIterator.remove();
                 }
             };
         }
-        return keySet;
     }
 
     /**
@@ -401,40 +406,43 @@ public abstract class AbstractMap<K, V> implements Map<K, V> {
      */
     public Collection<V> values() {
         if (valuesCollection == null) {
-            valuesCollection = new AbstractCollection<V>() {
-                @Override
-                public int size() {
-                    return AbstractMap.this.size();
-                }
-
-                @Override
-                public boolean contains(Object object) {
-                    return containsValue(object);
-                }
-
-                @Override
-                public Iterator<V> iterator() {
-                    return new Iterator<V>() {
-                        Iterator<Map.Entry<K, V>> setIterator = entrySet()
-                                .iterator();
-
-                        public boolean hasNext() {
-                            return setIterator.hasNext();
-                        }
-
-                        public V next() {
-                            return setIterator.next().getValue();
-                        }
-
-                        public void remove() {
-                            setIterator.remove();
-                        }
-                    };
-                }
-            };
+            valuesCollection = new ValuesCollection();
         }
         return valuesCollection;
     }
+
+    @WeakOuter
+    private class ValuesCollection extends AbstractCollection<V> {
+        @Override
+        public int size() {
+            return AbstractMap.this.size();
+        }
+
+        @Override
+        public boolean contains(Object object) {
+            return containsValue(object);
+        }
+
+        @Override
+        public Iterator<V> iterator() {
+            return new Iterator<V>() {
+                Iterator<Map.Entry<K, V>> setIterator = entrySet()
+                        .iterator();
+
+                public boolean hasNext() {
+                    return setIterator.hasNext();
+                }
+
+                public V next() {
+                    return setIterator.next().getValue();
+                }
+
+                public void remove() {
+                    setIterator.remove();
+                }
+            };
+        }
+    };
 
     /**
      * Returns a new instance of the same class as this instance, whose slots

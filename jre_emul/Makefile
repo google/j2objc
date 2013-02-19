@@ -302,6 +302,7 @@ JAVA_SOURCES = \
 
 JAVA_SOURCE_LIST = $(BUILD_DIR)/jre_emul.classes.list
 OBJC_OUT_LIST = $(BUILD_DIR)/jre_emul.objc.list
+JAVA_MANIFEST = $(BUILD_DIR)/java_sources.mf
 
 STUB_JAVA_SOURCES = $(shell find $(STUBS_DIR) -name *.java)
 J2OBJC_ANNOTATION_SOURCES = \
@@ -500,3 +501,11 @@ $(EMULATION_JAR): $(ALL_JAVA_SOURCES) | $(BUILD_DIR)
 	@mkdir $(EMULATION_STAGE)
 	@javac -classpath $(EMULATION_STAGE) -d $(EMULATION_STAGE) $^
 	@jar cf $(EMULATION_JAR) -C $(EMULATION_STAGE) .
+
+java_manifest: $(JAVA_MANIFEST)
+
+$(JAVA_MANIFEST): $(ALL_JAVA_SOURCES) | $(BUILD_DIR)
+	@echo "Building java_sources.mf"
+	@if [ -e $@ ]; then rm $@; fi
+	@for i in $^; do echo $$i >> $@; done
+

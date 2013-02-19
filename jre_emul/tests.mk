@@ -123,6 +123,7 @@ TEST_OBJS = \
 	$(TESTS_DIR)/org/apache/harmony/nio/tests/java/nio/ShortBufferTest.o \
 	$(TESTS_DIR)/org/apache/harmony/luni/tests/java/util/AbstractCollectionTest.o \
 	$(TESTS_DIR)/org/apache/harmony/luni/tests/java/util/AbstractListTest.o \
+	$(TESTS_DIR)/org/apache/harmony/luni/tests/java/util/AbstractMapTest.o \
 	$(TESTS_DIR)/org/apache/harmony/luni/tests/java/util/AbstractQueueTest.o \
 	$(TESTS_DIR)/org/apache/harmony/luni/tests/java/util/AbstractSequentialListTest.o \
 	$(TESTS_DIR)/org/apache/harmony/luni/tests/java/util/ArrayListTest.o \
@@ -166,7 +167,6 @@ FAILING_TESTS = \
 	$(TESTS_DIR)/org/apache/harmony/luni/tests/java/lang/FloatTest.o \
 	$(TESTS_DIR)/org/apache/harmony/luni/tests/java/lang/StrictMathTest.o \
 	$(TESTS_DIR)/org/apache/harmony/luni/tests/java/lang/StringBuilderTest.o \
-	$(TESTS_DIR)/org/apache/harmony/luni/tests/java/util/AbstractMapTest.o \
 	$(TESTS_DIR)/org/apache/harmony/luni/tests/java/util/CollectionsTest.o \
 	$(TESTS_DIR)/org/apache/harmony/luni/tests/java/util/TreeSetTest.o \
 	$(TESTS_DIR)/org/apache/harmony/luni/tests/java/util/TreeMapTest.o \
@@ -299,5 +299,5 @@ $(TESTS_DIR)/%.o: $(TESTS_DIR)/%.m
 	  -Wno-objc-redundant-literal-use -Wno-format \
 	  -Werror -Wno-parentheses -I$(EMULATION_TESTS_DIR) -I$(TESTS_DIR)
 
-$(TESTS_DIR)/%: $(TESTS_DIR)/%.o
-	$(TEST_JOCC) $? -o $@
+$(TESTS_DIR)/%: $(TESTS_DIR)/%.o $(EMULATION_LIB)
+	$(TEST_JOCC) $< -o $@

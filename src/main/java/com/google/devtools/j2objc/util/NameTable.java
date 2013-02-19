@@ -84,7 +84,9 @@ public class NameTable {
       "struct", "typedef", "union", "volatile",
 
       // C++ keywords
-      "template", "mutable", "not", "delete",
+      "asm", "const_cast", "delete", "dynamic_cast", "friend", "explicit", "mutable", "namespace",
+      "not", "operator", "reinterpret_cast", "static_cast", "template", "typeid", "typename",
+      "using", "virtual",
 
       // variables
       "self", "isa",
