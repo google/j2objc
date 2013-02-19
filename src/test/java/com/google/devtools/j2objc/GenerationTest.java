@@ -163,7 +163,7 @@ public abstract class GenerationTest extends TestCase {
    * @return the parsed compilation unit
    */
   protected CompilationUnit compileType(String name, String source, boolean assertErrors) {
-    ASTParser parser = ASTParser.newParser(AST.JLS3);
+    ASTParser parser = ASTParser.newParser(AST.JLS4);
     parser.setCompilerOptions(Options.getCompilerOptions());
     parser.setSource(source.toCharArray());
     parser.setResolveBindings(true);

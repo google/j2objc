@@ -181,7 +181,7 @@ public class J2ObjC {
 
   private static CompilationUnit parse(String filename, String source) {
     logger.finest("parsing " + filename);
-    ASTParser parser = ASTParser.newParser(AST.JLS3);
+    ASTParser parser = ASTParser.newParser(AST.JLS4);
     Map<String, String> compilerOptions = Options.getCompilerOptions();
     parser.setCompilerOptions(compilerOptions);
     parser.setSource(source.toCharArray());
