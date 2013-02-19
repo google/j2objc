@@ -36,7 +36,7 @@ else
   readonly LIB_PATH=${DIR}/lib
 fi
 
-declare CC_FLAGS="-Werror -Wno-parentheses"
+declare CC_FLAGS="-Werror -Wno-parentheses -Wno-objc-string-compare"
 declare  OBJC=-ObjC
 declare  LINK_FLAGS="-ljre_emul -framework Foundation -framework ExceptionHandling -L ${LIB_PATH}"
 
