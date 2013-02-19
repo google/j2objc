@@ -49,6 +49,7 @@ import org.eclipse.jdt.core.dom.SingleVariableDeclaration;
 import org.eclipse.jdt.core.dom.Statement;
 import org.eclipse.jdt.core.dom.StructuralPropertyDescriptor;
 import org.eclipse.jdt.core.dom.SuperConstructorInvocation;
+import org.eclipse.jdt.core.dom.SwitchStatement;
 import org.eclipse.jdt.core.dom.SynchronizedStatement;
 import org.eclipse.jdt.core.dom.VariableDeclarationFragment;
 
@@ -332,6 +333,8 @@ public abstract class ClassConverter extends TypeTrackingVisitor {
       List<Statement> args;
       if (parent instanceof Block) {
         args = ((Block) parent).statements();
+      } else if (parent instanceof SwitchStatement) {
+        args = ((SwitchStatement) parent).statements();
       } else {
         throw new AssertionError("unknown parent node type: " + parent.getClass().getSimpleName());
       }
