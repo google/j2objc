@@ -54,3 +54,4 @@ for test in ${TESTS}; do
   runtest ${test}
 done
 echo "Test binaries run:" ${tests} " Total errors/failures:" ${errors} " Aborted tests:" ${aborted_tests}
+exit $(/bin/expr ${errors} + ${aborted_tests})
