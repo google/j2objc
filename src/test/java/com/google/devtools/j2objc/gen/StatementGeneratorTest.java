@@ -343,14 +343,15 @@ public class StatementGeneratorTest extends GenerationTest {
         "[NSString stringWithFormat:@\"foo%@bar%dbaz\", [self getStr], [self getInt]]");
   }
 
-  public void testHashIsCastToIntInStringConcatenation() throws IOException {
+  public void testIntCastInStringConcatenation() throws IOException {
     String translation = translateSourceFile(
         "public class Test { void test() { " +
         "  String a = \"abc\"; " +
-        "  String b = \"foo\" + a.hashCode() + \"bar\"; } }",
+        "  String b = \"foo\" + a.hashCode() + \"bar\" + a.length() + \"baz\"; } }",
         "Test", "Test.m");
     assertTranslation(translation,
-        "[NSString stringWithFormat:@\"foo%dbar\", (int) [NIL_CHK(a) hash]]");
+        "[NSString stringWithFormat:@\"foo%dbar%dbaz\", (int) [NIL_CHK(a) hash], " +
+        "(int) [NIL_CHK(a) length]]");
   }
 
   public void testVarargsMethodInvocation() throws IOException {
