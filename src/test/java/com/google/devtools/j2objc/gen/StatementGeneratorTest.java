@@ -31,8 +31,6 @@ import java.util.List;
  * @author Tom Ball
  */
 public class StatementGeneratorTest extends GenerationTest {
-  // TODO(user): update bug id in comments to public issue numbers when
-  // issue tracking is sync'd.
 
   @Override
   protected void tearDown() throws Exception {
@@ -1353,5 +1351,25 @@ public class StatementGeneratorTest extends GenerationTest {
     assertTranslation(translation,
         "IOSObjectArray *c = [[[IOSObjectArray alloc] initWithLength:3" +
         " type:[IOSClass classWithClass:[IOSObjectArray class]]] autorelease]");
+  }
+
+  public void testUnsignedShiftRight() throws IOException {
+    String translation = translateSourceFile(
+        "public class Test { void test(int a, long b, char c, byte d, short e) { " +
+        "a >>>= 1; b >>>= 2; c >>>= 3; d >>>= 4; e >>>= 5; }}",
+        "Test", "Test.m");
+    assertTranslation(translation, "a = (int) (((unsigned int) a) >> 1);");
+    assertTranslation(translation, "b = (long long) (((unsigned long long) b) >> 2);");
+    assertTranslation(translation, "c >>= 3;");
+    assertTranslation(translation, "d = (char) (((unsigned char) d) >> 4);");
+    assertTranslation(translation, "e = (short) (((unsigned short) e) >> 5);");
+  }
+
+  public void testUnsignedShiftRightAssignCharArray() throws IOException {
+    String translation = translateSourceFile(
+        "public class Test { void test(char[] array) { " +
+        "array[0] >>>= 2; }}",
+        "Test", "Test.m");
+    assertTranslation(translation, "withChar:[array charAtIndex:0] >> 2];");
   }
 }
