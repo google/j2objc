@@ -634,6 +634,19 @@ public class StatementGeneratorTest extends GenerationTest {
     assertTranslation(result, "for (int i__ = 0; i__ < n__; i__++) {");
   }
 
+  public void testEnhancedForStatementInSwitchStatement() throws IOException {
+    String source = "int test = 5; int[] myInts = new int[10]; " +
+        "switch (test) { case 0: break; default: " +
+        "for (int i : myInts) {} break; }";
+    List<Statement> stmts = translateStatements(source);
+    assertEquals(3, stmts.size());
+    String result = generateStatement(stmts.get(2));
+    assertTranslation(result, "default:\n{");
+    assertTranslation(result, "int n__ = ");
+    assertTranslation(result, "for (int i__ = 0; i__ < n__; i__++)");
+    assertTranslation(result, "break;\n}");
+  }
+
   public void testSwitchStatementWithExpression() throws IOException {
     String translation = translateSourceFile("public class Example { " +
         "static enum Test { ONE, TWO } " +
