@@ -61,7 +61,6 @@ import org.eclipse.jdt.core.dom.IVariableBinding;
 import org.eclipse.jdt.core.dom.IfStatement;
 import org.eclipse.jdt.core.dom.InfixExpression;
 import org.eclipse.jdt.core.dom.Initializer;
-import org.eclipse.jdt.core.dom.InstanceofExpression;
 import org.eclipse.jdt.core.dom.LabeledStatement;
 import org.eclipse.jdt.core.dom.MethodDeclaration;
 import org.eclipse.jdt.core.dom.MethodInvocation;
@@ -281,17 +280,13 @@ public class Rewriter extends ErrorReportingASTVisitor {
     }
 
     AST ast = node.getAST();
+    IVariableBinding param = Types.getVariableBinding(getParameters(node).get(0));
 
-    InstanceofExpression instanceofExpr = ast.newInstanceofExpression();
-    instanceofExpr.setLeftOperand(ASTFactory.newSimpleName(ast,
-        Types.getVariableBinding(getParameters(node).get(0))));
-    instanceofExpr.setRightOperand(Types.makeType(typeArguments[0]));
-    Types.addBinding(instanceofExpr, ast.resolveWellKnownType("boolean"));
-
-    PrefixExpression negation = ast.newPrefixExpression();
-    negation.setOperator(PrefixExpression.Operator.NOT);
-    negation.setOperand(instanceofExpr);
-    Types.addBinding(negation, ast.resolveWellKnownType("boolean"));
+    Expression nullCheck = ASTFactory.createNullCheck(ast, param, false);
+    Expression instanceofExpr = ASTFactory.newInstanceofExpression(
+        ast, ASTFactory.newSimpleName(ast, param), Types.makeType(typeArguments[0]));
+    instanceofExpr = ASTFactory.newPrefixExpression(
+        ast, PrefixExpression.Operator.NOT, instanceofExpr, "boolean");
 
     ITypeBinding cceType = GeneratedTypeBinding.newTypeBinding(
         "java.lang.ClassCastException", ast.resolveWellKnownType("java.lang.RuntimeException"),
@@ -308,7 +303,8 @@ public class Rewriter extends ErrorReportingASTVisitor {
     getStatements(ifBlock).add(throwStmt);
 
     IfStatement ifStmt = ast.newIfStatement();
-    ifStmt.setExpression(negation);
+    ifStmt.setExpression(ASTFactory.newInfixExpression(
+        ast, nullCheck, InfixExpression.Operator.CONDITIONAL_AND, instanceofExpr, "boolean"));
     ifStmt.setThenStatement(ifBlock);
 
     getStatements(node.getBody()).add(0, ifStmt);
@@ -649,7 +645,7 @@ public class Rewriter extends ErrorReportingASTVisitor {
     VariableDeclarationExpression indexDecl = ASTFactory.newVariableDeclarationExpression(
         ast, indexVariable, ASTFactory.newNumberLiteral(ast, "0", "int"));
     InfixExpression loopCondition = ASTFactory.newInfixExpression(
-        ast, indexVariable, InfixExpression.Operator.LESS, sizeVariable);
+        ast, indexVariable, InfixExpression.Operator.LESS, sizeVariable, "boolean");
     PostfixExpression incrementExpr = ASTFactory.newPostfixExpression(
         ast, indexVariable, PostfixExpression.Operator.INCREMENT);
 
