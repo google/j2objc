@@ -1141,12 +1141,9 @@ public class StatementGenerator extends ErrorReportingASTVisitor {
       buffer.append(' ');
       node.getRightOperand().accept(this);
       final List<Expression> extendedOperands = node.extendedOperands();
-      if (extendedOperands.size() != 0) {
-        buffer.append(' ');
-        for (Iterator<Expression> it = extendedOperands.iterator(); it.hasNext(); ) {
-          buffer.append(node.getOperator().toString()).append(' ');
-          it.next().accept(this);
-        }
+      for (Iterator<Expression> it = extendedOperands.iterator(); it.hasNext(); ) {
+        buffer.append(' ').append(node.getOperator().toString()).append(' ');
+        it.next().accept(this);
       }
     }
     return false;

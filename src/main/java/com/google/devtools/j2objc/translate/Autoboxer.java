@@ -298,21 +298,36 @@ public class Autoboxer extends ErrorReportingASTVisitor {
 
   @Override
   public void endVisit(InfixExpression node) {
+    ITypeBinding type = Types.getTypeBinding(node);
     Expression lhs = node.getLeftOperand();
     ITypeBinding lhBinding = getBoxType(lhs);
     Expression rhs = node.getRightOperand();
     ITypeBinding rhBinding = getBoxType(rhs);
-
-    // Unless the operator is == or !=, both operands must be primitive.
     InfixExpression.Operator op = node.getOperator();
-    boolean needsPrimitive =
-        op != InfixExpression.Operator.EQUALS && op != InfixExpression.Operator.NOT_EQUALS;
 
-    if (!lhBinding.isPrimitive() && (rhBinding.isPrimitive() || needsPrimitive)) {
+    // Don't unbox for equality tests where both operands are boxed types.
+    if ((op == InfixExpression.Operator.EQUALS || op == InfixExpression.Operator.NOT_EQUALS)
+        && !lhBinding.isPrimitive() && !rhBinding.isPrimitive()) {
+      return;
+    }
+    // Don't unbox for string concatenation.
+    if (op == InfixExpression.Operator.PLUS && Types.isJavaStringType(type)) {
+      return;
+    }
+
+    if (!lhBinding.isPrimitive()) {
       node.setLeftOperand(unbox(lhs));
     }
-    if ((lhBinding.isPrimitive() || needsPrimitive) && !rhBinding.isPrimitive()) {
+    if (!rhBinding.isPrimitive()) {
       node.setRightOperand(unbox(rhs));
+    }
+    @SuppressWarnings("unchecked")
+    List<Expression> extendedOperands = node.extendedOperands(); // safe by definition
+    for (int i = 0; i < extendedOperands.size(); i++) {
+      Expression expr = extendedOperands.get(i);
+      if (!getBoxType(expr).isPrimitive()) {
+        extendedOperands.set(i, unbox(expr));
+      }
     }
   }
 
