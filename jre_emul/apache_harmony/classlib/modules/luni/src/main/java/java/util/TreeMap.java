@@ -796,7 +796,7 @@ class MapEntry implements Map.Entry<K, V>, Cloneable {
 
     static class SubMapEntrySet <K,V> extends AbstractSet<Map.Entry<K, V>>
                                                 implements Set<Map.Entry<K, V>> {
-        SubMap<K, V> subMap;
+        @Weak SubMap<K, V> subMap;
 
         SubMapEntrySet(SubMap<K, V> map) {
             subMap = map;
@@ -1195,47 +1195,50 @@ class MapEntry implements Map.Entry<K, V>, Cloneable {
     @Override
     public Set<Map.Entry<K, V>> entrySet() {
         if (entrySet == null) {
-            entrySet = new AbstractSet<Map.Entry<K, V>>() {
-                @Override
-                public int size() {
-                    return size;
-                }
-
-                @Override
-                public void clear() {
-                    TreeMap.this.clear();
-                }
-
-                @SuppressWarnings("unchecked")
-                @Override
-                public boolean contains(Object object) {
-                    if (object instanceof Map.Entry) {
-                        Map.Entry<K, V> entry = (Map.Entry<K, V>) object;
-                        K key = entry.getKey();
-                        Object v1 = TreeMap.this.get(key), v2 = entry.getValue();
-                        return v1 == null ? ( v2 == null && TreeMap.this.containsKey(key) ) : v1.equals(v2);
-                    }
-                    return false;
-                }
-
-                @Override
-                public boolean remove(Object object) {
-                    if (contains(object)) {
-                        Map.Entry<K, V> entry = (Map.Entry<K, V>) object;
-                        K key = entry.getKey();
-                        TreeMap.this.remove(key);
-                        return true;
-                    }
-                    return false;
-                }
-
-                @Override
-                public Iterator<Map.Entry<K, V>> iterator() {
-                    return new UnboundedEntryIterator<K, V>(TreeMap.this);
-                }
-            };
+            entrySet = new EntrySet();
         }
         return entrySet;
+    }
+
+    @WeakOuter
+    private class EntrySet extends AbstractSet<Map.Entry<K, V>> {
+        @Override
+        public int size() {
+            return size;
+        }
+
+        @Override
+        public void clear() {
+            TreeMap.this.clear();
+        }
+
+        @SuppressWarnings("unchecked")
+        @Override
+        public boolean contains(Object object) {
+            if (object instanceof Map.Entry) {
+                Map.Entry<K, V> entry = (Map.Entry<K, V>) object;
+                K key = entry.getKey();
+                Object v1 = TreeMap.this.get(key), v2 = entry.getValue();
+                return v1 == null ? ( v2 == null && TreeMap.this.containsKey(key) ) : v1.equals(v2);
+            }
+            return false;
+        }
+
+        @Override
+        public boolean remove(Object object) {
+            if (contains(object)) {
+                Map.Entry<K, V> entry = (Map.Entry<K, V>) object;
+                K key = entry.getKey();
+                TreeMap.this.remove(key);
+                return true;
+            }
+            return false;
+        }
+
+        @Override
+        public Iterator<Map.Entry<K, V>> iterator() {
+            return new UnboundedEntryIterator<K, V>(TreeMap.this);
+        }
     }
 
     /**

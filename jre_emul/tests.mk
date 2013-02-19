@@ -149,6 +149,7 @@ TEST_OBJS = \
 	$(TESTS_DIR)/org/apache/harmony/luni/tests/java/util/StackTest.o \
 	$(TESTS_DIR)/org/apache/harmony/luni/tests/java/util/StringTokenizerTest.o \
 	$(TESTS_DIR)/org/apache/harmony/luni/tests/java/util/TimeZoneTest.o \
+	$(TESTS_DIR)/org/apache/harmony/luni/tests/java/util/TreeMapTest.o \
 	$(TESTS_DIR)/org/apache/harmony/luni/tests/java/util/VectorTest.o \
 	$(TESTS_DIR)/org/apache/harmony/tests/java/util/regex/Matcher2Test.o \
 	$(TESTS_DIR)/org/apache/harmony/tests/java/util/regex/MatcherTest.o \
@@ -169,7 +170,6 @@ FAILING_TESTS = \
 	$(TESTS_DIR)/org/apache/harmony/luni/tests/java/lang/StringBuilderTest.o \
 	$(TESTS_DIR)/org/apache/harmony/luni/tests/java/util/CollectionsTest.o \
 	$(TESTS_DIR)/org/apache/harmony/luni/tests/java/util/TreeSetTest.o \
-	$(TESTS_DIR)/org/apache/harmony/luni/tests/java/util/TreeMapTest.o \
 	$(TESTS_DIR)/org/apache/harmony/tests/java/util/regex/ModeTest.o \
 
 # These tests fail because they subclass other tests, so linking fails

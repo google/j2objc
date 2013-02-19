@@ -21,8 +21,8 @@ import tests.support.Support_MapTest2;
 import tests.support.Support_UnmodifiableCollectionTest;
 
 import java.io.Serializable;
-import java.text.CollationKey;
-import java.text.Collator;
+//import java.text.CollationKey;
+//import java.text.Collator;
 import java.util.AbstractMap;
 import java.util.Collection;
 import java.util.Comparator;
@@ -301,6 +301,7 @@ public class TreeMapTest extends junit.framework.TestCase {
         // Regression for Harmony-1066
         assertTrue(head instanceof Serializable);
 
+        /* TODO(user): Uncomment when Collator is added to jre_emul.
         // Regression for ill-behaved collator
         Collator c = new Collator() {
             @Override
@@ -323,11 +324,11 @@ public class TreeMapTest extends junit.framework.TestCase {
         };
 
         TreeMap<String, String> treemap = new TreeMap<String, String>(c);
-        assertEquals(0, treemap.headMap(null).size());
-        
-        treemap = new TreeMap();
-		SortedMap<String, String> headMap =  treemap.headMap("100");
-		headMap.headMap("100");
+        assertEquals(0, treemap.headMap(null).size());*/
+
+        TreeMap<String, String> treemap = new TreeMap();
+                SortedMap<String, String> headMap =  treemap.headMap("100");
+                headMap.headMap("100");
 
 	SortedMap<Integer,Integer> intMap,sub;
         int size = 16;
@@ -343,7 +344,7 @@ public class TreeMapTest extends junit.framework.TestCase {
             fail("java.util.NoSuchElementException should be thrown");
         } catch(java.util.NoSuchElementException e) {
         }
-        
+
         try{
             sub.lastKey();
             fail("java.util.NoSuchElementException should be thrown");
@@ -363,7 +364,7 @@ public class TreeMapTest extends junit.framework.TestCase {
             fail("java.util.NoSuchElementException should be thrown");
         } catch(java.util.NoSuchElementException e) {
         }
-        
+
         try{
             sub.lastKey();
             fail("java.util.NoSuchElementException should be thrown");
@@ -495,8 +496,8 @@ public class TreeMapTest extends junit.framework.TestCase {
         SortedMap<String, String> sub = map.subMap("1", "3"); //$NON-NLS-1$ //$NON-NLS-2$
         assertEquals("2", sub.lastKey()); //$NON-NLS-1$
     }
-    
-    
+
+
     /**
      * @tests java.util.TreeMap#subMap(java.lang.Object, java.lang.Object)
      */
@@ -569,7 +570,7 @@ public class TreeMapTest extends junit.framework.TestCase {
             fail("java.util.NoSuchElementException should be thrown");
         } catch(java.util.NoSuchElementException e) {
         }
-        
+
         try{
             sub.lastKey();
             fail("java.util.NoSuchElementException should be thrown");
@@ -589,7 +590,7 @@ public class TreeMapTest extends junit.framework.TestCase {
             fail("java.util.NoSuchElementException should be thrown");
         } catch(java.util.NoSuchElementException e) {
         }
-        
+
         try{
             sub.lastKey();
             fail("java.util.NoSuchElementException should be thrown");

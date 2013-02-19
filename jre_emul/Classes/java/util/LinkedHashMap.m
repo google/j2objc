@@ -493,23 +493,10 @@
 
 - (id)initWithJavaUtilLinkedHashMap:(JavaUtilLinkedHashMap *)outer {
   if ((self = [super init])) {
-#if ! __has_feature(objc_arc)
-    [outer_ autorelease];
-#endif
     outer_ = outer;
-#if ! __has_feature(objc_arc)
-    [outer retain];
-#endif
   }
   return self;
 }
-
-#if ! __has_feature(objc_arc)
-- (void)dealloc {
-  [outer_ autorelease];
-  [super dealloc];
-}
-#endif
 
 @end
 
@@ -535,22 +522,9 @@
 
 - (id)initWithJavaUtilLinkedHashMap:(JavaUtilLinkedHashMap *)outer {
   if ((self = [super init])) {
-#if ! __has_feature(objc_arc)
-    [outer_ autorelease];
-#endif
     outer_ = outer;
-#if ! __has_feature(objc_arc)
-    [outer retain];
-#endif
   }
   return self;
 }
-
-#if ! __has_feature(objc_arc)
-- (void)dealloc {
-  [outer_ autorelease];
-  [super dealloc];
-}
-#endif
 
 @end
