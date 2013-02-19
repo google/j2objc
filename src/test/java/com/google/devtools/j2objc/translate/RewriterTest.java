@@ -574,4 +574,17 @@ public class RewriterTest extends GenerationTest {
         "unichar c = [((JavaLangCharacter *) [((id<JavaUtilIterator>) NIL_CHK(iter__)) next]) " +
         "charValue];");
   }
+
+  public void testStaticArrayInitializerMove() throws IOException {
+    String source = "class Test { static final double[] EVERY_SIXTEENTH_FACTORIAL = " +
+        "{ 0x1.0p0, 0x1.30777758p44, 0x1.956ad0aae33a4p117, 0x1.ee69a78d72cb6p202, " +
+        "0x1.fe478ee34844ap295, 0x1.c619094edabffp394, 0x1.3638dd7bd6347p498, " +
+        "0x1.7cac197cfe503p605, 0x1.1e5dfc140e1e5p716, 0x1.8ce85fadb707ep829, " +
+        "0x1.95d5f3d928edep945 }; }";
+    String translation = translateSourceFile(source, "Test", "Test.m");
+    assertTranslation(translation, "{ 1.0, 2.0922789888E13, 2.631308369336935E35, " +
+        "1.2413915592536073E61, 1.2688693218588417E89, 7.156945704626381E118, " +
+        "9.916779348709496E149, 1.974506857221074E182, 3.856204823625804E215, " +
+        "5.5502938327393044E249, 4.7147236359920616E284 }");
+  }
 }
