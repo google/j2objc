@@ -624,8 +624,14 @@ public class StatementGenerator extends ErrorReportingASTVisitor {
       printArrayElementAssignment(lhs, rhs, op);
     } else if (op == Operator.RIGHT_SHIFT_UNSIGNED_ASSIGN) {
       lhs.accept(this);
-      buffer.append(" = ");
-      printUnsignedRightShift(lhs, rhs);
+      ITypeBinding assignType = Types.getTypeBinding(lhs);
+      if (NameTable.getFullName(assignType).equals("unichar")) {
+        buffer.append(" >>= ");
+        rhs.accept(this);
+      } else {
+        buffer.append(" = ");
+        printUnsignedRightShift(lhs, rhs);
+      }
     } else if (op == Operator.ASSIGN) {
       IVariableBinding var = Types.getVariableBinding(lhs);
       boolean useWriter = false;
@@ -706,7 +712,8 @@ public class StatementGenerator extends ErrorReportingASTVisitor {
       // ... "withInt:(int) (((unsigned int) [arr intAtIndex:i]) >> j)]" for
       // unsigned right shift.
       String type = kind.toLowerCase();
-      if (op == Operator.RIGHT_SHIFT_UNSIGNED_ASSIGN) {
+      boolean isSigned = !type.equals("char");
+      if (op == Operator.RIGHT_SHIFT_UNSIGNED_ASSIGN && isSigned) {
         buffer.append("(");
         buffer.append(type);
         buffer.append(") (((unsigned ");
@@ -721,7 +728,7 @@ public class StatementGenerator extends ErrorReportingASTVisitor {
       aa.getIndex().accept(this);
       buffer.append(']');
       if (op == Operator.RIGHT_SHIFT_UNSIGNED_ASSIGN) {
-        buffer.append(") >>");
+        buffer.append(isSigned ? ") >>" : " >>");
       } else {
         buffer.append(' ');
         String s = op.toString();
@@ -729,7 +736,7 @@ public class StatementGenerator extends ErrorReportingASTVisitor {
       }
       buffer.append(' ');
       rhs.accept(this);
-      if (op == Operator.RIGHT_SHIFT_UNSIGNED_ASSIGN) {
+      if (op == Operator.RIGHT_SHIFT_UNSIGNED_ASSIGN && isSigned) {
         buffer.append(')');
       }
     }
@@ -1121,14 +1128,16 @@ public class StatementGenerator extends ErrorReportingASTVisitor {
   public boolean visit(InfixExpression node) {
     InfixExpression.Operator op = node.getOperator();
     ITypeBinding type = Types.getTypeBinding(node);
+    String typeName = NameTable.getFullName(type);
     if (Types.isJavaStringType(type) &&
         op.equals(InfixExpression.Operator.PLUS)) {
       printStringConcatenation(node.getLeftOperand(), node.getRightOperand(),
           node.extendedOperands());
-    } else if (op.equals(InfixExpression.Operator.RIGHT_SHIFT_UNSIGNED)) {
+    } else if (op.equals(InfixExpression.Operator.RIGHT_SHIFT_UNSIGNED) &&
+        !typeName.equals("unichar")) {
       printUnsignedRightShift(node.getLeftOperand(), node.getRightOperand());
     } else if (op.equals(InfixExpression.Operator.REMAINDER) && isFloatingPoint(node)) {
-      buffer.append(type.isEqualTo(node.getAST().resolveWellKnownType("float")) ? "fmodf" : "fmod");
+      buffer.append(typeName.equals("float") ? "fmodf" : "fmod");
       buffer.append('(');
       node.getLeftOperand().accept(this);
       buffer.append(", ");
