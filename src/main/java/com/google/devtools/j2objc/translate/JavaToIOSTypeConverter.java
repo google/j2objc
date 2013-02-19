@@ -21,8 +21,6 @@ import com.google.devtools.j2objc.types.Types;
 import com.google.devtools.j2objc.util.ErrorReportingASTVisitor;
 import com.google.devtools.j2objc.util.NameTable;
 
-import org.eclipse.jdt.core.dom.ArrayCreation;
-import org.eclipse.jdt.core.dom.ArrayType;
 import org.eclipse.jdt.core.dom.CastExpression;
 import org.eclipse.jdt.core.dom.Expression;
 import org.eclipse.jdt.core.dom.FieldDeclaration;
@@ -168,16 +166,6 @@ public class JavaToIOSTypeConverter extends ErrorReportingASTVisitor {
       }
     }
 
-    return super.visit(node);
-  }
-
-  @Override
-  public boolean visit(ArrayCreation node) {
-    ArrayType type = node.getType();
-    Type newType = Types.makeIOSType(type);
-    if (newType != null) {
-      type.setComponentType(newType);
-    }
     return super.visit(node);
   }
 

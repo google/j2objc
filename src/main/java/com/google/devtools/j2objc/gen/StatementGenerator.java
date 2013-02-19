@@ -435,16 +435,15 @@ public class StatementGenerator extends ErrorReportingASTVisitor {
     @SuppressWarnings("unchecked")
     List<Expression> dimensions = node.dimensions(); // safe by definition
     ArrayInitializer init = node.getInitializer();
+    ITypeBinding componentType = Types.getTypeBinding(node).getComponentType();
     if (init != null) {
       // Create an expression like [IOSArrayInt arrayWithInts:(int[]){ 1, 2, 3 }].
-      ArrayType at = node.getType();
-      ITypeBinding componentType = Types.getTypeBinding(node).getComponentType();
 
       // New array needs to be retained if it's a new assignment, since the
       // arrayWith* methods return an autoreleased object.
       buffer.append('[');
-      String elementType = at.getElementType().toString();
-      buffer.append(elementType);
+      String arrayType = Types.resolveArrayType(componentType).toString();
+      buffer.append(arrayType);
       buffer.append(' ');
 
       IOSArrayTypeBinding iosArrayBinding = Types.resolveArrayType(componentType);
@@ -453,32 +452,32 @@ public class StatementGenerator extends ErrorReportingASTVisitor {
       printArrayLiteral(init);
       buffer.append(" count:");
       buffer.append(init.expressions().size());
-      if (elementType.equals("IOSObjectArray")) {
+      if (arrayType.equals("IOSObjectArray")) {
         buffer.append(" type:");
         printObjectArrayType(componentType);
       }
       buffer.append(']');
     } else if (node.dimensions().size() > 1) {
-      printMultiDimArray(Types.getTypeBinding(node).getElementType(), dimensions);
+      printMultiDimArray(componentType, dimensions);
     } else {
       assert dimensions.size() == 1;
-      printSingleDimArray(Types.getTypeBinding(node).getElementType(),
-          dimensions.get(0), useReferenceCounting);
+      printSingleDimArray(componentType, dimensions.get(0), useReferenceCounting);
     }
     return false;
   }
 
-  private void printSingleDimArray(ITypeBinding elementType, Expression size, boolean useRefCount) {
+  private void printSingleDimArray(
+      ITypeBinding componentType, Expression size, boolean useRefCount) {
     // Create an expression like [IOSArrayInt initWithLength:5] }.
     buffer.append(useRefCount ? "[[[" : "[[");
-    String arrayType = Types.resolveArrayType(elementType).toString();
+    String arrayType = Types.resolveArrayType(componentType).toString();
     buffer.append(arrayType);
     buffer.append(" alloc] ");
     buffer.append("initWithLength:");
     size.accept(this);
     if (arrayType.equals("IOSObjectArray")) {
       buffer.append(" type:");
-      printObjectArrayType(elementType);
+      printObjectArrayType(componentType);
     }
     buffer.append(']');
     if (useRefCount) {
@@ -490,9 +489,9 @@ public class StatementGenerator extends ErrorReportingASTVisitor {
    * Prints a multi-dimensional array that is defined using array sizes,
    * rather than an initializer.  For example, "new int[2][3][4]".
    */
-  private void printMultiDimArray(ITypeBinding elementType, List<Expression> dimensions) {
+  private void printMultiDimArray(ITypeBinding componentType, List<Expression> dimensions) {
     if (dimensions.size() == 1) {
-      printSingleDimArray(elementType, dimensions.get(0), false);
+      printSingleDimArray(componentType, dimensions.get(0), false);
     } else {
       buffer.append("[IOSObjectArray arrayWithObjects:(id[]){ ");
       Expression dimension = dimensions.get(0);
@@ -511,7 +510,7 @@ public class StatementGenerator extends ErrorReportingASTVisitor {
       }
       List<Expression> subDimensions = dimensions.subList(1, dimensions.size());
       for (int i = 0; i < dim; i++) {
-        printMultiDimArray(elementType, subDimensions);
+        printMultiDimArray(componentType.getComponentType(), subDimensions);
         if (i + 1 < dim) {
           buffer.append(',');
         }
@@ -520,8 +519,7 @@ public class StatementGenerator extends ErrorReportingASTVisitor {
       buffer.append("} count:");
       dimension.accept(this);
       buffer.append(" type:[IOSClass classWithClass:[");
-      buffer.append(subDimensions.size() > 1 ? "IOSObjectArray" :
-          Types.resolveArrayType(elementType).toString());
+      buffer.append(Types.resolveArrayType(componentType.getComponentType()).toString());
       buffer.append(" class]]]");
     }
   }
