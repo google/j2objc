@@ -17,6 +17,8 @@
 
 package java.util;
 
+import com.google.j2objc.annotations.WeakOuter;
+
 import java.io.Serializable;
 
 /**
@@ -513,35 +515,38 @@ public class HashMap<K, V> extends AbstractMap<K, V> implements Map<K, V>,
     @Override
     public Set<K> keySet() {
         if (keySet == null) {
-            keySet = new AbstractSet<K>() {
-                @Override
-                public boolean contains(Object object) {
-                    return containsKey(object);
-                }
-
-                @Override
-                public int size() {
-                    return HashMap.this.size();
-                }
-
-                @Override
-                public void clear() {
-                    HashMap.this.clear();
-                }
-
-                @Override
-                public boolean remove(Object key) {
-                    Entry<K, V> entry = HashMap.this.removeEntry(key);
-                    return entry != null;
-                }
-
-                @Override
-                public Iterator<K> iterator() {
-                    return new KeyIterator<K,V> (HashMap.this);
-                }
-            };
+            keySet = new KeySet();
         }
         return keySet;
+    }
+
+    @WeakOuter
+    private class KeySet extends AbstractSet<K> {
+        @Override
+        public boolean contains(Object object) {
+            return containsKey(object);
+        }
+
+        @Override
+        public int size() {
+            return HashMap.this.size();
+        }
+
+        @Override
+        public void clear() {
+            HashMap.this.clear();
+        }
+
+        @Override
+        public boolean remove(Object key) {
+            Entry<K, V> entry = HashMap.this.removeEntry(key);
+            return entry != null;
+        }
+
+        @Override
+        public Iterator<K> iterator() {
+            return new KeyIterator<K,V> (HashMap.this);
+        }
     }
 
     /**
@@ -753,29 +758,32 @@ public class HashMap<K, V> extends AbstractMap<K, V> implements Map<K, V>,
     @Override
     public Collection<V> values() {
         if (valuesCollection == null) {
-            valuesCollection = new AbstractCollection<V>() {
-                @Override
-                public boolean contains(Object object) {
-                    return containsValue(object);
-                }
-
-                @Override
-                public int size() {
-                    return HashMap.this.size();
-                }
-
-                @Override
-                public void clear() {
-                    HashMap.this.clear();
-                }
-
-                @Override
-                public Iterator<V> iterator() {
-                    return new ValueIterator<K,V> (HashMap.this);
-                }
-            };
+            valuesCollection = new ValuesCollection();
         }
         return valuesCollection;
+    }
+
+    @WeakOuter
+    private class ValuesCollection extends AbstractCollection<V> {
+        @Override
+        public boolean contains(Object object) {
+            return containsValue(object);
+        }
+
+        @Override
+        public int size() {
+            return HashMap.this.size();
+        }
+
+        @Override
+        public void clear() {
+            HashMap.this.clear();
+        }
+
+        @Override
+        public Iterator<V> iterator() {
+            return new ValueIterator<K,V> (HashMap.this);
+        }
     }
 
     /*

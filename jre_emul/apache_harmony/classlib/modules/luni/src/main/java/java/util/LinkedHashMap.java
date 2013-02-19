@@ -17,6 +17,8 @@
 
 package java.util;
 
+import com.google.j2objc.annotations.WeakOuter;
+
 /**
  * LinkedHashMap is a variant of HashMap. Its entries are kept in a
  * doubly-linked list. The iteration order is, by default, the order in which
@@ -506,38 +508,41 @@ public class LinkedHashMap<K, V> extends HashMap<K, V> implements Map<K, V> {
     @Override
     public Set<K> keySet() {
         if (keySet == null) {
-            keySet = new AbstractSet<K>() {
-                @Override
-                public boolean contains(Object object) {
-                    return containsKey(object);
-                }
-
-                @Override
-                public int size() {
-                    return LinkedHashMap.this.size();
-                }
-
-                @Override
-                public void clear() {
-                    LinkedHashMap.this.clear();
-                }
-
-                @Override
-                public boolean remove(Object key) {
-                    if (containsKey(key)) {
-                        LinkedHashMap.this.remove(key);
-                        return true;
-                    }
-                    return false;
-                }
-
-                @Override
-                public Iterator<K> iterator() {
-                    return new KeyIterator<K,V>(LinkedHashMap.this);
-                }
-            };
+            keySet = new KeySet();
         }
         return keySet;
+    }
+
+    @WeakOuter
+    private class KeySet extends AbstractSet<K> {
+        @Override
+        public boolean contains(Object object) {
+            return containsKey(object);
+        }
+
+        @Override
+        public int size() {
+            return LinkedHashMap.this.size();
+        }
+
+        @Override
+        public void clear() {
+            LinkedHashMap.this.clear();
+        }
+
+        @Override
+        public boolean remove(Object key) {
+            if (containsKey(key)) {
+                LinkedHashMap.this.remove(key);
+                return true;
+            }
+            return false;
+        }
+
+        @Override
+        public Iterator<K> iterator() {
+            return new KeyIterator<K,V>(LinkedHashMap.this);
+        }
     }
 
     /**
@@ -562,29 +567,32 @@ public class LinkedHashMap<K, V> extends HashMap<K, V> implements Map<K, V> {
     @Override
     public Collection<V> values() {
         if (valuesCollection == null) {
-            valuesCollection = new AbstractCollection<V>() {
-                @Override
-                public boolean contains(Object object) {
-                    return containsValue(object);
-                }
-
-                @Override
-                public int size() {
-                    return LinkedHashMap.this.size();
-                }
-
-                @Override
-                public void clear() {
-                    LinkedHashMap.this.clear();
-                }
-
-                @Override
-                public Iterator<V> iterator() {
-                    return new ValueIterator<K,V>(LinkedHashMap.this);
-                }
-            };
+            valuesCollection = new ValuesCollection();
         }
         return valuesCollection;
+    }
+
+    @WeakOuter
+    private class ValuesCollection extends AbstractCollection<V> {
+        @Override
+        public boolean contains(Object object) {
+            return containsValue(object);
+        }
+
+        @Override
+        public int size() {
+            return LinkedHashMap.this.size();
+        }
+
+        @Override
+        public void clear() {
+            LinkedHashMap.this.clear();
+        }
+
+        @Override
+        public Iterator<V> iterator() {
+            return new ValueIterator<K,V>(LinkedHashMap.this);
+        }
     }
 
     /**

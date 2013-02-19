@@ -108,7 +108,7 @@
 
 @interface JavaUtilLinkedHashMap_KeySet : JavaUtilAbstractSet {
  @public
-  JavaUtilLinkedHashMap *outer_;
+  JavaUtilLinkedHashMap __weak *outer_;
 }
 
 - (BOOL)containsWithId:(id)object;
@@ -121,7 +121,7 @@
 
 @interface JavaUtilLinkedHashMap_ValuesCollection : JavaUtilAbstractCollection {
  @public
-  JavaUtilLinkedHashMap *outer_;
+  JavaUtilLinkedHashMap __weak *outer_;
 }
 
 - (BOOL)containsWithId:(id)object;
