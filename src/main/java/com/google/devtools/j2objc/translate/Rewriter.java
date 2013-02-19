@@ -702,6 +702,72 @@ public class Rewriter extends ErrorReportingASTVisitor {
     return block;
   }
 
+  @Override
+  public void endVisit(InfixExpression node) {
+    InfixExpression.Operator op = node.getOperator();
+    ITypeBinding type = Types.getTypeBinding(node);
+    ITypeBinding lhsType = Types.getTypeBinding(node.getLeftOperand());
+    ITypeBinding rhsType = Types.getTypeBinding(node.getRightOperand());
+    if (Types.isJavaStringType(type) && op == InfixExpression.Operator.PLUS
+        && !Types.isJavaStringType(lhsType) && !Types.isJavaStringType(rhsType)) {
+      // String concatenation where the first two operands are not strings.
+      // We move all the preceding non-string operands into a sub-expression.
+      AST ast = node.getAST();
+      ITypeBinding nonStringExprType = getAdditionType(ast, lhsType, rhsType);
+      InfixExpression nonStringExpr = ast.newInfixExpression();
+      InfixExpression stringExpr = ast.newInfixExpression();
+      nonStringExpr.setOperator(InfixExpression.Operator.PLUS);
+      stringExpr.setOperator(InfixExpression.Operator.PLUS);
+      nonStringExpr.setLeftOperand(NodeCopier.copySubtree(ast, node.getLeftOperand()));
+      nonStringExpr.setRightOperand(NodeCopier.copySubtree(ast, node.getRightOperand()));
+      List<Expression> extendedOperands = getExtendedOperands(node);
+      List<Expression> nonStringOperands = getExtendedOperands(nonStringExpr);
+      List<Expression> stringOperands = getExtendedOperands(stringExpr);
+      boolean foundStringType = false;
+      for (Expression expr : extendedOperands) {
+        Expression copiedExpr = NodeCopier.copySubtree(ast, expr);
+        ITypeBinding exprType = Types.getTypeBinding(expr);
+        if (foundStringType || Types.isJavaStringType(exprType)) {
+          if (foundStringType) {
+            stringOperands.add(copiedExpr);
+          } else {
+            stringExpr.setRightOperand(copiedExpr);
+          }
+          foundStringType = true;
+        } else {
+          nonStringOperands.add(copiedExpr);
+          nonStringExprType = getAdditionType(ast, nonStringExprType, exprType);
+        }
+      }
+      Types.addBinding(nonStringExpr, nonStringExprType);
+      stringExpr.setLeftOperand(nonStringExpr);
+      Types.addBinding(stringExpr, ast.resolveWellKnownType("java.lang.String"));
+      ClassConverter.setProperty(node, stringExpr);
+    }
+  }
+
+  private ITypeBinding getAdditionType(AST ast, ITypeBinding aType, ITypeBinding bType) {
+    ITypeBinding doubleType = ast.resolveWellKnownType("double");
+    ITypeBinding boxedDoubleType = ast.resolveWellKnownType("java.lang.Double");
+    if (aType == doubleType || bType == doubleType
+        || aType == boxedDoubleType || bType == boxedDoubleType) {
+      return doubleType;
+    }
+    ITypeBinding floatType = ast.resolveWellKnownType("float");
+    ITypeBinding boxedFloatType = ast.resolveWellKnownType("java.lang.Float");
+    if (aType == floatType || bType == floatType
+        || aType == boxedFloatType || bType == boxedFloatType) {
+      return floatType;
+    }
+    ITypeBinding longType = ast.resolveWellKnownType("long");
+    ITypeBinding boxedLongType = ast.resolveWellKnownType("java.lang.Long");
+    if (aType == longType || bType == longType
+        || aType == boxedLongType || bType == boxedLongType) {
+      return longType;
+    }
+    return ast.resolveWellKnownType("int");
+  }
+
   /**
    * Helper method to isolate the unchecked warning.
    */
@@ -713,6 +779,11 @@ public class Rewriter extends ErrorReportingASTVisitor {
   @SuppressWarnings("unchecked")
   private static List<SingleVariableDeclaration> getParameters(MethodDeclaration method) {
     return method.parameters();
+  }
+
+  @SuppressWarnings("unchecked")
+  private static List<Expression> getExtendedOperands(InfixExpression expr) {
+    return expr.extendedOperands();
   }
 
   /**

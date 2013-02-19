@@ -354,7 +354,7 @@ public class AutoboxerTest extends GenerationTest {
 
   public void testNoBoxingFormatPrimitiveParameter() throws IOException {
     String source = "public class Test { " +
-    	"boolean b; byte b2; char c; double d; float f; int i; long l; short s;" +
+        "boolean b; byte b2; char c; double d; float f; int i; long l; short s;" +
         "public String toString() { " +
         "return String.format(\"b=%d b2=%d c=%c d=%f f=%f i=%d l=%d s=%d\", " +
         "  b, b2, c, d, f, i, l, s); }}";
@@ -389,5 +389,21 @@ public class AutoboxerTest extends GenerationTest {
     assertTranslation(translation,
         "iSeconds = [JavaLangDouble valueOfWithDouble:" +
         "-[((JavaLangDouble *) NIL_CHK(iSeconds)) doubleValue]];");
+  }
+
+  public void testStringConcatenation() throws IOException {
+    String translation = translateSourceFile(
+        "class Test { void test() { Boolean b = Boolean.TRUE; Integer i = new Integer(3); " +
+        "String s = b + \"foo\" + i; } }", "Test", "test.m");
+    assertTranslation(translation, "NSString *s = [NSString stringWithFormat:@\"%@foo%@\", b, i]");
+  }
+
+  public void testExtendedOperandsAreUnboxed() throws IOException {
+    String translation = translateSourceFile(
+        "class Test { void test() { Integer i1 = new Integer(2); Integer i2 = new Integer(3); " +
+        "int i3 = 1 + 2 + i1 + i2; } }", "Test", "test.m");
+    assertTranslation(translation,
+        "int i3 = 1 + 2 + [((JavaLangInteger *) NIL_CHK(i1)) intValue] + " +
+        "[((JavaLangInteger *) NIL_CHK(i2)) intValue]");
   }
 }

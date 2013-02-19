@@ -596,4 +596,11 @@ public class RewriterTest extends GenerationTest {
     assertTranslation(translation,
         "@throw [[[JavaLangClassCastException alloc] init] autorelease]");
   }
+
+  public void testAdditionWithinStringConcatenation() throws IOException {
+    String translation = translateSourceFile(
+        "class Test { void test() { String s = 1 + 2.3f + \"foo\"; } }", "Test", "test.m");
+    assertTranslation(translation,
+        "NSString *s = [NSString stringWithFormat:@\"%ffoo\", 1 + 2.3f]");
+  }
 }
