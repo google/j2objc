@@ -745,11 +745,11 @@ public class ObjectiveCImplementationGenerator extends ObjectiveCSourceFileGener
     indent();
     printIndent();
     println("int exitCode = 0;");
-    if (Options.useReferenceCounting()) {
-        // TODO(user): use @autoreleasepool like ARC when iOS 5 is minimum.
+    if (Options.memoryDebug()) {
       printIndent();
-      println("NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];");
-    } else if (Options.useARC()) {
+      println("JreMemDebugEnabled = TRUE;");
+    }
+    if (!Options.useGC()) {
       printIndent();
       println("@autoreleasepool {");
       indent();
@@ -772,14 +772,14 @@ public class ObjectiveCImplementationGenerator extends ObjectiveCSourceFileGener
       }
       println(", nil];");
     }
-    if (Options.useReferenceCounting()) {
-      print('\n');
-      printIndent();
-      println("[pool release];");
-    } else if (Options.useARC()) {
+    if (!Options.useGC()) {
       unindent();
       printIndent();
       println("}");
+    }
+    if (Options.memoryDebug()) {
+      printIndent();
+      println("JreMemDebugGenerateAllocationsReport();");
     }
     printIndent();
     println("return exitCode;");
