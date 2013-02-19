@@ -27,7 +27,7 @@ package java.util.logging;
  */
 class NSLogHandler extends Handler {
 
-  class NSLogFormatter extends Formatter {
+  static class NSLogFormatter extends Formatter {
 
     /**
      * Very simple formatter, since NSLog adds its own text.

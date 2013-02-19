@@ -17,6 +17,8 @@
 
 package java.util;
 
+import com.google.j2objc.annotations.WeakOuter;
+
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
@@ -606,43 +608,46 @@ public class IdentityHashMap<K, V> extends AbstractMap<K, V> implements
     @Override
     public Set<K> keySet() {
         if (keySet == null) {
-            keySet = new AbstractSet<K>() {
-                @Override
-                public boolean contains(Object object) {
-                    return containsKey(object);
-                }
-
-                @Override
-                public int size() {
-                    return IdentityHashMap.this.size();
-                }
-
-                @Override
-                public void clear() {
-                    IdentityHashMap.this.clear();
-                }
-
-                @Override
-                public boolean remove(Object key) {
-                    if (containsKey(key)) {
-                        IdentityHashMap.this.remove(key);
-                        return true;
-                    }
-                    return false;
-                }
-
-                @Override
-                public Iterator<K> iterator() {
-                    return new IdentityHashMapIterator<K, K, V>(
-                            new MapEntry.Type<K, K, V>() {
-                                public K get(MapEntry<K, V> entry) {
-                                    return entry.key;
-                                }
-                            }, IdentityHashMap.this);
-                }
-            };
+            keySet = new KeySet();
         }
         return keySet;
+    }
+
+    @WeakOuter
+    class KeySet extends AbstractSet<K> {
+        @Override
+        public boolean contains(Object object) {
+            return containsKey(object);
+        }
+
+        @Override
+        public int size() {
+            return IdentityHashMap.this.size();
+        }
+
+        @Override
+        public void clear() {
+            IdentityHashMap.this.clear();
+        }
+
+        @Override
+        public boolean remove(Object key) {
+            if (containsKey(key)) {
+                IdentityHashMap.this.remove(key);
+                return true;
+            }
+            return false;
+        }
+
+        @Override
+        public Iterator<K> iterator() {
+            return new IdentityHashMapIterator<K, K, V>(
+                    new MapEntry.Type<K, K, V>() {
+                        public K get(MapEntry<K, V> entry) {
+                            return entry.key;
+                        }
+                    }, IdentityHashMap.this);
+        }
     }
 
     /**
@@ -667,46 +672,49 @@ public class IdentityHashMap<K, V> extends AbstractMap<K, V> implements
     @Override
     public Collection<V> values() {
         if (valuesCollection == null) {
-            valuesCollection = new AbstractCollection<V>() {
-                @Override
-                public boolean contains(Object object) {
-                    return containsValue(object);
-                }
-
-                @Override
-                public int size() {
-                    return IdentityHashMap.this.size();
-                }
-
-                @Override
-                public void clear() {
-                    IdentityHashMap.this.clear();
-                }
-
-                @Override
-                public Iterator<V> iterator() {
-                    return new IdentityHashMapIterator<V, K, V>(
-                            new MapEntry.Type<V, K, V>() {
-                                public V get(MapEntry<K, V> entry) {
-                                    return entry.value;
-                                }
-                            }, IdentityHashMap.this);
-                }
-
-                @Override
-                public boolean remove(Object object) {
-                    Iterator<?> it = iterator();
-                    while (it.hasNext()) {
-                        if (object == it.next()) {
-                            it.remove();
-                            return true;
-                        }
-                    }
-                    return false;
-                }
-            };
+            valuesCollection = new ValuesCollection();
         }
         return valuesCollection;
+    }
+
+    @WeakOuter
+    class ValuesCollection extends AbstractCollection<V> {
+        @Override
+        public boolean contains(Object object) {
+            return containsValue(object);
+        }
+
+        @Override
+        public int size() {
+            return IdentityHashMap.this.size();
+        }
+
+        @Override
+        public void clear() {
+            IdentityHashMap.this.clear();
+        }
+
+        @Override
+        public Iterator<V> iterator() {
+            return new IdentityHashMapIterator<V, K, V>(
+                    new MapEntry.Type<V, K, V>() {
+                        public V get(MapEntry<K, V> entry) {
+                            return entry.value;
+                        }
+                    }, IdentityHashMap.this);
+        }
+
+        @Override
+        public boolean remove(Object object) {
+            Iterator<?> it = iterator();
+            while (it.hasNext()) {
+                if (object == it.next()) {
+                    it.remove();
+                    return true;
+                }
+            }
+            return false;
+        }
     }
 
     /**
