@@ -24,11 +24,15 @@ import org.eclipse.jdt.core.dom.IMethodBinding;
 import org.eclipse.jdt.core.dom.ITypeBinding;
 import org.eclipse.jdt.core.dom.IVariableBinding;
 import org.eclipse.jdt.core.dom.InfixExpression;
+import org.eclipse.jdt.core.dom.InstanceofExpression;
 import org.eclipse.jdt.core.dom.MethodInvocation;
+import org.eclipse.jdt.core.dom.NullLiteral;
 import org.eclipse.jdt.core.dom.NumberLiteral;
 import org.eclipse.jdt.core.dom.PostfixExpression;
+import org.eclipse.jdt.core.dom.PrefixExpression;
 import org.eclipse.jdt.core.dom.SimpleName;
 import org.eclipse.jdt.core.dom.Statement;
+import org.eclipse.jdt.core.dom.Type;
 import org.eclipse.jdt.core.dom.VariableDeclarationExpression;
 import org.eclipse.jdt.core.dom.VariableDeclarationFragment;
 import org.eclipse.jdt.core.dom.VariableDeclarationStatement;
@@ -85,14 +89,29 @@ public final class ASTFactory {
     return decl;
   }
 
+  public static PrefixExpression newPrefixExpression(
+      AST ast, PrefixExpression.Operator op, Expression operand, String type) {
+    PrefixExpression expr = ast.newPrefixExpression();
+    expr.setOperator(op);
+    expr.setOperand(operand);
+    Types.addBinding(expr, ast.resolveWellKnownType(type));
+    return expr;
+  }
+
   public static InfixExpression newInfixExpression(
-      AST ast, IVariableBinding lhs, InfixExpression.Operator op, IVariableBinding rhs) {
+      AST ast, Expression lhs, InfixExpression.Operator op, Expression rhs, String type) {
     InfixExpression expr = ast.newInfixExpression();
     expr.setOperator(op);
-    expr.setLeftOperand(newSimpleName(ast, lhs));
-    expr.setRightOperand(newSimpleName(ast, rhs));
-    Types.addBinding(expr, ast.resolveWellKnownType("boolean"));
+    expr.setLeftOperand(lhs);
+    expr.setRightOperand(rhs);
+    Types.addBinding(expr, ast.resolveWellKnownType(type));
     return expr;
+  }
+
+  public static InfixExpression newInfixExpression(
+      AST ast, IVariableBinding lhs, InfixExpression.Operator op, IVariableBinding rhs,
+      String type) {
+    return newInfixExpression(ast, newSimpleName(ast, lhs), op, newSimpleName(ast, rhs), type);
   }
 
   public static PostfixExpression newPostfixExpression(
@@ -143,5 +162,22 @@ public final class ASTFactory {
     NumberLiteral literal = ast.newNumberLiteral(token);
     Types.addBinding(literal, ast.resolveWellKnownType(type));
     return literal;
+  }
+
+  public static InfixExpression createNullCheck(AST ast, IVariableBinding var, boolean equal) {
+    NullLiteral nullNode = ast.newNullLiteral();
+    Types.addBinding(nullNode, ast.resolveWellKnownType("java.lang.Object"));
+    return newInfixExpression(
+        ast, newSimpleName(ast, var),
+        equal ? InfixExpression.Operator.EQUALS : InfixExpression.Operator.NOT_EQUALS, nullNode,
+        "boolean");
+  }
+
+  public static InstanceofExpression newInstanceofExpression(AST ast, Expression lhs, Type rhs) {
+    InstanceofExpression expr = ast.newInstanceofExpression();
+    expr.setLeftOperand(lhs);
+    expr.setRightOperand(rhs);
+    Types.addBinding(expr, ast.resolveWellKnownType("boolean"));
+    return expr;
   }
 }
