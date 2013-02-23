@@ -33,6 +33,7 @@ import org.eclipse.jdt.core.dom.ChildPropertyDescriptor;
 import org.eclipse.jdt.core.dom.ClassInstanceCreation;
 import org.eclipse.jdt.core.dom.CompilationUnit;
 import org.eclipse.jdt.core.dom.ConstructorInvocation;
+import org.eclipse.jdt.core.dom.EnumConstantDeclaration;
 import org.eclipse.jdt.core.dom.Expression;
 import org.eclipse.jdt.core.dom.FieldDeclaration;
 import org.eclipse.jdt.core.dom.IExtendedModifier;
@@ -311,6 +312,8 @@ public abstract class ClassConverter extends TypeTrackingVisitor {
         args = ((SuperConstructorInvocation) parent).arguments();
       } else if (parent instanceof ArrayCreation) {
         args = ((ArrayCreation) parent).dimensions();
+      } else if (parent instanceof EnumConstantDeclaration) {
+        args = ((EnumConstantDeclaration) parent).arguments();
       } else {
         throw new AssertionError("unknown parent node type: " + parent.getClass().getSimpleName());
       }
