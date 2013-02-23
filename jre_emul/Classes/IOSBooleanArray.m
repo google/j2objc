@@ -52,27 +52,26 @@
 }
 
 - (BOOL)booleanAtIndex:(NSUInteger)index {
-  [self checkIndex:index];
+  IOSArray_checkIndex(self, index);
   return buffer_[index];
 }
 
 - (BOOL)replaceBooleanAtIndex:(NSUInteger)index withBoolean:(BOOL)boolean {
-  [self checkIndex:index];
+  IOSArray_checkIndex(self, index);
   buffer_[index] = boolean;
   return boolean;
 }
 
 - (void)getBooleans:(BOOL *)buffer length:(NSUInteger)length {
-  [self checkIndex:(length - 1)];
+  IOSArray_checkIndex(self, length - 1);
   memcpy(buffer, buffer_, length * sizeof(BOOL));
 }
 
 - (void) arraycopy:(NSRange)sourceRange
        destination:(IOSArray *)destination
             offset:(NSInteger)offset {
-  [self checkRange:sourceRange];
-  NSRange destRange = NSMakeRange(offset, sourceRange.length);
-  [destination checkRange:destRange];
+  IOSArray_checkRange(self, sourceRange);
+  IOSArray_checkRange(destination, NSMakeRange(offset, sourceRange.length));
   memmove(((IOSBooleanArray *) destination)->buffer_ + offset,
           self->buffer_ + sourceRange.location,
           sourceRange.length * sizeof(BOOL));

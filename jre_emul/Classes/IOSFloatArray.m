@@ -50,49 +50,48 @@
 }
 
 - (float)floatAtIndex:(NSUInteger)index {
-  [self checkIndex:index];
+  IOSArray_checkIndex(self, index);
   return buffer_[index];
 }
 
 - (float)replaceFloatAtIndex:(NSUInteger)index withFloat:(float)value {
-  [self checkIndex:index];
+  IOSArray_checkIndex(self, index);
   buffer_[index] = value;
   return value;
 }
 
 - (void)getFloats:(float *)buffer length:(NSUInteger)length {
-  [self checkIndex:(length - 1)];
+  IOSArray_checkIndex(self, length - 1);
   memcpy(buffer, buffer_, length * sizeof(float));
 }
 
 - (void) arraycopy:(NSRange)sourceRange
        destination:(IOSArray *)destination
             offset:(NSInteger)offset {
-  [self checkRange:sourceRange];
-  NSRange destRange = NSMakeRange(offset, sourceRange.length);
-  [destination checkRange:destRange];
+  IOSArray_checkRange(self, sourceRange);
+  IOSArray_checkRange(destination, NSMakeRange(offset, sourceRange.length));
   memmove(((IOSFloatArray *) destination)->buffer_ + offset,
           self->buffer_ + sourceRange.location,
           sourceRange.length * sizeof(float));
 }
 
 - (float)incr:(NSUInteger)index {
-  [self checkIndex:index];
+  IOSArray_checkIndex(self, index);
   return ++buffer_[index];
 }
 
 - (float)decr:(NSUInteger)index {
-  [self checkIndex:index];
+  IOSArray_checkIndex(self, index);
   return --buffer_[index];
 }
 
 - (float)postIncr:(NSUInteger)index {
-  [self checkIndex:index];
+  IOSArray_checkIndex(self, index);
   return buffer_[index]++;
 }
 
 - (float)postDecr:(NSUInteger)index {
-  [self checkIndex:index];
+  IOSArray_checkIndex(self, index);
   return buffer_[index]--;
 }
 

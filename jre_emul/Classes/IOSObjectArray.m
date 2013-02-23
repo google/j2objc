@@ -163,12 +163,12 @@
 }
 
 - (id)objectAtIndex:(NSUInteger)index {
-  [self checkIndex:index];
+  IOSArray_checkIndex(self, index);
   return buffer_[index];
 }
 
 - (id)replaceObjectAtIndex:(NSUInteger)index withObject:(id)value {
-  [self checkIndex:index];
+  IOSArray_checkIndex(self, index);
 #if ! __has_feature(objc_arc)
   id prev = buffer_[index];
   [prev autorelease];
@@ -179,7 +179,7 @@
 }
 
 - (void)getObjects:(NSObject **)buffer length:(NSUInteger)length {
-  [self checkIndex:(length - 1)];
+  IOSArray_checkIndex(self, length - 1);
   for (NSUInteger i = 0; i < length; i++) {
     id element = buffer_[i];
     buffer[i] = element;
@@ -189,10 +189,9 @@
 - (void) arraycopy:(NSRange)sourceRange
        destination:(IOSArray *)destination
             offset:(NSInteger)offset {
-  [self checkRange:sourceRange];
-  NSUInteger count = sourceRange.length;
+  IOSArray_checkRange(self, sourceRange);
+  IOSArray_checkRange(destination, NSMakeRange(offset, sourceRange.length));
   IOSObjectArray *dest = (IOSObjectArray *) destination;
-  [dest checkRange:NSMakeRange(offset, count)];
 
   // Do ranges overlap?
   if (self == destination && sourceRange.location < offset) {
