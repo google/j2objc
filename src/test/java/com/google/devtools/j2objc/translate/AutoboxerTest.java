@@ -406,4 +406,12 @@ public class AutoboxerTest extends GenerationTest {
         "int i3 = 1 + 2 + [((JavaLangInteger *) NIL_CHK(i1)) intValue] + " +
         "[((JavaLangInteger *) NIL_CHK(i2)) intValue]");
   }
+
+  public void testDoNotBoxStringFormatArg() throws IOException {
+    String source = "public class Test { String test(char sign, int hour, int minute) {" +
+            "return String.format(\"GMT%c%02d:%02d\", sign, hour, minute); }}";
+    String translation = translateSourceFile(source, "Test", "Test.m");
+    assertTranslation(translation,
+        "stringWithFormat:@\"GMT%C%02d:%02d\" , sign, hour, minute, nil];");
+  }
 }
