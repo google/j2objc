@@ -98,11 +98,12 @@ public class StatementGeneratorTest extends GenerationTest {
 
   public void testEnumConstantsInSwitchStatement() throws IOException {
     String translation = translateSourceFile(
-      "public class A { static enum B { ONE, TWO }" +
-      "public static void doSomething(B b) { switch (b) { case ONE: break; case TWO: break; }}}",
+      "public class A { static enum EnumType { ONE, TWO }" +
+      "public static void doSomething(EnumType e) {" +
+      " switch (e) { case ONE: break; case TWO: break; }}}",
       "A", "A.m");
-    assertTranslation(translation, "switch ([b ordinal]) {");
-    assertTranslation(translation, "case A_B_ONE:");
+    assertTranslation(translation, "switch ([e ordinal]) {");
+    assertTranslation(translation, "case A_EnumType_ONE:");
   }
 
   public void testEnumConstantReferences() throws IOException {
