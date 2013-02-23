@@ -401,7 +401,7 @@ public class RewriterTest extends GenerationTest {
 
     assertEquals("IOSIntArray a=IOSIntArray.arrayWithInts({1,2,3},3);",
         stmts.get(0).toString().trim());
-    assertEquals("IOSCharArray b=IOSCharArray.arrayWithCharacters({'4','5'},2);",
+    assertEquals("IOSCharArray b[]=IOSCharArray.arrayWithCharacters({'4','5'},2);",
       stmts.get(1).toString().trim());
   }
 
@@ -435,6 +435,22 @@ public class RewriterTest extends GenerationTest {
       }
     }
     assertTrue(foundInitStatements);
+  }
+
+  public void testNonStaticMultiDimArrayInitializer() throws IOException {
+    String translation = translateSourceFile(
+        "class Test { int[][] a = { { 1, 2, 3 } }; }", "Test", "Test.m");
+    assertTranslation(translation,
+        "[IOSObjectArray arrayWithObjects:(id[]){" +
+        " [IOSIntArray arrayWithInts:(int[]){ 1, 2, 3 } count:3] } count:1" +
+        " type:[IOSClass classWithClass:[IOSIntArray class]]]");
+  }
+
+  public void testArrayCreationInConstructorInvocation() throws IOException {
+    String translation = translateSourceFile(
+        "class Test { Test(int[] i) {} Test() { this(new int[] {}); } }", "Test", "Test.m");
+    assertTranslation(translation,
+        "[self initTestWithJavaLangIntegerArray:[IOSIntArray arrayWithInts:(int[]){  } count:0]]");
   }
 
   /**

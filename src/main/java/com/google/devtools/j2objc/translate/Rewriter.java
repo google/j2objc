@@ -409,69 +409,6 @@ public class Rewriter extends ErrorReportingASTVisitor {
     return true;
   }
 
-  @Override
-  public boolean visit(Block node) {
-    // split array declarations so that initializers are in separate statements.
-    List<Statement> stmts = getStatements(node);
-    int n = stmts.size();
-    for (int i = 0; i < n; i++) {
-      Statement s = stmts.get(i);
-      if (s instanceof VariableDeclarationStatement) {
-        VariableDeclarationStatement var = (VariableDeclarationStatement) s;
-        Map<VariableDeclarationFragment, Expression> initializers = Maps.newLinkedHashMap();
-        @SuppressWarnings("unchecked")
-        List<VariableDeclarationFragment> fragments = var.fragments();
-        for (VariableDeclarationFragment fragment : fragments) {
-          ITypeBinding varType = Types.getTypeBinding(fragment);
-          if (varType.isArray()) {
-            fragment.setExtraDimensions(0);
-            Expression initializer = fragment.getInitializer();
-            if (initializer != null) {
-              initializers.put(fragment, initializer);
-              if (initializer instanceof ArrayCreation) {
-                ArrayCreation creator = (ArrayCreation) initializer;
-                if (creator.getInitializer() != null) {
-                  // replace this redundant array creation node with its
-                  // rewritten initializer
-                  initializer = creator.getInitializer();
-                } else {
-                  continue;
-                }
-              }
-              if (initializer instanceof ArrayInitializer) {
-                fragment.setInitializer(createIOSArrayInitializer(
-                    Types.getTypeBinding(fragment), (ArrayInitializer) initializer));
-              }
-            }
-          }
-        }
-      } else if (s instanceof ExpressionStatement &&
-          ((ExpressionStatement) s).getExpression() instanceof Assignment) {
-        Assignment assign = (Assignment) ((ExpressionStatement) s).getExpression();
-        ITypeBinding assignType = Types.getTypeBinding(assign);
-        if (assign.getRightHandSide() instanceof ArrayInitializer) {
-          ArrayInitializer arrayInit = (ArrayInitializer) assign.getRightHandSide();
-          assert assignType.isArray() : "array initializer assigned to non-array";
-          assign.setRightHandSide(
-              createIOSArrayInitializer(assignType, arrayInit));
-        } else if (assign.getRightHandSide() instanceof ArrayCreation) {
-          ArrayCreation arrayCreate = (ArrayCreation) assign.getRightHandSide();
-          ArrayInitializer arrayInit = arrayCreate.getInitializer();
-          if (arrayInit != null) {
-            // Replace ArrayCreation node with its initializer.
-            AST ast = node.getAST();
-            Assignment newAssign = ast.newAssignment();
-            Types.addBinding(newAssign, assignType);
-            newAssign.setLeftHandSide(NodeCopier.copySubtree(ast, assign.getLeftHandSide()));
-            newAssign.setRightHandSide(createIOSArrayInitializer(assignType, arrayInit));
-            ((ExpressionStatement) s).setExpression(newAssign);
-          }
-        }
-      }
-    }
-    return true;
-  }
-
   private static Statement getLoopBody(Statement s) {
     if (s instanceof DoStatement) {
       return ((DoStatement) s).getBody();
@@ -832,6 +769,18 @@ public class Rewriter extends ErrorReportingASTVisitor {
     return true;
   }
 
+  @Override
+  public void endVisit(ArrayInitializer node) {
+    ASTNode nodeToReplace = node;
+    ASTNode parent = node.getParent();
+    if (parent instanceof ArrayCreation) {
+      // replace this redundant array creation node with its rewritten initializer.
+      nodeToReplace = parent;
+    }
+    ITypeBinding type = Types.getTypeBinding(node);
+    ClassConverter.setProperty(nodeToReplace, createIOSArrayInitializer(type, node));
+  }
+
   /**
    * Convert an array initializer into a init method on the equivalent
    * IOSArray. This init method takes a C array and count, like
@@ -874,15 +823,6 @@ public class Rewriter extends ErrorReportingASTVisitor {
     @SuppressWarnings("unchecked")
     List<Expression> args = message.arguments(); // safe by definition
     ArrayInitializer newArrayInit = NodeCopier.copySubtree(ast, arrayInit);
-    @SuppressWarnings("unchecked")
-    List<Expression> exprs = newArrayInit.expressions();
-    for (int i = 0; i < exprs.size(); i++) {
-      // Convert any elements that are also array initializers.
-      Expression expr = exprs.get(i);
-      if (expr instanceof ArrayInitializer) {
-        exprs.set(i, createIOSArrayInitializer(componentType, (ArrayInitializer) expr));
-      }
-    }
     args.add(newArrayInit);
     GeneratedVariableBinding argBinding = new GeneratedVariableBinding(arrayType,
         false, true, null, methodBinding);
