@@ -807,4 +807,20 @@ public class InnerClassExtractorTest extends GenerationTest {
     assertTranslation(translation, "- (id)initWithOuter:(Outer *)outer$0 {\n" +
         "  return JreMemDebugAdd([self initOuter_InnerWithOuter:outer$0 withInt:42]);\n}");
   }
+
+  public void testListArgsInEnumConstantDeclaration() throws IOException {
+    String source =
+        "class Outer { " +
+        "  enum Inner { " +
+        "    A(new String[] { \"1\", \"2\", \"3\" }), " +
+        "    B(new String[] { \"4\", \"5\", \"6\" }); " +
+        "    Inner(String[] values) {} " +
+        "  } " +
+        "}";
+    String translation = translateSourceFile(source, "Outer", "Outer.m");
+    assertTranslation(translation, "[IOSObjectArray arrayWithObjects:(id[]){ " +
+    		"@\"1\", @\"2\", @\"3\" } count:3 type:[IOSClass classWithClass:[NSString class]]]");
+    assertTranslation(translation, "[IOSObjectArray arrayWithObjects:(id[]){ " +
+    		"@\"4\", @\"5\", @\"6\" } count:3 type:[IOSClass classWithClass:[NSString class]]]");
+  }
 }
