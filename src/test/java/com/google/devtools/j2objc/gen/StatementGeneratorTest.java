@@ -1373,4 +1373,23 @@ public class StatementGeneratorTest extends GenerationTest {
         "Test", "Test.m");
     assertTranslation(translation, "withChar:[array charAtIndex:0] >> 2];");
   }
+
+  public void testDoubleQuoteConcatenation() throws IOException {
+    String translation = translateSourceFile(
+      "public class Test { String test(String s) { return '\"' + s + '\"'; }}",
+      "Test", "Test.m");
+    assertTranslation(translation, "return [NSString stringWithFormat:@\"\\\"%@\\\"\", s];");
+  }
+
+  public void testIntConcatenation() throws IOException {
+    String translation = translateSourceFile(
+      "public class Test { void check(boolean expr, String fmt, Object... args) {} " +
+      "void test(int i, int j) { check(true, \"%d-%d\", i, j); }}",
+      "Test", "Test.m");
+    assertTranslation(translation,
+      "[self checkWithBOOL:YES withNSString:@\"%d-%d\" " +
+      "withNSObjectArray:[IOSObjectArray " +
+      "arrayWithType:[IOSClass classWithClass:[NSObject class]] count:2, " +
+      "[JavaLangInteger valueOfWithInt:i], [JavaLangInteger valueOfWithInt:j] ]];");
+  }
 }

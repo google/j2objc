@@ -1287,7 +1287,10 @@ public class StatementGenerator extends ErrorReportingASTVisitor {
     assert (start == '\'' || start == '"');
     assert (start == end);
     s = s.substring(1, len - 1);
-    return s.replace("%", "%%");     // escape % character
+    if (s.equals("\"")) {
+      s = "\\\"";
+    }
+    return s.replace("%", "%%");     // escape % characters
   }
 
   private void printStringConcatenationArg(Expression arg) {
