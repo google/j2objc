@@ -73,4 +73,20 @@
 
 @end
 
+// Implement IOSArray |checkIndex| and |checkRange| methods as C functions. This
+// allows IOSArray index and range checks to be completely removed via the
+// J2OBJC_DISABLE_ARRAY_CHECKS macro to improve performance.
+__attribute__ ((unused))
+static inline void IOSArray_checkIndex(IOSArray *array, NSUInteger index) {
+#if !defined(J2OBJC_DISABLE_ARRAY_CHECKS)
+  [array checkIndex:index];
+#endif
+}
+__attribute__ ((unused))
+static inline void IOSArray_checkRange(IOSArray *array, NSRange range) {
+#if !defined(J2OBJC_DISABLE_ARRAY_CHECKS)
+  [array checkRange:range];
+#endif
+}
+
 #endif // _IOSARRAY_H

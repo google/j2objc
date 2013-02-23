@@ -50,49 +50,48 @@
 }
 
 - (int)intAtIndex:(NSUInteger)index {
-  [self checkIndex:index];
+  IOSArray_checkIndex(self, index);
   return buffer_[index];
 }
 
 - (int)replaceIntAtIndex:(NSUInteger)index withInt:(int)i {
-  [self checkIndex:index];
+  IOSArray_checkIndex(self, index);
   buffer_[index] = i;
   return i;
 }
 
 - (void)getInts:(int *)buffer length:(NSUInteger)length {
-  [self checkIndex:(length - 1)];
+  IOSArray_checkIndex(self, length - 1);
   memcpy(buffer, buffer_, length * sizeof(int));
 }
 
 - (void) arraycopy:(NSRange)sourceRange
        destination:(IOSArray *)destination
             offset:(NSInteger)offset {
-  [self checkRange:sourceRange];
-  NSRange destRange = NSMakeRange(offset, sourceRange.length);
-  [destination checkRange:destRange];
+  IOSArray_checkRange(self, sourceRange);
+  IOSArray_checkRange(destination, NSMakeRange(offset, sourceRange.length));
   memmove(((IOSIntArray *) destination)->buffer_ + offset,
           self->buffer_ + sourceRange.location,
           sourceRange.length * sizeof(int));
 }
 
 - (int)incr:(NSUInteger)index {
-  [self checkIndex:index];
+  IOSArray_checkIndex(self, index);
   return ++buffer_[index];
 }
 
 - (int)decr:(NSUInteger)index {
-  [self checkIndex:index];
+  IOSArray_checkIndex(self, index);
   return --buffer_[index];
 }
 
 - (int)postIncr:(NSUInteger)index {
-  [self checkIndex:index];
+  IOSArray_checkIndex(self, index);
   return buffer_[index]++;
 }
 
 - (int)postDecr:(NSUInteger)index {
-  [self checkIndex:index];
+  IOSArray_checkIndex(self, index);
   return buffer_[index]--;
 }
 
