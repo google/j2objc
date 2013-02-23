@@ -2014,7 +2014,9 @@ public class StatementGenerator extends ErrorReportingASTVisitor {
       Expression expr = node.getExpression();
       boolean isEnumConstant = Types.getTypeBinding(expr).isEnum();
       if (isEnumConstant) {
-        String bareTypeName = NameTable.getFullName(Types.getTypeBinding(expr)).replace("Enum", "");
+        String typeName = NameTable.getFullName(Types.getTypeBinding(expr));
+        String bareTypeName = typeName.endsWith("Enum") ?
+            typeName.substring(0, typeName.length() - 4) : typeName;
         buffer.append(bareTypeName).append("_");
       }
       if (isEnumConstant && expr instanceof SimpleName) {
