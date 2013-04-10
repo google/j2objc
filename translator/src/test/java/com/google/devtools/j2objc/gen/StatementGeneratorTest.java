@@ -1372,7 +1372,7 @@ public class StatementGeneratorTest extends GenerationTest {
           "boolean check(String s) { if (s == null) { return false; } return s == \"foo\"; }}",
       "Test", "Test.m");
     // Assert string equate is converted,
-    assertTranslation(translation, "[s isEqualToString:@\"foo\"]");
+    assertTranslation(translation, "((!s && !@\"foo\") || [s isEqualToString:@\"foo\"])");
     // but that non-string compare isn't.
     assertTranslation(translation, "if (s == nil)");
   }
