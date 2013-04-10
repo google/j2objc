@@ -14,6 +14,8 @@
 #
 # Author: Keith Stanger
 
+JAVA_DEPS_JAR_DIR = $(J2OBJC_ROOT)/java_deps/$(BUILD_DIR_NAME)
+
 ECLIPSE_JARS = \
     org.eclipse.core.contenttype-3.4.100.v20100505-1235.jar \
     org.eclipse.core.jobs-3.5.0.v20100515.jar \
@@ -30,3 +32,4 @@ GUAVA_JAR = guava-13.0.jar
 JSR305_JAR = jsr305-2.0.1.jar
 
 JUNIT_JAR = junit-4.10.jar
+JUNIT_SOURCE_JAR = junit-4.10-sources.jar

@@ -18,24 +18,21 @@
 #
 # Author: Tom Ball
 
-CWD = .
-PROJECT_ROOT = $(CWD)/..
+J2OBJC_ROOT = ..
 
-include ../make/detect_xcode.mk
+include ../make/common.mk
+include ../java_deps/jars.mk
 
 INCLUDE_DIR = $(BUILD_DIR)/include
-SOURCE_BASE = $(CWD)/src/main
-OBJC_SOURCE = $(SOURCE_BASE)/native/junit
+SOURCE_BASE = src/main
+OBJC_SOURCE_DIR = $(SOURCE_BASE)/native/junit
 JAVA_SRC_DIR = $(BUILD_DIR)/java
 
-ifndef M2_HOME
-M2_HOME = $(shell echo $$HOME)/.m2
-endif
-JUNIT_DIR = $(M2_HOME)/repository/junit/junit/4.10
-JUNIT_JAR = $(JUNIT_DIR)/junit-4.10.jar
-JUNIT_SRC_JAR = $(JUNIT_DIR)/junit-4.10-sources.jar
+JUNIT_SRC_JAR = $(JAVA_DEPS_JAR_DIR)/$(JUNIT_SOURCE_JAR)
+JUNIT_JAR_FULL = $(JAVA_DEPS_JAR_DIR)/$(JUNIT_JAR)
 
-JUNIT_LIB = $(BUILD_DIR)/libjunit.a
+JUNIT_LIB = $(ARCH_BUILD_DIR)/libjunit.a
+JUNIT_LIB_DIST = $(DIST_LIB_DIR)/libjunit.a
 
 # Compiler settings, based on Xcode log output
 WARNINGS = -Wno-trigraphs -Wunused-variable -Werror -Wincompatible-pointer-types
@@ -47,8 +44,8 @@ OBJCFLAGS := -ObjC -std=gnu99 $(WARNINGS) $(SDK_FLAGS) $(ARCH_FLAGS) \
   -I/System/Library/Frameworks/ExceptionHandling.framework/Headers
 
 # J2ObjC settings
-J2OBJC = $(DIST_DIR)/j2objc -classpath $(JUNIT_JAR) -d $(BUILD_DIR)
-J2OBJCC = $(DIST_DIR)/j2objcc -c $(OBJCFLAGS) -I$(OBJC_SOURCE) -I$(BUILD_DIR)
+J2OBJC = $(DIST_DIR)/j2objc -classpath $(JUNIT_JAR_FULL) -d $(BUILD_DIR)
+J2OBJCC = $(DIST_DIR)/j2objcc -c $(OBJCFLAGS) -I$(OBJC_SOURCE_DIR) -I$(BUILD_DIR)
 
 ifdef CLANG_ENABLE_OBJC_ARC
 J2OBJC := $(J2OBJC) -use-arc
