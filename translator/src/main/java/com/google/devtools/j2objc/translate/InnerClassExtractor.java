@@ -291,7 +291,7 @@ public class InnerClassExtractor extends ClassConverter {
         GeneratedVariableBinding param = new GeneratedVariableBinding(declaringClass,
             false, true, declaringClass, binding);
         newBinding.addParameter(0, param);
-        assert node.arguments().size() == binding.getParameterTypes().length;
+        assert binding.isVarargs() || node.arguments().size() == binding.getParameterTypes().length;
       }
       return true;
     }
