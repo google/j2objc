@@ -401,6 +401,7 @@ $(BUILD_DIR)/.jre_dist_includes: $(INCLUDES) | $(DIST_INCLUDE_DIR)
 
 ifdef XCODE_INCLUDE_DIR
 $(TARGET_TEMP_DIR)/.includes: $(INCLUDES)
+	@mkdir -p $(XCODE_INCLUDE_DIR)
 	(cd $(INCLUDE_DIR) && tar cf - $(INCLUDES:$(INCLUDE_DIR)/%=%)) \
 	    | (cd $(XCODE_INCLUDE_DIR); tar xfp -)
 	touch $@

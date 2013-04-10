@@ -21,34 +21,36 @@
 
 include environment.mk
 
-FRAMEWORK_OBJS = \
-	$(BUILD_DIR)/junit/framework/Assert.o \
-	$(BUILD_DIR)/junit/framework/AssertionFailedError.o \
-	$(BUILD_DIR)/junit/framework/ComparisonCompactor.o \
-	$(BUILD_DIR)/junit/framework/ComparisonFailure.o \
-	$(BUILD_DIR)/junit/framework/Protectable.o \
-	$(BUILD_DIR)/junit/framework/Test.o \
-	$(BUILD_DIR)/junit/framework/TestCase.o \
-	$(BUILD_DIR)/junit/framework/TestFailure.o \
-	$(BUILD_DIR)/junit/framework/TestListener.o \
-	$(BUILD_DIR)/junit/framework/TestResult.o \
-	$(BUILD_DIR)/junit/framework/TestSuite.o
-
-
-TEST_RUNNER_OBJS = \
-	$(BUILD_DIR)/JUnitRunner.o
-
-OBJS = $(FRAMEWORK_OBJS) $(INTERNAL_OBJS) $(TEST_RUNNER_OBJS)
-
 JAVA_SOURCES = \
-  $(addprefix junit/framework/,$(notdir $(FRAMEWORK_OBJS:.o=.java))) \
-  $(addprefix org/junit/internal/,$(notdir $(INTERNAL_OBJS:.o=.java)))
+    junit/framework/Assert.java \
+    junit/framework/AssertionFailedError.java \
+    junit/framework/ComparisonCompactor.java \
+    junit/framework/ComparisonFailure.java \
+    junit/framework/Protectable.java \
+    junit/framework/Test.java \
+    junit/framework/TestCase.java \
+    junit/framework/TestFailure.java \
+    junit/framework/TestListener.java \
+    junit/framework/TestResult.java \
+    junit/framework/TestSuite.java
+
+
+OBJC_SOURCES = \
+    JUnitRunner.m
+
+OBJS = $(JAVA_SOURCES:%.java=$(ARCH_BUILD_DIR)/%.o) $(OBJC_SOURCES:%.m=$(ARCH_BUILD_DIR)/%.o)
+
 JAVA_SOURCE_LIST = $(TMPDIR).classes.list
+EXTRACTED_JAVA = $(JAVA_SOURCES:%=$(JAVA_SRC_DIR)/%)
+TRANSLATED_OBJC = $(JAVA_SOURCES:%.java=$(BUILD_DIR)/%.m)
+SOURCE_HEADERS = $(shell find $(OBJC_SOURCE_DIR) -name '*.h')
+SOURCE_HEADERS := $(SOURCE_HEADERS:$(OBJC_SOURCE_DIR)/%=%)
+GENERATED_HEADERS = $(JAVA_SOURCES:%.java=%.h)
+RELATIVE_HEADERS = $(SOURCE_HEADERS) $(GENERATED_HEADERS)
+HEADERS = $(SOURCE_HEADERS:%=$(OBJC_SOURCE_DIR)/%) $(GENERATED_HEADERS:%=$(BUILD_DIR)/%)
+DIST_HEADERS = $(RELATIVE_HEADERS:%=$(DIST_INCLUDE_DIR)/%)
 
-all: lib includes
-	@: # suppress make's "nothing to be done" message
-
-translate: pre_translate $(JAVA_SOURCES) $(FRAMEWORK_OBJS:.o=.m) $(INTERNAL_OBJS:.o=.m)
+translate: pre_translate $(EXTRACTED_JAVA) $(TRANSLATED_OBJC)
 	@if [ `cat $(JAVA_SOURCE_LIST) | wc -l` -ge 1 ] ; then \
 	  $(J2OBJC) -sourcepath .:$(SOURCE_BASE)/java `cat $(JAVA_SOURCE_LIST)` ; \
 	fi
@@ -60,36 +62,38 @@ pre_translate:
 lib: translate $(JUNIT_LIB)
 	@:
 
-$(JAVA_SOURCES): $(JUNIT_SRC_JAR)
+$(EXTRACTED_JAVA): $(JUNIT_SRC_JAR)
 	@mkdir -p $(JAVA_SRC_DIR)
-	@unzip -q -o -d $(JAVA_SRC_DIR) $(JUNIT_SRC_JAR) $(JAVA_SOURCES)
+	unzip -q -o -d $(JAVA_SRC_DIR) $(JUNIT_SRC_JAR) $(JAVA_SOURCES)
+	@touch $(EXTRACTED_JAVA)
 
 $(JUNIT_LIB): $(OBJS)
-	$(LIBTOOL) -static -o $(JUNIT_LIB) `find $(BUILD_DIR) -name '*.o'`
-
-# Copy top-level class headers to include directory.
-includes:
-	@mkdir -p $(INCLUDE_DIR)/junit/framework
-	@install $(OBJC_SOURCE)/*.h $(INCLUDE_DIR)
-	@install $(BUILD_DIR)/junit/framework/*.h $(INCLUDE_DIR)/junit/framework
-	@find $(INCLUDE_DIR) -type f | xargs chmod 444
+	$(LIBTOOL) -static -o $@ $^
 
 $(BUILD_DIR)/%.h $(BUILD_DIR)/%.m: $(JAVA_SRC_DIR)/%.java
 	@echo "$?" >> $(JAVA_SOURCE_LIST)
 
-$(BUILD_DIR)/%.o: $(BUILD_DIR)/%.m
+$(ARCH_BUILD_DIR)/%.o: $(BUILD_DIR)/%.m
+	@mkdir -p $(@D)
 	$(J2OBJCC) -o $@ $?
 
-$(BUILD_DIR)/%.o: $(OBJC_SOURCE)/%.m
+$(ARCH_BUILD_DIR)/%.o: $(OBJC_SOURCE_DIR)/%.m
+	@mkdir -p $(@D)
 	$(J2OBJCC) -o $@ $?
+
+$(JUNIT_LIB_DIST): $(JUNIT_LIB)
+	@mkdir -p $(@D)
+	install -m 0644 $< $@
+
+$(DIST_INCLUDE_DIR)/%.h: $(BUILD_DIR)/%.h
+	@mkdir -p $(@D)
+	install -m 0644 $< $@
+
+$(DIST_INCLUDE_DIR)/%.h: $(OBJC_SOURCE_DIR)/%.h
+	@mkdir -p $(@D)
+	install -m 0644 $< $@
 
 clean:
-	@rm -rf $(BUILD_DIR)
-	@rm -rf $(DIST_LIB_DIR)/$(JUNIT_LIB) $(DIST_INCLUDE_DIR)/junit
-	@rm -f $(JAVA_SOURCE_LIST)
+	@rm -rf $(BUILD_DIR) $(JUNIT_LIB_DIST) $(DIST_HEADERS)
 
-dist: lib includes
-	@mkdir -p $(DIST_DIR) $(DIST_LIB_DIR)
-	cp -r $(INCLUDE_DIR)/* $(DIST_INCLUDE_DIR)
-	@find $(DIST_INCLUDE_DIR) -type f | xargs chmod 0644
-	install -m 0644 $(JUNIT_LIB) $(DIST_LIB_DIR)
+dist: lib $(JUNIT_LIB_DIST) $(DIST_HEADERS)
