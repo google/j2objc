@@ -23,7 +23,6 @@ include environment.mk
 
 # Native obj-c sources that do not emulate a specific java class.
 IOS_OBJS = \
-	ICUSupport.o \
 	IOSArray.o \
 	IOSArrayClass.o \
 	IOSBooleanArray.o \
@@ -42,7 +41,6 @@ IOS_OBJS = \
 	JreMemDebugStrongReference.o \
 	NSObject+JavaObject.o \
 	NSString+JavaString.o \
-	TimeZonesSupport.o \
 	java/lang/reflect/ExecutableMember.o
 
 # Java classes with hand written obj-c implementations. Shouldn't be translated,
@@ -294,8 +292,6 @@ JAVA_SOURCES = \
 	java/util/regex/Pattern.java \
 	java/util/regex/PatternSyntaxException.java \
 	java/util/regex/Splitter.java \
-	libcore/icu/TimeZones.java \
-	libcore/util/BasicLruCache.java \
 	org/apache/harmony/luni/platform/Endianness.java
 
 JAVA_SOURCE_LIST = $(BUILD_DIR)/jre_emul.classes.list
@@ -414,18 +410,11 @@ $(CLASS_DIR)/%.o: $(EMULATION_CLASS_DIR)/%.m
 	@mkdir -p `dirname $@`
 	$(CLANG) -c $? -o $@ $(OBJCFLAGS) -I$(EMULATION_CLASS_DIR) -I$(CLASS_DIR)
 
-$(CLASS_DIR)/%.o: $(EMULATION_CLASS_DIR)/%.mm
-	$(CLANG) -c '$?' -o '$@' $(OBJCFLAGS) -I$(EMULATION_CLASS_DIR) -I$(CLASS_DIR)
-
 $(IPHONE_BUILD_DIR)/%.o: $(CLASS_DIR)/%.m
 	@mkdir -p `dirname $@`
 	$(CLANG) -c '$?' -o '$@' $(OBJCFLAGS) -I$(EMULATION_CLASS_DIR) -I$(CLASS_DIR)
 
 $(IPHONE_BUILD_DIR)/%.o: $(EMULATION_CLASS_DIR)/%.m
-	@mkdir -p `dirname $@`
-	$(CLANG) -c $? -o $@ $(OBJCFLAGS) -I$(EMULATION_CLASS_DIR) -I$(CLASS_DIR)
-
-$(IPHONE_BUILD_DIR)/%.o: $(EMULATION_CLASS_DIR)/%.mm
 	@mkdir -p `dirname $@`
 	$(CLANG) -c $? -o $@ $(OBJCFLAGS) -I$(EMULATION_CLASS_DIR) -I$(CLASS_DIR)
 
@@ -437,10 +426,6 @@ $(IPHONEV7S_BUILD_DIR)/%.o: $(EMULATION_CLASS_DIR)/%.m
 	@mkdir -p `dirname $@`
 	$(CLANG) -c $? -o $@ $(OBJCFLAGS) -I$(EMULATION_CLASS_DIR) -I$(CLASS_DIR)
 
-$(IPHONEV7S_BUILD_DIR)/%.o: $(EMULATION_CLASS_DIR)/%.mm
-	@mkdir -p `dirname $@`
-	$(CLANG) -c $? -o $@ $(OBJCFLAGS) -I$(EMULATION_CLASS_DIR) -I$(CLASS_DIR)
-
 $(SIMULATOR_BUILD_DIR)/%.o: $(CLASS_DIR)/%.m
 	@mkdir -p `dirname $@`
 	$(CLANG) -c '$?' -o '$@' $(OBJCFLAGS) -I$(EMULATION_CLASS_DIR) -I$(CLASS_DIR)
@@ -449,18 +434,10 @@ $(SIMULATOR_BUILD_DIR)/%.o: $(EMULATION_CLASS_DIR)/%.m
 	@mkdir -p `dirname $@`
 	$(CLANG) -c $? -o $@ $(OBJCFLAGS) -I$(EMULATION_CLASS_DIR) -I$(CLASS_DIR)
 
-$(SIMULATOR_BUILD_DIR)/%.o: $(EMULATION_CLASS_DIR)/%.mm
-	@mkdir -p `dirname $@`
-	$(CLANG) -c $? -o $@ $(OBJCFLAGS) -I$(EMULATION_CLASS_DIR) -I$(CLASS_DIR)
-
 $(CLASS_DIR)/%.plist: $(CLASS_DIR)/%.m
 	$(CLANG) -c '$?' -o '$@' $(OBJCFLAGS) $(STATIC_ANALYZER_FLAGS) -I$(EMULATION_CLASS_DIR) -I$(CLASS_DIR)
 
 $(CLASS_DIR)/%.plist: $(EMULATION_CLASS_DIR)/%.m
-	@mkdir -p `dirname $@`
-	$(CLANG) -c $? -o $@ $(OBJCFLAGS) $(STATIC_ANALYZER_FLAGS) -I$(EMULATION_CLASS_DIR) -I$(CLASS_DIR)
-
-$(CLASS_DIR)/%.plist: $(EMULATION_CLASS_DIR)/%.mm
 	@mkdir -p `dirname $@`
 	$(CLANG) -c $? -o $@ $(OBJCFLAGS) $(STATIC_ANALYZER_FLAGS) -I$(EMULATION_CLASS_DIR) -I$(CLASS_DIR)
 
@@ -472,10 +449,6 @@ $(IPHONE_BUILD_DIR)/%.plist: $(EMULATION_CLASS_DIR)/%.m
 	@mkdir -p `dirname $@`
 	$(CLANG) -c $? -o $@ $(OBJCFLAGS) $(STATIC_ANALYZER_FLAGS) -I$(EMULATION_CLASS_DIR) -I$(CLASS_DIR)
 
-$(IPHONE_BUILD_DIR)/%.plist: $(EMULATION_CLASS_DIR)/%.mm
-	@mkdir -p `dirname $@`
-	$(CLANG) -c $? -o $@ $(OBJCFLAGS) $(STATIC_ANALYZER_FLAGS) -I$(EMULATION_CLASS_DIR) -I$(CLASS_DIR)
-
 $(IPHONEV7S_BUILD_DIR)/%.plist: $(CLASS_DIR)/%.m
 	@mkdir -p `dirname $@`
 	$(CLANG) -c '$?' -o '$@' $(OBJCFLAGS) $(STATIC_ANALYZER_FLAGS) -I$(EMULATION_CLASS_DIR) -I$(CLASS_DIR)
@@ -484,19 +457,11 @@ $(IPHONEV7S_BUILD_DIR)/%.plist: $(EMULATION_CLASS_DIR)/%.m
 	@mkdir -p `dirname $@`
 	$(CLANG) -c $? -o $@ $(OBJCFLAGS) $(STATIC_ANALYZER_FLAGS) -I$(EMULATION_CLASS_DIR) -I$(CLASS_DIR)
 
-$(IPHONEV7S_BUILD_DIR)/%.plist: $(EMULATION_CLASS_DIR)/%.mm
-	@mkdir -p `dirname $@`
-	$(CLANG) -c $? -o $@ $(OBJCFLAGS) $(STATIC_ANALYZER_FLAGS) -I$(EMULATION_CLASS_DIR) -I$(CLASS_DIR)
-
 $(SIMULATOR_BUILD_DIR)/%.plist: $(CLASS_DIR)/%.m
 	@mkdir -p `dirname $@`
 	$(CLANG) -c '$?' -o '$@' $(OBJCFLAGS) $(STATIC_ANALYZER_FLAGS) -I$(EMULATION_CLASS_DIR) -I$(CLASS_DIR)
 
 $(SIMULATOR_BUILD_DIR)/%.plist: $(EMULATION_CLASS_DIR)/%.m
-	@mkdir -p `dirname $@`
-	$(CLANG) -c $? -o $@ $(OBJCFLAGS) $(STATIC_ANALYZER_FLAGS) -I$(EMULATION_CLASS_DIR) -I$(CLASS_DIR)
-
-$(SIMULATOR_BUILD_DIR)/%.plist: $(EMULATION_CLASS_DIR)/%.mm
 	@mkdir -p `dirname $@`
 	$(CLANG) -c $? -o $@ $(OBJCFLAGS) $(STATIC_ANALYZER_FLAGS) -I$(EMULATION_CLASS_DIR) -I$(CLASS_DIR)
 
