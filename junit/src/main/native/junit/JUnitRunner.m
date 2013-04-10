@@ -13,11 +13,36 @@
 #import "java/lang/Throwable.h"
 #import "java/util/Enumeration.h"
 
+#import <execinfo.h>
+
+void signalHandler(int sig) {
+  void *array[10];
+  size_t size;
+
+  // get void*'s for all entries on the stack
+  size = backtrace(array, 10);
+
+  // print out all the frames to stderr
+  fprintf(stderr, "Error: signal %d:\n", sig);
+  backtrace_symbols_fd(array, size, 2);
+  exit(1);
+}
+
+void installSignalHandler() {
+  signal(SIGABRT, signalHandler);
+  signal(SIGILL, signalHandler);
+  signal(SIGSEGV, signalHandler);
+  signal(SIGFPE, signalHandler);
+  signal(SIGBUS, signalHandler);
+  signal(SIGPIPE, signalHandler);
+}
+
 @implementation JUnitRunner
 
 void listFailedTests(id<JavaUtilEnumeration> problems);
 
 + (int)runTests:(Class)testClass, ... {
+  installSignalHandler();
   va_list args;
   va_start(args, testClass);
   JunitFrameworkTestSuite *suite =
