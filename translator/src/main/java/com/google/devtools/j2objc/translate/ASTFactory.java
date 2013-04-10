@@ -18,6 +18,7 @@ import com.google.devtools.j2objc.types.Types;
 
 import org.eclipse.jdt.core.dom.AST;
 import org.eclipse.jdt.core.dom.ArrayAccess;
+import org.eclipse.jdt.core.dom.Assignment;
 import org.eclipse.jdt.core.dom.Expression;
 import org.eclipse.jdt.core.dom.ForStatement;
 import org.eclipse.jdt.core.dom.IMethodBinding;
@@ -57,6 +58,15 @@ public final class ASTFactory {
     SimpleName name = ast.newSimpleName(binding.getName());
     Types.addBinding(name, binding);
     return name;
+  }
+
+  public static Assignment newAssignment(AST ast, Expression lhs, Expression rhs) {
+    Assignment assignment = ast.newAssignment();
+    assignment.setOperator(Assignment.Operator.ASSIGN);
+    assignment.setLeftHandSide(lhs);
+    assignment.setRightHandSide(rhs);
+    Types.addBinding(assignment, Types.getTypeBinding(lhs));
+    return assignment;
   }
 
   public static VariableDeclarationFragment newVariableDeclarationFragment(

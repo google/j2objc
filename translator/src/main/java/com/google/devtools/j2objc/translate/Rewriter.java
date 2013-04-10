@@ -36,6 +36,7 @@ import org.eclipse.jdt.core.dom.ASTVisitor;
 import org.eclipse.jdt.core.dom.AnonymousClassDeclaration;
 import org.eclipse.jdt.core.dom.ArrayCreation;
 import org.eclipse.jdt.core.dom.ArrayInitializer;
+import org.eclipse.jdt.core.dom.Assignment;
 import org.eclipse.jdt.core.dom.Block;
 import org.eclipse.jdt.core.dom.BodyDeclaration;
 import org.eclipse.jdt.core.dom.BooleanLiteral;
@@ -74,6 +75,7 @@ import org.eclipse.jdt.core.dom.SingleVariableDeclaration;
 import org.eclipse.jdt.core.dom.Statement;
 import org.eclipse.jdt.core.dom.StringLiteral;
 import org.eclipse.jdt.core.dom.SuperMethodInvocation;
+import org.eclipse.jdt.core.dom.SwitchStatement;
 import org.eclipse.jdt.core.dom.ThrowStatement;
 import org.eclipse.jdt.core.dom.Type;
 import org.eclipse.jdt.core.dom.TypeDeclaration;
@@ -444,9 +446,8 @@ public class Rewriter extends ErrorReportingASTVisitor {
     if (node.initializers().size() == 1) {
       Object initializer = node.initializers().get(0);
       if (initializer instanceof VariableDeclarationExpression) {
-        @SuppressWarnings("unchecked")
         List<VariableDeclarationFragment> fragments =
-            ((VariableDeclarationExpression) initializer).fragments(); // safe by definition
+            getFragments((VariableDeclarationExpression) initializer);
         for (VariableDeclarationFragment fragment : fragments) {
           if (Types.hasAutoreleasePoolAnnotation(Types.getBinding(fragment))) {
             Statement loopBody = node.getBody();
@@ -630,11 +631,45 @@ public class Rewriter extends ErrorReportingASTVisitor {
   }
 
   /**
+   * Moves all variable declarations above the first case statement.
+   */
+  @Override
+  public void endVisit(SwitchStatement node) {
+    AST ast = node.getAST();
+    List<Statement> statements = getStatements(node);
+    int insertIdx = 0;
+    for (int i = 0; i < statements.size(); i++) {
+      Statement stmt = statements.get(i);
+      if (stmt instanceof VariableDeclarationStatement) {
+        VariableDeclarationStatement declStmt = (VariableDeclarationStatement) stmt;
+        statements.remove(i);
+        List<VariableDeclarationFragment> fragments = getFragments(declStmt);
+        for (VariableDeclarationFragment decl : fragments) {
+          Expression initializer = decl.getInitializer();
+          if (initializer != null) {
+            Assignment assignment = ASTFactory.newAssignment(ast,
+                NodeCopier.copySubtree(ast, decl.getName()),
+                NodeCopier.copySubtree(ast, initializer));
+            statements.add(i++, ast.newExpressionStatement(assignment));
+            decl.setInitializer(null);
+          }
+        }
+        statements.add(insertIdx++, NodeCopier.copySubtree(ast, declStmt));
+      }
+    }
+  }
+
+  /**
    * Helper method to isolate the unchecked warning.
    */
   @SuppressWarnings("unchecked")
   private static List<Statement> getStatements(Block block) {
     return block.statements();
+  }
+
+  @SuppressWarnings("unchecked")
+  private static List<Statement> getStatements(SwitchStatement node) {
+    return node.statements();
   }
 
   @SuppressWarnings("unchecked")
@@ -645,6 +680,17 @@ public class Rewriter extends ErrorReportingASTVisitor {
   @SuppressWarnings("unchecked")
   private static List<Expression> getExtendedOperands(InfixExpression expr) {
     return expr.extendedOperands();
+  }
+
+  @SuppressWarnings("unchecked")
+  private static List<VariableDeclarationFragment> getFragments(VariableDeclarationStatement node) {
+    return node.fragments();
+  }
+
+  @SuppressWarnings("unchecked")
+  private static List<VariableDeclarationFragment> getFragments(
+      VariableDeclarationExpression node) {
+    return node.fragments();
   }
 
   @Override
