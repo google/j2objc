@@ -14,9 +14,9 @@
 #
 # Author: Tom Ball, Keith Stanger
 
-J2OBJC_ROOT = ..
+PROJECT_ROOT = ..
 
-include ../make/common.mk
+include ../make/detect_xcode.mk
 
 JAR_NAME = j2objc_annotations.jar
 JAR = $(BUILD_DIR)/$(JAR_NAME)
@@ -32,14 +32,14 @@ SOURCE_JAVA = \
 
 SOURCE_JAVA_FULL = $(SOURCE_JAVA:%=$(JAVA_SOURCE_DIR)/%)
 
-$(BUILD_DIR) $(CLASSES_DIR) $(DIST_JAR_DIR):
+$(BUILD_DIR) $(CLASSES_DIR) $(DIST_LIB_DIR):
 	@mkdir -p $@
 
 $(JAR): $(SOURCE_JAVA_FULL) | $(BUILD_DIR) $(CLASSES_DIR)
 	javac -d $(CLASSES_DIR) $^
 	jar cf $(JAR) -C $(CLASSES_DIR) .
 
-$(DIST_JAR): $(JAR) | $(DIST_JAR_DIR)
+$(DIST_JAR): $(JAR) | $(DIST_LIB_DIR)
 	install -m 0644 $< $@
 
 dist: $(DIST_JAR)

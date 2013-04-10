@@ -315,31 +315,32 @@ DIST_INCLUDES = $(INCLUDES:$(INCLUDE_DIR)/%=$(DIST_INCLUDE_DIR)/%)
 
 ANNOTATIONS_JAR = $(DIST_JAR_DIR)/j2objc_annotations.jar
 
-IPHONE_SDK_DIR = $(shell bash ../scripts/sysroot_path.sh --iphoneos)
-SIMULATOR_SDK_DIR = $(shell bash ../scripts/sysroot_path.sh --iphonesimulator)
-
+ifndef CONFIGURATION_BUILD_DIR
 # Settings for building both Mac OS X, iPhone, and iPhone simulator libraries.
+BUILD_FAT_LIBARY = YES
 EMULATION_MACOSX_LIB = $(BUILD_DIR)/macosx-libjre_emul.a
 EMULATION_IPHONE_LIB = $(BUILD_DIR)/iphone-libjre_emul.a
 EMULATION_IPHONEV7S_LIB = $(BUILD_DIR)/iphonev7s-libjre_emul.a
 EMULATION_SIMULATOR_LIB = $(BUILD_DIR)/simulator-libjre_emul.a
-MACOSX_OBJS = $(ALL_OBJS:%=$(CLASS_DIR)/%)
-MACOSX_FLAGS = $(SDK_FLAGS)
 IPHONE_BUILD_DIR = $(BUILD_DIR)/iphone
 IPHONE_OBJS = $(ALL_OBJS:%=$(IPHONE_BUILD_DIR)/%)
-IPHONE_FLAGS = -arch armv7 -isysroot $(IPHONE_SDK_DIR)
 IPHONEV7S_BUILD_DIR = $(BUILD_DIR)/iphonev7s
 IPHONEV7S_OBJS = $(ALL_OBJS:%=$(IPHONEV7S_BUILD_DIR)/%)
-IPHONEV7S_FLAGS = -arch armv7s -isysroot $(IPHONE_SDK_DIR)
 SIMULATOR_BUILD_DIR = $(BUILD_DIR)/simulator
 SIMULATOR_OBJS = $(ALL_OBJS:%=$(SIMULATOR_BUILD_DIR)/%)
-SIMULATOR_FLAGS = -arch i386 -isysroot $(SIMULATOR_SDK_DIR)
+
+IPHONE_SDK_DIR = $(shell bash ../scripts/sysroot_path.sh --iphoneos)
+SIMULATOR_SDK_DIR = $(shell bash ../scripts/sysroot_path.sh --iphonesimulator)
+
+export ALT_ARCH_FLAGS
+export ALT_SDK_FLAGS
+endif
 
 # translate is the default so that Xcode can build its own object files
 default: lib includes
 	@: # suppress make's "nothing to be done" message
 
-analyze: $(ALL_OBJS:%.o=$(CLASS_DIR)/%.plist)
+analyze: $(OBJS:%.o=$(CLASS_DIR)%.plist)
 
 translate: pre_translate $(TRANSLATED_OBJC)
 	@if [ `cat $(JAVA_SOURCE_LIST) | wc -l` -ge 1 ] ; then \
@@ -347,41 +348,40 @@ translate: pre_translate $(TRANSLATED_OBJC)
 	  $(J2OBJC) --inline-field-access -sourcepath .:$(JRE_SRC) `cat $(JAVA_SOURCE_LIST)` ; \
 	fi
 
-pre_translate: | $(BUILD_DIR)
+pre_translate:
 	@rm -f $(JAVA_SOURCE_LIST) $(OBJC_OUT_LIST)
 	@touch $(JAVA_SOURCE_LIST) $(OBJC_OUT_LIST)
 
 lib: translate $(EMULATION_LIB)
 	@:
 
-# TODO(user): Remove includes copy to xcode dir.
-xcode_build: translate $(XCODE_LIB) dist_includes $(TARGET_TEMP_DIR)/.includes
+$(EMULATION_LIB): $(ALL_OBJS:%=$(CLASS_DIR)/%)
+	@if [ "x$(BUILD_FAT_LIBARY)" == "xYES" ] ; then \
+	  echo "building Mac OS X library" ; \
+	  $(LIBTOOL) -static -o $(EMULATION_MACOSX_LIB) $^ ; \
+	  echo "building iPhoneOS library" ; \
+	  env ALT_ARCH_FLAGS="-arch armv7" ALT_SDK_FLAGS="-isysroot $(IPHONE_SDK_DIR)" \
+	    $(MAKE) iphone_lib ; \
+	  echo "building iPhonev7S library" ; \
+		env ALT_ARCH_FLAGS="-arch armv7s" ALT_SDK_FLAGS="-isysroot $(IPHONE_SDK_DIR)" \
+		  $(MAKE) iphonev7s_lib ; \
+	  echo "building iPhoneSimulator library" ; \
+	  env ALT_ARCH_FLAGS="-arch i386" ALT_SDK_FLAGS="-isysroot $(SIMULATOR_SDK_DIR)" \
+	    $(MAKE) simulator_lib ; \
+	  $(LIPO) -create $(EMULATION_MACOSX_LIB) $(EMULATION_IPHONE_LIB) \
+	    $(EMULATION_SIMULATOR_LIB) $(EMULATION_IPHONEV7S_LIB) -output $(EMULATION_LIB) ; \
+	else \
+	  $(LIBTOOL) -static -o $(EMULATION_LIB) $^ ; \
+	fi
 
-xcode_analyze: $(ALL_OBJS:%.o=$(TARGET_TEMP_DIR)/%.plist)
+iphone_lib: $(IPHONE_OBJS)
+	$(LIBTOOL) -static -o $(EMULATION_IPHONE_LIB) $^ ; \
 
-$(EMULATION_LIB): $(EMULATION_MACOSX_LIB) $(EMULATION_IPHONE_LIB) \
-    $(EMULATION_IPHONEV7S_LIB) $(EMULATION_SIMULATOR_LIB)
-	$(LIPO) -create $^ -output $@
+iphonev7s_lib: $(IPHONEV7S_OBJS)
+	$(LIBTOOL) -static -o $(EMULATION_IPHONEV7S_LIB) $^ ; \
 
-$(EMULATION_MACOSX_LIB): $(MACOSX_OBJS)
-	echo "building Mac OS X library"
-	$(LIBTOOL) -static -o $@ $^
-
-$(EMULATION_IPHONE_LIB): $(IPHONE_OBJS)
-	echo "building iPhoneOS library"
-	$(LIBTOOL) -static -o $@ $^
-
-$(EMULATION_IPHONEV7S_LIB): $(IPHONEV7S_OBJS)
-	echo "building iPhonev7S library"
-	$(LIBTOOL) -static -o $@ $^
-
-$(EMULATION_SIMULATOR_LIB): $(SIMULATOR_OBJS)
-	echo "building iPhoneSimulator library"
-	$(LIBTOOL) -static -o $@ $^
-
-$(XCODE_LIB): $(ALL_OBJS:%=$(TARGET_TEMP_DIR)/%)
-	@mkdir -p $(@D)
-	$(LIBTOOL) -static -o $@ $^
+simulator_lib: $(SIMULATOR_OBJS)
+	$(LIBTOOL) -static -o $(EMULATION_SIMULATOR_LIB) $^ ; \
 
 includes: translate $(BUILD_DIR)/.jre_includes
 
@@ -399,14 +399,7 @@ $(BUILD_DIR)/.jre_dist_includes: $(INCLUDES) | $(DIST_INCLUDE_DIR)
 	    | (cd $(DIST_INCLUDE_DIR); tar xfp -)
 	touch $@
 
-ifdef XCODE_INCLUDE_DIR
-$(TARGET_TEMP_DIR)/.includes: $(INCLUDES)
-	(cd $(INCLUDE_DIR) && tar cf - $(INCLUDES:$(INCLUDE_DIR)/%=%)) \
-	    | (cd $(XCODE_INCLUDE_DIR); tar xfp -)
-	touch $@
-endif
-
-$(sort $(BUILD_DIR) $(INCLUDE_DIR) $(DIST_INCLUDE_DIR) $(DIST_JAR_DIR) $(DIST_LIB_DIR)):
+$(BUILD_DIR) $(INCLUDE_DIR) $(DIST_INCLUDE_DIR):
 	@mkdir -p $@
 
 $(CLASS_DIR)/%.h $(CLASS_DIR)/%.m: %.java
@@ -414,53 +407,119 @@ $(CLASS_DIR)/%.h $(CLASS_DIR)/%.m: %.java
 	@echo "$@" >> $(OBJC_OUT_LIST)
 	@if [ -e $@ ]; then touch $@; fi
 
-define compile_rules
-$(1)/%.o: $(3)/%.$(4)
-	@mkdir -p $$(@D)
-	$$(CLANG) -c $$? -o $$@ $(2) $$(OBJCFLAGS) -I$$(EMULATION_CLASS_DIR) -I$$(CLASS_DIR)
+$(CLASS_DIR)/%.o: $(CLASS_DIR)/%.m
+	$(CLANG) -c '$?' -o '$@' $(OBJCFLAGS) -I$(EMULATION_CLASS_DIR) -I$(CLASS_DIR)
 
-$(1)/%.plist: $(3)/%.$(4)
-	@mkdir -p $$(@D)
-	$$(CLANG) -c $$? -o $$@ $(2) $$(OBJCFLAGS) $$(STATIC_ANALYZER_FLAGS) \
-	  -I$$(EMULATION_CLASS_DIR) -I$$(CLASS_DIR)
-endef
+$(CLASS_DIR)/%.o: $(EMULATION_CLASS_DIR)/%.m
+	@mkdir -p `dirname $@`
+	$(CLANG) -c $? -o $@ $(OBJCFLAGS) -I$(EMULATION_CLASS_DIR) -I$(CLASS_DIR)
 
-OBJC_SOURCE_DIRS = $(EMULATION_CLASS_DIR) $(CLASS_DIR)
-OBJC_EXTENTIONS = m mm
-arch_compile_rules = $(foreach src_dir,$(OBJC_SOURCE_DIRS),$(foreach ext,$(OBJC_EXTENTIONS),\
-    $(eval $(call compile_rules,$(1),$(2),$(src_dir),$(ext)))))
+$(CLASS_DIR)/%.o: $(EMULATION_CLASS_DIR)/%.mm
+	$(CLANG) -c '$?' -o '$@' $(OBJCFLAGS) -I$(EMULATION_CLASS_DIR) -I$(CLASS_DIR)
 
-$(call arch_compile_rules,$(CLASS_DIR),$(MACOSX_FLAGS))
-$(call arch_compile_rules,$(IPHONE_BUILD_DIR),$(IPHONE_FLAGS))
-$(call arch_compile_rules,$(IPHONEV7S_BUILD_DIR),$(IPHONEV7S_FLAGS))
-$(call arch_compile_rules,$(SIMULATOR_BUILD_DIR),$(SIMULATOR_FLAGS))
-ifdef TARGET_TEMP_DIR
-$(call arch_compile_rules,$(TARGET_TEMP_DIR),$(ARCH_FLAGS) $(SDK_FLAGS))
-endif
+$(IPHONE_BUILD_DIR)/%.o: $(CLASS_DIR)/%.m
+	@mkdir -p `dirname $@`
+	$(CLANG) -c '$?' -o '$@' $(OBJCFLAGS) -I$(EMULATION_CLASS_DIR) -I$(CLASS_DIR)
+
+$(IPHONE_BUILD_DIR)/%.o: $(EMULATION_CLASS_DIR)/%.m
+	@mkdir -p `dirname $@`
+	$(CLANG) -c $? -o $@ $(OBJCFLAGS) -I$(EMULATION_CLASS_DIR) -I$(CLASS_DIR)
+
+$(IPHONE_BUILD_DIR)/%.o: $(EMULATION_CLASS_DIR)/%.mm
+	@mkdir -p `dirname $@`
+	$(CLANG) -c $? -o $@ $(OBJCFLAGS) -I$(EMULATION_CLASS_DIR) -I$(CLASS_DIR)
+
+$(IPHONEV7S_BUILD_DIR)/%.o: $(CLASS_DIR)/%.m
+	@mkdir -p `dirname $@`
+	$(CLANG) -c '$?' -o '$@' $(OBJCFLAGS) -I$(EMULATION_CLASS_DIR) -I$(CLASS_DIR)
+
+$(IPHONEV7S_BUILD_DIR)/%.o: $(EMULATION_CLASS_DIR)/%.m
+	@mkdir -p `dirname $@`
+	$(CLANG) -c $? -o $@ $(OBJCFLAGS) -I$(EMULATION_CLASS_DIR) -I$(CLASS_DIR)
+
+$(IPHONEV7S_BUILD_DIR)/%.o: $(EMULATION_CLASS_DIR)/%.mm
+	@mkdir -p `dirname $@`
+	$(CLANG) -c $? -o $@ $(OBJCFLAGS) -I$(EMULATION_CLASS_DIR) -I$(CLASS_DIR)
+
+$(SIMULATOR_BUILD_DIR)/%.o: $(CLASS_DIR)/%.m
+	@mkdir -p `dirname $@`
+	$(CLANG) -c '$?' -o '$@' $(OBJCFLAGS) -I$(EMULATION_CLASS_DIR) -I$(CLASS_DIR)
+
+$(SIMULATOR_BUILD_DIR)/%.o: $(EMULATION_CLASS_DIR)/%.m
+	@mkdir -p `dirname $@`
+	$(CLANG) -c $? -o $@ $(OBJCFLAGS) -I$(EMULATION_CLASS_DIR) -I$(CLASS_DIR)
+
+$(SIMULATOR_BUILD_DIR)/%.o: $(EMULATION_CLASS_DIR)/%.mm
+	@mkdir -p `dirname $@`
+	$(CLANG) -c $? -o $@ $(OBJCFLAGS) -I$(EMULATION_CLASS_DIR) -I$(CLASS_DIR)
+
+$(CLASS_DIR)/%.plist: $(CLASS_DIR)/%.m
+	$(CLANG) -c '$?' -o '$@' $(OBJCFLAGS) $(STATIC_ANALYZER_FLAGS) -I$(EMULATION_CLASS_DIR) -I$(CLASS_DIR)
+
+$(CLASS_DIR)/%.plist: $(EMULATION_CLASS_DIR)/%.m
+	@mkdir -p `dirname $@`
+	$(CLANG) -c $? -o $@ $(OBJCFLAGS) $(STATIC_ANALYZER_FLAGS) -I$(EMULATION_CLASS_DIR) -I$(CLASS_DIR)
+
+$(CLASS_DIR)/%.plist: $(EMULATION_CLASS_DIR)/%.mm
+	@mkdir -p `dirname $@`
+	$(CLANG) -c $? -o $@ $(OBJCFLAGS) $(STATIC_ANALYZER_FLAGS) -I$(EMULATION_CLASS_DIR) -I$(CLASS_DIR)
+
+$(IPHONE_BUILD_DIR)/%.plist: $(CLASS_DIR)/%.m
+	@mkdir -p `dirname $@`
+	$(CLANG) -c '$?' -o '$@' $(OBJCFLAGS) $(STATIC_ANALYZER_FLAGS) -I$(EMULATION_CLASS_DIR) -I$(CLASS_DIR)
+
+$(IPHONE_BUILD_DIR)/%.plist: $(EMULATION_CLASS_DIR)/%.m
+	@mkdir -p `dirname $@`
+	$(CLANG) -c $? -o $@ $(OBJCFLAGS) $(STATIC_ANALYZER_FLAGS) -I$(EMULATION_CLASS_DIR) -I$(CLASS_DIR)
+
+$(IPHONE_BUILD_DIR)/%.plist: $(EMULATION_CLASS_DIR)/%.mm
+	@mkdir -p `dirname $@`
+	$(CLANG) -c $? -o $@ $(OBJCFLAGS) $(STATIC_ANALYZER_FLAGS) -I$(EMULATION_CLASS_DIR) -I$(CLASS_DIR)
+
+$(IPHONEV7S_BUILD_DIR)/%.plist: $(CLASS_DIR)/%.m
+	@mkdir -p `dirname $@`
+	$(CLANG) -c '$?' -o '$@' $(OBJCFLAGS) $(STATIC_ANALYZER_FLAGS) -I$(EMULATION_CLASS_DIR) -I$(CLASS_DIR)
+
+$(IPHONEV7S_BUILD_DIR)/%.plist: $(EMULATION_CLASS_DIR)/%.m
+	@mkdir -p `dirname $@`
+	$(CLANG) -c $? -o $@ $(OBJCFLAGS) $(STATIC_ANALYZER_FLAGS) -I$(EMULATION_CLASS_DIR) -I$(CLASS_DIR)
+
+$(IPHONEV7S_BUILD_DIR)/%.plist: $(EMULATION_CLASS_DIR)/%.mm
+	@mkdir -p `dirname $@`
+	$(CLANG) -c $? -o $@ $(OBJCFLAGS) $(STATIC_ANALYZER_FLAGS) -I$(EMULATION_CLASS_DIR) -I$(CLASS_DIR)
+
+$(SIMULATOR_BUILD_DIR)/%.plist: $(CLASS_DIR)/%.m
+	@mkdir -p `dirname $@`
+	$(CLANG) -c '$?' -o '$@' $(OBJCFLAGS) $(STATIC_ANALYZER_FLAGS) -I$(EMULATION_CLASS_DIR) -I$(CLASS_DIR)
+
+$(SIMULATOR_BUILD_DIR)/%.plist: $(EMULATION_CLASS_DIR)/%.m
+	@mkdir -p `dirname $@`
+	$(CLANG) -c $? -o $@ $(OBJCFLAGS) $(STATIC_ANALYZER_FLAGS) -I$(EMULATION_CLASS_DIR) -I$(CLASS_DIR)
+
+$(SIMULATOR_BUILD_DIR)/%.plist: $(EMULATION_CLASS_DIR)/%.mm
+	@mkdir -p `dirname $@`
+	$(CLANG) -c $? -o $@ $(OBJCFLAGS) $(STATIC_ANALYZER_FLAGS) -I$(EMULATION_CLASS_DIR) -I$(CLASS_DIR)
 
 test: default
 	$(MAKE) -f tests.mk test
 
 clean:
 	@rm -rf $(BUILD_DIR)
-	@rm -f $(EMULATION_JAR_DIST)
-	@rm -f $(EMULATION_LIB_DIST)
+	@rm -f $(EMULATION_JAR:$(BUILD_DIR)/%=$(DIST_LIB_DIR)/%)
+	@rm -f $(EMULATION_LIB:$(BUILD_DIR)/%=$(DIST_LIB_DIR)/%)
 	@rm -f $(DIST_INCLUDES)
 
 dist: emul_jar_dist lib_dist
 
-lib_dist: lib dist_includes $(EMULATION_LIB_DIST)
-
-$(EMULATION_LIB_DIST): $(EMULATION_LIB) | $(DIST_LIB_DIR)
-	install -m 0644 $< $@
+lib_dist: lib dist_includes
+	@mkdir -p $(DIST_LIB_DIR)
+	install -m 0644 $(EMULATION_LIB) $(DIST_LIB_DIR)
 
 java: emul_jar_dist java_manifest
 
-emul_jar_dist: $(EMULATION_JAR_DIST)
-	@:
-
-$(EMULATION_JAR_DIST): $(EMULATION_JAR) | $(DIST_JAR_DIR)
-	install -m 0644 $< $@
+emul_jar_dist: $(EMULATION_JAR)
+	@mkdir -p $(DIST_LIB_DIR)
+	install -m 0644 $(EMULATION_JAR) $(DIST_LIB_DIR)
 
 $(EMULATION_JAR): $(ALL_JAVA_SOURCES) | $(BUILD_DIR)
 	@echo "building jre_emul.jar"

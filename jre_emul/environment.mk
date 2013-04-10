@@ -51,21 +51,18 @@ ANDROID_JRE_ROOT = $(ANDROID_BASE)/luni/src/main/java
 ANDROID_JRE_TEST_ROOT = $(ANDROID_BASE)/luni/src/test/java/tests/api
 
 MISC_TEST_ROOT = $(CWD)/Tests
-J2OBJC_ROOT = ..
+PROJECT_ROOT = $(CWD)/..
 
 ANDROID_INCLUDE = $(ANDROID_BASE)/include
 ICU4C_I18N_INCLUDE = $(CWD)/icu4c/i18n/include
 ICU4C_COMMON_INCLUDE = $(CWD)/icu4c/common
 
-include ../make/common.mk
+include ../make/detect_xcode.mk
 
 CLASS_DIR = $(BUILD_DIR)/Classes
 EMULATION_STAGE = /tmp/jre_emul
 EMULATION_JAR = $(BUILD_DIR)/jre_emul.jar
-EMULATION_JAR_DIST = $(DIST_JAR_DIR)/jre_emul.jar
 EMULATION_LIB = $(BUILD_DIR)/libjre_emul.a
-EMULATION_LIB_DIST = $(DIST_LIB_DIR)/libjre_emul.a
-XCODE_LIB = $(CONFIGURATION_BUILD_DIR)/libjre_emul.a
 EMULATION_CLASS_DIR = $(CWD)/Classes
 INCLUDE_DIR = $(BUILD_DIR)/include
 TESTS_DIR = $(BUILD_DIR)/tests
@@ -81,7 +78,7 @@ vpath %.java $(JRE_SRC) $(TEST_SRC)
 CLANG=$(XCRUN) clang
 
 # J2ObjC settings
-J2OBJC := USE_SYSTEM_BOOT_PATH=TRUE $(DIST_DIR)/j2objc --mem-debug \
+J2OBJC := USE_SYSTEM_BOOT_PATH=TRUE $(DIST_MACOS_DIR)/j2objc --mem-debug \
    -classpath $(EMULATION_JAR) -d $(CLASS_DIR) $(J2OBJC_DEBUGFLAGS)
 
 # GCC settings, based on Xcode log output
@@ -105,7 +102,8 @@ WARNINGS := $(WARNINGS) -Wobjc-missing-property-synthesis \
 
 # The -fobjc flags match XCode (a link fails without them because of
 # missing symbols of the form OBJC_CLASS_$_[classname]).
-OBJCFLAGS := $(WARNINGS) -DU_DISABLE_RENAMING=1 \
+OBJCFLAGS := $(WARNINGS) $(SDK_FLAGS) $(ALT_SDK_FLAGS) \
+  $(ARCH_FLAGS) $(ALT_ARCH_FLAGS) -DU_DISABLE_RENAMING=1 \
   -fobjc-abi-version=2 -fobjc-legacy-dispatch $(DEBUGFLAGS) \
   -I/System/Library/Frameworks/ExceptionHandling.framework/Headers \
   -I$(ANDROID_INCLUDE) -I$(ICU4C_I18N_INCLUDE) -I$(ICU4C_COMMON_INCLUDE)

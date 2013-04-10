@@ -19,9 +19,9 @@
 CWD = .
 SOURCE_DIR = src/main
 JAVA_SOURCE_DIR = $(SOURCE_DIR)/java
-J2OBJC_ROOT = ..
+PROJECT_ROOT = ..
 
-include ../make/common.mk
+include ../make/detect_xcode.mk
 include ../java_deps/jars.mk
 
 CLASS_DIR = $(BUILD_DIR)/classes
