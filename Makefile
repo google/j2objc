@@ -62,7 +62,10 @@ jre_emul:
 junit_dist: translator_dist jre_emul_dist
 	@cd junit && $(MAKE) dist
 
-dist: translator_dist jre_emul_dist junit_dist install-man-pages
+cycle_finder_dist: annotations_dist java_deps_dist
+	@cd cycle_finder && $(MAKE) dist
+
+dist: translator_dist jre_emul_dist junit_dist cycle_finder_dist install-man-pages
 
 
 clean:
@@ -72,9 +75,11 @@ clean:
 	@cd translator && $(MAKE) clean
 	@cd jre_emul && $(MAKE) clean
 	@cd junit && $(MAKE) clean
+	@cd cycle_finder && $(MAKE) clean
 
 test: annotations_dist java_deps_dist
 	@cd translator && $(MAKE) test
 
 test_all: test
 	@cd jre_emul && $(MAKE) -f tests.mk
+	@cd cycle_finder && $(MAKE) test
