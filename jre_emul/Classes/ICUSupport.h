@@ -23,7 +23,7 @@
 
 #include "unicode/locid.h"
 
-@interface ICUSupport
+@interface ICUSupport : NSObject
 
 + (Locale)getLocale:(const char *)localeName;
 

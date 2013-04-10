@@ -22,7 +22,7 @@
 #import "JreEmulation.h"
 #import "IOSObjectArray.h"
 
-@interface TimeZonesSupport
+@interface TimeZonesSupport : NSObject
 
 + (IOSObjectArray *)forCountryCode:(NSString *)countryCode;
 
