@@ -478,6 +478,28 @@ public class ObjectiveCImplementationGeneratorTest extends GenerationTest {
         "}");
   }
 
+  public void testAutoreleasePoolAnonymousClassMethod() throws IOException {
+    String translation = translateSourceFile(
+        "import com.google.j2objc.annotations.AutoreleasePool;" +
+        "public class Test {" +
+        "  interface Foo {" +
+        "    void apply();" +
+        "  }" +
+        "  Foo foo() {" +
+        "    return new Foo() {" +
+        "      @AutoreleasePool\n" +
+        "      public void apply() { }" +
+        "    };" +
+        "  }" +
+        "}",
+        "Test", "Test.m");
+    assertTranslation(translation, "- (void)apply {\n" +
+        "  NSAutoreleasePool *pool__ = [[NSAutoreleasePool alloc] init];\n" +
+        "  {\n  }\n" +
+        "  [pool__ release];\n" +
+        "}");
+  }
+
   public void testCopyAllPropertiesMethod() throws IOException {
     String translation = translateSourceFile(
         "public class Test {" +
