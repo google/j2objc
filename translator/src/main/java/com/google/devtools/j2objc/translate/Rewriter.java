@@ -27,6 +27,7 @@ import com.google.devtools.j2objc.types.IOSMethodBinding;
 import com.google.devtools.j2objc.types.IOSVariableBinding;
 import com.google.devtools.j2objc.types.NodeCopier;
 import com.google.devtools.j2objc.types.Types;
+import com.google.devtools.j2objc.util.ASTUtil;
 import com.google.devtools.j2objc.util.ErrorReportingASTVisitor;
 import com.google.devtools.j2objc.util.NameTable;
 
@@ -111,25 +112,22 @@ public class Rewriter extends ErrorReportingASTVisitor {
   private static final List<String> typeQualifierKeywords = Lists.newArrayList("in", "out",
       "inout", "oneway", "bycopy", "byref");
 
-  @SuppressWarnings("unchecked")
   @Override
   public boolean visit(TypeDeclaration node) {
-    return visitType(
-        node.getAST(), Types.getTypeBinding(node), node.bodyDeclarations(), node.getModifiers());
+    return visitType(node.getAST(), Types.getTypeBinding(node), ASTUtil.getBodyDeclarations(node),
+                     node.getModifiers());
   }
 
-  @SuppressWarnings("unchecked")
   @Override
   public boolean visit(EnumDeclaration node) {
-    return visitType(
-        node.getAST(), Types.getTypeBinding(node), node.bodyDeclarations(), node.getModifiers());
+    return visitType(node.getAST(), Types.getTypeBinding(node), ASTUtil.getBodyDeclarations(node),
+                     node.getModifiers());
   }
 
-  @SuppressWarnings("unchecked")
   @Override
   public boolean visit(AnonymousClassDeclaration node) {
-    return visitType(
-        node.getAST(), Types.getTypeBinding(node), node.bodyDeclarations(), Modifier.NONE);
+    return visitType(node.getAST(), Types.getTypeBinding(node), ASTUtil.getBodyDeclarations(node),
+                     Modifier.NONE);
   }
 
   private boolean visitType(
@@ -243,7 +241,7 @@ public class Rewriter extends ErrorReportingASTVisitor {
 
     handleCompareToMethod(node, binding);
 
-    List<SingleVariableDeclaration> params = getParameters(node);
+    List<SingleVariableDeclaration> params = ASTUtil.getParameters(node);
     for (int i = 0; i < params.size(); i++) {
       // Change the names of any parameters that are type qualifier keywords.
       SingleVariableDeclaration param = params.get(i);
@@ -278,7 +276,7 @@ public class Rewriter extends ErrorReportingASTVisitor {
     }
 
     AST ast = node.getAST();
-    IVariableBinding param = Types.getVariableBinding(getParameters(node).get(0));
+    IVariableBinding param = Types.getVariableBinding(ASTUtil.getParameters(node).get(0));
 
     Expression nullCheck = ASTFactory.createNullCheck(ast, param, false);
     Expression instanceofExpr = ASTFactory.newInstanceofExpression(
@@ -298,14 +296,14 @@ public class Rewriter extends ErrorReportingASTVisitor {
     throwStmt.setExpression(newCce);
 
     Block ifBlock = ast.newBlock();
-    getStatements(ifBlock).add(throwStmt);
+    ASTUtil.getStatements(ifBlock).add(throwStmt);
 
     IfStatement ifStmt = ast.newIfStatement();
     ifStmt.setExpression(ASTFactory.newInfixExpression(
         ast, nullCheck, InfixExpression.Operator.CONDITIONAL_AND, instanceofExpr, "boolean"));
     ifStmt.setThenStatement(ifBlock);
 
-    getStatements(node.getBody()).add(0, ifStmt);
+    ASTUtil.getStatements(node.getBody()).add(0, ifStmt);
   }
 
   @Override
@@ -356,10 +354,10 @@ public class Rewriter extends ErrorReportingASTVisitor {
    */
   private static <E extends Statement> E insertStatement(E node, Statement toInsert) {
     if (node instanceof Block) {
-      getStatements((Block) node).add(toInsert);
+      ASTUtil.getStatements((Block) node).add(toInsert);
       return node;
     } else if (node.getParent() instanceof Block) {
-      List<Statement> stmts = getStatements((Block) node.getParent());
+      List<Statement> stmts = ASTUtil.getStatements((Block) node.getParent());
       // Find node in statement list, and add given statement after it.
       for (int i = 0; i < stmts.size(); i++) {
         if (stmts.get(i) == node) {
@@ -370,7 +368,7 @@ public class Rewriter extends ErrorReportingASTVisitor {
     } else {
       AST ast = node.getAST();
       Block block = ast.newBlock();
-      List<Statement> stmts = getStatements(block);
+      List<Statement> stmts = ASTUtil.getStatements(block);
       E oldNode = node;
       node = NodeCopier.copySubtree(ast, node);
       stmts.add(node);
@@ -435,7 +433,7 @@ public class Rewriter extends ErrorReportingASTVisitor {
     }
     AST ast = stmt.getAST();
     Block block = ast.newBlock();
-    getStatements(block).add(stmt);
+    ASTUtil.getStatements(block).add(stmt);
     return block;
   }
 
@@ -447,14 +445,14 @@ public class Rewriter extends ErrorReportingASTVisitor {
       Object initializer = node.initializers().get(0);
       if (initializer instanceof VariableDeclarationExpression) {
         List<VariableDeclarationFragment> fragments =
-            getFragments((VariableDeclarationExpression) initializer);
+            ASTUtil.getFragments((VariableDeclarationExpression) initializer);
         for (VariableDeclarationFragment fragment : fragments) {
           if (Types.hasAutoreleasePoolAnnotation(Types.getBinding(fragment))) {
             Statement loopBody = node.getBody();
             if (!(loopBody instanceof Block)) {
               AST ast = node.getAST();
               Block block = ast.newBlock();
-              getStatements(block).add(NodeCopier.copySubtree(ast, loopBody));
+              ASTUtil.getStatements(block).add(NodeCopier.copySubtree(ast, loopBody));
               node.setBody(block);
             }
             Types.addAutoreleasePool((Block) node.getBody());
@@ -513,13 +511,13 @@ public class Rewriter extends ErrorReportingASTVisitor {
 
     VariableDeclarationStatement itemDecl = ASTFactory.newVariableDeclarationStatement(
         ast, loopVariable, ASTFactory.newArrayAccess(ast, arrayVariable, indexVariable));
-    getStatements(loopBody).add(0, itemDecl);
+    ASTUtil.getStatements(loopBody).add(0, itemDecl);
 
     ForStatement forLoop = ASTFactory.newForStatement(
         ast, indexDecl, loopCondition, incrementExpr, loopBody);
 
     Block block = ast.newBlock();
-    List<Statement> stmts = getStatements(block);
+    List<Statement> stmts = ASTUtil.getStatements(block);
     stmts.add(arrayDecl);
     stmts.add(sizeDecl);
     stmts.add(forLoop);
@@ -549,7 +547,7 @@ public class Rewriter extends ErrorReportingASTVisitor {
     MethodInvocation nextInvocation = ASTFactory.newMethodInvocation(
         ast, nextMethod, ASTFactory.newSimpleName(ast, iteratorVariable));
 
-    getStatements(loopBody).add(0, ASTFactory.newVariableDeclarationStatement(
+    ASTUtil.getStatements(loopBody).add(0, ASTFactory.newVariableDeclarationStatement(
         ast, loopVariable, nextInvocation));
 
     WhileStatement whileLoop = ast.newWhileStatement();
@@ -557,7 +555,7 @@ public class Rewriter extends ErrorReportingASTVisitor {
     whileLoop.setBody(loopBody);
 
     Block block = ast.newBlock();
-    List<Statement> stmts = getStatements(block);
+    List<Statement> stmts = ASTUtil.getStatements(block);
     stmts.add(iteratorDecl);
     stmts.add(whileLoop);
 
@@ -582,9 +580,9 @@ public class Rewriter extends ErrorReportingASTVisitor {
       stringExpr.setOperator(InfixExpression.Operator.PLUS);
       nonStringExpr.setLeftOperand(NodeCopier.copySubtree(ast, node.getLeftOperand()));
       nonStringExpr.setRightOperand(NodeCopier.copySubtree(ast, node.getRightOperand()));
-      List<Expression> extendedOperands = getExtendedOperands(node);
-      List<Expression> nonStringOperands = getExtendedOperands(nonStringExpr);
-      List<Expression> stringOperands = getExtendedOperands(stringExpr);
+      List<Expression> extendedOperands = ASTUtil.getExtendedOperands(node);
+      List<Expression> nonStringOperands = ASTUtil.getExtendedOperands(nonStringExpr);
+      List<Expression> stringOperands = ASTUtil.getExtendedOperands(stringExpr);
       boolean foundStringType = false;
       for (Expression expr : extendedOperands) {
         Expression copiedExpr = NodeCopier.copySubtree(ast, expr);
@@ -636,14 +634,14 @@ public class Rewriter extends ErrorReportingASTVisitor {
   @Override
   public void endVisit(SwitchStatement node) {
     AST ast = node.getAST();
-    List<Statement> statements = getStatements(node);
+    List<Statement> statements = ASTUtil.getStatements(node);
     int insertIdx = 0;
     for (int i = 0; i < statements.size(); i++) {
       Statement stmt = statements.get(i);
       if (stmt instanceof VariableDeclarationStatement) {
         VariableDeclarationStatement declStmt = (VariableDeclarationStatement) stmt;
         statements.remove(i);
-        List<VariableDeclarationFragment> fragments = getFragments(declStmt);
+        List<VariableDeclarationFragment> fragments = ASTUtil.getFragments(declStmt);
         for (VariableDeclarationFragment decl : fragments) {
           Expression initializer = decl.getInitializer();
           if (initializer != null) {
@@ -657,40 +655,6 @@ public class Rewriter extends ErrorReportingASTVisitor {
         statements.add(insertIdx++, NodeCopier.copySubtree(ast, declStmt));
       }
     }
-  }
-
-  /**
-   * Helper method to isolate the unchecked warning.
-   */
-  @SuppressWarnings("unchecked")
-  private static List<Statement> getStatements(Block block) {
-    return block.statements();
-  }
-
-  @SuppressWarnings("unchecked")
-  private static List<Statement> getStatements(SwitchStatement node) {
-    return node.statements();
-  }
-
-  @SuppressWarnings("unchecked")
-  private static List<SingleVariableDeclaration> getParameters(MethodDeclaration method) {
-    return method.parameters();
-  }
-
-  @SuppressWarnings("unchecked")
-  private static List<Expression> getExtendedOperands(InfixExpression expr) {
-    return expr.extendedOperands();
-  }
-
-  @SuppressWarnings("unchecked")
-  private static List<VariableDeclarationFragment> getFragments(VariableDeclarationStatement node) {
-    return node.fragments();
-  }
-
-  @SuppressWarnings("unchecked")
-  private static List<VariableDeclarationFragment> getFragments(
-      VariableDeclarationExpression node) {
-    return node.fragments();
   }
 
   @Override
@@ -744,8 +708,7 @@ public class Rewriter extends ErrorReportingASTVisitor {
     Types.addBinding(message, methodBinding);
 
     // Pass array initializer as C-style array to message.
-    @SuppressWarnings("unchecked")
-    List<Expression> args = message.arguments(); // safe by definition
+    List<Expression> args = ASTUtil.getArguments(message);
     ArrayInitializer newArrayInit = NodeCopier.copySubtree(ast, arrayInit);
     args.add(newArrayInit);
     GeneratedVariableBinding argBinding = new GeneratedVariableBinding(arrayType,
@@ -779,7 +742,6 @@ public class Rewriter extends ErrorReportingASTVisitor {
    * @return true if the node was rewritten
    */
   // TODO(user): remove when there is iOS console support.
-  @SuppressWarnings("unchecked")
   private boolean rewriteSystemOut(MethodInvocation node) {
     Expression expression = node.getExpression();
     if (expression instanceof Name) {
@@ -807,7 +769,7 @@ public class Rewriter extends ErrorReportingASTVisitor {
           newInvocation.setExpression(null);
 
           // Insert NSLog format argument
-          List<Expression> args = node.arguments();
+          List<Expression> args = ASTUtil.getArguments(node);
           if (args.size() == 1) {
             Expression arg = args.get(0);
             arg.accept(this);
@@ -815,10 +777,10 @@ public class Rewriter extends ErrorReportingASTVisitor {
             StringLiteral literal = ast.newStringLiteral();
             literal.setLiteralValue(format);
             Types.addBinding(literal, ast.resolveWellKnownType("java.lang.String"));
-            newInvocation.arguments().add(literal);
+            ASTUtil.getArguments(newInvocation).add(literal);
 
             // JDT won't let nodes be re-parented, so copy and map.
-            ASTNode newArg = NodeCopier.copySubtree(ast, arg);
+            Expression newArg = NodeCopier.copySubtree(ast, arg);
             if (arg instanceof MethodInvocation) {
               IMethodBinding argBinding = ((MethodInvocation) arg).resolveMethodBinding();
               if (!argBinding.getReturnType().isPrimitive() &&
@@ -828,15 +790,15 @@ public class Rewriter extends ErrorReportingASTVisitor {
                 Types.addMappedInvocation((MethodInvocation) newArg, newBinding);
               }
             }
-            newInvocation.arguments().add(newArg);
+            ASTUtil.getArguments(newInvocation).add(newArg);
           } else if (args.size() > 1 && node.getName().getIdentifier().equals("printf")) {
-            newInvocation.arguments().addAll(NodeCopier.copySubtrees(ast, args));
+            ASTUtil.getArguments(newInvocation).addAll(NodeCopier.copySubtrees(ast, args));
           } else if (args.size() == 0) {
             // NSLog requires a format string.
             StringLiteral literal = ast.newStringLiteral();
             literal.setLiteralValue("");
             Types.addBinding(literal,  ast.resolveWellKnownType("java.lang.String"));
-            newInvocation.arguments().add(literal);
+            ASTUtil.getArguments(newInvocation).add(literal);
           }
 
           // Replace old invocation with new.
@@ -870,8 +832,7 @@ public class Rewriter extends ErrorReportingASTVisitor {
     if (typeBinding.equals(ast.resolveWellKnownType("java.lang.String"))
         && binding.getName().equals("format")) {
 
-      @SuppressWarnings("unchecked")
-      List<Expression> args = node.arguments();
+      List<Expression> args = ASTUtil.getArguments(node);
       if (args.isEmpty()) {
         return false;
       }
@@ -1003,9 +964,7 @@ public class Rewriter extends ErrorReportingASTVisitor {
       List<BodyDeclaration> decls) {
     MethodDeclaration method = createInterfaceMethodBody(ast, typeBinding, interfaceMethod);
 
-    @SuppressWarnings("unchecked")
-    List<Modifier> modifiers = method.modifiers();
-    modifiers.add(ast.newModifier(ModifierKeyword.ABSTRACT_KEYWORD));
+    ASTUtil.getModifiers(method).add(ast.newModifier(ModifierKeyword.ABSTRACT_KEYWORD));
 
     decls.add(method);
   }
@@ -1031,16 +990,14 @@ public class Rewriter extends ErrorReportingASTVisitor {
     SuperMethodInvocation superInvocation = ast.newSuperMethodInvocation();
     superInvocation.setName(NodeCopier.copySubtree(ast, method.getName()));
 
-    @SuppressWarnings("unchecked")
-    List<Expression> args = superInvocation.arguments();  // safe by definition
-    for (SingleVariableDeclaration param : getParameters(method)) {
+    for (SingleVariableDeclaration param : ASTUtil.getParameters(method)) {
       Expression arg = NodeCopier.copySubtree(ast, param.getName());
-      args.add(arg);
+      ASTUtil.getArguments(superInvocation).add(arg);
     }
     Types.addBinding(superInvocation, Types.getMethodBinding(method));
     ReturnStatement returnStmt = ast.newReturnStatement();
     returnStmt.setExpression(superInvocation);
-    getStatements(body).add(returnStmt);
+    ASTUtil.getStatements(body).add(returnStmt);
 
     decls.add(method);
   }
@@ -1058,9 +1015,7 @@ public class Rewriter extends ErrorReportingASTVisitor {
     Types.addBinding(methodName, methodBinding);
     method.setName(methodName);
 
-    @SuppressWarnings("unchecked")
-    List<Modifier> modifiers = method.modifiers();
-    modifiers.add(ast.newModifier(ModifierKeyword.PUBLIC_KEYWORD));
+    ASTUtil.getModifiers(method).add(ast.newModifier(ModifierKeyword.PUBLIC_KEYWORD));
 
     ITypeBinding[] parameterTypes = interfaceMethod.getParameterTypes();
     for (int i = 0; i < parameterTypes.length; i++) {
@@ -1074,7 +1029,7 @@ public class Rewriter extends ErrorReportingASTVisitor {
       param.setName(ast.newSimpleName(paramName));
       Types.addBinding(param.getName(), paramBinding);
       param.setType(Types.makeType(paramType));
-      getParameters(method).add(param);
+      ASTUtil.getParameters(method).add(param);
     }
     Symbols.scanAST(method);
     return method;

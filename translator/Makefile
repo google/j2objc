@@ -95,6 +95,7 @@ JAVA_SOURCES = \
 	types/RenamedTypeBinding.java \
 	types/Types.java \
 	util/ASTNodeException.java \
+	util/ASTUtil.java \
 	util/DeadCodeMap.java \
 	util/ErrorReportingASTVisitor.java \
 	util/NameTable.java \

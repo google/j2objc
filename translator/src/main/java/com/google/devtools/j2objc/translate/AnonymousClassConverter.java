@@ -25,6 +25,7 @@ import com.google.devtools.j2objc.types.GeneratedVariableBinding;
 import com.google.devtools.j2objc.types.NodeCopier;
 import com.google.devtools.j2objc.types.RenamedTypeBinding;
 import com.google.devtools.j2objc.types.Types;
+import com.google.devtools.j2objc.util.ASTUtil;
 import com.google.devtools.j2objc.util.NameTable;
 
 import org.eclipse.jdt.core.dom.AST;
@@ -32,7 +33,6 @@ import org.eclipse.jdt.core.dom.ASTNode;
 import org.eclipse.jdt.core.dom.ASTVisitor;
 import org.eclipse.jdt.core.dom.AbstractTypeDeclaration;
 import org.eclipse.jdt.core.dom.AnonymousClassDeclaration;
-import org.eclipse.jdt.core.dom.Assignment;
 import org.eclipse.jdt.core.dom.BodyDeclaration;
 import org.eclipse.jdt.core.dom.CharacterLiteral;
 import org.eclipse.jdt.core.dom.ClassInstanceCreation;
@@ -244,6 +244,7 @@ public class AnonymousClassConverter extends ClassConverter {
     ClassInstanceCreation newInvocation = null;
     EnumConstantDeclaration enumConstant = null;
     List<Expression> parentArguments;
+    Expression outerExpression = null;
     String newClassName;
     ITypeBinding innerType;
     boolean isStatic = staticParent(node);
@@ -255,6 +256,8 @@ public class AnonymousClassConverter extends ClassConverter {
       newClassName = innerType.getName();
       innerType = RenamedTypeBinding.rename(newClassName, innerType.getDeclaringClass(), innerType,
           modifiers);
+      outerExpression = newInvocation.getExpression();
+      newInvocation.setExpression(null);
     } else if (parent instanceof EnumConstantDeclaration) {
       enumConstant = (EnumConstantDeclaration) parent;
       parentArguments = enumConstant.arguments();
@@ -293,42 +296,46 @@ public class AnonymousClassConverter extends ClassConverter {
     Set<IVariableBinding> methodVars = getMethodVars(node);
     final List<ReferenceDescription> references = findReferences(node, methodVars);
     final List<Expression> invocationArgs = parentArguments;
-    if (!references.isEmpty() || !invocationArgs.isEmpty()) {  // is there anything to fix-up?
-      List<IVariableBinding> innerVars = getInnerVars(references);
-      if (!innerVars.isEmpty() || !invocationArgs.isEmpty()) {
-        GeneratedMethodBinding defaultConstructor = addInnerVars(typeDecl, innerVars, references,
-            parentArguments);
-        Types.addBinding(parent, defaultConstructor);
-        for (IVariableBinding var : innerVars) {
-          if (!isConstant(var)) {
-            parentArguments.add(makeFieldRef(var, ast));
-          }
+    List<IVariableBinding> innerVars = getInnerVars(references);
+    List<IVariableBinding> innerFields = addInnerFields(typeDecl, innerVars, references);
+    if (!innerFields.isEmpty() || !invocationArgs.isEmpty() || outerExpression != null) {
+      GeneratedMethodBinding defaultConstructor =
+          addDefaultConstructor(typeDecl, innerFields, parentArguments, outerExpression);
+      Types.addBinding(parent, defaultConstructor);
+      if (outerExpression != null) {
+        parentArguments.add(0, NodeCopier.copySubtree(ast, outerExpression));
+      }
+      for (IVariableBinding var : innerVars) {
+        if (!isConstant(var)) {
+          parentArguments.add(makeFieldRef(var, ast));
         }
-        assert defaultConstructor.getParameterTypes().length == parentArguments.size();
-        typeDecl.accept(new ASTVisitor() {
-          @Override
-          public void endVisit(SimpleName node) {
-            IVariableBinding var = Types.getVariableBinding(node);
-            if (var != null) {
-              for (ReferenceDescription ref : references) {
-                if (var.isEqualTo(ref.binding)) {
-                  if (ref.innerField != null) {
-                    setProperty(node, makeFieldRef(ref.innerField, node.getAST()));
-                  } else {
-                    // In-line constant.
-                    Object o = var.getConstantValue();
-                    assert o != null;
-                    Expression literal =
-                        makeLiteral(o, var.getType().getQualifiedName(), node.getAST());
-                    setProperty(node, literal);
-                  }
-                  return;
+      }
+      assert defaultConstructor.getParameterTypes().length == parentArguments.size();
+    }
+    if (!references.isEmpty()) {
+      typeDecl.accept(new ASTVisitor() {
+        @Override
+        public void endVisit(SimpleName node) {
+          IVariableBinding var = Types.getVariableBinding(node);
+          if (var != null) {
+            for (ReferenceDescription ref : references) {
+              if (var.isEqualTo(ref.binding)) {
+                if (ref.innerField != null) {
+                  setProperty(node, makeFieldRef(ref.innerField, node.getAST()));
+                } else {
+                  // In-line constant.
+                  Object o = var.getConstantValue();
+                  assert o != null;
+                  Expression literal =
+                      makeLiteral(o, var.getType().getQualifiedName(), node.getAST());
+                  setProperty(node, literal);
                 }
+                return;
               }
             }
           }
-        });
-      }
+        }
+      });
     }
 
     // If invocation, replace anonymous class invocation with the new constructor.
@@ -391,14 +398,10 @@ public class AnonymousClassConverter extends ClassConverter {
 
   /**
    * Adds val$N instance fields to type so references to external
-   * variables can be resolved.  Existing constructors are updated to
-   * initialize these fields; if no constructor exists, one is added.
+   * variables can be resolved.
    */
-  private GeneratedMethodBinding addInnerVars(TypeDeclaration node,
-      List<IVariableBinding> innerVars, List<ReferenceDescription> references,
-      List<Expression> invocationArguments) {
-    @SuppressWarnings("unchecked")
-    List<BodyDeclaration> members = node.bodyDeclarations(); // safe by definition
+  private List<IVariableBinding> addInnerFields(TypeDeclaration node,
+      List<IVariableBinding> innerVars, List<ReferenceDescription> references) {
     List<IVariableBinding> innerFields = Lists.newArrayList();
     AST ast = node.getAST();
     ITypeBinding clazz = Types.getTypeBinding(node);
@@ -414,7 +417,7 @@ public class AnonymousClassConverter extends ClassConverter {
         }
         String fieldName = "val$" + var.getName();
         FieldDeclaration field = createField(fieldName, varType, clazz, ast);
-        members.add(field);
+        ASTUtil.getBodyDeclarations(node).add(field);
         IVariableBinding fieldVar = Types.getVariableBinding(field.fragments().get(0));
         innerFields.add(fieldVar);
         for (ReferenceDescription ref : references) {
@@ -425,6 +428,14 @@ public class AnonymousClassConverter extends ClassConverter {
       }
     }
 
+    return innerFields;
+  }
+
+  private GeneratedMethodBinding addDefaultConstructor(
+      TypeDeclaration node, List<IVariableBinding> innerFields,
+      List<Expression> invocationArguments, Expression outerExpression) {
+    AST ast = node.getAST();
+    ITypeBinding clazz = Types.getTypeBinding(node);
     MethodDeclaration constructor = ast.newMethodDeclaration();
     constructor.setConstructor(true);
     ITypeBinding voidType = ast.resolveWellKnownType("void");
@@ -436,50 +447,61 @@ public class AnonymousClassConverter extends ClassConverter {
     Types.addBinding(name, binding);
     constructor.setName(name);
     constructor.setBody(ast.newBlock());
-    if (!invocationArguments.isEmpty()) {
-      addArguments(invocationArguments, ast, clazz, constructor, binding);
+
+    SuperConstructorInvocation superCall = ast.newSuperConstructorInvocation();
+    GeneratedMethodBinding superCallBinding = new GeneratedMethodBinding(
+        findSuperConstructorBinding(clazz.getSuperclass(), invocationArguments));
+
+    // If there is an outer expression (eg myFoo.new Foo() {};), then this must
+    // be passed to the super class as its outer reference.
+    int outerCount = 0;
+    if (outerExpression != null) {
+      ITypeBinding outerExpressionType = Types.getTypeBinding(outerExpression);
+      GeneratedVariableBinding outerExpressionParam = new GeneratedVariableBinding(
+          "outer$" + outerCount++, Modifier.FINAL, outerExpressionType, false, true, clazz,
+          binding);
+      ASTUtil.getParameters(constructor).add(0,
+          ASTFactory.newSingleVariableDeclaration(ast, outerExpressionParam));
+      binding.addParameter(0, outerExpressionType);
+      ASTUtil.getArguments(superCall).add(ASTFactory.newSimpleName(ast, outerExpressionParam));
+      superCallBinding.addParameter(0, outerExpressionType);
     }
-    addInnerParameters(constructor, binding, innerFields, ast, true);
-    members.add(constructor);
+
+    // The invocation arguments must become parameters of the generated
+    // constructor and passed to the super call.
+    int argCount = 0;
+    for (Expression arg : invocationArguments) {
+      ITypeBinding argType = Types.getTypeBinding(arg);
+      GeneratedVariableBinding argBinding = new GeneratedVariableBinding(
+          "arg$" + argCount++, 0, argType, false, true, clazz, binding);
+      ASTUtil.getParameters(constructor).add(
+          ASTFactory.newSingleVariableDeclaration(ast, argBinding));
+      binding.addParameter(argType);
+      ASTUtil.getArguments(superCall).add(ASTFactory.newSimpleName(ast, argBinding));
+    }
+    assert superCall.arguments().size() == superCallBinding.getParameterTypes().length;
+    if (superCall.arguments().size() > 0) {
+      ASTUtil.getStatements(constructor.getBody()).add(superCall);
+      Types.addBinding(superCall, superCallBinding);
+    }
+
+    // Add parameters and assignments for the captured inner vars.
+    for (IVariableBinding innerField : innerFields) {
+      GeneratedVariableBinding paramBinding = new GeneratedVariableBinding(
+          "outer$" + outerCount++, Modifier.FINAL, innerField.getType(), false, true, clazz,
+          binding);
+      ASTUtil.getParameters(constructor).add(
+          ASTFactory.newSingleVariableDeclaration(ast, paramBinding));
+      binding.addParameter(paramBinding);
+      ASTUtil.getStatements(constructor.getBody()).add(
+          ast.newExpressionStatement(ASTFactory.newAssignment(ast,
+          ASTFactory.newSimpleName(ast, innerField), ASTFactory.newSimpleName(ast, paramBinding))));
+    }
+    ASTUtil.getBodyDeclarations(node).add(constructor);
     Symbols.scanAST(constructor);
     assert constructor.parameters().size() == binding.getParameterTypes().length;
 
     return binding;
-  }
-
-  private void addArguments(List<Expression> invocationArguments, AST ast, ITypeBinding clazz,
-      MethodDeclaration constructor, GeneratedMethodBinding binding) {
-    // Create a parameter list, based on the invocation arguments.
-    @SuppressWarnings("unchecked") // safe by definition
-    List<SingleVariableDeclaration> parameters = constructor.parameters();
-    int parameterOffset = binding.getParameterTypes().length;
-    for (int i = 0; i < invocationArguments.size(); i++) {
-      Expression arg = invocationArguments.get(i);
-      ITypeBinding argType = Types.getTypeBinding(arg);
-      SimpleName paramName = ast.newSimpleName("arg$" + i);
-      GeneratedVariableBinding paramBinding = new GeneratedVariableBinding(
-          paramName.getIdentifier(), 0, argType, false, true, clazz, null);
-      Types.addBinding(paramName, paramBinding);
-      SingleVariableDeclaration param = ast.newSingleVariableDeclaration();
-      param.setName(paramName);
-      param.setType(Types.makeType(argType));
-      Types.addBinding(param, paramBinding);
-      parameters.add(param);
-      binding.addParameter(i + parameterOffset, argType);
-    }
-
-    // Add super constructor call, forwarding the invocation arguments.
-    SuperConstructorInvocation superInvocation = ast.newSuperConstructorInvocation();
-    @SuppressWarnings("unchecked")
-    List<Expression> superArgs = superInvocation.arguments(); // safe by definition
-    for (SingleVariableDeclaration param : parameters) {
-      superArgs.add(NodeCopier.copySubtree(ast, param.getName()));
-    }
-    Types.addBinding(superInvocation,
-        findSuperConstructorBinding(clazz.getSuperclass(), invocationArguments));
-    @SuppressWarnings("unchecked")
-    List<Statement> statements = constructor.getBody().statements(); // safe by definition
-    statements.add(superInvocation);
   }
 
   private boolean argsMatch(List<Expression> invocationArguments, ITypeBinding[] parameterTypes) {
