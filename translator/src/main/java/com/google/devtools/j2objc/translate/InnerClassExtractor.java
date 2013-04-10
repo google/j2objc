@@ -361,21 +361,7 @@ public class InnerClassExtractor extends ClassConverter {
           TypeSymbol typeSymbol = Symbols.resolve(currentType);
           for (Symbol sym : typeSymbol.getScope().getMembers()) {
             if (sym.getName().startsWith("this$")) {
-              IBinding symBinding = sym.getBinding();
-
-              // If inside a super constructor invocation, this is the first
-              // statement in the constructor, and so the this$ field hasn't
-              // yet been initialized. So use the outer$ parameter instead.
-              if (inSuperConstructorInvocation) {
-                // Find containing constructor.
-                ASTNode constructorNode = node;
-                do {
-                  constructorNode = constructorNode.getParent();
-                } while (!(constructorNode instanceof MethodDeclaration));
-
-                List params = ((MethodDeclaration) constructorNode).parameters();
-                symBinding = Types.getBinding(params.get(0));
-              }
+              IBinding symBinding = getOuterBinding(node, Symbols.resolve(getCurrentType()), sym);
               expr = makeFieldRef((IVariableBinding) symBinding, node.getAST());
               break;
             }
@@ -409,7 +395,7 @@ public class InnerClassExtractor extends ClassConverter {
             thisExpr.setQualifier(null);
           } else {
             AST ast = node.getAST();
-            Name outerQualifier = makeOuterQualifier(outer, current, ast);
+            Name outerQualifier = makeOuterQualifier(node, outer, current, ast);
             ITypeBinding tb = (ITypeBinding) outer.getBinding();
             if (outerQualifier.isQualifiedName()) {
               // Replace this field access.
@@ -447,7 +433,7 @@ public class InnerClassExtractor extends ClassConverter {
         ITypeBinding currentType = getCurrentType();
         TypeSymbol current = Symbols.resolve(currentType);
         if (needsOuterReference(methodBinding, currentType)) {
-          Name outerQualifier = makeOuterQualifier(method, current, node.getAST());
+          Name outerQualifier = makeOuterQualifier(node, method, current, node.getAST());
           node.setExpression(outerQualifier);
         }
       }
@@ -516,7 +502,7 @@ public class InnerClassExtractor extends ClassConverter {
           return true;
         }
         AST ast = node.getAST();
-        Name newName = makeQualifiedName(node, sym, currentType, ast);
+        Name newName = makeQualifiedName(node, node, sym, currentType, ast);
         Types.addBinding(newName, binding);
         setProperty(node, newName);
       }
@@ -534,7 +520,7 @@ public class InnerClassExtractor extends ClassConverter {
         if (outer.equals(current)) {
           node.setQualifier(null);
         } else {
-          Name outerQualifier = makeOuterQualifier(outer, current, node.getAST());
+          Name outerQualifier = makeOuterQualifier(node, outer, current, node.getAST());
           setProperty(node, outerQualifier);
         }
       }
@@ -553,25 +539,66 @@ public class InnerClassExtractor extends ClassConverter {
     /**
      * Returns the full name for a given name reference and containing type.
      */
-    private Name makeQualifiedName(SimpleName name, VariableSymbol sym,
+    private Name makeQualifiedName(ASTNode node, SimpleName name, VariableSymbol sym,
         TypeSymbol currentType, AST ast) {
-      Name qualifier = makeOuterQualifier(sym, currentType, ast);
+      Name qualifier = makeOuterQualifier(node, sym, currentType, ast);
       QualifiedName fullName = ast.newQualifiedName(qualifier, NodeCopier.copySubtree(ast, name));
       Types.addBinding(fullName, sym.getBinding());
       return fullName;
     }
 
-    private Name makeOuterQualifier(Symbol sym, TypeSymbol currentType, AST ast) {
-      Name outerName = makeOuterName(currentType, ast);
+    private Name makeOuterQualifier(ASTNode node, Symbol sym, TypeSymbol currentType, AST ast) {
+      Name outerName = makeOuterName(node, currentType, ast);
       IVariableBinding outerVar = Types.getVariableBinding(outerName);
       while ((currentType = currentType.getDeclaringClass()) != null &&
           !currentType.getScope().owns(sym) &&
           !currentType.equals(sym) && !currentType.getType().isTopLevel() &&
           !Modifier.isStatic(currentType.getBinding().getModifiers())) {
-        outerName = ast.newQualifiedName(outerName, makeOuterName(currentType, ast));
+        outerName = ast.newQualifiedName(outerName, makeOuterName(node, currentType, ast));
         Types.addBinding(outerName, outerVar);
       }
       return outerName;
+    }
+
+    /**
+     * Get the right outer reference binding if in a super constructor
+     * invocation.
+     */
+    private IBinding getOuterBinding(ASTNode node, TypeSymbol currentType, Symbol sym) {
+      IBinding var = sym.getBinding();
+
+      // If inside a super constructor invocation, this is the first
+      // statement in the constructor, and so the this$ field hasn't
+      // yet been initialized. So use the outer$ parameter instead.
+      if (inSuperConstructorInvocation) {
+        // Find containing constructor.
+        ASTNode constructorNode = node;
+        do {
+          constructorNode = constructorNode.getParent();
+        } while (!(constructorNode instanceof MethodDeclaration));
+
+        List params = ((MethodDeclaration) constructorNode).parameters();
+        IBinding outerParamType = Types.getBinding(params.get(0));
+        if (((IVariableBinding) outerParamType).getType().isEqualTo(
+            currentType.getDeclaringClass().getType())) {
+          var = outerParamType;
+        }
+      }
+
+      return var;
+    }
+
+    private SimpleName makeOuterName(ASTNode node, TypeSymbol currentType, AST ast) {
+      for (Symbol sym : currentType.getScope().getMembers()) {
+        if (sym instanceof VariableSymbol && sym.getName().startsWith("this$")) {
+          IVariableBinding outerVar = (IVariableBinding) getOuterBinding(node, currentType, sym);
+          assert outerVar.getType().isEqualTo(currentType.getDeclaringClass().getType());
+          SimpleName name = ast.newSimpleName(sym.getName());
+          Types.addBinding(name, outerVar);
+          return name;
+        }
+      }
+      throw new AssertionError("no outer field in scope");
     }
   }
 

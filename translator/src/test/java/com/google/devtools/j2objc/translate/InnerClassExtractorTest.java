@@ -846,4 +846,40 @@ public class InnerClassExtractorTest extends GenerationTest {
 
     assertTranslation(translation, "[[Outer_Inner1 alloc] initWithOuter:outer$0]");
   }
+
+  public void testOuterReferenceInSuperConstructorInvocation() throws IOException {
+    String translation = translateSourceFile(
+        "class Outer { " +
+        "  int foo; " +
+        "  class Inner1 { Inner1(int i) { } } " +
+        "  class Inner2 extends Inner1 { " +
+        "    Inner2() { " +
+        "      super(foo); " +
+        "    } " +
+        "  } " +
+        "}", "Outer", "Outer.m");
+
+    assertTranslation(translation,
+        "[super initWithOuter:outer$0 withInt:((Outer *) NIL_CHK(outer$0)).foo]");
+  }
+
+  public void testOuterThisReferenceInSuperConstructorInvocation() throws IOException {
+    String translation = translateSourceFile(
+        "class Outer { " +
+        "  int foo; " +
+        "  class Outer1 { " +
+        "    int foo; " +
+        "    class Inner1 { Inner1(int i) { } } " +
+        "    class Inner2 extends Inner1 { " +
+        "      Inner2() { " +
+        "        super(Outer.this.foo); " +
+        "      } " +
+        "    } " +
+        "  } " +
+        "}", "Outer", "Outer.m");
+
+    assertTranslation(translation,
+        "[super initWithOuter_Outer1:outer$0 withInt:" +
+        "((Outer_Outer1 *) NIL_CHK(outer$0)).this$0.foo]");
+  }
 }
