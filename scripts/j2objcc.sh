@@ -28,8 +28,13 @@ else
   readonly DIR=$(dirname "$0")
 fi
 
-readonly INCLUDE_PATH=${DIR}/include
-readonly LIB_PATH=${DIR}/lib
+if [ x$CONFIGURATION_BUILD_DIR != x ]; then
+  readonly INCLUDE_PATH=${CONFIGURATION_BUILD_DIR}/Headers
+  readonly LIB_PATH=${CONFIGURATION_BUILD_DIR}
+else
+  readonly INCLUDE_PATH=${DIR}/include
+  readonly LIB_PATH=${DIR}/lib
+fi
 
 declare CC_FLAGS="-Werror -Wno-parentheses -Wno-objc-string-compare"
 declare OBJC=-ObjC
