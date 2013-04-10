@@ -1126,13 +1126,18 @@ public class StatementGenerator extends ErrorReportingASTVisitor {
     } else if (op.equals(InfixExpression.Operator.EQUALS) &&
         Types.isJavaStringType(Types.getTypeBinding(node.getLeftOperand())) &&
         Types.isJavaStringType(Types.getTypeBinding(node.getRightOperand()))) {
-      // Since NSString doesn't support interning, == is never legal a
-      // valid test for strings.
-      buffer.append('[');
+      // Since NSString doesn't support interning, == is never a valid
+      // test for strings. We need to check for two nulls, however, since
+      // nil == nil is true and [nil isEqualToString:nil] is false.
+      buffer.append("((!");
+      node.getLeftOperand().accept(this);
+      buffer.append(" && !");
+      node.getRightOperand().accept(this);
+      buffer.append(") || [");
       node.getLeftOperand().accept(this);
       buffer.append(" isEqualToString:");
       node.getRightOperand().accept(this);
-      buffer.append(']');
+      buffer.append("])");
     } else if (op.equals(InfixExpression.Operator.RIGHT_SHIFT_UNSIGNED) &&
         !typeName.equals("unichar")) {
       printUnsignedRightShift(node.getLeftOperand(), node.getRightOperand());
