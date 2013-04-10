@@ -375,10 +375,14 @@ public abstract class TimeZone implements Serializable, Cloneable {
       if (toStandard && toDaylightSaving) {
         NSUInteger savingsOffset =
             [tz daylightSavingTimeOffsetForDate:toDaylightSaving] * 1000;
+        if ([tz isDaylightSavingTime]) {
+          // iOS returns current seconds, not the zone difference.
+          offset -= savingsOffset;
+        }
 
         // Fetch each date's components.
         NSCalendar *calendar = [NSCalendar currentCalendar];
-        NSUInteger units =NSMonthCalendarUnit | NSDayCalendarUnit |
+        NSUInteger units = NSMonthCalendarUnit | NSDayCalendarUnit |
             NSHourCalendarUnit | NSMinuteCalendarUnit | NSSecondCalendarUnit;
         NSDateComponents *daylight = [calendar components:units
                                                  fromDate:toDaylightSaving];
@@ -386,28 +390,26 @@ public abstract class TimeZone implements Serializable, Cloneable {
                                                  fromDate:toStandard];
 
         // Convert each day's date components to milliseconds since midnight.
-        int daylightTime = (([daylight hour] * 60 * 60) +
-                            ([daylight minute] * 60) +
-                             [daylight second]) * 1000;
         int standardTime = (([standard hour] * 60 * 60) +
                             ([standard minute] * 60) +
                              [standard second]) * 1000;
+        int daylightTime = (standardTime + savingsOffset) % (24 * 3600000);
 
-        return [[JavaUtilSimpleTimeZone alloc]
-                initWithInt:offset
-               withNSString:[tz name]
-                    withInt:[daylight month] - 1
-                    withInt:[daylight day] - 1
-                    withInt:0
-                    withInt:daylightTime
-                    withInt:[standard month] - 1
-                    withInt:[standard day] - 1
-                    withInt:0
-                    withInt:standardTime
-                    withInt:savingsOffset];
+        return AUTORELEASE([[JavaUtilSimpleTimeZone alloc]
+                            initWithInt:offset
+                           withNSString:[tz name]
+                                withInt:[daylight month] - 1
+                                withInt:[daylight day] - 1
+                                withInt:0
+                                withInt:daylightTime
+                                withInt:[standard month] - 1
+                                withInt:[standard day] - 1
+                                withInt:0
+                                withInt:standardTime
+                                withInt:savingsOffset]);
       } else {
-        return [[JavaUtilSimpleTimeZone alloc]
-                initWithInt:offset withNSString:[tz name]];
+        return AUTORELEASE([[JavaUtilSimpleTimeZone alloc]
+                           initWithInt:offset withNSString:[tz name]]);
       }
     ]-*/;
 
