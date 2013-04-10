@@ -99,7 +99,22 @@ JRE_INTERFACES = \
 	java/util/concurrent/ConcurrentMap.h \
 	java/util/concurrent/Executor.h \
 	java/util/concurrent/ExecutorService.h \
-	java/util/concurrent/Future.h
+	java/util/concurrent/Future.h \
+	org/xml/sax/AttributeList.h \
+	org/xml/sax/Attributes.h \
+	org/xml/sax/ContentHandler.h \
+	org/xml/sax/DocumentHandler.h \
+	org/xml/sax/DTDHandler.h \
+	org/xml/sax/EntityResolver.h \
+	org/xml/sax/ErrorHandler.h \
+	org/xml/sax/ext/Attributes2.h \
+	org/xml/sax/ext/DeclHandler.h \
+	org/xml/sax/ext/EntityResolver2.h \
+	org/xml/sax/ext/LexicalHandler.h \
+	org/xml/sax/ext/Locator2.h \
+	org/xml/sax/Parser.h \
+	org/xml/sax/XMLFilter.h \
+	org/xml/sax/XMLReader.h
 
 # Java sources to be translated normally.
 JAVA_SOURCES = \
@@ -298,7 +313,29 @@ JAVA_SOURCES = \
 	java/util/regex/Splitter.java \
 	libcore/icu/TimeZones.java \
 	libcore/util/BasicLruCache.java \
-	org/apache/harmony/luni/platform/Endianness.java
+	libcore/util/EmptyArray.java \
+	org/apache/harmony/luni/platform/Endianness.java \
+	org/xml/sax/HandlerBase.java \
+	org/xml/sax/InputSource.java \
+	org/xml/sax/Locator.java \
+	org/xml/sax/SAXException.java \
+	org/xml/sax/SAXNotRecognizedException.java \
+	org/xml/sax/SAXNotSupportedException.java \
+	org/xml/sax/SAXParseException.java \
+	org/xml/sax/ext/Attributes2Impl.java \
+	org/xml/sax/ext/DefaultHandler2.java \
+	org/xml/sax/ext/Locator2Impl.java \
+	org/xml/sax/helpers/AttributeListImpl.java \
+	org/xml/sax/helpers/AttributesImpl.java \
+	org/xml/sax/helpers/DefaultHandler.java \
+	org/xml/sax/helpers/LocatorImpl.java \
+	org/xml/sax/helpers/NamespaceSupport.java \
+	org/xml/sax/helpers/NewInstance.java \
+	org/xml/sax/helpers/ParserAdapter.java \
+	org/xml/sax/helpers/ParserFactory.java \
+	org/xml/sax/helpers/XMLFilterImpl.java \
+	org/xml/sax/helpers/XMLReaderAdapter.java \
+	org/xml/sax/helpers/XMLReaderFactory.java
 
 JAVA_SOURCE_LIST = $(BUILD_DIR)/jre_emul.classes.list
 OBJC_OUT_LIST = $(BUILD_DIR)/jre_emul.objc.list
