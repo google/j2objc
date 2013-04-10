@@ -6,6 +6,8 @@
 
 package org.xml.sax.helpers;
 
+import com.google.j2objc.annotations.WeakOuter;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.EmptyStackException;
@@ -539,6 +541,7 @@ public class NamespaceSupport
      * the amount of memory that's consumed.
      * </p>
      */
+    @WeakOuter
     final class Context {
 
     /**
