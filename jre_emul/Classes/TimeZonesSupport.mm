@@ -33,8 +33,8 @@
 static void setStringArrayElement(IOSObjectArray *array, NSUInteger i,
                                   const UnicodeString& s) {
   NSString *nsstring =
-      [[NSString alloc] initWithCharacters:(unichar *) s.getBuffer() 
-                                    length:s.length()];
+      [NSString stringWithCharacters:(unichar *) s.getBuffer()
+                              length:s.length()];
   [array replaceObjectAtIndex:i withObject:nsstring];
 }
 
