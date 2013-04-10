@@ -16,15 +16,13 @@
 #import <execinfo.h>
 
 void signalHandler(int sig) {
-  void *array[10];
-  size_t size;
+  // Get void*'s for all entries on the stack.
+  void *array[64];
+  size_t frame_count = backtrace(array, 64);
 
-  // get void*'s for all entries on the stack
-  size = backtrace(array, 10);
-
-  // print out all the frames to stderr
+  // Print all the frames to stderr.
   fprintf(stderr, "Error: signal %d:\n", sig);
-  backtrace_symbols_fd(array, size, 2);
+  backtrace_symbols_fd(array, frame_count, 2);
   exit(1);
 }
 
@@ -55,10 +53,10 @@ void listFailedTests(id<JavaUtilEnumeration> problems);
   va_start(args, testClass);
   return [JUnitRunner testSuite:testClass withArguments:args];
 }
-                                      
+
 + (JunitFrameworkTestSuite *)testSuite:(Class)testClass
                          withArguments:(va_list)args {
-  JunitFrameworkTestSuite *suite = 
+  JunitFrameworkTestSuite *suite =
       [[JunitFrameworkTestSuite alloc]
        initWithNSString:NSStringFromClass(testClass)];
   NSString *name;
@@ -84,7 +82,7 @@ void listFailedTests(id<JavaUtilEnumeration> problems);
 #endif
   [test runWithJunitFrameworkTestResult:result];
   if ([result wasSuccessful]) {
-    NSLog(@"OK (%d test%@)", [result runCount], 
+    NSLog(@"OK (%d test%@)", [result runCount],
           [result runCount] == 1 ? @"" : @"s");
   }
   else {

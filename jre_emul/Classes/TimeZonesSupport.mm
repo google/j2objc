@@ -20,7 +20,6 @@
 //  Created by Tom Ball on 2/6/2013.
 //
 
-#include <map>
 #include <vector>
 
 #include "ICUSupport.h"
@@ -47,7 +46,7 @@ static void setStringArrayElement(IOSObjectArray *array, NSUInteger i,
   const char* c_str = [countryCode UTF8String];
   UniquePtr<StringEnumeration> ids(icu::TimeZone::createEnumeration(c_str));
   if (ids.get() == NULL) {
-      return NULL;
+    return NULL;
   }
   UErrorCode status = U_ZERO_ERROR;
   int32_t idCount = ids->count(status);
@@ -74,20 +73,30 @@ struct TimeZoneNames {
   UDate daylightDate;
 };
 
+// Create an NSString instance from a ICU UnicodeString instance.
+// TODO(tball): remove once the ICU C++ API references are rewritten.
+NSString *stringFromUnicodeString(const UnicodeString& ustr) {
+  const unichar *buffer = ustr.getBuffer();
+  if (!buffer) {
+    return nil;
+  }
+  NSString *s = [NSString stringWithCharacters:buffer
+                                        length:ustr.length()];
+  return s;
+}
+
 static bool isUtc(const UnicodeString& ustr) {
-  static UnicodeString etcUct("Etc/UCT", 7, US_INV);
-  static UnicodeString etcUtc("Etc/UTC", 7, US_INV);
-  static UnicodeString etcUniversal("Etc/Universal", 13, US_INV);
-  static UnicodeString etcZulu("Etc/Zulu", 8, US_INV);
-
-  static UnicodeString uct("UCT", 3, US_INV);
-  static UnicodeString utc("UTC", 3, US_INV);
-  static UnicodeString universal("Universal", 9, US_INV);
-  static UnicodeString zulu("Zulu", 4, US_INV);
-
-  return ustr == etcUct || ustr == etcUtc || ustr == etcUniversal ||
-      ustr == etcZulu || ustr == uct || ustr == utc || ustr == universal || 
-      ustr == zulu;
+  NSString *s = stringFromUnicodeString(ustr);
+  if (!s) {
+    return NO;
+  }
+  return [s compare:@"Etc/UCT"] == NSOrderedSame ||
+         [s compare:@"Etc/Universal"] == NSOrderedSame ||
+         [s compare:@"Etc/Zulu"] == NSOrderedSame ||
+         [s compare:@"UCT"] == NSOrderedSame ||
+         [s compare:@"UTC"] == NSOrderedSame ||
+         [s compare:@"Etc/Universal"] == NSOrderedSame ||
+         [s compare:@"Etc/Zulu"] == NSOrderedSame;
 }
 
 + (IOSObjectArray *)getZoneStringsImpl:(NSString *)localeName
@@ -131,8 +140,7 @@ static bool isUtc(const UnicodeString& ustr) {
   // In the first pass, we get the long names for the time zone.
   // We also get any commonly-used abbreviations.
   std::vector<TimeZoneNames> table;
-  typedef std::map<UnicodeString, UnicodeString*> AbbreviationMap;
-  AbbreviationMap usedAbbreviations;
+  NSMutableDictionary *usedAbbreviations = [NSMutableDictionary dictionary];
   NSUInteger idCount = [timeZoneIds count];
   for (NSUInteger i = 0; i < idCount; ++i) {
     NSString *zoneId = [timeZoneIds objectAtIndex:i];
@@ -142,12 +150,13 @@ static bool isUtc(const UnicodeString& ustr) {
     if (isUtc(zone)) {
       // ICU doesn't have names for the UTC zones; it just says "GMT+00:00"
       // for both long and short names. We don't want this. The best we can
-      // do is use "UTC" for everything (since we don't know how to say 
+      // do is use "UTC" for everything (since we don't know how to say
       // "Universal Coordinated Time").
       row.tz = NULL;
       row.longStd = row.shortStd = row.longDst = row.shortDst = utc;
       table.push_back(row);
-      usedAbbreviations[utc] = &utc;
+      [usedAbbreviations setObject:stringFromUnicodeString(utc)
+                            forKey:stringFromUnicodeString(utc)];
       continue;
     }
 
@@ -189,12 +198,19 @@ static bool isUtc(const UnicodeString& ustr) {
     }
 
     table.push_back(row);
-    usedAbbreviations[row.shortStd] = &row.longStd;
-    usedAbbreviations[row.shortDst] = &row.longDst;
+    NSLog(@"row.shortStd=%@ row.longStd=%@ row.shortDst=%@ row.longDst=%@",
+          stringFromUnicodeString(row.shortStd),
+          stringFromUnicodeString(row.longStd),
+          stringFromUnicodeString(row.shortDst),
+          stringFromUnicodeString(row.longDst));
+    [usedAbbreviations setObject:stringFromUnicodeString(row.longStd)
+                          forKey:stringFromUnicodeString(row.shortStd)];
+    [usedAbbreviations setObject:stringFromUnicodeString(row.longDst)
+                          forKey:stringFromUnicodeString(row.shortDst)];
   }
 
   // In the second pass, we create the Java String[][].
-  // We also look for any uncommon abbreviations that don't conflict with 
+  // We also look for any uncommon abbreviations that don't conflict with
   // ones we've already seen.
   IOSClass *stringClass = [IOSClass classWithClass:[NSString class]];
   IOSObjectArray *result = [IOSObjectArray arrayWithLength:idCount
@@ -214,15 +230,19 @@ static bool isUtc(const UnicodeString& ustr) {
       }
 
       // If this abbreviation isn't already in use, we can use it.
-      AbbreviationMap::iterator it = usedAbbreviations.find(uncommonStd);
-      if (it == usedAbbreviations.end() || *(it->second) == row.longStd) {
+      id abbrev =
+          [usedAbbreviations objectForKey:stringFromUnicodeString(uncommonStd)];
+      if (!abbrev) {
         row.shortStd = uncommonStd;
-        usedAbbreviations[row.shortStd] = &row.longStd;
+        [usedAbbreviations setObject:stringFromUnicodeString(row.longStd)
+                              forKey:stringFromUnicodeString(row.shortStd)];
       }
-      it = usedAbbreviations.find(uncommonDst);
-      if (it == usedAbbreviations.end() || *(it->second) == row.longDst) {
+      abbrev =
+          [usedAbbreviations objectForKey:stringFromUnicodeString(uncommonDst)];
+      if (!abbrev) {
         row.shortDst = uncommonDst;
-        usedAbbreviations[row.shortDst] = &row.longDst;
+        [usedAbbreviations setObject:stringFromUnicodeString(row.longDst)
+                              forKey:stringFromUnicodeString(row.shortDst)];
       }
     }
 
