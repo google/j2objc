@@ -575,7 +575,14 @@ public class StatementGenerator extends ErrorReportingASTVisitor {
       if (!isString) {
         buffer.append('[');
       }
+      int start = buffer.length();
       expr.accept(this);
+      int end = buffer.length();
+      // Commas inside sub-expression of the NSAssert macro will be incorrectly interpreted as
+      // new argument indicators in the macro. Replace commas with the J2OBJC_COMMA macro.
+      String substring = buffer.substring(start, end);
+      substring = substring.replaceAll(",", " J2OBJC_COMMA()");
+      buffer.replace(start, end, substring);
       if (!isString) {
         buffer.append(" description]");
       }

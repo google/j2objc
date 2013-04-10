@@ -58,6 +58,7 @@
 #  define ARC_CONSUME_PARAMETER
 # endif
 
+#define J2OBJC_COMMA() ,
 
 static inline id JreOperatorRetainedAssign(id *pIvar, id value) {
   // We need a lock here because during
@@ -82,7 +83,6 @@ static inline id JreOperatorRetainedAssign(id *pIvar, id value) {
 
   return value;
 }
-
 
 // Converts main() arguments into an IOSObjectArray of NSStrings.
 FOUNDATION_EXPORT

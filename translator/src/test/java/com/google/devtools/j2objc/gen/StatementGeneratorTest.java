@@ -1287,6 +1287,16 @@ public class StatementGeneratorTest extends GenerationTest {
       "NSAssert(a < b, @\"a should be lower than b\")");
   }
 
+  public void testAssertWithDynamicDescription() throws IOException {
+    String translation = translateSourceFile(
+        "public class Test { void test() { " +
+        "int a = 5; int b = 6; assert a < b : a + \" should be lower than \" + b;}}",
+        "Test", "Test.m");
+    assertTranslation(translation,
+      "NSAssert(a < b, [[NSString stringWithFormat:@\"%d should be lower than %d\" " +
+      "J2OBJC_COMMA() a J2OBJC_COMMA() b] description])");
+  }
+
   // Verify that a Unicode escape sequence is preserved with string
   // concatenation.
   public void testUnicodeStringConcat() throws IOException {
