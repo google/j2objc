@@ -130,6 +130,7 @@ TEST_OBJS = \
 	$(TESTS_DIR)/org/apache/harmony/luni/tests/java/util/ArraysTest.o \
 	$(TESTS_DIR)/org/apache/harmony/luni/tests/java/util/BitSetTest.o \
 	$(TESTS_DIR)/org/apache/harmony/luni/tests/java/util/CalendarTest.o \
+	$(TESTS_DIR)/org/apache/harmony/luni/tests/java/util/CollectionsTest.o \
 	$(TESTS_DIR)/org/apache/harmony/luni/tests/java/util/DateTest.o \
 	$(TESTS_DIR)/org/apache/harmony/luni/tests/java/util/EmptyStackExceptionTest.o \
 	$(TESTS_DIR)/org/apache/harmony/luni/tests/java/util/EnumSetTest.o \
@@ -169,7 +170,6 @@ FAILING_TESTS = \
 	$(TESTS_DIR)/org/apache/harmony/luni/tests/java/lang/FloatTest.o \
 	$(TESTS_DIR)/org/apache/harmony/luni/tests/java/lang/StrictMathTest.o \
 	$(TESTS_DIR)/org/apache/harmony/luni/tests/java/lang/StringBuilderTest.o \
-	$(TESTS_DIR)/org/apache/harmony/luni/tests/java/util/CollectionsTest.o \
 	$(TESTS_DIR)/org/apache/harmony/luni/tests/java/util/TreeSetTest.o \
 	$(TESTS_DIR)/org/apache/harmony/tests/java/util/regex/ModeTest.o \
 

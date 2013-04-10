@@ -22,7 +22,7 @@ import java.io.Serializable;
 /**
  * {@code Collections} contains static methods which operate on
  * {@code Collection} classes.
- * 
+ *
  * @since 1.2
  */
 public class Collections {
@@ -1348,7 +1348,7 @@ public class Collections {
      * order. Searching in an unsorted array has an undefined result. It's also
      * undefined which element is found if there are multiple occurrences of the
      * same element.
-     * 
+     *
      * @param list
      *            the sorted list to search.
      * @param object
@@ -1369,12 +1369,12 @@ public class Collections {
             return -1;
         }
 
-               
+
         if (!(list instanceof RandomAccess)) {
             ListIterator<? extends Comparable<? super T>> it = list.listIterator();
             while (it.hasNext()) {
                 int result;
-                if ((result = -it.next().compareTo(object)) <= 0) {    
+                if ((result = -it.next().compareTo(object)) <= 0) {
                     if (result == 0) {
                         return it.previousIndex();
                     }
@@ -1404,7 +1404,7 @@ public class Collections {
      * sorted according to the comparator passed. Searching in an unsorted array
      * has an undefined result. It's also undefined which element is found if
      * there are multiple occurrences of the same element.
-     * 
+     *
      * @param <T> The element type
      * @param list
      *            the sorted List to search.
@@ -1462,7 +1462,7 @@ public class Collections {
      * end both lists will have the same objects at the same index. If the
      * destination array is larger than the source list, the elements in the
      * destination list with {@code index >= source.size()} will be unchanged.
-     * 
+     *
      * @param destination
      *            the list whose elements are set from the source list.
      * @param source
@@ -1499,7 +1499,7 @@ public class Collections {
 
     /**
      * Returns an {@code Enumeration} on the specified collection.
-     * 
+     *
      * @param collection
      *            the collection to enumerate.
      * @return an Enumeration.
@@ -1521,7 +1521,7 @@ public class Collections {
 
     /**
      * Fills the specified list with the specified element.
-     * 
+     *
      * @param list
      *            the list to fill.
      * @param object
@@ -1542,7 +1542,7 @@ public class Collections {
 
     /**
      * Searches the specified collection for the maximum element.
-     * 
+     *
      * @param collection
      *            the collection to search.
      * @return the maximum element in the Collection.
@@ -1567,7 +1567,7 @@ public class Collections {
     /**
      * Searches the specified collection for the maximum element using the
      * specified comparator.
-     * 
+     *
      * @param collection
      *            the collection to search.
      * @param comparator
@@ -1598,7 +1598,7 @@ public class Collections {
 
     /**
      * Searches the specified collection for the minimum element.
-     * 
+     *
      * @param collection
      *            the collection to search.
      * @return the minimum element in the collection.
@@ -1623,7 +1623,7 @@ public class Collections {
     /**
      * Searches the specified collection for the minimum element using the
      * specified comparator.
-     * 
+     *
      * @param collection
      *            the collection to search.
      * @param comparator
@@ -1655,7 +1655,7 @@ public class Collections {
     /**
      * Returns a list containing the specified number of the specified element.
      * The list cannot be modified. The list is serializable.
-     * 
+     *
      * @param length
      *            the size of the returned list.
      * @param object
@@ -1671,7 +1671,7 @@ public class Collections {
     /**
      * Modifies the specified {@code List} by reversing the order of the
      * elements.
-     * 
+     *
      * @param list
      *            the list to reverse.
      * @throws UnsupportedOperationException
@@ -1734,10 +1734,10 @@ public class Collections {
 
     /**
      * Moves every element of the list to a random new position in the list.
-     * 
+     *
      * @param list
      *            the List to shuffle.
-     * 
+     *
      * @throws UnsupportedOperationException
      *             when replacing an element in the List is not supported.
      */
@@ -1748,7 +1748,7 @@ public class Collections {
     /**
      * Moves every element of the list to a random new position in the list
      * using the specified random number generator.
-     * 
+     *
      * @param list
      *            the list to shuffle.
      * @param random
@@ -1789,7 +1789,7 @@ public class Collections {
     /**
      * Returns a set containing the specified element. The set cannot be
      * modified. The set is serializable.
-     * 
+     *
      * @param object
      *            the element.
      * @return a set containing the element.
@@ -1801,7 +1801,7 @@ public class Collections {
     /**
      * Returns a list containing the specified element. The list cannot be
      * modified. The list is serializable.
-     * 
+     *
      * @param object
      *            the element.
      * @return a list containing the element.
@@ -1813,7 +1813,7 @@ public class Collections {
     /**
      * Returns a Map containing the specified key and value. The map cannot be
      * modified. The map is serializable.
-     * 
+     *
      * @param key
      *            the key.
      * @param value
@@ -1827,7 +1827,7 @@ public class Collections {
     /**
      * Sorts the specified list in ascending natural order. The algorithm is
      * stable which means equal elements don't get reordered.
-     * 
+     *
      * @param list
      *            the list to be sorted.
      * @throws ClassCastException
@@ -1849,7 +1849,7 @@ public class Collections {
     /**
      * Sorts the specified list using the specified comparator. The algorithm is
      * stable which means equal elements don't get reordered.
-     * 
+     *
      * @param list
      *            the list to be sorted.
      * @param comparator
@@ -1873,7 +1873,7 @@ public class Collections {
     /**
      * Swaps the elements of list {@code list} at indices {@code index1} and
      * {@code index2}.
-     * 
+     *
      * @param list
      *            the list to manipulate.
      * @param index1
@@ -1881,7 +1881,7 @@ public class Collections {
      *            index2.
      * @param index2
      *            position of the other element.
-     * 
+     *
      * @throws IndexOutOfBoundsException
      *             if index1 or index2 is out of range of this list.
      * @since 1.4
@@ -1906,7 +1906,7 @@ public class Collections {
      * Replaces all occurrences of Object {@code obj} in {@code list} with
      * {@code newObj}. If the {@code obj} is {@code null}, then all
      * occurrences of {@code null} are replaced with {@code newObj}.
-     * 
+     *
      * @param list
      *            the list to modify.
      * @param obj
@@ -1999,7 +1999,7 @@ public class Collections {
      * index of the first occurrence.
      * <p>
      * -1 is returned if the {@code sublist} does not exist in {@code list}.
-     * 
+     *
      * @param list
      *            the List to search {@code sublist} in.
      * @param sublist
@@ -2069,7 +2069,7 @@ public class Collections {
      * index of the last occurrence.
      * <p>
      * -1 is returned if the {@code sublist} does not exist in {@code list}.
-     * 
+     *
      * @param list
      *            the list to search {@code sublist} in.
      * @param sublist
@@ -2135,7 +2135,7 @@ public class Collections {
      * Returns an {@code ArrayList} with all the elements in the {@code
      * enumeration}. The elements in the returned {@code ArrayList} are in the
      * same order as in the {@code enumeration}.
-     * 
+     *
      * @param enumeration
      *            the source {@link Enumeration}.
      * @return an {@code ArrayList} from {@code enumeration}.
@@ -2151,7 +2151,7 @@ public class Collections {
     /**
      * Returns a wrapper on the specified collection which synchronizes all
      * access to the collection.
-     * 
+     *
      * @param collection
      *            the Collection to wrap in a synchronized collection.
      * @return a synchronized Collection.
@@ -2167,7 +2167,7 @@ public class Collections {
     /**
      * Returns a wrapper on the specified List which synchronizes all access to
      * the List.
-     * 
+     *
      * @param list
      *            the List to wrap in a synchronized list.
      * @return a synchronized List.
@@ -2185,7 +2185,7 @@ public class Collections {
     /**
      * Returns a wrapper on the specified map which synchronizes all access to
      * the map.
-     * 
+     *
      * @param map
      *            the map to wrap in a synchronized map.
      * @return a synchronized Map.
@@ -2200,7 +2200,7 @@ public class Collections {
     /**
      * Returns a wrapper on the specified set which synchronizes all access to
      * the set.
-     * 
+     *
      * @param set
      *            the set to wrap in a synchronized set.
      * @return a synchronized set.
@@ -2215,7 +2215,7 @@ public class Collections {
     /**
      * Returns a wrapper on the specified sorted map which synchronizes all
      * access to the sorted map.
-     * 
+     *
      * @param map
      *            the sorted map to wrap in a synchronized sorted map.
      * @return a synchronized sorted map.
@@ -2231,7 +2231,7 @@ public class Collections {
     /**
      * Returns a wrapper on the specified sorted set which synchronizes all
      * access to the sorted set.
-     * 
+     *
      * @param set
      *            the sorted set to wrap in a synchronized sorted set.
      * @return a synchronized sorted set.
@@ -2247,7 +2247,7 @@ public class Collections {
      * Returns a wrapper on the specified collection which throws an
      * {@code UnsupportedOperationException} whenever an attempt is made to
      * modify the collection.
-     * 
+     *
      * @param collection
      *            the collection to wrap in an unmodifiable collection.
      * @return an unmodifiable collection.
@@ -2265,7 +2265,7 @@ public class Collections {
      * Returns a wrapper on the specified list which throws an
      * {@code UnsupportedOperationException} whenever an attempt is made to
      * modify the list.
-     * 
+     *
      * @param list
      *            the list to wrap in an unmodifiable list.
      * @return an unmodifiable List.
@@ -2285,7 +2285,7 @@ public class Collections {
      * Returns a wrapper on the specified map which throws an
      * {@code UnsupportedOperationException} whenever an attempt is made to
      * modify the map.
-     * 
+     *
      * @param map
      *            the map to wrap in an unmodifiable map.
      * @return a unmodifiable map.
@@ -2303,7 +2303,7 @@ public class Collections {
      * Returns a wrapper on the specified set which throws an
      * {@code UnsupportedOperationException} whenever an attempt is made to
      * modify the set.
-     * 
+     *
      * @param set
      *            the set to wrap in an unmodifiable set.
      * @return a unmodifiable set
@@ -2320,7 +2320,7 @@ public class Collections {
      * Returns a wrapper on the specified sorted map which throws an
      * {@code UnsupportedOperationException} whenever an attempt is made to
      * modify the sorted map.
-     * 
+     *
      * @param map
      *            the sorted map to wrap in an unmodifiable sorted map.
      * @return a unmodifiable sorted map
@@ -2338,7 +2338,7 @@ public class Collections {
      * Returns a wrapper on the specified sorted set which throws an
      * {@code UnsupportedOperationException} whenever an attempt is made to
      * modify the sorted set.
-     * 
+     *
      * @param set
      *            the sorted set to wrap in an unmodifiable sorted set.
      * @return a unmodifiable sorted set.
@@ -2354,7 +2354,7 @@ public class Collections {
      * Returns the number of elements in the {@code Collection} that match the
      * {@code Object} passed. If the {@code Object} is {@code null}, then the
      * number of {@code null} elements is returned.
-     * 
+     *
      * @param c
      *            the {@code Collection} to search.
      * @param o
@@ -2384,7 +2384,7 @@ public class Collections {
 
     /**
      * Returns a type-safe empty, immutable {@link List}.
-     * 
+     *
      * @return an empty {@link List}.
      * @since 1.5
      * @see #EMPTY_LIST
@@ -2396,7 +2396,7 @@ public class Collections {
 
     /**
      * Returns a type-safe empty, immutable {@link Set}.
-     * 
+     *
      * @return an empty {@link Set}.
      * @since 1.5
      * @see #EMPTY_SET
@@ -2408,7 +2408,7 @@ public class Collections {
 
     /**
      * Returns a type-safe empty, immutable {@link Map}.
-     * 
+     *
      * @return an empty {@link Map}.
      * @since 1.5
      * @see #EMPTY_MAP
@@ -2423,7 +2423,7 @@ public class Collections {
      * to insert an element of the wrong type into this collection throws a
      * {@code ClassCastException}. At creation time the types in {@code c} are
      * not checked for correct type.
-     * 
+     *
      * @param c
      *            the collection to be wrapped in a typesafe collection.
      * @param type
@@ -2440,7 +2440,7 @@ public class Collections {
      * insert an element of the wrong type into this map throws a
      * {@code ClassCastException}. At creation time the types in {@code m} are
      * not checked for correct type.
-     * 
+     *
      * @param m
      *            the map to be wrapped in a typesafe map.
      * @param keyType
@@ -2459,7 +2459,7 @@ public class Collections {
      * insert an element of the wrong type into this list throws a
      * {@code ClassCastException}. At creation time the types in {@code list}
      * are not checked for correct type.
-     * 
+     *
      * @param list
      *            the list to be wrapped in a typesafe list.
      * @param type
@@ -2478,7 +2478,7 @@ public class Collections {
      * insert an element of the wrong type into this set throws a
      * {@code ClassCastException}. At creation time the types in {@code s} are
      * not checked for correct type.
-     * 
+     *
      * @param s
      *            the set to be wrapped in a typesafe set.
      * @param type
@@ -2494,7 +2494,7 @@ public class Collections {
      * to insert an element of the wrong type into this sorted map throws a
      * {@code ClassCastException}. At creation time the types in {@code m} are
      * not checked for correct type.
-     * 
+     *
      * @param m
      *            the sorted map to be wrapped in a typesafe sorted map.
      * @param keyType
@@ -2513,7 +2513,7 @@ public class Collections {
      * to insert an element of the wrong type into this sorted set throws a
      * {@code ClassCastException}. At creation time the types in {@code s} are
      * not checked for correct type.
-     * 
+     *
      * @param s
      *            the sorted set to be wrapped in a typesafe sorted set.
      * @param type
@@ -2527,7 +2527,7 @@ public class Collections {
 
     /**
      * Adds all the specified elements to the specified collection.
-     * 
+     *
      * @param c
      *            the collection the elements are to be inserted into.
      * @param a
@@ -2553,7 +2553,7 @@ public class Collections {
 
     /**
      * Returns whether the specified collections have no elements in common.
-     * 
+     *
      * @param c1
      *            the first collection.
      * @param c2
@@ -2582,7 +2582,7 @@ public class Collections {
     /**
      * Checks if specified object is instance of specified class. Used for a
      * dynamically typesafe view of the collections.
-     * 
+     *
      * @param obj -
      *            object is to be checked
      * @param type -
@@ -2613,7 +2613,7 @@ public class Collections {
 
         /**
          * Constructs a dynamically typesafe view of the specified collection.
-         * 
+         *
          * @param c -
          *            the collection for which an unmodifiable view is to be
          *            constructed.
@@ -2747,7 +2747,7 @@ public class Collections {
 
         /**
          * Constructs a dynamically typesafe view of the specified ListIterator.
-         * 
+         *
          * @param i -
          *            the listIterator for which a dynamically typesafe view to
          *            be constructed.
@@ -2833,7 +2833,7 @@ public class Collections {
 
         /**
          * Constructs a dynamically typesafe view of the specified list.
-         * 
+         *
          * @param l -
          *            the list for which a dynamically typesafe view is to be
          *            constructed.
@@ -2947,7 +2947,7 @@ public class Collections {
         /**
          * Constructs a dynamically typesafe view of the specified
          * randomAccessList.
-         * 
+         *
          * @param l -
          *            the randomAccessList for which a dynamically typesafe view
          *            is to be constructed.
@@ -2967,7 +2967,7 @@ public class Collections {
 
         /**
          * Constructs a dynamically typesafe view of the specified set.
-         * 
+         *
          * @param s -
          *            the set for which a dynamically typesafe view is to be
          *            constructed.
@@ -3009,7 +3009,7 @@ public class Collections {
 
         /**
          * Constructs a dynamically typesafe view of the specified map.
-         * 
+         *
          * @param m -
          *            the map for which a dynamically typesafe view is to be
          *            constructed.
@@ -3160,7 +3160,7 @@ public class Collections {
             /**
              * Constructs a dynamically typesafe view of the specified map
              * entry.
-             * 
+             *
              * @param e
              *            the map entry for which a dynamically typesafe view is
              *            to be constructed.
@@ -3227,7 +3227,7 @@ public class Collections {
             /**
              * Constructs a dynamically typesafe view of the specified entry
              * set.
-             * 
+             *
              * @param s -
              *            the entry set for which a dynamically typesafe view is
              *            to be constructed.
@@ -3363,7 +3363,7 @@ public class Collections {
                 /**
                  * Constructs a dynamically typesafe view of the specified entry
                  * iterator.
-                 * 
+                 *
                  * @param i -
                  *            the entry iterator for which a dynamically
                  *            typesafe view is to be constructed.
@@ -3412,7 +3412,7 @@ public class Collections {
 
         /**
          * Constructs a dynamically typesafe view of the specified sortedSet.
-         * 
+         *
          * @param s -
          *            the sortedSet for which a dynamically typesafe view is to
          *            be constructed.
@@ -3478,7 +3478,7 @@ public class Collections {
 
         /**
          * Constructs a dynamically typesafe view of the specified sortedMap.
-         * 
+         *
          * @param m -
          *            the sortedMap for which a dynamically typesafe view is to
          *            be constructed.
@@ -3531,6 +3531,232 @@ public class Collections {
          */
         public K lastKey() {
             return sm.lastKey();
+        }
+    }
+
+    // The following code was merged in from HARMONY-4198
+    // (see https://issues.apache.org/jira/browse/HARMONY-4198)
+    // TODO(user): Verify this patch is correct, upgrade to Android version.
+
+    /**
+     * Answers a set backed by a map. And the map must be empty when this method
+     * is called.
+     *
+     * @param <E>
+     *            type of elements in set
+     * @param map
+     *            the backing map
+     * @return the set from the map
+     * @throws IllegalArgumentException
+     *             if the map is not empty
+     * @since 1.6
+     */
+    public static <E> Set<E> newSetFromMap(Map<E, Boolean> map) {
+        if (map.isEmpty()) {
+            return new SetFromMap<E>(map);
+        }
+        throw new IllegalArgumentException();
+    }
+
+    /**
+     * Answers a LIFO Queue as a view of a Deque. Methods in the returned Queue
+     * need to be re-written to implement the LIFO feature.
+     *
+     * @param <T>
+     *            type of elements
+     * @param deque
+     *            the Deque
+     * @return the LIFO Queue
+     * @since 1.6
+     */
+    public static <T> Queue<T> asLifoQueue(Deque<T> deque) {
+        return new AsLIFOQueue<T>(deque);
+    }
+
+    private static class SetFromMap<E> extends AbstractSet<E> implements
+            Serializable {
+        private static final long serialVersionUID = 2454657854757543876L;
+
+        // must named as it, to pass serialization compatibility test.
+        private Map<E, Boolean> m;
+
+        private transient Set<E> backingSet;
+
+        SetFromMap(final Map<E, Boolean> map) {
+            super();
+            m = map;
+            backingSet = map.keySet();
+        }
+
+        @Override
+        public boolean equals(Object object) {
+            return backingSet.equals(object);
+        }
+
+        @Override
+        public int hashCode() {
+            return backingSet.hashCode();
+        }
+
+        @Override
+        public boolean add(E object) {
+            return m.put(object, Boolean.TRUE) == null;
+        }
+
+        @Override
+        public void clear() {
+            m.clear();
+        }
+
+        @Override
+        public String toString() {
+            return backingSet.toString();
+        }
+
+        @Override
+        public boolean contains(Object object) {
+            return backingSet.contains(object);
+        }
+
+        @Override
+        public boolean containsAll(Collection<?> collection) {
+            return backingSet.containsAll(collection);
+        }
+
+        @Override
+        public boolean isEmpty() {
+            return m.isEmpty();
+        }
+
+        @Override
+        public boolean remove(Object object) {
+            return m.remove(object) != null;
+        }
+
+        @Override
+        public boolean retainAll(Collection<?> collection) {
+            return backingSet.retainAll(collection);
+        }
+
+        @Override
+        public Object[] toArray() {
+            return backingSet.toArray();
+        }
+
+        @Override
+        public <T> T[] toArray(T[] contents) {
+            return backingSet.toArray(contents);
+        }
+
+        @Override
+        public Iterator<E> iterator() {
+            return backingSet.iterator();
+        }
+
+        @Override
+        public int size() {
+            return m.size();
+        }
+    }
+
+    private static class AsLIFOQueue<E> extends AbstractQueue<E> implements
+            Serializable {
+        private static final long serialVersionUID = 1802017725587941708L;
+
+        // must named as it, to pass serialization compatibility test.
+        private final Deque<E> q;
+
+        AsLIFOQueue(final Deque<E> deque) {
+            super();
+            this.q = deque;
+        }
+
+        @Override
+        public Iterator<E> iterator() {
+            return q.iterator();
+        }
+
+        @Override
+        public int size() {
+            return q.size();
+        }
+
+        public boolean offer(E o) {
+            return q.offerFirst(o);
+        }
+
+        public E peek() {
+            return q.peekFirst();
+        }
+
+        public E poll() {
+            return q.pollFirst();
+        }
+
+        @Override
+        public boolean add(E o) {
+            q.push(o);
+            return true;
+        }
+
+        @Override
+        public void clear() {
+            q.clear();
+        }
+
+        @Override
+        public E element() {
+            return q.getFirst();
+        }
+
+        @Override
+        public E remove() {
+            return q.pop();
+        }
+
+        @Override
+        public boolean contains(Object object) {
+            return q.contains(object);
+        }
+
+        @Override
+        public boolean containsAll(Collection<?> collection) {
+            return q.containsAll(collection);
+        }
+
+        @Override
+        public boolean isEmpty() {
+            return q.isEmpty();
+        }
+
+        @Override
+        public boolean remove(Object object) {
+            return q.remove(object);
+        }
+
+        @Override
+        public boolean removeAll(Collection<?> collection) {
+            return q.removeAll(collection);
+        }
+
+        @Override
+        public boolean retainAll(Collection<?> collection) {
+            return q.retainAll(collection);
+        }
+
+        @Override
+        public Object[] toArray() {
+            return q.toArray();
+        }
+
+        @Override
+        public <T> T[] toArray(T[] contents) {
+            return q.toArray(contents);
+        }
+
+        @Override
+        public String toString() {
+            return q.toString();
         }
     }
 }
