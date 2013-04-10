@@ -17,6 +17,7 @@
 package com.google.devtools.j2objc.gen;
 
 import com.google.devtools.j2objc.GenerationTest;
+import com.google.devtools.j2objc.Options;
 import com.google.devtools.j2objc.util.NameTable;
 
 import org.eclipse.jdt.core.dom.AbstractTypeDeclaration;
@@ -33,6 +34,12 @@ import java.util.Set;
  * @author Tom Ball
  */
 public class ObjectiveCHeaderGeneratorTest extends GenerationTest {
+
+  @Override
+  protected void tearDown() throws Exception {
+    super.tearDown();
+    Options.resetDeprecatedDeclarations();
+  }
 
   public void testInnerEnumWithPackage() throws IOException {
     String translation = translateSourceFile(
@@ -52,6 +59,26 @@ public class ObjectiveCHeaderGeneratorTest extends GenerationTest {
     String translation = translateSourceFile(
         "public class Example {}", "Example", "Example.h");
     assertTranslation(translation, "@interface Example ");
+  }
+
+  public void testDeprecatedTypeNameTranslation() throws IOException {
+    Options.enableDeprecatedDeclarations();
+    String translation = translateSourceFile(
+        "public @Deprecated class Example {}", "Example", "Example.h");
+    assertTranslation(translation, "__attribute__((deprecated))\n@interface Example ");
+  }
+
+  public void testDeprecatedTypeNameTranslationIsTurnedOff() throws IOException {
+    String translation = translateSourceFile(
+        "public @Deprecated class Example {}", "Example", "Example.h");
+    assertFalse(translation.contains("__attribute__((deprecated))"));
+  }
+
+  public void testFullyQualifiedDeprecatedTypeNameTranslation() throws IOException {
+    Options.enableDeprecatedDeclarations();
+    String translation = translateSourceFile(
+        "public @java.lang.Deprecated class Example {}", "Example", "Example.h");
+    assertTranslation(translation, "__attribute__((deprecated))\n@interface Example ");
   }
 
   public void testPackageTypeNameTranslation() throws IOException {
@@ -111,11 +138,28 @@ public class ObjectiveCHeaderGeneratorTest extends GenerationTest {
     assertTranslation(translation, "@protocol UnitTestExample");
   }
 
+  public void testDeprecatedInterfaceTranslation() throws IOException {
+    Options.enableDeprecatedDeclarations();
+    String translation = translateSourceFile(
+      "package unit.test; public @Deprecated interface Example {}",
+      "Example", "unit/test/Example.h");
+    assertTranslation(translation, "__attribute__((deprecated))\n@protocol UnitTestExample");
+  }
+
   public void testInterfaceWithMethodTranslation() throws IOException {
     String translation = translateSourceFile(
         "package unit.test; public interface Example { Example getExample(); }",
         "Example", "unit/test/Example.h");
     assertTranslation(translation, "(id<UnitTestExample>)getExample;");
+  }
+
+  public void testInterfaceWithDeprecatedMethodTranslation() throws IOException {
+    Options.enableDeprecatedDeclarations();
+    String translation = translateSourceFile(
+        "package unit.test; public interface Example { @Deprecated Example getExample(); }",
+        "Example", "unit/test/Example.h");
+    assertTranslation(translation,
+        "- (id<UnitTestExample>)getExample __attribute__((deprecated));");
   }
 
   public void testSuperInterfaceTranslation() throws IOException {

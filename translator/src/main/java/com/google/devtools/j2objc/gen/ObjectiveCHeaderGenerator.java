@@ -33,16 +33,19 @@ import com.google.devtools.j2objc.util.UnicodeUtils;
 
 import org.eclipse.jdt.core.dom.ASTVisitor;
 import org.eclipse.jdt.core.dom.AbstractTypeDeclaration;
+import org.eclipse.jdt.core.dom.Annotation;
 import org.eclipse.jdt.core.dom.AnnotationTypeDeclaration;
 import org.eclipse.jdt.core.dom.CompilationUnit;
 import org.eclipse.jdt.core.dom.EnumConstantDeclaration;
 import org.eclipse.jdt.core.dom.EnumDeclaration;
 import org.eclipse.jdt.core.dom.FieldDeclaration;
+import org.eclipse.jdt.core.dom.IExtendedModifier;
 import org.eclipse.jdt.core.dom.IMethodBinding;
 import org.eclipse.jdt.core.dom.ITypeBinding;
 import org.eclipse.jdt.core.dom.IVariableBinding;
 import org.eclipse.jdt.core.dom.MethodDeclaration;
 import org.eclipse.jdt.core.dom.Modifier;
+import org.eclipse.jdt.core.dom.Name;
 import org.eclipse.jdt.core.dom.SingleVariableDeclaration;
 import org.eclipse.jdt.core.dom.Type;
 import org.eclipse.jdt.core.dom.TypeDeclaration;
@@ -61,6 +64,8 @@ import java.util.Set;
  * @author Tom Ball
  */
 public class ObjectiveCHeaderGenerator extends ObjectiveCSourceFileGenerator {
+
+  private static final String DEPRECATED_ATTRIBUTE = "__attribute__((deprecated))";
 
   /**
    * Generate an Objective-C header file for each type declared in a specified
@@ -105,6 +110,14 @@ public class ObjectiveCHeaderGenerator extends ObjectiveCSourceFileGenerator {
     boolean isInterface = node.isInterface();
 
     printConstantDefines(node);
+
+    if (Options.generateDeprecatedDeclarations()) {
+      @SuppressWarnings("unchecked")
+      List<IExtendedModifier> modifiers = node.modifiers();
+      if (hasDeprecated(modifiers)) {
+        println(DEPRECATED_ATTRIBUTE);
+      }
+    }
 
     if (isInterface) {
       printf("@protocol %s", typeName);
@@ -275,6 +288,15 @@ public class ObjectiveCHeaderGenerator extends ObjectiveCSourceFileGenerator {
       return "";
     }
     String result = super.methodDeclaration(m);
+
+    if (Options.generateDeprecatedDeclarations()) {
+      @SuppressWarnings("unchecked")
+      List<IExtendedModifier> modifiers = m.modifiers();
+      if (hasDeprecated(modifiers)) {
+        result += " " + DEPRECATED_ATTRIBUTE;
+      }
+    }
+
     return result + ";\n";
   }
 
@@ -667,5 +689,27 @@ public class ObjectiveCHeaderGenerator extends ObjectiveCSourceFileGenerator {
       return "@private";
     }
     return "@package";
+  }
+
+  /**
+   * Checks if the list of modifiers contains a Deprecated annotation.
+   *
+   * @param modifiers extended modifiers
+   * @return true if the list has {@link Deprecated @Deprecated}, false otherwise
+   */
+  boolean hasDeprecated(List<IExtendedModifier> modifiers) {
+    for (IExtendedModifier modifier : modifiers) {
+      if (modifier.isAnnotation()) {
+        Annotation annotation = (Annotation) modifier;
+        Name annotationTypeName = annotation.getTypeName();
+        String expectedTypeName = annotationTypeName.isQualifiedName() ?
+            "java.lang.Deprecated" : "Deprecated";
+        if (expectedTypeName.equals(annotationTypeName.getFullyQualifiedName())) {
+          return true;
+        }
+      }
+    }
+
+    return false;
   }
 }

@@ -59,6 +59,7 @@ public class Options {
   private static MemoryManagementOption memoryManagementOption = null;
   private static boolean emitLineDirectives = false;
   private static boolean warningsAsErrors = false;
+  private static boolean deprecatedDeclarations = false;
   private static boolean inlineFieldAccess = true;
   private static Map<String, String> methodMappings = Maps.newLinkedHashMap();
   private static boolean generateTestMain = true;
@@ -213,6 +214,8 @@ public class Options {
         emitLineDirectives = true;
       } else if (arg.equals("-Werror")) {
         warningsAsErrors = true;
+      } else if (arg.equals("--generate-deprecated")) {
+        deprecatedDeclarations = true;
       } else if (arg.equals("-q") || arg.equals("--quiet")) {
         logger.setLevel(Level.WARNING);
       } else if (arg.equals("-t") || arg.equals("--timing-info")) {
@@ -448,6 +451,20 @@ public class Options {
 
   public static boolean treatWarningsAsErrors() {
     return warningsAsErrors;
+  }
+
+  @VisibleForTesting
+  public static void enableDeprecatedDeclarations() {
+    deprecatedDeclarations = true;
+  }
+
+  @VisibleForTesting
+  public static void resetDeprecatedDeclarations() {
+    deprecatedDeclarations = false;
+  }
+
+  public static boolean generateDeprecatedDeclarations() {
+    return deprecatedDeclarations;
   }
 
   public static Map<String, String> getMethodMappings() {
