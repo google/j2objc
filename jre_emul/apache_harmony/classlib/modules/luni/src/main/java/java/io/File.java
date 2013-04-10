@@ -305,7 +305,7 @@ public class File implements Serializable, Comparable<File> {
             return false;
         }
         String pp = properPath(true);
-        return existsImpl(pp) && !isWriteOnlyImpl(pp);
+        return existsImpl(pp) && isReadableImpl(pp);
     }
 
     /**
@@ -323,7 +323,7 @@ public class File implements Serializable, Comparable<File> {
         if (path.length() > 0) {
             exists = existsImpl(properPath(true));
         }
-        return exists && !isReadOnlyImpl(properPath(true));
+        return exists && isWritableImpl(properPath(true));
     }
 
     /**
@@ -354,7 +354,7 @@ public class File implements Serializable, Comparable<File> {
      */
     public boolean delete() {
         String propPath = properPath(true);
-        if ((path.length() != 0) && isDirectoryImpl(propPath)) {
+        if ((propPath.length() != 0) && isDirectoryImpl(propPath)) {
             return deleteDirImpl(propPath);
         }
         return deleteFileImpl(propPath);
@@ -371,8 +371,7 @@ public class File implements Serializable, Comparable<File> {
 
     private native boolean deleteFileImpl(String filePath) /*-{
       NSFileManager *manager = [NSFileManager defaultManager];
-      BOOL isDir;
-      if (![manager fileExistsAtPath:filePath isDirectory:&isDir] || isDir) {
+      if (![manager fileExistsAtPath:filePath isDirectory:NULL]) {
         return NO;
       }
       if (![manager isDeletableFileAtPath:filePath]) {
@@ -732,11 +731,11 @@ public class File implements Serializable, Comparable<File> {
       return getName().startsWith(".");
     }
 
-    private native boolean isReadOnlyImpl(String filePath) /*-{
+    private native boolean isReadableImpl(String filePath) /*-{
       return [[NSFileManager defaultManager] isReadableFileAtPath:filePath];
     }-*/;
 
-    private native boolean isWriteOnlyImpl(String filePath) /*-{
+    private native boolean isWritableImpl(String filePath) /*-{
       return [[NSFileManager defaultManager] isWritableFileAtPath:filePath];
     }-*/;
 
@@ -862,7 +861,7 @@ public class File implements Serializable, Comparable<File> {
         }
 
         String bs = properPath(true);
-        if (!isDirectoryImpl(bs) || !existsImpl(bs) || isWriteOnlyImpl(bs)) {
+        if (!isDirectoryImpl(bs) || !existsImpl(bs) || !isReadableImpl(bs)) {
             return null;
         }
 
@@ -871,11 +870,7 @@ public class File implements Serializable, Comparable<File> {
             // empty list
             return new String[0];
         }
-        String result[] = new String[implList.length];
-        for (int index = 0; index < implList.length; index++) {
-            result[index] = new String(implList[index]);
-        }
-        return result;
+        return implList;
     }
 
     /**
@@ -963,7 +958,7 @@ public class File implements Serializable, Comparable<File> {
         }
 
         String bs = properPath(true);
-        if (!isDirectoryImpl(bs) || !existsImpl(bs) || isWriteOnlyImpl(bs)) {
+        if (!isDirectoryImpl(bs) || !existsImpl(bs) || !isReadableImpl(bs)) {
             return null;
         }
 
@@ -1008,7 +1003,7 @@ public class File implements Serializable, Comparable<File> {
         }
 
         String bs = properPath(true);
-        if (!isDirectoryImpl(bs) || !existsImpl(bs) || isWriteOnlyImpl(bs)) {
+        if (!isDirectoryImpl(bs) || !existsImpl(bs) || !isReadableImpl(bs)) {
             return null;
         }
 
