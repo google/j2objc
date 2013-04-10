@@ -1364,4 +1364,16 @@ public class StatementGeneratorTest extends GenerationTest {
       "arrayWithType:[IOSClass classWithClass:[NSObject class]] count:2, " +
       "[JavaLangInteger valueOfWithInt:i], [JavaLangInteger valueOfWithInt:j] ]];");
   }
+
+  // Verify that a string == comparison is converted to compare invocation.
+  public void testStringComparison() throws IOException {
+    String translation = translateSourceFile(
+      "public class Test { " +
+          "boolean check(String s) { if (s == null) { return false; } return s == \"foo\"; }}",
+      "Test", "Test.m");
+    // Assert string equate is converted,
+    assertTranslation(translation, "[s isEqualToString:@\"foo\"]");
+    // but that non-string compare isn't.
+    assertTranslation(translation, "if (s == nil)");
+  }
 }
