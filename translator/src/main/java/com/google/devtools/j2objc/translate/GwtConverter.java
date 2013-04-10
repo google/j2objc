@@ -19,7 +19,6 @@ package com.google.devtools.j2objc.translate;
 import com.google.common.annotations.GwtIncompatible;
 import com.google.common.collect.Sets;
 import com.google.devtools.j2objc.J2ObjC;
-import com.google.devtools.j2objc.types.GeneratedMethodBinding;
 import com.google.devtools.j2objc.types.NodeCopier;
 import com.google.devtools.j2objc.types.Types;
 import com.google.devtools.j2objc.util.ErrorReportingASTVisitor;

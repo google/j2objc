@@ -1204,9 +1204,7 @@ public class StatementGeneratorTest extends GenerationTest {
         "}",
         "Test", "Test.m");
     assertTranslation(translation, "  for (int i = 0; i < 10; i++) {\n" +
-        "    NSAutoreleasePool *pool__ = [[NSAutoreleasePool alloc] init];\n" +
-        "    {\n    }\n" +
-        "    [pool__ release];\n" +
+        "    @autoreleasepool {\n    }\n" +
         "  }");
   }
 
@@ -1220,8 +1218,7 @@ public class StatementGeneratorTest extends GenerationTest {
         "  }" +
         "}",
         "Test", "Test.m");
-    assertTranslation(translation, "NSAutoreleasePool *pool__ = [[NSAutoreleasePool alloc] init]");
-    assertTranslation(translation, "[pool__ release]");
+    assertTranslation(translation, "@autoreleasepool");
   }
 
   public void testARCAutoreleasePoolForStatement() throws IOException {

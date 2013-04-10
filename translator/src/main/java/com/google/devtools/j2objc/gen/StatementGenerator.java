@@ -833,12 +833,7 @@ public class StatementGenerator extends ErrorReportingASTVisitor {
   @Override
   public boolean visit(Block node) {
     if (Types.hasAutoreleasePool(node)) {
-      if (Options.useReferenceCounting()) {
-        // TODO(user): use @autoreleasepool like ARC when iOS 5 is minimum.
-        buffer.append("{\nNSAutoreleasePool *pool__ = [[NSAutoreleasePool alloc] init];\n");
-      } else if (Options.useARC()) {
-        buffer.append("{\n@autoreleasepool ");
-      }
+      buffer.append("{\n@autoreleasepool ");
     }
     buffer.append("{\n");
     List<?> stmts = node.statements();
@@ -863,11 +858,7 @@ public class StatementGenerator extends ErrorReportingASTVisitor {
     printStatements(stmts);
     buffer.append("}\n");
     if (Types.hasAutoreleasePool(node)) {
-      if (Options.useReferenceCounting()) {
-        buffer.append("[pool__ release];\n}\n");
-      } else if (Options.useARC()) {
-        buffer.append("}\n");
-      }
+      buffer.append("}\n");
     }
     return false;
   }
@@ -1078,17 +1069,9 @@ public class StatementGenerator extends ErrorReportingASTVisitor {
   @SuppressWarnings("unchecked")
   @Override
   public boolean visit(ForStatement node) {
-    boolean emitAutoreleasePool = false;
     buffer.append("for (");
     for (Iterator<Expression> it = node.initializers().iterator(); it.hasNext(); ) {
       Expression next = it.next();
-      if (next instanceof VariableDeclarationExpression) {
-        List<VariableDeclarationFragment> vars =
-            ((VariableDeclarationExpression) next).fragments();
-        for (VariableDeclarationFragment fragment : vars) {
-          emitAutoreleasePool |= Types.hasAutoreleasePoolAnnotation(Types.getBinding(fragment));
-        }
-      }
       next.accept(this);
       if (it.hasNext()) {
         buffer.append(", ");

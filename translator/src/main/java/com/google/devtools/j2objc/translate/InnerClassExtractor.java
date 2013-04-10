@@ -170,7 +170,6 @@ public class InnerClassExtractor extends ClassConverter {
 
     // Ensure that the new outer field does not conflict with a field in a superclass.
     ITypeBinding superClazz = clazz.getSuperclass();
-    ITypeBinding superDeclaringClazz = superClazz.getDeclaringClass();
     int suffix = 0;
     while (superClazz.getDeclaringClass() != null) {
       if (!Modifier.isStatic(superClazz.getModifiers())) {
