@@ -35,6 +35,8 @@ class NSLogHandler extends Handler {
     @Override
     public String format(LogRecord record) {
       StringBuffer sb = new StringBuffer();
+      sb.append(record.getLoggerName());
+      sb.append(": ");
       sb.append(record.getLevel().getLocalizedName());
       sb.append(": ");
       sb.append(record.getMessage());
