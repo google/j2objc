@@ -414,4 +414,12 @@ public class AutoboxerTest extends GenerationTest {
     assertTranslation(translation,
         "stringWithFormat:@\"GMT%C%02d:%02d\" , sign, hour, minute, nil];");
   }
+
+  public void testUnboxOfSwitchStatementExpression() throws IOException {
+    String translation = translateSourceFile(
+        "class Test { void test() {" +
+        " Integer i = 3;" +
+        " switch (i) { case 1: case 2: case 3: } } }", "Test", "Test.m");
+    assertTranslation(translation, "switch ([((JavaLangInteger *) NIL_CHK(i)) intValue]) {");
+  }
 }
