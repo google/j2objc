@@ -26,15 +26,14 @@ include make/common.mk
 MAN_DIR = doc/man
 MAN_PAGES = $(MAN_DIR)/j2objc.1 $(MAN_DIR)/j2objcc.1
 
+J2OBJC = $(DIST_DIR)/j2objc
+
 default: dist
 
-$(DIST_DIR)/j2objc: scripts/j2objc.sh
+$(J2OBJC): scripts/j2objc.sh
 	@install -C $< $@
 
-$(DIST_DIR)/j2objcc: scripts/j2objcc.sh
-	@install -C $< $@
-
-install-scripts: $(DIST_DIR)/j2objc $(DIST_DIR)/j2objcc
+install-scripts: $(J2OBJC)
 	@:
 
 install-man-pages: $(MAN_PAGES)

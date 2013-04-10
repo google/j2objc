@@ -28,7 +28,11 @@ else
   readonly DIR=$(dirname "$0")
 fi
 
-readonly INCLUDE_PATH=${DIR}/include
+if [ -d ${DIR}/include ]; then
+  readonly INCLUDE_PATH=${DIR}/include
+else
+  readonly INCLUDE_PATH=${DIR}/Headers
+fi
 readonly LIB_PATH=${DIR}/lib
 
 declare CC_FLAGS="-Werror -Wno-parentheses -Wno-objc-string-compare"

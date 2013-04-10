@@ -314,9 +314,10 @@ TRANSLATED_HEADERS = $(JRE_INTERFACES:%=$(TRANSLATED_SOURCE_DIR)/%) \
     $(JAVA_SOURCES:%.java=$(TRANSLATED_SOURCE_DIR)/%.h)
 ALL_OBJS = $(JAVA_SOURCES:.java=.o) $(IOS_OBJS) $(IOS_JAVA_OBJS)
 SOURCE_HEADERS = $(shell find $(EMULATION_CLASS_DIR) -name *.h)
-INCLUDES = $(TRANSLATED_HEADERS:$(TRANSLATED_SOURCE_DIR)/%=$(INCLUDE_DIR)/%) \
-    $(SOURCE_HEADERS:$(EMULATION_CLASS_DIR)/%=$(INCLUDE_DIR)/%)
-DIST_INCLUDES = $(INCLUDES:$(INCLUDE_DIR)/%=$(DIST_INCLUDE_DIR)/%)
+INCLUDES = $(TRANSLATED_HEADERS:$(TRANSLATED_SOURCE_DIR)/%=%) \
+    $(SOURCE_HEADERS:$(EMULATION_CLASS_DIR)/%=%)
+DIST_INCLUDES = $(INCLUDES:%=$(DIST_INCLUDE_DIR)/%)
+ARCH_INCLUDES = $(INCLUDES:%=$(ARCH_INCLUDE_DIR)/%)
 
 ANNOTATIONS_JAR = $(DIST_JAR_DIR)/j2objc_annotations.jar
 
@@ -359,8 +360,10 @@ pre_translate: | $(BUILD_DIR)
 lib: translate $(EMULATION_LIB)
 	@:
 
-# TODO(user): Remove includes copy to xcode dir.
-xcode_build: translate $(XCODE_LIB) dist_includes $(TARGET_TEMP_DIR)/.includes
+xcode_build: translate $(XCODE_LIB) $(ARCH_BIN_DIR)/j2objcc $(ARCH_BUILD_DIR)/.includes
+
+xcode_clean:
+	@rm -rf $(TRANSLATED_SOURCE_DIR) $(ARCH_BIN_DIR)/j2objcc
 
 xcode_analyze: $(ALL_OBJS:%.o=$(TARGET_TEMP_DIR)/%.plist)
 
@@ -398,18 +401,22 @@ $(BUILD_DIR)/.jre_dist_includes: $(TRANSLATED_HEADERS) $(SOURCE_HEADERS) | $(DIS
 	    | (cd $(DIST_INCLUDE_DIR); tar xfp -)
 	touch $@
 
-ifdef XCODE_INCLUDE_DIR
-$(TARGET_TEMP_DIR)/.includes: $(TRANSLATED_HEADERS) $(SOURCE_HEADERS)
-	@mkdir -p $(XCODE_INCLUDE_DIR)
+$(ARCH_BUILD_DIR)/.includes: $(TRANSLATED_HEADERS) $(SOURCE_HEADERS) | \
+    $(ARCH_BUILD_DIR) $(ARCH_INCLUDE_DIR)
 	(cd $(EMULATION_CLASS_DIR) && tar cf - $(SOURCE_HEADERS:$(EMULATION_CLASS_DIR)/%=%)) \
-	    | (cd $(XCODE_INCLUDE_DIR); tar xfp -)
+	    | (cd $(ARCH_INCLUDE_DIR); tar xfp -)
 	(cd $(TRANSLATED_SOURCE_DIR) && tar cf - \
 	    $(TRANSLATED_HEADERS:$(TRANSLATED_SOURCE_DIR)/%=%)) \
-	    | (cd $(XCODE_INCLUDE_DIR); tar xfp -)
+	    | (cd $(ARCH_INCLUDE_DIR); tar xfp -)
 	touch $@
-endif
 
-$(sort $(BUILD_DIR) $(INCLUDE_DIR) $(DIST_INCLUDE_DIR) $(DIST_JAR_DIR) $(DIST_LIB_DIR)):
+%/j2objcc: $(J2OBJC_ROOT)/scripts/j2objcc.sh
+	@mkdir -p $(@D)
+	install -C $< $@
+
+DIRS_TO_MAKE = $(BUILD_DIR) $(ARCH_BUILD_DIR) $(ARCH_INCLUDE_DIR) \
+    $(DIST_INCLUDE_DIR) $(DIST_JAR_DIR) $(DIST_LIB_DIR)
+$(sort $(DIRS_TO_MAKE)):
 	@mkdir -p $@
 
 $(TRANSLATED_SOURCE_DIR)/%.m: %.java
@@ -448,11 +455,10 @@ test: default
 
 clean:
 	@rm -rf $(BUILD_DIR) $(TRANSLATED_SOURCE_DIR)
-	@rm -f $(EMULATION_JAR_DIST)
-	@rm -f $(EMULATION_LIB_DIST)
+	@rm -f $(DIST_DIR)/j2objcc $(EMULATION_JAR_DIST) $(EMULATION_LIB_DIST)
 	@rm -f $(DIST_INCLUDES)
 
-dist: emul_jar_dist lib_dist
+dist: emul_jar_dist lib_dist $(DIST_DIR)/j2objcc
 
 lib_dist: lib dist_includes $(EMULATION_LIB_DIST)
 
