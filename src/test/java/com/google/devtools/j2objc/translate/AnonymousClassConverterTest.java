@@ -24,7 +24,6 @@ import com.google.devtools.j2objc.util.NameTable;
 
 import org.eclipse.jdt.core.dom.ASTVisitor;
 import org.eclipse.jdt.core.dom.Assignment;
-import org.eclipse.jdt.core.dom.Block;
 import org.eclipse.jdt.core.dom.BodyDeclaration;
 import org.eclipse.jdt.core.dom.ClassInstanceCreation;
 import org.eclipse.jdt.core.dom.CompilationUnit;
@@ -131,8 +130,7 @@ public class AnonymousClassConverterTest extends GenerationTest {
       if (member instanceof MethodDeclaration) {
         MethodDeclaration m = (MethodDeclaration) member;
         if (m.getName().getIdentifier().equals("initialize")) {
-          Block b = (Block) m.getBody().statements().get(0);
-          ExpressionStatement expStmt = (ExpressionStatement) b.statements().get(0);
+          ExpressionStatement expStmt = (ExpressionStatement) m.getBody().statements().get(0);
           Assignment assign = (Assignment) expStmt.getExpression();
           ClassInstanceCreation create = (ClassInstanceCreation) assign.getRightHandSide();
           assertTrue(create.arguments().get(0) instanceof TypeLiteral);
@@ -253,7 +251,7 @@ public class AnonymousClassConverterTest extends GenerationTest {
     types.get(0).accept(new ASTVisitor() {
       @Override
       public void endVisit(Assignment node) {
-        assertEquals("Test_EMPTY_ENUMERATION_=new $1()", node.toString().trim());
+        assertEquals("EMPTY_ENUMERATION=new $1()", node.toString().trim());
         ++testsFound[0];
       }
     });

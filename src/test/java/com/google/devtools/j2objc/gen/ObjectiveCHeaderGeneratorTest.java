@@ -138,7 +138,7 @@ public class ObjectiveCHeaderGeneratorTest extends GenerationTest {
         "public class Example { public static java.util.Date today; }",
         "Example", "Example.h");
     assertTranslation(translation, "+ (JavaUtilDate *)today;");
-    assertTranslation(translation, "+ (void)setTodayWithJavaUtilDate:(JavaUtilDate *)today;");
+    assertTranslation(translation, "+ (void)setToday:(JavaUtilDate *)today;");
     assertFalse(translation.contains("initialize"));
     assertFalse(translation.contains("dealloc"));
   }
@@ -148,7 +148,7 @@ public class ObjectiveCHeaderGeneratorTest extends GenerationTest {
         "public class Example { public static java.util.Date today = new java.util.Date(); }",
         "Example", "Example.h");
     assertTranslation(translation, "+ (JavaUtilDate *)today;");
-    assertTranslation(translation, "+ (void)setTodayWithJavaUtilDate:(JavaUtilDate *)today;");
+    assertTranslation(translation, "+ (void)setToday:(JavaUtilDate *)today;");
     assertFalse(translation.contains("+ (void)initialize;"));
     assertFalse(translation.contains("dealloc"));
   }

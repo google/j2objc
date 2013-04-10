@@ -33,11 +33,9 @@ import com.google.devtools.j2objc.util.NameTable;
 import org.eclipse.jdt.core.dom.AST;
 import org.eclipse.jdt.core.dom.ASTNode;
 import org.eclipse.jdt.core.dom.ASTVisitor;
-import org.eclipse.jdt.core.dom.AbstractTypeDeclaration;
 import org.eclipse.jdt.core.dom.AnonymousClassDeclaration;
 import org.eclipse.jdt.core.dom.ArrayCreation;
 import org.eclipse.jdt.core.dom.ArrayInitializer;
-import org.eclipse.jdt.core.dom.Assignment;
 import org.eclipse.jdt.core.dom.Block;
 import org.eclipse.jdt.core.dom.BodyDeclaration;
 import org.eclipse.jdt.core.dom.BooleanLiteral;
@@ -53,14 +51,12 @@ import org.eclipse.jdt.core.dom.ExpressionStatement;
 import org.eclipse.jdt.core.dom.FieldDeclaration;
 import org.eclipse.jdt.core.dom.ForStatement;
 import org.eclipse.jdt.core.dom.IBinding;
-import org.eclipse.jdt.core.dom.IExtendedModifier;
 import org.eclipse.jdt.core.dom.IMethodBinding;
 import org.eclipse.jdt.core.dom.IPackageBinding;
 import org.eclipse.jdt.core.dom.ITypeBinding;
 import org.eclipse.jdt.core.dom.IVariableBinding;
 import org.eclipse.jdt.core.dom.IfStatement;
 import org.eclipse.jdt.core.dom.InfixExpression;
-import org.eclipse.jdt.core.dom.Initializer;
 import org.eclipse.jdt.core.dom.LabeledStatement;
 import org.eclipse.jdt.core.dom.MethodDeclaration;
 import org.eclipse.jdt.core.dom.MethodInvocation;
@@ -335,78 +331,6 @@ public class Rewriter extends ErrorReportingASTVisitor {
     if (NameTable.isReservedName(name)) {
       NameTable.rename(binding, name + "__");
     }
-  }
-
-  @Override
-  public boolean visit(FieldDeclaration node) {
-    int mods = node.getModifiers();
-    ASTNode parent = node.getParent();
-    if (parent instanceof TypeDeclaration && ((TypeDeclaration) parent).isInterface()) {
-      // Interface fields are implicitly static and final.
-      mods |= Modifier.STATIC | Modifier.FINAL;
-    }
-    if (Modifier.isStatic(mods)) {
-      @SuppressWarnings("unchecked")
-      List<BodyDeclaration> classMembers =
-          parent instanceof AbstractTypeDeclaration ?
-              ((AbstractTypeDeclaration) parent).bodyDeclarations() :
-              ((AnonymousClassDeclaration) parent).bodyDeclarations();  // safe by specification
-      int indexOfNewMember = classMembers.indexOf(node) + 1;
-
-      @SuppressWarnings("unchecked")
-      List<VariableDeclarationFragment> fragments = node.fragments(); // safe by specification
-      for (VariableDeclarationFragment var : fragments) {
-        IVariableBinding binding = Types.getVariableBinding(var);
-        if (Types.isPrimitiveConstant(binding) && Modifier.isPrivate(binding.getModifiers())) {
-          // Don't define accessors for private constants, since they can be
-          // directly referenced.
-          continue;
-        }
-
-        // rename varName to varName_, per Obj-C style guide
-        SimpleName oldName = var.getName();
-        ITypeBinding type = ((AbstractTypeDeclaration) node.getParent()).resolveBinding();
-        String varName = NameTable.getStaticVarQualifiedName(type, oldName.getIdentifier());
-        NameTable.rename(binding, varName);
-        ITypeBinding typeBinding = binding.getType();
-        var.setExtraDimensions(0);  // if array, type was corrected above
-
-        // add accessor(s)
-        if (needsReader(var, classMembers)) {
-          classMembers.add(indexOfNewMember++, makeStaticReader(var, mods));
-        }
-        if (!Modifier.isFinal(mods) && needsWriter(var, classMembers)) {
-          classMembers.add(
-              indexOfNewMember++,
-              makeStaticWriter(var, oldName.getIdentifier(), node.getType(), mods));
-        }
-
-        // move non-constant initialization to init block
-        Expression initializer = var.getInitializer();
-        if (initializer != null && initializer.resolveConstantExpressionValue() == null) {
-          var.setInitializer(null);
-
-          AST ast = var.getAST();
-          SimpleName newName = ast.newSimpleName(varName);
-          Types.addBinding(newName, binding);
-          Assignment assign = ast.newAssignment();
-          assign.setLeftHandSide(newName);
-          Expression newInit = NodeCopier.copySubtree(ast, initializer);
-          assign.setRightHandSide(newInit);
-          Types.addBinding(assign, typeBinding);
-
-          Block initBlock = ast.newBlock();
-          getStatements(initBlock).add(ast.newExpressionStatement(assign));
-          Initializer staticInitializer = ast.newInitializer();
-          staticInitializer.setBody(initBlock);
-          @SuppressWarnings("unchecked")
-          List<IExtendedModifier> initMods = staticInitializer.modifiers(); // safe by definition
-          initMods.add(ast.newModifier(ModifierKeyword.STATIC_KEYWORD));
-          classMembers.add(indexOfNewMember++, staticInitializer);
-        }
-      }
-    }
-    return true;
   }
 
   private static Statement getLoopBody(Statement s) {
@@ -723,52 +647,6 @@ public class Rewriter extends ErrorReportingASTVisitor {
     return expr.extendedOperands();
   }
 
-  /**
-   * Returns true if a reader method is needed for a specified field.  The
-   * heuristic used is to find a method that has the same name, returns the
-   * same type, and has no parameters.  Obviously, lousy code can fail this
-   * test, but it should work in practice with existing Java code standards.
-   */
-  private boolean needsReader(VariableDeclarationFragment var, List<BodyDeclaration> classMembers) {
-    String methodName = var.getName().getIdentifier();
-    ITypeBinding varType = Types.getTypeBinding(var);
-    for (BodyDeclaration member : classMembers) {
-      if (member instanceof MethodDeclaration) {
-        IMethodBinding method = Types.getMethodBinding(member);
-        if (method.getName().equals(methodName) && method.getReturnType().isEqualTo(varType) &&
-            method.getParameterTypes().length == 0) {
-          return false;
-        }
-      }
-    }
-    return true;
-  }
-
-
-  /**
-   * Returns true if a writer method is needed for a specified field.  The
-   * heuristic used is to find a method that has "set" plus the capitalized
-   * field name, returns null, and takes a single parameter of the same type.
-   * Obviously, lousy code can fail this test, but it should work in practice
-   * with Google code standards.
-   */
-  private boolean needsWriter(VariableDeclarationFragment var, List<BodyDeclaration> classMembers) {
-    String methodName = "set" + NameTable.capitalize(var.getName().getIdentifier());
-    ITypeBinding varType = Types.getTypeBinding(var);
-    ITypeBinding voidType = var.getAST().resolveWellKnownType("void");
-    for (BodyDeclaration member : classMembers) {
-      if (member instanceof MethodDeclaration) {
-        IMethodBinding method = Types.getMethodBinding(member);
-        ITypeBinding[] params = method.getParameterTypes();
-        if (method.getName().equals(methodName) && method.getReturnType().isEqualTo(voidType) &&
-            params.length == 1 && params[0].isEqualTo(varType)) {
-          return false;
-        }
-      }
-    }
-    return true;
-  }
-
   @Override
   public void endVisit(ArrayInitializer node) {
     ASTNode nodeToReplace = node;
@@ -847,95 +725,6 @@ public class Rewriter extends ErrorReportingASTVisitor {
     }
 
     return message;
-  }
-
-  /**
-   * Add a static read accessor method for a specified variable. The generator
-   * phase will rename the variable from "name" to "name_", following the Obj-C
-   * style guide.
-   */
-  private MethodDeclaration makeStaticReader(VariableDeclarationFragment var,
-      int modifiers) {
-    AST ast = var.getAST();
-    String varName = var.getName().getIdentifier();
-    IVariableBinding varBinding = var.resolveBinding();
-    String methodName;
-    methodName = NameTable.getStaticAccessorName(varName);
-
-    Type returnType = Types.makeType(varBinding.getType());
-    MethodDeclaration accessor = createBlankAccessor(var, methodName, modifiers, returnType);
-
-    ReturnStatement returnStmt = ast.newReturnStatement();
-    SimpleName returnName = ast.newSimpleName(var.getName().getIdentifier() + "_");
-    Types.addBinding(returnName, varBinding);
-    returnStmt.setExpression(returnName);
-
-    getStatements(accessor.getBody()).add(returnStmt);
-
-    GeneratedMethodBinding binding =
-        new GeneratedMethodBinding(accessor, varBinding.getDeclaringClass(), false);
-    Types.addBinding(accessor, binding);
-    Types.addBinding(accessor.getName(), binding);
-    Symbols.scanAST(accessor);
-    return accessor;
-  }
-
-  /**
-   * Add a static write accessor method for a specified variable.
-   */
-  private MethodDeclaration makeStaticWriter(VariableDeclarationFragment var,
-      String paramName, Type type, int modifiers) {
-    AST ast = var.getAST();
-    String varName = var.getName().getIdentifier();
-    IVariableBinding varBinding = Types.getVariableBinding(var);
-
-    Type returnType = ast.newPrimitiveType(PrimitiveType.VOID);
-    Types.addBinding(returnType, ast.resolveWellKnownType("void"));
-    String methodName = "set" + NameTable.capitalize(varName);
-    MethodDeclaration accessor = createBlankAccessor(var, methodName, modifiers, returnType);
-    GeneratedMethodBinding binding =
-        new GeneratedMethodBinding(accessor, varBinding.getDeclaringClass(), false);
-    Types.addBinding(accessor, binding);
-    Types.addBinding(accessor.getName(), binding);
-
-    SingleVariableDeclaration param = ast.newSingleVariableDeclaration();
-    param.setName(ast.newSimpleName(paramName));
-    Type paramType = NodeCopier.copySubtree(ast, type);
-    param.setType(paramType);
-    Types.addBinding(paramType, type.resolveBinding());
-    GeneratedVariableBinding paramBinding = new GeneratedVariableBinding(paramName, 0,
-        type.resolveBinding(), false, true, varBinding.getDeclaringClass(), binding);
-    Types.addBinding(param, paramBinding);
-    Types.addBinding(param.getName(), paramBinding);
-    getParameters(accessor).add(param);
-    binding.addParameter(paramBinding);
-
-    Assignment assign = ast.newAssignment();
-    SimpleName sn = ast.newSimpleName(NameTable.getName(varBinding));
-    assign.setLeftHandSide(sn);
-    Types.addBinding(sn, varBinding);
-    assign.setRightHandSide(NodeCopier.copySubtree(ast, param.getName()));
-    Types.addBinding(assign, varBinding.getType());
-    ExpressionStatement assignStmt = ast.newExpressionStatement(assign);
-
-    getStatements(accessor.getBody()).add(assignStmt);
-    Symbols.scanAST(accessor);
-    return accessor;
-  }
-
-  /**
-   * Create an unbound accessor method, minus its code.
-   */
-  @SuppressWarnings("unchecked") // safe by specification
-  private MethodDeclaration createBlankAccessor(VariableDeclarationFragment var,
-      String name, int modifiers, Type returnType) {
-    AST ast = var.getAST();
-    MethodDeclaration accessor = ast.newMethodDeclaration();
-    accessor.setName(ast.newSimpleName(name));
-    accessor.modifiers().addAll(ast.newModifiers(modifiers));
-    accessor.setBody(ast.newBlock());
-    accessor.setReturnType2(NodeCopier.copySubtree(ast, returnType));
-    return accessor;
   }
 
   /**

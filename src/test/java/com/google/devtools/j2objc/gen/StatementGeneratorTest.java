@@ -259,20 +259,6 @@ public class StatementGeneratorTest extends GenerationTest {
     assertEquals("id o;", result);
   }
 
-  public void testInterfaceTypeReferencesWithinGenericClassesResolveCorrectly() throws IOException {
-    String translation = translateSourceFile(
-      " public class Example<S> { " +
-      "   private Example() {} " +
-      "   private static final Foo DEFAULT = new Foo() { " +
-      "       @Override public <S> void run(Example<S> e){} " +
-      "   }; " +
-      "   private static Foo var = DEFAULT; " +
-      "   public static final void setVarForTest(Foo param) { var = param; } " +
-      "   interface Foo { <S> void run(Example<S> e); } } ",
-      "Example", "Example.m");
-    assertTranslation(translation, "[Example setVarWithExample_Foo:");
-  }
-
   public void testStaticBooleanFields() throws IOException {
     String translation = translateSourceFile(
         "public class Example { Boolean b1 = Boolean.TRUE; Boolean b2 = Boolean.FALSE; }",
@@ -922,7 +908,7 @@ public class StatementGeneratorTest extends GenerationTest {
         "public class Example { public static java.util.Date today; }" +
         "class Test { void test(java.util.Date now) { Example.today = now; }}",
         "Example", "Example.m");
-    assertTranslation(translation, "[Example setTodayWithJavaUtilDate:now];");
+    assertTranslation(translation, "[Example setToday:now];");
   }
 
   // b/5872533: reserved method name not renamed correctly in super invocation.
@@ -1212,7 +1198,7 @@ public class StatementGeneratorTest extends GenerationTest {
         "interface Assigner { void assign(String s); } static { " +
         "new Assigner() { public void assign(String s) { foo = s; }}; }}",
         "Test", "Test.m");
-    assertTranslation(translation, "[Test setFooWithNSString:s];");
+    assertTranslation(translation, "[Test setFoo:s];");
   }
 
   public void testNoAutoreleasePoolForStatement() throws IOException {

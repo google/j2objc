@@ -100,10 +100,13 @@ public class ObjectiveCHeaderGenerator extends ObjectiveCSourceFileGenerator {
   public void generate(TypeDeclaration node) {
     String typeName = NameTable.getFullName(node);
     String superName = NameTable.getSuperClassName(node);
+    List<FieldDeclaration> fields = Lists.newArrayList(node.getFields());
+    List<MethodDeclaration> methods = Lists.newArrayList(node.getMethods());
+    boolean isInterface = node.isInterface();
 
     printConstantDefines(node);
 
-    if (node.isInterface()) {
+    if (isInterface) {
       printf("@protocol %s", typeName);
     } else {
       printf("@interface %s : %s", typeName, superName);
@@ -118,24 +121,24 @@ public class ObjectiveCHeaderGenerator extends ObjectiveCSourceFileGenerator {
           print(", ");
         }
       }
-      print(node.isInterface() ? ", NSObject >" : " >");
-    } else if (node.isInterface()) {
+      print(isInterface ? ", NSObject >" : " >");
+    } else if (isInterface) {
       print(" < NSObject >");
     }
-    if (node.isInterface()) {
+    if (isInterface) {
       newline();
     } else {
       println(" {");
-      printInstanceVariables(node.getFields());
+      printInstanceVariables(fields);
       println("}\n");
-      printProperties(node.getFields());
+      printProperties(fields);
+      printStaticFieldAccessors(fields, methods, isInterface);
     }
-    List<MethodDeclaration> methods = Lists.newArrayList(node.getMethods());
     printMethods(methods);
     println("@end");
 
-    if (node.isInterface()) {
-      printStaticInterface(typeName, methods);
+    if (isInterface) {
+      printStaticInterface(typeName, fields, methods);
     }
 
     ITypeBinding binding = Types.getTypeBinding(node);
@@ -178,16 +181,17 @@ public class ObjectiveCHeaderGenerator extends ObjectiveCSourceFileGenerator {
     }
   }
 
-  private void printStaticInterface(String typeName, List<MethodDeclaration> methods) {
+  private void printStaticInterface(
+      String typeName, List<FieldDeclaration> fields, List<MethodDeclaration> methods) {
     // Print @interface for static constants, if any.
-    List<MethodDeclaration> accessors = findInterfaceConstantAccessors(methods);
-    if (!accessors.isEmpty()) {
-      printf("\n@interface %s : NSObject {\n}\n", typeName);
-      for (MethodDeclaration m : accessors) {
-        printMethod(m);
-      }
-      println("@end");
+    List<IVariableBinding> staticFields =
+        getStaticFieldsNeedingAccessors(fields, /* isInterface */ true);
+    if (staticFields.isEmpty()) {
+      return;
     }
+    printf("\n@interface %s : NSObject {\n}\n", typeName);
+    printStaticFieldAccessors(staticFields, methods);
+    println("@end");
   }
 
   @Override
@@ -236,18 +240,33 @@ public class ObjectiveCHeaderGenerator extends ObjectiveCSourceFileGenerator {
       }
     }
     println(" > {");
-    FieldDeclaration[] fieldDeclarations = fields.toArray(new FieldDeclaration[0]);
-    printInstanceVariables(fieldDeclarations);
+    printInstanceVariables(fields);
     println("}");
-    printProperties(fieldDeclarations);
+    printProperties(fields);
     for (EnumConstantDeclaration constant : constants) {
       printf("+ (%s *)%s;\n", typeName, NameTable.getName(constant.getName()));
     }
     println("+ (IOSObjectArray *)values;");
     printf("+ (%s *)valueOfWithNSString:(NSString *)name;\n", typeName);
     println("- (id)copyWithZone:(NSZone *)zone;");
+    printStaticFieldAccessors(fields, methods, /* isInterface */ false);
     printMethods(methods);
     println("@end");
+  }
+
+  @Override
+  protected void printStaticFieldGetter(IVariableBinding var) {
+    printf(staticFieldGetterSignature(var) + ";\n");
+  }
+
+  @Override
+  protected void printStaticFieldReferenceGetter(IVariableBinding var) {
+    printf(staticFieldReferenceGetterSignature(var) + ";\n");
+  }
+
+  @Override
+  protected void printStaticFieldSetter(IVariableBinding var) {
+    printf(staticFieldSetterSignature(var) + ";\n");
   }
 
   @Override
@@ -457,7 +476,7 @@ public class ObjectiveCHeaderGenerator extends ObjectiveCSourceFileGenerator {
     return moreForwardTypes;
   }
 
-  private void printInstanceVariables(FieldDeclaration[] fields) {
+  private void printInstanceVariables(List<FieldDeclaration> fields) {
     indent();
     String lastAccess = "@protected";
     for (FieldDeclaration field : fields) {
@@ -507,7 +526,7 @@ public class ObjectiveCHeaderGenerator extends ObjectiveCSourceFileGenerator {
     unindent();
   }
 
-  private void printProperties(FieldDeclaration[] fields) {
+  private void printProperties(List<FieldDeclaration> fields) {
     int nPrinted = 0;
     for (FieldDeclaration field : fields) {
       if ((field.getModifiers() & Modifier.STATIC) == 0) {

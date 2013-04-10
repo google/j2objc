@@ -534,8 +534,9 @@ public class NameTable {
     return isReservedName(varName) ? "get" + capitalize(varName) : varName;
   }
 
-  public static String getStaticVarQualifiedName(ITypeBinding declaringType, String varName) {
-    return getFullName(declaringType) + "_" + varName + "_";
+  public static String getStaticVarQualifiedName(IVariableBinding var) {
+    ITypeBinding declaringType = var.getDeclaringClass().getTypeDeclaration();
+    return getFullName(declaringType) + "_" + getName(var) + (var.isEnumConstant() ? "" : "_");
   }
 
   public static String getPrimitiveConstantName(IVariableBinding constant) {

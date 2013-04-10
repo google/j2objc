@@ -20,15 +20,12 @@ import com.google.devtools.j2objc.GenerationTest;
 import com.google.devtools.j2objc.J2ObjC;
 import com.google.devtools.j2objc.types.Types;
 
-import org.eclipse.jdt.core.dom.Assignment;
 import org.eclipse.jdt.core.dom.Block;
 import org.eclipse.jdt.core.dom.BodyDeclaration;
 import org.eclipse.jdt.core.dom.BreakStatement;
 import org.eclipse.jdt.core.dom.CompilationUnit;
 import org.eclipse.jdt.core.dom.ContinueStatement;
 import org.eclipse.jdt.core.dom.EmptyStatement;
-import org.eclipse.jdt.core.dom.Expression;
-import org.eclipse.jdt.core.dom.ExpressionStatement;
 import org.eclipse.jdt.core.dom.FieldDeclaration;
 import org.eclipse.jdt.core.dom.ForStatement;
 import org.eclipse.jdt.core.dom.IBinding;
@@ -37,10 +34,8 @@ import org.eclipse.jdt.core.dom.IVariableBinding;
 import org.eclipse.jdt.core.dom.IfStatement;
 import org.eclipse.jdt.core.dom.LabeledStatement;
 import org.eclipse.jdt.core.dom.MethodDeclaration;
-import org.eclipse.jdt.core.dom.MethodInvocation;
 import org.eclipse.jdt.core.dom.Modifier;
 import org.eclipse.jdt.core.dom.ReturnStatement;
-import org.eclipse.jdt.core.dom.SimpleName;
 import org.eclipse.jdt.core.dom.SingleVariableDeclaration;
 import org.eclipse.jdt.core.dom.Statement;
 import org.eclipse.jdt.core.dom.SuperMethodInvocation;
@@ -153,46 +148,6 @@ public class RewriterTest extends GenerationTest {
     Statement labelStmt = stmts.get(1);
     assertTrue(labelStmt instanceof LabeledStatement);
     assertTrue(((LabeledStatement) labelStmt).getBody() instanceof EmptyStatement);
-  }
-
-  public void testStaticReaderAdded() {
-    String source = "class Test { private static int foo; }";
-    assertEquals(1, methodCount(source, "foo", new String[0]));
-  }
-
-  public void testStaticReaderAddedWhenSameMethodNameExists() {
-    String source = "class Test { private static int foo; void foo(String s) {}}";
-    assertEquals(1, methodCount(source, "foo", new String[0]));
-  }
-
-  public void testStaticWriterAdded() {
-    String source = "class Test { private static int foo; }";
-    assertEquals(1, methodCount(source, "setFoo", new String[] { "int" }));
-  }
-
-  public void testStaticWriterAddedWhenSameMethodNameExists() {
-    String source = "class Test { private static int foo; void setFoo(String s) {}}";
-    assertEquals(1, methodCount(source, "setFoo", new String[] { "int" }));
-  }
-
-  /**
-   * Verify that a static reader method is not added to a class that already
-   * has one.
-   */
-  public void testExistingStaticReaderDetected() {
-    String source =
-        "class Test { private static int foo; public static int foo() { return foo; }}";
-    assertEquals(1, methodCount(source, "foo", new String[0]));
-  }
-
-  /**
-   * Verify that a static writer method is not added to a class that already
-   * has one.
-   */
-  public void testExistingStaticWriterDetected() {
-    String source = "class Test { private static int foo;" +
-        "public static void setFoo(int newFoo) { foo = newFoo; }}";
-    assertEquals(1, methodCount(source, "setFoo", new String[] { "int" }));
   }
 
   private int methodCount(String source, String methodName, String[] paramTypes) {
@@ -425,12 +380,9 @@ public class RewriterTest extends GenerationTest {
           assertEquals(2, stmts.size());
           foundInitStatements = true;
 
-          List<Statement> blockStmts = ((Block) stmts.get(0)).statements();
-          assertEquals("Test_a_=IOSIntArray.arrayWithInts({1,2,3},3);",
-              blockStmts.get(0).toString().trim());
-          blockStmts = ((Block) stmts.get(1)).statements();
-          assertEquals("Test_b_=IOSCharArray.arrayWithCharacters({'4','5'},2);",
-            blockStmts.get(0).toString().trim());
+          assertEquals("a=IOSIntArray.arrayWithInts({1,2,3},3);", stmts.get(0).toString().trim());
+          assertEquals("b=IOSCharArray.arrayWithCharacters({'4','5'},2);",
+                       stmts.get(1).toString().trim());
         }
       }
     }
@@ -483,58 +435,6 @@ public class RewriterTest extends GenerationTest {
     assertTrue(m.isConstructor());
     m = (MethodDeclaration) members.get(2);
     assertEquals("testMethod", m.getName().getIdentifier());
-  }
-
-  public void testStaticInitializersKeptInOrder() {
-    String source =
-        "public class Test { " +
-        "  public static final int I = 1; " +
-        "  public static final java.util.Set<Integer> iSet = new java.util.HashSet<Integer>(); " +
-        "  static { iSet.add(I); } " +
-        "  public static final int iSetSize = iSet.size(); }";
-    CompilationUnit unit = compileType("Test", source);
-    J2ObjC.initializeTranslation(unit);
-    J2ObjC.translate(unit, source);
-    List<BodyDeclaration> classMembers = ((TypeDeclaration) unit.types().get(0)).bodyDeclarations();
-    assertEquals(8, classMembers.size()); // 3 fields + 3 getters + 1 clInit + 1 dealloc
-
-    // Test that the clInit has the right statements in order.
-    MethodDeclaration clInit = (MethodDeclaration) classMembers.get(6);
-    assertEquals("initialize", clInit.getName().getIdentifier());
-    assertEquals(Modifier.PUBLIC | Modifier.STATIC, clInit.getModifiers());
-    List<Statement> statements = clInit.getBody().statements();
-    assertEquals(3, statements.size());
-
-    // Test_iSet_ = new ...
-    Statement first = statements.get(0);
-    assertTrue(first instanceof Block);
-    Block b = (Block) first;
-    first = (Statement) b.statements().get(0);
-    assertTrue(first instanceof ExpressionStatement);
-    Expression firstExpr = ((ExpressionStatement) first).getExpression();
-    assertTrue(firstExpr instanceof Assignment);
-    assertEquals("Test_iSet_",
-        ((SimpleName) ((Assignment) firstExpr).getLeftHandSide()).getIdentifier());
-
-    // iSet.add(...)
-    Statement second = statements.get(1);
-    assertTrue(second instanceof Block);
-    b = (Block) second;
-    second = (Statement) b.statements().get(0);
-    assertTrue(second instanceof ExpressionStatement);
-    Expression secondExpr = ((ExpressionStatement) second).getExpression();
-    assertTrue(secondExpr instanceof MethodInvocation);
-
-    // Test_iSetSize_ = ...
-    Statement third = statements.get(2);
-    assertTrue(third instanceof Block);
-    b = (Block) third;
-    third = (Statement) b.statements().get(0);
-    assertTrue(third instanceof ExpressionStatement);
-    Expression thirdExpr = ((ExpressionStatement) third).getExpression();
-    assertTrue(thirdExpr instanceof Assignment);
-    assertEquals("Test_iSetSize_",
-        ((SimpleName) ((Assignment) thirdExpr).getLeftHandSide()).getIdentifier());
   }
 
   public void testRewriteSystemOut() throws IOException {
