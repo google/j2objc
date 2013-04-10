@@ -164,6 +164,14 @@ public class SourceBuilder {
     return buffer.length();
   }
 
+  public String substring(int start, int end) {
+    return buffer.substring(start, end);
+  }
+
+  public void replace(int start, int end, String str) {
+    buffer.replace(start, end, str);
+  }
+
   public char[] pad(int n) {
     if (n < 0) {
       n = 0;
