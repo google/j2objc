@@ -22,40 +22,28 @@ JAVA_SOURCE_DIR = $(SOURCE_DIR)/java
 PROJECT_ROOT = ..
 
 include ../make/detect_xcode.mk
+include ../java_deps/jars.mk
 
 CLASS_DIR = $(BUILD_DIR)/classes
-LIB_DIR = $(BUILD_DIR)/lib
 TEST_DIR = $(BUILD_DIR)/test
 
 SOURCEPATH = $(CWD):$(JAVA_SOURCE_DIR)
 BASE_PACKAGE = com/google/devtools/j2objc
 
-JARS = \
-  guava-13.0.jar \
-  jsr305-2.0.1.jar \
-  org.eclipse.core.contenttype-3.4.100.v20100505-1235.jar \
-  org.eclipse.core.jobs-3.5.0.v20100515.jar \
-  org.eclipse.core.resources-3.6.0.v20100526-0737.jar \
-  org.eclipse.core.runtime-3.6.0.v20100505.jar \
-  org.eclipse.equinox.common-3.6.0.v20100503.jar \
-  org.eclipse.equinox.preferences-3.3.0.v20100503.jar \
-  org.eclipse.jdt.core-3.8.1.v20120531-0637.jar \
-  org.eclipse.osgi-3.6.0.v20100517.jar \
-  org.eclipse.text-3.5.100.v20110505-0800.jar
-JUNIT_JAR = $(LIB_DIR)/junit-4.10.jar
+JAR_DEPS = $(ECLIPSE_JARS) $(GUAVA_JAR) $(JSR305_JAR) j2objc_annotations.jar
+JAR_DEPS_DIST = $(JAR_DEPS:%=$(DIST_JAR_DIR)/%)
+JAR_DEPS_PATH = $(subst $(eval) ,:,$(strip $(JAR_DEPS_DIST)))
+JUNIT_JAR_DIST = $(DIST_JAR_DIR)/$(JUNIT_JAR)
 
-ANNOTATIONS_JAR = $(DIST_JAR_DIR)/j2objc_annotations.jar
-
-JAR_PATH = $(strip $(subst : ,:, $(strip $(foreach j, $(JARS), $(LIB_DIR)/$j:))))
-CLASSPATH = $(CLASS_DIR):$(ANNOTATIONS_JAR):$(JAR_PATH)
-TEST_CLASSPATH = $(TEST_DIR):$(J2OBJC_JAR):$(ANNOTATIONS_JAR):$(JAR_PATH):$(JUNIT_JAR)
+CLASSPATH = $(CLASS_DIR):$(JAR_DEPS_PATH)
+TEST_CLASSPATH = $(TEST_DIR):$(J2OBJC_JAR):$(JAR_DEPS_PATH):$(JUNIT_JAR_DIST)
 
 MAIN_CLASS = com.google.devtools.j2objc.J2ObjC
 MANIFEST = $(BUILD_DIR)/manifest.mf
-MANIFEST_PATH = $(strip $(foreach j, $(JARS), $j)) j2objc_annotations.jar
-J2OBJC_JAR = $(LIB_DIR)/j2objc.jar
+J2OBJC_JAR = $(BUILD_DIR)/j2objc.jar
+J2OBJC_JAR_DIST = $(DIST_JAR_DIR)/j2objc.jar
 
-CLASSES = \
+JAVA_SOURCES = \
 	J2ObjC.java \
 	Options.java \
 	Plugin.java \
@@ -117,62 +105,47 @@ CLASSES = \
 RESOURCES = J2ObjC.properties JRE.mappings
 RESOURCE_DIR = $(SOURCE_DIR)/resources
 
-SOURCE_FILES = $(foreach f, $(CLASSES), $(JAVA_SOURCE_DIR)/$(BASE_PACKAGE)/$f)
-CLASSFILES = $(foreach c, $(CLASSES:.java=.class), $(CLASS_DIR)/$(BASE_PACKAGE)/$c)
-RESOURCE_FILES = $(foreach f, $(RESOURCES), $(CLASS_DIR)/$(BASE_PACKAGE)/$f)
+JAVA_SOURCES_FULL = $(JAVA_SOURCES:%=$(JAVA_SOURCE_DIR)/$(BASE_PACKAGE)/%)
+RESOURCE_FILES = $(RESOURCES:%=$(CLASS_DIR)/$(BASE_PACKAGE)/%)
 
-default: jar
+default: $(J2OBJC_JAR)
 	@: # suppress make's "nothing to be done" message
 
 # Only build dependencies when called directly from command-line.
 deps:
 	@if [ "$(CONFIGURATION_BUILD_DIR)x$(MAKELEVEL)" == "x0" ]; then \
-	  echo BUILDING DEPS; \
 	  cd ../annotations && make dist; \
+	  cd ../java_deps && make dist; \
 	fi
 
-jar: compile $(J2OBJC_JAR)
-	@:
-
-$(J2OBJC_JAR): $(MANIFEST) $(RESOURCE_FILES)
+$(J2OBJC_JAR): $(MANIFEST) $(RESOURCE_FILES) $(JAVA_SOURCES_FULL) | $(BUILD_DIR)
+	javac -Xlint:unchecked -sourcepath $(SOURCEPATH) -classpath $(CLASSPATH) \
+	    -d $(CLASS_DIR) $(JAVA_SOURCES_FULL)
 	jar cfm $@ $(MANIFEST) -C $(CLASS_DIR) .
 
-compile: plugins $(CLASSFILES)
-	@:
-
-$(CLASS_DIR)/$(BASE_PACKAGE)/%.class: $(JAVA_SOURCE_DIR)/$(BASE_PACKAGE)/%.java
-	javac -Xlint:unchecked -sourcepath $(SOURCEPATH) -classpath $(CLASSPATH) -d $(CLASS_DIR) $(SOURCE_FILES)
-
-$(MANIFEST): $(CLASSFILES)
+$(MANIFEST): | $(BUILD_DIR)
 	@echo creating $@
 	@echo "Manifest-Version: 1.0" > $@
 	@echo "Main-Class:" $(MAIN_CLASS) >> $@
-	@echo "Class-Path:" $(MANIFEST_PATH) >> $@
+	@echo "Class-Path:" $(JAR_DEPS) >> $@
 
 $(CLASS_DIR)/%: $(RESOURCE_DIR)/%
+	@mkdir -p $(@D)
 	@cp -f $< $@
 
-dirs: $(CLASS_DIR)/$(BASE_PACKAGE) $(LIB_DIR)
-	@:
-
-$(CLASS_DIR)/$(BASE_PACKAGE) $(LIB_DIR):
+$(CLASS_DIR) $(BUILD_DIR) $(DIST_JAR_DIR):
 	mkdir -p $@
 
-plugins: dirs
-	mvn generate-resources dependency:sources
+$(J2OBJC_JAR_DIST): $(J2OBJC_JAR) | $(DIST_JAR_DIR)
+	install -m 0644 $< $@
 
-install-libs: $(LIB_DIR)/j2objc.jar
-	@mkdir -p $(DIST_LIB_DIR)
-	install -C -m 0644 $(LIB_DIR)/* $(JUNIT_JAR) $(DIST_LIB_DIR)
-
-dist: deps jar install-libs
+dist: deps $(J2OBJC_JAR_DIST)
 	@:
 
-# TODO(user): remove files from dist.
 clean:
-	@rm -rf $(BUILD_DIR)
+	@rm -rf $(BUILD_DIR) $(J2OBJC_JAR_DIST)
 
-test: deps jar compile-tests
+test: deps $(J2OBJC_JAR) compile-tests
 	java -classpath $(TEST_CLASSPATH) junit.textui.TestRunner com.google.devtools.j2objc.SmallTests
 
 compile-tests:

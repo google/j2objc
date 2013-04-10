@@ -44,9 +44,12 @@ install-man-pages: $(MAN_PAGES)
 annotations_dist:
 	@cd annotations && $(MAKE) dist
 
+java_deps_dist:
+	@cd java_deps && $(MAKE) dist
+
 translator_dist: translator jre_emul_jar_dist install-scripts
 
-translator: annotations_dist
+translator: annotations_dist java_deps_dist
 	@cd translator && $(MAKE) dist
 
 jre_emul_jar_dist: annotations_dist
@@ -66,6 +69,7 @@ dist: translator_dist jre_emul_dist junit_dist install-man-pages
 clean:
 	@rm -rf $(DIST_DIR)
 	@cd annotations && $(MAKE) clean
+	@cd java_deps && $(MAKE) clean
 	@cd translator && $(MAKE) clean
 	@cd jre_emul && $(MAKE) clean
 	@cd junit && $(MAKE) clean
