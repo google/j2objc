@@ -307,6 +307,19 @@ public class InnerClassExtractor extends ClassConverter {
    */
   private class OuterReferenceFixer extends TypeTrackingVisitor {
 
+    private boolean inSuperConstructorInvocation = false;
+
+    @Override
+    public boolean visit(SuperConstructorInvocation node) {
+      inSuperConstructorInvocation = true;
+      return true;
+    }
+
+    @Override
+    public void endVisit(SuperConstructorInvocation node) {
+      inSuperConstructorInvocation = false;
+    }
+
     @Override
     public boolean visit(ClassInstanceCreation node) {
       IMethodBinding binding = Types.getMethodBinding(node).getMethodDeclaration();
@@ -349,7 +362,22 @@ public class InnerClassExtractor extends ClassConverter {
           TypeSymbol typeSymbol = Symbols.resolve(currentType);
           for (Symbol sym : typeSymbol.getScope().getMembers()) {
             if (sym.getName().startsWith("this$")) {
-              expr = makeFieldRef((IVariableBinding) sym.getBinding(), node.getAST());
+              IBinding symBinding = sym.getBinding();
+
+              // If inside a super constructor invocation, this is the first
+              // statement in the constructor, and so the this$ field hasn't
+              // yet been initialized. So use the outer$ parameter instead.
+              if (inSuperConstructorInvocation) {
+                // Find containing constructor.
+                ASTNode constructorNode = node;
+                do {
+                  constructorNode = constructorNode.getParent();
+                } while (!(constructorNode instanceof MethodDeclaration));
+
+                List params = ((MethodDeclaration) constructorNode).parameters();
+                symBinding = Types.getBinding(params.get(0));
+              }
+              expr = makeFieldRef((IVariableBinding) symBinding, node.getAST());
               break;
             }
           }

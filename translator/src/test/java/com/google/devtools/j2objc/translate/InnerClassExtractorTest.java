@@ -831,4 +831,19 @@ public class InnerClassExtractorTest extends GenerationTest {
         "[int class]] count:3, [JavaLangInteger valueOfWithInt:1], [JavaLangInteger " +
         "valueOfWithInt:2], [JavaLangInteger valueOfWithInt:3] ]]");
   }
+
+  public void testInnerClassConstructedInSuperConstructorInvocation() throws IOException {
+    String translation = translateSourceFile(
+        "class Outer { " +
+        "  class Inner1 { } " +
+        "  class Inner2Super { Inner2Super(Inner1 i) { } } " +
+        "  class Inner2 extends Inner2Super { " +
+        "    Inner2() { " +
+        "      super(new Inner1()); " +
+        "    } " +
+        "  } " +
+        "}", "Outer", "Outer.m");
+
+    assertTranslation(translation, "[[Outer_Inner1 alloc] initWithOuter:outer$0]");
+  }
 }
