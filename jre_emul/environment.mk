@@ -68,6 +68,10 @@ INCLUDE_DIR = $(BUILD_DIR)/include
 TESTS_DIR = $(BUILD_DIR)/tests
 STUBS_DIR = stub_classes
 
+ifndef TRANSLATED_SOURCE_DIR
+TRANSLATED_SOURCE_DIR = $(CLASS_DIR)
+endif
+
 JRE_SRC_ROOTS = $(JRE_ROOT) $(JRE_ANNOTATION_ROOT) $(JRE_CONCURRENT_ROOT) $(JRE_KERNEL_ROOT) \
     $(JRE_MATH_ROOT) $(JRE_NIO_ROOT) $(ANDROID_JRE_ROOT) $(EMULATION_CLASS_DIR) $(STUBS_DIR)
 JRE_SRC = $(subst $(eval) ,:,$(JRE_SRC_ROOTS))
@@ -78,7 +82,7 @@ CLANG=$(XCRUN) clang
 
 # J2ObjC settings
 J2OBJC := USE_SYSTEM_BOOT_PATH=TRUE $(DIST_DIR)/j2objc --mem-debug \
-   -classpath $(EMULATION_JAR) -d $(CLASS_DIR) $(J2OBJC_DEBUGFLAGS)
+   -classpath $(EMULATION_JAR) -d $(TRANSLATED_SOURCE_DIR) $(J2OBJC_DEBUGFLAGS)
 
 # GCC settings, based on Xcode log output
 WARNINGS := $(WARNINGS) -Wno-trigraphs -Wunused-variable -Werror \

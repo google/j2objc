@@ -305,11 +305,13 @@ JAVA_MANIFEST = $(BUILD_DIR)/java_sources.mf
 STUB_JAVA_SOURCES = $(shell find $(STUBS_DIR) -name *.java)
 ALL_JAVA_SOURCES = $(JAVA_SOURCES) $(IOS_JAVA_OBJS:.o=.java) $(IOS_INTERFACES:.h=.java) \
     $(JRE_INTERFACES:.h=.java) $(STUB_JAVA_SOURCES:$(STUBS_DIR)/%=%)
-TRANSLATED_OBJC = $(JRE_INTERFACES:%.h=$(CLASS_DIR)/%.m) $(JAVA_SOURCES:%.java=$(CLASS_DIR)/%.m)
-TRANSLATED_HEADERS = $(JRE_INTERFACES:%=$(CLASS_DIR)/%) $(JAVA_SOURCES:%.java=$(CLASS_DIR)/%.h)
+TRANSLATED_OBJC = $(JRE_INTERFACES:%.h=$(TRANSLATED_SOURCE_DIR)/%.m) \
+    $(JAVA_SOURCES:%.java=$(TRANSLATED_SOURCE_DIR)/%.m)
+TRANSLATED_HEADERS = $(JRE_INTERFACES:%=$(TRANSLATED_SOURCE_DIR)/%) \
+    $(JAVA_SOURCES:%.java=$(TRANSLATED_SOURCE_DIR)/%.h)
 ALL_OBJS = $(JAVA_SOURCES:.java=.o) $(IOS_OBJS) $(IOS_JAVA_OBJS)
 SOURCE_HEADERS = $(shell find $(EMULATION_CLASS_DIR) -name *.h)
-INCLUDES = $(TRANSLATED_HEADERS:$(CLASS_DIR)/%=$(INCLUDE_DIR)/%) \
+INCLUDES = $(TRANSLATED_HEADERS:$(TRANSLATED_SOURCE_DIR)/%=$(INCLUDE_DIR)/%) \
     $(SOURCE_HEADERS:$(EMULATION_CLASS_DIR)/%=$(INCLUDE_DIR)/%)
 DIST_INCLUDES = $(INCLUDES:$(INCLUDE_DIR)/%=$(DIST_INCLUDE_DIR)/%)
 
@@ -336,7 +338,7 @@ SIMULATOR_OBJS = $(ALL_OBJS:%=$(SIMULATOR_BUILD_DIR)/%)
 SIMULATOR_FLAGS = -arch i386 -isysroot $(SIMULATOR_SDK_DIR)
 
 # translate is the default so that Xcode can build its own object files
-default: lib includes
+default: lib
 	@: # suppress make's "nothing to be done" message
 
 analyze: $(ALL_OBJS:%.o=$(CLASS_DIR)/%.plist)
@@ -383,26 +385,23 @@ $(XCODE_LIB): $(ALL_OBJS:%=$(TARGET_TEMP_DIR)/%)
 	@mkdir -p $(@D)
 	$(LIBTOOL) -static -o $@ $^
 
-includes: translate $(BUILD_DIR)/.jre_includes
+dist_includes: translate $(BUILD_DIR)/.jre_dist_includes
 
-dist_includes: includes $(BUILD_DIR)/.jre_dist_includes
-
-$(BUILD_DIR)/.jre_includes: $(TRANSLATED_HEADERS) $(SOURCE_HEADERS) | $(INCLUDE_DIR)
+$(BUILD_DIR)/.jre_dist_includes: $(TRANSLATED_HEADERS) $(SOURCE_HEADERS) | $(DIST_INCLUDE_DIR)
 	(cd $(EMULATION_CLASS_DIR) && tar cf - $(SOURCE_HEADERS:$(EMULATION_CLASS_DIR)/%=%)) \
-	    | (cd $(INCLUDE_DIR); tar xfp -)
-	(cd $(CLASS_DIR) && tar cf - $(TRANSLATED_HEADERS:$(CLASS_DIR)/%=%)) \
-	    | (cd $(INCLUDE_DIR); tar xfp -)
-	touch $@
-
-$(BUILD_DIR)/.jre_dist_includes: $(INCLUDES) | $(DIST_INCLUDE_DIR)
-	(cd $(INCLUDE_DIR) && tar cf - $(INCLUDES:$(INCLUDE_DIR)/%=%)) \
+	    | (cd $(DIST_INCLUDE_DIR); tar xfp -)
+	(cd $(TRANSLATED_SOURCE_DIR) && tar cf - \
+	    $(TRANSLATED_HEADERS:$(TRANSLATED_SOURCE_DIR)/%=%)) \
 	    | (cd $(DIST_INCLUDE_DIR); tar xfp -)
 	touch $@
 
 ifdef XCODE_INCLUDE_DIR
-$(TARGET_TEMP_DIR)/.includes: $(INCLUDES)
+$(TARGET_TEMP_DIR)/.includes: $(TRANSLATED_HEADERS) $(SOURCE_HEADERS)
 	@mkdir -p $(XCODE_INCLUDE_DIR)
-	(cd $(INCLUDE_DIR) && tar cf - $(INCLUDES:$(INCLUDE_DIR)/%=%)) \
+	(cd $(EMULATION_CLASS_DIR) && tar cf - $(SOURCE_HEADERS:$(EMULATION_CLASS_DIR)/%=%)) \
+	    | (cd $(XCODE_INCLUDE_DIR); tar xfp -)
+	(cd $(TRANSLATED_SOURCE_DIR) && tar cf - \
+	    $(TRANSLATED_HEADERS:$(TRANSLATED_SOURCE_DIR)/%=%)) \
 	    | (cd $(XCODE_INCLUDE_DIR); tar xfp -)
 	touch $@
 endif
@@ -410,23 +409,25 @@ endif
 $(sort $(BUILD_DIR) $(INCLUDE_DIR) $(DIST_INCLUDE_DIR) $(DIST_JAR_DIR) $(DIST_LIB_DIR)):
 	@mkdir -p $@
 
-$(CLASS_DIR)/%.h $(CLASS_DIR)/%.m: %.java
+$(TRANSLATED_SOURCE_DIR)/%.m: %.java
 	@echo "$?" >> $(JAVA_SOURCE_LIST)
+	@echo "$(@:.m=.h)" >> $(OBJC_OUT_LIST)
 	@echo "$@" >> $(OBJC_OUT_LIST)
 	@if [ -e $@ ]; then touch $@; fi
 
 define compile_rules
 $(1)/%.o: $(3)/%.$(4)
 	@mkdir -p $$(@D)
-	$$(CLANG) -c $$? -o $$@ $(2) $$(OBJCFLAGS) -I$$(EMULATION_CLASS_DIR) -I$$(CLASS_DIR)
+	$$(CLANG) -c $$? -o $$@ $(2) $$(OBJCFLAGS) -I$$(EMULATION_CLASS_DIR) \
+	    -I$$(TRANSLATED_SOURCE_DIR)
 
 $(1)/%.plist: $(3)/%.$(4)
 	@mkdir -p $$(@D)
 	$$(CLANG) -c $$? -o $$@ $(2) $$(OBJCFLAGS) $$(STATIC_ANALYZER_FLAGS) \
-	  -I$$(EMULATION_CLASS_DIR) -I$$(CLASS_DIR)
+	    -I$$(EMULATION_CLASS_DIR) -I$$(TRANSLATED_SOURCE_DIR)
 endef
 
-OBJC_SOURCE_DIRS = $(EMULATION_CLASS_DIR) $(CLASS_DIR)
+OBJC_SOURCE_DIRS = $(EMULATION_CLASS_DIR) $(TRANSLATED_SOURCE_DIR)
 OBJC_EXTENTIONS = m mm
 arch_compile_rules = $(foreach src_dir,$(OBJC_SOURCE_DIRS),$(foreach ext,$(OBJC_EXTENTIONS),\
     $(eval $(call compile_rules,$(1),$(2),$(src_dir),$(ext)))))
@@ -443,7 +444,7 @@ test: default
 	$(MAKE) -f tests.mk test
 
 clean:
-	@rm -rf $(BUILD_DIR)
+	@rm -rf $(BUILD_DIR) $(TRANSLATED_SOURCE_DIR)
 	@rm -f $(EMULATION_JAR_DIST)
 	@rm -f $(EMULATION_LIB_DIST)
 	@rm -f $(DIST_INCLUDES)
