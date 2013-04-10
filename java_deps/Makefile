@@ -16,9 +16,9 @@
 
 .SECONDARY:
 
-PROJECT_ROOT = ..
+J2OBJC_ROOT = ..
 
-include ../make/detect_xcode.mk
+include ../make/common.mk
 include jars.mk
 
 ALL_JARS = $(ECLIPSE_JARS) $(GUAVA_JAR) $(JSR305_JAR) $(JUNIT_JAR)
