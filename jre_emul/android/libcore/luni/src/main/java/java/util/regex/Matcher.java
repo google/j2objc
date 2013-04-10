@@ -340,16 +340,19 @@ public final class Matcher implements MatchResult {
      * @throws IllegalStateException
      *             if no successful match has been made.
      */
-    public String group(int group) {
-        ensureMatch();
-        int from = matchOffsets[group * 2];
-        int to = matchOffsets[(group * 2) + 1];
-        if (from == -1 || to == -1) {
-            return null;
-        } else {
-            return input.substring(from, to);
-        }
-    }
+    public native String group(int group) /*-[
+      [self ensureMatch];
+      NIL_CHK(matchOffsets_);
+      NSInteger from = [matchOffsets_ intAtIndex:group * 2];
+      NSInteger to = [matchOffsets_ intAtIndex:(group * 2) + 1];
+      // On 64-bit systems NSNotFound gets truncated to -1 when stored in IOSIntArray.
+      static const NSInteger notFound = (sizeof(int) < sizeof(NSInteger)) ? -1 : NSNotFound;
+      if (from == notFound || to == notFound) {
+        return nil;
+      } else {
+        return [NIL_CHK(input_) substring:from endIndex:to];
+      }
+    ]-*/;
 
     /**
      * Returns the text that matched the whole regular expression.
