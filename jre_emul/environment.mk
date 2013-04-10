@@ -44,7 +44,7 @@ JRE_NIO_TEST_ROOT = $(APACHE_HARMONY_BASE)/nio/src/test/java/common
 TEST_SUPPORT_ROOT = $(APACHE_HARMONY_BASE)/../support/src/test/java
 MATH_TEST_SUPPORT_ROOT = $(APACHE_HARMONY_BASE)/math/src/test/java/tests/api
 REGEX_TEST_ROOT = $(APACHE_HARMONY_BASE)/regex/src/test/java
-J2OBJC_SRC_ROOT = $(CWD)/../src/main/java
+J2OBJC_SRC_ROOT = $(CWD)/../translator/src/main/java
 
 ANDROID_BASE = $(CWD)/android/libcore
 ANDROID_JRE_ROOT = $(ANDROID_BASE)/luni/src/main/java
@@ -53,7 +53,7 @@ ANDROID_JRE_TEST_ROOT = $(ANDROID_BASE)/luni/src/test/java/tests/api
 MISC_TEST_ROOT = $(CWD)/Tests
 PROJECT_ROOT = $(CWD)/..
 
-include ../src/main/make/detect_xcode.mk
+include ../make/detect_xcode.mk
 
 CLASS_DIR = $(BUILD_DIR)/Classes
 EMULATION_STAGE = /tmp/jre_emul
