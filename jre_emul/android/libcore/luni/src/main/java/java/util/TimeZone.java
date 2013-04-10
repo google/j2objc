@@ -22,6 +22,8 @@ import java.text.SimpleDateFormat;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import libcore.icu.TimeZones;
+
 /*-[
 #import "java/util/SimpleTimeZone.h"
 ]-*/
@@ -198,17 +200,14 @@ public abstract class TimeZone implements Serializable, Cloneable {
             throw new IllegalArgumentException();
         }
 
-        boolean useDaylight = daylightTime && useDaylightTime();
-
-        String result = displayName(useDaylight, style == SHORT, locale);
+        String[][] zoneStrings = TimeZones.getZoneStrings(locale);
+        String result = TimeZones.getDisplayName(zoneStrings, getID(), daylightTime, style);
         if (result != null) {
             return result;
         }
 
-        // TODO: do we ever get here?
-
         int offset = getRawOffset();
-        if (useDaylight && this instanceof SimpleTimeZone) {
+        if (daylightTime) {
             offset += getDSTSavings();
         }
         offset /= 60000;
@@ -225,32 +224,6 @@ public abstract class TimeZone implements Serializable, Cloneable {
         appendNumber(builder, 2, offset % 60);
         return builder.toString();
     }
-    
-    private native String displayName(boolean daylightTime, boolean shortName, Locale locale) /*-[
-      NSTimeZoneNameStyle zoneStyle;
-      if (daylightTime) {
-        zoneStyle = shortName ? 
-            NSTimeZoneNameStyleShortDaylightSaving : NSTimeZoneNameStyleDaylightSaving;
-      } else {
-        zoneStyle = shortName ? 
-            NSTimeZoneNameStyleShortGeneric : NSTimeZoneNameStyleGeneric;
-      }
-
-      // Find native locale.
-      NSLocale *nativeLocale;
-      if (locale) {
-        NSMutableDictionary *components = [NSMutableDictionary dictionary];
-        [components setObject:[locale getLanguage] forKey:NSLocaleLanguageCode];
-        [components setObject:[locale getCountry]  forKey:NSLocaleCountryCode];
-        [components setObject:[locale getVariant]  forKey:NSLocaleVariantCode];
-        NSString *localeId = [NSLocale localeIdentifierFromComponents:components];
-        nativeLocale = AUTORELEASE([[NSLocale alloc] initWithLocaleIdentifier:localeId]);
-      } else {
-        nativeLocale = [NSLocale currentLocale];
-      }
-
-      return [(NSTimeZone *) nativeTimeZone_ localizedName:zoneStyle locale:nativeLocale];
-    ]-*/;
 
     private void appendNumber(StringBuilder builder, int count, int value) {
         String string = Integer.toString(value);

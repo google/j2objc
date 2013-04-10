@@ -370,6 +370,15 @@
 		06DD335916A1406A00AD7ACE /* TimeZone.m in Sources */ = {isa = PBXBuildFile; fileRef = 06DD334516A1406A00AD7ACE /* TimeZone.m */; };
 		06DD335C16A140A600AD7ACE /* Endianness.h in Headers */ = {isa = PBXBuildFile; fileRef = 06DD335A16A140A600AD7ACE /* Endianness.h */; };
 		06DD335D16A140A600AD7ACE /* Endianness.m in Sources */ = {isa = PBXBuildFile; fileRef = 06DD335B16A140A600AD7ACE /* Endianness.m */; };
+		06DDF48716E83FF800A08BE0 /* BasicLruCache.h in Headers */ = {isa = PBXBuildFile; fileRef = 06DDF48516E83FF800A08BE0 /* BasicLruCache.h */; };
+		06DDF48816E83FF800A08BE0 /* BasicLruCache.m in Sources */ = {isa = PBXBuildFile; fileRef = 06DDF48616E83FF800A08BE0 /* BasicLruCache.m */; };
+		06DDF48B16E8401600A08BE0 /* TimeZones.h in Headers */ = {isa = PBXBuildFile; fileRef = 06DDF48916E8401600A08BE0 /* TimeZones.h */; };
+		06DDF48C16E8401600A08BE0 /* TimeZones.m in Sources */ = {isa = PBXBuildFile; fileRef = 06DDF48A16E8401600A08BE0 /* TimeZones.m */; };
+		06DDF49216E8404B00A08BE0 /* ICUSupport.h in Headers */ = {isa = PBXBuildFile; fileRef = 06DDF48D16E8404B00A08BE0 /* ICUSupport.h */; };
+		06DDF49316E8404B00A08BE0 /* ICUSupport.mm in Sources */ = {isa = PBXBuildFile; fileRef = 06DDF48E16E8404B00A08BE0 /* ICUSupport.mm */; };
+		06DDF49416E8404B00A08BE0 /* TimeZonesSupport.h in Headers */ = {isa = PBXBuildFile; fileRef = 06DDF48F16E8404B00A08BE0 /* TimeZonesSupport.h */; };
+		06DDF49516E8404B00A08BE0 /* TimeZonesSupport.mm in Sources */ = {isa = PBXBuildFile; fileRef = 06DDF49016E8404B00A08BE0 /* TimeZonesSupport.mm */; };
+		06DDF49616E8404B00A08BE0 /* UniquePtr.h in Headers */ = {isa = PBXBuildFile; fileRef = 06DDF49116E8404B00A08BE0 /* UniquePtr.h */; };
 		A34A99F11630A9E7006DEC32 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = A34A99EF1630A9E7006DEC32 /* InfoPlist.strings */; };
 /* End PBXBuildFile section */
 
@@ -887,6 +896,15 @@
 		06DD334516A1406A00AD7ACE /* TimeZone.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = TimeZone.m; path = build_result/Classes/java/util/TimeZone.m; sourceTree = "<group>"; };
 		06DD335A16A140A600AD7ACE /* Endianness.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Endianness.h; path = build_result/Classes/org/apache/harmony/luni/platform/Endianness.h; sourceTree = "<group>"; };
 		06DD335B16A140A600AD7ACE /* Endianness.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = Endianness.m; path = build_result/Classes/org/apache/harmony/luni/platform/Endianness.m; sourceTree = "<group>"; };
+		06DDF48516E83FF800A08BE0 /* BasicLruCache.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = BasicLruCache.h; path = build_result/Classes/libcore/util/BasicLruCache.h; sourceTree = "<group>"; };
+		06DDF48616E83FF800A08BE0 /* BasicLruCache.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = BasicLruCache.m; path = build_result/Classes/libcore/util/BasicLruCache.m; sourceTree = "<group>"; };
+		06DDF48916E8401600A08BE0 /* TimeZones.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = TimeZones.h; path = build_result/Classes/libcore/icu/TimeZones.h; sourceTree = "<group>"; };
+		06DDF48A16E8401600A08BE0 /* TimeZones.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = TimeZones.m; path = build_result/Classes/libcore/icu/TimeZones.m; sourceTree = "<group>"; };
+		06DDF48D16E8404B00A08BE0 /* ICUSupport.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ICUSupport.h; sourceTree = "<group>"; };
+		06DDF48E16E8404B00A08BE0 /* ICUSupport.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = ICUSupport.mm; sourceTree = "<group>"; };
+		06DDF48F16E8404B00A08BE0 /* TimeZonesSupport.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TimeZonesSupport.h; sourceTree = "<group>"; };
+		06DDF49016E8404B00A08BE0 /* TimeZonesSupport.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = TimeZonesSupport.mm; sourceTree = "<group>"; };
+		06DDF49116E8404B00A08BE0 /* UniquePtr.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UniquePtr.h; sourceTree = "<group>"; };
 		A34A99EB1630A9DA006DEC32 /* Tests-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = "Tests-Info.plist"; path = "Tests/Tests-Info.plist"; sourceTree = SOURCE_ROOT; };
 		A34A99EC1630A9DA006DEC32 /* Tests-Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "Tests-Prefix.pch"; path = "Tests/Tests-Prefix.pch"; sourceTree = SOURCE_ROOT; };
 		A34A99F01630A9E7006DEC32 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = Tests/en.lproj/InfoPlist.strings; sourceTree = SOURCE_ROOT; };
@@ -959,6 +977,8 @@
 				067855AE169F364D0042431C /* HashMap.h */,
 				067855AF169F364D0042431C /* HashMap.m */,
 				067855AD169F364D0042431C /* HashMap_PackagePrivate.h */,
+				06DDF48D16E8404B00A08BE0 /* ICUSupport.h */,
+				06DDF48E16E8404B00A08BE0 /* ICUSupport.mm */,
 				06619396155849BB0004DAFE /* IOSArray.h */,
 				06619397155849BB0004DAFE /* IOSArray.m */,
 				06619398155849BB0004DAFE /* IOSArrayClass.h */,
@@ -1003,6 +1023,9 @@
 				066193E7155849F80004DAFE /* NSString+JavaString.m */,
 				067228F2158FB002005318BD /* Throwable.h */,
 				06721BA31559DE3800645E1B /* Throwable.m */,
+				06DDF48F16E8404B00A08BE0 /* TimeZonesSupport.h */,
+				06DDF49016E8404B00A08BE0 /* TimeZonesSupport.mm */,
+				06DDF49116E8404B00A08BE0 /* UniquePtr.h */,
 			);
 			path = Classes;
 			sourceTree = "<group>";
@@ -1068,6 +1091,8 @@
 				06721A3D1559C93000645E1B /* AtomicInteger.m */,
 				06721ADE1559CB9200645E1B /* AtomicLong.h */,
 				06721A3E1559C93000645E1B /* AtomicLong.m */,
+				06DDF48516E83FF800A08BE0 /* BasicLruCache.h */,
+				06DDF48616E83FF800A08BE0 /* BasicLruCache.m */,
 				067855C3169F37710042431C /* BigDecimal.h */,
 				067855C4169F37710042431C /* BigDecimal.m */,
 				067855C5169F37710042431C /* BigInteger.h */,
@@ -1438,6 +1463,8 @@
 				06721A411559C93000645E1B /* TimeUnit.m */,
 				06DD334416A1406A00AD7ACE /* TimeZone.h */,
 				06DD334516A1406A00AD7ACE /* TimeZone.m */,
+				06DDF48916E8401600A08BE0 /* TimeZones.h */,
+				06DDF48A16E8401600A08BE0 /* TimeZones.m */,
 				06721B031559CB9200645E1B /* TreeMap.h */,
 				06721A601559C99E00645E1B /* TreeMap.m */,
 				06721B041559CB9200645E1B /* TreeSet.h */,
@@ -1579,6 +1606,11 @@
 				06DD335616A1406A00AD7ACE /* SimpleTimeZone.h in Headers */,
 				06DD335816A1406A00AD7ACE /* TimeZone.h in Headers */,
 				06DD335C16A140A600AD7ACE /* Endianness.h in Headers */,
+				06DDF48716E83FF800A08BE0 /* BasicLruCache.h in Headers */,
+				06DDF48B16E8401600A08BE0 /* TimeZones.h in Headers */,
+				06DDF49216E8404B00A08BE0 /* ICUSupport.h in Headers */,
+				06DDF49416E8404B00A08BE0 /* TimeZonesSupport.h in Headers */,
+				06DDF49616E8404B00A08BE0 /* UniquePtr.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1937,6 +1969,10 @@
 				06DD335716A1406A00AD7ACE /* SimpleTimeZone.m in Sources */,
 				06DD335916A1406A00AD7ACE /* TimeZone.m in Sources */,
 				06DD335D16A140A600AD7ACE /* Endianness.m in Sources */,
+				06DDF48816E83FF800A08BE0 /* BasicLruCache.m in Sources */,
+				06DDF48C16E8401600A08BE0 /* TimeZones.m in Sources */,
+				06DDF49316E8404B00A08BE0 /* ICUSupport.mm in Sources */,
+				06DDF49516E8404B00A08BE0 /* TimeZonesSupport.mm in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -2056,8 +2092,16 @@
 				DSTROOT = /tmp/JreEmulation.dst;
 				GCC_PRECOMPILE_PREFIX_HEADER = NO;
 				GCC_PREFIX_HEADER = "";
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"U_DISABLE_RENAMING=1",
+					"DEBUG=1",
+				);
 				GCC_THUMB_SUPPORT = NO;
 				GCC_WARN_MISSING_PARENTHESES = NO;
+				HEADER_SEARCH_PATHS = (
+					icu4c/i18n/include,
+					icu4c/common,
+				);
 				OTHER_LDFLAGS = "-ObjC";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
@@ -2078,8 +2122,13 @@
 				DSTROOT = /tmp/JreEmulation.dst;
 				GCC_PRECOMPILE_PREFIX_HEADER = NO;
 				GCC_PREFIX_HEADER = "";
+				GCC_PREPROCESSOR_DEFINITIONS = "U_DISABLE_RENAMING=1";
 				GCC_THUMB_SUPPORT = NO;
 				GCC_WARN_MISSING_PARENTHESES = NO;
+				HEADER_SEARCH_PATHS = (
+					icu4c/i18n/include,
+					icu4c/common,
+				);
 				OTHER_LDFLAGS = "-ObjC";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
@@ -2132,7 +2181,10 @@
 				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
 				INFOPLIST_FILE = "Tests/Tests-Info.plist";
 				LIBRARY_SEARCH_PATHS = "";
-				OTHER_LDFLAGS = "";
+				OTHER_LDFLAGS = (
+					"-licucore",
+					"-lstdc++",
+				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				TEST_AFTER_BUILD = YES;
 				USER_HEADER_SEARCH_PATHS = "build_result/include Classes";
@@ -2161,7 +2213,10 @@
 				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
 				INFOPLIST_FILE = "jre_emul_tests/jre_emul_tests-Info.plist";
 				LIBRARY_SEARCH_PATHS = "";
-				OTHER_LDFLAGS = "";
+				OTHER_LDFLAGS = (
+					"-licucore",
+					"-lstdc++",
+				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				TEST_AFTER_BUILD = YES;
 				USER_HEADER_SEARCH_PATHS = "build_result/include Classes";
