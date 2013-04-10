@@ -30,6 +30,7 @@ import com.google.devtools.j2objc.translate.AnonymousClassConverterTest;
 import com.google.devtools.j2objc.translate.AutoboxerTest;
 import com.google.devtools.j2objc.translate.DeadCodeEliminatorTest;
 import com.google.devtools.j2objc.translate.DestructorGeneratorTest;
+import com.google.devtools.j2objc.translate.GwtConverterTest;
 import com.google.devtools.j2objc.translate.InitializationNormalizerTest;
 import com.google.devtools.j2objc.translate.InnerClassExtractorTest;
 import com.google.devtools.j2objc.translate.JavaToIOSMethodTranslatorTest;
@@ -65,6 +66,7 @@ public class SmallTests {
     DeadCodeMapTest.class,
     DestructorGeneratorTest.class,
     ErrorReportingASTVisitorTest.class,
+    GwtConverterTest.class,
     HiddenFieldDetectorTest.class,
     ImplementationImportCollectorTest.class,
     InitializationNormalizerTest.class,
