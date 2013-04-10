@@ -64,7 +64,6 @@ EMULATION_LIB = $(BUILD_DIR)/libjre_emul.a
 EMULATION_LIB_DIST = $(DIST_LIB_DIR)/libjre_emul.a
 XCODE_LIB = $(CONFIGURATION_BUILD_DIR)/libjre_emul.a
 EMULATION_CLASS_DIR = Classes
-INCLUDE_DIR = $(BUILD_DIR)/include
 TESTS_DIR = $(BUILD_DIR)/tests
 STUBS_DIR = stub_classes
 
