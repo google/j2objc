@@ -279,6 +279,7 @@ public class Thread implements Runnable {
     } else {
       threadGroup = [currentThreadData objectForKey:JavaLangThread_THREADGROUP_];
     }
+    assert(threadGroup != nil);
 
     NSThread *thread;
     NSMutableDictionary *newThreadData;
@@ -369,7 +370,18 @@ public class Thread implements Runnable {
 
   public static native Thread currentThread() /*-{
     NSDictionary *threadData = [[NSThread currentThread] threadDictionary];
-    return (JavaLangThread *) [threadData objectForKey:JavaLangThread_JAVA_THREAD_];
+    JavaLangThread *thread = [threadData objectForKey:JavaLangThread_JAVA_THREAD_];
+    if (!thread) {
+      NSString *name = [[NSThread currentThread] name];
+      thread =
+          [[JavaLangThread alloc] initWithJavaLangThreadGroup:JavaLangThread_mainThreadGroup_
+                                                 withNSString:name
+                                                     withBOOL:FALSE];
+#if !__has_feature(objc_arc)
+      [thread autorelease];
+#endif
+    }
+    return thread;
   }-*/;
 
   public native void start() /*-{
