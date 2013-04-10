@@ -198,11 +198,6 @@ static bool isUtc(const UnicodeString& ustr) {
     }
 
     table.push_back(row);
-    NSLog(@"row.shortStd=%@ row.longStd=%@ row.shortDst=%@ row.longDst=%@",
-          stringFromUnicodeString(row.shortStd),
-          stringFromUnicodeString(row.longStd),
-          stringFromUnicodeString(row.shortDst),
-          stringFromUnicodeString(row.longDst));
     [usedAbbreviations setObject:stringFromUnicodeString(row.longStd)
                           forKey:stringFromUnicodeString(row.shortStd)];
     [usedAbbreviations setObject:stringFromUnicodeString(row.longDst)

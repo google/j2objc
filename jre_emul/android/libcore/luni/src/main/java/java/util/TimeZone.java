@@ -477,7 +477,7 @@ public abstract class TimeZone implements Serializable, Cloneable {
 
         // Determine whether to include a separator between hours and minutes.
         String fmt = m.group(2) != null && !Character.isDigit(m.group(2).charAt(0)) ?
-        	"GMT%c%02d%02d" : "GMT%c%02d:%02d";
+            "GMT%c%02d%02d" : "GMT%c%02d:%02d";
         String cleanId = String.format(fmt, sign, hour, minute);
         return new SimpleTimeZone(raw, cleanId);
     }
