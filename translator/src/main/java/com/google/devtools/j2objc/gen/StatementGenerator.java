@@ -2014,7 +2014,7 @@ public class StatementGenerator extends ErrorReportingASTVisitor {
   @Override
   public boolean visit(SwitchCase node) {
     if (node.isDefault()) {
-      buffer.append("  default:");
+      buffer.append("  default:\n");
     } else {
       buffer.append("  case ");
       Expression expr = node.getExpression();
@@ -2032,7 +2032,7 @@ public class StatementGenerator extends ErrorReportingASTVisitor {
       } else {
         expr.accept(this);
       }
-      buffer.append(":");
+      buffer.append(":\n");
     }
     return false;
   }
@@ -2053,53 +2053,18 @@ public class StatementGenerator extends ErrorReportingASTVisitor {
     buffer.append(") ");
     buffer.append("{\n");
     List<Statement> stmts = node.statements(); // safe by definition
-    boolean needsClosingBrace = false;
     int nStatements = stmts.size();
     for (int i = 0; i < nStatements; i++) {
       Statement stmt = stmts.get(i);
       buffer.syncLineNumbers(stmt);
-      if (stmt instanceof SwitchCase) {
-        if (needsClosingBrace) {
-          buffer.append("}\n");
-          needsClosingBrace = false;
-        }
-        stmt.accept(this);
-        if (declaresLocalVar(stmts, i + 1)) {
-          buffer.append(" {\n");
-          needsClosingBrace = true;
-        } else {
-          buffer.append('\n');
-        }
-      } else {
-        stmt.accept(this);
-      }
+      stmt.accept(this);
     }
     if (!stmts.isEmpty() && stmts.get(nStatements - 1) instanceof SwitchCase) {
       // Last switch case doesn't have an associated statement, so add
       // an empty one.
       buffer.append(";\n");
     }
-    if (needsClosingBrace) {
-      buffer.append("}\n");
-    }
     buffer.append("}\n");
-    return false;
-  }
-
-  // Scan statements until a SwitchCase statement, returning true if any
-  // return a local variable declaration.
-  private boolean declaresLocalVar(List<Statement> stmts, int startIndex) {
-    int i = startIndex;
-    while (i < stmts.size()) {
-      Statement s = stmts.get(i);
-      if (s instanceof VariableDeclarationStatement) {
-        return true;
-      }
-      if (s instanceof SwitchCase) {
-        return false;
-      }
-      i++;
-    }
     return false;
   }
 

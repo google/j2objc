@@ -519,4 +519,23 @@ public class RewriterTest extends GenerationTest {
     assertTranslation(translation,
         "NSString *s = [NSString stringWithFormat:@\"%ffoo\", 1 + 2.3f]");
   }
+
+  public void testVariableDeclarationsInSwitchStatement() throws IOException {
+    String translation = translateSourceFile(
+      "public class A { public void doSomething(int i) { switch (i) { " +
+      "case 1: int j = i * 2; log(j); break; " +
+      "case 2: log(i); break; " +
+      "case 3: log(i); int k = i, l = 42; break; }}" +
+      "private void log(int i) {}}",
+      "A", "A.m");
+    assertTranslation(translation, "int j;");
+    assertTranslation(translation, "int k, l;");
+    assertTranslation(translation, "case 1:");
+    assertTrue(translation.indexOf("int j;") < translation.indexOf("case 1:"));
+    assertTrue(translation.indexOf("int k, l;") < translation.indexOf("case 1:"));
+    assertTrue(translation.indexOf("int j;") < translation.indexOf("int k, l;"));
+    assertTranslation(translation, "j = i * 2;");
+    assertTranslation(translation, "k = i;");
+    assertTranslation(translation, "l = 42;");
+  }
 }

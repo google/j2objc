@@ -75,27 +75,6 @@ public class StatementGeneratorTest extends GenerationTest {
     assertTranslation(translation, "[(id<JavaObject>) ((id<JavaUtilList>) NIL_CHK(two)) getClass]");
   }
 
-  public void testVariableDeclarationsInSwitchStatement() throws IOException {
-    String translation = translateSourceFile(
-      "public class A { public void doSomething(int i) { switch (i) { " +
-      "case 1: int j = i * 2; log(j); break; " +
-      "case 2: log(i); break; " +
-      "case 3: log(i); int k = i; break; }}" +
-      "private void log(int i) {}}",
-      "A", "A.m");
-    assertTranslation(translation, "case 1: {\n");
-    assertTranslation(translation, "case 2:\n");
-    assertTranslation(translation, "case 3: {\n");
-  }
-
-  public void testClosingBraceInSwitchStatement() throws IOException {
-    String source = "switch (1) { case 1: int i = 1; break; }";
-    List<Statement> stmts = translateStatements(source);
-    assertEquals(1, stmts.size());
-    String result = generateStatement(stmts.get(0));
-    assertTranslation(result, "}\n}");
-  }
-
   public void testEnumConstantsInSwitchStatement() throws IOException {
     String translation = translateSourceFile(
       "public class A { static enum EnumType { ONE, TWO }" +
