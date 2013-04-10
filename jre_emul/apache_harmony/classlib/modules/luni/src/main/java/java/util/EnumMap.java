@@ -16,6 +16,8 @@
 
 package java.util;
 
+import com.google.j2objc.annotations.Weak;
+
 import java.io.Serializable;
 
 /**
@@ -182,6 +184,7 @@ public class EnumMap<K extends Enum<K>, V> extends AbstractMap<K, V> implements
 
     private static class EnumMapKeySet<KT extends Enum<KT>, VT> extends
             AbstractSet<KT> {
+        @Weak
         private final EnumMap<KT, VT> enumMap;
 
         EnumMapKeySet(EnumMap<KT, VT> em) {
@@ -227,6 +230,7 @@ public class EnumMap<K extends Enum<K>, V> extends AbstractMap<K, V> implements
 
     private static class EnumMapValueCollection<KT extends Enum<KT>, VT>
             extends AbstractCollection<VT> {
+        @Weak
         private final EnumMap<KT, VT> enumMap;
 
         EnumMapValueCollection(EnumMap<KT, VT> em) {
@@ -301,6 +305,7 @@ public class EnumMap<K extends Enum<K>, V> extends AbstractMap<K, V> implements
 
     private static class EnumMapEntrySet<KT extends Enum<KT>, VT> extends
             AbstractSet<Map.Entry<KT, VT>> {
+        @Weak
         private final EnumMap<KT, VT> enumMap;
 
         EnumMapEntrySet(EnumMap<KT, VT> em) {
