@@ -19,22 +19,22 @@
 
 .PHONY: translator jre_emul dist test
 
-PROJECT_ROOT = .
+J2OBJC_ROOT = .
 
-include make/detect_xcode.mk
+include make/common.mk
 
 MAN_DIR = doc/man
 MAN_PAGES = $(MAN_DIR)/j2objc.1 $(MAN_DIR)/j2objcc.1
 
 default: dist
 
-$(DIST_MACOS_DIR)/j2objc: scripts/j2objc.sh
+$(DIST_DIR)/j2objc: scripts/j2objc.sh
 	@install -C $< $@
 
-$(DIST_MACOS_DIR)/j2objcc: scripts/j2objcc.sh
+$(DIST_DIR)/j2objcc: scripts/j2objcc.sh
 	@install -C $< $@
 
-install-scripts: $(DIST_MACOS_DIR)/j2objc $(DIST_MACOS_DIR)/j2objcc
+install-scripts: $(DIST_DIR)/j2objc $(DIST_DIR)/j2objcc
 	@:
 
 install-man-pages: $(MAN_PAGES)
@@ -67,14 +67,14 @@ dist: translator_dist jre_emul_dist junit_dist install-man-pages
 
 
 clean:
-	@rm -rf $(DIST_DIR) $(DIST_MACOS_DIR)
+	@rm -rf $(DIST_DIR)
 	@cd annotations && $(MAKE) clean
 	@cd java_deps && $(MAKE) clean
 	@cd translator && $(MAKE) clean
 	@cd jre_emul && $(MAKE) clean
 	@cd junit && $(MAKE) clean
 
-test: annotations_dist
+test: annotations_dist java_deps_dist
 	@cd translator && $(MAKE) test
 
 test_all: test
