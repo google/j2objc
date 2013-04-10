@@ -32,10 +32,10 @@ $(BUILD_DIR)/.maven_generate: | $(BUILD_DIR)
 	mvn generate-resources dependency:sources
 	@touch $@
 
-$(BUILD_DIR) $(DIST_LIB_DIR):
+$(BUILD_DIR) $(DIST_JAR_DIR):
 	@mkdir -p $@
 
-$(DIST_LIB_DIR)/%.jar: $(BUILD_DIR)/%.jar | $(DIST_LIB_DIR)
+$(DIST_JAR_DIR)/%.jar: $(BUILD_DIR)/%.jar | $(DIST_JAR_DIR)
 	install -m 0644 $< $@
 
 dist: $(DIST_JARS)

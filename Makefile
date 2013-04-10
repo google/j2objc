@@ -28,13 +28,13 @@ MAN_PAGES = $(MAN_DIR)/j2objc.1 $(MAN_DIR)/j2objcc.1
 
 default: dist
 
-$(DIST_DIR)/j2objc: scripts/j2objc.sh
+$(DIST_MACOS_DIR)/j2objc: scripts/j2objc.sh
 	@install -C $< $@
 
-$(DIST_DIR)/j2objcc: scripts/j2objcc.sh
+$(DIST_MACOS_DIR)/j2objcc: scripts/j2objcc.sh
 	@install -C $< $@
 
-install-scripts: $(DIST_DIR)/j2objc $(DIST_DIR)/j2objcc
+install-scripts: $(DIST_MACOS_DIR)/j2objc $(DIST_MACOS_DIR)/j2objcc
 	@:
 
 install-man-pages: $(MAN_PAGES)
@@ -67,7 +67,7 @@ dist: translator_dist jre_emul_dist junit_dist install-man-pages
 
 
 clean:
-	@rm -rf $(DIST_DIR)
+	@rm -rf $(DIST_DIR) $(DIST_MACOS_DIR)
 	@cd annotations && $(MAKE) clean
 	@cd java_deps && $(MAKE) clean
 	@cd translator && $(MAKE) clean
