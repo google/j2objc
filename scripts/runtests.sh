@@ -1,4 +1,4 @@
-#!/usr/bin/bash
+#!/bin/bash
 #
 # Copyright 2011 Google Inc. All Rights Reserved.
 #
@@ -20,7 +20,7 @@
 # directory.
 
 if [ $# -eq 0 ]; then
-  TESTS=$(/usr/bin/find build/tests -perm 755 -a -type f)
+  TESTS=$(/usr/bin/find build_result/tests -perm 755 -a -type f)
 else
   TESTS=$*
 fi

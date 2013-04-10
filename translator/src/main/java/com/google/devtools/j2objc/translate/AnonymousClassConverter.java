@@ -504,19 +504,6 @@ public class AnonymousClassConverter extends ClassConverter {
     return binding;
   }
 
-  private boolean argsMatch(List<Expression> invocationArguments, ITypeBinding[] parameterTypes) {
-    if (invocationArguments.size() != parameterTypes.length) {
-      return false;
-    }
-    for (int i = 0; i < parameterTypes.length; i++) {
-      ITypeBinding argType = Types.getTypeBinding(invocationArguments.get(i));
-      if (!parameterTypes[i].isEqualTo(argType)) {
-        return false;
-      }
-    }
-    return true;
-  }
-
   private IMethodBinding findSuperConstructorBinding(ITypeBinding clazz,
       List<Expression> superArgs) {
     if (clazz == null) {

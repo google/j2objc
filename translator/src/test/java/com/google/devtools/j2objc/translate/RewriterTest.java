@@ -150,35 +150,6 @@ public class RewriterTest extends GenerationTest {
     assertTrue(((LabeledStatement) labelStmt).getBody() instanceof EmptyStatement);
   }
 
-  private int methodCount(String source, String methodName, String[] paramTypes) {
-    CompilationUnit unit = translateType("Test", source);
-    List<?> types = unit.types();
-    assertEquals(1, types.size());
-    TypeDeclaration testType = (TypeDeclaration) types.get(0);
-    MethodDeclaration[] methods = testType.getMethods();
-    int nFooMethods = 0;
-    for (MethodDeclaration m : methods) {
-      if (m.getName().getIdentifier().equals(methodName) &&
-          parametersMatch(paramTypes, m.parameters())) {
-        nFooMethods++;
-      }
-    }
-    return nFooMethods;
-  }
-
-  private boolean parametersMatch(String[] paramTypes, List<?> parameters) {
-    if (parameters.size() != paramTypes.length) {
-      return false;
-    }
-    for (int i = 0; i < paramTypes.length; i++) {
-      SingleVariableDeclaration param = (SingleVariableDeclaration) parameters.get(i);
-      if (!param.getType().toString().equals(paramTypes[i])) {
-        return false;
-      }
-    }
-    return true;
-  }
-
   /**
    * Verifies that abstract methods to implement an interface are added to an
    * abstract class.

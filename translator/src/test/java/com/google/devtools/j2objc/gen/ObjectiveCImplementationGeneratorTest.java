@@ -457,9 +457,8 @@ public class ObjectiveCImplementationGeneratorTest extends GenerationTest {
         "}",
         "Test", "Test.m");
     assertTranslation(translation, "- (void)foo {\n" +
-        "  NSAutoreleasePool *pool__ = [[NSAutoreleasePool alloc] init];\n" +
-        "  {\n  }\n" +
-        "  [pool__ release];\n" +
+        "  @autoreleasepool {\n" +
+        "  }\n" +
         "}");
   }
 
@@ -494,9 +493,7 @@ public class ObjectiveCImplementationGeneratorTest extends GenerationTest {
         "}",
         "Test", "Test.m");
     assertTranslation(translation, "- (void)apply {\n" +
-        "  NSAutoreleasePool *pool__ = [[NSAutoreleasePool alloc] init];\n" +
-        "  {\n  }\n" +
-        "  [pool__ release];\n" +
+        "  @autoreleasepool {\n  }\n" +
         "}");
   }
 
