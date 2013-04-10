@@ -53,10 +53,6 @@ ANDROID_JRE_TEST_ROOT = $(ANDROID_BASE)/luni/src/test/java/tests/api
 MISC_TEST_ROOT = $(CWD)/Tests
 PROJECT_ROOT = $(CWD)/..
 
-ANDROID_INCLUDE = $(ANDROID_BASE)/include
-ICU4C_I18N_INCLUDE = $(CWD)/icu4c/i18n/include
-ICU4C_COMMON_INCLUDE = $(CWD)/icu4c/common
-
 include ../make/detect_xcode.mk
 
 CLASS_DIR = $(BUILD_DIR)/Classes
@@ -102,11 +98,10 @@ WARNINGS := $(WARNINGS) -Wobjc-missing-property-synthesis \
 
 # The -fobjc flags match XCode (a link fails without them because of
 # missing symbols of the form OBJC_CLASS_$_[classname]).
-OBJCFLAGS := $(WARNINGS) $(SDK_FLAGS) $(ALT_SDK_FLAGS) \
-  $(ARCH_FLAGS) $(ALT_ARCH_FLAGS) -DU_DISABLE_RENAMING=1 \
+OBJCFLAGS := -ObjC $(WARNINGS) $(SDK_FLAGS) $(ALT_SDK_FLAGS) \
+  $(ARCH_FLAGS) $(ALT_ARCH_FLAGS) \
   -fobjc-abi-version=2 -fobjc-legacy-dispatch $(DEBUGFLAGS) \
-  -I/System/Library/Frameworks/ExceptionHandling.framework/Headers \
-  -I$(ANDROID_INCLUDE) -I$(ICU4C_I18N_INCLUDE) -I$(ICU4C_COMMON_INCLUDE)
+  -I/System/Library/Frameworks/ExceptionHandling.framework/Headers
 
 ifdef CLANG_ENABLE_OBJC_ARC
 J2OBJC := $(J2OBJC) -use-arc
