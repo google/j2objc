@@ -235,7 +235,7 @@ TEST_SOURCE_PATH = \
 TEST_JOC = ../dist/j2objc -classpath $(JUNIT_JAR) -Werror \
 	-sourcepath $(TEST_SOURCE_PATH) -d $(TESTS_DIR)
 TEST_JOCC = ../dist/j2objcc -g -I$(TESTS_DIR) -l junit -Werror \
-	-L$(TESTS_DIR) -l test-support
+	-L$(TESTS_DIR) -l test-support -l icucore -l stdc++
 SUPPORT_LIB = $(TESTS_DIR)/libtest-support.a
 TEST_BINS = $(TEST_OBJS:.o=)
 
