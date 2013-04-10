@@ -1123,6 +1123,16 @@ public class StatementGenerator extends ErrorReportingASTVisitor {
         op.equals(InfixExpression.Operator.PLUS)) {
       printStringConcatenation(node.getLeftOperand(), node.getRightOperand(),
           node.extendedOperands());
+    } else if (op.equals(InfixExpression.Operator.EQUALS) &&
+        Types.isJavaStringType(Types.getTypeBinding(node.getLeftOperand())) &&
+        Types.isJavaStringType(Types.getTypeBinding(node.getRightOperand()))) {
+      // Since NSString doesn't support interning, == is never legal a
+      // valid test for strings.
+      buffer.append('[');
+      node.getLeftOperand().accept(this);
+      buffer.append(" isEqualToString:");
+      node.getRightOperand().accept(this);
+      buffer.append(']');
     } else if (op.equals(InfixExpression.Operator.RIGHT_SHIFT_UNSIGNED) &&
         !typeName.equals("unichar")) {
       printUnsignedRightShift(node.getLeftOperand(), node.getRightOperand());
