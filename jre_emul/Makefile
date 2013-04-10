@@ -75,6 +75,8 @@ JRE_INTERFACES = \
 	java/lang/Iterable.h \
 	java/lang/Runnable.h \
 	java/lang/annotation/Annotation.h \
+	java/lang/annotation/ElementType.h \
+	java/lang/annotation/RetentionPolicy.h \
 	java/lang/reflect/GenericDeclaration.h \
 	java/lang/reflect/Type.h \
 	java/lang/reflect/TypeVariable.h \
