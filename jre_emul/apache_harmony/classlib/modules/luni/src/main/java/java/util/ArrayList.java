@@ -23,7 +23,7 @@ import java.io.Serializable;
  * ArrayList is an implementation of {@link List}, backed by an array. All
  * optional operations adding, removing, and replacing are supported. The
  * elements can be any objects.
- * 
+ *
  * @since 1.2
  */
 public class ArrayList<E> extends AbstractList<E> implements List<E>,
@@ -47,7 +47,7 @@ public class ArrayList<E> extends AbstractList<E> implements List<E>,
     /**
      * Constructs a new instance of {@code ArrayList} with the specified
      * capacity.
-     * 
+     *
      * @param capacity
      *            the initial capacity of this {@code ArrayList}.
      */
@@ -61,22 +61,22 @@ public class ArrayList<E> extends AbstractList<E> implements List<E>,
 
     /**
      * Constructs a new instance of {@code ArrayList} containing the elements of
-     * the specified collection. The initial size of the {@code ArrayList} will
-     * be 10% larger than the size of the specified collection.
-     * 
+     * the specified collection.
+     *
      * @param collection
      *            the collection of elements to add.
      */
     public ArrayList(Collection<? extends E> collection) {
         firstIndex = 0;
-        Object[] objects = collection.toArray();
-        size = objects.length;
-
-        // REVIEW: Created 2 array copies of the original collection here
-        //         Could be better to use the collection iterator and
-        //         copy once?
-        array = newElementArray(size + (size / 10));
-        System.arraycopy(objects, 0, array, 0, size);
+        // NOTE(user): This implementation was modified from the original to
+        // NOT add an additional 10% to the end of the array. The only way to
+        // add the 10% safely with concurrent collections is to call Collection
+        // .toArray() and copy the result into a new 10% larger array. It is
+        // more efficient to avoid paying a penalty every time this method is
+        // called rather than avoid paying a penalty only if the caller decides
+        // to add to the list.
+        array = (E[]) collection.toArray();
+        size = array.length;
         modCount = 1;
     }
 
@@ -90,7 +90,7 @@ public class ArrayList<E> extends AbstractList<E> implements List<E>,
      * location. The object is inserted before any previous element at the
      * specified location. If the location is equal to the size of this
      * {@code ArrayList}, the object is added at the end.
-     * 
+     *
      * @param location
      *            the index at which to insert the object.
      * @param object
@@ -135,7 +135,7 @@ public class ArrayList<E> extends AbstractList<E> implements List<E>,
 
     /**
      * Adds the specified object at the end of this {@code ArrayList}.
-     * 
+     *
      * @param object
      *            the object to add.
      * @return always true
@@ -155,7 +155,7 @@ public class ArrayList<E> extends AbstractList<E> implements List<E>,
      * Inserts the objects in the specified collection at the specified location
      * in this List. The objects are added in the order they are returned from
      * the collection's iterator.
-     * 
+     *
      * @param location
      *            the index at which to insert.
      * @param collection
@@ -219,7 +219,7 @@ public class ArrayList<E> extends AbstractList<E> implements List<E>,
 
     /**
      * Adds the objects in the specified collection to this {@code ArrayList}.
-     * 
+     *
      * @param collection
      *            the collection of objects.
      * @return {@code true} if this {@code ArrayList} is modified, {@code false}
@@ -246,7 +246,7 @@ public class ArrayList<E> extends AbstractList<E> implements List<E>,
 
     /**
      * Removes all elements from this {@code ArrayList}, leaving it empty.
-     * 
+     *
      * @see #isEmpty
      * @see #size
      */
@@ -267,7 +267,7 @@ public class ArrayList<E> extends AbstractList<E> implements List<E>,
     /**
      * Returns a new {@code ArrayList} with the same elements, the same size and
      * the same capacity as this {@code ArrayList}.
-     * 
+     *
      * @return a shallow copy of this {@code ArrayList}
      * @see java.lang.Cloneable
      */
@@ -278,7 +278,7 @@ public class ArrayList<E> extends AbstractList<E> implements List<E>,
 
     /**
      * Searches this {@code ArrayList} for the specified object.
-     * 
+     *
      * @param object
      *            the object to search for.
      * @return {@code true} if {@code object} is an element of this
@@ -306,7 +306,7 @@ public class ArrayList<E> extends AbstractList<E> implements List<E>,
     /**
      * Ensures that after this operation the {@code ArrayList} can hold the
      * specified number of elements without further growing.
-     * 
+     *
      * @param minimumCapacity
      *            the minimum capacity asked for.
      */
@@ -461,7 +461,7 @@ public class ArrayList<E> extends AbstractList<E> implements List<E>,
 
     /**
      * Removes the object at the specified location from this list.
-     * 
+     *
      * @param location
      *            the index of the object to remove.
      * @return the removed object.
@@ -519,7 +519,7 @@ public class ArrayList<E> extends AbstractList<E> implements List<E>,
     /**
      * Removes the objects in the specified range from the start to the end, but
      * not including the end index.
-     * 
+     *
      * @param start
      *            the index at which to start removing.
      * @param end
@@ -564,7 +564,7 @@ public class ArrayList<E> extends AbstractList<E> implements List<E>,
     /**
      * Replaces the element at the specified location in this {@code ArrayList}
      * with the specified object.
-     * 
+     *
      * @param location
      *            the index at which to put the specified object.
      * @param object
@@ -585,7 +585,7 @@ public class ArrayList<E> extends AbstractList<E> implements List<E>,
 
     /**
      * Returns the number of elements in this {@code ArrayList}.
-     * 
+     *
      * @return the number of elements in this {@code ArrayList}.
      */
     @Override
@@ -596,7 +596,7 @@ public class ArrayList<E> extends AbstractList<E> implements List<E>,
     /**
      * Sets the capacity of this {@code ArrayList} to be the same as the current
      * size.
-     * 
+     *
      * @see #size
      */
     public void trimToSize() {
