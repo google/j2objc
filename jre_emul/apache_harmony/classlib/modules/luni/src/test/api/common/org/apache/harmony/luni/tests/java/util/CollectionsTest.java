@@ -20,11 +20,13 @@ package org.apache.harmony.luni.tests.java.util;
 import tests.support.Support_UnmodifiableCollectionTest;
 import tests.support.Support_UnmodifiableMapTest;
 
+import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.Deque;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -34,6 +36,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.Map;
+import java.util.Queue;
 import java.util.Random;
 import java.util.RandomAccess;
 import java.util.Set;
@@ -1953,7 +1956,101 @@ public class CollectionsTest extends junit.framework.TestCase {
 		fail("Allowed modification of set");
 	}
 
-	/**
+    /**
+     * @tests {@link java.util.Collections#newSetFromMap(Map)}
+     */
+    public void test_newSetFromMap_LMap() throws Exception {
+        Integer testInt[] = new Integer[100];
+        for (int i = 0; i < testInt.length; i++) {
+            testInt[i] = new Integer(i);
+        }
+        Map<Integer,Boolean> map = new HashMap<Integer,Boolean>();
+        Set<Integer> set = Collections.newSetFromMap(map);
+        for (int i = 0; i < testInt.length; i++) {
+            map.put(testInt[i], true);
+        }
+        // operater on map successed
+        map.put(testInt[1], false);
+        assertTrue(map.containsKey(testInt[1]));
+        assertEquals(100, map.size());
+        assertFalse(map.get(testInt[1]));
+        assertEquals(100, set.size());
+        assertTrue(set.contains(testInt[16]));
+        Iterator setIter = set.iterator();
+        Iterator mapIter = map.keySet().iterator();
+        int i = 0;
+        // in the same order
+        while(setIter.hasNext()){
+            assertEquals(mapIter.next(),setIter.next());
+        }
+
+        // operator on set successed
+        Integer testInt101 = new Integer(101);
+        Integer testInt102 = new Integer(102);
+        set.add(testInt101);
+        assertTrue(set.contains(testInt101));
+        assertTrue(map.get(testInt101));
+
+        // operator on map still passes
+        map.put(testInt102, false);
+        assertTrue(set.contains(testInt102));
+        assertFalse(map.get(testInt102));
+
+        // exception thrown
+        try {
+            Collections.newSetFromMap(map);
+            fail ("should throw IllegalArgumentException");
+        } catch (IllegalArgumentException e) {
+            // expected
+        }
+    }
+
+    /**
+     * @tests {@link java.util.Collections#asLifoQueue(Deque)
+     */
+    public void test_asLifoQueue() throws Exception {
+        Integer testInt[] = new Integer[100];
+        Integer test101 = new Integer(101);
+        for (int i = 0; i < testInt.length; i++) {
+            testInt[i] = new Integer(i);
+        }
+        Deque deque = new ArrayDeque<Integer>();
+        Queue<Integer> que = Collections.asLifoQueue(deque);
+        for (int i = 0; i < testInt.length; i++) {
+            que.add(testInt[i]);
+        }
+        assertEquals(100, deque.size());
+        assertEquals(100, que.size());
+        for (int i = testInt.length-1; i >=0 ; i--) {
+            assertEquals(testInt[i], deque.pop());
+        }
+        assertEquals(0, deque.size());
+        assertEquals(0, que.size());
+        for (int i = 0; i < testInt.length; i++) {
+            deque.push(testInt[i]);
+        }
+        assertEquals(100, deque.size());
+        assertEquals(100, que.size());
+        Collection col = new LinkedList<Integer>();
+        col.add(test101);
+        que.addAll(col);
+        assertEquals(test101, que.remove());
+        for (int i = testInt.length-1; i >=0 ; i--) {
+            assertEquals(testInt[i], que.remove());
+        }
+        assertEquals(0, deque.size());
+        assertEquals(0, que.size());
+    }
+
+    /**
+     * @tests java.util.Collections#emptyList()
+     */
+    public void test_emptyList() {
+        List<String> list = Collections.emptyList();
+        assertTrue("should be true", list.isEmpty());
+    }
+
+    /**
      * Test unmodifiable objects toString methods
      */
     public void test_unmodifiable_toString_methods() {
@@ -1968,7 +2065,8 @@ public class CollectionsTest extends junit.framework.TestCase {
         m.put("one", "1");
         m.put("two", "2");
         Map um = Collections.unmodifiableMap(m);
-        assertEquals("{one=1, two=2}", um.toString());
+        assertTrue(-1 != um.toString().indexOf("two=2"));
+        assertTrue(-1 != um.toString().indexOf("one=1"));
     }
 
     /**
