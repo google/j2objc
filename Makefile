@@ -41,12 +41,15 @@ install-man-pages: $(MAN_PAGES)
 	@mkdir -p $(DIST_DIR)/man/man1
 	@install -C -m 0644 $? $(DIST_DIR)/man/man1
 
+annotations_dist:
+	@cd annotations && $(MAKE) dist
+
 translator_dist: translator jre_emul_jar_dist install-scripts
 
-translator:
+translator: annotations_dist
 	@cd translator && $(MAKE) dist
 
-jre_emul_jar_dist:
+jre_emul_jar_dist: annotations_dist
 	@cd jre_emul && $(MAKE) emul_jar_dist
 
 jre_emul_dist: translator_dist jre_emul
@@ -62,11 +65,12 @@ dist: translator_dist jre_emul_dist junit_dist install-man-pages
 
 clean:
 	@rm -rf $(DIST_DIR)
+	@cd annotations && $(MAKE) clean
 	@cd translator && $(MAKE) clean
 	@cd jre_emul && $(MAKE) clean
 	@cd junit && $(MAKE) clean
 
-test:
+test: annotations_dist
 	@cd translator && $(MAKE) test
 
 test_all: test

@@ -299,11 +299,8 @@ OBJC_OUT_LIST = $(BUILD_DIR)/jre_emul.objc.list
 JAVA_MANIFEST = $(BUILD_DIR)/java_sources.mf
 
 STUB_JAVA_SOURCES = $(shell find $(STUBS_DIR) -name *.java)
-J2OBJC_ANNOTATION_SOURCES = \
-    $(shell find $(J2OBJC_SRC_ROOT)/com/google/j2objc/annotations -name *.java)
 ALL_JAVA_SOURCES = $(JAVA_SOURCES) $(IOS_JAVA_OBJS:.o=.java) $(IOS_INTERFACES:.h=.java) \
-    $(JRE_INTERFACES:.h=.java) $(STUB_JAVA_SOURCES:$(STUBS_DIR)/%=%) \
-    $(J2OBJC_ANNOTATION_SOURCES:$(J2OBJC_SRC_ROOT)/%=%)
+    $(JRE_INTERFACES:.h=.java) $(STUB_JAVA_SOURCES:$(STUBS_DIR)/%=%)
 TRANSLATED_OBJC = $(JRE_INTERFACES:%.h=$(CLASS_DIR)/%.m) $(JAVA_SOURCES:%.java=$(CLASS_DIR)/%.m)
 TRANSLATED_HEADERS = $(JRE_INTERFACES:%=$(CLASS_DIR)/%) $(JAVA_SOURCES:%.java=$(CLASS_DIR)/%.h)
 ALL_OBJS = $(JAVA_SOURCES:.java=.o) $(IOS_OBJS) $(IOS_JAVA_OBJS)
@@ -311,6 +308,8 @@ SOURCE_HEADERS = $(shell find $(EMULATION_CLASS_DIR) -name *.h)
 INCLUDES = $(TRANSLATED_HEADERS:$(CLASS_DIR)/%=$(INCLUDE_DIR)/%) \
     $(SOURCE_HEADERS:$(EMULATION_CLASS_DIR)/%=$(INCLUDE_DIR)/%)
 DIST_INCLUDES = $(INCLUDES:$(INCLUDE_DIR)/%=$(DIST_INCLUDE_DIR)/%)
+
+ANNOTATIONS_JAR = $(DIST_JAR_DIR)/j2objc_annotations.jar
 
 ifndef CONFIGURATION_BUILD_DIR
 # Settings for building both Mac OS X, iPhone, and iPhone simulator libraries.
@@ -491,7 +490,7 @@ $(EMULATION_JAR): $(ALL_JAVA_SOURCES) | $(BUILD_DIR)
 	@echo "building jre_emul.jar"
 	@rm -rf $(EMULATION_STAGE)
 	@mkdir $(EMULATION_STAGE)
-	@javac -classpath $(EMULATION_STAGE) -d $(EMULATION_STAGE) $^
+	@javac -classpath $(ANNOTATIONS_JAR) -d $(EMULATION_STAGE) $^
 	@jar cf $(EMULATION_JAR) -C $(EMULATION_STAGE) .
 
 java_manifest: $(JAVA_MANIFEST)

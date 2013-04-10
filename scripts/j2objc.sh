@@ -32,19 +32,21 @@ fi
 PARSING_JAVA_ARGS=0
 JAVA_ARGS=""
 J2OBJC_ARGS=""
-for ARG in $@; do
-  if [ "${ARG}" == "-begin-java-args" ]; then
-    PARSING_JAVA_ARGS=1
-  elif [ "${ARG}" == "-end-java-args" ]; then
-    PARSING_JAVA_ARGS=0
-  else
-    if [ ${PARSING_JAVA_ARGS} -eq 0 ]; then
-      J2OBJC_ARGS="${J2OBJC_ARGS} ${ARG}"
-    else
-      JAVA_ARGS="${JAVA_ARGS} ${ARG}"
-    fi
-  fi
+CLASSPATH=${LIB_DIR}/j2objc_annotations.jar
+
+while [ $# -gt 0 ]; do
+  case $1 in
+    -begin-java-args) PARSING_JAVA_ARGS=1;;
+    -end-java-args) PARSING_JAVA_ARGS=0;;
+    -classpath|-cp) CLASSPATH="${CLASSPATH}:$2"; shift;;
+    *)
+      if [ ${PARSING_JAVA_ARGS} -eq 0 ]; then
+        J2OBJC_ARGS="${J2OBJC_ARGS} $1"
+      else
+        JAVA_ARGS="${JAVA_ARGS} $1"
+      fi;;
+  esac
+  shift
 done
 
-java ${JAVA_ARGS} -jar ${JAR} ${BOOT_PATH} ${J2OBJC_ARGS}
-
+java ${JAVA_ARGS} -jar ${JAR} ${BOOT_PATH} -classpath ${CLASSPATH} ${J2OBJC_ARGS}

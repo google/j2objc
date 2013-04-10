@@ -44,13 +44,15 @@ JARS = \
   org.eclipse.text-3.5.100.v20110505-0800.jar
 JUNIT_JAR = $(LIB_DIR)/junit-4.10.jar
 
+ANNOTATIONS_JAR = $(DIST_JAR_DIR)/j2objc_annotations.jar
+
 JAR_PATH = $(strip $(subst : ,:, $(strip $(foreach j, $(JARS), $(LIB_DIR)/$j:))))
-CLASSPATH = $(CLASS_DIR):$(JAR_PATH)
-TEST_CLASSPATH = $(TEST_DIR):$(J2OBJC_JAR):$(JAR_PATH):$(JUNIT_JAR)
+CLASSPATH = $(CLASS_DIR):$(ANNOTATIONS_JAR):$(JAR_PATH)
+TEST_CLASSPATH = $(TEST_DIR):$(J2OBJC_JAR):$(ANNOTATIONS_JAR):$(JAR_PATH):$(JUNIT_JAR)
 
 MAIN_CLASS = com.google.devtools.j2objc.J2ObjC
 MANIFEST = $(BUILD_DIR)/manifest.mf
-MANIFEST_PATH = $(strip $(foreach j, $(JARS), $j))
+MANIFEST_PATH = $(strip $(foreach j, $(JARS), $j)) j2objc_annotations.jar
 J2OBJC_JAR = $(LIB_DIR)/j2objc.jar
 
 CLASSES = \
@@ -111,9 +113,6 @@ CLASSES = \
 	util/ProGuardUsageParser.java \
 	util/TypeTrackingVisitor.java \
 	util/UnicodeUtils.java \
-	../../j2objc/annotations/Weak.java \
-	../../j2objc/annotations/WeakOuter.java \
-	../../j2objc/annotations/AutoreleasePool.java
 
 RESOURCES = J2ObjC.properties JRE.mappings
 RESOURCE_DIR = $(SOURCE_DIR)/resources
@@ -124,6 +123,13 @@ RESOURCE_FILES = $(foreach f, $(RESOURCES), $(CLASS_DIR)/$(BASE_PACKAGE)/$f)
 
 default: jar
 	@: # suppress make's "nothing to be done" message
+
+# Only build dependencies when called directly from command-line.
+deps:
+	@if [ "$(CONFIGURATION_BUILD_DIR)x$(MAKELEVEL)" == "x0" ]; then \
+	  echo BUILDING DEPS; \
+	  cd ../annotations && make dist; \
+	fi
 
 jar: compile $(J2OBJC_JAR)
 	@:
@@ -159,16 +165,14 @@ install-libs: $(LIB_DIR)/j2objc.jar
 	@mkdir -p $(DIST_LIB_DIR)
 	install -C -m 0644 $(LIB_DIR)/* $(JUNIT_JAR) $(DIST_LIB_DIR)
 
-translator_dist: jar install-libs
+dist: deps jar install-libs
 	@:
-
-dist: translator_dist
 
 # TODO(user): remove files from dist.
 clean:
 	@rm -rf $(BUILD_DIR)
 
-test: jar compile-tests
+test: deps jar compile-tests
 	java -classpath $(TEST_CLASSPATH) junit.textui.TestRunner com.google.devtools.j2objc.SmallTests
 
 compile-tests:
