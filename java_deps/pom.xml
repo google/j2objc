@@ -42,7 +42,7 @@
               <goal>copy-dependencies</goal>
             </goals>
             <configuration>
-              <outputDirectory>${project.build.directory}/lib</outputDirectory>
+              <outputDirectory>${project.build.directory}</outputDirectory>
               <excludeTransitive>true</excludeTransitive>
             </configuration>
           </execution>
