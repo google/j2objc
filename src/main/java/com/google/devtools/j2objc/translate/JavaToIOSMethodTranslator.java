@@ -248,11 +248,7 @@ public class JavaToIOSMethodTranslator extends ErrorReportingASTVisitor {
   }
 
   @Override
-  public boolean visit(MethodInvocation node) {
-    // translate any embedded method invocations
-    if (node.getExpression() != null) {
-      node.getExpression().accept(this);
-    }
+  public void endVisit(MethodInvocation node) {
     @SuppressWarnings("unchecked")
     List<Expression> args = node.arguments(); // safe by definition
     for (Expression e : args) {
@@ -281,7 +277,7 @@ public class JavaToIOSMethodTranslator extends ErrorReportingASTVisitor {
       String value = methodMappings.get(key);
       if (value == null) {
         J2ObjC.error(node, createMissingMethodMessage(binding));
-        return true;
+        return;
       }
       IOSMethod iosMethod = new IOSMethod(value, binding, ast);
       NameTable.rename(binding, iosMethod.getName());
@@ -312,7 +308,7 @@ public class JavaToIOSMethodTranslator extends ErrorReportingASTVisitor {
         }
       }
     }
-    return true;
+    return;
   }
 
   public MethodInvocation createMappedInvocation(IOSMethod iosMethod,

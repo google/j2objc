@@ -228,4 +228,34 @@ public class JavaToIOSMethodTranslatorTest extends GenerationTest {
         "Example_Inner *inner = (Example_Inner *) [super clone];");
     assertTranslation(translation, "((Example_Inner *) NIL_CHK(inner)).i = i_;");
   }
+
+  // Ensure using the builder pattern does not invoke O(2^N) running time.
+  // The test below would have taken about 100 days to run before this was fixed.
+  public void testHugeBuilderExpression() throws IOException {
+    String translation = translateSourceFile(
+        "public class Example { " +
+        "  static class Builder { " +
+        "    Example build() { return new Example(); } " +
+        "    Builder add(int i) { return this; } " +
+        "  } " +
+        "  static Example create() { " +
+        "    return new Builder()" +
+        "      .add(10).add(11).add(12).add(13).add(14).add(15).add(16).add(17).add(18).add(19)" +
+        "      .add(20).add(21).add(22).add(23).add(24).add(25).add(26).add(27).add(28).add(29)" +
+        "      .add(30).add(31).add(32).add(33).add(34).add(35).add(36).add(37).add(38).add(39)" +
+        "      .add(40).add(41).add(42).add(43).add(44).add(45).add(46).add(47).add(48).add(49)" +
+        "      .build(); " +
+        "} }",
+        "Example", "Example.m");
+    assertTranslation(translation, "return [[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[" +
+        "((Example_Builder *) [[[Example_Builder alloc] init] autorelease]) " +
+        "addWithInt:10] addWithInt:11] addWithInt:12] addWithInt:13] addWithInt:14] " +
+        "addWithInt:15] addWithInt:16] addWithInt:17] addWithInt:18] addWithInt:19] " +
+        "addWithInt:20] addWithInt:21] addWithInt:22] addWithInt:23] addWithInt:24] " +
+        "addWithInt:25] addWithInt:26] addWithInt:27] addWithInt:28] addWithInt:29] " +
+        "addWithInt:30] addWithInt:31] addWithInt:32] addWithInt:33] addWithInt:34] " +
+        "addWithInt:35] addWithInt:36] addWithInt:37] addWithInt:38] addWithInt:39] " +
+        "addWithInt:40] addWithInt:41] addWithInt:42] addWithInt:43] addWithInt:44] " +
+        "addWithInt:45] addWithInt:46] addWithInt:47] addWithInt:48] addWithInt:49] build];");
+  }
 }
