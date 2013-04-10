@@ -27,6 +27,7 @@ import org.eclipse.jdt.core.dom.ArrayCreation;
 import org.eclipse.jdt.core.dom.ArrayInitializer;
 import org.eclipse.jdt.core.dom.ArrayType;
 import org.eclipse.jdt.core.dom.Assignment;
+import org.eclipse.jdt.core.dom.Block;
 import org.eclipse.jdt.core.dom.BooleanLiteral;
 import org.eclipse.jdt.core.dom.CastExpression;
 import org.eclipse.jdt.core.dom.CharacterLiteral;
@@ -153,6 +154,14 @@ public class NodeCopier extends ASTMatcher {
   @Override
   public boolean match(Assignment node, Object other) {
     copy(node, other);
+    return super.match(node, other);
+  }
+
+  @Override
+  public boolean match(Block node, Object other) {
+    if (Types.hasAutoreleasePool(node)) {
+      Types.addAutoreleasePool((Block) other);
+    }
     return super.match(node, other);
   }
 
