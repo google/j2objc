@@ -819,8 +819,18 @@ public class InnerClassExtractorTest extends GenerationTest {
         "}";
     String translation = translateSourceFile(source, "Outer", "Outer.m");
     assertTranslation(translation, "[IOSObjectArray arrayWithObjects:(id[]){ " +
-    		"@\"1\", @\"2\", @\"3\" } count:3 type:[IOSClass classWithClass:[NSString class]]]");
+        "@\"1\", @\"2\", @\"3\" } count:3 type:[IOSClass classWithClass:[NSString class]]]");
     assertTranslation(translation, "[IOSObjectArray arrayWithObjects:(id[]){ " +
-    		"@\"4\", @\"5\", @\"6\" } count:3 type:[IOSClass classWithClass:[NSString class]]]");
+        "@\"4\", @\"5\", @\"6\" } count:3 type:[IOSClass classWithClass:[NSString class]]]");
+  }
+
+  public void testInnerClassVarargsConstructor() throws IOException {
+    String translation = translateSourceFile(
+        "class Test { class Inner { Inner(int... i) {} } void test() { new Inner(1, 2, 3); } }",
+        "Test", "Test.m");
+    assertTranslation(translation, "[[Test_Inner alloc] initWithTest:self " +
+        "withJavaLangIntegerArray:[IOSObjectArray arrayWithType:[IOSClass classWithClass:" +
+        "[int class]] count:3, [JavaLangInteger valueOfWithInt:1], [JavaLangInteger " +
+        "valueOfWithInt:2], [JavaLangInteger valueOfWithInt:3] ]]");
   }
 }
