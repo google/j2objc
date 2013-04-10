@@ -64,7 +64,7 @@ import java.util.Set;
 public class ObjectiveCImplementationGenerator extends ObjectiveCSourceFileGenerator {
   private Set<IVariableBinding> fieldHiders;
   private final String suffix;
-  private Set<String> invokedConstructors = Sets.newHashSet();
+  private final Set<String> invokedConstructors = Sets.newHashSet();
 
   /**
    * Generate an Objective-C implementation file for each type declared in a
@@ -914,7 +914,7 @@ public class ObjectiveCImplementationGenerator extends ObjectiveCSourceFileGener
           if (!hasGetter && Options.useReferenceCounting() && !type.isPrimitive()) {
             // Generates a getter that will make sure the returned object is still valid
             // if it's used after it's unreferenced by the instance.
-            printf(String.format("- (%s)%s {\n  return [[%s retain] autorelease];\n}\n",
+            printf(String.format("- (%s)%s {\n  return %s;\n}\n",
                 typeString, name, objCFieldName));
             hasGetter = true;
           }

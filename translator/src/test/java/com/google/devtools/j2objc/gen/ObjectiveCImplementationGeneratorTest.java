@@ -281,10 +281,10 @@ public class ObjectiveCImplementationGeneratorTest extends GenerationTest {
       "FooBar", "FooBar.m");
     assertTranslation(translation, "@synthesize fieldFoo = fieldFoo_;");
     assertTranslation(translation, "- (id)fieldFoo {");
-    assertTranslation(translation, "return [[fieldFoo_ retain] autorelease];");
+    assertTranslation(translation, "return fieldFoo_;");
     assertTranslation(translation, "@synthesize fieldJar = fieldJar_;");
     assertTranslation(translation, "- (id)fieldJar {");
-    assertTranslation(translation, "return [[fieldJar_ retain] autorelease];");
+    assertTranslation(translation, "return fieldJar_;");
     assertTranslation(translation, "@synthesize newFieldBar = newFieldBar_;");
     assertTranslation(translation, "static int FooBar_fieldPhi_;");
     assertTranslation(translation, "+ (int)fieldPhi {");
