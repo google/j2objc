@@ -79,7 +79,6 @@ JRE_INTERFACES = \
 	java/util/Collection.h \
 	java/util/Comparator.h \
 	java/util/Deque.h \
-	java/util/Dictionary.h \
 	java/util/Enumeration.h \
 	java/util/EventListener.h \
 	java/util/Iterator.h \
@@ -249,16 +248,12 @@ JAVA_SOURCES = \
 	java/util/concurrent/atomic/AtomicInteger.java \
 	java/util/concurrent/atomic/AtomicLong.java \
 	java/util/concurrent/ConcurrentHashMap.java \
-	java/util/concurrent/Executor.java \
-	java/util/concurrent/ExecutorService.java \
-	java/util/concurrent/Future.java \
 	java/util/concurrent/TimeUnit.java \
 	java/util/Currency.java \
 	java/util/Date.java \
 	java/util/Dictionary.java \
 	java/util/EnumMap.java \
 	java/util/EnumSet.java \
-	java/util/EventListener.java \
 	java/util/EventObject.java \
 	java/util/EmptyStackException.java \
 	java/util/Grego.java \
@@ -280,8 +275,6 @@ JAVA_SOURCES = \
 	java/util/logging/NSLogHandler.java \
 	java/util/MapEntry.java \
 	java/util/MiniEnumSet.java \
-	java/util/NavigableMap.java \
-	java/util/NavigableSet.java \
 	java/util/NoSuchElementException.java \
 	java/util/PriorityQueue.java \
 	java/util/Properties.java \
@@ -311,8 +304,13 @@ J2OBJC_ANNOTATION_SOURCES = \
 ALL_JAVA_SOURCES = $(JAVA_SOURCES) $(IOS_JAVA_OBJS:.o=.java) $(IOS_INTERFACES:.h=.java) \
     $(JRE_INTERFACES:.h=.java) $(STUB_JAVA_SOURCES:$(STUBS_DIR)/%=%) \
     $(J2OBJC_ANNOTATION_SOURCES:$(J2OBJC_SRC_ROOT)/%=%)
-TRANSLATED_OBJC = $(JRE_INTERFACES:%=$(CLASS_DIR)/%) $(JAVA_SOURCES:%.java=$(CLASS_DIR)/%.m)
+TRANSLATED_OBJC = $(JRE_INTERFACES:%.h=$(CLASS_DIR)/%.m) $(JAVA_SOURCES:%.java=$(CLASS_DIR)/%.m)
+TRANSLATED_HEADERS = $(JRE_INTERFACES:%=$(CLASS_DIR)/%) $(JAVA_SOURCES:%.java=$(CLASS_DIR)/%.h)
 ALL_OBJS = $(JAVA_SOURCES:.java=.o) $(IOS_OBJS) $(IOS_JAVA_OBJS)
+SOURCE_HEADERS = $(shell find $(EMULATION_CLASS_DIR) -name *.h)
+INCLUDES = $(TRANSLATED_HEADERS:$(CLASS_DIR)/%=$(INCLUDE_DIR)/%) \
+    $(SOURCE_HEADERS:$(EMULATION_CLASS_DIR)/%=$(INCLUDE_DIR)/%)
+DIST_INCLUDES = $(INCLUDES:$(INCLUDE_DIR)/%=$(DIST_INCLUDE_DIR)/%)
 
 ifndef CONFIGURATION_BUILD_DIR
 # Settings for building both Mac OS X, iPhone, and iPhone simulator libraries.
@@ -382,24 +380,23 @@ iphonev7s_lib: $(IPHONEV7S_OBJS)
 simulator_lib: $(SIMULATOR_OBJS)
 	$(LIBTOOL) -static -o $(EMULATION_SIMULATOR_LIB) $^ ; \
 
-# Copy top-level class headers to include directory.
-includes: $(BUILD_DIR)/.jre_includes
+includes: translate $(BUILD_DIR)/.jre_includes
 
-$(BUILD_DIR)/.jre_includes: $(EMULATION_CLASS_DIR)
-	mkdir -p $(INCLUDE_DIR)
-	install -C $(EMULATION_CLASS_DIR)/*.h $(INCLUDE_DIR)
-	cd $(CLASS_DIR) && tar cf - --exclude '*.[mo]' * | ( cd $(INCLUDE_DIR); tar xfp - )
-	mkdir -p $(INCLUDE_DIR)/java/lang/
-	install -C $(EMULATION_CLASS_DIR)/java/lang/*.h $(INCLUDE_DIR)/java/lang/
-	mkdir -p $(INCLUDE_DIR)/java/lang/reflect/
-	install -C $(EMULATION_CLASS_DIR)/java/lang/reflect/*.h \
-	  $(INCLUDE_DIR)/java/lang/reflect/
-	mkdir -p $(INCLUDE_DIR)/java/util/
-	install -C $(EMULATION_CLASS_DIR)/java/util/*.h $(INCLUDE_DIR)/java/util/
-	find $(INCLUDE_DIR) -type f | xargs chmod 444
-	touch $(BUILD_DIR)/.jre_includes
+dist_includes: includes $(BUILD_DIR)/.jre_dist_includes
 
-$(BUILD_DIR) $(INCLUDE_DIR)/java/lang/reflect:
+$(BUILD_DIR)/.jre_includes: $(TRANSLATED_HEADERS) $(SOURCE_HEADERS) | $(INCLUDE_DIR)
+	(cd $(EMULATION_CLASS_DIR) && tar cf - $(SOURCE_HEADERS:$(EMULATION_CLASS_DIR)/%=%)) \
+	    | (cd $(INCLUDE_DIR); tar xfp -)
+	(cd $(CLASS_DIR) && tar cf - $(TRANSLATED_HEADERS:$(CLASS_DIR)/%=%)) \
+	    | (cd $(INCLUDE_DIR); tar xfp -)
+	touch $@
+
+$(BUILD_DIR)/.jre_dist_includes: $(INCLUDES) | $(DIST_INCLUDE_DIR)
+	(cd $(INCLUDE_DIR) && tar cf - $(INCLUDES:$(INCLUDE_DIR)/%=%)) \
+	    | (cd $(DIST_INCLUDE_DIR); tar xfp -)
+	touch $@
+
+$(BUILD_DIR) $(INCLUDE_DIR) $(DIST_INCLUDE_DIR):
 	@mkdir -p $@
 
 $(CLASS_DIR)/%.h $(CLASS_DIR)/%.m: %.java
@@ -473,24 +470,14 @@ test: default
 	$(MAKE) -f tests.mk test
 
 clean:
-	@rm -rf $(CLASS_DIR) $(EMULATION_JAR) $(EMULATION_LIB) $(INCLUDE_DIR) \
-	  $(BUILD_DIR)/*.octest $(DIST_LIB_DIR)/jre_emul.jar $(DIST_INCLUDE_DIR)/java
-	@for i in $(CLASS_DIR)/*.h; do rm -f $(DIST_INCLUDE_DIR)/$${i#$(CLASS_DIR)/}; done
-	@$(MAKE) -f tests.mk clean
-	@rm -f $(JAVA_SOURCE_LIST)
 	@rm -rf $(BUILD_DIR)
+	@rm -f $(EMULATION_JAR:$(BUILD_DIR)/%=$(DIST_LIB_DIR)/%)
+	@rm -f $(EMULATION_LIB:$(BUILD_DIR)/%=$(DIST_LIB_DIR)/%)
+	@rm -f $(DIST_INCLUDES)
 
 dist: lib includes emul_jar_dist dist_includes
 	@mkdir -p $(DIST_LIB_DIR)
 	install -m 0644 $(EMULATION_LIB) $(DIST_LIB_DIR)
-
-dist_includes: $(BUILD_DIR)/.jre_dist_includes
-
-$(BUILD_DIR)/.jre_dist_includes: $(INCLUDE_DIR)
-	@mkdir -p $(DIST_INCLUDE_DIR)
-	cp -r $(INCLUDE_DIR)/* $(DIST_INCLUDE_DIR)
-	@find $(DIST_INCLUDE_DIR) -type f | xargs chmod 0644
-	touch $(BUILD_DIR)/.jre_dist_includes
 
 emul_jar_dist: $(EMULATION_JAR)
 	@mkdir -p $(DIST_LIB_DIR)
