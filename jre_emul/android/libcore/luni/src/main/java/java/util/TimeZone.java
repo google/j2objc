@@ -65,7 +65,7 @@ import java.util.regex.Pattern;
  */
 public abstract class TimeZone implements Serializable, Cloneable {
     private static final Pattern CUSTOM_ZONE_ID_PATTERN = 
-	Pattern.compile("^GMT[-+](\\d{1,2})(:?(\\d\\d))?$");
+	Pattern.compile("^GMT[-+](\\d{1,2})([:.]?(\\d\\d))?$");
 
     /**
      * The short display name style, such as {@code PDT}. Requests for this
@@ -448,7 +448,10 @@ public abstract class TimeZone implements Serializable, Cloneable {
     private static TimeZone getCustomTimeZone(String id) {
         Matcher m = CUSTOM_ZONE_ID_PATTERN.matcher(id);
         if (!m.matches()) {
-            return null;
+            return GMT;  // Expected result for invalid format.
+        }
+        if (id.equals("GMT-00")) {
+            return GMT;
         }
 
         int hour;
@@ -472,7 +475,10 @@ public abstract class TimeZone implements Serializable, Cloneable {
             raw = -raw;
         }
 
-        String cleanId = String.format("GMT%c%02d:%02d", sign, hour, minute);
+        // Determine whether to include a separator between hours and minutes.
+        String fmt = m.group(2) != null && !Character.isDigit(m.group(2).charAt(0)) ?
+        	"GMT%c%02d%02d" : "GMT%c%02d:%02d";
+        String cleanId = String.format(fmt, sign, hour, minute);
         return new SimpleTimeZone(raw, cleanId);
     }
 
