@@ -16,7 +16,6 @@
 
 package com.google.devtools.j2objc.translate;
 
-import com.google.common.collect.Lists;
 import com.google.devtools.j2objc.sym.MethodSymbol;
 import com.google.devtools.j2objc.sym.Scope;
 import com.google.devtools.j2objc.sym.Symbol;
@@ -27,6 +26,7 @@ import com.google.devtools.j2objc.types.GeneratedMethodBinding;
 import com.google.devtools.j2objc.types.GeneratedVariableBinding;
 import com.google.devtools.j2objc.types.NodeCopier;
 import com.google.devtools.j2objc.types.Types;
+import com.google.devtools.j2objc.util.ASTUtil;
 import com.google.devtools.j2objc.util.NameTable;
 import com.google.devtools.j2objc.util.TypeTrackingVisitor;
 
@@ -38,6 +38,7 @@ import org.eclipse.jdt.core.dom.Block;
 import org.eclipse.jdt.core.dom.BodyDeclaration;
 import org.eclipse.jdt.core.dom.ClassInstanceCreation;
 import org.eclipse.jdt.core.dom.CompilationUnit;
+import org.eclipse.jdt.core.dom.ConstructorInvocation;
 import org.eclipse.jdt.core.dom.EnumDeclaration;
 import org.eclipse.jdt.core.dom.Expression;
 import org.eclipse.jdt.core.dom.FieldAccess;
@@ -54,7 +55,9 @@ import org.eclipse.jdt.core.dom.Modifier.ModifierKeyword;
 import org.eclipse.jdt.core.dom.Name;
 import org.eclipse.jdt.core.dom.QualifiedName;
 import org.eclipse.jdt.core.dom.SimpleName;
+import org.eclipse.jdt.core.dom.SingleVariableDeclaration;
 import org.eclipse.jdt.core.dom.Statement;
+import org.eclipse.jdt.core.dom.SuperConstructorInvocation;
 import org.eclipse.jdt.core.dom.ThisExpression;
 import org.eclipse.jdt.core.dom.TypeDeclaration;
 import org.eclipse.jdt.core.dom.TypeDeclarationStatement;
@@ -165,7 +168,6 @@ public class InnerClassExtractor extends ClassConverter {
     ITypeBinding outerClazz = clazz.getDeclaringClass();
     assert outerClazz != null;
 
-    List<IVariableBinding> innerFields = Lists.newArrayList();
     // Ensure that the new outer field does not conflict with a field in a superclass.
     ITypeBinding superClazz = clazz.getSuperclass();
     ITypeBinding superDeclaringClazz = superClazz.getDeclaringClass();
@@ -181,20 +183,6 @@ public class InnerClassExtractor extends ClassConverter {
     FieldDeclaration outerField = createField(outerFieldName, outerClazz, clazz, ast);
     members.add(0, outerField);
     IVariableBinding outerVar = Types.getVariableBinding(outerField.fragments().get(0));
-    innerFields.add(outerVar);
-
-    if (superDeclaringClazz != null &&
-        !Modifier.isStatic(clazz.getSuperclass().getModifiers()) &&
-        !outerClazz.isAssignmentCompatible(superDeclaringClazz.getTypeDeclaration())) {
-      // The super class is an inner class, and it's declaring class and the
-      // current node's declaring class don't match, so we need another outer
-      // var. This var is only a parameter, not a field, an it's name doesn't
-      // matter because addInnerParameters will assign a different name to it
-      // anyway.
-      IVariableBinding secondOuterVar = new GeneratedVariableBinding(
-          "", Modifier.FINAL, superDeclaringClazz, false, true, superClazz, null);
-      innerFields.add(secondOuterVar);
-    }
 
     // Insert new parameters for each constructor in class.
     boolean needsConstructor = true;
@@ -205,7 +193,7 @@ public class InnerClassExtractor extends ClassConverter {
         IMethodBinding oldBinding = Types.getMethodBinding(constructor);
         GeneratedMethodBinding newBinding = new GeneratedMethodBinding(oldBinding);
         Types.addBinding(constructor, newBinding);
-        addInnerParameters(constructor, newBinding, innerFields, ast, false);
+        addOuterParameter(constructor, newBinding, outerVar, ast);
         assert constructor.parameters().size() == newBinding.getParameterTypes().length;
       }
     }
@@ -222,9 +210,94 @@ public class InnerClassExtractor extends ClassConverter {
       Types.addBinding(name, binding);
       constructor.setName(name);
       constructor.setBody(ast.newBlock());
-      addInnerParameters(constructor, binding, innerFields, ast, false);
+      addOuterParameter(constructor, binding, outerVar, ast);
       members.add(constructor);
       assert constructor.parameters().size() == binding.getParameterTypes().length;
+    }
+  }
+
+  private IMethodBinding getDefaultConstructorDeclaration(ITypeBinding type) {
+    for (IMethodBinding method : type.getTypeDeclaration().getDeclaredMethods()) {
+      if (method.isConstructor()) {
+        IMethodBinding decl = method.getMethodDeclaration();
+        if (decl.getParameterTypes().length == 0) {
+          return decl;
+        }
+      }
+    }
+    return null;
+  }
+
+  private boolean hasOuterArg(SuperConstructorInvocation superCall) {
+    List<Expression> superCallArgs = ASTUtil.getArguments(superCall);
+    if (superCallArgs.size() == 0) {
+      return false;
+    }
+    Expression firstArg = superCallArgs.get(0);
+    if (!(firstArg instanceof SimpleName)) {
+      return false;
+    }
+    SimpleName name = (SimpleName) firstArg;
+    return name.getIdentifier().startsWith("outer$");
+  }
+
+  protected void addOuterParameter(
+      MethodDeclaration constructor, GeneratedMethodBinding binding, IVariableBinding outerField,
+      AST ast) {
+    GeneratedVariableBinding outerParamBinding = new GeneratedVariableBinding(
+        "outer$" + binding.getParameterTypes().length, Modifier.FINAL, outerField.getType(),
+        false, true, binding.getDeclaringClass(), binding);
+    SingleVariableDeclaration outerParam =
+        ASTFactory.newSingleVariableDeclaration(ast, outerParamBinding);
+    ASTUtil.getParameters(constructor).add(0, outerParam);
+    binding.addParameter(0, outerParamBinding);
+
+    ConstructorInvocation thisCall = null;
+    SuperConstructorInvocation superCall = null;
+
+    List<Statement> statements = ASTUtil.getStatements(constructor.getBody());
+    Statement firstStatement = statements.size() > 0 ? statements.get(0) : null;
+    if (firstStatement != null && firstStatement instanceof ConstructorInvocation) {
+      thisCall = (ConstructorInvocation) firstStatement;
+    } else if (firstStatement != null && firstStatement instanceof SuperConstructorInvocation) {
+      superCall = (SuperConstructorInvocation) firstStatement;
+    }
+
+    if (thisCall != null) {
+      IMethodBinding thisBinding = Types.getMethodBinding(thisCall);
+      GeneratedMethodBinding newThisBinding =
+          new GeneratedMethodBinding(thisBinding.getMethodDeclaration());
+      ASTUtil.getArguments(thisCall).add(0, ASTFactory.newSimpleName(ast, outerParamBinding));
+      newThisBinding.addParameter(0, outerParamBinding.getType());
+      Types.addBinding(thisCall, newThisBinding);
+    } else {
+      ITypeBinding superType = binding.getDeclaringClass().getSuperclass().getTypeDeclaration();
+      if (superType.getDeclaringClass() != null && !Modifier.isStatic(superType.getModifiers())
+          && (superCall == null || !hasOuterArg(superCall))) {
+        IMethodBinding superCallDecl = superCall != null ?
+            Types.getMethodBinding(superCall).getMethodDeclaration() :
+            getDefaultConstructorDeclaration(superType);
+        GeneratedMethodBinding superCallBinding = new GeneratedMethodBinding(superCallDecl);
+        if (superCall == null) {
+          superCall = ast.newSuperConstructorInvocation();
+          ASTUtil.getStatements(constructor.getBody()).add(0, superCall);
+        }
+        Name superOuterArg = ASTFactory.newSimpleName(ast, outerParamBinding);
+        TypeSymbol currentType = Symbols.resolve(outerParamBinding.getType());
+        while (!currentType.getType().isAssignmentCompatible(superType.getDeclaringClass())) {
+          SimpleName outerName = makeOuterName(currentType, ast);
+          superOuterArg = ast.newQualifiedName(superOuterArg, outerName);
+          Types.addBinding(superOuterArg, Types.getBinding(outerName));
+          currentType = currentType.getDeclaringClass();
+        }
+        ASTUtil.getArguments(superCall).add(0, superOuterArg);
+        superCallBinding.addParameter(0, superType.getDeclaringClass());
+        Types.addBinding(superCall, superCallBinding);
+      }
+      ASTUtil.getStatements(constructor.getBody()).add(superCall == null ? 0 : 1,
+          ast.newExpressionStatement(ASTFactory.newAssignment(ast,
+          ASTFactory.newSimpleName(ast, outerField),
+          ASTFactory.newSimpleName(ast, outerParamBinding))));
     }
   }
 
@@ -473,18 +546,18 @@ public class InnerClassExtractor extends ClassConverter {
       }
       return outerName;
     }
+  }
 
-    private SimpleName makeOuterName(TypeSymbol currentType, AST ast) {
-      for (Symbol sym : currentType.getScope().getMembers()) {
-        if (sym instanceof VariableSymbol && sym.getName().startsWith("this$")) {
-          IVariableBinding outerVar = (IVariableBinding) sym.getBinding();
-          assert outerVar.getType().isEqualTo(currentType.getDeclaringClass().getType());
-          SimpleName name = ast.newSimpleName(sym.getName());
-          Types.addBinding(name, outerVar);
-          return name;
-        }
+  private static SimpleName makeOuterName(TypeSymbol currentType, AST ast) {
+    for (Symbol sym : currentType.getScope().getMembers()) {
+      if (sym instanceof VariableSymbol && sym.getName().startsWith("this$")) {
+        IVariableBinding outerVar = (IVariableBinding) sym.getBinding();
+        assert outerVar.getType().isEqualTo(currentType.getDeclaringClass().getType());
+        SimpleName name = ast.newSimpleName(sym.getName());
+        Types.addBinding(name, outerVar);
+        return name;
       }
-      throw new AssertionError("no outer field in scope");
     }
+    throw new AssertionError("no outer field in scope");
   }
 }

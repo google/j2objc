@@ -78,7 +78,7 @@ public class InnerClassExtractorTest extends GenerationTest {
 
   public void testWeakSimpleInnerClass() throws IOException {
     String source = "import com.google.j2objc.annotations.WeakOuter; " +
-    	"public class A { @WeakOuter class B { int test() { return o.hashCode(); }} Object o; }";
+        "public class A { @WeakOuter class B { int test() { return o.hashCode(); }} Object o; }";
     String translation = translateSourceFile(source, "A", "A.h");
     assertTranslation(translation, "@property (nonatomic, assign) A *this$0;");
     translation = getTranslatedFile("A.m");
@@ -121,7 +121,6 @@ public class InnerClassExtractorTest extends GenerationTest {
     assertTranslation(translation, "[NIL_CHK(this$0_.this$0.o) hash]");
   }
 
-  /** TODO(user): test fails due to b/6265412
   public void testInnerMethodAnonymousClass() throws IOException {
     String source = "public class A {" +
         "  abstract class C { public abstract void foo(); }" +
@@ -146,10 +145,9 @@ public class InnerClassExtractorTest extends GenerationTest {
         "- (id)initWithA_B:(A_B *)outer$1\n" +
         "          withInt:(int)outer$0;");
     translation = getTranslatedFile("A.m");
-    assertTranslation(translation, "[super initWithA:outer$1.this$0]");
+    assertTranslation(translation, "[super initWithA:((A_B *) NIL_CHK(outer$1)).this$0]");
     assertTranslation(translation, "[NIL_CHK(this$1_.this$0.o) hash]");
   }
-  */
 
   /**
    * Verify that a static inner class is extracted.

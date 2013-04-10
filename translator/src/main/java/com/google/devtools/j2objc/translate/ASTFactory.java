@@ -32,6 +32,7 @@ import org.eclipse.jdt.core.dom.NumberLiteral;
 import org.eclipse.jdt.core.dom.PostfixExpression;
 import org.eclipse.jdt.core.dom.PrefixExpression;
 import org.eclipse.jdt.core.dom.SimpleName;
+import org.eclipse.jdt.core.dom.SingleVariableDeclaration;
 import org.eclipse.jdt.core.dom.Statement;
 import org.eclipse.jdt.core.dom.Type;
 import org.eclipse.jdt.core.dom.VariableDeclarationExpression;
@@ -96,6 +97,17 @@ public final class ASTFactory {
     decl.setType(Types.makeType(binding.getType()));
     decl.modifiers().addAll(ast.newModifiers(binding.getModifiers()));
     Types.addBinding(decl, binding.getType());
+    return decl;
+  }
+
+  @SuppressWarnings("unchecked")
+  public static SingleVariableDeclaration newSingleVariableDeclaration(
+      AST ast, IVariableBinding binding) {
+    SingleVariableDeclaration decl = ast.newSingleVariableDeclaration();
+    decl.setName(ASTFactory.newSimpleName(ast, binding));
+    decl.setType(Types.makeType(binding.getType()));
+    decl.modifiers().addAll(ast.newModifiers(binding.getModifiers()));
+    Types.addBinding(decl, binding);
     return decl;
   }
 
