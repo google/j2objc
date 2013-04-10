@@ -52,6 +52,7 @@ import org.eclipse.jdt.core.dom.SuperConstructorInvocation;
 import org.eclipse.jdt.core.dom.TypeDeclaration;
 import org.eclipse.jdt.core.dom.VariableDeclarationFragment;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
 
@@ -123,11 +124,15 @@ public class ObjectiveCImplementationGenerator extends ObjectiveCSourceFileGener
     unit.accept(new ErrorReportingASTVisitor() {
       @Override
       public boolean visit(TypeDeclaration node) {
-        if (!node.isInterface()) {
+        if (node.isInterface()) {
+          if (!getStaticFieldsNeedingAccessors(
+              Arrays.asList(node.getFields()), /* isInterface */ true).isEmpty()) {
+            result[0] = true;
+          }
+        } else {
           result[0] = true;  // always print concrete types
-          return false;
         }
-        return true;
+        return false;
       }
 
       @Override
@@ -139,14 +144,6 @@ public class ObjectiveCImplementationGenerator extends ObjectiveCSourceFileGener
       @Override
       public boolean visit(AnnotationTypeDeclaration node) {
         return false;  // never print annotations
-      }
-
-      @Override
-      public void endVisit(MethodDeclaration node) {
-        // Only print protocols if they have static constants.
-        if (isInterfaceConstantAccessor(Types.getMethodBinding(node))) {
-          result[0] = true;
-        }
       }
     });
     return result[0];
@@ -178,16 +175,18 @@ public class ObjectiveCImplementationGenerator extends ObjectiveCSourceFileGener
     }
     syncLineNumbers(node.getName()); // avoid doc-comment
 
+    String typeName = NameTable.getFullName(node);
+    List<FieldDeclaration> fields = Lists.newArrayList(node.getFields());
+    List<MethodDeclaration> methods = Lists.newArrayList(node.getMethods());
     fieldHiders = HiddenFieldDetector.getFieldNameConflicts(node);
     if (node.isInterface()) {
-      printStaticInterface(node);
+      printStaticInterface(typeName, fields, methods);
     } else {
-      String typeName = NameTable.getFullName(node);
       printf("@implementation %s\n\n", typeName);
-      List<FieldDeclaration> fields = Lists.newArrayList(node.getFields());
       printStaticReferencesMethod(fields);
-      printStaticVars(Lists.newArrayList(node.getFields()), /* isInterface */ false);
-      printProperties(node.getFields());
+      printStaticVars(fields, /* isInterface */ false);
+      printProperties(fields);
+      printStaticFieldAccessors(fields, methods, /* isInterface */ false);
       printMethods(node);
       printObjCTypeMethod(node);
 
@@ -195,7 +194,7 @@ public class ObjectiveCImplementationGenerator extends ObjectiveCSourceFileGener
 
       // Generate main method, if declared.
       MethodDeclaration main = null;
-      for (MethodDeclaration m : node.getMethods()) {
+      for (MethodDeclaration m : methods) {
         if (isMainMethod(m)) {
           main = m;
           break;
@@ -321,20 +320,6 @@ public class ObjectiveCImplementationGenerator extends ObjectiveCSourceFileGener
     }
   }
 
-  // Returns whether the static property a strong reference.
-  private boolean isStrongStaticProperty(VariableDeclarationFragment var) {
-    IVariableBinding binding = Types.getVariableBinding(var);
-    if (!Types.isPrimitiveConstant(binding)) {
-      if (!Types.isWeakReference(binding)) {
-        ITypeBinding type = Types.getTypeBinding(var);
-        if (!type.isPrimitive()) {
-          return true;
-        }
-      }
-    }
-    return false;
-  }
-
   private void printStaticReferencesMethod(List<FieldDeclaration> fields) {
     printStaticReferencesMethod(fields, null);
   }
@@ -363,9 +348,10 @@ public class ObjectiveCImplementationGenerator extends ObjectiveCSourceFileGener
           @SuppressWarnings("unchecked")
           List<VariableDeclarationFragment> fragments = f.fragments(); // safe by specification
           for (VariableDeclarationFragment var : fragments) {
-            if (isStrongStaticProperty(var)) {
-              IVariableBinding binding = Types.getVariableBinding(var);
-              String name = NameTable.getName(binding);
+            IVariableBinding binding = Types.getVariableBinding(var);
+            // All non-primitive static variables are strong references.
+            if (!binding.getType().isPrimitive()) {
+              String name = NameTable.getStaticVarQualifiedName(binding);
               println(String.format("  [result addObject:[JreMemDebugStrongReference " +
                   "strongReferenceWithObject:%s name:@\"%s\"]];", name, name));
             }
@@ -381,28 +367,22 @@ public class ObjectiveCImplementationGenerator extends ObjectiveCSourceFileGener
     }
   }
 
-  private void printStaticInterface(TypeDeclaration node) {
-    // Print implementation for static constants, if any.
-    boolean needsPrinting = false;
-    List<MethodDeclaration> methods = Lists.newArrayList(node.getMethods());
-    for (MethodDeclaration m : methods) {
-      if (isInterfaceConstantAccessor(Types.getMethodBinding(m))) {
-        needsPrinting = true;
-        break;
+  private void printStaticInterface(
+      String typeName, List<FieldDeclaration> fields, List<MethodDeclaration> methods) {
+    List<IVariableBinding> staticFields =
+        getStaticFieldsNeedingAccessors(fields, /* isInterface */ true);
+    if (staticFields.isEmpty()) {
+      return;
+    }
+    printf("\n@implementation %s\n\n", typeName);
+    printStaticVars(fields, /* isInterface */ true);
+    printStaticFieldAccessors(staticFields, methods);
+    for (MethodDeclaration method : methods) {
+      if (Types.getMethodBinding(method).isSynthetic()) {
+        printMethod(method);
       }
     }
-
-    if (needsPrinting) {
-      printf("\n@implementation %s\n\n", NameTable.getFullName(node));
-      printStaticVars(Lists.newArrayList(node.getFields()), /* isInterface */ true);
-      for (MethodDeclaration m : methods) {
-        IMethodBinding binding = Types.getMethodBinding(m);
-        if (binding.isSynthetic() || isInterfaceConstantAccessor(binding)) {
-          printMethod(m);
-        }
-      }
-      println("@end");
-    }
+    println("@end");
   }
 
   @Override
@@ -429,8 +409,10 @@ public class ObjectiveCImplementationGenerator extends ObjectiveCSourceFileGener
     syncLineNumbers(node.getName()); // avoid doc-comment
 
     String typeName = NameTable.getFullName(node);
+    newline();
     for (EnumConstantDeclaration constant : constants) {
-      printf("static %s *%s_%s;\n", typeName, typeName, NameTable.getName(constant.getName()));
+      IVariableBinding var = Types.getVariableBinding(constant.getName());
+      printf("static %s *%s;\n", typeName, NameTable.getStaticVarQualifiedName(var));
     }
     printf("IOSObjectArray *%s_values;\n", typeName);
     newline();
@@ -452,7 +434,8 @@ public class ObjectiveCImplementationGenerator extends ObjectiveCSourceFileGener
     String selfString = Options.useReferenceCounting() ? "[self retain]" : "self";
     printf("- (id)copyWithZone:(NSZone *)zone {\n  return %s;\n}\n\n", selfString);
 
-    printProperties(fields.toArray(new FieldDeclaration[0]));
+    printProperties(fields);
+    printStaticFieldAccessors(fields, methods, /* isInterface */ false);
     printMethods(methods);
 
     printf("+ (void)initialize {\n  if (self == [%s class]) {\n", typeName);
@@ -518,6 +501,28 @@ public class ObjectiveCImplementationGenerator extends ObjectiveCSourceFileGener
     println("}\n");
 
     println("@end");
+  }
+
+  @Override
+  protected void printStaticFieldGetter(IVariableBinding var) {
+    String name = Types.isPrimitiveConstant(var) ?
+        NameTable.getPrimitiveConstantName(var) :
+        NameTable.getStaticVarQualifiedName(var);
+    printf("%s {\n  return %s;\n}\n\n", staticFieldGetterSignature(var), name);
+  }
+
+  @Override
+  protected void printStaticFieldReferenceGetter(IVariableBinding var) {
+    printf("%s {\n  return &%s;\n}\n\n", staticFieldReferenceGetterSignature(var),
+           NameTable.getStaticVarQualifiedName(var));
+  }
+
+  @Override
+  protected void printStaticFieldSetter(IVariableBinding var) {
+    String fieldName = NameTable.getStaticVarQualifiedName(var);
+    String paramName = NameTable.getName(var);
+    printf("%s {\n  JreOperatorRetainedAssign(&%s, %s);\n}\n\n", staticFieldSetterSignature(var),
+           fieldName, paramName);
   }
 
   @Override
@@ -856,12 +861,13 @@ public class ObjectiveCImplementationGenerator extends ObjectiveCSourceFileGener
         for (VariableDeclarationFragment var : fragments) {
           IVariableBinding binding = Types.getVariableBinding(var);
           if (!Types.isPrimitiveConstant(binding)) {
-            String name = NameTable.getName(binding);
+            String name = NameTable.getStaticVarQualifiedName(binding);
+            String objcType = NameTable.javaRefToObjC(f.getType());
             Expression initializer = var.getInitializer();
             if (initializer != null) {
               printConstant(name, initializer);
             } else {
-              printf("static %s %s;\n", NameTable.javaRefToObjC(f.getType()), name);
+              printf("static %s %s;\n", objcType, name);
             }
             hadStaticVar = true;
           }
@@ -873,7 +879,7 @@ public class ObjectiveCImplementationGenerator extends ObjectiveCSourceFileGener
     }
   }
 
-  private void printProperties(FieldDeclaration[] fields) {
+  private void printProperties(List<FieldDeclaration> fields) {
     int nPrinted = 0;
     for (FieldDeclaration field : fields) {
       if ((field.getModifiers() & Modifier.STATIC) == 0) {

@@ -48,6 +48,8 @@ import java.net.URLDecoder;
 import java.nio.charset.Charset;
 import java.util.Collections;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * Tests code generation. A string containing the source code for a list of Java
@@ -254,6 +256,14 @@ public abstract class GenerationTest extends TestCase {
     }
   }
 
+  protected void assertOccurrences(String translation, String expected, int times) {
+    Matcher matcher = Pattern.compile(Pattern.quote(expected)).matcher(translation);
+    int count = 0;
+    for (; matcher.find(); count++) {}
+    if (count != times) {
+      fail("expected:\"" + expected + "\" " + times + " times in:\n" + translation);
+    }
+  }
 
   /**
    * Translate a Java method into a JDT DOM MethodDeclaration.  Although JDT

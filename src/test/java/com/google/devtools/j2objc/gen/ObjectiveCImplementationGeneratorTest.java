@@ -109,7 +109,7 @@ public class ObjectiveCImplementationGeneratorTest extends GenerationTest {
     assertTranslation(translation, "static JavaUtilDate * Example_today_;");
     assertTranslation(translation, "+ (JavaUtilDate *)today {");
     assertTranslation(translation, "return Example_today_;");
-    assertTranslation(translation, "+ (void)setTodayWithJavaUtilDate:(JavaUtilDate *)today {");
+    assertTranslation(translation, "+ (void)setToday:(JavaUtilDate *)today {");
     assertTranslation(translation, "JreOperatorRetainedAssign(&Example_today_, today);");
     assertFalse(translation.contains("initialize"));
   }
@@ -168,10 +168,10 @@ public class ObjectiveCImplementationGeneratorTest extends GenerationTest {
     assertTranslation(translation, "return Bar_FOO_;");
     assertTranslation(translation, "+ (void)initialize {");
     assertTranslation(translation, "Bar_FOO_ = 1;");
-    assertTranslation(translation, "+ (void)setFOOWithInt:(int)FOO {");
-    assertTranslation(translation, "Bar_FOO_ = FOO;");
+    assertTranslation(translation, "+ (int *)FOORef {");
+    assertTranslation(translation, "return &Bar_FOO_;");
     translation = getTranslatedFile("Example.m");
-    assertTranslation(translation, "[Bar setFOOWithInt:2];");
+    assertTranslation(translation, "(*[Bar FOORef]) = 2;");
   }
 
   public void testNSObjectMessageRename() throws IOException {
@@ -289,8 +289,8 @@ public class ObjectiveCImplementationGeneratorTest extends GenerationTest {
     assertTranslation(translation, "static int FooBar_fieldPhi_;");
     assertTranslation(translation, "+ (int)fieldPhi {");
     assertTranslation(translation, "return FooBar_fieldPhi_;");
-    assertTranslation(translation, "+ (void)setFieldPhiWithInt:(int)fieldPhi {");
-    assertTranslation(translation, "FooBar_fieldPhi_ = fieldPhi;");
+    assertTranslation(translation, "+ (int *)fieldPhiRef {");
+    assertTranslation(translation, "return &FooBar_fieldPhi_;");
     translation = getTranslatedFile("FooBar.h");
     assertTranslation(translation, "id fieldFoo_;");
     assertTranslation(translation, "id fieldJar_;");
@@ -300,7 +300,7 @@ public class ObjectiveCImplementationGeneratorTest extends GenerationTest {
     assertTranslation(translation, "@property (nonatomic, assign) int newFieldBar;");
     assertTranslation(translation, "- (int)newFieldBar OBJC_METHOD_FAMILY_NONE;");
     assertTranslation(translation, "+ (int)fieldPhi;");
-    assertTranslation(translation, "+ (void)setFieldPhiWithInt:(int)fieldPhi;");
+    assertTranslation(translation, "+ (int *)fieldPhiRef;");
   }
 
   public void testEmptyInterfaceGeneration() throws IOException {

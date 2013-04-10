@@ -82,6 +82,97 @@ public abstract class ObjectiveCSourceFileGenerator extends SourceFileGenerator 
     save(getOutputFileName(node));
   }
 
+  protected void printStaticFieldAccessors(
+      List<FieldDeclaration> fields, List<MethodDeclaration> methods, boolean isInterface) {
+    printStaticFieldAccessors(getStaticFieldsNeedingAccessors(fields, isInterface), methods);
+  }
+
+  protected void printStaticFieldAccessors(
+      List<IVariableBinding> bindings, List<MethodDeclaration> methods) {
+    for (IVariableBinding binding : bindings) {
+      if (needsGetter(binding, methods)) {
+        printStaticFieldGetter(binding);
+      }
+      if (!Modifier.isFinal(binding.getModifiers())) {
+        if (binding.getType().isPrimitive()) {
+          printStaticFieldReferenceGetter(binding);
+        } else {
+          printStaticFieldSetter(binding);
+        }
+      }
+    }
+  }
+
+  protected List<IVariableBinding> getStaticFieldsNeedingAccessors(
+      List<FieldDeclaration> fields, boolean isInterface) {
+    List<IVariableBinding> bindings = Lists.newArrayList();
+    for (FieldDeclaration f : fields) {
+      if (Modifier.isStatic(f.getModifiers()) || isInterface) {
+        @SuppressWarnings("unchecked")
+        List<VariableDeclarationFragment> fragments = f.fragments(); // safe by specification
+        for (VariableDeclarationFragment var : fragments) {
+          IVariableBinding binding = Types.getVariableBinding(var);
+          // Don't define accessors for private constants, since they can be
+          // directly referenced.
+          if (!(Types.isPrimitiveConstant(binding) && Modifier.isPrivate(binding.getModifiers()))) {
+            bindings.add(binding);
+          }
+        }
+      }
+    }
+    return bindings;
+  }
+
+  /**
+   * Returns true if a getter method is needed for a specified field.  The
+   * heuristic used is to find a method that has the same name, returns the
+   * same type, and has no parameters.  Obviously, lousy code can fail this
+   * test, but it should work in practice with existing Java code standards.
+   */
+  private boolean needsGetter(IVariableBinding var, List<MethodDeclaration> methods) {
+    String accessorName = NameTable.getStaticAccessorName(var.getName());
+    ITypeBinding type = var.getType();
+    for (MethodDeclaration methodDecl : methods) {
+      IMethodBinding method = Types.getMethodBinding(methodDecl);
+      if (method.getName().equals(accessorName) && method.getReturnType().isEqualTo(type)
+          && method.getParameterTypes().length == 0) {
+        return false;
+      }
+    }
+    return true;
+  }
+
+  protected void printStaticFieldGetter(IVariableBinding var) {
+    printf(staticFieldGetterSignature(var));
+  }
+
+  protected String staticFieldGetterSignature(IVariableBinding var) {
+    String objcType = NameTable.javaRefToObjC(var.getType());
+    String accessorName = NameTable.getStaticAccessorName(var.getName());
+    return String.format("+ (%s)%s", objcType, accessorName);
+  }
+
+  protected void printStaticFieldReferenceGetter(IVariableBinding var) {
+    printf(staticFieldReferenceGetterSignature(var));
+  }
+
+  protected String staticFieldReferenceGetterSignature(IVariableBinding var) {
+    String objcType = NameTable.javaRefToObjC(var.getType());
+    String accessorName = NameTable.getStaticAccessorName(var.getName());
+    return String.format("+ (%s *)%sRef", objcType, accessorName);
+  }
+
+  protected void printStaticFieldSetter(IVariableBinding var) {
+    printf(staticFieldSetterSignature(var));
+  }
+
+  protected String staticFieldSetterSignature(IVariableBinding var) {
+    String objcType = NameTable.javaRefToObjC(var.getType());
+    String paramName = NameTable.getName(var);
+    return String.format("+ (void)set%s:(%s)%s", NameTable.capitalize(var.getName()), objcType,
+                         paramName);
+  }
+
   /**
    * Print a list of methods.
    */
@@ -97,34 +188,10 @@ public abstract class ObjectiveCSourceFileGenerator extends SourceFileGenerator 
       } else if (Modifier.isStatic(m.getModifiers()) &&
           NameTable.CLINIT_NAME.equals(m.getName().getIdentifier())) {
         printStaticConstructorDeclaration(m);
-      } else if (!isMainMethod(m) && !isInterfaceConstantAccessor(binding)) {
+      } else if (!isMainMethod(m)) {
         printMethod(m);
       }
     }
-  }
-
-  /**
-   * Returns true if the specified method binding describes an accessor for
-   * an interface constant.
-   */
-  protected boolean isInterfaceConstantAccessor(IMethodBinding binding) {
-    return binding.getDeclaringClass().isInterface()
-        && !Modifier.isAbstract(binding.getModifiers());
-  }
-
-  /**
-   * Returns a list of those methods that define accessors to interface
-   * constants.  For most interfaces, the returned list will be empty.
-   */
-  protected List<MethodDeclaration> findInterfaceConstantAccessors(
-      List<MethodDeclaration> methods) {
-    List<MethodDeclaration> results = Lists.newArrayList();
-    for (MethodDeclaration m : methods) {
-      if (isInterfaceConstantAccessor(Types.getMethodBinding(m))) {
-        results.add(m);
-      }
-    }
-    return results;
   }
 
   protected void printMethod(MethodDeclaration m) {

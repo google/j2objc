@@ -32,8 +32,6 @@ import org.eclipse.jdt.core.dom.IMethodBinding;
 import org.eclipse.jdt.core.dom.MethodDeclaration;
 import org.eclipse.jdt.core.dom.MethodInvocation;
 import org.eclipse.jdt.core.dom.Modifier;
-import org.eclipse.jdt.core.dom.ReturnStatement;
-import org.eclipse.jdt.core.dom.SingleVariableDeclaration;
 import org.eclipse.jdt.core.dom.Statement;
 import org.eclipse.jdt.core.dom.SuperConstructorInvocation;
 import org.eclipse.jdt.core.dom.TypeDeclaration;
@@ -107,7 +105,7 @@ public class InitializationNormalizerTest extends GenerationTest {
     TypeDeclaration clazz =
         translateClassBody("static java.util.Date date = new java.util.Date();");
     List<BodyDeclaration> classMembers = clazz.bodyDeclarations();
-    assertEquals(5, classMembers.size()); // added two accessors and initialize method
+    assertEquals(3, classMembers.size()); // added an initialize method
 
     // test that initializer was stripped from the declaration
     BodyDeclaration decl = classMembers.get(0);
@@ -117,52 +115,20 @@ public class InitializationNormalizerTest extends GenerationTest {
     VariableDeclarationFragment field = varFragments.get(0);
     assertTrue(field.getInitializer() == null);
 
-    // test that a read accessor was added
+    // test that initializer was moved to new initialize method
     decl = classMembers.get(1);
     assertTrue(decl instanceof MethodDeclaration);
     MethodDeclaration method = (MethodDeclaration) decl;
-    assertEquals("date", method.getName().getIdentifier());
-    assertEquals(Modifier.STATIC, method.getModifiers());
+    assertEquals(NameTable.CLINIT_NAME, method.getName().getIdentifier());
+    assertEquals(Modifier.PUBLIC | Modifier.STATIC, method.getModifiers());
     assertTrue(method.parameters().isEmpty());
     List<Statement> generatedStatements = method.getBody().statements();
-    assertEquals(1, generatedStatements.size());
-    assertTrue(generatedStatements.get(0) instanceof ReturnStatement);
-    assertEquals("return date_;\n", generatedStatements.get(0).toString());
-
-    // test that a write accessor was added
-    decl = classMembers.get(2);
-    assertTrue(decl instanceof MethodDeclaration);
-    method = (MethodDeclaration) decl;
-    assertEquals("setDate", method.getName().getIdentifier());
-    assertEquals(Modifier.STATIC, method.getModifiers());
-    assertEquals(1, method.parameters().size());
-    SingleVariableDeclaration param = (SingleVariableDeclaration) method.parameters().get(0);
-    assertEquals("date", param.getName().getIdentifier());
-    generatedStatements = method.getBody().statements();
     assertEquals(1, generatedStatements.size());
     assertTrue(generatedStatements.get(0) instanceof ExpressionStatement);
     ExpressionStatement stmt = (ExpressionStatement) generatedStatements.get(0);
     assertTrue(stmt.getExpression() instanceof Assignment);
     Assignment assign = (Assignment) stmt.getExpression();
-    assertEquals("Test_date_", NameTable.getName(Types.getBinding(assign.getLeftHandSide())));
-    assertEquals("date", assign.getRightHandSide().toString());
-
-    // test that initializer was moved to new initialize method
-    decl = classMembers.get(3);
-    assertTrue(decl instanceof MethodDeclaration);
-    method = (MethodDeclaration) decl;
-    assertEquals(NameTable.CLINIT_NAME, method.getName().getIdentifier());
-    assertEquals(Modifier.PUBLIC | Modifier.STATIC, method.getModifiers());
-    assertTrue(method.parameters().isEmpty());
-    generatedStatements = method.getBody().statements();
-    assertEquals(1, generatedStatements.size());
-    assertTrue(generatedStatements.get(0) instanceof Block);
-    Block b = (Block) generatedStatements.get(0);
-    assertTrue(b.statements().get(0) instanceof ExpressionStatement);
-    stmt = (ExpressionStatement) b.statements().get(0);
-    assertTrue(stmt.getExpression() instanceof Assignment);
-    assign = (Assignment) stmt.getExpression();
-    assertEquals("Test_date_", NameTable.getName(Types.getBinding(assign.getLeftHandSide())));
+    assertEquals("date", NameTable.getName(Types.getBinding(assign.getLeftHandSide())));
     assertEquals("new java.util.Date()", assign.getRightHandSide().toString());
   }
 
@@ -364,5 +330,25 @@ public class InitializationNormalizerTest extends GenerationTest {
     assertTranslation(translation, "innerVar_ = this$0_.outerVar;");
     assertTrue(translation.indexOf("JreOperatorRetainedAssign(&this$0_, outer$0);")
                < translation.indexOf("innerVar_ = this$0_.outerVar;"));
+  }
+
+  public void testStaticInitializersKeptInOrder() throws IOException {
+    String source =
+        "public class Test { " +
+        "  public static final int I = 1; " +
+        "  public static final java.util.Set<Integer> iSet = new java.util.HashSet<Integer>(); " +
+        "  static { iSet.add(I); } " +
+        "  public static final int iSetSize = iSet.size(); }";
+    String translation = translateSourceFile(source, "Test", "Test.m");
+    String setInit =
+        "JreOperatorRetainedAssign(&Test_iSet_, [[[JavaUtilHashSet alloc] init] autorelease])";
+    String setAdd = "[((id<JavaUtilSet>) NIL_CHK(Test_iSet_))" +
+        " addWithId:[JavaLangInteger valueOfWithInt:Test_I]]";
+    String setSize = "Test_iSetSize_ = [((id<JavaUtilSet>) NIL_CHK(Test_iSet_)) size]";
+    assertTranslation(translation, setInit);
+    assertTranslation(translation, setAdd);
+    assertTranslation(translation, setSize);
+    assertTrue(translation.indexOf(setInit) < translation.indexOf(setAdd));
+    assertTrue(translation.indexOf(setAdd) < translation.indexOf(setSize));
   }
 }

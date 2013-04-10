@@ -71,4 +71,42 @@ public class ObjectiveCSourceFileGeneratorTest extends GenerationTest {
     assertTranslation(translation, "ocni();");
     assertFalse(translation.contains("jsni();"));
   }
+
+  public void testStaticAccessorsAdded() throws IOException {
+    String header = translateSourceFile("class Test {" +
+        " private static int foo;" +
+        " private static final int finalFoo = 12;" +
+        " private static String bar;" +
+        " private static final String finalBar = \"test\";" +
+        " }", "Test", "Test.h");
+    assertTranslation(header, "#define Test_finalFoo 12");
+    String implementation = getTranslatedFile("Test.m");
+    for (String translation : new String[] { header, implementation }) {
+      assertTranslation(translation, "+ (int)foo");
+      assertTranslation(translation, "+ (int *)fooRef");
+      assertTranslation(translation, "+ (NSString *)bar");
+      assertTranslation(translation, "+ (void)setBar:(NSString *)bar");
+      assertTranslation(translation, "+ (NSString *)finalBar");
+      assertFalse(translation.contains("setFinalBar"));
+    }
+  }
+
+  public void testStaticReaderAddedWhenSameMethodNameExists() throws IOException {
+    String translation = translateSourceFile(
+        "class Test { private static int foo; void foo(String s) {}}", "Test", "Test.h");
+    assertTranslation(translation, "+ (int)foo;");
+    assertTranslation(translation, "+ (int *)fooRef;");
+    assertTranslation(translation, "- (void)fooWithNSString:(NSString *)s;");
+  }
+
+  /**
+   * Verify that a static reader method is not added to a class that already
+   * has one.
+   */
+  public void testExistingStaticReaderDetected() throws IOException {
+    String translation = translateSourceFile(
+        "class Test { private static int foo; public static int foo() { return foo; }}", "Test",
+        "Test.h");
+    assertOccurrences(translation, "+ (int)foo;", 1);
+  }
 }
