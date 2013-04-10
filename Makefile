@@ -17,7 +17,7 @@
 #
 # Author: Tom Ball
 
-.PHONY: translator jre_emul dist
+.PHONY: translator jre_emul dist test
 
 PROJECT_ROOT = .
 
