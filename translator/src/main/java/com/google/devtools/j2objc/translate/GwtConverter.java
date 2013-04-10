@@ -139,9 +139,8 @@ public class GwtConverter extends ErrorReportingASTVisitor {
       Expression clazz = NodeCopier.copySubtree(ast, args.get(0));
       args.remove(0);
       node.setExpression(clazz);
-      GeneratedMethodBinding newBinding = new GeneratedMethodBinding("newInstance", 0,
-        ast.resolveWellKnownType("java.lang.Object"), ast.resolveWellKnownType("java.lang.Class"),
-        false, false, false);
+      IMethodBinding newBinding = Types.findDeclaredMethod(
+          ast.resolveWellKnownType("java.lang.Class"), "newInstance");
       Types.addBinding(name, newBinding);
       Types.addBinding(node, newBinding);
     } else if (isGwtTest(node)) {

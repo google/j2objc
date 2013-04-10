@@ -340,6 +340,7 @@ public abstract class GenerationTest extends TestCase {
 
   protected void addSourceFile(String source, String fileName) throws IOException {
     File file = new File(tempDir, fileName);
+    file.getParentFile().mkdirs();
     Files.write(source, file, Charset.defaultCharset());
   }
 
