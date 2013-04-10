@@ -256,7 +256,7 @@ build: support-lib $(TEST_OBJS)
 link: build $(TEST_BINS)
 
 run-tests: link $(TEST_BINS)
-	@/bin/sh runtests.sh $(TEST_BINS)
+	@/bin/sh ../scripts/runtests.sh $(TEST_BINS)
 
 $(SUPPORT_LIB): $(SUPPORT_OBJS)
 	libtool -static -o $(SUPPORT_LIB) $(SUPPORT_OBJS)

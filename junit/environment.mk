@@ -21,7 +21,7 @@
 CWD = .
 PROJECT_ROOT = $(CWD)/..
 
-include ../src/main/make/detect_xcode.mk
+include ../make/detect_xcode.mk
 
 INCLUDE_DIR = $(BUILD_DIR)/include
 SOURCE_BASE = $(CWD)/src/main
