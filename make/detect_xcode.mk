@@ -26,6 +26,7 @@ DIST_DIR = $(CONFIGURATION_BUILD_DIR)
 DIST_MACOS_DIR = $(SYMROOT)/$(CONFIGURATION)
 DIST_INCLUDE_DIR = $(DIST_DIR)/Headers
 DIST_LIB_DIR = $(DIST_DIR)
+DIST_JAR_DIR = $(DIST_MACOS_DIR)
 ARCH_FLAGS = $(ARCHS:%=-arch %)
 
 dep_build_dir = $(TEMP_ROOT)/$(word 3,$(1)).build/$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME)/$(word 1,$(1)).build
@@ -44,6 +45,7 @@ endif
 DIST_MACOS_DIR = $(DIST_DIR)
 DIST_INCLUDE_DIR = $(DIST_DIR)/include
 DIST_LIB_DIR = $(DIST_DIR)/lib
+DIST_JAR_DIR = $(DIST_LIB_DIR)
 ARCH_FLAGS =
 
 # Determine this makefile's path.

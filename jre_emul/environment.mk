@@ -44,7 +44,7 @@ JRE_NIO_TEST_ROOT = $(APACHE_HARMONY_BASE)/nio/src/test/java/common
 TEST_SUPPORT_ROOT = $(APACHE_HARMONY_BASE)/../support/src/test/java
 MATH_TEST_SUPPORT_ROOT = $(APACHE_HARMONY_BASE)/math/src/test/java/tests/api
 REGEX_TEST_ROOT = $(APACHE_HARMONY_BASE)/regex/src/test/java
-J2OBJC_SRC_ROOT = $(CWD)/../translator/src/main/java
+J2OBJC_SRC_ROOT = $(CWD)/../src/main/java
 
 ANDROID_BASE = $(CWD)/android/libcore
 ANDROID_JRE_ROOT = $(ANDROID_BASE)/luni/src/main/java
@@ -74,7 +74,7 @@ vpath %.java $(JRE_SRC) $(TEST_SRC)
 CLANG=$(XCRUN) clang
 
 # J2ObjC settings
-J2OBJC := USE_SYSTEM_BOOT_PATH=TRUE $(DIST_DIR)/j2objc --mem-debug \
+J2OBJC := USE_SYSTEM_BOOT_PATH=TRUE $(DIST_MACOS_DIR)/j2objc --mem-debug \
    -classpath $(EMULATION_JAR) -d $(CLASS_DIR) $(J2OBJC_DEBUGFLAGS)
 
 # GCC settings, based on Xcode log output
