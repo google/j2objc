@@ -256,6 +256,7 @@ JAVA_SOURCES = \
 	java/util/Currency.java \
 	java/util/Date.java \
 	java/util/Dictionary.java \
+	java/util/EnumMap.java \
 	java/util/EnumSet.java \
 	java/util/EventListener.java \
 	java/util/EventObject.java \
