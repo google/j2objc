@@ -45,6 +45,7 @@ import org.eclipse.jdt.core.dom.PrefixExpression;
 import org.eclipse.jdt.core.dom.ReturnStatement;
 import org.eclipse.jdt.core.dom.SimpleName;
 import org.eclipse.jdt.core.dom.SuperConstructorInvocation;
+import org.eclipse.jdt.core.dom.SwitchStatement;
 import org.eclipse.jdt.core.dom.VariableDeclarationFragment;
 import org.eclipse.jdt.core.dom.WhileStatement;
 
@@ -386,6 +387,15 @@ public class Autoboxer extends ErrorReportingASTVisitor {
 
   @Override
   public void endVisit(WhileStatement node) {
+    Expression expression = node.getExpression();
+    ITypeBinding exprType = getBoxType(expression);
+    if (!exprType.isPrimitive()) {
+      node.setExpression(unbox(expression));
+    }
+  }
+
+  @Override
+  public void endVisit(SwitchStatement node) {
     Expression expression = node.getExpression();
     ITypeBinding exprType = getBoxType(expression);
     if (!exprType.isPrimitive()) {
