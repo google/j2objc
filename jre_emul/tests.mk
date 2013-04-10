@@ -45,6 +45,7 @@ TEST_OBJS = \
 	$(TESTS_DIR)/org/apache/harmony/luni/tests/java/io/FileInputStreamTest.o \
 	$(TESTS_DIR)/org/apache/harmony/luni/tests/java/io/FileNotFoundExceptionTest.o \
 	$(TESTS_DIR)/org/apache/harmony/luni/tests/java/io/FileReaderTest.o \
+	$(TESTS_DIR)/org/apache/harmony/luni/tests/java/io/FileTest.o \
 	$(TESTS_DIR)/org/apache/harmony/luni/tests/java/io/FileWriterTest.o \
 	$(TESTS_DIR)/org/apache/harmony/luni/tests/java/io/FilterOutputStreamTest.o \
 	$(TESTS_DIR)/org/apache/harmony/luni/tests/java/io/FileOutputStreamTest.o \
