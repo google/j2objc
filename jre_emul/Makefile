@@ -300,7 +300,8 @@ JAVA_SOURCES = \
 
 JAVA_SOURCE_LIST = $(BUILD_DIR)/jre_emul.classes.list
 OBJC_OUT_LIST = $(BUILD_DIR)/jre_emul.objc.list
-JAVA_MANIFEST = $(BUILD_DIR)/java_sources.mf
+JAVA_SOURCES_MANIFEST = $(BUILD_DIR)/java_sources.mf
+OBJC_SOURCES_MANIFEST = $(BUILD_DIR)/objc_sources.mf
 
 STUB_JAVA_SOURCES = $(shell find $(STUBS_DIR) -name *.java)
 ALL_JAVA_SOURCES = $(JAVA_SOURCES) $(IOS_JAVA_OBJS:.o=.java) $(IOS_INTERFACES:.h=.java) \
@@ -456,7 +457,7 @@ lib_dist: lib dist_includes $(EMULATION_LIB_DIST)
 $(EMULATION_LIB_DIST): $(EMULATION_LIB) | $(DIST_LIB_DIR)
 	install -m 0644 $< $@
 
-java: emul_jar_dist java_manifest
+java: emul_jar_dist java_sources_manifest
 
 emul_jar_dist: $(EMULATION_JAR_DIST)
 	@:
@@ -471,10 +472,20 @@ $(EMULATION_JAR): $(ALL_JAVA_SOURCES) | $(BUILD_DIR)
 	@javac -classpath $(ANNOTATIONS_JAR) -d $(EMULATION_STAGE) $^
 	@jar cf $(EMULATION_JAR) -C $(EMULATION_STAGE) .
 
-java_manifest: $(JAVA_MANIFEST)
-
 $(JAVA_MANIFEST): $(ALL_JAVA_SOURCES) | $(BUILD_DIR)
-	@echo "Building java_sources.mf"
+	@echo "Building $$(basename $@)"
 	@if [ -e $@ ]; then rm $@; fi
 	@for i in $^; do echo $$i >> $@; done
+
+java_sources_manifest: $(JAVA_MANIFEST)
+
+$(OBJC_SOURCES_MANIFEST): $(ALL_JAVA_SOURCES) | $(BUILD_DIR)
+	@echo "Building $$(basename $@)"
+	@if [ -e $@ ]; then rm $@; fi
+	@for i in $(JAVA_SOURCES); do \
+	  echo $(TRANSLATED_SOURCE_DIR)/$${i%.java}.h >> $@; \
+	  echo $(TRANSLATED_SOURCE_DIR)/$${i%.java}.m >> $@; \
+	done
+
+objc_sources_manifest: $(OBJC_SOURCES_MANIFEST)
 
