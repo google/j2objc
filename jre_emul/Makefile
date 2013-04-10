@@ -17,7 +17,7 @@
 # Author: Tom Ball
 
 .SUFFIXES: .java .m
-.PHONY: default j2objc clean
+.PHONY: default clean
 
 include environment.mk
 
@@ -339,7 +339,7 @@ default: lib includes
 
 analyze: $(OBJS:%.o=$(CLASS_DIR)%.plist)
 
-translate: j2objc $(EMULATION_JAR) pre_translate $(TRANSLATED_OBJC)
+translate: pre_translate $(TRANSLATED_OBJC)
 	@if [ `cat $(JAVA_SOURCE_LIST) | wc -l` -ge 1 ] ; then \
 	  rm -f `cat $(OBJC_OUT_LIST)`; \
 	  $(J2OBJC) --inline-field-access -sourcepath .:$(JRE_SRC) `cat $(JAVA_SOURCE_LIST)` ; \
@@ -475,9 +475,13 @@ clean:
 	@rm -f $(EMULATION_LIB:$(BUILD_DIR)/%=$(DIST_LIB_DIR)/%)
 	@rm -f $(DIST_INCLUDES)
 
-dist: lib includes emul_jar_dist dist_includes
+dist: emul_jar_dist lib_dist
+
+lib_dist: lib dist_includes
 	@mkdir -p $(DIST_LIB_DIR)
 	install -m 0644 $(EMULATION_LIB) $(DIST_LIB_DIR)
+
+java: emul_jar_dist java_manifest
 
 emul_jar_dist: $(EMULATION_JAR)
 	@mkdir -p $(DIST_LIB_DIR)
