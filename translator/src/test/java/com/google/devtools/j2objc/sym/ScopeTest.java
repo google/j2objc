@@ -96,7 +96,7 @@ public class ScopeTest extends GenerationTest {
     String source = "public class Test { static { for (int i = 0; i < 3; i++) { } } }";
     CompilationUnit unit = translateType("Test", source);
     TypeDeclaration decl = (TypeDeclaration) unit.types().get(0);
-    MethodDeclaration init = (MethodDeclaration) decl.bodyDeclarations().get(0);
+    MethodDeclaration init = (MethodDeclaration) decl.bodyDeclarations().get(1);
     assertEquals("initialize", init.getName().getIdentifier());
     Block b = (Block) init.getBody().statements().get(0);
     ForStatement stmt = (ForStatement) b.statements().get(0);

@@ -899,7 +899,7 @@ public class StatementGeneratorTest extends GenerationTest {
     assertTranslation(translation, "- (id)init;");
     assertTranslation(translation, "- (void)init__WithInt:(int)a");
     translation = translateSourceFile("B", "B.m");
-    assertTranslation(translation, "return (self = JreMemDebugAdd([super init]));");
+    assertTranslation(translation, "return JreMemDebugAdd([super init]);");
     assertTranslation(translation, "[super init__WithInt:b];");
   }
 

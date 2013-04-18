@@ -112,7 +112,7 @@ public class InitializationNormalizer extends ErrorReportingASTVisitor {
     }
 
     // Update any primary constructors with init statements.
-    if (!initStatements.isEmpty() || binding.isEnum()) {
+    if (!binding.isInterface()) {
       boolean needsConstructor = true;
       for (MethodDeclaration md : methods) {
         if (md.isConstructor()) {
@@ -295,11 +295,13 @@ public class InitializationNormalizer extends ErrorReportingASTVisitor {
   void addDefaultConstructor(ITypeBinding type, List<BodyDeclaration> members,
       List<Statement> initStatements, AST ast) {
     SuperConstructorInvocation superCall = ast.newSuperConstructorInvocation();
+    int constructorModifier =
+        type.getModifiers() & (Modifier.PUBLIC | Modifier.PROTECTED | Modifier.PRIVATE);
     GeneratedMethodBinding binding = new GeneratedMethodBinding(
-        INIT_NAME, Modifier.PUBLIC, null, type.getSuperclass(), true, false, true);
+        INIT_NAME, constructorModifier, null, type.getSuperclass(), true, false, true);
     Types.addBinding(superCall, binding);
     initStatements.add(0, superCall);
-    addMethod(INIT_NAME, Modifier.PUBLIC, type, initStatements, members, ast, true);
+    addMethod(INIT_NAME, constructorModifier, type, initStatements, members, ast, true);
   }
 
   void addClassInitializer(ITypeBinding type, List<BodyDeclaration> members,

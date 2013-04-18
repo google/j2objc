@@ -22,6 +22,7 @@
 #import <Foundation/Foundation.h>
 #import "IOSByteArray.h"
 #import "IOSCharArray.h"
+#import "IOSIntArray.h"
 #import "IOSObjectArray.h"
 #import "java/lang/CharSequence.h"
 #import "java/lang/Comparable.h"
@@ -78,10 +79,19 @@ destinationBegin:(int)dstBegin;
 // String(byte[])
 + (NSString *)stringWithBytes:(IOSByteArray *)value;
 
+// String(byte[], int)
++ (NSString *)stringWithBytes:(IOSByteArray *)value
+                       hibyte:(int)hibyte;
+
 // String(byte[], int, int)
 + (NSString *)stringWithBytes:(IOSByteArray *)value
                        offset:(int)offset
                        length:(int)count;
+
++ (NSString *)stringWithBytes:(IOSByteArray *)value
+                       hibyte:(NSUInteger)hibyte
+                       offset:(NSUInteger)offset
+                       length:(NSUInteger)length;
 
 // String(byte[], String)
 + (NSString *)stringWithBytes:(IOSByteArray *)value
@@ -110,6 +120,11 @@ destinationBegin:(int)dstBegin;
 + (NSString *)stringWithOffset:(int)offset
                         length:(int)length
                     characters:(IOSCharArray *)value;
+
+// String(int[], int, int)
++ (NSString *)stringWithInts:(IOSIntArray *)codePoints
+                      offset:(int)offset
+                      length:(int)length;
 
 // String(StringBuffer)
 + (NSString *)stringWithJavaLangStringBuffer:(JavaLangStringBuffer *)sb;
@@ -196,6 +211,12 @@ destinationBegin:(int)dstBegin;
 
 - (IOSByteArray *)getBytesWithEncoding:(NSStringEncoding)encoding;
 
+// String.getBytes(int, int, byte[], int)
+- (void)getBytesWithSrcBegin:(int)srcBegin
+                  withSrcEnd:(int)srcEnd
+                     withDst:(IOSByteArray *)dst
+                withDstBegin:(int)dstBegin;
+
 // String.format(Locale, String, ...)
 + (NSString *)stringWithFormat:(NSString *)format locale:(id)locale, ...;
 
@@ -244,6 +265,12 @@ destinationBegin:(int)dstBegin;
 // String.matches(), split(String, int)
 - (BOOL)matches:(NSString *)regex;
 - (IOSObjectArray *)split:(NSString *)regex limit:(int)limit;
+
+// String.contentEquals(CharSequence), contentEquals(StringBuffer)
+- (BOOL)contentEqualsCharSequence:(id<JavaLangCharSequence>)seq;
+- (BOOL)contentEqualsStringBuffer:(JavaLangStringBuffer *)sb;
+
+// String.offsetByCodePoints(int, int)
 
 + (id<JavaUtilComparator>)CASE_INSENSITIVE_ORDER;
 

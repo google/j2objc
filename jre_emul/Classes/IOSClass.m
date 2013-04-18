@@ -404,8 +404,7 @@ NSString *getTranslatedMethodName(NSString *name,
 }
 
 JavaLangReflectConstructor *getConstructorImpl(IOSClass *cls,
-                                               IOSObjectArray *classes,
-                                               BOOL searchSuperclasses) {
+                                               IOSObjectArray *classes) {
   NSMutableString *name = [@"init" mutableCopy];
 #if ! __has_feature(objc_arc)
   [name autorelease];
@@ -426,8 +425,6 @@ JavaLangReflectConstructor *getConstructorImpl(IOSClass *cls,
   BOOL hasConstructor;
   if (cls->protocol_) {
     hasConstructor = NO;
-  } else if (searchSuperclasses) {
-    hasConstructor = (class_getInstanceMethod(cls->class_, selector) != NULL);
   } else {
     hasConstructor = NO;
     unsigned count;
@@ -455,12 +452,15 @@ JavaLangReflectConstructor *getConstructorImpl(IOSClass *cls,
 }
 
 - (JavaLangReflectConstructor *)getConstructor:(IOSObjectArray *)classes {
-  return getConstructorImpl(self, classes, YES);
+  // Java's getConstructor() only returns the constructor if it's public.
+  // However, all constructors in Objective-C are public, so this method
+  // is identical to getDeclaredConstructor().
+  return getConstructorImpl(self, classes);
 }
 
 - (JavaLangReflectConstructor *)getDeclaredConstructor:
     (IOSObjectArray *)classes {
-  return getConstructorImpl(self, classes, NO);
+  return getConstructorImpl(self, classes);
 }
 
 - (BOOL) isAssignableFrom:(IOSClass *)cls {

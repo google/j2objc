@@ -157,7 +157,7 @@ public class InnerClassExtractorTest extends GenerationTest {
         "static class Foo { int i; Foo() { this(0); } Foo(int i) { this.i = i; } }");
     assertEquals(2, types.size());
     List<BodyDeclaration> classMembers = types.get(0).bodyDeclarations();
-    assertTrue(classMembers.size() == 1);
+    assertTrue(classMembers.size() == 2);
     TypeDeclaration innerClass = types.get(1);
     assertEquals(4, innerClass.bodyDeclarations().size());
     List<?> members = innerClass.bodyDeclarations();
@@ -176,8 +176,8 @@ public class InnerClassExtractorTest extends GenerationTest {
     method = (MethodDeclaration) members.get(2);
     assertTrue(method.isConstructor());
     assertEquals(1, method.parameters().size());
-    assertEquals(1, method.getBody().statements().size());
-    ExpressionStatement expr = (ExpressionStatement) method.getBody().statements().get(0);
+    assertEquals(2, method.getBody().statements().size());
+    ExpressionStatement expr = (ExpressionStatement) method.getBody().statements().get(1);
     assertTrue(expr.getExpression() instanceof Assignment);
   }
 
@@ -227,7 +227,7 @@ public class InnerClassExtractorTest extends GenerationTest {
       public void endVisit(MethodDeclaration node) {
         if (node.isConstructor()) {
           assertEquals("final Test outer$0", node.parameters().get(0).toString());
-          assertEquals("this$0=outer$0;", node.getBody().statements().get(0).toString().trim());
+          assertEquals("this$0=outer$0;", node.getBody().statements().get(1).toString().trim());
           ++testsFound[0];
         } else if (node.getName().getIdentifier().equals("dealloc")) {
           assertEquals("this$0=null;", node.getBody().statements().get(0).toString().trim());
@@ -272,7 +272,7 @@ public class InnerClassExtractorTest extends GenerationTest {
       @Override
       public void endVisit(MethodDeclaration node) {
         if (node.isConstructor()) {
-          assertEquals("this$0=outer$0;", node.getBody().statements().get(0).toString().trim());
+          assertEquals("this$0=outer$0;", node.getBody().statements().get(1).toString().trim());
           ++testsFound[0];
         } else if (node.getName().getIdentifier().equals("test")) {
           assertEquals("this$0.add(this$0.size());",
@@ -305,7 +305,7 @@ public class InnerClassExtractorTest extends GenerationTest {
       @Override
       public void endVisit(MethodDeclaration node) {
         if (node.isConstructor()) {
-          String result = node.getBody().statements().get(0).toString().trim();
+          String result = node.getBody().statements().get(1).toString().trim();
           assertTrue(result.matches("this\\$0=outer\\$[0-9];"));
           ++testsFound[0];
         }
@@ -331,7 +331,7 @@ public class InnerClassExtractorTest extends GenerationTest {
       public void endVisit(MethodDeclaration node) {
         if (node.isConstructor()) {
           // No this$0 qualifier should have been added.
-          assertEquals("elementCount=0;", node.getBody().statements().get(0).toString().trim());
+          assertEquals("elementCount=0;", node.getBody().statements().get(1).toString().trim());
           ++testsFound[0];
         }
       };
@@ -531,7 +531,7 @@ public class InnerClassExtractorTest extends GenerationTest {
     // Verify that main method creates a new instanceof B associated with
     // a new instance of Test.
     List<BodyDeclaration> classMembers = types.get(0).bodyDeclarations();
-    assertEquals(2, classMembers.size());
+    assertEquals(3, classMembers.size());
     MethodDeclaration method = (MethodDeclaration) classMembers.get(0);
     assertEquals("main", method.getName().getIdentifier());
     VariableDeclarationStatement field =
@@ -586,7 +586,7 @@ public class InnerClassExtractorTest extends GenerationTest {
     // Verify that main method creates a new instanceof B associated with
     // a new instance of Test.
     List<BodyDeclaration> classMembers = types.get(0).bodyDeclarations();
-    assertEquals(2, classMembers.size());
+    assertEquals(3, classMembers.size());
     MethodDeclaration method = (MethodDeclaration) classMembers.get(0);
     assertEquals("main", method.getName().getIdentifier());
     VariableDeclarationStatement field =

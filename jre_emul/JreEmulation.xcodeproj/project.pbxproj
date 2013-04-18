@@ -203,6 +203,7 @@
 		067228FB158FB0B3005318BD /* AccessibleObject.h in Headers */ = {isa = PBXBuildFile; fileRef = 067228F9158FB0B3005318BD /* AccessibleObject.h */; };
 		067228FC158FB0B3005318BD /* AccessibleObject.m in Sources */ = {isa = PBXBuildFile; fileRef = 067228FA158FB0B3005318BD /* AccessibleObject.m */; };
 		06722900158FD6AF005318BD /* NoSuchFieldException.m in Sources */ = {isa = PBXBuildFile; fileRef = 067228FE158FD6AF005318BD /* NoSuchFieldException.m */; };
+		06734321171DF62600F26D4F /* TempFailureRetry.h in Headers */ = {isa = PBXBuildFile; fileRef = 06734320171DF62600F26D4F /* TempFailureRetry.h */; };
 		067855A9169F35AB0042431C /* JreMemDebug.h in Headers */ = {isa = PBXBuildFile; fileRef = 067855A5169F35AB0042431C /* JreMemDebug.h */; };
 		067855AA169F35AB0042431C /* JreMemDebug.m in Sources */ = {isa = PBXBuildFile; fileRef = 067855A6169F35AB0042431C /* JreMemDebug.m */; };
 		067855AB169F35AB0042431C /* JreMemDebugStrongReference.h in Headers */ = {isa = PBXBuildFile; fileRef = 067855A7169F35AB0042431C /* JreMemDebugStrongReference.h */; };
@@ -729,6 +730,7 @@
 		067228FA158FB0B3005318BD /* AccessibleObject.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = AccessibleObject.m; path = java/lang/reflect/AccessibleObject.m; sourceTree = "<group>"; };
 		067228FD158FD6AF005318BD /* NoSuchFieldException.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = NoSuchFieldException.h; path = build_result/Classes/java/lang/NoSuchFieldException.h; sourceTree = "<group>"; };
 		067228FE158FD6AF005318BD /* NoSuchFieldException.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = NoSuchFieldException.m; path = build_result/Classes/java/lang/NoSuchFieldException.m; sourceTree = "<group>"; };
+		06734320171DF62600F26D4F /* TempFailureRetry.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TempFailureRetry.h; sourceTree = "<group>"; };
 		067855A5169F35AB0042431C /* JreMemDebug.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JreMemDebug.h; sourceTree = "<group>"; };
 		067855A6169F35AB0042431C /* JreMemDebug.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JreMemDebug.m; sourceTree = "<group>"; };
 		067855A7169F35AB0042431C /* JreMemDebugStrongReference.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JreMemDebugStrongReference.h; sourceTree = "<group>"; };
@@ -1021,6 +1023,7 @@
 				066193E5155849F80004DAFE /* NSObject+JavaObject.m */,
 				066193E6155849F80004DAFE /* NSString+JavaString.h */,
 				066193E7155849F80004DAFE /* NSString+JavaString.m */,
+				06734320171DF62600F26D4F /* TempFailureRetry.h */,
 				067228F2158FB002005318BD /* Throwable.h */,
 				06721BA31559DE3800645E1B /* Throwable.m */,
 				06DDF48F16E8404B00A08BE0 /* TimeZonesSupport.h */,
@@ -1611,6 +1614,7 @@
 				06DDF49216E8404B00A08BE0 /* ICUSupport.h in Headers */,
 				06DDF49416E8404B00A08BE0 /* TimeZonesSupport.h in Headers */,
 				06DDF49616E8404B00A08BE0 /* UniquePtr.h in Headers */,
+				06734321171DF62600F26D4F /* TempFailureRetry.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

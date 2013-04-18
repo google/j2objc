@@ -32,7 +32,11 @@ public class String implements CharSequence, Comparable<String> {
 
   public String(byte[] bytes) {}
 
-  public String(byte[] bytes, int i, int j) {}
+  public String(byte[] bytes, int hibyte) {}
+
+  public String(byte[] bytes, int offset, int count) {}
+
+  public String(byte[] bytes, int hibyte, int offset, int count) {}
 
   public String(byte[] bytes, int i, int j, String s) throws UnsupportedEncodingException {}
 
@@ -41,6 +45,8 @@ public class String implements CharSequence, Comparable<String> {
   public String(char[] chars) {}
 
   public String(char[] chars, int i, int j) {}
+
+  public String(int[] codePoints, int offset, int length) {}
 
   String(int i, int j, char[] chars) {}
 
@@ -149,6 +155,8 @@ public class String implements CharSequence, Comparable<String> {
   public byte[] getBytes(String s) throws UnsupportedEncodingException {
     return null;
   }
+
+  public void getBytes(int srcBegin, int srcEnd, byte dst[], int dstBegin) {}
 
   public void getChars(int i, int j, char[] chars, int k) {}
 
@@ -276,15 +284,17 @@ public class String implements CharSequence, Comparable<String> {
     return null;
   }
 
+  public boolean contentEquals(CharSequence cs) {
+    return false;
+  }
+
+  public boolean contentEquals(StringBuffer sb) {
+    return false;
+  }
+
   /* Unimplemented/mapped methods.
-  String(byte[] bytes, int i)
-  String(byte[] bytes, int i, int j, int k)
   String(byte[] bytes, int i, int j, java.nio.charset.Charset charset)
   String(byte[] bytes, java.nio.charset.Charset charset)
-  String(int[] ints, int i, int j)
-  boolean contentEquals(CharSequence cs)
-  boolean contentEquals(StringBuffer sb)
-  getBytes(int i, int j, byte[] bytes, int k)
   byte[] getBytes(java.nio.charset.Charset charset)
   int offsetByCodePoints(int i, int j)
   */
