@@ -8,12 +8,7 @@ else
   readonly DIR=$(dirname "$0")
 fi
 
-if [ ${CONFIGURATION_BUILD_DIR:+1} ]; then
-  # Running in XCode
-  readonly LIB_DIR=
-else
-  readonly LIB_DIR=/lib
-fi
+readonly LIB_DIR=/lib
 
 readonly JAR=${DIR}${LIB_DIR}/cycle_finder.jar
 
