@@ -152,9 +152,10 @@ JAVA_SOURCES = \
 	java/io/UnsupportedEncodingException.java \
 	java/io/Writer.java \
 	java/lang/ArithmeticException.java \
-	java/lang/AssertionError.java \
 	java/lang/ArrayIndexOutOfBoundsException.java \
 	java/lang/ArrayStoreException.java \
+	java/lang/AssertionError.java \
+	java/lang/AutoCloseable.java \
 	java/lang/Boolean.java \
 	java/lang/Byte.java \
 	java/lang/Character.java \
