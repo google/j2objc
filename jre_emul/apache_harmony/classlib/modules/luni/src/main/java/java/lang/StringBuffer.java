@@ -365,6 +365,23 @@ public final class StringBuffer implements Appendable, Serializable, CharSequenc
         return append(s.subSequence(start, end).toString());
     }
 
+    /**
+     * Appends the string representation of the specified Unicode code point to
+     * the end of this buffer.
+     * <p>
+     * The code point is converted to a {@code char[]} as defined by
+     * {@link Character#toChars(int)}.
+     *
+     * @param codePoint
+     *            the Unicode code point to encode and append.
+     * @return this StringBuffer.
+     * @see Character#toChars(int)
+     * @since 1.5
+     */
+    public StringBuffer appendCodePoint(int codePoint) {
+        return append(Character.toChars(codePoint));
+    }
+
     public synchronized char charAt(int index) {
         if (index < 0 || index >= count) {
             throw new StringIndexOutOfBoundsException(index);
