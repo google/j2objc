@@ -29,6 +29,7 @@ import com.google.devtools.j2objc.types.IOSMethodBinding;
 import com.google.devtools.j2objc.types.IOSTypeBinding;
 import com.google.devtools.j2objc.types.Types;
 import com.google.devtools.j2objc.util.ASTNodeException;
+import com.google.devtools.j2objc.util.ASTUtil;
 import com.google.devtools.j2objc.util.ErrorReportingASTVisitor;
 import com.google.devtools.j2objc.util.NameTable;
 import com.google.devtools.j2objc.util.UnicodeUtils;
@@ -1113,50 +1114,50 @@ public class StatementGenerator extends ErrorReportingASTVisitor {
     return false;
   }
 
-  @SuppressWarnings("unchecked")
   @Override
   public boolean visit(InfixExpression node) {
     InfixExpression.Operator op = node.getOperator();
+    Expression lhs = node.getLeftOperand();
+    Expression rhs = node.getRightOperand();
+    List<Expression> extendedOperands = ASTUtil.getExtendedOperands(node);
     ITypeBinding type = Types.getTypeBinding(node);
     String typeName = NameTable.getFullName(type);
     if (Types.isJavaStringType(type) &&
         op.equals(InfixExpression.Operator.PLUS)) {
-      printStringConcatenation(node.getLeftOperand(), node.getRightOperand(),
-          node.extendedOperands());
-    } else if (op.equals(InfixExpression.Operator.EQUALS) &&
-        Types.isJavaStringType(Types.getTypeBinding(node.getLeftOperand())) &&
-        Types.isJavaStringType(Types.getTypeBinding(node.getRightOperand()))) {
-      // Since NSString doesn't support interning, == is never a valid
-      // test for strings. We need to check for two nulls, however, since
-      // nil == nil is true and [nil isEqualToString:nil] is false.
-      buffer.append("((!");
-      node.getLeftOperand().accept(this);
-      buffer.append(" && !");
-      node.getRightOperand().accept(this);
-      buffer.append(") || [");
-      node.getLeftOperand().accept(this);
-      buffer.append(" isEqualToString:");
-      node.getRightOperand().accept(this);
-      buffer.append("])");
+      printStringConcatenation(lhs, rhs, extendedOperands);
+    } else if ((op.equals(InfixExpression.Operator.EQUALS)
+        || op.equals(InfixExpression.Operator.NOT_EQUALS))
+        && (lhs instanceof StringLiteral || rhs instanceof StringLiteral)) {
+      Expression first = lhs;
+      Expression second = rhs;
+      if (!(lhs instanceof StringLiteral)) {
+        // In case the lhs can't call isEqual.
+        first = rhs;
+        second = lhs;
+      }
+      buffer.append(op.equals(InfixExpression.Operator.NOT_EQUALS) ? "![" : "[");
+      first.accept(this);
+      buffer.append(" isEqual:");
+      second.accept(this);
+      buffer.append("]");
     } else if (op.equals(InfixExpression.Operator.RIGHT_SHIFT_UNSIGNED) &&
         !typeName.equals("unichar")) {
-      printUnsignedRightShift(node.getLeftOperand(), node.getRightOperand());
+      printUnsignedRightShift(lhs, rhs);
     } else if (op.equals(InfixExpression.Operator.REMAINDER) && isFloatingPoint(node)) {
       buffer.append(typeName.equals("float") ? "fmodf" : "fmod");
       buffer.append('(');
-      node.getLeftOperand().accept(this);
+      lhs.accept(this);
       buffer.append(", ");
-      node.getRightOperand().accept(this);
+      rhs.accept(this);
       buffer.append(')');
     } else {
-      node.getLeftOperand().accept(this);
+      lhs.accept(this);
       buffer.append(' ');
-      buffer.append(node.getOperator().toString());
+      buffer.append(op.toString());
       buffer.append(' ');
-      node.getRightOperand().accept(this);
-      final List<Expression> extendedOperands = node.extendedOperands();
+      rhs.accept(this);
       for (Iterator<Expression> it = extendedOperands.iterator(); it.hasNext(); ) {
-        buffer.append(' ').append(node.getOperator().toString()).append(' ');
+        buffer.append(' ').append(op.toString()).append(' ');
         it.next().accept(this);
       }
     }
