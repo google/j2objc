@@ -17,10 +17,10 @@
   */
 #ifndef TEMP_FAILURE_RETRY
 /* Used to retry syscalls that can return EINTR. */
-#define TEMP_FAILURE_RETRY(exp) ({         \
-    typeof (exp) _rc;                      \
-    do {                                   \
-        _rc = (exp);                       \
-    } while (_rc == -1 && errno == EINTR); \
-    _rc; })
+# define TEMP_FAILURE_RETRY(expression)           \
+  (__extension__                                  \
+    ({ long int __result;                         \
+      do __result = (long int) (expression);      \
+      while (__result == -1L && errno == EINTR);  \
+      __result; }))
 #endif
