@@ -100,6 +100,8 @@ JRE_INTERFACES = \
 	java/util/concurrent/Executor.h \
 	java/util/concurrent/ExecutorService.h \
 	java/util/concurrent/Future.h \
+	org/w3c/dom/TypeInfo.h \
+	org/w3c/dom/ls/LSResourceResolver.h \
 	org/xml/sax/AttributeList.h \
 	org/xml/sax/Attributes.h \
 	org/xml/sax/ContentHandler.h \
@@ -114,7 +116,8 @@ JRE_INTERFACES = \
 	org/xml/sax/ext/Locator2.h \
 	org/xml/sax/Parser.h \
 	org/xml/sax/XMLFilter.h \
-	org/xml/sax/XMLReader.h
+	org/xml/sax/XMLReader.h \
+	org/xmlpull/v1/XmlSerializer.h
 
 # Java sources to be translated normally.
 JAVA_SOURCES = \
@@ -216,6 +219,9 @@ JAVA_SOURCES = \
 	java/math/Multiplication.java \
 	java/math/Primality.java \
 	java/math/RoundingMode.java \
+	java/net/URI.java \
+	java/net/URIEncoderDecoder.java \
+	java/net/URISyntaxException.java \
 	java/nio/Buffer.java \
 	java/nio/BufferFactory.java \
 	java/nio/BufferOverflowException.java \
@@ -315,11 +321,11 @@ JAVA_SOURCES = \
 	java/util/regex/PatternSyntaxException.java \
 	java/util/regex/Splitter.java \
 	javax/xml/XMLConstants.java \
-	javax/xml/parsers/DocumentBuilder.java \
 	javax/xml/parsers/FactoryConfigurationError.java \
 	javax/xml/parsers/FilePathToURI.java \
 	javax/xml/parsers/ParserConfigurationException.java \
 	javax/xml/parsers/SAXParser.java \
+	javax/xml/parsers/SAXParserFactory.java \
 	javax/xml/transform/Result.java \
 	javax/xml/transform/Source.java \
 	javax/xml/validation/Schema.java \
@@ -327,9 +333,20 @@ JAVA_SOURCES = \
 	javax/xml/validation/Validator.java \
 	javax/xml/validation/ValidatorHandler.java \
 	libcore/icu/TimeZones.java \
+	libcore/internal/StringPool.java \
+	libcore/io/ErrnoException.java \
+	libcore/io/IoUtils.java \
+	libcore/io/Libcore.java \
+	libcore/io/Os.java \
+	libcore/io/OsConstants.java \
+	libcore/io/Posix.java \
 	libcore/util/BasicLruCache.java \
 	libcore/util/EmptyArray.java \
 	org/apache/harmony/luni/platform/Endianness.java \
+	org/apache/harmony/xml/parsers/SAXParserFactoryImpl.java \
+	org/apache/harmony/xml/parsers/SAXParserImpl.java \
+	org/kxml2/io/KXmlParser.java \
+	org/kxml2/io/KXmlSerializer.java \
 	org/xml/sax/HandlerBase.java \
 	org/xml/sax/InputSource.java \
 	org/xml/sax/Locator.java \
@@ -351,14 +368,10 @@ JAVA_SOURCES = \
 	org/xml/sax/helpers/XMLFilterImpl.java \
 	org/xml/sax/helpers/XMLReaderAdapter.java \
 	org/xml/sax/helpers/XMLReaderFactory.java \
-	org/w3c/dom/Document.java \
-	org/w3c/dom/DOMImplementation.java \
-	org/w3c/dom/NamedNodeMap.java \
-	org/w3c/dom/Node.java \
-	org/w3c/dom/NodeList.java \
-	org/w3c/dom/TypeInfo.java \
-	org/w3c/dom/UserDataHandler.java \
-	org/w3c/dom/ls/LSResourceResolver.java
+	org/xmlpull/v1/XmlPullParser.java \
+	org/xmlpull/v1/XmlPullParserException.java \
+	org/xmlpull/v1/XmlPullParserFactory.java \
+	org/xmlpull/v1/sax2/Driver.java
 
 JAVA_SOURCE_LIST = $(BUILD_DIR)/jre_emul.classes.list
 OBJC_OUT_LIST = $(BUILD_DIR)/jre_emul.objc.list
