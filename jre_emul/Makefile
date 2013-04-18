@@ -282,6 +282,7 @@ JAVA_SOURCES = \
 	java/util/HugeEnumSet.java \
 	java/util/IdentityHashMap.java \
 	java/util/InputMismatchException.java \
+	java/util/InvalidPropertiesFormatException.java \
 	java/util/LinkedList.java \
 	java/util/LinkedHashSet.java \
 	java/util/Locale.java \
@@ -311,6 +312,18 @@ JAVA_SOURCES = \
 	java/util/regex/Pattern.java \
 	java/util/regex/PatternSyntaxException.java \
 	java/util/regex/Splitter.java \
+	javax/xml/XMLConstants.java \
+	javax/xml/parsers/DocumentBuilder.java \
+	javax/xml/parsers/FactoryConfigurationError.java \
+	javax/xml/parsers/FilePathToURI.java \
+	javax/xml/parsers/ParserConfigurationException.java \
+	javax/xml/parsers/SAXParser.java \
+	javax/xml/transform/Result.java \
+	javax/xml/transform/Source.java \
+	javax/xml/validation/Schema.java \
+	javax/xml/validation/TypeInfoProvider.java \
+	javax/xml/validation/Validator.java \
+	javax/xml/validation/ValidatorHandler.java \
 	libcore/icu/TimeZones.java \
 	libcore/util/BasicLruCache.java \
 	libcore/util/EmptyArray.java \
@@ -335,7 +348,15 @@ JAVA_SOURCES = \
 	org/xml/sax/helpers/ParserFactory.java \
 	org/xml/sax/helpers/XMLFilterImpl.java \
 	org/xml/sax/helpers/XMLReaderAdapter.java \
-	org/xml/sax/helpers/XMLReaderFactory.java
+	org/xml/sax/helpers/XMLReaderFactory.java \
+	org/w3c/dom/Document.java \
+	org/w3c/dom/DOMImplementation.java \
+	org/w3c/dom/NamedNodeMap.java \
+	org/w3c/dom/Node.java \
+	org/w3c/dom/NodeList.java \
+	org/w3c/dom/TypeInfo.java \
+	org/w3c/dom/UserDataHandler.java \
+	org/w3c/dom/ls/LSResourceResolver.java
 
 JAVA_SOURCE_LIST = $(BUILD_DIR)/jre_emul.classes.list
 OBJC_OUT_LIST = $(BUILD_DIR)/jre_emul.objc.list
