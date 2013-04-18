@@ -16,7 +16,9 @@
 
 package java.lang;
 
+import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
+
 import junit.framework.TestCase;
 
 /**
@@ -25,6 +27,9 @@ import junit.framework.TestCase;
  * @author Tom Ball
  */
 public class ClassTest extends TestCase {
+
+  public ClassTest() {}
+  public ClassTest(String s) {}
 
   public int answerToLife() {
     return 42;
@@ -37,5 +42,26 @@ public class ClassTest extends TestCase {
     Method answerToLife = thisClass.getMethod("answerToLife");
     Integer answer = (Integer) answerToLife.invoke(this);
     assertEquals(42, answer.intValue());
+  }
+
+  public void testGetDefaultConstructor() throws Exception {
+    Class<?> foo = Class.forName("java.lang.ClassTest");
+    Constructor c = foo.getConstructor();
+    Class<?>[] paramTypes = c.getParameterTypes();
+    assertEquals(0, paramTypes.length);
+  }
+
+  public void testGetConstructor() throws Exception {
+    Class<?> foo = Class.forName("java.lang.ClassTest");
+    Constructor c = foo.getConstructor(String.class);
+    Class<?>[] paramTypes = c.getParameterTypes();
+    assertEquals(1, paramTypes.length);
+  }
+
+  public void testGetDeclaredConstructor() throws Exception {
+    Class<?> foo = Class.forName("java.lang.ClassTest");
+    Constructor c = foo.getConstructor();
+    Class<?>[] paramTypes = c.getParameterTypes();
+    assertEquals(0, paramTypes.length);
   }
 }
