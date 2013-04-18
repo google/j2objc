@@ -49,7 +49,7 @@ public abstract class Writer implements Appendable, Closeable, Flushable {
      */
     protected Writer() {
         super();
-        lock = this;
+        lock = new Object();
     }
 
     /**

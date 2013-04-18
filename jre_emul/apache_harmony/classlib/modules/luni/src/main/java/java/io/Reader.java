@@ -48,7 +48,7 @@ public abstract class Reader implements Readable, Closeable {
      */
     protected Reader() {
         super();
-        lock = this;
+        lock = new Object();
     }
 
     /**
