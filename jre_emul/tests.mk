@@ -95,7 +95,6 @@ TEST_OBJS = \
 	$(TESTS_DIR)/org/apache/harmony/luni/tests/java/lang/StringBufferTest.o \
 	$(TESTS_DIR)/org/apache/harmony/luni/tests/java/lang/StringIndexOutOfBoundsExceptionTest.o \
 	$(TESTS_DIR)/org/apache/harmony/luni/tests/java/lang/StringTest.o \
-	$(TESTS_DIR)/org/apache/harmony/luni/tests/java/lang/String2Test.o \
 	$(TESTS_DIR)/org/apache/harmony/luni/tests/java/lang/ThreadDeathTest.o \
 	$(TESTS_DIR)/org/apache/harmony/luni/tests/java/lang/ThreadTest.o \
 	$(TESTS_DIR)/java/lang/ThrowableTest.o \
