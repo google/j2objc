@@ -1368,12 +1368,19 @@ public class StatementGeneratorTest extends GenerationTest {
   // Verify that a string == comparison is converted to compare invocation.
   public void testStringComparison() throws IOException {
     String translation = translateSourceFile(
-      "public class Test { " +
-          "boolean check(String s) { if (s == null) { return false; } return s == \"foo\"; }}",
+      "public class Test { void check(String s, Object o) { " +
+      "boolean b1 = s == null; boolean b2 = \"foo\" == s; boolean b3 = o == \"bar\"; " +
+      "boolean b4 = \"baz\" != s; boolean b5 = null != \"abc\"; }}",
       "Test", "Test.m");
+    // Assert that non-string compare isn't converted.
+    assertTranslation(translation, "BOOL b1 = s == nil;");
     // Assert string equate is converted,
-    assertTranslation(translation, "((!s && !@\"foo\") || [s isEqualToString:@\"foo\"])");
-    // but that non-string compare isn't.
-    assertTranslation(translation, "if (s == nil)");
+    assertTranslation(translation, "BOOL b2 = [@\"foo\" isEqual:s];");
+    // Order is reversed when literal is on the right.
+    assertTranslation(translation, "BOOL b3 = [@\"bar\" isEqual:o];");
+    // Not equals is converted.
+    assertTranslation(translation, "BOOL b4 = ![@\"baz\" isEqual:s];");
+    // Comparing null with string literal.
+    assertTranslation(translation, "BOOL b5 = ![@\"abc\" isEqual:nil];");
   }
 }
