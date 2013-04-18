@@ -162,7 +162,7 @@ public class AnonymousClassConverterTest extends GenerationTest {
       public void endVisit(MethodDeclaration node) {
         if (node.isConstructor()) {
           assertEquals("final NSObject outer$0", node.parameters().get(1).toString());
-          assertEquals("val$test=outer$0;", node.getBody().statements().get(1).toString().trim());
+          assertEquals("val$test=outer$0;", node.getBody().statements().get(2).toString().trim());
           ++testsFound[0];
         }
       };
@@ -204,7 +204,7 @@ public class AnonymousClassConverterTest extends GenerationTest {
       public void endVisit(MethodDeclaration node) {
         if (node.isConstructor()) {
           assertEquals("final NSObject outer$0", node.parameters().get(1).toString());
-          assertEquals("val$foo=outer$0;", node.getBody().statements().get(1).toString().trim());
+          assertEquals("val$foo=outer$0;", node.getBody().statements().get(2).toString().trim());
           ++testsFound[0];
         }
       };

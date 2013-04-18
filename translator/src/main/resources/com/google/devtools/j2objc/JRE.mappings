@@ -116,8 +116,16 @@ java.lang.String.String([B)V = NSString stringWithBytes:(IOSByteArray *)value
 java.lang.String.String([BLjava/lang/String;)V = \
     NSString stringWithBytes:(IOSByteArray *)value \
                  charsetName:(NSString *)charset
+java.lang.String.String([BI)V = \
+    NSString stringWithBytes:(IOSByteArray *)value \
+                      hibyte:(NSUInteger)hibyte
 java.lang.String.String([BII)V = \
     NSString stringWithBytes:(IOSByteArray *)value \
+                      offset:(NSUInteger)offset \
+                      length:(NSUInteger)length
+java.lang.String.String([BIII)V = \
+    NSString stringWithBytes:(IOSByteArray *)value \
+                      hibyte:(NSUInteger)hibyte \
                       offset:(NSUInteger)offset \
                       length:(NSUInteger)length
 java.lang.String.String([BIILjava/lang/String;)V = \
@@ -128,6 +136,10 @@ java.lang.String.String([BIILjava/lang/String;)V = \
 java.lang.String.String([C)V = NSString stringWithCharacters:(IOSCharArray *)value
 java.lang.String.String([CII)V = \
     NSString stringWithCharacters:(IOSCharArray *)value \
+                           offset:(int)offset \
+                           length:(int)length
+java.lang.String.String([III)V = \
+    NSString stringWithInts:(IOSIntArray *)codePoints \
                            offset:(int)offset \
                            length:(int)length
 java.lang.String.String(II[C)V = \
@@ -148,6 +160,10 @@ java.lang.String.compareToIgnoreCase(Ljava/lang/String;)I = \
     NSString compareToIgnoreCase:(NSString *)another
 java.lang.String.concat(Ljava/lang/String;)Ljava/lang/String; = NSString concat:(NSString *)string
 java.lang.String.contains(Ljava/lang/CharSequence;)Z = NSString contains:(JavaLangCharSequence *)seq
+java.lang.String.contentEquals(Ljava/lang/CharSequence;)Z = \
+    NSString contentEqualsCharSequence:(JavaLangCharSequence *)seq
+java.lang.String.contentEquals(Ljava/lang/StringBuffer;)Z = \
+    NSString contentEqualsStringBuffer:(JavaLangStringBuffer *)sb
 java.lang.String.endsWith(Ljava/lang/String;)Z = NSString hasSuffix:(NSString *)aString
 java.lang.String.equals(Ljava/lang/Object;)Z = NSString isEqual:(id)anObject
 java.lang.String.equalsIgnoreCase(Ljava/lang/String;)Z = \
@@ -158,6 +174,10 @@ java.lang.String.format(Ljava/util/Locale;Ljava/lang/String;[Ljava/lang/Object;)
     NSString stringWithFormat:(NSString *)format locale:(id)locale ...
 java.lang.String.getBytes()[B = NSString getBytes
 java.lang.String.getBytes(Ljava/lang/String;)[B = NSString getBytesWithCharset:(NSString *)name
+java.lang.String.getBytes(II[BI)V = NSString getBytesWithSrcBegin:(int)srcBegin \
+                                                       withSrcEnd:(int)srcEnd \
+                                                       withDst:(IOSByteArray *)dst \
+                                                       withDstBegin:(int)dstBegin
 java.lang.String.getChars(II[CI)V = \
     NSString getChars:(int)sourceBegin \
             sourceEnd:(int)sourceEnd \

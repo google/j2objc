@@ -105,7 +105,7 @@ public class InitializationNormalizerTest extends GenerationTest {
     TypeDeclaration clazz =
         translateClassBody("static java.util.Date date = new java.util.Date();");
     List<BodyDeclaration> classMembers = clazz.bodyDeclarations();
-    assertEquals(3, classMembers.size()); // added an initialize method
+    assertEquals(4, classMembers.size()); // added an initialize method
 
     // test that initializer was stripped from the declaration
     BodyDeclaration decl = classMembers.get(0);
@@ -116,7 +116,7 @@ public class InitializationNormalizerTest extends GenerationTest {
     assertTrue(field.getInitializer() == null);
 
     // test that initializer was moved to new initialize method
-    decl = classMembers.get(1);
+    decl = classMembers.get(2);
     assertTrue(decl instanceof MethodDeclaration);
     MethodDeclaration method = (MethodDeclaration) decl;
     assertEquals(NameTable.CLINIT_NAME, method.getName().getIdentifier());
@@ -194,10 +194,10 @@ public class InitializationNormalizerTest extends GenerationTest {
   public void testStaticInitializerBlock() {
     TypeDeclaration clazz = translateClassBody("static { System.out.println(\"foo\"); }");
     List<BodyDeclaration> classMembers = clazz.bodyDeclarations();
-    assertEquals(2, classMembers.size());
+    assertEquals(3, classMembers.size());
 
     // test that a static initialize() method was created
-    BodyDeclaration decl = classMembers.get(0);
+    BodyDeclaration decl = classMembers.get(1);
     assertTrue(decl instanceof MethodDeclaration);
     MethodDeclaration method = (MethodDeclaration) decl;
     assertEquals(NameTable.CLINIT_NAME, method.getName().getIdentifier());

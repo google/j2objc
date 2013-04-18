@@ -447,6 +447,15 @@ NSStringEncoding parseCharsetName(NSString *charset) {
 }
 
 + (NSString *)stringWithBytes:(IOSByteArray *)value
+                       hibyte:(int)hibyte {
+  return [NSString stringWithBytes:value
+                            hibyte:hibyte
+                            offset:0
+                            length:[value count]];
+}
+
+
++ (NSString *)stringWithBytes:(IOSByteArray *)value
                        offset:(int)offset
                        length:(int)count {
   return [NSString stringWithBytes:value
@@ -464,6 +473,24 @@ NSStringEncoding parseCharsetName(NSString *charset) {
                             offset:offset
                             length:count
                       encoding:encoding];
+}
+
++ (NSString *)stringWithBytes:(IOSByteArray *)value
+                       hibyte:(NSUInteger)hibyte
+                       offset:(NSUInteger)offset
+                       length:(NSUInteger)length {
+  char *bytes = malloc(length);
+  [value getBytes:bytes offset:0 length:length];
+  unichar *chars = calloc(length, sizeof(unichar));
+  for (int i = 0; i < length; i++) {
+    char b = bytes[i + offset];
+    // Expression from String(byte[],int) javadoc.
+    chars[i] = (unichar)(((hibyte & 0xff) << 8) | (b & 0xff));
+  }
+  NSString *s = [NSString stringWithCharacters:chars length:length];
+  free(chars);
+  free(bytes);
+  return s;
 }
 
 + (NSString *)stringWithBytes:(IOSByteArray *)value
@@ -509,6 +536,22 @@ NSStringEncoding parseCharsetName(NSString *charset) {
   return result;
 }
 
++ (NSString *)stringWithInts:(IOSIntArray *)codePoints
+                      offset:(int)offset
+                      length:(int)length {
+  NSUInteger ncps = [codePoints count];
+  int *ints = malloc(ncps);
+  [codePoints getInts:ints length:ncps];
+  unichar *chars = malloc(length);
+  for (int i = 0; i < length; i++) {
+    chars[i] = ints[i + offset];
+  }
+  NSString *s = [NSString stringWithCharacters:chars length:length];
+  free(chars);
+  free(ints);
+  return s;
+}
+
 - (IOSByteArray *)getBytes  {
   // UTF-8 is the Java default charset, unless the file.encoding system
   // property is set.
@@ -528,6 +571,9 @@ NSStringEncoding parseCharsetName(NSString *charset) {
 }
 
 - (IOSByteArray *)getBytesWithEncoding:(NSStringEncoding)encoding  {
+  if (!encoding) {
+    @throw AUTORELEASE([[JavaLangNullPointerException alloc] init]);
+  }
   int max_length = [self maximumLengthOfBytesUsingEncoding:encoding];
   char *buffer = malloc(max_length * sizeof(char));
   NSRange range = NSMakeRange(0, [self length]);
@@ -542,6 +588,55 @@ NSStringEncoding parseCharsetName(NSString *charset) {
                                                 count:used_length];
   free(buffer);
   return result;
+}
+
+- (void)getBytesWithSrcBegin:(int)srcBegin
+                  withSrcEnd:(int)srcEnd  
+                     withDst:(IOSByteArray *)dst
+                withDstBegin:(int)dstBegin {
+  int copyLength = srcEnd - srcBegin;
+  NSString *badParamMsg = nil;
+  if (srcBegin < 0) {
+    badParamMsg = @"srcBegin < 0";
+  } else if (srcBegin > srcEnd) {
+    badParamMsg = @"srcBegin > srcEnd";
+  } else if (srcEnd > [self length]) {
+    badParamMsg = @"srcEnd > string length";
+  } else if (copyLength > [self length]) {
+    badParamMsg = @"dstBegin+(srcEnd-srcBegin) > dst.length";
+  }
+  if (badParamMsg) {
+    @throw AUTORELEASE([[JavaLangIndexOutOfBoundsException alloc]
+                        initWithNSString:badParamMsg]);
+  }
+  if (!dst) {
+    @throw AUTORELEASE([[JavaLangNullPointerException alloc] init]);
+  }
+  NSUInteger maxBytes =
+      [self maximumLengthOfBytesUsingEncoding:NSUTF8StringEncoding];
+  char *bytes = malloc(maxBytes);
+  NSUInteger bytesUsed;
+  NSRange range = NSMakeRange(srcBegin, srcEnd - srcBegin);
+  [self getBytes:bytes
+       maxLength:maxBytes
+      usedLength:&bytesUsed
+        encoding:NSUTF8StringEncoding
+         options:0
+           range:range
+  remainingRange:NULL];
+  char *dstBytes = malloc([dst count] - dstBegin);
+  
+  // Double-check there won't be a buffer overflow, since the encoded length
+  // of the copied substring is now known.
+  if (bytesUsed > ([dst count] - dstBegin)) {
+    @throw AUTORELEASE(
+        [[JavaLangIndexOutOfBoundsException alloc]
+         initWithNSString:@"dstBegin+(srcEnd-srcBegin) > dst.length"]);
+  }
+  memcpy(dstBytes, bytes, bytesUsed);
+  [dst replaceBytes:dstBytes length:bytesUsed offset:dstBegin];
+  free(dstBytes);
+  free(bytes);
 }
 
 + (NSString *)stringWithFormat:(NSString *)format locale:(id)locale, ... {
@@ -659,6 +754,9 @@ NSStringEncoding parseCharsetName(NSString *charset) {
 }
 
 - (NSString *)concat:string {
+  if (!string) {
+    @throw AUTORELEASE([[JavaLangNullPointerException alloc] init]);
+  }
   return [self stringByAppendingString:string];
 }
 
@@ -707,6 +805,14 @@ NSStringEncoding parseCharsetName(NSString *charset) {
                                   options:0
                                     range:NSMakeRange(0, [self length])];
   return result != nil;
+}
+
+- (BOOL)contentEqualsCharSequence:(id<JavaLangCharSequence>)seq {
+  return [self isEqualToString:[(id) seq description]];
+}
+
+- (BOOL)contentEqualsStringBuffer:(JavaLangStringBuffer *)sb {
+  return [self isEqualToString:[sb description]];
 }
 
 + (id<JavaUtilComparator>)CASE_INSENSITIVE_ORDER {

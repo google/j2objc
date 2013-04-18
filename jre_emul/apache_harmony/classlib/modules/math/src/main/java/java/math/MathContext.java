@@ -17,10 +17,7 @@
 
 package java.math;
 
-import java.io.IOException;
-import java.io.ObjectInputStream;
 import java.io.Serializable;
-import java.io.StreamCorruptedException;
 
 /**
  * Immutable objects describing settings such as rounding mode and digit
@@ -302,7 +299,7 @@ public final class MathContext implements Serializable {
      *             if {@code precision < 0}
      * @throws StreamCorruptedException
      *             if {@code roundingMode == null}
-     */
+     *
     private void readObject(ObjectInputStream s) throws IOException,
             ClassNotFoundException {
         s.defaultReadObject();
@@ -313,5 +310,5 @@ public final class MathContext implements Serializable {
             throw new StreamCorruptedException("null roundingMode"); //$NON-NLS-1$
         }
     }
-
+    */
 }

@@ -25,6 +25,7 @@ import com.google.devtools.j2objc.gen.SourceBuilder;
 import com.google.devtools.j2objc.gen.SourcePosition;
 import com.google.devtools.j2objc.gen.StatementGenerator;
 import com.google.devtools.j2objc.translate.DestructorGenerator;
+import com.google.devtools.j2objc.translate.InitializationNormalizer;
 
 import junit.framework.TestCase;
 
@@ -272,7 +273,7 @@ public abstract class GenerationTest extends TestCase {
    */
   protected MethodDeclaration translateMethod(String method) {
     // Wrap statements in test class, so type resolution works.
-    String source = "public class Test { " + method + "}";
+    String source = "public class Test { " + method + " }";
     CompilationUnit unit = translateType("Test", source);
     assertNoCompilationErrors(unit);
     final MethodDeclaration[] result = new MethodDeclaration[1];
@@ -280,7 +281,8 @@ public abstract class GenerationTest extends TestCase {
       @Override
       public boolean visit(MethodDeclaration node) {
         String name = node.getName().getIdentifier();
-        if (name.equals(DestructorGenerator.FINALIZE_METHOD) ||
+        if (name.equals(InitializationNormalizer.INIT_NAME) ||
+            name.equals(DestructorGenerator.FINALIZE_METHOD) ||
             name.equals(DestructorGenerator.DEALLOC_METHOD)) {
           return false;
         }

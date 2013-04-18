@@ -104,6 +104,7 @@ static id Box(JavaResult *value, const char *type);
     [invocation setTarget:object];
   }
 
+  NSLog(@"invoking %@", [self description]);
   [invocation invoke];
   const char *returnType = [methodSignature_ methodReturnType];
   if (*returnType != 'v') {  // if not void

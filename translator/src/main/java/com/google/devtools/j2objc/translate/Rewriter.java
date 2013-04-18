@@ -787,7 +787,7 @@ public class Rewriter extends ErrorReportingASTVisitor {
                   !Types.isJavaStringType(argBinding.getReturnType())) {
                 IOSMethodBinding newBinding =
                     new IOSMethodBinding("format", argBinding, Types.getNSString());
-                Types.addMappedInvocation((MethodInvocation) newArg, newBinding);
+                Types.addMappedInvocation(newArg, newBinding);
               }
             }
             ASTUtil.getArguments(newInvocation).add(newArg);
@@ -912,45 +912,47 @@ public class Rewriter extends ErrorReportingASTVisitor {
     if (s.isEmpty()) {
       return s;
     }
-    String[] parts = s.split("%");
+    char[] chars = s.toCharArray();
     StringBuffer result = new StringBuffer();
-    int i = 0;
-    if (!s.startsWith("%")) {
-      result.append(parts[0]);
-      i++;
-    }
-    while (i < parts.length) {
-      String part = parts[i];
-      if (part.length() > 0) {
+    boolean inSpecifier = false;
+    for (int i = 0; i < chars.length; i++) {
+      char c = chars[i];
+      if (c == '%') {
         result.append('%');
-        switch (part.charAt(0)) {
+        inSpecifier = true;
+      } else if (inSpecifier) {
+        switch (c) {
           case 's':
           case 'S':
             result.append('@');
+            inSpecifier = false;
             break;
           case 'c':
           case 'C':
             result.append('C');
+            inSpecifier = false;
             break;
           case 'h':
           case 'H':
             result.append('x');
+            inSpecifier = false;
             break;
-
-          // These aren't mapped, so escape them so it's obvious when output
-          case 'b':
-          case 'B':
-          case 't':
-          case 'T':
-          case 'n':
-            result.append('%');
-            // falls through
+          case 'd':
+          case 'e':
+          case 'f':
+          case 'g':
+          case 'o':
+          case 'x':
+          case '%':
+            result.append(c);
+            inSpecifier = false;
+            break;
           default:
-            result.append(part.charAt(0));
+            result.append(c);
         }
-        result.append(part.substring(1));
+      } else {
+        result.append(c);
       }
-      i++;
     }
     return result.toString();
   }

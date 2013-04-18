@@ -164,7 +164,7 @@ public class RewriterTest extends GenerationTest {
     assertTrue(types.get(0) instanceof TypeDeclaration);
     TypeDeclaration testType = (TypeDeclaration) types.get(0);
     MethodDeclaration[] methods = testType.getMethods();
-    assertEquals(4, methods.length);
+    assertEquals(5, methods.length);
 
     // verify added methods are abstract, and that existing method wasn't changed
     for (MethodDeclaration m : methods) {
@@ -173,7 +173,8 @@ public class RewriterTest extends GenerationTest {
       if (name.equals("hasNext")) {
         assertFalse(Modifier.isAbstract(modifiers));
       } else if (name.equals(DestructorGenerator.FINALIZE_METHOD)
-          || name.equals(DestructorGenerator.DEALLOC_METHOD)) {
+          || name.equals(DestructorGenerator.DEALLOC_METHOD)
+          || name.equals(InitializationNormalizer.INIT_NAME)) {
         // it's ok.
       } else {
         // it's an added method
@@ -204,7 +205,7 @@ public class RewriterTest extends GenerationTest {
     assertTrue(types.get(0) instanceof TypeDeclaration);
     TypeDeclaration testType = (TypeDeclaration) types.get(0);
     MethodDeclaration[] methods = testType.getMethods();
-    assertEquals(26, methods.length);
+    assertEquals(27, methods.length);
 
     // verify added methods are abstract, and that existing method wasn't changed
     for (MethodDeclaration m : methods) {
@@ -213,7 +214,8 @@ public class RewriterTest extends GenerationTest {
       if (name.equals("isEmpty")) {
         assertFalse(Modifier.isAbstract(modifiers));
       } else if (name.equals(DestructorGenerator.FINALIZE_METHOD)
-          || name.equals(DestructorGenerator.DEALLOC_METHOD)) {
+          || name.equals(DestructorGenerator.DEALLOC_METHOD)
+          || name.equals(InitializationNormalizer.INIT_NAME)) {
         // it's ok.
       } else {
         // it's an added method
@@ -275,7 +277,7 @@ public class RewriterTest extends GenerationTest {
     assertEquals("Test", innerType.getName().toString());
 
     MethodDeclaration[] methods = innerType.getMethods();
-    assertEquals(2, methods.length);
+    assertEquals(3, methods.length);
     MethodDeclaration equalsMethod = methods[0];
     assertEquals("isEqual", equalsMethod.getName().getIdentifier());
     assertEquals(1, equalsMethod.parameters().size());
@@ -508,5 +510,11 @@ public class RewriterTest extends GenerationTest {
     assertTranslation(translation, "j = i * 2;");
     assertTranslation(translation, "k = i;");
     assertTranslation(translation, "l = 42;");
+  }
+
+  public void testPercentInFormatString() throws IOException {
+    String translation = translateSourceFile("public class Test { " +
+        "String test(int n) { return String.format(\"%d%% of 100%%\", n); }}", "Test", "Test.m");
+    assertTranslation(translation, "[NSString stringWithFormat:@\"%d%% of 100%%\" , n, nil];");
   }
 }
