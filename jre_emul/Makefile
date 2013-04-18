@@ -160,6 +160,7 @@ JAVA_SOURCES = \
 	java/lang/Byte.java \
 	java/lang/Character.java \
 	java/lang/ClassCastException.java \
+	java/lang/ClassLoader.java \
 	java/lang/ClassNotFoundException.java \
 	java/lang/CloneNotSupportedException.java \
 	java/lang/Double.java \
