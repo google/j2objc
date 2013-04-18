@@ -385,7 +385,7 @@ public class Collections {
 
         SynchronizedCollection(Collection<E> collection) {
             c = collection;
-            mutex = this;
+            mutex = new Object();
         }
 
         SynchronizedCollection(Collection<E> collection, Object mutex) {
@@ -636,7 +636,7 @@ public class Collections {
 
         SynchronizedMap(Map<K, V> map) {
             m = map;
-            mutex = this;
+            mutex = new Object();
         }
 
         SynchronizedMap(Map<K, V> map, Object mutex) {
