@@ -581,4 +581,11 @@ public class ObjectiveCImplementationGeneratorTest extends GenerationTest {
       Options.setGenerateNativeStubs(false);  // Restore default value.
     }
   }
+
+  public void testStaticSetterWithARC() throws IOException {
+    Options.setMemoryManagementOption(MemoryManagementOption.ARC);
+    String translation = translateSourceFile(
+        "class Test { public static String foo; }", "Test", "Test.m");
+    assertTranslation(translation, "+ (void)setFoo:(NSString *)foo {\n  Test_foo_ = foo;\n}");
+  }
 }

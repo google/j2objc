@@ -521,8 +521,12 @@ public class ObjectiveCImplementationGenerator extends ObjectiveCSourceFileGener
   protected void printStaticFieldSetter(IVariableBinding var) {
     String fieldName = NameTable.getStaticVarQualifiedName(var);
     String paramName = NameTable.getName(var);
-    printf("%s {\n  JreOperatorRetainedAssign(&%s, %s);\n}\n\n", staticFieldSetterSignature(var),
-           fieldName, paramName);
+    String signature = staticFieldSetterSignature(var);
+    if (Options.useReferenceCounting()) {
+      printf("%s {\n  JreOperatorRetainedAssign(&%s, %s);\n}\n\n", signature, fieldName, paramName);
+    } else {
+      printf("%s {\n  %s = %s;\n}\n\n", signature, fieldName, paramName);
+    }
   }
 
   @Override
