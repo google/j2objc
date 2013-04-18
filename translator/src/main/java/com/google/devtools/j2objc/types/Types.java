@@ -279,6 +279,8 @@ public class Types {
         ast.resolveWellKnownType("float"), ast.resolveWellKnownType("java.lang.Float"));
     loadPrimitiveAndWrapperTypes(
         ast.resolveWellKnownType("double"), ast.resolveWellKnownType("java.lang.Double"));
+    loadPrimitiveAndWrapperTypes(
+        ast.resolveWellKnownType("void"), ast.resolveWellKnownType("java.lang.Void"));
   }
 
   private void loadPrimitiveAndWrapperTypes(ITypeBinding primitive, ITypeBinding wrapper) {
