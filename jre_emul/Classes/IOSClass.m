@@ -154,7 +154,7 @@ static NSString *getTranslatedMethodName(NSString *name,
 }
 
 - (NSString *)getSimpleName {
-  return NSStringFromClass(class_);
+  return class_ ? NSStringFromClass(class_) : NSStringFromProtocol(protocol_);
 }
 
 - (NSString *)getCanonicalName {
@@ -412,26 +412,35 @@ JavaLangReflectConstructor *getConstructorImpl(IOSClass *cls,
 #endif
   BOOL first = YES;
   for (int i = 0; i < [classes count]; i++) {
-    IOSClass *cls = [classes objectAtIndex:i];
+    IOSClass *type = [classes objectAtIndex:i];
     if (first) {
       [name appendString:@"With"];
       first = NO;
     } else {
       [name appendString:@"with"];
     }
-    [name appendFormat:@"%@:", [cls getSimpleName]];
+    [name appendFormat:@"%@:", [type getSimpleName]];
   }
   
   SEL selector = NSSelectorFromString(name);
-  if (cls != nil && ![cls respondsToSelector:selector] && searchSuperclasses) {
-    while (cls != nil) {
-      cls = [cls getSuperclass];
-      if ([cls respondsToSelector:selector]) {
+  BOOL hasConstructor;
+  if (cls->protocol_) {
+    hasConstructor = NO;
+  } else if (searchSuperclasses) {
+    hasConstructor = (class_getInstanceMethod(cls->class_, selector) != NULL);
+  } else {
+    hasConstructor = NO;
+    unsigned count;
+    Method *instanceMethods = class_copyMethodList(cls->class_, &count);
+    for (unsigned i = 0; i < count; i++) {
+      SEL signature = method_getName(instanceMethods[i]);
+      if (sel_isEqual(selector, signature)) {
+        hasConstructor = YES;
         break;
       }
     }
   }
-  if (cls != nil && ![cls respondsToSelector:selector]) {
+  if (!hasConstructor) {
     // Either a protocol (Java interface - no constructors) or doesn't have
     // the required constructor.
 #if __has_feature(objc_arc)
