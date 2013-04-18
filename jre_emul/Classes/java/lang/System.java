@@ -36,6 +36,8 @@ package java.lang;
 import java.io.OutputStream;
 import java.io.PrintStream;
 import java.util.Properties;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * Simple iOS version of java.lang.System.  No code was shared, just its
@@ -122,6 +124,7 @@ public class System {
       props.setProperty("file.separator", "/");
       props.setProperty("line.separator", "\n");
       props.setProperty("path.separator", ":");
+      props.setProperty("org.xml.sax.driver", "org.xmlpull.v1.sax2.Driver");
       setSystemProperties(props);
     }
     return props;
@@ -163,5 +166,66 @@ public class System {
     String result = properties.getProperty(key);
     properties.remove(key);
     return result;
+  }
+
+  /**
+   * Returns the system's line separator.
+   * @since 1.7
+   */
+  public static String lineSeparator() {
+      return "\n";   // Always return OSX/iOS value.
+  }
+
+  // Android internal logging methods, rewritten to use Logger.
+
+  /**
+   * @hide internal use only
+   */
+  public static void logE(String message) {
+      log(Level.SEVERE, message, null);
+  }
+
+  /**
+   * @hide internal use only
+   */
+  public static void logE(String message, Throwable th) {
+      log(Level.SEVERE, message, th);
+  }
+
+  /**
+   * @hide internal use only
+   */
+  public static void logI(String message) {
+      log(Level.INFO, message, null);
+  }
+
+  /**
+   * @hide internal use only
+   */
+  public static void logI(String message, Throwable th) {
+      log(Level.INFO, message, th);
+  }
+
+  /**
+   * @hide internal use only
+   */
+  public static void logW(String message) {
+      log(Level.WARNING, message, null);
+  }
+
+  /**
+   * @hide internal use only
+   */
+  public static void logW(String message, Throwable th) {
+      log(Level.WARNING, message, th);
+  }
+
+  private static Logger systemLogger;
+
+  private static void log(Level level, String message, Throwable thrown) {
+    if (systemLogger == null) {
+      systemLogger = Logger.getLogger("java.lang.System");
+    }
+    systemLogger.log(level, message, thrown);
   }
 }
