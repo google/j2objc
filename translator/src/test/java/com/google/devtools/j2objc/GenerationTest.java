@@ -222,11 +222,10 @@ public abstract class GenerationTest extends TestCase {
   }
 
   /**
-   * Recursively delete specified directory. Files.deleteRecursively() won't
-   * work on Macs, because OS X returns a tempfile spec which has a symlink
-   * that deleteRecursively() explicitly won't follow.
+   * Recursively delete specified directory.
    */
   protected void deleteTempDir(File dir) {
+    // TODO(cpovirk): try Directories.deleteRecursively if a c.g.c.unix dep is OK
     if (dir.exists()) {
       for (File f : dir.listFiles()) {
         if (f.isDirectory()) {
