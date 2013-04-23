@@ -59,6 +59,7 @@ public class CycleFinder {
 
   private FileASTRequestor newASTRequestor(final TypeCollector typeCollector) {
     return new FileASTRequestor() {
+      @Override
       public void acceptAST(String sourceFilePath, CompilationUnit ast) {
         outStream.println("acceptAST: " + sourceFilePath);
         for (IProblem problem : ast.getProblems()) {
@@ -150,6 +151,9 @@ public class CycleFinder {
   }
 
   public static void main(String[] args) throws IOException {
+    if (args.length == 0) {
+      Options.help(true);
+    }
     Options options = Options.parse(args);
     CycleFinder finder = new CycleFinder(options, System.out, System.err);
     List<List<Edge>> cycles = finder.findCycles();

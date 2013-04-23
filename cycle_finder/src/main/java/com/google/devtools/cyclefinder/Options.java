@@ -85,10 +85,14 @@ class Options {
 
   private void addManifest(String manifestFile) throws IOException {
     BufferedReader in = new BufferedReader(new FileReader(new File(manifestFile)));
-    for (String line = in.readLine(); line != null; line = in.readLine()) {
-      if (!Strings.isNullOrEmpty(line)) {
-        sourceFiles.add(line.trim());
+    try {
+      for (String line = in.readLine(); line != null; line = in.readLine()) {
+        if (!Strings.isNullOrEmpty(line)) {
+          sourceFiles.add(line.trim());
+        }
       }
+    } finally {
+      in.close();
     }
   }
 
@@ -98,16 +102,16 @@ class Options {
     System.exit(1);
   }
 
-  public static void help() {
+  public static void help(boolean errorExit) {
     System.err.println(helpMessage);
-    System.exit(0);
+    // javac exits with 2, but any non-zero value works.
+    System.exit(errorExit ? 2 : 0);
   }
 
   public static Options parse(String[] args) throws IOException {
     Options options = new Options();
 
     int nArg = 0;
-    String[] noFiles = new String[0];
     while (nArg < args.length) {
       String arg = args[nArg];
       if (arg.equals("-sourcepath")) {
@@ -133,7 +137,7 @@ class Options {
       } else if (arg.startsWith(XBOOTCLASSPATH)) {
         options.bootclasspath = arg.substring(XBOOTCLASSPATH.length());
       } else if (arg.startsWith("-h") || arg.equals("--help")) {
-        help();
+        help(false);
       } else if (arg.startsWith("-")) {
         usage("invalid flag: " + arg);
       } else {
@@ -144,6 +148,9 @@ class Options {
 
     while (nArg < args.length) {
       options.sourceFiles.add(args[nArg++]);
+    }
+    if (options.sourceFiles.isEmpty()) {
+      usage("no source files");
     }
 
     return options;
