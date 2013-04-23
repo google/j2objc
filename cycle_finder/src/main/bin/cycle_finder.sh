@@ -12,6 +12,12 @@ readonly LIB_DIR=/lib
 
 readonly JAR=${DIR}${LIB_DIR}/cycle_finder.jar
 
+if [ $# -eq 0 ]; then
+  # Invoke app without arguments, so it displays a help message.
+  java -jar ${JAR}
+  exit $?
+fi
+
 ARGS=""
 CLASSPATH=${DIR}${LIB_DIR}/j2objc_annotations.jar
 

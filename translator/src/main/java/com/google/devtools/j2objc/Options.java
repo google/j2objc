@@ -231,7 +231,7 @@ public class Options {
       } else if (arg.equals("--generate-native-stubs")) {
         generateNativeStubs = true;
       } else if (arg.startsWith("-h") || arg.equals("--help")) {
-        help();
+        help(false);
       } else if (arg.startsWith("-")) {
         usage("invalid flag: " + arg);
       } else {
@@ -308,9 +308,10 @@ public class Options {
     System.exit(1);
   }
 
-  public static void help() {
+  public static void help(boolean errorExit) {
     System.err.println(helpMessage);
-    System.exit(0);
+    // javac exits with 2, but any non-zero value works.
+    System.exit(errorExit ? 2 : 0);
   }
 
   private static List<String> getPathArgument(String argument) {

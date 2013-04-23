@@ -758,11 +758,14 @@ public class J2ObjC {
    * @throws IOException
    */
   public static void main(String[] args) {
+    if (args.length == 0) {
+      Options.help(true);
+    }
     String[] files = null;
     try {
       files = Options.load(args);
       if (files.length == 0) {
-        Options.help(); // Exits, due to no files specified.
+        Options.usage("no source files");
       }
     } catch (IOException e) {
       error(e.getMessage());

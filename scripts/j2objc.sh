@@ -25,6 +25,12 @@ else
 fi
 readonly JAR=${LIB_DIR}/j2objc.jar
 
+if [ $# -eq 0 ]; then
+  # Invoke app without arguments, so it displays a help message.
+  java -jar ${JAR}
+  exit $?
+fi
+
 if [ x${USE_SYSTEM_BOOT_PATH} == x ]; then
   readonly BOOT_PATH=-Xbootclasspath:${LIB_DIR}/jre_emul.jar
 fi
