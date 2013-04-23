@@ -44,6 +44,7 @@ public class GeneratedVariableBinding implements IVariableBinding {
   private final boolean isField;
 
   public static final String UNNAMED_VARIABLE = "<unnamed-variable>";
+  public static final String PLACEHOLDER_NAME = "<placeholder-variable>";
 
   public GeneratedVariableBinding(String name, int modifiers, ITypeBinding type,
       boolean isField, boolean isParameter, @Nullable ITypeBinding declaringClass,
@@ -74,6 +75,14 @@ public class GeneratedVariableBinding implements IVariableBinding {
   public GeneratedVariableBinding(ITypeBinding binding, boolean isField, boolean isParameter,
       ITypeBinding declaringClass, IMethodBinding declaringMethod) {
     this(UNNAMED_VARIABLE, 0, binding, isField, isParameter, declaringClass, declaringMethod);
+  }
+
+  public static GeneratedVariableBinding newPlaceholder() {
+    return new GeneratedVariableBinding(PLACEHOLDER_NAME, 0, null, false, false, null, null);
+  }
+
+  public static boolean isPlaceholder(IVariableBinding var) {
+    return var.getName().equals(PLACEHOLDER_NAME);
   }
 
   @Override

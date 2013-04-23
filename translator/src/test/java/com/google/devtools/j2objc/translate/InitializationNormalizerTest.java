@@ -97,7 +97,7 @@ public class InitializationNormalizerTest extends GenerationTest {
     String translation = translateSourceFile(source, "Distance", "Distance.m");
     assertTranslation(translation,
         "[IOSObjectArray arrayWithObjects:(id[]){ [[[Distance_SimplexVertex alloc] " +
-        "initWithDistance:this$0_] autorelease] } " +
+        "initWithDistance:outer$] autorelease] } " +
         "count:1 type:[IOSClass classWithClass:[Distance_SimplexVertex class]]]");
   }
 
@@ -324,12 +324,12 @@ public class InitializationNormalizerTest extends GenerationTest {
   public void testInitializersPlacedAfterOuterAssignments() throws IOException {
     String source = "class Test { "
          + "  int outerVar = 1; "
-         + "  class Inner { int innerVar = outerVar; } }";
+         + "  class Inner { int innerVar = outerVar; void test() { outerVar++; } } }";
     String translation = translateSourceFile(source, "Test", "Test.m");
-    assertTranslation(translation, "JreOperatorRetainedAssign(&this$0_, outer$0);");
-    assertTranslation(translation, "innerVar_ = this$0_.outerVar;");
-    assertTrue(translation.indexOf("JreOperatorRetainedAssign(&this$0_, outer$0);")
-               < translation.indexOf("innerVar_ = this$0_.outerVar;"));
+    assertTranslation(translation, "JreOperatorRetainedAssign(&this$0_, outer$);");
+    assertTranslation(translation, "innerVar_ = outer$.outerVar;");
+    assertTrue(translation.indexOf("JreOperatorRetainedAssign(&this$0_, outer$);")
+               < translation.indexOf("innerVar_ = outer$.outerVar;"));
   }
 
   public void testStaticInitializersKeptInOrder() throws IOException {

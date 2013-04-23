@@ -33,6 +33,7 @@ import org.eclipse.jdt.core.dom.IBinding;
 import org.eclipse.jdt.core.dom.IMethodBinding;
 import org.eclipse.jdt.core.dom.ITypeBinding;
 import org.eclipse.jdt.core.dom.IVariableBinding;
+import org.eclipse.jdt.core.dom.MethodDeclaration;
 import org.eclipse.jdt.core.dom.MethodInvocation;
 import org.eclipse.jdt.core.dom.Modifier;
 import org.eclipse.jdt.core.dom.Name;
@@ -62,9 +63,14 @@ import java.util.Set;
  */
 public class OuterReferenceResolver extends ASTVisitor {
 
+  // A placeholder variable binding that should be replaced with the outer
+  // parameter in a constructor.
+  public static final IVariableBinding OUTER_PARAMETER = GeneratedVariableBinding.newPlaceholder();
+
   private static OuterReferenceResolver instance;
 
   private Map<ITypeBinding, IVariableBinding> outerVars = Maps.newHashMap();
+  private Set<ITypeBinding> usesOuterParam = Sets.newHashSet();
   private ListMultimap<ITypeBinding, Capture> captures = ArrayListMultimap.create();
   private Map<ASTNode, List<IVariableBinding>> outerPaths = Maps.newHashMap();
   private ArrayList<Scope> scopeStack = Lists.newArrayList();
@@ -88,6 +94,11 @@ public class OuterReferenceResolver extends ASTVisitor {
   public static boolean needsOuterReference(ITypeBinding type) {
     assert instance != null;
     return instance.outerVars.containsKey(type);
+  }
+
+  public static boolean needsOuterParam(ITypeBinding type) {
+    assert instance != null;
+    return instance.outerVars.containsKey(type) || instance.usesOuterParam.contains(type);
   }
 
   public static IVariableBinding getOuterField(ITypeBinding type) {
@@ -144,6 +155,7 @@ public class OuterReferenceResolver extends ASTVisitor {
 
     private final ITypeBinding type;
     private final Set<ITypeBinding> inheritedScope;
+    private boolean initializingContext = true;
     private Set<IVariableBinding> declaredVars = Sets.newHashSet();
 
     private Scope(ITypeBinding type) {
@@ -160,6 +172,11 @@ public class OuterReferenceResolver extends ASTVisitor {
     }
   }
 
+  private Scope peekScope() {
+    assert scopeStack.size() > 0;
+    return scopeStack.get(scopeStack.size() - 1);
+  }
+
   private String getOuterFieldName(ITypeBinding type) {
     // Ensure that the new outer field does not conflict with a field in a superclass.
     type = type.getSuperclass();
@@ -173,7 +190,12 @@ public class OuterReferenceResolver extends ASTVisitor {
     return "this$" + suffix;
   }
 
-  private IVariableBinding getOrCreateOuterField(ITypeBinding type) {
+  private IVariableBinding getOrCreateOuterField(Scope scope) {
+    if (scope.initializingContext && scope == peekScope()) {
+      usesOuterParam.add(scope.type);
+      return OUTER_PARAMETER;
+    }
+    ITypeBinding type = scope.type;
     IVariableBinding outerField = outerVars.get(type);
     if (outerField == null) {
       outerField = new GeneratedVariableBinding(
@@ -210,7 +232,7 @@ public class OuterReferenceResolver extends ASTVisitor {
       if (type.equals(scope.type)) {
         break;
       }
-      path.add(getOrCreateOuterField(scope.type));
+      path.add(getOrCreateOuterField(scope));
     }
     return path;
   }
@@ -223,7 +245,7 @@ public class OuterReferenceResolver extends ASTVisitor {
       if (scope.inheritedScope.contains(type)) {
         break;
       }
-      path.add(getOrCreateOuterField(scope.type));
+      path.add(getOrCreateOuterField(scope));
     }
     return path;
   }
@@ -241,22 +263,22 @@ public class OuterReferenceResolver extends ASTVisitor {
     var = var.getVariableDeclaration();
     boolean isConstant = var.getConstantValue() != null;
     List<IVariableBinding> path = Lists.newArrayList();
-    ITypeBinding lastType = null;
+    Scope lastScope = null;
     for (int i = scopeStack.size() - 1; i >= 0; i--) {
       Scope scope = scopeStack.get(i);
       if (scope.declaredVars.contains(var)) {
         break;
       }
-      if (lastType != null && !isConstant) {
-        path.add(getOrCreateOuterField(lastType));
+      if (lastScope != null && !isConstant) {
+        path.add(getOrCreateOuterField(lastScope));
       }
-      lastType = scope.type;
+      lastScope = scope;
     }
-    if (lastType != null) {
+    if (lastScope != null) {
       if (isConstant) {
         path.add(var);
       } else {
-        path.add(getOrCreateInnerField(var, lastType));
+        path.add(getOrCreateInnerField(var, lastScope.type));
       }
     }
     return path;
@@ -381,5 +403,23 @@ public class OuterReferenceResolver extends ASTVisitor {
   @Override
   public boolean visit(SingleVariableDeclaration node) {
     return visitVariableDeclaration(node);
+  }
+
+  @Override
+  public boolean visit(MethodDeclaration node) {
+    IMethodBinding binding = node.resolveBinding();
+    // Assume all code except for non-constructor methods is initializer code.
+    if (!binding.isConstructor()) {
+      peekScope().initializingContext = false;
+    }
+    return true;
+  }
+
+  @Override
+  public void endVisit(MethodDeclaration node) {
+    IMethodBinding binding = node.resolveBinding();
+    if (!binding.isConstructor()) {
+      peekScope().initializingContext = true;
+    }
   }
 }

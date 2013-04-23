@@ -69,7 +69,7 @@ public class OuterReferenceResolverTest extends GenerationTest {
     TypeDeclaration bNode = (TypeDeclaration) nodesByType.get(ASTNode.TYPE_DECLARATION).get(2);
     TypeDeclaration innerNode = (TypeDeclaration) nodesByType.get(ASTNode.TYPE_DECLARATION).get(3);
     assertFalse(OuterReferenceResolver.needsOuterReference(aNode.resolveBinding()));
-    assertTrue(OuterReferenceResolver.needsOuterReference(bNode.resolveBinding()));
+    assertFalse(OuterReferenceResolver.needsOuterReference(bNode.resolveBinding()));
     assertTrue(OuterReferenceResolver.needsOuterReference(innerNode.resolveBinding()));
 
     // B will need an outer reference to Test so it can initialize its
@@ -77,7 +77,7 @@ public class OuterReferenceResolverTest extends GenerationTest {
     List<IVariableBinding> bPath = OuterReferenceResolver.getPath(bNode);
     assertNotNull(bPath);
     assertEquals(1, bPath.size());
-    assertEquals("Test", bPath.get(0).getType().getName());
+    assertEquals(OuterReferenceResolver.OUTER_PARAMETER, bPath.get(0));
 
     // foo() call will need to get to B's scope to call the inherited method.
     MethodInvocation fooCall = (MethodInvocation) nodesByType.get(ASTNode.METHOD_INVOCATION).get(0);

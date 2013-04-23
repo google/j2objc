@@ -250,16 +250,16 @@ public class ObjectiveCHeaderGeneratorTest extends GenerationTest {
       "Example", "Example.h");
     assertTranslation(translation, "@interface Example_Inner : NSObject");
     assertNotInTranslation(translation, "Example *this");
-    assertTranslation(translation, "- (id)initWithExample:(Example *)outer$0;");
+    assertTranslation(translation, "- (id)initWithExample:(Example *)outer$;");
   }
 
   public void testInnerClassDeclarationWithOuterReference() throws IOException {
     String translation = translateSourceFile(
-      "public class Example { int i; class Inner { int j = i; } }",
+      "public class Example { int i; class Inner { void test() { int j = i; } } }",
       "Example", "Example.h");
     assertTranslation(translation, "@interface Example_Inner : NSObject");
     assertTranslation(translation, "Example *this$0;");
-    assertTranslation(translation, "- (id)initWithExample:(Example *)outer$0;");
+    assertTranslation(translation, "- (id)initWithExample:(Example *)outer$;");
   }
 
   public void testAnonymousClassDeclaration() throws IOException {

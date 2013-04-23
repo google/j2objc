@@ -266,7 +266,7 @@ public class InitializationNormalizer extends ErrorReportingASTVisitor {
     IVariableBinding rhsBinding = Types.getVariableBinding(
         ((Assignment) expression).getRightHandSide());
     return rhsBinding != null && (rhsBinding instanceof GeneratedVariableBinding)
-        && rhsBinding.getName().startsWith("outer$");
+        && (rhsBinding.getName().equals("outer$") || rhsBinding.getName().startsWith("capture$"));
   }
 
   /**

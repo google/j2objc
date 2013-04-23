@@ -37,6 +37,7 @@ import org.eclipse.jdt.core.dom.EnumDeclaration;
 import org.eclipse.jdt.core.dom.FieldAccess;
 import org.eclipse.jdt.core.dom.IBinding;
 import org.eclipse.jdt.core.dom.IMethodBinding;
+import org.eclipse.jdt.core.dom.IVariableBinding;
 import org.eclipse.jdt.core.dom.InfixExpression;
 import org.eclipse.jdt.core.dom.InstanceofExpression;
 import org.eclipse.jdt.core.dom.MethodDeclaration;
@@ -84,7 +85,11 @@ class BindingMapVerifier extends ErrorReportingASTVisitor {
   }
 
   private boolean verify(ASTNode node) {
-    assert bindingMap.get(node) != null;
+    IBinding binding = bindingMap.get(node);
+    assert binding != null;
+    if (binding instanceof IVariableBinding) {
+      assert !GeneratedVariableBinding.isPlaceholder((IVariableBinding) binding);
+    }
     return true;
   }
 

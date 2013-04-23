@@ -64,6 +64,7 @@ JAVA_SOURCES = \
 	translate/InnerClassExtractor.java \
 	translate/JavaToIOSMethodTranslator.java \
 	translate/JavaToIOSTypeConverter.java \
+	translate/OuterReferenceFixer.java \
 	translate/OuterReferenceResolver.java \
 	translate/Rewriter.java \
 	types/BindingMapBuilder.java \
