@@ -120,7 +120,8 @@ public class CycleFinder {
     // Parse all the source and populate type data.
     ASTParser parser = newParser(options);
     FileASTRequestor astRequestor = newASTRequestor(typeCollector);
-    parser.createASTs(options.getFiles(), null, new String[0], astRequestor, null);
+    String[] sourceFiles = options.getSourceFiles().toArray(new String[0]);
+    parser.createASTs(sourceFiles, null, new String[0], astRequestor, null);
 
     if (nErrors > 0) {
       return null;

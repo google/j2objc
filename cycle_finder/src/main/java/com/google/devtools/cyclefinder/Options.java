@@ -15,9 +15,13 @@
 package com.google.devtools.cyclefinder;
 
 import com.google.common.base.Preconditions;
+import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
 import com.google.common.io.Resources;
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
 import java.io.IOException;
 import java.net.URL;
 import java.util.List;
@@ -45,18 +49,18 @@ class Options {
     Preconditions.checkNotNull(helpMessage);
   }
 
-  private String[] files;
   private String sourcepath;
   private String classpath;
   private String bootclasspath;
   private List<String> whitelistFiles = Lists.newArrayList();
+  private List<String> sourceFiles = Lists.newArrayList();
 
-  public String[] getFiles() {
-    return files;
+  public List<String> getSourceFiles() {
+    return sourceFiles;
   }
 
-  public void setFiles(String[] files) {
-    this.files = files;
+  public void setSourceFiles(List<String> files) {
+    this.sourceFiles = files;
   }
 
   public String getSourcepath() {
@@ -79,6 +83,15 @@ class Options {
     whitelistFiles.add(fileName);
   }
 
+  private void addManifest(String manifestFile) throws IOException {
+    BufferedReader in = new BufferedReader(new FileReader(new File(manifestFile)));
+    for (String line = in.readLine(); line != null; line = in.readLine()) {
+      if (!Strings.isNullOrEmpty(line)) {
+        sourceFiles.add(line.trim());
+      }
+    }
+  }
+
   public static void usage(String invalidUseMsg) {
     System.err.println("cycle_finder: " + invalidUseMsg);
     System.err.println(usageMessage);
@@ -90,7 +103,7 @@ class Options {
     System.exit(0);
   }
 
-  public static Options parse(String[] args) {
+  public static Options parse(String[] args) throws IOException {
     Options options = new Options();
 
     int nArg = 0;
@@ -109,9 +122,14 @@ class Options {
         options.classpath = args[nArg];
       } else if (arg.equals("--whitelist") || arg.equals("-w")) {
         if (++nArg == args.length) {
-          usage("-whitelist requires an argument");
+          usage("--whitelist requires an argument");
         }
         options.whitelistFiles.add(args[nArg]);
+      } else if (arg.equals("--sourcefilelist") || arg.equals("-s")) {
+        if (++nArg == args.length) {
+          usage("--sourcefilelist requires an argument");
+        }
+        options.addManifest(args[nArg]);
       } else if (arg.startsWith(XBOOTCLASSPATH)) {
         options.bootclasspath = arg.substring(XBOOTCLASSPATH.length());
       } else if (arg.startsWith("-h") || arg.equals("--help")) {
@@ -124,9 +142,9 @@ class Options {
       ++nArg;
     }
 
-    int nFiles = args.length - nArg;
-    options.files = new String[nFiles];
-    System.arraycopy(args, nArg, options.files, 0, nFiles);
+    while (nArg < args.length) {
+      options.sourceFiles.add(args[nArg++]);
+    }
 
     return options;
   }
