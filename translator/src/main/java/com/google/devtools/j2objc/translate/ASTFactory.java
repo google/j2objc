@@ -77,6 +77,14 @@ public final class ASTFactory {
     return qualifier == null ? name : newQualifiedName(ast, qualifier, name);
   }
 
+  public static Name newName(AST ast, List<IVariableBinding> path) {
+    Name name = null;
+    for (IVariableBinding var : path) {
+      name = newName(ast, name, var);
+    }
+    return name;
+  }
+
   public static Assignment newAssignment(AST ast, Expression lhs, Expression rhs) {
     Assignment assignment = ast.newAssignment();
     assignment.setOperator(Assignment.Operator.ASSIGN);

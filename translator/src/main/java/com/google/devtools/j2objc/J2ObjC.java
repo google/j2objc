@@ -32,6 +32,7 @@ import com.google.devtools.j2objc.translate.InitializationNormalizer;
 import com.google.devtools.j2objc.translate.InnerClassExtractor;
 import com.google.devtools.j2objc.translate.JavaToIOSMethodTranslator;
 import com.google.devtools.j2objc.translate.JavaToIOSTypeConverter;
+import com.google.devtools.j2objc.translate.OuterReferenceFixer;
 import com.google.devtools.j2objc.translate.OuterReferenceResolver;
 import com.google.devtools.j2objc.translate.Rewriter;
 import com.google.devtools.j2objc.types.Types;
@@ -356,6 +357,9 @@ public class J2ObjC {
 
     // Normalize init statements
     new InitializationNormalizer().run(unit);
+
+    // Fix references to outer scope and captured variables.
+    new OuterReferenceFixer().run(unit);
 
     // Translate core Java type use to similar iOS types
     new JavaToIOSTypeConverter().run(unit);

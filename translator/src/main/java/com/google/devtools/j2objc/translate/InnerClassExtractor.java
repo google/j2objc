@@ -30,7 +30,6 @@ import org.eclipse.jdt.core.dom.AbstractTypeDeclaration;
 import org.eclipse.jdt.core.dom.AnnotationTypeDeclaration;
 import org.eclipse.jdt.core.dom.Block;
 import org.eclipse.jdt.core.dom.BodyDeclaration;
-import org.eclipse.jdt.core.dom.ClassInstanceCreation;
 import org.eclipse.jdt.core.dom.CompilationUnit;
 import org.eclipse.jdt.core.dom.ConstructorInvocation;
 import org.eclipse.jdt.core.dom.EnumDeclaration;
@@ -40,18 +39,16 @@ import org.eclipse.jdt.core.dom.IMethodBinding;
 import org.eclipse.jdt.core.dom.ITypeBinding;
 import org.eclipse.jdt.core.dom.IVariableBinding;
 import org.eclipse.jdt.core.dom.MethodDeclaration;
-import org.eclipse.jdt.core.dom.MethodInvocation;
 import org.eclipse.jdt.core.dom.Modifier;
-import org.eclipse.jdt.core.dom.Modifier.ModifierKeyword;
 import org.eclipse.jdt.core.dom.Name;
 import org.eclipse.jdt.core.dom.SimpleName;
 import org.eclipse.jdt.core.dom.SingleVariableDeclaration;
 import org.eclipse.jdt.core.dom.Statement;
 import org.eclipse.jdt.core.dom.SuperConstructorInvocation;
-import org.eclipse.jdt.core.dom.ThisExpression;
 import org.eclipse.jdt.core.dom.TypeDeclaration;
 import org.eclipse.jdt.core.dom.TypeDeclarationStatement;
 
+import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -62,23 +59,11 @@ import java.util.List;
  * @author Tom Ball
  */
 public class InnerClassExtractor extends ErrorReportingASTVisitor {
-  private final List<AbstractTypeDeclaration> unitTypes;
 
-  static final char INNERCLASS_DELIMITER = '_';
+  private final List<AbstractTypeDeclaration> unitTypes;
 
   public InnerClassExtractor(CompilationUnit unit) {
     unitTypes = ASTUtil.getTypes(unit);
-  }
-
-  @Override
-  public boolean visit(CompilationUnit node) {
-    return true;
-  }
-
-  @Override
-  public void endVisit(CompilationUnit node) {
-    // Fixup references to the inner fields.
-    node.accept(new OuterReferenceFixer());
   }
 
   @Override
@@ -111,11 +96,8 @@ public class InnerClassExtractor extends ErrorReportingASTVisitor {
 
       if (parentNode instanceof AbstractTypeDeclaration) {
         // Remove declaration from declaring type.
-        AbstractTypeDeclaration parent = (AbstractTypeDeclaration) node.getParent();
-        @SuppressWarnings("unchecked")
-        List<AbstractTypeDeclaration> parentTypes =
-            parent.bodyDeclarations(); // safe by definition
-        boolean success = parentTypes.remove(node);
+        boolean success =
+            ASTUtil.getBodyDeclarations((AbstractTypeDeclaration) parentNode).remove(node);
         assert success;
       } else {
         TypeDeclarationStatement typeStatement = (TypeDeclarationStatement) parentNode;
@@ -123,23 +105,18 @@ public class InnerClassExtractor extends ErrorReportingASTVisitor {
 
         // Remove stmt from method body (or an if/else/try/catch/finally clause).
         Block body = (Block) typeStatement.getParent();
-        @SuppressWarnings("unchecked")
-        List<Statement> stmts = body.statements(); // safe by definition
-        boolean success = stmts.remove(typeStatement);
+        boolean success = ASTUtil.getStatements(body).remove(typeStatement);
         assert success;
       }
 
       // Make this node non-private, if necessary, and add it to the unit's type
       // list.
-      @SuppressWarnings("unchecked") // safe by definition
-      List<IExtendedModifier> modifiers = node.modifiers();
-      for (IExtendedModifier iem : modifiers) {
-        if (iem instanceof Modifier) {
-          Modifier mod = (Modifier) iem;
-          if (mod.getKeyword().equals(ModifierKeyword.PRIVATE_KEYWORD)) {
-            modifiers.remove(mod);
-            break;
-          }
+      Iterator<IExtendedModifier> iter = ASTUtil.getModifiers(node).iterator();
+      while (iter.hasNext()) {
+        IExtendedModifier iem = iter.next();
+        if ((iem instanceof Modifier) && ((Modifier) iem).isPrivate()) {
+          iter.remove();
+          break;
         }
       }
       unitTypes.add(node);
@@ -213,7 +190,7 @@ public class InnerClassExtractor extends ErrorReportingASTVisitor {
       return false;
     }
     SimpleName name = (SimpleName) firstArg;
-    return name.getIdentifier().startsWith("outer$");
+    return name.getIdentifier().startsWith("capture$");
   }
 
   protected void addOuterParameter(
@@ -222,8 +199,7 @@ public class InnerClassExtractor extends ErrorReportingASTVisitor {
     AST ast = typeNode.getAST();
     ITypeBinding outerType = Types.getTypeBinding(typeNode).getDeclaringClass();
     GeneratedVariableBinding outerParamBinding = new GeneratedVariableBinding(
-        "outer$" + binding.getParameterTypes().length, Modifier.FINAL, outerType, false, true,
-        binding.getDeclaringClass(), binding);
+        "outer$", Modifier.FINAL, outerType, false, true, binding.getDeclaringClass(), binding);
     SingleVariableDeclaration outerParam =
         ASTFactory.newSingleVariableDeclaration(ast, outerParamBinding);
     ASTUtil.getParameters(constructor).add(0, outerParam);
@@ -264,7 +240,7 @@ public class InnerClassExtractor extends ErrorReportingASTVisitor {
         assert path != null && path.size() > 0;
         path = Lists.newArrayList(path);
         path.set(0, outerParamBinding);
-        Name superOuterArg = makeNameFromPath(path, ast);
+        Name superOuterArg = ASTFactory.newName(ast, path);
 
         ASTUtil.getArguments(superCall).add(0, superOuterArg);
         superCallBinding.addParameter(0, superType.getDeclaringClass());
@@ -276,127 +252,6 @@ public class InnerClassExtractor extends ErrorReportingASTVisitor {
             ASTFactory.newSimpleName(ast, outerField),
             ASTFactory.newSimpleName(ast, outerParamBinding))));
       }
-    }
-  }
-
-  private static Name makeNameFromPath(List<IVariableBinding> path, AST ast) {
-    Name name = null;
-    for (IVariableBinding var : path) {
-      name = ASTFactory.newName(ast, name, var);
-    }
-    assert name != null;
-    return name;
-  }
-
-  /**
-   * Updates variable references outside an inner class to the new fields
-   * injected into it.
-   */
-  private class OuterReferenceFixer extends ErrorReportingASTVisitor {
-
-    private boolean inSuperConstructorInvocation = false;
-
-    @Override
-    public boolean visit(SuperConstructorInvocation node) {
-      inSuperConstructorInvocation = true;
-      return true;
-    }
-
-    @Override
-    public void endVisit(SuperConstructorInvocation node) {
-      inSuperConstructorInvocation = false;
-    }
-
-    @Override
-    public boolean visit(ClassInstanceCreation node) {
-      ITypeBinding newType = Types.getTypeBinding(node);
-      ITypeBinding declaringClass = newType.getDeclaringClass();
-      if (Modifier.isStatic(newType.getModifiers()) || declaringClass == null) {
-        return true;
-      }
-
-      AST ast = node.getAST();
-      IMethodBinding binding = Types.getMethodBinding(node).getMethodDeclaration();
-      Expression outerExpr = node.getExpression();
-      List<IVariableBinding> path = OuterReferenceResolver.getPath(node);
-      Expression outerArg = null;
-
-      if (outerExpr != null) {
-        node.setExpression(null);
-        outerArg = NodeCopier.copySubtree(ast, outerExpr);
-      } else if (path != null) {
-        outerArg = makeNameFromPath(fixPath(node, path), ast);
-      } else {
-        outerArg = ast.newThisExpression();
-        Types.addBinding(outerArg, declaringClass);
-      }
-
-      if (outerArg != null) {
-        ASTUtil.getArguments(node).add(0, outerArg);
-        GeneratedMethodBinding newBinding = new GeneratedMethodBinding(binding);
-        binding = newBinding;
-        newBinding.addParameter(0, declaringClass);
-        Types.addBinding(node, newBinding);
-      }
-      assert binding.isVarargs() || node.arguments().size() == binding.getParameterTypes().length;
-      return true;
-    }
-
-    @Override
-    public boolean visit(MethodInvocation node) {
-      List<IVariableBinding> path = OuterReferenceResolver.getPath(node);
-      if (path != null) {
-        node.setExpression(makeNameFromPath(fixPath(node, path), node.getAST()));
-      }
-      return true;
-    }
-
-    @Override
-    public boolean visit(SimpleName node) {
-      List<IVariableBinding> path = OuterReferenceResolver.getPath(node);
-      if (path != null) {
-        AST ast = node.getAST();
-        if (path.size() == 1 && path.get(0).getConstantValue() != null) {
-          IVariableBinding var = path.get(0);
-          ASTUtil.setProperty(node,
-              ASTFactory.makeLiteral(ast, var.getConstantValue(), var.getType()));
-        } else {
-          ASTUtil.setProperty(node, makeNameFromPath(fixPath(node, path), ast));
-        }
-      }
-      return true;
-    }
-
-    @Override
-    public boolean visit(ThisExpression node) {
-      List<IVariableBinding> path = OuterReferenceResolver.getPath(node);
-      if (path != null) {
-        ASTUtil.setProperty(node, makeNameFromPath(fixPath(node, path), node.getAST()));
-      } else {
-        node.setQualifier(null);
-      }
-      return true;
-    }
-
-    private List<IVariableBinding> fixPath(ASTNode node, List<IVariableBinding> path) {
-      // If inside a super constructor invocation, this is the first
-      // statement in the constructor, and so the this$ field hasn't
-      // yet been initialized. So use the outer$ parameter instead.
-      if (!inSuperConstructorInvocation) {
-        return path;
-      }
-
-      // Find containing constructor.
-      ASTNode constructorNode = node;
-      do {
-        constructorNode = constructorNode.getParent();
-      } while (!(constructorNode instanceof MethodDeclaration));
-
-      List<SingleVariableDeclaration> params =
-          ASTUtil.getParameters((MethodDeclaration) constructorNode);
-      path = Lists.newArrayList(path);
-      path.set(0, Types.getVariableBinding(params.get(0)));
-      return path;
     }
   }
 }

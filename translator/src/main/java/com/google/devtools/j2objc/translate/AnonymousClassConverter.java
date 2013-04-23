@@ -103,7 +103,7 @@ public class AnonymousClassConverter extends ErrorReportingASTVisitor {
     List<Expression> parentArguments;
     Expression outerExpression = null;
     String newClassName = typeBinding.getName();
-    boolean isStatic = !OuterReferenceResolver.needsOuterReference(typeBinding);
+    boolean isStatic = !OuterReferenceResolver.needsOuterParam(typeBinding);
     int modifiers = isStatic ? Modifier.STATIC : 0;
     ITypeBinding innerType = RenamedTypeBinding.rename(
         newClassName, outerType, typeBinding, modifiers);
@@ -231,7 +231,7 @@ public class AnonymousClassConverter extends ErrorReportingASTVisitor {
     if (outerExpression != null) {
       ITypeBinding outerExpressionType = Types.getTypeBinding(outerExpression);
       GeneratedVariableBinding outerExpressionParam = new GeneratedVariableBinding(
-          "outer$" + outerCount++, Modifier.FINAL, outerExpressionType, false, true, clazz,
+          "capture$" + outerCount++, Modifier.FINAL, outerExpressionType, false, true, clazz,
           binding);
       ASTUtil.getParameters(constructor).add(0,
           ASTFactory.newSingleVariableDeclaration(ast, outerExpressionParam));
@@ -261,7 +261,7 @@ public class AnonymousClassConverter extends ErrorReportingASTVisitor {
     // Add parameters and assignments for the captured inner vars.
     for (IVariableBinding innerField : innerFields) {
       GeneratedVariableBinding paramBinding = new GeneratedVariableBinding(
-          "outer$" + outerCount++, Modifier.FINAL, innerField.getType(), false, true, clazz,
+          "capture$" + outerCount++, Modifier.FINAL, innerField.getType(), false, true, clazz,
           binding);
       ASTUtil.getParameters(constructor).add(
           ASTFactory.newSingleVariableDeclaration(ast, paramBinding));

@@ -85,7 +85,7 @@ public class AnonymousClassConverterTest extends GenerationTest {
     assertTranslation(header, "IOSBooleanArray *val$bar_;");
     assertTranslation(header, "@property (nonatomic, retain) IOSBooleanArray *val$bar;");
     assertTranslation(header,
-        "- (id)initWithJavaLangBooleanArray:(IOSBooleanArray *)outer$0;");
+        "- (id)initWithJavaLangBooleanArray:(IOSBooleanArray *)capture$0;");
     assertTranslation(impl,
         "IOSBooleanArray *bar = [[[IOSBooleanArray alloc] initWithLength:1] autorelease];");
     assertTranslation(impl, "[[Test_$1 alloc] initWithJavaLangBooleanArray:bar]");
@@ -160,8 +160,8 @@ public class AnonymousClassConverterTest extends GenerationTest {
       @Override
       public void endVisit(MethodDeclaration node) {
         if (node.isConstructor()) {
-          assertEquals("final NSObject outer$0", node.parameters().get(0).toString());
-          assertEquals("val$test=outer$0;", node.getBody().statements().get(1).toString().trim());
+          assertEquals("final NSObject capture$0", node.parameters().get(0).toString());
+          assertEquals("val$test=capture$0;", node.getBody().statements().get(1).toString().trim());
           ++testsFound[0];
         }
       };
@@ -201,8 +201,8 @@ public class AnonymousClassConverterTest extends GenerationTest {
       @Override
       public void endVisit(MethodDeclaration node) {
         if (node.isConstructor()) {
-          assertEquals("final NSObject outer$0", node.parameters().get(0).toString());
-          assertEquals("val$foo=outer$0;", node.getBody().statements().get(1).toString().trim());
+          assertEquals("final NSObject capture$0", node.parameters().get(0).toString());
+          assertEquals("val$foo=capture$0;", node.getBody().statements().get(1).toString().trim());
           ++testsFound[0];
         }
       };
@@ -271,7 +271,7 @@ public class AnonymousClassConverterTest extends GenerationTest {
     // Test_$: since bar_ is an unshadowed field, the parameter name is
     // unchanged.
     assertTranslation(translation, "[this$0_ logWithInt:1 withId:val$bar__];");
-    assertTranslation(translation, "JreOperatorRetainedAssign(&val$bar__, outer$0);");
+    assertTranslation(translation, "JreOperatorRetainedAssign(&val$bar__, capture$0);");
   }
 
   public void testExternalReferenceAsQualifier() throws IOException {
@@ -294,7 +294,7 @@ public class AnonymousClassConverterTest extends GenerationTest {
       "    Runnable run = new Runnable() { public void run() { int j = i + i; } }; } }",
       "Test", "Test.m");
 
-    assertTranslation(translation, "initWithJavaLangInteger:(JavaLangInteger *)outer$0 {");
+    assertTranslation(translation, "initWithJavaLangInteger:(JavaLangInteger *)capture$0 {");
   }
 
   public void testFinalVarInEnhancedForStatement() throws IOException {
@@ -465,7 +465,7 @@ public class AnonymousClassConverterTest extends GenerationTest {
     assertTranslation(translation,
         "[[[Test_A_$1 alloc] initWithTest_A:self withTest_B:b withInt:1 withTest_B:b]");
     assertTranslation(translation,
-        "[super initWithTest_B:outer$0 withInt:arg$0]");
+        "[super initWithTest_B:capture$0 withInt:arg$0]");
   }
 
   public void testAnonymousClassInStaticBlock() throws IOException {

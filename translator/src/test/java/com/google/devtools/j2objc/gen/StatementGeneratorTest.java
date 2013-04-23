@@ -471,7 +471,7 @@ public class StatementGeneratorTest extends GenerationTest {
         "return [[[Test_$1 alloc] initWithJavaUtilCollection:collection] autorelease];");
     translation = getTranslatedFile("Test.h");
     assertTranslation(translation,
-        "- (id)initWithJavaUtilCollection:(id<JavaUtilCollection>)outer$0;");
+        "- (id)initWithJavaUtilCollection:(id<JavaUtilCollection>)capture$0;");
   }
 
   public void testEnumInEqualsTest() throws IOException {
@@ -1069,7 +1069,7 @@ public class StatementGeneratorTest extends GenerationTest {
         "    public Inner() { }" +
         "    public Inner(int foo) { this(); int i = foo; }}}",
         "Test", "Test.m");
-    assertTranslation(translation, "self = [self initTest_InnerWithTest:outer$1]");
+    assertTranslation(translation, "self = [self initTest_InnerWithTest:outer$]");
   }
 
   public void testDoubleModulo() throws IOException {
