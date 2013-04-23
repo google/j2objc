@@ -218,7 +218,7 @@ public class CycleFinderTest extends TestCase {
       Files.write(Joiner.on("\n").join(whitelistEntries), whitelistFile, Charset.defaultCharset());
       options.addWhitelistFile(whitelistFile.getAbsolutePath());
     }
-    options.setFiles(inputFiles.toArray(new String[0]));
+    options.setSourceFiles(inputFiles);
     ByteArrayOutputStream errorMessages = new ByteArrayOutputStream();
     CycleFinder finder = new CycleFinder(options, new PrintStream(new NullOutputStream()),
                                          new PrintStream(errorMessages));
