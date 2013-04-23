@@ -22,40 +22,82 @@
 /* End PBXAggregateTarget section */
 
 /* Begin PBXBuildFile section */
+		064FB74C172705F400DC0D51 /* URI.h in Headers */ = {isa = PBXBuildFile; fileRef = 064FB746172705F400DC0D51 /* URI.h */; };
+		064FB74E172705F400DC0D51 /* URIEncoderDecoder.h in Headers */ = {isa = PBXBuildFile; fileRef = 064FB748172705F400DC0D51 /* URIEncoderDecoder.h */; };
+		064FB750172705F400DC0D51 /* URISyntaxException.h in Headers */ = {isa = PBXBuildFile; fileRef = 064FB74A172705F400DC0D51 /* URISyntaxException.h */; };
+		064FB758172706E100DC0D51 /* EnumMap.h in Headers */ = {isa = PBXBuildFile; fileRef = 064FB752172706E100DC0D51 /* EnumMap.h */; };
+		064FB75A172706E100DC0D51 /* InvalidPropertiesFormatException.h in Headers */ = {isa = PBXBuildFile; fileRef = 064FB754172706E100DC0D51 /* InvalidPropertiesFormatException.h */; };
+		064FB75C172706E100DC0D51 /* StringTokenizer.h in Headers */ = {isa = PBXBuildFile; fileRef = 064FB756172706E100DC0D51 /* StringTokenizer.h */; };
+		064FB760172706F600DC0D51 /* XMLConstants.h in Headers */ = {isa = PBXBuildFile; fileRef = 064FB75E172706F600DC0D51 /* XMLConstants.h */; };
+		064FB76C1727071800DC0D51 /* FactoryConfigurationError.h in Headers */ = {isa = PBXBuildFile; fileRef = 064FB7621727071800DC0D51 /* FactoryConfigurationError.h */; };
+		064FB76E1727071800DC0D51 /* FilePathToURI.h in Headers */ = {isa = PBXBuildFile; fileRef = 064FB7641727071800DC0D51 /* FilePathToURI.h */; };
+		064FB7701727071800DC0D51 /* ParserConfigurationException.h in Headers */ = {isa = PBXBuildFile; fileRef = 064FB7661727071800DC0D51 /* ParserConfigurationException.h */; };
+		064FB7721727071800DC0D51 /* SAXParser.h in Headers */ = {isa = PBXBuildFile; fileRef = 064FB7681727071800DC0D51 /* SAXParser.h */; };
+		064FB7741727071800DC0D51 /* SAXParserFactory.h in Headers */ = {isa = PBXBuildFile; fileRef = 064FB76A1727071800DC0D51 /* SAXParserFactory.h */; };
+		064FB77A1727072B00DC0D51 /* Result.h in Headers */ = {isa = PBXBuildFile; fileRef = 064FB7761727072B00DC0D51 /* Result.h */; };
+		064FB77C1727072B00DC0D51 /* Source.h in Headers */ = {isa = PBXBuildFile; fileRef = 064FB7781727072B00DC0D51 /* Source.h */; };
+		064FB7861727074100DC0D51 /* Schema.h in Headers */ = {isa = PBXBuildFile; fileRef = 064FB77E1727074100DC0D51 /* Schema.h */; };
+		064FB7881727074100DC0D51 /* TypeInfoProvider.h in Headers */ = {isa = PBXBuildFile; fileRef = 064FB7801727074100DC0D51 /* TypeInfoProvider.h */; };
+		064FB78A1727074100DC0D51 /* Validator.h in Headers */ = {isa = PBXBuildFile; fileRef = 064FB7821727074100DC0D51 /* Validator.h */; };
+		064FB78C1727074100DC0D51 /* ValidatorHandler.h in Headers */ = {isa = PBXBuildFile; fileRef = 064FB7841727074100DC0D51 /* ValidatorHandler.h */; };
+		064FB79C1727079100DC0D51 /* HandlerBase.h in Headers */ = {isa = PBXBuildFile; fileRef = 064FB78E1727079100DC0D51 /* HandlerBase.h */; };
+		064FB79E1727079100DC0D51 /* InputSource.h in Headers */ = {isa = PBXBuildFile; fileRef = 064FB7901727079100DC0D51 /* InputSource.h */; };
+		064FB7A01727079100DC0D51 /* Locator.h in Headers */ = {isa = PBXBuildFile; fileRef = 064FB7921727079100DC0D51 /* Locator.h */; };
+		064FB7A21727079100DC0D51 /* SAXException.h in Headers */ = {isa = PBXBuildFile; fileRef = 064FB7941727079100DC0D51 /* SAXException.h */; };
+		064FB7A41727079100DC0D51 /* SAXNotRecognizedException.h in Headers */ = {isa = PBXBuildFile; fileRef = 064FB7961727079100DC0D51 /* SAXNotRecognizedException.h */; };
+		064FB7A61727079100DC0D51 /* SAXNotSupportedException.h in Headers */ = {isa = PBXBuildFile; fileRef = 064FB7981727079100DC0D51 /* SAXNotSupportedException.h */; };
+		064FB7A81727079100DC0D51 /* SAXParseException.h in Headers */ = {isa = PBXBuildFile; fileRef = 064FB79A1727079100DC0D51 /* SAXParseException.h */; };
+		064FB7B5172707D700DC0D51 /* Attributes2.h in Headers */ = {isa = PBXBuildFile; fileRef = 064FB7AA172707D700DC0D51 /* Attributes2.h */; };
+		064FB7B6172707D700DC0D51 /* Attributes2Impl.h in Headers */ = {isa = PBXBuildFile; fileRef = 064FB7AB172707D700DC0D51 /* Attributes2Impl.h */; };
+		064FB7B8172707D700DC0D51 /* DeclHandler.h in Headers */ = {isa = PBXBuildFile; fileRef = 064FB7AD172707D700DC0D51 /* DeclHandler.h */; };
+		064FB7B9172707D700DC0D51 /* DefaultHandler2.h in Headers */ = {isa = PBXBuildFile; fileRef = 064FB7AE172707D700DC0D51 /* DefaultHandler2.h */; };
+		064FB7BB172707D700DC0D51 /* EntityResolver2.h in Headers */ = {isa = PBXBuildFile; fileRef = 064FB7B0172707D700DC0D51 /* EntityResolver2.h */; };
+		064FB7BC172707D700DC0D51 /* LexicalHandler.h in Headers */ = {isa = PBXBuildFile; fileRef = 064FB7B1172707D700DC0D51 /* LexicalHandler.h */; };
+		064FB7BD172707D700DC0D51 /* Locator2.h in Headers */ = {isa = PBXBuildFile; fileRef = 064FB7B2172707D700DC0D51 /* Locator2.h */; };
+		064FB7BE172707D700DC0D51 /* Locator2Impl.h in Headers */ = {isa = PBXBuildFile; fileRef = 064FB7B3172707D700DC0D51 /* Locator2Impl.h */; };
+		064FB7CA172707F200DC0D51 /* AttributeList.h in Headers */ = {isa = PBXBuildFile; fileRef = 064FB7C0172707F200DC0D51 /* AttributeList.h */; };
+		064FB7CB172707F200DC0D51 /* Attributes.h in Headers */ = {isa = PBXBuildFile; fileRef = 064FB7C1172707F200DC0D51 /* Attributes.h */; };
+		064FB7CC172707F200DC0D51 /* ContentHandler.h in Headers */ = {isa = PBXBuildFile; fileRef = 064FB7C2172707F200DC0D51 /* ContentHandler.h */; };
+		064FB7CD172707F200DC0D51 /* DocumentHandler.h in Headers */ = {isa = PBXBuildFile; fileRef = 064FB7C3172707F200DC0D51 /* DocumentHandler.h */; };
+		064FB7CE172707F200DC0D51 /* DTDHandler.h in Headers */ = {isa = PBXBuildFile; fileRef = 064FB7C4172707F200DC0D51 /* DTDHandler.h */; };
+		064FB7CF172707F200DC0D51 /* EntityResolver.h in Headers */ = {isa = PBXBuildFile; fileRef = 064FB7C5172707F200DC0D51 /* EntityResolver.h */; };
+		064FB7D0172707F200DC0D51 /* ErrorHandler.h in Headers */ = {isa = PBXBuildFile; fileRef = 064FB7C6172707F200DC0D51 /* ErrorHandler.h */; };
+		064FB7D1172707F200DC0D51 /* Parser.h in Headers */ = {isa = PBXBuildFile; fileRef = 064FB7C7172707F200DC0D51 /* Parser.h */; };
+		064FB7D2172707F200DC0D51 /* XMLFilter.h in Headers */ = {isa = PBXBuildFile; fileRef = 064FB7C8172707F200DC0D51 /* XMLFilter.h */; };
+		064FB7D3172707F200DC0D51 /* XMLReader.h in Headers */ = {isa = PBXBuildFile; fileRef = 064FB7C9172707F200DC0D51 /* XMLReader.h */; };
+		064FB7EA1727081D00DC0D51 /* AttributeListImpl.h in Headers */ = {isa = PBXBuildFile; fileRef = 064FB7D41727081D00DC0D51 /* AttributeListImpl.h */; };
+		064FB7EC1727081D00DC0D51 /* AttributesImpl.h in Headers */ = {isa = PBXBuildFile; fileRef = 064FB7D61727081D00DC0D51 /* AttributesImpl.h */; };
+		064FB7EE1727081D00DC0D51 /* DefaultHandler.h in Headers */ = {isa = PBXBuildFile; fileRef = 064FB7D81727081D00DC0D51 /* DefaultHandler.h */; };
+		064FB7F01727081D00DC0D51 /* LocatorImpl.h in Headers */ = {isa = PBXBuildFile; fileRef = 064FB7DA1727081D00DC0D51 /* LocatorImpl.h */; };
+		064FB7F21727081D00DC0D51 /* NamespaceSupport.h in Headers */ = {isa = PBXBuildFile; fileRef = 064FB7DC1727081D00DC0D51 /* NamespaceSupport.h */; };
+		064FB7F41727081D00DC0D51 /* NewInstance.h in Headers */ = {isa = PBXBuildFile; fileRef = 064FB7DE1727081D00DC0D51 /* NewInstance.h */; };
+		064FB7F61727081D00DC0D51 /* ParserAdapter.h in Headers */ = {isa = PBXBuildFile; fileRef = 064FB7E01727081D00DC0D51 /* ParserAdapter.h */; };
+		064FB7F81727081D00DC0D51 /* ParserFactory.h in Headers */ = {isa = PBXBuildFile; fileRef = 064FB7E21727081D00DC0D51 /* ParserFactory.h */; };
+		064FB7FA1727081D00DC0D51 /* XMLFilterImpl.h in Headers */ = {isa = PBXBuildFile; fileRef = 064FB7E41727081D00DC0D51 /* XMLFilterImpl.h */; };
+		064FB7FC1727081D00DC0D51 /* XMLReaderAdapter.h in Headers */ = {isa = PBXBuildFile; fileRef = 064FB7E61727081D00DC0D51 /* XMLReaderAdapter.h */; };
+		064FB7FE1727081D00DC0D51 /* XMLReaderFactory.h in Headers */ = {isa = PBXBuildFile; fileRef = 064FB7E81727081D00DC0D51 /* XMLReaderFactory.h */; };
+		064FB8011727085500DC0D51 /* TypeInfo.h in Headers */ = {isa = PBXBuildFile; fileRef = 064FB8001727085500DC0D51 /* TypeInfo.h */; };
+		064FB8031727086700DC0D51 /* LSResourceResolver.h in Headers */ = {isa = PBXBuildFile; fileRef = 064FB8021727086700DC0D51 /* LSResourceResolver.h */; };
+		064FB8081727091A00DC0D51 /* ICUSupport.h in Headers */ = {isa = PBXBuildFile; fileRef = 064FB8041727091A00DC0D51 /* ICUSupport.h */; };
+		064FB80B1727091A00DC0D51 /* UniquePtr.h in Headers */ = {isa = PBXBuildFile; fileRef = 064FB8071727091A00DC0D51 /* UniquePtr.h */; };
 		06619389155848D70004DAFE /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 06619388155848D70004DAFE /* Foundation.framework */; };
 		06619395155849870004DAFE /* JreEmulation.h in Headers */ = {isa = PBXBuildFile; fileRef = 0661938D155848D70004DAFE /* JreEmulation.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		066193BD155849BC0004DAFE /* IOSArray.h in Headers */ = {isa = PBXBuildFile; fileRef = 06619396155849BB0004DAFE /* IOSArray.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		066193BE155849BC0004DAFE /* IOSArray.m in Sources */ = {isa = PBXBuildFile; fileRef = 06619397155849BB0004DAFE /* IOSArray.m */; };
 		066193BF155849BC0004DAFE /* IOSArrayClass.h in Headers */ = {isa = PBXBuildFile; fileRef = 06619398155849BB0004DAFE /* IOSArrayClass.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		066193C0155849BC0004DAFE /* IOSArrayClass.m in Sources */ = {isa = PBXBuildFile; fileRef = 06619399155849BB0004DAFE /* IOSArrayClass.m */; };
 		066193C1155849BC0004DAFE /* IOSBooleanArray.h in Headers */ = {isa = PBXBuildFile; fileRef = 0661939A155849BB0004DAFE /* IOSBooleanArray.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		066193C2155849BC0004DAFE /* IOSBooleanArray.m in Sources */ = {isa = PBXBuildFile; fileRef = 0661939B155849BB0004DAFE /* IOSBooleanArray.m */; };
 		066193C3155849BC0004DAFE /* IOSByteArray.h in Headers */ = {isa = PBXBuildFile; fileRef = 0661939C155849BB0004DAFE /* IOSByteArray.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		066193C4155849BC0004DAFE /* IOSByteArray.m in Sources */ = {isa = PBXBuildFile; fileRef = 0661939D155849BB0004DAFE /* IOSByteArray.m */; };
 		066193C5155849BC0004DAFE /* IOSCharArray.h in Headers */ = {isa = PBXBuildFile; fileRef = 0661939E155849BB0004DAFE /* IOSCharArray.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		066193C6155849BC0004DAFE /* IOSCharArray.m in Sources */ = {isa = PBXBuildFile; fileRef = 0661939F155849BC0004DAFE /* IOSCharArray.m */; };
 		066193C7155849BC0004DAFE /* IOSClass.h in Headers */ = {isa = PBXBuildFile; fileRef = 066193A0155849BC0004DAFE /* IOSClass.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		066193C8155849BC0004DAFE /* IOSClass.m in Sources */ = {isa = PBXBuildFile; fileRef = 066193A1155849BC0004DAFE /* IOSClass.m */; };
 		066193CB155849BC0004DAFE /* IOSDoubleArray.h in Headers */ = {isa = PBXBuildFile; fileRef = 066193A4155849BC0004DAFE /* IOSDoubleArray.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		066193CC155849BC0004DAFE /* IOSDoubleArray.m in Sources */ = {isa = PBXBuildFile; fileRef = 066193A5155849BC0004DAFE /* IOSDoubleArray.m */; };
 		066193CD155849BC0004DAFE /* IOSFloatArray.h in Headers */ = {isa = PBXBuildFile; fileRef = 066193A6155849BC0004DAFE /* IOSFloatArray.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		066193CE155849BC0004DAFE /* IOSFloatArray.m in Sources */ = {isa = PBXBuildFile; fileRef = 066193A7155849BC0004DAFE /* IOSFloatArray.m */; };
 		066193CF155849BC0004DAFE /* IOSIntArray.h in Headers */ = {isa = PBXBuildFile; fileRef = 066193A8155849BC0004DAFE /* IOSIntArray.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		066193D0155849BC0004DAFE /* IOSIntArray.m in Sources */ = {isa = PBXBuildFile; fileRef = 066193A9155849BC0004DAFE /* IOSIntArray.m */; };
 		066193D5155849BC0004DAFE /* IOSLongArray.h in Headers */ = {isa = PBXBuildFile; fileRef = 066193AE155849BC0004DAFE /* IOSLongArray.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		066193D6155849BC0004DAFE /* IOSLongArray.m in Sources */ = {isa = PBXBuildFile; fileRef = 066193AF155849BC0004DAFE /* IOSLongArray.m */; };
 		066193D7155849BC0004DAFE /* IOSObjectArray.h in Headers */ = {isa = PBXBuildFile; fileRef = 066193B0155849BC0004DAFE /* IOSObjectArray.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		066193D8155849BC0004DAFE /* IOSObjectArray.m in Sources */ = {isa = PBXBuildFile; fileRef = 066193B1155849BC0004DAFE /* IOSObjectArray.m */; };
 		066193D9155849BC0004DAFE /* IOSPrimitiveClass.h in Headers */ = {isa = PBXBuildFile; fileRef = 066193B2155849BC0004DAFE /* IOSPrimitiveClass.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		066193DA155849BC0004DAFE /* IOSPrimitiveClass.m in Sources */ = {isa = PBXBuildFile; fileRef = 066193B3155849BC0004DAFE /* IOSPrimitiveClass.m */; };
 		066193DD155849BC0004DAFE /* IOSShortArray.h in Headers */ = {isa = PBXBuildFile; fileRef = 066193B6155849BC0004DAFE /* IOSShortArray.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		066193DE155849BC0004DAFE /* IOSShortArray.m in Sources */ = {isa = PBXBuildFile; fileRef = 066193B7155849BC0004DAFE /* IOSShortArray.m */; };
 		066193DF155849BC0004DAFE /* JavaObject.h in Headers */ = {isa = PBXBuildFile; fileRef = 066193B8155849BC0004DAFE /* JavaObject.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		066193E0155849BC0004DAFE /* JreEmulation.m in Sources */ = {isa = PBXBuildFile; fileRef = 066193B9155849BC0004DAFE /* JreEmulation.m */; };
 		066193E8155849F80004DAFE /* NSObject+JavaObject.h in Headers */ = {isa = PBXBuildFile; fileRef = 066193E4155849F80004DAFE /* NSObject+JavaObject.h */; };
-		066193E9155849F80004DAFE /* NSObject+JavaObject.m in Sources */ = {isa = PBXBuildFile; fileRef = 066193E5155849F80004DAFE /* NSObject+JavaObject.m */; };
 		066193EA155849F80004DAFE /* NSString+JavaString.h in Headers */ = {isa = PBXBuildFile; fileRef = 066193E6155849F80004DAFE /* NSString+JavaString.h */; };
-		066193EB155849F80004DAFE /* NSString+JavaString.m in Sources */ = {isa = PBXBuildFile; fileRef = 066193E7155849F80004DAFE /* NSString+JavaString.m */; };
 		0672178415587E2C00645E1B /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 06619388155848D70004DAFE /* Foundation.framework */; };
 		067217D315587FC600645E1B /* IOSArrayTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 067217CD15587FC600645E1B /* IOSArrayTest.m */; };
 		067217D415587FC600645E1B /* IOSObjectArrayTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 067217CE15587FC600645E1B /* IOSObjectArrayTest.m */; };
@@ -65,135 +107,9 @@
 		067217D815587FC600645E1B /* NSString_JavaStringTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 067217D215587FC600645E1B /* NSString_JavaStringTest.m */; };
 		067217DF1558945C00645E1B /* SenTestingKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 067217DE1558945C00645E1B /* SenTestingKit.framework */; };
 		067217E81558978000645E1B /* libjre_emul.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 06619385155848D70004DAFE /* libjre_emul.a */; };
-		067219AD1559C7FC00645E1B /* BufferedInputStream.m in Sources */ = {isa = PBXBuildFile; fileRef = 0672198D1559C7FC00645E1B /* BufferedInputStream.m */; };
-		067219AE1559C7FC00645E1B /* BufferedOutputStream.m in Sources */ = {isa = PBXBuildFile; fileRef = 0672198E1559C7FC00645E1B /* BufferedOutputStream.m */; };
-		067219AF1559C7FC00645E1B /* BufferedReader.m in Sources */ = {isa = PBXBuildFile; fileRef = 0672198F1559C7FC00645E1B /* BufferedReader.m */; };
-		067219B01559C7FC00645E1B /* BufferedWriter.m in Sources */ = {isa = PBXBuildFile; fileRef = 067219901559C7FC00645E1B /* BufferedWriter.m */; };
-		067219B11559C7FC00645E1B /* ByteArrayInputStream.m in Sources */ = {isa = PBXBuildFile; fileRef = 067219911559C7FC00645E1B /* ByteArrayInputStream.m */; };
-		067219B21559C7FC00645E1B /* ByteArrayOutputStream.m in Sources */ = {isa = PBXBuildFile; fileRef = 067219921559C7FC00645E1B /* ByteArrayOutputStream.m */; };
-		067219B31559C7FC00645E1B /* CharArrayReader.m in Sources */ = {isa = PBXBuildFile; fileRef = 067219931559C7FC00645E1B /* CharArrayReader.m */; };
-		067219B41559C7FC00645E1B /* CharArrayWriter.m in Sources */ = {isa = PBXBuildFile; fileRef = 067219941559C7FC00645E1B /* CharArrayWriter.m */; };
-		067219B51559C7FC00645E1B /* File.m in Sources */ = {isa = PBXBuildFile; fileRef = 067219951559C7FC00645E1B /* File.m */; };
-		067219B61559C7FC00645E1B /* FileDescriptor.m in Sources */ = {isa = PBXBuildFile; fileRef = 067219961559C7FC00645E1B /* FileDescriptor.m */; };
-		067219B71559C7FC00645E1B /* FileInputStream.m in Sources */ = {isa = PBXBuildFile; fileRef = 067219971559C7FC00645E1B /* FileInputStream.m */; };
-		067219B81559C7FC00645E1B /* FileNotFoundException.m in Sources */ = {isa = PBXBuildFile; fileRef = 067219981559C7FC00645E1B /* FileNotFoundException.m */; };
-		067219B91559C7FC00645E1B /* FileOutputStream.m in Sources */ = {isa = PBXBuildFile; fileRef = 067219991559C7FC00645E1B /* FileOutputStream.m */; };
-		067219BA1559C7FC00645E1B /* FileReader.m in Sources */ = {isa = PBXBuildFile; fileRef = 0672199A1559C7FC00645E1B /* FileReader.m */; };
-		067219BB1559C7FC00645E1B /* FileWriter.m in Sources */ = {isa = PBXBuildFile; fileRef = 0672199B1559C7FC00645E1B /* FileWriter.m */; };
-		067219BC1559C7FC00645E1B /* FilterInputStream.m in Sources */ = {isa = PBXBuildFile; fileRef = 0672199C1559C7FC00645E1B /* FilterInputStream.m */; };
-		067219BD1559C7FC00645E1B /* FilterOutputStream.m in Sources */ = {isa = PBXBuildFile; fileRef = 0672199D1559C7FC00645E1B /* FilterOutputStream.m */; };
-		067219BE1559C7FC00645E1B /* InputStream.m in Sources */ = {isa = PBXBuildFile; fileRef = 0672199E1559C7FC00645E1B /* InputStream.m */; };
-		067219BF1559C7FC00645E1B /* InputStreamReader.m in Sources */ = {isa = PBXBuildFile; fileRef = 0672199F1559C7FC00645E1B /* InputStreamReader.m */; };
-		067219C01559C7FC00645E1B /* InterruptedIOException.m in Sources */ = {isa = PBXBuildFile; fileRef = 067219A01559C7FC00645E1B /* InterruptedIOException.m */; };
-		067219C11559C7FC00645E1B /* InvalidObjectException.m in Sources */ = {isa = PBXBuildFile; fileRef = 067219A11559C7FC00645E1B /* InvalidObjectException.m */; };
-		067219C21559C7FC00645E1B /* IOException.m in Sources */ = {isa = PBXBuildFile; fileRef = 067219A21559C7FC00645E1B /* IOException.m */; };
-		067219C31559C7FC00645E1B /* ObjectStreamException.m in Sources */ = {isa = PBXBuildFile; fileRef = 067219A31559C7FC00645E1B /* ObjectStreamException.m */; };
-		067219C41559C7FC00645E1B /* OutputStream.m in Sources */ = {isa = PBXBuildFile; fileRef = 067219A41559C7FC00645E1B /* OutputStream.m */; };
-		067219C51559C7FC00645E1B /* OutputStreamWriter.m in Sources */ = {isa = PBXBuildFile; fileRef = 067219A51559C7FC00645E1B /* OutputStreamWriter.m */; };
-		067219C61559C7FC00645E1B /* PrintStream.m in Sources */ = {isa = PBXBuildFile; fileRef = 067219A61559C7FC00645E1B /* PrintStream.m */; };
-		067219C71559C7FC00645E1B /* PrintWriter.m in Sources */ = {isa = PBXBuildFile; fileRef = 067219A71559C7FC00645E1B /* PrintWriter.m */; };
-		067219C81559C7FC00645E1B /* Reader.m in Sources */ = {isa = PBXBuildFile; fileRef = 067219A81559C7FC00645E1B /* Reader.m */; };
-		067219C91559C7FC00645E1B /* StringReader.m in Sources */ = {isa = PBXBuildFile; fileRef = 067219A91559C7FC00645E1B /* StringReader.m */; };
-		067219CA1559C7FC00645E1B /* StringWriter.m in Sources */ = {isa = PBXBuildFile; fileRef = 067219AA1559C7FC00645E1B /* StringWriter.m */; };
-		067219CB1559C7FC00645E1B /* UnsupportedEncodingException.m in Sources */ = {isa = PBXBuildFile; fileRef = 067219AB1559C7FC00645E1B /* UnsupportedEncodingException.m */; };
-		067219CC1559C7FC00645E1B /* Writer.m in Sources */ = {isa = PBXBuildFile; fileRef = 067219AC1559C7FC00645E1B /* Writer.m */; };
-		067219FB1559C87100645E1B /* ArithmeticException.m in Sources */ = {isa = PBXBuildFile; fileRef = 067219CD1559C87100645E1B /* ArithmeticException.m */; };
-		067219FC1559C87100645E1B /* ArrayIndexOutOfBoundsException.m in Sources */ = {isa = PBXBuildFile; fileRef = 067219CE1559C87100645E1B /* ArrayIndexOutOfBoundsException.m */; };
-		067219FD1559C87100645E1B /* ArrayStoreException.m in Sources */ = {isa = PBXBuildFile; fileRef = 067219CF1559C87100645E1B /* ArrayStoreException.m */; };
-		067219FE1559C87100645E1B /* AssertionError.m in Sources */ = {isa = PBXBuildFile; fileRef = 067219D01559C87100645E1B /* AssertionError.m */; };
-		067219FF1559C87100645E1B /* Boolean.m in Sources */ = {isa = PBXBuildFile; fileRef = 067219D11559C87100645E1B /* Boolean.m */; };
-		06721A001559C87100645E1B /* Byte.m in Sources */ = {isa = PBXBuildFile; fileRef = 067219D21559C87100645E1B /* Byte.m */; };
-		06721A011559C87100645E1B /* Character.m in Sources */ = {isa = PBXBuildFile; fileRef = 067219D31559C87100645E1B /* Character.m */; };
-		06721A021559C87100645E1B /* ClassCastException.m in Sources */ = {isa = PBXBuildFile; fileRef = 067219D41559C87100645E1B /* ClassCastException.m */; };
-		06721A031559C87100645E1B /* ClassNotFoundException.m in Sources */ = {isa = PBXBuildFile; fileRef = 067219D51559C87100645E1B /* ClassNotFoundException.m */; };
-		06721A041559C87100645E1B /* CloneNotSupportedException.m in Sources */ = {isa = PBXBuildFile; fileRef = 067219D61559C87100645E1B /* CloneNotSupportedException.m */; };
-		06721A051559C87100645E1B /* Double.m in Sources */ = {isa = PBXBuildFile; fileRef = 067219D71559C87100645E1B /* Double.m */; };
-		06721A061559C87100645E1B /* Enum.m in Sources */ = {isa = PBXBuildFile; fileRef = 067219D81559C87100645E1B /* Enum.m */; };
-		06721A071559C87100645E1B /* Error.m in Sources */ = {isa = PBXBuildFile; fileRef = 067219D91559C87100645E1B /* Error.m */; };
-		06721A081559C87100645E1B /* Exception.m in Sources */ = {isa = PBXBuildFile; fileRef = 067219DA1559C87100645E1B /* Exception.m */; };
-		06721A091559C87100645E1B /* ExceptionInInitializerError.m in Sources */ = {isa = PBXBuildFile; fileRef = 067219DB1559C87100645E1B /* ExceptionInInitializerError.m */; };
-		06721A0A1559C87100645E1B /* Float.m in Sources */ = {isa = PBXBuildFile; fileRef = 067219DC1559C87100645E1B /* Float.m */; };
-		06721A0B1559C87100645E1B /* IllegalAccessException.m in Sources */ = {isa = PBXBuildFile; fileRef = 067219DD1559C87100645E1B /* IllegalAccessException.m */; };
-		06721A0C1559C87100645E1B /* IllegalArgumentException.m in Sources */ = {isa = PBXBuildFile; fileRef = 067219DE1559C87100645E1B /* IllegalArgumentException.m */; };
-		06721A0D1559C87100645E1B /* IllegalStateException.m in Sources */ = {isa = PBXBuildFile; fileRef = 067219DF1559C87100645E1B /* IllegalStateException.m */; };
-		06721A0E1559C87100645E1B /* IllegalThreadStateException.m in Sources */ = {isa = PBXBuildFile; fileRef = 067219E01559C87100645E1B /* IllegalThreadStateException.m */; };
-		06721A0F1559C87100645E1B /* IndexOutOfBoundsException.m in Sources */ = {isa = PBXBuildFile; fileRef = 067219E11559C87100645E1B /* IndexOutOfBoundsException.m */; };
-		06721A101559C87100645E1B /* InstantiationException.m in Sources */ = {isa = PBXBuildFile; fileRef = 067219E21559C87100645E1B /* InstantiationException.m */; };
-		06721A111559C87100645E1B /* Integer.m in Sources */ = {isa = PBXBuildFile; fileRef = 067219E31559C87100645E1B /* Integer.m */; };
-		06721A121559C87100645E1B /* InternalError.m in Sources */ = {isa = PBXBuildFile; fileRef = 067219E41559C87100645E1B /* InternalError.m */; };
-		06721A131559C87100645E1B /* InterruptedException.m in Sources */ = {isa = PBXBuildFile; fileRef = 067219E51559C87100645E1B /* InterruptedException.m */; };
-		06721A141559C87100645E1B /* LinkageError.m in Sources */ = {isa = PBXBuildFile; fileRef = 067219E61559C87100645E1B /* LinkageError.m */; };
-		06721A151559C87100645E1B /* Long.m in Sources */ = {isa = PBXBuildFile; fileRef = 067219E71559C87100645E1B /* Long.m */; };
-		06721A161559C87100645E1B /* Math.m in Sources */ = {isa = PBXBuildFile; fileRef = 067219E81559C87100645E1B /* Math.m */; };
-		06721A171559C87100645E1B /* NegativeArraySizeException.m in Sources */ = {isa = PBXBuildFile; fileRef = 067219E91559C87100645E1B /* NegativeArraySizeException.m */; };
-		06721A181559C87100645E1B /* NoSuchMethodException.m in Sources */ = {isa = PBXBuildFile; fileRef = 067219EA1559C87100645E1B /* NoSuchMethodException.m */; };
-		06721A191559C87100645E1B /* NullPointerException.m in Sources */ = {isa = PBXBuildFile; fileRef = 067219EB1559C87100645E1B /* NullPointerException.m */; };
-		06721A1A1559C87100645E1B /* NumberFormatException.m in Sources */ = {isa = PBXBuildFile; fileRef = 067219EC1559C87100645E1B /* NumberFormatException.m */; };
-		06721A1B1559C87100645E1B /* RuntimeException.m in Sources */ = {isa = PBXBuildFile; fileRef = 067219ED1559C87100645E1B /* RuntimeException.m */; };
-		06721A1C1559C87100645E1B /* Short.m in Sources */ = {isa = PBXBuildFile; fileRef = 067219EE1559C87100645E1B /* Short.m */; };
-		06721A1D1559C87100645E1B /* StackTraceElement.m in Sources */ = {isa = PBXBuildFile; fileRef = 067219EF1559C87100645E1B /* StackTraceElement.m */; };
-		06721A1E1559C87100645E1B /* StrictMath.m in Sources */ = {isa = PBXBuildFile; fileRef = 067219F01559C87100645E1B /* StrictMath.m */; };
-		06721A1F1559C87100645E1B /* StringBuffer.m in Sources */ = {isa = PBXBuildFile; fileRef = 067219F11559C87100645E1B /* StringBuffer.m */; };
-		06721A201559C87100645E1B /* StringBuilder.m in Sources */ = {isa = PBXBuildFile; fileRef = 067219F21559C87100645E1B /* StringBuilder.m */; };
-		06721A211559C87100645E1B /* StringIndexOutOfBoundsException.m in Sources */ = {isa = PBXBuildFile; fileRef = 067219F31559C87100645E1B /* StringIndexOutOfBoundsException.m */; };
-		06721A221559C87100645E1B /* System.m in Sources */ = {isa = PBXBuildFile; fileRef = 067219F41559C87100645E1B /* System.m */; };
-		06721A231559C87100645E1B /* Thread.m in Sources */ = {isa = PBXBuildFile; fileRef = 067219F51559C87100645E1B /* Thread.m */; };
-		06721A241559C87100645E1B /* ThreadDeath.m in Sources */ = {isa = PBXBuildFile; fileRef = 067219F61559C87100645E1B /* ThreadDeath.m */; };
-		06721A251559C87100645E1B /* ThreadGroup.m in Sources */ = {isa = PBXBuildFile; fileRef = 067219F71559C87100645E1B /* ThreadGroup.m */; };
-		06721A261559C87100645E1B /* ThreadLocal.m in Sources */ = {isa = PBXBuildFile; fileRef = 067219F81559C87100645E1B /* ThreadLocal.m */; };
-		06721A271559C87100645E1B /* UnsupportedOperationException.m in Sources */ = {isa = PBXBuildFile; fileRef = 067219F91559C87100645E1B /* UnsupportedOperationException.m */; };
-		06721A281559C87100645E1B /* Void.m in Sources */ = {isa = PBXBuildFile; fileRef = 067219FA1559C87100645E1B /* Void.m */; };
-		06721A331559C91600645E1B /* AbstractCollection.m in Sources */ = {isa = PBXBuildFile; fileRef = 06721A291559C91600645E1B /* AbstractCollection.m */; };
-		06721A341559C91600645E1B /* AbstractList.m in Sources */ = {isa = PBXBuildFile; fileRef = 06721A2A1559C91600645E1B /* AbstractList.m */; };
-		06721A351559C91600645E1B /* AbstractMap.m in Sources */ = {isa = PBXBuildFile; fileRef = 06721A2B1559C91600645E1B /* AbstractMap.m */; };
-		06721A361559C91600645E1B /* AbstractQueue.m in Sources */ = {isa = PBXBuildFile; fileRef = 06721A2C1559C91600645E1B /* AbstractQueue.m */; };
-		06721A371559C91600645E1B /* AbstractSequentialList.m in Sources */ = {isa = PBXBuildFile; fileRef = 06721A2D1559C91600645E1B /* AbstractSequentialList.m */; };
-		06721A381559C91600645E1B /* AbstractSet.m in Sources */ = {isa = PBXBuildFile; fileRef = 06721A2E1559C91600645E1B /* AbstractSet.m */; };
-		06721A391559C91600645E1B /* ArrayList.m in Sources */ = {isa = PBXBuildFile; fileRef = 06721A2F1559C91600645E1B /* ArrayList.m */; };
-		06721A3A1559C91600645E1B /* Arrays.m in Sources */ = {isa = PBXBuildFile; fileRef = 06721A301559C91600645E1B /* Arrays.m */; };
-		06721A3B1559C91600645E1B /* BitSet.m in Sources */ = {isa = PBXBuildFile; fileRef = 06721A311559C91600645E1B /* BitSet.m */; };
-		06721A3C1559C91600645E1B /* Collections.m in Sources */ = {isa = PBXBuildFile; fileRef = 06721A321559C91600645E1B /* Collections.m */; };
-		06721A441559C93000645E1B /* AtomicInteger.m in Sources */ = {isa = PBXBuildFile; fileRef = 06721A3D1559C93000645E1B /* AtomicInteger.m */; };
-		06721A451559C93000645E1B /* AtomicLong.m in Sources */ = {isa = PBXBuildFile; fileRef = 06721A3E1559C93000645E1B /* AtomicLong.m */; };
-		06721A461559C93000645E1B /* ConcurrentHashMap.m in Sources */ = {isa = PBXBuildFile; fileRef = 06721A3F1559C93000645E1B /* ConcurrentHashMap.m */; };
-		06721A471559C93000645E1B /* ConcurrentMap.m in Sources */ = {isa = PBXBuildFile; fileRef = 06721A401559C93000645E1B /* ConcurrentMap.m */; };
-		06721A481559C93000645E1B /* TimeUnit.m in Sources */ = {isa = PBXBuildFile; fileRef = 06721A411559C93000645E1B /* TimeUnit.m */; };
-		06721A491559C93000645E1B /* ConcurrentModificationException.m in Sources */ = {isa = PBXBuildFile; fileRef = 06721A421559C93000645E1B /* ConcurrentModificationException.m */; };
-		06721A4A1559C93000645E1B /* Date.m in Sources */ = {isa = PBXBuildFile; fileRef = 06721A431559C93000645E1B /* Date.m */; };
-		06721A631559C99E00645E1B /* Dictionary.m in Sources */ = {isa = PBXBuildFile; fileRef = 06721A4B1559C99E00645E1B /* Dictionary.m */; };
-		06721A641559C99E00645E1B /* EmptyStackException.m in Sources */ = {isa = PBXBuildFile; fileRef = 06721A4C1559C99E00645E1B /* EmptyStackException.m */; };
-		06721A651559C99E00645E1B /* HashSet.m in Sources */ = {isa = PBXBuildFile; fileRef = 06721A4D1559C99E00645E1B /* HashSet.m */; };
-		06721A661559C99E00645E1B /* Hashtable.m in Sources */ = {isa = PBXBuildFile; fileRef = 06721A4E1559C99E00645E1B /* Hashtable.m */; };
-		06721A671559C99E00645E1B /* IdentityHashMap.m in Sources */ = {isa = PBXBuildFile; fileRef = 06721A4F1559C99E00645E1B /* IdentityHashMap.m */; };
-		06721A681559C99E00645E1B /* InputMismatchException.m in Sources */ = {isa = PBXBuildFile; fileRef = 06721A501559C99E00645E1B /* InputMismatchException.m */; };
-		06721A691559C99E00645E1B /* LinkedList.m in Sources */ = {isa = PBXBuildFile; fileRef = 06721A511559C99E00645E1B /* LinkedList.m */; };
-		06721A6A1559C99E00645E1B /* Locale.m in Sources */ = {isa = PBXBuildFile; fileRef = 06721A521559C99E00645E1B /* Locale.m */; };
-		06721A6B1559C99E00645E1B /* Formatter.m in Sources */ = {isa = PBXBuildFile; fileRef = 06721A531559C99E00645E1B /* Formatter.m */; };
-		06721A6C1559C99E00645E1B /* Handler.m in Sources */ = {isa = PBXBuildFile; fileRef = 06721A541559C99E00645E1B /* Handler.m */; };
-		06721A6D1559C99E00645E1B /* Level.m in Sources */ = {isa = PBXBuildFile; fileRef = 06721A551559C99E00645E1B /* Level.m */; };
-		06721A6E1559C99E00645E1B /* Logger.m in Sources */ = {isa = PBXBuildFile; fileRef = 06721A561559C99E00645E1B /* Logger.m */; };
-		06721A6F1559C99E00645E1B /* LogManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 06721A571559C99E00645E1B /* LogManager.m */; };
-		06721A701559C99E00645E1B /* LogRecord.m in Sources */ = {isa = PBXBuildFile; fileRef = 06721A581559C99E00645E1B /* LogRecord.m */; };
-		06721A711559C99E00645E1B /* NSLogHandler.m in Sources */ = {isa = PBXBuildFile; fileRef = 06721A591559C99E00645E1B /* NSLogHandler.m */; };
-		06721A721559C99E00645E1B /* MapEntry.m in Sources */ = {isa = PBXBuildFile; fileRef = 06721A5A1559C99E00645E1B /* MapEntry.m */; };
-		06721A731559C99E00645E1B /* NoSuchElementException.m in Sources */ = {isa = PBXBuildFile; fileRef = 06721A5B1559C99E00645E1B /* NoSuchElementException.m */; };
-		06721A741559C99E00645E1B /* PriorityQueue.m in Sources */ = {isa = PBXBuildFile; fileRef = 06721A5C1559C99E00645E1B /* PriorityQueue.m */; };
-		06721A751559C99E00645E1B /* Properties.m in Sources */ = {isa = PBXBuildFile; fileRef = 06721A5D1559C99E00645E1B /* Properties.m */; };
-		06721A761559C99E00645E1B /* Random.m in Sources */ = {isa = PBXBuildFile; fileRef = 06721A5E1559C99E00645E1B /* Random.m */; };
-		06721A771559C99E00645E1B /* Stack.m in Sources */ = {isa = PBXBuildFile; fileRef = 06721A5F1559C99E00645E1B /* Stack.m */; };
-		06721A781559C99E00645E1B /* TreeMap.m in Sources */ = {isa = PBXBuildFile; fileRef = 06721A601559C99E00645E1B /* TreeMap.m */; };
-		06721A791559C99E00645E1B /* TreeSet.m in Sources */ = {isa = PBXBuildFile; fileRef = 06721A611559C99E00645E1B /* TreeSet.m */; };
-		06721A7A1559C99E00645E1B /* Vector.m in Sources */ = {isa = PBXBuildFile; fileRef = 06721A621559C99E00645E1B /* Vector.m */; };
-		06721B891559CC0300645E1B /* InvocationTargetException.m in Sources */ = {isa = PBXBuildFile; fileRef = 06721B531559CC0300645E1B /* InvocationTargetException.m */; };
-		06721B8B1559CC0300645E1B /* Modifier.m in Sources */ = {isa = PBXBuildFile; fileRef = 06721B551559CC0300645E1B /* Modifier.m */; };
 		06721B9E1559DAF100645E1B /* NSObject+JavaObject.m in Sources */ = {isa = PBXBuildFile; fileRef = 066193E5155849F80004DAFE /* NSObject+JavaObject.m */; };
 		06721B9F1559DAF100645E1B /* NSString+JavaString.m in Sources */ = {isa = PBXBuildFile; fileRef = 066193E7155849F80004DAFE /* NSString+JavaString.m */; };
-		06721BA41559DE3800645E1B /* Constructor.m in Sources */ = {isa = PBXBuildFile; fileRef = 06721BA01559DE3800645E1B /* Constructor.m */; };
-		06721BA51559DE3800645E1B /* ExecutableMember.m in Sources */ = {isa = PBXBuildFile; fileRef = 06721BA11559DE3800645E1B /* ExecutableMember.m */; };
-		06721BA61559DE3800645E1B /* Method.m in Sources */ = {isa = PBXBuildFile; fileRef = 06721BA21559DE3800645E1B /* Method.m */; };
-		06721BA71559DE3800645E1B /* Throwable.m in Sources */ = {isa = PBXBuildFile; fileRef = 06721BA31559DE3800645E1B /* Throwable.m */; };
 		067228E6158FAEBC005318BD /* Field.h in Headers */ = {isa = PBXBuildFile; fileRef = 067228E4158FAEBC005318BD /* Field.h */; };
-		067228E7158FAEBC005318BD /* Field.m in Sources */ = {isa = PBXBuildFile; fileRef = 067228E5158FAEBC005318BD /* Field.m */; };
 		067228F3158FB002005318BD /* CharSequence.h in Headers */ = {isa = PBXBuildFile; fileRef = 067228ED158FB002005318BD /* CharSequence.h */; };
 		067228F4158FB002005318BD /* Comparable.h in Headers */ = {isa = PBXBuildFile; fileRef = 067228EE158FB002005318BD /* Comparable.h */; };
 		067228F5158FB002005318BD /* Constructor.h in Headers */ = {isa = PBXBuildFile; fileRef = 067228EF158FB002005318BD /* Constructor.h */; };
@@ -201,185 +117,97 @@
 		067228F7158FB002005318BD /* Method.h in Headers */ = {isa = PBXBuildFile; fileRef = 067228F1158FB002005318BD /* Method.h */; };
 		067228F8158FB002005318BD /* Throwable.h in Headers */ = {isa = PBXBuildFile; fileRef = 067228F2158FB002005318BD /* Throwable.h */; };
 		067228FB158FB0B3005318BD /* AccessibleObject.h in Headers */ = {isa = PBXBuildFile; fileRef = 067228F9158FB0B3005318BD /* AccessibleObject.h */; };
-		067228FC158FB0B3005318BD /* AccessibleObject.m in Sources */ = {isa = PBXBuildFile; fileRef = 067228FA158FB0B3005318BD /* AccessibleObject.m */; };
-		06722900158FD6AF005318BD /* NoSuchFieldException.m in Sources */ = {isa = PBXBuildFile; fileRef = 067228FE158FD6AF005318BD /* NoSuchFieldException.m */; };
 		06734321171DF62600F26D4F /* TempFailureRetry.h in Headers */ = {isa = PBXBuildFile; fileRef = 06734320171DF62600F26D4F /* TempFailureRetry.h */; };
 		067855A9169F35AB0042431C /* JreMemDebug.h in Headers */ = {isa = PBXBuildFile; fileRef = 067855A5169F35AB0042431C /* JreMemDebug.h */; };
-		067855AA169F35AB0042431C /* JreMemDebug.m in Sources */ = {isa = PBXBuildFile; fileRef = 067855A6169F35AB0042431C /* JreMemDebug.m */; };
 		067855AB169F35AB0042431C /* JreMemDebugStrongReference.h in Headers */ = {isa = PBXBuildFile; fileRef = 067855A7169F35AB0042431C /* JreMemDebugStrongReference.h */; };
-		067855AC169F35AB0042431C /* JreMemDebugStrongReference.m in Sources */ = {isa = PBXBuildFile; fileRef = 067855A8169F35AB0042431C /* JreMemDebugStrongReference.m */; };
 		067855B3169F364D0042431C /* HashMap_PackagePrivate.h in Headers */ = {isa = PBXBuildFile; fileRef = 067855AD169F364D0042431C /* HashMap_PackagePrivate.h */; };
 		067855B4169F364D0042431C /* HashMap.h in Headers */ = {isa = PBXBuildFile; fileRef = 067855AE169F364D0042431C /* HashMap.h */; };
-		067855B5169F364D0042431C /* HashMap.m in Sources */ = {isa = PBXBuildFile; fileRef = 067855AF169F364D0042431C /* HashMap.m */; };
 		067855B6169F364D0042431C /* LinkedHashMap_PackagePrivate.h in Headers */ = {isa = PBXBuildFile; fileRef = 067855B0169F364D0042431C /* LinkedHashMap_PackagePrivate.h */; };
 		067855B7169F364D0042431C /* LinkedHashMap.h in Headers */ = {isa = PBXBuildFile; fileRef = 067855B1169F364D0042431C /* LinkedHashMap.h */; };
-		067855B8169F364D0042431C /* LinkedHashMap.m in Sources */ = {isa = PBXBuildFile; fileRef = 067855B2169F364D0042431C /* LinkedHashMap.m */; };
 		067855BB169F367E0042431C /* SyncFailedException.h in Headers */ = {isa = PBXBuildFile; fileRef = 067855B9169F367E0042431C /* SyncFailedException.h */; };
-		067855BC169F367E0042431C /* SyncFailedException.m in Sources */ = {isa = PBXBuildFile; fileRef = 067855BA169F367E0042431C /* SyncFailedException.m */; };
 		067855BE169F36A40042431C /* Annotation.h in Headers */ = {isa = PBXBuildFile; fileRef = 067855BD169F36A40042431C /* Annotation.h */; };
 		067855C1169F37140042431C /* SecurityException.h in Headers */ = {isa = PBXBuildFile; fileRef = 067855BF169F37140042431C /* SecurityException.h */; };
-		067855C2169F37140042431C /* SecurityException.m in Sources */ = {isa = PBXBuildFile; fileRef = 067855C0169F37140042431C /* SecurityException.m */; };
 		067855D9169F37710042431C /* BigDecimal.h in Headers */ = {isa = PBXBuildFile; fileRef = 067855C3169F37710042431C /* BigDecimal.h */; };
-		067855DA169F37710042431C /* BigDecimal.m in Sources */ = {isa = PBXBuildFile; fileRef = 067855C4169F37710042431C /* BigDecimal.m */; };
 		067855DB169F37710042431C /* BigInteger.h in Headers */ = {isa = PBXBuildFile; fileRef = 067855C5169F37710042431C /* BigInteger.h */; };
-		067855DC169F37710042431C /* BigInteger.m in Sources */ = {isa = PBXBuildFile; fileRef = 067855C6169F37710042431C /* BigInteger.m */; };
 		067855DD169F37710042431C /* BitLevel.h in Headers */ = {isa = PBXBuildFile; fileRef = 067855C7169F37710042431C /* BitLevel.h */; };
-		067855DE169F37710042431C /* BitLevel.m in Sources */ = {isa = PBXBuildFile; fileRef = 067855C8169F37710042431C /* BitLevel.m */; };
 		067855DF169F37710042431C /* Conversion.h in Headers */ = {isa = PBXBuildFile; fileRef = 067855C9169F37710042431C /* Conversion.h */; };
-		067855E0169F37710042431C /* Conversion.m in Sources */ = {isa = PBXBuildFile; fileRef = 067855CA169F37710042431C /* Conversion.m */; };
 		067855E1169F37710042431C /* Division.h in Headers */ = {isa = PBXBuildFile; fileRef = 067855CB169F37710042431C /* Division.h */; };
-		067855E2169F37710042431C /* Division.m in Sources */ = {isa = PBXBuildFile; fileRef = 067855CC169F37710042431C /* Division.m */; };
 		067855E3169F37710042431C /* Elementary.h in Headers */ = {isa = PBXBuildFile; fileRef = 067855CD169F37710042431C /* Elementary.h */; };
-		067855E4169F37710042431C /* Elementary.m in Sources */ = {isa = PBXBuildFile; fileRef = 067855CE169F37710042431C /* Elementary.m */; };
 		067855E5169F37710042431C /* Logical.h in Headers */ = {isa = PBXBuildFile; fileRef = 067855CF169F37710042431C /* Logical.h */; };
-		067855E6169F37710042431C /* Logical.m in Sources */ = {isa = PBXBuildFile; fileRef = 067855D0169F37710042431C /* Logical.m */; };
 		067855E7169F37710042431C /* MathContext.h in Headers */ = {isa = PBXBuildFile; fileRef = 067855D1169F37710042431C /* MathContext.h */; };
-		067855E8169F37710042431C /* MathContext.m in Sources */ = {isa = PBXBuildFile; fileRef = 067855D2169F37710042431C /* MathContext.m */; };
 		067855E9169F37710042431C /* Multiplication.h in Headers */ = {isa = PBXBuildFile; fileRef = 067855D3169F37710042431C /* Multiplication.h */; };
-		067855EA169F37710042431C /* Multiplication.m in Sources */ = {isa = PBXBuildFile; fileRef = 067855D4169F37710042431C /* Multiplication.m */; };
 		067855EB169F37710042431C /* Primality.h in Headers */ = {isa = PBXBuildFile; fileRef = 067855D5169F37710042431C /* Primality.h */; };
-		067855EC169F37710042431C /* Primality.m in Sources */ = {isa = PBXBuildFile; fileRef = 067855D6169F37710042431C /* Primality.m */; };
 		067855ED169F37710042431C /* RoundingMode.h in Headers */ = {isa = PBXBuildFile; fileRef = 067855D7169F37710042431C /* RoundingMode.h */; };
-		067855EE169F37710042431C /* RoundingMode.m in Sources */ = {isa = PBXBuildFile; fileRef = 067855D8169F37710042431C /* RoundingMode.m */; };
 		068677D6166C342C005A5AD7 /* ArrayDeque.h in Headers */ = {isa = PBXBuildFile; fileRef = 068677CB166C342C005A5AD7 /* ArrayDeque.h */; };
-		068677D7166C342C005A5AD7 /* ArrayDeque.m in Sources */ = {isa = PBXBuildFile; fileRef = 068677CC166C342C005A5AD7 /* ArrayDeque.m */; };
 		068677D8166C342C005A5AD7 /* Deque.h in Headers */ = {isa = PBXBuildFile; fileRef = 068677CD166C342C005A5AD7 /* Deque.h */; };
 		068677D9166C342C005A5AD7 /* EventListener.h in Headers */ = {isa = PBXBuildFile; fileRef = 068677CE166C342C005A5AD7 /* EventListener.h */; };
-		068677DA166C342C005A5AD7 /* EventListener.m in Sources */ = {isa = PBXBuildFile; fileRef = 068677CF166C342C005A5AD7 /* EventListener.m */; };
 		068677DB166C342C005A5AD7 /* EventObject.h in Headers */ = {isa = PBXBuildFile; fileRef = 068677D0166C342C005A5AD7 /* EventObject.h */; };
-		068677DC166C342C005A5AD7 /* EventObject.m in Sources */ = {isa = PBXBuildFile; fileRef = 068677D1166C342C005A5AD7 /* EventObject.m */; };
 		068677DD166C342C005A5AD7 /* NavigableMap.h in Headers */ = {isa = PBXBuildFile; fileRef = 068677D2166C342C005A5AD7 /* NavigableMap.h */; };
-		068677DE166C342C005A5AD7 /* NavigableMap.m in Sources */ = {isa = PBXBuildFile; fileRef = 068677D3166C342C005A5AD7 /* NavigableMap.m */; };
 		068677DF166C342C005A5AD7 /* NavigableSet.h in Headers */ = {isa = PBXBuildFile; fileRef = 068677D4166C342C005A5AD7 /* NavigableSet.h */; };
-		068677E0166C342C005A5AD7 /* NavigableSet.m in Sources */ = {isa = PBXBuildFile; fileRef = 068677D5166C342C005A5AD7 /* NavigableSet.m */; };
 		068677EC166C345F005A5AD7 /* Matcher.h in Headers */ = {isa = PBXBuildFile; fileRef = 068677E2166C345F005A5AD7 /* Matcher.h */; };
-		068677ED166C345F005A5AD7 /* Matcher.m in Sources */ = {isa = PBXBuildFile; fileRef = 068677E3166C345F005A5AD7 /* Matcher.m */; };
 		068677EE166C345F005A5AD7 /* MatchResult.h in Headers */ = {isa = PBXBuildFile; fileRef = 068677E4166C345F005A5AD7 /* MatchResult.h */; };
-		068677EF166C345F005A5AD7 /* MatchResult.m in Sources */ = {isa = PBXBuildFile; fileRef = 068677E5166C345F005A5AD7 /* MatchResult.m */; };
 		068677F0166C345F005A5AD7 /* MatchResultImpl.h in Headers */ = {isa = PBXBuildFile; fileRef = 068677E6166C345F005A5AD7 /* MatchResultImpl.h */; };
-		068677F1166C345F005A5AD7 /* MatchResultImpl.m in Sources */ = {isa = PBXBuildFile; fileRef = 068677E7166C345F005A5AD7 /* MatchResultImpl.m */; };
 		068677F2166C345F005A5AD7 /* Pattern.h in Headers */ = {isa = PBXBuildFile; fileRef = 068677E8166C345F005A5AD7 /* Pattern.h */; };
-		068677F3166C345F005A5AD7 /* Pattern.m in Sources */ = {isa = PBXBuildFile; fileRef = 068677E9166C345F005A5AD7 /* Pattern.m */; };
 		068677F4166C345F005A5AD7 /* Splitter.h in Headers */ = {isa = PBXBuildFile; fileRef = 068677EA166C345F005A5AD7 /* Splitter.h */; };
-		068677F5166C345F005A5AD7 /* Splitter.m in Sources */ = {isa = PBXBuildFile; fileRef = 068677EB166C345F005A5AD7 /* Splitter.m */; };
 		0697F60B15D190580027A7E4 /* Array.h in Headers */ = {isa = PBXBuildFile; fileRef = 0697F60315D190580027A7E4 /* Array.h */; };
-		0697F60C15D190580027A7E4 /* Array.m in Sources */ = {isa = PBXBuildFile; fileRef = 0697F60415D190580027A7E4 /* Array.m */; };
 		0697F60E15D190580027A7E4 /* GenericDeclaration.h in Headers */ = {isa = PBXBuildFile; fileRef = 0697F60515D190580027A7E4 /* GenericDeclaration.h */; };
-		0697F60F15D190580027A7E4 /* GenericDeclaration.m in Sources */ = {isa = PBXBuildFile; fileRef = 0697F60615D190580027A7E4 /* GenericDeclaration.m */; };
 		0697F61115D190580027A7E4 /* Type.h in Headers */ = {isa = PBXBuildFile; fileRef = 0697F60715D190580027A7E4 /* Type.h */; };
-		0697F61215D190580027A7E4 /* Type.m in Sources */ = {isa = PBXBuildFile; fileRef = 0697F60815D190580027A7E4 /* Type.m */; };
 		0697F61415D190580027A7E4 /* TypeVariable.h in Headers */ = {isa = PBXBuildFile; fileRef = 0697F60915D190580027A7E4 /* TypeVariable.h */; };
-		0697F61515D190580027A7E4 /* TypeVariable.m in Sources */ = {isa = PBXBuildFile; fileRef = 0697F60A15D190580027A7E4 /* TypeVariable.m */; };
 		06C6B7FD159BCBD1004B800C /* PatternSyntaxException.h in Headers */ = {isa = PBXBuildFile; fileRef = 06C6B7FB159BCBD1004B800C /* PatternSyntaxException.h */; };
-		06C6B7FE159BCBD1004B800C /* PatternSyntaxException.m in Sources */ = {isa = PBXBuildFile; fileRef = 06C6B7FC159BCBD1004B800C /* PatternSyntaxException.m */; };
 		06DD32DF16A13FA000AD7ACE /* Buffer.h in Headers */ = {isa = PBXBuildFile; fileRef = 06DD329716A13FA000AD7ACE /* Buffer.h */; };
-		06DD32E016A13FA000AD7ACE /* Buffer.m in Sources */ = {isa = PBXBuildFile; fileRef = 06DD329816A13FA000AD7ACE /* Buffer.m */; };
 		06DD32E116A13FA000AD7ACE /* BufferFactory.h in Headers */ = {isa = PBXBuildFile; fileRef = 06DD329916A13FA000AD7ACE /* BufferFactory.h */; };
-		06DD32E216A13FA000AD7ACE /* BufferFactory.m in Sources */ = {isa = PBXBuildFile; fileRef = 06DD329A16A13FA000AD7ACE /* BufferFactory.m */; };
 		06DD32E316A13FA000AD7ACE /* BufferOverflowException.h in Headers */ = {isa = PBXBuildFile; fileRef = 06DD329B16A13FA000AD7ACE /* BufferOverflowException.h */; };
-		06DD32E416A13FA000AD7ACE /* BufferOverflowException.m in Sources */ = {isa = PBXBuildFile; fileRef = 06DD329C16A13FA000AD7ACE /* BufferOverflowException.m */; };
 		06DD32E516A13FA000AD7ACE /* BufferUnderflowException.h in Headers */ = {isa = PBXBuildFile; fileRef = 06DD329D16A13FA000AD7ACE /* BufferUnderflowException.h */; };
-		06DD32E616A13FA000AD7ACE /* BufferUnderflowException.m in Sources */ = {isa = PBXBuildFile; fileRef = 06DD329E16A13FA000AD7ACE /* BufferUnderflowException.m */; };
 		06DD32E716A13FA000AD7ACE /* ByteBuffer.h in Headers */ = {isa = PBXBuildFile; fileRef = 06DD329F16A13FA000AD7ACE /* ByteBuffer.h */; };
-		06DD32E816A13FA000AD7ACE /* ByteBuffer.m in Sources */ = {isa = PBXBuildFile; fileRef = 06DD32A016A13FA000AD7ACE /* ByteBuffer.m */; };
 		06DD32E916A13FA000AD7ACE /* ByteOrder.h in Headers */ = {isa = PBXBuildFile; fileRef = 06DD32A116A13FA000AD7ACE /* ByteOrder.h */; };
-		06DD32EA16A13FA000AD7ACE /* ByteOrder.m in Sources */ = {isa = PBXBuildFile; fileRef = 06DD32A216A13FA000AD7ACE /* ByteOrder.m */; };
 		06DD32EB16A13FA000AD7ACE /* CharArrayBuffer.h in Headers */ = {isa = PBXBuildFile; fileRef = 06DD32A316A13FA000AD7ACE /* CharArrayBuffer.h */; };
-		06DD32EC16A13FA000AD7ACE /* CharArrayBuffer.m in Sources */ = {isa = PBXBuildFile; fileRef = 06DD32A416A13FA000AD7ACE /* CharArrayBuffer.m */; };
 		06DD32ED16A13FA000AD7ACE /* CharBuffer.h in Headers */ = {isa = PBXBuildFile; fileRef = 06DD32A516A13FA000AD7ACE /* CharBuffer.h */; };
-		06DD32EE16A13FA000AD7ACE /* CharBuffer.m in Sources */ = {isa = PBXBuildFile; fileRef = 06DD32A616A13FA000AD7ACE /* CharBuffer.m */; };
 		06DD32EF16A13FA000AD7ACE /* CharSequenceAdapter.h in Headers */ = {isa = PBXBuildFile; fileRef = 06DD32A716A13FA000AD7ACE /* CharSequenceAdapter.h */; };
-		06DD32F016A13FA000AD7ACE /* CharSequenceAdapter.m in Sources */ = {isa = PBXBuildFile; fileRef = 06DD32A816A13FA000AD7ACE /* CharSequenceAdapter.m */; };
 		06DD32F116A13FA000AD7ACE /* DoubleArrayBuffer.h in Headers */ = {isa = PBXBuildFile; fileRef = 06DD32A916A13FA000AD7ACE /* DoubleArrayBuffer.h */; };
-		06DD32F216A13FA000AD7ACE /* DoubleArrayBuffer.m in Sources */ = {isa = PBXBuildFile; fileRef = 06DD32AA16A13FA000AD7ACE /* DoubleArrayBuffer.m */; };
 		06DD32F316A13FA000AD7ACE /* DoubleBuffer.h in Headers */ = {isa = PBXBuildFile; fileRef = 06DD32AB16A13FA000AD7ACE /* DoubleBuffer.h */; };
-		06DD32F416A13FA000AD7ACE /* DoubleBuffer.m in Sources */ = {isa = PBXBuildFile; fileRef = 06DD32AC16A13FA000AD7ACE /* DoubleBuffer.m */; };
 		06DD32F516A13FA000AD7ACE /* FloatArrayBuffer.h in Headers */ = {isa = PBXBuildFile; fileRef = 06DD32AD16A13FA000AD7ACE /* FloatArrayBuffer.h */; };
-		06DD32F616A13FA000AD7ACE /* FloatArrayBuffer.m in Sources */ = {isa = PBXBuildFile; fileRef = 06DD32AE16A13FA000AD7ACE /* FloatArrayBuffer.m */; };
 		06DD32F716A13FA000AD7ACE /* FloatBuffer.h in Headers */ = {isa = PBXBuildFile; fileRef = 06DD32AF16A13FA000AD7ACE /* FloatBuffer.h */; };
-		06DD32F816A13FA000AD7ACE /* FloatBuffer.m in Sources */ = {isa = PBXBuildFile; fileRef = 06DD32B016A13FA000AD7ACE /* FloatBuffer.m */; };
 		06DD32F916A13FA000AD7ACE /* HeapByteBuffer.h in Headers */ = {isa = PBXBuildFile; fileRef = 06DD32B116A13FA000AD7ACE /* HeapByteBuffer.h */; };
-		06DD32FA16A13FA000AD7ACE /* HeapByteBuffer.m in Sources */ = {isa = PBXBuildFile; fileRef = 06DD32B216A13FA000AD7ACE /* HeapByteBuffer.m */; };
 		06DD32FB16A13FA000AD7ACE /* IntArrayBuffer.h in Headers */ = {isa = PBXBuildFile; fileRef = 06DD32B316A13FA000AD7ACE /* IntArrayBuffer.h */; };
-		06DD32FC16A13FA000AD7ACE /* IntArrayBuffer.m in Sources */ = {isa = PBXBuildFile; fileRef = 06DD32B416A13FA000AD7ACE /* IntArrayBuffer.m */; };
 		06DD32FD16A13FA000AD7ACE /* IntBuffer.h in Headers */ = {isa = PBXBuildFile; fileRef = 06DD32B516A13FA000AD7ACE /* IntBuffer.h */; };
-		06DD32FE16A13FA000AD7ACE /* IntBuffer.m in Sources */ = {isa = PBXBuildFile; fileRef = 06DD32B616A13FA000AD7ACE /* IntBuffer.m */; };
 		06DD32FF16A13FA000AD7ACE /* InvalidMarkException.h in Headers */ = {isa = PBXBuildFile; fileRef = 06DD32B716A13FA000AD7ACE /* InvalidMarkException.h */; };
-		06DD330016A13FA000AD7ACE /* InvalidMarkException.m in Sources */ = {isa = PBXBuildFile; fileRef = 06DD32B816A13FA000AD7ACE /* InvalidMarkException.m */; };
 		06DD330116A13FA000AD7ACE /* LongArrayBuffer.h in Headers */ = {isa = PBXBuildFile; fileRef = 06DD32B916A13FA000AD7ACE /* LongArrayBuffer.h */; };
-		06DD330216A13FA000AD7ACE /* LongArrayBuffer.m in Sources */ = {isa = PBXBuildFile; fileRef = 06DD32BA16A13FA000AD7ACE /* LongArrayBuffer.m */; };
 		06DD330316A13FA000AD7ACE /* LongBuffer.h in Headers */ = {isa = PBXBuildFile; fileRef = 06DD32BB16A13FA000AD7ACE /* LongBuffer.h */; };
-		06DD330416A13FA000AD7ACE /* LongBuffer.m in Sources */ = {isa = PBXBuildFile; fileRef = 06DD32BC16A13FA000AD7ACE /* LongBuffer.m */; };
 		06DD330516A13FA000AD7ACE /* ReadOnlyBufferException.h in Headers */ = {isa = PBXBuildFile; fileRef = 06DD32BD16A13FA000AD7ACE /* ReadOnlyBufferException.h */; };
-		06DD330616A13FA000AD7ACE /* ReadOnlyBufferException.m in Sources */ = {isa = PBXBuildFile; fileRef = 06DD32BE16A13FA000AD7ACE /* ReadOnlyBufferException.m */; };
 		06DD330716A13FA000AD7ACE /* ReadOnlyCharArrayBuffer.h in Headers */ = {isa = PBXBuildFile; fileRef = 06DD32BF16A13FA000AD7ACE /* ReadOnlyCharArrayBuffer.h */; };
-		06DD330816A13FA000AD7ACE /* ReadOnlyCharArrayBuffer.m in Sources */ = {isa = PBXBuildFile; fileRef = 06DD32C016A13FA000AD7ACE /* ReadOnlyCharArrayBuffer.m */; };
 		06DD330916A13FA000AD7ACE /* ReadOnlyDoubleArrayBuffer.h in Headers */ = {isa = PBXBuildFile; fileRef = 06DD32C116A13FA000AD7ACE /* ReadOnlyDoubleArrayBuffer.h */; };
-		06DD330A16A13FA000AD7ACE /* ReadOnlyDoubleArrayBuffer.m in Sources */ = {isa = PBXBuildFile; fileRef = 06DD32C216A13FA000AD7ACE /* ReadOnlyDoubleArrayBuffer.m */; };
 		06DD330B16A13FA000AD7ACE /* ReadOnlyFloatArrayBuffer.h in Headers */ = {isa = PBXBuildFile; fileRef = 06DD32C316A13FA000AD7ACE /* ReadOnlyFloatArrayBuffer.h */; };
-		06DD330C16A13FA000AD7ACE /* ReadOnlyFloatArrayBuffer.m in Sources */ = {isa = PBXBuildFile; fileRef = 06DD32C416A13FA000AD7ACE /* ReadOnlyFloatArrayBuffer.m */; };
 		06DD330D16A13FA000AD7ACE /* ReadOnlyHeapByteBuffer.h in Headers */ = {isa = PBXBuildFile; fileRef = 06DD32C516A13FA000AD7ACE /* ReadOnlyHeapByteBuffer.h */; };
-		06DD330E16A13FA000AD7ACE /* ReadOnlyHeapByteBuffer.m in Sources */ = {isa = PBXBuildFile; fileRef = 06DD32C616A13FA000AD7ACE /* ReadOnlyHeapByteBuffer.m */; };
 		06DD330F16A13FA000AD7ACE /* ReadOnlyIntArrayBuffer.h in Headers */ = {isa = PBXBuildFile; fileRef = 06DD32C716A13FA000AD7ACE /* ReadOnlyIntArrayBuffer.h */; };
-		06DD331016A13FA000AD7ACE /* ReadOnlyIntArrayBuffer.m in Sources */ = {isa = PBXBuildFile; fileRef = 06DD32C816A13FA000AD7ACE /* ReadOnlyIntArrayBuffer.m */; };
 		06DD331116A13FA000AD7ACE /* ReadOnlyLongArrayBuffer.h in Headers */ = {isa = PBXBuildFile; fileRef = 06DD32C916A13FA000AD7ACE /* ReadOnlyLongArrayBuffer.h */; };
-		06DD331216A13FA000AD7ACE /* ReadOnlyLongArrayBuffer.m in Sources */ = {isa = PBXBuildFile; fileRef = 06DD32CA16A13FA000AD7ACE /* ReadOnlyLongArrayBuffer.m */; };
 		06DD331316A13FA000AD7ACE /* ReadOnlyShortArrayBuffer.h in Headers */ = {isa = PBXBuildFile; fileRef = 06DD32CB16A13FA000AD7ACE /* ReadOnlyShortArrayBuffer.h */; };
-		06DD331416A13FA000AD7ACE /* ReadOnlyShortArrayBuffer.m in Sources */ = {isa = PBXBuildFile; fileRef = 06DD32CC16A13FA000AD7ACE /* ReadOnlyShortArrayBuffer.m */; };
 		06DD331516A13FA000AD7ACE /* ReadWriteCharArrayBuffer.h in Headers */ = {isa = PBXBuildFile; fileRef = 06DD32CD16A13FA000AD7ACE /* ReadWriteCharArrayBuffer.h */; };
-		06DD331616A13FA000AD7ACE /* ReadWriteCharArrayBuffer.m in Sources */ = {isa = PBXBuildFile; fileRef = 06DD32CE16A13FA000AD7ACE /* ReadWriteCharArrayBuffer.m */; };
 		06DD331716A13FA000AD7ACE /* ReadWriteDoubleArrayBuffer.h in Headers */ = {isa = PBXBuildFile; fileRef = 06DD32CF16A13FA000AD7ACE /* ReadWriteDoubleArrayBuffer.h */; };
-		06DD331816A13FA000AD7ACE /* ReadWriteDoubleArrayBuffer.m in Sources */ = {isa = PBXBuildFile; fileRef = 06DD32D016A13FA000AD7ACE /* ReadWriteDoubleArrayBuffer.m */; };
 		06DD331916A13FA000AD7ACE /* ReadWriteFloatArrayBuffer.h in Headers */ = {isa = PBXBuildFile; fileRef = 06DD32D116A13FA000AD7ACE /* ReadWriteFloatArrayBuffer.h */; };
-		06DD331A16A13FA000AD7ACE /* ReadWriteFloatArrayBuffer.m in Sources */ = {isa = PBXBuildFile; fileRef = 06DD32D216A13FA000AD7ACE /* ReadWriteFloatArrayBuffer.m */; };
 		06DD331B16A13FA000AD7ACE /* ReadWriteHeapByteBuffer.h in Headers */ = {isa = PBXBuildFile; fileRef = 06DD32D316A13FA000AD7ACE /* ReadWriteHeapByteBuffer.h */; };
-		06DD331C16A13FA000AD7ACE /* ReadWriteHeapByteBuffer.m in Sources */ = {isa = PBXBuildFile; fileRef = 06DD32D416A13FA000AD7ACE /* ReadWriteHeapByteBuffer.m */; };
 		06DD331D16A13FA000AD7ACE /* ReadWriteIntArrayBuffer.h in Headers */ = {isa = PBXBuildFile; fileRef = 06DD32D516A13FA000AD7ACE /* ReadWriteIntArrayBuffer.h */; };
-		06DD331E16A13FA000AD7ACE /* ReadWriteIntArrayBuffer.m in Sources */ = {isa = PBXBuildFile; fileRef = 06DD32D616A13FA000AD7ACE /* ReadWriteIntArrayBuffer.m */; };
 		06DD331F16A13FA000AD7ACE /* ReadWriteLongArrayBuffer.h in Headers */ = {isa = PBXBuildFile; fileRef = 06DD32D716A13FA000AD7ACE /* ReadWriteLongArrayBuffer.h */; };
-		06DD332016A13FA000AD7ACE /* ReadWriteLongArrayBuffer.m in Sources */ = {isa = PBXBuildFile; fileRef = 06DD32D816A13FA000AD7ACE /* ReadWriteLongArrayBuffer.m */; };
 		06DD332116A13FA000AD7ACE /* ReadWriteShortArrayBuffer.h in Headers */ = {isa = PBXBuildFile; fileRef = 06DD32D916A13FA000AD7ACE /* ReadWriteShortArrayBuffer.h */; };
-		06DD332216A13FA000AD7ACE /* ReadWriteShortArrayBuffer.m in Sources */ = {isa = PBXBuildFile; fileRef = 06DD32DA16A13FA000AD7ACE /* ReadWriteShortArrayBuffer.m */; };
 		06DD332316A13FA000AD7ACE /* ShortArrayBuffer.h in Headers */ = {isa = PBXBuildFile; fileRef = 06DD32DB16A13FA000AD7ACE /* ShortArrayBuffer.h */; };
-		06DD332416A13FA000AD7ACE /* ShortArrayBuffer.m in Sources */ = {isa = PBXBuildFile; fileRef = 06DD32DC16A13FA000AD7ACE /* ShortArrayBuffer.m */; };
 		06DD332516A13FA000AD7ACE /* ShortBuffer.h in Headers */ = {isa = PBXBuildFile; fileRef = 06DD32DD16A13FA000AD7ACE /* ShortBuffer.h */; };
-		06DD332616A13FA000AD7ACE /* ShortBuffer.m in Sources */ = {isa = PBXBuildFile; fileRef = 06DD32DE16A13FA000AD7ACE /* ShortBuffer.m */; };
 		06DD332A16A13FBB00AD7ACE /* ParseException.h in Headers */ = {isa = PBXBuildFile; fileRef = 06DD332816A13FBB00AD7ACE /* ParseException.h */; };
-		06DD332B16A13FBB00AD7ACE /* ParseException.m in Sources */ = {isa = PBXBuildFile; fileRef = 06DD332916A13FBB00AD7ACE /* ParseException.m */; };
 		06DD332F16A1402900AD7ACE /* Executor.h in Headers */ = {isa = PBXBuildFile; fileRef = 06DD332C16A1402900AD7ACE /* Executor.h */; };
 		06DD333016A1402900AD7ACE /* ExecutorService.h in Headers */ = {isa = PBXBuildFile; fileRef = 06DD332D16A1402900AD7ACE /* ExecutorService.h */; };
 		06DD333116A1402900AD7ACE /* Future.h in Headers */ = {isa = PBXBuildFile; fileRef = 06DD332E16A1402900AD7ACE /* Future.h */; };
 		06DD334616A1406A00AD7ACE /* Calendar.h in Headers */ = {isa = PBXBuildFile; fileRef = 06DD333216A1406A00AD7ACE /* Calendar.h */; };
-		06DD334716A1406A00AD7ACE /* Calendar.m in Sources */ = {isa = PBXBuildFile; fileRef = 06DD333316A1406A00AD7ACE /* Calendar.m */; };
 		06DD334816A1406A00AD7ACE /* Currency.h in Headers */ = {isa = PBXBuildFile; fileRef = 06DD333416A1406A00AD7ACE /* Currency.h */; };
-		06DD334916A1406A00AD7ACE /* Currency.m in Sources */ = {isa = PBXBuildFile; fileRef = 06DD333516A1406A00AD7ACE /* Currency.m */; };
 		06DD334A16A1406A00AD7ACE /* EnumSet.h in Headers */ = {isa = PBXBuildFile; fileRef = 06DD333616A1406A00AD7ACE /* EnumSet.h */; };
-		06DD334B16A1406A00AD7ACE /* EnumSet.m in Sources */ = {isa = PBXBuildFile; fileRef = 06DD333716A1406A00AD7ACE /* EnumSet.m */; };
 		06DD334C16A1406A00AD7ACE /* Grego.h in Headers */ = {isa = PBXBuildFile; fileRef = 06DD333816A1406A00AD7ACE /* Grego.h */; };
-		06DD334D16A1406A00AD7ACE /* Grego.m in Sources */ = {isa = PBXBuildFile; fileRef = 06DD333916A1406A00AD7ACE /* Grego.m */; };
 		06DD334E16A1406A00AD7ACE /* GregorianCalendar.h in Headers */ = {isa = PBXBuildFile; fileRef = 06DD333A16A1406A00AD7ACE /* GregorianCalendar.h */; };
-		06DD334F16A1406A00AD7ACE /* GregorianCalendar.m in Sources */ = {isa = PBXBuildFile; fileRef = 06DD333B16A1406A00AD7ACE /* GregorianCalendar.m */; };
 		06DD335016A1406A00AD7ACE /* HugeEnumSet.h in Headers */ = {isa = PBXBuildFile; fileRef = 06DD333C16A1406A00AD7ACE /* HugeEnumSet.h */; };
-		06DD335116A1406A00AD7ACE /* HugeEnumSet.m in Sources */ = {isa = PBXBuildFile; fileRef = 06DD333D16A1406A00AD7ACE /* HugeEnumSet.m */; };
 		06DD335216A1406A00AD7ACE /* LinkedHashSet.h in Headers */ = {isa = PBXBuildFile; fileRef = 06DD333E16A1406A00AD7ACE /* LinkedHashSet.h */; };
-		06DD335316A1406A00AD7ACE /* LinkedHashSet.m in Sources */ = {isa = PBXBuildFile; fileRef = 06DD333F16A1406A00AD7ACE /* LinkedHashSet.m */; };
 		06DD335416A1406A00AD7ACE /* MiniEnumSet.h in Headers */ = {isa = PBXBuildFile; fileRef = 06DD334016A1406A00AD7ACE /* MiniEnumSet.h */; };
-		06DD335516A1406A00AD7ACE /* MiniEnumSet.m in Sources */ = {isa = PBXBuildFile; fileRef = 06DD334116A1406A00AD7ACE /* MiniEnumSet.m */; };
 		06DD335616A1406A00AD7ACE /* SimpleTimeZone.h in Headers */ = {isa = PBXBuildFile; fileRef = 06DD334216A1406A00AD7ACE /* SimpleTimeZone.h */; };
-		06DD335716A1406A00AD7ACE /* SimpleTimeZone.m in Sources */ = {isa = PBXBuildFile; fileRef = 06DD334316A1406A00AD7ACE /* SimpleTimeZone.m */; };
 		06DD335816A1406A00AD7ACE /* TimeZone.h in Headers */ = {isa = PBXBuildFile; fileRef = 06DD334416A1406A00AD7ACE /* TimeZone.h */; };
-		06DD335916A1406A00AD7ACE /* TimeZone.m in Sources */ = {isa = PBXBuildFile; fileRef = 06DD334516A1406A00AD7ACE /* TimeZone.m */; };
 		06DD335C16A140A600AD7ACE /* Endianness.h in Headers */ = {isa = PBXBuildFile; fileRef = 06DD335A16A140A600AD7ACE /* Endianness.h */; };
-		06DD335D16A140A600AD7ACE /* Endianness.m in Sources */ = {isa = PBXBuildFile; fileRef = 06DD335B16A140A600AD7ACE /* Endianness.m */; };
 		06DDF48716E83FF800A08BE0 /* BasicLruCache.h in Headers */ = {isa = PBXBuildFile; fileRef = 06DDF48516E83FF800A08BE0 /* BasicLruCache.h */; };
-		06DDF48816E83FF800A08BE0 /* BasicLruCache.m in Sources */ = {isa = PBXBuildFile; fileRef = 06DDF48616E83FF800A08BE0 /* BasicLruCache.m */; };
 		06DDF48B16E8401600A08BE0 /* TimeZones.h in Headers */ = {isa = PBXBuildFile; fileRef = 06DDF48916E8401600A08BE0 /* TimeZones.h */; };
-		06DDF48C16E8401600A08BE0 /* TimeZones.m in Sources */ = {isa = PBXBuildFile; fileRef = 06DDF48A16E8401600A08BE0 /* TimeZones.m */; };
-		06DDF49216E8404B00A08BE0 /* ICUSupport.h in Headers */ = {isa = PBXBuildFile; fileRef = 06DDF48D16E8404B00A08BE0 /* ICUSupport.h */; };
-		06DDF49316E8404B00A08BE0 /* ICUSupport.mm in Sources */ = {isa = PBXBuildFile; fileRef = 06DDF48E16E8404B00A08BE0 /* ICUSupport.mm */; };
 		06DDF49416E8404B00A08BE0 /* TimeZonesSupport.h in Headers */ = {isa = PBXBuildFile; fileRef = 06DDF48F16E8404B00A08BE0 /* TimeZonesSupport.h */; };
-		06DDF49516E8404B00A08BE0 /* TimeZonesSupport.mm in Sources */ = {isa = PBXBuildFile; fileRef = 06DDF49016E8404B00A08BE0 /* TimeZonesSupport.mm */; };
-		06DDF49616E8404B00A08BE0 /* UniquePtr.h in Headers */ = {isa = PBXBuildFile; fileRef = 06DDF49116E8404B00A08BE0 /* UniquePtr.h */; };
 		A34A99F11630A9E7006DEC32 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = A34A99EF1630A9E7006DEC32 /* InfoPlist.strings */; };
 /* End PBXBuildFile section */
 
@@ -408,6 +236,105 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		064FB746172705F400DC0D51 /* URI.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = URI.h; path = build_result/Classes/java/net/URI.h; sourceTree = "<group>"; };
+		064FB747172705F400DC0D51 /* URI.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = URI.m; path = build_result/Classes/java/net/URI.m; sourceTree = "<group>"; };
+		064FB748172705F400DC0D51 /* URIEncoderDecoder.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = URIEncoderDecoder.h; path = build_result/Classes/java/net/URIEncoderDecoder.h; sourceTree = "<group>"; };
+		064FB749172705F400DC0D51 /* URIEncoderDecoder.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = URIEncoderDecoder.m; path = build_result/Classes/java/net/URIEncoderDecoder.m; sourceTree = "<group>"; };
+		064FB74A172705F400DC0D51 /* URISyntaxException.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = URISyntaxException.h; path = build_result/Classes/java/net/URISyntaxException.h; sourceTree = "<group>"; };
+		064FB74B172705F400DC0D51 /* URISyntaxException.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = URISyntaxException.m; path = build_result/Classes/java/net/URISyntaxException.m; sourceTree = "<group>"; };
+		064FB752172706E100DC0D51 /* EnumMap.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = EnumMap.h; path = build_result/Classes/java/util/EnumMap.h; sourceTree = "<group>"; };
+		064FB753172706E100DC0D51 /* EnumMap.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = EnumMap.m; path = build_result/Classes/java/util/EnumMap.m; sourceTree = "<group>"; };
+		064FB754172706E100DC0D51 /* InvalidPropertiesFormatException.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = InvalidPropertiesFormatException.h; path = build_result/Classes/java/util/InvalidPropertiesFormatException.h; sourceTree = "<group>"; };
+		064FB755172706E100DC0D51 /* InvalidPropertiesFormatException.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = InvalidPropertiesFormatException.m; path = build_result/Classes/java/util/InvalidPropertiesFormatException.m; sourceTree = "<group>"; };
+		064FB756172706E100DC0D51 /* StringTokenizer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = StringTokenizer.h; path = build_result/Classes/java/util/StringTokenizer.h; sourceTree = "<group>"; };
+		064FB757172706E100DC0D51 /* StringTokenizer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = StringTokenizer.m; path = build_result/Classes/java/util/StringTokenizer.m; sourceTree = "<group>"; };
+		064FB75E172706F600DC0D51 /* XMLConstants.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = XMLConstants.h; path = build_result/Classes/javax/xml/XMLConstants.h; sourceTree = "<group>"; };
+		064FB75F172706F600DC0D51 /* XMLConstants.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = XMLConstants.m; path = build_result/Classes/javax/xml/XMLConstants.m; sourceTree = "<group>"; };
+		064FB7621727071800DC0D51 /* FactoryConfigurationError.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = FactoryConfigurationError.h; path = build_result/Classes/javax/xml/parsers/FactoryConfigurationError.h; sourceTree = "<group>"; };
+		064FB7631727071800DC0D51 /* FactoryConfigurationError.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = FactoryConfigurationError.m; path = build_result/Classes/javax/xml/parsers/FactoryConfigurationError.m; sourceTree = "<group>"; };
+		064FB7641727071800DC0D51 /* FilePathToURI.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = FilePathToURI.h; path = build_result/Classes/javax/xml/parsers/FilePathToURI.h; sourceTree = "<group>"; };
+		064FB7651727071800DC0D51 /* FilePathToURI.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = FilePathToURI.m; path = build_result/Classes/javax/xml/parsers/FilePathToURI.m; sourceTree = "<group>"; };
+		064FB7661727071800DC0D51 /* ParserConfigurationException.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ParserConfigurationException.h; path = build_result/Classes/javax/xml/parsers/ParserConfigurationException.h; sourceTree = "<group>"; };
+		064FB7671727071800DC0D51 /* ParserConfigurationException.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ParserConfigurationException.m; path = build_result/Classes/javax/xml/parsers/ParserConfigurationException.m; sourceTree = "<group>"; };
+		064FB7681727071800DC0D51 /* SAXParser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SAXParser.h; path = build_result/Classes/javax/xml/parsers/SAXParser.h; sourceTree = "<group>"; };
+		064FB7691727071800DC0D51 /* SAXParser.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = SAXParser.m; path = build_result/Classes/javax/xml/parsers/SAXParser.m; sourceTree = "<group>"; };
+		064FB76A1727071800DC0D51 /* SAXParserFactory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SAXParserFactory.h; path = build_result/Classes/javax/xml/parsers/SAXParserFactory.h; sourceTree = "<group>"; };
+		064FB76B1727071800DC0D51 /* SAXParserFactory.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = SAXParserFactory.m; path = build_result/Classes/javax/xml/parsers/SAXParserFactory.m; sourceTree = "<group>"; };
+		064FB7761727072B00DC0D51 /* Result.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Result.h; path = build_result/Classes/javax/xml/transform/Result.h; sourceTree = "<group>"; };
+		064FB7771727072B00DC0D51 /* Result.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = Result.m; path = build_result/Classes/javax/xml/transform/Result.m; sourceTree = "<group>"; };
+		064FB7781727072B00DC0D51 /* Source.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Source.h; path = build_result/Classes/javax/xml/transform/Source.h; sourceTree = "<group>"; };
+		064FB7791727072B00DC0D51 /* Source.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = Source.m; path = build_result/Classes/javax/xml/transform/Source.m; sourceTree = "<group>"; };
+		064FB77E1727074100DC0D51 /* Schema.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Schema.h; path = build_result/Classes/javax/xml/validation/Schema.h; sourceTree = "<group>"; };
+		064FB77F1727074100DC0D51 /* Schema.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = Schema.m; path = build_result/Classes/javax/xml/validation/Schema.m; sourceTree = "<group>"; };
+		064FB7801727074100DC0D51 /* TypeInfoProvider.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = TypeInfoProvider.h; path = build_result/Classes/javax/xml/validation/TypeInfoProvider.h; sourceTree = "<group>"; };
+		064FB7811727074100DC0D51 /* TypeInfoProvider.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = TypeInfoProvider.m; path = build_result/Classes/javax/xml/validation/TypeInfoProvider.m; sourceTree = "<group>"; };
+		064FB7821727074100DC0D51 /* Validator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Validator.h; path = build_result/Classes/javax/xml/validation/Validator.h; sourceTree = "<group>"; };
+		064FB7831727074100DC0D51 /* Validator.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = Validator.m; path = build_result/Classes/javax/xml/validation/Validator.m; sourceTree = "<group>"; };
+		064FB7841727074100DC0D51 /* ValidatorHandler.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ValidatorHandler.h; path = build_result/Classes/javax/xml/validation/ValidatorHandler.h; sourceTree = "<group>"; };
+		064FB7851727074100DC0D51 /* ValidatorHandler.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ValidatorHandler.m; path = build_result/Classes/javax/xml/validation/ValidatorHandler.m; sourceTree = "<group>"; };
+		064FB78E1727079100DC0D51 /* HandlerBase.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = HandlerBase.h; path = build_result/Classes/org/xml/sax/HandlerBase.h; sourceTree = "<group>"; };
+		064FB78F1727079100DC0D51 /* HandlerBase.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = HandlerBase.m; path = build_result/Classes/org/xml/sax/HandlerBase.m; sourceTree = "<group>"; };
+		064FB7901727079100DC0D51 /* InputSource.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = InputSource.h; path = build_result/Classes/org/xml/sax/InputSource.h; sourceTree = "<group>"; };
+		064FB7911727079100DC0D51 /* InputSource.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = InputSource.m; path = build_result/Classes/org/xml/sax/InputSource.m; sourceTree = "<group>"; };
+		064FB7921727079100DC0D51 /* Locator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Locator.h; path = build_result/Classes/org/xml/sax/Locator.h; sourceTree = "<group>"; };
+		064FB7931727079100DC0D51 /* Locator.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = Locator.m; path = build_result/Classes/org/xml/sax/Locator.m; sourceTree = "<group>"; };
+		064FB7941727079100DC0D51 /* SAXException.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SAXException.h; path = build_result/Classes/org/xml/sax/SAXException.h; sourceTree = "<group>"; };
+		064FB7951727079100DC0D51 /* SAXException.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = SAXException.m; path = build_result/Classes/org/xml/sax/SAXException.m; sourceTree = "<group>"; };
+		064FB7961727079100DC0D51 /* SAXNotRecognizedException.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SAXNotRecognizedException.h; path = build_result/Classes/org/xml/sax/SAXNotRecognizedException.h; sourceTree = "<group>"; };
+		064FB7971727079100DC0D51 /* SAXNotRecognizedException.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = SAXNotRecognizedException.m; path = build_result/Classes/org/xml/sax/SAXNotRecognizedException.m; sourceTree = "<group>"; };
+		064FB7981727079100DC0D51 /* SAXNotSupportedException.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SAXNotSupportedException.h; path = build_result/Classes/org/xml/sax/SAXNotSupportedException.h; sourceTree = "<group>"; };
+		064FB7991727079100DC0D51 /* SAXNotSupportedException.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = SAXNotSupportedException.m; path = build_result/Classes/org/xml/sax/SAXNotSupportedException.m; sourceTree = "<group>"; };
+		064FB79A1727079100DC0D51 /* SAXParseException.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SAXParseException.h; path = build_result/Classes/org/xml/sax/SAXParseException.h; sourceTree = "<group>"; };
+		064FB79B1727079100DC0D51 /* SAXParseException.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = SAXParseException.m; path = build_result/Classes/org/xml/sax/SAXParseException.m; sourceTree = "<group>"; };
+		064FB7AA172707D700DC0D51 /* Attributes2.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Attributes2.h; path = build_result/Classes/org/xml/sax/ext/Attributes2.h; sourceTree = "<group>"; };
+		064FB7AB172707D700DC0D51 /* Attributes2Impl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Attributes2Impl.h; path = build_result/Classes/org/xml/sax/ext/Attributes2Impl.h; sourceTree = "<group>"; };
+		064FB7AC172707D700DC0D51 /* Attributes2Impl.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = Attributes2Impl.m; path = build_result/Classes/org/xml/sax/ext/Attributes2Impl.m; sourceTree = "<group>"; };
+		064FB7AD172707D700DC0D51 /* DeclHandler.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = DeclHandler.h; path = build_result/Classes/org/xml/sax/ext/DeclHandler.h; sourceTree = "<group>"; };
+		064FB7AE172707D700DC0D51 /* DefaultHandler2.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = DefaultHandler2.h; path = build_result/Classes/org/xml/sax/ext/DefaultHandler2.h; sourceTree = "<group>"; };
+		064FB7AF172707D700DC0D51 /* DefaultHandler2.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = DefaultHandler2.m; path = build_result/Classes/org/xml/sax/ext/DefaultHandler2.m; sourceTree = "<group>"; };
+		064FB7B0172707D700DC0D51 /* EntityResolver2.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = EntityResolver2.h; path = build_result/Classes/org/xml/sax/ext/EntityResolver2.h; sourceTree = "<group>"; };
+		064FB7B1172707D700DC0D51 /* LexicalHandler.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = LexicalHandler.h; path = build_result/Classes/org/xml/sax/ext/LexicalHandler.h; sourceTree = "<group>"; };
+		064FB7B2172707D700DC0D51 /* Locator2.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Locator2.h; path = build_result/Classes/org/xml/sax/ext/Locator2.h; sourceTree = "<group>"; };
+		064FB7B3172707D700DC0D51 /* Locator2Impl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Locator2Impl.h; path = build_result/Classes/org/xml/sax/ext/Locator2Impl.h; sourceTree = "<group>"; };
+		064FB7B4172707D700DC0D51 /* Locator2Impl.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = Locator2Impl.m; path = build_result/Classes/org/xml/sax/ext/Locator2Impl.m; sourceTree = "<group>"; };
+		064FB7C0172707F200DC0D51 /* AttributeList.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AttributeList.h; path = build_result/Classes/org/xml/sax/AttributeList.h; sourceTree = "<group>"; };
+		064FB7C1172707F200DC0D51 /* Attributes.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Attributes.h; path = build_result/Classes/org/xml/sax/Attributes.h; sourceTree = "<group>"; };
+		064FB7C2172707F200DC0D51 /* ContentHandler.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ContentHandler.h; path = build_result/Classes/org/xml/sax/ContentHandler.h; sourceTree = "<group>"; };
+		064FB7C3172707F200DC0D51 /* DocumentHandler.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = DocumentHandler.h; path = build_result/Classes/org/xml/sax/DocumentHandler.h; sourceTree = "<group>"; };
+		064FB7C4172707F200DC0D51 /* DTDHandler.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = DTDHandler.h; path = build_result/Classes/org/xml/sax/DTDHandler.h; sourceTree = "<group>"; };
+		064FB7C5172707F200DC0D51 /* EntityResolver.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = EntityResolver.h; path = build_result/Classes/org/xml/sax/EntityResolver.h; sourceTree = "<group>"; };
+		064FB7C6172707F200DC0D51 /* ErrorHandler.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ErrorHandler.h; path = build_result/Classes/org/xml/sax/ErrorHandler.h; sourceTree = "<group>"; };
+		064FB7C7172707F200DC0D51 /* Parser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Parser.h; path = build_result/Classes/org/xml/sax/Parser.h; sourceTree = "<group>"; };
+		064FB7C8172707F200DC0D51 /* XMLFilter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = XMLFilter.h; path = build_result/Classes/org/xml/sax/XMLFilter.h; sourceTree = "<group>"; };
+		064FB7C9172707F200DC0D51 /* XMLReader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = XMLReader.h; path = build_result/Classes/org/xml/sax/XMLReader.h; sourceTree = "<group>"; };
+		064FB7D41727081D00DC0D51 /* AttributeListImpl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AttributeListImpl.h; path = build_result/Classes/org/xml/sax/helpers/AttributeListImpl.h; sourceTree = "<group>"; };
+		064FB7D51727081D00DC0D51 /* AttributeListImpl.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = AttributeListImpl.m; path = build_result/Classes/org/xml/sax/helpers/AttributeListImpl.m; sourceTree = "<group>"; };
+		064FB7D61727081D00DC0D51 /* AttributesImpl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AttributesImpl.h; path = build_result/Classes/org/xml/sax/helpers/AttributesImpl.h; sourceTree = "<group>"; };
+		064FB7D71727081D00DC0D51 /* AttributesImpl.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = AttributesImpl.m; path = build_result/Classes/org/xml/sax/helpers/AttributesImpl.m; sourceTree = "<group>"; };
+		064FB7D81727081D00DC0D51 /* DefaultHandler.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = DefaultHandler.h; path = build_result/Classes/org/xml/sax/helpers/DefaultHandler.h; sourceTree = "<group>"; };
+		064FB7D91727081D00DC0D51 /* DefaultHandler.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = DefaultHandler.m; path = build_result/Classes/org/xml/sax/helpers/DefaultHandler.m; sourceTree = "<group>"; };
+		064FB7DA1727081D00DC0D51 /* LocatorImpl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = LocatorImpl.h; path = build_result/Classes/org/xml/sax/helpers/LocatorImpl.h; sourceTree = "<group>"; };
+		064FB7DB1727081D00DC0D51 /* LocatorImpl.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = LocatorImpl.m; path = build_result/Classes/org/xml/sax/helpers/LocatorImpl.m; sourceTree = "<group>"; };
+		064FB7DC1727081D00DC0D51 /* NamespaceSupport.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = NamespaceSupport.h; path = build_result/Classes/org/xml/sax/helpers/NamespaceSupport.h; sourceTree = "<group>"; };
+		064FB7DD1727081D00DC0D51 /* NamespaceSupport.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = NamespaceSupport.m; path = build_result/Classes/org/xml/sax/helpers/NamespaceSupport.m; sourceTree = "<group>"; };
+		064FB7DE1727081D00DC0D51 /* NewInstance.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = NewInstance.h; path = build_result/Classes/org/xml/sax/helpers/NewInstance.h; sourceTree = "<group>"; };
+		064FB7DF1727081D00DC0D51 /* NewInstance.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = NewInstance.m; path = build_result/Classes/org/xml/sax/helpers/NewInstance.m; sourceTree = "<group>"; };
+		064FB7E01727081D00DC0D51 /* ParserAdapter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ParserAdapter.h; path = build_result/Classes/org/xml/sax/helpers/ParserAdapter.h; sourceTree = "<group>"; };
+		064FB7E11727081D00DC0D51 /* ParserAdapter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ParserAdapter.m; path = build_result/Classes/org/xml/sax/helpers/ParserAdapter.m; sourceTree = "<group>"; };
+		064FB7E21727081D00DC0D51 /* ParserFactory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ParserFactory.h; path = build_result/Classes/org/xml/sax/helpers/ParserFactory.h; sourceTree = "<group>"; };
+		064FB7E31727081D00DC0D51 /* ParserFactory.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ParserFactory.m; path = build_result/Classes/org/xml/sax/helpers/ParserFactory.m; sourceTree = "<group>"; };
+		064FB7E41727081D00DC0D51 /* XMLFilterImpl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = XMLFilterImpl.h; path = build_result/Classes/org/xml/sax/helpers/XMLFilterImpl.h; sourceTree = "<group>"; };
+		064FB7E51727081D00DC0D51 /* XMLFilterImpl.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = XMLFilterImpl.m; path = build_result/Classes/org/xml/sax/helpers/XMLFilterImpl.m; sourceTree = "<group>"; };
+		064FB7E61727081D00DC0D51 /* XMLReaderAdapter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = XMLReaderAdapter.h; path = build_result/Classes/org/xml/sax/helpers/XMLReaderAdapter.h; sourceTree = "<group>"; };
+		064FB7E71727081D00DC0D51 /* XMLReaderAdapter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = XMLReaderAdapter.m; path = build_result/Classes/org/xml/sax/helpers/XMLReaderAdapter.m; sourceTree = "<group>"; };
+		064FB7E81727081D00DC0D51 /* XMLReaderFactory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = XMLReaderFactory.h; path = build_result/Classes/org/xml/sax/helpers/XMLReaderFactory.h; sourceTree = "<group>"; };
+		064FB7E91727081D00DC0D51 /* XMLReaderFactory.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = XMLReaderFactory.m; path = build_result/Classes/org/xml/sax/helpers/XMLReaderFactory.m; sourceTree = "<group>"; };
+		064FB8001727085500DC0D51 /* TypeInfo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = TypeInfo.h; path = build_result/Classes/org/w3c/dom/TypeInfo.h; sourceTree = "<group>"; };
+		064FB8021727086700DC0D51 /* LSResourceResolver.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = LSResourceResolver.h; path = build_result/Classes/org/w3c/dom/ls/LSResourceResolver.h; sourceTree = "<group>"; };
+		064FB8041727091A00DC0D51 /* ICUSupport.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ICUSupport.h; sourceTree = "<group>"; };
+		064FB8051727091A00DC0D51 /* ICUSupport.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = ICUSupport.mm; sourceTree = "<group>"; };
+		064FB8061727091A00DC0D51 /* TimeZonesSupport.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = TimeZonesSupport.mm; sourceTree = "<group>"; };
+		064FB8071727091A00DC0D51 /* UniquePtr.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UniquePtr.h; sourceTree = "<group>"; };
 		06619385155848D70004DAFE /* libjre_emul.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libjre_emul.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		06619388155848D70004DAFE /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		0661938D155848D70004DAFE /* JreEmulation.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = JreEmulation.h; sourceTree = "<group>"; };
@@ -902,11 +829,7 @@
 		06DDF48616E83FF800A08BE0 /* BasicLruCache.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = BasicLruCache.m; path = build_result/Classes/libcore/util/BasicLruCache.m; sourceTree = "<group>"; };
 		06DDF48916E8401600A08BE0 /* TimeZones.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = TimeZones.h; path = build_result/Classes/libcore/icu/TimeZones.h; sourceTree = "<group>"; };
 		06DDF48A16E8401600A08BE0 /* TimeZones.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = TimeZones.m; path = build_result/Classes/libcore/icu/TimeZones.m; sourceTree = "<group>"; };
-		06DDF48D16E8404B00A08BE0 /* ICUSupport.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ICUSupport.h; sourceTree = "<group>"; };
-		06DDF48E16E8404B00A08BE0 /* ICUSupport.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = ICUSupport.mm; sourceTree = "<group>"; };
 		06DDF48F16E8404B00A08BE0 /* TimeZonesSupport.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TimeZonesSupport.h; sourceTree = "<group>"; };
-		06DDF49016E8404B00A08BE0 /* TimeZonesSupport.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = TimeZonesSupport.mm; sourceTree = "<group>"; };
-		06DDF49116E8404B00A08BE0 /* UniquePtr.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UniquePtr.h; sourceTree = "<group>"; };
 		A34A99EB1630A9DA006DEC32 /* Tests-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = "Tests-Info.plist"; path = "Tests/Tests-Info.plist"; sourceTree = SOURCE_ROOT; };
 		A34A99EC1630A9DA006DEC32 /* Tests-Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "Tests-Prefix.pch"; path = "Tests/Tests-Prefix.pch"; sourceTree = SOURCE_ROOT; };
 		A34A99F01630A9E7006DEC32 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = Tests/en.lproj/InfoPlist.strings; sourceTree = SOURCE_ROOT; };
@@ -979,8 +902,8 @@
 				067855AE169F364D0042431C /* HashMap.h */,
 				067855AF169F364D0042431C /* HashMap.m */,
 				067855AD169F364D0042431C /* HashMap_PackagePrivate.h */,
-				06DDF48D16E8404B00A08BE0 /* ICUSupport.h */,
-				06DDF48E16E8404B00A08BE0 /* ICUSupport.mm */,
+				064FB8041727091A00DC0D51 /* ICUSupport.h */,
+				064FB8051727091A00DC0D51 /* ICUSupport.mm */,
 				06619396155849BB0004DAFE /* IOSArray.h */,
 				06619397155849BB0004DAFE /* IOSArray.m */,
 				06619398155849BB0004DAFE /* IOSArrayClass.h */,
@@ -1027,8 +950,8 @@
 				067228F2158FB002005318BD /* Throwable.h */,
 				06721BA31559DE3800645E1B /* Throwable.m */,
 				06DDF48F16E8404B00A08BE0 /* TimeZonesSupport.h */,
-				06DDF49016E8404B00A08BE0 /* TimeZonesSupport.mm */,
-				06DDF49116E8404B00A08BE0 /* UniquePtr.h */,
+				064FB8061727091A00DC0D51 /* TimeZonesSupport.mm */,
+				064FB8071727091A00DC0D51 /* UniquePtr.h */,
 			);
 			path = Classes;
 			sourceTree = "<group>";
@@ -1094,6 +1017,15 @@
 				06721A3D1559C93000645E1B /* AtomicInteger.m */,
 				06721ADE1559CB9200645E1B /* AtomicLong.h */,
 				06721A3E1559C93000645E1B /* AtomicLong.m */,
+				064FB7C0172707F200DC0D51 /* AttributeList.h */,
+				064FB7D41727081D00DC0D51 /* AttributeListImpl.h */,
+				064FB7D51727081D00DC0D51 /* AttributeListImpl.m */,
+				064FB7C1172707F200DC0D51 /* Attributes.h */,
+				064FB7AA172707D700DC0D51 /* Attributes2.h */,
+				064FB7AB172707D700DC0D51 /* Attributes2Impl.h */,
+				064FB7AC172707D700DC0D51 /* Attributes2Impl.m */,
+				064FB7D61727081D00DC0D51 /* AttributesImpl.h */,
+				064FB7D71727081D00DC0D51 /* AttributesImpl.m */,
 				06DDF48516E83FF800A08BE0 /* BasicLruCache.h */,
 				06DDF48616E83FF800A08BE0 /* BasicLruCache.m */,
 				067855C3169F37710042431C /* BigDecimal.h */,
@@ -1163,36 +1095,49 @@
 				06721A401559C93000645E1B /* ConcurrentMap.m */,
 				06721AE21559CB9200645E1B /* ConcurrentModificationException.h */,
 				06721A421559C93000645E1B /* ConcurrentModificationException.m */,
+				064FB7C2172707F200DC0D51 /* ContentHandler.h */,
 				067855C9169F37710042431C /* Conversion.h */,
 				067855CA169F37710042431C /* Conversion.m */,
 				06DD333416A1406A00AD7ACE /* Currency.h */,
 				06DD333516A1406A00AD7ACE /* Currency.m */,
 				06721AE31559CB9200645E1B /* Date.h */,
 				06721A431559C93000645E1B /* Date.m */,
+				064FB7AD172707D700DC0D51 /* DeclHandler.h */,
+				064FB7D81727081D00DC0D51 /* DefaultHandler.h */,
+				064FB7D91727081D00DC0D51 /* DefaultHandler.m */,
+				064FB7AE172707D700DC0D51 /* DefaultHandler2.h */,
+				064FB7AF172707D700DC0D51 /* DefaultHandler2.m */,
 				068677CD166C342C005A5AD7 /* Deque.h */,
 				06721AE41559CB9200645E1B /* Dictionary.h */,
 				06721A4B1559C99E00645E1B /* Dictionary.m */,
 				067855CB169F37710042431C /* Division.h */,
 				067855CC169F37710042431C /* Division.m */,
+				064FB7C3172707F200DC0D51 /* DocumentHandler.h */,
 				06721B3A1559CC0300645E1B /* Double.h */,
 				067219D71559C87100645E1B /* Double.m */,
 				06DD32A916A13FA000AD7ACE /* DoubleArrayBuffer.h */,
 				06DD32AA16A13FA000AD7ACE /* DoubleArrayBuffer.m */,
 				06DD32AB16A13FA000AD7ACE /* DoubleBuffer.h */,
 				06DD32AC16A13FA000AD7ACE /* DoubleBuffer.m */,
+				064FB7C4172707F200DC0D51 /* DTDHandler.h */,
 				067855CD169F37710042431C /* Elementary.h */,
 				067855CE169F37710042431C /* Elementary.m */,
 				06721AE51559CB9200645E1B /* EmptyStackException.h */,
 				06721A4C1559C99E00645E1B /* EmptyStackException.m */,
 				06DD335A16A140A600AD7ACE /* Endianness.h */,
 				06DD335B16A140A600AD7ACE /* Endianness.m */,
+				064FB7C5172707F200DC0D51 /* EntityResolver.h */,
+				064FB7B0172707D700DC0D51 /* EntityResolver2.h */,
 				06721B3B1559CC0300645E1B /* Enum.h */,
 				067219D81559C87100645E1B /* Enum.m */,
 				06721AE61559CB9200645E1B /* Enumeration.h */,
+				064FB752172706E100DC0D51 /* EnumMap.h */,
+				064FB753172706E100DC0D51 /* EnumMap.m */,
 				06DD333616A1406A00AD7ACE /* EnumSet.h */,
 				06DD333716A1406A00AD7ACE /* EnumSet.m */,
 				06721B3C1559CC0300645E1B /* Error.h */,
 				067219D91559C87100645E1B /* Error.m */,
+				064FB7C6172707F200DC0D51 /* ErrorHandler.h */,
 				068677CE166C342C005A5AD7 /* EventListener.h */,
 				068677CF166C342C005A5AD7 /* EventListener.m */,
 				068677D0166C342C005A5AD7 /* EventObject.h */,
@@ -1203,6 +1148,8 @@
 				067219DB1559C87100645E1B /* ExceptionInInitializerError.m */,
 				06DD332C16A1402900AD7ACE /* Executor.h */,
 				06DD332D16A1402900AD7ACE /* ExecutorService.h */,
+				064FB7621727071800DC0D51 /* FactoryConfigurationError.h */,
+				064FB7631727071800DC0D51 /* FactoryConfigurationError.m */,
 				06721A841559CB2500645E1B /* File.h */,
 				067219951559C7FC00645E1B /* File.m */,
 				06721A851559CB2500645E1B /* FileDescriptor.h */,
@@ -1215,6 +1162,8 @@
 				067219981559C7FC00645E1B /* FileNotFoundException.m */,
 				06721A8A1559CB2500645E1B /* FileOutputStream.h */,
 				067219991559C7FC00645E1B /* FileOutputStream.m */,
+				064FB7641727071800DC0D51 /* FilePathToURI.h */,
+				064FB7651727071800DC0D51 /* FilePathToURI.m */,
 				06721A8B1559CB2500645E1B /* FileReader.h */,
 				0672199A1559C7FC00645E1B /* FileReader.m */,
 				06721A8C1559CB2500645E1B /* FileWriter.h */,
@@ -1241,6 +1190,8 @@
 				06DD333B16A1406A00AD7ACE /* GregorianCalendar.m */,
 				06721AF11559CB9200645E1B /* Handler.h */,
 				06721A541559C99E00645E1B /* Handler.m */,
+				064FB78E1727079100DC0D51 /* HandlerBase.h */,
+				064FB78F1727079100DC0D51 /* HandlerBase.m */,
 				06721AE71559CB9200645E1B /* HashSet.h */,
 				06721A4D1559C99E00645E1B /* HashSet.m */,
 				06721AE81559CB9200645E1B /* Hashtable.h */,
@@ -1263,6 +1214,8 @@
 				067219E11559C87100645E1B /* IndexOutOfBoundsException.m */,
 				06721AEA1559CB9200645E1B /* InputMismatchException.h */,
 				06721A501559C99E00645E1B /* InputMismatchException.m */,
+				064FB7901727079100DC0D51 /* InputSource.h */,
+				064FB7911727079100DC0D51 /* InputSource.m */,
 				06721A901559CB2500645E1B /* InputStream.h */,
 				0672199E1559C7FC00645E1B /* InputStream.m */,
 				06721A911559CB2500645E1B /* InputStreamReader.h */,
@@ -1285,6 +1238,8 @@
 				06DD32B816A13FA000AD7ACE /* InvalidMarkException.m */,
 				06721A931559CB2500645E1B /* InvalidObjectException.h */,
 				067219A11559C7FC00645E1B /* InvalidObjectException.m */,
+				064FB754172706E100DC0D51 /* InvalidPropertiesFormatException.h */,
+				064FB755172706E100DC0D51 /* InvalidPropertiesFormatException.m */,
 				06721B521559CC0300645E1B /* InvocationTargetException.h */,
 				06721B531559CC0300645E1B /* InvocationTargetException.m */,
 				06721A941559CB2500645E1B /* IOException.h */,
@@ -1293,6 +1248,7 @@
 				06721AEB1559CB9200645E1B /* Iterator.h */,
 				06721AF21559CB9200645E1B /* Level.h */,
 				06721A551559C99E00645E1B /* Level.m */,
+				064FB7B1172707D700DC0D51 /* LexicalHandler.h */,
 				06721B4A1559CC0300645E1B /* LinkageError.h */,
 				067219E61559C87100645E1B /* LinkageError.m */,
 				06DD333E16A1406A00AD7ACE /* LinkedHashSet.h */,
@@ -1303,6 +1259,13 @@
 				06721AEE1559CB9200645E1B /* ListIterator.h */,
 				06721AEF1559CB9200645E1B /* Locale.h */,
 				06721A521559C99E00645E1B /* Locale.m */,
+				064FB7921727079100DC0D51 /* Locator.h */,
+				064FB7931727079100DC0D51 /* Locator.m */,
+				064FB7B2172707D700DC0D51 /* Locator2.h */,
+				064FB7B3172707D700DC0D51 /* Locator2Impl.h */,
+				064FB7B4172707D700DC0D51 /* Locator2Impl.m */,
+				064FB7DA1727081D00DC0D51 /* LocatorImpl.h */,
+				064FB7DB1727081D00DC0D51 /* LocatorImpl.m */,
 				06721AF31559CB9200645E1B /* Logger.h */,
 				06721A561559C99E00645E1B /* Logger.m */,
 				067855CF169F37710042431C /* Logical.h */,
@@ -1317,6 +1280,7 @@
 				06DD32BA16A13FA000AD7ACE /* LongArrayBuffer.m */,
 				06DD32BB16A13FA000AD7ACE /* LongBuffer.h */,
 				06DD32BC16A13FA000AD7ACE /* LongBuffer.m */,
+				064FB8021727086700DC0D51 /* LSResourceResolver.h */,
 				06721AF71559CB9200645E1B /* Map.h */,
 				06721AF81559CB9200645E1B /* MapEntry.h */,
 				06721A5A1559C99E00645E1B /* MapEntry.m */,
@@ -1336,12 +1300,16 @@
 				06721B551559CC0300645E1B /* Modifier.m */,
 				067855D3169F37710042431C /* Multiplication.h */,
 				067855D4169F37710042431C /* Multiplication.m */,
+				064FB7DC1727081D00DC0D51 /* NamespaceSupport.h */,
+				064FB7DD1727081D00DC0D51 /* NamespaceSupport.m */,
 				068677D2166C342C005A5AD7 /* NavigableMap.h */,
 				068677D3166C342C005A5AD7 /* NavigableMap.m */,
 				068677D4166C342C005A5AD7 /* NavigableSet.h */,
 				068677D5166C342C005A5AD7 /* NavigableSet.m */,
 				06721B4D1559CC0300645E1B /* NegativeArraySizeException.h */,
 				067219E91559C87100645E1B /* NegativeArraySizeException.m */,
+				064FB7DE1727081D00DC0D51 /* NewInstance.h */,
+				064FB7DF1727081D00DC0D51 /* NewInstance.m */,
 				06721AF91559CB9200645E1B /* NoSuchElementException.h */,
 				06721A5B1559C99E00645E1B /* NoSuchElementException.m */,
 				067228FD158FD6AF005318BD /* NoSuchFieldException.h */,
@@ -1362,6 +1330,13 @@
 				067219A51559C7FC00645E1B /* OutputStreamWriter.m */,
 				06DD332816A13FBB00AD7ACE /* ParseException.h */,
 				06DD332916A13FBB00AD7ACE /* ParseException.m */,
+				064FB7C7172707F200DC0D51 /* Parser.h */,
+				064FB7E01727081D00DC0D51 /* ParserAdapter.h */,
+				064FB7E11727081D00DC0D51 /* ParserAdapter.m */,
+				064FB7661727071800DC0D51 /* ParserConfigurationException.h */,
+				064FB7671727071800DC0D51 /* ParserConfigurationException.m */,
+				064FB7E21727081D00DC0D51 /* ParserFactory.h */,
+				064FB7E31727081D00DC0D51 /* ParserFactory.m */,
 				068677E8166C345F005A5AD7 /* Pattern.h */,
 				068677E9166C345F005A5AD7 /* Pattern.m */,
 				06C6B7FB159BCBD1004B800C /* PatternSyntaxException.h */,
@@ -1413,11 +1388,27 @@
 				06DD32D816A13FA000AD7ACE /* ReadWriteLongArrayBuffer.m */,
 				06DD32D916A13FA000AD7ACE /* ReadWriteShortArrayBuffer.h */,
 				06DD32DA16A13FA000AD7ACE /* ReadWriteShortArrayBuffer.m */,
+				064FB7761727072B00DC0D51 /* Result.h */,
+				064FB7771727072B00DC0D51 /* Result.m */,
 				067855D7169F37710042431C /* RoundingMode.h */,
 				067855D8169F37710042431C /* RoundingMode.m */,
 				06721B561559CC0300645E1B /* Runnable.h */,
 				06721B571559CC0300645E1B /* RuntimeException.h */,
 				067219ED1559C87100645E1B /* RuntimeException.m */,
+				064FB7941727079100DC0D51 /* SAXException.h */,
+				064FB7951727079100DC0D51 /* SAXException.m */,
+				064FB7961727079100DC0D51 /* SAXNotRecognizedException.h */,
+				064FB7971727079100DC0D51 /* SAXNotRecognizedException.m */,
+				064FB7981727079100DC0D51 /* SAXNotSupportedException.h */,
+				064FB7991727079100DC0D51 /* SAXNotSupportedException.m */,
+				064FB79A1727079100DC0D51 /* SAXParseException.h */,
+				064FB79B1727079100DC0D51 /* SAXParseException.m */,
+				064FB7681727071800DC0D51 /* SAXParser.h */,
+				064FB7691727071800DC0D51 /* SAXParser.m */,
+				064FB76A1727071800DC0D51 /* SAXParserFactory.h */,
+				064FB76B1727071800DC0D51 /* SAXParserFactory.m */,
+				064FB77E1727074100DC0D51 /* Schema.h */,
+				064FB77F1727074100DC0D51 /* Schema.m */,
 				067855BF169F37140042431C /* SecurityException.h */,
 				067855C0169F37140042431C /* SecurityException.m */,
 				06721A9B1559CB2500645E1B /* Serializable.h */,
@@ -1432,6 +1423,8 @@
 				06DD334316A1406A00AD7ACE /* SimpleTimeZone.m */,
 				06721B001559CB9200645E1B /* SortedMap.h */,
 				06721B011559CB9200645E1B /* SortedSet.h */,
+				064FB7781727072B00DC0D51 /* Source.h */,
+				064FB7791727072B00DC0D51 /* Source.m */,
 				068677EA166C345F005A5AD7 /* Splitter.h */,
 				068677EB166C345F005A5AD7 /* Splitter.m */,
 				06721B021559CB9200645E1B /* Stack.h */,
@@ -1448,6 +1441,8 @@
 				067219F31559C87100645E1B /* StringIndexOutOfBoundsException.m */,
 				06721A9C1559CB2500645E1B /* StringReader.h */,
 				067219A91559C7FC00645E1B /* StringReader.m */,
+				064FB756172706E100DC0D51 /* StringTokenizer.h */,
+				064FB757172706E100DC0D51 /* StringTokenizer.m */,
 				06721A9D1559CB2500645E1B /* StringWriter.h */,
 				067219AA1559C7FC00645E1B /* StringWriter.m */,
 				067855B9169F367E0042431C /* SyncFailedException.h */,
@@ -1474,18 +1469,41 @@
 				06721A611559C99E00645E1B /* TreeSet.m */,
 				0697F60715D190580027A7E4 /* Type.h */,
 				0697F60815D190580027A7E4 /* Type.m */,
+				064FB8001727085500DC0D51 /* TypeInfo.h */,
+				064FB7801727074100DC0D51 /* TypeInfoProvider.h */,
+				064FB7811727074100DC0D51 /* TypeInfoProvider.m */,
 				0697F60915D190580027A7E4 /* TypeVariable.h */,
 				0697F60A15D190580027A7E4 /* TypeVariable.m */,
 				06721A9E1559CB2500645E1B /* UnsupportedEncodingException.h */,
 				067219AB1559C7FC00645E1B /* UnsupportedEncodingException.m */,
 				06721B631559CC0300645E1B /* UnsupportedOperationException.h */,
 				067219F91559C87100645E1B /* UnsupportedOperationException.m */,
+				064FB746172705F400DC0D51 /* URI.h */,
+				064FB747172705F400DC0D51 /* URI.m */,
+				064FB748172705F400DC0D51 /* URIEncoderDecoder.h */,
+				064FB749172705F400DC0D51 /* URIEncoderDecoder.m */,
+				064FB74A172705F400DC0D51 /* URISyntaxException.h */,
+				064FB74B172705F400DC0D51 /* URISyntaxException.m */,
+				064FB7821727074100DC0D51 /* Validator.h */,
+				064FB7831727074100DC0D51 /* Validator.m */,
+				064FB7841727074100DC0D51 /* ValidatorHandler.h */,
+				064FB7851727074100DC0D51 /* ValidatorHandler.m */,
 				06721B051559CB9200645E1B /* Vector.h */,
 				06721A621559C99E00645E1B /* Vector.m */,
 				06721B641559CC0300645E1B /* Void.h */,
 				067219FA1559C87100645E1B /* Void.m */,
 				06721A9F1559CB2500645E1B /* Writer.h */,
 				067219AC1559C7FC00645E1B /* Writer.m */,
+				064FB75E172706F600DC0D51 /* XMLConstants.h */,
+				064FB75F172706F600DC0D51 /* XMLConstants.m */,
+				064FB7C8172707F200DC0D51 /* XMLFilter.h */,
+				064FB7E41727081D00DC0D51 /* XMLFilterImpl.h */,
+				064FB7E51727081D00DC0D51 /* XMLFilterImpl.m */,
+				064FB7C9172707F200DC0D51 /* XMLReader.h */,
+				064FB7E61727081D00DC0D51 /* XMLReaderAdapter.h */,
+				064FB7E71727081D00DC0D51 /* XMLReaderAdapter.m */,
+				064FB7E81727081D00DC0D51 /* XMLReaderFactory.h */,
+				064FB7E91727081D00DC0D51 /* XMLReaderFactory.m */,
 			);
 			name = "Transpiled Classes";
 			sourceTree = "<group>";
@@ -1611,10 +1629,66 @@
 				06DD335C16A140A600AD7ACE /* Endianness.h in Headers */,
 				06DDF48716E83FF800A08BE0 /* BasicLruCache.h in Headers */,
 				06DDF48B16E8401600A08BE0 /* TimeZones.h in Headers */,
-				06DDF49216E8404B00A08BE0 /* ICUSupport.h in Headers */,
 				06DDF49416E8404B00A08BE0 /* TimeZonesSupport.h in Headers */,
-				06DDF49616E8404B00A08BE0 /* UniquePtr.h in Headers */,
 				06734321171DF62600F26D4F /* TempFailureRetry.h in Headers */,
+				064FB74C172705F400DC0D51 /* URI.h in Headers */,
+				064FB74E172705F400DC0D51 /* URIEncoderDecoder.h in Headers */,
+				064FB750172705F400DC0D51 /* URISyntaxException.h in Headers */,
+				064FB758172706E100DC0D51 /* EnumMap.h in Headers */,
+				064FB75A172706E100DC0D51 /* InvalidPropertiesFormatException.h in Headers */,
+				064FB75C172706E100DC0D51 /* StringTokenizer.h in Headers */,
+				064FB760172706F600DC0D51 /* XMLConstants.h in Headers */,
+				064FB76C1727071800DC0D51 /* FactoryConfigurationError.h in Headers */,
+				064FB76E1727071800DC0D51 /* FilePathToURI.h in Headers */,
+				064FB7701727071800DC0D51 /* ParserConfigurationException.h in Headers */,
+				064FB7721727071800DC0D51 /* SAXParser.h in Headers */,
+				064FB7741727071800DC0D51 /* SAXParserFactory.h in Headers */,
+				064FB77A1727072B00DC0D51 /* Result.h in Headers */,
+				064FB77C1727072B00DC0D51 /* Source.h in Headers */,
+				064FB7861727074100DC0D51 /* Schema.h in Headers */,
+				064FB7881727074100DC0D51 /* TypeInfoProvider.h in Headers */,
+				064FB78A1727074100DC0D51 /* Validator.h in Headers */,
+				064FB78C1727074100DC0D51 /* ValidatorHandler.h in Headers */,
+				064FB79C1727079100DC0D51 /* HandlerBase.h in Headers */,
+				064FB79E1727079100DC0D51 /* InputSource.h in Headers */,
+				064FB7A01727079100DC0D51 /* Locator.h in Headers */,
+				064FB7A21727079100DC0D51 /* SAXException.h in Headers */,
+				064FB7A41727079100DC0D51 /* SAXNotRecognizedException.h in Headers */,
+				064FB7A61727079100DC0D51 /* SAXNotSupportedException.h in Headers */,
+				064FB7A81727079100DC0D51 /* SAXParseException.h in Headers */,
+				064FB7B5172707D700DC0D51 /* Attributes2.h in Headers */,
+				064FB7B6172707D700DC0D51 /* Attributes2Impl.h in Headers */,
+				064FB7B8172707D700DC0D51 /* DeclHandler.h in Headers */,
+				064FB7B9172707D700DC0D51 /* DefaultHandler2.h in Headers */,
+				064FB7BB172707D700DC0D51 /* EntityResolver2.h in Headers */,
+				064FB7BC172707D700DC0D51 /* LexicalHandler.h in Headers */,
+				064FB7BD172707D700DC0D51 /* Locator2.h in Headers */,
+				064FB7BE172707D700DC0D51 /* Locator2Impl.h in Headers */,
+				064FB7CA172707F200DC0D51 /* AttributeList.h in Headers */,
+				064FB7CB172707F200DC0D51 /* Attributes.h in Headers */,
+				064FB7CC172707F200DC0D51 /* ContentHandler.h in Headers */,
+				064FB7CD172707F200DC0D51 /* DocumentHandler.h in Headers */,
+				064FB7CE172707F200DC0D51 /* DTDHandler.h in Headers */,
+				064FB7CF172707F200DC0D51 /* EntityResolver.h in Headers */,
+				064FB7D0172707F200DC0D51 /* ErrorHandler.h in Headers */,
+				064FB7D1172707F200DC0D51 /* Parser.h in Headers */,
+				064FB7D2172707F200DC0D51 /* XMLFilter.h in Headers */,
+				064FB7D3172707F200DC0D51 /* XMLReader.h in Headers */,
+				064FB7EA1727081D00DC0D51 /* AttributeListImpl.h in Headers */,
+				064FB7EC1727081D00DC0D51 /* AttributesImpl.h in Headers */,
+				064FB7EE1727081D00DC0D51 /* DefaultHandler.h in Headers */,
+				064FB7F01727081D00DC0D51 /* LocatorImpl.h in Headers */,
+				064FB7F21727081D00DC0D51 /* NamespaceSupport.h in Headers */,
+				064FB7F41727081D00DC0D51 /* NewInstance.h in Headers */,
+				064FB7F61727081D00DC0D51 /* ParserAdapter.h in Headers */,
+				064FB7F81727081D00DC0D51 /* ParserFactory.h in Headers */,
+				064FB7FA1727081D00DC0D51 /* XMLFilterImpl.h in Headers */,
+				064FB7FC1727081D00DC0D51 /* XMLReaderAdapter.h in Headers */,
+				064FB7FE1727081D00DC0D51 /* XMLReaderFactory.h in Headers */,
+				064FB8011727085500DC0D51 /* TypeInfo.h in Headers */,
+				064FB8031727086700DC0D51 /* LSResourceResolver.h in Headers */,
+				064FB8081727091A00DC0D51 /* ICUSupport.h in Headers */,
+				064FB80B1727091A00DC0D51 /* UniquePtr.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1749,234 +1823,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				066193BE155849BC0004DAFE /* IOSArray.m in Sources */,
-				066193C0155849BC0004DAFE /* IOSArrayClass.m in Sources */,
-				066193C2155849BC0004DAFE /* IOSBooleanArray.m in Sources */,
-				066193C4155849BC0004DAFE /* IOSByteArray.m in Sources */,
-				066193C6155849BC0004DAFE /* IOSCharArray.m in Sources */,
-				066193C8155849BC0004DAFE /* IOSClass.m in Sources */,
-				066193CC155849BC0004DAFE /* IOSDoubleArray.m in Sources */,
-				066193CE155849BC0004DAFE /* IOSFloatArray.m in Sources */,
-				066193D0155849BC0004DAFE /* IOSIntArray.m in Sources */,
-				066193D6155849BC0004DAFE /* IOSLongArray.m in Sources */,
-				066193D8155849BC0004DAFE /* IOSObjectArray.m in Sources */,
-				066193DA155849BC0004DAFE /* IOSPrimitiveClass.m in Sources */,
-				066193DE155849BC0004DAFE /* IOSShortArray.m in Sources */,
-				066193E0155849BC0004DAFE /* JreEmulation.m in Sources */,
-				066193E9155849F80004DAFE /* NSObject+JavaObject.m in Sources */,
-				066193EB155849F80004DAFE /* NSString+JavaString.m in Sources */,
-				067219AD1559C7FC00645E1B /* BufferedInputStream.m in Sources */,
-				067219AE1559C7FC00645E1B /* BufferedOutputStream.m in Sources */,
-				067219AF1559C7FC00645E1B /* BufferedReader.m in Sources */,
-				067219B01559C7FC00645E1B /* BufferedWriter.m in Sources */,
-				067219B11559C7FC00645E1B /* ByteArrayInputStream.m in Sources */,
-				067219B21559C7FC00645E1B /* ByteArrayOutputStream.m in Sources */,
-				067219B31559C7FC00645E1B /* CharArrayReader.m in Sources */,
-				067219B41559C7FC00645E1B /* CharArrayWriter.m in Sources */,
-				067219B51559C7FC00645E1B /* File.m in Sources */,
-				067219B61559C7FC00645E1B /* FileDescriptor.m in Sources */,
-				067219B71559C7FC00645E1B /* FileInputStream.m in Sources */,
-				067219B81559C7FC00645E1B /* FileNotFoundException.m in Sources */,
-				067219B91559C7FC00645E1B /* FileOutputStream.m in Sources */,
-				067219BA1559C7FC00645E1B /* FileReader.m in Sources */,
-				067219BB1559C7FC00645E1B /* FileWriter.m in Sources */,
-				067219BC1559C7FC00645E1B /* FilterInputStream.m in Sources */,
-				067219BD1559C7FC00645E1B /* FilterOutputStream.m in Sources */,
-				067219BE1559C7FC00645E1B /* InputStream.m in Sources */,
-				067219BF1559C7FC00645E1B /* InputStreamReader.m in Sources */,
-				067219C01559C7FC00645E1B /* InterruptedIOException.m in Sources */,
-				067219C11559C7FC00645E1B /* InvalidObjectException.m in Sources */,
-				067219C21559C7FC00645E1B /* IOException.m in Sources */,
-				067219C31559C7FC00645E1B /* ObjectStreamException.m in Sources */,
-				067219C41559C7FC00645E1B /* OutputStream.m in Sources */,
-				067219C51559C7FC00645E1B /* OutputStreamWriter.m in Sources */,
-				067219C61559C7FC00645E1B /* PrintStream.m in Sources */,
-				067219C71559C7FC00645E1B /* PrintWriter.m in Sources */,
-				067219C81559C7FC00645E1B /* Reader.m in Sources */,
-				067219C91559C7FC00645E1B /* StringReader.m in Sources */,
-				067219CA1559C7FC00645E1B /* StringWriter.m in Sources */,
-				067219CB1559C7FC00645E1B /* UnsupportedEncodingException.m in Sources */,
-				067219CC1559C7FC00645E1B /* Writer.m in Sources */,
-				067219FB1559C87100645E1B /* ArithmeticException.m in Sources */,
-				067219FC1559C87100645E1B /* ArrayIndexOutOfBoundsException.m in Sources */,
-				067219FD1559C87100645E1B /* ArrayStoreException.m in Sources */,
-				067219FE1559C87100645E1B /* AssertionError.m in Sources */,
-				067219FF1559C87100645E1B /* Boolean.m in Sources */,
-				06721A001559C87100645E1B /* Byte.m in Sources */,
-				06721A011559C87100645E1B /* Character.m in Sources */,
-				06721A021559C87100645E1B /* ClassCastException.m in Sources */,
-				06721A031559C87100645E1B /* ClassNotFoundException.m in Sources */,
-				06721A041559C87100645E1B /* CloneNotSupportedException.m in Sources */,
-				06721A051559C87100645E1B /* Double.m in Sources */,
-				06721A061559C87100645E1B /* Enum.m in Sources */,
-				06721A071559C87100645E1B /* Error.m in Sources */,
-				06721A081559C87100645E1B /* Exception.m in Sources */,
-				06721A091559C87100645E1B /* ExceptionInInitializerError.m in Sources */,
-				06721A0A1559C87100645E1B /* Float.m in Sources */,
-				06721A0B1559C87100645E1B /* IllegalAccessException.m in Sources */,
-				06721A0C1559C87100645E1B /* IllegalArgumentException.m in Sources */,
-				06721A0D1559C87100645E1B /* IllegalStateException.m in Sources */,
-				06721A0E1559C87100645E1B /* IllegalThreadStateException.m in Sources */,
-				06721A0F1559C87100645E1B /* IndexOutOfBoundsException.m in Sources */,
-				06721A101559C87100645E1B /* InstantiationException.m in Sources */,
-				06721A111559C87100645E1B /* Integer.m in Sources */,
-				06721A121559C87100645E1B /* InternalError.m in Sources */,
-				06721A131559C87100645E1B /* InterruptedException.m in Sources */,
-				06721A141559C87100645E1B /* LinkageError.m in Sources */,
-				06721A151559C87100645E1B /* Long.m in Sources */,
-				06721A161559C87100645E1B /* Math.m in Sources */,
-				06721A171559C87100645E1B /* NegativeArraySizeException.m in Sources */,
-				06721A181559C87100645E1B /* NoSuchMethodException.m in Sources */,
-				06721A191559C87100645E1B /* NullPointerException.m in Sources */,
-				06721A1A1559C87100645E1B /* NumberFormatException.m in Sources */,
-				06721A1B1559C87100645E1B /* RuntimeException.m in Sources */,
-				06721A1C1559C87100645E1B /* Short.m in Sources */,
-				06721A1D1559C87100645E1B /* StackTraceElement.m in Sources */,
-				06721A1E1559C87100645E1B /* StrictMath.m in Sources */,
-				06721A1F1559C87100645E1B /* StringBuffer.m in Sources */,
-				06721A201559C87100645E1B /* StringBuilder.m in Sources */,
-				06721A211559C87100645E1B /* StringIndexOutOfBoundsException.m in Sources */,
-				06721A221559C87100645E1B /* System.m in Sources */,
-				06721A231559C87100645E1B /* Thread.m in Sources */,
-				06721A241559C87100645E1B /* ThreadDeath.m in Sources */,
-				06721A251559C87100645E1B /* ThreadGroup.m in Sources */,
-				06721A261559C87100645E1B /* ThreadLocal.m in Sources */,
-				06721A271559C87100645E1B /* UnsupportedOperationException.m in Sources */,
-				06721A281559C87100645E1B /* Void.m in Sources */,
-				06721A331559C91600645E1B /* AbstractCollection.m in Sources */,
-				06721A341559C91600645E1B /* AbstractList.m in Sources */,
-				06721A351559C91600645E1B /* AbstractMap.m in Sources */,
-				06721A361559C91600645E1B /* AbstractQueue.m in Sources */,
-				06721A371559C91600645E1B /* AbstractSequentialList.m in Sources */,
-				06721A381559C91600645E1B /* AbstractSet.m in Sources */,
-				06721A391559C91600645E1B /* ArrayList.m in Sources */,
-				06721A3A1559C91600645E1B /* Arrays.m in Sources */,
-				06721A3B1559C91600645E1B /* BitSet.m in Sources */,
-				06721A3C1559C91600645E1B /* Collections.m in Sources */,
-				06721A441559C93000645E1B /* AtomicInteger.m in Sources */,
-				06721A451559C93000645E1B /* AtomicLong.m in Sources */,
-				06721A461559C93000645E1B /* ConcurrentHashMap.m in Sources */,
-				06721A471559C93000645E1B /* ConcurrentMap.m in Sources */,
-				06721A481559C93000645E1B /* TimeUnit.m in Sources */,
-				06721A491559C93000645E1B /* ConcurrentModificationException.m in Sources */,
-				06721A4A1559C93000645E1B /* Date.m in Sources */,
-				06721A631559C99E00645E1B /* Dictionary.m in Sources */,
-				06721A641559C99E00645E1B /* EmptyStackException.m in Sources */,
-				06721A651559C99E00645E1B /* HashSet.m in Sources */,
-				06721A661559C99E00645E1B /* Hashtable.m in Sources */,
-				06721A671559C99E00645E1B /* IdentityHashMap.m in Sources */,
-				06721A681559C99E00645E1B /* InputMismatchException.m in Sources */,
-				06721A691559C99E00645E1B /* LinkedList.m in Sources */,
-				06721A6A1559C99E00645E1B /* Locale.m in Sources */,
-				06721A6B1559C99E00645E1B /* Formatter.m in Sources */,
-				06721A6C1559C99E00645E1B /* Handler.m in Sources */,
-				06721A6D1559C99E00645E1B /* Level.m in Sources */,
-				06721A6E1559C99E00645E1B /* Logger.m in Sources */,
-				06721A6F1559C99E00645E1B /* LogManager.m in Sources */,
-				06721A701559C99E00645E1B /* LogRecord.m in Sources */,
-				06721A711559C99E00645E1B /* NSLogHandler.m in Sources */,
-				06721A721559C99E00645E1B /* MapEntry.m in Sources */,
-				06721A731559C99E00645E1B /* NoSuchElementException.m in Sources */,
-				06721A741559C99E00645E1B /* PriorityQueue.m in Sources */,
-				06721A751559C99E00645E1B /* Properties.m in Sources */,
-				06721A761559C99E00645E1B /* Random.m in Sources */,
-				06721A771559C99E00645E1B /* Stack.m in Sources */,
-				06721A781559C99E00645E1B /* TreeMap.m in Sources */,
-				06721A791559C99E00645E1B /* TreeSet.m in Sources */,
-				06721A7A1559C99E00645E1B /* Vector.m in Sources */,
-				06721B891559CC0300645E1B /* InvocationTargetException.m in Sources */,
-				06721B8B1559CC0300645E1B /* Modifier.m in Sources */,
-				06721BA41559DE3800645E1B /* Constructor.m in Sources */,
-				06721BA51559DE3800645E1B /* ExecutableMember.m in Sources */,
-				06721BA61559DE3800645E1B /* Method.m in Sources */,
-				06721BA71559DE3800645E1B /* Throwable.m in Sources */,
-				067228E7158FAEBC005318BD /* Field.m in Sources */,
-				067228FC158FB0B3005318BD /* AccessibleObject.m in Sources */,
-				06722900158FD6AF005318BD /* NoSuchFieldException.m in Sources */,
-				06C6B7FE159BCBD1004B800C /* PatternSyntaxException.m in Sources */,
-				0697F60C15D190580027A7E4 /* Array.m in Sources */,
-				0697F60F15D190580027A7E4 /* GenericDeclaration.m in Sources */,
-				0697F61215D190580027A7E4 /* Type.m in Sources */,
-				0697F61515D190580027A7E4 /* TypeVariable.m in Sources */,
-				068677D7166C342C005A5AD7 /* ArrayDeque.m in Sources */,
-				068677DA166C342C005A5AD7 /* EventListener.m in Sources */,
-				068677DC166C342C005A5AD7 /* EventObject.m in Sources */,
-				068677DE166C342C005A5AD7 /* NavigableMap.m in Sources */,
-				068677E0166C342C005A5AD7 /* NavigableSet.m in Sources */,
-				068677ED166C345F005A5AD7 /* Matcher.m in Sources */,
-				068677EF166C345F005A5AD7 /* MatchResult.m in Sources */,
-				068677F1166C345F005A5AD7 /* MatchResultImpl.m in Sources */,
-				068677F3166C345F005A5AD7 /* Pattern.m in Sources */,
-				068677F5166C345F005A5AD7 /* Splitter.m in Sources */,
-				067855AA169F35AB0042431C /* JreMemDebug.m in Sources */,
-				067855AC169F35AB0042431C /* JreMemDebugStrongReference.m in Sources */,
-				067855B5169F364D0042431C /* HashMap.m in Sources */,
-				067855B8169F364D0042431C /* LinkedHashMap.m in Sources */,
-				067855BC169F367E0042431C /* SyncFailedException.m in Sources */,
-				067855C2169F37140042431C /* SecurityException.m in Sources */,
-				067855DA169F37710042431C /* BigDecimal.m in Sources */,
-				067855DC169F37710042431C /* BigInteger.m in Sources */,
-				067855DE169F37710042431C /* BitLevel.m in Sources */,
-				067855E0169F37710042431C /* Conversion.m in Sources */,
-				067855E2169F37710042431C /* Division.m in Sources */,
-				067855E4169F37710042431C /* Elementary.m in Sources */,
-				067855E6169F37710042431C /* Logical.m in Sources */,
-				067855E8169F37710042431C /* MathContext.m in Sources */,
-				067855EA169F37710042431C /* Multiplication.m in Sources */,
-				067855EC169F37710042431C /* Primality.m in Sources */,
-				067855EE169F37710042431C /* RoundingMode.m in Sources */,
-				06DD32E016A13FA000AD7ACE /* Buffer.m in Sources */,
-				06DD32E216A13FA000AD7ACE /* BufferFactory.m in Sources */,
-				06DD32E416A13FA000AD7ACE /* BufferOverflowException.m in Sources */,
-				06DD32E616A13FA000AD7ACE /* BufferUnderflowException.m in Sources */,
-				06DD32E816A13FA000AD7ACE /* ByteBuffer.m in Sources */,
-				06DD32EA16A13FA000AD7ACE /* ByteOrder.m in Sources */,
-				06DD32EC16A13FA000AD7ACE /* CharArrayBuffer.m in Sources */,
-				06DD32EE16A13FA000AD7ACE /* CharBuffer.m in Sources */,
-				06DD32F016A13FA000AD7ACE /* CharSequenceAdapter.m in Sources */,
-				06DD32F216A13FA000AD7ACE /* DoubleArrayBuffer.m in Sources */,
-				06DD32F416A13FA000AD7ACE /* DoubleBuffer.m in Sources */,
-				06DD32F616A13FA000AD7ACE /* FloatArrayBuffer.m in Sources */,
-				06DD32F816A13FA000AD7ACE /* FloatBuffer.m in Sources */,
-				06DD32FA16A13FA000AD7ACE /* HeapByteBuffer.m in Sources */,
-				06DD32FC16A13FA000AD7ACE /* IntArrayBuffer.m in Sources */,
-				06DD32FE16A13FA000AD7ACE /* IntBuffer.m in Sources */,
-				06DD330016A13FA000AD7ACE /* InvalidMarkException.m in Sources */,
-				06DD330216A13FA000AD7ACE /* LongArrayBuffer.m in Sources */,
-				06DD330416A13FA000AD7ACE /* LongBuffer.m in Sources */,
-				06DD330616A13FA000AD7ACE /* ReadOnlyBufferException.m in Sources */,
-				06DD330816A13FA000AD7ACE /* ReadOnlyCharArrayBuffer.m in Sources */,
-				06DD330A16A13FA000AD7ACE /* ReadOnlyDoubleArrayBuffer.m in Sources */,
-				06DD330C16A13FA000AD7ACE /* ReadOnlyFloatArrayBuffer.m in Sources */,
-				06DD330E16A13FA000AD7ACE /* ReadOnlyHeapByteBuffer.m in Sources */,
-				06DD331016A13FA000AD7ACE /* ReadOnlyIntArrayBuffer.m in Sources */,
-				06DD331216A13FA000AD7ACE /* ReadOnlyLongArrayBuffer.m in Sources */,
-				06DD331416A13FA000AD7ACE /* ReadOnlyShortArrayBuffer.m in Sources */,
-				06DD331616A13FA000AD7ACE /* ReadWriteCharArrayBuffer.m in Sources */,
-				06DD331816A13FA000AD7ACE /* ReadWriteDoubleArrayBuffer.m in Sources */,
-				06DD331A16A13FA000AD7ACE /* ReadWriteFloatArrayBuffer.m in Sources */,
-				06DD331C16A13FA000AD7ACE /* ReadWriteHeapByteBuffer.m in Sources */,
-				06DD331E16A13FA000AD7ACE /* ReadWriteIntArrayBuffer.m in Sources */,
-				06DD332016A13FA000AD7ACE /* ReadWriteLongArrayBuffer.m in Sources */,
-				06DD332216A13FA000AD7ACE /* ReadWriteShortArrayBuffer.m in Sources */,
-				06DD332416A13FA000AD7ACE /* ShortArrayBuffer.m in Sources */,
-				06DD332616A13FA000AD7ACE /* ShortBuffer.m in Sources */,
-				06DD332B16A13FBB00AD7ACE /* ParseException.m in Sources */,
-				06DD334716A1406A00AD7ACE /* Calendar.m in Sources */,
-				06DD334916A1406A00AD7ACE /* Currency.m in Sources */,
-				06DD334B16A1406A00AD7ACE /* EnumSet.m in Sources */,
-				06DD334D16A1406A00AD7ACE /* Grego.m in Sources */,
-				06DD334F16A1406A00AD7ACE /* GregorianCalendar.m in Sources */,
-				06DD335116A1406A00AD7ACE /* HugeEnumSet.m in Sources */,
-				06DD335316A1406A00AD7ACE /* LinkedHashSet.m in Sources */,
-				06DD335516A1406A00AD7ACE /* MiniEnumSet.m in Sources */,
-				06DD335716A1406A00AD7ACE /* SimpleTimeZone.m in Sources */,
-				06DD335916A1406A00AD7ACE /* TimeZone.m in Sources */,
-				06DD335D16A140A600AD7ACE /* Endianness.m in Sources */,
-				06DDF48816E83FF800A08BE0 /* BasicLruCache.m in Sources */,
-				06DDF48C16E8401600A08BE0 /* TimeZones.m in Sources */,
-				06DDF49316E8404B00A08BE0 /* ICUSupport.mm in Sources */,
-				06DDF49516E8404B00A08BE0 /* TimeZonesSupport.mm in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -2034,6 +1880,7 @@
 				ARCHS = (
 					armv6,
 					armv7,
+					"$(ARCHS_STANDARD_64_BIT)",
 				);
 				COPY_PHASE_STRIP = NO;
 				DEAD_CODE_STRIPPING = NO;
@@ -2056,6 +1903,7 @@
 				SDKROOT = iphoneos;
 				STRIP_STYLE = "non-global";
 				USER_HEADER_SEARCH_PATHS = "$(TARGET_TEMP_DIR)/Classes JreEmulation";
+				VALID_ARCHS = "armv7 armv7s i386 x86_64";
 			};
 			name = Debug;
 		};
@@ -2066,6 +1914,7 @@
 				ARCHS = (
 					armv6,
 					armv7,
+					"$(ARCHS_STANDARD_64_BIT)",
 				);
 				COPY_PHASE_STRIP = NO;
 				DEAD_CODE_STRIPPING = NO;
@@ -2082,6 +1931,7 @@
 				STRIP_STYLE = "non-global";
 				USER_HEADER_SEARCH_PATHS = "$(TARGET_TEMP_DIR)/Classes JreEmulation";
 				VALIDATE_PRODUCT = YES;
+				VALID_ARCHS = "armv7 armv7s i386 x86_64";
 			};
 			name = Release;
 		};
