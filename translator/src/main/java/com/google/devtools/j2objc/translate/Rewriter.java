@@ -18,7 +18,6 @@ package com.google.devtools.j2objc.translate;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
-import com.google.devtools.j2objc.sym.Symbols;
 import com.google.devtools.j2objc.types.GeneratedMethodBinding;
 import com.google.devtools.j2objc.types.GeneratedTypeBinding;
 import com.google.devtools.j2objc.types.GeneratedVariableBinding;
@@ -1033,7 +1032,6 @@ public class Rewriter extends ErrorReportingASTVisitor {
       param.setType(Types.makeType(paramType));
       ASTUtil.getParameters(method).add(param);
     }
-    Symbols.scanAST(method);
     return method;
   }
 

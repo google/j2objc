@@ -249,7 +249,7 @@ public class ObjectiveCHeaderGeneratorTest extends GenerationTest {
       "public class Example { class Inner {} }",
       "Example", "Example.h");
     assertTranslation(translation, "@interface Example_Inner : NSObject");
-    assertTranslation(translation, "Example *this$0_;");
+    assertNotInTranslation(translation, "Example *this");
     assertTranslation(translation, "- (id)initWithExample:(Example *)outer$0;");
   }
 
@@ -268,8 +268,9 @@ public class ObjectiveCHeaderGeneratorTest extends GenerationTest {
       "Example", "Example.h");
     assertTranslation(translation, "@interface Example_$1 : NSObject < JavaLangRunnable >");
     assertTranslation(translation, "- (void)run;");
-    assertTranslation(translation, "Example *this$0_;");
-    assertTranslation(translation, "- (id)initWithExample:(Example *)outer$0;");
+    // Outer reference is not required.
+    assertNotInTranslation(translation, "Example *this");
+    assertNotInTranslation(translation, "- (id)initWithExample:");
   }
 
   public void testEnum() throws IOException {

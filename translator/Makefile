@@ -54,13 +54,6 @@ JAVA_SOURCES = \
 	gen/SourceFileGenerator.java \
 	gen/SourcePosition.java \
 	gen/StatementGenerator.java \
-	sym/MethodSymbol.java \
-	sym/Scope.java \
-	sym/Symbol.java \
-	sym/Symbols.java \
-	sym/SymbolTableBuilder.java \
-	sym/TypeSymbol.java \
-	sym/VariableSymbol.java \
 	translate/ASTFactory.java \
 	translate/AnonymousClassConverter.java \
 	translate/Autoboxer.java \
@@ -72,7 +65,7 @@ JAVA_SOURCES = \
 	translate/InnerClassExtractor.java \
 	translate/JavaToIOSMethodTranslator.java \
 	translate/JavaToIOSTypeConverter.java \
-	translate/ReferenceDescription.java \
+	translate/OuterReferenceResolver.java \
 	translate/Rewriter.java \
 	types/BindingMapBuilder.java \
 	types/BindingMapVerifier.java \

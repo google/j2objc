@@ -16,8 +16,6 @@
 
 package com.google.devtools.j2objc.types;
 
-import com.google.devtools.j2objc.sym.Symbols;
-
 import org.eclipse.jdt.core.IJavaElement;
 import org.eclipse.jdt.core.dom.IAnnotationBinding;
 import org.eclipse.jdt.core.dom.IBinding;
@@ -65,7 +63,6 @@ public class IOSVariableBinding implements IVariableBinding {
     this.declaringClass = declaringClass;
     this.declaringMethod = declaringMethod;
     this.index = index;
-    Symbols.queueForResolution(this);
   }
 
   @Override

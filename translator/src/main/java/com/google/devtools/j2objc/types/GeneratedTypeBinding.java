@@ -17,7 +17,6 @@
 package com.google.devtools.j2objc.types;
 
 import com.google.common.collect.Sets;
-import com.google.devtools.j2objc.sym.Symbols;
 
 import org.eclipse.jdt.core.IJavaElement;
 import org.eclipse.jdt.core.dom.IAnnotationBinding;
@@ -53,7 +52,6 @@ public class GeneratedTypeBinding implements ITypeBinding {
     this.superClass = superClass;
     this.isInterface = isInterface;
     this.isArray = isArray;
-    Symbols.queueForResolution(this);
   }
 
   /**

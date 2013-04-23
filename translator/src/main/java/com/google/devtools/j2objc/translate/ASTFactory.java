@@ -19,7 +19,9 @@ import com.google.devtools.j2objc.types.Types;
 import org.eclipse.jdt.core.dom.AST;
 import org.eclipse.jdt.core.dom.ArrayAccess;
 import org.eclipse.jdt.core.dom.Assignment;
+import org.eclipse.jdt.core.dom.CharacterLiteral;
 import org.eclipse.jdt.core.dom.Expression;
+import org.eclipse.jdt.core.dom.FieldDeclaration;
 import org.eclipse.jdt.core.dom.ForStatement;
 import org.eclipse.jdt.core.dom.IMethodBinding;
 import org.eclipse.jdt.core.dom.ITypeBinding;
@@ -27,13 +29,16 @@ import org.eclipse.jdt.core.dom.IVariableBinding;
 import org.eclipse.jdt.core.dom.InfixExpression;
 import org.eclipse.jdt.core.dom.InstanceofExpression;
 import org.eclipse.jdt.core.dom.MethodInvocation;
+import org.eclipse.jdt.core.dom.Name;
 import org.eclipse.jdt.core.dom.NullLiteral;
 import org.eclipse.jdt.core.dom.NumberLiteral;
 import org.eclipse.jdt.core.dom.PostfixExpression;
 import org.eclipse.jdt.core.dom.PrefixExpression;
+import org.eclipse.jdt.core.dom.QualifiedName;
 import org.eclipse.jdt.core.dom.SimpleName;
 import org.eclipse.jdt.core.dom.SingleVariableDeclaration;
 import org.eclipse.jdt.core.dom.Statement;
+import org.eclipse.jdt.core.dom.StringLiteral;
 import org.eclipse.jdt.core.dom.Type;
 import org.eclipse.jdt.core.dom.VariableDeclarationExpression;
 import org.eclipse.jdt.core.dom.VariableDeclarationFragment;
@@ -59,6 +64,17 @@ public final class ASTFactory {
     SimpleName name = ast.newSimpleName(binding.getName());
     Types.addBinding(name, binding);
     return name;
+  }
+
+  public static QualifiedName newQualifiedName(AST ast, Name qualifier, SimpleName name) {
+    QualifiedName qName = ast.newQualifiedName(qualifier, name);
+    Types.addBinding(qName, Types.getBinding(name));
+    return qName;
+  }
+
+  public static Name newName(AST ast, Name qualifier, IVariableBinding var) {
+    SimpleName name = newSimpleName(ast, var);
+    return qualifier == null ? name : newQualifiedName(ast, qualifier, name);
   }
 
   public static Assignment newAssignment(AST ast, Expression lhs, Expression rhs) {
@@ -104,7 +120,18 @@ public final class ASTFactory {
   public static SingleVariableDeclaration newSingleVariableDeclaration(
       AST ast, IVariableBinding binding) {
     SingleVariableDeclaration decl = ast.newSingleVariableDeclaration();
-    decl.setName(ASTFactory.newSimpleName(ast, binding));
+    decl.setName(newSimpleName(ast, binding));
+    decl.setType(Types.makeType(binding.getType()));
+    decl.modifiers().addAll(ast.newModifiers(binding.getModifiers()));
+    Types.addBinding(decl, binding);
+    return decl;
+  }
+
+  @SuppressWarnings("unchecked")
+  public static FieldDeclaration newFieldDeclaration(
+      AST ast, IVariableBinding binding, Expression initializer) {
+    FieldDeclaration decl = ast.newFieldDeclaration(
+        newVariableDeclarationFragment(ast, binding, initializer));
     decl.setType(Types.makeType(binding.getType()));
     decl.modifiers().addAll(ast.newModifiers(binding.getModifiers()));
     Types.addBinding(decl, binding);
@@ -201,5 +228,31 @@ public final class ASTFactory {
     expr.setRightOperand(rhs);
     Types.addBinding(expr, ast.resolveWellKnownType("boolean"));
     return expr;
+  }
+
+  private static Expression makeLiteralInternal(AST ast, Object value) {
+    if (value instanceof Boolean) {
+      return ast.newBooleanLiteral((Boolean) value);
+    } else if (value instanceof Character) {
+      CharacterLiteral c = ast.newCharacterLiteral();
+      c.setCharValue((Character) value);
+      return c;
+    } else if (value instanceof Number) {
+      return ast.newNumberLiteral(value.toString());
+    } else if (value instanceof String) {
+      StringLiteral s = ast.newStringLiteral();
+      s.setLiteralValue((String) value);
+      return s;
+    }
+    throw new AssertionError("unknown constant type");
+  }
+
+  /**
+   * Returns a literal node for a specified constant value.
+   */
+  public static Expression makeLiteral(AST ast, Object value, ITypeBinding type) {
+    Expression literal = makeLiteralInternal(ast, value);
+    Types.addBinding(literal, type);
+    return literal;
   }
 }

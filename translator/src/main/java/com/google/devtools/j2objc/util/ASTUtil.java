@@ -18,6 +18,7 @@ import org.eclipse.jdt.core.dom.AbstractTypeDeclaration;
 import org.eclipse.jdt.core.dom.AnonymousClassDeclaration;
 import org.eclipse.jdt.core.dom.Block;
 import org.eclipse.jdt.core.dom.BodyDeclaration;
+import org.eclipse.jdt.core.dom.ClassInstanceCreation;
 import org.eclipse.jdt.core.dom.ConstructorInvocation;
 import org.eclipse.jdt.core.dom.Expression;
 import org.eclipse.jdt.core.dom.IExtendedModifier;
@@ -77,6 +78,11 @@ public final class ASTUtil {
 
   @SuppressWarnings("unchecked")
   public static List<Expression> getArguments(SuperConstructorInvocation node) {
+    return node.arguments();
+  }
+
+  @SuppressWarnings("unchecked")
+  public static List<Expression> getArguments(ClassInstanceCreation node) {
     return node.arguments();
   }
 

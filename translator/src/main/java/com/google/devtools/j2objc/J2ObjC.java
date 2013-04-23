@@ -23,7 +23,6 @@ import com.google.common.io.CharStreams;
 import com.google.common.io.Files;
 import com.google.devtools.j2objc.gen.ObjectiveCHeaderGenerator;
 import com.google.devtools.j2objc.gen.ObjectiveCImplementationGenerator;
-import com.google.devtools.j2objc.sym.Symbols;
 import com.google.devtools.j2objc.translate.AnonymousClassConverter;
 import com.google.devtools.j2objc.translate.Autoboxer;
 import com.google.devtools.j2objc.translate.DeadCodeEliminator;
@@ -33,6 +32,7 @@ import com.google.devtools.j2objc.translate.InitializationNormalizer;
 import com.google.devtools.j2objc.translate.InnerClassExtractor;
 import com.google.devtools.j2objc.translate.JavaToIOSMethodTranslator;
 import com.google.devtools.j2objc.translate.JavaToIOSTypeConverter;
+import com.google.devtools.j2objc.translate.OuterReferenceResolver;
 import com.google.devtools.j2objc.translate.Rewriter;
 import com.google.devtools.j2objc.types.Types;
 import com.google.devtools.j2objc.util.ASTNodeException;
@@ -215,8 +215,8 @@ public class J2ObjC {
 
   private void cleanup() {
     NameTable.cleanup();
-    Symbols.cleanup();
     Types.cleanup();
+    OuterReferenceResolver.cleanup();
   }
 
   /**
@@ -394,7 +394,7 @@ public class J2ObjC {
     unit.recordModifications();
     NameTable.initialize(unit);
     Types.initialize(unit);
-    Symbols.initialize(unit);
+    OuterReferenceResolver.resolve(unit);
   }
 
   private void saveConvertedSource(String filename, String content) {

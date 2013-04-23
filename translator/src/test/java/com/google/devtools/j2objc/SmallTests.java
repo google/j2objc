@@ -25,7 +25,6 @@ import com.google.devtools.j2objc.gen.ObjectiveCImplementationGeneratorTest;
 import com.google.devtools.j2objc.gen.ObjectiveCSourceFileGeneratorTest;
 import com.google.devtools.j2objc.gen.PrimitiveArrayTest;
 import com.google.devtools.j2objc.gen.StatementGeneratorTest;
-import com.google.devtools.j2objc.sym.ScopeTest;
 import com.google.devtools.j2objc.translate.AnonymousClassConverterTest;
 import com.google.devtools.j2objc.translate.AutoboxerTest;
 import com.google.devtools.j2objc.translate.DeadCodeEliminatorTest;
@@ -34,6 +33,7 @@ import com.google.devtools.j2objc.translate.GwtConverterTest;
 import com.google.devtools.j2objc.translate.InitializationNormalizerTest;
 import com.google.devtools.j2objc.translate.InnerClassExtractorTest;
 import com.google.devtools.j2objc.translate.JavaToIOSMethodTranslatorTest;
+import com.google.devtools.j2objc.translate.OuterReferenceResolverTest;
 import com.google.devtools.j2objc.translate.RewriterTest;
 import com.google.devtools.j2objc.types.BindingMapBuilderTest;
 import com.google.devtools.j2objc.types.ImplementationImportCollectorTest;
@@ -79,11 +79,11 @@ public class SmallTests {
     ObjectiveCImplementationGeneratorTest.class,
     ObjectiveCSourceFileGeneratorTest.class,
     OptionsTest.class,
+    OuterReferenceResolverTest.class,
     PrimitiveArrayTest.class,
     ProGuardUsageParserTest.class,
     RenamedTypeBindingTest.class,
     RewriterTest.class,
-    ScopeTest.class,
     StatementGeneratorTest.class,
     TypesTest.class,
     UnicodeUtilsTest.class

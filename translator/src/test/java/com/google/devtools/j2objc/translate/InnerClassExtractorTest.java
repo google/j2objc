@@ -351,7 +351,7 @@ public class InnerClassExtractorTest extends GenerationTest {
         "    Bar.Inner inner = bar.new Inner(); } }";
 
     String translation = translateSourceFile(source, "Test", "Test.m");
-    assertTranslation(translation, "- (void)bar {\n  [this$1_.this$0 foo]");
+    assertTranslation(translation, "- (void)bar {\n  [this$1_ foo]");
     assertTranslation(translation,
         "- (Test_Bar_Inner *)makeInner {\n" +
         "  return [[[Test_Bar_Inner alloc] initWithTest_Bar:self] autorelease]");
@@ -374,7 +374,7 @@ public class InnerClassExtractorTest extends GenerationTest {
     // Anonymous class constructor in Inner.blah()
     assertTranslation(translation, "[[A_Inner_$1 alloc] initWithA_Inner:self]");
     // A.Inner.x referred to in anonymous Foo
-    assertTranslation(translation, "this$0.x = 2");
+    assertTranslation(translation, "this$0_.x = 2");
     // A.x referred to in anonymous Foo
     assertTranslation(translation, "this$0_.this$0.x = 3");
     // A.Inner init in anonymous Foo's constructor
@@ -401,8 +401,10 @@ public class InnerClassExtractorTest extends GenerationTest {
     String translation = translateSourceFile(source, "A", "A.m");
     // Anonymous class constructor in Inner.blah()
     assertTranslation(translation, "[[A_Inner_$1 alloc] initWithA_Inner:self]");
-    // A.Inner.x referred to in anonymous Foo
-    assertTranslation(translation, "self.this$0.x = 3");
+    // A.x referred to in A.Inner.
+    assertTranslation(translation, "this$0_.x = 2");
+    // A.Inner.x referred to in anonymous Foo.
+    assertTranslation(translation, "this$0_.x = 3");
     // A.x referred to in anonymous Foo
     assertTranslation(translation, "this$0_.this$0.x = 4");
     // A.Inner init in anonymous Foo's constructor
@@ -471,7 +473,7 @@ public class InnerClassExtractorTest extends GenerationTest {
         "    void bar() { int j = i; } } }";
     String translation = translateSourceFile(source, "Test", "Test.m");
 
-    assertTranslation(translation, "- (void)fooWithInt:(int)i {\n  self.this$0.i =");
+    assertTranslation(translation, "- (void)fooWithInt:(int)i {\n  this$0_.i =");
     assertTranslation(translation, "- (void)bar {\n  int j = this$0_.i");
   }
 
@@ -484,7 +486,7 @@ public class InnerClassExtractorTest extends GenerationTest {
         "    int j = 1; " +
         "    public int foo() { return i + j; } } }",
         "Test", "Test.h");
-    assertTranslation(translation, "Test *this$0");
+    assertTranslation(translation, "Test *this$1");  // Inner2's outer reference.
 
     translation = getTranslatedFile("Test.m");
     assertTranslation(translation, "[((JavaLangInteger *) NIL_CHK(this$1_.i)) intValue] + j_");
@@ -518,8 +520,9 @@ public class InnerClassExtractorTest extends GenerationTest {
 
   public void testInnerSubClassOfOtherInnerWithOuterRefsExtraction() throws IOException {
     String source = "public class Test { " +
+        "int i; " +
         "class A { " +
-        "  private void foo() { } " +
+        "  private void foo() { i++; } " +
         "  public class Inner { Inner() { foo(); } } } " +
         "class B extends A { " +
         "  public class BInner extends A.Inner { } } " +
@@ -531,8 +534,8 @@ public class InnerClassExtractorTest extends GenerationTest {
     // Verify that main method creates a new instanceof B associated with
     // a new instance of Test.
     List<BodyDeclaration> classMembers = types.get(0).bodyDeclarations();
-    assertEquals(3, classMembers.size());
-    MethodDeclaration method = (MethodDeclaration) classMembers.get(0);
+    assertEquals(4, classMembers.size());
+    MethodDeclaration method = (MethodDeclaration) classMembers.get(1);
     assertEquals("main", method.getName().getIdentifier());
     VariableDeclarationStatement field =
         (VariableDeclarationStatement) method.getBody().statements().get(0);
@@ -573,10 +576,11 @@ public class InnerClassExtractorTest extends GenerationTest {
   // Identical sample code to above test, except the order of B and A is switched.
   public void testInnerSubClassOfOtherInnerWithOuterRefsExtraction2() throws IOException {
     String source = "public class Test { " +
+        "int i; " +
         "class B extends A { " +
         "  public class BInner extends A.Inner { } } " +
         "class A { " +
-        "  private void foo() { } " +
+        "  private void foo() { i++; } " +
         "  public class Inner { Inner() { foo(); } } } " +
         "public static void main(String[] args) { B b = new Test().new B(); }}";
     CompilationUnit unit = translateType("Test", source);
@@ -586,8 +590,8 @@ public class InnerClassExtractorTest extends GenerationTest {
     // Verify that main method creates a new instanceof B associated with
     // a new instance of Test.
     List<BodyDeclaration> classMembers = types.get(0).bodyDeclarations();
-    assertEquals(3, classMembers.size());
-    MethodDeclaration method = (MethodDeclaration) classMembers.get(0);
+    assertEquals(4, classMembers.size());
+    MethodDeclaration method = (MethodDeclaration) classMembers.get(1);
     assertEquals("main", method.getName().getIdentifier());
     VariableDeclarationStatement field =
         (VariableDeclarationStatement) method.getBody().statements().get(0);
@@ -662,8 +666,7 @@ public class InnerClassExtractorTest extends GenerationTest {
         "public void run() {} }}}";
     String translation = translateSourceFile(source, "A", "A.h");
     assertTranslation(translation, "@interface A_foo_MyRunnable : NSObject < JavaLangRunnable >");
-    assertTranslation(translation, "A *this$0_;");
-    assertTranslation(translation, "@property (nonatomic, retain) A *this$0;");
+    assertNotInTranslation(translation, "A *this");
     assertTranslation(translation, "- (id)initWithA:(A *)outer$0;");
   }
 

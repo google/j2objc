@@ -16,12 +16,8 @@
 
 package com.google.devtools.j2objc.translate;
 
-import com.google.common.collect.Lists;
-import com.google.devtools.j2objc.types.GeneratedVariableBinding;
-import com.google.devtools.j2objc.types.Types;
 import com.google.devtools.j2objc.util.TypeTrackingVisitor;
 
-import org.eclipse.jdt.core.dom.AST;
 import org.eclipse.jdt.core.dom.ASTNode;
 import org.eclipse.jdt.core.dom.ArrayCreation;
 import org.eclipse.jdt.core.dom.ArrayInitializer;
@@ -32,21 +28,13 @@ import org.eclipse.jdt.core.dom.CompilationUnit;
 import org.eclipse.jdt.core.dom.ConstructorInvocation;
 import org.eclipse.jdt.core.dom.EnumConstantDeclaration;
 import org.eclipse.jdt.core.dom.Expression;
-import org.eclipse.jdt.core.dom.FieldDeclaration;
-import org.eclipse.jdt.core.dom.IExtendedModifier;
-import org.eclipse.jdt.core.dom.ITypeBinding;
-import org.eclipse.jdt.core.dom.IVariableBinding;
 import org.eclipse.jdt.core.dom.InfixExpression;
 import org.eclipse.jdt.core.dom.MethodInvocation;
-import org.eclipse.jdt.core.dom.Modifier;
-import org.eclipse.jdt.core.dom.Modifier.ModifierKeyword;
-import org.eclipse.jdt.core.dom.SimpleName;
 import org.eclipse.jdt.core.dom.Statement;
 import org.eclipse.jdt.core.dom.StructuralPropertyDescriptor;
 import org.eclipse.jdt.core.dom.SuperConstructorInvocation;
 import org.eclipse.jdt.core.dom.SwitchStatement;
 import org.eclipse.jdt.core.dom.SynchronizedStatement;
-import org.eclipse.jdt.core.dom.VariableDeclarationFragment;
 
 import java.util.List;
 
@@ -61,64 +49,6 @@ public abstract class ClassConverter extends TypeTrackingVisitor {
 
   protected ClassConverter(CompilationUnit unit) {
     this.unit = unit;
-  }
-
-  /**
-   * Returns a list of inner variables that need to be added to an inner type,
-   * to resolve its references to outer classes.
-   */
-  protected List<IVariableBinding> getInnerVars(List<ReferenceDescription> references) {
-    List<IVariableBinding> innerVars = Lists.newArrayList();
-    outer: for (ReferenceDescription desc : references) {
-      ITypeBinding declaringClass = desc.declaringClass;
-      if (declaringClass == null) {
-        declaringClass = desc.binding.getType();
-      }
-      declaringClass = declaringClass.getTypeDeclaration();
-      if (desc.binding.isField()) {
-        // Combine references to a type and its supertypes.
-        for (int i = 0; i < innerVars.size(); i++) {
-          IVariableBinding var = innerVars.get(i);
-          ITypeBinding varType = var.getDeclaringClass();
-          if (varType != null && varType.isAssignmentCompatible(declaringClass)) {
-            desc.declaringClass = varType;
-            continue outer;
-          } else if (varType == null) {
-            desc.declaringMethod = var.getDeclaringMethod();
-          }
-        }
-      }
-      if (!innerVars.contains(desc.binding)) {
-        innerVars.add(desc.binding);
-      }
-    }
-    return innerVars;
-  }
-
-  protected FieldDeclaration createField(String name, ITypeBinding varType,
-       ITypeBinding declaringClass, AST ast) {
-    VariableDeclarationFragment fragment = ast.newVariableDeclarationFragment();
-    SimpleName fieldName = ast.newSimpleName(name);
-    GeneratedVariableBinding fieldBinding = new GeneratedVariableBinding(
-        fieldName.getIdentifier(), Modifier.PRIVATE | Modifier.FINAL, varType,
-        true, false, declaringClass, null);
-    Types.addBinding(fieldName, fieldBinding);
-    fragment.setName(fieldName);
-    Types.addBinding(fragment, fieldBinding);
-
-    FieldDeclaration field = ast.newFieldDeclaration(fragment);
-    field.setType(Types.makeType(varType));
-    @SuppressWarnings("unchecked")
-    List<IExtendedModifier> mods = field.modifiers(); // safe by definition
-    mods.add(ast.newModifier(ModifierKeyword.PRIVATE_KEYWORD));
-    mods.add(ast.newModifier(ModifierKeyword.FINAL_KEYWORD));
-    return field;
-  }
-
-  protected SimpleName makeFieldRef(IVariableBinding newVar, AST ast) {
-    SimpleName fieldRef = ast.newSimpleName(newVar.getName());
-    Types.addBinding(fieldRef, newVar);
-    return fieldRef;
   }
 
   @SuppressWarnings("unchecked")

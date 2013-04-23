@@ -16,8 +16,6 @@
 
 package com.google.devtools.j2objc.types;
 
-import com.google.devtools.j2objc.sym.Symbols;
-
 import org.eclipse.jdt.core.IJavaElement;
 import org.eclipse.jdt.core.dom.IAnnotationBinding;
 import org.eclipse.jdt.core.dom.IBinding;
@@ -47,7 +45,6 @@ public class IOSMethodBinding implements IMethodBinding {
     delegate = originalBinding;
     this.clazz = clazz;
     this.returnType = returnType;
-    Symbols.queueForResolution(this);
     if (clazz instanceof IOSTypeBinding) {
       ((IOSTypeBinding) clazz).addMethod(this);
     }
