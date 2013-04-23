@@ -17,9 +17,6 @@
 package com.google.devtools.j2objc.translate;
 
 import com.google.common.annotations.VisibleForTesting;
-import com.google.common.collect.Lists;
-import com.google.common.collect.Sets;
-import com.google.devtools.j2objc.sym.Symbols;
 import com.google.devtools.j2objc.types.GeneratedMethodBinding;
 import com.google.devtools.j2objc.types.GeneratedVariableBinding;
 import com.google.devtools.j2objc.types.NodeCopier;
@@ -34,31 +31,23 @@ import org.eclipse.jdt.core.dom.ASTVisitor;
 import org.eclipse.jdt.core.dom.AbstractTypeDeclaration;
 import org.eclipse.jdt.core.dom.AnonymousClassDeclaration;
 import org.eclipse.jdt.core.dom.BodyDeclaration;
-import org.eclipse.jdt.core.dom.CharacterLiteral;
 import org.eclipse.jdt.core.dom.ClassInstanceCreation;
 import org.eclipse.jdt.core.dom.CompilationUnit;
 import org.eclipse.jdt.core.dom.EnumConstantDeclaration;
 import org.eclipse.jdt.core.dom.EnumDeclaration;
 import org.eclipse.jdt.core.dom.Expression;
-import org.eclipse.jdt.core.dom.FieldDeclaration;
 import org.eclipse.jdt.core.dom.IMethodBinding;
 import org.eclipse.jdt.core.dom.ITypeBinding;
 import org.eclipse.jdt.core.dom.IVariableBinding;
 import org.eclipse.jdt.core.dom.MethodDeclaration;
 import org.eclipse.jdt.core.dom.Modifier.ModifierKeyword;
 import org.eclipse.jdt.core.dom.SimpleName;
-import org.eclipse.jdt.core.dom.SingleVariableDeclaration;
-import org.eclipse.jdt.core.dom.Statement;
-import org.eclipse.jdt.core.dom.StringLiteral;
 import org.eclipse.jdt.core.dom.SuperConstructorInvocation;
 import org.eclipse.jdt.core.dom.Type;
 import org.eclipse.jdt.core.dom.TypeDeclaration;
-import org.eclipse.jdt.core.dom.VariableDeclarationFragment;
-import org.eclipse.jdt.core.dom.VariableDeclarationStatement;
 
 import java.lang.reflect.Modifier;
 import java.util.List;
-import java.util.Set;
 import java.util.Stack;
 
 /**
@@ -93,143 +82,6 @@ public class AnonymousClassConverter extends ClassConverter {
   //    Types.verifyNode(node);
   //  }
 
-  private boolean isConstant(IVariableBinding var) {
-    return var.getConstantValue() != null;
-  }
-
-  /**
-   * Returns a list of nodes that reference any of the method's read-only
-   * parameters and local variables.
-   */
-  private List<ReferenceDescription> findReferences(AnonymousClassDeclaration node,
-      final Set<IVariableBinding> methodVars) {
-    final List<ReferenceDescription> refs = Lists.newArrayList();
-    MethodDeclaration decl = getEnclosingMethod(node);
-    if (decl != null) {
-      final IMethodBinding enclosingMethod = Types.getMethodBinding(decl);
-      @SuppressWarnings("unchecked")
-      List<BodyDeclaration> classMembers = node.bodyDeclarations(); // safe by definition
-      for (BodyDeclaration member : classMembers) {
-        member.accept(new ASTVisitor() {
-          @Override
-          public void endVisit(SimpleName node) {
-            IVariableBinding varType = Types.getVariableBinding(node);
-            if (varType != null) {
-              if (methodVars.contains(varType.getVariableDeclaration())) {
-                refs.add(new ReferenceDescription(node, varType, enclosingMethod));
-              }
-            }
-          }
-
-          @Override
-          public boolean visit(AnonymousClassDeclaration node) {
-            return false;
-          }
-        });
-      }
-    }
-    return refs;
-  }
-
-  /**
-   * Returns the set of read-only variables (parameters and local variables)
-   * defined in the scope of the method enclosing a specified anonymous
-   * class declaration.
-   */
-  private Set<IVariableBinding> getMethodVars(AnonymousClassDeclaration node) {
-    final Set<IVariableBinding> methodVars = Sets.newHashSet();
-    MethodDeclaration method = getEnclosingMethod(node);
-    if (method != null) {
-      @SuppressWarnings("unchecked")
-      List<SingleVariableDeclaration> params = method.parameters(); // safe by definition
-      for (SingleVariableDeclaration param : params) {
-        IVariableBinding var = Types.getVariableBinding(param);
-        assert var != null;
-        if (Modifier.isFinal(var.getModifiers())) {
-          methodVars.add(var);
-        }
-      }
-
-      ASTNode lastNode = node;
-      do {
-        getMethodVars(method, lastNode, methodVars);
-        lastNode = method;
-        method = getEnclosingMethod(lastNode);
-      } while (method != null);
-    }
-    return methodVars;
-  }
-
-  private void getMethodVars(MethodDeclaration method, ASTNode node,
-      final Set<IVariableBinding> methodVars) {
-    @SuppressWarnings("unchecked")
-    List<Statement> statements = method.getBody().statements(); // safe by definition
-    Statement enclosingStatement = getEnclosingStatement(node);
-    for (Statement stmt : statements) {
-      if (stmt == enclosingStatement) {
-        // Local variables declared after this statement cannot be
-        // referenced by the anonymous class.
-        break;
-      }
-      stmt.accept(new ASTVisitor() {
-        @Override
-        public boolean visit(VariableDeclarationStatement node) {
-          if (Modifier.isFinal(node.getModifiers())) {
-            @SuppressWarnings("unchecked")  // safe by definition
-            List<VariableDeclarationFragment> localVars = node.fragments();
-            for (VariableDeclarationFragment localVar : localVars) {
-              IVariableBinding var = Types.getVariableBinding(localVar);
-              assert var != null;
-              methodVars.add(var);
-            }
-          }
-          return true;
-        }
-
-        @Override
-        public boolean visit(SingleVariableDeclaration node) {
-          IVariableBinding var = Types.getVariableBinding(node);
-          assert var != null;
-          if (Modifier.isFinal(var.getModifiers())) {
-            methodVars.add(var);
-          }
-          return true;
-        }
-
-        @Override
-        public boolean visit(AnonymousClassDeclaration node) {
-          return false;
-        }
-      });
-    }
-  }
-
-  /**
-   * Returns the method surrounding an anonymous class declaration, or null if
-   * the class is defined outside of a method.
-   */
-  private MethodDeclaration getEnclosingMethod(ASTNode node) {
-    ASTNode parent = node.getParent();
-    while (parent != null && !(parent instanceof MethodDeclaration)) {
-      parent = parent.getParent();
-    }
-    return (MethodDeclaration) parent;
-  }
-
-  /**
-   * Returns the method-level statement surrounding an anonymous class
-   * declaration.
-   */
-  private Statement getEnclosingStatement(ASTNode node) {
-    ASTNode lastChild = node;
-    ASTNode parent = node.getParent();
-    while (parent != null && !(parent instanceof MethodDeclaration)) {
-      lastChild = parent;
-      parent = parent.getParent();
-    }
-    return (Statement) lastChild;
-  }
-
   /**
    * Convert the anonymous class into an inner class.  Fields are added for
    * final variables that are referenced, and a constructor is added.
@@ -240,31 +92,26 @@ public class AnonymousClassConverter extends ClassConverter {
   @Override
   @SuppressWarnings("unchecked")
   public void endVisit(AnonymousClassDeclaration node) {
+    ITypeBinding typeBinding = Types.getTypeBinding(node);
+    ITypeBinding outerType = typeBinding.getDeclaringClass();
     ASTNode parent = node.getParent();
     ClassInstanceCreation newInvocation = null;
     EnumConstantDeclaration enumConstant = null;
     List<Expression> parentArguments;
     Expression outerExpression = null;
-    String newClassName;
-    ITypeBinding innerType;
-    boolean isStatic = staticParent(node);
+    String newClassName = typeBinding.getName();
+    boolean isStatic = !OuterReferenceResolver.needsOuterReference(typeBinding);
     int modifiers = isStatic ? Modifier.STATIC : 0;
+    ITypeBinding innerType = RenamedTypeBinding.rename(
+        newClassName, outerType, typeBinding, modifiers);
     if (parent instanceof ClassInstanceCreation) {
       newInvocation = (ClassInstanceCreation) parent;
       parentArguments = newInvocation.arguments();
-      innerType = Types.getTypeBinding(newInvocation);
-      newClassName = innerType.getName();
-      innerType = RenamedTypeBinding.rename(newClassName, innerType.getDeclaringClass(), innerType,
-          modifiers);
       outerExpression = newInvocation.getExpression();
       newInvocation.setExpression(null);
     } else if (parent instanceof EnumConstantDeclaration) {
       enumConstant = (EnumConstantDeclaration) parent;
       parentArguments = enumConstant.arguments();
-      innerType = Types.getTypeBinding(node);
-      newClassName = Types.getTypeBinding(node).getName();
-      innerType = RenamedTypeBinding.rename(newClassName, innerType.getDeclaringClass(), innerType,
-          modifiers);
     } else {
       throw new AssertionError(
           "unknown anonymous class declaration parent: " + parent.getClass().getName());
@@ -292,13 +139,11 @@ public class AnonymousClassConverter extends ClassConverter {
       typeDecl.bodyDeclarations().add(NodeCopier.copySubtree(ast, decl));
     }
 
-    // Fix up references to external types, if necessary.
-    Set<IVariableBinding> methodVars = getMethodVars(node);
-    final List<ReferenceDescription> references = findReferences(node, methodVars);
-    final List<Expression> invocationArgs = parentArguments;
-    List<IVariableBinding> innerVars = getInnerVars(references);
-    List<IVariableBinding> innerFields = addInnerFields(typeDecl, innerVars, references);
-    if (!innerFields.isEmpty() || !invocationArgs.isEmpty() || outerExpression != null) {
+    // Add inner fields and a default constructor.
+    List<IVariableBinding> innerVars = OuterReferenceResolver.getCapturedVars(typeBinding);
+    List<IVariableBinding> innerFields = OuterReferenceResolver.getInnerFields(typeBinding);
+    createInnerFieldDeclarations(typeDecl, innerFields);
+    if (!innerFields.isEmpty() || !parentArguments.isEmpty() || outerExpression != null) {
       GeneratedMethodBinding defaultConstructor =
           addDefaultConstructor(typeDecl, innerFields, parentArguments, outerExpression);
       Types.addBinding(parent, defaultConstructor);
@@ -306,36 +151,9 @@ public class AnonymousClassConverter extends ClassConverter {
         parentArguments.add(0, NodeCopier.copySubtree(ast, outerExpression));
       }
       for (IVariableBinding var : innerVars) {
-        if (!isConstant(var)) {
-          parentArguments.add(makeFieldRef(var, ast));
-        }
+        parentArguments.add(ASTFactory.newSimpleName(ast, var));
       }
       assert defaultConstructor.getParameterTypes().length == parentArguments.size();
-    }
-    if (!references.isEmpty()) {
-      typeDecl.accept(new ASTVisitor() {
-        @Override
-        public void endVisit(SimpleName node) {
-          IVariableBinding var = Types.getVariableBinding(node);
-          if (var != null) {
-            for (ReferenceDescription ref : references) {
-              if (var.isEqualTo(ref.binding)) {
-                if (ref.innerField != null) {
-                  setProperty(node, makeFieldRef(ref.innerField, node.getAST()));
-                } else {
-                  // In-line constant.
-                  Object o = var.getConstantValue();
-                  assert o != null;
-                  Expression literal =
-                      makeLiteral(o, var.getType().getQualifiedName(), node.getAST());
-                  setProperty(node, literal);
-                }
-                return;
-              }
-            }
-          }
-        }
-      });
     }
 
     // If invocation, replace anonymous class invocation with the new constructor.
@@ -356,7 +174,6 @@ public class AnonymousClassConverter extends ClassConverter {
     }
 
     // Add type declaration to enclosing type.
-    ITypeBinding outerType = innerType.getDeclaringClass();
     if (outerType.isAnonymous()) {
       // Get outerType node.
       ASTNode n = parent.getParent();
@@ -372,63 +189,16 @@ public class AnonymousClassConverter extends ClassConverter {
           (AbstractTypeDeclaration) unit.findDeclaringNode(outerType);
       outerDecl.bodyDeclarations().add(typeDecl);
     }
-    Symbols.scanAST(typeDecl);
+    OuterReferenceResolver.copyNode(node, typeDecl);
     super.endVisit(node);
   }
 
-  /**
-   * Returns true if this anonymous class is defined in a static method or
-   * used to initialize a static variable.
-   */
-  private boolean staticParent(AnonymousClassDeclaration node) {
-    ITypeBinding type = Types.getTypeBinding(node);
-    IMethodBinding declaringMethod = type.getDeclaringMethod();
-    if (declaringMethod != null) {
-      return Modifier.isStatic(declaringMethod.getModifiers());
+  private void createInnerFieldDeclarations(
+      TypeDeclaration node, List<IVariableBinding> innerFields) {
+    for (IVariableBinding field : innerFields) {
+      ASTUtil.getBodyDeclarations(node).add(
+          ASTFactory.newFieldDeclaration(node.getAST(), field, null));
     }
-    ASTNode parent = node.getParent();
-    while (parent != null) {
-      if (parent instanceof BodyDeclaration) {
-        return Modifier.isStatic(((BodyDeclaration) parent).getModifiers());
-      }
-      parent = parent.getParent();
-    }
-    return false;
-  }
-
-  /**
-   * Adds val$N instance fields to type so references to external
-   * variables can be resolved.
-   */
-  private List<IVariableBinding> addInnerFields(TypeDeclaration node,
-      List<IVariableBinding> innerVars, List<ReferenceDescription> references) {
-    List<IVariableBinding> innerFields = Lists.newArrayList();
-    AST ast = node.getAST();
-    ITypeBinding clazz = Types.getTypeBinding(node);
-
-    for (IVariableBinding var : innerVars) {
-      if (!isConstant(var)) {  // Constants are in-lined instead.
-        ITypeBinding varType = var.getDeclaringClass();
-        if (varType == null) {
-          varType = var.getType();
-        }
-        if (Types.hasIOSEquivalent(varType)) {
-          varType = Types.mapType(varType);
-        }
-        String fieldName = "val$" + var.getName();
-        FieldDeclaration field = createField(fieldName, varType, clazz, ast);
-        ASTUtil.getBodyDeclarations(node).add(field);
-        IVariableBinding fieldVar = Types.getVariableBinding(field.fragments().get(0));
-        innerFields.add(fieldVar);
-        for (ReferenceDescription ref : references) {
-          if (ref.binding == var && ref.innerField == null) {
-            ref.innerField = fieldVar;
-          }
-        }
-      }
-    }
-
-    return innerFields;
   }
 
   private GeneratedMethodBinding addDefaultConstructor(
@@ -498,7 +268,6 @@ public class AnonymousClassConverter extends ClassConverter {
           ASTFactory.newSimpleName(ast, innerField), ASTFactory.newSimpleName(ast, paramBinding))));
     }
     ASTUtil.getBodyDeclarations(node).add(constructor);
-    Symbols.scanAST(constructor);
     assert constructor.parameters().size() == binding.getParameterTypes().length;
 
     return binding;
@@ -527,32 +296,6 @@ public class AnonymousClassConverter extends ClassConverter {
   }
 
   /**
-   * Returns a literal node for a specified constant value.
-   */
-  private Expression makeLiteral(Object value, String typeName, AST ast) {
-    Expression literal;
-    if (value instanceof Boolean) {
-      literal = ast.newBooleanLiteral((Boolean) value);
-    } else if (value instanceof Character) {
-      CharacterLiteral c = ast.newCharacterLiteral();
-      c.setCharValue((Character) value);
-      literal = c;
-    } else if (value instanceof Number) {
-      literal = ast.newNumberLiteral(value.toString());
-    } else if (value instanceof String) {
-        StringLiteral s = ast.newStringLiteral();
-        s.setLiteralValue((String) value);
-        literal = s;
-    } else {
-      throw new AssertionError("unknown constant type");
-    }
-    ITypeBinding type = ast.resolveWellKnownType(typeName);
-    assert type != null : "unknown constant type";
-    Types.addBinding(literal, type);
-    return literal;
-  }
-
-  /**
    * Rename anonymous classes to class file-like $n names, where n is the
    * index of the number of anonymous classes for the parent type.  A stack
    * is used to ensure that anonymous classes defined inside of other
@@ -576,54 +319,20 @@ public class AnonymousClassConverter extends ClassConverter {
     }
 
     private boolean processType(AbstractTypeDeclaration node) {
-      Frame parentFrame = classIndex.isEmpty() ? null : classIndex.peek();
-      if (parentFrame != null) {
-        String newName = node.getName().getIdentifier();
-        ITypeBinding newBinding = renameClass(newName, Types.getTypeBinding(node));
-        SimpleName nameNode = node.getAST().newSimpleName(newName);
-        node.setName(nameNode);
-        Types.addBinding(nameNode, newBinding);
-        Types.addBinding(node, newBinding);
-      }
       classIndex.push(new Frame());
       return true;
     }
 
     @Override
-    public boolean visit(ClassInstanceCreation node) {
-      if (node.getAnonymousClassDeclaration() != null) {
-        AnonymousClassDeclaration anonDecl = node.getAnonymousClassDeclaration();
-        Frame parentFrame = classIndex.peek();
+    public boolean visit(AnonymousClassDeclaration node) {
+      Frame parentFrame = classIndex.peek();
 
-        String className = "$" + ++parentFrame.classCount;
-        ITypeBinding innerType = renameClass(className, Types.getTypeBinding(anonDecl));
-        Types.addBinding(anonDecl, innerType);
+      String className = "$" + ++parentFrame.classCount;
+      ITypeBinding innerType = renameClass(className, Types.getTypeBinding(node));
+      Types.addBinding(node, innerType);
+      NameTable.rename(Types.getTypeBinding(node), className);
 
-        node.setType(Types.makeType(innerType));
-        IMethodBinding oldBinding = Types.getMethodBinding(node);
-        GeneratedMethodBinding newConstructorBinding = new GeneratedMethodBinding("init", 0,
-            node.getAST().resolveWellKnownType("void"), innerType, true, false, true);
-        for (ITypeBinding paramType : oldBinding.getParameterTypes()) {
-          newConstructorBinding.addParameter(paramType);
-        }
-        Types.addBinding(node, newConstructorBinding);
-        classIndex.push(new Frame());
-      }
-      return true;
-    }
-
-    @Override
-    public boolean visit(EnumConstantDeclaration node) {
-      if (node.getAnonymousClassDeclaration() != null) {
-        AnonymousClassDeclaration anonDecl = node.getAnonymousClassDeclaration();
-        Frame parentFrame = classIndex.peek();
-
-        String className = "$" + ++parentFrame.classCount;
-        ITypeBinding innerType = renameClass(className, Types.getTypeBinding(anonDecl));
-        Types.addBinding(anonDecl, innerType);
-
-        classIndex.push(new Frame());
-      }
+      classIndex.push(new Frame());
       return true;
     }
 
@@ -633,13 +342,6 @@ public class AnonymousClassConverter extends ClassConverter {
       ITypeBinding newBinding = Types.renameTypeBinding(name, outerType, oldBinding);
       assert newBinding.getName().equals(name);
       return newBinding;
-    }
-
-    @Override
-    public void endVisit(ClassInstanceCreation node) {
-      if (node.getAnonymousClassDeclaration() != null) {
-        classIndex.pop();
-      }
     }
 
     @Override
@@ -653,10 +355,8 @@ public class AnonymousClassConverter extends ClassConverter {
     }
 
     @Override
-    public void endVisit(EnumConstantDeclaration node) {
-      if (node.getAnonymousClassDeclaration() != null) {
-        classIndex.pop();
-      }
+    public void endVisit(AnonymousClassDeclaration node) {
+      classIndex.pop();
     }
   }
 }

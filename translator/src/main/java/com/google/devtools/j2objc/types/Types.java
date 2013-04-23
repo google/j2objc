@@ -342,7 +342,7 @@ public class Types {
    * Returns all interfaces implemented by the given class, and all
    * super-interfaces of those.
    */
-  private static Set<ITypeBinding> getAllInterfaces(ITypeBinding type) {
+  public static Set<ITypeBinding> getAllInterfaces(ITypeBinding type) {
     Set<ITypeBinding> allInterfaces = Sets.newHashSet();
     Deque<ITypeBinding> typeQueue = Lists.newLinkedList();
 

@@ -257,6 +257,12 @@ public abstract class GenerationTest extends TestCase {
     }
   }
 
+  protected void assertNotInTranslation(String translation, String notExpected) {
+    if (translation.contains(notExpected)) {
+      fail("NOT expected:\"" + notExpected + "\" in:\n" + translation);
+    }
+  }
+
   protected void assertOccurrences(String translation, String expected, int times) {
     Matcher matcher = Pattern.compile(Pattern.quote(expected)).matcher(translation);
     int count = 0;

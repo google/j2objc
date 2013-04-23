@@ -1918,6 +1918,10 @@ public class StatementGenerator extends ErrorReportingASTVisitor {
       // This case is for arrays, with property.length references.
       return true;
     }
+    if (parentNodeType == ASTNode.FIELD_ACCESS &&
+        name == ((FieldAccess) name.getParent()).getExpression()) {
+      return true;
+    }
     return parentNodeType != ASTNode.FIELD_ACCESS && parentNodeType != ASTNode.QUALIFIED_NAME;
   }
 

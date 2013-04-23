@@ -454,10 +454,6 @@ public class NameTable {
     }
     ITypeBinding outerBinding = binding.getDeclaringClass();
     if (outerBinding != null) {
-      while (outerBinding.isAnonymous()) {
-        prefix += "_" + outerBinding.getName();
-        outerBinding = outerBinding.getDeclaringClass();
-      }
       String baseName = getFullName(outerBinding) + prefix + '_' + getName(binding);
       return (outerBinding.isEnum() && binding.isAnonymous()) ? baseName : baseName + suffix;
     }

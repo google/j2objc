@@ -17,7 +17,6 @@
 package com.google.devtools.j2objc.translate;
 
 import com.google.common.collect.Lists;
-import com.google.devtools.j2objc.sym.Symbols;
 import com.google.devtools.j2objc.types.GeneratedMethodBinding;
 import com.google.devtools.j2objc.types.GeneratedVariableBinding;
 import com.google.devtools.j2objc.types.NodeCopier;
@@ -336,6 +335,5 @@ public class InitializationNormalizer extends ErrorReportingASTVisitor {
     Types.addBinding(nameNode, binding);
     method.setName(nameNode);
     members.add(method);
-    Symbols.resolve(method, binding);
   }
 }

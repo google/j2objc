@@ -17,7 +17,6 @@
 package com.google.devtools.j2objc.types;
 
 import com.google.common.base.Preconditions;
-import com.google.devtools.j2objc.sym.Symbols;
 
 import org.eclipse.jdt.core.IJavaElement;
 import org.eclipse.jdt.core.dom.IAnnotationBinding;
@@ -57,7 +56,6 @@ public class GeneratedVariableBinding implements IVariableBinding {
     this.declaringClass = declaringClass;
     this.declaringMethod = declaringMethod;
     this.isField = isField;
-    Symbols.resolve(this);
   }
 
   /**

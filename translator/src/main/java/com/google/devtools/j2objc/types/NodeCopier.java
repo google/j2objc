@@ -16,7 +16,7 @@
 
 package com.google.devtools.j2objc.types;
 
-import com.google.devtools.j2objc.sym.Symbols;
+import com.google.devtools.j2objc.translate.OuterReferenceResolver;
 
 import org.eclipse.jdt.core.dom.AST;
 import org.eclipse.jdt.core.dom.ASTMatcher;
@@ -116,7 +116,7 @@ public class NodeCopier extends ASTMatcher {
       if (replacement != null) {
         Types.substitute((ASTNode) to, replacement);
       }
-      Symbols.substitute(fromNode, (ASTNode) to);
+      OuterReferenceResolver.copyNode(fromNode, (ASTNode) to);
     }
   }
 
