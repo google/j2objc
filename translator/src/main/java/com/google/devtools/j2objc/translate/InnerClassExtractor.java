@@ -22,7 +22,7 @@ import com.google.devtools.j2objc.types.GeneratedVariableBinding;
 import com.google.devtools.j2objc.types.NodeCopier;
 import com.google.devtools.j2objc.types.Types;
 import com.google.devtools.j2objc.util.ASTUtil;
-import com.google.devtools.j2objc.util.TypeTrackingVisitor;
+import com.google.devtools.j2objc.util.ErrorReportingASTVisitor;
 
 import org.eclipse.jdt.core.dom.AST;
 import org.eclipse.jdt.core.dom.ASTNode;
@@ -61,15 +61,13 @@ import java.util.List;
  *
  * @author Tom Ball
  */
-public class InnerClassExtractor extends ClassConverter {
+public class InnerClassExtractor extends ErrorReportingASTVisitor {
   private final List<AbstractTypeDeclaration> unitTypes;
 
   static final char INNERCLASS_DELIMITER = '_';
 
-  @SuppressWarnings("unchecked")
   public InnerClassExtractor(CompilationUnit unit) {
-    super(unit);
-    unitTypes = unit.types(); // safe by definition
+    unitTypes = ASTUtil.getTypes(unit);
   }
 
   @Override
@@ -294,7 +292,7 @@ public class InnerClassExtractor extends ClassConverter {
    * Updates variable references outside an inner class to the new fields
    * injected into it.
    */
-  private class OuterReferenceFixer extends TypeTrackingVisitor {
+  private class OuterReferenceFixer extends ErrorReportingASTVisitor {
 
     private boolean inSuperConstructorInvocation = false;
 
@@ -360,9 +358,10 @@ public class InnerClassExtractor extends ClassConverter {
         AST ast = node.getAST();
         if (path.size() == 1 && path.get(0).getConstantValue() != null) {
           IVariableBinding var = path.get(0);
-          setProperty(node, ASTFactory.makeLiteral(ast, var.getConstantValue(), var.getType()));
+          ASTUtil.setProperty(node,
+              ASTFactory.makeLiteral(ast, var.getConstantValue(), var.getType()));
         } else {
-          setProperty(node, makeNameFromPath(fixPath(node, path), ast));
+          ASTUtil.setProperty(node, makeNameFromPath(fixPath(node, path), ast));
         }
       }
       return true;
@@ -372,7 +371,7 @@ public class InnerClassExtractor extends ClassConverter {
     public boolean visit(ThisExpression node) {
       List<IVariableBinding> path = OuterReferenceResolver.getPath(node);
       if (path != null) {
-        setProperty(node, makeNameFromPath(fixPath(node, path), node.getAST()));
+        ASTUtil.setProperty(node, makeNameFromPath(fixPath(node, path), node.getAST()));
       } else {
         node.setQualifier(null);
       }

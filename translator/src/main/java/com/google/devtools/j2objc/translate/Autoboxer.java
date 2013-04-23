@@ -19,6 +19,7 @@ package com.google.devtools.j2objc.translate;
 import com.google.devtools.j2objc.types.IOSMethodBinding;
 import com.google.devtools.j2objc.types.NodeCopier;
 import com.google.devtools.j2objc.types.Types;
+import com.google.devtools.j2objc.util.ASTUtil;
 import com.google.devtools.j2objc.util.ErrorReportingASTVisitor;
 
 import org.eclipse.jdt.core.dom.AST;
@@ -213,7 +214,7 @@ public class Autoboxer extends ErrorReportingASTVisitor {
             }
           }
         }
-        ClassConverter.setProperty(node.getParent(), expr);
+        ASTUtil.setProperty(node.getParent(), expr);
       }
     }
   }

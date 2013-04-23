@@ -23,6 +23,7 @@ import com.google.devtools.j2objc.types.NodeCopier;
 import com.google.devtools.j2objc.types.RenamedTypeBinding;
 import com.google.devtools.j2objc.types.Types;
 import com.google.devtools.j2objc.util.ASTUtil;
+import com.google.devtools.j2objc.util.ErrorReportingASTVisitor;
 import com.google.devtools.j2objc.util.NameTable;
 
 import org.eclipse.jdt.core.dom.AST;
@@ -59,10 +60,12 @@ import java.util.Stack;
  *
  * @author Tom Ball
  */
-public class AnonymousClassConverter extends ClassConverter {
+public class AnonymousClassConverter extends ErrorReportingASTVisitor {
+
+  private final CompilationUnit unit;
 
   public AnonymousClassConverter(CompilationUnit unit) {
-    super(unit);
+    this.unit = unit;
   }
 
   @Override

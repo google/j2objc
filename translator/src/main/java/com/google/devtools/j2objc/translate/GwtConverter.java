@@ -21,6 +21,7 @@ import com.google.common.collect.Sets;
 import com.google.devtools.j2objc.J2ObjC;
 import com.google.devtools.j2objc.types.NodeCopier;
 import com.google.devtools.j2objc.types.Types;
+import com.google.devtools.j2objc.util.ASTUtil;
 import com.google.devtools.j2objc.util.ErrorReportingASTVisitor;
 
 import org.eclipse.jdt.core.dom.AST;
@@ -71,8 +72,7 @@ public class GwtConverter extends ErrorReportingASTVisitor {
   public boolean visit(ConditionalExpression node) {
     if (isGwtTest(node.getExpression())) {
       // Replace this node with the else expression, removing this conditional.
-      ClassConverter.setProperty(node,
-          NodeCopier.copySubtree(node.getAST(), node.getElseExpression()));
+      ASTUtil.setProperty(node, NodeCopier.copySubtree(node.getAST(), node.getElseExpression()));
     }
     node.getElseExpression().accept(this);
     return false;
@@ -104,8 +104,7 @@ public class GwtConverter extends ErrorReportingASTVisitor {
     if (isGwtTest(node.getExpression())) {
       if (node.getElseStatement() != null) {
         // Replace this node with the else statement.
-        ClassConverter.setProperty(node,
-            NodeCopier.copySubtree(node.getAST(), node.getElseStatement()));
+        ASTUtil.setProperty(node, NodeCopier.copySubtree(node.getAST(), node.getElseStatement()));
         node.getElseStatement().accept(this);
       } else {
         // No else statement, so remove this if statement or replace it
@@ -116,7 +115,7 @@ public class GwtConverter extends ErrorReportingASTVisitor {
           List<Statement> stmts = ((Block) parent).statements();
           stmts.remove(node);
         } else {
-          ClassConverter.setProperty(node, node.getAST().newEmptyStatement());
+          ASTUtil.setProperty(node, node.getAST().newEmptyStatement());
         }
       }
     }

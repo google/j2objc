@@ -57,7 +57,6 @@ JAVA_SOURCES = \
 	translate/ASTFactory.java \
 	translate/AnonymousClassConverter.java \
 	translate/Autoboxer.java \
-	translate/ClassConverter.java \
 	translate/DeadCodeEliminator.java \
 	translate/DestructorGenerator.java \
 	translate/GwtConverter.java \
@@ -93,7 +92,6 @@ JAVA_SOURCES = \
 	util/ErrorReportingASTVisitor.java \
 	util/NameTable.java \
 	util/ProGuardUsageParser.java \
-	util/TypeTrackingVisitor.java \
 	util/UnicodeUtils.java \
 
 RESOURCES = J2ObjC.properties JRE.mappings
