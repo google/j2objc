@@ -79,9 +79,14 @@ JRE_INTERFACES = \
 	java/lang/Iterable.h \
 	java/lang/Runnable.h \
 	java/lang/annotation/Annotation.h \
+	java/lang/reflect/AnnotatedElement.h \
+	java/lang/reflect/GenericArrayType.h \
 	java/lang/reflect/GenericDeclaration.h \
+	java/lang/reflect/Member.h \
+	java/lang/reflect/ParameterizedType.h \
 	java/lang/reflect/Type.h \
 	java/lang/reflect/TypeVariable.h \
+	java/lang/reflect/WildcardType.h \
 	java/util/Collection.h \
 	java/util/Comparator.h \
 	java/util/Deque.h \
@@ -188,6 +193,7 @@ JAVA_SOURCES = \
 	java/lang/Byte.java \
 	java/lang/Character.java \
 	java/lang/ClassCastException.java \
+	java/lang/ClassFormatError.java \
 	java/lang/ClassLoader.java \
 	java/lang/ClassNotFoundException.java \
 	java/lang/CloneNotSupportedException.java \
@@ -216,8 +222,11 @@ JAVA_SOURCES = \
 	java/lang/NumberFormatException.java \
 	java/lang/Readable.java \
 	java/lang/reflect/Array.java \
+	java/lang/reflect/GenericSignatureFormatError.java \
 	java/lang/reflect/InvocationTargetException.java \
+	java/lang/reflect/MalformedParameterizedTypeException.java \
 	java/lang/reflect/Modifier.java \
+	java/lang/reflect/UndeclaredThrowableException.java \
 	java/lang/RuntimeException.java \
 	java/lang/SecurityException.java \
 	java/lang/Short.java \

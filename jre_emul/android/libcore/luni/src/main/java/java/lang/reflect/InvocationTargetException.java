@@ -20,7 +20,7 @@ package java.lang.reflect;
 /**
  * This class provides a wrapper for an exception thrown by a {@code Method} or
  * {@code Constructor} invocation.
- * 
+ *
  * @see Method#invoke
  * @see Constructor#newInstance
  */
@@ -41,7 +41,7 @@ public class InvocationTargetException extends Exception {
     /**
      * Constructs a new {@code InvocationTargetException} instance with its
      * cause / target exception filled in.
-     * 
+     *
      * @param exception
      *            the exception which occurred while running the Method or
      *            Constructor
@@ -54,7 +54,7 @@ public class InvocationTargetException extends Exception {
     /**
      * Constructs a new {@code InvocationTargetException} instance with its
      * cause / target exception and message filled in.
-     * 
+     *
      * @param detailMessage
      *            the detail message for the exception
      * @param exception
@@ -68,7 +68,7 @@ public class InvocationTargetException extends Exception {
 
     /**
      * Returns the target exception, which may be {@code null}.
-     * 
+     *
      * @return the target exception
      */
     public Throwable getTargetException() {
@@ -77,7 +77,7 @@ public class InvocationTargetException extends Exception {
 
     /**
      * Returns the cause of this exception, which may be {@code null}.
-     * 
+     *
      * @return the cause of this exception
      */
     @Override

@@ -77,6 +77,7 @@ TEST_OBJS = \
 	$(TESTS_DIR)/java/lang/ClassTest.o \
 	$(TESTS_DIR)/org/apache/harmony/luni/tests/java/lang/ClassCastExceptionTest.o \
 	$(TESTS_DIR)/org/apache/harmony/luni/tests/java/lang/ClassNotFoundExceptionTest.o \
+	$(TESTS_DIR)/org/apache/harmony/luni/tests/java/lang/ClassTest.o \
 	$(TESTS_DIR)/org/apache/harmony/luni/tests/java/lang/CloneNotSupportedExceptionTest.o \
 	$(TESTS_DIR)/org/apache/harmony/luni/tests/java/lang/ErrorTest.o \
 	$(TESTS_DIR)/org/apache/harmony/luni/tests/java/lang/EnumTest.o \
