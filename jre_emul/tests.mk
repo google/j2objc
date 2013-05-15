@@ -66,11 +66,13 @@ TEST_OBJS = \
 	$(TESTS_DIR)/org/apache/harmony/luni/tests/java/lang/ArrayStoreExceptionTest.o \
 	$(TESTS_DIR)/org/apache/harmony/luni/tests/java/lang/AssertionErrorTest.o \
 	$(TESTS_DIR)/org/apache/harmony/luni/tests/java/lang/BooleanTest.o \
+	$(TESTS_DIR)/org/apache/harmony/luni/tests/java/lang/ByteTest.o \
 	$(TESTS_DIR)/java/lang/ClassTest.o \
 	$(TESTS_DIR)/org/apache/harmony/luni/tests/java/lang/ClassCastExceptionTest.o \
 	$(TESTS_DIR)/org/apache/harmony/luni/tests/java/lang/ClassNotFoundExceptionTest.o \
 	$(TESTS_DIR)/org/apache/harmony/luni/tests/java/lang/CloneNotSupportedExceptionTest.o \
 	$(TESTS_DIR)/org/apache/harmony/luni/tests/java/lang/ErrorTest.o \
+	$(TESTS_DIR)/org/apache/harmony/luni/tests/java/lang/EnumTest.o \
 	$(TESTS_DIR)/org/apache/harmony/luni/tests/java/lang/ExceptionTest.o \
 	$(TESTS_DIR)/org/apache/harmony/luni/tests/java/lang/IllegalAccessExceptionTest.o \
 	$(TESTS_DIR)/org/apache/harmony/luni/tests/java/lang/IllegalArgumentExceptionTest.o \
@@ -154,6 +156,7 @@ TEST_OBJS = \
 	$(TESTS_DIR)/org/apache/harmony/luni/tests/java/util/StringTokenizerTest.o \
 	$(TESTS_DIR)/org/apache/harmony/luni/tests/java/util/TimeZoneTest.o \
 	$(TESTS_DIR)/org/apache/harmony/luni/tests/java/util/TreeMapTest.o \
+	$(TESTS_DIR)/org/apache/harmony/luni/tests/java/util/TreeSetTest.o \
 	$(TESTS_DIR)/org/apache/harmony/luni/tests/java/util/VectorTest.o \
 	$(TESTS_DIR)/org/apache/harmony/tests/java/util/regex/Matcher2Test.o \
 	$(TESTS_DIR)/org/apache/harmony/tests/java/util/regex/MatcherTest.o \
@@ -218,16 +221,7 @@ FAILING_MATH_TESTS = \
 JAVA_SOURCE_LIST = $(TMPDIR).tests.list
 
 # Broken tests, plus associated bug id.  Once bug is fixed, move line(s) up.
-#	$(TESTS_DIR)/org/apache/harmony/luni/tests/java/lang/ByteTest.o                        b/5738869
-#
-#	$(TESTS_DIR)/org/apache/harmony/luni/tests/java/lang/EnumTest.o                        b/5729446
-#
-#	$(TESTS_DIR)/org/apache/harmony/luni/tests/java/lang/StrictMathTest.o                  b/5733596
-#	$(TESTS_DIR)/org/apache/harmony/luni/tests/java/lang/StringBuilderTest.o               b/5733596
-#
-#	$(TESTS_DIR)/org/apache/harmony/luni/tests/java/util/TreeMapTest.o                     b/5754676
-#	$(TESTS_DIR)/org/apache/harmony/luni/tests/java/util/TreeSetTest.o                     b/5754676
-#
+#	$(TESTS_DIR)/org/apache/harmony/luni/tests/java/lang/StringBuilderTest.o               b/8842295
 
 JUNIT_JAR = ../dist/lib/junit-4.10.jar
 
