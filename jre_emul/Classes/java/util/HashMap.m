@@ -18,6 +18,10 @@
 #import "java/util/NoSuchElementException.h"
 #import "java/util/Set.h"
 
+#if __has_feature(objc_arc)
+#error "JavaUtilHashMap is not built with ARC"
+#endif
+
 @implementation JavaUtilHashMap
 
 @synthesize elementCount = elementCount_;

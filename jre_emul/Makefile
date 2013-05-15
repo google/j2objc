@@ -512,10 +512,33 @@ $(1)/%.plist: $(3)/%.$(4)
 	    -I$$(EMULATION_CLASS_DIR) -I$$(TRANSLATED_SOURCE_DIR)
 endef
 
+define compile_rules_no_arc
+$(1)/java/util/HashMap.o: Classes/java/util/HashMap.m
+	@mkdir -p $$(@D)
+	$$(CLANG) -c $$? -o $$@ $(2) $$(OBJCFLAGS_NO_ARC) \
+	    -I$$(EMULATION_CLASS_DIR) -I$$(TRANSLATED_SOURCE_DIR)
+
+$(1)/java/util/HashMap.plist: Classes/java/util/HashMap.m
+	@mkdir -p $$(@D)
+	$$(CLANG) -c $$? -o $$@ $(2) $$(OBJCFLAGS) $$(STATIC_ANALYZER_FLAGS) \
+	    -I$$(EMULATION_CLASS_DIR) -I$$(TRANSLATED_SOURCE_DIR)
+
+$(1)/java/util/LinkedHashMap.o: Classes/java/util/LinkedHashMap.m
+	@mkdir -p $$(@D)
+	$$(CLANG) -c $$? -o $$@ $(2) $$(OBJCFLAGS_NO_ARC) \
+	    -I$$(EMULATION_CLASS_DIR) -I$$(TRANSLATED_SOURCE_DIR)
+
+$(1)/java/util/LinkedHashMap.plist: Classes/java/util/LinkedHashMap.m
+	@mkdir -p $$(@D)
+	$$(CLANG) -c $$? -o $$@ $(2) $$(OBJCFLAGS) $$(STATIC_ANALYZER_FLAGS) \
+	    -I$$(EMULATION_CLASS_DIR) -I$$(TRANSLATED_SOURCE_DIR)
+endef
+
 OBJC_SOURCE_DIRS = $(EMULATION_CLASS_DIR) $(TRANSLATED_SOURCE_DIR)
-OBJC_EXTENTIONS = m mm
-arch_compile_rules = $(foreach src_dir,$(OBJC_SOURCE_DIRS),$(foreach ext,$(OBJC_EXTENTIONS),\
-    $(eval $(call compile_rules,$(1),$(2),$(src_dir),$(ext)))))
+OBJC_EXTENSIONS = m mm
+arch_compile_rules = $(foreach src_dir,$(OBJC_SOURCE_DIRS),$(foreach ext,$(OBJC_EXTENSIONS),\
+    $(eval $(call compile_rules,$(1),$(2),$(src_dir),$(ext))))) \
+    $(eval $(call compile_rules_no_arc,$(1),$(2)))
 
 $(call arch_compile_rules,$(CLASS_DIR),$(MACOSX_FLAGS))
 $(call arch_compile_rules,$(IPHONE_BUILD_DIR),$(IPHONE_FLAGS))
@@ -572,15 +595,4 @@ $(OBJC_SOURCES_MANIFEST): $(ALL_JAVA_SOURCES) | $(BUILD_DIR)
 	done
 
 objc_sources_manifest: $(OBJC_SOURCES_MANIFEST)
-
-$(CLASS_DIR)/java/util/HashMap.o: $(EMULATION_CLASS_DIR)/java/util/HashMap.m \
-    $(EMULATION_CLASS_DIR)/java/util/HashMap.h
-	$(CLANG) -c $(EMULATION_CLASS_DIR)/java/util/HashMap.m -o $@ \
-	$(OBJCFLAGS_NO_ARC) -I$(EMULATION_CLASS_DIR) -I$(TRANSLATED_SOURCE_DIR)
-
-$(CLASS_DIR)/java/util/LinkedHashMap.o: \
-	  $(EMULATION_CLASS_DIR)/java/util/LinkedHashMap.m \
-    $(EMULATION_CLASS_DIR)/java/util/LinkedHashMap.h
-	$(CLANG) -c $(EMULATION_CLASS_DIR)/java/util/LinkedHashMap.m -o \
-	$@ $(OBJCFLAGS_NO_ARC) -I$(EMULATION_CLASS_DIR) -I$(TRANSLATED_SOURCE_DIR)
 
