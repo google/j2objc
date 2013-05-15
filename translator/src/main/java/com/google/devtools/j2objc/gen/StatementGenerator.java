@@ -1313,6 +1313,10 @@ public class StatementGenerator extends ErrorReportingASTVisitor {
       buffer.append(buildStringFromChars(((StringLiteral) arg).getLiteralValue()));
       return;
     }
+    if (arg instanceof NullLiteral) {
+      buffer.append("@\"null\"");
+      return;
+    }
     if (stringConcatenationArgNeedsIntCast(arg)) {
       // Some native objective-c methods are declared to return NSUInteger.
       buffer.append("(int) ");

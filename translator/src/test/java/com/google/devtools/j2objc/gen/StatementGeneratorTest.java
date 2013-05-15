@@ -1423,4 +1423,13 @@ public class StatementGeneratorTest extends GenerationTest {
     assertTranslation(translation, "nybbles_ = 0b00100101;");
     assertTranslation(translation, "bytes_ = 0b11010010011010011001010010010010;");
   }
+
+  // Verify that the null literal is concatenated as "null" in strings.
+  public void testNullConcatenation() throws IOException {
+    String translation = translateSourceFile(
+      "public class Test { String test(String s) { return \"the nil value is \" + null; }}",
+      "Test", "Test.m");
+    assertTranslation(translation,
+        "return [NSString stringWithFormat:@\"the nil value is %@\", @\"null\"];");
+  }
 }
