@@ -179,7 +179,11 @@ public class ImplementationImportCollector extends HeaderImportCollector {
 
   @Override
   public boolean visit(TypeLiteral node) {
-    addReference(node.getType());
+    ITypeBinding type = Types.getTypeBinding(node);
+    if (type.isPrimitive()) {
+      type = Types.getWrapperType(type);
+    }
+    addReference(type);
     return super.visit(node);
   }
 

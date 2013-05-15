@@ -93,4 +93,12 @@ public class ImplementationImportCollectorTest extends GenerationTest {
         "class C extends B { void test() { I i = getAnA(); } }", "C", "C.m");
     assertTranslation(translation, "#import \"A.h\"");
   }
+
+  // Verify that a primitive type literal has a wrapper class import.
+  public void testPrimitiveTypeLiteral() throws IOException {
+    String translation = translateSourceFile(
+        "class Test { Class doubleType() { return double.class; }}",
+        "Test", "Test.m");
+    assertTranslation(translation, "#import \"java/lang/Double.h\"");
+  }
 }
