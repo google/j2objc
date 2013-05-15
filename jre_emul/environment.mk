@@ -111,10 +111,14 @@ OBJCFLAGS := $(WARNINGS) -DU_DISABLE_RENAMING=1 \
   -I/System/Library/Frameworks/ExceptionHandling.framework/Headers \
   -I$(ANDROID_INCLUDE) -I$(ICU4C_I18N_INCLUDE) -I$(ICU4C_COMMON_INCLUDE)
 
+# Settings for classes that need to always compile without ARC.
+OBJCFLAGS_NO_ARC := $(OBJCFLAGS)
+
 ifdef CLANG_ENABLE_OBJC_ARC
 J2OBJC := $(J2OBJC) -use-arc
 OBJCFLAGS := $(OBJCFLAGS) -fobjc-arc -fobjc-arc-exceptions \
-  -Wno-unused-value -Wno-arc-bridge-casts-disallowed-in-nonarc
+  -Wno-unused-value -Wno-arc-bridge-casts-disallowed-in-nonarc \
+  -Xclang -fobjc-runtime-has-weak
 endif
 
 # Flags for the static analyzer.

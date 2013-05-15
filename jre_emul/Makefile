@@ -19,6 +19,9 @@
 .SUFFIXES: .java .m
 .PHONY: default clean
 
+# Uncomment to build with ARC by default.
+# CLANG_ENABLE_OBJC_ARC=YES
+
 include environment.mk
 
 # Native obj-c sources that do not emulate a specific java class.
@@ -569,4 +572,15 @@ $(OBJC_SOURCES_MANIFEST): $(ALL_JAVA_SOURCES) | $(BUILD_DIR)
 	done
 
 objc_sources_manifest: $(OBJC_SOURCES_MANIFEST)
+
+$(CLASS_DIR)/java/util/HashMap.o: $(EMULATION_CLASS_DIR)/java/util/HashMap.m \
+    $(EMULATION_CLASS_DIR)/java/util/HashMap.h
+	$(CLANG) -c $(EMULATION_CLASS_DIR)/java/util/HashMap.m -o $@ \
+	$(OBJCFLAGS_NO_ARC) -I$(EMULATION_CLASS_DIR) -I$(TRANSLATED_SOURCE_DIR)
+
+$(CLASS_DIR)/java/util/LinkedHashMap.o: \
+	  $(EMULATION_CLASS_DIR)/java/util/LinkedHashMap.m \
+    $(EMULATION_CLASS_DIR)/java/util/LinkedHashMap.h
+	$(CLANG) -c $(EMULATION_CLASS_DIR)/java/util/LinkedHashMap.m -o \
+	$@ $(OBJCFLAGS_NO_ARC) -I$(EMULATION_CLASS_DIR) -I$(TRANSLATED_SOURCE_DIR)
 
