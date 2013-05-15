@@ -513,7 +513,7 @@ public class ObjectiveCHeaderGenerator extends ObjectiveCSourceFileGenerator {
           print("__weak ");
         }
         ITypeBinding varType = Types.getTypeBinding(vars.get(0));
-        String objcType = NameTable.javaRefToObjC(varType);
+        String objcType = NameTable.getSpecificObjCType(varType);
         boolean needsAsterisk = !varType.isPrimitive() && !objcType.matches("id|id<.*>|Class");
         if (needsAsterisk && objcType.endsWith(" *")) {
           // Strip pointer from type, as it will be added when appending fragment.
@@ -560,16 +560,13 @@ public class ObjectiveCHeaderGenerator extends ObjectiveCSourceFileGenerator {
           } else {
             print(Options.useARC() ? "strong" : "retain");
           }
-          String typeString = NameTable.javaRefToObjC(type);
-          if (!typeString.endsWith("*")) {
-            typeString += " ";
-          }
+          String typeString = NameTable.getSpecificObjCType(type);
           String propertyName = NameTable.getName(var.getName());
-          println(String.format(") %s%s;", typeString, propertyName));
+          println(String.format(") %s%s%s;", typeString, typeString.endsWith("*") ? "" : " ",
+              propertyName));
           if (propertyName.startsWith("new") || propertyName.startsWith("copy")
               || propertyName.startsWith("alloc") || propertyName.startsWith("init")) {
-            println(String.format("- (%s)%s OBJC_METHOD_FAMILY_NONE;",
-                NameTable.javaRefToObjC(type), propertyName));
+            println(String.format("- (%s)%s OBJC_METHOD_FAMILY_NONE;", typeString, propertyName));
           }
           nPrinted++;
         }

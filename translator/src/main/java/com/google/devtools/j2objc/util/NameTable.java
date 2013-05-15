@@ -395,13 +395,10 @@ public class NameTable {
   }
 
   /**
-   * Convert a Java type reference into an equivalent Objective-C type.
+   * Convert a Java type to an equivalent Objective-C type with type variables
+   * resolved to their bounds.
    */
-  public static String javaRefToObjC(Type type) {
-    return javaRefToObjC(Types.getTypeBinding(type));
-  }
-
-  public static String javaRefToObjC(ITypeBinding type) {
+  public static String getSpecificObjCType(ITypeBinding type) {
     if (type.isTypeVariable()) {
       ITypeBinding[] bounds = type.getTypeBounds();
       while (bounds.length > 0 && bounds[0].isTypeVariable()) {
@@ -409,6 +406,17 @@ public class NameTable {
         bounds = type.getTypeBounds();
       }
       return constructObjCType(bounds);
+    }
+    return getObjCType(type);
+  }
+
+  /**
+   * Convert a Java type to an equivalent Objective-C type with type variables
+   * converted to "id" regardless of their bounds.
+   */
+  public static String getObjCType(ITypeBinding type) {
+    if (type.isTypeVariable()) {
+      return ID_TYPE;
     }
     if (type.isPrimitive()) {
       return primitiveTypeToObjC(type.getName());

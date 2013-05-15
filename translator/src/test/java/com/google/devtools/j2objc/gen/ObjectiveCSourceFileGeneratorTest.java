@@ -109,4 +109,10 @@ public class ObjectiveCSourceFileGeneratorTest extends GenerationTest {
         "Test.h");
     assertOccurrences(translation, "+ (int)foo;", 1);
   }
+
+  public void testTypeVariableReturnType() throws IOException {
+    String translation = translateSourceFile(
+        "interface I<T extends Runnable> { T test(); }", "Test", "Test.h");
+    assertTranslation(translation, "- (id)test;");
+  }
 }
