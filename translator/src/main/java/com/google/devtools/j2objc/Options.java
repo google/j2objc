@@ -65,6 +65,7 @@ public class Options {
   private static boolean generateTestMain = true;
   private static boolean memoryDebug = false;
   private static boolean generateNativeStubs = false;
+  private static String fileEncoding = System.getProperty("file.encoding", "ISO-8859-1");
 
   private static DeadCodeMap deadCodeMap = null;
   private static File proGuardUsageFile = null;
@@ -230,6 +231,11 @@ public class Options {
         memoryDebug = true;
       } else if (arg.equals("--generate-native-stubs")) {
         generateNativeStubs = true;
+      } else if (arg.equals("-encoding")) {
+        if (++nArg == args.length) {
+          usage("-encoding requires an argument");
+        }
+        fileEncoding = args[nArg];
       } else if (arg.startsWith("-h") || arg.equals("--help")) {
         help(false);
       } else if (arg.startsWith("-")) {
@@ -557,5 +563,22 @@ public class Options {
       }
     }
     dir.delete();  // Will fail if other files in dir, which is fine.
+  }
+
+  public static String fileEncoding() {
+    return fileEncoding;
+  }
+
+  /**
+   * Returns an array that has the same number of elements as the source path
+   * entries, containing the file encoding.
+   */
+  public static String[] getFileEncodings() {
+    int n = sourcePathEntries.size();
+    String[] result = new String[n];
+    for (int i = 0; i < n; i++) {
+      result[i] = fileEncoding;
+    }
+    return result;
   }
 }

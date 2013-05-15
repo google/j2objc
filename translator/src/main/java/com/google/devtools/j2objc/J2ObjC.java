@@ -429,7 +429,7 @@ public class J2ObjC {
       }
     }
     parser.setEnvironment(fullClasspath.toArray(new String[0]), Options.getSourcePathEntries(),
-        null, true);
+        Options.getFileEncodings(), true);
 
     // Workaround for ASTParser.setEnvironment() bug, which ignores its
     // last parameter.  This has been fixed in the Eclipse post-3.7 Java7

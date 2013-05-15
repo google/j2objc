@@ -95,9 +95,14 @@ public class CycleFinder {
         org.eclipse.jdt.core.JavaCore.COMPILER_CODEGEN_TARGET_PLATFORM, "1.6",
         org.eclipse.jdt.core.JavaCore.COMPILER_COMPLIANCE, "1.6"));
     parser.setResolveBindings(true);
+    String[] sourcePathEntries = splitEntries(options.getSourcepath());
+    String[] encodings = new String[sourcePathEntries.length];
+    for (int i = 0; i < encodings.length; i++) {
+      encodings[i] = Options.fileEncoding();
+    }
     parser.setEnvironment(
         splitEntries(options.getBootclasspath() + ":" + options.getClasspath()),
-        splitEntries(options.getSourcepath()), null, false);
+        sourcePathEntries, encodings, false);
     return parser;
   }
 
