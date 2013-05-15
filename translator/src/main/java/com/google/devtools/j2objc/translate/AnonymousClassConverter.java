@@ -42,6 +42,7 @@ import org.eclipse.jdt.core.dom.ITypeBinding;
 import org.eclipse.jdt.core.dom.IVariableBinding;
 import org.eclipse.jdt.core.dom.MethodDeclaration;
 import org.eclipse.jdt.core.dom.Modifier.ModifierKeyword;
+import org.eclipse.jdt.core.dom.NullLiteral;
 import org.eclipse.jdt.core.dom.SimpleName;
 import org.eclipse.jdt.core.dom.SuperConstructorInvocation;
 import org.eclipse.jdt.core.dom.Type;
@@ -244,7 +245,8 @@ public class AnonymousClassConverter extends ErrorReportingASTVisitor {
     // constructor and passed to the super call.
     int argCount = 0;
     for (Expression arg : invocationArguments) {
-      ITypeBinding argType = Types.getTypeBinding(arg);
+      ITypeBinding argType =
+          arg instanceof NullLiteral ? Types.getNSObject() : Types.getTypeBinding(arg);
       GeneratedVariableBinding argBinding = new GeneratedVariableBinding(
           "arg$" + argCount++, 0, argType, false, true, clazz, binding);
       ASTUtil.getParameters(constructor).add(

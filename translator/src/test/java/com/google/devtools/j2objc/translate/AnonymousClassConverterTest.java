@@ -559,4 +559,15 @@ public class AnonymousClassConverterTest extends GenerationTest {
         "int i2 = i; } }; } }; } }", "Test", "Test.m");
     assertTranslation(impl, "int i2 = this$0_.val$i;");
   }
+
+  // Verify that an anonymous class can be defined with a null constructor
+  // parameter.
+  public void testDefaultConstructorWithNullParameter() throws IOException {
+    translateSourceFile(
+      "class Test {" +
+      "  static Test instance = new Test(null) {};" +
+      "  protected Test(String s) {} }",
+      "Test", "Test.m");
+    // The test is successful if the above doesn't throw an NPE.
+  }
 }
