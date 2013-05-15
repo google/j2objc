@@ -801,6 +801,7 @@ IOSObjectArray *copyFieldsToObjectArray(NSArray *fields) {
        @"NSCopying", @"java.lang.Cloneable", nil];
   IOSClass_classCache = [NSMutableDictionary dictionary];
 #if ! __has_feature(objc_arc)
+  [IOSClass_mappedClasses retain];
   [IOSClass_classCache retain];
 #endif
 }
