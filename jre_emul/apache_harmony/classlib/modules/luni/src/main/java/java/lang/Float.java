@@ -164,7 +164,9 @@ public final class Float extends Number implements Comparable<Float> {
      */
     @Override
     public native boolean equals(Object object) /*-{
-        if (!object) return NO;
+        if (!object || ![object isKindOfClass:[JavaLangFloat class]]) {
+          return NO;
+        }
         NSComparisonResult result = [self compare:object];
         return result == NSOrderedSame;
     }-*/;
