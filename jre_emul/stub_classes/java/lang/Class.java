@@ -20,15 +20,17 @@ package java.lang;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
+import java.lang.reflect.GenericDeclaration;
 import java.lang.reflect.Method;
 import java.lang.reflect.Type;
+import java.lang.reflect.TypeVariable;
 
 /**
  * Stub implementation of java.lang.Class.
  *
  * @see java.lang.Object
  */
-public final class Class<T> {
+public final class Class<T> implements GenericDeclaration, Type {
 
   public static Class<?> forName(String className) throws ClassNotFoundException {
     return null;
@@ -190,8 +192,8 @@ public final class Class<T> {
     return null;
   }
 
-  public Object[] getTypeParameters() {
-  	return null;
+  public TypeVariable<Class<T>>[] getTypeParameters() {
+	return null;
   }
 
   public boolean isAnnotation() {
