@@ -42,6 +42,9 @@ FOUNDATION_EXPORT void JreMemDebugMarkAllocations(void) {
 FOUNDATION_EXPORT void JreMemDebugShowAllocations(void) {
   NSLog(@"J2Objc MemDebug: Not implemented when ARC is enabled.");
 }
+FOUNDATION_EXPORT void JreMemDebugGenerateAllocationsReport(void) {
+  NSLog(@"J2Objc MemDebug: Not implemented when ARC is enabled.");
+}
 #else
 
 // We use [NSNumber numberWithUnsignedLong:] to store pointer values in
