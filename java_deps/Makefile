@@ -46,7 +46,7 @@ $(BUILD_DIR) $(DIST_JAR_DIR):
 	@mkdir -p $@
 
 $(DIST_JAR_DIR)/%.jar: $(BUILD_DIR)/%.jar | $(DIST_JAR_DIR)
-	install -m 0644 $< $@
+	@install -m 0644 $< $@
 
 dist: $(BUILD_DIR_JARS) $(DIST_JARS)
 	@:

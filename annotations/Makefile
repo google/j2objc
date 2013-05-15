@@ -36,11 +36,12 @@ $(BUILD_DIR) $(CLASSES_DIR) $(DIST_JAR_DIR):
 	@mkdir -p $@
 
 $(JAR): $(SOURCE_JAVA_FULL) | $(BUILD_DIR) $(CLASSES_DIR)
-	javac -d $(CLASSES_DIR) $^
-	jar cf $(JAR) -C $(CLASSES_DIR) .
+	@echo Building j2objc annotations
+	@javac -d $(CLASSES_DIR) $^
+	@jar cf $(JAR) -C $(CLASSES_DIR) .
 
 $(DIST_JAR): $(JAR) | $(DIST_JAR_DIR)
-	install -m 0644 $< $@
+	@install -m 0644 $< $@
 
 dist: $(DIST_JAR)
 	@:

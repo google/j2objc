@@ -484,7 +484,7 @@ $(ARCH_BUILD_DIR)/.includes: $(TRANSLATED_HEADERS) $(SOURCE_HEADERS) | \
 
 %/j2objcc: $(J2OBJC_ROOT)/scripts/j2objcc.sh
 	@mkdir -p $(@D)
-	install -C $< $@
+	@install -C $< $@
 
 DIRS_TO_MAKE = $(BUILD_DIR) $(ARCH_BUILD_DIR) $(ARCH_INCLUDE_DIR) \
     $(DIST_INCLUDE_DIR) $(DIST_JAR_DIR) $(DIST_LIB_DIR)
@@ -535,7 +535,7 @@ dist: emul_jar_dist lib_dist $(DIST_DIR)/j2objcc
 lib_dist: lib dist_includes $(EMULATION_LIB_DIST)
 
 $(EMULATION_LIB_DIST): $(EMULATION_LIB) | $(DIST_LIB_DIR)
-	install -m 0644 $< $@
+	@install -m 0644 $< $@
 
 java: emul_jar_dist java_sources_manifest
 
@@ -543,7 +543,7 @@ emul_jar_dist: $(EMULATION_JAR_DIST)
 	@:
 
 $(EMULATION_JAR_DIST): $(EMULATION_JAR) | $(DIST_JAR_DIR)
-	install -m 0644 $< $@
+	@install -m 0644 $< $@
 
 $(EMULATION_JAR): $(ALL_JAVA_SOURCES) | $(BUILD_DIR)
 	@echo "building jre_emul.jar"

@@ -112,12 +112,12 @@ deps:
 	fi
 
 $(J2OBJC_JAR): $(MANIFEST) $(RESOURCE_FILES) $(JAVA_SOURCES_FULL) | $(BUILD_DIR)
-	javac -Xlint:unchecked -sourcepath $(SOURCEPATH) -classpath $(CLASSPATH) \
+	@echo Building j2objc jar
+	@javac -Xlint:unchecked -sourcepath $(SOURCEPATH) -classpath $(CLASSPATH) \
 	    -d $(CLASS_DIR) $(JAVA_SOURCES_FULL)
-	jar cfm $@ $(MANIFEST) -C $(CLASS_DIR) .
+	@jar cfm $@ $(MANIFEST) -C $(CLASS_DIR) .
 
 $(MANIFEST): | $(BUILD_DIR)
-	@echo creating $@
 	@echo "Manifest-Version: 1.0" > $@
 	@echo "Main-Class:" $(MAIN_CLASS) >> $@
 	@echo "Class-Path:" $(JAR_DEPS) >> $@
@@ -127,10 +127,10 @@ $(CLASS_DIR)/%: $(RESOURCE_DIR)/%
 	@cp -f $< $@
 
 $(CLASS_DIR) $(BUILD_DIR) $(DIST_JAR_DIR):
-	mkdir -p $@
+	@mkdir -p $@
 
 $(J2OBJC_JAR_DIST): $(J2OBJC_JAR) | $(DIST_JAR_DIR)
-	install -m 0644 $< $@
+	@install -m 0644 $< $@
 
 dist: deps $(J2OBJC_JAR_DIST)
 	@:
