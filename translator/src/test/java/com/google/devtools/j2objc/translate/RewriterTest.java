@@ -19,6 +19,7 @@ package com.google.devtools.j2objc.translate;
 import com.google.devtools.j2objc.GenerationTest;
 import com.google.devtools.j2objc.J2ObjC;
 import com.google.devtools.j2objc.types.Types;
+import com.google.devtools.j2objc.util.ASTUtil;
 
 import org.eclipse.jdt.core.dom.Block;
 import org.eclipse.jdt.core.dom.BodyDeclaration;
@@ -39,8 +40,10 @@ import org.eclipse.jdt.core.dom.ReturnStatement;
 import org.eclipse.jdt.core.dom.SingleVariableDeclaration;
 import org.eclipse.jdt.core.dom.Statement;
 import org.eclipse.jdt.core.dom.SuperMethodInvocation;
+import org.eclipse.jdt.core.dom.SwitchStatement;
 import org.eclipse.jdt.core.dom.TypeDeclaration;
 import org.eclipse.jdt.core.dom.VariableDeclarationFragment;
+import org.eclipse.jdt.core.dom.VariableDeclarationStatement;
 
 import java.io.IOException;
 import java.util.Iterator;
@@ -510,6 +513,40 @@ public class RewriterTest extends GenerationTest {
     assertTranslation(translation, "j = i * 2;");
     assertTranslation(translation, "k = i;");
     assertTranslation(translation, "l = 42;");
+    assertTrue(translation.indexOf("k = i") < translation.indexOf("l = 42"));
+  }
+
+  public void testVariableDeclarationsInSwitchStatement2() throws IOException {
+    CompilationUnit unit = translateType("A", 
+        "public class A { public void doSomething(int i) { switch (i) { " +
+        "case 1: int j = i * 2; log(j); break; " +
+        "case 2: log(i); break; " +
+        "case 3: log(i); int k = i, l = 42; break; }}" +
+        "private void log(int i) {}}");
+    TypeDeclaration testType = (TypeDeclaration) unit.types().get(0);
+    MethodDeclaration method = testType.getMethods()[0];
+    List<Statement> stmts = ASTUtil.getStatements(method.getBody());
+    assertEquals(1, stmts.size());
+    Block block = (Block) stmts.get(0);
+    stmts = ASTUtil.getStatements(block);
+    assertEquals(3, stmts.size());
+    assertTrue(stmts.get(0) instanceof VariableDeclarationStatement);
+    assertTrue(stmts.get(1) instanceof VariableDeclarationStatement);
+    assertTrue(stmts.get(2) instanceof SwitchStatement);
+  }
+
+  public void testMultipleSwitchVariables() throws IOException {
+    String translation = translateSourceFile(
+      "public class A { public void doSomething(int n) { switch (n) { " +
+      "case 1: int i = 1; int j = 2; }}" +
+      "private void log(int i) {}}",
+      "A", "A.m");
+    int index = translation.indexOf("int i;");
+    assertTrue(index >= 0 && index < translation.indexOf("switch"));
+    index = translation.indexOf("int j;");
+    assertTrue(index >= 0 && index < translation.indexOf("switch"));
+    assertFalse(translation.contains("int i = 1;"));
+    assertFalse(translation.contains("int j = 2;"));
   }
 
   public void testPercentInFormatString() throws IOException {
