@@ -41,12 +41,16 @@ TEST_OBJS = \
 	$(TESTS_DIR)/org/apache/harmony/luni/tests/java/io/ByteArrayOutputStreamTest.o \
 	$(TESTS_DIR)/org/apache/harmony/luni/tests/java/io/CharArrayReaderTest.o \
 	$(TESTS_DIR)/org/apache/harmony/luni/tests/java/io/CharArrayWriterTest.o \
+	$(TESTS_DIR)/org/apache/harmony/luni/tests/java/io/DataInputStreamTest.o \
+	$(TESTS_DIR)/org/apache/harmony/luni/tests/java/io/DataOutputStreamTest.o \
+	$(TESTS_DIR)/org/apache/harmony/luni/tests/java/io/EOFExceptionTest.o \
 	$(TESTS_DIR)/org/apache/harmony/luni/tests/java/io/FileDescriptorTest.o \
 	$(TESTS_DIR)/org/apache/harmony/luni/tests/java/io/FileInputStreamTest.o \
 	$(TESTS_DIR)/org/apache/harmony/luni/tests/java/io/FileNotFoundExceptionTest.o \
 	$(TESTS_DIR)/org/apache/harmony/luni/tests/java/io/FileReaderTest.o \
 	$(TESTS_DIR)/org/apache/harmony/luni/tests/java/io/FileTest.o \
 	$(TESTS_DIR)/org/apache/harmony/luni/tests/java/io/FileWriterTest.o \
+	$(TESTS_DIR)/org/apache/harmony/luni/tests/java/io/FilterInputStreamTest.o \
 	$(TESTS_DIR)/org/apache/harmony/luni/tests/java/io/FilterOutputStreamTest.o \
 	$(TESTS_DIR)/org/apache/harmony/luni/tests/java/io/FileOutputStreamTest.o \
 	$(TESTS_DIR)/org/apache/harmony/luni/tests/java/io/InputStreamReaderTest.o \
@@ -56,10 +60,13 @@ TEST_OBJS = \
 	$(TESTS_DIR)/org/apache/harmony/luni/tests/java/io/OutputStreamWriterTest.o \
 	$(TESTS_DIR)/org/apache/harmony/luni/tests/java/io/PrintStreamTest.o \
 	$(TESTS_DIR)/org/apache/harmony/luni/tests/java/io/PrintWriterTest.o \
+	$(TESTS_DIR)/org/apache/harmony/luni/tests/java/io/PushbackInputStreamTest.o \
+	$(TESTS_DIR)/org/apache/harmony/luni/tests/java/io/PushbackReaderTest.o \
 	$(TESTS_DIR)/org/apache/harmony/luni/tests/java/io/ReaderTest.o \
 	$(TESTS_DIR)/org/apache/harmony/luni/tests/java/io/StringReaderTest.o \
 	$(TESTS_DIR)/org/apache/harmony/luni/tests/java/io/StringWriterTest.o \
 	$(TESTS_DIR)/org/apache/harmony/luni/tests/java/io/UnsupportedEncodingExceptionTest.o \
+	$(TESTS_DIR)/org/apache/harmony/luni/tests/java/io/UTFDataFormatExceptionTest.o \
 	$(TESTS_DIR)/org/apache/harmony/luni/tests/java/io/WriterTest.o \
 	$(TESTS_DIR)/org/apache/harmony/luni/tests/java/lang/ArithmeticExceptionTest.o \
 	$(TESTS_DIR)/org/apache/harmony/luni/tests/java/lang/ArrayIndexOutOfBoundsExceptionTest.o \
@@ -102,6 +109,7 @@ TEST_OBJS = \
 	$(TESTS_DIR)/org/apache/harmony/luni/tests/java/lang/ThreadTest.o \
 	$(TESTS_DIR)/java/lang/ThrowableTest.o \
 	$(TESTS_DIR)/org/apache/harmony/luni/tests/java/lang/UnsupportedOperationExceptionTest.o \
+	$(TESTS_DIR)/org/apache/harmony/luni/tests/util/UtilTest.o \
 	$(TESTS_DIR)/org/apache/harmony/tests/java/math/BigIntegerAddTest.o \
 	$(TESTS_DIR)/org/apache/harmony/tests/java/math/BigIntegerAndTest.o \
 	$(TESTS_DIR)/org/apache/harmony/tests/java/math/BigIntegerCompareTest.o \

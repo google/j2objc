@@ -41,7 +41,6 @@ public class PrintStream extends FilterOutputStream implements Appendable,
      */
     private boolean autoflush;
 
-    @SuppressWarnings("unused")
     private String encoding;
 
     private final String lineSeparator = "\n";
