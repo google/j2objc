@@ -121,9 +121,9 @@ public class Options {
    */
   public static String[] load(String[] args) throws IOException {
     compilerOptions = Maps.newHashMap();
-    compilerOptions.put(org.eclipse.jdt.core.JavaCore.COMPILER_SOURCE, "1.6");
-    compilerOptions.put(org.eclipse.jdt.core.JavaCore.COMPILER_CODEGEN_TARGET_PLATFORM, "1.6");
-    compilerOptions.put(org.eclipse.jdt.core.JavaCore.COMPILER_COMPLIANCE, "1.6");
+    compilerOptions.put(org.eclipse.jdt.core.JavaCore.COMPILER_SOURCE, "1.7");
+    compilerOptions.put(org.eclipse.jdt.core.JavaCore.COMPILER_CODEGEN_TARGET_PLATFORM, "1.7");
+    compilerOptions.put(org.eclipse.jdt.core.JavaCore.COMPILER_COMPLIANCE, "1.7");
     logger.setLevel(Level.INFO);
 
     // Create a temporary directory as the sourcepath's first entry, so that

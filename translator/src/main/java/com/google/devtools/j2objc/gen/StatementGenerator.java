@@ -1565,6 +1565,7 @@ public class StatementGenerator extends ErrorReportingASTVisitor {
   @Override
   public boolean visit(NumberLiteral node) {
     String token = node.getToken();
+    token = token.replace("_", "");  // Remove any embedded underscores.
     ITypeBinding binding = Types.getTypeBinding(node);
     assert binding.isPrimitive();
     char kind = binding.getKey().charAt(0);  // Primitive types have single-character keys.
