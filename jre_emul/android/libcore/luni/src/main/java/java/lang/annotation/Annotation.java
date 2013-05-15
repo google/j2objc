@@ -37,7 +37,7 @@ public interface Annotation {
     /**
      * Determines whether or not this annotation is equivalent to the annotation
      * passed. This is determined according to the following rules:
-     * 
+     *
      * <ul>
      *     <li>
      *         Two annotations {@code x} and {@code y} are equal if and only if
@@ -80,7 +80,7 @@ public interface Annotation {
     /**
      * Returns the hash code of this annotation. The hash code is determined
      * according to the following rules:
-     * 
+     *
      * <ul>
      *     <li>
      *         The hash code of an annotation is the sum of the hash codes of
@@ -118,7 +118,7 @@ public interface Annotation {
      * consists of the name of the annotation, preceded by a "@". If the
      * annotation contains field members, their names and values are also
      * included in the result.
-     * 
+     *
      * @return the {@code String} that represents this annotation.
      */
     String toString();
