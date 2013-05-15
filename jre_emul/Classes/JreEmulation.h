@@ -60,7 +60,7 @@
 
 #define J2OBJC_COMMA() ,
 
-static inline id JreOperatorRetainedAssign(id *pIvar, id value) {
+static inline id JreOperatorRetainedAssign(id *pIvar, id self, id value) {
   // We need a lock here because during
   // JreMemDebugGenerateAllocationsReport(), we want the list of links
   // of the graph to be consistent.
@@ -72,8 +72,10 @@ static inline id JreOperatorRetainedAssign(id *pIvar, id value) {
 #if __has_feature(objc_arc)
   * pIvar = value;
 #else
-  [* pIvar autorelease];
-  * pIvar = [value retain];
+  if (* pIvar != self) {
+    [* pIvar autorelease];
+  }
+  * pIvar = value != self ? [value retain] : self;
 #endif // __has_feature(objc_arc)
 #if JREMEMDEBUG_ENABLED
   if (JreMemDebugEnabled) {
@@ -88,6 +90,6 @@ static inline id JreOperatorRetainedAssign(id *pIvar, id value) {
 FOUNDATION_EXPORT
     IOSObjectArray *JreEmulationMainArguments(int argc, const char *argv[]);
 
-FOUNDATION_EXPORT id JreOperatorRetainedAssign(id *pIvar, id value);
+FOUNDATION_EXPORT id JreOperatorRetainedAssign(id *pIvar, id self, id value);
 
 #endif // __OBJC__

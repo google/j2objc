@@ -110,7 +110,7 @@ public class ObjectiveCImplementationGeneratorTest extends GenerationTest {
     assertTranslation(translation, "+ (JavaUtilDate *)today {");
     assertTranslation(translation, "return Example_today_;");
     assertTranslation(translation, "+ (void)setToday:(JavaUtilDate *)today {");
-    assertTranslation(translation, "JreOperatorRetainedAssign(&Example_today_, today);");
+    assertTranslation(translation, "JreOperatorRetainedAssign(&Example_today_, self, today);");
     assertFalse(translation.contains("initialize"));
   }
 
@@ -121,10 +121,10 @@ public class ObjectiveCImplementationGeneratorTest extends GenerationTest {
     assertTranslation(translation, "static JavaUtilDate * Example_today_;");
     assertTranslation(translation, "+ (void)initialize {");
     assertTranslation(translation,
-        "JreOperatorRetainedAssign(&Example_today_, [[[JavaUtilDate alloc] init] autorelease]);");
+        "JreOperatorRetainedAssign(&Example_today_, self, [[[JavaUtilDate alloc] init] autorelease]);");
     assertTranslation(translation, "+ (JavaUtilDate *)today {");
     assertTranslation(translation, "return Example_today_;");
-    assertTranslation(translation, "JreOperatorRetainedAssign(&Example_today_, today);");
+    assertTranslation(translation, "JreOperatorRetainedAssign(&Example_today_, self, today);");
   }
 
   public void testStaticVariableWithNonInitInitialization() throws IOException {
@@ -134,7 +134,7 @@ public class ObjectiveCImplementationGeneratorTest extends GenerationTest {
         "      java.util.logging.Logger.getLogger(\"Test\");}",
         "Example", "Example.m");
     assertTranslation(translation,
-        "JreOperatorRetainedAssign(&Example_logger_, " +
+        "JreOperatorRetainedAssign(&Example_logger_, self, " +
         "[JavaUtilLoggingLogger getLoggerWithNSString:@\"Test\"]);");
   }
 
@@ -316,7 +316,8 @@ public class ObjectiveCImplementationGeneratorTest extends GenerationTest {
       "Compatible", "foo/Compatible.m");
     assertTranslation(translation, "static id FooCompatible_FOO_;");
     assertTranslation(translation,
-        "JreOperatorRetainedAssign(&FooCompatible_FOO_, [[[NSObject alloc] init] autorelease]);");
+        "JreOperatorRetainedAssign(&FooCompatible_FOO_, self, " +
+        "[[[NSObject alloc] init] autorelease]);");
   }
 
   public void testEmptyAnnotationGeneration() throws IOException {

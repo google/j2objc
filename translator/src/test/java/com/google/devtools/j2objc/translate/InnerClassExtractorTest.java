@@ -73,7 +73,7 @@ public class InnerClassExtractorTest extends GenerationTest {
     assertTranslation(translation, "- (id)initWithA:(A *)outer$;");
     translation = getTranslatedFile("A.m");
     assertTranslation(translation, "[NIL_CHK(this$0_.o) hash]");
-    assertTranslation(translation, "JreOperatorRetainedAssign(&this$0_, outer$);");
+    assertTranslation(translation, "JreOperatorRetainedAssign(&this$0_, self, outer$);");
   }
 
   public void testWeakSimpleInnerClass() throws IOException {
@@ -378,7 +378,7 @@ public class InnerClassExtractorTest extends GenerationTest {
     // A.x referred to in anonymous Foo
     assertTranslation(translation, "this$0_.this$0.x = 3");
     // A.Inner init in anonymous Foo's constructor
-    assertTranslation(translation, "JreOperatorRetainedAssign(&this$0_, outer$)");
+    assertTranslation(translation, "JreOperatorRetainedAssign(&this$0_, self, outer$)");
   }
 
   /**
@@ -408,7 +408,7 @@ public class InnerClassExtractorTest extends GenerationTest {
     // A.x referred to in anonymous Foo
     assertTranslation(translation, "this$0_.this$0.x = 4");
     // A.Inner init in anonymous Foo's constructor
-    assertTranslation(translation, "JreOperatorRetainedAssign(&this$0_, outer$)");
+    assertTranslation(translation, "JreOperatorRetainedAssign(&this$0_, self, outer$)");
   }
 
   public void testOuterMethodReference() throws IOException {
@@ -735,7 +735,7 @@ public class InnerClassExtractorTest extends GenerationTest {
     translation = getTranslatedFile("A.m");
     assertFalse(translation.contains("this$0_"));
     assertTranslation(translation,
-        "JreOperatorRetainedAssign(&A_test_, [[[A_$1 alloc] init] autorelease]);");
+        "JreOperatorRetainedAssign(&A_test_, self, [[[A_$1 alloc] init] autorelease]);");
   }
 
   // Verify that an anonymous class in a static method does not reference

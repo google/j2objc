@@ -523,7 +523,8 @@ public class ObjectiveCImplementationGenerator extends ObjectiveCSourceFileGener
     String paramName = NameTable.getName(var);
     String signature = staticFieldSetterSignature(var);
     if (Options.useReferenceCounting()) {
-      printf("%s {\n  JreOperatorRetainedAssign(&%s, %s);\n}\n\n", signature, fieldName, paramName);
+      printf("%s {\n  JreOperatorRetainedAssign(&%s, self, %s);\n}\n\n",
+          signature, fieldName, paramName);
     } else {
       printf("%s {\n  %s = %s;\n}\n\n", signature, fieldName, paramName);
     }
@@ -927,7 +928,8 @@ public class ObjectiveCImplementationGenerator extends ObjectiveCSourceFileGener
               !Types.isWeakReference(binding)) {
             // Setter can always be generated and won't collide with a transpiled method name.
             String setterName = "set" + NameTable.capitalize(name);
-            printf(String.format("- (void)%s:(%s)%s {\n  JreOperatorRetainedAssign(&%s, %s);\n}\n",
+            printf(String.format(
+                "- (void)%s:(%s)%s {\n  JreOperatorRetainedAssign(&%s, self, %s);\n}\n",
                 setterName, typeString, name, objCFieldName, name));
           }
           if (!hasGetter || !hasSetter) {

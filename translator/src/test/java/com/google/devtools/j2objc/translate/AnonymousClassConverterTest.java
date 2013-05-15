@@ -271,7 +271,7 @@ public class AnonymousClassConverterTest extends GenerationTest {
     // Test_$: since bar_ is an unshadowed field, the parameter name is
     // unchanged.
     assertTranslation(translation, "[this$0_ logWithInt:1 withId:val$bar__];");
-    assertTranslation(translation, "JreOperatorRetainedAssign(&val$bar__, capture$0);");
+    assertTranslation(translation, "JreOperatorRetainedAssign(&val$bar__, self, capture$0);");
   }
 
   public void testExternalReferenceAsQualifier() throws IOException {

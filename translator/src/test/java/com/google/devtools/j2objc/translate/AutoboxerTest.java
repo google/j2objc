@@ -278,14 +278,14 @@ public class AutoboxerTest extends GenerationTest {
   public void testBoxedTypeLiteral() throws IOException {
     String source = "public class Test { Class c = int.class; }";
     String translation = translateSourceFile(source, "Test", "Test.m");
-    assertTranslation(translation, "JreOperatorRetainedAssign(&c_, [JavaLangInteger TYPE]);");
+    assertTranslation(translation, "JreOperatorRetainedAssign(&c_, self, [JavaLangInteger TYPE]);");
   }
 
   public void testBoxedLhsOperatorAssignment() throws IOException {
     String source = "public class Test { Integer i = 1; void foo() { i *= 2; } }";
     String translation = translateSourceFile(source, "Test", "Test.m");
     assertTranslation(translation,
-        "JreOperatorRetainedAssign(&i_, " +
+        "JreOperatorRetainedAssign(&i_, self, " +
         "[JavaLangInteger valueOfWithInt:[((JavaLangInteger *) NIL_CHK(i_)) intValue] * 2]);");
   }
 
