@@ -21,6 +21,7 @@ import com.google.common.collect.Maps;
 import com.google.common.collect.Multimap;
 import com.google.common.collect.SetMultimap;
 import com.google.common.collect.Sets;
+import com.google.devtools.j2objc.translate.OuterReferenceResolver;
 
 import org.eclipse.jdt.core.dom.IAnnotationBinding;
 import org.eclipse.jdt.core.dom.ITypeBinding;
@@ -40,7 +41,6 @@ import java.util.Set;
  */
 public class ReferenceGraph {
 
-  private final TypeCollector typeCollector;
   private final Map<String, ITypeBinding> allTypes;
   private final Whitelist whitelist;
   private SetMultimap<String, Edge> edges = HashMultimap.create();
@@ -48,7 +48,6 @@ public class ReferenceGraph {
 
   public ReferenceGraph(TypeCollector typeCollector, Whitelist whitelist) {
     this.allTypes = typeCollector.getTypes();
-    this.typeCollector = typeCollector;
     this.whitelist = whitelist;
   }
 
@@ -81,10 +80,7 @@ public class ReferenceGraph {
         if (whitelist.containsField(field)) {
           continue;
         }
-        ITypeBinding fieldType = field.getType();
-        if (fieldType.isArray()) {
-          fieldType = fieldType.getElementType();
-        }
+        ITypeBinding fieldType = getElementType(field.getType());
         if (!fieldType.isPrimitive()
             && !Modifier.isStatic(field.getModifiers())
             // Exclude self-referential fields. (likely linked DS or delegate pattern)
@@ -94,6 +90,13 @@ public class ReferenceGraph {
         }
       }
     }
+  }
+
+  private ITypeBinding getElementType(ITypeBinding type) {
+    if (type.isArray()) {
+      return type.getElementType();
+    }
+    return type;
   }
 
   private boolean hasWildcard(ITypeBinding type) {
@@ -181,8 +184,7 @@ public class ReferenceGraph {
 
   private void addOuterClassEdges() {
     for (ITypeBinding type : allTypes.values()) {
-      if ((type.isMember() || type.isLocal()) && !Modifier.isStatic(type.getModifiers())
-          && !typeCollector.isStaticAnonymousClass(type.getKey()) && !type.isInterface()
+      if (OuterReferenceResolver.needsOuterReference(type.getTypeDeclaration())
           && !isWeakOuter(type)) {
         ITypeBinding declaringType = type.getDeclaringClass();
         if (declaringType != null) {
@@ -195,8 +197,11 @@ public class ReferenceGraph {
   private void addAnonymousClassCaptureEdges() {
     for (ITypeBinding type : allTypes.values()) {
       if (type.isAnonymous()) {
-        for (IVariableBinding capturedVar : typeCollector.getCaptures(type.getKey())) {
-          edges.put(type.getKey(), Edge.newCaptureEdge(type, capturedVar));
+        for (IVariableBinding capturedVar :
+             OuterReferenceResolver.getCapturedVars(type.getTypeDeclaration())) {
+          if (!getElementType(capturedVar.getType()).isPrimitive()) {
+            edges.put(type.getKey(), Edge.newCaptureEdge(type, capturedVar));
+          }
         }
       }
     }
