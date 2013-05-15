@@ -179,11 +179,28 @@ public class ImplementationImportCollector extends HeaderImportCollector {
 
   @Override
   public boolean visit(TypeLiteral node) {
-    ITypeBinding type = Types.getTypeBinding(node);
+    ITypeBinding type = Types.getTypeBinding(node.getType());
     if (type.isPrimitive()) {
       type = Types.getWrapperType(type);
+    } else if (type.isArray()) {
+      ITypeBinding componentType = type.getComponentType();
+      if (!componentType.isPrimitive()) {
+        addImports(componentType);
+        addImport("IOSArrayClass", "IOSArrayClass", false);
+      }
     }
     addImports(type);
+    if (type.isParameterizedType()) {
+      for (ITypeBinding typeArgument : type.getTypeArguments()) {
+        if (typeArgument.isArray()) {
+          ITypeBinding componentType = typeArgument.getComponentType();
+          if (!componentType.isPrimitive()) {
+            addImports(componentType);
+            addImport("IOSArrayClass", "IOSArrayClass", false);
+          }
+        }
+      }
+    }
     return super.visit(node);
   }
 
@@ -356,6 +373,11 @@ public class ImplementationImportCollector extends HeaderImportCollector {
       addImport("JUnitRunner", "JUnitRunner", true);
     }
     return true;
+  }
+
+  @Override
+  public void endVisit(TypeDeclaration node) {
+    super.endVisit(node);
   }
 
   @Override

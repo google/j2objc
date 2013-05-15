@@ -147,5 +147,9 @@
 
 // Internal methods
 - (NSString *)binaryName;
++ (IOSClass *)fetchCachedClass:(NSString *)signature;
++ (IOSClass *)fetchClass:(Class)cls;
++ (IOSClass *)fetchProtocol:(Protocol *)protocol;
++ (void)addToCache:(IOSClass *)clazz withSignature:(NSString *)signature;
 
 @end

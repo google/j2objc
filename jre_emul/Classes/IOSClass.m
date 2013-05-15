@@ -22,10 +22,12 @@
 #import "IOSClass.h"
 #import "java/lang/AssertionError.h"
 #import "java/lang/ClassCastException.h"
+#import "java/lang/ClassNotFoundException.h"
 #import "java/lang/Enum.h"
 #import "java/lang/InstantiationException.h"
 #import "java/lang/NoSuchFieldException.h"
 #import "java/lang/NoSuchMethodException.h"
+#import "java/lang/NullPointerException.h"
 #import "java/lang/Void.h"
 #import "java/lang/annotation/Annotation.h"
 #import "java/lang/reflect/Constructor.h"
@@ -33,7 +35,17 @@
 #import "java/lang/reflect/Method.h"
 #import "java/lang/reflect/Modifier.h"
 #import "IOSArray.h"
+#import "IOSArrayClass.h"
+#import "IOSBooleanArray.h"
+#import "IOSByteArray.h"
+#import "IOSCharArray.h"
+#import "IOSDoubleArray.h"
+#import "IOSFloatArray.h"
+#import "IOSIntArray.h"
+#import "IOSLongArray.h"
 #import "IOSObjectArray.h"
+#import "IOSPrimitiveClass.h"
+#import "IOSShortArray.h"
 #import "objc/runtime.h"
 
 @implementation IOSClass
@@ -58,13 +70,7 @@ static NSString *getTranslatedMethodName(NSString *name,
                                          IOSObjectArray *parameterTypes);
 
 + (IOSClass *)classWithClass:(Class)cls {
-  NSString *classKey = NSStringFromClass(cls);
-  IOSClass *clazz = [IOSClass_classCache objectForKey:classKey];
-  if (!clazz) {
-    clazz = AUTORELEASE([[IOSClass alloc] initWithClass:cls]);
-    [IOSClass_classCache setObject:clazz forKey:classKey];
-  }
-  return clazz;
+  return [self fetchClass:cls];
 }
 
 - (id)initWithClass:(Class)cls {
@@ -91,13 +97,7 @@ static NSString *getTranslatedMethodName(NSString *name,
 }
 
 + (IOSClass *)classWithProtocol:(Protocol *)protocol {
-  NSString *protocolKey = NSStringFromProtocol(protocol);
-  IOSClass *clazz = [IOSClass_classCache objectForKey:protocolKey];
-  if (!clazz) {
-    clazz = AUTORELEASE([[IOSClass alloc] initWithProtocol:protocol]);
-    [IOSClass_classCache setObject:clazz forKey:protocolKey];
-  }
-  return clazz;
+  return [IOSClass fetchProtocol:protocol];
 }
 
 - (id)newInstance {
@@ -116,13 +116,21 @@ static NSString *getTranslatedMethodName(NSString *name,
 
 - (IOSClass *)getSuperclass {
   if (class_ != nil) {
+    if ([class_ isSubclassOfClass:[IOSArrayClass class]]) {
+      return [IOSClass fetchCachedClass:@"NSObject"];
+    }
     Class superclass = [class_ superclass];
     if (superclass != nil) {
-      IOSClass *result = [[IOSClass alloc] initWithClass:[class_ superclass]];
-#if ! __has_feature(objc_arc)
-      [result autorelease];
-#endif
-      return result;
+      NSString *classKey = NSStringFromClass(superclass);
+      IOSClass *clazz = [IOSClass_classCache objectForKey:classKey];
+      if (!clazz) {
+        clazz = [[IOSClass alloc] initWithClass:[class_ superclass]];
+  #if ! __has_feature(objc_arc)
+        [clazz autorelease];
+  #endif
+        [IOSClass_classCache setObject:clazz forKey:classKey];
+      }
+      return clazz;
     }
   }
   return nil;
@@ -418,15 +426,16 @@ JavaLangReflectConstructor *getConstructorImpl(IOSClass *cls,
     } else {
       [name appendString:@"with"];
     }
-    [name appendFormat:@"%@:", [type getSimpleName]];
+    NSString *clsName = [type getSimpleName];
+    if ([clsName isEqualToString:@"NSObject"]) {
+      clsName = @"Id";
+    }
+    [name appendFormat:@"%@:", clsName];
   }
   
   SEL selector = NSSelectorFromString(name);
-  BOOL hasConstructor;
-  if (cls->protocol_) {
-    hasConstructor = NO;
-  } else {
-    hasConstructor = NO;
+  BOOL hasConstructor = NO;
+  if (cls->class_) {
     unsigned count;
     Method *instanceMethods = class_copyMethodList(cls->class_, &count);
     for (unsigned i = 0; i < count; i++) {
@@ -487,7 +496,8 @@ JavaLangReflectConstructor *getConstructorImpl(IOSClass *cls,
 
 - (NSString *)description {
   // matches java.lang.Class.toString() output
-  return [NSString stringWithFormat:@"class %@", [self getSimpleName]];
+  return [NSString stringWithFormat:@"class %@",
+          [IOSClass javaToIOSName:[self getSimpleName]]];
 }
 
 - (BOOL)isEqual:(id)anObject {
@@ -515,9 +525,30 @@ JavaLangReflectConstructor *getConstructorImpl(IOSClass *cls,
 }
 
 static NSDictionary *IOSClass_mappedClasses;
+static NSArray *IOSClass_primitiveClassNames;
 
 // Convert Java class name to camelcased iOS name.
-+ (NSString *)camelcaseClassName:(NSString *)className {
++ (NSString *)javaToIOSName:(NSString *)className {
+  if (!className) {
+    @throw AUTORELEASE([[JavaLangNullPointerException alloc] init]);
+  }
+  if ([IOSClass_primitiveClassNames containsObject:className]) {
+    return className;
+  }
+  if ([className length] >= 2 && [className characterAtIndex:0] == '[') {
+    switch ([className characterAtIndex:1]) {
+      case 'B': return @"IOSByteArray";
+      case 'C': return @"IOSCharArray";
+      case 'D': return @"IOSDoubleArray";
+      case 'F': return @"IOSFloatArray";
+      case 'I': return @"IOSIntArray";
+      case 'J': return @"IOSLongArray";
+      case 'S': return @"IOSShortArray";
+      case 'Z': return @"IOSBooleanArray";
+      case 'L': return @"IOSObjectArray";
+      case '[': return @"IOSObjectArray";
+    }
+  }
   NSString *mappedName = [IOSClass_mappedClasses objectForKey:className];
   if (mappedName) {
     return mappedName;
@@ -537,15 +568,47 @@ static NSDictionary *IOSClass_mappedClasses;
 }
 
 + (IOSClass *)forName:(NSString *)className {
-  NSString *iosName = [IOSClass camelcaseClassName:className];
-  Class class = NSClassFromString(iosName);
-  if (class) {
-    return [IOSClass classWithClass:class];
+  if ([IOSClass_primitiveClassNames containsObject:className]) {
+    // Primitive types are found using their associated wrapper class's TYPE.
+    @throw AUTORELEASE([[JavaLangClassNotFoundException alloc]
+                        initWithNSString:className]);
+  }
+  IOSClass *cls = [self fetchCachedClass:className];
+  if (cls) {
+    return cls;
+  }
+  NSString *iosName = [IOSClass javaToIOSName:className];
+  if ([iosName isEqualToString:@"IOSObjectArray"]) {
+    // Strip leading [ (may be multiple if multi-dimensional,
+    NSString *componentName = [className substringFromIndex:1];
+    // and leading L if single-dimensional,
+    if ([componentName characterAtIndex:0] == 'L') {
+      componentName = [componentName substringFromIndex:1];
+    }
+    // and optional trailing semi-colon.
+    int lastChar = [componentName length] - 1;
+    if ([componentName characterAtIndex:lastChar] == ';') {
+      componentName = [componentName substringToIndex:lastChar];
+    }
+    IOSClass *componentType = [self forName:componentName];
+    cls = AUTORELEASE([[IOSArrayClass alloc]
+                       initWithComponentType:componentType]);
+    [self addToCache:cls withSignature:className];
+    return cls;
+  }
+  cls = [self fetchCachedClass:iosName];
+  if (cls) {
+    return cls;
+  }
+  Class clazz = NSClassFromString(iosName);
+  if (clazz) {
+    return [self fetchClass:clazz];
   }
   Protocol *protocol = NSProtocolFromString(iosName);
   if (protocol) {
-    return [IOSClass classWithProtocol:protocol];
+    return [self fetchProtocol:protocol];
   }
+  @throw AUTORELEASE([[JavaLangClassNotFoundException alloc] init]);
   return nil;
 }
 
@@ -573,7 +636,7 @@ static NSDictionary *IOSClass_mappedClasses;
 }
 
 - (BOOL)isArray {
-  return [class_ isSubclassOfClass:[IOSArray class]];
+  return NO;
 }
 
 - (BOOL)isEnum {
@@ -585,8 +648,7 @@ static NSDictionary *IOSClass_mappedClasses;
 }
 
 - (BOOL)isPrimitive {
-  //TODO(user): implement when getComponentType is implemented.
-  return NO;
+  return NO;  // Overridden by IOSPrimitiveClass.
 }
 
 static IOSObjectArray *getClassInterfaces(IOSClass *cls, IOSClass *arrayType) {
@@ -596,7 +658,7 @@ static IOSObjectArray *getClassInterfaces(IOSClass *cls, IOSClass *arrayType) {
   }
   unsigned int outCount;
   Protocol *__unsafe_unretained *interfaces =
-      class_copyProtocolList(cls.class, &outCount);
+      class_copyProtocolList(cls->class_, &outCount);
   result = [IOSObjectArray arrayWithLength:outCount type:arrayType];
   for (unsigned i = 0; i < outCount; i++) {
     [result replaceObjectAtIndex:i
@@ -651,6 +713,7 @@ static IOSObjectArray *getClassInterfaces(IOSClass *cls, IOSClass *arrayType) {
 }
 
 JavaLangReflectField *getFieldFromClass(NSString *name, Class clazz) {
+  name = [JavaLangReflectField variableName:name];
   const char* cname =
       [name cStringUsingEncoding:[NSString defaultCStringEncoding]];
   Ivar ivar = class_getInstanceVariable(clazz, cname);
@@ -788,22 +851,113 @@ IOSObjectArray *copyFieldsToObjectArray(NSArray *fields) {
 #endif
 }
 
++ (IOSClass *)fetchClass:(Class)cls {
+  NSString *classKey = [IOSClass javaToIOSName:NSStringFromClass(cls)];
+  IOSClass *clazz = [IOSClass_classCache objectForKey:classKey];
+  if (!clazz) {
+    clazz = AUTORELEASE([[IOSClass alloc] initWithClass:cls]);
+    [IOSClass_classCache setObject:clazz forKey:classKey];
+  }
+  return clazz;
+}
+
++ (IOSClass *)fetchCachedClass:(NSString *)signature {
+  return [IOSClass_classCache objectForKey:signature];
+}
+
++ (IOSClass *)fetchProtocol:(Protocol *)protocol {
+  NSString *protocolKey = NSStringFromProtocol(protocol);
+  IOSClass *clazz = [IOSClass_classCache objectForKey:protocolKey];
+  if (!clazz) {
+    clazz = AUTORELEASE([[IOSClass alloc] initWithProtocol:protocol]);
+    [IOSClass_classCache setObject:clazz forKey:protocolKey];
+  }
+  return clazz;
+}
+
++ (void)addToCache:(IOSClass *)clazz withSignature:(NSString *)signature {
+  [IOSClass_classCache setObject:clazz forKey:signature];
+}
+
 + (void)initialize {
   // Explicitly mapped classes are defined in Types.initializeTypeMap().
   // If types are added to that method (it's rare) they need to be added here.
-  IOSClass_mappedClasses =
-      [NSDictionary dictionaryWithObjectsAndKeys:
+  IOSClass_mappedClasses = [[NSDictionary alloc] initWithObjectsAndKeys:
        @"NSObject",  @"java.lang.Object",
        @"IOSClass",  @"java.lang.Class",
        @"NSNumber",  @"java.lang.Number",
        @"NSString",  @"java.lang.String",
        @"NSString",  @"java.lang.CharSequence",
        @"NSCopying", @"java.lang.Cloneable", nil];
-  IOSClass_classCache = [NSMutableDictionary dictionary];
-#if ! __has_feature(objc_arc)
-  [IOSClass_mappedClasses retain];
-  [IOSClass_classCache retain];
-#endif
+  IOSClass_primitiveClassNames = [[NSArray alloc] initWithObjects:
+       @"boolean", @"byte", @"char", @"double", @"float",
+       @"int", @"long", @"short", @"void", nil];
+
+  // Populate class cache with primitive and primitive array types.
+  IOSClass_classCache = [[NSMutableDictionary alloc] init];
+  IOSClass *clazz =
+      [[IOSPrimitiveClass alloc] initWithName:@"boolean" type:@"Z"];
+  [IOSClass_classCache setObject:clazz forKey:@"Z"];
+  [IOSClass_classCache setObject:clazz forKey:@"boolean"];
+  IOSClass *arrayClazz = [[IOSArrayClass alloc] initWithComponentType:clazz];
+  [IOSClass_classCache setObject:arrayClazz forKey:@"[Z"];
+  [IOSClass_classCache setObject:arrayClazz forKey:@"IOSBooleanArray"];
+
+  clazz = [[IOSPrimitiveClass alloc] initWithName:@"byte" type:@"B"];
+  [IOSClass_classCache setObject:clazz forKey:@"B"];
+  [IOSClass_classCache setObject:clazz forKey:@"byte"];
+  arrayClazz = [[IOSArrayClass alloc] initWithComponentType:clazz];
+  [IOSClass_classCache setObject:arrayClazz forKey:@"[B"];
+  [IOSClass_classCache setObject:arrayClazz forKey:@"IOSByteArray"];
+
+  clazz = [[IOSPrimitiveClass alloc] initWithName:@"char" type:@"C"];
+  [IOSClass_classCache setObject:clazz forKey:@"C"];
+  [IOSClass_classCache setObject:clazz forKey:@"char"];
+  arrayClazz = [[IOSArrayClass alloc] initWithComponentType:clazz];
+  [IOSClass_classCache setObject:arrayClazz forKey:@"[C"];
+  [IOSClass_classCache setObject:arrayClazz forKey:@"IOSCharArray"];
+
+  clazz = [[IOSPrimitiveClass alloc] initWithName:@"double" type:@"D"];
+  [IOSClass_classCache setObject:clazz forKey:@"D"];
+  [IOSClass_classCache setObject:clazz forKey:@"double"];
+  arrayClazz = [[IOSArrayClass alloc] initWithComponentType:clazz];
+  [IOSClass_classCache setObject:arrayClazz forKey:@"[D"];
+  [IOSClass_classCache setObject:arrayClazz forKey:@"IOSDoubleArray"];
+
+  clazz = [[IOSPrimitiveClass alloc] initWithName:@"float" type:@"F"];
+  [IOSClass_classCache setObject:clazz forKey:@"F"];
+  [IOSClass_classCache setObject:clazz forKey:@"float"];
+  arrayClazz = [[IOSArrayClass alloc] initWithComponentType:clazz];
+  [IOSClass_classCache setObject:arrayClazz forKey:@"[F"];
+  [IOSClass_classCache setObject:arrayClazz forKey:@"IOSFloatArray"];
+
+  clazz = [[IOSPrimitiveClass alloc] initWithName:@"int" type:@"I"];
+  [IOSClass_classCache setObject:clazz forKey:@"int"];
+  [IOSClass_classCache setObject:clazz forKey:@"I"];
+  arrayClazz = [[IOSArrayClass alloc] initWithComponentType:clazz];
+  [IOSClass_classCache setObject:arrayClazz forKey:@"[I"];
+  [IOSClass_classCache setObject:arrayClazz forKey:@"IOSIntArray"];
+
+  clazz = [[IOSPrimitiveClass alloc] initWithName:@"long" type:@"J"];
+  [IOSClass_classCache setObject:clazz forKey:@"long"];
+  [IOSClass_classCache setObject:clazz forKey:@"J"];
+  arrayClazz = [[IOSArrayClass alloc] initWithComponentType:clazz];
+  [IOSClass_classCache setObject:arrayClazz forKey:@"[J"];
+  [IOSClass_classCache setObject:arrayClazz forKey:@"IOSLongArray"];
+
+  clazz = [[IOSPrimitiveClass alloc] initWithName:@"short" type:@"S"];
+  [IOSClass_classCache setObject:clazz forKey:@"S"];
+  [IOSClass_classCache setObject:clazz forKey:@"short"];
+  arrayClazz = [[IOSArrayClass alloc] initWithComponentType:clazz];
+  [IOSClass_classCache setObject:arrayClazz forKey:@"[S"];
+  [IOSClass_classCache setObject:arrayClazz forKey:@"IOSShortArray"];
+
+  clazz = [[self alloc] initWithClass:[NSObject class]];
+  [IOSClass_classCache setObject:clazz forKey:@"java.lang.Object"];
+  [IOSClass_classCache setObject:clazz forKey:@"NSObject"];
+  arrayClazz = [[IOSArrayClass alloc] initWithComponentType:clazz];
+  [IOSClass_classCache setObject:arrayClazz forKey:@"[NSObject"];
+  [IOSClass_classCache setObject:arrayClazz forKey:@"IOSObjectArray"];
 }
 
 @end

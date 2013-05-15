@@ -133,13 +133,15 @@
 }
 
 - (NSString *)description {
+  if (size_ == 0) {
+    return @"[]";
+  }
   NSString *result = @"[";
   for (int i = 0; i < size_; i++) {
     NSString *separator = i < size_ - 1 ? @", " : @"]";
     result = [result stringByAppendingFormat:@"%@%@",
                      [self descriptionOfElementAtIndex:i], separator];
   }
-
   return result;
 }
 

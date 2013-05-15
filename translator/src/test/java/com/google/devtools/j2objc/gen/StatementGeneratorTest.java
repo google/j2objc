@@ -963,7 +963,7 @@ public class StatementGeneratorTest extends GenerationTest {
         "type:[IOSClass classWithClass:[JavaLangInteger class]]], " +
         "[IOSObjectArray arrayWithObjects:(id[]){ j_, i_ } count:2 " +
         "type:[IOSClass classWithClass:[JavaLangInteger class]]] } count:3 " +
-        "type:[IOSClass classWithClass:[IOSObjectArray class]]];");
+        "type:[IOSArrayClass classWithComponentType:[IOSClass classWithClass:[NSObject class]]]];");
   }
 
   public void testVarargsMethodInvocationZeroLengthArray() throws IOException {
