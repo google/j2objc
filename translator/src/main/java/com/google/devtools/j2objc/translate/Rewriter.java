@@ -635,24 +635,33 @@ public class Rewriter extends ErrorReportingASTVisitor {
     AST ast = node.getAST();
     List<Statement> statements = ASTUtil.getStatements(node);
     int insertIdx = 0;
+    Block block = ast.newBlock();
+    List<Statement> blockStmts = ASTUtil.getStatements(block);
     for (int i = 0; i < statements.size(); i++) {
       Statement stmt = statements.get(i);
       if (stmt instanceof VariableDeclarationStatement) {
         VariableDeclarationStatement declStmt = (VariableDeclarationStatement) stmt;
         statements.remove(i);
         List<VariableDeclarationFragment> fragments = ASTUtil.getFragments(declStmt);
+        int iStatement = i;
         for (VariableDeclarationFragment decl : fragments) {
           Expression initializer = decl.getInitializer();
           if (initializer != null) {
             Assignment assignment = ASTFactory.newAssignment(ast,
                 NodeCopier.copySubtree(ast, decl.getName()),
                 NodeCopier.copySubtree(ast, initializer));
-            statements.add(i++, ast.newExpressionStatement(assignment));
+            statements.add(iStatement++, ast.newExpressionStatement(assignment));
             decl.setInitializer(null);
           }
         }
-        statements.add(insertIdx++, NodeCopier.copySubtree(ast, declStmt));
+        blockStmts.add(insertIdx++, NodeCopier.copySubtree(ast, declStmt));
       }
+    }
+    if (blockStmts.size() > 0) {
+      // There is at least one variable declaration, so copy this switch
+      // statement into the new block and replace it in the parent list.
+      blockStmts.add(NodeCopier.copySubtree(ast, node));
+      ASTUtil.setProperty(node, block);
     }
   }
 

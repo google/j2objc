@@ -653,6 +653,8 @@ NSStringEncoding parseCharsetName(NSString *charset) {
   // Double-check there won't be a buffer overflow, since the encoded length
   // of the copied substring is now known.
   if (bytesUsed > ([dst count] - dstBegin)) {
+    free(dstBytes);
+    free(bytes);
     @throw AUTORELEASE(
         [[JavaLangStringIndexOutOfBoundsException alloc]
          initWithNSString:@"dstBegin+(srcEnd-srcBegin) > dst.length"]);
@@ -895,9 +897,14 @@ static id<JavaUtilComparator> CaseInsensitiveComparator_CASE_INSENSITIVE_ORDER_;
 
 + (void)initialize {
   if (self == [CaseInsensitiveComparator class]) {
+#if __has_feature(objc_arc)
+    CaseInsensitiveComparator_CASE_INSENSITIVE_ORDER_ =
+        [[CaseInsensitiveComparator alloc] init];
+#else
     JreOperatorRetainedAssign(
         &CaseInsensitiveComparator_CASE_INSENSITIVE_ORDER_,
-        AUTORELEASE([[CaseInsensitiveComparator alloc] init]));
+        [[[CaseInsensitiveComparator alloc] init] autorelease]);
+#endif
   }
 }
 
