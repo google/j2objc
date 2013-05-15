@@ -68,4 +68,8 @@
 - (int)getModifiers;
 - (IOSClass *)getType;
 
+// Convert between property and variable names.
++ (NSString *)propertyName:(NSString *)name;
++ (NSString *)variableName:(NSString *)name;
+
 @end

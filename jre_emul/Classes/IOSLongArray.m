@@ -100,11 +100,7 @@
 }
 
 - (IOSClass *)elementType {
-  id type = [[IOSPrimitiveClass alloc] initWithName:@"long" type:@"J"];
-#if ! __has_feature(objc_arc)
-  [type autorelease];
-#endif
-  return type;
+  return [IOSClass fetchCachedClass:@"J"];
 }
 
 - (id)copyWithZone:(NSZone *)zone {

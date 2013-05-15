@@ -2102,6 +2102,11 @@ public class StatementGenerator extends ErrorReportingASTVisitor {
       buffer.append("[IOSClass classWithProtocol:@protocol(");
       type.accept(this);
       buffer.append(")]");
+    } else if (typeBinding != null && typeBinding.isArray() &&
+        !typeBinding.getComponentType().isPrimitive()) {
+      buffer.append("[IOSArrayClass classWithComponentType:[IOSClass classWithClass:[");
+      buffer.append(NameTable.getFullName(typeBinding.getComponentType()));
+      buffer.append(" class]]]");
     } else {
       buffer.append("[IOSClass classWithClass:[");
       type.accept(this);

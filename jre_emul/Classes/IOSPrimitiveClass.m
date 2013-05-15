@@ -139,6 +139,10 @@ getConstructorWithClasses:(IOSClass *)firstClass, ... {
   return nil;
 }
 
+- (BOOL)isPrimitive {
+  return YES;
+}
+
 // isEqual and hash are uniquely identified by their name.
 - (BOOL)isEqual:(id)anObject {
   if (![anObject isKindOfClass:[IOSPrimitiveClass class]]) {

@@ -447,7 +447,8 @@ public class Types {
    * Returns true if a Type AST node refers to an iOS type.
    */
   public static boolean isIOSType(Type type) {
-    return isIOSType(type.toString());
+    return isIOSType(type.toString())
+        || instance.iosBindingMap.containsValue(getTypeBinding(type));
   }
 
   /**

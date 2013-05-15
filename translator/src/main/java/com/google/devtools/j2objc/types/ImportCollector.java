@@ -94,7 +94,8 @@ public class ImportCollector extends ErrorReportingASTVisitor {
     if (binding == null) {
       return; // parser already reported missing class
     }
-    if (Types.isIOSType(type)) {
+    if (Types.isIOSType(type)
+        && !(binding instanceof IOSArrayTypeBinding)) { // Include array definitions.
       return;
     }
     if (binding.isPrimitive()) {
