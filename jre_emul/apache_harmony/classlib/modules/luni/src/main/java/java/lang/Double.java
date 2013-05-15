@@ -209,7 +209,9 @@ public final class Double extends Number implements Comparable<Double> {
      */
     @Override
     public native boolean equals(Object object) /*-{
-        if (!object) return NO;
+        if (!object || ![object isKindOfClass:[JavaLangDouble class]]) {
+          return NO;
+        }
         NSComparisonResult result = [self compare:object];
         return result == NSOrderedSame;
     }-*/;
