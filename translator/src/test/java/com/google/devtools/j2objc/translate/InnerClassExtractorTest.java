@@ -164,7 +164,7 @@ public class InnerClassExtractorTest extends GenerationTest {
     List<?> members = innerClass.bodyDeclarations();
 
     FieldDeclaration field = (FieldDeclaration) members.get(0);
-    assertEquals(field.getAST().resolveWellKnownType("int"), field.getType().resolveBinding());
+    assertEquals("int", field.getType().toString());
 
     MethodDeclaration method = (MethodDeclaration) members.get(1);
     assertTrue(method.isConstructor());
@@ -880,5 +880,13 @@ public class InnerClassExtractorTest extends GenerationTest {
         "}", "Outer", "Outer.m");
 
     assertTranslation(translation, "[super initWithOuter_Outer1:outer$ withInt:outer$.this$0.foo]");
+  }
+
+  public void testAnonymousClassWithinTypeDeclarationStatement() throws IOException {
+    String translation = translateSourceFile(
+        "class Test { Runnable foo() { class MyRunnable implements Runnable { " +
+        "public void run() { Runnable r = new Runnable() { public void run() {} }; } } " +
+        "return new MyRunnable(); } }", "Test", "Test.h");
+    assertOccurrences(translation, "@interface Test_foo_MyRunnable_$1", 1);
   }
 }
