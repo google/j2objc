@@ -416,8 +416,7 @@ public class StatementGenerator extends ErrorReportingASTVisitor {
 
   @Override
   public boolean visit(ArrayCreation node) {
-    @SuppressWarnings("unchecked")
-    List<Expression> dimensions = node.dimensions(); // safe by definition
+    List<Expression> dimensions = ASTUtil.getDimensions(node);
     ArrayInitializer init = node.getInitializer();
     ITypeBinding componentType = Types.getTypeBinding(node).getComponentType();
     if (init != null) {
@@ -441,7 +440,7 @@ public class StatementGenerator extends ErrorReportingASTVisitor {
         printObjectArrayType(componentType);
       }
       buffer.append(']');
-    } else if (node.dimensions().size() > 1) {
+    } else if (dimensions.size() > 1) {
       printMultiDimArray(componentType, dimensions);
     } else {
       assert dimensions.size() == 1;
@@ -909,7 +908,6 @@ public class StatementGenerator extends ErrorReportingASTVisitor {
     return false;
   }
 
-  @SuppressWarnings("unchecked")
   @Override
   public boolean visit(ClassInstanceCreation node) {
     boolean addAutorelease = useReferenceCounting;
@@ -919,7 +917,7 @@ public class StatementGenerator extends ErrorReportingASTVisitor {
     buffer.append(NameTable.getFullName(type));
     buffer.append(" alloc] init");
     IMethodBinding method = Types.getMethodBinding(node);
-    List<Expression> arguments = node.arguments();
+    List<Expression> arguments = ASTUtil.getArguments(node);
     if (node.getExpression() != null && type.isMember() && arguments.size() > 0 &&
         !Types.getTypeBinding(arguments.get(0)).isEqualTo(outerType)) {
       // This is calling an untranslated "Outer.new Inner()" method,
@@ -927,7 +925,7 @@ public class StatementGenerator extends ErrorReportingASTVisitor {
       GeneratedMethodBinding newBinding = new GeneratedMethodBinding(method);
       newBinding.addParameter(0, outerType);
       method = newBinding;
-      arguments = Lists.newArrayList(node.arguments());
+      arguments = Lists.newArrayList(arguments);
       arguments.add(0, node.getExpression());
     }
     printArguments(method, arguments);
@@ -978,12 +976,11 @@ public class StatementGenerator extends ErrorReportingASTVisitor {
     return false;
   }
 
-  @SuppressWarnings("unchecked")
   @Override
   public boolean visit(ConstructorInvocation node) {
     IMethodBinding binding = Types.getMethodBinding(node);
     buffer.append("[self init" + NameTable.getFullName(binding.getDeclaringClass()));
-    printArguments(binding, node.arguments());
+    printArguments(binding, ASTUtil.getArguments(node));
     buffer.append("]");
     return false;
   }
@@ -1057,11 +1054,10 @@ public class StatementGenerator extends ErrorReportingASTVisitor {
     return false;
   }
 
-  @SuppressWarnings("unchecked")
   @Override
   public boolean visit(ForStatement node) {
     buffer.append("for (");
-    for (Iterator<Expression> it = node.initializers().iterator(); it.hasNext(); ) {
+    for (Iterator<Expression> it = ASTUtil.getInitializers(node).iterator(); it.hasNext(); ) {
       Expression next = it.next();
       next.accept(this);
       if (it.hasNext()) {
@@ -1073,7 +1069,7 @@ public class StatementGenerator extends ErrorReportingASTVisitor {
       node.getExpression().accept(this);
     }
     buffer.append("; ");
-    for (Iterator<Expression> it = node.updaters().iterator(); it.hasNext(); ) {
+    for (Iterator<Expression> it = ASTUtil.getUpdaters(node).iterator(); it.hasNext(); ) {
       it.next().accept(this);
       if (it.hasNext()) {
         buffer.append(", ");
@@ -1373,7 +1369,6 @@ public class StatementGenerator extends ErrorReportingASTVisitor {
     return false;
   }
 
-  @SuppressWarnings("unchecked")
   @Override
   public boolean visit(MethodInvocation node) {
     invocations.push(node);
@@ -1387,7 +1382,7 @@ public class StatementGenerator extends ErrorReportingASTVisitor {
     if (Types.isFunction(binding)) {
       buffer.append(methodName);
       buffer.append("(");
-      for (Iterator<Expression> it = node.arguments().iterator(); it.hasNext(); ) {
+      for (Iterator<Expression> it = ASTUtil.getArguments(node).iterator(); it.hasNext(); ) {
         it.next().accept(this);
         if (it.hasNext()) {
           buffer.append(", ");
@@ -1480,7 +1475,7 @@ public class StatementGenerator extends ErrorReportingASTVisitor {
       } else {
         buffer.append(methodName);
       }
-      printArguments(binding, node.arguments());
+      printArguments(binding, ASTUtil.getArguments(node));
       buffer.append(']');
       if (castReturnValue) {
         buffer.append(')');
@@ -1777,7 +1772,7 @@ public class StatementGenerator extends ErrorReportingASTVisitor {
 
   @Override
   public boolean visit(QualifiedType node) {
-    ITypeBinding binding = node.resolveBinding();
+    ITypeBinding binding = Types.getTypeBinding(node);
     if (binding != null) {
       buffer.append(NameTable.getFullName(binding));
       return false;
@@ -1961,11 +1956,10 @@ public class StatementGenerator extends ErrorReportingASTVisitor {
   }
 
 
-  @SuppressWarnings("unchecked")
   @Override
   public boolean visit(SuperConstructorInvocation node) {
     buffer.append("[super init");
-    printArguments(Types.getMethodBinding(node), node.arguments());
+    printArguments(Types.getMethodBinding(node), ASTUtil.getArguments(node));
     buffer.append(']');
     return false;
   }
@@ -1977,7 +1971,6 @@ public class StatementGenerator extends ErrorReportingASTVisitor {
     return false;
   }
 
-  @SuppressWarnings("unchecked")
   @Override
   public boolean visit(SuperMethodInvocation node) {
     IMethodBinding binding = Types.getMethodBinding(node);
@@ -1987,7 +1980,7 @@ public class StatementGenerator extends ErrorReportingASTVisitor {
       buffer.append("[super ");
     }
     buffer.append(NameTable.getName(binding));
-    printArguments(binding, node.arguments());
+    printArguments(binding, ASTUtil.getArguments(node));
     buffer.append(']');
     return false;
   }
@@ -2018,7 +2011,6 @@ public class StatementGenerator extends ErrorReportingASTVisitor {
     return false;
   }
 
-  @SuppressWarnings("unchecked")
   @Override
   public boolean visit(SwitchStatement node) {
     buffer.append("switch (");
@@ -2033,14 +2025,12 @@ public class StatementGenerator extends ErrorReportingASTVisitor {
     }
     buffer.append(") ");
     buffer.append("{\n");
-    List<Statement> stmts = node.statements(); // safe by definition
-    int nStatements = stmts.size();
-    for (int i = 0; i < nStatements; i++) {
-      Statement stmt = stmts.get(i);
+    List<Statement> stmts = ASTUtil.getStatements(node);
+    for (Statement stmt : stmts) {
       buffer.syncLineNumbers(stmt);
       stmt.accept(this);
     }
-    if (!stmts.isEmpty() && stmts.get(nStatements - 1) instanceof SwitchCase) {
+    if (!stmts.isEmpty() && stmts.get(stmts.size() - 1) instanceof SwitchCase) {
       // Last switch case doesn't have an associated statement, so add
       // an empty one.
       buffer.append(";\n");
@@ -2141,8 +2131,7 @@ public class StatementGenerator extends ErrorReportingASTVisitor {
 
   @Override
   public boolean visit(VariableDeclarationStatement node) {
-    @SuppressWarnings("unchecked")
-    List<VariableDeclarationFragment> vars = node.fragments(); // safe by definition
+    List<VariableDeclarationFragment> vars = ASTUtil.getFragments(node);
     assert !vars.isEmpty();
     ITypeBinding binding = Types.getTypeBinding(vars.get(0));
     String objcType = NameTable.javaRefToObjC(binding);

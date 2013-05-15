@@ -25,6 +25,7 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 import com.google.devtools.j2objc.types.Types;
+import com.google.devtools.j2objc.util.ASTUtil;
 import com.google.devtools.j2objc.util.DeadCodeMap;
 import com.google.devtools.j2objc.util.ErrorReportingASTVisitor;
 import com.google.j2objc.annotations.Weak;
@@ -43,6 +44,7 @@ import org.eclipse.jdt.core.dom.EnumDeclaration;
 import org.eclipse.jdt.core.dom.Expression;
 import org.eclipse.jdt.core.dom.FieldDeclaration;
 import org.eclipse.jdt.core.dom.IBinding;
+import org.eclipse.jdt.core.dom.IExtendedModifier;
 import org.eclipse.jdt.core.dom.IMethodBinding;
 import org.eclipse.jdt.core.dom.ITypeBinding;
 import org.eclipse.jdt.core.dom.IVariableBinding;
@@ -105,15 +107,14 @@ public class DeadCodeEliminator extends ErrorReportingASTVisitor {
   // =========================================================================
   // Top-level elimination
 
-  @SuppressWarnings("unchecked")
   @Override
   public void endVisit(TypeDeclaration node) {
     ITypeBinding binding = node.resolveBinding();
-    List<BodyDeclaration> body = node.bodyDeclarations();
-    eliminateDeadCode(node.resolveBinding(), node.bodyDeclarations());
+    List<BodyDeclaration> bodyDecls = ASTUtil.getBodyDeclarations(node);
+    eliminateDeadCode(node.resolveBinding(), bodyDecls);
 
     if (!node.isInterface() && !Modifier.isAbstract(node.getModifiers())) {
-      generateMissingMethods(node.getAST(), binding, body);
+      generateMissingMethods(node.getAST(), binding, bodyDecls);
     }
 
     ITypeBinding clazz = node.resolveBinding();
@@ -129,13 +130,12 @@ public class DeadCodeEliminator extends ErrorReportingASTVisitor {
     finishElimination();
   }
 
-  @SuppressWarnings("unchecked")
   @Override
   public void endVisit(EnumDeclaration node) {
     ITypeBinding binding = node.resolveBinding();
-    List<BodyDeclaration> body = node.bodyDeclarations();
-    eliminateDeadCode(binding, body);
-    generateMissingMethods(node.getAST(), binding, body);
+    List<BodyDeclaration> bodyDecls = ASTUtil.getBodyDeclarations(node);
+    eliminateDeadCode(binding, bodyDecls);
+    generateMissingMethods(node.getAST(), binding, bodyDecls);
     if (deadCodeMap.isDeadClass(Types.getSignature(node.resolveBinding()))) {
       // Dead enum means none of the constants are ever used, so they can all be deleted.
       node.enumConstants().clear();
@@ -143,12 +143,12 @@ public class DeadCodeEliminator extends ErrorReportingASTVisitor {
     finishElimination();
   }
 
-  @SuppressWarnings("unchecked")
   @Override
   public void endVisit(AnnotationTypeDeclaration node) {
-    eliminateDeadCode(node.resolveBinding(), node.bodyDeclarations());
+    List<BodyDeclaration> bodyDecls = ASTUtil.getBodyDeclarations(node);
+    eliminateDeadCode(node.resolveBinding(), bodyDecls);
     // All annotations are stripped, so we can remove all annotation members.
-    removeAnnotationMembers(node.bodyDeclarations());
+    removeAnnotationMembers(bodyDecls);
     finishElimination();
   }
 
@@ -176,10 +176,9 @@ public class DeadCodeEliminator extends ErrorReportingASTVisitor {
   @Override
   public void endVisit(AnonymousClassDeclaration node) {
     ITypeBinding binding = node.resolveBinding();
-    @SuppressWarnings("unchecked")
-    List<BodyDeclaration> body = node.bodyDeclarations();
-    eliminateDeadCode(binding, body);
-    generateMissingMethods(node.getAST(), binding, body);
+    List<BodyDeclaration> bodyDecls = ASTUtil.getBodyDeclarations(node);
+    eliminateDeadCode(binding, bodyDecls);
+    generateMissingMethods(node.getAST(), binding, bodyDecls);
     finishElimination();
   }
 
@@ -470,7 +469,6 @@ public class DeadCodeEliminator extends ErrorReportingASTVisitor {
   /**
    * Add a method stub, the body of which throws an assertion error, to a type.
    */
-  @SuppressWarnings("unchecked")
   private void generateMethodStub(
       AST ast,
       ITypeBinding scope,
@@ -488,9 +486,9 @@ public class DeadCodeEliminator extends ErrorReportingASTVisitor {
       TypeParameter typeParam = ast.newTypeParameter();
       typeParam.setName(ast.newSimpleName(typeParamBinding.getName()));
       for (ITypeBinding typeBound : typeParamBinding.getTypeBounds()) {
-        typeParam.typeBounds().add(createType(ast, scope, typeBound));
+        ASTUtil.getTypeBounds(typeParam).add(createType(ast, scope, typeBound));
       }
-      decl.typeParameters().add(typeParam);
+      ASTUtil.getTypeParameters(decl).add(typeParam);
     }
 
     // Parameters
@@ -503,19 +501,20 @@ public class DeadCodeEliminator extends ErrorReportingASTVisitor {
 
       var.setName(ast.newSimpleName(paramName));
       var.setType(createType(ast, scope, paramBinding));
-      decl.parameters().add(var);
+      ASTUtil.getParameters(decl).add(var);
     }
 
     // Modifiers
     int modifiers = method.getModifiers();
     // Always make the new method public.  Even if this method overrides a
     // protected method, it might also need to implement an interface.
-    decl.modifiers().add(ast.newModifier(ModifierKeyword.PUBLIC_KEYWORD));
+    List<IExtendedModifier> newModifiers = ASTUtil.getModifiers(decl);
+    newModifiers.add(ast.newModifier(ModifierKeyword.PUBLIC_KEYWORD));
     if (Modifier.isStrictfp(modifiers)){
-      decl.modifiers().add(ast.newModifier(Modifier.ModifierKeyword.STRICTFP_KEYWORD));
+      newModifiers.add(ast.newModifier(Modifier.ModifierKeyword.STRICTFP_KEYWORD));
     }
     if (Modifier.isSynchronized(modifiers)) {
-      decl.modifiers().add(ast.newModifier(Modifier.ModifierKeyword.SYNCHRONIZED_KEYWORD));
+      newModifiers.add(ast.newModifier(Modifier.ModifierKeyword.SYNCHRONIZED_KEYWORD));
     }
 
     // Body
@@ -531,12 +530,11 @@ public class DeadCodeEliminator extends ErrorReportingASTVisitor {
   /**
    * Add a thrown AssertionError statement to a block.
    */
-  @SuppressWarnings("unchecked")
   private void addAssertionError(Block block) {
     AST ast = block.getAST();
 
     ThrowStatement throwStatement = ast.newThrowStatement();
-    block.statements().add(throwStatement);
+    ASTUtil.getStatements(block).add(throwStatement);
 
     ClassInstanceCreation newException = ast.newClassInstanceCreation();
     throwStatement.setExpression(newException);
@@ -546,7 +544,7 @@ public class DeadCodeEliminator extends ErrorReportingASTVisitor {
 
     StringLiteral assertionDescription = ast.newStringLiteral();
     assertionDescription.setLiteralValue("Cannot invoke dead method");
-    newException.arguments().add(assertionDescription);
+    ASTUtil.getArguments(newException).add(assertionDescription);
   }
 
   // =========================================================================
@@ -561,8 +559,8 @@ public class DeadCodeEliminator extends ErrorReportingASTVisitor {
       BodyDeclaration declaration = declarationsIter.next();
       if (declaration instanceof FieldDeclaration) {
         FieldDeclaration field = (FieldDeclaration) declaration;
-        @SuppressWarnings("unchecked")
-        Iterator<VariableDeclarationFragment> fragmentsIter = field.fragments().iterator();
+        Iterator<VariableDeclarationFragment> fragmentsIter =
+            ASTUtil.getFragments(field).iterator();
         while (fragmentsIter.hasNext()) {
           VariableDeclarationFragment fragment = fragmentsIter.next();
           // Don't delete any constants because we can't detect their use.
@@ -598,9 +596,7 @@ public class DeadCodeEliminator extends ErrorReportingASTVisitor {
         FieldDeclaration field = (FieldDeclaration) declaration;
         int modifiers = field.getModifiers();
         if (!Modifier.isStatic(modifiers) && Modifier.isFinal(modifiers)) {
-          @SuppressWarnings("unchecked")
-          List<VariableDeclarationFragment> fragments = field.fragments();
-          for (VariableDeclarationFragment fragment : fragments) {
+          for (VariableDeclarationFragment fragment : ASTUtil.getFragments(field)) {
             if (fragment.getInitializer() == null) {
               finalVars.add(fragment);
             }
@@ -688,7 +684,6 @@ public class DeadCodeEliminator extends ErrorReportingASTVisitor {
    * Adds a nullary constructor that invokes a superclass constructor with
    * default arguments.
    */
-  @SuppressWarnings("unchecked")
   private void generateConstructor(TypeDeclaration node) {
     ITypeBinding clazz = node.resolveBinding();
     IMethodBinding superConstructor = getVisible(getConstructors(clazz.getSuperclass())).next();
@@ -698,13 +693,13 @@ public class DeadCodeEliminator extends ErrorReportingASTVisitor {
     MethodDeclaration constructor = ast.newMethodDeclaration();
     constructor.setConstructor(true);
     constructor.setName(ast.newSimpleName(node.getName().getIdentifier()));
-    constructor.modifiers().add(ast.newModifier(ModifierKeyword.PROTECTED_KEYWORD));
-    node.bodyDeclarations().add(constructor);
+    ASTUtil.getModifiers(constructor).add(ast.newModifier(ModifierKeyword.PROTECTED_KEYWORD));
+    ASTUtil.getBodyDeclarations(node).add(constructor);
 
     Block block = ast.newBlock();
     constructor.setBody(block);
     SuperConstructorInvocation invocation = ast.newSuperConstructorInvocation();
-    block.statements().add(invocation);
+    ASTUtil.getStatements(block).add(invocation);
     addAssertionError(block);
 
     for (ITypeBinding type : superConstructor.getParameterTypes()) {
@@ -712,7 +707,7 @@ public class DeadCodeEliminator extends ErrorReportingASTVisitor {
       CastExpression cast = ast.newCastExpression();
       cast.setExpression(value);
       cast.setType(createType(ast, clazz, type));
-      invocation.arguments().add(cast);
+      ASTUtil.getArguments(invocation).add(cast);
     }
   }
 
@@ -807,7 +802,6 @@ public class DeadCodeEliminator extends ErrorReportingASTVisitor {
    * is a ParameterizedType with the same type parameters.  Otherwise
    * the returned Type is a SimpleType.
    */
-  @SuppressWarnings("unchecked")
   private Type createType(AST ast, ITypeBinding scope, ITypeBinding type) {
     Type newType;
     if (type.isArray()) {
@@ -832,7 +826,7 @@ public class DeadCodeEliminator extends ErrorReportingASTVisitor {
       ParameterizedType paramType = ast.newParameterizedType(rawType);
       ITypeBinding[] typeArgs = type.getTypeArguments();
       for (ITypeBinding param : typeArgs) {
-        paramType.typeArguments().add(createType(ast, scope, param));
+        ASTUtil.getTypeArguments(paramType).add(createType(ast, scope, param));
       }
       newType = paramType;
     }
@@ -896,7 +890,6 @@ public class DeadCodeEliminator extends ErrorReportingASTVisitor {
    * Creates a type declaration for a new class with the specified parent
    * and interfaces types.
    */
-  @SuppressWarnings("unchecked")
   private TypeDeclaration createClass(
       AST ast, ITypeBinding scope, ITypeBinding superClass, List<ITypeBinding> interfaces) {
     TypeDeclaration decl = ast.newTypeDeclaration();
@@ -904,9 +897,9 @@ public class DeadCodeEliminator extends ErrorReportingASTVisitor {
       decl.setSuperclassType(createType(ast, scope, superClass));
     }
     for (ITypeBinding intrface : interfaces) {
-      decl.superInterfaceTypes().add(createType(ast, scope, intrface));
+      ASTUtil.getSuperInterfaceTypes(decl).add(createType(ast, scope, intrface));
     }
-    decl.modifiers().add(ast.newModifier(ModifierKeyword.ABSTRACT_KEYWORD));
+    ASTUtil.getModifiers(decl).add(ast.newModifier(ModifierKeyword.ABSTRACT_KEYWORD));
     decl.setName(ast.newSimpleName(generateClassName()));
     return decl;
   }

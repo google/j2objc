@@ -94,7 +94,6 @@ public class AnonymousClassConverter extends ErrorReportingASTVisitor {
    * to scan their containing nodes for references.
    */
   @Override
-  @SuppressWarnings("unchecked")
   public void endVisit(AnonymousClassDeclaration node) {
     ITypeBinding typeBinding = Types.getTypeBinding(node);
     ITypeBinding outerType = typeBinding.getDeclaringClass();
@@ -110,12 +109,12 @@ public class AnonymousClassConverter extends ErrorReportingASTVisitor {
         newClassName, outerType, typeBinding, modifiers);
     if (parent instanceof ClassInstanceCreation) {
       newInvocation = (ClassInstanceCreation) parent;
-      parentArguments = newInvocation.arguments();
+      parentArguments = ASTUtil.getArguments(newInvocation);
       outerExpression = newInvocation.getExpression();
       newInvocation.setExpression(null);
     } else if (parent instanceof EnumConstantDeclaration) {
       enumConstant = (EnumConstantDeclaration) parent;
-      parentArguments = enumConstant.arguments();
+      parentArguments = ASTUtil.getArguments(enumConstant);
     } else {
       throw new AssertionError(
           "unknown anonymous class declaration parent: " + parent.getClass().getName());
@@ -125,7 +124,7 @@ public class AnonymousClassConverter extends ErrorReportingASTVisitor {
     AST ast = node.getAST();
     TypeDeclaration typeDecl = ast.newTypeDeclaration();
     if (isStatic) {
-      typeDecl.modifiers().add(ast.newModifier(ModifierKeyword.STATIC_KEYWORD));
+      ASTUtil.getModifiers(typeDecl).add(ast.newModifier(ModifierKeyword.STATIC_KEYWORD));
     }
     Types.addBinding(typeDecl, innerType);
     typeDecl.setName(ast.newSimpleName(newClassName));
@@ -135,12 +134,12 @@ public class AnonymousClassConverter extends ErrorReportingASTVisitor {
     Type superType = Types.makeType(Types.mapType(innerType.getSuperclass()));
     typeDecl.setSuperclassType(superType);
     for (ITypeBinding interfaceType : innerType.getInterfaces()) {
-      typeDecl.superInterfaceTypes().add(Types.makeType(Types.mapType(interfaceType)));
+      ASTUtil.getSuperInterfaceTypes(typeDecl).add(Types.makeType(Types.mapType(interfaceType)));
     }
 
     for (Object bodyDecl : node.bodyDeclarations()) {
       BodyDeclaration decl = (BodyDeclaration) bodyDecl;
-      typeDecl.bodyDeclarations().add(NodeCopier.copySubtree(ast, decl));
+      ASTUtil.getBodyDeclarations(typeDecl).add(NodeCopier.copySubtree(ast, decl));
     }
 
     // Add inner fields and a default constructor.
@@ -166,7 +165,7 @@ public class AnonymousClassConverter extends ErrorReportingASTVisitor {
       newInvocation.setType(Types.makeType(innerType));
       IMethodBinding oldBinding = Types.getMethodBinding(newInvocation);
       if (oldBinding == null) {
-        oldBinding = newInvocation.resolveConstructorBinding();
+        oldBinding = Types.getMethodBinding(newInvocation);
       }
       if (oldBinding != null) {
         GeneratedMethodBinding invocationBinding = new GeneratedMethodBinding(oldBinding);
@@ -186,12 +185,12 @@ public class AnonymousClassConverter extends ErrorReportingASTVisitor {
       }
       if (n instanceof AnonymousClassDeclaration) {
         AnonymousClassDeclaration outerDecl = (AnonymousClassDeclaration) n;
-        outerDecl.bodyDeclarations().add(typeDecl);
+        ASTUtil.getBodyDeclarations(outerDecl).add(typeDecl);
       }
     } else {
       AbstractTypeDeclaration outerDecl =
           (AbstractTypeDeclaration) unit.findDeclaringNode(outerType);
-      outerDecl.bodyDeclarations().add(typeDecl);
+      ASTUtil.getBodyDeclarations(outerDecl).add(typeDecl);
     }
     OuterReferenceResolver.copyNode(node, typeDecl);
     super.endVisit(node);

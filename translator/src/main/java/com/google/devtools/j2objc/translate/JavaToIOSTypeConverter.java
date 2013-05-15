@@ -18,6 +18,7 @@ package com.google.devtools.j2objc.translate;
 
 import com.google.devtools.j2objc.types.GeneratedVariableBinding;
 import com.google.devtools.j2objc.types.Types;
+import com.google.devtools.j2objc.util.ASTUtil;
 import com.google.devtools.j2objc.util.ErrorReportingASTVisitor;
 import com.google.devtools.j2objc.util.NameTable;
 
@@ -36,7 +37,6 @@ import org.eclipse.jdt.core.dom.TypeDeclaration;
 import org.eclipse.jdt.core.dom.VariableDeclarationFragment;
 import org.eclipse.jdt.core.dom.VariableDeclarationStatement;
 
-import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -66,8 +66,7 @@ public class JavaToIOSTypeConverter extends ErrorReportingASTVisitor {
         }
       }
     }
-    @SuppressWarnings("unchecked")
-    List<Type> interfaces = node.superInterfaceTypes(); // safe by definition
+    List<Type> interfaces = ASTUtil.getSuperInterfaceTypes(node);
     for (int i = 0; i < interfaces.size(); i++) {
       Type intrface = interfaces.get(i);
       binding = Types.getTypeBinding(intrface);
@@ -88,13 +87,9 @@ public class JavaToIOSTypeConverter extends ErrorReportingASTVisitor {
       node.setReturnType2(Types.makeType(newBinding));
     }
 
-    @SuppressWarnings("unchecked")
-    List<SingleVariableDeclaration> parameters = node.parameters();
-    for (Iterator<SingleVariableDeclaration> iterator = parameters.iterator();
-        iterator.hasNext();) {
-      SingleVariableDeclaration parameter = iterator.next();
+    for (SingleVariableDeclaration parameter : ASTUtil.getParameters(node)) {
       Type type = parameter.getType();
-      ITypeBinding varBinding = type.resolveBinding();
+      ITypeBinding varBinding = Types.getTypeBinding(type);
       if (varBinding != null) { // true for primitive types
         newBinding = Types.mapType(varBinding);
         if (varBinding != newBinding) {
@@ -107,9 +102,7 @@ public class JavaToIOSTypeConverter extends ErrorReportingASTVisitor {
 
   @Override
   public boolean visit(FieldDeclaration node) {
-    @SuppressWarnings("unchecked")
-    List<VariableDeclarationFragment> vars = node.fragments(); // safe by definition
-    for (VariableDeclarationFragment var : vars) {
+    for (VariableDeclarationFragment var : ASTUtil.getFragments(node)) {
       IVariableBinding binding = Types.getVariableBinding(var);
       Type newType = Types.makeIOSType(binding.getType());
       if (newType != null) {
@@ -151,9 +144,7 @@ public class JavaToIOSTypeConverter extends ErrorReportingASTVisitor {
 
   @Override
   public boolean visit(VariableDeclarationStatement node) {
-    @SuppressWarnings("unchecked")
-    List<VariableDeclarationFragment> vars = node.fragments(); // safe by definition
-    for (VariableDeclarationFragment var : vars) {
+    for (VariableDeclarationFragment var : ASTUtil.getFragments(node)) {
       IVariableBinding binding = Types.getVariableBinding(var);
       Type newType = Types.makeIOSType(binding.getType());
       if (newType != null) {

@@ -25,6 +25,7 @@ import com.google.devtools.j2objc.types.IOSMethod;
 import com.google.devtools.j2objc.types.ImplementationImportCollector;
 import com.google.devtools.j2objc.types.ImportCollector;
 import com.google.devtools.j2objc.types.Types;
+import com.google.devtools.j2objc.util.ASTUtil;
 import com.google.devtools.j2objc.util.ErrorReportingASTVisitor;
 import com.google.devtools.j2objc.util.NameTable;
 
@@ -110,8 +111,7 @@ public class ObjectiveCImplementationGenerator extends ObjectiveCSourceFileGener
       });
     } else {
       // Print a dummy C function so compiled object file is valid.
-      @SuppressWarnings("unchecked")
-      List<AbstractTypeDeclaration> types = unit.types(); // safe by definition
+      List<AbstractTypeDeclaration> types = ASTUtil.getTypes(unit);
       if (!types.isEmpty()) {
         printf("void %s_unused() {}\n", NameTable.getFullName(types.get(0)));
       }
@@ -264,9 +264,7 @@ public class ObjectiveCImplementationGenerator extends ObjectiveCSourceFileGener
     List<VariableDeclarationFragment> properties = Lists.newArrayList();
     for (FieldDeclaration field : fields) {
       if (!Modifier.isStatic(field.getModifiers())) {
-        @SuppressWarnings("unchecked")
-        List<VariableDeclarationFragment> fragments = field.fragments(); // safe by definition
-        properties.addAll(fragments);
+        properties.addAll(ASTUtil.getFragments(field));
       }
     }
     return properties;
@@ -345,9 +343,7 @@ public class ObjectiveCImplementationGenerator extends ObjectiveCSourceFileGener
       println("  NSMutableArray *result = [NSMutableArray array];");
       for (FieldDeclaration f : fields) {
         if (Modifier.isStatic(f.getModifiers())) {
-          @SuppressWarnings("unchecked")
-          List<VariableDeclarationFragment> fragments = f.fragments(); // safe by specification
-          for (VariableDeclarationFragment var : fragments) {
+          for (VariableDeclarationFragment var : ASTUtil.getFragments(f)) {
             IVariableBinding binding = Types.getVariableBinding(var);
             // All non-primitive static variables are strong references.
             if (!binding.getType().isPrimitive()) {
@@ -387,14 +383,11 @@ public class ObjectiveCImplementationGenerator extends ObjectiveCSourceFileGener
 
   @Override
   protected void generate(EnumDeclaration node) {
-    @SuppressWarnings("unchecked")
-    List<EnumConstantDeclaration> constants = node.enumConstants(); // safe by definition
+    List<EnumConstantDeclaration> constants = ASTUtil.getEnumConstants(node);
     List<MethodDeclaration> methods = Lists.newArrayList();
     List<FieldDeclaration> fields = Lists.newArrayList();
     MethodDeclaration initializeMethod = null;
-    @SuppressWarnings("unchecked")
-    List<BodyDeclaration> declarations = node.bodyDeclarations(); // safe by definition
-    for (BodyDeclaration decl : declarations) {
+    for (BodyDeclaration decl : ASTUtil.getBodyDeclarations(node)) {
       if (decl instanceof FieldDeclaration) {
         fields.add((FieldDeclaration) decl);
       } else if (decl instanceof MethodDeclaration) {
@@ -441,8 +434,7 @@ public class ObjectiveCImplementationGenerator extends ObjectiveCSourceFileGener
     printf("+ (void)initialize {\n  if (self == [%s class]) {\n", typeName);
     for (int i = 0; i < constants.size(); i++) {
       EnumConstantDeclaration constant = constants.get(i);
-      @SuppressWarnings("unchecked")
-      List<Expression> args = constant.arguments(); // safe by definition
+      List<Expression> args = ASTUtil.getArguments(constant);
       String name = NameTable.getName(constant.getName());
       String constantTypeName =
           NameTable.getFullName(Types.getMethodBinding(constant).getDeclaringClass());
@@ -471,9 +463,7 @@ public class ObjectiveCImplementationGenerator extends ObjectiveCSourceFileGener
     printf("nil } count:%d type:[IOSClass classWithClass:[%s class]]];\n",
         constants.size(), typeName);
     if (initializeMethod != null) {
-      @SuppressWarnings("unchecked")
-      List<Statement> stmts = initializeMethod.getBody().statements(); // safe by definition
-      for (Statement s : stmts) {
+      for (Statement s : ASTUtil.getStatements(initializeMethod.getBody())) {
         printf("    %s", StatementGenerator.generate(s, fieldHiders, false,
             getBuilder().getSourcePosition()));
       }
@@ -596,7 +586,7 @@ public class ObjectiveCImplementationGenerator extends ObjectiveCSourceFileGener
   @Override
   protected String getParameterName(SingleVariableDeclaration param) {
     String name = super.getParameterName(param);
-    IVariableBinding binding = param.resolveBinding();
+    IVariableBinding binding = Types.getVariableBinding(param);
     return binding != null && fieldHiders.contains(binding) ? name + "Arg" : name;
   }
 
@@ -605,8 +595,7 @@ public class ObjectiveCImplementationGenerator extends ObjectiveCSourceFileGener
     String methodBody;
     IMethodBinding binding = Types.getMethodBinding(m);
     boolean memDebug = Options.memoryDebug();
-    @SuppressWarnings("unchecked")
-    List<Statement> statements = m.getBody().statements();
+    List<Statement> statements = ASTUtil.getStatements(m.getBody());
     if (binding.getDeclaringClass().isEnum()) {
       return enumConstructorDeclaration(m, statements, binding);
     } else if (statements.isEmpty()) {
@@ -656,16 +645,12 @@ public class ObjectiveCImplementationGenerator extends ObjectiveCSourceFileGener
   private Statement createInnerConstructorInvocation(MethodDeclaration m) {
     ConstructorInvocation invocation = m.getAST().newConstructorInvocation();
     Types.addBinding(invocation, Types.getBinding(m));
-    @SuppressWarnings("unchecked")
-    List<Expression> arguments = invocation.arguments();
-    @SuppressWarnings("unchecked")
-    List<SingleVariableDeclaration> params = m.parameters();
-    for (SingleVariableDeclaration param : params) {
+    for (SingleVariableDeclaration param : ASTUtil.getParameters(m)) {
       SimpleName paramName = param.getName();
       IVariableBinding paramBinding = Types.getVariableBinding(paramName);
       SimpleName argName = m.getAST().newSimpleName(paramName.getIdentifier());
       Types.addBinding(argName, paramBinding);
-      arguments.add(argName);
+      ASTUtil.getArguments(invocation).add(argName);
     }
     return invocation;
   }
@@ -717,9 +702,7 @@ public class ObjectiveCImplementationGenerator extends ObjectiveCSourceFileGener
     String className = NameTable.getFullName(Types.getMethodBinding(m).getDeclaringClass());
     StringBuffer sb = new StringBuffer();
     sb.append("{\nif (self == [" + className + " class]) {\n");
-    @SuppressWarnings("unchecked")
-    List<Statement> statements = m.getBody().statements();
-    for (Statement statement : statements) {
+    for (Statement statement : ASTUtil.getStatements(m.getBody())) {
       sb.append(generateStatement(statement, false, true));
     }
     sb.append("}\n}");
@@ -765,8 +748,7 @@ public class ObjectiveCImplementationGenerator extends ObjectiveCSourceFileGener
     }
 
     if (m != null) {
-      @SuppressWarnings("unchecked")
-      List<SingleVariableDeclaration> params = m.parameters();
+      List<SingleVariableDeclaration> params = ASTUtil.getParameters(m);
       assert params.size() == 1;  // Previously checked in isMainMethod().
       printIndent();
       printf("IOSObjectArray *%s = JreEmulationMainArguments(argc, argv);\n\n",
@@ -837,9 +819,7 @@ public class ObjectiveCImplementationGenerator extends ObjectiveCSourceFileGener
       // Print native imports.
       int endOfImportText = node.types().isEmpty() ? node.getLength()
           : ((ASTNode) node.types().get(0)).getStartPosition();
-      @SuppressWarnings("unchecked")
-      List<Comment> comments = node.getCommentList(); // safe by definition
-      for (Comment c : comments) {
+      for (Comment c : ASTUtil.getCommentList(node)) {
         int start = c.getStartPosition();
         if (start >= endOfImportText) {
           break;
@@ -860,9 +840,7 @@ public class ObjectiveCImplementationGenerator extends ObjectiveCSourceFileGener
     boolean hadStaticVar = false;
     for (FieldDeclaration f : fields) {
       if (Modifier.isStatic(f.getModifiers()) || isInterface) {
-        @SuppressWarnings("unchecked")
-        List<VariableDeclarationFragment> fragments = f.fragments(); // safe by specification
-        for (VariableDeclarationFragment var : fragments) {
+        for (VariableDeclarationFragment var : ASTUtil.getFragments(f)) {
           IVariableBinding binding = Types.getVariableBinding(var);
           if (!Types.isPrimitiveConstant(binding)) {
             String name = NameTable.getStaticVarQualifiedName(binding);
@@ -887,9 +865,7 @@ public class ObjectiveCImplementationGenerator extends ObjectiveCSourceFileGener
     int nPrinted = 0;
     for (FieldDeclaration field : fields) {
       if ((field.getModifiers() & Modifier.STATIC) == 0) {
-        @SuppressWarnings("unchecked")
-        List<VariableDeclarationFragment> vars = field.fragments(); // safe by definition
-        for (VariableDeclarationFragment var : vars) {
+        for (VariableDeclarationFragment var : ASTUtil.getFragments(field)) {
           if (var.getName().getIdentifier().startsWith("this$") && superDefinesVariable(var)) {
             // Don't print, as it shadows an inner field in a super class.
             continue;

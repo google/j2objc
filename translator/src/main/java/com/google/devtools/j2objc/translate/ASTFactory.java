@@ -15,6 +15,7 @@
 package com.google.devtools.j2objc.translate;
 
 import com.google.devtools.j2objc.types.Types;
+import com.google.devtools.j2objc.util.ASTUtil;
 
 import org.eclipse.jdt.core.dom.AST;
 import org.eclipse.jdt.core.dom.ArrayAccess;
@@ -29,6 +30,7 @@ import org.eclipse.jdt.core.dom.IVariableBinding;
 import org.eclipse.jdt.core.dom.InfixExpression;
 import org.eclipse.jdt.core.dom.InstanceofExpression;
 import org.eclipse.jdt.core.dom.MethodInvocation;
+import org.eclipse.jdt.core.dom.Modifier;
 import org.eclipse.jdt.core.dom.Name;
 import org.eclipse.jdt.core.dom.NullLiteral;
 import org.eclipse.jdt.core.dom.NumberLiteral;
@@ -53,6 +55,11 @@ import java.util.List;
  * @author Keith Stanger
  */
 public final class ASTFactory {
+
+  @SuppressWarnings("unchecked")
+  public static List<Modifier> newModifiers(AST ast, int flags) {
+    return ast.newModifiers(flags);
+  }
 
   public static SimpleName newSimpleName(AST ast, IVariableBinding binding) {
     SimpleName name = ast.newSimpleName(binding.getName());
@@ -103,45 +110,41 @@ public final class ASTFactory {
     return frag;
   }
 
-  @SuppressWarnings("unchecked")
   public static VariableDeclarationStatement newVariableDeclarationStatement(
       AST ast, IVariableBinding binding, Expression initializer) {
     VariableDeclarationStatement decl = ast.newVariableDeclarationStatement(
         newVariableDeclarationFragment(ast, binding, initializer));
     decl.setType(Types.makeType(binding.getType()));
-    decl.modifiers().addAll(ast.newModifiers(binding.getModifiers()));
+    ASTUtil.getModifiers(decl).addAll(newModifiers(ast, binding.getModifiers()));
     return decl;
   }
 
-  @SuppressWarnings("unchecked")
   public static VariableDeclarationExpression newVariableDeclarationExpression(
       AST ast, IVariableBinding binding, Expression initializer) {
     VariableDeclarationExpression decl = ast.newVariableDeclarationExpression(
         newVariableDeclarationFragment(ast, binding, initializer));
     decl.setType(Types.makeType(binding.getType()));
-    decl.modifiers().addAll(ast.newModifiers(binding.getModifiers()));
+    ASTUtil.getModifiers(decl).addAll(newModifiers(ast, binding.getModifiers()));
     Types.addBinding(decl, binding.getType());
     return decl;
   }
 
-  @SuppressWarnings("unchecked")
   public static SingleVariableDeclaration newSingleVariableDeclaration(
       AST ast, IVariableBinding binding) {
     SingleVariableDeclaration decl = ast.newSingleVariableDeclaration();
     decl.setName(newSimpleName(ast, binding));
     decl.setType(Types.makeType(binding.getType()));
-    decl.modifiers().addAll(ast.newModifiers(binding.getModifiers()));
+    ASTUtil.getModifiers(decl).addAll(newModifiers(ast, binding.getModifiers()));
     Types.addBinding(decl, binding);
     return decl;
   }
 
-  @SuppressWarnings("unchecked")
   public static FieldDeclaration newFieldDeclaration(
       AST ast, IVariableBinding binding, Expression initializer) {
     FieldDeclaration decl = ast.newFieldDeclaration(
         newVariableDeclarationFragment(ast, binding, initializer));
     decl.setType(Types.makeType(binding.getType()));
-    decl.modifiers().addAll(ast.newModifiers(binding.getModifiers()));
+    ASTUtil.getModifiers(decl).addAll(newModifiers(ast, binding.getModifiers()));
     Types.addBinding(decl, binding);
     return decl;
   }
@@ -195,13 +198,9 @@ public final class ASTFactory {
       AST ast, VariableDeclarationExpression decl, Expression cond, Expression updater,
       Statement body) {
     ForStatement forLoop = ast.newForStatement();
-    @SuppressWarnings("unchecked")
-    List<Expression> initializers = forLoop.initializers(); // safe by definition
-    initializers.add(decl);
+    ASTUtil.getInitializers(forLoop).add(decl);
     forLoop.setExpression(cond);
-    @SuppressWarnings("unchecked")
-    List<Expression> updaters = forLoop.updaters(); // safe by definition
-    updaters.add(updater);
+    ASTUtil.getUpdaters(forLoop).add(updater);
     forLoop.setBody(body);
     return forLoop;
   }

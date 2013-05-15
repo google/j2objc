@@ -85,9 +85,7 @@ public class Autoboxer extends ErrorReportingASTVisitor {
       invocation.setName(methodName);
       Types.addBinding(invocation, wrapperMethod);
 
-      @SuppressWarnings("unchecked")
-      List<Expression> args = invocation.arguments(); // safe by definition
-      args.add(NodeCopier.copySubtree(ast, expr));
+      ASTUtil.getArguments(invocation).add(NodeCopier.copySubtree(ast, expr));
       return invocation;
     } else {
       return NodeCopier.copySubtree(ast, expr);
@@ -186,8 +184,7 @@ public class Autoboxer extends ErrorReportingASTVisitor {
   @Override
   public void endVisit(ArrayInitializer node) {
     ITypeBinding type = Types.getTypeBinding(node).getElementType();
-    @SuppressWarnings("unchecked")
-    List<Expression> expressions = node.expressions(); // safe by definition
+    List<Expression> expressions = ASTUtil.getExpressions(node);
     for (int i = 0; i < expressions.size(); i++) {
       Expression expr = expressions.get(i);
       Expression result = boxOrUnboxExpression(expr, type);
@@ -205,8 +202,7 @@ public class Autoboxer extends ErrorReportingASTVisitor {
       if (parent instanceof Expression) {
         // Check if this cast is an argument or the invocation's expression.
         if (parent instanceof MethodInvocation) {
-          @SuppressWarnings("unchecked")
-          List<Expression> args = ((MethodInvocation) parent).arguments();
+          List<Expression> args = ASTUtil.getArguments((MethodInvocation) parent);
           for (int i = 0; i < args.size(); i++) {
             if (node.equals(args.get(i))) {
               args.set(i, expr);
@@ -221,9 +217,7 @@ public class Autoboxer extends ErrorReportingASTVisitor {
 
   @Override
   public void endVisit(ClassInstanceCreation node) {
-    @SuppressWarnings("unchecked")
-    List<Expression> args = node.arguments(); // safe by definition
-    convertArguments(Types.getMethodBinding(node), args);
+    convertArguments(Types.getMethodBinding(node), ASTUtil.getArguments(node));
   }
 
   @Override
@@ -251,9 +245,7 @@ public class Autoboxer extends ErrorReportingASTVisitor {
 
   @Override
   public void endVisit(ConstructorInvocation node) {
-    @SuppressWarnings("unchecked")
-    List<Expression> args = node.arguments(); // safe by definition
-    convertArguments(Types.getMethodBinding(node), args);
+    convertArguments(Types.getMethodBinding(node), ASTUtil.getArguments(node));
   }
 
   @Override
@@ -267,8 +259,7 @@ public class Autoboxer extends ErrorReportingASTVisitor {
 
   @Override
   public void endVisit(EnumConstantDeclaration node) {
-    @SuppressWarnings("unchecked")
-    List<Expression> args = node.arguments(); // safe by definition
+    List<Expression> args = ASTUtil.getArguments(node);
     if (!args.isEmpty()) {
       IMethodBinding constructor = Types.getMethodBinding(node);
       int n = args.size();
@@ -321,8 +312,7 @@ public class Autoboxer extends ErrorReportingASTVisitor {
     if (!rhBinding.isPrimitive()) {
       node.setRightOperand(unbox(rhs));
     }
-    @SuppressWarnings("unchecked")
-    List<Expression> extendedOperands = node.extendedOperands(); // safe by definition
+    List<Expression> extendedOperands = ASTUtil.getExtendedOperands(node);
     for (int i = 0; i < extendedOperands.size(); i++) {
       Expression expr = extendedOperands.get(i);
       if (!getBoxType(expr).isPrimitive()) {
@@ -333,9 +323,7 @@ public class Autoboxer extends ErrorReportingASTVisitor {
 
   @Override
   public void endVisit(MethodInvocation node) {
-    @SuppressWarnings("unchecked")
-    List<Expression> args = node.arguments(); // safe by definition
-    convertArguments(Types.getMethodBinding(node), args);
+    convertArguments(Types.getMethodBinding(node), ASTUtil.getArguments(node));
   }
 
   @Override
@@ -367,9 +355,7 @@ public class Autoboxer extends ErrorReportingASTVisitor {
 
   @Override
   public void endVisit(SuperConstructorInvocation node) {
-    @SuppressWarnings("unchecked")
-    List<Expression> args = node.arguments(); // safe by definition
-    convertArguments(Types.getMethodBinding(node), args);
+    convertArguments(Types.getMethodBinding(node), ASTUtil.getArguments(node));
   }
 
   @Override

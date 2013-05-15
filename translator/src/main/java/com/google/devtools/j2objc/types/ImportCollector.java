@@ -24,8 +24,6 @@ import com.google.devtools.j2objc.util.NameTable;
 import org.eclipse.jdt.core.dom.ASTNode;
 import org.eclipse.jdt.core.dom.ITypeBinding;
 import org.eclipse.jdt.core.dom.PrimitiveType;
-import org.eclipse.jdt.core.dom.QualifiedType;
-import org.eclipse.jdt.core.dom.SimpleType;
 import org.eclipse.jdt.core.dom.Type;
 
 import java.util.Collection;
@@ -132,23 +130,6 @@ public class ImportCollector extends ErrorReportingASTVisitor {
 
   protected void addSuperType(String typeName, String javaFileName, boolean isInterface) {
     superTypes.add(new Import(typeName, javaFileName, isInterface));
-  }
-
-  protected String getTypeName(Type type) throws ClassNotFoundException {
-    assert type != null && !(type instanceof PrimitiveType);
-    String fullName;
-    ITypeBinding binding = type.resolveBinding();
-    if (binding != null) {
-      binding = Types.mapType(binding);
-      fullName = NameTable.getFullName(binding);
-    } else if (type instanceof SimpleType) {
-      fullName = ((SimpleType) type).getName().getFullyQualifiedName();
-    } else if (type instanceof QualifiedType) {
-      fullName = ((QualifiedType) type).getName().getFullyQualifiedName();
-    } else {
-      throw new ClassNotFoundException(type.toString());
-    }
-    return fullName;
   }
 
   /**

@@ -20,6 +20,7 @@ import com.google.common.collect.Lists;
 import com.google.devtools.j2objc.types.IOSMethod;
 import com.google.devtools.j2objc.types.IOSParameter;
 import com.google.devtools.j2objc.types.Types;
+import com.google.devtools.j2objc.util.ASTUtil;
 import com.google.devtools.j2objc.util.NameTable;
 
 import org.eclipse.jdt.core.dom.AbstractTypeDeclaration;
@@ -107,9 +108,7 @@ public abstract class ObjectiveCSourceFileGenerator extends SourceFileGenerator 
     List<IVariableBinding> bindings = Lists.newArrayList();
     for (FieldDeclaration f : fields) {
       if (Modifier.isStatic(f.getModifiers()) || isInterface) {
-        @SuppressWarnings("unchecked")
-        List<VariableDeclarationFragment> fragments = f.fragments(); // safe by specification
-        for (VariableDeclarationFragment var : fragments) {
+        for (VariableDeclarationFragment var : ASTUtil.getFragments(f)) {
           IVariableBinding binding = Types.getVariableBinding(var);
           // Don't define accessors for private constants, since they can be
           // directly referenced.
@@ -217,8 +216,7 @@ public abstract class ObjectiveCSourceFileGenerator extends SourceFileGenerator 
     sb.append(baseDeclaration);
     Iterator<IOSParameter> iosParameters = mappedMethod.getParameters().iterator();
     if (iosParameters.hasNext()) {
-      @SuppressWarnings("unchecked")
-      List<SingleVariableDeclaration> parameters = method.parameters();
+      List<SingleVariableDeclaration> parameters = ASTUtil.getParameters(method);
       IOSParameter first = iosParameters.next();
       SingleVariableDeclaration var = parameters.get(first.getIndex());
       addTypeAndName(first, var, sb);
@@ -253,9 +251,8 @@ public abstract class ObjectiveCSourceFileGenerator extends SourceFileGenerator 
     String baseDeclaration = String.format("%c (%s)%s", isStatic ? '+' : '-',
         NameTable.javaRefToObjC(m.getReturnType2()), methodName);
     sb.append(baseDeclaration);
-    @SuppressWarnings("unchecked")
-    List<SingleVariableDeclaration> params = m.parameters(); // safe by definition
-    parametersDeclaration(Types.getOriginalMethodBinding(binding), params, baseDeclaration, sb);
+    parametersDeclaration(Types.getOriginalMethodBinding(binding), ASTUtil.getParameters(m),
+        baseDeclaration, sb);
     if (methodName.startsWith("new") || methodName.startsWith("copy")
      || methodName.startsWith("alloc") || methodName.startsWith("init")) {
       // Getting around a clang warning.
@@ -288,9 +285,7 @@ public abstract class ObjectiveCSourceFileGenerator extends SourceFileGenerator 
       baseDeclaration += NameTable.getFullName(binding.getDeclaringClass());
     }
     sb.append(baseDeclaration);
-    @SuppressWarnings("unchecked")
-    List<SingleVariableDeclaration> params = m.parameters(); // safe by definition
-    parametersDeclaration(binding, params, baseDeclaration, sb);
+    parametersDeclaration(binding, ASTUtil.getParameters(m), baseDeclaration, sb);
     return sb.toString();
   }
 
@@ -366,7 +361,7 @@ public abstract class ObjectiveCSourceFileGenerator extends SourceFileGenerator 
 
           // Use original binding, since we can't tell if it's a String
           // array after translation, since IOSObjectArray just holds objects.
-          ITypeBinding type = var.resolveBinding().getType();
+          ITypeBinding type = Types.getVariableBinding(var).getType();
           ITypeBinding stringType = m.getAST().resolveWellKnownType("java.lang.String");
           return type.isArray() && type.getComponentType().isEqualTo(stringType);
         }
@@ -399,9 +394,7 @@ public abstract class ObjectiveCSourceFileGenerator extends SourceFileGenerator 
       return false;
     }
     for (FieldDeclaration field : superClazz.getFields()) {
-      @SuppressWarnings("unchecked")
-      List<VariableDeclarationFragment> vars = field.fragments(); // safe by definition
-      for (VariableDeclarationFragment var : vars) {
+      for (VariableDeclarationFragment var : ASTUtil.getFragments(field)) {
         if (var.getName().getIdentifier().equals(name)) {
           ITypeBinding varType = Types.getTypeBinding(var);
           if (varType.isEqualTo(type)) {

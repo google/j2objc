@@ -27,12 +27,12 @@ import com.google.devtools.j2objc.types.IOSTypeBinding;
 import com.google.devtools.j2objc.types.JavaMethod;
 import com.google.devtools.j2objc.types.NodeCopier;
 import com.google.devtools.j2objc.types.Types;
+import com.google.devtools.j2objc.util.ASTUtil;
 import com.google.devtools.j2objc.util.ErrorReportingASTVisitor;
 import com.google.devtools.j2objc.util.NameTable;
 
 import org.eclipse.jdt.core.dom.AST;
 import org.eclipse.jdt.core.dom.Block;
-import org.eclipse.jdt.core.dom.BodyDeclaration;
 import org.eclipse.jdt.core.dom.ClassInstanceCreation;
 import org.eclipse.jdt.core.dom.Expression;
 import org.eclipse.jdt.core.dom.IMethodBinding;
@@ -164,8 +164,7 @@ public class JavaToIOSMethodTranslator extends ErrorReportingASTVisitor {
     Types.addMappedIOSMethod(binding, iosMethod);
 
     // Map parameters, if any.
-    @SuppressWarnings("unchecked")
-    List<SingleVariableDeclaration> parameters = node.parameters();
+    List<SingleVariableDeclaration> parameters = ASTUtil.getParameters(node);
     int n = parameters.size();
     if (n > 0) {
       List<IOSParameter> iosArgs = iosMethod.getParameters();
@@ -198,9 +197,7 @@ public class JavaToIOSMethodTranslator extends ErrorReportingASTVisitor {
     if (node.getExpression() != null) {
       node.getExpression().accept(this);
     }
-    @SuppressWarnings("unchecked")
-    List<Expression> args = node.arguments(); // safe by design
-    for (Expression e : args) {
+    for (Expression e : ASTUtil.getArguments(node)) {
       e.accept(this);
     }
     if (node.getAnonymousClassDeclaration() != null) {
@@ -218,11 +215,8 @@ public class JavaToIOSMethodTranslator extends ErrorReportingASTVisitor {
         MethodInvocation newInvocation = createMappedInvocation(iosMethod, binding, methodBinding);
 
         // Set parameters.
-        @SuppressWarnings("unchecked")
-        List<Expression> oldArgs = node.arguments(); // safe by definition
-        @SuppressWarnings("unchecked")
-        List<Expression> newArgs = newInvocation.arguments(); // safe by definition
-        copyInvocationArguments(null, oldArgs, newArgs);
+        copyInvocationArguments(null, ASTUtil.getArguments(node),
+            ASTUtil.getArguments(newInvocation));
 
         Types.substitute(node, newInvocation);
         Types.addMappedIOSMethod(binding, iosMethod);
@@ -249,9 +243,7 @@ public class JavaToIOSMethodTranslator extends ErrorReportingASTVisitor {
 
   @Override
   public void endVisit(MethodInvocation node) {
-    @SuppressWarnings("unchecked")
-    List<Expression> args = node.arguments(); // safe by definition
-    for (Expression e : args) {
+    for (Expression e : ASTUtil.getArguments(node)) {
       e.accept(this);
     }
 
@@ -344,9 +336,7 @@ public class JavaToIOSMethodTranslator extends ErrorReportingASTVisitor {
   @Override
   public boolean visit(SuperMethodInvocation node) {
     // translate any embedded method invocations
-    @SuppressWarnings("unchecked")
-    List<Expression> args = node.arguments(); // safe by definition
-    for (Expression e : args) {
+    for (Expression e : ASTUtil.getArguments(node)) {
       e.accept(this);
     }
 
@@ -416,9 +406,7 @@ public class JavaToIOSMethodTranslator extends ErrorReportingASTVisitor {
    */
   @Override
   public boolean visit(Block node) {
-    @SuppressWarnings("unchecked")
-    List<Statement> stmts = node.statements(); // safe by design
-    for (Statement s : stmts) {
+    for (Statement s : ASTUtil.getStatements(node)) {
       s.accept(this);
     }
     return false;
@@ -497,9 +485,7 @@ public class JavaToIOSMethodTranslator extends ErrorReportingASTVisitor {
     GeneratedVariableBinding zoneBinding = new GeneratedVariableBinding("zone", 0, nsZoneType,
         false, true, binding.getDeclaringClass(), binding);
     binding.addParameter(zoneBinding);
-    @SuppressWarnings("unchecked")
-    List<SingleVariableDeclaration> parameters = cloneMethod.parameters(); // safe by definition
-    parameters.add(makeZoneParameter(zoneBinding));
+    ASTUtil.getParameters(cloneMethod).add(makeZoneParameter(zoneBinding));
     Types.addMappedIOSMethod(binding, iosMethod);
 
     Block block = ast.newBlock();
@@ -508,13 +494,9 @@ public class JavaToIOSMethodTranslator extends ErrorReportingASTVisitor {
     MethodInvocation cloneInvocation = makeCloneInvocation(type, zoneBinding);
     ReturnStatement returnStmt = ast.newReturnStatement();
     returnStmt.setExpression(cloneInvocation);
-    @SuppressWarnings("unchecked")
-    List<Statement> stmts = block.statements(); // safe by definition
-    stmts.add(returnStmt);
+    ASTUtil.getStatements(block).add(returnStmt);
 
-    @SuppressWarnings("unchecked")
-    List<BodyDeclaration> members = node.bodyDeclarations(); // safe by definition
-    members.add(cloneMethod);
+    ASTUtil.getBodyDeclarations(node).add(cloneMethod);
   }
 
   private GeneratedMethodBinding makeCloneBinding(ITypeBinding declaringClass,
