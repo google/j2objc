@@ -217,7 +217,7 @@ public class StatementGeneratorTest extends GenerationTest {
       "public class Example { static class Bar { public static final String FOO=\"Mumble\"; } "
       + "String foo; { foo = Bar.FOO; } }",
       "Example", "Example.m");
-    assertTranslation(translation, "JreOperatorRetainedAssign(&foo_, [Example_Bar FOO])");
+    assertTranslation(translation, "JreOperatorRetainedAssign(&foo_, self, [Example_Bar FOO])");
     assertTranslation(translation, "static NSString * Example_Bar_FOO_ = @\"Mumble\";");
     assertTranslation(translation, "+ (NSString *)FOO {");
     assertTranslation(translation, "return Example_Bar_FOO_;");
@@ -242,8 +242,10 @@ public class StatementGeneratorTest extends GenerationTest {
     String translation = translateSourceFile(
         "public class Example { Boolean b1 = Boolean.TRUE; Boolean b2 = Boolean.FALSE; }",
         "Example", "Example.m");
-    assertTranslation(translation, "JreOperatorRetainedAssign(&b1_, [JavaLangBoolean getTRUE])");
-    assertTranslation(translation, "JreOperatorRetainedAssign(&b2_, [JavaLangBoolean getFALSE])");
+    assertTranslation(translation,
+        "JreOperatorRetainedAssign(&b1_, self, [JavaLangBoolean getTRUE])");
+    assertTranslation(translation,
+        "JreOperatorRetainedAssign(&b2_, self, [JavaLangBoolean getFALSE])");
   }
 
   public void testStringConcatenation() throws IOException {
@@ -292,7 +294,7 @@ public class StatementGeneratorTest extends GenerationTest {
       "Example", "Example.m");
     //TODO(user): should copy the string below, not retain it.
     assertTranslation(translation,
-        "JreOperatorRetainedAssign(&s_, @\"hello, 50% of the world\\n\")");
+        "JreOperatorRetainedAssign(&s_, self, @\"hello, 50% of the world\\n\")");
   }
 
   public void testStringConcatenationMethodInvocation() throws IOException {
@@ -379,9 +381,9 @@ public class StatementGeneratorTest extends GenerationTest {
       + "  }"
       + "}",
       "Test", "Test.m");
-    assertTranslation(translation, "JreOperatorRetainedAssign(&i_, otherI);");
+    assertTranslation(translation, "JreOperatorRetainedAssign(&i_, self, otherI);");
     assertTranslation(translation, "j_ = otherJ;");
-    assertTranslation(translation, "JreOperatorRetainedAssign(&i_, nil);");
+    assertTranslation(translation, "JreOperatorRetainedAssign(&i_, self, nil);");
   }
 
   public void testInnerInnerClassFieldAccess() throws IOException {
@@ -563,10 +565,10 @@ public class StatementGeneratorTest extends GenerationTest {
         "public class Test { static int[] a = { 1, 2, 3 }; static char b[] = { '4', '5' }; }",
         "Test", "Test.m");
     assertTranslation(translation,
-        "JreOperatorRetainedAssign(&Test_a_, " +
+        "JreOperatorRetainedAssign(&Test_a_, self, " +
         "[IOSIntArray arrayWithInts:(int[]){ 1, 2, 3 } count:3]);");
     assertTranslation(translation,
-        "JreOperatorRetainedAssign(&Test_b_, " +
+        "JreOperatorRetainedAssign(&Test_b_, self, " +
         "[IOSCharArray arrayWithCharacters:(unichar[]){ '4', '5' } count:2]);");
   }
 
@@ -657,7 +659,7 @@ public class StatementGeneratorTest extends GenerationTest {
       "import java.util.*; public class A { Map map; A() { map = new HashMap(); }}",
       "A", "A.m");
     assertTranslation(translation,
-        "JreOperatorRetainedAssign(&map_, [[[JavaUtilHashMap alloc] init] autorelease])");
+        "JreOperatorRetainedAssign(&map_, self, [[[JavaUtilHashMap alloc] init] autorelease])");
   }
 
   public void testStringAddOperator() throws IOException {
@@ -666,7 +668,7 @@ public class StatementGeneratorTest extends GenerationTest {
       "  A() { myString = \"Foo\"; myString += \"Bar\"; }}",
       "A", "A.m");
     assertTranslation(translation,
-        "JreOperatorRetainedAssign(&myString_, " +
+        "JreOperatorRetainedAssign(&myString_, self, " +
         "[NSString stringWithFormat:@\"%@Bar\", myString_]);");
   }
 
@@ -804,7 +806,7 @@ public class StatementGeneratorTest extends GenerationTest {
     assertTranslation(translation, "@property (nonatomic, retain) Test_B *other_B;");
     translation = getTranslatedFile("Test.m");
     assertTranslation(translation,
-        "JreOperatorRetainedAssign(&other_B_, ((Test_B *) [self getOther]))");
+        "JreOperatorRetainedAssign(&other_B_, self, ((Test_B *) [self getOther]))");
   }
 
   public void testArrayInstanceOfTranslation() throws IOException {

@@ -902,7 +902,7 @@ static id<JavaUtilComparator> CaseInsensitiveComparator_CASE_INSENSITIVE_ORDER_;
         [[CaseInsensitiveComparator alloc] init];
 #else
     JreOperatorRetainedAssign(
-        &CaseInsensitiveComparator_CASE_INSENSITIVE_ORDER_,
+        &CaseInsensitiveComparator_CASE_INSENSITIVE_ORDER_, self,
         [[[CaseInsensitiveComparator alloc] init] autorelease]);
 #endif
   }

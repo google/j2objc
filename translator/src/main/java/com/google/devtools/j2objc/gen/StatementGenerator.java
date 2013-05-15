@@ -613,7 +613,7 @@ public class StatementGenerator extends ErrorReportingASTVisitor {
       if (Options.useReferenceCounting() && isLeftHandSideRetainedProperty(lhs)) {
         String name = leftHandSideInstanceVariableName(lhs);
         buffer.append("JreOperatorRetainedAssign(&" + name);
-        buffer.append(", ");
+        buffer.append(", self, ");
         printStringConcatenation(lhs, rhs, Collections.<Expression>emptyList());
         buffer.append(")");
       } else {
@@ -663,7 +663,7 @@ public class StatementGenerator extends ErrorReportingASTVisitor {
         if (Options.useReferenceCounting() && isLeftHandSideRetainedProperty(lhs)) {
           String name = leftHandSideInstanceVariableName(lhs);
           buffer.append("JreOperatorRetainedAssign(&" + name);
-          buffer.append(", ");
+          buffer.append(", self, ");
           rhs.accept(this);
           buffer.append(")");
         } else {

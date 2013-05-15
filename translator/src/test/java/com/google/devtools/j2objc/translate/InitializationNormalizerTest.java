@@ -308,7 +308,7 @@ public class InitializationNormalizerTest extends GenerationTest {
     String translation = translateSourceFile(source, "Test", "test.m");
     assertTranslation(translation, "static NSString * Test_foo_;");
     assertTranslation(translation,
-        "JreOperatorRetainedAssign(&Test_foo_, [NSString stringWithCharacters:(unichar[]) { "
+        "JreOperatorRetainedAssign(&Test_foo_, self, [NSString stringWithCharacters:(unichar[]) { "
         + "(int) 0xffff } length:1]);");
   }
 
@@ -317,7 +317,7 @@ public class InitializationNormalizerTest extends GenerationTest {
     String translation = translateSourceFile(source, "Test", "test.m");
     assertTranslation(translation, "static NSString * Test_foo_;");
     assertTranslation(translation,
-        "JreOperatorRetainedAssign(&Test_foo_, [NSString stringWithFormat:@\"hello%@\", "
+        "JreOperatorRetainedAssign(&Test_foo_, self, [NSString stringWithFormat:@\"hello%@\", "
         + "[NSString stringWithCharacters:(unichar[]) { (int) 0xffff } length:1]]);");
   }
 
@@ -326,9 +326,9 @@ public class InitializationNormalizerTest extends GenerationTest {
          + "  int outerVar = 1; "
          + "  class Inner { int innerVar = outerVar; void test() { outerVar++; } } }";
     String translation = translateSourceFile(source, "Test", "Test.m");
-    assertTranslation(translation, "JreOperatorRetainedAssign(&this$0_, outer$);");
+    assertTranslation(translation, "JreOperatorRetainedAssign(&this$0_, self, outer$);");
     assertTranslation(translation, "innerVar_ = outer$.outerVar;");
-    assertTrue(translation.indexOf("JreOperatorRetainedAssign(&this$0_, outer$);")
+    assertTrue(translation.indexOf("JreOperatorRetainedAssign(&this$0_, self, outer$);")
                < translation.indexOf("innerVar_ = outer$.outerVar;"));
   }
 
@@ -341,7 +341,8 @@ public class InitializationNormalizerTest extends GenerationTest {
         "  public static final int iSetSize = iSet.size(); }";
     String translation = translateSourceFile(source, "Test", "Test.m");
     String setInit =
-        "JreOperatorRetainedAssign(&Test_iSet_, [[[JavaUtilHashSet alloc] init] autorelease])";
+        "JreOperatorRetainedAssign(&Test_iSet_, self, " +
+        "[[[JavaUtilHashSet alloc] init] autorelease])";
     String setAdd = "[((id<JavaUtilSet>) NIL_CHK(Test_iSet_))" +
         " addWithId:[JavaLangInteger valueOfWithInt:Test_I]]";
     String setSize = "Test_iSetSize_ = [((id<JavaUtilSet>) NIL_CHK(Test_iSet_)) size]";
