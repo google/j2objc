@@ -22,82 +22,7 @@
 /* End PBXAggregateTarget section */
 
 /* Begin PBXBuildFile section */
-		064FB74C172705F400DC0D51 /* URI.h in Headers */ = {isa = PBXBuildFile; fileRef = 064FB746172705F400DC0D51 /* URI.h */; };
-		064FB74E172705F400DC0D51 /* URIEncoderDecoder.h in Headers */ = {isa = PBXBuildFile; fileRef = 064FB748172705F400DC0D51 /* URIEncoderDecoder.h */; };
-		064FB750172705F400DC0D51 /* URISyntaxException.h in Headers */ = {isa = PBXBuildFile; fileRef = 064FB74A172705F400DC0D51 /* URISyntaxException.h */; };
-		064FB758172706E100DC0D51 /* EnumMap.h in Headers */ = {isa = PBXBuildFile; fileRef = 064FB752172706E100DC0D51 /* EnumMap.h */; };
-		064FB75A172706E100DC0D51 /* InvalidPropertiesFormatException.h in Headers */ = {isa = PBXBuildFile; fileRef = 064FB754172706E100DC0D51 /* InvalidPropertiesFormatException.h */; };
-		064FB75C172706E100DC0D51 /* StringTokenizer.h in Headers */ = {isa = PBXBuildFile; fileRef = 064FB756172706E100DC0D51 /* StringTokenizer.h */; };
-		064FB760172706F600DC0D51 /* XMLConstants.h in Headers */ = {isa = PBXBuildFile; fileRef = 064FB75E172706F600DC0D51 /* XMLConstants.h */; };
-		064FB76C1727071800DC0D51 /* FactoryConfigurationError.h in Headers */ = {isa = PBXBuildFile; fileRef = 064FB7621727071800DC0D51 /* FactoryConfigurationError.h */; };
-		064FB76E1727071800DC0D51 /* FilePathToURI.h in Headers */ = {isa = PBXBuildFile; fileRef = 064FB7641727071800DC0D51 /* FilePathToURI.h */; };
-		064FB7701727071800DC0D51 /* ParserConfigurationException.h in Headers */ = {isa = PBXBuildFile; fileRef = 064FB7661727071800DC0D51 /* ParserConfigurationException.h */; };
-		064FB7721727071800DC0D51 /* SAXParser.h in Headers */ = {isa = PBXBuildFile; fileRef = 064FB7681727071800DC0D51 /* SAXParser.h */; };
-		064FB7741727071800DC0D51 /* SAXParserFactory.h in Headers */ = {isa = PBXBuildFile; fileRef = 064FB76A1727071800DC0D51 /* SAXParserFactory.h */; };
-		064FB77A1727072B00DC0D51 /* Result.h in Headers */ = {isa = PBXBuildFile; fileRef = 064FB7761727072B00DC0D51 /* Result.h */; };
-		064FB77C1727072B00DC0D51 /* Source.h in Headers */ = {isa = PBXBuildFile; fileRef = 064FB7781727072B00DC0D51 /* Source.h */; };
-		064FB7861727074100DC0D51 /* Schema.h in Headers */ = {isa = PBXBuildFile; fileRef = 064FB77E1727074100DC0D51 /* Schema.h */; };
-		064FB7881727074100DC0D51 /* TypeInfoProvider.h in Headers */ = {isa = PBXBuildFile; fileRef = 064FB7801727074100DC0D51 /* TypeInfoProvider.h */; };
-		064FB78A1727074100DC0D51 /* Validator.h in Headers */ = {isa = PBXBuildFile; fileRef = 064FB7821727074100DC0D51 /* Validator.h */; };
-		064FB78C1727074100DC0D51 /* ValidatorHandler.h in Headers */ = {isa = PBXBuildFile; fileRef = 064FB7841727074100DC0D51 /* ValidatorHandler.h */; };
-		064FB79C1727079100DC0D51 /* HandlerBase.h in Headers */ = {isa = PBXBuildFile; fileRef = 064FB78E1727079100DC0D51 /* HandlerBase.h */; };
-		064FB79E1727079100DC0D51 /* InputSource.h in Headers */ = {isa = PBXBuildFile; fileRef = 064FB7901727079100DC0D51 /* InputSource.h */; };
-		064FB7A01727079100DC0D51 /* Locator.h in Headers */ = {isa = PBXBuildFile; fileRef = 064FB7921727079100DC0D51 /* Locator.h */; };
-		064FB7A21727079100DC0D51 /* SAXException.h in Headers */ = {isa = PBXBuildFile; fileRef = 064FB7941727079100DC0D51 /* SAXException.h */; };
-		064FB7A41727079100DC0D51 /* SAXNotRecognizedException.h in Headers */ = {isa = PBXBuildFile; fileRef = 064FB7961727079100DC0D51 /* SAXNotRecognizedException.h */; };
-		064FB7A61727079100DC0D51 /* SAXNotSupportedException.h in Headers */ = {isa = PBXBuildFile; fileRef = 064FB7981727079100DC0D51 /* SAXNotSupportedException.h */; };
-		064FB7A81727079100DC0D51 /* SAXParseException.h in Headers */ = {isa = PBXBuildFile; fileRef = 064FB79A1727079100DC0D51 /* SAXParseException.h */; };
-		064FB7B5172707D700DC0D51 /* Attributes2.h in Headers */ = {isa = PBXBuildFile; fileRef = 064FB7AA172707D700DC0D51 /* Attributes2.h */; };
-		064FB7B6172707D700DC0D51 /* Attributes2Impl.h in Headers */ = {isa = PBXBuildFile; fileRef = 064FB7AB172707D700DC0D51 /* Attributes2Impl.h */; };
-		064FB7B8172707D700DC0D51 /* DeclHandler.h in Headers */ = {isa = PBXBuildFile; fileRef = 064FB7AD172707D700DC0D51 /* DeclHandler.h */; };
-		064FB7B9172707D700DC0D51 /* DefaultHandler2.h in Headers */ = {isa = PBXBuildFile; fileRef = 064FB7AE172707D700DC0D51 /* DefaultHandler2.h */; };
-		064FB7BB172707D700DC0D51 /* EntityResolver2.h in Headers */ = {isa = PBXBuildFile; fileRef = 064FB7B0172707D700DC0D51 /* EntityResolver2.h */; };
-		064FB7BC172707D700DC0D51 /* LexicalHandler.h in Headers */ = {isa = PBXBuildFile; fileRef = 064FB7B1172707D700DC0D51 /* LexicalHandler.h */; };
-		064FB7BD172707D700DC0D51 /* Locator2.h in Headers */ = {isa = PBXBuildFile; fileRef = 064FB7B2172707D700DC0D51 /* Locator2.h */; };
-		064FB7BE172707D700DC0D51 /* Locator2Impl.h in Headers */ = {isa = PBXBuildFile; fileRef = 064FB7B3172707D700DC0D51 /* Locator2Impl.h */; };
-		064FB7CA172707F200DC0D51 /* AttributeList.h in Headers */ = {isa = PBXBuildFile; fileRef = 064FB7C0172707F200DC0D51 /* AttributeList.h */; };
-		064FB7CB172707F200DC0D51 /* Attributes.h in Headers */ = {isa = PBXBuildFile; fileRef = 064FB7C1172707F200DC0D51 /* Attributes.h */; };
-		064FB7CC172707F200DC0D51 /* ContentHandler.h in Headers */ = {isa = PBXBuildFile; fileRef = 064FB7C2172707F200DC0D51 /* ContentHandler.h */; };
-		064FB7CD172707F200DC0D51 /* DocumentHandler.h in Headers */ = {isa = PBXBuildFile; fileRef = 064FB7C3172707F200DC0D51 /* DocumentHandler.h */; };
-		064FB7CE172707F200DC0D51 /* DTDHandler.h in Headers */ = {isa = PBXBuildFile; fileRef = 064FB7C4172707F200DC0D51 /* DTDHandler.h */; };
-		064FB7CF172707F200DC0D51 /* EntityResolver.h in Headers */ = {isa = PBXBuildFile; fileRef = 064FB7C5172707F200DC0D51 /* EntityResolver.h */; };
-		064FB7D0172707F200DC0D51 /* ErrorHandler.h in Headers */ = {isa = PBXBuildFile; fileRef = 064FB7C6172707F200DC0D51 /* ErrorHandler.h */; };
-		064FB7D1172707F200DC0D51 /* Parser.h in Headers */ = {isa = PBXBuildFile; fileRef = 064FB7C7172707F200DC0D51 /* Parser.h */; };
-		064FB7D2172707F200DC0D51 /* XMLFilter.h in Headers */ = {isa = PBXBuildFile; fileRef = 064FB7C8172707F200DC0D51 /* XMLFilter.h */; };
-		064FB7D3172707F200DC0D51 /* XMLReader.h in Headers */ = {isa = PBXBuildFile; fileRef = 064FB7C9172707F200DC0D51 /* XMLReader.h */; };
-		064FB7EA1727081D00DC0D51 /* AttributeListImpl.h in Headers */ = {isa = PBXBuildFile; fileRef = 064FB7D41727081D00DC0D51 /* AttributeListImpl.h */; };
-		064FB7EC1727081D00DC0D51 /* AttributesImpl.h in Headers */ = {isa = PBXBuildFile; fileRef = 064FB7D61727081D00DC0D51 /* AttributesImpl.h */; };
-		064FB7EE1727081D00DC0D51 /* DefaultHandler.h in Headers */ = {isa = PBXBuildFile; fileRef = 064FB7D81727081D00DC0D51 /* DefaultHandler.h */; };
-		064FB7F01727081D00DC0D51 /* LocatorImpl.h in Headers */ = {isa = PBXBuildFile; fileRef = 064FB7DA1727081D00DC0D51 /* LocatorImpl.h */; };
-		064FB7F21727081D00DC0D51 /* NamespaceSupport.h in Headers */ = {isa = PBXBuildFile; fileRef = 064FB7DC1727081D00DC0D51 /* NamespaceSupport.h */; };
-		064FB7F41727081D00DC0D51 /* NewInstance.h in Headers */ = {isa = PBXBuildFile; fileRef = 064FB7DE1727081D00DC0D51 /* NewInstance.h */; };
-		064FB7F61727081D00DC0D51 /* ParserAdapter.h in Headers */ = {isa = PBXBuildFile; fileRef = 064FB7E01727081D00DC0D51 /* ParserAdapter.h */; };
-		064FB7F81727081D00DC0D51 /* ParserFactory.h in Headers */ = {isa = PBXBuildFile; fileRef = 064FB7E21727081D00DC0D51 /* ParserFactory.h */; };
-		064FB7FA1727081D00DC0D51 /* XMLFilterImpl.h in Headers */ = {isa = PBXBuildFile; fileRef = 064FB7E41727081D00DC0D51 /* XMLFilterImpl.h */; };
-		064FB7FC1727081D00DC0D51 /* XMLReaderAdapter.h in Headers */ = {isa = PBXBuildFile; fileRef = 064FB7E61727081D00DC0D51 /* XMLReaderAdapter.h */; };
-		064FB7FE1727081D00DC0D51 /* XMLReaderFactory.h in Headers */ = {isa = PBXBuildFile; fileRef = 064FB7E81727081D00DC0D51 /* XMLReaderFactory.h */; };
-		064FB8011727085500DC0D51 /* TypeInfo.h in Headers */ = {isa = PBXBuildFile; fileRef = 064FB8001727085500DC0D51 /* TypeInfo.h */; };
-		064FB8031727086700DC0D51 /* LSResourceResolver.h in Headers */ = {isa = PBXBuildFile; fileRef = 064FB8021727086700DC0D51 /* LSResourceResolver.h */; };
-		064FB8081727091A00DC0D51 /* ICUSupport.h in Headers */ = {isa = PBXBuildFile; fileRef = 064FB8041727091A00DC0D51 /* ICUSupport.h */; };
-		064FB80B1727091A00DC0D51 /* UniquePtr.h in Headers */ = {isa = PBXBuildFile; fileRef = 064FB8071727091A00DC0D51 /* UniquePtr.h */; };
 		06619389155848D70004DAFE /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 06619388155848D70004DAFE /* Foundation.framework */; };
-		06619395155849870004DAFE /* JreEmulation.h in Headers */ = {isa = PBXBuildFile; fileRef = 0661938D155848D70004DAFE /* JreEmulation.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		066193BD155849BC0004DAFE /* IOSArray.h in Headers */ = {isa = PBXBuildFile; fileRef = 06619396155849BB0004DAFE /* IOSArray.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		066193BF155849BC0004DAFE /* IOSArrayClass.h in Headers */ = {isa = PBXBuildFile; fileRef = 06619398155849BB0004DAFE /* IOSArrayClass.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		066193C1155849BC0004DAFE /* IOSBooleanArray.h in Headers */ = {isa = PBXBuildFile; fileRef = 0661939A155849BB0004DAFE /* IOSBooleanArray.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		066193C3155849BC0004DAFE /* IOSByteArray.h in Headers */ = {isa = PBXBuildFile; fileRef = 0661939C155849BB0004DAFE /* IOSByteArray.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		066193C5155849BC0004DAFE /* IOSCharArray.h in Headers */ = {isa = PBXBuildFile; fileRef = 0661939E155849BB0004DAFE /* IOSCharArray.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		066193C7155849BC0004DAFE /* IOSClass.h in Headers */ = {isa = PBXBuildFile; fileRef = 066193A0155849BC0004DAFE /* IOSClass.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		066193CB155849BC0004DAFE /* IOSDoubleArray.h in Headers */ = {isa = PBXBuildFile; fileRef = 066193A4155849BC0004DAFE /* IOSDoubleArray.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		066193CD155849BC0004DAFE /* IOSFloatArray.h in Headers */ = {isa = PBXBuildFile; fileRef = 066193A6155849BC0004DAFE /* IOSFloatArray.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		066193CF155849BC0004DAFE /* IOSIntArray.h in Headers */ = {isa = PBXBuildFile; fileRef = 066193A8155849BC0004DAFE /* IOSIntArray.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		066193D5155849BC0004DAFE /* IOSLongArray.h in Headers */ = {isa = PBXBuildFile; fileRef = 066193AE155849BC0004DAFE /* IOSLongArray.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		066193D7155849BC0004DAFE /* IOSObjectArray.h in Headers */ = {isa = PBXBuildFile; fileRef = 066193B0155849BC0004DAFE /* IOSObjectArray.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		066193D9155849BC0004DAFE /* IOSPrimitiveClass.h in Headers */ = {isa = PBXBuildFile; fileRef = 066193B2155849BC0004DAFE /* IOSPrimitiveClass.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		066193DD155849BC0004DAFE /* IOSShortArray.h in Headers */ = {isa = PBXBuildFile; fileRef = 066193B6155849BC0004DAFE /* IOSShortArray.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		066193DF155849BC0004DAFE /* JavaObject.h in Headers */ = {isa = PBXBuildFile; fileRef = 066193B8155849BC0004DAFE /* JavaObject.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		066193E8155849F80004DAFE /* NSObject+JavaObject.h in Headers */ = {isa = PBXBuildFile; fileRef = 066193E4155849F80004DAFE /* NSObject+JavaObject.h */; };
-		066193EA155849F80004DAFE /* NSString+JavaString.h in Headers */ = {isa = PBXBuildFile; fileRef = 066193E6155849F80004DAFE /* NSString+JavaString.h */; };
 		0672178415587E2C00645E1B /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 06619388155848D70004DAFE /* Foundation.framework */; };
 		067217D315587FC600645E1B /* IOSArrayTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 067217CD15587FC600645E1B /* IOSArrayTest.m */; };
 		067217D415587FC600645E1B /* IOSObjectArrayTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 067217CE15587FC600645E1B /* IOSObjectArrayTest.m */; };
@@ -109,105 +34,6 @@
 		067217E81558978000645E1B /* libjre_emul.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 06619385155848D70004DAFE /* libjre_emul.a */; };
 		06721B9E1559DAF100645E1B /* NSObject+JavaObject.m in Sources */ = {isa = PBXBuildFile; fileRef = 066193E5155849F80004DAFE /* NSObject+JavaObject.m */; };
 		06721B9F1559DAF100645E1B /* NSString+JavaString.m in Sources */ = {isa = PBXBuildFile; fileRef = 066193E7155849F80004DAFE /* NSString+JavaString.m */; };
-		067228E6158FAEBC005318BD /* Field.h in Headers */ = {isa = PBXBuildFile; fileRef = 067228E4158FAEBC005318BD /* Field.h */; };
-		067228F3158FB002005318BD /* CharSequence.h in Headers */ = {isa = PBXBuildFile; fileRef = 067228ED158FB002005318BD /* CharSequence.h */; };
-		067228F4158FB002005318BD /* Comparable.h in Headers */ = {isa = PBXBuildFile; fileRef = 067228EE158FB002005318BD /* Comparable.h */; };
-		067228F5158FB002005318BD /* Constructor.h in Headers */ = {isa = PBXBuildFile; fileRef = 067228EF158FB002005318BD /* Constructor.h */; };
-		067228F6158FB002005318BD /* ExecutableMember.h in Headers */ = {isa = PBXBuildFile; fileRef = 067228F0158FB002005318BD /* ExecutableMember.h */; };
-		067228F7158FB002005318BD /* Method.h in Headers */ = {isa = PBXBuildFile; fileRef = 067228F1158FB002005318BD /* Method.h */; };
-		067228F8158FB002005318BD /* Throwable.h in Headers */ = {isa = PBXBuildFile; fileRef = 067228F2158FB002005318BD /* Throwable.h */; };
-		067228FB158FB0B3005318BD /* AccessibleObject.h in Headers */ = {isa = PBXBuildFile; fileRef = 067228F9158FB0B3005318BD /* AccessibleObject.h */; };
-		06734321171DF62600F26D4F /* TempFailureRetry.h in Headers */ = {isa = PBXBuildFile; fileRef = 06734320171DF62600F26D4F /* TempFailureRetry.h */; };
-		067855A9169F35AB0042431C /* JreMemDebug.h in Headers */ = {isa = PBXBuildFile; fileRef = 067855A5169F35AB0042431C /* JreMemDebug.h */; };
-		067855AB169F35AB0042431C /* JreMemDebugStrongReference.h in Headers */ = {isa = PBXBuildFile; fileRef = 067855A7169F35AB0042431C /* JreMemDebugStrongReference.h */; };
-		067855B3169F364D0042431C /* HashMap_PackagePrivate.h in Headers */ = {isa = PBXBuildFile; fileRef = 067855AD169F364D0042431C /* HashMap_PackagePrivate.h */; };
-		067855B4169F364D0042431C /* HashMap.h in Headers */ = {isa = PBXBuildFile; fileRef = 067855AE169F364D0042431C /* HashMap.h */; };
-		067855B6169F364D0042431C /* LinkedHashMap_PackagePrivate.h in Headers */ = {isa = PBXBuildFile; fileRef = 067855B0169F364D0042431C /* LinkedHashMap_PackagePrivate.h */; };
-		067855B7169F364D0042431C /* LinkedHashMap.h in Headers */ = {isa = PBXBuildFile; fileRef = 067855B1169F364D0042431C /* LinkedHashMap.h */; };
-		067855BB169F367E0042431C /* SyncFailedException.h in Headers */ = {isa = PBXBuildFile; fileRef = 067855B9169F367E0042431C /* SyncFailedException.h */; };
-		067855BE169F36A40042431C /* Annotation.h in Headers */ = {isa = PBXBuildFile; fileRef = 067855BD169F36A40042431C /* Annotation.h */; };
-		067855C1169F37140042431C /* SecurityException.h in Headers */ = {isa = PBXBuildFile; fileRef = 067855BF169F37140042431C /* SecurityException.h */; };
-		067855D9169F37710042431C /* BigDecimal.h in Headers */ = {isa = PBXBuildFile; fileRef = 067855C3169F37710042431C /* BigDecimal.h */; };
-		067855DB169F37710042431C /* BigInteger.h in Headers */ = {isa = PBXBuildFile; fileRef = 067855C5169F37710042431C /* BigInteger.h */; };
-		067855DD169F37710042431C /* BitLevel.h in Headers */ = {isa = PBXBuildFile; fileRef = 067855C7169F37710042431C /* BitLevel.h */; };
-		067855DF169F37710042431C /* Conversion.h in Headers */ = {isa = PBXBuildFile; fileRef = 067855C9169F37710042431C /* Conversion.h */; };
-		067855E1169F37710042431C /* Division.h in Headers */ = {isa = PBXBuildFile; fileRef = 067855CB169F37710042431C /* Division.h */; };
-		067855E3169F37710042431C /* Elementary.h in Headers */ = {isa = PBXBuildFile; fileRef = 067855CD169F37710042431C /* Elementary.h */; };
-		067855E5169F37710042431C /* Logical.h in Headers */ = {isa = PBXBuildFile; fileRef = 067855CF169F37710042431C /* Logical.h */; };
-		067855E7169F37710042431C /* MathContext.h in Headers */ = {isa = PBXBuildFile; fileRef = 067855D1169F37710042431C /* MathContext.h */; };
-		067855E9169F37710042431C /* Multiplication.h in Headers */ = {isa = PBXBuildFile; fileRef = 067855D3169F37710042431C /* Multiplication.h */; };
-		067855EB169F37710042431C /* Primality.h in Headers */ = {isa = PBXBuildFile; fileRef = 067855D5169F37710042431C /* Primality.h */; };
-		067855ED169F37710042431C /* RoundingMode.h in Headers */ = {isa = PBXBuildFile; fileRef = 067855D7169F37710042431C /* RoundingMode.h */; };
-		068677D6166C342C005A5AD7 /* ArrayDeque.h in Headers */ = {isa = PBXBuildFile; fileRef = 068677CB166C342C005A5AD7 /* ArrayDeque.h */; };
-		068677D8166C342C005A5AD7 /* Deque.h in Headers */ = {isa = PBXBuildFile; fileRef = 068677CD166C342C005A5AD7 /* Deque.h */; };
-		068677D9166C342C005A5AD7 /* EventListener.h in Headers */ = {isa = PBXBuildFile; fileRef = 068677CE166C342C005A5AD7 /* EventListener.h */; };
-		068677DB166C342C005A5AD7 /* EventObject.h in Headers */ = {isa = PBXBuildFile; fileRef = 068677D0166C342C005A5AD7 /* EventObject.h */; };
-		068677DD166C342C005A5AD7 /* NavigableMap.h in Headers */ = {isa = PBXBuildFile; fileRef = 068677D2166C342C005A5AD7 /* NavigableMap.h */; };
-		068677DF166C342C005A5AD7 /* NavigableSet.h in Headers */ = {isa = PBXBuildFile; fileRef = 068677D4166C342C005A5AD7 /* NavigableSet.h */; };
-		068677EC166C345F005A5AD7 /* Matcher.h in Headers */ = {isa = PBXBuildFile; fileRef = 068677E2166C345F005A5AD7 /* Matcher.h */; };
-		068677EE166C345F005A5AD7 /* MatchResult.h in Headers */ = {isa = PBXBuildFile; fileRef = 068677E4166C345F005A5AD7 /* MatchResult.h */; };
-		068677F0166C345F005A5AD7 /* MatchResultImpl.h in Headers */ = {isa = PBXBuildFile; fileRef = 068677E6166C345F005A5AD7 /* MatchResultImpl.h */; };
-		068677F2166C345F005A5AD7 /* Pattern.h in Headers */ = {isa = PBXBuildFile; fileRef = 068677E8166C345F005A5AD7 /* Pattern.h */; };
-		068677F4166C345F005A5AD7 /* Splitter.h in Headers */ = {isa = PBXBuildFile; fileRef = 068677EA166C345F005A5AD7 /* Splitter.h */; };
-		0697F60B15D190580027A7E4 /* Array.h in Headers */ = {isa = PBXBuildFile; fileRef = 0697F60315D190580027A7E4 /* Array.h */; };
-		0697F60E15D190580027A7E4 /* GenericDeclaration.h in Headers */ = {isa = PBXBuildFile; fileRef = 0697F60515D190580027A7E4 /* GenericDeclaration.h */; };
-		0697F61115D190580027A7E4 /* Type.h in Headers */ = {isa = PBXBuildFile; fileRef = 0697F60715D190580027A7E4 /* Type.h */; };
-		0697F61415D190580027A7E4 /* TypeVariable.h in Headers */ = {isa = PBXBuildFile; fileRef = 0697F60915D190580027A7E4 /* TypeVariable.h */; };
-		06C6B7FD159BCBD1004B800C /* PatternSyntaxException.h in Headers */ = {isa = PBXBuildFile; fileRef = 06C6B7FB159BCBD1004B800C /* PatternSyntaxException.h */; };
-		06DD32DF16A13FA000AD7ACE /* Buffer.h in Headers */ = {isa = PBXBuildFile; fileRef = 06DD329716A13FA000AD7ACE /* Buffer.h */; };
-		06DD32E116A13FA000AD7ACE /* BufferFactory.h in Headers */ = {isa = PBXBuildFile; fileRef = 06DD329916A13FA000AD7ACE /* BufferFactory.h */; };
-		06DD32E316A13FA000AD7ACE /* BufferOverflowException.h in Headers */ = {isa = PBXBuildFile; fileRef = 06DD329B16A13FA000AD7ACE /* BufferOverflowException.h */; };
-		06DD32E516A13FA000AD7ACE /* BufferUnderflowException.h in Headers */ = {isa = PBXBuildFile; fileRef = 06DD329D16A13FA000AD7ACE /* BufferUnderflowException.h */; };
-		06DD32E716A13FA000AD7ACE /* ByteBuffer.h in Headers */ = {isa = PBXBuildFile; fileRef = 06DD329F16A13FA000AD7ACE /* ByteBuffer.h */; };
-		06DD32E916A13FA000AD7ACE /* ByteOrder.h in Headers */ = {isa = PBXBuildFile; fileRef = 06DD32A116A13FA000AD7ACE /* ByteOrder.h */; };
-		06DD32EB16A13FA000AD7ACE /* CharArrayBuffer.h in Headers */ = {isa = PBXBuildFile; fileRef = 06DD32A316A13FA000AD7ACE /* CharArrayBuffer.h */; };
-		06DD32ED16A13FA000AD7ACE /* CharBuffer.h in Headers */ = {isa = PBXBuildFile; fileRef = 06DD32A516A13FA000AD7ACE /* CharBuffer.h */; };
-		06DD32EF16A13FA000AD7ACE /* CharSequenceAdapter.h in Headers */ = {isa = PBXBuildFile; fileRef = 06DD32A716A13FA000AD7ACE /* CharSequenceAdapter.h */; };
-		06DD32F116A13FA000AD7ACE /* DoubleArrayBuffer.h in Headers */ = {isa = PBXBuildFile; fileRef = 06DD32A916A13FA000AD7ACE /* DoubleArrayBuffer.h */; };
-		06DD32F316A13FA000AD7ACE /* DoubleBuffer.h in Headers */ = {isa = PBXBuildFile; fileRef = 06DD32AB16A13FA000AD7ACE /* DoubleBuffer.h */; };
-		06DD32F516A13FA000AD7ACE /* FloatArrayBuffer.h in Headers */ = {isa = PBXBuildFile; fileRef = 06DD32AD16A13FA000AD7ACE /* FloatArrayBuffer.h */; };
-		06DD32F716A13FA000AD7ACE /* FloatBuffer.h in Headers */ = {isa = PBXBuildFile; fileRef = 06DD32AF16A13FA000AD7ACE /* FloatBuffer.h */; };
-		06DD32F916A13FA000AD7ACE /* HeapByteBuffer.h in Headers */ = {isa = PBXBuildFile; fileRef = 06DD32B116A13FA000AD7ACE /* HeapByteBuffer.h */; };
-		06DD32FB16A13FA000AD7ACE /* IntArrayBuffer.h in Headers */ = {isa = PBXBuildFile; fileRef = 06DD32B316A13FA000AD7ACE /* IntArrayBuffer.h */; };
-		06DD32FD16A13FA000AD7ACE /* IntBuffer.h in Headers */ = {isa = PBXBuildFile; fileRef = 06DD32B516A13FA000AD7ACE /* IntBuffer.h */; };
-		06DD32FF16A13FA000AD7ACE /* InvalidMarkException.h in Headers */ = {isa = PBXBuildFile; fileRef = 06DD32B716A13FA000AD7ACE /* InvalidMarkException.h */; };
-		06DD330116A13FA000AD7ACE /* LongArrayBuffer.h in Headers */ = {isa = PBXBuildFile; fileRef = 06DD32B916A13FA000AD7ACE /* LongArrayBuffer.h */; };
-		06DD330316A13FA000AD7ACE /* LongBuffer.h in Headers */ = {isa = PBXBuildFile; fileRef = 06DD32BB16A13FA000AD7ACE /* LongBuffer.h */; };
-		06DD330516A13FA000AD7ACE /* ReadOnlyBufferException.h in Headers */ = {isa = PBXBuildFile; fileRef = 06DD32BD16A13FA000AD7ACE /* ReadOnlyBufferException.h */; };
-		06DD330716A13FA000AD7ACE /* ReadOnlyCharArrayBuffer.h in Headers */ = {isa = PBXBuildFile; fileRef = 06DD32BF16A13FA000AD7ACE /* ReadOnlyCharArrayBuffer.h */; };
-		06DD330916A13FA000AD7ACE /* ReadOnlyDoubleArrayBuffer.h in Headers */ = {isa = PBXBuildFile; fileRef = 06DD32C116A13FA000AD7ACE /* ReadOnlyDoubleArrayBuffer.h */; };
-		06DD330B16A13FA000AD7ACE /* ReadOnlyFloatArrayBuffer.h in Headers */ = {isa = PBXBuildFile; fileRef = 06DD32C316A13FA000AD7ACE /* ReadOnlyFloatArrayBuffer.h */; };
-		06DD330D16A13FA000AD7ACE /* ReadOnlyHeapByteBuffer.h in Headers */ = {isa = PBXBuildFile; fileRef = 06DD32C516A13FA000AD7ACE /* ReadOnlyHeapByteBuffer.h */; };
-		06DD330F16A13FA000AD7ACE /* ReadOnlyIntArrayBuffer.h in Headers */ = {isa = PBXBuildFile; fileRef = 06DD32C716A13FA000AD7ACE /* ReadOnlyIntArrayBuffer.h */; };
-		06DD331116A13FA000AD7ACE /* ReadOnlyLongArrayBuffer.h in Headers */ = {isa = PBXBuildFile; fileRef = 06DD32C916A13FA000AD7ACE /* ReadOnlyLongArrayBuffer.h */; };
-		06DD331316A13FA000AD7ACE /* ReadOnlyShortArrayBuffer.h in Headers */ = {isa = PBXBuildFile; fileRef = 06DD32CB16A13FA000AD7ACE /* ReadOnlyShortArrayBuffer.h */; };
-		06DD331516A13FA000AD7ACE /* ReadWriteCharArrayBuffer.h in Headers */ = {isa = PBXBuildFile; fileRef = 06DD32CD16A13FA000AD7ACE /* ReadWriteCharArrayBuffer.h */; };
-		06DD331716A13FA000AD7ACE /* ReadWriteDoubleArrayBuffer.h in Headers */ = {isa = PBXBuildFile; fileRef = 06DD32CF16A13FA000AD7ACE /* ReadWriteDoubleArrayBuffer.h */; };
-		06DD331916A13FA000AD7ACE /* ReadWriteFloatArrayBuffer.h in Headers */ = {isa = PBXBuildFile; fileRef = 06DD32D116A13FA000AD7ACE /* ReadWriteFloatArrayBuffer.h */; };
-		06DD331B16A13FA000AD7ACE /* ReadWriteHeapByteBuffer.h in Headers */ = {isa = PBXBuildFile; fileRef = 06DD32D316A13FA000AD7ACE /* ReadWriteHeapByteBuffer.h */; };
-		06DD331D16A13FA000AD7ACE /* ReadWriteIntArrayBuffer.h in Headers */ = {isa = PBXBuildFile; fileRef = 06DD32D516A13FA000AD7ACE /* ReadWriteIntArrayBuffer.h */; };
-		06DD331F16A13FA000AD7ACE /* ReadWriteLongArrayBuffer.h in Headers */ = {isa = PBXBuildFile; fileRef = 06DD32D716A13FA000AD7ACE /* ReadWriteLongArrayBuffer.h */; };
-		06DD332116A13FA000AD7ACE /* ReadWriteShortArrayBuffer.h in Headers */ = {isa = PBXBuildFile; fileRef = 06DD32D916A13FA000AD7ACE /* ReadWriteShortArrayBuffer.h */; };
-		06DD332316A13FA000AD7ACE /* ShortArrayBuffer.h in Headers */ = {isa = PBXBuildFile; fileRef = 06DD32DB16A13FA000AD7ACE /* ShortArrayBuffer.h */; };
-		06DD332516A13FA000AD7ACE /* ShortBuffer.h in Headers */ = {isa = PBXBuildFile; fileRef = 06DD32DD16A13FA000AD7ACE /* ShortBuffer.h */; };
-		06DD332A16A13FBB00AD7ACE /* ParseException.h in Headers */ = {isa = PBXBuildFile; fileRef = 06DD332816A13FBB00AD7ACE /* ParseException.h */; };
-		06DD332F16A1402900AD7ACE /* Executor.h in Headers */ = {isa = PBXBuildFile; fileRef = 06DD332C16A1402900AD7ACE /* Executor.h */; };
-		06DD333016A1402900AD7ACE /* ExecutorService.h in Headers */ = {isa = PBXBuildFile; fileRef = 06DD332D16A1402900AD7ACE /* ExecutorService.h */; };
-		06DD333116A1402900AD7ACE /* Future.h in Headers */ = {isa = PBXBuildFile; fileRef = 06DD332E16A1402900AD7ACE /* Future.h */; };
-		06DD334616A1406A00AD7ACE /* Calendar.h in Headers */ = {isa = PBXBuildFile; fileRef = 06DD333216A1406A00AD7ACE /* Calendar.h */; };
-		06DD334816A1406A00AD7ACE /* Currency.h in Headers */ = {isa = PBXBuildFile; fileRef = 06DD333416A1406A00AD7ACE /* Currency.h */; };
-		06DD334A16A1406A00AD7ACE /* EnumSet.h in Headers */ = {isa = PBXBuildFile; fileRef = 06DD333616A1406A00AD7ACE /* EnumSet.h */; };
-		06DD334C16A1406A00AD7ACE /* Grego.h in Headers */ = {isa = PBXBuildFile; fileRef = 06DD333816A1406A00AD7ACE /* Grego.h */; };
-		06DD334E16A1406A00AD7ACE /* GregorianCalendar.h in Headers */ = {isa = PBXBuildFile; fileRef = 06DD333A16A1406A00AD7ACE /* GregorianCalendar.h */; };
-		06DD335016A1406A00AD7ACE /* HugeEnumSet.h in Headers */ = {isa = PBXBuildFile; fileRef = 06DD333C16A1406A00AD7ACE /* HugeEnumSet.h */; };
-		06DD335216A1406A00AD7ACE /* LinkedHashSet.h in Headers */ = {isa = PBXBuildFile; fileRef = 06DD333E16A1406A00AD7ACE /* LinkedHashSet.h */; };
-		06DD335416A1406A00AD7ACE /* MiniEnumSet.h in Headers */ = {isa = PBXBuildFile; fileRef = 06DD334016A1406A00AD7ACE /* MiniEnumSet.h */; };
-		06DD335616A1406A00AD7ACE /* SimpleTimeZone.h in Headers */ = {isa = PBXBuildFile; fileRef = 06DD334216A1406A00AD7ACE /* SimpleTimeZone.h */; };
-		06DD335816A1406A00AD7ACE /* TimeZone.h in Headers */ = {isa = PBXBuildFile; fileRef = 06DD334416A1406A00AD7ACE /* TimeZone.h */; };
-		06DD335C16A140A600AD7ACE /* Endianness.h in Headers */ = {isa = PBXBuildFile; fileRef = 06DD335A16A140A600AD7ACE /* Endianness.h */; };
-		06DDF48716E83FF800A08BE0 /* BasicLruCache.h in Headers */ = {isa = PBXBuildFile; fileRef = 06DDF48516E83FF800A08BE0 /* BasicLruCache.h */; };
-		06DDF48B16E8401600A08BE0 /* TimeZones.h in Headers */ = {isa = PBXBuildFile; fileRef = 06DDF48916E8401600A08BE0 /* TimeZones.h */; };
-		06DDF49416E8404B00A08BE0 /* TimeZonesSupport.h in Headers */ = {isa = PBXBuildFile; fileRef = 06DDF48F16E8404B00A08BE0 /* TimeZonesSupport.h */; };
 		A34A99F11630A9E7006DEC32 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = A34A99EF1630A9E7006DEC32 /* InfoPlist.strings */; };
 /* End PBXBuildFile section */
 
@@ -331,9 +157,7 @@
 		064FB7E91727081D00DC0D51 /* XMLReaderFactory.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = XMLReaderFactory.m; path = build_result/Classes/org/xml/sax/helpers/XMLReaderFactory.m; sourceTree = "<group>"; };
 		064FB8001727085500DC0D51 /* TypeInfo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = TypeInfo.h; path = build_result/Classes/org/w3c/dom/TypeInfo.h; sourceTree = "<group>"; };
 		064FB8021727086700DC0D51 /* LSResourceResolver.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = LSResourceResolver.h; path = build_result/Classes/org/w3c/dom/ls/LSResourceResolver.h; sourceTree = "<group>"; };
-		064FB8041727091A00DC0D51 /* ICUSupport.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ICUSupport.h; sourceTree = "<group>"; };
-		064FB8051727091A00DC0D51 /* ICUSupport.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = ICUSupport.mm; sourceTree = "<group>"; };
-		064FB8061727091A00DC0D51 /* TimeZonesSupport.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = TimeZonesSupport.mm; sourceTree = "<group>"; };
+		064FB8061727091A00DC0D51 /* TimeZonesSupport.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TimeZonesSupport.m; sourceTree = "<group>"; };
 		064FB8071727091A00DC0D51 /* UniquePtr.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UniquePtr.h; sourceTree = "<group>"; };
 		06619385155848D70004DAFE /* libjre_emul.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libjre_emul.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		06619388155848D70004DAFE /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
@@ -902,8 +726,6 @@
 				067855AE169F364D0042431C /* HashMap.h */,
 				067855AF169F364D0042431C /* HashMap.m */,
 				067855AD169F364D0042431C /* HashMap_PackagePrivate.h */,
-				064FB8041727091A00DC0D51 /* ICUSupport.h */,
-				064FB8051727091A00DC0D51 /* ICUSupport.mm */,
 				06619396155849BB0004DAFE /* IOSArray.h */,
 				06619397155849BB0004DAFE /* IOSArray.m */,
 				06619398155849BB0004DAFE /* IOSArrayClass.h */,
@@ -950,7 +772,7 @@
 				067228F2158FB002005318BD /* Throwable.h */,
 				06721BA31559DE3800645E1B /* Throwable.m */,
 				06DDF48F16E8404B00A08BE0 /* TimeZonesSupport.h */,
-				064FB8061727091A00DC0D51 /* TimeZonesSupport.mm */,
+				064FB8061727091A00DC0D51 /* TimeZonesSupport.m */,
 				064FB8071727091A00DC0D51 /* UniquePtr.h */,
 			);
 			path = Classes;
@@ -1515,180 +1337,6 @@
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				06619395155849870004DAFE /* JreEmulation.h in Headers */,
-				066193BD155849BC0004DAFE /* IOSArray.h in Headers */,
-				066193BF155849BC0004DAFE /* IOSArrayClass.h in Headers */,
-				066193C1155849BC0004DAFE /* IOSBooleanArray.h in Headers */,
-				066193C3155849BC0004DAFE /* IOSByteArray.h in Headers */,
-				066193C5155849BC0004DAFE /* IOSCharArray.h in Headers */,
-				066193C7155849BC0004DAFE /* IOSClass.h in Headers */,
-				066193CB155849BC0004DAFE /* IOSDoubleArray.h in Headers */,
-				066193CD155849BC0004DAFE /* IOSFloatArray.h in Headers */,
-				066193CF155849BC0004DAFE /* IOSIntArray.h in Headers */,
-				066193D5155849BC0004DAFE /* IOSLongArray.h in Headers */,
-				066193D7155849BC0004DAFE /* IOSObjectArray.h in Headers */,
-				066193D9155849BC0004DAFE /* IOSPrimitiveClass.h in Headers */,
-				066193DD155849BC0004DAFE /* IOSShortArray.h in Headers */,
-				066193DF155849BC0004DAFE /* JavaObject.h in Headers */,
-				066193E8155849F80004DAFE /* NSObject+JavaObject.h in Headers */,
-				066193EA155849F80004DAFE /* NSString+JavaString.h in Headers */,
-				067228E6158FAEBC005318BD /* Field.h in Headers */,
-				067228F3158FB002005318BD /* CharSequence.h in Headers */,
-				067228F4158FB002005318BD /* Comparable.h in Headers */,
-				067228F5158FB002005318BD /* Constructor.h in Headers */,
-				067228F6158FB002005318BD /* ExecutableMember.h in Headers */,
-				067228F7158FB002005318BD /* Method.h in Headers */,
-				067228F8158FB002005318BD /* Throwable.h in Headers */,
-				067228FB158FB0B3005318BD /* AccessibleObject.h in Headers */,
-				06C6B7FD159BCBD1004B800C /* PatternSyntaxException.h in Headers */,
-				0697F60B15D190580027A7E4 /* Array.h in Headers */,
-				0697F60E15D190580027A7E4 /* GenericDeclaration.h in Headers */,
-				0697F61115D190580027A7E4 /* Type.h in Headers */,
-				0697F61415D190580027A7E4 /* TypeVariable.h in Headers */,
-				068677D6166C342C005A5AD7 /* ArrayDeque.h in Headers */,
-				068677D8166C342C005A5AD7 /* Deque.h in Headers */,
-				068677D9166C342C005A5AD7 /* EventListener.h in Headers */,
-				068677DB166C342C005A5AD7 /* EventObject.h in Headers */,
-				068677DD166C342C005A5AD7 /* NavigableMap.h in Headers */,
-				068677DF166C342C005A5AD7 /* NavigableSet.h in Headers */,
-				068677EC166C345F005A5AD7 /* Matcher.h in Headers */,
-				068677EE166C345F005A5AD7 /* MatchResult.h in Headers */,
-				068677F0166C345F005A5AD7 /* MatchResultImpl.h in Headers */,
-				068677F2166C345F005A5AD7 /* Pattern.h in Headers */,
-				068677F4166C345F005A5AD7 /* Splitter.h in Headers */,
-				067855A9169F35AB0042431C /* JreMemDebug.h in Headers */,
-				067855AB169F35AB0042431C /* JreMemDebugStrongReference.h in Headers */,
-				067855B3169F364D0042431C /* HashMap_PackagePrivate.h in Headers */,
-				067855B4169F364D0042431C /* HashMap.h in Headers */,
-				067855B6169F364D0042431C /* LinkedHashMap_PackagePrivate.h in Headers */,
-				067855B7169F364D0042431C /* LinkedHashMap.h in Headers */,
-				067855BB169F367E0042431C /* SyncFailedException.h in Headers */,
-				067855BE169F36A40042431C /* Annotation.h in Headers */,
-				067855C1169F37140042431C /* SecurityException.h in Headers */,
-				067855D9169F37710042431C /* BigDecimal.h in Headers */,
-				067855DB169F37710042431C /* BigInteger.h in Headers */,
-				067855DD169F37710042431C /* BitLevel.h in Headers */,
-				067855DF169F37710042431C /* Conversion.h in Headers */,
-				067855E1169F37710042431C /* Division.h in Headers */,
-				067855E3169F37710042431C /* Elementary.h in Headers */,
-				067855E5169F37710042431C /* Logical.h in Headers */,
-				067855E7169F37710042431C /* MathContext.h in Headers */,
-				067855E9169F37710042431C /* Multiplication.h in Headers */,
-				067855EB169F37710042431C /* Primality.h in Headers */,
-				067855ED169F37710042431C /* RoundingMode.h in Headers */,
-				06DD32DF16A13FA000AD7ACE /* Buffer.h in Headers */,
-				06DD32E116A13FA000AD7ACE /* BufferFactory.h in Headers */,
-				06DD32E316A13FA000AD7ACE /* BufferOverflowException.h in Headers */,
-				06DD32E516A13FA000AD7ACE /* BufferUnderflowException.h in Headers */,
-				06DD32E716A13FA000AD7ACE /* ByteBuffer.h in Headers */,
-				06DD32E916A13FA000AD7ACE /* ByteOrder.h in Headers */,
-				06DD32EB16A13FA000AD7ACE /* CharArrayBuffer.h in Headers */,
-				06DD32ED16A13FA000AD7ACE /* CharBuffer.h in Headers */,
-				06DD32EF16A13FA000AD7ACE /* CharSequenceAdapter.h in Headers */,
-				06DD32F116A13FA000AD7ACE /* DoubleArrayBuffer.h in Headers */,
-				06DD32F316A13FA000AD7ACE /* DoubleBuffer.h in Headers */,
-				06DD32F516A13FA000AD7ACE /* FloatArrayBuffer.h in Headers */,
-				06DD32F716A13FA000AD7ACE /* FloatBuffer.h in Headers */,
-				06DD32F916A13FA000AD7ACE /* HeapByteBuffer.h in Headers */,
-				06DD32FB16A13FA000AD7ACE /* IntArrayBuffer.h in Headers */,
-				06DD32FD16A13FA000AD7ACE /* IntBuffer.h in Headers */,
-				06DD32FF16A13FA000AD7ACE /* InvalidMarkException.h in Headers */,
-				06DD330116A13FA000AD7ACE /* LongArrayBuffer.h in Headers */,
-				06DD330316A13FA000AD7ACE /* LongBuffer.h in Headers */,
-				06DD330516A13FA000AD7ACE /* ReadOnlyBufferException.h in Headers */,
-				06DD330716A13FA000AD7ACE /* ReadOnlyCharArrayBuffer.h in Headers */,
-				06DD330916A13FA000AD7ACE /* ReadOnlyDoubleArrayBuffer.h in Headers */,
-				06DD330B16A13FA000AD7ACE /* ReadOnlyFloatArrayBuffer.h in Headers */,
-				06DD330D16A13FA000AD7ACE /* ReadOnlyHeapByteBuffer.h in Headers */,
-				06DD330F16A13FA000AD7ACE /* ReadOnlyIntArrayBuffer.h in Headers */,
-				06DD331116A13FA000AD7ACE /* ReadOnlyLongArrayBuffer.h in Headers */,
-				06DD331316A13FA000AD7ACE /* ReadOnlyShortArrayBuffer.h in Headers */,
-				06DD331516A13FA000AD7ACE /* ReadWriteCharArrayBuffer.h in Headers */,
-				06DD331716A13FA000AD7ACE /* ReadWriteDoubleArrayBuffer.h in Headers */,
-				06DD331916A13FA000AD7ACE /* ReadWriteFloatArrayBuffer.h in Headers */,
-				06DD331B16A13FA000AD7ACE /* ReadWriteHeapByteBuffer.h in Headers */,
-				06DD331D16A13FA000AD7ACE /* ReadWriteIntArrayBuffer.h in Headers */,
-				06DD331F16A13FA000AD7ACE /* ReadWriteLongArrayBuffer.h in Headers */,
-				06DD332116A13FA000AD7ACE /* ReadWriteShortArrayBuffer.h in Headers */,
-				06DD332316A13FA000AD7ACE /* ShortArrayBuffer.h in Headers */,
-				06DD332516A13FA000AD7ACE /* ShortBuffer.h in Headers */,
-				06DD332A16A13FBB00AD7ACE /* ParseException.h in Headers */,
-				06DD332F16A1402900AD7ACE /* Executor.h in Headers */,
-				06DD333016A1402900AD7ACE /* ExecutorService.h in Headers */,
-				06DD333116A1402900AD7ACE /* Future.h in Headers */,
-				06DD334616A1406A00AD7ACE /* Calendar.h in Headers */,
-				06DD334816A1406A00AD7ACE /* Currency.h in Headers */,
-				06DD334A16A1406A00AD7ACE /* EnumSet.h in Headers */,
-				06DD334C16A1406A00AD7ACE /* Grego.h in Headers */,
-				06DD334E16A1406A00AD7ACE /* GregorianCalendar.h in Headers */,
-				06DD335016A1406A00AD7ACE /* HugeEnumSet.h in Headers */,
-				06DD335216A1406A00AD7ACE /* LinkedHashSet.h in Headers */,
-				06DD335416A1406A00AD7ACE /* MiniEnumSet.h in Headers */,
-				06DD335616A1406A00AD7ACE /* SimpleTimeZone.h in Headers */,
-				06DD335816A1406A00AD7ACE /* TimeZone.h in Headers */,
-				06DD335C16A140A600AD7ACE /* Endianness.h in Headers */,
-				06DDF48716E83FF800A08BE0 /* BasicLruCache.h in Headers */,
-				06DDF48B16E8401600A08BE0 /* TimeZones.h in Headers */,
-				06DDF49416E8404B00A08BE0 /* TimeZonesSupport.h in Headers */,
-				06734321171DF62600F26D4F /* TempFailureRetry.h in Headers */,
-				064FB74C172705F400DC0D51 /* URI.h in Headers */,
-				064FB74E172705F400DC0D51 /* URIEncoderDecoder.h in Headers */,
-				064FB750172705F400DC0D51 /* URISyntaxException.h in Headers */,
-				064FB758172706E100DC0D51 /* EnumMap.h in Headers */,
-				064FB75A172706E100DC0D51 /* InvalidPropertiesFormatException.h in Headers */,
-				064FB75C172706E100DC0D51 /* StringTokenizer.h in Headers */,
-				064FB760172706F600DC0D51 /* XMLConstants.h in Headers */,
-				064FB76C1727071800DC0D51 /* FactoryConfigurationError.h in Headers */,
-				064FB76E1727071800DC0D51 /* FilePathToURI.h in Headers */,
-				064FB7701727071800DC0D51 /* ParserConfigurationException.h in Headers */,
-				064FB7721727071800DC0D51 /* SAXParser.h in Headers */,
-				064FB7741727071800DC0D51 /* SAXParserFactory.h in Headers */,
-				064FB77A1727072B00DC0D51 /* Result.h in Headers */,
-				064FB77C1727072B00DC0D51 /* Source.h in Headers */,
-				064FB7861727074100DC0D51 /* Schema.h in Headers */,
-				064FB7881727074100DC0D51 /* TypeInfoProvider.h in Headers */,
-				064FB78A1727074100DC0D51 /* Validator.h in Headers */,
-				064FB78C1727074100DC0D51 /* ValidatorHandler.h in Headers */,
-				064FB79C1727079100DC0D51 /* HandlerBase.h in Headers */,
-				064FB79E1727079100DC0D51 /* InputSource.h in Headers */,
-				064FB7A01727079100DC0D51 /* Locator.h in Headers */,
-				064FB7A21727079100DC0D51 /* SAXException.h in Headers */,
-				064FB7A41727079100DC0D51 /* SAXNotRecognizedException.h in Headers */,
-				064FB7A61727079100DC0D51 /* SAXNotSupportedException.h in Headers */,
-				064FB7A81727079100DC0D51 /* SAXParseException.h in Headers */,
-				064FB7B5172707D700DC0D51 /* Attributes2.h in Headers */,
-				064FB7B6172707D700DC0D51 /* Attributes2Impl.h in Headers */,
-				064FB7B8172707D700DC0D51 /* DeclHandler.h in Headers */,
-				064FB7B9172707D700DC0D51 /* DefaultHandler2.h in Headers */,
-				064FB7BB172707D700DC0D51 /* EntityResolver2.h in Headers */,
-				064FB7BC172707D700DC0D51 /* LexicalHandler.h in Headers */,
-				064FB7BD172707D700DC0D51 /* Locator2.h in Headers */,
-				064FB7BE172707D700DC0D51 /* Locator2Impl.h in Headers */,
-				064FB7CA172707F200DC0D51 /* AttributeList.h in Headers */,
-				064FB7CB172707F200DC0D51 /* Attributes.h in Headers */,
-				064FB7CC172707F200DC0D51 /* ContentHandler.h in Headers */,
-				064FB7CD172707F200DC0D51 /* DocumentHandler.h in Headers */,
-				064FB7CE172707F200DC0D51 /* DTDHandler.h in Headers */,
-				064FB7CF172707F200DC0D51 /* EntityResolver.h in Headers */,
-				064FB7D0172707F200DC0D51 /* ErrorHandler.h in Headers */,
-				064FB7D1172707F200DC0D51 /* Parser.h in Headers */,
-				064FB7D2172707F200DC0D51 /* XMLFilter.h in Headers */,
-				064FB7D3172707F200DC0D51 /* XMLReader.h in Headers */,
-				064FB7EA1727081D00DC0D51 /* AttributeListImpl.h in Headers */,
-				064FB7EC1727081D00DC0D51 /* AttributesImpl.h in Headers */,
-				064FB7EE1727081D00DC0D51 /* DefaultHandler.h in Headers */,
-				064FB7F01727081D00DC0D51 /* LocatorImpl.h in Headers */,
-				064FB7F21727081D00DC0D51 /* NamespaceSupport.h in Headers */,
-				064FB7F41727081D00DC0D51 /* NewInstance.h in Headers */,
-				064FB7F61727081D00DC0D51 /* ParserAdapter.h in Headers */,
-				064FB7F81727081D00DC0D51 /* ParserFactory.h in Headers */,
-				064FB7FA1727081D00DC0D51 /* XMLFilterImpl.h in Headers */,
-				064FB7FC1727081D00DC0D51 /* XMLReaderAdapter.h in Headers */,
-				064FB7FE1727081D00DC0D51 /* XMLReaderFactory.h in Headers */,
-				064FB8011727085500DC0D51 /* TypeInfo.h in Headers */,
-				064FB8031727086700DC0D51 /* LSResourceResolver.h in Headers */,
-				064FB8081727091A00DC0D51 /* ICUSupport.h in Headers */,
-				064FB80B1727091A00DC0D51 /* UniquePtr.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

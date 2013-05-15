@@ -37,7 +37,7 @@ readonly LIB_PATH=${DIR}/lib
 
 declare CC_FLAGS="-Werror -Wno-parentheses"
 declare OBJC=-ObjC
-declare LIBS="-ljre_emul -licucore -lstdc++"
+declare LIBS="-ljre_emul -licucore"
 declare LINK_FLAGS="${LIBS} -framework Foundation -framework ExceptionHandling -L ${LIB_PATH}"
 
 for arg; do
