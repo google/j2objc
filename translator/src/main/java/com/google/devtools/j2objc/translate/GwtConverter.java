@@ -18,7 +18,7 @@ package com.google.devtools.j2objc.translate;
 
 import com.google.common.annotations.GwtIncompatible;
 import com.google.common.collect.Sets;
-import com.google.devtools.j2objc.J2ObjC;
+import com.google.devtools.j2objc.Options;
 import com.google.devtools.j2objc.types.NodeCopier;
 import com.google.devtools.j2objc.types.Types;
 import com.google.devtools.j2objc.util.ASTUtil;
@@ -30,6 +30,7 @@ import org.eclipse.jdt.core.dom.AbstractTypeDeclaration;
 import org.eclipse.jdt.core.dom.Annotation;
 import org.eclipse.jdt.core.dom.AnonymousClassDeclaration;
 import org.eclipse.jdt.core.dom.Block;
+import org.eclipse.jdt.core.dom.BooleanLiteral;
 import org.eclipse.jdt.core.dom.ConditionalExpression;
 import org.eclipse.jdt.core.dom.Expression;
 import org.eclipse.jdt.core.dom.IBinding;
@@ -48,8 +49,9 @@ import java.util.List;
 import java.util.Set;
 
 /**
- * Updates the Java AST to remove methods annotated with GwtIncompatible,
- * and code bound by GWT.isClient and GWT.isScript tests.
+ * Updates the Java AST to remove code bound by GWT.isClient and
+ * GWT.isScript tests, and translate GWT.create(Class) invocations
+ * into Class.newInstance().
  *
  * @author Tom Ball
  */
@@ -66,7 +68,15 @@ public class GwtConverter extends ErrorReportingASTVisitor {
    * specified GwtIncompatible value, since it takes unchecked strings.
    */
   private static final Set<String> compatibleAPIs = Sets.newHashSet(
-    "proto", "protos", "Class.isInstance", "Class.isAssignableFrom", "java.util.BitSet");
+      "Array.newArray(Class, int)", "Array.newInstance(Class, int)", "Class.isInstance",
+      "Class.isAssignableFrom", "CopyOnWriteArraySet", "InputStream", "java.io.BufferedReader",
+      "java.io.Closeable,java.io.Flushable", "java.io.Writer", "java.lang.reflect",
+      "java.lang.String.getBytes()", "java.lang.System#getProperty", "java.util.ArrayDeque",
+      "java.util.BitSet", "java.util.Locale", "java.util.regex", "java.util.regex.Pattern",
+      "java.util.String(byte[], Charset)", "MapMakerInternalMap", "NavigableMap", "NavigableAsMap",
+      "NavigableSet", "Non-UTF-8 Charset", "OutputStream", "proto", "protos", "Readable",
+      "Reader", "Reader,InputStream", "reflection", "regular expressions", "String.format()",
+      "uses NavigableMap", "Writer", "Writer,OutputStream");
 
   @Override
   public boolean visit(ConditionalExpression node) {
@@ -76,27 +86,6 @@ public class GwtConverter extends ErrorReportingASTVisitor {
     }
     node.getElseExpression().accept(this);
     return false;
-  }
-
-  @Override
-  public boolean visit(MethodDeclaration node) {
-    @SuppressWarnings("unchecked")
-    List<IExtendedModifier> modifiers = node.modifiers();
-    if (hasAnnotation(GwtIncompatible.class, modifiers)) {
-      // Remove method from its declaring class.
-      ASTNode parent = node.getParent();
-      if (parent instanceof TypeDeclarationStatement) {
-        parent = ((TypeDeclarationStatement) parent).getDeclaration();
-      }
-      if (parent instanceof AbstractTypeDeclaration) {
-        ((AbstractTypeDeclaration) parent).bodyDeclarations().remove(node);
-      } else if (parent instanceof AnonymousClassDeclaration) {
-        ((AnonymousClassDeclaration) parent).bodyDeclarations().remove(node);
-      } else {
-        throw new AssertionError("unknown parent type: " + parent.getClass().getSimpleName());
-      }
-    }
-    return true;
   }
 
   @Override
@@ -118,8 +107,30 @@ public class GwtConverter extends ErrorReportingASTVisitor {
           ASTUtil.setProperty(node, node.getAST().newEmptyStatement());
         }
       }
+      return false;
     }
-    return false;
+    return true;
+  }
+
+  @Override
+  public boolean visit(MethodDeclaration node) {
+    @SuppressWarnings("unchecked")
+    List<IExtendedModifier> modifiers = node.modifiers();
+    if (Options.stripGwtIncompatibleMethods() && hasAnnotation(GwtIncompatible.class, modifiers)) {
+      // Remove method from its declaring class.
+      ASTNode parent = node.getParent();
+      if (parent instanceof TypeDeclarationStatement) {
+        parent = ((TypeDeclarationStatement) parent).getDeclaration();
+      }
+      if (parent instanceof AbstractTypeDeclaration) {
+        ((AbstractTypeDeclaration) parent).bodyDeclarations().remove(node);
+      } else if (parent instanceof AnonymousClassDeclaration) {
+        ((AnonymousClassDeclaration) parent).bodyDeclarations().remove(node);
+      } else {
+        throw new AssertionError("unknown parent type: " + parent.getClass().getSimpleName());
+      }
+    }
+    return true;
   }
 
   @Override
@@ -142,7 +153,8 @@ public class GwtConverter extends ErrorReportingASTVisitor {
       Types.addBinding(name, newBinding);
       Types.addBinding(node, newBinding);
     } else if (isGwtTest(node)) {
-      J2ObjC.error(node, "GWT.isScript() detected in boolean expression, which is not supported");
+      BooleanLiteral falseLiteral = Types.newBooleanLiteral(false);
+      ASTUtil.setProperty(node, falseLiteral);
     }
     return true;
   }

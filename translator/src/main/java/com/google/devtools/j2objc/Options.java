@@ -65,6 +65,7 @@ public class Options {
   private static boolean generateTestMain = true;
   private static boolean memoryDebug = false;
   private static boolean generateNativeStubs = false;
+  private static boolean stripGwtIncompatible = false;
   private static String fileEncoding = System.getProperty("file.encoding", "ISO-8859-1");
 
   private static DeadCodeMap deadCodeMap = null;
@@ -236,6 +237,8 @@ public class Options {
           usage("-encoding requires an argument");
         }
         fileEncoding = args[nArg];
+      } else if (arg.equals("--strip-gwt-incompatible")) {
+        stripGwtIncompatible = true;
       } else if (arg.startsWith("-h") || arg.equals("--help")) {
         help(false);
       } else if (arg.startsWith("-")) {
@@ -580,5 +583,14 @@ public class Options {
       result[i] = fileEncoding;
     }
     return result;
+  }
+
+  public static boolean stripGwtIncompatibleMethods() {
+    return stripGwtIncompatible;
+  }
+
+  @VisibleForTesting
+  public static void setStripGwtIncompatibleMethods(boolean b) {
+    stripGwtIncompatible = b;
   }
 }
