@@ -40,7 +40,7 @@ JAVA_SOURCES = \
 RESOURCES = \
     com/google/devtools/cyclefinder/CycleFinder.properties
 
-JAR_DEPS = $(ECLIPSE_JARS) $(GUAVA_JAR)
+JAR_DEPS = $(ECLIPSE_JARS) $(GUAVA_JAR) j2objc.jar
 JAR_DEPS_DIST = $(JAR_DEPS:%=$(DIST_JAR_DIR)/%)
 JAR_DEPS_PATH = $(subst $(eval) ,:,$(strip $(JAR_DEPS_DIST)))
 JUNIT_JAR_DIST = $(DIST_JAR_DIR)/$(JUNIT_JAR)
@@ -65,6 +65,7 @@ deps:
 	@if [ "$(CONFIGURATION_BUILD_DIR)x$(MAKELEVEL)" == "x0" ]; then \
 	  cd ../annotations && make dist; \
 	  cd ../java_deps && make dist; \
+	  cd ../translator && make dist; \
 	fi
 
 clean:

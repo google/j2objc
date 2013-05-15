@@ -141,11 +141,20 @@ public class CycleFinderTest extends TestCase {
 
   public void testCapturedVariable() throws Exception {
     addSourceFile("A.java", "class A { void test() {"
-        + " final B b;"
-        + " A a = new A() {}; } }");
+        + " final B b = new B();"
+        + " A a = new A() { void test() { b.hashCode(); } }; } }");
     addSourceFile("B.java", "class B { A a; }");
     findCycles();
     assertCycle("LB;");
+  }
+
+  public void testCapturedVariableNotUsed() throws Exception {
+    addSourceFile("A.java", "class A { void test() {"
+        + " final B b = new B();"
+        + " A a = new A() { void test() { } }; } }");
+    addSourceFile("B.java", "class B { A a; }");
+    findCycles();
+    assertNoCycles();
   }
 
   public void testFinalVarAfterAnonymousClassNotCaptured() throws Exception {
@@ -180,6 +189,19 @@ public class CycleFinderTest extends TestCase {
     addSourceFile("B.java", "class B { Runnable r; }");
     findCycles();
     assertNoCycles();
+  }
+
+  public void testNoOuterReferenceIfNotNeeded() throws Exception {
+    addSourceFile("A.java", "class A { Runnable r = new Runnable() { public void run() {} }; }");
+    findCycles();
+    assertNoCycles();
+  }
+
+  public void testOuterReferenceToGenericClass() throws Exception {
+    addSourceFile("A.java", "class A<T> { int i; T t; class C { void test() { i++; } } }");
+    addSourceFile("B.java", "class B { A<B>.C abc; }");
+    findCycles();
+    assertCycle("LA<LB;>;", "LB;", "LA<LB;>.C;");
   }
 
   private void assertNoCycles() {

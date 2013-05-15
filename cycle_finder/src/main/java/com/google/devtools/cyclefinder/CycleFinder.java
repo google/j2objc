@@ -17,6 +17,7 @@ package com.google.devtools.cyclefinder;
 import com.google.common.base.Splitter;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Lists;
+import com.google.devtools.j2objc.translate.OuterReferenceResolver;
 
 import org.eclipse.jdt.core.compiler.IProblem;
 import org.eclipse.jdt.core.dom.AST;
@@ -69,6 +70,7 @@ public class CycleFinder {
           }
         }
         typeCollector.visitAST(ast);
+        OuterReferenceResolver.resolve(ast);
       }
     };
   }
