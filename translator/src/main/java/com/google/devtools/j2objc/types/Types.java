@@ -141,6 +141,7 @@ public class Types {
     NSString.setMappedType(javaStringType);
     ITypeBinding binding = ast.resolveWellKnownType("java.lang.Integer");
     javaNumberType = binding.getSuperclass();
+    NSNumber.setMappedType(javaNumberType);
     initializeArrayTypes();
     initializeTypeMap();
     populateSimpleTypeMap();
@@ -213,10 +214,7 @@ public class Types {
     typeMap.put(javaClassType, IOSClass);
     typeMap.put(javaCloneableType, NSCopying);
     typeMap.put(javaStringType, NSString);
-
-    // Number isn't a well-known type, but its subclasses are.
     typeMap.put(javaNumberType, NSNumber);
-    NSNumber.setMappedType(javaNumberType.getSuperclass());
   }
 
   private void populateSimpleTypeMap() {
