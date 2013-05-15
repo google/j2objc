@@ -26,7 +26,4 @@
 
 + (IOSObjectArray *)forCountryCode:(NSString *)countryCode;
 
-+ (IOSObjectArray *)getZoneStringsImpl:(NSString *)locale
-                                   ids:(IOSObjectArray *)timeZoneIds;
-
 @end

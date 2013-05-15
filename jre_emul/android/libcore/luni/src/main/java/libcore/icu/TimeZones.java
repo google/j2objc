@@ -44,15 +44,6 @@ public final class TimeZones {
     public static final int NAME_COUNT = 5;
 
     private static final ZoneStringsCache cachedZoneStrings = new ZoneStringsCache();
-    static {
-        // Ensure that we pull in the zone strings for the root locale, en_US, and the
-        // user's default locale. (All devices must support the root locale and en_US,
-        // and they're used for various system things like HTTP headers.) Pre-populating
-        // the cache is especially useful on Android because we'll share this via the Zygote.
-        cachedZoneStrings.get(Locale.ROOT);
-        cachedZoneStrings.get(Locale.US);
-        cachedZoneStrings.get(Locale.getDefault());
-    }
 
     public static class ZoneStringsCache extends BasicLruCache<Locale, String[][]> {
         private final HashMap<String, String> internTable = new HashMap<String, String>();
@@ -63,23 +54,6 @@ public final class TimeZones {
             // really expensive to compute.
             // If you change this, you might want to change the scope of the intern table too.
             super(availableTimeZones.length);
-        }
-
-        @Override protected String[][] create(Locale locale) {
-//            long start, nativeStart;
-//            start = nativeStart = System.currentTimeMillis();
-            String[][] result = getZoneStringsImpl(locale.toString(), availableTimeZones);
-//            long nativeEnd = System.currentTimeMillis();
-            internStrings(result);
-            // Ending up in this method too often is an easy way to make your app slow, so we ensure
-            // it's easy to tell from the log (a) what we were doing, (b) how long it took, and
-            // (c) that it's all ICU's fault.
-//            long end = System.currentTimeMillis();
-//            long duration = end - start;
-//            long nativeDuration = nativeEnd - nativeStart;
-//            System.logI("Loaded time zone names for " + locale + " in " + duration + "ms" +
-//                    " (" + nativeDuration + "ms in ICU)");
-            return result;
         }
 
         private synchronized void internStrings(String[][] result) {
@@ -143,9 +117,5 @@ public final class TimeZones {
 
     private static native String[] forCountryCode(String countryCode) /*-[
       return [TimeZonesSupport forCountryCode:countryCode];
-    ]-*/;
-
-    private static native String[][] getZoneStringsImpl(String locale, String[] timeZoneIds) /*-[
-      return [TimeZonesSupport getZoneStringsImpl:locale ids:timeZoneIds];
     ]-*/;
 }
