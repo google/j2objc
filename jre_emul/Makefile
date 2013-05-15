@@ -77,8 +77,6 @@ JRE_INTERFACES = \
 	java/lang/Iterable.h \
 	java/lang/Runnable.h \
 	java/lang/annotation/Annotation.h \
-	java/lang/annotation/ElementType.h \
-	java/lang/annotation/RetentionPolicy.h \
 	java/lang/reflect/GenericDeclaration.h \
 	java/lang/reflect/Type.h \
 	java/lang/reflect/TypeVariable.h \
@@ -121,6 +119,16 @@ JRE_INTERFACES = \
 	org/xml/sax/XMLReader.h \
 	org/xmlpull/v1/XmlSerializer.h
 
+# Java annotations with runtime retention. These are not currently converted,
+# but need to be when runtime support for annotations is implemented; now they
+# are included so that GWT-compatible sources that reference them can be
+# translated.
+JRE_ANNOTATIONS = \
+	java/lang/annotation/Documented.java \
+	java/lang/annotation/Inherited.java \
+	java/lang/annotation/Retention.java \
+	java/lang/annotation/Target.java
+
 # Java sources to be translated normally.
 JAVA_SOURCES = \
 	java/io/BufferedInputStream.java \
@@ -156,6 +164,11 @@ JAVA_SOURCES = \
 	java/io/SyncFailedException.java \
 	java/io/UnsupportedEncodingException.java \
 	java/io/Writer.java \
+	java/lang/annotation/AnnotationFormatError.java \
+	java/lang/annotation/AnnotationTypeMismatchException.java \
+	java/lang/annotation/ElementType.java \
+	java/lang/annotation/IncompleteAnnotationException.java \
+	java/lang/annotation/RetentionPolicy.java \
 	java/lang/ArithmeticException.java \
 	java/lang/ArrayIndexOutOfBoundsException.java \
 	java/lang/ArrayStoreException.java \
@@ -260,6 +273,9 @@ JAVA_SOURCES = \
 	java/nio/ReadWriteShortArrayBuffer.java \
 	java/nio/ShortArrayBuffer.java \
 	java/nio/ShortBuffer.java \
+	java/sql/Date.java \
+	java/sql/Time.java \
+	java/sql/Timestamp.java \
 	java/text/ParseException.java \
 	java/util/AbstractCollection.java \
 	java/util/AbstractList.java \
@@ -382,7 +398,8 @@ OBJC_SOURCES_MANIFEST = $(BUILD_DIR)/objc_sources.mf
 
 STUB_JAVA_SOURCES = $(shell find $(STUBS_DIR) -name *.java)
 ALL_JAVA_SOURCES = $(JAVA_SOURCES) $(IOS_JAVA_OBJS:.o=.java) $(IOS_INTERFACES:.h=.java) \
-    $(JRE_INTERFACES:.h=.java) $(STUB_JAVA_SOURCES:$(STUBS_DIR)/%=%)
+    $(JRE_INTERFACES:.h=.java) $(STUB_JAVA_SOURCES:$(STUBS_DIR)/%=%) \
+    $(JRE_ANNOTATIONS:$(ANDROID_JRE_ROOT)/%=%)
 TRANSLATED_OBJC = $(JRE_INTERFACES:%.h=$(TRANSLATED_SOURCE_DIR)/%.m) \
     $(JAVA_SOURCES:%.java=$(TRANSLATED_SOURCE_DIR)/%.m)
 TRANSLATED_HEADERS = $(JRE_INTERFACES:%=$(TRANSLATED_SOURCE_DIR)/%) \
