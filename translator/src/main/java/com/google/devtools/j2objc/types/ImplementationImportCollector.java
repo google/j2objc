@@ -17,6 +17,7 @@
 package com.google.devtools.j2objc.types;
 
 import com.google.common.collect.Lists;
+import com.google.devtools.j2objc.util.ASTUtil;
 import com.google.devtools.j2objc.util.NameTable;
 
 import org.eclipse.jdt.core.dom.ASTNode;
@@ -46,7 +47,6 @@ import org.eclipse.jdt.core.dom.Modifier;
 import org.eclipse.jdt.core.dom.Name;
 import org.eclipse.jdt.core.dom.QualifiedName;
 import org.eclipse.jdt.core.dom.SimpleName;
-import org.eclipse.jdt.core.dom.SingleVariableDeclaration;
 import org.eclipse.jdt.core.dom.Type;
 import org.eclipse.jdt.core.dom.TypeDeclaration;
 import org.eclipse.jdt.core.dom.TypeLiteral;
@@ -240,9 +240,7 @@ public class ImplementationImportCollector extends HeaderImportCollector {
           Types.isBooleanType(Types.getTypeBinding(node.getRightOperand()))) {
         needsImport = true;
       } else {
-        @SuppressWarnings("unchecked")
-        List<Expression> extendedExpressions = node.extendedOperands();  // Safe by definition
-        for (Expression extendedExpression : extendedExpressions) {
+        for (Expression extendedExpression : ASTUtil.getExtendedOperands(node)) {
           if (Types.isBooleanType(Types.getTypeBinding(extendedExpression))) {
             needsImport = true;
             break;
@@ -262,16 +260,12 @@ public class ImplementationImportCollector extends HeaderImportCollector {
   @Override
   public boolean visit(MethodDeclaration node) {
     addImports(node.getReturnType2());
-    if (node.resolveBinding() != null && node.resolveBinding().isVarargs()) {
+    IMethodBinding binding = Types.getMethodBinding(node);
+    if (binding.isVarargs()) {
       addImports(Types.resolveIOSType("IOSObjectArray"));
     }
-    for (Iterator<?> iterator = node.parameters().iterator(); iterator.hasNext(); ) {
-      Object o = iterator.next();
-      if (o instanceof SingleVariableDeclaration) {
-        addImports(((SingleVariableDeclaration) o).getType());
-      } else {
-        throw new AssertionError("unknown AST type: " + o.getClass());
-      }
+    for (ITypeBinding paramType : binding.getParameterTypes()) {
+      addImports(paramType);
     }
     return super.visit(node);
   }
@@ -336,9 +330,6 @@ public class ImplementationImportCollector extends HeaderImportCollector {
       }
       if (expr instanceof QualifiedName) {
         expr = ((QualifiedName) expr).getQualifier();
-        if (expr.resolveTypeBinding() == null) {
-          break;
-        }
       } else {
         break;
       }

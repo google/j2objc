@@ -16,6 +16,8 @@
 
 package com.google.devtools.j2objc.types;
 
+import com.google.devtools.j2objc.util.ASTUtil;
+
 import org.eclipse.jdt.core.dom.ITypeBinding;
 import org.eclipse.jdt.core.dom.Type;
 import org.eclipse.jdt.core.dom.TypeDeclaration;
@@ -45,8 +47,7 @@ public class ModifiedTypeBinding implements InvocationHandler {
     ITypeBinding originalBinding = Types.getTypeBinding(type);
     Type superType = type.getSuperclassType();
     ITypeBinding superclass = superType != null ? Types.getTypeBinding(superType) : null;
-    @SuppressWarnings("unchecked")
-    List<ITypeBinding> interfaceList = type.superInterfaceTypes(); // safe by definition
+    List<Type> interfaceList = ASTUtil.getSuperInterfaceTypes(type);
     ITypeBinding[] interfaces = new ITypeBinding[interfaceList.size()];
     for (int i = 0; i < interfaces.length; i++) {
       interfaces[i] = Types.getTypeBinding(interfaceList.get(i));

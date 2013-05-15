@@ -27,6 +27,7 @@ import com.google.devtools.j2objc.types.HeaderImportCollector;
 import com.google.devtools.j2objc.types.IOSMethod;
 import com.google.devtools.j2objc.types.ImportCollector;
 import com.google.devtools.j2objc.types.Types;
+import com.google.devtools.j2objc.util.ASTUtil;
 import com.google.devtools.j2objc.util.ErrorReportingASTVisitor;
 import com.google.devtools.j2objc.util.NameTable;
 import com.google.devtools.j2objc.util.UnicodeUtils;
@@ -89,8 +90,7 @@ public class ObjectiveCHeaderGenerator extends ObjectiveCSourceFileGenerator {
   public void generate(CompilationUnit unit) {
     println(J2ObjC.getFileHeader(getSourceFileName()));
 
-    @SuppressWarnings("unchecked")
-    List<AbstractTypeDeclaration> types = unit.types(); // safe by definition
+    List<AbstractTypeDeclaration> types = ASTUtil.getTypes(unit);
     Set<ITypeBinding> moreForwardTypes = sortTypes(types);
     printImportsAndForwardReferences(unit, moreForwardTypes);
 
@@ -112,9 +112,7 @@ public class ObjectiveCHeaderGenerator extends ObjectiveCSourceFileGenerator {
     printConstantDefines(node);
 
     if (Options.generateDeprecatedDeclarations()) {
-      @SuppressWarnings("unchecked")
-      List<IExtendedModifier> modifiers = node.modifiers();
-      if (hasDeprecated(modifiers)) {
+      if (hasDeprecated(ASTUtil.getModifiers(node))) {
         println(DEPRECATED_ATTRIBUTE);
       }
     }
@@ -124,8 +122,7 @@ public class ObjectiveCHeaderGenerator extends ObjectiveCSourceFileGenerator {
     } else {
       printf("@interface %s : %s", typeName, superName);
     }
-    @SuppressWarnings("unchecked")
-    List<Type> interfaces = node.superInterfaceTypes(); // safe by definition
+    List<Type> interfaces = ASTUtil.getSuperInterfaceTypes(node);
     if (!interfaces.isEmpty()) {
       print(" < ");
       for (Iterator<Type> iterator = interfaces.iterator(); iterator.hasNext();) {
@@ -211,8 +208,7 @@ public class ObjectiveCHeaderGenerator extends ObjectiveCSourceFileGenerator {
   protected void generate(EnumDeclaration node) {
     printConstantDefines(node);
     String typeName = NameTable.getFullName(node);
-    @SuppressWarnings("unchecked")
-    List<EnumConstantDeclaration> constants = node.enumConstants();
+    List<EnumConstantDeclaration> constants = ASTUtil.getEnumConstants(node);
 
     // C doesn't allow empty enum declarations.  Java does, so we skip the
     // C enum declaration and generate the type declaration.
@@ -290,9 +286,7 @@ public class ObjectiveCHeaderGenerator extends ObjectiveCSourceFileGenerator {
     String result = super.methodDeclaration(m);
 
     if (Options.generateDeprecatedDeclarations()) {
-      @SuppressWarnings("unchecked")
-      List<IExtendedModifier> modifiers = m.modifiers();
-      if (hasDeprecated(modifiers)) {
+      if (hasDeprecated(ASTUtil.getModifiers(m))) {
         result += " " + DEPRECATED_ATTRIBUTE;
       }
     }
@@ -420,9 +414,7 @@ public class ObjectiveCHeaderGenerator extends ObjectiveCSourceFileGenerator {
         @Override
         public boolean visit(MethodDeclaration node) {
           addReference(node.getReturnType2());
-          @SuppressWarnings("unchecked")
-          List<SingleVariableDeclaration> params = node.parameters();
-          for (SingleVariableDeclaration param : params) {
+          for (SingleVariableDeclaration param : ASTUtil.getParameters(node)) {
             addReference(param.getType());
           }
           return true;
@@ -503,8 +495,7 @@ public class ObjectiveCHeaderGenerator extends ObjectiveCSourceFileGenerator {
     String lastAccess = "@protected";
     for (FieldDeclaration field : fields) {
       if ((field.getModifiers() & Modifier.STATIC) == 0) {
-        @SuppressWarnings("unchecked")
-        List<VariableDeclarationFragment> vars = field.fragments(); // safe by definition
+        List<VariableDeclarationFragment> vars = ASTUtil.getFragments(field);
         assert !vars.isEmpty();
         VariableDeclarationFragment var = vars.get(0);
         if (var.getName().getIdentifier().startsWith("this$") && superDefinesVariable(var)) {
@@ -553,9 +544,7 @@ public class ObjectiveCHeaderGenerator extends ObjectiveCSourceFileGenerator {
     for (FieldDeclaration field : fields) {
       if ((field.getModifiers() & Modifier.STATIC) == 0) {
         ITypeBinding type = Types.getTypeBinding(field.getType());
-        @SuppressWarnings("unchecked")
-        List<VariableDeclarationFragment> vars = field.fragments(); // safe by definition
-        for (VariableDeclarationFragment var : vars) {
+        for (VariableDeclarationFragment var : ASTUtil.getFragments(field)) {
           if (var.getName().getIdentifier().startsWith("this$") && superDefinesVariable(var)) {
             // Don't print, as it shadows an inner field in a super class.
             continue;

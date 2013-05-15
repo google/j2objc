@@ -41,7 +41,6 @@ import org.eclipse.jdt.core.dom.MethodDeclaration;
 import org.eclipse.jdt.core.dom.MethodInvocation;
 import org.eclipse.jdt.core.dom.SimpleName;
 import org.eclipse.jdt.core.dom.SingleMemberAnnotation;
-import org.eclipse.jdt.core.dom.Statement;
 import org.eclipse.jdt.core.dom.StringLiteral;
 import org.eclipse.jdt.core.dom.TypeDeclarationStatement;
 
@@ -100,9 +99,7 @@ public class GwtConverter extends ErrorReportingASTVisitor {
         // with an empty statement.
         ASTNode parent = node.getParent();
         if (parent instanceof Block) {
-          @SuppressWarnings("unchecked")
-          List<Statement> stmts = ((Block) parent).statements();
-          stmts.remove(node);
+          ASTUtil.getStatements((Block) parent).remove(node);
         } else {
           ASTUtil.setProperty(node, node.getAST().newEmptyStatement());
         }
@@ -114,9 +111,8 @@ public class GwtConverter extends ErrorReportingASTVisitor {
 
   @Override
   public boolean visit(MethodDeclaration node) {
-    @SuppressWarnings("unchecked")
-    List<IExtendedModifier> modifiers = node.modifiers();
-    if (Options.stripGwtIncompatibleMethods() && hasAnnotation(GwtIncompatible.class, modifiers)) {
+    if (Options.stripGwtIncompatibleMethods()
+        && hasAnnotation(GwtIncompatible.class, ASTUtil.getModifiers(node))) {
       // Remove method from its declaring class.
       ASTNode parent = node.getParent();
       if (parent instanceof TypeDeclarationStatement) {
@@ -136,8 +132,7 @@ public class GwtConverter extends ErrorReportingASTVisitor {
   @Override
   public boolean visit(MethodInvocation node) {
     IMethodBinding method = Types.getMethodBinding(node);
-    @SuppressWarnings("unchecked")
-    List<Expression> args = node.arguments();
+    List<Expression> args = ASTUtil.getArguments(node);
     if (method.getName().equals("create") &&
         method.getDeclaringClass().getQualifiedName().equals(GWT_CLASS) &&
         args.size() == 1) {

@@ -20,6 +20,7 @@ import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 import com.google.devtools.j2objc.types.Types;
 import com.google.devtools.j2objc.util.ASTNodeException;
+import com.google.devtools.j2objc.util.ASTUtil;
 import com.google.devtools.j2objc.util.ErrorReportingASTVisitor;
 import com.google.devtools.j2objc.util.NameTable;
 
@@ -32,7 +33,6 @@ import org.eclipse.jdt.core.dom.Modifier;
 import org.eclipse.jdt.core.dom.SingleVariableDeclaration;
 import org.eclipse.jdt.core.dom.TypeDeclaration;
 
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -91,9 +91,7 @@ public class HiddenFieldDetector extends ErrorReportingASTVisitor {
         fieldNames = NO_FIELDS;
       }
 
-      @SuppressWarnings("unchecked")
-      List<SingleVariableDeclaration> parameters = node.parameters();
-      for (SingleVariableDeclaration param : parameters) {
+      for (SingleVariableDeclaration param : ASTUtil.getParameters(node)) {
         IVariableBinding varBinding = Types.getVariableBinding(param);
         if (varBinding != null && fieldNames.contains(varBinding.getName())) {
           fieldNameConflicts.add(varBinding);

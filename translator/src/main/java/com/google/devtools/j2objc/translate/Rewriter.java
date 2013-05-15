@@ -51,7 +51,6 @@ import org.eclipse.jdt.core.dom.Expression;
 import org.eclipse.jdt.core.dom.ExpressionStatement;
 import org.eclipse.jdt.core.dom.FieldDeclaration;
 import org.eclipse.jdt.core.dom.ForStatement;
-import org.eclipse.jdt.core.dom.IBinding;
 import org.eclipse.jdt.core.dom.IMethodBinding;
 import org.eclipse.jdt.core.dom.IPackageBinding;
 import org.eclipse.jdt.core.dom.ITypeBinding;
@@ -246,7 +245,7 @@ public class Rewriter extends ErrorReportingASTVisitor {
       SingleVariableDeclaration param = params.get(i);
       name = param.getName().getIdentifier();
       if (typeQualifierKeywords.contains(name)) {
-        IVariableBinding varBinding = param.resolveBinding();
+        IVariableBinding varBinding = Types.getVariableBinding(param);
         NameTable.rename(varBinding, name + "Arg");
       }
     }
@@ -752,74 +751,74 @@ public class Rewriter extends ErrorReportingASTVisitor {
   // TODO(user): remove when there is iOS console support.
   private boolean rewriteSystemOut(MethodInvocation node) {
     Expression expression = node.getExpression();
-    if (expression instanceof Name) {
-      Name expr = (Name) node.getExpression();
-      IBinding binding = expr.resolveBinding();
-      if (binding instanceof IVariableBinding) {
-        IVariableBinding varBinding = (IVariableBinding) binding;
-        ITypeBinding type = varBinding.getDeclaringClass();
-        if (type == null) {
-          return false;
-        }
-        String clsName = type.getQualifiedName();
-        String varName = varBinding.getName();
-        if (clsName.equals("java.lang.System")
-            && (varName.equals("out") || varName.equals("err"))) {
-          // Change System.out.* or System.err.* to NSLog
-          AST ast = node.getAST();
-          MethodInvocation newInvocation = ast.newMethodInvocation();
-          IMethodBinding methodBinding = new IOSMethodBinding("NSLog",
-              Types.getMethodBinding(node), null);
-          Types.addBinding(newInvocation, methodBinding);
-          Types.addFunction(methodBinding);
-          newInvocation.setName(ast.newSimpleName("NSLog"));
-          Types.addBinding(newInvocation.getName(), methodBinding);
-          newInvocation.setExpression(null);
+    if (!(expression instanceof Name)) {
+      return false;
+    }
+    IVariableBinding varBinding = Types.getVariableBinding(expression);
+    if (varBinding == null) {
+      return false;
+    }
+    ITypeBinding type = varBinding.getDeclaringClass();
+    if (type == null) {
+      return false;
+    }
+    String clsName = type.getQualifiedName();
+    String varName = varBinding.getName();
+    if (clsName.equals("java.lang.System")
+        && (varName.equals("out") || varName.equals("err"))) {
+      // Change System.out.* or System.err.* to NSLog
+      AST ast = node.getAST();
+      MethodInvocation newInvocation = ast.newMethodInvocation();
+      IMethodBinding methodBinding = new IOSMethodBinding("NSLog",
+          Types.getMethodBinding(node), null);
+      Types.addBinding(newInvocation, methodBinding);
+      Types.addFunction(methodBinding);
+      newInvocation.setName(ast.newSimpleName("NSLog"));
+      Types.addBinding(newInvocation.getName(), methodBinding);
+      newInvocation.setExpression(null);
 
-          // Insert NSLog format argument
-          List<Expression> args = ASTUtil.getArguments(node);
-          if (args.size() == 1) {
-            Expression arg = args.get(0);
-            arg.accept(this);
-            String format = getFormatArgument(arg);
-            StringLiteral literal = ast.newStringLiteral();
-            literal.setLiteralValue(format);
-            Types.addBinding(literal, ast.resolveWellKnownType("java.lang.String"));
-            ASTUtil.getArguments(newInvocation).add(literal);
+      // Insert NSLog format argument
+      List<Expression> args = ASTUtil.getArguments(node);
+      if (args.size() == 1) {
+        Expression arg = args.get(0);
+        arg.accept(this);
+        String format = getFormatArgument(arg);
+        StringLiteral literal = ast.newStringLiteral();
+        literal.setLiteralValue(format);
+        Types.addBinding(literal, ast.resolveWellKnownType("java.lang.String"));
+        ASTUtil.getArguments(newInvocation).add(literal);
 
-            // JDT won't let nodes be re-parented, so copy and map.
-            Expression newArg = NodeCopier.copySubtree(ast, arg);
-            if (arg instanceof MethodInvocation) {
-              IMethodBinding argBinding = ((MethodInvocation) arg).resolveMethodBinding();
-              if (!argBinding.getReturnType().isPrimitive() &&
-                  !Types.isJavaStringType(argBinding.getReturnType())) {
-                IOSMethodBinding newBinding =
-                    new IOSMethodBinding("format", argBinding, Types.getNSString());
-                Types.addMappedInvocation(newArg, newBinding);
-              }
-            }
-            ASTUtil.getArguments(newInvocation).add(newArg);
-          } else if (args.size() > 1 && node.getName().getIdentifier().equals("printf")) {
-            ASTUtil.getArguments(newInvocation).addAll(NodeCopier.copySubtrees(ast, args));
-          } else if (args.size() == 0) {
-            // NSLog requires a format string.
-            StringLiteral literal = ast.newStringLiteral();
-            literal.setLiteralValue("");
-            Types.addBinding(literal,  ast.resolveWellKnownType("java.lang.String"));
-            ASTUtil.getArguments(newInvocation).add(literal);
+        // JDT won't let nodes be re-parented, so copy and map.
+        Expression newArg = NodeCopier.copySubtree(ast, arg);
+        if (arg instanceof MethodInvocation) {
+          IMethodBinding argBinding = Types.getMethodBinding(arg);
+          if (!argBinding.getReturnType().isPrimitive() &&
+              !Types.isJavaStringType(argBinding.getReturnType())) {
+            IOSMethodBinding newBinding =
+                new IOSMethodBinding("format", argBinding, Types.getNSString());
+            Types.addMappedInvocation(newArg, newBinding);
           }
-
-          // Replace old invocation with new.
-          ASTNode parent = node.getParent();
-          if (parent instanceof ExpressionStatement) {
-            ExpressionStatement stmt = (ExpressionStatement) parent;
-            stmt.setExpression(newInvocation);
-          } else {
-            throw new AssertionError("unknown parent type: " + parent.getClass().getSimpleName());
-          }
-          return true;
         }
+        ASTUtil.getArguments(newInvocation).add(newArg);
+      } else if (args.size() > 1 && node.getName().getIdentifier().equals("printf")) {
+        ASTUtil.getArguments(newInvocation).addAll(NodeCopier.copySubtrees(ast, args));
+      } else if (args.size() == 0) {
+        // NSLog requires a format string.
+        StringLiteral literal = ast.newStringLiteral();
+        literal.setLiteralValue("");
+        Types.addBinding(literal,  ast.resolveWellKnownType("java.lang.String"));
+        ASTUtil.getArguments(newInvocation).add(literal);
       }
+
+      // Replace old invocation with new.
+      ASTNode parent = node.getParent();
+      if (parent instanceof ExpressionStatement) {
+        ExpressionStatement stmt = (ExpressionStatement) parent;
+        stmt.setExpression(newInvocation);
+      } else {
+        throw new AssertionError("unknown parent type: " + parent.getClass().getSimpleName());
+      }
+      return true;
     }
     return false;
   }
@@ -830,7 +829,7 @@ public class Rewriter extends ErrorReportingASTVisitor {
    * @return true if the node was rewritten
    */
   private boolean rewriteStringFormat(MethodInvocation node) {
-    IMethodBinding binding = node.resolveMethodBinding();
+    IMethodBinding binding = Types.getMethodBinding(node);
     if (binding == null) {
       // No binding due to error already reported.
       return false;
@@ -845,11 +844,11 @@ public class Rewriter extends ErrorReportingASTVisitor {
         return false;
       }
       Expression first = args.get(0);
-      typeBinding = first.resolveTypeBinding();
+      typeBinding = Types.getTypeBinding(first);
       if (typeBinding.getQualifiedName().equals("java.util.Locale")) {
         args.remove(0); // discard locale parameter
         first = args.get(0);
-        typeBinding = first.resolveTypeBinding();
+        typeBinding = Types.getTypeBinding(first);
       }
       if (first instanceof StringLiteral) {
         String format = ((StringLiteral) first).getLiteralValue();

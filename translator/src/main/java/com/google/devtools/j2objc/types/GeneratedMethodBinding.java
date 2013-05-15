@@ -18,6 +18,7 @@ package com.google.devtools.j2objc.types;
 
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Lists;
+import com.google.devtools.j2objc.util.ASTUtil;
 
 import org.eclipse.jdt.core.IJavaElement;
 import org.eclipse.jdt.core.dom.IAnnotationBinding;
@@ -66,8 +67,7 @@ public class GeneratedMethodBinding implements IMethodBinding {
     this(m.getName().getIdentifier(), m.getModifiers(), getReturnType(m),
         declaringClass, m.isConstructor(), m.isVarargs(), isSynthetic);
 
-    @SuppressWarnings("unchecked") // safe by definition
-    List<SingleVariableDeclaration> params = m.parameters();
+    List<SingleVariableDeclaration> params = ASTUtil.getParameters(m);
     for (SingleVariableDeclaration param : params) {
       GeneratedVariableBinding gvb = new GeneratedVariableBinding(param.getName().getIdentifier(),
         param.getModifiers(), Types.getTypeBinding(param), false, true, declaringClass, this);

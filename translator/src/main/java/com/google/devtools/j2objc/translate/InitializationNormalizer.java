@@ -21,6 +21,7 @@ import com.google.devtools.j2objc.types.GeneratedMethodBinding;
 import com.google.devtools.j2objc.types.GeneratedVariableBinding;
 import com.google.devtools.j2objc.types.NodeCopier;
 import com.google.devtools.j2objc.types.Types;
+import com.google.devtools.j2objc.util.ASTUtil;
 import com.google.devtools.j2objc.util.ErrorReportingASTVisitor;
 import com.google.devtools.j2objc.util.NameTable;
 import com.google.devtools.j2objc.util.UnicodeUtils;
@@ -87,8 +88,7 @@ public class InitializationNormalizer extends ErrorReportingASTVisitor {
     ITypeBinding binding = Types.getTypeBinding(node);
 
     // Scan class, gathering initialization statements in declaration order.
-    @SuppressWarnings("unchecked")
-    List<BodyDeclaration> members = node.bodyDeclarations(); // safe by specification
+    List<BodyDeclaration> members = ASTUtil.getBodyDeclarations(node);
     Iterator<BodyDeclaration> iterator = members.iterator();
     while (iterator.hasNext()) {
       BodyDeclaration member = iterator.next();
@@ -150,9 +150,7 @@ public class InitializationNormalizer extends ErrorReportingASTVisitor {
       BodyDeclaration member, boolean isInterface, List<Statement> initStatements,
       List<Statement> classInitStatements) {
     FieldDeclaration field = (FieldDeclaration) member;
-    @SuppressWarnings("unchecked")
-    List<VariableDeclarationFragment> fragments = field.fragments(); // safe by specification
-    for (VariableDeclarationFragment frag : fragments) {
+    for (VariableDeclarationFragment frag : ASTUtil.getFragments(field)) {
       if (frag.getInitializer() != null) {
         Statement assignStmt = makeAssignmentStatement(frag);
         if (Modifier.isStatic(field.getModifiers()) || isInterface) {
@@ -225,8 +223,7 @@ public class InitializationNormalizer extends ErrorReportingASTVisitor {
    */
   void normalizeMethod(MethodDeclaration node, List<Statement> initStatements) {
     if (isDesignatedConstructor(node)) {
-      @SuppressWarnings("unchecked")
-      List<Statement> stmts = node.getBody().statements(); // safe by specification
+      List<Statement> stmts = ASTUtil.getStatements(node.getBody());
 
       // Insert initializer statements after the super invocation. If there
       // isn't a super invocation, add one (like all Java compilers do).
@@ -282,8 +279,7 @@ public class InitializationNormalizer extends ErrorReportingASTVisitor {
     if (body == null) {
       return false;
     }
-    @SuppressWarnings("unchecked")
-    List<Statement> stmts = body.statements(); // safe by specification
+    List<Statement> stmts = ASTUtil.getStatements(body);
     if (stmts.isEmpty()) {
       return true;
     }
@@ -309,12 +305,11 @@ public class InitializationNormalizer extends ErrorReportingASTVisitor {
     addMethod(NameTable.CLINIT_NAME, modifiers, type, classInitStatements, members, ast, false);
   }
 
-  @SuppressWarnings("unchecked")
   private void addMethod(String name, int modifiers, ITypeBinding type,
       List<Statement> initStatements, List<BodyDeclaration> members, AST ast,
       boolean isConstructor) {
     Block body = ast.newBlock();
-    List<Statement> stmts = body.statements();  // safe by definition
+    List<Statement> stmts = ASTUtil.getStatements(body);
     for (Statement stmt : initStatements) {
       Statement newStmt = NodeCopier.copySubtree(ast, stmt);
       stmts.add(newStmt);
@@ -330,7 +325,7 @@ public class InitializationNormalizer extends ErrorReportingASTVisitor {
     method.setReturnType2(returnType);
     method.setBody(body);
     method.setConstructor(isConstructor);
-    method.modifiers().addAll(ast.newModifiers(modifiers));
+    ASTUtil.getModifiers(method).addAll(ASTFactory.newModifiers(ast, modifiers));
     SimpleName nameNode = NameTable.unsafeSimpleName(name, ast);
     Types.addBinding(nameNode, binding);
     method.setName(nameNode);
