@@ -54,6 +54,7 @@ class Options {
   private String bootclasspath;
   private List<String> whitelistFiles = Lists.newArrayList();
   private List<String> sourceFiles = Lists.newArrayList();
+  private static String fileEncoding = System.getProperty("file.encoding", "ISO-8859-1");
 
   public List<String> getSourceFiles() {
     return sourceFiles;
@@ -96,6 +97,10 @@ class Options {
     }
   }
 
+  public static String fileEncoding() {
+    return fileEncoding;
+  }
+
   public static void usage(String invalidUseMsg) {
     System.err.println("cycle_finder: " + invalidUseMsg);
     System.err.println(usageMessage);
@@ -136,6 +141,11 @@ class Options {
         options.addManifest(args[nArg]);
       } else if (arg.startsWith(XBOOTCLASSPATH)) {
         options.bootclasspath = arg.substring(XBOOTCLASSPATH.length());
+      } else if (arg.equals("-encoding")) {
+        if (++nArg == args.length) {
+          usage("-encoding requires an argument");
+        }
+        fileEncoding = args[nArg];
       } else if (arg.startsWith("-h") || arg.equals("--help")) {
         help(false);
       } else if (arg.startsWith("-")) {
