@@ -1385,4 +1385,42 @@ public class StatementGeneratorTest extends GenerationTest {
     // Comparing null with string literal.
     assertTranslation(translation, "BOOL b5 = ![@\"abc\" isEqual:nil];");
   }
+
+  public void testBinaryLiterals() throws IOException {
+    String translation = translateSourceFile(
+        "public class A { " +
+        "  byte aByte = (byte)0b00100001; short aShort = (short)0b1010000101000101;" +
+        "  int anInt1 = 0b10100001010001011010000101000101; " +
+        "  int anInt2 = 0b101; int anInt3 = 0B101;" +  // b can be lower or upper case.
+        "  long aLong = 0b1010000101000101101000010100010110100001010001011010000101000101L; }",
+        "A", "A.m");
+    assertTranslation(translation, "aByte_ = (char) 0b00100001;");
+    assertTranslation(translation, "aShort_ = (short int) 0b1010000101000101;");
+    assertTranslation(translation, "anInt1_ = 0b10100001010001011010000101000101;");
+    assertTranslation(translation, "anInt2_ = 0b101;");
+    assertTranslation(translation, "anInt3_ = 0B101;");
+    assertTranslation(translation,
+        "aLong_ = 0b1010000101000101101000010100010110100001010001011010000101000101LL;");
+  }
+
+  public void testUnderscoresInNumericLiterals() throws IOException {
+    String translation = translateSourceFile(
+        "public class A { " +
+        "  long creditCardNumber = 1234_5678_9012_3456L; " +
+        "  long socialSecurityNumber = 999_99_9999L; " +
+        "  float pi =  3.14_15F; " +
+        "  long hexBytes = 0xFF_EC_DE_5E; " +
+        "  long hexWords = 0xCAFE_BABE; " +
+        "  long maxLong = 0x7fff_ffff_ffff_ffffL; " +
+        "  byte nybbles = 0b0010_0101; " +
+        "  long bytes = 0b11010010_01101001_10010100_10010010; }", "A", "A.m");
+    assertTranslation(translation, "creditCardNumber_ = 1234567890123456LL;");
+    assertTranslation(translation, "socialSecurityNumber_ = 999999999LL;");
+    assertTranslation(translation, "pi_ = 3.1415f;");
+    assertTranslation(translation, "hexBytes_ = (int) 0xFFECDE5E;");
+    assertTranslation(translation, "hexWords_ = (int) 0xCAFEBABE;");
+    assertTranslation(translation, "maxLong_ = (long long) 0x7fffffffffffffffLL;");
+    assertTranslation(translation, "nybbles_ = 0b00100101;");
+    assertTranslation(translation, "bytes_ = 0b11010010011010011001010010010010;");
+  }
 }

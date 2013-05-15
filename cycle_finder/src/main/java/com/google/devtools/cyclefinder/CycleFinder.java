@@ -89,11 +89,11 @@ public class CycleFinder {
   }
 
   private static ASTParser newParser(Options options) {
-    ASTParser parser = ASTParser.newParser(AST.JLS3);
+    ASTParser parser = ASTParser.newParser(AST.JLS4);
     parser.setCompilerOptions(ImmutableMap.of(
-        org.eclipse.jdt.core.JavaCore.COMPILER_SOURCE, "1.6",
-        org.eclipse.jdt.core.JavaCore.COMPILER_CODEGEN_TARGET_PLATFORM, "1.6",
-        org.eclipse.jdt.core.JavaCore.COMPILER_COMPLIANCE, "1.6"));
+        org.eclipse.jdt.core.JavaCore.COMPILER_SOURCE, "1.7",
+        org.eclipse.jdt.core.JavaCore.COMPILER_CODEGEN_TARGET_PLATFORM, "1.7",
+        org.eclipse.jdt.core.JavaCore.COMPILER_COMPLIANCE, "1.7"));
     parser.setResolveBindings(true);
     String[] sourcePathEntries = splitEntries(options.getSourcepath());
     String[] encodings = new String[sourcePathEntries.length];
