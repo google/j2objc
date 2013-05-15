@@ -235,7 +235,7 @@ public class StatementGenerator extends ErrorReportingASTVisitor {
     ITypeBinding binding = Types.getTypeBinding(arrayInit);
     assert binding.isArray();
     ITypeBinding componentType = binding.getComponentType();
-    String componentTypeName = NameTable.javaRefToObjC(componentType);
+    String componentTypeName = NameTable.getSpecificObjCType(componentType);
     buffer.append(String.format("(%s[])",
         componentType.isPrimitive() ? componentTypeName : "id"));
     arrayInit.accept(this);
@@ -882,7 +882,7 @@ public class StatementGenerator extends ErrorReportingASTVisitor {
   @Override
   public boolean visit(CastExpression node) {
     buffer.append("(");
-    buffer.append(NameTable.javaRefToObjC(node.getType()));
+    buffer.append(NameTable.getSpecificObjCType(Types.getTypeBinding(node)));
     buffer.append(") ");
     node.getExpression().accept(this);
     return false;
@@ -1039,7 +1039,7 @@ public class StatementGenerator extends ErrorReportingASTVisitor {
       // Since arrays are untyped in Obj-C, add a cast of its element type.
       ArrayAccess access = (ArrayAccess) expr;
       ITypeBinding elementType = Types.getTypeBinding(access.getArray()).getElementType();
-      buffer.append(String.format("((%s) ", NameTable.javaRefToObjC(elementType)));
+      buffer.append(String.format("((%s) ", NameTable.getSpecificObjCType(elementType)));
       expr.accept(this);
       buffer.append(')');
     } else {
@@ -1512,7 +1512,7 @@ public class StatementGenerator extends ErrorReportingASTVisitor {
       return false;
     }
     String typeName = type.getName().equals("NSObject") ? "NSObject *" :
-        NameTable.javaRefToObjC(type);
+        NameTable.getSpecificObjCType(type);
     if (typeName.equals(NameTable.ID_TYPE)) {
       return false;
     }
@@ -1818,7 +1818,7 @@ public class StatementGenerator extends ErrorReportingASTVisitor {
       }
       if (needsCast) {
         buffer.append('(');
-        buffer.append(NameTable.javaRefToObjC(expressionType));
+        buffer.append(NameTable.getObjCType(expressionType));
         buffer.append(") ");
       }
       if (shouldRetainResult) {
@@ -1904,7 +1904,7 @@ public class StatementGenerator extends ErrorReportingASTVisitor {
 
   @Override
   public boolean visit(SingleVariableDeclaration node) {
-    buffer.append(NameTable.javaRefToObjC(node.getType()));
+    buffer.append(NameTable.getSpecificObjCType(Types.getTypeBinding(node)));
     if (node.isVarargs()) {
       buffer.append("...");
     }
@@ -2107,7 +2107,7 @@ public class StatementGenerator extends ErrorReportingASTVisitor {
 
   @Override
   public boolean visit(VariableDeclarationExpression node) {
-    buffer.append(NameTable.javaRefToObjC(node.getType()));
+    buffer.append(NameTable.getSpecificObjCType(Types.getTypeBinding(node)));
     buffer.append(" ");
     for (Iterator<?> it = node.fragments().iterator(); it.hasNext(); ) {
       VariableDeclarationFragment f = (VariableDeclarationFragment) it.next();
@@ -2134,7 +2134,7 @@ public class StatementGenerator extends ErrorReportingASTVisitor {
     List<VariableDeclarationFragment> vars = ASTUtil.getFragments(node);
     assert !vars.isEmpty();
     ITypeBinding binding = Types.getTypeBinding(vars.get(0));
-    String objcType = NameTable.javaRefToObjC(binding);
+    String objcType = NameTable.getSpecificObjCType(binding);
     boolean needsAsterisk = !binding.isPrimitive() &&
         !(objcType.equals(NameTable.ID_TYPE) || objcType.matches("id<.*>"));
     if (needsAsterisk && objcType.endsWith(" *")) {

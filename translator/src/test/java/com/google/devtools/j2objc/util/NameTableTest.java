@@ -105,6 +105,6 @@ public class NameTableTest extends GenerationTest {
     });
     assertNotNull(methodBinding[0]);
     ITypeBinding paramType = methodBinding[0].getParameterTypes()[0];
-    assertEquals("id", NameTable.javaRefToObjC(paramType));
+    assertEquals("id", NameTable.getSpecificObjCType(paramType));
   }
 }

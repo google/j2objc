@@ -152,7 +152,7 @@ public class ObjectiveCImplementationGenerator extends ObjectiveCSourceFileGener
   private String constructorKey(IMethodBinding constructor) {
     StringBuilder sb = new StringBuilder();
     for (ITypeBinding type : constructor.getParameterTypes()) {
-      sb.append(NameTable.javaRefToObjC(type) + ":");
+      sb.append(NameTable.parameterKeyword(type) + ":");
     }
     return sb.toString();
   }
@@ -844,7 +844,7 @@ public class ObjectiveCImplementationGenerator extends ObjectiveCSourceFileGener
           IVariableBinding binding = Types.getVariableBinding(var);
           if (!Types.isPrimitiveConstant(binding)) {
             String name = NameTable.getStaticVarQualifiedName(binding);
-            String objcType = NameTable.javaRefToObjC(f.getType());
+            String objcType = NameTable.getObjCType(binding.getType());
             Expression initializer = var.getInitializer();
             if (initializer != null) {
               printf("static %s %s = %s;\n", objcType, name, generateExpression(initializer));
@@ -873,7 +873,7 @@ public class ObjectiveCImplementationGenerator extends ObjectiveCSourceFileGener
 
           String name = NameTable.getName(var.getName());
           ITypeBinding type = Types.getTypeBinding(field.getType());
-          String typeString = NameTable.javaRefToObjC(type);
+          String typeString = NameTable.getSpecificObjCType(type);
           String objCFieldName = NameTable.javaFieldToObjC(name);
 
           // Don't emit the getter when there is already a method with the

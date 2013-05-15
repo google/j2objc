@@ -145,7 +145,7 @@ public abstract class ObjectiveCSourceFileGenerator extends SourceFileGenerator 
   }
 
   protected String staticFieldGetterSignature(IVariableBinding var) {
-    String objcType = NameTable.javaRefToObjC(var.getType());
+    String objcType = NameTable.getObjCType(var.getType());
     String accessorName = NameTable.getStaticAccessorName(var.getName());
     return String.format("+ (%s)%s", objcType, accessorName);
   }
@@ -155,7 +155,7 @@ public abstract class ObjectiveCSourceFileGenerator extends SourceFileGenerator 
   }
 
   protected String staticFieldReferenceGetterSignature(IVariableBinding var) {
-    String objcType = NameTable.javaRefToObjC(var.getType());
+    String objcType = NameTable.getObjCType(var.getType());
     String accessorName = NameTable.getStaticAccessorName(var.getName());
     return String.format("+ (%s *)%sRef", objcType, accessorName);
   }
@@ -165,7 +165,7 @@ public abstract class ObjectiveCSourceFileGenerator extends SourceFileGenerator 
   }
 
   protected String staticFieldSetterSignature(IVariableBinding var) {
-    String objcType = NameTable.javaRefToObjC(var.getType());
+    String objcType = NameTable.getObjCType(var.getType());
     String paramName = NameTable.getName(var);
     return String.format("+ (void)set%s:(%s)%s", NameTable.capitalize(var.getName()), objcType,
                          paramName);
@@ -202,15 +202,16 @@ public abstract class ObjectiveCSourceFileGenerator extends SourceFileGenerator 
    */
   protected String mappedMethodDeclaration(MethodDeclaration method, IOSMethod mappedMethod) {
     StringBuffer sb = new StringBuffer();
-    boolean isStatic = (method.getModifiers() & Modifier.STATIC) > 0;
 
     // Explicitly test hashCode() because of NSObject's hash return value.
     String baseDeclaration;
     if (mappedMethod.getName().equals("hash")) {
       baseDeclaration = "- (NSUInteger)hash";
     } else {
-      baseDeclaration = String.format("%c (%s)%s", isStatic ? '+' : '-',
-          NameTable.javaRefToObjC(method.getReturnType2()), mappedMethod.getName());
+      baseDeclaration = String.format("%c (%s)%s",
+          Modifier.isStatic(method.getModifiers()) ? '+' : '-',
+          NameTable.getObjCType(Types.getTypeBinding(method.getReturnType2())),
+          mappedMethod.getName());
     }
 
     sb.append(baseDeclaration);
@@ -249,7 +250,7 @@ public abstract class ObjectiveCSourceFileGenerator extends SourceFileGenerator 
     IMethodBinding binding = Types.getMethodBinding(m);
     String methodName = NameTable.getName(binding);
     String baseDeclaration = String.format("%c (%s)%s", isStatic ? '+' : '-',
-        NameTable.javaRefToObjC(m.getReturnType2()), methodName);
+        NameTable.getObjCType(binding.getReturnType()), methodName);
     sb.append(baseDeclaration);
     parametersDeclaration(Types.getOriginalMethodBinding(binding), ASTUtil.getParameters(m),
         baseDeclaration, sb);
@@ -316,7 +317,8 @@ public abstract class ObjectiveCSourceFileGenerator extends SourceFileGenerator 
           sb.append(pad(baseDeclaration.length() - keyword.length()));
           sb.append(keyword);
         }
-        sb.append(String.format(":(%s)%s", NameTable.javaRefToObjC(param.getType()), fieldName));
+        sb.append(String.format(":(%s)%s",
+            NameTable.getSpecificObjCType(Types.getTypeBinding(param)), fieldName));
         if (i + 1 < nParams) {
           sb.append('\n');
         }
