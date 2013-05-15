@@ -30,6 +30,7 @@ import org.eclipse.jdt.core.IJavaElement;
 import org.eclipse.jdt.core.dom.AST;
 import org.eclipse.jdt.core.dom.ASTNode;
 import org.eclipse.jdt.core.dom.Block;
+import org.eclipse.jdt.core.dom.BooleanLiteral;
 import org.eclipse.jdt.core.dom.CompilationUnit;
 import org.eclipse.jdt.core.dom.Expression;
 import org.eclipse.jdt.core.dom.IAnnotationBinding;
@@ -763,6 +764,12 @@ public class Types {
     NullLiteral nullLiteral = instance.ast.newNullLiteral();
     addBinding(nullLiteral, NullType.SINGLETON);
     return nullLiteral;
+  }
+
+  public static BooleanLiteral newBooleanLiteral(boolean value) {
+    BooleanLiteral boolLiteral = instance.ast.newBooleanLiteral(value);
+    addBinding(boolLiteral, instance.booleanType);
+    return boolLiteral;
   }
 
   public static SimpleName newLabel(String identifier) {
