@@ -16,6 +16,7 @@
 
 package com.google.devtools.j2objc.util;
 
+import com.google.common.base.Joiner;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.devtools.j2objc.Options;
@@ -25,7 +26,6 @@ import com.google.devtools.j2objc.types.Types;
 import org.eclipse.jdt.core.dom.AST;
 import org.eclipse.jdt.core.dom.ASTNode;
 import org.eclipse.jdt.core.dom.AbstractTypeDeclaration;
-import org.eclipse.jdt.core.dom.ArrayType;
 import org.eclipse.jdt.core.dom.CompilationUnit;
 import org.eclipse.jdt.core.dom.IBinding;
 import org.eclipse.jdt.core.dom.IMethodBinding;
@@ -323,7 +323,7 @@ public class NameTable {
     return primitiveTypeToObjC(code.toString());
   }
 
-  private static String primitiveTypeToObjC(String javaName) {
+  public static String primitiveTypeToObjC(String javaName) {
     if (javaName.equals("boolean")) {
       return "BOOL"; // defined in NSObject.h
     }
@@ -343,40 +343,55 @@ public class NameTable {
     return javaName;
   }
 
-  /**
-   * Convert a Java type into an equivalent Objective-C type.
-   */
-  public static String javaTypeToObjC(Type type, boolean includeInterfaces) {
-    if (type instanceof PrimitiveType) {
-      return primitiveTypeToObjC((PrimitiveType) type);
+  private static String getPrimitiveTypeParameterKeyword(String javaName) {
+    // TODO(user): These can be changed to "Long" and "Short".
+    if (javaName.equals("long")) {
+      return "LongInt";
+    } else if (javaName.equals("short")) {
+      return "ShortInt";
     }
-    if (type instanceof ParameterizedType) {
-      type = ((ParameterizedType) type).getType();  // erase parameterized type
-    }
-    if (type instanceof ArrayType) {
-      ITypeBinding arrayBinding = Types.getTypeBinding(type);
-      if (arrayBinding != null) {
-        ITypeBinding elementType = arrayBinding.getElementType();
-        return Types.resolveArrayType(elementType).getName();
-      }
-    }
-    ITypeBinding binding = Types.getTypeBinding(type);
-    return javaTypeToObjC(binding, includeInterfaces);
+    return primitiveTypeToObjC(javaName);
   }
 
-  public static String javaTypeToObjC(ITypeBinding binding, boolean includeInterfaces) {
-    if (binding.isInterface() && !includeInterfaces || binding == Types.resolveIOSType("id") ||
-        binding == Types.resolveIOSType("NSObject") || Types.isJavaObjectType(binding)) {
-      return NameTable.ID_TYPE;
+  // TODO(user): See whether the logic in this method can be simplified.
+  //     Also, what about type variables?
+  private static String getArrayTypeParameterKeyword(ITypeBinding elementType) {
+    if (elementType.isPrimitive()) {
+      elementType = Types.getWrapperType(elementType);
     }
-    if (binding.isTypeVariable()) {
-      binding = binding.getErasure();
-      if (Types.isJavaObjectType(binding) || binding.isInterface()) {
-        return NameTable.ID_TYPE;
+    if (elementType.isParameterizedType()) {
+      elementType = elementType.getErasure();
+    }
+    if (elementType.isCapture()) {
+      elementType = elementType.getWildcard();
+    }
+    if (elementType.isWildcardType()) {
+      ITypeBinding bound = elementType.getBound();
+      if (bound != null) {
+        elementType = bound;
       }
-      // otherwise fall-through
     }
-    return getFullName(binding);
+    return getFullName(elementType) + "Array";
+  }
+
+  private static boolean isIdType(ITypeBinding type) {
+    return type == Types.resolveIOSType("id") || type == Types.resolveIOSType("NSObject")
+        || Types.isJavaObjectType(type);
+  }
+
+  private static String getParameterTypeKeyword(ITypeBinding type) {
+    if (isIdType(type) || type.isTypeVariable()) {
+      return ID_TYPE;
+    } else if (type.isPrimitive()) {
+      return getPrimitiveTypeParameterKeyword(type.getName());
+    } else if (type.isArray()) {
+      return getArrayTypeParameterKeyword(type.getElementType());
+    }
+    return getFullName(type);
+  }
+
+  public static String parameterKeyword(ITypeBinding type) {
+    return "with" + capitalize(getParameterTypeKeyword(type));
   }
 
   /**
@@ -387,17 +402,36 @@ public class NameTable {
   }
 
   public static String javaRefToObjC(ITypeBinding type) {
+    if (type.isTypeVariable()) {
+      ITypeBinding[] bounds = type.getTypeBounds();
+      while (bounds.length > 0 && bounds[0].isTypeVariable()) {
+        type = bounds[0];
+        bounds = type.getTypeBounds();
+      }
+      return constructObjCType(bounds);
+    }
     if (type.isPrimitive()) {
       return primitiveTypeToObjC(type.getName());
     }
-    String typeName = javaTypeToObjC(type, false);
-    if (typeName.equals(NameTable.ID_TYPE) || Types.isJavaVoidType(type)) {
-      if (type.isInterface()) {
-        return String.format("%s<%s>", ID_TYPE, getFullName(type));
+    return constructObjCType(type.getErasure());
+  }
+
+  private static String constructObjCType(ITypeBinding... types) {
+    String classType = null;
+    List<String> interfaces = Lists.newArrayListWithCapacity(types.length);
+    for (ITypeBinding type : types) {
+      if (type == null || isIdType(type) || Types.isJavaVoidType(type)) {
+        continue;
       }
-      return NameTable.ID_TYPE;
+      if (type.isInterface()) {
+        interfaces.add(getFullName(type));
+      } else {
+        assert classType == null;  // Can only have one class type.
+        classType = getFullName(type);
+      }
     }
-    return typeName + " *";
+    String protocols = interfaces.isEmpty() ? "" : "<" + Joiner.on(", ").join(interfaces) + ">";
+    return classType == null ? ID_TYPE + protocols : classType + protocols + " *";
   }
 
   /**
@@ -442,9 +476,6 @@ public class NameTable {
   }
 
   public static String getFullName(ITypeBinding binding) {
-    if (binding.isPrimitive()) {
-      return primitiveTypeToObjC(binding.getName());
-    }
     binding = Types.mapType(binding.getErasure());  // Make sure type variables aren't included.
     String suffix = binding.isEnum() ? "Enum" : "";
     String prefix = "";
@@ -562,33 +593,6 @@ public class NameTable {
 
   public static String getPrimitiveConstantName(IVariableBinding constant) {
     return String.format("%s_%s", getFullName(constant.getDeclaringClass()), constant.getName());
-  }
-
-  public static String getParameterTypeName(String typeName, ITypeBinding typeBinding) {
-    if (typeName.equals("long long int") || typeName.equals("long")) {
-      typeName = "LongInt";   // avoid name conflict with java.lang.Long
-    } else if (typeName.equals("short int") || typeName.equals("short")) {
-      typeName = "ShortInt";  // or java.lang.Short
-    } else if (typeBinding.isArray()) {
-      ITypeBinding elementType = typeBinding.getElementType();
-      if (elementType.isPrimitive()) {
-        elementType = Types.getWrapperType(elementType);
-      }
-      if (elementType.isParameterizedType()) {
-        elementType = elementType.getErasure();
-      }
-      if (elementType.isCapture()) {
-        elementType = elementType.getWildcard();
-      }
-      if (elementType.isWildcardType()) {
-        ITypeBinding bound = elementType.getBound();
-        if (bound != null) {
-          elementType = bound;
-        }
-      }
-      typeName = getFullName(elementType) + "Array";
-    }
-    return typeName;
   }
 
   public static String javaFieldToObjC(String fieldName) {

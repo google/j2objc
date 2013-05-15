@@ -22,6 +22,7 @@ import com.google.devtools.j2objc.Options.MemoryManagementOption;
 import com.google.devtools.j2objc.gen.SourceBuilder;
 import com.google.devtools.j2objc.gen.SourcePosition;
 import com.google.devtools.j2objc.gen.StatementGenerator;
+import com.google.devtools.j2objc.types.Types;
 import com.google.devtools.j2objc.util.NameTable;
 
 import org.eclipse.jdt.core.dom.ASTVisitor;
@@ -538,7 +539,7 @@ public class InnerClassExtractorTest extends GenerationTest {
     assertEquals("main", method.getName().getIdentifier());
     VariableDeclarationStatement field =
         (VariableDeclarationStatement) method.getBody().statements().get(0);
-    assertEquals("Test_B", NameTable.javaTypeToObjC(field.getType(), false));
+    assertEquals("Test_B", NameTable.getFullName(Types.getTypeBinding(field.getType())));
     String result = StatementGenerator.generate(field, Collections.EMPTY_SET, false,
         new SourcePosition(null, SourceBuilder.BEGINNING_OF_FILE, null)).trim();
     assertEquals("Test_B *b = " +
@@ -593,7 +594,7 @@ public class InnerClassExtractorTest extends GenerationTest {
     assertEquals("main", method.getName().getIdentifier());
     VariableDeclarationStatement field =
         (VariableDeclarationStatement) method.getBody().statements().get(0);
-    assertEquals("Test_B", NameTable.javaTypeToObjC(field.getType(), false));
+    assertEquals("Test_B", NameTable.getFullName(Types.getTypeBinding(field.getType())));
     String result = StatementGenerator.generate(field, Collections.EMPTY_SET, false,
         new SourcePosition(null, SourceBuilder.BEGINNING_OF_FILE, null)).trim();
     assertEquals("Test_B *b = " +

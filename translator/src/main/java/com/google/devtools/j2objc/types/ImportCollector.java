@@ -28,6 +28,7 @@ import org.eclipse.jdt.core.dom.QualifiedType;
 import org.eclipse.jdt.core.dom.SimpleType;
 import org.eclipse.jdt.core.dom.Type;
 
+import java.util.Collection;
 import java.util.Set;
 
 /**
@@ -39,10 +40,8 @@ import java.util.Set;
  */
 public class ImportCollector extends ErrorReportingASTVisitor {
 
-  private final Set<Import> imports = Sets.newLinkedHashSet();
-  private final Set<Import> superTypes = Sets.newLinkedHashSet();
-
-  public static final Import NULL_IMPORT = new Import("<not a type>", "", false);
+  protected final Set<Import> imports = Sets.newLinkedHashSet();
+  protected final Set<Import> superTypes = Sets.newLinkedHashSet();
 
   /**
    * Collects references and super types for a specified type declaration.
@@ -72,45 +71,39 @@ public class ImportCollector extends ErrorReportingASTVisitor {
     return superTypes;
   }
 
-  protected void addReference(Type type) {
-    Import imp = getReference(type);
-    if (imp != NULL_IMPORT) {
-      addImport(imp);
-    }
+  protected void addImports(Type type) {
+    addImports(type, imports);
+  }
+
+  protected void addImports(ITypeBinding type) {
+    addImports(type, imports);
   }
 
   protected void addSuperType(Type type) {
-    Import imp = getReference(type);
-    if (imp != NULL_IMPORT) {
-      superTypes.add(imp);
-    }
+    addImports(type, superTypes);
   }
 
-  protected Import getReference(Type type) {
+  private void addImports(Type type, Collection<Import> references) {
     if (type == null || type instanceof PrimitiveType) {
-      return NULL_IMPORT;
+      return;
     }
     ITypeBinding binding = Types.getTypeBinding(type);
     if (binding == null) {
       binding = Types.resolveIOSType(type);
     }
     if (binding == null) {
-      return NULL_IMPORT; // parser already reported missing class
+      return; // parser already reported missing class
     }
     if (Types.isIOSType(type)) {
-      return NULL_IMPORT;
+      return;
     }
     if (binding.isPrimitive()) {
-      return NULL_IMPORT;
+      return;
     }
-    return getReference(binding);
+    addImports(binding, references);
   }
 
-  protected void addReference(ITypeBinding binding) {
-    addImport(getReference(binding));
-  }
-
-  protected Import getReference(ITypeBinding binding) {
+  protected void addImports(ITypeBinding binding, Collection<Import> imports) {
     if (!binding.isTypeVariable() && !binding.isPrimitive() && !binding.isAnnotation()
         // Don't import IOS types, other than the IOS array types,
         // since they have header files.
@@ -122,27 +115,22 @@ public class ImportCollector extends ErrorReportingASTVisitor {
       while (!binding.isTopLevel()) {
         binding = binding.getDeclaringClass();
       }
-      return getReference(typeName,
-          binding.getErasure().getQualifiedName(), isInterface);
+      if (!Types.isIOSType(typeName)) {
+        imports.add(new Import(typeName, binding.getErasure().getQualifiedName(), isInterface));
+      }
     } else if (binding.isTypeVariable()) {
-      ITypeBinding[] typeBounds = binding.getTypeBounds();
-      if (typeBounds.length > 0 && !Types.isJavaObjectType(typeBounds[0])) {
-        return getReference(typeBounds[0]);
+      for (ITypeBinding bound : binding.getTypeBounds()) {
+        addImports(bound, imports);
       }
     }
-    return NULL_IMPORT;
   }
 
-  protected void addReference(String typeName, String javaFileName, boolean isInterface) {
-    imports.add(getReference(typeName, javaFileName, isInterface));
+  protected void addImport(String typeName, String javaFileName, boolean isInterface) {
+    imports.add(new Import(typeName, javaFileName, isInterface));
   }
 
   protected void addSuperType(String typeName, String javaFileName, boolean isInterface) {
-    superTypes.add(getReference(typeName, javaFileName, isInterface));
-  }
-
-  protected Import getReference(String typeName, String javaFileName, boolean isInterface) {
-    return new Import(typeName, javaFileName, isInterface);
+    superTypes.add(new Import(typeName, javaFileName, isInterface));
   }
 
   protected String getTypeName(Type type) throws ClassNotFoundException {
@@ -160,12 +148,6 @@ public class ImportCollector extends ErrorReportingASTVisitor {
       throw new ClassNotFoundException(type.toString());
     }
     return fullName;
-  }
-
-  protected void addImport(Import imp) {
-    if (imp != NULL_IMPORT && imp.needsImport()) {
-     imports.add(imp);
-    }
   }
 
   /**
@@ -221,10 +203,6 @@ public class ImportCollector extends ErrorReportingASTVisitor {
       }
       Import other = (Import) obj;
       return typeName.equals(other.typeName);
-    }
-
-    public boolean needsImport() {
-      return !Types.isIOSType(typeName);
     }
 
     @Override

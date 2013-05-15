@@ -72,7 +72,7 @@ public class ImplementationImportCollector extends HeaderImportCollector {
   @Override
   public void collect(CompilationUnit unit, String sourceFileName) {
     super.collect(unit, sourceFileName);
-    getDeclaredTypes(unit);
+    getDeclaredTypes(unit, NameTable.getMainTypeName(unit, sourceFileName));
     Iterator<Import> imports = getImports().iterator();
     while (imports.hasNext()) {
       Import imp = imports.next();
@@ -85,7 +85,7 @@ public class ImplementationImportCollector extends HeaderImportCollector {
   // Keep track of any declared types to avoid invalid imports.  The
   // exception is the main type, as it's needed to import the matching
   // header file.
-  private void getDeclaredTypes(ASTNode node) {
+  private void getDeclaredTypes(ASTNode node, final String mainTypeName) {
     node.accept(new ASTVisitor() {
       @Override
       public void endVisit(TypeDeclaration node) {
@@ -101,7 +101,7 @@ public class ImplementationImportCollector extends HeaderImportCollector {
         ITypeBinding binding = Types.getTypeBinding(type);
         boolean isMain = NameTable.getFullName(binding).equals(mainType);
         if (!isMain) {
-          declaredTypes.add(getReference(binding));
+          addImports(binding, declaredTypes);
         }
       }
     });
@@ -110,8 +110,8 @@ public class ImplementationImportCollector extends HeaderImportCollector {
   @Override
   public boolean visit(ArrayAccess node) {
     ITypeBinding componentType = Types.getTypeBinding(node);
-    addReference(componentType);
-    addReference(Types.resolveArrayType(componentType));
+    addImports(componentType);
+    addImports(Types.resolveArrayType(componentType));
     return super.visit(node);
   }
 
@@ -122,7 +122,7 @@ public class ImplementationImportCollector extends HeaderImportCollector {
         Types.isBooleanType(Types.getTypeBinding(node.getRightHandSide()))) {
       // Implicit conversion from boolean -> String translates into a
       // Boolean.toString(...) call, so add a reference to java.lang.Boolean.
-      addReference(node.getAST().resolveWellKnownType("java.lang.Boolean"));
+      addImports(node.getAST().resolveWellKnownType("java.lang.Boolean"));
     }
     return super.visit(node);
   }
@@ -130,30 +130,30 @@ public class ImplementationImportCollector extends HeaderImportCollector {
   @Override
   public boolean visit(ArrayCreation node) {
     ITypeBinding type = Types.getTypeBinding(node);
-    addReference(type);
+    addImports(type);
     int dim = node.dimensions().size();
     for (int i = 0; i < dim; i++) {
       type = type.getComponentType();
-      addReference(type);
+      addImports(type);
     }
     return super.visit(node);
   }
 
   @Override
   public boolean visit(CastExpression node) {
-    addReference(node.getType());
+    addImports(node.getType());
     return super.visit(node);
   }
 
   @Override
   public boolean visit(CatchClause node) {
-    addReference(node.getException().getType());
+    addImports(node.getException().getType());
     return super.visit(node);
   }
 
   @Override
   public boolean visit(ClassInstanceCreation node) {
-    addReference(node.getType());
+    addImports(node.getType());
     IMethodBinding binding = Types.getMethodBinding(node);
     if (binding != null) {
       ITypeBinding[] parameterTypes = binding.getParameterTypes();
@@ -168,9 +168,9 @@ public class ImplementationImportCollector extends HeaderImportCollector {
         ITypeBinding actualType = Types.getTypeBinding(node.arguments().get(i));
         if (!parameterType.equals(actualType) &&
             actualType.isAssignmentCompatible(parameterType)) {
-          addReference(actualType);
+          addImports(actualType);
         } else {
-          addReference(parameterType);
+          addImports(parameterType);
         }
       }
     }
@@ -183,20 +183,20 @@ public class ImplementationImportCollector extends HeaderImportCollector {
     if (type.isPrimitive()) {
       type = Types.getWrapperType(type);
     }
-    addReference(type);
+    addImports(type);
     return super.visit(node);
   }
 
   @Override
   public boolean visit(EnumDeclaration node) {
-    addReference(Types.getTypeBinding(node));
-    addReference("JavaLangIllegalArgumentException", "java.lang.IllegalArgumentException", false);
+    addImports(Types.getTypeBinding(node));
+    addImport("JavaLangIllegalArgumentException", "java.lang.IllegalArgumentException", false);
     return true;
   }
 
   @Override
   public boolean visit(FieldAccess node) {
-    addReference(Types.getTypeBinding(node.getName()));
+    addImports(Types.getTypeBinding(node.getName()));
     return true;
   }
 
@@ -204,14 +204,14 @@ public class ImplementationImportCollector extends HeaderImportCollector {
   public boolean visit(FieldDeclaration node) {
     // non-private references are gathered by the header file collector
     if (Modifier.isPrivate(node.getModifiers())) {
-      addReference(node.getType());
+      addImports(node.getType());
     }
     return super.visit(node);
   }
 
   @Override
   public boolean visit(InstanceofExpression node) {
-    addReference(node.getRightOperand());
+    addImports(node.getRightOperand());
     return super.visit(node);
   }
 
@@ -236,7 +236,7 @@ public class ImplementationImportCollector extends HeaderImportCollector {
       if (needsImport) {
         // Implicit conversion from boolean -> String translates into a
         // Boolean.toString(...) call, so add a reference to java.lang.Boolean.
-        addReference(node.getAST().resolveWellKnownType("java.lang.Boolean"));
+        addImports(node.getAST().resolveWellKnownType("java.lang.Boolean"));
       }
     }
     return super.visit(node);
@@ -244,14 +244,14 @@ public class ImplementationImportCollector extends HeaderImportCollector {
 
   @Override
   public boolean visit(MethodDeclaration node) {
-    addReference(node.getReturnType2());
+    addImports(node.getReturnType2());
     if (node.resolveBinding() != null && node.resolveBinding().isVarargs()) {
-      addReference(Types.resolveIOSType("IOSObjectArray"));
+      addImports(Types.resolveIOSType("IOSObjectArray"));
     }
     for (Iterator<?> iterator = node.parameters().iterator(); iterator.hasNext(); ) {
       Object o = iterator.next();
       if (o instanceof SingleVariableDeclaration) {
-        addReference(((SingleVariableDeclaration) o).getType());
+        addImports(((SingleVariableDeclaration) o).getType());
       } else {
         throw new AssertionError("unknown AST type: " + o.getClass());
       }
@@ -262,11 +262,11 @@ public class ImplementationImportCollector extends HeaderImportCollector {
   @Override
   public boolean visit(MethodInvocation node) {
     IMethodBinding methodBinding = Types.getMethodBinding(node);
-    addReference(methodBinding.getReturnType());
+    addImports(methodBinding.getReturnType());
     // Check for vararg method
     IMethodBinding binding = Types.getMethodBinding(node);
     if (binding != null && binding.isVarargs()) {
-      addReference(Types.resolveIOSType("IOSObjectArray"));
+      addImports(Types.resolveIOSType("IOSObjectArray"));
     } else if (binding != null) {
       ITypeBinding[] parameterTypes = binding.getParameterTypes();
       for (int i = 0; i < parameterTypes.length; i++) {
@@ -274,7 +274,7 @@ public class ImplementationImportCollector extends HeaderImportCollector {
         ITypeBinding actualType = Types.getTypeBinding(node.arguments().get(i));
         if (!parameterType.equals(actualType) &&
             actualType.isAssignmentCompatible(parameterType)) {
-          addReference(actualType);
+          addImports(actualType);
         }
       }
     }
@@ -285,21 +285,21 @@ public class ImplementationImportCollector extends HeaderImportCollector {
       if (binding != null) {
         ITypeBinding typeBinding = binding.getDeclaringClass();
         if (typeBinding != null) {
-          addReference(typeBinding);
+          addImports(typeBinding);
         }
       }
     } else {
       IMethodBinding receiver = Types.getMethodBinding(expr);
       if (receiver != null && !receiver.isConstructor()) {
-        addReference(receiver.getReturnType());
+        addImports(receiver.getReturnType());
       }
       if (receiver == null) {
         // Check for class variable or enum constant.
         IVariableBinding var = Types.getVariableBinding(expr);
         if (var == null || var.isEnumConstant()) {
-          addReference(Types.getTypeBinding(expr));
+          addImports(Types.getTypeBinding(expr));
         } else {
-          addReference(var.getType());
+          addImports(var.getType());
         }
       }
     }
@@ -308,13 +308,13 @@ public class ImplementationImportCollector extends HeaderImportCollector {
         // true for mapped methods
         IMethodBinding resolvedBinding = Types.resolveInvocationBinding(node);
         if (resolvedBinding != null) {
-          addReference(resolvedBinding.getDeclaringClass());
+          addImports(resolvedBinding.getDeclaringClass());
           break;
         }
       }
       ITypeBinding typeBinding = Types.getTypeBinding(expr);
       if (typeBinding != null && typeBinding.isClass()) { // if class literal
-        addReference(typeBinding);
+        addImports(typeBinding);
         break;
       }
       if (expr instanceof QualifiedName) {
@@ -333,7 +333,7 @@ public class ImplementationImportCollector extends HeaderImportCollector {
   public boolean visit(QualifiedName node) {
     IBinding type = Types.getTypeBinding(node);
     if (type != null) {
-      addReference((ITypeBinding) type);
+      addImports((ITypeBinding) type);
     }
     return true;
   }
@@ -343,7 +343,7 @@ public class ImplementationImportCollector extends HeaderImportCollector {
     IVariableBinding var = Types.getVariableBinding(node);
     if (var != null && Modifier.isStatic(var.getModifiers())) {
       ITypeBinding declaringClass = var.getDeclaringClass();
-      addReference(declaringClass);
+      addImports(declaringClass);
     }
     return true;
   }
@@ -351,9 +351,9 @@ public class ImplementationImportCollector extends HeaderImportCollector {
   @Override
   public boolean visit(TypeDeclaration node) {
     ITypeBinding type = Types.getTypeBinding(node);
-    addReference(type);
+    addImports(type);
     if (Types.isJUnitTest(type)) {
-      addReference("JUnitRunner", "JUnitRunner", true);
+      addImport("JUnitRunner", "JUnitRunner", true);
     }
     return true;
   }
@@ -361,33 +361,33 @@ public class ImplementationImportCollector extends HeaderImportCollector {
   @Override
   public boolean visit(VariableDeclarationExpression node) {
     Type type = node.getType();
-    addReference(type);
+    addImports(type);
     return super.visit(node);
   }
 
   @Override
   public boolean visit(VariableDeclarationStatement node) {
-    addReference(node.getType());
+    addImports(node.getType());
     return super.visit(node);
   }
 
   @Override
-  protected void addReference(ITypeBinding binding) {
+  protected void addImports(ITypeBinding binding) {
     // There is similar code in gen/StatementGenerator, but here
     // recursion is used to tease out the references in nested
     // generic type declarations, which isn't needed when
     // generating statements.
     if (binding != null && !Types.isVoidType(binding) && !binding.isAnnotation()) {
       if (binding.isWildcardType()) {
-        addReference(binding.getBound());
+        addImports(binding.getBound());
       } else if (binding.isCapture()) {
-        addReference(binding.getWildcard());
+        addImports(binding.getWildcard());
       } else {
         assert (!binding.isCapture() && !binding.isWildcardType());
-        super.addReference(binding);
+        super.addImports(binding);
       }
       for (ITypeBinding typeArg : binding.getTypeArguments()) {
-        addReference(typeArg);
+        addImports(typeArg);
       }
     }
   }

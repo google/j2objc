@@ -20,8 +20,11 @@ import com.google.devtools.j2objc.GenerationTest;
 import com.google.devtools.j2objc.Options;
 import com.google.devtools.j2objc.types.Types;
 
+import org.eclipse.jdt.core.dom.ASTVisitor;
 import org.eclipse.jdt.core.dom.CompilationUnit;
+import org.eclipse.jdt.core.dom.IMethodBinding;
 import org.eclipse.jdt.core.dom.ITypeBinding;
+import org.eclipse.jdt.core.dom.MethodDeclaration;
 import org.eclipse.jdt.core.dom.TypeDeclaration;
 
 /**
@@ -86,5 +89,22 @@ public class NameTableTest extends GenerationTest {
     assertEquals("FooBarSomeClass_Inner", NameTable.getFullName(decl));
     ITypeBinding binding = Types.getTypeBinding(decl);
     assertEquals("FooBarSomeClass_Inner", NameTable.getFullName(binding));
+  }
+
+  public void testTypeVariableWithTypeVariableBounds() {
+    String source = "class A<T> { <E extends T> void foo(E e) {} }";
+    CompilationUnit unit = translateType("A", source);
+    final IMethodBinding[] methodBinding = new IMethodBinding[1];
+    unit.accept(new ASTVisitor() {
+      @Override public void endVisit(MethodDeclaration node) {
+        IMethodBinding binding = Types.getMethodBinding(node);
+        if (binding.getName().equals("foo")) {
+          methodBinding[0] = binding;
+        }
+      }
+    });
+    assertNotNull(methodBinding[0]);
+    ITypeBinding paramType = methodBinding[0].getParameterTypes()[0];
+    assertEquals("id", NameTable.javaRefToObjC(paramType));
   }
 }

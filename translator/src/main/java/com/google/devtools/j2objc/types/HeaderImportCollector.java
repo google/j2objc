@@ -35,7 +35,7 @@ import java.util.Iterator;
  * @author Tom Ball
  */
 public class HeaderImportCollector extends ImportCollector {
-  protected String mainTypeName;
+
   private boolean includeMainType;
 
   public HeaderImportCollector() {
@@ -47,23 +47,37 @@ public class HeaderImportCollector extends ImportCollector {
   }
 
   public void collect(CompilationUnit unit, String sourceName) {
-    mainTypeName = NameTable.getMainTypeName(unit, sourceName);
     super.collect(unit);
+    if (includeMainType) {
+      return;
+    }
+    String mainTypeName = NameTable.getMainTypeName(unit, sourceName);
+    removeTypeWithName(mainTypeName, imports);
+    removeTypeWithName(mainTypeName, superTypes);
+  }
+
+  private static void removeTypeWithName(String typeName, Iterable<Import> imports) {
+    Iterator<Import> iter = imports.iterator();
+    while (iter.hasNext()) {
+      if (iter.next().getTypeName().equals(typeName)) {
+        iter.remove();
+      }
+    }
   }
 
   @Override
   public boolean visit(FieldDeclaration node) {
-    addReference(node.getType());
+    addImports(node.getType());
     return super.visit(node);
   }
 
   @Override
   public boolean visit(MethodDeclaration node) {
-    addReference(node.getReturnType2());
+    addImports(node.getReturnType2());
     for (Iterator<?> iterator = node.parameters().iterator(); iterator.hasNext(); ) {
       Object o = iterator.next();
       if (o instanceof SingleVariableDeclaration) {
-        addReference(((SingleVariableDeclaration) o).getType());
+        addImports(((SingleVariableDeclaration) o).getType());
       } else {
         throw new AssertionError("unknown AST type: " + o.getClass());
       }
@@ -101,21 +115,5 @@ public class HeaderImportCollector extends ImportCollector {
       }
     }
     return true;
-  }
-
-  @Override
-  protected void addImport(Import imp) {
-    if (includeMainType || !imp.getTypeName().equals(mainTypeName)) {
-      super.addImport(imp);
-    }
-  }
-
-  @Override
-  protected void addSuperType(Type type) {
-    ITypeBinding binding = type != null ? Types.getTypeBinding(type) : null;
-    if (includeMainType || binding == null ||
-        mainTypeName == null || !mainTypeName.equals(NameTable.getFullName(binding))) {
-      super.addSuperType(type);
-    }
   }
 }

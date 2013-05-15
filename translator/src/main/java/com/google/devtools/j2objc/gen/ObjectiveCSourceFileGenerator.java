@@ -33,7 +33,6 @@ import org.eclipse.jdt.core.dom.IVariableBinding;
 import org.eclipse.jdt.core.dom.MethodDeclaration;
 import org.eclipse.jdt.core.dom.Modifier;
 import org.eclipse.jdt.core.dom.SingleVariableDeclaration;
-import org.eclipse.jdt.core.dom.Type;
 import org.eclipse.jdt.core.dom.TypeDeclaration;
 import org.eclipse.jdt.core.dom.VariableDeclarationFragment;
 
@@ -313,9 +312,7 @@ public abstract class ObjectiveCSourceFileGenerator extends SourceFileGenerator 
           fieldName = "";
         }
         ITypeBinding typeBinding = parameterTypes[i];
-        boolean isTypeVariable = typeBinding.isTypeVariable();
-        String keyword = isTypeVariable ? parameterKeyword(NameTable.ID_TYPE, typeBinding)
-            : parameterKeyword(param.getType(), typeBinding);
+        String keyword = NameTable.parameterKeyword(typeBinding);
         if (first) {
           sb.append(NameTable.capitalize(keyword));
           baseDeclaration += keyword;
@@ -356,25 +353,6 @@ public abstract class ObjectiveCSourceFileGenerator extends SourceFileGenerator 
     return name;
   }
 
-  private String parameterKeyword(Type type, ITypeBinding typeBinding) {
-    String typeName = NameTable.javaTypeToObjC(type, true);
-    return parameterKeyword(typeName, typeBinding);
-  }
-
-  /**
-   * Returns a parameter name, which consists of a prefix ("with") and
-   * a type name that doesn't conflict with core names.  For example,
-   * "Foo" returns "withFoo", "Long" returns "withLong", and "long"
-   * returns "withLongInt", so as not to conflict with the previous
-   * example.
-   *
-   * For array types, the name returned is the type of the array's
-   * element followed by "Array".
-   */
-  public static String parameterKeyword(String typeName, ITypeBinding typeBinding) {
-    return "with" + NameTable.capitalize(NameTable.getParameterTypeName(typeName, typeBinding));
-  }
-
   /**
    * Returns true if the specified method declaration is for a Java main
    */
@@ -395,38 +373,6 @@ public abstract class ObjectiveCSourceFileGenerator extends SourceFileGenerator 
       }
     }
     return false;
-  }
-
-  /**
-   * Returns a function declaration string from a specified class and method.
-   */
-  protected String makeFunctionDeclaration(AbstractTypeDeclaration cls,
-      MethodDeclaration method) {
-    StringBuffer sb = new StringBuffer();
-    Type returnType = method.getReturnType2();
-    ITypeBinding binding = Types.getTypeBinding(returnType);
-    if (binding.isEnum()) {
-      sb.append(NameTable.javaTypeToObjC(returnType, true));
-    } else {
-      sb.append(NameTable.javaRefToObjC(returnType));
-    }
-    sb.append(' ');
-    sb.append(NameTable.makeFunctionName(cls, method));
-    sb.append('(');
-    for (Iterator<?> iterator = method.parameters().iterator(); iterator.hasNext(); ) {
-      Object o = iterator.next();
-      if (o instanceof SingleVariableDeclaration) {
-        SingleVariableDeclaration param = (SingleVariableDeclaration) o;
-        String fieldType = NameTable.javaRefToObjC(param.getType());
-        String fieldName = param.getName().getIdentifier();
-        sb.append(String.format("%s %s", fieldType, fieldName));
-        if (iterator.hasNext()) {
-          sb.append(", ");
-        }
-      }
-    }
-    sb.append(')');
-    return sb.toString();
   }
 
   /**

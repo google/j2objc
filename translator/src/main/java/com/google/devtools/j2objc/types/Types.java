@@ -112,8 +112,6 @@ public class Types {
 
   private final Map<String, IOSTypeBinding> iosBindingMap = Maps.newHashMap();
 
-  private final Map<ITypeBinding, String> primitiveTypeNameMap = Maps.newHashMap();
-
   // Map a primitive type to its emulation array type.
   private final Map<String, IOSArrayTypeBinding> arrayTypeMap = Maps.newHashMap();
   private final Map<ITypeBinding, IOSArrayTypeBinding> arrayBindingMap = Maps.newHashMap();
@@ -147,7 +145,6 @@ public class Types {
     initializeTypeMap();
     populateSimpleTypeMap();
     populateArrayTypeMaps();
-    populatePrimitiveTypeNameMap();
     populatePrimitiveAndWrapperTypeMaps();
     bindingMap = BindingMapBuilder.buildBindingMap(unit);
     setGlobalRenamings();
@@ -248,17 +245,6 @@ public class Types {
     ITypeBinding primitiveType = ast.resolveWellKnownType(typeName);
     arrayBindingMap.put(primitiveType, arrayType);
     componentTypeMap.put(arrayType, primitiveType);
-  }
-
-  private void populatePrimitiveTypeNameMap() {
-    primitiveTypeNameMap.put(ast.resolveWellKnownType("boolean"), "BOOL");
-    primitiveTypeNameMap.put(ast.resolveWellKnownType("byte"), "char");
-    primitiveTypeNameMap.put(ast.resolveWellKnownType("char"), "unichar");
-    primitiveTypeNameMap.put(ast.resolveWellKnownType("double"), "double");
-    primitiveTypeNameMap.put(ast.resolveWellKnownType("float"), "float");
-    primitiveTypeNameMap.put(ast.resolveWellKnownType("int"), "int");
-    primitiveTypeNameMap.put(ast.resolveWellKnownType("long"), "long long");
-    primitiveTypeNameMap.put(ast.resolveWellKnownType("short"), "short");
   }
 
   private void populatePrimitiveAndWrapperTypeMaps() {
@@ -611,10 +597,6 @@ public class Types {
   public static IOSArrayTypeBinding resolveArrayType(ITypeBinding binding) {
     IOSArrayTypeBinding arrayBinding = instance.arrayBindingMap.get(binding);
     return arrayBinding != null ? arrayBinding : instance.IOSObjectArray;
-  }
-
-  public static String getPrimitiveTypeName(ITypeBinding binding) {
-    return instance.primitiveTypeNameMap.get(binding);
   }
 
   public static IBinding getBinding(Object node) {

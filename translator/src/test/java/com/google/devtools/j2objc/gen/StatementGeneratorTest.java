@@ -1432,4 +1432,19 @@ public class StatementGeneratorTest extends GenerationTest {
     assertTranslation(translation,
         "return [NSString stringWithFormat:@\"the nil value is %@\", @\"null\"];");
   }
+
+  public void testTypeVariableWithBoundsIsCast() throws IOException {
+    String translation = translateSourceFile(
+        "class Test<E> { interface A<T> { void foo(); } class B { int foo() { return 1; } } " +
+        "<T extends A<? super E>> void test(T t) { t.foo(); } " +
+        "<T extends B> void test2(T t) { t.foo(); } }", "Test", "Test.m");
+    assertTranslation(translation, "[((id<Test_A>) NIL_CHK(t)) foo];");
+    assertTranslation(translation, "[((Test_B *) NIL_CHK(t)) foo];");
+  }
+
+  public void testTypeVariableWithMultipleBounds() throws IOException {
+    String translation = translateSourceFile(
+        "class Test<T extends String & Runnable & Cloneable> { T t; }", "Test", "Test.h");
+    assertTranslation(translation, "NSString<JavaLangRunnable, NSCopying> *t");
+  }
 }
