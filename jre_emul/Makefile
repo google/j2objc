@@ -69,6 +69,8 @@ IOS_INTERFACES = \
 # Java interfaces that will generate empty .m files.
 JRE_INTERFACES = \
 	java/io/Closeable.h \
+	java/io/DataInput.h \
+	java/io/DataOutput.h \
 	java/io/FileFilter.h \
 	java/io/FilenameFilter.h \
 	java/io/Flushable.h \
@@ -139,6 +141,9 @@ JAVA_SOURCES = \
 	java/io/ByteArrayOutputStream.java \
 	java/io/CharArrayReader.java \
 	java/io/CharArrayWriter.java \
+	java/io/DataInputStream.java \
+	java/io/DataOutputStream.java \
+	java/io/EOFException.java \
 	java/io/File.java \
 	java/io/FileDescriptor.java \
 	java/io/FileInputStream.java \
@@ -148,6 +153,8 @@ JAVA_SOURCES = \
 	java/io/FileWriter.java \
 	java/io/FilterInputStream.java \
 	java/io/FilterOutputStream.java \
+	java/io/FilterReader.java \
+	java/io/FilterWriter.java \
 	java/io/InputStream.java \
 	java/io/InputStreamReader.java \
 	java/io/InterruptedIOException.java \
@@ -158,11 +165,14 @@ JAVA_SOURCES = \
 	java/io/OutputStreamWriter.java \
 	java/io/PrintStream.java \
 	java/io/PrintWriter.java \
+	java/io/PushbackInputStream.java \
+	java/io/PushbackReader.java \
 	java/io/Reader.java \
 	java/io/StringReader.java \
 	java/io/StringWriter.java \
 	java/io/SyncFailedException.java \
 	java/io/UnsupportedEncodingException.java \
+	java/io/UTFDataFormatException.java \
 	java/io/Writer.java \
 	java/lang/annotation/AnnotationFormatError.java \
 	java/lang/annotation/AnnotationTypeMismatchException.java \
@@ -361,6 +371,7 @@ JAVA_SOURCES = \
 	libcore/util/BasicLruCache.java \
 	libcore/util/EmptyArray.java \
 	org/apache/harmony/luni/platform/Endianness.java \
+	org/apache/harmony/luni/util/Util.java \
 	org/apache/harmony/xml/parsers/SAXParserFactoryImpl.java \
 	org/apache/harmony/xml/parsers/SAXParserImpl.java \
 	org/kxml2/io/KXmlParser.java \
