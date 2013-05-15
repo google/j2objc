@@ -129,7 +129,7 @@ public class ObjectiveCHeaderGenerator extends ObjectiveCSourceFileGenerator {
     if (!interfaces.isEmpty()) {
       print(" < ");
       for (Iterator<Type> iterator = interfaces.iterator(); iterator.hasNext();) {
-        print(NameTable.javaTypeToObjC(iterator.next(), true));
+        print(NameTable.getFullName(Types.getTypeBinding(iterator.next())));
         if (iterator.hasNext()) {
           print(", ");
         }

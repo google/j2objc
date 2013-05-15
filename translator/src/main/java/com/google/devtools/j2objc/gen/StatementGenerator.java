@@ -172,17 +172,6 @@ public class StatementGenerator extends ErrorReportingASTVisitor {
     return buffer.toString();
   }
 
-  private String getSimpleTypeName(ITypeBinding binding) {
-    if (binding == null) {
-      // Parse error already reported.
-      return "<unknown>";
-    }
-    if (binding.isPrimitive()) {
-      return Types.getPrimitiveTypeName(binding);
-    }
-    return Types.mapSimpleTypeName(NameTable.javaTypeToObjC(binding, true));
-  }
-
   private void printArguments(IMethodBinding method, List<Expression> args) {
     if (method != null && method.isVarargs()) {
       printVarArgs(method, args);
@@ -219,12 +208,7 @@ public class StatementGenerator extends ErrorReportingASTVisitor {
         ITypeBinding[] parameterTypes = method.getParameterTypes();
         assert index < parameterTypes.length : "method called with fewer parameters than declared";
         ITypeBinding parameter = parameterTypes[index];
-        String typeName = method.isParameterizedMethod() || parameter.isTypeVariable()
-            ? "id" : getSimpleTypeName(Types.mapType(parameter));
-        if (typeName.equals("long long")) {
-          typeName = "long";
-        }
-        String keyword = ObjectiveCSourceFileGenerator.parameterKeyword(typeName, parameter);
+        String keyword = NameTable.parameterKeyword(parameter);
         if (index == 0) {
           keyword = NameTable.capitalize(keyword);
         }
@@ -290,9 +274,7 @@ public class StatementGenerator extends ErrorReportingASTVisitor {
             buffer.append(iosMethod.getParameters().get(i).getParameterName());
           }
         } else {
-          String typename = getSimpleTypeName(Types.mapType(parameterTypes[i]));
-          String keyword =
-              ObjectiveCSourceFileGenerator.parameterKeyword(typename, parameterTypes[i]);
+          String keyword = NameTable.parameterKeyword(parameterTypes[i]);
           if (i == 0) {
             keyword = NameTable.capitalize(keyword);
           }
@@ -634,7 +616,7 @@ public class StatementGenerator extends ErrorReportingASTVisitor {
     } else if (op == Operator.RIGHT_SHIFT_UNSIGNED_ASSIGN) {
       lhs.accept(this);
       ITypeBinding assignType = Types.getTypeBinding(lhs);
-      if (NameTable.getFullName(assignType).equals("unichar")) {
+      if (assignType.getName().equals("char")) {
         buffer.append(" >>= ");
         rhs.accept(this);
       } else {
@@ -1530,33 +1512,16 @@ public class StatementGenerator extends ErrorReportingASTVisitor {
   }
 
   private boolean printCast(ITypeBinding type) {
-    if (type == null || type.isPrimitive() || type.isTypeVariable() || Types.isVoidType(type) ||
-        Types.isJavaObjectType(type)) {
+    if (type == null || type.isPrimitive() || Types.isVoidType(type)
+        || Types.isJavaObjectType(type)) {
       return false;
     }
-    if (type.isCapture()) {
-      type = type.getWildcard();
+    String typeName = type.getName().equals("NSObject") ? "NSObject *" :
+        NameTable.javaRefToObjC(type);
+    if (typeName.equals(NameTable.ID_TYPE)) {
+      return false;
     }
-    if (type.isWildcardType()) {
-      ITypeBinding bound = type.getBound();
-      if (bound == null) {
-        return false;
-      }
-      type = bound;
-    }
-    buffer.append("((");
-    if (type.isInterface()) {
-      buffer.append("id<");
-      buffer.append(NameTable.getFullName(type));
-      buffer.append('>');
-    } else {
-      if (type.getName().equals("NSObject")) {
-        buffer.append("NSObject *");
-      } else {
-        buffer.append(NameTable.javaRefToObjC(type));
-      }
-    }
-    buffer.append(") ");
+    buffer.append("((" + typeName + ") ");
     return true;
   }
 
@@ -1749,7 +1714,7 @@ public class StatementGenerator extends ErrorReportingASTVisitor {
     if (useStaticPublicAccessor(expression)) {
       buffer.append(assignable ? "(*[" : "[");
       ITypeBinding declaringClass = var.getDeclaringClass();
-      String receiver = NameTable.javaTypeToObjC(declaringClass, true);
+      String receiver = NameTable.getFullName(declaringClass);
       buffer.append(receiver);
       buffer.append(' ');
       buffer.append(var.isEnumConstant() ? NameTable.getName(var) :
@@ -1905,7 +1870,7 @@ public class StatementGenerator extends ErrorReportingASTVisitor {
       if (binding instanceof IOSTypeBinding) {
         buffer.append(binding.getName());
       } else {
-        buffer.append(NameTable.javaTypeToObjC(((ITypeBinding) binding), false));
+        buffer.append(NameTable.getFullName((ITypeBinding) binding));
       }
     } else {
       buffer.append(node.getIdentifier());

@@ -249,7 +249,7 @@ public class ObjectiveCImplementationGenerator extends ObjectiveCSourceFileGener
       if (primitiveType != null) {
         // All java.lang primitive type wrappers have a "value" field.
         printf("- (void)getValue:(void *)buffer {\n  *((%s *) buffer) = value_;\n}\n\n",
-            NameTable.getFullName(primitiveType));
+            NameTable.primitiveTypeToObjC(primitiveType.getName()));
       }
     }
 
@@ -714,8 +714,7 @@ public class ObjectiveCImplementationGenerator extends ObjectiveCSourceFileGener
 
   @Override
   protected void printStaticConstructorDeclaration(MethodDeclaration m) {
-    String className =
-        NameTable.javaTypeToObjC(Types.getMethodBinding(m).getDeclaringClass(), false);
+    String className = NameTable.getFullName(Types.getMethodBinding(m).getDeclaringClass());
     StringBuffer sb = new StringBuffer();
     sb.append("{\nif (self == [" + className + " class]) {\n");
     @SuppressWarnings("unchecked")
