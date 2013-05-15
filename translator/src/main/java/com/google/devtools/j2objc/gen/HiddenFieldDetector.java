@@ -84,7 +84,7 @@ public class HiddenFieldDetector extends ErrorReportingASTVisitor {
 
   @Override
   public boolean visit(MethodDeclaration node) {
-    IMethodBinding binding = node.resolveBinding();
+    IMethodBinding binding = Types.getMethodBinding(node);
     if (binding != null) {
       Set<String> fieldNames = fieldNameMap.get(binding.getDeclaringClass().getBinaryName());
       if (fieldNames == null) {
@@ -94,7 +94,7 @@ public class HiddenFieldDetector extends ErrorReportingASTVisitor {
       @SuppressWarnings("unchecked")
       List<SingleVariableDeclaration> parameters = node.parameters();
       for (SingleVariableDeclaration param : parameters) {
-        IVariableBinding varBinding = param.resolveBinding();
+        IVariableBinding varBinding = Types.getVariableBinding(param);
         if (varBinding != null && fieldNames.contains(varBinding.getName())) {
           fieldNameConflicts.add(varBinding);
         }

@@ -869,7 +869,7 @@ public class ObjectiveCImplementationGenerator extends ObjectiveCSourceFileGener
             String objcType = NameTable.javaRefToObjC(f.getType());
             Expression initializer = var.getInitializer();
             if (initializer != null) {
-              printConstant(name, initializer);
+              printf("static %s %s = %s;\n", objcType, name, generateExpression(initializer));
             } else {
               printf("static %s %s;\n", objcType, name);
             }
@@ -940,37 +940,6 @@ public class ObjectiveCImplementationGenerator extends ObjectiveCSourceFileGener
     }
     if (nPrinted > 0) {
       newline();
-    }
-  }
-
-  private void printConstant(String name, Expression initializer) {
-    Object constant = initializer.resolveConstantExpressionValue();
-    String text = generateExpression(initializer);
-    // non-constant initializers were already moved to static blocks
-    assert constant != null;
-    print("static ");
-    if (constant instanceof String) {
-      printf("NSString * %s = %s;\n", name, text);
-    } else if (constant instanceof Boolean) {
-      printf("BOOL %s = %s;\n;", name, ((Boolean) constant).booleanValue() ? "YES" : "NO");
-    } else if (constant instanceof Character) {
-      printf("unichar %s = %s;\n", name, text);
-    } else {
-      assert constant instanceof Number;
-      Number number = (Number) constant;
-      if (constant instanceof Byte) {
-        printf("char %s = %d;\n", name, number.byteValue());
-      } else if (constant instanceof Double) {
-        printf("double %s = %s;\n", name, text);
-      } else if (constant instanceof Float) {
-        printf("float %s = %s;\n", name, text);
-      } else if (constant instanceof Integer) {
-        printf("int %s = %s;\n", name, text);
-      } else if (constant instanceof Long) {
-        printf("long long %s = %s;\n", name, text);
-      } else {
-        printf("short %s = %d;\n", name, number.shortValue());
-      }
     }
   }
 

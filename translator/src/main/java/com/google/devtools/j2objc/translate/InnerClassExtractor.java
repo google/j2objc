@@ -48,6 +48,7 @@ import org.eclipse.jdt.core.dom.SuperConstructorInvocation;
 import org.eclipse.jdt.core.dom.TypeDeclaration;
 import org.eclipse.jdt.core.dom.TypeDeclarationStatement;
 
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
@@ -61,6 +62,8 @@ import java.util.List;
 public class InnerClassExtractor extends ErrorReportingASTVisitor {
 
   private final List<AbstractTypeDeclaration> unitTypes;
+  // Helps keep types in the order they are visited.
+  private ArrayList<Integer> typeOrderStack = Lists.newArrayList();
 
   public InnerClassExtractor(CompilationUnit unit) {
     unitTypes = ASTUtil.getTypes(unit);
@@ -68,32 +71,39 @@ public class InnerClassExtractor extends ErrorReportingASTVisitor {
 
   @Override
   public boolean visit(TypeDeclaration node) {
-    super.visit(node);
-    visitType(node);
-    return true;
+    return handleType(node);
+  }
+
+  @Override
+  public void endVisit(TypeDeclaration node) {
+    endHandleType(node);
   }
 
   @Override
   public boolean visit(EnumDeclaration node) {
-    super.visit(node);
-    visitType(node);
-    return true;
+    return handleType(node);
+  }
+
+  @Override
+  public void endVisit(EnumDeclaration node) {
+    endHandleType(node);
   }
 
   @Override
   public boolean visit(AnnotationTypeDeclaration node) {
-    super.visit(node);
     return false; // ignore annotations
   }
 
-  public boolean visitType(AbstractTypeDeclaration node) {
+  private boolean handleType(AbstractTypeDeclaration node) {
+    typeOrderStack.add(unitTypes.size());
+    return true;
+  }
+
+  private void endHandleType(AbstractTypeDeclaration node) {
+    int insertIdx = typeOrderStack.remove(typeOrderStack.size() - 1);
     ASTNode parentNode = node.getParent();
     if (!(parentNode instanceof CompilationUnit)) {
-      ITypeBinding type = Types.getTypeBinding(node);
-      if (!type.isInterface() && !type.isAnnotation() && !Modifier.isStatic(type.getModifiers())) {
-        addOuterFields(node);
-      }
-
+      // Remove this type declaration from its current location.
       if (parentNode instanceof AbstractTypeDeclaration) {
         // Remove declaration from declaring type.
         boolean success =
@@ -101,17 +111,23 @@ public class InnerClassExtractor extends ErrorReportingASTVisitor {
         assert success;
       } else {
         TypeDeclarationStatement typeStatement = (TypeDeclarationStatement) parentNode;
-        node = NodeCopier.copySubtree(node.getAST(), typeStatement.getDeclaration());
-
         // Remove stmt from method body (or an if/else/try/catch/finally clause).
         Block body = (Block) typeStatement.getParent();
         boolean success = ASTUtil.getStatements(body).remove(typeStatement);
         assert success;
       }
 
+      // Make a copy to add to add as a top-level type.
+      AbstractTypeDeclaration newTypeDecl = NodeCopier.copySubtree(node.getAST(), node);
+
+      ITypeBinding type = Types.getTypeBinding(node);
+      if (!type.isInterface() && !type.isAnnotation() && !Modifier.isStatic(type.getModifiers())) {
+        addOuterFields(newTypeDecl);
+      }
+
       // Make this node non-private, if necessary, and add it to the unit's type
       // list.
-      Iterator<IExtendedModifier> iter = ASTUtil.getModifiers(node).iterator();
+      Iterator<IExtendedModifier> iter = ASTUtil.getModifiers(newTypeDecl).iterator();
       while (iter.hasNext()) {
         IExtendedModifier iem = iter.next();
         if ((iem instanceof Modifier) && ((Modifier) iem).isPrivate()) {
@@ -119,9 +135,8 @@ public class InnerClassExtractor extends ErrorReportingASTVisitor {
           break;
         }
       }
-      unitTypes.add(node);
+      unitTypes.add(insertIdx, newTypeDecl);
     }
-    return true;
   }
 
   private void addOuterFields(AbstractTypeDeclaration node) {
