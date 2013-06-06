@@ -45,6 +45,7 @@ import org.eclipse.jdt.core.dom.Modifier;
 import org.eclipse.jdt.core.dom.Name;
 import org.eclipse.jdt.core.dom.QualifiedName;
 import org.eclipse.jdt.core.dom.SimpleName;
+import org.eclipse.jdt.core.dom.TryStatement;
 import org.eclipse.jdt.core.dom.Type;
 import org.eclipse.jdt.core.dom.TypeDeclaration;
 import org.eclipse.jdt.core.dom.TypeLiteral;
@@ -163,6 +164,14 @@ public class ImplementationImportCollector extends ErrorReportingASTVisitor {
           addImports(parameterType);
         }
       }
+    }
+    return true;
+  }
+
+  @Override
+  public boolean visit(TryStatement node) {
+    if (ASTUtil.getResources(node).size() > 0) {
+      addImports(Types.mapTypeName("java.lang.Throwable"));
     }
     return true;
   }

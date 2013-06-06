@@ -889,20 +889,7 @@ public class StatementGenerator extends ErrorReportingASTVisitor {
     return false;
   }
 
-  @Override
-  public boolean visit(CatchClause node) {
-    if (node.getException().getType().isUnionType()) {
-      printMultiCatch(node);
-      return false;
-    }
-    buffer.append("@catch (");
-    node.getException().accept(this);
-    buffer.append(") ");
-    node.getBody().accept(this);
-    return false;
-  }
-
-  private void printMultiCatch(CatchClause node) {
+  private void printMultiCatch(CatchClause node, boolean hasResources) {
     SingleVariableDeclaration exception = node.getException();
     for (Type exceptionType : ASTUtil.getTypes(((UnionType) exception.getType()))) {
       buffer.syncLineNumbers(node);
@@ -910,8 +897,11 @@ public class StatementGenerator extends ErrorReportingASTVisitor {
       exceptionType.accept(this);
       buffer.append(' ');
       exception.getName().accept(this);
-      buffer.append(") ");
-      node.getBody().accept(this);
+      buffer.append(") {\n");
+      printMainExceptionStore(hasResources, node);
+      buffer.syncLineNumbers(node);
+      printStatements(ASTUtil.getStatements(node.getBody()));
+      buffer.append("}\n");
     }
   }
 
@@ -2139,18 +2129,74 @@ public class StatementGenerator extends ErrorReportingASTVisitor {
 
   @Override
   public boolean visit(TryStatement node) {
+    List<VariableDeclarationExpression> resources = ASTUtil.getResources(node);
+    boolean hasResources = !resources.isEmpty();
+    if (hasResources) {
+      buffer.append("{\n");
+      buffer.syncLineNumbers(node);
+      buffer.append("JavaLangThrowable *__mainException = nil;\n");
+    }
+    for (VariableDeclarationExpression var : resources) {
+      buffer.syncLineNumbers(var);
+      var.accept(this);
+      buffer.append(";\n");
+    }
     buffer.append("@try ");
     node.getBody().accept(this);
     buffer.append(' ');
     for (Iterator<?> it = node.catchClauses().iterator(); it.hasNext(); ) {
       CatchClause cc = (CatchClause) it.next();
-      cc.accept(this);
+      if (cc.getException().getType().isUnionType()) {
+        printMultiCatch(cc, hasResources);
+      }
+      buffer.syncLineNumbers(cc);
+      buffer.append("@catch (");
+      cc.getException().accept(this);
+      buffer.append(") {\n");
+      printMainExceptionStore(hasResources, cc);
+      buffer.syncLineNumbers(cc);
+      printStatements(ASTUtil.getStatements(cc.getBody()));
+      buffer.append("}\n");
     }
-    if (node.getFinally() != null) {
-      buffer.append(" @finally ");
-      node.getFinally().accept(this);
+    if (node.getFinally() != null || resources.size() > 0) {
+      buffer.append(" @finally {\n");
+      if (node.getFinally() != null) {
+        printStatements(ASTUtil.getStatements(node.getFinally()));
+      }
+      for (VariableDeclarationExpression var : resources) {
+        for (VariableDeclarationFragment frag : ASTUtil.getFragments(var)) {
+          buffer.syncLineNumbers(var);
+          buffer.append("@try {\n[");
+          buffer.append(frag.getName().getFullyQualifiedName());
+          buffer.append(" close];\n}\n");
+          buffer.append("@catch (JavaLangThrowable *e) {\n");
+          buffer.syncLineNumbers(var);
+          buffer.append("if (__mainException) {\n");
+          buffer.syncLineNumbers(var);
+          buffer.append("[__mainException addSuppressedWithJavaLangThrowable:e];\n} else {\n");
+          buffer.syncLineNumbers(var);
+          buffer.append("__mainException = e;\n}\n");
+          buffer.append("}\n");
+        }
+      }
+      buffer.syncLineNumbers(node);
+      if (hasResources) {
+        buffer.append("if (__mainException) {\n@throw __mainException;\n}\n");
+      }
+      buffer.append("}\n");
+    }
+    if (hasResources) {
+      buffer.append("}\n");
     }
     return false;
+  }
+
+  private void printMainExceptionStore(boolean hasResources, CatchClause cc) {
+    if (hasResources) {
+      buffer.append("__mainException = ");
+      buffer.append(cc.getException().getName().getFullyQualifiedName());
+      buffer.append(";\n");
+    }
   }
 
   @Override

@@ -1480,4 +1480,26 @@ public class StatementGeneratorTest extends GenerationTest {
         "NSUInteger __index = [__caseValues indexOfObject:s];");
     assertTranslation(translation, "switch (__index)");
   }
+
+  // Verify Java 7 try-with-resources translation.
+  public void testTryWithResourceNoCatchOrFinally() throws IOException {
+    String translation = translateSourceFile(
+        "import java.io.*; public class Test { String test(String path) throws IOException { " +
+        "  try (BufferedReader br = new BufferedReader(new FileReader(path))) {" +
+        "    return br.readLine(); } }}",
+        "Test", "Test.m");
+    assertTranslation(translation,
+        "JavaIoBufferedReader * br = [[[JavaIoBufferedReader alloc] initWithJavaIoReader:" +
+        "[[[JavaIoFileReader alloc] initWithNSString:path] autorelease]] autorelease];");
+    assertTranslation(translation,
+        "@try {\n      return [((JavaIoBufferedReader *) NIL_CHK(br)) readLine];\n    }");
+    assertTranslation(translation, "@finally {");
+    assertTranslation(translation, "@try {\n        [br close];\n      }");
+    assertTranslation(translation, "@catch (JavaLangThrowable *e) {");
+    assertTranslation(translation, "if (__mainException) {");
+    assertTranslation(translation, "[__mainException addSuppressedWithJavaLangThrowable:e];");
+    assertTranslation(translation, "} else {\n          __mainException = e;\n        }");
+    assertTranslation(translation,
+        "if (__mainException) {\n        @throw __mainException;\n      }");
+  }
 }
