@@ -158,7 +158,6 @@
 		064FB8001727085500DC0D51 /* TypeInfo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = TypeInfo.h; path = build_result/Classes/org/w3c/dom/TypeInfo.h; sourceTree = "<group>"; };
 		064FB8021727086700DC0D51 /* LSResourceResolver.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = LSResourceResolver.h; path = build_result/Classes/org/w3c/dom/ls/LSResourceResolver.h; sourceTree = "<group>"; };
 		064FB8061727091A00DC0D51 /* TimeZonesSupport.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TimeZonesSupport.m; sourceTree = "<group>"; };
-		064FB8071727091A00DC0D51 /* UniquePtr.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UniquePtr.h; sourceTree = "<group>"; };
 		06619385155848D70004DAFE /* libjre_emul.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libjre_emul.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		06619388155848D70004DAFE /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		0661938D155848D70004DAFE /* JreEmulation.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = JreEmulation.h; sourceTree = "<group>"; };
@@ -773,7 +772,6 @@
 				06721BA31559DE3800645E1B /* Throwable.m */,
 				06DDF48F16E8404B00A08BE0 /* TimeZonesSupport.h */,
 				064FB8061727091A00DC0D51 /* TimeZonesSupport.m */,
-				064FB8071727091A00DC0D51 /* UniquePtr.h */,
 			);
 			path = Classes;
 			sourceTree = "<group>";
@@ -1682,14 +1680,14 @@
 				GCC_THUMB_SUPPORT = NO;
 				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
 				INFOPLIST_FILE = "Tests/Tests-Info.plist";
-				LIBRARY_SEARCH_PATHS = "";
+				LIBRARY_SEARCH_PATHS = build_result;
 				OTHER_LDFLAGS = (
 					"-licucore",
 					"-lstdc++",
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				TEST_AFTER_BUILD = YES;
-				USER_HEADER_SEARCH_PATHS = "build_result/include Classes";
+				USER_HEADER_SEARCH_PATHS = "build_result/Classes Classes";
 				VALID_ARCHS = "armv6 armv7 i386";
 				WRAPPER_EXTENSION = octest;
 			};
@@ -1714,14 +1712,14 @@
 				GCC_THUMB_SUPPORT = NO;
 				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
 				INFOPLIST_FILE = "jre_emul_tests/jre_emul_tests-Info.plist";
-				LIBRARY_SEARCH_PATHS = "";
+				LIBRARY_SEARCH_PATHS = build_result;
 				OTHER_LDFLAGS = (
 					"-licucore",
 					"-lstdc++",
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				TEST_AFTER_BUILD = YES;
-				USER_HEADER_SEARCH_PATHS = "build_result/include Classes";
+				USER_HEADER_SEARCH_PATHS = "build_result/Classes Classes";
 				VALID_ARCHS = "armv6 armv7 i386";
 				WRAPPER_EXTENSION = octest;
 			};
