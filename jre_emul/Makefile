@@ -304,6 +304,9 @@ JAVA_SOURCES = \
 	java/sql/Date.java \
 	java/sql/Time.java \
 	java/sql/Timestamp.java \
+	java/text/DecimalFormat.java \
+	java/text/Format.java \
+	java/text/NumberFormat.java \
 	java/text/ParseException.java \
 	java/util/AbstractCollection.java \
 	java/util/AbstractList.java \
