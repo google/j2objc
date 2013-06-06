@@ -105,10 +105,9 @@ public class JSR166TestCase extends TestCase {
     /**
      * Collects all JSR166 unit tests as one suite
      */
-    public static Test suite ( ) {
+    /*public static Test suite ( ) {
         TestSuite suite = new TestSuite("JSR166 Unit Tests");
 
-        /* TODO(user): Uncomment tests as they are added.
         suite.addTest(new TestSuite(AbstractExecutorServiceTest.class));
         suite.addTest(new TestSuite(AbstractQueueTest.class));
         suite.addTest(new TestSuite(AbstractQueuedSynchronizerTest.class));
@@ -126,10 +125,10 @@ public class JSR166TestCase extends TestCase {
         suite.addTest(new TestSuite(AtomicReferenceTest.class));
         suite.addTest(new TestSuite(AtomicStampedReferenceTest.class));
         suite.addTest(new TestSuite(ConcurrentHashMapTest.class));
-        suite.addTest(new TestSuite(ConcurrentLinkedQueueTest.class));*/
+        suite.addTest(new TestSuite(ConcurrentLinkedQueueTest.class));
         suite.addTest(new TestSuite(CopyOnWriteArrayListTest.class));
         suite.addTest(new TestSuite(CopyOnWriteArraySetTest.class));
-        /*suite.addTest(new TestSuite(CountDownLatchTest.class));
+        suite.addTest(new TestSuite(CountDownLatchTest.class));
         suite.addTest(new TestSuite(CyclicBarrierTest.class));
         suite.addTest(new TestSuite(DelayQueueTest.class));
         suite.addTest(new TestSuite(ExchangerTest.class));
@@ -150,10 +149,10 @@ public class JSR166TestCase extends TestCase {
         suite.addTest(new TestSuite(ThreadLocalTest.class));
         suite.addTest(new TestSuite(ThreadPoolExecutorTest.class));
         suite.addTest(new TestSuite(ThreadTest.class));
-        suite.addTest(new TestSuite(TimeUnitTest.class));*/
+        suite.addTest(new TestSuite(TimeUnitTest.class));
 
         return suite;
-    }
+    }*/
 
 
     public static long SHORT_DELAY_MS;
