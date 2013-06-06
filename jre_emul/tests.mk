@@ -21,6 +21,7 @@
 include environment.mk
 
 SUPPORT_OBJS = \
+	$(TESTS_DIR)/JSR166TestCase.o \
 	$(TESTS_DIR)/org/apache/harmony/nio/tests/java/nio/AbstractBufferTest.o \
 	$(TESTS_DIR)/tests/support/Support_CollectionTest.o \
 	$(TESTS_DIR)/tests/support/Support_ListTest.o \
@@ -33,6 +34,8 @@ SUPPORT_OBJS = \
 	$(TESTS_DIR)/tests/support/Support_UnmodifiableMapTest.o
 
 TEST_OBJS = \
+	$(TESTS_DIR)/CopyOnWriteArrayListTest.o \
+	$(TESTS_DIR)/CopyOnWriteArraySetTest.o \
 	$(TESTS_DIR)/org/apache/harmony/luni/tests/java/io/BufferedInputStreamTest.o \
 	$(TESTS_DIR)/org/apache/harmony/luni/tests/java/io/BufferedOutputStreamTest.o \
 	$(TESTS_DIR)/org/apache/harmony/luni/tests/java/io/BufferedReaderTest.o \
@@ -234,10 +237,8 @@ JAVA_SOURCE_LIST = $(TMPDIR).tests.list
 
 JUNIT_JAR = ../dist/lib/junit-4.10.jar
 
-TEST_SOURCE_PATH = \
-  $(JRE_TEST_ROOT):$(JRE_MATH_TEST_ROOT):$(JRE_NIO_TEST_ROOT):$(TEST_SUPPORT_ROOT):$(MATH_TEST_SUPPORT_ROOT)
 TEST_JOC = ../dist/j2objc -classpath $(JUNIT_JAR) -Werror \
-	-sourcepath $(TEST_SOURCE_PATH) -d $(TESTS_DIR)
+	-sourcepath $(TEST_SRC) -d $(TESTS_DIR)
 TEST_JOCC = ../dist/j2objcc -g -I$(TESTS_DIR) -l junit -Werror \
 	-L$(TESTS_DIR) -l test-support -l icucore
 SUPPORT_LIB = $(TESTS_DIR)/libtest-support.a
@@ -297,6 +298,9 @@ $(TESTS_DIR)/%.h $(TESTS_DIR)/%.m: $(ANDROID_JRE_TEST_ROOT)/%.java
 	@echo $? >> $(JAVA_SOURCE_LIST)
 
 $(TESTS_DIR)/%.h $(TESTS_DIR)/%.m: $(REGEX_TEST_ROOT)/%.java
+	@echo $? >> $(JAVA_SOURCE_LIST)
+
+$(TESTS_DIR)/%.h $(TESTS_DIR)/%.m: $(CONCURRENT_TEST_ROOT)/%.java
 	@echo $? >> $(JAVA_SOURCE_LIST)
 
 $(TESTS_DIR)/%.o: $(TESTS_DIR)/%.m

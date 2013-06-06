@@ -20,6 +20,7 @@
 //
 
 #import "IOSObjectArray.h"
+#import "java/lang/ArrayStoreException.h"
 #import "java/lang/AssertionError.h"
 
 @implementation IOSObjectArray
@@ -167,6 +168,19 @@
   return buffer_[index];
 }
 
+__attribute__ ((unused))
+static inline id IOSObjectArray_checkValue(IOSObjectArray *array, id value) {
+#if !defined(J2OBJC_DISABLE_ARRAY_CHECKS)
+  if (value && ![array->elementType_ isInstance:value]) {
+    NSString *msg = [NSString stringWithFormat:
+        @"attempt to add object of type %@ to array with type %@",
+        [[value getClass] getName], [array->elementType_ getName]];
+    @throw AUTORELEASE([[JavaLangArrayStoreException alloc] initWithNSString:msg]);
+  }
+#endif
+  return value;
+}
+
 - (id)replaceObjectAtIndex:(NSUInteger)index withObject:(id)value {
   IOSArray_checkIndex(self, index);
 #if ! __has_feature(objc_arc)
@@ -174,7 +188,7 @@
   [prev autorelease];
   [value retain];
 #endif
-  buffer_[index] = value;
+  buffer_[index] = IOSObjectArray_checkValue(self, value);
   return value;
 }
 
@@ -202,7 +216,7 @@
       [oldElement autorelease];
       [newElement retain];
 #endif
-      dest->buffer_[i + offset] = newElement;
+      dest->buffer_[i + offset] = IOSObjectArray_checkValue(dest, newElement);
     }
   } else {
     for (NSUInteger i = 0; i < sourceRange.length; i++) {
@@ -212,7 +226,7 @@
       [oldElement autorelease];
       [newElement retain];
 #endif
-      dest->buffer_[i + offset] = newElement;
+      dest->buffer_[i + offset] = IOSObjectArray_checkValue(dest, newElement);
     }
   }
 }
