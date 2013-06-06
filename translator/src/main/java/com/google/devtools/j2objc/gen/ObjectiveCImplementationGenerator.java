@@ -23,7 +23,7 @@ import com.google.devtools.j2objc.J2ObjC.Language;
 import com.google.devtools.j2objc.Options;
 import com.google.devtools.j2objc.types.IOSMethod;
 import com.google.devtools.j2objc.types.ImplementationImportCollector;
-import com.google.devtools.j2objc.types.ImportCollector;
+import com.google.devtools.j2objc.types.Import;
 import com.google.devtools.j2objc.types.Types;
 import com.google.devtools.j2objc.util.ASTUtil;
 import com.google.devtools.j2objc.util.ErrorReportingASTVisitor;
@@ -805,11 +805,11 @@ public class ObjectiveCImplementationGenerator extends ObjectiveCSourceFileGener
   private void printImports(CompilationUnit node) {
     ImplementationImportCollector collector = new ImplementationImportCollector();
     collector.collect(node, getSourceFileName());
-    Set<ImportCollector.Import> imports = collector.getImports();
+    Set<Import> imports = collector.getImports();
 
     if (!imports.isEmpty()) {
       Set<String> importStmts = Sets.newTreeSet();
-      for (ImportCollector.Import imp : imports) {
+      for (Import imp : imports) {
         importStmts.add(String.format("#import \"%s.h\"", imp.getImportFileName()));
       }
       for (String stmt : importStmts) {
