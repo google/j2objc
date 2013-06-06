@@ -36,12 +36,12 @@
   IOSClass *class_;
   SEL selector_;
   BOOL classMethod_;
-  NSMethodSignature *methodSignature_;    
+  NSMethodSignature *methodSignature_;
 }
 
 - (id)initWithSelector:(SEL)aSelector withClass:(IOSClass *)aClass;
 
-// This method returns Modifier.PUBLIC (1) for an instance method, or 
+// This method returns Modifier.PUBLIC (1) for an instance method, or
 // Modifier.PUBLIC | Modifier.STATIC (9) for a class method.  Even though
 // iOS init methods are instance methods, constructors are always returned
 // as class methods.

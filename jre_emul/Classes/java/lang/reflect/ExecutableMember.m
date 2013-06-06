@@ -81,8 +81,8 @@
   [parameters autorelease];
 #endif
 
-  for (NSUInteger i = 0; i < nArgs; i++) { 
-    const char *argType = 
+  for (NSUInteger i = 0; i < nArgs; i++) {
+    const char *argType =
         [methodSignature_ getArgumentTypeAtIndex:i + SKIPPED_ARGUMENTS];
     IOSClass *paramType = decodeTypeEncoding(*argType);
     [parameters replaceObjectAtIndex:i withObject:paramType];

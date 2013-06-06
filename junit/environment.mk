@@ -27,12 +27,16 @@ INCLUDE_DIR = $(BUILD_DIR)/include
 SOURCE_BASE = src/main
 OBJC_SOURCE_DIR = $(SOURCE_BASE)/native/junit
 JAVA_SRC_DIR = $(BUILD_DIR)/java
+MODIFIED_JAVA_SRC_DIR = $(SOURCE_BASE)/java
 
 JUNIT_SRC_JAR = $(JAVA_DEPS_JAR_DIR)/$(JUNIT_SOURCE_JAR)
 JUNIT_JAR_FULL = $(JAVA_DEPS_JAR_DIR)/$(JUNIT_JAR)
 
 JUNIT_LIB = $(ARCH_BUILD_DIR)/libjunit.a
 JUNIT_LIB_DIST = $(DIST_LIB_DIR)/libjunit.a
+
+RUNNER_LIB = $(ARCH_BUILD_DIR)/libjunit_runner.a
+RUNNER_LIB_DIST = $(DIST_LIB_DIR)/libjunit_runner.a
 
 # Compiler settings, based on Xcode log output
 WARNINGS = -Wno-trigraphs -Wunused-variable -Werror -Wincompatible-pointer-types
