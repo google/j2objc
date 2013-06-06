@@ -62,26 +62,17 @@ public class ReferenceGraph {
     addSubtypeEdges();
     addSuperclassEdges();
     addOuterClassEdges();
+    // TODO(user): Capture edges should be added before subtype edges.
     addAnonymousClassCaptureEdges();
-    removeWhitelistedTypes();
-  }
-
-  private void removeWhitelistedTypes() {
-    for (ITypeBinding type : allTypes.values()) {
-      if (whitelist.containsType(type)) {
-        edges.removeAll(type.getKey());
-      }
-    }
   }
 
   private void addFieldEdges() {
     for (ITypeBinding type : allTypes.values()) {
       for (IVariableBinding field : type.getDeclaredFields()) {
-        if (whitelist.containsField(field)) {
-          continue;
-        }
         ITypeBinding fieldType = getElementType(field.getType());
-        if (!fieldType.isPrimitive()
+        if (!whitelist.containsField(field)
+            && !whitelist.containsType(fieldType)
+            && !fieldType.isPrimitive()
             && !Modifier.isStatic(field.getModifiers())
             // Exclude self-referential fields. (likely linked DS or delegate pattern)
             && !type.isAssignmentCompatible(fieldType)
@@ -140,12 +131,13 @@ public class ReferenceGraph {
         Set<String> targetSubtypes = subtypes.get(e.getTarget().getKey());
         Set<String> whitelistKeys = Sets.newHashSet();
         IVariableBinding field = e.getField();
-        if (field != null && whitelist.hasWhitelistedTypesForField(field)) {
-          for (String subtype : targetSubtypes) {
-            if (whitelist.isWhitelistedTypeForField(field, allTypes.get(subtype))) {
-              whitelistKeys.add(subtype);
-              whitelistKeys.addAll(subtypes.get(subtype));
-            }
+        for (String subtype : targetSubtypes) {
+          ITypeBinding subtypeBinding = allTypes.get(subtype);
+          if ((field != null && field.isField()
+               && whitelist.isWhitelistedTypeForField(field, subtypeBinding))
+              || whitelist.containsType(subtypeBinding)) {
+            whitelistKeys.add(subtype);
+            whitelistKeys.addAll(subtypes.get(subtype));
           }
         }
         for (String subtype : Sets.difference(targetSubtypes, whitelistKeys)) {
@@ -187,7 +179,7 @@ public class ReferenceGraph {
       if (OuterReferenceResolver.needsOuterReference(type.getTypeDeclaration())
           && !isWeakOuter(type)) {
         ITypeBinding declaringType = type.getDeclaringClass();
-        if (declaringType != null) {
+        if (declaringType != null && !whitelist.containsType(declaringType)) {
           edges.put(type.getKey(), Edge.newOuterClassEdge(type, declaringType));
         }
       }
@@ -199,7 +191,8 @@ public class ReferenceGraph {
       if (type.isAnonymous()) {
         for (IVariableBinding capturedVar :
              OuterReferenceResolver.getCapturedVars(type.getTypeDeclaration())) {
-          if (!getElementType(capturedVar.getType()).isPrimitive()) {
+          ITypeBinding targetType = getElementType(capturedVar.getType());
+          if (!targetType.isPrimitive() && !whitelist.containsType(targetType)) {
             edges.put(type.getKey(), Edge.newCaptureEdge(type, capturedVar));
           }
         }

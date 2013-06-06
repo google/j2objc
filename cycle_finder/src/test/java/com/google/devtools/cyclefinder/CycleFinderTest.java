@@ -71,7 +71,7 @@ public class CycleFinderTest extends TestCase {
   public void testWhitelistedField() throws Exception {
     addSourceFile("A.java", "class A { B b; }");
     addSourceFile("B.java", "class B { A a; }");
-    whitelistEntries.add("field A.b");
+    whitelistEntries.add("FIELD A.b");
     findCycles();
     assertNoCycles();
   }
@@ -80,15 +80,24 @@ public class CycleFinderTest extends TestCase {
     addSourceFile("test/foo/A.java", "package test.foo; class A { C c; }");
     addSourceFile("test/foo/B.java", "package test.foo; class B { A a; }");
     addSourceFile("test/foo/C.java", "package test.foo; class C extends B { }");
-    whitelistEntries.add("type test.foo.C");
+    whitelistEntries.add("TYPE test.foo.C");
     findCycles();
     assertNoCycles();
-    whitelistEntries.set(0, "type test.foo.A");
+    whitelistEntries.set(0, "TYPE test.foo.A");
     findCycles();
     assertNoCycles();
-    whitelistEntries.set(0, "type test.foo.B");
+    whitelistEntries.set(0, "TYPE test.foo.B");
     findCycles();
     assertCycle("Ltest/foo/C;", "Ltest/foo/A;");
+  }
+
+  public void testSubtypeOfWhitelistedType() throws Exception {
+    addSourceFile("test/foo/A.java", "package test.foo; class A { B b; }");
+    addSourceFile("test/foo/B.java", "package test.foo; class B { A a; }");
+    addSourceFile("test/foo/C.java", "package test.foo; class C extends B { }");
+    whitelistEntries.add("TYPE test.foo.B");
+    findCycles();
+    assertNoCycles();
   }
 
   public void testWhitelistedPackage() throws Exception {
@@ -96,7 +105,7 @@ public class CycleFinderTest extends TestCase {
                   "package test.foo; import test.bar.B; public class A { B b; }");
     addSourceFile("test/bar/B.java",
                   "package test.bar; import test.foo.A; public class B { A a; }");
-    whitelistEntries.add("namespace test.bar");
+    whitelistEntries.add("NAMESPACE test.bar");
     findCycles();
     assertNoCycles();
   }
@@ -106,7 +115,7 @@ public class CycleFinderTest extends TestCase {
     addSourceFile("B.java", "class B {}");
     addSourceFile("C.java", "class C extends B {}");
     addSourceFile("D.java", "class D extends C { A a; }");
-    whitelistEntries.add("field A.b C");
+    whitelistEntries.add("FIELD A.b C");
     findCycles();
     assertNoCycles();
   }
@@ -114,7 +123,7 @@ public class CycleFinderTest extends TestCase {
   public void testWhitelistComment() throws Exception {
     addSourceFile("A.java", "class A { B b; }");
     addSourceFile("B.java", "class B { A a; }");
-    whitelistEntries.add("# A.b");
+    whitelistEntries.add("# FIELD A.b");
     findCycles();
     assertCycle("LA;", "LB;");
   }
