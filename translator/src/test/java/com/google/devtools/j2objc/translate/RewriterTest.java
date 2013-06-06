@@ -20,6 +20,7 @@ import com.google.devtools.j2objc.GenerationTest;
 import com.google.devtools.j2objc.J2ObjC;
 import com.google.devtools.j2objc.types.Types;
 import com.google.devtools.j2objc.util.ASTUtil;
+import com.google.devtools.j2objc.util.NameTable;
 
 import org.eclipse.jdt.core.dom.Block;
 import org.eclipse.jdt.core.dom.BodyDeclaration;
@@ -177,7 +178,7 @@ public class RewriterTest extends GenerationTest {
         assertFalse(Modifier.isAbstract(modifiers));
       } else if (name.equals(DestructorGenerator.FINALIZE_METHOD)
           || name.equals(DestructorGenerator.DEALLOC_METHOD)
-          || name.equals(InitializationNormalizer.INIT_NAME)) {
+          || name.equals(NameTable.INIT_NAME)) {
         // it's ok.
       } else {
         // it's an added method
@@ -218,7 +219,7 @@ public class RewriterTest extends GenerationTest {
         assertFalse(Modifier.isAbstract(modifiers));
       } else if (name.equals(DestructorGenerator.FINALIZE_METHOD)
           || name.equals(DestructorGenerator.DEALLOC_METHOD)
-          || name.equals(InitializationNormalizer.INIT_NAME)) {
+          || name.equals(NameTable.INIT_NAME)) {
         // it's ok.
       } else {
         // it's an added method

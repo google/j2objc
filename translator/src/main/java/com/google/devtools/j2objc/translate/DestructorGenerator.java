@@ -60,6 +60,7 @@ import java.util.List;
 public class DestructorGenerator extends ErrorReportingASTVisitor {
   private final String destructorName;
 
+  // TODO(user): Move these to NameTable.java.
   public static final String FINALIZE_METHOD = "finalize";
   public static final String DEALLOC_METHOD = "dealloc";
 
@@ -201,8 +202,9 @@ public class DestructorGenerator extends ErrorReportingASTVisitor {
     if (Options.useReferenceCounting() && !hasSuperFinalize[0]) {
       SuperMethodInvocation call = ast.newSuperMethodInvocation();
       IMethodBinding methodBinding = Types.getMethodBinding(method);
-      GeneratedMethodBinding binding = new GeneratedMethodBinding(destructorName, Modifier.PUBLIC,
-        Types.mapTypeName("void"), methodBinding.getDeclaringClass(), false, false, true);
+      GeneratedMethodBinding binding = GeneratedMethodBinding.newMethod(
+          destructorName, Modifier.PUBLIC, Types.mapTypeName("void"),
+          methodBinding.getDeclaringClass());
       Types.addBinding(call, binding);
       call.setName(ast.newSimpleName(destructorName));
       Types.addBinding(call.getName(), binding);
@@ -214,8 +216,8 @@ public class DestructorGenerator extends ErrorReportingASTVisitor {
   private MethodDeclaration buildFinalizeMethod(AST ast, ITypeBinding declaringClass,
         List<IVariableBinding> fields) {
     ITypeBinding voidType = Types.mapTypeName("void");
-    GeneratedMethodBinding binding = new GeneratedMethodBinding(destructorName, Modifier.PUBLIC,
-      voidType, declaringClass, false, false, true);
+    GeneratedMethodBinding binding = GeneratedMethodBinding.newMethod(
+        destructorName, Modifier.PUBLIC, voidType, declaringClass);
     MethodDeclaration method = ast.newMethodDeclaration();
     Types.addBinding(method, binding);
     method.setName(ast.newSimpleName(destructorName));

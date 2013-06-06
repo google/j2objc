@@ -22,7 +22,6 @@ import com.google.devtools.j2objc.types.GeneratedMethodBinding;
 import com.google.devtools.j2objc.types.GeneratedTypeBinding;
 import com.google.devtools.j2objc.types.GeneratedVariableBinding;
 import com.google.devtools.j2objc.types.IOSArrayTypeBinding;
-import com.google.devtools.j2objc.types.IOSMethodBinding;
 import com.google.devtools.j2objc.types.IOSVariableBinding;
 import com.google.devtools.j2objc.types.NodeCopier;
 import com.google.devtools.j2objc.types.Types;
@@ -283,8 +282,7 @@ public class Rewriter extends ErrorReportingASTVisitor {
         false);
     ClassInstanceCreation newCce = ast.newClassInstanceCreation();
     newCce.setType(Types.makeType(cceType));
-    Types.addBinding(newCce, new GeneratedMethodBinding(
-        "ClassCastException", 0, cceType, cceType, true, false, false));
+    Types.addBinding(newCce, GeneratedMethodBinding.newConstructor(cceType, 0));
 
     ThrowStatement throwStmt = ast.newThrowStatement();
     throwStmt.setExpression(newCce);
@@ -701,8 +699,8 @@ public class Rewriter extends ErrorReportingASTVisitor {
     message.setExpression(receiver);
     String methodName = iosArrayBinding.getInitMethod();
     SimpleName messageName = ast.newSimpleName(methodName);
-    GeneratedMethodBinding methodBinding = new GeneratedMethodBinding(methodName,
-        Modifier.PUBLIC | Modifier.STATIC, iosArrayBinding, iosArrayBinding, false, false, true);
+    GeneratedMethodBinding methodBinding = GeneratedMethodBinding.newMethod(
+        methodName, Modifier.PUBLIC | Modifier.STATIC, iosArrayBinding, iosArrayBinding);
     Types.addBinding(messageName, methodBinding);
     message.setName(messageName);
     Types.addBinding(message, methodBinding);
@@ -880,32 +878,18 @@ public class Rewriter extends ErrorReportingASTVisitor {
 
   private MethodDeclaration createInterfaceMethodBody(
       AST ast, ITypeBinding typeBinding, IMethodBinding interfaceMethod) {
-    IMethodBinding methodBinding = new IOSMethodBinding(interfaceMethod.getName(), interfaceMethod,
-        typeBinding);
-
-    MethodDeclaration method = ast.newMethodDeclaration();
-    Types.addBinding(method, methodBinding);
-    method.setReturnType2(Types.makeType(interfaceMethod.getReturnType()));
-
-    SimpleName methodName = ast.newSimpleName(interfaceMethod.getName());
-    Types.addBinding(methodName, methodBinding);
-    method.setName(methodName);
-
-    ASTUtil.getModifiers(method).add(ast.newModifier(ModifierKeyword.PUBLIC_KEYWORD));
+    GeneratedMethodBinding methodBinding =
+        GeneratedMethodBinding.newOverridingMethod(interfaceMethod, typeBinding);
+    MethodDeclaration method = ASTFactory.newMethodDeclaration(ast, methodBinding);
 
     ITypeBinding[] parameterTypes = interfaceMethod.getParameterTypes();
     for (int i = 0; i < parameterTypes.length; i++) {
       ITypeBinding paramType = parameterTypes[i];
-      String paramName = "param" + i;
-      SingleVariableDeclaration param = ast.newSingleVariableDeclaration();
-      IVariableBinding paramBinding = IOSVariableBinding.newParameter(paramName, i, paramType,
-          methodBinding, paramType.getDeclaringClass(),
+      IVariableBinding paramBinding = IOSVariableBinding.newParameter(
+          "param" + i, i, paramType, methodBinding, paramType.getDeclaringClass(),
           Modifier.isFinal(paramType.getModifiers()));
-      Types.addBinding(param, paramBinding);
-      param.setName(ast.newSimpleName(paramName));
-      Types.addBinding(param.getName(), paramBinding);
-      param.setType(Types.makeType(paramType));
-      ASTUtil.getParameters(method).add(param);
+      ASTUtil.getParameters(method).add(ASTFactory.newSingleVariableDeclaration(ast, paramBinding));
+      methodBinding.addParameter(paramType);
     }
     return method;
   }

@@ -111,12 +111,7 @@ public class NodeCopier extends ASTMatcher {
     Types.addBinding(to, sharedBinding);
 
     if (from instanceof ASTNode) {
-      ASTNode fromNode = (ASTNode) from;
-      ASTNode replacement = Types.getNode(fromNode);
-      if (replacement != null) {
-        Types.substitute((ASTNode) to, replacement);
-      }
-      OuterReferenceResolver.copyNode(fromNode, (ASTNode) to);
+      OuterReferenceResolver.copyNode((ASTNode) from, (ASTNode) to);
     }
   }
 
@@ -147,7 +142,7 @@ public class NodeCopier extends ASTMatcher {
   @Override
   public boolean match(ArrayType node, Object other) {
     copy(node, other);
-    copy(node.getComponentType(), ((ArrayType) other).getComponentType());// fix for ASTMatcher bug
+    copy(node.getComponentType(), ((ArrayType) other).getComponentType()); // fix for ASTMatcher bug
     return super.match(node, other);
   }
 

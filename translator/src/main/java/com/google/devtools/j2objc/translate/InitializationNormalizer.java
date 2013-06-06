@@ -40,13 +40,12 @@ import org.eclipse.jdt.core.dom.EnumDeclaration;
 import org.eclipse.jdt.core.dom.Expression;
 import org.eclipse.jdt.core.dom.ExpressionStatement;
 import org.eclipse.jdt.core.dom.FieldDeclaration;
+import org.eclipse.jdt.core.dom.IMethodBinding;
 import org.eclipse.jdt.core.dom.ITypeBinding;
 import org.eclipse.jdt.core.dom.IVariableBinding;
 import org.eclipse.jdt.core.dom.Initializer;
 import org.eclipse.jdt.core.dom.MethodDeclaration;
 import org.eclipse.jdt.core.dom.Modifier;
-import org.eclipse.jdt.core.dom.PrimitiveType;
-import org.eclipse.jdt.core.dom.SimpleName;
 import org.eclipse.jdt.core.dom.Statement;
 import org.eclipse.jdt.core.dom.SuperConstructorInvocation;
 import org.eclipse.jdt.core.dom.Type;
@@ -66,8 +65,6 @@ import java.util.List;
  * @author Tom Ball
  */
 public class InitializationNormalizer extends ErrorReportingASTVisitor {
-
-  public static final String INIT_NAME = "init";
 
   @Override
   public void endVisit(TypeDeclaration node) {
@@ -230,8 +227,8 @@ public class InitializationNormalizer extends ErrorReportingASTVisitor {
       if (stmts.isEmpty() || !(stmts.get(0) instanceof SuperConstructorInvocation)) {
         SuperConstructorInvocation superCall = node.getAST().newSuperConstructorInvocation();
         ITypeBinding superType = Types.getTypeBinding(node).getSuperclass();
-        GeneratedMethodBinding newBinding = new GeneratedMethodBinding(INIT_NAME, Modifier.PUBLIC,
-            node.getAST().resolveWellKnownType("void"), superType, true, false, true);
+        GeneratedMethodBinding newBinding = GeneratedMethodBinding.newConstructor(
+            superType, Modifier.PUBLIC);
         Types.addBinding(superCall, newBinding);
         stmts.add(0, superCall);
       }
@@ -292,43 +289,31 @@ public class InitializationNormalizer extends ErrorReportingASTVisitor {
     SuperConstructorInvocation superCall = ast.newSuperConstructorInvocation();
     int constructorModifier =
         type.getModifiers() & (Modifier.PUBLIC | Modifier.PROTECTED | Modifier.PRIVATE);
-    GeneratedMethodBinding binding = new GeneratedMethodBinding(
-        INIT_NAME, constructorModifier, null, type.getSuperclass(), true, false, true);
+    GeneratedMethodBinding binding = GeneratedMethodBinding.newConstructor(
+        type.getSuperclass(), constructorModifier);
     Types.addBinding(superCall, binding);
     initStatements.add(0, superCall);
-    addMethod(INIT_NAME, constructorModifier, type, initStatements, members, ast, true);
+    members.add(createMethod(ast, GeneratedMethodBinding.newConstructor(type, constructorModifier),
+                             initStatements));
   }
 
   void addClassInitializer(ITypeBinding type, List<BodyDeclaration> members,
       List<Statement> classInitStatements, AST ast) {
     int modifiers = Modifier.PUBLIC | Modifier.STATIC;
-    addMethod(NameTable.CLINIT_NAME, modifiers, type, classInitStatements, members, ast, false);
+    members.add(createMethod(ast, GeneratedMethodBinding.newMethod(NameTable.CLINIT_NAME, modifiers,
+        ast.resolveWellKnownType("void"), type), classInitStatements));
   }
 
-  private void addMethod(String name, int modifiers, ITypeBinding type,
-      List<Statement> initStatements, List<BodyDeclaration> members, AST ast,
-      boolean isConstructor) {
+  private MethodDeclaration createMethod(
+      AST ast, IMethodBinding binding, List<Statement> statements) {
     Block body = ast.newBlock();
     List<Statement> stmts = ASTUtil.getStatements(body);
-    for (Statement stmt : initStatements) {
+    for (Statement stmt : statements) {
       Statement newStmt = NodeCopier.copySubtree(ast, stmt);
       stmts.add(newStmt);
     }
-    MethodDeclaration method = ast.newMethodDeclaration();
-    Type returnType = ast.newPrimitiveType(PrimitiveType.VOID);
-    ITypeBinding voidType = ast.resolveWellKnownType("void");
-    Types.addBinding(returnType, voidType);
-    ITypeBinding returnBinding = isConstructor ? null : voidType;
-    GeneratedMethodBinding binding = new GeneratedMethodBinding(
-        name, modifiers, returnBinding, type, isConstructor, false, true);
-    Types.addBinding(method, binding);
-    method.setReturnType2(returnType);
+    MethodDeclaration method = ASTFactory.newMethodDeclaration(ast, binding);
     method.setBody(body);
-    method.setConstructor(isConstructor);
-    ASTUtil.getModifiers(method).addAll(ASTFactory.newModifiers(ast, modifiers));
-    SimpleName nameNode = NameTable.unsafeSimpleName(name, ast);
-    Types.addBinding(nameNode, binding);
-    method.setName(nameNode);
-    members.add(method);
+    return method;
   }
 }

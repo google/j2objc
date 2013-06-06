@@ -166,16 +166,8 @@ public class InnerClassExtractor extends ErrorReportingASTVisitor {
     }
 
     if (needsConstructor) {
-      MethodDeclaration constructor = ast.newMethodDeclaration();
-      constructor.setConstructor(true);
-      ITypeBinding voidType = ast.resolveWellKnownType("void");
-      GeneratedMethodBinding binding = new GeneratedMethodBinding("init", 0,
-          voidType, clazz, true, false, true);
-      Types.addBinding(constructor, binding);
-      Types.addBinding(constructor.getReturnType2(), voidType);
-      SimpleName name = ast.newSimpleName("init");
-      Types.addBinding(name, binding);
-      constructor.setName(name);
+      GeneratedMethodBinding binding = GeneratedMethodBinding.newConstructor(clazz, 0);
+      MethodDeclaration constructor = ASTFactory.newMethodDeclaration(ast, binding);
       constructor.setBody(ast.newBlock());
       addOuterParameter(node, constructor, binding, outerFieldBinding);
       members.add(constructor);

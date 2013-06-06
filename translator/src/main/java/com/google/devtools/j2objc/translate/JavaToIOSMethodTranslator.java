@@ -43,7 +43,6 @@ import org.eclipse.jdt.core.dom.MethodInvocation;
 import org.eclipse.jdt.core.dom.Modifier;
 import org.eclipse.jdt.core.dom.ReturnStatement;
 import org.eclipse.jdt.core.dom.SimpleName;
-import org.eclipse.jdt.core.dom.SimpleType;
 import org.eclipse.jdt.core.dom.SingleVariableDeclaration;
 import org.eclipse.jdt.core.dom.Statement;
 import org.eclipse.jdt.core.dom.SuperMethodInvocation;
@@ -170,21 +169,11 @@ public class JavaToIOSMethodTranslator extends ErrorReportingASTVisitor {
       List<IOSParameter> iosArgs = iosMethod.getParameters();
       assert n == iosArgs.size() || iosMethod.isVarArgs();
 
-      // Pull parameters out of list, so they can be reordered.
-      SingleVariableDeclaration[] params =
-          parameters.toArray(new SingleVariableDeclaration[n]);
-
       for (int i = 0; i < n; i++) {
-        SingleVariableDeclaration var = params[i];
-        IVariableBinding varBinding = Types.getVariableBinding(var);
-        IOSParameter iosArg = iosArgs.get(i);
-        SimpleType paramType =
-            ast.newSimpleType(NameTable.unsafeSimpleName(iosArg.getType(), ast));
-        Types.addBinding(paramType, varBinding);
-        Types.addBinding(paramType.getName(), varBinding);
-        var.setType(paramType);
-        Types.addBinding(var.getName(), varBinding);
-        parameters.set(iosArg.getIndex(), var);
+        ITypeBinding newParamType = Types.resolveIOSType(iosArgs.get(i).getType());
+        if (newParamType != null) {
+          parameters.get(i).setType(Types.makeType(newParamType));
+        }
       }
     }
 
@@ -212,13 +201,14 @@ public class JavaToIOSMethodTranslator extends ErrorReportingASTVisitor {
       if (value != null) {
         IOSMethod iosMethod = new IOSMethod(value, binding, binding.getDeclaringClass(), ast);
         IMethodBinding methodBinding = iosMethod.resolveBinding();
-        MethodInvocation newInvocation = createMappedInvocation(iosMethod, binding, methodBinding);
+        MethodInvocation newInvocation = ASTFactory.newMethodInvocation(ast, methodBinding,
+            ASTFactory.newSimpleName(ast, Types.resolveIOSType(iosMethod.getDeclaringClass())));
 
         // Set parameters.
         copyInvocationArguments(null, ASTUtil.getArguments(node),
             ASTUtil.getArguments(newInvocation));
 
-        Types.substitute(node, newInvocation);
+        ASTUtil.setProperty(node, newInvocation);
         Types.addMappedIOSMethod(binding, iosMethod);
         Types.addMappedInvocation(node, iosMethod.resolveBinding());
       } else {
@@ -303,21 +293,6 @@ public class JavaToIOSMethodTranslator extends ErrorReportingASTVisitor {
     return;
   }
 
-  public MethodInvocation createMappedInvocation(IOSMethod iosMethod,
-      IMethodBinding oldMethodBinding, IMethodBinding newMethodBinding) {
-    // create invocation of mapped method
-    MethodInvocation newInvocation = ast.newMethodInvocation();
-    Types.addBinding(newInvocation, newMethodBinding);
-    newInvocation.setName(NameTable.unsafeSimpleName(iosMethod.getName(), ast));
-    Types.addBinding(newInvocation.getName(), newMethodBinding);
-    newInvocation.setExpression(ast.newName(iosMethod.getDeclaringClass()));
-    Types.addBinding(newInvocation.getExpression(),
-        Types.resolveIOSType(iosMethod.getDeclaringClass()));
-    Types.addMappedIOSMethod(oldMethodBinding, iosMethod);
-    Types.addMappedInvocation(newInvocation, newMethodBinding);
-    return newInvocation;
-  }
-
   private void copyInvocationArguments(Expression receiver, List<Expression> oldArgs,
       List<Expression> newArgs) {
     // set the receiver as the first argument
@@ -351,17 +326,10 @@ public class JavaToIOSMethodTranslator extends ErrorReportingASTVisitor {
         return super.visit(node);
       }
       IOSMethod iosMethod = new IOSMethod(value, binding, ast);
-      node.setName(NameTable.unsafeSimpleName(iosMethod.getName(), ast));
-      SimpleName name = node.getName();
-      if (name.getIdentifier().equals(binding.getDeclaringClass().getName())
-          || name.getIdentifier().equals(binding.getDeclaringClass().getQualifiedName())) {
-        node.setName(NameTable.unsafeSimpleName(iosMethod.getDeclaringClass(), ast));
-      }
       Types.addMappedIOSMethod(binding, iosMethod);
       IMethodBinding newBinding = iosMethod.resolveBinding();
       Types.addMappedInvocation(node, newBinding);
       Types.addBinding(node, newBinding);
-      Types.addBinding(name, newBinding);
     } else {
       // Not mapped, check if it overrides a mapped method.
       for (IMethodBinding methodBinding : mappedMethods) {
@@ -371,11 +339,9 @@ public class JavaToIOSMethodTranslator extends ErrorReportingASTVisitor {
             String value = methodMappings.get(desc.getKey());
             if (value != null) {
               IOSMethod iosMethod = new IOSMethod(value, binding, ast);
-              node.setName(NameTable.unsafeSimpleName(iosMethod.getName(), ast));
               Types.addMappedIOSMethod(binding, iosMethod);
               IMethodBinding newBinding = iosMethod.resolveBinding();
               Types.addBinding(node, newBinding);
-              Types.addBinding(node.getName(), newBinding);
             }
           }
         }
@@ -444,41 +410,18 @@ public class JavaToIOSMethodTranslator extends ErrorReportingASTVisitor {
 
   private MethodInvocation makeCloneInvocation(ITypeBinding declaringClass,
       GeneratedVariableBinding zoneBinding) {
-    GeneratedMethodBinding cloneBinding =
-        makeCloneBinding(declaringClass, zoneBinding);
-
-    SimpleName cloneInvocationName = ast.newSimpleName("clone");
-    Types.addBinding(cloneInvocationName, cloneBinding);
-    MethodInvocation cloneInvocation = ast.newMethodInvocation();
-    cloneInvocation.setName(cloneInvocationName);
-    Types.addBinding(cloneInvocation, cloneBinding);
-    return cloneInvocation;
-  }
-
-  /**
-   * Returns a bound method name for "copyWithZone", given the method's
-   * declaring class type.
-   */
-  private SimpleName newCloneMethodName(ITypeBinding declaringClass, boolean isSynthetic) {
-    GeneratedMethodBinding newBinding = new GeneratedMethodBinding("copyWithZone", 0,
-        Types.resolveIOSType("id"), declaringClass, false, false, isSynthetic);
-    IOSMethod iosMethod = new IOSMethod("id copyWithZone:(NSZone *)zone", newBinding, ast);
-    Types.addMappedIOSMethod(newBinding, iosMethod);
-    SimpleName copyMethodName = ast.newSimpleName(iosMethod.getName());
-    Types.addBinding(copyMethodName, newBinding);
-    return copyMethodName;
+    GeneratedMethodBinding cloneBinding = GeneratedMethodBinding.newMethod(
+        "clone", 0, Types.resolveIOSType("NSObject"), declaringClass);
+    return ASTFactory.newMethodInvocation(ast, cloneBinding, null);
   }
 
   private void addCopyWithZoneMethod(TypeDeclaration node) {
     // Create copyWithZone: method.
     ITypeBinding type = Types.getTypeBinding(node).getTypeDeclaration();
-    SimpleName methodName = newCloneMethodName(type, true);
-    GeneratedMethodBinding binding = (GeneratedMethodBinding) Types.getMethodBinding(methodName);
-    IOSMethod iosMethod = Types.getMappedMethod(binding);
-    MethodDeclaration cloneMethod = ast.newMethodDeclaration();
-    Types.addBinding(cloneMethod, binding);
-    cloneMethod.setName(methodName);
-    cloneMethod.setReturnType2(Types.makeType(binding.getReturnType()));
+    GeneratedMethodBinding binding = GeneratedMethodBinding.newMethod(
+        "copyWithZone", 0, Types.resolveIOSType("id"), type);
+    IOSMethod iosMethod = new IOSMethod("id copyWithZone:(NSZone *)zone", binding, ast);
+    MethodDeclaration cloneMethod = ASTFactory.newMethodDeclaration(ast, binding);
 
     // Add NSZone *zone parameter.
     IOSTypeBinding nsZoneType = new IOSTypeBinding("NSZone", false);
@@ -497,12 +440,5 @@ public class JavaToIOSMethodTranslator extends ErrorReportingASTVisitor {
     ASTUtil.getStatements(block).add(returnStmt);
 
     ASTUtil.getBodyDeclarations(node).add(cloneMethod);
-  }
-
-  private GeneratedMethodBinding makeCloneBinding(ITypeBinding declaringClass,
-      GeneratedVariableBinding zoneBinding) {
-    GeneratedMethodBinding copyObjectBinding = new GeneratedMethodBinding("clone", 0,
-        Types.resolveIOSType("NSObject"), declaringClass, false, false, true);
-    return copyObjectBinding;
   }
 }

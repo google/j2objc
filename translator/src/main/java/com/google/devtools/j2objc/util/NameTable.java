@@ -23,8 +23,6 @@ import com.google.common.collect.Maps;
 import com.google.devtools.j2objc.Options;
 import com.google.devtools.j2objc.types.Types;
 
-import org.eclipse.jdt.core.dom.AST;
-import org.eclipse.jdt.core.dom.ASTNode;
 import org.eclipse.jdt.core.dom.AbstractTypeDeclaration;
 import org.eclipse.jdt.core.dom.CompilationUnit;
 import org.eclipse.jdt.core.dom.IBinding;
@@ -36,12 +34,9 @@ import org.eclipse.jdt.core.dom.MethodDeclaration;
 import org.eclipse.jdt.core.dom.PackageDeclaration;
 import org.eclipse.jdt.core.dom.PrimitiveType;
 import org.eclipse.jdt.core.dom.SimpleName;
-import org.eclipse.jdt.core.dom.SimplePropertyDescriptor;
 import org.eclipse.jdt.core.dom.VariableDeclarationFragment;
 
 import java.io.File;
-import java.lang.reflect.Field;
-import java.lang.reflect.Method;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -57,6 +52,7 @@ public class NameTable {
   private static NameTable instance;
   private final Map<IBinding, String> renamings = Maps.newHashMap();
 
+  public static final String INIT_NAME = "init";
   public static final String CLINIT_NAME = "initialize";
 
   public static final String ID_TYPE = "id";
@@ -500,35 +496,6 @@ public class NameTable {
    */
   public static String makeFunctionName(AbstractTypeDeclaration cls, MethodDeclaration method) {
     return getFullName(cls) + '_' + method.getName().getIdentifier();
-  }
-
-  /**
-   * Returns a SimpleName for an identifier that may not be a legal
-   * Java identifier but is for iOS.  For example, JDT doesn't allow
-   * Java keywords such as "class" to be used as names.
-   */
-  public static SimpleName unsafeSimpleName(String identifier, AST ast) {
-    SimpleName name = ast.newSimpleName("foo");
-    try {
-      Field field = SimpleName.class.getDeclaredField("identifier");
-      field.setAccessible(true);
-
-      Class<?>[] argTypes = new Class[] { SimplePropertyDescriptor.class };
-      Object[] args = new Object[] { SimpleName.IDENTIFIER_PROPERTY };
-      Method preValueChange = ASTNode.class.getDeclaredMethod("preValueChange", argTypes);
-      Method postValueChange = ASTNode.class.getDeclaredMethod("postValueChange", argTypes);
-      preValueChange.setAccessible(true);
-      postValueChange.setAccessible(true);
-
-      preValueChange.invoke(name, args);
-      field.set(name, identifier);
-      postValueChange.invoke(name, args);
-    } catch (Exception e) {
-      // should never happen, since only the one known class is manipulated
-      e.printStackTrace();
-      System.exit(1);
-    }
-    return name;
   }
 
   public static boolean isReservedName(String name) {
