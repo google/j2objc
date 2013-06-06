@@ -91,10 +91,18 @@ public class ObjectiveCHeaderGenerator extends ObjectiveCSourceFileGenerator {
     save(unit);
   }
 
+  private String getSuperTypeName(TypeDeclaration node) {
+    Type superType = node.getSuperclassType();
+    if (superType == null) {
+      return "NSObject";
+    }
+    return NameTable.getFullName(Types.getTypeBinding(superType));
+  }
+
   @Override
   public void generate(TypeDeclaration node) {
     String typeName = NameTable.getFullName(node);
-    String superName = NameTable.getSuperClassName(node);
+    String superName = getSuperTypeName(node);
     List<FieldDeclaration> fields = Lists.newArrayList(node.getFields());
     List<MethodDeclaration> methods = Lists.newArrayList(node.getMethods());
     boolean isInterface = node.isInterface();

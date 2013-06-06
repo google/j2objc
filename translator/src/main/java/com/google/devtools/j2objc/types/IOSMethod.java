@@ -45,11 +45,11 @@ public class IOSMethod {
 
   public IOSMethod(String s, IMethodBinding binding, ITypeBinding returnType, AST ast) {
     if (s.endsWith(";")) {
-      s = s.substring(0, s.length() -1 );
+      s = s.substring(0, s.length() - 1);
     }
     int i = s.indexOf(' ');
     String className = s.substring(0, i);
-    IOSTypeBinding clazz = Types.resolveIOSType(className);
+    ITypeBinding clazz = Types.resolveIOSType(className);
     if (clazz == null) {
       clazz = new IOSTypeBinding(className, false);
     }

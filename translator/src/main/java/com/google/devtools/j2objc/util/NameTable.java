@@ -21,7 +21,6 @@ import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.devtools.j2objc.Options;
-import com.google.devtools.j2objc.types.IOSTypeBinding;
 import com.google.devtools.j2objc.types.Types;
 
 import org.eclipse.jdt.core.dom.AST;
@@ -35,14 +34,9 @@ import org.eclipse.jdt.core.dom.ITypeBinding;
 import org.eclipse.jdt.core.dom.IVariableBinding;
 import org.eclipse.jdt.core.dom.MethodDeclaration;
 import org.eclipse.jdt.core.dom.PackageDeclaration;
-import org.eclipse.jdt.core.dom.ParameterizedType;
 import org.eclipse.jdt.core.dom.PrimitiveType;
-import org.eclipse.jdt.core.dom.QualifiedType;
 import org.eclipse.jdt.core.dom.SimpleName;
 import org.eclipse.jdt.core.dom.SimplePropertyDescriptor;
-import org.eclipse.jdt.core.dom.SimpleType;
-import org.eclipse.jdt.core.dom.Type;
-import org.eclipse.jdt.core.dom.TypeDeclaration;
 import org.eclipse.jdt.core.dom.VariableDeclarationFragment;
 
 import java.io.File;
@@ -498,23 +492,6 @@ public class NameTable {
     IPackageBinding pkg = binding.getPackage();
     String pkgName = pkg != null ? getPrefix(pkg.getName()) : "";
     return pkgName + binding.getName() + suffix;
-  }
-
-  /**
-   * Returns the full name of a type declaration's superclass.
-   */
-  public static String getSuperClassName(TypeDeclaration typeDecl) {
-    Type superclass = typeDecl.getSuperclassType();
-    if (superclass instanceof ParameterizedType) {
-      superclass = ((ParameterizedType) superclass).getType();
-    }
-    if (superclass instanceof SimpleType || superclass instanceof QualifiedType) {
-      ITypeBinding binding = Types.getTypeBinding(superclass).getErasure();
-      String typeName = binding instanceof IOSTypeBinding ? binding.getQualifiedName()
-          : getFullName(binding);
-      return Types.mapSimpleTypeName(typeName);
-    }
-    return "NSObject";
   }
 
   /**

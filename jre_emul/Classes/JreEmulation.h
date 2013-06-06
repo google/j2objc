@@ -22,17 +22,14 @@
 #endif
 
 #ifdef __OBJC__
-# import <Foundation/Foundation.h>
-# import "IOSArray.h"
-# import "java/lang/CharSequence.h"
-# import "java/lang/Comparable.h"
-# import "IOSClass.h"
-# import "JavaObject.h"
-# import "NSObject+JavaObject.h"
-# import "NSString+JavaString.h"
-# import "IOSClass.h"
-# import <fcntl.h>
-# import "JreMemDebug.h"
+#import <Foundation/Foundation.h>
+#import "IOSArray.h"
+#import "IOSClass.h"
+#import "JavaObject.h"
+#import "NSObject+JavaObject.h"
+#import "NSString+JavaString.h"
+#import <fcntl.h>
+#import "JreMemDebug.h"
 
 # ifndef __has_attribute
 #  define __has_attribute(x) 0 // Compatibility with non-clang compilers.
