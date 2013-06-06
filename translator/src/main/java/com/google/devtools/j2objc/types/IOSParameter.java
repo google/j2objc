@@ -19,8 +19,6 @@ package com.google.devtools.j2objc.types;
 import com.google.common.base.Splitter;
 import com.google.common.collect.Lists;
 
-import org.eclipse.jdt.core.dom.AST;
-
 import java.util.List;
 import java.util.regex.Pattern;
 
@@ -41,7 +39,7 @@ public class IOSParameter {
     static final Splitter IOS_PARAMETER_SPLITTER =
       Splitter.on(Pattern.compile("(:|\\(|\\)|\\{|\\})")).omitEmptyStrings().trimResults();
 
-    public IOSParameter(String s, int index, AST ast) {
+    public IOSParameter(String s, int index) {
       if (s.equals("...")) {
         name = "values";
         type = null;
