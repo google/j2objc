@@ -24,18 +24,31 @@
 #import "IOSObjectArray.h"
 #import "java/lang/NoSuchMethodException.h"
 #import "java/lang/reflect/Modifier.h"
+#import "objc/runtime.h"
 
 @implementation ExecutableMember
 
 - (id)initWithSelector:(SEL)aSelector withClass:(IOSClass *)aClass {
   if ((self = [super init])) {
     selector_ = aSelector;
-    class_ = aClass.objcClass;
-    classMethod_ = ![class_ instancesRespondToSelector:selector_];
-    if (classMethod_) {
-      methodSignature_ = [class_ methodSignatureForSelector:selector_];
+    class_ = aClass;
+    if (class_.objcClass) {
+      classMethod_ = ![class_.objcClass instancesRespondToSelector:selector_];
+      if (classMethod_) {
+        methodSignature_ =
+            [class_.objcClass methodSignatureForSelector:selector_];
+      } else {
+        methodSignature_ =
+            [class_.objcClass instanceMethodSignatureForSelector:selector_];
+      }
     } else {
-      methodSignature_ = [class_ instanceMethodSignatureForSelector:selector_];
+      assert (class_.objcProtocol);
+      struct objc_method_description methodDesc =
+        protocol_getMethodDescription(class_.objcProtocol, aSelector, YES, YES);
+      if (methodDesc.name && methodDesc.types) {  // If method exists ...
+        methodSignature_ =
+            [NSMethodSignature signatureWithObjCTypes:methodDesc.types];
+      }
     }
     if (methodSignature_ == nil) {
       id exception =
@@ -79,7 +92,7 @@
 
 // Returns the class this executable is a member of.
 - (IOSClass *)getDeclaringClass {
-  return [IOSClass classWithClass:class_];
+  return class_;
 }
 
 @end

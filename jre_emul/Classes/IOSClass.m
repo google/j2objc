@@ -175,28 +175,29 @@ static NSString *getTranslatedMethodName(NSString *name,
   return mods | JavaLangReflectModifier_PUBLIC;
 }
 
-// Create reflection wrappers for an Objective-C Method list, updating a map
-// keyed by those methods' signatures.  The map is necessary to skip methods
-// in superclasses that are overridden.
+// Create a reflection wrapper for an Objective-C selector, updating a map
+// keyed by the selector's signature.  The map is necessary to skip methods
+// that are overridden (subtypes are added first).
+void addMethod(SEL sel, IOSClass *clazz, NSMutableDictionary *map,
+               BOOL fetchConstructors) {
+  NSString *key = NSStringFromSelector(sel);
+  BOOL isConstructor =
+      [key isEqualToString:@"init"] || [key hasPrefix:@"initWith"];
+  if (isConstructor == fetchConstructors && ![map objectForKey:key]) {
+    JavaLangReflectMethod *method =
+    [JavaLangReflectMethod methodWithSelector:sel withClass:clazz];
+    [map setObject:method forKey:key];
+  }
+}
+
 void createMethodWrappers(Method *methods,
                           unsigned count,
                           IOSClass* clazz,
                           NSMutableDictionary *map,
                           BOOL fetchConstructors) {
-
-  // Copy first the instance, then the class methods into a combined
-  // array of IOSMethod instances.  Method ordering is not defined or
-  // important.
   for (NSUInteger i = 0; i < count; i++) {
     SEL sel = method_getName(methods[i]);
-    NSString *key = NSStringFromSelector(sel);
-    BOOL isConstructor =
-        [key hasPrefix:@"init"] && ![key isEqualToString:@"initialize"];
-    if (isConstructor == fetchConstructors && ![map objectForKey:key]) {
-      JavaLangReflectMethod *method =
-          [JavaLangReflectMethod methodWithSelector:sel withClass:clazz];
-      [map setObject:method forKey:key];
-    }
+    addMethod(sel, clazz, map, fetchConstructors);
   }
 }
 
@@ -205,25 +206,40 @@ void createMethodWrappers(Method *methods,
 void getMethodsFromClass(IOSClass *clazz, NSMutableDictionary *methods,
                          BOOL fetchConstructors) {
   unsigned int nInstanceMethods, nClassMethods;
-  Method *instanceMethods =
-      class_copyMethodList(clazz->class_, &nInstanceMethods);
-  createMethodWrappers(instanceMethods, nInstanceMethods, clazz,
-                       methods, fetchConstructors);
+  if (clazz->class_) {
+    // Copy first the instance, then the class methods into a combined
+    // array of IOSMethod instances.  Method ordering is not defined or
+    // important.
+    Method *instanceMethods =
+        class_copyMethodList(clazz->class_, &nInstanceMethods);
+    createMethodWrappers(instanceMethods, nInstanceMethods, clazz,
+                         methods, fetchConstructors);
 
-  Method *classMethods =
-      class_copyMethodList(object_getClass(clazz->class_), &nClassMethods);
-  createMethodWrappers(classMethods, nClassMethods, clazz,
-                       methods, fetchConstructors);
+    Method *classMethods =
+        class_copyMethodList(object_getClass(clazz->class_), &nClassMethods);
+    createMethodWrappers(classMethods, nClassMethods, clazz,
+                         methods, fetchConstructors);
 
-  free(instanceMethods);
-  free(classMethods);
+    free(instanceMethods);
+    free(classMethods);
+  } else {
+    assert(clazz->protocol_);
+    unsigned count;
+    struct objc_method_description *descriptions =
+        protocol_copyMethodDescriptionList(clazz->protocol_, YES, YES, &count);
+    for (unsigned i = 0; i < count; i++) {
+      SEL sel = descriptions[i].name;
+      addMethod(sel, clazz, methods, fetchConstructors);
+    }
+    free (descriptions);
+  }
 }
 
 IOSObjectArray *getDeclaredMethods(IOSClass *clazz, BOOL fetchConstructors) {
   NSMutableDictionary *methodMap = [NSMutableDictionary dictionary];
   getMethodsFromClass(clazz, methodMap, fetchConstructors);
   IOSClass *methodType =
-  [IOSClass classWithClass:[JavaLangReflectMethod class]];
+      [IOSClass classWithClass:[JavaLangReflectMethod class]];
   return [IOSObjectArray arrayWithNSArray:[methodMap allValues]
                                      type:methodType];
 }
@@ -231,30 +247,12 @@ IOSObjectArray *getDeclaredMethods(IOSClass *clazz, BOOL fetchConstructors) {
 // Return the class and instance methods declared by this class.  Superclass
 // methods are not included.
 - (IOSObjectArray *)getDeclaredMethods {
-  if (class_ == nil) {
-    id exception =
-        [[JavaLangAssertionError alloc] initWithNSString:@"not implemented"];
-#if ! __has_feature(objc_arc)
-    [exception autorelease];
-#endif
-    @throw exception;
-  }
-
   return getDeclaredMethods(self, NO);
 }
 
 // Return the constructors declared by this class.  Superclass constructors
 // are not included.
 - (IOSObjectArray *)getDeclaredConstructors {
-  if (class_ == nil) {
-    id exception =
-    [[JavaLangAssertionError alloc] initWithNSString:@"not implemented"];
-#if ! __has_feature(objc_arc)
-    [exception autorelease];
-#endif
-    @throw exception;
-  }
-
   return getDeclaredMethods(self, YES);
 }
 
@@ -273,27 +271,11 @@ IOSObjectArray *getMethods(IOSClass *clazz, BOOL fetchConstructors) {
 
 // Return the methods for this class, including inherited methods.
 - (IOSObjectArray *)getMethods {
-  if (class_ == nil) {
-    id exception =
-    [[JavaLangAssertionError alloc] initWithNSString:@"not implemented"];
-#if ! __has_feature(objc_arc)
-    [exception autorelease];
-#endif
-    @throw exception;
-  }
   return getMethods(self, NO);
 }
 
 // Return the constructors for this class, including inherited ones.
 - (IOSObjectArray *)getConstructors {
-  if (class_ == nil) {
-    id exception =
-    [[JavaLangAssertionError alloc] initWithNSString:@"not implemented"];
-#if ! __has_feature(objc_arc)
-    [exception autorelease];
-#endif
-    @throw exception;
-  }
   return getMethods(self, YES);
 }
 
@@ -302,15 +284,6 @@ IOSObjectArray *getMethods(IOSClass *clazz, BOOL fetchConstructors) {
 // class, return a superclass method if available.
 - (JavaLangReflectMethod *)getMethod:(NSString *)name
                       parameterTypes:(IOSObjectArray *)types {
-  if (class_ == nil) {
-    id exception =
-    [[JavaLangAssertionError alloc] initWithNSString:@"not implemented"];
-#if ! __has_feature(objc_arc)
-    [exception autorelease];
-#endif
-    @throw exception;
-  }
-
   JavaLangReflectMethod *method = getClassMethod(name, types, self);
   if (method != nil) {
     return method;
@@ -322,6 +295,9 @@ IOSObjectArray *getMethods(IOSClass *clazz, BOOL fetchConstructors) {
       return method;
     }
   }
+  JavaLangNoSuchMethodException *e = AUTORELEASE(
+      [[JavaLangNoSuchMethodException alloc] initWithNSString:name]);
+  @throw e;
   return nil;
 }
 
@@ -329,15 +305,6 @@ IOSObjectArray *getMethods(IOSClass *clazz, BOOL fetchConstructors) {
 // types.  Return nil if the named method is not a member of this class.
 - (JavaLangReflectMethod *)getDeclaredMethod:(NSString *)name
                               parameterTypes:(IOSObjectArray *)types {
-  if (class_ == nil) {
-    id exception =
-    [[JavaLangAssertionError alloc] initWithNSString:@"not implemented"];
-#if ! __has_feature(objc_arc)
-    [exception autorelease];
-#endif
-    @throw exception;
-  }
-  
   return getClassMethod(name, types, self);
 }
 
@@ -345,18 +312,37 @@ IOSObjectArray *getMethods(IOSClass *clazz, BOOL fetchConstructors) {
 JavaLangReflectMethod *getClassMethod(NSString *name,
                                       IOSObjectArray *parameterTypes,
                                       IOSClass *cls) {
-  unsigned int n;
-  Method *instanceMethods = class_copyMethodList(cls->class_, &n);
-  JavaLangReflectMethod *method = findClassMethod(name, parameterTypes,
-                                                  cls, instanceMethods, n);
-  free(instanceMethods);
-  if (method != nil) {
+  NIL_CHK(name);
+  if (cls->class_) {
+    unsigned int n;
+    Method *instanceMethods = class_copyMethodList(cls->class_, &n);
+    JavaLangReflectMethod *method = findClassMethod(name, parameterTypes,
+                                                    cls, instanceMethods, n);
+    free(instanceMethods);
+    if (method != nil) {
+      return method;
+    }
+    Method *classMethods = class_copyMethodList(object_getClass(cls->class_), &n);
+    method = findClassMethod(name, parameterTypes, cls, classMethods, n);
+    free(classMethods);
     return method;
+  } else {
+    assert(cls->protocol_);
+    unsigned count;
+    struct objc_method_description *descriptions =
+        protocol_copyMethodDescriptionList(cls->protocol_, YES, YES, &count);
+    for (unsigned i = 0; i < count; i++) {
+      SEL sel = descriptions[i].name;
+      JavaLangReflectMethod *method =
+          [JavaLangReflectMethod methodWithSelector:sel withClass:cls];
+      if (methodMatches(name, parameterTypes, method)) {
+        free(descriptions);
+        return method;
+      }
+    }
+    free(descriptions);
+    return nil;
   }
-  Method *classMethods = class_copyMethodList(object_getClass(cls->class_), &n);
-  method = findClassMethod(name, parameterTypes, cls, classMethods, n);
-  free(classMethods);
-  return method;
 }
 
 // Look up a method in a list of Method references.
