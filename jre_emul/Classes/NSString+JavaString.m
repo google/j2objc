@@ -842,7 +842,7 @@ NSStringEncoding parseCharsetName(NSString *charset) {
   if (!regex) {
     @throw makeException([JavaLangNullPointerException class]);
   }
-  NSError *error;
+  NSError *error = nil;
   NSRegularExpression *nsRegex =
       [NSRegularExpression regularExpressionWithPattern:regex
                                                 options:0
