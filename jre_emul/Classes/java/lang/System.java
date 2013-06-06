@@ -16,7 +16,7 @@
 
 package java.lang;
 
-/*-{
+/*-[
 #import "IOSBooleanArray.h"
 #import "IOSByteArray.h"
 #import "IOSCharArray.h"
@@ -31,9 +31,13 @@ package java.lang;
 #import "java/lang/IllegalArgumentException.h"
 #import "java/lang/NullPointerException.h"
 #include "mach/mach_time.h"
-}-*/
+]-*/
 
-import java.io.OutputStream;
+import java.io.BufferedInputStream;
+import java.io.FileDescriptor;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.InputStream;
 import java.io.PrintStream;
 import java.util.Properties;
 import java.util.logging.Level;
@@ -42,39 +46,57 @@ import java.util.logging.Logger;
 /**
  * Simple iOS version of java.lang.System.  No code was shared, just its
  * public API.
- *
+ * 
  * @author Tom Ball
  */
 public class System {
   private static Properties props;
 
-  // The following two, implemented this way, might be slow, but it works.
-  // TODO(user,user,user): Replace with real implementation from Harmony.
+  public static final InputStream in;
+  public static final PrintStream out;
+  public static final PrintStream err;
 
-  public static final PrintStream out = new PrintStream(new OutputStream() {
-    @Override
-    public native void write(int b) /*-{
-      putc(b, stdout);
-    }-*/;
-  });
+  static {
+    // Set up standard in, out, and err.
+    err = new PrintStream(new FileOutputStream(FileDescriptor.err));
+    out = new PrintStream(new FileOutputStream(FileDescriptor.out));
+    in = new BufferedInputStream(new FileInputStream(FileDescriptor.in));
+  }
 
-  public static final PrintStream err = new PrintStream(new OutputStream() {
-    @Override
-    public native void write(int b) /*-{
-      putc(b, stderr);
-    }-*/;
-  });
+  public static native void setIn(InputStream newIn) /*-[
+#if __has_feature(objc_arc)
+    JavaLangSystem_in_ = newIn;
+#else
+    JreOperatorRetainedAssign(&JavaLangSystem_in_, self, newIn);
+#endif
+  ]-*/;
 
-  public static native long currentTimeMillis() /*-{
+  public static native void setOut(java.io.PrintStream newOut) /*-[
+#if __has_feature(objc_arc)
+    JavaLangSystem_out_ = newOut;
+#else
+    JreOperatorRetainedAssign(&JavaLangSystem_out_, self, newOut);
+#endif
+  ]-*/;
+
+  public static native void setErr(java.io.PrintStream newErr)  /*-[
+#if __has_feature(objc_arc)
+    JavaLangSystem_err_ = newErr;
+#else
+    JreOperatorRetainedAssign(&JavaLangSystem_err_, self, newErr);
+#endif
+  ]-*/;
+
+  public static native long currentTimeMillis() /*-[
     return (long long) ([[NSDate date] timeIntervalSince1970] * 1000);
-  }-*/;
+  ]-*/;
 
-  public static native int identityHashCode(Object anObject) /*-{
+  public static native int identityHashCode(Object anObject) /*-[
     return (int) (intptr_t) anObject;
-  }-*/;
-
+  ]-*/;
+  
   public static native void arraycopy(Object src, int srcPos, Object dest, int destPos,
-      int length) /*-{
+      int length) /*-[
     id exception = nil;
     if (!src || !dest) {
       exception = [[JavaLangNullPointerException alloc] init];
@@ -100,9 +122,9 @@ public class System {
     [(IOSArray *) src arraycopy:NSMakeRange(srcPos, length)
                     destination:(IOSArray *) dest
                          offset:destPos];
-  }-*/;
+  ]-*/;
 
-  public native static long nanoTime() /*-{
+  public native static long nanoTime() /*-[
     // Get the timebase info
     mach_timebase_info_data_t info;
     mach_timebase_info(&info);
@@ -111,11 +133,11 @@ public class System {
 
     // Convert to nanoseconds and return,
     return (time * info.numer) / info.denom;
-  }-*/;
+  ]-*/;
 
-  public native static void exit(int status) /*-{
+  public native static void exit(int status) /*-[
     exit(status);
-  }-*/;
+  ]-*/;
 
   public static Properties getProperties() {
     if (props == null) {
@@ -130,7 +152,7 @@ public class System {
     return props;
   }
 
-  private static native void setSystemProperties(Properties props) /*-{
+  private static native void setSystemProperties(Properties props) /*-[
     [props setPropertyWithNSString:@"user.home" withNSString:NSHomeDirectory()];
     [props setPropertyWithNSString:@"user.name" withNSString:NSUserName()];
     NSString *curDir = [[NSFileManager defaultManager] currentDirectoryPath];
@@ -142,7 +164,7 @@ public class System {
       tmpDir = [tmpDir substringToIndex:iLast];
     }
     [props setPropertyWithNSString:@"java.io.tmpdir" withNSString:tmpDir];
-  }-*/;
+  ]-*/;
 
   public static String getProperty(String key) {
     return getProperties().getProperty(key);
@@ -166,6 +188,16 @@ public class System {
     String result = properties.getProperty(key);
     properties.remove(key);
     return result;
+  }
+
+  /**
+   * Returns null. Android does not use {@code SecurityManager}. This method
+   * is only provided for source compatibility.
+   *
+   * @return null
+   */
+  public static SecurityManager getSecurityManager() {
+      return null;
   }
 
   /**

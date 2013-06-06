@@ -413,18 +413,6 @@ public class RewriterTest extends GenerationTest {
     assertEquals("testMethod", m.getName().getIdentifier());
   }
 
-  public void testRewriteSystemOut() throws IOException {
-    String source = "class A {\n" +
-        "  void foo() {\n" +
-        "    System.out.println(\"foo\");\n" +
-        "    System.out.println();\n" +
-        "  }" +
-        "}\n";
-    String translation = translateSourceFile(source, "A", "A.m");
-    assertTranslation(translation, "NSLog(@\"%@\", @\"foo\")");
-    assertTranslation(translation, "NSLog(@\"\")");
-  }
-
   public void testAddsAbstractMethodsToEnum() throws IOException {
     String interfaceSource = "interface I { public int foo(); }";
     String enumSource =
@@ -446,12 +434,12 @@ public class RewriterTest extends GenerationTest {
   }
 
   // Regression test: the wrong method name used for "f.group()" translation.
-  public void testNSLogWithMethodInvocation() throws IOException {
+  public void testPrintlnWithMethodInvocation() throws IOException {
     String source = "public class A { " +
         "String group() { return \"foo\"; } " +
         "void test() { A a = new A(); System.out.println(a.group()); }}";
     String translation = translateSourceFile(source, "A", "A.m");
-    assertTranslation(translation, "NSLog(@\"%@\", [((A *) NIL_CHK(a)) group]);");
+    assertTranslation(translation, "printlnWithNSString:[((A *) NIL_CHK(a)) group]];");
   }
 
   // Regression test: Must call "charValue" on boxed type returned from iterator.
@@ -517,7 +505,7 @@ public class RewriterTest extends GenerationTest {
   }
 
   public void testVariableDeclarationsInSwitchStatement2() throws IOException {
-    CompilationUnit unit = translateType("A", 
+    CompilationUnit unit = translateType("A",
         "public class A { public void doSomething(int i) { switch (i) { " +
         "case 1: int j = i * 2; log(j); break; " +
         "case 2: log(i); break; " +

@@ -26,20 +26,22 @@ public interface Os {
     public void close(FileDescriptor fd) throws ErrnoException;
     public FileDescriptor dup(FileDescriptor oldFd) throws ErrnoException;
     public FileDescriptor dup2(FileDescriptor oldFd, int newFd) throws ErrnoException;
+    public void fchmod(FileDescriptor fd, int mode) throws ErrnoException;
+    public void fchown(FileDescriptor fd, int uid, int gid) throws ErrnoException;
     public int fcntlVoid(FileDescriptor fd, int cmd) throws ErrnoException;
     public int fcntlLong(FileDescriptor fd, int cmd, long arg) throws ErrnoException;
+    public void fsync(FileDescriptor fd) throws ErrnoException;
+    public boolean isatty(FileDescriptor fd);
     public FileDescriptor open(String path, int flags, int mode) throws ErrnoException;
     public String strerror(int errno);
+    public void tcdrain(FileDescriptor fd) throws ErrnoException;
 
     // TODO(user): enable as needed.
 //    public String[] environ();
-//    public void fchmod(FileDescriptor fd, int mode) throws ErrnoException;
-//    public void fchown(FileDescriptor fd, int uid, int gid) throws ErrnoException;
 //    public int fcntlFlock(FileDescriptor fd, int cmd, StructFlock arg) throws ErrnoException;
 //    public void fdatasync(FileDescriptor fd) throws ErrnoException;
 //    public StructStat fstat(FileDescriptor fd) throws ErrnoException;
 //    public StructStatFs fstatfs(FileDescriptor fd) throws ErrnoException;
-//    public void fsync(FileDescriptor fd) throws ErrnoException;
 //    public void ftruncate(FileDescriptor fd, long length) throws ErrnoException;
 //    public int getegid();
 //    public int geteuid();
@@ -52,7 +54,6 @@ public interface Os {
 //    public int getuid();
 //    public String if_indextoname(int index);
 //    public int ioctlInt(FileDescriptor fd, int cmd, MutableInt arg) throws ErrnoException;
-//    public boolean isatty(FileDescriptor fd);
 //    public void kill(int pid, int signal) throws ErrnoException;
 //    public void lchown(String path, int uid, int gid) throws ErrnoException;
 //    public void listen(FileDescriptor fd, int backlog) throws ErrnoException;
@@ -97,7 +98,6 @@ public interface Os {
 //    public StructStatFs statfs(String path) throws ErrnoException;
 //    public void symlink(String oldPath, String newPath) throws ErrnoException;
 //    public long sysconf(int name);
-//    public void tcdrain(FileDescriptor fd) throws ErrnoException;
 //    public void tcsendbreak(FileDescriptor fd, int duration) throws ErrnoException;
 //    public int umask(int mask);
 //    public StructUtsname uname();

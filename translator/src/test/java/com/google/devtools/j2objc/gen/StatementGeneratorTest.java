@@ -439,27 +439,6 @@ public class StatementGeneratorTest extends GenerationTest {
     assertFalse(translation.contains("Test *this$0;"));
   }
 
-  public void testPrintlnToNSLog() throws IOException {
-    String translation = translateSourceFile(
-        "public class Hello { public static void main(String[] args) { " +
-        "System.out.println(\"Hello, world!\"); }}",
-        "Hello", "Hello.m");
-    assertTranslation(translation, "NSLog(@\"%@\", @\"Hello, world!\");");
-  }
-
-  public void testPrintlnToNSLogInAnonymousClass() throws IOException {
-    String translation = translateSourceFile(
-        "public class Hello { public static void main(String[] args) { " +
-        "Object o = new Object() { public String toString() { return \"Hello, world!\"; }};" +
-        "System.out.println(o); }}",
-        "Hello", "Hello.m");
-    assertTranslation(translation, "NSLog(@\"%@\", o);");
-    assertFalse(translation.contains("toString"));
-    assertTranslation(translation, "- (NSString *)description");
-    translation = getTranslatedFile("Hello.h");
-    assertFalse(translation.contains("toString"));
-  }
-
   public void testGenericMethodWithAnonymousReturn() throws IOException {
     String translation = translateSourceFile(
         "import java.util.*; public class Test { " +
@@ -1061,7 +1040,7 @@ public class StatementGeneratorTest extends GenerationTest {
         "    System.out.println(staticString);" +
         "  }}",
         "HelloWorld", "HelloWorld.m");
-      assertTranslation(translation, "NSLog(@\"%@\", [HelloWorld staticString]);");
+      assertTranslation(translation, "printlnWithNSString:[HelloWorld staticString]];");
   }
 
   public void testThisCallInInnerConstructor() throws IOException {

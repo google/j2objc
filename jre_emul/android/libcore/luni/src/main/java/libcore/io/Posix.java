@@ -21,6 +21,7 @@ import java.io.FileDescriptor;
 /*-[
 #import "TempFailureRetry.h"
 #import <sys/stat.h>
+#include <termios.h>
 ]-*/
 
 public final class Posix implements Os {
@@ -100,14 +101,33 @@ public final class Posix implements Os {
     return newFd;
   ]-*/;
 
+  public native void fchmod(FileDescriptor fd, int mode) throws ErrnoException /*-[
+    int rc = TEMP_FAILURE_RETRY(fchmod((int) fd->descriptor_, mode));
+    [LibcoreIoPosix throwIfMinusOneWithNSString:@"fchmod" withInt:rc];
+  ]-*/;
+
+  public native void fchown(FileDescriptor fd, int uid, int gid) throws ErrnoException /*-[
+    int rc = TEMP_FAILURE_RETRY(fchown((int) fd->descriptor_, uid, gid));
+    [LibcoreIoPosix throwIfMinusOneWithNSString:@"fchown" withInt:rc];
+  ]-*/;
+
   public native int fcntlVoid(FileDescriptor fd, int cmd) throws ErrnoException /*-[
     int rc = TEMP_FAILURE_RETRY(fcntl((int) fd->descriptor_, cmd));
     return [LibcoreIoPosix throwIfMinusOneWithNSString:@"fcntl" withInt:rc];
   ]-*/;
 
+  public native void fsync(FileDescriptor fd) throws ErrnoException /*-[
+    int rc = TEMP_FAILURE_RETRY(fsync((int) fd->descriptor_));
+    [LibcoreIoPosix throwIfMinusOneWithNSString:@"fsync" withInt:rc];
+  ]-*/;
+
   public native int fcntlLong(FileDescriptor fd, int cmd, long arg) throws ErrnoException /*-[
     int rc = TEMP_FAILURE_RETRY(fcntl((int) fd->descriptor_, cmd, arg));
     return [LibcoreIoPosix throwIfMinusOneWithNSString:@"fcntl" withInt:rc];
+  ]-*/;
+
+  public native boolean isatty(FileDescriptor fd) /*-[
+    return TEMP_FAILURE_RETRY(isatty((int) fd->descriptor_)) == 1;
   ]-*/;
 
   public native FileDescriptor open(String path, int flags, int mode) throws ErrnoException /*-[
@@ -133,16 +153,18 @@ public final class Posix implements Os {
     return [NSString stringWithCString:buffer encoding:LibcoreIoPosix_defaultEncoding_];
   ]-*/;
 
+  public native void tcdrain(FileDescriptor fd) throws ErrnoException /*-[
+    int rc = TEMP_FAILURE_RETRY(tcdrain((int) fd->descriptor_));
+    [LibcoreIoPosix throwIfMinusOneWithNSString:@"fcntl" withInt:rc];
+  ]-*/;
+
 // Uncomment and implement as Os interface grows.
 //  public native String[] environ();
-//  public native void fchmod(FileDescriptor fd, int mode) throws ErrnoException;
-//  public native void fchown(FileDescriptor fd, int uid, int gid) throws ErrnoException;
 //  public native int fcntlFlock(FileDescriptor fd, int cmd, StructFlock arg)
 //      throws ErrnoException;
 //  public native void fdatasync(FileDescriptor fd) throws ErrnoException;
 //  public native StructStat fstat(FileDescriptor fd) throws ErrnoException;
 //  public native StructStatFs fstatfs(FileDescriptor fd) throws ErrnoException;
-//  public native void fsync(FileDescriptor fd) throws ErrnoException;
 //  public native void ftruncate(FileDescriptor fd, long length) throws ErrnoException;
 //  public native String gai_strerror(int error);
 //  public native int getegid();
@@ -157,7 +179,6 @@ public final class Posix implements Os {
 //  public native String if_indextoname(int index);
 //  public native int ioctlInt(FileDescriptor fd, int cmd, MutableInt arg)
 //      throws ErrnoException;
-//  public native boolean isatty(FileDescriptor fd);
 //  public native void kill(int pid, int signal) throws ErrnoException;
 //  public native void lchown(String path, int uid, int gid) throws ErrnoException;
 //  public native void listen(FileDescriptor fd, int backlog) throws ErrnoException;
@@ -236,7 +257,6 @@ public final class Posix implements Os {
 //  public native StructStatFs statfs(String path) throws ErrnoException;
 //  public native void symlink(String oldPath, String newPath) throws ErrnoException;
 //  public native long sysconf(int name);
-//  public native void tcdrain(FileDescriptor fd) throws ErrnoException;
 //  public native void tcsendbreak(FileDescriptor fd, int duration) throws ErrnoException;
 //  public int umask(int mask) {
 //    if ((mask & 0777) != mask) {

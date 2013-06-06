@@ -17,6 +17,10 @@
 
 package java.io;
 
+/*-[
+#import <sys/ioctl.h>
+]-*/
+
 /**
  * A specialized {@link InputStream} that reads from a file in the file system.
  * All read requests made by calling methods in this class are directly
@@ -85,9 +89,6 @@ public class FileInputStream extends InputStream implements Closeable {
         if (fd == null) {
             throw new NullPointerException();
         }
-	if (fd == FileDescriptor.in) {
-	    throw new AssertionError("stdin not implemented");
-	}
         this.fd = fd;
     }
 
@@ -121,6 +122,10 @@ public class FileInputStream extends InputStream implements Closeable {
     public int available() throws IOException {
         openCheck();
         synchronized (repositioningLock) {
+            // stdin requires special handling
+            if (fd == FileDescriptor.in) {
+                return nativeTtyAvailable();
+            }
             return nativeAvailable(fd.descriptor);
         }
     }
@@ -131,6 +136,23 @@ public class FileInputStream extends InputStream implements Closeable {
       lseek(descriptor, currentPosition, SEEK_SET);
       return (int) (endPosition - currentPosition);
     }-*/;
+
+    // Code based on Harmony's hytty.c:hytty_available().
+    private native int nativeTtyAvailable() /*-[
+      long long currentPosition = lseek(STDIN_FILENO, 0L, SEEK_CUR);
+      if (currentPosition != -1) {
+        long long endPosition = lseek(STDIN_FILENO, 0L, SEEK_END);
+        lseek(STDIN_FILENO, currentPosition, SEEK_SET);
+        if (endPosition >= currentPosition) {
+          return endPosition - currentPosition;
+        }
+      }
+      NSInteger available;
+      if (ioctl(STDIN_FILENO, FIONREAD, &available) != -1) {
+        return *(int *) &available;
+      }
+      return 0;
+    ]-*/;
 
     /**
      * Closes this stream.
