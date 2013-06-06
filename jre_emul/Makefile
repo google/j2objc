@@ -106,6 +106,7 @@ JRE_INTERFACES = \
 	java/util/Set.h \
 	java/util/SortedMap.h \
 	java/util/SortedSet.h \
+	java/util/concurrent/Callable.h \
 	java/util/concurrent/ConcurrentMap.h \
 	java/util/concurrent/Executor.h \
 	java/util/concurrent/ExecutorService.h \
@@ -320,6 +321,8 @@ JAVA_SOURCES = \
 	java/util/concurrent/atomic/AtomicInteger.java \
 	java/util/concurrent/atomic/AtomicLong.java \
 	java/util/concurrent/ConcurrentHashMap.java \
+	java/util/concurrent/CopyOnWriteArrayList.java \
+	java/util/concurrent/CopyOnWriteArraySet.java \
 	java/util/concurrent/TimeUnit.java \
 	java/util/Currency.java \
 	java/util/Date.java \
@@ -387,6 +390,7 @@ JAVA_SOURCES = \
 	libcore/io/Posix.java \
 	libcore/util/BasicLruCache.java \
 	libcore/util/EmptyArray.java \
+	libcore/util/Objects.java \
 	org/apache/harmony/luni/platform/Endianness.java \
 	org/apache/harmony/luni/util/Util.java \
 	org/apache/harmony/xml/parsers/SAXParserFactoryImpl.java \
