@@ -36,6 +36,9 @@ public class Throwable implements Serializable {
 
   public Throwable(Throwable cause) {}
 
+  protected Throwable(String message, Throwable cause, boolean enableSuppression,
+      boolean writableStackTrace) {}
+
   public Throwable fillInStackTrace() {
     return null;
   }
@@ -67,4 +70,10 @@ public class Throwable implements Serializable {
   public void printStackTrace(PrintStream ps) {}
 
   public void setStackTrace(StackTraceElement[] stackTrace) {}
+
+  public final void addSuppressed(Throwable exception) {}
+
+  public final Throwable[] getSuppressed() {
+    return null;
+  }
 }

@@ -36,6 +36,7 @@ SUPPORT_OBJS = \
 TEST_OBJS = \
 	$(TESTS_DIR)/CopyOnWriteArrayListTest.o \
 	$(TESTS_DIR)/CopyOnWriteArraySetTest.o \
+	$(TESTS_DIR)/libcore/java/lang/ThrowableTest.o \
 	$(TESTS_DIR)/org/apache/harmony/luni/tests/java/io/BufferedInputStreamTest.o \
 	$(TESTS_DIR)/org/apache/harmony/luni/tests/java/io/BufferedOutputStreamTest.o \
 	$(TESTS_DIR)/org/apache/harmony/luni/tests/java/io/BufferedReaderTest.o \
