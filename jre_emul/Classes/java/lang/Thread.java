@@ -363,9 +363,10 @@ public class Thread implements Runnable {
     }
     
     // Now there is a main threadgroup, 
-    [[JavaLangThread alloc] initWithJavaLangThreadGroup:JavaLangThread_mainThreadGroup_
-                                           withNSString:@"main"
-                                               withBOOL:FALSE];
+    (void) [[JavaLangThread alloc]
+            initWithJavaLangThreadGroup:JavaLangThread_mainThreadGroup_
+                           withNSString:@"main"
+                               withBOOL:FALSE];
   ]-*/;
 
   public static native Thread currentThread() /*-{
