@@ -46,6 +46,7 @@ import org.eclipse.jdt.core.dom.SynchronizedStatement;
 import org.eclipse.jdt.core.dom.Type;
 import org.eclipse.jdt.core.dom.TypeDeclaration;
 import org.eclipse.jdt.core.dom.TypeParameter;
+import org.eclipse.jdt.core.dom.UnionType;
 import org.eclipse.jdt.core.dom.VariableDeclarationExpression;
 import org.eclipse.jdt.core.dom.VariableDeclarationFragment;
 import org.eclipse.jdt.core.dom.VariableDeclarationStatement;
@@ -211,6 +212,11 @@ public final class ASTUtil {
   @SuppressWarnings("unchecked")
   public static List<Comment> getCommentList(CompilationUnit unit) {
     return unit.getCommentList();
+  }
+
+  @SuppressWarnings("unchecked")
+  public static List<Type> getTypes(UnionType unionType) {
+    return unionType.types();
   }
 
   @SuppressWarnings("unchecked")

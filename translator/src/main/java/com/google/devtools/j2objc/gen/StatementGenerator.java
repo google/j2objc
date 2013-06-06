@@ -100,6 +100,7 @@ import org.eclipse.jdt.core.dom.ThrowStatement;
 import org.eclipse.jdt.core.dom.TryStatement;
 import org.eclipse.jdt.core.dom.Type;
 import org.eclipse.jdt.core.dom.TypeLiteral;
+import org.eclipse.jdt.core.dom.UnionType;
 import org.eclipse.jdt.core.dom.VariableDeclarationExpression;
 import org.eclipse.jdt.core.dom.VariableDeclarationFragment;
 import org.eclipse.jdt.core.dom.VariableDeclarationStatement;
@@ -890,11 +891,28 @@ public class StatementGenerator extends ErrorReportingASTVisitor {
 
   @Override
   public boolean visit(CatchClause node) {
+    if (node.getException().getType().isUnionType()) {
+      printMultiCatch(node);
+      return false;
+    }
     buffer.append("@catch (");
     node.getException().accept(this);
     buffer.append(") ");
     node.getBody().accept(this);
     return false;
+  }
+
+  private void printMultiCatch(CatchClause node) {
+    SingleVariableDeclaration exception = node.getException();
+    for (Type exceptionType : ASTUtil.getTypes(((UnionType) exception.getType()))) {
+      buffer.syncLineNumbers(node);
+      buffer.append("@catch (");
+      exceptionType.accept(this);
+      buffer.append(' ');
+      exception.getName().accept(this);
+      buffer.append(") ");
+      node.getBody().accept(this);
+    }
   }
 
   @Override

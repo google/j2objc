@@ -61,6 +61,7 @@ import org.eclipse.jdt.core.dom.ThisExpression;
 import org.eclipse.jdt.core.dom.TypeDeclaration;
 import org.eclipse.jdt.core.dom.TypeLiteral;
 import org.eclipse.jdt.core.dom.TypeParameter;
+import org.eclipse.jdt.core.dom.UnionType;
 import org.eclipse.jdt.core.dom.VariableDeclarationExpression;
 import org.eclipse.jdt.core.dom.VariableDeclarationFragment;
 
@@ -335,6 +336,10 @@ class BindingMapVerifier extends ErrorReportingASTVisitor {
   public boolean visit(TypeLiteral node) {
     return verify(node);
 
+  }
+
+  public boolean visit(UnionType node) {
+    return verify(node);
   }
 
   @Override
