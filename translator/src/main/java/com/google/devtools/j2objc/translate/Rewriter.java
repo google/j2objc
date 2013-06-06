@@ -991,21 +991,6 @@ public class Rewriter extends ErrorReportingASTVisitor {
         }
       }
     }
-
-    // Check all declared fields with method names.
-    addFields(typeBinding, true, false, fields);
-    for (IMethodBinding method : typeBinding.getDeclaredMethods()) {
-      String name = method.getName();
-      IVariableBinding field = fields.get(name);
-      if (field != null) {
-        IVariableBinding newField;
-        while ((newField = fields.get(name)) != null) {
-          name += '_';
-          field = newField;
-        }
-        NameTable.rename(field, name, true);
-      }
-    }
   }
 
   private void addFields(ITypeBinding type, boolean includePrivate, boolean includeSuperclasses,
