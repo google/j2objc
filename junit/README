@@ -1,3 +1,13 @@
-This package provides an Objective-C library of JUnit's framework classes,
-and a simple unit test runner.  This library is used with JUnit test source
-files translated with J2ObjC.
+This package creates an Objective-C library of JUnit's framework classes.
+It also has the junit.textui.TestRunner and junit.runner package, to run
+unit tests as it's done with Java.
+
+This project's only Java files are those that were modified from the
+original JUnit release. The other JUnit source files are extracted from
+the JUnit source jar when building.
+
+Modifications:
+. The main method was removed from junit.runner.Version, since Obj-C
+  libraries can only have one main() function.
+. A signal handler was added to junit.textui.TestRunner to report
+  uncaught exceptions and failures.

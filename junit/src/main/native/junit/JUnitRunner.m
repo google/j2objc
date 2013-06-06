@@ -15,7 +15,7 @@
 
 #import <execinfo.h>
 
-void signalHandler(int sig) {
+static void signalHandler(int sig) {
   // Get void*'s for all entries on the stack.
   void *array[64];
   size_t frame_count = backtrace(array, 64);
