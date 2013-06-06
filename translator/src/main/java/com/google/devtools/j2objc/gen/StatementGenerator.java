@@ -207,7 +207,7 @@ public class StatementGenerator extends ErrorReportingASTVisitor {
       } else {
         method = Types.getOriginalMethodBinding(method.getMethodDeclaration());
         ITypeBinding[] parameterTypes = method.getParameterTypes();
-        assert index < parameterTypes.length : "method called with fewer parameters than declared";
+        assert index < parameterTypes.length : "method called with more parameters than declared";
         ITypeBinding parameter = parameterTypes[index];
         String keyword = NameTable.parameterKeyword(parameter);
         if (index == 0) {
@@ -361,17 +361,6 @@ public class StatementGenerator extends ErrorReportingASTVisitor {
       }
     }
     return false;
-  }
-
-  @Override
-  public boolean preVisit2(ASTNode node) {
-    super.preVisit2(node);
-    ASTNode replacement = Types.getNode(node);
-    if (replacement != null) {
-      replacement.accept(this);
-      return false;  // don't process node
-    }
-    return true;     // do process it
   }
 
   @Override

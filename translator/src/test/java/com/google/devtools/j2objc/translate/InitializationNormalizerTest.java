@@ -141,7 +141,7 @@ public class InitializationNormalizerTest extends GenerationTest {
     BodyDeclaration decl = classMembers.get(1);
     assertTrue(decl instanceof MethodDeclaration);
     MethodDeclaration method = (MethodDeclaration) decl;
-    assertEquals(InitializationNormalizer.INIT_NAME, method.getName().getIdentifier());
+    assertEquals(NameTable.INIT_NAME, method.getName().getIdentifier());
     assertEquals(Modifier.PUBLIC, method.getModifiers());
     assertTrue(method.parameters().isEmpty());
     List<Statement> generatedStatements = method.getBody().statements();
@@ -171,7 +171,7 @@ public class InitializationNormalizerTest extends GenerationTest {
     assertTrue(decl instanceof MethodDeclaration);
     MethodDeclaration method = (MethodDeclaration) decl;
     assertTrue(method.isConstructor());
-    assertEquals(InitializationNormalizer.INIT_NAME, method.getName().getIdentifier());
+    assertEquals(NameTable.INIT_NAME, method.getName().getIdentifier());
     assertEquals(Modifier.PUBLIC, method.getModifiers());
     assertTrue(method.parameters().isEmpty());
     List<Statement> generatedStatements = method.getBody().statements();

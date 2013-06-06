@@ -24,11 +24,13 @@ import org.eclipse.jdt.core.dom.CharacterLiteral;
 import org.eclipse.jdt.core.dom.Expression;
 import org.eclipse.jdt.core.dom.FieldDeclaration;
 import org.eclipse.jdt.core.dom.ForStatement;
+import org.eclipse.jdt.core.dom.IBinding;
 import org.eclipse.jdt.core.dom.IMethodBinding;
 import org.eclipse.jdt.core.dom.ITypeBinding;
 import org.eclipse.jdt.core.dom.IVariableBinding;
 import org.eclipse.jdt.core.dom.InfixExpression;
 import org.eclipse.jdt.core.dom.InstanceofExpression;
+import org.eclipse.jdt.core.dom.MethodDeclaration;
 import org.eclipse.jdt.core.dom.MethodInvocation;
 import org.eclipse.jdt.core.dom.Modifier;
 import org.eclipse.jdt.core.dom.Name;
@@ -61,13 +63,7 @@ public final class ASTFactory {
     return ast.newModifiers(flags);
   }
 
-  public static SimpleName newSimpleName(AST ast, IVariableBinding binding) {
-    SimpleName name = ast.newSimpleName(binding.getName());
-    Types.addBinding(name, binding);
-    return name;
-  }
-
-  public static SimpleName newSimpleName(AST ast, IMethodBinding binding) {
+  public static SimpleName newSimpleName(AST ast, IBinding binding) {
     SimpleName name = ast.newSimpleName(binding.getName());
     Types.addBinding(name, binding);
     return name;
@@ -212,6 +208,16 @@ public final class ASTFactory {
     invocation.setName(newSimpleName(ast, binding));
     Types.addBinding(invocation, binding);
     return invocation;
+  }
+
+  public static MethodDeclaration newMethodDeclaration(AST ast, IMethodBinding binding) {
+    MethodDeclaration declaration = ast.newMethodDeclaration();
+    declaration.setConstructor(binding.isConstructor());
+    declaration.setName(newSimpleName(ast, binding));
+    declaration.setReturnType2(Types.makeType(binding.getReturnType()));
+    ASTUtil.getModifiers(declaration).addAll(newModifiers(ast, binding.getModifiers()));
+    Types.addBinding(declaration, binding);
+    return declaration;
   }
 
   public static NumberLiteral newNumberLiteral(AST ast, String token, String type) {

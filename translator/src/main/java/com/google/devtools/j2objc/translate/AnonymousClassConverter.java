@@ -164,9 +164,6 @@ public class AnonymousClassConverter extends ErrorReportingASTVisitor {
       newInvocation.setAnonymousClassDeclaration(null);
       newInvocation.setType(Types.makeType(innerType));
       IMethodBinding oldBinding = Types.getMethodBinding(newInvocation);
-      if (oldBinding == null) {
-        oldBinding = Types.getMethodBinding(newInvocation);
-      }
       if (oldBinding != null) {
         GeneratedMethodBinding invocationBinding = new GeneratedMethodBinding(oldBinding);
         invocationBinding.setDeclaringClass(innerType);
@@ -212,8 +209,7 @@ public class AnonymousClassConverter extends ErrorReportingASTVisitor {
     MethodDeclaration constructor = ast.newMethodDeclaration();
     constructor.setConstructor(true);
     ITypeBinding voidType = ast.resolveWellKnownType("void");
-    GeneratedMethodBinding binding = new GeneratedMethodBinding("init", 0,
-        voidType, clazz, true, false, true);
+    GeneratedMethodBinding binding = GeneratedMethodBinding.newConstructor(clazz, 0);
     Types.addBinding(constructor, binding);
     Types.addBinding(constructor.getReturnType2(), voidType);
     SimpleName name = ast.newSimpleName("init");

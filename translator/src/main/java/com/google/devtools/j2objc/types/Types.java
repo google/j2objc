@@ -70,7 +70,6 @@ public class Types {
   private final Map<IMethodBinding, IOSMethod> mappedMethods = Maps.newHashMap();
   private final Map<Expression, IMethodBinding> mappedInvocations = Maps.newHashMap();
   private final Map<IVariableBinding, IVariableBinding> mappedVariables = Maps.newHashMap();
-  private final Map<ASTNode, ASTNode> substitutionMap = Maps.newHashMap();
   private final Map<IVariableBinding, ITypeBinding> variablesNeedingCasts = Maps.newHashMap();
   private final List<IMethodBinding> functions = Lists.newArrayList();
   private final Map<ITypeBinding, ITypeBinding> primitiveToWrapperTypes =
@@ -110,7 +109,6 @@ public class Types {
   private final Map<String, ITypeBinding> iosBindingMap = Maps.newHashMap();
 
   // Map a primitive type to its emulation array type.
-  private final Map<String, IOSArrayTypeBinding> arrayTypeMap = Maps.newHashMap();
   private final Map<ITypeBinding, IOSArrayTypeBinding> arrayBindingMap = Maps.newHashMap();
   private final Map<IOSArrayTypeBinding, ITypeBinding> componentTypeMap = Maps.newHashMap();
 
@@ -217,14 +215,6 @@ public class Types {
   }
 
   private void populateArrayTypeMaps() {
-    arrayTypeMap.put("boolean", IOSBooleanArray);
-    arrayTypeMap.put("byte", IOSByteArray);
-    arrayTypeMap.put("char", IOSCharArray);
-    arrayTypeMap.put("double", IOSDoubleArray);
-    arrayTypeMap.put("float", IOSFloatArray);
-    arrayTypeMap.put("int", IOSIntArray);
-    arrayTypeMap.put("long", IOSLongArray);
-    arrayTypeMap.put("short", IOSShortArray);
     addPrimitiveMappings("boolean", IOSBooleanArray);
     addPrimitiveMappings("byte", IOSByteArray);
     addPrimitiveMappings("char", IOSCharArray);
@@ -561,10 +551,6 @@ public class Types {
     return null;
   }
 
-  public static IOSTypeBinding resolveArrayType(String name) {
-    return instance.arrayTypeMap.get(name);
-  }
-
   public static IOSArrayTypeBinding resolveArrayType(ITypeBinding binding) {
     IOSArrayTypeBinding arrayBinding = instance.arrayBindingMap.get(binding);
     return arrayBinding != null ? arrayBinding : instance.IOSObjectArray;
@@ -620,14 +606,6 @@ public class Types {
     for (ASTNode node : nodes) {
       BindingMapVerifier.verify(node, instance.bindingMap);
     }
-  }
-
-  public static void substitute(ASTNode oldNode, ASTNode replacement) {
-    instance.substitutionMap.put(oldNode, replacement);
-  }
-
-  public static ASTNode getNode(ASTNode currentNode) {
-    return instance.substitutionMap.get(currentNode);
   }
 
   static ITypeBinding getIOSArrayComponentType(IOSArrayTypeBinding arrayType) {
