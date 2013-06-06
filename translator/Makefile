@@ -76,7 +76,7 @@ JAVA_SOURCES = \
 	types/GeneratedVariableBinding.java \
 	types/HeaderImportCollector.java \
 	types/ImplementationImportCollector.java \
-	types/ImportCollector.java \
+	types/Import.java \
 	types/IOSArrayTypeBinding.java \
 	types/IOSMethod.java \
 	types/IOSMethodBinding.java \

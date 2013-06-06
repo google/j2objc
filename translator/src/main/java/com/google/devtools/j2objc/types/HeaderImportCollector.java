@@ -16,7 +16,9 @@
 
 package com.google.devtools.j2objc.types;
 
-import com.google.devtools.j2objc.util.NameTable;
+import com.google.common.collect.Sets;
+import com.google.devtools.j2objc.util.ASTUtil;
+import com.google.devtools.j2objc.util.ErrorReportingASTVisitor;
 
 import org.eclipse.jdt.core.dom.CompilationUnit;
 import org.eclipse.jdt.core.dom.EnumDeclaration;
@@ -27,92 +29,96 @@ import org.eclipse.jdt.core.dom.SingleVariableDeclaration;
 import org.eclipse.jdt.core.dom.Type;
 import org.eclipse.jdt.core.dom.TypeDeclaration;
 
-import java.util.Iterator;
+import java.util.Set;
 
 /**
  * Collects the set of imports needed to resolve type references in a header.
  *
  * @author Tom Ball
  */
-public class HeaderImportCollector extends ImportCollector {
+public class HeaderImportCollector extends ErrorReportingASTVisitor {
 
-  private boolean includeMainType;
-
-  public HeaderImportCollector() {
-    this(false);
-  }
-
-  protected HeaderImportCollector(boolean includeMainType) {
-    this.includeMainType = includeMainType;
-  }
+  private Set<Import> forwardDecls = Sets.newLinkedHashSet();
+  private Set<Import> superTypes = Sets.newLinkedHashSet();
+  private Set<Import> declaredTypes = Sets.newHashSet();
 
   public void collect(CompilationUnit unit, String sourceName) {
-    super.collect(unit);
-    if (includeMainType) {
-      return;
-    }
-    String mainTypeName = NameTable.getMainTypeName(unit, sourceName);
-    removeTypeWithName(mainTypeName, imports);
-    removeTypeWithName(mainTypeName, superTypes);
-  }
-
-  private static void removeTypeWithName(String typeName, Iterable<Import> imports) {
-    Iterator<Import> iter = imports.iterator();
-    while (iter.hasNext()) {
-      if (iter.next().getTypeName().equals(typeName)) {
-        iter.remove();
+    run(unit);
+    for (Import imp : superTypes) {
+      if (forwardDecls.contains(imp)) {
+        forwardDecls.remove(imp);
       }
     }
+  }
+
+  public Set<Import> getForwardDeclarations() {
+    return forwardDecls;
+  }
+
+  public Set<Import> getSuperTypes() {
+    return superTypes;
+  }
+
+  private void addForwardDecl(Type type) {
+    if (type != null) {
+      addForwardDecl(Types.getTypeBinding(type));
+    }
+  }
+
+  private void addForwardDecl(ITypeBinding type) {
+    forwardDecls.addAll(Sets.difference(Import.getImports(type), declaredTypes));
+  }
+
+  private void addSuperType(Type type) {
+    if (type != null) {
+      addSuperType(Types.getTypeBinding(type));
+    }
+  }
+
+  private void addSuperType(ITypeBinding type) {
+    superTypes.addAll(Sets.difference(Import.getImports(type), declaredTypes));
+  }
+
+  private void addDeclaredType(ITypeBinding type) {
+    Import.addImports(type, declaredTypes);
   }
 
   @Override
   public boolean visit(FieldDeclaration node) {
-    addImports(node.getType());
-    return super.visit(node);
+    addForwardDecl(node.getType());
+    return true;
   }
 
   @Override
   public boolean visit(MethodDeclaration node) {
-    addImports(node.getReturnType2());
-    for (Iterator<?> iterator = node.parameters().iterator(); iterator.hasNext(); ) {
-      Object o = iterator.next();
-      if (o instanceof SingleVariableDeclaration) {
-        addImports(((SingleVariableDeclaration) o).getType());
-      } else {
-        throw new AssertionError("unknown AST type: " + o.getClass());
-      }
+    addForwardDecl(node.getReturnType2());
+    for (SingleVariableDeclaration param : ASTUtil.getParameters(node)) {
+      addForwardDecl(param.getType());
     }
-    return super.visit(node);
+    return true;
   }
 
   @Override
   public boolean visit(TypeDeclaration node) {
     ITypeBinding binding = Types.getTypeBinding(node);
+    addDeclaredType(binding);
     if (binding.isEqualTo(Types.getNSObject())) {
       return false;
     }
     addSuperType(node.getSuperclassType());
-    for (Iterator<?> iterator = node.superInterfaceTypes().iterator(); iterator.hasNext();) {
-      Object o = iterator.next();
-      if (o instanceof Type) {
-        addSuperType((Type) o);
-      } else {
-        throw new AssertionError("unknown AST type: " + o.getClass());
-      }
+    for (Type interfaze : ASTUtil.getSuperInterfaceTypes(node)) {
+      addSuperType(interfaze);
     }
     return true;
   }
 
   @Override
   public boolean visit(EnumDeclaration node) {
-    addSuperType("JavaLangEnum", "java.lang.Enum", false);
-    for (Iterator<?> iterator = node.superInterfaceTypes().iterator(); iterator.hasNext();) {
-      Object o = iterator.next();
-      if (o instanceof Type) {
-        addSuperType((Type) o);
-      } else {
-        throw new AssertionError("unknown AST type: " + o.getClass());
-      }
+    superTypes.add(new Import("JavaLangEnum", "java.lang.Enum", false));
+    ITypeBinding binding = Types.getTypeBinding(node);
+    addDeclaredType(binding);
+    for (ITypeBinding interfaze : binding.getInterfaces()) {
+      addSuperType(interfaze);
     }
     return true;
   }

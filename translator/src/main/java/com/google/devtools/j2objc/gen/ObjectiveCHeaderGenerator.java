@@ -22,10 +22,9 @@ import com.google.devtools.j2objc.J2ObjC;
 import com.google.devtools.j2objc.Options;
 import com.google.devtools.j2objc.types.HeaderImportCollector;
 import com.google.devtools.j2objc.types.IOSMethod;
-import com.google.devtools.j2objc.types.ImportCollector;
+import com.google.devtools.j2objc.types.Import;
 import com.google.devtools.j2objc.types.Types;
 import com.google.devtools.j2objc.util.ASTUtil;
-import com.google.devtools.j2objc.util.ErrorReportingASTVisitor;
 import com.google.devtools.j2objc.util.NameTable;
 import com.google.devtools.j2objc.util.UnicodeUtils;
 
@@ -44,7 +43,6 @@ import org.eclipse.jdt.core.dom.IVariableBinding;
 import org.eclipse.jdt.core.dom.MethodDeclaration;
 import org.eclipse.jdt.core.dom.Modifier;
 import org.eclipse.jdt.core.dom.Name;
-import org.eclipse.jdt.core.dom.SingleVariableDeclaration;
 import org.eclipse.jdt.core.dom.Type;
 import org.eclipse.jdt.core.dom.TypeDeclaration;
 import org.eclipse.jdt.core.dom.VariableDeclarationFragment;
@@ -84,11 +82,9 @@ public class ObjectiveCHeaderGenerator extends ObjectiveCSourceFileGenerator {
   public void generate(CompilationUnit unit) {
     println(J2ObjC.getFileHeader(getSourceFileName()));
 
-    List<AbstractTypeDeclaration> types = ASTUtil.getTypes(unit);
-    Set<ITypeBinding> moreForwardTypes = getForwardTypes(unit);
-    printImportsAndForwardReferences(unit, moreForwardTypes);
+    printImportsAndForwardReferences(unit);
 
-    for (AbstractTypeDeclaration type : types) {
+    for (AbstractTypeDeclaration type : ASTUtil.getTypes(unit)) {
       newline();
       generate(type);
     }
@@ -311,20 +307,16 @@ public class ObjectiveCHeaderGenerator extends ObjectiveCSourceFileGenerator {
     }
   }
 
-  private void printImportsAndForwardReferences(CompilationUnit unit, Set<ITypeBinding> forwards) {
+  private void printImportsAndForwardReferences(CompilationUnit unit) {
     HeaderImportCollector collector = new HeaderImportCollector();
     collector.collect(unit, getSourceFileName());
-    Set<ImportCollector.Import> imports = collector.getImports();
-    Set<ImportCollector.Import> superTypes = collector.getSuperTypes();
+    Set<Import> forwardDecls = collector.getForwardDeclarations();
+    Set<Import> superTypes = collector.getSuperTypes();
 
     // Print forward declarations.
     Set<String> forwardStmts = Sets.newTreeSet();
-    for (ImportCollector.Import imp : imports) {
+    for (Import imp : forwardDecls) {
       forwardStmts.add(createForwardDeclaration(imp.getTypeName(), imp.isInterface()));
-    }
-    for (ITypeBinding forward : forwards) {
-      forwardStmts.add(
-          createForwardDeclaration(NameTable.getFullName(forward), forward.isInterface()));
     }
     if (!forwardStmts.isEmpty()) {
       for (String stmt : forwardStmts) {
@@ -337,7 +329,7 @@ public class ObjectiveCHeaderGenerator extends ObjectiveCSourceFileGenerator {
     println("#import \"JreEmulation.h\"");
     if (!superTypes.isEmpty()) {
       Set<String> importStmts = Sets.newTreeSet();
-      for (ImportCollector.Import imp : superTypes) {
+      for (Import imp : superTypes) {
         importStmts.add(createImport(imp));
       }
       for (String stmt : importStmts) {
@@ -350,52 +342,8 @@ public class ObjectiveCHeaderGenerator extends ObjectiveCSourceFileGenerator {
     return String.format("@%s %s;", isInterface ? "protocol" : "class", typeName);
   }
 
-  protected String createImport(ImportCollector.Import imp) {
+  protected String createImport(Import imp) {
     return String.format("#import \"%s.h\"", imp.getImportFileName());
-  }
-
-  // TODO(user): This functionality should be merged with the import collector.
-  private static Set<ITypeBinding> getForwardTypes(CompilationUnit unit) {
-    final Set<String> localTypes = Sets.newHashSet();
-    for (AbstractTypeDeclaration type : ASTUtil.getTypes(unit)) {
-      localTypes.add(Types.getTypeBinding(type).getKey());
-    }
-    final Set<String> seen = Sets.newHashSet();
-    final Set<ITypeBinding> references = Sets.newHashSet();
-
-    unit.accept(new ErrorReportingASTVisitor() {
-      private void addReference(Type type) {
-        if (type == null) {
-          return;
-        }
-        ITypeBinding binding = Types.getTypeBinding(type).getTypeDeclaration();
-        String key = binding.getKey();
-        if (localTypes.contains(key) && !seen.contains(key)) {
-          references.add(binding);
-        }
-      }
-
-      @Override
-      public void endVisit(FieldDeclaration node) {
-        addReference(node.getType());
-      }
-
-      @Override
-      public void endVisit(MethodDeclaration node) {
-        addReference(node.getReturnType2());
-        for (SingleVariableDeclaration param : ASTUtil.getParameters(node)) {
-          addReference(param.getType());
-        }
-      }
-
-      @Override
-      public boolean visit(TypeDeclaration node) {
-        seen.add(Types.getTypeBinding(node).getKey());
-        return true;
-      }
-    });
-
-    return references;
   }
 
   private void printInstanceVariables(List<FieldDeclaration> fields) {
