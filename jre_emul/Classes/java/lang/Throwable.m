@@ -33,7 +33,10 @@
 #import <TargetConditionals.h>
 #import <execinfo.h>
 
+#ifndef MAX_STACK_FRAMES
+// This defines the upper limit of the stack frames for any exception.
 #define MAX_STACK_FRAMES 128
+#endif
 
 @implementation JavaLangThrowable
 
@@ -52,10 +55,15 @@
 
     void *callStack[MAX_STACK_FRAMES];
     unsigned nFrames = backtrace(callStack, MAX_STACK_FRAMES);
+#ifdef NO_STACK_FRAME_SYMBOLS
+    stackTrace = RETAIN([JavaLangThrowable stackTrace:callStack
+                                                count:nFrames]);
+#else
     char **stackSymbols =  backtrace_symbols(callStack, nFrames);
     stackTrace = RETAIN([JavaLangThrowable stackTraceWithSymbols:stackSymbols
                                                            count:nFrames]);
     free(stackSymbols);
+#endif
   }
   return self;
 }
@@ -78,6 +86,24 @@
                            withJavaLangThrowable:causeArg];
 }
 
+#ifdef NO_STACK_FRAME_SYMBOLS
++ (IOSObjectArray *)stackTrace:(void **)addresses
+                         count:(unsigned)count {
+  IOSObjectArray *stackTrace = [IOSObjectArray arrayWithLength:count type:
+      [IOSClass classWithClass:[JavaLangStackTraceElement class]]];
+  for (int i = 0; i < count; i++) {
+    NSString *address =
+        [NSString stringWithFormat:@"%2d   %016p", i, addresses[i]];
+    JavaLangStackTraceElement *element =
+    AUTORELEASE([[JavaLangStackTraceElement alloc] initWithNSString:nil
+                                                       withNSString:address
+                                                       withNSString:nil
+                                                            withInt:-1]);
+    [stackTrace replaceObjectAtIndex:i withObject:element];
+  }
+  return stackTrace;
+}
+#else
 + (IOSObjectArray *)stackTraceWithSymbols:(char **)symbols
                                     count:(unsigned)count {
   IOSObjectArray *stackTrace = [IOSObjectArray arrayWithLength:0 type:
@@ -94,6 +120,8 @@
   //}
   return stackTrace;
 }
+#endif
+
 
 - (JavaLangThrowable *)fillInStackTrace {
   return self;
