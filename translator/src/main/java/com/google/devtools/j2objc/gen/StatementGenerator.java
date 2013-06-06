@@ -2037,9 +2037,13 @@ public class StatementGenerator extends ErrorReportingASTVisitor {
 
   @Override
   public boolean visit(SwitchStatement node) {
-    buffer.append("switch (");
     Expression expr = node.getExpression();
     ITypeBinding exprType = Types.getTypeBinding(expr);
+    if (Types.isJavaStringType(exprType)) {
+      printStringSwitchStatement(node);
+      return false;
+    }
+    buffer.append("switch (");
     if (exprType.isEnum()) {
       buffer.append('[');
     }
@@ -2061,6 +2065,53 @@ public class StatementGenerator extends ErrorReportingASTVisitor {
     }
     buffer.append("}\n");
     return false;
+  }
+
+  private void printStringSwitchStatement(SwitchStatement node) {
+    buffer.append("{\n");
+
+    // Define an array of all the string constant case values.
+    List<String> caseValues = Lists.newArrayList();
+    List<Statement> stmts = ASTUtil.getStatements(node);
+    for (Statement stmt : stmts) {
+      if (stmt instanceof SwitchCase) {
+        SwitchCase caseStmt = (SwitchCase) stmt;
+        if (!caseStmt.isDefault()) {
+          assert (caseStmt.getExpression() instanceof StringLiteral);
+          caseValues.add(((StringLiteral) caseStmt.getExpression()).getEscapedValue());
+        }
+      }
+    }
+    buffer.syncLineNumbers(node);
+    buffer.append("NSArray *__caseValues = [NSArray arrayWithObjects:");
+    for (String value : caseValues) {
+      buffer.append("@" + value + ", ");
+    }
+    buffer.append("nil];\n");
+    buffer.syncLineNumbers(node);
+    buffer.append("NSUInteger __index = [__caseValues indexOfObject:");
+    node.getExpression().accept(this);
+    buffer.append("];\n");
+    buffer.syncLineNumbers(node);
+    buffer.append("switch (__index) {\n");
+    for (Statement stmt : stmts) {
+      buffer.syncLineNumbers(stmt);
+      if (stmt instanceof SwitchCase) {
+        SwitchCase caseStmt = (SwitchCase) stmt;
+        if (caseStmt.isDefault()) {
+          stmt.accept(this);
+        } else {
+          int i = caseValues.indexOf(((StringLiteral) caseStmt.getExpression()).getEscapedValue());
+          assert i >= 0;
+          buffer.append("case ");
+          buffer.append(i);
+          buffer.append(":\n");
+        }
+      } else {
+        stmt.accept(this);
+      }
+    }
+    buffer.append("}\n}\n");
   }
 
   @Override

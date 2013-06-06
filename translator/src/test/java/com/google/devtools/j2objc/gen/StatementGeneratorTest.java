@@ -1460,4 +1460,24 @@ public class StatementGeneratorTest extends GenerationTest {
     assertTranslation(translation,
         "(void) [((JavaLangStringBuilder *) NIL_CHK(sb)) appendWithNSString:@\"hello, world\"];");
   }
+
+  // Verify Java 7's switch statements with strings.
+  public void testStringSwitchStatement() throws IOException {
+    String translation = translateSourceFile(
+        "public class Test { int test(String s) { " +
+        "  switch(s) {" +
+        "    case \"foo\": return 42;" +
+        "    case \"bar\": return 666;" +
+        "    default: return -1;" +
+        "  }}}",
+        "Test", "Test.m");
+    assertTranslation(translation, "case 0:\n      return 42;");
+    assertTranslation(translation, "case 1:\n      return 666;");
+    assertTranslation(translation, "default:\n      return -1;");
+    assertTranslation(translation,
+        "NSArray *__caseValues = [NSArray arrayWithObjects:@\"foo\", @\"bar\", nil];");
+    assertTranslation(translation,
+        "NSUInteger __index = [__caseValues indexOfObject:s];");
+    assertTranslation(translation, "switch (__index)");
+  }
 }
