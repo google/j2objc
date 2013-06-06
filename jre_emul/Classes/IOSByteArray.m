@@ -68,7 +68,7 @@
   memcpy(buffer, &buffer_[offset], length);
 }
 
-- (void)replaceBytes:(char *)source
+- (void)replaceBytes:(const char *)source
               length:(NSUInteger)length
               offset:(NSUInteger)destOffset {
   IOSArray_checkRange(self, NSMakeRange(destOffset, length));
