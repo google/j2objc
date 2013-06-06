@@ -120,7 +120,7 @@ OBJCFLAGS_NO_ARC := $(OBJCFLAGS)
 ifdef CLANG_ENABLE_OBJC_ARC
 J2OBJC := $(J2OBJC) -use-arc
 OBJCFLAGS := $(OBJCFLAGS) -fobjc-arc -fobjc-arc-exceptions \
-  -Wno-unused-value -Wno-arc-bridge-casts-disallowed-in-nonarc \
+  -Wno-arc-bridge-casts-disallowed-in-nonarc \
   -Xclang -fobjc-runtime-has-weak
 endif
 

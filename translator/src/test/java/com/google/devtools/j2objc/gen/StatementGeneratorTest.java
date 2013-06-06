@@ -164,9 +164,9 @@ public class StatementGeneratorTest extends GenerationTest {
     List<Statement> stmts = translateStatements(source);
     assertEquals(3, stmts.size());
     String result = generateStatement(stmts.get(1));
-    assertEquals("[NIL_CHK(o) description];", result);
+    assertEquals("(void) [NIL_CHK(o) description];", result);
     result = generateStatement(stmts.get(2));
-    assertEquals("[self description];", result);
+    assertEquals("(void) [self description];", result);
   }
 
   public void testSuperToStringRenaming() throws IOException {
@@ -1448,5 +1448,16 @@ public class StatementGeneratorTest extends GenerationTest {
         "class Test { String test(Runnable r) { return \"foo\" + (r != null ? r : \"bar\"); } }",
         "Test", "Test.m");
     assertTranslation(translation, "(r != nil ? ((id) r) : @\"bar\")");
+  }
+
+  // Verify that when a method invocation returns an object that is ignored,
+  // it is cast to (void) to avoid a clang warning when compiling with ARC.
+  public void testVoidedUnusedInvocationReturn() throws IOException {
+    String translation = translateSourceFile(
+        "class Test { String test() { StringBuilder sb = new StringBuilder();" +
+        "  sb.append(\"hello, world\"); return sb.toString(); }}",
+        "Test", "Test.m");
+    assertTranslation(translation,
+        "(void) [((JavaLangStringBuilder *) NIL_CHK(sb)) appendWithNSString:@\"hello, world\"];");
   }
 }
