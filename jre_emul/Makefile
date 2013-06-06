@@ -47,7 +47,6 @@ IOS_OBJS = \
 	NSDictionaryMap.o \
 	NSObject+JavaObject.o \
 	NSString+JavaString.o \
-	TimeZonesSupport.o \
 	java/lang/reflect/ExecutableMember.o
 
 # Java classes with hand written obj-c implementations. Shouldn't be translated,

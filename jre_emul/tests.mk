@@ -241,7 +241,7 @@ JUNIT_JAR = ../dist/lib/junit-4.10.jar
 TEST_JOC = ../dist/j2objc -classpath $(JUNIT_JAR) -Werror \
 	-sourcepath $(TEST_SRC) -d $(TESTS_DIR)
 TEST_JOCC = ../dist/j2objcc -g -I$(TESTS_DIR) -l junit -Werror \
-	-L$(TESTS_DIR) -l test-support -l icucore
+	-L$(TESTS_DIR) -l test-support
 SUPPORT_LIB = $(TESTS_DIR)/libtest-support.a
 TEST_BINS = $(TEST_OBJS:.o=)
 

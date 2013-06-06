@@ -157,7 +157,6 @@
 		064FB7E91727081D00DC0D51 /* XMLReaderFactory.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = XMLReaderFactory.m; path = build_result/Classes/org/xml/sax/helpers/XMLReaderFactory.m; sourceTree = "<group>"; };
 		064FB8001727085500DC0D51 /* TypeInfo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = TypeInfo.h; path = build_result/Classes/org/w3c/dom/TypeInfo.h; sourceTree = "<group>"; };
 		064FB8021727086700DC0D51 /* LSResourceResolver.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = LSResourceResolver.h; path = build_result/Classes/org/w3c/dom/ls/LSResourceResolver.h; sourceTree = "<group>"; };
-		064FB8061727091A00DC0D51 /* TimeZonesSupport.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TimeZonesSupport.m; sourceTree = "<group>"; };
 		06619385155848D70004DAFE /* libjre_emul.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libjre_emul.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		06619388155848D70004DAFE /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		0661938D155848D70004DAFE /* JreEmulation.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = JreEmulation.h; sourceTree = "<group>"; };
@@ -652,7 +651,6 @@
 		06DDF48616E83FF800A08BE0 /* BasicLruCache.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = BasicLruCache.m; path = build_result/Classes/libcore/util/BasicLruCache.m; sourceTree = "<group>"; };
 		06DDF48916E8401600A08BE0 /* TimeZones.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = TimeZones.h; path = build_result/Classes/libcore/icu/TimeZones.h; sourceTree = "<group>"; };
 		06DDF48A16E8401600A08BE0 /* TimeZones.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = TimeZones.m; path = build_result/Classes/libcore/icu/TimeZones.m; sourceTree = "<group>"; };
-		06DDF48F16E8404B00A08BE0 /* TimeZonesSupport.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TimeZonesSupport.h; sourceTree = "<group>"; };
 		2CBD9CBA174A8BD7008A0086 /* NSDictionaryMap.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = NSDictionaryMap.h; sourceTree = "<group>"; };
 		2CBD9CBB174A8BD7008A0086 /* NSDictionaryMap.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = NSDictionaryMap.m; sourceTree = "<group>"; };
 		2CBD9CBC174ABC0D008A0086 /* NSDataInputStream.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = NSDataInputStream.h; sourceTree = "<group>"; };
@@ -724,12 +722,6 @@
 				067228EE158FB002005318BD /* Comparable.h */,
 				067228EF158FB002005318BD /* Constructor.h */,
 				06721BA01559DE3800645E1B /* Constructor.m */,
-				2CBD9CBA174A8BD7008A0086 /* NSDictionaryMap.h */,
-				2CBD9CBB174A8BD7008A0086 /* NSDictionaryMap.m */,
-				2CBD9CBC174ABC0D008A0086 /* NSDataInputStream.h */,
-				2CBD9CBD174ABC0D008A0086 /* NSDataInputStream.m */,
-				2CBD9CBE174ABCF8008A0086 /* NSDataOutputStream.h */,
-				2CBD9CBF174ABCF8008A0086 /* NSDataOutputStream.m */,
 				067228F0158FB002005318BD /* ExecutableMember.h */,
 				06721BA11559DE3800645E1B /* ExecutableMember.m */,
 				067228E4158FAEBC005318BD /* Field.h */,
@@ -775,6 +767,12 @@
 				067855B0169F364D0042431C /* LinkedHashMap_PackagePrivate.h */,
 				067228F1158FB002005318BD /* Method.h */,
 				06721BA21559DE3800645E1B /* Method.m */,
+				2CBD9CBC174ABC0D008A0086 /* NSDataInputStream.h */,
+				2CBD9CBD174ABC0D008A0086 /* NSDataInputStream.m */,
+				2CBD9CBE174ABCF8008A0086 /* NSDataOutputStream.h */,
+				2CBD9CBF174ABCF8008A0086 /* NSDataOutputStream.m */,
+				2CBD9CBA174A8BD7008A0086 /* NSDictionaryMap.h */,
+				2CBD9CBB174A8BD7008A0086 /* NSDictionaryMap.m */,
 				066193E4155849F80004DAFE /* NSObject+JavaObject.h */,
 				066193E5155849F80004DAFE /* NSObject+JavaObject.m */,
 				066193E6155849F80004DAFE /* NSString+JavaString.h */,
@@ -782,8 +780,6 @@
 				06734320171DF62600F26D4F /* TempFailureRetry.h */,
 				067228F2158FB002005318BD /* Throwable.h */,
 				06721BA31559DE3800645E1B /* Throwable.m */,
-				06DDF48F16E8404B00A08BE0 /* TimeZonesSupport.h */,
-				064FB8061727091A00DC0D51 /* TimeZonesSupport.m */,
 			);
 			path = Classes;
 			sourceTree = "<group>";

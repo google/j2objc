@@ -23,10 +23,6 @@ import java.util.Locale;
 import java.util.TimeZone;
 import libcore.util.BasicLruCache;
 
-/*-[
-#import "TimeZonesSupport.h"
-]-*/
-
 /**
  * Provides access to ICU's time zone data.
  */
@@ -105,17 +101,4 @@ public final class TimeZones {
         }
         return cachedZoneStrings.get(locale);
     }
-
-    /**
-     * Returns an array containing the time zone ids in use in the country corresponding to
-     * the given locale. This is not necessary for Java API, but is used by telephony as a
-     * fallback.
-     */
-    public static String[] forLocale(Locale locale) {
-        return forCountryCode(locale.getCountry());
-    }
-
-    private static native String[] forCountryCode(String countryCode) /*-[
-      return [TimeZonesSupport forCountryCode:countryCode];
-    ]-*/;
 }
