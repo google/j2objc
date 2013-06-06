@@ -16,10 +16,7 @@
 
 package com.google.devtools.j2objc.gen;
 
-import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Lists;
-import com.google.common.collect.Maps;
-import com.google.common.collect.Multimap;
 import com.google.common.collect.Sets;
 import com.google.devtools.j2objc.J2ObjC;
 import com.google.devtools.j2objc.Options;
@@ -52,11 +49,8 @@ import org.eclipse.jdt.core.dom.Type;
 import org.eclipse.jdt.core.dom.TypeDeclaration;
 import org.eclipse.jdt.core.dom.VariableDeclarationFragment;
 
-import java.util.ArrayList;
 import java.util.Iterator;
-import java.util.LinkedHashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 /**
@@ -91,7 +85,7 @@ public class ObjectiveCHeaderGenerator extends ObjectiveCSourceFileGenerator {
     println(J2ObjC.getFileHeader(getSourceFileName()));
 
     List<AbstractTypeDeclaration> types = ASTUtil.getTypes(unit);
-    Set<ITypeBinding> moreForwardTypes = sortTypes(types);
+    Set<ITypeBinding> moreForwardTypes = getForwardTypes(unit);
     printImportsAndForwardReferences(unit, moreForwardTypes);
 
     for (AbstractTypeDeclaration type : types) {
@@ -360,134 +354,48 @@ public class ObjectiveCHeaderGenerator extends ObjectiveCSourceFileGenerator {
     return String.format("#import \"%s.h\"", imp.getImportFileName());
   }
 
-  /**
-   * If an inner type is defined before any of its super types are, put the
-   * super types first.  Otherwise, keep the order as is, to make debugging
-   * easier.  For field and method references to a following type, add a
-   * forward type.
-   *
-   * @return the set of forward types to declare.
-   */
-  static Set<ITypeBinding> sortTypes(List<AbstractTypeDeclaration> types) {
-    final List<AbstractTypeDeclaration> typesCopy =
-        new ArrayList<AbstractTypeDeclaration>(types);
-
-    final Map<String, AbstractTypeDeclaration> index = Maps.newHashMap();
-    for (AbstractTypeDeclaration type : typesCopy) {
-      index.put(Types.getTypeBinding(type).getBinaryName(), type);
+  // TODO(user): This functionality should be merged with the import collector.
+  private static Set<ITypeBinding> getForwardTypes(CompilationUnit unit) {
+    final Set<String> localTypes = Sets.newHashSet();
+    for (AbstractTypeDeclaration type : ASTUtil.getTypes(unit)) {
+      localTypes.add(Types.getTypeBinding(type).getKey());
     }
+    final Set<String> seen = Sets.newHashSet();
+    final Set<ITypeBinding> references = Sets.newHashSet();
 
-    final Multimap<String, String> references = HashMultimap.create();
-    final Multimap<String, String> superTypes = HashMultimap.create();
-
-    // Collect all references to other types, but track super types
-    // separately from other references.
-    for (AbstractTypeDeclaration type : typesCopy) {
-      final String typeName = Types.getTypeBinding(type).getBinaryName();
-
-      ErrorReportingASTVisitor collector = new ErrorReportingASTVisitor() {
-        protected void addSuperType(Type type) {
-          ITypeBinding binding = type == null ? null : Types.getTypeBinding(type);
-          if (binding != null && isMember(binding)) {
-            superTypes.put(typeName, binding.getBinaryName());
-          }
+    unit.accept(new ErrorReportingASTVisitor() {
+      private void addReference(Type type) {
+        if (type == null) {
+          return;
         }
-
-        private void addReference(Type type) {
-          ITypeBinding binding = type == null ? null : Types.getTypeBinding(type);
-          if (binding != null && isMember(binding)) {
-            references.put(typeName, binding.getBinaryName());
-          }
-        }
-
-        // Only collect references to types members.
-        private boolean isMember(ITypeBinding binding) {
-          return index.containsKey(binding.getBinaryName());
-        }
-
-        @Override
-        public boolean visit(FieldDeclaration node) {
-          addReference(node.getType());
-          return true;
-        }
-
-        @Override
-        public boolean visit(MethodDeclaration node) {
-          addReference(node.getReturnType2());
-          for (SingleVariableDeclaration param : ASTUtil.getParameters(node)) {
-            addReference(param.getType());
-          }
-          return true;
-        }
-
-        @Override
-        public boolean visit(TypeDeclaration node) {
-          ITypeBinding binding = Types.getTypeBinding(node);
-          if (binding.isEqualTo(Types.getNSObject())) {
-            return false;
-          }
-          addSuperType(node.getSuperclassType());
-          for (Iterator<?> iterator = node.superInterfaceTypes().iterator(); iterator.hasNext();) {
-            Object o = iterator.next();
-            if (o instanceof Type) {
-              addSuperType((Type) o);
-            } else {
-              throw new AssertionError("unknown AST type: " + o.getClass());
-            }
-          }
-          return true;
-        }
-      };
-      collector.run(type);
-    }
-
-    // Do a topological sort on the types declared in this unit, with an edge
-    // in the graph denoting a type inheritance. Super types will end up
-    // higher up in the sort.
-
-    types.clear();
-    LinkedHashSet<AbstractTypeDeclaration> rootTypes = Sets.newLinkedHashSet();
-    for (AbstractTypeDeclaration type : typesCopy) {
-      String name = Types.getTypeBinding(type).getBinaryName();
-      if (!superTypes.containsValue(name)) {
-        rootTypes.add(type);
-      }
-    }
-
-    while (!rootTypes.isEmpty()) {
-      AbstractTypeDeclaration type =
-          (AbstractTypeDeclaration) rootTypes.toArray()[rootTypes.size() - 1];
-      rootTypes.remove(type);
-      types.add(0, type);
-
-      ITypeBinding binding = Types.getTypeBinding(type);
-      String typeName = binding.getBinaryName();
-      // Copy the values to avoid a ConcurrentModificationException.
-      List<String> values = Lists.newArrayList(superTypes.get(typeName));
-      for (String superTypeName : values) {
-        superTypes.remove(typeName, superTypeName);
-        if (!superTypes.containsValue(superTypeName)) {
-          AbstractTypeDeclaration superType = index.get(superTypeName);
-          rootTypes.add(superType);
+        ITypeBinding binding = Types.getTypeBinding(type).getTypeDeclaration();
+        String key = binding.getKey();
+        if (localTypes.contains(key) && !seen.contains(key)) {
+          references.add(binding);
         }
       }
-    }
 
-    assert types.size() == typesCopy.size();
-
-    // For all other references, if the referred to type is declared
-    // after the reference, add a forward reference.
-    final Set<ITypeBinding> moreForwardTypes = Sets.newHashSet();
-    for (Map.Entry<String, String> entry : references.entries()) {
-      AbstractTypeDeclaration referrer = index.get(entry.getKey());
-      AbstractTypeDeclaration referred = index.get(entry.getValue());
-      if (types.indexOf(referred) > types.indexOf(referrer)) {
-        // Referred to type occurs after the reference; add a forward decl
-        moreForwardTypes.add(Types.getTypeBinding(referred));
+      @Override
+      public void endVisit(FieldDeclaration node) {
+        addReference(node.getType());
       }
-    }
 
-    return moreForwardTypes;
+      @Override
+      public void endVisit(MethodDeclaration node) {
+        addReference(node.getReturnType2());
+        for (SingleVariableDeclaration param : ASTUtil.getParameters(node)) {
+          addReference(param.getType());
+        }
+      }
+
+      @Override
+      public boolean visit(TypeDeclaration node) {
+        seen.add(Types.getTypeBinding(node).getKey());
+        return true;
+      }
+    });
+
+    return references;
   }
 
   private void printInstanceVariables(List<FieldDeclaration> fields) {

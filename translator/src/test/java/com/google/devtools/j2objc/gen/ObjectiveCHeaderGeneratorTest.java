@@ -20,12 +20,9 @@ import com.google.devtools.j2objc.GenerationTest;
 import com.google.devtools.j2objc.Options;
 import com.google.devtools.j2objc.util.NameTable;
 
-import org.eclipse.jdt.core.dom.AbstractTypeDeclaration;
-import org.eclipse.jdt.core.dom.CompilationUnit;
 import org.eclipse.jdt.core.dom.ITypeBinding;
 
 import java.io.IOException;
-import java.util.List;
 import java.util.Set;
 
 /**
@@ -312,65 +309,12 @@ public class ObjectiveCHeaderGeneratorTest extends GenerationTest {
     assertTranslation(translation, "IOSCharArray *after;");
   }
 
-  public void testTypeSortNoDependencies() throws IOException {
-    CompilationUnit unit = translateType("Example",
-        "public class Example { class Foo {} }");
-    @SuppressWarnings("unchecked")
-    List<AbstractTypeDeclaration> types = unit.types();
-    assertEquals(2, types.size());
-    Set<ITypeBinding> forwards = ObjectiveCHeaderGenerator.sortTypes(types);
-
-    // Expecting no sort change, no forwards
-    assertEquals("Example", types.get(0).getName().getIdentifier());
-    assertEquals("Foo", types.get(1).getName().getIdentifier());
-    assertEquals(0, forwards.size());
-  }
-
-  public void testTypeSortForward() throws IOException {
-    CompilationUnit unit = translateType("Example",
-        "public class Example { Foo foo; class Foo {} }");
-    @SuppressWarnings("unchecked")
-    List<AbstractTypeDeclaration> types = unit.types();
-    assertEquals(2, types.size());
-    Set<ITypeBinding> forwards = ObjectiveCHeaderGenerator.sortTypes(types);
-
-    // Expecting no sort change, one forward.
-    assertEquals("Example", types.get(0).getName().getIdentifier());
-    assertEquals("Foo", types.get(1).getName().getIdentifier());
-    assertEquals(1, forwards.size());
-    assertTrue(containsType(forwards, "Example_Foo"));
-  }
-
-  public void testTypeSortInnerInterface() throws IOException {
-    CompilationUnit unit = translateType("Example",
-        "public class Example { Foo foo; Bar bar; class Bar implements Foo {} interface Foo {} }");
-    @SuppressWarnings("unchecked")
-    List<AbstractTypeDeclaration> types = unit.types();
-    assertEquals(3, types.size());
-    Set<ITypeBinding> forwards = ObjectiveCHeaderGenerator.sortTypes(types);
-
-    // Expecting Foo before Bar, otherwise no sort change, one forward.
-    assertEquals("Example", types.get(0).getName().getIdentifier());
-    assertEquals("Foo", types.get(1).getName().getIdentifier());
-    assertEquals("Bar", types.get(2).getName().getIdentifier());
-    assertEquals(2, forwards.size());
-    assertTrue(containsType(forwards, "Example_Bar"));
-  }
-
-
-  public void testTypeSortInnerInterfaceParameterReference() throws IOException {
-    CompilationUnit unit = translateType("Example",
-        "public class Example { Foo foo; interface Foo { void doSomething(Example e); } }");
-    @SuppressWarnings("unchecked")
-    List<AbstractTypeDeclaration> types = unit.types();
-    assertEquals(2, types.size());
-    Set<ITypeBinding> forwards = ObjectiveCHeaderGenerator.sortTypes(types);
-
-    // Expecting no sort change, one forward.
-    assertEquals("Example", types.get(0).getName().getIdentifier());
-    assertEquals("Foo", types.get(1).getName().getIdentifier());
-    assertEquals(1, forwards.size());
-    assertTrue(containsType(forwards, "Example_Foo"));
+  public void testForwardDeclarationOfInnerType() throws IOException {
+    String translation = translateSourceFile(
+        "public class Example { Foo foo; class Foo {} }", "Example", "Example.h");
+    // Test that Foo is forward declared because Example contains a field of
+    // type Foo and Foo is declared after Example.
+    assertTranslation(translation, "@class Example_Foo;");
   }
 
   public void testAnnotationGeneration() throws IOException {

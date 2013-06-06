@@ -276,7 +276,7 @@ public class RewriterTest extends GenerationTest {
         "interface Equateable { boolean equals(Object o); }";
     CompilationUnit unit = translateType("Test", source);
     assertEquals(2, unit.types().size());
-    TypeDeclaration innerType = (TypeDeclaration) unit.types().get(0);
+    TypeDeclaration innerType = (TypeDeclaration) unit.types().get(1);
     assertEquals("Test", innerType.getName().toString());
 
     MethodDeclaration[] methods = innerType.getMethods();
