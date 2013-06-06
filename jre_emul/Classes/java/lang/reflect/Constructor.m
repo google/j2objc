@@ -58,7 +58,7 @@ static id makeException(Class exceptionClass) {
 - (id)newInstanceWithNSObjectArray:(IOSObjectArray *)initArgs {
   id newInstance;
   @try {
-    newInstance = [class_ alloc];
+    newInstance = [class_.objcClass alloc];
   }
   @catch (JavaLangThrowable *e) {
     JavaLangThrowable *throwable =
@@ -183,10 +183,7 @@ static id makeException(Class exceptionClass) {
 }
 
 - (NSString *)getName {
-  const char *cname = class_getName(class_);
-  NSString *name = [NSString stringWithCString:cname
-                                      encoding:NSUTF8StringEncoding];
-  return name;
+  return [class_ getName];
 }
 
 @end

@@ -33,7 +33,7 @@
 // Method and Constructor classes just duplicate their common code.
 @interface ExecutableMember : AccessibleObject {
  @protected
-  Class class_;
+  IOSClass *class_;
   SEL selector_;
   BOOL classMethod_;
   NSMethodSignature *methodSignature_;    

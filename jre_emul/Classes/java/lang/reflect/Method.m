@@ -99,7 +99,7 @@ static id Box(JavaResult *value, const char *type);
     [invocation setArgument:&arg atIndex:i + SKIPPED_ARGUMENTS];
   }
   if (object == nil || [object isKindOfClass:[IOSClass class]]) {
-    [invocation setTarget:class_];
+    [invocation setTarget:class_.objcClass];
   } else {
     [invocation setTarget:object];
   }
