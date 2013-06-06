@@ -229,6 +229,7 @@ JAVA_SOURCES = \
 	java/lang/reflect/UndeclaredThrowableException.java \
 	java/lang/RuntimeException.java \
 	java/lang/SecurityException.java \
+	java/lang/SecurityManager.java \
 	java/lang/Short.java \
 	java/lang/StackTraceElement.java \
 	java/lang/StrictMath.java \
@@ -292,6 +293,10 @@ JAVA_SOURCES = \
 	java/nio/ReadWriteShortArrayBuffer.java \
 	java/nio/ShortArrayBuffer.java \
 	java/nio/ShortBuffer.java \
+	java/security/AllPermissionCollection.java \
+	java/security/Guard.java \
+	java/security/Permission.java \
+	java/security/PermissionCollection.java \
 	java/sql/Date.java \
 	java/sql/Time.java \
 	java/sql/Timestamp.java \
