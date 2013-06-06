@@ -80,17 +80,18 @@
 
 + (IOSObjectArray *)stackTraceWithSymbols:(char **)symbols
                                     count:(unsigned)count {
-  IOSObjectArray *stackTrace = [IOSObjectArray arrayWithLength:count type:
+  IOSObjectArray *stackTrace = [IOSObjectArray arrayWithLength:0 type:
       [IOSClass classWithClass:[JavaLangStackTraceElement class]]];
-  for (int i = 0; i < count; i++) {
-    NSString *symbol = [NSString stringWithUTF8String:symbols[i]];
-    JavaLangStackTraceElement *element =
-        AUTORELEASE([[JavaLangStackTraceElement alloc] initWithNSString:nil
-                                                           withNSString:symbol
-                                                           withNSString:nil
-                                                                withInt:-1]);
-    [stackTrace replaceObjectAtIndex:i withObject:element];
-  }
+  // TODO(user): Uncomment this code when b/9108204 is fixed.
+  //for (int i = 0; i < count; i++) {
+  //  NSString *symbol = [NSString stringWithUTF8String:symbols[i]];
+  //  JavaLangStackTraceElement *element =
+  //      AUTORELEASE([[JavaLangStackTraceElement alloc] initWithNSString:nil
+  //                                                         withNSString:symbol
+  //                                                         withNSString:nil
+  //                                                              withInt:-1]);
+  //  [stackTrace replaceObjectAtIndex:i withObject:element];
+  //}
   return stackTrace;
 }
 
