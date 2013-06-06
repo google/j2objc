@@ -604,14 +604,14 @@ public class ObjectiveCHeaderGenerator extends ObjectiveCSourceFileGenerator {
         } else if (value instanceof Long) {
           long l = ((Long) value).longValue();
           if (l == Long.MIN_VALUE) {
-            println("-0x7fffffffffffffffLL - 1");
+            println("((long long) 0x8000000000000000LL)");
           } else {
             println(value.toString());
           }
         } else if (value instanceof Integer) {
           long l = ((Integer) value).intValue();
           if (l == Integer.MIN_VALUE) {
-            println("-0x7fffffff - 1");
+            println("((int) 0x80000000)");
           } else {
             println(value.toString());
           }
