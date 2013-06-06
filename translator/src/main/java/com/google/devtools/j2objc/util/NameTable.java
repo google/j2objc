@@ -17,6 +17,7 @@
 package com.google.devtools.j2objc.util;
 
 import com.google.common.base.Joiner;
+import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.devtools.j2objc.Options;
@@ -323,34 +324,32 @@ public class NameTable {
     return primitiveTypeToObjC(code.toString());
   }
 
+  private static final ImmutableMap<String, String> PRIMITIVE_TYPE_MAP =
+      ImmutableMap.<String, String>builder()
+      .put("boolean", "BOOL")
+      .put("byte", "char")
+      .put("char", "unichar")
+      .put("short", "short int")
+      .put("long", "long long int")
+      .build();
+
   public static String primitiveTypeToObjC(String javaName) {
-    if (javaName.equals("boolean")) {
-      return "BOOL"; // defined in NSObject.h
-    }
-    if (javaName.equals("byte")) {
-      return "char";
-    }
-    if (javaName.equals("char")) {
-      return "unichar";
-    }
-    if (javaName.equals("short")) {
-      return "short int";
-    }
-    if (javaName.equals("long")) {
-      return "long long int";
-    }
-    // type name unchanged for int, float, double, and void
-    return javaName;
+    String result = PRIMITIVE_TYPE_MAP.get(javaName);
+    return result != null ? result : javaName;
   }
 
+  private static final ImmutableMap<String, String> PRIMITIVE_TYPE_KEYWORD_MAP =
+      ImmutableMap.<String, String>builder()
+      .put("boolean", "BOOL")
+      .put("byte", "char")
+      .put("char", "unichar")
+      .put("short", "shortInt")
+      .put("long", "longInt")
+      .build();
+
   private static String getPrimitiveTypeParameterKeyword(String javaName) {
-    // TODO(user): These can be changed to "Long" and "Short".
-    if (javaName.equals("long")) {
-      return "LongInt";
-    } else if (javaName.equals("short")) {
-      return "ShortInt";
-    }
-    return primitiveTypeToObjC(javaName);
+    String result = PRIMITIVE_TYPE_KEYWORD_MAP.get(javaName);
+    return result != null ? result : javaName;
   }
 
   // TODO(user): See whether the logic in this method can be simplified.
