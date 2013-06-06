@@ -383,25 +383,4 @@ public class ImplementationImportCollector extends HeaderImportCollector {
     addImports(node.getType());
     return super.visit(node);
   }
-
-  @Override
-  protected void addImports(ITypeBinding binding) {
-    // There is similar code in gen/StatementGenerator, but here
-    // recursion is used to tease out the references in nested
-    // generic type declarations, which isn't needed when
-    // generating statements.
-    if (binding != null && !Types.isVoidType(binding) && !binding.isAnnotation()) {
-      if (binding.isWildcardType()) {
-        addImports(binding.getBound());
-      } else if (binding.isCapture()) {
-        addImports(binding.getWildcard());
-      } else {
-        assert (!binding.isCapture() && !binding.isWildcardType());
-        super.addImports(binding);
-      }
-      for (ITypeBinding typeArg : binding.getTypeArguments()) {
-        addImports(typeArg);
-      }
-    }
-  }
 }

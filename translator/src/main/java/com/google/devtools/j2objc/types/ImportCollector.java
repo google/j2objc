@@ -108,7 +108,7 @@ public class ImportCollector extends ErrorReportingASTVisitor {
         // since they have header files.
         && (binding instanceof IOSArrayTypeBinding
             || !(binding instanceof IOSTypeBinding))) {
-      binding = Types.mapType(binding);
+      binding = Types.mapType(binding).getErasure();
       String typeName = NameTable.getFullName(binding);
       boolean isInterface = binding.isInterface();
       while (!binding.isTopLevel()) {
