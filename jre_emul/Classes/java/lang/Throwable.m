@@ -31,9 +31,9 @@
 #import "java/lang/System.h"
 
 #import <TargetConditionals.h>
-#ifndef TARGET_OS_IPHONE
-#import <NSExceptionHandler.h>
-#endif
+#import <execinfo.h>
+
+#define MAX_STACK_FRAMES 128
 
 @implementation JavaLangThrowable
 
@@ -47,16 +47,15 @@
                            reason:message
                          userInfo:nil])) {
     JreMemDebugAdd(self);
-#if __has_feature(objc_arc)
-    cause = causeArg;
-    detailMessage = message;
-    stackTrace = [JavaLangThrowable stackTraceWithSymbols:[NSThread callStackSymbols]];
-#else
-    cause = [causeArg retain];
-    detailMessage = [message retain];
-    stackTrace =
-        [[JavaLangThrowable stackTraceWithSymbols:[NSThread callStackSymbols]] retain];
-#endif
+    cause = RETAIN(causeArg);
+    detailMessage = RETAIN(message);
+
+    void *callStack[MAX_STACK_FRAMES];
+    unsigned nFrames = backtrace(callStack, MAX_STACK_FRAMES);
+    char **stackSymbols =  backtrace_symbols(callStack, nFrames);
+    stackTrace = RETAIN([JavaLangThrowable stackTraceWithSymbols:stackSymbols
+                                                           count:nFrames]);
+    free(stackSymbols);
   }
   return self;
 }
@@ -79,11 +78,12 @@
                            withJavaLangThrowable:causeArg];
 }
 
-+ (IOSObjectArray *)stackTraceWithSymbols:(NSArray *)symbols {
-  IOSObjectArray *stackTrace = [IOSObjectArray arrayWithLength:[symbols count] type:
++ (IOSObjectArray *)stackTraceWithSymbols:(char **)symbols
+                                    count:(unsigned)count {
+  IOSObjectArray *stackTrace = [IOSObjectArray arrayWithLength:count type:
       [IOSClass classWithClass:[JavaLangStackTraceElement class]]];
-  for (int i = 0; i < [symbols count]; i++) {
-    NSString *symbol = [symbols objectAtIndex:i];
+  for (int i = 0; i < count; i++) {
+    NSString *symbol = [NSString stringWithUTF8String:symbols[i]];
     JavaLangStackTraceElement *element =
         AUTORELEASE([[JavaLangStackTraceElement alloc] initWithNSString:nil
                                                            withNSString:symbol
