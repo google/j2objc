@@ -16,6 +16,7 @@
 
 package com.google.devtools.j2objc.types;
 
+import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Sets;
 import com.google.devtools.j2objc.Options;
 import com.google.devtools.j2objc.util.NameTable;
@@ -32,6 +33,10 @@ import java.util.Set;
  * @author Tom Ball
  */
 public class Import implements Comparable<Import> {
+
+  private static final Set<String> FOUNDATION_TYPES =
+      ImmutableSet.of("id", "NSObject", "NSString", "NSNumber", "NSCopying", "NSZone");
+
   private final String typeName;
   private final String javaFileName;
   private final boolean isInterface;
@@ -94,27 +99,24 @@ public class Import implements Comparable<Import> {
   }
 
   public static void addImports(ITypeBinding binding, Collection<Import> imports) {
-    if (binding == null) {
+    if (binding == null || binding.isPrimitive() || binding.isAnnotation()) {
       return;
     }
-    if (!binding.isTypeVariable() && !binding.isPrimitive() && !binding.isAnnotation()
-        // Don't import IOS types, other than the IOS array types,
-        // since they have header files.
-        && (binding instanceof IOSArrayTypeBinding
-            || !(binding instanceof IOSTypeBinding))) {
-      binding = Types.mapType(binding).getErasure();
-      String typeName = NameTable.getFullName(binding);
-      boolean isInterface = binding.isInterface();
-      while (!binding.isTopLevel()) {
-        binding = binding.getDeclaringClass();
-      }
-      if (!Types.isIOSType(typeName)) {
-        imports.add(new Import(typeName, binding.getErasure().getQualifiedName(), isInterface));
-      }
-    } else if (binding.isTypeVariable()) {
+    if (binding.isTypeVariable()) {
       for (ITypeBinding bound : binding.getTypeBounds()) {
         addImports(bound, imports);
       }
+      return;
     }
+    binding = Types.mapType(binding.getErasure());
+    if (FOUNDATION_TYPES.contains(binding.getName())) {
+      return;
+    }
+    String typeName = NameTable.getFullName(binding);
+    boolean isInterface = binding.isInterface();
+    while (!binding.isTopLevel()) {
+      binding = binding.getDeclaringClass();
+    }
+    imports.add(new Import(typeName, binding.getErasure().getQualifiedName(), isInterface));
   }
 }

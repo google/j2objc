@@ -23,14 +23,11 @@ import com.google.devtools.j2objc.util.ErrorReportingASTVisitor;
 import com.google.devtools.j2objc.util.NameTable;
 
 import org.eclipse.jdt.core.dom.CastExpression;
-import org.eclipse.jdt.core.dom.Expression;
 import org.eclipse.jdt.core.dom.FieldDeclaration;
 import org.eclipse.jdt.core.dom.IMethodBinding;
 import org.eclipse.jdt.core.dom.ITypeBinding;
 import org.eclipse.jdt.core.dom.IVariableBinding;
 import org.eclipse.jdt.core.dom.MethodDeclaration;
-import org.eclipse.jdt.core.dom.MethodInvocation;
-import org.eclipse.jdt.core.dom.SimpleName;
 import org.eclipse.jdt.core.dom.SingleVariableDeclaration;
 import org.eclipse.jdt.core.dom.Type;
 import org.eclipse.jdt.core.dom.TypeDeclaration;
@@ -112,21 +109,6 @@ public class JavaToIOSTypeConverter extends ErrorReportingASTVisitor {
             binding.getDeclaringClass(), binding.getDeclaringMethod());
         Types.addMappedVariable(var, varBinding);
         node.setType(newType);
-      }
-    }
-    return super.visit(node);
-  }
-
-  @Override
-  public boolean visit(MethodInvocation node) {
-    Expression receiver = node.getExpression();
-    if (receiver instanceof SimpleName) {
-      String name = ((SimpleName) receiver).getIdentifier();
-      String newName = Types.mapSimpleTypeName(name);
-      if (name != newName) { // identity test
-        SimpleName nameNode = node.getAST().newSimpleName(newName);
-        Types.addBinding(nameNode, Types.getBinding(node));
-        node.setExpression(nameNode);
       }
     }
     return super.visit(node);

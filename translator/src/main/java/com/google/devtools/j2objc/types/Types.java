@@ -67,7 +67,6 @@ public class Types {
   private final Map<Object, IBinding> bindingMap;
   private final Map<ITypeBinding, ITypeBinding> typeMap = Maps.newHashMap();
   private final Map<ITypeBinding, ITypeBinding> renamedTypeMap = Maps.newHashMap();
-  private final Map<String, String> simpleTypeMap = Maps.newHashMap();
   private final Map<IMethodBinding, IOSMethod> mappedMethods = Maps.newHashMap();
   private final Map<Expression, IMethodBinding> mappedInvocations = Maps.newHashMap();
   private final Map<IVariableBinding, IVariableBinding> mappedVariables = Maps.newHashMap();
@@ -95,8 +94,6 @@ public class Types {
   public final IOSTypeBinding NSObject = new IOSTypeBinding("NSObject", false);
   public final IOSTypeBinding NSNumber = new IOSTypeBinding("NSNumber", NSObject);
   public final IOSTypeBinding NSString = new IOSTypeBinding("NSString", NSObject);
-  public final IOSTypeBinding JavaLangCharSequence =
-      new IOSTypeBinding("JavaLangCharSequence", true);
   public final IOSTypeBinding NS_ANY = new IOSTypeBinding("id", false);
   public final IOSTypeBinding IOSClass = new IOSTypeBinding("IOSClass", false);
 
@@ -110,7 +107,7 @@ public class Types {
   public IOSArrayTypeBinding IOSObjectArray;
   public IOSArrayTypeBinding IOSShortArray;
 
-  private final Map<String, IOSTypeBinding> iosBindingMap = Maps.newHashMap();
+  private final Map<String, ITypeBinding> iosBindingMap = Maps.newHashMap();
 
   // Map a primitive type to its emulation array type.
   private final Map<String, IOSArrayTypeBinding> arrayTypeMap = Maps.newHashMap();
@@ -143,7 +140,7 @@ public class Types {
     NSNumber.setMappedType(javaNumberType);
     initializeArrayTypes();
     initializeTypeMap();
-    populateSimpleTypeMap();
+    initializeCommonJavaTypes();
     populateArrayTypeMaps();
     populatePrimitiveAndWrapperTypeMaps();
     bindingMap = BindingMapBuilder.buildBindingMap(unit);
@@ -197,7 +194,6 @@ public class Types {
     iosBindingMap.put("IOSLongArray", IOSLongArray);
     iosBindingMap.put("IOSObjectArray", IOSObjectArray);
     iosBindingMap.put("IOSShortArray", IOSShortArray);
-    iosBindingMap.put("JavaLangCharSequence", JavaLangCharSequence);
   }
 
   /**
@@ -215,11 +211,9 @@ public class Types {
     typeMap.put(javaNumberType, NSNumber);
   }
 
-  private void populateSimpleTypeMap() {
-    simpleTypeMap.put("JavaLangObject", "NSObject");
-    simpleTypeMap.put("JavaLangString", "NSString");
-    simpleTypeMap.put("JavaLangNumber", "NSNumber");
-    simpleTypeMap.put("JavaLangCloneable", "NSCopying");
+  private void initializeCommonJavaTypes() {
+    ITypeBinding charSequence = findInterface(javaStringType, "java.lang.CharSequence");
+    iosBindingMap.put("JavaLangCharSequence", charSequence);
   }
 
   private void populateArrayTypeMaps() {
@@ -444,30 +438,6 @@ public class Types {
   }
 
   /**
-   * Returns true if a Type AST node refers to an iOS type.
-   */
-  public static boolean isIOSType(Type type) {
-    return isIOSType(type.toString())
-        || instance.iosBindingMap.containsValue(getTypeBinding(type));
-  }
-
-  /**
-   * Returns true if a type name refers to an iOS type.
-   */
-  public static boolean isIOSType(String name) {
-    return instance.simpleTypeMap.get(name) != null
-        || instance.simpleTypeMap.containsValue(name);
-  }
-
-  /**
-   * Returns a simple (no package) name for a given one.
-   */
-  public static String mapSimpleTypeName(String typeName) {
-    String newName = instance.simpleTypeMap.get(typeName);
-    return newName != null ? newName : typeName;
-  }
-
-  /**
    * Returns a Type AST node for a specific type binding.
    */
   public static Type makeType(ITypeBinding binding) {
@@ -556,7 +526,7 @@ public class Types {
     return null;
   }
 
-  public static IOSTypeBinding resolveIOSType(String name) {
+  public static ITypeBinding resolveIOSType(String name) {
     return instance.iosBindingMap.get(name);
   }
 
