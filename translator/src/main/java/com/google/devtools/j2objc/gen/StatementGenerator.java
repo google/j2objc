@@ -190,7 +190,7 @@ public class StatementGenerator extends ErrorReportingASTVisitor {
 
   private void printArgument(IMethodBinding method, Expression arg, int index) {
     if (method != null) {
-      IOSMethod iosMethod = getIOSMethod(method);
+      IOSMethod iosMethod = IOSMethodBinding.getIOSMethod(method);
       if (iosMethod != null) {
         // mapped methods already have converted parameters
         if (index > 0) {
@@ -222,14 +222,6 @@ public class StatementGenerator extends ErrorReportingASTVisitor {
     } else {
       arg.accept(this);
     }
-  }
-
-  private IOSMethod getIOSMethod(IMethodBinding method) {
-    if (method instanceof IOSMethodBinding) {
-      IMethodBinding delegate = ((IOSMethodBinding) method).getDelegate();
-      return Types.getMappedMethod(delegate);
-    }
-    return Types.getMappedMethod(method);
   }
 
   private void printArrayLiteral(ArrayInitializer arrayInit) {
@@ -269,9 +261,9 @@ public class StatementGenerator extends ErrorReportingASTVisitor {
       } else {
         // Last parameter; Group remain arguments into an array.
         assert parameterTypes[i].isArray();
-        if (method instanceof IOSMethodBinding) {
+        IOSMethod iosMethod = IOSMethodBinding.getIOSMethod(method);
+        if (iosMethod != null) {
           if (i > 0) {
-            IOSMethod iosMethod = getIOSMethod(method);
             buffer.append(iosMethod.getParameters().get(i).getParameterName());
           }
         } else {
@@ -304,7 +296,11 @@ public class StatementGenerator extends ErrorReportingASTVisitor {
   }
 
   private boolean hasVarArgsTarget(IMethodBinding method) {
-    return method instanceof IOSMethodBinding && ((IOSMethodBinding) method).hasVarArgsTarget();
+    IOSMethod iosMethod = IOSMethodBinding.getIOSMethod(method);
+    if (iosMethod != null) {
+      return iosMethod.isVarArgs();
+    }
+    return false;
   }
 
   private void printNilCheck(Expression e, boolean needsCast) {

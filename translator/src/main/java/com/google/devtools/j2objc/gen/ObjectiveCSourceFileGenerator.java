@@ -18,6 +18,7 @@ package com.google.devtools.j2objc.gen;
 
 import com.google.common.collect.Lists;
 import com.google.devtools.j2objc.types.IOSMethod;
+import com.google.devtools.j2objc.types.IOSMethodBinding;
 import com.google.devtools.j2objc.types.IOSParameter;
 import com.google.devtools.j2objc.types.Types;
 import com.google.devtools.j2objc.util.ASTUtil;
@@ -178,7 +179,7 @@ public abstract class ObjectiveCSourceFileGenerator extends SourceFileGenerator 
     for (MethodDeclaration m : methods) {
       syncLineNumbers(m.getName());  // avoid doc-comment
       IMethodBinding binding = Types.getMethodBinding(m);
-      IOSMethod iosMethod = Types.getMappedMethod(binding);
+      IOSMethod iosMethod = IOSMethodBinding.getIOSMethod(binding);
       if (iosMethod != null) {
         print(mappedMethodDeclaration(m, iosMethod));
       } else if (m.isConstructor()) {

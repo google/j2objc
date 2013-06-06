@@ -32,7 +32,6 @@ import org.eclipse.jdt.core.dom.ASTNode;
 import org.eclipse.jdt.core.dom.Block;
 import org.eclipse.jdt.core.dom.BooleanLiteral;
 import org.eclipse.jdt.core.dom.CompilationUnit;
-import org.eclipse.jdt.core.dom.Expression;
 import org.eclipse.jdt.core.dom.IAnnotationBinding;
 import org.eclipse.jdt.core.dom.IBinding;
 import org.eclipse.jdt.core.dom.IMethodBinding;
@@ -67,8 +66,6 @@ public class Types {
   private final Map<Object, IBinding> bindingMap;
   private final Map<ITypeBinding, ITypeBinding> typeMap = Maps.newHashMap();
   private final Map<ITypeBinding, ITypeBinding> renamedTypeMap = Maps.newHashMap();
-  private final Map<IMethodBinding, IOSMethod> mappedMethods = Maps.newHashMap();
-  private final Map<Expression, IMethodBinding> mappedInvocations = Maps.newHashMap();
   private final Map<IVariableBinding, IVariableBinding> mappedVariables = Maps.newHashMap();
   private final Map<IVariableBinding, ITypeBinding> variablesNeedingCasts = Maps.newHashMap();
   private final List<IMethodBinding> functions = Lists.newArrayList();
@@ -106,6 +103,7 @@ public class Types {
   public IOSArrayTypeBinding IOSObjectArray;
   public IOSArrayTypeBinding IOSShortArray;
 
+  private final Map<String, ITypeBinding> javaBindingMap = Maps.newHashMap();
   private final Map<String, ITypeBinding> iosBindingMap = Maps.newHashMap();
 
   // Map a primitive type to its emulation array type.
@@ -211,6 +209,7 @@ public class Types {
 
   private void initializeCommonJavaTypes() {
     ITypeBinding charSequence = findInterface(javaStringType, "java.lang.CharSequence");
+    javaBindingMap.put("java.lang.CharSequence", charSequence);
     iosBindingMap.put("JavaLangCharSequence", charSequence);
   }
 
@@ -470,23 +469,6 @@ public class Types {
   }
 
   /**
-   * Returns true if a specified method binding refers to a replacement iOS
-   * type.
-   */
-  public static boolean isMappedMethod(IMethodBinding method) {
-    return method instanceof IOSMethodBinding ? true : instance.mappedMethods.containsKey(method);
-  }
-
-  public static void addMappedIOSMethod(IMethodBinding binding, IOSMethod method) {
-    instance.mappedMethods.put(binding, method);
-    Types.addBinding(method, binding);
-  }
-
-  public static IOSMethod getMappedMethod(IMethodBinding binding) {
-    return instance.mappedMethods.get(binding);
-  }
-
-  /**
    * Returns true if a specified variable binding refers has a replacement.
    */
   public static boolean isMappedVariable(IVariableBinding var) {
@@ -504,16 +486,12 @@ public class Types {
     return var != null ? var : binding;
   }
 
-  public static void addMappedInvocation(Expression method, IMethodBinding binding) {
-    instance.mappedInvocations.put(method, binding);
-    Types.addBinding(method, binding);
-  }
-
-  public static IMethodBinding resolveInvocationBinding(Expression invocation) {
-    if (instance.mappedInvocations.containsKey(invocation)) {
-      return instance.mappedInvocations.get(invocation);
+  public static ITypeBinding resolveJavaType(String name) {
+    ITypeBinding result = instance.javaBindingMap.get(name);
+    if (result == null) {
+      result = instance.ast.resolveWellKnownType(name);
     }
-    return null;
+    return result;
   }
 
   public static ITypeBinding resolveIOSType(String name) {

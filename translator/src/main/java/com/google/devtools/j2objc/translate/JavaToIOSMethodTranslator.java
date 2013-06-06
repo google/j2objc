@@ -16,12 +16,15 @@
 
 package com.google.devtools.j2objc.translate;
 
+import com.google.common.base.Function;
+import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.devtools.j2objc.J2ObjC;
 import com.google.devtools.j2objc.types.GeneratedMethodBinding;
 import com.google.devtools.j2objc.types.GeneratedVariableBinding;
 import com.google.devtools.j2objc.types.IOSMethod;
+import com.google.devtools.j2objc.types.IOSMethodBinding;
 import com.google.devtools.j2objc.types.IOSParameter;
 import com.google.devtools.j2objc.types.IOSTypeBinding;
 import com.google.devtools.j2objc.types.JavaMethod;
@@ -68,18 +71,24 @@ public class JavaToIOSMethodTranslator extends ErrorReportingASTVisitor {
   private List<IMethodBinding> mappedMethods = Lists.newArrayList();
   private final ITypeBinding javaLangCloneable;
 
-  private final Map<String, String> methodMappings;
+  private final Map<String, IOSMethod> methodMappings;
+
+  private static final Function<String, IOSMethod> IOS_METHOD_FROM_STRING =
+      new Function<String, IOSMethod>() {
+    public IOSMethod apply(String value) {
+      return IOSMethod.create(value);
+    }
+  };
 
   public JavaToIOSMethodTranslator(AST ast, Map<String, String> methodMappings) {
     this.ast = ast;
-    this.methodMappings = methodMappings;
+    this.methodMappings =
+        ImmutableMap.copyOf(Maps.transformValues(methodMappings, IOS_METHOD_FROM_STRING));
     loadTargetMethods(ast.resolveWellKnownType("java.lang.Object"));
     loadTargetMethods(ast.resolveWellKnownType("java.lang.Class"));
-    ITypeBinding javaLangString = ast.resolveWellKnownType("java.lang.String");
-    loadTargetMethods(javaLangString);
-    loadCharSequenceMethods(javaLangString);
+    loadTargetMethods(ast.resolveWellKnownType("java.lang.String"));
+    loadCharSequenceMethods();
     javaLangCloneable = ast.resolveWellKnownType("java.lang.Cloneable");
-
   }
 
   private void loadTargetMethods(ITypeBinding clazz) {
@@ -102,27 +111,24 @@ public class JavaToIOSMethodTranslator extends ErrorReportingASTVisitor {
     }
   }
 
-  private void loadCharSequenceMethods(ITypeBinding stringClass) {
-    for (ITypeBinding binding : stringClass.getInterfaces()) {
-      if (binding.getQualifiedName().equals("java.lang.CharSequence")) {
-        for (IMethodBinding method : binding.getDeclaredMethods()) {
-          if (method.getName().equals("length")) {
-            overridableMethods.add(0, method);
-            NameTable.rename(method, "sequenceLength");
-            mappedMethods.add(method);
-            addDescription(method);
-          } else if (method.getName().equals("toString")) {
-            overridableMethods.add(0, method);
-            NameTable.rename(method, "sequenceDescription");
-            mappedMethods.add(method);
-            addDescription(method);
-          } else if (method.getName().equals("subSequence")) {
-            overridableMethods.add(0, method);
-            NameTable.rename(method, "subSequenceFrom");
-            mappedMethods.add(method);
-            addDescription(method);
-          }
-        }
+  private void loadCharSequenceMethods() {
+    ITypeBinding charSequence = Types.resolveJavaType("java.lang.CharSequence");
+    for (IMethodBinding method : charSequence.getDeclaredMethods()) {
+      if (method.getName().equals("length")) {
+        overridableMethods.add(0, method);
+        NameTable.rename(method, "sequenceLength");
+        mappedMethods.add(method);
+        addDescription(method);
+      } else if (method.getName().equals("toString")) {
+        overridableMethods.add(0, method);
+        NameTable.rename(method, "sequenceDescription");
+        mappedMethods.add(method);
+        addDescription(method);
+      } else if (method.getName().equals("subSequence")) {
+        overridableMethods.add(0, method);
+        NameTable.rename(method, "subSequenceFrom");
+        mappedMethods.add(method);
+        addDescription(method);
       }
     }
   }
@@ -146,9 +152,9 @@ public class JavaToIOSMethodTranslator extends ErrorReportingASTVisitor {
           continue;
         }
         String key = md.getKey();
-        String value = methodMappings.get(key);
-        if (value != null) {
-          mapMethod(node, binding, value);
+        IOSMethod iosMethod = methodMappings.get(key);
+        if (iosMethod != null) {
+          mapMethod(node, binding, iosMethod);
         }
         return true;
       }
@@ -156,11 +162,10 @@ public class JavaToIOSMethodTranslator extends ErrorReportingASTVisitor {
     return true;
   }
 
-  private void mapMethod(MethodDeclaration node, IMethodBinding binding, String value) {
-    IOSMethod iosMethod = new IOSMethod(value, binding, ast);
-    node.setName(ast.newSimpleName(iosMethod.getName()));
-    Types.addBinding(node.getName(), iosMethod.resolveBinding());
-    Types.addMappedIOSMethod(binding, iosMethod);
+  private void mapMethod(MethodDeclaration node, IMethodBinding binding, IOSMethod iosMethod) {
+    IOSMethodBinding iosBinding = IOSMethodBinding.newMappedMethod(iosMethod, binding);
+    node.setName(ASTFactory.newSimpleName(ast, iosBinding));
+    Types.addBinding(node, iosBinding);
 
     // Map parameters, if any.
     List<SingleVariableDeclaration> parameters = ASTUtil.getParameters(node);
@@ -176,8 +181,6 @@ public class JavaToIOSMethodTranslator extends ErrorReportingASTVisitor {
         }
       }
     }
-
-    Types.addMappedIOSMethod(binding, iosMethod);
   }
 
   @Override
@@ -197,10 +200,9 @@ public class JavaToIOSMethodTranslator extends ErrorReportingASTVisitor {
     JavaMethod md = descriptions.get(binding);
     if (md != null) {
       String key = md.getKey();
-      String value = methodMappings.get(key);
-      if (value != null) {
-        IOSMethod iosMethod = new IOSMethod(value, binding, binding.getDeclaringClass(), ast);
-        IMethodBinding methodBinding = iosMethod.resolveBinding();
+      IOSMethod iosMethod = methodMappings.get(key);
+      if (iosMethod != null) {
+        IOSMethodBinding methodBinding = IOSMethodBinding.newMappedMethod(iosMethod, binding);
         MethodInvocation newInvocation = ASTFactory.newMethodInvocation(ast, methodBinding,
             ASTFactory.newSimpleName(ast, Types.resolveIOSType(iosMethod.getDeclaringClass())));
 
@@ -209,8 +211,6 @@ public class JavaToIOSMethodTranslator extends ErrorReportingASTVisitor {
             ASTUtil.getArguments(newInvocation));
 
         ASTUtil.setProperty(node, newInvocation);
-        Types.addMappedIOSMethod(binding, iosMethod);
-        Types.addMappedInvocation(node, iosMethod.resolveBinding());
       } else {
         J2ObjC.error(node, createMissingMethodMessage(binding));
       }
@@ -256,12 +256,13 @@ public class JavaToIOSMethodTranslator extends ErrorReportingASTVisitor {
     }
     if (md != null) {
       String key = md.getKey();
-      String value = methodMappings.get(key);
-      if (value == null) {
+      IOSMethod iosMethod = methodMappings.get(key);
+      if (iosMethod == null) {
         J2ObjC.error(node, createMissingMethodMessage(binding));
         return;
       }
-      IOSMethod iosMethod = new IOSMethod(value, binding, ast);
+      IOSMethodBinding newBinding = IOSMethodBinding.newMappedMethod(iosMethod, binding);
+      Types.addBinding(node, newBinding);
       NameTable.rename(binding, iosMethod.getName());
       if (node.getExpression() instanceof SimpleName) {
         SimpleName expr = (SimpleName) node.getExpression();
@@ -270,20 +271,16 @@ public class JavaToIOSMethodTranslator extends ErrorReportingASTVisitor {
           NameTable.rename(binding.getDeclaringClass(), iosMethod.getDeclaringClass());
         }
       }
-      Types.addMappedIOSMethod(binding, iosMethod);
-      Types.addMappedInvocation(node, iosMethod.resolveBinding());
     } else {
       // Not mapped, check if it overrides a mapped method.
       for (IMethodBinding methodBinding : mappedMethods) {
         if (binding.overrides(methodBinding)) {
           JavaMethod desc = getDescription(methodBinding);
           if (desc != null) {
-            String value = methodMappings.get(desc.getKey());
-            if (value != null) {
-              IOSMethod iosMethod = new IOSMethod(value, binding, ast);
-              NameTable.rename(methodBinding, iosMethod.getName());
-              Types.addMappedIOSMethod(binding, iosMethod);
-              Types.addMappedInvocation(node, iosMethod.resolveBinding());
+            IOSMethod iosMethod = methodMappings.get(desc.getKey());
+            if (iosMethod != null) {
+              IOSMethodBinding newBinding = IOSMethodBinding.newMappedMethod(iosMethod, binding);
+              Types.addBinding(node, newBinding);
               break;
             }
           }
@@ -319,16 +316,13 @@ public class JavaToIOSMethodTranslator extends ErrorReportingASTVisitor {
     JavaMethod md = getDescription(binding);
     if (md != null) {
       String key = md.getKey();
-      String value = methodMappings.get(key);
-      if (value == null) {
+      IOSMethod iosMethod = methodMappings.get(key);
+      if (iosMethod == null) {
         // Method has same name as a mapped method's, but it's ignored since
         // it doesn't override it.
         return super.visit(node);
       }
-      IOSMethod iosMethod = new IOSMethod(value, binding, ast);
-      Types.addMappedIOSMethod(binding, iosMethod);
-      IMethodBinding newBinding = iosMethod.resolveBinding();
-      Types.addMappedInvocation(node, newBinding);
+      IOSMethodBinding newBinding = IOSMethodBinding.newMappedMethod(iosMethod, binding);
       Types.addBinding(node, newBinding);
     } else {
       // Not mapped, check if it overrides a mapped method.
@@ -336,11 +330,9 @@ public class JavaToIOSMethodTranslator extends ErrorReportingASTVisitor {
         if (binding.overrides(methodBinding)) {
           JavaMethod desc = getDescription(methodBinding);
           if (desc != null) {
-            String value = methodMappings.get(desc.getKey());
-            if (value != null) {
-              IOSMethod iosMethod = new IOSMethod(value, binding, ast);
-              Types.addMappedIOSMethod(binding, iosMethod);
-              IMethodBinding newBinding = iosMethod.resolveBinding();
+            IOSMethod iosMethod = methodMappings.get(desc.getKey());
+            if (iosMethod != null) {
+              IOSMethodBinding newBinding = IOSMethodBinding.newMappedMethod(iosMethod, binding);
               Types.addBinding(node, newBinding);
             }
           }
@@ -418,9 +410,9 @@ public class JavaToIOSMethodTranslator extends ErrorReportingASTVisitor {
   private void addCopyWithZoneMethod(TypeDeclaration node) {
     // Create copyWithZone: method.
     ITypeBinding type = Types.getTypeBinding(node).getTypeDeclaration();
-    GeneratedMethodBinding binding = GeneratedMethodBinding.newMethod(
-        "copyWithZone", 0, Types.resolveIOSType("id"), type);
-    IOSMethod iosMethod = new IOSMethod("id copyWithZone:(NSZone *)zone", binding, ast);
+    IOSMethod iosMethod = IOSMethod.create("id copyWithZone:(NSZone *)zone");
+    IOSMethodBinding binding =
+        IOSMethodBinding.newMethod(iosMethod, Types.resolveIOSType("id"), type);
     MethodDeclaration cloneMethod = ASTFactory.newMethodDeclaration(ast, binding);
 
     // Add NSZone *zone parameter.
@@ -429,7 +421,6 @@ public class JavaToIOSMethodTranslator extends ErrorReportingASTVisitor {
         false, true, binding.getDeclaringClass(), binding);
     binding.addParameter(zoneBinding);
     ASTUtil.getParameters(cloneMethod).add(makeZoneParameter(zoneBinding));
-    Types.addMappedIOSMethod(binding, iosMethod);
 
     Block block = ast.newBlock();
     cloneMethod.setBody(block);

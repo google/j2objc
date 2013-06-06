@@ -714,6 +714,7 @@ public class J2ObjC {
 
   private static void initPlugins(String[] pluginPaths, String pluginOptionString)
       throws IOException {
+    @SuppressWarnings("resource")
     JarFileLoader classLoader = new JarFileLoader();
     for (String path : pluginPaths) {
       if (path.endsWith(".jar")) {

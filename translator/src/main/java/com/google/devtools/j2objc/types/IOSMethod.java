@@ -16,11 +16,8 @@
 
 package com.google.devtools.j2objc.types;
 
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
-
-import org.eclipse.jdt.core.dom.AST;
-import org.eclipse.jdt.core.dom.IMethodBinding;
-import org.eclipse.jdt.core.dom.ITypeBinding;
 
 import java.util.List;
 
@@ -35,44 +32,42 @@ import java.util.List;
 public class IOSMethod {
   private final String name;
   private final String declaringClass;
-  private final IOSMethodBinding binding;
   private final List<IOSParameter> parameters;
   private boolean varArgs = false;
 
-  public IOSMethod(String s, IMethodBinding binding, AST ast) {
-    this(s, binding, binding.getReturnType(), ast);
+  private IOSMethod(
+      String name, String declaringClass, List<IOSParameter> parameters, boolean varArgs) {
+    this.name = name;
+    this.declaringClass = declaringClass;
+    this.parameters = parameters;
+    this.varArgs = varArgs;
   }
 
-  public IOSMethod(String s, IMethodBinding binding, ITypeBinding returnType, AST ast) {
+  public static IOSMethod create(String s) {
     if (s.endsWith(";")) {
       s = s.substring(0, s.length() - 1);
     }
     int i = s.indexOf(' ');
     String className = s.substring(0, i);
-    ITypeBinding clazz = Types.resolveIOSType(className);
-    if (clazz == null) {
-      clazz = new IOSTypeBinding(className, false);
-    }
-    declaringClass = clazz.getName();
     s = s.substring(i + 1);
 
-    parameters = Lists.newArrayList();
+    ImmutableList.Builder<IOSParameter> parameters = ImmutableList.builder();
+    String name = s;
+    boolean varArgs = false;
     i = s.indexOf(':');
     if (i > 0) {  // if there are parameters
       name = s.substring(0, i);
       String[] argDefs = splitParameterString(s);
       for (i = 0; i < argDefs.length; i++) {
-        IOSParameter param = new IOSParameter(argDefs[i], i, ast);
+        IOSParameter param = new IOSParameter(argDefs[i], i);
         parameters.add(param);
         if (param.isVarArgs()) {
           varArgs = true;
           break;
         }
       }
-    } else {
-      name = s;
     }
-    this.binding = new IOSMethodBinding(name, binding, clazz, returnType, varArgs);
+    return new IOSMethod(name, className, parameters.build(), varArgs);
   }
 
   public String getName() {
@@ -87,15 +82,11 @@ public class IOSMethod {
     return parameters;
   }
 
-  public IOSMethodBinding resolveBinding() {
-    return binding;
-  }
-
   public boolean isVarArgs() {
     return varArgs;
   }
 
-  private String[] splitParameterString(String s) {
+  private static String[] splitParameterString(String s) {
     List<String> result = Lists.newArrayList();
     String[] parts = s.split(" ");
     for (int i = 0; i < parts.length; i++) {
