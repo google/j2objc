@@ -82,4 +82,5 @@ test: annotations_dist java_deps_dist
 
 test_all: test
 	@cd jre_emul && $(MAKE) -f tests.mk
+	@cd jre_emul && $(MAKE) find_cycles
 	@cd cycle_finder && $(MAKE) test
