@@ -67,6 +67,7 @@ JAVA_SOURCES = \
 	translate/OuterReferenceFixer.java \
 	translate/OuterReferenceResolver.java \
 	translate/Rewriter.java \
+	translate/TypeSorter.java \
 	types/BindingMapBuilder.java \
 	types/BindingMapVerifier.java \
 	types/GeneratedMethodBinding.java \
@@ -144,5 +145,5 @@ test: deps $(J2OBJC_JAR) compile-tests
 compile-tests:
 	@rm -rf $(TEST_DIR)
 	@mkdir -p $(TEST_DIR)
-	@javac -sourcepath src/test/java -classpath $(TEST_CLASSPATH) -d $(TEST_DIR) \
-		`find src/test/java -name '*.java'`
+	@javac -Xlint:unchecked -sourcepath src/test/java -classpath $(TEST_CLASSPATH) \
+	    -d $(TEST_DIR) `find src/test/java -name '*.java'`

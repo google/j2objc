@@ -16,6 +16,7 @@
 
 package com.google.devtools.j2objc.translate;
 
+import com.google.common.collect.Maps;
 import com.google.devtools.j2objc.GenerationTest;
 import com.google.devtools.j2objc.Options;
 import com.google.devtools.j2objc.Options.MemoryManagementOption;
@@ -23,32 +24,34 @@ import com.google.devtools.j2objc.gen.SourceBuilder;
 import com.google.devtools.j2objc.gen.SourcePosition;
 import com.google.devtools.j2objc.gen.StatementGenerator;
 import com.google.devtools.j2objc.types.Types;
+import com.google.devtools.j2objc.util.ASTUtil;
 import com.google.devtools.j2objc.util.NameTable;
 
 import org.eclipse.jdt.core.dom.ASTVisitor;
+import org.eclipse.jdt.core.dom.AbstractTypeDeclaration;
 import org.eclipse.jdt.core.dom.Assignment;
 import org.eclipse.jdt.core.dom.BodyDeclaration;
 import org.eclipse.jdt.core.dom.CompilationUnit;
 import org.eclipse.jdt.core.dom.ConstructorInvocation;
 import org.eclipse.jdt.core.dom.ExpressionStatement;
 import org.eclipse.jdt.core.dom.FieldDeclaration;
+import org.eclipse.jdt.core.dom.IVariableBinding;
 import org.eclipse.jdt.core.dom.MethodDeclaration;
 import org.eclipse.jdt.core.dom.MethodInvocation;
 import org.eclipse.jdt.core.dom.ReturnStatement;
 import org.eclipse.jdt.core.dom.SingleVariableDeclaration;
-import org.eclipse.jdt.core.dom.TypeDeclaration;
 import org.eclipse.jdt.core.dom.VariableDeclarationStatement;
 
 import java.io.IOException;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Unit tests for {@link InnerClassExtractor}.
  *
  * @author Tom Ball
  */
-@SuppressWarnings("unchecked")  // JDT lists are raw, but still safely typed.
 public class InnerClassExtractorTest extends GenerationTest {
   // TODO(user): update bug id in comments to public issue numbers when
   // issue tracking is sync'd.
@@ -60,10 +63,10 @@ public class InnerClassExtractorTest extends GenerationTest {
     Options.setMemoryManagementOption(MemoryManagementOption.REFERENCE_COUNTING);
   }
 
-  protected List<TypeDeclaration> translateClassBody(String testSource) {
+  protected List<AbstractTypeDeclaration> translateClassBody(String testSource) {
     String source = "public class Test { " + testSource + " }";
     CompilationUnit unit = translateType("Test", source);
-    return unit.types();
+    return ASTUtil.getTypes(unit);
   }
 
   public void testSimpleInnerClass() throws IOException {
@@ -154,14 +157,14 @@ public class InnerClassExtractorTest extends GenerationTest {
    * Verify that a static inner class is extracted.
    */
   public void testStaticInnerClass() {
-    List<TypeDeclaration> types = translateClassBody(
+    List<AbstractTypeDeclaration> types = translateClassBody(
         "static class Foo { int i; Foo() { this(0); } Foo(int i) { this.i = i; } }");
     assertEquals(2, types.size());
-    List<BodyDeclaration> classMembers = types.get(0).bodyDeclarations();
+    List<BodyDeclaration> classMembers = ASTUtil.getBodyDeclarations(types.get(0));
     assertTrue(classMembers.size() == 2);
-    TypeDeclaration innerClass = types.get(1);
+    AbstractTypeDeclaration innerClass = types.get(1);
     assertEquals(4, innerClass.bodyDeclarations().size());
-    List<?> members = innerClass.bodyDeclarations();
+    List<BodyDeclaration> members = ASTUtil.getBodyDeclarations(innerClass);
 
     FieldDeclaration field = (FieldDeclaration) members.get(0);
     assertEquals("int", field.getType().toString());
@@ -186,7 +189,7 @@ public class InnerClassExtractorTest extends GenerationTest {
    * Verify that an inner class is moved to the compilation unit's types list.
    */
   public void testInnerClassExtracted() {
-    List<TypeDeclaration> types = translateClassBody("class Foo { }");
+    List<AbstractTypeDeclaration> types = translateClassBody("class Foo { }");
     assertEquals(2, types.size());
     assertEquals("Test", types.get(0).getName().getIdentifier());
     assertEquals("Foo", types.get(1).getName().getIdentifier());
@@ -197,7 +200,7 @@ public class InnerClassExtractorTest extends GenerationTest {
    * an inner class aren't disturbed.
    */
   public void testStaticMethodInvokingStaticMethodWithInnerClass() {
-    List<TypeDeclaration> types = translateClassBody(
+    List<AbstractTypeDeclaration> types = translateClassBody(
         "public static int test(Object object) { return 0; }" +
         "public static int test(Object object, Object foo) {" +
         "  if (foo == null) { return Test.test(object); } return 1; } " +
@@ -217,7 +220,7 @@ public class InnerClassExtractorTest extends GenerationTest {
   }
 
   public void testInnerClassInvokingExplicitOuterMethod() {
-    List<TypeDeclaration> types = translateClassBody(
+    List<AbstractTypeDeclaration> types = translateClassBody(
       "public int size() { return 0; } " +
       "class Inner { int size() { return Test.this.size(); }}");
     assertEquals(2, types.size());
@@ -246,7 +249,7 @@ public class InnerClassExtractorTest extends GenerationTest {
   }
 
   public void testInnerClassInvokingOuterMethod() {
-    List<TypeDeclaration> types = translateClassBody(
+    List<AbstractTypeDeclaration> types = translateClassBody(
       "public int size() { return 0; } " +
       "class Inner { int getCount() { return size(); }}");
     assertEquals(2, types.size());
@@ -263,7 +266,7 @@ public class InnerClassExtractorTest extends GenerationTest {
   }
 
   public void testInnerSubclassInvokingOuterMethod() {
-    List<TypeDeclaration> types = translateClassBody(
+    List<AbstractTypeDeclaration> types = translateClassBody(
       "public int size() { return 0; } public void add(int n) {} class Inner {} " +
       "class Innermost { void test() { Test.this.add(size()); }}");
     assertEquals(3, types.size());
@@ -286,7 +289,7 @@ public class InnerClassExtractorTest extends GenerationTest {
   }
 
   public void testInnerClassDefaultInitialization() {
-    List<TypeDeclaration> types = translateClassBody(
+    List<AbstractTypeDeclaration> types = translateClassBody(
       "Inner inner = new Inner(true); public int size() { return 0; }" +
       "class Inner { Inner(boolean b) {} int size() { return Test.this.size(); }}");
     assertEquals(2, types.size());
@@ -316,7 +319,7 @@ public class InnerClassExtractorTest extends GenerationTest {
   }
 
   public void testOuterClassAccessOuterVars() {
-    List<TypeDeclaration> types = translateClassBody(
+    List<AbstractTypeDeclaration> types = translateClassBody(
       "int elementCount;" +
       "public Test() { " +
       "  elementCount = 0; }" +
@@ -368,7 +371,7 @@ public class InnerClassExtractorTest extends GenerationTest {
         "      new Foo() { public void doSomething() { " +
         "      Inner.this.x = 2; A.this.x = 3; }}; }}}";
     CompilationUnit unit = translateType("A", source);
-    List<TypeDeclaration> types = unit.types();
+    List<AbstractTypeDeclaration> types = ASTUtil.getTypes(unit);
     assertEquals(4, types.size());
 
     String translation = translateSourceFile(source, "A", "A.m");
@@ -396,7 +399,7 @@ public class InnerClassExtractorTest extends GenerationTest {
         "      new Foo() { public void doSomething() { " +
         "      Inner.this.x = 3; A.this.x = 4; }}; }}}";
     CompilationUnit unit = translateType("A", source);
-    List<TypeDeclaration> types = unit.types();
+    List<AbstractTypeDeclaration> types = ASTUtil.getTypes(unit);
     assertEquals(4, types.size());
 
     String translation = translateSourceFile(source, "A", "A.m");
@@ -528,33 +531,37 @@ public class InnerClassExtractorTest extends GenerationTest {
         "  public class BInner extends A.Inner { } } " +
         "public static void main(String[] args) { B b = new Test().new B(); }}";
     CompilationUnit unit = translateType("Test", source);
-    List<TypeDeclaration> types = unit.types();
+    List<AbstractTypeDeclaration> types = ASTUtil.getTypes(unit);
     assertEquals(5, types.size());
+    Map<String, AbstractTypeDeclaration> typesByName = Maps.newHashMap();
+    for (AbstractTypeDeclaration type : types) {
+      typesByName.put(NameTable.getFullName(type), type);
+    }
 
     // Verify that main method creates a new instanceof B associated with
     // a new instance of Test.
-    List<BodyDeclaration> classMembers = types.get(0).bodyDeclarations();
+    List<BodyDeclaration> classMembers = ASTUtil.getBodyDeclarations(typesByName.get("Test"));
     assertEquals(4, classMembers.size());
     MethodDeclaration method = (MethodDeclaration) classMembers.get(1);
     assertEquals("main", method.getName().getIdentifier());
     VariableDeclarationStatement field =
         (VariableDeclarationStatement) method.getBody().statements().get(0);
     assertEquals("Test_B", NameTable.getFullName(Types.getTypeBinding(field.getType())));
-    String result = StatementGenerator.generate(field, Collections.EMPTY_SET, false,
-        new SourcePosition(null, SourceBuilder.BEGINNING_OF_FILE, null)).trim();
+    String result = StatementGenerator.generate(field, Collections.<IVariableBinding>emptySet(),
+        false, new SourcePosition(null, SourceBuilder.BEGINNING_OF_FILE, null)).trim();
     assertEquals("Test_B *b = " +
         "[[[Test_B alloc] initWithTest:[[[Test alloc] init] autorelease]] autorelease];", result);
 
     // Verify that A has a Test field (this$0).
-    TypeDeclaration classA = types.get(1);
-    assertEquals("Test_A", NameTable.getFullName(classA));
-    classMembers = classA.bodyDeclarations();
+    AbstractTypeDeclaration classA = typesByName.get("Test_A");
+    assertNotNull(classA);
+    classMembers = ASTUtil.getBodyDeclarations(classA);
     assertEquals(4, classMembers.size());  // Test field, init, foo, dealloc.
 
     // Verify that B has a Test field (this$0).
-    TypeDeclaration classB = types.get(3);
-    assertEquals("Test_B", NameTable.getFullName(classB));
-    classMembers = classB.bodyDeclarations();
+    AbstractTypeDeclaration classB = typesByName.get("Test_B");
+    assertNotNull(classB);
+    classMembers = ASTUtil.getBodyDeclarations(classB);
     assertEquals(2, classMembers.size());  // init, dealloc.
 
     // Verify that B has a constructor that takes a Test instance.
@@ -583,33 +590,37 @@ public class InnerClassExtractorTest extends GenerationTest {
         "  public class Inner { Inner() { foo(); } } } " +
         "public static void main(String[] args) { B b = new Test().new B(); }}";
     CompilationUnit unit = translateType("Test", source);
-    List<TypeDeclaration> types = unit.types();
+    List<AbstractTypeDeclaration> types = ASTUtil.getTypes(unit);
     assertEquals(5, types.size());
+    Map<String, AbstractTypeDeclaration> typesByName = Maps.newHashMap();
+    for (AbstractTypeDeclaration type : types) {
+      typesByName.put(NameTable.getFullName(type), type);
+    }
 
     // Verify that main method creates a new instanceof B associated with
     // a new instance of Test.
-    List<BodyDeclaration> classMembers = types.get(0).bodyDeclarations();
+    List<BodyDeclaration> classMembers = ASTUtil.getBodyDeclarations(typesByName.get("Test"));
     assertEquals(4, classMembers.size());
     MethodDeclaration method = (MethodDeclaration) classMembers.get(1);
     assertEquals("main", method.getName().getIdentifier());
     VariableDeclarationStatement field =
         (VariableDeclarationStatement) method.getBody().statements().get(0);
     assertEquals("Test_B", NameTable.getFullName(Types.getTypeBinding(field.getType())));
-    String result = StatementGenerator.generate(field, Collections.EMPTY_SET, false,
-        new SourcePosition(null, SourceBuilder.BEGINNING_OF_FILE, null)).trim();
+    String result = StatementGenerator.generate(field, Collections.<IVariableBinding>emptySet(),
+        false, new SourcePosition(null, SourceBuilder.BEGINNING_OF_FILE, null)).trim();
     assertEquals("Test_B *b = " +
         "[[[Test_B alloc] initWithTest:[[[Test alloc] init] autorelease]] autorelease];", result);
 
     // Verify that A has a Test field (this$0).
-    TypeDeclaration classA = types.get(3);
-    assertEquals("Test_A", NameTable.getFullName(classA));
-    classMembers = classA.bodyDeclarations();
+    AbstractTypeDeclaration classA = typesByName.get("Test_A");
+    assertNotNull(classA);
+    classMembers = ASTUtil.getBodyDeclarations(classA);
     assertEquals(4, classMembers.size());  // Test field, init, foo, dealloc.
 
     // Verify that B has a Test field (this$0).
-    TypeDeclaration classB = types.get(1);
-    assertEquals("Test_B", NameTable.getFullName(classB));
-    classMembers = classB.bodyDeclarations();
+    AbstractTypeDeclaration classB = typesByName.get("Test_B");
+    assertNotNull(classB);
+    classMembers = ASTUtil.getBodyDeclarations(classB);
     assertEquals(2, classMembers.size());  // init, dealloc.
 
     // Verify that B has a constructor that takes a Test instance.

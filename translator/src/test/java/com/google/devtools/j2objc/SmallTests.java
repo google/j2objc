@@ -35,6 +35,7 @@ import com.google.devtools.j2objc.translate.InnerClassExtractorTest;
 import com.google.devtools.j2objc.translate.JavaToIOSMethodTranslatorTest;
 import com.google.devtools.j2objc.translate.OuterReferenceResolverTest;
 import com.google.devtools.j2objc.translate.RewriterTest;
+import com.google.devtools.j2objc.translate.TypeSorterTest;
 import com.google.devtools.j2objc.types.BindingMapBuilderTest;
 import com.google.devtools.j2objc.types.ImplementationImportCollectorTest;
 import com.google.devtools.j2objc.types.ModifiedTypeBindingTest;
@@ -85,6 +86,7 @@ public class SmallTests {
     RenamedTypeBindingTest.class,
     RewriterTest.class,
     StatementGeneratorTest.class,
+    TypeSorterTest.class,
     TypesTest.class,
     UnicodeUtilsTest.class
   };

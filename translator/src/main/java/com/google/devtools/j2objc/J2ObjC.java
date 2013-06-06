@@ -35,6 +35,7 @@ import com.google.devtools.j2objc.translate.JavaToIOSTypeConverter;
 import com.google.devtools.j2objc.translate.OuterReferenceFixer;
 import com.google.devtools.j2objc.translate.OuterReferenceResolver;
 import com.google.devtools.j2objc.translate.Rewriter;
+import com.google.devtools.j2objc.translate.TypeSorter;
 import com.google.devtools.j2objc.types.Types;
 import com.google.devtools.j2objc.util.ASTNodeException;
 import com.google.devtools.j2objc.util.DeadCodeMap;
@@ -369,6 +370,10 @@ public class J2ObjC {
       loadMappingFiles();
     }
     new JavaToIOSMethodTranslator(unit.getAST(), methodMappings).run(unit);
+
+    // Reorders the types so that superclasses are declared before classes that
+    // extend them.
+    TypeSorter.sortTypes(unit);
 
     // Add dealloc/finalize method(s), if necessary.  This is done
     // after inner class extraction, so that each class releases
