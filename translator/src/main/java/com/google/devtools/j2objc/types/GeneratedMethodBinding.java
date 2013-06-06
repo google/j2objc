@@ -67,10 +67,7 @@ public class GeneratedMethodBinding implements IMethodBinding {
   public GeneratedMethodBinding(IMethodBinding m) {
     this(null, m.getName(), m.getModifiers(), m.getReturnType(), m.getDeclaringClass(),
         m.isConstructor(), m.isVarargs(), m.isSynthetic());
-    for (ITypeBinding paramType : m.getParameterTypes()) {
-      parameters.add(
-          new GeneratedVariableBinding(paramType, false, true, m.getDeclaringClass(), m));
-    }
+    addParameters(m);
   }
 
   public static GeneratedMethodBinding newMethod(
@@ -194,6 +191,12 @@ public class GeneratedMethodBinding implements IMethodBinding {
 
   public void addParameter(int index, IBinding param) {
     parameters.add(index, param);
+  }
+
+  public void addParameters(IMethodBinding method) {
+    for (ITypeBinding paramType : method.getParameterTypes()) {
+      parameters.add(new GeneratedVariableBinding(paramType, false, true, declaringClass, this));
+    }
   }
 
   @Override
