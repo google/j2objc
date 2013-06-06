@@ -57,6 +57,7 @@
     unsigned nFrames = backtrace(callStack, MAX_STACK_FRAMES);
     stackTrace = RETAIN([JavaLangThrowable stackTrace:callStack
                                                 count:nFrames]);
+    suppressedExceptions = nil;
   }
   return self;
 }
@@ -76,6 +77,14 @@
 
 - (id)initWithJavaLangThrowable:(JavaLangThrowable *)causeArg {
   return [self initJavaLangThrowableWithNSString:causeArg ? [causeArg description] : nil
+                           withJavaLangThrowable:causeArg];
+}
+
+- (id)initWithNSString:(NSString *)message
+ withJavaLangThrowable:(JavaLangThrowable *)causeArg
+              withBOOL:(BOOL)enableSuppression
+              withBOOL:(BOOL)writeableStackTrace {
+  return [self initJavaLangThrowableWithNSString:message
                            withJavaLangThrowable:causeArg];
 }
 
@@ -164,13 +173,48 @@
   }
 }
 
-- (void)setStackTraceWithJavaLangStackTraceElementArray:(IOSObjectArray *)stackTraceArg {
+- (void)setStackTraceWithJavaLangStackTraceElementArray:
+    (IOSObjectArray *)stackTraceArg {
+  NIL_CHK(stackTraceArg);
+  int count = [stackTraceArg count];
+  for (int i = 0; i < count; i++) {
+    NIL_CHK([stackTraceArg objectAtIndex:i]);
+  }
 #if __has_feature(objc_arc)
   stackTrace = stackTraceArg;
 #else
   [stackTrace autorelease];
   stackTrace = [stackTraceArg retain];
 #endif
+}
+
+- (void)addSuppressedWithJavaLangThrowable:(JavaLangThrowable *)exception {
+  NIL_CHK(exception);
+  if (exception == self) {
+    @throw AUTORELEASE([[JavaLangIllegalArgumentException alloc] init]);
+  }
+  NSUInteger existingCount =
+      suppressedExceptions ? [suppressedExceptions count] : 0;
+  IOSObjectArray *newArray = [[IOSObjectArray alloc]
+      initWithLength:existingCount + 1
+                type:[IOSClass classWithClass:[JavaLangThrowable class]]];
+  for (NSUInteger i = 0; i < existingCount; i++) {
+    [newArray replaceObjectAtIndex:i
+                        withObject:[suppressedExceptions objectAtIndex:i]];
+  }
+  [newArray replaceObjectAtIndex:existingCount
+                      withObject:exception];
+  if (suppressedExceptions) {
+    AUTORELEASE(suppressedExceptions);
+  }
+  suppressedExceptions = newArray;
+}
+
+- (IOSObjectArray *)getSuppressed {
+  return suppressedExceptions
+      ? [IOSObjectArray arrayWithArray:suppressedExceptions]
+      : [IOSObjectArray arrayWithLength:0
+          type:[IOSClass classWithClass:[JavaLangThrowable class]]];
 }
 
 - (NSString *)description {

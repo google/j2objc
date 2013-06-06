@@ -47,7 +47,7 @@ CONCURRENT_TEST_ROOT = $(APACHE_HARMONY_BASE)/concurrent/src/test/java
 
 ANDROID_BASE = android/libcore
 ANDROID_JRE_ROOT = $(ANDROID_BASE)/luni/src/main/java
-ANDROID_JRE_TEST_ROOT = $(ANDROID_BASE)/luni/src/test/java/tests/api
+ANDROID_JRE_TEST_ROOT = $(ANDROID_BASE)/luni/src/test/java
 ANDROID_XML_ROOT = $(ANDROID_BASE)/xml/src/main/java
 
 MISC_TEST_ROOT = Tests
