@@ -43,6 +43,7 @@ import org.eclipse.jdt.core.dom.SuperConstructorInvocation;
 import org.eclipse.jdt.core.dom.SuperMethodInvocation;
 import org.eclipse.jdt.core.dom.SwitchStatement;
 import org.eclipse.jdt.core.dom.SynchronizedStatement;
+import org.eclipse.jdt.core.dom.TryStatement;
 import org.eclipse.jdt.core.dom.Type;
 import org.eclipse.jdt.core.dom.TypeDeclaration;
 import org.eclipse.jdt.core.dom.TypeParameter;
@@ -217,6 +218,11 @@ public final class ASTUtil {
   @SuppressWarnings("unchecked")
   public static List<Type> getTypes(UnionType unionType) {
     return unionType.types();
+  }
+
+  @SuppressWarnings("unchecked")
+  public static List<VariableDeclarationExpression> getResources(TryStatement tryStatement) {
+    return tryStatement.resources();
   }
 
   @SuppressWarnings("unchecked")
