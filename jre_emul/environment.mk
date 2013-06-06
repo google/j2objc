@@ -26,6 +26,8 @@
 #                           (-Wflag-name) or turn off warnings that are set
 #                           (-Wno-flag-name).
 # CLANG_ENABLE_OBJC_ARC=YES Translate and build with ARC
+# MAX_STACK_FRAMES          The maximum number of exception stack trace frames
+# NO_STACK_FRAME_SYMBOLS    If set, exception stack traces only have addresses
 #
 # Author: Tom Ball
 
@@ -113,6 +115,14 @@ OBJCFLAGS := $(WARNINGS) -DU_DISABLE_RENAMING=1 \
   -fobjc-abi-version=2 -fobjc-legacy-dispatch $(DEBUGFLAGS) \
   -I/System/Library/Frameworks/ExceptionHandling.framework/Headers \
   -I$(ANDROID_INCLUDE) -I$(ICU4C_I18N_INCLUDE) -I$(ICU4C_COMMON_INCLUDE)
+
+ifdef MAX_STACK_FRAMES
+OBJCFLAGS := -DMAX_STACK_FRAMES=$(MAX_STACK_FRAMES)
+endif
+
+ifdef NO_STACK_FRAME_SYMBOLS
+OBJCFLAGS := -DNO_STACK_FRAME_SYMBOLS=$(NO_STACK_FRAME_SYMBOLS)
+endif
 
 # Settings for classes that need to always compile without ARC.
 OBJCFLAGS_NO_ARC := $(OBJCFLAGS)
