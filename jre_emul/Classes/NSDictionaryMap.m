@@ -22,10 +22,8 @@
 
 - (id)initWithDictionary:(NSMutableDictionary *)dictionary key:(id)key {
   if ((self = [super init])) {
-#if ! __has_feature(objc_arc)
-    dictionary_ = [dictionary retain];
-    key_ = [key retain];
-#endif
+    dictionary_ = RETAIN(dictionary);
+    key_ = RETAIN(key);
   }
   return self;
 }
@@ -47,7 +45,7 @@
 }
 
 - (id)setValueWithId:(id)object {
-  id current = AUTORELEASE([[dictionary_ objectForKey:key_] retain]);
+  id current = RETAIN_AND_AUTORELEASE([dictionary_ objectForKey:key_]);
   [dictionary_ setObject:object forKey:key_];
   return current;
 }
@@ -94,8 +92,8 @@
   id<JavaUtilSet> set = AUTORELEASE([[JavaUtilLinkedHashSet alloc] init]);
   for (id key in dictionary_) {
     NSDictionaryMap_Entry *entry =
-        [[[NSDictionaryMap_Entry alloc] initWithDictionary:dictionary_ key:key]
-            autorelease];
+        AUTORELEASE([[NSDictionaryMap_Entry alloc]
+                     initWithDictionary:dictionary_ key:key]);
     [set addWithId:entry];
   }
 
@@ -133,7 +131,7 @@
 }
 
 - (id<JavaUtilSet>)keySet {
-  id<JavaUtilSet> set = [[[JavaUtilLinkedHashSet alloc] init] autorelease];
+  id<JavaUtilSet> set = AUTORELEASE([[JavaUtilLinkedHashSet alloc] init]);
   for (id key in dictionary_) {
     [set addWithId:key];
   }
@@ -143,7 +141,7 @@
 
 - (id)putWithId:(id)key
          withId:(id)value {
-  id current = AUTORELEASE([[dictionary_ objectForKey:NIL_CHK(key)] retain]);
+  id current = RETAIN_AND_AUTORELEASE([dictionary_ objectForKey:NIL_CHK(key)]);
   [dictionary_ setObject:value forKey:key];
   return current;
 }
@@ -157,7 +155,7 @@
 }
 
 - (id)removeWithId:(id)key {
-  id current = AUTORELEASE([[dictionary_ objectForKey:NIL_CHK(key)] retain]);
+  id current = RETAIN_AND_AUTORELEASE([dictionary_ objectForKey:NIL_CHK(key)]);
   [dictionary_ removeObjectForKey:key];
   return current;
 }
