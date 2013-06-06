@@ -653,6 +653,12 @@
 		06DDF48916E8401600A08BE0 /* TimeZones.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = TimeZones.h; path = build_result/Classes/libcore/icu/TimeZones.h; sourceTree = "<group>"; };
 		06DDF48A16E8401600A08BE0 /* TimeZones.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = TimeZones.m; path = build_result/Classes/libcore/icu/TimeZones.m; sourceTree = "<group>"; };
 		06DDF48F16E8404B00A08BE0 /* TimeZonesSupport.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TimeZonesSupport.h; sourceTree = "<group>"; };
+		2CBD9CBA174A8BD7008A0086 /* NSDictionaryMap.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = NSDictionaryMap.h; sourceTree = "<group>"; };
+		2CBD9CBB174A8BD7008A0086 /* NSDictionaryMap.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = NSDictionaryMap.m; sourceTree = "<group>"; };
+		2CBD9CBC174ABC0D008A0086 /* NSDataInputStream.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = NSDataInputStream.h; sourceTree = "<group>"; };
+		2CBD9CBD174ABC0D008A0086 /* NSDataInputStream.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = NSDataInputStream.m; sourceTree = "<group>"; };
+		2CBD9CBE174ABCF8008A0086 /* NSDataOutputStream.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = NSDataOutputStream.h; sourceTree = "<group>"; };
+		2CBD9CBF174ABCF8008A0086 /* NSDataOutputStream.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = NSDataOutputStream.m; sourceTree = "<group>"; };
 		A34A99EB1630A9DA006DEC32 /* Tests-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = "Tests-Info.plist"; path = "Tests/Tests-Info.plist"; sourceTree = SOURCE_ROOT; };
 		A34A99EC1630A9DA006DEC32 /* Tests-Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "Tests-Prefix.pch"; path = "Tests/Tests-Prefix.pch"; sourceTree = SOURCE_ROOT; };
 		A34A99F01630A9E7006DEC32 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = Tests/en.lproj/InfoPlist.strings; sourceTree = SOURCE_ROOT; };
@@ -718,6 +724,12 @@
 				067228EE158FB002005318BD /* Comparable.h */,
 				067228EF158FB002005318BD /* Constructor.h */,
 				06721BA01559DE3800645E1B /* Constructor.m */,
+				2CBD9CBA174A8BD7008A0086 /* NSDictionaryMap.h */,
+				2CBD9CBB174A8BD7008A0086 /* NSDictionaryMap.m */,
+				2CBD9CBC174ABC0D008A0086 /* NSDataInputStream.h */,
+				2CBD9CBD174ABC0D008A0086 /* NSDataInputStream.m */,
+				2CBD9CBE174ABCF8008A0086 /* NSDataOutputStream.h */,
+				2CBD9CBF174ABCF8008A0086 /* NSDataOutputStream.m */,
 				067228F0158FB002005318BD /* ExecutableMember.h */,
 				06721BA11559DE3800645E1B /* ExecutableMember.m */,
 				067228E4158FAEBC005318BD /* Field.h */,

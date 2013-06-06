@@ -42,6 +42,9 @@ IOS_OBJS = \
 	JreEmulation.o \
 	JreMemDebug.o \
 	JreMemDebugStrongReference.o \
+	NSDataInputStream.o \
+	NSDataOutputStream.o \
+	NSDictionaryMap.o \
 	NSObject+JavaObject.o \
 	NSString+JavaString.o \
 	TimeZonesSupport.o \
