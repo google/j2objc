@@ -67,6 +67,7 @@ import org.eclipse.jdt.core.dom.ThisExpression;
 import org.eclipse.jdt.core.dom.TypeDeclaration;
 import org.eclipse.jdt.core.dom.TypeLiteral;
 import org.eclipse.jdt.core.dom.TypeParameter;
+import org.eclipse.jdt.core.dom.UnionType;
 import org.eclipse.jdt.core.dom.VariableDeclarationExpression;
 import org.eclipse.jdt.core.dom.VariableDeclarationFragment;
 
@@ -371,6 +372,11 @@ class BindingMapBuilder extends ErrorReportingASTVisitor {
 
   @Override
   public boolean visit(TypeParameter node) {
+    put(node, node.resolveBinding());
+    return true;
+  }
+
+  public boolean visit(UnionType node) {
     put(node, node.resolveBinding());
     return true;
   }

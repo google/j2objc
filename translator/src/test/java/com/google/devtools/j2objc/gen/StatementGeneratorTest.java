@@ -1447,4 +1447,20 @@ public class StatementGeneratorTest extends GenerationTest {
         "class Test<T extends String & Runnable & Cloneable> { T t; }", "Test", "Test.h");
     assertTranslation(translation, "NSString<JavaLangRunnable, NSCopying> *t");
   }
+
+  public void testMultiCatch() throws IOException {
+    String translation = translateSourceFile(
+        "import java.util.*; public class Test { " +
+        "  static class FirstException extends Exception {} " +
+        "  static class SecondException extends Exception {} " +
+        "  public void rethrowException(String exceptionName) " +
+        "      throws FirstException, SecondException { " +
+        "    try { " +
+        "      if (exceptionName.equals(\"First\")) { throw new FirstException(); } " +
+        "      else { throw new SecondException(); }" +
+        "    } catch (FirstException|SecondException e) { throw e; }}}",
+        "Test", "Test.m");
+    assertTranslation(translation, "@catch (Test_FirstException e) {\n    @throw e;\n  }");
+    assertTranslation(translation, "@catch (Test_SecondException e) {\n    @throw e;\n  }");
+  }
 }
