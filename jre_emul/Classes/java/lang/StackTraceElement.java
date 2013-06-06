@@ -16,6 +16,10 @@
 
 package java.lang;
 
+/*-[
+#import <execinfo.h>
+]-*/
+
 /**
  * Simple iOS version of java.lang.StackTraceElement.
  *
@@ -23,16 +27,18 @@ package java.lang;
  */
 public class StackTraceElement {
 
-  private final String className;
-  private final String methodName;
-  private final String fileName;
+  private String className;
+  private String methodName;
+  private String fileName;
   private final int lineNumber;
+  private long address;
 
   public String getClassName() {
     return className;
   }
 
   public String getMethodName() {
+    initializeFromAddress();
     return methodName;
   }
 
@@ -51,10 +57,49 @@ public class StackTraceElement {
     this.lineNumber = lineNumber;
   }
 
-  public String toString() {
-    return (className != null ? className + "." : "")
-        + (methodName != null ? methodName : "")
-        + "(" + (fileName != null ? fileName : "")
-        + ":" + lineNumber + ")";
+  StackTraceElement(long address) {
+    this(null, null, null, -1);
+    this.address = address;
   }
+
+  public String toString() {
+    initializeFromAddress();
+    StringBuilder sb = new StringBuilder();
+    if (className != null) {
+      sb.append(className);
+      sb.append('.');
+    }
+    if (methodName != null) {
+      sb.append(methodName);
+    }
+    if (fileName != null || lineNumber != -1) {
+      sb.append('(');
+      if (fileName != null) {
+        sb.append(fileName);
+      }
+      if (lineNumber != -1) {
+        sb.append(':');
+        sb.append(lineNumber);
+      }
+      sb.append(')');
+    }
+    return sb.toString();
+  }
+
+  /**
+   * Implements lazy loading of symbol information from application.
+   */
+  private native void initializeFromAddress() /*-[
+    if (address_ == 0L || methodName_) {
+      return;
+    }
+    void *shortStack[1];
+    shortStack[0] = (void *)address_;
+    char **stackSymbol = backtrace_symbols(shortStack, 1);
+    char *start = strstr(*stackSymbol, "0x");  // Skip text before address.
+    methodName_ =
+        RETAIN([NSString stringWithCString:start
+                                  encoding:[NSString defaultCStringEncoding]]);
+    free(stackSymbol);
+  ]-*/;
 }
