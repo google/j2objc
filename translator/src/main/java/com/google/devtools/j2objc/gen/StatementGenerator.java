@@ -957,8 +957,6 @@ public class StatementGenerator extends ErrorReportingASTVisitor {
   @Override
   public boolean visit(ConditionalExpression node) {
     boolean castNeeded = false;
-    boolean castPrinted = false;
-    ITypeBinding nodeType = Types.getTypeBinding(node);
     ITypeBinding thenType = Types.getTypeBinding(node.getThenExpression());
     ITypeBinding elseType = Types.getTypeBinding(node.getElseExpression());
 
@@ -966,28 +964,29 @@ public class StatementGenerator extends ErrorReportingASTVisitor {
         !(node.getThenExpression() instanceof NullLiteral) &&
         !(node.getElseExpression() instanceof NullLiteral)) {
       // gcc fails to compile a conditional expression where the two clauses of
-      // the expression have differnt type. So cast the expressions to the type
-      // of the node, which is guaranteed to be a valid cast.
+      // the expression have different type. So cast any interface type down to
+      // "id" to make the compiler happy. Concrete object types all have a
+      // common ancestor of NSObject, so they don't need a cast.
       castNeeded = true;
     }
 
     node.getExpression().accept(this);
 
     buffer.append(" ? ");
-    if (castNeeded) {
-      castPrinted = printCast(nodeType);
+    if (castNeeded && thenType.isInterface()) {
+      buffer.append("((id) ");
     }
     node.getThenExpression().accept(this);
-    if (castPrinted) {
+    if (castNeeded && thenType.isInterface()) {
       buffer.append(')');
     }
 
     buffer.append(" : ");
-    if (castNeeded) {
-      castPrinted = printCast(nodeType);
+    if (castNeeded && elseType.isInterface()) {
+      buffer.append("((id) ");
     }
     node.getElseExpression().accept(this);
-    if (castPrinted) {
+    if (castNeeded && elseType.isInterface()) {
       buffer.append(')');
     }
 
