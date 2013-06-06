@@ -47,15 +47,19 @@
 # endif
 
 # if __has_feature(objc_arc)
-#  define AUTORELEASE(x) x
 #  define ARCBRIDGE __bridge
 #  define ARCBRIDGE_TRANSFER __bridge_transfer
 #  define ARC_CONSUME_PARAMETER __attribute((ns_consumed))
+#  define AUTORELEASE(x) x
+#  define RETAIN(x) x
+#  define RETAIN_AND_AUTORELEASE(x) x
 # else
-#  define AUTORELEASE(x) [x autorelease]
 #  define ARCBRIDGE
 #  define ARCBRIDGE_TRANSFER
 #  define ARC_CONSUME_PARAMETER
+#  define AUTORELEASE(x) [x autorelease]
+#  define RETAIN(x) [x retain]
+#  define RETAIN_AND_AUTORELEASE(x) [[x retain] autorelease]
 # endif
 
 #define J2OBJC_COMMA() ,
