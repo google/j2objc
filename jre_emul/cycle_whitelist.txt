@@ -1,0 +1,14 @@
+TYPE java.util.logging.LogManager  # Long lived.
+
+# Breaks several false cycles.
+FIELD java.util.HashSet.backingMap
+FIELD java.util.TreeSet.backingMap
+
+# These types are adapters of each other. If the cycle was created then a stack
+# overflow would be a larger problem then the memory leak.
+FIELD org.xml.sax.helpers.ParserAdapter.contentHandler org.xml.sax.helpers.XMLReaderAdapter
+FIELD org.xml.sax.helpers.ParserAdapter.parser org.xml.sax.helpers.XMLReaderAdapter
+FIELD org.xml.sax.helpers.XMLReaderAdapter.AttributesAdapter.attributes org.xml.sax.helpers.ParserAdapter.AttributeListAdapter
+
+# TODO(kstanger): Resolve these cycles.
+NAMESPACE org.xml

@@ -647,3 +647,8 @@ $(OBJC_SOURCES_MANIFEST): $(ALL_JAVA_SOURCES) | $(BUILD_DIR)
 
 objc_sources_manifest: $(OBJC_SOURCES_MANIFEST)
 
+find_cycles: make_cycle_finder $(JAVA_SOURCES_MANIFEST)
+	$(DIST_DIR)/cycle_finder -w cycle_whitelist.txt `cat $(JAVA_SOURCES_MANIFEST)`
+
+make_cycle_finder:
+	@cd .. && $(MAKE) cycle_finder_dist

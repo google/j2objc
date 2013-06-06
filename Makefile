@@ -77,10 +77,10 @@ clean:
 	@cd junit && $(MAKE) clean
 	@cd cycle_finder && $(MAKE) clean
 
-test: annotations_dist java_deps_dist
+test_translator: annotations_dist java_deps_dist
 	@cd translator && $(MAKE) test
 
-test_all: test
+test: test_translator
 	@cd jre_emul && $(MAKE) -f tests.mk
 	@cd jre_emul && $(MAKE) find_cycles
 	@cd cycle_finder && $(MAKE) test
