@@ -314,14 +314,6 @@ public class ImplementationImportCollector extends ErrorReportingASTVisitor {
       }
     }
     while (expr != null && expr instanceof Name) {
-      if (methodBinding instanceof IOSMethodBinding) {
-        // true for mapped methods
-        IMethodBinding resolvedBinding = Types.resolveInvocationBinding(node);
-        if (resolvedBinding != null) {
-          addImports(resolvedBinding.getDeclaringClass());
-          break;
-        }
-      }
       ITypeBinding typeBinding = Types.getTypeBinding(expr);
       if (typeBinding != null && typeBinding.isClass()) { // if class literal
         addImports(typeBinding);
