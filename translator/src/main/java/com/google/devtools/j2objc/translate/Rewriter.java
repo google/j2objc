@@ -39,16 +39,13 @@ import org.eclipse.jdt.core.dom.ArrayInitializer;
 import org.eclipse.jdt.core.dom.Assignment;
 import org.eclipse.jdt.core.dom.Block;
 import org.eclipse.jdt.core.dom.BodyDeclaration;
-import org.eclipse.jdt.core.dom.BooleanLiteral;
 import org.eclipse.jdt.core.dom.BreakStatement;
-import org.eclipse.jdt.core.dom.CharacterLiteral;
 import org.eclipse.jdt.core.dom.ClassInstanceCreation;
 import org.eclipse.jdt.core.dom.ContinueStatement;
 import org.eclipse.jdt.core.dom.DoStatement;
 import org.eclipse.jdt.core.dom.EnhancedForStatement;
 import org.eclipse.jdt.core.dom.EnumDeclaration;
 import org.eclipse.jdt.core.dom.Expression;
-import org.eclipse.jdt.core.dom.ExpressionStatement;
 import org.eclipse.jdt.core.dom.FieldDeclaration;
 import org.eclipse.jdt.core.dom.ForStatement;
 import org.eclipse.jdt.core.dom.IMethodBinding;
@@ -62,7 +59,6 @@ import org.eclipse.jdt.core.dom.MethodDeclaration;
 import org.eclipse.jdt.core.dom.MethodInvocation;
 import org.eclipse.jdt.core.dom.Modifier;
 import org.eclipse.jdt.core.dom.Modifier.ModifierKeyword;
-import org.eclipse.jdt.core.dom.Name;
 import org.eclipse.jdt.core.dom.NumberLiteral;
 import org.eclipse.jdt.core.dom.PostfixExpression;
 import org.eclipse.jdt.core.dom.PrefixExpression;
@@ -307,9 +303,6 @@ public class Rewriter extends ErrorReportingASTVisitor {
   @Override
   public boolean visit(MethodInvocation node) {
     boolean visitChildren = true;
-    if (rewriteSystemOut(node)) {
-      visitChildren =  false;
-    }
     if (rewriteStringFormat(node)) {
       visitChildren =  false;
     }
@@ -744,86 +737,6 @@ public class Rewriter extends ErrorReportingASTVisitor {
   }
 
   /**
-   * Rewrites System.out and System.err println calls as NSLog calls.
-   *
-   * @return true if the node was rewritten
-   */
-  // TODO(user): remove when there is iOS console support.
-  private boolean rewriteSystemOut(MethodInvocation node) {
-    Expression expression = node.getExpression();
-    if (!(expression instanceof Name)) {
-      return false;
-    }
-    IVariableBinding varBinding = Types.getVariableBinding(expression);
-    if (varBinding == null) {
-      return false;
-    }
-    ITypeBinding type = varBinding.getDeclaringClass();
-    if (type == null) {
-      return false;
-    }
-    String clsName = type.getQualifiedName();
-    String varName = varBinding.getName();
-    if (clsName.equals("java.lang.System")
-        && (varName.equals("out") || varName.equals("err"))) {
-      // Change System.out.* or System.err.* to NSLog
-      AST ast = node.getAST();
-      MethodInvocation newInvocation = ast.newMethodInvocation();
-      IMethodBinding methodBinding = new IOSMethodBinding("NSLog",
-          Types.getMethodBinding(node), null);
-      Types.addBinding(newInvocation, methodBinding);
-      Types.addFunction(methodBinding);
-      newInvocation.setName(ast.newSimpleName("NSLog"));
-      Types.addBinding(newInvocation.getName(), methodBinding);
-      newInvocation.setExpression(null);
-
-      // Insert NSLog format argument
-      List<Expression> args = ASTUtil.getArguments(node);
-      if (args.size() == 1) {
-        Expression arg = args.get(0);
-        arg.accept(this);
-        String format = getFormatArgument(arg);
-        StringLiteral literal = ast.newStringLiteral();
-        literal.setLiteralValue(format);
-        Types.addBinding(literal, ast.resolveWellKnownType("java.lang.String"));
-        ASTUtil.getArguments(newInvocation).add(literal);
-
-        // JDT won't let nodes be re-parented, so copy and map.
-        Expression newArg = NodeCopier.copySubtree(ast, arg);
-        if (arg instanceof MethodInvocation) {
-          IMethodBinding argBinding = Types.getMethodBinding(arg);
-          if (!argBinding.getReturnType().isPrimitive() &&
-              !Types.isJavaStringType(argBinding.getReturnType())) {
-            IOSMethodBinding newBinding =
-                new IOSMethodBinding("format", argBinding, Types.getNSString());
-            Types.addMappedInvocation(newArg, newBinding);
-          }
-        }
-        ASTUtil.getArguments(newInvocation).add(newArg);
-      } else if (args.size() > 1 && node.getName().getIdentifier().equals("printf")) {
-        ASTUtil.getArguments(newInvocation).addAll(NodeCopier.copySubtrees(ast, args));
-      } else if (args.size() == 0) {
-        // NSLog requires a format string.
-        StringLiteral literal = ast.newStringLiteral();
-        literal.setLiteralValue("");
-        Types.addBinding(literal,  ast.resolveWellKnownType("java.lang.String"));
-        ASTUtil.getArguments(newInvocation).add(literal);
-      }
-
-      // Replace old invocation with new.
-      ASTNode parent = node.getParent();
-      if (parent instanceof ExpressionStatement) {
-        ExpressionStatement stmt = (ExpressionStatement) parent;
-        stmt.setExpression(newInvocation);
-      } else {
-        throw new AssertionError("unknown parent type: " + parent.getClass().getSimpleName());
-      }
-      return true;
-    }
-    return false;
-  }
-
-  /**
    * Rewrites String.format()'s format string to be iOS-compatible.
    *
    * @return true if the node was rewritten
@@ -863,52 +776,6 @@ public class Rewriter extends ErrorReportingASTVisitor {
       }
     }
     return false;
-  }
-
-  /**
-   * Given a AST node, return the appropriate printf() format specifier.
-   */
-  private String getFormatArgument(ASTNode node) {
-    ITypeBinding type = Types.getTypeBinding(node);
-    AST ast = node.getAST();
-    if (node instanceof CharacterLiteral || type.isEqualTo(ast.resolveWellKnownType("char"))) {
-      return "%C";
-    }
-    if (node instanceof BooleanLiteral || type.isEqualTo(ast.resolveWellKnownType("boolean"))) {
-      return "%d";
-    }
-    if (type.isEqualTo(ast.resolveWellKnownType("byte")) ||
-        type.isEqualTo(ast.resolveWellKnownType("int")) ||
-        type.isEqualTo(ast.resolveWellKnownType("short"))) {
-      return "%d";
-    }
-    if (type.isEqualTo(ast.resolveWellKnownType("long"))) {
-      return "%lld";
-    }
-    if (type.isEqualTo(ast.resolveWellKnownType("float")) ||
-        type.isEqualTo(ast.resolveWellKnownType("double"))) {
-      return "%f";
-    }
-    if (node instanceof NumberLiteral) {
-      String token = ((NumberLiteral) node).getToken();
-      try {
-        Integer.parseInt(token);
-        return "%d";
-      } catch (NumberFormatException e) {
-        try {
-          Long.parseLong(token);
-          return "%lld";
-        } catch (NumberFormatException e2) {
-          try {
-            Double.parseDouble(token);
-            return "%f";
-          } catch (NumberFormatException e3) {
-            throw new AssertionError("unknown number literal format: \"" + token + "\"");
-          }
-        }
-      }
-    }
-    return "%@"; // object, including string
   }
 
   /**

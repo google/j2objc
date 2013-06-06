@@ -168,8 +168,8 @@ public class AnonymousClassConverterTest extends GenerationTest {
 
       @Override
       public void endVisit(MethodInvocation node) {
-        if (node.getName().getIdentifier().equals("NSLog")) {
-          assertEquals("val$test.toString()", node.arguments().get(1).toString());
+        if (node.getName().getIdentifier().equals("toString")) {
+          assertEquals("val$test.toString()", node.toString());
           ++testsFound[0];
         }
       };
@@ -209,8 +209,8 @@ public class AnonymousClassConverterTest extends GenerationTest {
 
       @Override
       public void endVisit(MethodInvocation node) {
-        if (node.getName().getIdentifier().equals("NSLog")) {
-          assertEquals("val$foo.toString()", node.arguments().get(1).toString());
+        if (node.getName().getIdentifier().equals("toString")) {
+          assertEquals("val$foo.toString()", node.toString());
           ++testsFound[0];
         }
       };
@@ -308,7 +308,8 @@ public class AnonymousClassConverterTest extends GenerationTest {
         "    }; " +
         "  }}}";
     String translation = translateSourceFile(source, "Test", "Test.m");
-    assertTranslation(translation, "NSLog(@\"%@\", val$s_);");
+    assertTranslation(translation,
+        "[((JavaIoPrintStream *) NIL_CHK([JavaLangSystem out])) printlnWithNSString:val$s_];");
   }
 
   public void testMethodVarInNestedAnonymousClass() throws IOException {

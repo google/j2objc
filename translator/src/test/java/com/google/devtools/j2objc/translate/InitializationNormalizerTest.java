@@ -211,7 +211,7 @@ public class InitializationNormalizerTest extends GenerationTest {
     Block b = (Block) generatedStatements.get(0);
     assertTrue(b.statements().get(0) instanceof ExpressionStatement);
     ExpressionStatement stmt = (ExpressionStatement) b.statements().get(0);
-    assertEquals("NSLog(\"%@\",\"foo\")", stmt.getExpression().toString());
+    assertEquals("System.out.println(\"foo\")", stmt.getExpression().toString());
   }
 
   public void testIsDesignatedConstructor() {

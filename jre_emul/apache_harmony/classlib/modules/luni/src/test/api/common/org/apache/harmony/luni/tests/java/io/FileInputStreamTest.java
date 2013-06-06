@@ -18,6 +18,7 @@
 package org.apache.harmony.luni.tests.java.io;
 
 import java.io.File;
+import java.io.FileDescriptor;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -118,7 +119,7 @@ public class FileInputStreamTest extends TestCase {
         } catch (IOException e) {
             // Expected
         }
-
+        
         // Regression test for HARMONY-6642
         FileInputStream fis = new FileInputStream(fileName);
         FileInputStream fis2 = new FileInputStream(fis.getFD());
@@ -134,7 +135,6 @@ public class FileInputStreamTest extends TestCase {
             } catch (IOException e) {}
         }
 
-        /* TODO(user): enable when stdin is implemented.
         FileInputStream stdin = new FileInputStream(FileDescriptor.in);
         stdin.close();
         stdin = new FileInputStream(FileDescriptor.in);
@@ -144,7 +144,6 @@ public class FileInputStreamTest extends TestCase {
         } catch (IOException e) {
             // Expected
         }
-        */
     }
 
     /**
