@@ -425,6 +425,8 @@ JAVA_SOURCES = \
 	org/xmlpull/v1/XmlPullParserFactory.java \
 	org/xmlpull/v1/sax2/Driver.java
 
+MAIN_OBJ = J2ObjCMain.o
+
 JAVA_SOURCE_LIST = $(BUILD_DIR)/jre_emul.classes.list
 OBJC_OUT_LIST = $(BUILD_DIR)/jre_emul.objc.list
 JAVA_SOURCES_MANIFEST = $(BUILD_DIR)/java_sources.mf
@@ -455,7 +457,7 @@ EMULATION_MACOSX_LIB = $(BUILD_DIR)/macosx-libjre_emul.a
 EMULATION_IPHONE_LIB = $(BUILD_DIR)/iphone-libjre_emul.a
 EMULATION_IPHONEV7S_LIB = $(BUILD_DIR)/iphonev7s-libjre_emul.a
 EMULATION_SIMULATOR_LIB = $(BUILD_DIR)/simulator-libjre_emul.a
-MACOSX_OBJS = $(ALL_OBJS:%=$(CLASS_DIR)/%)
+MACOSX_OBJS = $(ALL_OBJS:%=$(CLASS_DIR)/%) $(MAIN_OBJ:%=$(CLASS_DIR)/%)
 MACOSX_FLAGS = $(SDK_FLAGS)
 IPHONE_BUILD_DIR = $(BUILD_DIR)/iphone
 IPHONE_OBJS = $(ALL_OBJS:%=$(IPHONE_BUILD_DIR)/%)
