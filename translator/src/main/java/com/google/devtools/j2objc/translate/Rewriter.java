@@ -237,6 +237,38 @@ public class Rewriter extends ErrorReportingASTVisitor {
         NameTable.rename(varBinding, name + "Arg");
       }
     }
+
+    // Rename any labels that have the same names; legal in Java but not C.
+    final Map<String, Integer> labelCounts = Maps.newHashMap();
+    final AST ast = node.getAST();
+    node.accept(new ASTVisitor() {
+      @Override
+      public void endVisit(LabeledStatement labeledStatement) {
+        final String name = labeledStatement.getLabel().getIdentifier();
+        int value = labelCounts.containsKey(name) ? labelCounts.get(name) + 1 : 1;
+        labelCounts.put(name, value);
+        if (value > 1) {
+          final String newName = name + '_' + value;
+          labeledStatement.setLabel(ASTFactory.newLabel(ast, newName));
+          // Update references to this label.
+          labeledStatement.accept(new ASTVisitor() {
+            @Override
+            public void endVisit(ContinueStatement node) {
+              if (node.getLabel() != null && node.getLabel().getIdentifier().equals(name)) {
+                node.setLabel(ASTFactory.newLabel(ast, newName));
+              }
+            }
+            @Override
+            public void endVisit(BreakStatement node) {
+              if (node.getLabel() != null && node.getLabel().getIdentifier().equals(name)) {
+                node.setLabel(ASTFactory.newLabel(ast, newName));
+              }
+            }
+          });
+
+        }
+      }
+    });
     return true;
   }
 

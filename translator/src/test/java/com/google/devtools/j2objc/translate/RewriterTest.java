@@ -550,4 +550,25 @@ public class RewriterTest extends GenerationTest {
         "class B extends A { int i() { return i; } }", "B", "B.m");
     assertTranslation(translation, "return i_;");
   }
+
+  public void testMultipleLabelsWithSameName() throws IOException {
+    String translation = translateSourceFile(
+        "public class Test { void test() { " +
+        "  outer: for (int r = 0; r < 10; r++) {" +
+        "    for (int s = 0; s < 10; s++) {" +
+        "      break outer; }}" +
+        "  outer: for (int t = 0; t < 10; t++) {" +
+        "    for (int u = 0; u < 10; u++) {" +
+        "      break outer; }}" +
+        "  outer: for (int v = 0; v < 10; v++) {" +
+        "    for (int w = 0; w < 10; w++) {" +
+        "      break outer;" +
+        "}}}}", "Test", "Test.m");
+    assertTranslation(translation, "break_outer:");
+    assertTranslation(translation, "goto break_outer;");
+    assertTranslation(translation, "break_outer_2:");
+    assertTranslation(translation, "goto break_outer_2;");
+    assertTranslation(translation, "break_outer_3:");
+    assertTranslation(translation, "goto break_outer_3;");
+  }
 }
