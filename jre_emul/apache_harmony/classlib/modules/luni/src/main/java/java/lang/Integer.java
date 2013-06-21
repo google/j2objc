@@ -480,10 +480,10 @@ public final class Integer extends Number implements Comparable<Integer> {
      *            the integer to convert.
      * @return the decimal string representation of {@code value}.
      */
-    public static native String toString(int value) /*-{
+    public static native String toString(int value) /*-[
       NSNumber *num = [NSNumber numberWithInt:value];
       return [num stringValue];
-    }-*/;
+    ]-*/;
 
     /**
      * Converts the specified integer into a string representation based on the

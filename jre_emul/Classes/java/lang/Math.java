@@ -130,9 +130,9 @@ public final class Math {
    *            the value to compute arc cosine of.
    * @return the arc cosine of the argument.
    */
-  public static native double acos(double d) /*-{
+  public static native double acos(double d) /*-[
     return acos(d);
-  }-*/;
+  ]-*/;
 
   /**
    * Returns the closest double approximation of the arc sine of the argument
@@ -150,9 +150,9 @@ public final class Math {
    *            the value whose arc sine has to be computed.
    * @return the arc sine of the argument.
    */
-  public static native double asin(double d) /*-{
+  public static native double asin(double d) /*-[
     return asin(d);
-  }-*/;
+  ]-*/;
 
   /**
    * Returns the closest double approximation of the arc tangent of the
@@ -172,9 +172,9 @@ public final class Math {
    *            the value whose arc tangent has to be computed.
    * @return the arc tangent of the argument.
    */
-  public static native double atan(double d) /*-{
+  public static native double atan(double d) /*-[
     return atan(d);
-  }-*/;
+  ]-*/;
 
   /**
    * Returns the closest double approximation of the arc tangent of {@code
@@ -214,9 +214,9 @@ public final class Math {
    *            the denominator of the value whose atan has to be computed.
    * @return the arc tangent of {@code y/x}.
    */
-  public static native double atan2(double x, double y) /*-{
+  public static native double atan2(double x, double y) /*-[
     return atan2(x, y);
-  }-*/;
+  ]-*/;
 
   /**
    * Returns the closest double approximation of the cube root of the
@@ -235,9 +235,9 @@ public final class Math {
    *            the value whose cube root has to be computed.
    * @return the cube root of the argument.
    */
-  public static native double cbrt(double d) /*-{
+  public static native double cbrt(double d) /*-[
     return cbrt(d);
-  }-*/;
+  ]-*/;
 
   /**
    * Returns the double conversion of the most negative (closest to negative
@@ -257,9 +257,9 @@ public final class Math {
    *            the value whose closest integer value has to be computed.
    * @return the ceiling of the argument.
    */
-  public static native double ceil(double d) /*-{
+  public static native double ceil(double d) /*-[
     return ceil(d);
-  }-*/;
+  ]-*/;
 
   /**
    * Returns the closest double approximation of the cosine of the argument.
@@ -277,9 +277,9 @@ public final class Math {
    *            the angle whose cosine has to be computed, in radians.
    * @return the cosine of the argument.
    */
-  public static native double cos(double d) /*-{
+  public static native double cos(double d) /*-[
     return cos(d);
-  }-*/;
+  ]-*/;
 
   /**
    * Returns the closest double approximation of the hyperbolic cosine of the
@@ -297,9 +297,9 @@ public final class Math {
    *            the value whose hyperbolic cosine has to be computed.
    * @return the hyperbolic cosine of the argument.
    */
-  public static native double cosh(double d) /*-{
+  public static native double cosh(double d) /*-[
     return cosh(d);
-  }-*/;
+  ]-*/;
 
   /**
    * Returns the closest double approximation of the raising "e" to the power
@@ -317,9 +317,9 @@ public final class Math {
    *            the value whose exponential has to be computed.
    * @return the exponential of the argument.
    */
-  public static native double exp(double d) /*-{
+  public static native double exp(double d) /*-[
     return exp(d);
-  }-*/;
+  ]-*/;
 
   /**
    * Returns the closest double approximation of <i>{@code e}</i><sup> {@code
@@ -346,9 +346,9 @@ public final class Math {
    * @return the <i>{@code e}</i><sup>{@code d}</sup>{@code - 1} value of the
    *         argument.
    */
-  public static native double expm1(double d) /*-{
+  public static native double expm1(double d) /*-[
     return expm1(d);
-  }-*/;
+  ]-*/;
 
   /**
    * Returns the double conversion of the most positive (closest to positive
@@ -367,9 +367,9 @@ public final class Math {
    *            the value whose closest integer value has to be computed.
    * @return the floor of the argument.
    */
-  public static native double floor(double d) /*-{
+  public static native double floor(double d) /*-[
     return floor(d);
-  }-*/;
+  ]-*/;
 
   /**
    * Returns {@code sqrt(}<i>{@code x}</i><sup>{@code 2}</sup>{@code +} <i>
@@ -395,9 +395,9 @@ public final class Math {
    *         <i> {@code y}</i><sup>{@code 2}</sup>{@code )} value of the
    *         arguments.
    */
-  public static native double hypot(double x, double y) /*-{
+  public static native double hypot(double x, double y) /*-[
     return hypot(x, y);
-  }-*/;
+  ]-*/;
 
   /**
    * Returns the remainder of dividing {@code x} by {@code y} using the IEEE
@@ -424,11 +424,11 @@ public final class Math {
    *            the denominator of the operation.
    * @return the IEEE754 floating point reminder of {@code x/y}.
    */
-  public static native double IEEEremainder(double x, double y) /*-{
+  public static native double IEEEremainder(double x, double y) /*-[
     // According to the Mac OS X math.h online man page, their routines are
     // all IEEE Standard 754 compliant.
     return remainder(x, y);
-  }-*/;
+  ]-*/;
 
   /**
    * Returns the closest double approximation of the natural logarithm of the
@@ -449,9 +449,9 @@ public final class Math {
    *            the value whose log has to be computed.
    * @return the natural logarithm of the argument.
    */
-  public static native double log(double d) /*-{
+  public static native double log(double d) /*-[
     return log(d);
-  }-*/;
+  ]-*/;
 
   /**
    * Returns the closest double approximation of the base 10 logarithm of the
@@ -472,9 +472,9 @@ public final class Math {
    *            the value whose base 10 log has to be computed.
    * @return the natural logarithm of the argument.
    */
-  public static native double log10(double d) /*-{
+  public static native double log10(double d) /*-[
     return log10(d);
-  }-*/;
+  ]-*/;
 
   /**
    * Returns the closest double approximation of the natural logarithm of the
@@ -498,9 +498,9 @@ public final class Math {
    *            the value to compute the {@code ln(1+d)} of.
    * @return the natural logarithm of the sum of the argument and 1.
    */
-  public static native double log1p(double d) /*-{
+  public static native double log1p(double d) /*-[
     return log1p(d);
-  }-*/;
+  ]-*/;
 
   /**
    * Returns the most positive (closest to positive infinity) of the two
@@ -520,9 +520,9 @@ public final class Math {
    *            the second argument.
    * @return the larger of {@code d1} and {@code d2}.
    */
-  public static native double max(double d1, double d2) /*-{
+  public static native double max(double d1, double d2) /*-[
     return fmax(d1, d2);
-  }-*/;
+  ]-*/;
 
   /**
    * Returns the most positive (closest to positive infinity) of the two
@@ -542,9 +542,9 @@ public final class Math {
    *            the second argument.
    * @return the larger of {@code f1} and {@code f2}.
    */
-  public static native float max(float f1, float f2) /*-{
+  public static native float max(float f1, float f2) /*-[
     return fmaxf(f1, f2);
-  }-*/;
+  ]-*/;
 
   /**
    * Returns the most positive (closest to positive infinity) of the two
@@ -592,9 +592,9 @@ public final class Math {
    *            the second argument.
    * @return the smaller of {@code d1} and {@code d2}.
    */
-  public static native double min(double d1, double d2) /*-{
+  public static native double min(double d1, double d2) /*-[
     return fmin(d1, d2);
-  }-*/;
+  ]-*/;
 
   /**
    * Returns the most negative (closest to negative infinity) of the two
@@ -614,9 +614,9 @@ public final class Math {
    *            the second argument.
    * @return the smaller of {@code f1} and {@code f2}.
    */
-  public static native float min(float f1, float f2) /*-{
+  public static native float min(float f1, float f2) /*-[
     return fminf(f1, f2);
-  }-*/;
+  ]-*/;
 
   /**
    * Returns the most negative (closest to negative infinity) of the two
@@ -683,9 +683,9 @@ public final class Math {
    *            the exponent of the operation.
    * @return {@code x} to the power of {@code y}.
    */
-  public static native double pow(double x, double y) /*-{
+  public static native double pow(double x, double y) /*-[
     return pow(x, y);
-  }-*/;
+  ]-*/;
  
   /**
    * Returns the double conversion of the result of rounding the argument to
@@ -704,9 +704,9 @@ public final class Math {
    *            the value to be rounded.
    * @return the closest integer to the argument (as a double).
    */
-  public static native double rint(double d) /*-{
+  public static native double rint(double d) /*-[
     return rint(d);
-  }-*/;
+  ]-*/;
 
   /**
    * Returns the result of rounding the argument to an integer. The result is
@@ -826,9 +826,9 @@ public final class Math {
    *            the angle whose sin has to be computed, in radians.
    * @return the sine of the argument.
    */
-  public static native double sin(double d) /*-{
+  public static native double sin(double d) /*-[
     return sin(d);
-  }-*/;
+  ]-*/;
 
   /**
    * Returns the closest double approximation of the hyperbolic sine of the
@@ -848,9 +848,9 @@ public final class Math {
    *            the value whose hyperbolic sine has to be computed.
    * @return the hyperbolic sine of the argument.
    */
-  public static native double sinh(double d) /*-{
+  public static native double sinh(double d) /*-[
     return sinh(d);
-  }-*/;
+  ]-*/;
 
   /**
    * Returns the closest double approximation of the square root of the
@@ -869,9 +869,9 @@ public final class Math {
    *            the value whose square root has to be computed.
    * @return the square root of the argument.
    */
-  public static native double sqrt(double d) /*-{
+  public static native double sqrt(double d) /*-[
     return sqrt(d);
-  }-*/;
+  ]-*/;
 
   /**
    * Returns the closest double approximation of the tangent of the argument.
@@ -891,9 +891,9 @@ public final class Math {
    *            the angle whose tangens has to be computed, in radians.
    * @return the tangent of the argument.
    */
-  public static native double tan(double d) /*-{
+  public static native double tan(double d) /*-[
     return tan(d);
-  }-*/;
+  ]-*/;
 
   /**
    * Returns the closest double approximation of the hyperbolic tangent of the
@@ -915,9 +915,9 @@ public final class Math {
    *            the value whose hyperbolic tangent has to be computed.
    * @return the hyperbolic tangent of the argument.
    */
-  public static native double tanh(double d) /*-{
+  public static native double tanh(double d) /*-[
     return tanh(d);
-  }-*/;
+  ]-*/;
 
   /**
    * Returns a pseudo-random number between 0.0 (inclusive) and 1.0
@@ -1036,11 +1036,11 @@ public final class Math {
       return nextafterf(f, Float.MAX_VALUE) - f;
   }
 
-  private native static double nextafter(double x, double y) /*-{
+  private native static double nextafter(double x, double y) /*-[
     return nextafter(x, y);
-  }-*/;
+  ]-*/;
 
-  private native static float nextafterf(float x, float y) /*-{
+  private native static float nextafterf(float x, float y) /*-[
     return nextafterf(x, y);
-  }-*/;
+  ]-*/;
 }

@@ -66,7 +66,7 @@ class NSLogHandler extends Handler {
     log(record);
   }
 
-  private native void log(LogRecord record) /*-{
+  private native void log(LogRecord record) /*-[
     NSLog(@"%@: %@", [NSThread currentThread],
        [[self getFormatter] formatWithJavaUtilLoggingLogRecord:record]);
     [[record getThrown] printStackTrace];
@@ -77,6 +77,6 @@ class NSLogHandler extends Handler {
 //        [[self getFormatter] formatWithJavaUtilLoggingLogRecord:record];
 //    const char *cmsg = [msg cStringUsingEncoding:NSASCIIStringEncoding];
 //    fprintf(stderr, "%s\n", cmsg);
-  }-*/;
+  ]-*/;
 
 }

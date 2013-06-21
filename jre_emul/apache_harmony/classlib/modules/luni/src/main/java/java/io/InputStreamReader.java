@@ -137,7 +137,7 @@ public class InputStreamReader extends Reader {
         return nativeEncodingName(encoding);
     }
     
-    static native String nativeEncodingName(int encoding) /*-{
+    static native String nativeEncodingName(int encoding) /*-[
       switch (encoding) {
         case NSASCIIStringEncoding:
           return @"ASCII";
@@ -154,7 +154,7 @@ public class InputStreamReader extends Reader {
         default:
           return nil;
       }
-    }-*/;
+    ]-*/;
 
     /**
      * Reads a single character from this reader and returns it as an integer
@@ -242,7 +242,7 @@ public class InputStreamReader extends Reader {
      * Convert bytes to String using NSString.  This is necessary because
      * Cocoa doesn't have the equivalent of a byte-to-character decoder.
      */
-    private native String convertToString(byte[] byteArray) /*-{
+    private native String convertToString(byte[] byteArray) /*-[
       NSUInteger length = [byteArray count];
       char *buffer = malloc(length);
       [byteArray getBytes:buffer offset:0 length:length];
@@ -252,7 +252,7 @@ public class InputStreamReader extends Reader {
       [result autorelease];
 #endif
       return result;
-    }-*/;
+    ]-*/;
 
     /*
      * Answer a boolean indicating whether or not this InputStreamReader is

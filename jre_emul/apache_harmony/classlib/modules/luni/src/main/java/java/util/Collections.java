@@ -1153,7 +1153,7 @@ public class Collections {
 
             @Override
             @SuppressWarnings("unchecked")
-            public native <T> T[] toArray(T[] contents) /*-{
+            public native <T> T[] toArray(T[] contents) /*-[
                 if (!contents) {
                   id exception = [[JavaLangNullPointerException alloc] init];
 #if ! __has_feature(objc_arc)
@@ -1176,7 +1176,7 @@ public class Collections {
                   [contents replaceObjectAtIndex:i++ withObject:[it next]];
                 }
                 return contents;
-            }-*/;
+            ]-*/;
         }
 
         UnmodifiableMap(Map<K, V> map) {
@@ -3245,22 +3245,22 @@ public class Collections {
             }
 
             @Override
-            public native Object[] toArray() /*-{
+            public native Object[] toArray() /*-[
               IOSClass *type = [IOSClass classWithClass:[NSObject class]];
               IOSObjectArray *result =
                   AUTORELEASE([[IOSObjectArray alloc] initWithLength:[self size] type:type]);
               return [self toArrayWithNSObjectArray:result];
-            }-*/;
+            ]-*/;
 
             @Override
-            public native <T> T[] toArray(T[] contents) /*-{
+            public native <T> T[] toArray(T[] contents) /*-[
               NSUInteger i = 0;
               id<JavaUtilIterator> it = [self iterator];
               while ([it hasNext]) {
                 [contents replaceObjectAtIndex:i++ withObject:[it next]];
               }
               return contents;
-            }-*/;
+            ]-*/;
 
             /**
              * @see java.util.Set#retainAll(Collection)

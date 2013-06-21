@@ -17,7 +17,7 @@
 
 package java.lang;
 
-/*-{
+/*-[
 // From apache-harmony/classlib/modules/luni/src/main/native/luni/shared/floatbits.c,
 // apache-harmony/classlib/modules/portlib/src/main/native/include/shared/hycomp.h
 #define HYCONST64(x)            x##LL
@@ -25,7 +25,7 @@ package java.lang;
 #define DOUBLE_MANTISSA_MASK    HYCONST64(0x000FFFFFFFFFFFFF)
 #define DOUBLE_NAN_BITS         (DOUBLE_EXPONENT_MASK | HYCONST64(0x0008000000000000))
 
-}-*/
+]-*/
 
 /**
  * The wrapper for the primitive type {@code double}.
@@ -159,7 +159,7 @@ public final class Double extends Number implements Comparable<Double> {
      * @see #doubleToRawLongBits(double)
      * @see #longBitsToDouble(long)
      */
-    public static native long doubleToLongBits(double value) /*-{
+    public static native long doubleToLongBits(double value) /*-[
       // Modified from Harmony JNI implementation.
       long long longValue = *(long long *) &value;
       if ((longValue & DOUBLE_EXPONENT_MASK) == DOUBLE_EXPONENT_MASK) {
@@ -168,7 +168,7 @@ public final class Double extends Number implements Comparable<Double> {
         }
       }
       return longValue;
-    }-*/;
+    ]-*/;
 
     /**
      * Converts the specified double value to a binary representation conforming
@@ -182,9 +182,9 @@ public final class Double extends Number implements Comparable<Double> {
      * @see #doubleToLongBits(double)
      * @see #longBitsToDouble(long)
      */
-    public static native long doubleToRawLongBits(double value) /*-{
+    public static native long doubleToRawLongBits(double value) /*-[
         return *(long long *) &value;
-    }-*/;
+    ]-*/;
 
     /**
      * Gets the primitive value of this double.
@@ -208,13 +208,13 @@ public final class Double extends Number implements Comparable<Double> {
      *         {@code Double}; {@code false} otherwise.
      */
     @Override
-    public native boolean equals(Object object) /*-{
+    public native boolean equals(Object object) /*-[
         if (!object || ![object isKindOfClass:[JavaLangDouble class]]) {
           return NO;
         }
         NSComparisonResult result = [self compare:object];
         return result == NSOrderedSame;
-    }-*/;
+    ]-*/;
 
     @Override
     public float floatValue() {
@@ -250,9 +250,9 @@ public final class Double extends Number implements Comparable<Double> {
      * @return {@code true} if the value of {@code d} is positive or negative
      *         infinity; {@code false} otherwise.
      */
-    public static native boolean isInfinite(double d) /*-{
+    public static native boolean isInfinite(double d) /*-[
         return isinf(d);
-    }-*/;
+    ]-*/;
 
     /**
      * Indicates whether this object is a <em>Not-a-Number (NaN)</em> value.
@@ -273,9 +273,9 @@ public final class Double extends Number implements Comparable<Double> {
      * @return {@code true} if {@code d} is <em>Not-a-Number</em>;
      *         {@code false} if it is a (potentially infinite) double number.
      */
-    public native static boolean isNaN(double d) /*-{
+    public native static boolean isNaN(double d) /*-[
         return isnan(d);
-    }-*/;
+    ]-*/;
 
     /**
      * Converts the specified IEEE 754 floating-point double precision bit
@@ -288,9 +288,9 @@ public final class Double extends Number implements Comparable<Double> {
      * @see #doubleToLongBits(double)
      * @see #doubleToRawLongBits(double)
      */
-    public static native double longBitsToDouble(long bits) /*-{
+    public static native double longBitsToDouble(long bits) /*-[
         return *(double *) &bits;
-    }-*/;
+    ]-*/;
 
     @Override
     public long longValue() {
@@ -308,9 +308,9 @@ public final class Double extends Number implements Comparable<Double> {
      *             can not be parsed as a double value.
      */
     public native static double parseDouble(String string)
-            throws NumberFormatException /*-{
+            throws NumberFormatException /*-[
         return [string doubleValue];
-    }-*/;
+    ]-*/;
 
     @Override
     public short shortValue() {
@@ -330,9 +330,9 @@ public final class Double extends Number implements Comparable<Double> {
      *             the double to convert to a string.
      * @return a printable representation of {@code d}.
      */
-    public native static String toString(double d) /*-{
+    public native static String toString(double d) /*-[
         return [NSString stringWithFormat:@"%01.1f", d];
-    }-*/;
+    ]-*/;
 
     /**
      * Parses the specified string as a double value.
@@ -416,7 +416,7 @@ public final class Double extends Number implements Comparable<Double> {
      * @return the hexadecimal string representation of {@code d}.
      * @since 1.5
      */
-    public static native String toHexString(double d) /*-{
+    public static native String toHexString(double d) /*-[
         return [NSString stringWithFormat:@"%A", d];
-    }-*/;
+    ]-*/;
 }

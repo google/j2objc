@@ -17,9 +17,9 @@
 
 package java.io;
 
-/*-{
+/*-[
 #import "java/lang/NullPointerException.h"
-}-*/
+]-*/
 
 /**
  * Wraps either an existing {@link OutputStream} or an existing {@link Writer}

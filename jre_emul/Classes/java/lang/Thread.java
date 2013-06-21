@@ -17,12 +17,12 @@
 
 package java.lang;
 
-/*-{
+/*-[
 #import "java/lang/IllegalThreadStateException.h"
 #import "java/lang/InterruptedException.h"
 #import "java/lang/NullPointerException.h"
 #import "java/lang/Runnable.h"
-}-*/
+]-*/
 
 /**
  * Simplified iOS version of java.lang.Thread, based on Apache Harmony source
@@ -270,7 +270,7 @@ public class Thread implements Runnable {
    * Shared native constructor code.
    */
   private native void create(ThreadGroup group, Runnable target, String name, long stack,
-	  boolean createThread) /*-{
+	  boolean createThread) /*-[
     NSThread *currentThread = [NSThread currentThread];
     NSMutableDictionary *currentThreadData = [currentThread threadDictionary];
     JavaLangThreadGroup *threadGroup = nil;
@@ -342,7 +342,7 @@ public class Thread implements Runnable {
     [thread retain];
 #endif
     [newThreadData setObject:self forKey:JavaLangThread_JAVA_THREAD_];
-  }-*/;
+  ]-*/;
   
   /**
    * Create a Thread wrapper around the main native thread.
@@ -369,7 +369,7 @@ public class Thread implements Runnable {
                                withBOOL:FALSE];
   ]-*/;
 
-  public static native Thread currentThread() /*-{
+  public static native Thread currentThread() /*-[
     NSDictionary *threadData = [[NSThread currentThread] threadDictionary];
     JavaLangThread *thread = [threadData objectForKey:JavaLangThread_JAVA_THREAD_];
     if (!thread) {
@@ -383,9 +383,9 @@ public class Thread implements Runnable {
 #endif
     }
     return thread;
-  }-*/;
+  ]-*/;
 
-  public native void start() /*-{
+  public native void start() /*-[
     NSThread *nativeThread = (NSThread *) nsThread_;
     if ([nativeThread isExecuting]) {
       JavaLangIllegalThreadStateException *e =
@@ -398,9 +398,9 @@ public class Thread implements Runnable {
     }
     [[self getThreadGroup] addWithJavaLangThread:self];
     [(NSThread *) nativeThread start];
-  }-*/;
+  ]-*/;
 
-  public native void run() /*-{
+  public native void run() /*-[
     NSDictionary *threadData = [(NSThread *) nsThread_ threadDictionary];
     id<JavaLangRunnable> target =
         (id<JavaLangRunnable>) [threadData objectForKey:JavaLangThread_TARGET_];
@@ -409,7 +409,7 @@ public class Thread implements Runnable {
         [target run];
       }
     }
-  }-*/;
+  ]-*/;
 
   public boolean isDaemon() {
     return isDaemon;
@@ -419,17 +419,17 @@ public class Thread implements Runnable {
     this.isDaemon = isDaemon;
   }
 
-  public native long getId() /*-{
+  public native long getId() /*-[
     NSDictionary *threadData = [[NSThread currentThread] threadDictionary];
     NSNumber *threadId = [threadData objectForKey:JavaLangThread_THREAD_ID_];
     return [threadId longLongValue];
-  }-*/;
+  ]-*/;
 
-  public native String getName() /*-{
+  public native String getName() /*-[
     return [(NSThread *) nsThread_ name];
-  }-*/;
+  ]-*/;
 
-  public native void setName(String name) /*-{
+  public native void setName(String name) /*-[
     if (!name) {
       JavaLangNullPointerException *npe = [[JavaLangNullPointerException alloc] init];
 #if !__has_feature(objc_arc)
@@ -438,12 +438,12 @@ public class Thread implements Runnable {
       @throw npe;
     }
     [(NSThread *) nsThread_ setName:name];
-  }-*/;
+  ]-*/;
 
-  public native int getPriority() /*-{
+  public native int getPriority() /*-[
     double nativePriority = [(NSThread *) nsThread_ threadPriority];
     return (int) (nativePriority * 10);
-  }-*/;
+  ]-*/;
 
   public void setPriority(int priority) {
     checkAccess();
@@ -455,11 +455,11 @@ public class Thread implements Runnable {
     setPriority0(priority);
   }
 
-  private native void setPriority0(int priority) /*-{
+  private native void setPriority0(int priority) /*-[
     [(NSThread *) nsThread_ setThreadPriority:priority / 10.0];
-  }-*/;
+  ]-*/;
 
-  public native State getState() /*-{
+  public native State getState() /*-[
     if ([(NSThread *) nsThread_ isCancelled] || [(NSThread *) nsThread_ isFinished]) {
       return [JavaLangThread_StateEnum TERMINATED];
     }
@@ -467,12 +467,12 @@ public class Thread implements Runnable {
       return [JavaLangThread_StateEnum RUNNABLE];
     }
     return [JavaLangThread_StateEnum NEW];
-  }-*/;
+  ]-*/;
 
-  public native ThreadGroup getThreadGroup() /*-{
+  public native ThreadGroup getThreadGroup() /*-[
     NSDictionary *threadData = [(NSThread *) nsThread_ threadDictionary];
     return (JavaLangThreadGroup *) [threadData objectForKey:JavaLangThread_THREADGROUP_];
-  }-*/;
+  ]-*/;
 
   /**
    * Posts an interrupt request to this {@code Thread}. Unless the caller is
@@ -535,9 +535,9 @@ public class Thread implements Runnable {
    * @see Thread#interrupt
    * @see Thread#isInterrupted
    */
-  public native boolean isInterrupted() /*-{
+  public native boolean isInterrupted() /*-[
     return [(NSThread *) nsThread_ isCancelled];
-  }-*/;
+  ]-*/;
 
   /**
    * Blocks the current Thread (<code>Thread.currentThread()</code>) until
@@ -601,9 +601,9 @@ public class Thread implements Runnable {
       }
     ]-*/;
 
-  public native boolean isAlive() /*-{
+  public native boolean isAlive() /*-[
     return [(NSThread *) nsThread_ isExecuting];
-  }-*/;
+  ]-*/;
 
   public void checkAccess() {
     // Access checks not implemented on iOS.
@@ -613,11 +613,11 @@ public class Thread implements Runnable {
      sleep(millis, 0);
   }
 
-  public static native void sleep(long millis, int nanos) throws InterruptedException /*-{
+  public static native void sleep(long millis, int nanos) throws InterruptedException /*-[
     long long ticks = (millis * 1000000L) + nanos;
     NSTimeInterval ti = ticks / 1000000000.0;
     [NSThread sleepForTimeInterval:ti];
-  }-*/;
+  ]-*/;
 
   /**
    * Causes the calling Thread to yield execution time to another Thread that
