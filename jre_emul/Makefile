@@ -106,6 +106,8 @@ JRE_INTERFACES = \
 	java/util/Set.h \
 	java/util/SortedMap.h \
 	java/util/SortedSet.h \
+	java/util/concurrent/BlockingDeque.h \
+	java/util/concurrent/BlockingQueue.h \
 	java/util/concurrent/Callable.h \
 	java/util/concurrent/ConcurrentMap.h \
 	java/util/concurrent/Executor.h \
