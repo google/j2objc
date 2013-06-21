@@ -337,6 +337,7 @@ public class ObjectiveCHeaderGenerator extends ObjectiveCSourceFileGenerator {
   protected void generateFileHeader() {
     printf("#ifndef _%s_H_\n", mainTypeName);
     printf("#define _%s_H_\n", mainTypeName);
+    pushIgnoreDeprecatedDeclarationsPragma();
     newline();
 
     HeaderImportCollector collector = new HeaderImportCollector();
@@ -365,6 +366,7 @@ public class ObjectiveCHeaderGenerator extends ObjectiveCSourceFileGenerator {
 
   protected void generateFileFooter() {
     newline();
+    popIgnoreDeprecatedDeclarationsPragma();
     printf("#endif // _%s_H_\n", mainTypeName);
   }
 
@@ -577,3 +579,4 @@ public class ObjectiveCHeaderGenerator extends ObjectiveCSourceFileGenerator {
     return false;
   }
 }
+

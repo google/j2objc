@@ -486,4 +486,27 @@ public class ObjectiveCHeaderGeneratorTest extends GenerationTest {
     assertTranslation(translation, "@property (nonatomic, assign) FooBar_Internal *fieldBar;");
     assertTranslation(translation, "@property (nonatomic, retain) FooBar_Internal *fieldFoo;");
   }
+
+  public void testAddIgnoreDeprecationWarningsPragmaIfDeprecatedDeclarationsIsEnabled()
+      throws IOException {
+    Options.enableDeprecatedDeclarations();
+
+    String sourceContent = "";
+    String translation = translateSourceFile(sourceContent, "FooBar", "FooBar.h");
+
+    assertTranslation(translation, "#pragma clang diagnostic push");
+    assertTranslation(translation, "#pragma GCC diagnostic ignored \"-Wdeprecated-declarations\"");
+    assertTranslation(translation, "#pragma clang diagnostic pop");
+  }
+
+  public void testDoNotAddIgnoreDeprecationWarningsPragmaIfDeprecatedDeclarationsIsDisabled()
+      throws IOException {
+    String sourceContent = "";
+    String translation = translateSourceFile(sourceContent, "FooBar", "FooBar.h");
+
+    assertNotInTranslation(translation, "#pragma clang diagnostic push");
+    assertNotInTranslation(translation,
+        "#pragma GCC diagnostic ignored \"-Wdeprecated-declarations\"");
+    assertNotInTranslation(translation, "#pragma clang diagnostic pop");
+  }
 }
