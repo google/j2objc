@@ -160,29 +160,29 @@ public final class Locale implements Cloneable, Serializable {
         defaultLocale = new Locale(language, region, variant);
     }
     
-    private static native String getUserLanguage(String defaultLanguage) /*-{
+    private static native String getUserLanguage(String defaultLanguage) /*-[
       NSString *language = [[NSLocale currentLocale] objectForKey:NSLocaleLanguageCode];
       if (language == nil) {
         language = @"";
       }
       return language;
-    }-*/;
+    ]-*/;
     
-    private static native String getUserRegion(String defaultRegion) /*-{
+    private static native String getUserRegion(String defaultRegion) /*-[
       NSString *region = [[NSLocale currentLocale] objectForKey:NSLocaleCountryCode];
       if (region == nil) {
         region = @"";
       }
       return region;
-    }-*/;
+    ]-*/;
 
-    private static native String getUserVariant(String defaultVariant) /*-{
+    private static native String getUserVariant(String defaultVariant) /*-[
       NSString *variant = [[NSLocale currentLocale] objectForKey:NSLocaleVariantCode];
       if (variant == nil) {
       	variant = @"";
       }
       return variant;
-    }-*/;
+    ]-*/;
   
   
     private transient String countryCode;
@@ -307,7 +307,7 @@ public final class Locale implements Cloneable, Serializable {
      *
      * @return an array of {@code Locale}s.
      */
-    public static native Locale[] getAvailableLocales() /*-{
+    public static native Locale[] getAvailableLocales() /*-[
         NSArray *locales = [NSLocale availableLocaleIdentifiers];
         NSUInteger n = [locales count];
         IOSClass *localeType = [IOSClass classWithClass:[JavaUtilLocale class]];
@@ -339,7 +339,7 @@ public final class Locale implements Cloneable, Serializable {
         [result autorelease];
 #endif
         return result;
-    }-*/;
+    ]-*/;
 
     /**
      * Gets the country code for this {@code Locale} or an empty string of no country
@@ -509,7 +509,7 @@ public final class Locale implements Cloneable, Serializable {
      * 
      * @return an array of strings.
      */
-    public static native String[] getISOCountries() /*-{
+    public static native String[] getISOCountries() /*-[
         NSArray *countries = [NSLocale ISOCountryCodes];
         NSUInteger count = [countries count];
         NSMutableData* data = [NSMutableData dataWithLength: count * sizeof(id)];
@@ -520,7 +520,7 @@ public final class Locale implements Cloneable, Serializable {
                                        count:count
                                         type:[IOSClass classWithClass:[NSString class]]];
         return result;
-    }-*/;
+    ]-*/;
 
     /**
      * Gets the list of two letter ISO language codes which can be used as the
@@ -528,7 +528,7 @@ public final class Locale implements Cloneable, Serializable {
      *
      * @return an array of strings.
      */
-	public static native String[] getISOLanguages() /*-{
+	public static native String[] getISOLanguages() /*-[
         NSArray *languages = [NSLocale ISOLanguageCodes];
         NSUInteger count = [languages count];
         NSMutableData* data = [NSMutableData dataWithLength: count * sizeof(id)];    
@@ -539,7 +539,7 @@ public final class Locale implements Cloneable, Serializable {
                                        count:count
                                         type:[IOSClass classWithClass:[NSString class]]];
         return result;
-    }-*/;
+    ]-*/;
 
     /**
      * Gets the language code for this {@code Locale} or the empty string of no language

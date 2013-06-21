@@ -85,10 +85,10 @@ public class FileOutputStream extends OutputStream implements Closeable {
         fd.descriptor = open(file.getAbsolutePath(), append);
     }
     
-    private native long open(String path, boolean append) throws FileNotFoundException /*-{
+    private native long open(String path, boolean append) throws FileNotFoundException /*-[
       int flags = O_WRONLY | O_CREAT | (append ? O_APPEND : O_TRUNC);
       return (long long) open([path UTF8String], flags, 0644);
-    }-*/;
+    ]-*/;
     
     /**
      * Constructs a new FileOutputStream on the FileDescriptor {@code fd}. The
@@ -172,9 +172,9 @@ public class FileOutputStream extends OutputStream implements Closeable {
         }
     }
     
-    private native void close(long descriptor) /*-{
+    private native void close(long descriptor) /*-[
       close((int) descriptor);
-    }-*/;
+    ]-*/;
 
     /**
      * Frees any resources allocated for this stream before it is garbage
@@ -254,7 +254,7 @@ public class FileOutputStream extends OutputStream implements Closeable {
         nativeWrite(buffer, offset, count);
     }
     
-    private native int nativeWrite(byte[] buffer, int offset, int count) /*-{
+    private native int nativeWrite(byte[] buffer, int offset, int count) /*-[
       char *buf = malloc(count);
       @try {
         [buffer getBytes:buf offset:offset length:count];
@@ -271,7 +271,7 @@ public class FileOutputStream extends OutputStream implements Closeable {
       @finally {
         free(buf);
       }
-    }-*/;
+    ]-*/;
 
     /**
      * Writes the specified byte {@code oneByte} to this stream. Only the low

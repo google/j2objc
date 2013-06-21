@@ -22,9 +22,9 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Random;
 
-/*-{
+/*-[
 #import <sys/utsname.h>
-}-*/
+]-*/
 
 /**
  * An "abstract" representation of a file system entity identified by a
@@ -226,7 +226,7 @@ public class File implements Serializable, Comparable<File> {
     }
     */
 
-    private static native boolean isCaseSensitiveImpl() /*-{
+    private static native boolean isCaseSensitiveImpl() /*-[
       // True for iOS, not OS X/simulator.
       struct utsname systemInfo;
       uname(&systemInfo);
@@ -234,7 +234,7 @@ public class File implements Serializable, Comparable<File> {
         return false;
       }
       return true;
-    }-*/;
+    ]-*/;
 
     /**
      * Lists the file system roots. The Java platform may support zero or more
@@ -360,16 +360,16 @@ public class File implements Serializable, Comparable<File> {
         return deleteFileImpl(propPath);
     }
 
-    private native boolean deleteDirImpl(String filePath) /*-{
+    private native boolean deleteDirImpl(String filePath) /*-[
       NSArray *files =
           [[NSFileManager defaultManager] contentsOfDirectoryAtPath:filePath error:nil];
       if (!files || [files count] > 0) {  // Don't delete if non-empty.
         return false;
       }
       return [self deleteFileImplWithNSString:filePath];
-    }-*/;
+    ]-*/;
 
-    private native boolean deleteFileImpl(String filePath) /*-{
+    private native boolean deleteFileImpl(String filePath) /*-[
       NSFileManager *manager = [NSFileManager defaultManager];
       if (![manager fileExistsAtPath:filePath isDirectory:NULL]) {
         return NO;
@@ -378,7 +378,7 @@ public class File implements Serializable, Comparable<File> {
         return NO;
       }
       return [[NSFileManager defaultManager] removeItemAtPath:filePath error:nil];
-    }-*/;
+    ]-*/;
 
     /**
      * Schedules this file to be automatically deleted once the virtual machine
@@ -431,9 +431,9 @@ public class File implements Serializable, Comparable<File> {
         return existsImpl(properPath(true));
     }
 
-    private native boolean existsImpl(String filePath) /*-{
+    private native boolean existsImpl(String filePath) /*-[
       return [[NSFileManager defaultManager] fileExistsAtPath:filePath];
-    }-*/;
+    ]-*/;
 
     /**
      * Returns the absolute path of this file.
@@ -680,11 +680,11 @@ public class File implements Serializable, Comparable<File> {
         return isDirectoryImpl(properPath(true));
     }
 
-    private native boolean isDirectoryImpl(String filePath) /*-{
+    private native boolean isDirectoryImpl(String filePath) /*-[
       BOOL isDir;
       BOOL exists = [[NSFileManager defaultManager] fileExistsAtPath:filePath isDirectory:&isDir];
       return exists && isDir;
-    }-*/;
+    ]-*/;
 
     /**
      * Indicates if this file represents a <em>file</em> on the underlying
@@ -702,11 +702,11 @@ public class File implements Serializable, Comparable<File> {
         return isFileImpl(properPath(true));
     }
 
-    private native boolean isFileImpl(String filePath) /*-{
+    private native boolean isFileImpl(String filePath) /*-[
       BOOL isDir;
       BOOL exists = [[NSFileManager defaultManager] fileExistsAtPath:filePath isDirectory:&isDir];
       return exists && !isDir;
-    }-*/;
+    ]-*/;
 
     /**
      * Returns whether or not this file is a hidden file as defined by the
@@ -731,17 +731,17 @@ public class File implements Serializable, Comparable<File> {
       return getName().startsWith(".");
     }
 
-    private native boolean isReadableImpl(String filePath) /*-{
+    private native boolean isReadableImpl(String filePath) /*-[
       return [[NSFileManager defaultManager] isReadableFileAtPath:filePath];
-    }-*/;
+    ]-*/;
 
-    private native boolean isWritableImpl(String filePath) /*-{
+    private native boolean isWritableImpl(String filePath) /*-[
       return [[NSFileManager defaultManager] isWritableFileAtPath:filePath];
-    }-*/;
+    ]-*/;
 
-    private native String getLinkImpl(String filePath) /*-{
+    private native String getLinkImpl(String filePath) /*-[
       return [[NSFileManager defaultManager] destinationOfSymbolicLinkAtPath:filePath error:nil];
-    }-*/;
+    ]-*/;
 
     /**
      * Returns the time when this file was last modified, measured in
@@ -761,13 +761,13 @@ public class File implements Serializable, Comparable<File> {
         return result;
     }
 
-    private native long lastModifiedImpl(String filePath) /*-{
+    private native long lastModifiedImpl(String filePath) /*-[
       NSDictionary *attributes = [[NSFileManager defaultManager] attributesOfItemAtPath:filePath
                                                                                   error:nil];
       NSDate *lastModified = [attributes fileModificationDate];
       NSTimeInterval seconds = [lastModified timeIntervalSince1970];
       return llround(seconds * 1000);
-    }-*/;
+    ]-*/;
 
     /**
      * Sets the time this file was last modified, measured in milliseconds since
@@ -790,19 +790,19 @@ public class File implements Serializable, Comparable<File> {
         return (setLastModifiedImpl(properPath(true), time));
     }
 
-    private native boolean setAttribute(String path, String attributeKey, Object value) /*-{
+    private native boolean setAttribute(String path, String attributeKey, Object value) /*-[
       NSMutableDictionary *attributes = [NSMutableDictionary dictionaryWithCapacity:1];
       [attributes setObject:value forKey:attributeKey];
       return [[NSFileManager defaultManager] setAttributes:attributes ofItemAtPath:path error:nil];
-    }-*/;
+    ]-*/;
 
-    private native boolean setLastModifiedImpl(String path, long time) /*-{
+    private native boolean setLastModifiedImpl(String path, long time) /*-[
       NSTimeInterval seconds = time / 1000.0;
       NSDate *lastModified = [NSDate dateWithTimeIntervalSince1970:seconds];
       return [self setAttributeWithNSString:path
                                withNSString:NSFileModificationDate
                                      withId:lastModified];
-    }-*/;
+    ]-*/;
 
     /**
      * Marks this file or directory to be read-only as defined by the operating
@@ -818,11 +818,11 @@ public class File implements Serializable, Comparable<File> {
         return (setReadOnlyImpl(properPath(true)));
     }
 
-    private native boolean setReadOnlyImpl(String path) /*-{
+    private native boolean setReadOnlyImpl(String path) /*-[
       return [self setAttributeWithNSString:path
                                withNSString:NSFileImmutable
                                      withId:[NSNumber numberWithBool:YES]];
-    }-*/;
+    ]-*/;
 
     /**
      * Returns the length of this file in bytes.
@@ -836,9 +836,9 @@ public class File implements Serializable, Comparable<File> {
         return lengthImpl(properPath(true));
     }
 
-    private native long lengthImpl(String filePath) /*-{
+    private native long lengthImpl(String filePath) /*-[
       return [[[NSFileManager defaultManager] attributesOfItemAtPath:filePath error:nil] fileSize];
-    }-*/;
+    ]-*/;
 
     /**
      * Returns an array of strings with the file names in the directory
@@ -1023,7 +1023,7 @@ public class File implements Serializable, Comparable<File> {
         return tempResult.toArray(new String[tempResult.size()]);
     }
 
-    private synchronized static native String[] listImpl(String path) /*-{
+    private synchronized static native String[] listImpl(String path) /*-[
       NSArray *fileArray =
           [[NSFileManager defaultManager] contentsOfDirectoryAtPath:path error:nil];
       IOSObjectArray *files =
@@ -1037,7 +1037,7 @@ public class File implements Serializable, Comparable<File> {
         [files replaceObjectAtIndex:i withObject:[fileArray objectAtIndex:i]];
       }
       return files;
-    }-*/;
+    ]-*/;
 
     /**
      * Creates the directory named by the trailing filename of this file. Does
@@ -1054,12 +1054,12 @@ public class File implements Serializable, Comparable<File> {
        return mkdirImpl(properPath(true));
     }
 
-    private native boolean mkdirImpl(String filePath) /*-{
+    private native boolean mkdirImpl(String filePath) /*-[
       return [[NSFileManager defaultManager] createDirectoryAtPath:filePath
                                        withIntermediateDirectories:NO
                                                         attributes:nil
                                                              error:nil];
-    }-*/;
+    ]-*/;
 
     /**
      * Creates the directory named by the trailing filename of this file,
@@ -1122,7 +1122,7 @@ public class File implements Serializable, Comparable<File> {
         }
     }
 
-    private native int newFileImpl(String filePath) /*-{
+    private native int newFileImpl(String filePath) /*-[
       if ([self existsImplWithNSString:filePath]) {
         return 1;
       }
@@ -1136,7 +1136,7 @@ public class File implements Serializable, Comparable<File> {
       [e autorelease];
 #endif
       @throw e;
-    }-*/;
+    ]-*/;
 
     /**
      * Creates an empty temporary file using the given prefix and suffix as part
@@ -1274,9 +1274,9 @@ public class File implements Serializable, Comparable<File> {
         return renameToImpl(properPath(true), dest.properPath(true));
     }
 
-    private native boolean renameToImpl(String pathExist, String pathNew) /*-{
+    private native boolean renameToImpl(String pathExist, String pathNew) /*-[
       return [[NSFileManager defaultManager] moveItemAtPath:pathExist toPath:pathNew error:nil];
-    }-*/;
+    ]-*/;
 
     /**
      * Returns a string containing a concise, human-readable description of this

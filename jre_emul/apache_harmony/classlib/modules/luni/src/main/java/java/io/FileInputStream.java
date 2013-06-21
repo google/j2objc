@@ -68,9 +68,9 @@ public class FileInputStream extends InputStream implements Closeable {
         fd.descriptor = open(file.getAbsolutePath());
     }
     
-    private native long open(String path) /*-{
+    private native long open(String path) /*-[
       return (long long) open([path UTF8String], O_RDONLY);
-    }-*/;
+    ]-*/;
 
     /**
      * Constructs a new {@code FileInputStream} on the {@link FileDescriptor}
@@ -131,12 +131,12 @@ public class FileInputStream extends InputStream implements Closeable {
         }
     }
     
-    private native int nativeAvailable(long descriptor) /*-{
+    private native int nativeAvailable(long descriptor) /*-[
       long long currentPosition = lseek(descriptor, 0L, SEEK_CUR);
       long long endPosition = lseek(descriptor, 0L, SEEK_END);
       lseek(descriptor, currentPosition, SEEK_SET);
       return (int) (endPosition - currentPosition);
-    }-*/;
+    ]-*/;
 
     // Code based on Harmony's hytty.c:hytty_available().
     private native int nativeTtyAvailable() /*-[
@@ -177,9 +177,9 @@ public class FileInputStream extends InputStream implements Closeable {
         }
     }
     
-    private native void nativeClose() /*-{
+    private native void nativeClose() /*-[
       close(fd_->descriptor_);
-    }-*/;
+    ]-*/;
 
     /**
      * Ensures that all resources for this stream are released when it is about
@@ -275,7 +275,7 @@ public class FileInputStream extends InputStream implements Closeable {
         }
     }
 
-    private native int nativeRead(byte[] buffer, int offset, int count) /*-{
+    private native int nativeRead(byte[] buffer, int offset, int count) /*-[
       char *buf = malloc(count);
       @try {
         int n = read(fd_->descriptor_, buf, count);
@@ -295,7 +295,7 @@ public class FileInputStream extends InputStream implements Closeable {
       @finally {
         free(buf);
       }
-    }-*/;
+    ]-*/;
 
     /**
      * Skips {@code count} number of bytes in this stream. Subsequent
@@ -325,11 +325,11 @@ public class FileInputStream extends InputStream implements Closeable {
         }
     }
     
-    private native long seek(long count) /*-{
+    private native long seek(long count) /*-[
       long currentPosition = lseek(fd_->descriptor_, 0L, SEEK_CUR);
       long newPosition = lseek(fd_->descriptor_, count, SEEK_CUR);
       return newPosition - currentPosition;
-    }-*/;
+    ]-*/;
 
     private synchronized void openCheck() throws IOException {
         if (fd.descriptor < 0) {

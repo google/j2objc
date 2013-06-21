@@ -41,9 +41,9 @@ public final class ByteOrder {
         }
     }
     
-    private static native boolean isLittleEndian() /*-{
+    private static native boolean isLittleEndian() /*-[
 	return CFByteOrderGetCurrent() == CFByteOrderLittleEndian;
-    }-*/;
+    ]-*/;
 
     /**
      * Returns the current platform byte order.

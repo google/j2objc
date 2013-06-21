@@ -17,9 +17,9 @@
 
 package java.util;
 
-/*-{
+/*-[
 #import <math.h>
-}-*/
+]-*/
 
 import java.io.Serializable;
 
@@ -187,15 +187,15 @@ public class Random implements Serializable {
                             // ?
     }
 
-    private static native double iOS_sqrt(double a) /*-{
+    private static native double iOS_sqrt(double a) /*-[
         // Use math.h function.
         return sqrt(a);
-    }-*/;
+    ]-*/;
 
-    private static native double iOS_log(double a) /*-{
+    private static native double iOS_log(double a) /*-[
         // Use math.h function.
         return log(a);
-    }-*/;
+    ]-*/;
 
     /**
      * Generates a uniformly distributed 32-bit {@code int} value from

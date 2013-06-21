@@ -153,7 +153,7 @@ public class OutputStreamWriter extends Writer {
         }
     }
 
-    private native void convert(char[] buf, int offset, int count) /*-{
+    private native void convert(char[] buf, int offset, int count) /*-[
       unichar *chars = [buf getChars];
       NSString *s = [[NSString alloc] initWithCharacters:(chars + offset) length:count];
 #if ! __has_feature(objc_arc)
@@ -182,7 +182,7 @@ public class OutputStreamWriter extends Writer {
 #if ! __has_feature(objc_arc)
       [array release];
 #endif
-    }-*/;
+    ]-*/;
 
     /**
      * Writes the character {@code oneChar} to this writer. The lowest two bytes

@@ -64,17 +64,17 @@ public final class FileDescriptor {
     
     boolean readOnly = false; 
 
-    private static native long getStdInDescriptor() /*-{
+    private static native long getStdInDescriptor() /*-[
       return (long) fcntl(STDIN_FILENO, F_DUPFD, 0);
-    }-*/;
+    ]-*/;
     
-    private static native long getStdOutDescriptor() /*-{
+    private static native long getStdOutDescriptor() /*-[
       return (long) fcntl(STDOUT_FILENO, F_DUPFD, 0);
-    }-*/;
+    ]-*/;
     
-    private static native long getStdErrDescriptor() /*-{
+    private static native long getStdErrDescriptor() /*-[
       return (long) fcntl(STDERR_FILENO, F_DUPFD, 0);
-    }-*/;
+    ]-*/;
 
     static {
         in.descriptor = getStdInDescriptor();
@@ -104,9 +104,9 @@ public final class FileDescriptor {
         }
     }
     
-    private native void syncImpl() throws SyncFailedException /*-{
+    private native void syncImpl() throws SyncFailedException /*-[
       fsync((int) descriptor_);
-    }-*/;
+    ]-*/;
 
     /**
      * Indicates whether this FileDescriptor is valid.
