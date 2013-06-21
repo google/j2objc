@@ -20,6 +20,7 @@ import java.io.FileDescriptor;
 
 /*-[
 #import "TempFailureRetry.h"
+#import <fcntl.h>
 #import <sys/stat.h>
 #include <termios.h>
 ]-*/

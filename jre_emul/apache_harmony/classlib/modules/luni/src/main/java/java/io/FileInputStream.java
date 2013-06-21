@@ -18,6 +18,7 @@
 package java.io;
 
 /*-[
+#import <fcntl.h>
 #import <sys/ioctl.h>
 ]-*/
 
