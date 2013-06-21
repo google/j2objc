@@ -134,6 +134,9 @@ public class StatementGenerator extends ErrorReportingASTVisitor {
       boolean asFunction, SourcePosition sourcePosition) throws ASTNodeException {
     StatementGenerator generator = new StatementGenerator(node, fieldHiders, asFunction,
         sourcePosition);
+    if (node == null) {
+      throw new NullPointerException("cannot generate a null statement");
+    }
     generator.run(node);
     return generator.getResult();
   }
