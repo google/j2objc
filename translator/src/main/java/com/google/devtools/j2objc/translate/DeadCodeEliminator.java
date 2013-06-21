@@ -24,8 +24,8 @@ import com.google.common.collect.Iterators;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
-import com.google.devtools.j2objc.types.Types;
 import com.google.devtools.j2objc.util.ASTUtil;
+import com.google.devtools.j2objc.util.BindingUtil;
 import com.google.devtools.j2objc.util.DeadCodeMap;
 import com.google.devtools.j2objc.util.ErrorReportingASTVisitor;
 import com.google.j2objc.annotations.Weak;
@@ -136,7 +136,7 @@ public class DeadCodeEliminator extends ErrorReportingASTVisitor {
     List<BodyDeclaration> bodyDecls = ASTUtil.getBodyDeclarations(node);
     eliminateDeadCode(binding, bodyDecls);
     generateMissingMethods(node.getAST(), binding, bodyDecls);
-    if (deadCodeMap.isDeadClass(Types.getSignature(node.resolveBinding()))) {
+    if (deadCodeMap.isDeadClass(BindingUtil.getSignature(node.resolveBinding()))) {
       // Dead enum means none of the constants are ever used, so they can all be deleted.
       node.enumConstants().clear();
     }
@@ -164,7 +164,7 @@ public class DeadCodeEliminator extends ErrorReportingASTVisitor {
     } else if (binding instanceof IVariableBinding) {
       // Remove static imports for dead non-constant fields
       IVariableBinding var = (IVariableBinding) binding;
-      String clazz = Types.getSignature(var.getDeclaringClass());
+      String clazz = BindingUtil.getSignature(var.getDeclaringClass());
       String name = var.getName();
       if (deadCodeMap.isDeadField(clazz, name) && var.getConstantValue() == null) {
         node.delete();
@@ -201,7 +201,7 @@ public class DeadCodeEliminator extends ErrorReportingASTVisitor {
    * Remove dead members from a type.
    */
   private void eliminateDeadCode(ITypeBinding type, List<BodyDeclaration> body) {
-    String clazz = Types.getSignature(type);
+    String clazz = BindingUtil.getSignature(type);
     removeDeadMethods(clazz, body);
     removeDeadFields(clazz, body);
     if (deadCodeMap.isDeadClass(clazz)) {
@@ -234,7 +234,7 @@ public class DeadCodeEliminator extends ErrorReportingASTVisitor {
         if (!generatedMethods.contains(method)) {
           IMethodBinding binding = method.resolveBinding();
           String name = getProGuardName(binding);
-          String signature = Types.getSignature(binding);
+          String signature = BindingUtil.getSignature(binding);
           if (deadCodeMap.isDeadMethod(clazz, name, signature)) {
             declarationsIter.remove();
           }
@@ -422,10 +422,11 @@ public class DeadCodeEliminator extends ErrorReportingASTVisitor {
    */
   private List<IMethodBinding> getVisibleMethods(ITypeBinding type) {
     List<IMethodBinding> methods = Lists.newArrayList();
-    String clazz = Types.getSignature(type);
+    String clazz = BindingUtil.getSignature(type);
     for (IMethodBinding method : type.getDeclaredMethods()) {
       int modifiers = method.getModifiers();
-      if (!deadCodeMap.isDeadMethod(clazz, getProGuardName(method), Types.getSignature(method))
+      if (!deadCodeMap.isDeadMethod(clazz, getProGuardName(method),
+                                    BindingUtil.getSignature(method))
           && !Modifier.isPrivate(modifiers)
           && !Modifier.isStatic(modifiers)) {
         methods.add(method);
@@ -625,10 +626,10 @@ public class DeadCodeEliminator extends ErrorReportingASTVisitor {
    * Determines whether every method in a class with a given name is dead.
    */
   private boolean allMethodsDeadWithName(ITypeBinding type, String name) {
-    String clazz = Types.getSignature(type);
+    String clazz = BindingUtil.getSignature(type);
     for (IMethodBinding method : type.getDeclaredMethods()) {
       if (method.getName().equals(name)
-          && !deadCodeMap.isDeadMethod(clazz, name, Types.getSignature(method))) {
+          && !deadCodeMap.isDeadMethod(clazz, name, BindingUtil.getSignature(method))) {
         return false;
       }
     }
@@ -642,7 +643,7 @@ public class DeadCodeEliminator extends ErrorReportingASTVisitor {
    * Remove all annotations except @Weak and @WeakOuter.
    */
   private void removeAnnotation(Annotation annotation) {
-    String signature = Types.getSignature(annotation.resolveTypeBinding());
+    String signature = BindingUtil.getSignature(annotation.resolveTypeBinding());
     if (!signature.equals(WEAK) && !signature.equals(WEAK_OUTER)) {
       annotation.delete();
     }
@@ -715,12 +716,12 @@ public class DeadCodeEliminator extends ErrorReportingASTVisitor {
    * Retrieve all non-dead constructors of a class.
    */
   private Iterator<IMethodBinding> getConstructors(final ITypeBinding clazz) {
-    final String classSignature = Types.getSignature(clazz);
+    final String classSignature = BindingUtil.getSignature(clazz);
     return Iterators.filter(Iterators.forArray(clazz.getDeclaredMethods()),
         new Predicate<IMethodBinding>() {
       @Override public boolean apply(IMethodBinding method) {
         return method.isConstructor() && !deadCodeMap.isDeadMethod(
-            classSignature, getProGuardName(method), Types.getSignature(method));
+            classSignature, getProGuardName(method), BindingUtil.getSignature(method));
       }
     });
   }

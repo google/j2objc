@@ -114,7 +114,7 @@ public abstract class ObjectiveCSourceFileGenerator extends SourceFileGenerator 
           IVariableBinding binding = Types.getVariableBinding(var);
           // Don't define accessors for private constants, since they can be
           // directly referenced.
-          if (!(Types.isPrimitiveConstant(binding) && Modifier.isPrivate(binding.getModifiers()))) {
+          if (!(BindingUtil.isPrimitiveConstant(binding) && BindingUtil.isPrivate(binding))) {
             bindings.add(binding);
           }
         }

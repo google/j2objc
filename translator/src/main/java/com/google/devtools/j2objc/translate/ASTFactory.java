@@ -14,12 +14,16 @@
 
 package com.google.devtools.j2objc.translate;
 
+import com.google.devtools.j2objc.types.IOSArrayTypeBinding;
 import com.google.devtools.j2objc.types.IOSTypeBinding;
 import com.google.devtools.j2objc.types.Types;
 import com.google.devtools.j2objc.util.ASTUtil;
 
 import org.eclipse.jdt.core.dom.AST;
 import org.eclipse.jdt.core.dom.ArrayAccess;
+import org.eclipse.jdt.core.dom.ArrayCreation;
+import org.eclipse.jdt.core.dom.ArrayInitializer;
+import org.eclipse.jdt.core.dom.ArrayType;
 import org.eclipse.jdt.core.dom.Assignment;
 import org.eclipse.jdt.core.dom.CharacterLiteral;
 import org.eclipse.jdt.core.dom.Expression;
@@ -39,6 +43,7 @@ import org.eclipse.jdt.core.dom.NullLiteral;
 import org.eclipse.jdt.core.dom.NumberLiteral;
 import org.eclipse.jdt.core.dom.PostfixExpression;
 import org.eclipse.jdt.core.dom.PrefixExpression;
+import org.eclipse.jdt.core.dom.PrimitiveType;
 import org.eclipse.jdt.core.dom.QualifiedName;
 import org.eclipse.jdt.core.dom.SimpleName;
 import org.eclipse.jdt.core.dom.SingleVariableDeclaration;
@@ -66,9 +71,13 @@ public final class ASTFactory {
   }
 
   public static SimpleName newSimpleName(AST ast, IBinding binding) {
-    SimpleName name = ast.newSimpleName(binding.getName());
-    Types.addBinding(name, binding);
-    return name;
+    String name = binding.getName();
+    if (name.isEmpty()) {
+      name = "$Unnamed$";
+    }
+    SimpleName nameNode = ast.newSimpleName(name);
+    Types.addBinding(nameNode, binding);
+    return nameNode;
   }
 
   public static QualifiedName newQualifiedName(AST ast, Name qualifier, SimpleName name) {
@@ -109,19 +118,25 @@ public final class ASTFactory {
   }
 
   public static VariableDeclarationStatement newVariableDeclarationStatement(
-      AST ast, IVariableBinding binding, Expression initializer) {
-    VariableDeclarationStatement decl = ast.newVariableDeclarationStatement(
-        newVariableDeclarationFragment(ast, binding, initializer));
-    decl.setType(Types.makeType(binding.getType()));
-    ASTUtil.getModifiers(decl).addAll(newModifiers(ast, binding.getModifiers()));
+      AST ast, VariableDeclarationFragment fragment) {
+    IVariableBinding varBinding = Types.getVariableBinding(fragment);
+    VariableDeclarationStatement decl = ast.newVariableDeclarationStatement(fragment);
+    decl.setType(newType(ast, varBinding.getType()));
+    ASTUtil.getModifiers(decl).addAll(newModifiers(ast, varBinding.getModifiers()));
     return decl;
+  }
+
+  public static VariableDeclarationStatement newVariableDeclarationStatement(
+      AST ast, IVariableBinding binding, Expression initializer) {
+    return newVariableDeclarationStatement(ast, newVariableDeclarationFragment(
+        ast, binding, initializer));
   }
 
   public static VariableDeclarationExpression newVariableDeclarationExpression(
       AST ast, IVariableBinding binding, Expression initializer) {
     VariableDeclarationExpression decl = ast.newVariableDeclarationExpression(
         newVariableDeclarationFragment(ast, binding, initializer));
-    decl.setType(Types.makeType(binding.getType()));
+    decl.setType(newType(ast, binding.getType()));
     ASTUtil.getModifiers(decl).addAll(newModifiers(ast, binding.getModifiers()));
     Types.addBinding(decl, binding.getType());
     return decl;
@@ -131,20 +146,24 @@ public final class ASTFactory {
       AST ast, IVariableBinding binding) {
     SingleVariableDeclaration decl = ast.newSingleVariableDeclaration();
     decl.setName(newSimpleName(ast, binding));
-    decl.setType(Types.makeType(binding.getType()));
+    decl.setType(newType(ast, binding.getType()));
     ASTUtil.getModifiers(decl).addAll(newModifiers(ast, binding.getModifiers()));
     Types.addBinding(decl, binding);
     return decl;
   }
 
   public static FieldDeclaration newFieldDeclaration(
-      AST ast, IVariableBinding binding, Expression initializer) {
-    FieldDeclaration decl = ast.newFieldDeclaration(
-        newVariableDeclarationFragment(ast, binding, initializer));
-    decl.setType(Types.makeType(binding.getType()));
-    ASTUtil.getModifiers(decl).addAll(newModifiers(ast, binding.getModifiers()));
-    Types.addBinding(decl, binding);
+      AST ast, VariableDeclarationFragment fragment) {
+    IVariableBinding varBinding = Types.getVariableBinding(fragment);
+    FieldDeclaration decl = ast.newFieldDeclaration(fragment);
+    decl.setType(newType(ast, varBinding.getType()));
+    ASTUtil.getModifiers(decl).addAll(newModifiers(ast, varBinding.getModifiers()));
     return decl;
+  }
+
+  public static FieldDeclaration newFieldDeclaration(
+      AST ast, IVariableBinding binding, Expression initializer) {
+    return newFieldDeclaration(ast, newVariableDeclarationFragment(ast, binding, initializer));
   }
 
   public static PrefixExpression newPrefixExpression(
@@ -192,6 +211,15 @@ public final class ASTFactory {
     return access;
   }
 
+  public static ArrayCreation newArrayCreation(AST ast, ArrayInitializer initializer) {
+    ITypeBinding type = Types.getTypeBinding(initializer);
+    ArrayCreation arrayCreation = ast.newArrayCreation();
+    arrayCreation.setType((ArrayType) newType(ast, type));
+    arrayCreation.setInitializer(initializer);
+    Types.addBinding(arrayCreation, type);
+    return arrayCreation;
+  }
+
   public static ForStatement newForStatement(
       AST ast, VariableDeclarationExpression decl, Expression cond, Expression updater,
       Statement body) {
@@ -216,7 +244,7 @@ public final class ASTFactory {
     MethodDeclaration declaration = ast.newMethodDeclaration();
     declaration.setConstructor(binding.isConstructor());
     declaration.setName(newSimpleName(ast, binding));
-    declaration.setReturnType2(Types.makeType(binding.getReturnType()));
+    declaration.setReturnType2(newType(ast, binding.getReturnType()));
     ASTUtil.getModifiers(declaration).addAll(newModifiers(ast, binding.getModifiers()));
     Types.addBinding(declaration, binding);
     return declaration;
@@ -243,10 +271,11 @@ public final class ASTFactory {
         "boolean");
   }
 
-  public static InstanceofExpression newInstanceofExpression(AST ast, Expression lhs, Type rhs) {
+  public static InstanceofExpression newInstanceofExpression(
+      AST ast, Expression lhs, ITypeBinding type) {
     InstanceofExpression expr = ast.newInstanceofExpression();
     expr.setLeftOperand(lhs);
-    expr.setRightOperand(rhs);
+    expr.setRightOperand(newType(ast, type));
     Types.addBinding(expr, ast.resolveWellKnownType("boolean"));
     return expr;
   }
@@ -279,8 +308,21 @@ public final class ASTFactory {
 
   public static TypeLiteral newTypeLiteral(AST ast, ITypeBinding type) {
     TypeLiteral literal = ast.newTypeLiteral();
-    literal.setType(Types.makeType(type));
+    literal.setType(newType(ast, type));
     Types.addBinding(literal, type);
     return literal;
+  }
+
+  public static Type newType(AST ast, ITypeBinding binding) {
+    Type type;
+    if (binding.isPrimitive()) {
+      type = ast.newPrimitiveType(PrimitiveType.toCode(binding.getName()));
+    } else if (binding.isArray() && !(binding instanceof IOSArrayTypeBinding)) {
+      type = ast.newArrayType(newType(ast, binding.getComponentType()));
+    } else {
+      type = ast.newSimpleType(newSimpleName(ast, binding.getErasure()));
+    }
+    Types.addBinding(type, binding);
+    return type;
   }
 }

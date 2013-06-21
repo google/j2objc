@@ -39,10 +39,7 @@ import org.eclipse.jdt.core.dom.IMethodBinding;
 import org.eclipse.jdt.core.dom.IPackageBinding;
 import org.eclipse.jdt.core.dom.ITypeBinding;
 import org.eclipse.jdt.core.dom.IVariableBinding;
-import org.eclipse.jdt.core.dom.Modifier;
 import org.eclipse.jdt.core.dom.NullLiteral;
-import org.eclipse.jdt.core.dom.PrimitiveType;
-import org.eclipse.jdt.core.dom.SimpleName;
 import org.eclipse.jdt.core.dom.SimpleType;
 import org.eclipse.jdt.core.dom.Type;
 import org.eclipse.jdt.core.dom.TypeDeclaration;
@@ -115,8 +112,6 @@ public class Types {
   // name.  The method mapper therefore uses this string, which the generators ignore.
   public static final String EMPTY_PARAMETER_NAME = "__empty_parameter__";
   public static final String NS_ANY_TYPE = "NS_ANY_TYPE";  // type of "id"
-
-  private static final int STATIC_FINAL_MODIFIERS = Modifier.STATIC | Modifier.FINAL;
 
   private Types(CompilationUnit unit) {
     ast = unit.getAST();
@@ -286,22 +281,6 @@ public class Types {
   }
 
   /**
-   * Returns true if the specified binding is for a static final variable.
-   */
-  public static boolean isConstantVariable(IVariableBinding binding) {
-    return (binding.getModifiers() & Types.STATIC_FINAL_MODIFIERS) == Types.STATIC_FINAL_MODIFIERS;
-  }
-
-  public static boolean isStaticVariable(IVariableBinding binding) {
-    return (binding.getModifiers() & Modifier.STATIC) > 0;
-  }
-
-  public static boolean isPrimitiveConstant(IVariableBinding binding) {
-    return binding != null && isConstantVariable(binding) && binding.getType().isPrimitive() &&
-        binding.getConstantValue() != null;
-  }
-
-  /**
    * Initialize this service using the AST returned by the parser.
    */
   public static void initialize(CompilationUnit unit) {
@@ -343,48 +322,6 @@ public class Types {
    */
   public static boolean hasIOSEquivalent(ITypeBinding binding) {
     return binding.isArray() || instance.typeMap.containsKey(binding.getTypeDeclaration());
-  }
-
-  /**
-   * Returns a Type AST node for a specific type binding.
-   */
-  public static Type makeType(ITypeBinding binding) {
-    Type type;
-    if (binding.isPrimitive()) {
-      PrimitiveType.Code typeCode = PrimitiveType.toCode(binding.getName());
-      type = instance.ast.newPrimitiveType(typeCode);
-    } else if (binding.isArray() && !(binding instanceof IOSArrayTypeBinding)) {
-      Type componentType = makeType(binding.getComponentType());
-      type = instance.ast.newArrayType(componentType);
-    } else {
-      String typeName = binding.getErasure().getName();
-      if (typeName == "") {
-        // Debugging aid for anonymous (no-name) classes.
-        typeName = "$Local$";
-      }
-      SimpleName name = instance.ast.newSimpleName(typeName);
-      addBinding(name, binding);
-      type = instance.ast.newSimpleType(name);
-    }
-    addBinding(type, binding);
-    return type;
-  }
-
-  /**
-   * Creates a replacement iOS type for a given JDT type.
-   */
-  public static Type makeIOSType(Type type) {
-    ITypeBinding binding = Types.getTypeBinding(type);
-    return makeIOSType(binding);
-  }
-
-  public static Type makeIOSType(ITypeBinding binding) {
-    if (binding.isArray()) {
-      ITypeBinding componentType = binding.getComponentType();
-      return Types.makeType(Types.resolveArrayType(componentType));
-    }
-    ITypeBinding newBinding = Types.mapType(binding);
-    return binding != newBinding ? Types.makeType(newBinding) : null;
   }
 
   public static ITypeBinding resolveJavaType(String name) {
@@ -889,42 +826,6 @@ public class Types {
 
     public boolean isWildcardType() {
       return false;
-    }
-  }
-
-  /**
-   * Returns the signature of an element, defined in the Java Language
-   * Specification 3rd edition, section 13.1.
-   */
-  public static String getSignature(IBinding binding) {
-    if (binding instanceof ITypeBinding) {
-      return ((ITypeBinding) binding).getBinaryName();
-    }
-    if (binding instanceof IMethodBinding) {
-      return getSignature((IMethodBinding) binding);
-    }
-    return binding.getName();
-  }
-
-  private static String getSignature(IMethodBinding binding) {
-    StringBuilder sb = new StringBuilder("(");
-    for (ITypeBinding parameter : binding.getParameterTypes()) {
-      appendParameterSignature(parameter.getErasure(), sb);
-    }
-    sb.append(')');
-    if (binding.getReturnType() != null) {
-      appendParameterSignature(binding.getReturnType().getErasure(), sb);
-    }
-    return sb.toString();
-  }
-
-  private static void appendParameterSignature(ITypeBinding parameter, StringBuilder sb) {
-    if (!parameter.isPrimitive() && !parameter.isArray()) {
-      sb.append('L');
-    }
-    sb.append(parameter.getBinaryName().replace('.', '/'));
-    if (!parameter.isPrimitive() && !parameter.isArray()) {
-      sb.append(';');
     }
   }
 }

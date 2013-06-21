@@ -131,10 +131,11 @@ public class AnonymousClassConverter extends ErrorReportingASTVisitor {
     Types.addBinding(typeDecl.getName(), innerType);
     typeDecl.setSourceRange(node.getStartPosition(), node.getLength());
 
-    Type superType = Types.makeType(Types.mapType(innerType.getSuperclass()));
+    Type superType = ASTFactory.newType(ast, Types.mapType(innerType.getSuperclass()));
     typeDecl.setSuperclassType(superType);
     for (ITypeBinding interfaceType : innerType.getInterfaces()) {
-      ASTUtil.getSuperInterfaceTypes(typeDecl).add(Types.makeType(Types.mapType(interfaceType)));
+      ASTUtil.getSuperInterfaceTypes(typeDecl).add(
+          ASTFactory.newType(ast, Types.mapType(interfaceType)));
     }
 
     for (Object bodyDecl : node.bodyDeclarations()) {
@@ -162,7 +163,7 @@ public class AnonymousClassConverter extends ErrorReportingASTVisitor {
     // If invocation, replace anonymous class invocation with the new constructor.
     if (newInvocation != null) {
       newInvocation.setAnonymousClassDeclaration(null);
-      newInvocation.setType(Types.makeType(innerType));
+      newInvocation.setType(ASTFactory.newType(ast, innerType));
       IMethodBinding oldBinding = Types.getMethodBinding(newInvocation);
       if (oldBinding != null) {
         GeneratedMethodBinding invocationBinding = new GeneratedMethodBinding(oldBinding);

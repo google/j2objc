@@ -75,7 +75,6 @@ import org.eclipse.jdt.core.dom.InstanceofExpression;
 import org.eclipse.jdt.core.dom.LabeledStatement;
 import org.eclipse.jdt.core.dom.MethodDeclaration;
 import org.eclipse.jdt.core.dom.MethodInvocation;
-import org.eclipse.jdt.core.dom.Modifier;
 import org.eclipse.jdt.core.dom.NullLiteral;
 import org.eclipse.jdt.core.dom.NumberLiteral;
 import org.eclipse.jdt.core.dom.ParenthesizedExpression;
@@ -464,7 +463,7 @@ public class StatementGenerator extends ErrorReportingASTVisitor {
       }
     } else if (op == Operator.ASSIGN) {
       IVariableBinding lhsVar = Types.getVariableBinding(lhs);
-      if (!lhsVar.getType().isPrimitive() && Types.isStaticVariable(lhsVar)
+      if (!lhsVar.getType().isPrimitive() && BindingUtil.isStatic(lhsVar)
           && useStaticPublicAccessor(lhs)) {
         // convert static var assignment to its writer message
         buffer.append('[');
@@ -1310,7 +1309,7 @@ public class StatementGenerator extends ErrorReportingASTVisitor {
           buffer.append(')');
         }
       } else {
-        if ((binding.getModifiers() & Modifier.STATIC) > 0) {
+        if (BindingUtil.isStatic(binding)) {
           buffer.append(NameTable.getFullName(typeBinding));
         } else {
           buffer.append("self");
@@ -1505,7 +1504,7 @@ public class StatementGenerator extends ErrorReportingASTVisitor {
     IBinding binding = Types.getBinding(node);
     if (binding instanceof IVariableBinding) {
       IVariableBinding var = (IVariableBinding) binding;
-      if (Types.isStaticVariable(var)) {
+      if (BindingUtil.isStatic(var)) {
         return true;
       }
     }
@@ -1517,10 +1516,10 @@ public class StatementGenerator extends ErrorReportingASTVisitor {
     IBinding binding = Types.getBinding(node);
     if (binding instanceof IVariableBinding) {
       IVariableBinding var = (IVariableBinding) binding;
-      if (Types.isPrimitiveConstant(var)) {
+      if (BindingUtil.isPrimitiveConstant(var)) {
         buffer.append(NameTable.getPrimitiveConstantName(var));
         return false;
-      } else if (Types.isStaticVariable(var)) {
+      } else if (BindingUtil.isStatic(var)) {
         printStaticVarReference(node, /* assignable */ false);
         return false;
       }
@@ -1688,9 +1687,9 @@ public class StatementGenerator extends ErrorReportingASTVisitor {
     IBinding binding = Types.getBinding(node);
     if (binding instanceof IVariableBinding) {
       IVariableBinding var = (IVariableBinding) binding;
-      if (Types.isPrimitiveConstant(var)) {
+      if (BindingUtil.isPrimitiveConstant(var)) {
         buffer.append(NameTable.getPrimitiveConstantName(var));
-      } else if (Types.isStaticVariable(var)) {
+      } else if (BindingUtil.isStatic(var)) {
         printStaticVarReference(node, /* assignable */ false);
       } else {
         String name = NameTable.getName(node);
@@ -1722,7 +1721,7 @@ public class StatementGenerator extends ErrorReportingASTVisitor {
 
   private boolean isProperty(SimpleName name) {
     IVariableBinding var = Types.getVariableBinding(name);
-    if (!var.isField() || Modifier.isStatic(var.getModifiers())) {
+    if (!var.isField() || BindingUtil.isStatic(var)) {
       return false;
     }
     int parentNodeType = name.getParent().getNodeType();
@@ -1821,7 +1820,7 @@ public class StatementGenerator extends ErrorReportingASTVisitor {
   @Override
   public boolean visit(SuperMethodInvocation node) {
     IMethodBinding binding = Types.getMethodBinding(node);
-    if (Modifier.isStatic(binding.getModifiers())) {
+    if (BindingUtil.isStatic(binding)) {
       buffer.append("[[super class] ");
     } else {
       buffer.append("[super ");

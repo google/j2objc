@@ -77,7 +77,7 @@ public class DestructorGenerator extends ErrorReportingASTVisitor {
           @Override
           public boolean visit(VariableDeclarationFragment node) {
             IVariableBinding binding = Types.getVariableBinding(node);
-            if (!Modifier.isStatic(field.getModifiers()) && !Types.isConstantVariable(binding)) {
+            if (!Modifier.isStatic(field.getModifiers())) {
               releaseableFields.add(binding);
             }
             return true;
