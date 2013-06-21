@@ -24,6 +24,7 @@ import com.google.common.io.Files;
 import com.google.devtools.j2objc.gen.ObjectiveCHeaderGenerator;
 import com.google.devtools.j2objc.gen.ObjectiveCImplementationGenerator;
 import com.google.devtools.j2objc.translate.AnonymousClassConverter;
+import com.google.devtools.j2objc.translate.ArrayRewriter;
 import com.google.devtools.j2objc.translate.Autoboxer;
 import com.google.devtools.j2objc.translate.DeadCodeEliminator;
 import com.google.devtools.j2objc.translate.DestructorGenerator;
@@ -370,6 +371,8 @@ public class J2ObjC {
       loadMappingFiles();
     }
     new JavaToIOSMethodTranslator(unit.getAST(), methodMappings).run(unit);
+
+    new ArrayRewriter().run(unit);
 
     // Reorders the types so that superclasses are declared before classes that
     // extend them.

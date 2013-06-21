@@ -40,8 +40,9 @@ public class AutoboxerTest extends GenerationTest {
     // but 1 and 2 should be because they are passed as varargs.
     assertTranslation(translation, "twoWithTest:[[[Test alloc] initWithNSString:s] autorelease] " +
         "withInt:i withJavaLangIntegerArray:" +
-        "[IOSObjectArray arrayWithType:[IOSClass classWithClass:[JavaLangInteger class]] count:2,"+
-        " [JavaLangInteger valueOfWithInt:1], [JavaLangInteger valueOfWithInt:2] ]];");
+        "[IOSObjectArray arrayWithObjects:(id[]){ [JavaLangInteger valueOfWithInt:1], " +
+        "[JavaLangInteger valueOfWithInt:2] } count:2 type:" +
+        "[IOSClass classWithClass:[JavaLangInteger class]]]];");
   }
 
   public void testUnboxReturn() throws IOException {

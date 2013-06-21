@@ -14,6 +14,7 @@
 
 package com.google.devtools.j2objc.translate;
 
+import com.google.devtools.j2objc.types.IOSTypeBinding;
 import com.google.devtools.j2objc.types.Types;
 import com.google.devtools.j2objc.util.ASTUtil;
 
@@ -44,6 +45,7 @@ import org.eclipse.jdt.core.dom.SingleVariableDeclaration;
 import org.eclipse.jdt.core.dom.Statement;
 import org.eclipse.jdt.core.dom.StringLiteral;
 import org.eclipse.jdt.core.dom.Type;
+import org.eclipse.jdt.core.dom.TypeLiteral;
 import org.eclipse.jdt.core.dom.VariableDeclarationExpression;
 import org.eclipse.jdt.core.dom.VariableDeclarationFragment;
 import org.eclipse.jdt.core.dom.VariableDeclarationStatement;
@@ -220,6 +222,12 @@ public final class ASTFactory {
     return declaration;
   }
 
+  public static SimpleName newLabel(AST ast, String identifier) {
+    SimpleName node = ast.newSimpleName(identifier);
+    Types.addBinding(node, IOSTypeBinding.newUnmappedClass(identifier));
+    return node;
+  }
+
   public static NumberLiteral newNumberLiteral(AST ast, String token, String type) {
     NumberLiteral literal = ast.newNumberLiteral(token);
     Types.addBinding(literal, ast.resolveWellKnownType(type));
@@ -265,6 +273,13 @@ public final class ASTFactory {
    */
   public static Expression makeLiteral(AST ast, Object value, ITypeBinding type) {
     Expression literal = makeLiteralInternal(ast, value);
+    Types.addBinding(literal, type);
+    return literal;
+  }
+
+  public static TypeLiteral newTypeLiteral(AST ast, ITypeBinding type) {
+    TypeLiteral literal = ast.newTypeLiteral();
+    literal.setType(Types.makeType(type));
     Types.addBinding(literal, type);
     return literal;
   }

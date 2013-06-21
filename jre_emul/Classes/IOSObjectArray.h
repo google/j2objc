@@ -41,16 +41,13 @@
                  count:(NSUInteger)count
                   type:(IOSClass *)type;
 
-// Create an array from an element type, count and a C object array.
-+ (id)arrayWithType:(IOSClass *)type count:(int)count, ...;
-
 // Create an empty array with a type and length.
 - (id)initWithLength:(NSUInteger)length type:(IOSClass *)type;
 + (id)arrayWithLength:(NSUInteger)length type:(IOSClass *)type;
 
 // Create an empty multidimensional array.
 + (id)arrayWithDimensions:(NSUInteger)dimensionCount
-                  lengths:(NSUInteger *)dimensionLengths
+                  lengths:(const int *)dimensionLengths
                      type:(IOSClass *)type;
 
 + (id)arrayWithArray:(IOSObjectArray *)array;

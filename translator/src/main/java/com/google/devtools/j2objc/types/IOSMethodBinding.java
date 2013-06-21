@@ -18,7 +18,6 @@ package com.google.devtools.j2objc.types;
 
 import org.eclipse.jdt.core.dom.IMethodBinding;
 import org.eclipse.jdt.core.dom.ITypeBinding;
-import org.eclipse.jdt.core.dom.Modifier;
 
 /**
  * IOSMethodBinding: synthetic binding for an iOS method.
@@ -30,10 +29,10 @@ public class IOSMethodBinding extends GeneratedMethodBinding {
   private final IOSMethod iosMethod;
 
   private IOSMethodBinding(
-      IOSMethod iosMethod, IMethodBinding original, ITypeBinding returnType,
+      IOSMethod iosMethod, IMethodBinding original, int modifiers, ITypeBinding returnType,
       ITypeBinding declaringClass, boolean varargs) {
-    super(original, iosMethod.getName(), Modifier.PUBLIC, returnType, declaringClass, false,
-          varargs, true);
+    super(original, iosMethod.getName(), modifiers, returnType, declaringClass, false, varargs,
+          true);
     this.iosMethod = iosMethod;
   }
 
@@ -42,17 +41,18 @@ public class IOSMethodBinding extends GeneratedMethodBinding {
         original.isConstructor() ? original.getDeclaringClass() : original.getReturnType();
     ITypeBinding declaringClass = Types.resolveIOSType(iosMethod.getDeclaringClass());
     if (declaringClass == null) {
-      declaringClass = new IOSTypeBinding(iosMethod.getDeclaringClass(), false);
+      declaringClass = IOSTypeBinding.newUnmappedClass(iosMethod.getDeclaringClass());
     }
     IOSMethodBinding binding = new IOSMethodBinding(
-        iosMethod, original, returnType, declaringClass, original.isVarargs());
+        iosMethod, original, original.getModifiers(), returnType, declaringClass,
+        original.isVarargs());
     binding.addParameters(original);
     return binding;
   }
 
   public static IOSMethodBinding newMethod(
-      IOSMethod iosMethod, ITypeBinding returnType, ITypeBinding declaringClass) {
-    return new IOSMethodBinding(iosMethod, null, returnType, declaringClass, false);
+      IOSMethod iosMethod, int modifiers, ITypeBinding returnType, ITypeBinding declaringClass) {
+    return new IOSMethodBinding(iosMethod, null, modifiers, returnType, declaringClass, false);
   }
 
   public static IOSMethod getIOSMethod(IMethodBinding binding) {
@@ -64,5 +64,13 @@ public class IOSMethodBinding extends GeneratedMethodBinding {
 
   public IOSMethod getIOSMethod() {
     return iosMethod;
+  }
+
+  public static boolean hasVarArgsTarget(IMethodBinding method) {
+    IOSMethod iosMethod = getIOSMethod(method);
+    if (iosMethod != null) {
+      return iosMethod.isVarArgs();
+    }
+    return false;
   }
 }

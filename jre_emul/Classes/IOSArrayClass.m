@@ -38,11 +38,7 @@
 
 - (id)initWithComponentType:(IOSClass *)type {
   if ((self = [super initWithClass:[self class]])) {
-#if __has_feature(objc_arc)
-    componentType_ = type;
-#else
-    componentType_ = [type retain];
-#endif
+    componentType_ = RETAIN(type);
   }
   return self;
 }
@@ -53,6 +49,11 @@
 
 - (BOOL)isArray {
   return YES;
+}
+
+- (BOOL)isInstance:(id)object {
+  IOSClass *objClass = [object getClass];
+  return [objClass isArray] && [componentType_ isAssignableFrom:[objClass getComponentType]];
 }
 
 - (NSString *)binaryName {

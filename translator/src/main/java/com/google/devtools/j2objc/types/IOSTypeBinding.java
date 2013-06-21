@@ -26,18 +26,30 @@ import org.eclipse.jdt.core.dom.ITypeBinding;
  */
 public class IOSTypeBinding extends GeneratedTypeBinding {
 
-  private ITypeBinding mappedType;
+  private final ITypeBinding mappedType;
 
-  public IOSTypeBinding(String name, boolean isInterface) {
-    super(name, null, null, isInterface, false);
+  protected IOSTypeBinding(
+      String name, ITypeBinding mappedType, ITypeBinding superClass, boolean isInterface,
+      boolean isArray) {
+    super(name, null, superClass, isInterface, isArray);
+    this.mappedType = mappedType;
   }
 
-  public IOSTypeBinding(String name, ITypeBinding superClass) {
-    super(name, null, superClass, false, false);
+  public static IOSTypeBinding newClass(String name, ITypeBinding mappedType) {
+    return new IOSTypeBinding(name, mappedType, null, false, false);
   }
 
-  public IOSTypeBinding(String name, ITypeBinding superClass, boolean isArray) {
-    super(name, null, superClass, false, isArray);
+  public static IOSTypeBinding newClass(
+      String name, ITypeBinding mappedType, ITypeBinding superClass) {
+    return new IOSTypeBinding(name, mappedType, superClass, false, false);
+  }
+
+  public static IOSTypeBinding newUnmappedClass(String name) {
+    return new IOSTypeBinding(name, null, null, false, false);
+  }
+
+  public static IOSTypeBinding newInterface(String name, ITypeBinding mappedType) {
+    return new IOSTypeBinding(name, mappedType, null, true, false);
   }
 
   @Override
@@ -60,13 +72,5 @@ public class IOSTypeBinding extends GeneratedTypeBinding {
   @Override
   public boolean isCastCompatible(ITypeBinding type) {
     return isEqualTo(type) || mappedType.isCastCompatible(type);
-  }
-
-  public ITypeBinding getMappedType() {
-    return mappedType;
-  }
-
-  public void setMappedType(ITypeBinding mappedType) {
-    this.mappedType = mappedType;
   }
 }

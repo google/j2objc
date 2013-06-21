@@ -41,10 +41,7 @@
 - (id)initWithLength:(NSUInteger)length type:(IOSClass *)type {
   if ((self = [super initWithLength:length])) {
     buffer_ = (id __strong *) calloc(length, sizeof(id));
-    elementType_ = type;
-#if ! __has_feature(objc_arc)
-    [elementType_ retain];
-#endif
+    elementType_ = RETAIN(type);
   }
   return self;
 }
@@ -60,11 +57,7 @@
   if ((self = [self initWithLength:count type:type])) {
     if (objects != nil) {
       for (NSUInteger i = 0; i < count; i++) {
-        id element = objects[i];
-#if ! __has_feature(objc_arc)
-        [element retain];
-#endif
-        buffer_[i] = element;
+        buffer_[i] = RETAIN(objects[i]);
       }
     }
   }
@@ -78,41 +71,6 @@
                                                count:count
                                                 type:type];
   return AUTORELEASE(array);
-}
-
-+ (id)arrayWithType:(IOSClass *)type count:(int)count args:(va_list)args {
-  if (count > 0) {
-    __unsafe_unretained id *objects =
-        (__unsafe_unretained id *) calloc(count, sizeof(id));
-    for (int i = 0; i < count; i++) {
-      objects[i] = va_arg(args, id);
-    }
-    id array = [[self class] arrayWithObjects:objects
-                                        count:count
-                                         type:type];
-    free(objects);
-    return array;
-  } else {
-    return [[self class] arrayWithObjects:nil count:0 type:type];
-  }
-}
-
-+ (id)arrayWithType:(IOSClass *)type count:(int)count, ... {
-  va_list args;
-  va_start(args, count);
-  id result = [self arrayWithType:type count:count args:args];
-  va_end(args);
-  return result;
-}
-
-+ (id)arrayWithClass:(Class)clazz count:(int)count, ... {
-  va_list args;
-  va_start(args, count);
-  id result = [self arrayWithType:[IOSClass classWithClass:clazz]
-                            count:count
-                             args:args];
-  va_end(args);
-  return result;
 }
 
 + (id)arrayWithArray:(IOSObjectArray *)array {
@@ -132,35 +90,31 @@
 }
 
 + (id)arrayWithDimensions:(NSUInteger)dimensionCount
-                  lengths:(NSUInteger *)dimensionLengths
+                  lengths:(const int *)dimensionLengths
                      type:(IOSClass *)type {
+  if (dimensionCount == 0) {
+    @throw AUTORELEASE([[JavaLangAssertionError alloc] initWithId:@"invalid dimension count"]);
+  }
+
+  NSUInteger size = *dimensionLengths;
 
   // If dimension of 1, just return a regular array of objects.
   if (dimensionCount == 1) {
-    NSUInteger size = *dimensionLengths;
-    IOSObjectArray *result = [[[self class] alloc] initWithLength:size
-                                                             type:type];
-    return AUTORELEASE(result);
+    return AUTORELEASE([[[self class] alloc] initWithLength:size type:type]);
   }
 
   // Create an array of arrays, which is recursive to handle additional
   // dimensions.
-  NSUInteger arraySize = *dimensionLengths;
-  IOSObjectArray *result =
-      [[IOSObjectArray alloc] initWithLength:arraySize type:
-          [IOSClass classWithClass:[IOSObjectArray class]]];
-  result->elementType_ = type;
-#if ! __has_feature(objc_arc)
-  [result->elementType_ retain];
-#endif
-  for (NSUInteger i = 0; i < arraySize; i++) {
+  IOSObjectArray *result = [IOSObjectArray arrayWithLength:size type:
+      [IOSClass classWithClass:[IOSObjectArray class]]];
+  for (NSUInteger i = 0; i < size; i++) {
     id subarray = [[self class] arrayWithDimensions:dimensionCount - 1
                                             lengths:dimensionLengths + 1
                                                type:type];
     [result replaceObjectAtIndex:i withObject:subarray];
   }
 
-  return AUTORELEASE(result);
+  return result;
 }
 
 - (id)objectAtIndex:(NSUInteger)index {

@@ -28,7 +28,7 @@ FOUNDATION_EXPORT
     IOSObjectArray *JreEmulationMainArguments(int argc, const char *argv[]) {
   IOSClass *stringType = [IOSClass classWithClass:[NSString class]];
   if (argc <= 1) {
-    return [IOSObjectArray arrayWithType:stringType count:0];
+    return [IOSObjectArray arrayWithLength:0 type:stringType];
   }
   IOSObjectArray *args = [[IOSObjectArray alloc] initWithLength:argc - 1
                                                            type:stringType];

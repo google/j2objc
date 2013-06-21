@@ -21,7 +21,6 @@ import com.google.common.collect.Maps;
 import com.google.devtools.j2objc.types.GeneratedMethodBinding;
 import com.google.devtools.j2objc.types.GeneratedTypeBinding;
 import com.google.devtools.j2objc.types.GeneratedVariableBinding;
-import com.google.devtools.j2objc.types.IOSArrayTypeBinding;
 import com.google.devtools.j2objc.types.IOSVariableBinding;
 import com.google.devtools.j2objc.types.NodeCopier;
 import com.google.devtools.j2objc.types.Types;
@@ -30,11 +29,8 @@ import com.google.devtools.j2objc.util.ErrorReportingASTVisitor;
 import com.google.devtools.j2objc.util.NameTable;
 
 import org.eclipse.jdt.core.dom.AST;
-import org.eclipse.jdt.core.dom.ASTNode;
 import org.eclipse.jdt.core.dom.ASTVisitor;
 import org.eclipse.jdt.core.dom.AnonymousClassDeclaration;
-import org.eclipse.jdt.core.dom.ArrayCreation;
-import org.eclipse.jdt.core.dom.ArrayInitializer;
 import org.eclipse.jdt.core.dom.Assignment;
 import org.eclipse.jdt.core.dom.Block;
 import org.eclipse.jdt.core.dom.BodyDeclaration;
@@ -58,13 +54,11 @@ import org.eclipse.jdt.core.dom.MethodDeclaration;
 import org.eclipse.jdt.core.dom.MethodInvocation;
 import org.eclipse.jdt.core.dom.Modifier;
 import org.eclipse.jdt.core.dom.Modifier.ModifierKeyword;
-import org.eclipse.jdt.core.dom.NumberLiteral;
 import org.eclipse.jdt.core.dom.PostfixExpression;
 import org.eclipse.jdt.core.dom.PrefixExpression;
 import org.eclipse.jdt.core.dom.PrimitiveType;
 import org.eclipse.jdt.core.dom.QualifiedName;
 import org.eclipse.jdt.core.dom.ReturnStatement;
-import org.eclipse.jdt.core.dom.SimpleName;
 import org.eclipse.jdt.core.dom.SingleVariableDeclaration;
 import org.eclipse.jdt.core.dom.Statement;
 import org.eclipse.jdt.core.dom.StringLiteral;
@@ -73,7 +67,6 @@ import org.eclipse.jdt.core.dom.SwitchStatement;
 import org.eclipse.jdt.core.dom.ThrowStatement;
 import org.eclipse.jdt.core.dom.Type;
 import org.eclipse.jdt.core.dom.TypeDeclaration;
-import org.eclipse.jdt.core.dom.TypeLiteral;
 import org.eclipse.jdt.core.dom.VariableDeclarationExpression;
 import org.eclipse.jdt.core.dom.VariableDeclarationFragment;
 import org.eclipse.jdt.core.dom.VariableDeclarationStatement;
@@ -374,7 +367,7 @@ public class Rewriter extends ErrorReportingASTVisitor {
       return true;
     }
 
-    AST ast = node.getAST();
+    final AST ast = node.getAST();
     final String labelIdentifier = node.getLabel().getIdentifier();
 
     final boolean[] hasContinue = new boolean[1];
@@ -384,27 +377,27 @@ public class Rewriter extends ErrorReportingASTVisitor {
       public void endVisit(ContinueStatement node) {
         if (node.getLabel() != null && node.getLabel().getIdentifier().equals(labelIdentifier)) {
           hasContinue[0] = true;
-          node.setLabel(Types.newLabel("continue_" + labelIdentifier));
+          node.setLabel(ASTFactory.newLabel(ast, "continue_" + labelIdentifier));
         }
       }
       @Override
       public void endVisit(BreakStatement node) {
         if (node.getLabel() != null && node.getLabel().getIdentifier().equals(labelIdentifier)) {
           hasBreak[0] = true;
-          node.setLabel(Types.newLabel("break_" + labelIdentifier));
+          node.setLabel(ASTFactory.newLabel(ast, "break_" + labelIdentifier));
         }
       }
     });
 
     if (hasContinue[0]) {
       LabeledStatement newLabelStmt = ast.newLabeledStatement();
-      newLabelStmt.setLabel(Types.newLabel("continue_" + labelIdentifier));
+      newLabelStmt.setLabel(ASTFactory.newLabel(ast, "continue_" + labelIdentifier));
       newLabelStmt.setBody(ast.newEmptyStatement());
       loopBody = insertStatement(loopBody, newLabelStmt);
     }
     if (hasBreak[0]) {
       LabeledStatement newLabelStmt = ast.newLabeledStatement();
-      newLabelStmt.setLabel(Types.newLabel("break_" + labelIdentifier));
+      newLabelStmt.setLabel(ASTFactory.newLabel(ast, "break_" + labelIdentifier));
       newLabelStmt.setBody(ast.newEmptyStatement());
       node = insertStatement(node, newLabelStmt);
     }
@@ -653,85 +646,6 @@ public class Rewriter extends ErrorReportingASTVisitor {
       blockStmts.add(NodeCopier.copySubtree(ast, node));
       ASTUtil.setProperty(node, block);
     }
-  }
-
-  @Override
-  public void endVisit(ArrayInitializer node) {
-    ASTNode nodeToReplace = node;
-    ASTNode parent = node.getParent();
-    if (parent instanceof ArrayCreation) {
-      // replace this redundant array creation node with its rewritten initializer.
-      nodeToReplace = parent;
-    }
-    ITypeBinding type = Types.getTypeBinding(node);
-    ASTUtil.setProperty(nodeToReplace, createIOSArrayInitializer(type, node));
-  }
-
-  /**
-   * Convert an array initializer into a init method on the equivalent
-   * IOSArray. This init method takes a C array and count, like
-   * NSArray.arrayWithObjects:count:. For example, "int[] a = { 1, 2, 3 };"
-   * translates to "[IOSIntArray initWithInts:(int[]){ 1, 2, 3 } count:3];".
-   */
-  private MethodInvocation createIOSArrayInitializer(ITypeBinding arrayType,
-      ArrayInitializer arrayInit) {
-    AST ast = arrayInit.getAST();
-
-    int dimensions = arrayType.getDimensions();
-    ITypeBinding componentType;
-    IOSArrayTypeBinding iosArrayBinding;
-    if (dimensions > 2) {
-      // This gets resolved into IOSObjectArray, for an array of arrays.
-      componentType = iosArrayBinding = Types.resolveArrayType(arrayType);
-    } else if (dimensions == 2) {
-      // Creates a single-dimension array type.
-      componentType = Types.resolveArrayType(arrayType.getElementType());
-      iosArrayBinding = Types.resolveArrayType(componentType);
-    } else {
-      componentType = Types.getTypeBinding(arrayInit).getComponentType();
-      iosArrayBinding = Types.resolveArrayType(componentType);
-    }
-
-    // Create IOS message.
-    MethodInvocation message = ast.newMethodInvocation();
-    SimpleName receiver = ast.newSimpleName(iosArrayBinding.getName());
-    Types.addBinding(receiver, iosArrayBinding);
-    message.setExpression(receiver);
-    String methodName = iosArrayBinding.getInitMethod();
-    SimpleName messageName = ast.newSimpleName(methodName);
-    GeneratedMethodBinding methodBinding = GeneratedMethodBinding.newMethod(
-        methodName, Modifier.PUBLIC | Modifier.STATIC, iosArrayBinding, iosArrayBinding);
-    Types.addBinding(messageName, methodBinding);
-    message.setName(messageName);
-    Types.addBinding(message, methodBinding);
-
-    // Pass array initializer as C-style array to message.
-    List<Expression> args = ASTUtil.getArguments(message);
-    ArrayInitializer newArrayInit = NodeCopier.copySubtree(ast, arrayInit);
-    args.add(newArrayInit);
-    GeneratedVariableBinding argBinding = new GeneratedVariableBinding(arrayType,
-        false, true, null, methodBinding);
-    methodBinding.addParameter(argBinding);
-    NumberLiteral arraySize =
-          ast.newNumberLiteral(Integer.toString(arrayInit.expressions().size()));
-    Types.addBinding(arraySize, ast.resolveWellKnownType("int"));
-    args.add(arraySize);
-    argBinding = new GeneratedVariableBinding(ast.resolveWellKnownType("int"),
-        false, true, null, methodBinding);
-    methodBinding.addParameter(argBinding);
-
-    // Specify type for object arrays.
-    if (iosArrayBinding.getName().equals("IOSObjectArray")) {
-      TypeLiteral typeLiteral = ast.newTypeLiteral();
-      typeLiteral.setType(Types.makeType(componentType));
-      Types.addBinding(typeLiteral, Types.getIOSClass());
-      args.add(typeLiteral);
-      argBinding = new GeneratedVariableBinding("type", 0, Types.getIOSClass(),
-          false, true, null, methodBinding);
-      methodBinding.addParameter(argBinding);
-    }
-
-    return message;
   }
 
   /**

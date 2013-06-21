@@ -62,6 +62,10 @@
   return nil;
 }
 
+- (BOOL)isAssignableFrom:(IOSClass *)cls {
+  return [self isEqual:cls];
+}
+
 - (BOOL)isInstance:(id)object {
   return NO;  // Objects can't be primitives.
 }

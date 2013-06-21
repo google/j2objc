@@ -16,11 +16,9 @@
 
 package com.google.devtools.j2objc.translate;
 
-import com.google.devtools.j2objc.types.GeneratedVariableBinding;
 import com.google.devtools.j2objc.types.Types;
 import com.google.devtools.j2objc.util.ASTUtil;
 import com.google.devtools.j2objc.util.ErrorReportingASTVisitor;
-import com.google.devtools.j2objc.util.NameTable;
 
 import org.eclipse.jdt.core.dom.CastExpression;
 import org.eclipse.jdt.core.dom.FieldDeclaration;
@@ -103,11 +101,6 @@ public class JavaToIOSTypeConverter extends ErrorReportingASTVisitor {
       IVariableBinding binding = Types.getVariableBinding(var);
       Type newType = Types.makeIOSType(binding.getType());
       if (newType != null) {
-        ITypeBinding newTypeBinding = Types.getTypeBinding(newType);
-        GeneratedVariableBinding varBinding = new GeneratedVariableBinding(
-            NameTable.getName(binding), binding.getModifiers(), newTypeBinding, true, false,
-            binding.getDeclaringClass(), binding.getDeclaringMethod());
-        Types.addMappedVariable(var, varBinding);
         node.setType(newType);
       }
     }
@@ -130,11 +123,6 @@ public class JavaToIOSTypeConverter extends ErrorReportingASTVisitor {
       IVariableBinding binding = Types.getVariableBinding(var);
       Type newType = Types.makeIOSType(binding.getType());
       if (newType != null) {
-        ITypeBinding newTypeBinding = Types.getTypeBinding(newType);
-        GeneratedVariableBinding varBinding = new GeneratedVariableBinding(
-            NameTable.getName(binding), binding.getModifiers(), newTypeBinding, false, false,
-            binding.getDeclaringClass(), binding.getDeclaringMethod());
-        Types.addMappedVariable(var, varBinding);
         node.setType(newType);
       }
     }

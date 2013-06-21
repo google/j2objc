@@ -394,6 +394,6 @@ class BindingMapBuilder extends ErrorReportingASTVisitor {
   }
 
   private ITypeBinding createLabelBinding(SimpleName label) {
-    return new IOSTypeBinding(label.getIdentifier(), false);
+    return IOSTypeBinding.newUnmappedClass(label.getIdentifier());
   }
 }

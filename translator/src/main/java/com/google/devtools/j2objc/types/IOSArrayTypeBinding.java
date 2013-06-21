@@ -24,7 +24,6 @@ import org.eclipse.jdt.core.dom.ITypeBinding;
  * @author Tom Ball
  */
 public class IOSArrayTypeBinding extends IOSTypeBinding {
-  private final String initMethod;
   private final String accessMethod;
   private final String copyMethod;
   private final ITypeBinding elementType;
@@ -34,8 +33,6 @@ public class IOSArrayTypeBinding extends IOSTypeBinding {
    * Create an array binding.
    *
    * @param name the iOS class name
-   * @param initMethod the method used to create an array from a C array of
-   *                   same primitive type
    * @param accessMethod the method used to access an array member, not including
    *                   parameter name
    * @param copyMethod the method used to copy the contents of this array, not including
@@ -44,10 +41,10 @@ public class IOSArrayTypeBinding extends IOSTypeBinding {
    * @param primitiveElementType the binding for the primitive type corresponding to
    *                   the element this array contains. null for Object[].
    */
-  public IOSArrayTypeBinding(String name, String initMethod, String accessMethod,
-      String copyMethod, ITypeBinding elementType, ITypeBinding primitiveElementType) {
-    super(name, false);
-    this.initMethod = initMethod;
+  public IOSArrayTypeBinding(
+      String name, String accessMethod, String copyMethod, ITypeBinding elementType,
+      ITypeBinding primitiveElementType) {
+    super(name, null, null, false, true);
     this.accessMethod = accessMethod;
     this.copyMethod = copyMethod;
     this.elementType = elementType;
@@ -57,18 +54,6 @@ public class IOSArrayTypeBinding extends IOSTypeBinding {
   @Override
   public ITypeBinding getComponentType() {
     return Types.getIOSArrayComponentType(this);
-  }
-
-  @Override
-  public boolean isArray() {
-    return true;
-  }
-
-  /**
-   * Returns the name of the init method, such as "initWithInts".
-   */
-  public String getInitMethod() {
-    return initMethod;
   }
 
   /**
