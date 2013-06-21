@@ -40,6 +40,7 @@ public class ClassTest extends junit.framework.TestCase {
     }
 
     public static class TestClass {
+        @SuppressWarnings("unused")
         private int privField = 1;
 
         public int pubField = 2;
@@ -48,6 +49,7 @@ public class ClassTest extends junit.framework.TestCase {
 
         public Object ack = new Object();
 
+        @SuppressWarnings("unused")
         private int privMethod() {
             return 1;
         }
@@ -63,6 +65,7 @@ public class ClassTest extends junit.framework.TestCase {
         public TestClass() {
         }
 
+        @SuppressWarnings("unused")
         private TestClass(Object o) {
         }
     }
@@ -361,7 +364,7 @@ public class ClassTest extends junit.framework.TestCase {
      * @tests java.lang.Class#getConstructors()
      */
     public void test_getConstructors() throws Exception {
-        Constructor[] c = TestClass.class.getConstructors();
+        Constructor<?>[] c = TestClass.class.getConstructors();
         assertEquals("Incorrect number of constructors returned", 2, c.length);
     }
 
@@ -387,7 +390,7 @@ public class ClassTest extends junit.framework.TestCase {
      * @tests java.lang.Class#getDeclaredConstructors()
      */
     public void test_getDeclaredConstructors() throws Exception {
-        Constructor[] c = TestClass.class.getDeclaredConstructors();
+        Constructor<?>[] c = TestClass.class.getDeclaredConstructors();
         assertEquals("Incorrect number of constructors returned", 2, c.length);
     }
 
@@ -465,9 +468,7 @@ public class ClassTest extends junit.framework.TestCase {
      * @tests java.lang.Class#getInterfaces()
      */
     public void test_getInterfaces() {
-        Class[] interfaces;
         List<?> interfaceList;
-        interfaces = Object.class.getInterfaces();
         interfaceList = Arrays.asList(Vector.class.getInterfaces());
         assertTrue("Incorrect interface list for Vector", interfaceList
                 .contains(Cloneable.class)
@@ -636,7 +637,7 @@ public class ClassTest extends junit.framework.TestCase {
         Class<?> clazz = null;
         clazz = Class.forName("[I");
         assertEquals("Class toString printed wrong value",
-                     "class IOSIntArray", clazz.toString());
+                     "class IntArray", clazz.toString());
 
         clazz = Class.forName("java.lang.Object");
         assertEquals("Class toString printed wrong value",
@@ -644,6 +645,6 @@ public class ClassTest extends junit.framework.TestCase {
 
         clazz = Class.forName("[Ljava.lang.Object;");
         assertEquals("Class toString printed wrong value",
-                     "class [NSObject", clazz.toString());
+                     "class NSObjectArray", clazz.toString());
     }
 }

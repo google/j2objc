@@ -305,7 +305,12 @@ IOSObjectArray *getMethods(IOSClass *clazz, BOOL fetchConstructors) {
 // types.  Return nil if the named method is not a member of this class.
 - (JavaLangReflectMethod *)getDeclaredMethod:(NSString *)name
                               parameterTypes:(IOSObjectArray *)types {
-  return getClassMethod(name, types, self);
+  JavaLangReflectMethod *result = getClassMethod(name, types, self);
+  if (!result) {
+    @throw AUTORELEASE([[JavaLangNoSuchMethodException alloc]
+                        initWithNSString:name]);
+  }
+  return result;
 }
 
 // Look up a method in a specific class.
@@ -336,16 +341,11 @@ JavaLangReflectMethod *getClassMethod(NSString *name,
       JavaLangReflectMethod *method =
           [JavaLangReflectMethod methodWithSelector:sel withClass:cls];
       if (methodMatches(name, parameterTypes, method)) {
-        free(descriptions);
         result = method;
         break;
       }
     }
     free(descriptions);
-  }
-  if (!result) {
-    @throw AUTORELEASE([[JavaLangNoSuchMethodException alloc]
-                        initWithNSString:name]);
   }
   return result;
 }
