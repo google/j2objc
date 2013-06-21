@@ -345,9 +345,6 @@ public class NameTable {
   // TODO(user): See whether the logic in this method can be simplified.
   //     Also, what about type variables?
   private static String getArrayTypeParameterKeyword(ITypeBinding elementType, int dimensions) {
-    if (elementType.isPrimitive()) {
-      elementType = Types.getWrapperType(elementType);
-    }
     if (elementType.isParameterizedType()) {
       elementType = elementType.getErasure();
     }
