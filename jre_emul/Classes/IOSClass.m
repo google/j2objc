@@ -162,7 +162,7 @@ static NSString *getTranslatedMethodName(NSString *name,
 }
 
 - (NSString *)getSimpleName {
-  return class_ ? NSStringFromClass(class_) : NSStringFromProtocol(protocol_);
+  return [self getName];
 }
 
 - (NSString *)getCanonicalName {
@@ -313,19 +313,19 @@ JavaLangReflectMethod *getClassMethod(NSString *name,
                                       IOSObjectArray *parameterTypes,
                                       IOSClass *cls) {
   NIL_CHK(name);
+  JavaLangReflectMethod *result = nil;
   if (cls->class_) {
     unsigned int n;
     Method *instanceMethods = class_copyMethodList(cls->class_, &n);
     JavaLangReflectMethod *method = findClassMethod(name, parameterTypes,
                                                     cls, instanceMethods, n);
     free(instanceMethods);
-    if (method != nil) {
-      return method;
+    if (!method) {
+      Method *classMethods = class_copyMethodList(object_getClass(cls->class_), &n);
+      method = findClassMethod(name, parameterTypes, cls, classMethods, n);
+      free(classMethods);
     }
-    Method *classMethods = class_copyMethodList(object_getClass(cls->class_), &n);
-    method = findClassMethod(name, parameterTypes, cls, classMethods, n);
-    free(classMethods);
-    return method;
+    result = method;
   } else {
     assert(cls->protocol_);
     unsigned count;
@@ -337,12 +337,17 @@ JavaLangReflectMethod *getClassMethod(NSString *name,
           [JavaLangReflectMethod methodWithSelector:sel withClass:cls];
       if (methodMatches(name, parameterTypes, method)) {
         free(descriptions);
-        return method;
+        result = method;
+        break;
       }
     }
     free(descriptions);
-    return nil;
   }
+  if (!result) {
+    @throw AUTORELEASE([[JavaLangNoSuchMethodException alloc]
+                        initWithNSString:name]);
+  }
+  return result;
 }
 
 // Look up a method in a list of Method references.

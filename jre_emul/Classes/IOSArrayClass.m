@@ -65,11 +65,11 @@
 }
 
 - (NSString *)getName {
-  return [self binaryName];
+  return [self getSimpleName];
 }
 
 - (NSString *)getSimpleName {
-  return [self binaryName];
+  return [[[self getComponentType] getName] stringByAppendingString:@"Array"];
 }
 
 #if ! __has_feature(objc_arc)
