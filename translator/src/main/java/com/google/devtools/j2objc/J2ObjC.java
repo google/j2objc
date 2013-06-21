@@ -540,6 +540,28 @@ public class J2ObjC {
   }
 
   /**
+   * Translate files listed in a manifest file.
+   */
+  private static void translateAtFile(J2ObjC compiler, String atFile) throws IOException {
+    if (atFile.isEmpty()) {
+      error("no @ file specified");
+      exit();
+    }
+    File f = new File(atFile);
+    if (!f.exists()) {
+      error("no such file: " + atFile);
+      exit();
+    }
+    String fileList = compiler.getSource(atFile);
+    String[] files = fileList.split("\\s+");  // Split on any whitespace.
+    for (String file : files) {
+      printInfo("translating " + file);
+      compiler.translate(file);
+      nFiles++;
+    }
+  }
+
+  /**
    * Report an error during translation.
    */
   public static void error(String message) {
@@ -829,6 +851,8 @@ public class J2ObjC {
           nFiles++;
         } else if (file.endsWith(".jar")) {
           translateSourceJar(compiler, file);
+        } else if (file.startsWith("@")) {
+          translateAtFile(compiler, file.substring(1));
         }
       } catch (IOException e) {
         error(e.getMessage());
