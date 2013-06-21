@@ -74,6 +74,18 @@
   return result;
 }
 
++ (id)iosClass {
+  return [IOSClass classWithClass:[self class]];
+}
+
++ (id)iosClassWithDimensions:(NSUInteger)dimensions {
+  IOSClass *result = [IOSClass classWithClass:[self class]];
+  while (--dimensions > 0) {
+    result = [IOSArrayClass classWithComponentType:result];
+  }
+  return result;
+}
+
 - (NSUInteger)count {
   return size_;
 }

@@ -165,29 +165,23 @@ public class ImplementationImportCollector extends ErrorReportingASTVisitor {
 
   @Override
   public boolean visit(TypeLiteral node) {
-    ITypeBinding type = Types.getTypeBinding(node.getType());
+    handleTypeLiteral(Types.getTypeBinding(node.getType()));
+    return false;
+  }
+
+  private void handleTypeLiteral(ITypeBinding type) {
     if (type.isPrimitive()) {
-      type = Types.getWrapperType(type);
+      addImports(Types.getWrapperType(type));
     } else if (type.isArray()) {
-      ITypeBinding componentType = type.getComponentType();
-      if (!componentType.isPrimitive()) {
-        addImports(componentType);
-        imports.add(new Import("IOSArrayClass", "IOSArrayClass", false));
+      ITypeBinding elementType = type.getElementType();
+      addImports(Types.resolveArrayType(elementType));
+      if (!elementType.isPrimitive()) {
+        handleTypeLiteral(elementType);
       }
+    } else {
+      addImports(type);
+      addImports(Types.resolveIOSType("IOSClass"));
     }
-    addImports(type);
-    if (type.isParameterizedType()) {
-      for (ITypeBinding typeArgument : type.getTypeArguments()) {
-        if (typeArgument.isArray()) {
-          ITypeBinding componentType = typeArgument.getComponentType();
-          if (!componentType.isPrimitive()) {
-            addImports(componentType);
-            imports.add(new Import("IOSArrayClass", "IOSArrayClass", false));
-          }
-        }
-      }
-    }
-    return true;
   }
 
   @Override
@@ -195,6 +189,7 @@ public class ImplementationImportCollector extends ErrorReportingASTVisitor {
     ITypeBinding type = Types.getTypeBinding(node);
     addImports(type);
     addDeclaredType(type, true);
+    addImports(Types.resolveIOSType("IOSClass"));
     imports.add(new Import(
         "JavaLangIllegalArgumentException", "java.lang.IllegalArgumentException", false));
     return true;
@@ -214,7 +209,13 @@ public class ImplementationImportCollector extends ErrorReportingASTVisitor {
 
   @Override
   public boolean visit(InstanceofExpression node) {
-    addImports(node.getRightOperand());
+    ITypeBinding rightType = Types.getTypeBinding(node.getRightOperand());
+    if (rightType.isArray() && !rightType.getComponentType().isPrimitive()) {
+      handleTypeLiteral(rightType);
+      addImports(Types.resolveIOSType("IOSClass"));
+    } else {
+      addImports(rightType);
+    }
     return true;
   }
 

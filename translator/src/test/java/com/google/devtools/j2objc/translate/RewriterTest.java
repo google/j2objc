@@ -372,7 +372,7 @@ public class RewriterTest extends GenerationTest {
     assertTranslation(translation,
         "[IOSObjectArray arrayWithObjects:(id[]){" +
         " [IOSIntArray arrayWithInts:(int[]){ 1, 2, 3 } count:3] } count:1" +
-        " type:[IOSClass classWithClass:[IOSIntArray class]]]");
+        " type:[IOSIntArray iosClass]]");
   }
 
   public void testArrayCreationInConstructorInvocation() throws IOException {

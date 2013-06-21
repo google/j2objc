@@ -23,12 +23,9 @@
 
 #ifdef __OBJC__
 #import <Foundation/Foundation.h>
-#import "IOSArray.h"
-#import "IOSClass.h"
 #import "JavaObject.h"
 #import "NSObject+JavaObject.h"
 #import "NSString+JavaString.h"
-#import <fcntl.h>
 #import "JreMemDebug.h"
 
 # ifndef __has_attribute

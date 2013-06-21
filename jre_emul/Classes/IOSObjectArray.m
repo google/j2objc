@@ -19,6 +19,8 @@
 //  Created by Tom Ball on 9/9/11.
 //
 
+#import "IOSArrayClass.h"
+#import "IOSClass.h"
 #import "IOSObjectArray.h"
 #import "java/lang/ArrayStoreException.h"
 #import "java/lang/AssertionError.h"
@@ -106,7 +108,7 @@
   // Create an array of arrays, which is recursive to handle additional
   // dimensions.
   IOSObjectArray *result = [IOSObjectArray arrayWithLength:size type:
-      [IOSClass classWithClass:[IOSObjectArray class]]];
+      [self iosClassWithDimensions:dimensionCount - 1 type:type]];
   for (NSUInteger i = 0; i < size; i++) {
     id subarray = [[self class] arrayWithDimensions:dimensionCount - 1
                                             lengths:dimensionLengths + 1
@@ -114,6 +116,18 @@
     [result replaceObjectAtIndex:i withObject:subarray];
   }
 
+  return result;
+}
+
++ (id)iosClassWithType:(IOSClass *)type {
+  return [IOSArrayClass classWithComponentType:type];
+}
+
++ (id)iosClassWithDimensions:(NSUInteger)dimensions type:(IOSClass *)type {
+  IOSClass *result = [IOSArrayClass classWithComponentType:type];
+  while (--dimensions > 0) {
+    result = [IOSArrayClass classWithComponentType:result];
+  }
   return result;
 }
 

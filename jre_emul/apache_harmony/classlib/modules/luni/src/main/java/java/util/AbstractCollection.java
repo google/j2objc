@@ -17,9 +17,10 @@
 
 package java.util;
 
-/*-{
+/*-[
+#import "IOSClass.h"
 #import "java/lang/NullPointerException.h"
-}-*/
+]-*/
 
 /**
  * Class {@code AbstractCollection} is an abstract implementation of the {@code

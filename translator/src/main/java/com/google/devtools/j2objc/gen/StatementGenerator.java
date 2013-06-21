@@ -360,20 +360,6 @@ public class StatementGenerator extends ErrorReportingASTVisitor {
     return false;
   }
 
-  private void printObjectArrayType(ITypeBinding componentType) {
-    buffer.append("[IOSClass ");
-    if (componentType.isInterface()) {
-      buffer.append("classWithProtocol:@protocol(");
-      buffer.append(NameTable.getFullName(componentType));
-      buffer.append(')');
-    } else {
-      buffer.append("classWithClass:[");
-      buffer.append(NameTable.getFullName(componentType));
-      buffer.append(" class]");
-    }
-    buffer.append(']');
-  }
-
   @Override
   public boolean visit(ArrayInitializer node) {
     buffer.append("{ ");
@@ -1192,19 +1178,13 @@ public class StatementGenerator extends ErrorReportingASTVisitor {
     ITypeBinding leftBinding = Types.getTypeBinding(node.getLeftOperand());
     ITypeBinding rightBinding = Types.getTypeBinding(node.getRightOperand());
 
-    if (rightBinding.isArray()) {
-      ITypeBinding elementType = rightBinding.getElementType();
-      assert elementType != null;
-      if (!elementType.isPrimitive()) {
-        buffer.append("([");
-        node.getLeftOperand().accept(this);
-        buffer.append(" isKindOfClass:[IOSObjectArray class]] ? [[(IOSObjectArray *) ");
-        node.getLeftOperand().accept(this);
-        buffer.append(" elementType] isEqual:");
-        printObjectArrayType(elementType);
-        buffer.append("] : NO)");
-        return false;
-      }
+    if (rightBinding.isArray() && !rightBinding.getComponentType().isPrimitive()) {
+      buffer.append("[");
+      printArrayTypeLiteral(rightBinding);
+      buffer.append(" isInstance:");
+      node.getLeftOperand().accept(this);
+      buffer.append("]");
+      return false;
     }
 
     buffer.append('[');
@@ -2053,29 +2033,44 @@ public class StatementGenerator extends ErrorReportingASTVisitor {
 
   @Override
   public boolean visit(TypeLiteral node) {
-    Type type = node.getType();
-    ITypeBinding typeBinding = Types.getTypeBinding(type);
-    if (typeBinding != null && typeBinding.isPrimitive()) {
+    printTypeLiteral(Types.getTypeBinding(node.getType()));
+    return false;
+  }
+
+  private void printTypeLiteral(ITypeBinding type) {
+    if (type.isPrimitive()) {
       // Use the wrapper class's TYPE variable.
-      ITypeBinding wrapperType = Types.getWrapperType(typeBinding);
+      ITypeBinding wrapperType = Types.getWrapperType(type);
       buffer.append('[');
       buffer.append(NameTable.getFullName(wrapperType));
       buffer.append(" TYPE]");
-    } else if (typeBinding != null && typeBinding.isInterface()) {
+    } else if (type.isArray()) {
+      printArrayTypeLiteral(type);
+    } else if (type.isInterface()) {
       buffer.append("[IOSClass classWithProtocol:@protocol(");
-      type.accept(this);
+      buffer.append(NameTable.getFullName(type));
       buffer.append(")]");
-    } else if (typeBinding != null && typeBinding.isArray() &&
-        !typeBinding.getComponentType().isPrimitive()) {
-      buffer.append("[IOSArrayClass classWithComponentType:[IOSClass classWithClass:[");
-      buffer.append(NameTable.getFullName(typeBinding.getComponentType()));
-      buffer.append(" class]]]");
     } else {
       buffer.append("[IOSClass classWithClass:[");
-      type.accept(this);
+      buffer.append(NameTable.getFullName(type));
       buffer.append(" class]]");
     }
-    return false;
+  }
+
+  private void printArrayTypeLiteral(ITypeBinding arrayType) {
+    assert arrayType.isArray();
+    ITypeBinding elementType = arrayType.getElementType();
+    IOSArrayTypeBinding iosArrayType = Types.resolveArrayType(elementType);
+    buffer.append("[").append(iosArrayType.getName()).append(" iosClass");
+    int dimensions = arrayType.getDimensions();
+    if (dimensions > 1) {
+      buffer.append("WithDimensions:").append(dimensions);
+    }
+    if (!elementType.isPrimitive()) {
+      buffer.append(dimensions == 1 ? "WithType:" : " type:");
+      printTypeLiteral(elementType);
+    }
+    buffer.append("]");
   }
 
   @Override

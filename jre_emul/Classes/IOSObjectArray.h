@@ -53,6 +53,9 @@
 + (id)arrayWithArray:(IOSObjectArray *)array;
 + (id)arrayWithNSArray:(NSArray *)array type:(IOSClass *)type;
 
++ (id)iosClassWithType:(IOSClass *)type;
++ (id)iosClassWithDimensions:(NSUInteger)dimensions type:(IOSClass *)type;
+
 // Return  at a specified index, throws IndexOutOfBoundsException
 // if out out range;
 - (id)objectAtIndex:(NSUInteger)index;
