@@ -524,7 +524,7 @@ public class ObjectiveCImplementationGenerator extends ObjectiveCSourceFileGener
   protected String methodDeclaration(MethodDeclaration m) {
     int modifiers = m.getModifiers();
     if ((modifiers & Modifier.NATIVE) > 0) {
-      if (hasNativeCode(m)) {
+      if (hasNativeCode(m, true)) {
         return super.methodDeclaration(m) + " " + extractNativeMethodBody(m) + "\n\n";
       } else if (Options.generateNativeStubs()) {
         return super.methodDeclaration(m) + " " + generateNativeStub(m) + "\n\n";
@@ -825,7 +825,7 @@ public class ObjectiveCImplementationGenerator extends ObjectiveCSourceFileGener
           break;
         }
         if (c instanceof BlockComment) {
-          String nativeImport = extractNativeCode(start, c.getLength());
+          String nativeImport = extractNativeCode(start, c.getLength(), true);
           if (nativeImport != null) {  // if it has a JSNI section
             println(nativeImport.trim());
           }

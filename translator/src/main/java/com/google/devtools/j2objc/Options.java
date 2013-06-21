@@ -68,13 +68,10 @@ public class Options {
   private static boolean stripGwtIncompatible = false;
   private static boolean segmentedHeaders = false;
   private static String fileEncoding = System.getProperty("file.encoding", "ISO-8859-1");
+  private static boolean jsniWarnings = true;
 
   private static DeadCodeMap deadCodeMap = null;
   private static File proGuardUsageFile = null;
-
-  // TODO(user): next step will make this false, then later remove it
-  // when all internal source uses OCNI.
-  private static boolean acceptJsniDelimiters = true;
 
   private static final String JRE_MAPPINGS_FILE = "JRE.mappings";
   private static final List<String> mappingFiles = Lists.newArrayList(JRE_MAPPINGS_FILE);
@@ -228,11 +225,13 @@ public class Options {
       } else if (arg.startsWith(XBOOTCLASSPATH)) {
         bootclasspath = arg.substring(XBOOTCLASSPATH.length());
       } else if (arg.equals("-Xno-jsni-delimiters")) {
-        acceptJsniDelimiters = false;
+        // TODO(user): remove flag when all client builds stop using it.
       } else if (arg.equals("--mem-debug")) {
         memoryDebug = true;
       } else if (arg.equals("--generate-native-stubs")) {
         generateNativeStubs = true;
+      } else if (arg.equals("-Xno-jsni-warnings")) {
+        jsniWarnings = false;
       } else if (arg.equals("-encoding")) {
         if (++nArg == args.length) {
           usage("-encoding requires an argument");
@@ -377,16 +376,6 @@ public class Options {
 
   public static File getOutputDirectory() {
     return outputDirectory;
-  }
-
-  /* TODO(user): remove when all internal source uses OCNI delimiters. */
-  public static boolean acceptJsniDelimiters() {
-    return acceptJsniDelimiters;
-  }
-
-  /* TODO(user): remove when all internal source uses OCNI delimiters. */
-  public static void setAcceptJsniDelimiters(boolean value) {
-    acceptJsniDelimiters = value;
   }
 
   public static boolean memoryDebug() {
@@ -609,5 +598,13 @@ public class Options {
   @VisibleForTesting
   public static void resetSegmentedHeaders() {
     segmentedHeaders = false;
+  }
+
+  public static boolean jsniWarnings() {
+    return jsniWarnings;
+  }
+
+  public static void setJsniWarnings(boolean b) {
+    jsniWarnings = b;
   }
 }

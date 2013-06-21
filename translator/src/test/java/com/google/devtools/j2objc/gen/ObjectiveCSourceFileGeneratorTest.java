@@ -48,28 +48,40 @@ public class ObjectiveCSourceFileGeneratorTest extends GenerationTest {
     assertEquals("", NameTable.capitalize(""));
   }
 
-  public void testAcceptJsniDelimiters() throws IOException {
+  public void testJsniDelimiters() throws IOException {
     String source =
+        "/*-{ jsni-comment }-*/ " +
         "class Example { " +
         "  native void test1() /*-[ ocni(); ]-*/; " +
         "  native void test2() /*-{ jsni(); }-*/; " +
         "}";
 
-    // First test with defaults, JSNI should be accepted.
-    String translation = translateSourceFile(source, "Example", "Example.m");
-    assertTranslation(translation, "ocni();");
-    assertTranslation(translation, "jsni();");
-
-    // Now rebuild with option set.
-    Options.setAcceptJsniDelimiters(false);
-    translation = translateSourceFile(source, "Example", "Example.h");
+    // First test with defaults, to see if warnings are reported.
+    assertTrue(Options.jsniWarnings());
+    String translation = translateSourceFile(source, "Example", "Example.h");
+    assertWarningCount(2);
 
     // Verify JSNI method is declared in a native methods category,
-    // and not implemented.
+    // the ocni method is implemented and the jsni method is not implemented.
+    assertTranslation(translation, "@interface Example (NativeMethods)\n- (void)test2");
+    translation = getTranslatedFile("Example.m");
+    assertTranslation(translation, "ocni();");
+    assertNotInTranslation(translation, "jsni();");
+    assertNotInTranslation(translation, "jsni-comment;");
+
+    // Now rebuild with warnings disabled.
+    Options.setJsniWarnings(false);
+    resetWarningCount();
+    translation = translateSourceFile(source, "Example", "Example.h");
+    assertWarningCount(0);
+
+    // Verify JSNI method is still declared in a native methods category,
+    // and implementation wasn't affected.
     assertTranslation(translation, "@interface Example (NativeMethods)\n- (void)test2");
     translation = getTranslatedFile("Example.m");
     assertTranslation(translation, "ocni();");
     assertFalse(translation.contains("jsni();"));
+    assertNotInTranslation(translation, "jsni-comment;");
   }
 
   public void testStaticAccessorsAdded() throws IOException {

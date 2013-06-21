@@ -269,8 +269,11 @@ public class SourceBuilder {
     if (position == -1) {
       return -1;
     }
-    int sourceLine = unit.getLineNumber(position);
-    return sourceLine;
+    return getLineNumber(position);
+  }
+
+  public int getLineNumber(int position) {
+    return unit.getLineNumber(position);
   }
 
   public SourcePosition getSourcePosition() {
