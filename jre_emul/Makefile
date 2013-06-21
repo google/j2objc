@@ -39,6 +39,7 @@ IOS_OBJS = \
 	IOSObjectArray.o \
 	IOSPrimitiveClass.o \
 	IOSShortArray.o \
+	JavaToIOSInputStreamAdapter.o \
 	JreEmulation.o \
 	JreMemDebug.o \
 	JreMemDebugStrongReference.o \
