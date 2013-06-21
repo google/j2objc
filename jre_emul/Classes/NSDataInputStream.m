@@ -23,7 +23,7 @@
 - (id)initWithData:(NSData *)data {
   if ((self = [super init])) {
     data_ = [NIL_CHK(data) copy];
-    bytes_ = (const char *) [data bytes];
+    bytes_ = (const char *) [data_ bytes];
     position_ = 0;
     length_ = [data_ length];
   }
