@@ -17,6 +17,10 @@
 
 package java.io;
 
+/*-[
+#import <fcntl.h>
+]-*/
+
 /**
  * The lowest-level representation of a file, device, or
  * socket. If is often used for wrapping an operating system "handle". Some

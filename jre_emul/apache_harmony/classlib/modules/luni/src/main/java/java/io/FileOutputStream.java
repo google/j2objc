@@ -17,6 +17,11 @@
 
 package java.io;
 
+/*-[
+#import <fcntl.h>
+#import <sys/ioctl.h>
+]-*/
+
 /**
  * A specialized {@link OutputStream} that writes to a file in the file system.
  * All write requests made by calling methods in this class are directly
