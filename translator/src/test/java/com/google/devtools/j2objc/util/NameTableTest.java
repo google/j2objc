@@ -27,6 +27,8 @@ import org.eclipse.jdt.core.dom.ITypeBinding;
 import org.eclipse.jdt.core.dom.MethodDeclaration;
 import org.eclipse.jdt.core.dom.TypeDeclaration;
 
+import java.io.IOException;
+
 /**
  * Unit tests for {@link NameTable}.
  *
@@ -106,5 +108,15 @@ public class NameTableTest extends GenerationTest {
     assertNotNull(methodBinding[0]);
     ITypeBinding paramType = methodBinding[0].getParameterTypes()[0];
     assertEquals("id", NameTable.getSpecificObjCType(paramType));
+  }
+
+  public void testMultiDimArrayName() throws IOException {
+    String translation = translateSourceFile("public class A { " +
+        "void foo(int[] values) {}" +
+        "void foo(int[][] values) {}" +
+        "void foo(int[][][] values) {}}", "A", "A.h");
+    assertTranslation(translation, "- (void)fooWithJavaLangIntegerArray:(IOSIntArray *)values");
+    assertTranslation(translation, "- (void)fooWithJavaLangIntegerArray2:(IOSObjectArray *)values");
+    assertTranslation(translation, "- (void)fooWithJavaLangIntegerArray3:(IOSObjectArray *)values");
   }
 }

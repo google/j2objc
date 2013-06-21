@@ -946,7 +946,7 @@ public class StatementGeneratorTest extends GenerationTest {
         " public void bar(Object[] ... args) { } }",
         "Example", "Example.h");
     assertTranslation(translation, "- (void)fooWithNSObjectArray:(IOSObjectArray *)args");
-    assertTranslation(translation, "- (void)barWithNSObjectArray:(IOSObjectArray *)args");
+    assertTranslation(translation, "- (void)barWithNSObjectArray2:(IOSObjectArray *)args");
     translation = getTranslatedFile("Example.m");
 
     // Should be equivalent to foo(new Object[0]).
@@ -956,7 +956,7 @@ public class StatementGeneratorTest extends GenerationTest {
 
     // Should be equivalent to bar(new Object[] { new Object[0] }).
     assertTranslation(translation,
-        "[self barWithNSObjectArray:[IOSObjectArray arrayWithObjects:" +
+        "[self barWithNSObjectArray2:[IOSObjectArray arrayWithObjects:" +
         "(id[]){ [IOSObjectArray arrayWithLength:0 type:" +
         "[IOSClass classWithClass:[NSObject class]]] } count:1 " +
         "type:[IOSObjectArray iosClassWithType:" +
