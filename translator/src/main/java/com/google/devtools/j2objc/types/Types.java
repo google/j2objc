@@ -21,6 +21,7 @@ import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 import com.google.devtools.j2objc.J2ObjC;
 import com.google.devtools.j2objc.Options;
+import com.google.devtools.j2objc.util.BindingUtil;
 import com.google.devtools.j2objc.util.NameTable;
 import com.google.j2objc.annotations.AutoreleasePool;
 import com.google.j2objc.annotations.Weak;
@@ -46,9 +47,7 @@ import org.eclipse.jdt.core.dom.SimpleType;
 import org.eclipse.jdt.core.dom.Type;
 import org.eclipse.jdt.core.dom.TypeDeclaration;
 
-import java.util.Arrays;
 import java.util.Collection;
-import java.util.Deque;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -218,7 +217,7 @@ public class Types {
   }
 
   private void initializeCommonJavaTypes() {
-    ITypeBinding charSequence = findInterface(javaStringType, "java.lang.CharSequence");
+    ITypeBinding charSequence = BindingUtil.findInterface(javaStringType, "java.lang.CharSequence");
     javaBindingMap.put("java.lang.CharSequence", charSequence);
     iosBindingMap.put("JavaLangCharSequence", charSequence);
   }
@@ -284,96 +283,6 @@ public class Types {
         break;
       }
     }
-  }
-
-  /**
-   * If this method overrides another method, return the binding for the
-   * original declaration.
-   */
-  public static IMethodBinding getOriginalMethodBinding(IMethodBinding method) {
-    if (method != null) {
-      ITypeBinding clazz = method.getDeclaringClass();
-      ITypeBinding superclass = clazz.getSuperclass();
-      if (superclass != null) {
-        for (IMethodBinding interfaceMethod : superclass.getDeclaredMethods()) {
-          if (!(interfaceMethod instanceof IOSMethodBinding) && method.overrides(interfaceMethod)) {
-            IMethodBinding decl = interfaceMethod.getMethodDeclaration();
-            return decl != null ? decl : interfaceMethod.getMethodDeclaration();
-          }
-        }
-      }
-
-      for (ITypeBinding interfaceBinding : getAllInterfaces(clazz)) {
-        for (IMethodBinding interfaceMethod : interfaceBinding.getDeclaredMethods()) {
-          if (method.overrides(interfaceMethod)) {
-            IMethodBinding decl = interfaceMethod.getMethodDeclaration();
-            return decl != null ? decl : interfaceMethod.getMethodDeclaration();
-          }
-        }
-      }
-
-    }
-    return method;
-  }
-
-  /**
-   * Returns all interfaces implemented by the given class, and all
-   * super-interfaces of those.
-   */
-  public static Set<ITypeBinding> getAllInterfaces(ITypeBinding type) {
-    Set<ITypeBinding> allInterfaces = Sets.newHashSet();
-    Deque<ITypeBinding> typeQueue = Lists.newLinkedList();
-
-    if (type.isInterface()) {
-      allInterfaces.add(type);
-    }
-
-    while (type != null) {
-      typeQueue.add(type);
-      type = type.getSuperclass();
-    }
-
-    while (!typeQueue.isEmpty()) {
-      ITypeBinding nextType = typeQueue.poll();
-      List<ITypeBinding> newInterfaces = Arrays.asList(nextType.getInterfaces());
-      allInterfaces.addAll(newInterfaces);
-      typeQueue.addAll(newInterfaces);
-    }
-
-    return allInterfaces;
-  }
-
-  /**
-   * Returns the type binding for a specific interface of a specific type.
-   */
-  public static ITypeBinding findInterface(ITypeBinding implementingType, String qualifiedName) {
-    for (ITypeBinding interfaze : getAllInterfaces(implementingType)) {
-      if (interfaze.getErasure().getQualifiedName().equals(qualifiedName)) {
-        return interfaze;
-      }
-    }
-    return null;
-  }
-
-  /**
-   * Returns the method binding for a specific method of a specific type.
-   */
-  public static IMethodBinding findDeclaredMethod(
-      ITypeBinding type, String methodName, String... paramTypes) {
-    outer: for (IMethodBinding method : type.getDeclaredMethods()) {
-      if (method.getName().equals(methodName)) {
-        ITypeBinding[] foundParamTypes = method.getParameterTypes();
-        if (paramTypes.length == foundParamTypes.length) {
-          for (int i = 0; i < paramTypes.length; i++) {
-            if (!paramTypes[i].equals(foundParamTypes[i].getQualifiedName())) {
-              continue outer;
-            }
-          }
-          return method;
-        }
-      }
-    }
-    return null;
   }
 
   /**
@@ -671,28 +580,6 @@ public class Types {
     BooleanLiteral boolLiteral = instance.ast.newBooleanLiteral(value);
     addBinding(boolLiteral, instance.booleanType);
     return boolLiteral;
-  }
-
-  public static boolean isJUnitTest(ITypeBinding type) {
-    // Skip JUnit framework classes.
-    if (type.getPackage().getName().equals("junit.framework")) {
-      return false;
-    }
-    if (Modifier.isAbstract(type.getModifiers())) {
-      return false;
-    }
-    while (type != null) {
-      for (ITypeBinding intrf : type.getInterfaces()) {
-        if (intrf.getQualifiedName().equals("junit.framework.Test")) {
-          return true;
-        }
-        if (isJUnitTest(intrf)) { // Also check any super-interfaces.
-          return true;
-        }
-      }
-      type = type.getSuperclass();
-    }
-    return false;
   }
 
   public static ITypeBinding getWrapperType(ITypeBinding primitiveType) {

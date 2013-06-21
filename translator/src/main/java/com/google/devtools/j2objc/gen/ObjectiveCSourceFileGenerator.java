@@ -22,6 +22,7 @@ import com.google.devtools.j2objc.types.IOSMethodBinding;
 import com.google.devtools.j2objc.types.IOSParameter;
 import com.google.devtools.j2objc.types.Types;
 import com.google.devtools.j2objc.util.ASTUtil;
+import com.google.devtools.j2objc.util.BindingUtil;
 import com.google.devtools.j2objc.util.NameTable;
 
 import org.eclipse.jdt.core.dom.AbstractTypeDeclaration;
@@ -253,7 +254,7 @@ public abstract class ObjectiveCSourceFileGenerator extends SourceFileGenerator 
     String baseDeclaration = String.format("%c (%s)%s", isStatic ? '+' : '-',
         NameTable.getObjCType(binding.getReturnType()), methodName);
     sb.append(baseDeclaration);
-    parametersDeclaration(Types.getOriginalMethodBinding(binding), ASTUtil.getParameters(m),
+    parametersDeclaration(BindingUtil.getOriginalMethodBinding(binding), ASTUtil.getParameters(m),
         baseDeclaration, sb);
     if (methodName.startsWith("new") || methodName.startsWith("copy")
      || methodName.startsWith("alloc") || methodName.startsWith("init")) {

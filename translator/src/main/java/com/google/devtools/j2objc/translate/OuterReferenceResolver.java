@@ -21,7 +21,7 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 import com.google.devtools.j2objc.types.GeneratedVariableBinding;
-import com.google.devtools.j2objc.types.Types;
+import com.google.devtools.j2objc.util.BindingUtil;
 
 import org.eclipse.jdt.core.dom.ASTNode;
 import org.eclipse.jdt.core.dom.ASTVisitor;
@@ -161,12 +161,9 @@ public class OuterReferenceResolver extends ASTVisitor {
     private Scope(ITypeBinding type) {
       this.type = type;
       ImmutableSet.Builder<ITypeBinding> inheritedScopeBuilder = ImmutableSet.builder();
-      for (ITypeBinding interfaceType : Types.getAllInterfaces(type)) {
-        inheritedScopeBuilder.add(interfaceType.getTypeDeclaration());
-      }
-      while (type != null) {
-        inheritedScopeBuilder.add(type.getTypeDeclaration());
-        type = type.getSuperclass();
+      inheritedScopeBuilder.add(type.getTypeDeclaration());
+      for (ITypeBinding inheritedType : BindingUtil.getAllInheritedTypes(type)) {
+        inheritedScopeBuilder.add(inheritedType.getTypeDeclaration());
       }
       this.inheritedScope = inheritedScopeBuilder.build();
     }
