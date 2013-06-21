@@ -349,7 +349,7 @@ public class StatementGeneratorTest extends GenerationTest {
     String translation = translateSourceFile(
         "class Test { void call() { foo(1); } void foo(int... i) {} }", "Test", "Test.m");
     assertTranslation(translation,
-        "[self fooWithJavaLangIntegerArray:[IOSIntArray arrayWithInts:(int[]){ 1 } count:1]];");
+        "[self fooWithIntArray:[IOSIntArray arrayWithInts:(int[]){ 1 } count:1]];");
   }
 
   public void testStaticInnerSubclassAccessingOuterStaticVar() throws IOException {
@@ -683,7 +683,7 @@ public class StatementGeneratorTest extends GenerationTest {
       "public class Test { " +
       "  public void foo(char[] chars) { } }",
       "Test", "Test.m");
-    assertTranslation(translation, "fooWithJavaLangCharacterArray:");
+    assertTranslation(translation, "fooWithCharArray:");
   }
 
   public void testMethodWithGenericArrayParameter() throws IOException {

@@ -379,7 +379,7 @@ public class RewriterTest extends GenerationTest {
     String translation = translateSourceFile(
         "class Test { Test(int[] i) {} Test() { this(new int[] {}); } }", "Test", "Test.m");
     assertTranslation(translation,
-        "[self initTestWithJavaLangIntegerArray:[IOSIntArray arrayWithInts:(int[]){  } count:0]]");
+        "[self initTestWithIntArray:[IOSIntArray arrayWithInts:(int[]){  } count:0]]");
   }
 
   /**

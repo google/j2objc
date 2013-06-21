@@ -22,6 +22,8 @@
 /* End PBXAggregateTarget section */
 
 /* Begin PBXBuildFile section */
+		06389AD1176BADA20018B4EA /* JavaToIOSInputStreamAdapter.h in Headers */ = {isa = PBXBuildFile; fileRef = 06389ACF176BADA20018B4EA /* JavaToIOSInputStreamAdapter.h */; };
+		06389AD2176BADA20018B4EA /* JavaToIOSInputStreamAdapter.m in Sources */ = {isa = PBXBuildFile; fileRef = 06389AD0176BADA20018B4EA /* JavaToIOSInputStreamAdapter.m */; };
 		06619389155848D70004DAFE /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 06619388155848D70004DAFE /* Foundation.framework */; };
 		0672178415587E2C00645E1B /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 06619388155848D70004DAFE /* Foundation.framework */; };
 		067217D315587FC600645E1B /* IOSArrayTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 067217CD15587FC600645E1B /* IOSArrayTest.m */; };
@@ -63,6 +65,8 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		06389ACF176BADA20018B4EA /* JavaToIOSInputStreamAdapter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JavaToIOSInputStreamAdapter.h; sourceTree = "<group>"; };
+		06389AD0176BADA20018B4EA /* JavaToIOSInputStreamAdapter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JavaToIOSInputStreamAdapter.m; sourceTree = "<group>"; };
 		064FB746172705F400DC0D51 /* URI.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = URI.h; path = build_result/Classes/java/net/URI.h; sourceTree = "<group>"; };
 		064FB747172705F400DC0D51 /* URI.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = URI.m; path = build_result/Classes/java/net/URI.m; sourceTree = "<group>"; };
 		064FB748172705F400DC0D51 /* URIEncoderDecoder.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = URIEncoderDecoder.h; path = build_result/Classes/java/net/URIEncoderDecoder.h; sourceTree = "<group>"; };
@@ -759,6 +763,8 @@
 				066193B7155849BC0004DAFE /* IOSShortArray.m */,
 				06986A181767D781006EE92F /* J2ObjCMain.m */,
 				066193B8155849BC0004DAFE /* JavaObject.h */,
+				06389ACF176BADA20018B4EA /* JavaToIOSInputStreamAdapter.h */,
+				06389AD0176BADA20018B4EA /* JavaToIOSInputStreamAdapter.m */,
 				0661938D155848D70004DAFE /* JreEmulation.h */,
 				066193B9155849BC0004DAFE /* JreEmulation.m */,
 				067855A5169F35AB0042431C /* JreMemDebug.h */,
@@ -1346,6 +1352,7 @@
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				06389AD1176BADA20018B4EA /* JavaToIOSInputStreamAdapter.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1481,6 +1488,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				06986A191767D781006EE92F /* J2ObjCMain.m in Sources */,
+				06389AD2176BADA20018B4EA /* JavaToIOSInputStreamAdapter.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

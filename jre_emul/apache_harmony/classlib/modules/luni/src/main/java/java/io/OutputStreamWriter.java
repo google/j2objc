@@ -178,7 +178,7 @@ public class OutputStreamWriter extends Writer {
       }
       IOSByteArray *array = [[IOSByteArray alloc] initWithBytes:bytes count:nBytes];
       free(bytes);
-      [out_ writeWithJavaLangByteArray:array];
+      [out_ writeWithByteArray:array];
 #if ! __has_feature(objc_arc)
       [array release];
 #endif

@@ -110,13 +110,25 @@ public class NameTableTest extends GenerationTest {
     assertEquals("id", NameTable.getSpecificObjCType(paramType));
   }
 
+  public void testPrimitiveArrayParameterName() throws IOException {
+    String translation = translateSourceFile("public class A { " +
+        "void foo(int[] value1) {}" +
+        "void foo(Integer[] value2) {}" +
+        "void foo(String[] value3) {}}", "A", "A.h");
+    assertTranslation(translation, "- (void)fooWithIntArray:(IOSIntArray *)value1");
+    assertTranslation(translation,
+        "- (void)fooWithJavaLangIntegerArray:(IOSObjectArray *)value2");
+    assertTranslation(translation,
+        "- (void)fooWithNSStringArray:(IOSObjectArray *)value3");
+  }
+
   public void testMultiDimArrayName() throws IOException {
     String translation = translateSourceFile("public class A { " +
         "void foo(int[] values) {}" +
         "void foo(int[][] values) {}" +
         "void foo(int[][][] values) {}}", "A", "A.h");
-    assertTranslation(translation, "- (void)fooWithJavaLangIntegerArray:(IOSIntArray *)values");
-    assertTranslation(translation, "- (void)fooWithJavaLangIntegerArray2:(IOSObjectArray *)values");
-    assertTranslation(translation, "- (void)fooWithJavaLangIntegerArray3:(IOSObjectArray *)values");
+    assertTranslation(translation, "- (void)fooWithIntArray:(IOSIntArray *)values");
+    assertTranslation(translation, "- (void)fooWithIntArray2:(IOSObjectArray *)values");
+    assertTranslation(translation, "- (void)fooWithIntArray3:(IOSObjectArray *)values");
   }
 }

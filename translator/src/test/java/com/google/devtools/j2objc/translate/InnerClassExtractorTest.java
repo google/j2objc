@@ -839,7 +839,7 @@ public class InnerClassExtractorTest extends GenerationTest {
         "class Test { class Inner { Inner(int... i) {} } void test() { new Inner(1, 2, 3); } }",
         "Test", "Test.m");
     assertTranslation(translation,
-        "[[Test_Inner alloc] initWithTest:self withJavaLangIntegerArray:" +
+        "[[Test_Inner alloc] initWithTest:self withIntArray:" +
         "[IOSIntArray arrayWithInts:(int[]){ 1, 2, 3 } count:3]]");
   }
 
