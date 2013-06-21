@@ -17,8 +17,11 @@ package com.google.devtools.j2objc.util;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 
+import org.eclipse.jdt.core.dom.IBinding;
 import org.eclipse.jdt.core.dom.IMethodBinding;
 import org.eclipse.jdt.core.dom.ITypeBinding;
+import org.eclipse.jdt.core.dom.IVariableBinding;
+import org.eclipse.jdt.core.dom.Modifier;
 
 import java.util.Arrays;
 import java.util.Deque;
@@ -31,6 +34,23 @@ import java.util.Set;
  * @author Keith Stanger
  */
 public final class BindingUtil {
+
+  public static boolean isStatic(IBinding binding) {
+    return Modifier.isStatic(binding.getModifiers());
+  }
+
+  public static boolean isFinal(IBinding binding) {
+    return Modifier.isFinal(binding.getModifiers());
+  }
+
+  public static boolean isPrivate(IBinding binding) {
+    return Modifier.isPrivate(binding.getModifiers());
+  }
+
+  public static boolean isPrimitiveConstant(IVariableBinding binding) {
+    return binding != null && isStatic(binding) && isFinal(binding)
+        && binding.getType().isPrimitive() && binding.getConstantValue() != null;
+  }
 
   /**
    * If this method overrides another method, return the binding for the
@@ -133,5 +153,41 @@ public final class BindingUtil {
       }
     }
     return null;
+  }
+
+  /**
+   * Returns the signature of an element, defined in the Java Language
+   * Specification 3rd edition, section 13.1.
+   */
+  public static String getSignature(IBinding binding) {
+    if (binding instanceof ITypeBinding) {
+      return ((ITypeBinding) binding).getBinaryName();
+    }
+    if (binding instanceof IMethodBinding) {
+      return getSignature((IMethodBinding) binding);
+    }
+    return binding.getName();
+  }
+
+  private static String getSignature(IMethodBinding binding) {
+    StringBuilder sb = new StringBuilder("(");
+    for (ITypeBinding parameter : binding.getParameterTypes()) {
+      appendParameterSignature(parameter.getErasure(), sb);
+    }
+    sb.append(')');
+    if (binding.getReturnType() != null) {
+      appendParameterSignature(binding.getReturnType().getErasure(), sb);
+    }
+    return sb.toString();
+  }
+
+  private static void appendParameterSignature(ITypeBinding parameter, StringBuilder sb) {
+    if (!parameter.isPrimitive() && !parameter.isArray()) {
+      sb.append('L');
+    }
+    sb.append(parameter.getBinaryName().replace('.', '/'));
+    if (!parameter.isPrimitive() && !parameter.isArray()) {
+      sb.append(';');
+    }
   }
 }

@@ -1,6 +1,4 @@
 /*
- * Copyright 2011 Google Inc. All Rights Reserved.
- *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -14,9 +12,10 @@
  * limitations under the License.
  */
 
-package com.google.devtools.j2objc.types;
+package com.google.devtools.j2objc.translate;
 
 import com.google.devtools.j2objc.GenerationTest;
+import com.google.devtools.j2objc.types.Types;
 
 import org.eclipse.jdt.core.dom.AST;
 import org.eclipse.jdt.core.dom.CompilationUnit;
@@ -28,11 +27,12 @@ import org.eclipse.jdt.core.dom.Type;
 import java.io.IOException;
 
 /**
- * UnitTests for the {@link Types} class.
+ * Unit tests for {@link ASTFactory}.
  *
- * @author Tom Ball
+ * @author Keith Stanger
  */
-public class TypesTest extends GenerationTest {
+public class ASTFactoryTest extends GenerationTest {
+
   private CompilationUnit unit;
   private AST ast;
 
@@ -44,17 +44,17 @@ public class TypesTest extends GenerationTest {
     ast = unit.getAST();
   }
 
-  public void testMakeType() throws IOException {
+  public void testNewType() throws IOException {
     ITypeBinding binding = Types.getTypeBinding(unit.types().get(0));
-    Type type = Types.makeType(binding);
+    Type type = ASTFactory.newType(ast, binding);
     assertTrue(type instanceof SimpleType);
     SimpleType simpleType = (SimpleType) type;
     assertEquals("Example", simpleType.getName().getFullyQualifiedName());
   }
 
-  public void testMakePrimitiveType() throws IOException {
+  public void testNewPrimitiveType() throws IOException {
     ITypeBinding binding = ast.resolveWellKnownType("int");
-    Type type = Types.makeType(binding);
+    Type type = ASTFactory.newType(ast, binding);
     assertTrue(type instanceof PrimitiveType);
     PrimitiveType primitiveType = (PrimitiveType) type;
     assertEquals(PrimitiveType.INT, primitiveType.getPrimitiveTypeCode());

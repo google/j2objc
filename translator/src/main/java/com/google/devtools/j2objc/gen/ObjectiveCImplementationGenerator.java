@@ -26,6 +26,7 @@ import com.google.devtools.j2objc.types.ImplementationImportCollector;
 import com.google.devtools.j2objc.types.Import;
 import com.google.devtools.j2objc.types.Types;
 import com.google.devtools.j2objc.util.ASTUtil;
+import com.google.devtools.j2objc.util.BindingUtil;
 import com.google.devtools.j2objc.util.ErrorReportingASTVisitor;
 import com.google.devtools.j2objc.util.NameTable;
 
@@ -461,7 +462,7 @@ public class ObjectiveCImplementationGenerator extends ObjectiveCSourceFileGener
 
   @Override
   protected void printStaticFieldGetter(IVariableBinding var) {
-    String name = Types.isPrimitiveConstant(var) ?
+    String name = BindingUtil.isPrimitiveConstant(var) ?
         NameTable.getPrimitiveConstantName(var) :
         NameTable.getStaticVarQualifiedName(var);
     printf("%s {\n  return %s;\n}\n\n", staticFieldGetterSignature(var), name);
@@ -743,7 +744,7 @@ public class ObjectiveCImplementationGenerator extends ObjectiveCSourceFileGener
       if (Modifier.isStatic(f.getModifiers()) || isInterface) {
         for (VariableDeclarationFragment var : ASTUtil.getFragments(f)) {
           IVariableBinding binding = Types.getVariableBinding(var);
-          if (!Types.isPrimitiveConstant(binding)) {
+          if (!BindingUtil.isPrimitiveConstant(binding)) {
             String name = NameTable.getStaticVarQualifiedName(binding);
             String objcType = NameTable.getObjCType(binding.getType());
             Expression initializer = var.getInitializer();

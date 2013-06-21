@@ -42,7 +42,6 @@ import org.eclipse.jdt.core.dom.StructuralPropertyDescriptor;
 import org.eclipse.jdt.core.dom.SuperConstructorInvocation;
 import org.eclipse.jdt.core.dom.SuperMethodInvocation;
 import org.eclipse.jdt.core.dom.SwitchStatement;
-import org.eclipse.jdt.core.dom.SynchronizedStatement;
 import org.eclipse.jdt.core.dom.TryStatement;
 import org.eclipse.jdt.core.dom.Type;
 import org.eclipse.jdt.core.dom.TypeDeclaration;
@@ -140,6 +139,17 @@ public final class ASTUtil {
     return node.bodyDeclarations();
   }
 
+  public static List<BodyDeclaration> getBodyDeclarations(ASTNode node) {
+    if (node instanceof AbstractTypeDeclaration) {
+      return getBodyDeclarations((AbstractTypeDeclaration) node);
+    } else if (node instanceof AnonymousClassDeclaration) {
+      return getBodyDeclarations((AnonymousClassDeclaration) node);
+    } else {
+      throw new AssertionError(
+          "node type does not contains body declarations: " + node.getClass().getSimpleName());
+    }
+  }
+
   @SuppressWarnings("unchecked")
   public static List<IExtendedModifier> getModifiers(BodyDeclaration node) {
     return node.modifiers();
@@ -226,66 +236,42 @@ public final class ASTUtil {
   }
 
   @SuppressWarnings("unchecked")
-  public static void setProperty(ASTNode node, Expression expr) {
+  public static void setProperty(ASTNode node, ASTNode newNode) {
     ASTNode parent = node.getParent();
     StructuralPropertyDescriptor locator = node.getLocationInParent();
     if (locator instanceof ChildPropertyDescriptor) {
-      parent.setStructuralProperty(locator, expr);
+      parent.setStructuralProperty(locator, newNode);
     } else {
       // JDT doesn't directly support ChildListProperty replacement.
-      List<Expression> args;
-      if (parent instanceof MethodInvocation) {
-        args = ((MethodInvocation) parent).arguments();
-      } else if (parent instanceof ConstructorInvocation) {
-        args = ((ConstructorInvocation) parent).arguments();
-      } else if (parent instanceof ClassInstanceCreation) {
-        args = ((ClassInstanceCreation) parent).arguments();
-      } else if (parent instanceof InfixExpression) {
-        args = ((InfixExpression) parent).extendedOperands();
-      } else if (parent instanceof SynchronizedStatement) {
-        SynchronizedStatement stmt = (SynchronizedStatement) parent;
-        if (node.equals(stmt.getExpression())) {
-          stmt.setExpression((Expression) node);
-        }
-        return;
-      } else if (parent instanceof SuperConstructorInvocation) {
-        args = ((SuperConstructorInvocation) parent).arguments();
-      } else if (parent instanceof ArrayCreation) {
+      List args;
+      if (parent instanceof ArrayCreation) {
         args = ((ArrayCreation) parent).dimensions();
       } else if (parent instanceof ArrayInitializer) {
         args = ((ArrayInitializer) parent).expressions();
+      } else if (parent instanceof Block) {
+        args = ((Block) parent).statements();
+      } else if (parent instanceof ClassInstanceCreation) {
+        args = ((ClassInstanceCreation) parent).arguments();
+      } else if (parent instanceof ConstructorInvocation) {
+        args = ((ConstructorInvocation) parent).arguments();
       } else if (parent instanceof EnumConstantDeclaration) {
         args = ((EnumConstantDeclaration) parent).arguments();
-      } else {
-        throw new AssertionError("unknown parent node type: " + parent.getClass().getSimpleName());
-      }
-      for (int i = 0; i < args.size(); i++) {
-        if (node.equals(args.get(i))) {
-          args.set(i, expr);
-        }
-      }
-    }
-  }
-
-  @SuppressWarnings("unchecked")
-  public static void setProperty(ASTNode node, Statement stmt) {
-    ASTNode parent = node.getParent();
-    StructuralPropertyDescriptor locator = node.getLocationInParent();
-    if (locator instanceof ChildPropertyDescriptor) {
-      parent.setStructuralProperty(locator, stmt);
-    } else {
-      // JDT doesn't directly support ChildListProperty replacement.
-      List<Statement> args;
-      if (parent instanceof Block) {
-        args = ((Block) parent).statements();
+      } else if (parent instanceof InfixExpression) {
+        args = ((InfixExpression) parent).extendedOperands();
+      } else if (parent instanceof MethodInvocation) {
+        args = ((MethodInvocation) parent).arguments();
+      } else if (parent instanceof SuperConstructorInvocation) {
+        args = ((SuperConstructorInvocation) parent).arguments();
       } else if (parent instanceof SwitchStatement) {
         args = ((SwitchStatement) parent).statements();
+      } else if (parent instanceof TypeDeclaration) {
+        args = ((TypeDeclaration) parent).superInterfaceTypes();
       } else {
         throw new AssertionError("unknown parent node type: " + parent.getClass().getSimpleName());
       }
       for (int i = 0; i < args.size(); i++) {
         if (node.equals(args.get(i))) {
-          args.set(i, stmt);
+          args.set(i, newNode);
         }
       }
     }

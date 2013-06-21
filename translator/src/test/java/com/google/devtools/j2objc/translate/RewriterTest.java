@@ -571,4 +571,23 @@ public class RewriterTest extends GenerationTest {
     assertTranslation(translation, "break_outer_3:");
     assertTranslation(translation, "goto break_outer_3;");
   }
+
+  public void testExtraDimensionsInFieldDeclaration() throws IOException {
+    String translation = translateSourceFile(
+        "class Test { int i1, i2[], i3[][], i4[][][], i5[][], i6; }", "Test", "Test.h");
+    assertTranslatedLines(translation,
+        "int i1_, i6_;",
+        "IOSIntArray *i2_;",
+        "IOSObjectArray *i3_, *i5_;",
+        "IOSObjectArray *i4_;");
+  }
+
+  public void testExtraDimensionsInVariableDeclarationStatement() throws IOException {
+    String translation = translateSourceFile(
+        "class Test { void test() { char c1[][], c2[], c3, c4, c5[][]; } }", "Test", "Test.m");
+    assertTranslatedLines(translation,
+        "IOSObjectArray *c1, *c5;",
+        "IOSCharArray *c2;",
+        "unichar c3, c4;");
+  }
 }

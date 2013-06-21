@@ -176,7 +176,7 @@ public class JavaToIOSMethodTranslator extends ErrorReportingASTVisitor {
       for (int i = 0; i < n; i++) {
         ITypeBinding newParamType = Types.resolveIOSType(iosArgs.get(i).getType());
         if (newParamType != null) {
-          parameters.get(i).setType(Types.makeType(newParamType));
+          parameters.get(i).setType(ASTFactory.newType(ast, newParamType));
         }
       }
     }
@@ -394,7 +394,7 @@ public class JavaToIOSMethodTranslator extends ErrorReportingASTVisitor {
     Types.addBinding(zoneName, zoneBinding);
     SingleVariableDeclaration zoneParam = ast.newSingleVariableDeclaration();
     zoneParam.setName(zoneName);
-    zoneParam.setType(Types.makeType(zoneBinding.getType()));
+    zoneParam.setType(ASTFactory.newType(ast, zoneBinding.getType()));
     Types.addBinding(zoneParam, zoneBinding);
     return zoneParam;
   }

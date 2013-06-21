@@ -25,6 +25,7 @@ import com.google.devtools.j2objc.types.IOSMethod;
 import com.google.devtools.j2objc.types.Import;
 import com.google.devtools.j2objc.types.Types;
 import com.google.devtools.j2objc.util.ASTUtil;
+import com.google.devtools.j2objc.util.BindingUtil;
 import com.google.devtools.j2objc.util.NameTable;
 import com.google.devtools.j2objc.util.UnicodeUtils;
 
@@ -458,7 +459,7 @@ public class ObjectiveCHeaderGenerator extends ObjectiveCSourceFileGenerator {
     ITypeBinding type = Types.getTypeBinding(node);
     boolean hadConstant = false;
     for (IVariableBinding field : type.getDeclaredFields()) {
-      if (Types.isPrimitiveConstant(field)) {
+      if (BindingUtil.isPrimitiveConstant(field)) {
         printf("#define %s ", NameTable.getPrimitiveConstantName(field));
         Object value = field.getConstantValue();
         assert value != null;

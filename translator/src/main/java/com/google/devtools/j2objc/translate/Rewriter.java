@@ -16,6 +16,7 @@
 
 package com.google.devtools.j2objc.translate;
 
+import com.google.common.collect.LinkedListMultimap;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.devtools.j2objc.types.GeneratedMethodBinding;
@@ -299,7 +300,7 @@ public class Rewriter extends ErrorReportingASTVisitor {
 
     Expression nullCheck = ASTFactory.createNullCheck(ast, param, false);
     Expression instanceofExpr = ASTFactory.newInstanceofExpression(
-        ast, ASTFactory.newSimpleName(ast, param), Types.makeType(typeArguments[0]));
+        ast, ASTFactory.newSimpleName(ast, param), typeArguments[0]);
     instanceofExpr = ASTFactory.newPrefixExpression(
         ast, PrefixExpression.Operator.NOT, instanceofExpr, "boolean");
 
@@ -307,7 +308,7 @@ public class Rewriter extends ErrorReportingASTVisitor {
         "java.lang.ClassCastException", ast.resolveWellKnownType("java.lang.RuntimeException"),
         false);
     ClassInstanceCreation newCce = ast.newClassInstanceCreation();
-    newCce.setType(Types.makeType(cceType));
+    newCce.setType(ASTFactory.newType(ast, cceType));
     Types.addBinding(newCce, GeneratedMethodBinding.newConstructor(cceType, 0));
 
     ThrowStatement throwStmt = ast.newThrowStatement();
@@ -948,5 +949,88 @@ public class Rewriter extends ErrorReportingASTVisitor {
     if (includeSuperclasses && superclass != null) {
       addFields(superclass, false, true, fields);
     }
+  }
+
+  @Override
+  public void endVisit(SingleVariableDeclaration node) {
+    if (node.getExtraDimensions() > 0) {
+      node.setType(ASTFactory.newType(node.getAST(), Types.getTypeBinding(node)));
+      node.setExtraDimensions(0);
+    }
+  }
+
+  @Override
+  public void endVisit(VariableDeclarationStatement node) {
+    AST ast = node.getAST();
+    LinkedListMultimap<Integer, VariableDeclarationFragment> newDeclarations =
+        rewriteExtraDimensions(ast, node.getType(), ASTUtil.getFragments(node));
+    if (newDeclarations != null) {
+      List<Statement> statements = ASTUtil.getStatements((Block) node.getParent());
+      int location = 0;
+      while (location < statements.size() && !node.equals(statements.get(location))) {
+        location++;
+      }
+      for (Integer dimensions : newDeclarations.keySet()) {
+        List<VariableDeclarationFragment> fragments = newDeclarations.get(dimensions);
+        VariableDeclarationStatement newDecl =
+            ASTFactory.newVariableDeclarationStatement(ast, fragments.get(0));
+        ASTUtil.getFragments(newDecl).addAll(fragments.subList(1, fragments.size()));
+        statements.add(++location, newDecl);
+      }
+    }
+  }
+
+  @Override
+  public void endVisit(FieldDeclaration node) {
+    AST ast = node.getAST();
+    LinkedListMultimap<Integer, VariableDeclarationFragment> newDeclarations =
+        rewriteExtraDimensions(ast, node.getType(), ASTUtil.getFragments(node));
+    if (newDeclarations != null) {
+      List<BodyDeclaration> bodyDecls = ASTUtil.getBodyDeclarations(node.getParent());
+      int location = 0;
+      while (location < bodyDecls.size() && !node.equals(bodyDecls.get(location))) {
+        location++;
+      }
+      for (Integer dimensions : newDeclarations.keySet()) {
+        List<VariableDeclarationFragment> fragments = newDeclarations.get(dimensions);
+        FieldDeclaration newDecl = ASTFactory.newFieldDeclaration(ast, fragments.get(0));
+        ASTUtil.getFragments(newDecl).addAll(fragments.subList(1, fragments.size()));
+        bodyDecls.add(++location, newDecl);
+      }
+    }
+  }
+
+  @SuppressWarnings("unchecked")
+  private LinkedListMultimap<Integer, VariableDeclarationFragment> rewriteExtraDimensions(
+      AST ast, Type typeNode, List<VariableDeclarationFragment> fragments) {
+    // Removes extra dimensions on variable declaration fragments and creates extra field
+    // declaration nodes if necessary.
+    // eg. "int i1, i2[], i3[][];" becomes "int i1; int[] i2; int[][] i3".
+    LinkedListMultimap<Integer, VariableDeclarationFragment> newDeclarations = null;
+    int masterDimensions = -1;
+    Iterator<VariableDeclarationFragment> iter = fragments.iterator();
+    while (iter.hasNext()) {
+      VariableDeclarationFragment frag = iter.next();
+      int dimensions = frag.getExtraDimensions();
+      ITypeBinding binding = Types.getTypeBinding(frag);
+      if (masterDimensions == -1) {
+        masterDimensions = dimensions;
+        if (dimensions != 0) {
+          ASTUtil.setProperty(typeNode, ASTFactory.newType(ast, binding));
+        }
+      } else if (dimensions != masterDimensions) {
+        if (newDeclarations == null) {
+          newDeclarations = LinkedListMultimap.create();
+        }
+        VariableDeclarationFragment newFrag = ASTFactory.newVariableDeclarationFragment(
+            ast, Types.getVariableBinding(frag),
+            NodeCopier.copySubtree(ast, frag.getInitializer()));
+        newDeclarations.put(dimensions, newFrag);
+        iter.remove();
+      } else {
+        frag.setExtraDimensions(0);
+      }
+    }
+    return newDeclarations;
   }
 }

@@ -29,9 +29,7 @@ import com.google.devtools.j2objc.util.UnicodeUtils;
 import org.eclipse.jdt.core.dom.AST;
 import org.eclipse.jdt.core.dom.ASTNode;
 import org.eclipse.jdt.core.dom.AbstractTypeDeclaration;
-import org.eclipse.jdt.core.dom.ArrayCreation;
 import org.eclipse.jdt.core.dom.ArrayInitializer;
-import org.eclipse.jdt.core.dom.ArrayType;
 import org.eclipse.jdt.core.dom.Assignment;
 import org.eclipse.jdt.core.dom.Block;
 import org.eclipse.jdt.core.dom.BodyDeclaration;
@@ -48,7 +46,6 @@ import org.eclipse.jdt.core.dom.MethodDeclaration;
 import org.eclipse.jdt.core.dom.Modifier;
 import org.eclipse.jdt.core.dom.Statement;
 import org.eclipse.jdt.core.dom.SuperConstructorInvocation;
-import org.eclipse.jdt.core.dom.Type;
 import org.eclipse.jdt.core.dom.TypeDeclaration;
 import org.eclipse.jdt.core.dom.VariableDeclarationFragment;
 
@@ -180,34 +177,22 @@ public class InitializationNormalizer extends ErrorReportingASTVisitor {
     return false;
   }
 
-  private ExpressionStatement makeAssignmentStatement(VariableDeclarationFragment fragment) {
-    AST ast = fragment.getAST();
-    IVariableBinding varBinding = Types.getVariableBinding(fragment);
-    Assignment assignment = ast.newAssignment();
-    Types.addBinding(assignment, varBinding.getType());
-    Expression lhs = ast.newSimpleName(fragment.getName().getIdentifier());
-    Types.addBinding(lhs, varBinding);
-    assignment.setLeftHandSide(lhs);
-
-    Expression initializer = fragment.getInitializer();
+  private Expression copyInitializer(AST ast, Expression initializer) {
     if (initializer instanceof ArrayInitializer) {
       // An array initializer cannot be directly assigned, since by itself
       // it's just shorthand for an array creation node.  This therefore
       // builds an array creation node with the existing initializer.
-      ArrayCreation arrayCreation = ast.newArrayCreation();
-      ITypeBinding arrayType = varBinding.getType();
-      Types.addBinding(arrayCreation, arrayType);
-      Type newType = Types.makeIOSType(arrayType);
-      assert newType != null;
-      ArrayType newArrayType = ast.newArrayType(newType);
-      Types.addBinding(newArrayType, arrayType);
-      arrayCreation.setType(newArrayType);
-      arrayCreation.setInitializer((ArrayInitializer) NodeCopier.copySubtree(ast, initializer));
-      assignment.setRightHandSide(arrayCreation);
-    } else {
-      assignment.setRightHandSide(NodeCopier.copySubtree(ast, initializer));
+      return ASTFactory.newArrayCreation(
+          ast, NodeCopier.copySubtree(ast, (ArrayInitializer) initializer));
     }
-    return ast.newExpressionStatement(assignment);
+    return NodeCopier.copySubtree(ast, initializer);
+  }
+
+  private ExpressionStatement makeAssignmentStatement(VariableDeclarationFragment fragment) {
+    AST ast = fragment.getAST();
+    return ast.newExpressionStatement(ASTFactory.newAssignment(
+        ast, ASTFactory.newSimpleName(ast, Types.getVariableBinding(fragment)),
+        copyInitializer(ast, fragment.getInitializer())));
   }
 
   /**

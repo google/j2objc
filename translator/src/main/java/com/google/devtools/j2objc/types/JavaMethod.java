@@ -17,6 +17,7 @@
 package com.google.devtools.j2objc.types;
 
 import com.google.common.base.Preconditions;
+import com.google.devtools.j2objc.util.BindingUtil;
 
 import org.eclipse.jdt.core.dom.IMethodBinding;
 import org.eclipse.jdt.core.dom.ITypeBinding;
@@ -53,7 +54,7 @@ public class JavaMethod {
 
   private JavaMethod(IMethodBinding binding, ITypeBinding classBinding) {
     name = binding.getName();
-    signature = Types.getSignature(binding);
+    signature = BindingUtil.getSignature(binding);
     clazz = classBinding.getBinaryName();
     varargs = binding.isVarargs();
   }
