@@ -122,7 +122,7 @@ class MapEntry implements Map.Entry<K, V>, Cloneable {
     static class Node <K,V> implements Cloneable {
         static final int NODE_SIZE = 64;
         @Weak Node<K, V> prev;
-        Node<K, V> next;
+        @Weak Node<K, V> next;
         @Weak Node<K, V> parent;
         Node<K, V> left;
         Node<K, V> right;
