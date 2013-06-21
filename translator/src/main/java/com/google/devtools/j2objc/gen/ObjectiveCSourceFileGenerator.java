@@ -187,7 +187,7 @@ public abstract class ObjectiveCSourceFileGenerator extends SourceFileGenerator 
       } else if (Modifier.isStatic(m.getModifiers()) &&
           NameTable.CLINIT_NAME.equals(m.getName().getIdentifier())) {
         printStaticConstructorDeclaration(m);
-      } else if (!isMainMethod(m)) {
+      } else {
         printMethod(m);
       }
     }
@@ -349,28 +349,6 @@ public abstract class ObjectiveCSourceFileGenerator extends SourceFileGenerator 
       name += "Arg";
     }
     return name;
-  }
-
-  /**
-   * Returns true if the specified method declaration is for a Java main
-   */
-  protected boolean isMainMethod(MethodDeclaration m) {
-    int modifiers = m.getModifiers();
-    if (Modifier.isPublic(modifiers) && Modifier.isStatic(modifiers)) {
-      if (m.getName().getIdentifier().equals("main")) {
-        List<?> args = m.parameters();
-        if (args.size() == 1) {
-          SingleVariableDeclaration var = (SingleVariableDeclaration) args.get(0);
-
-          // Use original binding, since we can't tell if it's a String
-          // array after translation, since IOSObjectArray just holds objects.
-          ITypeBinding type = Types.getVariableBinding(var).getType();
-          ITypeBinding stringType = m.getAST().resolveWellKnownType("java.lang.String");
-          return type.isArray() && type.getComponentType().isEqualTo(stringType);
-        }
-      }
-    }
-    return false;
   }
 
   /**

@@ -31,7 +31,10 @@ import java.lang.reflect.Method;
 public class ClassTest extends TestCase {
 
   public ClassTest() {}
-  public ClassTest(String s) {}
+
+  public ClassTest(Double d) {
+    super();
+  }
 
   public int answerToLife() {
     return 42;
@@ -48,21 +51,21 @@ public class ClassTest extends TestCase {
 
   public void testGetDefaultConstructor() throws Exception {
     Class<?> foo = Class.forName("java.lang.ClassTest");
-    Constructor c = foo.getConstructor();
+    Constructor<?> c = foo.getConstructor();
     Class<?>[] paramTypes = c.getParameterTypes();
     assertEquals(0, paramTypes.length);
   }
 
   public void testGetConstructor() throws Exception {
     Class<?> foo = Class.forName("java.lang.ClassTest");
-    Constructor c = foo.getConstructor(String.class);
+    Constructor<?> c = foo.getConstructor(Double.class);
     Class<?>[] paramTypes = c.getParameterTypes();
     assertEquals(1, paramTypes.length);
   }
 
   public void testGetDeclaredConstructor() throws Exception {
     Class<?> foo = Class.forName("java.lang.ClassTest");
-    Constructor c = foo.getConstructor();
+    Constructor<?> c = foo.getConstructor();
     Class<?>[] paramTypes = c.getParameterTypes();
     assertEquals(0, paramTypes.length);
   }

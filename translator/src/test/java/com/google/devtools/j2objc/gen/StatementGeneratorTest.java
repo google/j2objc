@@ -893,16 +893,7 @@ public class StatementGeneratorTest extends GenerationTest {
       "  public static void main(String[] args) { int n = strings.get(1).length(); }}",
       "Test", "Test.m");
     assertTranslation(translation, "[((NSString *) " +
-      "[((JavaUtilArrayList *) NIL_CHK([Test strings])) getWithInt:1]) length];");
-  }
-
-  // b/5872667: verify asserts in main() methods use NSCAssert.
-  public void testAssertInMain() throws IOException {
-    String translation = translateSourceFile(
-        "public class Test { public static void main(String[] args) {" +
-        "  assert (false) : \"false!!\"; }}",
-        "Test", "Test.m");
-    assertTranslation(translation, "NSCAssert((NO), @\"false!!\");");
+      "[((JavaUtilArrayList *) NIL_CHK(Test_strings_)) getWithInt:1]) length];");
   }
 
   // b/5872757: verify multi-dimensional array has cast before each
@@ -915,10 +906,10 @@ public class StatementGeneratorTest extends GenerationTest {
       "    a[0][0] = \"42\"; System.out.println(a[0].length); }}",
       "Test", "Test.m");
     assertTranslation(translation,
-        "[((IOSObjectArray *) [((IOSObjectArray *) NIL_CHK([Test a])) objectAtIndex:0]) " +
+        "[((IOSObjectArray *) [((IOSObjectArray *) NIL_CHK(Test_a_)) objectAtIndex:0]) " +
         "replaceObjectAtIndex:0 withObject:@\"42\"];");
     assertTranslation(translation,
-        "[((IOSObjectArray *) [((IOSObjectArray *) NIL_CHK([Test a])) objectAtIndex:0]) count]");
+        "[((IOSObjectArray *) [((IOSObjectArray *) NIL_CHK(Test_a_)) objectAtIndex:0]) count]");
   }
 
   public void testMultiDimArray() throws IOException {
@@ -1045,7 +1036,7 @@ public class StatementGeneratorTest extends GenerationTest {
         "    System.out.println(staticString);" +
         "  }}",
         "HelloWorld", "HelloWorld.m");
-      assertTranslation(translation, "printlnWithNSString:[HelloWorld staticString]];");
+      assertTranslation(translation, "printlnWithNSString:HelloWorld_staticString_];");
   }
 
   public void testThisCallInInnerConstructor() throws IOException {

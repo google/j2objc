@@ -42,32 +42,25 @@ OBJC_SOURCES = \
     JUnitRunner.m
 
 MODIFIED_SOURCES = \
+    junit/textui/TestRunner.java \
     junit/runner/Version.java
 
 OBJS = $(JAVA_SOURCES:%.java=$(ARCH_BUILD_DIR)/%.o) \
     $(OBJC_SOURCES:%.m=$(ARCH_BUILD_DIR)/%.o) \
     $(MODIFIED_SOURCES:%.java=$(ARCH_BUILD_DIR)/%.o)
 
-# TestRunner is in a separate library, so that its main function doesn't
-# collide with main functions defined elsewhere.
-RUNNER_SOURCES = \
-    junit/textui/TestRunner.java
-
-RUNNER_OBJS = $(RUNNER_SOURCES:%.java=$(ARCH_BUILD_DIR)/%.o)
-
 JAVA_SOURCE_LIST = $(TMPDIR).classes.list
 EXTRACTED_JAVA = $(JAVA_SOURCES:%=$(JAVA_SRC_DIR)/%)
 TRANSLATED_OBJC = $(JAVA_SOURCES:%.java=$(BUILD_DIR)/%.m) \
     $(MODIFIED_SOURCES:%.java=$(BUILD_DIR)/%.m)
-RUNNER_OBJC = $(RUNNER_SOURCES:%.java=$(BUILD_DIR)/%.m)
 SOURCE_HEADERS = $(shell find $(OBJC_SOURCE_DIR) -name '*.h')
 SOURCE_HEADERS := $(SOURCE_HEADERS:$(OBJC_SOURCE_DIR)/%=%)
-GENERATED_HEADERS = $(JAVA_SOURCES:%.java=%.h) $(RUNNER_SOURCES:%.java=%.h)
+GENERATED_HEADERS = $(JAVA_SOURCES:%.java=%.h)
 RELATIVE_HEADERS = $(SOURCE_HEADERS) $(GENERATED_HEADERS)
 HEADERS = $(SOURCE_HEADERS:%=$(OBJC_SOURCE_DIR)/%) $(GENERATED_HEADERS:%=$(BUILD_DIR)/%)
 DIST_HEADERS = $(RELATIVE_HEADERS:%=$(DIST_INCLUDE_DIR)/%)
 
-translate: pre_translate $(EXTRACTED_JAVA) $(TRANSLATED_OBJC) $(RUNNER_OBJC)
+translate: pre_translate $(EXTRACTED_JAVA) $(TRANSLATED_OBJC)
 	@if [ `cat $(JAVA_SOURCE_LIST) | wc -l` -ge 1 ] ; then \
 	  $(J2OBJC) -sourcepath .:$(SOURCE_BASE)/java `cat $(JAVA_SOURCE_LIST)` ; \
 	fi
@@ -76,7 +69,7 @@ pre_translate:
 	@rm -f $(JAVA_SOURCE_LIST)
 	@touch $(JAVA_SOURCE_LIST)
 
-lib: translate $(JUNIT_LIB) $(RUNNER_LIB)
+lib: translate $(JUNIT_LIB)
 	@:
 
 $(EXTRACTED_JAVA): $(JUNIT_SRC_JAR)
@@ -85,9 +78,6 @@ $(EXTRACTED_JAVA): $(JUNIT_SRC_JAR)
 	@touch $(EXTRACTED_JAVA)
 
 $(JUNIT_LIB): $(OBJS)
-	$(LIBTOOL) -static -o $@ $^
-
-$(RUNNER_LIB): $(RUNNER_OBJS)
 	$(LIBTOOL) -static -o $@ $^
 
 $(BUILD_DIR)/%.h $(BUILD_DIR)/%.m: $(JAVA_SRC_DIR)/%.java
@@ -108,10 +98,6 @@ $(JUNIT_LIB_DIST): $(JUNIT_LIB)
 	@mkdir -p $(@D)
 	install -m 0644 $< $@
 
-$(RUNNER_LIB_DIST): $(RUNNER_LIB)
-	@mkdir -p $(@D)
-	install -m 0644 $< $@
-
 $(DIST_INCLUDE_DIR)/%.h: $(BUILD_DIR)/%.h
 	@mkdir -p $(@D)
 	install -m 0644 $< $@
@@ -121,6 +107,6 @@ $(DIST_INCLUDE_DIR)/%.h: $(OBJC_SOURCE_DIR)/%.h
 	install -m 0644 $< $@
 
 clean:
-	@rm -rf $(BUILD_DIR) $(JUNIT_LIB_DIST) $(RUNNER_LIB_DIST) $(DIST_HEADERS)
+	@rm -rf $(BUILD_DIR) $(JUNIT_LIB_DIST) $(DIST_HEADERS)
 
-dist: lib $(JUNIT_LIB_DIST) $(RUNNER_LIB_DIST) $(DIST_HEADERS)
+dist: lib $(JUNIT_LIB_DIST) $(DIST_HEADERS)

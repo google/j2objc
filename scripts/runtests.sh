@@ -16,12 +16,14 @@
 #
 # Author: Tom Ball
 #
-# Run specified unit test executables, or all tests in the build/tests
-# directory.
+# Run a list of test classes with a specified unit test executable.
 
-if [ $# -eq 0 ]; then
-  TESTS=$(/usr/bin/find build_result/tests -perm 755 -a -type f)
+if [ $# -lt 2 ]; then
+  echo usage: $0 test_executable test-class [, test-class2, ...]
+  exit 1
 else
+  TEST_BINARY=$1
+  shift
   TESTS=$*
 fi
 
@@ -45,7 +47,7 @@ function add_results {
 
 function runtest {
   echo "starting $(basename $@)"
-  eval "$@"
+  eval "${TEST_BINARY} $@"
   add_results $?
   echo
 }
