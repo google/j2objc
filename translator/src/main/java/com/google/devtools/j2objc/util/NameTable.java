@@ -344,7 +344,7 @@ public class NameTable {
 
   // TODO(user): See whether the logic in this method can be simplified.
   //     Also, what about type variables?
-  private static String getArrayTypeParameterKeyword(ITypeBinding elementType) {
+  private static String getArrayTypeParameterKeyword(ITypeBinding elementType, int dimensions) {
     if (elementType.isPrimitive()) {
       elementType = Types.getWrapperType(elementType);
     }
@@ -360,7 +360,11 @@ public class NameTable {
         elementType = bound;
       }
     }
-    return getFullName(elementType) + "Array";
+    String name = getFullName(elementType) + "Array";
+    if (dimensions > 1) {
+      name += dimensions;
+    }
+    return name;
   }
 
   private static boolean isIdType(ITypeBinding type) {
@@ -374,7 +378,7 @@ public class NameTable {
     } else if (type.isPrimitive()) {
       return getPrimitiveTypeParameterKeyword(type.getName());
     } else if (type.isArray()) {
-      return getArrayTypeParameterKeyword(type.getElementType());
+      return getArrayTypeParameterKeyword(type.getElementType(), type.getDimensions());
     }
     return getFullName(type);
   }
