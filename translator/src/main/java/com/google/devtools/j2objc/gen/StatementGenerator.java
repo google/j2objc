@@ -142,7 +142,7 @@ public class StatementGenerator extends ErrorReportingASTVisitor {
       Set<IVariableBinding> fieldHiders, SourcePosition sourcePosition) {
     StatementGenerator generator = new StatementGenerator(null, fieldHiders, false,
         sourcePosition);
-    if (method.isVarargs()) {
+    if (IOSMethodBinding.hasVarArgsTarget(method)) {
       generator.printVarArgs(method, args);
     } else {
       int nArgs = args.size();
@@ -174,7 +174,7 @@ public class StatementGenerator extends ErrorReportingASTVisitor {
   }
 
   private void printArguments(IMethodBinding method, List<Expression> args) {
-    if (method != null && method.isVarargs()) {
+    if (IOSMethodBinding.hasVarArgsTarget(method)) {
       printVarArgs(method, args);
     } else if (!args.isEmpty()) {
       int nArgs = args.size();
@@ -195,14 +195,6 @@ public class StatementGenerator extends ErrorReportingASTVisitor {
         // mapped methods already have converted parameters
         if (index > 0) {
           buffer.append(iosMethod.getParameters().get(index).getParameterName());
-        }
-      } else if (method.getDeclaringClass() instanceof IOSArrayTypeBinding) {
-        assert method.getName().startsWith("arrayWith");
-        if (index == 1) {
-          buffer.append("count"); // IOSArray methods' 2nd parameter is the same.
-        } else if (index == 2) {
-          assert method.getName().equals("arrayWithObjects");
-          buffer.append("type");
         }
       } else {
         method = Types.getOriginalMethodBinding(method.getMethodDeclaration());
@@ -245,7 +237,7 @@ public class StatementGenerator extends ErrorReportingASTVisitor {
         if (it.hasNext() || i + 1 < parameterTypes.length) {
           buffer.append(' ');
         }
-      } else if (hasVarArgsTarget(method)) {
+      } else {
         if (i == 0) {
           buffer.append(':');
           if (it.hasNext()) {
@@ -258,49 +250,8 @@ public class StatementGenerator extends ErrorReportingASTVisitor {
           it.next().accept(this);
         }
         buffer.append(", nil");
-      } else {
-        // Last parameter; Group remain arguments into an array.
-        assert parameterTypes[i].isArray();
-        IOSMethod iosMethod = IOSMethodBinding.getIOSMethod(method);
-        if (iosMethod != null) {
-          if (i > 0) {
-            buffer.append(iosMethod.getParameters().get(i).getParameterName());
-          }
-        } else {
-          String keyword = NameTable.parameterKeyword(parameterTypes[i]);
-          if (i == 0) {
-            keyword = NameTable.capitalize(keyword);
-          }
-          buffer.append(keyword);
-        }
-        buffer.append(':');
-        List<Expression> objs = Lists.newArrayList(it);
-        if (objs.size() == 1 && Types.getTypeBinding(objs.get(0)).isArray() &&
-            parameterTypes[i].getDimensions() == 1) {
-          // Varargs method invoked with an array, so just pass it on.
-          objs.get(0).accept(this);
-        } else {
-          buffer.append("[IOSObjectArray arrayWithType:");
-          printObjectArrayType(parameterTypes[i].getElementType());
-          buffer.append(" count:");
-          buffer.append(objs.size());
-          it = objs.iterator();
-          while (it.hasNext()) {
-            buffer.append(", ");
-            it.next().accept(this);
-          }
-          buffer.append(" ]");
-        }
       }
     }
-  }
-
-  private boolean hasVarArgsTarget(IMethodBinding method) {
-    IOSMethod iosMethod = IOSMethodBinding.getIOSMethod(method);
-    if (iosMethod != null) {
-      return iosMethod.isVarArgs();
-    }
-    return false;
   }
 
   private void printNilCheck(Expression e, boolean needsCast) {
@@ -402,95 +353,8 @@ public class StatementGenerator extends ErrorReportingASTVisitor {
 
   @Override
   public boolean visit(ArrayCreation node) {
-    List<Expression> dimensions = ASTUtil.getDimensions(node);
-    ArrayInitializer init = node.getInitializer();
-    ITypeBinding componentType = Types.getTypeBinding(node).getComponentType();
-    if (init != null) {
-      // Create an expression like [IOSArrayInt arrayWithInts:(int[]){ 1, 2, 3 }].
-
-      // New array needs to be retained if it's a new assignment, since the
-      // arrayWith* methods return an autoreleased object.
-      buffer.append('[');
-      String arrayType = Types.resolveArrayType(componentType).toString();
-      buffer.append(arrayType);
-      buffer.append(' ');
-
-      IOSArrayTypeBinding iosArrayBinding = Types.resolveArrayType(componentType);
-      buffer.append(iosArrayBinding.getInitMethod());
-      buffer.append(':');
-      printArrayLiteral(init);
-      buffer.append(" count:");
-      buffer.append(init.expressions().size());
-      if (arrayType.equals("IOSObjectArray")) {
-        buffer.append(" type:");
-        printObjectArrayType(componentType);
-      }
-      buffer.append(']');
-    } else if (dimensions.size() > 1) {
-      printMultiDimArray(componentType, dimensions);
-    } else {
-      assert dimensions.size() == 1;
-      printSingleDimArray(componentType, dimensions.get(0), useReferenceCounting);
-    }
+    assert false : "ArrayCreation nodes are rewritten by ArrayRewriter.";
     return false;
-  }
-
-  private void printSingleDimArray(
-      ITypeBinding componentType, Expression size, boolean useRefCount) {
-    // Create an expression like [IOSArrayInt initWithLength:5] }.
-    buffer.append(useRefCount ? "[[[" : "[[");
-    String arrayType = Types.resolveArrayType(componentType).toString();
-    buffer.append(arrayType);
-    buffer.append(" alloc] ");
-    buffer.append("initWithLength:");
-    size.accept(this);
-    if (arrayType.equals("IOSObjectArray")) {
-      buffer.append(" type:");
-      printObjectArrayType(componentType);
-    }
-    buffer.append(']');
-    if (useRefCount) {
-      buffer.append(" autorelease]");
-    }
-  }
-
-  /**
-   * Prints a multi-dimensional array that is defined using array sizes,
-   * rather than an initializer.  For example, "new int[2][3][4]".
-   */
-  private void printMultiDimArray(ITypeBinding componentType, List<Expression> dimensions) {
-    if (dimensions.size() == 1) {
-      printSingleDimArray(componentType, dimensions.get(0), false);
-    } else {
-      buffer.append("[IOSObjectArray arrayWithObjects:(id[]){ ");
-      Expression dimension = dimensions.get(0);
-      int dim;
-      // An array dimension may either be a number literal, constant, or expression.
-      if (dimension instanceof NumberLiteral) {
-        dim = Integer.parseInt(dimension.toString());
-      } else {
-        IVariableBinding var = Types.getVariableBinding(dimension);
-        if (var != null) {
-          Number constant = (Number) var.getConstantValue();
-          dim = constant != null ? constant.intValue() : 1;
-        } else {
-          dim = 1;
-        }
-      }
-      List<Expression> subDimensions = dimensions.subList(1, dimensions.size());
-      for (int i = 0; i < dim; i++) {
-        printMultiDimArray(componentType.getComponentType(), subDimensions);
-        if (i + 1 < dim) {
-          buffer.append(',');
-        }
-        buffer.append(' ');
-      }
-      buffer.append("} count:");
-      dimension.accept(this);
-      buffer.append(" type:[IOSClass classWithClass:[");
-      buffer.append(Types.resolveArrayType(componentType.getComponentType()).toString());
-      buffer.append(" class]]]");
-    }
   }
 
   private void printObjectArrayType(ITypeBinding componentType) {

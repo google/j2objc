@@ -838,10 +838,9 @@ public class InnerClassExtractorTest extends GenerationTest {
     String translation = translateSourceFile(
         "class Test { class Inner { Inner(int... i) {} } void test() { new Inner(1, 2, 3); } }",
         "Test", "Test.m");
-    assertTranslation(translation, "[[Test_Inner alloc] initWithTest:self " +
-        "withJavaLangIntegerArray:[IOSObjectArray arrayWithType:[IOSClass classWithClass:" +
-        "[int class]] count:3, [JavaLangInteger valueOfWithInt:1], [JavaLangInteger " +
-        "valueOfWithInt:2], [JavaLangInteger valueOfWithInt:3] ]]");
+    assertTranslation(translation,
+        "[[Test_Inner alloc] initWithTest:self withJavaLangIntegerArray:" +
+        "[IOSIntArray arrayWithInts:(int[]){ 1, 2, 3 } count:3]]");
   }
 
   public void testInnerClassConstructedInSuperConstructorInvocation() throws IOException {

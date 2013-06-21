@@ -66,7 +66,6 @@ public class Types {
   private final Map<Object, IBinding> bindingMap;
   private final Map<ITypeBinding, ITypeBinding> typeMap = Maps.newHashMap();
   private final Map<ITypeBinding, ITypeBinding> renamedTypeMap = Maps.newHashMap();
-  private final Map<IVariableBinding, IVariableBinding> mappedVariables = Maps.newHashMap();
   private final Map<IVariableBinding, ITypeBinding> variablesNeedingCasts = Maps.newHashMap();
   private final List<IMethodBinding> functions = Lists.newArrayList();
   private final Map<ITypeBinding, ITypeBinding> primitiveToWrapperTypes =
@@ -86,12 +85,13 @@ public class Types {
   private static Types instance;
 
   // Non-standard naming pattern is used, since in this case it's more readable.
-  public final IOSTypeBinding NSCopying = new IOSTypeBinding("NSCopying", true);
-  public final IOSTypeBinding NSObject = new IOSTypeBinding("NSObject", false);
-  public final IOSTypeBinding NSNumber = new IOSTypeBinding("NSNumber", NSObject);
-  public final IOSTypeBinding NSString = new IOSTypeBinding("NSString", NSObject);
-  public final IOSTypeBinding NS_ANY = new IOSTypeBinding("id", false);
-  public final IOSTypeBinding IOSClass = new IOSTypeBinding("IOSClass", false);
+  private final IOSTypeBinding NSCopying;
+  private final IOSTypeBinding NSObject;
+  private final IOSTypeBinding NSNumber;
+  private final IOSTypeBinding NSString;
+  private final IOSTypeBinding NSZone;
+  private final IOSTypeBinding NS_ANY;
+  private final IOSTypeBinding IOSClass;
 
   public IOSArrayTypeBinding IOSBooleanArray;
   public IOSArrayTypeBinding IOSByteArray;
@@ -121,7 +121,8 @@ public class Types {
 
   private Types(CompilationUnit unit) {
     ast = unit.getAST();
-    initializeBaseClasses();
+
+    // Find core java types.
     javaObjectType = ast.resolveWellKnownType("java.lang.Object");
     javaClassType = ast.resolveWellKnownType("java.lang.Class");
     javaCloneableType = ast.resolveWellKnownType("java.lang.Cloneable");
@@ -129,11 +130,19 @@ public class Types {
     javaVoidType = ast.resolveWellKnownType("java.lang.Void");
     voidType = ast.resolveWellKnownType("void");
     booleanType = ast.resolveWellKnownType("boolean");
-    NSObject.setMappedType(javaObjectType);
-    NSString.setMappedType(javaStringType);
     ITypeBinding binding = ast.resolveWellKnownType("java.lang.Integer");
     javaNumberType = binding.getSuperclass();
-    NSNumber.setMappedType(javaNumberType);
+
+    // Create core IOS types.
+    NSCopying = IOSTypeBinding.newInterface("NSCopying", javaCloneableType);
+    NSObject = IOSTypeBinding.newClass("NSObject", javaObjectType);
+    NSNumber = IOSTypeBinding.newClass("NSNumber", javaNumberType, NSObject);
+    NSString = IOSTypeBinding.newClass("NSString", javaStringType, NSObject);
+    NS_ANY = IOSTypeBinding.newUnmappedClass("id");
+    IOSClass = IOSTypeBinding.newUnmappedClass("IOSClass");
+    NSZone = IOSTypeBinding.newUnmappedClass("NSZone");
+
+    initializeBaseClasses();
     initializeArrayTypes();
     initializeTypeMap();
     initializeCommonJavaTypes();
@@ -149,37 +158,38 @@ public class Types {
     iosBindingMap.put("NSString", NSString);
     iosBindingMap.put("NSNumber", NSNumber);
     iosBindingMap.put("NSCopying", NSCopying);
+    iosBindingMap.put("NSZone", NSZone);
     iosBindingMap.put("id", NS_ANY);
   }
 
   private void initializeArrayTypes() {
     IOSBooleanArray = new IOSArrayTypeBinding(
-        "IOSBooleanArray", "arrayWithBooleans", "booleanAtIndex", "getBooleans",
+        "IOSBooleanArray", "booleanAtIndex", "getBooleans",
         ast.resolveWellKnownType("java.lang.Boolean"), ast.resolveWellKnownType("boolean"));
-    IOSByteArray =
-        new IOSArrayTypeBinding("IOSByteArray", "arrayWithBytes", "byteAtIndex", "getBytes",
-            ast.resolveWellKnownType("java.lang.Byte"), ast.resolveWellKnownType("byte"));
-    IOSCharArray =
-        new IOSArrayTypeBinding("IOSCharArray", "arrayWithCharacters", "charAtIndex", "getChars",
-            ast.resolveWellKnownType("java.lang.Character"), ast.resolveWellKnownType("char"));
-    IOSDoubleArray =
-        new IOSArrayTypeBinding("IOSDoubleArray", "arrayWithDoubles", "doubleAtIndex", "getDoubles",
-            ast.resolveWellKnownType("java.lang.Double"), ast.resolveWellKnownType("double"));
-    IOSFloatArray =
-        new IOSArrayTypeBinding("IOSFloatArray", "arrayWithFloats", "floatAtIndex", "getFloats",
-            ast.resolveWellKnownType("java.lang.Float"), ast.resolveWellKnownType("float"));
-    IOSIntArray =
-        new IOSArrayTypeBinding("IOSIntArray", "arrayWithInts", "intAtIndex", "getInts",
-            ast.resolveWellKnownType("java.lang.Integer"), ast.resolveWellKnownType("int"));
-    IOSLongArray =
-        new IOSArrayTypeBinding("IOSLongArray", "arrayWithLongs", "longAtIndex", "getLongs",
-            ast.resolveWellKnownType("java.lang.Long"), ast.resolveWellKnownType("long"));
-    IOSObjectArray =
-        new IOSArrayTypeBinding("IOSObjectArray", "arrayWithObjects", "objectAtIndex", "getObjects",
-            ast.resolveWellKnownType("java.lang.Object"), null);
-    IOSShortArray =
-        new IOSArrayTypeBinding("IOSShortArray", "arrayWithShorts", "shortAtIndex", "getShorts",
-            ast.resolveWellKnownType("java.lang.Short"), ast.resolveWellKnownType("short"));
+    IOSByteArray = new IOSArrayTypeBinding(
+        "IOSByteArray", "byteAtIndex", "getBytes", ast.resolveWellKnownType("java.lang.Byte"),
+        ast.resolveWellKnownType("byte"));
+    IOSCharArray = new IOSArrayTypeBinding(
+        "IOSCharArray", "charAtIndex", "getChars", ast.resolveWellKnownType("java.lang.Character"),
+        ast.resolveWellKnownType("char"));
+    IOSDoubleArray = new IOSArrayTypeBinding(
+        "IOSDoubleArray", "doubleAtIndex", "getDoubles",
+        ast.resolveWellKnownType("java.lang.Double"), ast.resolveWellKnownType("double"));
+    IOSFloatArray = new IOSArrayTypeBinding(
+        "IOSFloatArray", "floatAtIndex", "getFloats", ast.resolveWellKnownType("java.lang.Float"),
+        ast.resolveWellKnownType("float"));
+    IOSIntArray = new IOSArrayTypeBinding(
+        "IOSIntArray", "intAtIndex", "getInts", ast.resolveWellKnownType("java.lang.Integer"),
+        ast.resolveWellKnownType("int"));
+    IOSLongArray = new IOSArrayTypeBinding(
+        "IOSLongArray", "longAtIndex", "getLongs", ast.resolveWellKnownType("java.lang.Long"),
+        ast.resolveWellKnownType("long"));
+    IOSObjectArray = new IOSArrayTypeBinding(
+        "IOSObjectArray", "objectAtIndex", "getObjects",
+        ast.resolveWellKnownType("java.lang.Object"), null);
+    IOSShortArray = new IOSArrayTypeBinding(
+        "IOSShortArray", "shortAtIndex", "getShorts", ast.resolveWellKnownType("java.lang.Short"),
+        ast.resolveWellKnownType("short"));
 
     iosBindingMap.put("IOSBooleanArray", IOSBooleanArray);
     iosBindingMap.put("IOSByteArray", IOSByteArray);
@@ -468,24 +478,6 @@ public class Types {
     return binding != newBinding ? Types.makeType(newBinding) : null;
   }
 
-  /**
-   * Returns true if a specified variable binding refers has a replacement.
-   */
-  public static boolean isMappedVariable(IVariableBinding var) {
-    return instance.mappedVariables.containsKey(var);
-  }
-
-  public static void addMappedVariable(ASTNode node, IVariableBinding newBinding) {
-    IVariableBinding oldBinding = getVariableBinding(node);
-    assert oldBinding != null;
-    instance.mappedVariables.put(oldBinding, newBinding);
-  }
-
-  public static IVariableBinding getMappedVariable(IVariableBinding binding) {
-    IVariableBinding var = instance.mappedVariables.get(binding);
-    return var != null ? var : binding;
-  }
-
   public static ITypeBinding resolveJavaType(String name) {
     ITypeBinding result = instance.javaBindingMap.get(name);
     if (result == null) {
@@ -679,12 +671,6 @@ public class Types {
     BooleanLiteral boolLiteral = instance.ast.newBooleanLiteral(value);
     addBinding(boolLiteral, instance.booleanType);
     return boolLiteral;
-  }
-
-  public static SimpleName newLabel(String identifier) {
-    SimpleName node = instance.ast.newSimpleName(identifier);
-    addBinding(node, new IOSTypeBinding(identifier, false));
-    return node;
   }
 
   public static boolean isJUnitTest(ITypeBinding type) {

@@ -34,73 +34,64 @@ public class ArrayCreationTest extends GenerationTest {
     List<Statement> stmts = translateStatements("boolean[] foo = new boolean[3];");
     assertEquals(1, stmts.size());
     String result = generateStatement(stmts.get(0));
-    assertEquals(
-      "IOSBooleanArray *foo = [[[IOSBooleanArray alloc] initWithLength:3] autorelease];",
-      result);
+    assertEquals("IOSBooleanArray *foo = [IOSBooleanArray arrayWithLength:3];", result);
   }
 
   public void testByteArrayCreationNoInitializer() {
     List<Statement> stmts = translateStatements("byte[] foo = new byte[3];");
     assertEquals(1, stmts.size());
     String result = generateStatement(stmts.get(0));
-    assertEquals("IOSByteArray *foo = [[[IOSByteArray alloc] initWithLength:3] autorelease];",
-        result);
+    assertEquals("IOSByteArray *foo = [IOSByteArray arrayWithLength:3];", result);
   }
 
   public void testCharArrayCreationNoInitializer() {
     List<Statement> stmts = translateStatements("char[] foo = new char[3];");
     assertEquals(1, stmts.size());
     String result = generateStatement(stmts.get(0));
-    assertEquals("IOSCharArray *foo = [[[IOSCharArray alloc] initWithLength:3] autorelease];",
-        result);
+    assertEquals("IOSCharArray *foo = [IOSCharArray arrayWithLength:3];", result);
   }
 
   public void testDoubleArrayCreationNoInitializer() {
     List<Statement> stmts = translateStatements("double[] foo = new double[3];");
     assertEquals(1, stmts.size());
     String result = generateStatement(stmts.get(0));
-    assertEquals("IOSDoubleArray *foo = [[[IOSDoubleArray alloc] initWithLength:3] autorelease];",
-        result);
+    assertEquals("IOSDoubleArray *foo = [IOSDoubleArray arrayWithLength:3];", result);
   }
 
   public void testFloatArrayCreationNoInitializer() {
     List<Statement> stmts = translateStatements("float[] foo = new float[3];");
     assertEquals(1, stmts.size());
     String result = generateStatement(stmts.get(0));
-    assertEquals("IOSFloatArray *foo = [[[IOSFloatArray alloc] initWithLength:3] autorelease];",
-        result);
+    assertEquals("IOSFloatArray *foo = [IOSFloatArray arrayWithLength:3];", result);
   }
 
   public void testIntArrayCreationNoInitializer() {
     List<Statement> stmts = translateStatements("int[] foo = new int[3];");
     assertEquals(1, stmts.size());
     String result = generateStatement(stmts.get(0));
-    assertEquals("IOSIntArray *foo = [[[IOSIntArray alloc] initWithLength:3] autorelease];",
-        result);
+    assertEquals("IOSIntArray *foo = [IOSIntArray arrayWithLength:3];", result);
   }
 
   public void testLongArrayCreationNoInitializer() {
     List<Statement> stmts = translateStatements("long[] foo = new long[3];");
     assertEquals(1, stmts.size());
     String result = generateStatement(stmts.get(0));
-    assertEquals("IOSLongArray *foo = [[[IOSLongArray alloc] initWithLength:3] autorelease];",
-        result);
+    assertEquals("IOSLongArray *foo = [IOSLongArray arrayWithLength:3];", result);
   }
 
   public void testShortArrayCreationNoInitializer() {
     List<Statement> stmts = translateStatements("short[] foo = new short[3];");
     assertEquals(1, stmts.size());
     String result = generateStatement(stmts.get(0));
-    assertEquals("IOSShortArray *foo = [[[IOSShortArray alloc] initWithLength:3] autorelease];",
-        result);
+    assertEquals("IOSShortArray *foo = [IOSShortArray arrayWithLength:3];", result);
   }
 
   public void testObjectArrayCreationNoInitializer() {
     List<Statement> stmts = translateStatements("Integer[] foo = new Integer[3];");
     assertEquals(1, stmts.size());
     String result = generateStatement(stmts.get(0));
-    assertEquals("IOSObjectArray *foo = [[[IOSObjectArray alloc] " +
-        "initWithLength:3 type:[IOSClass classWithClass:[JavaLangInteger class]]] autorelease];",
+    assertEquals("IOSObjectArray *foo = [IOSObjectArray " +
+        "arrayWithLength:3 type:[IOSClass classWithClass:[JavaLangInteger class]]];",
         result);
   }
 
@@ -108,8 +99,9 @@ public class ArrayCreationTest extends GenerationTest {
     List<Statement> stmts = translateStatements("boolean[] foo = { true, false };");
     assertEquals(1, stmts.size());
     String result = generateStatement(stmts.get(0));
-    assertEquals("IOSBooleanArray *foo = " +
-    		"[IOSBooleanArray arrayWithBooleans:(BOOL[]){ YES, NO } count:2];", result);
+    assertEquals(
+        "IOSBooleanArray *foo = [IOSBooleanArray arrayWithBooleans:(BOOL[]){ YES, NO } count:2];",
+        result);
   }
 
   public void testByteArrayCreationNoDimension() {
@@ -237,18 +229,8 @@ public class ArrayCreationTest extends GenerationTest {
     List<Statement> stmts = translateStatements("int foo[][][] = new int[2][3][4];");
     assertEquals(1, stmts.size());
     String result = generateStatement(stmts.get(0));
-    assertEquals("IOSObjectArray *foo = " +
-        "[IOSObjectArray arrayWithObjects:(id[]){ " +
-          "[IOSObjectArray arrayWithObjects:(id[]){ " +
-            "[[IOSIntArray alloc] initWithLength:4], " +
-            "[[IOSIntArray alloc] initWithLength:4], " +
-            "[[IOSIntArray alloc] initWithLength:4] } " +
-           "count:3 type:[IOSClass classWithClass:[IOSIntArray class]]], " +
-          "[IOSObjectArray arrayWithObjects:(id[]){ " +
-            "[[IOSIntArray alloc] initWithLength:4], " +
-            "[[IOSIntArray alloc] initWithLength:4], " +
-            "[[IOSIntArray alloc] initWithLength:4] } " +
-           "count:3 type:[IOSClass classWithClass:[IOSIntArray class]]] } " +
-         "count:2 type:[IOSClass classWithClass:[IOSObjectArray class]]];", result);
+    assertEquals(
+        "IOSObjectArray *foo = [IOSIntArray arrayWithDimensions:3 lengths:(int[]){ 2, 3, 4 }];",
+        result);
   }
 }

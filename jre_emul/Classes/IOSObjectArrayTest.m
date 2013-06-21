@@ -86,15 +86,16 @@
     [numbers replaceObjectAtIndex:i
                        withObject:[NSNumber numberWithInt:i]];
   }
-  type = [IOSClass classWithClass:[NSString class]];
-  IOSObjectArray *strings =
-      [IOSObjectArray arrayWithType:type count:3, @"huey", @"dewey", @"louie"];
-  [strings arraycopy:NSMakeRange(1, 1) 
-         destination:numbers
-              offset:2];
+  IOSObjectArray *numbers2 = [IOSObjectArray arrayWithObjects:(id[]){
+      [NSNumber numberWithInt:11], [NSNumber numberWithInt:12],
+      [NSNumber numberWithInt:13] }
+      count:3 type:type];
+  [numbers2 arraycopy:NSMakeRange(1, 1)
+          destination:numbers
+               offset:2];
   STAssertEquals([[numbers objectAtIndex:0] intValue], 0, @"incorrect element", nil);
   STAssertEquals([[numbers objectAtIndex:1] intValue], 1, @"incorrect element", nil);
-  STAssertEquals([numbers objectAtIndex:2], @"dewey", @"incorrect element", nil);
+  STAssertEquals([[numbers objectAtIndex:2] intValue], 12, @"incorrect element", nil);
   STAssertEquals([[numbers objectAtIndex:3] intValue], 3, @"incorrect element", nil);
   STAssertEquals([[numbers objectAtIndex:4] intValue], 4, @"incorrect element", nil);
 }
@@ -131,6 +132,6 @@
     STAssertEquals([array objectAtIndex:i], [clone objectAtIndex:i],
                    @"elements don't match at index: %d", i);
   }
-}  
+}
 
 @end

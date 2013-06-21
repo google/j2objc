@@ -42,41 +42,34 @@
 #endif
 }
 
++ (id)arrayWithLength:(NSUInteger)length {
+  return AUTORELEASE([[[self class] alloc] initWithLength:length]);
+}
+
 + (id)arrayWithDimensions:(NSUInteger)dimensionCount
-                  lengths:(NSUInteger *)dimensionLengths {
+                  lengths:(const int *)dimensionLengths {
   if (dimensionCount == 0) {
-    id exception = [[JavaLangAssertionError alloc]
-                    initWithId:@"invalid dimension count"];
-#if ! __has_feature(objc_arc)
-    [exception autorelease];
-#endif
-    @throw exception;
+    @throw AUTORELEASE([[JavaLangAssertionError alloc] initWithId:@"invalid dimension count"]);
   }
 
   NSUInteger size = *dimensionLengths;
 
   // If dimension of 1, just return a regular array.
   if (dimensionCount == 1) {
-    id array = [[[self class] alloc] initWithLength:size];
-#if ! __has_feature(objc_arc)
-    [array autorelease];
-#endif
-    return array;
+    return AUTORELEASE([[[self class] alloc] initWithLength:size]);
   }
 
   // Create an array of arrays, which is recursive to handle additional
   // dimensions.
+  Class elementClass = dimensionCount == 2 ? [self class] : [IOSObjectArray class];
   IOSObjectArray *result =
-      [[IOSObjectArray alloc] initWithLength:size type:
-       [IOSClass classWithClass:[IOSObjectArray class]]];
+      [IOSObjectArray arrayWithLength:size
+                                 type:[IOSClass classWithClass:elementClass]];
   for (NSUInteger i = 0; i < size; i++) {
     id subarray = [[self class] arrayWithDimensions:dimensionCount - 1
                                             lengths:dimensionLengths + 1];
     [result replaceObjectAtIndex:i withObject:subarray];
   }
-#if ! __has_feature(objc_arc)
-  [result autorelease];
-#endif
 
   return result;
 }

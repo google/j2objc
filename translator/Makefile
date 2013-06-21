@@ -56,6 +56,7 @@ JAVA_SOURCES = \
 	gen/StatementGenerator.java \
 	translate/ASTFactory.java \
 	translate/AnonymousClassConverter.java \
+	translate/ArrayRewriter.java \
 	translate/Autoboxer.java \
 	translate/DeadCodeEliminator.java \
 	translate/DestructorGenerator.java \

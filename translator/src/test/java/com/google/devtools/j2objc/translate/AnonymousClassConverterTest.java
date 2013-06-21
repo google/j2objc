@@ -86,8 +86,7 @@ public class AnonymousClassConverterTest extends GenerationTest {
     assertTranslation(header, "@property (nonatomic, retain) IOSBooleanArray *val$bar;");
     assertTranslation(header,
         "- (id)initWithJavaLangBooleanArray:(IOSBooleanArray *)capture$0;");
-    assertTranslation(impl,
-        "IOSBooleanArray *bar = [[[IOSBooleanArray alloc] initWithLength:1] autorelease];");
+    assertTranslation(impl, "IOSBooleanArray *bar = [IOSBooleanArray arrayWithLength:1];");
     assertTranslation(impl, "[[Test_$1 alloc] initWithJavaLangBooleanArray:bar]");
     assertTranslation(impl,
         "[((IOSBooleanArray *) NIL_CHK(val$bar_)) replaceBooleanAtIndex:0 withBoolean:YES];");

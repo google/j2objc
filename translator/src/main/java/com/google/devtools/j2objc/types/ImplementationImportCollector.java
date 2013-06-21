@@ -22,7 +22,6 @@ import com.google.devtools.j2objc.util.ErrorReportingASTVisitor;
 import com.google.devtools.j2objc.util.NameTable;
 
 import org.eclipse.jdt.core.dom.ArrayAccess;
-import org.eclipse.jdt.core.dom.ArrayCreation;
 import org.eclipse.jdt.core.dom.Assignment;
 import org.eclipse.jdt.core.dom.Assignment.Operator;
 import org.eclipse.jdt.core.dom.CastExpression;
@@ -114,18 +113,6 @@ public class ImplementationImportCollector extends ErrorReportingASTVisitor {
       // Implicit conversion from boolean -> String translates into a
       // Boolean.toString(...) call, so add a reference to java.lang.Boolean.
       addImports(node.getAST().resolveWellKnownType("java.lang.Boolean"));
-    }
-    return true;
-  }
-
-  @Override
-  public boolean visit(ArrayCreation node) {
-    ITypeBinding type = Types.getTypeBinding(node);
-    addImports(type);
-    int dim = node.dimensions().size();
-    for (int i = 0; i < dim; i++) {
-      type = type.getComponentType();
-      addImports(type);
     }
     return true;
   }
@@ -260,9 +247,6 @@ public class ImplementationImportCollector extends ErrorReportingASTVisitor {
   public boolean visit(MethodDeclaration node) {
     addImports(node.getReturnType2());
     IMethodBinding binding = Types.getMethodBinding(node);
-    if (binding.isVarargs()) {
-      addImports(Types.resolveIOSType("IOSObjectArray"));
-    }
     for (ITypeBinding paramType : binding.getParameterTypes()) {
       addImports(paramType);
     }
@@ -275,9 +259,7 @@ public class ImplementationImportCollector extends ErrorReportingASTVisitor {
     addImports(methodBinding.getReturnType());
     // Check for vararg method
     IMethodBinding binding = Types.getMethodBinding(node);
-    if (binding != null && binding.isVarargs()) {
-      addImports(Types.resolveIOSType("IOSObjectArray"));
-    } else if (binding != null) {
+    if (binding != null) {
       ITypeBinding[] parameterTypes = binding.getParameterTypes();
       for (int i = 0; i < parameterTypes.length; i++) {
         ITypeBinding parameterType = parameterTypes[i];

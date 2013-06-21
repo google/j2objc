@@ -26,7 +26,6 @@ import com.google.devtools.j2objc.types.GeneratedVariableBinding;
 import com.google.devtools.j2objc.types.IOSMethod;
 import com.google.devtools.j2objc.types.IOSMethodBinding;
 import com.google.devtools.j2objc.types.IOSParameter;
-import com.google.devtools.j2objc.types.IOSTypeBinding;
 import com.google.devtools.j2objc.types.JavaMethod;
 import com.google.devtools.j2objc.types.NodeCopier;
 import com.google.devtools.j2objc.types.Types;
@@ -411,14 +410,14 @@ public class JavaToIOSMethodTranslator extends ErrorReportingASTVisitor {
     // Create copyWithZone: method.
     ITypeBinding type = Types.getTypeBinding(node).getTypeDeclaration();
     IOSMethod iosMethod = IOSMethod.create("id copyWithZone:(NSZone *)zone");
-    IOSMethodBinding binding =
-        IOSMethodBinding.newMethod(iosMethod, Types.resolveIOSType("id"), type);
+    IOSMethodBinding binding = IOSMethodBinding.newMethod(
+        iosMethod, Modifier.PUBLIC, Types.resolveIOSType("id"), type);
     MethodDeclaration cloneMethod = ASTFactory.newMethodDeclaration(ast, binding);
 
     // Add NSZone *zone parameter.
-    IOSTypeBinding nsZoneType = new IOSTypeBinding("NSZone", false);
-    GeneratedVariableBinding zoneBinding = new GeneratedVariableBinding("zone", 0, nsZoneType,
-        false, true, binding.getDeclaringClass(), binding);
+    GeneratedVariableBinding zoneBinding = new GeneratedVariableBinding(
+        "zone", 0, Types.resolveIOSType("NSZone"), false, true, binding.getDeclaringClass(),
+        binding);
     binding.addParameter(zoneBinding);
     ASTUtil.getParameters(cloneMethod).add(makeZoneParameter(zoneBinding));
 

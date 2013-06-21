@@ -259,22 +259,7 @@ public class Autoboxer extends ErrorReportingASTVisitor {
 
   @Override
   public void endVisit(EnumConstantDeclaration node) {
-    List<Expression> args = ASTUtil.getArguments(node);
-    if (!args.isEmpty()) {
-      IMethodBinding constructor = Types.getMethodBinding(node);
-      int n = args.size();
-      for (int i = 0; i < n; i++) {
-        Expression arg = args.get(i);
-        ITypeBinding parameterType = constructor.getParameterTypes()[i];
-        boolean argumentIsPrimitive = getBoxType(arg).isPrimitive();
-        boolean parameterIsPrimitive = parameterType.isPrimitive();
-        if (argumentIsPrimitive && !parameterIsPrimitive) {
-          args.set(i, box(arg));
-        } else if (parameterIsPrimitive && !argumentIsPrimitive) {
-          args.set(i, unbox(arg));
-        }
-      }
-    }
+    convertArguments(Types.getMethodBinding(node), ASTUtil.getArguments(node));
   }
 
   @Override
@@ -441,35 +426,18 @@ public class Autoboxer extends ErrorReportingASTVisitor {
       return;
     }
 
-    ITypeBinding[] argTypes = methodBinding.getParameterTypes();
-    if (methodBinding.isVarargs()) {
-      ITypeBinding[] paramTypes = methodBinding.getParameterTypes();
-      int explicitArgs = paramTypes.length - 1;  // the last arg is the varargs array
-
-      for (int i = 0; i < args.size(); i++) {
-        Expression arg = args.get(i);
-        if (i < explicitArgs) {
-          // Only box/unbox explicit args if necessary.
-          Expression replacementArg = boxOrUnboxExpression(arg, argTypes[i]);
-          if (replacementArg != arg) {
-            args.set(i, replacementArg);
-          }
-        } else {
-          // Box varargs since they are passed as an object array, unless a format
-          // specifier needs a primitive.
-          ITypeBinding argBinding = getBoxType(arg);
-          if (argBinding.isPrimitive()) {
-            args.set(i, box(arg));
-          }
-        }
+    ITypeBinding[] paramTypes = methodBinding.getParameterTypes();
+    for (int i = 0; i < args.size(); i++) {
+      ITypeBinding paramType;
+      if (methodBinding.isVarargs() && i >= paramTypes.length - 1) {
+        paramType = paramTypes[paramTypes.length - 1].getComponentType();
+      } else {
+        paramType = paramTypes[i];
       }
-    } else {
-      for (int i = 0; i < argTypes.length; i++) {
-        Expression arg = args.get(i);
-        Expression replacementArg = boxOrUnboxExpression(arg, argTypes[i]);
-        if (replacementArg != arg) {
-          args.set(i, replacementArg);
-        }
+      Expression arg = args.get(i);
+      Expression replacementArg = boxOrUnboxExpression(arg, paramType);
+      if (replacementArg != arg) {
+        args.set(i, replacementArg);
       }
     }
   }
