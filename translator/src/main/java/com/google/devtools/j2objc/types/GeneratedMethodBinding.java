@@ -26,8 +26,6 @@ import org.eclipse.jdt.core.dom.IBinding;
 import org.eclipse.jdt.core.dom.IMethodBinding;
 import org.eclipse.jdt.core.dom.ITypeBinding;
 import org.eclipse.jdt.core.dom.IVariableBinding;
-import org.eclipse.jdt.core.dom.MethodDeclaration;
-import org.eclipse.jdt.core.dom.Type;
 import org.eclipse.jdt.internal.compiler.ast.ASTNode;
 
 import java.util.List;
@@ -86,11 +84,6 @@ public class GeneratedMethodBinding implements IMethodBinding {
     return new GeneratedMethodBinding(
         m, m.getName(), m.getModifiers(), m.getReturnType(), declaringClass, m.isConstructor(),
         m.isVarargs(), m.isSynthetic());
-  }
-
-  private static ITypeBinding getReturnType(MethodDeclaration method) {
-    Type returnType = method.getReturnType2();
-    return returnType != null ? Types.getTypeBinding(returnType) : null;
   }
 
   @Override

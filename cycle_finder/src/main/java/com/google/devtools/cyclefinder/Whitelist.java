@@ -114,11 +114,15 @@ public class Whitelist {
 
   public void addFile(String file) throws IOException {
     BufferedReader in = new BufferedReader(new FileReader(new File(file)));
-    for (String line = in.readLine(); line != null; line = in.readLine()) {
-      String entry = line.split("#", 2)[0].trim();
-      if (!Strings.isNullOrEmpty(entry)) {
-        addEntry(entry);
+    try {
+      for (String line = in.readLine(); line != null; line = in.readLine()) {
+        String entry = line.split("#", 2)[0].trim();
+        if (!Strings.isNullOrEmpty(entry)) {
+          addEntry(entry);
+        }
       }
+    } finally {
+      in.close();
     }
   }
 
