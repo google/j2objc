@@ -69,6 +69,7 @@ public class Options {
   private static boolean segmentedHeaders = false;
   private static String fileEncoding = System.getProperty("file.encoding", "ISO-8859-1");
   private static boolean jsniWarnings = true;
+  private static boolean buildClosure = false;
 
   private static DeadCodeMap deadCodeMap = null;
   private static File proGuardUsageFile = null;
@@ -241,6 +242,8 @@ public class Options {
         stripGwtIncompatible = true;
       } else if (arg.equals("--segmented-headers")) {
         segmentedHeaders = true;
+      } else if (arg.equals("--build-closure")) {
+        buildClosure = true;
       } else if (arg.startsWith("-h") || arg.equals("--help")) {
         help(false);
       } else if (arg.startsWith("-")) {
@@ -606,5 +609,9 @@ public class Options {
 
   public static void setJsniWarnings(boolean b) {
     jsniWarnings = b;
+  }
+
+  public static boolean buildClosure() {
+    return buildClosure;
   }
 }

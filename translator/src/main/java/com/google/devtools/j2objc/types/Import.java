@@ -37,16 +37,24 @@ public class Import implements Comparable<Import> {
   private static final Set<String> FOUNDATION_TYPES =
       ImmutableSet.of("id", "NSObject", "NSString", "NSNumber", "NSCopying", "NSZone");
 
+  private final ITypeBinding type;
   private final String typeName;
   private final String mainTypeName;
   private final String importFileName;
-  private final boolean isInterface;
 
-  private Import(String typeName, String mainTypeName, String importFileName, boolean isInterface) {
-    this.typeName = typeName;
-    this.mainTypeName = mainTypeName;
-    this.importFileName = importFileName;
-    this.isInterface = isInterface;
+  private Import(ITypeBinding type) {
+    this.type = type;
+    this.typeName = NameTable.getFullName(type);
+    ITypeBinding mainType = type;
+    while (!mainType.isTopLevel()) {
+      mainType = mainType.getDeclaringClass();
+    }
+    this.mainTypeName = NameTable.getFullName(mainType);
+    this.importFileName = getImportFileName(mainType);
+  }
+
+  public ITypeBinding getType() {
+    return type;
   }
 
   public String getTypeName() {
@@ -73,7 +81,7 @@ public class Import implements Comparable<Import> {
   }
 
   public boolean isInterface() {
-    return isInterface;
+    return type.isInterface();
   }
 
   @Override
@@ -123,12 +131,6 @@ public class Import implements Comparable<Import> {
     if (FOUNDATION_TYPES.contains(binding.getName())) {
       return;
     }
-    String typeName = NameTable.getFullName(binding);
-    boolean isInterface = binding.isInterface();
-    while (!binding.isTopLevel()) {
-      binding = binding.getDeclaringClass();
-    }
-    imports.add(new Import(
-        typeName, NameTable.getFullName(binding), getImportFileName(binding), isInterface));
+    imports.add(new Import(binding));
   }
 }
