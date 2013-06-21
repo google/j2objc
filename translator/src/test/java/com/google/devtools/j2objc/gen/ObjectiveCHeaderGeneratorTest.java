@@ -297,6 +297,36 @@ public class ObjectiveCHeaderGeneratorTest extends GenerationTest {
     assertTranslation(translation, "withInt:(int)ordinal;");
   }
 
+  public void testEnumWithMultipleConstructors() throws IOException {
+    String translation = translateSourceFile(
+      "public enum Color { RED(0xff0000), WHITE(0xffffff, false), BLUE(0x0000ff); " +
+      "private int rgb; private boolean primary;" +
+      "private Color(int rgb, boolean primary) { this.rgb = rgb; this.primary = primary; } " +
+      "private Color(int rgb) { this(rgb, true); } " +
+      "public int getRgb() { return rgb; }" +
+      "public boolean isPrimaryColor() { return primary; }}",
+      "Color", "Color.h");
+    assertTranslation(translation, "@interface ColorEnum : JavaLangEnum");
+    assertTranslation(translation, "BOOL primary_;");
+    assertTranslation(translation, "@property (nonatomic, assign) BOOL primary;");
+    assertTranslatedLines(translation,
+        "- (id)initWithInt:(int)rgb",
+        "withNSString:(NSString *)name",
+        "withInt:(int)ordinal;");
+    assertTranslatedLines(translation,
+        "- (id)initWithInt:(int)rgb",
+        "withBOOL:(BOOL)primary",
+        "withNSString:(NSString *)name",
+        "withInt:(int)ordinal;");
+    translation = getTranslatedFile("Color.m");
+    assertTranslation(translation,
+        "[self initColorEnumWithInt:rgb withBOOL:YES withNSString:name withInt:ordinal]");
+    assertTranslatedLines(translation,
+        "if ((self = [super initWithNSString:name withInt:ordinal])) {",
+        "self.rgb = rgb;",
+        "self.primary = primary;");
+  }
+
   public void testArrayFieldDeclaration() throws IOException {
     String translation = translateSourceFile(
       "public class Example { char[] before; char after[]; }",
