@@ -68,6 +68,7 @@ static BOOL methodMatches(NSString *name, IOSObjectArray *parameterTypes,
                           JavaLangReflectMethod *method);
 static NSString *getTranslatedMethodName(NSString *name,
                                          IOSObjectArray *parameterTypes);
+static NSString *capitalize(NSString *s);
 
 + (IOSClass *)classWithClass:(Class)cls {
   return [self fetchClass:cls];
@@ -378,6 +379,17 @@ BOOL methodMatches(NSString *name, IOSObjectArray *parameterTypes,
   return [translatedName isEqualToString:methodName];
 }
 
+NSString *capitalize(NSString *s) {
+  if ([s length] == 0) {
+    return s;
+  }
+  // Only capitalize the first character, as NSString.capitalizedString
+  // will make all other characters lowercase.
+  NSString *firstChar = [[s substringToIndex:1] capitalizedString];
+  return [s stringByReplacingCharactersInRange:NSMakeRange(0, 1)
+                                    withString:firstChar];
+}
+
 // Return a method name as it would be modified during j2objc translation.
 // The format is "name" with no parameters, "nameWithType:" for one parameter,
 // and "nameWithType:withType:..." for multiple parameters.
@@ -389,11 +401,11 @@ NSString *getTranslatedMethodName(NSString *name,
   }
   IOSClass *firstParameterType = (IOSClass *)[parameterTypes objectAtIndex:0];
   NSString *translatedName = [NSString stringWithFormat:@"%@With%@:", name,
-                              [firstParameterType getName]];
+                              capitalize([firstParameterType getName])];
   for (NSUInteger i = 1; i < nParameters; i++) {
     IOSClass *parameterType = (IOSClass *) [parameterTypes objectAtIndex:i];
-    [translatedName stringByAppendingFormat:@"with%@:",
-        [parameterType getName]];
+    translatedName = [translatedName stringByAppendingFormat:@"with%@:",
+        capitalize([parameterType getName])];
   }
   return translatedName;
 }
@@ -547,13 +559,7 @@ static NSArray *IOSClass_primitiveClassNames;
   NSArray *parts = [className componentsSeparatedByString:@"."];
   NSString *iosName = [NSString string];
   for (NSString *part in parts) {
-    // Only capitalize the first character of the class name segment.
-    // NSString.capitalizedString will make all other characters lower case.
-    NSString *firstChar = [[part substringToIndex:1] capitalizedString];
-    NSString *capitalizedPart =
-    [part stringByReplacingCharactersInRange:NSMakeRange(0, 1)
-                                  withString:firstChar];
-    iosName = [iosName stringByAppendingString:capitalizedPart];
+    iosName = [iosName stringByAppendingString:capitalize(part)];
   }
   return iosName;
 }
