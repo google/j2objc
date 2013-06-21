@@ -18,12 +18,8 @@ package com.google.devtools.j2objc.gen;
 
 import com.google.devtools.j2objc.GenerationTest;
 import com.google.devtools.j2objc.Options;
-import com.google.devtools.j2objc.util.NameTable;
-
-import org.eclipse.jdt.core.dom.ITypeBinding;
 
 import java.io.IOException;
-import java.util.Set;
 
 /**
  * Tests for {@link ObjectiveCHeaderGenerator}.
@@ -326,15 +322,6 @@ public class ObjectiveCHeaderGeneratorTest extends GenerationTest {
     // Test both that annotation was declared as a marker protocol,
     // and that it's empty.
     assertTranslation(translation, "@protocol FooCompatible < NSObject >\n@end");
-  }
-
-  private boolean containsType(Set<ITypeBinding> bindings, String typeName) {
-    for (ITypeBinding binding : bindings) {
-      if (NameTable.getFullName(binding).equals(typeName)) {
-        return true;
-      }
-    }
-    return false;
   }
 
   public void testCharacterEdgeValues() throws IOException {
