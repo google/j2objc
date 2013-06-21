@@ -235,6 +235,7 @@
   JreMemDebugRemove(self);
   [cause release];
   [detailMessage release];
+  [stackTrace release];
   [super dealloc];
 }
 #endif
