@@ -23,6 +23,7 @@ import com.google.common.io.CharStreams;
 import com.google.common.io.Files;
 import com.google.devtools.j2objc.gen.ObjectiveCHeaderGenerator;
 import com.google.devtools.j2objc.gen.ObjectiveCImplementationGenerator;
+import com.google.devtools.j2objc.gen.ObjectiveCSegmentedHeaderGenerator;
 import com.google.devtools.j2objc.translate.AnonymousClassConverter;
 import com.google.devtools.j2objc.translate.ArrayRewriter;
 import com.google.devtools.j2objc.translate.Autoboxer;
@@ -165,7 +166,11 @@ public class J2ObjC {
             "writing output file(s) to " + Options.getOutputDirectory().getAbsolutePath());
 
         // write header
-        ObjectiveCHeaderGenerator.generate(filename, source, currentUnit);
+        if (Options.generateSegmentedHeaders()) {
+          ObjectiveCSegmentedHeaderGenerator.generate(filename, source, currentUnit);
+        } else {
+          ObjectiveCHeaderGenerator.generate(filename, source, currentUnit);
+        }
 
         // write implementation file
         ObjectiveCImplementationGenerator.generate(

@@ -19,6 +19,9 @@
 //  Created by Tom Ball on 6/21/11, using j2objc.
 //
 
+#ifndef _JavaLangThrowable_H_
+#define _JavaLangThrowable_H_
+
 #import <Foundation/Foundation.h>
 #import "java/io/Serializable.h"
 
@@ -63,3 +66,5 @@
 - (void)addSuppressedWithJavaLangThrowable:(JavaLangThrowable *)exception;
 - (IOSObjectArray *)getSuppressed;
 @end
+
+#endif // _JavaLangThrowable_H_

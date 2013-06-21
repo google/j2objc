@@ -6,15 +6,18 @@
 //  Copyright 2012 Google, Inc. All rights reserved.
 //
 
+#ifndef _JavaUtilLinkedHashMap_PackagePrivate_H_
+#define _JavaUtilLinkedHashMap_PackagePrivate_H_
+
 @class JavaUtilLinkedHashMap_LinkedHashMapEntry;
 
-#import "JreEmulation.h"
-#import "java/util/AbstractCollection.h"
-#import "java/util/AbstractSet.h"
-#import "java/util/HashMap_PackagePrivate.h"
-#import "java/util/Iterator.h"
-#import "java/util/LinkedHashMap.h"
-#import "java/util/Map.h"
+#include "JreEmulation.h"
+#include "java/util/AbstractCollection.h"
+#include "java/util/AbstractSet.h"
+#include "java/util/HashMap_PackagePrivate.h"
+#include "java/util/Iterator.h"
+#include "java/util/LinkedHashMap.h"
+#include "java/util/Map.h"
 
 #define JavaUtilLinkedHashMap_serialVersionUID 3801124242820219131
 
@@ -130,3 +133,5 @@
 - (id<JavaUtilIterator>)iterator;
 - (id)initWithJavaUtilLinkedHashMap:(JavaUtilLinkedHashMap *)outer;
 @end
+
+#endif // _JavaUtilLinkedHashMap_PackagePrivate_H_

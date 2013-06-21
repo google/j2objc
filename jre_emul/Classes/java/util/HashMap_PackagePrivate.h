@@ -6,16 +6,19 @@
 //  Copyright 2012 Google, Inc. All rights reserved.
 //
 
-#import "JreEmulation.h"
+#ifndef _JavaUtilHashMap_PackagePrivate_H_
+#define _JavaUtilHashMap_PackagePrivate_H_
 
-#import "java/io/Serializable.h"
-#import "java/util/AbstractCollection.h"
-#import "java/util/AbstractMap.h"
-#import "java/util/AbstractSet.h"
-#import "java/util/HashMap.h"
-#import "java/util/Iterator.h"
-#import "java/util/Map.h"
-#import "java/util/MapEntry.h"
+#include "JreEmulation.h"
+
+#include "java/io/Serializable.h"
+#include "java/util/AbstractCollection.h"
+#include "java/util/AbstractMap.h"
+#include "java/util/AbstractSet.h"
+#include "java/util/HashMap.h"
+#include "java/util/Iterator.h"
+#include "java/util/Map.h"
+#include "java/util/MapEntry.h"
 
 #define JavaUtilHashMap_DEFAULT_SIZE 16
 #define JavaUtilHashMap_DEFAULT_LOAD_FACTOR 0.75f
@@ -177,3 +180,5 @@
 - (id<JavaUtilIterator>)iterator;
 - (id)initWithJavaUtilHashMap:(JavaUtilHashMap *)outer;
 @end
+
+#endif // _JavaUtilHashMap_PackagePrivate_H_

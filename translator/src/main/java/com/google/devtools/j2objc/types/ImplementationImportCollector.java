@@ -190,8 +190,8 @@ public class ImplementationImportCollector extends ErrorReportingASTVisitor {
     addImports(type);
     addDeclaredType(type, true);
     addImports(Types.resolveIOSType("IOSClass"));
-    imports.add(new Import(
-        "JavaLangIllegalArgumentException", "java.lang.IllegalArgumentException", false));
+    addImports(GeneratedTypeBinding.newTypeBinding("java.lang.IllegalArgumentException",
+        Types.resolveJavaType("java.lang.RuntimeException"), false));
     return true;
   }
 
@@ -330,13 +330,15 @@ public class ImplementationImportCollector extends ErrorReportingASTVisitor {
     return true;
   }
 
+  private static final ITypeBinding JUNIT_RUNNER = IOSTypeBinding.newUnmappedClass("JUnitRunner");
+
   @Override
   public boolean visit(TypeDeclaration node) {
     ITypeBinding type = Types.getTypeBinding(node);
     addImports(type);
     addDeclaredType(type, false);
     if (Types.isJUnitTest(type)) {
-      imports.add(new Import("JUnitRunner", "JUnitRunner", true));
+      addImports(JUNIT_RUNNER);
     }
     return true;
   }

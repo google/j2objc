@@ -66,6 +66,7 @@ public class Options {
   private static boolean memoryDebug = false;
   private static boolean generateNativeStubs = false;
   private static boolean stripGwtIncompatible = false;
+  private static boolean segmentedHeaders = false;
   private static String fileEncoding = System.getProperty("file.encoding", "ISO-8859-1");
 
   private static DeadCodeMap deadCodeMap = null;
@@ -239,6 +240,8 @@ public class Options {
         fileEncoding = args[nArg];
       } else if (arg.equals("--strip-gwt-incompatible")) {
         stripGwtIncompatible = true;
+      } else if (arg.equals("--segmented-headers")) {
+        segmentedHeaders = true;
       } else if (arg.startsWith("-h") || arg.equals("--help")) {
         help(false);
       } else if (arg.startsWith("-")) {
@@ -592,5 +595,19 @@ public class Options {
   @VisibleForTesting
   public static void setStripGwtIncompatibleMethods(boolean b) {
     stripGwtIncompatible = b;
+  }
+
+  public static boolean generateSegmentedHeaders() {
+    return segmentedHeaders;
+  }
+
+  @VisibleForTesting
+  public static void enableSegmentedHeaders() {
+    segmentedHeaders = true;
+  }
+
+  @VisibleForTesting
+  public static void resetSegmentedHeaders() {
+    segmentedHeaders = false;
   }
 }

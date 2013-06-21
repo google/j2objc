@@ -472,7 +472,7 @@ public class RewriterTest extends GenerationTest {
     String translation = translateSourceFile(
         "class Test implements Comparable<Test> { int i; " +
         "  public int compareTo(Test t) { return i - t.i; } }", "Test", "Test.m");
-    assertTranslation(translation, "#import \"java/lang/ClassCastException.h\"");
+    assertTranslation(translation, "#include \"java/lang/ClassCastException.h\"");
     assertTranslation(translation, "if (t != nil && ![t isKindOfClass:[Test class]])");
     assertTranslation(translation,
         "@throw [[[JavaLangClassCastException alloc] init] autorelease]");
