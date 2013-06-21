@@ -47,7 +47,9 @@
     return -1;
   }
 
-  return (int) bytes_[position_++];
+  // Ensure that we don't sign extend and accidentally return -1
+  unsigned char c = bytes_[position_++];
+  return (int) c;
 }
 
 - (int)readWithJavaLangByteArray:(IOSByteArray *)b
