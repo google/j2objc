@@ -458,7 +458,7 @@ EMULATION_MACOSX_LIB = $(BUILD_DIR)/macosx-libjre_emul.a
 EMULATION_IPHONE_LIB = $(BUILD_DIR)/iphone-libjre_emul.a
 EMULATION_IPHONEV7S_LIB = $(BUILD_DIR)/iphonev7s-libjre_emul.a
 EMULATION_SIMULATOR_LIB = $(BUILD_DIR)/simulator-libjre_emul.a
-MACOSX_OBJS = $(ALL_OBJS:%=$(CLASS_DIR)/%) $(MAIN_OBJ:%=$(CLASS_DIR)/%)
+MACOSX_OBJS = $(ALL_OBJS:%=$(CLASS_DIR)/%)
 MACOSX_FLAGS = $(SDK_FLAGS)
 IPHONE_BUILD_DIR = $(BUILD_DIR)/iphone
 IPHONE_OBJS = $(ALL_OBJS:%=$(IPHONE_BUILD_DIR)/%)
@@ -469,9 +469,10 @@ IPHONEV7S_FLAGS = -arch armv7s -isysroot $(IPHONE_SDK_DIR)
 SIMULATOR_BUILD_DIR = $(BUILD_DIR)/simulator
 SIMULATOR_OBJS = $(ALL_OBJS:%=$(SIMULATOR_BUILD_DIR)/%)
 SIMULATOR_FLAGS = -arch i386 -isysroot $(SIMULATOR_SDK_DIR)
+MAIN_LIB_OBJS = $(MAIN_OBJ:%=$(CLASS_DIR)/%)
 
 # translate is the default so that Xcode can build its own object files
-default: lib
+default: libs
 	@: # suppress make's "nothing to be done" message
 
 analyze: $(ALL_OBJS:%.o=$(CLASS_DIR)/%.plist)
@@ -486,7 +487,7 @@ pre_translate: | $(BUILD_DIR)
 	@rm -f $(JAVA_SOURCE_LIST) $(OBJC_OUT_LIST)
 	@touch $(JAVA_SOURCE_LIST) $(OBJC_OUT_LIST)
 
-lib: translate $(EMULATION_LIB)
+libs: translate $(EMULATION_LIB) $(MAIN_LIB)
 	@:
 
 xcode_build: translate $(XCODE_LIB) $(ARCH_BIN_DIR)/j2objcc $(ARCH_BUILD_DIR)/.includes
@@ -518,6 +519,9 @@ $(EMULATION_SIMULATOR_LIB): $(SIMULATOR_OBJS)
 
 $(XCODE_LIB): $(ALL_OBJS:%=$(TARGET_TEMP_DIR)/%)
 	@mkdir -p $(@D)
+	$(LIBTOOL) -static -o $@ $^
+
+$(MAIN_LIB): $(MAIN_LIB_OBJS)
 	$(LIBTOOL) -static -o $@ $^
 
 dist_includes: translate $(BUILD_DIR)/.jre_dist_includes
@@ -607,14 +611,17 @@ test: default
 
 clean:
 	@rm -rf $(BUILD_DIR) $(TRANSLATED_SOURCE_DIR)
-	@rm -f $(DIST_DIR)/j2objcc $(EMULATION_JAR_DIST) $(EMULATION_LIB_DIST)
+	@rm -f $(DIST_DIR)/j2objcc $(EMULATION_JAR_DIST) $(EMULATION_LIB_DIST) $(MAIN_LIB_DIST)
 	@rm -f $(DIST_INCLUDES)
 
-dist: emul_jar_dist lib_dist $(DIST_DIR)/j2objcc
+dist: emul_jar_dist libs_dist $(DIST_DIR)/j2objcc
 
-lib_dist: lib dist_includes $(EMULATION_LIB_DIST)
+libs_dist: libs dist_includes $(EMULATION_LIB_DIST) $(MAIN_LIB_DIST)
 
 $(EMULATION_LIB_DIST): $(EMULATION_LIB) | $(DIST_LIB_DIR)
+	@install -m 0644 $< $@
+
+$(MAIN_LIB_DIST): $(MAIN_LIB) | $(DIST_LIB_DIR)
 	@install -m 0644 $< $@
 
 java: emul_jar_dist java_sources_manifest

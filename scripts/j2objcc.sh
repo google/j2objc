@@ -40,7 +40,7 @@ readonly LIB_PATH=${DIR}/lib
 
 declare CC_FLAGS="-Werror -Wno-parentheses"
 declare OBJC=-ObjC
-declare LIBS="-ljre_emul"
+declare LIBS="-ljre_emul -l j2objc_main"
 declare LINK_FLAGS="${LIBS} -framework Foundation -framework ExceptionHandling -L ${LIB_PATH}"
 
 for arg; do
