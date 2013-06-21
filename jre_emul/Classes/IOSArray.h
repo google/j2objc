@@ -42,6 +42,9 @@
 + (id)arrayWithDimensions:(NSUInteger)dimensionCount
                   lengths:(const int *)dimensionLengths;
 
++ (id)iosClass;
++ (id)iosClassWithDimensions:(NSUInteger)dimensions;
+
 // Returns the size of this array.
 - (NSUInteger)count;
 

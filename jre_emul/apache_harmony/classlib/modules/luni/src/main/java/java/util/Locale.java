@@ -19,6 +19,10 @@ package java.util;
 
 import java.io.Serializable;
 
+/*-[
+#import "IOSClass.h"
+]-*/
+
 /**
  * {@code Locale} represents a language/country/variant combination. It is an identifier
  * which dictates particular conventions for the presentation of information.

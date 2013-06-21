@@ -20,6 +20,7 @@
 //
 
 #import "JreEmulation.h"
+#import "IOSClass.h"
 
 // Converts main() arguments into an IOSObjectArray of NSStrings.  The first
 // argument, the program name, is skipped so the returned array matches what

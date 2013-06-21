@@ -102,19 +102,19 @@ public class ImplementationImportCollectorTest extends GenerationTest {
     assertTranslation(translation, "#import \"java/lang/Double.h\"");
   }
 
-  // Verify that an object array type literal imports IOSArrayClass.
+  // Verify that an object array type literal imports IOSObjectArray.
   public void testArrayTypeLiteralImport() throws IOException {
     String translation = translateSourceFile(
         "class Test { Class arrayType() { return Object[].class; }}",
         "Test", "Test.m");
-    assertTranslation(translation, "#import \"IOSArrayClass.h\"");
+    assertTranslation(translation, "#import \"IOSObjectArray.h\"");
   }
 
-  // Verify that a multi-dimensional array declaration imports IOSArrayClass.
+  // Verify that a multi-dimensional array declaration imports IOSObjectArray.
   public void testMultiArrayTypeLiteralImport() throws IOException {
     String translation = translateSourceFile(
         "class Test { String[][] map = { { \"1\", \"one\" }, { \"2\", \"two\" } }; }",
         "Test", "Test.m");
-    assertTranslation(translation, "#import \"IOSArrayClass.h\"");
+    assertTranslation(translation, "#import \"IOSObjectArray.h\"");
   }
 }

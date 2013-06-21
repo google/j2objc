@@ -56,6 +56,10 @@
   return [objClass isArray] && [componentType_ isAssignableFrom:[objClass getComponentType]];
 }
 
+- (BOOL)isAssignableFrom:(IOSClass *)cls {
+  return [cls isArray] && [componentType_ isAssignableFrom:[cls getComponentType]];
+}
+
 - (NSString *)binaryName {
   return [@"[" stringByAppendingString:[[self getComponentType] binaryName]];
 }

@@ -23,6 +23,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /*-[
+#import "IOSClass.h"
 #import "java/util/SimpleTimeZone.h"
 ]-*/
 

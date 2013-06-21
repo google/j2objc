@@ -799,10 +799,8 @@ public class StatementGeneratorTest extends GenerationTest {
     assertEquals(2, stmts.size());
     String result = generateStatement(stmts.get(1));
     assertEquals(
-        "if (([args isKindOfClass:[IOSObjectArray class]] ? " +
-        "[[(IOSObjectArray *) args elementType] isEqual:" +
-        "[IOSClass classWithClass:[NSString class]]] : " +
-        "NO)) {\n}", result);
+        "if ([[IOSObjectArray iosClassWithType:[IOSClass classWithClass:[NSString class]]] " +
+        "isInstance:args]) {\n}", result);
   }
 
   public void testInterfaceArrayInstanceOfTranslation() throws IOException {
@@ -811,10 +809,8 @@ public class StatementGeneratorTest extends GenerationTest {
     assertEquals(2, stmts.size());
     String result = generateStatement(stmts.get(1));
     assertEquals(
-        "if (([args isKindOfClass:[IOSObjectArray class]] ? " +
-        "[[(IOSObjectArray *) args elementType] isEqual:" +
-        "[IOSClass classWithProtocol:@protocol(JavaLangReadable)]] : " +
-        "NO)) {\n}", result);
+        "if ([[IOSObjectArray iosClassWithType:[IOSClass classWithProtocol:" +
+        "@protocol(JavaLangReadable)]] isInstance:args]) {\n}", result);
   }
 
   public void testPrimitiveArrayInstanceOfTranslation() throws IOException {
@@ -934,7 +930,7 @@ public class StatementGeneratorTest extends GenerationTest {
         "IOSObjectArray *a = [IOSObjectArray arrayWithObjects:(id[]){ nil, " +
         "[IOSIntArray arrayWithInts:(int[]){ 0, 2 } count:2], " +
         "[IOSIntArray arrayWithInts:(int[]){ 2, 2 } count:2] } count:3 " +
-        "type:[IOSClass classWithClass:[IOSIntArray class]]];");
+        "type:[IOSIntArray iosClass]];");
   }
 
   public void testObjectMultiDimArray() throws IOException {
@@ -947,7 +943,7 @@ public class StatementGeneratorTest extends GenerationTest {
         "type:[IOSClass classWithClass:[JavaLangInteger class]]], " +
         "[IOSObjectArray arrayWithObjects:(id[]){ j_, i_ } count:2 " +
         "type:[IOSClass classWithClass:[JavaLangInteger class]]] } count:3 " +
-        "type:[IOSArrayClass classWithComponentType:" +
+        "type:[IOSObjectArray iosClassWithType:" +
         "[IOSClass classWithClass:[JavaLangInteger class]]]];");
   }
 
@@ -972,7 +968,7 @@ public class StatementGeneratorTest extends GenerationTest {
         "[self barWithNSObjectArray:[IOSObjectArray arrayWithObjects:" +
         "(id[]){ [IOSObjectArray arrayWithLength:0 type:" +
         "[IOSClass classWithClass:[NSObject class]]] } count:1 " +
-        "type:[IOSArrayClass classWithComponentType:" +
+        "type:[IOSObjectArray iosClassWithType:" +
         "[IOSClass classWithClass:[NSObject class]]]]];");
   }
 
@@ -1303,8 +1299,7 @@ public class StatementGeneratorTest extends GenerationTest {
     assertTranslation(translation, "#import \"IOSObjectArray.h\"");
     assertTranslation(translation, "#import \"IOSCharArray.h\"");
     assertTranslation(translation,
-        "IOSObjectArray *c = [IOSObjectArray arrayWithLength:3" +
-        " type:[IOSClass classWithClass:[IOSCharArray class]]]");
+        "IOSObjectArray *c = [IOSObjectArray arrayWithLength:3 type:[IOSCharArray iosClass]]");
   }
 
   public void testPartialArrayCreation3D() throws IOException {
@@ -1312,8 +1307,8 @@ public class StatementGeneratorTest extends GenerationTest {
         "class Test { void foo() { char[][][] c = new char[3][][]; } }", "Test", "Test.m");
     assertTranslation(translation, "#import \"IOSObjectArray.h\"");
     assertTranslation(translation,
-        "IOSObjectArray *c = [IOSObjectArray arrayWithLength:3 type:[IOSArrayClass " +
-        "classWithComponentType:[IOSClass classWithClass:[IOSCharArray class]]]]");
+        "IOSObjectArray *c = [IOSObjectArray arrayWithLength:3 type:" +
+        "[IOSCharArray iosClassWithDimensions:2]]");
   }
 
   public void testUnsignedShiftRight() throws IOException {
