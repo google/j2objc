@@ -1296,13 +1296,6 @@ public class StatementGenerator extends ErrorReportingASTVisitor {
               }
             }
           }
-        } else {
-          IVariableBinding var = Types.getVariableBinding(receiver);
-          if (var != null) {
-            if (Types.variableHasCast(var)) {
-              castPrinted = printCast(Types.getCastForVariable(var));
-            }
-          }
         }
         printNilCheck(receiver, !castPrinted);
         if (castPrinted) {

@@ -62,7 +62,6 @@ public class Types {
   private final Map<Object, IBinding> bindingMap;
   private final Map<ITypeBinding, ITypeBinding> typeMap = Maps.newHashMap();
   private final Map<ITypeBinding, ITypeBinding> renamedTypeMap = Maps.newHashMap();
-  private final Map<IVariableBinding, ITypeBinding> variablesNeedingCasts = Maps.newHashMap();
   private final List<IMethodBinding> functions = Lists.newArrayList();
   private final Map<ITypeBinding, ITypeBinding> primitiveToWrapperTypes =
       new HashMap<ITypeBinding, ITypeBinding>();
@@ -479,22 +478,6 @@ public class Types {
       }
     }
     return null;
-  }
-
-  /**
-   * Adds a variable that needs to be cast when referenced.  This is necessary
-   * for gcc to verify parameters of generic interface's methods
-   */
-  public static void addVariableCast(IVariableBinding var, ITypeBinding castType) {
-    instance.variablesNeedingCasts.put(var.getVariableDeclaration(), castType);
-  }
-
-  public static boolean variableHasCast(IVariableBinding var) {
-    return instance.variablesNeedingCasts.containsKey(var.getVariableDeclaration());
-  }
-
-  public static ITypeBinding getCastForVariable(IVariableBinding var) {
-    return instance.variablesNeedingCasts.get(var.getVariableDeclaration());
   }
 
   public static void addReleaseableFields(Collection<IVariableBinding> fields) {
