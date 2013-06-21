@@ -20,7 +20,7 @@ import com.google.common.collect.Sets;
 import com.google.devtools.j2objc.util.ASTUtil;
 import com.google.devtools.j2objc.util.ErrorReportingASTVisitor;
 
-import org.eclipse.jdt.core.dom.CompilationUnit;
+import org.eclipse.jdt.core.dom.ASTNode;
 import org.eclipse.jdt.core.dom.EnumDeclaration;
 import org.eclipse.jdt.core.dom.FieldDeclaration;
 import org.eclipse.jdt.core.dom.ITypeBinding;
@@ -42,8 +42,8 @@ public class HeaderImportCollector extends ErrorReportingASTVisitor {
   private Set<Import> superTypes = Sets.newLinkedHashSet();
   private Set<Import> declaredTypes = Sets.newHashSet();
 
-  public void collect(CompilationUnit unit, String sourceName) {
-    run(unit);
+  public void collect(ASTNode node) {
+    run(node);
     for (Import imp : superTypes) {
       if (forwardDecls.contains(imp)) {
         forwardDecls.remove(imp);
@@ -112,9 +112,12 @@ public class HeaderImportCollector extends ErrorReportingASTVisitor {
     return true;
   }
 
+  private static final ITypeBinding JAVA_LANG_ENUM =
+      GeneratedTypeBinding.newTypeBinding("java.lang.Enum", null, false);
+
   @Override
   public boolean visit(EnumDeclaration node) {
-    superTypes.add(new Import("JavaLangEnum", "java.lang.Enum", false));
+    addSuperType(JAVA_LANG_ENUM);
     ITypeBinding binding = Types.getTypeBinding(node);
     addDeclaredType(binding);
     for (ITypeBinding interfaze : binding.getInterfaces()) {

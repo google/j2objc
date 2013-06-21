@@ -60,6 +60,8 @@ public class ObjectiveCHeaderGenerator extends ObjectiveCSourceFileGenerator {
 
   private static final String DEPRECATED_ATTRIBUTE = "__attribute__((deprecated))";
 
+  protected final String mainTypeName;
+
   /**
    * Generate an Objective-C header file for each type declared in a specified
    * compilation unit.
@@ -70,8 +72,9 @@ public class ObjectiveCHeaderGenerator extends ObjectiveCSourceFileGenerator {
     headerGenerator.generate(unit);
   }
 
-  private ObjectiveCHeaderGenerator(String fileName, String source, CompilationUnit unit) {
+  protected ObjectiveCHeaderGenerator(String fileName, String source, CompilationUnit unit) {
     super(fileName, source, unit, false);
+    mainTypeName = NameTable.getMainTypeName(unit, fileName);
   }
 
   @Override
@@ -82,12 +85,14 @@ public class ObjectiveCHeaderGenerator extends ObjectiveCSourceFileGenerator {
   public void generate(CompilationUnit unit) {
     println(J2ObjC.getFileHeader(getSourceFileName()));
 
-    printImportsAndForwardReferences(unit);
+    generateFileHeader();
 
     for (AbstractTypeDeclaration type : ASTUtil.getTypes(unit)) {
       newline();
       generate(type);
     }
+
+    generateFileFooter();
     save(unit);
   }
 
@@ -315,13 +320,7 @@ public class ObjectiveCHeaderGenerator extends ObjectiveCSourceFileGenerator {
     }
   }
 
-  private void printImportsAndForwardReferences(CompilationUnit unit) {
-    HeaderImportCollector collector = new HeaderImportCollector();
-    collector.collect(unit, getSourceFileName());
-    Set<Import> forwardDecls = collector.getForwardDeclarations();
-    Set<Import> superTypes = collector.getSuperTypes();
-
-    // Print forward declarations.
+  protected void printForwardDeclarations(Set<Import> forwardDecls) {
     Set<String> forwardStmts = Sets.newTreeSet();
     for (Import imp : forwardDecls) {
       forwardStmts.add(createForwardDeclaration(imp.getTypeName(), imp.isInterface()));
@@ -332,15 +331,28 @@ public class ObjectiveCHeaderGenerator extends ObjectiveCSourceFileGenerator {
       }
       newline();
     }
+  }
 
-    // Print collected imports.
+  protected void generateFileHeader() {
+    printf("#ifndef _%s_H_\n", mainTypeName);
+    printf("#define _%s_H_\n", mainTypeName);
+    newline();
+
+    HeaderImportCollector collector = new HeaderImportCollector();
+    collector.collect(getUnit());
+
+    printForwardDeclarations(collector.getForwardDeclarations());
+
     println("#import \"JreEmulation.h\"");
+
+    // Print collected includes.
+    Set<Import> superTypes = collector.getSuperTypes();
     if (!superTypes.isEmpty()) {
-      Set<String> importStmts = Sets.newTreeSet();
+      Set<String> includeStmts = Sets.newTreeSet();
       for (Import imp : superTypes) {
-        importStmts.add(createImport(imp));
+        includeStmts.add(String.format("#include \"%s.h\"", imp.getImportFileName()));
       }
-      for (String stmt : importStmts) {
+      for (String stmt : includeStmts) {
         println(stmt);
       }
     }
@@ -350,8 +362,9 @@ public class ObjectiveCHeaderGenerator extends ObjectiveCSourceFileGenerator {
     return String.format("@%s %s;", isInterface ? "protocol" : "class", typeName);
   }
 
-  protected String createImport(Import imp) {
-    return String.format("#import \"%s.h\"", imp.getImportFileName());
+  protected void generateFileFooter() {
+    newline();
+    printf("#endif // _%s_H_\n", mainTypeName);
   }
 
   private void printInstanceVariables(List<FieldDeclaration> fields) {

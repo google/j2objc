@@ -22,6 +22,7 @@ import com.google.common.io.Files;
 import com.google.devtools.j2objc.J2ObjC.Language;
 import com.google.devtools.j2objc.gen.ObjectiveCHeaderGenerator;
 import com.google.devtools.j2objc.gen.ObjectiveCImplementationGenerator;
+import com.google.devtools.j2objc.gen.ObjectiveCSegmentedHeaderGenerator;
 import com.google.devtools.j2objc.gen.SourceBuilder;
 import com.google.devtools.j2objc.gen.SourcePosition;
 import com.google.devtools.j2objc.gen.StatementGenerator;
@@ -382,7 +383,11 @@ public abstract class GenerationTest extends TestCase {
       CompilationUnit unit = translateType(typeName, source);
       assertNoCompilationErrors(unit);
       String sourceName = typeName + ".java";
-      ObjectiveCHeaderGenerator.generate(sourceName, source, unit);
+      if (Options.generateSegmentedHeaders()) {
+        ObjectiveCSegmentedHeaderGenerator.generate(sourceName, source, unit);
+      } else {
+        ObjectiveCHeaderGenerator.generate(sourceName, source, unit);
+      }
       ObjectiveCImplementationGenerator.generate(sourceName, Language.OBJECTIVE_C, unit, source);
       lastLog += stringWriter.toString();
       return getTranslatedFile(fileName);

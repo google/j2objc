@@ -22,6 +22,7 @@ import com.google.devtools.j2objc.gen.HiddenFieldDetectorTest;
 import com.google.devtools.j2objc.gen.LineDirectivesTest;
 import com.google.devtools.j2objc.gen.ObjectiveCHeaderGeneratorTest;
 import com.google.devtools.j2objc.gen.ObjectiveCImplementationGeneratorTest;
+import com.google.devtools.j2objc.gen.ObjectiveCSegmentedHeaderGeneratorTest;
 import com.google.devtools.j2objc.gen.ObjectiveCSourceFileGeneratorTest;
 import com.google.devtools.j2objc.gen.PrimitiveArrayTest;
 import com.google.devtools.j2objc.gen.StatementGeneratorTest;
@@ -78,6 +79,7 @@ public class SmallTests {
     NameTableTest.class,
     ObjectiveCHeaderGeneratorTest.class,
     ObjectiveCImplementationGeneratorTest.class,
+    ObjectiveCSegmentedHeaderGeneratorTest.class,
     ObjectiveCSourceFileGeneratorTest.class,
     OptionsTest.class,
     OuterReferenceResolverTest.class,

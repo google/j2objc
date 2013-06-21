@@ -37,7 +37,7 @@ public class ImplementationImportCollectorTest extends GenerationTest {
     String translation = translateSourceFile(
         "class A { void test() { " +
         "throw FooMaker.makeException().asAssertion(); }}", "A", "A.m");
-    assertTranslation(translation, "#import \"FooException.h\"");
+    assertTranslation(translation, "#include \"FooException.h\"");
   }
 
   public void testVarargsMethodNoActualArguments() throws IOException {
@@ -58,7 +58,7 @@ public class ImplementationImportCollectorTest extends GenerationTest {
     addSourceFile("class A { boolean[] b; }", "A.java");
     String translation = translateSourceFile(
         "class B { int test() { return new A().b.length; }}", "B", "B.m");
-    assertTranslation(translation, "#import \"IOSBooleanArray.h\"");
+    assertTranslation(translation, "#include \"IOSBooleanArray.h\"");
   }
 
   public void testPrimitiveArrayAsParameterImport() throws IOException {
@@ -66,14 +66,14 @@ public class ImplementationImportCollectorTest extends GenerationTest {
         "class B { protected char bits[]; public B(char[] bits_) { bits = bits_;} }", "B.java");
     String translation = translateSourceFile(
         "class A { public static final B test = new B(new char[]{'a', 'b'}); }", "A", "A.m");
-    assertTranslation(translation, "#import \"IOSCharArray.h\"");
+    assertTranslation(translation, "#include \"IOSCharArray.h\"");
   }
 
   public void testObjectArrayImport() throws IOException {
     String translation = translateSourceFile(
         "import java.util.BitSet; class A { public BitSet[] test = new BitSet[3]; }", "A", "A.m");
-    assertTranslation(translation, "#import \"IOSObjectArray.h\"");
-    assertTranslation(translation, "#import \"java/util/BitSet.h\"");
+    assertTranslation(translation, "#include \"IOSObjectArray.h\"");
+    assertTranslation(translation, "#include \"java/util/BitSet.h\"");
   }
 
   public void testEnhancedForMethodInvocation() throws IOException {
@@ -82,7 +82,7 @@ public class ImplementationImportCollectorTest extends GenerationTest {
     String translation = translateSourceFile(
         "import java.util.*; class B extends A { " +
         "void test() { for (String s : map.keySet()) {}}}", "B", "B.m");
-    assertTranslation(translation, "#import \"java/util/Map.h\"");
+    assertTranslation(translation, "#include \"java/util/Map.h\"");
   }
 
   public void testReturnTypeOfSuperclassMethod() throws IOException {
@@ -91,7 +91,7 @@ public class ImplementationImportCollectorTest extends GenerationTest {
     addSourceFile("class B { A getAnA() { return new A(); } }", "B.java");
     String translation = translateSourceFile(
         "class C extends B { void test() { I i = getAnA(); } }", "C", "C.m");
-    assertTranslation(translation, "#import \"A.h\"");
+    assertTranslation(translation, "#include \"A.h\"");
   }
 
   // Verify that a primitive type literal has a wrapper class import.
@@ -99,7 +99,7 @@ public class ImplementationImportCollectorTest extends GenerationTest {
     String translation = translateSourceFile(
         "class Test { Class doubleType() { return double.class; }}",
         "Test", "Test.m");
-    assertTranslation(translation, "#import \"java/lang/Double.h\"");
+    assertTranslation(translation, "#include \"java/lang/Double.h\"");
   }
 
   // Verify that an object array type literal imports IOSObjectArray.
@@ -107,7 +107,7 @@ public class ImplementationImportCollectorTest extends GenerationTest {
     String translation = translateSourceFile(
         "class Test { Class arrayType() { return Object[].class; }}",
         "Test", "Test.m");
-    assertTranslation(translation, "#import \"IOSObjectArray.h\"");
+    assertTranslation(translation, "#include \"IOSObjectArray.h\"");
   }
 
   // Verify that a multi-dimensional array declaration imports IOSObjectArray.
@@ -115,6 +115,6 @@ public class ImplementationImportCollectorTest extends GenerationTest {
     String translation = translateSourceFile(
         "class Test { String[][] map = { { \"1\", \"one\" }, { \"2\", \"two\" } }; }",
         "Test", "Test.m");
-    assertTranslation(translation, "#import \"IOSObjectArray.h\"");
+    assertTranslation(translation, "#include \"IOSObjectArray.h\"");
   }
 }

@@ -17,6 +17,9 @@
 // the 'JreEmulation' project.
 //
 
+#ifndef _JreEmulation_H_
+#define _JreEmulation_H_
+
 #ifndef __has_feature
 #define __has_feature(x) 0  // Compatibility with non-clang compilers.
 #endif
@@ -91,3 +94,5 @@ FOUNDATION_EXPORT
 FOUNDATION_EXPORT id JreOperatorRetainedAssign(id *pIvar, id self, id value);
 
 #endif // __OBJC__
+
+#endif // _JreEmulation_H_

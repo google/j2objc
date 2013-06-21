@@ -1296,8 +1296,8 @@ public class StatementGeneratorTest extends GenerationTest {
   public void testPartialArrayCreation2D() throws IOException {
     String translation = translateSourceFile(
         "class Test { void foo() { char[][] c = new char[3][]; } }", "Test", "Test.m");
-    assertTranslation(translation, "#import \"IOSObjectArray.h\"");
-    assertTranslation(translation, "#import \"IOSCharArray.h\"");
+    assertTranslation(translation, "#include \"IOSObjectArray.h\"");
+    assertTranslation(translation, "#include \"IOSCharArray.h\"");
     assertTranslation(translation,
         "IOSObjectArray *c = [IOSObjectArray arrayWithLength:3 type:[IOSCharArray iosClass]]");
   }
@@ -1305,7 +1305,7 @@ public class StatementGeneratorTest extends GenerationTest {
   public void testPartialArrayCreation3D() throws IOException {
     String translation = translateSourceFile(
         "class Test { void foo() { char[][][] c = new char[3][][]; } }", "Test", "Test.m");
-    assertTranslation(translation, "#import \"IOSObjectArray.h\"");
+    assertTranslation(translation, "#include \"IOSObjectArray.h\"");
     assertTranslation(translation,
         "IOSObjectArray *c = [IOSObjectArray arrayWithLength:3 type:" +
         "[IOSCharArray iosClassWithDimensions:2]]");

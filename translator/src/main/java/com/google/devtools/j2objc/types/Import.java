@@ -38,12 +38,14 @@ public class Import implements Comparable<Import> {
       ImmutableSet.of("id", "NSObject", "NSString", "NSNumber", "NSCopying", "NSZone");
 
   private final String typeName;
-  private final String javaFileName;
+  private final String mainTypeName;
+  private final String importFileName;
   private final boolean isInterface;
 
-  public Import(String typeName, String javaFileName, boolean isInterface) {
+  private Import(String typeName, String mainTypeName, String importFileName, boolean isInterface) {
     this.typeName = typeName;
-    this.javaFileName = javaFileName;
+    this.mainTypeName = mainTypeName;
+    this.importFileName = importFileName;
     this.isInterface = isInterface;
   }
 
@@ -51,14 +53,23 @@ public class Import implements Comparable<Import> {
     return typeName;
   }
 
-  public String getImportFileName() {
+  public String getMainTypeName() {
+    return mainTypeName;
+  }
+
+  private static String getImportFileName(ITypeBinding type) {
+    String javaName = type.getErasure().getQualifiedName();
     // Always use JRE and JUnit package directories, since the j2objc
     // distribution is (currently) built with package directories.
-    if (Options.usePackageDirectories() || javaFileName.startsWith("java") ||
-        javaFileName.startsWith("junit")) {
-      return javaFileName.replace('.', '/');
+    if (Options.usePackageDirectories() || javaName.startsWith("java")
+        || javaName.startsWith("junit")) {
+      return javaName.replace('.', '/');
     }
-    return javaFileName.substring(javaFileName.lastIndexOf('.') + 1);
+    return javaName.substring(javaName.lastIndexOf('.') + 1);
+  }
+
+  public String getImportFileName() {
+    return importFileName;
   }
 
   public boolean isInterface() {
@@ -117,6 +128,7 @@ public class Import implements Comparable<Import> {
     while (!binding.isTopLevel()) {
       binding = binding.getDeclaringClass();
     }
-    imports.add(new Import(typeName, binding.getErasure().getQualifiedName(), isInterface));
+    imports.add(new Import(
+        typeName, NameTable.getFullName(binding), getImportFileName(binding), isInterface));
   }
 }

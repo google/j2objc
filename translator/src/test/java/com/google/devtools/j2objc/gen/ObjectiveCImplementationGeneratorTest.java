@@ -45,21 +45,21 @@ public class ObjectiveCImplementationGeneratorTest extends GenerationTest {
   public void testTypeNameTranslation() throws IOException {
     String translation = translateSourceFile(
         "public class Example {}", "Example", "Example.m");
-    assertTranslation(translation, "#import \"Example.h\"");
+    assertTranslation(translation, "#include \"Example.h\"");
   }
 
   public void testPackageTypeNameTranslation() throws IOException {
     String translation = translateSourceFile(
         "package unit.test; public class Example {}", "Example", "unit/test/Example.m");
-    assertTranslation(translation, "#import \"unit/test/Example.h\"");
+    assertTranslation(translation, "#include \"unit/test/Example.h\"");
   }
 
   public void testPackageTypeNameTranslationWithInnerClass() throws IOException {
     String translation = translateSourceFile(
         "package unit.test; public class Example { class Inner {}}",
         "Example", "unit/test/Example.m");
-    assertTranslation(translation, "#import \"unit/test/Example.h\"");
-    assertFalse(translation.contains("#import \"unit/test/Example_Inner.h\""));
+    assertTranslation(translation, "#include \"unit/test/Example.h\"");
+    assertFalse(translation.contains("#include \"unit/test/Example_Inner.h\""));
   }
 
   public void testSameClassMethodInvocation() throws IOException {
@@ -340,7 +340,7 @@ public class ObjectiveCImplementationGeneratorTest extends GenerationTest {
     String translation = translateSourceFile(
         "public class Example { Bar bar; } class Bar {}",
         "Example", "Example.m");
-    assertFalse(translation.contains("#import \"Bar.h\""));
+    assertFalse(translation.contains("#include \"Bar.h\""));
   }
 
   public void testEnumWithStaticVar() throws IOException {
@@ -385,7 +385,7 @@ public class ObjectiveCImplementationGeneratorTest extends GenerationTest {
         "  void baz(java.util.List list) { }" +
         "  void foobar() { baz(new Bar().foo()); } }",
         "Test", "Test.m");
-    assertTranslation(translation, "#import \"Foo.h\"");
+    assertTranslation(translation, "#include \"Foo.h\"");
   }
 
   public void testImportDerivedTypeInConstructorParams() throws IOException {
@@ -396,7 +396,7 @@ public class ObjectiveCImplementationGeneratorTest extends GenerationTest {
         "class Test { " +
         "  void foobar() { new Baz(new Bar().foo()); } }",
         "Test", "Test.m");
-    assertTranslation(translation, "#import \"Foo.h\"");
+    assertTranslation(translation, "#include \"Foo.h\"");
   }
 
   public void testImportJavaLangBooleanPlusAssign() throws IOException {
@@ -404,7 +404,7 @@ public class ObjectiveCImplementationGeneratorTest extends GenerationTest {
         "class Test { " +
         "  void foo() { boolean b = true; String s = \"\"; s += b; } }",
         "Test", "Test.m");
-    assertTranslation(translation, "#import \"java/lang/Boolean.h\"");
+    assertTranslation(translation, "#include \"java/lang/Boolean.h\"");
   }
 
   public void testImportJavaLangBooleanInfixLeft() throws IOException {
@@ -412,7 +412,7 @@ public class ObjectiveCImplementationGeneratorTest extends GenerationTest {
         "class Test { " +
         "  void foo() { boolean b = true; String s = b + \"\"; } }",
         "Test", "Test.m");
-    assertTranslation(translation, "#import \"java/lang/Boolean.h\"");
+    assertTranslation(translation, "#include \"java/lang/Boolean.h\"");
   }
 
   public void testImportJavaLangBooleanInfixRight() throws IOException {
@@ -420,7 +420,7 @@ public class ObjectiveCImplementationGeneratorTest extends GenerationTest {
         "class Test { " +
         "  void foo() { boolean b = true; String s = \"\" + b; } }",
         "Test", "Test.m");
-    assertTranslation(translation, "#import \"java/lang/Boolean.h\"");
+    assertTranslation(translation, "#include \"java/lang/Boolean.h\"");
   }
 
   public void testImportJavaLangBooleanInfixExtendedOperands() throws IOException {
@@ -428,7 +428,7 @@ public class ObjectiveCImplementationGeneratorTest extends GenerationTest {
         "class Test { " +
         "  void foo() { boolean b = true; String s = \"\" + \"\" + b; } }",
         "Test", "Test.m");
-    assertTranslation(translation, "#import \"java/lang/Boolean.h\"");
+    assertTranslation(translation, "#include \"java/lang/Boolean.h\"");
   }
 
   public void testEnumWithEnumField() throws IOException {

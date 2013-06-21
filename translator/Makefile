@@ -50,6 +50,7 @@ JAVA_SOURCES = \
 	gen/HiddenFieldDetector.java \
 	gen/ObjectiveCHeaderGenerator.java \
 	gen/ObjectiveCImplementationGenerator.java \
+	gen/ObjectiveCSegmentedHeaderGenerator.java \
 	gen/ObjectiveCSourceFileGenerator.java \
 	gen/SourceFileGenerator.java \
 	gen/SourcePosition.java \

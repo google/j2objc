@@ -30,8 +30,8 @@ public class ObjectiveCHeaderGeneratorTest extends GenerationTest {
 
   @Override
   protected void tearDown() throws Exception {
-    super.tearDown();
     Options.resetDeprecatedDeclarations();
+    super.tearDown();
   }
 
   public void testInnerEnumWithPackage() throws IOException {
@@ -107,7 +107,7 @@ public class ObjectiveCHeaderGeneratorTest extends GenerationTest {
         "public class MyException extends Exception { MyException(Throwable t) {super(t);}}",
         "MyException", "MyException.h");
     assertTranslation(translation, "@class JavaLangThrowable;");
-    assertTranslation(translation, "#import \"java/lang/Exception.h\"");
+    assertTranslation(translation, "#include \"java/lang/Exception.h\"");
   }
 
   public void testForwardDeclarationTranslation() throws IOException {
@@ -404,14 +404,14 @@ public class ObjectiveCHeaderGeneratorTest extends GenerationTest {
         "  public String toString() { return \"\"; }" +
         "  public Class<?> myClass() { return getClass(); }}",
         "Test", "Test.h");
-    assertFalse(translation.contains("#import \"java/lang/Class.h\""));
-    assertFalse(translation.contains("#import \"java/lang/Cloneable.h\""));
-    assertFalse(translation.contains("#import \"java/lang/Object.h\""));
-    assertFalse(translation.contains("#import \"java/lang/String.h\""));
-    assertFalse(translation.contains("#import \"Class.h\""));
-    assertFalse(translation.contains("#import \"NSCopying.h\""));
-    assertFalse(translation.contains("#import \"NSObject.h\""));
-    assertFalse(translation.contains("#import \"NSString.h\""));
+    assertFalse(translation.contains("#include \"java/lang/Class.h\""));
+    assertFalse(translation.contains("#include \"java/lang/Cloneable.h\""));
+    assertFalse(translation.contains("#include \"java/lang/Object.h\""));
+    assertFalse(translation.contains("#include \"java/lang/String.h\""));
+    assertFalse(translation.contains("#include \"Class.h\""));
+    assertFalse(translation.contains("#include \"NSCopying.h\""));
+    assertFalse(translation.contains("#include \"NSObject.h\""));
+    assertFalse(translation.contains("#include \"NSString.h\""));
     assertTranslation(translation, "NSCopying");
   }
 
@@ -447,7 +447,7 @@ public class ObjectiveCHeaderGeneratorTest extends GenerationTest {
         "A, B, C; public void run() {}}}", "A", "A.h");
     assertTranslation(translation,
         "@interface A_FooEnum : JavaLangEnum < NSCopying, A_I, JavaLangRunnable >");
-    assertTranslation(translation, "#import \"java/lang/Runnable.h\"");
+    assertTranslation(translation, "#include \"java/lang/Runnable.h\"");
   }
 
   public void testExternalNativeMethod() throws IOException {

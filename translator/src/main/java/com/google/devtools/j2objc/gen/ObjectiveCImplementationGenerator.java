@@ -808,15 +808,15 @@ public class ObjectiveCImplementationGenerator extends ObjectiveCSourceFileGener
     Set<Import> imports = collector.getImports();
 
     if (!imports.isEmpty()) {
-      Set<String> importStmts = Sets.newTreeSet();
+      Set<String> includeStmts = Sets.newTreeSet();
       for (Import imp : imports) {
-        importStmts.add(String.format("#import \"%s.h\"", imp.getImportFileName()));
+        includeStmts.add(String.format("#include \"%s.h\"", imp.getImportFileName()));
       }
-      for (String stmt : importStmts) {
+      for (String stmt : includeStmts) {
         println(stmt);
       }
 
-      // Print native imports.
+      // Print native includes.
       int endOfImportText = node.types().isEmpty() ? node.getLength()
           : ((ASTNode) node.types().get(0)).getStartPosition();
       for (Comment c : ASTUtil.getCommentList(node)) {
