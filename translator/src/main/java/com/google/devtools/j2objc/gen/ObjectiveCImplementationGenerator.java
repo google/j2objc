@@ -169,10 +169,6 @@ public class ObjectiveCImplementationGenerator extends ObjectiveCSourceFileGener
 
   @Override
   public void generate(TypeDeclaration node) {
-    List<IMethodBinding> testMethods = null;
-    if (Types.isJUnitTest(Types.getTypeBinding(node))) {
-       testMethods = findTestMethods(node);
-    }
     syncLineNumbers(node.getName()); // avoid doc-comment
 
     String typeName = NameTable.getFullName(node);
@@ -191,37 +187,7 @@ public class ObjectiveCImplementationGenerator extends ObjectiveCSourceFileGener
       printObjCTypeMethod(node);
 
       println("@end");
-
-      // Generate main method, if declared.
-      MethodDeclaration main = null;
-      for (MethodDeclaration m : methods) {
-        if (isMainMethod(m)) {
-          main = m;
-          break;
-        }
-      }
-      if (main != null || (testMethods != null && Options.generateTestMain())) {
-        newline();
-        printMainMethod(main, typeName, testMethods);
-      }
     }
-  }
-
-  private List<IMethodBinding> findTestMethods(TypeDeclaration node) {
-    ITypeBinding type = Types.getTypeBinding(node);
-    List<IMethodBinding> tests = Lists.newArrayList();
-    while (type != null) {
-      for (IMethodBinding md : type.getDeclaredMethods()) {
-        int modifiers = md.getModifiers();
-        if (Modifier.isPublic(modifiers)) {
-          if (md.getName().startsWith("test") && md.getParameterTypes().length == 0) {
-            tests.add(md);
-          }
-        }
-      }
-      type = type.getSuperclass();
-    }
-    return tests.isEmpty() ? null : tests;
   }
 
   @Override
@@ -722,71 +688,6 @@ public class ObjectiveCImplementationGenerator extends ObjectiveCSourceFileGener
   private String generateExpression(Expression expr) {
     return StatementGenerator.generate(expr, fieldHiders, false,
         getBuilder().getSourcePosition());
-  }
-
-  private void printMainMethod(MethodDeclaration m, String typeName,
-      List<IMethodBinding> testMethods) {
-    if (m != null) {  // True for unit tests.
-      Types.addFunction(Types.getMethodBinding(m));
-    }
-    println("int main( int argc, const char *argv[] ) {");
-    if (m != null && (m.getModifiers() & Modifier.NATIVE) > 0 && hasNativeCode(m)) {
-      println(extractNativeMethodBody(m));
-      return;
-    }
-    indent();
-    printIndent();
-    println("int exitCode = 0;");
-    if (Options.memoryDebug()) {
-      printIndent();
-      println("JreMemDebugEnabled = TRUE;");
-    }
-    if (!Options.useGC()) {
-      printIndent();
-      println("@autoreleasepool {");
-      indent();
-    }
-
-    if (m != null) {
-      List<SingleVariableDeclaration> params = ASTUtil.getParameters(m);
-      assert params.size() == 1;  // Previously checked in isMainMethod().
-      printIndent();
-      printf("IOSObjectArray *%s = JreEmulationMainArguments(argc, argv);\n\n",
-          params.get(0).getName().getIdentifier());
-      printMethodBody(m, true);
-    }
-    if (testMethods != null) {
-      printIndent();
-      printf("exitCode = [JUnitRunner runTests:[%s class]", typeName);
-      for (IMethodBinding test : testMethods) {
-        printf(", @\"%s\"", test.getName());
-      }
-      println(", nil];");
-    }
-    if (!Options.useGC()) {
-      unindent();
-      printIndent();
-      println("}");
-    }
-    if (Options.memoryDebug()) {
-      printIndent();
-      println("JreMemDebugGenerateAllocationsReport();");
-    }
-    printIndent();
-    println("return exitCode;");
-    unindent();
-    println("}");
-  }
-
-  private void printMethodBody(MethodDeclaration m, boolean isFunction) throws AssertionError {
-    for (Object stmt : m.getBody().statements()) {
-      if (stmt instanceof Statement) {
-        String objcStmt = reindent(generateStatement((Statement) stmt, isFunction));
-        println(objcStmt);
-      } else {
-        throw new AssertionError("unexpected AST type: " + stmt.getClass());
-      }
-    }
   }
 
   private String extractNativeMethodBody(MethodDeclaration m) {

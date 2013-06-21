@@ -330,16 +330,11 @@ public class ImplementationImportCollector extends ErrorReportingASTVisitor {
     return true;
   }
 
-  private static final ITypeBinding JUNIT_RUNNER = IOSTypeBinding.newUnmappedClass("JUnitRunner");
-
   @Override
   public boolean visit(TypeDeclaration node) {
     ITypeBinding type = Types.getTypeBinding(node);
     addImports(type);
     addDeclaredType(type, false);
-    if (Types.isJUnitTest(type)) {
-      addImports(JUNIT_RUNNER);
-    }
     return true;
   }
 
