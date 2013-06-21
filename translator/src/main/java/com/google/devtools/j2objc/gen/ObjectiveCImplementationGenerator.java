@@ -374,7 +374,7 @@ public class ObjectiveCImplementationGenerator extends ObjectiveCSourceFileGener
     printStaticVars(fields, /* isInterface */ true);
     printStaticFieldAccessors(staticFields, methods);
     for (MethodDeclaration method : methods) {
-      if (Types.getMethodBinding(method).isSynthetic()) {
+      if (method.getBody() != null) {
         printMethod(method);
       }
     }

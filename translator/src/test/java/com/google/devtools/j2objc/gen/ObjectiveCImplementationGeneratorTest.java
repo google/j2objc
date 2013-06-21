@@ -589,4 +589,13 @@ public class ObjectiveCImplementationGeneratorTest extends GenerationTest {
         "class Test { public static String foo; }", "Test", "Test.m");
     assertTranslation(translation, "+ (void)setFoo:(NSString *)foo {\n  Test_foo_ = foo;\n}");
   }
+
+  // Verify that an interface that has a generated implementation file and an Object method
+  // like toString() doesn't print a description method.
+  public void testNoInterfaceToString() throws IOException {
+    String translation = translateSourceFile(
+        "interface Test { public static final Object FOO = new Object(); String toString(); }",
+        "Test", "Test.m");
+    assertNotInTranslation(translation, "- (NSString *)description {");
+  }
 }
