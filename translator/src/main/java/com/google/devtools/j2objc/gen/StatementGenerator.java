@@ -30,6 +30,7 @@ import com.google.devtools.j2objc.types.IOSTypeBinding;
 import com.google.devtools.j2objc.types.Types;
 import com.google.devtools.j2objc.util.ASTNodeException;
 import com.google.devtools.j2objc.util.ASTUtil;
+import com.google.devtools.j2objc.util.BindingUtil;
 import com.google.devtools.j2objc.util.ErrorReportingASTVisitor;
 import com.google.devtools.j2objc.util.NameTable;
 import com.google.devtools.j2objc.util.UnicodeUtils;
@@ -200,7 +201,7 @@ public class StatementGenerator extends ErrorReportingASTVisitor {
           buffer.append(iosMethod.getParameters().get(index).getParameterName());
         }
       } else {
-        method = Types.getOriginalMethodBinding(method.getMethodDeclaration());
+        method = BindingUtil.getOriginalMethodBinding(method.getMethodDeclaration());
         ITypeBinding[] parameterTypes = method.getParameterTypes();
         assert index < parameterTypes.length : "method called with more parameters than declared";
         ITypeBinding parameter = parameterTypes[index];

@@ -25,6 +25,7 @@ import com.google.devtools.j2objc.types.IOSVariableBinding;
 import com.google.devtools.j2objc.types.NodeCopier;
 import com.google.devtools.j2objc.types.Types;
 import com.google.devtools.j2objc.util.ASTUtil;
+import com.google.devtools.j2objc.util.BindingUtil;
 import com.google.devtools.j2objc.util.ErrorReportingASTVisitor;
 import com.google.devtools.j2objc.util.NameTable;
 
@@ -282,7 +283,7 @@ public class Rewriter extends ErrorReportingASTVisitor {
       return;
     }
     ITypeBinding comparableType =
-        Types.findInterface(binding.getDeclaringClass(), "java.lang.Comparable");
+        BindingUtil.findInterface(binding.getDeclaringClass(), "java.lang.Comparable");
     if (comparableType == null) {
       return;
     }
@@ -542,11 +543,11 @@ public class Rewriter extends ErrorReportingASTVisitor {
   private Block makeIterableBlock(
       AST ast, Expression expression, ITypeBinding expressionType, IVariableBinding loopVariable,
       Block loopBody) {
-    ITypeBinding iterableType = Types.findInterface(expressionType, "java.lang.Iterable");
-    IMethodBinding iteratorMethod = Types.findDeclaredMethod(iterableType, "iterator");
+    ITypeBinding iterableType = BindingUtil.findInterface(expressionType, "java.lang.Iterable");
+    IMethodBinding iteratorMethod = BindingUtil.findDeclaredMethod(iterableType, "iterator");
     ITypeBinding iteratorType = iteratorMethod.getReturnType();
-    IMethodBinding hasNextMethod = Types.findDeclaredMethod(iteratorType, "hasNext");
-    IMethodBinding nextMethod = Types.findDeclaredMethod(iteratorType, "next");
+    IMethodBinding hasNextMethod = BindingUtil.findDeclaredMethod(iteratorType, "hasNext");
+    IMethodBinding nextMethod = BindingUtil.findDeclaredMethod(iteratorType, "next");
     assert hasNextMethod != null && nextMethod != null;
 
     IVariableBinding iteratorVariable = new GeneratedVariableBinding(

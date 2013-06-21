@@ -22,6 +22,7 @@ import com.google.devtools.j2objc.Options;
 import com.google.devtools.j2objc.types.NodeCopier;
 import com.google.devtools.j2objc.types.Types;
 import com.google.devtools.j2objc.util.ASTUtil;
+import com.google.devtools.j2objc.util.BindingUtil;
 import com.google.devtools.j2objc.util.ErrorReportingASTVisitor;
 
 import org.eclipse.jdt.core.dom.AST;
@@ -143,7 +144,7 @@ public class GwtConverter extends ErrorReportingASTVisitor {
       Expression clazz = NodeCopier.copySubtree(ast, args.get(0));
       args.remove(0);
       node.setExpression(clazz);
-      IMethodBinding newBinding = Types.findDeclaredMethod(
+      IMethodBinding newBinding = BindingUtil.findDeclaredMethod(
           ast.resolveWellKnownType("java.lang.Class"), "newInstance");
       Types.addBinding(name, newBinding);
       Types.addBinding(node, newBinding);

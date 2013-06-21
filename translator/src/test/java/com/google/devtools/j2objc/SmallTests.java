@@ -42,6 +42,7 @@ import com.google.devtools.j2objc.types.ImplementationImportCollectorTest;
 import com.google.devtools.j2objc.types.ModifiedTypeBindingTest;
 import com.google.devtools.j2objc.types.RenamedTypeBindingTest;
 import com.google.devtools.j2objc.types.TypesTest;
+import com.google.devtools.j2objc.util.BindingUtilTest;
 import com.google.devtools.j2objc.util.DeadCodeMapTest;
 import com.google.devtools.j2objc.util.ErrorReportingASTVisitorTest;
 import com.google.devtools.j2objc.util.NameTableTest;
@@ -64,6 +65,7 @@ public class SmallTests {
     ArrayCreationTest.class,
     AutoboxerTest.class,
     BindingMapBuilderTest.class,
+    BindingUtilTest.class,
     DeadCodeEliminatorTest.class,
     DeadCodeMapTest.class,
     DestructorGeneratorTest.class,
