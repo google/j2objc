@@ -640,7 +640,7 @@ $(EMULATION_JAR): $(ALL_JAVA_SOURCES) $(STUB_JAVA_SOURCES) | $(BUILD_DIR)
 	@javac -classpath $(ANNOTATIONS_JAR) -d $(EMULATION_STAGE) $^
 	@jar cf $(EMULATION_JAR) -C $(EMULATION_STAGE) .
 
-$(JAVA_SOURCES_MANIFEST): $(ALL_JAVA_SOURCES) | $(BUILD_DIR)
+$(JAVA_SOURCES_MANIFEST): $(ALL_JAVA_SOURCES) $(STUB_JAVA_SOURCES) | $(BUILD_DIR)
 	@echo "Building $$(basename $@)"
 	@if [ -e $@ ]; then rm $@; fi
 	@for i in $^; do echo $(CURDIR)/$$i >> $@; done
