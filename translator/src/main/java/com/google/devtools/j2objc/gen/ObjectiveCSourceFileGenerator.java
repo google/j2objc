@@ -17,6 +17,7 @@
 package com.google.devtools.j2objc.gen;
 
 import com.google.common.collect.Lists;
+import com.google.devtools.j2objc.Options;
 import com.google.devtools.j2objc.types.IOSMethod;
 import com.google.devtools.j2objc.types.IOSMethodBinding;
 import com.google.devtools.j2objc.types.IOSParameter;
@@ -386,5 +387,22 @@ public abstract class ObjectiveCSourceFileGenerator extends SourceFileGenerator 
       }
     }
     return superDefinesVariable(superClazz, name, type);
+  }
+
+  /** Ignores deprecation warnings. Deprecation warnings should be visible for human authored code,
+   *  not transpiled code. This method should be paired with popIgnoreDeprecatedDeclarationsPragma.
+   */
+  protected void pushIgnoreDeprecatedDeclarationsPragma() {
+    if (Options.generateDeprecatedDeclarations()) {
+      printf("#pragma clang diagnostic push\n");
+      printf("#pragma GCC diagnostic ignored \"-Wdeprecated-declarations\"\n");
+    }
+  }
+
+  /** Restores deprecation warnings after a call to pushIgnoreDeprecatedDeclarationsPragma. */
+  protected void popIgnoreDeprecatedDeclarationsPragma() {
+    if (Options.generateDeprecatedDeclarations()) {
+      printf("#pragma clang diagnostic pop\n");
+    }
   }
 }

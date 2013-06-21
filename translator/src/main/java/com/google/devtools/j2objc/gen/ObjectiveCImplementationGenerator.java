@@ -97,6 +97,7 @@ public class ObjectiveCImplementationGenerator extends ObjectiveCSourceFileGener
       findInvokedConstructors(unit);
       printStart(getSourceFileName());
       printImports(unit);
+      pushIgnoreDeprecatedDeclarationsPragma();
       unit.accept(new ErrorReportingASTVisitor() {
         @Override
         public boolean visit(TypeDeclaration node) {
@@ -110,6 +111,7 @@ public class ObjectiveCImplementationGenerator extends ObjectiveCSourceFileGener
           return true;
         }
       });
+      popIgnoreDeprecatedDeclarationsPragma();
     } else {
       // Print a dummy C function so compiled object file is valid.
       List<AbstractTypeDeclaration> types = ASTUtil.getTypes(unit);

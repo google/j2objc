@@ -31,6 +31,7 @@ public class ObjectiveCImplementationGeneratorTest extends GenerationTest {
 
   @Override
   protected void tearDown() throws Exception {
+    Options.resetDeprecatedDeclarations();
     Options.resetMemoryManagementOption();
     super.tearDown();
   }
@@ -597,5 +598,28 @@ public class ObjectiveCImplementationGeneratorTest extends GenerationTest {
         "interface Test { public static final Object FOO = new Object(); String toString(); }",
         "Test", "Test.m");
     assertNotInTranslation(translation, "- (NSString *)description {");
+  }
+
+  public void testAddIgnoreDeprecationWarningsPragmaIfDeprecatedDeclarationsIsEnabled()
+      throws IOException {
+    Options.enableDeprecatedDeclarations();
+
+    String translation = translateSourceFile(
+            "class Test { public static String foo; }", "Test", "Test.m");
+
+    assertTranslation(translation, "#pragma clang diagnostic push");
+    assertTranslation(translation, "#pragma GCC diagnostic ignored \"-Wdeprecated-declarations\"");
+    assertTranslation(translation, "#pragma clang diagnostic pop");
+  }
+
+  public void testDoNotAddIgnoreDeprecationWarningsPragmaIfDeprecatedDeclarationsIsDisabled()
+      throws IOException {
+    String translation = translateSourceFile(
+            "class Test { public static String foo; }", "Test", "Test.m");
+
+    assertNotInTranslation(translation, "#pragma clang diagnostic push");
+    assertNotInTranslation(translation,
+        "#pragma GCC diagnostic ignored \"-Wdeprecated-declarations\"");
+    assertNotInTranslation(translation, "#pragma clang diagnostic pop");
   }
 }
