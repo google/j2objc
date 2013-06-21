@@ -77,38 +77,57 @@ public abstract class SourceFileGenerator {
   protected abstract String getSuffix();
 
   /**
-   * Returns true if a native method has an OCNI block, or
-   * temporarily if it has a JSNI block.
+   * Returns true if a native method has an OCNI block.
    */
   protected boolean hasNativeCode(MethodDeclaration m) {
+    return hasNativeCode(m, false);
+  }
+
+  /**
+   * Returns true if a native method has an OCNI block, warning if JSNI
+   * delimiters are found instead.
+   */
+  protected boolean hasNativeCode(MethodDeclaration m, boolean reportJsniWarnings) {
     assert (m.getModifiers() & Modifier.NATIVE) > 0;
-    String nativeCode = extractNativeCode(m.getStartPosition(), m.getLength());
+    String nativeCode = extractNativeCode(m.getStartPosition(), m.getLength(), reportJsniWarnings);
     return nativeCode != null;
   }
 
   /**
    * Returns text from within a source code range, where that text is
-   * surrounded by JSNI-like tokens ("/&#42;-[" and "]-&#42;/").
+   * surrounded by OCNI-like tokens ("/&#42;-[" and "]-&#42;/").
+   */
+  protected String extractNativeCode(int offset, int length) {
+    return extractNativeCode(offset, length, true);
+  }
+
+  /**
+   * Returns text from within a source code range, where that text is
+   * surrounded by OCNI-like tokens ("/&#42;-[" and "]-&#42;/"), warning
+   * if JSNI delimiters are found instead.
    *
    * @param offset the offset into the source to begin searching for
    *     a JSNI region
    * @param length the length of the text range to search
-   * @return the extracted text between the JSNI delimiters, or null if
+   * @param reportWarnings if true, warn that JSNI delimiters were found
+   * @return the extracted text between the OCNI delimiters, or null if
    *     a pair of JSNI delimiters aren't in the specified text range
    */
-  protected String extractNativeCode(int offset, int length) {
+  protected String extractNativeCode(int offset, int length, boolean reportWarnings) {
     String text = source.substring(offset, offset + length);
     int start = text.indexOf("/*-[");  // start after the bracket
     int end = text.lastIndexOf("]-*/");
 
-    //TODO(user): remove after everyone has updated to use the new delimiters.
-    if ((start == -1 || end <= start) && Options.acceptJsniDelimiters()) {
-      // Check for soon-to-be obsolete GWT JSNI tokens.
-      start = text.indexOf("/*-{");
-      end = text.lastIndexOf("}-*/");
-    }
-
     if (start == -1 || end <= start) {
+      if (reportWarnings && Options.jsniWarnings()) {
+        start = text.indexOf("/*-{");
+        end = text.lastIndexOf("}-*/");
+        if (start != -1 && end > start) {
+          String message = String.format("JSNI comment found: %s:%d",
+              sourceFileName, builder.getLineNumber(offset));
+          J2ObjC.warning(message);
+        }
+      }
       return null;
     }
     return text.substring(start + 4, end);

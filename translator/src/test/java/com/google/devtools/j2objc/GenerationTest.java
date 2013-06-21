@@ -437,4 +437,12 @@ public abstract class GenerationTest extends TestCase {
       fail("expected:\"" + expectedText + "\" in:\n" + lastLog);
     }
   }
+
+  protected void resetWarningCount() {
+    J2ObjC.resetWarnings();
+  }
+
+  protected void resetErrorCount() {
+    J2ObjC.resetErrors();
+  }
 }

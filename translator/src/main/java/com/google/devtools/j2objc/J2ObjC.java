@@ -578,6 +578,16 @@ public class J2ObjC {
     }
   }
 
+  @VisibleForTesting
+  static void resetWarnings() {
+    nWarnings = 0;
+  }
+
+  @VisibleForTesting
+  static void resetErrors() {
+    nErrors = 0;
+  }
+
   /**
    * Report an error with a specific AST node.
    */
