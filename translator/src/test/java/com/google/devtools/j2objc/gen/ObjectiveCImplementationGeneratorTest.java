@@ -195,7 +195,7 @@ public class ObjectiveCImplementationGeneratorTest extends GenerationTest {
         "public class Example { int load() { return 1; }} "
         + "class SubClass extends Example { int load() { return super.load(); }}",
         "Example", "Example.m");
-    assertTranslation(translation, "return (int) [super load__];");
+    assertTranslation(translation, "return [super load__];");
   }
 
   public void testNSObjectMessageStaticRename() throws IOException {

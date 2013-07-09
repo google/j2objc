@@ -173,7 +173,7 @@ public class StatementGeneratorTest extends GenerationTest {
     String translation = translateSourceFile(
       "public class Example { public String toString() { return super.toString(); } }",
       "Example", "Example.m");
-    assertTranslation(translation, "return (NSString *) [super description];");
+    assertTranslation(translation, "return [super description];");
   }
 
   public void testAccessPublicConstant() throws IOException {
@@ -1510,5 +1510,22 @@ public class StatementGeneratorTest extends GenerationTest {
         "abstract T getObj(); static class Foo { void foo() { } } " +
         "static void test(Test<Foo> t) { t.getObj().foo(); } }", "Test", "Test.m");
     assertTranslation(translation, "[((Test_Foo *) nil_chk([((Test *) nil_chk(t)) getObj])) foo]");
+  }
+
+  public void testCastResultWhenInterfaceDeclaresMoreGenericType() throws IOException {
+    String translation = translateSourceFile(
+        "class Test { " +
+        "interface I1 { A foo(); } " +
+        "interface I2 { B foo(); } " +
+        "static class A { } static class B extends A { } " +
+        "static abstract class C { abstract B foo(); } " +
+        "static abstract class D extends C implements I1, I2 { } " +
+        "B test(D d) { return d.foo(); } }", "Test", "Test.h");
+    // Check that protocols are declared in the same order.
+    assertTranslation(translation, "@interface Test_D : Test_C < Test_I1, Test_I2 >");
+    translation = getTranslatedFile("Test.m");
+    // Check that the result of d.foo() is cast because the compiler will think
+    // it returns a Test_A type.
+    assertTranslation(translation, "return ((Test_B *) [((Test_D *) nil_chk(d)) foo]);");
   }
 }
