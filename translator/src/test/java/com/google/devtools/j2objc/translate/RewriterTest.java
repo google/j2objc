@@ -590,4 +590,49 @@ public class RewriterTest extends GenerationTest {
         "IOSCharArray *c2;",
         "unichar c3, c4;");
   }
+
+  // Objective-C requires that && tests be surrounded by parens when mixed with || tests.
+  public void testLogicalPrecedence() throws IOException {
+    String translation = translateSourceFile(
+        "class Test { " +
+        "boolean test1(boolean a, boolean b) {" +
+        "  return a && b; }" +
+        "boolean test2(boolean c, boolean d) {" +
+        "  return c || d; }" +
+        "boolean test3(boolean e, boolean f, boolean g, boolean h, boolean i) { " +
+        "  return e && f || g && h || i; }" +
+        "boolean test4(boolean j, boolean k, boolean l, boolean m, boolean n) {" +
+        "  return j || k || l && m && n; }}",
+        "Test", "Test.m");
+    assertTranslation(translation, "return a && b;");
+    assertTranslation(translation, "return c || d;");
+    assertTranslatedLines(translation, "return (e && f) || (g && h) || i;");
+    assertTranslatedLines(translation, "return j || k || (l && m && n);");
+
+    translation = translateSourceFile(
+        "class Test { int i; @Override public boolean equals(Object object) { " +
+        "return (object == this) || (object instanceof Test) && (i == ((Test) object).i); } }",
+        "Test", "Test.m");
+    assertTranslatedLines(translation, "(object == self) || " +
+        "(([object isKindOfClass:[Test class]]) && (i_ == ((Test *) object).i));");
+  }
+
+  // Objective-C requires that bit-wise and tests be surrounded by parens when mixed with or tests.
+  public void testBitPrecedence() throws IOException {
+    String translation = translateSourceFile(
+        "class Test { " +
+        "int test1(int a, int b) {" +
+        "  return a & b; }" +
+        "int test2(int c, int d) {" +
+        "  return c | d; }" +
+        "int test3(int e, int f, int g, int h, int i) { " +
+        "  return e & f | g & h | i; }" +
+        "int test4(int j, int k, int l, int m, int n) {" +
+        "  return j | k | l & m & n; }}",
+        "Test", "Test.m");
+    assertTranslation(translation, "return a & b;");
+    assertTranslation(translation, "return c | d;");
+    assertTranslatedLines(translation, "return (e & f) | (g & h) | i;");
+    assertTranslatedLines(translation, "return j | k | (l & m & n);");
+  }
 }
