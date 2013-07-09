@@ -20,7 +20,6 @@ import com.google.devtools.j2objc.util.ErrorReportingASTVisitor;
 
 import org.eclipse.jdt.core.dom.ASTNode;
 import org.eclipse.jdt.core.dom.AnnotationTypeDeclaration;
-import org.eclipse.jdt.core.dom.AnnotationTypeMemberDeclaration;
 import org.eclipse.jdt.core.dom.AnonymousClassDeclaration;
 import org.eclipse.jdt.core.dom.ArrayAccess;
 import org.eclipse.jdt.core.dom.ArrayCreation;
@@ -41,12 +40,8 @@ import org.eclipse.jdt.core.dom.IMethodBinding;
 import org.eclipse.jdt.core.dom.IVariableBinding;
 import org.eclipse.jdt.core.dom.InfixExpression;
 import org.eclipse.jdt.core.dom.InstanceofExpression;
-import org.eclipse.jdt.core.dom.MarkerAnnotation;
 import org.eclipse.jdt.core.dom.MethodDeclaration;
 import org.eclipse.jdt.core.dom.MethodInvocation;
-import org.eclipse.jdt.core.dom.MethodRef;
-import org.eclipse.jdt.core.dom.NormalAnnotation;
-import org.eclipse.jdt.core.dom.NullLiteral;
 import org.eclipse.jdt.core.dom.NumberLiteral;
 import org.eclipse.jdt.core.dom.ParameterizedType;
 import org.eclipse.jdt.core.dom.ParenthesizedExpression;
@@ -57,7 +52,6 @@ import org.eclipse.jdt.core.dom.QualifiedName;
 import org.eclipse.jdt.core.dom.QualifiedType;
 import org.eclipse.jdt.core.dom.SimpleName;
 import org.eclipse.jdt.core.dom.SimpleType;
-import org.eclipse.jdt.core.dom.SingleMemberAnnotation;
 import org.eclipse.jdt.core.dom.SingleVariableDeclaration;
 import org.eclipse.jdt.core.dom.StringLiteral;
 import org.eclipse.jdt.core.dom.SuperConstructorInvocation;
@@ -102,11 +96,6 @@ class BindingMapVerifier extends ErrorReportingASTVisitor {
 
   // There is a lot of seemingly duplicate code here, but each
   // resolve*Binding() method is specific to the node type.
-
-  @Override
-  public boolean visit(AnnotationTypeMemberDeclaration node) {
-    return verify(node);
-  }
 
   @Override
   public boolean visit(AnnotationTypeDeclaration node) {
@@ -219,12 +208,6 @@ class BindingMapVerifier extends ErrorReportingASTVisitor {
   }
 
   @Override
-  public boolean visit(MarkerAnnotation node) {
-    return verify(node);
-
-  }
-
-  @Override
   public boolean visit(MethodDeclaration node) {
     IMethodBinding binding = (IMethodBinding) bindingMap.get(node);
     assert node.parameters().size() == binding.getParameterTypes().length;
@@ -242,23 +225,9 @@ class BindingMapVerifier extends ErrorReportingASTVisitor {
   }
 
   @Override
-  public boolean visit(MethodRef node) {
-    return verify(node);
-  }
-
-  @Override
-  public boolean visit(NormalAnnotation node) {
-    return verify(node);
-  }
-
-  @Override
-  public boolean visit(NullLiteral node) {
-    return verify(node);
-  }
-
-  @Override
   public boolean visit(NumberLiteral node) {
     return verify(node);
+
   }
 
   @Override
@@ -316,11 +285,6 @@ class BindingMapVerifier extends ErrorReportingASTVisitor {
   }
 
   @Override
-  public boolean visit(SingleMemberAnnotation node) {
-    return verify(node);
-  }
-
-  @Override
   public boolean visit(SingleVariableDeclaration node) {
     return verify(node);
 
@@ -363,13 +327,13 @@ class BindingMapVerifier extends ErrorReportingASTVisitor {
   }
 
   @Override
-  public boolean visit(TypeLiteral node) {
+  public boolean visit(TypeParameter node) {
     return verify(node);
 
   }
 
   @Override
-  public boolean visit(TypeParameter node) {
+  public boolean visit(TypeLiteral node) {
     return verify(node);
 
   }

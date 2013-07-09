@@ -118,7 +118,7 @@ public class Import implements Comparable<Import> {
   }
 
   public static void addImports(ITypeBinding binding, Collection<Import> imports) {
-    if (binding == null || binding.isPrimitive()) {
+    if (binding == null || binding.isPrimitive() || binding.isAnnotation()) {
       return;
     }
     if (binding.isTypeVariable()) {

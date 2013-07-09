@@ -91,7 +91,7 @@ public class InnerClassExtractor extends ErrorReportingASTVisitor {
 
   @Override
   public boolean visit(AnnotationTypeDeclaration node) {
-    return handleType(node);
+    return false; // ignore annotations
   }
 
   private boolean handleType(AbstractTypeDeclaration node) {
