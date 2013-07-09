@@ -31,15 +31,17 @@ import java.util.List;
  */
 public class IOSMethod {
   private final String name;
+  private final boolean isFunction;
   private final String declaringClass;
   private final List<IOSParameter> parameters;
   private boolean varArgs = false;
   private final boolean returnsPointer;
 
   private IOSMethod(
-      String name, String declaringClass, List<IOSParameter> parameters, boolean varArgs,
-      boolean returnsPointer) {
+      String name, boolean isFunction, String declaringClass, List<IOSParameter> parameters,
+      boolean varArgs, boolean returnsPointer) {
     this.name = name;
+    this.isFunction = isFunction;
     this.declaringClass = declaringClass;
     this.parameters = parameters;
     this.varArgs = varArgs;
@@ -75,11 +77,19 @@ public class IOSMethod {
       returnsPointer = true;
       name = name.substring(1);
     }
-    return new IOSMethod(name, className, parameters.build(), varArgs, returnsPointer);
+    return new IOSMethod(name, false, className, parameters.build(), varArgs, returnsPointer);
+  }
+
+  public static IOSMethod newFunction(String name) {
+    return new IOSMethod(name, true, null, null, false, false);
   }
 
   public String getName() {
     return name;
+  }
+
+  public boolean isFunction() {
+    return isFunction;
   }
 
   public String getDeclaringClass() {

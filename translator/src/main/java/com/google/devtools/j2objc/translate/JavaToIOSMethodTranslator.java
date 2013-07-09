@@ -232,10 +232,6 @@ public class JavaToIOSMethodTranslator extends ErrorReportingASTVisitor {
 
   @Override
   public void endVisit(MethodInvocation node) {
-    for (Expression e : ASTUtil.getArguments(node)) {
-      e.accept(this);
-    }
-
     IMethodBinding binding = Types.getMethodBinding(node);
     JavaMethod md = getDescription(binding);
     if (md == null && !binding.getName().equals("clone")) { // never map clone()

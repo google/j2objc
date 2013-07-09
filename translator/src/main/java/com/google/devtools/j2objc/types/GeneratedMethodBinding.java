@@ -56,7 +56,7 @@ public class GeneratedMethodBinding implements IMethodBinding {
     this.modifiers = modifiers;
     this.returnType = returnType;
     this.methodDeclaration = methodDeclaration;
-    this.declaringClass = Preconditions.checkNotNull(declaringClass);
+    this.declaringClass = declaringClass;
     this.isConstructor = isConstructor;
     this.varargs = varargs;
     this.isSynthetic = isSynthetic;

@@ -191,27 +191,16 @@ public class InitializationNormalizerTest extends GenerationTest {
     assertEquals("new java.util.Date()", assign.getRightHandSide().toString());
   }
 
-  public void testStaticInitializerBlock() {
-    TypeDeclaration clazz = translateClassBody("static { System.out.println(\"foo\"); }");
-    List<BodyDeclaration> classMembers = clazz.bodyDeclarations();
-    assertEquals(3, classMembers.size());
-
-    // test that a static initialize() method was created
-    BodyDeclaration decl = classMembers.get(1);
-    assertTrue(decl instanceof MethodDeclaration);
-    MethodDeclaration method = (MethodDeclaration) decl;
-    assertEquals(NameTable.CLINIT_NAME, method.getName().getIdentifier());
-    assertEquals(Modifier.PUBLIC | Modifier.STATIC, method.getModifiers());
-    assertTrue(method.parameters().isEmpty());
-
-    // test that the method body consists of the block's statement
-    List<Statement> generatedStatements = method.getBody().statements();
-    assertEquals(1, generatedStatements.size());
-    assertTrue(generatedStatements.get(0) instanceof Block);
-    Block b = (Block) generatedStatements.get(0);
-    assertTrue(b.statements().get(0) instanceof ExpressionStatement);
-    ExpressionStatement stmt = (ExpressionStatement) b.statements().get(0);
-    assertEquals("System.out.println(\"foo\")", stmt.getExpression().toString());
+  public void testStaticInitializerBlock() throws IOException {
+    String translation = translateSourceFile(
+        "class Test { static { System.out.println(\"foo\"); } }", "Test", "Test.m");
+    // test that a static initialize() method was created and that it contains
+    // the block's statement.
+    assertTranslatedLines(translation,
+        "+ (void)initialize {",
+        "if (self == [Test class]) {",
+        "{",
+        "[((JavaIoPrintStream *) nil_chk([JavaLangSystem out])) printlnWithNSString:@\"foo\"];");
   }
 
   public void testIsDesignatedConstructor() {
