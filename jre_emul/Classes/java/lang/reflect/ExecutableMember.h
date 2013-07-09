@@ -19,6 +19,9 @@
 //  Created by Tom Ball on 11/11/11.
 //
 
+#ifndef _ExecutableMember_H_
+#define _ExecutableMember_H_
+
 #import "AccessibleObject.h"
 
 // The first arguments all messages have are self and _cmd.
@@ -59,3 +62,5 @@
 - (IOSObjectArray *)getParameterTypes;
 
 @end
+
+#endif // _ExecutableMember_H_

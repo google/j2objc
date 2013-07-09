@@ -16,6 +16,9 @@
 // Transpiler Memory Debug.
 //
 
+#ifndef _JreMemDebug_H_
+#define _JreMemDebug_H_
+
 // Set JREMEMDEBUG_OVERHEAD_ENABLED to 1 to allow overhead of memory debugging.
 // Keeping this value to 0 will completely disable it at compile time
 // And will avoid any (even unsignificant) overhead.
@@ -96,3 +99,5 @@
     FOUNDATION_EXPORT void JreMemDebugGenerateAllocationsReport(void);
 
 #endif
+
+#endif // _JreMemDebug_H_

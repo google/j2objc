@@ -19,6 +19,9 @@
 //  Created by Tom Ball on 10/18/11.
 //
 
+#ifndef _IOSClass_H_
+#define _IOSClass_H_
+
 #import <Foundation/Foundation.h>
 #import "java/lang/reflect/GenericDeclaration.h"
 #import "java/lang/reflect/Type.h"
@@ -153,3 +156,5 @@
 + (void)addToCache:(IOSClass *)clazz withSignature:(NSString *)signature;
 
 @end
+
+#endif // _IOSClass_H_

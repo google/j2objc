@@ -19,6 +19,9 @@
 //  Created by Tom Ball on 1/23/12.
 //
 
+#ifndef _IOSArrayClass_H_
+#define _IOSArrayClass_H_
+
 #import "IOSClass.h"
 
 @interface IOSArrayClass : IOSClass {
@@ -32,3 +35,5 @@
 - (id)initWithComponentType:(IOSClass *)type;
 
 @end
+
+#endif // _IOSArrayClass_H_

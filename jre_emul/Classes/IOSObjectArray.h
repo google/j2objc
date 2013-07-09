@@ -19,6 +19,9 @@
 //  Created by Tom Ball on 9/9/11.
 //
 
+#ifndef _IOSObjectArray_H_
+#define _IOSObjectArray_H_
+
 #import "IOSArray.h"
 
 @class IOSClass;
@@ -70,3 +73,5 @@
 - (void)getObjects:(NSObject **)buffer length:(NSUInteger)length;
 
 @end
+
+#endif // _IOSObjectArray_H_

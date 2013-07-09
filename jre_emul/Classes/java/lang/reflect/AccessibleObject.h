@@ -19,6 +19,9 @@
 //  Created by Tom Ball on 6/18/12.
 //
 
+#ifndef _AccessibleObject_H_
+#define _AccessibleObject_H_
+
 #import <Foundation/Foundation.h>
 #import "IOSClass.h"
 
@@ -37,3 +40,5 @@ IOSClass *decodeTypeEncoding(char type);
 // Return a Java type name for an Objective-C type encoding.  For example,
 // "byte" is returned for 'c', since a Java byte is mapped to a C char.
 NSString *describeTypeEncoding(NSString *type);
+
+#endif // _AccessibleObject_H_

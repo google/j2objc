@@ -19,6 +19,9 @@
 //  Created by Tom Ball on 06/18/2012.
 //
 
+#ifndef _JavaLangReflectField_H_
+#define _JavaLangReflectField_H_
+
 #import "AccessibleObject.h"
 #import <objc/runtime.h>
 
@@ -73,3 +76,5 @@
 + (NSString *)variableName:(NSString *)name;
 
 @end
+
+#endif // _JavaLangReflectField_H_

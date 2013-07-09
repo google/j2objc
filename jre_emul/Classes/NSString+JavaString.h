@@ -19,6 +19,9 @@
 //  Created by Tom Ball on 8/24/11.
 //
 
+#ifndef _NSString_JavaString_H_
+#define _NSString_JavaString_H_
+
 #import <Foundation/Foundation.h>
 #import "IOSByteArray.h"
 #import "IOSCharArray.h"
@@ -275,3 +278,5 @@ destinationBegin:(int)dstBegin;
 + (id<JavaUtilComparator>)CASE_INSENSITIVE_ORDER;
 
 @end
+
+#endif // _NSString_JavaString_H_
