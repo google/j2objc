@@ -393,20 +393,6 @@ public class Types {
       return m.isConstructor() ? m.getDeclaringClass() : m.getReturnType();
     } else if (binding instanceof IVariableBinding) {
       return ((IVariableBinding) binding).getType();
-    } else if (binding instanceof IAnnotationBinding) {
-      return ((IAnnotationBinding) binding).getAnnotationType();
-    }
-    return null;
-  }
-
-  /**
-   * Return a type binding for a specified ASTNode or IOS node, or null if
-   * no type binding exists.
-   */
-  public static IAnnotationBinding getAnnotationBinding(Object node) {
-    IBinding binding = getBinding(node);
-    if (binding instanceof IAnnotationBinding) {
-      return (IAnnotationBinding) binding;
     }
     return null;
   }

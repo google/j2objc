@@ -33,7 +33,6 @@ import com.google.devtools.j2objc.util.NameTable;
 import org.eclipse.jdt.core.dom.ASTNode;
 import org.eclipse.jdt.core.dom.AbstractTypeDeclaration;
 import org.eclipse.jdt.core.dom.AnnotationTypeDeclaration;
-import org.eclipse.jdt.core.dom.AnnotationTypeMemberDeclaration;
 import org.eclipse.jdt.core.dom.BlockComment;
 import org.eclipse.jdt.core.dom.BodyDeclaration;
 import org.eclipse.jdt.core.dom.Comment;
@@ -111,12 +110,6 @@ public class ObjectiveCImplementationGenerator extends ObjectiveCSourceFileGener
           generate(node);
           return true;
         }
-
-        @Override
-        public boolean visit(AnnotationTypeDeclaration node) {
-          generate(node);
-          return true;
-        }
       });
       popIgnoreDeprecatedDeclarationsPragma();
     } else {
@@ -153,8 +146,7 @@ public class ObjectiveCImplementationGenerator extends ObjectiveCSourceFileGener
 
       @Override
       public boolean visit(AnnotationTypeDeclaration node) {
-        result[0] = true; // always print annotations
-        return false;
+        return false;  // never print annotations
       }
     });
     return result[0];
@@ -203,69 +195,7 @@ public class ObjectiveCImplementationGenerator extends ObjectiveCSourceFileGener
 
   @Override
   protected void generate(AnnotationTypeDeclaration node) {
-    if (BindingUtil.isRuntimeAnnotation(Types.getTypeBinding(node))) {
-      syncLineNumbers(node.getName()); // avoid doc-comment
-
-      String typeName = NameTable.getFullName(node);
-      printf("@implementation %s\n", typeName);
-      List<AnnotationTypeMemberDeclaration> members = Lists.newArrayList();
-      for (BodyDeclaration decl : ASTUtil.getBodyDeclarations(node)) {
-        if (decl instanceof AnnotationTypeMemberDeclaration) {
-          members.add((AnnotationTypeMemberDeclaration) decl);
-        }
-      }
-      printAnnotationProperties(members);
-      if (!members.isEmpty()) {
-        printAnnotationConstructor(members);
-      }
-      printAnnotationAccessors(members);
-      println("- (IOSClass *)annotationType {");
-      printf("  return [%s getClass];\n", typeName);
-      println("}\n");
-      println("@end\n");
-    }
-  }
-
-  private void printAnnotationConstructor(List<AnnotationTypeMemberDeclaration> members) {
-    print(annotationConstructorDeclaration(members));
-    println(" {");
-    println("  if ((self = [super init])) {");
-    for (AnnotationTypeMemberDeclaration member : members) {
-      String name = member.getName().getIdentifier();
-      printf("    %s = ", name);
-      ITypeBinding type = Types.getTypeBinding(member);
-      boolean needsRetain = !type.isPrimitive();
-      if (needsRetain) {
-        print("RETAIN(");
-      }
-      printf("%s_", name);
-      if (needsRetain) {
-        print(')');
-      }
-      println(";");
-    }
-    println("  }");
-    println("  return self;");
-    println("}\n");
-  }
-
-  private void printAnnotationAccessors(List<AnnotationTypeMemberDeclaration> members) {
-    int nPrinted = 0;
-    for (AnnotationTypeMemberDeclaration member : members) {
-      Expression deflt = member.getDefault();
-      if (deflt != null) {
-        ITypeBinding type = Types.getTypeBinding(member.getType());
-        String typeString = NameTable.getSpecificObjCType(type);
-        String propertyName = NameTable.getName(member.getName());
-        printf("+ (%s)%sDefault {\n", typeString, propertyName);
-        printf("  return %s;\n", generateExpression(deflt));
-        println("}\n");
-        nPrinted++;
-      }
-    }
-    if (nPrinted > 0) {
-      newline();
-    }
+    // No implementation for annotations.
   }
 
   private void printMethods(TypeDeclaration node) {
@@ -893,23 +823,12 @@ public class ObjectiveCImplementationGenerator extends ObjectiveCSourceFileGener
     }
   }
 
-  private void printAnnotationProperties(List<AnnotationTypeMemberDeclaration> members) {
-    int nPrinted = 0;
-    for (AnnotationTypeMemberDeclaration member : members) {
-      println(String.format("@synthesize %s;", NameTable.getName(member.getName())));
-      nPrinted++;
-    }
-    if (nPrinted > 0) {
-      newline();
-    }
-  }
-
-  /**
-   * If type extends java.lang.Number, add a required implementation of
-   * NSValue.objCType().  This can't be implemented as a native method
-   * because its return type is const char *.  Since this method overrides
-   * the default implementation, the signatures need to match exactly.
-   */
+   /**
+    * If type extends java.lang.Number, add a required implementation of
+    * NSValue.objCType().  This can't be implemented as a native method
+    * because its return type is const char *.  Since this method overrides
+    * the default implementation, the signatures need to match exactly.
+    */
   private void printObjCTypeMethod(TypeDeclaration node) {
     ITypeBinding type = Types.getTypeBinding(node);
     if (Types.isJavaNumberType(type)) {
