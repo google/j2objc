@@ -28,13 +28,9 @@ import com.google.devtools.j2objc.util.ASTUtil;
 import com.google.devtools.j2objc.util.BindingUtil;
 import com.google.devtools.j2objc.util.DeadCodeMap;
 import com.google.devtools.j2objc.util.ErrorReportingASTVisitor;
-import com.google.j2objc.annotations.Weak;
-import com.google.j2objc.annotations.WeakOuter;
 
 import org.eclipse.jdt.core.dom.AST;
-import org.eclipse.jdt.core.dom.Annotation;
 import org.eclipse.jdt.core.dom.AnnotationTypeDeclaration;
-import org.eclipse.jdt.core.dom.AnnotationTypeMemberDeclaration;
 import org.eclipse.jdt.core.dom.AnonymousClassDeclaration;
 import org.eclipse.jdt.core.dom.Block;
 import org.eclipse.jdt.core.dom.BodyDeclaration;
@@ -50,14 +46,11 @@ import org.eclipse.jdt.core.dom.ITypeBinding;
 import org.eclipse.jdt.core.dom.IVariableBinding;
 import org.eclipse.jdt.core.dom.ImportDeclaration;
 import org.eclipse.jdt.core.dom.Initializer;
-import org.eclipse.jdt.core.dom.MarkerAnnotation;
 import org.eclipse.jdt.core.dom.MethodDeclaration;
 import org.eclipse.jdt.core.dom.Modifier;
 import org.eclipse.jdt.core.dom.Modifier.ModifierKeyword;
-import org.eclipse.jdt.core.dom.NormalAnnotation;
 import org.eclipse.jdt.core.dom.ParameterizedType;
 import org.eclipse.jdt.core.dom.PrimitiveType;
-import org.eclipse.jdt.core.dom.SingleMemberAnnotation;
 import org.eclipse.jdt.core.dom.SingleVariableDeclaration;
 import org.eclipse.jdt.core.dom.StringLiteral;
 import org.eclipse.jdt.core.dom.SuperConstructorInvocation;
@@ -83,9 +76,6 @@ import java.util.Set;
 public class DeadCodeEliminator extends ErrorReportingASTVisitor {
 
   private static final Joiner innerClassJoiner = Joiner.on('$');
-
-  private static final String WEAK = Weak.class.getName();
-  private static final String WEAK_OUTER = WeakOuter.class.getName();
 
   private static int classCount = 0;
   private static String generateClassName() {
@@ -147,8 +137,6 @@ public class DeadCodeEliminator extends ErrorReportingASTVisitor {
   public void endVisit(AnnotationTypeDeclaration node) {
     List<BodyDeclaration> bodyDecls = ASTUtil.getBodyDeclarations(node);
     eliminateDeadCode(node.resolveBinding(), bodyDecls);
-    // All annotations are stripped, so we can remove all annotation members.
-    removeAnnotationMembers(bodyDecls);
     finishElimination();
   }
 
@@ -180,21 +168,6 @@ public class DeadCodeEliminator extends ErrorReportingASTVisitor {
     eliminateDeadCode(binding, bodyDecls);
     generateMissingMethods(node.getAST(), binding, bodyDecls);
     finishElimination();
-  }
-
-  @Override
-  public void endVisit(MarkerAnnotation annotation) {
-    removeAnnotation(annotation);
-  }
-
-  @Override
-  public void endVisit(NormalAnnotation annotation) {
-    removeAnnotation(annotation);
-  }
-
-  @Override
-  public void endVisit(SingleMemberAnnotation annotation) {
-    removeAnnotation(annotation);
   }
 
   /**
@@ -634,32 +607,6 @@ public class DeadCodeEliminator extends ErrorReportingASTVisitor {
       }
     }
     return true;
-  }
-
-  // =========================================================================
-  // Annotations
-
-  /**
-   * Remove all annotations except @Weak and @WeakOuter.
-   */
-  private void removeAnnotation(Annotation annotation) {
-    String signature = BindingUtil.getSignature(annotation.resolveTypeBinding());
-    if (!signature.equals(WEAK) && !signature.equals(WEAK_OUTER)) {
-      annotation.delete();
-    }
-  }
-
-  /**
-   * Remove all AnnotationTypeMemberDeclarations from a list of declarations.
-   */
-  private void removeAnnotationMembers(List<BodyDeclaration> declarations) {
-    Iterator<BodyDeclaration> declarationsIter = declarations.iterator();
-    while (declarationsIter.hasNext()) {
-      BodyDeclaration declaration = declarationsIter.next();
-      if (declaration instanceof AnnotationTypeMemberDeclaration) {
-        declarationsIter.remove();
-      }
-    }
   }
 
   // =========================================================================
