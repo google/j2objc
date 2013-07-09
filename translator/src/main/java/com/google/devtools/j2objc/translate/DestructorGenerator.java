@@ -193,7 +193,7 @@ public class DestructorGenerator extends ErrorReportingASTVisitor {
         SimpleName receiver = ast.newSimpleName(field.getName());
         Types.addBinding(receiver, field);
         assign.setLeftHandSide(receiver);
-        assign.setRightHandSide(Types.newNullLiteral());
+        assign.setRightHandSide(ASTFactory.newNullLiteral(ast));
         Types.addBinding(assign, field.getDeclaringClass());
         ExpressionStatement stmt = ast.newExpressionStatement(assign);
         statements.add(index, stmt);
