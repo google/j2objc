@@ -176,18 +176,18 @@ public final class ASTFactory {
   }
 
   public static InfixExpression newInfixExpression(
-      AST ast, Expression lhs, InfixExpression.Operator op, Expression rhs, String type) {
+      AST ast, Expression lhs, InfixExpression.Operator op, Expression rhs, ITypeBinding type) {
     InfixExpression expr = ast.newInfixExpression();
     expr.setOperator(op);
     expr.setLeftOperand(lhs);
     expr.setRightOperand(rhs);
-    Types.addBinding(expr, ast.resolveWellKnownType(type));
+    Types.addBinding(expr, type);
     return expr;
   }
 
   public static InfixExpression newInfixExpression(
       AST ast, IVariableBinding lhs, InfixExpression.Operator op, IVariableBinding rhs,
-      String type) {
+      ITypeBinding type) {
     return newInfixExpression(ast, newSimpleName(ast, lhs), op, newSimpleName(ast, rhs), type);
   }
 
@@ -268,7 +268,7 @@ public final class ASTFactory {
     return newInfixExpression(
         ast, newSimpleName(ast, var),
         equal ? InfixExpression.Operator.EQUALS : InfixExpression.Operator.NOT_EQUALS, nullNode,
-        "boolean");
+        ast.resolveWellKnownType("boolean"));
   }
 
   public static InstanceofExpression newInstanceofExpression(

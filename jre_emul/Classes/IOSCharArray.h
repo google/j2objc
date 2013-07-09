@@ -38,6 +38,7 @@
 // Return char at a specified index, throws IndexOutOfBoundsException
 // if out out range;
 - (unichar)charAtIndex:(NSUInteger)index;
+- (unichar *)charRefAtIndex:(NSUInteger)index;
 
 // Sets char at a specified index, throws IndexOutOfBoundsException
 // if out out range.  Returns replacement value.

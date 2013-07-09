@@ -54,6 +54,11 @@
   return buffer_[index];
 }
 
+- (short *)shortRefAtIndex:(NSUInteger)index {
+  IOSArray_checkIndex(self, index);
+  return &buffer_[index];
+}
+
 - (short)replaceShortAtIndex:(NSUInteger)index withShort:(short)value {
   IOSArray_checkIndex(self, index);
   buffer_[index] = value;

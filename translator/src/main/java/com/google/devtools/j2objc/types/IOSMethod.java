@@ -34,13 +34,16 @@ public class IOSMethod {
   private final String declaringClass;
   private final List<IOSParameter> parameters;
   private boolean varArgs = false;
+  private final boolean returnsPointer;
 
   private IOSMethod(
-      String name, String declaringClass, List<IOSParameter> parameters, boolean varArgs) {
+      String name, String declaringClass, List<IOSParameter> parameters, boolean varArgs,
+      boolean returnsPointer) {
     this.name = name;
     this.declaringClass = declaringClass;
     this.parameters = parameters;
     this.varArgs = varArgs;
+    this.returnsPointer = returnsPointer;
   }
 
   public static IOSMethod create(String s) {
@@ -67,7 +70,12 @@ public class IOSMethod {
         }
       }
     }
-    return new IOSMethod(name, className, parameters.build(), varArgs);
+    boolean returnsPointer = false;
+    if (name.charAt(0) == '*') {
+      returnsPointer = true;
+      name = name.substring(1);
+    }
+    return new IOSMethod(name, className, parameters.build(), varArgs, returnsPointer);
   }
 
   public String getName() {
@@ -84,6 +92,10 @@ public class IOSMethod {
 
   public boolean isVarArgs() {
     return varArgs;
+  }
+
+  public boolean returnsPointer() {
+    return returnsPointer;
   }
 
   private static String[] splitParameterString(String s) {

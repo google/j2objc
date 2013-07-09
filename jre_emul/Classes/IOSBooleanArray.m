@@ -56,6 +56,11 @@
   return buffer_[index];
 }
 
+- (BOOL *)booleanRefAtIndex:(NSUInteger)index {
+  IOSArray_checkIndex(self, index);
+  return &buffer_[index];
+}
+
 - (BOOL)replaceBooleanAtIndex:(NSUInteger)index withBoolean:(BOOL)boolean {
   IOSArray_checkIndex(self, index);
   buffer_[index] = boolean;

@@ -338,34 +338,12 @@ public class StatementGenerator extends ErrorReportingASTVisitor {
 
   @Override
   public boolean visit(ArrayAccess node) {
-    ITypeBinding elementType = Types.getTypeBinding(node);
-    boolean castPrinted = maybePrintCastFromId(node);
-    buffer.append('[');
-    printNilCheckAndCast(node.getArray());
-    buffer.append(' ');
-
-    IOSTypeBinding iosArrayType = Types.resolveArrayType(elementType);
-    if (iosArrayType == null) {
-      J2ObjC.error(node, "No IOSArrayBinding for " + elementType.getName());
-    } else {
-      assert(iosArrayType instanceof IOSArrayTypeBinding);
-      IOSArrayTypeBinding primitiveArray = (IOSArrayTypeBinding) iosArrayType;
-      buffer.append(primitiveArray.getAccessMethod());
-    }
-
-    buffer.append(':');
-    node.getIndex().accept(this);
-    buffer.append(']');
-    if (castPrinted) {
-      buffer.append(')');
-    }
-    return false;
+    throw new AssertionError("ArrayAccess nodes are rewritten by ArrayRewriter.");
   }
 
   @Override
   public boolean visit(ArrayCreation node) {
-    assert false : "ArrayCreation nodes are rewritten by ArrayRewriter.";
-    return false;
+    throw new AssertionError("ArrayCreation nodes are rewritten by ArrayRewriter.");
   }
 
   @Override
@@ -457,21 +435,23 @@ public class StatementGenerator extends ErrorReportingASTVisitor {
       buffer.append(", ");
       rhs.accept(this);
       buffer.append(")");
-    } else if (lhs instanceof ArrayAccess) {
-      printArrayElementAssignment(lhs, rhs, op);
     } else if (op == Operator.RIGHT_SHIFT_UNSIGNED_ASSIGN) {
-      lhs.accept(this);
+      // TODO(user): This operator is broken for static variables.
       ITypeBinding assignType = Types.getTypeBinding(lhs);
       if (assignType.getName().equals("char")) {
+        lhs.accept(this);
         buffer.append(" >>= ");
         rhs.accept(this);
       } else {
-        buffer.append(" = ");
-        printUnsignedRightShift(lhs, rhs);
+        buffer.append("URShiftAssign" + NameTable.capitalize(assignType.getName()) + "(&");
+        lhs.accept(this);
+        buffer.append(", ");
+        rhs.accept(this);
+        buffer.append(")");
       }
     } else if (op == Operator.ASSIGN) {
       IVariableBinding lhsVar = Types.getVariableBinding(lhs);
-      if (!lhsVar.getType().isPrimitive() && BindingUtil.isStatic(lhsVar)
+      if (lhsVar != null && !lhsVar.getType().isPrimitive() && BindingUtil.isStatic(lhsVar)
           && useStaticPublicAccessor(lhs)) {
         // convert static var assignment to its writer message
         buffer.append('[');
@@ -526,67 +506,6 @@ public class StatementGenerator extends ErrorReportingASTVisitor {
 
   private boolean isFloatingPoint(Expression e) {
     return Types.isFloatingPointType(Types.getTypeBinding(e));
-  }
-
-  private void printArrayElementAssignment(Expression lhs, Expression rhs, Assignment.Operator op) {
-    ArrayAccess aa = (ArrayAccess) lhs;
-    String kind = getArrayAccessKind(aa);
-    buffer.append('[');
-    printNilCheckAndCast(aa.getArray());
-    buffer.append(" replace");
-    buffer.append(kind);
-    buffer.append("AtIndex:");
-    aa.getIndex().accept(this);
-    buffer.append(" with");
-    buffer.append(kind);
-    buffer.append(':');
-    if (op == Operator.ASSIGN) {
-      rhs.accept(this);
-    } else {
-      // Fetch value and apply operand; for example, "arr[i] += j" becomes
-      // "[arr replaceIntAtIndex:i withInt:[arr intAtIndex:i] + j]", or
-      // ... "withInt:(int) (((unsigned int) [arr intAtIndex:i]) >> j)]" for
-      // unsigned right shift.
-      String type = kind.toLowerCase();
-      boolean isSigned = !type.equals("char");
-      if (op == Operator.RIGHT_SHIFT_UNSIGNED_ASSIGN && isSigned) {
-        buffer.append("(");
-        buffer.append(type);
-        buffer.append(") (((unsigned ");
-        buffer.append(type);
-        buffer.append(") ");
-      }
-      buffer.append('[');
-      aa.getArray().accept(this);
-      buffer.append(' ');
-      buffer.append(type);
-      buffer.append("AtIndex:");
-      aa.getIndex().accept(this);
-      buffer.append(']');
-      if (op == Operator.RIGHT_SHIFT_UNSIGNED_ASSIGN) {
-        buffer.append(isSigned ? ") >>" : " >>");
-      } else {
-        buffer.append(' ');
-        String s = op.toString();
-        buffer.append(s.substring(0, s.length() - 1)); // strip trailing '='.
-      }
-      buffer.append(' ');
-      rhs.accept(this);
-      if (op == Operator.RIGHT_SHIFT_UNSIGNED_ASSIGN && isSigned) {
-        buffer.append(')');
-      }
-    }
-    buffer.append(']');
-  }
-
-  private String getArrayAccessKind(ArrayAccess node) {
-    ITypeBinding componentType = Types.getTypeBinding(node);
-    if (componentType == null) {
-      componentType = Types.getTypeBinding(node);
-    }
-    String kind = componentType.isPrimitive()
-        ? NameTable.capitalize(componentType.getName()) : "Object";
-    return kind;
   }
 
   /*
@@ -897,17 +816,7 @@ public class StatementGenerator extends ErrorReportingASTVisitor {
       return false;
     }
 
-    Expression expr = node.getExpression();
-    if (expr instanceof ArrayAccess) {
-      // Since arrays are untyped in Obj-C, add a cast of its element type.
-      ArrayAccess access = (ArrayAccess) expr;
-      ITypeBinding elementType = Types.getTypeBinding(access.getArray()).getElementType();
-      buffer.append(String.format("((%s) ", NameTable.getSpecificObjCType(elementType)));
-      expr.accept(this);
-      buffer.append(')');
-    } else {
-      printNilCheckAndCast(expr);
-    }
+    printNilCheckAndCast(node.getExpression());
     if (Options.inlineFieldAccess() && isProperty(node.getName())) {
       buffer.append("->");
     } else {
@@ -1250,6 +1159,10 @@ public class StatementGenerator extends ErrorReportingASTVisitor {
       printInterfaceGetClass(node, receiver);
     } else {
       boolean castPrinted = maybePrintCast(node, getActualReturnType(binding, receiverType));
+      boolean returnsPointer = IOSMethodBinding.returnsPointer(binding);
+      if (returnsPointer) {
+        buffer.append("(*");
+      }
       buffer.append('[');
 
       if (receiver != null) {
@@ -1270,6 +1183,9 @@ public class StatementGenerator extends ErrorReportingASTVisitor {
       printArguments(binding, ASTUtil.getArguments(node));
       buffer.append(']');
       if (castPrinted) {
+        buffer.append(')');
+      }
+      if (returnsPointer) {
         buffer.append(')');
       }
     }
@@ -1456,13 +1372,6 @@ public class StatementGenerator extends ErrorReportingASTVisitor {
     PostfixExpression.Operator op = node.getOperator();
     boolean isIncOrDec = op == PostfixExpression.Operator.INCREMENT
         || op == PostfixExpression.Operator.DECREMENT;
-    if (operand instanceof ArrayAccess) {
-      if (isIncOrDec) {
-        String methodName = op == PostfixExpression.Operator.INCREMENT ? "postIncr" : "postDecr";
-        printArrayIncrementOrDecrement((ArrayAccess) operand, methodName);
-        return false;
-      }
-    }
     if (isIncOrDec && isStaticVariableAccess(operand)) {
       printStaticVarReference(operand, /* assignable */ true);
     } else {
@@ -1478,13 +1387,6 @@ public class StatementGenerator extends ErrorReportingASTVisitor {
     PrefixExpression.Operator op = node.getOperator();
     boolean isIncOrDec = op == PrefixExpression.Operator.INCREMENT
         || op == PrefixExpression.Operator.DECREMENT;
-    if (operand instanceof ArrayAccess) {
-      if (isIncOrDec) {
-        String methodName = op == PrefixExpression.Operator.INCREMENT ? "incr" : "decr";
-        printArrayIncrementOrDecrement((ArrayAccess) operand, methodName);
-        return false;
-      }
-    }
     buffer.append(op.toString());
     if (isIncOrDec && isStaticVariableAccess(operand)) {
       printStaticVarReference(operand, /* assignable */ true);
@@ -1492,16 +1394,6 @@ public class StatementGenerator extends ErrorReportingASTVisitor {
       operand.accept(this);
     }
     return false;
-  }
-
-  private void printArrayIncrementOrDecrement(ArrayAccess access, String methodName) {
-    buffer.append('[');
-    printNilCheckAndCast(access.getArray());
-    buffer.append(' ');
-    buffer.append(methodName);
-    buffer.append(':');
-    access.getIndex().accept(this);
-    buffer.append(']');
   }
 
   @Override

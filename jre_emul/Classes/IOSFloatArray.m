@@ -54,6 +54,11 @@
   return buffer_[index];
 }
 
+- (float *)floatRefAtIndex:(NSUInteger)index {
+  IOSArray_checkIndex(self, index);
+  return &buffer_[index];
+}
+
 - (float)replaceFloatAtIndex:(NSUInteger)index withFloat:(float)value {
   IOSArray_checkIndex(self, index);
   buffer_[index] = value;

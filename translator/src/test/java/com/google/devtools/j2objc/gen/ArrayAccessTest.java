@@ -45,9 +45,9 @@ public class ArrayAccessTest extends GenerationTest {
     List<Statement> stmts = translateStatements("int[] arr = { 1, 2 }; arr[0] = -1; arr[1] = -2;");
     assertEquals(3, stmts.size());
     String result = generateStatement(stmts.get(1));
-    assertEquals("[((IOSIntArray *) nil_chk(arr)) replaceIntAtIndex:0 withInt:-1];", result);
+    assertEquals("(*[((IOSIntArray *) nil_chk(arr)) intRefAtIndex:0]) = -1;", result);
     result = generateStatement(stmts.get(2));
-    assertEquals("[((IOSIntArray *) nil_chk(arr)) replaceIntAtIndex:1 withInt:-2];", result);
+    assertEquals("(*[((IOSIntArray *) nil_chk(arr)) intRefAtIndex:1]) = -2;", result);
   }
 
   public void testSetElementWithExpression() {
@@ -55,26 +55,26 @@ public class ArrayAccessTest extends GenerationTest {
         "arr[0] = 2 * 5; arr[1] = 6 / 3;");
     assertEquals(3, stmts.size());
     String result = generateStatement(stmts.get(1));
-    assertEquals("[((IOSIntArray *) nil_chk(arr)) replaceIntAtIndex:0 withInt:2 * 5];", result);
+    assertEquals("(*[((IOSIntArray *) nil_chk(arr)) intRefAtIndex:0]) = 2 * 5;", result);
     result = generateStatement(stmts.get(2));
-    assertEquals("[((IOSIntArray *) nil_chk(arr)) replaceIntAtIndex:1 withInt:6 / 3];", result);
+    assertEquals("(*[((IOSIntArray *) nil_chk(arr)) intRefAtIndex:1]) = 6 / 3;", result);
   }
 
   public void testPrefixOperator() {
     List<Statement> stmts = translateStatements("int[] arr = { 1, 2 }; ++arr[0]; --arr[1];");
     assertEquals(3, stmts.size());
     String result = generateStatement(stmts.get(1));
-    assertEquals("[((IOSIntArray *) nil_chk(arr)) incr:0];", result);
+    assertEquals("++(*[((IOSIntArray *) nil_chk(arr)) intRefAtIndex:0]);", result);
     result = generateStatement(stmts.get(2));
-    assertEquals("[((IOSIntArray *) nil_chk(arr)) decr:1];", result);
+    assertEquals("--(*[((IOSIntArray *) nil_chk(arr)) intRefAtIndex:1]);", result);
   }
 
   public void testPostfixOperator() {
     List<Statement> stmts = translateStatements("int[] arr = { 1, 2 }; arr[0]++; arr[1]--;");
     assertEquals(3, stmts.size());
     String result = generateStatement(stmts.get(1));
-    assertEquals("[((IOSIntArray *) nil_chk(arr)) postIncr:0];", result);
+    assertEquals("(*[((IOSIntArray *) nil_chk(arr)) intRefAtIndex:0])++;", result);
     result = generateStatement(stmts.get(2));
-    assertEquals("[((IOSIntArray *) nil_chk(arr)) postDecr:1];", result);
+    assertEquals("(*[((IOSIntArray *) nil_chk(arr)) intRefAtIndex:1])--;", result);
   }
 }

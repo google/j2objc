@@ -54,6 +54,11 @@
   return buffer_[index];
 }
 
+- (double *)doubleRefAtIndex:(NSUInteger)index {
+  IOSArray_checkIndex(self, index);
+  return &buffer_[index];
+}
+
 - (double)replaceDoubleAtIndex:(NSUInteger)index withDouble:(double)value {
   IOSArray_checkIndex(self, index);
   buffer_[index] = value;

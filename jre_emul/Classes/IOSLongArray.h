@@ -35,6 +35,7 @@
 // Return long at a specified index, throws IndexOutOfBoundsException
 // if out out range.
 - (long long)longAtIndex:(NSUInteger)index;
+- (long long *)longRefAtIndex:(NSUInteger)index;
 
 // Sets long at a specified index, throws IndexOutOfBoundsException
 // if out out range.  Returns replacement value.
@@ -60,4 +61,3 @@
 - (long long)postDecr:(NSUInteger)index;
 
 @end
-

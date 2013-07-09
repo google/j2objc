@@ -27,8 +27,10 @@ import com.google.devtools.j2objc.util.ErrorReportingASTVisitor;
 
 import org.eclipse.jdt.core.dom.AST;
 import org.eclipse.jdt.core.dom.ASTNode;
+import org.eclipse.jdt.core.dom.ArrayAccess;
 import org.eclipse.jdt.core.dom.ArrayCreation;
 import org.eclipse.jdt.core.dom.ArrayInitializer;
+import org.eclipse.jdt.core.dom.Assignment;
 import org.eclipse.jdt.core.dom.ClassInstanceCreation;
 import org.eclipse.jdt.core.dom.ConstructorInvocation;
 import org.eclipse.jdt.core.dom.EnumConstantDeclaration;
@@ -37,6 +39,8 @@ import org.eclipse.jdt.core.dom.IMethodBinding;
 import org.eclipse.jdt.core.dom.ITypeBinding;
 import org.eclipse.jdt.core.dom.MethodInvocation;
 import org.eclipse.jdt.core.dom.Modifier;
+import org.eclipse.jdt.core.dom.PostfixExpression;
+import org.eclipse.jdt.core.dom.PrefixExpression;
 import org.eclipse.jdt.core.dom.SuperConstructorInvocation;
 import org.eclipse.jdt.core.dom.SuperMethodInvocation;
 
@@ -69,6 +73,35 @@ public class ArrayRewriter extends ErrorReportingASTVisitor {
       .put("IOSObjectArray",
            " arrayWithObjects:(id *)objects count:(int)count type:(IOSClass *)type")
       .build();
+
+  public static final ImmutableMap<String, IOSMethod> ACCESS_METHODS =
+      ImmutableMap.<String, IOSMethod>builder()
+      .put("IOSBooleanArray", IOSMethod.create("IOSBooleanArray booleanAtIndex:(NSUInteger)index"))
+      .put("IOSByteArray", IOSMethod.create("IOSByteArray byteAtIndex:(NSUInteger)index"))
+      .put("IOSCharArray", IOSMethod.create("IOSCharArray charAtIndex:(NSUInteger)index"))
+      .put("IOSDoubleArray", IOSMethod.create("IOSDoubleArray doubleAtIndex:(NSUInteger)index"))
+      .put("IOSFloatArray", IOSMethod.create("IOSFloatArray floatAtIndex:(NSUInteger)index"))
+      .put("IOSIntArray", IOSMethod.create("IOSIntArray intAtIndex:(NSUInteger)index"))
+      .put("IOSLongArray", IOSMethod.create("IOSLongArray longAtIndex:(NSUInteger)index"))
+      .put("IOSShortArray", IOSMethod.create("IOSShortArray shortAtIndex:(NSUInteger)index"))
+      .put("IOSObjectArray", IOSMethod.create("IOSObjectArray objectAtIndex:(NSUInteger)index"))
+      .build();
+
+  public static final ImmutableMap<String, IOSMethod> ACCESS_REF_METHODS =
+      ImmutableMap.<String, IOSMethod>builder()
+      .put("IOSBooleanArray",
+           IOSMethod.create("IOSBooleanArray *booleanRefAtIndex:(NSUInteger)index"))
+      .put("IOSByteArray", IOSMethod.create("IOSByteArray *byteRefAtIndex:(NSUInteger)index"))
+      .put("IOSCharArray", IOSMethod.create("IOSCharArray *charRefAtIndex:(NSUInteger)index"))
+      .put("IOSDoubleArray", IOSMethod.create("IOSDoubleArray *doubleRefAtIndex:(NSUInteger)index"))
+      .put("IOSFloatArray", IOSMethod.create("IOSFloatArray *floatRefAtIndex:(NSUInteger)index"))
+      .put("IOSIntArray", IOSMethod.create("IOSIntArray *intRefAtIndex:(NSUInteger)index"))
+      .put("IOSLongArray", IOSMethod.create("IOSLongArray *longRefAtIndex:(NSUInteger)index"))
+      .put("IOSShortArray", IOSMethod.create("IOSShortArray *shortRefAtIndex:(NSUInteger)index"))
+      .build();
+
+  public static final IOSMethod OBJECT_ARRAY_ASSIGNMENT = IOSMethod.create(
+      "IOSObjectArray replaceObjectAtIndex:(NSUInteger)index withObject:(id)object");
 
   @Override
   public void endVisit(ArrayCreation node) {
@@ -277,6 +310,99 @@ public class ArrayRewriter extends ErrorReportingASTVisitor {
     }
     multiDimMethods.put(arrayType, binding);
     return binding;
+  }
+
+  @Override
+  public void endVisit(ArrayAccess node) {
+    AST ast = node.getAST();
+    ITypeBinding arrayType = Types.getTypeBinding(node.getArray());
+    assert arrayType.isArray();
+    ITypeBinding componentType = arrayType.getComponentType();
+    IOSArrayTypeBinding iosArrayBinding = Types.resolveArrayType(componentType);
+
+    Assignment assignment = getArrayAssignment(node);
+    if (assignment != null && !componentType.isPrimitive()) {
+      assignment.getRightHandSide().accept(this);
+      ASTUtil.setProperty(assignment, newArrayAssignment(
+          ast, assignment, node, componentType, iosArrayBinding));
+    } else {
+      boolean assignable = assignment != null || needsAssignableAccess(node);
+      ASTUtil.setProperty(node, newArrayAccess(
+          ast, node, componentType, iosArrayBinding, assignable));
+    }
+  }
+
+  private static Assignment getArrayAssignment(ArrayAccess node) {
+    ASTNode parent = node.getParent();
+    if (parent instanceof Assignment) {
+      Assignment assignment = (Assignment) parent;
+      if (node == assignment.getLeftHandSide()) {
+        return assignment;
+      }
+    }
+    return null;
+  }
+
+  private static boolean needsAssignableAccess(ArrayAccess node) {
+    ASTNode parent = node.getParent();
+    if (parent instanceof PostfixExpression) {
+      PostfixExpression.Operator op = ((PostfixExpression) parent).getOperator();
+      if (op == PostfixExpression.Operator.INCREMENT
+          || op == PostfixExpression.Operator.DECREMENT) {
+        return true;
+      }
+    } else if (parent instanceof PrefixExpression) {
+      PrefixExpression.Operator op = ((PrefixExpression) parent).getOperator();
+      if (op == PrefixExpression.Operator.INCREMENT || op == PrefixExpression.Operator.DECREMENT) {
+        return true;
+      }
+    }
+    return false;
+  }
+
+  private static MethodInvocation newArrayAccess(
+      AST ast, ArrayAccess arrayAccessNode, ITypeBinding componentType,
+      IOSArrayTypeBinding iosArrayBinding, boolean assignable) {
+    IOSMethod iosMethod = assignable ? ACCESS_REF_METHODS.get(iosArrayBinding.getName()) :
+        ACCESS_METHODS.get(iosArrayBinding.getName());
+    assert iosMethod != null;
+    ITypeBinding declaredReturnType =
+        componentType.isPrimitive() ? componentType : Types.resolveIOSType("id");
+    IOSMethodBinding binding = IOSMethodBinding.newMethod(
+        iosMethod, Modifier.PUBLIC, declaredReturnType, iosArrayBinding);
+    binding.addParameter(new GeneratedVariableBinding(
+        Types.resolveJavaType("int"), false, true, null, binding));
+    if (!componentType.isPrimitive()) {
+      binding = IOSMethodBinding.newTypedInvocation(binding, componentType);
+    }
+
+    MethodInvocation invocation = ASTFactory.newMethodInvocation(
+        ast, binding, NodeCopier.copySubtree(ast, arrayAccessNode.getArray()));
+    ASTUtil.getArguments(invocation).add(NodeCopier.copySubtree(ast, arrayAccessNode.getIndex()));
+    return invocation;
+  }
+
+  private static MethodInvocation newArrayAssignment(
+      AST ast, Assignment assignmentNode, ArrayAccess arrayAccessNode, ITypeBinding componentType,
+      IOSArrayTypeBinding iosArrayBinding) {
+    Assignment.Operator op = assignmentNode.getOperator();
+    assert !componentType.isPrimitive();
+    assert op == Assignment.Operator.ASSIGN;
+
+    ITypeBinding idType = Types.resolveIOSType("id");
+    IOSMethodBinding binding = IOSMethodBinding.newMethod(
+        OBJECT_ARRAY_ASSIGNMENT, Modifier.PUBLIC, idType, iosArrayBinding);
+    binding.addParameter(new GeneratedVariableBinding(
+        Types.resolveJavaType("int"), false, true, null, binding));
+    binding.addParameter(new GeneratedVariableBinding(idType, false, true, null, binding));
+    binding = IOSMethodBinding.newTypedInvocation(binding, componentType);
+
+    MethodInvocation invocation = ASTFactory.newMethodInvocation(
+        ast, binding, NodeCopier.copySubtree(ast, arrayAccessNode.getArray()));
+    ASTUtil.getArguments(invocation).add(NodeCopier.copySubtree(ast, arrayAccessNode.getIndex()));
+    ASTUtil.getArguments(invocation).add(
+        NodeCopier.copySubtree(ast, assignmentNode.getRightHandSide()));
+    return invocation;
   }
 
   @Override

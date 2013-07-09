@@ -55,6 +55,11 @@
   return buffer_[index];
 }
 
+- (unichar *)charRefAtIndex:(NSUInteger)index {
+  IOSArray_checkIndex(self, index);
+  return &buffer_[index];
+}
+
 - (unichar)replaceCharAtIndex:(NSUInteger)index withChar:(unichar)c {
   IOSArray_checkIndex(self, index);
   buffer_[index] = c;

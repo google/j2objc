@@ -55,6 +55,11 @@
   return buffer_[index];
 }
 
+- (char *)byteRefAtIndex:(NSUInteger)index {
+  IOSArray_checkIndex(self, index);
+  return &buffer_[index];
+}
+
 - (char)replaceByteAtIndex:(NSUInteger)index withByte:(char)byte {
   IOSArray_checkIndex(self, index);
   buffer_[index] = byte;

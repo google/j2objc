@@ -89,7 +89,7 @@ public class AnonymousClassConverterTest extends GenerationTest {
     assertTranslation(impl, "IOSBooleanArray *bar = [IOSBooleanArray arrayWithLength:1];");
     assertTranslation(impl, "[[Test_$1 alloc] initWithBooleanArray:bar]");
     assertTranslation(impl,
-        "[((IOSBooleanArray *) nil_chk(val$bar_)) replaceBooleanAtIndex:0 withBoolean:YES];");
+        "(*[((IOSBooleanArray *) nil_chk(val$bar_)) booleanRefAtIndex:0]) = YES;");
   }
 
   /**
