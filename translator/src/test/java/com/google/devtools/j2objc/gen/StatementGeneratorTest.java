@@ -164,9 +164,9 @@ public class StatementGeneratorTest extends GenerationTest {
     List<Statement> stmts = translateStatements(source);
     assertEquals(3, stmts.size());
     String result = generateStatement(stmts.get(1));
-    assertEquals("(void) [nil_chk(o) description];", result);
+    assertEquals("[nil_chk(o) description];", result);
     result = generateStatement(stmts.get(2));
-    assertEquals("(void) [self description];", result);
+    assertEquals("[self description];", result);
   }
 
   public void testSuperToStringRenaming() throws IOException {
@@ -1462,12 +1462,16 @@ public class StatementGeneratorTest extends GenerationTest {
   // Verify that when a method invocation returns an object that is ignored,
   // it is cast to (void) to avoid a clang warning when compiling with ARC.
   public void testVoidedUnusedInvocationReturn() throws IOException {
+    Options.setMemoryManagementOption(MemoryManagementOption.ARC);
     String translation = translateSourceFile(
-        "class Test { String test() { StringBuilder sb = new StringBuilder();" +
-        "  sb.append(\"hello, world\"); return sb.toString(); }}",
+        "class Test { void test() {" +
+        "  StringBuilder sb = new StringBuilder();" +
+        "  sb.append(\"hello, world\");" +
+        "  new Throwable(); }}",
         "Test", "Test.m");
     assertTranslation(translation,
         "(void) [((JavaLangStringBuilder *) nil_chk(sb)) appendWithNSString:@\"hello, world\"];");
+    assertTranslation(translation, "(void) [[JavaLangThrowable alloc] init]");
   }
 
   // Verify Java 7's switch statements with strings.

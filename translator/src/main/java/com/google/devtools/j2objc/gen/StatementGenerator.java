@@ -798,14 +798,14 @@ public class StatementGenerator extends ErrorReportingASTVisitor {
 
   @Override
   public boolean visit(ExpressionStatement node) {
-    if (node.getExpression() instanceof MethodInvocation) {
-      IMethodBinding binding = Types.getMethodBinding(node.getExpression());
-      if (!binding.getReturnType().isPrimitive()) {
-        // Avoid clang warning that the return value is unused.
-        buffer.append("(void) ");
-      }
+    Expression expression = node.getExpression();
+    IMethodBinding method = Types.getMethodBinding(expression);
+    ITypeBinding type = Types.getTypeBinding(expression);
+    if (method != null && !type.isPrimitive() && Options.useARC()) {
+      // Avoid clang warning that the return value is unused.
+      buffer.append("(void) ");
     }
-    node.getExpression().accept(this);
+    expression.accept(this);
     buffer.append(";\n");
     return false;
   }
