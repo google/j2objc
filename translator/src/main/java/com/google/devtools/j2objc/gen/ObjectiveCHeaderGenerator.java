@@ -33,6 +33,8 @@ import org.eclipse.jdt.core.dom.ASTVisitor;
 import org.eclipse.jdt.core.dom.AbstractTypeDeclaration;
 import org.eclipse.jdt.core.dom.Annotation;
 import org.eclipse.jdt.core.dom.AnnotationTypeDeclaration;
+import org.eclipse.jdt.core.dom.AnnotationTypeMemberDeclaration;
+import org.eclipse.jdt.core.dom.BodyDeclaration;
 import org.eclipse.jdt.core.dom.CompilationUnit;
 import org.eclipse.jdt.core.dom.EnumConstantDeclaration;
 import org.eclipse.jdt.core.dom.EnumDeclaration;
@@ -172,7 +174,19 @@ public class ObjectiveCHeaderGenerator extends ObjectiveCSourceFileGenerator {
   @Override
   protected void generate(AnnotationTypeDeclaration node) {
     String typeName = NameTable.getFullName(node);
-    printf("@protocol %s < NSObject >\n@end\n", typeName);
+    printf("@interface %s : NSObject < JavaLangAnnotationAnnotation > {\n @private\n", typeName);
+    List<AnnotationTypeMemberDeclaration> members = Lists.newArrayList();
+    for (BodyDeclaration decl : ASTUtil.getBodyDeclarations(node)) {
+      if (decl instanceof AnnotationTypeMemberDeclaration) {
+        members.add((AnnotationTypeMemberDeclaration) decl);
+      }
+    }
+    printAnnotationVariables(members);
+    println("}\n");
+    printAnnotationProperties(members);
+    printAnnotationConstructor(members);
+    printAnnotationAccessors(members);
+    println("@end");
   }
 
   private void printExternalNativeMethodCategory(TypeDeclaration node, String typeName) {
@@ -419,6 +433,28 @@ public class ObjectiveCHeaderGenerator extends ObjectiveCSourceFileGenerator {
     unindent();
   }
 
+  private void printAnnotationVariables(List<AnnotationTypeMemberDeclaration> members) {
+    indent();
+    for (AnnotationTypeMemberDeclaration member : members) {
+      printIndent();
+      ITypeBinding type = Types.getTypeBinding(member);
+      print(NameTable.getObjCType(type));
+      if (type.isPrimitive() || type.isInterface()) {
+        print(' ');
+      }
+      print(member.getName().getIdentifier());
+      println(";");
+    }
+    unindent();
+  }
+
+  private void printAnnotationConstructor(List<AnnotationTypeMemberDeclaration> members) {
+    if (!members.isEmpty()) {
+      print(annotationConstructorDeclaration(members));
+      println(";\n");
+    }
+  }
+
   private void printProperties(List<FieldDeclaration> fields) {
     int nPrinted = 0;
     for (FieldDeclaration field : fields) {
@@ -450,6 +486,42 @@ public class ObjectiveCHeaderGenerator extends ObjectiveCSourceFileGenerator {
           }
           nPrinted++;
         }
+      }
+    }
+    if (nPrinted > 0) {
+      newline();
+    }
+  }
+
+  private void printAnnotationProperties(List<AnnotationTypeMemberDeclaration> members) {
+    int nPrinted = 0;
+    for (AnnotationTypeMemberDeclaration member : members) {
+      ITypeBinding type = Types.getTypeBinding(member.getType());
+      print("@property (readonly) ");
+      String typeString = NameTable.getSpecificObjCType(type);
+      String propertyName = NameTable.getName(member.getName());
+      println(String.format("%s%s%s;", typeString, typeString.endsWith("*") ? "" : " ",
+          propertyName));
+      if (propertyName.startsWith("new") || propertyName.startsWith("copy")
+          || propertyName.startsWith("alloc") || propertyName.startsWith("init")) {
+        println(String.format("- (%s)%s OBJC_METHOD_FAMILY_NONE;", typeString, propertyName));
+      }
+      nPrinted++;
+    }
+    if (nPrinted > 0) {
+      newline();
+    }
+  }
+
+  private void printAnnotationAccessors(List<AnnotationTypeMemberDeclaration> members) {
+    int nPrinted = 0;
+    for (AnnotationTypeMemberDeclaration member : members) {
+      if (member.getDefault() != null) {
+        ITypeBinding type = Types.getTypeBinding(member.getType());
+        String typeString = NameTable.getSpecificObjCType(type);
+        String propertyName = NameTable.getName(member.getName());
+        printf("+ (%s)%sDefault;\n", typeString, propertyName);
+        nPrinted++;
       }
     }
     if (nPrinted > 0) {

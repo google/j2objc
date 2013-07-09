@@ -29,6 +29,7 @@ import com.google.devtools.j2objc.util.UnicodeUtils;
 import org.eclipse.jdt.core.dom.AST;
 import org.eclipse.jdt.core.dom.ASTNode;
 import org.eclipse.jdt.core.dom.AbstractTypeDeclaration;
+import org.eclipse.jdt.core.dom.AnnotationTypeDeclaration;
 import org.eclipse.jdt.core.dom.ArrayInitializer;
 import org.eclipse.jdt.core.dom.Assignment;
 import org.eclipse.jdt.core.dom.Block;
@@ -74,6 +75,13 @@ public class InitializationNormalizer extends ErrorReportingASTVisitor {
     normalizeMembers(node);
     super.endVisit(node);
   }
+
+  @Override
+  public void endVisit(AnnotationTypeDeclaration node) {
+    normalizeMembers(node);
+    super.endVisit(node);
+  }
+
 
   void normalizeMembers(AbstractTypeDeclaration node) {
     List<Statement> initStatements = Lists.newArrayList();

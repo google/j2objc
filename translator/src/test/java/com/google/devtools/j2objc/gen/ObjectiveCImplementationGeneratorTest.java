@@ -321,12 +321,26 @@ public class ObjectiveCImplementationGeneratorTest extends GenerationTest {
         "[[[NSObject alloc] init] autorelease]);");
   }
 
-  public void testEmptyAnnotationGeneration() throws IOException {
+  public void testAnnotationGeneration() throws IOException {
     String translation = translateSourceFile(
-      "package foo; import java.lang.annotation.*; @Retention(RetentionPolicy.CLASS) " +
+      "package foo; import java.lang.annotation.*; @Retention(RetentionPolicy.RUNTIME) " +
       "public @interface Compatible { boolean fooable() default false; }",
       "Compatible", "foo/Compatible.m");
-    assertTranslation(translation, "void FooCompatible_unused() {}");
+    assertTranslation(translation, "@implementation FooCompatible");
+    assertTranslation(translation, "@synthesize fooable;");
+
+    // Verify constructor generated.
+    assertTranslation(translation, "- (id)initWithFooable:(BOOL)fooable_");
+    assertTranslation(translation, "fooable = fooable_;");
+
+    // Verify default value accessor.
+    assertTranslatedLines(translation,
+        "+ (BOOL)fooableDefault {",
+        "return NO;");
+
+    assertTranslatedLines(translation,
+        "- (IOSClass *)annotationType {",
+        "return [FooCompatible getClass];");
   }
 
   public void testMethodsWithTypeParameters() throws IOException {

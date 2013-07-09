@@ -437,36 +437,6 @@ public class DeadCodeEliminatorTest extends GenerationTest {
     assertRemoved(stripped, "import static java.lang.System.in");
   }
 
-  public void testRemoveAnnotations() {
-    String source = "import com.google.j2objc.annotations.Weak;\n" +
-        "import com.google.j2objc.annotations.WeakOuter;\n" +
-        "@interface C {\n" +
-        "  String value() default \"foo\";\n" +
-        "}\n" +
-    	"@Deprecated class A {\n" +
-    	"  @Weak @C private String x;\n" +
-    	"  @WeakOuter private class B {}\n" +
-        "  @SuppressWarnings(\"unchecked\") @Override public String toString() { return null; }\n" +
-        "  @SuppressWarnings({\"unchecked\", \"unused\"}) void bar() {}\n" +
-        "  @SuppressWarnings(value = \"unused\") void baz() {\n" +
-        "    @SuppressWarnings({\"unchecked\"}) java.util.List list;\n" +
-        "  }\n" +
-        "}\n";
-    DeadCodeMap map = DeadCodeMap.builder()
-        .addDeadClass("C")
-        .build();
-    Options.setDeadCodeMap(map);
-    String stripped = getStrippedCode("A", source);
-    assertTranslation(stripped, "@interface C");
-    assertRemoved(stripped, "String value() default \"foo\"");
-    assertRemoved(stripped, "@SuppressWarnings");
-    assertRemoved(stripped, "@Deprecated");
-    assertRemoved(stripped, "@Override");
-    assertRemoved(stripped, "@C");
-    assertTranslation(stripped, "@Weak");
-    assertTranslation(stripped, "@WeakOuter");
-  }
-
   public void testDeadInitializer() {
     String source = "class A {\n" +
         "  static final int baz = 9;\n" +
