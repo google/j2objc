@@ -119,6 +119,19 @@ public class NilCheckResolver extends ErrorReportingASTVisitor {
     if (!needsNilCheck(node.getQualifier())) {
       return true;
     }
+
+    // Instance references to static fields don't need to be nil-checked.
+    // This is true in Java (surprisingly), where instance.FIELD returns
+    // FIELD even when instance is null.
+    IBinding binding = Types.getBinding(node);
+    if (binding instanceof IVariableBinding &&
+        BindingUtil.isStatic((IVariableBinding) binding)) {
+      IBinding qualifierBinding = Types.getBinding(node.getQualifier());
+      if (qualifierBinding instanceof IVariableBinding &&
+          !BindingUtil.isStatic((IVariableBinding) qualifierBinding))
+      return true;
+    }
+
     // We can't substitute the qualifier with a nil_chk because it must have a
     // Name type, so we have to convert to a FieldAccess node.
     FieldAccess newNode = convertToFieldAccess(node);
