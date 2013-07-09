@@ -1243,17 +1243,7 @@ public class StatementGenerator extends ErrorReportingASTVisitor {
     ITypeBinding receiverType = receiver != null ? Types.getTypeBinding(receiver) :
         binding.getDeclaringClass();
 
-    if (Types.isFunction(binding)) {
-      buffer.append(methodName);
-      buffer.append("(");
-      for (Iterator<Expression> it = ASTUtil.getArguments(node).iterator(); it.hasNext(); ) {
-        it.next().accept(this);
-        if (it.hasNext()) {
-          buffer.append(", ");
-        }
-      }
-      buffer.append(")");
-    } else if (methodName.equals("isAssignableFrom") &&
+    if (methodName.equals("isAssignableFrom") &&
         binding.getDeclaringClass().equals(Types.getIOSClass())) {
       printIsAssignableFromExpression(node);
     } else if (methodName.equals("getClass") && receiver != null && receiverType.isInterface()) {
@@ -1622,14 +1612,6 @@ public class StatementGenerator extends ErrorReportingASTVisitor {
    * accessor methods.
    */
   private boolean useStaticPublicAccessor(ASTNode expression) {
-    MethodDeclaration method = getOwningMethod(expression);
-    if (method != null) {
-      // Functions should always use public accessor, to trigger the var's
-      // class loading if it hasn't happened yet.
-      if (Types.isFunction(Types.getMethodBinding(method))) {
-        return true;
-      }
-    }
     AbstractTypeDeclaration owner = getOwningType(expression);
     if (owner != null) {
       ITypeBinding owningType = Types.getTypeBinding(owner).getTypeDeclaration();
