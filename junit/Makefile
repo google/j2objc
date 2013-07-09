@@ -107,6 +107,7 @@ $(DIST_INCLUDE_DIR)/%.h: $(OBJC_SOURCE_DIR)/%.h
 	install -m 0644 $< $@
 
 clean:
-	@rm -rf $(BUILD_DIR) $(JUNIT_LIB_DIST) $(DIST_HEADERS)
+	@rm -rf $(BUILD_DIR) $(JUNIT_LIB_DIST)
+	@rm -rf $(DIST_INCLUDE_DIR)/junit $(DIST_INCLUDE_DIR)/org/junit
 
 dist: lib $(JUNIT_LIB_DIST) $(DIST_HEADERS)
