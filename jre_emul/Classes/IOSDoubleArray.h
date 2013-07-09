@@ -19,6 +19,9 @@
 //  Created by Tom Ball on 6/16/11.
 //
 
+#ifndef _IOSDoubleArray_H_
+#define _IOSDoubleArray_H_
+
 #import "IOSArray.h"
 
 // An emulation class that represents a Java double array.  Like a Java array,
@@ -61,3 +64,5 @@
 - (double)postDecr:(NSUInteger)index;
 
 @end
+
+#endif // _IOSDoubleArray_H_

@@ -19,6 +19,9 @@
 //  Created by Tom Ball on 6/16/11.
 //
 
+#ifndef _IOSShortArray_H_
+#define _IOSShortArray_H_
+
 #import "IOSArray.h"
 
 // An emulation class that represents a Java short array.  Like a Java array,
@@ -61,3 +64,5 @@
 - (short)postDecr:(NSUInteger)index;
 
 @end
+
+#endif // _IOSShortArray_H_

@@ -19,6 +19,9 @@
 //  Created by Tom Ball on 12/12/11.
 //
 
+#ifndef _JavaObject_H_
+#define _JavaObject_H_
+
 #import <Foundation/Foundation.h>
 
 @class IOSClass;
@@ -30,3 +33,5 @@
 - (IOSClass *)getClass;
 
 @end
+
+#endif // _JavaObject_H_

@@ -19,6 +19,9 @@
 //  Created by Tom Ball on 8/15/11.
 //
 
+#ifndef _NSObject_JavaObject_H_
+#define _NSObject_JavaObject_H_
+
 #import <Foundation/Foundation.h>
 #import "JavaObject.h"
 
@@ -58,3 +61,5 @@ __attribute__ ((unused)) static inline id nil_chk(id p) {
   return p;
 #endif
 }
+
+#endif // _NSObject_JavaObject_H_

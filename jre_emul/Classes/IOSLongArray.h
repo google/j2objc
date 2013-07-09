@@ -19,6 +19,9 @@
 //  Created by Tom Ball on 6/16/11.
 //
 
+#ifndef _IOSLongArray_H_
+#define _IOSLongArray_H_
+
 #import "IOSArray.h"
 
 // An emulation class that represents a Java long array.  Like a Java array,
@@ -61,3 +64,5 @@
 - (long long)postDecr:(NSUInteger)index;
 
 @end
+
+#endif // _IOSLongArray_H_

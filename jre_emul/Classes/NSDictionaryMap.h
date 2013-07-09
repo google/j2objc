@@ -6,6 +6,9 @@
 //  Copyright 2013 Google, Inc. All rights reserved.
 //
 
+#ifndef _NSDictionaryMap_H_
+#define _NSDictionaryMap_H_
+
 #import <Foundation/Foundation.h>
 
 #import "java/util/Map.h"
@@ -31,3 +34,5 @@
 + (NSDictionaryMap *)mapWithDictionary:(NSDictionary *)dictionary;
 
 @end
+
+#endif // _NSDictionaryMap_H_

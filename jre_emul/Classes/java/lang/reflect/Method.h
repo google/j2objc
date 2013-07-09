@@ -19,6 +19,9 @@
 //  Created by Tom Ball on 11/07/11.
 //
 
+#ifndef _JavaLangReflectMethod_H_
+#define _JavaLangReflectMethod_H_
+
 #import <Foundation/Foundation.h>
 #import "java/lang/reflect/ExecutableMember.h"
 
@@ -48,3 +51,5 @@
                withNSObjectArray:(IOSObjectArray *)arguments;
 
 @end
+
+#endif // _JavaLangReflectMethod_H_

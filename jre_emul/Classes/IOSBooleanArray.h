@@ -19,6 +19,9 @@
 //  Created by Tom Ball on 6/16/11.
 //
 
+#ifndef _IOSBooleanArray_H_
+#define _IOSBooleanArray_H_
+
 #import "IOSArray.h"
 
 // An emulation class that represents a Java boolean array.  Like a Java array,
@@ -47,3 +50,5 @@
 - (void)getBooleans:(BOOL *)buffer length:(NSUInteger)length;
 
 @end
+
+#endif // _IOSBooleanArray_H_
