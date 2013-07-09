@@ -14,7 +14,6 @@
 
 package com.google.devtools.j2objc.translate;
 
-import com.google.devtools.j2objc.types.IOSArrayTypeBinding;
 import com.google.devtools.j2objc.types.IOSTypeBinding;
 import com.google.devtools.j2objc.types.Types;
 import com.google.devtools.j2objc.util.ASTUtil;
@@ -325,6 +324,10 @@ public final class ASTFactory {
     return literal;
   }
 
+  public static Expression makeIntLiteral(AST ast, int i) {
+    return makeLiteral(ast, Integer.valueOf(i), ast.resolveWellKnownType("int"));
+  }
+
   public static TypeLiteral newTypeLiteral(AST ast, ITypeBinding type) {
     TypeLiteral literal = ast.newTypeLiteral();
     literal.setType(newType(ast, type));
@@ -336,7 +339,7 @@ public final class ASTFactory {
     Type type;
     if (binding.isPrimitive()) {
       type = ast.newPrimitiveType(PrimitiveType.toCode(binding.getName()));
-    } else if (binding.isArray() && !(binding instanceof IOSArrayTypeBinding)) {
+    } else if (binding.isArray()) {
       type = ast.newArrayType(newType(ast, binding.getComponentType()));
     } else {
       type = ast.newSimpleType(newSimpleName(ast, binding.getErasure()));

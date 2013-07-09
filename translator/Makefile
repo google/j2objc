@@ -81,7 +81,6 @@ JAVA_SOURCES = \
 	types/HeaderImportCollector.java \
 	types/ImplementationImportCollector.java \
 	types/Import.java \
-	types/IOSArrayTypeBinding.java \
 	types/IOSMethod.java \
 	types/IOSMethodBinding.java \
 	types/IOSParameter.java \

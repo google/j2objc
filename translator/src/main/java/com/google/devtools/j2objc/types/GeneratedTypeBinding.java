@@ -40,18 +40,18 @@ public class GeneratedTypeBinding implements ITypeBinding {
   private final IPackageBinding packageBinding;
   private final ITypeBinding superClass;
   private final boolean isInterface;
-  private final boolean isArray;
+  private final ITypeBinding componentType;
   private final Set<IVariableBinding> fields = Sets.newHashSet();
   private final Set<IMethodBinding> methods = Sets.newHashSet();
 
   public GeneratedTypeBinding(
       String name, IPackageBinding packageBinding, ITypeBinding superClass, boolean isInterface,
-      boolean isArray) {
+      ITypeBinding componentType) {
     this.name = name;
     this.packageBinding = packageBinding;
     this.superClass = superClass;
     this.isInterface = isInterface;
-    this.isArray = isArray;
+    this.componentType = componentType;
   }
 
   /**
@@ -65,7 +65,12 @@ public class GeneratedTypeBinding implements ITypeBinding {
       packageBinding = new GeneratedPackageBinding(name.substring(0, idx));
       name = name.substring(idx + 1);
     }
-    return new GeneratedTypeBinding(name, packageBinding, superClass, isInterface, false);
+    return new GeneratedTypeBinding(name, packageBinding, superClass, isInterface, null);
+  }
+
+  public static GeneratedTypeBinding newArrayType(ITypeBinding componentType) {
+    return new GeneratedTypeBinding(
+        componentType.getName() + "[]", null, null, false, componentType);
   }
 
   @Override
@@ -144,7 +149,7 @@ public class GeneratedTypeBinding implements ITypeBinding {
 
   @Override
   public boolean isArray() {
-    return isArray;
+    return componentType != null;
   }
 
   @Override
@@ -251,7 +256,7 @@ public class GeneratedTypeBinding implements ITypeBinding {
 
   @Override
   public ITypeBinding getComponentType() {
-    return isArray ? Types.getNSObject() : null;
+    return componentType;
   }
 
   @Override
@@ -294,12 +299,19 @@ public class GeneratedTypeBinding implements ITypeBinding {
 
   @Override
   public int getDimensions() {
-    return isArray ? 1 : 0;
+    if (componentType != null) {
+      return componentType.getDimensions() + 1;
+    }
+    return 0;
   }
 
   @Override
   public ITypeBinding getElementType() {
-    return isArray ? Types.getNSObject() : null;
+    ITypeBinding elementType = componentType;
+    while (elementType != null && elementType.isArray()) {
+      elementType = elementType.getComponentType();
+    }
+    return elementType;
   }
 
   @Override
@@ -354,6 +366,9 @@ public class GeneratedTypeBinding implements ITypeBinding {
 
   @Override
   public boolean isAssignmentCompatible(ITypeBinding variableType) {
+    if (componentType != null && variableType.isArray()) {
+      return componentType.isAssignmentCompatible(variableType.getComponentType());
+    }
     return isEqualTo(variableType);
   }
 

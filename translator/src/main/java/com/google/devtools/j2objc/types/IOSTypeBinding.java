@@ -29,27 +29,26 @@ public class IOSTypeBinding extends GeneratedTypeBinding {
   private final ITypeBinding mappedType;
 
   protected IOSTypeBinding(
-      String name, ITypeBinding mappedType, ITypeBinding superClass, boolean isInterface,
-      boolean isArray) {
-    super(name, null, superClass, isInterface, isArray);
+      String name, ITypeBinding mappedType, ITypeBinding superClass, boolean isInterface) {
+    super(name, null, superClass, isInterface, null);
     this.mappedType = mappedType;
   }
 
   public static IOSTypeBinding newClass(String name, ITypeBinding mappedType) {
-    return new IOSTypeBinding(name, mappedType, null, false, false);
+    return new IOSTypeBinding(name, mappedType, null, false);
   }
 
   public static IOSTypeBinding newClass(
       String name, ITypeBinding mappedType, ITypeBinding superClass) {
-    return new IOSTypeBinding(name, mappedType, superClass, false, false);
+    return new IOSTypeBinding(name, mappedType, superClass, false);
   }
 
   public static IOSTypeBinding newUnmappedClass(String name) {
-    return new IOSTypeBinding(name, null, null, false, false);
+    return new IOSTypeBinding(name, null, null, false);
   }
 
   public static IOSTypeBinding newInterface(String name, ITypeBinding mappedType) {
-    return new IOSTypeBinding(name, mappedType, null, true, false);
+    return new IOSTypeBinding(name, mappedType, null, true);
   }
 
   @Override
