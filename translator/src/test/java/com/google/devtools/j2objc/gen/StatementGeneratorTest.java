@@ -782,6 +782,15 @@ public class StatementGeneratorTest extends GenerationTest {
     assertEquals(result, "double d = JavaLangDouble_POSITIVE_INFINITY;");
   }
 
+  public void testInstanceStaticConstants() throws IOException {
+    String translation = translateSourceFile(
+        "public class Test { Foo f; void test() { int i = f.DEFAULT; Object lock = f.LOCK; }} " +
+    		"class Foo { public static final int DEFAULT = 1; " +
+    		"    public static final Object LOCK = null; }", "Test", "Test.m");
+    assertTranslation(translation, "int i = Foo_DEFAULT;");
+    assertTranslation(translation, "id lock = [Foo LOCK];");
+  }
+
   public void testCastGenericReturnType() throws IOException {
     String translation = translateSourceFile(
       "class Test { " +
