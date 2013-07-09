@@ -21,6 +21,8 @@ import com.google.devtools.j2objc.util.ASTUtil;
 import com.google.devtools.j2objc.util.ErrorReportingASTVisitor;
 import com.google.devtools.j2objc.util.NameTable;
 
+import org.eclipse.jdt.core.dom.AnnotationTypeDeclaration;
+import org.eclipse.jdt.core.dom.AnnotationTypeMemberDeclaration;
 import org.eclipse.jdt.core.dom.ArrayAccess;
 import org.eclipse.jdt.core.dom.Assignment;
 import org.eclipse.jdt.core.dom.Assignment.Operator;
@@ -95,6 +97,20 @@ public class ImplementationImportCollector extends ErrorReportingASTVisitor {
         && !NameTable.getFullName(type).equals(mainTypeName + (isEnum ? "Enum" : ""))) {
       Import.addImports(type, declaredTypes);
     }
+  }
+
+  @Override
+  public boolean visit(AnnotationTypeDeclaration node) {
+    ITypeBinding type = Types.getTypeBinding(node);
+    addImports(type);
+    addDeclaredType(type, false);
+    return true;
+  }
+
+  @Override
+  public boolean visit(AnnotationTypeMemberDeclaration node) {
+    addImports(node.getType());
+    return true;
   }
 
   @Override
