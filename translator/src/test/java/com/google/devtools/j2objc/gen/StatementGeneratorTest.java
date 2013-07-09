@@ -1050,6 +1050,18 @@ public class StatementGeneratorTest extends GenerationTest {
       assertTranslation(translation, "printlnWithNSString:HelloWorld_staticString_];");
   }
 
+  public void testThisCallInEnumConstructor() throws IOException {
+    String translation = translateSourceFile(
+        "public enum Test {" +
+        "  A, B(1);" +
+        "  private int i;" +
+        "  private Test(int i) { this.i = i; } " +
+        "  private Test() { this(0); }}",
+        "Test", "Test.m");
+    assertTranslation(translation,
+        "[self initTestEnumWithInt:0 withNSString:name withInt:ordinal]");
+  }
+
   public void testThisCallInInnerConstructor() throws IOException {
     String translation = translateSourceFile(
         "public class Test {" +
