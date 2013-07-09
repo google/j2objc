@@ -25,6 +25,7 @@ import org.eclipse.jdt.core.dom.ArrayCreation;
 import org.eclipse.jdt.core.dom.ArrayInitializer;
 import org.eclipse.jdt.core.dom.ArrayType;
 import org.eclipse.jdt.core.dom.Assignment;
+import org.eclipse.jdt.core.dom.CastExpression;
 import org.eclipse.jdt.core.dom.CharacterLiteral;
 import org.eclipse.jdt.core.dom.Expression;
 import org.eclipse.jdt.core.dom.FieldDeclaration;
@@ -278,6 +279,14 @@ public final class ASTFactory {
     expr.setRightOperand(newType(ast, type));
     Types.addBinding(expr, ast.resolveWellKnownType("boolean"));
     return expr;
+  }
+
+  public static CastExpression newCastExpression(AST ast, Expression expr, ITypeBinding type) {
+    CastExpression cast = ast.newCastExpression();
+    cast.setExpression(expr);
+    cast.setType(newType(ast, type));
+    Types.addBinding(cast, type);
+    return cast;
   }
 
   private static Expression makeLiteralInternal(AST ast, Object value) {

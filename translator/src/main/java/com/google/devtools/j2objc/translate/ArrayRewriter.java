@@ -20,6 +20,7 @@ import com.google.devtools.j2objc.types.GeneratedVariableBinding;
 import com.google.devtools.j2objc.types.IOSArrayTypeBinding;
 import com.google.devtools.j2objc.types.IOSMethod;
 import com.google.devtools.j2objc.types.IOSMethodBinding;
+import com.google.devtools.j2objc.types.IOSTypeBinding;
 import com.google.devtools.j2objc.types.NodeCopier;
 import com.google.devtools.j2objc.types.Types;
 import com.google.devtools.j2objc.util.ASTUtil;
@@ -35,12 +36,15 @@ import org.eclipse.jdt.core.dom.ClassInstanceCreation;
 import org.eclipse.jdt.core.dom.ConstructorInvocation;
 import org.eclipse.jdt.core.dom.EnumConstantDeclaration;
 import org.eclipse.jdt.core.dom.Expression;
+import org.eclipse.jdt.core.dom.FieldAccess;
 import org.eclipse.jdt.core.dom.IMethodBinding;
 import org.eclipse.jdt.core.dom.ITypeBinding;
 import org.eclipse.jdt.core.dom.MethodInvocation;
 import org.eclipse.jdt.core.dom.Modifier;
 import org.eclipse.jdt.core.dom.PostfixExpression;
 import org.eclipse.jdt.core.dom.PrefixExpression;
+import org.eclipse.jdt.core.dom.QualifiedName;
+import org.eclipse.jdt.core.dom.SimpleName;
 import org.eclipse.jdt.core.dom.SuperConstructorInvocation;
 import org.eclipse.jdt.core.dom.SuperMethodInvocation;
 
@@ -56,9 +60,7 @@ import java.util.Map;
  */
 public class ArrayRewriter extends ErrorReportingASTVisitor {
 
-  private Map<IOSArrayTypeBinding, IOSMethodBinding> initMethods = Maps.newHashMap();
-  private Map<IOSArrayTypeBinding, IOSMethodBinding> singleDimMethods = Maps.newHashMap();
-  private Map<IOSArrayTypeBinding, IOSMethodBinding> multiDimMethods = Maps.newHashMap();
+  private static final IOSTypeBinding ARRAY_BASE_TYPE = IOSTypeBinding.newUnmappedClass("IOSArray");
 
   private static final ImmutableMap<String, String> INIT_METHODS =
       ImmutableMap.<String, String>builder()
@@ -102,6 +104,14 @@ public class ArrayRewriter extends ErrorReportingASTVisitor {
 
   public static final IOSMethod OBJECT_ARRAY_ASSIGNMENT = IOSMethod.create(
       "IOSObjectArray replaceObjectAtIndex:(NSUInteger)index withObject:(id)object");
+
+  private Map<IOSArrayTypeBinding, IOSMethodBinding> initMethods = Maps.newHashMap();
+  private Map<IOSArrayTypeBinding, IOSMethodBinding> singleDimMethods = Maps.newHashMap();
+  private Map<IOSArrayTypeBinding, IOSMethodBinding> multiDimMethods = Maps.newHashMap();
+
+  private final IOSMethodBinding arrayCountMethod = IOSMethodBinding.newMethod(
+      IOSMethod.create("IOSArray count"), Modifier.PUBLIC, Types.resolveJavaType("int"),
+      ARRAY_BASE_TYPE);
 
   @Override
   public void endVisit(ArrayCreation node) {
@@ -403,6 +413,26 @@ public class ArrayRewriter extends ErrorReportingASTVisitor {
     ASTUtil.getArguments(invocation).add(
         NodeCopier.copySubtree(ast, assignmentNode.getRightHandSide()));
     return invocation;
+  }
+
+  @Override
+  public void endVisit(FieldAccess node) {
+    maybeRewriteArrayLength(node, node.getName(), node.getExpression());
+  }
+
+  @Override
+  public void endVisit(QualifiedName node) {
+    maybeRewriteArrayLength(node, node.getName(), node.getQualifier());
+  }
+
+  private void maybeRewriteArrayLength(Expression node, SimpleName name, Expression expr) {
+    if (name.getIdentifier().equals("length") && Types.getTypeBinding(expr).isArray()) {
+      AST ast = node.getAST();
+      // needs cast: count returns an unsigned value
+      ASTUtil.setProperty(node, ASTFactory.newCastExpression(ast,
+          ASTFactory.newMethodInvocation(ast, arrayCountMethod, NodeCopier.copySubtree(ast, expr)),
+          Types.resolveJavaType("int")));
+    }
   }
 
   @Override

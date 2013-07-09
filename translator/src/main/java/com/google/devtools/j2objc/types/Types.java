@@ -155,31 +155,30 @@ public class Types {
 
   private void initializeArrayTypes() {
     IOSBooleanArray = new IOSArrayTypeBinding(
-        "IOSBooleanArray", "booleanAtIndex", "getBooleans",
-        ast.resolveWellKnownType("java.lang.Boolean"), ast.resolveWellKnownType("boolean"));
+        "IOSBooleanArray", ast.resolveWellKnownType("java.lang.Boolean"),
+        ast.resolveWellKnownType("boolean"));
     IOSByteArray = new IOSArrayTypeBinding(
-        "IOSByteArray", "byteAtIndex", "getBytes", ast.resolveWellKnownType("java.lang.Byte"),
+        "IOSByteArray", ast.resolveWellKnownType("java.lang.Byte"),
         ast.resolveWellKnownType("byte"));
     IOSCharArray = new IOSArrayTypeBinding(
-        "IOSCharArray", "charAtIndex", "getChars", ast.resolveWellKnownType("java.lang.Character"),
+        "IOSCharArray", ast.resolveWellKnownType("java.lang.Character"),
         ast.resolveWellKnownType("char"));
     IOSDoubleArray = new IOSArrayTypeBinding(
-        "IOSDoubleArray", "doubleAtIndex", "getDoubles",
-        ast.resolveWellKnownType("java.lang.Double"), ast.resolveWellKnownType("double"));
+        "IOSDoubleArray", ast.resolveWellKnownType("java.lang.Double"),
+        ast.resolveWellKnownType("double"));
     IOSFloatArray = new IOSArrayTypeBinding(
-        "IOSFloatArray", "floatAtIndex", "getFloats", ast.resolveWellKnownType("java.lang.Float"),
+        "IOSFloatArray", ast.resolveWellKnownType("java.lang.Float"),
         ast.resolveWellKnownType("float"));
     IOSIntArray = new IOSArrayTypeBinding(
-        "IOSIntArray", "intAtIndex", "getInts", ast.resolveWellKnownType("java.lang.Integer"),
+        "IOSIntArray", ast.resolveWellKnownType("java.lang.Integer"),
         ast.resolveWellKnownType("int"));
     IOSLongArray = new IOSArrayTypeBinding(
-        "IOSLongArray", "longAtIndex", "getLongs", ast.resolveWellKnownType("java.lang.Long"),
+        "IOSLongArray", ast.resolveWellKnownType("java.lang.Long"),
         ast.resolveWellKnownType("long"));
     IOSObjectArray = new IOSArrayTypeBinding(
-        "IOSObjectArray", "objectAtIndex", "getObjects",
-        ast.resolveWellKnownType("java.lang.Object"), null);
+        "IOSObjectArray", ast.resolveWellKnownType("java.lang.Object"), null);
     IOSShortArray = new IOSArrayTypeBinding(
-        "IOSShortArray", "shortAtIndex", "getShorts", ast.resolveWellKnownType("java.lang.Short"),
+        "IOSShortArray", ast.resolveWellKnownType("java.lang.Short"),
         ast.resolveWellKnownType("short"));
 
     iosBindingMap.put("IOSBooleanArray", IOSBooleanArray);

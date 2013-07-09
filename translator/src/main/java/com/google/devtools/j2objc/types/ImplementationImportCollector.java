@@ -23,7 +23,6 @@ import com.google.devtools.j2objc.util.NameTable;
 
 import org.eclipse.jdt.core.dom.AnnotationTypeDeclaration;
 import org.eclipse.jdt.core.dom.AnnotationTypeMemberDeclaration;
-import org.eclipse.jdt.core.dom.ArrayAccess;
 import org.eclipse.jdt.core.dom.Assignment;
 import org.eclipse.jdt.core.dom.Assignment.Operator;
 import org.eclipse.jdt.core.dom.CastExpression;
@@ -110,14 +109,6 @@ public class ImplementationImportCollector extends ErrorReportingASTVisitor {
   @Override
   public boolean visit(AnnotationTypeMemberDeclaration node) {
     addImports(node.getType());
-    return true;
-  }
-
-  @Override
-  public boolean visit(ArrayAccess node) {
-    ITypeBinding componentType = Types.getTypeBinding(node);
-    addImports(componentType);
-    addImports(Types.resolveArrayType(componentType));
     return true;
   }
 
