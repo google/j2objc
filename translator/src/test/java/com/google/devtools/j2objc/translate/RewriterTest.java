@@ -403,7 +403,7 @@ public class RewriterTest extends GenerationTest {
     List<BodyDeclaration> members = type.bodyDeclarations();
     assertEquals(9, members.size());
     J2ObjC.initializeTranslation(unit);
-    J2ObjC.translate(unit, source);
+    J2ObjC.translate(unit);
     assertEquals(4, members.size());
     FieldDeclaration f = (FieldDeclaration) members.get(0);
     VariableDeclarationFragment var = (VariableDeclarationFragment) f.fragments().get(0);

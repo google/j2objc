@@ -172,14 +172,14 @@ public class J2ObjC {
     long translateTime = 0L;
     initializeTranslation(currentUnit);
     try {
-      String newSource = translate(currentUnit, source);
+      translate(currentUnit);
       translateTime = System.currentTimeMillis();
 
       if (currentUnit.types().isEmpty()) {
         logger.finest("skipping dead file " + filename);
       } else {
         if (Options.printConvertedSources()) {
-          saveConvertedSource(filename, newSource);
+          saveConvertedSource(filename, source, currentUnit);
         }
 
         logger.finest(
@@ -448,7 +448,7 @@ public class J2ObjC {
    * @return the rewritten source
    * @throws AssertionError if the translator makes invalid edits
    */
-  public static String translate(CompilationUnit unit, String source) {
+  public static void translate(CompilationUnit unit) {
 
     // Update code that has GWT references.
     new GwtConverter().run(unit);
@@ -498,17 +498,6 @@ public class J2ObjC {
 
     // Verify all modified nodes have type bindings
     Types.verifyNode(unit);
-
-    Document doc = new Document(source);
-    TextEdit edit = unit.rewrite(doc, Options.getCompilerOptions());
-    try {
-      edit.apply(doc);
-    } catch (MalformedTreeException e) {
-      throw new AssertionError(e);
-    } catch (BadLocationException e) {
-      throw new AssertionError(e);
-    }
-    return doc.get();
   }
 
   public static void initializeTranslation(CompilationUnit unit) {
@@ -518,11 +507,18 @@ public class J2ObjC {
     OuterReferenceResolver.resolve(unit);
   }
 
-  private static void saveConvertedSource(String filename, String content) {
+  private static void saveConvertedSource(String filename, String source, CompilationUnit unit) {
     try {
+      Document doc = new Document(source);
+      TextEdit edit = unit.rewrite(doc, Options.getCompilerOptions());
+      edit.apply(doc);
       File outputFile = new File(Options.getOutputDirectory(), filename);
       outputFile.getParentFile().mkdirs();
-      Files.write(content, outputFile, Charset.defaultCharset());
+      Files.write(doc.get(), outputFile, Charset.defaultCharset());
+    } catch (MalformedTreeException e) {
+      throw new AssertionError(e);
+    } catch (BadLocationException e) {
+      throw new AssertionError(e);
     } catch (IOException e) {
       error(e.getMessage());
     }
