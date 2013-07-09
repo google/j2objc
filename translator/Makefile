@@ -59,6 +59,7 @@ JAVA_SOURCES = \
 	translate/AnonymousClassConverter.java \
 	translate/ArrayRewriter.java \
 	translate/Autoboxer.java \
+	translate/ComplexExpressionExtractor.java \
 	translate/DeadCodeEliminator.java \
 	translate/DestructorGenerator.java \
 	translate/GwtConverter.java \

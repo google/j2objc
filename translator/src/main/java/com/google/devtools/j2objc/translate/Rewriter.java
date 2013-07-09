@@ -370,38 +370,6 @@ public class Rewriter extends ErrorReportingASTVisitor {
     return null;
   }
 
-  /**
-   * Inserts a new statement after a given node. If node is a Block, appends
-   * toInsert to the end of the block. If node's parent is a Block, inserts
-   * directly after node. Otherwise, creates a new Block with node and toInsert
-   * as the only two statements.
-   */
-  private static <E extends Statement> E insertStatement(E node, Statement toInsert) {
-    if (node instanceof Block) {
-      ASTUtil.getStatements((Block) node).add(toInsert);
-      return node;
-    } else if (node.getParent() instanceof Block) {
-      List<Statement> stmts = ASTUtil.getStatements((Block) node.getParent());
-      // Find node in statement list, and add given statement after it.
-      for (int i = 0; i < stmts.size(); i++) {
-        if (stmts.get(i) == node) {
-          stmts.add(i + 1, toInsert);
-          break;
-        }
-      }
-    } else {
-      AST ast = node.getAST();
-      Block block = ast.newBlock();
-      List<Statement> stmts = ASTUtil.getStatements(block);
-      E oldNode = node;
-      node = NodeCopier.copySubtree(ast, node);
-      stmts.add(node);
-      stmts.add(toInsert);
-      ASTUtil.setProperty(oldNode, block);
-    }
-    return node;
-  }
-
   @Override
   public boolean visit(LabeledStatement node) {
     Statement loopBody = getLoopBody(node.getBody());
@@ -435,13 +403,13 @@ public class Rewriter extends ErrorReportingASTVisitor {
       LabeledStatement newLabelStmt = ast.newLabeledStatement();
       newLabelStmt.setLabel(ASTFactory.newLabel(ast, "continue_" + labelIdentifier));
       newLabelStmt.setBody(ast.newEmptyStatement());
-      loopBody = insertStatement(loopBody, newLabelStmt);
+      ASTUtil.insertAfter(loopBody, newLabelStmt);
     }
     if (hasBreak[0]) {
       LabeledStatement newLabelStmt = ast.newLabeledStatement();
       newLabelStmt.setLabel(ASTFactory.newLabel(ast, "break_" + labelIdentifier));
       newLabelStmt.setBody(ast.newEmptyStatement());
-      node = insertStatement(node, newLabelStmt);
+      ASTUtil.insertAfter(node, newLabelStmt);
     }
 
     if (hasContinue[0] || hasBreak[0]) {

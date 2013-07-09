@@ -29,6 +29,7 @@ import com.google.devtools.j2objc.gen.StatementGeneratorTest;
 import com.google.devtools.j2objc.translate.ASTFactoryTest;
 import com.google.devtools.j2objc.translate.AnonymousClassConverterTest;
 import com.google.devtools.j2objc.translate.AutoboxerTest;
+import com.google.devtools.j2objc.translate.ComplexExpressionExtractorTest;
 import com.google.devtools.j2objc.translate.DeadCodeEliminatorTest;
 import com.google.devtools.j2objc.translate.DestructorGeneratorTest;
 import com.google.devtools.j2objc.translate.GwtConverterTest;
@@ -67,6 +68,7 @@ public class SmallTests {
     AutoboxerTest.class,
     BindingMapBuilderTest.class,
     BindingUtilTest.class,
+    ComplexExpressionExtractorTest.class,
     DeadCodeEliminatorTest.class,
     DeadCodeMapTest.class,
     DestructorGeneratorTest.class,
