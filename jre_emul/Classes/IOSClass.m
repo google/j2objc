@@ -318,7 +318,7 @@ IOSObjectArray *getMethods(IOSClass *clazz, BOOL fetchConstructors) {
 JavaLangReflectMethod *getClassMethod(NSString *name,
                                       IOSObjectArray *parameterTypes,
                                       IOSClass *cls) {
-  NIL_CHK(name);
+  nil_chk(name);
   JavaLangReflectMethod *result = nil;
   if (cls->class_) {
     unsigned int n;
@@ -741,7 +741,7 @@ void getFieldsFromClass(Class clazz, NSMutableDictionary *fields) {
 }
 
 - (JavaLangReflectField *)getDeclaredField:(NSString *)name {
-  NIL_CHK(name);
+  nil_chk(name);
   JavaLangReflectField *field = nil;
   id exception = nil;
   if (class_) {
@@ -767,7 +767,7 @@ void getFieldsFromClass(Class clazz, NSMutableDictionary *fields) {
 }
 
 - (JavaLangReflectField *)getField:(NSString *)name {
-  NIL_CHK(name);
+  nil_chk(name);
   JavaLangReflectField *field = nil;
   Class cls = class_;
   while (cls) {

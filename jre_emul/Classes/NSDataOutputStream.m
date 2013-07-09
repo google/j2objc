@@ -44,7 +44,7 @@
 - (void)writeWithJavaLangByteArray:(IOSByteArray *)buffer
                            withInt:(int)offset
                            withInt:(int)count {
-  NIL_CHK(buffer);
+  nil_chk(buffer);
   NSUInteger originalLength = [data_ length];
   [data_ increaseLengthBy:count];
 
