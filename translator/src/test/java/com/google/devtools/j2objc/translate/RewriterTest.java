@@ -451,8 +451,8 @@ public class RewriterTest extends GenerationTest {
         "void test() { for (char c : chars) {} } }";
     String translation = translateSourceFile(source, "A", "A.m");
     assertTranslation(translation,
-        "unichar c = [((JavaLangCharacter *) [((id<JavaUtilIterator>) NIL_CHK(iter__)) next]) " +
-        "charValue];");
+        "unichar c = [((JavaLangCharacter *) NIL_CHK([((id<JavaUtilIterator>) NIL_CHK(iter__)) " +
+        "next])) charValue];");
   }
 
   public void testStaticArrayInitializerMove() throws IOException {

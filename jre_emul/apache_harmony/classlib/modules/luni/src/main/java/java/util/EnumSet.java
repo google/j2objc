@@ -335,6 +335,6 @@ public abstract class EnumSet<E extends Enum<E>> extends AbstractSet<E>
     }
 
     boolean isValidType(Class<?> cls) {
-        return cls.equals(elementClass) || cls.getSuperclass().equals(elementClass);
+        return cls.equals(elementClass) || cls.getSuperclass() == elementClass;
     }
 }

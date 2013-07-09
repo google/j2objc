@@ -167,7 +167,7 @@ public class AutoboxerTest extends GenerationTest {
     List<Statement> stmts = translateStatements(source);
     String result = generateStatement(stmts.get(2));
     assertEquals("int result = [((JavaLangInteger *) NIL_CHK(foo)) intValue] + " +
-    	"[((JavaLangInteger *) NIL_CHK(bar)) intValue];", result);
+        "[((JavaLangInteger *) NIL_CHK(bar)) intValue];", result);
   }
 
   public void testInfixNeitherOperand() throws IOException {
@@ -374,7 +374,8 @@ public class AutoboxerTest extends GenerationTest {
         "    int[] array = new int[3];" +
         "    array[index()] = 2; }}";
     String translation = translateSourceFile(source, "Test", "Test.m");
-    assertTranslation(translation, "replaceIntAtIndex:[[self index] intValue]");
+    assertTranslation(translation,
+        "replaceIntAtIndex:[((JavaLangInteger *) NIL_CHK([self index])) intValue]");
   }
 
   public void testPrefixExpression() throws IOException {

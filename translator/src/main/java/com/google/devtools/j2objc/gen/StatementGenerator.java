@@ -19,6 +19,7 @@ package com.google.devtools.j2objc.gen;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.CharMatcher;
 import com.google.common.collect.Lists;
+import com.google.common.collect.Sets;
 import com.google.devtools.j2objc.J2ObjC;
 import com.google.devtools.j2objc.Options;
 import com.google.devtools.j2objc.translate.DestructorGenerator;
@@ -110,7 +111,6 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
-import java.util.Stack;
 
 /**
  * Returns an Objective-C equivalent of a Java AST node.
@@ -121,9 +121,8 @@ public class StatementGenerator extends ErrorReportingASTVisitor {
   private final SourceBuilder buffer;
   private final Set<IVariableBinding> fieldHiders;
   private final boolean asFunction;
-  private final Stack<MethodInvocation> invocations = new Stack<MethodInvocation>();
-  private int nilCheckDepth = 0;
   private final boolean useReferenceCounting;
+  private final Set<Expression> nilCheckedNodes = Sets.newHashSet();
 
   private static final String EXPONENTIAL_FLOATING_POINT_REGEX =
       "[+-]?\\d*\\.?\\d*[eE][+-]?\\d+";
@@ -257,34 +256,42 @@ public class StatementGenerator extends ErrorReportingASTVisitor {
     }
   }
 
-  private void printNilCheck(Expression e, boolean needsCast) {
+  private boolean needsNilCheck(Expression e) {
     IVariableBinding sym = Types.getVariableBinding(e);
-    // Outer class references should always be non-nil.
-    if (sym != null && !sym.getName().startsWith("this$") && !sym.getName().equals("outer$")
-        && !hasNilCheckParent(e, sym)) {
-      ITypeBinding symType = Types.mapType(sym.getType());
-      if (needsCast && (Types.getNSObject().isEqualTo(symType) ||
-          Types.getIOSClass().isEqualTo(symType) || Types.getNSString().isEqualTo(symType))) {
-        needsCast = false;
-      }
-      if (nilCheckDepth == 0) {
-        if (needsCast) {
-          needsCast = printCast(symType);
-        }
-        buffer.append("NIL_CHK(");
-      }
-      ++nilCheckDepth;
+    if (sym != null) {
+      // Outer class references should always be non-nil.
+      return !sym.getName().startsWith("this$") && !sym.getName().equals("outer$")
+          && !hasNilCheckParent(e, sym);
+    }
+    if (e instanceof MethodInvocation) {
+      IMethodBinding method = Types.getMethodBinding(e);
+      // Check for some common cases where the result is known not to be null.
+      return !method.getName().equals("getClass")
+          && !(Types.isBoxedPrimitive(method.getDeclaringClass())
+               && method.getName().equals("valueOf"));
+    }
+    return false;
+  }
+
+  private void printNilCheck(Expression e) {
+    if (!needsNilCheck(e)) {
       e.accept(this);
-      if (--nilCheckDepth == 0) {
-        if (needsCast) {
-          buffer.append("))");
-        } else {
-          buffer.append(')');
-        }
-      }
+      return;
+    }
+    boolean castPrinted = printCast(Types.getTypeBinding(e));
+    buffer.append("NIL_CHK(");
+    nilCheckedNodes.add(e);
+    int start = buffer.length();
+    e.accept(this);
+    int end = buffer.length();
+    String substring = buffer.substring(start, end);
+    // TODO(user): Replace NIL_CHK with the inline function so we don't need to do this.
+    substring = substring.replaceAll(",", " J2OBJC_COMMA()");
+    buffer.replace(start, end, substring);
+    if (castPrinted) {
+      buffer.append("))");
     } else {
-      // Print expression without check.
-      e.accept(this);
+      buffer.append(')');
     }
   }
 
@@ -328,12 +335,9 @@ public class StatementGenerator extends ErrorReportingASTVisitor {
   @Override
   public boolean visit(ArrayAccess node) {
     ITypeBinding elementType = Types.getTypeBinding(node);
-    boolean castPrinted = false;
-    if (!elementType.isPrimitive()) {
-      castPrinted = printCast(elementType);
-    }
+    boolean castPrinted = !nilCheckedNodes.contains(node) && printCast(elementType);
     buffer.append('[');
-    printNilCheck(node.getArray(), true);
+    printNilCheck(node.getArray());
     buffer.append(' ');
 
     IOSTypeBinding iosArrayType = Types.resolveArrayType(elementType);
@@ -524,7 +528,7 @@ public class StatementGenerator extends ErrorReportingASTVisitor {
     ArrayAccess aa = (ArrayAccess) lhs;
     String kind = getArrayAccessKind(aa);
     buffer.append('[');
-    printNilCheck(aa.getArray(), true);
+    printNilCheck(aa.getArray());
     buffer.append(" replace");
     buffer.append(kind);
     buffer.append("AtIndex:");
@@ -756,9 +760,13 @@ public class StatementGenerator extends ErrorReportingASTVisitor {
 
   @Override
   public boolean visit(ClassInstanceCreation node) {
-    boolean addAutorelease = useReferenceCounting;
-    buffer.append(addAutorelease ? "[[[" : "[[");
     ITypeBinding type = Types.getTypeBinding(node.getType());
+    boolean castPrinted = false;
+    if (node.getParent() instanceof MethodInvocation
+        && node.equals(((MethodInvocation) node.getParent()).getExpression())) {
+      castPrinted = printCast(type);
+    }
+    buffer.append(useReferenceCounting ? "[[[" : "[[");
     ITypeBinding outerType = type.getDeclaringClass();
     buffer.append(NameTable.getFullName(type));
     buffer.append(" alloc] init");
@@ -776,8 +784,11 @@ public class StatementGenerator extends ErrorReportingASTVisitor {
     }
     printArguments(method, arguments);
     buffer.append(']');
-    if (addAutorelease) {
+    if (useReferenceCounting) {
       buffer.append(" autorelease]");
+    }
+    if (castPrinted) {
+      buffer.append(")");
     }
     return false;
   }
@@ -895,7 +906,7 @@ public class StatementGenerator extends ErrorReportingASTVisitor {
       expr.accept(this);
       buffer.append(')');
     } else {
-      printNilCheck(expr, true);
+      printNilCheck(expr);
     }
     if (Options.inlineFieldAccess() && isProperty(node.getName())) {
       buffer.append("->");
@@ -1217,7 +1228,6 @@ public class StatementGenerator extends ErrorReportingASTVisitor {
 
   @Override
   public boolean visit(MethodInvocation node) {
-    invocations.push(node);
     String methodName = NameTable.getName(node.getName());
     IMethodBinding binding = Types.getMethodBinding(node);
     assert binding != null;
@@ -1241,69 +1251,19 @@ public class StatementGenerator extends ErrorReportingASTVisitor {
     } else if (methodName.equals("getClass") && receiver != null && receiverType.isInterface()) {
       printInterfaceGetClass(node, receiver);
     } else {
-      boolean castAttempted = false;
-      boolean castReturnValue = false;
-      if (node.getParent() instanceof Expression ||
-          node.getParent() instanceof ReturnStatement ||
-          node.getParent() instanceof VariableDeclarationFragment) {
-        ITypeBinding actualType = binding.getMethodDeclaration().getReturnType();
-        if (actualType.isArray()) {
-          actualType = Types.resolveArrayType(actualType.getComponentType());
-        }
-        ITypeBinding expectedType;
-        if (node.getParent() instanceof VariableDeclarationFragment) {
-          expectedType = Types.getTypeBinding(node.getParent());
-        } else {
-          expectedType = binding.getReturnType();
-        }
-        if (expectedType.isArray()) {
-          expectedType = Types.resolveArrayType(expectedType.getComponentType());
-        }
-        if (!actualType.isAssignmentCompatible(expectedType)) {
-          if (!actualType.isEqualTo(node.getAST().resolveWellKnownType("void"))) {
-            // Since type parameters aren't passed to Obj-C, add cast for it.
-            // However, this is only needed with nested invocations.
-            if (invocations.size() > 0) {
-              // avoid a casting again below, and know to print a closing ')'
-              // after the method invocation.
-              castReturnValue = printCast(expectedType);
-              castAttempted = true;
-            }
-          }
-        }
+      boolean castPrinted = false;
+      ITypeBinding expectedType = Types.mapType(Types.getTypeBinding(node));
+      ITypeBinding actualType = Types.mapType(binding.getMethodDeclaration().getReturnType());
+      if (!expectedType.isEqualTo(actualType)) {
+        castPrinted = !nilCheckedNodes.contains(node) && printCast(expectedType);
       }
-      ITypeBinding typeBinding = binding.getDeclaringClass();
       buffer.append('[');
 
       if (receiver != null) {
-        boolean castPrinted = false;
-        IMethodBinding methodReceiver = Types.getMethodBinding(receiver);
-        if (methodReceiver != null) {
-          if (methodReceiver.isConstructor()) {
-            // gcc sometimes fails to discern the constructor's type when
-            // chaining, so add a cast.
-            if (!castAttempted) {
-              castPrinted = printCast(typeBinding);
-              castAttempted = true;
-            }
-          } else {
-            ITypeBinding receiverReturnType = methodReceiver.getReturnType();
-            if (receiverReturnType.isInterface()) {
-              // Add interface cast, so Obj-C knows the type node's receiver is.
-              if (!castAttempted) {
-                castPrinted = printCast(receiverReturnType);
-                castAttempted = true;
-              }
-            }
-          }
-        }
-        printNilCheck(receiver, !castPrinted);
-        if (castPrinted) {
-          buffer.append(')');
-        }
+        printNilCheck(receiver);
       } else {
         if (BindingUtil.isStatic(binding)) {
-          buffer.append(NameTable.getFullName(typeBinding));
+          buffer.append(NameTable.getFullName(binding.getDeclaringClass()));
         } else {
           buffer.append("self");
         }
@@ -1316,17 +1276,16 @@ public class StatementGenerator extends ErrorReportingASTVisitor {
       }
       printArguments(binding, ASTUtil.getArguments(node));
       buffer.append(']');
-      if (castReturnValue) {
+      if (castPrinted) {
         buffer.append(')');
       }
     }
-    invocations.pop();
     return false;
   }
 
   private void printInterfaceGetClass(MethodInvocation node, Expression receiver) {
     buffer.append("[(id<JavaObject>) ");
-    printNilCheck(receiver, true);
+    printNilCheck(receiver);
     buffer.append(" getClass]");
   }
 
@@ -1346,12 +1305,10 @@ public class StatementGenerator extends ErrorReportingASTVisitor {
   }
 
   private boolean printCast(ITypeBinding type) {
-    if (type == null || type.isPrimitive() || Types.isVoidType(type)
-        || Types.isJavaObjectType(type)) {
+    if (type == null || type.isPrimitive() || Types.isVoidType(type)) {
       return false;
     }
-    String typeName = type.getName().equals("NSObject") ? "NSObject *" :
-        NameTable.getSpecificObjCType(type);
+    String typeName = NameTable.getSpecificObjCType(type);
     if (typeName.equals(NameTable.ID_TYPE)) {
       return false;
     }
@@ -1476,7 +1433,7 @@ public class StatementGenerator extends ErrorReportingASTVisitor {
 
   private void printArrayIncrementOrDecrement(ArrayAccess access, String methodName) {
     buffer.append('[');
-    printNilCheck(access.getArray(), true);
+    printNilCheck(access.getArray());
     buffer.append(' ');
     buffer.append(methodName);
     buffer.append(':');
@@ -1525,7 +1482,7 @@ public class StatementGenerator extends ErrorReportingASTVisitor {
       buffer.append(NameTable.getFullName((ITypeBinding) binding));
       return false;
     }
-    printNilCheck(node.getQualifier(), true);
+    printNilCheck(node.getQualifier());
     buffer.append('.');
     node.getName().accept(this);
     return false;
@@ -1536,7 +1493,7 @@ public class StatementGenerator extends ErrorReportingASTVisitor {
   private boolean maybePrintArrayLength(String name, Expression qualifier) {
     if (name.equals("length") && Types.getTypeBinding(qualifier).isArray()) {
       buffer.append("(int) ["); // needs cast: count returns an unsigned value
-      printNilCheck(qualifier, true);
+      printNilCheck(qualifier);
       buffer.append(" count]");
       return true;
     }

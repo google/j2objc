@@ -510,6 +510,10 @@ public class Types {
     return instance.wrapperToPrimitiveTypes.get(wrapperType);
   }
 
+  public static boolean isBoxedPrimitive(ITypeBinding type) {
+    return instance.wrapperToPrimitiveTypes.containsKey(type);
+  }
+
   public static ITypeBinding getNSNumber() {
     return instance.NSNumber;
   }
