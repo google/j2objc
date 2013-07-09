@@ -1151,8 +1151,6 @@ public class StatementGenerator extends ErrorReportingASTVisitor {
     if (methodName.equals("isAssignableFrom") &&
         binding.getDeclaringClass().equals(Types.getIOSClass())) {
       printIsAssignableFromExpression(node);
-    } else if (methodName.equals("getClass") && receiver != null && receiverType.isInterface()) {
-      printInterfaceGetClass(node, receiver);
     } else {
       boolean castPrinted = maybePrintCast(node, getActualReturnType(binding, receiverType));
       boolean returnsPointer = IOSMethodBinding.returnsPointer(binding);
@@ -1239,12 +1237,6 @@ public class StatementGenerator extends ErrorReportingASTVisitor {
       sb.append(keyword + ":");
     }
     return sb.toString();
-  }
-
-  private void printInterfaceGetClass(MethodInvocation node, Expression receiver) {
-    buffer.append("[(id<JavaObject>) ");
-    printNilCheck(receiver);
-    buffer.append(" getClass]");
   }
 
   /**

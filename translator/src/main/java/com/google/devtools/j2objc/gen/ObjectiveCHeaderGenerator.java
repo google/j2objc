@@ -137,9 +137,9 @@ public class ObjectiveCHeaderGenerator extends ObjectiveCSourceFileGenerator {
           print(", ");
         }
       }
-      print(isInterface ? ", NSObject >" : " >");
+      print(isInterface ? ", NSObject, JavaObject >" : " >");
     } else if (isInterface) {
-      print(" < NSObject >");
+      print(" < NSObject, JavaObject >");
     }
     if (isInterface) {
       newline();
@@ -651,4 +651,3 @@ public class ObjectiveCHeaderGenerator extends ObjectiveCSourceFileGenerator {
     return false;
   }
 }
-
