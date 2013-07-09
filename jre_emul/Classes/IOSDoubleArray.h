@@ -35,6 +35,7 @@
 // Return double at a specified index, throws IndexOutOfBoundsException
 // if out out range.
 - (double)doubleAtIndex:(NSUInteger)index;
+- (double *)doubleRefAtIndex:(NSUInteger)index;
 
 // Sets double at a specified index, throws IndexOutOfBoundsException
 // if out out range.  Returns replacement value.
@@ -60,4 +61,3 @@
 - (double)postDecr:(NSUInteger)index;
 
 @end
-

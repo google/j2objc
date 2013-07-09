@@ -35,6 +35,7 @@
 // Return float at a specified index, throws IndexOutOfBoundsException
 // if out out range.
 - (float)floatAtIndex:(NSUInteger)index;
+- (float *)floatRefAtIndex:(NSUInteger)index;
 
 // Sets float at a specified index, throws IndexOutOfBoundsException
 // if out out range.  Returns replacement value.
@@ -60,4 +61,3 @@
 - (float)postDecr:(NSUInteger)index;
 
 @end
-

@@ -35,6 +35,7 @@
 // Return boolean at a specified index, throws IndexOutOfBoundsException
 // if out out range.
 - (BOOL)booleanAtIndex:(NSUInteger)index;
+- (BOOL *)booleanRefAtIndex:(NSUInteger)index;
 
 // Sets boolean at a specified index, throws IndexOutOfBoundsException
 // if out out range.  Returns replacement value.
@@ -46,4 +47,3 @@
 - (void)getBooleans:(BOOL *)buffer length:(NSUInteger)length;
 
 @end
-

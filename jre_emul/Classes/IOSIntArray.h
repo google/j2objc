@@ -35,6 +35,7 @@
 // Return int at a specified index, throws IndexOutOfBoundsException
 // if out out range;
 - (int)intAtIndex:(NSUInteger)index;
+- (int *)intRefAtIndex:(NSUInteger)index;
 
 // Sets int at a specified index, throws IndexOutOfBoundsException
 // if out out range. Returns replacement value.

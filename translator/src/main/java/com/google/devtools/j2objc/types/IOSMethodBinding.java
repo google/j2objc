@@ -30,9 +30,9 @@ public class IOSMethodBinding extends GeneratedMethodBinding {
 
   private IOSMethodBinding(
       IOSMethod iosMethod, IMethodBinding original, int modifiers, ITypeBinding returnType,
-      ITypeBinding declaringClass, boolean varargs) {
-    super(original, iosMethod.getName(), modifiers, returnType, declaringClass, false, varargs,
-          true);
+      IMethodBinding methodDeclaration, ITypeBinding declaringClass, boolean varargs) {
+    super(original, iosMethod.getName(), modifiers, returnType, methodDeclaration, declaringClass,
+          false, varargs, true);
     this.iosMethod = iosMethod;
   }
 
@@ -44,7 +44,7 @@ public class IOSMethodBinding extends GeneratedMethodBinding {
       declaringClass = IOSTypeBinding.newUnmappedClass(iosMethod.getDeclaringClass());
     }
     IOSMethodBinding binding = new IOSMethodBinding(
-        iosMethod, original, original.getModifiers(), returnType, declaringClass,
+        iosMethod, original, original.getModifiers(), returnType, null, declaringClass,
         original.isVarargs());
     binding.addParameters(original);
     return binding;
@@ -52,7 +52,16 @@ public class IOSMethodBinding extends GeneratedMethodBinding {
 
   public static IOSMethodBinding newMethod(
       IOSMethod iosMethod, int modifiers, ITypeBinding returnType, ITypeBinding declaringClass) {
-    return new IOSMethodBinding(iosMethod, null, modifiers, returnType, declaringClass, false);
+    return new IOSMethodBinding(
+        iosMethod, null, modifiers, returnType, null, declaringClass, false);
+  }
+
+  public static IOSMethodBinding newTypedInvocation(IOSMethodBinding m, ITypeBinding returnType) {
+    IOSMethodBinding binding = new IOSMethodBinding(
+        m.getIOSMethod(), null, m.getModifiers(), returnType, m, m.getDeclaringClass(),
+        m.isVarargs());
+    binding.addParameters(m);
+    return binding;
   }
 
   public static IOSMethod getIOSMethod(IMethodBinding binding) {
@@ -70,6 +79,14 @@ public class IOSMethodBinding extends GeneratedMethodBinding {
     IOSMethod iosMethod = getIOSMethod(method);
     if (iosMethod != null) {
       return iosMethod.isVarArgs();
+    }
+    return false;
+  }
+
+  public static boolean returnsPointer(IMethodBinding method) {
+    IOSMethod iosMethod = getIOSMethod(method);
+    if (iosMethod != null) {
+      return iosMethod.returnsPointer();
     }
     return false;
   }

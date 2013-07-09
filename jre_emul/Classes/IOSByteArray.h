@@ -38,6 +38,7 @@
 // Return byte at a specified index, throws IndexOutOfBoundsException
 // if out out range.
 - (char)byteAtIndex:(NSUInteger)index;
+- (char *)byteRefAtIndex:(NSUInteger)index;
 
 // Sets byte at a specified index, throws IndexOutOfBoundsException
 // if out out range.  Returns the replacement value.

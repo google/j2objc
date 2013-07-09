@@ -93,6 +93,16 @@ FOUNDATION_EXPORT
 
 FOUNDATION_EXPORT id JreOperatorRetainedAssign(id *pIvar, id self, id value);
 
+#define UR_SHIFT_ASSIGN_DEFN(NAME, TYPE) \
+  static inline TYPE URShiftAssign##NAME(TYPE *pLhs, int rhs) { \
+    return *pLhs = (TYPE) (((unsigned TYPE) *pLhs) >> rhs); \
+  }
+
+UR_SHIFT_ASSIGN_DEFN(Byte, char)
+UR_SHIFT_ASSIGN_DEFN(Int, int)
+UR_SHIFT_ASSIGN_DEFN(Long, long long)
+UR_SHIFT_ASSIGN_DEFN(Short, short int)
+
 #endif // __OBJC__
 
 #endif // _JreEmulation_H_

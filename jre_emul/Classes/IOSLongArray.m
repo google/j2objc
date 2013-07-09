@@ -32,11 +32,6 @@
   return self;
 }
 
-- (long long)longAtIndex:(NSUInteger)index {
-  IOSArray_checkIndex(self, index);
-  return buffer_[index];
-}
-
 - (id)initWithLongs:(const long long *)longs count:(NSUInteger)count {
   if ((self = [self initWithLength:count])) {
     if (longs != nil) {
@@ -52,6 +47,16 @@
   [array autorelease];
 #endif
   return array;
+}
+
+- (long long)longAtIndex:(NSUInteger)index {
+  IOSArray_checkIndex(self, index);
+  return buffer_[index];
+}
+
+- (long long *)longRefAtIndex:(NSUInteger)index {
+  IOSArray_checkIndex(self, index);
+  return &buffer_[index];
 }
 
 - (long long)replaceLongAtIndex:(NSUInteger)index withLong:(long long)value {

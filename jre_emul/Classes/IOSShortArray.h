@@ -35,6 +35,7 @@
 // Return short at a specified index, throws IndexOutOfBoundsException
 // if out out range.
 - (short)shortAtIndex:(NSUInteger)index;
+- (short *)shortRefAtIndex:(NSUInteger)index;
 
 // Sets short at a specified index, throws IndexOutOfBoundsException
 // if out out range.  Returns replacement value.
@@ -60,4 +61,3 @@
 - (short)postDecr:(NSUInteger)index;
 
 @end
-

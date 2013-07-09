@@ -319,7 +319,8 @@ public class Rewriter extends ErrorReportingASTVisitor {
 
     IfStatement ifStmt = ast.newIfStatement();
     ifStmt.setExpression(ASTFactory.newInfixExpression(
-        ast, nullCheck, InfixExpression.Operator.CONDITIONAL_AND, instanceofExpr, "boolean"));
+        ast, nullCheck, InfixExpression.Operator.CONDITIONAL_AND, instanceofExpr,
+        ast.resolveWellKnownType("boolean")));
     ifStmt.setThenStatement(ifBlock);
 
     ASTUtil.getStatements(node.getBody()).add(0, ifStmt);
@@ -521,7 +522,8 @@ public class Rewriter extends ErrorReportingASTVisitor {
     VariableDeclarationExpression indexDecl = ASTFactory.newVariableDeclarationExpression(
         ast, indexVariable, ASTFactory.newNumberLiteral(ast, "0", "int"));
     InfixExpression loopCondition = ASTFactory.newInfixExpression(
-        ast, indexVariable, InfixExpression.Operator.LESS, sizeVariable, "boolean");
+        ast, indexVariable, InfixExpression.Operator.LESS, sizeVariable,
+        ast.resolveWellKnownType("boolean"));
     PostfixExpression incrementExpr = ASTFactory.newPostfixExpression(
         ast, indexVariable, PostfixExpression.Operator.INCREMENT);
 
