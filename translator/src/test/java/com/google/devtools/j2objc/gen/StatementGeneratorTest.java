@@ -1304,7 +1304,19 @@ public class StatementGeneratorTest extends GenerationTest {
         "[IOSCharArray iosClassWithDimensions:2]]");
   }
 
-  public void testUnsignedShiftRight() throws IOException {
+  public void testUnsignedRightShift() throws IOException {
+    String translation = translateSourceFile(
+        "public class Test { void test(int a, long b, char c, byte d, short e) { " +
+        "long r; r = a >>> 1; r = b >>> 2; r = c >>> 3; r = d >>> 4; r = e >>> 5; }}",
+        "Test", "Test.m");
+    assertTranslation(translation, "r = (int) (((unsigned int) a) >> 1);");
+    assertTranslation(translation, "r = (long long) (((unsigned long long) b) >> 2);");
+    assertTranslation(translation, "r = c >> 3;");
+    assertTranslation(translation, "r = (char) (((unsigned char) d) >> 4);");
+    assertTranslation(translation, "r = (short) (((unsigned short) e) >> 5);");
+  }
+
+  public void testUnsignedRightShiftAssign() throws IOException {
     String translation = translateSourceFile(
         "public class Test { void test(int a, long b, char c, byte d, short e) { " +
         "a >>>= 1; b >>>= 2; c >>>= 3; d >>>= 4; e >>>= 5; }}",

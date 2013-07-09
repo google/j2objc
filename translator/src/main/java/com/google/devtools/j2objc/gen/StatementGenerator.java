@@ -963,7 +963,7 @@ public class StatementGenerator extends ErrorReportingASTVisitor {
     Expression rhs = node.getRightOperand();
     List<Expression> extendedOperands = ASTUtil.getExtendedOperands(node);
     ITypeBinding type = Types.getTypeBinding(node);
-    String typeName = NameTable.getFullName(type);
+    ITypeBinding lhsType = Types.getTypeBinding(lhs);
     if (Types.isJavaStringType(type) &&
         op.equals(InfixExpression.Operator.PLUS)) {
       printStringConcatenation(lhs, rhs, extendedOperands);
@@ -983,10 +983,10 @@ public class StatementGenerator extends ErrorReportingASTVisitor {
       second.accept(this);
       buffer.append("]");
     } else if (op.equals(InfixExpression.Operator.RIGHT_SHIFT_UNSIGNED) &&
-        !typeName.equals("unichar")) {
+        !lhsType.getName().equals("char")) {
       printUnsignedRightShift(lhs, rhs);
     } else if (op.equals(InfixExpression.Operator.REMAINDER) && isFloatingPoint(node)) {
-      buffer.append(typeName.equals("float") ? "fmodf" : "fmod");
+      buffer.append(type.getName().equals("float") ? "fmodf" : "fmod");
       buffer.append('(');
       lhs.accept(this);
       buffer.append(", ");
@@ -995,7 +995,7 @@ public class StatementGenerator extends ErrorReportingASTVisitor {
     } else {
       lhs.accept(this);
       buffer.append(' ');
-      buffer.append(op.toString());
+      buffer.append(getOperatorStr(op));
       buffer.append(' ');
       rhs.accept(this);
       for (Iterator<Expression> it = extendedOperands.iterator(); it.hasNext(); ) {
@@ -1004,6 +1004,13 @@ public class StatementGenerator extends ErrorReportingASTVisitor {
       }
     }
     return false;
+  }
+
+  private static String getOperatorStr(InfixExpression.Operator op) {
+    if (op.equals(InfixExpression.Operator.RIGHT_SHIFT_UNSIGNED)) {
+      return ">>";
+    }
+    return op.toString();
   }
 
   /**
