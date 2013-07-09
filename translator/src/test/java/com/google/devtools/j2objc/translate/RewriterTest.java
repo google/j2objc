@@ -527,14 +527,14 @@ public class RewriterTest extends GenerationTest {
   public void testMultipleSwitchVariables() throws IOException {
     String translation = translateSourceFile(
       "public class A { public void doSomething(int n) { switch (n) { " +
-      "case 1: int i = 1; int j = 2; }}" +
+      "case 1: int i; int j = 2; }}" +
       "private void log(int i) {}}",
       "A", "A.m");
     int index = translation.indexOf("int i;");
     assertTrue(index >= 0 && index < translation.indexOf("switch"));
     index = translation.indexOf("int j;");
     assertTrue(index >= 0 && index < translation.indexOf("switch"));
-    assertFalse(translation.contains("int i = 1;"));
+    assertOccurrences(translation, "int i;", 1);
     assertFalse(translation.contains("int j = 2;"));
   }
 

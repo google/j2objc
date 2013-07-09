@@ -660,16 +660,15 @@ public class Rewriter extends ErrorReportingASTVisitor {
       Statement stmt = statements.get(i);
       if (stmt instanceof VariableDeclarationStatement) {
         VariableDeclarationStatement declStmt = (VariableDeclarationStatement) stmt;
-        statements.remove(i);
+        statements.remove(i--);
         List<VariableDeclarationFragment> fragments = ASTUtil.getFragments(declStmt);
-        int iStatement = i;
         for (VariableDeclarationFragment decl : fragments) {
           Expression initializer = decl.getInitializer();
           if (initializer != null) {
             Assignment assignment = ASTFactory.newAssignment(ast,
                 NodeCopier.copySubtree(ast, decl.getName()),
                 NodeCopier.copySubtree(ast, initializer));
-            statements.add(iStatement++, ast.newExpressionStatement(assignment));
+            statements.add(++i, ast.newExpressionStatement(assignment));
             decl.setInitializer(null);
           }
         }
