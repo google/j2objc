@@ -19,7 +19,7 @@ package com.google.devtools.j2objc.gen;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.CharMatcher;
 import com.google.common.collect.Lists;
-import com.google.common.collect.Sets;
+import com.google.common.collect.Maps;
 import com.google.devtools.j2objc.J2ObjC;
 import com.google.devtools.j2objc.Options;
 import com.google.devtools.j2objc.translate.DestructorGenerator;
@@ -107,9 +107,11 @@ import org.eclipse.jdt.core.dom.VariableDeclarationFragment;
 import org.eclipse.jdt.core.dom.VariableDeclarationStatement;
 import org.eclipse.jdt.core.dom.WhileStatement;
 
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 /**
@@ -122,7 +124,9 @@ public class StatementGenerator extends ErrorReportingASTVisitor {
   private final Set<IVariableBinding> fieldHiders;
   private final boolean asFunction;
   private final boolean useReferenceCounting;
-  private final Set<Expression> needsCastNodes = Sets.newHashSet();
+  // The boolean value indicates whether the expression should be cast when the
+  // resolved type of the expression is known to be "id".
+  private final Map<Expression, Boolean> needsCastNodes = Maps.newHashMap();
 
   private static final String EXPONENTIAL_FLOATING_POINT_REGEX =
       "[+-]?\\d*\\.?\\d*[eE][+-]?\\d+";
@@ -274,7 +278,7 @@ public class StatementGenerator extends ErrorReportingASTVisitor {
   }
 
   private void printNilCheckAndCast(Expression e) {
-    needsCastNodes.add(e);
+    needsCastNodes.put(e, true);
     printNilCheck(e);
   }
 
@@ -283,7 +287,7 @@ public class StatementGenerator extends ErrorReportingASTVisitor {
       e.accept(this);
       return;
     }
-    boolean castPrinted = printCast(e);
+    boolean castPrinted = maybePrintCastFromId(e);
     buffer.append("nil_chk(");
     // Avoid printing the same cast inside the nil_chk.
     needsCastNodes.remove(e);
@@ -335,7 +339,7 @@ public class StatementGenerator extends ErrorReportingASTVisitor {
   @Override
   public boolean visit(ArrayAccess node) {
     ITypeBinding elementType = Types.getTypeBinding(node);
-    boolean castPrinted = printCast(node);
+    boolean castPrinted = maybePrintCastFromId(node);
     buffer.append('[');
     printNilCheckAndCast(node.getArray());
     buffer.append(' ');
@@ -761,7 +765,7 @@ public class StatementGenerator extends ErrorReportingASTVisitor {
   @Override
   public boolean visit(ClassInstanceCreation node) {
     ITypeBinding type = Types.getTypeBinding(node.getType());
-    boolean castPrinted = printCast(node);
+    boolean castPrinted = maybePrintCastFromId(node);
     buffer.append(useReferenceCounting ? "[[[" : "[[");
     ITypeBinding outerType = type.getDeclaringClass();
     buffer.append(NameTable.getFullName(type));
@@ -1229,7 +1233,8 @@ public class StatementGenerator extends ErrorReportingASTVisitor {
     assert binding != null;
     // Object receiving the message, or null if it's a method in this class.
     Expression receiver = node.getExpression();
-    ITypeBinding receiverType = receiver != null ? Types.getTypeBinding(receiver) : null;
+    ITypeBinding receiverType = receiver != null ? Types.getTypeBinding(receiver) :
+        binding.getDeclaringClass();
 
     if (Types.isFunction(binding)) {
       buffer.append(methodName);
@@ -1247,12 +1252,7 @@ public class StatementGenerator extends ErrorReportingASTVisitor {
     } else if (methodName.equals("getClass") && receiver != null && receiverType.isInterface()) {
       printInterfaceGetClass(node, receiver);
     } else {
-      boolean castPrinted = false;
-      ITypeBinding expectedType = Types.mapType(Types.getTypeBinding(node));
-      ITypeBinding actualType = Types.mapType(binding.getMethodDeclaration().getReturnType());
-      if (!expectedType.isEqualTo(actualType)) {
-        castPrinted = printCast(node);
-      }
+      boolean castPrinted = maybePrintCast(node, getActualReturnType(binding, receiverType));
       buffer.append('[');
 
       if (receiver != null) {
@@ -1279,6 +1279,60 @@ public class StatementGenerator extends ErrorReportingASTVisitor {
     return false;
   }
 
+  private static ITypeBinding getActualReturnType(
+      IMethodBinding method, ITypeBinding receiverType) {
+    IMethodBinding actualDeclaration =
+        getFirstDeclaration(getObjCMethodSignature(method), receiverType);
+    if (actualDeclaration == null) {
+      actualDeclaration = method.getMethodDeclaration();
+    }
+    ITypeBinding returnType = actualDeclaration.getReturnType();
+    if (returnType.isTypeVariable()) {
+      return Types.resolveIOSType("id");
+    }
+    return Types.mapType(returnType.getErasure());
+  }
+
+  /**
+   * Finds the declaration for a given method and receiver in the same way that
+   * the ObjC compiler will search for a declaration.
+   */
+  private static IMethodBinding getFirstDeclaration(String methodSig, ITypeBinding type) {
+    if (type == null) {
+      return null;
+    }
+    type = type.getTypeDeclaration();
+    for (IMethodBinding declaredMethod : type.getDeclaredMethods()) {
+      if (methodSig.equals(getObjCMethodSignature(declaredMethod))) {
+        return declaredMethod;
+      }
+    }
+    List<ITypeBinding> supertypes = Lists.newArrayList();
+    supertypes.addAll(Arrays.asList(type.getInterfaces()));
+    supertypes.add(type.isTypeVariable() ? 0 : supertypes.size(), type.getSuperclass());
+    for (ITypeBinding supertype : supertypes) {
+      IMethodBinding result = getFirstDeclaration(methodSig, supertype);
+      if (result != null) {
+        return result;
+      }
+    }
+    return null;
+  }
+
+  private static String getObjCMethodSignature(IMethodBinding method) {
+    StringBuilder sb = new StringBuilder(method.getName());
+    boolean first = true;
+    for (ITypeBinding paramType : method.getParameterTypes()) {
+      String keyword = NameTable.parameterKeyword(paramType);
+      if (first) {
+        first = false;
+        keyword = NameTable.capitalize(keyword);
+      }
+      sb.append(keyword + ":");
+    }
+    return sb.toString();
+  }
+
   private void printInterfaceGetClass(MethodInvocation node, Expression receiver) {
     buffer.append("[(id<JavaObject>) ");
     printNilCheck(receiver);
@@ -1300,8 +1354,20 @@ public class StatementGenerator extends ErrorReportingASTVisitor {
     buffer.append(']');
   }
 
-  private boolean printCast(Expression e) {
-    if (!needsCastNodes.contains(e)) {
+  private boolean maybePrintCastFromId(Expression e) {
+    return maybePrintCast(e, Types.resolveIOSType("id"));
+  }
+
+  private boolean maybePrintCast(Expression e, ITypeBinding actualType) {
+    Boolean forceCastOfId = needsCastNodes.get(e);
+    if (forceCastOfId == null) {
+      return false;
+    }
+    ITypeBinding expectedType = Types.mapType(Types.getTypeBinding(e).getTypeDeclaration());
+    if (actualType.isAssignmentCompatible(expectedType)) {
+      return false;
+    }
+    if (actualType == Types.resolveIOSType("id") && !forceCastOfId) {
       return false;
     }
     ITypeBinding type = Types.getTypeBinding(e);
@@ -1582,28 +1648,8 @@ public class StatementGenerator extends ErrorReportingASTVisitor {
     Expression expr = node.getExpression();
     if (expr != null) {
       buffer.append(' ');
-      boolean needsCast = false;
       ITypeBinding expressionType = Types.getTypeBinding(expr);
       IBinding binding = Types.getBinding(expr);
-      if (expr instanceof SuperMethodInvocation) {
-        needsCast = true;
-      } else if (expressionType.isParameterizedType()) {
-        // Add a cast if expr is a superclass field or method, as its declared
-        // type may be more general than expr's return type.
-        if (binding instanceof IVariableBinding && ((IVariableBinding) binding).isField()) {
-          IVariableBinding var = (IVariableBinding) binding;
-          ITypeBinding remoteC = var.getDeclaringClass();
-          ITypeBinding localC = Types.getMethodBinding(getOwningMethod(node)).getDeclaringClass();
-          needsCast = !localC.isEqualTo(remoteC) &&
-              var.getVariableDeclaration().getType().isTypeVariable();
-        } else if (binding instanceof IMethodBinding) {
-          IMethodBinding method = (IMethodBinding) binding;
-          ITypeBinding remoteC = method.getDeclaringClass();
-          ITypeBinding localC = Types.getMethodBinding(getOwningMethod(node)).getDeclaringClass();
-          needsCast = !localC.isEqualTo(remoteC) &&
-              method.getMethodDeclaration().getReturnType().isTypeVariable();
-        }
-      }
       MethodDeclaration method = getOwningMethod(node);
       boolean shouldRetainResult = false;
 
@@ -1612,14 +1658,10 @@ public class StatementGenerator extends ErrorReportingASTVisitor {
       if (method.getName().getIdentifier().equals("copyWithZone") && useReferenceCounting) {
         shouldRetainResult = true;
       }
-      if (needsCast) {
-        buffer.append('(');
-        buffer.append(NameTable.getObjCType(expressionType));
-        buffer.append(") ");
-      }
       if (shouldRetainResult) {
         buffer.append("[");
       }
+      needsCastNodes.put(expr, false);
       expr.accept(this);
       if (shouldRetainResult) {
         buffer.append(" retain]");
@@ -1770,6 +1812,8 @@ public class StatementGenerator extends ErrorReportingASTVisitor {
   @Override
   public boolean visit(SuperMethodInvocation node) {
     IMethodBinding binding = Types.getMethodBinding(node);
+    boolean castPrinted = maybePrintCast(node,
+        getActualReturnType(binding, Types.getTypeBinding(getOwningType(node)).getSuperclass()));
     if (BindingUtil.isStatic(binding)) {
       buffer.append("[[super class] ");
     } else {
@@ -1778,6 +1822,9 @@ public class StatementGenerator extends ErrorReportingASTVisitor {
     buffer.append(NameTable.getName(binding));
     printArguments(binding, ASTUtil.getArguments(node));
     buffer.append(']');
+    if (castPrinted) {
+      buffer.append(')');
+    }
     return false;
   }
 
@@ -2040,9 +2087,11 @@ public class StatementGenerator extends ErrorReportingASTVisitor {
   @Override
   public boolean visit(VariableDeclarationFragment node) {
     node.getName().accept(this);
-    if (node.getInitializer() != null) {
+    Expression initializer = node.getInitializer();
+    if (initializer != null) {
       buffer.append(" = ");
-      node.getInitializer().accept(this);
+      needsCastNodes.put(initializer, false);
+      initializer.accept(this);
     }
     return false;
   }
