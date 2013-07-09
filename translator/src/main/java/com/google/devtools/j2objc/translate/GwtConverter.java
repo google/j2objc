@@ -132,13 +132,13 @@ public class GwtConverter extends ErrorReportingASTVisitor {
 
   @Override
   public boolean visit(MethodInvocation node) {
+    AST ast = node.getAST();
     IMethodBinding method = Types.getMethodBinding(node);
     List<Expression> args = ASTUtil.getArguments(node);
     if (method.getName().equals("create") &&
         method.getDeclaringClass().getQualifiedName().equals(GWT_CLASS) &&
         args.size() == 1) {
       // Convert GWT.create(Foo.class) to Foo.class.newInstance().
-      AST ast = node.getAST();
       SimpleName name = ast.newSimpleName("newInstance");
       node.setName(name);
       Expression clazz = NodeCopier.copySubtree(ast, args.get(0));
@@ -149,7 +149,7 @@ public class GwtConverter extends ErrorReportingASTVisitor {
       Types.addBinding(name, newBinding);
       Types.addBinding(node, newBinding);
     } else if (isGwtTest(node)) {
-      BooleanLiteral falseLiteral = Types.newBooleanLiteral(false);
+      BooleanLiteral falseLiteral = ASTFactory.newBooleanLiteral(ast, false);
       ASTUtil.setProperty(node, falseLiteral);
     }
     return true;

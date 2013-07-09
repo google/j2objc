@@ -24,6 +24,7 @@ import org.eclipse.jdt.core.dom.ArrayCreation;
 import org.eclipse.jdt.core.dom.ArrayInitializer;
 import org.eclipse.jdt.core.dom.ArrayType;
 import org.eclipse.jdt.core.dom.Assignment;
+import org.eclipse.jdt.core.dom.BooleanLiteral;
 import org.eclipse.jdt.core.dom.CastExpression;
 import org.eclipse.jdt.core.dom.CharacterLiteral;
 import org.eclipse.jdt.core.dom.Expression;
@@ -272,15 +273,6 @@ public final class ASTFactory {
     return literal;
   }
 
-  public static InfixExpression createNullCheck(AST ast, IVariableBinding var, boolean equal) {
-    NullLiteral nullNode = ast.newNullLiteral();
-    Types.addBinding(nullNode, ast.resolveWellKnownType("java.lang.Object"));
-    return newInfixExpression(
-        ast, newSimpleName(ast, var),
-        equal ? InfixExpression.Operator.EQUALS : InfixExpression.Operator.NOT_EQUALS, nullNode,
-        ast.resolveWellKnownType("boolean"));
-  }
-
   public static InstanceofExpression newInstanceofExpression(
       AST ast, Expression lhs, ITypeBinding type) {
     InstanceofExpression expr = ast.newInstanceofExpression();
@@ -326,6 +318,18 @@ public final class ASTFactory {
 
   public static Expression makeIntLiteral(AST ast, int i) {
     return makeLiteral(ast, Integer.valueOf(i), ast.resolveWellKnownType("int"));
+  }
+
+  public static BooleanLiteral newBooleanLiteral(AST ast, boolean value) {
+    BooleanLiteral node = ast.newBooleanLiteral(value);
+    Types.addBinding(node, ast.resolveWellKnownType("boolean"));
+    return node;
+  }
+
+  public static NullLiteral newNullLiteral(AST ast) {
+    NullLiteral node = ast.newNullLiteral();
+    Types.addBinding(node, ast.resolveWellKnownType("java.lang.Object"));
+    return node;
   }
 
   public static TypeLiteral newTypeLiteral(AST ast, ITypeBinding type) {

@@ -27,19 +27,15 @@ import com.google.j2objc.annotations.AutoreleasePool;
 import com.google.j2objc.annotations.Weak;
 import com.google.j2objc.annotations.WeakOuter;
 
-import org.eclipse.jdt.core.IJavaElement;
 import org.eclipse.jdt.core.dom.AST;
 import org.eclipse.jdt.core.dom.ASTNode;
 import org.eclipse.jdt.core.dom.Block;
-import org.eclipse.jdt.core.dom.BooleanLiteral;
 import org.eclipse.jdt.core.dom.CompilationUnit;
 import org.eclipse.jdt.core.dom.IAnnotationBinding;
 import org.eclipse.jdt.core.dom.IBinding;
 import org.eclipse.jdt.core.dom.IMethodBinding;
-import org.eclipse.jdt.core.dom.IPackageBinding;
 import org.eclipse.jdt.core.dom.ITypeBinding;
 import org.eclipse.jdt.core.dom.IVariableBinding;
-import org.eclipse.jdt.core.dom.NullLiteral;
 import org.eclipse.jdt.core.dom.SimpleType;
 import org.eclipse.jdt.core.dom.Type;
 import org.eclipse.jdt.core.dom.TypeDeclaration;
@@ -177,27 +173,20 @@ public class Types {
   }
 
   private void populatePrimitiveAndWrapperTypeMaps() {
-    loadPrimitiveAndWrapperTypes(
-        ast.resolveWellKnownType("boolean"), ast.resolveWellKnownType("java.lang.Boolean"));
-    loadPrimitiveAndWrapperTypes(
-        ast.resolveWellKnownType("byte"), ast.resolveWellKnownType("java.lang.Byte"));
-    loadPrimitiveAndWrapperTypes(
-        ast.resolveWellKnownType("char"), ast.resolveWellKnownType("java.lang.Character"));
-    loadPrimitiveAndWrapperTypes(
-        ast.resolveWellKnownType("short"), ast.resolveWellKnownType("java.lang.Short"));
-    loadPrimitiveAndWrapperTypes(
-        ast.resolveWellKnownType("int"), ast.resolveWellKnownType("java.lang.Integer"));
-    loadPrimitiveAndWrapperTypes(
-        ast.resolveWellKnownType("long"), ast.resolveWellKnownType("java.lang.Long"));
-    loadPrimitiveAndWrapperTypes(
-        ast.resolveWellKnownType("float"), ast.resolveWellKnownType("java.lang.Float"));
-    loadPrimitiveAndWrapperTypes(
-        ast.resolveWellKnownType("double"), ast.resolveWellKnownType("java.lang.Double"));
-    loadPrimitiveAndWrapperTypes(
-        ast.resolveWellKnownType("void"), ast.resolveWellKnownType("java.lang.Void"));
+    loadPrimitiveAndWrapperTypes("boolean", "java.lang.Boolean");
+    loadPrimitiveAndWrapperTypes("byte", "java.lang.Byte");
+    loadPrimitiveAndWrapperTypes("char", "java.lang.Character");
+    loadPrimitiveAndWrapperTypes("short", "java.lang.Short");
+    loadPrimitiveAndWrapperTypes("int", "java.lang.Integer");
+    loadPrimitiveAndWrapperTypes("long", "java.lang.Long");
+    loadPrimitiveAndWrapperTypes("float", "java.lang.Float");
+    loadPrimitiveAndWrapperTypes("double", "java.lang.Double");
+    loadPrimitiveAndWrapperTypes("void", "java.lang.Void");
   }
 
-  private void loadPrimitiveAndWrapperTypes(ITypeBinding primitive, ITypeBinding wrapper) {
+  private void loadPrimitiveAndWrapperTypes(String primitiveName, String wrapperName) {
+    ITypeBinding primitive = ast.resolveWellKnownType(primitiveName);
+    ITypeBinding wrapper = ast.resolveWellKnownType(wrapperName);
     primitiveToWrapperTypes.put(primitive, wrapper);
     wrapperToPrimitiveTypes.put(wrapper, primitive);
   }
@@ -430,18 +419,6 @@ public class Types {
     return var != null ? instance.releaseableFields.contains(var.getVariableDeclaration()) : false;
   }
 
-  public static NullLiteral newNullLiteral() {
-    NullLiteral nullLiteral = instance.ast.newNullLiteral();
-    addBinding(nullLiteral, NullType.SINGLETON);
-    return nullLiteral;
-  }
-
-  public static BooleanLiteral newBooleanLiteral(boolean value) {
-    BooleanLiteral boolLiteral = instance.ast.newBooleanLiteral(value);
-    addBinding(boolLiteral, instance.booleanType);
-    return boolLiteral;
-  }
-
   public static ITypeBinding getWrapperType(ITypeBinding primitiveType) {
     return instance.primitiveToWrapperTypes.get(primitiveType);
   }
@@ -521,238 +498,5 @@ public class Types {
 
   public static boolean hasAutoreleasePool(Block block) {
     return instance.autoreleasePoolBlocks.contains(block);
-  }
-
-  // JDT doesn't have any way to dynamically create a null literal binding.
-  private static class NullType implements ITypeBinding {
-    static final NullType SINGLETON = new NullType();
-
-    public IAnnotationBinding[] getAnnotations() {
-      return new IAnnotationBinding[0];
-    }
-
-    public int getKind() {
-      return IBinding.TYPE;
-    }
-
-    public boolean isDeprecated() {
-      return false;
-    }
-
-    public boolean isRecovered() {
-      return false;
-    }
-
-    public boolean isSynthetic() {
-      return false;
-    }
-
-    public IJavaElement getJavaElement() {
-      return null;
-    }
-
-    public String getKey() {
-      return null;
-    }
-
-    public boolean isEqualTo(IBinding binding) {
-      return binding.getName().equals("null");
-    }
-
-    public ITypeBinding createArrayType(int dimension) {
-      return null;
-    }
-
-    public String getBinaryName() {
-      return "N";
-    }
-
-    public ITypeBinding getBound() {
-      return null;
-    }
-
-    public ITypeBinding getGenericTypeOfWildcardType() {
-      return null;
-    }
-
-    public int getRank() {
-      return -1;
-    }
-
-    public ITypeBinding getComponentType() {
-      return null;
-    }
-
-    public IVariableBinding[] getDeclaredFields() {
-      return new IVariableBinding[0];
-    }
-
-    public IMethodBinding[] getDeclaredMethods() {
-      return new IMethodBinding[0];
-    }
-
-    public int getDeclaredModifiers() {
-      return 0;
-    }
-
-    public ITypeBinding[] getDeclaredTypes() {
-      return new ITypeBinding[0];
-    }
-
-    public ITypeBinding getDeclaringClass() {
-      return null;
-    }
-
-    public IMethodBinding getDeclaringMethod() {
-      return null;
-    }
-
-    public int getDimensions() {
-      return 0;
-    }
-
-    public ITypeBinding getElementType() {
-      return null;
-    }
-
-    public ITypeBinding getErasure() {
-      return null;
-    }
-
-    public ITypeBinding[] getInterfaces() {
-      return new ITypeBinding[0];
-    }
-
-    public int getModifiers() {
-      return 0;
-    }
-
-    public String getName() {
-      return "null";
-    }
-
-    public IPackageBinding getPackage() {
-      return null;
-    }
-
-    public String getQualifiedName() {
-      return "null";
-    }
-
-    public ITypeBinding getSuperclass() {
-      return null;
-    }
-
-    public ITypeBinding[] getTypeArguments() {
-      return new ITypeBinding[0];
-    }
-
-    public ITypeBinding[] getTypeBounds() {
-      return new ITypeBinding[0];
-    }
-
-    public ITypeBinding getTypeDeclaration() {
-      return SINGLETON;
-    }
-
-    public ITypeBinding[] getTypeParameters() {
-      return new ITypeBinding[0];
-    }
-
-    public ITypeBinding getWildcard() {
-      return null;
-    }
-
-    public boolean isAnnotation() {
-      return false;
-    }
-
-    public boolean isAnonymous() {
-      return false;
-    }
-
-    public boolean isArray() {
-      return false;
-    }
-
-    public boolean isAssignmentCompatible(ITypeBinding variableType) {
-      return true;
-    }
-
-    public boolean isCapture() {
-      return false;
-    }
-
-    public boolean isCastCompatible(ITypeBinding type) {
-      return false;
-    }
-
-    public boolean isClass() {
-      return false;
-    }
-
-    public boolean isEnum() {
-      return false;
-    }
-
-    public boolean isFromSource() {
-      return false;
-    }
-
-    public boolean isGenericType() {
-      return false;
-    }
-
-    public boolean isInterface() {
-      return false;
-    }
-
-    public boolean isLocal() {
-      return false;
-    }
-
-    public boolean isMember() {
-      return false;
-    }
-
-    public boolean isNested() {
-      return false;
-    }
-
-    public boolean isNullType() {
-      return true;
-    }
-
-    public boolean isParameterizedType() {
-      return false;
-    }
-
-    public boolean isPrimitive() {
-      return false;
-    }
-
-    public boolean isRawType() {
-      return false;
-    }
-
-    public boolean isSubTypeCompatible(ITypeBinding type) {
-      return false;
-    }
-
-    public boolean isTopLevel() {
-      return false;
-    }
-
-    public boolean isTypeVariable() {
-      return false;
-    }
-
-    public boolean isUpperbound() {
-      return false;
-    }
-
-    public boolean isWildcardType() {
-      return false;
-    }
   }
 }

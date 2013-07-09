@@ -306,7 +306,9 @@ public class Rewriter extends ErrorReportingASTVisitor {
     AST ast = node.getAST();
     IVariableBinding param = Types.getVariableBinding(ASTUtil.getParameters(node).get(0));
 
-    Expression nullCheck = ASTFactory.createNullCheck(ast, param, false);
+    Expression nullCheck = ASTFactory.newInfixExpression(
+        ast, ASTFactory.newSimpleName(ast, param), InfixExpression.Operator.NOT_EQUALS,
+        ASTFactory.newNullLiteral(ast), ast.resolveWellKnownType("boolean"));
     Expression instanceofExpr = ASTFactory.newInstanceofExpression(
         ast, ASTFactory.newSimpleName(ast, param), typeArguments[0]);
     instanceofExpr = ASTFactory.newPrefixExpression(
