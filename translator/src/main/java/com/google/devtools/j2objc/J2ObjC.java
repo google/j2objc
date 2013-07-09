@@ -27,6 +27,7 @@ import com.google.devtools.j2objc.gen.ObjectiveCSegmentedHeaderGenerator;
 import com.google.devtools.j2objc.translate.AnonymousClassConverter;
 import com.google.devtools.j2objc.translate.ArrayRewriter;
 import com.google.devtools.j2objc.translate.Autoboxer;
+import com.google.devtools.j2objc.translate.ComplexExpressionExtractor;
 import com.google.devtools.j2objc.translate.DeadCodeEliminator;
 import com.google.devtools.j2objc.translate.DestructorGenerator;
 import com.google.devtools.j2objc.translate.GwtConverter;
@@ -467,6 +468,9 @@ public class J2ObjC {
 
     // Fix references to outer scope and captured variables.
     new OuterReferenceFixer().run(unit);
+
+    // Breaks up deeply nested expressions such as chained method calls.
+    new ComplexExpressionExtractor().run(unit);
 
     // Translate core Java type use to similar iOS types
     new JavaToIOSTypeConverter().run(unit);

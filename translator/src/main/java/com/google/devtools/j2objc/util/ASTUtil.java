@@ -276,4 +276,38 @@ public final class ASTUtil {
       }
     }
   }
+
+  /**
+   * Returns the given statement as a list of statements that can be added to.
+   * If node is a Block, then returns it's statement list. If node is the direct
+   * child of a Block, returns the sublist containing node as the only element.
+   * Otherwise, creates a new Block node in the place of node and returns its
+   * list of statements.
+   */
+  public static List<Statement> asStatementList(Statement node) {
+    if (node instanceof Block) {
+      return getStatements((Block) node);
+    }
+    ASTNode parent = node.getParent();
+    if (parent instanceof Block) {
+      List<Statement> stmts = getStatements((Block) parent);
+      for (int i = 0; i < stmts.size(); i++) {
+        if (stmts.get(i) == node) {
+          return stmts.subList(i, i+1);
+        }
+      }
+    }
+    Block block = node.getAST().newBlock();
+    setProperty(node, block);
+    getStatements(block).add(node);
+    return getStatements(block);
+  }
+
+  public static void insertAfter(Statement node, Statement toInsert) {
+    asStatementList(node).add(toInsert);
+  }
+
+  public static void insertBefore(Statement node, Statement toInsert) {
+    asStatementList(node).add(0, toInsert);
+  }
 }
