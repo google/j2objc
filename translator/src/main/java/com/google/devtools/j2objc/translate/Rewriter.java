@@ -32,6 +32,7 @@ import com.google.devtools.j2objc.util.NameTable;
 
 import org.eclipse.jdt.core.dom.AST;
 import org.eclipse.jdt.core.dom.ASTVisitor;
+import org.eclipse.jdt.core.dom.AnnotationTypeDeclaration;
 import org.eclipse.jdt.core.dom.AnonymousClassDeclaration;
 import org.eclipse.jdt.core.dom.Assignment;
 import org.eclipse.jdt.core.dom.Block;
@@ -116,6 +117,12 @@ public class Rewriter extends ErrorReportingASTVisitor {
   public boolean visit(AnonymousClassDeclaration node) {
     return visitType(node.getAST(), Types.getTypeBinding(node), ASTUtil.getBodyDeclarations(node),
                      Modifier.NONE);
+  }
+
+  @Override
+  public boolean visit(AnnotationTypeDeclaration node) {
+    return visitType(node.getAST(), Types.getTypeBinding(node), ASTUtil.getBodyDeclarations(node),
+                     node.getModifiers());
   }
 
   private boolean visitType(
@@ -1001,7 +1008,6 @@ public class Rewriter extends ErrorReportingASTVisitor {
     }
   }
 
-  @SuppressWarnings("unchecked")
   private LinkedListMultimap<Integer, VariableDeclarationFragment> rewriteExtraDimensions(
       AST ast, Type typeNode, List<VariableDeclarationFragment> fragments) {
     // Removes extra dimensions on variable declaration fragments and creates extra field
