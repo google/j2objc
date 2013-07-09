@@ -28,6 +28,7 @@ import org.eclipse.jdt.core.dom.Assignment;
 import org.eclipse.jdt.core.dom.CastExpression;
 import org.eclipse.jdt.core.dom.CharacterLiteral;
 import org.eclipse.jdt.core.dom.Expression;
+import org.eclipse.jdt.core.dom.FieldAccess;
 import org.eclipse.jdt.core.dom.FieldDeclaration;
 import org.eclipse.jdt.core.dom.ForStatement;
 import org.eclipse.jdt.core.dom.IBinding;
@@ -99,6 +100,14 @@ public final class ASTFactory {
       name = newName(ast, name, var);
     }
     return name;
+  }
+
+  public static FieldAccess newFieldAccess(AST ast, IVariableBinding var, Expression expr) {
+    FieldAccess node = ast.newFieldAccess();
+    node.setExpression(expr);
+    node.setName(newSimpleName(ast, var));
+    Types.addBinding(node, var);
+    return node;
   }
 
   public static Assignment newAssignment(AST ast, Expression lhs, Expression rhs) {

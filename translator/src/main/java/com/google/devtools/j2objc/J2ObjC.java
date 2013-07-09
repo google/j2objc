@@ -35,6 +35,7 @@ import com.google.devtools.j2objc.translate.InitializationNormalizer;
 import com.google.devtools.j2objc.translate.InnerClassExtractor;
 import com.google.devtools.j2objc.translate.JavaToIOSMethodTranslator;
 import com.google.devtools.j2objc.translate.JavaToIOSTypeConverter;
+import com.google.devtools.j2objc.translate.NilCheckResolver;
 import com.google.devtools.j2objc.translate.OuterReferenceFixer;
 import com.google.devtools.j2objc.translate.OuterReferenceResolver;
 import com.google.devtools.j2objc.translate.Rewriter;
@@ -471,6 +472,9 @@ public class J2ObjC {
 
     // Breaks up deeply nested expressions such as chained method calls.
     new ComplexExpressionExtractor().run(unit);
+
+    // Adds nil_chk calls wherever an expression is dereferenced.
+    new NilCheckResolver().run(unit);
 
     // Translate core Java type use to similar iOS types
     new JavaToIOSTypeConverter().run(unit);

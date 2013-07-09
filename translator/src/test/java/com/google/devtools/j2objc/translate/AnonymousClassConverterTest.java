@@ -168,7 +168,7 @@ public class AnonymousClassConverterTest extends GenerationTest {
       @Override
       public void endVisit(MethodInvocation node) {
         if (node.getName().getIdentifier().equals("toString")) {
-          assertEquals("val$test.toString()", node.toString());
+          assertEquals("nil_chk(val$test).toString()", node.toString());
           ++testsFound[0];
         }
       };
@@ -209,7 +209,7 @@ public class AnonymousClassConverterTest extends GenerationTest {
       @Override
       public void endVisit(MethodInvocation node) {
         if (node.getName().getIdentifier().equals("toString")) {
-          assertEquals("val$foo.toString()", node.toString());
+          assertEquals("nil_chk(val$foo).toString()", node.toString());
           ++testsFound[0];
         }
       };

@@ -76,6 +76,7 @@ import org.eclipse.jdt.core.dom.InstanceofExpression;
 import org.eclipse.jdt.core.dom.LabeledStatement;
 import org.eclipse.jdt.core.dom.MethodDeclaration;
 import org.eclipse.jdt.core.dom.MethodInvocation;
+import org.eclipse.jdt.core.dom.Name;
 import org.eclipse.jdt.core.dom.NullLiteral;
 import org.eclipse.jdt.core.dom.NumberLiteral;
 import org.eclipse.jdt.core.dom.ParenthesizedExpression;
@@ -258,70 +259,6 @@ public class StatementGenerator extends ErrorReportingASTVisitor {
         buffer.append(", nil");
       }
     }
-  }
-
-  private boolean needsNilCheck(Expression e) {
-    IVariableBinding sym = Types.getVariableBinding(e);
-    if (sym != null) {
-      // Outer class references should always be non-nil.
-      return !sym.getName().startsWith("this$") && !sym.getName().equals("outer$")
-          && !hasNilCheckParent(e, sym);
-    }
-    if (e instanceof MethodInvocation) {
-      IMethodBinding method = Types.getMethodBinding(e);
-      // Check for some common cases where the result is known not to be null.
-      return !method.getName().equals("getClass")
-          && !(Types.isBoxedPrimitive(method.getDeclaringClass())
-               && method.getName().equals("valueOf"));
-    }
-    return false;
-  }
-
-  private void printNilCheckAndCast(Expression e) {
-    needsCastNodes.put(e, true);
-    printNilCheck(e);
-  }
-
-  private void printNilCheck(Expression e) {
-    if (!needsNilCheck(e)) {
-      e.accept(this);
-      return;
-    }
-    boolean castPrinted = maybePrintCastFromId(e);
-    buffer.append("nil_chk(");
-    // Avoid printing the same cast inside the nil_chk.
-    needsCastNodes.remove(e);
-    e.accept(this);
-    if (castPrinted) {
-      buffer.append("))");
-    } else {
-      buffer.append(')');
-    }
-  }
-
-  private boolean hasNilCheckParent(Expression e, IVariableBinding sym) {
-    ASTNode parent = e.getParent();
-    while (parent != null) {
-      if (parent instanceof IfStatement) {
-        Expression condition = ((IfStatement) parent).getExpression();
-        if (condition instanceof InfixExpression) {
-          InfixExpression infix = (InfixExpression) condition;
-          IBinding lhs = Types.getBinding(infix.getLeftOperand());
-          if (lhs != null && infix.getRightOperand() instanceof NullLiteral) {
-            return sym.isEqualTo(lhs);
-          }
-          IBinding rhs = Types.getBinding(infix.getRightOperand());
-          if (rhs != null && infix.getLeftOperand() instanceof NullLiteral) {
-            return sym.isEqualTo(rhs);
-          }
-        }
-      }
-      parent = parent.getParent();
-      if (parent instanceof MethodDeclaration) {
-        break;
-      }
-    }
-    return false;
   }
 
   @Override
@@ -812,7 +749,9 @@ public class StatementGenerator extends ErrorReportingASTVisitor {
 
   @Override
   public boolean visit(FieldAccess node) {
-    printNilCheckAndCast(node.getExpression());
+    Expression expr = node.getExpression();
+    needsCastNodes.put(expr, true);
+    expr.accept(this);
     if (Options.inlineFieldAccess() && isProperty(node.getName())) {
       buffer.append("->");
     } else {
@@ -1140,9 +1079,10 @@ public class StatementGenerator extends ErrorReportingASTVisitor {
 
   @Override
   public boolean visit(MethodInvocation node) {
-    String methodName = NameTable.getName(node.getName());
     IMethodBinding binding = Types.getMethodBinding(node);
+    String methodName = NameTable.getName(binding);
     assert binding != null;
+
     // Object receiving the message, or null if it's a method in this class.
     Expression receiver = node.getExpression();
     ITypeBinding receiverType = receiver != null ? Types.getTypeBinding(receiver) :
@@ -1152,37 +1092,63 @@ public class StatementGenerator extends ErrorReportingASTVisitor {
         binding.getDeclaringClass().equals(Types.getIOSClass())) {
       printIsAssignableFromExpression(node);
     } else {
+      IOSMethod iosMethod = IOSMethodBinding.getIOSMethod(binding);
       boolean castPrinted = maybePrintCast(node, getActualReturnType(binding, receiverType));
-      boolean returnsPointer = IOSMethodBinding.returnsPointer(binding);
+      boolean returnsPointer = iosMethod != null && iosMethod.returnsPointer();
       if (returnsPointer) {
         buffer.append("(*");
       }
-      buffer.append('[');
-
-      if (BindingUtil.isStatic(binding)) {
-        buffer.append(NameTable.getFullName(binding.getDeclaringClass()));
-      } else if (receiver != null) {
-        printNilCheckAndCast(receiver);
+      if (iosMethod != null && iosMethod.isFunction()) {
+        printFunctionInvocation(iosMethod, ASTUtil.getArguments(node));
       } else {
-        buffer.append("self");
-      }
-
-      buffer.append(' ');
-      if (binding instanceof IOSMethodBinding) {
-        buffer.append(binding.getName());
-      } else {
-        buffer.append(methodName);
-      }
-      printArguments(binding, ASTUtil.getArguments(node));
-      buffer.append(']');
-      if (castPrinted) {
-        buffer.append(')');
+        printMethodInvocation(binding, methodName, receiver, ASTUtil.getArguments(node));
       }
       if (returnsPointer) {
+        buffer.append(')');
+      }
+      if (castPrinted) {
         buffer.append(')');
       }
     }
     return false;
+  }
+
+  private void printFunctionInvocation(IOSMethod iosMethod, List<Expression> args) {
+    buffer.append(iosMethod.getName());
+    buffer.append('(');
+    boolean isFirst = true;
+    for (Expression arg : args) {
+      if (isFirst) {
+        isFirst = false;
+      } else {
+        buffer.append(", ");
+      }
+      arg.accept(this);
+    }
+    buffer.append(')');
+  }
+
+  private void printMethodInvocation(
+      IMethodBinding binding, String methodName, Expression receiver, List<Expression> args) {
+    buffer.append('[');
+
+    if (BindingUtil.isStatic(binding)) {
+      buffer.append(NameTable.getFullName(binding.getDeclaringClass()));
+    } else if (receiver != null) {
+      needsCastNodes.put(receiver, true);
+      receiver.accept(this);
+    } else {
+      buffer.append("self");
+    }
+
+    buffer.append(' ');
+    if (binding instanceof IOSMethodBinding) {
+      buffer.append(binding.getName());
+    } else {
+      buffer.append(methodName);
+    }
+    printArguments(binding, args);
+    buffer.append(']');
   }
 
   private static ITypeBinding getActualReturnType(
@@ -1420,7 +1386,9 @@ public class StatementGenerator extends ErrorReportingASTVisitor {
       buffer.append(NameTable.getFullName((ITypeBinding) binding));
       return false;
     }
-    printNilCheckAndCast(node.getQualifier());
+    Name qualifier = node.getQualifier();
+    needsCastNodes.put(qualifier, true);
+    qualifier.accept(this);
     buffer.append('.');
     node.getName().accept(this);
     return false;

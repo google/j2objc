@@ -64,6 +64,16 @@ public class IOSMethodBinding extends GeneratedMethodBinding {
     return binding;
   }
 
+  public static IOSMethodBinding newFunction(
+      String name, ITypeBinding returnType, ITypeBinding... paramTypes) {
+    IOSMethodBinding binding = new IOSMethodBinding(
+        IOSMethod.newFunction(name), null, 0, returnType, null, null, false);
+    for (ITypeBinding paramType : paramTypes) {
+      binding.addParameter(paramType);
+    }
+    return binding;
+  }
+
   public static IOSMethod getIOSMethod(IMethodBinding binding) {
     if (binding instanceof IOSMethodBinding) {
       return ((IOSMethodBinding) binding).getIOSMethod();
@@ -79,14 +89,6 @@ public class IOSMethodBinding extends GeneratedMethodBinding {
     IOSMethod iosMethod = getIOSMethod(method);
     if (iosMethod != null) {
       return iosMethod.isVarArgs();
-    }
-    return false;
-  }
-
-  public static boolean returnsPointer(IMethodBinding method) {
-    IOSMethod iosMethod = getIOSMethod(method);
-    if (iosMethod != null) {
-      return iosMethod.returnsPointer();
     }
     return false;
   }
