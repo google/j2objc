@@ -316,8 +316,8 @@ public class StatementGeneratorTest extends GenerationTest {
         "  String b = \"foo\" + a.hashCode() + \"bar\" + a.length() + \"baz\"; } }",
         "Test", "Test.m");
     assertTranslation(translation,
-        "[NSString stringWithFormat:@\"foo%dbar%dbaz\", (int) [NIL_CHK(a) hash], " +
-        "(int) [NIL_CHK(a) length]]");
+        "[NSString stringWithFormat:@\"foo%dbar%dbaz\", (int) [((NSString *) NIL_CHK(a)) hash], " +
+        "(int) [((NSString *) NIL_CHK(a)) length]]");
   }
 
   public void testVarargsMethodInvocation() throws IOException {
@@ -428,7 +428,7 @@ public class StatementGeneratorTest extends GenerationTest {
       "K test() { return iterator.next().getKey(); }}",
       "Test", "Test.m");
     assertTranslation(translation, "return [((id<JavaUtilMap_Entry>) " +
-        "[((id<JavaUtilIterator>) NIL_CHK(iterator_)) next]) getKey];");
+        "NIL_CHK([((id<JavaUtilIterator>) NIL_CHK(iterator_)) next])) getKey];");
   }
 
   public void testAnonymousClassInInnerStatic() throws IOException {
@@ -616,17 +616,20 @@ public class StatementGeneratorTest extends GenerationTest {
     String result = generateStatement(stmts.get(0));
     assertEquals("IOSClass *myClass = [self getClass];", result);
     result = generateStatement(stmts.get(1));
-    assertEquals("IOSClass *mySuperClass = [NIL_CHK(myClass) getSuperclass];", result);
+    assertEquals(
+        "IOSClass *mySuperClass = [((IOSClass *) NIL_CHK(myClass)) getSuperclass];", result);
     result = generateStatement(stmts.get(2));
     assertEquals("IOSClass *enumClass = [IOSClass classWithClass:[JavaLangEnum class]];", result);
   }
 
   public void testCastInConstructorChain() throws IOException {
-    String source = "int i = new Object().hashCode();";
+    String source = "int i = new Throwable().hashCode();";
     List<Statement> stmts = translateStatements(source);
     assertEquals(1, stmts.size());
     String result = generateStatement(stmts.get(0));
-    assertEquals("int i = [((NSObject *) [[[NSObject alloc] init] autorelease]) hash];", result);
+    assertEquals(
+        "int i = [((JavaLangThrowable *) [[[JavaLangThrowable alloc] init] autorelease]) hash];",
+        result);
   }
 
   public void testInnerClassCreation() throws IOException {
@@ -893,7 +896,7 @@ public class StatementGeneratorTest extends GenerationTest {
       "  public static void main(String[] args) { int n = strings.get(1).length(); }}",
       "Test", "Test.m");
     assertTranslation(translation, "[((NSString *) " +
-      "[((JavaUtilArrayList *) NIL_CHK(Test_strings_)) getWithInt:1]) length];");
+      "NIL_CHK([((JavaUtilArrayList *) NIL_CHK(Test_strings_)) getWithInt:1])) length];");
   }
 
   // b/5872757: verify multi-dimensional array has cast before each
@@ -1500,5 +1503,13 @@ public class StatementGeneratorTest extends GenerationTest {
       assertTranslation(translation,
           "if (__mainException) {\n        @throw __mainException;\n      }");
     }
+  }
+
+  public void testGenericResultIsCastForChainedMethodCall() throws IOException {
+    String translation = translateSourceFile(
+        "abstract class Test<T extends Test.Foo> { " +
+        "abstract T getObj(); static class Foo { void foo() { } } " +
+        "static void test(Test<Foo> t) { t.getObj().foo(); } }", "Test", "Test.m");
+    assertTranslation(translation, "[((Test_Foo *) NIL_CHK([((Test *) NIL_CHK(t)) getObj])) foo]");
   }
 }

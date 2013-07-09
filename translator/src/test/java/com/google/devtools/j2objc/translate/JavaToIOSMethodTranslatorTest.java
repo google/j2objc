@@ -106,7 +106,7 @@ public class JavaToIOSMethodTranslatorTest extends GenerationTest {
     String result = generateStatement(stmts.get(0));
     assertEquals("IOSClass *cls = [self getClass];", result);
     result = generateStatement(stmts.get(1));
-    assertEquals("IOSClass *superClass = [NIL_CHK(cls) getSuperclass];", result);
+    assertEquals("IOSClass *superClass = [((IOSClass *) NIL_CHK(cls)) getSuperclass];", result);
   }
 
   /**
@@ -120,11 +120,11 @@ public class JavaToIOSMethodTranslatorTest extends GenerationTest {
     List<Statement> stmts = translateStatements(source);
     assertEquals(4, stmts.size());
     String result = generateStatement(stmts.get(1));
-    assertEquals("NSString *s1 = [NIL_CHK(cls) getName];", result);
+    assertEquals("NSString *s1 = [((IOSClass *) NIL_CHK(cls)) getName];", result);
     result = generateStatement(stmts.get(2));
-    assertEquals("NSString *s2 = [NIL_CHK(cls) getSimpleName];", result);
+    assertEquals("NSString *s2 = [((IOSClass *) NIL_CHK(cls)) getSimpleName];", result);
     result = generateStatement(stmts.get(3));
-    assertEquals("NSString *s3 = [NIL_CHK(cls) getCanonicalName];", result);
+    assertEquals("NSString *s3 = [((IOSClass *) NIL_CHK(cls)) getCanonicalName];", result);
   }
 
   public void testStringSubstring() throws IOException {
@@ -133,9 +133,9 @@ public class JavaToIOSMethodTranslatorTest extends GenerationTest {
     List<Statement> stmts = translateStatements(source);
     assertEquals(3, stmts.size());
     String result = generateStatement(stmts.get(1));
-    assertEquals("NSString *s2 = [NIL_CHK(s1) substring:2];", result);
+    assertEquals("NSString *s2 = [((NSString *) NIL_CHK(s1)) substring:2];", result);
     result = generateStatement(stmts.get(2));
-    assertEquals("NSString *s3 = [NIL_CHK(s1) substring:2 endIndex:4];", result);
+    assertEquals("NSString *s3 = [((NSString *) NIL_CHK(s1)) substring:2 endIndex:4];", result);
   }
 
   public void testStringIndexOf() throws IOException {
@@ -147,21 +147,23 @@ public class JavaToIOSMethodTranslatorTest extends GenerationTest {
     List<Statement> stmts = translateStatements(source);
     assertEquals(9, stmts.size());
     String result = generateStatement(stmts.get(1));
-    assertEquals("int idx = [NIL_CHK(s) indexOf:'g'];", result);
+    assertEquals("int idx = [((NSString *) NIL_CHK(s)) indexOf:'g'];", result);
     result = generateStatement(stmts.get(2));
-    assertEquals("idx = [NIL_CHK(s) indexOfString:@\"brillig\"];", result);
+    assertEquals("idx = [((NSString *) NIL_CHK(s)) indexOfString:@\"brillig\"];", result);
     result = generateStatement(stmts.get(3));
-    assertEquals("idx = [NIL_CHK(s) lastIndexOf:'v'];", result);
+    assertEquals("idx = [((NSString *) NIL_CHK(s)) lastIndexOf:'v'];", result);
     result = generateStatement(stmts.get(4));
-    assertEquals("idx = [NIL_CHK(s) lastIndexOfString:@\"the\"];", result);
+    assertEquals("idx = [((NSString *) NIL_CHK(s)) lastIndexOfString:@\"the\"];", result);
     result = generateStatement(stmts.get(5));
-    assertEquals("idx = [NIL_CHK(s) indexOf:'g' fromIndex:1];", result);
+    assertEquals("idx = [((NSString *) NIL_CHK(s)) indexOf:'g' fromIndex:1];", result);
     result = generateStatement(stmts.get(6));
-    assertEquals("idx = [NIL_CHK(s) indexOfString:@\"brillig\" fromIndex:2];", result);
+    assertEquals("idx = [((NSString *) NIL_CHK(s)) indexOfString:@\"brillig\" fromIndex:2];",
+                 result);
     result = generateStatement(stmts.get(7));
-    assertEquals("idx = [NIL_CHK(s) lastIndexOf:'v' fromIndex:3];", result);
+    assertEquals("idx = [((NSString *) NIL_CHK(s)) lastIndexOf:'v' fromIndex:3];", result);
     result = generateStatement(stmts.get(8));
-    assertEquals("idx = [NIL_CHK(s) lastIndexOfString:@\"the\" fromIndex:4];", result);
+    assertEquals("idx = [((NSString *) NIL_CHK(s)) lastIndexOfString:@\"the\" fromIndex:4];",
+                 result);
   }
 
   public void testStringToCharArray() throws IOException {
@@ -169,7 +171,7 @@ public class JavaToIOSMethodTranslatorTest extends GenerationTest {
     List<Statement> stmts = translateStatements(source);
     assertEquals(2, stmts.size());
     String result = generateStatement(stmts.get(1));
-    assertEquals("IOSCharArray *array = [NIL_CHK(s) toCharArray];", result);
+    assertEquals("IOSCharArray *array = [((NSString *) NIL_CHK(s)) toCharArray];", result);
   }
 
   public void testNewInstanceMapping() throws IOException {
@@ -178,7 +180,7 @@ public class JavaToIOSMethodTranslatorTest extends GenerationTest {
     List<Statement> stmts = translateStatements(source);
     assertEquals(1, stmts.size());
     String result = generateStatement(stmts.get(0));
-    assertTranslation(result, "[NIL_CHK(clazz) newInstance]");
+    assertTranslation(result, "[((IOSClass *) NIL_CHK(clazz)) newInstance]");
   }
 
   // Verify that a method named cloned in a class that doesn't
@@ -247,15 +249,36 @@ public class JavaToIOSMethodTranslatorTest extends GenerationTest {
         "      .build(); " +
         "} }",
         "Example", "Example.m");
-    assertTranslation(translation, "return [[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[" +
-        "((Example_Builder *) [[[Example_Builder alloc] init] autorelease]) " +
-        "addWithInt:10] addWithInt:11] addWithInt:12] addWithInt:13] addWithInt:14] " +
-        "addWithInt:15] addWithInt:16] addWithInt:17] addWithInt:18] addWithInt:19] " +
-        "addWithInt:20] addWithInt:21] addWithInt:22] addWithInt:23] addWithInt:24] " +
-        "addWithInt:25] addWithInt:26] addWithInt:27] addWithInt:28] addWithInt:29] " +
-        "addWithInt:30] addWithInt:31] addWithInt:32] addWithInt:33] addWithInt:34] " +
-        "addWithInt:35] addWithInt:36] addWithInt:37] addWithInt:38] addWithInt:39] " +
-        "addWithInt:40] addWithInt:41] addWithInt:42] addWithInt:43] addWithInt:44] " +
-        "addWithInt:45] addWithInt:46] addWithInt:47] addWithInt:48] addWithInt:49] build];");
+    assertTranslation(translation,
+        "return [((Example_Builder *) NIL_CHK([((Example_Builder *) " +
+        "NIL_CHK([((Example_Builder *) NIL_CHK([((Example_Builder *) " +
+        "NIL_CHK([((Example_Builder *) NIL_CHK([((Example_Builder *) " +
+        "NIL_CHK([((Example_Builder *) NIL_CHK([((Example_Builder *) " +
+        "NIL_CHK([((Example_Builder *) NIL_CHK([((Example_Builder *) " +
+        "NIL_CHK([((Example_Builder *) NIL_CHK([((Example_Builder *) " +
+        "NIL_CHK([((Example_Builder *) NIL_CHK([((Example_Builder *) " +
+        "NIL_CHK([((Example_Builder *) NIL_CHK([((Example_Builder *) " +
+        "NIL_CHK([((Example_Builder *) NIL_CHK([((Example_Builder *) " +
+        "NIL_CHK([((Example_Builder *) NIL_CHK([((Example_Builder *) " +
+        "NIL_CHK([((Example_Builder *) NIL_CHK([((Example_Builder *) " +
+        "NIL_CHK([((Example_Builder *) NIL_CHK([((Example_Builder *) " +
+        "NIL_CHK([((Example_Builder *) NIL_CHK([((Example_Builder *) " +
+        "NIL_CHK([((Example_Builder *) NIL_CHK([((Example_Builder *) " +
+        "NIL_CHK([((Example_Builder *) NIL_CHK([((Example_Builder *) " +
+        "NIL_CHK([((Example_Builder *) NIL_CHK([((Example_Builder *) " +
+        "NIL_CHK([((Example_Builder *) NIL_CHK([((Example_Builder *) " +
+        "NIL_CHK([((Example_Builder *) NIL_CHK([((Example_Builder *) " +
+        "NIL_CHK([((Example_Builder *) NIL_CHK([((Example_Builder *) " +
+        "NIL_CHK([((Example_Builder *) NIL_CHK([((Example_Builder *) " +
+        "NIL_CHK([((Example_Builder *) [[[Example_Builder alloc] init] autorelease]) " +
+        "addWithInt:10])) addWithInt:11])) addWithInt:12])) addWithInt:13])) addWithInt:14])) " +
+        "addWithInt:15])) addWithInt:16])) addWithInt:17])) addWithInt:18])) addWithInt:19])) " +
+        "addWithInt:20])) addWithInt:21])) addWithInt:22])) addWithInt:23])) addWithInt:24])) " +
+        "addWithInt:25])) addWithInt:26])) addWithInt:27])) addWithInt:28])) addWithInt:29])) " +
+        "addWithInt:30])) addWithInt:31])) addWithInt:32])) addWithInt:33])) addWithInt:34])) " +
+        "addWithInt:35])) addWithInt:36])) addWithInt:37])) addWithInt:38])) addWithInt:39])) " +
+        "addWithInt:40])) addWithInt:41])) addWithInt:42])) addWithInt:43])) addWithInt:44])) " +
+        "addWithInt:45])) addWithInt:46])) addWithInt:47])) addWithInt:48])) addWithInt:49])) " +
+        "build];");
   }
 }
