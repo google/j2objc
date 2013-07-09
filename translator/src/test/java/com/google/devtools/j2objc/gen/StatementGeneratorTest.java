@@ -1540,4 +1540,10 @@ public class StatementGeneratorTest extends GenerationTest {
     // it returns a Test_A type.
     assertTranslation(translation, "return ((Test_B *) [((Test_D *) nil_chk(d)) foo]);");
   }
+
+  public void testStaticMethodCalledOnObject() throws IOException {
+    String translation = translateSourceFile(
+        "class Test { static void foo() {} void test(Test t) { t.foo(); } }", "Test", "Test.m");
+    assertTranslation(translation, "[Test foo];");
+  }
 }

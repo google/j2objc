@@ -1165,15 +1165,14 @@ public class StatementGenerator extends ErrorReportingASTVisitor {
       }
       buffer.append('[');
 
-      if (receiver != null) {
+      if (BindingUtil.isStatic(binding)) {
+        buffer.append(NameTable.getFullName(binding.getDeclaringClass()));
+      } else if (receiver != null) {
         printNilCheckAndCast(receiver);
       } else {
-        if (BindingUtil.isStatic(binding)) {
-          buffer.append(NameTable.getFullName(binding.getDeclaringClass()));
-        } else {
-          buffer.append("self");
-        }
+        buffer.append("self");
       }
+
       buffer.append(' ');
       if (binding instanceof IOSMethodBinding) {
         buffer.append(binding.getName());
