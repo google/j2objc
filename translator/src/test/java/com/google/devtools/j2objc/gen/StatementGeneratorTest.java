@@ -72,7 +72,7 @@ public class StatementGeneratorTest extends GenerationTest {
       "    Class<?> classTwo = two.getClass(); }}",
       "A", "A.m");
     assertTranslation(translation, "[((JavaUtilArrayList *) nil_chk(one)) getClass]");
-    assertTranslation(translation, "[(id<JavaObject>) nil_chk(two) getClass]");
+    assertTranslation(translation, "[((id<JavaUtilList>) nil_chk(two)) getClass]");
   }
 
   public void testEnumConstantsInSwitchStatement() throws IOException {
