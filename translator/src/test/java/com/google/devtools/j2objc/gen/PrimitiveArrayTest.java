@@ -150,7 +150,6 @@ public class PrimitiveArrayTest extends GenerationTest {
     assertEquals(2, stmts.size());
     result = generateStatement(stmts.get(1));
     assertEquals(
-        "JavaLangException *o = ((JavaLangException *) [((IOSObjectArray *) nil_chk(foo))"
-        + " objectAtIndex:1]);", result);
+        "JavaLangException *o = [((IOSObjectArray *) nil_chk(foo)) objectAtIndex:1];", result);
   }
 }
