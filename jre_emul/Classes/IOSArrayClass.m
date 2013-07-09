@@ -20,7 +20,9 @@
 //
 
 #import "IOSArrayClass.h"
+#import "IOSObjectArray.h"
 #import "IOSPrimitiveClass.h"
+#import "java/lang/InstantiationException.h"
 
 @implementation IOSArrayClass
 
@@ -70,6 +72,13 @@
 
 - (NSString *)getSimpleName {
   return [[[self getComponentType] getName] stringByAppendingString:@"Array"];
+}
+
+- (id)newInstance {
+  if (!componentType_) {
+    @throw AUTORELEASE([[JavaLangInstantiationException alloc] init]);
+  }
+  return [IOSObjectArray arrayWithLength:0 type:componentType_];
 }
 
 #if ! __has_feature(objc_arc)
