@@ -76,7 +76,7 @@ public class InnerClassExtractorTest extends GenerationTest {
     assertTranslation(translation, "@property (nonatomic, retain) A *this$0;");
     assertTranslation(translation, "- (id)initWithA:(A *)outer$;");
     translation = getTranslatedFile("A.m");
-    assertTranslation(translation, "[NIL_CHK(this$0_.o) hash]");
+    assertTranslation(translation, "[nil_chk(this$0_.o) hash]");
     assertTranslation(translation, "JreOperatorRetainedAssign(&this$0_, self, outer$);");
   }
 
@@ -111,7 +111,7 @@ public class InnerClassExtractorTest extends GenerationTest {
     assertTranslation(translation, "@property (nonatomic, retain) A_B *this$0;");
     assertTranslation(translation, "- (id)initWithA_B:(A_B *)outer$;");
     translation = getTranslatedFile("A.m");
-    assertTranslation(translation, "[NIL_CHK(this$0_.this$0.o) hash]");
+    assertTranslation(translation, "[nil_chk(this$0_.this$0.o) hash]");
   }
 
   public void testWeakInnerInnerClass() throws IOException {
@@ -122,7 +122,7 @@ public class InnerClassExtractorTest extends GenerationTest {
     assertTranslation(translation, "@property (nonatomic, retain) A *this$0;");
     assertTranslation(translation, "@property (nonatomic, assign) A_B *this$0;");
     translation = getTranslatedFile("A.m");
-    assertTranslation(translation, "[NIL_CHK(this$0_.this$0.o) hash]");
+    assertTranslation(translation, "[nil_chk(this$0_.this$0.o) hash]");
   }
 
   public void testInnerMethodAnonymousClass() throws IOException {
@@ -150,7 +150,7 @@ public class InnerClassExtractorTest extends GenerationTest {
         "          withInt:(int)capture$0;");
     translation = getTranslatedFile("A.m");
     assertTranslation(translation, "[super initWithA:outer$.this$0]");
-    assertTranslation(translation, "[NIL_CHK(this$1_.this$0.o) hash]");
+    assertTranslation(translation, "[nil_chk(this$1_.this$0.o) hash]");
   }
 
   /**
@@ -493,7 +493,7 @@ public class InnerClassExtractorTest extends GenerationTest {
     assertTranslation(translation, "Test *this$1");  // Inner2's outer reference.
 
     translation = getTranslatedFile("Test.m");
-    assertTranslation(translation, "[((JavaLangInteger *) NIL_CHK(this$1_.i)) intValue] + j_");
+    assertTranslation(translation, "[((JavaLangInteger *) nil_chk(this$1_.i)) intValue] + j_");
   }
 
   public void testInnerClassInstantiatesAnotherInner() throws IOException {
@@ -784,7 +784,7 @@ public class InnerClassExtractorTest extends GenerationTest {
     assertTranslation(translation, "@property (nonatomic, retain) A *this$0;");
     assertTranslation(translation, "- (id)initWithA:(A *)outer$;");
     translation = getTranslatedFile("A.m");
-    assertTranslation(translation, "[((IOSObjectArray *) NIL_CHK(this$0_.elements)) count]");
+    assertTranslation(translation, "[((IOSObjectArray *) nil_chk(this$0_.elements)) count]");
   }
 
   public void testCreateInnerClassOfSuperclass() throws IOException {

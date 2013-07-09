@@ -440,7 +440,7 @@ public class RewriterTest extends GenerationTest {
         "String group() { return \"foo\"; } " +
         "void test() { A a = new A(); System.out.println(a.group()); }}";
     String translation = translateSourceFile(source, "A", "A.m");
-    assertTranslation(translation, "printlnWithNSString:[((A *) NIL_CHK(a)) group]];");
+    assertTranslation(translation, "printlnWithNSString:[((A *) nil_chk(a)) group]];");
   }
 
   // Regression test: Must call "charValue" on boxed type returned from iterator.
@@ -451,7 +451,7 @@ public class RewriterTest extends GenerationTest {
         "void test() { for (char c : chars) {} } }";
     String translation = translateSourceFile(source, "A", "A.m");
     assertTranslation(translation,
-        "unichar c = [((JavaLangCharacter *) NIL_CHK([((id<JavaUtilIterator>) NIL_CHK(iter__)) " +
+        "unichar c = [((JavaLangCharacter *) nil_chk([((id<JavaUtilIterator>) nil_chk(iter__)) " +
         "next])) charValue];");
   }
 
