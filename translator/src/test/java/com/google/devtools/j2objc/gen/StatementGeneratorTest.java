@@ -72,7 +72,7 @@ public class StatementGeneratorTest extends GenerationTest {
       "    Class<?> classTwo = two.getClass(); }}",
       "A", "A.m");
     assertTranslation(translation, "[((JavaUtilArrayList *) nil_chk(one)) getClass]");
-    assertTranslation(translation, "[(id<JavaObject>) ((id<JavaUtilList>) nil_chk(two)) getClass]");
+    assertTranslation(translation, "[(id<JavaObject>) nil_chk(two) getClass]");
   }
 
   public void testEnumConstantsInSwitchStatement() throws IOException {
@@ -792,8 +792,7 @@ public class StatementGeneratorTest extends GenerationTest {
     // field in its superclass.
     assertTranslation(translation, "@property (nonatomic, retain) Test_B *other_B;");
     translation = getTranslatedFile("Test.m");
-    assertTranslation(translation,
-        "JreOperatorRetainedAssign(&other_B_, self, ((Test_B *) [self getOther]))");
+    assertTranslation(translation, "JreOperatorRetainedAssign(&other_B_, self, [self getOther])");
   }
 
   public void testArrayInstanceOfTranslation() throws IOException {
@@ -1026,7 +1025,7 @@ public class StatementGeneratorTest extends GenerationTest {
       "  public static class BarD extends Foo.Bar { } " +
       "  public void bar() { Foo<BarD> f = new Foo<BarD>(); BarD b = f.foo(); } }",
       "Test", "Test.m");
-    assertTranslation(translation, "(Test_BarD *) [((Test_Foo *) nil_chk(f)) foo]");
+    assertTranslation(translation, "[((Test_Foo *) nil_chk(f)) foo]");
   }
 
   // b/5934474: verify that static variables are always referenced by

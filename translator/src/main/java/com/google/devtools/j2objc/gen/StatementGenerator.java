@@ -122,7 +122,7 @@ public class StatementGenerator extends ErrorReportingASTVisitor {
   private final Set<IVariableBinding> fieldHiders;
   private final boolean asFunction;
   private final boolean useReferenceCounting;
-  private final Set<Expression> nilCheckedNodes = Sets.newHashSet();
+  private final Set<Expression> needsCastNodes = Sets.newHashSet();
 
   private static final String EXPONENTIAL_FLOATING_POINT_REGEX =
       "[+-]?\\d*\\.?\\d*[eE][+-]?\\d+";
@@ -273,14 +273,20 @@ public class StatementGenerator extends ErrorReportingASTVisitor {
     return false;
   }
 
+  private void printNilCheckAndCast(Expression e) {
+    needsCastNodes.add(e);
+    printNilCheck(e);
+  }
+
   private void printNilCheck(Expression e) {
     if (!needsNilCheck(e)) {
       e.accept(this);
       return;
     }
-    boolean castPrinted = printCast(Types.getTypeBinding(e));
+    boolean castPrinted = printCast(e);
     buffer.append("nil_chk(");
-    nilCheckedNodes.add(e);
+    // Avoid printing the same cast inside the nil_chk.
+    needsCastNodes.remove(e);
     e.accept(this);
     if (castPrinted) {
       buffer.append("))");
@@ -329,9 +335,9 @@ public class StatementGenerator extends ErrorReportingASTVisitor {
   @Override
   public boolean visit(ArrayAccess node) {
     ITypeBinding elementType = Types.getTypeBinding(node);
-    boolean castPrinted = !nilCheckedNodes.contains(node) && printCast(elementType);
+    boolean castPrinted = printCast(node);
     buffer.append('[');
-    printNilCheck(node.getArray());
+    printNilCheckAndCast(node.getArray());
     buffer.append(' ');
 
     IOSTypeBinding iosArrayType = Types.resolveArrayType(elementType);
@@ -522,7 +528,7 @@ public class StatementGenerator extends ErrorReportingASTVisitor {
     ArrayAccess aa = (ArrayAccess) lhs;
     String kind = getArrayAccessKind(aa);
     buffer.append('[');
-    printNilCheck(aa.getArray());
+    printNilCheckAndCast(aa.getArray());
     buffer.append(" replace");
     buffer.append(kind);
     buffer.append("AtIndex:");
@@ -755,11 +761,7 @@ public class StatementGenerator extends ErrorReportingASTVisitor {
   @Override
   public boolean visit(ClassInstanceCreation node) {
     ITypeBinding type = Types.getTypeBinding(node.getType());
-    boolean castPrinted = false;
-    if (node.getParent() instanceof MethodInvocation
-        && node.equals(((MethodInvocation) node.getParent()).getExpression())) {
-      castPrinted = printCast(type);
-    }
+    boolean castPrinted = printCast(node);
     buffer.append(useReferenceCounting ? "[[[" : "[[");
     ITypeBinding outerType = type.getDeclaringClass();
     buffer.append(NameTable.getFullName(type));
@@ -900,7 +902,7 @@ public class StatementGenerator extends ErrorReportingASTVisitor {
       expr.accept(this);
       buffer.append(')');
     } else {
-      printNilCheck(expr);
+      printNilCheckAndCast(expr);
     }
     if (Options.inlineFieldAccess() && isProperty(node.getName())) {
       buffer.append("->");
@@ -1249,12 +1251,12 @@ public class StatementGenerator extends ErrorReportingASTVisitor {
       ITypeBinding expectedType = Types.mapType(Types.getTypeBinding(node));
       ITypeBinding actualType = Types.mapType(binding.getMethodDeclaration().getReturnType());
       if (!expectedType.isEqualTo(actualType)) {
-        castPrinted = !nilCheckedNodes.contains(node) && printCast(expectedType);
+        castPrinted = printCast(node);
       }
       buffer.append('[');
 
       if (receiver != null) {
-        printNilCheck(receiver);
+        printNilCheckAndCast(receiver);
       } else {
         if (BindingUtil.isStatic(binding)) {
           buffer.append(NameTable.getFullName(binding.getDeclaringClass()));
@@ -1298,7 +1300,11 @@ public class StatementGenerator extends ErrorReportingASTVisitor {
     buffer.append(']');
   }
 
-  private boolean printCast(ITypeBinding type) {
+  private boolean printCast(Expression e) {
+    if (!needsCastNodes.contains(e)) {
+      return false;
+    }
+    ITypeBinding type = Types.getTypeBinding(e);
     if (type == null || type.isPrimitive() || Types.isVoidType(type)) {
       return false;
     }
@@ -1427,7 +1433,7 @@ public class StatementGenerator extends ErrorReportingASTVisitor {
 
   private void printArrayIncrementOrDecrement(ArrayAccess access, String methodName) {
     buffer.append('[');
-    printNilCheck(access.getArray());
+    printNilCheckAndCast(access.getArray());
     buffer.append(' ');
     buffer.append(methodName);
     buffer.append(':');
@@ -1476,7 +1482,7 @@ public class StatementGenerator extends ErrorReportingASTVisitor {
       buffer.append(NameTable.getFullName((ITypeBinding) binding));
       return false;
     }
-    printNilCheck(node.getQualifier());
+    printNilCheckAndCast(node.getQualifier());
     buffer.append('.');
     node.getName().accept(this);
     return false;
@@ -1487,7 +1493,7 @@ public class StatementGenerator extends ErrorReportingASTVisitor {
   private boolean maybePrintArrayLength(String name, Expression qualifier) {
     if (name.equals("length") && Types.getTypeBinding(qualifier).isArray()) {
       buffer.append("(int) ["); // needs cast: count returns an unsigned value
-      printNilCheck(qualifier);
+      printNilCheckAndCast(qualifier);
       buffer.append(" count]");
       return true;
     }
