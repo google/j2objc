@@ -1039,15 +1039,6 @@ public class StatementGenerator extends ErrorReportingASTVisitor {
     ITypeBinding leftBinding = Types.getTypeBinding(node.getLeftOperand());
     ITypeBinding rightBinding = Types.getTypeBinding(node.getRightOperand());
 
-    if (rightBinding.isArray() && !rightBinding.getComponentType().isPrimitive()) {
-      buffer.append("[");
-      printArrayTypeLiteral(rightBinding);
-      buffer.append(" isInstance:");
-      node.getLeftOperand().accept(this);
-      buffer.append("]");
-      return false;
-    }
-
     buffer.append('[');
     if (leftBinding.isInterface()) {
       // Obj-C complains when a id<Protocol> is tested for a different
@@ -1849,19 +1840,13 @@ public class StatementGenerator extends ErrorReportingASTVisitor {
 
   @Override
   public boolean visit(TypeLiteral node) {
-    printTypeLiteral(Types.getTypeBinding(node.getType()));
-    return false;
-  }
-
-  private void printTypeLiteral(ITypeBinding type) {
+    ITypeBinding type = Types.getTypeBinding(node.getType());
     if (type.isPrimitive()) {
       // Use the wrapper class's TYPE variable.
       ITypeBinding wrapperType = Types.getWrapperType(type);
       buffer.append('[');
       buffer.append(NameTable.getFullName(wrapperType));
       buffer.append(" TYPE]");
-    } else if (type.isArray()) {
-      printArrayTypeLiteral(type);
     } else if (type.isInterface()) {
       buffer.append("[IOSClass classWithProtocol:@protocol(");
       buffer.append(NameTable.getFullName(type));
@@ -1871,22 +1856,7 @@ public class StatementGenerator extends ErrorReportingASTVisitor {
       buffer.append(NameTable.getFullName(type));
       buffer.append(" class]]");
     }
-  }
-
-  private void printArrayTypeLiteral(ITypeBinding arrayType) {
-    assert arrayType.isArray();
-    ITypeBinding elementType = arrayType.getElementType();
-    IOSTypeBinding iosArrayType = Types.resolveArrayType(elementType);
-    buffer.append("[").append(iosArrayType.getName()).append(" iosClass");
-    int dimensions = arrayType.getDimensions();
-    if (dimensions > 1) {
-      buffer.append("WithDimensions:").append(dimensions);
-    }
-    if (!elementType.isPrimitive()) {
-      buffer.append(dimensions == 1 ? "WithType:" : " type:");
-      printTypeLiteral(elementType);
-    }
-    buffer.append("]");
+    return false;
   }
 
   @Override

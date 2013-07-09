@@ -172,23 +172,14 @@ public class ImplementationImportCollector extends ErrorReportingASTVisitor {
 
   @Override
   public boolean visit(TypeLiteral node) {
-    handleTypeLiteral(Types.getTypeBinding(node.getType()));
-    return false;
-  }
-
-  private void handleTypeLiteral(ITypeBinding type) {
+    ITypeBinding type = Types.getTypeBinding(node.getType());
     if (type.isPrimitive()) {
       addImports(Types.getWrapperType(type));
-    } else if (type.isArray()) {
-      ITypeBinding elementType = type.getElementType();
-      addImports(Types.resolveArrayType(elementType));
-      if (!elementType.isPrimitive()) {
-        handleTypeLiteral(elementType);
-      }
     } else {
       addImports(type);
       addImports(Types.resolveIOSType("IOSClass"));
     }
+    return false;
   }
 
   @Override
@@ -216,13 +207,7 @@ public class ImplementationImportCollector extends ErrorReportingASTVisitor {
 
   @Override
   public boolean visit(InstanceofExpression node) {
-    ITypeBinding rightType = Types.getTypeBinding(node.getRightOperand());
-    if (rightType.isArray() && !rightType.getComponentType().isPrimitive()) {
-      handleTypeLiteral(rightType);
-      addImports(Types.resolveIOSType("IOSClass"));
-    } else {
-      addImports(rightType);
-    }
+    addImports(Types.getTypeBinding(node.getRightOperand()));
     return true;
   }
 
