@@ -34,6 +34,15 @@ package java.lang;
  * @since 1.0
  */
 public final class Double extends Number implements Comparable<Double> {
+    static final int EXPONENT_BIAS = 1023;
+
+    static final int EXPONENT_BITS = 12;
+    static final int MANTISSA_BITS = 52;
+    static final int NON_MANTISSA_BITS = 12;
+
+    static final long SIGN_MASK     = 0x8000000000000000L;
+    static final long EXPONENT_MASK = 0x7ff0000000000000L;
+    static final long MANTISSA_MASK = 0x000fffffffffffffL;
 
     /**
      * The value which the receiver represents.
@@ -67,6 +76,22 @@ public final class Double extends Number implements Comparable<Double> {
      * Constant for the Negative Infinity value of the {@code double} type.
      */
     public static final double NEGATIVE_INFINITY = -1.0 / 0.0;
+
+    /**
+     * Maximum base-2 exponent that a finite value of the {@code double} type may have.
+     * Equal to {@code Math.getExponent(Double.MAX_VALUE)}.
+     *
+     * @since 1.6
+     */
+    public static final int MAX_EXPONENT = 1023;
+
+    /**
+     * Minimum base-2 exponent that a normal value of the {@code double} type may have.
+     * Equal to {@code Math.getExponent(Double.MIN_NORMAL)}.
+     *
+     * @since 1.6
+     */
+    public static final int MIN_EXPONENT = -1022;
 
     /**
      * The {@link Class} object that represents the primitive type {@code

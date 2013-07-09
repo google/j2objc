@@ -1036,6 +1036,147 @@ public final class Math {
       return nextafterf(f, Float.MAX_VALUE) - f;
   }
 
+  /**
+   * Returns a double with the given magnitude and the sign of {@code sign}.
+   * If {@code sign} is NaN, the sign of the result is arbitrary.
+   * If you need a determinate sign in such cases, use {@code StrictMath.copySign}.
+   * @since 1.6
+   */
+  public static double copySign(double magnitude, double sign) {
+      long magnitudeBits = Double.doubleToRawLongBits(magnitude);
+      long signBits = Double.doubleToRawLongBits(sign);
+      magnitudeBits = (magnitudeBits & ~Double.SIGN_MASK) | (signBits & Double.SIGN_MASK);
+      return Double.longBitsToDouble(magnitudeBits);
+  }
+
+  /**
+   * Returns a float with the given magnitude and the sign of {@code sign}.
+   * If {@code sign} is NaN, the sign of the result is arbitrary.
+   * If you need a determinate sign in such cases, use {@code StrictMath.copySign}.
+   * @since 1.6
+   */
+  public static float copySign(float magnitude, float sign) {
+      int magnitudeBits = Float.floatToRawIntBits(magnitude);
+      int signBits = Float.floatToRawIntBits(sign);
+      magnitudeBits = (magnitudeBits & ~Float.SIGN_MASK) | (signBits & Float.SIGN_MASK);
+      return Float.intBitsToFloat(magnitudeBits);
+  }
+
+  /**
+   * Returns the unbiased base-2 exponent of float {@code f}.
+   * @since 1.6
+   */
+  public static int getExponent(float f) {
+      int bits = Float.floatToRawIntBits(f);
+      bits = (bits & Float.EXPONENT_MASK) >> Float.MANTISSA_BITS;
+      return bits - Float.EXPONENT_BIAS;
+  }
+
+  /**
+   * Returns the unbiased base-2 exponent of double {@code d}.
+   * @since 1.6
+   */
+  public static int getExponent(double d) {
+      long bits = Double.doubleToRawLongBits(d);
+      bits = (bits & Double.EXPONENT_MASK) >> Double.MANTISSA_BITS;
+      return (int) bits - Double.EXPONENT_BIAS;
+  }
+
+  /**
+   * Returns the next double after {@code start} in the given {@code direction}.
+   * @since 1.6
+   */
+  public static double nextAfter(double start, double direction) {
+      if (start == 0 && direction == 0) {
+          return direction;
+      }
+      return nextafter(start, direction);
+  }
+
+  /**
+   * Returns the next float after {@code start} in the given {@code direction}.
+   * @since 1.6
+   */
+  public static float nextAfter(float start, double direction) {
+      if (Float.isNaN(start) || Double.isNaN(direction)) {
+          return Float.NaN;
+      }
+      if (start == 0 && direction == 0) {
+          return (float) direction;
+      }
+      if ((start == Float.MIN_VALUE && direction < start)
+              || (start == -Float.MIN_VALUE && direction > start)) {
+          return (start > 0 ? 0f : -0f);
+      }
+      if (Float.isInfinite(start) && (direction != start)) {
+          return (start > 0 ? Float.MAX_VALUE : -Float.MAX_VALUE);
+      }
+      if ((start == Float.MAX_VALUE && direction > start)
+              || (start == -Float.MAX_VALUE && direction < start)) {
+          return (start > 0 ? Float.POSITIVE_INFINITY
+                  : Float.NEGATIVE_INFINITY);
+      }
+      if (direction > start) {
+          if (start > 0) {
+              return Float.intBitsToFloat(Float.floatToIntBits(start) + 1);
+          }
+          if (start < 0) {
+              return Float.intBitsToFloat(Float.floatToIntBits(start) - 1);
+          }
+          return +Float.MIN_VALUE;
+      }
+      if (direction < start) {
+          if (start > 0) {
+              return Float.intBitsToFloat(Float.floatToIntBits(start) - 1);
+          }
+          if (start < 0) {
+              return Float.intBitsToFloat(Float.floatToIntBits(start) + 1);
+          }
+          return -Float.MIN_VALUE;
+      }
+      return (float) direction;
+  }
+
+  /**
+   * Returns the next double larger than {@code d}.
+   * @since 1.6
+   */
+  public static double nextUp(double d) {
+      if (Double.isNaN(d)) {
+          return Double.NaN;
+      }
+      if (d == Double.POSITIVE_INFINITY) {
+          return Double.POSITIVE_INFINITY;
+      }
+      if (d == 0) {
+          return Double.MIN_VALUE;
+      } else if (d > 0) {
+          return Double.longBitsToDouble(Double.doubleToLongBits(d) + 1);
+      } else {
+          return Double.longBitsToDouble(Double.doubleToLongBits(d) - 1);
+      }
+  }
+
+  /**
+   * Returns the next float larger than {@code f}.
+   * @since 1.6
+   */
+  public static float nextUp(float f) {
+      if (Float.isNaN(f)) {
+          return Float.NaN;
+      }
+      if (f == Float.POSITIVE_INFINITY) {
+          return Float.POSITIVE_INFINITY;
+      }
+      if (f == 0) {
+          return Float.MIN_VALUE;
+      } else if (f > 0) {
+          return Float.intBitsToFloat(Float.floatToIntBits(f) + 1);
+      } else {
+          return Float.intBitsToFloat(Float.floatToIntBits(f) - 1);
+      }
+  }
+
   private native static double nextafter(double x, double y) /*-[
     return nextafter(x, y);
   ]-*/;

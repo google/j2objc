@@ -31,6 +31,15 @@ package java.lang;
  * @since 1.0
  */
 public final class Float extends Number implements Comparable<Float> {
+    static final int EXPONENT_BIAS = 127;
+
+    static final int EXPONENT_BITS = 9;
+    static final int MANTISSA_BITS = 23;
+    static final int NON_MANTISSA_BITS = 9;
+
+    static final int SIGN_MASK     = 0x80000000;
+    static final int EXPONENT_MASK = 0x7f800000;
+    static final int MANTISSA_MASK = 0x007fffff;
 
     /**
      * The value which the receiver represents.
@@ -61,6 +70,22 @@ public final class Float extends Number implements Comparable<Float> {
      * Constant for the Negative Infinity value of the {@code float} type.
      */
     public static final float NEGATIVE_INFINITY = -1.0f / 0.0f;
+
+    /**
+     * Maximum base-2 exponent that a finite value of the {@code float} type may have.
+     * Equal to {@code Math.getExponent(Float.MAX_VALUE)}.
+     *
+     * @since 1.6
+     */
+    public static final int MAX_EXPONENT = 127;
+
+    /**
+     * Minimum base-2 exponent that a normal value of the {@code float} type may have.
+     * Equal to {@code Math.getExponent(Float.MIN_NORMAL)}.
+     *
+     * @since 1.6
+     */
+    public static final int MIN_EXPONENT = -126;
 
     /**
      * The {@link Class} object that represents the primitive type {@code
