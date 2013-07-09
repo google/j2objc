@@ -226,9 +226,7 @@ public class RewriterTest extends GenerationTest {
         assertTrue(Modifier.isAbstract(modifiers));
         ITypeBinding returnType = Types.getTypeBinding(m.getReturnType2());
         if (name.equals("toArray")) {
-          assertTrue(returnType.isArray());
-          ITypeBinding componentType = returnType.getComponentType();
-          assertEquals(Types.getNSObject(), componentType);
+          assertEquals("IOSObjectArray", returnType.getName());
           if (!m.parameters().isEmpty()) {
             assertEquals(1, m.parameters().size());
             Object param = m.parameters().get(0);

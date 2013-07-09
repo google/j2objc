@@ -87,22 +87,13 @@ public class Types {
   private final IOSTypeBinding NS_ANY;
   private final IOSTypeBinding IOSClass;
 
-  public IOSArrayTypeBinding IOSBooleanArray;
-  public IOSArrayTypeBinding IOSByteArray;
-  public IOSArrayTypeBinding IOSCharArray;
-  public IOSArrayTypeBinding IOSDoubleArray;
-  public IOSArrayTypeBinding IOSFloatArray;
-  public IOSArrayTypeBinding IOSIntArray;
-  public IOSArrayTypeBinding IOSLongArray;
-  public IOSArrayTypeBinding IOSObjectArray;
-  public IOSArrayTypeBinding IOSShortArray;
+  private IOSTypeBinding IOSObjectArray;
 
   private final Map<String, ITypeBinding> javaBindingMap = Maps.newHashMap();
   private final Map<String, ITypeBinding> iosBindingMap = Maps.newHashMap();
 
   // Map a primitive type to its emulation array type.
-  private final Map<ITypeBinding, IOSArrayTypeBinding> arrayBindingMap = Maps.newHashMap();
-  private final Map<IOSArrayTypeBinding, ITypeBinding> componentTypeMap = Maps.newHashMap();
+  private final Map<ITypeBinding, IOSTypeBinding> arrayBindingMap = Maps.newHashMap();
 
   private final Set<Block> autoreleasePoolBlocks = Sets.newHashSet();
 
@@ -125,71 +116,37 @@ public class Types {
     javaNumberType = binding.getSuperclass();
 
     // Create core IOS types.
-    NSCopying = IOSTypeBinding.newInterface("NSCopying", javaCloneableType);
-    NSObject = IOSTypeBinding.newClass("NSObject", javaObjectType);
-    NSNumber = IOSTypeBinding.newClass("NSNumber", javaNumberType, NSObject);
-    NSString = IOSTypeBinding.newClass("NSString", javaStringType, NSObject);
-    NS_ANY = IOSTypeBinding.newUnmappedClass("id");
-    IOSClass = IOSTypeBinding.newUnmappedClass("IOSClass");
-    NSZone = IOSTypeBinding.newUnmappedClass("NSZone");
+    NSCopying = mapIOSType(IOSTypeBinding.newInterface("NSCopying", javaCloneableType));
+    NSObject = mapIOSType(IOSTypeBinding.newClass("NSObject", javaObjectType));
+    NSNumber = mapIOSType(IOSTypeBinding.newClass("NSNumber", javaNumberType, NSObject));
+    NSString = mapIOSType(IOSTypeBinding.newClass("NSString", javaStringType, NSObject));
+    NS_ANY = mapIOSType(IOSTypeBinding.newUnmappedClass("id"));
+    IOSClass = mapIOSType(IOSTypeBinding.newUnmappedClass("IOSClass"));
+    NSZone = mapIOSType(IOSTypeBinding.newUnmappedClass("NSZone"));
 
-    initializeBaseClasses();
     initializeArrayTypes();
     initializeTypeMap();
     initializeCommonJavaTypes();
-    populateArrayTypeMaps();
     populatePrimitiveAndWrapperTypeMaps();
     bindingMap = BindingMapBuilder.buildBindingMap(unit);
     setGlobalRenamings();
   }
 
-  private void initializeBaseClasses() {
-    iosBindingMap.put("NSObject", NSObject);
-    iosBindingMap.put("IOSClass", IOSClass);
-    iosBindingMap.put("NSString", NSString);
-    iosBindingMap.put("NSNumber", NSNumber);
-    iosBindingMap.put("NSCopying", NSCopying);
-    iosBindingMap.put("NSZone", NSZone);
-    iosBindingMap.put("id", NS_ANY);
+  private IOSTypeBinding mapIOSType(IOSTypeBinding type) {
+    iosBindingMap.put(type.getName(), type);
+    return type;
   }
 
   private void initializeArrayTypes() {
-    IOSBooleanArray = new IOSArrayTypeBinding(
-        "IOSBooleanArray", ast.resolveWellKnownType("java.lang.Boolean"),
-        ast.resolveWellKnownType("boolean"));
-    IOSByteArray = new IOSArrayTypeBinding(
-        "IOSByteArray", ast.resolveWellKnownType("java.lang.Byte"),
-        ast.resolveWellKnownType("byte"));
-    IOSCharArray = new IOSArrayTypeBinding(
-        "IOSCharArray", ast.resolveWellKnownType("java.lang.Character"),
-        ast.resolveWellKnownType("char"));
-    IOSDoubleArray = new IOSArrayTypeBinding(
-        "IOSDoubleArray", ast.resolveWellKnownType("java.lang.Double"),
-        ast.resolveWellKnownType("double"));
-    IOSFloatArray = new IOSArrayTypeBinding(
-        "IOSFloatArray", ast.resolveWellKnownType("java.lang.Float"),
-        ast.resolveWellKnownType("float"));
-    IOSIntArray = new IOSArrayTypeBinding(
-        "IOSIntArray", ast.resolveWellKnownType("java.lang.Integer"),
-        ast.resolveWellKnownType("int"));
-    IOSLongArray = new IOSArrayTypeBinding(
-        "IOSLongArray", ast.resolveWellKnownType("java.lang.Long"),
-        ast.resolveWellKnownType("long"));
-    IOSObjectArray = new IOSArrayTypeBinding(
-        "IOSObjectArray", ast.resolveWellKnownType("java.lang.Object"), null);
-    IOSShortArray = new IOSArrayTypeBinding(
-        "IOSShortArray", ast.resolveWellKnownType("java.lang.Short"),
-        ast.resolveWellKnownType("short"));
-
-    iosBindingMap.put("IOSBooleanArray", IOSBooleanArray);
-    iosBindingMap.put("IOSByteArray", IOSByteArray);
-    iosBindingMap.put("IOSCharArray", IOSCharArray);
-    iosBindingMap.put("IOSDoubleArray", IOSDoubleArray);
-    iosBindingMap.put("IOSFloatArray", IOSFloatArray);
-    iosBindingMap.put("IOSIntArray", IOSIntArray);
-    iosBindingMap.put("IOSLongArray", IOSLongArray);
-    iosBindingMap.put("IOSObjectArray", IOSObjectArray);
-    iosBindingMap.put("IOSShortArray", IOSShortArray);
+    initializePrimitiveArray("boolean", "IOSBooleanArray");
+    initializePrimitiveArray("byte", "IOSByteArray");
+    initializePrimitiveArray("char", "IOSCharArray");
+    initializePrimitiveArray("double", "IOSDoubleArray");
+    initializePrimitiveArray("float", "IOSFloatArray");
+    initializePrimitiveArray("int", "IOSIntArray");
+    initializePrimitiveArray("long", "IOSLongArray");
+    initializePrimitiveArray("short", "IOSShortArray");
+    IOSObjectArray = mapIOSType(IOSTypeBinding.newUnmappedClass("IOSObjectArray"));
   }
 
   /**
@@ -213,21 +170,10 @@ public class Types {
     iosBindingMap.put("JavaLangCharSequence", charSequence);
   }
 
-  private void populateArrayTypeMaps() {
-    addPrimitiveMappings("boolean", IOSBooleanArray);
-    addPrimitiveMappings("byte", IOSByteArray);
-    addPrimitiveMappings("char", IOSCharArray);
-    addPrimitiveMappings("double", IOSDoubleArray);
-    addPrimitiveMappings("float", IOSFloatArray);
-    addPrimitiveMappings("int", IOSIntArray);
-    addPrimitiveMappings("long", IOSLongArray);
-    addPrimitiveMappings("short", IOSShortArray);
-  }
-
-  private void addPrimitiveMappings(String typeName, IOSArrayTypeBinding arrayType) {
-    ITypeBinding primitiveType = ast.resolveWellKnownType(typeName);
-    arrayBindingMap.put(primitiveType, arrayType);
-    componentTypeMap.put(arrayType, primitiveType);
+  private void initializePrimitiveArray(String javaTypeName, String iosTypeName) {
+    ITypeBinding javaType = ast.resolveWellKnownType(javaTypeName);
+    IOSTypeBinding iosType = mapIOSType(IOSTypeBinding.newUnmappedClass(iosTypeName));
+    arrayBindingMap.put(javaType, iosType);
   }
 
   private void populatePrimitiveAndWrapperTypeMaps() {
@@ -363,8 +309,8 @@ public class Types {
     return null;
   }
 
-  public static IOSArrayTypeBinding resolveArrayType(ITypeBinding binding) {
-    IOSArrayTypeBinding arrayBinding = instance.arrayBindingMap.get(binding);
+  public static IOSTypeBinding resolveArrayType(ITypeBinding binding) {
+    IOSTypeBinding arrayBinding = instance.arrayBindingMap.get(binding);
     return arrayBinding != null ? arrayBinding : instance.IOSObjectArray;
   }
 
@@ -432,11 +378,6 @@ public class Types {
     for (ASTNode node : nodes) {
       BindingMapVerifier.verify(node, instance.bindingMap);
     }
-  }
-
-  static ITypeBinding getIOSArrayComponentType(IOSArrayTypeBinding arrayType) {
-    ITypeBinding type = instance.componentTypeMap.get(arrayType);
-    return type != null ? type : instance.NSObject;
   }
 
   public static ITypeBinding renameTypeBinding(String newName, ITypeBinding newDeclaringClass,

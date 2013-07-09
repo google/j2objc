@@ -24,7 +24,6 @@ import com.google.devtools.j2objc.J2ObjC;
 import com.google.devtools.j2objc.Options;
 import com.google.devtools.j2objc.translate.DestructorGenerator;
 import com.google.devtools.j2objc.types.GeneratedMethodBinding;
-import com.google.devtools.j2objc.types.IOSArrayTypeBinding;
 import com.google.devtools.j2objc.types.IOSMethod;
 import com.google.devtools.j2objc.types.IOSMethodBinding;
 import com.google.devtools.j2objc.types.IOSTypeBinding;
@@ -1877,7 +1876,7 @@ public class StatementGenerator extends ErrorReportingASTVisitor {
   private void printArrayTypeLiteral(ITypeBinding arrayType) {
     assert arrayType.isArray();
     ITypeBinding elementType = arrayType.getElementType();
-    IOSArrayTypeBinding iosArrayType = Types.resolveArrayType(elementType);
+    IOSTypeBinding iosArrayType = Types.resolveArrayType(elementType);
     buffer.append("[").append(iosArrayType.getName()).append(" iosClass");
     int dimensions = arrayType.getDimensions();
     if (dimensions > 1) {
