@@ -57,6 +57,7 @@ import org.eclipse.jdt.core.dom.MethodDeclaration;
 import org.eclipse.jdt.core.dom.MethodInvocation;
 import org.eclipse.jdt.core.dom.Modifier;
 import org.eclipse.jdt.core.dom.Modifier.ModifierKeyword;
+import org.eclipse.jdt.core.dom.ParenthesizedExpression;
 import org.eclipse.jdt.core.dom.PostfixExpression;
 import org.eclipse.jdt.core.dom.PrefixExpression;
 import org.eclipse.jdt.core.dom.PrimitiveType;
@@ -596,6 +597,26 @@ public class Rewriter extends ErrorReportingASTVisitor {
       stringExpr.setLeftOperand(nonStringExpr);
       Types.addBinding(stringExpr, ast.resolveWellKnownType("java.lang.String"));
       ASTUtil.setProperty(node, stringExpr);
+    } else if (op == InfixExpression.Operator.CONDITIONAL_AND) {
+      // Avoid logical-op-parentheses compiler warnings.
+      if (node.getParent() instanceof InfixExpression) {
+        InfixExpression parent = (InfixExpression) node.getParent();
+        if (parent.getOperator() == InfixExpression.Operator.CONDITIONAL_OR) {
+          AST ast = node.getAST();
+          ParenthesizedExpression expr =
+              ASTFactory.newParenthesizedExpression(ast, NodeCopier.copySubtree(ast, node));
+          ASTUtil.setProperty(node, expr);
+        }
+      }
+    } else if (op == InfixExpression.Operator.AND) {
+      // Avoid bitwise-op-parentheses compiler warnings.
+      if (node.getParent() instanceof InfixExpression &&
+          ((InfixExpression) node.getParent()).getOperator() == InfixExpression.Operator.OR) {
+        AST ast = node.getAST();
+        ParenthesizedExpression expr =
+            ASTFactory.newParenthesizedExpression(ast, NodeCopier.copySubtree(ast, node));
+        ASTUtil.setProperty(node, expr);
+      }
     }
   }
 

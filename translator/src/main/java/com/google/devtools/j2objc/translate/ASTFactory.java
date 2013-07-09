@@ -42,6 +42,7 @@ import org.eclipse.jdt.core.dom.Modifier;
 import org.eclipse.jdt.core.dom.Name;
 import org.eclipse.jdt.core.dom.NullLiteral;
 import org.eclipse.jdt.core.dom.NumberLiteral;
+import org.eclipse.jdt.core.dom.ParenthesizedExpression;
 import org.eclipse.jdt.core.dom.PostfixExpression;
 import org.eclipse.jdt.core.dom.PrefixExpression;
 import org.eclipse.jdt.core.dom.PrimitiveType;
@@ -333,5 +334,12 @@ public final class ASTFactory {
     }
     Types.addBinding(type, binding);
     return type;
+  }
+
+  public static ParenthesizedExpression newParenthesizedExpression(AST ast, Expression expr) {
+    ParenthesizedExpression result = ast.newParenthesizedExpression();
+    result.setExpression(expr);
+    Types.addBinding(result, Types.getTypeBinding(expr));
+    return result;
   }
 }

@@ -204,9 +204,11 @@
   }
   [newArray replaceObjectAtIndex:existingCount
                       withObject:exception];
+#if ! __has_feature(objc_arc)
   if (suppressedExceptions) {
-    AUTORELEASE(suppressedExceptions);
+    [suppressedExceptions release];
   }
+#endif
   suppressedExceptions = newArray;
 }
 
