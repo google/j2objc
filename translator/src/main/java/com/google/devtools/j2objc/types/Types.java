@@ -62,7 +62,6 @@ public class Types {
   private final Map<Object, IBinding> bindingMap;
   private final Map<ITypeBinding, ITypeBinding> typeMap = Maps.newHashMap();
   private final Map<ITypeBinding, ITypeBinding> renamedTypeMap = Maps.newHashMap();
-  private final List<IMethodBinding> functions = Lists.newArrayList();
   private final Map<ITypeBinding, ITypeBinding> primitiveToWrapperTypes =
       new HashMap<ITypeBinding, ITypeBinding>();
   private final Map<ITypeBinding, ITypeBinding> wrapperToPrimitiveTypes =
@@ -110,7 +109,6 @@ public class Types {
   // The first argument of a iOS method isn't named, but Java requires some sort of valid parameter
   // name.  The method mapper therefore uses this string, which the generators ignore.
   public static final String EMPTY_PARAMETER_NAME = "__empty_parameter__";
-  public static final String NS_ANY_TYPE = "NS_ANY_TYPE";  // type of "id"
 
   private Types(CompilationUnit unit) {
     ast = unit.getAST();
@@ -439,18 +437,6 @@ public class Types {
   public static ITypeBinding getRenamedBinding(ITypeBinding original) {
     return original != null && instance.renamedTypeMap.containsKey(original)
         ? instance.renamedTypeMap.get(original) : original;
-  }
-
-  public static void addFunction(IMethodBinding binding) {
-    instance.functions.add(binding);
-  }
-
-  public static boolean isFunction(IMethodBinding binding) {
-    if (instance.functions.contains(binding)) {
-      return true;
-    }
-    IMethodBinding decl = binding.getMethodDeclaration();
-    return decl != null ? instance.functions.contains(decl) : false;
   }
 
   public static boolean isVoidType(Type type) {
