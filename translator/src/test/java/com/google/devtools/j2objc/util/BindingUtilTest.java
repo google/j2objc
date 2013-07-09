@@ -18,8 +18,10 @@ import com.google.devtools.j2objc.GenerationTest;
 import com.google.devtools.j2objc.types.Types;
 
 import org.eclipse.jdt.core.dom.CompilationUnit;
+import org.eclipse.jdt.core.dom.IExtendedModifier;
 import org.eclipse.jdt.core.dom.IMethodBinding;
 import org.eclipse.jdt.core.dom.ITypeBinding;
+import org.eclipse.jdt.core.dom.TypeDeclaration;
 
 import java.io.IOException;
 
@@ -45,5 +47,21 @@ public class BindingUtilTest extends GenerationTest {
     ITypeBinding[] params = original.getParameterTypes();
     assertEquals(1, params.length);
     assertEquals("T", params[0].getName());
+  }
+
+  public void testIsRuntimeAnnotation() throws IOException {
+    // SuppressWarnings is a source-level annotation.
+    CompilationUnit unit = translateType("Example", "@SuppressWarnings(\"test\") class Example {}");
+    TypeDeclaration decl = (TypeDeclaration) unit.types().get(0);
+    IExtendedModifier mod = ASTUtil.getModifiers(decl).get(0);
+    assertTrue(mod.isAnnotation());
+    assertFalse(BindingUtil.isRuntimeAnnotation(Types.getTypeBinding(mod)));
+
+    // Deprecated is a runtime annotation..
+    unit = translateType("Example", "@Deprecated class Example {}");
+    decl = (TypeDeclaration) unit.types().get(0);
+    mod = ASTUtil.getModifiers(decl).get(0);
+    assertTrue(mod.isAnnotation());
+    assertTrue(BindingUtil.isRuntimeAnnotation(mod));
   }
 }
