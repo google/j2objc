@@ -40,6 +40,7 @@ import org.eclipse.jdt.core.dom.Expression;
 import org.eclipse.jdt.core.dom.FieldAccess;
 import org.eclipse.jdt.core.dom.IMethodBinding;
 import org.eclipse.jdt.core.dom.ITypeBinding;
+import org.eclipse.jdt.core.dom.InstanceofExpression;
 import org.eclipse.jdt.core.dom.MethodInvocation;
 import org.eclipse.jdt.core.dom.Modifier;
 import org.eclipse.jdt.core.dom.PostfixExpression;
@@ -48,6 +49,7 @@ import org.eclipse.jdt.core.dom.QualifiedName;
 import org.eclipse.jdt.core.dom.SimpleName;
 import org.eclipse.jdt.core.dom.SuperConstructorInvocation;
 import org.eclipse.jdt.core.dom.SuperMethodInvocation;
+import org.eclipse.jdt.core.dom.TypeLiteral;
 
 import java.util.List;
 import java.util.Map;
@@ -77,7 +79,7 @@ public class ArrayRewriter extends ErrorReportingASTVisitor {
            " arrayWithObjects:(id *)objects count:(int)count type:(IOSClass *)type")
       .build();
 
-  public static final ImmutableMap<String, IOSMethod> ACCESS_METHODS =
+  private static final ImmutableMap<String, IOSMethod> ACCESS_METHODS =
       ImmutableMap.<String, IOSMethod>builder()
       .put("IOSBooleanArray", IOSMethod.create("IOSBooleanArray booleanAtIndex:(NSUInteger)index"))
       .put("IOSByteArray", IOSMethod.create("IOSByteArray byteAtIndex:(NSUInteger)index"))
@@ -90,7 +92,7 @@ public class ArrayRewriter extends ErrorReportingASTVisitor {
       .put("IOSObjectArray", IOSMethod.create("IOSObjectArray objectAtIndex:(NSUInteger)index"))
       .build();
 
-  public static final ImmutableMap<String, IOSMethod> ACCESS_REF_METHODS =
+  private static final ImmutableMap<String, IOSMethod> ACCESS_REF_METHODS =
       ImmutableMap.<String, IOSMethod>builder()
       .put("IOSBooleanArray",
            IOSMethod.create("IOSBooleanArray *booleanRefAtIndex:(NSUInteger)index"))
@@ -103,8 +105,19 @@ public class ArrayRewriter extends ErrorReportingASTVisitor {
       .put("IOSShortArray", IOSMethod.create("IOSShortArray *shortRefAtIndex:(NSUInteger)index"))
       .build();
 
-  public static final IOSMethod OBJECT_ARRAY_ASSIGNMENT = IOSMethod.create(
+  private static final IOSMethod OBJECT_ARRAY_ASSIGNMENT = IOSMethod.create(
       "IOSObjectArray replaceObjectAtIndex:(NSUInteger)index withObject:(id)object");
+
+  private static final IOSMethod IOSCLASS_METHOD = IOSMethod.create("IOSArray iosClass");
+  private static final IOSMethod IOSCLASS_METHOD_DIM = IOSMethod.create(
+      "IOSArray iosClassWithDimensions:(NSUInteger)dimensions");
+  private static final IOSMethod IOSCLASS_METHOD_OBJ = IOSMethod.create(
+      "IOSObjectArray iosClassWithType:(IOSClass *)type");
+  private static final IOSMethod IOSCLASS_METHOD_OBJ_DIM = IOSMethod.create(
+      "IOSObjectArray iosClassWithDimensions:(NSUInteger)dimensions type:(IOSClass *)type");
+
+  private static final IOSMethod ISINSTANCE_METHOD = IOSMethod.create(
+      "IOSClass isInstance:(id)object");
 
   private Map<IOSTypeBinding, IOSMethodBinding> initMethods = Maps.newHashMap();
   private Map<IOSTypeBinding, IOSMethodBinding> singleDimMethods = Maps.newHashMap();
@@ -203,7 +216,7 @@ public class ArrayRewriter extends ErrorReportingASTVisitor {
 
     // Add the type argument for object arrays.
     if (!componentType.isPrimitive()) {
-      ASTUtil.getArguments(invocation).add(ASTFactory.newTypeLiteral(ast, componentType));
+      ASTUtil.getArguments(invocation).add(newTypeLiteral(ast, componentType));
     }
 
     return invocation;
@@ -244,7 +257,7 @@ public class ArrayRewriter extends ErrorReportingASTVisitor {
 
     // Add the type argument for object arrays.
     if (!componentType.isPrimitive()) {
-      ASTUtil.getArguments(invocation).add(ASTFactory.newTypeLiteral(ast, componentType));
+      ASTUtil.getArguments(invocation).add(newTypeLiteral(ast, componentType));
     }
 
     return invocation;
@@ -297,7 +310,7 @@ public class ArrayRewriter extends ErrorReportingASTVisitor {
     ASTUtil.getArguments(invocation).add(dimensionsArg);
 
     if (!componentType.isPrimitive()) {
-      ASTUtil.getArguments(invocation).add(ASTFactory.newTypeLiteral(ast, componentType));
+      ASTUtil.getArguments(invocation).add(newTypeLiteral(ast, componentType));
     }
 
     return invocation;
@@ -316,10 +329,11 @@ public class ArrayRewriter extends ErrorReportingASTVisitor {
     binding = IOSMethodBinding.newMethod(
         iosMethod, Modifier.PUBLIC | Modifier.STATIC, Types.resolveIOSType("IOSObjectArray"),
         arrayType);
+    ITypeBinding intType = Types.resolveJavaType("int");
     binding.addParameter(new GeneratedVariableBinding(
-        Types.resolveJavaType("int"), false, true, null, binding));
+        intType, false, true, null, binding));
     binding.addParameter(new GeneratedVariableBinding(
-        Types.resolveIOSType("IOSIntArray"), false, true, null, binding));
+        GeneratedTypeBinding.newArrayType(intType), false, true, null, binding));
     if (needsTypeParam) {
       binding.addParameter(new GeneratedVariableBinding(
           Types.getIOSClass(), false, true, null, binding));
@@ -438,6 +452,75 @@ public class ArrayRewriter extends ErrorReportingASTVisitor {
       ASTUtil.setProperty(node, ASTFactory.newCastExpression(ast,
           ASTFactory.newMethodInvocation(ast, arrayCountMethod, NodeCopier.copySubtree(ast, expr)),
           Types.resolveJavaType("int")));
+    }
+  }
+
+  @Override
+  public void endVisit(InstanceofExpression node) {
+    ITypeBinding type = Types.getTypeBinding(node.getRightOperand());
+    if (!type.isArray() || type.getComponentType().isPrimitive()) {
+      return;
+    }
+    AST ast = node.getAST();
+    IOSMethodBinding binding = IOSMethodBinding.newMethod(
+        ISINSTANCE_METHOD, Modifier.PUBLIC, Types.resolveJavaType("boolean"), Types.getIOSClass());
+    binding.addParameter(Types.resolveIOSType("id"));
+    MethodInvocation invocation = ASTFactory.newMethodInvocation(
+        ast, binding, newTypeLiteralInvocation(ast, type));
+    ASTUtil.getArguments(invocation).add(NodeCopier.copySubtree(ast, node.getLeftOperand()));
+    ASTUtil.setProperty(node, invocation);
+  }
+
+  @Override
+  public void endVisit(TypeLiteral node) {
+    ITypeBinding type = Types.getTypeBinding(node.getType());
+    if (type.isArray()) {
+      ASTUtil.setProperty(node, newTypeLiteralInvocation(node.getAST(), type));
+    }
+  }
+
+  private static Expression newTypeLiteral(AST ast, ITypeBinding type) {
+    if (type.isArray()) {
+      return newTypeLiteralInvocation(ast, type);
+    }
+    return ASTFactory.newTypeLiteral(ast, type);
+  }
+
+  private static MethodInvocation newTypeLiteralInvocation(AST ast, ITypeBinding type) {
+    assert type.isArray();
+    ITypeBinding elementType = type.getElementType();
+    IOSTypeBinding iosArrayType = Types.resolveArrayType(elementType);
+    int dimensions = type.getDimensions();
+    IOSMethodBinding binding = IOSMethodBinding.newMethod(
+        getTypeLiteralMethod(elementType, dimensions), Modifier.PUBLIC | Modifier.STATIC,
+        Types.getIOSClass(), iosArrayType);
+    MethodInvocation invocation = ASTFactory.newMethodInvocation(
+        ast, binding, ASTFactory.newSimpleName(ast, iosArrayType));
+    if (dimensions > 1) {
+      binding.addParameter(Types.resolveJavaType("int"));
+      ASTUtil.getArguments(invocation).add(
+          ASTFactory.makeLiteral(ast, Integer.valueOf(dimensions), Types.resolveJavaType("int")));
+    }
+    if (!elementType.isPrimitive()) {
+      binding.addParameter(Types.getIOSClass());
+      ASTUtil.getArguments(invocation).add(newTypeLiteral(ast, elementType));
+    }
+    return invocation;
+  }
+
+  private static IOSMethod getTypeLiteralMethod(ITypeBinding elementType, int dimensions) {
+    if (elementType.isPrimitive()) {
+      if (dimensions > 1) {
+        return IOSCLASS_METHOD_DIM;
+      } else {
+        return IOSCLASS_METHOD;
+      }
+    } else {
+      if (dimensions > 1) {
+        return IOSCLASS_METHOD_OBJ_DIM;
+      } else {
+        return IOSCLASS_METHOD_OBJ;
+      }
     }
   }
 
