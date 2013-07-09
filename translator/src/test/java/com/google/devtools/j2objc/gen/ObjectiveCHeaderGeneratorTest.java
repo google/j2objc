@@ -345,23 +345,13 @@ public class ObjectiveCHeaderGeneratorTest extends GenerationTest {
 
   public void testAnnotationGeneration() throws IOException {
     String translation = translateSourceFile(
-      "package foo; import java.lang.annotation.*; @Retention(RetentionPolicy.RUNTIME) " +
+      "package foo; import java.lang.annotation.*; @Retention(RetentionPolicy.CLASS) " +
       "public @interface Compatible { boolean fooable() default false; }",
       "Compatible", "foo/Compatible.h");
 
-    // Test that the annotation was declared as a value class.
-    assertTranslation(translation,
-        "@interface FooCompatible : NSObject < JavaLangAnnotationAnnotation >");
-
-    // Verify that the value is defined as a property instead of a method.
-    assertTranslation(translation, "@private\n  BOOL fooable;");
-    assertTranslation(translation, "@property (readonly) BOOL fooable;");
-
-    // Verify default value accessor is generated for property.
-    assertTranslation(translation, "+ (BOOL)fooableDefault;");
-
-    // Check that constructor was created with the property as parameter.
-    assertTranslation(translation, "- (id)initWithFooable:(BOOL)fooable_;");
+    // Test both that annotation was declared as a marker protocol,
+    // and that it's empty.
+    assertTranslation(translation, "@protocol FooCompatible < NSObject >\n@end");
   }
 
   public void testCharacterEdgeValues() throws IOException {
