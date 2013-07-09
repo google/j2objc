@@ -730,8 +730,19 @@ public class ObjectiveCImplementationGenerator extends ObjectiveCSourceFileGener
       }
       sb.append("}\nreturn self;\n}");
     }
-    String result = super.constructorDeclaration(m) + " " + reindent(sb.toString()) + "\n\n";
-    return result;
+
+    // Insert synthetic parameters.
+    StringBuilder sb2 =
+        new StringBuilder(generateStatement(createInnerConstructorInvocation(m), false));
+    invocation = sb2.insert(sb2.length() - 1, " withNSString:name withInt:ordinal").toString();
+
+    if (invokedConstructors.contains(constructorKey(binding))) {
+      return super.constructorDeclaration(m, true) + " " + reindent(sb.toString()) + "\n\n"
+          + super.constructorDeclaration(m, false) + " {\n  return "
+          + invocation + ";\n}\n\n";
+    } else {
+      return super.constructorDeclaration(m, false) + " " + reindent(sb.toString()) + "\n\n";
+    }
   }
 
   @Override
