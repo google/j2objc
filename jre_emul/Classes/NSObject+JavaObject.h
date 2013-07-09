@@ -59,5 +59,5 @@ __attribute__ ((unused)) static inline id nil_chk(id p) {
 #endif
 }
 
+// TODO(user): Clean up call sites and remove this macro.
 #define NIL_CHK(p) nil_chk(p)
-

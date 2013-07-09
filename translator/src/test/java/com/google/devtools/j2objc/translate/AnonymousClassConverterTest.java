@@ -89,7 +89,7 @@ public class AnonymousClassConverterTest extends GenerationTest {
     assertTranslation(impl, "IOSBooleanArray *bar = [IOSBooleanArray arrayWithLength:1];");
     assertTranslation(impl, "[[Test_$1 alloc] initWithBooleanArray:bar]");
     assertTranslation(impl,
-        "[((IOSBooleanArray *) NIL_CHK(val$bar_)) replaceBooleanAtIndex:0 withBoolean:YES];");
+        "[((IOSBooleanArray *) nil_chk(val$bar_)) replaceBooleanAtIndex:0 withBoolean:YES];");
   }
 
   /**
@@ -282,7 +282,7 @@ public class AnonymousClassConverterTest extends GenerationTest {
       "    Runnable run = new Runnable() { public void run() { int j = foo.i; } }; } }",
       "Test", "Test.m");
 
-    assertTranslation(translation, "int j = ((Test_Foo *) NIL_CHK(val$foo_)).i");
+    assertTranslation(translation, "int j = ((Test_Foo *) nil_chk(val$foo_)).i");
   }
 
   public void testMultipleReferencesToSameVar() throws IOException {
@@ -308,7 +308,7 @@ public class AnonymousClassConverterTest extends GenerationTest {
         "  }}}";
     String translation = translateSourceFile(source, "Test", "Test.m");
     assertTranslation(translation,
-        "[((JavaIoPrintStream *) NIL_CHK([JavaLangSystem out])) printlnWithNSString:val$s_];");
+        "[((JavaIoPrintStream *) nil_chk([JavaLangSystem out])) printlnWithNSString:val$s_];");
   }
 
   public void testMethodVarInNestedAnonymousClass() throws IOException {
@@ -430,7 +430,7 @@ public class AnonymousClassConverterTest extends GenerationTest {
         "          public void run() { j = i + 1; } }; } }; } }";
     String translation = translateSourceFile(source, "Test", "Test.m");
     assertTranslation(translation,
-        "this$0_.j = [((JavaLangInteger *) NIL_CHK(val$i_)) intValue] + 1;");
+        "this$0_.j = [((JavaLangInteger *) nil_chk(val$i_)) intValue] + 1;");
   }
 
   public void testEnumConstantAnonymousClassNaming() throws IOException {

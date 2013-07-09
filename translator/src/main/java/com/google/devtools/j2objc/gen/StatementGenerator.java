@@ -279,15 +279,9 @@ public class StatementGenerator extends ErrorReportingASTVisitor {
       return;
     }
     boolean castPrinted = printCast(Types.getTypeBinding(e));
-    buffer.append("NIL_CHK(");
+    buffer.append("nil_chk(");
     nilCheckedNodes.add(e);
-    int start = buffer.length();
     e.accept(this);
-    int end = buffer.length();
-    String substring = buffer.substring(start, end);
-    // TODO(user): Replace NIL_CHK with the inline function so we don't need to do this.
-    substring = substring.replaceAll(",", " J2OBJC_COMMA()");
-    buffer.replace(start, end, substring);
     if (castPrinted) {
       buffer.append("))");
     } else {

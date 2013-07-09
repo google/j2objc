@@ -60,7 +60,7 @@ public class StatementGeneratorTest extends GenerationTest {
       "public class A {" +
       "  int length(char[] s) { return s.length; } void test() { length(null);}}",
       "A", "A.m");
-    assertTranslation(translation, "return (int) [((IOSCharArray *) NIL_CHK(s)) count];");
+    assertTranslation(translation, "return (int) [((IOSCharArray *) nil_chk(s)) count];");
   }
 
   // Verify that both a class and interface type invoke getClass() correctly.
@@ -71,8 +71,8 @@ public class StatementGeneratorTest extends GenerationTest {
       "    Class<?> classOne = one.getClass();" +
       "    Class<?> classTwo = two.getClass(); }}",
       "A", "A.m");
-    assertTranslation(translation, "[((JavaUtilArrayList *) NIL_CHK(one)) getClass]");
-    assertTranslation(translation, "[(id<JavaObject>) ((id<JavaUtilList>) NIL_CHK(two)) getClass]");
+    assertTranslation(translation, "[((JavaUtilArrayList *) nil_chk(one)) getClass]");
+    assertTranslation(translation, "[(id<JavaObject>) ((id<JavaUtilList>) nil_chk(two)) getClass]");
   }
 
   public void testEnumConstantsInSwitchStatement() throws IOException {
@@ -164,7 +164,7 @@ public class StatementGeneratorTest extends GenerationTest {
     List<Statement> stmts = translateStatements(source);
     assertEquals(3, stmts.size());
     String result = generateStatement(stmts.get(1));
-    assertEquals("(void) [NIL_CHK(o) description];", result);
+    assertEquals("(void) [nil_chk(o) description];", result);
     result = generateStatement(stmts.get(2));
     assertEquals("(void) [self description];", result);
   }
@@ -316,8 +316,8 @@ public class StatementGeneratorTest extends GenerationTest {
         "  String b = \"foo\" + a.hashCode() + \"bar\" + a.length() + \"baz\"; } }",
         "Test", "Test.m");
     assertTranslation(translation,
-        "[NSString stringWithFormat:@\"foo%dbar%dbaz\", (int) [((NSString *) NIL_CHK(a)) hash], " +
-        "(int) [((NSString *) NIL_CHK(a)) length]]");
+        "[NSString stringWithFormat:@\"foo%dbar%dbaz\", (int) [((NSString *) nil_chk(a)) hash], " +
+        "(int) [((NSString *) nil_chk(a)) length]]");
   }
 
   public void testVarargsMethodInvocation() throws IOException {
@@ -399,7 +399,7 @@ public class StatementGeneratorTest extends GenerationTest {
       "Integer i; Two(Integer i) { this.i = i; } int getI() { return i.intValue(); }}}",
       "Test", "Test.m");
     assertTranslation(translation, "- (id)initWithJavaLangInteger:(JavaLangInteger *)i {");
-    assertTranslation(translation, "return [((JavaLangInteger *) NIL_CHK(i_)) intValue];");
+    assertTranslation(translation, "return [((JavaLangInteger *) nil_chk(i_)) intValue];");
   }
 
   public void testInnerClassSuperConstructor() throws IOException {
@@ -428,7 +428,7 @@ public class StatementGeneratorTest extends GenerationTest {
       "K test() { return iterator.next().getKey(); }}",
       "Test", "Test.m");
     assertTranslation(translation, "return [((id<JavaUtilMap_Entry>) " +
-        "NIL_CHK([((id<JavaUtilIterator>) NIL_CHK(iterator_)) next])) getKey];");
+        "nil_chk([((id<JavaUtilIterator>) nil_chk(iterator_)) next])) getKey];");
   }
 
   public void testAnonymousClassInInnerStatic() throws IOException {
@@ -441,8 +441,8 @@ public class StatementGeneratorTest extends GenerationTest {
         "public boolean hasMoreElements() { return it.hasNext(); } " +
         "public T nextElement() { return it.next(); } }; }}",
         "Test", "Test.m");
-    assertTranslation(translation, "return [((id<JavaUtilIterator>) NIL_CHK(it_)) hasNext];");
-    assertTranslation(translation, "return [((id<JavaUtilIterator>) NIL_CHK(it_)) next];");
+    assertTranslation(translation, "return [((id<JavaUtilIterator>) nil_chk(it_)) hasNext];");
+    assertTranslation(translation, "return [((id<JavaUtilIterator>) nil_chk(it_)) next];");
     assertFalse(translation.contains("Test *this$0;"));
   }
 
@@ -490,8 +490,8 @@ public class StatementGeneratorTest extends GenerationTest {
         "sync(foo.length, bar.length); } void sync(int a, int b) {} }",
         "Test", "Test.m");
     assertTranslation(translation,
-        "[self syncWithInt:(int) [((IOSCharArray *) NIL_CHK(foo)) count] withInt:(int) " +
-        "[((IOSCharArray *) NIL_CHK(bar)) count]];");
+        "[self syncWithInt:(int) [((IOSCharArray *) nil_chk(foo)) count] withInt:(int) " +
+        "[((IOSCharArray *) nil_chk(bar)) count]];");
   }
 
   public void testLongLiteral() throws IOException {
@@ -617,7 +617,7 @@ public class StatementGeneratorTest extends GenerationTest {
     assertEquals("IOSClass *myClass = [self getClass];", result);
     result = generateStatement(stmts.get(1));
     assertEquals(
-        "IOSClass *mySuperClass = [((IOSClass *) NIL_CHK(myClass)) getSuperclass];", result);
+        "IOSClass *mySuperClass = [((IOSClass *) nil_chk(myClass)) getSuperclass];", result);
     result = generateStatement(stmts.get(2));
     assertEquals("IOSClass *enumClass = [IOSClass classWithClass:[JavaLangEnum class]];", result);
   }
@@ -847,7 +847,7 @@ public class StatementGeneratorTest extends GenerationTest {
     List<Statement> stmts = translateStatements(source);
     assertEquals(3, stmts.size());
     String result = generateStatement(stmts.get(2));
-    assertEquals("[((IOSIntArray *) NIL_CHK(array)) replaceIntAtIndex:offset " +
+    assertEquals("[((IOSIntArray *) nil_chk(array)) replaceIntAtIndex:offset " +
         "withInt:[array intAtIndex:offset] + 23];", result);
   }
 
@@ -896,7 +896,7 @@ public class StatementGeneratorTest extends GenerationTest {
       "  public static void main(String[] args) { int n = strings.get(1).length(); }}",
       "Test", "Test.m");
     assertTranslation(translation, "[((NSString *) " +
-      "NIL_CHK([((JavaUtilArrayList *) NIL_CHK(Test_strings_)) getWithInt:1])) length];");
+      "nil_chk([((JavaUtilArrayList *) nil_chk(Test_strings_)) getWithInt:1])) length];");
   }
 
   // b/5872757: verify multi-dimensional array has cast before each
@@ -909,10 +909,10 @@ public class StatementGeneratorTest extends GenerationTest {
       "    a[0][0] = \"42\"; System.out.println(a[0].length); }}",
       "Test", "Test.m");
     assertTranslation(translation,
-        "[((IOSObjectArray *) [((IOSObjectArray *) NIL_CHK(Test_a_)) objectAtIndex:0]) " +
+        "[((IOSObjectArray *) [((IOSObjectArray *) nil_chk(Test_a_)) objectAtIndex:0]) " +
         "replaceObjectAtIndex:0 withObject:@\"42\"];");
     assertTranslation(translation,
-        "[((IOSObjectArray *) [((IOSObjectArray *) NIL_CHK(Test_a_)) objectAtIndex:0]) count]");
+        "[((IOSObjectArray *) [((IOSObjectArray *) nil_chk(Test_a_)) objectAtIndex:0]) count]");
   }
 
   public void testMultiDimArray() throws IOException {
@@ -1026,7 +1026,7 @@ public class StatementGeneratorTest extends GenerationTest {
       "  public static class BarD extends Foo.Bar { } " +
       "  public void bar() { Foo<BarD> f = new Foo<BarD>(); BarD b = f.foo(); } }",
       "Test", "Test.m");
-    assertTranslation(translation, "(Test_BarD *) [((Test_Foo *) NIL_CHK(f)) foo]");
+    assertTranslation(translation, "(Test_BarD *) [((Test_Foo *) nil_chk(f)) foo]");
   }
 
   // b/5934474: verify that static variables are always referenced by
@@ -1415,8 +1415,8 @@ public class StatementGeneratorTest extends GenerationTest {
         "class Test<E> { interface A<T> { void foo(); } class B { int foo() { return 1; } } " +
         "<T extends A<? super E>> void test(T t) { t.foo(); } " +
         "<T extends B> void test2(T t) { t.foo(); } }", "Test", "Test.m");
-    assertTranslation(translation, "[((id<Test_A>) NIL_CHK(t)) foo];");
-    assertTranslation(translation, "[((Test_B *) NIL_CHK(t)) foo];");
+    assertTranslation(translation, "[((id<Test_A>) nil_chk(t)) foo];");
+    assertTranslation(translation, "[((Test_B *) nil_chk(t)) foo];");
   }
 
   public void testTypeVariableWithMultipleBounds() throws IOException {
@@ -1456,7 +1456,7 @@ public class StatementGeneratorTest extends GenerationTest {
         "  sb.append(\"hello, world\"); return sb.toString(); }}",
         "Test", "Test.m");
     assertTranslation(translation,
-        "(void) [((JavaLangStringBuilder *) NIL_CHK(sb)) appendWithNSString:@\"hello, world\"];");
+        "(void) [((JavaLangStringBuilder *) nil_chk(sb)) appendWithNSString:@\"hello, world\"];");
   }
 
   // Verify Java 7's switch statements with strings.
@@ -1493,7 +1493,7 @@ public class StatementGeneratorTest extends GenerationTest {
           "JavaIoBufferedReader * br = [[[JavaIoBufferedReader alloc] initWithJavaIoReader:" +
           "[[[JavaIoFileReader alloc] initWithNSString:path] autorelease]] autorelease];");
       assertTranslation(translation,
-          "@try {\n      return [((JavaIoBufferedReader *) NIL_CHK(br)) readLine];\n    }");
+          "@try {\n      return [((JavaIoBufferedReader *) nil_chk(br)) readLine];\n    }");
       assertTranslation(translation, "@finally {");
       assertTranslation(translation, "@try {\n        [br close];\n      }");
       assertTranslation(translation, "@catch (JavaLangThrowable *e) {");
@@ -1510,6 +1510,6 @@ public class StatementGeneratorTest extends GenerationTest {
         "abstract class Test<T extends Test.Foo> { " +
         "abstract T getObj(); static class Foo { void foo() { } } " +
         "static void test(Test<Foo> t) { t.getObj().foo(); } }", "Test", "Test.m");
-    assertTranslation(translation, "[((Test_Foo *) NIL_CHK([((Test *) NIL_CHK(t)) getObj])) foo]");
+    assertTranslation(translation, "[((Test_Foo *) nil_chk([((Test *) nil_chk(t)) getObj])) foo]");
   }
 }

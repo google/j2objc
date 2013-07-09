@@ -46,7 +46,7 @@ public class JavaToIOSMethodTranslatorTest extends GenerationTest {
     assertTranslation(translation, "return (Example *) [self clone];");
     assertTranslation(translation, "- (id)copyWithZone:(NSZone *)zone {");
     assertTranslation(translation, "Example *e = (Example *) [super clone];");
-    assertTranslation(translation, "((Example *) NIL_CHK(e)).i = i_");
+    assertTranslation(translation, "((Example *) nil_chk(e)).i = i_");
   }
 
   public void testStringValueOfBoolean() throws IOException {
@@ -106,7 +106,7 @@ public class JavaToIOSMethodTranslatorTest extends GenerationTest {
     String result = generateStatement(stmts.get(0));
     assertEquals("IOSClass *cls = [self getClass];", result);
     result = generateStatement(stmts.get(1));
-    assertEquals("IOSClass *superClass = [((IOSClass *) NIL_CHK(cls)) getSuperclass];", result);
+    assertEquals("IOSClass *superClass = [((IOSClass *) nil_chk(cls)) getSuperclass];", result);
   }
 
   /**
@@ -120,11 +120,11 @@ public class JavaToIOSMethodTranslatorTest extends GenerationTest {
     List<Statement> stmts = translateStatements(source);
     assertEquals(4, stmts.size());
     String result = generateStatement(stmts.get(1));
-    assertEquals("NSString *s1 = [((IOSClass *) NIL_CHK(cls)) getName];", result);
+    assertEquals("NSString *s1 = [((IOSClass *) nil_chk(cls)) getName];", result);
     result = generateStatement(stmts.get(2));
-    assertEquals("NSString *s2 = [((IOSClass *) NIL_CHK(cls)) getSimpleName];", result);
+    assertEquals("NSString *s2 = [((IOSClass *) nil_chk(cls)) getSimpleName];", result);
     result = generateStatement(stmts.get(3));
-    assertEquals("NSString *s3 = [((IOSClass *) NIL_CHK(cls)) getCanonicalName];", result);
+    assertEquals("NSString *s3 = [((IOSClass *) nil_chk(cls)) getCanonicalName];", result);
   }
 
   public void testStringSubstring() throws IOException {
@@ -133,9 +133,9 @@ public class JavaToIOSMethodTranslatorTest extends GenerationTest {
     List<Statement> stmts = translateStatements(source);
     assertEquals(3, stmts.size());
     String result = generateStatement(stmts.get(1));
-    assertEquals("NSString *s2 = [((NSString *) NIL_CHK(s1)) substring:2];", result);
+    assertEquals("NSString *s2 = [((NSString *) nil_chk(s1)) substring:2];", result);
     result = generateStatement(stmts.get(2));
-    assertEquals("NSString *s3 = [((NSString *) NIL_CHK(s1)) substring:2 endIndex:4];", result);
+    assertEquals("NSString *s3 = [((NSString *) nil_chk(s1)) substring:2 endIndex:4];", result);
   }
 
   public void testStringIndexOf() throws IOException {
@@ -147,22 +147,22 @@ public class JavaToIOSMethodTranslatorTest extends GenerationTest {
     List<Statement> stmts = translateStatements(source);
     assertEquals(9, stmts.size());
     String result = generateStatement(stmts.get(1));
-    assertEquals("int idx = [((NSString *) NIL_CHK(s)) indexOf:'g'];", result);
+    assertEquals("int idx = [((NSString *) nil_chk(s)) indexOf:'g'];", result);
     result = generateStatement(stmts.get(2));
-    assertEquals("idx = [((NSString *) NIL_CHK(s)) indexOfString:@\"brillig\"];", result);
+    assertEquals("idx = [((NSString *) nil_chk(s)) indexOfString:@\"brillig\"];", result);
     result = generateStatement(stmts.get(3));
-    assertEquals("idx = [((NSString *) NIL_CHK(s)) lastIndexOf:'v'];", result);
+    assertEquals("idx = [((NSString *) nil_chk(s)) lastIndexOf:'v'];", result);
     result = generateStatement(stmts.get(4));
-    assertEquals("idx = [((NSString *) NIL_CHK(s)) lastIndexOfString:@\"the\"];", result);
+    assertEquals("idx = [((NSString *) nil_chk(s)) lastIndexOfString:@\"the\"];", result);
     result = generateStatement(stmts.get(5));
-    assertEquals("idx = [((NSString *) NIL_CHK(s)) indexOf:'g' fromIndex:1];", result);
+    assertEquals("idx = [((NSString *) nil_chk(s)) indexOf:'g' fromIndex:1];", result);
     result = generateStatement(stmts.get(6));
-    assertEquals("idx = [((NSString *) NIL_CHK(s)) indexOfString:@\"brillig\" fromIndex:2];",
+    assertEquals("idx = [((NSString *) nil_chk(s)) indexOfString:@\"brillig\" fromIndex:2];",
                  result);
     result = generateStatement(stmts.get(7));
-    assertEquals("idx = [((NSString *) NIL_CHK(s)) lastIndexOf:'v' fromIndex:3];", result);
+    assertEquals("idx = [((NSString *) nil_chk(s)) lastIndexOf:'v' fromIndex:3];", result);
     result = generateStatement(stmts.get(8));
-    assertEquals("idx = [((NSString *) NIL_CHK(s)) lastIndexOfString:@\"the\" fromIndex:4];",
+    assertEquals("idx = [((NSString *) nil_chk(s)) lastIndexOfString:@\"the\" fromIndex:4];",
                  result);
   }
 
@@ -171,7 +171,7 @@ public class JavaToIOSMethodTranslatorTest extends GenerationTest {
     List<Statement> stmts = translateStatements(source);
     assertEquals(2, stmts.size());
     String result = generateStatement(stmts.get(1));
-    assertEquals("IOSCharArray *array = [((NSString *) NIL_CHK(s)) toCharArray];", result);
+    assertEquals("IOSCharArray *array = [((NSString *) nil_chk(s)) toCharArray];", result);
   }
 
   public void testNewInstanceMapping() throws IOException {
@@ -180,7 +180,7 @@ public class JavaToIOSMethodTranslatorTest extends GenerationTest {
     List<Statement> stmts = translateStatements(source);
     assertEquals(1, stmts.size());
     String result = generateStatement(stmts.get(0));
-    assertTranslation(result, "[((IOSClass *) NIL_CHK(clazz)) newInstance]");
+    assertTranslation(result, "[((IOSClass *) nil_chk(clazz)) newInstance]");
   }
 
   // Verify that a method named cloned in a class that doesn't
@@ -228,7 +228,7 @@ public class JavaToIOSMethodTranslatorTest extends GenerationTest {
     assertTranslation(translation, "- (id)copyWithZone:(NSZone *)zone {");
     assertTranslation(translation,
         "Example_Inner *inner = (Example_Inner *) [super clone];");
-    assertTranslation(translation, "((Example_Inner *) NIL_CHK(inner)).i = i_;");
+    assertTranslation(translation, "((Example_Inner *) nil_chk(inner)).i = i_;");
   }
 
   // Ensure using the builder pattern does not invoke O(2^N) running time.
@@ -250,27 +250,27 @@ public class JavaToIOSMethodTranslatorTest extends GenerationTest {
         "} }",
         "Example", "Example.m");
     assertTranslation(translation,
-        "return [((Example_Builder *) NIL_CHK([((Example_Builder *) " +
-        "NIL_CHK([((Example_Builder *) NIL_CHK([((Example_Builder *) " +
-        "NIL_CHK([((Example_Builder *) NIL_CHK([((Example_Builder *) " +
-        "NIL_CHK([((Example_Builder *) NIL_CHK([((Example_Builder *) " +
-        "NIL_CHK([((Example_Builder *) NIL_CHK([((Example_Builder *) " +
-        "NIL_CHK([((Example_Builder *) NIL_CHK([((Example_Builder *) " +
-        "NIL_CHK([((Example_Builder *) NIL_CHK([((Example_Builder *) " +
-        "NIL_CHK([((Example_Builder *) NIL_CHK([((Example_Builder *) " +
-        "NIL_CHK([((Example_Builder *) NIL_CHK([((Example_Builder *) " +
-        "NIL_CHK([((Example_Builder *) NIL_CHK([((Example_Builder *) " +
-        "NIL_CHK([((Example_Builder *) NIL_CHK([((Example_Builder *) " +
-        "NIL_CHK([((Example_Builder *) NIL_CHK([((Example_Builder *) " +
-        "NIL_CHK([((Example_Builder *) NIL_CHK([((Example_Builder *) " +
-        "NIL_CHK([((Example_Builder *) NIL_CHK([((Example_Builder *) " +
-        "NIL_CHK([((Example_Builder *) NIL_CHK([((Example_Builder *) " +
-        "NIL_CHK([((Example_Builder *) NIL_CHK([((Example_Builder *) " +
-        "NIL_CHK([((Example_Builder *) NIL_CHK([((Example_Builder *) " +
-        "NIL_CHK([((Example_Builder *) NIL_CHK([((Example_Builder *) " +
-        "NIL_CHK([((Example_Builder *) NIL_CHK([((Example_Builder *) " +
-        "NIL_CHK([((Example_Builder *) NIL_CHK([((Example_Builder *) " +
-        "NIL_CHK([((Example_Builder *) [[[Example_Builder alloc] init] autorelease]) " +
+        "return [((Example_Builder *) nil_chk([((Example_Builder *) " +
+        "nil_chk([((Example_Builder *) nil_chk([((Example_Builder *) " +
+        "nil_chk([((Example_Builder *) nil_chk([((Example_Builder *) " +
+        "nil_chk([((Example_Builder *) nil_chk([((Example_Builder *) " +
+        "nil_chk([((Example_Builder *) nil_chk([((Example_Builder *) " +
+        "nil_chk([((Example_Builder *) nil_chk([((Example_Builder *) " +
+        "nil_chk([((Example_Builder *) nil_chk([((Example_Builder *) " +
+        "nil_chk([((Example_Builder *) nil_chk([((Example_Builder *) " +
+        "nil_chk([((Example_Builder *) nil_chk([((Example_Builder *) " +
+        "nil_chk([((Example_Builder *) nil_chk([((Example_Builder *) " +
+        "nil_chk([((Example_Builder *) nil_chk([((Example_Builder *) " +
+        "nil_chk([((Example_Builder *) nil_chk([((Example_Builder *) " +
+        "nil_chk([((Example_Builder *) nil_chk([((Example_Builder *) " +
+        "nil_chk([((Example_Builder *) nil_chk([((Example_Builder *) " +
+        "nil_chk([((Example_Builder *) nil_chk([((Example_Builder *) " +
+        "nil_chk([((Example_Builder *) nil_chk([((Example_Builder *) " +
+        "nil_chk([((Example_Builder *) nil_chk([((Example_Builder *) " +
+        "nil_chk([((Example_Builder *) nil_chk([((Example_Builder *) " +
+        "nil_chk([((Example_Builder *) nil_chk([((Example_Builder *) " +
+        "nil_chk([((Example_Builder *) nil_chk([((Example_Builder *) " +
+        "nil_chk([((Example_Builder *) [[[Example_Builder alloc] init] autorelease]) " +
         "addWithInt:10])) addWithInt:11])) addWithInt:12])) addWithInt:13])) addWithInt:14])) " +
         "addWithInt:15])) addWithInt:16])) addWithInt:17])) addWithInt:18])) addWithInt:19])) " +
         "addWithInt:20])) addWithInt:21])) addWithInt:22])) addWithInt:23])) addWithInt:24])) " +
