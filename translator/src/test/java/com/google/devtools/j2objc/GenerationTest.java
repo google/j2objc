@@ -142,7 +142,7 @@ public abstract class GenerationTest extends TestCase {
       CompilationUnit unit = compileType(name, source, assertErrors);
       J2ObjC.initializeTranslation(unit);
       J2ObjC.removeDeadCode(unit, source);
-      J2ObjC.translate(unit, source);
+      J2ObjC.translate(unit);
       lastLog = stringWriter.toString();
       return unit;
     } finally {
