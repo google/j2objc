@@ -812,10 +812,6 @@ public class StatementGenerator extends ErrorReportingASTVisitor {
 
   @Override
   public boolean visit(FieldAccess node) {
-    if (maybePrintArrayLength(node.getName().getIdentifier(), node.getExpression())) {
-      return false;
-    }
-
     printNilCheckAndCast(node.getExpression());
     if (Options.inlineFieldAccess() && isProperty(node.getName())) {
       buffer.append("->");
@@ -1427,10 +1423,6 @@ public class StatementGenerator extends ErrorReportingASTVisitor {
         printStaticVarReference(node, /* assignable */ false);
         return false;
       }
-
-      if (maybePrintArrayLength(var.getName(), node.getQualifier())) {
-        return false;
-      }
     }
     if (binding instanceof ITypeBinding) {
       buffer.append(NameTable.getFullName((ITypeBinding) binding));
@@ -1439,18 +1431,6 @@ public class StatementGenerator extends ErrorReportingASTVisitor {
     printNilCheckAndCast(node.getQualifier());
     buffer.append('.');
     node.getName().accept(this);
-    return false;
-  }
-
-  // Array.length is specially handled because it's a method that's
-  // syntactically a variable.
-  private boolean maybePrintArrayLength(String name, Expression qualifier) {
-    if (name.equals("length") && Types.getTypeBinding(qualifier).isArray()) {
-      buffer.append("(int) ["); // needs cast: count returns an unsigned value
-      printNilCheckAndCast(qualifier);
-      buffer.append(" count]");
-      return true;
-    }
     return false;
   }
 
