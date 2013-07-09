@@ -67,7 +67,7 @@
 
 - (id)initWithDictionary:(NSDictionary *)dictionary {
   if ((self = [super init])) {
-    dictionary_ = [NIL_CHK(dictionary) mutableCopy];
+    dictionary_ = [nil_chk(dictionary) mutableCopy];
   }
   return self;
 }
@@ -119,7 +119,7 @@
 }
 
 - (id)getWithId:(id)key {
-  return [dictionary_ objectForKey:NIL_CHK(key)];
+  return [dictionary_ objectForKey:nil_chk(key)];
 }
 
 - (NSUInteger)hash {
@@ -141,21 +141,21 @@
 
 - (id)putWithId:(id)key
          withId:(id)value {
-  id current = RETAIN_AND_AUTORELEASE([dictionary_ objectForKey:NIL_CHK(key)]);
+  id current = RETAIN_AND_AUTORELEASE([dictionary_ objectForKey:nil_chk(key)]);
   [dictionary_ setObject:value forKey:key];
   return current;
 }
 
 - (void)putAllWithJavaUtilMap:(id<JavaUtilMap>)map {
-  id<JavaUtilIterator> keyIterator = NIL_CHK([[NIL_CHK(map) keySet] iterator]);
+  id<JavaUtilIterator> keyIterator = nil_chk([[nil_chk(map) keySet] iterator]);
   while ([keyIterator hasNext]) {
     id key = [keyIterator next];
-    [dictionary_ setObject:[map getWithId:NIL_CHK(key)] forKey:key];
+    [dictionary_ setObject:[map getWithId:nil_chk(key)] forKey:key];
   }
 }
 
 - (id)removeWithId:(id)key {
-  id current = RETAIN_AND_AUTORELEASE([dictionary_ objectForKey:NIL_CHK(key)]);
+  id current = RETAIN_AND_AUTORELEASE([dictionary_ objectForKey:nil_chk(key)]);
   [dictionary_ removeObjectForKey:key];
   return current;
 }

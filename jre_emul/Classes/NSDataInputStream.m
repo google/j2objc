@@ -22,7 +22,7 @@
 
 - (id)initWithData:(NSData *)data {
   if ((self = [super init])) {
-    data_ = [NIL_CHK(data) copy];
+    data_ = [nil_chk(data) copy];
     bytes_ = (const char *) [data_ bytes];
     position_ = 0;
     length_ = [data_ length];
@@ -68,7 +68,7 @@
     len = remaining;
   }
 
-  [NIL_CHK(b) replaceBytes:bytes_ + position_
+  [nil_chk(b) replaceBytes:bytes_ + position_
                     length:len
                     offset:offset];
   position_ += len;

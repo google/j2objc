@@ -85,7 +85,7 @@
 
 - (id)initWithJavaUtilMap:(id<JavaUtilMap>)map {
   if ((self = [self initJavaUtilHashMapWithInt:
-      [JavaUtilHashMap calculateCapacityWithInt:[((id<JavaUtilMap>) NIL_CHK(map)) size]]
+      [JavaUtilHashMap calculateCapacityWithInt:[((id<JavaUtilMap>) nil_chk(map)) size]]
       withFloat:JavaUtilHashMap_DEFAULT_LOAD_FACTOR])) {
     [self putAllImplWithJavaUtilMap:map];
   }
@@ -273,25 +273,25 @@
 }
 
 - (void)putAllWithJavaUtilMap:(id<JavaUtilMap>)map {
-  if (![((id<JavaUtilMap>) NIL_CHK(map)) isEmpty]) {
+  if (![((id<JavaUtilMap>) nil_chk(map)) isEmpty]) {
     [self putAllImplWithJavaUtilMap:map];
   }
 }
 
 - (void)putAllImplWithJavaUtilMap:(id<JavaUtilMap>)map {
-  int capacity = elementCount_ + [((id<JavaUtilMap>) NIL_CHK(map)) size];
+  int capacity = elementCount_ + [((id<JavaUtilMap>) nil_chk(map)) size];
   if (capacity > threshold_) {
     [self rehashWithInt:capacity];
   }
   {
-    id<JavaLangIterable> array__ = (id<JavaLangIterable>) [((id<JavaUtilMap>) NIL_CHK(map)) entrySet];
+    id<JavaLangIterable> array__ = (id<JavaLangIterable>) [((id<JavaUtilMap>) nil_chk(map)) entrySet];
     if (!array__) {
       @throw AUTORELEASE([[JavaLangNullPointerException alloc] init]);
     }
     id<JavaUtilIterator> iter__ = [array__ iterator];
     while ([iter__ hasNext]) {
       id<JavaUtilMap_Entry> entry = (id<JavaUtilMap_Entry>) [iter__ next];
-      [self putImplWithId:((id) [((id<JavaUtilMap_Entry>) NIL_CHK(entry)) getKey]) withId:((id) [((id<JavaUtilMap_Entry>) NIL_CHK(entry)) getValue])];
+      [self putImplWithId:((id) [((id<JavaUtilMap_Entry>) nil_chk(entry)) getKey]) withId:((id) [((id<JavaUtilMap_Entry>) nil_chk(entry)) getValue])];
     }
   }
 }
@@ -396,17 +396,17 @@
 }
 
 + (int)computeHashCodeWithId:(id)key {
-  return [NIL_CHK(key) hash];
+  return [nil_chk(key) hash];
 }
 
 + (BOOL)areEqualKeysWithId:(id)key1
                     withId:(id)key2 {
-  return (key1 == key2) || [NIL_CHK(key1) isEqual:key2];
+  return (key1 == key2) || [nil_chk(key1) isEqual:key2];
 }
 
 + (BOOL)areEqualValuesWithId:(id)value1
                       withId:(id)value2 {
-  return (value1 == value2) || [NIL_CHK(value1) isEqual:value2];
+  return (value1 == value2) || [nil_chk(value1) isEqual:value2];
 }
 
 - (id)copyWithZone:(NSZone *)zone {
@@ -485,7 +485,7 @@
 #if ! __has_feature(objc_arc)
     [associatedMap_  retain];
 #endif
-    expectedModCount_ = ((JavaUtilHashMap *) NIL_CHK(hm)).modCount;
+    expectedModCount_ = ((JavaUtilHashMap *) nil_chk(hm)).modCount;
     futureEntry_ = nil;
   }
   return self;
@@ -507,7 +507,7 @@
 }
 
 - (void)checkConcurrentMod {
-  if (expectedModCount_ != ((JavaUtilHashMap *) NIL_CHK(associatedMap_)).modCount) {
+  if (expectedModCount_ != ((JavaUtilHashMap *) nil_chk(associatedMap_)).modCount) {
     @throw AUTORELEASE([[JavaUtilConcurrentModificationException alloc] init]);
   }
 }
@@ -584,7 +584,7 @@
 
 - (id)next {
   [self makeNext];
-  return ((JavaUtilHashMap_Entry *) NIL_CHK(currentEntry_)).key;
+  return ((JavaUtilHashMap_Entry *) nil_chk(currentEntry_)).key;
 }
 
 @end
@@ -598,7 +598,7 @@
 
 - (id)next {
   [self makeNext];
-  return ((JavaUtilHashMap_Entry *) NIL_CHK(currentEntry_)).value;
+  return ((JavaUtilHashMap_Entry *) nil_chk(currentEntry_)).value;
 }
 
 @end
@@ -618,11 +618,11 @@
 }
 
 - (int)size {
-  return ((JavaUtilHashMap *) NIL_CHK(associatedMap_)).elementCount;
+  return ((JavaUtilHashMap *) nil_chk(associatedMap_)).elementCount;
 }
 
 - (void)clear {
-  [((JavaUtilHashMap *) NIL_CHK(associatedMap_)) clear];
+  [((JavaUtilHashMap *) nil_chk(associatedMap_)) clear];
 }
 
 - (BOOL)removeWithId:(id)object {

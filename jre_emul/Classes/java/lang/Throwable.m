@@ -175,10 +175,10 @@
 
 - (void)setStackTraceWithJavaLangStackTraceElementArray:
     (IOSObjectArray *)stackTraceArg {
-  NIL_CHK(stackTraceArg);
+  nil_chk(stackTraceArg);
   int count = [stackTraceArg count];
   for (int i = 0; i < count; i++) {
-    NIL_CHK([stackTraceArg objectAtIndex:i]);
+    nil_chk([stackTraceArg objectAtIndex:i]);
   }
 #if __has_feature(objc_arc)
   stackTrace = stackTraceArg;
@@ -189,7 +189,7 @@
 }
 
 - (void)addSuppressedWithJavaLangThrowable:(JavaLangThrowable *)exception {
-  NIL_CHK(exception);
+  nil_chk(exception);
   if (exception == self) {
     @throw AUTORELEASE([[JavaLangIllegalArgumentException alloc] init]);
   }

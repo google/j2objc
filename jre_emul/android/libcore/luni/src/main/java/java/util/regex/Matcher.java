@@ -342,7 +342,7 @@ public final class Matcher implements MatchResult {
      */
     public native String group(int group) /*-[
       [self ensureMatch];
-      NIL_CHK(matchOffsets_);
+      nil_chk(matchOffsets_);
       NSInteger from = [matchOffsets_ intAtIndex:group * 2];
       NSInteger to = [matchOffsets_ intAtIndex:(group * 2) + 1];
       // On 64-bit systems NSNotFound gets truncated to -1 when stored in IOSIntArray.
@@ -350,7 +350,7 @@ public final class Matcher implements MatchResult {
       if (from == notFound || to == notFound) {
         return nil;
       } else {
-        return [NIL_CHK(input_) substring:from endIndex:to];
+        return [nil_chk(input_) substring:from endIndex:to];
       }
     ]-*/;
 
