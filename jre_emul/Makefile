@@ -203,7 +203,6 @@ JAVA_SOURCES = \
 	java/lang/ClassLoader.java \
 	java/lang/ClassNotFoundException.java \
 	java/lang/CloneNotSupportedException.java \
-	java/lang/Deprecated.java \
 	java/lang/Double.java \
 	java/lang/Enum.java \
 	java/lang/Error.java \
@@ -227,7 +226,6 @@ JAVA_SOURCES = \
 	java/lang/NoSuchMethodException.java \
 	java/lang/NullPointerException.java \
 	java/lang/NumberFormatException.java \
-	java/lang/Override.java \
 	java/lang/Readable.java \
 	java/lang/reflect/Array.java \
 	java/lang/reflect/GenericSignatureFormatError.java \
@@ -236,7 +234,6 @@ JAVA_SOURCES = \
 	java/lang/reflect/Modifier.java \
 	java/lang/reflect/UndeclaredThrowableException.java \
 	java/lang/RuntimeException.java \
-	java/lang/SafeVarargs.java \
 	java/lang/SecurityException.java \
 	java/lang/SecurityManager.java \
 	java/lang/Short.java \
@@ -245,7 +242,6 @@ JAVA_SOURCES = \
 	java/lang/StringBuffer.java \
 	java/lang/StringBuilder.java \
 	java/lang/StringIndexOutOfBoundsException.java \
-	java/lang/SuppressWarnings.java \
 	java/lang/System.java \
 	java/lang/Thread.java \
 	java/lang/ThreadDeath.java \

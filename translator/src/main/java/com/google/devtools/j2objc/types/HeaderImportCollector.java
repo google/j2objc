@@ -18,12 +18,9 @@ package com.google.devtools.j2objc.types;
 
 import com.google.common.collect.Sets;
 import com.google.devtools.j2objc.util.ASTUtil;
-import com.google.devtools.j2objc.util.BindingUtil;
 import com.google.devtools.j2objc.util.ErrorReportingASTVisitor;
 
 import org.eclipse.jdt.core.dom.ASTNode;
-import org.eclipse.jdt.core.dom.AnnotationTypeDeclaration;
-import org.eclipse.jdt.core.dom.AnnotationTypeMemberDeclaration;
 import org.eclipse.jdt.core.dom.EnumDeclaration;
 import org.eclipse.jdt.core.dom.FieldDeclaration;
 import org.eclipse.jdt.core.dom.ITypeBinding;
@@ -87,12 +84,6 @@ public class HeaderImportCollector extends ErrorReportingASTVisitor {
   }
 
   @Override
-  public boolean visit(AnnotationTypeMemberDeclaration node) {
-    addForwardDecl(node.getType());
-    return true;
-  }
-
-  @Override
   public boolean visit(FieldDeclaration node) {
     addForwardDecl(node.getType());
     return true;
@@ -133,19 +124,5 @@ public class HeaderImportCollector extends ErrorReportingASTVisitor {
       addSuperType(interfaze);
     }
     return true;
-  }
-
-  private static final ITypeBinding JAVA_LANG_ANNOTATION =
-      GeneratedTypeBinding.newTypeBinding("java.lang.annotation.Annotation", null, false);
-
-  @Override
-  public boolean visit(AnnotationTypeDeclaration node) {
-    if (BindingUtil.isRuntimeAnnotation(Types.getTypeBinding(node))) {
-      addSuperType(JAVA_LANG_ANNOTATION);
-      ITypeBinding binding = Types.getTypeBinding(node);
-      addDeclaredType(binding);
-      return true;
-    }
-    return false;
   }
 }

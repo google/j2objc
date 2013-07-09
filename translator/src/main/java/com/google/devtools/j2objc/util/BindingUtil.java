@@ -16,17 +16,13 @@ package com.google.devtools.j2objc.util;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
-import com.google.devtools.j2objc.types.Types;
 
-import org.eclipse.jdt.core.dom.IAnnotationBinding;
 import org.eclipse.jdt.core.dom.IBinding;
-import org.eclipse.jdt.core.dom.IExtendedModifier;
 import org.eclipse.jdt.core.dom.IMethodBinding;
 import org.eclipse.jdt.core.dom.ITypeBinding;
 import org.eclipse.jdt.core.dom.IVariableBinding;
 import org.eclipse.jdt.core.dom.Modifier;
 
-import java.lang.annotation.RetentionPolicy;
 import java.util.Arrays;
 import java.util.Deque;
 import java.util.List;
@@ -193,30 +189,5 @@ public final class BindingUtil {
     if (!parameter.isPrimitive() && !parameter.isArray()) {
       sb.append(';');
     }
-  }
-
-  /**
-   * Returns true if the specified binding is of an annotation that has
-   * a runtime retention policy.
-   */
-  public static boolean isRuntimeAnnotation(IExtendedModifier mod) {
-    return mod.isAnnotation() ? isRuntimeAnnotation(Types.getTypeBinding(mod)) : false;
-  }
-
-  /**
-   * Returns true if the specified binding is of an annotation that has
-   * a runtime retention policy.
-   */
-  public static boolean isRuntimeAnnotation(ITypeBinding binding) {
-    if (binding != null) {
-      for (IAnnotationBinding ann : binding.getAnnotations()) {
-        if (ann.getName().equals("Retention")) {
-          IVariableBinding retentionBinding =
-              (IVariableBinding) ann.getDeclaredMemberValuePairs()[0].getValue();
-          return retentionBinding.getName().equals(RetentionPolicy.RUNTIME.name());
-        }
-      }
-    }
-    return false;
   }
 }
