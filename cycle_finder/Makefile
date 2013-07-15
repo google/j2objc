@@ -73,7 +73,7 @@ clean:
 
 $(JAR): $(MANIFEST) $(RESOURCE_FILES) $(JAVA_SOURCES_FULL) | $(CLASS_DIR)
 	javac -Xlint:unchecked -sourcepath $(JAVA_SOURCE_DIR) -classpath $(JAR_DEPS_PATH) \
-	    -d $(CLASS_DIR) $(JAVA_SOURCES:%=$(JAVA_SOURCE_DIR)/%)
+	    -d $(CLASS_DIR) -source 1.6 -target 1.6 -nowarn $(JAVA_SOURCES:%=$(JAVA_SOURCE_DIR)/%)
 	jar cfm $@ $(MANIFEST) -C $(CLASS_DIR) .
 
 $(MANIFEST): | $(BUILD_DIR)

@@ -641,7 +641,7 @@ $(EMULATION_JAR): $(ALL_JAVA_SOURCES) $(STUB_JAVA_SOURCES) | $(BUILD_DIR)
 	@echo "building jre_emul.jar"
 	@rm -rf $(EMULATION_STAGE)
 	@mkdir $(EMULATION_STAGE)
-	@javac -classpath $(ANNOTATIONS_JAR) -d $(EMULATION_STAGE) $^
+	@javac -classpath $(ANNOTATIONS_JAR) -d $(EMULATION_STAGE) -source 1.6 -target 1.6 -nowarn $^
 	@jar cf $(EMULATION_JAR) -C $(EMULATION_STAGE) .
 
 $(JAVA_SOURCES_MANIFEST): $(ALL_JAVA_SOURCES) $(STUB_JAVA_SOURCES) | $(BUILD_DIR)

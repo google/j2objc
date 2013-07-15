@@ -119,7 +119,8 @@ deps:
 $(J2OBJC_JAR): $(MANIFEST) $(RESOURCE_FILES) $(JAVA_SOURCES_FULL) | $(BUILD_DIR)
 	@echo Building j2objc jar
 	@javac -Xlint:unchecked -sourcepath $(SOURCEPATH) -classpath $(CLASSPATH) \
-	    -d $(CLASS_DIR) -encoding ISO-8859-1 $(JAVA_SOURCES_FULL)
+	    -d $(CLASS_DIR) -encoding ISO-8859-1 -source 1.6 -target 1.6 -nowarn \
+	    $(JAVA_SOURCES_FULL)
 	@jar cfm $@ $(MANIFEST) -C $(CLASS_DIR) .
 
 $(MANIFEST): | $(BUILD_DIR)
