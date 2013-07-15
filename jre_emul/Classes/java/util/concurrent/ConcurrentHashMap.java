@@ -17,12 +17,29 @@
 package java.util.concurrent;
 
 import java.util.Hashtable;
+import java.util.Map;
 
 /**
  * An inefficient implementation of ConcurrentMap where the underlying map
  * is a HashTable.
  */
 public class ConcurrentHashMap<K, V> extends Hashtable<K, V> implements ConcurrentMap<K, V> {
+
+  public ConcurrentHashMap() {
+    super();
+  }
+
+  public ConcurrentHashMap(int initialCapacity) {
+    super(initialCapacity);
+  }
+
+  public ConcurrentHashMap(int initialCapacity, float loadFactor) {
+    super(initialCapacity, loadFactor);
+  }
+
+  public ConcurrentHashMap(Map<? extends K, ? extends V> t) {
+    super(t);
+  }
 
   public V putIfAbsent(K key, V value) {
     synchronized (this) {
