@@ -28,6 +28,7 @@ import org.eclipse.jdt.core.dom.ITypeBinding;
 import org.eclipse.jdt.core.dom.IVariableBinding;
 import org.eclipse.jdt.internal.compiler.ast.ASTNode;
 
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -39,7 +40,7 @@ public class GeneratedMethodBinding implements IMethodBinding {
   private final IMethodBinding delegate;
   private final String name;
   private final int modifiers;
-  private final List<IBinding> parameters = Lists.newArrayList();
+  private final List<ITypeBinding> parameters = Lists.newArrayList();
   private final ITypeBinding returnType;
   private final IMethodBinding methodDeclaration;
   private ITypeBinding declaringClass;
@@ -171,29 +172,19 @@ public class GeneratedMethodBinding implements IMethodBinding {
 
   @Override
   public ITypeBinding[] getParameterTypes() {
-    List<ITypeBinding> types = Lists.newArrayList();
-    for (IBinding param : parameters) {
-      if (param instanceof IVariableBinding) {
-        types.add(((IVariableBinding) param).getType());
-      } else {
-        types.add((ITypeBinding) param);
-      }
-    }
-    return types.toArray(new ITypeBinding[types.size()]);
+    return parameters.toArray(new ITypeBinding[parameters.size()]);
   }
 
-  public void addParameter(IBinding param) {
+  public void addParameter(ITypeBinding param) {
     parameters.add(param);
   }
 
-  public void addParameter(int index, IBinding param) {
+  public void addParameter(int index, ITypeBinding param) {
     parameters.add(index, param);
   }
 
   public void addParameters(IMethodBinding method) {
-    for (ITypeBinding paramType : method.getParameterTypes()) {
-      parameters.add(new GeneratedVariableBinding(paramType, false, true, declaringClass, this));
-    }
+    parameters.addAll(Arrays.asList(method.getParameterTypes()));
   }
 
   @Override
