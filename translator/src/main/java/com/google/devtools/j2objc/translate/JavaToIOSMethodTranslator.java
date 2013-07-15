@@ -414,7 +414,7 @@ public class JavaToIOSMethodTranslator extends ErrorReportingASTVisitor {
     GeneratedVariableBinding zoneBinding = new GeneratedVariableBinding(
         "zone", 0, Types.resolveIOSType("NSZone"), false, true, binding.getDeclaringClass(),
         binding);
-    binding.addParameter(zoneBinding);
+    binding.addParameter(zoneBinding.getType());
     ASTUtil.getParameters(cloneMethod).add(makeZoneParameter(zoneBinding));
 
     Block block = ast.newBlock();

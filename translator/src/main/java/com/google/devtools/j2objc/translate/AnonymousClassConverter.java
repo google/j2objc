@@ -263,7 +263,7 @@ public class AnonymousClassConverter extends ErrorReportingASTVisitor {
           binding);
       ASTUtil.getParameters(constructor).add(
           ASTFactory.newSingleVariableDeclaration(ast, paramBinding));
-      binding.addParameter(paramBinding);
+      binding.addParameter(paramBinding.getType());
       ASTUtil.getStatements(constructor.getBody()).add(
           ast.newExpressionStatement(ASTFactory.newAssignment(ast,
           ASTFactory.newSimpleName(ast, innerField), ASTFactory.newSimpleName(ast, paramBinding))));

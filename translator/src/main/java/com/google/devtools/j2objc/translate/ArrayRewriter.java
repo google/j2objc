@@ -232,12 +232,10 @@ public class ArrayRewriter extends ErrorReportingASTVisitor {
     IOSMethod iosMethod = IOSMethod.create(arrayType.getName() + methodName);
     binding = IOSMethodBinding.newMethod(
         iosMethod, Modifier.PUBLIC | Modifier.STATIC, arrayType, arrayType);
-    binding.addParameter(new GeneratedVariableBinding(arrayType, false, true, null, binding));
-    binding.addParameter(new GeneratedVariableBinding(
-        Types.resolveJavaType("int"), false, true, null, binding));
+    binding.addParameter(arrayType);
+    binding.addParameter(Types.resolveJavaType("int"));
     if (arrayType.getName().equals("IOSObjectArray")) {
-      binding.addParameter(new GeneratedVariableBinding(
-          Types.getIOSClass(), false, true, null, binding));
+      binding.addParameter(Types.getIOSClass());
     }
     initMethods.put(arrayType, binding);
     return binding;
@@ -274,11 +272,9 @@ public class ArrayRewriter extends ErrorReportingASTVisitor {
         + (needsTypeParam ? " type:(IOSClass *)type" : ""));
     binding = IOSMethodBinding.newMethod(
         iosMethod, Modifier.PUBLIC | Modifier.STATIC, arrayType, arrayType);
-    binding.addParameter(new GeneratedVariableBinding(
-        Types.resolveJavaType("int"), false, true, null, binding));
+    binding.addParameter(Types.resolveJavaType("int"));
     if (needsTypeParam) {
-      binding.addParameter(new GeneratedVariableBinding(
-          Types.getIOSClass(), false, true, null, binding));
+      binding.addParameter(Types.getIOSClass());
     }
     singleDimMethods.put(arrayType, binding);
     return binding;
@@ -330,13 +326,10 @@ public class ArrayRewriter extends ErrorReportingASTVisitor {
         iosMethod, Modifier.PUBLIC | Modifier.STATIC, Types.resolveIOSType("IOSObjectArray"),
         arrayType);
     ITypeBinding intType = Types.resolveJavaType("int");
-    binding.addParameter(new GeneratedVariableBinding(
-        intType, false, true, null, binding));
-    binding.addParameter(new GeneratedVariableBinding(
-        GeneratedTypeBinding.newArrayType(intType), false, true, null, binding));
+    binding.addParameter(intType);
+    binding.addParameter(GeneratedTypeBinding.newArrayType(intType));
     if (needsTypeParam) {
-      binding.addParameter(new GeneratedVariableBinding(
-          Types.getIOSClass(), false, true, null, binding));
+      binding.addParameter(Types.getIOSClass());
     }
     multiDimMethods.put(arrayType, binding);
     return binding;
@@ -400,8 +393,7 @@ public class ArrayRewriter extends ErrorReportingASTVisitor {
         componentType.isPrimitive() ? componentType : Types.resolveIOSType("id");
     IOSMethodBinding binding = IOSMethodBinding.newMethod(
         iosMethod, Modifier.PUBLIC, declaredReturnType, iosArrayBinding);
-    binding.addParameter(new GeneratedVariableBinding(
-        Types.resolveJavaType("int"), false, true, null, binding));
+    binding.addParameter(Types.resolveJavaType("int"));
     if (!componentType.isPrimitive()) {
       binding = IOSMethodBinding.newTypedInvocation(binding, componentType);
     }
@@ -422,9 +414,8 @@ public class ArrayRewriter extends ErrorReportingASTVisitor {
     ITypeBinding idType = Types.resolveIOSType("id");
     IOSMethodBinding binding = IOSMethodBinding.newMethod(
         OBJECT_ARRAY_ASSIGNMENT, Modifier.PUBLIC, idType, iosArrayBinding);
-    binding.addParameter(new GeneratedVariableBinding(
-        Types.resolveJavaType("int"), false, true, null, binding));
-    binding.addParameter(new GeneratedVariableBinding(idType, false, true, null, binding));
+    binding.addParameter(Types.resolveJavaType("int"));
+    binding.addParameter(idType);
     binding = IOSMethodBinding.newTypedInvocation(binding, componentType);
 
     MethodInvocation invocation = ASTFactory.newMethodInvocation(

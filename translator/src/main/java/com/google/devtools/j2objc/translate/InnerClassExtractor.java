@@ -210,7 +210,7 @@ public class InnerClassExtractor extends ErrorReportingASTVisitor {
     SingleVariableDeclaration outerParam =
         ASTFactory.newSingleVariableDeclaration(ast, outerParamBinding);
     ASTUtil.getParameters(constructor).add(0, outerParam);
-    binding.addParameter(0, outerParamBinding);
+    binding.addParameter(0, outerType);
 
     ConstructorInvocation thisCall = null;
     SuperConstructorInvocation superCall = null;
