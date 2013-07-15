@@ -60,7 +60,26 @@ class TypeCollector {
     visitType(type.getSuperclass());
     visitType(type.getDeclaringClass());
     for (IVariableBinding field : type.getDeclaredFields()) {
-      visitType(field.getType());
+      // Directly checking the field type that has parameterized types
+      // that are self-referential causes the JDT to generate new types
+      // with each recursion:
+      //
+      // ImmutableMap<C,? extends ImmutableCollection><java.lang.Integer>>,
+      // ImmutableMap<C,? extends ImmutableCollection<
+      //    ? extends ImmutableCollection<java.lang.Integer>>>, etc.
+      // ImmutableMap<C,? extends ImmutableCollection<
+      //    ? extends ImmutableCollection<
+      //    ? extends ImmutableCollection<java.lang.Integer>>>>, etc.
+      //
+      // Separately visiting the erasure of the field type and its type
+      // arguments works around this issue. I'm not sure how to write a
+      // unit test for this, however, so I added a cycle_finder target
+      // to the Guava build, which has several of these cases.
+      ITypeBinding fieldType = field.getType();
+      visitType(fieldType.getErasure());
+      for (ITypeBinding typeParam : fieldType.getTypeArguments()) {
+        visitType(typeParam);
+      }
     }
     for (ITypeBinding interfaze : type.getInterfaces()) {
       visitType(interfaze);
