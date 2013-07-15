@@ -18,6 +18,8 @@
 package java.lang;
 
 /*-[
+#import "java/lang/NumberFormatException.h"
+
 // From apache-harmony/classlib/modules/luni/src/main/native/luni/shared/floatbits.c
 #define SINGLE_EXPONENT_MASK    0x7F800000
 #define SINGLE_MANTISSA_MASK    0x007FFFFF
@@ -334,7 +336,13 @@ public final class Float extends Number implements Comparable<Float> {
      * @since 1.2
      */
     public native static float parseFloat(String string) throws NumberFormatException /*-[
-        return [string floatValue];
+      NSNumberFormatter *f = AUTORELEASE([[NSNumberFormatter alloc] init]);
+      [f setNumberStyle:NSNumberFormatterDecimalStyle];
+      NSNumber *result = [f numberFromString:string];
+      if (!result) {
+        @throw AUTORELEASE([[JavaLangNumberFormatException alloc] initWithNSString:string]);
+      }
+      return [result floatValue];
     ]-*/;
 
     @Override

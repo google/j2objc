@@ -18,6 +18,8 @@
 package java.lang;
 
 /*-[
+#import "java/lang/NumberFormatException.h"
+
 // From apache-harmony/classlib/modules/luni/src/main/native/luni/shared/floatbits.c,
 // apache-harmony/classlib/modules/portlib/src/main/native/include/shared/hycomp.h
 #define HYCONST64(x)            x##LL
@@ -163,7 +165,7 @@ public final class Double extends Number implements Comparable<Double> {
           // When object is nil, Obj-C ignores messages sent to it.
           throw new NullPointerException();
         }
-        return compare(value, object.value); 
+        return compare(value, object.value);
     }
 
     @Override
@@ -334,7 +336,13 @@ public final class Double extends Number implements Comparable<Double> {
      */
     public native static double parseDouble(String string)
             throws NumberFormatException /*-[
-        return [string doubleValue];
+      NSNumberFormatter *f = AUTORELEASE([[NSNumberFormatter alloc] init]);
+      [f setNumberStyle:NSNumberFormatterDecimalStyle];
+      NSNumber *result = [f numberFromString:string];
+      if (!result) {
+        @throw AUTORELEASE([[JavaLangNumberFormatException alloc] initWithNSString:string]);
+      }
+      return [result doubleValue];
     ]-*/;
 
     @Override
