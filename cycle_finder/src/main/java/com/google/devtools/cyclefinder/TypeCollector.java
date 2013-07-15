@@ -76,10 +76,18 @@ class TypeCollector {
       // unit test for this, however, so I added a cycle_finder target
       // to the Guava build, which has several of these cases.
       ITypeBinding fieldType = field.getType();
-      visitType(fieldType.getErasure());
+      boolean mayRecurse = false;
       for (ITypeBinding typeParam : fieldType.getTypeArguments()) {
+        if (typeParam.isUpperbound()) {
+          mayRecurse = true;
+          break;
+        }
         visitType(typeParam);
       }
+      if (mayRecurse) {
+        fieldType = fieldType.getErasure();
+      }
+      visitType(fieldType);
     }
     for (ITypeBinding interfaze : type.getInterfaces()) {
       visitType(interfaze);

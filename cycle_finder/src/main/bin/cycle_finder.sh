@@ -29,4 +29,4 @@ while [ $# -gt 0 ]; do
   shift
 done
 
-java -Xmx1024m -jar ${JAR} -classpath ${CLASSPATH} ${ARGS}
+java -jar ${JAR} -classpath ${CLASSPATH} ${ARGS}
