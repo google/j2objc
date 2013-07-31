@@ -120,10 +120,10 @@ public class Thread implements Runnable {
   private static final String TARGET = "JreThread-TargetKey";
   private static final String THREADGROUP = "JreThread-GroupKey";
   private static final String THREAD_ID = "JreThread-IdKey";
-  
+
   // Milliseconds between polls for testing thread completion.
   private static final int POLL_INTERVAL = 100;
-  
+
   static {
     initializeThreadClass();
   }
@@ -261,7 +261,7 @@ public class Thread implements Runnable {
   public Thread(ThreadGroup group, String threadName) {
     create(group, null, threadName, 0, true);
   }
-  
+
   private Thread(ThreadGroup group, String threadName, boolean createThread) {
     create(group, null, threadName, 0, createThread);
   }
@@ -332,7 +332,7 @@ public class Thread implements Runnable {
     }
     [thread setName:name];
     [self setNameWithNSString:name];
-    
+
     int priority = [currentThread isMainThread] ? 5 : [currentThread threadPriority] * 10;
     [self setPriority0WithInt:priority];
 
@@ -343,7 +343,7 @@ public class Thread implements Runnable {
 #endif
     [newThreadData setObject:self forKey:JavaLangThread_JAVA_THREAD_];
   ]-*/;
-  
+
   /**
    * Create a Thread wrapper around the main native thread.
    */
@@ -361,8 +361,8 @@ public class Thread implements Runnable {
       [JavaLangThread_mainThreadGroup_ autorelease];
 #endif
     }
-    
-    // Now there is a main threadgroup, 
+
+    // Now there is a main threadgroup,
     (void) [[JavaLangThread alloc]
             initWithJavaLangThreadGroup:JavaLangThread_mainThreadGroup_
                            withNSString:@"main"
@@ -474,6 +474,36 @@ public class Thread implements Runnable {
     return (JavaLangThreadGroup *) [threadData objectForKey:JavaLangThread_THREADGROUP_];
   ]-*/;
 
+  public StackTraceElement[] getStackTrace() {
+    // Get the stack trace for a new exception, stripping the exception's
+    // and preamble's (runtime startup) frames.
+    StackTraceElement[] exceptionTrace = new Throwable().getStackTrace();
+    int firstElement = 0;
+    int lastElement = exceptionTrace.length;
+    for (int i = 0; i < exceptionTrace.length; i++) {
+      String methodName = exceptionTrace[i].getMethodName();
+      if (methodName.contains("getStackTrace")) {
+        firstElement = i;
+        continue;
+      }
+      if (methodName.contains("mainWithNSStringArray:")) {
+        lastElement = i;
+        break;
+      }
+    }
+    int nFrames = lastElement - firstElement + 1;
+    if (nFrames < 0) {
+      // Something failed, return the whole stack trace.
+      return exceptionTrace;
+    }
+    if (firstElement + nFrames > exceptionTrace.length) {
+      nFrames = exceptionTrace.length - firstElement;
+    }
+    StackTraceElement[] result = new StackTraceElement[nFrames];
+    System.arraycopy(exceptionTrace, firstElement, result, 0, nFrames);
+    return result;
+  }
+
   /**
    * Posts an interrupt request to this {@code Thread}. Unless the caller is
    * the {@link #currentThread()}, the method {@code checkAccess()} is called
@@ -497,7 +527,7 @@ public class Thread implements Runnable {
    * their interrupt status set and return immediately. They don't receive an
    * exception in this case.
    * <ul>
-   * 
+   *
    * @throws SecurityException
    *             if <code>checkAccess()</code> fails with a SecurityException
    * @see java.lang.SecurityException
@@ -514,7 +544,7 @@ public class Thread implements Runnable {
    * <code>currentThread()</code>) has a pending interrupt request (<code>
    * true</code>) or not (<code>false</code>). It also has the side-effect of
    * clearing the flag.
-   * 
+   *
    * @return a <code>boolean</code> indicating the interrupt status
    * @see Thread#currentThread
    * @see Thread#interrupt
@@ -529,7 +559,7 @@ public class Thread implements Runnable {
    * <code>currentThread()</code>) has a pending interrupt request (<code>
    * true</code>) or not (<code>false</code>). It also has the side-effect of
    * clearing the flag.
-   * 
+   *
    * @return a <code>boolean</code> indicating the interrupt status
    * @see Thread#currentThread
    * @see Thread#interrupt
@@ -634,7 +664,7 @@ public class Thread implements Runnable {
   private static synchronized long getNextThreadId() {
     return ++threadOrdinalNum;
   }
-  
+
   public String toString() {
     ThreadGroup group = getThreadGroup();
     if (group != null) {
