@@ -112,14 +112,27 @@ public class CycleFinder {
     nErrors++;
   }
 
-  private void printErrors() {
-    for (String error : errors) {
-      errStream.println("error: " + error);
+  private void exitOnErrors() {
+    if (nErrors > 0) {
+      errStream.println("Failed with " + nErrors + " errors:");
+      for (String error : errors) {
+        errStream.println("error: " + error);
+      }
+      System.exit(nErrors);
     }
   }
 
   public int errorCount() {
     return nErrors;
+  }
+
+  private void testFileExistence() {
+    for (String filePath : options.getSourceFiles()) {
+      File f = new File(filePath);
+      if (!f.exists()) {
+        error("File not found: " + filePath);
+      }
+    }
   }
 
   public List<List<Edge>> findCycles() throws IOException {
@@ -163,13 +176,11 @@ public class CycleFinder {
     }
     Options options = Options.parse(args);
     CycleFinder finder = new CycleFinder(options, System.out, System.err);
+    finder.testFileExistence();
+    finder.exitOnErrors();
     List<List<Edge>> cycles = finder.findCycles();
-    if (finder.errorCount() > 0) {
-      System.out.println("Failed with " + finder.errorCount() + " errors:");
-      finder.printErrors();
-    } else {
-      printCycles(cycles, System.out);
-    }
+    finder.exitOnErrors();
+    printCycles(cycles, System.out);
     System.exit(finder.errorCount() + cycles.size());
   }
 }
