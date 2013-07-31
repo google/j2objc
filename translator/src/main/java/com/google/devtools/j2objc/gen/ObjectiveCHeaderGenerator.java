@@ -392,10 +392,6 @@ public class ObjectiveCHeaderGenerator extends ObjectiveCSourceFileGenerator {
         List<VariableDeclarationFragment> vars = ASTUtil.getFragments(field);
         assert !vars.isEmpty();
         VariableDeclarationFragment var = vars.get(0);
-        if (var.getName().getIdentifier().startsWith("this$") && superDefinesVariable(var)) {
-          // Don't print, as it shadows an inner field in a super class.
-          continue;
-        }
         String access = accessScope(field.getModifiers());
         if (!access.equals(lastAccess)) {
           print(' ');
@@ -461,10 +457,6 @@ public class ObjectiveCHeaderGenerator extends ObjectiveCSourceFileGenerator {
       if ((field.getModifiers() & Modifier.STATIC) == 0) {
         ITypeBinding type = Types.getTypeBinding(field.getType());
         for (VariableDeclarationFragment var : ASTUtil.getFragments(field)) {
-          if (var.getName().getIdentifier().startsWith("this$") && superDefinesVariable(var)) {
-            // Don't print, as it shadows an inner field in a super class.
-            continue;
-          }
           print("@property (nonatomic, ");
           IVariableBinding varBinding = Types.getVariableBinding(var);
           if (type.isPrimitive()) {

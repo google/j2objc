@@ -378,42 +378,6 @@ public abstract class ObjectiveCSourceFileGenerator extends SourceFileGenerator 
     return name;
   }
 
-  /**
-   * Returns true if a superclass also defines this variable.
-   */
-  protected boolean superDefinesVariable(VariableDeclarationFragment var) {
-    IVariableBinding varBinding = Types.getVariableBinding(var);
-    ITypeBinding declaringClassBinding = varBinding.getDeclaringClass();
-    TypeDeclaration declaringClass =
-        Types.getTypeDeclaration(declaringClassBinding, getUnit().types());
-    if (declaringClass == null) {
-      return false;
-    }
-    String name = var.getName().getIdentifier();
-    ITypeBinding type = varBinding.getType();
-    return superDefinesVariable(declaringClass, name, type);
-  }
-
-  private boolean superDefinesVariable(TypeDeclaration declaringClass, String name,
-      ITypeBinding type) {
-    ITypeBinding superClazzBinding = Types.getTypeBinding(declaringClass.getSuperclassType());
-    TypeDeclaration superClazz = Types.getTypeDeclaration(superClazzBinding, getUnit().types());
-    if (superClazz == null) {
-      return false;
-    }
-    for (FieldDeclaration field : superClazz.getFields()) {
-      for (VariableDeclarationFragment var : ASTUtil.getFragments(field)) {
-        if (var.getName().getIdentifier().equals(name)) {
-          ITypeBinding varType = Types.getTypeBinding(var);
-          if (varType.isEqualTo(type)) {
-            return true;
-          }
-        }
-      }
-    }
-    return superDefinesVariable(superClazz, name, type);
-  }
-
   /** Ignores deprecation warnings. Deprecation warnings should be visible for human authored code,
    *  not transpiled code. This method should be paired with popIgnoreDeprecatedDeclarationsPragma.
    */
