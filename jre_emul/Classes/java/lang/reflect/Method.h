@@ -24,14 +24,17 @@
 
 #import <Foundation/Foundation.h>
 #import "java/lang/reflect/ExecutableMember.h"
+#import "java/lang/reflect/GenericDeclaration.h"
+#import "java/lang/reflect/Member.h"
 
 @class IOSClass;
 @class IOSObjectArray;
 
-// A native implementation of java.lang.reflect.Method.  Its methods are 
+// A native implementation of java.lang.reflect.Method.  Its methods are
 // limited to those that can be derived from an Objective-C Method instance,
 // so instances can be created and released as needed.
 @interface JavaLangReflectMethod : ExecutableMember
+    < JavaLangReflectGenericDeclaration, JavaLangReflectMember >
 
 + (id)methodWithSelector:(SEL)aSelector withClass:(IOSClass *)aClass;
 

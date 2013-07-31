@@ -19,7 +19,6 @@
 //  Created by Tom Ball on 6/18/12.
 //
 
-#import "AccessibleObject.h"
 #import "java/lang/AssertionError.h"
 #import "java/lang/Boolean.h"
 #import "java/lang/Byte.h"
@@ -30,8 +29,9 @@
 #import "java/lang/Long.h"
 #import "java/lang/Short.h"
 #import "java/lang/Void.h"
+#import "java/lang/reflect/AccessibleObject.h"
 
-@implementation AccessibleObject
+@implementation JavaLangReflectAccessibleObject
 
 - (BOOL)isAccessible {
   // Everything in Objective-C is accessible at runtime.
@@ -40,6 +40,31 @@
 
 - (void)setAccessibleWithBOOL:(BOOL)b {
   // do nothing
+}
+
++ (void)setAccessibleWithJavaLangReflectAccessibleObjectArray:(IOSObjectArray *)objects
+                                                     withBOOL:(BOOL)b {
+  // do nothing
+}
+
+- (id)getAnnotationWithIOSClass:(IOSClass *)annotationType {
+  // can't call an abstract method
+  [self doesNotRecognizeSelector:_cmd];
+  return nil;
+}
+
+- (IOSObjectArray *)getDeclaredAnnotations {
+  // can't call an abstract method
+  [self doesNotRecognizeSelector:_cmd];
+  return nil;
+}
+
+- (IOSObjectArray *)getAnnotations {
+  return [self getDeclaredAnnotations];
+}
+
+- (BOOL)isAnnotationPresentWithIOSClass:(IOSClass *)annotationType {
+  return [self getAnnotationWithIOSClass:annotationType] != nil;
 }
 
 @end

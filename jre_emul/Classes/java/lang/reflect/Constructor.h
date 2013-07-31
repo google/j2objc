@@ -23,13 +23,15 @@
 #define _JAVA_LANG_REFLECT_CONSTRUCTOR_H
 
 #import <Foundation/Foundation.h>
+#import "java/lang/reflect/GenericDeclaration.h"
+#import "java/lang/reflect/Member.h"
 #import "ExecutableMember.h"
 
-// A native implementation of java.lang.reflect.Constructor.  Its methods are 
+// A native implementation of java.lang.reflect.Constructor.  Its methods are
 // limited to those that can be derived from an Objective-C Method instance,
-// so instances can be created and released as needed.  
-@interface JavaLangReflectConstructor : ExecutableMember {
-}
+// so instances can be created and released as needed.
+@interface JavaLangReflectConstructor : ExecutableMember
+    < JavaLangReflectGenericDeclaration, JavaLangReflectMember >
 
 + (id)constructorWithSelector:(SEL)aSelector withClass:(IOSClass *)aClass;
 

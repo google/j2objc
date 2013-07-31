@@ -23,6 +23,7 @@
 #define _JavaLangReflectField_H_
 
 #import "AccessibleObject.h"
+#import "java/lang/reflect/Member.h"
 #import <objc/runtime.h>
 
 @class IOSClass;
@@ -31,7 +32,7 @@
 // A native implementation of java.lang.reflect.Field.  Its methods are
 // limited to those that can be derived from the Objective-C runtime,
 // so instances can be created and released as needed.
-@interface JavaLangReflectField : AccessibleObject {
+@interface JavaLangReflectField : JavaLangReflectAccessibleObject < JavaLangReflectMember > {
 @protected
   Ivar ivar_;
   IOSClass *declaringClass_;
