@@ -186,4 +186,14 @@ static id makeException(Class exceptionClass) {
   return [class_ getName];
 }
 
+- (IOSObjectArray *)getDeclaredAnnotations {
+  JavaLangReflectMethod *method = [self getAnnotationsAccessor:[self getName]];
+  return [self getAnnotationsFromAccessor:method];
+}
+
+- (IOSObjectArray *)getParameterAnnotations {
+  JavaLangReflectMethod *method = [self getParameterAnnotationsAccessor:[self getName]];
+  return [self getAnnotationsFromAccessor:method];
+}
+
 @end

@@ -30,6 +30,7 @@
 #import "java/lang/Short.h"
 #import "java/lang/Void.h"
 #import "java/lang/reflect/AccessibleObject.h"
+#import "java/lang/reflect/Method.h"
 
 @implementation JavaLangReflectAccessibleObject
 
@@ -73,6 +74,16 @@
 
 - (BOOL)isAnnotationPresentWithIOSClass:(IOSClass *)annotationType {
   return [self getAnnotationWithIOSClass:annotationType] != nil;
+}
+
+- (IOSObjectArray *)getAnnotationsFromAccessor:(JavaLangReflectMethod *)method {
+  if (method) {
+    IOSObjectArray *noArgs = [IOSObjectArray arrayWithLength:0 type:[NSObject getClass]];
+    return (IOSObjectArray *) [method invokeWithId:nil withNSObjectArray:noArgs];
+  } else {
+    IOSClass *annotationType = [IOSClass classWithProtocol:@protocol(JavaLangAnnotationAnnotation)];
+    return [IOSObjectArray arrayWithLength:0 type:annotationType];
+  }
 }
 
 @end
