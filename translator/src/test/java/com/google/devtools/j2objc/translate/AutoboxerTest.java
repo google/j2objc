@@ -424,4 +424,16 @@ public class AutoboxerTest extends GenerationTest {
         " switch (i) { case 1: case 2: case 3: } } }", "Test", "Test.m");
     assertTranslation(translation, "switch ([((JavaLangInteger *) nil_chk(i)) intValue]) {");
   }
+
+  // Verify that a primitive referenced as an object in the format string is boxed.
+  public void testFormatAutoboxing() throws IOException {
+    String translation = translateSourceFile("public class Test { " +
+        "String test(int n) { return String.format(\"%s\", n); }" +
+        "String test2() { return String.format(\"%s %d %s\", \"foo\", 2, 4); }}", "Test", "Test.m");
+    assertTranslation(translation,
+        "[NSString stringWithFormat:@\"%@\" , [JavaLangInteger valueOfWithInt:n], nil]");
+    assertTranslation(translation,
+        "[NSString stringWithFormat:@\"%@ %d %@\" , @\"foo\", 2, " +
+        "[JavaLangInteger valueOfWithInt:4], nil]");
+  }
 }
