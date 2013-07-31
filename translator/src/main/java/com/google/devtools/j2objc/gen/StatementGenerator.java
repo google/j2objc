@@ -820,7 +820,7 @@ public class StatementGenerator extends ErrorReportingASTVisitor {
               format += "%d";
               break;
             case 'J':  // long
-              format += "%qi";
+              format += "%lld";
               break;
             case 'D':  // double
             case 'F':  // float

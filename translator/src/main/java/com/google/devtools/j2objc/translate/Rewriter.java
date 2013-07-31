@@ -710,7 +710,7 @@ public class Rewriter extends ErrorReportingASTVisitor {
       }
       if (first instanceof StringLiteral) {
         String format = ((StringLiteral) first).getLiteralValue();
-        String convertedFormat = convertStringFormatString(format);
+        String convertedFormat = convertStringFormatString(format, args);
         if (!format.equals(convertedFormat)) {
           StringLiteral newLiteral = ast.newStringLiteral();
           newLiteral.setLiteralValue(convertedFormat);
@@ -727,10 +727,11 @@ public class Rewriter extends ErrorReportingASTVisitor {
    * Convert a Java string format string into a NSString equivalent.
    */
   @SuppressWarnings("fallthrough")
-  private String convertStringFormatString(String s) {
+  private String convertStringFormatString(String s, List<Expression> args) {
     if (s.isEmpty()) {
       return s;
     }
+    int iArg = 1;  // First argument after format string.
     char[] chars = s.toCharArray();
     StringBuffer result = new StringBuffer();
     boolean inSpecifier = false;
@@ -745,23 +746,37 @@ public class Rewriter extends ErrorReportingASTVisitor {
           case 'S':
             result.append('@');
             inSpecifier = false;
+            iArg++;
             break;
           case 'c':
           case 'C':
             result.append('C');
             inSpecifier = false;
+            iArg++;
             break;
           case 'h':
           case 'H':
             result.append('x');
             inSpecifier = false;
+            iArg++;
             break;
           case 'd':
+            if (Types.isLongType(Types.getTypeBinding(args.get(iArg)))) {
+              result.append("ll");
+            }
+            result.append(c);
+            inSpecifier = false;
+            iArg++;
+            break;
           case 'e':
           case 'f':
           case 'g':
           case 'o':
           case 'x':
+            result.append(c);
+            inSpecifier = false;
+            iArg++;
+            break;
           case '%':
             result.append(c);
             inSpecifier = false;

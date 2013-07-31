@@ -78,8 +78,6 @@ public class Types {
   private final IOSTypeBinding NSObject;
   private final IOSTypeBinding NSNumber;
   private final IOSTypeBinding NSString;
-  private final IOSTypeBinding NSZone;
-  private final IOSTypeBinding NS_ANY;
   private final IOSTypeBinding IOSClass;
 
   private IOSTypeBinding IOSObjectArray;
@@ -115,9 +113,9 @@ public class Types {
     NSObject = mapIOSType(IOSTypeBinding.newClass("NSObject", javaObjectType));
     NSNumber = mapIOSType(IOSTypeBinding.newClass("NSNumber", javaNumberType, NSObject));
     NSString = mapIOSType(IOSTypeBinding.newClass("NSString", javaStringType, NSObject));
-    NS_ANY = mapIOSType(IOSTypeBinding.newUnmappedClass("id"));
     IOSClass = mapIOSType(IOSTypeBinding.newUnmappedClass("IOSClass"));
-    NSZone = mapIOSType(IOSTypeBinding.newUnmappedClass("NSZone"));
+    mapIOSType(IOSTypeBinding.newUnmappedClass("id"));
+    mapIOSType(IOSTypeBinding.newUnmappedClass("NSZone"));
 
     initializeArrayTypes();
     initializeTypeMap();
@@ -286,7 +284,13 @@ public class Types {
   }
 
   public static boolean isBooleanType(ITypeBinding type) {
-    return instance.booleanType.equals(type);
+    return type.isEqualTo(instance.booleanType) ||
+        type == instance.ast.resolveWellKnownType("java.lang.Boolean");
+  }
+
+  public static boolean isLongType(ITypeBinding type) {
+    return type.isEqualTo(instance.ast.resolveWellKnownType("long")) ||
+        type == instance.ast.resolveWellKnownType("java.lang.Long");
   }
 
   public static ITypeBinding resolveIOSType(Type type) {

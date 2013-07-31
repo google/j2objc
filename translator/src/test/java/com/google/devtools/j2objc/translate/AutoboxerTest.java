@@ -362,7 +362,7 @@ public class AutoboxerTest extends GenerationTest {
     String translation = translateSourceFile(source, "Test", "Test.m");
 
     assertTranslation(translation,
-        "stringWithFormat:@\"b=%d b2=%d c=%C d=%f f=%f i=%d l=%d s=%d\" , " +
+        "stringWithFormat:@\"b=%d b2=%d c=%C d=%f f=%f i=%d l=%lld s=%d\" , " +
         "b_, b2_, c_, d_, f_, i_, l_, s_, nil];");
   }
 

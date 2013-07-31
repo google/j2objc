@@ -530,6 +530,12 @@ public class RewriterTest extends GenerationTest {
     assertTranslation(translation, "[NSString stringWithFormat:@\"%d%% of 100%%\" , n, nil];");
   }
 
+  public void testFormatStringWithLong() throws IOException {
+    String translation = translateSourceFile("public class Test { " +
+        "String test(long n) { return String.format(\"%d\", n); }}", "Test", "Test.m");
+    assertTranslation(translation, "[NSString stringWithFormat:@\"%lld\" , n, nil];");
+  }
+
   public void testMethodCollisionWithSuperclassField() throws IOException {
     addSourceFile("class A { protected int i; }", "A.java");
     String translation = translateSourceFile(
