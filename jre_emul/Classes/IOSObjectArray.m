@@ -220,10 +220,14 @@ static inline id IOSObjectArray_checkValue(IOSObjectArray *array, id value) {
 - (void)dealloc {
 #if ! __has_feature(objc_arc)
   [elementType_ release];
-  for (NSUInteger i = 0; i < size_; i++) {
-    [buffer_[i] release];
-  }
 #endif
+  for (NSUInteger i = 0; i < size_; i++) {
+#if __has_feature(objc_arc)
+    buffer_[i] = nil;
+#else
+    [buffer_[i] release];
+#endif
+  }
   free(buffer_);
 #if ! __has_feature(objc_arc)
   [super dealloc];
