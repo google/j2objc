@@ -109,7 +109,8 @@ public class ObjectiveCHeaderGenerator extends ObjectiveCSourceFileGenerator {
 
   @Override
   public void generate(TypeDeclaration node) {
-    String typeName = NameTable.getFullName(node);
+    ITypeBinding binding = Types.getTypeBinding(node);
+    String typeName = NameTable.getFullName(binding);
     String superName = getSuperTypeName(node);
     List<FieldDeclaration> fields = Lists.newArrayList(node.getFields());
     List<MethodDeclaration> methods = Lists.newArrayList(node.getMethods());
@@ -152,12 +153,14 @@ public class ObjectiveCHeaderGenerator extends ObjectiveCSourceFileGenerator {
     }
     printMethods(methods);
     println("@end");
+    if (!isInterface) {
+      printFieldSetters(binding, fields);
+    }
 
     if (isInterface) {
       printStaticInterface(typeName, fields, methods);
     }
 
-    ITypeBinding binding = Types.getTypeBinding(node);
     String pkg = binding.getPackage().getName();
     if (NameTable.hasPrefix(pkg) && binding.isTopLevel()) {
       String unprefixedName = NameTable.camelCaseQualifiedName(binding.getQualifiedName());
@@ -295,6 +298,7 @@ public class ObjectiveCHeaderGenerator extends ObjectiveCSourceFileGenerator {
     printStaticFieldAccessors(fields, methods, /* isInterface */ false);
     printMethods(methods);
     println("@end");
+    printFieldSetters(enumType, fields);
   }
 
   @Override
@@ -415,20 +419,22 @@ public class ObjectiveCHeaderGenerator extends ObjectiveCSourceFileGenerator {
 
   private void printInstanceVariables(List<FieldDeclaration> fields) {
     indent();
-    String lastAccess = "@protected";
+    boolean first = true;
     for (FieldDeclaration field : fields) {
       if ((field.getModifiers() & Modifier.STATIC) == 0) {
         List<VariableDeclarationFragment> vars = ASTUtil.getFragments(field);
         assert !vars.isEmpty();
         VariableDeclarationFragment var = vars.get(0);
-        String access = accessScope(field.getModifiers());
-        if (!access.equals(lastAccess)) {
-          print(' ');
-          println(access);
-          lastAccess = access;
+        // Need direct access to fields possibly from inner classes that are
+        // promoted to top level classes, so must make all fields public.
+        if (first) {
+          println(" @public");
+          first = false;
         }
         printIndent();
-        if (Types.isWeakReference(Types.getVariableBinding(var)) && Options.useARC()) {
+        if (Types.isWeakReference(Types.getVariableBinding(var))) {
+          // We must add this even without -use-arc because the header may be
+          // included by a file compiled with ARC.
           print("__weak ");
         }
         ITypeBinding varType = Types.getTypeBinding(vars.get(0));
@@ -480,10 +486,37 @@ public class ObjectiveCHeaderGenerator extends ObjectiveCSourceFileGenerator {
     }
   }
 
+  private void printFieldSetters(ITypeBinding declaringType, List<FieldDeclaration> fields) {
+    boolean newlinePrinted = false;
+    for (FieldDeclaration field : fields) {
+      ITypeBinding type = Types.getTypeBinding(field.getType());
+      int modifiers = field.getModifiers();
+      if (Modifier.isStatic(modifiers) || type.isPrimitive()) {
+        continue;
+      }
+      String typeStr = NameTable.getObjCType(type);
+      String declaringClassName = NameTable.getFullName(declaringType);
+      for (VariableDeclarationFragment var : ASTUtil.getFragments(field)) {
+        IVariableBinding varBinding = Types.getVariableBinding(var);
+        if (Types.isWeakReference(varBinding)) {
+          continue;
+        }
+        String fieldName = NameTable.javaFieldToObjC(NameTable.getName(var.getName()));
+        if (!newlinePrinted) {
+          newlinePrinted = true;
+          newline();
+        }
+        println(String.format("J2OBJC_FIELD_SETTER(%s, %s, %s)",
+            declaringClassName, fieldName, typeStr));
+      }
+    }
+  }
+
+  // TODO(user): Remove properties.
   private void printProperties(List<FieldDeclaration> fields) {
     int nPrinted = 0;
     for (FieldDeclaration field : fields) {
-      if ((field.getModifiers() & Modifier.STATIC) == 0) {
+      if (!Modifier.isStatic(field.getModifiers())) {
         ITypeBinding type = Types.getTypeBinding(field.getType());
         for (VariableDeclarationFragment var : ASTUtil.getFragments(field)) {
           print("@property (nonatomic, ");
@@ -629,25 +662,6 @@ public class ObjectiveCHeaderGenerator extends ObjectiveCSourceFileGenerator {
     if (hadConstant) {
       newline();
     }
-  }
-
-  private String accessScope(int modifiers) {
-    if (Options.inlineFieldAccess()) {
-      // Need direct access to fields possibly from inner classes that are
-      // promoted to top level classes, so must make all fields public.
-      return "@public";
-    }
-
-    if ((modifiers & Modifier.PUBLIC) > 0) {
-      return "@public";
-    }
-    if ((modifiers & Modifier.PROTECTED) > 0) {
-      return "@protected";
-    }
-    if ((modifiers & Modifier.PRIVATE) > 0) {
-      return "@private";
-    }
-    return "@package";
   }
 
   /**

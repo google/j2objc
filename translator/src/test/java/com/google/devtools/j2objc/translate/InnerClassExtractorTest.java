@@ -76,8 +76,8 @@ public class InnerClassExtractorTest extends GenerationTest {
     assertTranslation(translation, "@property (nonatomic, retain) A *this$0;");
     assertTranslation(translation, "- (id)initWithA:(A *)outer$;");
     translation = getTranslatedFile("A.m");
-    assertTranslation(translation, "[nil_chk(this$0_.o) hash]");
-    assertTranslation(translation, "JreOperatorRetainedAssign(&this$0_, self, outer$);");
+    assertTranslation(translation, "[nil_chk(this$0_->o_) hash]");
+    assertTranslation(translation, "A_B_set_this$0_(self, outer$);");
   }
 
   public void testWeakSimpleInnerClass() throws IOException {
@@ -111,7 +111,7 @@ public class InnerClassExtractorTest extends GenerationTest {
     assertTranslation(translation, "@property (nonatomic, retain) A_B *this$0;");
     assertTranslation(translation, "- (id)initWithA_B:(A_B *)outer$;");
     translation = getTranslatedFile("A.m");
-    assertTranslation(translation, "[nil_chk(this$0_.this$0.o) hash]");
+    assertTranslation(translation, "[nil_chk(this$0_->this$0_->o_) hash]");
   }
 
   public void testWeakInnerInnerClass() throws IOException {
@@ -122,7 +122,7 @@ public class InnerClassExtractorTest extends GenerationTest {
     assertTranslation(translation, "@property (nonatomic, retain) A *this$0;");
     assertTranslation(translation, "@property (nonatomic, assign) A_B *this$0;");
     translation = getTranslatedFile("A.m");
-    assertTranslation(translation, "[nil_chk(this$0_.this$0.o) hash]");
+    assertTranslation(translation, "[nil_chk(this$0_->this$0_->o_) hash]");
   }
 
   public void testInnerMethodAnonymousClass() throws IOException {
@@ -149,8 +149,8 @@ public class InnerClassExtractorTest extends GenerationTest {
         "- (id)initWithA_B:(A_B *)outer$\n" +
         "          withInt:(int)capture$0;");
     translation = getTranslatedFile("A.m");
-    assertTranslation(translation, "[super initWithA:outer$.this$0]");
-    assertTranslation(translation, "[nil_chk(this$1_.this$0.o) hash]");
+    assertTranslation(translation, "[super initWithA:outer$->this$0_]");
+    assertTranslation(translation, "[nil_chk(this$1_->this$0_->o_) hash]");
   }
 
   /**
@@ -219,33 +219,12 @@ public class InnerClassExtractorTest extends GenerationTest {
     assertEquals(1, testsFound[0]);
   }
 
-  public void testInnerClassInvokingExplicitOuterMethod() {
-    List<AbstractTypeDeclaration> types = translateClassBody(
-      "public int size() { return 0; } " +
-      "class Inner { int size() { return Test.this.size(); }}");
-    assertEquals(2, types.size());
-
-    final int[] testsFound = { 0 };
-    types.get(1).accept(new ASTVisitor() {
-      @Override
-      public void endVisit(MethodDeclaration node) {
-        if (node.isConstructor()) {
-          assertEquals("final Test outer$", node.parameters().get(0).toString());
-          assertEquals("this$0=outer$;", node.getBody().statements().get(1).toString().trim());
-          ++testsFound[0];
-        } else if (node.getName().getIdentifier().equals("dealloc")) {
-          assertEquals("this$0=null;", node.getBody().statements().get(0).toString().trim());
-          ++testsFound[0];
-        }
-      };
-
-      @Override
-      public void endVisit(ReturnStatement node) {
-        assertEquals("return this$0.size();", node.toString().trim());
-        ++testsFound[0];
-      }
-    });
-    assertEquals(3, testsFound[0]);
+  public void testInnerClassInvokingExplicitOuterMethod() throws IOException {
+    String translation = translateSourceFile(
+      "class Test { public int size() { return 0; } " +
+      "class Inner { int size() { return Test.this.size(); } } }", "Test", "Test.m");
+    assertTranslation(translation, "Test_Inner_set_this$0_(self, outer$);");
+    assertTranslation(translation, "return [this$0_ size];");
   }
 
   public void testInnerClassInvokingOuterMethod() {
@@ -265,57 +244,22 @@ public class InnerClassExtractorTest extends GenerationTest {
     assertEquals(1, testsFound[0]);
   }
 
-  public void testInnerSubclassInvokingOuterMethod() {
-    List<AbstractTypeDeclaration> types = translateClassBody(
-      "public int size() { return 0; } public void add(int n) {} class Inner {} " +
-      "class Innermost { void test() { Test.this.add(size()); }}");
-    assertEquals(3, types.size());
-
-    final int[] testsFound = { 0 };
-    types.get(2).accept(new ASTVisitor() {
-      @Override
-      public void endVisit(MethodDeclaration node) {
-        if (node.isConstructor()) {
-          assertEquals("this$0=outer$;", node.getBody().statements().get(1).toString().trim());
-          ++testsFound[0];
-        } else if (node.getName().getIdentifier().equals("test")) {
-          assertEquals("this$0.add(this$0.size());",
-              node.getBody().statements().get(0).toString().trim());
-          ++testsFound[0];
-        }
-      }
-    });
-    assertEquals(2, testsFound[0]);
+  public void testInnerSubclassInvokingOuterMethod() throws IOException {
+    String translation = translateSourceFile(
+      "class Test { public int size() { return 0; } public void add(int n) {} class Inner {} " +
+      "class Innermost { void test() { Test.this.add(size()); } } }", "Test", "Test.m");
+    assertTranslation(translation, "Test_Innermost_set_this$0_(self, outer$);");
+    assertTranslation(translation, "[this$0_ addWithInt:[this$0_ size]];");
   }
 
-  public void testInnerClassDefaultInitialization() {
-    List<AbstractTypeDeclaration> types = translateClassBody(
-      "Inner inner = new Inner(true); public int size() { return 0; }" +
-      "class Inner { Inner(boolean b) {} int size() { return Test.this.size(); }}");
-    assertEquals(2, types.size());
-
-    final int[] testsFound = { 0 };
-    types.get(0).accept(new ASTVisitor() {
-      @Override
-      public void endVisit(MethodDeclaration node) {
-        if (node.isConstructor()) {
-          assertEquals("inner=new Inner(this,true);",
-              node.getBody().statements().get(1).toString().trim());
-          ++testsFound[0];
-        }
-      };
-    });
-    types.get(1).accept(new ASTVisitor() {
-      @Override
-      public void endVisit(MethodDeclaration node) {
-        if (node.isConstructor()) {
-          String result = node.getBody().statements().get(1).toString().trim();
-          assertEquals("this$0=outer$;", result);
-          ++testsFound[0];
-        }
-      };
-    });
-   assertEquals(2, testsFound[0]);
+  public void testInnerClassDefaultInitialization() throws IOException {
+    String translation = translateSourceFile(
+        "class Test { Inner inner = new Inner(true); public int size() { return 0; }" +
+        "class Inner { Inner(boolean b) {} int size() { return Test.this.size(); } } }",
+        "Test", "Test.m");
+    assertTranslation(translation, "Test_set_inner_(self, " +
+        "[[[Test_Inner alloc] initWithTest:self withBOOL:YES] autorelease]);");
+    assertTranslation(translation, "Test_Inner_set_this$0_(self, outer$);");
   }
 
   public void testOuterClassAccessOuterVars() {
@@ -378,11 +322,11 @@ public class InnerClassExtractorTest extends GenerationTest {
     // Anonymous class constructor in Inner.blah()
     assertTranslation(translation, "[[A_Inner_$1 alloc] initWithA_Inner:self]");
     // A.Inner.x referred to in anonymous Foo
-    assertTranslation(translation, "this$0_.x = 2");
+    assertTranslation(translation, "this$0_->x_ = 2");
     // A.x referred to in anonymous Foo
-    assertTranslation(translation, "this$0_.this$0.x = 3");
+    assertTranslation(translation, "this$0_->this$0_->x_ = 3");
     // A.Inner init in anonymous Foo's constructor
-    assertTranslation(translation, "JreOperatorRetainedAssign(&this$0_, self, outer$)");
+    assertTranslation(translation, "A_Inner_set_this$0_(self, outer$)");
   }
 
   /**
@@ -406,13 +350,13 @@ public class InnerClassExtractorTest extends GenerationTest {
     // Anonymous class constructor in Inner.blah()
     assertTranslation(translation, "[[A_Inner_$1 alloc] initWithA_Inner:self]");
     // A.x referred to in A.Inner.
-    assertTranslation(translation, "this$0_.x = 2");
+    assertTranslation(translation, "this$0_->x_ = 2");
     // A.Inner.x referred to in anonymous Foo.
-    assertTranslation(translation, "this$0_.x = 3");
+    assertTranslation(translation, "this$0_->x_ = 3");
     // A.x referred to in anonymous Foo
-    assertTranslation(translation, "this$0_.this$0.x = 4");
+    assertTranslation(translation, "this$0_->this$0_->x_ = 4");
     // A.Inner init in anonymous Foo's constructor
-    assertTranslation(translation, "JreOperatorRetainedAssign(&this$0_, self, outer$)");
+    assertTranslation(translation, "A_Inner_set_this$0_(self, outer$)");
   }
 
   public void testOuterMethodReference() throws IOException {
@@ -425,7 +369,7 @@ public class InnerClassExtractorTest extends GenerationTest {
         "        public void foo() { if (x ==0) mumble(y); } }; } }" +
         "  private void mumble(int y) { } }";
     String translation = translateSourceFile(source, "Test", "Test.m");
-    assertTranslation(translation, "[this$0_.this$0 mumbleWithInt:0]");
+    assertTranslation(translation, "[this$0_->this$0_ mumbleWithInt:0]");
   }
 
   public void testInnerSubClassOfGenericClassInner() throws IOException {
@@ -477,8 +421,8 @@ public class InnerClassExtractorTest extends GenerationTest {
         "    void bar() { int j = i; } } }";
     String translation = translateSourceFile(source, "Test", "Test.m");
 
-    assertTranslation(translation, "- (void)fooWithInt:(int)i {\n  this$0_.i =");
-    assertTranslation(translation, "- (void)bar {\n  int j = this$0_.i");
+    assertTranslation(translation, "- (void)fooWithInt:(int)i {\n  this$0_->i_ =");
+    assertTranslation(translation, "- (void)bar {\n  int j = this$0_->i_");
   }
 
   public void testInnerClassExtendsAnotherInner() throws IOException {
@@ -493,7 +437,7 @@ public class InnerClassExtractorTest extends GenerationTest {
     assertTranslation(translation, "Test *this$1");  // Inner2's outer reference.
 
     translation = getTranslatedFile("Test.m");
-    assertTranslation(translation, "[((JavaLangInteger *) nil_chk(this$1_.i)) intValue] + j_");
+    assertTranslation(translation, "[((JavaLangInteger *) nil_chk(this$1_->i_)) intValue] + j_");
   }
 
   public void testInnerClassInstantiatesAnotherInner() throws IOException {
@@ -708,7 +652,7 @@ public class InnerClassExtractorTest extends GenerationTest {
         "class Test { " +
         "  class Inner { int i = 0; Inner() { Inner.this.i = 1; } } }",
         "Test", "Test.m");
-    assertTranslation(translation, "self.i = 1");
+    assertTranslation(translation, "self->i_ = 1");
   }
 
   public void testInnerThisReferenceInInnerAsThisExpression() throws IOException {
@@ -747,7 +691,7 @@ public class InnerClassExtractorTest extends GenerationTest {
     translation = getTranslatedFile("A.m");
     assertFalse(translation.contains("this$0_"));
     assertTranslation(translation,
-        "JreOperatorRetainedAssign(&A_test_, self, [[[A_$1 alloc] init] autorelease]);");
+        "JreOperatorRetainedAssign(&A_test_, nil, [[[A_$1 alloc] init] autorelease]);");
   }
 
   // Verify that an anonymous class in a static method does not reference
@@ -784,7 +728,7 @@ public class InnerClassExtractorTest extends GenerationTest {
     assertTranslation(translation, "@property (nonatomic, retain) A *this$0;");
     assertTranslation(translation, "- (id)initWithA:(A *)outer$;");
     translation = getTranslatedFile("A.m");
-    assertTranslation(translation, "[((IOSObjectArray *) nil_chk(this$0_.elements)) count]");
+    assertTranslation(translation, "[((IOSObjectArray *) nil_chk(this$0_->elements_)) count]");
   }
 
   public void testCreateInnerClassOfSuperclass() throws IOException {
@@ -870,8 +814,7 @@ public class InnerClassExtractorTest extends GenerationTest {
         "  } " +
         "}", "Outer", "Outer.m");
 
-    assertTranslation(translation,
-        "[super initWithOuter:outer$ withInt:outer$.foo]");
+    assertTranslation(translation, "[super initWithOuter:outer$ withInt:outer$->foo_]");
   }
 
   public void testOuterThisReferenceInSuperConstructorInvocation() throws IOException {
@@ -889,7 +832,8 @@ public class InnerClassExtractorTest extends GenerationTest {
         "  } " +
         "}", "Outer", "Outer.m");
 
-    assertTranslation(translation, "[super initWithOuter_Outer1:outer$ withInt:outer$.this$0.foo]");
+    assertTranslation(translation,
+        "[super initWithOuter_Outer1:outer$ withInt:outer$->this$0_->foo_]");
   }
 
   public void testAnonymousClassWithinTypeDeclarationStatement() throws IOException {

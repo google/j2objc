@@ -40,7 +40,7 @@ public class ObjectiveCImplementationGeneratorTest extends GenerationTest {
     String translation = translateSourceFile(
         "public class Example { int foo; class Inner { int test() { return foo; }}}",
         "Example", "Example.m");
-    assertTranslation(translation, "return this$0_.foo;");
+    assertTranslation(translation, "return this$0_->foo_;");
   }
 
   public void testTypeNameTranslation() throws IOException {
@@ -111,7 +111,7 @@ public class ObjectiveCImplementationGeneratorTest extends GenerationTest {
     assertTranslation(translation, "+ (JavaUtilDate *)today {");
     assertTranslation(translation, "return Example_today_;");
     assertTranslation(translation, "+ (void)setToday:(JavaUtilDate *)today {");
-    assertTranslation(translation, "JreOperatorRetainedAssign(&Example_today_, self, today);");
+    assertTranslation(translation, "JreOperatorRetainedAssign(&Example_today_, nil, today);");
     assertFalse(translation.contains("initialize"));
   }
 
@@ -122,10 +122,11 @@ public class ObjectiveCImplementationGeneratorTest extends GenerationTest {
     assertTranslation(translation, "static JavaUtilDate * Example_today_;");
     assertTranslation(translation, "+ (void)initialize {");
     assertTranslation(translation,
-        "JreOperatorRetainedAssign(&Example_today_, self, [[[JavaUtilDate alloc] init] autorelease]);");
+        "JreOperatorRetainedAssign(&Example_today_, nil, " +
+        "[[[JavaUtilDate alloc] init] autorelease]);");
     assertTranslation(translation, "+ (JavaUtilDate *)today {");
     assertTranslation(translation, "return Example_today_;");
-    assertTranslation(translation, "JreOperatorRetainedAssign(&Example_today_, self, today);");
+    assertTranslation(translation, "JreOperatorRetainedAssign(&Example_today_, nil, today);");
   }
 
   public void testStaticVariableWithNonInitInitialization() throws IOException {
@@ -135,7 +136,7 @@ public class ObjectiveCImplementationGeneratorTest extends GenerationTest {
         "      java.util.logging.Logger.getLogger(\"Test\");}",
         "Example", "Example.m");
     assertTranslation(translation,
-        "JreOperatorRetainedAssign(&Example_logger_, self, " +
+        "JreOperatorRetainedAssign(&Example_logger_, nil, " +
         "[JavaUtilLoggingLogger getLoggerWithNSString:@\"Test\"]);");
   }
 
@@ -317,7 +318,7 @@ public class ObjectiveCImplementationGeneratorTest extends GenerationTest {
       "Compatible", "foo/Compatible.m");
     assertTranslation(translation, "static id FooCompatible_FOO_;");
     assertTranslation(translation,
-        "JreOperatorRetainedAssign(&FooCompatible_FOO_, self, " +
+        "JreOperatorRetainedAssign(&FooCompatible_FOO_, nil, " +
         "[[[NSObject alloc] init] autorelease]);");
   }
 

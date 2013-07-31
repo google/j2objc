@@ -58,7 +58,7 @@ public class GwtConverterTest extends GenerationTest {
         "  Test INSTANCE = GWT.create(Test.class);" +
         "  String FOO = foo();" +  // Regression requires subsequent non-mapped method invocation.
         "  static String foo() { return \"foo\"; } }", "Test", "Test.m");
-    assertTranslation(translation, "JreOperatorRetainedAssign(&INSTANCE_, self, " +
+    assertTranslation(translation, "Test_set_INSTANCE_(self, " +
         "[[IOSClass classWithClass:[Test class]] newInstance]);");
   }
 

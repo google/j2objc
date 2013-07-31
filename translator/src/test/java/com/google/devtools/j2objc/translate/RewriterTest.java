@@ -47,7 +47,6 @@ import org.eclipse.jdt.core.dom.VariableDeclarationFragment;
 import org.eclipse.jdt.core.dom.VariableDeclarationStatement;
 
 import java.io.IOException;
-import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -338,30 +337,19 @@ public class RewriterTest extends GenerationTest {
   /**
    * Verify that static array initializers are rewritten as method calls.
    */
-  public void testStaticArrayInitializerRewrite() {
-    String source =
-        "public class Test { static int[] a = { 1, 2, 3 }; static char b[] = { '4', '5' }; }";
-    CompilationUnit unit = translateType("Test", source);
-    TypeDeclaration clazz = (TypeDeclaration) unit.types().get(0);
-    Iterator<BodyDeclaration> classMembers = clazz.bodyDeclarations().iterator();
-
-    boolean foundInitStatements = false;
-    while (classMembers.hasNext()) {
-      BodyDeclaration member = classMembers.next();
-      if (member instanceof MethodDeclaration) {
-        MethodDeclaration md = (MethodDeclaration) member;
-        if (md.getName().getIdentifier().equals("initialize")) {
-          List<Statement> stmts = md.getBody().statements();
-          assertEquals(2, stmts.size());
-          foundInitStatements = true;
-
-          assertEquals("a=IOSIntArray.arrayWithInts({1,2,3},3);", stmts.get(0).toString().trim());
-          assertEquals("b=IOSCharArray.arrayWithCharacters({'4','5'},2);",
-                       stmts.get(1).toString().trim());
-        }
-      }
-    }
-    assertTrue(foundInitStatements);
+  public void testStaticArrayInitializerRewrite() throws IOException {
+    String translation = translateSourceFile(
+        "public class Test { static int[] a = { 1, 2, 3 }; static char b[] = { '4', '5' }; }",
+        "Test", "Test.m");
+    assertTranslatedLines(translation,
+        "+ (void)initialize {",
+        "if (self == [Test class]) {",
+        "JreOperatorRetainedAssign(&Test_a_, nil, " +
+            "[IOSIntArray arrayWithInts:(int[]){ 1, 2, 3 } count:3]);",
+        "JreOperatorRetainedAssign(&Test_b_, nil, " +
+            "[IOSCharArray arrayWithCharacters:(unichar[]){ '4', '5' } count:2]);",
+        "}",
+        "}");
   }
 
   public void testNonStaticMultiDimArrayInitializer() throws IOException {
@@ -612,7 +600,7 @@ public class RewriterTest extends GenerationTest {
         "return (object == this) || (object instanceof Test) && (i == ((Test) object).i); } }",
         "Test", "Test.m");
     assertTranslatedLines(translation, "(object == self) || " +
-        "(([object isKindOfClass:[Test class]]) && (i_ == ((Test *) object).i));");
+        "(([object isKindOfClass:[Test class]]) && (i_ == ((Test *) object)->i_));");
   }
 
   // Objective-C requires that bit-wise and tests be surrounded by parens when mixed with or tests.

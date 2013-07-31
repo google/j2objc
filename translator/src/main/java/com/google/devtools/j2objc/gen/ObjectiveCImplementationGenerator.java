@@ -567,7 +567,7 @@ public class ObjectiveCImplementationGenerator extends ObjectiveCSourceFileGener
     String paramName = NameTable.getName(var);
     String signature = staticFieldSetterSignature(var);
     if (Options.useReferenceCounting()) {
-      printf("%s {\n  JreOperatorRetainedAssign(&%s, self, %s);\n}\n\n",
+      printf("%s {\n  JreOperatorRetainedAssign(&%s, nil, %s);\n}\n\n",
           signature, fieldName, paramName);
     } else {
       printf("%s {\n  %s = %s;\n}\n\n", signature, fieldName, paramName);
@@ -861,6 +861,7 @@ public class ObjectiveCImplementationGenerator extends ObjectiveCSourceFileGener
     }
   }
 
+  // TODO(user): Remove property generation.
   private void printProperties(List<FieldDeclaration> fields) {
     int nPrinted = 0;
     for (FieldDeclaration field : fields) {

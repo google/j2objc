@@ -36,6 +36,7 @@ import com.google.devtools.j2objc.translate.InnerClassExtractor;
 import com.google.devtools.j2objc.translate.JavaToIOSMethodTranslator;
 import com.google.devtools.j2objc.translate.JavaToIOSTypeConverter;
 import com.google.devtools.j2objc.translate.NilCheckResolver;
+import com.google.devtools.j2objc.translate.OperatorRewriter;
 import com.google.devtools.j2objc.translate.OuterReferenceFixer;
 import com.google.devtools.j2objc.translate.OuterReferenceResolver;
 import com.google.devtools.j2objc.translate.Rewriter;
@@ -498,6 +499,8 @@ public class J2ObjC {
     // after inner class extraction, so that each class releases
     // only its own instance variables.
     new DestructorGenerator().run(unit);
+
+    new OperatorRewriter().run(unit);
 
     for (Plugin plugin : Options.getPlugins()) {
       plugin.processUnit(unit);
