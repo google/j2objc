@@ -681,7 +681,7 @@ static IOSObjectArray *getClassInterfaces(IOSClass *cls, IOSClass *arrayType) {
 }
 
 // Annotations aren't available, so stub out annotation-related methods.
-- (JavaLangAnnotationAnnotation *)getAnnotation:(IOSClass *)annotationClass {
+- (id)getAnnotation:(IOSClass *)annotationClass {
   return nil;
 }
 

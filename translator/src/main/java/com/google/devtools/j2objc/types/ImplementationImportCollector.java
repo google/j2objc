@@ -18,6 +18,7 @@ package com.google.devtools.j2objc.types;
 
 import com.google.common.collect.Sets;
 import com.google.devtools.j2objc.util.ASTUtil;
+import com.google.devtools.j2objc.util.BindingUtil;
 import com.google.devtools.j2objc.util.ErrorReportingASTVisitor;
 import com.google.devtools.j2objc.util.NameTable;
 
@@ -33,18 +34,23 @@ import org.eclipse.jdt.core.dom.EnumDeclaration;
 import org.eclipse.jdt.core.dom.Expression;
 import org.eclipse.jdt.core.dom.FieldAccess;
 import org.eclipse.jdt.core.dom.FieldDeclaration;
+import org.eclipse.jdt.core.dom.IAnnotationBinding;
 import org.eclipse.jdt.core.dom.IBinding;
+import org.eclipse.jdt.core.dom.IMemberValuePairBinding;
 import org.eclipse.jdt.core.dom.IMethodBinding;
 import org.eclipse.jdt.core.dom.ITypeBinding;
 import org.eclipse.jdt.core.dom.IVariableBinding;
 import org.eclipse.jdt.core.dom.InfixExpression;
 import org.eclipse.jdt.core.dom.InstanceofExpression;
+import org.eclipse.jdt.core.dom.MarkerAnnotation;
 import org.eclipse.jdt.core.dom.MethodDeclaration;
 import org.eclipse.jdt.core.dom.MethodInvocation;
 import org.eclipse.jdt.core.dom.Modifier;
 import org.eclipse.jdt.core.dom.Name;
+import org.eclipse.jdt.core.dom.NormalAnnotation;
 import org.eclipse.jdt.core.dom.QualifiedName;
 import org.eclipse.jdt.core.dom.SimpleName;
+import org.eclipse.jdt.core.dom.SingleMemberAnnotation;
 import org.eclipse.jdt.core.dom.TryStatement;
 import org.eclipse.jdt.core.dom.Type;
 import org.eclipse.jdt.core.dom.TypeDeclaration;
@@ -237,6 +243,12 @@ public class ImplementationImportCollector extends ErrorReportingASTVisitor {
   }
 
   @Override
+  public boolean visit(MarkerAnnotation node) {
+    addDefaultValueTypes(Types.getAnnotationBinding(node));
+    return true;
+  }
+
+  @Override
   public boolean visit(MethodDeclaration node) {
     addImports(node.getReturnType2());
     IMethodBinding binding = Types.getMethodBinding(node);
@@ -304,6 +316,12 @@ public class ImplementationImportCollector extends ErrorReportingASTVisitor {
   }
 
   @Override
+  public boolean visit(NormalAnnotation node) {
+    addDefaultValueTypes(Types.getAnnotationBinding(node));
+    return true;
+  }
+
+  @Override
   public boolean visit(QualifiedName node) {
     IBinding type = Types.getTypeBinding(node);
     if (type != null) {
@@ -319,6 +337,17 @@ public class ImplementationImportCollector extends ErrorReportingASTVisitor {
       ITypeBinding declaringClass = var.getDeclaringClass();
       addImports(declaringClass);
     }
+    ITypeBinding type = Types.getTypeBinding(node);
+    if (BindingUtil.isRuntimeAnnotation(type)) {
+      addImports(type);
+      addImports(Types.resolveIOSType("IOSClass"));
+    }
+    return true;
+  }
+
+  @Override
+  public boolean visit(SingleMemberAnnotation node) {
+    addDefaultValueTypes(Types.getAnnotationBinding(node));
     return true;
   }
 
@@ -341,5 +370,16 @@ public class ImplementationImportCollector extends ErrorReportingASTVisitor {
   public boolean visit(VariableDeclarationStatement node) {
     addImports(node.getType());
     return true;
+  }
+
+  private void addDefaultValueTypes(IAnnotationBinding binding) {
+    for (IMemberValuePairBinding memberValuePair : binding.getAllMemberValuePairs()) {
+      if (memberValuePair.isDefault()) {
+        Object value = memberValuePair.getValue();
+        if (value instanceof IVariableBinding) {
+          addImports(((IVariableBinding) value).getType());
+        }
+      }
+    }
   }
 }

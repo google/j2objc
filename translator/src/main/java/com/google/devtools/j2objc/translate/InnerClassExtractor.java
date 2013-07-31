@@ -94,6 +94,11 @@ public class InnerClassExtractor extends ErrorReportingASTVisitor {
     return handleType(node);
   }
 
+  @Override
+  public void endVisit(AnnotationTypeDeclaration node) {
+    endHandleType(node);
+  }
+
   private boolean handleType(AbstractTypeDeclaration node) {
     typeOrderStack.add(unitTypes.size());
     return true;

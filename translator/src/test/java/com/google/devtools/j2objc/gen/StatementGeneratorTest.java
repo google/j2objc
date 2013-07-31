@@ -1571,4 +1571,21 @@ public class StatementGeneratorTest extends GenerationTest {
         "class Test { static void foo() {} void test(Test t) { t.foo(); } }", "Test", "Test.m");
     assertTranslation(translation, "[Test foo];");
   }
+
+  public void testAnnotationVariableDeclaration() throws IOException {
+    String translation = translateSourceFile(
+        "public class Test { void test() { " +
+        "Deprecated annotation = null; }}",
+        "Test", "Test.m");
+    assertTranslation(translation, "id<JavaLangDeprecated> annotation = ");
+  }
+
+  public void testAnnotationTypeLiteral() throws IOException {
+    String translation = translateSourceFile(
+        "@Deprecated public class Test { " +
+        "  Deprecated deprecated() { " +
+        "    return Test.class.getAnnotation(Deprecated.class); }}",
+        "Test", "Test.m");
+    assertTranslation(translation, "[IOSClass classWithProtocol:@protocol(JavaLangDeprecated)]]");
+  }
 }

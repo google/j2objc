@@ -28,7 +28,6 @@ import com.google.devtools.j2objc.util.NameTable;
 
 import org.eclipse.jdt.core.dom.AbstractTypeDeclaration;
 import org.eclipse.jdt.core.dom.AnnotationTypeDeclaration;
-import org.eclipse.jdt.core.dom.AnnotationTypeMemberDeclaration;
 import org.eclipse.jdt.core.dom.CompilationUnit;
 import org.eclipse.jdt.core.dom.EnumDeclaration;
 import org.eclipse.jdt.core.dom.FieldDeclaration;
@@ -298,21 +297,22 @@ public abstract class ObjectiveCSourceFileGenerator extends SourceFileGenerator 
    * Create an Objective-C constructor from a list of annotation member
    * declarations.
    */
-  protected String annotationConstructorDeclaration(List<AnnotationTypeMemberDeclaration> members) {
+  protected String annotationConstructorDeclaration(ITypeBinding annotation) {
     StringBuffer sb = new StringBuffer();
     sb.append("- (id)init");
-    for (int i = 0; i < members.size(); i++) {
+    IMethodBinding[] members = annotation.getDeclaredMethods();
+    for (int i = 0; i < members.length; i++) {
       if (i == 0) {
         sb.append("With");
       } else {
         sb.append(" with");
       }
-      AnnotationTypeMemberDeclaration member = members.get(i);
-      sb.append(NameTable.capitalize(member.getName().getIdentifier()));
+      IMethodBinding member = members[i];
+      sb.append(NameTable.capitalize(member.getName()));
       sb.append(":(");
-      sb.append(NameTable.getSpecificObjCType(Types.getTypeBinding(member)));
+      sb.append(NameTable.getSpecificObjCType(member.getReturnType()));
       sb.append(')');
-      sb.append(member.getName().getIdentifier());
+      sb.append(member.getName());
       sb.append('_');
     }
     return sb.toString();
