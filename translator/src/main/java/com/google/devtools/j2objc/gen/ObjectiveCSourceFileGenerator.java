@@ -257,19 +257,6 @@ public abstract class ObjectiveCSourceFileGenerator extends SourceFileGenerator 
     sb.append(baseDeclaration);
     parametersDeclaration(BindingUtil.getOriginalMethodBinding(binding), ASTUtil.getParameters(m),
         baseDeclaration, sb);
-    if (methodName.startsWith("new") || methodName.startsWith("copy")
-     || methodName.startsWith("alloc") || methodName.startsWith("init")) {
-      // Getting around a clang warning.
-      // clang assumes that methods with names starting with new, alloc or copy
-      // return objects of the same type as the receiving class, regardless of
-      // the actual declared return type. This attribute tells clang to not do
-      // that, please.
-      // See http://clang.llvm.org/docs/AutomaticReferenceCounting.html
-      // Sections 5.1 (Explicit method family control)
-      // and 5.2.2 (Related result types)
-      // TODO(user,user): Rename method instead of using the attribute.
-      sb.append(" OBJC_METHOD_FAMILY_NONE");
-    }
     return sb.toString();
   }
 
