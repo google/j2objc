@@ -33,7 +33,9 @@
 #import "java/lang/Short.h"
 #import "java/lang/Void.h"
 #import "java/lang/reflect/Field.h"
+#import "java/lang/reflect/Method.h"
 #import "java/lang/reflect/Modifier.h"
+#import "objc/runtime.h"
 
 @implementation JavaLangReflectField
 
@@ -199,7 +201,7 @@ typedef union {
   const char *argType = ivar_getTypeEncoding(ivar_);
   if (strlen(argType) != 1) {
     NSString *errorMsg =
-    [NSString stringWithFormat:@"unexpected type: %s", argType];
+        [NSString stringWithFormat:@"unexpected type: %s", argType];
     id exception = [[JavaLangAssertionError alloc] initWithNSString:errorMsg];
 #if ! __has_feature(objc_arc)
     [exception autorelease];
@@ -237,14 +239,21 @@ typedef union {
   return NO;
 }
 
-- (id)getAnnotationWithIOSClass:(IOSClass *)annotationType {
-  // TODO(user): implement.
-  return nil;
-}
-
 - (IOSObjectArray *)getDeclaredAnnotations {
-  // TODO(user): implement.
-  return nil;
+  NSString *annotationsMethod =
+      [NSString stringWithFormat:@"__annotations_%@", [self getName]];
+  IOSObjectArray *methods = [declaringClass_ getDeclaredMethods];
+  NSUInteger n = [methods count];
+  for (NSUInteger i = 0; i < n; i++) {
+    JavaLangReflectMethod *method = [methods objectAtIndex:i];
+    if ([annotationsMethod isEqualToString:[method getName]] &&
+        [[method getParameterTypes] count] == 0) {
+      IOSObjectArray *noArgs = [IOSObjectArray arrayWithLength:0 type:[NSObject getClass]];
+      return (IOSObjectArray *) [method invokeWithId:nil withNSObjectArray:noArgs];
+    }
+  }
+  IOSClass *annotationType = [IOSClass classWithProtocol:@protocol(JavaLangAnnotationAnnotation)];
+  return [IOSObjectArray arrayWithLength:0 type:annotationType];
 }
 
 @end
