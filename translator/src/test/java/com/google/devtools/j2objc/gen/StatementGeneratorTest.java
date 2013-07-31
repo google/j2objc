@@ -275,7 +275,7 @@ public class StatementGeneratorTest extends GenerationTest {
       " + \" i=\" + i + \" l=\" + l + \" s=\" + s; }}",
       "Example", "Example.m");
     assertTranslation(translation,
-        "return [NSString stringWithFormat:@\"obj=%@ b=%@ c=%C d=%f f=%f i=%d l=%qi s=%d\", " +
+        "return [NSString stringWithFormat:@\"obj=%@ b=%@ c=%C d=%f f=%f i=%d l=%lld s=%d\", " +
         "obj_, [JavaLangBoolean toStringWithBOOL:b_], c_, d_, f_, i_, l_, s_];");
   }
 
