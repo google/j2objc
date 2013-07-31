@@ -54,7 +54,7 @@ java.lang.Class.forName(Ljava/lang/String;)Ljava/lang/Class; = \
 java.lang.Class.forName(Ljava/lang/String;ZLjava/lang/ClassLoader;)Ljava/lang/Class; = \
     IOSClass forName:(NSString *)className initialize:(BOOL)load classLoader:(id)loader
 java.lang.Class.getAnnotation(Ljava/lang/Class;)Ljava/lang/annotation/Annotation; = \
-    IOSClass getAnnotation:(IOSClass *)annotationClass
+    IOSClass getAnnotationWithIOSClass:(IOSClass *)annotationClass
 java.lang.Class.getAnnotations()[Ljava/lang/annotation/Annotation; = \
     IOSClass getAnnotations
 java.lang.Class.getCanonicalName()Ljava/lang/String; = IOSClass getCanonicalName
@@ -99,7 +99,7 @@ java.lang.Class.getSuperclass()Ljava/lang/Class; = IOSClass getSuperclass
 java.lang.Class.getTypeParameters()[Ljava/lang/reflect/TypeVariable; = \
     IOSClass getTypeParameters
 java.lang.Class.isAnnotationPresent(Ljava/lang/Class;)Z = \
-    IOSClass isAnnotationPresent:(IOSClass *)annotationClass
+    IOSClass isAnnotationPresentWithIOSClass:(IOSClass *)annotationClass
 java.lang.Class.isAnonymousClass()Z = IOSClass isAnonymousClass
 java.lang.Class.isArray()Z = IOSClass isArray
 java.lang.Class.isAssignableFrom(Ljava/lang/Class;)Z = IOSClass isAssignableFrom:(IOSClass *)cls

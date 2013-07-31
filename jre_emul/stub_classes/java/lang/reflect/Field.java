@@ -36,11 +36,11 @@ public class Field extends AccessibleObject implements Member {
     return 0;
   }
   
-  public Type getType() {
+  public Class<?> getType() {
     return null;
   }
 
-  public Class getDeclaringClass() {
+  public Class<?> getDeclaringClass() {
     return null;
   }
   
