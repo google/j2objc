@@ -22,6 +22,7 @@ import org.eclipse.jdt.core.dom.AST;
 import org.eclipse.jdt.core.dom.ASTMatcher;
 import org.eclipse.jdt.core.dom.ASTNode;
 import org.eclipse.jdt.core.dom.AnnotationTypeDeclaration;
+import org.eclipse.jdt.core.dom.AnnotationTypeMemberDeclaration;
 import org.eclipse.jdt.core.dom.AnonymousClassDeclaration;
 import org.eclipse.jdt.core.dom.ArrayAccess;
 import org.eclipse.jdt.core.dom.ArrayCreation;
@@ -121,6 +122,12 @@ public class NodeCopier extends ASTMatcher {
 
   @Override
   public boolean match(AnnotationTypeDeclaration node, Object other) {
+    copy(node, other);
+    return super.match(node, other);
+  }
+
+  @Override
+  public boolean match(AnnotationTypeMemberDeclaration node, Object other) {
     copy(node, other);
     return super.match(node, other);
   }
