@@ -849,11 +849,6 @@ public class ObjectiveCImplementationGenerator extends ObjectiveCSourceFileGener
     for (FieldDeclaration field : fields) {
       if ((field.getModifiers() & Modifier.STATIC) == 0) {
         for (VariableDeclarationFragment var : ASTUtil.getFragments(field)) {
-          if (var.getName().getIdentifier().startsWith("this$") && superDefinesVariable(var)) {
-            // Don't print, as it shadows an inner field in a super class.
-            continue;
-          }
-
           String name = NameTable.getName(var.getName());
           ITypeBinding type = Types.getTypeBinding(field.getType());
           String typeString = NameTable.getSpecificObjCType(type);

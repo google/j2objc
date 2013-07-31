@@ -38,7 +38,6 @@ import org.eclipse.jdt.core.dom.ITypeBinding;
 import org.eclipse.jdt.core.dom.IVariableBinding;
 import org.eclipse.jdt.core.dom.SimpleType;
 import org.eclipse.jdt.core.dom.Type;
-import org.eclipse.jdt.core.dom.TypeDeclaration;
 
 import java.util.Collection;
 import java.util.HashMap;
@@ -392,21 +391,6 @@ public class Types {
 
   public static boolean isJavaVoidType(ITypeBinding type) {
     return type.isEqualTo(instance.javaVoidType);
-  }
-
-  /**
-   * Returns the declaration for a specified binding from a list of
-   * type declarations.
-   */
-  public static TypeDeclaration getTypeDeclaration(ITypeBinding binding, List<?> declarations) {
-    binding = binding.getTypeDeclaration();
-    for (Object decl : declarations) {
-      ITypeBinding type = getTypeBinding(decl).getTypeDeclaration();
-      if (binding.isEqualTo(type)) {
-        return decl instanceof TypeDeclaration ? (TypeDeclaration) decl : null;
-      }
-    }
-    return null;
   }
 
   public static void addReleaseableFields(Collection<IVariableBinding> fields) {
