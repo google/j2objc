@@ -58,7 +58,7 @@ SOURCE_HEADERS := $(SOURCE_HEADERS:$(OBJC_SOURCE_DIR)/%=%)
 GENERATED_HEADERS = $(JAVA_SOURCES:%.java=%.h)
 RELATIVE_HEADERS = $(SOURCE_HEADERS) $(GENERATED_HEADERS)
 HEADERS = $(SOURCE_HEADERS:%=$(OBJC_SOURCE_DIR)/%) $(GENERATED_HEADERS:%=$(BUILD_DIR)/%)
-DIST_HEADERS = $(RELATIVE_HEADERS:%=$(DIST_INCLUDE_DIR)/%)
+ARCH_HEADERS = $(RELATIVE_HEADERS:%=$(ARCH_INCLUDE_DIR)/%)
 
 translate: pre_translate $(EXTRACTED_JAVA) $(TRANSLATED_OBJC)
 	@if [ `cat $(JAVA_SOURCE_LIST) | wc -l` -ge 1 ] ; then \
@@ -98,16 +98,16 @@ $(JUNIT_LIB_DIST): $(JUNIT_LIB)
 	@mkdir -p $(@D)
 	install -m 0644 $< $@
 
-$(DIST_INCLUDE_DIR)/%.h: $(BUILD_DIR)/%.h
+$(ARCH_INCLUDE_DIR)/%.h: $(BUILD_DIR)/%.h
 	@mkdir -p $(@D)
 	install -m 0644 $< $@
 
-$(DIST_INCLUDE_DIR)/%.h: $(OBJC_SOURCE_DIR)/%.h
+$(ARCH_INCLUDE_DIR)/%.h: $(OBJC_SOURCE_DIR)/%.h
 	@mkdir -p $(@D)
 	install -m 0644 $< $@
 
 clean:
 	@rm -rf $(BUILD_DIR) $(JUNIT_LIB_DIST)
-	@rm -rf $(DIST_INCLUDE_DIR)/junit $(DIST_INCLUDE_DIR)/org/junit
+	@rm -rf $(ARCH_INCLUDE_DIR)/junit $(ARCH_INCLUDE_DIR)/org/junit
 
-dist: lib $(JUNIT_LIB_DIST) $(DIST_HEADERS)
+dist: lib $(JUNIT_LIB_DIST) $(ARCH_HEADERS)
