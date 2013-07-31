@@ -25,9 +25,9 @@ import org.eclipse.jdt.core.dom.AnnotationTypeDeclaration;
 import org.eclipse.jdt.core.dom.AnnotationTypeMemberDeclaration;
 import org.eclipse.jdt.core.dom.EnumDeclaration;
 import org.eclipse.jdt.core.dom.FieldDeclaration;
+import org.eclipse.jdt.core.dom.IMethodBinding;
 import org.eclipse.jdt.core.dom.ITypeBinding;
 import org.eclipse.jdt.core.dom.MethodDeclaration;
-import org.eclipse.jdt.core.dom.SingleVariableDeclaration;
 import org.eclipse.jdt.core.dom.Type;
 import org.eclipse.jdt.core.dom.TypeDeclaration;
 
@@ -100,8 +100,9 @@ public class HeaderImportCollector extends ErrorReportingASTVisitor {
   @Override
   public boolean visit(MethodDeclaration node) {
     addForwardDecl(node.getReturnType2());
-    for (SingleVariableDeclaration param : ASTUtil.getParameters(node)) {
-      addForwardDecl(param.getType());
+    IMethodBinding binding = Types.getMethodBinding(node);
+    for (ITypeBinding paramType : binding.getParameterTypes()) {
+      addForwardDecl(paramType);
     }
     return true;
   }
