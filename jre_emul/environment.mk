@@ -92,8 +92,12 @@ CLANG=$(XCRUN) clang
 J2OBJC := USE_SYSTEM_BOOT_PATH=TRUE $(DIST_DIR)/j2objc --mem-debug \
    -classpath $(EMULATION_JAR) -d $(TRANSLATED_SOURCE_DIR) $(J2OBJC_DEBUGFLAGS)
 
-# GCC settings, based on Xcode log output
+# Clang warnings
 WARNINGS := $(WARNINGS) -Wall -Werror
+
+ifeq ("$(strip $(XCODE_VERSION_MAJOR))", "0500")
+WARNINGS := $(WARNINGS) -Wno-unsequenced
+endif
 
 # The -fobjc flags match XCode (a link fails without them because of
 # missing symbols of the form OBJC_CLASS_$_[classname]).
@@ -113,7 +117,7 @@ endif
 # Settings for classes that need to always compile without ARC.
 OBJCFLAGS_NO_ARC := $(OBJCFLAGS)
 
-ifdef CLANG_ENABLE_OBJC_ARC
+ifeq ("$(strip $(CLANG_ENABLE_OBJC_ARC))", "YES")
 J2OBJC := $(J2OBJC) -use-arc
 OBJCFLAGS := $(OBJCFLAGS) -fobjc-arc -fobjc-arc-exceptions \
   -Wno-arc-bridge-casts-disallowed-in-nonarc \
