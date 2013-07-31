@@ -130,7 +130,7 @@ endif
 define compile_rules
 $(1)/%.o: $(BUILD_DIR)/%.m
 	@mkdir -p $$(@D)
-	$$(CLANG) -c $$? -o $$@ -I. $(2) -I.. $$(OBJCFLAGS) -I$$(BUILD_DIR) \
+	$$(CLANG) -c $$? -o $$@ $(2) $$(OBJCFLAGS) -I$$(BUILD_DIR) \
 	  -I$(ARCH_INCLUDE_DIR)
 
 $(1)/%.o: $(OBJC_SOURCE_DIR)/%.m
