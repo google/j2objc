@@ -39,6 +39,9 @@
 - (IOSObjectArray *)getAnnotations;
 - (IOSObjectArray *)getDeclaredAnnotations;
 
+// Protected method.
+- (IOSObjectArray *)getAnnotationsFromAccessor:(JavaLangReflectMethod *)method;
+
 @end
 
 // Decodes an Objective-C type encoding, returning the associated iOS class.

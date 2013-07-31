@@ -644,9 +644,43 @@ public class ObjectiveCImplementationGeneratorTest extends GenerationTest {
         "public class Test { @After void foo() {} }",
         "Test", "Test.m");
     assertTranslatedLines(translation,
-        "+ (IOSObjectArray *)__annotations_foo_ {",
+        "+ (IOSObjectArray *)__annotations_foo {",
         "return [IOSObjectArray arrayWithObjects:(id[]) " +
         "{ [[[OrgJunitAfterImpl alloc] init] autorelease] } " +
+        "count:1 type:[IOSClass classWithProtocol:@protocol(JavaLangAnnotationAnnotation)]];");
+  }
+
+  public void testMethodAnnotationWithParameter() throws IOException {
+    String translation = translateSourceFile(
+        "import org.junit.*;" +
+        "public class Test { @After void foo(int i) {} }",
+        "Test", "Test.m");
+    assertTranslatedLines(translation,
+        "+ (IOSObjectArray *)__annotations_fooWithInt_ {",
+        "return [IOSObjectArray arrayWithObjects:(id[]) " +
+        "{ [[[OrgJunitAfterImpl alloc] init] autorelease] } " +
+        "count:1 type:[IOSClass classWithProtocol:@protocol(JavaLangAnnotationAnnotation)]];");
+  }
+
+  public void testConstructorAnnotationNoParameters() throws IOException {
+    String translation = translateSourceFile(
+        "public class Test { @Deprecated Test() {} }",
+        "Test", "Test.m");
+    assertTranslatedLines(translation,
+        "+ (IOSObjectArray *)__annotations_Test {",
+        "return [IOSObjectArray arrayWithObjects:(id[]) " +
+        "{ [[[JavaLangDeprecatedImpl alloc] init] autorelease] } " +
+        "count:1 type:[IOSClass classWithProtocol:@protocol(JavaLangAnnotationAnnotation)]];");
+  }
+
+  public void testConstructorAnnotationWithParameter() throws IOException {
+    String translation = translateSourceFile(
+        "public class Test { @Deprecated Test(int i) {} }",
+        "Test", "Test.m");
+    assertTranslatedLines(translation,
+        "+ (IOSObjectArray *)__annotations_TestWithInt_ {",
+        "return [IOSObjectArray arrayWithObjects:(id[]) " +
+        "{ [[[JavaLangDeprecatedImpl alloc] init] autorelease] } " +
         "count:1 type:[IOSClass classWithProtocol:@protocol(JavaLangAnnotationAnnotation)]];");
   }
 

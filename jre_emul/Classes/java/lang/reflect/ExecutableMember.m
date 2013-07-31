@@ -105,19 +105,30 @@
   return NO;
 }
 
-- (id)getAnnotationWithIOSClass:(IOSClass *)annotationType {
-  // TODO(user): implement.
-  return nil;
-}
-
-- (IOSObjectArray *)getDeclaredAnnotations {
-  // TODO(user): implement.
-  return nil;
-}
-
 - (IOSObjectArray *)getParameterAnnotations {
-  // TODO(user): implement.
+  // can't call an abstract method
+  [self doesNotRecognizeSelector:_cmd];
   return nil;
+}
+
+- (JavaLangReflectMethod *)getAnnotationsAccessor:(NSString *)methodName {
+  NSString *annotationsMethod =
+      [NSString stringWithFormat:@"__annotations_%@",
+          [methodName stringByReplacingOccurrencesOfString:@":" withString:@"_"]];
+  IOSObjectArray *methods = [class_ getDeclaredMethods];
+  NSUInteger n = [methods count];
+  for (NSUInteger i = 0; i < n; i++) {
+    JavaLangReflectMethod *method = [methods objectAtIndex:i];
+    if ([annotationsMethod isEqualToString:[method getName]] &&
+        [[method getParameterTypes] count] == 0) {
+      return method;
+    }
+  }
+  return nil;  // No annotations for this member.
+}
+
+- (JavaLangReflectMethod *)getParameterAnnotationsAccessor:(NSString *)methodName {
+  return [self getAnnotationsAccessor:[NSString stringWithFormat:@"%@_params", methodName]];
 }
 
 @end

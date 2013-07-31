@@ -167,15 +167,25 @@ public class ObjectiveCImplementationGenerator extends ObjectiveCSourceFileGener
 
   private String parameterKey(IMethodBinding method) {
     StringBuilder sb = new StringBuilder();
-    for (ITypeBinding type : method.getParameterTypes()) {
-      sb.append(NameTable.parameterKeyword(type) + "_");
+    ITypeBinding[] parameterTypes = method.getParameterTypes();
+    for (int i = 0; i < parameterTypes.length; i++) {
+      if (i == 0) {
+        sb.append(NameTable.capitalize(NameTable.parameterKeyword(parameterTypes[i])));
+      } else {
+        sb.append(NameTable.parameterKeyword(parameterTypes[i]));
+      }
+      sb.append('_');
     }
     return sb.toString();
   }
 
   private String methodKey(IMethodBinding method) {
-    StringBuilder sb = new StringBuilder(method.getName());
-    sb.append('_');
+    StringBuilder sb = new StringBuilder();
+    if (method.isConstructor()) {
+      sb.append(NameTable.getFullName(method.getDeclaringClass()));
+    } else {
+      sb.append(NameTable.getName(method));
+    }
     sb.append(parameterKey(method));
     return sb.toString();
   }
@@ -1027,7 +1037,7 @@ public class ObjectiveCImplementationGenerator extends ObjectiveCSourceFileGener
           ASTUtil.getRuntimeAnnotations(ASTUtil.getModifiers(field));
       if (runtimeAnnotations.size() > 0) {
         for (VariableDeclarationFragment var : ASTUtil.getFragments(field)) {
-          printf("+ (IOSObjectArray *)__annotations_%s {\n", var.getName().getIdentifier());
+          printf("+ (IOSObjectArray *)__annotations_%s_ {\n", var.getName().getIdentifier());
           printAnnotationCreate(runtimeAnnotations);
         }
       }

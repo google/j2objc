@@ -241,7 +241,7 @@ typedef union {
 
 - (IOSObjectArray *)getDeclaredAnnotations {
   NSString *annotationsMethod =
-      [NSString stringWithFormat:@"__annotations_%@", [self getName]];
+      [NSString stringWithFormat:@"__annotations_%@_", [self getName]];
   IOSObjectArray *methods = [declaringClass_ getDeclaredMethods];
   NSUInteger n = [methods count];
   for (NSUInteger i = 0; i < n; i++) {

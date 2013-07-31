@@ -41,30 +41,30 @@ public final class AnnotationsTest extends TestCase {
         assertAnnotatedElement(ExtendsType.class, AnnotationB.class);
     }
 
-//    public void testConstructorAnnotations() throws Exception {
-//        Constructor<Type> constructor = Type.class.getConstructor();
-//        assertAnnotatedElement(constructor, AnnotationA.class, AnnotationC.class);
-//    }
+    public void testConstructorAnnotations() throws Exception {
+        Constructor<Type> constructor = Type.class.getConstructor();
+        assertAnnotatedElement(constructor, AnnotationA.class, AnnotationC.class);
+    }
 
     public void testFieldAnnotations() throws Exception {
         Field field = Type.class.getField("field");
         assertAnnotatedElement(field, AnnotationA.class, AnnotationD.class);
     }
 
-//    public void testMethodAnnotations() throws Exception {
-//        Method method = Type.class.getMethod("method", String.class, String.class);
-//        assertAnnotatedElement(method, AnnotationB.class, AnnotationC.class);
-//    }
+    public void testMethodAnnotations() throws Exception {
+        Method method = Type.class.getMethod("method", String.class, String.class);
+        assertAnnotatedElement(method, AnnotationB.class, AnnotationC.class);
+    }
 
-//    public void testParameterAnnotations() throws Exception {
-//        Method method = Type.class.getMethod("method", String.class, String.class);
-//        Annotation[][] parameterAnnotations = method.getParameterAnnotations();
-//        assertEquals(2, parameterAnnotations.length);
-//        assertEquals(set(AnnotationB.class, AnnotationD.class),
-//                annotationsToTypes(parameterAnnotations[0]));
-//        assertEquals(set(AnnotationC.class, AnnotationD.class),
-//                annotationsToTypes(parameterAnnotations[1]));
-//    }
+    public void testParameterAnnotations() throws Exception {
+        Method method = Type.class.getMethod("method", String.class, String.class);
+        Annotation[][] parameterAnnotations = method.getParameterAnnotations();
+        assertEquals(2, parameterAnnotations.length);
+        assertEquals(set(AnnotationB.class, AnnotationD.class),
+                annotationsToTypes(parameterAnnotations[0]));
+        assertEquals(set(AnnotationC.class, AnnotationD.class),
+                annotationsToTypes(parameterAnnotations[1]));
+    }
 
     @Retention(RetentionPolicy.RUNTIME)
     public @interface AnnotationA {}

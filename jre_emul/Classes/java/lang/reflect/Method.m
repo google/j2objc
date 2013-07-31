@@ -136,6 +136,16 @@ static id Box(JavaResult *value, const char *type);
   return [result stringByAppendingString:@")"];
 }
 
+- (IOSObjectArray *)getDeclaredAnnotations {
+  JavaLangReflectMethod *method = [self getAnnotationsAccessor:[self getName]];
+  return [self getAnnotationsFromAccessor:method];
+}
+
+- (IOSObjectArray *)getParameterAnnotations {
+  JavaLangReflectMethod *method = [self getParameterAnnotationsAccessor:[self getName]];
+  return [self getAnnotationsFromAccessor:method];
+}
+
 // Return a wrapper object for a value with a specified Obj-C type encoding.
 id Box(JavaResult *value, const char *type) {
   if (strlen(type) == 1) {

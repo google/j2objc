@@ -70,6 +70,10 @@
 
 - (IOSObjectArray *)getParameterAnnotations;
 
+// Protected methods.
+- (JavaLangReflectMethod *)getAnnotationsAccessor:(NSString *)methodName;
+- (JavaLangReflectMethod *)getParameterAnnotationsAccessor:(NSString *)methodName;
+
 @end
 
 #endif // _ExecutableMember_H_
