@@ -168,6 +168,52 @@ static inline id IOSObjectArray_checkValue(IOSObjectArray *array, id value) {
   }
 }
 
+void CopyWithMemmove(id __strong *buffer, NSUInteger src, NSUInteger dest, NSUInteger length) {
+  NSUInteger releaseStart = dest;
+  NSUInteger releaseEnd = dest + length;
+  NSUInteger retainStart = src;
+  NSUInteger retainEnd = src + length;
+  if (retainEnd > releaseStart && retainEnd <= releaseEnd) {
+    NSUInteger tmp = releaseStart;
+    releaseStart = retainEnd;
+    retainEnd = tmp;
+  } else if (releaseEnd > retainStart && releaseEnd <= retainEnd) {
+    NSUInteger tmp = retainStart;
+    retainStart = releaseEnd;
+    releaseEnd = tmp;
+  }
+#if __has_feature(objc_arc)
+  for (NSUInteger i = releaseStart; i < releaseEnd; i++) {
+    buffer[i] = nil;
+  }
+  // memmove is unsafe for general use in ARC so we must cast the buffer to the
+  // unretained data type void**. Then we must manually correct the retain
+  // counts using bridged casts.
+  void **buffer_unretained = (void *)buffer;
+  memmove(buffer_unretained + dest, buffer_unretained + src, length * sizeof(id));
+  for (NSUInteger i = retainStart; i < retainEnd; i++) {
+    // Use a __bridge_retained cast to trick ARC into retaining the element.
+    void *tmp = (__bridge_retained void *) buffer[i];
+    tmp = nil;  // Avoid unused variable warning.
+  }
+#else
+  for (NSUInteger i = releaseStart; i < releaseEnd; i++) {
+    [buffer[i] autorelease];
+  }
+  memmove(buffer + dest, buffer + src, length * sizeof(id));
+  for (NSUInteger i = retainStart; i < retainEnd; i++) {
+    [buffer[i] retain];
+  }
+#endif
+}
+
+// We can get a significant performance gain for an overlapping arraycopy in ARC
+// by using memmove when the amount of overlap is a large fraction of the moved
+// elements. However, the memmove method is more costly than directly copying
+// each element with a small overlap. This value has been determined
+// experimentally on a OSX desktop device.
+#define ARC_MEMMOVE_OVERLAP_RATIO 15
+
 - (void) arraycopy:(NSRange)sourceRange
        destination:(IOSArray *)destination
             offset:(NSInteger)offset {
@@ -175,28 +221,39 @@ static inline id IOSObjectArray_checkValue(IOSObjectArray *array, id value) {
   IOSArray_checkRange(destination->size_, NSMakeRange(offset, sourceRange.length));
   IOSObjectArray *dest = (IOSObjectArray *) destination;
 
-  // Do ranges overlap?
-  if (self == destination && sourceRange.location < offset) {
-    for (int i = sourceRange.length - 1; i >= 0; i--) {
-      id newElement = self->buffer_[i + sourceRange.location];
-#if ! __has_feature(objc_arc)
-      id oldElement = dest->buffer_[i + offset];
-      [oldElement autorelease];
-      [newElement retain];
-#endif
-      dest->buffer_[i + offset] = IOSObjectArray_checkValue(dest, newElement);
+#if __has_feature(objc_arc)
+  if (self == dest) {
+    int shift = abs(offset - sourceRange.location);
+    if (sourceRange.length > ARC_MEMMOVE_OVERLAP_RATIO * shift) {
+      CopyWithMemmove(buffer_, sourceRange.location, offset, sourceRange.length);
+    } else if (sourceRange.location < offset) {
+      for (int i = sourceRange.length - 1; i >= 0; i--) {
+        buffer_[i + offset] = buffer_[i + sourceRange.location];
+      }
+    } else {
+      for (int i = 0; i < sourceRange.length; i++) {
+        buffer_[i + offset] = buffer_[i + sourceRange.location];
+      }
     }
   } else {
-    for (NSUInteger i = 0; i < sourceRange.length; i++) {
-      id newElement = self->buffer_[i + sourceRange.location];
-#if ! __has_feature(objc_arc)
-      id oldElement = dest->buffer_[i + offset];
-      [oldElement autorelease];
-      [newElement retain];
-#endif
-      dest->buffer_[i + offset] = IOSObjectArray_checkValue(dest, newElement);
+    for (int i = 0; i < sourceRange.length; i++) {
+      dest->buffer_[i + offset] =
+          IOSObjectArray_checkValue(dest, buffer_[i + sourceRange.location]);
     }
   }
+#else
+  if (self == dest) {
+    CopyWithMemmove(buffer_, sourceRange.location, offset, sourceRange.length);
+  } else {
+    for (int i = 0; i < sourceRange.length; i++) {
+      // TODO(user): We can probably skip this check if the source array
+      // passes an isInstance test on the destination array.
+      id newElement = IOSObjectArray_checkValue(dest, buffer_[i + sourceRange.location]);
+      [dest->buffer_[i + offset] autorelease];
+      dest->buffer_[i + offset] = [newElement retain];
+    }
+  }
+#endif
 }
 
 - (id)copyWithZone:(NSZone *)zone {
