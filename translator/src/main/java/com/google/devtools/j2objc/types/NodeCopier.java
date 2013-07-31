@@ -21,6 +21,7 @@ import com.google.devtools.j2objc.translate.OuterReferenceResolver;
 import org.eclipse.jdt.core.dom.AST;
 import org.eclipse.jdt.core.dom.ASTMatcher;
 import org.eclipse.jdt.core.dom.ASTNode;
+import org.eclipse.jdt.core.dom.AnnotationTypeDeclaration;
 import org.eclipse.jdt.core.dom.AnonymousClassDeclaration;
 import org.eclipse.jdt.core.dom.ArrayAccess;
 import org.eclipse.jdt.core.dom.ArrayCreation;
@@ -116,6 +117,12 @@ public class NodeCopier extends ASTMatcher {
     if (from instanceof ASTNode) {
       OuterReferenceResolver.copyNode((ASTNode) from, (ASTNode) to);
     }
+  }
+
+  @Override
+  public boolean match(AnnotationTypeDeclaration node, Object other) {
+    copy(node, other);
+    return super.match(node, other);
   }
 
   @Override

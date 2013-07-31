@@ -174,19 +174,35 @@ public class ObjectiveCHeaderGenerator extends ObjectiveCSourceFileGenerator {
   @Override
   protected void generate(AnnotationTypeDeclaration node) {
     String typeName = NameTable.getFullName(node);
-    printf("@interface %s : NSObject < JavaLangAnnotationAnnotation > {\n @private\n", typeName);
     List<AnnotationTypeMemberDeclaration> members = Lists.newArrayList();
     for (BodyDeclaration decl : ASTUtil.getBodyDeclarations(node)) {
       if (decl instanceof AnnotationTypeMemberDeclaration) {
         members.add((AnnotationTypeMemberDeclaration) decl);
       }
     }
-    printAnnotationVariables(members);
-    println("}\n");
-    printAnnotationProperties(members);
-    printAnnotationConstructor(members);
-    printAnnotationAccessors(members);
-    println("@end");
+
+    // Print annotation as protocol.
+    printf("@protocol %s < JavaLangAnnotationAnnotation >\n", typeName);
+    if (!members.isEmpty()) {
+      newline();
+      printAnnotationProperties(members);
+    }
+    println("@end\n");
+
+    if (BindingUtil.isRuntimeAnnotation(Types.getTypeBinding(node))) {
+      // Print annotation implementation interface.
+      printf("@interface %sImpl : NSObject < %s >", typeName, typeName);
+      if (members.isEmpty()) {
+        newline();
+      } else {
+        println(" {\n @private");
+        printAnnotationVariables(members);
+        println("}\n");
+      }
+      printAnnotationConstructor(Types.getTypeBinding(node));
+      printAnnotationAccessors(members);
+      println("@end");
+    }
   }
 
   private void printExternalNativeMethodCategory(TypeDeclaration node, String typeName) {
@@ -444,9 +460,9 @@ public class ObjectiveCHeaderGenerator extends ObjectiveCSourceFileGenerator {
     unindent();
   }
 
-  private void printAnnotationConstructor(List<AnnotationTypeMemberDeclaration> members) {
-    if (!members.isEmpty()) {
-      print(annotationConstructorDeclaration(members));
+  private void printAnnotationConstructor(ITypeBinding annotation) {
+    if (annotation.getDeclaredMethods().length > 0) {
+      print(annotationConstructorDeclaration(annotation));
       println(";\n");
     }
   }

@@ -1330,8 +1330,6 @@ public class StatementGenerator extends ErrorReportingASTVisitor {
     Expression expr = node.getExpression();
     if (expr != null) {
       buffer.append(' ');
-      ITypeBinding expressionType = Types.getTypeBinding(expr);
-      IBinding binding = Types.getBinding(expr);
       MethodDeclaration method = ASTUtil.getOwningMethod(node);
       boolean shouldRetainResult = false;
 

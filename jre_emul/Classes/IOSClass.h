@@ -27,10 +27,10 @@
 #import "java/lang/reflect/Type.h"
 
 @class IOSObjectArray;
-@class JavaLangAnnotationAnnotation;
 @class JavaLangReflectConstructor;
 @class JavaLangReflectField;
 @class JavaLangReflectMethod;
+@protocol JavaLangAnnotationAnnotation;
 
 // A wrapper class for an Objective-C Class or Protocol,
 // similar in functionality to java.lang.Class.  Its
@@ -127,7 +127,7 @@
 - (IOSObjectArray *)getGenericInterfaces;
 - (IOSObjectArray *)getTypeParameters;
 
-- (JavaLangAnnotationAnnotation *)getAnnotation:(IOSClass *)annotationClass;
+- (id)getAnnotation:(IOSClass *)annotationClass;
 - (BOOL)isAnnotationPresent:(IOSClass *)annotationClass;
 - (IOSObjectArray *)getAnnotations;
 - (IOSObjectArray *)getDeclaredAnnotations;

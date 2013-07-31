@@ -132,16 +132,6 @@ JRE_INTERFACES = \
 	org/xml/sax/XMLReader.h \
 	org/xmlpull/v1/XmlSerializer.h
 
-# Java annotations with runtime retention. These are not currently converted,
-# but need to be when runtime support for annotations is implemented; now they
-# are included so that GWT-compatible sources that reference them can be
-# translated.
-JRE_ANNOTATIONS = \
-	java/lang/annotation/Documented.java \
-	java/lang/annotation/Inherited.java \
-	java/lang/annotation/Retention.java \
-	java/lang/annotation/Target.java
-
 # Java sources to be translated normally.
 JAVA_SOURCES = \
 	java/io/BufferedInputStream.java \
@@ -229,6 +219,10 @@ JAVA_SOURCES = \
 	java/lang/NumberFormatException.java \
 	java/lang/Override.java \
 	java/lang/Readable.java \
+	java/lang/annotation/Documented.java \
+	java/lang/annotation/Inherited.java \
+	java/lang/annotation/Retention.java \
+	java/lang/annotation/Target.java \
 	java/lang/reflect/Array.java \
 	java/lang/reflect/GenericSignatureFormatError.java \
 	java/lang/reflect/InvocationTargetException.java \
@@ -441,7 +435,7 @@ OBJC_SOURCES_MANIFEST = $(BUILD_DIR)/objc_sources.mf
 
 STUB_JAVA_SOURCES = $(shell find $(STUBS_DIR) -name *.java)
 ALL_JAVA_SOURCES = $(JAVA_SOURCES) $(IOS_JAVA_OBJS:.o=.java) $(IOS_INTERFACES:.h=.java) \
-    $(JRE_INTERFACES:.h=.java) $(JRE_ANNOTATIONS:$(ANDROID_JRE_ROOT)/%=%)
+    $(JRE_INTERFACES:.h=.java)
 TRANSLATED_OBJC = $(JRE_INTERFACES:%.h=$(TRANSLATED_SOURCE_DIR)/%.m) \
     $(JAVA_SOURCES:%.java=$(TRANSLATED_SOURCE_DIR)/%.m)
 TRANSLATED_HEADERS = $(JRE_INTERFACES:%=$(TRANSLATED_SOURCE_DIR)/%) \

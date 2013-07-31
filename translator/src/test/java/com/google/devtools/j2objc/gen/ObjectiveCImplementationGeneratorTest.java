@@ -340,7 +340,7 @@ public class ObjectiveCImplementationGeneratorTest extends GenerationTest {
 
     assertTranslatedLines(translation,
         "- (IOSClass *)annotationType {",
-        "return [FooCompatible getClass];");
+        "return [IOSClass classWithProtocol:@protocol(FooCompatible)];");
   }
 
   public void testMethodsWithTypeParameters() throws IOException {
@@ -635,5 +635,41 @@ public class ObjectiveCImplementationGeneratorTest extends GenerationTest {
     assertNotInTranslation(translation,
         "#pragma GCC diagnostic ignored \"-Wdeprecated-declarations\"");
     assertNotInTranslation(translation, "#pragma clang diagnostic pop");
+  }
+
+  public void testMethodAnnotationNoParameters() throws IOException {
+    String translation = translateSourceFile(
+        "import org.junit.*;" +
+        "public class Test { @After void foo() {} }",
+        "Test", "Test.m");
+    assertTranslatedLines(translation,
+        "+ (IOSObjectArray *)__annotations_foo_ {",
+        "return [IOSObjectArray arrayWithObjects:(id[]) " +
+        "{ [[[OrgJunitAfterImpl alloc] init] autorelease] } " +
+        "count:1 type:[IOSClass classWithProtocol:@protocol(JavaLangAnnotationAnnotation)]];");
+  }
+
+  public void testTypeAnnotationDefaultParameter() throws IOException {
+    String translation = translateSourceFile(
+        "import org.junit.*;" +
+        "@Ignore public class Test { void test() {} }",
+        "Test", "Test.m");
+    assertTranslatedLines(translation,
+        "+ (IOSObjectArray *)__annotations {",
+        "return [IOSObjectArray arrayWithObjects:(id[]) " +
+        "{ [[[OrgJunitIgnoreImpl alloc] initWithValue:@\"\"] autorelease] } " +
+        "count:1 type:[IOSClass classWithProtocol:@protocol(JavaLangAnnotationAnnotation)]];");
+  }
+
+  public void testTypeAnnotationWithParameter() throws IOException {
+    String translation = translateSourceFile(
+        "import org.junit.*;" +
+        "@Ignore(\"some comment\") public class Test { void test() {} }",
+        "Test", "Test.m");
+    assertTranslatedLines(translation,
+        "+ (IOSObjectArray *)__annotations {",
+        "return [IOSObjectArray arrayWithObjects:(id[]) " +
+        "{ [[[OrgJunitIgnoreImpl alloc] initWithValue:@\"some comment\"] autorelease] } " +
+        "count:1 type:[IOSClass classWithProtocol:@protocol(JavaLangAnnotationAnnotation)]];");
   }
 }

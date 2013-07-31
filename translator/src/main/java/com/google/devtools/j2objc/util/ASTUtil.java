@@ -14,8 +14,11 @@
 
 package com.google.devtools.j2objc.util;
 
+import com.google.common.collect.Lists;
+
 import org.eclipse.jdt.core.dom.ASTNode;
 import org.eclipse.jdt.core.dom.AbstractTypeDeclaration;
+import org.eclipse.jdt.core.dom.Annotation;
 import org.eclipse.jdt.core.dom.AnonymousClassDeclaration;
 import org.eclipse.jdt.core.dom.ArrayCreation;
 import org.eclipse.jdt.core.dom.ArrayInitializer;
@@ -52,6 +55,7 @@ import org.eclipse.jdt.core.dom.VariableDeclarationFragment;
 import org.eclipse.jdt.core.dom.VariableDeclarationStatement;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * Utility methods for manipulating AST nodes.
@@ -235,7 +239,7 @@ public final class ASTUtil {
     return tryStatement.resources();
   }
 
-  @SuppressWarnings("unchecked")
+  @SuppressWarnings({"unchecked", "rawtypes"})
   public static void setProperty(ASTNode node, ASTNode newNode) {
     ASTNode parent = node.getParent();
     StructuralPropertyDescriptor locator = node.getLocationInParent();
@@ -309,6 +313,21 @@ public final class ASTUtil {
 
   public static void insertBefore(Statement node, Statement toInsert) {
     asStatementList(node).add(0, toInsert);
+  }
+
+  @SuppressWarnings("unchecked")
+  public static Map<String, Object> getProperties(ASTNode node) {
+    return node.properties();
+  }
+
+  public static List<Annotation> getRuntimeAnnotations(List<IExtendedModifier> modifiers) {
+    List<Annotation> runtimeAnnotations = Lists.newArrayList();
+    for (IExtendedModifier modifier : modifiers) {
+      if (BindingUtil.isRuntimeAnnotation(modifier)) {
+        runtimeAnnotations.add((Annotation) modifier);
+      }
+    }
+    return runtimeAnnotations;
   }
 
   /**
