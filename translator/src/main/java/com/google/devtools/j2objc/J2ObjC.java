@@ -39,6 +39,7 @@ import com.google.devtools.j2objc.translate.NilCheckResolver;
 import com.google.devtools.j2objc.translate.OuterReferenceFixer;
 import com.google.devtools.j2objc.translate.OuterReferenceResolver;
 import com.google.devtools.j2objc.translate.Rewriter;
+import com.google.devtools.j2objc.translate.StaticVarRewriter;
 import com.google.devtools.j2objc.translate.TypeSorter;
 import com.google.devtools.j2objc.types.HeaderImportCollector;
 import com.google.devtools.j2objc.types.IOSTypeBinding;
@@ -487,6 +488,8 @@ public class J2ObjC {
 
     new ArrayRewriter().run(unit);
 
+    new StaticVarRewriter().run(unit);
+
     // Reorders the types so that superclasses are declared before classes that
     // extend them.
     TypeSorter.sortTypes(unit);
@@ -880,8 +883,8 @@ public class J2ObjC {
               continue;
             }
 
-            String className =
-                entryName.replaceAll("/", "\\.").substring(0, entryName.length() - ".class".length());
+            String className = entryName.replaceAll("/", "\\.").substring(
+                0, entryName.length() - ".class".length());
 
             try {
               Class<?> clazz = classLoader.loadClass(className);

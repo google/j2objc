@@ -71,6 +71,7 @@ JAVA_SOURCES = \
 	translate/OuterReferenceFixer.java \
 	translate/OuterReferenceResolver.java \
 	translate/Rewriter.java \
+	translate/StaticVarRewriter.java \
 	translate/TypeSorter.java \
 	types/BindingMapBuilder.java \
 	types/BindingMapVerifier.java \

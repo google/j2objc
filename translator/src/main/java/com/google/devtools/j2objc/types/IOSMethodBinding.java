@@ -74,6 +74,10 @@ public class IOSMethodBinding extends GeneratedMethodBinding {
     return binding;
   }
 
+  public static IOSMethodBinding newDereference(ITypeBinding type) {
+    return new IOSMethodBinding(IOSMethod.DEREFERENCE, null, 0, type, null, null, false);
+  }
+
   public static IOSMethod getIOSMethod(IMethodBinding binding) {
     if (binding instanceof IOSMethodBinding) {
       return ((IOSMethodBinding) binding).getIOSMethod();

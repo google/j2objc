@@ -14,6 +14,7 @@
 
 package com.google.devtools.j2objc.translate;
 
+import com.google.devtools.j2objc.types.IOSMethodBinding;
 import com.google.devtools.j2objc.types.IOSTypeBinding;
 import com.google.devtools.j2objc.types.Types;
 import com.google.devtools.j2objc.util.ASTUtil;
@@ -357,5 +358,14 @@ public final class ASTFactory {
     result.setExpression(expr);
     Types.addBinding(result, Types.getTypeBinding(expr));
     return result;
+  }
+
+  public static MethodInvocation newDereference(AST ast, Expression node) {
+    IOSMethodBinding binding = IOSMethodBinding.newDereference(Types.getTypeBinding(node));
+    MethodInvocation invocation = ast.newMethodInvocation();
+    invocation.setName(newSimpleName(ast, binding));
+    Types.addBinding(invocation, binding);
+    ASTUtil.getArguments(invocation).add(node);
+    return invocation;
   }
 }

@@ -18,7 +18,6 @@ import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.devtools.j2objc.types.GeneratedTypeBinding;
-import com.google.devtools.j2objc.types.GeneratedVariableBinding;
 import com.google.devtools.j2objc.types.IOSMethod;
 import com.google.devtools.j2objc.types.IOSMethodBinding;
 import com.google.devtools.j2objc.types.IOSTypeBinding;
@@ -95,14 +94,14 @@ public class ArrayRewriter extends ErrorReportingASTVisitor {
   private static final ImmutableMap<String, IOSMethod> ACCESS_REF_METHODS =
       ImmutableMap.<String, IOSMethod>builder()
       .put("IOSBooleanArray",
-           IOSMethod.create("IOSBooleanArray *booleanRefAtIndex:(NSUInteger)index"))
-      .put("IOSByteArray", IOSMethod.create("IOSByteArray *byteRefAtIndex:(NSUInteger)index"))
-      .put("IOSCharArray", IOSMethod.create("IOSCharArray *charRefAtIndex:(NSUInteger)index"))
-      .put("IOSDoubleArray", IOSMethod.create("IOSDoubleArray *doubleRefAtIndex:(NSUInteger)index"))
-      .put("IOSFloatArray", IOSMethod.create("IOSFloatArray *floatRefAtIndex:(NSUInteger)index"))
-      .put("IOSIntArray", IOSMethod.create("IOSIntArray *intRefAtIndex:(NSUInteger)index"))
-      .put("IOSLongArray", IOSMethod.create("IOSLongArray *longRefAtIndex:(NSUInteger)index"))
-      .put("IOSShortArray", IOSMethod.create("IOSShortArray *shortRefAtIndex:(NSUInteger)index"))
+           IOSMethod.create("IOSBooleanArray booleanRefAtIndex:(NSUInteger)index"))
+      .put("IOSByteArray", IOSMethod.create("IOSByteArray byteRefAtIndex:(NSUInteger)index"))
+      .put("IOSCharArray", IOSMethod.create("IOSCharArray charRefAtIndex:(NSUInteger)index"))
+      .put("IOSDoubleArray", IOSMethod.create("IOSDoubleArray doubleRefAtIndex:(NSUInteger)index"))
+      .put("IOSFloatArray", IOSMethod.create("IOSFloatArray floatRefAtIndex:(NSUInteger)index"))
+      .put("IOSIntArray", IOSMethod.create("IOSIntArray intRefAtIndex:(NSUInteger)index"))
+      .put("IOSLongArray", IOSMethod.create("IOSLongArray longRefAtIndex:(NSUInteger)index"))
+      .put("IOSShortArray", IOSMethod.create("IOSShortArray shortRefAtIndex:(NSUInteger)index"))
       .build();
 
   private static final IOSMethod OBJECT_ARRAY_ASSIGNMENT = IOSMethod.create(
@@ -401,6 +400,9 @@ public class ArrayRewriter extends ErrorReportingASTVisitor {
     MethodInvocation invocation = ASTFactory.newMethodInvocation(
         ast, binding, NodeCopier.copySubtree(ast, arrayAccessNode.getArray()));
     ASTUtil.getArguments(invocation).add(NodeCopier.copySubtree(ast, arrayAccessNode.getIndex()));
+    if (assignable) {
+      invocation = ASTFactory.newDereference(ast, invocation);
+    }
     return invocation;
   }
 
