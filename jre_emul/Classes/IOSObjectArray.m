@@ -132,7 +132,7 @@
 }
 
 - (id)objectAtIndex:(NSUInteger)index {
-  IOSArray_checkIndex(self, index);
+  IOSArray_checkIndex(size_, index);
   return buffer_[index];
 }
 
@@ -150,7 +150,7 @@ static inline id IOSObjectArray_checkValue(IOSObjectArray *array, id value) {
 }
 
 - (id)replaceObjectAtIndex:(NSUInteger)index withObject:(id)value {
-  IOSArray_checkIndex(self, index);
+  IOSArray_checkIndex(size_, index);
 #if ! __has_feature(objc_arc)
   id prev = buffer_[index];
   [prev autorelease];
@@ -161,7 +161,7 @@ static inline id IOSObjectArray_checkValue(IOSObjectArray *array, id value) {
 }
 
 - (void)getObjects:(NSObject **)buffer length:(NSUInteger)length {
-  IOSArray_checkIndex(self, length - 1);
+  IOSArray_checkIndex(size_, length - 1);
   for (NSUInteger i = 0; i < length; i++) {
     id element = buffer_[i];
     buffer[i] = element;
@@ -171,8 +171,8 @@ static inline id IOSObjectArray_checkValue(IOSObjectArray *array, id value) {
 - (void) arraycopy:(NSRange)sourceRange
        destination:(IOSArray *)destination
             offset:(NSInteger)offset {
-  IOSArray_checkRange(self, sourceRange);
-  IOSArray_checkRange(destination, NSMakeRange(offset, sourceRange.length));
+  IOSArray_checkRange(size_, sourceRange);
+  IOSArray_checkRange(destination->size_, NSMakeRange(offset, sourceRange.length));
   IOSObjectArray *dest = (IOSObjectArray *) destination;
 
   // Do ranges overlap?
