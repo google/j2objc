@@ -24,6 +24,7 @@
 #import "IOSObjectArray.h"
 #import "java/lang/NoSuchMethodException.h"
 #import "java/lang/reflect/Modifier.h"
+#import "java/lang/reflect/TypeVariable.h"
 #import "objc/runtime.h"
 
 @implementation ExecutableMember
@@ -93,6 +94,30 @@
 // Returns the class this executable is a member of.
 - (IOSClass *)getDeclaringClass {
   return class_;
+}
+
+- (IOSObjectArray *)getTypeParameters {
+  IOSClass *typeVariableType = [IOSClass classWithProtocol:@protocol(JavaLangReflectTypeVariable)];
+  return[IOSObjectArray arrayWithLength:0 type:typeVariableType];
+}
+
+- (BOOL)isSynthetic {
+  return NO;
+}
+
+- (id)getAnnotationWithIOSClass:(IOSClass *)annotationType {
+  // TODO(user): implement.
+  return nil;
+}
+
+- (IOSObjectArray *)getDeclaredAnnotations {
+  // TODO(user): implement.
+  return nil;
+}
+
+- (IOSObjectArray *)getParameterAnnotations {
+  // TODO(user): implement.
+  return nil;
 }
 
 @end

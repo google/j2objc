@@ -24,12 +24,20 @@
 
 #import <Foundation/Foundation.h>
 #import "IOSClass.h"
+#import "java/lang/reflect/AnnotatedElement.h"
 
 // Base class for fields, methods, and constructors.
-@interface AccessibleObject : NSObject
+@interface JavaLangReflectAccessibleObject : NSObject < JavaLangReflectAnnotatedElement >
 
 - (BOOL)isAccessible;
 - (void)setAccessibleWithBOOL:(BOOL)b;
++ (void)setAccessibleWithJavaLangReflectAccessibleObjectArray:(IOSObjectArray *)objects
+                                                     withBOOL:(BOOL)b;
+
+- (id)getAnnotationWithIOSClass:(IOSClass *)annotationClass;
+- (BOOL)isAnnotationPresentWithIOSClass:(IOSClass *)annotationClass;
+- (IOSObjectArray *)getAnnotations;
+- (IOSObjectArray *)getDeclaredAnnotations;
 
 @end
 

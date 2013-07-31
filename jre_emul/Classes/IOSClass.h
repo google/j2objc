@@ -23,6 +23,8 @@
 #define _IOSClass_H_
 
 #import <Foundation/Foundation.h>
+#import "java/io/Serializable.h"
+#import "java/lang/reflect/AnnotatedElement.h"
 #import "java/lang/reflect/GenericDeclaration.h"
 #import "java/lang/reflect/Type.h"
 
@@ -37,7 +39,8 @@
 // methods are limited to those that can be derived
 // from a Class instance, so instances can be created
 // and released as needed.
-@interface IOSClass : NSObject <JavaLangReflectGenericDeclaration,
+@interface IOSClass : NSObject <JavaLangReflectAnnotatedElement,
+    JavaLangReflectGenericDeclaration, JavaIoSerializable,
     JavaLangReflectType> {
  @private
   // Only one of these may be set.
@@ -127,8 +130,8 @@
 - (IOSObjectArray *)getGenericInterfaces;
 - (IOSObjectArray *)getTypeParameters;
 
-- (id)getAnnotation:(IOSClass *)annotationClass;
-- (BOOL)isAnnotationPresent:(IOSClass *)annotationClass;
+- (id)getAnnotationWithIOSClass:(IOSClass *)annotationClass;
+- (BOOL)isAnnotationPresentWithIOSClass:(IOSClass *)annotationType;
 - (IOSObjectArray *)getAnnotations;
 - (IOSObjectArray *)getDeclaredAnnotations;
 

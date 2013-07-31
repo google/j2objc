@@ -16,6 +16,8 @@
  */
 package java.lang.reflect;
 
+import java.lang.annotation.Annotation;
+
 /**
  * Stub implementation of Method.  The actual implementation
  * is in Method.h and Method.m, so the declared methods in this
@@ -24,7 +26,7 @@ package java.lang.reflect;
  *
  * @see Object
  */
-public class Method extends AccessibleObject {
+public class Method extends AccessibleObject implements GenericDeclaration, Member {
 
   public String getName() {
     return null;
@@ -51,25 +53,37 @@ public class Method extends AccessibleObject {
     return null;
   }
   
+  public <T extends Annotation> T getAnnotation(Class<T> annotationClass) {
+    return null;
+  }
+
+  public Annotation[] getDeclaredAnnotations() {
+    return null;
+  }
+  
+  public Annotation[][] getParameterAnnotations() {
+    return null;
+  }
+  
+  public TypeVariable<Method>[] getTypeParameters() {
+    return null;
+  }
+  
+  public boolean isSynthetic() {
+    return false;
+  }
+  
   /* Not implemented
   public Class getDeclaringClass();
   public int getModifiers();
-  public TypeVariable[] getTypeParameters();
   public Type getGenericReturnType();
   public Type[] getGenericParameterTypes();
   public Class[] getParameterTypes();
   public Class[] getExceptionTypes();
   public Type[] getGenericExceptionTypes();
-  public boolean equals(Object);
-  public int hashCode();
-  public String toString();
   public String toGenericString();
   public boolean isBridge();
   public boolean isVarArgs();
-  public boolean isSynthetic();
-  public annotation.Annotation getAnnotation(Class);
-  public annotation.Annotation[] getDeclaredAnnotations();
   public Object getDefaultValue();
-  public annotation.Annotation[][] getParameterAnnotations();
   */
 }

@@ -17,7 +17,9 @@
 
 package java.lang;
 
+import java.io.Serializable;
 import java.lang.annotation.Annotation;
+import java.lang.reflect.AnnotatedElement;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.GenericDeclaration;
@@ -30,7 +32,7 @@ import java.lang.reflect.TypeVariable;
  *
  * @see java.lang.Object
  */
-public final class Class<T> implements GenericDeclaration, Type {
+public final class Class<T> implements AnnotatedElement, GenericDeclaration, Serializable, Type {
 
   public static Class<?> forName(String className) throws ClassNotFoundException {
     return null;
@@ -250,6 +252,10 @@ public final class Class<T> implements GenericDeclaration, Type {
 
   public String toString() {
     return "";
+  }
+  
+  public boolean isAnnotationPresent(Class<? extends Annotation> annotationType) {
+    return false;
   }
 
   /* Unimplemented/mapped methods

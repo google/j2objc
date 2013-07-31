@@ -16,6 +16,8 @@
  */
 package java.lang.reflect;
 
+import java.lang.annotation.Annotation;
+
 /**
  * Stub implementation of AccessibleObject. The actual implementation is in
  * AccessibleObject.h and AccessibleObject.m, so the declared methods in this
@@ -24,19 +26,29 @@ package java.lang.reflect;
  * 
  * @see java.lang.Object
  */
-public class AccessibleObject {
+public class AccessibleObject implements AnnotatedElement {
 
   public boolean isAccessible() {
     return false;
   }
 
   public void setAccessible(boolean b) {}
+  
+  public static void setAccessible(AccessibleObject[] objects, boolean b) {}
 
-  /*Not implemented
-    public static void setAccessible(AccessibleObject[], boolean);
-    public Annotation getAnnotation(Class);
-    public boolean isAnnotationPresent(Class);
-    public Annotation[] getAnnotations();
-    public Annotation[] getDeclaredAnnotations();
-   */
+  public <T extends Annotation> T getAnnotation(Class<T> annotationClass) {
+    return null;
+  }
+
+  public boolean isAnnotationPresent(Class<? extends Annotation> annotationClass) {
+    return false;
+  }
+
+  public Annotation[] getAnnotations() {
+    return null;
+  }
+
+  public Annotation[] getDeclaredAnnotations() {
+    return null;
+  }
 }

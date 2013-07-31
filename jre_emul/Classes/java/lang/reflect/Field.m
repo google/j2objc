@@ -233,4 +233,18 @@ typedef union {
   return name;
 }
 
+- (BOOL)isSynthetic {
+  return NO;
+}
+
+- (id)getAnnotationWithIOSClass:(IOSClass *)annotationType {
+  // TODO(user): implement.
+  return nil;
+}
+
+- (IOSObjectArray *)getDeclaredAnnotations {
+  // TODO(user): implement.
+  return nil;
+}
+
 @end

@@ -22,7 +22,8 @@
 #ifndef _ExecutableMember_H_
 #define _ExecutableMember_H_
 
-#import "AccessibleObject.h"
+#import "java/lang/reflect/AccessibleObject.h"
+#import "java/lang/reflect/Member.h"
 
 // The first arguments all messages have are self and _cmd.
 // These are unmodified when specifying method-specific arguments.
@@ -34,7 +35,7 @@
 // Common parent of Member and Constructor with their shared functionality.
 // This class isn't directly called from translated Java, since Java's
 // Method and Constructor classes just duplicate their common code.
-@interface ExecutableMember : AccessibleObject {
+@interface ExecutableMember : JavaLangReflectAccessibleObject {
  @protected
   IOSClass *class_;
   SEL selector_;
@@ -60,6 +61,14 @@
 //
 // @return an array of strings.
 - (IOSObjectArray *)getParameterTypes;
+
+// Empty array always returned for iOS.
+- (IOSObjectArray *)getTypeParameters;
+
+// Always false for iOS.
+- (BOOL)isSynthetic;
+
+- (IOSObjectArray *)getParameterAnnotations;
 
 @end
 

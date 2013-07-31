@@ -681,11 +681,11 @@ static IOSObjectArray *getClassInterfaces(IOSClass *cls, IOSClass *arrayType) {
 }
 
 // Annotations aren't available, so stub out annotation-related methods.
-- (id)getAnnotation:(IOSClass *)annotationClass {
+- (id)getAnnotationWithIOSClass:(IOSClass *)annotationClass {
   return nil;
 }
 
-- (BOOL)isAnnotationPresent:(IOSClass *)annotationClass {
+- (BOOL)isAnnotationPresentWithIOSClass:(IOSClass *)annotationClass {
   return NO;
 }
 
