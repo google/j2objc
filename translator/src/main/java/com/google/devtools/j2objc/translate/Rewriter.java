@@ -1031,4 +1031,20 @@ public class Rewriter extends ErrorReportingASTVisitor {
     }
     return newDeclarations;
   }
+
+  @Override
+  public void endVisit(Assignment node) {
+    AST ast = node.getAST();
+    Assignment.Operator op = node.getOperator();
+    Expression lhs = node.getLeftHandSide();
+    Expression rhs = node.getRightHandSide();
+    ITypeBinding lhsType = Types.getTypeBinding(lhs);
+    if (op == Assignment.Operator.PLUS_ASSIGN && Types.isJavaStringType(lhsType)) {
+      // Change "str1 += str2" to "str1 = str1 + str2".
+      node.setOperator(Assignment.Operator.ASSIGN);
+      node.setRightHandSide(ASTFactory.newInfixExpression(
+          ast, NodeCopier.copySubtree(ast, lhs), InfixExpression.Operator.PLUS,
+          NodeCopier.copySubtree(ast, rhs), lhsType));
+    }
+  }
 }
