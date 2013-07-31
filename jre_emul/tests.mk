@@ -37,6 +37,7 @@ TEST_SOURCES = \
 	CopyOnWriteArrayListTest.java \
 	CopyOnWriteArraySetTest.java \
 	libcore/java/lang/ThrowableTest.java \
+	libcore/java/lang/reflect/AnnotationsTest.java \
 	org/apache/harmony/luni/tests/java/io/BufferedInputStreamTest.java \
 	org/apache/harmony/luni/tests/java/io/BufferedOutputStreamTest.java \
 	org/apache/harmony/luni/tests/java/io/BufferedReaderTest.java \
@@ -302,5 +303,5 @@ $(TESTS_DIR)/%.o: $(TESTS_DIR)/%.m
 	  -Wno-objc-redundant-literal-use -Wno-format \
 	  -Werror -Wno-parentheses -I$(EMULATION_TESTS_DIR) -I$(TESTS_DIR)
 
-$(TEST_BIN): $(TEST_OBJS)
+$(TEST_BIN): $(TEST_OBJS) ../dist/lib/libjre_emul.a
 	$(TEST_JOCC) -o $@ $(TEST_OBJS)

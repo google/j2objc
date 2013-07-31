@@ -30,6 +30,7 @@
 #import "java/lang/NullPointerException.h"
 #import "java/lang/Void.h"
 #import "java/lang/annotation/Annotation.h"
+#import "java/lang/annotation/Inherited.h"
 #import "java/lang/reflect/Constructor.h"
 #import "java/lang/reflect/Field.h"
 #import "java/lang/reflect/Method.h"
@@ -680,23 +681,68 @@ static IOSObjectArray *getClassInterfaces(IOSClass *cls, IOSClass *arrayType) {
   return [IOSObjectArray arrayWithLength:0 type:typeVariableClass];
 }
 
-// Annotations aren't available, so stub out annotation-related methods.
 - (id)getAnnotationWithIOSClass:(IOSClass *)annotationClass {
+  nil_chk(annotationClass);
+  IOSObjectArray *annotations = [self getAnnotations];
+  NSUInteger n = [annotations count];
+  for (NSUInteger i = 0; i < n; i++) {
+    id annotation = [annotations objectAtIndex:i];
+    if ([annotationClass isInstance:annotation]) {
+      return annotation;
+    }
+  }
   return nil;
 }
 
 - (BOOL)isAnnotationPresentWithIOSClass:(IOSClass *)annotationClass {
-  return NO;
+  return [self getAnnotationWithIOSClass:annotationClass] != nil;
 }
 
 - (IOSObjectArray *)getAnnotations {
-  IOSClass *arrayType = [IOSClass classWithProtocol:objc_getProtocol(
-      "JavaLangAnnotationAnnotation")];
-  return[IOSObjectArray arrayWithLength:0 type:arrayType];
+  NSMutableArray *array = [[NSMutableArray alloc] init];
+  IOSObjectArray *declared = [self getDeclaredAnnotations];
+  for (NSUInteger i = 0; i < [declared count]; i++) {
+    [array addObject:[declared objectAtIndex:i]];
+  }
+
+  // Check for any inherited annotations.
+  IOSClass *cls = [self getSuperclass];
+  IOSClass *inheritedAnnotation = [JavaLangAnnotationInheritedImpl getClass];
+  while (cls) {
+    IOSObjectArray *declared = [cls getDeclaredAnnotations];
+    for (NSUInteger i = 0; i < [declared count]; i++) {
+      id<JavaLangAnnotationAnnotation> annotation = [declared objectAtIndex:i];
+      IOSObjectArray *attributes = [[annotation getClass] getDeclaredAnnotations];
+      for (NSUInteger j = 0; j < [attributes count]; j++) {
+        id<JavaLangAnnotationAnnotation> attribute = [attributes objectAtIndex:j];
+        if (inheritedAnnotation == [attribute getClass]) {
+          [array addObject:annotation];
+        }
+      }
+    }
+    cls = [cls getSuperclass];
+  }
+  IOSClass *annotationType = [IOSClass classWithProtocol:@protocol(JavaLangAnnotationAnnotation)];
+  IOSObjectArray *result = [IOSObjectArray arrayWithNSArray:array type:annotationType];
+#if ! __has_feature(objc_arc)
+  [array release];
+#endif
+  return result;
 }
 
 - (IOSObjectArray *)getDeclaredAnnotations {
-  return [self getAnnotations];
+  IOSObjectArray *methods = [self getDeclaredMethods];
+  NSUInteger n = [methods count];
+  for (NSUInteger i = 0; i < n; i++) {
+    JavaLangReflectMethod *method = [methods objectAtIndex:i];
+    if ([@"__annotations" isEqualToString:[method getName]] &&
+        [[method getParameterTypes] count] == 0) {
+      IOSObjectArray *noArgs = [IOSObjectArray arrayWithLength:0 type:[NSObject getClass]];
+      return (IOSObjectArray *) [method invokeWithId:nil withNSObjectArray:noArgs];
+    }
+  }
+  IOSClass *annotationType = [IOSClass classWithProtocol:@protocol(JavaLangAnnotationAnnotation)];
+  return [IOSObjectArray arrayWithLength:0 type:annotationType];
 }
 
 - (id)getPackage {

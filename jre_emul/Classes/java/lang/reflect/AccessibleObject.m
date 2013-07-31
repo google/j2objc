@@ -48,8 +48,15 @@
 }
 
 - (id)getAnnotationWithIOSClass:(IOSClass *)annotationType {
-  // can't call an abstract method
-  [self doesNotRecognizeSelector:_cmd];
+  nil_chk(annotationType);
+  IOSObjectArray *annotations = [self getAnnotations];
+  NSUInteger n = [annotations count];
+  for (NSUInteger i = 0; i < n; i++) {
+    id annotation = [annotations objectAtIndex:i];
+    if ([annotationType isInstance:annotation]) {
+      return annotation;
+    }
+  }
   return nil;
 }
 
@@ -60,6 +67,7 @@
 }
 
 - (IOSObjectArray *)getAnnotations {
+  // Overridden by ExecutableMember to also return inherited members.
   return [self getDeclaredAnnotations];
 }
 
