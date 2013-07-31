@@ -43,7 +43,7 @@ WARNINGS = -Wno-trigraphs -Wunused-variable -Werror -Wincompatible-pointer-types
 
 # The -fobjc flags match XCode (a link fails without them because of
 # missing symbols of the form OBJC_CLASS_$_[classname]).
-OBJCFLAGS := -ObjC -std=gnu99 $(WARNINGS) $(SDK_FLAGS) $(ARCH_FLAGS) \
+OBJCFLAGS := -ObjC $(WARNINGS) \
   -fobjc-abi-version=2 -fobjc-legacy-dispatch $(DEBUGFLAGS) \
   -I/System/Library/Frameworks/ExceptionHandling.framework/Headers
 
@@ -51,7 +51,9 @@ OBJCFLAGS := -ObjC -std=gnu99 $(WARNINGS) $(SDK_FLAGS) $(ARCH_FLAGS) \
 J2OBJC = $(DIST_DIR)/j2objc -classpath $(JUNIT_JAR_FULL) -d $(BUILD_DIR)
 J2OBJCC = $(ARCH_BIN_DIR)/j2objcc -c $(OBJCFLAGS) -I$(OBJC_SOURCE_DIR) -I$(BUILD_DIR)
 
-ifdef CLANG_ENABLE_OBJC_ARC
+ifeq ("$(strip $(CLANG_ENABLE_OBJC_ARC))", "YES")
 J2OBJC := $(J2OBJC) -use-arc
-OBJCFLAGS := $(OBJCFLAGS) -fobjc-arc -fobjc-arc-exceptions
+OBJCFLAGS := $(OBJCFLAGS) -fobjc-arc -fobjc-arc-exceptions\
+ -Wno-arc-bridge-casts-disallowed-in-nonarc \
+ -Xclang -fobjc-runtime-has-weak
 endif
