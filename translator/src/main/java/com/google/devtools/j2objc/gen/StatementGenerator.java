@@ -108,6 +108,7 @@ import org.eclipse.jdt.core.dom.VariableDeclarationStatement;
 import org.eclipse.jdt.core.dom.WhileStatement;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -339,7 +340,21 @@ public class StatementGenerator extends ErrorReportingASTVisitor {
     Operator op = node.getOperator();
     Expression lhs = node.getLeftHandSide();
     Expression rhs = node.getRightHandSide();
-    if (op == Operator.REMAINDER_ASSIGN && (isFloatingPoint(lhs) || isFloatingPoint(rhs))) {
+    if (op == Operator.PLUS_ASSIGN &&
+        Types.isJavaStringType(Types.getTypeBinding(lhs))) {
+      if (Options.useReferenceCounting() && isLeftHandSideRetainedProperty(lhs)) {
+        String name = leftHandSideInstanceVariableName(lhs);
+        buffer.append("JreOperatorRetainedAssign(&" + name);
+        buffer.append(", self, ");
+        printStringConcatenation(lhs, rhs, Collections.<Expression>emptyList());
+        buffer.append(")");
+      } else {
+        lhs.accept(this);
+        // Change "str1 += str2" to "str1 = str1 + str2".
+        buffer.append(" = ");
+        printStringConcatenation(lhs, rhs, Collections.<Expression>emptyList());
+      }
+    } else if (op == Operator.REMAINDER_ASSIGN && (isFloatingPoint(lhs) || isFloatingPoint(rhs))) {
       lhs.accept(this);
       buffer.append(" = fmod(");
       lhs.accept(this);
