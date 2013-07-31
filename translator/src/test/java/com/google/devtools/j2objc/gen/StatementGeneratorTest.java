@@ -275,7 +275,7 @@ public class StatementGeneratorTest extends GenerationTest {
       " + \" i=\" + i + \" l=\" + l + \" s=\" + s; }}",
       "Example", "Example.m");
     assertTranslation(translation,
-        "return [NSString stringWithFormat:@\"obj=%@ b=%@ c=%c d=%f f=%f i=%d l=%qi s=%d\", " +
+        "return [NSString stringWithFormat:@\"obj=%@ b=%@ c=%C d=%f f=%f i=%d l=%qi s=%d\", " +
         "obj_, [JavaLangBoolean toStringWithBOOL:b_], c_, d_, f_, i_, l_, s_];");
   }
 
@@ -1105,7 +1105,7 @@ public class StatementGeneratorTest extends GenerationTest {
     String translation = translateSourceFile(
       "public class A { String test(char c) { return \"foo: \" + c; }}",
       "A", "A.m");
-    assertTranslation(translation, "return [NSString stringWithFormat:@\"foo: %c\", c];");
+    assertTranslation(translation, "return [NSString stringWithFormat:@\"foo: %C\", c];");
   }
 
   // Verify that double quote character constants are concatenated correctly.
