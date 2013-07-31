@@ -318,6 +318,19 @@ public class ObjectiveCHeaderGenerator extends ObjectiveCSourceFileGenerator {
       return "";
     }
     String result = super.methodDeclaration(m);
+    String methodName = NameTable.getName(Types.getMethodBinding(m));
+    if (methodName.startsWith("new") || methodName.startsWith("copy")
+        || methodName.startsWith("alloc") || methodName.startsWith("init")) {
+         // Getting around a clang warning.
+         // clang assumes that methods with names starting with new, alloc or copy
+         // return objects of the same type as the receiving class, regardless of
+         // the actual declared return type. This attribute tells clang to not do
+         // that, please.
+         // See http://clang.llvm.org/docs/AutomaticReferenceCounting.html
+         // Sections 5.1 (Explicit method family control)
+         // and 5.2.2 (Related result types)
+         result += " OBJC_METHOD_FAMILY_NONE";
+       }
 
     if (Options.generateDeprecatedDeclarations()) {
       if (hasDeprecated(ASTUtil.getModifiers(m))) {

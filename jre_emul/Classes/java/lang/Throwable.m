@@ -122,7 +122,7 @@
 }
 
 - (JavaLangThrowable *)initCauseWithJavaLangThrowable:
-    (JavaLangThrowable *)causeArg OBJC_METHOD_FAMILY_NONE {
+    (JavaLangThrowable *)causeArg {
   if (self->cause != nil) {
     id exception = [[JavaLangIllegalStateException alloc]
                     initWithNSString:@"Can't overwrite cause"];
