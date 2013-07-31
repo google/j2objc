@@ -52,6 +52,9 @@ FOUNDATION_EXPORT void JreMemDebugGenerateAllocationsReport(void) {
 // unsigned long is the same size as a pointer and [NSValue valueWithPointer:]
 // seems to be broken.
 
+#undef __IPHONE_OS_VERSION_MIN_REQUIRED
+#define __IPHONE_OS_VERSION_MIN_REQUIRED __IPHONE_5_0
+
 // The actual global lock for memory debugging.
 static pthread_mutex_t memDebugLock = PTHREAD_RECURSIVE_MUTEX_INITIALIZER;
 
