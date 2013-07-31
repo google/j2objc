@@ -940,35 +940,30 @@ IOSObjectArray *copyFieldsToObjectArray(NSArray *fields) {
   IOSClass_classCache = [[NSMutableDictionary alloc] init];
   IOSClass *clazz =
       [[IOSPrimitiveClass alloc] initWithName:@"boolean" type:@"Z"];
-  [IOSClass_classCache setObject:clazz forKey:@"Z"];
   [IOSClass_classCache setObject:clazz forKey:@"boolean"];
   IOSClass *arrayClazz = [[IOSArrayClass alloc] initWithComponentType:clazz];
   [IOSClass_classCache setObject:arrayClazz forKey:@"[Z"];
   [IOSClass_classCache setObject:arrayClazz forKey:@"IOSBooleanArray"];
 
   clazz = [[IOSPrimitiveClass alloc] initWithName:@"byte" type:@"B"];
-  [IOSClass_classCache setObject:clazz forKey:@"B"];
   [IOSClass_classCache setObject:clazz forKey:@"byte"];
   arrayClazz = [[IOSArrayClass alloc] initWithComponentType:clazz];
   [IOSClass_classCache setObject:arrayClazz forKey:@"[B"];
   [IOSClass_classCache setObject:arrayClazz forKey:@"IOSByteArray"];
 
   clazz = [[IOSPrimitiveClass alloc] initWithName:@"char" type:@"C"];
-  [IOSClass_classCache setObject:clazz forKey:@"C"];
   [IOSClass_classCache setObject:clazz forKey:@"char"];
   arrayClazz = [[IOSArrayClass alloc] initWithComponentType:clazz];
   [IOSClass_classCache setObject:arrayClazz forKey:@"[C"];
   [IOSClass_classCache setObject:arrayClazz forKey:@"IOSCharArray"];
 
   clazz = [[IOSPrimitiveClass alloc] initWithName:@"double" type:@"D"];
-  [IOSClass_classCache setObject:clazz forKey:@"D"];
   [IOSClass_classCache setObject:clazz forKey:@"double"];
   arrayClazz = [[IOSArrayClass alloc] initWithComponentType:clazz];
   [IOSClass_classCache setObject:arrayClazz forKey:@"[D"];
   [IOSClass_classCache setObject:arrayClazz forKey:@"IOSDoubleArray"];
 
   clazz = [[IOSPrimitiveClass alloc] initWithName:@"float" type:@"F"];
-  [IOSClass_classCache setObject:clazz forKey:@"F"];
   [IOSClass_classCache setObject:clazz forKey:@"float"];
   arrayClazz = [[IOSArrayClass alloc] initWithComponentType:clazz];
   [IOSClass_classCache setObject:arrayClazz forKey:@"[F"];
@@ -976,20 +971,17 @@ IOSObjectArray *copyFieldsToObjectArray(NSArray *fields) {
 
   clazz = [[IOSPrimitiveClass alloc] initWithName:@"int" type:@"I"];
   [IOSClass_classCache setObject:clazz forKey:@"int"];
-  [IOSClass_classCache setObject:clazz forKey:@"I"];
   arrayClazz = [[IOSArrayClass alloc] initWithComponentType:clazz];
   [IOSClass_classCache setObject:arrayClazz forKey:@"[I"];
   [IOSClass_classCache setObject:arrayClazz forKey:@"IOSIntArray"];
 
   clazz = [[IOSPrimitiveClass alloc] initWithName:@"long" type:@"J"];
   [IOSClass_classCache setObject:clazz forKey:@"long"];
-  [IOSClass_classCache setObject:clazz forKey:@"J"];
   arrayClazz = [[IOSArrayClass alloc] initWithComponentType:clazz];
   [IOSClass_classCache setObject:arrayClazz forKey:@"[J"];
   [IOSClass_classCache setObject:arrayClazz forKey:@"IOSLongArray"];
 
   clazz = [[IOSPrimitiveClass alloc] initWithName:@"short" type:@"S"];
-  [IOSClass_classCache setObject:clazz forKey:@"S"];
   [IOSClass_classCache setObject:clazz forKey:@"short"];
   arrayClazz = [[IOSArrayClass alloc] initWithComponentType:clazz];
   [IOSClass_classCache setObject:arrayClazz forKey:@"[S"];
