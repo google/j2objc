@@ -97,21 +97,22 @@ WARNINGS := $(WARNINGS) -Wall -Werror
 
 ifeq ("$(strip $(XCODE_VERSION_MAJOR))", "0500")
 WARNINGS := $(WARNINGS) -Wno-unsequenced
+OBJCFLAGS := -DSET_MIN_IOS_VERSION
 endif
 
 # The -fobjc flags match XCode (a link fails without them because of
 # missing symbols of the form OBJC_CLASS_$_[classname]).
-OBJCFLAGS := $(WARNINGS) -DU_DISABLE_RENAMING=1 \
+OBJCFLAGS := $(WARNINGS) $(OBJCFLAGS) -DU_DISABLE_RENAMING=1 \
   -fobjc-abi-version=2 -fobjc-legacy-dispatch $(DEBUGFLAGS) \
   -I/System/Library/Frameworks/ExceptionHandling.framework/Headers \
   -I$(ANDROID_INCLUDE) -I$(ICU4C_I18N_INCLUDE) -I$(ICU4C_COMMON_INCLUDE)
 
 ifdef MAX_STACK_FRAMES
-OBJCFLAGS := -DMAX_STACK_FRAMES=$(MAX_STACK_FRAMES)
+OBJCFLAGS := $(OBJCFLAGS) -DMAX_STACK_FRAMES=$(MAX_STACK_FRAMES)
 endif
 
 ifdef NO_STACK_FRAME_SYMBOLS
-OBJCFLAGS := -DNO_STACK_FRAME_SYMBOLS=$(NO_STACK_FRAME_SYMBOLS)
+OBJCFLAGS := $(OBJCFLAGS) -DNO_STACK_FRAME_SYMBOLS=$(NO_STACK_FRAME_SYMBOLS)
 endif
 
 # Settings for classes that need to always compile without ARC.

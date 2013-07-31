@@ -12,6 +12,19 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+// Set minimum iOS requirement if compiled on Xcode5.
+#ifdef SET_MIN_IOS_VERSION
+#ifndef __IPHONE_5_0
+  #define __IPHONE_5_0 50000
+#endif
+
+#if (!defined(__IPHONE_OS_VERSION_MIN_REQUIRED) || \
+    __IPHONE_OS_VERSION_MIN_REQUIRED < __IPHONE_5_0)
+#undef __IPHONE_OS_VERSION_MIN_REQUIRED
+#define __IPHONE_OS_VERSION_MIN_REQUIRED __IPHONE_5_0
+#endif
+#endif
+
 #import "JreMemDebug.h"
 
 #import "NSObject+JavaObject.h"
@@ -51,9 +64,6 @@ FOUNDATION_EXPORT void JreMemDebugGenerateAllocationsReport(void) {
 // an object we can store in standard Objective-C containers because
 // unsigned long is the same size as a pointer and [NSValue valueWithPointer:]
 // seems to be broken.
-
-#undef __IPHONE_OS_VERSION_MIN_REQUIRED
-#define __IPHONE_OS_VERSION_MIN_REQUIRED __IPHONE_5_0
 
 // The actual global lock for memory debugging.
 static pthread_mutex_t memDebugLock = PTHREAD_RECURSIVE_MUTEX_INITIALIZER;
