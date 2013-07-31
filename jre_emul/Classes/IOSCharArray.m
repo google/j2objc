@@ -112,7 +112,7 @@
 }
 
 - (IOSClass *)elementType {
-  return [IOSClass fetchCachedClass:@"C"];
+  return [IOSClass fetchCachedClass:@"char"];
 }
 
 - (id)copyWithZone:(NSZone *)zone {
