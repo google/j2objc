@@ -30,6 +30,7 @@ ECLIPSE_JARS = \
 GUAVA_JAR = guava-13.0.jar
 
 JSR305_JAR = jsr305-2.0.1.jar
+JSR305_SOURCE_JAR = jsr305-2.0.1.jar
 
 JUNIT_JAR = junit-4.10.jar
 JUNIT_SOURCE_JAR = junit-4.10-sources.jar
