@@ -23,6 +23,7 @@
 #import "IOSClass.h"
 #import "IOSObjectArray.h"
 #import "java/lang/NoSuchMethodException.h"
+#import "java/lang/reflect/Method.h"
 #import "java/lang/reflect/Modifier.h"
 #import "java/lang/reflect/TypeVariable.h"
 #import "objc/runtime.h"
