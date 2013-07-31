@@ -215,21 +215,7 @@ public class StatementGenerator extends ErrorReportingASTVisitor {
       }
     }
     buffer.append(':');
-    if (arg instanceof ArrayInitializer) {
-      printArrayLiteral((ArrayInitializer) arg);
-    } else {
-      arg.accept(this);
-    }
-  }
-
-  private void printArrayLiteral(ArrayInitializer arrayInit) {
-    ITypeBinding binding = Types.getTypeBinding(arrayInit);
-    assert binding.isArray();
-    ITypeBinding componentType = binding.getComponentType();
-    String componentTypeName = NameTable.getSpecificObjCType(componentType);
-    buffer.append(String.format("(%s[])",
-        componentType.isPrimitive() ? componentTypeName : "id"));
-    arrayInit.accept(this);
+    arg.accept(this);
   }
 
   private void printVarArgs(IMethodBinding method, List<Expression> args) {
@@ -284,10 +270,14 @@ public class StatementGenerator extends ErrorReportingASTVisitor {
 
   @Override
   public boolean visit(ArrayInitializer node) {
-    buffer.append("{ ");
-    for (Iterator<?> it = node.expressions().iterator(); it.hasNext(); ) {
-      Expression e = (Expression) it.next();
-      e.accept(this);
+    ITypeBinding type = Types.getTypeBinding(node);
+    assert type.isArray();
+    ITypeBinding componentType = type.getComponentType();
+    String componentTypeName = componentType.isPrimitive() ?
+        NameTable.primitiveTypeToObjC(componentType.getName()) : "id";
+    buffer.append(String.format("(%s[]){ ", componentTypeName));
+    for (Iterator<Expression> it = ASTUtil.getExpressions(node).iterator(); it.hasNext(); ) {
+      it.next().accept(this);
       if (it.hasNext()) {
         buffer.append(", ");
       }

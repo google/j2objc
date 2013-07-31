@@ -30,7 +30,6 @@ import org.eclipse.jdt.core.dom.AST;
 import org.eclipse.jdt.core.dom.ASTNode;
 import org.eclipse.jdt.core.dom.AbstractTypeDeclaration;
 import org.eclipse.jdt.core.dom.AnnotationTypeDeclaration;
-import org.eclipse.jdt.core.dom.ArrayInitializer;
 import org.eclipse.jdt.core.dom.Assignment;
 import org.eclipse.jdt.core.dom.Block;
 import org.eclipse.jdt.core.dom.BodyDeclaration;
@@ -185,22 +184,11 @@ public class InitializationNormalizer extends ErrorReportingASTVisitor {
     return false;
   }
 
-  private Expression copyInitializer(AST ast, Expression initializer) {
-    if (initializer instanceof ArrayInitializer) {
-      // An array initializer cannot be directly assigned, since by itself
-      // it's just shorthand for an array creation node.  This therefore
-      // builds an array creation node with the existing initializer.
-      return ASTFactory.newArrayCreation(
-          ast, NodeCopier.copySubtree(ast, (ArrayInitializer) initializer));
-    }
-    return NodeCopier.copySubtree(ast, initializer);
-  }
-
   private ExpressionStatement makeAssignmentStatement(VariableDeclarationFragment fragment) {
     AST ast = fragment.getAST();
     return ast.newExpressionStatement(ASTFactory.newAssignment(
         ast, ASTFactory.newSimpleName(ast, Types.getVariableBinding(fragment)),
-        copyInitializer(ast, fragment.getInitializer())));
+        NodeCopier.copySubtree(ast, fragment.getInitializer())));
   }
 
   /**
