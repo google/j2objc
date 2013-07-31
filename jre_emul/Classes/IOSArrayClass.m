@@ -81,6 +81,11 @@
   return [IOSObjectArray arrayWithLength:0 type:componentType_];
 }
 
+- (BOOL)isEqual:(id)anObject {
+  return [anObject isKindOfClass:[IOSArrayClass class]] &&
+    [componentType_ isEqual:[anObject getComponentType]];
+}
+
 #if ! __has_feature(objc_arc)
 - (void)dealloc {
   [componentType_ release];

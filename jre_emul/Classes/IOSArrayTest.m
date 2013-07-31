@@ -30,7 +30,9 @@
 #import "IOSIntArray.h"
 #import "IOSLongArray.h"
 #import "IOSShortArray.h"
+#import "JreEmulation.h"
 #import "java/lang/IndexOutOfBoundsException.h"
+#import "java/util/Calendar.h"
 #import "java/util/Date.h"
 
 // Unit tests for IOSArray.
@@ -237,6 +239,31 @@
                            @"wrong array type: %@", [subsubarray elementType]);
     }
   }
+}
+
+// Verify that array type classes can be compared correctly.
+- (void)testIsEqual {
+  // Verify primitive array types are equal ...
+  IOSBooleanArray *boolArray1 = [IOSBooleanArray arrayWithLength:0];
+  IOSBooleanArray *boolArray2 = [IOSBooleanArray arrayWithLength:10];
+  STAssertTrue([[boolArray1 getClass] isEqual:[boolArray2 getClass]],
+               @"boolean array types not equal");
+  IOSIntArray *intArray1 = [IOSIntArray arrayWithLength:0];
+  IOSIntArray *intArray2 = [IOSIntArray arrayWithLength:10];
+  STAssertTrue([[intArray1 getClass] isEqual:[intArray2 getClass]], @"int array types not equal");
+
+  // ... but not to each other.
+  STAssertFalse([[boolArray1 getClass] isEqual:[intArray2 getClass]],
+                @"different primitive array types equal");
+
+  // Verify object array types are equal only if their element type is equal.
+  IOSObjectArray *dateArray1 = [IOSObjectArray arrayWithLength:0 type:[JavaUtilDate getClass]];
+  IOSObjectArray *dateArray2 = [IOSObjectArray arrayWithLength:10 type:[JavaUtilDate getClass]];
+  IOSObjectArray *calArray = [IOSObjectArray arrayWithLength:0 type:[JavaUtilCalendar getClass]];
+  STAssertTrue([[dateArray1 getClass] isEqual:[dateArray2 getClass]],
+               @"Date array types not equal");
+  STAssertFalse([[dateArray1 getClass] isEqual:[calArray getClass]],
+                @"different object array types equal");
 }
 
 @end
