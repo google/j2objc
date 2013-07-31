@@ -51,17 +51,17 @@
 }
 
 - (char)byteAtIndex:(NSUInteger)index {
-  IOSArray_checkIndex(self, index);
+  IOSArray_checkIndex(size_, index);
   return buffer_[index];
 }
 
 - (char *)byteRefAtIndex:(NSUInteger)index {
-  IOSArray_checkIndex(self, index);
+  IOSArray_checkIndex(size_, index);
   return &buffer_[index];
 }
 
 - (char)replaceByteAtIndex:(NSUInteger)index withByte:(char)byte {
-  IOSArray_checkIndex(self, index);
+  IOSArray_checkIndex(size_, index);
   buffer_[index] = byte;
   return byte;
 }
@@ -69,44 +69,44 @@
 - (void)getBytes:(char *)buffer
           offset:(NSUInteger)offset
           length:(NSUInteger)length {
-  IOSArray_checkRange(self, NSMakeRange(offset, length));
+  IOSArray_checkRange(size_, NSMakeRange(offset, length));
   memcpy(buffer, &buffer_[offset], length);
 }
 
 - (void)replaceBytes:(const char *)source
               length:(NSUInteger)length
               offset:(NSUInteger)destOffset {
-  IOSArray_checkRange(self, NSMakeRange(destOffset, length));
+  IOSArray_checkRange(size_, NSMakeRange(destOffset, length));
   memcpy(&buffer_[destOffset], source, length);
 }
 
 - (void) arraycopy:(NSRange)sourceRange
        destination:(IOSArray *)destination
             offset:(NSInteger)offset {
-  IOSArray_checkRange(self, sourceRange);
-  IOSArray_checkRange(destination, NSMakeRange(offset, sourceRange.length));
+  IOSArray_checkRange(size_, sourceRange);
+  IOSArray_checkRange(destination->size_, NSMakeRange(offset, sourceRange.length));
   memmove(((IOSByteArray *) destination)->buffer_ + offset,
           self->buffer_ + sourceRange.location,
           sourceRange.length * sizeof(char));
 }
 
 - (char)incr:(NSUInteger)index {
-  IOSArray_checkIndex(self, index);
+  IOSArray_checkIndex(size_, index);
   return ++buffer_[index];
 }
 
 - (char)decr:(NSUInteger)index {
-  IOSArray_checkIndex(self, index);
+  IOSArray_checkIndex(size_, index);
   return --buffer_[index];
 }
 
 - (char)postIncr:(NSUInteger)index {
-  IOSArray_checkIndex(self, index);
+  IOSArray_checkIndex(size_, index);
   return buffer_[index]++;
 }
 
 - (char)postDecr:(NSUInteger)index {
-  IOSArray_checkIndex(self, index);
+  IOSArray_checkIndex(size_, index);
   return buffer_[index]--;
 }
 

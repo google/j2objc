@@ -48,19 +48,6 @@
 // Returns the size of this array.
 - (NSUInteger)count;
 
-// Verifies that 0 >= index < length, throwing an IndexOutOfBoundsException
-// if index is out of range.
-- (void)checkIndex:(NSUInteger)index;
-
-// Verifies that the specified range fits within the array bounds, throwing
-// an IndexOutOfBoundsException if it is out of bounds.
-- (void)checkRange:(NSRange)range;
-
-// Verifies that the specified range fits within the array bounds after
-// applying the specified offset.  An IndexOutOfBoundsException is
-// thrown if it is out of bounds.
-- (void)checkRange:(NSRange)range withOffset:(NSUInteger)offset;
-
 - (NSString*)descriptionOfElementAtIndex:(NSUInteger)index;
 
 // Returns the element type of this array.
@@ -78,19 +65,26 @@
 
 @end
 
+extern void IOSArray_throwOutOfBounds(NSUInteger size, NSUInteger index);
+
 // Implement IOSArray |checkIndex| and |checkRange| methods as C functions. This
 // allows IOSArray index and range checks to be completely removed via the
 // J2OBJC_DISABLE_ARRAY_CHECKS macro to improve performance.
 __attribute__ ((unused))
-static inline void IOSArray_checkIndex(IOSArray *array, NSUInteger index) {
+static inline void IOSArray_checkIndex(NSUInteger size, NSUInteger index) {
 #if !defined(J2OBJC_DISABLE_ARRAY_CHECKS)
-  [array checkIndex:index];
+  if (index >= size) {
+    IOSArray_throwOutOfBounds(size, index);
+  }
 #endif
 }
 __attribute__ ((unused))
-static inline void IOSArray_checkRange(IOSArray *array, NSRange range) {
+static inline void IOSArray_checkRange(NSUInteger size, NSRange range) {
 #if !defined(J2OBJC_DISABLE_ARRAY_CHECKS)
-  [array checkRange:range];
+  if (range.length > 0) {
+    IOSArray_checkIndex(size, range.location);
+    IOSArray_checkIndex(size, range.location + range.length - 1);
+  }
 #endif
 }
 

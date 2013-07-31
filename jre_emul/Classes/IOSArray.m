@@ -90,46 +90,11 @@
   return size_;
 }
 
-- (void)checkIndex:(NSUInteger)index {
-  if (index >= size_) {
-    NSString *msg = [NSString stringWithFormat:
-        @"index out of range: %ld for array containing %ld elements",
-        (long)index, (long)size_];
-    id exception = [[JavaLangArrayIndexOutOfBoundsException alloc]
-                    initWithNSString:msg];
-#if ! __has_feature(objc_arc)
-    [exception autorelease];
-#endif
-    @throw exception;
-  }
-}
-
-- (void)checkRange:(NSRange)range {
-  if (range.length > 0) {
-    [self checkIndex:range.location];
-    NSUInteger bounds = range.location + range.length;
-    if (bounds > size_) {
-      NSString *msg = [NSString stringWithFormat:
-                       @"length out of range: %ld for array of %ld elements",
-                       (long)bounds, (long)size_];
-      id exception = [[JavaLangArrayIndexOutOfBoundsException alloc]
-                      initWithNSString:msg];
-#if ! __has_feature(objc_arc)
-      [exception autorelease];
-#endif
-      @throw exception;
-    }
-  }
-}
-
-- (void)checkRange:(NSRange)range withOffset:(NSUInteger)offset {
-  if (range.length == 0) {
-    return;
-  }
-  
-  [self checkIndex:offset];
-  [self checkIndex:range.location];
-  [self checkRange:NSMakeRange(range.location + offset, range.length)];
+void IOSArray_throwOutOfBounds(NSUInteger size, NSUInteger index) {
+  NSString *msg = [NSString stringWithFormat:
+      @"index out of range: %ld for array containing %ld elements",
+      (long)index, (long)size];
+  @throw AUTORELEASE([[JavaLangArrayIndexOutOfBoundsException alloc] initWithNSString:msg]);
 }
 
 - (NSString *)descriptionOfElementAtIndex:(NSUInteger)index {
