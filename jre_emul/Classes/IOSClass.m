@@ -435,7 +435,7 @@ JavaLangReflectConstructor *getConstructorImpl(IOSClass *cls,
     }
     [name appendFormat:@"%@:", clsName];
   }
-  
+
   SEL selector = NSSelectorFromString(name);
   BOOL hasConstructor = NO;
   if (cls->class_) {
@@ -458,7 +458,7 @@ JavaLangReflectConstructor *getConstructorImpl(IOSClass *cls,
     @throw [[[JavaLangNoSuchMethodException alloc] init] autorelease];
 #endif
   }
-  
+
   return [JavaLangReflectConstructor constructorWithSelector:selector
                                                    withClass:cls];
 }
@@ -481,7 +481,7 @@ JavaLangReflectConstructor *getConstructorImpl(IOSClass *cls,
   } else {
     return cls->class_ != nil
         ? [cls->class_ conformsToProtocol:protocol_]
-        : [(id) cls->protocol_ conformsToProtocol:protocol_];
+        : protocol_conformsToProtocol(cls->protocol_, protocol_);
   }
 }
 
