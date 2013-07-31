@@ -37,7 +37,6 @@ import com.google.devtools.j2objc.util.UnicodeUtils;
 
 import org.eclipse.jdt.core.dom.AST;
 import org.eclipse.jdt.core.dom.ASTNode;
-import org.eclipse.jdt.core.dom.AbstractTypeDeclaration;
 import org.eclipse.jdt.core.dom.AnonymousClassDeclaration;
 import org.eclipse.jdt.core.dom.ArrayAccess;
 import org.eclipse.jdt.core.dom.ArrayCreation;
@@ -361,52 +360,25 @@ public class StatementGenerator extends ErrorReportingASTVisitor {
         buffer.append(")");
       }
     } else if (op == Operator.ASSIGN) {
-      IVariableBinding lhsVar = Types.getVariableBinding(lhs);
-      if (lhsVar != null && !lhsVar.getType().isPrimitive() && BindingUtil.isStatic(lhsVar)
-          && useStaticPublicAccessor(lhs)) {
-        // convert static var assignment to its writer message
-        buffer.append('[');
-        if (lhs instanceof QualifiedName) {
-          QualifiedName qn = (QualifiedName) lhs;
-          qn.getQualifier().accept(this);
-        } else {
-          buffer.append(NameTable.getFullName(lhsVar.getDeclaringClass()));
-        }
-        buffer.append(" set");
-        buffer.append(NameTable.capitalize(lhsVar.getName()));
-        buffer.append(':');
+      if (Options.useReferenceCounting() && isLeftHandSideRetainedProperty(lhs)) {
+        String name = leftHandSideInstanceVariableName(lhs);
+        buffer.append("JreOperatorRetainedAssign(&" + name);
+        buffer.append(", self, ");
         rhs.accept(this);
-        buffer.append(']');
-        return false;
+        buffer.append(")");
       } else {
-        if (Options.useReferenceCounting() && isLeftHandSideRetainedProperty(lhs)) {
-          String name = leftHandSideInstanceVariableName(lhs);
-          buffer.append("JreOperatorRetainedAssign(&" + name);
-          buffer.append(", self, ");
-          rhs.accept(this);
-          buffer.append(")");
-        } else {
-          if (isStaticVariableAccess(lhs)) {
-            printStaticVarReference(lhs, /* assignable */ true);
-          } else {
-            lhs.accept(this);
-          }
-          buffer.append(" = ");
-          rhs.accept(this);
-        }
-        return false;
+        lhs.accept(this);
+        buffer.append(" = ");
+        rhs.accept(this);
       }
+      return false;
     } else {
       // Handles the case for the following operators:
       // BIT_AND_ASSIGN, BIT_OR_ASSIGN, BIT_XOR_ASSIGN, DIVIDE_ASSIGN,
       // LEFT_SHIFT_ASSIGN, MINUS_ASSIGN, PLUS_ASSIGN, REMAINDER_ASSIGN,
       // RIGHT_SHIFT_SIGNED_ASSIGN, RIGHT_SHIFT_UNSIGNED_ASSIGN and
       // TIMES_ASSIGN.
-      if (isStaticVariableAccess(lhs)) {
-        printStaticVarReference(lhs, /* assignable */ true);
-      } else {
-        lhs.accept(this);
-      }
+      lhs.accept(this);
       buffer.append(' ');
       buffer.append(op.toString());
       buffer.append(' ');
@@ -1059,17 +1031,10 @@ public class StatementGenerator extends ErrorReportingASTVisitor {
     } else {
       IOSMethod iosMethod = IOSMethodBinding.getIOSMethod(binding);
       boolean castPrinted = maybePrintCast(node, getActualReturnType(binding, receiverType));
-      boolean returnsPointer = iosMethod != null && iosMethod.returnsPointer();
-      if (returnsPointer) {
-        buffer.append("(*");
-      }
       if (iosMethod != null && iosMethod.isFunction()) {
         printFunctionInvocation(iosMethod, ASTUtil.getArguments(node));
       } else {
         printMethodInvocation(binding, methodName, receiver, ASTUtil.getArguments(node));
-      }
-      if (returnsPointer) {
-        buffer.append(')');
       }
       if (castPrinted) {
         buffer.append(')');
@@ -1079,6 +1044,12 @@ public class StatementGenerator extends ErrorReportingASTVisitor {
   }
 
   private void printFunctionInvocation(IOSMethod iosMethod, List<Expression> args) {
+    if (iosMethod == IOSMethod.DEREFERENCE) {
+      buffer.append("(*");
+      args.get(0).accept(this);
+      buffer.append(')');
+      return;
+    }
     buffer.append(iosMethod.getName());
     buffer.append('(');
     boolean isFirst = true;
@@ -1286,31 +1257,15 @@ public class StatementGenerator extends ErrorReportingASTVisitor {
 
   @Override
   public boolean visit(PostfixExpression node) {
-    Expression operand = node.getOperand();
-    PostfixExpression.Operator op = node.getOperator();
-    boolean isIncOrDec = op == PostfixExpression.Operator.INCREMENT
-        || op == PostfixExpression.Operator.DECREMENT;
-    if (isIncOrDec && isStaticVariableAccess(operand)) {
-      printStaticVarReference(operand, /* assignable */ true);
-    } else {
-      operand.accept(this);
-    }
-    buffer.append(op.toString());
+    node.getOperand().accept(this);
+    buffer.append(node.getOperator().toString());
     return false;
   }
 
   @Override
   public boolean visit(PrefixExpression node) {
-    Expression operand = node.getOperand();
-    PrefixExpression.Operator op = node.getOperator();
-    boolean isIncOrDec = op == PrefixExpression.Operator.INCREMENT
-        || op == PrefixExpression.Operator.DECREMENT;
-    buffer.append(op.toString());
-    if (isIncOrDec && isStaticVariableAccess(operand)) {
-      printStaticVarReference(operand, /* assignable */ true);
-    } else {
-      operand.accept(this);
-    }
+    buffer.append(node.getOperator().toString());
+    node.getOperand().accept(this);
     return false;
   }
 
@@ -1343,7 +1298,7 @@ public class StatementGenerator extends ErrorReportingASTVisitor {
         buffer.append(NameTable.getPrimitiveConstantName(var));
         return false;
       } else if (BindingUtil.isStatic(var)) {
-        printStaticVarReference(node, /* assignable */ false);
+        buffer.append(NameTable.getStaticVarQualifiedName(var));
         return false;
       }
     }
@@ -1357,64 +1312,6 @@ public class StatementGenerator extends ErrorReportingASTVisitor {
     buffer.append('.');
     node.getName().accept(this);
     return false;
-  }
-
-  private void printStaticVarReference(ASTNode expression, boolean assignable) {
-    IVariableBinding var = Types.getVariableBinding(expression);
-    if (useStaticPublicAccessor(expression)) {
-      buffer.append(assignable ? "(*[" : "[");
-      ITypeBinding declaringClass = var.getDeclaringClass();
-      String receiver = NameTable.getFullName(declaringClass);
-      buffer.append(receiver);
-      buffer.append(' ');
-      buffer.append(var.isEnumConstant() ? NameTable.getName(var) :
-                    NameTable.getStaticAccessorName(var.getName()));
-      buffer.append(assignable ? "Ref])" : "]");
-    } else {
-      buffer.append(NameTable.getStaticVarQualifiedName(var));
-    }
-  }
-
-  /**
-   * Returns the type declaration which the specified node is part of.
-   */
-  private AbstractTypeDeclaration getOwningType(ASTNode node) {
-    ASTNode n = node;
-    while (n != null) {
-      if (n instanceof AbstractTypeDeclaration) {
-        return (AbstractTypeDeclaration) n;
-      }
-      n = n.getParent();
-    }
-    return null;
-  }
-
-  /**
-   * Returns the method which is the parent of the specified node.
-   */
-  private MethodDeclaration getOwningMethod(ASTNode node) {
-    ASTNode n = node;
-    while (n != null) {
-      if (n instanceof MethodDeclaration) {
-        return (MethodDeclaration) n;
-      }
-      n = n.getParent();
-    }
-    return null;
-  }
-
-  /**
-   * Returns true if the caller should reference a static variable using its
-   * accessor methods.
-   */
-  private boolean useStaticPublicAccessor(ASTNode expression) {
-    AbstractTypeDeclaration owner = getOwningType(expression);
-    if (owner != null) {
-      ITypeBinding owningType = Types.getTypeBinding(owner).getTypeDeclaration();
-      IVariableBinding var = Types.getVariableBinding(expression);
-      return !owningType.isEqualTo(var.getDeclaringClass().getTypeDeclaration());
-    }
-    return true;
   }
 
   @Override
@@ -1435,7 +1332,7 @@ public class StatementGenerator extends ErrorReportingASTVisitor {
       buffer.append(' ');
       ITypeBinding expressionType = Types.getTypeBinding(expr);
       IBinding binding = Types.getBinding(expr);
-      MethodDeclaration method = getOwningMethod(node);
+      MethodDeclaration method = ASTUtil.getOwningMethod(node);
       boolean shouldRetainResult = false;
 
       // In manual reference counting mode, per convention, -copyWithZone: should return
@@ -1451,7 +1348,7 @@ public class StatementGenerator extends ErrorReportingASTVisitor {
       if (shouldRetainResult) {
         buffer.append(" retain]");
       }
-    } else if (Types.getMethodBinding(getOwningMethod(node)).isConstructor()) {
+    } else if (Types.getMethodBinding(ASTUtil.getOwningMethod(node)).isConstructor()) {
       // A return statement without any expression is allowed in constructors.
       buffer.append(" self");
     }
@@ -1467,7 +1364,7 @@ public class StatementGenerator extends ErrorReportingASTVisitor {
       if (BindingUtil.isPrimitiveConstant(var)) {
         buffer.append(NameTable.getPrimitiveConstantName(var));
       } else if (BindingUtil.isStatic(var)) {
-        printStaticVarReference(node, /* assignable */ false);
+        buffer.append(NameTable.getStaticVarQualifiedName(var));
       } else {
         String name = NameTable.getName(node);
         if (Options.inlineFieldAccess() && isProperty(node)) {
@@ -1597,8 +1494,8 @@ public class StatementGenerator extends ErrorReportingASTVisitor {
   @Override
   public boolean visit(SuperMethodInvocation node) {
     IMethodBinding binding = Types.getMethodBinding(node);
-    boolean castPrinted = maybePrintCast(node,
-        getActualReturnType(binding, Types.getTypeBinding(getOwningType(node)).getSuperclass()));
+    boolean castPrinted = maybePrintCast(node, getActualReturnType(binding,
+        Types.getTypeBinding(ASTUtil.getOwningType(node)).getSuperclass()));
     if (BindingUtil.isStatic(binding)) {
       buffer.append("[[super class] ");
     } else {

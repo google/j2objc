@@ -35,17 +35,17 @@ public class IOSMethod {
   private final String declaringClass;
   private final List<IOSParameter> parameters;
   private boolean varArgs = false;
-  private final boolean returnsPointer;
+
+  public static final IOSMethod DEREFERENCE = newFunction("_dereference_");
 
   private IOSMethod(
       String name, boolean isFunction, String declaringClass, List<IOSParameter> parameters,
-      boolean varArgs, boolean returnsPointer) {
+      boolean varArgs) {
     this.name = name;
     this.isFunction = isFunction;
     this.declaringClass = declaringClass;
     this.parameters = parameters;
     this.varArgs = varArgs;
-    this.returnsPointer = returnsPointer;
   }
 
   public static IOSMethod create(String s) {
@@ -72,16 +72,11 @@ public class IOSMethod {
         }
       }
     }
-    boolean returnsPointer = false;
-    if (name.charAt(0) == '*') {
-      returnsPointer = true;
-      name = name.substring(1);
-    }
-    return new IOSMethod(name, false, className, parameters.build(), varArgs, returnsPointer);
+    return new IOSMethod(name, false, className, parameters.build(), varArgs);
   }
 
   public static IOSMethod newFunction(String name) {
-    return new IOSMethod(name, true, null, null, false, false);
+    return new IOSMethod(name, true, null, null, false);
   }
 
   public String getName() {
@@ -102,10 +97,6 @@ public class IOSMethod {
 
   public boolean isVarArgs() {
     return varArgs;
-  }
-
-  public boolean returnsPointer() {
-    return returnsPointer;
   }
 
   private static String[] splitParameterString(String s) {

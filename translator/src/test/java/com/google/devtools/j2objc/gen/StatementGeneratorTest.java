@@ -785,8 +785,8 @@ public class StatementGeneratorTest extends GenerationTest {
   public void testInstanceStaticConstants() throws IOException {
     String translation = translateSourceFile(
         "public class Test { Foo f; void test() { int i = f.DEFAULT; Object lock = f.LOCK; }} " +
-    		"class Foo { public static final int DEFAULT = 1; " +
-    		"    public static final Object LOCK = null; }", "Test", "Test.m");
+        "class Foo { public static final int DEFAULT = 1; " +
+        "public static final Object LOCK = null; }", "Test", "Test.m");
     assertTranslation(translation, "int i = Foo_DEFAULT;");
     assertTranslation(translation, "id lock = [Foo LOCK];");
   }
@@ -1090,7 +1090,7 @@ public class StatementGeneratorTest extends GenerationTest {
       "public class A { String prefix(Object o) { return new String(o + B.separator); }}",
       "A", "A.m");
     assertTranslation(translation,
-        "[NSString stringWithString:[NSString stringWithFormat:@\"%@/\", o]];");
+        "[NSString stringWithString:[NSString stringWithFormat:@\"%@%@\", o, [B separator]]];");
   }
 
   public void testStringConcatWithBoolean() throws IOException {

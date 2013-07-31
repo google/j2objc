@@ -293,7 +293,7 @@ public final class ASTUtil {
       List<Statement> stmts = getStatements((Block) parent);
       for (int i = 0; i < stmts.size(); i++) {
         if (stmts.get(i) == node) {
-          return stmts.subList(i, i+1);
+          return stmts.subList(i, i + 1);
         }
       }
     }
@@ -309,5 +309,33 @@ public final class ASTUtil {
 
   public static void insertBefore(Statement node, Statement toInsert) {
     asStatementList(node).add(0, toInsert);
+  }
+
+  /**
+   * Returns the type declaration which the specified node is part of.
+   */
+  public static AbstractTypeDeclaration getOwningType(ASTNode node) {
+    ASTNode n = node;
+    while (n != null) {
+      if (n instanceof AbstractTypeDeclaration) {
+        return (AbstractTypeDeclaration) n;
+      }
+      n = n.getParent();
+    }
+    return null;
+  }
+
+  /**
+   * Returns the method which is the parent of the specified node.
+   */
+  public static MethodDeclaration getOwningMethod(ASTNode node) {
+    ASTNode n = node;
+    while (n != null) {
+      if (n instanceof MethodDeclaration) {
+        return (MethodDeclaration) n;
+      }
+      n = n.getParent();
+    }
+    return null;
   }
 }
