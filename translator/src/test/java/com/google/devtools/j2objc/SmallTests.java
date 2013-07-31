@@ -40,6 +40,7 @@ import com.google.devtools.j2objc.translate.OuterReferenceResolverTest;
 import com.google.devtools.j2objc.translate.RewriterTest;
 import com.google.devtools.j2objc.translate.TypeSorterTest;
 import com.google.devtools.j2objc.types.BindingMapBuilderTest;
+import com.google.devtools.j2objc.types.HeaderImportCollectorTest;
 import com.google.devtools.j2objc.types.ImplementationImportCollectorTest;
 import com.google.devtools.j2objc.types.ModifiedTypeBindingTest;
 import com.google.devtools.j2objc.types.RenamedTypeBindingTest;
@@ -74,6 +75,7 @@ public class SmallTests {
     DestructorGeneratorTest.class,
     ErrorReportingASTVisitorTest.class,
     GwtConverterTest.class,
+    HeaderImportCollectorTest.class,
     HiddenFieldDetectorTest.class,
     ImplementationImportCollectorTest.class,
     InitializationNormalizerTest.class,
