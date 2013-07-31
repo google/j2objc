@@ -45,7 +45,7 @@ import org.eclipse.jdt.core.dom.QualifiedName;
 public class NilCheckResolver extends ErrorReportingASTVisitor {
 
   private static final IOSMethodBinding NIL_CHK_DECL = IOSMethodBinding.newFunction(
-      "nil_chk", Types.resolveIOSType("id"), Types.resolveIOSType("id"));
+      "nil_chk", Types.resolveIOSType("id"), null, Types.resolveIOSType("id"));
 
   private static boolean needsNilCheck(Expression e) {
     IVariableBinding sym = Types.getVariableBinding(e);
@@ -123,12 +123,10 @@ public class NilCheckResolver extends ErrorReportingASTVisitor {
     // Instance references to static fields don't need to be nil-checked.
     // This is true in Java (surprisingly), where instance.FIELD returns
     // FIELD even when instance is null.
-    IBinding binding = Types.getBinding(node);
-    if (binding instanceof IVariableBinding &&
-        BindingUtil.isStatic((IVariableBinding) binding)) {
-      IBinding qualifierBinding = Types.getBinding(node.getQualifier());
-      if (qualifierBinding instanceof IVariableBinding &&
-          !BindingUtil.isStatic((IVariableBinding) qualifierBinding))
+    IVariableBinding var = Types.getVariableBinding(node);
+    IVariableBinding qualifierVar = Types.getVariableBinding(node.getQualifier());
+    if (var != null && qualifierVar != null && BindingUtil.isStatic(var)
+        && !BindingUtil.isStatic(qualifierVar)) {
       return true;
     }
 

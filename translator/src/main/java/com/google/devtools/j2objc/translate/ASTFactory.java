@@ -53,6 +53,7 @@ import org.eclipse.jdt.core.dom.SimpleName;
 import org.eclipse.jdt.core.dom.SingleVariableDeclaration;
 import org.eclipse.jdt.core.dom.Statement;
 import org.eclipse.jdt.core.dom.StringLiteral;
+import org.eclipse.jdt.core.dom.ThisExpression;
 import org.eclipse.jdt.core.dom.Type;
 import org.eclipse.jdt.core.dom.TypeLiteral;
 import org.eclipse.jdt.core.dom.VariableDeclarationExpression;
@@ -252,6 +253,20 @@ public final class ASTFactory {
     return invocation;
   }
 
+  public static MethodInvocation newDereference(AST ast, Expression node) {
+    IOSMethodBinding binding = IOSMethodBinding.newDereference(Types.getTypeBinding(node));
+    MethodInvocation invocation = newMethodInvocation(ast, binding, null);
+    ASTUtil.getArguments(invocation).add(node);
+    return invocation;
+  }
+
+  public static MethodInvocation newAddressOf(AST ast, Expression node) {
+    IOSMethodBinding binding = IOSMethodBinding.newAddressOf(Types.getTypeBinding(node));
+    MethodInvocation invocation = newMethodInvocation(ast, binding, null);
+    ASTUtil.getArguments(invocation).add(node);
+    return invocation;
+  }
+
   public static MethodDeclaration newMethodDeclaration(AST ast, IMethodBinding binding) {
     MethodDeclaration declaration = ast.newMethodDeclaration();
     declaration.setConstructor(binding.isConstructor());
@@ -289,6 +304,12 @@ public final class ASTFactory {
     cast.setType(newType(ast, type));
     Types.addBinding(cast, type);
     return cast;
+  }
+
+  public static ThisExpression newThisExpression(AST ast, ITypeBinding type) {
+    ThisExpression node = ast.newThisExpression();
+    Types.addBinding(node, type);
+    return node;
   }
 
   private static Expression makeLiteralInternal(AST ast, Object value) {
@@ -358,14 +379,5 @@ public final class ASTFactory {
     result.setExpression(expr);
     Types.addBinding(result, Types.getTypeBinding(expr));
     return result;
-  }
-
-  public static MethodInvocation newDereference(AST ast, Expression node) {
-    IOSMethodBinding binding = IOSMethodBinding.newDereference(Types.getTypeBinding(node));
-    MethodInvocation invocation = ast.newMethodInvocation();
-    invocation.setName(newSimpleName(ast, binding));
-    Types.addBinding(invocation, binding);
-    ASTUtil.getArguments(invocation).add(node);
-    return invocation;
   }
 }

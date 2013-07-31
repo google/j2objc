@@ -324,8 +324,8 @@ public class ObjectiveCHeaderGeneratorTest extends GenerationTest {
         "[self initColorEnumWithInt:rgb withBOOL:YES withNSString:name withInt:ordinal]");
     assertTranslatedLines(translation,
         "if ((self = [super initWithNSString:name withInt:ordinal])) {",
-        "self.rgb = rgb;",
-        "self.primary = primary;");
+        "self->rgb_ = rgb;",
+        "self->primary_ = primary;");
   }
 
   public void testArrayFieldDeclaration() throws IOException {
@@ -523,10 +523,19 @@ public class ObjectiveCHeaderGeneratorTest extends GenerationTest {
 
   public void testInnerAnnotationGeneration() throws IOException {
     String source = "import java.lang.annotation.*; public abstract class Test { " +
-    		"@Retention(RetentionPolicy.RUNTIME) @Target(ElementType.METHOD) " +
-    		"public @interface Initialize {}}";
+        "@Retention(RetentionPolicy.RUNTIME) @Target(ElementType.METHOD) " +
+        "public @interface Initialize {}}";
     String translation = translateSourceFile(source, "Test", "Test.h");
     assertTranslation(translation, "@protocol Test_Initialize < JavaLangAnnotationAnnotation >");
     assertTranslation(translation, "@interface Test_InitializeImpl : NSObject < Test_Initialize >");
+  }
+
+  public void testFieldSetterGeneration() throws IOException {
+    String translation = translateSourceFile(
+        "import com.google.j2objc.annotations.Weak;" +
+        "class Test { Object o; @Weak String s; static Integer i; }", "Test", "Test.h");
+    assertTranslation(translation, "J2OBJC_FIELD_SETTER(Test, o_, id)");
+    // Make sure the @Weak and static fields don't generate setters.
+    assertOccurrences(translation, "J2OBJC_FIELD_SETTER", 1);
   }
 }

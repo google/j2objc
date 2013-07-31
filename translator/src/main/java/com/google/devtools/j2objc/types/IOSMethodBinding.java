@@ -65,9 +65,10 @@ public class IOSMethodBinding extends GeneratedMethodBinding {
   }
 
   public static IOSMethodBinding newFunction(
-      String name, ITypeBinding returnType, ITypeBinding... paramTypes) {
+      String name, ITypeBinding returnType, ITypeBinding declaringClass,
+      ITypeBinding... paramTypes) {
     IOSMethodBinding binding = new IOSMethodBinding(
-        IOSMethod.newFunction(name), null, 0, returnType, null, null, false);
+        IOSMethod.newFunction(name), null, 0, returnType, null, declaringClass, false);
     for (ITypeBinding paramType : paramTypes) {
       binding.addParameter(paramType);
     }
@@ -76,6 +77,10 @@ public class IOSMethodBinding extends GeneratedMethodBinding {
 
   public static IOSMethodBinding newDereference(ITypeBinding type) {
     return new IOSMethodBinding(IOSMethod.DEREFERENCE, null, 0, type, null, null, false);
+  }
+
+  public static IOSMethodBinding newAddressOf(ITypeBinding type) {
+    return new IOSMethodBinding(IOSMethod.ADDRESS_OF, null, 0, type, null, null, false);
   }
 
   public static IOSMethod getIOSMethod(IMethodBinding binding) {

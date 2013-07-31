@@ -61,6 +61,8 @@
 
 #define J2OBJC_COMMA() ,
 
+// Should only be used with manual reference counting.
+#if !__has_feature(objc_arc)
 static inline id JreOperatorRetainedAssign(id *pIvar, id self, id value) {
   // We need a lock here because during
   // JreMemDebugGenerateAllocationsReport(), we want the list of links
@@ -70,14 +72,10 @@ static inline id JreOperatorRetainedAssign(id *pIvar, id self, id value) {
     JreMemDebugLock();
   }
 #endif // JREMEMDEBUG_ENABLED
-#if __has_feature(objc_arc)
-  * pIvar = value;
-#else
   if (* pIvar != self) {
     [* pIvar autorelease];
   }
   * pIvar = value != self ? [value retain] : self;
-#endif // __has_feature(objc_arc)
 #if JREMEMDEBUG_ENABLED
   if (JreMemDebugEnabled) {
     JreMemDebugUnlock();
@@ -86,12 +84,20 @@ static inline id JreOperatorRetainedAssign(id *pIvar, id self, id value) {
 
   return value;
 }
+#endif
 
 // Converts main() arguments into an IOSObjectArray of NSStrings.
 FOUNDATION_EXPORT
     IOSObjectArray *JreEmulationMainArguments(int argc, const char *argv[]);
 
-FOUNDATION_EXPORT id JreOperatorRetainedAssign(id *pIvar, id self, id value);
+#if __has_feature(objc_arc)
+#define J2OBJC_FIELD_SETTER(CLASS, FIELD, TYPE)
+#else
+#define J2OBJC_FIELD_SETTER(CLASS, FIELD, TYPE) \
+  static inline TYPE CLASS##_set_##FIELD(CLASS *instance, TYPE value) { \
+    return JreOperatorRetainedAssign(&instance->FIELD, instance, value); \
+  }
+#endif
 
 #define UR_SHIFT_ASSIGN_DEFN(NAME, TYPE) \
   static inline TYPE URShiftAssign##NAME(TYPE *pLhs, int rhs) { \

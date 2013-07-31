@@ -68,6 +68,7 @@ JAVA_SOURCES = \
 	translate/JavaToIOSMethodTranslator.java \
 	translate/JavaToIOSTypeConverter.java \
 	translate/NilCheckResolver.java \
+	translate/OperatorRewriter.java \
 	translate/OuterReferenceFixer.java \
 	translate/OuterReferenceResolver.java \
 	translate/Rewriter.java \

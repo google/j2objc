@@ -359,19 +359,6 @@ public class StatementGenerator extends ErrorReportingASTVisitor {
         rhs.accept(this);
         buffer.append(")");
       }
-    } else if (op == Operator.ASSIGN) {
-      if (Options.useReferenceCounting() && isLeftHandSideRetainedProperty(lhs)) {
-        String name = leftHandSideInstanceVariableName(lhs);
-        buffer.append("JreOperatorRetainedAssign(&" + name);
-        buffer.append(", self, ");
-        rhs.accept(this);
-        buffer.append(")");
-      } else {
-        lhs.accept(this);
-        buffer.append(" = ");
-        rhs.accept(this);
-      }
-      return false;
     } else {
       // Handles the case for the following operators:
       // BIT_AND_ASSIGN, BIT_OR_ASSIGN, BIT_XOR_ASSIGN, DIVIDE_ASSIGN,
@@ -389,51 +376,6 @@ public class StatementGenerator extends ErrorReportingASTVisitor {
 
   private boolean isFloatingPoint(Expression e) {
     return Types.isFloatingPointType(Types.getTypeBinding(e));
-  }
-
-  /*
-   * Returns true if the expression is a retained property.
-   */
-  private boolean isLeftHandSideRetainedProperty(Expression lhs) {
-    boolean isRetainedProperty = false;
-
-    if (Options.inlineFieldAccess()) {
-      // Inline the setter for a property.
-      IVariableBinding var = Types.getVariableBinding(lhs);
-      ITypeBinding type = Types.getTypeBinding(lhs);
-      if (!type.isPrimitive() && lhs instanceof SimpleName) {
-        if (isProperty((SimpleName) lhs) && !Types.isWeakReference(var)) {
-          isRetainedProperty = true;
-        } else if (isStaticVariableAccess(lhs)) {
-          isRetainedProperty = true;
-        }
-      }
-    }
-
-    return isRetainedProperty;
-  }
-
-  /*
-   * Returns the Objective-C instance variable name if the expression
-   * is a property. Returns null in other cases.
-   */
-  private String leftHandSideInstanceVariableName(Expression lhs) {
-    String nativeName = null;
-
-    if (Options.inlineFieldAccess()) {
-      // Inline the setter for a property.
-      if (lhs instanceof SimpleName) {
-        if (isProperty((SimpleName) lhs)) {
-          String name = NameTable.getName((SimpleName) lhs);
-          nativeName = NameTable.javaFieldToObjC(name);
-        } else if (isStaticVariableAccess(lhs)) {
-          IVariableBinding var = Types.getVariableBinding(lhs);
-          nativeName = NameTable.getStaticVarQualifiedName(var);
-        }
-      }
-    }
-
-    return nativeName;
   }
 
   private void printUnsignedRightShift(Expression lhs, Expression rhs) {
@@ -698,11 +640,7 @@ public class StatementGenerator extends ErrorReportingASTVisitor {
     Expression expr = node.getExpression();
     needsCastNodes.put(expr, true);
     expr.accept(this);
-    if (Options.inlineFieldAccess() && isProperty(node.getName())) {
-      buffer.append("->");
-    } else {
-      buffer.append('.');
-    }
+    buffer.append("->");
     node.getName().accept(this);
     return false;
   }
@@ -1049,6 +987,10 @@ public class StatementGenerator extends ErrorReportingASTVisitor {
       args.get(0).accept(this);
       buffer.append(')');
       return;
+    } else if (iosMethod == IOSMethod.ADDRESS_OF) {
+      buffer.append('&');
+      args.get(0).accept(this);
+      return;
     }
     buffer.append(iosMethod.getName());
     buffer.append('(');
@@ -1275,20 +1217,6 @@ public class StatementGenerator extends ErrorReportingASTVisitor {
     return false;
   }
 
-  /**
-   * Returns true if a node defines a reference to a static variable.
-   */
-  private boolean isStaticVariableAccess(Expression node) {
-    IBinding binding = Types.getBinding(node);
-    if (binding instanceof IVariableBinding) {
-      IVariableBinding var = (IVariableBinding) binding;
-      if (BindingUtil.isStatic(var)) {
-        return true;
-      }
-    }
-    return false;
-  }
-
   @Override
   public boolean visit(QualifiedName node) {
     IBinding binding = Types.getBinding(node);
@@ -1309,7 +1237,7 @@ public class StatementGenerator extends ErrorReportingASTVisitor {
     Name qualifier = node.getQualifier();
     needsCastNodes.put(qualifier, true);
     qualifier.accept(this);
-    buffer.append('.');
+    buffer.append("->");
     node.getName().accept(this);
     return false;
   }
@@ -1363,18 +1291,13 @@ public class StatementGenerator extends ErrorReportingASTVisitor {
         buffer.append(NameTable.getPrimitiveConstantName(var));
       } else if (BindingUtil.isStatic(var)) {
         buffer.append(NameTable.getStaticVarQualifiedName(var));
+      } else if (var.isField()) {
+        buffer.append(NameTable.javaFieldToObjC(NameTable.getName(var)));
       } else {
-        String name = NameTable.getName(node);
-        if (Options.inlineFieldAccess() && isProperty(node)) {
-          buffer.append(NameTable.javaFieldToObjC(name));
-        } else {
-          if (isProperty(node)) {
-            buffer.append("self.");
-          }
-          buffer.append(name);
-          if (!var.isField() && (fieldHiders.contains(var) || NameTable.isReservedName(name))) {
-            buffer.append("Arg");
-          }
+        String name = NameTable.getName(var);
+        buffer.append(name);
+        if (!var.isField() && (fieldHiders.contains(var) || NameTable.isReservedName(name))) {
+          buffer.append("Arg");
         }
       }
       return false;
@@ -1389,24 +1312,6 @@ public class StatementGenerator extends ErrorReportingASTVisitor {
       buffer.append(node.getIdentifier());
     }
     return false;
-  }
-
-  private boolean isProperty(SimpleName name) {
-    IVariableBinding var = Types.getVariableBinding(name);
-    if (!var.isField() || BindingUtil.isStatic(var)) {
-      return false;
-    }
-    int parentNodeType = name.getParent().getNodeType();
-    if (parentNodeType == ASTNode.QUALIFIED_NAME &&
-        name == ((QualifiedName) name.getParent()).getQualifier()) {
-      // This case is for arrays, with property.length references.
-      return true;
-    }
-    if (parentNodeType == ASTNode.FIELD_ACCESS &&
-        name == ((FieldAccess) name.getParent()).getExpression()) {
-      return true;
-    }
-    return parentNodeType != ASTNode.FIELD_ACCESS && parentNodeType != ASTNode.QUALIFIED_NAME;
   }
 
   @Override

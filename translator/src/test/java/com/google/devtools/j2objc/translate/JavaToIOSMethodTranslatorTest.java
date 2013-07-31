@@ -46,7 +46,7 @@ public class JavaToIOSMethodTranslatorTest extends GenerationTest {
     assertTranslation(translation, "return (Example *) [self clone];");
     assertTranslation(translation, "- (id)copyWithZone:(NSZone *)zone {");
     assertTranslation(translation, "Example *e = (Example *) [super clone];");
-    assertTranslation(translation, "((Example *) nil_chk(e)).i = i_");
+    assertTranslation(translation, "((Example *) nil_chk(e))->i_ = i_");
   }
 
   public void testStringValueOfBoolean() throws IOException {
@@ -228,7 +228,7 @@ public class JavaToIOSMethodTranslatorTest extends GenerationTest {
     assertTranslation(translation, "- (id)copyWithZone:(NSZone *)zone {");
     assertTranslation(translation,
         "Example_Inner *inner = (Example_Inner *) [super clone];");
-    assertTranslation(translation, "((Example_Inner *) nil_chk(inner)).i = i_;");
+    assertTranslation(translation, "((Example_Inner *) nil_chk(inner))->i_ = i_;");
   }
 
   // Ensure using the builder pattern does not invoke O(2^N) running time.

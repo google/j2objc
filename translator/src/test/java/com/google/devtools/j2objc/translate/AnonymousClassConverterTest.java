@@ -19,21 +19,15 @@ package com.google.devtools.j2objc.translate;
 import com.google.devtools.j2objc.GenerationTest;
 import com.google.devtools.j2objc.J2ObjC.Language;
 import com.google.devtools.j2objc.gen.ObjectiveCImplementationGenerator;
-import com.google.devtools.j2objc.types.Types;
 import com.google.devtools.j2objc.util.NameTable;
 
 import org.eclipse.jdt.core.dom.ASTVisitor;
-import org.eclipse.jdt.core.dom.Assignment;
-import org.eclipse.jdt.core.dom.BodyDeclaration;
 import org.eclipse.jdt.core.dom.ClassInstanceCreation;
 import org.eclipse.jdt.core.dom.CompilationUnit;
-import org.eclipse.jdt.core.dom.ExpressionStatement;
 import org.eclipse.jdt.core.dom.FieldDeclaration;
 import org.eclipse.jdt.core.dom.MethodDeclaration;
-import org.eclipse.jdt.core.dom.MethodInvocation;
 import org.eclipse.jdt.core.dom.ReturnStatement;
 import org.eclipse.jdt.core.dom.TypeDeclaration;
-import org.eclipse.jdt.core.dom.TypeLiteral;
 import org.eclipse.jdt.core.dom.VariableDeclaration;
 import org.eclipse.jdt.core.dom.VariableDeclarationFragment;
 
@@ -117,104 +111,59 @@ public class AnonymousClassConverterTest extends GenerationTest {
    * Regression test: verify that a class passed in the constructor of an
    * anonymous class is converted.
    */
-  public void testAnonymousClassWithTypeArgParameter() {
-    List<TypeDeclaration> types = translateClassBody(
-        "public Test(Class c) {} static Test t = " +
-        "new Test(Test.class) { @Override public int hashCode() { return 1; } };");
-    assertEquals(2, types.size());
-
-    TypeDeclaration type = types.get(0);
-    List<BodyDeclaration> members = type.bodyDeclarations();
-    for (BodyDeclaration member : members) {
-      if (member instanceof MethodDeclaration) {
-        MethodDeclaration m = (MethodDeclaration) member;
-        if (m.getName().getIdentifier().equals("initialize")) {
-          ExpressionStatement expStmt = (ExpressionStatement) m.getBody().statements().get(0);
-          Assignment assign = (Assignment) expStmt.getExpression();
-          ClassInstanceCreation create = (ClassInstanceCreation) assign.getRightHandSide();
-          assertTrue(create.arguments().get(0) instanceof TypeLiteral);
-        }
-      }
-    }
+  public void testAnonymousClassWithTypeArgParameter() throws IOException {
+    String translation = translateSourceFile(
+        "class Test { public Test(Class c) {} static Test t = " +
+        "new Test(Test.class) { @Override public int hashCode() { return 1; } }; }",
+        "Test", "Test.m");
+    assertTranslatedLines(translation,
+        "+ (void)initialize {",
+        "if (self == [Test class]) {",
+        "JreOperatorRetainedAssign(&Test_t_, nil, [[[Test_$1 alloc] " +
+            "initWithIOSClass:[IOSClass classWithClass:[Test class]]] autorelease]);",
+        "}",
+        "}");
   }
 
-  public void testFinalParameter() {
-    List<TypeDeclaration> types = translateClassBody(
-      "void test(final Object test) {" +
-      "  Runnable r = new Runnable() {" +
-      "    public void run() {" +
-      "      System.out.println(test.toString());" +
-      "    }};}");
-    assertEquals(2, types.size());
-
-    final int[] testsFound = { 0 };
-    types.get(0).accept(new ASTVisitor() {
-      @Override
-      public void endVisit(ClassInstanceCreation node) {
-        assertTrue(node.arguments().get(0).toString().equals("test"));
-        ++testsFound[0];
-      };
-    });
-    types.get(1).accept(new ASTVisitor() {
-      @Override
-      public void endVisit(MethodDeclaration node) {
-        if (node.isConstructor()) {
-          assertEquals("final NSObject capture$0", node.parameters().get(0).toString());
-          assertEquals("val$test=capture$0;", node.getBody().statements().get(1).toString().trim());
-          ++testsFound[0];
-        }
-      };
-
-      @Override
-      public void endVisit(MethodInvocation node) {
-        if (node.getName().getIdentifier().equals("toString")) {
-          assertEquals("nil_chk(val$test).toString()", node.toString());
-          ++testsFound[0];
-        }
-      };
-    });
-    assertEquals(3, testsFound[0]);
+  public void testFinalParameter() throws IOException {
+    String translation = translateSourceFile(
+        "class Test { void test(final Object test) {" +
+        "  Runnable r = new Runnable() {" +
+        "    public void run() {" +
+        "      System.out.println(test.toString());" +
+        "    } }; } }", "Test", "Test.m");
+    assertTranslation(translation,
+        "id<JavaLangRunnable> r = [[[Test_$1 alloc] initWithId:test] autorelease];");
+    assertTranslatedLines(translation,
+        "- (id)initWithId:(id)capture$0 {",
+        "if ((self = [super init])) {",
+        "Test_$1_set_val$test_(self, capture$0);",
+        "JreMemDebugAdd(self);",
+        "}",
+        "return self;",
+        "}");
+    assertTranslation(translation, "[nil_chk(val$test_) description]");
   }
 
-  public void testFinalLocalVariable() {
-    List<TypeDeclaration> types = translateClassBody(
-      "void test() {" +
-      "  final Object foo = new Object();" +
-      "  Runnable r = new Runnable() {" +
-      "    public void run() {" +
-      "      System.out.println(foo.toString());" +
-      "    }};}");
-    assertEquals(2, types.size());
-
-    final int[] testsFound = { 0 };
-    types.get(0).accept(new ASTVisitor() {
-      @Override
-      public void endVisit(ClassInstanceCreation node) {
-        if (Types.getTypeBinding(node).isAnonymous()) {
-          assertEquals("foo", node.arguments().get(0).toString());
-          ++testsFound[0];
-        }
-      };
-    });
-    types.get(1).accept(new ASTVisitor() {
-      @Override
-      public void endVisit(MethodDeclaration node) {
-        if (node.isConstructor()) {
-          assertEquals("final NSObject capture$0", node.parameters().get(0).toString());
-          assertEquals("val$foo=capture$0;", node.getBody().statements().get(1).toString().trim());
-          ++testsFound[0];
-        }
-      };
-
-      @Override
-      public void endVisit(MethodInvocation node) {
-        if (node.getName().getIdentifier().equals("toString")) {
-          assertEquals("nil_chk(val$foo).toString()", node.toString());
-          ++testsFound[0];
-        }
-      };
-    });
-    assertEquals(3, testsFound[0]);
+  public void testFinalLocalVariable() throws IOException {
+    String translation = translateSourceFile(
+        "class Test { void test() {" +
+        "  final Object foo = new Object();" +
+        "  Runnable r = new Runnable() {" +
+        "    public void run() {" +
+        "      System.out.println(foo.toString());" +
+        "    } }; } }", "Test", "Test.m");
+    assertTranslation(translation,
+        "id<JavaLangRunnable> r = [[[Test_$1 alloc] initWithId:foo] autorelease];");
+    assertTranslatedLines(translation,
+        "- (id)initWithId:(id)capture$0 {",
+        "if ((self = [super init])) {",
+        "Test_$1_set_val$foo_(self, capture$0);",
+        "JreMemDebugAdd(self);",
+        "}",
+        "return self;",
+        "}");
+    assertTranslation(translation, "[nil_chk(val$foo_) description]");
   }
 
   public void testAnonymousClassInvokingOuterMethod() {
@@ -234,25 +183,21 @@ public class AnonymousClassConverterTest extends GenerationTest {
     assertEquals(1, testsFound[0]);
   }
 
-  public void testAnonymousClassAsInitializer() {
-    String source =
+  public void testAnonymousClassAsInitializer() throws IOException {
+    String translation = translateSourceFile(
         "import java.util.*; public class Test {" +
         "private static final Enumeration<?> EMPTY_ENUMERATION = new Enumeration<Object>() {" +
         "  public boolean hasMoreElements() { return false; }" +
-        "  public Object nextElement() { throw new NoSuchElementException(); }}; }";
-    CompilationUnit unit = translateType("Test", source);
-    List<TypeDeclaration> types = unit.types();
-    assertEquals(2, types.size());
-
-    final int[] testsFound = { 0 };
-    types.get(0).accept(new ASTVisitor() {
-      @Override
-      public void endVisit(Assignment node) {
-        assertEquals("EMPTY_ENUMERATION=new $1()", node.toString().trim());
-        ++testsFound[0];
-      }
-    });
-    assertEquals(1, testsFound[0]);
+        "  public Object nextElement() { throw new NoSuchElementException(); }}; }",
+        "Test", "Test.m");
+    assertTranslation(translation, "static id<JavaUtilEnumeration> Test_EMPTY_ENUMERATION_;");
+    assertTranslatedLines(translation,
+        "+ (void)initialize {",
+        "if (self == [Test class]) {",
+        "JreOperatorRetainedAssign(&Test_EMPTY_ENUMERATION_, nil, " +
+            "[[[Test_$1 alloc] init] autorelease]);",
+        "}",
+        "}");
   }
 
   public void testFinalParameterAccess() throws IOException {
@@ -270,7 +215,7 @@ public class AnonymousClassConverterTest extends GenerationTest {
     // Test_$: since bar_ is an unshadowed field, the parameter name is
     // unchanged.
     assertTranslation(translation, "[this$0_ logWithInt:1 withId:val$bar__];");
-    assertTranslation(translation, "JreOperatorRetainedAssign(&val$bar__, self, capture$0);");
+    assertTranslation(translation, "Test_$1_set_val$bar__(self, capture$0);");
   }
 
   public void testExternalReferenceAsQualifier() throws IOException {
@@ -282,7 +227,7 @@ public class AnonymousClassConverterTest extends GenerationTest {
       "    Runnable run = new Runnable() { public void run() { int j = foo.i; } }; } }",
       "Test", "Test.m");
 
-    assertTranslation(translation, "int j = ((Test_Foo *) nil_chk(val$foo_)).i");
+    assertTranslation(translation, "int j = ((Test_Foo *) nil_chk(val$foo_))->i_");
   }
 
   public void testMultipleReferencesToSameVar() throws IOException {
@@ -430,7 +375,7 @@ public class AnonymousClassConverterTest extends GenerationTest {
         "          public void run() { j = i + 1; } }; } }; } }";
     String translation = translateSourceFile(source, "Test", "Test.m");
     assertTranslation(translation,
-        "this$0_.j = [((JavaLangInteger *) nil_chk(val$i_)) intValue] + 1;");
+        "this$0_->j_ = [((JavaLangInteger *) nil_chk(val$i_)) intValue] + 1;");
   }
 
   public void testEnumConstantAnonymousClassNaming() throws IOException {
@@ -557,7 +502,7 @@ public class AnonymousClassConverterTest extends GenerationTest {
         "class Test { void test(final int i) { Runnable r = new Runnable() { " +
         "public void run() { Runnable r2 = new Runnable() { public void run() { " +
         "int i2 = i; } }; } }; } }", "Test", "Test.m");
-    assertTranslation(impl, "int i2 = this$0_.val$i;");
+    assertTranslation(impl, "int i2 = this$0_->val$i_;");
   }
 
   // Verify that an anonymous class can be defined with a null constructor

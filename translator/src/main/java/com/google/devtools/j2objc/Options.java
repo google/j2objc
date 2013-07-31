@@ -46,8 +46,8 @@ import java.util.logging.Logger;
 public class Options {
 
   private static Map<String, String> compilerOptions;
-  private static List<String> sourcePathEntries = Lists.newArrayList( "." );
-  private static List<String> classPathEntries = Lists.newArrayList( "." );
+  private static List<String> sourcePathEntries = Lists.newArrayList(".");
+  private static List<String> classPathEntries = Lists.newArrayList(".");
   private static List<String> pluginPathEntries = Lists.newArrayList();
   private static String pluginOptionString = "";
   private static List<Plugin> plugins = new ArrayList<Plugin>();
@@ -60,7 +60,6 @@ public class Options {
   private static boolean emitLineDirectives = false;
   private static boolean warningsAsErrors = false;
   private static boolean deprecatedDeclarations = false;
-  private static boolean inlineFieldAccess = true;
   private static Map<String, String> methodMappings = Maps.newLinkedHashMap();
   private static boolean generateTestMain = true;
   private static boolean memoryDebug = false;
@@ -197,10 +196,6 @@ public class Options {
         ignoreMissingImports = true;
       } else if (arg.equals("-use-reference-counting")) {
         checkMemoryManagementOption(MemoryManagementOption.REFERENCE_COUNTING);
-      } else if (arg.equals("--inline-field-access")) {
-        inlineFieldAccess = true;
-      } else if (arg.equals("--no-inline-field-access")) {
-        inlineFieldAccess = false;
       } else if (arg.equals("--generate-test-main")) {
         generateTestMain = true;
       } else if (arg.equals("--no-generate-test-main")) {
@@ -415,10 +410,6 @@ public class Options {
 
   public static boolean ignoreMissingImports() {
     return ignoreMissingImports;
-  }
-
-  public static boolean inlineFieldAccess() {
-    return inlineFieldAccess;
   }
 
   public static boolean useReferenceCounting() {

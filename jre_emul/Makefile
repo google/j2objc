@@ -479,7 +479,7 @@ analyze: $(ALL_OBJS:%.o=$(CLASS_DIR)/%.plist)
 translate: pre_translate $(TRANSLATED_OBJC)
 	@if [ `cat $(JAVA_SOURCE_LIST) | wc -l` -ge 1 ] ; then \
 	  rm -f `cat $(OBJC_OUT_LIST)`; \
-	  $(J2OBJC) --inline-field-access -sourcepath .:$(JRE_SRC) `cat $(JAVA_SOURCE_LIST)` ; \
+	  $(J2OBJC) -sourcepath .:$(JRE_SRC) `cat $(JAVA_SOURCE_LIST)` ; \
 	fi
 
 pre_translate: | $(BUILD_DIR)

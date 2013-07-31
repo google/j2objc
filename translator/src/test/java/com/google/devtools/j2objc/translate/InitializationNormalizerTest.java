@@ -17,25 +17,16 @@
 package com.google.devtools.j2objc.translate;
 
 import com.google.devtools.j2objc.GenerationTest;
-import com.google.devtools.j2objc.types.Types;
-import com.google.devtools.j2objc.util.NameTable;
 
-import org.eclipse.jdt.core.dom.Assignment;
-import org.eclipse.jdt.core.dom.Block;
 import org.eclipse.jdt.core.dom.BodyDeclaration;
 import org.eclipse.jdt.core.dom.CompilationUnit;
-import org.eclipse.jdt.core.dom.ConstructorInvocation;
-import org.eclipse.jdt.core.dom.Expression;
 import org.eclipse.jdt.core.dom.ExpressionStatement;
-import org.eclipse.jdt.core.dom.FieldDeclaration;
 import org.eclipse.jdt.core.dom.IMethodBinding;
 import org.eclipse.jdt.core.dom.MethodDeclaration;
-import org.eclipse.jdt.core.dom.MethodInvocation;
 import org.eclipse.jdt.core.dom.Modifier;
 import org.eclipse.jdt.core.dom.Statement;
 import org.eclipse.jdt.core.dom.SuperConstructorInvocation;
 import org.eclipse.jdt.core.dom.TypeDeclaration;
-import org.eclipse.jdt.core.dom.VariableDeclarationFragment;
 
 import java.io.IOException;
 import java.util.List;
@@ -101,94 +92,50 @@ public class InitializationNormalizerTest extends GenerationTest {
         "count:1 type:[IOSClass classWithClass:[Distance_SimplexVertex class]]]");
   }
 
-  public void testStaticVarInitialization() {
-    TypeDeclaration clazz =
-        translateClassBody("static java.util.Date date = new java.util.Date();");
-    List<BodyDeclaration> classMembers = clazz.bodyDeclarations();
-    assertEquals(4, classMembers.size()); // added an initialize method
-
+  public void testStaticVarInitialization() throws IOException {
+    String translation = translateSourceFile(
+        "class Test { static java.util.Date date = new java.util.Date(); }", "Test", "Test.m");
     // test that initializer was stripped from the declaration
-    BodyDeclaration decl = classMembers.get(0);
-    assertTrue(decl instanceof FieldDeclaration);
-    List<VariableDeclarationFragment> varFragments = ((FieldDeclaration) decl).fragments();
-    assertEquals(1, varFragments.size());
-    VariableDeclarationFragment field = varFragments.get(0);
-    assertTrue(field.getInitializer() == null);
-
+    assertTranslation(translation, "static JavaUtilDate * Test_date_;");
     // test that initializer was moved to new initialize method
-    decl = classMembers.get(2);
-    assertTrue(decl instanceof MethodDeclaration);
-    MethodDeclaration method = (MethodDeclaration) decl;
-    assertEquals(NameTable.CLINIT_NAME, method.getName().getIdentifier());
-    assertEquals(Modifier.PUBLIC | Modifier.STATIC, method.getModifiers());
-    assertTrue(method.parameters().isEmpty());
-    List<Statement> generatedStatements = method.getBody().statements();
-    assertEquals(1, generatedStatements.size());
-    assertTrue(generatedStatements.get(0) instanceof ExpressionStatement);
-    ExpressionStatement stmt = (ExpressionStatement) generatedStatements.get(0);
-    assertTrue(stmt.getExpression() instanceof Assignment);
-    Assignment assign = (Assignment) stmt.getExpression();
-    assertEquals("date", NameTable.getName(Types.getBinding(assign.getLeftHandSide())));
-    assertEquals("new java.util.Date()", assign.getRightHandSide().toString());
+    assertTranslatedLines(translation,
+        "+ (void)initialize {",
+        "if (self == [Test class]) {",
+        "JreOperatorRetainedAssign(&Test_date_, nil, [[[JavaUtilDate alloc] init] autorelease]);",
+        "}",
+        "}");
   }
 
-  public void testFieldInitializer() {
-    TypeDeclaration clazz = translateClassBody("java.util.Date date = new java.util.Date();");
-    List<BodyDeclaration> classMembers = clazz.bodyDeclarations();
-    assertEquals(3, classMembers.size());  // dealloc() was also added to release date
-
-    // test that a default constructor was created
-    BodyDeclaration decl = classMembers.get(1);
-    assertTrue(decl instanceof MethodDeclaration);
-    MethodDeclaration method = (MethodDeclaration) decl;
-    assertEquals(NameTable.INIT_NAME, method.getName().getIdentifier());
-    assertEquals(Modifier.PUBLIC, method.getModifiers());
-    assertTrue(method.parameters().isEmpty());
-    List<Statement> generatedStatements = method.getBody().statements();
-    assertEquals(2, generatedStatements.size());
-    assertTrue(generatedStatements.get(0) instanceof SuperConstructorInvocation);
-    SuperConstructorInvocation superInvoke =
-        (SuperConstructorInvocation) generatedStatements.get(0);
-    assertTrue(superInvoke.arguments().isEmpty());
-
-    // test that initializer statement was moved to constructor
-    assertTrue(generatedStatements.get(1) instanceof ExpressionStatement);
-    ExpressionStatement stmt = (ExpressionStatement) generatedStatements.get(1);
-    assertTrue(stmt.getExpression() instanceof Assignment);
-    Assignment assign = (Assignment) stmt.getExpression();
-    assertEquals("date", assign.getLeftHandSide().toString());
-    assertEquals("new java.util.Date()", assign.getRightHandSide().toString());
+  public void testFieldInitializer() throws IOException {
+    String translation = translateSourceFile(
+        "class Test { java.util.Date date = new java.util.Date(); }", "Test", "Test.m");
+    // Test that a default constructor was created and the initializer statement
+    // moved to the constructor.
+    assertTranslatedLines(translation,
+        "- (id)init {",
+        "if ((self = [super init])) {",
+        "Test_set_date_(self, [[[JavaUtilDate alloc] init] autorelease]);",
+        "JreMemDebugAdd(self);",
+        "}",
+        "return self;",
+        "}");
   }
 
-  public void testInitializationBlock() {
-    TypeDeclaration clazz =
-        translateClassBody("java.util.Date date; { date = new java.util.Date(); }");
-    List<BodyDeclaration> classMembers = clazz.bodyDeclarations();
-    assertEquals(3, classMembers.size());  // dealloc() was also added to release date
-
-    // test that a default constructor was created
-    BodyDeclaration decl = classMembers.get(1);
-    assertTrue(decl instanceof MethodDeclaration);
-    MethodDeclaration method = (MethodDeclaration) decl;
-    assertTrue(method.isConstructor());
-    assertEquals(NameTable.INIT_NAME, method.getName().getIdentifier());
-    assertEquals(Modifier.PUBLIC, method.getModifiers());
-    assertTrue(method.parameters().isEmpty());
-    List<Statement> generatedStatements = method.getBody().statements();
-    assertEquals(2, generatedStatements.size());
-    assertTrue(generatedStatements.get(0) instanceof SuperConstructorInvocation);
-    SuperConstructorInvocation superInvoke =
-        (SuperConstructorInvocation) generatedStatements.get(0);
-    assertTrue(superInvoke.arguments().isEmpty());
-
-    // test that initializer statement was moved to constructor
-    assertTrue(generatedStatements.get(1) instanceof Block);
-    Block b = (Block) generatedStatements.get(1);
-    ExpressionStatement stmt = (ExpressionStatement) b.statements().get(0);
-    assertTrue(stmt.getExpression() instanceof Assignment);
-    Assignment assign = (Assignment) stmt.getExpression();
-    assertEquals("date", assign.getLeftHandSide().toString());
-    assertEquals("new java.util.Date()", assign.getRightHandSide().toString());
+  public void testInitializationBlock() throws IOException {
+    String translation = translateSourceFile(
+        "class Test { java.util.Date date; { date = new java.util.Date(); } }", "Test", "Test.m");
+    // Test that a default constructor was created and the initializer statement
+    // moved to the constructor.
+    assertTranslatedLines(translation,
+        "- (id)init {",
+        "if ((self = [super init])) {",
+        "{",
+        "Test_set_date_(self, [[[JavaUtilDate alloc] init] autorelease]);",
+        "}",
+        "JreMemDebugAdd(self);",
+        "}",
+        "return self;",
+        "}");
   }
 
   public void testStaticInitializerBlock() throws IOException {
@@ -222,42 +169,26 @@ public class InitializationNormalizerTest extends GenerationTest {
     assertTrue(instance.isDesignatedConstructor((MethodDeclaration) decl));
   }
 
-  public void testInitializerMovedToDesignatedConstructor() {
-    TypeDeclaration clazz = translateClassBody(
-      "java.util.Date date; { date = new java.util.Date(); } "
-      + "public Test() { this(2); } public Test(int i) { System.out.println(i); }");
-    List<BodyDeclaration> classMembers = clazz.bodyDeclarations();
-    assertEquals(4, classMembers.size());  // dealloc() was also added to release date
-
+  public void testInitializerMovedToDesignatedConstructor() throws IOException {
+    String translation = translateSourceFile(
+        "class Test { java.util.Date date; { date = new java.util.Date(); } "
+        + "public Test() { this(2); } public Test(int i) { System.out.println(i); } }",
+        "Test", "Test.m");
     // test that default constructor was untouched, since it calls self()
-    BodyDeclaration decl = classMembers.get(1);
-    assertTrue(decl instanceof MethodDeclaration);
-    MethodDeclaration method = (MethodDeclaration) decl;
-    assertTrue(method.isConstructor());
-    assertEquals(Modifier.PUBLIC, method.getModifiers());
-    assertTrue(method.parameters().isEmpty());
-    List<Statement> generatedStatements = method.getBody().statements();
-    assertEquals(1, generatedStatements.size());
-    assertTrue(generatedStatements.get(0) instanceof ConstructorInvocation);
-
+    assertTranslatedLines(translation,
+        "- (id)init {", "return JreMemDebugAdd([self initTestWithInt:2]);", "}");
     // test that initializer statement was added to second constructor
-    decl = classMembers.get(2);
-    assertTrue(decl instanceof MethodDeclaration);
-    method = (MethodDeclaration) decl;
-    assertTrue(method.isConstructor());
-    assertEquals(Modifier.PUBLIC, method.getModifiers());
-    assertEquals(1, method.parameters().size());
-    generatedStatements = method.getBody().statements();
-    assertEquals(3, generatedStatements.size());
-    assertTrue(generatedStatements.get(0) instanceof SuperConstructorInvocation);
-    assertTrue(generatedStatements.get(1) instanceof Block);
-    Block b = (Block) generatedStatements.get(1);
-    assertTrue(b.statements().get(0) instanceof ExpressionStatement);
-    Expression expr = ((ExpressionStatement) b.statements().get(0)).getExpression();
-    assertTrue(expr instanceof Assignment);
-    assertTrue(generatedStatements.get(2) instanceof ExpressionStatement);
-    expr = ((ExpressionStatement) generatedStatements.get(2)).getExpression();
-    assertTrue(expr instanceof MethodInvocation);
+    assertTranslatedLines(translation,
+        "- (id)initTestWithInt:(int)i {",
+        "if ((self = [super init])) {",
+        "{",
+        "Test_set_date_(self, [[[JavaUtilDate alloc] init] autorelease]);",
+        "}",
+        "[((JavaIoPrintStream *) nil_chk([JavaLangSystem out])) printlnWithInt:i];",
+        "JreMemDebugAdd(self);",
+        "}",
+        "return self;",
+        "}");
   }
 
   public void testInitializerMovedToEmptyConstructor() {
@@ -297,7 +228,7 @@ public class InitializationNormalizerTest extends GenerationTest {
     String translation = translateSourceFile(source, "Test", "test.m");
     assertTranslation(translation, "static NSString * Test_foo_;");
     assertTranslation(translation,
-        "JreOperatorRetainedAssign(&Test_foo_, self, [NSString stringWithCharacters:(unichar[]) { "
+        "JreOperatorRetainedAssign(&Test_foo_, nil, [NSString stringWithCharacters:(unichar[]) { "
         + "(int) 0xffff } length:1]);");
   }
 
@@ -306,7 +237,7 @@ public class InitializationNormalizerTest extends GenerationTest {
     String translation = translateSourceFile(source, "Test", "test.m");
     assertTranslation(translation, "static NSString * Test_foo_;");
     assertTranslation(translation,
-        "JreOperatorRetainedAssign(&Test_foo_, self, [NSString stringWithFormat:@\"hello%@\", "
+        "JreOperatorRetainedAssign(&Test_foo_, nil, [NSString stringWithFormat:@\"hello%@\", "
         + "[NSString stringWithCharacters:(unichar[]) { (int) 0xffff } length:1]]);");
   }
 
@@ -315,10 +246,10 @@ public class InitializationNormalizerTest extends GenerationTest {
          + "  int outerVar = 1; "
          + "  class Inner { int innerVar = outerVar; void test() { outerVar++; } } }";
     String translation = translateSourceFile(source, "Test", "Test.m");
-    assertTranslation(translation, "JreOperatorRetainedAssign(&this$0_, self, outer$);");
-    assertTranslation(translation, "innerVar_ = outer$.outerVar;");
-    assertTrue(translation.indexOf("JreOperatorRetainedAssign(&this$0_, self, outer$);")
-               < translation.indexOf("innerVar_ = outer$.outerVar;"));
+    assertTranslation(translation, "Test_Inner_set_this$0_(self, outer$);");
+    assertTranslation(translation, "innerVar_ = outer$->outerVar_;");
+    assertTrue(translation.indexOf("Test_Inner_set_this$0_(self, outer$);")
+               < translation.indexOf("innerVar_ = outer$->outerVar_;"));
   }
 
   public void testStaticInitializersKeptInOrder() throws IOException {
@@ -330,7 +261,7 @@ public class InitializationNormalizerTest extends GenerationTest {
         "  public static final int iSetSize = iSet.size(); }";
     String translation = translateSourceFile(source, "Test", "Test.m");
     String setInit =
-        "JreOperatorRetainedAssign(&Test_iSet_, self, " +
+        "JreOperatorRetainedAssign(&Test_iSet_, nil, " +
         "[[[JavaUtilHashSet alloc] init] autorelease])";
     String setAdd = "[((id<JavaUtilSet>) nil_chk(Test_iSet_))" +
         " addWithId:[JavaLangInteger valueOfWithInt:Test_I]]";

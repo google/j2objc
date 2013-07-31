@@ -37,6 +37,7 @@ public class IOSMethod {
   private boolean varArgs = false;
 
   public static final IOSMethod DEREFERENCE = newFunction("_dereference_");
+  public static final IOSMethod ADDRESS_OF = newFunction("_address_of_");
 
   private IOSMethod(
       String name, boolean isFunction, String declaringClass, List<IOSParameter> parameters,
