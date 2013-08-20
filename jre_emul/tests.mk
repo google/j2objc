@@ -38,6 +38,7 @@ TEST_SOURCES = \
 	CopyOnWriteArraySetTest.java \
 	libcore/java/lang/ThrowableTest.java \
 	libcore/java/lang/reflect/AnnotationsTest.java \
+	libcore/java/lang/reflect/ArrayTest.java \
 	org/apache/harmony/luni/tests/java/io/BufferedInputStreamTest.java \
 	org/apache/harmony/luni/tests/java/io/BufferedOutputStreamTest.java \
 	org/apache/harmony/luni/tests/java/io/BufferedReaderTest.java \
