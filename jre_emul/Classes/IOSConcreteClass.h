@@ -1,5 +1,3 @@
-// Copyright 2012 Google Inc. All Rights Reserved.
-//
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
@@ -13,24 +11,23 @@
 // limitations under the License.
 
 //
-//  IOSArrayClass.h
+//  IOSConcreteClass.h
 //  JreEmulation
 //
-//  Created by Tom Ball on 1/23/12.
+//  Created by Keith Stanger on 8/16/13.
 //
 
-#ifndef _IOSArrayClass_H_
-#define _IOSArrayClass_H_
+#ifndef _IOSConcreteClass_H_
+#define _IOSConcreteClass_H_
 
 #import "IOSClass.h"
 
-@interface IOSArrayClass : IOSClass {
-  // An IOSClass is used instead of a Class so a IOSPrimitiveClass can be used.
-  IOSClass *componentType_;
+@interface IOSConcreteClass : IOSClass {
+  Class class_;
 }
 
-- (id)initWithComponentType:(IOSClass *)type;
+- (id)initWithClass:(Class)cls;
 
 @end
 
-#endif // _IOSArrayClass_H_
+#endif // _IOSConcreteClass_H_

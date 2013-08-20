@@ -26,19 +26,8 @@
 
 @implementation IOSArrayClass
 
-@synthesize componentType = componentType_;
-
-+ (id)classWithComponentType:(IOSClass *)type {
-  id clazz = [IOSClass fetchCachedClass:type];
-  if (!clazz) {
-    clazz = AUTORELEASE([[IOSArrayClass alloc] initWithComponentType:type]);
-    [IOSClass addToCache:clazz withKey:type];
-  }
-  return clazz;
-}
-
 - (id)initWithComponentType:(IOSClass *)type {
-  if ((self = [super initWithClass:[self class]])) {
+  if ((self = [super init])) {
     componentType_ = RETAIN(type);
   }
   return self;
@@ -63,10 +52,6 @@
 
 - (BOOL)isAssignableFrom:(IOSClass *)cls {
   return [cls isArray] && [componentType_ isAssignableFrom:[cls getComponentType]];
-}
-
-- (NSString *)binaryName {
-  return [@"[" stringByAppendingString:[[self getComponentType] binaryName]];
 }
 
 - (NSString *)getName {

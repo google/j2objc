@@ -110,7 +110,7 @@
 }
 
 + (IOSClass *)iosClass {
-  return [IOSArrayClass classWithComponentType:[IOSClass longClass]];
+  return [IOSClass arrayClassWithComponentType:[IOSClass longClass]];
 }
 
 - (id)copyWithZone:(NSZone *)zone {
