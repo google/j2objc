@@ -237,6 +237,8 @@ public class Options {
         stripGwtIncompatible = true;
       } else if (arg.equals("--strip-reflection")) {
         stripReflection = true;
+      } else if (arg.equals("--generate-test-main") || arg.equals("--no-generate-test-main")) {
+        // obsolete
       } else if (arg.equals("--segmented-headers")) {
         segmentedHeaders = true;
       } else if (arg.equals("--build-closure")) {
