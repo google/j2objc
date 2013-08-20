@@ -266,6 +266,8 @@ public final class ASTUtil {
         args = ((MethodInvocation) parent).arguments();
       } else if (parent instanceof SuperConstructorInvocation) {
         args = ((SuperConstructorInvocation) parent).arguments();
+      } else if (parent instanceof SuperMethodInvocation) {
+        args = ((SuperMethodInvocation) parent).arguments();
       } else if (parent instanceof SwitchStatement) {
         args = ((SwitchStatement) parent).statements();
       } else if (parent instanceof TypeDeclaration) {
