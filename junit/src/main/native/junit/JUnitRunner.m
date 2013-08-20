@@ -17,7 +17,7 @@
 #include "junit/framework/TestFailure.h"
 #include "junit/framework/TestResult.h"
 #include "junit/framework/TestSuite.h"
-#include "junit/textui/TestRunner.h"
+#include "org/junit/runner/JUnitCore.h"
 
 #include <execinfo.h>
 
@@ -49,7 +49,7 @@ int main( int argc, const char *argv[] ) {
   installSignalHandler();
   @autoreleasepool {
     @try {
-      IOSClass *clazz = [JunitTextuiTestRunner getClass];
+      IOSClass *clazz = [OrgJunitRunnerJUnitCore getClass];
       IOSClass *stringArrayClass =
           [IOSObjectArray iosClassWithType:[NSString getClass]];
       IOSObjectArray *paramTypes =

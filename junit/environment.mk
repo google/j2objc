@@ -25,12 +25,12 @@ include ../java_deps/jars.mk
 
 INCLUDE_DIR = $(BUILD_DIR)/include
 SOURCE_BASE = src/main
-OBJC_SOURCE_DIR = $(SOURCE_BASE)/native/junit
+OBJC_SOURCE_DIR = $(SOURCE_BASE)/native
 JAVA_SRC_DIR = $(BUILD_DIR)/java
 MODIFIED_JAVA_SRC_DIR = $(SOURCE_BASE)/java
 
 JUNIT_SRC_JAR = $(JAVA_DEPS_JAR_DIR)/$(JUNIT_SOURCE_JAR)
-JUNIT_JAR_FULL = $(JAVA_DEPS_JAR_DIR)/$(JUNIT_JAR)
+HAMCREST_SRC_JAR = $(JAVA_DEPS_JAR_DIR)/$(HAMCREST_SOURCE_JAR)
 
 JUNIT_LIB = $(ARCH_BUILD_DIR)/libjunit.a
 JUNIT_LIB_DIST = $(ARCH_LIB_DIR)/libjunit.a
@@ -48,7 +48,7 @@ OBJCFLAGS := -ObjC $(WARNINGS) \
   -I/System/Library/Frameworks/ExceptionHandling.framework/Headers
 
 # J2ObjC settings
-J2OBJC = $(DIST_DIR)/j2objc -classpath $(JUNIT_JAR_FULL) -d $(BUILD_DIR)
+J2OBJC = $(DIST_DIR)/j2objc -d $(BUILD_DIR)
 J2OBJCC = $(ARCH_BIN_DIR)/j2objcc -c $(OBJCFLAGS) -I$(OBJC_SOURCE_DIR) -I$(BUILD_DIR)
 
 ifeq ("$(strip $(CLANG_ENABLE_OBJC_ARC))", "YES")
