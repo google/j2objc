@@ -1514,7 +1514,7 @@ public class StatementGeneratorTest extends GenerationTest {
           "JavaIoBufferedReader * br = [[[JavaIoBufferedReader alloc] initWithJavaIoReader:" +
           "[[[JavaIoFileReader alloc] initWithNSString:path] autorelease]] autorelease];");
       assertTranslation(translation,
-          "@try {\n      return [((JavaIoBufferedReader *) nil_chk(br)) readLine];\n    }");
+          "@try {\n      return [br readLine];\n    }");
       assertTranslation(translation, "@finally {");
       assertTranslation(translation, "@try {\n        [br close];\n      }");
       assertTranslation(translation, "@catch (JavaLangThrowable *e) {");
