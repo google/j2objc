@@ -110,12 +110,11 @@
   }
 }
 
-- (void)copyAllPropertiesTo:(id)copy {
-  [super copyAllPropertiesTo:copy];
-  JavaUtilHashMap *typedCopy = (JavaUtilHashMap *) copy;
-  typedCopy.modCount = modCount_;
-  typedCopy.loadFactor = loadFactor_;
-  typedCopy.threshold = threshold_;
+- (void)copyAllFieldsTo:(JavaUtilHashMap *)other {
+  [super copyAllFieldsTo:other];
+  other.modCount = modCount_;
+  other.loadFactor = loadFactor_;
+  other.threshold = threshold_;
 }
 
 - (id)clone {

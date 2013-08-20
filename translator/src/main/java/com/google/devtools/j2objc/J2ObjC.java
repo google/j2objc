@@ -28,6 +28,7 @@ import com.google.devtools.j2objc.translate.AnonymousClassConverter;
 import com.google.devtools.j2objc.translate.ArrayRewriter;
 import com.google.devtools.j2objc.translate.Autoboxer;
 import com.google.devtools.j2objc.translate.ComplexExpressionExtractor;
+import com.google.devtools.j2objc.translate.CopyAllFieldsWriter;
 import com.google.devtools.j2objc.translate.DeadCodeEliminator;
 import com.google.devtools.j2objc.translate.DestructorGenerator;
 import com.google.devtools.j2objc.translate.GwtConverter;
@@ -499,6 +500,8 @@ public class J2ObjC {
     // after inner class extraction, so that each class releases
     // only its own instance variables.
     new DestructorGenerator().run(unit);
+
+    new CopyAllFieldsWriter().run(unit);
 
     new OperatorRewriter().run(unit);
 
