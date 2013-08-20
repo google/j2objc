@@ -39,12 +39,20 @@ public class Method extends AccessibleObject implements GenericDeclaration, Memb
   public Class getReturnType() {
     return null;
   }
+
+  public Type getGenericReturnType() {
+    return null;
+  }
   
   public Class<?> getDeclaringClass() {
     return null;
   }
   
   public Class<?>[] getParameterTypes() {
+    return null;
+  }
+
+  public Type[] getGenericParameterTypes() {
     return null;
   }
 
@@ -74,11 +82,6 @@ public class Method extends AccessibleObject implements GenericDeclaration, Memb
   }
   
   /* Not implemented
-  public Class getDeclaringClass();
-  public int getModifiers();
-  public Type getGenericReturnType();
-  public Type[] getGenericParameterTypes();
-  public Class[] getParameterTypes();
   public Class[] getExceptionTypes();
   public Type[] getGenericExceptionTypes();
   public String toGenericString();

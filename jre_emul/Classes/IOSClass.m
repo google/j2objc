@@ -649,6 +649,23 @@ static NSArray *IOSClass_primitiveClassNames;
   return NO;  // Overridden by IOSPrimitiveClass.
 }
 
+- (BOOL)isMemberClass {
+  IOSClass *enclosingClass = [self getEnclosingClass];
+  if (!enclosingClass) {
+    return NO;
+  }
+
+  // Extract member class name.
+  NSString *className = NSStringFromClass(class_);
+  NSString *enclosingClassName = NSStringFromClass(enclosingClass->class_);
+  NSString *memberClassName =
+      [className substringFromIndex:[enclosingClassName length] + 1];  // Include trailing '_'.
+
+  // Anonymous classes are not considered member classes.
+  NSRange range = [memberClassName rangeOfString:@"$"];
+  return range.location == NSNotFound;
+}
+
 static IOSObjectArray *getClassInterfaces(IOSClass *cls, IOSClass *arrayType) {
   IOSObjectArray *result;
   if (!cls) {

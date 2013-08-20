@@ -102,6 +102,11 @@
   return[IOSObjectArray arrayWithLength:0 type:typeVariableType];
 }
 
+
+- (IOSObjectArray *)getGenericParameterTypes {
+  return [self getParameterTypes];
+}
+
 - (BOOL)isSynthetic {
   return NO;
 }
