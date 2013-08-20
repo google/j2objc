@@ -746,7 +746,7 @@ public class ObjectiveCImplementationGenerator extends ObjectiveCSourceFileGener
     String invocation = generateStatement(statements.get(0), false, true) + ";\n";
     List<?> args = s instanceof ConstructorInvocation
         ? ((ConstructorInvocation) s).arguments() : ((SuperConstructorInvocation) s).arguments();
-    String impliedArgs = (args.isEmpty() ? "W" : " w") + "ithNSString:name withInt:ordinal";
+    String impliedArgs = (args.isEmpty() ? "W" : " w") + "ithNSString:__name withInt:__ordinal";
     int index = invocation.lastIndexOf(']');
     invocation = invocation.substring(0, index) + impliedArgs + ']';
 

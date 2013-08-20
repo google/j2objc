@@ -389,9 +389,9 @@ public class AnonymousClassConverterTest extends GenerationTest {
     assertTranslation(header, "@interface TestEnum_$1 : TestEnum");
     assertTranslation(header, "@interface TestEnum_$2 : TestEnum");
     assertTranslation(header,
-        "- (id)initWithNSString:(NSString *)name withInt:(int)ordinal");
+        "- (id)initWithNSString:(NSString *)__name withInt:(int)__ordinal");
 
-    assertTranslation(impl, "[super initWithNSString:name withInt:ordinal]");
+    assertTranslation(impl, "[super initWithNSString:__name withInt:__ordinal]");
     assertTranslation(impl,
         "TestEnum_UP = [[TestEnum_$1 alloc] initWithNSString:@\"Test_UP\" withInt:0];");
     assertTranslation(impl,
@@ -446,16 +446,17 @@ public class AnonymousClassConverterTest extends GenerationTest {
     // Verify ColorEnum constructor.
     assertTranslation(impl,
         "- (id)initWithInt:(int)n\n" +
-        "     withNSString:(NSString *)name\n" +
-        "          withInt:(int)ordinal {\n" +
-        "  return JreMemDebugAdd([super initWithNSString:name withInt:ordinal]);\n}");
+        "     withNSString:(NSString *)__name\n" +
+        "          withInt:(int)__ordinal {\n" +
+        "  return JreMemDebugAdd([super initWithNSString:__name withInt:__ordinal]);\n}");
 
     // Verify ColorEnum_$1 constructor.
     assertTranslation(impl,
         "- (id)initWithInt:(int)arg$0\n" +
-        "     withNSString:(NSString *)name\n" +
-        "          withInt:(int)ordinal {\n" +
-        "  return JreMemDebugAdd([super initWithInt:arg$0 withNSString:name withInt:ordinal]);\n}");
+        "     withNSString:(NSString *)__name\n" +
+        "          withInt:(int)__ordinal {\n" +
+        "  return JreMemDebugAdd([super initWithInt:arg$0 " +
+        "withNSString:__name withInt:__ordinal]);\n}");
 
     // Verify constant initialization.
     assertTranslation(impl,

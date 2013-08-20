@@ -1057,7 +1057,7 @@ public class StatementGeneratorTest extends GenerationTest {
         "  private Test() { this(0); }}",
         "Test", "Test.m");
     assertTranslation(translation,
-        "[self initTestEnumWithInt:0 withNSString:name withInt:ordinal]");
+        "[self initTestEnumWithInt:0 withNSString:__name withInt:__ordinal]");
   }
 
   public void testThisCallInInnerConstructor() throws IOException {

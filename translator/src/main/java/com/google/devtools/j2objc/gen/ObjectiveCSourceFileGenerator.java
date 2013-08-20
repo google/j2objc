@@ -342,17 +342,17 @@ public abstract class ObjectiveCSourceFileGenerator extends SourceFileGenerator 
     if (method.isConstructor() && method.getDeclaringClass().isEnum()) {
       // If enum constant type, append name and ordinal.
       if (params.isEmpty()) {
-        sb.append("WithNSString:(NSString *)name withInt:(int)ordinal");
+        sb.append("WithNSString:(NSString *)__name withInt:(int)__ordinal");
       } else {
         sb.append('\n');
         String keyword = "withNSString";
         sb.append(pad(baseDeclaration.length() - keyword.length()));
         sb.append(keyword);
-        sb.append(":(NSString *)name\n");
+        sb.append(":(NSString *)__name\n");
         keyword = "withInt";
         sb.append(pad(baseDeclaration.length() - keyword.length()));
         sb.append(keyword);
-        sb.append(":(int)ordinal");
+        sb.append(":(int)__ordinal");
       }
     }
   }

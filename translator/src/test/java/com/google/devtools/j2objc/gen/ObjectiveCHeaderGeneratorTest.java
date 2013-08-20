@@ -294,8 +294,8 @@ public class ObjectiveCHeaderGeneratorTest extends GenerationTest {
     assertTranslation(translation, "int rgb_;");
     assertTranslation(translation, "@property (nonatomic, assign) int rgb;");
     assertTranslation(translation, "- (id)initWithInt:(int)rgb");
-    assertTranslation(translation, "withNSString:(NSString *)name");
-    assertTranslation(translation, "withInt:(int)ordinal;");
+    assertTranslation(translation, "withNSString:(NSString *)__name");
+    assertTranslation(translation, "withInt:(int)__ordinal;");
   }
 
   public void testEnumWithMultipleConstructors() throws IOException {
@@ -312,18 +312,18 @@ public class ObjectiveCHeaderGeneratorTest extends GenerationTest {
     assertTranslation(translation, "@property (nonatomic, assign) BOOL primary;");
     assertTranslatedLines(translation,
         "- (id)initWithInt:(int)rgb",
-        "withNSString:(NSString *)name",
-        "withInt:(int)ordinal;");
+        "withNSString:(NSString *)__name",
+        "withInt:(int)__ordinal;");
     assertTranslatedLines(translation,
         "- (id)initWithInt:(int)rgb",
         "withBOOL:(BOOL)primary",
-        "withNSString:(NSString *)name",
-        "withInt:(int)ordinal;");
+        "withNSString:(NSString *)__name",
+        "withInt:(int)__ordinal;");
     translation = getTranslatedFile("Color.m");
     assertTranslation(translation,
-        "[self initColorEnumWithInt:rgb withBOOL:YES withNSString:name withInt:ordinal]");
+        "[self initColorEnumWithInt:rgb withBOOL:YES withNSString:__name withInt:__ordinal]");
     assertTranslatedLines(translation,
-        "if ((self = [super initWithNSString:name withInt:ordinal])) {",
+        "if ((self = [super initWithNSString:__name withInt:__ordinal])) {",
         "self->rgb_ = rgb;",
         "self->primary_ = primary;");
   }
@@ -538,4 +538,24 @@ public class ObjectiveCHeaderGeneratorTest extends GenerationTest {
     // Make sure the @Weak and static fields don't generate setters.
     assertOccurrences(translation, "J2OBJC_FIELD_SETTER", 1);
   }
+
+  public void testEnumWithNameAndOrdinalParameters() throws IOException {
+    String translation = translateSourceFile(
+      "public enum Test { FOO(\"foo\", 3), BAR(\"bar\", 5); " +
+      "private String name; private int ordinal; " +
+      "private Test(String name, int ordinal) { this.name = name; this.ordinal = ordinal; }" +
+      "public String getName() { return name; }}",
+      "Test", "Test.h");
+    assertTranslation(translation, "@interface TestEnum : JavaLangEnum");
+    assertTranslation(translation, "NSString *name_Test_;");
+    assertTranslation(translation, "int ordinal_Test_;");
+    assertTranslation(translation, "@property (nonatomic, copy) NSString *name_Test;");
+    assertTranslation(translation, "@property (nonatomic, assign) int ordinal_Test;");
+    assertTranslatedLines(translation,
+        "- (id)initWithNSString:(NSString *)name",
+        "withInt:(int)ordinal",
+        "withNSString:(NSString *)__name",
+        "withInt:(int)__ordinal;");
+  }
+
 }
