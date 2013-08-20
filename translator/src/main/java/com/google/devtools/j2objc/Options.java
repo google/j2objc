@@ -61,7 +61,6 @@ public class Options {
   private static boolean warningsAsErrors = false;
   private static boolean deprecatedDeclarations = false;
   private static Map<String, String> methodMappings = Maps.newLinkedHashMap();
-  private static boolean generateTestMain = true;
   private static boolean memoryDebug = false;
   private static boolean generateNativeStubs = false;
   private static boolean stripGwtIncompatible = false;
@@ -69,6 +68,7 @@ public class Options {
   private static String fileEncoding = System.getProperty("file.encoding", "ISO-8859-1");
   private static boolean jsniWarnings = true;
   private static boolean buildClosure = false;
+  private static boolean stripReflection = false;
 
   private static DeadCodeMap deadCodeMap = null;
   private static File proGuardUsageFile = null;
@@ -200,10 +200,6 @@ public class Options {
         ignoreMissingImports = true;
       } else if (arg.equals("-use-reference-counting")) {
         checkMemoryManagementOption(MemoryManagementOption.REFERENCE_COUNTING);
-      } else if (arg.equals("--generate-test-main")) {
-        generateTestMain = true;
-      } else if (arg.equals("--no-generate-test-main")) {
-        generateTestMain = false;
       } else if (arg.equals("--no-package-directories")) {
         usePackageDirectories = false;
       } else if (arg.equals("-use-gc")) {
@@ -239,6 +235,8 @@ public class Options {
         fileEncoding = args[nArg];
       } else if (arg.equals("--strip-gwt-incompatible")) {
         stripGwtIncompatible = true;
+      } else if (arg.equals("--strip-reflection")) {
+        stripReflection = true;
       } else if (arg.equals("--segmented-headers")) {
         segmentedHeaders = true;
       } else if (arg.equals("--build-closure")) {
@@ -487,10 +485,6 @@ public class Options {
     return fileHeader;
   }
 
-  public static boolean generateTestMain() {
-    return generateTestMain;
-  }
-
   public static File getProGuardUsageFile() {
     return proGuardUsageFile;
   }
@@ -608,5 +602,9 @@ public class Options {
 
   public static boolean buildClosure() {
     return buildClosure;
+  }
+
+  public static boolean stripReflection() {
+    return stripReflection;
   }
 }

@@ -218,9 +218,11 @@ public class ObjectiveCImplementationGenerator extends ObjectiveCSourceFileGener
       printStaticFieldAccessors(fields, methods, /* isInterface */ false);
       printMethods(node);
       printObjCTypeMethod(node);
-      printTypeAnnotationsMethod(node);
-      printMethodAnnotationMethods(Lists.newArrayList(node.getMethods()));
-      printFieldAnnotationMethods(Lists.newArrayList(node.getFields()));
+      if (!Options.stripReflection()) {
+        printTypeAnnotationsMethod(node);
+        printMethodAnnotationMethods(Lists.newArrayList(node.getMethods()));
+        printFieldAnnotationMethods(Lists.newArrayList(node.getFields()));
+      }
 
       println("@end");
     }
@@ -602,7 +604,7 @@ public class ObjectiveCImplementationGenerator extends ObjectiveCSourceFileGener
   }
 
   protected String methodExceptionsFunction(MethodDeclaration m) {
-    if (m.thrownExceptions().isEmpty()) {
+    if (m.thrownExceptions().isEmpty() || Options.stripReflection()) {
       return "";
     }
     IMethodBinding method = Types.getMethodBinding(m);
