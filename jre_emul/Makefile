@@ -48,6 +48,7 @@ IOS_OBJS = \
 	NSDictionaryMap.o \
 	NSObject+JavaObject.o \
 	NSString+JavaString.o \
+	objc-sync.o \
 	java/lang/reflect/ExecutableMember.o
 
 # Java classes with hand written obj-c implementations. Shouldn't be translated,
@@ -206,6 +207,7 @@ JAVA_SOURCES = \
 	java/lang/Float.java \
 	java/lang/IllegalAccessException.java \
 	java/lang/IllegalArgumentException.java \
+	java/lang/IllegalMonitorStateException.java \
 	java/lang/IllegalStateException.java \
 	java/lang/IllegalThreadStateException.java \
 	java/lang/InstantiationException.java \
@@ -387,6 +389,8 @@ JAVA_SOURCES = \
 	java/util/SimpleTimeZone.java \
 	java/util/Stack.java \
 	java/util/StringTokenizer.java \
+	java/util/Timer.java \
+	java/util/TimerTask.java \
 	java/util/TimeZone.java \
 	java/util/TreeMap.java \
 	java/util/TreeSet.java \
@@ -615,6 +619,11 @@ $(1)/java/util/LinkedHashMap.o: Classes/java/util/LinkedHashMap.m
 $(1)/java/util/LinkedHashMap.plist: Classes/java/util/LinkedHashMap.m
 	@mkdir -p $$(@D)
 	$$(CLANG) -c $$? -o $$@ $(2) $$(OBJCFLAGS) $$(STATIC_ANALYZER_FLAGS) \
+	    -I$$(EMULATION_CLASS_DIR) -I$$(TRANSLATED_SOURCE_DIR)
+
+$(1)/objc-sync.o: $(APPLE_ROOT)/objc-sync.m
+	@mkdir -p $$(@D)
+	$$(CLANG) -c $$? -o $$@ $(2) $$(OBJCFLAGS_NO_ARC) \
 	    -I$$(EMULATION_CLASS_DIR) -I$$(TRANSLATED_SOURCE_DIR)
 endef
 

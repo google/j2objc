@@ -30,9 +30,6 @@
 // A category that adds Java Object-compatible methods to NSObject.
 @interface NSObject (JavaObject) <JavaObject>
 
-// Object.clone()
-- (id)clone;
-
 // JavaObject doesn't implement Comparable, but the Comparable contract wants
 // a ClassCastException to be thrown if "if the specified object's type
 // prevents it from being compared to this object."  This method therefore

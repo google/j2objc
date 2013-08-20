@@ -196,6 +196,8 @@
 		066193E5155849F80004DAFE /* NSObject+JavaObject.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSObject+JavaObject.m"; sourceTree = "<group>"; };
 		066193E6155849F80004DAFE /* NSString+JavaString.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSString+JavaString.h"; sourceTree = "<group>"; };
 		066193E7155849F80004DAFE /* NSString+JavaString.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSString+JavaString.m"; sourceTree = "<group>"; };
+		066B71F617B94DC100A4CBBD /* objc-sync.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "objc-sync.h"; path = "apple_apsl/objc-sync.h"; sourceTree = SOURCE_ROOT; };
+		066B71F717B94DC100A4CBBD /* objc-sync.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "objc-sync.m"; path = "apple_apsl/objc-sync.m"; sourceTree = SOURCE_ROOT; };
 		0672177F15587E2C00645E1B /* jre_emul_tests.octest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = jre_emul_tests.octest; sourceTree = BUILT_PRODUCTS_DIR; };
 		067217CD15587FC600645E1B /* IOSArrayTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = IOSArrayTest.m; path = Classes/IOSArrayTest.m; sourceTree = SOURCE_ROOT; };
 		067217CE15587FC600645E1B /* IOSObjectArrayTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = IOSObjectArrayTest.m; path = Classes/IOSObjectArrayTest.m; sourceTree = SOURCE_ROOT; };
@@ -785,6 +787,8 @@
 				066193E5155849F80004DAFE /* NSObject+JavaObject.m */,
 				066193E6155849F80004DAFE /* NSString+JavaString.h */,
 				066193E7155849F80004DAFE /* NSString+JavaString.m */,
+				066B71F617B94DC100A4CBBD /* objc-sync.h */,
+				066B71F717B94DC100A4CBBD /* objc-sync.m */,
 				06734320171DF62600F26D4F /* TempFailureRetry.h */,
 				067228F2158FB002005318BD /* Throwable.h */,
 				06721BA31559DE3800645E1B /* Throwable.m */,

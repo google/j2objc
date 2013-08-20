@@ -23,7 +23,11 @@
 #import "IOSClass.h"
 #import "java/lang/ClassCastException.h"
 #import "java/lang/CloneNotSupportedException.h"
+#import "java/lang/IllegalArgumentException.h"
+#import "java/lang/IllegalMonitorStateException.h"
+#import "java/lang/InternalError.h"
 #import "java/lang/NullPointerException.h"
+#import "objc-sync.h"
 
 // A category that adds Java Object-compatible methods to NSObject.
 @implementation NSObject (JavaObject)
@@ -57,6 +61,63 @@
   @throw [[[JavaLangClassCastException alloc] init] autorelease];
 #endif
   return 0;
+}
+
+- (void)notify {
+  int result = objc_sync_notify(self);
+  if (result == OBJC_SYNC_SUCCESS) {  // Test most likely outcome first.
+    return;
+  }
+  if (result == OBJC_SYNC_NOT_OWNING_THREAD_ERROR) {
+    @throw AUTORELEASE([[JavaLangIllegalMonitorStateException alloc] init]);
+  } else {
+    NSString *msg = [NSString stringWithFormat:@"system error %d", result];
+    @throw AUTORELEASE([[JavaLangInternalError alloc] initWithNSString:msg]);
+  }
+}
+
+- (void)notifyAll {
+  int result = objc_sync_notifyAll(self);
+  if (result == OBJC_SYNC_SUCCESS) {  // Test most likely outcome first.
+    return;
+  }
+  if (result == OBJC_SYNC_NOT_OWNING_THREAD_ERROR) {
+    @throw AUTORELEASE([[JavaLangIllegalMonitorStateException alloc] init]);
+  } else {
+    NSString *msg = [NSString stringWithFormat:@"system error %d", result];
+    @throw AUTORELEASE([[JavaLangInternalError alloc] initWithNSString:msg]);
+  }
+}
+
+static void doWait(id obj, long long timeout) {
+  if (timeout < 0) {
+    @throw AUTORELEASE([[JavaLangIllegalArgumentException alloc] init]);
+  }
+  int result = objc_sync_wait(obj, timeout);
+  if (result == OBJC_SYNC_SUCCESS || result == OBJC_SYNC_TIMED_OUT) {
+    return;
+  }
+  if (result == OBJC_SYNC_NOT_OWNING_THREAD_ERROR) {
+    @throw AUTORELEASE([[JavaLangIllegalMonitorStateException alloc] init]);
+  } else {
+    NSString *msg = [NSString stringWithFormat:@"system error %d", result];
+    @throw AUTORELEASE([[JavaLangInternalError alloc] initWithNSString:msg]);
+  }
+}
+
+- (void)wait {
+  doWait(self, 0LL);
+}
+
+- (void)waitWithLongInt:(long long)timeout {
+  doWait(self, timeout);
+}
+
+- (void)waitWithLongInt:(long long)timeout withInt:(int)nanos {
+  if (nanos < 0) {
+    @throw AUTORELEASE([[JavaLangIllegalArgumentException alloc] init]);
+  }
+  doWait(self, timeout + (nanos == 0 ? 0 : 1));
 }
 
 + (id)throwNullPointerException {
