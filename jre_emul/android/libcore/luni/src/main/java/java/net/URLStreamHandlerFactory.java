@@ -15,25 +15,21 @@
  *  limitations under the License.
  */
 
-package java.security;
-
-import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Enumeration;
-import java.util.List;
+package java.net;
 
 /**
- * Legacy security code; do not use.
+ * Defines a factory which creates an {@code URLStreamHandler} for a specified
+ * protocol. It is used by the class {@code URL}.
  */
-public abstract class PermissionCollection implements Serializable {
+public interface URLStreamHandlerFactory {
 
-    public abstract void add(Permission permission);
-
-    public abstract Enumeration<Permission> elements();
-
-    public abstract boolean implies(Permission permission);
-
-    public boolean isReadOnly() { return true; }
-
-    public void setReadOnly() { }
+    /**
+     * Creates a new {@code URLStreamHandler} instance for the given {@code
+     * protocol}.
+     * 
+     * @param protocol
+     *            the protocol for which a handler is needed.
+     * @return the created handler.
+     */
+    URLStreamHandler createURLStreamHandler(String protocol);
 }

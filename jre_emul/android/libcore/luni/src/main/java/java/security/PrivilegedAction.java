@@ -17,23 +17,9 @@
 
 package java.security;
 
-import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Enumeration;
-import java.util.List;
-
 /**
  * Legacy security code; do not use.
  */
-public abstract class PermissionCollection implements Serializable {
-
-    public abstract void add(Permission permission);
-
-    public abstract Enumeration<Permission> elements();
-
-    public abstract boolean implies(Permission permission);
-
-    public boolean isReadOnly() { return true; }
-
-    public void setReadOnly() { }
+public interface PrivilegedAction<T> {
+    public T run();
 }

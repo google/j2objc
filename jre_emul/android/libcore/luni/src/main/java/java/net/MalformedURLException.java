@@ -15,25 +15,38 @@
  *  limitations under the License.
  */
 
-package java.security;
+package java.net;
 
-import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Enumeration;
-import java.util.List;
+import java.io.IOException;
 
 /**
- * Legacy security code; do not use.
+ * This exception is thrown when a program attempts to create an URL from an
+ * incorrect specification.
+ *
+ * @see URL
  */
-public abstract class PermissionCollection implements Serializable {
+public class MalformedURLException extends IOException {
 
-    public abstract void add(Permission permission);
+    private static final long serialVersionUID = -182787522200415866L;
 
-    public abstract Enumeration<Permission> elements();
+    /**
+     * Constructs a new instance.
+     */
+    public MalformedURLException() {
+    }
 
-    public abstract boolean implies(Permission permission);
+    /**
+     * Constructs a new instance with the given detail message.
+     */
+    public MalformedURLException(String detailMessage) {
+        super(detailMessage);
+    }
 
-    public boolean isReadOnly() { return true; }
-
-    public void setReadOnly() { }
+    /**
+     * Constructs a new instance with given detail message and cause.
+     * @hide internal use only
+     */
+    public MalformedURLException(String detailMessage, Throwable cause) {
+        super(detailMessage, cause);
+    }
 }

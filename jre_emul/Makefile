@@ -90,6 +90,8 @@ JRE_INTERFACES = \
 	java/lang/reflect/Type.h \
 	java/lang/reflect/TypeVariable.h \
 	java/lang/reflect/WildcardType.h \
+	java/security/Guard.h \
+	java/security/PrivilegedAction.h \
 	java/util/Collection.h \
 	java/util/Comparator.h \
 	java/util/Deque.h \
@@ -114,6 +116,7 @@ JRE_INTERFACES = \
 	java/util/concurrent/ExecutorService.h \
 	java/util/concurrent/Future.h \
 	org/w3c/dom/TypeInfo.h \
+	org/w3c/dom/ls/LSInput.h \
 	org/w3c/dom/ls/LSResourceResolver.h \
 	org/xml/sax/AttributeList.h \
 	org/xml/sax/Attributes.h \
@@ -161,6 +164,7 @@ JAVA_SOURCES = \
 	java/io/InterruptedIOException.java \
 	java/io/InvalidObjectException.java \
 	java/io/IOException.java \
+	java/io/NotSerializableException.java \
 	java/io/ObjectStreamException.java \
 	java/io/OutputStream.java \
 	java/io/OutputStreamWriter.java \
@@ -258,7 +262,11 @@ JAVA_SOURCES = \
 	java/math/Multiplication.java \
 	java/math/Primality.java \
 	java/math/RoundingMode.java \
+	java/net/MalformedURLException.java \
 	java/net/URI.java \
+	java/net/URL.java \
+	java/net/URLStreamHandler.java \
+	java/net/URLStreamHandlerFactory.java \
 	java/net/URIEncoderDecoder.java \
 	java/net/URISyntaxException.java \
 	java/nio/Buffer.java \
@@ -297,10 +305,27 @@ JAVA_SOURCES = \
 	java/nio/ReadWriteShortArrayBuffer.java \
 	java/nio/ShortArrayBuffer.java \
 	java/nio/ShortBuffer.java \
+	java/security/AccessControlContext.java \
+	java/security/AccessControlException.java \
+	java/security/AccessController.java \
+	java/security/AllPermission.java \
 	java/security/AllPermissionCollection.java \
-	java/security/Guard.java \
+	java/security/BasicPermission.java \
+	java/security/CodeSource.java \
+	java/security/DomainCombiner.java \
+	java/security/GeneralSecurityException.java \
+	java/security/GuardedObject.java \
+	java/security/NoSuchProviderException.java \
 	java/security/Permission.java \
 	java/security/PermissionCollection.java \
+	java/security/Permissions.java \
+	java/security/PermissionsHash.java \
+	java/security/Principal.java \
+	java/security/PrivilegedActionException.java \
+	java/security/PrivilegedExceptionAction.java \
+	java/security/ProtectionDomain.java \
+	java/security/SecureClassLoader.java \
+	java/security/SecurityPermission.java \
 	java/sql/Date.java \
 	java/sql/Time.java \
 	java/sql/Timestamp.java \
@@ -392,6 +417,7 @@ JAVA_SOURCES = \
 	libcore/io/Os.java \
 	libcore/io/OsConstants.java \
 	libcore/io/Posix.java \
+	libcore/net/url/UrlUtils.java \
 	libcore/util/BasicLruCache.java \
 	libcore/util/EmptyArray.java \
 	libcore/util/Objects.java \

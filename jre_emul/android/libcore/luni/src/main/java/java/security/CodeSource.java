@@ -18,22 +18,22 @@
 package java.security;
 
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Enumeration;
-import java.util.List;
+import java.net.URL;
 
 /**
  * Legacy security code; do not use.
  */
-public abstract class PermissionCollection implements Serializable {
+public class CodeSource implements Serializable {
+    /* TODO(user): enable when certificates and code signers are ported.
+    public CodeSource(URL location, Certificate[] certs) { }
 
-    public abstract void add(Permission permission);
+    public CodeSource(URL location, CodeSigner[] signers) { }
+    */
+    public final /*Certificate*/Object[] getObjects() { return null; }
 
-    public abstract Enumeration<Permission> elements();
+    public final /*CodeSigner*/Object[] getCodeSigners() { return null; }
 
-    public abstract boolean implies(Permission permission);
+    public final URL getLocation() { return null; }
 
-    public boolean isReadOnly() { return true; }
-
-    public void setReadOnly() { }
+    public boolean implies(CodeSource cs) { return true; }
 }

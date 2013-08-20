@@ -17,23 +17,22 @@
 
 package java.security;
 
-import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Enumeration;
-import java.util.List;
-
 /**
  * Legacy security code; do not use.
  */
-public abstract class PermissionCollection implements Serializable {
+public interface DomainCombiner {
 
-    public abstract void add(Permission permission);
-
-    public abstract Enumeration<Permission> elements();
-
-    public abstract boolean implies(Permission permission);
-
-    public boolean isReadOnly() { return true; }
-
-    public void setReadOnly() { }
+    /**
+     * Returns a combination of the two provided {@code ProtectionDomain}
+     * arrays. Implementers can simply merge the two arrays into one, remove
+     * duplicates and perform other optimizations.
+     *
+     * @param current
+     *            the protection domains of the current execution thread
+     * @param assigned
+     *            the protection domains of the parent thread, may be {@code null}.
+     * @return a single {@code ProtectionDomain} array computed from the two
+     *         provided arrays.
+     */
+    ProtectionDomain[] combine(ProtectionDomain[] current, ProtectionDomain[] assigned);
 }
