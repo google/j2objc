@@ -83,6 +83,14 @@ static IOSClass *FetchArray(IOSClass *componentType);
   return self;
 }
 
+- (Class)objcClass {
+  return nil;
+}
+
+- (Protocol *)objcProtocol {
+  return nil;
+}
+
 + (IOSClass *)classWithClass:(Class)cls {
   return FetchClass(cls);
 }
