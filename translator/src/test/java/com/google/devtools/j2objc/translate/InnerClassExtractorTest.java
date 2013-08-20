@@ -163,7 +163,7 @@ public class InnerClassExtractorTest extends GenerationTest {
     List<BodyDeclaration> classMembers = ASTUtil.getBodyDeclarations(types.get(0));
     assertTrue(classMembers.size() == 1);
     AbstractTypeDeclaration innerClass = types.get(1);
-    assertEquals(3, innerClass.bodyDeclarations().size());
+    assertEquals(4, innerClass.bodyDeclarations().size());
     List<BodyDeclaration> members = ASTUtil.getBodyDeclarations(innerClass);
 
     FieldDeclaration field = (FieldDeclaration) members.get(0);
@@ -485,7 +485,7 @@ public class InnerClassExtractorTest extends GenerationTest {
     // Verify that main method creates a new instanceof B associated with
     // a new instance of Test.
     List<BodyDeclaration> classMembers = ASTUtil.getBodyDeclarations(typesByName.get("Test"));
-    assertEquals(3, classMembers.size());
+    assertEquals(4, classMembers.size());
     MethodDeclaration method = (MethodDeclaration) classMembers.get(1);
     assertEquals("main", method.getName().getIdentifier());
     VariableDeclarationStatement field =
@@ -544,7 +544,7 @@ public class InnerClassExtractorTest extends GenerationTest {
     // Verify that main method creates a new instanceof B associated with
     // a new instance of Test.
     List<BodyDeclaration> classMembers = ASTUtil.getBodyDeclarations(typesByName.get("Test"));
-    assertEquals(3, classMembers.size());
+    assertEquals(4, classMembers.size());
     MethodDeclaration method = (MethodDeclaration) classMembers.get(1);
     assertEquals("main", method.getName().getIdentifier());
     VariableDeclarationStatement field =

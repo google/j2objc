@@ -44,7 +44,7 @@
 
 // Should be implemented by any class that needs to support Java's clone
 // behavior for itself or its subclasses.
-- (void)copyAllPropertiesTo:(id)copy;
+- (void)copyAllFieldsTo:(id)other;
 
 - (NSArray *)memDebugStrongReferences;
 

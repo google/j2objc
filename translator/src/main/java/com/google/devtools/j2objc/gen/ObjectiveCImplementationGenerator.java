@@ -320,7 +320,6 @@ public class ObjectiveCImplementationGenerator extends ObjectiveCSourceFileGener
 
     List<VariableDeclarationFragment> properties = getProperties(node.getFields());
     if (properties.size() > 0) {
-      printCopyAllPropertiesMethod(NameTable.getFullName(node), properties);
       printStrongReferencesMethod(properties);
     }
   }
@@ -333,19 +332,6 @@ public class ObjectiveCImplementationGenerator extends ObjectiveCSourceFileGener
       }
     }
     return properties;
-  }
-
-  private void printCopyAllPropertiesMethod(
-      String typeName, List<VariableDeclarationFragment> properties) {
-    println("- (void)copyAllPropertiesTo:(id)copy {");
-    println("  [super copyAllPropertiesTo:copy];");
-    println(String.format("  %s *typedCopy = (%s *) copy;", typeName, typeName));
-    for (VariableDeclarationFragment property : properties) {
-      String propName = NameTable.getName(property.getName());
-      String objCFieldName = NameTable.javaFieldToObjC(propName);
-      println(String.format("  typedCopy.%s = %s;", propName, objCFieldName));
-    }
-    println("}\n");
   }
 
   // Returns whether the property is a strong reference.

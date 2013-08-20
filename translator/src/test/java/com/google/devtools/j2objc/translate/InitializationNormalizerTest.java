@@ -195,7 +195,7 @@ public class InitializationNormalizerTest extends GenerationTest {
     TypeDeclaration clazz = translateClassBody(
         "java.util.Date date = new java.util.Date(); public Test() {}");
     List<BodyDeclaration> classMembers = clazz.bodyDeclarations();
-    assertEquals(3, classMembers.size());  // dealloc() was also added to release date
+    assertEquals(4, classMembers.size());  // dealloc() was also added to release date
 
     // Test that the constructor had super() and initialization statements added.
     BodyDeclaration decl = classMembers.get(1);

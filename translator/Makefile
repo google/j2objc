@@ -60,6 +60,7 @@ JAVA_SOURCES = \
 	translate/ArrayRewriter.java \
 	translate/Autoboxer.java \
 	translate/ComplexExpressionExtractor.java \
+	translate/CopyAllFieldsWriter.java \
 	translate/DeadCodeEliminator.java \
 	translate/DestructorGenerator.java \
 	translate/GwtConverter.java \

@@ -53,6 +53,7 @@ import org.eclipse.jdt.core.dom.SimpleName;
 import org.eclipse.jdt.core.dom.SingleVariableDeclaration;
 import org.eclipse.jdt.core.dom.Statement;
 import org.eclipse.jdt.core.dom.StringLiteral;
+import org.eclipse.jdt.core.dom.SuperMethodInvocation;
 import org.eclipse.jdt.core.dom.ThisExpression;
 import org.eclipse.jdt.core.dom.Type;
 import org.eclipse.jdt.core.dom.TypeLiteral;
@@ -248,6 +249,13 @@ public final class ASTFactory {
       AST ast, IMethodBinding binding, Expression expr) {
     MethodInvocation invocation = ast.newMethodInvocation();
     invocation.setExpression(expr);
+    invocation.setName(newSimpleName(ast, binding));
+    Types.addBinding(invocation, binding);
+    return invocation;
+  }
+
+  public static SuperMethodInvocation newSuperMethodInvocation(AST ast, IMethodBinding binding) {
+    SuperMethodInvocation invocation = ast.newSuperMethodInvocation();
     invocation.setName(newSimpleName(ast, binding));
     Types.addBinding(invocation, binding);
     return invocation;

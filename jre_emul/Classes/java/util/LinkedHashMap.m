@@ -306,10 +306,9 @@
   head_ = tail_ = nil;
 }
 
-- (void)copyAllPropertiesTo:(id)copy {
-  [super copyAllPropertiesTo:copy];
-  JavaUtilLinkedHashMap *typedCopy = (JavaUtilLinkedHashMap *) copy;
-  typedCopy.accessOrder = accessOrder_;
+- (void)copyAllFieldsTo:(JavaUtilLinkedHashMap *)other {
+  [super copyAllFieldsTo:other];
+  other.accessOrder = accessOrder_;
 }
 
 @end
