@@ -65,6 +65,13 @@
   return self;
 }
 
+
+- (NSString *)getName {
+  // can't call an abstract method
+  [self doesNotRecognizeSelector:_cmd];
+  return nil;
+}
+
 - (int)getModifiers {
   int mods = JavaLangReflectModifier_PUBLIC;
   if (classMethod_) {
@@ -111,26 +118,43 @@
   return NO;
 }
 
+- (IOSObjectArray *)getExceptionTypes {
+  JavaLangReflectMethod *method = [self getExceptionsAccessor:[self getName]];
+  if (method) {
+    IOSObjectArray *noArgs = [IOSObjectArray arrayWithLength:0 type:[NSObject getClass]];
+    return (IOSObjectArray *) [method invokeWithId:nil withNSObjectArray:noArgs];
+  } else {
+    return [IOSObjectArray arrayWithLength:0 type:[IOSClass getClass]];
+  }
+}
+
 - (IOSObjectArray *)getParameterAnnotations {
   // can't call an abstract method
   [self doesNotRecognizeSelector:_cmd];
   return nil;
 }
 
-- (JavaLangReflectMethod *)getAnnotationsAccessor:(NSString *)methodName {
-  NSString *annotationsMethod =
-      [NSString stringWithFormat:@"__annotations_%@",
-          [methodName stringByReplacingOccurrencesOfString:@":" withString:@"_"]];
-  IOSObjectArray *methods = [class_ getDeclaredMethods];
+static JavaLangReflectMethod *getAccessor(IOSClass *class, NSString *method, NSString *accessor) {
+  NSString *accessorMethod = [NSString stringWithFormat:@"__%@_%@", accessor,
+     [method stringByReplacingOccurrencesOfString:@":" withString:@"_"]];
+  IOSObjectArray *methods = [class getDeclaredMethods];
   NSUInteger n = [methods count];
   for (NSUInteger i = 0; i < n; i++) {
     JavaLangReflectMethod *method = [methods objectAtIndex:i];
-    if ([annotationsMethod isEqualToString:[method getName]] &&
+    if ([accessorMethod isEqualToString:[method getName]] &&
         [[method getParameterTypes] count] == 0) {
       return method;
     }
   }
-  return nil;  // No annotations for this member.
+  return nil;  // No accessor for this member.
+}
+
+- (JavaLangReflectMethod *)getAnnotationsAccessor:(NSString *)methodName {
+  return getAccessor(class_, methodName, @"annotations");
+}
+
+- (JavaLangReflectMethod *)getExceptionsAccessor:(NSString *)methodName {
+  return getAccessor(class_, methodName, @"exceptions");
 }
 
 - (JavaLangReflectMethod *)getParameterAnnotationsAccessor:(NSString *)methodName {

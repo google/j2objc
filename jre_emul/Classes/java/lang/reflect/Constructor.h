@@ -38,9 +38,6 @@
 // Create a new instance using this constructor.
 - (id)newInstanceWithNSObjectArray:(IOSObjectArray *)initArgs;
 
-// Returns the class name, like java.lang.reflect.Constructor does.
-- (NSString *)getName;
-
 @end
 
 #endif // _JAVA_LANG_REFLECT_CONSTRUCTOR_H

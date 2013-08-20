@@ -72,9 +72,12 @@ public class Constructor<T> extends AccessibleObject implements GenericDeclarati
   public boolean isSynthetic() {
     return false;
   }
+
+  public Class[] getExceptionTypes() {
+    return null;
+  }
   
   /* Not implemented
-  public Class[] getExceptionTypes();
   public Type[] getGenericExceptionTypes();
   public String toGenericString();
   public boolean isBridge();

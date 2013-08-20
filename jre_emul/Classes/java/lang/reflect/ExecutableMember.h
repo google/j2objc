@@ -45,6 +45,8 @@
 
 - (id)initWithSelector:(SEL)aSelector withClass:(IOSClass *)aClass;
 
+- (NSString *)getName;
+
 // This method returns Modifier.PUBLIC (1) for an instance method, or
 // Modifier.PUBLIC | Modifier.STATIC (9) for a class method.  Even though
 // iOS init methods are instance methods, constructors are always returned
@@ -56,6 +58,9 @@
 
 // Returns the class this executable is a member of.
 - (IOSClass *)getDeclaringClass;
+
+// Returns the types of any declared exceptions.
+- (IOSObjectArray *)getExceptionTypes;
 
 // Returns the parameter types for this executable member.
 //
@@ -73,6 +78,7 @@
 
 // Protected methods.
 - (JavaLangReflectMethod *)getAnnotationsAccessor:(NSString *)methodName;
+- (JavaLangReflectMethod *)getExceptionsAccessor:(NSString *)methodName;
 - (JavaLangReflectMethod *)getParameterAnnotationsAccessor:(NSString *)methodName;
 
 @end

@@ -255,6 +255,10 @@ public class ImplementationImportCollector extends ErrorReportingASTVisitor {
     for (ITypeBinding paramType : binding.getParameterTypes()) {
       addImports(paramType);
     }
+    for (ITypeBinding exceptionType : binding.getExceptionTypes()) {
+      addImports(exceptionType);
+      addImports(Types.resolveIOSType("IOSClass"));
+    }
     return true;
   }
 

@@ -707,4 +707,13 @@ public class ObjectiveCImplementationGeneratorTest extends GenerationTest {
         "{ [[[OrgJunitIgnoreImpl alloc] initWithValue:@\"some comment\"] autorelease] } " +
         "count:1 type:[IOSClass classWithProtocol:@protocol(JavaLangAnnotationAnnotation)]];");
   }
+
+  public void testExceptionsMetadata() throws IOException {
+    String translation = translateSourceFile(
+        "class Test { void test() throws Exception, java.lang.Error {} }", "Test", "Test.m");
+    assertTranslation(translation, "+ (IOSObjectArray *)__exceptions_test ");
+    assertTranslation(translation,
+        "return [IOSObjectArray arrayWithObjects:(id[]) { [JavaLangException getClass], " +
+        "[JavaLangError getClass] } count:2 type:[IOSClass getClass]];");
+  }
 }

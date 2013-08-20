@@ -60,6 +60,7 @@ static id Box(JavaResult *value, const char *type);
   return method;
 }
 
+// Returns method name.
 - (NSString *)getName {
   return NSStringFromSelector(selector_);
 }
