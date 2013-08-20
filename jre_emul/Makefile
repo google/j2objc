@@ -335,6 +335,7 @@ JAVA_SOURCES = \
 	java/text/Format.java \
 	java/text/NumberFormat.java \
 	java/text/ParseException.java \
+	java/text/ParsePosition.java \
 	java/util/AbstractCollection.java \
 	java/util/AbstractList.java \
 	java/util/AbstractMap.java \
