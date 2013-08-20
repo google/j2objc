@@ -63,7 +63,7 @@ junit_dist: translator_dist jre_emul_dist
 	@cd junit && $(MAKE) dist
 
 
-cycle_finder_dist: annotations_dist java_deps_dist
+cycle_finder_dist: annotations_dist java_deps_dist translator_dist
 	@cd cycle_finder && $(MAKE) dist
 
 dist: translator_dist jre_emul_dist junit_dist cycle_finder_dist install-man-pages
