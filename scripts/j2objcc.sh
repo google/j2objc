@@ -41,7 +41,9 @@ readonly LIB_PATH=${DIR}/lib
 declare CC_FLAGS="-Werror -Wno-parentheses"
 declare OBJC=-ObjC
 declare LIBS="-ljre_emul -l j2objc_main"
-declare LINK_FLAGS="${LIBS} -framework Foundation -framework ExceptionHandling -L ${LIB_PATH}"
+declare FRAMEWORKS="-framework Foundation -framework ExceptionHandling"
+declare LOAD_FLAGS="-force_load ${LIB_PATH}/libjre_emul.a"
+declare LINK_FLAGS="${LIBS} ${FRAMEWORKS} -L ${LIB_PATH} ${LOAD_FLAGS}"
 
 for arg; do
   case $arg in
