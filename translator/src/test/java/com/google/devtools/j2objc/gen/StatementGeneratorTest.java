@@ -789,7 +789,7 @@ public class StatementGeneratorTest extends GenerationTest {
       "Test", "Test.h");
     // Test_B's "other" needs a trailing underscore, since there is an "other"
     // field in its superclass.
-    assertTranslation(translation, "@property (nonatomic, retain) Test_B *other_B;");
+    assertTranslation(translation, "Test_B *other_B_;");
     translation = getTranslatedFile("Test.m");
     assertTranslation(translation, "Test_B_set_other_B_(self, [self getOther])");
   }

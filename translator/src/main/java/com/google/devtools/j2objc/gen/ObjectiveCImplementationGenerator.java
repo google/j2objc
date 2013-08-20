@@ -214,7 +214,6 @@ public class ObjectiveCImplementationGenerator extends ObjectiveCSourceFileGener
       printf("@implementation %s\n\n", typeName);
       printStaticReferencesMethod(fields);
       printStaticVars(fields, /* isInterface */ false);
-      printProperties(fields);
       printStaticFieldAccessors(fields, methods, /* isInterface */ false);
       printMethods(node);
       printObjCTypeMethod(node);
@@ -478,7 +477,6 @@ public class ObjectiveCImplementationGenerator extends ObjectiveCSourceFileGener
     String selfString = Options.useReferenceCounting() ? "[self retain]" : "self";
     printf("- (id)copyWithZone:(NSZone *)zone {\n  return %s;\n}\n\n", selfString);
 
-    printProperties(fields);
     printStaticFieldAccessors(fields, methods, /* isInterface */ false);
     printMethods(methods);
 
@@ -882,60 +880,6 @@ public class ObjectiveCImplementationGenerator extends ObjectiveCSourceFileGener
       }
     }
     if (hadStaticVar) {
-      newline();
-    }
-  }
-
-  // TODO(user): Remove property generation.
-  private void printProperties(List<FieldDeclaration> fields) {
-    int nPrinted = 0;
-    for (FieldDeclaration field : fields) {
-      if ((field.getModifiers() & Modifier.STATIC) == 0) {
-        for (VariableDeclarationFragment var : ASTUtil.getFragments(field)) {
-          String name = NameTable.getName(var.getName());
-          ITypeBinding type = Types.getTypeBinding(field.getType());
-          String typeString = NameTable.getSpecificObjCType(type);
-          String objCFieldName = NameTable.javaFieldToObjC(name);
-
-          // Don't emit the getter when there is already a method with the
-          // same name.
-          boolean hasGetter = false;
-          boolean hasSetter = false;
-          ITypeBinding declaringClass = Types.getTypeBinding(field.getParent());
-          if (declaringClass != null) {
-            IMethodBinding[] methods = declaringClass.getDeclaredMethods();
-            for (IMethodBinding method : methods) {
-              if (method.getName().equals(name) && method.getParameterTypes().length == 0) {
-                hasGetter = true;
-                break;
-              }
-            }
-          }
-
-          if (!hasGetter && Options.useReferenceCounting() && !type.isPrimitive()) {
-            // Generates a getter that will make sure the returned object is still valid
-            // if it's used after it's unreferenced by the instance.
-            printf(String.format("- (%s)%s {\n  return %s;\n}\n",
-                typeString, name, objCFieldName));
-            hasGetter = true;
-          }
-          IVariableBinding binding = Types.getVariableBinding(var);
-          if (Options.useReferenceCounting() && !type.isPrimitive() &&
-              !Types.isWeakReference(binding)) {
-            // Setter can always be generated and won't collide with a transpiled method name.
-            String setterName = "set" + NameTable.capitalize(name);
-            printf(String.format(
-                "- (void)%s:(%s)%s {\n  JreOperatorRetainedAssign(&%s, self, %s);\n}\n",
-                setterName, typeString, name, objCFieldName, name));
-          }
-          if (!hasGetter || !hasSetter) {
-            printf(String.format("@synthesize %s = %s;\n", name, objCFieldName));
-          }
-          nPrinted++;
-        }
-      }
-    }
-    if (nPrinted > 0) {
       newline();
     }
   }

@@ -149,7 +149,6 @@ public class ObjectiveCHeaderGenerator extends ObjectiveCSourceFileGenerator {
       println(" {");
       printInstanceVariables(fields);
       println("}\n");
-      printProperties(fields);
       printStaticFieldAccessors(fields, methods, isInterface);
     }
     printMethods(methods);
@@ -306,7 +305,6 @@ public class ObjectiveCHeaderGenerator extends ObjectiveCSourceFileGenerator {
     println(" > {");
     printInstanceVariables(fields);
     println("}");
-    printProperties(fields);
     for (EnumConstantDeclaration constant : constants) {
       printf("+ (%s *)%s;\n", typeName, NameTable.getName(constant.getName()));
     }
@@ -527,41 +525,6 @@ public class ObjectiveCHeaderGenerator extends ObjectiveCSourceFileGenerator {
         println(String.format("J2OBJC_FIELD_SETTER(%s, %s, %s)",
             declaringClassName, fieldName, typeStr));
       }
-    }
-  }
-
-  // TODO(user): Remove properties.
-  private void printProperties(List<FieldDeclaration> fields) {
-    int nPrinted = 0;
-    for (FieldDeclaration field : fields) {
-      if (!Modifier.isStatic(field.getModifiers())) {
-        ITypeBinding type = Types.getTypeBinding(field.getType());
-        for (VariableDeclarationFragment var : ASTUtil.getFragments(field)) {
-          print("@property (nonatomic, ");
-          IVariableBinding varBinding = Types.getVariableBinding(var);
-          if (type.isPrimitive()) {
-            print("assign");
-          } else if (Types.isWeakReference(varBinding)) {
-            print(Options.useARC() ? "weak" : "assign");
-          } else if (type.isEqualTo(Types.getNSString())) {
-            print("copy");
-          } else {
-            print(Options.useARC() ? "strong" : "retain");
-          }
-          String typeString = NameTable.getSpecificObjCType(type);
-          String propertyName = NameTable.getName(var.getName());
-          println(String.format(") %s%s%s;", typeString, typeString.endsWith("*") ? "" : " ",
-              propertyName));
-          if (propertyName.startsWith("new") || propertyName.startsWith("copy")
-              || propertyName.startsWith("alloc") || propertyName.startsWith("init")) {
-            println(String.format("- (%s)%s OBJC_METHOD_FAMILY_NONE;", typeString, propertyName));
-          }
-          nPrinted++;
-        }
-      }
-    }
-    if (nPrinted > 0) {
-      newline();
     }
   }
 
