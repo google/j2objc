@@ -180,15 +180,16 @@ static NSString *capitalize(NSString *s);
 // Create a reflection wrapper for an Objective-C selector, updating a map
 // keyed by the selector's signature.  The map is necessary to skip methods
 // that are overridden (subtypes are added first).
-void addMethod(SEL sel, IOSClass *clazz, NSMutableDictionary *map,
-               BOOL fetchConstructors) {
+void addMethodOrConstructor(SEL sel, IOSClass *clazz, NSMutableDictionary *map,
+                            BOOL fetchConstructors) {
   NSString *key = NSStringFromSelector(sel);
   BOOL isConstructor =
       [key isEqualToString:@"init"] || [key hasPrefix:@"initWith"];
   if (isConstructor == fetchConstructors && ![map objectForKey:key]) {
-    JavaLangReflectMethod *method =
-    [JavaLangReflectMethod methodWithSelector:sel withClass:clazz];
-    [map setObject:method forKey:key];
+    id executable = isConstructor ?
+        [JavaLangReflectConstructor constructorWithSelector:sel withClass:clazz] :
+        [JavaLangReflectMethod methodWithSelector:sel withClass:clazz];
+    [map setObject:executable forKey:key];
   }
 }
 
@@ -199,7 +200,7 @@ void createMethodWrappers(Method *methods,
                           BOOL fetchConstructors) {
   for (NSUInteger i = 0; i < count; i++) {
     SEL sel = method_getName(methods[i]);
-    addMethod(sel, clazz, map, fetchConstructors);
+    addMethodOrConstructor(sel, clazz, map, fetchConstructors);
   }
 }
 
@@ -231,7 +232,7 @@ void getMethodsFromClass(IOSClass *clazz, NSMutableDictionary *methods,
         protocol_copyMethodDescriptionList(clazz->protocol_, YES, YES, &count);
     for (unsigned i = 0; i < count; i++) {
       SEL sel = descriptions[i].name;
-      addMethod(sel, clazz, methods, fetchConstructors);
+      addMethodOrConstructor(sel, clazz, methods, fetchConstructors);
     }
     free (descriptions);
   }
@@ -265,8 +266,9 @@ IOSObjectArray *getMethods(IOSClass *clazz, BOOL fetchConstructors) {
     getMethodsFromClass(cls, methodMap, fetchConstructors);
     cls = [cls getSuperclass];
   }
-  IOSClass *methodType =
-      [IOSClass classWithClass:[JavaLangReflectMethod class]];
+  IOSClass *methodType = fetchConstructors ?
+      [IOSClass classWithClass:[JavaLangReflectMethod class]] :
+      [IOSClass classWithClass:[JavaLangReflectConstructor class]];
   return [IOSObjectArray arrayWithNSArray:[methodMap allValues]
                                      type:methodType];
 }
