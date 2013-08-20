@@ -20,6 +20,7 @@
 //
 
 #import "IOSLongArray.h"
+#import "IOSArrayClass.h"
 #import "IOSPrimitiveClass.h"
 #import "java/lang/Long.h"
 
@@ -105,7 +106,11 @@
 }
 
 - (IOSClass *)elementType {
-  return [IOSClass fetchCachedClass:@"long"];
+  return [IOSClass longClass];
+}
+
++ (IOSClass *)iosClass {
+  return [IOSArrayClass classWithComponentType:[IOSClass longClass]];
 }
 
 - (id)copyWithZone:(NSZone *)zone {

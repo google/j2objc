@@ -20,6 +20,7 @@
 //
 
 #import "IOSCharArray.h"
+#import "IOSArrayClass.h"
 #import "IOSPrimitiveClass.h"
 #import "java/lang/Character.h"
 
@@ -112,7 +113,11 @@
 }
 
 - (IOSClass *)elementType {
-  return [IOSClass fetchCachedClass:@"char"];
+  return [IOSClass charClass];
+}
+
++ (IOSClass *)iosClass {
+  return [IOSArrayClass classWithComponentType:[IOSClass charClass]];
 }
 
 - (id)copyWithZone:(NSZone *)zone {

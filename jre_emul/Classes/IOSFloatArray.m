@@ -20,6 +20,7 @@
 //
 
 #import "IOSFloatArray.h"
+#import "IOSArrayClass.h"
 #import "IOSPrimitiveClass.h"
 #import "java/lang/Float.h"
 
@@ -105,7 +106,11 @@
 }
 
 - (IOSClass *)elementType {
-  return [IOSClass fetchCachedClass:@"float"];
+  return [IOSClass floatClass];
+}
+
++ (IOSClass *)iosClass {
+  return [IOSArrayClass classWithComponentType:[IOSClass floatClass]];
 }
 
 - (id)copyWithZone:(NSZone *)zone {

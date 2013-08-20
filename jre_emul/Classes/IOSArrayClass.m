@@ -29,11 +29,10 @@
 @synthesize componentType = componentType_;
 
 + (id)classWithComponentType:(IOSClass *)type {
-  NSString *signature = [@"[" stringByAppendingString:[type binaryName]];
-  id clazz = [IOSClass fetchCachedClass:signature];
+  id clazz = [IOSClass fetchCachedClass:type];
   if (!clazz) {
     clazz = AUTORELEASE([[IOSArrayClass alloc] initWithComponentType:type]);
-    [IOSClass addToCache:clazz withSignature:signature];
+    [IOSClass addToCache:clazz withKey:type];
   }
   return clazz;
 }
@@ -51,6 +50,10 @@
 
 - (BOOL)isArray {
   return YES;
+}
+
+- (IOSClass *)getSuperclass {
+  return [IOSClass objectClass];
 }
 
 - (BOOL)isInstance:(id)object {

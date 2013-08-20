@@ -41,7 +41,7 @@
 // and released as needed.
 @interface IOSClass : NSObject <JavaLangReflectAnnotatedElement,
     JavaLangReflectGenericDeclaration, JavaIoSerializable,
-    JavaLangReflectType> {
+    JavaLangReflectType, NSCopying> {
  @private
   // Only one of these may be set.
   Class class_;
@@ -56,6 +56,18 @@
 
 + (IOSClass *)classWithProtocol:(Protocol *)protocol;
 - (id)initWithProtocol:(Protocol *)protocol;
+
+// Primitive class instance getters.
++ (IOSClass *)byteClass;
++ (IOSClass *)charClass;
++ (IOSClass *)doubleClass;
++ (IOSClass *)floatClass;
++ (IOSClass *)intClass;
++ (IOSClass *)longClass;
++ (IOSClass *)shortClass;
++ (IOSClass *)booleanClass;
+
++ (IOSClass *)objectClass;
 
 // Class.newInstance()
 - (id)newInstance NS_RETURNS_RETAINED;
@@ -156,10 +168,10 @@
 
 // Internal methods
 - (NSString *)binaryName;
-+ (IOSClass *)fetchCachedClass:(NSString *)signature;
++ (IOSClass *)fetchCachedClass:(id<NSCopying>)key;
 + (IOSClass *)fetchClass:(Class)cls;
 + (IOSClass *)fetchProtocol:(Protocol *)protocol;
-+ (void)addToCache:(IOSClass *)clazz withSignature:(NSString *)signature;
++ (void)addToCache:(IOSClass *)clazz withKey:(id<NSCopying>)key;
 
 @end
 

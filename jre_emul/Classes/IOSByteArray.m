@@ -20,6 +20,7 @@
 //
 
 #import "IOSByteArray.h"
+#import "IOSArrayClass.h"
 #import "IOSPrimitiveClass.h"
 #import "java/lang/Byte.h"
 
@@ -115,7 +116,11 @@
 }
 
 - (IOSClass *)elementType {
-  return [IOSClass fetchCachedClass:@"byte"];
+  return [IOSClass byteClass];
+}
+
++ (IOSClass *)iosClass {
+  return [IOSArrayClass classWithComponentType:[IOSClass byteClass]];
 }
 
 - (id)copyWithZone:(NSZone *)zone {

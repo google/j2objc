@@ -87,7 +87,11 @@
 }
 
 - (IOSClass *)elementType {
-  return [IOSClass fetchCachedClass:@"boolean"];
+  return [IOSClass booleanClass];
+}
+
++ (IOSClass *)iosClass {
+  return [IOSArrayClass classWithComponentType:[IOSClass booleanClass]];
 }
 
 - (id)copyWithZone:(NSZone *)zone {
