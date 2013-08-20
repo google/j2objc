@@ -17,23 +17,28 @@
 
 package java.security;
 
-import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Enumeration;
-import java.util.List;
-
 /**
- * Legacy security code; do not use.
+ * {@code NoSuchProviderException} indicates that a requested security provider
+ * could not be found.
  */
-public abstract class PermissionCollection implements Serializable {
+public class NoSuchProviderException extends GeneralSecurityException {
 
-    public abstract void add(Permission permission);
+    private static final long serialVersionUID = 8488111756688534474L;
 
-    public abstract Enumeration<Permission> elements();
+    /**
+     * Constructs a new instance of {@code NoSuchProviderException} with the
+     * given message.
+     *
+     * @param msg
+     *            the detail message for this exception.
+     */
+    public NoSuchProviderException(String msg) {
+        super(msg);
+    }
 
-    public abstract boolean implies(Permission permission);
-
-    public boolean isReadOnly() { return true; }
-
-    public void setReadOnly() { }
+    /**
+     * Constructs a new instance of {@code NoSuchProviderException}.
+     */
+    public NoSuchProviderException() {
+    }
 }

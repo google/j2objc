@@ -17,23 +17,18 @@
 
 package java.security;
 
-import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Enumeration;
-import java.util.List;
-
 /**
  * Legacy security code; do not use.
  */
-public abstract class PermissionCollection implements Serializable {
+public class PrivilegedActionException extends Exception {
 
-    public abstract void add(Permission permission);
+    private static final long serialVersionUID = 4724086851538908602l;
 
-    public abstract Enumeration<Permission> elements();
+    public PrivilegedActionException(Exception ex) {
+        super(ex);
+    }
 
-    public abstract boolean implies(Permission permission);
-
-    public boolean isReadOnly() { return true; }
-
-    public void setReadOnly() { }
+    public Exception getException() {
+        return null;
+    }
 }

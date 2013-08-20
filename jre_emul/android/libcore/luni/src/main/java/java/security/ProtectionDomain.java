@@ -17,23 +17,21 @@
 
 package java.security;
 
-import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Enumeration;
-import java.util.List;
-
 /**
  * Legacy security code; do not use.
  */
-public abstract class PermissionCollection implements Serializable {
+public class ProtectionDomain {
+    public ProtectionDomain(CodeSource cs, PermissionCollection permissions) { }
 
-    public abstract void add(Permission permission);
+    public ProtectionDomain(CodeSource cs, PermissionCollection permissions, ClassLoader cl, Principal[] principals) { }
 
-    public abstract Enumeration<Permission> elements();
+    public final ClassLoader getClassLoader() { return null; }
 
-    public abstract boolean implies(Permission permission);
+    public final CodeSource getCodeSource() { return null; }
 
-    public boolean isReadOnly() { return true; }
+    public final PermissionCollection getPermissions() { return null; }
 
-    public void setReadOnly() { }
+    public final Principal[] getPrincipals() { return null; }
+
+    public boolean implies(Permission permission) { return true; }
 }
