@@ -263,9 +263,8 @@ public class InitializationNormalizerTest extends GenerationTest {
     String setInit =
         "JreOperatorRetainedAssign(&Test_iSet_, nil, " +
         "[[[JavaUtilHashSet alloc] init] autorelease])";
-    String setAdd = "[((id<JavaUtilSet>) nil_chk(Test_iSet_))" +
-        " addWithId:[JavaLangInteger valueOfWithInt:Test_I]]";
-    String setSize = "Test_iSetSize_ = [((id<JavaUtilSet>) nil_chk(Test_iSet_)) size]";
+    String setAdd = "[Test_iSet_ addWithId:[JavaLangInteger valueOfWithInt:Test_I]]";
+    String setSize = "Test_iSetSize_ = [Test_iSet_ size]";
     assertTranslation(translation, setInit);
     assertTranslation(translation, setAdd);
     assertTranslation(translation, setSize);

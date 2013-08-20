@@ -44,7 +44,7 @@ public class ComplexExpressionExtractorTest extends GenerationTest {
         ".append(\"f\"); } }", "Test", "Test.m");
     assertTranslation(translation, "JavaLangStringBuilder *complex$1 = " +
         "[((JavaLangStringBuilder *) nil_chk([((JavaLangStringBuilder *) " +
-        "nil_chk([((JavaLangStringBuilder *) nil_chk(sb)) appendWithNSString:@\"a\"])) " +
+        "nil_chk([sb appendWithNSString:@\"a\"])) " +
         "appendWithNSString:@\"b\"])) appendWithNSString:@\"c\"];");
     assertTranslation(translation, "JavaLangStringBuilder *complex$2 = " +
         "[((JavaLangStringBuilder *) nil_chk([((JavaLangStringBuilder *) " +

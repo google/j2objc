@@ -106,7 +106,7 @@ public class JavaToIOSMethodTranslatorTest extends GenerationTest {
     String result = generateStatement(stmts.get(0));
     assertEquals("IOSClass *cls = [self getClass];", result);
     result = generateStatement(stmts.get(1));
-    assertEquals("IOSClass *superClass = [((IOSClass *) nil_chk(cls)) getSuperclass];", result);
+    assertEquals("IOSClass *superClass = [cls getSuperclass];", result);
   }
 
   /**
@@ -120,11 +120,11 @@ public class JavaToIOSMethodTranslatorTest extends GenerationTest {
     List<Statement> stmts = translateStatements(source);
     assertEquals(4, stmts.size());
     String result = generateStatement(stmts.get(1));
-    assertEquals("NSString *s1 = [((IOSClass *) nil_chk(cls)) getName];", result);
+    assertEquals("NSString *s1 = [cls getName];", result);
     result = generateStatement(stmts.get(2));
-    assertEquals("NSString *s2 = [((IOSClass *) nil_chk(cls)) getSimpleName];", result);
+    assertEquals("NSString *s2 = [cls getSimpleName];", result);
     result = generateStatement(stmts.get(3));
-    assertEquals("NSString *s3 = [((IOSClass *) nil_chk(cls)) getCanonicalName];", result);
+    assertEquals("NSString *s3 = [cls getCanonicalName];", result);
   }
 
   public void testStringSubstring() throws IOException {
@@ -133,9 +133,9 @@ public class JavaToIOSMethodTranslatorTest extends GenerationTest {
     List<Statement> stmts = translateStatements(source);
     assertEquals(3, stmts.size());
     String result = generateStatement(stmts.get(1));
-    assertEquals("NSString *s2 = [((NSString *) nil_chk(s1)) substring:2];", result);
+    assertEquals("NSString *s2 = [s1 substring:2];", result);
     result = generateStatement(stmts.get(2));
-    assertEquals("NSString *s3 = [((NSString *) nil_chk(s1)) substring:2 endIndex:4];", result);
+    assertEquals("NSString *s3 = [s1 substring:2 endIndex:4];", result);
   }
 
   public void testStringIndexOf() throws IOException {
@@ -147,23 +147,21 @@ public class JavaToIOSMethodTranslatorTest extends GenerationTest {
     List<Statement> stmts = translateStatements(source);
     assertEquals(9, stmts.size());
     String result = generateStatement(stmts.get(1));
-    assertEquals("int idx = [((NSString *) nil_chk(s)) indexOf:'g'];", result);
+    assertEquals("int idx = [s indexOf:'g'];", result);
     result = generateStatement(stmts.get(2));
-    assertEquals("idx = [((NSString *) nil_chk(s)) indexOfString:@\"brillig\"];", result);
+    assertEquals("idx = [s indexOfString:@\"brillig\"];", result);
     result = generateStatement(stmts.get(3));
-    assertEquals("idx = [((NSString *) nil_chk(s)) lastIndexOf:'v'];", result);
+    assertEquals("idx = [s lastIndexOf:'v'];", result);
     result = generateStatement(stmts.get(4));
-    assertEquals("idx = [((NSString *) nil_chk(s)) lastIndexOfString:@\"the\"];", result);
+    assertEquals("idx = [s lastIndexOfString:@\"the\"];", result);
     result = generateStatement(stmts.get(5));
-    assertEquals("idx = [((NSString *) nil_chk(s)) indexOf:'g' fromIndex:1];", result);
+    assertEquals("idx = [s indexOf:'g' fromIndex:1];", result);
     result = generateStatement(stmts.get(6));
-    assertEquals("idx = [((NSString *) nil_chk(s)) indexOfString:@\"brillig\" fromIndex:2];",
-                 result);
+    assertEquals("idx = [s indexOfString:@\"brillig\" fromIndex:2];", result);
     result = generateStatement(stmts.get(7));
-    assertEquals("idx = [((NSString *) nil_chk(s)) lastIndexOf:'v' fromIndex:3];", result);
+    assertEquals("idx = [s lastIndexOf:'v' fromIndex:3];", result);
     result = generateStatement(stmts.get(8));
-    assertEquals("idx = [((NSString *) nil_chk(s)) lastIndexOfString:@\"the\" fromIndex:4];",
-                 result);
+    assertEquals("idx = [s lastIndexOfString:@\"the\" fromIndex:4];", result);
   }
 
   public void testStringToCharArray() throws IOException {
@@ -171,7 +169,7 @@ public class JavaToIOSMethodTranslatorTest extends GenerationTest {
     List<Statement> stmts = translateStatements(source);
     assertEquals(2, stmts.size());
     String result = generateStatement(stmts.get(1));
-    assertEquals("IOSCharArray *array = [((NSString *) nil_chk(s)) toCharArray];", result);
+    assertEquals("IOSCharArray *array = [s toCharArray];", result);
   }
 
   public void testNewInstanceMapping() throws IOException {
@@ -180,7 +178,7 @@ public class JavaToIOSMethodTranslatorTest extends GenerationTest {
     List<Statement> stmts = translateStatements(source);
     assertEquals(1, stmts.size());
     String result = generateStatement(stmts.get(0));
-    assertTranslation(result, "[((IOSClass *) nil_chk(clazz)) newInstance]");
+    assertTranslation(result, "[clazz newInstance]");
   }
 
   // Verify that a method named cloned in a class that doesn't
