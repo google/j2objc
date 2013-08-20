@@ -73,7 +73,6 @@ public class InnerClassExtractorTest extends GenerationTest {
     String source = "public class A { class B { int test() { return o.hashCode(); }} Object o; }";
     String translation = translateSourceFile(source, "A", "A.h");
     assertTranslation(translation, "A *this$0_;");
-    assertTranslation(translation, "@property (nonatomic, retain) A *this$0;");
     assertTranslation(translation, "- (id)initWithA:(A *)outer$;");
     translation = getTranslatedFile("A.m");
     assertTranslation(translation, "[nil_chk(this$0_->o_) hash]");
@@ -84,7 +83,7 @@ public class InnerClassExtractorTest extends GenerationTest {
     String source = "import com.google.j2objc.annotations.WeakOuter; " +
         "public class A { @WeakOuter class B { int test() { return o.hashCode(); }} Object o; }";
     String translation = translateSourceFile(source, "A", "A.h");
-    assertTranslation(translation, "@property (nonatomic, assign) A *this$0;");
+    assertTranslation(translation, "__weak A *this$0_;");
     translation = getTranslatedFile("A.m");
     assertTranslation(translation, "this$0_ = outer$;");
   }
@@ -95,9 +94,9 @@ public class InnerClassExtractorTest extends GenerationTest {
         "public class A { Object o;" +
         "  @WeakOuter class B { int test() { return o.hashCode(); } Object o2; }}";
     String translation = translateSourceFile(source, "A", "A.h");
-    assertTranslation(translation, "@property (nonatomic, strong) id o;");
-    assertTranslation(translation, "@property (nonatomic, strong) id o2;");
-    assertTranslation(translation, "@property (nonatomic, weak) A *this$0;");
+    assertTranslation(translation, "id o_;");
+    assertTranslation(translation, "id o2_;");
+    assertTranslation(translation, "__weak A *this$0_;");
   }
 
   public void testInnerInnerClass() throws IOException {
@@ -105,10 +104,8 @@ public class InnerClassExtractorTest extends GenerationTest {
         "class C {int test() { return o.hashCode(); }}} Object o; }";
     String translation = translateSourceFile(source, "A", "A.h");
     assertTranslation(translation, "A *this$0_;");
-    assertTranslation(translation, "@property (nonatomic, retain) A *this$0;");
     assertTranslation(translation, "- (id)initWithA:(A *)outer$;");
     assertTranslation(translation, "A_B *this$0_;");
-    assertTranslation(translation, "@property (nonatomic, retain) A_B *this$0;");
     assertTranslation(translation, "- (id)initWithA_B:(A_B *)outer$;");
     translation = getTranslatedFile("A.m");
     assertTranslation(translation, "[nil_chk(this$0_->this$0_->o_) hash]");
@@ -119,8 +116,8 @@ public class InnerClassExtractorTest extends GenerationTest {
         "@com.google.j2objc.annotations.WeakOuter class C {" +
         "  int test() { return o.hashCode(); }}} Object o; }";
     String translation = translateSourceFile(source, "A", "A.h");
-    assertTranslation(translation, "@property (nonatomic, retain) A *this$0;");
-    assertTranslation(translation, "@property (nonatomic, assign) A_B *this$0;");
+    assertTranslation(translation, "A *this$0_;");
+    assertTranslation(translation, "__weak A_B *this$0_;");
     translation = getTranslatedFile("A.m");
     assertTranslation(translation, "[nil_chk(this$0_->this$0_->o_) hash]");
   }
@@ -139,12 +136,9 @@ public class InnerClassExtractorTest extends GenerationTest {
         "}";
     String translation = translateSourceFile(source, "A", "A.h");
     assertTranslation(translation, "A *this$0_;");
-    assertTranslation(translation, "@property (nonatomic, retain) A *this$0;");
     assertTranslation(translation, "- (id)initWithA:(A *)outer$;");
     assertTranslation(translation, "A_B *this$1_;");
     assertTranslation(translation, "int val$j_;");
-    assertTranslation(translation, "@property (nonatomic, retain) A_B *this$1;");
-    assertTranslation(translation, "@property (nonatomic, assign) int val$j;");
     assertTranslation(translation,
         "- (id)initWithA_B:(A_B *)outer$\n" +
         "          withInt:(int)capture$0;");
@@ -517,7 +511,7 @@ public class InnerClassExtractorTest extends GenerationTest {
 
     // Verify that B's translation has the Test field declared.
     String translation = translateSourceFile(source, "Test", "Test.h");
-    assertTranslation(translation, "@property (nonatomic, retain) Test *this$");
+    assertTranslation(translation, "Test *this$0_;");
     translation = getTranslatedFile("Test.m");
     assertTranslation(translation, "- (id)initWithTest_B:(Test_B *)outer$ {");
     assertTranslation(translation, "[super initWithTest_A:outer$]");
@@ -576,7 +570,7 @@ public class InnerClassExtractorTest extends GenerationTest {
 
     // Verify that B's translation has the Test field declared.
     String translation = translateSourceFile(source, "Test", "Test.h");
-    assertTranslation(translation, "@property (nonatomic, retain) Test *this$");
+    assertTranslation(translation, "Test *this$0_;");
     translation = getTranslatedFile("Test.m");
     assertTranslation(translation, "- (id)initWithTest_B:(Test_B *)outer$ {");
     assertTranslation(translation, "[super initWithTest_A:outer$]");
@@ -725,7 +719,6 @@ public class InnerClassExtractorTest extends GenerationTest {
         "public void remove() {} }}";
     String translation = translateSourceFile(source, "A", "A.h");
     assertTranslation(translation, "A *this$0_;");
-    assertTranslation(translation, "@property (nonatomic, retain) A *this$0;");
     assertTranslation(translation, "- (id)initWithA:(A *)outer$;");
     translation = getTranslatedFile("A.m");
     assertTranslation(translation, "[((IOSObjectArray *) nil_chk(this$0_->elements_)) count]");

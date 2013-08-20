@@ -263,11 +263,8 @@ public class ObjectiveCImplementationGeneratorTest extends GenerationTest {
       "initWithInt:(int) 0x0000ff withNSString:@\"Color_BLUE\" withInt:2];");
     assertTranslation(translation, "- (int)getRgb {");
     assertTranslation(translation, "return rgb_;");
-    assertTranslation(translation, "@synthesize rgb = rgb_;");
-    assertTranslation(translation, "@synthesize newValue = newValue_;");
     translation = getTranslatedFile("Color.h");
-    assertTranslation(translation, "@property (nonatomic, assign) int newValue;");
-    assertTranslation(translation, "- (int)newValue OBJC_METHOD_FAMILY_NONE;");
+    assertTranslation(translation, "int newValue_;");
   }
 
   public void testClassField() throws IOException {
@@ -281,26 +278,19 @@ public class ObjectiveCImplementationGeneratorTest extends GenerationTest {
         + "}";
     String translation = translateSourceFile(sourceContent,
       "FooBar", "FooBar.m");
-    assertTranslation(translation, "@synthesize fieldFoo = fieldFoo_;");
-    assertTranslation(translation, "- (id)fieldFoo {");
-    assertTranslation(translation, "return fieldFoo_;");
-    assertTranslation(translation, "@synthesize fieldJar = fieldJar_;");
-    assertTranslation(translation, "- (id)fieldJar {");
-    assertTranslation(translation, "return fieldJar_;");
-    assertTranslation(translation, "@synthesize newFieldBar = newFieldBar_;");
     assertTranslation(translation, "static int FooBar_fieldPhi_;");
     assertTranslation(translation, "+ (int)fieldPhi {");
     assertTranslation(translation, "return FooBar_fieldPhi_;");
     assertTranslation(translation, "+ (int *)fieldPhiRef {");
     assertTranslation(translation, "return &FooBar_fieldPhi_;");
+    assertTranslation(translation, "FooBar_set_fieldFoo_(self, nil);");
     translation = getTranslatedFile("FooBar.h");
     assertTranslation(translation, "id fieldFoo_;");
     assertTranslation(translation, "id fieldJar_;");
     assertTranslation(translation, "int newFieldBar_;");
-    assertTranslation(translation, "@property (nonatomic, retain) id fieldFoo;");
-    assertTranslation(translation, "@property (nonatomic, assign) id fieldJar;");
-    assertTranslation(translation, "@property (nonatomic, assign) int newFieldBar;");
-    assertTranslation(translation, "- (int)newFieldBar OBJC_METHOD_FAMILY_NONE;");
+    assertTranslation(translation, "id fieldFoo_;");
+    assertTranslation(translation, "__weak id fieldJar_;");
+    assertTranslation(translation, "int newFieldBar_;");
     assertTranslation(translation, "+ (int)fieldPhi;");
     assertTranslation(translation, "+ (int *)fieldPhiRef;");
   }

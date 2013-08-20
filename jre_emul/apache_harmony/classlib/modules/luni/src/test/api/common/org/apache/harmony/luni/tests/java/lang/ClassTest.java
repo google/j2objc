@@ -428,7 +428,7 @@ public class ClassTest extends junit.framework.TestCase {
      */
     public void test_getDeclaredMethods() throws Exception {
         Method[] m = TestClass.class.getDeclaredMethods();
-        assertEquals("Returned incorrect number of methods", 13, m.length);
+        assertEquals("Returned incorrect number of methods", 5, m.length);
         m = SubTestClass.class.getDeclaredMethods();
         assertEquals("Returned incorrect number of methods", 0, m.length);
     }

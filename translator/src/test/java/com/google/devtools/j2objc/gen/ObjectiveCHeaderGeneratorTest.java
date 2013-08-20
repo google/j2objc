@@ -45,7 +45,6 @@ public class ObjectiveCHeaderGeneratorTest extends GenerationTest {
     assertTranslation(translation, "@interface MypackageAbcdEnum");
     assertTranslation(translation, "@interface MypackageMyClass");
     assertTranslation(translation, "MypackageMyClass *myclass_;");
-    assertTranslation(translation, "@property (nonatomic, retain) MypackageMyClass *myclass;");
   }
 
   public void testTypeNameTranslation() throws IOException {
@@ -121,7 +120,7 @@ public class ObjectiveCHeaderGeneratorTest extends GenerationTest {
     String translation = translateSourceFile(
         "public class Example { Exception testException; }",
         "Example", "Example.h");
-    assertTranslation(translation, "JavaLangException *testException;");
+    assertTranslation(translation, "JavaLangException *testException_;");
   }
 
   public void testInterfaceTranslation() throws IOException {
@@ -252,7 +251,7 @@ public class ObjectiveCHeaderGeneratorTest extends GenerationTest {
       "public class Example { int i; class Inner { void test() { int j = i; } } }",
       "Example", "Example.h");
     assertTranslation(translation, "@interface Example_Inner : NSObject");
-    assertTranslation(translation, "Example *this$0;");
+    assertTranslation(translation, "Example *this$0_;");
     assertTranslation(translation, "- (id)initWithExample:(Example *)outer$;");
   }
 
@@ -286,16 +285,16 @@ public class ObjectiveCHeaderGeneratorTest extends GenerationTest {
 
   public void testEnumWithParameters() throws IOException {
     String translation = translateSourceFile(
-      "public enum Color { RED(0xff0000), WHITE(0xffffff), BLUE(0x0000ff); " +
-      "private int rgb; private Color(int rgb) { this.rgb = rgb; } " +
-      "public int getRgb() { return rgb; }}",
-      "Color", "Color.h");
+        "public enum Color { RED(0xff0000), WHITE(0xffffff), BLUE(0x0000ff); " +
+        "private int rgb; private Color(int rgb) { this.rgb = rgb; } " +
+        "public int getRgb() { return rgb; }}",
+        "Color", "Color.h");
     assertTranslation(translation, "@interface ColorEnum : JavaLangEnum");
     assertTranslation(translation, "int rgb_;");
-    assertTranslation(translation, "@property (nonatomic, assign) int rgb;");
-    assertTranslation(translation, "- (id)initWithInt:(int)rgb");
-    assertTranslation(translation, "withNSString:(NSString *)__name");
-    assertTranslation(translation, "withInt:(int)__ordinal;");
+    assertTranslatedLines(translation,
+        "- (id)initWithInt:(int)rgb",
+        "withNSString:(NSString *)__name",
+        "withInt:(int)__ordinal;");
   }
 
   public void testEnumWithMultipleConstructors() throws IOException {
@@ -309,7 +308,6 @@ public class ObjectiveCHeaderGeneratorTest extends GenerationTest {
       "Color", "Color.h");
     assertTranslation(translation, "@interface ColorEnum : JavaLangEnum");
     assertTranslation(translation, "BOOL primary_;");
-    assertTranslation(translation, "@property (nonatomic, assign) BOOL primary;");
     assertTranslatedLines(translation,
         "- (id)initWithInt:(int)rgb",
         "withNSString:(NSString *)__name",
@@ -332,8 +330,8 @@ public class ObjectiveCHeaderGeneratorTest extends GenerationTest {
     String translation = translateSourceFile(
       "public class Example { char[] before; char after[]; }",
       "Example", "Example.h");
-    assertTranslation(translation, "IOSCharArray *before;");
-    assertTranslation(translation, "IOSCharArray *after;");
+    assertTranslation(translation, "IOSCharArray *before_;");
+    assertTranslation(translation, "IOSCharArray *after_;");
   }
 
   public void testForwardDeclarationOfInnerType() throws IOException {
@@ -382,11 +380,8 @@ public class ObjectiveCHeaderGeneratorTest extends GenerationTest {
         "class Subsubclass extends Subclass { int size; }",
         "Example", "Example.h");
     assertTranslation(translation, "int size_;");
-    assertTranslation(translation, "@property (nonatomic, assign) int size;");
     assertTranslation(translation, "int size_Subclass_;");
-    assertTranslation(translation, "@property (nonatomic, assign) int size_Subclass;");
     assertTranslation(translation, "int size_Subsubclass_;");
-    assertTranslation(translation, "@property (nonatomic, assign) int size_Subsubclass;");
   }
 
   public void testOverriddenNameTranslation() throws IOException {
@@ -395,9 +390,7 @@ public class ObjectiveCHeaderGeneratorTest extends GenerationTest {
         "class Subclass extends Example { int size; int size() { return size; }}",
         "Example", "Example.h");
     assertTranslation(translation, "int size__;");
-    assertTranslation(translation, "@property (nonatomic, assign) int size_;");
     assertTranslation(translation, "int size_Subclass_;");
-    assertTranslation(translation, "@property (nonatomic, assign) int size_Subclass;");
   }
 
   public void testEnumNaming() throws IOException {
@@ -492,10 +485,10 @@ public class ObjectiveCHeaderGeneratorTest extends GenerationTest {
         + "  private class Internal {"
         + "  }"
         + "}";
-    String translation = translateSourceFile(sourceContent,
-      "FooBar", "FooBar.h");
-    assertTranslation(translation, "@property (nonatomic, assign) FooBar_Internal *fieldBar;");
-    assertTranslation(translation, "@property (nonatomic, retain) FooBar_Internal *fieldFoo;");
+    String translation = translateSourceFile(sourceContent, "FooBar", "FooBar.h");
+    assertTranslatedLines(translation,
+        "__weak FooBar_Internal *fieldBar_;",
+        "FooBar_Internal *fieldFoo_;");
   }
 
   public void testAddIgnoreDeprecationWarningsPragmaIfDeprecatedDeclarationsIsEnabled()
@@ -549,13 +542,10 @@ public class ObjectiveCHeaderGeneratorTest extends GenerationTest {
     assertTranslation(translation, "@interface TestEnum : JavaLangEnum");
     assertTranslation(translation, "NSString *name_Test_;");
     assertTranslation(translation, "int ordinal_Test_;");
-    assertTranslation(translation, "@property (nonatomic, copy) NSString *name_Test;");
-    assertTranslation(translation, "@property (nonatomic, assign) int ordinal_Test;");
     assertTranslatedLines(translation,
         "- (id)initWithNSString:(NSString *)name",
         "withInt:(int)ordinal",
         "withNSString:(NSString *)__name",
         "withInt:(int)__ordinal;");
   }
-
 }
