@@ -198,17 +198,7 @@ typedef union {
 
 
 - (IOSClass *)getType {
-  const char *argType = ivar_getTypeEncoding(ivar_);
-  if (strlen(argType) != 1) {
-    NSString *errorMsg =
-        [NSString stringWithFormat:@"unexpected type: %s", argType];
-    id exception = [[JavaLangAssertionError alloc] initWithNSString:errorMsg];
-#if ! __has_feature(objc_arc)
-    [exception autorelease];
-#endif
-    @throw exception;
-  }
-  return decodeTypeEncoding(*argType);
+  return decodeTypeEncoding(ivar_getTypeEncoding(ivar_));
 }
 
 - (IOSClass *)getGenericType {

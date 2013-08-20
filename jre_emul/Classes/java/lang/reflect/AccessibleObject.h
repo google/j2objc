@@ -46,7 +46,7 @@
 
 // Decodes an Objective-C type encoding, returning the associated iOS class.
 // For example, the type encoding 's' is decoded as JavaLangShort.
-IOSClass *decodeTypeEncoding(char type);
+IOSClass *decodeTypeEncoding(const char *type);
 
 // Return a Java type name for an Objective-C type encoding.  For example,
 // "byte" is returned for 'c', since a Java byte is mapped to a C char.

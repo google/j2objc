@@ -75,7 +75,7 @@ static id Box(JavaResult *value, const char *type);
 #endif
     @throw exception;
   }
-  return decodeTypeEncoding(*argType);
+  return decodeTypeEncoding(argType);
 }
 
 - (IOSClass *)getGenericReturnType {

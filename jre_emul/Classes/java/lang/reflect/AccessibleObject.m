@@ -91,9 +91,16 @@
 // TODO(user): is there a reasonable way to make these methods table-driven?
 
 // Return a Obj-C type encoding as a Java type or wrapper type.
-IOSClass *decodeTypeEncoding(char type) {
+IOSClass *decodeTypeEncoding(const char *type) {
   Class typeClass = nil;
-  switch (type) {
+  if (strlen(type) > 1 && type[0] == '@') {
+    // Format is '@"type-name"'.
+    char *typeNameAsC = strndup(type + 2, strlen(type) - 3);
+    NSString *typeName = [NSString stringWithUTF8String:typeNameAsC];
+    free(typeNameAsC);
+    return [IOSClass forName:typeName];
+  }
+  switch (type[0]) {
     case '@':
       typeClass = [NSObject class];
       break;
@@ -133,7 +140,7 @@ IOSClass *decodeTypeEncoding(char type) {
   }
   if (typeClass == nil) {
     NSString *errorMsg =
-    [NSString stringWithFormat:@"unknown Java type encoding: '%c'", type];
+    [NSString stringWithFormat:@"unknown Java type encoding: '%s'", type];
     id exception = [[JavaLangAssertionError alloc] initWithNSString:errorMsg];
 #if ! __has_feature(objc_arc)
     [exception autorelease];
