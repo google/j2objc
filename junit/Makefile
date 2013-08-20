@@ -27,6 +27,9 @@ JUNIT_SOURCES = \
     junit/framework/AssertionFailedError.java \
     junit/framework/ComparisonCompactor.java \
     junit/framework/ComparisonFailure.java \
+    junit/framework/JUnit4TestAdapter.java \
+    junit/framework/JUnit4TestAdapterCache.java \
+    junit/framework/JUnit4TestCaseFacade.java \
     junit/framework/Protectable.java \
     junit/framework/Test.java \
     junit/framework/TestCase.java \
