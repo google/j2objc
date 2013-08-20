@@ -78,13 +78,20 @@ public class Autoboxer extends ErrorReportingASTVisitor {
   private Expression box(Expression expr) {
     ITypeBinding wrapperBinding = Types.getWrapperType(Types.getTypeBinding(expr));
     if (wrapperBinding != null) {
-      return boxWithType(expr, wrapperBinding);
+      return newBoxExpression(expr, wrapperBinding);
     } else {
       return NodeCopier.copySubtree(ast, expr);
     }
   }
 
   private Expression boxWithType(Expression expr, ITypeBinding wrapperType) {
+    if (Types.isBoxedPrimitive(wrapperType)) {
+      return newBoxExpression(expr, wrapperType);
+    }
+    return box(expr);
+  }
+
+  private Expression newBoxExpression(Expression expr, ITypeBinding wrapperType) {
     ITypeBinding primitiveType = Types.getPrimitiveType(wrapperType);
     assert primitiveType != null;
     IMethodBinding wrapperMethod = BindingUtil.findDeclaredMethod(
