@@ -101,19 +101,19 @@
   __unsafe_unretained IOSClass *componentTypes[dimensionCount];
   componentTypes[dimensionCount - 1] = type;
   for (int i = dimensionCount - 2; i >= 0; i--) {
-    componentTypes[i] = [IOSArrayClass classWithComponentType:componentTypes[i + 1]];
+    componentTypes[i] = [IOSClass arrayClassWithComponentType:componentTypes[i + 1]];
   }
   return [self arrayWithDimensions:dimensionCount lengths:dimensionLengths types:componentTypes];
 }
 
 + (id)iosClassWithType:(IOSClass *)type {
-  return [IOSArrayClass classWithComponentType:type];
+  return [IOSClass arrayClassWithComponentType:type];
 }
 
 + (id)iosClassWithDimensions:(NSUInteger)dimensions type:(IOSClass *)type {
-  IOSClass *result = [IOSArrayClass classWithComponentType:type];
+  IOSClass *result = [IOSClass arrayClassWithComponentType:type];
   while (--dimensions > 0) {
-    result = [IOSArrayClass classWithComponentType:result];
+    result = [IOSClass arrayClassWithComponentType:result];
   }
   return result;
 }

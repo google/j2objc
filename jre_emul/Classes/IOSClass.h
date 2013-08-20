@@ -42,20 +42,15 @@
 @interface IOSClass : NSObject <JavaLangReflectAnnotatedElement,
     JavaLangReflectGenericDeclaration, JavaIoSerializable,
     JavaLangReflectType, NSCopying> {
- @private
-  // Only one of these may be set.
-  Class class_;
-  Protocol *protocol_;
 }
 
 @property (readonly) Class objcClass;
 @property (readonly) Protocol *objcProtocol;
 
+// IOSClass Getters.
 + (IOSClass *)classWithClass:(Class)cls;
-- (id)initWithClass:(Class)cls;
-
 + (IOSClass *)classWithProtocol:(Protocol *)protocol;
-- (id)initWithProtocol:(Protocol *)protocol;
++ (IOSClass *)arrayClassWithComponentType:(IOSClass *)componentType;
 
 // Primitive class instance getters.
 + (IOSClass *)byteClass;
@@ -167,11 +162,11 @@
 - (IOSObjectArray *)getEnumConstants;
 
 // Internal methods
-- (NSString *)binaryName;
-+ (IOSClass *)fetchCachedClass:(id<NSCopying>)key;
-+ (IOSClass *)fetchClass:(Class)cls;
-+ (IOSClass *)fetchProtocol:(Protocol *)protocol;
-+ (void)addToCache:(IOSClass *)clazz withKey:(id<NSCopying>)key;
+- (void)collectMethods:(NSMutableDictionary *)methodMap;
+- (JavaLangReflectMethod *)findMethodWithTranslatedName:(NSString *)objcName;
+- (IOSObjectArray *)getInterfacesWithArrayType:(IOSClass *)arrayType;
+extern NSString *IOSClass_GetTranslatedMethodName(
+    NSString *name, IOSObjectArray *paramTypes);
 
 @end
 

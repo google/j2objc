@@ -58,10 +58,6 @@
   return name_;
 }
 
-- (IOSClass *)getSuperclass {
-  return nil;
-}
-
 - (BOOL)isAssignableFrom:(IOSClass *)cls {
   return [self isEqual:cls];
 }
@@ -109,33 +105,6 @@ static IOSObjectArray *emptyArray(IOSClass *arrayType) {
 - (JavaLangReflectConstructor *)
 getConstructorWithClasses:(IOSClass *)firstClass, ... {
   id exception = [[JavaLangNoSuchMethodException alloc] init];
-#if ! __has_feature(objc_arc)
-  [exception autorelease];
-#endif
-  @throw exception;
-  return nil;
-}
-
-- (id)newInstance {
-  id exception = [[JavaLangInstantiationException alloc] init];
-#if ! __has_feature(objc_arc)
-  [exception autorelease];
-#endif
-  @throw exception;
-  return nil;
-}
-
-- (id)initWithProtocol:(Protocol *)protocol {
-  id exception = [[JavaLangAssertionError alloc] init];
-#if ! __has_feature(objc_arc)
-  [exception autorelease];
-#endif
-  @throw exception;
-  return nil;
-}
-
-- (id)classWithProtocol:(Protocol *)protocol {
-  id exception = [[JavaLangAssertionError alloc] init];
 #if ! __has_feature(objc_arc)
   [exception autorelease];
 #endif

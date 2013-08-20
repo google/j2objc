@@ -32,12 +32,14 @@ IOS_OBJS = \
 	IOSByteArray.o \
 	IOSCharArray.o \
 	IOSClass.o \
+	IOSConcreteClass.o \
 	IOSDoubleArray.o \
 	IOSFloatArray.o \
 	IOSIntArray.o \
 	IOSLongArray.o \
 	IOSObjectArray.o \
 	IOSPrimitiveClass.o \
+	IOSProtocolClass.o \
 	IOSShortArray.o \
 	JavaToIOSInputStreamAdapter.o \
 	JreEmulation.o \

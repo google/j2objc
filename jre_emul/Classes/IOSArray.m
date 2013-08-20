@@ -57,7 +57,7 @@
   for (int i = dimensionCount - 2; i >= 0; i--) {
     __unsafe_unretained IOSClass *last = componentTypes[i + 1];
     if (last) {
-      componentTypes[i] = [IOSArrayClass classWithComponentType:last];
+      componentTypes[i] = [IOSClass arrayClassWithComponentType:last];
     } else {
       componentTypes[i] = [self iosClass];
     }
@@ -100,7 +100,7 @@
 + (id)iosClassWithDimensions:(NSUInteger)dimensions {
   IOSClass *result = [self iosClass];
   while (--dimensions > 0) {
-    result = [IOSArrayClass classWithComponentType:result];
+    result = [IOSClass arrayClassWithComponentType:result];
   }
   return result;
 }
@@ -135,7 +135,7 @@ void IOSArray_throwOutOfBounds(NSUInteger size, NSUInteger index) {
 }
 
 - (IOSClass *)getClass {
-  return [IOSArrayClass classWithComponentType:[self elementType]];
+  return [IOSClass arrayClassWithComponentType:[self elementType]];
 }
 
 - (IOSClass *)elementType {
@@ -147,10 +147,6 @@ void IOSArray_throwOutOfBounds(NSUInteger size, NSUInteger index) {
            initWithNSString:@"abstract method not overridden"] autorelease];
 #endif
   return nil;
-}
-
-- (NSString *)binaryName {
-  return [[self getClass] getName];
 }
 
 - (id)copyWithZone:(NSZone *)zone {
