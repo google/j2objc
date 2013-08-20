@@ -436,4 +436,13 @@ public class AutoboxerTest extends GenerationTest {
         "[NSString stringWithFormat:@\"%@ %d %@\" , @\"foo\", 2, " +
         "[JavaLangInteger valueOfWithInt:4], nil]");
   }
+
+  public void testInvokeSuperMethodAutoboxing() throws IOException {
+    String translation = translateSourceFile("class Base { " +
+        "public void print(Object o) { System.out.println(o); }}" +
+        "public class Test extends Base {" +
+        "@Override public void print(Object o) { super.print(123.456f); }}", "Test", "Test.m");
+    assertTranslation(translation,
+        "[super printWithId:[JavaLangFloat valueOfWithFloat:123.456f]];");
+  }
 }

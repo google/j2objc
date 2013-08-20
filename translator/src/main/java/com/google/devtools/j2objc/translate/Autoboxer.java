@@ -48,6 +48,7 @@ import org.eclipse.jdt.core.dom.ReturnStatement;
 import org.eclipse.jdt.core.dom.SimpleName;
 import org.eclipse.jdt.core.dom.StringLiteral;
 import org.eclipse.jdt.core.dom.SuperConstructorInvocation;
+import org.eclipse.jdt.core.dom.SuperMethodInvocation;
 import org.eclipse.jdt.core.dom.SwitchStatement;
 import org.eclipse.jdt.core.dom.VariableDeclarationFragment;
 import org.eclipse.jdt.core.dom.WhileStatement;
@@ -342,6 +343,11 @@ public class Autoboxer extends ErrorReportingASTVisitor {
 
   @Override
   public void endVisit(SuperConstructorInvocation node) {
+    convertArguments(Types.getMethodBinding(node), ASTUtil.getArguments(node));
+  }
+
+  @Override
+  public void endVisit(SuperMethodInvocation node) {
     convertArguments(Types.getMethodBinding(node), ASTUtil.getArguments(node));
   }
 
