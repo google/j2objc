@@ -1078,7 +1078,7 @@ public class ObjectiveCImplementationGenerator extends ObjectiveCSourceFileGener
   // isn't specified in the annotation will use the default.
   private void printAnnotationParameters(Annotation annotation) {
     IAnnotationBinding binding = Types.getAnnotationBinding(annotation);
-    IMemberValuePairBinding[] valueBindings = binding.getAllMemberValuePairs();
+    IMemberValuePairBinding[] valueBindings = BindingUtil.getSortedMemberValuePairs(binding);
     for (int i = 0; i < valueBindings.length; i++) {
       if (i > 0) {
         print(' ');
