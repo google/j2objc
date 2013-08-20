@@ -42,6 +42,10 @@
 + (id)arrayWithDimensions:(NSUInteger)dimensionCount
                   lengths:(const int *)dimensionLengths;
 
++ (id)arrayWithDimensions:(NSUInteger)dimensionCount
+                  lengths:(const int *)dimensionLengths
+                    types:(__unsafe_unretained IOSClass * const *)componentTypes;
+
 + (id)iosClass;
 + (id)iosClassWithDimensions:(NSUInteger)dimensions;
 
