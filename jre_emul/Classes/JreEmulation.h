@@ -91,7 +91,10 @@ FOUNDATION_EXPORT
     IOSObjectArray *JreEmulationMainArguments(int argc, const char *argv[]);
 
 #if __has_feature(objc_arc)
-#define J2OBJC_FIELD_SETTER(CLASS, FIELD, TYPE)
+#define J2OBJC_FIELD_SETTER(CLASS, FIELD, TYPE) \
+  static inline TYPE CLASS##_set_##FIELD(CLASS *instance, TYPE value) { \
+    return instance->FIELD = value; \
+  }
 #else
 #define J2OBJC_FIELD_SETTER(CLASS, FIELD, TYPE) \
   static inline TYPE CLASS##_set_##FIELD(CLASS *instance, TYPE value) { \
