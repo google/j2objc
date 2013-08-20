@@ -16,6 +16,7 @@
 
 package com.google.devtools.j2objc.gen;
 
+import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 import com.google.devtools.j2objc.J2ObjC;
@@ -161,6 +162,8 @@ public class ObjectiveCHeaderGenerator extends ObjectiveCSourceFileGenerator {
       printStaticInterface(typeName, fields, methods);
     }
 
+    printIncrementAndDecrementFunctions(binding);
+
     String pkg = binding.getPackage().getName();
     if (NameTable.hasPrefix(pkg) && binding.isTopLevel()) {
       String unprefixedName = NameTable.camelCaseQualifiedName(binding.getQualifiedName());
@@ -172,6 +175,21 @@ public class ObjectiveCHeaderGenerator extends ObjectiveCSourceFileGenerator {
       }
     }
     printExternalNativeMethodCategory(node, typeName);
+  }
+
+  private static final Set<String> NEEDS_INC_AND_DEC = ImmutableSet.of(
+      "int", "long", "double", "float", "short", "byte", "char");
+
+  private void printIncrementAndDecrementFunctions(ITypeBinding type) {
+    ITypeBinding primitiveType = Types.getPrimitiveType(type);
+    if (primitiveType == null || !NEEDS_INC_AND_DEC.contains(primitiveType.getName())) {
+      return;
+    }
+    String primitiveName = primitiveType.getName();
+    newline();
+    printf("BOXED_INC_AND_DEC(%s, %s, %s, %s)\n", NameTable.capitalize(primitiveName),
+        primitiveName, NameTable.getFullName(type),
+        NameTable.capitalize(NameTable.getPrimitiveTypeParameterKeyword(primitiveName)));
   }
 
   @Override
