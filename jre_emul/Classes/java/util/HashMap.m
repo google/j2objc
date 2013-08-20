@@ -176,7 +176,7 @@
 - (id)getWithId:(id)key {
   JavaUtilHashMap_Entry *m = [self getEntryWithId:key];
   if (m != nil) {
-    return m.value;
+    return m->value_;
   }
   return nil;
 }
@@ -324,7 +324,7 @@
 - (id)removeWithId:(id)key {
   JavaUtilHashMap_Entry *entry = [self removeEntryWithId:key];
   if (entry != nil) {
-    return entry.value;
+    return entry->value_;
   }
   return nil;
 }
@@ -583,7 +583,7 @@
 
 - (id)next {
   [self makeNext];
-  return ((JavaUtilHashMap_Entry *) nil_chk(currentEntry_)).key;
+  return ((JavaUtilHashMap_Entry *) nil_chk(currentEntry_))->key_;
 }
 
 @end
@@ -597,7 +597,7 @@
 
 - (id)next {
   [self makeNext];
-  return ((JavaUtilHashMap_Entry *) nil_chk(currentEntry_)).value;
+  return ((JavaUtilHashMap_Entry *) nil_chk(currentEntry_))->value_;
 }
 
 @end

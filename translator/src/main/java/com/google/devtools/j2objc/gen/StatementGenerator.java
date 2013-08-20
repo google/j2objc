@@ -1389,8 +1389,7 @@ public class StatementGenerator extends ErrorReportingASTVisitor {
 
   @Override
   public boolean visit(SuperFieldAccess node) {
-    buffer.append("super.");
-    buffer.append(NameTable.getName(node.getName()));
+    buffer.append(NameTable.javaFieldToObjC(NameTable.getName(node.getName())));
     return false;
   }
 

@@ -764,11 +764,10 @@ public class StatementGeneratorTest extends GenerationTest {
   }
 
   public void testSuperFieldAccess() throws IOException {
-    // Verify that super properties aren't referenced as "super.self.i".
     String translation = translateSourceFile(
-      "public class A { int i; class B extends A { int test() { return super.i; }}}",
+      "public class A { int i; class B extends A { int i; int test() { return super.i + i; }}}",
       "A", "A.m");
-    assertTranslation(translation, "super.i");
+    assertTranslation(translation, "return i_ + i_B_;");
   }
 
   public void testStaticConstants() throws IOException {

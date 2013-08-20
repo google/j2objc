@@ -410,7 +410,7 @@
 
 - (id)next {
   [self makeNext];
-  return ((JavaUtilLinkedHashMap_LinkedHashMapEntry *) nil_chk(currentEntry_)).key;
+  return ((JavaUtilLinkedHashMap_LinkedHashMapEntry *) nil_chk(currentEntry_))->key_;
 }
 
 @end
@@ -424,7 +424,7 @@
 
 - (id)next {
   [self makeNext];
-  return ((JavaUtilLinkedHashMap_LinkedHashMapEntry *) nil_chk(currentEntry_)).value;
+  return ((JavaUtilLinkedHashMap_LinkedHashMapEntry *) nil_chk(currentEntry_))->value_;
 }
 
 @end
