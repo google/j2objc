@@ -22,6 +22,7 @@ import com.google.devtools.j2objc.types.NodeCopier;
 import com.google.devtools.j2objc.types.Types;
 import com.google.devtools.j2objc.util.ASTUtil;
 import com.google.devtools.j2objc.util.ErrorReportingASTVisitor;
+import com.google.devtools.j2objc.util.NameTable;
 
 import org.eclipse.jdt.core.dom.AST;
 import org.eclipse.jdt.core.dom.ASTNode;
@@ -43,6 +44,7 @@ import org.eclipse.jdt.core.dom.IfStatement;
 import org.eclipse.jdt.core.dom.InfixExpression;
 import org.eclipse.jdt.core.dom.MethodDeclaration;
 import org.eclipse.jdt.core.dom.MethodInvocation;
+import org.eclipse.jdt.core.dom.PostfixExpression;
 import org.eclipse.jdt.core.dom.PrefixExpression;
 import org.eclipse.jdt.core.dom.ReturnStatement;
 import org.eclipse.jdt.core.dom.SimpleName;
@@ -316,10 +318,40 @@ public class Autoboxer extends ErrorReportingASTVisitor {
 
   @Override
   public void endVisit(PrefixExpression node) {
+    PrefixExpression.Operator op = node.getOperator();
     Expression operand = node.getOperand();
-    if (!getBoxType(operand).isPrimitive()) {
+    if (op == PrefixExpression.Operator.INCREMENT) {
+      rewriteBoxedPrefixOrPostfix(node, operand, "PreIncr");
+    } else if (op == PrefixExpression.Operator.DECREMENT) {
+      rewriteBoxedPrefixOrPostfix(node, operand, "PreDecr");
+    } else if (!getBoxType(operand).isPrimitive()) {
       node.setOperand(unbox(operand));
     }
+  }
+
+  @Override
+  public void endVisit(PostfixExpression node) {
+    PostfixExpression.Operator op = node.getOperator();
+    if (op == PostfixExpression.Operator.INCREMENT) {
+      rewriteBoxedPrefixOrPostfix(node, node.getOperand(), "PostIncr");
+    } else if (op == PostfixExpression.Operator.DECREMENT) {
+      rewriteBoxedPrefixOrPostfix(node, node.getOperand(), "PostDecr");
+    }
+  }
+
+  private void rewriteBoxedPrefixOrPostfix(
+      ASTNode node, Expression operand, String methodPrefix) {
+    ITypeBinding type = getBoxType(operand);
+    if (!Types.isBoxedPrimitive(type)) {
+      return;
+    }
+    AST ast = node.getAST();
+    String methodName = methodPrefix + NameTable.capitalize(Types.getPrimitiveType(type).getName());
+    IOSMethodBinding methodBinding = IOSMethodBinding.newFunction(methodName, type, type, type);
+    MethodInvocation invocation = ASTFactory.newMethodInvocation(ast, methodBinding, null);
+    ASTUtil.getArguments(invocation).add(
+        ASTFactory.newAddressOf(ast, NodeCopier.copySubtree(ast, operand)));
+    ASTUtil.setProperty(node, invocation);
   }
 
   @Override

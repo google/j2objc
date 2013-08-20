@@ -112,6 +112,26 @@ UR_SHIFT_ASSIGN_DEFN(Int, int)
 UR_SHIFT_ASSIGN_DEFN(Long, long long)
 UR_SHIFT_ASSIGN_DEFN(Short, short int)
 
+// This macro is used by the translator to add increment and decrement
+// operations to the header files of the boxed types.
+#define BOXED_INC_AND_DEC(CNAME, LNAME, TYPE, KEYWORD) \
+  static inline TYPE *PreIncr##CNAME(TYPE **value) { \
+    return *value = [TYPE valueOfWith##KEYWORD:[*value LNAME##Value] + 1]; \
+  } \
+  static inline TYPE *PostIncr##CNAME(TYPE **value) { \
+    TYPE *original = *value; \
+    *value = [TYPE valueOfWith##KEYWORD:[*value LNAME##Value] + 1]; \
+    return original; \
+  } \
+  static inline TYPE *PreDecr##CNAME(TYPE **value) { \
+    return *value = [TYPE valueOfWith##KEYWORD:[*value LNAME##Value] - 1]; \
+  } \
+  static inline TYPE *PostDecr##CNAME(TYPE **value) { \
+    TYPE *original = *value; \
+    *value = [TYPE valueOfWith##KEYWORD:[*value LNAME##Value] - 1]; \
+    return original; \
+  }
+
 #endif // __OBJC__
 
 #endif // _JreEmulation_H_

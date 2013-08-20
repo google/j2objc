@@ -337,7 +337,7 @@ public class NameTable {
       .put("long", "longInt")
       .build();
 
-  private static String getPrimitiveTypeParameterKeyword(String javaName) {
+  public static String getPrimitiveTypeParameterKeyword(String javaName) {
     String result = PRIMITIVE_TYPE_KEYWORD_MAP.get(javaName);
     return result != null ? result : javaName;
   }
