@@ -22,6 +22,20 @@
 #import "JreEmulation.h"
 #import "IOSClass.h"
 
+#ifdef J2OBJC_COUNT_NIL_CHK
+int j2objc_nil_chk_count = 0;
+#endif
+
+void JrePrintNilChkCount() {
+#ifdef J2OBJC_COUNT_NIL_CHK
+  printf("nil_chk count: %d\n", j2objc_nil_chk_count);
+#endif
+}
+
+void JrePrintNilChkCountAtExit() {
+  atexit(JrePrintNilChkCount);
+}
+
 // Converts main() arguments into an IOSObjectArray of NSStrings.  The first
 // argument, the program name, is skipped so the returned array matches what
 // is passed to a Java main method.
