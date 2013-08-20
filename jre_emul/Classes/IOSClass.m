@@ -502,8 +502,7 @@ JavaLangReflectConstructor *getConstructorImpl(IOSClass *cls,
 
 - (NSString *)description {
   // matches java.lang.Class.toString() output
-  return [NSString stringWithFormat:@"class %@",
-          [IOSClass javaToIOSName:[self getSimpleName]]];
+  return [NSString stringWithFormat:@"class %@", [self getSimpleName]];
 }
 
 - (BOOL)isEqual:(id)anObject {
@@ -914,7 +913,7 @@ IOSObjectArray *copyFieldsToObjectArray(NSArray *fields) {
 }
 
 + (IOSClass *)fetchClass:(Class)cls {
-  NSString *classKey = [IOSClass javaToIOSName:NSStringFromClass(cls)];
+  NSString *classKey = NSStringFromClass(cls);
   IOSClass *clazz = [IOSClass_classCache objectForKey:classKey];
   if (!clazz) {
     clazz = AUTORELEASE([[IOSClass alloc] initWithClass:cls]);

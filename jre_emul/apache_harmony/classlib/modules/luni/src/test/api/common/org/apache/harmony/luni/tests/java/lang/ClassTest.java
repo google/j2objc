@@ -637,7 +637,7 @@ public class ClassTest extends junit.framework.TestCase {
         Class<?> clazz = null;
         clazz = Class.forName("[I");
         assertEquals("Class toString printed wrong value",
-                     "class IntArray", clazz.toString());
+                     "class intArray", clazz.toString());
 
         clazz = Class.forName("java.lang.Object");
         assertEquals("Class toString printed wrong value",
