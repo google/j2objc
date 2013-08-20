@@ -27,8 +27,7 @@ public class NilCheckResolverTest extends GenerationTest {
 
   public void testNilCheckArrayLength() throws IOException {
     String translation = translateSourceFile(
-      "public class A {" +
-      "  int length(char[] s) { return s.length; } void test() { length(null);}}",
+      "public class A { int length(char[] s) { return s.length; } void test() { length(null);} }",
       "A", "A.m");
     assertTranslation(translation, "return (int) [((IOSCharArray *) nil_chk(s)) count];");
   }
@@ -37,5 +36,91 @@ public class NilCheckResolverTest extends GenerationTest {
     String translation = translateSourceFile(
         "class Test { int i; void test(Object o) { int i = ((Test) o).i; } }", "Test", "Test.m");
     assertTranslation(translation, "((Test *) nil_chk(o))->i_");
+  }
+
+  public void testNoNilCheckOnSecondDereference() throws IOException {
+    String translation = translateSourceFile(
+        "class Test { void test(Object o) { o.toString(); o.toString(); } }", "Test", "Test.m");
+    assertTranslatedLines(translation,
+        "[nil_chk(o) description];",
+        "[o description];");
+  }
+
+  public void testNilCheckAfterReassignment() throws IOException {
+    String translation = translateSourceFile(
+        "class Test { void test(Object o) { o.toString(); o = null; o.toString(); "
+        + "o = new Object(); o.toString(); } }", "Test", "Test.m");
+    assertTranslatedLines(translation,
+        "nil_chk(o) description];",
+        "o = nil;",
+        "[nil_chk(o) description];",
+        "o = [[[NSObject alloc] init] autorelease];",
+        "[o description];");
+  }
+
+  public void testNilCheckAfterIfStatement() throws IOException {
+    String translation = translateSourceFile(
+        "class Test { void test(Object o, boolean b) { if (b) { o.toString(); } o.toString(); } }",
+        "Test", "Test.m");
+    assertTranslatedLines(translation,
+        "if (b) {",
+        "[nil_chk(o) description];",
+        "}",
+        "[nil_chk(o) description];");
+  }
+
+  public void testEqualsNullTest() throws IOException {
+    String translation = translateSourceFile(
+        "class Test { "
+        + "void test1(Object o1) { if (o1 == null) { o1.toString(); } else { o1.toString(); } }"
+        + "void test2(Object o2) { if (o2 != null) { o2.toString(); } else { o2.toString(); } }"
+        + "void test3(Object o3, boolean b) { "
+        + "if (o3 != null || b) { o3.toString(); } else { o3.toString(); } } }",
+        "Test", "Test.m");
+    assertTranslatedLines(translation,
+        "if (o1 == nil) {",
+        "[nil_chk(o1) description];",
+        "}",
+        "else {",
+        "[o1 description];",
+        "}");
+    assertTranslatedLines(translation,
+        "if (o2 != nil) {",
+        "[o2 description];",
+        "}",
+        "else {",
+        "[nil_chk(o2) description];",
+        "}");
+    assertTranslatedLines(translation,
+        "if (o3 != nil || b) {",
+        "[nil_chk(o3) description];",
+        "}",
+        "else {",
+        "[nil_chk(o3) description];",
+        "}");
+  }
+
+  public void testNilCheckAfterWhileLoop() throws IOException {
+    String translation = translateSourceFile(
+        "class Test { void test(Object o, boolean b) { "
+        + "while (b) { o.toString(); } o.toString(); } }",
+        "Test", "Test.m");
+    assertTranslatedLines(translation,
+        "while (b) {",
+        "[nil_chk(o) description];",
+        "}",
+        "[nil_chk(o) description];");
+  }
+
+  public void testNilCheckAfterConditionalInfix() throws IOException {
+    String translation = translateSourceFile(
+        "abstract class Test { abstract boolean foo(); void test(Test t1, Test t2, boolean b) { "
+        + "boolean b1 = b && t1.foo(); t1.foo(); boolean b2 = b || t2.foo(); t2.foo(); } }",
+        "Test", "Test.m");
+    assertTranslatedLines(translation,
+        "BOOL b1 = b && [((Test *) nil_chk(t1)) foo];",
+        "[((Test *) nil_chk(t1)) foo];",
+        "BOOL b2 = b || [((Test *) nil_chk(t2)) foo];",
+        "[((Test *) nil_chk(t2)) foo];");
   }
 }

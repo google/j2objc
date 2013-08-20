@@ -156,7 +156,7 @@ public class StatementGeneratorTest extends GenerationTest {
     List<Statement> stmts = translateStatements(source);
     assertEquals(3, stmts.size());
     String result = generateStatement(stmts.get(1));
-    assertEquals("[nil_chk(o) description];", result);
+    assertEquals("[o description];", result);
     result = generateStatement(stmts.get(2));
     assertEquals("[self description];", result);
   }
@@ -308,8 +308,7 @@ public class StatementGeneratorTest extends GenerationTest {
         "  String b = \"foo\" + a.hashCode() + \"bar\" + a.length() + \"baz\"; } }",
         "Test", "Test.m");
     assertTranslation(translation,
-        "[NSString stringWithFormat:@\"foo%dbar%dbaz\", (int) [((NSString *) nil_chk(a)) hash], " +
-        "(int) [((NSString *) nil_chk(a)) length]]");
+        "[NSString stringWithFormat:@\"foo%dbar%dbaz\", (int) [a hash], (int) [a length]]");
   }
 
   public void testVarargsMethodInvocation() throws IOException {
@@ -608,8 +607,7 @@ public class StatementGeneratorTest extends GenerationTest {
     String result = generateStatement(stmts.get(0));
     assertEquals("IOSClass *myClass = [self getClass];", result);
     result = generateStatement(stmts.get(1));
-    assertEquals(
-        "IOSClass *mySuperClass = [((IOSClass *) nil_chk(myClass)) getSuperclass];", result);
+    assertEquals("IOSClass *mySuperClass = [myClass getSuperclass];", result);
     result = generateStatement(stmts.get(2));
     assertEquals("IOSClass *enumClass = [IOSClass classWithClass:[JavaLangEnum class]];", result);
   }
@@ -845,7 +843,7 @@ public class StatementGeneratorTest extends GenerationTest {
     List<Statement> stmts = translateStatements(source);
     assertEquals(3, stmts.size());
     String result = generateStatement(stmts.get(2));
-    assertEquals("(*[((IOSIntArray *) nil_chk(array)) intRefAtIndex:offset]) += 23;", result);
+    assertEquals("(*[array intRefAtIndex:offset]) += 23;", result);
   }
 
   public void testFPModuloOperator() throws IOException {
@@ -909,8 +907,7 @@ public class StatementGeneratorTest extends GenerationTest {
         "[((IOSObjectArray *) nil_chk([((IOSObjectArray *) nil_chk(Test_a_)) objectAtIndex:0])) " +
         "replaceObjectAtIndex:0 withObject:@\"42\"];");
     assertTranslation(translation,
-        "[((IOSObjectArray *) nil_chk([((IOSObjectArray *) nil_chk(Test_a_)) objectAtIndex:0])) " +
-        "count]");
+        "[((IOSObjectArray *) nil_chk([Test_a_ objectAtIndex:0])) count]");
   }
 
   public void testMultiDimArray() throws IOException {
@@ -1022,7 +1019,7 @@ public class StatementGeneratorTest extends GenerationTest {
       "    public static class Bar { } " +
       "    public T foo() { return null; } } " +
       "  public static class BarD extends Foo.Bar { } " +
-      "  public void bar() { Foo<BarD> f = new Foo<BarD>(); BarD b = f.foo(); } }",
+      "  public void bar(Foo<BarD> f) { BarD b = f.foo(); } }",
       "Test", "Test.m");
     assertTranslation(translation, "[((Test_Foo *) nil_chk(f)) foo]");
   }
@@ -1253,10 +1250,9 @@ public class StatementGeneratorTest extends GenerationTest {
         "Test", "Test.m");
     assertTranslation(translation,
         "URShiftAssignInt(&(*[((IOSIntArray *) nil_chk(array)) intRefAtIndex:0]), 2)");
-    assertTranslation(translation,
-        "URShiftAssignInt(&(*[((IOSIntArray *) nil_chk(array)) intRefAtIndex:i - 1]), 3)");
-    assertTranslation(translation, "(*[((IOSIntArray *) nil_chk(array)) intRefAtIndex:1]) >>= 4");
-    assertTranslation(translation, "(*[((IOSIntArray *) nil_chk(array)) intRefAtIndex:2]) <<= 5");
+    assertTranslation(translation, "URShiftAssignInt(&(*[array intRefAtIndex:i - 1]), 3)");
+    assertTranslation(translation, "(*[array intRefAtIndex:1]) >>= 4");
+    assertTranslation(translation, "(*[array intRefAtIndex:2]) <<= 5");
   }
 
   public void testAssertWithoutDescription() throws IOException {
@@ -1480,8 +1476,7 @@ public class StatementGeneratorTest extends GenerationTest {
         "  sb.append(\"hello, world\");" +
         "  new Throwable(); }}",
         "Test", "Test.m");
-    assertTranslation(translation,
-        "(void) [((JavaLangStringBuilder *) nil_chk(sb)) appendWithNSString:@\"hello, world\"];");
+    assertTranslation(translation, "(void) [sb appendWithNSString:@\"hello, world\"];");
     assertTranslation(translation, "(void) [[JavaLangThrowable alloc] init]");
   }
 

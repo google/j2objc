@@ -67,7 +67,7 @@ public class AutoboxerTest extends GenerationTest {
     String source = "byte b = 5; Byte foo = Byte.valueOf((byte) 3); b = foo;";
     List<Statement> stmts = translateStatements(source);
     String result = generateStatement(stmts.get(2));
-    assertEquals("b = [((JavaLangByte *) nil_chk(foo)) byteValue];", result);
+    assertEquals("b = [foo byteValue];", result);
 
     source = "byte b = 5; Byte foo = Byte.valueOf((byte) 3); foo = b;";
     stmts = translateStatements(source);
@@ -79,7 +79,7 @@ public class AutoboxerTest extends GenerationTest {
     String source = "char c = 'a'; Character foo = Character.valueOf('b'); c = foo;";
     List<Statement> stmts = translateStatements(source);
     String result = generateStatement(stmts.get(2));
-    assertEquals("c = [((JavaLangCharacter *) nil_chk(foo)) charValue];", result);
+    assertEquals("c = [foo charValue];", result);
 
     source = "char c = 'a'; Character foo = Character.valueOf('b'); foo = c;";
     stmts = translateStatements(source);
@@ -91,7 +91,7 @@ public class AutoboxerTest extends GenerationTest {
     String source = "short s = 5; Short foo = Short.valueOf((short) 3); s = foo;";
     List<Statement> stmts = translateStatements(source);
     String result = generateStatement(stmts.get(2));
-    assertEquals("s = [((JavaLangShort *) nil_chk(foo)) shortValue];", result);
+    assertEquals("s = [foo shortValue];", result);
 
     source = "short s = 5; Short foo = Short.valueOf((short) 3); foo = s;";
     stmts = translateStatements(source);
@@ -103,7 +103,7 @@ public class AutoboxerTest extends GenerationTest {
     String source = "int i = 5; Integer foo = Integer.valueOf(3); i = foo;";
     List<Statement> stmts = translateStatements(source);
     String result = generateStatement(stmts.get(2));
-    assertEquals("i = [((JavaLangInteger *) nil_chk(foo)) intValue];", result);
+    assertEquals("i = [foo intValue];", result);
 
     source = "int i = 5; Integer foo = Integer.valueOf(3); foo = i;";
     stmts = translateStatements(source);
@@ -115,7 +115,7 @@ public class AutoboxerTest extends GenerationTest {
     String source = "long l = 5; Long foo = Long.valueOf(3L); l = foo;";
     List<Statement> stmts = translateStatements(source);
     String result = generateStatement(stmts.get(2));
-    assertEquals("l = [((JavaLangLong *) nil_chk(foo)) longLongValue];", result);
+    assertEquals("l = [foo longLongValue];", result);
 
     source = "long l = 5; Long foo = Long.valueOf(3L); foo = l;";
     stmts = translateStatements(source);
@@ -127,7 +127,7 @@ public class AutoboxerTest extends GenerationTest {
     String source = "float f = 5.0f; Float foo = Float.valueOf(3.0f); f = foo;";
     List<Statement> stmts = translateStatements(source);
     String result = generateStatement(stmts.get(2));
-    assertEquals("f = [((JavaLangFloat *) nil_chk(foo)) floatValue];", result);
+    assertEquals("f = [foo floatValue];", result);
 
     source = "float f = 5.0f; Float foo = Float.valueOf(3.0f); foo = f;";
     stmts = translateStatements(source);
@@ -139,7 +139,7 @@ public class AutoboxerTest extends GenerationTest {
     String source = "double d = 5.0; Double foo = Double.valueOf(3.0); d = foo;";
     List<Statement> stmts = translateStatements(source);
     String result = generateStatement(stmts.get(2));
-    assertEquals("d = [((JavaLangDouble *) nil_chk(foo)) doubleValue];", result);
+    assertEquals("d = [foo doubleValue];", result);
 
     source = "double d = 5.0; Double foo = Double.valueOf(3.0); foo = d;";
     stmts = translateStatements(source);
@@ -151,14 +151,14 @@ public class AutoboxerTest extends GenerationTest {
     String source = "Integer test = new Integer(5); int result = test + 3;";
     List<Statement> stmts = translateStatements(source);
     String result = generateStatement(stmts.get(1));
-    assertEquals("int result = [((JavaLangInteger *) nil_chk(test)) intValue] + 3;", result);
+    assertEquals("int result = [test intValue] + 3;", result);
   }
 
   public void testInfixRightOperand() throws IOException {
     String source = "Integer test = new Integer(5); int result = 3 + test;";
     List<Statement> stmts = translateStatements(source);
     String result = generateStatement(stmts.get(1));
-    assertEquals("int result = 3 + [((JavaLangInteger *) nil_chk(test)) intValue];", result);
+    assertEquals("int result = 3 + [test intValue];", result);
   }
 
   public void testInfixBothOperands() throws IOException {
@@ -166,8 +166,7 @@ public class AutoboxerTest extends GenerationTest {
         "int result = foo + bar;";
     List<Statement> stmts = translateStatements(source);
     String result = generateStatement(stmts.get(2));
-    assertEquals("int result = [((JavaLangInteger *) nil_chk(foo)) intValue] + " +
-        "[((JavaLangInteger *) nil_chk(bar)) intValue];", result);
+    assertEquals("int result = [foo intValue] + [bar intValue];", result);
   }
 
   public void testInfixNeitherOperand() throws IOException {
@@ -206,8 +205,7 @@ public class AutoboxerTest extends GenerationTest {
         "public class Test { " +
         "boolean test() { Boolean b = null; return b != null ? b : false; } }",
         "Test", "Test.m");
-    assertTranslation(translation,
-        "b != nil ? [((JavaLangBoolean *) nil_chk(b)) booleanValue] : NO");
+    assertTranslation(translation, "b != nil ? [b booleanValue] : NO");
   }
 
   public void testArrayInitializerNotBoxed() throws IOException {
@@ -272,8 +270,7 @@ public class AutoboxerTest extends GenerationTest {
       "  public int values[] = new int[] { i, j, 3 }; }",
       "Test", "Test.m");
     assertTranslation(translation,
-        "[IOSIntArray arrayWithInts:(int[]){ [((JavaLangInteger *) nil_chk(i_)) intValue], " +
-        "[((JavaLangInteger *) nil_chk(j_)) intValue], 3 } count:3]");
+        "[IOSIntArray arrayWithInts:(int[]){ [i_ intValue], [j_ intValue], 3 } count:3]");
   }
 
   public void testBoxedTypeLiteral() throws IOException {
@@ -386,11 +383,9 @@ public class AutoboxerTest extends GenerationTest {
         "  iMinutes = -iMinutes; iSeconds = -iSeconds; }}";
     String translation = translateSourceFile(source, "Test", "Test.m");
     assertTranslation(translation,
-        "iMinutes = [JavaLangInteger valueOfWithInt:" +
-        "-[((JavaLangInteger *) nil_chk(iMinutes)) intValue]];");
+        "iMinutes = [JavaLangInteger valueOfWithInt:-[iMinutes intValue]];");
     assertTranslation(translation,
-        "iSeconds = [JavaLangDouble valueOfWithDouble:" +
-        "-[((JavaLangDouble *) nil_chk(iSeconds)) doubleValue]];");
+        "iSeconds = [JavaLangDouble valueOfWithDouble:-[iSeconds doubleValue]];");
   }
 
   public void testStringConcatenation() throws IOException {
@@ -404,9 +399,7 @@ public class AutoboxerTest extends GenerationTest {
     String translation = translateSourceFile(
         "class Test { void test() { Integer i1 = new Integer(2); Integer i2 = new Integer(3); " +
         "int i3 = 1 + 2 + i1 + i2; } }", "Test", "test.m");
-    assertTranslation(translation,
-        "int i3 = 1 + 2 + [((JavaLangInteger *) nil_chk(i1)) intValue] + " +
-        "[((JavaLangInteger *) nil_chk(i2)) intValue]");
+    assertTranslation(translation, "int i3 = 1 + 2 + [i1 intValue] + [i2 intValue]");
   }
 
   public void testDoNotBoxStringFormatArg() throws IOException {
@@ -422,7 +415,7 @@ public class AutoboxerTest extends GenerationTest {
         "class Test { void test() {" +
         " Integer i = 3;" +
         " switch (i) { case 1: case 2: case 3: } } }", "Test", "Test.m");
-    assertTranslation(translation, "switch ([((JavaLangInteger *) nil_chk(i)) intValue]) {");
+    assertTranslation(translation, "switch ([i intValue]) {");
   }
 
   // Verify that a primitive referenced as an object in the format string is boxed.

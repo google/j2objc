@@ -86,21 +86,21 @@ public class PrimitiveArrayTest extends GenerationTest {
         translateStatements("boolean[] foo = new boolean[3]; boolean b = foo[1];");
     assertEquals(2, stmts.size());
     String result = generateStatement(stmts.get(1));
-    assertEquals("BOOL b = [((IOSBooleanArray *) nil_chk(foo)) booleanAtIndex:1];", result);
+    assertEquals("BOOL b = [foo booleanAtIndex:1];", result);
   }
 
   public void testByteArrayAccess() {
     List<Statement> stmts = translateStatements("byte[] foo = new byte[3]; byte b = foo[1];");
     assertEquals(2, stmts.size());
     String result = generateStatement(stmts.get(1));
-    assertEquals("char b = [((IOSByteArray *) nil_chk(foo)) byteAtIndex:1];", result);
+    assertEquals("char b = [foo byteAtIndex:1];", result);
   }
 
   public void testCharArrayAccess() {
     List<Statement> stmts = translateStatements("char[] foo = new char[3]; char c = foo[1];");
     assertEquals(2, stmts.size());
     String result = generateStatement(stmts.get(1));
-    assertEquals("unichar c = [((IOSCharArray *) nil_chk(foo)) charAtIndex:1];", result);
+    assertEquals("unichar c = [foo charAtIndex:1];", result);
   }
 
   public void testDoubleArrayAccess() {
@@ -108,35 +108,35 @@ public class PrimitiveArrayTest extends GenerationTest {
         "double[] foo = new double[3]; double d = foo[1];");
     assertEquals(2, stmts.size());
     String result = generateStatement(stmts.get(1));
-    assertEquals("double d = [((IOSDoubleArray *) nil_chk(foo)) doubleAtIndex:1];", result);
+    assertEquals("double d = [foo doubleAtIndex:1];", result);
   }
 
   public void testFloatArrayAccess() {
     List<Statement> stmts = translateStatements("float[] foo = new float[3]; float f = foo[1];");
     assertEquals(2, stmts.size());
     String result = generateStatement(stmts.get(1));
-    assertEquals("float f = [((IOSFloatArray *) nil_chk(foo)) floatAtIndex:1];", result);
+    assertEquals("float f = [foo floatAtIndex:1];", result);
   }
 
   public void testIntArrayAccess() {
     List<Statement> stmts = translateStatements("int[] foo = new int[3]; int i = foo[1];");
     assertEquals(2, stmts.size());
     String result = generateStatement(stmts.get(1));
-    assertEquals("int i = [((IOSIntArray *) nil_chk(foo)) intAtIndex:1];", result);
+    assertEquals("int i = [foo intAtIndex:1];", result);
   }
 
   public void testLongArrayAccess() {
     List<Statement> stmts = translateStatements("long[] foo = new long[3]; long l = foo[1];");
     assertEquals(2, stmts.size());
     String result = generateStatement(stmts.get(1));
-    assertEquals("long long int l = [((IOSLongArray *) nil_chk(foo)) longAtIndex:1];", result);
+    assertEquals("long long int l = [foo longAtIndex:1];", result);
   }
 
   public void testShortArrayAccess() {
     List<Statement> stmts = translateStatements("short[] foo = new short[3]; short s = foo[1];");
     assertEquals(2, stmts.size());
     String result = generateStatement(stmts.get(1));
-    assertEquals("short int s = [((IOSShortArray *) nil_chk(foo)) shortAtIndex:1];", result);
+    assertEquals("short int s = [foo shortAtIndex:1];", result);
   }
 
   public void testObjectArrayAccess() {
@@ -144,12 +144,11 @@ public class PrimitiveArrayTest extends GenerationTest {
         "Object[] foo = new Object[3]; Object o = foo[1];");
     assertEquals(2, stmts.size());
     String result = generateStatement(stmts.get(1));
-    assertEquals("id o = [((IOSObjectArray *) nil_chk(foo)) objectAtIndex:1];", result);
+    assertEquals("id o = [foo objectAtIndex:1];", result);
 
     stmts = translateStatements("Exception[] foo = new Exception[3]; Exception o = foo[1];");
     assertEquals(2, stmts.size());
     result = generateStatement(stmts.get(1));
-    assertEquals(
-        "JavaLangException *o = [((IOSObjectArray *) nil_chk(foo)) objectAtIndex:1];", result);
+    assertEquals("JavaLangException *o = [foo objectAtIndex:1];", result);
   }
 }

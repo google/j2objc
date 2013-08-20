@@ -24,6 +24,7 @@ import org.eclipse.jdt.core.dom.ArrayCreation;
 import org.eclipse.jdt.core.dom.ArrayInitializer;
 import org.eclipse.jdt.core.dom.Block;
 import org.eclipse.jdt.core.dom.BodyDeclaration;
+import org.eclipse.jdt.core.dom.CatchClause;
 import org.eclipse.jdt.core.dom.ChildPropertyDescriptor;
 import org.eclipse.jdt.core.dom.ClassInstanceCreation;
 import org.eclipse.jdt.core.dom.Comment;
@@ -237,6 +238,11 @@ public final class ASTUtil {
   @SuppressWarnings("unchecked")
   public static List<VariableDeclarationExpression> getResources(TryStatement tryStatement) {
     return tryStatement.resources();
+  }
+
+  @SuppressWarnings("unchecked")
+  public static List<CatchClause> getCatchClauses(TryStatement node) {
+    return node.catchClauses();
   }
 
   @SuppressWarnings({"unchecked", "rawtypes"})
