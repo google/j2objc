@@ -55,14 +55,6 @@ public class StatementGeneratorTest extends GenerationTest {
     assertTranslation(translation, "[[super class] test];");
   }
 
-  public void testNilCheckArrayLength() throws IOException {
-    String translation = translateSourceFile(
-      "public class A {" +
-      "  int length(char[] s) { return s.length; } void test() { length(null);}}",
-      "A", "A.m");
-    assertTranslation(translation, "return (int) [((IOSCharArray *) nil_chk(s)) count];");
-  }
-
   // Verify that both a class and interface type invoke getClass() correctly.
   public void testGetClass() throws IOException {
     String translation = translateSourceFile(
