@@ -24,9 +24,7 @@ import com.google.devtools.j2objc.util.NameTable;
 
 import org.eclipse.jdt.core.dom.Block;
 import org.eclipse.jdt.core.dom.BodyDeclaration;
-import org.eclipse.jdt.core.dom.BreakStatement;
 import org.eclipse.jdt.core.dom.CompilationUnit;
-import org.eclipse.jdt.core.dom.ContinueStatement;
 import org.eclipse.jdt.core.dom.EmptyStatement;
 import org.eclipse.jdt.core.dom.FieldDeclaration;
 import org.eclipse.jdt.core.dom.ForStatement;
@@ -57,45 +55,27 @@ import java.util.List;
 @SuppressWarnings("unchecked")
 public class RewriterTest extends GenerationTest {
 
-  public void testContinueAndBreakUsingSameLabel() {
-    List<Statement> stmts = translateStatements(
+  public void testContinueAndBreakUsingSameLabel() throws IOException {
+    String translation = translateSourceFile(
+        "class Test { void test() { " +
         "int i = 0; outer: for (; i < 10; i++) { " +
         "for (int j = 0; j < 10; j++) { " +
-          "int n = i + j; " +
-          "if (n == 5) continue outer; " +
-          "else break outer; }}");
-    assertEquals(3, stmts.size());
-    Statement s = stmts.get(1);
-    assertTrue(s instanceof ForStatement);  // not LabeledStatement
-    ForStatement fs = (ForStatement) s;
-    Statement forStmt = fs.getBody();
-    assertTrue(forStmt instanceof Block);
-    List<Statement> innerStmts = ((Block) forStmt).statements();
-    assertEquals(2, innerStmts.size());
-    Statement innerForLoop = innerStmts.get(0);
-    assertTrue(innerForLoop instanceof ForStatement);
-    Statement innerForBlock = ((ForStatement) innerForLoop).getBody();
-    assertTrue(innerForBlock instanceof Block);
-    List<Statement> innerStmts2 = ((Block) innerForBlock).statements();
-    assertEquals(2, innerStmts2.size());
-    Statement ifStmt = innerStmts2.get(1);
-    assertTrue(ifStmt instanceof IfStatement);
-    Statement continueStmt = ((IfStatement) ifStmt).getThenStatement();
-    assertTrue(continueStmt instanceof ContinueStatement);
-    assertEquals("continue_outer", ((ContinueStatement) continueStmt).getLabel().getIdentifier());
-    Statement breakStmt = ((IfStatement) ifStmt).getElseStatement();
-    assertTrue(breakStmt instanceof BreakStatement);
-    assertEquals("break_outer", ((BreakStatement) breakStmt).getLabel().getIdentifier());
-    Statement lastInnerStmt = innerStmts.get(1);
-    assertTrue(lastInnerStmt instanceof LabeledStatement);
-    LabeledStatement continueLabel = (LabeledStatement) lastInnerStmt;
-    assertEquals("continue_outer", continueLabel.getLabel().getIdentifier());
-    assertTrue(continueLabel.getBody() instanceof EmptyStatement);
-    Statement lastStmt = stmts.get(2);
-    assertTrue(lastStmt instanceof LabeledStatement);
-    LabeledStatement breakLabel = (LabeledStatement) lastStmt;
-    assertEquals("break_outer", breakLabel.getLabel().getIdentifier());
-    assertTrue(breakLabel.getBody() instanceof EmptyStatement);
+        "int n = i + j; " +
+        "if (n == 5) continue outer; " +
+        "else break outer; } } } }", "Test", "Test.m");
+    assertTranslatedLines(translation,
+        "int i = 0;",
+        "for (; i < 10; i++) {",
+        "{",
+        "for (int j = 0; j < 10; j++) {",
+        "int n = i + j;",
+        "if (n == 5) goto continue_outer;",
+        "else goto break_outer;",
+        "}",
+        "}",
+        "continue_outer: ;",
+        "}",
+        "break_outer: ;");
   }
 
   public void testLabeledContinue() throws IOException {

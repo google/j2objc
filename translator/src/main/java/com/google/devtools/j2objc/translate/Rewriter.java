@@ -406,7 +406,12 @@ public class Rewriter extends ErrorReportingASTVisitor {
       LabeledStatement newLabelStmt = ast.newLabeledStatement();
       newLabelStmt.setLabel(ASTFactory.newLabel(ast, "continue_" + labelIdentifier));
       newLabelStmt.setBody(ast.newEmptyStatement());
-      ASTUtil.insertAfter(loopBody, newLabelStmt);
+      // Put the loop body into an inner block so the continue label is outside
+      // the scope of any variable initializations.
+      Block newBlock = ast.newBlock();
+      ASTUtil.setProperty(loopBody, newBlock);
+      ASTUtil.getStatements(newBlock).add(loopBody);
+      ASTUtil.getStatements(newBlock).add(newLabelStmt);
     }
     if (hasBreak[0]) {
       LabeledStatement newLabelStmt = ast.newLabeledStatement();
