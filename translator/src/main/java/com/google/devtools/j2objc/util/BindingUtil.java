@@ -21,6 +21,7 @@ import com.google.devtools.j2objc.types.Types;
 import org.eclipse.jdt.core.dom.IAnnotationBinding;
 import org.eclipse.jdt.core.dom.IBinding;
 import org.eclipse.jdt.core.dom.IExtendedModifier;
+import org.eclipse.jdt.core.dom.IMemberValuePairBinding;
 import org.eclipse.jdt.core.dom.IMethodBinding;
 import org.eclipse.jdt.core.dom.ITypeBinding;
 import org.eclipse.jdt.core.dom.IVariableBinding;
@@ -28,6 +29,7 @@ import org.eclipse.jdt.core.dom.Modifier;
 
 import java.lang.annotation.RetentionPolicy;
 import java.util.Arrays;
+import java.util.Comparator;
 import java.util.Deque;
 import java.util.List;
 import java.util.Set;
@@ -218,5 +220,40 @@ public final class BindingUtil {
       }
     }
     return false;
+  }
+
+  /**
+   * Returns an alphabetically sorted list of an annotation type's members.
+   * This is necessary since an annotation's values can be specified in any
+   * order, but the annotation's constructor needs to be invoked using its
+   * declaration order.
+   */
+  public static IMethodBinding[] getSortedAnnotationMembers(ITypeBinding annotation) {
+    IMethodBinding[] members = annotation.getDeclaredMethods();
+    Arrays.sort(members, new Comparator<IMethodBinding>() {
+      @Override
+      public int compare(IMethodBinding o1, IMethodBinding o2) {
+        return o1.getName().compareTo(o2.getName());
+      }
+    });
+    return members;
+  }
+
+  /**
+   * Returns an alphabetically sorted list of an annotation's member values.
+   * This is necessary since an annotation's values can be specified in any
+   * order, but the annotation's constructor needs to be invoked using its
+   * declaration order.
+   */
+  public static IMemberValuePairBinding[] getSortedMemberValuePairs(
+      IAnnotationBinding annotation) {
+    IMemberValuePairBinding[] valuePairs = annotation.getAllMemberValuePairs();
+    Arrays.sort(valuePairs, new Comparator<IMemberValuePairBinding>() {
+      @Override
+      public int compare(IMemberValuePairBinding o1, IMemberValuePairBinding o2) {
+        return o1.getName().compareTo(o2.getName());
+      }
+    });
+    return valuePairs;
   }
 }

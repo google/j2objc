@@ -287,7 +287,7 @@ public abstract class ObjectiveCSourceFileGenerator extends SourceFileGenerator 
   protected String annotationConstructorDeclaration(ITypeBinding annotation) {
     StringBuffer sb = new StringBuffer();
     sb.append("- (id)init");
-    IMethodBinding[] members = annotation.getDeclaredMethods();
+    IMethodBinding[] members = BindingUtil.getSortedAnnotationMembers(annotation);
     for (int i = 0; i < members.length; i++) {
       if (i == 0) {
         sb.append("With");
