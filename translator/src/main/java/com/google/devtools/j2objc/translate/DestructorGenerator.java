@@ -103,8 +103,8 @@ public class DestructorGenerator extends ErrorReportingASTVisitor {
         }
       }
 
-      // No destructor, so create a new one.
-      if (!foundDestructor && !Options.useARC()) {
+      // No destructor, so create a new one if there are releasable fields.
+      if (!foundDestructor && !Options.useARC() && !releaseableFields.isEmpty()) {
         MethodDeclaration finalizeMethod =
             buildFinalizeMethod(node.getAST(), Types.getTypeBinding(node), releaseableFields);
         ASTUtil.getBodyDeclarations(node).add(finalizeMethod);

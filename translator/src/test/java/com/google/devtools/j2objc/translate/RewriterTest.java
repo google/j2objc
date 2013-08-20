@@ -167,7 +167,7 @@ public class RewriterTest extends GenerationTest {
     assertTrue(types.get(0) instanceof TypeDeclaration);
     TypeDeclaration testType = (TypeDeclaration) types.get(0);
     MethodDeclaration[] methods = testType.getMethods();
-    assertEquals(5, methods.length);
+    assertEquals(4, methods.length);
 
     // verify added methods are abstract, and that existing method wasn't changed
     for (MethodDeclaration m : methods) {
@@ -208,7 +208,7 @@ public class RewriterTest extends GenerationTest {
     assertTrue(types.get(0) instanceof TypeDeclaration);
     TypeDeclaration testType = (TypeDeclaration) types.get(0);
     MethodDeclaration[] methods = testType.getMethods();
-    assertEquals(27, methods.length);
+    assertEquals(26, methods.length);
 
     // verify added methods are abstract, and that existing method wasn't changed
     for (MethodDeclaration m : methods) {
@@ -256,7 +256,7 @@ public class RewriterTest extends GenerationTest {
     assertEquals("Inner", innerType.getName().toString());
 
     MethodDeclaration[] methods = innerType.getMethods();
-    assertEquals(4, methods.length);
+    assertEquals(3, methods.length);
     String name0 = methods[0].getName().getIdentifier();
     assertTrue(name0.matches("foo|bar"));
     String name1 = methods[1].getName().getIdentifier();
@@ -278,7 +278,7 @@ public class RewriterTest extends GenerationTest {
     assertEquals("Test", innerType.getName().toString());
 
     MethodDeclaration[] methods = innerType.getMethods();
-    assertEquals(3, methods.length);
+    assertEquals(2, methods.length);
     MethodDeclaration equalsMethod = methods[0];
     assertEquals("isEqual", equalsMethod.getName().getIdentifier());
     assertEquals(1, equalsMethod.parameters().size());
@@ -304,7 +304,7 @@ public class RewriterTest extends GenerationTest {
     assertEquals("$1", innerType.getName().toString());
 
     MethodDeclaration[] methods = innerType.getMethods();
-    assertEquals(3, methods.length); // isEqual, init, dealloc
+    assertEquals(2, methods.length); // isEqual, init
     MethodDeclaration equalsMethod = methods[0];
     assertEquals("isEqual", equalsMethod.getName().getIdentifier());
     assertEquals(1, equalsMethod.parameters().size());
@@ -390,7 +390,7 @@ public class RewriterTest extends GenerationTest {
     assertEquals(9, members.size());
     J2ObjC.initializeTranslation(unit);
     J2ObjC.translate(unit);
-    assertEquals(4, members.size());
+    assertEquals(3, members.size());
     FieldDeclaration f = (FieldDeclaration) members.get(0);
     VariableDeclarationFragment var = (VariableDeclarationFragment) f.fragments().get(0);
     assertEquals("foo", var.getName().getIdentifier());
