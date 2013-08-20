@@ -36,11 +36,15 @@ public class Constructor<T> extends AccessibleObject implements GenericDeclarati
     return 0;
   }
   
-  public Class<?> getDeclaringClass() {
+  public Class<T> getDeclaringClass() {
     return null;
   }
   
   public Class<?>[] getParameterTypes() {
+    return null;
+  }
+  
+  public Type[] getGenericParameterTypes() {
     return null;
   }
   
@@ -70,16 +74,10 @@ public class Constructor<T> extends AccessibleObject implements GenericDeclarati
   }
   
   /* Not implemented
-  public Class getDeclaringClass();
-  public int getModifiers();
-  public Type getGenericReturnType();
-  public Type[] getGenericParameterTypes();
-  public Class[] getParameterTypes();
   public Class[] getExceptionTypes();
   public Type[] getGenericExceptionTypes();
   public String toGenericString();
   public boolean isBridge();
   public boolean isVarArgs();
-  public Object getDefaultValue();
   */
 }

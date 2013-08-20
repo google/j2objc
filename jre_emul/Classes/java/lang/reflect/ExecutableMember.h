@@ -61,6 +61,7 @@
 //
 // @return an array of strings.
 - (IOSObjectArray *)getParameterTypes;
+- (IOSObjectArray *)getGenericParameterTypes;
 
 // Empty array always returned for iOS.
 - (IOSObjectArray *)getTypeParameters;

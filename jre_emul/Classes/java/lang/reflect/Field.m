@@ -211,6 +211,10 @@ typedef union {
   return decodeTypeEncoding(*argType);
 }
 
+- (IOSClass *)getGenericType {
+  return [self getType];
+}
+
 - (int)getModifiers {
   // All Objective-C fields and methods are public at runtime.
   return JavaLangReflectModifier_PUBLIC;

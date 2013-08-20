@@ -78,6 +78,10 @@ static id Box(JavaResult *value, const char *type);
   return decodeTypeEncoding(*argType);
 }
 
+- (IOSClass *)getGenericReturnType {
+  return [self getReturnType];
+}
+
 - (id)invokeWithId:(id)object
        withNSObjectArray:(IOSObjectArray *)arguments {
   if (!classMethod_ && object == nil) {

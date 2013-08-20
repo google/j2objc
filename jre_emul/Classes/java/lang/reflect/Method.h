@@ -44,6 +44,9 @@
 // iOS version of Method.getReturnType();
 - (IOSClass *)getReturnType;
 
+// Returns type.
+- (IOSClass *)getGenericReturnType;
+
 // iOS version of Method.invoke().
 //
 // @param object the instance to invoke this method on, or if null,

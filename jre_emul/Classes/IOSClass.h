@@ -121,6 +121,9 @@
 // Class.getEnclosingClass()
 - (IOSClass *)getEnclosingClass;
 
+// Class.isMemberClass
+- (BOOL)isMemberClass;
+
 - (BOOL)isArray;
 - (BOOL)isEnum;
 - (BOOL)isInterface;

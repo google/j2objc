@@ -72,6 +72,9 @@
 - (int)getModifiers;
 - (IOSClass *)getType;
 
+// Returns type.
+- (IOSClass *)getGenericType;
+
 // Convert between property and variable names.
 + (NSString *)propertyName:(NSString *)name;
 + (NSString *)variableName:(NSString *)name;
