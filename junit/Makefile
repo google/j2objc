@@ -69,7 +69,6 @@ JUNIT_SOURCES = \
     org/junit/internal/matchers/Each.java \
     org/junit/internal/matchers/IsCollectionContaining.java \
     org/junit/internal/matchers/TypeSafeMatcher.java \
-    org/junit/internal/MethodSorter.java \
     org/junit/internal/RealSystem.java \
     org/junit/internal/requests/ClassRequest.java \
     org/junit/internal/requests/FilterRequest.java \
@@ -123,6 +122,7 @@ JUNIT_SOURCES = \
     org/junit/runners/model/RunnerScheduler.java \
     org/junit/runners/model/Statement.java \
     org/junit/runners/model/TestClass.java
+
 
 HAMCREST_SOURCES = \
     org/hamcrest/BaseDescription.java \
