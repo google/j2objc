@@ -52,26 +52,44 @@
     @throw AUTORELEASE([[JavaLangAssertionError alloc] initWithId:@"invalid dimension count"]);
   }
 
+  __unsafe_unretained IOSClass *componentTypes[dimensionCount];
+  componentTypes[dimensionCount - 1] = nil;
+  for (int i = dimensionCount - 2; i >= 0; i--) {
+    __unsafe_unretained IOSClass *last = componentTypes[i + 1];
+    if (last) {
+      componentTypes[i] = [IOSArrayClass classWithComponentType:last];
+    } else {
+      componentTypes[i] = [IOSClass classWithClass:[self class]];
+    }
+  }
+  return [self arrayWithDimensions:dimensionCount lengths:dimensionLengths types:componentTypes];
+}
+
++ (id)arrayWithDimensions:(NSUInteger)dimensionCount
+                  lengths:(const int *)dimensionLengths
+                    types:(__unsafe_unretained IOSClass * const *)componentTypes {
   NSUInteger size = *dimensionLengths;
+  __unsafe_unretained IOSClass *componentType = *componentTypes;
 
   // If dimension of 1, just return a regular array.
   if (dimensionCount == 1) {
-    return AUTORELEASE([[[self class] alloc] initWithLength:size]);
+    if (componentType) {
+      return AUTORELEASE([[IOSObjectArray alloc] initWithLength:size type:componentType]);
+    } else {
+      return AUTORELEASE([[[self class] alloc] initWithLength:size]);
+    }
   }
 
   // Create an array of arrays, which is recursive to handle additional
   // dimensions.
-  Class elementClass = dimensionCount == 2 ? [self class] : [IOSObjectArray class];
-  IOSObjectArray *result =
-      [IOSObjectArray arrayWithLength:size
-                                 type:[IOSClass classWithClass:elementClass]];
+  __unsafe_unretained id subarrays[size];
   for (NSUInteger i = 0; i < size; i++) {
-    id subarray = [[self class] arrayWithDimensions:dimensionCount - 1
-                                            lengths:dimensionLengths + 1];
-    [result replaceObjectAtIndex:i withObject:subarray];
+    subarrays[i] = [[self class] arrayWithDimensions:dimensionCount - 1
+                                             lengths:dimensionLengths + 1
+                                               types:componentTypes + 1];
   }
-
-  return result;
+  return AUTORELEASE([[IOSObjectArray alloc]
+      initWithObjects:subarrays count:size type:componentType]);
 }
 
 + (id)iosClass {

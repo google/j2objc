@@ -98,25 +98,12 @@
     @throw AUTORELEASE([[JavaLangAssertionError alloc] initWithId:@"invalid dimension count"]);
   }
 
-  NSUInteger size = *dimensionLengths;
-
-  // If dimension of 1, just return a regular array of objects.
-  if (dimensionCount == 1) {
-    return AUTORELEASE([[[self class] alloc] initWithLength:size type:type]);
+  __unsafe_unretained IOSClass *componentTypes[dimensionCount];
+  componentTypes[dimensionCount - 1] = type;
+  for (int i = dimensionCount - 2; i >= 0; i--) {
+    componentTypes[i] = [IOSArrayClass classWithComponentType:componentTypes[i + 1]];
   }
-
-  // Create an array of arrays, which is recursive to handle additional
-  // dimensions.
-  IOSObjectArray *result = [IOSObjectArray arrayWithLength:size type:
-      [self iosClassWithDimensions:dimensionCount - 1 type:type]];
-  for (NSUInteger i = 0; i < size; i++) {
-    id subarray = [[self class] arrayWithDimensions:dimensionCount - 1
-                                            lengths:dimensionLengths + 1
-                                               type:type];
-    [result replaceObjectAtIndex:i withObject:subarray];
-  }
-
-  return result;
+  return [self arrayWithDimensions:dimensionCount lengths:dimensionLengths types:componentTypes];
 }
 
 + (id)iosClassWithType:(IOSClass *)type {
@@ -151,13 +138,11 @@ static inline id IOSObjectArray_checkValue(IOSObjectArray *array, id value) {
 
 - (id)replaceObjectAtIndex:(NSUInteger)index withObject:(id)value {
   IOSArray_checkIndex(size_, index);
+  IOSObjectArray_checkValue(self, value);
 #if ! __has_feature(objc_arc)
-  id prev = buffer_[index];
-  [prev autorelease];
-  [value retain];
+  [buffer_[index] autorelease];
 #endif
-  buffer_[index] = IOSObjectArray_checkValue(self, value);
-  return value;
+  return buffer_[index] = RETAIN(value);
 }
 
 - (void)getObjects:(NSObject **)buffer length:(NSUInteger)length {

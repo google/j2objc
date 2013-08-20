@@ -941,76 +941,78 @@ IOSObjectArray *copyFieldsToObjectArray(NSArray *fields) {
 }
 
 + (void)initialize {
-  // Explicitly mapped classes are defined in Types.initializeTypeMap().
-  // If types are added to that method (it's rare) they need to be added here.
-  IOSClass_mappedClasses = [[NSDictionary alloc] initWithObjectsAndKeys:
-       @"NSObject",  @"java.lang.Object",
-       @"IOSClass",  @"java.lang.Class",
-       @"NSNumber",  @"java.lang.Number",
-       @"NSString",  @"java.lang.String",
-       @"NSString",  @"java.lang.CharSequence",
-       @"NSCopying", @"java.lang.Cloneable", nil];
-  IOSClass_primitiveClassNames = [[NSArray alloc] initWithObjects:
-       @"boolean", @"byte", @"char", @"double", @"float",
-       @"int", @"long", @"short", @"void", nil];
+  if (self == [IOSClass class]) {
+    // Explicitly mapped classes are defined in Types.initializeTypeMap().
+    // If types are added to that method (it's rare) they need to be added here.
+    IOSClass_mappedClasses = [[NSDictionary alloc] initWithObjectsAndKeys:
+         @"NSObject",  @"java.lang.Object",
+         @"IOSClass",  @"java.lang.Class",
+         @"NSNumber",  @"java.lang.Number",
+         @"NSString",  @"java.lang.String",
+         @"NSString",  @"java.lang.CharSequence",
+         @"NSCopying", @"java.lang.Cloneable", nil];
+    IOSClass_primitiveClassNames = [[NSArray alloc] initWithObjects:
+         @"boolean", @"byte", @"char", @"double", @"float",
+         @"int", @"long", @"short", @"void", nil];
 
-  // Populate class cache with primitive and primitive array types.
-  IOSClass_classCache = [[NSMutableDictionary alloc] init];
-  IOSClass *clazz =
-      [[IOSPrimitiveClass alloc] initWithName:@"boolean" type:@"Z"];
-  [IOSClass_classCache setObject:clazz forKey:@"boolean"];
-  IOSClass *arrayClazz = [[IOSArrayClass alloc] initWithComponentType:clazz];
-  [IOSClass_classCache setObject:arrayClazz forKey:@"[Z"];
-  [IOSClass_classCache setObject:arrayClazz forKey:@"IOSBooleanArray"];
+    // Populate class cache with primitive and primitive array types.
+    IOSClass_classCache = [[NSMutableDictionary alloc] init];
+    IOSClass *clazz =
+        [[IOSPrimitiveClass alloc] initWithName:@"boolean" type:@"Z"];
+    [IOSClass_classCache setObject:clazz forKey:@"boolean"];
+    IOSClass *arrayClazz = [[IOSArrayClass alloc] initWithComponentType:clazz];
+    [IOSClass_classCache setObject:arrayClazz forKey:@"[Z"];
+    [IOSClass_classCache setObject:arrayClazz forKey:@"IOSBooleanArray"];
 
-  clazz = [[IOSPrimitiveClass alloc] initWithName:@"byte" type:@"B"];
-  [IOSClass_classCache setObject:clazz forKey:@"byte"];
-  arrayClazz = [[IOSArrayClass alloc] initWithComponentType:clazz];
-  [IOSClass_classCache setObject:arrayClazz forKey:@"[B"];
-  [IOSClass_classCache setObject:arrayClazz forKey:@"IOSByteArray"];
+    clazz = [[IOSPrimitiveClass alloc] initWithName:@"byte" type:@"B"];
+    [IOSClass_classCache setObject:clazz forKey:@"byte"];
+    arrayClazz = [[IOSArrayClass alloc] initWithComponentType:clazz];
+    [IOSClass_classCache setObject:arrayClazz forKey:@"[B"];
+    [IOSClass_classCache setObject:arrayClazz forKey:@"IOSByteArray"];
 
-  clazz = [[IOSPrimitiveClass alloc] initWithName:@"char" type:@"C"];
-  [IOSClass_classCache setObject:clazz forKey:@"char"];
-  arrayClazz = [[IOSArrayClass alloc] initWithComponentType:clazz];
-  [IOSClass_classCache setObject:arrayClazz forKey:@"[C"];
-  [IOSClass_classCache setObject:arrayClazz forKey:@"IOSCharArray"];
+    clazz = [[IOSPrimitiveClass alloc] initWithName:@"char" type:@"C"];
+    [IOSClass_classCache setObject:clazz forKey:@"char"];
+    arrayClazz = [[IOSArrayClass alloc] initWithComponentType:clazz];
+    [IOSClass_classCache setObject:arrayClazz forKey:@"[C"];
+    [IOSClass_classCache setObject:arrayClazz forKey:@"IOSCharArray"];
 
-  clazz = [[IOSPrimitiveClass alloc] initWithName:@"double" type:@"D"];
-  [IOSClass_classCache setObject:clazz forKey:@"double"];
-  arrayClazz = [[IOSArrayClass alloc] initWithComponentType:clazz];
-  [IOSClass_classCache setObject:arrayClazz forKey:@"[D"];
-  [IOSClass_classCache setObject:arrayClazz forKey:@"IOSDoubleArray"];
+    clazz = [[IOSPrimitiveClass alloc] initWithName:@"double" type:@"D"];
+    [IOSClass_classCache setObject:clazz forKey:@"double"];
+    arrayClazz = [[IOSArrayClass alloc] initWithComponentType:clazz];
+    [IOSClass_classCache setObject:arrayClazz forKey:@"[D"];
+    [IOSClass_classCache setObject:arrayClazz forKey:@"IOSDoubleArray"];
 
-  clazz = [[IOSPrimitiveClass alloc] initWithName:@"float" type:@"F"];
-  [IOSClass_classCache setObject:clazz forKey:@"float"];
-  arrayClazz = [[IOSArrayClass alloc] initWithComponentType:clazz];
-  [IOSClass_classCache setObject:arrayClazz forKey:@"[F"];
-  [IOSClass_classCache setObject:arrayClazz forKey:@"IOSFloatArray"];
+    clazz = [[IOSPrimitiveClass alloc] initWithName:@"float" type:@"F"];
+    [IOSClass_classCache setObject:clazz forKey:@"float"];
+    arrayClazz = [[IOSArrayClass alloc] initWithComponentType:clazz];
+    [IOSClass_classCache setObject:arrayClazz forKey:@"[F"];
+    [IOSClass_classCache setObject:arrayClazz forKey:@"IOSFloatArray"];
 
-  clazz = [[IOSPrimitiveClass alloc] initWithName:@"int" type:@"I"];
-  [IOSClass_classCache setObject:clazz forKey:@"int"];
-  arrayClazz = [[IOSArrayClass alloc] initWithComponentType:clazz];
-  [IOSClass_classCache setObject:arrayClazz forKey:@"[I"];
-  [IOSClass_classCache setObject:arrayClazz forKey:@"IOSIntArray"];
+    clazz = [[IOSPrimitiveClass alloc] initWithName:@"int" type:@"I"];
+    [IOSClass_classCache setObject:clazz forKey:@"int"];
+    arrayClazz = [[IOSArrayClass alloc] initWithComponentType:clazz];
+    [IOSClass_classCache setObject:arrayClazz forKey:@"[I"];
+    [IOSClass_classCache setObject:arrayClazz forKey:@"IOSIntArray"];
 
-  clazz = [[IOSPrimitiveClass alloc] initWithName:@"long" type:@"J"];
-  [IOSClass_classCache setObject:clazz forKey:@"long"];
-  arrayClazz = [[IOSArrayClass alloc] initWithComponentType:clazz];
-  [IOSClass_classCache setObject:arrayClazz forKey:@"[J"];
-  [IOSClass_classCache setObject:arrayClazz forKey:@"IOSLongArray"];
+    clazz = [[IOSPrimitiveClass alloc] initWithName:@"long" type:@"J"];
+    [IOSClass_classCache setObject:clazz forKey:@"long"];
+    arrayClazz = [[IOSArrayClass alloc] initWithComponentType:clazz];
+    [IOSClass_classCache setObject:arrayClazz forKey:@"[J"];
+    [IOSClass_classCache setObject:arrayClazz forKey:@"IOSLongArray"];
 
-  clazz = [[IOSPrimitiveClass alloc] initWithName:@"short" type:@"S"];
-  [IOSClass_classCache setObject:clazz forKey:@"short"];
-  arrayClazz = [[IOSArrayClass alloc] initWithComponentType:clazz];
-  [IOSClass_classCache setObject:arrayClazz forKey:@"[S"];
-  [IOSClass_classCache setObject:arrayClazz forKey:@"IOSShortArray"];
+    clazz = [[IOSPrimitiveClass alloc] initWithName:@"short" type:@"S"];
+    [IOSClass_classCache setObject:clazz forKey:@"short"];
+    arrayClazz = [[IOSArrayClass alloc] initWithComponentType:clazz];
+    [IOSClass_classCache setObject:arrayClazz forKey:@"[S"];
+    [IOSClass_classCache setObject:arrayClazz forKey:@"IOSShortArray"];
 
-  clazz = [[self alloc] initWithClass:[NSObject class]];
-  [IOSClass_classCache setObject:clazz forKey:@"java.lang.Object"];
-  [IOSClass_classCache setObject:clazz forKey:@"NSObject"];
-  arrayClazz = [[IOSArrayClass alloc] initWithComponentType:clazz];
-  [IOSClass_classCache setObject:arrayClazz forKey:@"[NSObject"];
-  [IOSClass_classCache setObject:arrayClazz forKey:@"IOSObjectArray"];
+    clazz = [[self alloc] initWithClass:[NSObject class]];
+    [IOSClass_classCache setObject:clazz forKey:@"java.lang.Object"];
+    [IOSClass_classCache setObject:clazz forKey:@"NSObject"];
+    arrayClazz = [[IOSArrayClass alloc] initWithComponentType:clazz];
+    [IOSClass_classCache setObject:arrayClazz forKey:@"[NSObject"];
+    [IOSClass_classCache setObject:arrayClazz forKey:@"IOSObjectArray"];
+  }
 }
 
 @end

@@ -29,7 +29,7 @@
 @synthesize componentType = componentType_;
 
 + (id)classWithComponentType:(IOSClass *)type {
-  NSString *signature = [NSString stringWithFormat:@"[%@", [type binaryName]];
+  NSString *signature = [@"[" stringByAppendingString:[type binaryName]];
   id clazz = [IOSClass fetchCachedClass:signature];
   if (!clazz) {
     clazz = AUTORELEASE([[IOSArrayClass alloc] initWithComponentType:type]);
