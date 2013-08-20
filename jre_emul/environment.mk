@@ -54,8 +54,6 @@ MISC_TEST_ROOT = Tests
 J2OBJC_ROOT = ..
 
 ANDROID_INCLUDE = $(ANDROID_BASE)/include
-ICU4C_I18N_INCLUDE = icu4c/i18n/include
-ICU4C_COMMON_INCLUDE = icu4c/common
 
 include ../make/common.mk
 
