@@ -20,6 +20,7 @@
 //
 
 #import "IOSDoubleArray.h"
+#import "IOSArrayClass.h"
 #import "IOSPrimitiveClass.h"
 #import "java/lang/Double.h"
 
@@ -105,7 +106,11 @@
 }
 
 - (IOSClass *)elementType {
-  return [IOSClass fetchCachedClass:@"double"];
+  return [IOSClass doubleClass];
+}
+
++ (IOSClass *)iosClass {
+  return [IOSArrayClass classWithComponentType:[IOSClass doubleClass]];
 }
 
 - (id)copyWithZone:(NSZone *)zone {

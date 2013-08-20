@@ -59,7 +59,7 @@
     if (last) {
       componentTypes[i] = [IOSArrayClass classWithComponentType:last];
     } else {
-      componentTypes[i] = [IOSClass classWithClass:[self class]];
+      componentTypes[i] = [self iosClass];
     }
   }
   return [self arrayWithDimensions:dimensionCount lengths:dimensionLengths types:componentTypes];
@@ -93,11 +93,12 @@
 }
 
 + (id)iosClass {
-  return [IOSClass classWithClass:[self class]];
+  @throw AUTORELEASE([[JavaLangAssertionError alloc] initWithNSString:
+      @"abstract method not overridden"]);
 }
 
 + (id)iosClassWithDimensions:(NSUInteger)dimensions {
-  IOSClass *result = [IOSClass classWithClass:[self class]];
+  IOSClass *result = [self iosClass];
   while (--dimensions > 0) {
     result = [IOSArrayClass classWithComponentType:result];
   }

@@ -20,6 +20,7 @@
 //
 
 #import "IOSShortArray.h"
+#import "IOSArrayClass.h"
 #import "IOSPrimitiveClass.h"
 #import "java/lang/Short.h"
 
@@ -105,7 +106,11 @@
 }
 
 - (IOSClass *)elementType {
-  return [IOSClass fetchCachedClass:@"short"];
+  return [IOSClass shortClass];
+}
+
++ (IOSClass *)iosClass {
+  return [IOSArrayClass classWithComponentType:[IOSClass shortClass]];
 }
 
 - (id)copyWithZone:(NSZone *)zone {

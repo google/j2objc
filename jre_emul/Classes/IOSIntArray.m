@@ -20,6 +20,7 @@
 //
 
 #import "IOSIntArray.h"
+#import "IOSArrayClass.h"
 #import "IOSPrimitiveClass.h"
 #import "java/lang/Integer.h"
 
@@ -105,7 +106,11 @@
 }
 
 - (IOSClass *)elementType {
-  return [IOSClass fetchCachedClass:@"int"];
+  return [IOSClass intClass];
+}
+
++ (IOSClass *)iosClass {
+  return [IOSArrayClass classWithComponentType:[IOSClass intClass]];
 }
 
 - (id)copyWithZone:(NSZone *)zone {

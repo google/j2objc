@@ -113,4 +113,15 @@ public class ClassTest extends TestCase {
       System.setOut(oldOut);
     }
   }
+
+  public void testArrayClassObjects() throws Exception {
+    Class<?> c1 = int[].class;
+    Class<?> c2 = int[][].class;
+    assertFalse(c1 == c2);
+    assertTrue(c1 == c2.getComponentType());
+    c1 = String[].class;
+    c2 = String[][].class;
+    assertFalse(c1 == c2);
+    assertTrue(c1 == c2.getComponentType());
+  }
 }
