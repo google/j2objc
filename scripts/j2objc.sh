@@ -18,16 +18,16 @@ else
   readonly DIR=$(dirname "$0")
 fi
 
-if [ -e ${DIR}/j2objc.jar ]; then
-  readonly LIB_DIR=${DIR}
+if [ -e "${DIR}"/j2objc.jar ]; then
+  readonly LIB_DIR="${DIR}"
 else
-  readonly LIB_DIR=${DIR}/lib
+  readonly LIB_DIR="${DIR}"/lib
 fi
 readonly JAR=${LIB_DIR}/j2objc.jar
 
 if [ $# -eq 0 ]; then
   # Invoke app without arguments, so it displays a help message.
-  java -jar ${JAR}
+  java -jar "${JAR}"
   exit $?
 fi
 
@@ -36,8 +36,8 @@ if [ x${USE_SYSTEM_BOOT_PATH} == x ]; then
 fi
 
 PARSING_JAVA_ARGS=0
-JAVA_ARGS=""
-J2OBJC_ARGS=""
+JAVA_ARGS=$()
+J2OBJC_ARGS=$()
 CLASSPATH=${LIB_DIR}/j2objc_annotations.jar
 CLASSPATH_SET=0
 SOURCEPATH=
@@ -51,9 +51,9 @@ while [ $# -gt 0 ]; do
     -sourcepath) SOURCEPATH=$2; SOURCEPATH_SET=1; shift;;
     *)
       if [ ${PARSING_JAVA_ARGS} -eq 0 ]; then
-        J2OBJC_ARGS="${J2OBJC_ARGS} $1"
+        J2OBJC_ARGS[iArgs++]=$1
       else
-        JAVA_ARGS="${JAVA_ARGS} $1"
+        JAVA_ARGS[iJavaArgs++]=$1
       fi;;
   esac
   shift
@@ -66,5 +66,5 @@ if [ ${SOURCEPATH_SET} -eq 0 ]; then
   SOURCEPATH="."
 fi
 
-java ${JAVA_ARGS} -jar ${JAR} ${BOOT_PATH} -classpath ${CLASSPATH} \
-    -sourcepath ${SOURCEPATH} ${J2OBJC_ARGS}
+java ${JAVA_ARGS[*]} -jar "${JAR}" "${BOOT_PATH}" -classpath "${CLASSPATH}" \
+    -sourcepath "${SOURCEPATH}" "${J2OBJC_ARGS[@]}"

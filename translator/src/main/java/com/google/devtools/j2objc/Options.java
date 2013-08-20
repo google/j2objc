@@ -133,6 +133,10 @@ public class Options {
     String[] noFiles = new String[0];
     while (nArg < args.length) {
       String arg = args[nArg];
+      if (arg.isEmpty()) {
+        ++nArg;
+        continue;
+      }
       if (arg.equals("-classpath")) {
         if (++nArg == args.length) {
           return noFiles;
