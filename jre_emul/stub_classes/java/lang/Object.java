@@ -49,11 +49,13 @@ public class Object {
 
   protected void finalize() throws Throwable {}
 
-  /* Untranslated methods.
-  public final native void notify();
-  public final native void notifyAll();
-  public final native void wait(long timeout) throws InterruptedException;
-  public final native void wait(long timeout, int nanos) throws InterruptedException;
-  public final native void wait() throws InterruptedException;
-  */
+  public final void notify() {}
+
+  public final void notifyAll() {}
+
+  public final void wait(long timeout) throws InterruptedException {}
+
+  public final void wait(long timeout, int nanos) throws InterruptedException {}
+
+  public final void wait() throws InterruptedException {}
 }

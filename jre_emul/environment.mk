@@ -50,6 +50,8 @@ ANDROID_JRE_ROOT = $(ANDROID_BASE)/luni/src/main/java
 ANDROID_JRE_TEST_ROOT = $(ANDROID_BASE)/luni/src/test/java
 ANDROID_XML_ROOT = $(ANDROID_BASE)/xml/src/main/java
 
+APPLE_ROOT = apple_apsl
+
 MISC_TEST_ROOT = Tests
 J2OBJC_ROOT = ..
 
@@ -103,7 +105,8 @@ endif
 OBJCFLAGS := $(WARNINGS) $(OBJCFLAGS) -DU_DISABLE_RENAMING=1 \
   -fobjc-abi-version=2 -fobjc-legacy-dispatch $(DEBUGFLAGS) \
   -I/System/Library/Frameworks/ExceptionHandling.framework/Headers \
-  -I$(ANDROID_INCLUDE) -I$(ICU4C_I18N_INCLUDE) -I$(ICU4C_COMMON_INCLUDE)
+  -I$(ANDROID_INCLUDE) -I$(ICU4C_I18N_INCLUDE) -I$(ICU4C_COMMON_INCLUDE) \
+  -I$(APPLE_ROOT)
 
 ifdef MAX_STACK_FRAMES
 OBJCFLAGS := $(OBJCFLAGS) -DMAX_STACK_FRAMES=$(MAX_STACK_FRAMES)

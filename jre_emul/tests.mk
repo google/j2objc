@@ -36,6 +36,8 @@ SUPPORT_SOURCES = \
 TEST_SOURCES = \
 	CopyOnWriteArrayListTest.java \
 	CopyOnWriteArraySetTest.java \
+	java/lang/ClassTest.java \
+	java/lang/ThrowableTest.java \
 	libcore/java/lang/ThrowableTest.java \
 	libcore/java/lang/reflect/AnnotationsTest.java \
 	libcore/java/lang/reflect/ArrayTest.java \
@@ -81,7 +83,6 @@ TEST_SOURCES = \
 	org/apache/harmony/luni/tests/java/lang/AssertionErrorTest.java \
 	org/apache/harmony/luni/tests/java/lang/BooleanTest.java \
 	org/apache/harmony/luni/tests/java/lang/ByteTest.java \
-	java/lang/ClassTest.java \
 	org/apache/harmony/luni/tests/java/lang/ClassCastExceptionTest.java \
 	org/apache/harmony/luni/tests/java/lang/ClassNotFoundExceptionTest.java \
 	org/apache/harmony/luni/tests/java/lang/ClassTest.java \
@@ -91,6 +92,7 @@ TEST_SOURCES = \
 	org/apache/harmony/luni/tests/java/lang/ExceptionTest.java \
 	org/apache/harmony/luni/tests/java/lang/IllegalAccessExceptionTest.java \
 	org/apache/harmony/luni/tests/java/lang/IllegalArgumentExceptionTest.java \
+	org/apache/harmony/luni/tests/java/lang/IllegalMonitorStateExceptionTest.java \
 	org/apache/harmony/luni/tests/java/lang/IllegalStateExceptionTest.java \
 	org/apache/harmony/luni/tests/java/lang/IllegalThreadStateExceptionTest.java \
 	org/apache/harmony/luni/tests/java/lang/IndexOutOfBoundsExceptionTest.java \
@@ -115,7 +117,6 @@ TEST_SOURCES = \
 	org/apache/harmony/luni/tests/java/lang/String2Test.java \
 	org/apache/harmony/luni/tests/java/lang/ThreadDeathTest.java \
 	org/apache/harmony/luni/tests/java/lang/ThreadTest.java \
-	java/lang/ThrowableTest.java \
 	org/apache/harmony/luni/tests/java/lang/UnsupportedOperationExceptionTest.java \
 	org/apache/harmony/luni/tests/util/UtilTest.java \
 	org/apache/harmony/tests/java/math/BigIntegerAddTest.java \
@@ -200,7 +201,9 @@ TEST_SOURCES = \
 	org/apache/harmony/tests/java/util/regex/PatternSyntaxExceptionTest.java \
 	org/apache/harmony/tests/java/util/regex/PatternTest.java \
 	org/apache/harmony/tests/java/util/regex/ReplaceTest.java \
-	org/apache/harmony/tests/java/util/regex/SplitTest.java
+	org/apache/harmony/tests/java/util/regex/SplitTest.java \
+	tests/api/java/util/TimerTaskTest.java \
+	tests/api/java/util/TimerTest.java \
 
 FAILING_TESTS = \
 	org/apache/harmony/luni/tests/java/lang/DoubleTest.java \
