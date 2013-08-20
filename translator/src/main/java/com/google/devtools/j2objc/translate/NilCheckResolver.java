@@ -24,6 +24,7 @@ import com.google.devtools.j2objc.util.ErrorReportingASTVisitor;
 import org.eclipse.jdt.core.dom.AST;
 import org.eclipse.jdt.core.dom.ASTNode;
 import org.eclipse.jdt.core.dom.ArrayAccess;
+import org.eclipse.jdt.core.dom.CastExpression;
 import org.eclipse.jdt.core.dom.Expression;
 import org.eclipse.jdt.core.dom.FieldAccess;
 import org.eclipse.jdt.core.dom.IBinding;
@@ -34,6 +35,7 @@ import org.eclipse.jdt.core.dom.InfixExpression;
 import org.eclipse.jdt.core.dom.MethodDeclaration;
 import org.eclipse.jdt.core.dom.MethodInvocation;
 import org.eclipse.jdt.core.dom.NullLiteral;
+import org.eclipse.jdt.core.dom.ParenthesizedExpression;
 import org.eclipse.jdt.core.dom.QualifiedName;
 
 /**
@@ -92,16 +94,26 @@ public class NilCheckResolver extends ErrorReportingASTVisitor {
     return false;
   }
 
+  private static Expression stripCastsAndParentheses(Expression node) {
+    if (node instanceof ParenthesizedExpression) {
+      return stripCastsAndParentheses(((ParenthesizedExpression) node).getExpression());
+    } else if (node instanceof CastExpression) {
+      return stripCastsAndParentheses(((CastExpression) node).getExpression());
+    }
+    return node;
+  }
+
   private static void addNilCheck(Expression node) {
-    if (!needsNilCheck(node)) {
+    Expression strippedNode = stripCastsAndParentheses(node);
+    if (!needsNilCheck(strippedNode)) {
       return;
     }
+    AST ast = node.getAST();
     IOSMethodBinding nilChkBinding = IOSMethodBinding.newTypedInvocation(
         NIL_CHK_DECL, Types.getTypeBinding(node));
-    MethodInvocation nilChkInvocation = ASTFactory.newMethodInvocation(
-        node.getAST(), nilChkBinding, null);
+    MethodInvocation nilChkInvocation = ASTFactory.newMethodInvocation(ast, nilChkBinding, null);
+    ASTUtil.getArguments(nilChkInvocation).add(NodeCopier.copySubtree(ast, strippedNode));
     ASTUtil.setProperty(node, nilChkInvocation);
-    ASTUtil.getArguments(nilChkInvocation).add(node);
   }
 
   @Override

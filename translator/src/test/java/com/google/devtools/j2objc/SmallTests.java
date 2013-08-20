@@ -37,6 +37,7 @@ import com.google.devtools.j2objc.translate.GwtConverterTest;
 import com.google.devtools.j2objc.translate.InitializationNormalizerTest;
 import com.google.devtools.j2objc.translate.InnerClassExtractorTest;
 import com.google.devtools.j2objc.translate.JavaToIOSMethodTranslatorTest;
+import com.google.devtools.j2objc.translate.NilCheckResolverTest;
 import com.google.devtools.j2objc.translate.OperatorRewriterTest;
 import com.google.devtools.j2objc.translate.OuterReferenceResolverTest;
 import com.google.devtools.j2objc.translate.RewriterTest;
@@ -87,6 +88,7 @@ public class SmallTests {
     LineDirectivesTest.class,
     ModifiedTypeBindingTest.class,
     NameTableTest.class,
+    NilCheckResolverTest.class,
     ObjectiveCHeaderGeneratorTest.class,
     ObjectiveCImplementationGeneratorTest.class,
     ObjectiveCSegmentedHeaderGeneratorTest.class,
