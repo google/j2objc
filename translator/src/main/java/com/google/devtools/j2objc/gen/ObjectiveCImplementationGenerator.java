@@ -776,7 +776,7 @@ public class ObjectiveCImplementationGenerator extends ObjectiveCSourceFileGener
     // Insert synthetic parameters.
     StringBuilder sb2 =
         new StringBuilder(generateStatement(createInnerConstructorInvocation(m), false));
-    invocation = sb2.insert(sb2.length() - 1, " withNSString:name withInt:ordinal").toString();
+    invocation = sb2.insert(sb2.length() - 1, " withNSString:__name withInt:__ordinal").toString();
 
     if (invokedConstructors.contains(parameterKey(binding))) {
       return super.constructorDeclaration(m, true) + " " + reindent(sb.toString()) + "\n\n"
