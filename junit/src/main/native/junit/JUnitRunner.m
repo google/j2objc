@@ -5,6 +5,7 @@
 //  Created by Tom Ball on 11/10/11.
 //
 
+#import "JreEmulation.h"
 #include "IOSClass.h"
 #include "IOSObjectArray.h"
 #include "java/io/PrintStream.h"
@@ -45,6 +46,7 @@ void installSignalHandler() {
 // Variant of J2ObjCMain main function, hard-coded to invoke JUnit's
 // junit.textui.TestRunner.
 int main( int argc, const char *argv[] ) {
+  JrePrintNilChkCountAtExit();
   int exitCode = 0;
   installSignalHandler();
   @autoreleasepool {

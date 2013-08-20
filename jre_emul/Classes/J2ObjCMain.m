@@ -34,6 +34,7 @@ int main( int argc, const char *argv[] ) {
     printf("Usage: %s class [args...]\n", *argv);
     return 1;
   }
+  JrePrintNilChkCountAtExit();
   int exitCode = 0;
   @autoreleasepool {
   const char *className = argv[1];

@@ -61,6 +61,26 @@
 
 #define J2OBJC_COMMA() ,
 
+#ifdef J2OBJC_COUNT_NIL_CHK
+extern int j2objc_nil_chk_count;
+#endif
+
+extern void JrePrintNilChkCount();
+extern void JrePrintNilChkCountAtExit();
+
+// Marked as unused to avoid a clang warning when this file is included
+// but NIL_CHK isn't used.
+__attribute__ ((unused)) static inline id nil_chk(id __unsafe_unretained p) {
+#ifdef J2OBJC_COUNT_NIL_CHK
+  j2objc_nil_chk_count++;
+#endif
+#if !defined(J2OBJC_DISABLE_NIL_CHECKS)
+  return p ? p : [NSObject throwNullPointerException];
+#else
+  return p;
+#endif
+}
+
 // Should only be used with manual reference counting.
 #if !__has_feature(objc_arc)
 static inline id JreOperatorRetainedAssign(id *pIvar, id self, id value) {
