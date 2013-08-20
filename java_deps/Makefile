@@ -21,8 +21,8 @@ J2OBJC_ROOT = ..
 include ../make/common.mk
 include jars.mk
 
-ALL_JARS = $(ECLIPSE_JARS) $(GUAVA_JAR) $(JSR305_JAR) $(JUNIT_JAR)
-SOURCES_JARS = $(JUNIT_SOURCE_JAR)
+ALL_JARS = $(ECLIPSE_JARS) $(GUAVA_JAR) $(JSR305_JAR) $(JUNIT_JAR) $(ICU4J_JAR)
+SOURCES_JARS = $(JUNIT_SOURCE_JAR) $(HAMCREST_SOURCE_JAR) $(ICU4J_SOURCE_JAR)
 DIST_JARS = $(ALL_JARS:%=$(DIST_JAR_DIR)/%)
 BUILD_DIR_JARS = $(ALL_JARS:%=$(BUILD_DIR)/%) $(SOURCES_JARS:%=$(BUILD_DIR)/%)
 
@@ -32,6 +32,8 @@ M2_HOME = $(shell echo $$HOME)/.m2
 endif
 JUNIT_DIR = $(M2_HOME)/repository/junit/junit/4.10
 JSR305_DIR = $(M2_HOME)/repository/com/google/code/findbugs/jsr305/2.0.1
+HAMCREST_DIR = $(M2_HOME)/repository/org/hamcrest/hamcrest-core/1.1
+ICU4J_DIR = $(M2_HOME)/repository/com/ibm/icu/icu4j/51.1
 
 MAVEN_RESULTS = $(ALL_JARS:%=$(BUILD_DIR)/%) $(JUNIT_DIR)/$(JUNIT_SOURCE_JAR)
 $(MAVEN_RESULTS): $(BUILD_DIR)/.maven_generate
@@ -41,6 +43,12 @@ $(BUILD_DIR)/.maven_generate: | $(BUILD_DIR)
 	@touch $@
 
 $(BUILD_DIR)/$(JUNIT_SOURCE_JAR): $(JUNIT_DIR)/$(JUNIT_SOURCE_JAR) | $(BUILD_DIR)
+	cp -f $^ $@
+
+$(BUILD_DIR)/$(HAMCREST_SOURCE_JAR): $(HAMCREST_DIR)/$(HAMCREST_SOURCE_JAR) | $(BUILD_DIR)
+	cp -f $^ $@
+
+$(BUILD_DIR)/$(ICU4J_SOURCE_JAR): $(ICU4J_DIR)/$(ICU4J_SOURCE_JAR) | $(BUILD_DIR)
 	cp -f $^ $@
 
 $(BUILD_DIR) $(DIST_JAR_DIR):
