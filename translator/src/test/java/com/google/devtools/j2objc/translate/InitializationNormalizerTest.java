@@ -154,7 +154,7 @@ public class InitializationNormalizerTest extends GenerationTest {
     TypeDeclaration clazz = translateClassBody(
         "Test() { this(42); } Test(int i) {} Test(int i, byte b) { System.out.print(b); }");
     List<BodyDeclaration> classMembers = clazz.bodyDeclarations();
-    assertEquals(4, classMembers.size());
+    assertEquals(3, classMembers.size());
 
     BodyDeclaration decl = classMembers.get(0);
     assertTrue(decl instanceof MethodDeclaration);
