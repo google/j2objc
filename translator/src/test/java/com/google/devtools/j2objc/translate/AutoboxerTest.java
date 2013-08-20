@@ -445,4 +445,21 @@ public class AutoboxerTest extends GenerationTest {
     assertTranslation(translation,
         "[super printWithId:[JavaLangFloat valueOfWithFloat:123.456f]];");
   }
+
+  public void testAssignIntLiteralToNonIntBoxedType() throws Exception {
+    String translation = translateSourceFile(
+        "class Test { void test() { Byte b = 3; Short s; s = 4; } }", "Test", "Test.m");
+    assertTranslation(translation, "JavaLangByte *b = [JavaLangByte valueOfWithChar:3];");
+    assertTranslation(translation, "s = [JavaLangShort valueOfWithShortInt:4];");
+  }
+
+  public void testBoxedIncrementAndDecrement() throws Exception {
+    String translation = translateSourceFile(
+        "class Test { void test() { Integer i = 1; i++; Byte b = 2; b--; Character c = 'a'; ++c; " +
+        "Double d = 3.0; --d; } }", "Test", "Test.m");
+    assertTranslation(translation, "PostIncrInt(&i);");
+    assertTranslation(translation, "PostDecrByte(&b);");
+    assertTranslation(translation, "PreIncrChar(&c);");
+    assertTranslation(translation, "PreDecrDouble(&d);");
+  }
 }
