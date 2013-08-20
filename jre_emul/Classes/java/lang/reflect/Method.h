@@ -38,9 +38,6 @@
 
 + (id)methodWithSelector:(SEL)aSelector withClass:(IOSClass *)aClass;
 
-// Returns method name.
-- (NSString *)getName;
-
 // iOS version of Method.getReturnType();
 - (IOSClass *)getReturnType;
 

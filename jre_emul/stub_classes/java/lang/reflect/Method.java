@@ -80,9 +80,12 @@ public class Method extends AccessibleObject implements GenericDeclaration, Memb
   public boolean isSynthetic() {
     return false;
   }
+
+  public Class[] getExceptionTypes() {
+    return null;
+  }
   
   /* Not implemented
-  public Class[] getExceptionTypes();
   public Type[] getGenericExceptionTypes();
   public String toGenericString();
   public boolean isBridge();

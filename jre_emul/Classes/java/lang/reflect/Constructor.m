@@ -182,6 +182,7 @@ static id makeException(Class exceptionClass) {
   return newInstance;
 }
 
+// Returns the class name, like java.lang.reflect.Constructor does.
 - (NSString *)getName {
   return [class_ getName];
 }

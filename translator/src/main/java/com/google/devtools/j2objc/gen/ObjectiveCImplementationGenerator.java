@@ -597,7 +597,33 @@ public class ObjectiveCImplementationGenerator extends ObjectiveCSourceFileGener
       }
     }
     String methodBody = generateMethodBody(m);
-    return super.methodDeclaration(m) + " " + reindent(methodBody) + "\n\n";
+    return super.methodDeclaration(m) + " " + reindent(methodBody) + "\n\n" +
+        methodExceptionsFunction(m);
+  }
+
+  protected String methodExceptionsFunction(MethodDeclaration m) {
+    if (m.thrownExceptions().isEmpty()) {
+      return "";
+    }
+    IMethodBinding method = Types.getMethodBinding(m);
+    StringBuilder sb = new StringBuilder();
+    sb.append("+ (IOSObjectArray *)__exceptions_");
+    sb.append(methodKey(method));
+    sb.append(" {\n");
+    ITypeBinding[] exceptionTypes = method.getExceptionTypes();
+    sb.append("  return [IOSObjectArray arrayWithObjects:(id[]) { ");
+    for (int i = 0; i < exceptionTypes.length; i++) {
+      if (i > 0) {
+        sb.append(", ");
+      }
+      sb.append('[');
+      sb.append(NameTable.getFullName(exceptionTypes[i]));
+      sb.append(" getClass]");
+    }
+    sb.append(" } count:");
+    sb.append(exceptionTypes.length);
+    sb.append(" type:[IOSClass getClass]];\n}\n\n");
+    return sb.toString();
   }
 
   private String generateNativeStub(MethodDeclaration m) {
@@ -702,7 +728,8 @@ public class ObjectiveCImplementationGenerator extends ObjectiveCSourceFileGener
           + super.constructorDeclaration(m, false) + " {\n  return "
           + generateStatement(createInnerConstructorInvocation(m), false) + ";\n}\n\n";
     } else {
-      return super.constructorDeclaration(m, false) + " " + reindent(methodBody) + "\n\n";
+      return super.constructorDeclaration(m, false) + " " + reindent(methodBody) + "\n\n" +
+          methodExceptionsFunction(m);
     }
   }
 

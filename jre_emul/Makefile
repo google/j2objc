@@ -354,6 +354,7 @@ JAVA_SOURCES = \
 	java/util/logging/NSLogHandler.java \
 	java/util/MapEntry.java \
 	java/util/MiniEnumSet.java \
+	java/util/MissingResourceException.java \
 	java/util/NoSuchElementException.java \
 	java/util/PriorityQueue.java \
 	java/util/Properties.java \
