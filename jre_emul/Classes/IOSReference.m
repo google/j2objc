@@ -69,6 +69,7 @@ static void EnsureReferentSubclass(id referent);
 static void RemoveReferenceAssociation(id referent, JavaLangRefReference *reference);
 static void RealReferentRelease(id referent);
 static void ReferentSubclassDealloc(id self, SEL _cmd);
+static void ReferentSubclassRelease(id self, SEL _cmd);
 static void WhileLocked(void (^block)(void));
 
 // Global recursive mutux.
