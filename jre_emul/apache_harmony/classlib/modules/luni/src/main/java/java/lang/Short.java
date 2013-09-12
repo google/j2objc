@@ -325,4 +325,19 @@ public final class Short extends Number implements Comparable<Short> {
             }
         }
     }
+
+    /*
+     * These ObjC methods are needed to support subclassing of NSNumber.
+     * objCType is used by descriptionWithLocale:.
+     * getValue: is used by copyWithZone:.
+     */
+    /*-[
+    - (const char *)objCType {
+      return "s";
+    }
+
+    - (void)getValue:(void *)buffer {
+      *((short int *) buffer) = value_;
+    }
+    ]-*/
 }

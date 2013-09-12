@@ -459,4 +459,19 @@ public final class Double extends Number implements Comparable<Double> {
     public static native String toHexString(double d) /*-[
         return [NSString stringWithFormat:@"%A", d];
     ]-*/;
+
+    /*
+     * These ObjC methods are needed to support subclassing of NSNumber.
+     * objCType is used by descriptionWithLocale:.
+     * getValue: is used by copyWithZone:.
+     */
+    /*-[
+    - (const char *)objCType {
+      return "d";
+    }
+
+    - (void)getValue:(void *)buffer {
+      *((double *) buffer) = value_;
+    }
+    ]-*/
 }

@@ -779,4 +779,19 @@ public final class Integer extends Number implements Comparable<Integer> {
             }
         }
     }
+
+    /*
+     * These ObjC methods are needed to support subclassing of NSNumber.
+     * objCType is used by descriptionWithLocale:.
+     * getValue: is used by copyWithZone:.
+     */
+    /*-[
+    - (const char *)objCType {
+      return "i";
+    }
+
+    - (void)getValue:(void *)buffer {
+      *((int *) buffer) = value_;
+    }
+    ]-*/
 }

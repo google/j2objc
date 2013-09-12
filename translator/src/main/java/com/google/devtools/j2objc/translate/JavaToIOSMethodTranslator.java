@@ -86,6 +86,7 @@ public class JavaToIOSMethodTranslator extends ErrorReportingASTVisitor {
     loadTargetMethods(ast.resolveWellKnownType("java.lang.Object"));
     loadTargetMethods(ast.resolveWellKnownType("java.lang.Class"));
     loadTargetMethods(ast.resolveWellKnownType("java.lang.String"));
+    loadTargetMethods(Types.resolveJavaType("java.lang.Number"));
     loadCharSequenceMethods();
     javaLangCloneable = ast.resolveWellKnownType("java.lang.Cloneable");
   }

@@ -240,7 +240,6 @@ public class ObjectiveCImplementationGenerator extends ObjectiveCSourceFileGener
       printStaticVars(fields, /* isInterface */ false);
       printStaticFieldAccessors(fields, methods, /* isInterface */ false);
       printMethods(node);
-      printObjCTypeMethod(node);
       if (!Options.stripReflection()) {
         printTypeAnnotationsMethod(node);
         printMethodAnnotationMethods(Lists.newArrayList(node.getMethods()));
@@ -400,17 +399,6 @@ public class ObjectiveCImplementationGenerator extends ObjectiveCSourceFileGener
     for (ITypeBinding interfaze : binding.getInterfaces()) {
       if (interfaze.getQualifiedName().equals("java.lang.CharSequence")) {
         println("- (NSString *)description {\n  return [self sequenceDescription];\n}\n");
-      }
-    }
-
-    // If node defines a primitive number wrapper, add a getValue() method.
-    // This is required by iOS 5.0 to support cloning these types.
-    if (Types.isJavaNumberType(binding)) {
-      ITypeBinding primitiveType = Types.getPrimitiveType(binding);
-      if (primitiveType != null) {
-        // All java.lang primitive type wrappers have a "value" field.
-        printf("- (void)getValue:(void *)buffer {\n  *((%s *) buffer) = value_;\n}\n\n",
-            NameTable.primitiveTypeToObjC(primitiveType.getName()));
       }
     }
 
@@ -982,39 +970,6 @@ public class ObjectiveCImplementationGenerator extends ObjectiveCSourceFileGener
     }
     if (nPrinted > 0) {
       newline();
-    }
-  }
-
-  /**
-   * If type extends java.lang.Number, add a required implementation of
-   * NSValue.objCType().  This can't be implemented as a native method
-   * because its return type is const char *.  Since this method overrides
-   * the default implementation, the signatures need to match exactly.
-   */
-  private void printObjCTypeMethod(TypeDeclaration node) {
-    ITypeBinding type = Types.getTypeBinding(node);
-    if (Types.isJavaNumberType(type)) {
-      char objCType;
-      String s = type.getName();
-      // Strings as case values would be nice here.
-      if (s.equals("Byte")) {
-        objCType = 'c';
-      } else if (s.equals("Double")) {
-        objCType = 'd';
-      } else if (s.equals("Float")) {
-        objCType = 'f';
-      } else if (s.equals("Integer")) {
-        objCType = 'i';
-      } else if (s.equals("Long")) {
-        objCType = 'q';
-      } else if (s.equals("Short")) {
-        objCType = 's';
-      } else {
-        return;  // Other numeric types will be returned as objects.
-      }
-      println("- (const char *)objCType {");
-      printf("  return \"%c\";\n", objCType);
-      println("}\n");
     }
   }
 

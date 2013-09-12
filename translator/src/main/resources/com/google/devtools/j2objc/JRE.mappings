@@ -262,9 +262,4 @@ java.lang.CharSequence.toString()Ljava/lang/String; = JavaLangCharSequence seque
 java.lang.CharSequence.subSequence(II)Ljava/lang/CharSequence; = \
     NSString subSequenceFrom:(int)start to:(int)end
 
-java.lang.Number.intValue()I = NSNumber intValue
 java.lang.Number.longValue()J = NSNumber longLongValue
-java.lang.Number.floatValue()F = NSNumber floatValue
-java.lang.Number.doubleValue()D = NSNumber doubleValue
-java.lang.Number.byteValue()B = NSNumber charValue
-java.lang.Number.shortValue()S = NSNumber shortValue
