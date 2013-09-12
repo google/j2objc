@@ -21,6 +21,11 @@
 
 #import "JreEmulation.h"
 #import "IOSClass.h"
+#import "java/lang/NullPointerException.h"
+
+void JreThrowNullPointerException() {
+  @throw AUTORELEASE([[JavaLangNullPointerException alloc] init]);
+}
 
 #ifdef J2OBJC_COUNT_NIL_CHK
 int j2objc_nil_chk_count = 0;
