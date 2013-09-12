@@ -527,7 +527,7 @@ public class J2ObjC {
       edit.apply(doc);
       File outputFile = new File(Options.getOutputDirectory(), filename);
       outputFile.getParentFile().mkdirs();
-      Files.write(doc.get(), outputFile, Charset.defaultCharset());
+      Files.write(doc.get(), outputFile, Options.getCharset());
     } catch (MalformedTreeException e) {
       throw new AssertionError(e);
     } catch (BadLocationException e) {
@@ -579,7 +579,7 @@ public class J2ObjC {
     if (file == null) {
       return findArchivedSource(path);
     } else {
-      return Files.toString(file, Charset.defaultCharset());
+      return Files.toString(file, Options.getCharset());
     }
   }
 
