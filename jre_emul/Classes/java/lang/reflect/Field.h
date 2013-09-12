@@ -59,13 +59,13 @@
 
 // Field.set(Object, Object), etc.
 - (void)setWithId:(id)object withId:(id)value;
-- (void)setBooleanWithId:(id)object withBOOL:(BOOL)value;
+- (void)setBooleanWithId:(id)object withBoolean:(BOOL)value;
 - (void)setByteWithId:(id)object withChar:(char)value;
 - (void)setCharWithId:(id)object withUnichar:(unichar)value;
 - (void)setDoubleWithId:(id)object withDouble:(double)value;
 - (void)setFloatWithId:(id)object withFloat:(float)value;
 - (void)setIntWithId:(id)object withInt:(int)value;
-- (void)setLongWithId:(id)object withLongInt:(long long)value;
+- (void)setLongWithId:(id)object withLong:(long long)value;
 - (void)setShortWithId:(id)object withShortInt:(short)value;
 
 - (IOSClass *)getDeclaringClass;

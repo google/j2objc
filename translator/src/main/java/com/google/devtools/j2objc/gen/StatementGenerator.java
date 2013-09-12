@@ -878,7 +878,7 @@ public class StatementGenerator extends ErrorReportingASTVisitor {
 
   private void printStringConcatenationArg(Expression arg) {
     if (Types.getTypeBinding(arg).isEqualTo(arg.getAST().resolveWellKnownType("boolean"))) {
-      buffer.append("[JavaLangBoolean toStringWithBOOL:");
+      buffer.append("[JavaLangBoolean toStringWithBoolean:");
       arg.accept(this);
       buffer.append(']');
       return;

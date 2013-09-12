@@ -43,8 +43,8 @@
 - (id)initWithJavaLangThrowable:(JavaLangThrowable *)cause;
 - (id)initWithNSString:(NSString *)message
  withJavaLangThrowable:(JavaLangThrowable *)cause
-              withBOOL:(BOOL)enableSuppression
-              withBOOL:(BOOL)writeableStackTrace;
+           withBoolean:(BOOL)enableSuppression
+           withBoolean:(BOOL)writeableStackTrace;
 - (JavaLangThrowable *)fillInStackTrace;
 - (JavaLangThrowable *)getCause;
 - (NSString *)getLocalizedMessage;

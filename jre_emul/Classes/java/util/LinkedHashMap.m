@@ -66,7 +66,7 @@
 
 - (id)initWithInt:(int)s
         withFloat:(float)lf
-         withBOOL:(BOOL)order {
+      withBoolean:(BOOL)order {
   if ((self = [super initWithInt:s withFloat:lf])) {
     accessOrder_ = order;
 #if ! __has_feature(objc_arc)

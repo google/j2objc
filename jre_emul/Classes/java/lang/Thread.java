@@ -366,7 +366,7 @@ public class Thread implements Runnable {
     (void) [[JavaLangThread alloc]
             initWithJavaLangThreadGroup:JavaLangThread_mainThreadGroup_
                            withNSString:@"main"
-                               withBOOL:FALSE];
+                            withBoolean:FALSE];
   ]-*/;
 
   public static native Thread currentThread() /*-[
@@ -377,7 +377,7 @@ public class Thread implements Runnable {
       thread =
           [[JavaLangThread alloc] initWithJavaLangThreadGroup:JavaLangThread_mainThreadGroup_
                                                  withNSString:name
-                                                     withBOOL:FALSE];
+                                                  withBoolean:FALSE];
 #if !__has_feature(objc_arc)
       [thread autorelease];
 #endif

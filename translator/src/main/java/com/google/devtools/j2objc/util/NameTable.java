@@ -328,20 +328,6 @@ public class NameTable {
     return result != null ? result : javaName;
   }
 
-  private static final ImmutableMap<String, String> PRIMITIVE_TYPE_KEYWORD_MAP =
-      ImmutableMap.<String, String>builder()
-      .put("boolean", "BOOL")
-      .put("byte", "char")
-      .put("char", "unichar")
-      .put("short", "shortInt")
-      .put("long", "longInt")
-      .build();
-
-  public static String getPrimitiveTypeParameterKeyword(String javaName) {
-    String result = PRIMITIVE_TYPE_KEYWORD_MAP.get(javaName);
-    return result != null ? result : javaName;
-  }
-
   // TODO(user): See whether the logic in this method can be simplified.
   //     Also, what about type variables?
   private static String getArrayTypeParameterKeyword(ITypeBinding elementType, int dimensions) {
@@ -373,7 +359,7 @@ public class NameTable {
     if (isIdType(type) || type.isTypeVariable()) {
       return ID_TYPE;
     } else if (type.isPrimitive()) {
-      return getPrimitiveTypeParameterKeyword(type.getName());
+      return type.getName();
     } else if (type.isArray()) {
       return getArrayTypeParameterKeyword(type.getElementType(), type.getDimensions());
     }

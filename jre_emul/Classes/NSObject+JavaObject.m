@@ -109,11 +109,11 @@ static void doWait(id obj, long long timeout) {
   doWait(self, 0LL);
 }
 
-- (void)waitWithLongInt:(long long)timeout {
+- (void)waitWithLong:(long long)timeout {
   doWait(self, timeout);
 }
 
-- (void)waitWithLongInt:(long long)timeout withInt:(int)nanos {
+- (void)waitWithLong:(long long)timeout withInt:(int)nanos {
   if (nanos < 0) {
     @throw AUTORELEASE([[JavaLangIllegalArgumentException alloc] init]);
   }

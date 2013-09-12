@@ -20,7 +20,7 @@
 
 - (id)initWithInt:(int)capacity
         withFloat:(float)loadFactor
-         withBOOL:(BOOL)accessOrder;
+      withBoolean:(BOOL)accessOrder;
 
 @end
 
