@@ -147,25 +147,25 @@ UR_SHIFT_ASSIGN_DEFN(Short, short int)
 
 // This macro is used by the translator to add increment and decrement
 // operations to the header files of the boxed types.
-#define BOXED_INC_AND_DEC(CNAME, LNAME, TYPE, KEYWORD) \
+#define BOXED_INC_AND_DEC(CNAME, VALUE_METHOD, TYPE) \
   static inline TYPE *PreIncr##CNAME(TYPE **value) { \
     nil_chk(*value); \
-    return *value = [TYPE valueOfWith##KEYWORD:[*value LNAME##Value] + 1]; \
+    return *value = [TYPE valueOfWith##CNAME:[*value VALUE_METHOD] + 1]; \
   } \
   static inline TYPE *PostIncr##CNAME(TYPE **value) { \
     nil_chk(*value); \
     TYPE *original = *value; \
-    *value = [TYPE valueOfWith##KEYWORD:[*value LNAME##Value] + 1]; \
+    *value = [TYPE valueOfWith##CNAME:[*value VALUE_METHOD] + 1]; \
     return original; \
   } \
   static inline TYPE *PreDecr##CNAME(TYPE **value) { \
     nil_chk(*value); \
-    return *value = [TYPE valueOfWith##KEYWORD:[*value LNAME##Value] - 1]; \
+    return *value = [TYPE valueOfWith##CNAME:[*value VALUE_METHOD] - 1]; \
   } \
   static inline TYPE *PostDecr##CNAME(TYPE **value) { \
     nil_chk(*value); \
     TYPE *original = *value; \
-    *value = [TYPE valueOfWith##KEYWORD:[*value LNAME##Value] - 1]; \
+    *value = [TYPE valueOfWith##CNAME:[*value VALUE_METHOD] - 1]; \
     return original; \
   }
 
