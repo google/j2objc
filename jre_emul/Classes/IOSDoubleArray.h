@@ -39,9 +39,8 @@
 // if out out range.
 FOUNDATION_EXPORT double IOSDoubleArray_Get(IOSDoubleArray *array, NSUInteger index);
 FOUNDATION_EXPORT double *IOSDoubleArray_GetRef(IOSDoubleArray *array, NSUInteger index);
-// TODO(user): Remove after fixing call sites.
-- (double)doubleAtIndex:(NSUInteger)index __attribute__((deprecated));
-- (double *)doubleRefAtIndex:(NSUInteger)index __attribute__((deprecated));
+- (double)doubleAtIndex:(NSUInteger)index;
+- (double *)doubleRefAtIndex:(NSUInteger)index;
 
 // Sets double at a specified index, throws IndexOutOfBoundsException
 // if out out range.  Returns replacement value.

@@ -39,9 +39,8 @@
 // if out out range.
 FOUNDATION_EXPORT short IOSShortArray_Get(IOSShortArray *array, NSUInteger index);
 FOUNDATION_EXPORT short *IOSShortArray_GetRef(IOSShortArray *array, NSUInteger index);
-// TODO(user): Remove after fixing call sites.
-- (short)shortAtIndex:(NSUInteger)index __attribute__((deprecated));
-- (short *)shortRefAtIndex:(NSUInteger)index __attribute__((deprecated));
+- (short)shortAtIndex:(NSUInteger)index;
+- (short *)shortRefAtIndex:(NSUInteger)index;
 
 // Sets short at a specified index, throws IndexOutOfBoundsException
 // if out out range.  Returns replacement value.

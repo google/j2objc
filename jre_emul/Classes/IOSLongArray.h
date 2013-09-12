@@ -39,9 +39,8 @@
 // if out out range.
 FOUNDATION_EXPORT long long IOSLongArray_Get(IOSLongArray *array, NSUInteger index);
 FOUNDATION_EXPORT long long *IOSLongArray_GetRef(IOSLongArray *array, NSUInteger index);
-// TODO(user): Remove after fixing call sites.
-- (long long)longAtIndex:(NSUInteger)index __attribute__((deprecated));
-- (long long *)longRefAtIndex:(NSUInteger)index __attribute__((deprecated));
+- (long long)longAtIndex:(NSUInteger)index;
+- (long long *)longRefAtIndex:(NSUInteger)index;
 
 // Sets long at a specified index, throws IndexOutOfBoundsException
 // if out out range.  Returns replacement value.

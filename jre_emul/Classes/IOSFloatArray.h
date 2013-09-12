@@ -39,9 +39,8 @@
 // if out out range.
 FOUNDATION_EXPORT float IOSFloatArray_Get(IOSFloatArray *array, NSUInteger index);
 FOUNDATION_EXPORT float *IOSFloatArray_GetRef(IOSFloatArray *array, NSUInteger index);
-// TODO(user): Remove after fixing call sites.
-- (float)floatAtIndex:(NSUInteger)index __attribute__((deprecated));
-- (float *)floatRefAtIndex:(NSUInteger)index __attribute__((deprecated));
+- (float)floatAtIndex:(NSUInteger)index;
+- (float *)floatRefAtIndex:(NSUInteger)index;
 
 // Sets float at a specified index, throws IndexOutOfBoundsException
 // if out out range.  Returns replacement value.
