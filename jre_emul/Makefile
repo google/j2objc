@@ -474,6 +474,7 @@ JAVA_SOURCES = \
 	libcore/util/EmptyArray.java \
 	libcore/util/Objects.java \
 	org/apache/harmony/luni/platform/Endianness.java \
+	org/apache/harmony/luni/util/HistoricalNamesUtil.java \
 	org/apache/harmony/luni/util/Util.java \
 	org/apache/harmony/xml/parsers/SAXParserFactoryImpl.java \
 	org/apache/harmony/xml/parsers/SAXParserImpl.java \

@@ -34,6 +34,9 @@ import java.io.PrintStream;
 import java.io.PrintWriter;
 import java.io.Reader;
 import java.io.Writer;
+import java.nio.charset.Charset;
+import java.nio.charset.IllegalCharsetNameException;
+import java.nio.charset.UnsupportedCharsetException;
 
 /**
  * A {@code Properties} object is a {@code Hashtable} where the keys and values
@@ -569,12 +572,12 @@ public class Properties extends Hashtable<Object, Object> {
         if (in == null) {
             throw new NullPointerException("in == null");
         }
-
+        
         try {
             XMLReader reader = XMLReaderFactory.createXMLReader();
             reader.setContentHandler(new DefaultHandler() {
                 private String key;
-
+                
                 @Override
                 public void startElement(String uri, String localName,
                         String qName, Attributes attributes) throws SAXException {
@@ -583,7 +586,7 @@ public class Properties extends Hashtable<Object, Object> {
                         key = attributes.getValue("key");
                     }
                 }
-
+                
                 @Override
                 public void characters(char[] ch, int start, int length)
                         throws SAXException {
@@ -655,7 +658,6 @@ public class Properties extends Hashtable<Object, Object> {
          * since the XML parser must recognize encoding name used to store data.
          */
 
-        /* TODO(user): enable when java.nio.charset is available.
         String encodingCanonicalName;
         try {
             encodingCanonicalName = Charset.forName(encoding).name();
@@ -668,8 +670,6 @@ public class Properties extends Hashtable<Object, Object> {
                     + " is not supported, using UTF-8 as default encoding");
             encodingCanonicalName = "UTF-8";
         }
-        */
-        String encodingCanonicalName = "UTF-8";
 
         PrintStream printStream = new PrintStream(os, false,
                 encodingCanonicalName);

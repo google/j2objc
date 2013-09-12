@@ -7,6 +7,9 @@
 
 package org.xml.sax.helpers;
 
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+
 
 /**
  * Create a new instance of a class by name.
@@ -47,8 +50,7 @@ class NewInstance {
     /**
      * Figure out which ClassLoader to use.  For JDK 1.2 and later use
      * the context ClassLoader.
-     *
-     TODO(user): enable when classloader is implemented.
+     */
     static ClassLoader getClassLoader ()
     {
         Method m = null;
@@ -64,11 +66,10 @@ class NewInstance {
             return (ClassLoader) m.invoke(Thread.currentThread());
         } catch (IllegalAccessException e) {
             // assert(false)
-            throw new UnknownError(e.getMessage());
+            throw new AssertionError(e.getMessage());
         } catch (InvocationTargetException e) {
             // assert(e.getTargetException() instanceof SecurityException)
-            throw new UnknownError(e.getMessage());
+            throw new AssertionError(e.getMessage());
         }
     }
-    */
 }

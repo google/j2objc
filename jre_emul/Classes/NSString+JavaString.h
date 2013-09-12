@@ -32,6 +32,7 @@
 
 @class JavaLangStringBuffer;
 @class JavaLangStringBuilder;
+@class JavaNioCharsetCharset;
 @class JavaUtilLocale;
 @protocol JavaUtilComparator;
 
@@ -98,13 +99,23 @@ destinationBegin:(int)dstBegin;
 
 // String(byte[], String)
 + (NSString *)stringWithBytes:(IOSByteArray *)value
-              charsetName:(NSString *)charset;
+                  charsetName:(NSString *)charsetName;
+
+// String(byte[], Charset)
++ (NSString *)stringWithBytes:(IOSByteArray *)value
+                  charset:(JavaNioCharsetCharset *)charset;
 
 // String(byte[], int, int, String)
 + (NSString *)stringWithBytes:(IOSByteArray *)value
                        offset:(int)offset
                        length:(int)count
-              charsetName:(NSString *)charset;
+              charsetName:(NSString *)charsetName;
+
+// String(byte[], int, int, Charset)
++ (NSString *)stringWithBytes:(IOSByteArray *)value
+                       offset:(int)offset
+                       length:(int)count
+                  charset:(JavaNioCharsetCharset *)charset;
 
 + (NSString *)stringWithBytes:(IOSByteArray *)value
                        offset:(int)offset
@@ -210,7 +221,10 @@ destinationBegin:(int)dstBegin;
 - (IOSByteArray *)getBytes;
 
 // String.getBytes(String)
-- (IOSByteArray *)getBytesWithCharset:(NSString *)charsetName;
+- (IOSByteArray *)getBytesWithCharsetName:(NSString *)charsetName;
+
+// String.getBytes(Charset)
+- (IOSByteArray *)getBytesWithCharset:(JavaNioCharsetCharset *)charset;
 
 - (IOSByteArray *)getBytesWithEncoding:(NSStringEncoding)encoding;
 

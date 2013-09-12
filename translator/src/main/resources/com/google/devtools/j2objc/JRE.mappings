@@ -119,7 +119,10 @@ java.lang.String.String(Ljava/lang/String;)V = NSString stringWithString:(NSStri
 java.lang.String.String([B)V = NSString stringWithBytes:(IOSByteArray *)value
 java.lang.String.String([BLjava/lang/String;)V = \
     NSString stringWithBytes:(IOSByteArray *)value \
-                 charsetName:(NSString *)charset
+                 charsetName:(NSString *)charsetName
+java.lang.String.String([BLjava/nio/charset/Charset;)V = \
+    NSString stringWithBytes:(IOSByteArray *)value \
+                 charset:(JavaNioCharsetCharset *)charset
 java.lang.String.String([BI)V = \
     NSString stringWithBytes:(IOSByteArray *)value \
                       hibyte:(NSUInteger)hibyte
@@ -136,7 +139,12 @@ java.lang.String.String([BIILjava/lang/String;)V = \
     NSString stringWithBytes:(IOSByteArray *)value \
                       offset:(NSUInteger)offset \
                       length:(NSUInteger)length \
-                 charsetName:(NSString *)charset
+                 charsetName:(NSString *)charsetName
+java.lang.String.String([BIILjava/nio/charset/Charset;)V = \
+    NSString stringWithBytes:(IOSByteArray *)value \
+                      offset:(NSUInteger)offset \
+                      length:(NSUInteger)length \
+                     charset:(JavaNioCharsetCharset *)charset
 java.lang.String.String([C)V = NSString stringWithCharacters:(IOSCharArray *)value
 java.lang.String.String([CII)V = \
     NSString stringWithCharacters:(IOSCharArray *)value \
@@ -177,7 +185,9 @@ java.lang.String.format(Ljava/lang/String;[Ljava/lang/Object;)Ljava/lang/String;
 java.lang.String.format(Ljava/util/Locale;Ljava/lang/String;[Ljava/lang/Object;)Ljava/lang/String; = \
     NSString stringWithFormat:(NSString *)format locale:(id)locale ...
 java.lang.String.getBytes()[B = NSString getBytes
-java.lang.String.getBytes(Ljava/lang/String;)[B = NSString getBytesWithCharset:(NSString *)name
+java.lang.String.getBytes(Ljava/lang/String;)[B = NSString getBytesWithCharsetName:(NSString *)name
+java.lang.String.getBytes(Ljava/nio/charset/Charset;)[B = \
+    NSString getBytesWithCharset:(JavaNioCharsetCharset *)charset
 java.lang.String.getBytes(II[BI)V = NSString getBytesWithSrcBegin:(int)srcBegin \
                                                        withSrcEnd:(int)srcEnd \
                                                        withDst:(IOSByteArray *)dst \
