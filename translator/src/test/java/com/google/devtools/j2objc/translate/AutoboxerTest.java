@@ -276,7 +276,7 @@ public class AutoboxerTest extends GenerationTest {
   public void testBoxedTypeLiteral() throws IOException {
     String source = "public class Test { Class c = int.class; }";
     String translation = translateSourceFile(source, "Test", "Test.m");
-    assertTranslation(translation, "Test_set_c_(self, [JavaLangInteger TYPE]);");
+    assertTranslation(translation, "Test_set_c_(self, [IOSClass intClass]);");
   }
 
   public void testBoxedLhsOperatorAssignment() throws IOException {

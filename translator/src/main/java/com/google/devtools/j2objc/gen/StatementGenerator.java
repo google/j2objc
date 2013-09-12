@@ -1583,11 +1583,7 @@ public class StatementGenerator extends ErrorReportingASTVisitor {
   public boolean visit(TypeLiteral node) {
     ITypeBinding type = Types.getTypeBinding(node.getType());
     if (type.isPrimitive()) {
-      // Use the wrapper class's TYPE variable.
-      ITypeBinding wrapperType = Types.getWrapperType(type);
-      buffer.append('[');
-      buffer.append(NameTable.getFullName(wrapperType));
-      buffer.append(" TYPE]");
+      buffer.append(String.format("[IOSClass %sClass]", type.getName()));
     } else if (type.isInterface()) {
       buffer.append("[IOSClass classWithProtocol:@protocol(");
       buffer.append(NameTable.getFullName(type));
