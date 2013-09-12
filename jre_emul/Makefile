@@ -41,6 +41,7 @@ IOS_OBJS = \
 	IOSObjectArray.o \
 	IOSPrimitiveClass.o \
 	IOSProtocolClass.o \
+	IOSReference.o \
 	IOSShortArray.o \
 	JavaToIOSInputStreamAdapter.o \
 	JreEmulation.o \
@@ -258,6 +259,11 @@ JAVA_SOURCES = \
 	java/lang/ThreadLocal.java \
 	java/lang/UnsupportedOperationException.java \
 	java/lang/Void.java \
+	java/lang/ref/PhantomReference.java \
+	java/lang/ref/Reference.java \
+	java/lang/ref/ReferenceQueue.java \
+	java/lang/ref/SoftReference.java \
+	java/lang/ref/WeakReference.java \
 	java/math/BigDecimal.java \
 	java/math/BigInteger.java \
 	java/math/BitLevel.java \
@@ -415,6 +421,7 @@ JAVA_SOURCES = \
 	java/util/TreeMap.java \
 	java/util/TreeSet.java \
 	java/util/Vector.java \
+	java/util/WeakHashMap.java \
 	java/util/regex/Matcher.java \
 	java/util/regex/MatchResult.java \
 	java/util/regex/MatchResultImpl.java \
@@ -641,6 +648,16 @@ $(1)/java/util/LinkedHashMap.o: Classes/java/util/LinkedHashMap.m
 	    -I$$(EMULATION_CLASS_DIR) -I$$(TRANSLATED_SOURCE_DIR)
 
 $(1)/java/util/LinkedHashMap.plist: Classes/java/util/LinkedHashMap.m
+	@mkdir -p $$(@D)
+	$$(CLANG) -c $$? -o $$@ $(2) $$(OBJCFLAGS) $$(STATIC_ANALYZER_FLAGS) \
+	    -I$$(EMULATION_CLASS_DIR) -I$$(TRANSLATED_SOURCE_DIR)
+
+$(1)/IOSReference.o: Classes/IOSReference.m
+	@mkdir -p $$(@D)
+	$$(CLANG) -c $$? -o $$@ $(2) $$(OBJCFLAGS_NO_ARC) \
+	    -I$$(EMULATION_CLASS_DIR) -I$$(TRANSLATED_SOURCE_DIR)
+
+$(1)IOSReference.plist: Classes/IOSReference.m
 	@mkdir -p $$(@D)
 	$$(CLANG) -c $$? -o $$@ $(2) $$(OBJCFLAGS) $$(STATIC_ANALYZER_FLAGS) \
 	    -I$$(EMULATION_CLASS_DIR) -I$$(TRANSLATED_SOURCE_DIR)

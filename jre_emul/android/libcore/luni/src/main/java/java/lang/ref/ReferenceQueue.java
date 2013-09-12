@@ -60,6 +60,7 @@ public class ReferenceQueue<T> {
 
         ret.queueNext = null;
 
+        weakenReferent(ret.referent);
         return ret;
     }
 
@@ -139,6 +140,7 @@ public class ReferenceQueue<T> {
             reference.queueNext = head;
         }
         head = reference;
+        strengthenReferent(reference.referent);
         notify();
     }
 
@@ -157,4 +159,14 @@ public class ReferenceQueue<T> {
             ReferenceQueue.class.notifyAll();
         }
     }
+
+    // Retain the referent while it is queued.
+    private static native void strengthenReferent(Object referent) /*-[
+      [referent retain];
+    ]-*/;
+
+    // Release the referent after it is dequeued.
+    private static native void weakenReferent(Object referent) /*-[
+      [referent autorelease];
+    ]-*/;
 }
