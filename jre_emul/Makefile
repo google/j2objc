@@ -419,6 +419,7 @@ JAVA_SOURCES = \
 	javax/xml/validation/TypeInfoProvider.java \
 	javax/xml/validation/Validator.java \
 	javax/xml/validation/ValidatorHandler.java \
+	libcore/icu/ICU.java \
 	libcore/icu/LocaleData.java \
 	libcore/icu/TimeZones.java \
 	libcore/internal/StringPool.java \
