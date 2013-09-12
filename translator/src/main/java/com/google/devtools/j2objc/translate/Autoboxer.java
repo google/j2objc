@@ -19,6 +19,7 @@ package com.google.devtools.j2objc.translate;
 import com.google.common.collect.Lists;
 import com.google.devtools.j2objc.types.IOSMethodBinding;
 import com.google.devtools.j2objc.types.NodeCopier;
+import com.google.devtools.j2objc.types.PointerTypeBinding;
 import com.google.devtools.j2objc.types.Types;
 import com.google.devtools.j2objc.util.ASTUtil;
 import com.google.devtools.j2objc.util.BindingUtil;
@@ -350,7 +351,8 @@ public class Autoboxer extends ErrorReportingASTVisitor {
     }
     AST ast = node.getAST();
     String methodName = methodPrefix + NameTable.capitalize(Types.getPrimitiveType(type).getName());
-    IOSMethodBinding methodBinding = IOSMethodBinding.newFunction(methodName, type, type, type);
+    IOSMethodBinding methodBinding = IOSMethodBinding.newFunction(
+        methodName, type, type, new PointerTypeBinding(type));
     MethodInvocation invocation = ASTFactory.newMethodInvocation(ast, methodBinding, null);
     ASTUtil.getArguments(invocation).add(
         ASTFactory.newAddressOf(ast, NodeCopier.copySubtree(ast, operand)));

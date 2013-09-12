@@ -24,6 +24,7 @@ import com.google.devtools.j2objc.types.GeneratedTypeBinding;
 import com.google.devtools.j2objc.types.GeneratedVariableBinding;
 import com.google.devtools.j2objc.types.IOSVariableBinding;
 import com.google.devtools.j2objc.types.NodeCopier;
+import com.google.devtools.j2objc.types.PointerTypeBinding;
 import com.google.devtools.j2objc.types.Types;
 import com.google.devtools.j2objc.util.ASTUtil;
 import com.google.devtools.j2objc.util.BindingUtil;
@@ -44,6 +45,7 @@ import org.eclipse.jdt.core.dom.DoStatement;
 import org.eclipse.jdt.core.dom.EnhancedForStatement;
 import org.eclipse.jdt.core.dom.EnumDeclaration;
 import org.eclipse.jdt.core.dom.Expression;
+import org.eclipse.jdt.core.dom.FieldAccess;
 import org.eclipse.jdt.core.dom.FieldDeclaration;
 import org.eclipse.jdt.core.dom.ForStatement;
 import org.eclipse.jdt.core.dom.IMethodBinding;
@@ -61,7 +63,6 @@ import org.eclipse.jdt.core.dom.ParenthesizedExpression;
 import org.eclipse.jdt.core.dom.PostfixExpression;
 import org.eclipse.jdt.core.dom.PrefixExpression;
 import org.eclipse.jdt.core.dom.PrimitiveType;
-import org.eclipse.jdt.core.dom.QualifiedName;
 import org.eclipse.jdt.core.dom.ReturnStatement;
 import org.eclipse.jdt.core.dom.SingleVariableDeclaration;
 import org.eclipse.jdt.core.dom.Statement;
@@ -483,45 +484,51 @@ public class Rewriter extends ErrorReportingASTVisitor {
   private Block makeArrayIterationBlock(
       AST ast, Expression expression, ITypeBinding expressionType, IVariableBinding loopVariable,
       Block loopBody) {
+    ITypeBinding componentType = expressionType.getComponentType();
+    if (!componentType.isPrimitive()) {
+      componentType = Types.resolveIOSType("id");
+    }
+    ITypeBinding iosArrayType = Types.resolveArrayType(componentType);
+    PointerTypeBinding bufferType = new PointerTypeBinding(componentType, "const");
     IVariableBinding arrayVariable = new GeneratedVariableBinding(
         "a__", 0, expressionType, false, false, null, null);
-    IVariableBinding sizeVariable = new GeneratedVariableBinding(
-        "n__", 0, ast.resolveWellKnownType("int"), false, false, null, null);
-    IVariableBinding indexVariable = new GeneratedVariableBinding(
-        "i__", 0, ast.resolveWellKnownType("int"), false, false, null, null);
-
-    IVariableBinding lengthVariable = new GeneratedVariableBinding(
-        "length", 0, ast.resolveWellKnownType("int"), false, false, null, null);
-    QualifiedName arrayLength = ast.newQualifiedName(
-        ASTFactory.newSimpleName(ast, arrayVariable),
-        ASTFactory.newSimpleName(ast, lengthVariable));
-    Types.addBinding(arrayLength, lengthVariable);
+    IVariableBinding bufferVariable = new GeneratedVariableBinding(
+        "b__", 0, bufferType, false, false, null, null);
+    IVariableBinding endVariable = new GeneratedVariableBinding(
+        "e__", 0, bufferType, false, false, null, null);
+    IVariableBinding bufferField = new GeneratedVariableBinding(
+        "buffer", Modifier.PUBLIC, bufferType, true, false, iosArrayType, null);
+    IVariableBinding sizeField = new GeneratedVariableBinding(
+        "size", Modifier.PUBLIC, Types.resolveJavaType("int"), true, false, iosArrayType, null);
 
     VariableDeclarationStatement arrayDecl = ASTFactory.newVariableDeclarationStatement(
         ast, arrayVariable, NodeCopier.copySubtree(ast, expression));
-    VariableDeclarationStatement sizeDecl = ASTFactory.newVariableDeclarationStatement(
-        ast, sizeVariable, arrayLength);
+    FieldAccess bufferAccess = ASTFactory.newFieldAccess(
+        ast, bufferField, ASTFactory.newSimpleName(ast, arrayVariable));
+    VariableDeclarationStatement bufferDecl = ASTFactory.newVariableDeclarationStatement(
+        ast, bufferVariable, bufferAccess);
+    InfixExpression endInit = ASTFactory.newInfixExpression(
+        ast, ASTFactory.newSimpleName(ast, bufferVariable), InfixExpression.Operator.PLUS,
+        ASTFactory.newFieldAccess(ast, sizeField, ASTFactory.newSimpleName(ast, arrayVariable)),
+        bufferType);
+    VariableDeclarationStatement endDecl = ASTFactory.newVariableDeclarationStatement(
+        ast, endVariable, endInit);
 
-    VariableDeclarationExpression indexDecl = ASTFactory.newVariableDeclarationExpression(
-        ast, indexVariable, ASTFactory.newNumberLiteral(ast, "0", "int"));
-    InfixExpression loopCondition = ASTFactory.newInfixExpression(
-        ast, indexVariable, InfixExpression.Operator.LESS, sizeVariable,
-        ast.resolveWellKnownType("boolean"));
-    PostfixExpression incrementExpr = ASTFactory.newPostfixExpression(
-        ast, indexVariable, PostfixExpression.Operator.INCREMENT);
-
-    VariableDeclarationStatement itemDecl = ASTFactory.newVariableDeclarationStatement(
-        ast, loopVariable, ASTFactory.newArrayAccess(ast, arrayVariable, indexVariable));
-    ASTUtil.getStatements(loopBody).add(0, itemDecl);
-
-    ForStatement forLoop = ASTFactory.newForStatement(
-        ast, indexDecl, loopCondition, incrementExpr, loopBody);
+    WhileStatement loop = ast.newWhileStatement();
+    loop.setExpression(ASTFactory.newInfixExpression(
+        ast, ASTFactory.newSimpleName(ast, bufferVariable), InfixExpression.Operator.LESS,
+        ASTFactory.newSimpleName(ast, endVariable), Types.resolveJavaType("boolean")));
+    loop.setBody(loopBody);
+    ASTUtil.getStatements(loopBody).add(0, ASTFactory.newVariableDeclarationStatement(
+        ast, loopVariable, ASTFactory.newDereference(ast, ASTFactory.newPostfixExpression(
+            ast, bufferVariable, PostfixExpression.Operator.INCREMENT))));
 
     Block block = ast.newBlock();
     List<Statement> stmts = ASTUtil.getStatements(block);
     stmts.add(arrayDecl);
-    stmts.add(sizeDecl);
-    stmts.add(forLoop);
+    stmts.add(bufferDecl);
+    stmts.add(endDecl);
+    stmts.add(loop);
 
     return block;
   }

@@ -21,6 +21,7 @@ import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.devtools.j2objc.Options;
+import com.google.devtools.j2objc.types.PointerTypeBinding;
 import com.google.devtools.j2objc.types.Types;
 
 import org.eclipse.jdt.core.dom.AbstractTypeDeclaration;
@@ -391,6 +392,16 @@ public class NameTable {
    * converted to "id" regardless of their bounds.
    */
   public static String getObjCType(ITypeBinding type) {
+    if (type instanceof PointerTypeBinding) {
+      PointerTypeBinding pointerType = (PointerTypeBinding) type;
+      String qualifier = pointerType.getQualifier();
+      String pointeeType = getObjCType(pointerType.getPointeeType());
+      if (qualifier != null) {
+        return pointeeType + " " + qualifier + " *";
+      } else {
+        return pointeeType.endsWith("*") ? pointeeType + "*" : pointeeType + " *";
+      }
+    }
     if (type.isTypeVariable()) {
       return ID_TYPE;
     }

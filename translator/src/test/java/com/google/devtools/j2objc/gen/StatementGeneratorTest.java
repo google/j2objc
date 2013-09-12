@@ -572,8 +572,15 @@ public class StatementGeneratorTest extends GenerationTest {
     List<Statement> stmts = translateStatements(source);
     assertEquals(2, stmts.size());
     String result = generateStatement(stmts.get(1));
-    assertTranslation(result, "int n__ = ");
-    assertTranslation(result, "for (int i__ = 0; i__ < n__; i__++) {");
+    assertTranslatedLines(result,
+        "{",
+          "IOSObjectArray *a__ = strings;",
+          "id const *b__ = a__->buffer_;",
+          "id const *e__ = b__ + a__->size_;",
+          "while (b__ < e__) {",
+            "NSString *string = (*b__++);",
+          "}",
+        "}");
   }
 
   public void testEnhancedForStatementInSwitchStatement() throws IOException {
@@ -583,10 +590,21 @@ public class StatementGeneratorTest extends GenerationTest {
     List<Statement> stmts = translateStatements(source);
     assertEquals(3, stmts.size());
     String result = generateStatement(stmts.get(2));
-    assertTranslation(result, "default:\n{");
-    assertTranslation(result, "int n__ = ");
-    assertTranslation(result, "for (int i__ = 0; i__ < n__; i__++)");
-    assertTranslation(result, "break;\n}");
+    assertTranslatedLines(result,
+        "switch (test) {",
+          "case 0:",
+            "break;",
+          "default:",
+            "{",
+              "IOSIntArray *a__ = myInts;",
+              "int const *b__ = a__->buffer_;",
+              "int const *e__ = b__ + a__->size_;",
+              "while (b__ < e__) {",
+                "int i = (*b__++);",
+              "}",
+            "}",
+            "break;",
+        "}");
   }
 
   public void testSwitchStatementWithExpression() throws IOException {

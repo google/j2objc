@@ -22,6 +22,7 @@ import com.google.devtools.j2objc.types.IOSMethod;
 import com.google.devtools.j2objc.types.IOSMethodBinding;
 import com.google.devtools.j2objc.types.IOSTypeBinding;
 import com.google.devtools.j2objc.types.NodeCopier;
+import com.google.devtools.j2objc.types.PointerTypeBinding;
 import com.google.devtools.j2objc.types.Types;
 import com.google.devtools.j2objc.util.ASTUtil;
 import com.google.devtools.j2objc.util.ErrorReportingASTVisitor;
@@ -364,6 +365,9 @@ public class ArrayRewriter extends ErrorReportingASTVisitor {
     if (binding == null) {
       ITypeBinding declaredReturnType =
           componentType.isPrimitive() ? componentType : Types.resolveIOSType("id");
+      if (assignable) {
+        declaredReturnType = new PointerTypeBinding(declaredReturnType);
+      }
       binding = IOSMethodBinding.newFunction(
           name, declaredReturnType, iosArrayBinding, iosArrayBinding, Types.resolveJavaType("int"));
       accessFunctions.put(name, binding);
