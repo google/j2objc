@@ -66,11 +66,9 @@ public class LocaleDataTest extends junit.framework.TestCase {
 
         assertEquals("ledna", l.longMonthNames[0]);
         assertEquals("ledna", l.shortMonthNames[0]);
-        assertEquals("1", l.tinyMonthNames[0]);
 
         assertEquals("leden", l.longStandAloneMonthNames[0]);
         assertEquals("1.", l.shortStandAloneMonthNames[0]);
-        assertEquals("l", l.tinyStandAloneMonthNames[0]);
     }
 
     public void test_ru_RU() throws Exception {
@@ -78,12 +76,10 @@ public class LocaleDataTest extends junit.framework.TestCase {
 
         assertEquals("воскресенье", l.longWeekdayNames[1]);
         assertEquals("вс", l.shortWeekdayNames[1]);
-        assertEquals("\u0412", l.tinyWeekdayNames[1]);
 
         // Russian stand-alone weekday names get an initial capital.
         assertEquals("Воскресенье", l.longStandAloneWeekdayNames[1]);
         assertEquals("Вс", l.shortStandAloneWeekdayNames[1]);
-        assertEquals("В", l.tinyStandAloneWeekdayNames[1]);
     }
 
     // http://code.google.com/p/android/issues/detail?id=38844
