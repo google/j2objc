@@ -1347,13 +1347,16 @@ public class StatementGenerator extends ErrorReportingASTVisitor {
 
   @Override
   public boolean visit(StringLiteral node) {
-    if (UnicodeUtils.hasValidCppCharacters(node.getLiteralValue())) {
-      buffer.append('@');
-      buffer.append(UnicodeUtils.escapeStringLiteral(node.getEscapedValue()));
-    } else {
-      buffer.append(buildStringFromChars(node.getLiteralValue()));
-    }
+    buffer.append(generateStringLiteral(node));
     return false;
+  }
+
+  public static String generateStringLiteral(StringLiteral node) {
+    if (UnicodeUtils.hasValidCppCharacters(node.getLiteralValue())) {
+      return "@" + UnicodeUtils.escapeStringLiteral(node.getEscapedValue());
+    } else {
+      return buildStringFromChars(node.getLiteralValue());
+    }
   }
 
   @VisibleForTesting

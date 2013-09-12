@@ -30,6 +30,7 @@ import com.google.devtools.j2objc.util.BindingUtil;
 import com.google.devtools.j2objc.util.ErrorReportingASTVisitor;
 import com.google.devtools.j2objc.util.NameTable;
 
+import org.eclipse.jdt.core.dom.AST;
 import org.eclipse.jdt.core.dom.ASTNode;
 import org.eclipse.jdt.core.dom.AbstractTypeDeclaration;
 import org.eclipse.jdt.core.dom.Annotation;
@@ -54,6 +55,7 @@ import org.eclipse.jdt.core.dom.Modifier;
 import org.eclipse.jdt.core.dom.SimpleName;
 import org.eclipse.jdt.core.dom.SingleVariableDeclaration;
 import org.eclipse.jdt.core.dom.Statement;
+import org.eclipse.jdt.core.dom.StringLiteral;
 import org.eclipse.jdt.core.dom.SuperConstructorInvocation;
 import org.eclipse.jdt.core.dom.TypeDeclaration;
 import org.eclipse.jdt.core.dom.VariableDeclarationFragment;
@@ -1046,11 +1048,11 @@ public class ObjectiveCImplementationGenerator extends ObjectiveCSourceFileGener
       print(i == 0 ? "With" : "with");
       printf("%s:", NameTable.capitalize(valueBinding.getName()));
       Object value = valueBinding.getValue();
-      printAnnotationValue(value);
+      printAnnotationValue(annotation.getAST(), value);
     }
   }
 
-  private void printAnnotationValue(Object value) {
+  private void printAnnotationValue(AST ast, Object value) {
     if (value == null) {
       print("nil");
     } else if (value instanceof IVariableBinding) {
@@ -1061,7 +1063,9 @@ public class ObjectiveCImplementationGenerator extends ObjectiveCSourceFileGener
       ITypeBinding type = (ITypeBinding) value;
       printf("[%s getClass]", NameTable.getFullName(type));
     } else if (value instanceof String) {
-      printf("@\"%s\"", value);
+      StringLiteral node = ast.newStringLiteral();
+      node.setLiteralValue((String) value);
+      printf(StatementGenerator.generateStringLiteral(node));
     } else if (value instanceof Number || value instanceof Character || value instanceof Boolean) {
       print(value.toString());
     } else if (value.getClass().isArray()) {
@@ -1071,12 +1075,11 @@ public class ObjectiveCImplementationGenerator extends ObjectiveCSourceFileGener
         if (i > 0) {
           print(", ");
         }
-        printAnnotationValue(array[i]);
+        printAnnotationValue(ast, array[i]);
       }
       printf(" } count:%d type:[NSObject getClass]]", array.length);
     } else {
       assert false : "unknown annotation value type";
     }
   }
-
 }
