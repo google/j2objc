@@ -107,11 +107,9 @@ public final class ICU {
         return localesFromStrings(getAvailableBreakIteratorLocalesNative());
     }
 
-    /*
     public static Locale[] getAvailableCalendarLocales() {
         return localesFromStrings(getAvailableCalendarLocalesNative());
     }
-    */
 
     public static Locale[] getAvailableCollatorLocales() {
         return localesFromStrings(getAvailableCollatorLocalesNative());
@@ -132,6 +130,11 @@ public final class ICU {
     public static Locale[] getAvailableNumberFormatLocales() {
         return localesFromStrings(getAvailableNumberFormatLocalesNative());
     }
+
+    public static native String[] getAvailableCurrencyCodes() /*-[
+      NSArray *currencyCodes = [NSLocale ISOCurrencyCodes];
+      return [IOSObjectArray arrayWithNSArray:currencyCodes type:[NSString getClass]];
+    ]-*/;
 
     // --- Native methods accessing iOS data.
 
@@ -185,6 +188,20 @@ public final class ICU {
 #endif
       }
       return [IOSObjectArray arrayWithNSArray:localesWithDateFormats type:[NSString getClass]];
+    ]-*/;
+
+    private static native String[] getAvailableCalendarLocalesNative() /*-[
+      NSMutableArray *localesWithCalendarFormats = [NSMutableArray array];
+      for (NSString *localeId in [NSLocale availableLocaleIdentifiers]) {
+        NSLocale *locale = [[NSLocale alloc] initWithLocaleIdentifier:localeId];
+        if ([locale objectForKey:NSLocaleCalendar]) {
+          [localesWithCalendarFormats addObject:localeId];
+        }
+#if !__has_feature(objc_arc)
+        [locale release];
+#endif
+      }
+      return [IOSObjectArray arrayWithNSArray:localesWithCalendarFormats type:[NSString getClass]];
     ]-*/;
 
     private static native String[] getAvailableNumberFormatLocalesNative() /*-[
@@ -243,4 +260,27 @@ public final class ICU {
       return nil;
     ]-*/;
 
+    public static native String getCurrencyCode(String localeId) /*-[
+      NSLocale *nativeLocale =
+          AUTORELEASE([[NSLocale alloc] initWithLocaleIdentifier:localeId]);
+      NSNumberFormatter *formatter = AUTORELEASE([[NSNumberFormatter alloc] init]);
+      [formatter setNumberStyle:NSNumberFormatterCurrencyStyle];
+      [formatter setLocale:nativeLocale];
+      return [formatter currencyCode];
+    ]-*/;
+
+    public static native String getCurrencySymbol(String localeId) /*-[
+      NSLocale *nativeLocale =
+          AUTORELEASE([[NSLocale alloc] initWithLocaleIdentifier:localeId]);
+      NSNumberFormatter *formatter = AUTORELEASE([[NSNumberFormatter alloc] init]);
+      [formatter setNumberStyle:NSNumberFormatterCurrencyStyle];
+      [formatter setLocale:nativeLocale];
+      return [formatter currencySymbol];
+    ]-*/;
+
+    public static native int getCurrencyFractionDigits(String currencyCode) /*-[
+      NSNumberFormatter *formatter = AUTORELEASE([[NSNumberFormatter alloc] init]);
+      [formatter setCurrencyCode:currencyCode];
+      return [formatter maximumFractionDigits];
+    ]-*/;
 }

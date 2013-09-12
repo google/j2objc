@@ -46,7 +46,10 @@ TEST_SOURCES = \
 	libcore/java/lang/reflect/ArrayTest.java \
 	libcore/java/lang/reflect/ConstructorTest.java \
 	libcore/java/text/DecimalFormatTest.java \
+	libcore/java/text/DecimalFormatSymbolsTest.java \
 	libcore/java/text/NumberFormatTest.java \
+	libcore/java/util/CalendarTest.java \
+	libcore/java/util/OldTimeZoneTest.java \
 	org/apache/harmony/luni/tests/java/io/BufferedInputStreamTest.java \
 	org/apache/harmony/luni/tests/java/io/BufferedOutputStreamTest.java \
 	org/apache/harmony/luni/tests/java/io/BufferedReaderTest.java \
@@ -154,7 +157,6 @@ TEST_SOURCES = \
 	org/apache/harmony/luni/tests/java/util/ArrayListTest.java \
 	org/apache/harmony/luni/tests/java/util/ArraysTest.java \
 	org/apache/harmony/luni/tests/java/util/BitSetTest.java \
-	org/apache/harmony/luni/tests/java/util/CalendarTest.java \
 	org/apache/harmony/luni/tests/java/util/CollectionsTest.java \
 	org/apache/harmony/luni/tests/java/util/DateTest.java \
 	org/apache/harmony/luni/tests/java/util/EmptyStackExceptionTest.java \
@@ -207,6 +209,7 @@ TEST_SOURCES = \
 	org/apache/harmony/tests/java/util/regex/PatternTest.java \
 	org/apache/harmony/tests/java/util/regex/ReplaceTest.java \
 	org/apache/harmony/tests/java/util/regex/SplitTest.java \
+	tests/api/java/util/CalendarTest.java \
 	tests/api/java/util/TimerTaskTest.java \
 	tests/api/java/util/TimerTest.java \
 

@@ -65,8 +65,8 @@ import java.util.regex.Pattern;
  * @see SimpleDateFormat
  */
 public abstract class TimeZone implements Serializable, Cloneable {
-    private static final Pattern CUSTOM_ZONE_ID_PATTERN = 
-	Pattern.compile("^GMT[-+](\\d{1,2})([:.]?(\\d\\d))?$");
+    private static final Pattern CUSTOM_ZONE_ID_PATTERN =
+        Pattern.compile("^GMT[-+](\\d{1,2})([:.]?(\\d\\d))?$");
 
     /**
      * The short display name style, such as {@code PDT}. Requests for this
@@ -90,7 +90,7 @@ public abstract class TimeZone implements Serializable, Cloneable {
     private Object nativeTimeZone;
 
     public TimeZone() {}
-    
+
     private TimeZone(Object nativeTimeZone) {
       this.nativeTimeZone = nativeTimeZone;
     }
@@ -114,7 +114,7 @@ public abstract class TimeZone implements Serializable, Cloneable {
      */
     public static synchronized native String[] getAvailableIDs() /*-[
       NSArray *timeZones = [NSTimeZone knownTimeZoneNames];
-      return [IOSObjectArray arrayWithNSArray:timeZones 
+      return [IOSObjectArray arrayWithNSArray:timeZones
                                          type:[IOSClass classWithClass:[NSString class]]];
     ]-*/;
 
@@ -135,7 +135,7 @@ public abstract class TimeZone implements Serializable, Cloneable {
           [results addObject:id];
         }
       }
-      return [IOSObjectArray arrayWithNSArray:results 
+      return [IOSObjectArray arrayWithNSArray:results
                                          type:[IOSClass classWithClass:[NSString class]]];
     ]-*/;
 
@@ -152,7 +152,7 @@ public abstract class TimeZone implements Serializable, Cloneable {
         }
         return (TimeZone) defaultTimeZone.clone();
     }
-    
+
     private static native TimeZone getDefaultNativeTimeZone() /*-[
       NSTimeZone *tz = [NSTimeZone defaultTimeZone];
       NSInteger offsetMillis = [tz secondsFromGMT] * 1000;
@@ -234,7 +234,7 @@ public abstract class TimeZone implements Serializable, Cloneable {
             NSTimeZoneNameStyleShortDaylightSaving : NSTimeZoneNameStyleDaylightSaving;
       } else {
         zoneStyle = shortName ?
-            NSTimeZoneNameStyleShortGeneric : NSTimeZoneNameStyleGeneric;
+            NSTimeZoneNameStyleShortStandard : NSTimeZoneNameStyleStandard;
       }
 
       // Find native locale.
@@ -379,7 +379,7 @@ public abstract class TimeZone implements Serializable, Cloneable {
         // We never return null; on failure we return the equivalent of "GMT".
         return (zone != null) ? zone : (TimeZone) GMT.clone();
     }
-    
+
     private static native TimeZone getNativeTimeZone(String id) /*-[
       NSTimeZone *tz = [NSTimeZone timeZoneWithAbbreviation:id_];
       if (!tz) {

@@ -18,6 +18,8 @@
 package java.util;
 
 import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 
 /**
  * {@code GregorianCalendar} is a concrete subclass of {@link Calendar}
@@ -1248,7 +1250,6 @@ public class GregorianCalendar extends Calendar {
         }
     }
 
-    /*
     private void writeObject(ObjectOutputStream stream) throws IOException {
         stream.defaultWriteObject();
     }
@@ -1257,5 +1258,4 @@ public class GregorianCalendar extends Calendar {
         stream.defaultReadObject();
         setGregorianChange(new Date(gregorianCutover));
     }
-    */
 }
