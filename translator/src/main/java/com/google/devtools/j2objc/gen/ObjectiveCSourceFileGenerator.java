@@ -179,23 +179,27 @@ public abstract class ObjectiveCSourceFileGenerator extends SourceFileGenerator 
    */
   protected void printMethods(List<MethodDeclaration> methods) {
     for (MethodDeclaration m : methods) {
-      syncLineNumbers(m.getName());  // avoid doc-comment
-      IMethodBinding binding = Types.getMethodBinding(m);
-      IOSMethod iosMethod = IOSMethodBinding.getIOSMethod(binding);
-      if (iosMethod != null) {
-        print(mappedMethodDeclaration(m, iosMethod));
-      } else if (m.isConstructor()) {
-        print(constructorDeclaration(m));
-      } else if (Modifier.isStatic(m.getModifiers()) &&
-          NameTable.CLINIT_NAME.equals(m.getName().getIdentifier())) {
-        printStaticConstructorDeclaration(m);
-      } else {
-        printMethod(m);
-      }
+      printMethod(m);
     }
   }
 
   protected void printMethod(MethodDeclaration m) {
+    syncLineNumbers(m.getName());  // avoid doc-comment
+    IMethodBinding binding = Types.getMethodBinding(m);
+    IOSMethod iosMethod = IOSMethodBinding.getIOSMethod(binding);
+    if (iosMethod != null) {
+      print(mappedMethodDeclaration(m, iosMethod));
+    } else if (m.isConstructor()) {
+      print(constructorDeclaration(m));
+    } else if (Modifier.isStatic(m.getModifiers()) &&
+        NameTable.CLINIT_NAME.equals(m.getName().getIdentifier())) {
+      printStaticConstructorDeclaration(m);
+    } else {
+      printNormalMethod(m);
+    }
+  }
+
+  protected void printNormalMethod(MethodDeclaration m) {
     print(methodDeclaration(m));
   }
 
