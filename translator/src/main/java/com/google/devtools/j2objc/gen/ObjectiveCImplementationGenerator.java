@@ -626,17 +626,10 @@ public class ObjectiveCImplementationGenerator extends ObjectiveCSourceFileGener
 
   @Override
   protected String methodDeclaration(MethodDeclaration m) {
-    int modifiers = m.getModifiers();
-    if ((modifiers & Modifier.NATIVE) > 0) {
-      if (hasNativeCode(m, true)) {
-        return super.methodDeclaration(m) + " " + extractNativeMethodBody(m) + "\n\n";
-      } else if (Options.generateNativeStubs()) {
-        return super.methodDeclaration(m) + " " + generateNativeStub(m) + "\n\n";
-      } else {
-        return "";
-      }
-    }
     String methodBody = generateMethodBody(m);
+    if (methodBody == null) {
+      return "";
+    }
     return super.methodDeclaration(m) + " " + reindent(methodBody) + "\n\n" +
         methodExceptionsFunction(m);
   }
@@ -674,21 +667,24 @@ public class ObjectiveCImplementationGenerator extends ObjectiveCSourceFileGener
 
   @Override
   protected String mappedMethodDeclaration(MethodDeclaration method, IOSMethod mappedMethod) {
-    String methodBody;
-    if ((method.getModifiers() & Modifier.NATIVE) > 0) {
-      if (hasNativeCode(method)) {
-        methodBody = extractNativeMethodBody(method);
-      } else {
-        return "";
-      }
-    } else {
-      methodBody = generateMethodBody(method);
+    String methodBody = generateMethodBody(method);
+    if (methodBody == null) {
+      return "";
     }
     return super.mappedMethodDeclaration(method, mappedMethod)
         + " " + reindent(methodBody) + "\n\n";
   }
 
   private String generateMethodBody(MethodDeclaration m) {
+    if (Modifier.isNative(m.getModifiers())) {
+      if (hasNativeCode(m, true)) {
+        return extractNativeMethodBody(m);
+      } else if (Options.generateNativeStubs()) {
+        return generateNativeStub(m);
+      } else {
+        return null;
+      }
+    }
     if (Modifier.isAbstract(m.getModifiers())) {
       // Generate a body which throws a NSInvalidArgumentException.
       String body =
@@ -705,9 +701,9 @@ public class ObjectiveCImplementationGenerator extends ObjectiveCSourceFileGener
     boolean isStatic = (m.getModifiers() & Modifier.STATIC) != 0;
     boolean isSynchronized = (m.getModifiers() & Modifier.SYNCHRONIZED) != 0;
     if (isStatic && isSynchronized) {
-      methodBody = reindent("{\n@synchronized([self class]) {\n" + methodBody + "}\n}\n");
+      methodBody = "{\n@synchronized([self class]) {\n" + methodBody + "}\n}\n";
     } else if (isSynchronized) {
-      methodBody = reindent("{\n@synchronized(self) {\n" + methodBody + "}\n}\n");
+      methodBody = "{\n@synchronized(self) {\n" + methodBody + "}\n}\n";
     }
 
     return methodBody;
@@ -873,10 +869,7 @@ public class ObjectiveCImplementationGenerator extends ObjectiveCSourceFileGener
       J2ObjC.warning(m, "no native code found");
       return "";
     }
-    indent();
-    String code = reindent('{' + nativeCode + '}');
-    unindent();
-    return code;
+    return '{' + nativeCode + '}';
   }
 
   private void printImports(CompilationUnit node) {
