@@ -38,6 +38,7 @@ TEST_SOURCES = \
 	CopyOnWriteArraySetTest.java \
 	java/lang/ClassTest.java \
 	java/lang/ThrowableTest.java \
+	libcore/icu/ICUTest.java \
 	libcore/icu/LocaleDataTest.java \
 	libcore/java/lang/ThrowableTest.java \
 	libcore/java/lang/reflect/AnnotationsTest.java \
