@@ -144,8 +144,12 @@
 
   // Decimal format symbols.
   NSNumberFormatter *numberFormatter = [[NSNumberFormatter alloc] init];
+  [numberFormatter setNumberStyle:NSNumberFormatterNoStyle];
   [numberFormatter setLocale:locale];
   result->zeroDigit_ = [[numberFormatter zeroSymbol] characterAtIndex:0];
+  if (result->zeroDigit_ == 0) {
+    result->zeroDigit_ = '0';
+  }
   result->decimalSeparator_ = [[numberFormatter decimalSeparator] characterAtIndex:0];
   result->groupingSeparator_ = [[numberFormatter groupingSeparator] characterAtIndex:0];
   result->percent_ = [[numberFormatter percentSymbol] characterAtIndex:0];

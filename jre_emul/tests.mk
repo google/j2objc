@@ -25,6 +25,7 @@ SUPPORT_SOURCES = \
 	org/apache/harmony/nio/tests/java/nio/AbstractBufferTest.java \
 	tests/support/Support_CollectionTest.java \
 	tests/support/Support_ListTest.java \
+	tests/support/Support_Locale.java \
 	tests/support/Support_MapTest2.java \
 	tests/support/Support_SetTest.java \
 	tests/support/Support_StringReader.java \
@@ -44,6 +45,9 @@ TEST_SOURCES = \
 	libcore/java/lang/reflect/AnnotationsTest.java \
 	libcore/java/lang/reflect/ArrayTest.java \
 	libcore/java/lang/reflect/ConstructorTest.java \
+	libcore/java/text/DecimalFormatTest.java \
+	libcore/java/text/DecimalFormatSymbolsTest.java \
+	libcore/java/text/NumberFormatTest.java \
 	org/apache/harmony/luni/tests/java/io/BufferedInputStreamTest.java \
 	org/apache/harmony/luni/tests/java/io/BufferedOutputStreamTest.java \
 	org/apache/harmony/luni/tests/java/io/BufferedReaderTest.java \
@@ -296,6 +300,9 @@ $(TESTS_DIR)/%.h $(TESTS_DIR)/%.m: $(MISC_TEST_ROOT)/%.java
 	@echo $? >> $(JAVA_SOURCE_LIST)
 
 $(TESTS_DIR)/%.h $(TESTS_DIR)/%.m: $(ANDROID_JRE_TEST_ROOT)/%.java
+	@echo $? >> $(JAVA_SOURCE_LIST)
+
+$(TESTS_DIR)/%.h $(TESTS_DIR)/%.m: $(ANDROID_TEST_SUPPORT_ROOT)/%.java
 	@echo $? >> $(JAVA_SOURCE_LIST)
 
 $(TESTS_DIR)/%.h $(TESTS_DIR)/%.m: $(REGEX_TEST_ROOT)/%.java

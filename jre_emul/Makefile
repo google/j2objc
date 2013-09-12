@@ -335,8 +335,14 @@ JAVA_SOURCES = \
 	java/sql/Date.java \
 	java/sql/Time.java \
 	java/sql/Timestamp.java \
+	java/text/Annotation.java \
+	java/text/AttributedCharacterIterator.java \
+	java/text/AttributedString.java \
+	java/text/CharacterIterator.java \
 	java/text/DateFormat.java \
 	java/text/DecimalFormat.java \
+	java/text/DecimalFormatSymbols.java \
+	java/text/FieldPosition.java \
 	java/text/Format.java \
 	java/text/NumberFormat.java \
 	java/text/ParseException.java \
@@ -421,6 +427,7 @@ JAVA_SOURCES = \
 	javax/xml/validation/ValidatorHandler.java \
 	libcore/icu/ICU.java \
 	libcore/icu/LocaleData.java \
+	libcore/icu/NativeDecimalFormat.java \
 	libcore/icu/TimeZones.java \
 	libcore/internal/StringPool.java \
 	libcore/io/ErrnoException.java \
