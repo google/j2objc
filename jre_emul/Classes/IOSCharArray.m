@@ -32,8 +32,9 @@
 }
 
 - (id)initWithCharacters:(const unichar *)chars count:(NSUInteger)count {
-  if ((self = [self initWithLength:count])) {
+  if ((self = [super initWithLength:count])) {
     if (chars != nil) {
+      buffer_ = malloc(count * sizeof(unichar));
       memcpy(buffer_, chars, count * sizeof(unichar));
     }
   }
@@ -41,12 +42,22 @@
 }
 
 + (id)arrayWithCharacters:(const unichar *)chars count:(NSUInteger)count {
-  id array = [[IOSCharArray alloc] initWithCharacters:chars count:count];
-#if __has_feature(objc_arc)
-  return array;
-#else
-  return [array autorelease];
-#endif
+  return AUTORELEASE([[IOSCharArray alloc] initWithCharacters:chars count:count]);
+}
+
+- (id)initWithNSString:(NSString *)string {
+  int length = [string length];
+  if ((self = [super initWithLength:length])) {
+    if (length > 0) {
+      buffer_ = malloc(length * sizeof(unichar));
+      [string getCharacters:buffer_ range:NSMakeRange(0, length)];
+    }
+  }
+  return self;
+}
+
++ (id)arrayWithNSString:(NSString *)string {
+  return AUTORELEASE([[IOSCharArray alloc] initWithNSString:string]);
 }
 
 unichar IOSCharArray_Get(__unsafe_unretained IOSCharArray *array, NSUInteger index) {

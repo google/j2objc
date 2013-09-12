@@ -368,13 +368,7 @@ destinationBegin:(int)destinationBegin {
 }
 
 - (IOSCharArray *)toCharArray {
-  NSUInteger len = [self length];
-  unichar *buffer = calloc(len, sizeof(unichar));
-  NSRange range = NSMakeRange(0, len);
-  [self getCharacters:buffer range:range];
-  IOSCharArray *array = [IOSCharArray arrayWithCharacters:buffer count:len];
-  free(buffer);
-  return array;
+  return [IOSCharArray arrayWithNSString:self];
 }
 
 - (unichar)charAtWithInt:(int)index {
@@ -649,7 +643,7 @@ NSStringEncoding parseCharsetName(NSString *charset) {
            range:range
   remainingRange:NULL];
   char *dstBytes = malloc([dst count] - dstBegin);
-  
+
   // Double-check there won't be a buffer overflow, since the encoded length
   // of the copied substring is now known.
   if (bytesUsed > ([dst count] - dstBegin)) {
