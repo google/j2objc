@@ -18,12 +18,12 @@
 package java.net;
 
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.util.Hashtable;
 
+import libcore.net.url.FileHandler;
 import libcore.net.url.UrlUtils;
 
 /**
@@ -395,10 +395,10 @@ public final class URL implements Serializable {
             }
         }
 
-        /* TODO(user): enable when stream handlers are implemented.
         // Fall back to a built-in stream handler if the user didn't supply one
         if (protocol.equals("file")) {
             streamHandler = new FileHandler();
+        /* TODO(user): enable as other stream handlers are implemented.
         } else if (protocol.equals("ftp")) {
             streamHandler = new FtpHandler();
         } else if (protocol.equals("http")) {
@@ -417,11 +417,11 @@ public final class URL implements Serializable {
             }
         } else if (protocol.equals("jar")) {
             streamHandler = new JarHandler();
+        */
         }
         if (streamHandler != null) {
             streamHandlers.put(protocol, streamHandler);
         }
-        */
     }
 
     /**

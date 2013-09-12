@@ -468,6 +468,7 @@ JAVA_SOURCES = \
 	libcore/io/Os.java \
 	libcore/io/OsConstants.java \
 	libcore/io/Posix.java \
+	libcore/net/url/FileHandler.java \
 	libcore/net/url/UrlUtils.java \
 	libcore/util/BasicLruCache.java \
 	libcore/util/EmptyArray.java \
