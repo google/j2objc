@@ -44,7 +44,6 @@ import org.eclipse.jdt.core.dom.ArrayInitializer;
 import org.eclipse.jdt.core.dom.ArrayType;
 import org.eclipse.jdt.core.dom.AssertStatement;
 import org.eclipse.jdt.core.dom.Assignment;
-import org.eclipse.jdt.core.dom.Assignment.Operator;
 import org.eclipse.jdt.core.dom.Block;
 import org.eclipse.jdt.core.dom.BooleanLiteral;
 import org.eclipse.jdt.core.dom.BreakStatement;
@@ -335,47 +334,19 @@ public class StatementGenerator extends ErrorReportingASTVisitor {
 
   @Override
   public boolean visit(Assignment node) {
-    Operator op = node.getOperator();
-    Expression lhs = node.getLeftHandSide();
-    Expression rhs = node.getRightHandSide();
-    if (op == Operator.REMAINDER_ASSIGN && (isFloatingPoint(lhs) || isFloatingPoint(rhs))) {
-      lhs.accept(this);
-      buffer.append(" = fmod(");
-      lhs.accept(this);
-      buffer.append(", ");
-      rhs.accept(this);
-      buffer.append(")");
-    } else if (op == Operator.RIGHT_SHIFT_UNSIGNED_ASSIGN) {
-      // TODO(user): This operator is broken for static variables.
-      ITypeBinding assignType = Types.getTypeBinding(lhs);
-      if (assignType.getName().equals("char")) {
-        lhs.accept(this);
-        buffer.append(" >>= ");
-        rhs.accept(this);
-      } else {
-        buffer.append("URShiftAssign" + NameTable.capitalize(assignType.getName()) + "(&");
-        lhs.accept(this);
-        buffer.append(", ");
-        rhs.accept(this);
-        buffer.append(")");
-      }
-    } else {
-      // Handles the case for the following operators:
-      // BIT_AND_ASSIGN, BIT_OR_ASSIGN, BIT_XOR_ASSIGN, DIVIDE_ASSIGN,
-      // LEFT_SHIFT_ASSIGN, MINUS_ASSIGN, PLUS_ASSIGN, REMAINDER_ASSIGN,
-      // RIGHT_SHIFT_SIGNED_ASSIGN, RIGHT_SHIFT_UNSIGNED_ASSIGN and
-      // TIMES_ASSIGN.
-      lhs.accept(this);
-      buffer.append(' ');
-      buffer.append(op.toString());
-      buffer.append(' ');
-      rhs.accept(this);
-    }
+    node.getLeftHandSide().accept(this);
+    buffer.append(' ');
+    buffer.append(getOperatorStr(node.getOperator()));
+    buffer.append(' ');
+    node.getRightHandSide().accept(this);
     return false;
   }
 
-  private boolean isFloatingPoint(Expression e) {
-    return Types.isFloatingPointType(Types.getTypeBinding(e));
+  private static String getOperatorStr(Assignment.Operator op) {
+    if (op.equals(Assignment.Operator.RIGHT_SHIFT_UNSIGNED_ASSIGN)) {
+      return ">>=";
+    }
+    return op.toString();
   }
 
   private void printUnsignedRightShift(Expression lhs, Expression rhs) {
@@ -713,13 +684,6 @@ public class StatementGenerator extends ErrorReportingASTVisitor {
     } else if (op.equals(InfixExpression.Operator.RIGHT_SHIFT_UNSIGNED) &&
         !lhsType.getName().equals("char")) {
       printUnsignedRightShift(lhs, rhs);
-    } else if (op.equals(InfixExpression.Operator.REMAINDER) && isFloatingPoint(node)) {
-      buffer.append(type.getName().equals("float") ? "fmodf" : "fmod");
-      buffer.append('(');
-      lhs.accept(this);
-      buffer.append(", ");
-      rhs.accept(this);
-      buffer.append(')');
     } else {
       lhs.accept(this);
       buffer.append(' ');

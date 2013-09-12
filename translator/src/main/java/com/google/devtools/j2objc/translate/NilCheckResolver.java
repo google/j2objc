@@ -56,8 +56,6 @@ import org.eclipse.jdt.core.dom.WhileStatement;
 import java.util.ArrayList;
 import java.util.Set;
 
-// TODO(user): Need to add nil_chk to increment and decrement and certain
-// assignment types like +=.
 /**
  * Adds nil_chk calls where required to maintain compatibility Java's
  * NullPointerException being thrown when null is dereferenced.

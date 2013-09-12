@@ -16,7 +16,10 @@ package com.google.devtools.j2objc.translate;
 
 import com.google.devtools.j2objc.GenerationTest;
 
+import org.eclipse.jdt.core.dom.Statement;
+
 import java.io.IOException;
+import java.util.List;
 
 /**
  * Unit tests for {@link OperatorRewriter}.
@@ -31,5 +34,29 @@ public class OperatorRewriterTest extends GenerationTest {
         "void test(boolean b) { (b ? new Test() : getTest()).s = \"foo\"; } }", "Test", "Test.m");
     assertTranslation(translation,
         "Test_set_s_((b ? [[[Test alloc] init] autorelease] : [Test getTest]), @\"foo\");");
+  }
+
+  public void testModAssignOperator() throws IOException {
+    String source = "float a = 4.2f; a %= 2.1f; double b = 5.6; b %= 1.2; byte c = 3; c %= 2.3;" +
+        "short d = 4; d %= 3.4; int e = 5; e %= 4.5; long f = 6; f %= 5.6; char g = 'a'; g %= 6.7;";
+    List<Statement> stmts = translateStatements(source);
+    assertEquals(14, stmts.size());
+    assertEquals("ModAssignFloat(&a, 2.1f);", generateStatement(stmts.get(1)));
+    assertEquals("ModAssignDouble(&b, 1.2);", generateStatement(stmts.get(3)));
+    assertEquals("ModAssignByte(&c, 2.3);", generateStatement(stmts.get(5)));
+    assertEquals("ModAssignShort(&d, 3.4);", generateStatement(stmts.get(7)));
+    assertEquals("ModAssignInt(&e, 4.5);", generateStatement(stmts.get(9)));
+    assertEquals("ModAssignLong(&f, 5.6);", generateStatement(stmts.get(11)));
+    assertEquals("ModAssignChar(&g, 6.7);", generateStatement(stmts.get(13)));
+  }
+
+  public void testDoubleModulo() throws IOException {
+    String translation = translateSourceFile(
+      "public class A { " +
+      "  double doubleMod(double one, double two) { return one % two; }" +
+      "  float floatMod(float three, float four) { return three % four; }}",
+      "A", "A.m");
+    assertTranslation(translation, "return fmod(one, two);");
+    assertTranslation(translation, "return fmodf(three, four);");
   }
 }

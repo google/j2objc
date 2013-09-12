@@ -122,6 +122,19 @@ FOUNDATION_EXPORT
   }
 #endif
 
+#define MOD_ASSIGN_DEFN(NAME, TYPE) \
+  static inline TYPE ModAssign##NAME(TYPE *pLhs, double rhs) { \
+    return *pLhs = fmod(*pLhs, rhs); \
+  }
+
+MOD_ASSIGN_DEFN(Byte, char)
+MOD_ASSIGN_DEFN(Char, unichar)
+MOD_ASSIGN_DEFN(Double, double)
+MOD_ASSIGN_DEFN(Float, float)
+MOD_ASSIGN_DEFN(Int, int)
+MOD_ASSIGN_DEFN(Long, long long)
+MOD_ASSIGN_DEFN(Short, short int)
+
 #define UR_SHIFT_ASSIGN_DEFN(NAME, TYPE) \
   static inline TYPE URShiftAssign##NAME(TYPE *pLhs, int rhs) { \
     return *pLhs = (TYPE) (((unsigned TYPE) *pLhs) >> rhs); \
@@ -136,17 +149,21 @@ UR_SHIFT_ASSIGN_DEFN(Short, short int)
 // operations to the header files of the boxed types.
 #define BOXED_INC_AND_DEC(CNAME, LNAME, TYPE, KEYWORD) \
   static inline TYPE *PreIncr##CNAME(TYPE **value) { \
+    nil_chk(*value); \
     return *value = [TYPE valueOfWith##KEYWORD:[*value LNAME##Value] + 1]; \
   } \
   static inline TYPE *PostIncr##CNAME(TYPE **value) { \
+    nil_chk(*value); \
     TYPE *original = *value; \
     *value = [TYPE valueOfWith##KEYWORD:[*value LNAME##Value] + 1]; \
     return original; \
   } \
   static inline TYPE *PreDecr##CNAME(TYPE **value) { \
+    nil_chk(*value); \
     return *value = [TYPE valueOfWith##KEYWORD:[*value LNAME##Value] - 1]; \
   } \
   static inline TYPE *PostDecr##CNAME(TYPE **value) { \
+    nil_chk(*value); \
     TYPE *original = *value; \
     *value = [TYPE valueOfWith##KEYWORD:[*value LNAME##Value] - 1]; \
     return original; \
