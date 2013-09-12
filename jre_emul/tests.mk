@@ -51,6 +51,9 @@ TEST_SOURCES = \
 	libcore/java/lang/reflect/AnnotationsTest.java \
 	libcore/java/lang/reflect/ArrayTest.java \
 	libcore/java/lang/reflect/ConstructorTest.java \
+	libcore/java/nio/charset/CharsetDecoderTest.java \
+	libcore/java/nio/charset/CharsetEncoderTest.java \
+	libcore/java/nio/charset/CharsetTest.java \
 	libcore/java/text/CollatorTest.java \
 	libcore/java/text/DecimalFormatTest.java \
 	libcore/java/text/DecimalFormatSymbolsTest.java \

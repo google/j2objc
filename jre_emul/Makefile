@@ -318,6 +318,22 @@ JAVA_SOURCES = \
 	java/nio/ReadWriteShortArrayBuffer.java \
 	java/nio/ShortArrayBuffer.java \
 	java/nio/ShortBuffer.java \
+	java/nio/charset/CharacterCodingException.java \
+	java/nio/charset/Charset.java \
+	java/nio/charset/CharsetDecoder.java \
+	java/nio/charset/CharsetEncoder.java \
+	java/nio/charset/Charsets.java \
+	java/nio/charset/CoderMalfunctionError.java \
+	java/nio/charset/CoderResult.java \
+	java/nio/charset/CodingErrorAction.java \
+	java/nio/charset/IllegalCharsetNameException.java \
+	java/nio/charset/IOSCharset.java \
+	java/nio/charset/IOSCharsetDecoder.java \
+	java/nio/charset/IOSCharsetEncoder.java \
+	java/nio/charset/MalformedInputException.java \
+	java/nio/charset/StandardCharsets.java \
+	java/nio/charset/UnmappableCharacterException.java \
+	java/nio/charset/UnsupportedCharsetException.java \
 	java/security/AccessControlContext.java \
 	java/security/AccessControlException.java \
 	java/security/AccessController.java \

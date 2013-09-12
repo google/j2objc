@@ -144,6 +144,9 @@ public class NameTable {
       "O_RDONLY", "O_WRONLY", "O_RDWR", "O_ACCMODE", "O_NONBLOCK", "O_APPEND", "O_SYNC", "O_CREAT",
       "O_TRUNC", "O_EXCL", "O_NOCTTY", "O_NOFOLLOW",
 
+      // Definitions from math.h
+      "DOMAIN", "HUGE", "INFINITY", "NAN", "OVERFLOW", "SING", "UNDERFLOW",
+
       // Cocoa definitions from ConditionalMacros.h
       "CFMSYSTEMCALLS", "CGLUESUPPORTED", "FUNCTION_PASCAL", "FUNCTION_DECLSPEC",
       "FUNCTION_WIN32CC", "GENERATING68881", "GENERATING68K", "GENERATINGCFM", "GENERATINGPOWERPC",
