@@ -39,9 +39,8 @@
 // if out out range.
 FOUNDATION_EXPORT BOOL IOSBooleanArray_Get(IOSBooleanArray *array, NSUInteger index);
 FOUNDATION_EXPORT BOOL *IOSBooleanArray_GetRef(IOSBooleanArray *array, NSUInteger index);
-// TODO(user): Remove after fixing call sites.
-- (BOOL)booleanAtIndex:(NSUInteger)index __attribute__((deprecated));
-- (BOOL *)booleanRefAtIndex:(NSUInteger)index __attribute__((deprecated));
+- (BOOL)booleanAtIndex:(NSUInteger)index;
+- (BOOL *)booleanRefAtIndex:(NSUInteger)index;
 
 // Sets boolean at a specified index, throws IndexOutOfBoundsException
 // if out out range.  Returns replacement value.

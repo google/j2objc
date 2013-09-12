@@ -39,9 +39,8 @@
 // if out out range;
 FOUNDATION_EXPORT unichar IOSCharArray_Get(IOSCharArray *array, NSUInteger index);
 FOUNDATION_EXPORT unichar *IOSCharArray_GetRef(IOSCharArray *array, NSUInteger index);
-// TODO(user): Remove after fixing call sites.
-- (unichar)charAtIndex:(NSUInteger)index __attribute__((deprecated));
-- (unichar *)charRefAtIndex:(NSUInteger)index __attribute__((deprecated));
+- (unichar)charAtIndex:(NSUInteger)index;
+- (unichar *)charRefAtIndex:(NSUInteger)index;
 
 // Sets char at a specified index, throws IndexOutOfBoundsException
 // if out out range.  Returns replacement value.

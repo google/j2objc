@@ -39,9 +39,8 @@
 // if out out range.
 FOUNDATION_EXPORT char IOSByteArray_Get(IOSByteArray *array, NSUInteger index);
 FOUNDATION_EXPORT char *IOSByteArray_GetRef(IOSByteArray *array, NSUInteger index);
-// TODO(user): Remove after fixing call sites.
-- (char)byteAtIndex:(NSUInteger)index __attribute__((deprecated));
-- (char *)byteRefAtIndex:(NSUInteger)index __attribute__((deprecated));
+- (char)byteAtIndex:(NSUInteger)index;
+- (char *)byteRefAtIndex:(NSUInteger)index;
 
 // Sets byte at a specified index, throws IndexOutOfBoundsException
 // if out out range.  Returns the replacement value.

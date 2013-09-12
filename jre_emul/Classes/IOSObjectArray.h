@@ -63,8 +63,7 @@
 // Return  at a specified index, throws IndexOutOfBoundsException
 // if out out range;
 FOUNDATION_EXPORT id IOSObjectArray_Get(IOSObjectArray *array, NSUInteger index);
-// TODO(user): Remove after fixing call sites.
-- (id)objectAtIndex:(NSUInteger)index __attribute__((deprecated));
+- (id)objectAtIndex:(NSUInteger)index;
 
 // Sets  at a specified index, throws IndexOutOfBoundsException
 // if out out range.  Returns replacement object.

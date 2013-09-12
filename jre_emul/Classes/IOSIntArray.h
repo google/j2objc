@@ -39,9 +39,8 @@
 // if out out range;
 FOUNDATION_EXPORT int IOSIntArray_Get(IOSIntArray *array, NSUInteger index);
 FOUNDATION_EXPORT int *IOSIntArray_GetRef(IOSIntArray *array, NSUInteger index);
-// TODO(user): Remove after fixing call sites.
-- (int)intAtIndex:(NSUInteger)index __attribute__((deprecated));
-- (int *)intRefAtIndex:(NSUInteger)index __attribute__((deprecated));
+- (int)intAtIndex:(NSUInteger)index;
+- (int *)intRefAtIndex:(NSUInteger)index;
 
 // Sets int at a specified index, throws IndexOutOfBoundsException
 // if out out range. Returns replacement value.
