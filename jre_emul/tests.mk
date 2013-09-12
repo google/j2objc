@@ -252,6 +252,13 @@ JAVA_SOURCE_LIST = $(TMPDIR).tests.list
 SUPPORT_OBJS = $(SUPPORT_SOURCES:%.java=$(TESTS_DIR)/%.o)
 TEST_OBJS = $(TEST_SOURCES:%.java=$(TESTS_DIR)/%.o)
 
+TEST_RESOURCES_SRCS = \
+    org/apache/harmony/luni/tests/test_resource.txt \
+    org/apache/harmony/luni/tests/java/io/testfile-utf8.txt
+TEST_RESOURCES_TOP = $(BUILD_DIR)/org
+TEST_RESOURCES_ROOT = apache_harmony/classlib/modules/luni/src/test/resources
+TEST_RESOURCES = $(TEST_RESOURCES_SRCS:%=$(TESTS_DIR)/%)
+
 # Broken tests, plus associated bug id.  Once bug is fixed, move line(s) up.
 #	$(TESTS_DIR)/org/apache/harmony/luni/tests/java/lang/StringBuilderTest.o               b/8842295
 
@@ -262,7 +269,7 @@ TEST_JOC = ../dist/j2objc -classpath $(JUNIT_JAR) -Werror \
 TEST_JOCC = ../dist/j2objcc -g -I$(TESTS_DIR) -l junit -Werror \
 	-L$(TESTS_DIR) -l test-support
 SUPPORT_LIB = $(TESTS_DIR)/libtest-support.a
-TEST_BIN = $(BUILD_DIR)/jre_unit_tests
+TEST_BIN = $(TESTS_DIR)/jre_unit_tests
 
 test: run-tests
 
@@ -281,7 +288,14 @@ build: support-lib $(TEST_OBJS)
 
 link: build $(TEST_BIN)
 
-run-tests: link $(TEST_BIN)
+resources: $(TEST_RESOURCES)
+	@:
+
+$(TESTS_DIR)/%.txt: $(TEST_RESOURCES_ROOT)/%.txt
+	@mkdir -p `dirname $@`
+	@cp $< $@
+
+run-tests: link resources $(TEST_BIN)
 	@/bin/sh ../scripts/runtests.sh $(TEST_BIN) $(subst /,.,$(TEST_SOURCES:%.java=%))
 
 $(SUPPORT_LIB): $(SUPPORT_OBJS)

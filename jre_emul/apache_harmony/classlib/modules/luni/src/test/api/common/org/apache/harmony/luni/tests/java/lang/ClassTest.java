@@ -23,6 +23,7 @@ import java.io.Writer;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
+import java.net.URL;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Vector;
@@ -40,7 +41,6 @@ public class ClassTest extends junit.framework.TestCase {
     }
 
     public static class TestClass {
-        @SuppressWarnings("unused")
         private int privField = 1;
 
         public int pubField = 2;
@@ -49,7 +49,6 @@ public class ClassTest extends junit.framework.TestCase {
 
         public Object ack = new Object();
 
-        @SuppressWarnings("unused")
         private int privMethod() {
             return 1;
         }
@@ -65,7 +64,6 @@ public class ClassTest extends junit.framework.TestCase {
         public TestClass() {
         }
 
-        @SuppressWarnings("unused")
         private TestClass(Object o) {
         }
     }
@@ -501,41 +499,24 @@ public class ClassTest extends junit.framework.TestCase {
     /**
      * @tests java.lang.Class#getResource(java.lang.String)
      */
-    /* TODO(user): enable if Class.getResource is mapped.
     public void test_getResourceLjava_lang_String() {
         final String name = "/org/apache/harmony/luni/tests/test_resource.txt";
         URL res = getClass().getResource(name);
         assertNotNull(res);
     }
-    */
 
     /**
      * @tests java.lang.Class#getResourceAsStream(java.lang.String)
      */
-    /* TODO(user): enable if Class.getResourceAsStream is mapped.
     public void test_getResourceAsStreamLjava_lang_String() throws Exception {
         final String name = "/org/apache/harmony/luni/tests/test_resource.txt";
         assertNotNull("the file " + name + " can not be found in this directory", getClass()
                 .getResourceAsStream(name));
 
-        final String nameBadURI = "org/apache/harmony/luni/tests/test_resource.txt";
+        final String nameBadURI = "org/apache/harmony/luni/tests/test_resource.txt2";
         assertNull("the file " + nameBadURI + " should not be found in this directory",
                 getClass().getResourceAsStream(nameBadURI));
-
-        InputStream str = Object.class.getResourceAsStream("Class.class");
-        assertNotNull("java.lang.Object couldn't find its class with getResource...", str);
-
-        assertTrue("Cannot read single byte", str.read() != -1);
-        assertEquals("Cannot read multiple bytes", 5, str.read(new byte[5]));
-        str.close();
-
-        InputStream str2 = getClass().getResourceAsStream("ClassTest.class");
-        assertNotNull("Can't find resource", str2);
-        assertTrue("Cannot read single byte", str2.read() != -1);
-        assertEquals("Cannot read multiple bytes", 5, str2.read(new byte[5]));
-        str2.close();
     }
-    */
 
     /**
      * @tests java.lang.Class#getSuperclass()
