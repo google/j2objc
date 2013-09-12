@@ -17,6 +17,7 @@
 
 package java.lang;
 
+import java.io.InputStream;
 import java.io.Serializable;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.AnnotatedElement;
@@ -26,6 +27,7 @@ import java.lang.reflect.GenericDeclaration;
 import java.lang.reflect.Method;
 import java.lang.reflect.Type;
 import java.lang.reflect.TypeVariable;
+import java.net.URL;
 
 /**
  * Stub implementation of java.lang.Class.
@@ -258,10 +260,16 @@ public final class Class<T> implements AnnotatedElement, GenericDeclaration, Ser
     return false;
   }
 
+  public InputStream getResourceAsStream(String name) {
+    return null;
+  }
+  
+  public URL getResource(String name) {
+    return null;
+  }
+
   /* Unimplemented/mapped methods
   T[] getEnumConstants()
   ProtectionDomain getProtectionDomain()
-  InputStream getResourceAsStream(String name)
-  URL getResource(String name)
   */
 }

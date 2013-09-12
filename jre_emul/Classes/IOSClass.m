@@ -22,6 +22,7 @@
 #import "IOSClass.h"
 #import "java/lang/AssertionError.h"
 #import "java/lang/ClassCastException.h"
+#import "java/lang/ClassLoader.h"
 #import "java/lang/ClassNotFoundException.h"
 #import "java/lang/Enum.h"
 #import "java/lang/InstantiationException.h"
@@ -524,8 +525,7 @@ static IOSClass *IOSClass_ArrayClassForName(NSString *name, NSUInteger index) {
 }
 
 - (id)getClassLoader {
-  //TODO(user): enable when there is classloader support.
-  return nil;
+  return [JavaLangClassLoader getSystemClassLoader];
 }
 
 static const char* GetFieldName(NSString *name) {
@@ -624,6 +624,14 @@ IOSObjectArray *copyFieldsToObjectArray(NSArray *fields) {
     return [JavaLangEnum getValuesWithIOSClass:self];
   }
   return nil;
+}
+
+- (JavaNetURL *)getResource:(NSString *)name {
+  return [[self getClassLoader] getResourceWithNSString:name];
+}
+
+- (JavaIoInputStream *)getResourceAsStream:(NSString *)name {
+  return [[self getClassLoader] getResourceAsStreamWithNSString:name];
 }
 
 // Implementing NSCopying allows IOSClass objects to be used as keys in the
