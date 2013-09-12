@@ -35,6 +35,10 @@
 		067217E81558978000645E1B /* libjre_emul.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 06619385155848D70004DAFE /* libjre_emul.a */; };
 		06721B9E1559DAF100645E1B /* NSObject+JavaObject.m in Sources */ = {isa = PBXBuildFile; fileRef = 066193E5155849F80004DAFE /* NSObject+JavaObject.m */; };
 		06721B9F1559DAF100645E1B /* NSString+JavaString.m in Sources */ = {isa = PBXBuildFile; fileRef = 066193E7155849F80004DAFE /* NSString+JavaString.m */; };
+		06B6D20317C7D3DE00624B3C /* IOSLocaleData.h in Headers */ = {isa = PBXBuildFile; fileRef = 06B6D20117C7D3DE00624B3C /* IOSLocaleData.h */; };
+		06B6D20417C7D3DE00624B3C /* IOSLocaleData.m in Sources */ = {isa = PBXBuildFile; fileRef = 06B6D20217C7D3DE00624B3C /* IOSLocaleData.m */; };
+		06B6D20717C7D67400624B3C /* LocaleData.h in Headers */ = {isa = PBXBuildFile; fileRef = 06B6D20517C7D67400624B3C /* LocaleData.h */; };
+		06B6D20817C7D67400624B3C /* LocaleData.m in Sources */ = {isa = PBXBuildFile; fileRef = 06B6D20617C7D67400624B3C /* LocaleData.m */; };
 		A34A99F11630A9E7006DEC32 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = A34A99EF1630A9E7006DEC32 /* InfoPlist.strings */; };
 /* End PBXBuildFile section */
 
@@ -555,6 +559,10 @@
 		0697F60915D190580027A7E4 /* TypeVariable.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = TypeVariable.h; path = build_result/Classes/java/lang/reflect/TypeVariable.h; sourceTree = "<group>"; };
 		0697F60A15D190580027A7E4 /* TypeVariable.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = TypeVariable.m; path = build_result/Classes/java/lang/reflect/TypeVariable.m; sourceTree = "<group>"; };
 		06986A181767D781006EE92F /* J2ObjCMain.m */ = {isa = PBXFileReference; fileEncoding = 4; indentWidth = 2; lastKnownFileType = sourcecode.c.objc; path = J2ObjCMain.m; sourceTree = "<group>"; tabWidth = 2; };
+		06B6D20117C7D3DE00624B3C /* IOSLocaleData.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IOSLocaleData.h; sourceTree = "<group>"; };
+		06B6D20217C7D3DE00624B3C /* IOSLocaleData.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IOSLocaleData.m; sourceTree = "<group>"; };
+		06B6D20517C7D67400624B3C /* LocaleData.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = LocaleData.h; path = build_result/Classes/libcore/icu/LocaleData.h; sourceTree = "<group>"; };
+		06B6D20617C7D67400624B3C /* LocaleData.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = LocaleData.m; path = build_result/Classes/libcore/icu/LocaleData.m; sourceTree = "<group>"; };
 		06C6B7FB159BCBD1004B800C /* PatternSyntaxException.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PatternSyntaxException.h; path = build_result/Classes/java/util/regex/PatternSyntaxException.h; sourceTree = "<group>"; };
 		06C6B7FC159BCBD1004B800C /* PatternSyntaxException.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = PatternSyntaxException.m; path = build_result/Classes/java/util/regex/PatternSyntaxException.m; sourceTree = "<group>"; };
 		06DD329716A13FA000AD7ACE /* Buffer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Buffer.h; path = build_result/Classes/java/nio/Buffer.h; sourceTree = "<group>"; };
@@ -756,6 +764,8 @@
 				066193A7155849BC0004DAFE /* IOSFloatArray.m */,
 				066193A8155849BC0004DAFE /* IOSIntArray.h */,
 				066193A9155849BC0004DAFE /* IOSIntArray.m */,
+				06B6D20117C7D3DE00624B3C /* IOSLocaleData.h */,
+				06B6D20217C7D3DE00624B3C /* IOSLocaleData.m */,
 				066193AE155849BC0004DAFE /* IOSLongArray.h */,
 				066193AF155849BC0004DAFE /* IOSLongArray.m */,
 				066193B0155849BC0004DAFE /* IOSObjectArray.h */,
@@ -1104,6 +1114,8 @@
 				06721AEE1559CB9200645E1B /* ListIterator.h */,
 				06721AEF1559CB9200645E1B /* Locale.h */,
 				06721A521559C99E00645E1B /* Locale.m */,
+				06B6D20517C7D67400624B3C /* LocaleData.h */,
+				06B6D20617C7D67400624B3C /* LocaleData.m */,
 				064FB7921727079100DC0D51 /* Locator.h */,
 				064FB7931727079100DC0D51 /* Locator.m */,
 				064FB7B2172707D700DC0D51 /* Locator2.h */,
@@ -1360,6 +1372,8 @@
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				06B6D20317C7D3DE00624B3C /* IOSLocaleData.h in Headers */,
+				06B6D20717C7D67400624B3C /* LocaleData.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1494,6 +1508,8 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				06B6D20417C7D3DE00624B3C /* IOSLocaleData.m in Sources */,
+				06B6D20817C7D67400624B3C /* LocaleData.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
