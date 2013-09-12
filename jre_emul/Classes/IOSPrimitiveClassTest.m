@@ -55,11 +55,11 @@
                        @"incorrect primitive type name");
   NSString *arrayTypeName =
       [[[[IOSBooleanArray alloc] initWithLength:0] getClass] getName];
-  STAssertEqualObjects(arrayTypeName, @"[Z", @"incorrect array type name");
+  STAssertEqualObjects(arrayTypeName, @"booleanArray", @"incorrect array type name");
 }
 
 - (void)testByteType {
-  IOSClass *javaByteClass = [[JavaLangByte valueOfWithChar:42] getClass];
+  IOSClass *javaByteClass = [[JavaLangByte valueOfWithByte:42] getClass];
   NSString *objectTypeName = [javaByteClass getName];
   STAssertEqualObjects(objectTypeName, @"JavaLangByte", 
                        @"incorrect object type name");
@@ -68,11 +68,11 @@
                        @"incorrect primitive type name");
   IOSByteArray *byteArray = [[IOSByteArray alloc] initWithLength:0];
   NSString *arrayTypeName = [[byteArray getClass] getName];
-  STAssertEqualObjects(arrayTypeName, @"[B", @"incorrect array type name");
+  STAssertEqualObjects(arrayTypeName, @"byteArray", @"incorrect array type name");
 }
 
 - (void)testCharType {
-  JavaLangCharacter *javaCharacter = [JavaLangCharacter valueOfWithUnichar:'x'];
+  JavaLangCharacter *javaCharacter = [JavaLangCharacter valueOfWithChar:'x'];
   NSString *objectTypeName = [[javaCharacter getClass] getName];
   STAssertEqualObjects(objectTypeName, @"JavaLangCharacter", 
                        @"incorrect object type name");
@@ -81,7 +81,7 @@
                        @"incorrect primitive type name");
   IOSCharArray *charArray = [[IOSCharArray alloc] initWithLength:0];
   NSString *arrayTypeName = [[charArray getClass] getName];
-  STAssertEqualObjects(arrayTypeName, @"[C", @"incorrect array type name");
+  STAssertEqualObjects(arrayTypeName, @"charArray", @"incorrect array type name");
 }
 
 - (void)testDoubleType {
@@ -94,7 +94,7 @@
                        @"incorrect primitive type name");
   IOSDoubleArray *doubleArray = [[IOSDoubleArray alloc] initWithLength:0];
   NSString *arrayTypeName = [[doubleArray getClass] getName];
-  STAssertEqualObjects(arrayTypeName, @"[D", @"incorrect array type name");
+  STAssertEqualObjects(arrayTypeName, @"doubleArray", @"incorrect array type name");
 }
 
 - (void)testFloatType {
@@ -107,7 +107,7 @@
                        @"incorrect primitive type name");
   IOSFloatArray *floatArray = [[IOSFloatArray alloc] initWithLength:0];
   NSString *arrayTypeName = [[floatArray getClass] getName];
-  STAssertEqualObjects(arrayTypeName, @"[F", @"incorrect array type name");
+  STAssertEqualObjects(arrayTypeName, @"floatArray", @"incorrect array type name");
 }
 
 - (void)testIntType {
@@ -120,7 +120,7 @@
                        @"incorrect primitive type name");
   IOSIntArray *intArray = [[IOSIntArray alloc] initWithLength:0];
   NSString *arrayTypeName = [[intArray getClass] getName];
-  STAssertEqualObjects(arrayTypeName, @"[I", @"incorrect array type name");
+  STAssertEqualObjects(arrayTypeName, @"intArray", @"incorrect array type name");
 }
 
 - (void)testLongType {
@@ -133,11 +133,11 @@
                        @"incorrect primitive type name");
   IOSLongArray *longArray = [[IOSLongArray alloc] initWithLength:0];
   NSString *arrayTypeName = [[longArray getClass] getName];
-  STAssertEqualObjects(arrayTypeName, @"[J", @"incorrect array type name");
+  STAssertEqualObjects(arrayTypeName, @"longArray", @"incorrect array type name");
 }
 
 - (void)testShortType {
-  JavaLangShort *javaShort = [JavaLangShort valueOfWithShortInt:42];
+  JavaLangShort *javaShort = [JavaLangShort valueOfWithShort:42];
   NSString *objectTypeName = [[javaShort getClass] getName];
   STAssertEqualObjects(objectTypeName, @"JavaLangShort", 
                        @"incorrect object type name");
@@ -146,7 +146,7 @@
                        @"incorrect primitive type name");
   IOSShortArray *shortArray = [[IOSShortArray alloc] initWithLength:0];
   NSString *arrayTypeName = [[shortArray getClass] getName];
-  STAssertEqualObjects(arrayTypeName, @"[S", @"incorrect array type name");
+  STAssertEqualObjects(arrayTypeName, @"shortArray", @"incorrect array type name");
 }
 
 @end

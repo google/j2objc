@@ -53,12 +53,15 @@
 
   // String begins and ends with token.
   parts = [@"bbbabacbb" split:@"b"];
-  STAssertEquals((NSUInteger) 2, [parts count], @"Wrong number of parts.");
-  STAssertEqualObjects(@"a", [parts objectAtIndex:0], @"Wrong part.");
-  STAssertEqualObjects(@"ac", [parts objectAtIndex:1], @"Wrong part.");
+  STAssertEquals((NSUInteger) 5, [parts count], @"Wrong number of parts.");
+  STAssertEqualObjects(@"", [parts objectAtIndex:0], @"Wrong part.");
+  STAssertEqualObjects(@"", [parts objectAtIndex:1], @"Wrong part.");
+  STAssertEqualObjects(@"", [parts objectAtIndex:2], @"Wrong part.");
+  STAssertEqualObjects(@"a", [parts objectAtIndex:3], @"Wrong part.");
+  STAssertEqualObjects(@"ac", [parts objectAtIndex:4], @"Wrong part.");
 
   // Regular expression.
-  parts = [@"abba" split:@"[b]*"];
+  parts = [@"abba" split:@"[b]+"];
   STAssertEquals((NSUInteger) 2, [parts count], @"Wrong number of parts.");
   STAssertEqualObjects(@"a", [parts objectAtIndex:0], @"Wrong part.");
   STAssertEqualObjects(@"a", [parts objectAtIndex:1], @"Wrong part.");
@@ -73,15 +76,15 @@
 
   // Regular expression occurs at beginning and end.
   parts = [@"   what  up " split:@"\\s+"];
-  STAssertEquals((NSUInteger) 2, [parts count], @"Wrong number of parts.");
-  STAssertEqualObjects(@"what", [parts objectAtIndex:0],
-                       @"First part is wrong.");
-  STAssertEqualObjects(@"up", [parts objectAtIndex:1],
-                       @"Second part is wrong.");
+  STAssertEquals((NSUInteger) 3, [parts count], @"Wrong number of parts.");
+  STAssertEqualObjects(@"", [parts objectAtIndex:0], @"Wrong part.");
+  STAssertEqualObjects(@"what", [parts objectAtIndex:1], @"Wrong part.");
+  STAssertEqualObjects(@"up", [parts objectAtIndex:2], @"Wrong part.");
 
   // Empty string.
   parts = [@"" split:@"\\s+"];
-  STAssertEquals((NSUInteger) 0, [parts count], @"Wrong number of parts.");
+  STAssertEquals((NSUInteger) 1, [parts count], @"Wrong number of parts.");
+  STAssertEqualObjects(@"", [parts objectAtIndex:0], @"Wrong part.");
 
   // No matches, not regex.
   parts = [@"a" split:@"b"];
