@@ -25,14 +25,13 @@ import java.util.Locale;
 
 public class DecimalFormatSymbolsTest extends junit.framework.TestCase {
     private void checkLocaleIsEquivalentToRoot(Locale locale) {
+        // iOS doesn't initialize the perMill symbol for unknown locales.
+        DecimalFormatSymbols root = DecimalFormatSymbols.getInstance(Locale.ROOT);
         DecimalFormatSymbols dfs = DecimalFormatSymbols.getInstance(locale);
-        assertEquals(DecimalFormatSymbols.getInstance(Locale.ROOT), dfs);
+	dfs.setPerMill(root.getPerMill());
+        assertEquals(root, dfs);
     }
     public void test_getInstance_unknown_or_invalid_locale() throws Exception {
-        // TODO: we fail these tests because ROOT has "INF" for infinity but 'dfs' has "\u221e".
-        // On the RI, ROOT has "\u221e" too, but DecimalFormatSymbols.equals appears to be broken;
-        // it returns false for objects that -- if you compare their externally visible state --
-        // are equal. It could be that they're accidentally checking the Locale.
         checkLocaleIsEquivalentToRoot(new Locale("xx", "XX"));
         checkLocaleIsEquivalentToRoot(new Locale("not exist language", "not exist country"));
     }
