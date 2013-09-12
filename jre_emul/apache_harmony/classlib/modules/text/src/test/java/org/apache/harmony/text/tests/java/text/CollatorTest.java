@@ -17,7 +17,6 @@
 package org.apache.harmony.text.tests.java.text;
 
 import java.text.Collator;
-import java.text.ParseException;
 import java.util.Locale;
 
 public class CollatorTest extends junit.framework.TestCase {
