@@ -648,7 +648,7 @@ IOSObjectArray *copyFieldsToObjectArray(NSArray *fields) {
 }
 
 IOSClass *FetchClass(Class cls) {
-  NSValue *classKey = [NSValue valueWithPointer:cls];
+  NSValue *classKey = [NSValue valueWithPointer:(ARCBRIDGE void *) cls];
   IOSClass *clazz = [IOSClass_classCache objectForKey:classKey];
   if (!clazz) {
     clazz = AUTORELEASE([[IOSConcreteClass alloc] initWithClass:cls]);
@@ -658,7 +658,7 @@ IOSClass *FetchClass(Class cls) {
 }
 
 IOSClass *FetchProtocol(Protocol *protocol) {
-  NSValue *protocolKey = [NSValue valueWithPointer:protocol];
+  NSValue *protocolKey = [NSValue valueWithPointer:(ARCBRIDGE void *)protocol];
   IOSClass *clazz = [IOSClass_classCache objectForKey:protocolKey];
   if (!clazz) {
     clazz = AUTORELEASE([[IOSProtocolClass alloc] initWithProtocol:protocol]);

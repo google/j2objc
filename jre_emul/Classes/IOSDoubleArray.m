@@ -48,12 +48,12 @@
   return array;
 }
 
-double IOSDoubleArray_Get(IOSDoubleArray *array, NSUInteger index) {
+double IOSDoubleArray_Get(__unsafe_unretained IOSDoubleArray *array, NSUInteger index) {
   IOSArray_checkIndex(array->size_, index);
   return array->buffer_[index];
 }
 
-double *IOSDoubleArray_GetRef(IOSDoubleArray *array, NSUInteger index) {
+double *IOSDoubleArray_GetRef(__unsafe_unretained IOSDoubleArray *array, NSUInteger index) {
   IOSArray_checkIndex(array->size_, index);
   return &array->buffer_[index];
 }

@@ -48,12 +48,12 @@
   return array;
 }
 
-float IOSFloatArray_Get(IOSFloatArray *array, NSUInteger index) {
+float IOSFloatArray_Get(__unsafe_unretained IOSFloatArray *array, NSUInteger index) {
   IOSArray_checkIndex(array->size_, index);
   return array->buffer_[index];
 }
 
-float *IOSFloatArray_GetRef(IOSFloatArray *array, NSUInteger index) {
+float *IOSFloatArray_GetRef(__unsafe_unretained IOSFloatArray *array, NSUInteger index) {
   IOSArray_checkIndex(array->size_, index);
   return &array->buffer_[index];
 }

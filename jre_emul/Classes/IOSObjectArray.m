@@ -117,7 +117,7 @@
   return result;
 }
 
-id IOSObjectArray_Get(IOSObjectArray *array, NSUInteger index) {
+id IOSObjectArray_Get(__unsafe_unretained IOSObjectArray *array, NSUInteger index) {
   IOSArray_checkIndex(array->size_, index);
   return array->buffer_[index];
 }
@@ -128,7 +128,8 @@ id IOSObjectArray_Get(IOSObjectArray *array, NSUInteger index) {
 }
 
 __attribute__ ((unused))
-static inline id IOSObjectArray_checkValue(IOSObjectArray *array, id value) {
+static inline id IOSObjectArray_checkValue(
+    __unsafe_unretained IOSObjectArray *array, __unsafe_unretained id value) {
 #if !defined(J2OBJC_DISABLE_ARRAY_CHECKS)
   if (value && ![array->elementType_ isInstance:value]) {
     NSString *msg = [NSString stringWithFormat:
@@ -138,6 +139,16 @@ static inline id IOSObjectArray_checkValue(IOSObjectArray *array, id value) {
   }
 #endif
   return value;
+}
+
+id IOSObjectArray_Set(
+    __unsafe_unretained IOSObjectArray *array, NSUInteger index, __unsafe_unretained id value) {
+  IOSArray_checkIndex(array->size_, index);
+  IOSObjectArray_checkValue(array, value);
+#if ! __has_feature(objc_arc)
+  [array->buffer_[index] autorelease];
+#endif
+  return array->buffer_[index] = RETAIN(value);
 }
 
 - (id)replaceObjectAtIndex:(NSUInteger)index withObject:(id)value {

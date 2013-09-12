@@ -904,8 +904,7 @@ public class StatementGeneratorTest extends GenerationTest {
       "    a[0][0] = \"42\"; System.out.println(a[0].length); }}",
       "Test", "Test.m");
     assertTranslation(translation,
-        "[((IOSObjectArray *) nil_chk(IOSObjectArray_Get(nil_chk(Test_a_), 0))) " +
-        "replaceObjectAtIndex:0 withObject:@\"42\"];");
+        "IOSObjectArray_Set(nil_chk(IOSObjectArray_Get(nil_chk(Test_a_), 0)), 0, @\"42\");");
     assertTranslation(translation,
         "[((IOSObjectArray *) nil_chk(IOSObjectArray_Get(Test_a_, 0))) count]");
   }

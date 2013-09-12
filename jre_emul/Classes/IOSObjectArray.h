@@ -67,7 +67,8 @@ FOUNDATION_EXPORT id IOSObjectArray_Get(IOSObjectArray *array, NSUInteger index)
 
 // Sets  at a specified index, throws IndexOutOfBoundsException
 // if out out range.  Returns replacement object.
-- (id)replaceObjectAtIndex:(NSUInteger)index withObject:(id)object;
+FOUNDATION_EXPORT id IOSObjectArray_Set(IOSObjectArray *array, NSUInteger index, id value);
+- (id)replaceObjectAtIndex:(NSUInteger)index withObject:(id)value;
 
 // Copies the array contents into a specified buffer, up to the specified
 // length.  An IndexOutOfBoundsException is thrown if the specified length

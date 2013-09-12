@@ -49,12 +49,12 @@
 #endif
 }
 
-char IOSByteArray_Get(IOSByteArray *array, NSUInteger index) {
+char IOSByteArray_Get(__unsafe_unretained IOSByteArray *array, NSUInteger index) {
   IOSArray_checkIndex(array->size_, index);
   return array->buffer_[index];
 }
 
-char *IOSByteArray_GetRef(IOSByteArray *array, NSUInteger index) {
+char *IOSByteArray_GetRef(__unsafe_unretained IOSByteArray *array, NSUInteger index) {
   IOSArray_checkIndex(array->size_, index);
   return &array->buffer_[index];
 }
