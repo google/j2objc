@@ -35,6 +35,10 @@
 - (id)initWithCharacters:(const unichar *)chars count:(NSUInteger)count;
 + (id)arrayWithCharacters:(const unichar *)chars count:(NSUInteger)count;
 
+// Create an array from an NSString.
+- (id)initWithNSString:(NSString *)string;
++ (id)arrayWithNSString:(NSString *)string;
+
 // Return char at a specified index, throws IndexOutOfBoundsException
 // if out out range;
 FOUNDATION_EXPORT unichar IOSCharArray_Get(IOSCharArray *array, NSUInteger index);
