@@ -89,26 +89,6 @@ short *IOSShortArray_GetRef(IOSShortArray *array, NSUInteger index) {
           sourceRange.length * sizeof(short));
 }
 
-- (short)incr:(NSUInteger)index {
-  IOSArray_checkIndex(size_, index);
-  return ++buffer_[index];
-}
-
-- (short)decr:(NSUInteger)index {
-  IOSArray_checkIndex(size_, index);
-  return --buffer_[index];
-}
-
-- (short)postIncr:(NSUInteger)index {
-  IOSArray_checkIndex(size_, index);
-  return buffer_[index]++;
-}
-
-- (short)postDecr:(NSUInteger)index {
-  IOSArray_checkIndex(size_, index);
-  return buffer_[index]--;
-}
-
 - (NSString *)descriptionOfElementAtIndex:(NSUInteger)index {
   return [NSString stringWithFormat:@"%hi", buffer_[index]];
 }

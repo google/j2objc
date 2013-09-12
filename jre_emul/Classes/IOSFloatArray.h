@@ -51,20 +51,6 @@ FOUNDATION_EXPORT float *IOSFloatArray_GetRef(IOSFloatArray *array, NSUInteger i
 // is greater than the array size.
 - (void)getFloats:(float *)buffer length:(NSUInteger)length;
 
-// Increments an array element.
-- (float)incr:(NSUInteger)index;
-
-// Decrements an array element.
-- (float)decr:(NSUInteger)index;
-
-// Increments an array element but returns the initial value, like the postfix
-// operator.
-- (float)postIncr:(NSUInteger)index;
-
-// Decrements an array element but returns the initial value, like the postfix
-// operator.
-- (float)postDecr:(NSUInteger)index;
-
 @end
 
 #endif // _IOSFloatArray_H_

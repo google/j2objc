@@ -58,20 +58,6 @@ FOUNDATION_EXPORT char *IOSByteArray_GetRef(IOSByteArray *array, NSUInteger inde
               length:(NSUInteger)length
               offset:(NSUInteger)destOffset;
 
-// Increments an array element.
-- (char)incr:(NSUInteger)index;
-
-// Decrements an array element.
-- (char)decr:(NSUInteger)index;
-
-// Increments an array element but returns the initial value, like the postfix
-// operator.
-- (char)postIncr:(NSUInteger)index;
-
-// Decrements an array element but returns the initial value, like the postfix
-// operator.
-- (char)postDecr:(NSUInteger)index;
-
 // Returns the bytes of the array encapsulated in an NSData *. Copies the
 // underlying data.
 - (NSData *)toNSData;

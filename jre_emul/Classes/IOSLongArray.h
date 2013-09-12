@@ -51,20 +51,6 @@ FOUNDATION_EXPORT long long *IOSLongArray_GetRef(IOSLongArray *array, NSUInteger
 // is greater than the array size.
 - (void)getLongs:(long long *)buffer length:(NSUInteger)length;
 
-// Increments an array element.
-- (long long)incr:(NSUInteger)index;
-
-// Decrements an array element.
-- (long long)decr:(NSUInteger)index;
-
-// Increments an array element but returns the initial value, like the postfix
-// operator.
-- (long long)postIncr:(NSUInteger)index;
-
-// Decrements an array element but returns the initial value, like the postfix
-// operator.
-- (long long)postDecr:(NSUInteger)index;
-
 @end
 
 #endif // _IOSLongArray_H_

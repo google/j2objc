@@ -51,20 +51,6 @@ FOUNDATION_EXPORT short *IOSShortArray_GetRef(IOSShortArray *array, NSUInteger i
 // is greater than the array size.
 - (void)getShorts:(short *)buffer length:(NSUInteger)length;
 
-// Increments an array element.
-- (short)incr:(NSUInteger)index;
-
-// Decrements an array element.
-- (short)decr:(NSUInteger)index;
-
-// Increments an array element but returns the initial value, like the postfix
-// operator.
-- (short)postIncr:(NSUInteger)index;
-
-// Decrements an array element but returns the initial value, like the postfix
-// operator.
-- (short)postDecr:(NSUInteger)index;
-
 @end
 
 #endif // _IOSShortArray_H_

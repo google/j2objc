@@ -51,20 +51,6 @@ FOUNDATION_EXPORT double *IOSDoubleArray_GetRef(IOSDoubleArray *array, NSUIntege
 // is greater than the array size.
 - (void)getDoubles:(double *)buffer length:(NSUInteger)length;
 
-// Increments an array element.
-- (double)incr:(NSUInteger)index;
-
-// Decrements an array element.
-- (double)decr:(NSUInteger)index;
-
-// Increments an array element but returns the initial value, like the postfix
-// operator.
-- (double)postIncr:(NSUInteger)index;
-
-// Decrements an array element but returns the initial value, like the postfix
-// operator.
-- (double)postDecr:(NSUInteger)index;
-
 @end
 
 #endif // _IOSDoubleArray_H_

@@ -99,26 +99,6 @@ char *IOSByteArray_GetRef(IOSByteArray *array, NSUInteger index) {
           sourceRange.length * sizeof(char));
 }
 
-- (char)incr:(NSUInteger)index {
-  IOSArray_checkIndex(size_, index);
-  return ++buffer_[index];
-}
-
-- (char)decr:(NSUInteger)index {
-  IOSArray_checkIndex(size_, index);
-  return --buffer_[index];
-}
-
-- (char)postIncr:(NSUInteger)index {
-  IOSArray_checkIndex(size_, index);
-  return buffer_[index]++;
-}
-
-- (char)postDecr:(NSUInteger)index {
-  IOSArray_checkIndex(size_, index);
-  return buffer_[index]--;
-}
-
 - (NSString *)descriptionOfElementAtIndex:(NSUInteger)index {
   return [NSString stringWithFormat:@"0x%x", buffer_[index]];
 }
