@@ -19,6 +19,7 @@ package com.google.devtools.j2objc.translate;
 import com.google.common.collect.LinkedListMultimap;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
+import com.google.devtools.j2objc.J2ObjC;
 import com.google.devtools.j2objc.types.GeneratedMethodBinding;
 import com.google.devtools.j2objc.types.GeneratedTypeBinding;
 import com.google.devtools.j2objc.types.GeneratedVariableBinding;
@@ -30,6 +31,7 @@ import com.google.devtools.j2objc.util.ASTUtil;
 import com.google.devtools.j2objc.util.BindingUtil;
 import com.google.devtools.j2objc.util.ErrorReportingASTVisitor;
 import com.google.devtools.j2objc.util.NameTable;
+import com.google.j2objc.annotations.AutoreleasePool;
 
 import org.eclipse.jdt.core.dom.AST;
 import org.eclipse.jdt.core.dom.ASTVisitor;
@@ -225,14 +227,18 @@ public class Rewriter extends ErrorReportingASTVisitor {
 
   @Override
   public boolean visit(MethodDeclaration node) {
-    if (Types.hasAutoreleasePoolAnnotation(Types.getBinding(node))) {
-      if (node.getBody() != null) {
+    IMethodBinding binding = Types.getMethodBinding(node);
+
+    if (BindingUtil.hasAnnotation(binding, AutoreleasePool.class)) {
+      if (!Types.isVoidType(binding.getReturnType())) {
+        J2ObjC.warning(
+            "Warning: Ignoring AutoreleasePool annotation on method with non-void return type");
+      } else if (node.getBody() != null) {
         Types.addAutoreleasePool(node.getBody());
       }
     }
 
     // change the names of any methods that conflict with NSObject messages
-    IMethodBinding binding = Types.getMethodBinding(node);
     String name = binding.getName();
     renameReservedNames(name, binding);
 
@@ -448,7 +454,7 @@ public class Rewriter extends ErrorReportingASTVisitor {
         List<VariableDeclarationFragment> fragments =
             ASTUtil.getFragments((VariableDeclarationExpression) initializer);
         for (VariableDeclarationFragment fragment : fragments) {
-          if (Types.hasAutoreleasePoolAnnotation(Types.getBinding(fragment))) {
+          if (BindingUtil.hasAnnotation(Types.getBinding(fragment), AutoreleasePool.class)) {
             Statement loopBody = node.getBody();
             if (!(loopBody instanceof Block)) {
               AST ast = node.getAST();
@@ -471,7 +477,7 @@ public class Rewriter extends ErrorReportingASTVisitor {
     IVariableBinding loopVariable = Types.getVariableBinding(node.getParameter());
     Block loopBody = makeBlock(NodeCopier.copySubtree(ast, node.getBody()));
 
-    if (Types.hasAutoreleasePoolAnnotation(loopVariable)) {
+    if (BindingUtil.hasAnnotation(loopVariable, AutoreleasePool.class)) {
       Types.addAutoreleasePool(loopBody);
     }
 

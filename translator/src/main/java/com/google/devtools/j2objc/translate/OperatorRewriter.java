@@ -76,7 +76,7 @@ public class OperatorRewriter extends ErrorReportingASTVisitor {
       }
       if (BindingUtil.isStatic(var)) {
         ASTUtil.setProperty(node, newStaticAssignInvocation(ast, var, rhs));
-      } else if (var.isField() && !Types.isWeakReference(var)) {
+      } else if (var.isField() && !BindingUtil.isWeakReference(var)) {
         Expression target = getTarget(lhs, var);
         ASTUtil.setProperty(node, newFieldSetterInvocation(ast, var, target, rhs));
       }

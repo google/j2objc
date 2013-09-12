@@ -17,6 +17,8 @@ package com.google.devtools.j2objc.util;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 import com.google.devtools.j2objc.types.Types;
+import com.google.j2objc.annotations.Weak;
+import com.google.j2objc.annotations.WeakOuter;
 
 import org.eclipse.jdt.core.dom.IAnnotationBinding;
 import org.eclipse.jdt.core.dom.IBinding;
@@ -195,6 +197,22 @@ public final class BindingUtil {
     if (!parameter.isPrimitive() && !parameter.isArray()) {
       sb.append(';');
     }
+  }
+
+  public static boolean hasAnnotation(IBinding binding, Class<?> annotationClass) {
+    for (IAnnotationBinding annotation : binding.getAnnotations()) {
+      String name = annotation.getAnnotationType().getQualifiedName();
+      if (name.equals(annotationClass.getName())) {
+        return true;
+      }
+    }
+    return false;
+  }
+
+  public static boolean isWeakReference(IVariableBinding var) {
+    return hasAnnotation(var, Weak.class)
+        || var.getName().startsWith("this$")
+        && hasAnnotation(var.getDeclaringClass(), WeakOuter.class);
   }
 
   /**
