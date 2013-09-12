@@ -76,11 +76,15 @@ public class IOSMethodBinding extends GeneratedMethodBinding {
   }
 
   public static IOSMethodBinding newDereference(ITypeBinding type) {
-    return new IOSMethodBinding(IOSMethod.DEREFERENCE, null, 0, type, null, null, false);
+    assert type instanceof PointerTypeBinding : "Can't dereference a non-pointer.";
+    return new IOSMethodBinding(
+        IOSMethod.DEREFERENCE, null, 0, ((PointerTypeBinding) type).getPointeeType(), null, null,
+        false);
   }
 
   public static IOSMethodBinding newAddressOf(ITypeBinding type) {
-    return new IOSMethodBinding(IOSMethod.ADDRESS_OF, null, 0, type, null, null, false);
+    return new IOSMethodBinding(
+        IOSMethod.ADDRESS_OF, null, 0, new PointerTypeBinding(type), null, null, false);
   }
 
   public static IOSMethod getIOSMethod(IMethodBinding binding) {

@@ -17,6 +17,7 @@ package com.google.devtools.j2objc.translate;
 import com.google.devtools.j2objc.Options;
 import com.google.devtools.j2objc.types.IOSMethodBinding;
 import com.google.devtools.j2objc.types.NodeCopier;
+import com.google.devtools.j2objc.types.PointerTypeBinding;
 import com.google.devtools.j2objc.types.Types;
 import com.google.devtools.j2objc.util.ASTUtil;
 import com.google.devtools.j2objc.util.BindingUtil;
@@ -48,7 +49,7 @@ public class OperatorRewriter extends ErrorReportingASTVisitor {
   public OperatorRewriter() {
     ITypeBinding idType = Types.resolveIOSType("id");
     retainedAssignBinding = IOSMethodBinding.newFunction(
-        "JreOperatorRetainedAssign", idType, null, idType, idType, idType);
+        "JreOperatorRetainedAssign", idType, null, new PointerTypeBinding(idType), idType, idType);
   }
 
   private static Expression getTarget(Expression node, IVariableBinding var) {
@@ -138,7 +139,8 @@ public class OperatorRewriter extends ErrorReportingASTVisitor {
       AST ast, ITypeBinding assignType, Expression lhs, Expression rhs) {
     String funcName = "URShiftAssign" + NameTable.capitalize(assignType.getName());
     IOSMethodBinding binding = IOSMethodBinding.newFunction(
-        funcName, assignType, null, assignType, Types.resolveJavaType("int"));
+        funcName, assignType, null, new PointerTypeBinding(assignType),
+        Types.resolveJavaType("int"));
     MethodInvocation invocation = ASTFactory.newMethodInvocation(ast, binding, null);
     List<Expression> args = ASTUtil.getArguments(invocation);
     args.add(ASTFactory.newAddressOf(ast, NodeCopier.copySubtree(ast, lhs)));
@@ -150,7 +152,7 @@ public class OperatorRewriter extends ErrorReportingASTVisitor {
       AST ast, ITypeBinding lhsType, ITypeBinding rhsType, Expression lhs, Expression rhs) {
     String funcName = "ModAssign" + NameTable.capitalize(lhsType.getName());
     IOSMethodBinding binding = IOSMethodBinding.newFunction(
-        funcName, lhsType, null, lhsType, rhsType);
+        funcName, lhsType, null, new PointerTypeBinding(lhsType), rhsType);
     MethodInvocation invocation = ASTFactory.newMethodInvocation(ast, binding, null);
     List<Expression> args = ASTUtil.getArguments(invocation);
     args.add(ASTFactory.newAddressOf(ast, NodeCopier.copySubtree(ast, lhs)));

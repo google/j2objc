@@ -18,8 +18,6 @@ package com.google.devtools.j2objc.types;
 
 import com.google.common.collect.Sets;
 
-import org.eclipse.jdt.core.IJavaElement;
-import org.eclipse.jdt.core.dom.IAnnotationBinding;
 import org.eclipse.jdt.core.dom.IBinding;
 import org.eclipse.jdt.core.dom.IMethodBinding;
 import org.eclipse.jdt.core.dom.IPackageBinding;
@@ -34,7 +32,7 @@ import java.util.Set;
  *
  * @author Keith Stanger
  */
-public class GeneratedTypeBinding implements ITypeBinding {
+public class GeneratedTypeBinding extends AbstractTypeBinding {
 
   protected final String name;
   private final IPackageBinding packageBinding;
@@ -74,31 +72,6 @@ public class GeneratedTypeBinding implements ITypeBinding {
   }
 
   @Override
-  public IAnnotationBinding[] getAnnotations() {
-    return new IAnnotationBinding[0];
-  }
-
-  @Override
-  public int getKind() {
-    return IBinding.TYPE;
-  }
-
-  @Override
-  public boolean isDeprecated() {
-    return false;
-  }
-
-  @Override
-  public boolean isRecovered() {
-    return false;
-  }
-
-  @Override
-  public boolean isSynthetic() {
-    return true;
-  }
-
-  @Override
   public String getKey() {
     return name;
   }
@@ -115,23 +88,8 @@ public class GeneratedTypeBinding implements ITypeBinding {
   }
 
   @Override
-  public ITypeBinding createArrayType(int dimension) {
-    throw new AssertionError("not implemented");
-  }
-
-  @Override
   public String getBinaryName() {
     return getQualifiedName();
-  }
-
-  @Override
-  public ITypeBinding getErasure() {
-    return this;
-  }
-
-  @Override
-  public ITypeBinding[] getInterfaces() {
-    return new ITypeBinding[0];
   }
 
   @Override
@@ -158,100 +116,8 @@ public class GeneratedTypeBinding implements ITypeBinding {
   }
 
   @Override
-  public boolean isEnum() {
-    return false;
-  }
-
-  @Override
-  public boolean isFromSource() {
-    return false;
-  }
-
-  @Override
-  public boolean isGenericType() {
-    return false;
-  }
-
-  @Override
   public boolean isInterface() {
     return isInterface;
-  }
-
-  @Override
-  public boolean isLocal() {
-    return false;
-  }
-
-  @Override
-  public boolean isMember() {
-    return false;
-  }
-
-  @Override
-  public boolean isNested() {
-    return false;
-  }
-
-  @Override
-  public boolean isNullType() {
-    return false;
-  }
-
-  @Override
-  public boolean isParameterizedType() {
-    return false;
-  }
-
-  @Override
-  public boolean isPrimitive() {
-    return false;
-  }
-
-  @Override
-  public boolean isRawType() {
-    return false;
-  }
-
-  @Override
-  public boolean isTopLevel() {
-    return true;
-  }
-
-  @Override
-  public boolean isTypeVariable() {
-    return false;
-  }
-
-  @Override
-  public boolean isUpperbound() {
-    return false;
-  }
-
-  @Override
-  public boolean isWildcardType() {
-    return false;
-  }
-
-  // unused methods
-
-  @Override
-  public IJavaElement getJavaElement() {
-    return null;
-  }
-
-  @Override
-  public ITypeBinding getBound() {
-    return null;
-  }
-
-  @Override
-  public ITypeBinding getGenericTypeOfWildcardType() {
-    return null;
-  }
-
-  @Override
-  public int getRank() {
-    return -1;
   }
 
   @Override
@@ -283,21 +149,6 @@ public class GeneratedTypeBinding implements ITypeBinding {
   }
 
   @Override
-  public ITypeBinding[] getDeclaredTypes() {
-    return new ITypeBinding[0];
-  }
-
-  @Override
-  public ITypeBinding getDeclaringClass() {
-    return null; // no outer class declared this type
-  }
-
-  @Override
-  public IMethodBinding getDeclaringMethod() {
-    return null;
-  }
-
-  @Override
   public int getDimensions() {
     if (componentType != null) {
       return componentType.getDimensions() + 1;
@@ -315,11 +166,6 @@ public class GeneratedTypeBinding implements ITypeBinding {
   }
 
   @Override
-  public int getModifiers() {
-    return 0;
-  }
-
-  @Override
   public IPackageBinding getPackage() {
     return packageBinding;
   }
@@ -327,41 +173,6 @@ public class GeneratedTypeBinding implements ITypeBinding {
   @Override
   public ITypeBinding getSuperclass() {
     return superClass;
-  }
-
-  @Override
-  public ITypeBinding[] getTypeArguments() {
-    return new ITypeBinding[0];
-  }
-
-  @Override
-  public ITypeBinding[] getTypeBounds() {
-    return new ITypeBinding[0];
-  }
-
-  @Override
-  public ITypeBinding getTypeDeclaration() {
-    return this;
-  }
-
-  @Override
-  public ITypeBinding[] getTypeParameters() {
-    return new ITypeBinding[0];
-  }
-
-  @Override
-  public ITypeBinding getWildcard() {
-    return null;
-  }
-
-  @Override
-  public boolean isAnnotation() {
-    return false;
-  }
-
-  @Override
-  public boolean isAnonymous() {
-    return false;
   }
 
   @Override
@@ -373,18 +184,8 @@ public class GeneratedTypeBinding implements ITypeBinding {
   }
 
   @Override
-  public boolean isCapture() {
-    return false;
-  }
-
-  @Override
   public boolean isCastCompatible(ITypeBinding type) {
     return isEqualTo(type);
-  }
-
-  @Override
-  public boolean isSubTypeCompatible(ITypeBinding type) {
-    throw new AssertionError("not implemented");
   }
 
   @Override

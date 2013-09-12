@@ -75,6 +75,7 @@ JAVA_SOURCES = \
 	translate/Rewriter.java \
 	translate/StaticVarRewriter.java \
 	translate/TypeSorter.java \
+	types/AbstractTypeBinding.java \
 	types/BindingMapBuilder.java \
 	types/BindingMapVerifier.java \
 	types/GeneratedMethodBinding.java \
@@ -92,6 +93,7 @@ JAVA_SOURCES = \
 	types/JavaMethod.java \
 	types/ModifiedTypeBinding.java \
 	types/NodeCopier.java \
+	types/PointerTypeBinding.java \
 	types/RenamedTypeBinding.java \
 	types/Types.java \
 	util/ASTNodeException.java \

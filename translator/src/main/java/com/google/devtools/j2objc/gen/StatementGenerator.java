@@ -1628,23 +1628,21 @@ public class StatementGenerator extends ErrorReportingASTVisitor {
     assert !vars.isEmpty();
     ITypeBinding binding = Types.getTypeBinding(vars.get(0));
     String objcType = NameTable.getSpecificObjCType(binding);
-    boolean needsAsterisk = !binding.isPrimitive() &&
-        !(objcType.equals(NameTable.ID_TYPE) || objcType.matches("id<.*>"));
-    if (needsAsterisk && objcType.endsWith(" *")) {
-      // Strip pointer from type, as it will be added when appending fragment.
-      // This is necessary to create "Foo *one, *two;" declarations.
-      objcType = objcType.substring(0, objcType.length() - 2);
+    String objcTypePointers = " ";
+    int idx = objcType.indexOf(" *");
+    if (idx != -1) {
+      // Split the type at the first pointer. The second part of the type is
+      // applied to each fragment. (eg. Foo *one, *two)
+      objcTypePointers = objcType.substring(idx);
+      objcType = objcType.substring(0, idx);
     }
     buffer.append(objcType);
-    buffer.append(" ");
     for (Iterator<VariableDeclarationFragment> it = vars.iterator(); it.hasNext(); ) {
       VariableDeclarationFragment f = it.next();
-      if (needsAsterisk) {
-        buffer.append('*');
-      }
+      buffer.append(objcTypePointers);
       f.accept(this);
       if (it.hasNext()) {
-        buffer.append(", ");
+        buffer.append(",");
       }
     }
     buffer.append(";\n");

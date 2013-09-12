@@ -17,6 +17,7 @@ package com.google.devtools.j2objc.translate;
 import com.google.devtools.j2objc.types.IOSMethod;
 import com.google.devtools.j2objc.types.IOSMethodBinding;
 import com.google.devtools.j2objc.types.NodeCopier;
+import com.google.devtools.j2objc.types.PointerTypeBinding;
 import com.google.devtools.j2objc.types.Types;
 import com.google.devtools.j2objc.util.ASTUtil;
 import com.google.devtools.j2objc.util.BindingUtil;
@@ -125,12 +126,14 @@ public class StaticVarRewriter extends ErrorReportingASTVisitor {
     ITypeBinding declaringType = var.getDeclaringClass().getTypeDeclaration();
     String getterName = var.isEnumConstant() ? NameTable.getName(var) :
         NameTable.getStaticAccessorName(var.getName());
+    ITypeBinding returnType = var.getType();
     if (assignable) {
       getterName += "Ref";
+      returnType = new PointerTypeBinding(returnType);
     }
     IOSMethod iosMethod = IOSMethod.create(NameTable.getFullName(declaringType) + " " + getterName);
     IOSMethodBinding binding = IOSMethodBinding.newMethod(
-        iosMethod, Modifier.PUBLIC | Modifier.STATIC, var.getType(), declaringType);
+        iosMethod, Modifier.PUBLIC | Modifier.STATIC, returnType, declaringType);
     MethodInvocation invocation = ASTFactory.newMethodInvocation(
         ast, binding, ASTFactory.newSimpleName(ast, declaringType));
     if (assignable) {

@@ -121,6 +121,10 @@ public class Import implements Comparable<Import> {
     if (binding == null || binding.isPrimitive()) {
       return;
     }
+    if (binding instanceof PointerTypeBinding) {
+      addImports(((PointerTypeBinding) binding).getPointeeType(), imports);
+      return;
+    }
     if (binding.isTypeVariable()) {
       for (ITypeBinding bound : binding.getTypeBounds()) {
         addImports(bound, imports);
