@@ -18,7 +18,6 @@ package com.google.devtools.j2objc.translate;
 
 import com.google.common.collect.Lists;
 import com.google.devtools.j2objc.types.GeneratedMethodBinding;
-import com.google.devtools.j2objc.types.GeneratedVariableBinding;
 import com.google.devtools.j2objc.types.NodeCopier;
 import com.google.devtools.j2objc.types.Types;
 import com.google.devtools.j2objc.util.ASTUtil;
@@ -30,12 +29,10 @@ import org.eclipse.jdt.core.dom.AST;
 import org.eclipse.jdt.core.dom.ASTNode;
 import org.eclipse.jdt.core.dom.AbstractTypeDeclaration;
 import org.eclipse.jdt.core.dom.AnnotationTypeDeclaration;
-import org.eclipse.jdt.core.dom.Assignment;
 import org.eclipse.jdt.core.dom.Block;
 import org.eclipse.jdt.core.dom.BodyDeclaration;
 import org.eclipse.jdt.core.dom.ConstructorInvocation;
 import org.eclipse.jdt.core.dom.EnumDeclaration;
-import org.eclipse.jdt.core.dom.Expression;
 import org.eclipse.jdt.core.dom.ExpressionStatement;
 import org.eclipse.jdt.core.dom.FieldDeclaration;
 import org.eclipse.jdt.core.dom.IMethodBinding;
@@ -201,47 +198,32 @@ public class InitializationNormalizer extends ErrorReportingASTVisitor {
    */
   void normalizeMethod(MethodDeclaration node, List<Statement> initStatements) {
     if (isDesignatedConstructor(node)) {
+      AST ast = node.getAST();
       List<Statement> stmts = ASTUtil.getStatements(node.getBody());
+      int superCallIdx = findSuperConstructorInvocation(stmts);
 
       // Insert initializer statements after the super invocation. If there
       // isn't a super invocation, add one (like all Java compilers do).
-      if (stmts.isEmpty() || !(stmts.get(0) instanceof SuperConstructorInvocation)) {
-        SuperConstructorInvocation superCall = node.getAST().newSuperConstructorInvocation();
+      if (superCallIdx == -1) {
         ITypeBinding superType = Types.getTypeBinding(node).getSuperclass();
         GeneratedMethodBinding newBinding = GeneratedMethodBinding.newConstructor(
             superType, Modifier.PUBLIC);
-        Types.addBinding(superCall, newBinding);
-        stmts.add(0, superCall);
+        stmts.add(0, ASTFactory.newSuperConstructorInvocation(ast, newBinding));
+        superCallIdx = 0;
       }
 
-      // Insert initializer statements after any outer reference fields that may
-      // have been added by InnerClassExtractor or AnonymousClassConverter
-      // because initializers might reference these outer fields.
-      int insertionIdx = 1;
-      while (insertionIdx < stmts.size() && isOuterAssignment(stmts.get(insertionIdx))) {
-        insertionIdx++;
-      }
-      List<Statement> unparentedStmts =
-          NodeCopier.copySubtrees(node.getAST(), initStatements); // safe by specification
-      stmts.addAll(insertionIdx, unparentedStmts);
+      List<Statement> unparentedStmts = NodeCopier.copySubtrees(ast, initStatements);
+      stmts.addAll(superCallIdx + 1, unparentedStmts);
     }
   }
 
-  private boolean isOuterAssignment(Statement stmt) {
-    if (stmt == null) {
-      return false;
+  private int findSuperConstructorInvocation(List<Statement> statements) {
+    for (int i = 0; i < statements.size(); i++) {
+      if (statements.get(i) instanceof SuperConstructorInvocation) {
+        return i;
+      }
     }
-    if (!(stmt instanceof ExpressionStatement)) {
-      return false;
-    }
-    Expression expression = ((ExpressionStatement) stmt).getExpression();
-    if (!(expression instanceof Assignment)) {
-      return false;
-    }
-    IVariableBinding rhsBinding = Types.getVariableBinding(
-        ((Assignment) expression).getRightHandSide());
-    return rhsBinding != null && (rhsBinding instanceof GeneratedVariableBinding)
-        && (rhsBinding.getName().equals("outer$") || rhsBinding.getName().startsWith("capture$"));
+    return -1;
   }
 
   /**

@@ -836,4 +836,14 @@ public class InnerClassExtractorTest extends GenerationTest {
         "return new MyRunnable(); } }", "Test", "Test.h");
     assertOccurrences(translation, "@interface Test_foo_MyRunnable_$1", 1);
   }
+
+  public void testOuterInitializedBeforeSuperInit() throws IOException {
+    String translation = translateSourceFile(
+        "class Test { int i; class Inner { void test() { i++; } } }", "Test", "Test.m");
+    assertTranslatedLines(translation,
+        "- (id)initWithTest:(Test *)outer$ {",
+        "Test_Inner_set_this$0_(self, outer$);",
+        "return JreMemDebugAdd([super init]);",
+        "}");
+  }
 }

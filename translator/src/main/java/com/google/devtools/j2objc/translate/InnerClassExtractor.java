@@ -221,11 +221,15 @@ public class InnerClassExtractor extends ErrorReportingASTVisitor {
     SuperConstructorInvocation superCall = null;
 
     List<Statement> statements = ASTUtil.getStatements(constructor.getBody());
-    Statement firstStatement = statements.size() > 0 ? statements.get(0) : null;
-    if (firstStatement != null && firstStatement instanceof ConstructorInvocation) {
-      thisCall = (ConstructorInvocation) firstStatement;
-    } else if (firstStatement != null && firstStatement instanceof SuperConstructorInvocation) {
-      superCall = (SuperConstructorInvocation) firstStatement;
+    for (int i = 0; i < statements.size(); i++) {
+      Statement stmt = statements.get(i);
+      if (stmt instanceof ConstructorInvocation) {
+        thisCall = (ConstructorInvocation) stmt;
+        break;
+      } else if (stmt instanceof SuperConstructorInvocation) {
+        superCall = (SuperConstructorInvocation) stmt;
+        break;
+      }
     }
 
     if (thisCall != null) {
@@ -245,7 +249,7 @@ public class InnerClassExtractor extends ErrorReportingASTVisitor {
         GeneratedMethodBinding superCallBinding = new GeneratedMethodBinding(superCallDecl);
         if (superCall == null) {
           superCall = ast.newSuperConstructorInvocation();
-          ASTUtil.getStatements(constructor.getBody()).add(0, superCall);
+          statements.add(0, superCall);
         }
 
         List<IVariableBinding> path = OuterReferenceResolver.getPath(typeNode);
@@ -259,7 +263,13 @@ public class InnerClassExtractor extends ErrorReportingASTVisitor {
         Types.addBinding(superCall, superCallBinding);
       }
       if (outerField != null) {
-        ASTUtil.getStatements(constructor.getBody()).add(superCall == null ? 0 : 1,
+        if (superCall == null) {
+          // Add an explicit super() call so that the implementation generator
+          // doesn't insert one before the outer field is set.
+          statements.add(0, ASTFactory.newSuperConstructorInvocation(
+              ast, GeneratedMethodBinding.newConstructor(superType, Modifier.PUBLIC)));
+        }
+        statements.add(0,
             ast.newExpressionStatement(ASTFactory.newAssignment(ast,
             ASTFactory.newSimpleName(ast, outerField),
             ASTFactory.newSimpleName(ast, outerParamBinding))));

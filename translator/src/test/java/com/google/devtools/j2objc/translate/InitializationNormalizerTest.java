@@ -69,7 +69,7 @@ public class InitializationNormalizerTest extends GenerationTest {
         "Test() { this(true); b2 = true; }" +
         "Test(boolean b) { b1 = b; }}";
     String translation = translateSourceFile(source, "Test", "Test.m");
-    assertTranslation(translation, "if ((self = [self initTestWithBoolean:YES])) {");
+    assertTranslation(translation, "if (self = [self initTestWithBoolean:YES]) {");
   }
 
   /**
@@ -113,7 +113,7 @@ public class InitializationNormalizerTest extends GenerationTest {
     // moved to the constructor.
     assertTranslatedLines(translation,
         "- (id)init {",
-        "if ((self = [super init])) {",
+        "if (self = [super init]) {",
         "Test_set_date_(self, [[[JavaUtilDate alloc] init] autorelease]);",
         "JreMemDebugAdd(self);",
         "}",
@@ -128,7 +128,7 @@ public class InitializationNormalizerTest extends GenerationTest {
     // moved to the constructor.
     assertTranslatedLines(translation,
         "- (id)init {",
-        "if ((self = [super init])) {",
+        "if (self = [super init]) {",
         "{",
         "Test_set_date_(self, [[[JavaUtilDate alloc] init] autorelease]);",
         "}",
@@ -180,7 +180,7 @@ public class InitializationNormalizerTest extends GenerationTest {
     // test that initializer statement was added to second constructor
     assertTranslatedLines(translation,
         "- (id)initTestWithInt:(int)i {",
-        "if ((self = [super init])) {",
+        "if (self = [super init]) {",
         "{",
         "Test_set_date_(self, [[[JavaUtilDate alloc] init] autorelease]);",
         "}",

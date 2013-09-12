@@ -746,6 +746,16 @@ public class ObjectiveCImplementationGenerator extends ObjectiveCSourceFileGener
     return binding != null && fieldHiders.contains(binding) ? name + "Arg" : name;
   }
 
+  private static int findConstructorInvocation(List<Statement> statements) {
+    for (int i = 0; i < statements.size(); i++) {
+      Statement stmt = statements.get(i);
+      if (stmt instanceof ConstructorInvocation || stmt instanceof SuperConstructorInvocation) {
+        return i;
+      }
+    }
+    return -1;
+  }
+
   @Override
   protected String constructorDeclaration(MethodDeclaration m) {
     String methodBody;
@@ -754,41 +764,32 @@ public class ObjectiveCImplementationGenerator extends ObjectiveCSourceFileGener
     List<Statement> statements = ASTUtil.getStatements(m.getBody());
     if (binding.getDeclaringClass().isEnum()) {
       return enumConstructorDeclaration(m, statements, binding);
-    } else if (statements.isEmpty()) {
-      methodBody = memDebug ?
-          "{\nreturn (self = JreMemDebugAdd([super init]));\n}" :
-          "{\nreturn (self = [super init]);\n}";
-    } else if (statements.size() == 1 &&
-        (statements.get(0) instanceof ConstructorInvocation ||
-         statements.get(0) instanceof SuperConstructorInvocation)) {
+    }
+    StringBuffer sb = new StringBuffer("{\n");
+    int constructorIdx = findConstructorInvocation(statements);
+    int idx = 0;
+    while (idx < constructorIdx) {
+      sb.append(generateStatement(statements.get(idx++), false));
+    }
+    String superCall = idx == constructorIdx ?
+        generateStatement(statements.get(idx++), false) : "[super init]";
+    if (idx >= statements.size()) {
+      sb.append("return ");
       if (memDebug) {
-        methodBody = "{\nreturn JreMemDebugAdd(" +
-            generateStatement(statements.get(0), false, true) + ");\n}";
-      } else {
-        methodBody = "{\nreturn " + generateStatement(statements.get(0), false, true) + ";\n}";
+        sb.append("JreMemDebugAdd(");
       }
+      sb.append(superCall).append(memDebug ? ");\n}" : ";\n}");
     } else {
-      StringBuffer sb = new StringBuffer();
-      Statement first = statements.get(0);
-      boolean firstPrinted = false;
-      sb.append("{\nif ((self = ");
-      if (first instanceof ConstructorInvocation ||
-          first instanceof SuperConstructorInvocation) {
-        sb.append(generateStatement(first, false, true));
-        firstPrinted = true;
-      } else {
-        sb.append("[super init]");
-      }
-      sb.append(")) {\n");
-      for (int i = firstPrinted ? 1 : 0; i < statements.size(); i++) {
-        sb.append(generateStatement(statements.get(i), false, true));
+      sb.append("if (self = ").append(superCall).append(") {\n");
+      while (idx < statements.size()) {
+        sb.append(generateStatement(statements.get(idx++), false));
       }
       if (memDebug) {
         sb.append("JreMemDebugAdd(self);\n");
       }
       sb.append("}\nreturn self;\n}");
-      methodBody = sb.toString();
     }
+    methodBody = sb.toString();
     if (invokedConstructors.contains(parameterKey(binding))) {
       return super.constructorDeclaration(m, true) + " " + reindent(methodBody) + "\n\n"
           + super.constructorDeclaration(m, false) + " {\n  return "
@@ -821,7 +822,7 @@ public class ObjectiveCImplementationGenerator extends ObjectiveCSourceFileGener
     // first statement is a constructor or super invocation.
     Statement s = statements.get(0);
     assert s instanceof ConstructorInvocation || s instanceof SuperConstructorInvocation;
-    String invocation = generateStatement(statements.get(0), false, true) + ";\n";
+    String invocation = generateStatement(statements.get(0), false) + ";\n";
     List<?> args = s instanceof ConstructorInvocation
         ? ((ConstructorInvocation) s).arguments() : ((SuperConstructorInvocation) s).arguments();
     String impliedArgs = (args.isEmpty() ? "W" : " w") + "ithNSString:__name withInt:__ordinal";
@@ -843,7 +844,7 @@ public class ObjectiveCImplementationGenerator extends ObjectiveCSourceFileGener
       sb.append(invocation);
       sb.append(")) {\n");
       for (int i = 1; i < statements.size(); i++) {
-        sb.append(generateStatement(statements.get(i), false, true));
+        sb.append(generateStatement(statements.get(i), false));
       }
       if (memDebug) {
         sb.append("JreMemDebugAdd(self);\n");
@@ -871,15 +872,10 @@ public class ObjectiveCImplementationGenerator extends ObjectiveCSourceFileGener
     StringBuffer sb = new StringBuffer();
     sb.append("{\nif (self == [" + className + " class]) {\n");
     for (Statement statement : ASTUtil.getStatements(m.getBody())) {
-      sb.append(generateStatement(statement, false, true));
+      sb.append(generateStatement(statement, false));
     }
     sb.append("}\n}");
     print("+ (void)initialize " + reindent(sb.toString()) + "\n\n");
-  }
-
-  private String generateStatement(Statement stmt, boolean asFunction, boolean inConstructor) {
-    return StatementGenerator.generate(stmt, fieldHiders, asFunction,
-        getBuilder().getSourcePosition());
   }
 
   private String generateStatement(Statement stmt, boolean asFunction) {
