@@ -22,7 +22,6 @@ import com.google.common.collect.Sets;
 import com.google.devtools.j2objc.J2ObjC;
 import com.google.devtools.j2objc.Options;
 import com.google.devtools.j2objc.util.BindingUtil;
-import com.google.devtools.j2objc.util.NameTable;
 import com.google.j2objc.annotations.AutoreleasePool;
 import com.google.j2objc.annotations.Weak;
 import com.google.j2objc.annotations.WeakOuter;
@@ -122,7 +121,6 @@ public class Types {
     initializeCommonJavaTypes();
     populatePrimitiveAndWrapperTypeMaps();
     bindingMap = BindingMapBuilder.buildBindingMap(unit);
-    setGlobalRenamings();
   }
 
   private IOSTypeBinding mapIOSType(IOSTypeBinding type) {
@@ -161,6 +159,7 @@ public class Types {
     ITypeBinding charSequence = BindingUtil.findInterface(javaStringType, "java.lang.CharSequence");
     javaBindingMap.put("java.lang.CharSequence", charSequence);
     iosBindingMap.put("JavaLangCharSequence", charSequence);
+    javaBindingMap.put("java.lang.Number", javaNumberType);
   }
 
   private void initializePrimitiveArray(String javaTypeName, String iosTypeName) {
@@ -186,26 +185,6 @@ public class Types {
     ITypeBinding wrapper = ast.resolveWellKnownType(wrapperName);
     primitiveToWrapperTypes.put(primitive, wrapper);
     wrapperToPrimitiveTypes.put(wrapper, primitive);
-  }
-
-  private void setGlobalRenamings() {
-    // longValue => longLongValue, because of return value
-    // difference with NSNumber.longValue.
-    renameLongValue(ast.resolveWellKnownType("java.lang.Byte"));
-    renameLongValue(ast.resolveWellKnownType("java.lang.Double"));
-    renameLongValue(ast.resolveWellKnownType("java.lang.Float"));
-    renameLongValue(ast.resolveWellKnownType("java.lang.Integer"));
-    renameLongValue(ast.resolveWellKnownType("java.lang.Long"));
-    renameLongValue(ast.resolveWellKnownType("java.lang.Short"));
-  }
-
-  void renameLongValue(ITypeBinding type) {
-    for (IMethodBinding method : type.getDeclaredMethods()) {
-      if (method.getName().equals("longValue")) {
-        NameTable.rename(method, "longLongValue");
-        break;
-      }
-    }
   }
 
   /**
@@ -270,10 +249,6 @@ public class Types {
 
   public static boolean isJavaStringType(ITypeBinding type) {
     return instance.javaStringType.equals(type);
-  }
-
-  public static boolean isJavaNumberType(ITypeBinding type) {
-    return type.isAssignmentCompatible(instance.javaNumberType);
   }
 
   public static boolean isFloatingPointType(ITypeBinding type) {

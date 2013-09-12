@@ -794,4 +794,19 @@ public final class Long extends Number implements Comparable<Long> {
             }
         }
     }
+
+    /*
+     * These ObjC methods are needed to support subclassing of NSNumber.
+     * objCType is used by descriptionWithLocale:.
+     * getValue: is used by copyWithZone:.
+     */
+    /*-[
+    - (const char *)objCType {
+      return "q";
+    }
+
+    - (void)getValue:(void *)buffer {
+      *((long long int *) buffer) = value_;
+    }
+    ]-*/
 }

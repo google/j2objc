@@ -460,4 +460,19 @@ public final class Float extends Number implements Comparable<Float> {
     public static native String toHexString(float f) /*-[
         return [NSString stringWithFormat:@"%A", (double) f];
     ]-*/;
+
+    /*
+     * These ObjC methods are needed to support subclassing of NSNumber.
+     * objCType is used by descriptionWithLocale:.
+     * getValue: is used by copyWithZone:.
+     */
+    /*-[
+    - (const char *)objCType {
+      return "f";
+    }
+
+    - (void)getValue:(void *)buffer {
+      *((float *) buffer) = value_;
+    }
+    ]-*/
 }

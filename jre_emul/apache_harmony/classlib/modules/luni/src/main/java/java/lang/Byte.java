@@ -306,4 +306,23 @@ public final class Byte extends Number implements Comparable<Byte> {
             return (result == null ? CACHE[idx] = new Byte(b) : result);
         }
     }
+
+    /*
+     * These ObjC methods are needed to support subclassing of NSNumber.
+     * objCType and charValue are used by descriptionWithLocale:.
+     * getValue: is used by copyWithZone:.
+     */
+    /*-[
+    - (const char *)objCType {
+      return "c";
+    }
+
+    - (char)charValue {
+      return value_;
+    }
+
+    - (void)getValue:(void *)buffer {
+      *((char *) buffer) = value_;
+    }
+    ]-*/
 }
