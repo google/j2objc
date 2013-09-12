@@ -200,13 +200,26 @@ public final class BindingUtil {
   }
 
   public static boolean hasAnnotation(IBinding binding, Class<?> annotationClass) {
+    return getAnnotation(binding, annotationClass) != null;
+  }
+
+  public static IAnnotationBinding getAnnotation(IBinding binding, Class<?> annotationClass) {
     for (IAnnotationBinding annotation : binding.getAnnotations()) {
       String name = annotation.getAnnotationType().getQualifiedName();
       if (name.equals(annotationClass.getName())) {
-        return true;
+        return annotation;
       }
     }
-    return false;
+    return null;
+  }
+
+  public static Object getAnnotationValue(IAnnotationBinding annotation, String name) {
+    for (IMemberValuePairBinding pair : annotation.getAllMemberValuePairs()) {
+      if (name.equals(pair.getName())) {
+        return pair.getValue();
+      }
+    }
+    return null;
   }
 
   public static boolean isWeakReference(IVariableBinding var) {
@@ -221,6 +234,10 @@ public final class BindingUtil {
    */
   public static boolean isRuntimeAnnotation(IExtendedModifier mod) {
     return mod.isAnnotation() ? isRuntimeAnnotation(Types.getTypeBinding(mod)) : false;
+  }
+
+  public static boolean isRuntimeAnnotation(IAnnotationBinding binding) {
+    return isRuntimeAnnotation(binding.getAnnotationType());
   }
 
   /**

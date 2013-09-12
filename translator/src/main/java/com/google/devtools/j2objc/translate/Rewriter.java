@@ -32,6 +32,8 @@ import com.google.devtools.j2objc.util.BindingUtil;
 import com.google.devtools.j2objc.util.ErrorReportingASTVisitor;
 import com.google.devtools.j2objc.util.NameTable;
 import com.google.j2objc.annotations.AutoreleasePool;
+import com.google.j2objc.annotations.LoopTranslation;
+import com.google.j2objc.annotations.LoopTranslation.LoopStyle;
 
 import org.eclipse.jdt.core.dom.AST;
 import org.eclipse.jdt.core.dom.ASTVisitor;
@@ -50,6 +52,7 @@ import org.eclipse.jdt.core.dom.Expression;
 import org.eclipse.jdt.core.dom.FieldAccess;
 import org.eclipse.jdt.core.dom.FieldDeclaration;
 import org.eclipse.jdt.core.dom.ForStatement;
+import org.eclipse.jdt.core.dom.IAnnotationBinding;
 import org.eclipse.jdt.core.dom.IMethodBinding;
 import org.eclipse.jdt.core.dom.IPackageBinding;
 import org.eclipse.jdt.core.dom.ITypeBinding;
@@ -434,16 +437,6 @@ public class Rewriter extends ErrorReportingASTVisitor {
     return true;
   }
 
-  private Block makeBlock(Statement stmt) {
-    if (stmt instanceof Block) {
-      return (Block) stmt;
-    }
-    AST ast = stmt.getAST();
-    Block block = ast.newBlock();
-    ASTUtil.getStatements(block).add(stmt);
-    return block;
-  }
-
   @Override
   public void endVisit(ForStatement node) {
     // It should not be possible to have multiple VariableDeclarationExpression
@@ -469,39 +462,75 @@ public class Rewriter extends ErrorReportingASTVisitor {
     }
   }
 
+  private Block makeBlock(Statement stmt) {
+    if (stmt instanceof Block) {
+      return (Block) stmt;
+    }
+    Block block = stmt.getAST().newBlock();
+    if (stmt.getParent() != null) {
+      ASTUtil.setProperty(stmt, block);
+    }
+    ASTUtil.getStatements(block).add(stmt);
+    return block;
+  }
+
+  private boolean emitJavaIteratorLoop(IVariableBinding loopVariable) {
+    IAnnotationBinding loopTranslation =
+        BindingUtil.getAnnotation(loopVariable, LoopTranslation.class);
+    if (loopTranslation == null) {
+      return false;
+    }
+    Object style = BindingUtil.getAnnotationValue(loopTranslation, "value");
+    if (style instanceof IVariableBinding
+        && ((IVariableBinding) style).getName().equals(LoopStyle.JAVA_ITERATOR.name())) {
+      return true;
+    }
+    return false;
+  }
+
   @Override
   public void endVisit(EnhancedForStatement node) {
     AST ast = node.getAST();
     Expression expression = node.getExpression();
     ITypeBinding expressionType = Types.getTypeBinding(expression);
     IVariableBinding loopVariable = Types.getVariableBinding(node.getParameter());
-    Block loopBody = makeBlock(NodeCopier.copySubtree(ast, node.getBody()));
 
     if (BindingUtil.hasAnnotation(loopVariable, AutoreleasePool.class)) {
-      Types.addAutoreleasePool(loopBody);
+      Types.addAutoreleasePool(makeBlock(node.getBody()));
     }
 
-    Block newBlock = expressionType.isArray() ?
-        makeArrayIterationBlock(ast, expression, expressionType, loopVariable, loopBody) :
-        makeIterableBlock(ast, expression, expressionType, loopVariable, loopBody);
-    ASTUtil.setProperty(node, newBlock);
+    if (expressionType.isArray()) {
+      ASTUtil.setProperty(node, makeArrayIterationBlock(
+          ast, expression, expressionType, loopVariable, node.getBody()));
+    } else if (emitJavaIteratorLoop(loopVariable)) {
+      ASTUtil.setProperty(node, makeIterableBlock(
+          ast, expression, expressionType, loopVariable, node.getBody()));
+    } else if (loopVariable.getType().isPrimitive()) {
+      boxLoopVariable(ast, node, expressionType, loopVariable);
+    } else {
+      GeneratedVariableBinding newLoopVariable = new GeneratedVariableBinding(loopVariable);
+      newLoopVariable.setTypeQualifiers("__strong");
+      Types.addBinding(node.getParameter(), newLoopVariable);
+    }
   }
 
   private Block makeArrayIterationBlock(
       AST ast, Expression expression, ITypeBinding expressionType, IVariableBinding loopVariable,
-      Block loopBody) {
+      Statement loopBody) {
     ITypeBinding componentType = expressionType.getComponentType();
     if (!componentType.isPrimitive()) {
       componentType = Types.resolveIOSType("id");
     }
     ITypeBinding iosArrayType = Types.resolveArrayType(componentType);
-    PointerTypeBinding bufferType = new PointerTypeBinding(componentType, "const");
+    PointerTypeBinding bufferType = new PointerTypeBinding(componentType);
     IVariableBinding arrayVariable = new GeneratedVariableBinding(
         "a__", 0, expressionType, false, false, null, null);
-    IVariableBinding bufferVariable = new GeneratedVariableBinding(
+    GeneratedVariableBinding bufferVariable = new GeneratedVariableBinding(
         "b__", 0, bufferType, false, false, null, null);
-    IVariableBinding endVariable = new GeneratedVariableBinding(
+    bufferVariable.setTypeQualifiers("const*");
+    GeneratedVariableBinding endVariable = new GeneratedVariableBinding(
         "e__", 0, bufferType, false, false, null, null);
+    endVariable.setTypeQualifiers("const*");
     IVariableBinding bufferField = new GeneratedVariableBinding(
         "buffer", Modifier.PUBLIC, bufferType, true, false, iosArrayType, null);
     IVariableBinding sizeField = new GeneratedVariableBinding(
@@ -524,8 +553,9 @@ public class Rewriter extends ErrorReportingASTVisitor {
     loop.setExpression(ASTFactory.newInfixExpression(
         ast, ASTFactory.newSimpleName(ast, bufferVariable), InfixExpression.Operator.LESS,
         ASTFactory.newSimpleName(ast, endVariable), Types.resolveJavaType("boolean")));
-    loop.setBody(loopBody);
-    ASTUtil.getStatements(loopBody).add(0, ASTFactory.newVariableDeclarationStatement(
+    Block newLoopBody = makeBlock(NodeCopier.copySubtree(ast, loopBody));
+    loop.setBody(newLoopBody);
+    ASTUtil.getStatements(newLoopBody).add(0, ASTFactory.newVariableDeclarationStatement(
         ast, loopVariable, ASTFactory.newDereference(ast, ASTFactory.newPostfixExpression(
             ast, bufferVariable, PostfixExpression.Operator.INCREMENT))));
 
@@ -539,9 +569,22 @@ public class Rewriter extends ErrorReportingASTVisitor {
     return block;
   }
 
+  private void boxLoopVariable(
+      AST ast, EnhancedForStatement node, ITypeBinding expressionType,
+      IVariableBinding loopVariable) {
+    ITypeBinding[] typeArgs = expressionType.getTypeArguments();
+    assert typeArgs.length == 1 && Types.isBoxedPrimitive(typeArgs[0]);
+    IVariableBinding boxVariable = new GeneratedVariableBinding(
+        "boxed__", 0, typeArgs[0], false, false, null, null);
+    node.setParameter(ASTFactory.newSingleVariableDeclaration(ast, boxVariable));
+    ASTUtil.getStatements(makeBlock(node.getBody())).add(0,
+        ASTFactory.newVariableDeclarationStatement(
+        ast, loopVariable, ASTFactory.newSimpleName(ast, boxVariable)));
+  }
+
   private Block makeIterableBlock(
       AST ast, Expression expression, ITypeBinding expressionType, IVariableBinding loopVariable,
-      Block loopBody) {
+      Statement loopBody) {
     ITypeBinding iterableType = BindingUtil.findInterface(expressionType, "java.lang.Iterable");
     IMethodBinding iteratorMethod = BindingUtil.findDeclaredMethod(iterableType, "iterator");
     ITypeBinding iteratorType = iteratorMethod.getReturnType();
@@ -561,12 +604,13 @@ public class Rewriter extends ErrorReportingASTVisitor {
     MethodInvocation nextInvocation = ASTFactory.newMethodInvocation(
         ast, nextMethod, ASTFactory.newSimpleName(ast, iteratorVariable));
 
-    ASTUtil.getStatements(loopBody).add(0, ASTFactory.newVariableDeclarationStatement(
+    Block newLoopBody = makeBlock(NodeCopier.copySubtree(ast, loopBody));
+    ASTUtil.getStatements(newLoopBody).add(0, ASTFactory.newVariableDeclarationStatement(
         ast, loopVariable, nextInvocation));
 
     WhileStatement whileLoop = ast.newWhileStatement();
     whileLoop.setExpression(hasNextInvocation);
-    whileLoop.setBody(loopBody);
+    whileLoop.setBody(newLoopBody);
 
     Block block = ast.newBlock();
     List<Statement> stmts = ASTUtil.getStatements(block);

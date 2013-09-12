@@ -603,8 +603,12 @@ public class StatementGenerator extends ErrorReportingASTVisitor {
 
   @Override
   public boolean visit(EnhancedForStatement node) {
-    // Enhanced for loops should be rewritten prior to code generation.
-    assert false;
+    buffer.append("for (");
+    node.getParameter().accept(this);
+    buffer.append(" in ");
+    node.getExpression().accept(this);
+    buffer.append(") ");
+    node.getBody().accept(this);
     return false;
   }
 
@@ -1307,7 +1311,7 @@ public class StatementGenerator extends ErrorReportingASTVisitor {
 
   @Override
   public boolean visit(SingleVariableDeclaration node) {
-    buffer.append(NameTable.getSpecificObjCType(Types.getTypeBinding(node)));
+    buffer.append(NameTable.getSpecificObjCType(Types.getVariableBinding(node)));
     if (node.isVarargs()) {
       buffer.append("...");
     }
@@ -1642,7 +1646,7 @@ public class StatementGenerator extends ErrorReportingASTVisitor {
   public boolean visit(VariableDeclarationStatement node) {
     List<VariableDeclarationFragment> vars = ASTUtil.getFragments(node);
     assert !vars.isEmpty();
-    ITypeBinding binding = Types.getTypeBinding(vars.get(0));
+    IVariableBinding binding = Types.getVariableBinding(vars.get(0));
     String objcType = NameTable.getSpecificObjCType(binding);
     String objcTypePointers = " ";
     int idx = objcType.indexOf(" *");
