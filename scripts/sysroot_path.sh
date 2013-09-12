@@ -27,13 +27,15 @@ if [ $# -gt 0 ]; then
   esac
 fi
 
-if [ ! -d /Applications/Xcode.app ]; then
+XCODE_ROOT=$(xcode-select --print-path)
+
+if [ ! -d ${XCODE_ROOT} ]; then
   echo "Xcode is not installed."
   exit 1
 fi
 
 # Try looking in the install directory for Xcode 4.x.
-PLATFORM_ROOT=/Applications/Xcode.app/Contents/Developer/Platforms/${SDK_TYPE}.platform
+PLATFORM_ROOT=${XCODE_ROOT}/Platforms/${SDK_TYPE}.platform
 if [ -d ${PLATFORM_ROOT} ]; then
   SDKS_ROOT=${PLATFORM_ROOT}/Developer/SDKs
   if [ -d ${SDKS_ROOT} ]; then
