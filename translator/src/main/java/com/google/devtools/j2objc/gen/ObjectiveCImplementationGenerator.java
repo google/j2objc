@@ -66,6 +66,8 @@ import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * Generates Objective-C implementation (.m) files from compilation units.
@@ -315,8 +317,37 @@ public class ObjectiveCImplementationGenerator extends ObjectiveCSourceFileGener
     }
   }
 
+  private static final String TYPE_REGEX = "\\([\\w\\s\\*<>\\[\\]]+\\)";
+  private static final String PARAM_REGEX = "\\s*:\\s*" + TYPE_REGEX + "\\s*\\w+";
+  private static final String ADDITIONAL_PARAM_REGEX = "\\s+(\\w+)" + PARAM_REGEX;
+  private static final Pattern OBJC_METHOD_DECL_PATTERN = Pattern.compile(
+      "^\\+|-\\s*" + TYPE_REGEX + "\\s*(\\w+)(" + PARAM_REGEX + "((?:" + ADDITIONAL_PARAM_REGEX
+      + ")*))?\\s*\\{");
+  private static final Pattern ADDITIONAL_PARAM_PATTERN = Pattern.compile(ADDITIONAL_PARAM_REGEX);
+
+  private void findMethodSignatures(String code, Set<String> signatures) {
+    Matcher matcher = OBJC_METHOD_DECL_PATTERN.matcher(code);
+    while (matcher.find()) {
+      StringBuilder signature = new StringBuilder();
+      signature.append(matcher.group(1));
+      if (matcher.group(2) != null) {
+        signature.append(':');
+        String additionalParams = matcher.group(3);
+        if (additionalParams != null) {
+          Matcher paramsMatcher = ADDITIONAL_PARAM_PATTERN.matcher(additionalParams);
+          while (paramsMatcher.find()) {
+            signature.append(paramsMatcher.group(1)).append(':');
+          }
+        }
+      }
+      signatures.add(signature.toString());
+    }
+  }
+
   private void printMethodsAndOcni(
-      Iterable<MethodDeclaration> methods, Iterable<Comment> comments) {
+      AbstractTypeDeclaration typeNode, Iterable<MethodDeclaration> methods,
+      Iterable<Comment> comments) {
+    Set<String> methodsPrinted = Sets.newHashSet();
     Iterator<MethodDeclaration> methodsIter = methods.iterator();
     Iterator<Comment> commentsIter = comments.iterator();
     MethodDeclaration nextMethod = methodsIter.hasNext() ? methodsIter.next() : null;
@@ -339,16 +370,28 @@ public class ObjectiveCImplementationGenerator extends ObjectiveCSourceFileGener
         if (commentStartPos > minPos) {
           String nativeCode = extractNativeCode(commentStartPos, nextComment.getLength());
           if (nativeCode != null) {
-            print(reindent(nativeCode.trim()) + "\n\n");
+            nativeCode = reindent(nativeCode.trim());
+            findMethodSignatures(nativeCode, methodsPrinted);
+            print(nativeCode + "\n\n");
           }
         }
         nextComment = commentsIter.hasNext() ? commentsIter.next() : null;
       }
     }
+
+    // If the type implements Iterable and there's no existing implementation
+    // for NSFastEnumeration's protocol method, then add the default
+    // implementation.
+    if (BindingUtil.findInterface(Types.getTypeBinding(typeNode), "java.lang.Iterable") != null
+        && !methodsPrinted.contains("countByEnumeratingWithState:objects:count:")) {
+      print("- (NSUInteger)countByEnumeratingWithState:(NSFastEnumerationState *)state "
+            + "objects:(__unsafe_unretained id *)stackbuf count:(NSUInteger)len {\n"
+            + "  return JreDefaultFastEnumeration(self, state, stackbuf, len);\n}\n\n");
+    }
   }
 
   private void printMethods(TypeDeclaration node) {
-    printMethodsAndOcni(Arrays.asList(node.getMethods()), blockComments.get(node));
+    printMethodsAndOcni(node, Arrays.asList(node.getMethods()), blockComments.get(node));
 
     // If node implements CharSequence, add forwarding method from the
     // sequenceDescription method to description (toString()).  See
@@ -532,7 +575,7 @@ public class ObjectiveCImplementationGenerator extends ObjectiveCSourceFileGener
     printf("- (id)copyWithZone:(NSZone *)zone {\n  return %s;\n}\n\n", selfString);
 
     printStaticFieldAccessors(fields, methods, /* isInterface */ false);
-    printMethodsAndOcni(methods, blockComments.get(node));
+    printMethodsAndOcni(node, methods, blockComments.get(node));
 
     printf("+ (void)initialize {\n  if (self == [%s class]) {\n", typeName);
     for (int i = 0; i < constants.size(); i++) {
