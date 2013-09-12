@@ -340,12 +340,15 @@ JAVA_SOURCES = \
 	java/text/AttributedCharacterIterator.java \
 	java/text/AttributedString.java \
 	java/text/CharacterIterator.java \
+	java/text/CollationKey.java \
+	java/text/Collator.java \
 	java/text/DateFormat.java \
 	java/text/DateFormatSymbols.java \
 	java/text/DecimalFormat.java \
 	java/text/DecimalFormatSymbols.java \
 	java/text/FieldPosition.java \
 	java/text/Format.java \
+	java/text/IOSCollator.java \
 	java/text/NumberFormat.java \
 	java/text/ParseException.java \
 	java/text/ParsePosition.java \
