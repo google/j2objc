@@ -68,6 +68,7 @@ static IOSPrimitiveClass *IOSClass_intClass;
 static IOSPrimitiveClass *IOSClass_longClass;
 static IOSPrimitiveClass *IOSClass_shortClass;
 static IOSPrimitiveClass *IOSClass_booleanClass;
+static IOSPrimitiveClass *IOSClass_voidClass;
 
 // Other commonly used instances.
 static IOSClass *IOSClass_objectClass;
@@ -134,6 +135,10 @@ static IOSClass *FetchArray(IOSClass *componentType);
 
 + (IOSClass *)booleanClass {
   return IOSClass_booleanClass;
+}
+
++ (IOSClass *)voidClass {
+  return IOSClass_voidClass;
 }
 
 + (IOSClass *)objectClass {
@@ -353,6 +358,7 @@ static IOSClass *IOSClass_PrimitiveClassForChar(unichar c) {
     case 'J': return IOSClass_longClass;
     case 'S': return IOSClass_shortClass;
     case 'Z': return IOSClass_booleanClass;
+    // void type purposfully excluded because you can't have a void array.
     default: return nil;
   }
 }
@@ -696,6 +702,7 @@ IOSClass *FetchArray(IOSClass *componentType) {
     IOSClass_longClass = [[IOSPrimitiveClass alloc] initWithName:@"long" type:@"J"];
     IOSClass_shortClass = [[IOSPrimitiveClass alloc] initWithName:@"short" type:@"S"];
     IOSClass_booleanClass = [[IOSPrimitiveClass alloc] initWithName:@"boolean" type:@"Z"];
+    IOSClass_voidClass = [[IOSPrimitiveClass alloc] initWithName:@"void" type:@"V"];
 
     IOSClass_classCache = [[NSMutableDictionary alloc] init];
     IOSClass_protocolCache = [[NSMutableDictionary alloc] init];

@@ -63,6 +63,7 @@
 + (IOSClass *)longClass;
 + (IOSClass *)shortClass;
 + (IOSClass *)booleanClass;
++ (IOSClass *)voidClass;
 
 + (IOSClass *)objectClass;
 
