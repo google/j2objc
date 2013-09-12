@@ -664,6 +664,208 @@
 		06DDF48616E83FF800A08BE0 /* BasicLruCache.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = BasicLruCache.m; path = build_result/Classes/libcore/util/BasicLruCache.m; sourceTree = "<group>"; };
 		06DDF48916E8401600A08BE0 /* TimeZones.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = TimeZones.h; path = build_result/Classes/libcore/icu/TimeZones.h; sourceTree = "<group>"; };
 		06DDF48A16E8401600A08BE0 /* TimeZones.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = TimeZones.m; path = build_result/Classes/libcore/icu/TimeZones.m; sourceTree = "<group>"; };
+		06ED3D4617D163F80014750E /* IOSConcreteClass.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = IOSConcreteClass.h; sourceTree = "<group>"; };
+		06ED3D4717D163F80014750E /* IOSConcreteClass.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = IOSConcreteClass.m; sourceTree = "<group>"; };
+		06ED3D4817D163F80014750E /* IOSProtocolClass.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = IOSProtocolClass.h; sourceTree = "<group>"; };
+		06ED3D4917D163F80014750E /* IOSProtocolClass.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = IOSProtocolClass.m; sourceTree = "<group>"; };
+		06ED3D4A17D1645A0014750E /* DataInput.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = DataInput.h; path = build_result/Classes/java/io/DataInput.h; sourceTree = "<group>"; };
+		06ED3D4B17D1645A0014750E /* DataInput.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = DataInput.m; path = build_result/Classes/java/io/DataInput.m; sourceTree = "<group>"; };
+		06ED3D4C17D1645A0014750E /* DataInputStream.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = DataInputStream.h; path = build_result/Classes/java/io/DataInputStream.h; sourceTree = "<group>"; };
+		06ED3D4D17D1645A0014750E /* DataInputStream.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = DataInputStream.m; path = build_result/Classes/java/io/DataInputStream.m; sourceTree = "<group>"; };
+		06ED3D4E17D1645A0014750E /* DataOutput.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = DataOutput.h; path = build_result/Classes/java/io/DataOutput.h; sourceTree = "<group>"; };
+		06ED3D4F17D1645A0014750E /* DataOutputStream.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = DataOutputStream.h; path = build_result/Classes/java/io/DataOutputStream.h; sourceTree = "<group>"; };
+		06ED3D5017D1645A0014750E /* DataOutputStream.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = DataOutputStream.m; path = build_result/Classes/java/io/DataOutputStream.m; sourceTree = "<group>"; };
+		06ED3D5117D1645A0014750E /* EOFException.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = EOFException.h; path = build_result/Classes/java/io/EOFException.h; sourceTree = "<group>"; };
+		06ED3D5217D1645A0014750E /* EOFException.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = EOFException.m; path = build_result/Classes/java/io/EOFException.m; sourceTree = "<group>"; };
+		06ED3D5317D1645A0014750E /* FilterReader.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = FilterReader.h; path = build_result/Classes/java/io/FilterReader.h; sourceTree = "<group>"; };
+		06ED3D5417D1645A0014750E /* FilterReader.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = FilterReader.m; path = build_result/Classes/java/io/FilterReader.m; sourceTree = "<group>"; };
+		06ED3D5517D1645A0014750E /* FilterWriter.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = FilterWriter.h; path = build_result/Classes/java/io/FilterWriter.h; sourceTree = "<group>"; };
+		06ED3D5617D1645A0014750E /* FilterWriter.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = FilterWriter.m; path = build_result/Classes/java/io/FilterWriter.m; sourceTree = "<group>"; };
+		06ED3D5717D1645A0014750E /* NotSerializableException.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = NotSerializableException.h; path = build_result/Classes/java/io/NotSerializableException.h; sourceTree = "<group>"; };
+		06ED3D5817D1645A0014750E /* NotSerializableException.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = NotSerializableException.m; path = build_result/Classes/java/io/NotSerializableException.m; sourceTree = "<group>"; };
+		06ED3D5917D1645A0014750E /* PushbackInputStream.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = PushbackInputStream.h; path = build_result/Classes/java/io/PushbackInputStream.h; sourceTree = "<group>"; };
+		06ED3D5A17D1645A0014750E /* PushbackInputStream.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = PushbackInputStream.m; path = build_result/Classes/java/io/PushbackInputStream.m; sourceTree = "<group>"; };
+		06ED3D5B17D1645A0014750E /* PushbackReader.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = PushbackReader.h; path = build_result/Classes/java/io/PushbackReader.h; sourceTree = "<group>"; };
+		06ED3D5C17D1645A0014750E /* PushbackReader.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = PushbackReader.m; path = build_result/Classes/java/io/PushbackReader.m; sourceTree = "<group>"; };
+		06ED3D5D17D1645A0014750E /* UTFDataFormatException.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = UTFDataFormatException.h; path = build_result/Classes/java/io/UTFDataFormatException.h; sourceTree = "<group>"; };
+		06ED3D5E17D1645A0014750E /* UTFDataFormatException.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = UTFDataFormatException.m; path = build_result/Classes/java/io/UTFDataFormatException.m; sourceTree = "<group>"; };
+		06ED3D5F17D164AF0014750E /* AutoCloseable.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = AutoCloseable.h; path = build_result/Classes/java/lang/AutoCloseable.h; sourceTree = "<group>"; };
+		06ED3D6017D164AF0014750E /* ClassFormatError.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = ClassFormatError.h; path = build_result/Classes/java/lang/ClassFormatError.h; sourceTree = "<group>"; };
+		06ED3D6117D164AF0014750E /* ClassFormatError.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = ClassFormatError.m; path = build_result/Classes/java/lang/ClassFormatError.m; sourceTree = "<group>"; };
+		06ED3D6217D164AF0014750E /* ClassLoader.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = ClassLoader.h; path = build_result/Classes/java/lang/ClassLoader.h; sourceTree = "<group>"; };
+		06ED3D6317D164AF0014750E /* ClassLoader.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = ClassLoader.m; path = build_result/Classes/java/lang/ClassLoader.m; sourceTree = "<group>"; };
+		06ED3D6417D164AF0014750E /* Deprecated.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = Deprecated.h; path = build_result/Classes/java/lang/Deprecated.h; sourceTree = "<group>"; };
+		06ED3D6517D164AF0014750E /* Deprecated.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = Deprecated.m; path = build_result/Classes/java/lang/Deprecated.m; sourceTree = "<group>"; };
+		06ED3D6617D164AF0014750E /* IllegalMonitorStateException.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = IllegalMonitorStateException.h; path = build_result/Classes/java/lang/IllegalMonitorStateException.h; sourceTree = "<group>"; };
+		06ED3D6717D164AF0014750E /* IllegalMonitorStateException.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = IllegalMonitorStateException.m; path = build_result/Classes/java/lang/IllegalMonitorStateException.m; sourceTree = "<group>"; };
+		06ED3D6817D164AF0014750E /* Override.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = Override.h; path = build_result/Classes/java/lang/Override.h; sourceTree = "<group>"; };
+		06ED3D6917D164AF0014750E /* Override.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = Override.m; path = build_result/Classes/java/lang/Override.m; sourceTree = "<group>"; };
+		06ED3D6A17D164AF0014750E /* Package.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = Package.h; path = build_result/Classes/java/lang/Package.h; sourceTree = "<group>"; };
+		06ED3D6B17D164AF0014750E /* Package.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = Package.m; path = build_result/Classes/java/lang/Package.m; sourceTree = "<group>"; };
+		06ED3D6C17D164AF0014750E /* SafeVarargs.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = SafeVarargs.h; path = build_result/Classes/java/lang/SafeVarargs.h; sourceTree = "<group>"; };
+		06ED3D6D17D164AF0014750E /* SafeVarargs.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = SafeVarargs.m; path = build_result/Classes/java/lang/SafeVarargs.m; sourceTree = "<group>"; };
+		06ED3D6E17D164AF0014750E /* SecurityManager.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = SecurityManager.h; path = build_result/Classes/java/lang/SecurityManager.h; sourceTree = "<group>"; };
+		06ED3D6F17D164AF0014750E /* SecurityManager.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = SecurityManager.m; path = build_result/Classes/java/lang/SecurityManager.m; sourceTree = "<group>"; };
+		06ED3D7017D164AF0014750E /* SuppressWarnings.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = SuppressWarnings.h; path = build_result/Classes/java/lang/SuppressWarnings.h; sourceTree = "<group>"; };
+		06ED3D7117D164AF0014750E /* SuppressWarnings.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = SuppressWarnings.m; path = build_result/Classes/java/lang/SuppressWarnings.m; sourceTree = "<group>"; };
+		06ED3D7217D164DC0014750E /* AnnotatedElement.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = AnnotatedElement.h; path = build_result/Classes/java/lang/reflect/AnnotatedElement.h; sourceTree = "<group>"; };
+		06ED3D7317D164DC0014750E /* AnnotatedElement.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = AnnotatedElement.m; path = build_result/Classes/java/lang/reflect/AnnotatedElement.m; sourceTree = "<group>"; };
+		06ED3D7417D164DC0014750E /* GenericArrayType.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = GenericArrayType.h; path = build_result/Classes/java/lang/reflect/GenericArrayType.h; sourceTree = "<group>"; };
+		06ED3D7517D164DC0014750E /* GenericArrayType.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = GenericArrayType.m; path = build_result/Classes/java/lang/reflect/GenericArrayType.m; sourceTree = "<group>"; };
+		06ED3D7617D164DC0014750E /* GenericSignatureFormatError.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = GenericSignatureFormatError.h; path = build_result/Classes/java/lang/reflect/GenericSignatureFormatError.h; sourceTree = "<group>"; };
+		06ED3D7717D164DC0014750E /* GenericSignatureFormatError.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = GenericSignatureFormatError.m; path = build_result/Classes/java/lang/reflect/GenericSignatureFormatError.m; sourceTree = "<group>"; };
+		06ED3D7817D164DC0014750E /* MalformedParameterizedTypeException.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = MalformedParameterizedTypeException.h; path = build_result/Classes/java/lang/reflect/MalformedParameterizedTypeException.h; sourceTree = "<group>"; };
+		06ED3D7917D164DC0014750E /* MalformedParameterizedTypeException.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = MalformedParameterizedTypeException.m; path = build_result/Classes/java/lang/reflect/MalformedParameterizedTypeException.m; sourceTree = "<group>"; };
+		06ED3D7A17D164DC0014750E /* Member.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = Member.h; path = build_result/Classes/java/lang/reflect/Member.h; sourceTree = "<group>"; };
+		06ED3D7B17D164DC0014750E /* Member.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = Member.m; path = build_result/Classes/java/lang/reflect/Member.m; sourceTree = "<group>"; };
+		06ED3D7C17D164DC0014750E /* ParameterizedType.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = ParameterizedType.h; path = build_result/Classes/java/lang/reflect/ParameterizedType.h; sourceTree = "<group>"; };
+		06ED3D7D17D164DC0014750E /* ParameterizedType.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = ParameterizedType.m; path = build_result/Classes/java/lang/reflect/ParameterizedType.m; sourceTree = "<group>"; };
+		06ED3D7E17D164DC0014750E /* UndeclaredThrowableException.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = UndeclaredThrowableException.h; path = build_result/Classes/java/lang/reflect/UndeclaredThrowableException.h; sourceTree = "<group>"; };
+		06ED3D7F17D164DC0014750E /* UndeclaredThrowableException.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = UndeclaredThrowableException.m; path = build_result/Classes/java/lang/reflect/UndeclaredThrowableException.m; sourceTree = "<group>"; };
+		06ED3D8017D164DC0014750E /* WildcardType.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = WildcardType.h; path = build_result/Classes/java/lang/reflect/WildcardType.h; sourceTree = "<group>"; };
+		06ED3D8117D164DC0014750E /* WildcardType.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = WildcardType.m; path = build_result/Classes/java/lang/reflect/WildcardType.m; sourceTree = "<group>"; };
+		06ED3D8217D164FE0014750E /* MalformedURLException.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = MalformedURLException.h; path = build_result/Classes/java/net/MalformedURLException.h; sourceTree = "<group>"; };
+		06ED3D8317D164FE0014750E /* MalformedURLException.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = MalformedURLException.m; path = build_result/Classes/java/net/MalformedURLException.m; sourceTree = "<group>"; };
+		06ED3D8417D164FE0014750E /* URL.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = URL.h; path = build_result/Classes/java/net/URL.h; sourceTree = "<group>"; };
+		06ED3D8517D164FE0014750E /* URL.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = URL.m; path = build_result/Classes/java/net/URL.m; sourceTree = "<group>"; };
+		06ED3D8617D164FE0014750E /* URLStreamHandler.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = URLStreamHandler.h; path = build_result/Classes/java/net/URLStreamHandler.h; sourceTree = "<group>"; };
+		06ED3D8717D164FE0014750E /* URLStreamHandler.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = URLStreamHandler.m; path = build_result/Classes/java/net/URLStreamHandler.m; sourceTree = "<group>"; };
+		06ED3D8817D164FE0014750E /* URLStreamHandlerFactory.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = URLStreamHandlerFactory.h; path = build_result/Classes/java/net/URLStreamHandlerFactory.h; sourceTree = "<group>"; };
+		06ED3D8917D164FE0014750E /* URLStreamHandlerFactory.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = URLStreamHandlerFactory.m; path = build_result/Classes/java/net/URLStreamHandlerFactory.m; sourceTree = "<group>"; };
+		06ED3D8A17D165500014750E /* AccessControlContext.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = AccessControlContext.h; path = build_result/Classes/java/security/AccessControlContext.h; sourceTree = "<group>"; };
+		06ED3D8B17D165500014750E /* AccessControlContext.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = AccessControlContext.m; path = build_result/Classes/java/security/AccessControlContext.m; sourceTree = "<group>"; };
+		06ED3D8C17D165500014750E /* AccessControlException.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = AccessControlException.h; path = build_result/Classes/java/security/AccessControlException.h; sourceTree = "<group>"; };
+		06ED3D8D17D165500014750E /* AccessControlException.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = AccessControlException.m; path = build_result/Classes/java/security/AccessControlException.m; sourceTree = "<group>"; };
+		06ED3D8E17D165500014750E /* AccessController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = AccessController.h; path = build_result/Classes/java/security/AccessController.h; sourceTree = "<group>"; };
+		06ED3D8F17D165500014750E /* AccessController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = AccessController.m; path = build_result/Classes/java/security/AccessController.m; sourceTree = "<group>"; };
+		06ED3D9017D165500014750E /* AllPermission.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = AllPermission.h; path = build_result/Classes/java/security/AllPermission.h; sourceTree = "<group>"; };
+		06ED3D9117D165500014750E /* AllPermission.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = AllPermission.m; path = build_result/Classes/java/security/AllPermission.m; sourceTree = "<group>"; };
+		06ED3D9217D165500014750E /* AllPermissionCollection.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = AllPermissionCollection.h; path = build_result/Classes/java/security/AllPermissionCollection.h; sourceTree = "<group>"; };
+		06ED3D9317D165500014750E /* AllPermissionCollection.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = AllPermissionCollection.m; path = build_result/Classes/java/security/AllPermissionCollection.m; sourceTree = "<group>"; };
+		06ED3D9417D165510014750E /* BasicPermission.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = BasicPermission.h; path = build_result/Classes/java/security/BasicPermission.h; sourceTree = "<group>"; };
+		06ED3D9517D165510014750E /* BasicPermission.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = BasicPermission.m; path = build_result/Classes/java/security/BasicPermission.m; sourceTree = "<group>"; };
+		06ED3D9617D165510014750E /* CodeSource.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = CodeSource.h; path = build_result/Classes/java/security/CodeSource.h; sourceTree = "<group>"; };
+		06ED3D9717D165510014750E /* CodeSource.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = CodeSource.m; path = build_result/Classes/java/security/CodeSource.m; sourceTree = "<group>"; };
+		06ED3D9817D165510014750E /* DomainCombiner.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = DomainCombiner.h; path = build_result/Classes/java/security/DomainCombiner.h; sourceTree = "<group>"; };
+		06ED3D9917D165510014750E /* DomainCombiner.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = DomainCombiner.m; path = build_result/Classes/java/security/DomainCombiner.m; sourceTree = "<group>"; };
+		06ED3D9A17D165510014750E /* GeneralSecurityException.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = GeneralSecurityException.h; path = build_result/Classes/java/security/GeneralSecurityException.h; sourceTree = "<group>"; };
+		06ED3D9B17D165510014750E /* GeneralSecurityException.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = GeneralSecurityException.m; path = build_result/Classes/java/security/GeneralSecurityException.m; sourceTree = "<group>"; };
+		06ED3D9C17D165510014750E /* Guard.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = Guard.h; path = build_result/Classes/java/security/Guard.h; sourceTree = "<group>"; };
+		06ED3D9D17D165510014750E /* GuardedObject.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = GuardedObject.h; path = build_result/Classes/java/security/GuardedObject.h; sourceTree = "<group>"; };
+		06ED3D9E17D165510014750E /* GuardedObject.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = GuardedObject.m; path = build_result/Classes/java/security/GuardedObject.m; sourceTree = "<group>"; };
+		06ED3D9F17D165510014750E /* NoSuchProviderException.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = NoSuchProviderException.h; path = build_result/Classes/java/security/NoSuchProviderException.h; sourceTree = "<group>"; };
+		06ED3DA017D165510014750E /* NoSuchProviderException.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = NoSuchProviderException.m; path = build_result/Classes/java/security/NoSuchProviderException.m; sourceTree = "<group>"; };
+		06ED3DA117D165510014750E /* Permission.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = Permission.h; path = build_result/Classes/java/security/Permission.h; sourceTree = "<group>"; };
+		06ED3DA217D165510014750E /* Permission.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = Permission.m; path = build_result/Classes/java/security/Permission.m; sourceTree = "<group>"; };
+		06ED3DA317D165510014750E /* PermissionCollection.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = PermissionCollection.h; path = build_result/Classes/java/security/PermissionCollection.h; sourceTree = "<group>"; };
+		06ED3DA417D165510014750E /* PermissionCollection.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = PermissionCollection.m; path = build_result/Classes/java/security/PermissionCollection.m; sourceTree = "<group>"; };
+		06ED3DA517D165510014750E /* Permissions.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = Permissions.h; path = build_result/Classes/java/security/Permissions.h; sourceTree = "<group>"; };
+		06ED3DA617D165510014750E /* Permissions.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = Permissions.m; path = build_result/Classes/java/security/Permissions.m; sourceTree = "<group>"; };
+		06ED3DA717D165510014750E /* PermissionsHash.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = PermissionsHash.h; path = build_result/Classes/java/security/PermissionsHash.h; sourceTree = "<group>"; };
+		06ED3DA817D165510014750E /* PermissionsHash.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = PermissionsHash.m; path = build_result/Classes/java/security/PermissionsHash.m; sourceTree = "<group>"; };
+		06ED3DA917D165510014750E /* Principal.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = Principal.h; path = build_result/Classes/java/security/Principal.h; sourceTree = "<group>"; };
+		06ED3DAA17D165510014750E /* Principal.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = Principal.m; path = build_result/Classes/java/security/Principal.m; sourceTree = "<group>"; };
+		06ED3DAB17D165510014750E /* PrivilegedAction.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = PrivilegedAction.h; path = build_result/Classes/java/security/PrivilegedAction.h; sourceTree = "<group>"; };
+		06ED3DAC17D165510014750E /* PrivilegedActionException.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = PrivilegedActionException.h; path = build_result/Classes/java/security/PrivilegedActionException.h; sourceTree = "<group>"; };
+		06ED3DAD17D165510014750E /* PrivilegedActionException.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = PrivilegedActionException.m; path = build_result/Classes/java/security/PrivilegedActionException.m; sourceTree = "<group>"; };
+		06ED3DAE17D165510014750E /* PrivilegedExceptionAction.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = PrivilegedExceptionAction.h; path = build_result/Classes/java/security/PrivilegedExceptionAction.h; sourceTree = "<group>"; };
+		06ED3DAF17D165510014750E /* PrivilegedExceptionAction.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = PrivilegedExceptionAction.m; path = build_result/Classes/java/security/PrivilegedExceptionAction.m; sourceTree = "<group>"; };
+		06ED3DB017D165510014750E /* ProtectionDomain.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = ProtectionDomain.h; path = build_result/Classes/java/security/ProtectionDomain.h; sourceTree = "<group>"; };
+		06ED3DB117D165510014750E /* ProtectionDomain.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = ProtectionDomain.m; path = build_result/Classes/java/security/ProtectionDomain.m; sourceTree = "<group>"; };
+		06ED3DB217D165510014750E /* SecureClassLoader.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = SecureClassLoader.h; path = build_result/Classes/java/security/SecureClassLoader.h; sourceTree = "<group>"; };
+		06ED3DB317D165510014750E /* SecureClassLoader.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = SecureClassLoader.m; path = build_result/Classes/java/security/SecureClassLoader.m; sourceTree = "<group>"; };
+		06ED3DB417D165510014750E /* SecurityPermission.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = SecurityPermission.h; path = build_result/Classes/java/security/SecurityPermission.h; sourceTree = "<group>"; };
+		06ED3DB517D165510014750E /* SecurityPermission.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = SecurityPermission.m; path = build_result/Classes/java/security/SecurityPermission.m; sourceTree = "<group>"; };
+		06ED3DB617D165670014750E /* Date.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = Date.h; path = build_result/Classes/java/sql/Date.h; sourceTree = "<group>"; };
+		06ED3DB717D165670014750E /* Date.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = Date.m; path = build_result/Classes/java/sql/Date.m; sourceTree = "<group>"; };
+		06ED3DB817D165670014750E /* Time.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = Time.h; path = build_result/Classes/java/sql/Time.h; sourceTree = "<group>"; };
+		06ED3DB917D165670014750E /* Time.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = Time.m; path = build_result/Classes/java/sql/Time.m; sourceTree = "<group>"; };
+		06ED3DBA17D165670014750E /* Timestamp.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = Timestamp.h; path = build_result/Classes/java/sql/Timestamp.h; sourceTree = "<group>"; };
+		06ED3DBB17D165670014750E /* Timestamp.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = Timestamp.m; path = build_result/Classes/java/sql/Timestamp.m; sourceTree = "<group>"; };
+		06ED3DBC17D165DE0014750E /* Annotation.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = Annotation.h; path = build_result/Classes/java/text/Annotation.h; sourceTree = "<group>"; };
+		06ED3DBD17D165DE0014750E /* Annotation.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = Annotation.m; path = build_result/Classes/java/text/Annotation.m; sourceTree = "<group>"; };
+		06ED3DBE17D165DE0014750E /* AttributedCharacterIterator.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = AttributedCharacterIterator.h; path = build_result/Classes/java/text/AttributedCharacterIterator.h; sourceTree = "<group>"; };
+		06ED3DBF17D165DE0014750E /* AttributedCharacterIterator.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = AttributedCharacterIterator.m; path = build_result/Classes/java/text/AttributedCharacterIterator.m; sourceTree = "<group>"; };
+		06ED3DC017D165DE0014750E /* AttributedString.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = AttributedString.h; path = build_result/Classes/java/text/AttributedString.h; sourceTree = "<group>"; };
+		06ED3DC117D165DE0014750E /* AttributedString.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = AttributedString.m; path = build_result/Classes/java/text/AttributedString.m; sourceTree = "<group>"; };
+		06ED3DC217D165DE0014750E /* CharacterIterator.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = CharacterIterator.h; path = build_result/Classes/java/text/CharacterIterator.h; sourceTree = "<group>"; };
+		06ED3DC317D165DE0014750E /* CharacterIterator.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = CharacterIterator.m; path = build_result/Classes/java/text/CharacterIterator.m; sourceTree = "<group>"; };
+		06ED3DC417D165DE0014750E /* CollationKey.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = CollationKey.h; path = build_result/Classes/java/text/CollationKey.h; sourceTree = "<group>"; };
+		06ED3DC517D165DE0014750E /* CollationKey.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = CollationKey.m; path = build_result/Classes/java/text/CollationKey.m; sourceTree = "<group>"; };
+		06ED3DC617D165DE0014750E /* Collator.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = Collator.h; path = build_result/Classes/java/text/Collator.h; sourceTree = "<group>"; };
+		06ED3DC717D165DE0014750E /* Collator.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = Collator.m; path = build_result/Classes/java/text/Collator.m; sourceTree = "<group>"; };
+		06ED3DC817D165DE0014750E /* DateFormat.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = DateFormat.h; path = build_result/Classes/java/text/DateFormat.h; sourceTree = "<group>"; };
+		06ED3DC917D165DE0014750E /* DateFormat.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = DateFormat.m; path = build_result/Classes/java/text/DateFormat.m; sourceTree = "<group>"; };
+		06ED3DCA17D165DE0014750E /* DateFormatSymbols.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = DateFormatSymbols.h; path = build_result/Classes/java/text/DateFormatSymbols.h; sourceTree = "<group>"; };
+		06ED3DCB17D165DE0014750E /* DateFormatSymbols.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = DateFormatSymbols.m; path = build_result/Classes/java/text/DateFormatSymbols.m; sourceTree = "<group>"; };
+		06ED3DCC17D165DE0014750E /* DecimalFormat.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = DecimalFormat.h; path = build_result/Classes/java/text/DecimalFormat.h; sourceTree = "<group>"; };
+		06ED3DCD17D165DE0014750E /* DecimalFormat.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = DecimalFormat.m; path = build_result/Classes/java/text/DecimalFormat.m; sourceTree = "<group>"; };
+		06ED3DCE17D165DE0014750E /* DecimalFormatSymbols.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = DecimalFormatSymbols.h; path = build_result/Classes/java/text/DecimalFormatSymbols.h; sourceTree = "<group>"; };
+		06ED3DCF17D165DE0014750E /* DecimalFormatSymbols.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = DecimalFormatSymbols.m; path = build_result/Classes/java/text/DecimalFormatSymbols.m; sourceTree = "<group>"; };
+		06ED3DD017D165DE0014750E /* FieldPosition.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = FieldPosition.h; path = build_result/Classes/java/text/FieldPosition.h; sourceTree = "<group>"; };
+		06ED3DD117D165DE0014750E /* FieldPosition.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = FieldPosition.m; path = build_result/Classes/java/text/FieldPosition.m; sourceTree = "<group>"; };
+		06ED3DD217D165DE0014750E /* Format.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = Format.h; path = build_result/Classes/java/text/Format.h; sourceTree = "<group>"; };
+		06ED3DD317D165DE0014750E /* Format.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = Format.m; path = build_result/Classes/java/text/Format.m; sourceTree = "<group>"; };
+		06ED3DD417D165DE0014750E /* IOSCollator.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = IOSCollator.h; path = build_result/Classes/java/text/IOSCollator.h; sourceTree = "<group>"; };
+		06ED3DD517D165DE0014750E /* IOSCollator.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = IOSCollator.m; path = build_result/Classes/java/text/IOSCollator.m; sourceTree = "<group>"; };
+		06ED3DD617D165DE0014750E /* NumberFormat.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = NumberFormat.h; path = build_result/Classes/java/text/NumberFormat.h; sourceTree = "<group>"; };
+		06ED3DD717D165DE0014750E /* NumberFormat.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = NumberFormat.m; path = build_result/Classes/java/text/NumberFormat.m; sourceTree = "<group>"; };
+		06ED3DD817D165DE0014750E /* ParsePosition.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = ParsePosition.h; path = build_result/Classes/java/text/ParsePosition.h; sourceTree = "<group>"; };
+		06ED3DD917D165DE0014750E /* ParsePosition.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = ParsePosition.m; path = build_result/Classes/java/text/ParsePosition.m; sourceTree = "<group>"; };
+		06ED3DDA17D165DE0014750E /* SimpleDateFormat.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = SimpleDateFormat.h; path = build_result/Classes/java/text/SimpleDateFormat.h; sourceTree = "<group>"; };
+		06ED3DDB17D165DE0014750E /* SimpleDateFormat.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = SimpleDateFormat.m; path = build_result/Classes/java/text/SimpleDateFormat.m; sourceTree = "<group>"; };
+		06ED3DDC17D166080014750E /* MissingResourceException.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = MissingResourceException.h; path = build_result/Classes/java/util/MissingResourceException.h; sourceTree = "<group>"; };
+		06ED3DDD17D166080014750E /* MissingResourceException.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = MissingResourceException.m; path = build_result/Classes/java/util/MissingResourceException.m; sourceTree = "<group>"; };
+		06ED3DDE17D166080014750E /* Timer.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = Timer.h; path = build_result/Classes/java/util/Timer.h; sourceTree = "<group>"; };
+		06ED3DDF17D166080014750E /* Timer.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = Timer.m; path = build_result/Classes/java/util/Timer.m; sourceTree = "<group>"; };
+		06ED3DE017D166080014750E /* TimerTask.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = TimerTask.h; path = build_result/Classes/java/util/TimerTask.h; sourceTree = "<group>"; };
+		06ED3DE117D166080014750E /* TimerTask.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = TimerTask.m; path = build_result/Classes/java/util/TimerTask.m; sourceTree = "<group>"; };
+		06ED3DE217D1666A0014750E /* ICU.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = ICU.h; path = build_result/Classes/libcore/icu/ICU.h; sourceTree = "<group>"; };
+		06ED3DE317D1666A0014750E /* ICU.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = ICU.m; path = build_result/Classes/libcore/icu/ICU.m; sourceTree = "<group>"; };
+		06ED3DE417D1666A0014750E /* NativeDecimalFormat.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = NativeDecimalFormat.h; path = build_result/Classes/libcore/icu/NativeDecimalFormat.h; sourceTree = "<group>"; };
+		06ED3DE517D1666A0014750E /* NativeDecimalFormat.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = NativeDecimalFormat.m; path = build_result/Classes/libcore/icu/NativeDecimalFormat.m; sourceTree = "<group>"; };
+		06ED3DE617D1666A0014750E /* TimeZoneNames.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = TimeZoneNames.h; path = build_result/Classes/libcore/icu/TimeZoneNames.h; sourceTree = "<group>"; };
+		06ED3DE717D1666A0014750E /* TimeZoneNames.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = TimeZoneNames.m; path = build_result/Classes/libcore/icu/TimeZoneNames.m; sourceTree = "<group>"; };
+		06ED3DE817D1667D0014750E /* StringPool.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = StringPool.h; path = build_result/Classes/libcore/internal/StringPool.h; sourceTree = "<group>"; };
+		06ED3DE917D1667D0014750E /* StringPool.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = StringPool.m; path = build_result/Classes/libcore/internal/StringPool.m; sourceTree = "<group>"; };
+		06ED3DEA17D1669D0014750E /* ErrnoException.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = ErrnoException.h; path = build_result/Classes/libcore/io/ErrnoException.h; sourceTree = "<group>"; };
+		06ED3DEB17D1669D0014750E /* ErrnoException.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = ErrnoException.m; path = build_result/Classes/libcore/io/ErrnoException.m; sourceTree = "<group>"; };
+		06ED3DEC17D1669D0014750E /* IoUtils.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = IoUtils.h; path = build_result/Classes/libcore/io/IoUtils.h; sourceTree = "<group>"; };
+		06ED3DED17D1669D0014750E /* IoUtils.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = IoUtils.m; path = build_result/Classes/libcore/io/IoUtils.m; sourceTree = "<group>"; };
+		06ED3DEE17D1669D0014750E /* Libcore.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = Libcore.h; path = build_result/Classes/libcore/io/Libcore.h; sourceTree = "<group>"; };
+		06ED3DEF17D1669D0014750E /* Libcore.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = Libcore.m; path = build_result/Classes/libcore/io/Libcore.m; sourceTree = "<group>"; };
+		06ED3DF017D1669D0014750E /* Os.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = Os.h; path = build_result/Classes/libcore/io/Os.h; sourceTree = "<group>"; };
+		06ED3DF117D1669D0014750E /* Os.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = Os.m; path = build_result/Classes/libcore/io/Os.m; sourceTree = "<group>"; };
+		06ED3DF217D1669D0014750E /* OsConstants.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = OsConstants.h; path = build_result/Classes/libcore/io/OsConstants.h; sourceTree = "<group>"; };
+		06ED3DF317D1669D0014750E /* OsConstants.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = OsConstants.m; path = build_result/Classes/libcore/io/OsConstants.m; sourceTree = "<group>"; };
+		06ED3DF417D1669D0014750E /* Posix.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = Posix.h; path = build_result/Classes/libcore/io/Posix.h; sourceTree = "<group>"; };
+		06ED3DF517D1669D0014750E /* Posix.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = Posix.m; path = build_result/Classes/libcore/io/Posix.m; sourceTree = "<group>"; };
+		06ED3DF617D166AF0014750E /* UrlUtils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = UrlUtils.h; path = build_result/Classes/libcore/net/url/UrlUtils.h; sourceTree = "<group>"; };
+		06ED3DF717D166AF0014750E /* UrlUtils.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = UrlUtils.m; path = build_result/Classes/libcore/net/url/UrlUtils.m; sourceTree = "<group>"; };
+		06ED3DFA17D166C00014750E /* EmptyArray.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = EmptyArray.h; path = build_result/Classes/libcore/util/EmptyArray.h; sourceTree = "<group>"; };
+		06ED3DFB17D166C00014750E /* EmptyArray.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = EmptyArray.m; path = build_result/Classes/libcore/util/EmptyArray.m; sourceTree = "<group>"; };
+		06ED3DFC17D166C00014750E /* Objects.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = Objects.h; path = build_result/Classes/libcore/util/Objects.h; sourceTree = "<group>"; };
+		06ED3DFD17D166C00014750E /* Objects.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = Objects.m; path = build_result/Classes/libcore/util/Objects.m; sourceTree = "<group>"; };
+		06ED3DFE17D166D70014750E /* Util.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = Util.h; path = build_result/Classes/org/apache/harmony/luni/util/Util.h; sourceTree = "<group>"; };
+		06ED3DFF17D166D70014750E /* Util.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = Util.m; path = build_result/Classes/org/apache/harmony/luni/util/Util.m; sourceTree = "<group>"; };
+		06ED3E0017D166ED0014750E /* SAXParserFactoryImpl.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = SAXParserFactoryImpl.h; path = build_result/Classes/org/apache/harmony/xml/parsers/SAXParserFactoryImpl.h; sourceTree = "<group>"; };
+		06ED3E0117D166ED0014750E /* SAXParserFactoryImpl.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = SAXParserFactoryImpl.m; path = build_result/Classes/org/apache/harmony/xml/parsers/SAXParserFactoryImpl.m; sourceTree = "<group>"; };
+		06ED3E0217D166ED0014750E /* SAXParserImpl.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = SAXParserImpl.h; path = build_result/Classes/org/apache/harmony/xml/parsers/SAXParserImpl.h; sourceTree = "<group>"; };
+		06ED3E0317D166ED0014750E /* SAXParserImpl.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = SAXParserImpl.m; path = build_result/Classes/org/apache/harmony/xml/parsers/SAXParserImpl.m; sourceTree = "<group>"; };
+		06ED3E0417D167000014750E /* KXmlParser.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = KXmlParser.h; path = build_result/Classes/org/kxml2/io/KXmlParser.h; sourceTree = "<group>"; };
+		06ED3E0517D167000014750E /* KXmlParser.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = KXmlParser.m; path = build_result/Classes/org/kxml2/io/KXmlParser.m; sourceTree = "<group>"; };
+		06ED3E0617D167000014750E /* KXmlSerializer.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = KXmlSerializer.h; path = build_result/Classes/org/kxml2/io/KXmlSerializer.h; sourceTree = "<group>"; };
+		06ED3E0717D167000014750E /* KXmlSerializer.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = KXmlSerializer.m; path = build_result/Classes/org/kxml2/io/KXmlSerializer.m; sourceTree = "<group>"; };
+		06ED3E0817D1671A0014750E /* LSInput.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = LSInput.h; path = build_result/Classes/org/w3c/dom/ls/LSInput.h; sourceTree = "<group>"; };
+		06ED3E0917D1673A0014750E /* XmlPullParser.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = XmlPullParser.h; path = build_result/Classes/org/xmlpull/v1/XmlPullParser.h; sourceTree = "<group>"; };
+		06ED3E0A17D1673A0014750E /* XmlPullParser.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = XmlPullParser.m; path = build_result/Classes/org/xmlpull/v1/XmlPullParser.m; sourceTree = "<group>"; };
+		06ED3E0B17D1673A0014750E /* XmlPullParserException.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = XmlPullParserException.h; path = build_result/Classes/org/xmlpull/v1/XmlPullParserException.h; sourceTree = "<group>"; };
+		06ED3E0C17D1673A0014750E /* XmlPullParserException.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = XmlPullParserException.m; path = build_result/Classes/org/xmlpull/v1/XmlPullParserException.m; sourceTree = "<group>"; };
+		06ED3E0D17D1673A0014750E /* XmlPullParserFactory.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = XmlPullParserFactory.h; path = build_result/Classes/org/xmlpull/v1/XmlPullParserFactory.h; sourceTree = "<group>"; };
+		06ED3E0E17D1673A0014750E /* XmlPullParserFactory.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = XmlPullParserFactory.m; path = build_result/Classes/org/xmlpull/v1/XmlPullParserFactory.m; sourceTree = "<group>"; };
+		06ED3E0F17D1673A0014750E /* XmlSerializer.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = XmlSerializer.h; path = build_result/Classes/org/xmlpull/v1/XmlSerializer.h; sourceTree = "<group>"; };
+		06ED3E1017D1674B0014750E /* Driver.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = Driver.h; path = build_result/Classes/org/xmlpull/v1/sax2/Driver.h; sourceTree = "<group>"; };
+		06ED3E1117D1674B0014750E /* Driver.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = Driver.m; path = build_result/Classes/org/xmlpull/v1/sax2/Driver.m; sourceTree = "<group>"; };
 		2CBD9CBA174A8BD7008A0086 /* NSDictionaryMap.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = NSDictionaryMap.h; sourceTree = "<group>"; };
 		2CBD9CBB174A8BD7008A0086 /* NSDictionaryMap.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = NSDictionaryMap.m; sourceTree = "<group>"; };
 		2CBD9CBC174ABC0D008A0086 /* NSDataInputStream.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = NSDataInputStream.h; sourceTree = "<group>"; };
@@ -754,6 +956,8 @@
 				0661939F155849BC0004DAFE /* IOSCharArray.m */,
 				066193A0155849BC0004DAFE /* IOSClass.h */,
 				066193A1155849BC0004DAFE /* IOSClass.m */,
+				06ED3D4617D163F80014750E /* IOSConcreteClass.h */,
+				06ED3D4717D163F80014750E /* IOSConcreteClass.m */,
 				066193A4155849BC0004DAFE /* IOSDoubleArray.h */,
 				066193A5155849BC0004DAFE /* IOSDoubleArray.m */,
 				066193A6155849BC0004DAFE /* IOSFloatArray.h */,
@@ -768,6 +972,8 @@
 				066193B1155849BC0004DAFE /* IOSObjectArray.m */,
 				066193B2155849BC0004DAFE /* IOSPrimitiveClass.h */,
 				066193B3155849BC0004DAFE /* IOSPrimitiveClass.m */,
+				06ED3D4817D163F80014750E /* IOSProtocolClass.h */,
+				06ED3D4917D163F80014750E /* IOSProtocolClass.m */,
 				06898A7617BAF8C400D7B114 /* IOSReference.h */,
 				06898A7817BAFAB400D7B114 /* IOSReference.m */,
 				066193B6155849BC0004DAFE /* IOSShortArray.h */,
@@ -846,7 +1052,21 @@
 				06721A2D1559C91600645E1B /* AbstractSequentialList.m */,
 				06721ACA1559CB4200645E1B /* AbstractSet.h */,
 				06721A2E1559C91600645E1B /* AbstractSet.m */,
+				06ED3D8A17D165500014750E /* AccessControlContext.h */,
+				06ED3D8B17D165500014750E /* AccessControlContext.m */,
+				06ED3D8C17D165500014750E /* AccessControlException.h */,
+				06ED3D8D17D165500014750E /* AccessControlException.m */,
+				06ED3D8E17D165500014750E /* AccessController.h */,
+				06ED3D8F17D165500014750E /* AccessController.m */,
+				06ED3D9017D165500014750E /* AllPermission.h */,
+				06ED3D9117D165500014750E /* AllPermission.m */,
+				06ED3D9217D165500014750E /* AllPermissionCollection.h */,
+				06ED3D9317D165500014750E /* AllPermissionCollection.m */,
+				06ED3D7217D164DC0014750E /* AnnotatedElement.h */,
+				06ED3D7317D164DC0014750E /* AnnotatedElement.m */,
+				06ED3DBC17D165DE0014750E /* Annotation.h */,
 				067855BD169F36A40042431C /* Annotation.h */,
+				06ED3DBD17D165DE0014750E /* Annotation.m */,
 				06721B2F1559CC0300645E1B /* Appendable.h */,
 				06721B301559CC0300645E1B /* ArithmeticException.h */,
 				067219CD1559C87100645E1B /* ArithmeticException.m */,
@@ -868,6 +1088,10 @@
 				06721A3D1559C93000645E1B /* AtomicInteger.m */,
 				06721ADE1559CB9200645E1B /* AtomicLong.h */,
 				06721A3E1559C93000645E1B /* AtomicLong.m */,
+				06ED3DBE17D165DE0014750E /* AttributedCharacterIterator.h */,
+				06ED3DBF17D165DE0014750E /* AttributedCharacterIterator.m */,
+				06ED3DC017D165DE0014750E /* AttributedString.h */,
+				06ED3DC117D165DE0014750E /* AttributedString.m */,
 				064FB7C0172707F200DC0D51 /* AttributeList.h */,
 				064FB7D41727081D00DC0D51 /* AttributeListImpl.h */,
 				064FB7D51727081D00DC0D51 /* AttributeListImpl.m */,
@@ -877,8 +1101,11 @@
 				064FB7AC172707D700DC0D51 /* Attributes2Impl.m */,
 				064FB7D61727081D00DC0D51 /* AttributesImpl.h */,
 				064FB7D71727081D00DC0D51 /* AttributesImpl.m */,
+				06ED3D5F17D164AF0014750E /* AutoCloseable.h */,
 				06DDF48516E83FF800A08BE0 /* BasicLruCache.h */,
 				06DDF48616E83FF800A08BE0 /* BasicLruCache.m */,
+				06ED3D9417D165510014750E /* BasicPermission.h */,
+				06ED3D9517D165510014750E /* BasicPermission.m */,
 				067855C3169F37710042431C /* BigDecimal.h */,
 				067855C4169F37710042431C /* BigDecimal.m */,
 				067855C5169F37710042431C /* BigInteger.h */,
@@ -919,6 +1146,8 @@
 				06DD333316A1406A00AD7ACE /* Calendar.m */,
 				06721B361559CC0300645E1B /* Character.h */,
 				067219D31559C87100645E1B /* Character.m */,
+				06ED3DC217D165DE0014750E /* CharacterIterator.h */,
+				06ED3DC317D165DE0014750E /* CharacterIterator.m */,
 				06DD32A316A13FA000AD7ACE /* CharArrayBuffer.h */,
 				06DD32A416A13FA000AD7ACE /* CharArrayBuffer.m */,
 				06721A811559CB2500645E1B /* CharArrayReader.h */,
@@ -931,11 +1160,21 @@
 				06DD32A816A13FA000AD7ACE /* CharSequenceAdapter.m */,
 				06721B371559CC0300645E1B /* ClassCastException.h */,
 				067219D41559C87100645E1B /* ClassCastException.m */,
+				06ED3D6017D164AF0014750E /* ClassFormatError.h */,
+				06ED3D6117D164AF0014750E /* ClassFormatError.m */,
+				06ED3D6217D164AF0014750E /* ClassLoader.h */,
+				06ED3D6317D164AF0014750E /* ClassLoader.m */,
 				06721B381559CC0300645E1B /* ClassNotFoundException.h */,
 				067219D51559C87100645E1B /* ClassNotFoundException.m */,
 				06721B391559CC0300645E1B /* CloneNotSupportedException.h */,
 				067219D61559C87100645E1B /* CloneNotSupportedException.m */,
 				06721A831559CB2500645E1B /* Closeable.h */,
+				06ED3D9617D165510014750E /* CodeSource.h */,
+				06ED3D9717D165510014750E /* CodeSource.m */,
+				06ED3DC417D165DE0014750E /* CollationKey.h */,
+				06ED3DC517D165DE0014750E /* CollationKey.m */,
+				06ED3DC617D165DE0014750E /* Collator.h */,
+				06ED3DC717D165DE0014750E /* Collator.m */,
 				06721ACE1559CB4200645E1B /* Collection.h */,
 				06721ACF1559CB4200645E1B /* Collections.h */,
 				06721A321559C91600645E1B /* Collections.m */,
@@ -951,28 +1190,53 @@
 				067855CA169F37710042431C /* Conversion.m */,
 				06DD333416A1406A00AD7ACE /* Currency.h */,
 				06DD333516A1406A00AD7ACE /* Currency.m */,
+				06ED3D4A17D1645A0014750E /* DataInput.h */,
+				06ED3D4B17D1645A0014750E /* DataInput.m */,
+				06ED3D4C17D1645A0014750E /* DataInputStream.h */,
+				06ED3D4D17D1645A0014750E /* DataInputStream.m */,
+				06ED3D4E17D1645A0014750E /* DataOutput.h */,
+				06ED3D4F17D1645A0014750E /* DataOutputStream.h */,
+				06ED3D5017D1645A0014750E /* DataOutputStream.m */,
+				06ED3DB617D165670014750E /* Date.h */,
 				06721AE31559CB9200645E1B /* Date.h */,
+				06ED3DB717D165670014750E /* Date.m */,
 				06721A431559C93000645E1B /* Date.m */,
+				06ED3DC817D165DE0014750E /* DateFormat.h */,
+				06ED3DC917D165DE0014750E /* DateFormat.m */,
+				06ED3DCA17D165DE0014750E /* DateFormatSymbols.h */,
+				06ED3DCB17D165DE0014750E /* DateFormatSymbols.m */,
+				06ED3DCC17D165DE0014750E /* DecimalFormat.h */,
+				06ED3DCD17D165DE0014750E /* DecimalFormat.m */,
+				06ED3DCE17D165DE0014750E /* DecimalFormatSymbols.h */,
+				06ED3DCF17D165DE0014750E /* DecimalFormatSymbols.m */,
 				064FB7AD172707D700DC0D51 /* DeclHandler.h */,
 				064FB7D81727081D00DC0D51 /* DefaultHandler.h */,
 				064FB7D91727081D00DC0D51 /* DefaultHandler.m */,
 				064FB7AE172707D700DC0D51 /* DefaultHandler2.h */,
 				064FB7AF172707D700DC0D51 /* DefaultHandler2.m */,
+				06ED3D6417D164AF0014750E /* Deprecated.h */,
+				06ED3D6517D164AF0014750E /* Deprecated.m */,
 				068677CD166C342C005A5AD7 /* Deque.h */,
 				06721AE41559CB9200645E1B /* Dictionary.h */,
 				06721A4B1559C99E00645E1B /* Dictionary.m */,
 				067855CB169F37710042431C /* Division.h */,
 				067855CC169F37710042431C /* Division.m */,
 				064FB7C3172707F200DC0D51 /* DocumentHandler.h */,
+				06ED3D9817D165510014750E /* DomainCombiner.h */,
+				06ED3D9917D165510014750E /* DomainCombiner.m */,
 				06721B3A1559CC0300645E1B /* Double.h */,
 				067219D71559C87100645E1B /* Double.m */,
 				06DD32A916A13FA000AD7ACE /* DoubleArrayBuffer.h */,
 				06DD32AA16A13FA000AD7ACE /* DoubleArrayBuffer.m */,
 				06DD32AB16A13FA000AD7ACE /* DoubleBuffer.h */,
 				06DD32AC16A13FA000AD7ACE /* DoubleBuffer.m */,
+				06ED3E1017D1674B0014750E /* Driver.h */,
+				06ED3E1117D1674B0014750E /* Driver.m */,
 				064FB7C4172707F200DC0D51 /* DTDHandler.h */,
 				067855CD169F37710042431C /* Elementary.h */,
 				067855CE169F37710042431C /* Elementary.m */,
+				06ED3DFA17D166C00014750E /* EmptyArray.h */,
+				06ED3DFB17D166C00014750E /* EmptyArray.m */,
 				06721AE51559CB9200645E1B /* EmptyStackException.h */,
 				06721A4C1559C99E00645E1B /* EmptyStackException.m */,
 				06DD335A16A140A600AD7ACE /* Endianness.h */,
@@ -986,6 +1250,10 @@
 				064FB753172706E100DC0D51 /* EnumMap.m */,
 				06DD333616A1406A00AD7ACE /* EnumSet.h */,
 				06DD333716A1406A00AD7ACE /* EnumSet.m */,
+				06ED3D5117D1645A0014750E /* EOFException.h */,
+				06ED3D5217D1645A0014750E /* EOFException.m */,
+				06ED3DEA17D1669D0014750E /* ErrnoException.h */,
+				06ED3DEB17D1669D0014750E /* ErrnoException.m */,
 				06721B3C1559CC0300645E1B /* Error.h */,
 				067219D91559C87100645E1B /* Error.m */,
 				064FB7C6172707F200DC0D51 /* ErrorHandler.h */,
@@ -1001,6 +1269,8 @@
 				06DD332D16A1402900AD7ACE /* ExecutorService.h */,
 				064FB7621727071800DC0D51 /* FactoryConfigurationError.h */,
 				064FB7631727071800DC0D51 /* FactoryConfigurationError.m */,
+				06ED3DD017D165DE0014750E /* FieldPosition.h */,
+				06ED3DD117D165DE0014750E /* FieldPosition.m */,
 				06721A841559CB2500645E1B /* File.h */,
 				067219951559C7FC00645E1B /* File.m */,
 				06721A851559CB2500645E1B /* FileDescriptor.h */,
@@ -1023,6 +1293,10 @@
 				0672199C1559C7FC00645E1B /* FilterInputStream.m */,
 				06721A8E1559CB2500645E1B /* FilterOutputStream.h */,
 				0672199D1559C7FC00645E1B /* FilterOutputStream.m */,
+				06ED3D5317D1645A0014750E /* FilterReader.h */,
+				06ED3D5417D1645A0014750E /* FilterReader.m */,
+				06ED3D5517D1645A0014750E /* FilterWriter.h */,
+				06ED3D5617D1645A0014750E /* FilterWriter.m */,
 				06721B3F1559CC0300645E1B /* Float.h */,
 				067219DC1559C87100645E1B /* Float.m */,
 				06DD32AD16A13FA000AD7ACE /* FloatArrayBuffer.h */,
@@ -1030,15 +1304,26 @@
 				06DD32AF16A13FA000AD7ACE /* FloatBuffer.h */,
 				06DD32B016A13FA000AD7ACE /* FloatBuffer.m */,
 				06721A8F1559CB2500645E1B /* Flushable.h */,
+				06ED3DD217D165DE0014750E /* Format.h */,
+				06ED3DD317D165DE0014750E /* Format.m */,
 				06721AF01559CB9200645E1B /* Formatter.h */,
 				06721A531559C99E00645E1B /* Formatter.m */,
 				06DD332E16A1402900AD7ACE /* Future.h */,
+				06ED3D9A17D165510014750E /* GeneralSecurityException.h */,
+				06ED3D9B17D165510014750E /* GeneralSecurityException.m */,
+				06ED3D7417D164DC0014750E /* GenericArrayType.h */,
+				06ED3D7517D164DC0014750E /* GenericArrayType.m */,
 				0697F60515D190580027A7E4 /* GenericDeclaration.h */,
 				0697F60615D190580027A7E4 /* GenericDeclaration.m */,
+				06ED3D7617D164DC0014750E /* GenericSignatureFormatError.h */,
+				06ED3D7717D164DC0014750E /* GenericSignatureFormatError.m */,
 				06DD333816A1406A00AD7ACE /* Grego.h */,
 				06DD333916A1406A00AD7ACE /* Grego.m */,
 				06DD333A16A1406A00AD7ACE /* GregorianCalendar.h */,
 				06DD333B16A1406A00AD7ACE /* GregorianCalendar.m */,
+				06ED3D9C17D165510014750E /* Guard.h */,
+				06ED3D9D17D165510014750E /* GuardedObject.h */,
+				06ED3D9E17D165510014750E /* GuardedObject.m */,
 				06721AF11559CB9200645E1B /* Handler.h */,
 				06721A541559C99E00645E1B /* Handler.m */,
 				064FB78E1727079100DC0D51 /* HandlerBase.h */,
@@ -1051,12 +1336,16 @@
 				06DD32B216A13FA000AD7ACE /* HeapByteBuffer.m */,
 				06DD333C16A1406A00AD7ACE /* HugeEnumSet.h */,
 				06DD333D16A1406A00AD7ACE /* HugeEnumSet.m */,
+				06ED3DE217D1666A0014750E /* ICU.h */,
+				06ED3DE317D1666A0014750E /* ICU.m */,
 				06721AE91559CB9200645E1B /* IdentityHashMap.h */,
 				06721A4F1559C99E00645E1B /* IdentityHashMap.m */,
 				06721B401559CC0300645E1B /* IllegalAccessException.h */,
 				067219DD1559C87100645E1B /* IllegalAccessException.m */,
 				06721B411559CC0300645E1B /* IllegalArgumentException.h */,
 				067219DE1559C87100645E1B /* IllegalArgumentException.m */,
+				06ED3D6617D164AF0014750E /* IllegalMonitorStateException.h */,
+				06ED3D6717D164AF0014750E /* IllegalMonitorStateException.m */,
 				06721B421559CC0300645E1B /* IllegalStateException.h */,
 				067219DF1559C87100645E1B /* IllegalStateException.m */,
 				06721B431559CC0300645E1B /* IllegalThreadStateException.h */,
@@ -1095,11 +1384,21 @@
 				06721B531559CC0300645E1B /* InvocationTargetException.m */,
 				06721A941559CB2500645E1B /* IOException.h */,
 				067219A21559C7FC00645E1B /* IOException.m */,
+				06ED3DD417D165DE0014750E /* IOSCollator.h */,
+				06ED3DD517D165DE0014750E /* IOSCollator.m */,
+				06ED3DEC17D1669D0014750E /* IoUtils.h */,
+				06ED3DED17D1669D0014750E /* IoUtils.m */,
 				06721B491559CC0300645E1B /* Iterable.h */,
 				06721AEB1559CB9200645E1B /* Iterator.h */,
+				06ED3E0417D167000014750E /* KXmlParser.h */,
+				06ED3E0517D167000014750E /* KXmlParser.m */,
+				06ED3E0617D167000014750E /* KXmlSerializer.h */,
+				06ED3E0717D167000014750E /* KXmlSerializer.m */,
 				06721AF21559CB9200645E1B /* Level.h */,
 				06721A551559C99E00645E1B /* Level.m */,
 				064FB7B1172707D700DC0D51 /* LexicalHandler.h */,
+				06ED3DEE17D1669D0014750E /* Libcore.h */,
+				06ED3DEF17D1669D0014750E /* Libcore.m */,
 				06721B4A1559CC0300645E1B /* LinkageError.h */,
 				067219E61559C87100645E1B /* LinkageError.m */,
 				06DD333E16A1406A00AD7ACE /* LinkedHashSet.h */,
@@ -1133,7 +1432,12 @@
 				06DD32BA16A13FA000AD7ACE /* LongArrayBuffer.m */,
 				06DD32BB16A13FA000AD7ACE /* LongBuffer.h */,
 				06DD32BC16A13FA000AD7ACE /* LongBuffer.m */,
+				06ED3E0817D1671A0014750E /* LSInput.h */,
 				064FB8021727086700DC0D51 /* LSResourceResolver.h */,
+				06ED3D7817D164DC0014750E /* MalformedParameterizedTypeException.h */,
+				06ED3D7917D164DC0014750E /* MalformedParameterizedTypeException.m */,
+				06ED3D8217D164FE0014750E /* MalformedURLException.h */,
+				06ED3D8317D164FE0014750E /* MalformedURLException.m */,
 				06721AF71559CB9200645E1B /* Map.h */,
 				06721AF81559CB9200645E1B /* MapEntry.h */,
 				06721A5A1559C99E00645E1B /* MapEntry.m */,
@@ -1147,14 +1451,20 @@
 				067219E81559C87100645E1B /* Math.m */,
 				067855D1169F37710042431C /* MathContext.h */,
 				067855D2169F37710042431C /* MathContext.m */,
+				06ED3D7A17D164DC0014750E /* Member.h */,
+				06ED3D7B17D164DC0014750E /* Member.m */,
 				06DD334016A1406A00AD7ACE /* MiniEnumSet.h */,
 				06DD334116A1406A00AD7ACE /* MiniEnumSet.m */,
+				06ED3DDC17D166080014750E /* MissingResourceException.h */,
+				06ED3DDD17D166080014750E /* MissingResourceException.m */,
 				06721B541559CC0300645E1B /* Modifier.h */,
 				06721B551559CC0300645E1B /* Modifier.m */,
 				067855D3169F37710042431C /* Multiplication.h */,
 				067855D4169F37710042431C /* Multiplication.m */,
 				064FB7DC1727081D00DC0D51 /* NamespaceSupport.h */,
 				064FB7DD1727081D00DC0D51 /* NamespaceSupport.m */,
+				06ED3DE417D1666A0014750E /* NativeDecimalFormat.h */,
+				06ED3DE517D1666A0014750E /* NativeDecimalFormat.m */,
 				068677D2166C342C005A5AD7 /* NavigableMap.h */,
 				068677D3166C342C005A5AD7 /* NavigableMap.m */,
 				068677D4166C342C005A5AD7 /* NavigableSet.h */,
@@ -1169,20 +1479,40 @@
 				067228FE158FD6AF005318BD /* NoSuchFieldException.m */,
 				06721B4E1559CC0300645E1B /* NoSuchMethodException.h */,
 				067219EA1559C87100645E1B /* NoSuchMethodException.m */,
+				06ED3D9F17D165510014750E /* NoSuchProviderException.h */,
+				06ED3DA017D165510014750E /* NoSuchProviderException.m */,
+				06ED3D5717D1645A0014750E /* NotSerializableException.h */,
+				06ED3D5817D1645A0014750E /* NotSerializableException.m */,
 				06721AF61559CB9200645E1B /* NSLogHandler.h */,
 				06721A591559C99E00645E1B /* NSLogHandler.m */,
 				06721B4F1559CC0300645E1B /* NullPointerException.h */,
 				067219EB1559C87100645E1B /* NullPointerException.m */,
+				06ED3DD617D165DE0014750E /* NumberFormat.h */,
+				06ED3DD717D165DE0014750E /* NumberFormat.m */,
 				06721B501559CC0300645E1B /* NumberFormatException.h */,
 				067219EC1559C87100645E1B /* NumberFormatException.m */,
+				06ED3DFC17D166C00014750E /* Objects.h */,
+				06ED3DFD17D166C00014750E /* Objects.m */,
 				06721A951559CB2500645E1B /* ObjectStreamException.h */,
 				067219A31559C7FC00645E1B /* ObjectStreamException.m */,
+				06ED3DF017D1669D0014750E /* Os.h */,
+				06ED3DF117D1669D0014750E /* Os.m */,
+				06ED3DF217D1669D0014750E /* OsConstants.h */,
+				06ED3DF317D1669D0014750E /* OsConstants.m */,
 				06721A961559CB2500645E1B /* OutputStream.h */,
 				067219A41559C7FC00645E1B /* OutputStream.m */,
 				06721A971559CB2500645E1B /* OutputStreamWriter.h */,
 				067219A51559C7FC00645E1B /* OutputStreamWriter.m */,
+				06ED3D6817D164AF0014750E /* Override.h */,
+				06ED3D6917D164AF0014750E /* Override.m */,
+				06ED3D6A17D164AF0014750E /* Package.h */,
+				06ED3D6B17D164AF0014750E /* Package.m */,
+				06ED3D7C17D164DC0014750E /* ParameterizedType.h */,
+				06ED3D7D17D164DC0014750E /* ParameterizedType.m */,
 				06DD332816A13FBB00AD7ACE /* ParseException.h */,
 				06DD332916A13FBB00AD7ACE /* ParseException.m */,
+				06ED3DD817D165DE0014750E /* ParsePosition.h */,
+				06ED3DD917D165DE0014750E /* ParsePosition.m */,
 				064FB7C7172707F200DC0D51 /* Parser.h */,
 				064FB7E01727081D00DC0D51 /* ParserAdapter.h */,
 				064FB7E11727081D00DC0D51 /* ParserAdapter.m */,
@@ -1194,16 +1524,39 @@
 				068677E9166C345F005A5AD7 /* Pattern.m */,
 				06C6B7FB159BCBD1004B800C /* PatternSyntaxException.h */,
 				06C6B7FC159BCBD1004B800C /* PatternSyntaxException.m */,
+				06ED3DA117D165510014750E /* Permission.h */,
+				06ED3DA217D165510014750E /* Permission.m */,
+				06ED3DA317D165510014750E /* PermissionCollection.h */,
+				06ED3DA417D165510014750E /* PermissionCollection.m */,
+				06ED3DA517D165510014750E /* Permissions.h */,
+				06ED3DA617D165510014750E /* Permissions.m */,
+				06ED3DA717D165510014750E /* PermissionsHash.h */,
+				06ED3DA817D165510014750E /* PermissionsHash.m */,
+				06ED3DF417D1669D0014750E /* Posix.h */,
+				06ED3DF517D1669D0014750E /* Posix.m */,
 				067855D5169F37710042431C /* Primality.h */,
 				067855D6169F37710042431C /* Primality.m */,
+				06ED3DA917D165510014750E /* Principal.h */,
+				06ED3DAA17D165510014750E /* Principal.m */,
 				06721A981559CB2500645E1B /* PrintStream.h */,
 				067219A61559C7FC00645E1B /* PrintStream.m */,
 				06721A991559CB2500645E1B /* PrintWriter.h */,
 				067219A71559C7FC00645E1B /* PrintWriter.m */,
 				06721AFA1559CB9200645E1B /* PriorityQueue.h */,
 				06721A5C1559C99E00645E1B /* PriorityQueue.m */,
+				06ED3DAB17D165510014750E /* PrivilegedAction.h */,
+				06ED3DAC17D165510014750E /* PrivilegedActionException.h */,
+				06ED3DAD17D165510014750E /* PrivilegedActionException.m */,
+				06ED3DAE17D165510014750E /* PrivilegedExceptionAction.h */,
+				06ED3DAF17D165510014750E /* PrivilegedExceptionAction.m */,
 				06721AFB1559CB9200645E1B /* Properties.h */,
 				06721A5D1559C99E00645E1B /* Properties.m */,
+				06ED3DB017D165510014750E /* ProtectionDomain.h */,
+				06ED3DB117D165510014750E /* ProtectionDomain.m */,
+				06ED3D5917D1645A0014750E /* PushbackInputStream.h */,
+				06ED3D5A17D1645A0014750E /* PushbackInputStream.m */,
+				06ED3D5B17D1645A0014750E /* PushbackReader.h */,
+				06ED3D5C17D1645A0014750E /* PushbackReader.m */,
 				06721AFC1559CB9200645E1B /* Queue.h */,
 				06721AFD1559CB9200645E1B /* Random.h */,
 				06721A5E1559C99E00645E1B /* Random.m */,
@@ -1248,6 +1601,8 @@
 				06721B561559CC0300645E1B /* Runnable.h */,
 				06721B571559CC0300645E1B /* RuntimeException.h */,
 				067219ED1559C87100645E1B /* RuntimeException.m */,
+				06ED3D6C17D164AF0014750E /* SafeVarargs.h */,
+				06ED3D6D17D164AF0014750E /* SafeVarargs.m */,
 				064FB7941727079100DC0D51 /* SAXException.h */,
 				064FB7951727079100DC0D51 /* SAXException.m */,
 				064FB7961727079100DC0D51 /* SAXNotRecognizedException.h */,
@@ -1260,10 +1615,20 @@
 				064FB7691727071800DC0D51 /* SAXParser.m */,
 				064FB76A1727071800DC0D51 /* SAXParserFactory.h */,
 				064FB76B1727071800DC0D51 /* SAXParserFactory.m */,
+				06ED3E0017D166ED0014750E /* SAXParserFactoryImpl.h */,
+				06ED3E0117D166ED0014750E /* SAXParserFactoryImpl.m */,
+				06ED3E0217D166ED0014750E /* SAXParserImpl.h */,
+				06ED3E0317D166ED0014750E /* SAXParserImpl.m */,
 				064FB77E1727074100DC0D51 /* Schema.h */,
 				064FB77F1727074100DC0D51 /* Schema.m */,
+				06ED3DB217D165510014750E /* SecureClassLoader.h */,
+				06ED3DB317D165510014750E /* SecureClassLoader.m */,
 				067855BF169F37140042431C /* SecurityException.h */,
 				067855C0169F37140042431C /* SecurityException.m */,
+				06ED3D6E17D164AF0014750E /* SecurityManager.h */,
+				06ED3D6F17D164AF0014750E /* SecurityManager.m */,
+				06ED3DB417D165510014750E /* SecurityPermission.h */,
+				06ED3DB517D165510014750E /* SecurityPermission.m */,
 				06721A9B1559CB2500645E1B /* Serializable.h */,
 				06721AFF1559CB9200645E1B /* Set.h */,
 				06721B581559CC0300645E1B /* Short.h */,
@@ -1272,6 +1637,8 @@
 				06DD32DC16A13FA000AD7ACE /* ShortArrayBuffer.m */,
 				06DD32DD16A13FA000AD7ACE /* ShortBuffer.h */,
 				06DD32DE16A13FA000AD7ACE /* ShortBuffer.m */,
+				06ED3DDA17D165DE0014750E /* SimpleDateFormat.h */,
+				06ED3DDB17D165DE0014750E /* SimpleDateFormat.m */,
 				06DD334216A1406A00AD7ACE /* SimpleTimeZone.h */,
 				06DD334316A1406A00AD7ACE /* SimpleTimeZone.m */,
 				06721B001559CB9200645E1B /* SortedMap.h */,
@@ -1292,12 +1659,16 @@
 				067219F21559C87100645E1B /* StringBuilder.m */,
 				06721B5D1559CC0300645E1B /* StringIndexOutOfBoundsException.h */,
 				067219F31559C87100645E1B /* StringIndexOutOfBoundsException.m */,
+				06ED3DE817D1667D0014750E /* StringPool.h */,
+				06ED3DE917D1667D0014750E /* StringPool.m */,
 				06721A9C1559CB2500645E1B /* StringReader.h */,
 				067219A91559C7FC00645E1B /* StringReader.m */,
 				064FB756172706E100DC0D51 /* StringTokenizer.h */,
 				064FB757172706E100DC0D51 /* StringTokenizer.m */,
 				06721A9D1559CB2500645E1B /* StringWriter.h */,
 				067219AA1559C7FC00645E1B /* StringWriter.m */,
+				06ED3D7017D164AF0014750E /* SuppressWarnings.h */,
+				06ED3D7117D164AF0014750E /* SuppressWarnings.m */,
 				067855B9169F367E0042431C /* SyncFailedException.h */,
 				067855BA169F367E0042431C /* SyncFailedException.m */,
 				06721B5E1559CC0300645E1B /* System.h */,
@@ -1310,10 +1681,20 @@
 				067219F71559C87100645E1B /* ThreadGroup.m */,
 				06721B621559CC0300645E1B /* ThreadLocal.h */,
 				067219F81559C87100645E1B /* ThreadLocal.m */,
+				06ED3DB817D165670014750E /* Time.h */,
+				06ED3DB917D165670014750E /* Time.m */,
+				06ED3DDE17D166080014750E /* Timer.h */,
+				06ED3DDF17D166080014750E /* Timer.m */,
+				06ED3DE017D166080014750E /* TimerTask.h */,
+				06ED3DE117D166080014750E /* TimerTask.m */,
+				06ED3DBA17D165670014750E /* Timestamp.h */,
+				06ED3DBB17D165670014750E /* Timestamp.m */,
 				06721AE11559CB9200645E1B /* TimeUnit.h */,
 				06721A411559C93000645E1B /* TimeUnit.m */,
 				06DD334416A1406A00AD7ACE /* TimeZone.h */,
 				06DD334516A1406A00AD7ACE /* TimeZone.m */,
+				06ED3DE617D1666A0014750E /* TimeZoneNames.h */,
+				06ED3DE717D1666A0014750E /* TimeZoneNames.m */,
 				06DDF48916E8401600A08BE0 /* TimeZones.h */,
 				06DDF48A16E8401600A08BE0 /* TimeZones.m */,
 				06721B031559CB9200645E1B /* TreeMap.h */,
@@ -1327,6 +1708,8 @@
 				064FB7811727074100DC0D51 /* TypeInfoProvider.m */,
 				0697F60915D190580027A7E4 /* TypeVariable.h */,
 				0697F60A15D190580027A7E4 /* TypeVariable.m */,
+				06ED3D7E17D164DC0014750E /* UndeclaredThrowableException.h */,
+				06ED3D7F17D164DC0014750E /* UndeclaredThrowableException.m */,
 				06721A9E1559CB2500645E1B /* UnsupportedEncodingException.h */,
 				067219AB1559C7FC00645E1B /* UnsupportedEncodingException.m */,
 				06721B631559CC0300645E1B /* UnsupportedOperationException.h */,
@@ -1337,6 +1720,18 @@
 				064FB749172705F400DC0D51 /* URIEncoderDecoder.m */,
 				064FB74A172705F400DC0D51 /* URISyntaxException.h */,
 				064FB74B172705F400DC0D51 /* URISyntaxException.m */,
+				06ED3D8417D164FE0014750E /* URL.h */,
+				06ED3D8517D164FE0014750E /* URL.m */,
+				06ED3D8617D164FE0014750E /* URLStreamHandler.h */,
+				06ED3D8717D164FE0014750E /* URLStreamHandler.m */,
+				06ED3D8817D164FE0014750E /* URLStreamHandlerFactory.h */,
+				06ED3D8917D164FE0014750E /* URLStreamHandlerFactory.m */,
+				06ED3DF617D166AF0014750E /* UrlUtils.h */,
+				06ED3DF717D166AF0014750E /* UrlUtils.m */,
+				06ED3D5D17D1645A0014750E /* UTFDataFormatException.h */,
+				06ED3D5E17D1645A0014750E /* UTFDataFormatException.m */,
+				06ED3DFE17D166D70014750E /* Util.h */,
+				06ED3DFF17D166D70014750E /* Util.m */,
 				064FB7821727074100DC0D51 /* Validator.h */,
 				064FB7831727074100DC0D51 /* Validator.m */,
 				064FB7841727074100DC0D51 /* ValidatorHandler.h */,
@@ -1345,6 +1740,8 @@
 				06721A621559C99E00645E1B /* Vector.m */,
 				06721B641559CC0300645E1B /* Void.h */,
 				067219FA1559C87100645E1B /* Void.m */,
+				06ED3D8017D164DC0014750E /* WildcardType.h */,
+				06ED3D8117D164DC0014750E /* WildcardType.m */,
 				06721A9F1559CB2500645E1B /* Writer.h */,
 				067219AC1559C7FC00645E1B /* Writer.m */,
 				064FB75E172706F600DC0D51 /* XMLConstants.h */,
@@ -1352,11 +1749,18 @@
 				064FB7C8172707F200DC0D51 /* XMLFilter.h */,
 				064FB7E41727081D00DC0D51 /* XMLFilterImpl.h */,
 				064FB7E51727081D00DC0D51 /* XMLFilterImpl.m */,
+				06ED3E0917D1673A0014750E /* XmlPullParser.h */,
+				06ED3E0A17D1673A0014750E /* XmlPullParser.m */,
+				06ED3E0B17D1673A0014750E /* XmlPullParserException.h */,
+				06ED3E0C17D1673A0014750E /* XmlPullParserException.m */,
+				06ED3E0D17D1673A0014750E /* XmlPullParserFactory.h */,
+				06ED3E0E17D1673A0014750E /* XmlPullParserFactory.m */,
 				064FB7C9172707F200DC0D51 /* XMLReader.h */,
 				064FB7E61727081D00DC0D51 /* XMLReaderAdapter.h */,
 				064FB7E71727081D00DC0D51 /* XMLReaderAdapter.m */,
 				064FB7E81727081D00DC0D51 /* XMLReaderFactory.h */,
 				064FB7E91727081D00DC0D51 /* XMLReaderFactory.m */,
+				06ED3E0F17D1673A0014750E /* XmlSerializer.h */,
 			);
 			name = "Transpiled Classes";
 			sourceTree = "<group>";
