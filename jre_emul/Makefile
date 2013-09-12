@@ -58,6 +58,7 @@ IOS_OBJS = \
 # but need to include the .java file in jre_emul.jar and the .m file in
 # libjre_emul.a.
 IOS_JAVA_OBJS = \
+	java/lang/Iterable.o \
 	java/lang/Throwable.o \
 	java/lang/reflect/AccessibleObject.o \
 	java/lang/reflect/Constructor.o \
@@ -83,7 +84,6 @@ JRE_INTERFACES = \
 	java/io/Flushable.h \
 	java/io/Serializable.h \
 	java/lang/Appendable.h \
-	java/lang/Iterable.h \
 	java/lang/Runnable.h \
 	java/lang/annotation/Annotation.h \
 	java/lang/reflect/AnnotatedElement.h \

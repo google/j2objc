@@ -719,4 +719,26 @@ public class ObjectiveCImplementationGeneratorTest extends GenerationTest {
     assertTrue(translation.indexOf(innerType) < translation.indexOf("OCNI2"));
     assertTrue(translation.indexOf("OCNI2") < translation.indexOf(method2));
   }
+
+  public void testPrintsCountByEnumeratingWithState() throws IOException {
+    String translation = translateSourceFile(
+        "import java.util.Iterator; " +
+        "abstract class Test implements Iterable { abstract public Iterator iterator(); }",
+        "Test", "Test.m");
+    assertTranslatedLines(translation,
+        "- (NSUInteger)countByEnumeratingWithState:(NSFastEnumerationState *)state " +
+        "objects:(__unsafe_unretained id *)stackbuf count:(NSUInteger)len {",
+        "return JreDefaultFastEnumeration(self, state, stackbuf, len);",
+        "}");
+  }
+
+  public void testNoDuplicateCountByEnumeratingWithState() throws IOException {
+    String translation = translateSourceFile(
+        "import java.util.Iterator; " +
+        "abstract class Test implements Iterable { abstract public Iterator iterator(); /*-[ " +
+        "-(NSUInteger)countByEnumeratingWithState:(NSFastEnumerationState *)state " +
+        "objects:(id *)stackbuf count:(NSUInteger)len { return 0; } ]-*/}",
+        "Test", "Test.m");
+    assertOccurrences(translation, "countByEnumeratingWithState", 1);
+  }
 }
