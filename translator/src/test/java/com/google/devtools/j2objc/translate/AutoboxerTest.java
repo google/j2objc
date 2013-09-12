@@ -60,7 +60,7 @@ public class AutoboxerTest extends GenerationTest {
     source = "boolean b = true; Boolean foo = Boolean.FALSE; foo = b;";
     stmts = translateStatements(source);
     result = generateStatement(stmts.get(2));
-    assertEquals("foo = [JavaLangBoolean valueOfWithBOOL:b];", result);
+    assertEquals("foo = [JavaLangBoolean valueOfWithBoolean:b];", result);
   }
 
   public void testByteAssignment() throws IOException {
@@ -72,7 +72,7 @@ public class AutoboxerTest extends GenerationTest {
     source = "byte b = 5; Byte foo = Byte.valueOf((byte) 3); foo = b;";
     stmts = translateStatements(source);
     result = generateStatement(stmts.get(2));
-    assertEquals("foo = [JavaLangByte valueOfWithChar:b];", result);
+    assertEquals("foo = [JavaLangByte valueOfWithByte:b];", result);
   }
 
   public void testCharAssignment() throws IOException {
@@ -84,7 +84,7 @@ public class AutoboxerTest extends GenerationTest {
     source = "char c = 'a'; Character foo = Character.valueOf('b'); foo = c;";
     stmts = translateStatements(source);
     result = generateStatement(stmts.get(2));
-    assertEquals("foo = [JavaLangCharacter valueOfWithUnichar:c];", result);
+    assertEquals("foo = [JavaLangCharacter valueOfWithChar:c];", result);
   }
 
   public void testShortAssignment() throws IOException {
@@ -96,7 +96,7 @@ public class AutoboxerTest extends GenerationTest {
     source = "short s = 5; Short foo = Short.valueOf((short) 3); foo = s;";
     stmts = translateStatements(source);
     result = generateStatement(stmts.get(2));
-    assertEquals("foo = [JavaLangShort valueOfWithShortInt:s];", result);
+    assertEquals("foo = [JavaLangShort valueOfWithShort:s];", result);
   }
 
   public void testIntAssignment() throws IOException {
@@ -120,7 +120,7 @@ public class AutoboxerTest extends GenerationTest {
     source = "long l = 5; Long foo = Long.valueOf(3L); foo = l;";
     stmts = translateStatements(source);
     result = generateStatement(stmts.get(2));
-    assertEquals("foo = [JavaLangLong valueOfWithLongInt:l];", result);
+    assertEquals("foo = [JavaLangLong valueOfWithLong:l];", result);
   }
 
   public void testFloatAssignment() throws IOException {
@@ -197,7 +197,7 @@ public class AutoboxerTest extends GenerationTest {
         "public class Test { " +
         "void test() { Boolean b = true ? false : null; } }",
         "Test", "Test.m");
-    assertTranslation(translation, "[JavaLangBoolean valueOfWithBOOL:NO]");
+    assertTranslation(translation, "[JavaLangBoolean valueOfWithBoolean:NO]");
   }
 
   public void testReturnWithConditional() throws IOException {
@@ -297,7 +297,7 @@ public class AutoboxerTest extends GenerationTest {
         "[[TestEnum alloc] initWithId:[JavaLangInteger valueOfWithInt:0] " +
         "withNSString:@\"Test_INT\" withInt:0]");
     assertTranslation(translation,
-        "[[TestEnum alloc] initWithId:[JavaLangBoolean valueOfWithBOOL:NO] " +
+        "[[TestEnum alloc] initWithId:[JavaLangBoolean valueOfWithBoolean:NO] " +
         "withNSString:@\"Test_BOOLEAN\" withInt:1]");
   }
 
@@ -442,8 +442,8 @@ public class AutoboxerTest extends GenerationTest {
   public void testAssignIntLiteralToNonIntBoxedType() throws Exception {
     String translation = translateSourceFile(
         "class Test { void test() { Byte b = 3; Short s; s = 4; } }", "Test", "Test.m");
-    assertTranslation(translation, "JavaLangByte *b = [JavaLangByte valueOfWithChar:3];");
-    assertTranslation(translation, "s = [JavaLangShort valueOfWithShortInt:4];");
+    assertTranslation(translation, "JavaLangByte *b = [JavaLangByte valueOfWithByte:3];");
+    assertTranslation(translation, "s = [JavaLangShort valueOfWithShort:4];");
   }
 
   public void testBoxedIncrementAndDecrement() throws Exception {

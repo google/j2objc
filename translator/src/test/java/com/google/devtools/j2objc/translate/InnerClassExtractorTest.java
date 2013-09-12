@@ -252,7 +252,7 @@ public class InnerClassExtractorTest extends GenerationTest {
         "class Inner { Inner(boolean b) {} int size() { return Test.this.size(); } } }",
         "Test", "Test.m");
     assertTranslation(translation, "Test_set_inner_(self, " +
-        "[[[Test_Inner alloc] initWithTest:self withBOOL:YES] autorelease]);");
+        "[[[Test_Inner alloc] initWithTest:self withBoolean:YES] autorelease]);");
     assertTranslation(translation, "Test_Inner_set_this$0_(self, outer$);");
   }
 
