@@ -218,9 +218,10 @@ public class AnonymousClassConverter extends ErrorReportingASTVisitor {
     constructor.setName(name);
     constructor.setBody(ast.newBlock());
 
-    SuperConstructorInvocation superCall = ast.newSuperConstructorInvocation();
     GeneratedMethodBinding superCallBinding = new GeneratedMethodBinding(
         findSuperConstructorBinding(clazz.getSuperclass(), invocationArguments));
+    SuperConstructorInvocation superCall =
+        ASTFactory.newSuperConstructorInvocation(ast, superCallBinding);
 
     // If there is an outer expression (eg myFoo.new Foo() {};), then this must
     // be passed to the super class as its outer reference.
@@ -251,10 +252,6 @@ public class AnonymousClassConverter extends ErrorReportingASTVisitor {
       ASTUtil.getArguments(superCall).add(ASTFactory.newSimpleName(ast, argBinding));
     }
     assert superCall.arguments().size() == superCallBinding.getParameterTypes().length;
-    if (superCall.arguments().size() > 0) {
-      ASTUtil.getStatements(constructor.getBody()).add(superCall);
-      Types.addBinding(superCall, superCallBinding);
-    }
 
     // Add parameters and assignments for the captured inner vars.
     for (IVariableBinding innerField : innerFields) {
@@ -268,6 +265,10 @@ public class AnonymousClassConverter extends ErrorReportingASTVisitor {
           ast.newExpressionStatement(ASTFactory.newAssignment(ast,
           ASTFactory.newSimpleName(ast, innerField), ASTFactory.newSimpleName(ast, paramBinding))));
     }
+
+    // Call the super constructor after captured variables are initialized.
+    ASTUtil.getStatements(constructor.getBody()).add(superCall);
+
     ASTUtil.getBodyDeclarations(node).add(constructor);
     assert constructor.parameters().size() == binding.getParameterTypes().length;
 

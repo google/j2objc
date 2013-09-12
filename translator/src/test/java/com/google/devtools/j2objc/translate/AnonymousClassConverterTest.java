@@ -134,11 +134,8 @@ public class AnonymousClassConverterTest extends GenerationTest {
         "id<JavaLangRunnable> r = [[[Test_$1 alloc] initWithId:test] autorelease];");
     assertTranslatedLines(translation,
         "- (id)initWithId:(id)capture$0 {",
-        "if ((self = [super init])) {",
         "Test_$1_set_val$test_(self, capture$0);",
-        "JreMemDebugAdd(self);",
-        "}",
-        "return self;",
+        "return JreMemDebugAdd([super init]);",
         "}");
     assertTranslation(translation, "[nil_chk(val$test_) description]");
   }
@@ -155,11 +152,8 @@ public class AnonymousClassConverterTest extends GenerationTest {
         "id<JavaLangRunnable> r = [[[Test_$1 alloc] initWithId:foo] autorelease];");
     assertTranslatedLines(translation,
         "- (id)initWithId:(id)capture$0 {",
-        "if ((self = [super init])) {",
         "Test_$1_set_val$foo_(self, capture$0);",
-        "JreMemDebugAdd(self);",
-        "}",
-        "return self;",
+        "return JreMemDebugAdd([super init]);",
         "}");
     assertTranslation(translation, "[nil_chk(val$foo_) description]");
   }
