@@ -53,7 +53,7 @@
   IOSObjectArray *annotations = [self getAnnotations];
   NSUInteger n = [annotations count];
   for (NSUInteger i = 0; i < n; i++) {
-    id annotation = [annotations objectAtIndex:i];
+    id annotation = annotations->buffer_[i];
     if ([annotationType isInstance:annotation]) {
       return annotation;
     }

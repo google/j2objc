@@ -27,7 +27,7 @@
 // An emulation class that represents a Java float array.  Like a Java array,
 // an IOSFloatArray is fixed-size but its elements are mutable.
 @interface IOSFloatArray : IOSArray {
-@private
+ @public
   float *buffer_;
 }
 
@@ -37,8 +37,11 @@
 
 // Return float at a specified index, throws IndexOutOfBoundsException
 // if out out range.
-- (float)floatAtIndex:(NSUInteger)index;
-- (float *)floatRefAtIndex:(NSUInteger)index;
+FOUNDATION_EXPORT float IOSFloatArray_Get(IOSFloatArray *array, NSUInteger index);
+FOUNDATION_EXPORT float *IOSFloatArray_GetRef(IOSFloatArray *array, NSUInteger index);
+// TODO(user): Remove after fixing call sites.
+- (float)floatAtIndex:(NSUInteger)index __attribute__((deprecated));
+- (float *)floatRefAtIndex:(NSUInteger)index __attribute__((deprecated));
 
 // Sets float at a specified index, throws IndexOutOfBoundsException
 // if out out range.  Returns replacement value.

@@ -372,7 +372,8 @@ public class AutoboxerTest extends GenerationTest {
         "    array[index()] = 2; }}";
     String translation = translateSourceFile(source, "Test", "Test.m");
     assertTranslation(translation,
-        "intRefAtIndex:[((JavaLangInteger *) nil_chk([self index])) intValue]");
+        "(*IOSIntArray_GetRef(array, [((JavaLangInteger *) nil_chk([self index])) intValue])) = " +
+        "2;");
   }
 
   public void testPrefixExpression() throws IOException {

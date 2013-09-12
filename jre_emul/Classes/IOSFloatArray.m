@@ -20,9 +20,7 @@
 //
 
 #import "IOSFloatArray.h"
-#import "IOSArrayClass.h"
-#import "IOSPrimitiveClass.h"
-#import "java/lang/Float.h"
+#import "IOSClass.h"
 
 @implementation IOSFloatArray
 
@@ -48,6 +46,16 @@
   [array autorelease];
 #endif
   return array;
+}
+
+float IOSFloatArray_Get(IOSFloatArray *array, NSUInteger index) {
+  IOSArray_checkIndex(array->size_, index);
+  return array->buffer_[index];
+}
+
+float *IOSFloatArray_GetRef(IOSFloatArray *array, NSUInteger index) {
+  IOSArray_checkIndex(array->size_, index);
+  return &array->buffer_[index];
 }
 
 - (float)floatAtIndex:(NSUInteger)index {

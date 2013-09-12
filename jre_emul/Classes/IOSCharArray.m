@@ -20,9 +20,7 @@
 //
 
 #import "IOSCharArray.h"
-#import "IOSArrayClass.h"
-#import "IOSPrimitiveClass.h"
-#import "java/lang/Character.h"
+#import "IOSClass.h"
 
 @implementation IOSCharArray
 
@@ -49,6 +47,16 @@
 #else
   return [array autorelease];
 #endif
+}
+
+unichar IOSCharArray_Get(IOSCharArray *array, NSUInteger index) {
+  IOSArray_checkIndex(array->size_, index);
+  return array->buffer_[index];
+}
+
+unichar *IOSCharArray_GetRef(IOSCharArray *array, NSUInteger index) {
+  IOSArray_checkIndex(array->size_, index);
+  return &array->buffer_[index];
 }
 
 - (unichar)charAtIndex:(NSUInteger)index {

@@ -238,7 +238,7 @@ public class ObjectiveCImplementationGeneratorTest extends GenerationTest {
         "ColorEnum_RED, ColorEnum_WHITE, ColorEnum_BLUE, nil } " +
         "count:3 type:[IOSClass classWithClass:[ColorEnum class]]];");
     assertTranslation(translation, "for (int i = 0; i < [ColorEnum_values count]; i++) {");
-    assertTranslation(translation, "ColorEnum *e = [ColorEnum_values objectAtIndex:i];");
+    assertTranslation(translation, "ColorEnum *e = ColorEnum_values->buffer_[i];");
   }
 
   public void testEnumWithParameters() throws IOException {

@@ -20,9 +20,7 @@
 //
 
 #import "IOSShortArray.h"
-#import "IOSArrayClass.h"
-#import "IOSPrimitiveClass.h"
-#import "java/lang/Short.h"
+#import "IOSClass.h"
 
 @implementation IOSShortArray
 
@@ -48,6 +46,16 @@
   [array autorelease];
 #endif
   return array;
+}
+
+short IOSShortArray_Get(IOSShortArray *array, NSUInteger index) {
+  IOSArray_checkIndex(array->size_, index);
+  return array->buffer_[index];
+}
+
+short *IOSShortArray_GetRef(IOSShortArray *array, NSUInteger index) {
+  IOSArray_checkIndex(array->size_, index);
+  return &array->buffer_[index];
 }
 
 - (short)shortAtIndex:(NSUInteger)index {

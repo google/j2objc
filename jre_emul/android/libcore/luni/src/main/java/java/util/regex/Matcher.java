@@ -343,8 +343,8 @@ public final class Matcher implements MatchResult {
     public native String group(int group) /*-[
       [self ensureMatch];
       nil_chk(matchOffsets_);
-      NSInteger from = [matchOffsets_ intAtIndex:group * 2];
-      NSInteger to = [matchOffsets_ intAtIndex:(group * 2) + 1];
+      NSInteger from = IOSIntArray_Get(matchOffsets_, group * 2);
+      NSInteger to = IOSIntArray_Get(matchOffsets_, (group * 2) + 1);
       // On 64-bit systems NSNotFound gets truncated to -1 when stored in IOSIntArray.
       static const NSInteger notFound = (sizeof(int) < sizeof(NSInteger)) ? -1 : NSNotFound;
       if (from == notFound || to == notFound) {
