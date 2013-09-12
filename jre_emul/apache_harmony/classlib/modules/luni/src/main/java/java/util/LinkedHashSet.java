@@ -41,42 +41,42 @@ public class LinkedHashSet<E> extends HashSet<E> implements Set<E>, Cloneable,
      * Constructs a new empty instance of {@code LinkedHashSet}.
      */
     public LinkedHashSet() {
-        super(new LinkedHashMap<E, HashSet<E>>());
+        super(new LinkedHashMap<E, Object>());
     }
 
     /**
      * Constructs a new instance of {@code LinkedHashSet} with the specified
      * capacity.
-     * 
+     *
      * @param capacity
      *            the initial capacity of this {@code LinkedHashSet}.
      */
     public LinkedHashSet(int capacity) {
-        super(new LinkedHashMap<E, HashSet<E>>(capacity));
+        super(new LinkedHashMap<E, Object>(capacity));
     }
 
     /**
      * Constructs a new instance of {@code LinkedHashSet} with the specified
      * capacity and load factor.
-     * 
+     *
      * @param capacity
      *            the initial capacity.
      * @param loadFactor
      *            the initial load factor.
      */
     public LinkedHashSet(int capacity, float loadFactor) {
-        super(new LinkedHashMap<E, HashSet<E>>(capacity, loadFactor));
+        super(new LinkedHashMap<E, Object>(capacity, loadFactor));
     }
 
     /**
      * Constructs a new instance of {@code LinkedHashSet} containing the unique
      * elements in the specified collection.
-     * 
+     *
      * @param collection
      *            the collection of elements to add.
      */
     public LinkedHashSet(Collection<? extends E> collection) {
-        super(new LinkedHashMap<E, HashSet<E>>(collection.size() < 6 ? 11
+        super(new LinkedHashMap<E, Object>(collection.size() < 6 ? 11
                 : collection.size() * 2));
         for (E e : collection) {
             add(e);
@@ -85,7 +85,7 @@ public class LinkedHashSet<E> extends HashSet<E> implements Set<E>, Cloneable,
 
     /* overrides method in HashMap */
     @Override
-    HashMap<E, HashSet<E>> createBackingMap(int capacity, float loadFactor) {
-        return new LinkedHashMap<E, HashSet<E>>(capacity, loadFactor);
+    HashMap<E, Object> createBackingMap(int capacity, float loadFactor) {
+        return new LinkedHashMap<E, Object>(capacity, loadFactor);
     }
 }
