@@ -108,7 +108,7 @@ public abstract class ListResourceBundle extends ResourceBundle {
     public final Object handleGetObject(String key) {
         initializeTable();
         if (key == null) {
-            throw new NullPointerException();
+            throw new NullPointerException("key == null");
         }
         return table.get(key);
     }
@@ -119,7 +119,7 @@ public abstract class ListResourceBundle extends ResourceBundle {
             table = new HashMap<String, Object>(contents.length / 3 * 4 + 3);
             for (Object[] content : contents) {
                 if (content[0] == null || content[1] == null) {
-                    throw new NullPointerException();
+                    throw new NullPointerException("null entry");
                 }
                 table.put((String) content[0], content[1]);
             }
