@@ -46,7 +46,6 @@ TEST_SOURCES = \
 	libcore/java/lang/reflect/ArrayTest.java \
 	libcore/java/lang/reflect/ConstructorTest.java \
 	libcore/java/text/DecimalFormatTest.java \
-	libcore/java/text/DecimalFormatSymbolsTest.java \
 	libcore/java/text/NumberFormatTest.java \
 	org/apache/harmony/luni/tests/java/io/BufferedInputStreamTest.java \
 	org/apache/harmony/luni/tests/java/io/BufferedOutputStreamTest.java \
