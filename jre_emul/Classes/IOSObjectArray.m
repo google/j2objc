@@ -218,8 +218,18 @@ void CopyWithMemmove(id __strong *buffer, NSUInteger src, NSUInteger dest, NSUIn
        destination:(IOSArray *)destination
             offset:(NSInteger)offset {
   IOSArray_checkRange(size_, sourceRange);
-  IOSArray_checkRange(destination->size_, NSMakeRange(offset, sourceRange.length));
+  IOSArray_checkRange(destination->size_,
+                      NSMakeRange(offset, sourceRange.length));
   IOSObjectArray *dest = (IOSObjectArray *) destination;
+
+#ifdef J2OBJC_DISABLE_ARRAY_TYPE_CHECKS
+  BOOL skipElementCheck = YES;
+#else
+  // If dest element type can be assigned to this array, then all of its
+  // elements are assignable and therefore don't need to be individually
+  // checked.
+  BOOL skipElementCheck = [dest->elementType_ isAssignableFrom:elementType_];
+#endif
 
 #if __has_feature(objc_arc)
   if (self == dest) {
@@ -235,6 +245,10 @@ void CopyWithMemmove(id __strong *buffer, NSUInteger src, NSUInteger dest, NSUIn
         buffer_[i + offset] = buffer_[i + sourceRange.location];
       }
     }
+  } else if (skipElementCheck) {
+    for (int i = 0; i < sourceRange.length; i++) {
+      dest->buffer_[i + offset] = buffer_[i + sourceRange.location];
+    }
   } else {
     for (int i = 0; i < sourceRange.length; i++) {
       dest->buffer_[i + offset] =
@@ -244,11 +258,16 @@ void CopyWithMemmove(id __strong *buffer, NSUInteger src, NSUInteger dest, NSUIn
 #else
   if (self == dest) {
     CopyWithMemmove(buffer_, sourceRange.location, offset, sourceRange.length);
+  } else if (skipElementCheck) {
+    for (int i = 0; i < sourceRange.length; i++) {
+      id newElement = buffer_[i + sourceRange.location];
+      [dest->buffer_[i + offset] autorelease];
+      dest->buffer_[i + offset] = [newElement retain];
+    }
   } else {
     for (int i = 0; i < sourceRange.length; i++) {
-      // TODO(user): We can probably skip this check if the source array
-      // passes an isInstance test on the destination array.
-      id newElement = IOSObjectArray_checkValue(dest, buffer_[i + sourceRange.location]);
+      id newElement = skipElementCheck ? buffer_[i + sourceRange.location] :
+          IOSObjectArray_checkValue(dest, buffer_[i + sourceRange.location]);
       [dest->buffer_[i + offset] autorelease];
       dest->buffer_[i + offset] = [newElement retain];
     }

@@ -97,28 +97,32 @@ public class System {
   
   public static native void arraycopy(Object src, int srcPos, Object dest, int destPos,
       int length) /*-[
-    id exception = nil;
     if (!src || !dest) {
-      exception = [[JavaLangNullPointerException alloc] init];
-#if ! __has_feature(objc_arc)
-      [exception autorelease];
-#endif
+      @throw AUTORELEASE([[JavaLangNullPointerException alloc] init]);
     }
-    if (srcPos < 0 || destPos < 0) {
-      exception = [[JavaLangArrayIndexOutOfBoundsException alloc] init];
-#if ! __has_feature(objc_arc)
-      [exception autorelease];
-#endif
+    if (![src isKindOfClass:[IOSArray class]]) {
+      NSString *msg = [NSString stringWithFormat:@"source of type %@ is not an array",
+                       [src class]];
+      @throw AUTORELEASE([[JavaLangArrayStoreException alloc] initWithNSString:msg]);
     }
-    if (![src isMemberOfClass:[IOSArray class]] && ![dest isMemberOfClass:[src class]]) {
-      exception = [[JavaLangArrayStoreException alloc] init];
-#if ! __has_feature(objc_arc)
-      [exception autorelease];
-#endif
+    if (![dest isKindOfClass:[IOSArray class]]) {
+      NSString *msg = [NSString stringWithFormat:@"destination of type %@ is not an array",
+                       [dest class]];
+      @throw AUTORELEASE([[JavaLangArrayStoreException alloc] initWithNSString:msg]);
     }
-    if (exception) {
-      @throw exception;
+    if (![dest isMemberOfClass:[src class]]) {
+      NSString *msg =
+         [NSString stringWithFormat:@"source type %@ cannot be copied to array of type %@",
+          [src class], [dest class]];
+      @throw AUTORELEASE([[JavaLangArrayStoreException alloc] initWithNSString:msg]);
     }
+    
+    // Check for negative positions and length, since the array classes use unsigned ints.
+    if (srcPos < 0 || destPos < 0 || length < 0) {
+      @throw AUTORELEASE([[JavaLangArrayIndexOutOfBoundsException alloc] init]);
+    }
+
+    // Range tests are done by array class.
     [(IOSArray *) src arraycopy:NSMakeRange(srcPos, length)
                     destination:(IOSArray *) dest
                          offset:destPos];
