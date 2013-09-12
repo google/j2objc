@@ -96,6 +96,7 @@ JRE_INTERFACES = \
 	java/lang/reflect/WildcardType.h \
 	java/security/Guard.h \
 	java/security/PrivilegedAction.h \
+	java/text/CharacterIterator.h \
 	java/util/Collection.h \
 	java/util/Comparator.h \
 	java/util/Deque.h \
@@ -340,6 +341,7 @@ JAVA_SOURCES = \
 	java/text/AttributedString.java \
 	java/text/CharacterIterator.java \
 	java/text/DateFormat.java \
+	java/text/DateFormatSymbols.java \
 	java/text/DecimalFormat.java \
 	java/text/DecimalFormatSymbols.java \
 	java/text/FieldPosition.java \
@@ -347,6 +349,7 @@ JAVA_SOURCES = \
 	java/text/NumberFormat.java \
 	java/text/ParseException.java \
 	java/text/ParsePosition.java \
+	java/text/SimpleDateFormat.java \
 	java/util/AbstractCollection.java \
 	java/util/AbstractList.java \
 	java/util/AbstractMap.java \
@@ -428,6 +431,7 @@ JAVA_SOURCES = \
 	libcore/icu/ICU.java \
 	libcore/icu/LocaleData.java \
 	libcore/icu/NativeDecimalFormat.java \
+	libcore/icu/TimeZoneNames.java \
 	libcore/icu/TimeZones.java \
 	libcore/internal/StringPool.java \
 	libcore/io/ErrnoException.java \

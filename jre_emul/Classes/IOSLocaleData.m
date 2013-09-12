@@ -18,6 +18,7 @@
 //
 
 #import "IOSLocaleData.h"
+#import "java/lang/Integer.h"
 #import "libcore/icu/LocaleData.h"
 
 @implementation IOSLocaleData
@@ -181,6 +182,16 @@
   pattern = [NSString stringWithFormat:@"%@;%@",
              [numberFormatter positiveFormat], [numberFormatter negativeFormat]];
   LibcoreIcuLocaleData_set_percentPattern_(result, pattern);
+
+  // Calendar data.
+  NSCalendar *calendar = [NSCalendar currentCalendar];
+  NSLocale *currentLocale = [calendar locale];
+  [calendar setLocale:locale];
+  JavaLangInteger *firstWeekday = [JavaLangInteger valueOfWithInt:[calendar firstWeekday]];
+  LibcoreIcuLocaleData_set_firstDayOfWeek_(result, firstWeekday);
+  JavaLangInteger *minimalDays = [JavaLangInteger valueOfWithInt:[calendar minimumDaysInFirstWeek]];
+  LibcoreIcuLocaleData_set_minimalDaysInFirstWeek_(result, minimalDays);
+  [calendar setLocale:currentLocale];
 }
 
 @end

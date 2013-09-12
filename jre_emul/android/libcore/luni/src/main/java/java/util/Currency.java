@@ -18,6 +18,8 @@
 package java.util;
 
 import java.io.Serializable;
+import libcore.icu.ICU;
+import libcore.icu.LocaleData;
 
 /**
  * A currency corresponding to an <a href="http://en.wikipedia.org/wiki/ISO_4217">ISO 4217</a>
@@ -62,7 +64,14 @@ public final class Currency implements Serializable {
             if (currency != null) {
                 return currency;
             }
-            String currencyCode = getCurrencyCodeForLocale(locale);
+            String country = locale.getCountry();
+            String variant = locale.getVariant();
+            if (!variant.isEmpty() && (variant.equals("EURO") || variant.equals("HK") ||
+                    variant.equals("PREEURO"))) {
+                country = country + "_" + variant;
+            }
+
+            String currencyCode = ICU.getCurrencyCode(locale.toString());
             if (currencyCode == null) {
                 throw new IllegalArgumentException("Unsupported ISO 3166 country: " + locale);
             } else if (currencyCode.equals("XXX")) {
@@ -74,23 +83,18 @@ public final class Currency implements Serializable {
         }
     }
 
-    private static native String getCurrencyCodeForLocale(Locale locale) /*-[
-      NSLocale *nativeLocale =
-          AUTORELEASE([[NSLocale alloc] initWithLocaleIdentifier:[locale description]]);
-      NSNumberFormatter *formatter = AUTORELEASE([[NSNumberFormatter alloc] init]);
-      [formatter setNumberStyle:NSNumberFormatterCurrencyStyle];
-      [formatter setLocale:nativeLocale];
-      return [formatter currencyCode];
-    ]-*/;
-
-    private static native String getCurrencySymbolForLocale(Locale locale) /*-[
-      NSLocale *nativeLocale =
-          AUTORELEASE([[NSLocale alloc] initWithLocaleIdentifier:[locale description]]);
-      NSNumberFormatter *formatter = AUTORELEASE([[NSNumberFormatter alloc] init]);
-      [formatter setNumberStyle:NSNumberFormatterCurrencyStyle];
-      [formatter setLocale:nativeLocale];
-      return [formatter currencySymbol];
-    ]-*/;
+    /**
+     * Returns a set of all known currencies.
+     * @since 1.7
+     */
+    public static Set<Currency> getAvailableCurrencies() {
+        Set<Currency> result = new LinkedHashSet<Currency>();
+        String[] currencyCodes = ICU.getAvailableCurrencyCodes();
+        for (String currencyCode : currencyCodes) {
+            result.add(Currency.getInstance(currencyCode));
+        }
+        return result;
+    }
 
     /**
      * Returns this currency's ISO 4217 currency code.
@@ -122,7 +126,15 @@ public final class Currency implements Serializable {
         if (locale.getCountry().length() == 0) {
             return currencyCode;
         }
-        String symbol = getCurrencySymbolForLocale(locale);
+
+        // Check the locale first, in case the locale has the same currency.
+        LocaleData localeData = LocaleData.get(locale);
+        if (localeData.internationalCurrencySymbol.equals(currencyCode)) {
+            return localeData.currencySymbol;
+        }
+
+        // Try ICU, and fall back to the currency code if ICU has nothing.
+        String symbol = ICU.getCurrencySymbol(locale.toString());
         return symbol != null ? symbol : currencyCode;
     }
 
@@ -132,12 +144,14 @@ public final class Currency implements Serializable {
      * 100 US cents in a US dollar. For the Japanese Yen, the number is 0 because coins smaller
      * than 1 Yen became invalid in 1953. In the case of pseudo-currencies, such as
      * IMF Special Drawing Rights, -1 is returned.
-     *
-    TODO(user): enable when ICU currency tables are available.
+     */
     public int getDefaultFractionDigits() {
-        return com.ibm.icu.util.Currency.getInstance(currencyCode).getDefaultFractionDigits();
+      // In some places the code XXX is used as the fall back currency.
+      if (currencyCode.equals("XXX")) {
+          return -1;
+      }
+      return ICU.getCurrencyFractionDigits(currencyCode);
     }
-    */
 
     /**
      * Returns this currency's ISO 4217 currency code.
