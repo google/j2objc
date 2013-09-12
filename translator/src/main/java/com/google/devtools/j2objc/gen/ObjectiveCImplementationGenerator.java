@@ -16,6 +16,8 @@
 
 package com.google.devtools.j2objc.gen;
 
+import com.google.common.collect.ArrayListMultimap;
+import com.google.common.collect.ListMultimap;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 import com.google.devtools.j2objc.J2ObjC;
@@ -61,6 +63,7 @@ import org.eclipse.jdt.core.dom.TypeDeclaration;
 import org.eclipse.jdt.core.dom.VariableDeclarationFragment;
 
 import java.util.Arrays;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
@@ -73,6 +76,8 @@ public class ObjectiveCImplementationGenerator extends ObjectiveCSourceFileGener
   private Set<IVariableBinding> fieldHiders;
   private final String suffix;
   private final Set<String> invokedConstructors = Sets.newHashSet();
+  private final ListMultimap<AbstractTypeDeclaration, Comment> blockComments =
+      ArrayListMultimap.create();
 
   /**
    * Generate an Objective-C implementation file for each type declared in a
@@ -99,32 +104,16 @@ public class ObjectiveCImplementationGenerator extends ObjectiveCSourceFileGener
 
   public void generate(CompilationUnit unit) {
     println(J2ObjC.getFileHeader(getSourceFileName()));
-    if (needsPrinting(unit)) {
+    List<AbstractTypeDeclaration> typesToGenerate = collectTypes(unit);
+    if (!typesToGenerate.isEmpty()) {
+      findBlockComments(unit, typesToGenerate);
       findInvokedConstructors(unit);
       printStart(getSourceFileName());
       printImports(unit);
       pushIgnoreDeprecatedDeclarationsPragma();
-      unit.accept(new ErrorReportingASTVisitor() {
-        @Override
-        public boolean visit(TypeDeclaration node) {
-          generate(node);
-          return true;
-        }
-
-        @Override
-        public boolean visit(EnumDeclaration node) {
-          generate(node);
-          return true;
-        }
-
-        @Override
-        public boolean visit(AnnotationTypeDeclaration node) {
-          if (BindingUtil.isRuntimeAnnotation(Types.getTypeBinding(node))) {
-            generate(node);
-          }
-          return true;
-        }
-      });
+      for (AbstractTypeDeclaration type : typesToGenerate) {
+        generate(type);
+      }
       popIgnoreDeprecatedDeclarationsPragma();
     } else {
       // Print a dummy C function so compiled object file is valid.
@@ -136,35 +125,37 @@ public class ObjectiveCImplementationGenerator extends ObjectiveCSourceFileGener
     save(unit);
   }
 
-  private boolean needsPrinting(CompilationUnit unit) {
-    final boolean[] result = { false };
+  private List<AbstractTypeDeclaration> collectTypes(CompilationUnit unit) {
+    final List<AbstractTypeDeclaration> types = Lists.newArrayList();
     unit.accept(new ErrorReportingASTVisitor() {
       @Override
       public boolean visit(TypeDeclaration node) {
         if (node.isInterface()) {
           if (!getStaticFieldsNeedingAccessors(
               Arrays.asList(node.getFields()), /* isInterface */ true).isEmpty()) {
-            result[0] = true;
+            types.add(node);
           }
         } else {
-          result[0] = true;  // always print concrete types
+          types.add(node); // always print concrete types
         }
         return false;
       }
 
       @Override
       public boolean visit(EnumDeclaration node) {
-        result[0] = true; // always print enums
+        types.add(node); // always print enums
         return false;
       }
 
       @Override
       public boolean visit(AnnotationTypeDeclaration node) {
-        result[0] = BindingUtil.isRuntimeAnnotation(Types.getTypeBinding(node));
+        if (BindingUtil.isRuntimeAnnotation(Types.getTypeBinding(node))) {
+          types.add(node);
+        }
         return false;
       }
     });
-    return result[0];
+    return types;
   }
 
   private String parameterKey(IMethodBinding method) {
@@ -200,6 +191,35 @@ public class ObjectiveCImplementationGenerator extends ObjectiveCSourceFileGener
         return false;
       }
     });
+  }
+
+  /**
+   * Finds all block comments and associates them with their containing type.
+   */
+  private void findBlockComments(CompilationUnit unit, List<AbstractTypeDeclaration> types) {
+    List<Comment> comments = ASTUtil.getCommentList(unit);
+    for (Comment comment : comments) {
+      if (!comment.isBlockComment()) {
+        continue;
+      }
+      int commentPos = comment.getStartPosition();
+      AbstractTypeDeclaration containingType = null;
+      int containingTypePos = -1;
+      for (AbstractTypeDeclaration type : types) {
+        int typePos = type.getStartPosition();
+        if (typePos < 0) {
+          continue;
+        }
+        int typeEnd = typePos + type.getLength();
+        if (commentPos > typePos && commentPos < typeEnd && typePos > containingTypePos) {
+          containingType = type;
+          containingTypePos = typePos;
+        }
+      }
+      if (containingType != null) {
+        blockComments.put(containingType, comment);
+      }
+    }
   }
 
   @Override
@@ -295,8 +315,40 @@ public class ObjectiveCImplementationGenerator extends ObjectiveCSourceFileGener
     }
   }
 
+  private void printMethodsAndOcni(
+      Iterable<MethodDeclaration> methods, Iterable<Comment> comments) {
+    Iterator<MethodDeclaration> methodsIter = methods.iterator();
+    Iterator<Comment> commentsIter = comments.iterator();
+    MethodDeclaration nextMethod = methodsIter.hasNext() ? methodsIter.next() : null;
+    Comment nextComment = commentsIter.hasNext() ? commentsIter.next() : null;
+    int minPos = 0;
+    while (nextMethod != null || nextComment != null) {
+      int methodStartPos = nextMethod != null ? nextMethod.getStartPosition() : Integer.MAX_VALUE;
+      if (methodStartPos < 0) {
+        methodStartPos = minPos;
+      }
+      int commentStartPos =
+          nextComment != null ? nextComment.getStartPosition() : Integer.MAX_VALUE;
+      if (methodStartPos < commentStartPos) {
+        assert nextMethod != null;
+        printMethod(nextMethod);
+        minPos = methodStartPos + nextMethod.getLength();
+        nextMethod = methodsIter.hasNext() ? methodsIter.next() : null;
+      } else {
+        assert nextComment != null;
+        if (commentStartPos > minPos) {
+          String nativeCode = extractNativeCode(commentStartPos, nextComment.getLength());
+          if (nativeCode != null) {
+            print(reindent(nativeCode.trim()) + "\n\n");
+          }
+        }
+        nextComment = commentsIter.hasNext() ? commentsIter.next() : null;
+      }
+    }
+  }
+
   private void printMethods(TypeDeclaration node) {
-    printMethods(Lists.newArrayList(node.getMethods()));
+    printMethodsAndOcni(Arrays.asList(node.getMethods()), blockComments.get(node));
 
     // If node implements CharSequence, add forwarding method from the
     // sequenceDescription method to description (toString()).  See
@@ -427,7 +479,7 @@ public class ObjectiveCImplementationGenerator extends ObjectiveCSourceFileGener
     printStaticFieldAccessors(staticFields, methods);
     for (MethodDeclaration method : methods) {
       if (method.getBody() != null) {
-        printMethod(method);
+        printNormalMethod(method);
       }
     }
     println("@end");
@@ -480,7 +532,7 @@ public class ObjectiveCImplementationGenerator extends ObjectiveCSourceFileGener
     printf("- (id)copyWithZone:(NSZone *)zone {\n  return %s;\n}\n\n", selfString);
 
     printStaticFieldAccessors(fields, methods, /* isInterface */ false);
-    printMethods(methods);
+    printMethodsAndOcni(methods, blockComments.get(node));
 
     printf("+ (void)initialize {\n  if (self == [%s class]) {\n", typeName);
     for (int i = 0; i < constants.size(); i++) {

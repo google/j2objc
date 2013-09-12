@@ -377,10 +377,10 @@ public class ObjectiveCHeaderGenerator extends ObjectiveCSourceFileGenerator {
   }
 
   @Override
-  protected void printMethod(MethodDeclaration m) {
+  protected void printNormalMethod(MethodDeclaration m) {
     IMethodBinding binding = Types.getMethodBinding(m);
     if (!binding.isSynthetic()) {
-      super.printMethod(m);
+      super.printNormalMethod(m);
     }
   }
 

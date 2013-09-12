@@ -691,4 +691,32 @@ public class ObjectiveCImplementationGeneratorTest extends GenerationTest {
         "return [IOSObjectArray arrayWithObjects:(id[]) { [JavaLangException getClass], " +
         "[JavaLangError getClass] } count:2 type:[IOSClass getClass]];");
   }
+
+  public void testFreeFormNativeCode() throws IOException {
+    String translation = translateSourceFile(
+        "class Test { void method1() {} /*-[ OCNI1 ]-*/ " +
+        "enum Inner { A, B; /*-[ OCNI2 ]-*/ void method2() {}} " +
+        " native void method3() /*-[ OCNI3 ]-*/; }", "Test", "Test.m");
+    assertOccurrences(translation, "OCNI1", 1);
+    assertOccurrences(translation, "OCNI2", 1);
+    assertOccurrences(translation, "OCNI3", 1);
+    String testType = "@implementation Test\n";
+    String innerType = "@implementation Test_InnerEnum";
+    String method1 = "- (void)method1";
+    String method2 = "- (void)method2";
+    String method3 = "- (void)method3";
+    assertOccurrences(translation, testType, 1);
+    assertOccurrences(translation, innerType, 1);
+    assertOccurrences(translation, method1, 1);
+    assertOccurrences(translation, method2, 1);
+    assertOccurrences(translation, method3, 1);
+
+    assertTrue(translation.indexOf(testType) < translation.indexOf(method1));
+    assertTrue(translation.indexOf(method1) < translation.indexOf("OCNI1"));
+    assertTrue(translation.indexOf("OCNI1") < translation.indexOf(method3));
+    assertTrue(translation.indexOf(method3) < translation.indexOf("OCNI3"));
+    assertTrue(translation.indexOf("OCNI3") < translation.indexOf(innerType));
+    assertTrue(translation.indexOf(innerType) < translation.indexOf("OCNI2"));
+    assertTrue(translation.indexOf("OCNI2") < translation.indexOf(method2));
+  }
 }
