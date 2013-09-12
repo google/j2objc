@@ -36,6 +36,8 @@ package java.lang;
  * @since 1.0
  */
 public final class Double extends Number implements Comparable<Double> {
+    static final String FLOATING_POINT_REGEX = "^[-+]?[0-9]*\\.?[0-9]+([eE][-+]?[0-9]+)?$";
+
     static final int EXPONENT_BIAS = 1023;
 
     static final int EXPONENT_BITS = 12;
@@ -334,15 +336,15 @@ public final class Double extends Number implements Comparable<Double> {
      *             if {@code string} is {@code null}, has a length of zero or
      *             can not be parsed as a double value.
      */
-    public native static double parseDouble(String string)
-            throws NumberFormatException /*-[
-      NSNumberFormatter *f = AUTORELEASE([[NSNumberFormatter alloc] init]);
-      [f setNumberStyle:NSNumberFormatterDecimalStyle];
-      NSNumber *result = [f numberFromString:string];
-      if (!result) {
-        @throw AUTORELEASE([[JavaLangNumberFormatException alloc] initWithNSString:string]);
+    public static double parseDouble(String string) throws NumberFormatException {
+      if (!string.matches(FLOATING_POINT_REGEX)) {
+        throw new NumberFormatException(string);
       }
-      return [result doubleValue];
+      return nativeParseDouble(string);
+    }
+
+    private native static double nativeParseDouble(String s) /*-[
+      return [s doubleValue];
     ]-*/;
 
     @Override
@@ -364,7 +366,12 @@ public final class Double extends Number implements Comparable<Double> {
      * @return a printable representation of {@code d}.
      */
     public native static String toString(double d) /*-[
-        return [NSString stringWithFormat:@"%01.1f", d];
+        NSString *s = [NSString stringWithFormat:@"%g", d];
+        // Append ".0" if no decimal, like Java does.
+        if ([s rangeOfString:@"."].location == NSNotFound) {
+          return [s stringByAppendingString:@".0"];
+        }
+        return s;
     ]-*/;
 
     /**

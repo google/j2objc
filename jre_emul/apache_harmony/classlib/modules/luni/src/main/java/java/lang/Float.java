@@ -101,7 +101,7 @@ public final class Float extends Number implements Comparable<Float> {
 
     // Note: This can't be set to "float.class", since *that* is
     // defined to be "java.lang.Float.TYPE";
-    
+
     /**
      * Constant for the number of bits needed to represent a {@code float} in
      * two's complement form.
@@ -166,7 +166,7 @@ public final class Float extends Number implements Comparable<Float> {
             // When object is nil, Obj-C ignores messages sent to it.
             throw new NullPointerException();
         }
-        return compare(value, object.value); 
+        return compare(value, object.value);
     }
 
     @Override
@@ -335,14 +335,15 @@ public final class Float extends Number implements Comparable<Float> {
      * @see #valueOf(String)
      * @since 1.2
      */
-    public native static float parseFloat(String string) throws NumberFormatException /*-[
-      NSNumberFormatter *f = AUTORELEASE([[NSNumberFormatter alloc] init]);
-      [f setNumberStyle:NSNumberFormatterDecimalStyle];
-      NSNumber *result = [f numberFromString:string];
-      if (!result) {
-        @throw AUTORELEASE([[JavaLangNumberFormatException alloc] initWithNSString:string]);
+    public static float parseFloat(String string) throws NumberFormatException {
+      if (!string.matches(Double.FLOATING_POINT_REGEX)) {
+        throw new NumberFormatException(string);
       }
-      return [result floatValue];
+      return nativeParseFloat(string);
+    }
+
+    private native static float nativeParseFloat(String s) /*-[
+      return [s floatValue];
     ]-*/;
 
     @Override
@@ -364,7 +365,12 @@ public final class Float extends Number implements Comparable<Float> {
      * @return a printable representation of {@code f}.
      */
     public native static String toString(float f) /*-[
-        return [NSString stringWithFormat:@"%01.1f", f];
+        NSString *s = [NSString stringWithFormat:@"%g", f];
+        // Append ".0" if no decimal, like Java does.
+        if ([s rangeOfString:@"."].location == NSNotFound) {
+          return [s stringByAppendingString:@".0"];
+        }
+        return s;
     ]-*/;
 
     /**
