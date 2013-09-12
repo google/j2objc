@@ -47,6 +47,10 @@
 
 + (NSArray *)memDebugStaticReferences;
 
+// Unimplemented private method for java.lang.ref.Reference. The method
+// implementation is set when swizzling the Reference's referent class.
+- (void)_java_lang_ref_original_dealloc;
+
 @end
 
 #endif // _NSObject_JavaObject_H_
