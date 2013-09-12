@@ -36,6 +36,7 @@ IOS_OBJS = \
 	IOSDoubleArray.o \
 	IOSFloatArray.o \
 	IOSIntArray.o \
+	IOSLocaleData.o \
 	IOSLongArray.o \
 	IOSObjectArray.o \
 	IOSPrimitiveClass.o \
@@ -334,6 +335,7 @@ JAVA_SOURCES = \
 	java/sql/Date.java \
 	java/sql/Time.java \
 	java/sql/Timestamp.java \
+	java/text/DateFormat.java \
 	java/text/DecimalFormat.java \
 	java/text/Format.java \
 	java/text/NumberFormat.java \
@@ -417,6 +419,7 @@ JAVA_SOURCES = \
 	javax/xml/validation/TypeInfoProvider.java \
 	javax/xml/validation/Validator.java \
 	javax/xml/validation/ValidatorHandler.java \
+	libcore/icu/LocaleData.java \
 	libcore/icu/TimeZones.java \
 	libcore/internal/StringPool.java \
 	libcore/io/ErrnoException.java \
