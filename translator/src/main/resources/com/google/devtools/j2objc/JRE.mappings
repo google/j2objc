@@ -94,6 +94,10 @@ java.lang.Class.getMethods()[Ljava/lang/reflect/Method; = IOSClass getMethods
 java.lang.Class.getModifiers()I = IOSClass getModifiers
 java.lang.Class.getName()Ljava/lang/String; = IOSClass getName
 java.lang.Class.getPackage()Ljava/lang/Package; = IOSClass getPackage
+java.lang.Class.getResource(Ljava/lang/String;)Ljava/net/URL; = \
+    IOSClass getResource:(NSString *)name
+java.lang.Class.getResourceAsStream(Ljava/lang/String;)Ljava/io/InputStream; = \
+    IOSClass getResourceAsStream:(NSString *)name
 java.lang.Class.getSimpleName()Ljava/lang/String; = IOSClass getSimpleName
 java.lang.Class.getSuperclass()Ljava/lang/Class; = IOSClass getSuperclass
 java.lang.Class.getTypeParameters()[Ljava/lang/reflect/TypeVariable; = \

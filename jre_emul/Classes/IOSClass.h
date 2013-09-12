@@ -33,6 +33,8 @@
 @class JavaLangReflectField;
 @class JavaLangReflectMethod;
 @protocol JavaLangAnnotationAnnotation;
+@class JavaIoInputStream;
+@class JavaNetURL;
 
 // A wrapper class for an Objective-C Class or Protocol,
 // similar in functionality to java.lang.Class.  Its
@@ -160,6 +162,10 @@
 - (BOOL)desiredAssertionStatus;
 
 - (IOSObjectArray *)getEnumConstants;
+
+// Class.getResource, getResourceAsStream
+- (JavaNetURL *)getResource:(NSString *)name;
+- (JavaIoInputStream *)getResourceAsStream:(NSString *)name;
 
 // Internal methods
 - (void)collectMethods:(NSMutableDictionary *)methodMap;

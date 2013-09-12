@@ -226,6 +226,7 @@ JAVA_SOURCES = \
 	java/lang/NullPointerException.java \
 	java/lang/NumberFormatException.java \
 	java/lang/Override.java \
+	java/lang/Package.java \
 	java/lang/Readable.java \
 	java/lang/annotation/Documented.java \
 	java/lang/annotation/Inherited.java \
