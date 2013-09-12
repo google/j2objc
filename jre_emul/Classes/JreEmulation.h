@@ -68,6 +68,8 @@
  #define J2OBJC_DISABLE_ARRAY_TYPE_CHECKS 1
 #endif
 
+FOUNDATION_EXPORT void JreThrowNullPointerException() __attribute__((noreturn));
+
 #ifdef J2OBJC_COUNT_NIL_CHK
 extern int j2objc_nil_chk_count;
 #endif
@@ -82,10 +84,11 @@ __attribute__ ((unused)) static inline id nil_chk(id __unsafe_unretained p) {
   j2objc_nil_chk_count++;
 #endif
 #if !defined(J2OBJC_DISABLE_NIL_CHECKS)
-  return p ? p : [NSObject throwNullPointerException];
-#else
-  return p;
+  if (!p) {
+    JreThrowNullPointerException();
+  }
 #endif
+  return p;
 }
 
 // Separate methods for class and protocol cast checks are used to reduce
