@@ -185,10 +185,13 @@ public class ObjectiveCHeaderGenerator extends ObjectiveCSourceFileGenerator {
       return;
     }
     String primitiveName = primitiveType.getName();
+    String valueMethod = primitiveName + "Value";
+    if (primitiveName.equals("long")) {
+      valueMethod = "longLongValue";
+    }
     newline();
-    // TODO(user): The fourth param here is no longer needed.
-    printf("BOXED_INC_AND_DEC(%s, %s, %s, %s)\n", NameTable.capitalize(primitiveName),
-        primitiveName, NameTable.getFullName(type), NameTable.capitalize(primitiveName));
+    printf("BOXED_INC_AND_DEC(%s, %s, %s)\n", NameTable.capitalize(primitiveName), valueMethod,
+           NameTable.getFullName(type));
   }
 
   @Override
