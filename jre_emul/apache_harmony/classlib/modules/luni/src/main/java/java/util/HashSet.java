@@ -27,62 +27,62 @@ public class HashSet<E> extends AbstractSet<E> implements Set<E>, Cloneable,
         Serializable {
 
     private static final long serialVersionUID = -5024744406713321676L;
-    private final HashSet<E> dummyKey = (HashSet<E>) new Object();
+    private static final Object dummyKey = new Object();
 
-    transient HashMap<E, HashSet<E>> backingMap;
+    transient HashMap<E, Object> backingMap;
 
     /**
      * Constructs a new empty instance of {@code HashSet}.
      */
     public HashSet() {
-        this(new HashMap<E, HashSet<E>>());
+        this(new HashMap<E, Object>());
     }
 
     /**
      * Constructs a new instance of {@code HashSet} with the specified capacity.
-     * 
+     *
      * @param capacity
      *            the initial capacity of this {@code HashSet}.
      */
     public HashSet(int capacity) {
-        this(new HashMap<E, HashSet<E>>(capacity));
+        this(new HashMap<E, Object>(capacity));
     }
 
     /**
      * Constructs a new instance of {@code HashSet} with the specified capacity
      * and load factor.
-     * 
+     *
      * @param capacity
      *            the initial capacity.
      * @param loadFactor
      *            the initial load factor.
      */
     public HashSet(int capacity, float loadFactor) {
-        this(new HashMap<E, HashSet<E>>(capacity, loadFactor));
+        this(new HashMap<E, Object>(capacity, loadFactor));
     }
 
     /**
      * Constructs a new instance of {@code HashSet} containing the unique
      * elements in the specified collection.
-     * 
+     *
      * @param collection
      *            the collection of elements to add.
      */
     public HashSet(Collection<? extends E> collection) {
-        this(new HashMap<E, HashSet<E>>(collection.size() < 6 ? 11 : collection
+        this(new HashMap<E, Object>(collection.size() < 6 ? 11 : collection
                 .size() * 2));
         for (E e : collection) {
             add(e);
         }
     }
 
-    HashSet(HashMap<E, HashSet<E>> backingMap) {
+    HashSet(HashMap<E, Object> backingMap) {
         this.backingMap = backingMap;
     }
 
     /**
      * Adds the specified object to this {@code HashSet} if not already present.
-     * 
+     *
      * @param object
      *            the object to add.
      * @return {@code true} when this {@code HashSet} did not already contain
@@ -95,7 +95,7 @@ public class HashSet<E> extends AbstractSet<E> implements Set<E>, Cloneable,
 
     /**
      * Removes all elements from this {@code HashSet}, leaving it empty.
-     * 
+     *
      * @see #isEmpty
      * @see #size
      */
@@ -107,7 +107,7 @@ public class HashSet<E> extends AbstractSet<E> implements Set<E>, Cloneable,
     /**
      * Returns a new {@code HashSet} with the same elements and size as this
      * {@code HashSet}.
-     * 
+     *
      * @return a shallow copy of this {@code HashSet}.
      * @see java.lang.Cloneable
      */
@@ -116,7 +116,7 @@ public class HashSet<E> extends AbstractSet<E> implements Set<E>, Cloneable,
     public Object clone() {
         try {
             HashSet<E> clone = (HashSet<E>) super.clone();
-            clone.backingMap = (HashMap<E, HashSet<E>>) backingMap.clone();
+            clone.backingMap = (HashMap<E, Object>) backingMap.clone();
             return clone;
         } catch (CloneNotSupportedException e) {
             return null;
@@ -125,7 +125,7 @@ public class HashSet<E> extends AbstractSet<E> implements Set<E>, Cloneable,
 
     /**
      * Searches this {@code HashSet} for the specified object.
-     * 
+     *
      * @param object
      *            the object to search for.
      * @return {@code true} if {@code object} is an element of this
@@ -138,7 +138,7 @@ public class HashSet<E> extends AbstractSet<E> implements Set<E>, Cloneable,
 
     /**
      * Returns true if this {@code HashSet} has no elements, false otherwise.
-     * 
+     *
      * @return {@code true} if this {@code HashSet} has no elements,
      *         {@code false} otherwise.
      * @see #size
@@ -150,7 +150,7 @@ public class HashSet<E> extends AbstractSet<E> implements Set<E>, Cloneable,
 
     /**
      * Returns an Iterator on the elements of this {@code HashSet}.
-     * 
+     *
      * @return an Iterator on the elements of this {@code HashSet}.
      * @see Iterator
      */
@@ -161,7 +161,7 @@ public class HashSet<E> extends AbstractSet<E> implements Set<E>, Cloneable,
 
     /**
      * Removes the specified object from this {@code HashSet}.
-     * 
+     *
      * @param object
      *            the object to remove.
      * @return {@code true} if the object was removed, {@code false} otherwise.
@@ -173,7 +173,7 @@ public class HashSet<E> extends AbstractSet<E> implements Set<E>, Cloneable,
 
     /**
      * Returns the number of elements in this {@code HashSet}.
-     * 
+     *
      * @return the number of elements in this {@code HashSet}.
      */
     @Override
@@ -181,7 +181,7 @@ public class HashSet<E> extends AbstractSet<E> implements Set<E>, Cloneable,
         return backingMap.size();
     }
 
-    HashMap<E, HashSet<E>> createBackingMap(int capacity, float loadFactor) {
-        return new HashMap<E, HashSet<E>>(capacity, loadFactor);
+    HashMap<E, Object> createBackingMap(int capacity, float loadFactor) {
+        return new HashMap<E, Object>(capacity, loadFactor);
     }
 }
