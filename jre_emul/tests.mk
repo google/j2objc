@@ -45,6 +45,7 @@ TEST_SOURCES = \
 	libcore/java/lang/reflect/AnnotationsTest.java \
 	libcore/java/lang/reflect/ArrayTest.java \
 	libcore/java/lang/reflect/ConstructorTest.java \
+	libcore/java/text/CollatorTest.java \
 	libcore/java/text/DecimalFormatTest.java \
 	libcore/java/text/DecimalFormatSymbolsTest.java \
 	libcore/java/text/NumberFormatTest.java \
@@ -127,17 +128,6 @@ TEST_SOURCES = \
 	org/apache/harmony/luni/tests/java/lang/ThreadTest.java \
 	org/apache/harmony/luni/tests/java/lang/UnsupportedOperationExceptionTest.java \
 	org/apache/harmony/luni/tests/util/UtilTest.java \
-	org/apache/harmony/tests/java/math/BigIntegerAddTest.java \
-	org/apache/harmony/tests/java/math/BigIntegerAndTest.java \
-	org/apache/harmony/tests/java/math/BigIntegerCompareTest.java \
-	org/apache/harmony/tests/java/math/BigIntegerConstructorsTest.java \
-	org/apache/harmony/tests/java/math/BigIntegerConvertTest.java \
-	org/apache/harmony/tests/java/math/BigIntegerDivideTest.java \
-	org/apache/harmony/tests/java/math/BigIntegerHashCodeTest.java \
-	org/apache/harmony/tests/java/math/BigIntegerMultiplyTest.java \
-	org/apache/harmony/tests/java/math/BigIntegerNotTest.java \
-	org/apache/harmony/tests/java/math/BigIntegerOrTest.java \
-	org/apache/harmony/tests/java/math/BigIntegerSubtractTest.java \
 	org/apache/harmony/nio/tests/java/nio/BufferOverflowExceptionTest.java \
 	org/apache/harmony/nio/tests/java/nio/BufferTest.java \
 	org/apache/harmony/nio/tests/java/nio/ByteBufferTest.java \
@@ -149,6 +139,26 @@ TEST_SOURCES = \
 	org/apache/harmony/nio/tests/java/nio/InvalidMarkExceptionTest.java \
 	org/apache/harmony/nio/tests/java/nio/LongBufferTest.java \
 	org/apache/harmony/nio/tests/java/nio/ShortBufferTest.java \
+	org/apache/harmony/nio/tests/java/nio/HeapByteBufferTest.java \
+	org/apache/harmony/nio/tests/java/nio/HeapCharBufferTest.java \
+	org/apache/harmony/nio/tests/java/nio/HeapDoubleBufferTest.java \
+	org/apache/harmony/nio/tests/java/nio/HeapFloatBufferTest.java \
+	org/apache/harmony/nio/tests/java/nio/HeapIntBufferTest.java \
+	org/apache/harmony/nio/tests/java/nio/HeapLongBufferTest.java \
+	org/apache/harmony/nio/tests/java/nio/HeapShortBufferTest.java \
+	org/apache/harmony/nio/tests/java/nio/ReadOnlyCharBufferTest.java \
+	org/apache/harmony/nio/tests/java/nio/ReadOnlyDoubleBufferTest.java \
+	org/apache/harmony/nio/tests/java/nio/ReadOnlyFloatBufferTest.java \
+	org/apache/harmony/nio/tests/java/nio/ReadOnlyHeapByteBufferTest.java \
+	org/apache/harmony/nio/tests/java/nio/ReadOnlyHeapCharBufferTest.java \
+	org/apache/harmony/nio/tests/java/nio/ReadOnlyHeapDoubleBufferTest.java \
+	org/apache/harmony/nio/tests/java/nio/ReadOnlyHeapFloatBufferTest.java \
+	org/apache/harmony/nio/tests/java/nio/ReadOnlyHeapIntBufferTest.java \
+	org/apache/harmony/nio/tests/java/nio/ReadOnlyHeapLongBufferTest.java \
+	org/apache/harmony/nio/tests/java/nio/ReadOnlyHeapShortBufferTest.java \
+	org/apache/harmony/nio/tests/java/nio/ReadOnlyIntBufferTest.java \
+	org/apache/harmony/nio/tests/java/nio/ReadOnlyLongBufferTest.java \
+	org/apache/harmony/nio/tests/java/nio/ReadOnlyShortBufferTest.java \
 	org/apache/harmony/luni/tests/java/util/AbstractCollectionTest.java \
 	org/apache/harmony/luni/tests/java/util/AbstractListTest.java \
 	org/apache/harmony/luni/tests/java/util/AbstractMapTest.java \
@@ -181,26 +191,17 @@ TEST_SOURCES = \
 	org/apache/harmony/luni/tests/java/util/TreeMapTest.java \
 	org/apache/harmony/luni/tests/java/util/TreeSetTest.java \
 	org/apache/harmony/luni/tests/java/util/VectorTest.java \
-	org/apache/harmony/nio/tests/java/nio/HeapByteBufferTest.java \
-	org/apache/harmony/nio/tests/java/nio/HeapCharBufferTest.java \
-	org/apache/harmony/nio/tests/java/nio/HeapDoubleBufferTest.java \
-	org/apache/harmony/nio/tests/java/nio/HeapFloatBufferTest.java \
-	org/apache/harmony/nio/tests/java/nio/HeapIntBufferTest.java \
-	org/apache/harmony/nio/tests/java/nio/HeapLongBufferTest.java \
-	org/apache/harmony/nio/tests/java/nio/HeapShortBufferTest.java \
-	org/apache/harmony/nio/tests/java/nio/ReadOnlyCharBufferTest.java \
-	org/apache/harmony/nio/tests/java/nio/ReadOnlyDoubleBufferTest.java \
-	org/apache/harmony/nio/tests/java/nio/ReadOnlyFloatBufferTest.java \
-	org/apache/harmony/nio/tests/java/nio/ReadOnlyHeapByteBufferTest.java \
-	org/apache/harmony/nio/tests/java/nio/ReadOnlyHeapCharBufferTest.java \
-	org/apache/harmony/nio/tests/java/nio/ReadOnlyHeapDoubleBufferTest.java \
-	org/apache/harmony/nio/tests/java/nio/ReadOnlyHeapFloatBufferTest.java \
-	org/apache/harmony/nio/tests/java/nio/ReadOnlyHeapIntBufferTest.java \
-	org/apache/harmony/nio/tests/java/nio/ReadOnlyHeapLongBufferTest.java \
-	org/apache/harmony/nio/tests/java/nio/ReadOnlyHeapShortBufferTest.java \
-	org/apache/harmony/nio/tests/java/nio/ReadOnlyIntBufferTest.java \
-	org/apache/harmony/nio/tests/java/nio/ReadOnlyLongBufferTest.java \
-	org/apache/harmony/nio/tests/java/nio/ReadOnlyShortBufferTest.java \
+	org/apache/harmony/tests/java/math/BigIntegerAddTest.java \
+	org/apache/harmony/tests/java/math/BigIntegerAndTest.java \
+	org/apache/harmony/tests/java/math/BigIntegerCompareTest.java \
+	org/apache/harmony/tests/java/math/BigIntegerConstructorsTest.java \
+	org/apache/harmony/tests/java/math/BigIntegerConvertTest.java \
+	org/apache/harmony/tests/java/math/BigIntegerDivideTest.java \
+	org/apache/harmony/tests/java/math/BigIntegerHashCodeTest.java \
+	org/apache/harmony/tests/java/math/BigIntegerMultiplyTest.java \
+	org/apache/harmony/tests/java/math/BigIntegerNotTest.java \
+	org/apache/harmony/tests/java/math/BigIntegerOrTest.java \
+	org/apache/harmony/tests/java/math/BigIntegerSubtractTest.java \
 	org/apache/harmony/tests/java/util/regex/Matcher2Test.java \
 	org/apache/harmony/tests/java/util/regex/MatcherTest.java \
 	org/apache/harmony/tests/java/util/regex/Pattern2Test.java \
@@ -209,6 +210,7 @@ TEST_SOURCES = \
 	org/apache/harmony/tests/java/util/regex/PatternTest.java \
 	org/apache/harmony/tests/java/util/regex/ReplaceTest.java \
 	org/apache/harmony/tests/java/util/regex/SplitTest.java \
+	org/apache/harmony/text/tests/java/text/CollatorTest.java \
 	tests/api/java/util/CalendarTest.java \
 	tests/api/java/util/TimerTaskTest.java \
 	tests/api/java/util/TimerTest.java \
@@ -273,6 +275,7 @@ run-tests: link $(TEST_BIN)
 
 $(SUPPORT_LIB): $(SUPPORT_OBJS)
 	libtool -static -o $(SUPPORT_LIB) $(SUPPORT_OBJS)
+
 clean:
 	@rm -rf $(TESTS_DIR)
 
@@ -290,6 +293,9 @@ $(TESTS_DIR)/%.h $(TESTS_DIR)/%.m: $(JRE_MATH_TEST_ROOT)/%.java
 	@echo $? >> $(JAVA_SOURCE_LIST)
 
 $(TESTS_DIR)/%.h $(TESTS_DIR)/%.m: $(JRE_NIO_TEST_ROOT)/%.java
+	@echo $? >> $(JAVA_SOURCE_LIST)
+
+$(TESTS_DIR)/%.h $(TESTS_DIR)/%.m: $(JRE_TEXT_TEST_ROOT)/%.java
 	@echo $? >> $(JAVA_SOURCE_LIST)
 
 $(TESTS_DIR)/%.h $(TESTS_DIR)/%.m: $(TEST_SUPPORT_ROOT)/%.java
@@ -319,5 +325,5 @@ $(TESTS_DIR)/%.o: $(TESTS_DIR)/%.m
 	  -Wno-objc-redundant-literal-use -Wno-format \
 	  -Werror -Wno-parentheses -I$(EMULATION_TESTS_DIR) -I$(TESTS_DIR)
 
-$(TEST_BIN): $(TEST_OBJS) ../dist/lib/libjre_emul.a
+$(TEST_BIN): $(TEST_OBJS) ../dist/lib/libjre_emul.a ../dist/lib/libjunit.a
 	$(TEST_JOCC) -o $@ $(TEST_OBJS)
