@@ -186,9 +186,9 @@ public class ObjectiveCHeaderGenerator extends ObjectiveCSourceFileGenerator {
     }
     String primitiveName = primitiveType.getName();
     newline();
+    // TODO(user): The fourth param here is no longer needed.
     printf("BOXED_INC_AND_DEC(%s, %s, %s, %s)\n", NameTable.capitalize(primitiveName),
-        primitiveName, NameTable.getFullName(type),
-        NameTable.capitalize(NameTable.getPrimitiveTypeParameterKeyword(primitiveName)));
+        primitiveName, NameTable.getFullName(type), NameTable.capitalize(primitiveName));
   }
 
   @Override

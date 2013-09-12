@@ -82,8 +82,8 @@
 
 - (id)initWithNSString:(NSString *)message
  withJavaLangThrowable:(JavaLangThrowable *)causeArg
-              withBOOL:(BOOL)enableSuppression
-              withBOOL:(BOOL)writeableStackTrace {
+           withBoolean:(BOOL)enableSuppression
+           withBoolean:(BOOL)writeableStackTrace {
   return [self initJavaLangThrowableWithNSString:message
                            withJavaLangThrowable:causeArg];
 }
@@ -94,8 +94,7 @@
       [IOSClass classWithClass:[JavaLangStackTraceElement class]]];
   for (int i = 0; i < count; i++) {
     JavaLangStackTraceElement *element = AUTORELEASE(
-        [[JavaLangStackTraceElement alloc]
-         initWithLongInt:(long long int)addresses[i]]);
+        [[JavaLangStackTraceElement alloc] initWithLong:(long long int)addresses[i]]);
     [stackTrace replaceObjectAtIndex:i withObject:element];
   }
   return stackTrace;

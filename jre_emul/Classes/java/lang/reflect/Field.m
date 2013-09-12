@@ -156,7 +156,7 @@ typedef union {
   }
 }
 
-- (void)setBooleanWithId:(id)object withBOOL:(BOOL)value {
+- (void)setBooleanWithId:(id)object withBoolean:(BOOL)value {
   BOOL *field = (BOOL *) [self pvar:object];
   *field = value;
 }
@@ -186,7 +186,7 @@ typedef union {
   *field = value;
 }
 
-- (void)setLongWithId:(id)object withLongInt:(long long)value {
+- (void)setLongWithId:(id)object withLong:(long long)value {
   long long *field = (long long *) [self pvar:object];
   *field = value;
 }

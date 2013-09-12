@@ -161,26 +161,26 @@ id Box(JavaResult *value, const char *type) {
       case '#':
       return [IOSClass classWithClass:(ARCBRIDGE Class)value];
       case 'c':
-        return [JavaLangByte valueOfWithChar:value->asChar];
+        return [JavaLangByte valueOfWithByte:value->asChar];
       case 'S':
         // A Java character is an unsigned two-byte int; in other words,
         // an unsigned short with an encoding of 'S'.
-        return [JavaLangCharacter valueOfWithUnichar:value->asUnichar];
+        return [JavaLangCharacter valueOfWithChar:value->asUnichar];
       case 's':
-        return [JavaLangShort valueOfWithShortInt:value->asShort];
+        return [JavaLangShort valueOfWithShort:value->asShort];
       case 'i':
         return [JavaLangInteger valueOfWithInt:value->asInt];
       case 'l':
       case 'L':
       case 'q':
       case 'Q':
-        return [JavaLangLong valueOfWithLongInt:value->asLong];
+        return [JavaLangLong valueOfWithLong:value->asLong];
       case 'f':
         return [JavaLangFloat valueOfWithFloat:value->asFloat];
       case 'd':
         return [JavaLangDouble valueOfWithDouble:value->asDouble];
       case 'B':
-        return [JavaLangBoolean valueOfWithBOOL:value->asBOOL];
+        return [JavaLangBoolean valueOfWithBoolean:value->asBOOL];
     }
   }
   id exception =

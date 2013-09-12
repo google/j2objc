@@ -124,7 +124,7 @@
 }
 
 - (void)testLongType {
-  JavaLangLong *javaLong = [JavaLangLong valueOfWithLongInt:42LL];
+  JavaLangLong *javaLong = [JavaLangLong valueOfWithLong:42LL];
   NSString *objectTypeName = [[javaLong getClass] getName];
   STAssertEqualObjects(objectTypeName, @"JavaLangLong", 
                        @"incorrect object type name");

@@ -30,9 +30,9 @@
 @interface JavaLangReflectAccessibleObject : NSObject < JavaLangReflectAnnotatedElement >
 
 - (BOOL)isAccessible;
-- (void)setAccessibleWithBOOL:(BOOL)b;
+- (void)setAccessibleWithBoolean:(BOOL)b;
 + (void)setAccessibleWithJavaLangReflectAccessibleObjectArray:(IOSObjectArray *)objects
-                                                     withBOOL:(BOOL)b;
+                                                  withBoolean:(BOOL)b;
 
 - (id)getAnnotationWithIOSClass:(IOSClass *)annotationClass;
 - (BOOL)isAnnotationPresentWithIOSClass:(IOSClass *)annotationClass;

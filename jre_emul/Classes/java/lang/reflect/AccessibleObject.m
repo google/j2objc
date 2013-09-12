@@ -39,12 +39,12 @@
   return YES;
 }
 
-- (void)setAccessibleWithBOOL:(BOOL)b {
+- (void)setAccessibleWithBoolean:(BOOL)b {
   // do nothing
 }
 
 + (void)setAccessibleWithJavaLangReflectAccessibleObjectArray:(IOSObjectArray *)objects
-                                                     withBOOL:(BOOL)b {
+                                                  withBoolean:(BOOL)b {
   // do nothing
 }
 
