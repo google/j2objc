@@ -49,12 +49,12 @@
 #endif
 }
 
-BOOL IOSBooleanArray_Get(IOSBooleanArray *array, NSUInteger index) {
+BOOL IOSBooleanArray_Get(__unsafe_unretained IOSBooleanArray *array, NSUInteger index) {
   IOSArray_checkIndex(array->size_, index);
   return array->buffer_[index];
 }
 
-BOOL *IOSBooleanArray_GetRef(IOSBooleanArray *array, NSUInteger index) {
+BOOL *IOSBooleanArray_GetRef(__unsafe_unretained IOSBooleanArray *array, NSUInteger index) {
   IOSArray_checkIndex(array->size_, index);
   return &array->buffer_[index];
 }

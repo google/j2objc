@@ -48,12 +48,12 @@
   return array;
 }
 
-short IOSShortArray_Get(IOSShortArray *array, NSUInteger index) {
+short IOSShortArray_Get(__unsafe_unretained IOSShortArray *array, NSUInteger index) {
   IOSArray_checkIndex(array->size_, index);
   return array->buffer_[index];
 }
 
-short *IOSShortArray_GetRef(IOSShortArray *array, NSUInteger index) {
+short *IOSShortArray_GetRef(__unsafe_unretained IOSShortArray *array, NSUInteger index) {
   IOSArray_checkIndex(array->size_, index);
   return &array->buffer_[index];
 }

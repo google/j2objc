@@ -78,9 +78,6 @@ public class ArrayRewriter extends ErrorReportingASTVisitor {
            " arrayWithObjects:(id *)objects count:(int)count type:(IOSClass *)type")
       .build();
 
-  private static final IOSMethod OBJECT_ARRAY_ASSIGNMENT = IOSMethod.create(
-      "IOSObjectArray replaceObjectAtIndex:(NSUInteger)index withObject:(id)object");
-
   private static final IOSMethod IOSCLASS_METHOD = IOSMethod.create("IOSArray iosClass");
   private static final IOSMethod IOSCLASS_METHOD_DIM = IOSMethod.create(
       "IOSArray iosClassWithDimensions:(NSUInteger)dimensions");
@@ -319,8 +316,7 @@ public class ArrayRewriter extends ErrorReportingASTVisitor {
     Assignment assignment = getArrayAssignment(node);
     if (assignment != null && !componentType.isPrimitive()) {
       assignment.getRightHandSide().accept(this);
-      ASTUtil.setProperty(assignment, newArrayAssignment(
-          ast, assignment, node, componentType, iosArrayBinding));
+      ASTUtil.setProperty(assignment, newArrayAssignment(ast, assignment, node, componentType));
     } else {
       boolean assignable = assignment != null || needsAssignableAccess(node);
       ASTUtil.setProperty(node, newArrayAccess(
@@ -391,25 +387,30 @@ public class ArrayRewriter extends ErrorReportingASTVisitor {
     return invocation;
   }
 
-  private static MethodInvocation newArrayAssignment(
-      AST ast, Assignment assignmentNode, ArrayAccess arrayAccessNode, ITypeBinding componentType,
-      IOSTypeBinding iosArrayBinding) {
+  private static IOSMethodBinding createObjectArrayAssignmentFunction() {
+    ITypeBinding idType = Types.resolveIOSType("id");
+    ITypeBinding objArrayType = Types.resolveIOSType("IOSObjectArray");
+    return IOSMethodBinding.newFunction(
+        "IOSObjectArray_Set", idType, objArrayType, objArrayType, Types.resolveJavaType("int"),
+        idType);
+  }
+
+  private IOSMethodBinding objectArrayAssignmentFunction = createObjectArrayAssignmentFunction();
+
+  private MethodInvocation newArrayAssignment(
+      AST ast, Assignment assignmentNode, ArrayAccess arrayAccessNode, ITypeBinding componentType) {
     Assignment.Operator op = assignmentNode.getOperator();
     assert !componentType.isPrimitive();
     assert op == Assignment.Operator.ASSIGN;
 
-    ITypeBinding idType = Types.resolveIOSType("id");
-    IOSMethodBinding binding = IOSMethodBinding.newMethod(
-        OBJECT_ARRAY_ASSIGNMENT, Modifier.PUBLIC, idType, iosArrayBinding);
-    binding.addParameter(Types.resolveJavaType("int"));
-    binding.addParameter(idType);
-    binding = IOSMethodBinding.newTypedInvocation(binding, componentType);
+    IOSMethodBinding binding =
+        IOSMethodBinding.newTypedInvocation(objectArrayAssignmentFunction, componentType);
 
-    MethodInvocation invocation = ASTFactory.newMethodInvocation(
-        ast, binding, NodeCopier.copySubtree(ast, arrayAccessNode.getArray()));
-    ASTUtil.getArguments(invocation).add(NodeCopier.copySubtree(ast, arrayAccessNode.getIndex()));
-    ASTUtil.getArguments(invocation).add(
-        NodeCopier.copySubtree(ast, assignmentNode.getRightHandSide()));
+    MethodInvocation invocation = ASTFactory.newMethodInvocation(ast, binding, null);
+    List<Expression> args = ASTUtil.getArguments(invocation);
+    args.add(NodeCopier.copySubtree(ast, arrayAccessNode.getArray()));
+    args.add(NodeCopier.copySubtree(ast, arrayAccessNode.getIndex()));
+    args.add(NodeCopier.copySubtree(ast, assignmentNode.getRightHandSide()));
     return invocation;
   }
 
