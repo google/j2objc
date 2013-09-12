@@ -1065,7 +1065,7 @@ public class ObjectiveCImplementationGenerator extends ObjectiveCSourceFileGener
     } else if (value instanceof String) {
       StringLiteral node = ast.newStringLiteral();
       node.setLiteralValue((String) value);
-      printf(StatementGenerator.generateStringLiteral(node));
+      print(StatementGenerator.generateStringLiteral(node));
     } else if (value instanceof Number || value instanceof Character || value instanceof Boolean) {
       print(value.toString());
     } else if (value.getClass().isArray()) {
