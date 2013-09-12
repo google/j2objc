@@ -56,3 +56,6 @@ endif
 ifdef OPTIMIZATION_LEVEL
 DEBUGFLAGS := $(DEBUGFLAGS) -O$(OPTIMIZATION_LEVEL)
 endif
+
+comma=,
+space=$(eval) $(eval)
