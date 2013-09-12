@@ -268,7 +268,7 @@ public class StatementGeneratorTest extends GenerationTest {
       "Example", "Example.m");
     assertTranslation(translation,
         "return [NSString stringWithFormat:@\"obj=%@ b=%@ c=%C d=%f f=%f i=%d l=%lld s=%d\", " +
-        "obj_, [JavaLangBoolean toStringWithBOOL:b_], c_, d_, f_, i_, l_, s_];");
+        "obj_, [JavaLangBoolean toStringWithBoolean:b_], c_, d_, f_, i_, l_, s_];");
   }
 
   public void testStringConcatenationWithLiterals() throws IOException {
@@ -1085,7 +1085,8 @@ public class StatementGeneratorTest extends GenerationTest {
       "public class A { String test(boolean b) { return \"foo: \" + b; }}",
       "A", "A.m");
     assertTranslation(translation,
-        "return [NSString stringWithFormat:@\"foo: %@\", [JavaLangBoolean toStringWithBOOL:b]];");
+        "return [NSString stringWithFormat:@\"foo: %@\", " +
+        "[JavaLangBoolean toStringWithBoolean:b]];");
   }
 
   public void testStringConcatWithChar() throws IOException {
@@ -1155,8 +1156,8 @@ public class StatementGeneratorTest extends GenerationTest {
     assertTranslation(translation, "#define A_APOSTROPHE '\\''");
     assertTranslation(translation, "#define A_BACKSLASH '\\\\'");
     translation = getTranslatedFile("A.m");
-    assertTranslation(translation, "fooWithUnichar:'\\'']");
-    assertTranslation(translation, "fooWithUnichar:'\\\\']");
+    assertTranslation(translation, "fooWithChar:'\\'']");
+    assertTranslation(translation, "fooWithChar:'\\\\']");
   }
 
   public void testStaticVarAccessFromInnerClass() throws IOException {
@@ -1356,7 +1357,7 @@ public class StatementGeneratorTest extends GenerationTest {
       "void test(int i, int j) { check(true, \"%d-%d\", i, j); }}",
       "Test", "Test.m");
     assertTranslation(translation,
-      "[self checkWithBOOL:YES withNSString:@\"%d-%d\" " +
+      "[self checkWithBoolean:YES withNSString:@\"%d-%d\" " +
       "withNSObjectArray:[IOSObjectArray arrayWithObjects:(id[]){ " +
       "[JavaLangInteger valueOfWithInt:i], [JavaLangInteger valueOfWithInt:j] } count:2 " +
       "type:[IOSClass classWithClass:[NSObject class]]]];");

@@ -314,12 +314,12 @@ public class ObjectiveCHeaderGeneratorTest extends GenerationTest {
         "withInt:(int)__ordinal;");
     assertTranslatedLines(translation,
         "- (id)initWithInt:(int)rgb",
-        "withBOOL:(BOOL)primary",
+        "withBoolean:(BOOL)primary",
         "withNSString:(NSString *)__name",
         "withInt:(int)__ordinal;");
     translation = getTranslatedFile("Color.m");
     assertTranslation(translation,
-        "[self initColorEnumWithInt:rgb withBOOL:YES withNSString:__name withInt:__ordinal]");
+        "[self initColorEnumWithInt:rgb withBoolean:YES withNSString:__name withInt:__ordinal]");
     assertTranslatedLines(translation,
         "if ((self = [super initWithNSString:__name withInt:__ordinal])) {",
         "self->rgb_ = rgb;",
