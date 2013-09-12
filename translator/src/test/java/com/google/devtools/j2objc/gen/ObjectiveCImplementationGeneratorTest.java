@@ -673,12 +673,13 @@ public class ObjectiveCImplementationGeneratorTest extends GenerationTest {
   public void testTypeAnnotationWithParameter() throws IOException {
     String translation = translateSourceFile(
         "import org.junit.*;" +
-        "@Ignore(\"some comment\") public class Test { void test() {} }",
+        "@Ignore(\"some \\\"escaped\\n comment\") public class Test { void test() {} }",
         "Test", "Test.m");
     assertTranslatedLines(translation,
         "+ (IOSObjectArray *)__annotations {",
         "return [IOSObjectArray arrayWithObjects:(id[]) " +
-        "{ [[[OrgJunitIgnoreImpl alloc] initWithValue:@\"some comment\"] autorelease] } " +
+        "{ [[[OrgJunitIgnoreImpl alloc] initWithValue:" +
+        "@\"some \\\"escaped\\n comment\"] autorelease] } " +
         "count:1 type:[IOSClass classWithProtocol:@protocol(JavaLangAnnotationAnnotation)]];");
   }
 
