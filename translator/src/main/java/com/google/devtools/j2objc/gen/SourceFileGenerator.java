@@ -149,7 +149,7 @@ public abstract class SourceFileGenerator {
         source += '\n';
       }
 
-      Files.write(source, outputFile, Charset.defaultCharset());
+      Files.write(source, outputFile, Options.getCharset());
     } catch (IOException e) {
       J2ObjC.error(e.getMessage());
     } finally {

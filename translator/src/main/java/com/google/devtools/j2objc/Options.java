@@ -29,6 +29,8 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.net.URL;
+import java.nio.charset.Charset;
+import java.nio.charset.UnsupportedCharsetException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -65,7 +67,7 @@ public class Options {
   private static boolean generateNativeStubs = false;
   private static boolean stripGwtIncompatible = false;
   private static boolean segmentedHeaders = false;
-  private static String fileEncoding = System.getProperty("file.encoding", "ISO-8859-1");
+  private static String fileEncoding = System.getProperty("file.encoding", "UTF-8");
   private static boolean jsniWarnings = true;
   private static boolean buildClosure = false;
   private static boolean stripReflection = false;
@@ -233,6 +235,12 @@ public class Options {
           usage("-encoding requires an argument");
         }
         fileEncoding = args[nArg];
+        try {
+          // Verify encoding has a supported charset.
+          Charset.forName(fileEncoding);
+        } catch (UnsupportedCharsetException e) {
+          J2ObjC.warning(e.getMessage());
+        }
       } else if (arg.equals("--strip-gwt-incompatible")) {
         stripGwtIncompatible = true;
       } else if (arg.equals("--strip-reflection")) {
@@ -556,6 +564,10 @@ public class Options {
 
   public static String fileEncoding() {
     return fileEncoding;
+  }
+
+  public static Charset getCharset() {
+    return Charset.forName(fileEncoding);
   }
 
   /**
