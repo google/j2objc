@@ -140,4 +140,6 @@ static void doWait(id obj, long long timeout) {
   return nil;
 }
 
+- (void)_java_lang_ref_original_dealloc {}
+
 @end

@@ -544,6 +544,8 @@
 		068677E9166C345F005A5AD7 /* Pattern.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = Pattern.m; path = build_result/Classes/java/util/regex/Pattern.m; sourceTree = "<group>"; };
 		068677EA166C345F005A5AD7 /* Splitter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Splitter.h; path = build_result/Classes/java/util/regex/Splitter.h; sourceTree = "<group>"; };
 		068677EB166C345F005A5AD7 /* Splitter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = Splitter.m; path = build_result/Classes/java/util/regex/Splitter.m; sourceTree = "<group>"; };
+		06898A7617BAF8C400D7B114 /* IOSReference.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IOSReference.h; sourceTree = "<group>"; };
+		06898A7817BAFAB400D7B114 /* IOSReference.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IOSReference.m; sourceTree = "<group>"; };
 		0697F60315D190580027A7E4 /* Array.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Array.h; path = build_result/Classes/java/lang/reflect/Array.h; sourceTree = "<group>"; };
 		0697F60415D190580027A7E4 /* Array.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = Array.m; path = build_result/Classes/java/lang/reflect/Array.m; sourceTree = "<group>"; };
 		0697F60515D190580027A7E4 /* GenericDeclaration.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = GenericDeclaration.h; path = build_result/Classes/java/lang/reflect/GenericDeclaration.h; sourceTree = "<group>"; };
@@ -760,6 +762,8 @@
 				066193B1155849BC0004DAFE /* IOSObjectArray.m */,
 				066193B2155849BC0004DAFE /* IOSPrimitiveClass.h */,
 				066193B3155849BC0004DAFE /* IOSPrimitiveClass.m */,
+				06898A7617BAF8C400D7B114 /* IOSReference.h */,
+				06898A7817BAFAB400D7B114 /* IOSReference.m */,
 				066193B6155849BC0004DAFE /* IOSShortArray.h */,
 				066193B7155849BC0004DAFE /* IOSShortArray.m */,
 				06986A181767D781006EE92F /* J2ObjCMain.m */,
