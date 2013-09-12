@@ -42,6 +42,7 @@ public class GeneratedVariableBinding implements IVariableBinding {
   private IMethodBinding declaringMethod;  // optional
   private final boolean isParameter;
   private final boolean isField;
+  private String typeQualifiers;
 
   public static final String UNNAMED_VARIABLE = "<unnamed-variable>";
   public static final String PLACEHOLDER_NAME = "<placeholder-variable>";
@@ -57,6 +58,15 @@ public class GeneratedVariableBinding implements IVariableBinding {
     this.declaringClass = declaringClass;
     this.declaringMethod = declaringMethod;
     this.isField = isField;
+  }
+
+  /**
+   * For creating a mutable copy of an existing variable binding.
+   */
+  public GeneratedVariableBinding(IVariableBinding oldBinding) {
+    this(oldBinding.getName(), oldBinding.getModifiers(), oldBinding.getType(),
+        oldBinding.isField(), oldBinding.isParameter(), oldBinding.getDeclaringClass(),
+        oldBinding.getDeclaringMethod());
   }
 
   /**
@@ -83,6 +93,21 @@ public class GeneratedVariableBinding implements IVariableBinding {
 
   public static boolean isPlaceholder(IVariableBinding var) {
     return var.getName().equals(PLACEHOLDER_NAME);
+  }
+
+  /**
+   * Sets the qualifiers that should be added to the variable declaration. Use
+   * an asterisk ('*') to delimit qualifiers that should apply to a pointer from
+   * qualifiers that should apply to the pointee type. For example setting the
+   * qualifier as "__strong * const" on a string array will result in a
+   * declaration of "NSString * __strong * const".
+   */
+  public void setTypeQualifiers(String qualifiers) {
+    typeQualifiers = qualifiers;
+  }
+
+  public String getTypeQualifiers() {
+    return typeQualifiers;
   }
 
   @Override

@@ -417,7 +417,28 @@ public class RewriterTest extends GenerationTest {
         "void test() { for (char c : chars) {} } }";
     String translation = translateSourceFile(source, "A", "A.m");
     assertTranslation(translation,
-        "unichar c = [((JavaLangCharacter *) nil_chk([iter__ next])) charValue];");
+        "unichar c = [((JavaLangCharacter *) nil_chk(boxed__)) charValue];");
+  }
+
+  public void testEnhancedForLoopAnnotation() throws IOException {
+    String translation = translateSourceFile(
+        "import com.google.j2objc.annotations.LoopTranslation;" +
+        "import com.google.j2objc.annotations.LoopTranslation.LoopStyle;" +
+        "class Test { void test(Iterable<String> strings) { " +
+        "for (@LoopTranslation(LoopStyle.JAVA_ITERATOR) String s : strings) {}" +
+        "for (@LoopTranslation(LoopStyle.FAST_ENUMERATION) String s : strings) {} } }",
+        "Test", "Test.m");
+    assertTranslatedLines(translation,
+        "- (void)testWithJavaLangIterable:(id<JavaLangIterable>)strings {",
+          "{",
+            "id<JavaUtilIterator> iter__ = [((id<JavaLangIterable>) nil_chk(strings)) iterator];",
+            "while ([((id<JavaUtilIterator>) nil_chk(iter__)) hasNext]) {",
+              "NSString *s = [iter__ next];",
+            "}",
+          "}",
+          "for (NSString * __strong s in strings) {",
+          "}",
+        "}");
   }
 
   public void testStaticArrayInitializerMove() throws IOException {

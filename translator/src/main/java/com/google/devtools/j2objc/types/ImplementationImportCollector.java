@@ -22,6 +22,7 @@ import com.google.devtools.j2objc.util.BindingUtil;
 import com.google.devtools.j2objc.util.ErrorReportingASTVisitor;
 import com.google.devtools.j2objc.util.NameTable;
 
+import org.eclipse.jdt.core.dom.Annotation;
 import org.eclipse.jdt.core.dom.AnnotationTypeDeclaration;
 import org.eclipse.jdt.core.dom.AnnotationTypeMemberDeclaration;
 import org.eclipse.jdt.core.dom.Assignment;
@@ -51,6 +52,7 @@ import org.eclipse.jdt.core.dom.NormalAnnotation;
 import org.eclipse.jdt.core.dom.QualifiedName;
 import org.eclipse.jdt.core.dom.SimpleName;
 import org.eclipse.jdt.core.dom.SingleMemberAnnotation;
+import org.eclipse.jdt.core.dom.SingleVariableDeclaration;
 import org.eclipse.jdt.core.dom.TryStatement;
 import org.eclipse.jdt.core.dom.Type;
 import org.eclipse.jdt.core.dom.TypeDeclaration;
@@ -244,17 +246,13 @@ public class ImplementationImportCollector extends ErrorReportingASTVisitor {
 
   @Override
   public boolean visit(MarkerAnnotation node) {
-    addDefaultValueTypes(Types.getAnnotationBinding(node));
-    return true;
+    return visitAnnotation(node);
   }
 
   @Override
   public boolean visit(MethodDeclaration node) {
     addImports(node.getReturnType2());
     IMethodBinding binding = Types.getMethodBinding(node);
-    for (ITypeBinding paramType : binding.getParameterTypes()) {
-      addImports(paramType);
-    }
     for (ITypeBinding exceptionType : binding.getExceptionTypes()) {
       addImports(exceptionType);
       addImports(Types.resolveIOSType("IOSClass"));
@@ -321,8 +319,7 @@ public class ImplementationImportCollector extends ErrorReportingASTVisitor {
 
   @Override
   public boolean visit(NormalAnnotation node) {
-    addDefaultValueTypes(Types.getAnnotationBinding(node));
-    return true;
+    return visitAnnotation(node);
   }
 
   @Override
@@ -351,7 +348,12 @@ public class ImplementationImportCollector extends ErrorReportingASTVisitor {
 
   @Override
   public boolean visit(SingleMemberAnnotation node) {
-    addDefaultValueTypes(Types.getAnnotationBinding(node));
+    return visitAnnotation(node);
+  }
+
+  @Override
+  public boolean visit(SingleVariableDeclaration node) {
+    addImports(Types.getTypeBinding(node));
     return true;
   }
 
@@ -376,7 +378,11 @@ public class ImplementationImportCollector extends ErrorReportingASTVisitor {
     return true;
   }
 
-  private void addDefaultValueTypes(IAnnotationBinding binding) {
+  private boolean visitAnnotation(Annotation node) {
+    IAnnotationBinding binding = Types.getAnnotationBinding(node);
+    if (!BindingUtil.isRuntimeAnnotation(binding)) {
+      return false;
+    }
     for (IMemberValuePairBinding memberValuePair : binding.getAllMemberValuePairs()) {
       if (memberValuePair.isDefault()) {
         Object value = memberValuePair.getValue();
@@ -385,5 +391,6 @@ public class ImplementationImportCollector extends ErrorReportingASTVisitor {
         }
       }
     }
+    return true;
   }
 }

@@ -27,24 +27,13 @@ import org.eclipse.jdt.core.dom.ITypeBinding;
 public class PointerTypeBinding extends AbstractTypeBinding {
 
   private final ITypeBinding pointeeType;
-  // ARC requires an explicit ownership qualifier for pointer types.
-  private String qualifier = null;
-
-  public PointerTypeBinding(ITypeBinding pointeeType, String qualifier) {
-    this.pointeeType = Preconditions.checkNotNull(pointeeType);
-    this.qualifier = qualifier;
-  }
 
   public PointerTypeBinding(ITypeBinding pointeeType) {
-    this(pointeeType, null);
+    this.pointeeType = Preconditions.checkNotNull(pointeeType);
   }
 
   public ITypeBinding getPointeeType() {
     return pointeeType;
-  }
-
-  public String getQualifier() {
-    return qualifier;
   }
 
   @Override

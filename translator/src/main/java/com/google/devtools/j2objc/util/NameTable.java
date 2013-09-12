@@ -21,6 +21,7 @@ import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.devtools.j2objc.Options;
+import com.google.devtools.j2objc.types.GeneratedVariableBinding;
 import com.google.devtools.j2objc.types.PointerTypeBinding;
 import com.google.devtools.j2objc.types.Types;
 
@@ -376,15 +377,15 @@ public class NameTable {
    * resolved to their bounds.
    */
   public static String getSpecificObjCType(ITypeBinding type) {
-    if (type.isTypeVariable()) {
-      ITypeBinding[] bounds = type.getTypeBounds();
-      while (bounds.length > 0 && bounds[0].isTypeVariable()) {
-        type = bounds[0];
-        bounds = type.getTypeBounds();
-      }
-      return constructObjCType(bounds);
+    return getObjCTypeInner(type, null, true);
+  }
+
+  public static String getSpecificObjCType(IVariableBinding var) {
+    String qualifiers = null;
+    if (var instanceof GeneratedVariableBinding) {
+      qualifiers = ((GeneratedVariableBinding) var).getTypeQualifiers();
     }
-    return getObjCType(type);
+    return getObjCTypeInner(var.getType(), qualifiers, true);
   }
 
   /**
@@ -392,23 +393,47 @@ public class NameTable {
    * converted to "id" regardless of their bounds.
    */
   public static String getObjCType(ITypeBinding type) {
+    return getObjCTypeInner(type, null, false);
+  }
+
+  private static String getObjCTypeInner(
+      ITypeBinding type, String qualifiers, boolean expandTypeVariables) {
+    String objCType;
     if (type instanceof PointerTypeBinding) {
-      PointerTypeBinding pointerType = (PointerTypeBinding) type;
-      String qualifier = pointerType.getQualifier();
-      String pointeeType = getObjCType(pointerType.getPointeeType());
-      if (qualifier != null) {
-        return pointeeType + " " + qualifier + " *";
+      String pointeeQualifiers = null;
+      if (qualifiers != null) {
+        int idx = qualifiers.indexOf('*');
+        if (idx != -1) {
+          pointeeQualifiers = qualifiers.substring(0, idx);
+          qualifiers = qualifiers.substring(idx + 1);
+        }
+      }
+      objCType = getObjCTypeInner(
+          ((PointerTypeBinding) type).getPointeeType(), pointeeQualifiers, expandTypeVariables);
+      objCType = objCType.endsWith("*") ? objCType + "*" : objCType + " *";
+    } else if (type.isTypeVariable()) {
+      if (expandTypeVariables) {
+        ITypeBinding[] bounds = type.getTypeBounds();
+        while (bounds.length > 0 && bounds[0].isTypeVariable()) {
+          type = bounds[0];
+          bounds = type.getTypeBounds();
+        }
+        objCType = constructObjCType(bounds);
       } else {
-        return pointeeType.endsWith("*") ? pointeeType + "*" : pointeeType + " *";
+        objCType = ID_TYPE;
+      }
+    } else if (type.isPrimitive()) {
+      objCType = primitiveTypeToObjC(type.getName());
+    } else {
+      objCType = constructObjCType(type.getErasure());
+    }
+    if (qualifiers != null) {
+      qualifiers = qualifiers.trim();
+      if (!qualifiers.isEmpty()) {
+        objCType += " " + qualifiers;
       }
     }
-    if (type.isTypeVariable()) {
-      return ID_TYPE;
-    }
-    if (type.isPrimitive()) {
-      return primitiveTypeToObjC(type.getName());
-    }
-    return constructObjCType(type.getErasure());
+    return objCType;
   }
 
   private static String constructObjCType(ITypeBinding... types) {
