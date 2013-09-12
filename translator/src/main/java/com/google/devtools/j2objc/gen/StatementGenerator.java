@@ -443,10 +443,26 @@ public class StatementGenerator extends ErrorReportingASTVisitor {
 
   @Override
   public boolean visit(CastExpression node) {
+    ITypeBinding type = Types.getTypeBinding(node.getType());
     buffer.append("(");
-    buffer.append(NameTable.getSpecificObjCType(Types.getTypeBinding(node)));
+    buffer.append(NameTable.getSpecificObjCType(type));
     buffer.append(") ");
-    node.getExpression().accept(this);
+    if (type.isInterface() && !type.isAnnotation()) {
+      buffer.append("check_protocol_cast(");
+      node.getExpression().accept(this);
+      buffer.append(", @protocol(");
+      buffer.append(NameTable.getFullName(type));
+      buffer.append("))");
+    } else if (type.isClass() || type.isAnnotation()) {
+      buffer.append("check_class_cast(");
+      node.getExpression().accept(this);
+      buffer.append(", [");
+      buffer.append(NameTable.getFullName(type));
+      buffer.append(" class])");
+    } else {
+      // Cast type check not needed for primitive, enum and array types.
+      node.getExpression().accept(this);
+    }
     return false;
   }
 

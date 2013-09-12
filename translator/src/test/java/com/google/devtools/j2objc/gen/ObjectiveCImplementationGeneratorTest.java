@@ -157,7 +157,8 @@ public class ObjectiveCImplementationGeneratorTest extends GenerationTest {
         "  public <B> Example<B> foo() { return (Example<B>) FOO; } " +
         "  public static final Example<?> FOO = new Example(); }",
         "Example", "Example.m");
-    assertTranslation(translation, "return (Example *) Example_FOO_");
+    assertTranslation(translation,
+        "return (Example *) check_class_cast(Example_FOO_, [Example class])");
     assertTranslation(translation, "return Example_FOO_");
   }
 

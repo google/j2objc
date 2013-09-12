@@ -124,7 +124,18 @@ public class StatementGeneratorTest extends GenerationTest {
     List<Statement> stmts = translateStatements(source);
     assertEquals(2, stmts.size());
     String result = generateStatement(stmts.get(1));
-    assertEquals("JavaLangThrowable *t = (JavaLangThrowable *) e;", result);
+    assertEquals("JavaLangThrowable *t = " +
+        "(JavaLangThrowable *) check_class_cast(e, [JavaLangThrowable class]);", result);
+  }
+
+  public void testInterfaceCastTranslation() throws IOException {
+    String source = "java.util.ArrayList al = new java.util.ArrayList(); " +
+        "java.util.List l = (java.util.List) al;";
+    List<Statement> stmts = translateStatements(source);
+    assertEquals(2, stmts.size());
+    String result = generateStatement(stmts.get(1));
+    assertEquals("id<JavaUtilList> l = " +
+        "(id<JavaUtilList>) check_protocol_cast(al, @protocol(JavaUtilList));", result);
   }
 
   public void testCatchTranslation() throws IOException {

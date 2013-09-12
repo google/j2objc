@@ -61,6 +61,12 @@
 
 #define J2OBJC_COMMA() ,
 
+#ifdef J2OBJC_DISABLE_ALL_CHECKS
+ #define J2OBJC_DISABLE_NIL_CHECKS 1
+ #define J2OBJC_DISABLE_CAST_CHECKS 1
+ #define J2OBJC_DISABLE_ARRAY_CHECKS 1
+#endif
+
 #ifdef J2OBJC_COUNT_NIL_CHK
 extern int j2objc_nil_chk_count;
 #endif
@@ -78,6 +84,21 @@ __attribute__ ((unused)) static inline id nil_chk(id __unsafe_unretained p) {
   return p ? p : [NSObject throwNullPointerException];
 #else
   return p;
+#endif
+}
+
+// Separate methods for class and protocol cast checks are used to reduce
+// overhead, since the difference is statically known.
+__attribute__ ((unused)) static inline id check_class_cast(id __unsafe_unretained p, Class clazz) {
+#if !defined(J2OBJC_DISABLE_CAST_CHECKS)
+  return (!p || [p isKindOfClass:clazz]) ? p : [NSObject throwClassCastException];
+#endif
+}
+
+__attribute__ ((unused)) static inline id check_protocol_cast(id __unsafe_unretained p,
+                                                              Protocol *protocol) {
+#if !defined(J2OBJC_DISABLE_CAST_CHECKS)
+  return (!p || [p conformsToProtocol:protocol]) ? p : [NSObject throwClassCastException];
 #endif
 }
 
