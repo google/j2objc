@@ -21,6 +21,7 @@ import com.google.devtools.j2objc.Options;
 import com.google.devtools.j2objc.types.GeneratedMethodBinding;
 import com.google.devtools.j2objc.types.Types;
 import com.google.devtools.j2objc.util.ASTUtil;
+import com.google.devtools.j2objc.util.BindingUtil;
 import com.google.devtools.j2objc.util.ErrorReportingASTVisitor;
 import com.google.devtools.j2objc.util.NameTable;
 
@@ -188,7 +189,7 @@ public class DestructorGenerator extends ErrorReportingASTVisitor {
     AST ast = method.getAST();
     int index = statements.size();
     for (IVariableBinding field : fields) {
-      if (!field.getType().isPrimitive() && !Types.isWeakReference(field)) {
+      if (!field.getType().isPrimitive() && !BindingUtil.isWeakReference(field)) {
         Assignment assign = ast.newAssignment();
         SimpleName receiver = ast.newSimpleName(field.getName());
         Types.addBinding(receiver, field);

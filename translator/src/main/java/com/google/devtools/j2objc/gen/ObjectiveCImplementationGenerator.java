@@ -422,8 +422,7 @@ public class ObjectiveCImplementationGenerator extends ObjectiveCSourceFileGener
   private boolean isStrongReferenceProperty(VariableDeclarationFragment property) {
     IVariableBinding varBinding = Types.getVariableBinding(property);
     ITypeBinding type = Types.getTypeBinding(property);
-    return !type.isPrimitive() && !Types.hasWeakAnnotation(varBinding.getDeclaringClass()) &&
-        !Types.isWeakReference(varBinding);
+    return !type.isPrimitive() && !BindingUtil.isWeakReference(varBinding);
   }
 
   // We generate the runtime debug method -memDebugStrongReferences.

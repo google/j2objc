@@ -451,7 +451,7 @@ public class ObjectiveCHeaderGenerator extends ObjectiveCSourceFileGenerator {
           first = false;
         }
         printIndent();
-        if (Types.isWeakReference(Types.getVariableBinding(var))) {
+        if (BindingUtil.isWeakReference(Types.getVariableBinding(var))) {
           // We must add this even without -use-arc because the header may be
           // included by a file compiled with ARC.
           print("__weak ");
@@ -517,7 +517,7 @@ public class ObjectiveCHeaderGenerator extends ObjectiveCSourceFileGenerator {
       String declaringClassName = NameTable.getFullName(declaringType);
       for (VariableDeclarationFragment var : ASTUtil.getFragments(field)) {
         IVariableBinding varBinding = Types.getVariableBinding(var);
-        if (Types.isWeakReference(varBinding)) {
+        if (BindingUtil.isWeakReference(varBinding)) {
           continue;
         }
         String fieldName = NameTable.javaFieldToObjC(NameTable.getName(var.getName()));

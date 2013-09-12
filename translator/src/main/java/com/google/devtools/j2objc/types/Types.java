@@ -22,9 +22,6 @@ import com.google.common.collect.Sets;
 import com.google.devtools.j2objc.J2ObjC;
 import com.google.devtools.j2objc.Options;
 import com.google.devtools.j2objc.util.BindingUtil;
-import com.google.j2objc.annotations.AutoreleasePool;
-import com.google.j2objc.annotations.Weak;
-import com.google.j2objc.annotations.WeakOuter;
 
 import org.eclipse.jdt.core.dom.AST;
 import org.eclipse.jdt.core.dom.ASTNode;
@@ -408,48 +405,6 @@ public class Types {
 
   public static ITypeBinding getIOSClass() {
     return instance.IOSClass;
-  }
-
-  public static boolean isWeakReference(IVariableBinding var) {
-    return hasWeakAnnotation(var) || isWeakOuterReference(var);
-  }
-
-  private static boolean isWeakOuterReference(IVariableBinding var) {
-    return var.getName().startsWith("this$") && hasWeakAnnotation(var.getDeclaringClass());
-  }
-
-  public static boolean hasAnyAnnotation(IBinding binding, Class<?>[] annotations) {
-    for (IAnnotationBinding annotation : binding.getAnnotations()) {
-      String name = annotation.getAnnotationType().getQualifiedName();
-      for (Class<?> annotationClass : annotations) {
-        if (name.equals(annotationClass.getName())) {
-          return true;
-        }
-      }
-    }
-    return false;
-  }
-
-  public static boolean hasAnnotation(IBinding binding, Class<?> annotation) {
-    return hasAnyAnnotation(binding, new Class<?>[] { annotation });
-  }
-
-  public static boolean hasWeakAnnotation(IBinding binding) {
-    return hasAnyAnnotation(binding, new Class<?>[] { Weak.class, WeakOuter.class });
-  }
-
-  public static boolean hasAutoreleasePoolAnnotation(IBinding binding) {
-    boolean hasAnnotation = hasAnnotation(binding, AutoreleasePool.class);
-
-    if (hasAnnotation && binding instanceof IMethodBinding) {
-      if (!isVoidType(((IMethodBinding) binding).getReturnType())) {
-        J2ObjC.warning(
-            "Warning: Ignoring AutoreleasePool annotation on method with non-void return type");
-        return false;
-      }
-    }
-
-    return hasAnnotation;
   }
 
   public static void addAutoreleasePool(Block block) {
