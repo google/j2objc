@@ -26,6 +26,8 @@ package java.lang;
  * javac -bootclasspath <path>/jre_emul.jar -extdirs '' <sources>
  */
 public class Object {
+  
+  public Object() {}
 
   public final Class<?> getClass() {
     return null;

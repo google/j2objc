@@ -413,6 +413,7 @@ JAVA_SOURCES = \
 	java/util/InvalidPropertiesFormatException.java \
 	java/util/LinkedList.java \
 	java/util/LinkedHashSet.java \
+	java/util/ListResourceBundle.java \
 	java/util/Locale.java \
 	java/util/logging/Formatter.java \
 	java/util/logging/Handler.java \
@@ -427,7 +428,9 @@ JAVA_SOURCES = \
 	java/util/NoSuchElementException.java \
 	java/util/PriorityQueue.java \
 	java/util/Properties.java \
+	java/util/PropertyResourceBundle.java \
 	java/util/Random.java \
+	java/util/ResourceBundle.java \
 	java/util/SimpleTimeZone.java \
 	java/util/Stack.java \
 	java/util/StringTokenizer.java \

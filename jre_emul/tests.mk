@@ -32,6 +32,12 @@ SUPPORT_SOURCES = \
 	tests/support/Support_SetTest.java \
 	tests/support/Support_StringReader.java \
 	tests/support/Support_StringWriter.java \
+	tests/support/Support_TestResource.java \
+	tests/support/Support_TestResource_en.java \
+	tests/support/Support_TestResource_en_US.java \
+	tests/support/Support_TestResource_fr.java \
+	tests/support/Support_TestResource_fr_FR.java \
+	tests/support/Support_TestResource_fr_FR_VAR.java \
 	tests/support/Support_TimeZone.java \
 	tests/support/Support_UnmodifiableCollectionTest.java \
 	tests/support/Support_UnmodifiableMapTest.java
@@ -223,6 +229,9 @@ TEST_SOURCES = \
 	org/apache/harmony/text/tests/java/text/CollatorTest.java \
 	org/apache/harmony/text/tests/java/text/MessageFormatTest.java \
 	tests/api/java/util/CalendarTest.java \
+	tests/api/java/util/ListResourceBundleTest.java \
+	tests/api/java/util/PropertyResourceBundleTest.java \
+	tests/api/java/util/ResourceBundleTest.java \
 	tests/api/java/util/TimerTaskTest.java \
 	tests/api/java/util/TimerTest.java \
 
@@ -350,5 +359,6 @@ $(TESTS_DIR)/%.o: $(TESTS_DIR)/%.m
 	  -Wno-objc-redundant-literal-use -Wno-format \
 	  -Werror -Wno-parentheses -I$(EMULATION_TESTS_DIR) -I$(TESTS_DIR)
 
-$(TEST_BIN): $(TEST_OBJS) ../dist/lib/libjre_emul.a ../dist/lib/libjunit.a
+$(TEST_BIN): $(TEST_OBJS) $(SUPPORT_LIB) \
+        ../dist/lib/libjre_emul.a ../dist/lib/libjunit.a
 	$(TEST_JOCC) -o $@ $(TEST_OBJS)
