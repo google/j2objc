@@ -54,7 +54,7 @@ public class LinkedList<E> extends AbstractSequentialList<E> implements
 
         final LinkedList<ET> list;
 
-        Link<ET> link, lastLink;
+        @Weak Link<ET> link, lastLink;
 
         LinkIterator(LinkedList<ET> object, int location) {
             list = object;
