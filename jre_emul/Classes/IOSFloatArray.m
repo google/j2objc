@@ -89,26 +89,6 @@ float *IOSFloatArray_GetRef(IOSFloatArray *array, NSUInteger index) {
           sourceRange.length * sizeof(float));
 }
 
-- (float)incr:(NSUInteger)index {
-  IOSArray_checkIndex(size_, index);
-  return ++buffer_[index];
-}
-
-- (float)decr:(NSUInteger)index {
-  IOSArray_checkIndex(size_, index);
-  return --buffer_[index];
-}
-
-- (float)postIncr:(NSUInteger)index {
-  IOSArray_checkIndex(size_, index);
-  return buffer_[index]++;
-}
-
-- (float)postDecr:(NSUInteger)index {
-  IOSArray_checkIndex(size_, index);
-  return buffer_[index]--;
-}
-
 - (NSString *)descriptionOfElementAtIndex:(NSUInteger)index {
   return [NSString stringWithFormat:@"%g", buffer_[index]];
 }

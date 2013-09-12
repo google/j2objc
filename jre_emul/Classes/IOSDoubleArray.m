@@ -89,26 +89,6 @@ double *IOSDoubleArray_GetRef(IOSDoubleArray *array, NSUInteger index) {
           sourceRange.length * sizeof(double));
 }
 
-- (double)incr:(NSUInteger)index {
-  IOSArray_checkIndex(size_, index);
-  return ++buffer_[index];
-}
-
-- (double)decr:(NSUInteger)index {
-  IOSArray_checkIndex(size_, index);
-  return --buffer_[index];
-}
-
-- (double)postIncr:(NSUInteger)index {
-  IOSArray_checkIndex(size_, index);
-  return buffer_[index]++;
-}
-
-- (double)postDecr:(NSUInteger)index {
-  IOSArray_checkIndex(size_, index);
-  return buffer_[index]--;
-}
-
 - (NSString *)descriptionOfElementAtIndex:(NSUInteger)index {
   return [NSString stringWithFormat:@"%g", buffer_[index]];
 }

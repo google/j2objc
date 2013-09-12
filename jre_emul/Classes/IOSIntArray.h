@@ -51,20 +51,6 @@ FOUNDATION_EXPORT int *IOSIntArray_GetRef(IOSIntArray *array, NSUInteger index);
 // is greater than the array size.
 - (void)getInts:(int *)buffer length:(NSUInteger)length;
 
-// Increments an array element.
-- (int)incr:(NSUInteger)index;
-
-// Decrements an array element.
-- (int)decr:(NSUInteger)index;
-
-// Increments an array element but returns the initial value, like the postfix
-// operator.
-- (int)postIncr:(NSUInteger)index;
-
-// Decrements an array element but returns the initial value, like the postfix
-// operator.
-- (int)postDecr:(NSUInteger)index;
-
 @end
 
 #endif // _IOSIntArray_H_

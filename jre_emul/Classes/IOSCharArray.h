@@ -54,20 +54,6 @@ FOUNDATION_EXPORT unichar *IOSCharArray_GetRef(IOSCharArray *array, NSUInteger i
 // is greater than the array size.
 - (void)getChars:(unichar *)buffer length:(NSUInteger)length;
 
-// Increments an array element.
-- (unichar)incr:(NSUInteger)index;
-
-// Decrements an array element.
-- (unichar)decr:(NSUInteger)index;
-
-// Increments an array element but returns the initial value, like the postfix
-// operator.
-- (unichar)postIncr:(NSUInteger)index;
-
-// Decrements an array element but returns the initial value, like the postfix
-// operator.
-- (unichar)postDecr:(NSUInteger)index;
-
 @end
 
 #endif // _IOSCHARARRAY_H
