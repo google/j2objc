@@ -23,6 +23,8 @@ include environment.mk
 SUPPORT_SOURCES = \
 	JSR166TestCase.java \
 	org/apache/harmony/nio/tests/java/nio/AbstractBufferTest.java \
+	org/apache/harmony/text/tests/java/text/Support_Format.java \
+	org/apache/harmony/text/tests/java/text/Support_MessageFormat.java \
 	tests/support/Support_CollectionTest.java \
 	tests/support/Support_ListTest.java \
 	tests/support/Support_Locale.java \
@@ -210,7 +212,9 @@ TEST_SOURCES = \
 	org/apache/harmony/tests/java/util/regex/PatternTest.java \
 	org/apache/harmony/tests/java/util/regex/ReplaceTest.java \
 	org/apache/harmony/tests/java/util/regex/SplitTest.java \
+	org/apache/harmony/text/tests/java/text/ChoiceFormatTest.java \
 	org/apache/harmony/text/tests/java/text/CollatorTest.java \
+	org/apache/harmony/text/tests/java/text/MessageFormatTest.java \
 	tests/api/java/util/CalendarTest.java \
 	tests/api/java/util/TimerTaskTest.java \
 	tests/api/java/util/TimerTest.java \

@@ -643,33 +643,24 @@ public final class NativeDecimalFormat implements Cloneable {
     private static native Number parse(Object nativeFormatter, String string,
         ParsePosition position, boolean parseBigDecimal) /*-[
       NSNumberFormatter *formatter = (NSNumberFormatter *) nativeFormatter;
-      int startPosition = [position getIndex];
-      NSString *s = (startPosition == 0) ? string : [string substringFromIndex:startPosition];
       NSNumber *result;
-      NSString *error;
-      BOOL success = [formatter getObjectValue:&result forString:s errorDescription:&error];
-      if (!success) {
-        // NSNumberFormatter only checks for valid characters in string,
-        // so set error position at first invalid one.
-        NSMutableCharacterSet *validChars =
-            AUTORELEASE([[NSCharacterSet decimalDigitCharacterSet] mutableCopy]);
-        [validChars addCharactersInString:[formatter perMillSymbol]];
-        [validChars addCharactersInString:[formatter decimalSeparator]];
-        NSUInteger len = [string length];
-        for (int i = startPosition; i < len; i++) {
-          if (![validChars characterIsMember:[string characterAtIndex:i]]) {
-            [position setErrorIndexWithInt:i];
-            break;
-          }
+      int start = [position getIndex];
+      NSRange range = NSMakeRange(start, [string length] - start);
+      NSError *error;
+      BOOL success = [formatter getObjectValue:&result
+                                     forString:string
+                                         range:&range
+                                         error:&error];
+      if (success) {
+        [position setIndexWithInt:start + range.length];
+        if ([formatter generatesDecimalNumbers]) {
+          return [JavaLangDouble valueOfWithDouble:[result doubleValue]];
+        } else {
+          return [JavaLangLong valueOfWithLong:[result longLongValue]];
         }
-        return nil;
-      }
-      const char *typeStr = [result objCType];
-      char type = *typeStr;  // Return type is guaranteed to be one character.
-      if (type == 'f' || type == 'd') {
-        return [JavaLangDouble valueOfWithDouble:[result doubleValue]];
       } else {
-        return [JavaLangLong valueOfWithLong:[result longLongValue]];
+        [position setErrorIndexWithInt:start];
+        return nil;
       }
     ]-*/;
 
