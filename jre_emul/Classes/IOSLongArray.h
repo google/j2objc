@@ -27,7 +27,7 @@
 // An emulation class that represents a Java long array.  Like a Java array,
 // an IOSLongArray is fixed-size but its elements are mutable.
 @interface IOSLongArray : IOSArray {
-@private
+ @public
   long long *buffer_;
 }
 
@@ -37,8 +37,11 @@
 
 // Return long at a specified index, throws IndexOutOfBoundsException
 // if out out range.
-- (long long)longAtIndex:(NSUInteger)index;
-- (long long *)longRefAtIndex:(NSUInteger)index;
+FOUNDATION_EXPORT long long IOSLongArray_Get(IOSLongArray *array, NSUInteger index);
+FOUNDATION_EXPORT long long *IOSLongArray_GetRef(IOSLongArray *array, NSUInteger index);
+// TODO(user): Remove after fixing call sites.
+- (long long)longAtIndex:(NSUInteger)index __attribute__((deprecated));
+- (long long *)longRefAtIndex:(NSUInteger)index __attribute__((deprecated));
 
 // Sets long at a specified index, throws IndexOutOfBoundsException
 // if out out range.  Returns replacement value.

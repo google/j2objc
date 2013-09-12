@@ -27,7 +27,7 @@
 // An emulation class that represents a Java boolean array.  Like a Java array,
 // an IOSBooleanArray is fixed-size but its elements are mutable.
 @interface IOSBooleanArray : IOSArray {
-@private
+ @public
   BOOL *buffer_;
 }
 
@@ -37,8 +37,11 @@
 
 // Return boolean at a specified index, throws IndexOutOfBoundsException
 // if out out range.
-- (BOOL)booleanAtIndex:(NSUInteger)index;
-- (BOOL *)booleanRefAtIndex:(NSUInteger)index;
+FOUNDATION_EXPORT BOOL IOSBooleanArray_Get(IOSBooleanArray *array, NSUInteger index);
+FOUNDATION_EXPORT BOOL *IOSBooleanArray_GetRef(IOSBooleanArray *array, NSUInteger index);
+// TODO(user): Remove after fixing call sites.
+- (BOOL)booleanAtIndex:(NSUInteger)index __attribute__((deprecated));
+- (BOOL *)booleanRefAtIndex:(NSUInteger)index __attribute__((deprecated));
 
 // Sets boolean at a specified index, throws IndexOutOfBoundsException
 // if out out range.  Returns replacement value.

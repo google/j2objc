@@ -527,7 +527,7 @@ public class ObjectiveCImplementationGenerator extends ObjectiveCSourceFileGener
     println("}\n");
     printf("+ (%s *)valueOfWithNSString:(NSString *)name {\n", typeName);
     printf("  for (int i = 0; i < [%s_values count]; i++) {\n", typeName);
-    printf("    %s *e = [%s_values objectAtIndex:i];\n", typeName, typeName);
+    printf("    %s *e = %s_values->buffer_[i];\n", typeName, typeName);
     printf("    if ([name isEqual:[e name]]) {\n");
     printf("      return e;\n");
     printf("    }\n");

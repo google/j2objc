@@ -20,9 +20,7 @@
 //
 
 #import "IOSIntArray.h"
-#import "IOSArrayClass.h"
-#import "IOSPrimitiveClass.h"
-#import "java/lang/Integer.h"
+#import "IOSClass.h"
 
 @implementation IOSIntArray
 
@@ -48,6 +46,16 @@
   [array autorelease];
 #endif
   return array;
+}
+
+int IOSIntArray_Get(IOSIntArray *array, NSUInteger index) {
+  IOSArray_checkIndex(array->size_, index);
+  return array->buffer_[index];
+}
+
+int *IOSIntArray_GetRef(IOSIntArray *array, NSUInteger index) {
+  IOSArray_checkIndex(array->size_, index);
+  return &array->buffer_[index];
 }
 
 - (int)intAtIndex:(NSUInteger)index {

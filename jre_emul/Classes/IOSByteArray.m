@@ -20,9 +20,7 @@
 //
 
 #import "IOSByteArray.h"
-#import "IOSArrayClass.h"
-#import "IOSPrimitiveClass.h"
-#import "java/lang/Byte.h"
+#import "IOSClass.h"
 
 @implementation IOSByteArray
 
@@ -49,6 +47,16 @@
 #else
   return [array autorelease];
 #endif
+}
+
+char IOSByteArray_Get(IOSByteArray *array, NSUInteger index) {
+  IOSArray_checkIndex(array->size_, index);
+  return array->buffer_[index];
+}
+
+char *IOSByteArray_GetRef(IOSByteArray *array, NSUInteger index) {
+  IOSArray_checkIndex(array->size_, index);
+  return &array->buffer_[index];
 }
 
 - (char)byteAtIndex:(NSUInteger)index {

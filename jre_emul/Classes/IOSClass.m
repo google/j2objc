@@ -273,11 +273,11 @@ NSString *IOSClass_GetTranslatedMethodName(NSString *name, IOSObjectArray *param
   if (nParameters == 0) {
     return name;
   }
-  IOSClass *firstParameterType = (IOSClass *) [parameterTypes objectAtIndex:0];
+  IOSClass *firstParameterType = parameterTypes->buffer_[0];
   NSMutableString *translatedName = [NSMutableString stringWithCapacity:128];
   [translatedName appendFormat:@"%@With%@:", name, GetParameterKeyword(firstParameterType)];
   for (NSUInteger i = 1; i < nParameters; i++) {
-    IOSClass *parameterType = (IOSClass *) [parameterTypes objectAtIndex:i];
+    IOSClass *parameterType = parameterTypes->buffer_[i];
     [translatedName appendFormat:@"with%@:", GetParameterKeyword(parameterType)];
   }
   return translatedName;
@@ -460,7 +460,7 @@ static IOSClass *IOSClass_ArrayClassForName(NSString *name, NSUInteger index) {
   IOSObjectArray *annotations = [self getAnnotations];
   NSUInteger n = [annotations count];
   for (NSUInteger i = 0; i < n; i++) {
-    id annotation = [annotations objectAtIndex:i];
+    id annotation = annotations->buffer_[i];
     if ([annotationClass isInstance:annotation]) {
       return annotation;
     }
@@ -476,7 +476,7 @@ static IOSClass *IOSClass_ArrayClassForName(NSString *name, NSUInteger index) {
   NSMutableArray *array = [[NSMutableArray alloc] init];
   IOSObjectArray *declared = [self getDeclaredAnnotations];
   for (NSUInteger i = 0; i < [declared count]; i++) {
-    [array addObject:[declared objectAtIndex:i]];
+    [array addObject:declared->buffer_[i]];
   }
 
   // Check for any inherited annotations.
@@ -485,10 +485,10 @@ static IOSClass *IOSClass_ArrayClassForName(NSString *name, NSUInteger index) {
   while (cls) {
     IOSObjectArray *declared = [cls getDeclaredAnnotations];
     for (NSUInteger i = 0; i < [declared count]; i++) {
-      id<JavaLangAnnotationAnnotation> annotation = [declared objectAtIndex:i];
+      id<JavaLangAnnotationAnnotation> annotation = declared->buffer_[i];
       IOSObjectArray *attributes = [[annotation getClass] getDeclaredAnnotations];
       for (NSUInteger j = 0; j < [attributes count]; j++) {
-        id<JavaLangAnnotationAnnotation> attribute = [attributes objectAtIndex:j];
+        id<JavaLangAnnotationAnnotation> attribute = attributes->buffer_[j];
         if (inheritedAnnotation == [attribute getClass]) {
           [array addObject:annotation];
         }
@@ -508,7 +508,7 @@ static IOSClass *IOSClass_ArrayClassForName(NSString *name, NSUInteger index) {
   IOSObjectArray *methods = [self getDeclaredMethods];
   NSUInteger n = [methods count];
   for (NSUInteger i = 0; i < n; i++) {
-    JavaLangReflectMethod *method = [methods objectAtIndex:i];
+    JavaLangReflectMethod *method = methods->buffer_[i];
     if ([@"__annotations" isEqualToString:[method getName]] &&
         [[method getParameterTypes] count] == 0) {
       IOSObjectArray *noArgs = [IOSObjectArray arrayWithLength:0 type:[NSObject getClass]];

@@ -150,7 +150,7 @@
   [pw printlnWithNSString:[self description]];
   NSUInteger nFrames = [stackTrace count];
   for (NSUInteger i = 0; i < nFrames; i++) {
-    id trace = [stackTrace objectAtIndex:i];
+    id trace = stackTrace->buffer_[i];
     [pw printlnWithId:trace];
   }
   if (self->cause) {
@@ -163,7 +163,7 @@
   [ps printlnWithNSString:[self description]];
   NSUInteger nFrames = [stackTrace count];
   for (NSUInteger i = 0; i < nFrames; i++) {
-    id trace = [stackTrace objectAtIndex:i];
+    id trace = stackTrace->buffer_[i];
     [ps printlnWithId:trace];
   }
   if (self->cause) {
@@ -177,7 +177,7 @@
   nil_chk(stackTraceArg);
   int count = [stackTraceArg count];
   for (int i = 0; i < count; i++) {
-    nil_chk([stackTraceArg objectAtIndex:i]);
+    nil_chk(stackTraceArg->buffer_[i]);
   }
 #if __has_feature(objc_arc)
   stackTrace = stackTraceArg;
@@ -198,8 +198,7 @@
       initWithLength:existingCount + 1
                 type:[IOSClass classWithClass:[JavaLangThrowable class]]];
   for (NSUInteger i = 0; i < existingCount; i++) {
-    [newArray replaceObjectAtIndex:i
-                        withObject:[suppressedExceptions objectAtIndex:i]];
+    [newArray replaceObjectAtIndex:i withObject:suppressedExceptions->buffer_[i]];
   }
   [newArray replaceObjectAtIndex:existingCount
                       withObject:exception];

@@ -27,7 +27,7 @@
 // An emulation class that represents a Java byte array.  Like a Java array,
 // an IOSByteArray is fixed-size but its elements are mutable.
 @interface IOSByteArray : IOSArray {
- @private
+ @public
   char *buffer_;
 }
 
@@ -37,8 +37,11 @@
 
 // Return byte at a specified index, throws IndexOutOfBoundsException
 // if out out range.
-- (char)byteAtIndex:(NSUInteger)index;
-- (char *)byteRefAtIndex:(NSUInteger)index;
+FOUNDATION_EXPORT char IOSByteArray_Get(IOSByteArray *array, NSUInteger index);
+FOUNDATION_EXPORT char *IOSByteArray_GetRef(IOSByteArray *array, NSUInteger index);
+// TODO(user): Remove after fixing call sites.
+- (char)byteAtIndex:(NSUInteger)index __attribute__((deprecated));
+- (char *)byteRefAtIndex:(NSUInteger)index __attribute__((deprecated));
 
 // Sets byte at a specified index, throws IndexOutOfBoundsException
 // if out out range.  Returns the replacement value.

@@ -20,9 +20,7 @@
 //
 
 #import "IOSBooleanArray.h"
-#import "IOSArrayClass.h"
-#import "IOSPrimitiveClass.h"
-#import "java/lang/Boolean.h"
+#import "IOSClass.h"
 
 @implementation IOSBooleanArray
 
@@ -49,6 +47,16 @@
 #else
   return [array autorelease];
 #endif
+}
+
+BOOL IOSBooleanArray_Get(IOSBooleanArray *array, NSUInteger index) {
+  IOSArray_checkIndex(array->size_, index);
+  return array->buffer_[index];
+}
+
+BOOL *IOSBooleanArray_GetRef(IOSBooleanArray *array, NSUInteger index) {
+  IOSArray_checkIndex(array->size_, index);
+  return &array->buffer_[index];
 }
 
 - (BOOL)booleanAtIndex:(NSUInteger)index {

@@ -78,32 +78,6 @@ public class ArrayRewriter extends ErrorReportingASTVisitor {
            " arrayWithObjects:(id *)objects count:(int)count type:(IOSClass *)type")
       .build();
 
-  private static final ImmutableMap<String, IOSMethod> ACCESS_METHODS =
-      ImmutableMap.<String, IOSMethod>builder()
-      .put("IOSBooleanArray", IOSMethod.create("IOSBooleanArray booleanAtIndex:(NSUInteger)index"))
-      .put("IOSByteArray", IOSMethod.create("IOSByteArray byteAtIndex:(NSUInteger)index"))
-      .put("IOSCharArray", IOSMethod.create("IOSCharArray charAtIndex:(NSUInteger)index"))
-      .put("IOSDoubleArray", IOSMethod.create("IOSDoubleArray doubleAtIndex:(NSUInteger)index"))
-      .put("IOSFloatArray", IOSMethod.create("IOSFloatArray floatAtIndex:(NSUInteger)index"))
-      .put("IOSIntArray", IOSMethod.create("IOSIntArray intAtIndex:(NSUInteger)index"))
-      .put("IOSLongArray", IOSMethod.create("IOSLongArray longAtIndex:(NSUInteger)index"))
-      .put("IOSShortArray", IOSMethod.create("IOSShortArray shortAtIndex:(NSUInteger)index"))
-      .put("IOSObjectArray", IOSMethod.create("IOSObjectArray objectAtIndex:(NSUInteger)index"))
-      .build();
-
-  private static final ImmutableMap<String, IOSMethod> ACCESS_REF_METHODS =
-      ImmutableMap.<String, IOSMethod>builder()
-      .put("IOSBooleanArray",
-           IOSMethod.create("IOSBooleanArray booleanRefAtIndex:(NSUInteger)index"))
-      .put("IOSByteArray", IOSMethod.create("IOSByteArray byteRefAtIndex:(NSUInteger)index"))
-      .put("IOSCharArray", IOSMethod.create("IOSCharArray charRefAtIndex:(NSUInteger)index"))
-      .put("IOSDoubleArray", IOSMethod.create("IOSDoubleArray doubleRefAtIndex:(NSUInteger)index"))
-      .put("IOSFloatArray", IOSMethod.create("IOSFloatArray floatRefAtIndex:(NSUInteger)index"))
-      .put("IOSIntArray", IOSMethod.create("IOSIntArray intRefAtIndex:(NSUInteger)index"))
-      .put("IOSLongArray", IOSMethod.create("IOSLongArray longRefAtIndex:(NSUInteger)index"))
-      .put("IOSShortArray", IOSMethod.create("IOSShortArray shortRefAtIndex:(NSUInteger)index"))
-      .build();
-
   private static final IOSMethod OBJECT_ARRAY_ASSIGNMENT = IOSMethod.create(
       "IOSObjectArray replaceObjectAtIndex:(NSUInteger)index withObject:(id)object");
 
@@ -382,23 +356,34 @@ public class ArrayRewriter extends ErrorReportingASTVisitor {
     return false;
   }
 
-  private static MethodInvocation newArrayAccess(
+  private Map<String, IOSMethodBinding> accessFunctions = Maps.newHashMap();
+
+  private IOSMethodBinding getArrayAccessBinding(
+      ITypeBinding componentType, IOSTypeBinding iosArrayBinding, boolean assignable) {
+    String name = iosArrayBinding.getName() + "_Get";
+    if (assignable) {
+      name += "Ref";
+    }
+    IOSMethodBinding binding = accessFunctions.get(name);
+    if (binding == null) {
+      ITypeBinding declaredReturnType =
+          componentType.isPrimitive() ? componentType : Types.resolveIOSType("id");
+      binding = IOSMethodBinding.newFunction(
+          name, declaredReturnType, iosArrayBinding, iosArrayBinding, Types.resolveJavaType("int"));
+      accessFunctions.put(name, binding);
+    }
+    return binding;
+  }
+
+  private MethodInvocation newArrayAccess(
       AST ast, ArrayAccess arrayAccessNode, ITypeBinding componentType,
       IOSTypeBinding iosArrayBinding, boolean assignable) {
-    IOSMethod iosMethod = assignable ? ACCESS_REF_METHODS.get(iosArrayBinding.getName()) :
-        ACCESS_METHODS.get(iosArrayBinding.getName());
-    assert iosMethod != null;
-    ITypeBinding declaredReturnType =
-        componentType.isPrimitive() ? componentType : Types.resolveIOSType("id");
-    IOSMethodBinding binding = IOSMethodBinding.newMethod(
-        iosMethod, Modifier.PUBLIC, declaredReturnType, iosArrayBinding);
-    binding.addParameter(Types.resolveJavaType("int"));
+    IOSMethodBinding binding = getArrayAccessBinding(componentType, iosArrayBinding, assignable);
     if (!componentType.isPrimitive()) {
       binding = IOSMethodBinding.newTypedInvocation(binding, componentType);
     }
-
-    MethodInvocation invocation = ASTFactory.newMethodInvocation(
-        ast, binding, NodeCopier.copySubtree(ast, arrayAccessNode.getArray()));
+    MethodInvocation invocation = ASTFactory.newMethodInvocation(ast, binding, null);
+    ASTUtil.getArguments(invocation).add(NodeCopier.copySubtree(ast, arrayAccessNode.getArray()));
     ASTUtil.getArguments(invocation).add(NodeCopier.copySubtree(ast, arrayAccessNode.getIndex()));
     if (assignable) {
       invocation = ASTFactory.newDereference(ast, invocation);

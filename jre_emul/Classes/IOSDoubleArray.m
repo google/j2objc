@@ -20,9 +20,7 @@
 //
 
 #import "IOSDoubleArray.h"
-#import "IOSArrayClass.h"
-#import "IOSPrimitiveClass.h"
-#import "java/lang/Double.h"
+#import "IOSClass.h"
 
 @implementation IOSDoubleArray
 
@@ -48,6 +46,16 @@
   [array autorelease];
 #endif
   return array;
+}
+
+double IOSDoubleArray_Get(IOSDoubleArray *array, NSUInteger index) {
+  IOSArray_checkIndex(array->size_, index);
+  return array->buffer_[index];
+}
+
+double *IOSDoubleArray_GetRef(IOSDoubleArray *array, NSUInteger index) {
+  IOSArray_checkIndex(array->size_, index);
+  return &array->buffer_[index];
 }
 
 - (double)doubleAtIndex:(NSUInteger)index {

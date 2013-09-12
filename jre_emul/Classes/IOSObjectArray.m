@@ -19,9 +19,8 @@
 //  Created by Tom Ball on 9/9/11.
 //
 
-#import "IOSArrayClass.h"
-#import "IOSClass.h"
 #import "IOSObjectArray.h"
+#import "IOSClass.h"
 #import "java/lang/ArrayStoreException.h"
 #import "java/lang/AssertionError.h"
 
@@ -116,6 +115,11 @@
     result = [IOSClass arrayClassWithComponentType:result];
   }
   return result;
+}
+
+id IOSObjectArray_Get(IOSObjectArray *array, NSUInteger index) {
+  IOSArray_checkIndex(array->size_, index);
+  return array->buffer_[index];
 }
 
 - (id)objectAtIndex:(NSUInteger)index {

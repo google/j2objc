@@ -100,7 +100,7 @@ static id Box(JavaResult *value, const char *type);
   [invocation setSelector:selector_];
   int nArgs = [arguments count];
   for (NSUInteger i = 0; i < nArgs; i++) {
-    NSObject *arg = [arguments objectAtIndex:i];
+    NSObject *arg = arguments->buffer_[i];
     [invocation setArgument:&arg atIndex:i + SKIPPED_ARGUMENTS];
   }
   if (object == nil || [object isKindOfClass:[IOSClass class]]) {

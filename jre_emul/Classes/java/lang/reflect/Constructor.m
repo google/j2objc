@@ -84,8 +84,8 @@ static id makeException(Class exceptionClass) {
   for (int i = 0; i < count; i++) {
     int argIndex = i + 2;  // Add 2 to account for self and _cmd.
 
-    IOSClass *type = [parameterTypes objectAtIndex:i];
-    id arg = [initArgs objectAtIndex:i];
+    IOSClass *type = parameterTypes->buffer_[i];
+    id arg = initArgs->buffer_[i];
 
     if ([type.objcClass isEqual:[NSObject class]] ||
         [type.objcClass isEqual:[IOSClass class]]) {

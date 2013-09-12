@@ -239,7 +239,7 @@ typedef union {
   IOSObjectArray *methods = [declaringClass_ getDeclaredMethods];
   NSUInteger n = [methods count];
   for (NSUInteger i = 0; i < n; i++) {
-    JavaLangReflectMethod *method = [methods objectAtIndex:i];
+    JavaLangReflectMethod *method = methods->buffer_[i];
     if ([annotationsMethod isEqualToString:[method getName]] &&
         [[method getParameterTypes] count] == 0) {
       IOSObjectArray *noArgs = [IOSObjectArray arrayWithLength:0 type:[NSObject getClass]];

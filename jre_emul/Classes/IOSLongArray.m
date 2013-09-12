@@ -20,9 +20,7 @@
 //
 
 #import "IOSLongArray.h"
-#import "IOSArrayClass.h"
-#import "IOSPrimitiveClass.h"
-#import "java/lang/Long.h"
+#import "IOSClass.h"
 
 @implementation IOSLongArray
 
@@ -48,6 +46,16 @@
   [array autorelease];
 #endif
   return array;
+}
+
+long long IOSLongArray_Get(IOSLongArray *array, NSUInteger index) {
+  IOSArray_checkIndex(array->size_, index);
+  return array->buffer_[index];
+}
+
+long long *IOSLongArray_GetRef(IOSLongArray *array, NSUInteger index) {
+  IOSArray_checkIndex(array->size_, index);
+  return &array->buffer_[index];
 }
 
 - (long long)longAtIndex:(NSUInteger)index {

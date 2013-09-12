@@ -27,7 +27,7 @@
 // An emulation class that represents a Java double array.  Like a Java array,
 // an IOSDoubleArray is fixed-size but its elements are mutable.
 @interface IOSDoubleArray : IOSArray {
-@private
+ @public
   double *buffer_;
 }
 
@@ -37,8 +37,11 @@
 
 // Return double at a specified index, throws IndexOutOfBoundsException
 // if out out range.
-- (double)doubleAtIndex:(NSUInteger)index;
-- (double *)doubleRefAtIndex:(NSUInteger)index;
+FOUNDATION_EXPORT double IOSDoubleArray_Get(IOSDoubleArray *array, NSUInteger index);
+FOUNDATION_EXPORT double *IOSDoubleArray_GetRef(IOSDoubleArray *array, NSUInteger index);
+// TODO(user): Remove after fixing call sites.
+- (double)doubleAtIndex:(NSUInteger)index __attribute__((deprecated));
+- (double *)doubleRefAtIndex:(NSUInteger)index __attribute__((deprecated));
 
 // Sets double at a specified index, throws IndexOutOfBoundsException
 // if out out range.  Returns replacement value.

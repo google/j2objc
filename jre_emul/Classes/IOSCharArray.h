@@ -27,7 +27,7 @@
 // An emulation class that represents a Java char array.  Like a Java array,
 // an IOSCharArray is fixed-size but its elements are mutable.
 @interface IOSCharArray : IOSArray {
- @private
+ @public
   unichar *buffer_;
 }
 
@@ -37,8 +37,11 @@
 
 // Return char at a specified index, throws IndexOutOfBoundsException
 // if out out range;
-- (unichar)charAtIndex:(NSUInteger)index;
-- (unichar *)charRefAtIndex:(NSUInteger)index;
+FOUNDATION_EXPORT unichar IOSCharArray_Get(IOSCharArray *array, NSUInteger index);
+FOUNDATION_EXPORT unichar *IOSCharArray_GetRef(IOSCharArray *array, NSUInteger index);
+// TODO(user): Remove after fixing call sites.
+- (unichar)charAtIndex:(NSUInteger)index __attribute__((deprecated));
+- (unichar *)charRefAtIndex:(NSUInteger)index __attribute__((deprecated));
 
 // Sets char at a specified index, throws IndexOutOfBoundsException
 // if out out range.  Returns replacement value.

@@ -843,7 +843,7 @@ public class StatementGeneratorTest extends GenerationTest {
     List<Statement> stmts = translateStatements(source);
     assertEquals(3, stmts.size());
     String result = generateStatement(stmts.get(2));
-    assertEquals("(*[array intRefAtIndex:offset]) += 23;", result);
+    assertEquals("(*IOSIntArray_GetRef(array, offset)) += 23;", result);
   }
 
   public void testFPModuloOperator() throws IOException {
@@ -904,10 +904,10 @@ public class StatementGeneratorTest extends GenerationTest {
       "    a[0][0] = \"42\"; System.out.println(a[0].length); }}",
       "Test", "Test.m");
     assertTranslation(translation,
-        "[((IOSObjectArray *) nil_chk([((IOSObjectArray *) nil_chk(Test_a_)) objectAtIndex:0])) " +
+        "[((IOSObjectArray *) nil_chk(IOSObjectArray_Get(nil_chk(Test_a_), 0))) " +
         "replaceObjectAtIndex:0 withObject:@\"42\"];");
     assertTranslation(translation,
-        "[((IOSObjectArray *) nil_chk([Test_a_ objectAtIndex:0])) count]");
+        "[((IOSObjectArray *) nil_chk(IOSObjectArray_Get(Test_a_, 0))) count]");
   }
 
   public void testMultiDimArray() throws IOException {
@@ -1250,10 +1250,10 @@ public class StatementGeneratorTest extends GenerationTest {
         "array[2] <<= 5;}}",
         "Test", "Test.m");
     assertTranslation(translation,
-        "URShiftAssignInt(&(*[((IOSIntArray *) nil_chk(array)) intRefAtIndex:0]), 2)");
-    assertTranslation(translation, "URShiftAssignInt(&(*[array intRefAtIndex:i - 1]), 3)");
-    assertTranslation(translation, "(*[array intRefAtIndex:1]) >>= 4");
-    assertTranslation(translation, "(*[array intRefAtIndex:2]) <<= 5");
+        "URShiftAssignInt(&(*IOSIntArray_GetRef(nil_chk(array), 0)), 2)");
+    assertTranslation(translation, "URShiftAssignInt(&(*IOSIntArray_GetRef(array, i - 1)), 3)");
+    assertTranslation(translation, "(*IOSIntArray_GetRef(array, 1)) >>= 4");
+    assertTranslation(translation, "(*IOSIntArray_GetRef(array, 2)) <<= 5");
   }
 
   public void testAssertWithoutDescription() throws IOException {
@@ -1341,7 +1341,7 @@ public class StatementGeneratorTest extends GenerationTest {
         "public class Test { void test(char[] array) { " +
         "array[0] >>>= 2; }}",
         "Test", "Test.m");
-    assertTranslation(translation, "(*[((IOSCharArray *) nil_chk(array)) charRefAtIndex:0]) >>= 2");
+    assertTranslation(translation, "(*IOSCharArray_GetRef(nil_chk(array), 0)) >>= 2");
   }
 
   public void testDoubleQuoteConcatenation() throws IOException {
