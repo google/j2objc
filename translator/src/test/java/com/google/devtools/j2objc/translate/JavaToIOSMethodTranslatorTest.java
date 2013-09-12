@@ -43,9 +43,11 @@ public class JavaToIOSMethodTranslatorTest extends GenerationTest {
     assertTranslation(translation, "- (Example *)copy__ OBJC_METHOD_FAMILY_NONE;");
     assertTranslation(translation, "- (id)copyWithZone:(NSZone *)zone;");
     translation = getTranslatedFile("Example.m");
-    assertTranslation(translation, "return (Example *) [self clone];");
+    assertTranslation(translation,
+        "return (Example *) check_class_cast([self clone], [Example class]);");
     assertTranslation(translation, "- (id)copyWithZone:(NSZone *)zone {");
-    assertTranslation(translation, "Example *e = (Example *) [super clone];");
+    assertTranslation(translation,
+        "Example *e = (Example *) check_class_cast([super clone], [Example class]);");
     assertTranslation(translation, "((Example *) nil_chk(e))->i_ = i_");
   }
 
@@ -222,10 +224,11 @@ public class JavaToIOSMethodTranslatorTest extends GenerationTest {
     assertTranslation(translation, "- (Example *)copy__ OBJC_METHOD_FAMILY_NONE;");
     assertTranslation(translation, "- (id)copyWithZone:(NSZone *)zone;");
     translation = getTranslatedFile("Example.m");
-    assertTranslation(translation, "return (Example *) [self clone];");
-    assertTranslation(translation, "- (id)copyWithZone:(NSZone *)zone {");
     assertTranslation(translation,
-        "Example_Inner *inner = (Example_Inner *) [super clone];");
+        "return (Example *) check_class_cast([self clone], [Example class]);");
+    assertTranslation(translation, "- (id)copyWithZone:(NSZone *)zone {");
+    assertTranslation(translation, "Example_Inner *inner = " +
+        "(Example_Inner *) check_class_cast([super clone], [Example_Inner class]);");
     assertTranslation(translation, "((Example_Inner *) nil_chk(inner))->i_ = i_;");
   }
 

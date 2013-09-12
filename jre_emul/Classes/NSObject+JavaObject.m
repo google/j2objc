@@ -121,11 +121,12 @@ static void doWait(id obj, long long timeout) {
 }
 
 + (id)throwNullPointerException {
-#if __has_feature(objc_arc)
-  @throw [[JavaLangNullPointerException alloc] init];
-#else
-  @throw [[[JavaLangNullPointerException alloc] init] autorelease];
-#endif
+  @throw AUTORELEASE([[JavaLangNullPointerException alloc] init]);
+  return nil;
+}
+
++ (id)throwClassCastException {
+  @throw AUTORELEASE([[JavaLangClassCastException alloc] init]);
   return nil;
 }
 

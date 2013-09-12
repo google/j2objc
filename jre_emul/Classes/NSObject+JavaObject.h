@@ -38,6 +38,7 @@
 - (int)compareToWithId:(id)other;
 
 + (id)throwNullPointerException;
++ (id)throwClassCastException;
 
 // Should be implemented by any class that needs to support Java's clone
 // behavior for itself or its subclasses.
