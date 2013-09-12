@@ -846,14 +846,6 @@ public class StatementGeneratorTest extends GenerationTest {
     assertEquals("(*IOSIntArray_GetRef(array, offset)) += 23;", result);
   }
 
-  public void testFPModuloOperator() throws IOException {
-    String source = "float a = 4.2f; a %= 2.1f;";
-    List<Statement> stmts = translateStatements(source);
-    assertEquals(2, stmts.size());
-    String result = generateStatement(stmts.get(1));
-    assertEquals("a = fmod(a, 2.1f);", result);
-  }
-
   public void testRegisterVariableName() throws IOException {
     String source = "int register = 42;";
     List<Statement> stmts = translateStatements(source);
@@ -1056,16 +1048,6 @@ public class StatementGeneratorTest extends GenerationTest {
         "    public Inner(int foo) { this(); int i = foo; }}}",
         "Test", "Test.m");
     assertTranslation(translation, "self = [self initTest_InnerWithTest:outer$]");
-  }
-
-  public void testDoubleModulo() throws IOException {
-    String translation = translateSourceFile(
-      "public class A { " +
-      "  double doubleMod(double one, double two) { return one % two; }" +
-      "  float floatMod(float three, float four) { return three % four; }}",
-      "A", "A.m");
-    assertTranslation(translation, "return fmod(one, two);");
-    assertTranslation(translation, "return fmodf(three, four);");
   }
 
   // Verify that an external string can be used in string concatenation,
