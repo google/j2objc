@@ -561,6 +561,18 @@
 		06B6D20617C7D67400624B3C /* LocaleData.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = LocaleData.m; path = build_result/Classes/libcore/icu/LocaleData.m; sourceTree = "<group>"; };
 		06C6B7FB159BCBD1004B800C /* PatternSyntaxException.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PatternSyntaxException.h; path = build_result/Classes/java/util/regex/PatternSyntaxException.h; sourceTree = "<group>"; };
 		06C6B7FC159BCBD1004B800C /* PatternSyntaxException.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = PatternSyntaxException.m; path = build_result/Classes/java/util/regex/PatternSyntaxException.m; sourceTree = "<group>"; };
+		06D7BDE917DE685C00329964 /* PhantomReference.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PhantomReference.h; path = build_result/Classes/java/lang/ref/PhantomReference.h; sourceTree = "<group>"; };
+		06D7BDEA17DE685C00329964 /* PhantomReference.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = PhantomReference.m; path = build_result/Classes/java/lang/ref/PhantomReference.m; sourceTree = "<group>"; };
+		06D7BDEB17DE685C00329964 /* Reference.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Reference.h; path = build_result/Classes/java/lang/ref/Reference.h; sourceTree = "<group>"; };
+		06D7BDEC17DE685C00329964 /* Reference.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = Reference.m; path = build_result/Classes/java/lang/ref/Reference.m; sourceTree = "<group>"; };
+		06D7BDED17DE685C00329964 /* ReferenceQueue.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ReferenceQueue.h; path = build_result/Classes/java/lang/ref/ReferenceQueue.h; sourceTree = "<group>"; };
+		06D7BDEE17DE685C00329964 /* ReferenceQueue.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ReferenceQueue.m; path = build_result/Classes/java/lang/ref/ReferenceQueue.m; sourceTree = "<group>"; };
+		06D7BDEF17DE685C00329964 /* SoftReference.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SoftReference.h; path = build_result/Classes/java/lang/ref/SoftReference.h; sourceTree = "<group>"; };
+		06D7BDF017DE685C00329964 /* SoftReference.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = SoftReference.m; path = build_result/Classes/java/lang/ref/SoftReference.m; sourceTree = "<group>"; };
+		06D7BDF117DE685C00329964 /* WeakReference.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = WeakReference.h; path = build_result/Classes/java/lang/ref/WeakReference.h; sourceTree = "<group>"; };
+		06D7BDF217DE685C00329964 /* WeakReference.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = WeakReference.m; path = build_result/Classes/java/lang/ref/WeakReference.m; sourceTree = "<group>"; };
+		06D7BDFD17DE687200329964 /* WeakHashMap.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = WeakHashMap.h; path = build_result/Classes/java/util/WeakHashMap.h; sourceTree = "<group>"; };
+		06D7BDFE17DE687200329964 /* WeakHashMap.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = WeakHashMap.m; path = build_result/Classes/java/util/WeakHashMap.m; sourceTree = "<group>"; };
 		06DD329716A13FA000AD7ACE /* Buffer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Buffer.h; path = build_result/Classes/java/nio/Buffer.h; sourceTree = "<group>"; };
 		06DD329816A13FA000AD7ACE /* Buffer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = Buffer.m; path = build_result/Classes/java/nio/Buffer.m; sourceTree = "<group>"; };
 		06DD329916A13FA000AD7ACE /* BufferFactory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = BufferFactory.h; path = build_result/Classes/java/nio/BufferFactory.h; sourceTree = "<group>"; };
@@ -1040,6 +1052,18 @@
 		067219221559B9D200645E1B /* Transpiled Classes */ = {
 			isa = PBXGroup;
 			children = (
+				06D7BDFD17DE687200329964 /* WeakHashMap.h */,
+				06D7BDFE17DE687200329964 /* WeakHashMap.m */,
+				06D7BDE917DE685C00329964 /* PhantomReference.h */,
+				06D7BDEA17DE685C00329964 /* PhantomReference.m */,
+				06D7BDEB17DE685C00329964 /* Reference.h */,
+				06D7BDEC17DE685C00329964 /* Reference.m */,
+				06D7BDED17DE685C00329964 /* ReferenceQueue.h */,
+				06D7BDEE17DE685C00329964 /* ReferenceQueue.m */,
+				06D7BDEF17DE685C00329964 /* SoftReference.h */,
+				06D7BDF017DE685C00329964 /* SoftReference.m */,
+				06D7BDF117DE685C00329964 /* WeakReference.h */,
+				06D7BDF217DE685C00329964 /* WeakReference.m */,
 				06721AC51559CB4200645E1B /* AbstractCollection.h */,
 				06721A291559C91600645E1B /* AbstractCollection.m */,
 				06721AC61559CB4200645E1B /* AbstractList.h */,

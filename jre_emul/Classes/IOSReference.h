@@ -20,7 +20,7 @@
 #ifndef _IOSREFERENCE_H_
 #define _IOSREFERENCE_H_
 
-#import <Foundation/Foundation.h>
+#import "JreEmulation.h"
 
 @class JavaLangRefReference;
 
@@ -33,6 +33,9 @@
 // Methods should only be called by java.lang.ref.Reference.
 + (void)initReferent:(JavaLangRefReference *)reference;
 + (void)deallocReferent:(JavaLangRefReference *)reference;
+
+// Test-only method to fake a low-memory condition.
++ (void)handleMemoryWarning:(NSNotification *)notification;
 
 @end
 

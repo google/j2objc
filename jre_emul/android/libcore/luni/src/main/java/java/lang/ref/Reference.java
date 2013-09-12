@@ -34,7 +34,6 @@ package java.lang.ref;
 
 import com.google.j2objc.annotations.Weak;
 
-
 /*-[
 #import "IOSReference.h"
 ]-*/
@@ -118,6 +117,7 @@ public abstract class Reference<T> {
      * VM requirement: this field <em>must</em> be called "queue"
      * and be a java.lang.ref.ReferenceQueue.
      */
+    @Weak
     volatile ReferenceQueue<? super T> queue;
 
     /**
@@ -212,10 +212,10 @@ public abstract class Reference<T> {
     }
 
     private native void initReferent() /*-[
-        [IOSReference initReferent:self];
+      [IOSReference initReferent:self];
     ]-*/;
 
     private native void deallocReferent() /*-[
-        [IOSReference deallocReferent:self];
+      [IOSReference deallocReferent:self];
     ]-*/;
 }

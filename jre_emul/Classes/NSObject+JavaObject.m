@@ -141,6 +141,9 @@ static void doWait(id obj, long long timeout) {
   return nil;
 }
 
+// Unimplemented private methods for java.lang.ref.Reference. The methods'
+// implementations are set when swizzling the Reference's referent class.
 - (void)_java_lang_ref_original_dealloc {}
+- (void)_java_lang_ref_original_release {}
 
 @end

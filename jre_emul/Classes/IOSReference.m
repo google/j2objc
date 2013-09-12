@@ -18,12 +18,21 @@
 //
 
 #import "IOSReference.h"
+#import "java/lang/ref/PhantomReference.h"
 #import "java/lang/ref/Reference.h"
+#import "java/lang/ref/SoftReference.h"
 
-#import <dlfcn.h>
 #import <objc/runtime.h>
 #import <pthread.h>
 
+#if TARGET_OS_MAC == 0
+#import <UIKit/UIApplication.h>
+#define SUPPORTS_SOFT_REFERENCES 1
+#endif
+
+#if __has_feature(objc_arc)
+#error "IOSReference is not built with ARC"
+#endif
 
 // This class implements a variation on the design described in
 // Mike Ash's "Zeroing Weak References in Objective-C" blog entry.
@@ -34,12 +43,22 @@
 // This design creates a subclass of a referent's class (one per
 // referent type), then replaces the referent's class with it.
 // These referent subclasses have a dealloc method that zeroes
-// the reference's referent field, posts a copy of the referent
-// to the reference's queue (if it exists), and then calls the
-// original class's dealloc method.
+// the reference's referent field, like iOS does for __weak
+// references. They also have a release method that posts refs
+// to their associated queues when they don't have other
+// references.
+//
+// Note: only iOS provides low-memory notification support. Since
+// the primary purpose of soft references is to support caching,
+// and since iOS is the J2ObjC's primary target platform, on OS X
+// soft references are never released. This shouldn't be an issue
+// in practice, due to OS X virtual memory and the infrequent use
+// of large caches in client code. The alternative of throwing an
+// UnsupportedOperationException seems less useful.
 
 @interface NSObject (JavaLangRefReferenceSwizzled)
 - (void)JavaLangRefReference_original_dealloc;
+- (void)JavaLangRefReference_original_release;
 @end
 
 
@@ -48,8 +67,10 @@
 static void AssociateReferenceWithReferent(id referent, JavaLangRefReference *reference);
 static void EnsureReferentSubclass(id referent);
 static void RemoveReferenceAssociation(id referent, JavaLangRefReference *reference);
+static void RealReferentRelease(id referent);
+static void WhileLocked(void (^block)(void));
 
-// Global recursive mutux used with WhileLocked().
+// Global recursive mutux.
 static pthread_mutex_t reference_mutex;
 
 // Maps referents to sets of Reference instances that refer to them.
@@ -61,6 +82,12 @@ static NSMutableDictionary *referent_subclass_map;
 // Set of all referent subclasses.
 static NSMutableSet *referent_subclasses;
 
+// Set of all soft ref queue candidates. These are only released when
+// the runtime is notified of a low memory condition.
+static NSMutableSet *soft_references;
+
+static BOOL in_low_memory_cleanup;
+
 + (void)initReferent:(JavaLangRefReference *)reference {
   EnsureReferentSubclass(reference->referent_);
   AssociateReferenceWithReferent(reference->referent_, reference);
@@ -70,6 +97,18 @@ static NSMutableSet *referent_subclasses;
   if (reference->referent_) {
     RemoveReferenceAssociation(reference->referent_, reference);
   }
+}
+
++ (void)handleMemoryWarning:(NSNotification *)notification {
+  WhileLocked(^{
+    in_low_memory_cleanup = YES;
+    for (JavaLangRefSoftReference *reference in soft_references) {
+      [reference->referent_ release];
+    }
+    in_low_memory_cleanup = NO;
+  });
+  [soft_references release];
+  soft_references = [[NSMutableSet alloc] init];
 }
 
 + (void)initialize {
@@ -83,7 +122,24 @@ static NSMutableSet *referent_subclasses;
     weak_refs_map = CFDictionaryCreateMutable(NULL, 0, NULL, &kCFTypeDictionaryValueCallBacks);
     referent_subclasses = [[NSMutableSet alloc] init];
     referent_subclass_map = [[NSMutableDictionary alloc] init];
+    soft_references = [[NSMutableSet alloc] init];
+
+#if SUPPORTS_SOFT_REFERENCES
+    // Register for iOS low memory notifications, to clear pending soft references.
+    [[NSNotificationCenter defaultCenter]
+        addObserver:self
+           selector:@selector(handleMemoryWarning:)
+               name: UIApplicationDidReceiveMemoryWarningNotification
+             object:nil];
+#endif
   }
+}
+
+
+static void WhileLocked(void (^block)(void)) {
+  pthread_mutex_lock(&reference_mutex);
+  block();
+  pthread_mutex_unlock(&reference_mutex);
 }
 
 
@@ -97,10 +153,13 @@ static Class GetReferentSubclass(id obj) {
 }
 
 
-// Returns YES if an object is constant. Normally object retain
-// counts shouldn't be queried, but it's permissible here because
-// retain/release don't modify retain counts when they are INT_MAX
-// (or UINT_MAX on some architectures).
+// Returns YES if an object is constant. The retain and release methods
+// don't modify retain counts when they are INT_MAX (or UINT_MAX on some
+// architectures), so the retainCount test in ReferentSubclassRelease
+// won't work. The only constants in translated code are string constants;
+// since constant strings as reference referents does nothing in Java
+// (since they are never GC'd), with this test they will do nothing in
+// iOS as well.
 static BOOL IsConstantObject(id obj) {
   unsigned int retainCount = [obj retainCount];
   return retainCount == UINT_MAX || retainCount == INT_MAX;
@@ -114,6 +173,9 @@ static Class CreateReferentSubclass(Class class) {
   Method dealloc = class_getInstanceMethod(class, @selector(dealloc));
   class_addMethod(subclass, @selector(dealloc), (IMP) ReferentSubclassDealloc,
                   method_getTypeEncoding(dealloc));
+  Method release = class_getInstanceMethod(class, @selector(release));
+  class_addMethod(subclass, @selector(release), (IMP) ReferentSubclassRelease,
+                  method_getTypeEncoding(release));
   objc_registerClassPair(subclass);
   return subclass;
 }
@@ -147,25 +209,29 @@ static Class GetRealSuperclass(id obj) {
 // Add an association between a referent and its reference. Because
 // multiple references can share a referent, a reference set is used.
 static void AssociateReferenceWithReferent(id referent, JavaLangRefReference *reference) {
-  CFMutableSetRef set = (void *)CFDictionaryGetValue(weak_refs_map, referent);
-  if (!set) {
-    set = CFSetCreateMutable(NULL, 0, NULL);
-    CFDictionarySetValue(weak_refs_map, referent, set);
-    CFRelease(set);
-  }
-  CFSetAddValue(set, reference);
+  WhileLocked(^{
+    CFMutableSetRef set = (void *)CFDictionaryGetValue(weak_refs_map, referent);
+    if (!set) {
+      set = CFSetCreateMutable(NULL, 0, NULL);
+      CFDictionarySetValue(weak_refs_map, referent, set);
+      CFRelease(set);
+    }
+    CFSetAddValue(set, reference);
+  });
 }
 
 
 // Remove the association between a referent and all of its references.
 static void RemoveReferenceAssociation(id referent, JavaLangRefReference *reference) {
-  CFMutableSetRef set = (void *)CFDictionaryGetValue(weak_refs_map, referent);
-  CFSetRemoveValue(set, reference);
+  WhileLocked(^{
+    CFMutableSetRef set = (void *)CFDictionaryGetValue(weak_refs_map, referent);
+    CFSetRemoveValue(set, reference);
+  });
 }
 
 
 // A referent is being dealloc'd, so remove all references to it from
-// the weak refs map. If one or more references have a
+// the weak refs map.
 static BOOL RemoveAllReferenceAssociations(id referent) {
   BOOL enqueued = NO;
   CFMutableSetRef set = (void *) CFDictionaryGetValue(weak_refs_map, referent);
@@ -194,5 +260,75 @@ static void ReferentSubclassDealloc(id self, SEL _cmd) {
   }
 }
 
+
+// Queues any references to this referent to their associated reference
+// queue (if one is defined) when the referent's retainCount is low.
+static void MaybeQueueReferences(id referent) {
+  if ([referent retainCount] == 1) {
+    // Add any associated references to their respective reference queues.
+    CFMutableSetRef set = (void *) CFDictionaryGetValue(weak_refs_map, referent);
+    if (set) {
+      NSSet *setCopy = (ARCBRIDGE NSSet *) set;
+      for (JavaLangRefReference *reference in setCopy) {
+        if ([reference isKindOfClass:[JavaLangRefSoftReference class]]) {
+          JavaLangRefSoftReference *softRef = (JavaLangRefSoftReference *) reference;
+          if (in_low_memory_cleanup) {
+            // Queue reference.
+            [reference enqueueInternal];
+            softRef->queued_ = YES;
+          } else if (!softRef->queued_) {
+            // Add to soft_references list.
+            [referent retain];
+            [soft_references addObject:reference];
+          }
+        } else {
+          [reference enqueueInternal];
+        }
+      }
+    }
+  }
+}
+
+
+// Queues any phantom references to this referent when its retainCount
+// is low. Phantom references are queued after the release message is sent,
+// just like in Java they are queued after being finalized.
+static void MaybeQueuePhantomReferences(id referent) {
+  // Add any associated phantom references to their respective queues.
+  CFMutableSetRef set = (void *) CFDictionaryGetValue(weak_refs_map, referent);
+  if (set) {
+    NSSet *setCopy = (ARCBRIDGE NSSet *) set;
+    for (JavaLangRefReference *reference in setCopy) {
+      if ([reference isKindOfClass:[JavaLangRefPhantomReference class]]) {
+        // Enqueue PhantomReference, now that it's been "finalized".
+        [reference enqueueInternal];
+      }
+    }
+  }
+}
+
+
+// Invoke a referent subclass's original release method.
+static void RealReferentRelease(id referent) {
+  Class superclass = GetRealSuperclass(referent);
+  IMP superRelease = class_getMethodImplementation(superclass, @selector(release));
+  WhileLocked(^{
+    ((void (*)(id, SEL))superRelease)(referent, @selector(release));
+  });
+}
+
+
+// Release method for referent subclasses, which directly calls the
+// original class's release method. If the instance would be
+// deallocated when this function returns, it is added to its
+// associated reference queue, if any.
+static void ReferentSubclassRelease(id self, SEL _cmd) {
+  MaybeQueueReferences(self);
+  NSUInteger retainCount = [self retainCount];
+  RealReferentRelease(self);
+  if (retainCount == 1) {
+    MaybeQueuePhantomReferences(self);
+  }
+}
 
 @end
