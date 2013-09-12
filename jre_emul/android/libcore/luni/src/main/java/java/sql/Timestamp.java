@@ -19,6 +19,8 @@ package java.sql;
 
 //import java.text.ParsePosition;
 //import java.text.SimpleDateFormat;
+import java.text.ParsePosition;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
 import java.util.regex.Pattern;
@@ -402,8 +404,7 @@ public class Timestamp extends Date {
      *         supplied {@code String}.
      * @throws IllegalArgumentException
      *             if the provided string is {@code null}.
-     *
-    // TODO(user): enable when java.text is supported.
+     */
     public static Timestamp valueOf(String s) throws IllegalArgumentException {
         if (s == null) {
             throw new IllegalArgumentException("Argument cannot be null");
@@ -424,7 +425,7 @@ public class Timestamp extends Date {
          * seconds value, according to the definition of SimpleDateFormat.parse,
          * with the ParsePosition indicating the index of the "." which should
          * precede the nanoseconds value
-         * /
+         */
         Date theDate;
         try {
             theDate = df.parse(s, pp);
@@ -443,7 +444,7 @@ public class Timestamp extends Date {
          * '.' followed by 1 to 9 digits - we also accept nothing (no fractions
          * of a second). Anything else is interpreted as incorrect format which
          * will generate an IllegalArgumentException
-         * /
+         */
         int position = pp.getIndex();
         int remaining = s.length() - position;
         int theNanos;
@@ -455,7 +456,7 @@ public class Timestamp extends Date {
             /*
              * Case where fraction of a second is specified: Require 1 character
              * plus the "." in the remaining part of the string...
-             * /
+             */
             if ((s.length() - position) < ".n".length()) {
                 throw badTimestampString(s);
             }
@@ -463,7 +464,7 @@ public class Timestamp extends Date {
             /*
              * If we're strict, we should not allow any EXTRA characters after
              * the 9 digits
-             * /
+             */
             if ((s.length() - position) > ".nnnnnnnnn".length()) {
                 throw badTimestampString(s);
             }
@@ -482,7 +483,7 @@ public class Timestamp extends Date {
             /*
              * We must adjust for the cases where the nanos String was not 9
              * characters long by padding out with zeros
-             * /
+             */
             theNanoString = theNanoString + "000000000";
             theNanoString = theNanoString.substring(0, 9);
 
@@ -503,7 +504,6 @@ public class Timestamp extends Date {
 
         return theTimestamp;
     }
-    */
 
     private static IllegalArgumentException badTimestampString(String s) {
         throw new IllegalArgumentException("Timestamp format must be " +

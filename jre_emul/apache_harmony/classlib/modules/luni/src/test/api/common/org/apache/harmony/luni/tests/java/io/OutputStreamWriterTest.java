@@ -17,6 +17,8 @@
 
 package org.apache.harmony.luni.tests.java.io;
 
+import junit.framework.TestCase;
+
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -27,8 +29,8 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.io.UnsupportedEncodingException;
-
-import junit.framework.TestCase;
+import java.nio.charset.Charset;
+import java.nio.charset.CharsetEncoder;
 
 public class OutputStreamWriterTest extends TestCase {
 
@@ -348,8 +350,7 @@ public class OutputStreamWriterTest extends TestCase {
 
     /*
      * Class under test for void OutputStreamWriter(OutputStream)
-     *
-    TODO(user): enable when java.nio support is implemented
+     */
     public void testOutputStreamWriterOutputStreamCharset() throws IOException {
         Charset cs = Charset.forName("ascii");
         try {
@@ -368,12 +369,10 @@ public class OutputStreamWriterTest extends TestCase {
         assertEquals(cs, Charset.forName(writer2.getEncoding()));
         writer2.close();
     }
-    */
 
     /*
      * Class under test for void OutputStreamWriter(OutputStream, String)
-     *
-    TODO(user): enable when java.nio support is implemented
+     */
     public void testOutputStreamWriterOutputStreamCharsetEncoder()
             throws IOException {
         Charset cs = Charset.forName("ascii");
@@ -399,7 +398,6 @@ public class OutputStreamWriterTest extends TestCase {
         Charset cs = Charset.forName("utf-8");
         assertEquals(cs, Charset.forName(writer.getEncoding()));
     }
-    */
 
     public void testHandleEarlyEOFChar_1() throws IOException {
         String str = "All work and no play makes Jack a dull boy\n"; //$NON-NLS-1$
@@ -421,7 +419,7 @@ public class OutputStreamWriterTest extends TestCase {
         InputStreamReader in = new InputStreamReader(fis);
         for (int offset = 0; offset < strChars.length; ++offset) {
             int b = in.read();
-            assertFalse("Early EOF at offset", -1 == b);
+            assertFalse("Early EOF at offset " + offset, -1 == b);
         }
         f.delete();
     }
@@ -601,7 +599,7 @@ public class OutputStreamWriterTest extends TestCase {
             // stream is closed
             converted = new String(bout.toByteArray(), "ISO8859_1");
             assertTrue("invalid conversion 2: " + converted, converted
-                    .equals("\u001b$B$("));
+                    .equals("\u001b$B$(\u001b(B"));
             writer.close();
             converted = new String(bout.toByteArray(), "ISO8859_1");
             assertTrue("invalid conversion 3: " + converted, converted
@@ -613,7 +611,7 @@ public class OutputStreamWriterTest extends TestCase {
             writer.write(new char[] { '\u3048' });
             writer.close();
             // there should not be a mode switch between writes
-            assertEquals("invalid conversion 4", "\u001b$B$($(\u001b(B",
+            assertEquals("invalid conversion 4", "\u001b$B$(\u001b(B\u001b$B$(\u001b(B",
                     new String(bout.toByteArray(), "ISO8859_1"));
         } catch (UnsupportedEncodingException e) {
             // Can't test missing converter

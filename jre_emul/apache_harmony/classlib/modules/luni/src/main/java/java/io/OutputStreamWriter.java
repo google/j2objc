@@ -17,6 +17,15 @@
 
 package java.io;
 
+import org.apache.harmony.luni.util.HistoricalNamesUtil;
+
+import java.nio.ByteBuffer;
+import java.nio.CharBuffer;
+import java.nio.charset.Charset;
+import java.nio.charset.CharsetEncoder;
+import java.nio.charset.CoderResult;
+import java.nio.charset.CodingErrorAction;
+
 /**
  * A class for turning a character stream into a byte stream. Data written to
  * the target input stream is converted into bytes by either a default or a
@@ -30,7 +39,12 @@ package java.io;
 public class OutputStreamWriter extends Writer {
 
     private OutputStream out;
-    private int encoding;
+
+    private CharsetEncoder encoder;
+
+    private ByteBuffer bytes = ByteBuffer.allocate(8192);
+
+    private boolean encoderFlush = false;
 
     /**
      * Constructs a new OutputStreamWriter using {@code out} as the target
@@ -43,7 +57,9 @@ public class OutputStreamWriter extends Writer {
     public OutputStreamWriter(OutputStream out) {
         super(out);
         this.out = out;
-        encoding = 5;  // NSISOLatin1StringEncoding documented enum value.
+        encoder = Charset.forName("ISO8859_1").newEncoder();
+        encoder.onMalformedInput(CodingErrorAction.REPLACE);
+        encoder.onUnmappableCharacter(CodingErrorAction.REPLACE);
     }
 
     /**
@@ -68,10 +84,48 @@ public class OutputStreamWriter extends Writer {
             throw new NullPointerException();
         }
         this.out = out;
-        encoding = InputStreamReader.getOSXEncoding(enc);
-        if (encoding == -1) {
+        try {
+            encoder = Charset.forName(enc).newEncoder();
+        } catch (Exception e) {
             throw new UnsupportedEncodingException(enc);
         }
+        encoder.onMalformedInput(CodingErrorAction.REPLACE);
+        encoder.onUnmappableCharacter(CodingErrorAction.REPLACE);
+    }
+
+    /**
+     * Constructs a new OutputStreamWriter using {@code out} as the target
+     * stream to write converted characters to and {@code cs} as the character
+     * encoding.
+     * 
+     * @param out
+     *            the target stream to write converted bytes to.
+     * @param cs
+     *            the {@code Charset} that specifies the character encoding.
+     */
+    public OutputStreamWriter(OutputStream out, Charset cs) {
+        super(out);
+        this.out = out;
+        encoder = cs.newEncoder();
+        encoder.onMalformedInput(CodingErrorAction.REPLACE);
+        encoder.onUnmappableCharacter(CodingErrorAction.REPLACE);
+    }
+
+    /**
+     * Constructs a new OutputStreamWriter using {@code out} as the target
+     * stream to write converted characters to and {@code enc} as the character
+     * encoder.
+     * 
+     * @param out
+     *            the target stream to write converted bytes to.
+     * @param enc
+     *            the character encoder used for character conversion.
+     */
+    public OutputStreamWriter(OutputStream out, CharsetEncoder enc) {
+        super(out);
+        enc.charset();
+        this.out = out;
+        encoder = enc;
     }
 
     /**
@@ -87,14 +141,26 @@ public class OutputStreamWriter extends Writer {
      */
     @Override
     public void close() throws IOException {
-	if (out == null) {
-	    return;
-	}
         synchronized (lock) {
-            flush();
-            out.flush();
-            out.close();
-            out = null;
+            if (encoder != null) {
+                if (encoderFlush) {
+                    CoderResult result = encoder.flush(bytes);
+                    while (!result.isUnderflow()) {
+                        if (result.isOverflow()) {
+                            flush();
+                            result = encoder.flush(bytes);
+                        } else {
+                            result.throwException();
+                        }
+                    }
+                }
+    
+                flush();
+                out.flush();
+                out.close();
+                encoder = null;
+                bytes = null;
+            }
         }
     }
 
@@ -108,7 +174,22 @@ public class OutputStreamWriter extends Writer {
      */
     @Override
     public void flush() throws IOException {
-        checkStatus();
+        synchronized (lock) {
+            checkStatus();
+            int position;
+            if ((position = bytes.position()) > 0) {
+                bytes.flip();
+                out.write(bytes.array(), 0, position);
+                bytes.clear();
+            }
+            out.flush();
+        }
+    }
+
+    private void checkStatus() throws IOException {
+        if (encoder == null) {
+            throw new IOException("Writer is closed.");
+        }
     }
 
     /**
@@ -119,7 +200,10 @@ public class OutputStreamWriter extends Writer {
      *         writer is closed.
      */
     public String getEncoding() {
-	return out != null ? InputStreamReader.nativeEncodingName(encoding) : null;
+        if (encoder == null) {
+            return null;
+        }
+        return HistoricalNamesUtil.getHistoricalName(encoder.charset().name());
     }
 
     /**
@@ -149,40 +233,26 @@ public class OutputStreamWriter extends Writer {
             if (offset < 0 || offset > buf.length - count || count < 0) {
                 throw new IndexOutOfBoundsException();
             }
-            convert(buf, offset, count);
+            CharBuffer chars = CharBuffer.wrap(buf, offset, count);
+            convert(chars);
         }
     }
 
-    private native void convert(char[] buf, int offset, int count) /*-[
-      unichar *chars = [buf getChars];
-      NSString *s = [[NSString alloc] initWithCharacters:(chars + offset) length:count];
-#if ! __has_feature(objc_arc)
-      [s autorelease];
-#endif
-      free(chars);
-      NSUInteger nBytes = [s lengthOfBytesUsingEncoding:NSUTF8StringEncoding];
-      void *bytes = malloc(nBytes);
-      if (![s getBytes:bytes
-             maxLength:nBytes
-            usedLength:NULL
-              encoding:NSUTF8StringEncoding
-               options:0
-                 range:NSMakeRange(0, count)
-        remainingRange:NULL]) {
-        JavaIoIOException *e = [[JavaIoIOException alloc] init];
-#if ! __has_feature(objc_arc)
-        [e autorelease];
-#endif
-        free(bytes);
-        @throw e;
-      }
-      IOSByteArray *array = [[IOSByteArray alloc] initWithBytes:bytes count:nBytes];
-      free(bytes);
-      [out_ writeWithByteArray:array];
-#if ! __has_feature(objc_arc)
-      [array release];
-#endif
-    ]-*/;
+    private void convert(CharBuffer chars) throws IOException {
+        CoderResult result = encoder.encode(chars, bytes, true);
+        encoderFlush = true;
+        while (true) {
+            if (result.isError()) {
+                throw new IOException(result.toString());
+            } else if (result.isOverflow()) {
+                // flush the output buffer
+                flush();
+                result = encoder.encode(chars, bytes, true);
+                continue;
+            }
+            break;
+        }
+    }
 
     /**
      * Writes the character {@code oneChar} to this writer. The lowest two bytes
@@ -197,11 +267,10 @@ public class OutputStreamWriter extends Writer {
      */
     @Override
     public void write(int oneChar) throws IOException {
-        checkStatus();
         synchronized (lock) {
-            char[] buf = new char[1];
-            buf[0] = (char) oneChar;
-            convert(buf, 0, 1);
+            checkStatus();
+            CharBuffer chars = CharBuffer.wrap(new char[] { (char) oneChar });
+            convert(chars);
         }
     }
 
@@ -236,15 +305,9 @@ public class OutputStreamWriter extends Writer {
                 throw new StringIndexOutOfBoundsException();
             }
             checkStatus();
-            char[] chars = str.toCharArray();
-            convert(chars, offset, count);
+            CharBuffer chars = CharBuffer.wrap(str, offset, count + offset);
+            convert(chars);
         }
-    }
-
-    private void checkStatus() throws IOException {
-	if (out == null) {
-            throw new IOException("Writer is closed.");
-	}
     }
 
     @Override boolean checkError() {

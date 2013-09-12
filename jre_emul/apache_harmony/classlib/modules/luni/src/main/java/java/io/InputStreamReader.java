@@ -17,6 +17,18 @@
 
 package java.io;
 
+import java.nio.ByteBuffer;
+import java.nio.CharBuffer;
+import java.nio.charset.Charset;
+import java.nio.charset.CharsetDecoder;
+import java.nio.charset.CoderResult;
+import java.nio.charset.CodingErrorAction;
+import java.nio.charset.IOSCharsetDecoder;
+import java.nio.charset.MalformedInputException;
+import java.nio.charset.UnmappableCharacterException;
+
+import org.apache.harmony.luni.util.HistoricalNamesUtil;
+
 /**
  * A class for turning a byte stream into a character stream. Data read from the
  * source input stream is converted into characters by either a default or a
@@ -29,9 +41,14 @@ package java.io;
  */
 public class InputStreamReader extends Reader {
     private InputStream in;
-    private int encoding;
-    private String backingStore;
-    private int currentIndex;
+
+    private static final int BUFFER_SIZE = 8192;
+
+    private boolean endOfInput = false;
+
+    CharsetDecoder decoder;
+
+    ByteBuffer bytes = ByteBuffer.allocate(BUFFER_SIZE);
 
     /**
      * Constructs a new {@code InputStreamReader} on the {@link InputStream}
@@ -45,7 +62,10 @@ public class InputStreamReader extends Reader {
     public InputStreamReader(InputStream in) {
         super(in);
         this.in = in;
-        encoding = 5;  // NSISOLatin1StringEncoding documented enum value.
+        decoder = Charset.forName("ISO8859_1").newDecoder().onMalformedInput(
+            CodingErrorAction.REPLACE).onUnmappableCharacter(
+            CodingErrorAction.REPLACE);
+        bytes.limit(0);
     }
 
     /**
@@ -70,40 +90,50 @@ public class InputStreamReader extends Reader {
             throw new NullPointerException();
         }
         this.in = in;
-        encoding = getOSXEncoding(enc);
-        if (encoding == -1) {
-            throw new UnsupportedEncodingException(enc);
+        try {
+            decoder = Charset.forName(enc).newDecoder().onMalformedInput(
+                CodingErrorAction.REPLACE).onUnmappableCharacter(
+                CodingErrorAction.REPLACE);
+        } catch (IllegalArgumentException e) {
+            throw (UnsupportedEncodingException)
+                new UnsupportedEncodingException(enc).initCause(e);
         }
+        bytes.limit(0);
     }
 
-    static int getOSXEncoding(String enc) {
-	// String encoding enum values are from NSString documentation.
-	if (enc.equalsIgnoreCase("ASCII") || enc.equalsIgnoreCase("US-ASCII")) {
-	    return 1; // NSASCIIStringEncoding
-	}
-	if (enc.equalsIgnoreCase("EUC_JP")) {
-	    return 3; // NSJapaneseEUCStringEncoding
-	}
-	if (enc.equalsIgnoreCase("UTF8") || enc.equalsIgnoreCase("UTF-8")) {
-	    return 4; // NSUTF8StringEncoding
-	}
-	if (enc.equalsIgnoreCase("8859_1") || enc.equalsIgnoreCase("ISO8859_1") ||
-	        enc.equalsIgnoreCase("ISO-8859-1")) {
-	    return 5; // NSISOLatin1StringEncoding
-	}
-	if (enc.equalsIgnoreCase("ISO8859_2")) {
-	    return 9; // NSISOLatin2StringEncoding
-	}
-	if (enc.equalsIgnoreCase("UTF-16")) {
-	    return 10; // NSUTF16StringEncoding, NSUnicodeStringEncoding
-	}
-	if (enc.equalsIgnoreCase("UTF-16BE")) {
-	    return 0x90000100; // NSUTF16BigEndianStringEncoding
-	}
-	if (enc.equalsIgnoreCase("UTF-16LE")) {
-	    return 0x94000100; // NSUTF16LittleEndianStringEncoding
-	}
-	return -1;
+    /**
+     * Constructs a new InputStreamReader on the InputStream {@code in} and
+     * CharsetDecoder {@code dec}.
+     * 
+     * @param in
+     *            the source InputStream from which to read characters.
+     * @param dec
+     *            the CharsetDecoder used by the character conversion.
+     */
+    public InputStreamReader(InputStream in, CharsetDecoder dec) {
+        super(in);
+        dec.averageCharsPerByte();
+        this.in = in;
+        decoder = dec;
+        bytes.limit(0);
+    }
+
+    /**
+     * Constructs a new InputStreamReader on the InputStream {@code in} and
+     * Charset {@code charset}.
+     * 
+     * @param in
+     *            the source InputStream from which to read characters.
+     * @param charset
+     *            the Charset that defines the character converter
+     */
+    public InputStreamReader(InputStream in, Charset charset) {
+        super(in);
+        this.in = in;
+        decoder = charset.newDecoder().onMalformedInput(
+                CodingErrorAction.REPLACE).onUnmappableCharacter(
+                CodingErrorAction.REPLACE);
+        bytes.limit(0);
     }
 
     /**
@@ -116,6 +146,7 @@ public class InputStreamReader extends Reader {
     @Override
     public void close() throws IOException {
         synchronized (lock) {
+            decoder = null;
             if (in != null) {
                 in.close();
                 in = null;
@@ -134,27 +165,8 @@ public class InputStreamReader extends Reader {
         if (!isOpen()) {
             return null;
         }
-        return nativeEncodingName(encoding);
+        return HistoricalNamesUtil.getHistoricalName(decoder.charset().name());
     }
-    
-    static native String nativeEncodingName(int encoding) /*-[
-      switch (encoding) {
-        case NSASCIIStringEncoding:
-          return @"ASCII";
-        case NSISOLatin1StringEncoding:
-          return @"ISO8859_1";
-        case NSUTF8StringEncoding:
-          return @"UTF8";
-        case NSUnicodeStringEncoding:
-          return @"UTF-16";
-        case NSUTF16BigEndianStringEncoding:
-          return @"UnicodeBigUnmarked";
-        case NSUTF16LittleEndianStringEncoding:
-          return @"UnicodeLittleUnmarked";
-        default:
-          return nil;
-      }
-    ]-*/;
 
     /**
      * Reads a single character from this reader and returns it as an integer
@@ -217,42 +229,70 @@ public class InputStreamReader extends Reader {
                 return 0;
             }
 
-            if (backingStore == null) {
-                ByteArrayOutputStream byteArray = new ByteArrayOutputStream();
-                byte[] buffer = new byte[8192];
-                int len;
-                while ((len = in.read(buffer)) > -1) {
-                    byteArray.write(buffer, 0, len);
+            CharBuffer out = CharBuffer.wrap(buf, offset, length);
+            CoderResult result = CoderResult.UNDERFLOW;
+
+            // bytes.remaining() indicates number of bytes in buffer
+            // when 1-st time entered, it'll be equal to zero
+            boolean needInput = !bytes.hasRemaining();
+
+            while (out.hasRemaining()) {
+                // fill the buffer if needed
+                if (needInput) {
+                    try {
+                        if ((in.available() == 0) 
+                            && (out.position() > offset)) {
+                            // we could return the result without blocking read
+                            break;
+                        }
+                    } catch (IOException e) {
+                        // available didn't work so just try the read
+                    }
+
+                    int to_read = bytes.capacity() - bytes.limit();
+                    int off = bytes.arrayOffset() + bytes.limit();
+                    int was_red = in.read(bytes.array(), off, to_read);
+
+                    if (was_red == -1) {
+                        endOfInput = true;
+                        break;
+                    } else if (was_red == 0) {
+                        break;
+                    }
+                    bytes.limit(bytes.limit() + was_red);
+                    needInput = false;
                 }
-                backingStore = convertToString(byteArray.toByteArray());
-                currentIndex = 0;
+
+                // decode bytes
+                result = decoder.decode(bytes, out, false);
+
+                if (result.isUnderflow()) {
+                    // compact the buffer if no space left
+                    if (bytes.limit() == bytes.capacity()) {
+                        bytes.compact();
+                        bytes.limit(bytes.position());
+                        bytes.position(0);
+                    }
+                    needInput = true;
+                } else {
+                    break;
+                }
             }
 
-            if (currentIndex == backingStore.length()) {
-        	return -1;
+            if (result == CoderResult.UNDERFLOW && endOfInput) {
+                result = decoder.decode(bytes, out, true);
+                decoder.flush(out);
+                decoder.reset();
             }
-            int n = Math.min(length, backingStore.length() - currentIndex);
-            backingStore.getChars(currentIndex, currentIndex + n, buf, offset);
-            currentIndex += n;
-            return n;
+            if (result.isMalformed()) {
+                throw new MalformedInputException(result.length());
+            } else if (result.isUnmappable()) {
+                throw new UnmappableCharacterException(result.length());
+            }
+
+            return out.position() - offset == 0 ? -1 : out.position() - offset;
         }
     }
-
-    /**
-     * Convert bytes to String using NSString.  This is necessary because
-     * Cocoa doesn't have the equivalent of a byte-to-character decoder.
-     */
-    private native String convertToString(byte[] byteArray) /*-[
-      NSUInteger length = [byteArray count];
-      char *buffer = malloc(length);
-      [byteArray getBytes:buffer offset:0 length:length];
-      NSString *result = [[NSString alloc] initWithBytes:buffer length:length encoding:encoding_];
-      free(buffer);
-#if ! __has_feature(objc_arc)
-      [result autorelease];
-#endif
-      return result;
-    ]-*/;
 
     /*
      * Answer a boolean indicating whether or not this InputStreamReader is
@@ -277,9 +317,20 @@ public class InputStreamReader extends Reader {
      */
     @Override
     public boolean ready() throws IOException {
+      synchronized (lock) {
         if (in == null) {
             throw new IOException("InputStreamReader is closed.");
         }
-        return backingStore == null || backingStore.length() - currentIndex > 0;
+        try {
+            if (decoder instanceof IOSCharsetDecoder) {
+              if (((IOSCharsetDecoder) decoder).available() > 0) {
+                return true;
+              }
+            }
+            return bytes.hasRemaining() || in.available() > 0;
+        } catch (IOException e) {
+            return false;
+        }
+    }
     }
 }

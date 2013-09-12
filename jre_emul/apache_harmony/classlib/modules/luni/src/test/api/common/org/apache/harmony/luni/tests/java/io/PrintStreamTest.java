@@ -19,12 +19,13 @@ package org.apache.harmony.luni.tests.java.io;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
-import java.io.InputStreamReader;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.PrintStream;
+import java.io.UnsupportedEncodingException;
 
 public class PrintStreamTest extends junit.framework.TestCase {
 
@@ -44,11 +45,9 @@ public class PrintStreamTest extends junit.framework.TestCase {
 			super(fileName);
 		}
 
-                /* TODO(user): enable when there is java.nio support.
 		public MockPrintStream(String fileName, String csn) throws FileNotFoundException, UnsupportedEncodingException {
 			super(fileName, csn);
 		}
-		*/
 
 		public MockPrintStream(OutputStream os) {
 			super(os);
@@ -71,8 +70,7 @@ public class PrintStreamTest extends junit.framework.TestCase {
 
     /**
      * @tests {@link java.io.PrintStream#PrintStream(String, String)}
-     *
-    TODO(user): enable when there is java.nio support.
+     */
     public void test_Constructor_Ljava_lang_String_Ljava_lang_String() throws Exception {
     	MockPrintStream os = new MockPrintStream(testFilePath, "utf-8");
     	assertNotNull(os);
@@ -86,7 +84,6 @@ public class PrintStreamTest extends junit.framework.TestCase {
     	    assertNotNull(e.getMessage());
     	}
     }
-    */
 
     /**
      * @tests java.io.PrintStream#PrintStream(java.io.OutputStream)
@@ -97,13 +94,11 @@ public class PrintStreamTest extends junit.framework.TestCase {
         os.print(2345.76834720202);
         os.close();
 
-        /* TODO(user): enable when there is java.nio support.
         // regression for HARMONY-1195
         try {
             os = new PrintStream(bos, true, null);
             fail("Should throw NPE");
         } catch (NullPointerException e) {}
-        */
     }
 
     /**
@@ -120,8 +115,7 @@ public class PrintStreamTest extends junit.framework.TestCase {
 
     /**
      * @tests java.io.PrintStream#PrintStream(java.io.OutputStream, boolean, String)
-     *
-     TODO(user): enable when there is java.nio support.
+     */
     public void test_ConstructorLjava_io_OutputStreamZLjava_lang_String() {
         try {
             new PrintStream(new ByteArrayOutputStream(), false,
@@ -131,7 +125,6 @@ public class PrintStreamTest extends junit.framework.TestCase {
             // expected
         }
     }
-    */
 
     /**
      * @tests java.io.PrintStream#checkError()
@@ -581,7 +574,7 @@ public class PrintStreamTest extends junit.framework.TestCase {
     /**
      * @tests java.io.PrintStream#format(java.lang.String, java.lang.Object...)
      *
-    TODO(user): enable when there is java.text support.
+    TODO(user): enable when there is formatter support.
     public void test_formatLjava_lang_String$Ljava_lang_Object() {
         PrintStream os = new PrintStream(bos, false);
         os.format("%s %s", "Hello", "World");
@@ -599,7 +592,7 @@ public class PrintStreamTest extends junit.framework.TestCase {
      * @tests java.io.PrintStream#format(java.util.Locale, java.lang.String,
      *        java.lang.Object...)
      *
-     TODO(user): enable when there is java.text support.
+     TODO(user): enable when there is formatter support.
     public void test_formatLjava_util_Locale_Ljava_lang_String_$Ljava_lang_Object() {
         PrintStream os = new PrintStream(bos, false);
         os.format(Locale.US, "%s %s", "Hello", "World");
@@ -615,7 +608,7 @@ public class PrintStreamTest extends junit.framework.TestCase {
     /**
      * @tests java.io.PrintStream#printf(java.lang.String, java.lang.Object...)
      *
-    TODO(user): enable when there is java.text support.
+    TODO(user): enable when there is formatter support.
     public void test_printfLjava_lang_String$Ljava_lang_Object() {
         PrintStream os = new PrintStream(bos, false);
         os.printf("%s %s", "Hello", "World");
@@ -632,7 +625,7 @@ public class PrintStreamTest extends junit.framework.TestCase {
      * @tests java.io.PrintStream#printf(java.util.Locale, java.lang.String,
      *        java.lang.Object...)
      *
-     TODO(user): enable when there is java.text support.
+     TODO(user): enable when there is formatter support.
     public void test_printfLjava_util_Locale_Ljava_lang_String_$Ljava_lang_Object() {
         PrintStream os = new PrintStream(bos, false);
         os.printf(Locale.US, "%s %s", "Hello", "World");

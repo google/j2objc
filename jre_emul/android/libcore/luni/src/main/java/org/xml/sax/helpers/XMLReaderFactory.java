@@ -122,9 +122,7 @@ final public class XMLReaderFactory
             in = loader.getResourceAsStream (service);
 
         if (in != null) {
-            // TODO(user): restore this line when charsets are implemented.
-            //reader = new BufferedReader (new InputStreamReader (in, Charsets.UTF_8));
-            reader = new BufferedReader (new InputStreamReader (in));
+            reader = new BufferedReader (new InputStreamReader (in, Charsets.UTF_8));
             className = reader.readLine ();
             in.close ();
         }

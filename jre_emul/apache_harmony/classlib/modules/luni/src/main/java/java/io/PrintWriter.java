@@ -203,13 +203,11 @@ public class PrintWriter extends Writer {
      * @throws UnsupportedEncodingException
      *             if the encoding specified by {@code csn} is not supported.
      */
-    /* TODO(user): enable when there is file system support.
     public PrintWriter(String fileName, String csn)
             throws FileNotFoundException, UnsupportedEncodingException {
         this(new OutputStreamWriter(new BufferedOutputStream(
                 new FileOutputStream(fileName)), csn), false);
     }
-     */
 
     /**
      * Flushes this writer and returns the value of the error flag.

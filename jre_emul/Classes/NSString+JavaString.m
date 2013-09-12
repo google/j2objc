@@ -30,6 +30,9 @@
 #import "java/lang/StringBuffer.h"
 #import "java/lang/StringBuilder.h"
 #import "java/lang/StringIndexOutOfBoundsException.h"
+#import "java/nio/charset/Charset.h"
+#import "java/nio/charset/IOSCharset.h"
+#import "java/nio/charset/UnsupportedCharsetException.h"
 #import "java/util/Comparator.h"
 #import "java/util/Locale.h"
 #import "java/util/regex/Pattern.h"
@@ -441,11 +444,19 @@ destinationBegin:(int)destinationBegin {
 }
 
 + (NSString *)stringWithBytes:(IOSByteArray *)value
-                  charsetName:(NSString *)charset {
+                  charsetName:(NSString *)charsetName {
   return [self stringWithBytes:value
                         offset:0
                         length:[value count]
-                   charsetName:charset];
+                   charsetName:charsetName];
+}
+
++ (NSString *)stringWithBytes:(IOSByteArray *)value
+                      charset:(JavaNioCharsetCharset *)charset {
+  return [self stringWithBytes:value
+                        offset:0
+                        length:[value count]
+                       charset:charset];
 }
 
 NSStringEncoding parseCharsetName(NSString *charset) {
@@ -494,6 +505,22 @@ NSStringEncoding parseCharsetName(NSString *charset) {
                             offset:offset
                             length:count
                       encoding:encoding];
+}
+
++ (NSString *)stringWithBytes:(IOSByteArray *)value
+                       offset:(int)offset
+                       length:(int)count
+                      charset:(JavaNioCharsetCharset *)charset {
+  if (![charset isKindOfClass:[JavaNioCharsetIOSCharset class]]) {
+    @throw AUTORELEASE([[JavaNioCharsetUnsupportedCharsetException alloc]
+                        initWithNSString:[charset description]]);
+  }
+  JavaNioCharsetIOSCharset *iosCharset = (JavaNioCharsetIOSCharset *) charset;
+  NSStringEncoding encoding = (NSStringEncoding) [iosCharset nsEncoding];
+  return [NSString stringWithBytes:value
+                            offset:offset
+                            length:count
+                          encoding:encoding];
 }
 
 + (NSString *)stringWithBytes:(IOSByteArray *)value
@@ -580,11 +607,22 @@ NSStringEncoding parseCharsetName(NSString *charset) {
   return [self getBytesWithEncoding:NSUTF8StringEncoding];
 }
 
-- (IOSByteArray *)getBytesWithCharset:(NSString *)charsetName {
+- (IOSByteArray *)getBytesWithCharsetName:(NSString *)charsetName {
   if (!charsetName) {
     @throw makeException([JavaLangNullPointerException class]);
   }
   NSStringEncoding encoding = parseCharsetName(charsetName);
+  return [self getBytesWithEncoding:encoding];
+}
+
+- (IOSByteArray *)getBytesWithCharset:(JavaNioCharsetCharset *)charset {
+  nil_chk(charset);
+  if (![charset isKindOfClass:[JavaNioCharsetIOSCharset class]]) {
+    @throw AUTORELEASE([[JavaNioCharsetUnsupportedCharsetException alloc]
+                        initWithNSString:[charset description]]);
+  }
+  JavaNioCharsetIOSCharset *iosCharset = (JavaNioCharsetIOSCharset *) charset;
+  NSStringEncoding encoding = (NSStringEncoding) [iosCharset nsEncoding];
   return [self getBytesWithEncoding:encoding];
 }
 

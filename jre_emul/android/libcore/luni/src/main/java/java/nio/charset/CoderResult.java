@@ -19,6 +19,7 @@ package java.nio.charset;
 import java.nio.BufferOverflowException;
 import java.nio.BufferUnderflowException;
 import java.util.HashMap;
+import java.util.WeakHashMap;
 
 /**
  * Used to indicate the result of encoding/decoding. There are four types of
@@ -70,17 +71,13 @@ public class CoderResult {
      * Stores unique result objects for each malformed-input error of a certain
      * length
      */
-    // TODO(user): reenable when WeakHashMap is supported.
-    // private static WeakHashMap<Integer, CoderResult> _malformedErrors = new WeakHashMap<Integer, CoderResult>();
-    private static HashMap<Integer, CoderResult> _malformedErrors = new HashMap<Integer, CoderResult>();
+    private static WeakHashMap<Integer, CoderResult> _malformedErrors = new WeakHashMap<Integer, CoderResult>();
 
     /*
      * Stores unique result objects for each unmappable-character error of a
      * certain length
      */
-    // TODO(user): reenable when WeakHashMap is supported.
-    //private static WeakHashMap<Integer, CoderResult> _unmappableErrors = new WeakHashMap<Integer, CoderResult>();
-    private static HashMap<Integer, CoderResult> _unmappableErrors = new HashMap<Integer, CoderResult>();
+    private static WeakHashMap<Integer, CoderResult> _unmappableErrors = new WeakHashMap<Integer, CoderResult>();
 
     // the type of this result
     private final int type;

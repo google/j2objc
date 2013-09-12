@@ -17,6 +17,9 @@
 
 package java.io;
 
+import java.nio.charset.Charset;
+import java.nio.charset.IllegalCharsetNameException;
+
 /**
  * Wraps an existing {@link OutputStream} and provides convenience methods for
  * writing common data types in a human readable format. This is not to be
@@ -111,7 +114,6 @@ public class PrintStream extends FilterOutputStream implements Appendable,
             throw new NullPointerException();
         }
         this.autoflush = autoflush;
-        /* TODO(user): enable when java.nio.Charset is supported.
         try {
             if (!Charset.isSupported(enc)) {
                 throw new UnsupportedEncodingException(enc);
@@ -119,7 +121,6 @@ public class PrintStream extends FilterOutputStream implements Appendable,
         } catch (IllegalCharsetNameException e) {
             throw new UnsupportedEncodingException(enc);
         }
-        */
         encoding = enc;
     }
 
@@ -165,11 +166,9 @@ public class PrintStream extends FilterOutputStream implements Appendable,
         if (csn == null) {
             throw new NullPointerException();
         }
-        /* TODO(user): enable when java.nio.Charset is supported.
         if (!Charset.isSupported(csn)) {
             throw new UnsupportedEncodingException(csn);
         }
-        */
         encoding = csn;
     }
 

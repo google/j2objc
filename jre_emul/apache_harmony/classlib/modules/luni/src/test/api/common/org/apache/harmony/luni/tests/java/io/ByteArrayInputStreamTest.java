@@ -20,6 +20,7 @@ package org.apache.harmony.luni.tests.java.io;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 
 public class ByteArrayInputStreamTest extends junit.framework.TestCase {
 
@@ -112,14 +113,12 @@ public class ByteArrayInputStreamTest extends junit.framework.TestCase {
     /**
      * @tests ByteArrayInputStream#read()
      */
-    /* TODO(user): enable when there is NIO support, needed by InputStreamReader.
     public void test_read() throws IOException {
         InputStreamReader isr = new InputStreamReader(is);
         int c = isr.read();
         is.reset();
         assertTrue("read returned incorrect char", c == fileString.charAt(0));
     }
-    */
 
     /**
      * @tests ByteArrayInputStream#read(byte[], int, int)

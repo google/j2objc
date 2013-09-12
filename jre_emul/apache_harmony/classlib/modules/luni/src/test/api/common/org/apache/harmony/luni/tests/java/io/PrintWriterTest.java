@@ -17,6 +17,9 @@
 
 package org.apache.harmony.luni.tests.java.io;
 
+import tests.support.Support_StringReader;
+import tests.support.Support_StringWriter;
+
 import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -24,9 +27,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
-
-import tests.support.Support_StringReader;
-import tests.support.Support_StringWriter;
+import java.nio.charset.Charset;
 
 public class PrintWriterTest extends junit.framework.TestCase {
 
@@ -134,8 +135,7 @@ public class PrintWriterTest extends junit.framework.TestCase {
 
     /**
      * @tests java.io.PrintWriter#PrintWriter(java.io.File, java.lang.String)
-     *
-    TODO(user): enable when there is java.nio support.
+     */
     public void test_ConstructorLjava_io_File_Ljava_lang_String() throws Exception {
         File file = File.createTempFile(getClass().getName(), null);
         try {
@@ -146,7 +146,6 @@ public class PrintWriterTest extends junit.framework.TestCase {
             file.delete();
         }
     }
-    */
 
     /**
      * @tests java.io.PrintWriter#PrintWriter(java.lang.String)
@@ -163,8 +162,7 @@ public class PrintWriterTest extends junit.framework.TestCase {
 
     /**
      * @tests java.io.PrintWriter#PrintWriter(java.lang.String, java.lang.String)
-     *
-    TODO(user): enable when there is java.nio support.
+     */
     public void test_ConstructorLjava_lang_String_Ljava_lang_String() throws Exception {
         File file = File.createTempFile(getClass().getName(), null);
         try {
@@ -175,7 +173,6 @@ public class PrintWriterTest extends junit.framework.TestCase {
             file.delete();
         }
     }
-    */
 
 	/**
 	 * @tests java.io.PrintWriter#checkError()

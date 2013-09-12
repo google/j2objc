@@ -20,7 +20,9 @@ package org.apache.harmony.luni.tests.java.io;
 import tests.support.Support_StringWriter;
 
 import java.io.BufferedWriter;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.OutputStreamWriter;
 import java.io.Writer;
 
 public class BufferedWriterTest extends junit.framework.TestCase {
@@ -103,18 +105,16 @@ public class BufferedWriterTest extends junit.framework.TestCase {
         assertEquals("BufferdWriter do not flush itself before close", "a", mw
                 .getWritten());
     }
-
+    
     /**
-     * @throws IOException
+     * @throws IOException 
      * @tests java.io.BufferedWriter#close()
      *
      */
-    /* TODO(user): enable when there is NIO support, needed by OutputStreamWriter.
     public void test_close2() throws IOException {
         BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(new ByteArrayOutputStream()));
             bw.close();
     }
-    */
 
     /**
      * @tests java.io.BufferedWriter#flush()

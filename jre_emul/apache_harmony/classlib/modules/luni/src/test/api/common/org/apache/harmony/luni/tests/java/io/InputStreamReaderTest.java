@@ -17,6 +17,9 @@
 
 package org.apache.harmony.luni.tests.java.io;
 
+import junit.framework.TestCase;
+
+import java.io.BufferedInputStream;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -24,9 +27,9 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.io.UnsupportedEncodingException;
+import java.nio.charset.Charset;
+import java.nio.charset.CharsetDecoder;
 import java.util.Arrays;
-
-import junit.framework.TestCase;
 
 public class InputStreamReaderTest extends TestCase {
 
@@ -154,7 +157,6 @@ public class InputStreamReaderTest extends TestCase {
         reader.close();
 
         // Tests after reader closed
-        /* TODO(user): enable if getResourceAsStream is implemented
         in = new BufferedInputStream(
                 this
                         .getClass()
@@ -177,7 +179,6 @@ public class InputStreamReaderTest extends TestCase {
         }
 
         assertFalse(reader.ready());
-        */
     }
 
     /**
@@ -238,8 +239,7 @@ public class InputStreamReaderTest extends TestCase {
     /**
      * @tests java.io.InputStreamReader(java.io.InputStream,
      *        java.nio.charset.Charset)
-     *
-    TODO(user): enable when java.nio support is implemented.
+     */
     public void test_ConstructorLjava_io_InputStreamLjava_nio_charset_Charset()
             throws IOException {
         Charset cs = Charset.forName("utf-8");
@@ -259,13 +259,11 @@ public class InputStreamReaderTest extends TestCase {
         assertEquals(Charset.forName(reader2.getEncoding()), cs);
         reader2.close();
     }
-    */
 
     /**
      * @tests java.io.InputStreamReader(java.io.InputStream,
      *        java.nio.charset.CharsetDecoder)
-     *
-     TODO(user): enable when java.net support is implemented.
+     */
     public void test_ConstructorLjava_io_InputStreamLjava_nio_charset_CharsetDecoder()
             throws IOException {
         CharsetDecoder decoder = Charset.forName("utf-8").newDecoder();
@@ -285,7 +283,6 @@ public class InputStreamReaderTest extends TestCase {
         assertEquals(Charset.forName(reader2.getEncoding()), decoder.charset());
         reader2.close();
     }
-    */
 
     /**
      * @tests java.io.InputStreamReader#getEncoding()
@@ -348,7 +345,6 @@ public class InputStreamReaderTest extends TestCase {
          */
     }
 
-    /* TODO(user): enable when java.nio, getResourceAsStream is implemented.
     public void test_read_specialCharset() throws IOException {
         reader.close();
         in = this.getClass().getClassLoader().getResourceAsStream(
@@ -359,25 +355,8 @@ public class InputStreamReaderTest extends TestCase {
         while ((c = reader.read()) != -1) {
             sb.append((char) c);
         }
-        // delete BOM
-        assertEquals(source, sb.deleteCharAt(0).toString());
-
-        sb.setLength(0);
-        reader.close();
-        in = this.getClass().getClassLoader().getResourceAsStream(
-                "org/apache/harmony/luni/tests/java/io/testfile.txt");
-        try {
-            reader = new InputStreamReader(in, "gb18030");
-        } catch (UnsupportedEncodingException e) {
-            System.out
-                    .println("GB18030 is not supported, abort test InputStreamReaderTest.testSpecialCharsetReading().");
-        }
-        while ((c = reader.read()) != -1) {
-            sb.append((char) c);
-        }
         assertEquals(source, sb.toString());
     }
-    */
 
     /**
      * @tests java.io.InputStreamReader#read(char[], int, int)
