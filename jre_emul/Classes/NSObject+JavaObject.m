@@ -120,11 +120,6 @@ static void doWait(id obj, long long timeout) {
   doWait(self, timeout + (nanos == 0 ? 0 : 1));
 }
 
-+ (id)throwNullPointerException {
-  @throw AUTORELEASE([[JavaLangNullPointerException alloc] init]);
-  return nil;
-}
-
 + (id)throwClassCastException {
   @throw AUTORELEASE([[JavaLangClassCastException alloc] init]);
   return nil;
