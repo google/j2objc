@@ -555,6 +555,44 @@
 		0697F60915D190580027A7E4 /* TypeVariable.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = TypeVariable.h; path = build_result/Classes/java/lang/reflect/TypeVariable.h; sourceTree = "<group>"; };
 		0697F60A15D190580027A7E4 /* TypeVariable.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = TypeVariable.m; path = build_result/Classes/java/lang/reflect/TypeVariable.m; sourceTree = "<group>"; };
 		06986A181767D781006EE92F /* J2ObjCMain.m */ = {isa = PBXFileReference; fileEncoding = 4; indentWidth = 2; lastKnownFileType = sourcecode.c.objc; path = J2ObjCMain.m; sourceTree = "<group>"; tabWidth = 2; };
+		06AA054817E110D00017C34A /* CharacterCodingException.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = CharacterCodingException.h; path = build_result/Classes/java/nio/charset/CharacterCodingException.h; sourceTree = "<group>"; };
+		06AA054917E110D00017C34A /* CharacterCodingException.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = CharacterCodingException.m; path = build_result/Classes/java/nio/charset/CharacterCodingException.m; sourceTree = "<group>"; };
+		06AA054A17E110D00017C34A /* Charset.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = Charset.h; path = build_result/Classes/java/nio/charset/Charset.h; sourceTree = "<group>"; };
+		06AA054B17E110D00017C34A /* Charset.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = Charset.m; path = build_result/Classes/java/nio/charset/Charset.m; sourceTree = "<group>"; };
+		06AA054C17E110D00017C34A /* CharsetDecoder.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = CharsetDecoder.h; path = build_result/Classes/java/nio/charset/CharsetDecoder.h; sourceTree = "<group>"; };
+		06AA054D17E110D00017C34A /* CharsetDecoder.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = CharsetDecoder.m; path = build_result/Classes/java/nio/charset/CharsetDecoder.m; sourceTree = "<group>"; };
+		06AA054E17E110D00017C34A /* CharsetEncoder.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = CharsetEncoder.h; path = build_result/Classes/java/nio/charset/CharsetEncoder.h; sourceTree = "<group>"; };
+		06AA054F17E110D00017C34A /* CharsetEncoder.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = CharsetEncoder.m; path = build_result/Classes/java/nio/charset/CharsetEncoder.m; sourceTree = "<group>"; };
+		06AA055017E110D00017C34A /* Charsets.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = Charsets.h; path = build_result/Classes/java/nio/charset/Charsets.h; sourceTree = "<group>"; };
+		06AA055117E110D00017C34A /* Charsets.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = Charsets.m; path = build_result/Classes/java/nio/charset/Charsets.m; sourceTree = "<group>"; };
+		06AA055217E110D00017C34A /* CoderMalfunctionError.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = CoderMalfunctionError.h; path = build_result/Classes/java/nio/charset/CoderMalfunctionError.h; sourceTree = "<group>"; };
+		06AA055317E110D00017C34A /* CoderMalfunctionError.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = CoderMalfunctionError.m; path = build_result/Classes/java/nio/charset/CoderMalfunctionError.m; sourceTree = "<group>"; };
+		06AA055417E110D00017C34A /* CoderResult.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = CoderResult.h; path = build_result/Classes/java/nio/charset/CoderResult.h; sourceTree = "<group>"; };
+		06AA055517E110D00017C34A /* CoderResult.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = CoderResult.m; path = build_result/Classes/java/nio/charset/CoderResult.m; sourceTree = "<group>"; };
+		06AA055617E110D00017C34A /* CodingErrorAction.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = CodingErrorAction.h; path = build_result/Classes/java/nio/charset/CodingErrorAction.h; sourceTree = "<group>"; };
+		06AA055717E110D00017C34A /* CodingErrorAction.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = CodingErrorAction.m; path = build_result/Classes/java/nio/charset/CodingErrorAction.m; sourceTree = "<group>"; };
+		06AA055817E110D00017C34A /* IllegalCharsetNameException.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = IllegalCharsetNameException.h; path = build_result/Classes/java/nio/charset/IllegalCharsetNameException.h; sourceTree = "<group>"; };
+		06AA055917E110D00017C34A /* IllegalCharsetNameException.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = IllegalCharsetNameException.m; path = build_result/Classes/java/nio/charset/IllegalCharsetNameException.m; sourceTree = "<group>"; };
+		06AA055A17E110D00017C34A /* IOSCharset.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = IOSCharset.h; path = build_result/Classes/java/nio/charset/IOSCharset.h; sourceTree = "<group>"; };
+		06AA055B17E110D00017C34A /* IOSCharset.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = IOSCharset.m; path = build_result/Classes/java/nio/charset/IOSCharset.m; sourceTree = "<group>"; };
+		06AA055C17E110D00017C34A /* IOSCharsetDecoder.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = IOSCharsetDecoder.h; path = build_result/Classes/java/nio/charset/IOSCharsetDecoder.h; sourceTree = "<group>"; };
+		06AA055D17E110D00017C34A /* IOSCharsetDecoder.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = IOSCharsetDecoder.m; path = build_result/Classes/java/nio/charset/IOSCharsetDecoder.m; sourceTree = "<group>"; };
+		06AA055E17E110D00017C34A /* IOSCharsetEncoder.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = IOSCharsetEncoder.h; path = build_result/Classes/java/nio/charset/IOSCharsetEncoder.h; sourceTree = "<group>"; };
+		06AA055F17E110D00017C34A /* IOSCharsetEncoder.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = IOSCharsetEncoder.m; path = build_result/Classes/java/nio/charset/IOSCharsetEncoder.m; sourceTree = "<group>"; };
+		06AA056017E110D00017C34A /* MalformedInputException.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = MalformedInputException.h; path = build_result/Classes/java/nio/charset/MalformedInputException.h; sourceTree = "<group>"; };
+		06AA056117E110D00017C34A /* MalformedInputException.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = MalformedInputException.m; path = build_result/Classes/java/nio/charset/MalformedInputException.m; sourceTree = "<group>"; };
+		06AA056217E110D00017C34A /* StandardCharsets.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = StandardCharsets.h; path = build_result/Classes/java/nio/charset/StandardCharsets.h; sourceTree = "<group>"; };
+		06AA056317E110D00017C34A /* StandardCharsets.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = StandardCharsets.m; path = build_result/Classes/java/nio/charset/StandardCharsets.m; sourceTree = "<group>"; };
+		06AA056417E110D00017C34A /* UnmappableCharacterException.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = UnmappableCharacterException.h; path = build_result/Classes/java/nio/charset/UnmappableCharacterException.h; sourceTree = "<group>"; };
+		06AA056517E110D00017C34A /* UnmappableCharacterException.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = UnmappableCharacterException.m; path = build_result/Classes/java/nio/charset/UnmappableCharacterException.m; sourceTree = "<group>"; };
+		06AA056617E110D00017C34A /* UnsupportedCharsetException.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = UnsupportedCharsetException.h; path = build_result/Classes/java/nio/charset/UnsupportedCharsetException.h; sourceTree = "<group>"; };
+		06AA056717E110D00017C34A /* UnsupportedCharsetException.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = UnsupportedCharsetException.m; path = build_result/Classes/java/nio/charset/UnsupportedCharsetException.m; sourceTree = "<group>"; };
+		06AA056817E111190017C34A /* ListResourceBundle.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = ListResourceBundle.h; path = build_result/Classes/java/util/ListResourceBundle.h; sourceTree = "<group>"; };
+		06AA056917E111190017C34A /* ListResourceBundle.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = ListResourceBundle.m; path = build_result/Classes/java/util/ListResourceBundle.m; sourceTree = "<group>"; };
+		06AA056A17E111190017C34A /* PropertyResourceBundle.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = PropertyResourceBundle.h; path = build_result/Classes/java/util/PropertyResourceBundle.h; sourceTree = "<group>"; };
+		06AA056B17E111190017C34A /* PropertyResourceBundle.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = PropertyResourceBundle.m; path = build_result/Classes/java/util/PropertyResourceBundle.m; sourceTree = "<group>"; };
+		06AA056C17E111190017C34A /* ResourceBundle.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = ResourceBundle.h; path = build_result/Classes/java/util/ResourceBundle.h; sourceTree = "<group>"; };
+		06AA056D17E111190017C34A /* ResourceBundle.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = ResourceBundle.m; path = build_result/Classes/java/util/ResourceBundle.m; sourceTree = "<group>"; };
 		06B6D20117C7D3DE00624B3C /* IOSLocaleData.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IOSLocaleData.h; sourceTree = "<group>"; };
 		06B6D20217C7D3DE00624B3C /* IOSLocaleData.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IOSLocaleData.m; sourceTree = "<group>"; };
 		06B6D20517C7D67400624B3C /* LocaleData.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = LocaleData.h; path = build_result/Classes/libcore/icu/LocaleData.h; sourceTree = "<group>"; };
@@ -1052,18 +1090,6 @@
 		067219221559B9D200645E1B /* Transpiled Classes */ = {
 			isa = PBXGroup;
 			children = (
-				06D7BDFD17DE687200329964 /* WeakHashMap.h */,
-				06D7BDFE17DE687200329964 /* WeakHashMap.m */,
-				06D7BDE917DE685C00329964 /* PhantomReference.h */,
-				06D7BDEA17DE685C00329964 /* PhantomReference.m */,
-				06D7BDEB17DE685C00329964 /* Reference.h */,
-				06D7BDEC17DE685C00329964 /* Reference.m */,
-				06D7BDED17DE685C00329964 /* ReferenceQueue.h */,
-				06D7BDEE17DE685C00329964 /* ReferenceQueue.m */,
-				06D7BDEF17DE685C00329964 /* SoftReference.h */,
-				06D7BDF017DE685C00329964 /* SoftReference.m */,
-				06D7BDF117DE685C00329964 /* WeakReference.h */,
-				06D7BDF217DE685C00329964 /* WeakReference.m */,
 				06721AC51559CB4200645E1B /* AbstractCollection.h */,
 				06721A291559C91600645E1B /* AbstractCollection.m */,
 				06721AC61559CB4200645E1B /* AbstractList.h */,
@@ -1170,6 +1196,8 @@
 				06DD333316A1406A00AD7ACE /* Calendar.m */,
 				06721B361559CC0300645E1B /* Character.h */,
 				067219D31559C87100645E1B /* Character.m */,
+				06AA054817E110D00017C34A /* CharacterCodingException.h */,
+				06AA054917E110D00017C34A /* CharacterCodingException.m */,
 				06ED3DC217D165DE0014750E /* CharacterIterator.h */,
 				06ED3DC317D165DE0014750E /* CharacterIterator.m */,
 				06DD32A316A13FA000AD7ACE /* CharArrayBuffer.h */,
@@ -1182,6 +1210,14 @@
 				06DD32A616A13FA000AD7ACE /* CharBuffer.m */,
 				06DD32A716A13FA000AD7ACE /* CharSequenceAdapter.h */,
 				06DD32A816A13FA000AD7ACE /* CharSequenceAdapter.m */,
+				06AA054A17E110D00017C34A /* Charset.h */,
+				06AA054B17E110D00017C34A /* Charset.m */,
+				06AA054C17E110D00017C34A /* CharsetDecoder.h */,
+				06AA054D17E110D00017C34A /* CharsetDecoder.m */,
+				06AA054E17E110D00017C34A /* CharsetEncoder.h */,
+				06AA054F17E110D00017C34A /* CharsetEncoder.m */,
+				06AA055017E110D00017C34A /* Charsets.h */,
+				06AA055117E110D00017C34A /* Charsets.m */,
 				06721B371559CC0300645E1B /* ClassCastException.h */,
 				067219D41559C87100645E1B /* ClassCastException.m */,
 				06ED3D6017D164AF0014750E /* ClassFormatError.h */,
@@ -1193,8 +1229,14 @@
 				06721B391559CC0300645E1B /* CloneNotSupportedException.h */,
 				067219D61559C87100645E1B /* CloneNotSupportedException.m */,
 				06721A831559CB2500645E1B /* Closeable.h */,
+				06AA055217E110D00017C34A /* CoderMalfunctionError.h */,
+				06AA055317E110D00017C34A /* CoderMalfunctionError.m */,
+				06AA055417E110D00017C34A /* CoderResult.h */,
+				06AA055517E110D00017C34A /* CoderResult.m */,
 				06ED3D9617D165510014750E /* CodeSource.h */,
 				06ED3D9717D165510014750E /* CodeSource.m */,
+				06AA055617E110D00017C34A /* CodingErrorAction.h */,
+				06AA055717E110D00017C34A /* CodingErrorAction.m */,
 				06ED3DC417D165DE0014750E /* CollationKey.h */,
 				06ED3DC517D165DE0014750E /* CollationKey.m */,
 				06ED3DC617D165DE0014750E /* Collator.h */,
@@ -1368,6 +1410,8 @@
 				067219DD1559C87100645E1B /* IllegalAccessException.m */,
 				06721B411559CC0300645E1B /* IllegalArgumentException.h */,
 				067219DE1559C87100645E1B /* IllegalArgumentException.m */,
+				06AA055817E110D00017C34A /* IllegalCharsetNameException.h */,
+				06AA055917E110D00017C34A /* IllegalCharsetNameException.m */,
 				06ED3D6617D164AF0014750E /* IllegalMonitorStateException.h */,
 				06ED3D6717D164AF0014750E /* IllegalMonitorStateException.m */,
 				06721B421559CC0300645E1B /* IllegalStateException.h */,
@@ -1408,6 +1452,12 @@
 				06721B531559CC0300645E1B /* InvocationTargetException.m */,
 				06721A941559CB2500645E1B /* IOException.h */,
 				067219A21559C7FC00645E1B /* IOException.m */,
+				06AA055A17E110D00017C34A /* IOSCharset.h */,
+				06AA055B17E110D00017C34A /* IOSCharset.m */,
+				06AA055C17E110D00017C34A /* IOSCharsetDecoder.h */,
+				06AA055D17E110D00017C34A /* IOSCharsetDecoder.m */,
+				06AA055E17E110D00017C34A /* IOSCharsetEncoder.h */,
+				06AA055F17E110D00017C34A /* IOSCharsetEncoder.m */,
 				06ED3DD417D165DE0014750E /* IOSCollator.h */,
 				06ED3DD517D165DE0014750E /* IOSCollator.m */,
 				06ED3DEC17D1669D0014750E /* IoUtils.h */,
@@ -1431,6 +1481,8 @@
 				06721A511559C99E00645E1B /* LinkedList.m */,
 				06721AED1559CB9200645E1B /* List.h */,
 				06721AEE1559CB9200645E1B /* ListIterator.h */,
+				06AA056817E111190017C34A /* ListResourceBundle.h */,
+				06AA056917E111190017C34A /* ListResourceBundle.m */,
 				06721AEF1559CB9200645E1B /* Locale.h */,
 				06721A521559C99E00645E1B /* Locale.m */,
 				06B6D20517C7D67400624B3C /* LocaleData.h */,
@@ -1458,6 +1510,8 @@
 				06DD32BC16A13FA000AD7ACE /* LongBuffer.m */,
 				06ED3E0817D1671A0014750E /* LSInput.h */,
 				064FB8021727086700DC0D51 /* LSResourceResolver.h */,
+				06AA056017E110D00017C34A /* MalformedInputException.h */,
+				06AA056117E110D00017C34A /* MalformedInputException.m */,
 				06ED3D7817D164DC0014750E /* MalformedParameterizedTypeException.h */,
 				06ED3D7917D164DC0014750E /* MalformedParameterizedTypeException.m */,
 				06ED3D8217D164FE0014750E /* MalformedURLException.h */,
@@ -1556,6 +1610,8 @@
 				06ED3DA617D165510014750E /* Permissions.m */,
 				06ED3DA717D165510014750E /* PermissionsHash.h */,
 				06ED3DA817D165510014750E /* PermissionsHash.m */,
+				06D7BDE917DE685C00329964 /* PhantomReference.h */,
+				06D7BDEA17DE685C00329964 /* PhantomReference.m */,
 				06ED3DF417D1669D0014750E /* Posix.h */,
 				06ED3DF517D1669D0014750E /* Posix.m */,
 				067855D5169F37710042431C /* Primality.h */,
@@ -1575,6 +1631,8 @@
 				06ED3DAF17D165510014750E /* PrivilegedExceptionAction.m */,
 				06721AFB1559CB9200645E1B /* Properties.h */,
 				06721A5D1559C99E00645E1B /* Properties.m */,
+				06AA056A17E111190017C34A /* PropertyResourceBundle.h */,
+				06AA056B17E111190017C34A /* PropertyResourceBundle.m */,
 				06ED3DB017D165510014750E /* ProtectionDomain.h */,
 				06ED3DB117D165510014750E /* ProtectionDomain.m */,
 				06ED3D5917D1645A0014750E /* PushbackInputStream.h */,
@@ -1618,6 +1676,12 @@
 				06DD32D816A13FA000AD7ACE /* ReadWriteLongArrayBuffer.m */,
 				06DD32D916A13FA000AD7ACE /* ReadWriteShortArrayBuffer.h */,
 				06DD32DA16A13FA000AD7ACE /* ReadWriteShortArrayBuffer.m */,
+				06D7BDEB17DE685C00329964 /* Reference.h */,
+				06D7BDEC17DE685C00329964 /* Reference.m */,
+				06D7BDED17DE685C00329964 /* ReferenceQueue.h */,
+				06D7BDEE17DE685C00329964 /* ReferenceQueue.m */,
+				06AA056C17E111190017C34A /* ResourceBundle.h */,
+				06AA056D17E111190017C34A /* ResourceBundle.m */,
 				064FB7761727072B00DC0D51 /* Result.h */,
 				064FB7771727072B00DC0D51 /* Result.m */,
 				067855D7169F37710042431C /* RoundingMode.h */,
@@ -1665,6 +1729,8 @@
 				06ED3DDB17D165DE0014750E /* SimpleDateFormat.m */,
 				06DD334216A1406A00AD7ACE /* SimpleTimeZone.h */,
 				06DD334316A1406A00AD7ACE /* SimpleTimeZone.m */,
+				06D7BDEF17DE685C00329964 /* SoftReference.h */,
+				06D7BDF017DE685C00329964 /* SoftReference.m */,
 				06721B001559CB9200645E1B /* SortedMap.h */,
 				06721B011559CB9200645E1B /* SortedSet.h */,
 				064FB7781727072B00DC0D51 /* Source.h */,
@@ -1675,6 +1741,8 @@
 				06721A5F1559C99E00645E1B /* Stack.m */,
 				06721B591559CC0300645E1B /* StackTraceElement.h */,
 				067219EF1559C87100645E1B /* StackTraceElement.m */,
+				06AA056217E110D00017C34A /* StandardCharsets.h */,
+				06AA056317E110D00017C34A /* StandardCharsets.m */,
 				06721B5A1559CC0300645E1B /* StrictMath.h */,
 				067219F01559C87100645E1B /* StrictMath.m */,
 				06721B5B1559CC0300645E1B /* StringBuffer.h */,
@@ -1734,6 +1802,10 @@
 				0697F60A15D190580027A7E4 /* TypeVariable.m */,
 				06ED3D7E17D164DC0014750E /* UndeclaredThrowableException.h */,
 				06ED3D7F17D164DC0014750E /* UndeclaredThrowableException.m */,
+				06AA056417E110D00017C34A /* UnmappableCharacterException.h */,
+				06AA056517E110D00017C34A /* UnmappableCharacterException.m */,
+				06AA056617E110D00017C34A /* UnsupportedCharsetException.h */,
+				06AA056717E110D00017C34A /* UnsupportedCharsetException.m */,
 				06721A9E1559CB2500645E1B /* UnsupportedEncodingException.h */,
 				067219AB1559C7FC00645E1B /* UnsupportedEncodingException.m */,
 				06721B631559CC0300645E1B /* UnsupportedOperationException.h */,
@@ -1764,6 +1836,10 @@
 				06721A621559C99E00645E1B /* Vector.m */,
 				06721B641559CC0300645E1B /* Void.h */,
 				067219FA1559C87100645E1B /* Void.m */,
+				06D7BDFD17DE687200329964 /* WeakHashMap.h */,
+				06D7BDFE17DE687200329964 /* WeakHashMap.m */,
+				06D7BDF117DE685C00329964 /* WeakReference.h */,
+				06D7BDF217DE685C00329964 /* WeakReference.m */,
 				06ED3D8017D164DC0014750E /* WildcardType.h */,
 				06ED3D8117D164DC0014750E /* WildcardType.m */,
 				06721A9F1559CB2500645E1B /* Writer.h */,
