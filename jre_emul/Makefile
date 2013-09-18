@@ -643,8 +643,8 @@ DIRS_TO_MAKE = $(BUILD_DIR) $(ARCH_BUILD_DIR) $(ARCH_INCLUDE_DIR) \
 $(sort $(DIRS_TO_MAKE)):
 	@mkdir -p $@
 
-$(TRANSLATED_SOURCE_DIR)/%.h $(TRANSLATED_SOURCE_DIR)/%.m: %.java | pre_translate
-	@echo "$?" >> $(JAVA_SOURCE_LIST)
+$(TRANSLATED_SOURCE_DIR)/%.h $(TRANSLATED_SOURCE_DIR)/%.m: %.java $(TRANSLATOR_DEPS) | pre_translate
+	@echo "$<" >> $(JAVA_SOURCE_LIST)
 	@echo "$(TRANSLATED_SOURCE_DIR)/$*.h" >> $(OBJC_OUT_LIST)
 	@echo "$(TRANSLATED_SOURCE_DIR)/$*.m" >> $(OBJC_OUT_LIST)
 	@if [ -e $(TRANSLATED_SOURCE_DIR)/$*.h ]; then touch $(TRANSLATED_SOURCE_DIR)/$*.h; fi
@@ -653,36 +653,36 @@ $(TRANSLATED_SOURCE_DIR)/%.h $(TRANSLATED_SOURCE_DIR)/%.m: %.java | pre_translat
 define compile_rules
 $(1)/%.o: $(3)/%.$(4) | translate
 	@mkdir -p $$(@D)
-	$$(CLANG) -c $$? -o $$@ $(2) $$(OBJCFLAGS) -I$$(EMULATION_CLASS_DIR) \
+	$$(CLANG) -c $$< -o $$@ $(2) $$(OBJCFLAGS) -I$$(EMULATION_CLASS_DIR) \
 	    -I$$(TRANSLATED_SOURCE_DIR)
 
 $(1)/%.plist: $(3)/%.$(4) | translate
 	@mkdir -p $$(@D)
-	$$(CLANG) -c $$? -o $$@ $(2) $$(OBJCFLAGS) $$(STATIC_ANALYZER_FLAGS) \
+	$$(CLANG) -c $$< -o $$@ $(2) $$(OBJCFLAGS) $$(STATIC_ANALYZER_FLAGS) \
 	    -I$$(EMULATION_CLASS_DIR) -I$$(TRANSLATED_SOURCE_DIR)
 endef
 
 define compile_rules_no_arc
 $(1)/$(3:.m=.o): Classes/$(3) | translate
 	@mkdir -p $$(@D)
-	$$(CLANG) -c $$? -o $$@ $(2) $$(OBJCFLAGS_NO_ARC) \
+	$$(CLANG) -c $$< -o $$@ $(2) $$(OBJCFLAGS_NO_ARC) \
 	    -I$$(EMULATION_CLASS_DIR) -I$$(TRANSLATED_SOURCE_DIR)
 
 $(1)/$(3:.m=.plist): Classes/$(3) | translate
 	@mkdir -p $$(@D)
-	$$(CLANG) -c $$? -o $$@ $(2) $$(OBJCFLAGS) $$(STATIC_ANALYZER_FLAGS) \
+	$$(CLANG) -c $$< -o $$@ $(2) $$(OBJCFLAGS) $$(STATIC_ANALYZER_FLAGS) \
 	    -I$$(EMULATION_CLASS_DIR) -I$$(TRANSLATED_SOURCE_DIR)
 endef
 
 define additional_compile_rules
 $(1)/objc-sync.o: $(APPLE_ROOT)/objc-sync.m
 	@mkdir -p $$(@D)
-	$$(CLANG) -c $$? -o $$@ $(2) $$(OBJCFLAGS_NO_ARC) \
+	$$(CLANG) -c $$< -o $$@ $(2) $$(OBJCFLAGS_NO_ARC) \
 	    -I$$(EMULATION_CLASS_DIR) -I$$(TRANSLATED_SOURCE_DIR)
 
 $(1)/objc-sync.plist: $(APPLE_ROOT)/objc-sync.m
 	@mkdir -p $$(@D)
-	$$(CLANG) -c $$? -o $$@ $(2) $$(OBJCFLAGS) $$(STATIC_ANALYZER_FLAGS) \
+	$$(CLANG) -c $$< -o $$@ $(2) $$(OBJCFLAGS) $$(STATIC_ANALYZER_FLAGS) \
 	    -I$$(EMULATION_CLASS_DIR) -I$$(TRANSLATED_SOURCE_DIR)
 endef
 
