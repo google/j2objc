@@ -53,11 +53,6 @@ done:
 }
 
 
-typedef uintptr_t spin_lock_t;
-extern void _spin_lock(spin_lock_t *lockp);
-extern int  _spin_lock_try(spin_lock_t *lockp);
-extern void _spin_unlock(spin_lock_t *lockp);
-
 typedef struct SyncData {
     struct SyncData* nextData;
     id               object;
@@ -78,7 +73,7 @@ typedef struct SyncCache {
 } SyncCache;
 
 typedef struct {
-    spin_lock_t lock;
+    OSSpinLock lock;
     SyncData *data;
 } SyncList __attribute__((aligned(64)));
 // aligned to put locks on separate cache lines
@@ -151,7 +146,7 @@ static SyncCache *fetch_cache(BOOL create)
 
 static SyncData* id2data(id object, enum usage why)
 {
-    spin_lock_t *lockp = &LOCK_FOR_OBJ(object);
+    OSSpinLock *lockp = &LOCK_FOR_OBJ(object);
     SyncData **listp = &LIST_FOR_OBJ(object);
     SyncData* result = NULL;
     int err;
@@ -201,7 +196,7 @@ static SyncData* id2data(id object, enum usage why)
     // We could keep the nodes in some hash table if we find that there are
     // more than 20 or so distinct locks active, but we don't do that now.
     
-    _spin_lock(lockp);
+    OSSpinLockLock(lockp);
 
     SyncData* p;
     SyncData* firstUnused = NULL;
@@ -243,7 +238,7 @@ static SyncData* id2data(id object, enum usage why)
     *listp = result;
     
  done:
-    _spin_unlock(lockp);
+    OSSpinLockUnlock(lockp);
     if (result) {
         // Only new ACQUIRE should get here.
         // All RELEASE and CHECK and recursive ACQUIRE are 
