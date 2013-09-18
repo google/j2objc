@@ -43,6 +43,15 @@ SUPPORT_SOURCES = \
 	tests/support/Support_UnmodifiableMapTest.java
 
 TEST_SOURCES = \
+	AtomicBooleanTest.java \
+	AtomicIntegerArrayTest.java \
+	AtomicIntegerTest.java \
+	AtomicLongArrayTest.java \
+	AtomicLongTest.java \
+	AtomicMarkableReferenceTest.java \
+	AtomicReferenceArrayTest.java \
+	AtomicReferenceTest.java \
+	AtomicStampedReferenceTest.java \
 	CopyOnWriteArrayListTest.java \
 	CopyOnWriteArraySetTest.java \
 	java/lang/ClassTest.java \
