@@ -163,11 +163,11 @@ public class J2ObjC {
       error("no such file: " + filename);
       return;
     }
-    long readTime = System.currentTimeMillis();
+    long readTime = logTime("read source", startTime);
 
     // Parse and resolve source
     currentUnit = parse(filename, source);
-    long compileTime = System.currentTimeMillis();
+    long compileTime = logTime("parse", readTime);
     if (getCurrentErrorLevel() > beginningErrorLevel) {
       return; // Continue to next file.
     }
@@ -195,10 +195,12 @@ public class J2ObjC {
         } else {
           ObjectiveCHeaderGenerator.generate(filename, source, currentUnit);
         }
+        long writeTime = logTime("header generation", translateTime);
 
         // write implementation file
         ObjectiveCImplementationGenerator.generate(
             filename, Options.getLanguage(), currentUnit, source);
+        logTime("implementation generation", writeTime);
 
         if (Options.buildClosure()) {
           // Add out-of-date dependencies to translation list.
@@ -434,6 +436,14 @@ public class J2ObjC {
     return path;
   }
 
+  private static long logTime(String phase, long start) {
+    long mark = System.currentTimeMillis();
+    if (logger.getLevel().intValue() <= Level.FINEST.intValue()) {
+      System.out.printf("%5d ms  %s\n", mark - start, phase);
+    }
+    return mark;
+  }
+
   /**
    * Translates a parsed source file, modifying the compilation unit by
    * substituting core Java type and method references with iOS equivalents.
@@ -453,57 +463,75 @@ public class J2ObjC {
    * @throws AssertionError if the translator makes invalid edits
    */
   public static void translate(CompilationUnit unit) {
+    long starttime = System.currentTimeMillis();
 
     // Update code that has GWT references.
     new GwtConverter().run(unit);
+    starttime = logTime("GwtConverter", starttime);
 
     // Modify AST to be more compatible with Objective C
     new Rewriter().run(unit);
+    starttime = logTime("Rewriter", starttime);
 
     // Add auto-boxing conversions.
     new Autoboxer(unit.getAST()).run(unit);
+    starttime = logTime("Autoboxer", starttime);
 
     // Extract inner and anonymous classes
     new AnonymousClassConverter(unit).run(unit);
+    starttime = logTime("AnonymousClassConverter", starttime);
     new InnerClassExtractor(unit).run(unit);
+    starttime = logTime("InnerClassConverter", starttime);
 
     // Normalize init statements
     new InitializationNormalizer().run(unit);
+    starttime = logTime("InitializationNormalizer", starttime);
 
     // Fix references to outer scope and captured variables.
     new OuterReferenceFixer().run(unit);
+    starttime = logTime("OuterReferenceFixer", starttime);
 
     // Breaks up deeply nested expressions such as chained method calls.
     new ComplexExpressionExtractor().run(unit);
+    starttime = logTime("ComplexExpressionExtractor", starttime);
 
     // Adds nil_chk calls wherever an expression is dereferenced.
     new NilCheckResolver().run(unit);
+    starttime = logTime("NilCheckResolver", starttime);
 
     // Translate core Java type use to similar iOS types
     new JavaToIOSTypeConverter().run(unit);
+    starttime = logTime("JavaToIOSTypeConverter", starttime);
     Map<String, String> methodMappings = Options.getMethodMappings();
     if (methodMappings.isEmpty()) {
       // Method maps are loaded here so tests can call translate() directly.
       loadMappingFiles();
     }
     new JavaToIOSMethodTranslator(unit.getAST(), methodMappings).run(unit);
+    starttime = logTime("JavaToIOSMethodTranslator", starttime);
 
     new ArrayRewriter().run(unit);
+    starttime = logTime("ArrayRewriter", starttime);
 
     new StaticVarRewriter().run(unit);
+    starttime = logTime("StaticVarRewriter", starttime);
 
     // Reorders the types so that superclasses are declared before classes that
     // extend them.
     TypeSorter.sortTypes(unit);
+    starttime = logTime("TypeSorter", starttime);
 
     // Add dealloc/finalize method(s), if necessary.  This is done
     // after inner class extraction, so that each class releases
     // only its own instance variables.
     new DestructorGenerator().run(unit);
+    starttime = logTime("DestructorGenerator", starttime);
 
     new CopyAllFieldsWriter().run(unit);
+    starttime = logTime("CopyAllFieldsWriter", starttime);
 
     new OperatorRewriter().run(unit);
+    starttime = logTime("OperatorRewriter", starttime);
 
     for (Plugin plugin : Options.getPlugins()) {
       plugin.processUnit(unit);
