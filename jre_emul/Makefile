@@ -608,7 +608,8 @@ $(MAIN_LIB): $(MAIN_LIB_OBJS)
 
 dist_includes: translate $(BUILD_DIR)/.jre_dist_includes
 
-$(BUILD_DIR)/.jre_dist_includes: $(TRANSLATED_HEADERS) $(SOURCE_HEADERS) | $(DIST_INCLUDE_DIR)
+$(BUILD_DIR)/.jre_dist_includes: $(TRANSLATED_HEADERS) $(SOURCE_HEADERS) | \
+    $(DIST_INCLUDE_DIR) translate
 	(cd $(EMULATION_CLASS_DIR) && tar cf - $(SOURCE_HEADERS:$(EMULATION_CLASS_DIR)/%=%)) \
 	    | (cd $(DIST_INCLUDE_DIR); tar xfp -)
 	(cd $(TRANSLATED_SOURCE_DIR) && tar cf - \
@@ -617,7 +618,7 @@ $(BUILD_DIR)/.jre_dist_includes: $(TRANSLATED_HEADERS) $(SOURCE_HEADERS) | $(DIS
 	touch $@
 
 $(ARCH_BUILD_DIR)/.includes: $(TRANSLATED_HEADERS) $(SOURCE_HEADERS) | \
-    $(ARCH_BUILD_DIR) $(ARCH_INCLUDE_DIR)
+    $(ARCH_BUILD_DIR) $(ARCH_INCLUDE_DIR) translate
 	(cd $(EMULATION_CLASS_DIR) && tar cf - $(SOURCE_HEADERS:$(EMULATION_CLASS_DIR)/%=%)) \
 	    | (cd $(ARCH_INCLUDE_DIR); tar xfp -)
 	(cd $(TRANSLATED_SOURCE_DIR) && tar cf - \
@@ -634,66 +635,55 @@ DIRS_TO_MAKE = $(BUILD_DIR) $(ARCH_BUILD_DIR) $(ARCH_INCLUDE_DIR) \
 $(sort $(DIRS_TO_MAKE)):
 	@mkdir -p $@
 
-$(TRANSLATED_SOURCE_DIR)/%.m: %.java
+$(TRANSLATED_SOURCE_DIR)/%.h $(TRANSLATED_SOURCE_DIR)/%.m: %.java | pre_translate
 	@echo "$?" >> $(JAVA_SOURCE_LIST)
-	@echo "$(@:.m=.h)" >> $(OBJC_OUT_LIST)
-	@echo "$@" >> $(OBJC_OUT_LIST)
-	@if [ -e $@ ]; then touch $@; fi
+	@echo "$(TRANSLATED_SOURCE_DIR)/$*.h" >> $(OBJC_OUT_LIST)
+	@echo "$(TRANSLATED_SOURCE_DIR)/$*.m" >> $(OBJC_OUT_LIST)
+	@if [ -e $(TRANSLATED_SOURCE_DIR)/$*.h ]; then touch $(TRANSLATED_SOURCE_DIR)/$*.h; fi
+	@if [ -e $(TRANSLATED_SOURCE_DIR)/$*.m ]; then touch $(TRANSLATED_SOURCE_DIR)/$*.m; fi
 
 define compile_rules
-$(1)/%.o: $(3)/%.$(4)
+$(1)/%.o: $(3)/%.$(4) | translate
 	@mkdir -p $$(@D)
 	$$(CLANG) -c $$? -o $$@ $(2) $$(OBJCFLAGS) -I$$(EMULATION_CLASS_DIR) \
 	    -I$$(TRANSLATED_SOURCE_DIR)
 
-$(1)/%.plist: $(3)/%.$(4)
+$(1)/%.plist: $(3)/%.$(4) | translate
 	@mkdir -p $$(@D)
 	$$(CLANG) -c $$? -o $$@ $(2) $$(OBJCFLAGS) $$(STATIC_ANALYZER_FLAGS) \
 	    -I$$(EMULATION_CLASS_DIR) -I$$(TRANSLATED_SOURCE_DIR)
 endef
 
 define compile_rules_no_arc
-$(1)/java/util/HashMap.o: Classes/java/util/HashMap.m
+$(1)/$(3:.m=.o): Classes/$(3) | translate
 	@mkdir -p $$(@D)
 	$$(CLANG) -c $$? -o $$@ $(2) $$(OBJCFLAGS_NO_ARC) \
 	    -I$$(EMULATION_CLASS_DIR) -I$$(TRANSLATED_SOURCE_DIR)
 
-$(1)/java/util/HashMap.plist: Classes/java/util/HashMap.m
+$(1)/$(3:.m=.plist): Classes/$(3) | translate
 	@mkdir -p $$(@D)
 	$$(CLANG) -c $$? -o $$@ $(2) $$(OBJCFLAGS) $$(STATIC_ANALYZER_FLAGS) \
 	    -I$$(EMULATION_CLASS_DIR) -I$$(TRANSLATED_SOURCE_DIR)
+endef
 
-$(1)/java/util/LinkedHashMap.o: Classes/java/util/LinkedHashMap.m
-	@mkdir -p $$(@D)
-	$$(CLANG) -c $$? -o $$@ $(2) $$(OBJCFLAGS_NO_ARC) \
-	    -I$$(EMULATION_CLASS_DIR) -I$$(TRANSLATED_SOURCE_DIR)
-
-$(1)/java/util/LinkedHashMap.plist: Classes/java/util/LinkedHashMap.m
-	@mkdir -p $$(@D)
-	$$(CLANG) -c $$? -o $$@ $(2) $$(OBJCFLAGS) $$(STATIC_ANALYZER_FLAGS) \
-	    -I$$(EMULATION_CLASS_DIR) -I$$(TRANSLATED_SOURCE_DIR)
-
-$(1)/IOSReference.o: Classes/IOSReference.m
-	@mkdir -p $$(@D)
-	$$(CLANG) -c $$? -o $$@ $(2) $$(OBJCFLAGS_NO_ARC) \
-	    -I$$(EMULATION_CLASS_DIR) -I$$(TRANSLATED_SOURCE_DIR)
-
-$(1)IOSReference.plist: Classes/IOSReference.m
-	@mkdir -p $$(@D)
-	$$(CLANG) -c $$? -o $$@ $(2) $$(OBJCFLAGS) $$(STATIC_ANALYZER_FLAGS) \
-	    -I$$(EMULATION_CLASS_DIR) -I$$(TRANSLATED_SOURCE_DIR)
-
+define additional_compile_rules
 $(1)/objc-sync.o: $(APPLE_ROOT)/objc-sync.m
 	@mkdir -p $$(@D)
 	$$(CLANG) -c $$? -o $$@ $(2) $$(OBJCFLAGS_NO_ARC) \
 	    -I$$(EMULATION_CLASS_DIR) -I$$(TRANSLATED_SOURCE_DIR)
 endef
 
+NON_ARC_SRCS = \
+    java/util/HashMap.m \
+    java/util/LinkedHashMap.m \
+    IOSReference.m
+
 OBJC_SOURCE_DIRS = $(EMULATION_CLASS_DIR) $(TRANSLATED_SOURCE_DIR)
 OBJC_EXTENSIONS = m mm
 arch_compile_rules = $(foreach src_dir,$(OBJC_SOURCE_DIRS),$(foreach ext,$(OBJC_EXTENSIONS),\
     $(eval $(call compile_rules,$(1),$(2),$(src_dir),$(ext))))) \
-    $(eval $(call compile_rules_no_arc,$(1),$(2)))
+    $(foreach src,$(NON_ARC_SRCS),$(eval $(call compile_rules_no_arc,$(1),$(2),$(src)))) \
+    $(eval $(call additional_compile_rules,$(1),$(2)))
 
 $(call arch_compile_rules,$(CLASS_DIR),$(MACOSX_FLAGS))
 $(call arch_compile_rules,$(IPHONE_BUILD_DIR),$(IPHONE_FLAGS))
@@ -703,7 +693,7 @@ ifdef TARGET_TEMP_DIR
 $(call arch_compile_rules,$(TARGET_TEMP_DIR),$(ARCH_FLAGS) $(SDK_FLAGS))
 endif
 
-test: default
+test: libs_dist $(DIST_DIR)/j2objcc
 	$(MAKE) -f tests.mk test
 
 clean:

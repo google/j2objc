@@ -161,7 +161,7 @@ OBJS = $(JUNIT_SOURCES:%.java=%.o) \
 IPHONE_SDK_DIR = $(shell bash ../scripts/sysroot_path.sh --iphoneos)
 SIMULATOR_SDK_DIR = $(shell bash ../scripts/sysroot_path.sh --iphonesimulator)
 
-JAVA_SOURCE_LIST = $(TMPDIR).classes.list
+JAVA_SOURCE_LIST = $(BUILD_DIR)/junit.classes.list
 EXTRACTED_JAVA = $(JUNIT_SOURCES:%=$(JAVA_SRC_DIR)/%) \
     $(HAMCREST_SOURCES:%=$(JAVA_SRC_DIR)/%) \
     $(JAVA_SRC_DIR)/$(ORG_JUNIT_TEST_SRC)
@@ -206,17 +206,21 @@ translate: pre_translate $(EXTRACTED_JAVA) $(TRANSLATED_OBJC)
 	fi
 
 pre_translate:
+	@mkdir -p $(BUILD_DIR)
 	@rm -f $(JAVA_SOURCE_LIST)
 	@touch $(JAVA_SOURCE_LIST)
 
-$(EXTRACTED_JAVA): $(JUNIT_SRC_JAR) $(HAMCREST_SRC_JAR)
+$(BUILD_DIR)/.extracted: $(JUNIT_SRC_JAR) $(HAMCREST_SRC_JAR)
 	@mkdir -p $(JAVA_SRC_DIR)
 	unzip -q -o -d $(JAVA_SRC_DIR) $(JUNIT_SRC_JAR) $(JUNIT_SOURCES) \
 	    $(ORG_JUNIT_TEST_SRC)
 	unzip -q -o -d $(JAVA_SRC_DIR) $(HAMCREST_SRC_JAR) $(HAMCREST_SOURCES)
 	@touch $(EXTRACTED_JAVA)
+	@touch $@
 
-$(BUILD_DIR)/%.h $(BUILD_DIR)/%.m: $(JAVA_SRC_DIR)/%.java
+$(EXTRACTED_JAVA): $(BUILD_DIR)/.extracted
+
+$(BUILD_DIR)/%.h $(BUILD_DIR)/%.m: $(JAVA_SRC_DIR)/%.java | pre_translate
 	@echo "$?" >> $(JAVA_SOURCE_LIST)
 
 ifdef TARGET_TEMP_DIR
@@ -246,17 +250,17 @@ $(EMULATION_SIMULATOR_LIB): $(SIMULATOR_OBJS)
 endif
 
 define compile_rules
-$(1)/%.o: $(BUILD_DIR)/%.m
+$(1)/%.o: $(BUILD_DIR)/%.m | translate
 	@mkdir -p $$(@D)
 	$$(CLANG) -c $$? -o $$@ $(2) $$(OBJCFLAGS) -I$$(BUILD_DIR) \
 	  -I$(ARCH_INCLUDE_DIR)
 
-$(1)/%.o: $(OBJC_SOURCE_DIR)/%.m
+$(1)/%.o: $(OBJC_SOURCE_DIR)/%.m | translate
 	@mkdir -p $$(@D)
 	$$(CLANG) -c $$? -o $$@ $(2) $$(OBJCFLAGS) -I$$(BUILD_DIR) \
 	  -I$$(ARCH_INCLUDE_DIR)
 
-$(1)/$(ORG_JUNIT_TEST_OBJ): $(BUILD_DIR)/$(ORG_JUNIT_TEST_SRC:%.java=%.m)
+$(1)/$(ORG_JUNIT_TEST_OBJ): $(BUILD_DIR)/$(ORG_JUNIT_TEST_SRC:%.java=%.m) | translate
 	@mkdir -p $$(@D)
 	$$(CLANG) -c $$? -o $$@ $(2) $$(OBJCFLAGS) -I$$(BUILD_DIR) \
 	  -I$$(ARCH_INCLUDE_DIR)
@@ -278,7 +282,7 @@ $(JUNIT_LIB_DIST): $(JUNIT_LIB)
 	@mkdir -p $(@D)
 	install -m 0644 $< $@
 
-$(ARCH_INCLUDE_DIR)/%.h: $(BUILD_DIR)/%.h
+$(ARCH_INCLUDE_DIR)/%.h: $(BUILD_DIR)/%.h | translate
 	@mkdir -p $(@D)
 	install -m 0644 $< $@
 
