@@ -797,9 +797,15 @@ public class J2ObjC {
 
       Enumeration<?> keyIterator = mappings.propertyNames();
       while (keyIterator.hasMoreElements()) {
-        String javaMethod = (String) keyIterator.nextElement();
-        String iosMethod = mappings.getProperty(javaMethod);
-        Options.getMethodMappings().put(javaMethod, iosMethod);
+        String key = (String) keyIterator.nextElement();
+        if (key.indexOf('(') > 0) {
+          // All method mappings have parentheses characters, classes don't.
+          String iosMethod = mappings.getProperty(key);
+          Options.getMethodMappings().put(key, iosMethod);
+        } else {
+          String iosClass = mappings.getProperty(key);
+          Options.getClassMappings().put(key, iosClass);
+        }
       }
     }
   }

@@ -131,4 +131,30 @@ public class NameTableTest extends GenerationTest {
     assertTranslation(translation, "- (void)fooWithIntArray2:(IOSObjectArray *)values");
     assertTranslation(translation, "- (void)fooWithIntArray3:(IOSObjectArray *)values");
   }
+
+  public void testRenameAnnotation() throws IOException {
+    addSourceFile("@com.google.j2objc.annotations.ObjectiveCName(\"TestName\") " +
+    		"public class A { static void test() {}}", "A.java");
+    addSourceFile(
+        "public class B { void test() { A.test(); }}", "B.java");
+    String translation = translateSourceFile("A", "A.h");
+    assertTranslation(translation, "@interface TestName : NSObject");
+    translation = translateSourceFile("B", "B.m");
+    assertTranslation(translation, "[TestName test];");
+  }
+
+  public void testRenameMapping() throws IOException {
+    Options.getClassMappings().put("foo.bar.A",  "Test2Name");
+    try {
+      addSourceFile("package foo.bar; public class A { static void test() {}}", "foo/bar/A.java");
+      addSourceFile(
+          "package foo.bar; public class B { void test() { A.test(); }}", "foo/bar/B.java");
+      String translation = translateSourceFile("foo/bar/A", "foo/bar/A.h");
+      assertTranslation(translation, "@interface Test2Name : NSObject");
+      translation = translateSourceFile("foo/bar/B", "foo/bar/B.m");
+      assertTranslation(translation, "[Test2Name test];");
+    } finally {
+      Options.getClassMappings().remove("foo.bar.A");
+    }
+  }
 }
