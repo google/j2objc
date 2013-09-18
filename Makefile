@@ -19,6 +19,11 @@
 
 .PHONY: translator dist test
 
+# Force test targets to be run sequentially to avoid interspersed output.
+ifeq "$(findstring test,$(MAKECMDGOALS))" "test"
+.NOTPARALLEL:
+endif
+
 J2OBJC_ROOT = .
 
 include make/common.mk
@@ -61,7 +66,6 @@ jre_emul_dist: translator_dist
 junit_dist: translator_dist jre_emul_dist
 	@cd junit && $(MAKE) dist
 
-
 cycle_finder_dist: annotations_dist java_deps_dist translator_dist
 	@cd cycle_finder && $(MAKE) dist
 
@@ -80,7 +84,14 @@ clean:
 test_translator: annotations_dist java_deps_dist
 	@cd translator && $(MAKE) test
 
-test: test_translator
+test_jre_emul: jre_emul_dist junit_dist
 	@cd jre_emul && $(MAKE) -f tests.mk
+
+test_jre_cycles:
 	@cd jre_emul && $(MAKE) find_cycles
+
+test_cycle_finder:
 	@cd cycle_finder && $(MAKE) test
+
+test: test_translator test_jre_emul test_jre_cycles test_cycle_finder
+
