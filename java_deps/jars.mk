@@ -40,7 +40,10 @@ JUNIT_JAR = junit.jar
 JUNIT_SOURCE_JAR = junit-src.jar
 
 # JUnit dependency
+HAMCREST_JAR = hamcrest-core-1.1.jar
 HAMCREST_SOURCE_JAR = hamcrest-core-1.1-src.jar
+
+JUNIT_JARS = $(JUNIT_JAR) $(HAMCREST_JAR)
 
 # MOE:end_strip
 # MOE:insert ECLIPSE_JARS = \
@@ -65,3 +68,4 @@ HAMCREST_SOURCE_JAR = hamcrest-core-1.1-src.jar
 # MOE:insert JUNIT_JAR = junit-4.10.jar
 # MOE:insert JUNIT_SOURCE_JAR = junit-4.10-sources.jar
 # MOE:insert HAMCREST_SOURCE_JAR = hamcrest-core-1.1.jar
+# MOE:insert JUNIT_JARS = $(JUNIT_JAR)
