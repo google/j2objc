@@ -322,38 +322,12 @@ pre_translate:
 $(TESTS_DIR):
 	@mkdir -p $@
 
-$(TESTS_DIR)/%.h $(TESTS_DIR)/%.m: $(JRE_TEST_ROOT)/%.java
-	@echo $? >> $(JAVA_SOURCE_LIST)
+define java_source_rule
+$$(TESTS_DIR)/%.h $$(TESTS_DIR)/%.m: $(1)/%.java | pre_translate
+	@echo $$? >> $$(JAVA_SOURCE_LIST)
+endef
 
-$(TESTS_DIR)/%.h $(TESTS_DIR)/%.m: $(JRE_MATH_TEST_ROOT)/%.java
-	@echo $? >> $(JAVA_SOURCE_LIST)
-
-$(TESTS_DIR)/%.h $(TESTS_DIR)/%.m: $(JRE_NIO_TEST_ROOT)/%.java
-	@echo $? >> $(JAVA_SOURCE_LIST)
-
-$(TESTS_DIR)/%.h $(TESTS_DIR)/%.m: $(JRE_TEXT_TEST_ROOT)/%.java
-	@echo $? >> $(JAVA_SOURCE_LIST)
-
-$(TESTS_DIR)/%.h $(TESTS_DIR)/%.m: $(TEST_SUPPORT_ROOT)/%.java
-	@echo $? >> $(JAVA_SOURCE_LIST)
-
-$(TESTS_DIR)/%.h $(TESTS_DIR)/%.m: $(MATH_TEST_SUPPORT_ROOT)/%.java
-	@echo $? >> $(JAVA_SOURCE_LIST)
-
-$(TESTS_DIR)/%.h $(TESTS_DIR)/%.m: $(MISC_TEST_ROOT)/%.java
-	@echo $? >> $(JAVA_SOURCE_LIST)
-
-$(TESTS_DIR)/%.h $(TESTS_DIR)/%.m: $(ANDROID_JRE_TEST_ROOT)/%.java
-	@echo $? >> $(JAVA_SOURCE_LIST)
-
-$(TESTS_DIR)/%.h $(TESTS_DIR)/%.m: $(ANDROID_TEST_SUPPORT_ROOT)/%.java
-	@echo $? >> $(JAVA_SOURCE_LIST)
-
-$(TESTS_DIR)/%.h $(TESTS_DIR)/%.m: $(REGEX_TEST_ROOT)/%.java
-	@echo $? >> $(JAVA_SOURCE_LIST)
-
-$(TESTS_DIR)/%.h $(TESTS_DIR)/%.m: $(CONCURRENT_TEST_ROOT)/%.java
-	@echo $? >> $(JAVA_SOURCE_LIST)
+$(foreach srcdir,$(TEST_SRC_ROOTS),$(eval $(call java_source_rule,$(srcdir))))
 
 $(TESTS_DIR)/%.o: $(TESTS_DIR)/%.m | translate
 	@mkdir -p `dirname $@`
