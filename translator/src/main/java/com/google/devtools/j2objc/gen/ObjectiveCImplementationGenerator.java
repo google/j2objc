@@ -233,7 +233,7 @@ public class ObjectiveCImplementationGenerator extends ObjectiveCSourceFileGener
     List<MethodDeclaration> methods = Lists.newArrayList(node.getMethods());
     fieldHiders = HiddenFieldDetector.getFieldNameConflicts(node);
     if (node.isInterface()) {
-      printStaticInterface(typeName, fields, methods);
+      printStaticInterface(node, typeName, fields, methods);
     } else {
       printf("@implementation %s\n\n", typeName);
       printStaticReferencesMethod(fields);
@@ -501,11 +501,11 @@ public class ObjectiveCImplementationGenerator extends ObjectiveCSourceFileGener
     }
   }
 
-  private void printStaticInterface(
+  private void printStaticInterface(AbstractTypeDeclaration node,
       String typeName, List<FieldDeclaration> fields, List<MethodDeclaration> methods) {
     List<IVariableBinding> staticFields =
         getStaticFieldsNeedingAccessors(fields, /* isInterface */ true);
-    if (staticFields.isEmpty()) {
+    if (staticFields.isEmpty() && !hasMetadata(Types.getTypeBinding(node))) {
       return;
     }
     printf("\n@implementation %s\n\n", typeName);
@@ -515,6 +515,9 @@ public class ObjectiveCImplementationGenerator extends ObjectiveCSourceFileGener
       if (method.getBody() != null) {
         printNormalMethod(method);
       }
+    }
+    if (!Options.stripReflection()) {
+      printMetadata(node);
     }
     println("@end");
   }
@@ -1130,14 +1133,43 @@ public class ObjectiveCImplementationGenerator extends ObjectiveCSourceFileGener
 
   private void printMetadata(AbstractTypeDeclaration node) {
     ITypeBinding type = Types.getTypeBinding(node);
-    String fullName = NameTable.getFullName(type);
-    if (type.getPackage() != null || Modifier.isPublic(type.getModifiers()) ||
-        !type.getQualifiedName().equals(fullName)) {
-      printf("static J2ObjcClassInfo _%s = { ", fullName);
+    if (hasMetadata(type)) {
+      String fullName = NameTable.getFullName(type);
+      println("+ (J2ObjcClassInfo *)__metadata {");
+      printf("  static J2ObjcClassInfo _%s = { ", fullName);
       printf("\"%s\", ", type.getName());
       printf("\"%s\", ", type.getPackage().getName());
-      printf("0x%s };\n\n", Integer.toHexString(type.getModifiers()));
-      printf("+ (J2ObjcClassInfo *)__metadata {\n  return &_%s;\n}\n\n", fullName);
+      printf("0x%s };\n", Integer.toHexString(getModifiers(type)));
+      printf("  return &_%s;\n}\n\n", fullName);
     }
+  }
+
+  /**
+   * Does this type need a metadata method?
+   */
+  private boolean hasMetadata(ITypeBinding type) {
+    return type.getPackage() != null ||
+        !type.getQualifiedName().equals(NameTable.getFullName(type));
+  }
+
+  /**
+   * Returns the modifiers for a specified type, including internal ones.
+   * All class modifiers are defined in the JVM specification, table 4.1.
+   */
+  private static int getModifiers(ITypeBinding type) {
+    int modifiers = type.getModifiers();
+    if (type.isInterface()) {
+      modifiers |= 0x200;
+    }
+    if (type.isSynthetic()) {
+      modifiers |= 0x1000;
+    }
+    if (type.isAnnotation()) {
+      modifiers |= 0x2000;
+    }
+    if (type.isEnum()) {
+      modifiers |= 0x4000;
+    }
+    return modifiers;
   }
 }
