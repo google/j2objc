@@ -256,7 +256,7 @@ FAILING_MATH_TESTS = \
 	org/apache/harmony/tests/java/math/BigIntegerXorTest.java \
 	tests/api/java/math/BigIntegerTest.java \
 
-JAVA_SOURCE_LIST = $(TMPDIR).tests.list
+JAVA_SOURCE_LIST = $(BUILD_DIR)/jre_emul.tests.list
 
 SUPPORT_OBJS = $(SUPPORT_SOURCES:%.java=$(TESTS_DIR)/%.o)
 TEST_OBJS = $(TEST_SOURCES:%.java=$(TESTS_DIR)/%.o)
@@ -264,7 +264,6 @@ TEST_OBJS = $(TEST_SOURCES:%.java=$(TESTS_DIR)/%.o)
 TEST_RESOURCES_SRCS = \
     org/apache/harmony/luni/tests/test_resource.txt \
     org/apache/harmony/luni/tests/java/io/testfile-utf8.txt
-TEST_RESOURCES_TOP = $(BUILD_DIR)/org
 TEST_RESOURCES_ROOT = apache_harmony/classlib/modules/luni/src/test/resources
 TEST_RESOURCES = $(TEST_RESOURCES_SRCS:%=$(TESTS_DIR)/%)
 
@@ -316,6 +315,7 @@ clean:
 	@rm -rf $(TESTS_DIR)
 
 pre_translate:
+	@mkdir -p $(BUILD_DIR)
 	@rm -f $(JAVA_SOURCE_LIST)
 	@touch $(JAVA_SOURCE_LIST)
 
@@ -355,7 +355,7 @@ $(TESTS_DIR)/%.h $(TESTS_DIR)/%.m: $(REGEX_TEST_ROOT)/%.java
 $(TESTS_DIR)/%.h $(TESTS_DIR)/%.m: $(CONCURRENT_TEST_ROOT)/%.java
 	@echo $? >> $(JAVA_SOURCE_LIST)
 
-$(TESTS_DIR)/%.o: $(TESTS_DIR)/%.m
+$(TESTS_DIR)/%.o: $(TESTS_DIR)/%.m | translate
 	@mkdir -p `dirname $@`
 	../dist/j2objcc -g -I$(TESTS_DIR) -c $? -o $@ \
 	  -Wno-objc-redundant-literal-use -Wno-format \
