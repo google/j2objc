@@ -25,7 +25,7 @@
 
 - (id)initWithJavaInputStream:(JavaIoInputStream *)javaStream {
   if ((self = [super init])) {
-    delegate_ = RETAIN(javaStream);
+    delegate_ = RETAIN_(javaStream);
   }
   return self;
 }
