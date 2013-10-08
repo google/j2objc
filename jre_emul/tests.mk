@@ -59,6 +59,7 @@ TEST_SOURCES = \
 	java/lang/ref/PhantomReferenceTest.java \
 	java/lang/ref/SoftReferenceTest.java \
 	java/lang/ref/WeakReferenceTest.java \
+	java/util/TreeMapTest.java \
 	java/util/WeakHashMapTest.java \
 	libcore/icu/ICUTest.java \
 	libcore/icu/LocaleDataTest.java \
