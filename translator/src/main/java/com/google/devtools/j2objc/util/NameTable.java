@@ -75,13 +75,14 @@ public class NameTable {
       "nil", "Nil", "YES", "NO", "TRUE", "FALSE",
 
       // C99 keywords
-      "auto", "const", "extern", "inline", "register", "restrict", "signed", "goto", "sizeof",
-      "struct", "typedef", "union", "volatile",
+      "auto", "const", "entry", "extern", "goto", "inline", "register", "restrict", "signed",
+      "sizeof", "struct", "typedef", "union", "unsigned", "volatile",
 
       // C++ keywords
-      "asm", "const_cast", "delete", "dynamic_cast", "friend", "explicit", "mutable", "namespace",
-      "not", "operator", "reinterpret_cast", "static_cast", "template", "typeid", "typename",
-      "using", "virtual",
+      "and", "and_eq", "asm", "bitand", "bitor", "compl", "const_cast", "delete", "dynamic_cast",
+      "explicit", "export", "friend", "mutable", "namespace", "not", "not_eq", "operator", "or",
+      "or_eq", "reinterpret_cast", "static_cast", "template", "typeid", "typename", "using",
+      "virtual", "wchar_t", "xor", "xor_eq",
 
       // variables
       "self", "isa",
