@@ -16,6 +16,7 @@
 
 package com.google.devtools.j2objc.gen;
 
+import com.google.common.base.Strings;
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.ListMultimap;
 import com.google.common.collect.Lists;
@@ -1137,6 +1138,27 @@ public class ObjectiveCImplementationGenerator extends ObjectiveCSourceFileGener
     }
   }
 
+  private String getEnclosingName(ITypeBinding type) {
+    type = type.getDeclaringClass();
+    if (type == null) {
+      return "NULL";
+    }
+    StringBuilder sb = new StringBuilder("\"");
+    List<String> types = Lists.newArrayList();
+    while (type != null) {
+      types.add(type.getName());
+      type = type.getDeclaringClass();
+    }
+    for (int i = types.size() - 1; i >= 0; i--) {
+      sb.append(types.get(i));
+      if (i > 0) {
+        sb.append("$");
+      }
+    }
+    sb.append("\"");
+    return sb.toString();
+  }
+
   private void printMetadata(AbstractTypeDeclaration node) {
     ITypeBinding type = Types.getTypeBinding(node);
     if (hasMetadata(type)) {
@@ -1144,7 +1166,13 @@ public class ObjectiveCImplementationGenerator extends ObjectiveCSourceFileGener
       println("+ (J2ObjcClassInfo *)__metadata {");
       printf("  static J2ObjcClassInfo _%s = { ", fullName);
       printf("\"%s\", ", type.getName());
-      printf("\"%s\", ", type.getPackage().getName());
+      String pkgName = type.getPackage().getName();
+      if (Strings.isNullOrEmpty(pkgName)) {
+        printf("NULL, ");
+      } else {
+        printf("\"%s\", ", pkgName);
+      }
+      printf("%s, ", getEnclosingName(type));
       printf("0x%s };\n", Integer.toHexString(getModifiers(type)));
       printf("  return &_%s;\n}\n\n", fullName);
     }
@@ -1175,6 +1203,9 @@ public class ObjectiveCImplementationGenerator extends ObjectiveCSourceFileGener
     }
     if (type.isEnum()) {
       modifiers |= 0x4000;
+    }
+    if (type.isAnonymous()) {
+      modifiers |= 0x8000;
     }
     return modifiers;
   }

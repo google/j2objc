@@ -338,8 +338,9 @@ $(TESTS_DIR):
 	@mkdir -p $@
 
 define java_source_rule
-$$(TESTS_DIR)/%.h $$(TESTS_DIR)/%.m: $(1)/%.java | pre_translate
-	@echo $$? >> $$(JAVA_SOURCE_LIST)
+$$(TESTS_DIR)/%.m: $(1)/%.java | pre_translate
+	@echo $$< >> $$(JAVA_SOURCE_LIST)
+	@if [ -e $$@ ]; then touch $$@; fi
 endef
 
 $(foreach srcdir,$(TEST_SRC_ROOTS),$(eval $(call java_source_rule,$(srcdir))))
@@ -352,4 +353,5 @@ $(TESTS_DIR)/%.o: $(TESTS_DIR)/%.m | translate
 
 $(TEST_BIN): $(TEST_OBJS) $(SUPPORT_LIB) \
         ../dist/lib/libjre_emul.a ../dist/lib/libjunit.a
-	$(TEST_JOCC) -o $@ $(TEST_OBJS)
+	@echo Building test executable...
+	@$(TEST_JOCC) -o $@ $(TEST_OBJS)
