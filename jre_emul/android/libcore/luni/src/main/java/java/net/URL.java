@@ -453,7 +453,13 @@ public final class URL implements Serializable {
     public final InputStream openStream() throws IOException {
       // TODO(tball): enable when connections are supported.
       //return openConnection().getInputStream();
-      return new FileInputStream(file);
+
+      // Workaround (delete when above is enabled).
+      try {
+        return new FileInputStream(toURI().getPath());
+      } catch (URISyntaxException e) {
+        return null;
+      }
     }
 
     /**
