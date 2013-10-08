@@ -139,6 +139,7 @@
 - (BOOL)isEnum;
 - (BOOL)isInterface;
 - (BOOL)isPrimitive;
+- (BOOL)isAnnotation;
 
 - (IOSObjectArray *)getInterfaces;
 - (IOSObjectArray *)getGenericInterfaces;
