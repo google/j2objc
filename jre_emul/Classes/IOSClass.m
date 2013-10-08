@@ -745,6 +745,16 @@ IOSClass *FetchArray(IOSClass *componentType) {
   return iosClass;
 }
 
++ (void)load {
+  // Check that app was linked with -force-load flag, as otherwise JRE support
+  // will fail due to its categories not being loaded.
+  if ([[NSObject class] instanceMethodSignatureForSelector:@selector(compareToWithId:)] == NULL) {
+    [NSException raise:@"J2ObjCLinkError"
+                format:@"Your project is not configured to load categories from the JRE "
+     "emulation library. Did you forget the -force_load linker flag?"];
+  }
+}
+
 + (void)initialize {
   if (self == [IOSClass class]) {
     // Explicitly mapped classes are defined in Types.initializeTypeMap().
