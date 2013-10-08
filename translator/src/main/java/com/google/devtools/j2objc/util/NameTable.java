@@ -24,9 +24,11 @@ import com.google.devtools.j2objc.Options;
 import com.google.devtools.j2objc.types.GeneratedVariableBinding;
 import com.google.devtools.j2objc.types.PointerTypeBinding;
 import com.google.devtools.j2objc.types.Types;
+import com.google.j2objc.annotations.ObjectiveCName;
 
 import org.eclipse.jdt.core.dom.AbstractTypeDeclaration;
 import org.eclipse.jdt.core.dom.CompilationUnit;
+import org.eclipse.jdt.core.dom.IAnnotationBinding;
 import org.eclipse.jdt.core.dom.IBinding;
 import org.eclipse.jdt.core.dom.IMethodBinding;
 import org.eclipse.jdt.core.dom.IPackageBinding;
@@ -511,6 +513,22 @@ public class NameTable {
       String baseName = getFullName(outerBinding) + prefix + '_' + getName(binding);
       return (outerBinding.isEnum() && binding.isAnonymous()) ? baseName : baseName + suffix;
     }
+    String name = binding.getQualifiedName();
+
+    // Use ObjectiveCType annotation, if it exists.
+    IAnnotationBinding annotation = BindingUtil.getAnnotation(binding, ObjectiveCName.class);
+    if (annotation != null) {
+      name = (String) BindingUtil.getAnnotationValue(annotation, "value");
+      return name + suffix;
+    }
+
+    // Use mapping file entry, if it exists.
+    if (Options.getClassMappings().containsKey(name)) {
+      name = Options.getClassMappings().get(name);
+      return name + suffix;
+    }
+
+    // Use camel-cased package+class name.
     IPackageBinding pkg = binding.getPackage();
     String pkgName = pkg != null ? getPrefix(pkg.getName()) : "";
     return pkgName + binding.getName() + suffix;
