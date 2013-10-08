@@ -231,11 +231,15 @@ public class Autoboxer extends ErrorReportingASTVisitor {
 
   @Override
   public void endVisit(ConditionalExpression node) {
-    ITypeBinding nodeType = Types.getTypeBinding(node);
+    Expression expr = node.getExpression();
+    ITypeBinding exprType = Types.getTypeBinding(expr);
+    if (!exprType.isPrimitive()) {
+      node.setExpression(unbox(expr));
+    }
 
+    ITypeBinding nodeType = Types.getTypeBinding(node);
     Expression thenExpr = node.getThenExpression();
     ITypeBinding thenType = Types.getTypeBinding(thenExpr);
-
     Expression elseExpr = node.getElseExpression();
     ITypeBinding elseType = Types.getTypeBinding(elseExpr);
 

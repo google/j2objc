@@ -161,7 +161,7 @@ public final class Posix implements Os {
 
 // Uncomment and implement as Os interface grows.
 //  public native String[] environ();
-//  public native int fcntlFlock(FileDescriptor fd, int cmd, StructFlock arg)
+//  public native int fcntlFlock(FileDescriptor fd, int cmd, StructFlock arg) 
 //      throws ErrnoException;
 //  public native void fdatasync(FileDescriptor fd) throws ErrnoException;
 //  public native StructStat fstat(FileDescriptor fd) throws ErrnoException;
@@ -185,11 +185,11 @@ public final class Posix implements Os {
 //  public native void listen(FileDescriptor fd, int backlog) throws ErrnoException;
 //  public native long lseek(FileDescriptor fd, long offset, int whence) throws ErrnoException;
 //  public native StructStat lstat(String path) throws ErrnoException;
-//  public native void mincore(long address, long byteCount, byte[] vector)
+//  public native void mincore(long address, long byteCount, byte[] vector) 
 //      throws ErrnoException;
 //  public native void mkdir(String path, int mode) throws ErrnoException;
 //  public native void mlock(long address, long byteCount) throws ErrnoException;
-//  public native long mmap(long address, long byteCount, int prot, int flags,
+//  public native long mmap(long address, long byteCount, int prot, int flags, 
 //      FileDescriptor fd, long offset) throws ErrnoException;
 //  public native void msync(long address, long byteCount, int flags) throws ErrnoException;
 //  public native void munlock(long address, long byteCount) throws ErrnoException;
@@ -200,7 +200,7 @@ public final class Posix implements Os {
 //    if (buffer.isDirect()) {
 //      return preadBytes(fd, buffer, buffer.position(), buffer.remaining(), offset);
 //    } else {
-//      return preadBytes(fd, NioUtils.unsafeArray(buffer),
+//      return preadBytes(fd, NioUtils.unsafeArray(buffer), 
 //          NioUtils.unsafeArrayOffset(buffer) + buffer.position(), buffer.remaining(), offset);
 //    }
 //  }
@@ -285,8 +285,8 @@ public final class Posix implements Os {
 //      throws ErrnoException;
 //  public native int writev(FileDescriptor fd, Object[] buffers, int[] offsets, int[] byteCounts)
 //      throws ErrnoException;
-
-// TODO(user): implement these commented methods when java.net is ported.
+  
+// TODO(tball): implement these commented methods when java.net is ported.
 //  public native FileDescriptor accept(FileDescriptor fd, InetSocketAddress peerAddress) throws ErrnoException, SocketException;
 //  public native void bind(FileDescriptor fd, InetAddress address, int port) throws ErrnoException, SocketException;
 //  public native void connect(FileDescriptor fd, InetAddress address, int port) throws ErrnoException, SocketException;

@@ -95,11 +95,11 @@ static id invokeValueMethod(NSString *methodName) {
 }
 
 - (void)testByteReturn {
-  id result = invokeValueMethod(@"byteValue");
+  id result = invokeValueMethod(@"charValue");
   STAssertTrue([result isKindOfClass:[JavaLangByte class]],
                @"incorrect type returned", nil);
   JavaLangByte *b = (JavaLangByte *) result;
-  STAssertEquals([b byteValue], (char) 3, @"invalid result", nil);
+  STAssertEquals([b charValue], (char) 3, @"invalid result", nil);
 }
 
 - (void)testDoubleReturn {

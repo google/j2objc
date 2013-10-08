@@ -38,7 +38,7 @@ public abstract class URLStreamHandler {
      * @throws IOException
      *             if an I/O error occurs during opening the connection.
      *
-     TODO(user): enable when URLConnection is ported.
+     TODO(tball): enable when URLConnection is ported.
     protected abstract URLConnection openConnection(URL u) throws IOException;
     */
 
@@ -60,7 +60,7 @@ public abstract class URLStreamHandler {
      * @throws UnsupportedOperationException
      *             if the protocol handler doesn't support this method.
      *
-     TODO(user): enable when URLConnection is ported.
+     TODO(tball): enable when URLConnection is ported.
     protected URLConnection openConnection(URL u, Proxy proxy) throws IOException {
         throw new UnsupportedOperationException();
     }
@@ -274,7 +274,7 @@ public abstract class URLStreamHandler {
         String authority = url.getAuthority();
         if (authority != null) {
             result.append("//");
-            /* TODO(user): enable when URI encoders are ported.
+            /* TODO(tball): enable when URI encoders are ported.
             if (escapeIllegalCharacters) {
                 URI.AUTHORITY_ENCODER.appendPartiallyEncoded(result, authority);
             } else {
@@ -285,7 +285,7 @@ public abstract class URLStreamHandler {
 
         String fileAndQuery = url.getFile();
         if (fileAndQuery != null) {
-          /* TODO(user): enable when URI encoders are ported.
+          /* TODO(tball): enable when URI encoders are ported.
             if (escapeIllegalCharacters) {
                 URI.FILE_AND_QUERY_ENCODER.appendPartiallyEncoded(result, fileAndQuery);
             } else {
@@ -297,7 +297,7 @@ public abstract class URLStreamHandler {
         String ref = url.getRef();
         if (ref != null) {
             result.append('#');
-            /* TODO(user): enable when URI encoders are ported.
+            /* TODO(tball): enable when URI encoders are ported.
             if (escapeIllegalCharacters) {
                 URI.ALL_LEGAL_ENCODER.appendPartiallyEncoded(result, ref);
             } else {
@@ -330,7 +330,7 @@ public abstract class URLStreamHandler {
     /**
      * Returns the host address of {@code url}.
      *
-     TODO(user): enable when InetAddress is ported.
+     TODO(tball): enable when InetAddress is ported.
     protected InetAddress getHostAddress(URL url) {
         try {
             String host = url.getHost();

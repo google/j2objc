@@ -33,6 +33,7 @@ public class ObjectiveCImplementationGeneratorTest extends GenerationTest {
   protected void tearDown() throws Exception {
     Options.resetDeprecatedDeclarations();
     Options.resetMemoryManagementOption();
+    Options.setStripReflection(false);
     super.tearDown();
   }
 
@@ -296,11 +297,21 @@ public class ObjectiveCImplementationGeneratorTest extends GenerationTest {
     assertTranslation(translation, "+ (int *)fieldPhiRef;");
   }
 
+  public void testEmptyInterfaceGenerationNoMetadata() throws IOException {
+    Options.setStripReflection(true);
+    String translation = translateSourceFile(
+        "package foo; public interface Compatible {}",
+        "Compatible", "foo/Compatible.m");
+    assertTranslation(translation, "void FooCompatible_unused() {}");
+  }
+
   public void testEmptyInterfaceGeneration() throws IOException {
     String translation = translateSourceFile(
-      "package foo; public interface Compatible {}",
-      "Compatible", "foo/Compatible.m");
-    assertTranslation(translation, "void FooCompatible_unused() {}");
+        "package foo; public interface Compatible {}",
+        "Compatible", "foo/Compatible.m");
+    assertTranslation(translation, "@interface FooCompatible : NSObject");
+    assertTranslation(translation, "@implementation FooCompatible");
+    assertTranslation(translation, "+ (J2ObjcClassInfo *)__metadata");
   }
 
   public void testInterfaceConstantGeneration() throws IOException {
@@ -689,8 +700,8 @@ public class ObjectiveCImplementationGeneratorTest extends GenerationTest {
         "class Test { void test() throws Exception, java.lang.Error {} }", "Test", "Test.m");
     assertTranslation(translation, "+ (IOSObjectArray *)__exceptions_test ");
     assertTranslation(translation,
-        "return [IOSObjectArray arrayWithObjects:(id[]) { [JavaLangException getClass], " +
-        "[JavaLangError getClass] } count:2 type:[IOSClass getClass]];");
+        "return [IOSObjectArray arrayWithObjects:(id[]) { [[JavaLangException class] getClass], " +
+        "[[JavaLangError class] getClass] } count:2 type:[[IOSClass class] getClass]];");
   }
 
   public void testFreeFormNativeCode() throws IOException {

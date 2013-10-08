@@ -67,7 +67,7 @@ public class AutoboxerTest extends GenerationTest {
     String source = "byte b = 5; Byte foo = Byte.valueOf((byte) 3); b = foo;";
     List<Statement> stmts = translateStatements(source);
     String result = generateStatement(stmts.get(2));
-    assertEquals("b = [foo byteValue];", result);
+    assertEquals("b = [foo charValue];", result);
 
     source = "byte b = 5; Byte foo = Byte.valueOf((byte) 3); foo = b;";
     stmts = translateStatements(source);
@@ -206,6 +206,13 @@ public class AutoboxerTest extends GenerationTest {
         "boolean test() { Boolean b = null; return b != null ? b : false; } }",
         "Test", "Test.m");
     assertTranslation(translation, "b != nil ? [b booleanValue] : NO");
+  }
+
+  public void testConditionalOnBoxedValue() throws IOException {
+    String translation = translateSourceFile(
+        "public class Test { int test(Boolean b) { return b ? 1 : 2; } }", "Test", "Test.m");
+    assertTranslation(translation,
+        "return [((JavaLangBoolean *) nil_chk(b)) booleanValue] ? 1 : 2;");
   }
 
   public void testArrayInitializerNotBoxed() throws IOException {

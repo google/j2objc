@@ -34,9 +34,18 @@
 // limited to those that can be derived from an Objective-C Method instance,
 // so instances can be created and released as needed.
 @interface JavaLangReflectMethod : ExecutableMember
-    < JavaLangReflectGenericDeclaration, JavaLangReflectMember >
+    < JavaLangReflectGenericDeclaration, JavaLangReflectMember > {
+ @private
+  const J2ObjcMethodInfo *metadata_;
+}
 
-+ (id)methodWithSelector:(SEL)aSelector withClass:(IOSClass *)aClass;
++ (id)methodWithSelector:(SEL)aSelector
+               withClass:(IOSClass *)aClass
+            withMetadata:(const J2ObjcMethodInfo *)metadata;
+
+- (id)initWithSelector:(SEL)aSelector
+             withClass:(IOSClass *)aClass
+          withMetadata:(const J2ObjcMethodInfo *)metadata;
 
 // iOS version of Method.getReturnType();
 - (IOSClass *)getReturnType;
@@ -52,6 +61,9 @@
 //     it is wrapped in a Foundation wrapper class instance.
 - (NSObject *)invokeWithId:(id)object
                withNSObjectArray:(IOSObjectArray *)arguments;
+
+// Returns default value.
+- (id)getDefaultValue;
 
 @end
 

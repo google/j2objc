@@ -108,7 +108,7 @@ final public class XMLReaderFactory
     try { className = System.getProperty (property); }
     catch (RuntimeException e) { /* normally fails for applets */ }
 
-    /* TODO(user): enable when dynamic services are supported.
+    /* TODO(tball): enable when dynamic services are supported.
     // 2. if that fails, try META-INF/services/
     if (className == null) {
         try {

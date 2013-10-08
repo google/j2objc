@@ -23,6 +23,7 @@
 
 /* Begin PBXBuildFile section */
 		0604932D1772407B0047D336 /* IOSClassTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 0604932C1772407B0047D336 /* IOSClassTest.m */; };
+		062889CF18047030007DDA39 /* IOSReflection.m in Sources */ = {isa = PBXBuildFile; fileRef = 062889CE18047030007DDA39 /* IOSReflection.m */; };
 		06619389155848D70004DAFE /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 06619388155848D70004DAFE /* Foundation.framework */; };
 		0672178415587E2C00645E1B /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 06619388155848D70004DAFE /* Foundation.framework */; };
 		067217D315587FC600645E1B /* IOSArrayTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 067217CD15587FC600645E1B /* IOSArrayTest.m */; };
@@ -64,6 +65,7 @@
 
 /* Begin PBXFileReference section */
 		0604932C1772407B0047D336 /* IOSClassTest.m */ = {isa = PBXFileReference; fileEncoding = 4; indentWidth = 2; lastKnownFileType = sourcecode.c.objc; name = IOSClassTest.m; path = Classes/IOSClassTest.m; sourceTree = SOURCE_ROOT; tabWidth = 2; wrapsLines = 0; };
+		062889CE18047030007DDA39 /* IOSReflection.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IOSReflection.m; sourceTree = "<group>"; };
 		06389ACF176BADA20018B4EA /* JavaToIOSInputStreamAdapter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JavaToIOSInputStreamAdapter.h; sourceTree = "<group>"; };
 		06389AD0176BADA20018B4EA /* JavaToIOSInputStreamAdapter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JavaToIOSInputStreamAdapter.m; sourceTree = "<group>"; };
 		064FB746172705F400DC0D51 /* URI.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = URI.h; path = build_result/Classes/java/net/URI.h; sourceTree = "<group>"; };
@@ -486,6 +488,9 @@
 		067228FD158FD6AF005318BD /* NoSuchFieldException.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = NoSuchFieldException.h; path = build_result/Classes/java/lang/NoSuchFieldException.h; sourceTree = "<group>"; };
 		067228FE158FD6AF005318BD /* NoSuchFieldException.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = NoSuchFieldException.m; path = build_result/Classes/java/lang/NoSuchFieldException.m; sourceTree = "<group>"; };
 		06734320171DF62600F26D4F /* TempFailureRetry.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TempFailureRetry.h; sourceTree = "<group>"; };
+		0675061217F0B3E10015B7E8 /* IOSReflection.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = IOSReflection.h; sourceTree = "<group>"; };
+		0675061317F0C7A30015B7E8 /* JavaMetadata.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = JavaMetadata.h; sourceTree = "<group>"; };
+		0675061417F0C7A30015B7E8 /* JavaMetadata.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = JavaMetadata.m; sourceTree = "<group>"; };
 		067855A5169F35AB0042431C /* JreMemDebug.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JreMemDebug.h; sourceTree = "<group>"; };
 		067855A6169F35AB0042431C /* JreMemDebug.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JreMemDebug.m; sourceTree = "<group>"; };
 		067855A7169F35AB0042431C /* JreMemDebugStrongReference.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JreMemDebugStrongReference.h; sourceTree = "<group>"; };
@@ -593,6 +598,8 @@
 		06AA056B17E111190017C34A /* PropertyResourceBundle.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = PropertyResourceBundle.m; path = build_result/Classes/java/util/PropertyResourceBundle.m; sourceTree = "<group>"; };
 		06AA056C17E111190017C34A /* ResourceBundle.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = ResourceBundle.h; path = build_result/Classes/java/util/ResourceBundle.h; sourceTree = "<group>"; };
 		06AA056D17E111190017C34A /* ResourceBundle.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = ResourceBundle.m; path = build_result/Classes/java/util/ResourceBundle.m; sourceTree = "<group>"; };
+		06B1E04F17F6403100F8940B /* Iterable.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = Iterable.h; path = java/lang/Iterable.h; sourceTree = "<group>"; };
+		06B1E05017F6403100F8940B /* Iterable.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = Iterable.m; path = java/lang/Iterable.m; sourceTree = "<group>"; };
 		06B6D20117C7D3DE00624B3C /* IOSLocaleData.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IOSLocaleData.h; sourceTree = "<group>"; };
 		06B6D20217C7D3DE00624B3C /* IOSLocaleData.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IOSLocaleData.m; sourceTree = "<group>"; };
 		06B6D20517C7D67400624B3C /* LocaleData.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = LocaleData.h; path = build_result/Classes/libcore/icu/LocaleData.h; sourceTree = "<group>"; };
@@ -953,6 +960,7 @@
 			isa = PBXGroup;
 			children = (
 				0661938A155848D70004DAFE /* Classes */,
+				06E7B98C17F9F8060028B7F2 /* iOS Tests */,
 				0672178515587E2C00645E1B /* jre_emul_tests */,
 				067219221559B9D200645E1B /* Transpiled Classes */,
 				06619387155848D70004DAFE /* Frameworks */,
@@ -1026,9 +1034,15 @@
 				06ED3D4917D163F80014750E /* IOSProtocolClass.m */,
 				06898A7617BAF8C400D7B114 /* IOSReference.h */,
 				06898A7817BAFAB400D7B114 /* IOSReference.m */,
+				0675061217F0B3E10015B7E8 /* IOSReflection.h */,
+				062889CE18047030007DDA39 /* IOSReflection.m */,
 				066193B6155849BC0004DAFE /* IOSShortArray.h */,
 				066193B7155849BC0004DAFE /* IOSShortArray.m */,
+				06B1E04F17F6403100F8940B /* Iterable.h */,
+				06B1E05017F6403100F8940B /* Iterable.m */,
 				06986A181767D781006EE92F /* J2ObjCMain.m */,
+				0675061317F0C7A30015B7E8 /* JavaMetadata.h */,
+				0675061417F0C7A30015B7E8 /* JavaMetadata.m */,
 				066193B8155849BC0004DAFE /* JavaObject.h */,
 				06389ACF176BADA20018B4EA /* JavaToIOSInputStreamAdapter.h */,
 				06389AD0176BADA20018B4EA /* JavaToIOSInputStreamAdapter.m */,
@@ -1865,6 +1879,13 @@
 			name = "Transpiled Classes";
 			sourceTree = "<group>";
 		};
+		06E7B98C17F9F8060028B7F2 /* iOS Tests */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = "iOS Tests";
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXHeadersBuildPhase section */
@@ -1880,7 +1901,7 @@
 /* Begin PBXLegacyTarget section */
 		067219231559BF3600645E1B /* j2objc build */ = {
 			isa = PBXLegacyTarget;
-			buildArgumentsString = "-c \"if [ x$ACTION == xclean ]; then make clean; else make dist; fi\"";
+			buildArgumentsString = "-c \"if [ x$ACTION == xclean ]; then make clean; else make -j dist; fi\"";
 			buildConfigurationList = 067219241559BF3600645E1B /* Build configuration list for PBXLegacyTarget "j2objc build" */;
 			buildPhases = (
 			);
@@ -2006,6 +2027,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				062889CF18047030007DDA39 /* IOSReflection.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

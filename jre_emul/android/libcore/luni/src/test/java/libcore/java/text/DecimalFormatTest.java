@@ -57,7 +57,8 @@ public class DecimalFormatTest extends junit.framework.TestCase {
 //        assertEquals(309, numberFormat.format(BigInteger.valueOf(123)).length());
 //    }
 
-    // TODO(user): enable when field position iterating on iOS is supported.
+    // Regression test for http://b/1897917: BigDecimal does not take into account multiplier.
+    // TODO(tball): enable when field position iterating on iOS is supported.
 //    public void testBigDecimalBug1897917() {
 //        // For example. the BigDecimal 0.17 formatted in PercentInstance is 0% instead of 17%:
 //        NumberFormat pf = NumberFormat.getPercentInstance();
@@ -87,7 +88,7 @@ public class DecimalFormatTest extends junit.framework.TestCase {
 //        }
 //    }
 
-    // TODO(user): enable when field position iterating on iOS is supported.
+    // TODO(tball): enable when field position iterating on iOS is supported.
 //    public void testBigDecimalTestBigIntWithMultiplier() {
 //        // Big integer tests.
 //        assertDecFmtWithMultiplierAndFractionByLocale("123456789012345", 10, 0,
@@ -122,7 +123,7 @@ public class DecimalFormatTest extends junit.framework.TestCase {
 //        }
 //    }
 
-    // TODO(user): enable when field position iterating on iOS is supported.
+    // TODO(tball): enable when field position iterating on iOS is supported.
 //    public void testBigDecimalICUConsistency() {
 //        DecimalFormat df = (DecimalFormat) NumberFormat.getInstance();
 //        df.setMaximumFractionDigits(2);

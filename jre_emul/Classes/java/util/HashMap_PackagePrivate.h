@@ -27,7 +27,7 @@
 @interface JavaUtilHashMap () {
 @public
   int elementCount_;
-  // TODO(user): a CF version of JavaUtilHashMap_Entry should be used
+  // TODO(tball): a CF version of JavaUtilHashMap_Entry should be used
   // instead (CFEntry **elementData_), so we can retain/release in ARC
   // using __bridge_retain and __bridge_transfer casts, rather than
   // use __unsafe_unretained.

@@ -27,6 +27,7 @@ import org.eclipse.jdt.core.dom.AST;
 import org.eclipse.jdt.core.dom.ASTNode;
 import org.eclipse.jdt.core.dom.Block;
 import org.eclipse.jdt.core.dom.CompilationUnit;
+import org.eclipse.jdt.core.dom.Expression;
 import org.eclipse.jdt.core.dom.IAnnotationBinding;
 import org.eclipse.jdt.core.dom.IBinding;
 import org.eclipse.jdt.core.dom.IMethodBinding;
@@ -46,7 +47,7 @@ import java.util.Set;
  *
  * @author Tom Ball
  */
-// TODO(user): convert to injectable implementation, to allow translator
+// TODO(tball): convert to injectable implementation, to allow translator
 // core to be reused for other languages.
 public class Types {
   private final AST ast;
@@ -85,6 +86,8 @@ public class Types {
   private final Map<ITypeBinding, IOSTypeBinding> arrayBindingMap = Maps.newHashMap();
 
   private final Set<Block> autoreleasePoolBlocks = Sets.newHashSet();
+  private final Set<Expression> nilChecks = Sets.newHashSet();
+  private final Set<Expression> deferredFieldSetters = Sets.newHashSet();
 
   // The first argument of a iOS method isn't named, but Java requires some sort of valid parameter
   // name.  The method mapper therefore uses this string, which the generators ignore.
@@ -416,5 +419,21 @@ public class Types {
 
   public static boolean hasAutoreleasePool(Block block) {
     return instance.autoreleasePoolBlocks.contains(block);
+  }
+
+  public static void addNilCheck(Expression expression) {
+    instance.nilChecks.add(expression);
+  }
+
+  public static boolean hasNilCheck(Expression expression) {
+    return instance.nilChecks.contains(expression);
+  }
+
+  public static void addDeferredFieldSetter(Expression expression) {
+    instance.deferredFieldSetters.add(expression);
+  }
+
+  public static boolean hasDeferredFieldSetter(Expression expression) {
+    return instance.deferredFieldSetters.contains(expression);
   }
 }

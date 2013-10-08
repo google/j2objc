@@ -68,7 +68,7 @@ public class FileDescriptorTest extends TestCase {
         assertEquals("Bytes were not written after sync", length, fis
                 .available());
 
-        /* TODO(user): enable when random-access files are supported
+        /* TODO(tball): enable when random-access files are supported
         RandomAccessFile raf = new RandomAccessFile(f, "r");
         fd = raf.getFD();
         fd.sync();

@@ -43,8 +43,8 @@
         methodSignature_ =
             [class_.objcClass instanceMethodSignatureForSelector:selector_];
       }
-    } else {
-      assert (class_.objcProtocol);
+    }
+    if (class_.objcProtocol && !methodSignature_) {
       struct objc_method_description methodDesc =
         protocol_getMethodDescription(class_.objcProtocol, aSelector, YES, YES);
       if (methodDesc.name && methodDesc.types) {  // If method exists ...
@@ -109,9 +109,12 @@
   return[IOSObjectArray arrayWithLength:0 type:typeVariableType];
 }
 
-
 - (IOSObjectArray *)getGenericParameterTypes {
   return [self getParameterTypes];
+}
+
+- (IOSObjectArray *)getGenericExceptionTypes {
+  return [self getExceptionTypes];
 }
 
 - (BOOL)isSynthetic {
@@ -119,13 +122,19 @@
 }
 
 - (IOSObjectArray *)getExceptionTypes {
-  JavaLangReflectMethod *method = [self getExceptionsAccessor:[self getName]];
+  JavaLangReflectMethod *method = [self getExceptionsAccessor:[self internalName]];
   if (method) {
     IOSObjectArray *noArgs = [IOSObjectArray arrayWithLength:0 type:[NSObject getClass]];
     return (IOSObjectArray *) [method invokeWithId:nil withNSObjectArray:noArgs];
   } else {
     return [IOSObjectArray arrayWithLength:0 type:[IOSClass getClass]];
   }
+}
+
+- (NSString *)internalName {
+  // can't call an abstract method
+  [self doesNotRecognizeSelector:_cmd];
+  return nil;
 }
 
 - (IOSObjectArray *)getParameterAnnotations {
@@ -159,6 +168,21 @@ static JavaLangReflectMethod *getAccessor(IOSClass *class, NSString *method, NSS
 
 - (JavaLangReflectMethod *)getParameterAnnotationsAccessor:(NSString *)methodName {
   return [self getAnnotationsAccessor:[NSString stringWithFormat:@"%@_params", methodName]];
+}
+
+- (NSString *)toGenericString {
+  // TODO(tball): implement as part of method metadata.
+  return nil;
+}
+
+- (BOOL)isVarArgs {
+  // TODO(tball): implement as part of method metadata.
+  return NO;
+}
+
+- (BOOL)isBridge {
+  // TODO(tball): implement as part of method metadata.
+  return NO;
 }
 
 @end

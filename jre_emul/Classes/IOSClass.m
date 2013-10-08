@@ -29,6 +29,7 @@
 #import "java/lang/NoSuchFieldException.h"
 #import "java/lang/NoSuchMethodException.h"
 #import "java/lang/NullPointerException.h"
+#import "java/lang/Package.h"
 #import "java/lang/annotation/Annotation.h"
 #import "java/lang/annotation/Inherited.h"
 #import "java/lang/reflect/Constructor.h"
@@ -49,13 +50,10 @@
 #import "IOSPrimitiveClass.h"
 #import "IOSProtocolClass.h"
 #import "IOSShortArray.h"
+#import "JavaMetadata.h"
 #import "objc/runtime.h"
 
 @implementation IOSClass
-
-static NSMutableDictionary *IOSClass_classCache;
-static NSMutableDictionary *IOSClass_protocolCache;
-static NSMutableDictionary *IOSClass_arrayCache;
 
 static NSDictionary *IOSClass_mappedClasses;
 
@@ -173,9 +171,19 @@ static IOSClass *FetchArray(IOSClass *componentType);
   return [self getName];
 }
 
+- (NSString *)objcName {
+  @throw AUTORELEASE([[JavaLangAssertionError alloc] initWithNSString:
+      @"abstract method not overridden"]);
+}
+
 - (int)getModifiers {
-  // All Objective-C classes and protocols are public.
-  return JavaLangReflectModifier_PUBLIC;
+  JavaClassMetadata *metadata = [self getMetadata];
+  if (metadata) {
+    return metadata.modifiers & [JavaLangReflectModifier classModifiers];
+  } else {
+    // All Objective-C classes and protocols are public by default.
+    return JavaLangReflectModifier_PUBLIC;
+  }
 }
 
 - (void)collectMethods:(NSMutableDictionary *)methodMap {
@@ -267,7 +275,7 @@ static NSString *GetParameterKeyword(IOSClass *paramType) {
   if (paramType == IOSClass_objectClass) {
     return @"Id";
   }
-  return Capitalize([paramType getName]);
+  return Capitalize([paramType objcName]);
 }
 
 // Return a method name as it would be modified during j2objc translation.
@@ -314,7 +322,7 @@ NSString *IOSClass_GetTranslatedMethodName(NSString *name, IOSObjectArray *param
 
 - (NSString *)description {
   // matches java.lang.Class.toString() output
-  return [NSString stringWithFormat:@"class %@", [self getSimpleName]];
+  return [NSString stringWithFormat:@"class %@", [self getName]];
 }
 
 - (NSString *)binaryName {
@@ -328,24 +336,43 @@ static NSString *IOSClass_JavaToIOSName(NSString *javaName) {
     return mappedName;
   }
   NSArray *parts = [javaName componentsSeparatedByString:@"."];
-  NSString *iosName = [NSString string];
+  NSMutableString *iosName = [NSMutableString string];
   for (NSString *part in parts) {
-    iosName = [iosName stringByAppendingString:Capitalize(part)];
+    [iosName appendString:Capitalize(part)];
   }
+  [iosName replaceOccurrencesOfString:@"$"
+                           withString:@"_"
+                              options:0
+                                range:NSMakeRange(0, [iosName length])];
   return iosName;
 }
 
-static IOSClass *IOSClass_ClassForName(NSString *name) {
-  NSString *iosName = IOSClass_JavaToIOSName(name);
-  Class clazz = NSClassFromString(iosName);
-  if (clazz) {
-    return FetchClass(clazz);
+static IOSClass *ClassForIosName(NSString *iosName) {
+  // Some protocols have a sibling class that contains the metadata and any
+  // constants that are defined. We must look for the protocol before the class
+  // to ensure we create a IOSProtocolClass for such cases. NSObject must be
+  // special-cased because it also has a protocol but we want to return an
+  // IOSConcreteClass instance for it.
+  if ([iosName isEqualToString:@"NSObject"]) {
+    return [IOSClass objectClass];
   }
   Protocol *protocol = NSProtocolFromString(iosName);
   if (protocol) {
     return FetchProtocol(protocol);
   }
+  Class clazz = NSClassFromString(iosName);
+  if (clazz) {
+    return FetchClass(clazz);
+  }
   return nil;
+}
+
++ (IOSClass *)classForIosName:(NSString *)iosName {
+  return ClassForIosName(iosName);
+}
+
+static IOSClass *ClassForJavaName(NSString *name) {
+  return ClassForIosName(IOSClass_JavaToIOSName(name));
 }
 
 static IOSClass *IOSClass_PrimitiveClassForChar(unichar c) {
@@ -371,7 +398,7 @@ static IOSClass *IOSClass_ArrayClassForName(NSString *name, NSUInteger index) {
       {
         NSUInteger length = [name length];
         if ([name characterAtIndex:length - 1] == ';') {
-          componentType = IOSClass_ClassForName(
+          componentType = ClassForJavaName(
               [name substringWithRange:NSMakeRange(index + 1, length - index - 2)]);
         }
         break;
@@ -398,7 +425,7 @@ static IOSClass *IOSClass_ArrayClassForName(NSString *name, NSUInteger index) {
     if ([className characterAtIndex:0] == '[') {
       iosClass = IOSClass_ArrayClassForName(className, 1);
     } else {
-      iosClass = IOSClass_ClassForName(className);
+      iosClass = ClassForJavaName(className);
     }
   }
   if (iosClass) {
@@ -420,7 +447,17 @@ static IOSClass *IOSClass_ArrayClassForName(NSString *name, NSUInteger index) {
 }
 
 - (IOSClass *)getEnclosingClass {
-  return nil;
+  JavaClassMetadata *metadata = [self getMetadata];
+  if (!metadata || !metadata.enclosingName) {
+    return nil;
+  }
+  NSMutableString *qName = [NSMutableString string];
+  if (metadata.packageName) {
+    [qName appendString:metadata.packageName];
+    [qName appendString:@"."];
+  }
+  [qName appendString:metadata.enclosingName];
+  return ClassForJavaName(qName);
 }
 
 - (BOOL)isArray {
@@ -439,8 +476,22 @@ static IOSClass *IOSClass_ArrayClassForName(NSString *name, NSUInteger index) {
   return NO;  // Overridden by IOSPrimitiveClass.
 }
 
+static BOOL hasModifier(IOSClass *cls, int flag) {
+  JavaClassMetadata *metadata = [cls getMetadata];
+  return metadata ? (metadata.modifiers & flag) > 0 : NO;
+}
+
+- (BOOL)isAnnotation {
+  return hasModifier(self, JavaLangReflectModifier_ANNOTATION);
+}
+
 - (BOOL)isMemberClass {
-  return NO;
+  JavaClassMetadata *metadata = [self getMetadata];
+  return metadata && metadata.enclosingName && ![self isAnonymousClass];
+}
+
+- (BOOL)isSynthetic {
+  return hasModifier(self, JavaLangReflectModifier_SYNTHETIC);
 }
 
 - (IOSObjectArray *)getInterfacesWithArrayType:(IOSClass *)arrayType {
@@ -525,8 +576,34 @@ static IOSClass *IOSClass_ArrayClassForName(NSString *name, NSUInteger index) {
   return [IOSObjectArray arrayWithLength:0 type:annotationType];
 }
 
+// Returns the metadata structure defined by this class, if it exists.
+- (JavaClassMetadata *)getMetadata {
+  Class cls = [self objcClass];
+  if (cls) {
+    SEL sel = @selector(__metadata);
+    if ([cls respondsToSelector:sel]) {
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Warc-performSelector-leaks"
+      J2ObjcClassInfo *rawData = (ARCBRIDGE J2ObjcClassInfo *) [cls performSelector:sel];
+#pragma clang diagnostic pop
+      return AUTORELEASE([[JavaClassMetadata alloc] initWithMetadata:rawData]);
+    }
+  }
+  return nil;
+}
+
 - (id)getPackage {
-  // No packages in Objective-C, but are included in class names.
+  JavaClassMetadata *metadata = [self getMetadata];
+  if (metadata) {
+    return AUTORELEASE([[JavaLangPackage alloc] initWithNSString:metadata.packageName
+                                                    withNSString:nil
+                                                    withNSString:nil
+                                                    withNSString:nil
+                                                    withNSString:nil
+                                                    withNSString:nil
+                                                    withNSString:nil
+                                                  withJavaNetURL:nil]);
+  }
   return nil;
 }
 
@@ -553,7 +630,7 @@ static void GetFieldsFromClass(IOSClass *iosClass, NSMutableDictionary *fields) 
   free(ivars);
 }
 
-// TODO(user): add support for interface constants.
+// TODO(tball): add support for interface constants.
 - (JavaLangReflectField *)getDeclaredField:(NSString *)name {
   nil_chk(name);
   Class cls = self.objcClass;
@@ -654,32 +731,58 @@ IOSObjectArray *copyFieldsToObjectArray(NSArray *fields) {
 }
 
 IOSClass *FetchClass(Class cls) {
-  NSValue *classKey = [NSValue valueWithPointer:(ARCBRIDGE void *) cls];
-  IOSClass *clazz = [IOSClass_classCache objectForKey:classKey];
-  if (!clazz) {
-    clazz = AUTORELEASE([[IOSConcreteClass alloc] initWithClass:cls]);
-    [IOSClass_classCache setObject:clazz forKey:classKey];
+  static int key;
+  IOSClass *iosClass = objc_getAssociatedObject(cls, &key);
+  if (!iosClass) {
+    @synchronized (cls) {
+      iosClass = objc_getAssociatedObject(cls, &key);
+      if (!iosClass) {
+        iosClass = AUTORELEASE([[IOSConcreteClass alloc] initWithClass:cls]);
+        objc_setAssociatedObject(cls, &key, iosClass, OBJC_ASSOCIATION_RETAIN);
+      }
+    }
   }
-  return clazz;
+  return iosClass;
 }
 
 IOSClass *FetchProtocol(Protocol *protocol) {
-  NSValue *protocolKey = [NSValue valueWithPointer:(ARCBRIDGE void *)protocol];
-  IOSClass *clazz = [IOSClass_classCache objectForKey:protocolKey];
-  if (!clazz) {
-    clazz = AUTORELEASE([[IOSProtocolClass alloc] initWithProtocol:protocol]);
-    [IOSClass_classCache setObject:clazz forKey:protocolKey];
+  static int key;
+  IOSClass *iosClass = objc_getAssociatedObject(protocol, &key);
+  if (!iosClass) {
+    @synchronized (protocol) {
+      iosClass = objc_getAssociatedObject(protocol, &key);
+      if (!iosClass) {
+        iosClass = AUTORELEASE([[IOSProtocolClass alloc] initWithProtocol:protocol]);
+        objc_setAssociatedObject(protocol, &key, iosClass, OBJC_ASSOCIATION_RETAIN);
+      }
+    }
   }
-  return clazz;
+  return iosClass;
 }
 
 IOSClass *FetchArray(IOSClass *componentType) {
-  IOSClass *clazz = [IOSClass_arrayCache objectForKey:componentType];
-  if (!clazz) {
-    clazz = AUTORELEASE([[IOSArrayClass alloc] initWithComponentType:componentType]);
-    [IOSClass_arrayCache setObject:clazz forKey:componentType];
+  static int key;
+  IOSClass *iosClass = objc_getAssociatedObject(componentType, &key);
+  if (!iosClass) {
+    @synchronized (componentType) {
+      iosClass = objc_getAssociatedObject(componentType, &key);
+      if (!iosClass) {
+        iosClass = AUTORELEASE([[IOSArrayClass alloc] initWithComponentType:componentType]);
+        objc_setAssociatedObject(componentType, &key, iosClass, OBJC_ASSOCIATION_RETAIN);
+      }
+    }
   }
-  return clazz;
+  return iosClass;
+}
+
++ (void)load {
+  // Check that app was linked with -force-load flag, as otherwise JRE support
+  // will fail due to its categories not being loaded.
+  if ([[NSObject class] instanceMethodSignatureForSelector:@selector(compareToWithId:)] == NULL) {
+    [NSException raise:@"J2ObjCLinkError"
+                format:@"Your project is not configured to load categories from the JRE "
+     "emulation library. Did you forget the -force_load linker flag?"];
+  }
 }
 
 + (void)initialize {
@@ -703,10 +806,6 @@ IOSClass *FetchArray(IOSClass *componentType) {
     IOSClass_shortClass = [[IOSPrimitiveClass alloc] initWithName:@"short" type:@"S"];
     IOSClass_booleanClass = [[IOSPrimitiveClass alloc] initWithName:@"boolean" type:@"Z"];
     IOSClass_voidClass = [[IOSPrimitiveClass alloc] initWithName:@"void" type:@"V"];
-
-    IOSClass_classCache = [[NSMutableDictionary alloc] init];
-    IOSClass_protocolCache = [[NSMutableDictionary alloc] init];
-    IOSClass_arrayCache = [[NSMutableDictionary alloc] init];
 
     IOSClass_objectClass = FetchClass([NSObject class]);
   }

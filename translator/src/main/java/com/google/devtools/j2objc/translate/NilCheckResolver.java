@@ -60,6 +60,12 @@ import java.util.Set;
  * Adds nil_chk calls where required to maintain compatibility Java's
  * NullPointerException being thrown when null is dereferenced.
  *
+ * TODO(kstanger): We need to be more strict with fields. When an external call
+ * such as a MethodInvocation or ConstructorInvocation is encountered it could
+ * have the side-effect of re-assigning the field. Therefore when encountering
+ * such nodes we need to clear all non-local variables from the set of safe
+ * vars.
+ *
  * @author Keith Stanger
  */
 public class NilCheckResolver extends ErrorReportingASTVisitor {
@@ -164,7 +170,7 @@ public class NilCheckResolver extends ErrorReportingASTVisitor {
     return node;
   }
 
-  private void addNilCheck(Expression node) {
+  private void addNilCheck(Expression node, boolean deferAdd) {
     Expression strippedNode = stripCastsAndParentheses(node);
     if (!needsNilCheck(strippedNode)) {
       return;
@@ -175,22 +181,26 @@ public class NilCheckResolver extends ErrorReportingASTVisitor {
       safeVarsTrue.add(var);
       safeVarsFalse.add(var);
     }
-    AST ast = node.getAST();
-    IOSMethodBinding nilChkBinding = IOSMethodBinding.newTypedInvocation(
-        NIL_CHK_DECL, Types.getTypeBinding(node));
-    MethodInvocation nilChkInvocation = ASTFactory.newMethodInvocation(ast, nilChkBinding, null);
-    ASTUtil.getArguments(nilChkInvocation).add(NodeCopier.copySubtree(ast, strippedNode));
-    ASTUtil.setProperty(node, nilChkInvocation);
+    if (deferAdd) {
+      Types.addNilCheck(strippedNode);
+    } else {
+      AST ast = node.getAST();
+      IOSMethodBinding nilChkBinding = IOSMethodBinding.newTypedInvocation(
+          NIL_CHK_DECL, Types.getTypeBinding(node));
+      MethodInvocation nilChkInvocation = ASTFactory.newMethodInvocation(ast, nilChkBinding, null);
+      ASTUtil.getArguments(nilChkInvocation).add(NodeCopier.copySubtree(ast, strippedNode));
+      ASTUtil.setProperty(node, nilChkInvocation);
+    }
   }
 
   @Override
   public void endVisit(ArrayAccess node) {
-    addNilCheck(node.getArray());
+    addNilCheck(node.getArray(), false);
   }
 
   @Override
   public void endVisit(FieldAccess node) {
-    addNilCheck(node.getExpression());
+    addNilCheck(node.getExpression(), false);
   }
 
   @Override
@@ -211,24 +221,9 @@ public class NilCheckResolver extends ErrorReportingASTVisitor {
 
     // We can't substitute the qualifier with a nil_chk because it must have a
     // Name type, so we have to convert to a FieldAccess node.
-    FieldAccess newNode = convertToFieldAccess(node);
+    FieldAccess newNode = ASTFactory.convertToFieldAccess(node);
     newNode.accept(this);
     return false;
-  }
-
-  private static FieldAccess convertToFieldAccess(QualifiedName node) {
-    AST ast = node.getAST();
-    ASTNode parent = node.getParent();
-    if (parent instanceof QualifiedName) {
-      FieldAccess newParent = convertToFieldAccess((QualifiedName) parent);
-      Expression expr = newParent.getExpression();
-      assert expr instanceof QualifiedName;
-      node = (QualifiedName) expr;
-    }
-    FieldAccess newNode = ASTFactory.newFieldAccess(
-        ast, Types.getVariableBinding(node), NodeCopier.copySubtree(ast, node.getQualifier()));
-    ASTUtil.setProperty(node, newNode);
-    return newNode;
   }
 
   @Override
@@ -239,7 +234,7 @@ public class NilCheckResolver extends ErrorReportingASTVisitor {
     }
     Expression receiver = node.getExpression();
     if (receiver != null) {
-      addNilCheck(receiver);
+      addNilCheck(receiver, true);
     }
   }
 

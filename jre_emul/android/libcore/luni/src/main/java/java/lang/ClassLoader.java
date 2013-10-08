@@ -390,9 +390,7 @@ public abstract class ClassLoader {
         try {
             URL url = getResource(resName);
             if (url != null) {
-        	// TODO(user): reenable when URL.openStream is implemented.
-                // return url.openStream();
-                return new FileInputStream(url.getFile());
+                return url.openStream();
             }
         } catch (IOException ex) {
             // Don't want to see the exception.

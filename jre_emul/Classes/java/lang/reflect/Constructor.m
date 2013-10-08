@@ -33,6 +33,7 @@
 #import "java/lang/Short.h"
 #import "java/lang/Throwable.h"
 #import "java/lang/reflect/InvocationTargetException.h"
+#import "java/lang/reflect/Method.h"
 
 #import <objc/runtime.h>
 
@@ -96,7 +97,7 @@ static id makeException(Class exceptionClass) {
         @throw makeException([JavaLangIllegalArgumentException class]);
       }
 
-      char primitiveArg = [arg byteValue];
+      char primitiveArg = [(JavaLangByte *) arg charValue];
       [invocation setArgument:&primitiveArg atIndex:argIndex];
 
     } else if ([type.objcClass isEqual:[JavaLangCharacter class]]) {
@@ -104,7 +105,7 @@ static id makeException(Class exceptionClass) {
         @throw makeException([JavaLangIllegalArgumentException class]);
       }
 
-      unichar primitiveArg = [(JavaLangCharacter *)arg charValue];
+      unichar primitiveArg = [(JavaLangCharacter *) arg charValue];
       [invocation setArgument:&primitiveArg atIndex:argIndex];
 
     } else if ([type.objcClass isEqual:[JavaLangShort class]]) {
@@ -112,7 +113,7 @@ static id makeException(Class exceptionClass) {
         @throw makeException([JavaLangIllegalArgumentException class]);
       }
 
-      short primitiveArg = [arg byteValue];
+      short primitiveArg = [(JavaLangShort *) arg charValue];
       [invocation setArgument:&primitiveArg atIndex:argIndex];
 
     } else if ([type.objcClass isEqual:[JavaLangInteger class]]) {
@@ -188,13 +189,17 @@ static id makeException(Class exceptionClass) {
 }
 
 - (IOSObjectArray *)getDeclaredAnnotations {
-  JavaLangReflectMethod *method = [self getAnnotationsAccessor:[self getName]];
+  JavaLangReflectMethod *method = [self getAnnotationsAccessor:[self internalName]];
   return [self getAnnotationsFromAccessor:method];
 }
 
 - (IOSObjectArray *)getParameterAnnotations {
-  JavaLangReflectMethod *method = [self getParameterAnnotationsAccessor:[self getName]];
+  JavaLangReflectMethod *method = [self getParameterAnnotationsAccessor:[self internalName]];
   return [self getAnnotationsFromAccessor:method];
+}
+
+- (NSString *)internalName {
+  return [class_ objcName];
 }
 
 @end

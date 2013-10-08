@@ -61,7 +61,7 @@ import java.util.List;
 public class DestructorGenerator extends ErrorReportingASTVisitor {
   private final String destructorName;
 
-  // TODO(user): Move these to NameTable.java.
+  // TODO(kstanger): Move these to NameTable.java.
   public static final String FINALIZE_METHOD = "finalize";
   public static final String DEALLOC_METHOD = "dealloc";
 

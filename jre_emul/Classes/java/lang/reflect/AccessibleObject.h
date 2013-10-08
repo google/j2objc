@@ -38,6 +38,7 @@
 - (BOOL)isAnnotationPresentWithIOSClass:(IOSClass *)annotationClass;
 - (IOSObjectArray *)getAnnotations;
 - (IOSObjectArray *)getDeclaredAnnotations;
+- (NSString *)toGenericString;
 
 // Protected method.
 - (IOSObjectArray *)getAnnotationsFromAccessor:(JavaLangReflectMethod *)method;

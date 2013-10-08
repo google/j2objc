@@ -19,6 +19,7 @@
 //  Created by Tom Ball on 6/18/12.
 //
 
+#import "IOSClass.h"
 #import "java/lang/AssertionError.h"
 #import "java/lang/Boolean.h"
 #import "java/lang/Byte.h"
@@ -86,13 +87,18 @@
   }
 }
 
+- (NSString *)toGenericString {
+  // can't call an abstract method
+  [self doesNotRecognizeSelector:_cmd];
+  return nil;
+}
+
 @end
 
-// TODO(user): is there a reasonable way to make these methods table-driven?
+// TODO(tball): is there a reasonable way to make these methods table-driven?
 
 // Return a Obj-C type encoding as a Java type or wrapper type.
 IOSClass *decodeTypeEncoding(const char *type) {
-  Class typeClass = nil;
   if (strlen(type) > 1 && type[0] == '@') {
     // Format is '@"type-name"'.
     char *typeNameAsC = strndup(type + 2, strlen(type) - 3);
@@ -102,52 +108,34 @@ IOSClass *decodeTypeEncoding(const char *type) {
   }
   switch (type[0]) {
     case '@':
-      typeClass = [NSObject class];
-      break;
+      return [IOSClass objectClass];
     case '#':
-      typeClass = [IOSClass class];
-      break;
+      return [IOSClass classWithClass:[IOSClass class]];
     case 'c':
-      typeClass = [JavaLangByte class];
-      break;
+      return [IOSClass byteClass];
     case 'S':
-      typeClass = [JavaLangCharacter class];
-      break;
+      return [IOSClass charClass];
     case 's':
-      typeClass = [JavaLangShort class];
-      break;
+      return [IOSClass shortClass];
     case 'i':
-      typeClass = [JavaLangInteger class];
-      break;
+      return [IOSClass intClass];
     case 'l':
     case 'L':
     case 'q':
     case 'Q':
-      typeClass = [JavaLangLong class];
-      break;
+      return [IOSClass longClass];
     case 'f':
-      typeClass = [JavaLangFloat class];
-      break;
+      return [IOSClass floatClass];
     case 'd':
-      typeClass = [JavaLangDouble class];
-      break;
+      return [IOSClass doubleClass];
     case 'B':
-      typeClass = [JavaLangBoolean class];
-      break;
+      return [IOSClass booleanClass];
     case 'v':
-      typeClass = [JavaLangVoid class];
-      break;
+      return [IOSClass classWithClass:[JavaLangVoid class]];
   }
-  if (typeClass == nil) {
-    NSString *errorMsg =
-    [NSString stringWithFormat:@"unknown Java type encoding: '%s'", type];
-    id exception = [[JavaLangAssertionError alloc] initWithNSString:errorMsg];
-#if ! __has_feature(objc_arc)
-    [exception autorelease];
-#endif
-    @throw exception;
-  }
-  return [IOSClass classWithClass:typeClass];
+  NSString *errorMsg =
+  [NSString stringWithFormat:@"unknown Java type encoding: '%s'", type];
+  @throw AUTORELEASE([[JavaLangAssertionError alloc] initWithNSString:errorMsg]);
 }
 
 // Return a description of an Obj-C type encoding.

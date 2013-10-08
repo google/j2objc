@@ -423,7 +423,7 @@ public class DateTest extends junit.framework.TestCase {
 	/**
 	 * @tests java.util.Date#toGMTString()
 	 *
-  TODO(user): enable when DateFormat is ported.
+  TODO(tball): enable when DateFormat is ported.
 	public void test_toGMTString() {
 		// Test for method java.lang.String java.util.Date.toGMTString()
 		assertEquals("Did not convert epoch to GMT string correctly", "1 Jan 1970 00:00:00 GMT", new Date(0)
@@ -436,7 +436,7 @@ public class DateTest extends junit.framework.TestCase {
 	/**
 	 * @tests java.util.Date#toString()
 	 *
-	TODO(user): enable when DateFormat is ported.
+	TODO(tball): enable when DateFormat is ported.
 	public void test_toString() {
 		// Test for method java.lang.String java.util.Date.toString()
 		Calendar cal = Calendar.getInstance();

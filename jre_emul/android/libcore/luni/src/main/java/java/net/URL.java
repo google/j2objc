@@ -17,7 +17,9 @@
 
 package java.net;
 
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
@@ -398,7 +400,7 @@ public final class URL implements Serializable {
         // Fall back to a built-in stream handler if the user didn't supply one
         if (protocol.equals("file")) {
             streamHandler = new FileHandler();
-        /* TODO(user): enable as other stream handlers are implemented.
+        /* TODO(tball): enable as other stream handlers are implemented.
         } else if (protocol.equals("ftp")) {
             streamHandler = new FtpHandler();
         } else if (protocol.equals("http")) {
@@ -429,7 +431,7 @@ public final class URL implements Serializable {
      * default this returns an {@code InputStream}, or null if the content type
      * of the response is unknown.
      *
-     TODO(user): enable when connections are supported.
+     TODO(tball): enable when connections are supported.
     public final Object getContent() throws IOException {
         return openConnection().getContent();
     }
@@ -438,7 +440,7 @@ public final class URL implements Serializable {
     /**
      * Equivalent to {@code openConnection().getContent(types)}.
      *
-     TODO(user): enable when connections are supported.
+     TODO(tball): enable when connections are supported.
     @SuppressWarnings("unchecked") // Param not generic in spec
     public final Object getContent(Class[] types) throws IOException {
         return openConnection().getContent(types);
@@ -447,19 +449,25 @@ public final class URL implements Serializable {
 
     /**
      * Equivalent to {@code openConnection().getInputStream(types)}.
-     *
-     TODO(user): enable when connections are supported.
+     */
     public final InputStream openStream() throws IOException {
-        return openConnection().getInputStream();
+      // TODO(tball): enable when connections are supported.
+      //return openConnection().getInputStream();
+
+      // Workaround (delete when above is enabled).
+      try {
+        return new FileInputStream(toURI().getPath());
+      } catch (URISyntaxException e) {
+        return null;
+      }
     }
-    */
 
     /**
      * Returns a new connection to the resource referred to by this URL.
      *
      * @throws IOException if an error occurs while opening the connection.
      *
-     TODO(user): enable when connections are supported.
+     TODO(tball): enable when connections are supported.
     public URLConnection openConnection() throws IOException {
         return streamHandler.openConnection(this);
     }
@@ -475,7 +483,7 @@ public final class URL implements Serializable {
      * @throws UnsupportedOperationException if the protocol handler does not
      *     support opening connections through proxies.
      *
-     TODO(user): enable when connections are supported.
+     TODO(tball): enable when connections are supported.
     public URLConnection openConnection(Proxy proxy) throws IOException {
         if (proxy == null) {
             throw new IllegalArgumentException("proxy == null");
@@ -547,7 +555,7 @@ public final class URL implements Serializable {
             if (streamHandler == null) {
                 throw new IOException("Unknown protocol: " + protocol);
             }
-            hashCode = 0;
+            hashCode = 0; // necessary until http://b/4471249 is fixed
         } catch (ClassNotFoundException e) {
             throw new IOException(e);
         }
