@@ -57,5 +57,7 @@ ifdef OPTIMIZATION_LEVEL
 DEBUGFLAGS := $(DEBUGFLAGS) -O$(OPTIMIZATION_LEVEL)
 endif
 
+TRANSLATOR_DEPS = $(DIST_DIR)/j2objc $(DIST_JAR_DIR)/j2objc.jar
+
 comma=,
 space=$(eval) $(eval)
