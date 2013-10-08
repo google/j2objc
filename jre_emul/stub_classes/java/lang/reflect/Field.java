@@ -107,8 +107,11 @@ public class Field extends AccessibleObject implements Member {
     return false;
   }
   
-  /* Not implemented
-  public boolean isEnumConstant();
-  public String toGenericString();
-  */
+  public boolean isEnumConstant() {
+    return false;
+  }
+
+  public String toGenericString() {
+    return null;
+  }
 }

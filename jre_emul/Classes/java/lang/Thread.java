@@ -678,6 +678,16 @@ public class Thread implements Runnable {
     return j2objc_sync_holds_lock(object);
   ]-*/;
 
+  /**
+   * Returns the context ClassLoader for this Thread.
+   *
+   * @return ClassLoader The context ClassLoader
+   * @see java.lang.ClassLoader
+   */
+  public ClassLoader getContextClassLoader() {
+    return ClassLoader.getSystemClassLoader();
+  }
+
   public String toString() {
     ThreadGroup group = getThreadGroup();
     if (group != null) {
