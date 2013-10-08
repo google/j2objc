@@ -22,6 +22,7 @@ package java.lang;
 #import "java/lang/InterruptedException.h"
 #import "java/lang/NullPointerException.h"
 #import "java/lang/Runnable.h"
+#import "objc-sync.h"
 ]-*/
 
 /**
@@ -664,6 +665,18 @@ public class Thread implements Runnable {
   private static synchronized long getNextThreadId() {
     return ++threadOrdinalNum;
   }
+
+  /**
+   * Indicates whether the current Thread has a monitor lock on the specified
+   * object.
+   *
+   * @param object the object to test for the monitor lock
+   * @return true if the current thread has a monitor lock on the specified
+   *         object; false otherwise
+   */
+  public static native boolean holdsLock(Object object) /*-[
+    return j2objc_sync_holds_lock(object);
+  ]-*/;
 
   public String toString() {
     ThreadGroup group = getThreadGroup();
