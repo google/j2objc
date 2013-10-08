@@ -22,6 +22,10 @@
 #error "JavaUtilHashMap is not built with ARC"
 #endif
 
+static NSUInteger EnumerateEntries(
+    JavaUtilHashMap *map, NSFastEnumerationState *state, __unsafe_unretained id *stackbuf,
+    NSUInteger len);
+
 @implementation JavaUtilHashMap
 
 @synthesize elementCount = elementCount_;
@@ -659,6 +663,12 @@
                       initWithJavaUtilHashMap:associatedMap_]);
 }
 
+- (NSUInteger)countByEnumeratingWithState:(NSFastEnumerationState *)state
+                                  objects:(__unsafe_unretained id *)stackbuf
+                                    count:(NSUInteger)len {
+  return EnumerateEntries(associatedMap_, state, stackbuf, len);
+}
+
 @end
 
 
@@ -693,6 +703,19 @@
   return self;
 }
 
+- (NSUInteger)countByEnumeratingWithState:(NSFastEnumerationState *)state
+                                  objects:(__unsafe_unretained id *)stackbuf
+                                    count:(NSUInteger)len {
+  NSUInteger objCount = EnumerateEntries(outer_, state, stackbuf, len);
+  __unsafe_unretained id *entries = state->itemsPtr;
+  __unsafe_unretained id *end = entries + objCount;
+  while (entries < end) {
+    *entries = ((JavaUtilHashMap_Entry *) *entries)->key_;
+    entries++;
+  }
+  return objCount;
+}
+
 @end
 
 
@@ -722,4 +745,49 @@
   return self;
 }
 
+- (NSUInteger)countByEnumeratingWithState:(NSFastEnumerationState *)state
+                                  objects:(__unsafe_unretained id *)stackbuf
+                                    count:(NSUInteger)len {
+  NSUInteger objCount = EnumerateEntries(outer_, state, stackbuf, len);
+  __unsafe_unretained id *entries = state->itemsPtr;
+  __unsafe_unretained id *end = entries + objCount;
+  while (entries < end) {
+    *entries = ((JavaUtilHashMap_Entry *) *entries)->value_;
+    entries++;
+  }
+  return objCount;
+}
+
 @end
+
+NSUInteger EnumerateEntries(
+    JavaUtilHashMap *map, NSFastEnumerationState *state, __unsafe_unretained id *stackbuf,
+    NSUInteger len) {
+  // Note: Must not use extra[4] because it is set by HashSet.
+  if (state->state == 0) {
+    state->state = 1;
+    state->mutationsPtr = (unsigned long *) &map->modCount_;
+    state->extra[0] = 0;
+    state->extra[1] = 0;
+  }
+  NSUInteger position = state->extra[0];
+  __unsafe_unretained JavaUtilHashMap_Entry *entry = (ARCBRIDGE id) (void *) state->extra[1];
+  state->itemsPtr = stackbuf;
+  NSUInteger objCount = 0;
+  while (objCount < len) {
+    if (entry) {
+      entry = entry->next_;
+    }
+    while (!entry && position < map->elementDataLength_) {
+      entry = map->elementData_[position++];
+    }
+    if (!entry) {
+      break;
+    }
+    *stackbuf++ = entry;
+    objCount++;
+  }
+  state->extra[0] = position;
+  state->extra[1] = (unsigned long) entry;
+  return objCount;
+}
