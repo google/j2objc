@@ -67,7 +67,7 @@ public class AutoboxerTest extends GenerationTest {
     String source = "byte b = 5; Byte foo = Byte.valueOf((byte) 3); b = foo;";
     List<Statement> stmts = translateStatements(source);
     String result = generateStatement(stmts.get(2));
-    assertEquals("b = [foo byteValue];", result);
+    assertEquals("b = [foo charValue];", result);
 
     source = "byte b = 5; Byte foo = Byte.valueOf((byte) 3); foo = b;";
     stmts = translateStatements(source);
