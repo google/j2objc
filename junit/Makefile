@@ -150,15 +150,11 @@ HAMCREST_SOURCES = \
     org/hamcrest/SelfDescribing.java \
     org/hamcrest/StringDescription.java
 
-OBJC_SOURCES = \
-    junit/JUnitRunner.m
-
 ORG_JUNIT_TEST_SRC = org/junit/Test.java
 ORG_JUNIT_TEST_OBJ = org/junit/OrgJunitTest.o
 
 OBJS = $(JUNIT_SOURCES:%.java=%.o) \
     $(HAMCREST_SOURCES:%.java=%.o) \
-    $(OBJC_SOURCES:%.m=%.o) \
     $(ORG_JUNIT_TEST_OBJ)
 
 IPHONE_SDK_DIR = $(shell bash ../scripts/sysroot_path.sh --iphoneos)
@@ -171,13 +167,9 @@ EXTRACTED_JAVA = $(JUNIT_SOURCES:%=$(JAVA_SRC_DIR)/%) \
 TRANSLATED_OBJC = $(JUNIT_SOURCES:%.java=$(BUILD_DIR)/%.m) \
     $(HAMCREST_SOURCES:%.java=$(BUILD_DIR)/%.m) \
     $(ORG_JUNIT_TEST_SRC:%.java=$(BUILD_DIR)/%.m)
-SOURCE_HEADERS = $(shell find $(OBJC_SOURCE_DIR) -name '*.h')
-SOURCE_HEADERS := $(SOURCE_HEADERS:$(OBJC_SOURCE_DIR)/%=%)
 GENERATED_HEADERS = $(JUNIT_SOURCES:%.java=%.h)
-RELATIVE_HEADERS = $(SOURCE_HEADERS) $(GENERATED_HEADERS) \
-    $(ORG_JUNIT_TEST_SRC:%.java=%.h)
-HEADERS = $(SOURCE_HEADERS:%=$(OBJC_SOURCE_DIR)/%) \
-    $(GENERATED_HEADERS:%=$(BUILD_DIR)/%)
+RELATIVE_HEADERS = $(GENERATED_HEADERS) $(ORG_JUNIT_TEST_SRC:%.java=%.h)
+HEADERS = $(GENERATED_HEADERS:%=$(BUILD_DIR)/%)
 ARCH_HEADERS = $(RELATIVE_HEADERS:%=$(ARCH_INCLUDE_DIR)/%)
 
 # Settings for building Mac OS X, iPhone, and iPhone simulator libraries.
@@ -209,8 +201,7 @@ lib: translate $(JUNIT_LIB)
 
 translate: pre_translate $(EXTRACTED_JAVA) $(TRANSLATED_OBJC)
 	@if [ `cat $(JAVA_SOURCE_LIST) | wc -l` -ge 1 ] ; then \
-	  $(J2OBJC) -sourcepath $(SOURCE_BASE)/java:$(JAVA_SRC_DIR) \
-	    `cat $(JAVA_SOURCE_LIST)` ; \
+	  $(J2OBJC) -sourcepath $(JAVA_SRC_DIR) `cat $(JAVA_SOURCE_LIST)`; \
 	fi
 
 pre_translate:
@@ -262,11 +253,6 @@ $(1)/%.o: $(BUILD_DIR)/%.m | translate
 	$$(CLANG) -c $$? -o $$@ $(2) $$(OBJCFLAGS) -I$$(BUILD_DIR) \
 	  -I$(ARCH_INCLUDE_DIR)
 
-$(1)/%.o: $(OBJC_SOURCE_DIR)/%.m | translate
-	@mkdir -p $$(@D)
-	$$(CLANG) -c $$? -o $$@ $(2) $$(OBJCFLAGS) -I$$(BUILD_DIR) \
-	  -I$$(ARCH_INCLUDE_DIR)
-
 $(1)/$(ORG_JUNIT_TEST_OBJ): $(BUILD_DIR)/$(ORG_JUNIT_TEST_SRC:%.java=%.m) | translate
 	@mkdir -p $$(@D)
 	$$(CLANG) -c $$? -o $$@ $(2) $$(OBJCFLAGS) -I$$(BUILD_DIR) \
@@ -290,10 +276,6 @@ $(JUNIT_LIB_DIST): $(JUNIT_LIB)
 	install -m 0644 $< $@
 
 $(ARCH_INCLUDE_DIR)/%.h: $(BUILD_DIR)/%.h | translate
-	@mkdir -p $(@D)
-	install -m 0644 $< $@
-
-$(ARCH_INCLUDE_DIR)/%.h: $(OBJC_SOURCE_DIR)/%.h
 	@mkdir -p $(@D)
 	install -m 0644 $< $@
 

@@ -24,10 +24,7 @@ include ../make/common.mk
 include ../java_deps/jars.mk
 
 INCLUDE_DIR = $(BUILD_DIR)/include
-SOURCE_BASE = src/main
-OBJC_SOURCE_DIR = $(SOURCE_BASE)/native
 JAVA_SRC_DIR = $(BUILD_DIR)/java
-MODIFIED_JAVA_SRC_DIR = $(SOURCE_BASE)/java
 
 JUNIT_SRC_JAR = $(JAVA_DEPS_JAR_DIR)/$(JUNIT_SOURCE_JAR)
 HAMCREST_SRC_JAR = $(JAVA_DEPS_JAR_DIR)/$(HAMCREST_SOURCE_JAR)
@@ -49,7 +46,7 @@ OBJCFLAGS := -ObjC $(WARNINGS) \
 
 # J2ObjC settings
 J2OBJC = $(DIST_DIR)/j2objc -d $(BUILD_DIR)
-J2OBJCC = $(ARCH_BIN_DIR)/j2objcc -c $(OBJCFLAGS) -I$(OBJC_SOURCE_DIR) -I$(BUILD_DIR)
+J2OBJCC = $(ARCH_BIN_DIR)/j2objcc -c $(OBJCFLAGS) -I$(BUILD_DIR)
 
 ifeq ("$(strip $(CLANG_ENABLE_OBJC_ARC))", "YES")
 J2OBJC := $(J2OBJC) -use-arc
