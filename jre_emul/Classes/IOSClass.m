@@ -29,6 +29,7 @@
 #import "java/lang/NoSuchFieldException.h"
 #import "java/lang/NoSuchMethodException.h"
 #import "java/lang/NullPointerException.h"
+#import "java/lang/Package.h"
 #import "java/lang/annotation/Annotation.h"
 #import "java/lang/annotation/Inherited.h"
 #import "java/lang/reflect/Constructor.h"
@@ -49,6 +50,7 @@
 #import "IOSPrimitiveClass.h"
 #import "IOSProtocolClass.h"
 #import "IOSShortArray.h"
+#import "JavaMetadata.h"
 #import "objc/runtime.h"
 
 @implementation IOSClass
@@ -173,6 +175,11 @@ static IOSClass *FetchArray(IOSClass *componentType);
   return [self getName];
 }
 
+- (NSString *)objcName {
+  @throw AUTORELEASE([[JavaLangAssertionError alloc] initWithNSString:
+      @"abstract method not overridden"]);
+}
+
 - (int)getModifiers {
   // All Objective-C classes and protocols are public.
   return JavaLangReflectModifier_PUBLIC;
@@ -267,7 +274,7 @@ static NSString *GetParameterKeyword(IOSClass *paramType) {
   if (paramType == IOSClass_objectClass) {
     return @"Id";
   }
-  return Capitalize([paramType getName]);
+  return Capitalize([paramType objcName]);
 }
 
 // Return a method name as it would be modified during j2objc translation.
@@ -314,7 +321,7 @@ NSString *IOSClass_GetTranslatedMethodName(NSString *name, IOSObjectArray *param
 
 - (NSString *)description {
   // matches java.lang.Class.toString() output
-  return [NSString stringWithFormat:@"class %@", [self getSimpleName]];
+  return [NSString stringWithFormat:@"class %@", [self getName]];
 }
 
 - (NSString *)binaryName {
@@ -525,8 +532,31 @@ static IOSClass *IOSClass_ArrayClassForName(NSString *name, NSUInteger index) {
   return [IOSObjectArray arrayWithLength:0 type:annotationType];
 }
 
+// Returns the metadata structure defined by this class, if it exists.
+- (JavaClassMetadata *)getMetadata {
+  Class cls = [self objcClass];
+  if (cls) {
+    SEL sel = @selector(__metadata);
+    if ([cls respondsToSelector:sel]) {
+      J2ObjcClassInfo *rawData = (J2ObjcClassInfo *) [cls performSelector:sel];
+      return AUTORELEASE([[JavaClassMetadata alloc] initWithMetadata:rawData]);
+    }
+  }
+  return nil;
+}
+
 - (id)getPackage {
-  // No packages in Objective-C, but are included in class names.
+  JavaClassMetadata *metadata = [self getMetadata];
+  if (metadata) {
+    return AUTORELEASE([[JavaLangPackage alloc] initWithNSString:metadata.packageName
+                                                    withNSString:nil
+                                                    withNSString:nil
+                                                    withNSString:nil
+                                                    withNSString:nil
+                                                    withNSString:nil
+                                                    withNSString:nil
+                                                  withJavaNetURL:nil]);
+  }
   return nil;
 }
 

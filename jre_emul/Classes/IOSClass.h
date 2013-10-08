@@ -34,6 +34,7 @@
 @class JavaLangReflectMethod;
 @protocol JavaLangAnnotationAnnotation;
 @class JavaIoInputStream;
+@class JavaClassMetadata;
 @class JavaNetURL;
 
 // A wrapper class for an Objective-C Class or Protocol,
@@ -172,6 +173,9 @@
 - (void)collectMethods:(NSMutableDictionary *)methodMap;
 - (JavaLangReflectMethod *)findMethodWithTranslatedName:(NSString *)objcName;
 - (IOSObjectArray *)getInterfacesWithArrayType:(IOSClass *)arrayType;
+- (JavaClassMetadata *)getMetadata;
+- (NSString *)objcName;
+
 extern NSString *IOSClass_GetTranslatedMethodName(
     NSString *name, IOSObjectArray *paramTypes);
 

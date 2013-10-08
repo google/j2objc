@@ -17,6 +17,7 @@
 package java.lang;
 
 /*-[
+#import "IOSClass.h"
 #import "java/lang/ClassNotFoundException.h"
 
 #import <execinfo.h>
@@ -137,14 +138,12 @@ public class StackTraceElement {
         className__ =
             RETAIN_([NSString stringWithCString:className
                                        encoding:[NSString defaultCStringEncoding]]);
-        // TODO(tball): enable when Class.getName() returns original Java name.
-        //@try {
-        //  IOSClass *cls = Class.forName(className__);
-        //  className__ = [cls getName];
-        //}
-        //@catch (JavaLangClassNotFoundException *e) {
-        //  // Unknown name, ignore.
-        //}
+        @try {
+          className__ = [[IOSClass forName:className__] getName];
+        }
+        @catch (JavaLangClassNotFoundException *e) {
+          // Unknown name, ignore.
+        }
       }
       if (selector) {
         char *methodName = NULL;

@@ -65,6 +65,10 @@ static id Box(JavaResult *value, const char *type);
   return NSStringFromSelector(selector_);
 }
 
+- (NSString *)internalName {
+  return NSStringFromSelector(selector_);
+}
+
 - (IOSClass *)getReturnType {
   const char *argType = [methodSignature_ methodReturnType];
   if (strlen(argType) != 1) {
@@ -142,12 +146,12 @@ static id Box(JavaResult *value, const char *type);
 }
 
 - (IOSObjectArray *)getDeclaredAnnotations {
-  JavaLangReflectMethod *method = [self getAnnotationsAccessor:[self getName]];
+  JavaLangReflectMethod *method = [self getAnnotationsAccessor:[self internalName]];
   return [self getAnnotationsFromAccessor:method];
 }
 
 - (IOSObjectArray *)getParameterAnnotations {
-  JavaLangReflectMethod *method = [self getParameterAnnotationsAccessor:[self getName]];
+  JavaLangReflectMethod *method = [self getParameterAnnotationsAccessor:[self internalName]];
   return [self getAnnotationsFromAccessor:method];
 }
 
