@@ -50,13 +50,13 @@
                            reason:message
                          userInfo:nil])) {
     JreMemDebugAdd(self);
-    cause = RETAIN(causeArg);
-    detailMessage = RETAIN(message);
+    cause = RETAIN_(causeArg);
+    detailMessage = RETAIN_(message);
 
     void *callStack[MAX_STACK_FRAMES];
     unsigned nFrames = backtrace(callStack, MAX_STACK_FRAMES);
-    stackTrace = RETAIN([JavaLangThrowable stackTrace:callStack
-                                                count:nFrames]);
+    stackTrace = RETAIN_([JavaLangThrowable stackTrace:callStack
+                                                 count:nFrames]);
     suppressedExceptions = nil;
   }
   return self;

@@ -22,8 +22,8 @@
 
 - (id)initWithDictionary:(NSMutableDictionary *)dictionary key:(id)key {
   if ((self = [super init])) {
-    dictionary_ = RETAIN(dictionary);
-    key_ = RETAIN(key);
+    dictionary_ = RETAIN_(dictionary);
+    key_ = RETAIN_(key);
   }
   return self;
 }

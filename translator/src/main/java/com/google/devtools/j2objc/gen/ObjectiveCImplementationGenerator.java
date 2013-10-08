@@ -284,7 +284,7 @@ public class ObjectiveCImplementationGenerator extends ObjectiveCSourceFileGener
       ITypeBinding type = member.getReturnType();
       boolean needsRetain = !type.isPrimitive();
       if (needsRetain) {
-        print("RETAIN(");
+        print("RETAIN_(");
       }
       printf("%s_", name);
       if (needsRetain) {
