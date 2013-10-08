@@ -548,4 +548,11 @@ public class ObjectiveCHeaderGeneratorTest extends GenerationTest {
         "withNSString:(NSString *)__name",
         "withInt:(int)__ordinal;");
   }
+
+  public void testDeprecatedEnumType() throws IOException {
+    Options.enableDeprecatedDeclarations();
+    String translation = translateSourceFile(
+        "@Deprecated public enum Test { A, B }", "Test", "Test.h");
+    assertTranslation(translation, "__attribute__((deprecated))\n@interface TestEnum");
+  }
 }
