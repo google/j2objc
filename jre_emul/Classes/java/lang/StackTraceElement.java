@@ -132,9 +132,8 @@ public class StackTraceElement {
       char *signature = leftBrace + 1;
       char *className = strsep(&signature, "[ ]");
       if (className && strlen(className) > 0) {
-        IOSClass *cls =
-            IOSClass_ClassForName([NSString stringWithCString:className
-                                                     encoding:[NSString defaultCStringEncoding]]);
+        IOSClass *cls = [IOSClass classForIosName:[NSString stringWithCString:className
+            encoding:[NSString defaultCStringEncoding]]];
         if (cls) {
           className__ = RETAIN_([cls getName]);
         }

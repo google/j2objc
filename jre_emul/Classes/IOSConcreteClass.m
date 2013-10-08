@@ -105,51 +105,62 @@
   return NO;
 }
 
-static void AddMethodOrConstructor(
-    SEL sel, IOSClass *clazz, NSMutableDictionary *map, BOOL fetchConstructors) {
-  NSString *key = NSStringFromSelector(sel);
-  BOOL isConstructor =
-      [key isEqualToString:@"init"] || [key hasPrefix:@"initWith"];
-  if (isConstructor == fetchConstructors && ![map objectForKey:key]) {
-    id executable = isConstructor ?
-        [JavaLangReflectConstructor constructorWithSelector:sel withClass:clazz] :
-        [JavaLangReflectMethod methodWithSelector:sel withClass:clazz];
-    [map setObject:executable forKey:key];
-  }
+static BOOL IsConstructor(NSString *name) {
+  return [name isEqualToString:@"init"] || [name hasPrefix:@"initWith"];
 }
 
 static void CreateMethodWrappers(
     Method *methods, unsigned count, IOSClass* clazz, NSMutableDictionary *map,
-    BOOL fetchConstructors) {
+    id (^methodCreator)(SEL)) {
   for (NSUInteger i = 0; i < count; i++) {
     SEL sel = method_getName(methods[i]);
-    AddMethodOrConstructor(sel, clazz, map, fetchConstructors);
+    NSString *key = NSStringFromSelector(sel);
+    if ([map objectForKey:key]) {
+      continue;
+    }
+    id method = methodCreator(sel);
+    if (method) {
+      [map setObject:method forKey:NSStringFromSelector(sel)];
+    }
   }
 }
 
 static void CollectMethodsOrConstructors(
-    IOSConcreteClass *iosClass, NSMutableDictionary *methods, BOOL fetchConstructors) {
+    IOSConcreteClass *iosClass, NSMutableDictionary *methods, id (^methodCreator)(SEL)) {
   unsigned int nInstanceMethods, nClassMethods;
   // Copy first the instance, then the class methods into a combined
   // array of IOSMethod instances.  Method ordering is not defined or
   // important.
   Method *instanceMethods = class_copyMethodList(iosClass->class_, &nInstanceMethods);
-  CreateMethodWrappers(instanceMethods, nInstanceMethods, iosClass, methods, fetchConstructors);
+  CreateMethodWrappers(instanceMethods, nInstanceMethods, iosClass, methods, methodCreator);
 
   Method *classMethods = class_copyMethodList(object_getClass(iosClass->class_), &nClassMethods);
-  CreateMethodWrappers(classMethods, nClassMethods, iosClass, methods, fetchConstructors);
+  CreateMethodWrappers(classMethods, nClassMethods, iosClass, methods, methodCreator);
 
   free(instanceMethods);
   free(classMethods);
 }
 
 - (void)collectMethods:(NSMutableDictionary *)methodMap {
-  CollectMethodsOrConstructors(self, methodMap, NO);
+  JavaClassMetadata *metadata = [self getMetadata];
+  CollectMethodsOrConstructors(self, methodMap, ^ id (SEL sel) {
+    NSString *selStr = NSStringFromSelector(sel);
+    if (!IsConstructor(selStr)) {
+      return [JavaLangReflectMethod methodWithSelector:sel withClass:self
+          withMetadata:metadata ? [metadata findMethodInfo:selStr] : nil];
+    }
+    return nil;
+  });
 }
 
 - (IOSObjectArray *)getDeclaredConstructors {
   NSMutableDictionary *methodMap = [NSMutableDictionary dictionary];
-  CollectMethodsOrConstructors(self, methodMap, YES);
+  CollectMethodsOrConstructors(self, methodMap, ^ id (SEL sel) {
+    if (IsConstructor(NSStringFromSelector(sel))) {
+      return [JavaLangReflectConstructor constructorWithSelector:sel withClass:self];
+    }
+    return nil;
+  });
   return [IOSObjectArray arrayWithNSArray:[methodMap allValues] type:
       [IOSClass classWithClass:[JavaLangReflectConstructor class]]];
 }
@@ -176,11 +187,15 @@ static SEL FindSelector(NSString *name, Class cls) {
 - (JavaLangReflectMethod *)findMethodWithTranslatedName:(NSString *)objcName {
   SEL selector = FindSelector(objcName, class_);
   if (selector) {
-    return [JavaLangReflectMethod methodWithSelector:selector withClass:self];
+    JavaClassMetadata *metadata = [self getMetadata];
+    return [JavaLangReflectMethod methodWithSelector:selector withClass:self
+        withMetadata:metadata ? [metadata findMethodInfo:objcName] : nil];
   }
   selector = FindSelector(objcName, object_getClass(class_));
   if (selector) {
-    return [JavaLangReflectMethod methodWithSelector:selector withClass:self];
+    JavaClassMetadata *metadata = [self getMetadata];
+    return [JavaLangReflectMethod methodWithSelector:selector withClass:self
+        withMetadata:metadata ? [metadata findMethodInfo:objcName] : nil];
   }
   return nil;
 }

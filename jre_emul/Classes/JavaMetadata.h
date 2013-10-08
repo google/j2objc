@@ -22,6 +22,7 @@
 // An internal-use-only value object that contains the reflection metadata
 // for an IOSClass.
 @interface JavaClassMetadata : NSObject {
+  J2ObjcClassInfo *data_;
   J2ObjCAttribute *attributes;
 }
 
@@ -33,5 +34,6 @@
 - (id)initWithMetadata:(J2ObjcClassInfo *)metadata;
 
 - (NSString *)qualifiedName;
+- (const J2ObjcMethodInfo *)findMethodInfo:(NSString *)methodName;
 
 @end

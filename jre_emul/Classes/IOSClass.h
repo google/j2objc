@@ -54,6 +54,7 @@
 + (IOSClass *)classWithClass:(Class)cls;
 + (IOSClass *)classWithProtocol:(Protocol *)protocol;
 + (IOSClass *)arrayClassWithComponentType:(IOSClass *)componentType;
++ (IOSClass *)classForIosName:(NSString *)iosName;
 
 // Primitive class instance getters.
 + (IOSClass *)byteClass;
@@ -183,8 +184,6 @@ extern "C" {
 
 extern NSString *IOSClass_GetTranslatedMethodName(
     NSString *name, IOSObjectArray *paramTypes);
-extern NSString *IOSClass_JavaToIOSName(NSString *javaName);
-extern IOSClass *IOSClass_ClassForName(NSString *name);
 
 #ifdef __cplusplus
 }

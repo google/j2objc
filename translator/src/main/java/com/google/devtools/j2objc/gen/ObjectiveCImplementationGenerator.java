@@ -1161,21 +1161,79 @@ public class ObjectiveCImplementationGenerator extends ObjectiveCSourceFileGener
 
   private void printMetadata(AbstractTypeDeclaration node) {
     ITypeBinding type = Types.getTypeBinding(node);
-    if (hasMetadata(type)) {
-      String fullName = NameTable.getFullName(type);
-      println("+ (J2ObjcClassInfo *)__metadata {");
-      printf("  static J2ObjcClassInfo _%s = { ", fullName);
-      printf("\"%s\", ", type.getName());
-      String pkgName = type.getPackage().getName();
-      if (Strings.isNullOrEmpty(pkgName)) {
-        printf("NULL, ");
-      } else {
-        printf("\"%s\", ", pkgName);
+    List<String> methodMetadata = Lists.newArrayList();
+    for (MethodDeclaration decl : ASTUtil.getMethodDeclarations(node)) {
+      String metadata = getMethodMetadata(Types.getMethodBinding(decl));
+      if (metadata != null) {
+        methodMetadata.add(metadata);
       }
-      printf("%s, ", getEnclosingName(type));
-      printf("0x%s };\n", Integer.toHexString(getModifiers(type)));
-      printf("  return &_%s;\n}\n\n", fullName);
     }
+    if (!hasMetadata(type) && methodMetadata.size() == 0) {
+      return;
+    }
+    String fullName = NameTable.getFullName(type);
+    println("+ (J2ObjcClassInfo *)__metadata {");
+    if (methodMetadata.size() > 0) {
+      println("  static J2ObjcMethodInfo methods[] = {");
+      for (String metadata : methodMetadata) {
+        print(metadata);
+      }
+      println("  };");
+    }
+    printf("  static J2ObjcClassInfo _%s = { ", fullName);
+    printf("\"%s\", ", type.getName());
+    String pkgName = type.getPackage().getName();
+    if (Strings.isNullOrEmpty(pkgName)) {
+      printf("NULL, ");
+    } else {
+      printf("\"%s\", ", pkgName);
+    }
+    printf("%s, ", getEnclosingName(type));
+    printf("0x%s, ", Integer.toHexString(getModifiers(type)));
+    printf("%s, ", Integer.toString(methodMetadata.size()));
+    print(methodMetadata.size() > 0 ? "methods" : "NULL");
+    println("};");
+    printf("  return &_%s;\n}\n\n", fullName);
+  }
+
+  private String getMethodMetadata(IMethodBinding method) {
+    if (method.isConstructor() || method.isSynthetic()) {
+      return null;
+    }
+    boolean needsMetadata = false;
+    ITypeBinding returnType = method.getReturnType();
+    String returnTypeStr = "NULL";
+    if (!returnType.isPrimitive()) {
+      returnTypeStr = "\"" + NameTable.getFullName(method.getReturnType()) + "\"";
+      needsMetadata = true;
+    }
+    String methodName = "NULL";
+    ITypeBinding[] paramTypes = method.getParameterTypes();
+    // Most of the time the method name can be parsed from the ObjC selector
+    // but not if the first parameter contains the substring "With".
+    if (paramTypes.length > 0 && NameTable.parameterKeyword(paramTypes[0]).contains("With")) {
+      methodName = "\"" + method.getName() + "\"";
+      needsMetadata = true;
+    }
+    if (!needsMetadata) {
+      return null;
+    }
+    return String.format("    { \"%s\", %s, %s },\n",
+        methodSelector(method), methodName, returnTypeStr);
+  }
+
+  private String methodSelector(IMethodBinding method) {
+    StringBuilder sb = new StringBuilder(NameTable.getName(method));
+    boolean first = true;
+    for (ITypeBinding paramType : method.getParameterTypes()) {
+      String keyword = NameTable.parameterKeyword(paramType);
+      if (first) {
+        keyword = NameTable.capitalize(keyword);
+        first = false;
+      }
+      sb.append(keyword).append(":");
+    }
+    return sb.toString();
   }
 
   /**

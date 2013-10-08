@@ -365,4 +365,14 @@ public final class ASTUtil {
     }
     return null;
   }
+
+  public static List<MethodDeclaration> getMethodDeclarations(AbstractTypeDeclaration node) {
+    List<MethodDeclaration> methods = Lists.newArrayList();
+    for (BodyDeclaration bodyDecl : getBodyDeclarations(node)) {
+      if (bodyDecl instanceof MethodDeclaration) {
+        methods.add((MethodDeclaration) bodyDecl);
+      }
+    }
+    return methods;
+  }
 }
