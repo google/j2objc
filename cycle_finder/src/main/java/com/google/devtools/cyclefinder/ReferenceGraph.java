@@ -90,40 +90,10 @@ public class ReferenceGraph {
     return type;
   }
 
-  private boolean hasWildcard(ITypeBinding type) {
-    if (type.isWildcardType()) {
-      return true;
-    }
-    if (type.isParameterizedType()) {
-      for (ITypeBinding arg : type.getTypeArguments()) {
-        if (hasWildcard(arg)) {
-          return true;
-        }
-      }
-    }
-    return false;
-  }
-
-  private Set<String> findAssignableTypes(ITypeBinding type) {
-    Set<String> assignableTypes = Sets.newHashSet();
-    for (ITypeBinding assignable : allTypes.values()) {
-      if (assignable.isAssignmentCompatible(type)) {
-        assignableTypes.add(assignable.getKey());
-      }
-    }
-    return assignableTypes;
-  }
-
   private void addSubtypeEdges() {
     SetMultimap<String, String> subtypes = HashMultimap.create();
     for (ITypeBinding type : allTypes.values()) {
       collectSubtypes(type.getKey(), type, subtypes);
-      // The internal implementation of isAssignmentCompatible caches all
-      // results and will quickly fill up heap space, so we must use it
-      // sparingly.
-      if (hasWildcard(type)) {
-        subtypes.putAll(type.getKey(), findAssignableTypes(type));
-      }
     }
     for (String type : allTypes.keySet()) {
       Set<Edge> newEdges = Sets.newHashSet();
