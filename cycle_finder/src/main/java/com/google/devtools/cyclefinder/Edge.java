@@ -15,7 +15,6 @@
 package com.google.devtools.cyclefinder;
 
 import com.google.common.base.Objects;
-import com.google.common.base.Strings;
 
 import org.eclipse.jdt.core.dom.ITypeBinding;
 import org.eclipse.jdt.core.dom.IVariableBinding;
@@ -43,7 +42,8 @@ class Edge {
     ITypeBinding target = type.isArray() ? type.getElementType() : type;
     assert !target.isPrimitive();
     return new Edge(field, origin, target,
-        "(" + varType + " " + field.getName() + " with type " + getNameForType(type) + ")");
+        "(" + varType + " " + field.getName() + " with type " + TypeCollector.getNameForType(type)
+        + ")");
   }
 
   public static Edge newFieldEdge(ITypeBinding origin, IVariableBinding field) {
@@ -52,17 +52,19 @@ class Edge {
 
   public static Edge newSubtypeEdge(Edge original, ITypeBinding target) {
     return new Edge(original.field, original.origin, target,
-                    "(" + getNameForType(target) + " subtype of " + original.description + ")");
+        "(" + TypeCollector.getNameForType(target) + " subtype of " + original.description + ")");
   }
 
   public static Edge newSuperclassEdge(
       Edge original, ITypeBinding origin, ITypeBinding superclass) {
     return new Edge(original.field, origin, original.target,
-        "(superclass " + getNameForType(superclass) + " has " + original.description + ")");
+        "(superclass " + TypeCollector.getNameForType(superclass) + " has " + original.description
+        + ")");
   }
 
   public static Edge newOuterClassEdge(ITypeBinding origin, ITypeBinding target) {
-    return new Edge(null, origin, target, "(outer class " + getNameForType(target) + ")");
+    return new Edge(null, origin, target,
+        "(outer class " + TypeCollector.getNameForType(target) + ")");
   }
 
   public static Edge newCaptureEdge(ITypeBinding origin, IVariableBinding capturedVar) {
@@ -82,7 +84,7 @@ class Edge {
   }
 
   public String toString() {
-    return getNameForType(origin) + " -> " + description;
+    return TypeCollector.getNameForType(origin) + " -> " + description;
   }
 
   public boolean equals(Object o) {
@@ -95,16 +97,5 @@ class Edge {
 
   public int hashCode() {
     return Objects.hashCode(origin.getKey(), target.getKey());
-  }
-
-  private static String getNameForType(ITypeBinding type) {
-    String name = type.getName();
-    if (!Strings.isNullOrEmpty(name)) {
-      return name;
-    }
-    if (type.isAnonymous()) {
-      return "anonymous";
-    }
-    return type.getKey();
   }
 }
