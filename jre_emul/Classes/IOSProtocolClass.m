@@ -52,6 +52,11 @@
   return NSStringFromProtocol(protocol_);
 }
 
+// Returns the class with the same name as the protocol, if it exists.
+- (Class) objcClass {
+  return objc_lookUpClass(protocol_getName(protocol_));
+}
+
 - (int)getModifiers {
   return JavaLangReflectModifier_PUBLIC | JavaLangReflectModifier_INTERFACE |
       JavaLangReflectModifier_ABSTRACT | JavaLangReflectModifier_STATIC;
