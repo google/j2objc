@@ -390,12 +390,20 @@ JAVA_SOURCES = \
 	java/util/Calendar.java \
 	java/util/Collections.java \
 	java/util/ConcurrentModificationException.java \
-	java/util/concurrent/atomic/AtomicInteger.java \
-	java/util/concurrent/atomic/AtomicLong.java \
 	java/util/concurrent/ConcurrentHashMap.java \
 	java/util/concurrent/CopyOnWriteArrayList.java \
 	java/util/concurrent/CopyOnWriteArraySet.java \
 	java/util/concurrent/TimeUnit.java \
+	java/util/concurrent/atomic/AtomicBoolean.java \
+	java/util/concurrent/atomic/AtomicInteger.java \
+	java/util/concurrent/atomic/AtomicIntegerArray.java \
+	java/util/concurrent/atomic/AtomicLong.java \
+	java/util/concurrent/atomic/AtomicLongArray.java \
+	java/util/concurrent/atomic/AtomicMarkableReference.java \
+	java/util/concurrent/atomic/AtomicReference.java \
+	java/util/concurrent/atomic/AtomicReferenceArray.java \
+	java/util/concurrent/atomic/AtomicStampedReference.java \
+	java/util/concurrent/atomic/Fences.java \
 	java/util/Currency.java \
 	java/util/Date.java \
 	java/util/Dictionary.java \
