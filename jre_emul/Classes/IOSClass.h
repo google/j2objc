@@ -179,6 +179,7 @@
 
 extern NSString *IOSClass_GetTranslatedMethodName(
     NSString *name, IOSObjectArray *paramTypes);
+extern IOSClass *IOSClass_ClassForName(NSString *name);
 
 @end
 
