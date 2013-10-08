@@ -29,8 +29,9 @@
 - (id)initWithMetadata:(J2ObjcClassInfo *)metadata {
   if (self = [super init]) {
     if (metadata) {
-      typeName = (ARCBRIDGE NSString *) metadata->typeName;
-      packageName = (ARCBRIDGE NSString *) metadata->packageName;
+      NSStringEncoding defaultEncoding = [NSString defaultCStringEncoding];
+      typeName = [NSString stringWithCString:metadata->typeName encoding:defaultEncoding];
+      packageName = [NSString stringWithCString:metadata->packageName encoding:defaultEncoding];
       modifiers = metadata->modifiers;
     }
   }
