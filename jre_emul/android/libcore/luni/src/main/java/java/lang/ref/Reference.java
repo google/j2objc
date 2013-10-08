@@ -215,12 +215,12 @@ public abstract class Reference<T> {
       [IOSReference initReferent:self];
     ]-*/;
 
-    native void retainReferent() /*-[
-      [IOSReference retainReferent:self];
+    native void strengthenReferent() /*-[
+      [IOSReference strengthenReferent:self];
     ]-*/;
 
-    native void releaseReferent() /*-[
-      [IOSReference releaseReferent:self];
+    native void weakenReferent() /*-[
+      [IOSReference weakenReferent:self];
     ]-*/;
 
     private native void deallocReferent() /*-[
