@@ -18,6 +18,7 @@
 package java.lang;
 
 import java.io.UnsupportedEncodingException;
+import java.nio.charset.Charset;
 
 /**
  * Stub implementation of java.lang.String.
@@ -39,6 +40,8 @@ public class String implements CharSequence, Comparable<String> {
   public String(byte[] bytes, int hibyte, int offset, int count) {}
 
   public String(byte[] bytes, int i, int j, String s) throws UnsupportedEncodingException {}
+
+  public String(byte[] bytes, Charset cs) {}
 
   public String(byte[] bytes, String s) throws UnsupportedEncodingException {}
 
@@ -149,6 +152,10 @@ public class String implements CharSequence, Comparable<String> {
   }
 
   public byte[] getBytes() {
+    return null;
+  }
+
+  public byte[] getBytes(Charset cs) {
     return null;
   }
 
