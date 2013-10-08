@@ -20,6 +20,8 @@
 #ifndef JreEmulation_IOSReflection_h
 #define JreEmulation_IOSReflection_h
 
+#import <Foundation/Foundation.h>
+
 // C data structures that hold "raw" metadata for use by the methods that
 // implement Java reflection. This information is necessary because not
 // all information provided by the reflection API is discoverable via the
@@ -111,5 +113,31 @@ typedef struct J2ObjcMemberInfo {
   // Methods: exceptions, generic signature,.
   const J2ObjCAttribute *attributes;
 } J2ObjcMemberInfo;
+
+// Autoboxing support.
+
+// A raw value is the union of all possible native types.
+typedef union {
+  void *asId;
+  char asChar;
+  unichar asUnichar;
+  short asShort;
+  int asInt;
+  long long asLong;
+  float asFloat;
+  double asDouble;
+  BOOL asBOOL;
+} J2ObjcRawValue;
+
+// Converts a raw value to an object wrapper; for example,
+// boxing a double value returns a java.lang.Double instance.
+// If the raw value is an object, that value is returned.
+FOUNDATION_EXPORT id J2ObjcBoxValue(J2ObjcRawValue *value, const char *type);
+
+// Converts an object into its unwrapped value; for example,
+// unboxing a java.lang.Double returns a double result.  If
+// the object isn't a wrapper class, then the result is the
+// unmodified object.
+FOUNDATION_EXPORT void J2ObjcUnboxValue(id value, const char *type, J2ObjcRawValue *result);
 
 #endif

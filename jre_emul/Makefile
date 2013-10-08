@@ -42,6 +42,7 @@ IOS_OBJS = \
 	IOSPrimitiveClass.o \
 	IOSProtocolClass.o \
 	IOSReference.o \
+	IOSReflection.o \
 	IOSShortArray.o \
 	JavaMetadata.o \
 	JavaToIOSInputStreamAdapter.o \
@@ -239,9 +240,12 @@ JAVA_SOURCES = \
 	java/lang/annotation/Target.java \
 	java/lang/reflect/Array.java \
 	java/lang/reflect/GenericSignatureFormatError.java \
+	java/lang/reflect/InvocationHandler.java \
 	java/lang/reflect/InvocationTargetException.java \
 	java/lang/reflect/MalformedParameterizedTypeException.java \
 	java/lang/reflect/Modifier.java \
+	java/lang/reflect/Proxy.java \
+	java/lang/reflect/ReflectPermission.java \
 	java/lang/reflect/UndeclaredThrowableException.java \
 	java/lang/RuntimeException.java \
 	java/lang/SafeVarargs.java \

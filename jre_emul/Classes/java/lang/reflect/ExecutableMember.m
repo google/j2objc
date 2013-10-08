@@ -43,8 +43,8 @@
         methodSignature_ =
             [class_.objcClass instanceMethodSignatureForSelector:selector_];
       }
-    } else {
-      assert (class_.objcProtocol);
+    }
+    if (class_.objcProtocol && !methodSignature_) {
       struct objc_method_description methodDesc =
         protocol_getMethodDescription(class_.objcProtocol, aSelector, YES, YES);
       if (methodDesc.name && methodDesc.types) {  // If method exists ...
