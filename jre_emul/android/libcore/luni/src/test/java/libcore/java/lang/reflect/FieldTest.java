@@ -22,6 +22,7 @@ import junit.framework.TestCase;
 public final class FieldTest extends TestCase {
     private static final long MY_LONG = 5073258162644648461L;
 
+    // Reflection for static long fields was broken http://b/1120750
     public void testLongFieldReflection() throws Exception {
         Field field = getClass().getDeclaredField("MY_LONG");
         assertEquals(5073258162644648461L, field.getLong(null));

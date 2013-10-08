@@ -69,7 +69,7 @@ public final class IoUtils {
     /**
      * Closes 'socket', ignoring any exceptions. Does nothing if 'socket' is null.
      *
-    TODO(user): enable when sockets are implemented.
+    TODO(tball): enable when sockets are implemented.
     public static void closeQuietly(Socket socket) {
         if (socket != null) {
             try {
@@ -155,6 +155,7 @@ public final class IoUtils {
      */
     public static boolean canOpenReadOnly(String path) {
         try {
+            // Use open(2) rather than stat(2) so we require fewer permissions. http://b/6485312.
             FileDescriptor fd = Libcore.os.open(path, O_RDONLY, 0);
             Libcore.os.close(fd);
             return true;

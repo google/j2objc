@@ -53,7 +53,7 @@ import java.util.Map;
  * @author Tom Ball
  */
 public class InnerClassExtractorTest extends GenerationTest {
-  // TODO(user): update bug id in comments to public issue numbers when
+  // TODO(tball): update bug id in comments to public issue numbers when
   // issue tracking is sync'd.
 
   @Override

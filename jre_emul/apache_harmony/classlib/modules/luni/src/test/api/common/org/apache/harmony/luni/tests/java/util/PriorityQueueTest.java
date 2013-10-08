@@ -4,9 +4,9 @@
  * The ASF licenses this file to You under the Apache License, Version 2.0
  * (the "License"); you may not use this file except in compliance with
  * the License.  You may obtain a copy of the License at
- *
+ * 
  *     http://www.apache.org/licenses/LICENSE-2.0
- *
+ * 
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -291,7 +291,7 @@ public class PriorityQueueTest extends TestCase {
     /**
      * @tests java.util.PriorityQueue#PriorityQueue(Collection)
      */
-    /* TODO(user): enable when Comparable.compareTo checks that two instances
+    /* TODO(tball): enable when Comparable.compareTo checks that two instances
      * are assignment compatible.
     public void test_ConstructorLjava_util_Colleciton_non_comparable() {
         ArrayList<Object> list = new ArrayList<Object>();
@@ -439,7 +439,7 @@ public class PriorityQueueTest extends TestCase {
     /**
      * @tests java.util.PriorityQueue#offer(Object)
      */
-    /* TODO(user): enable when Comparable.compareTo checks that two instances
+    /* TODO(tball): enable when Comparable.compareTo checks that two instances
      * are assignment compatible.
     public void test_offer_Ljava_lang_Object_non_Comparable() {
         PriorityQueue<Object> queue = new PriorityQueue<Object>();
@@ -558,7 +558,7 @@ public class PriorityQueueTest extends TestCase {
     /**
      * @tests java.util.PriorityQueue#add(Object)
      */
-    /* TODO(user): enable when Comparable.compareTo checks that two instances
+    /* TODO(tball): enable when Comparable.compareTo checks that two instances
      * are assignment compatible.
     public void test_add_Ljava_lang_Object_non_Comparable() {
         PriorityQueue<Object> queue = new PriorityQueue<Object>();
@@ -583,7 +583,7 @@ public class PriorityQueueTest extends TestCase {
 
     /**
      * @tests java.util.PriorityQueue#remove(Object)
-     *
+     * 
      */
     public void test_remove_Ljava_lang_Object() {
         Integer[] array = { 2, 45, 7, -12, 9, 23, 17, 1118, 10, 16, 39 };
@@ -600,7 +600,7 @@ public class PriorityQueueTest extends TestCase {
 
     /**
      * @tests java.util.PriorityQueue#remove(Object)
-     *
+     * 
      */
     public void test_remove_Ljava_lang_Object_using_comparator() {
         PriorityQueue<String> queue = new PriorityQueue<String>(10,
@@ -615,7 +615,7 @@ public class PriorityQueueTest extends TestCase {
 
     /**
      * @tests java.util.PriorityQueue#remove(Object)
-     *
+     * 
      */
     public void test_remove_Ljava_lang_Object_not_exists() {
         Integer[] array = { 2, 45, 7, -12, 9, 23, 17, 1118, 10, 16, 39 };
@@ -628,7 +628,7 @@ public class PriorityQueueTest extends TestCase {
 
     /**
      * @tests java.util.PriorityQueue#remove(Object)
-     *
+     * 
      */
     public void test_remove_Ljava_lang_Object_null() {
         Integer[] array = { 2, 45, 7, -12, 9, 23, 17, 1118, 10, 16, 39 };
@@ -639,14 +639,14 @@ public class PriorityQueueTest extends TestCase {
 
     /**
      * @tests java.util.PriorityQueue#remove(Object)
-     *
+     * 
      */
     public void test_remove_Ljava_lang_Object_not_Compatible() {
         Integer[] array = { 2, 45, 7, -12, 9, 23, 17, 1118, 10, 16, 39 };
         List<Integer> list = Arrays.asList(array);
         PriorityQueue<Integer> integerQueue = new PriorityQueue<Integer>(list);
         assertFalse(integerQueue.remove(new Float(1.3F)));
-
+ 
         // although argument element type is not compatible with those in queue,
         // but comparator supports it.
         MockComparator<Object> comparator = new MockComparator<Object>();

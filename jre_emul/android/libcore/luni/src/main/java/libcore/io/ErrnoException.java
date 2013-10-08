@@ -58,7 +58,7 @@ public final class ErrnoException extends Exception {
         throw newException;
     }
 
-    /* TODO(user): enable when sockets are implemented.
+    /* TODO(tball): enable when sockets are implemented.
     public SocketException rethrowAsSocketException() throws SocketException {
         throw new SocketException(getMessage(), this);
     }

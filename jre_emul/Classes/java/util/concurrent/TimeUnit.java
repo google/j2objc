@@ -19,13 +19,13 @@ package java.util.concurrent;
 /**
  * Handwritten version of TimeUnit for J2ObjC.
  *
- * This class is not translated by J2ObjC, due to incorrect enum
+ * This class is not translated by J2ObjC, due to incorrect enum 
  * translation bug.
  *
  * @author Pankaj Kakkar
  */
 public enum TimeUnit {
-  // TODO(user): update bug id in comments to public issue numbers when
+  // TODO(tball): update bug id in comments to public issue numbers when
   // issue tracking is sync'd.
 
   DAYS        (1000L * 1000L * 1000L * 3600L * 24L),

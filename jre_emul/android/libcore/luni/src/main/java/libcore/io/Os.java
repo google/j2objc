@@ -19,7 +19,7 @@ package libcore.io;
 import java.io.FileDescriptor;
 
 public interface Os {
-
+    
     public boolean access(String path, int mode) throws ErrnoException;
     public void chmod(String path, int mode) throws ErrnoException;
     public void chown(String path, int uid, int gid) throws ErrnoException;
@@ -36,7 +36,7 @@ public interface Os {
     public String strerror(int errno);
     public void tcdrain(FileDescriptor fd) throws ErrnoException;
 
-    // TODO(user): enable as needed.
+    // TODO(tball): enable as needed.
 //    public String[] environ();
 //    public int fcntlFlock(FileDescriptor fd, int cmd, StructFlock arg) throws ErrnoException;
 //    public void fdatasync(FileDescriptor fd) throws ErrnoException;
@@ -109,7 +109,7 @@ public interface Os {
 //    public int writev(FileDescriptor fd, Object[] buffers, int[] offsets, int[] byteCounts)
 //        throws ErrnoException;
 
-    // TODO(user): implement these commented methods when java.net is ported.
+    // TODO(tball): implement these commented methods when java.net is ported.
 //    public FileDescriptor accept(FileDescriptor fd, InetSocketAddress peerAddress)
 //        throws ErrnoException, SocketException;
 //    public void bind(FileDescriptor fd, InetAddress address, int port)
@@ -148,7 +148,7 @@ public interface Os {
 //        throws ErrnoException;
 //    public void setsockoptIpMreqn(FileDescriptor fd, int level, int option, int value)
 //        throws ErrnoException;
-//    public void setsockoptGroupReq(FileDescriptor fd, int level, int option,
+//    public void setsockoptGroupReq(FileDescriptor fd, int level, int option, 
 //        StructGroupReq value) throws ErrnoException;
 //    public void setsockoptLinger(FileDescriptor fd, int level, int option, StructLinger value)
 //        throws ErrnoException;

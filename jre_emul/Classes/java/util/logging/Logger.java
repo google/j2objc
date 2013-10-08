@@ -49,7 +49,7 @@ public class Logger {
   }
 
   protected Logger(String name, String resourceName) {
-    //TODO(user): check OS X user defaults, so level can be changed from command-line
+    //TODO(tball): check OS X user defaults, so level can be changed from command-line
     level = null;
     this.useParentHandlers = true;
     handlers = new ArrayList<Handler>();
