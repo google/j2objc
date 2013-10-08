@@ -136,6 +136,8 @@ public class ObjectiveCImplementationGenerator extends ObjectiveCSourceFileGener
           if (!getStaticFieldsNeedingAccessors(
               Arrays.asList(node.getFields()), /* isInterface */ true).isEmpty()) {
             types.add(node);
+          } else if (!Options.stripReflection() && hasMetadata(Types.getTypeBinding(node))) {
+            types.add(node);
           }
         } else {
           types.add(node); // always print concrete types
@@ -505,8 +507,12 @@ public class ObjectiveCImplementationGenerator extends ObjectiveCSourceFileGener
       String typeName, List<FieldDeclaration> fields, List<MethodDeclaration> methods) {
     List<IVariableBinding> staticFields =
         getStaticFieldsNeedingAccessors(fields, /* isInterface */ true);
-    if (staticFields.isEmpty() && !hasMetadata(Types.getTypeBinding(node))) {
-      return;
+    if (staticFields.isEmpty()) {
+      if (hasMetadata(Types.getTypeBinding(node))) {
+        printf("\n@interface %s : NSObject\n@end\n", typeName);
+      } else {
+        return;
+      }
     }
     printf("\n@implementation %s\n\n", typeName);
     printStaticVars(fields, /* isInterface */ true);
