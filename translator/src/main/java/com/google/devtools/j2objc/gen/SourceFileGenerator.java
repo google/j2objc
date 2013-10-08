@@ -29,7 +29,6 @@ import org.eclipse.jdt.core.dom.PackageDeclaration;
 
 import java.io.File;
 import java.io.IOException;
-import java.nio.charset.Charset;
 
 /**
  * This class handles common actions shared by the header, implementation, and
