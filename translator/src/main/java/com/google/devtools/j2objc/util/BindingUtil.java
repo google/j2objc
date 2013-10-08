@@ -56,8 +56,12 @@ public final class BindingUtil {
   }
 
   public static boolean isPrimitiveConstant(IVariableBinding binding) {
+    return isConstant(binding) && binding.getType().isPrimitive();
+  }
+
+  public static boolean isConstant(IVariableBinding binding) {
     return binding != null && isStatic(binding) && isFinal(binding)
-        && binding.getType().isPrimitive() && binding.getConstantValue() != null;
+        && binding.getConstantValue() != null;
   }
 
   /**

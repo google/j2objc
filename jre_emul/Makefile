@@ -42,7 +42,9 @@ IOS_OBJS = \
 	IOSPrimitiveClass.o \
 	IOSProtocolClass.o \
 	IOSReference.o \
+	IOSReflection.o \
 	IOSShortArray.o \
+	JavaMetadata.o \
 	JavaToIOSInputStreamAdapter.o \
 	JreEmulation.o \
 	JreMemDebug.o \
@@ -238,9 +240,12 @@ JAVA_SOURCES = \
 	java/lang/annotation/Target.java \
 	java/lang/reflect/Array.java \
 	java/lang/reflect/GenericSignatureFormatError.java \
+	java/lang/reflect/InvocationHandler.java \
 	java/lang/reflect/InvocationTargetException.java \
 	java/lang/reflect/MalformedParameterizedTypeException.java \
 	java/lang/reflect/Modifier.java \
+	java/lang/reflect/Proxy.java \
+	java/lang/reflect/ReflectPermission.java \
 	java/lang/reflect/UndeclaredThrowableException.java \
 	java/lang/RuntimeException.java \
 	java/lang/SafeVarargs.java \
@@ -391,9 +396,14 @@ JAVA_SOURCES = \
 	java/util/Calendar.java \
 	java/util/Collections.java \
 	java/util/ConcurrentModificationException.java \
+	java/util/concurrent/BrokenBarrierException.java \
+	java/util/concurrent/CancellationException.java \
 	java/util/concurrent/ConcurrentHashMap.java \
 	java/util/concurrent/CopyOnWriteArrayList.java \
 	java/util/concurrent/CopyOnWriteArraySet.java \
+	java/util/concurrent/ExecutionException.java \
+	java/util/concurrent/RejectedExecutionException.java \
+	java/util/concurrent/TimeoutException.java \
 	java/util/concurrent/TimeUnit.java \
 	java/util/concurrent/atomic/AtomicBoolean.java \
 	java/util/concurrent/atomic/AtomicInteger.java \
@@ -549,6 +559,11 @@ EMULATION_MACOSX_LIB = $(BUILD_DIR)/macosx-libjre_emul.a
 EMULATION_IPHONE_LIB = $(BUILD_DIR)/iphone-libjre_emul.a
 EMULATION_IPHONEV7S_LIB = $(BUILD_DIR)/iphonev7s-libjre_emul.a
 EMULATION_SIMULATOR_LIB = $(BUILD_DIR)/simulator-libjre_emul.a
+ARCH_LIBS = $(J2OBJC_ARCHS)
+ARCH_LIBS := $(ARCH_LIBS:macosx=$(EMULATION_MACOSX_LIB))
+ARCH_LIBS := $(ARCH_LIBS:iphone=$(EMULATION_IPHONE_LIB))
+ARCH_LIBS := $(ARCH_LIBS:iphonev7s=$(EMULATION_IPHONEV7s_LIB))
+ARCH_LIBS := $(ARCH_LIBS:simulator=$(EMULATION_SIMULATOR_LIB))
 MACOSX_OBJS = $(ALL_OBJS:%=$(CLASS_DIR)/%)
 MACOSX_FLAGS = $(SDK_FLAGS)
 IPHONE_BUILD_DIR = $(BUILD_DIR)/iphone
@@ -588,8 +603,7 @@ xcode_clean:
 
 xcode_analyze: $(ALL_OBJS:%.o=$(TARGET_TEMP_DIR)/%.plist)
 
-$(EMULATION_LIB): $(EMULATION_MACOSX_LIB) $(EMULATION_IPHONE_LIB) \
-    $(EMULATION_IPHONEV7S_LIB) $(EMULATION_SIMULATOR_LIB)
+$(EMULATION_LIB): $(ARCH_LIBS)
 	$(LIPO) -create $^ -output $@
 
 $(EMULATION_MACOSX_LIB): $(MACOSX_OBJS)
@@ -737,7 +751,7 @@ $(EMULATION_JAR): $(ALL_JAVA_SOURCES) $(STUB_JAVA_SOURCES) | $(BUILD_DIR)
 	@echo "building jre_emul.jar"
 	@rm -rf $(EMULATION_STAGE)
 	@mkdir $(EMULATION_STAGE)
-	@javac -classpath $(ANNOTATIONS_JAR) -d $(EMULATION_STAGE) -encoding ISO-8859-1 \
+	@$(JAVAC) -classpath $(ANNOTATIONS_JAR) -d $(EMULATION_STAGE) -encoding ISO-8859-1 \
 	    -source 1.6 -target 1.6 -nowarn $^
 	@jar cf $(EMULATION_JAR) -C $(EMULATION_STAGE) .
 

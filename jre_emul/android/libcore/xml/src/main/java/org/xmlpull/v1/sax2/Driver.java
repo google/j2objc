@@ -15,6 +15,8 @@ import java.io.Reader;
 // not J2ME classes
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.net.MalformedURLException;
+import java.net.URL;
 
 import org.xml.sax.Attributes;
 import org.xml.sax.DTDHandler;
@@ -287,11 +289,10 @@ public class Driver implements Locator, XMLReader, Attributes
                         errorHandler.fatalError(saxException);
                         return;
                     }
-                    // TODO(user): enable when java.net is supported.
-//                    try {
-//                        final URL url = new URL(systemId);
-//                        stream = url.openStream();
-//                    } catch (MalformedURLException nue) {
+                    try {
+                        final URL url = new URL(systemId);
+                        stream = url.openStream();
+                    } catch (MalformedURLException nue) {
                         try {
                             stream = new FileInputStream(systemId);
                         } catch (FileNotFoundException fnfe) {
@@ -300,7 +301,7 @@ public class Driver implements Locator, XMLReader, Attributes
                             errorHandler.fatalError(saxException);
                             return;
                         }
-//                    }
+                    }
                 }
                 pp.setInput(stream, encoding);
             } else {

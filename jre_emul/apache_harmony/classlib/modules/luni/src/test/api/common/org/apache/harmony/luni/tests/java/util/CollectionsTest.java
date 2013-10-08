@@ -82,7 +82,7 @@ public class CollectionsTest extends junit.framework.TestCase {
 		}
 	}
 
-	/* TODO(user): enable when threading is supported.
+	/* TODO(tball): enable when threading is supported.
 	public static class SynchCollectionChecker implements Runnable {
 		Collection col;
 
@@ -650,7 +650,7 @@ public class CollectionsTest extends junit.framework.TestCase {
 		LinkedList ll2 = new LinkedList();
 		ll2.addAll(ll);
 		testShuffle(ll2, "Random Access", true);
-
+        
         List l = new ArrayList();
         l.add('a');
         l.add('b');
@@ -1254,7 +1254,7 @@ public class CollectionsTest extends junit.framework.TestCase {
 	 * @throws InterruptedException
 	 * @tests java.util.Collections#synchronizedCollection(java.util.Collection)
 	 */
-	/* TODO(user): enable when threading is supported.
+	/* TODO(tball): enable when threading is supported.
 	public void test_synchronizedCollectionLjava_util_Collection() throws InterruptedException {
 		// Test for method java.util.Collection
 		// java.util.Collections.synchronizedCollection(java.util.Collection)
@@ -1280,7 +1280,7 @@ public class CollectionsTest extends junit.framework.TestCase {
 		offsetThread.start();
 		while ((normalSynchChecker.getNumberOfChecks() < numberOfLoops)
 				|| (offsetSynchChecker.getNumberOfChecks() < numberOfLoops)) {
-
+	    
                        try {
                                Thread.sleep(10);
                        } catch (InterruptedException e) {
@@ -1318,7 +1318,7 @@ public class CollectionsTest extends junit.framework.TestCase {
 	/**
 	 * @tests java.util.Collections#synchronizedList(java.util.List)
 	 */
-	/* TODO(user): enable when threading is supported.
+	/* TODO(tball): enable when threading is supported.
 	public void test_synchronizedListLjava_util_List() {
 		try {
 			Collections.synchronizedList(null);
@@ -1339,7 +1339,7 @@ public class CollectionsTest extends junit.framework.TestCase {
 		myList = Collections.synchronizedList(smallList);
 
 		new Support_ListTest("", myList).runTest();
-
+        
 		// test with a Random Access List
 		smallList = new ArrayList();
 		testSynchronizedList(smallList, "Random Access");
@@ -1350,7 +1350,7 @@ public class CollectionsTest extends junit.framework.TestCase {
 		}
 		myList = Collections.synchronizedList(smallList);
 		new Support_ListTest("", myList).runTest();
-
+        
 		//Test self reference
         myList = Collections.synchronizedList(smallList);
         myList.add(smallList);
@@ -1358,7 +1358,7 @@ public class CollectionsTest extends junit.framework.TestCase {
 	}
 	*/
 
-	/* TODO(user): enable when threading is supported.
+	/* TODO(tball): enable when threading is supported.
 	private void testSynchronizedList(List smallList, String type) {
 		for (int i = 0; i < 50; i++) {
 			smallList.add(objArray[i]);
@@ -1413,7 +1413,7 @@ public class CollectionsTest extends junit.framework.TestCase {
 	/**
 	 * @tests java.util.Collections#synchronizedMap(java.util.Map)
 	 */
-	/* TODO(user): enable when threading is supported.
+	/* TODO(tball): enable when threading is supported.
 	public void test_synchronizedMapLjava_util_Map() {
 		// Test for method java.util.Map
 		// java.util.Collections.synchronizedMap(java.util.Map)
@@ -1481,7 +1481,7 @@ public class CollectionsTest extends junit.framework.TestCase {
 	/**
 	 * @tests java.util.Collections#synchronizedSet(java.util.Set)
 	 */
-	/* TODO(user): enable when threading is supported.
+	/* TODO(tball): enable when threading is supported.
 	public void test_synchronizedSetLjava_util_Set() {
 		// Test for method java.util.Set
 		// java.util.Collections.synchronizedSet(java.util.Set)
@@ -1532,7 +1532,7 @@ public class CollectionsTest extends junit.framework.TestCase {
 		}
 		new Support_SetTest("", Collections.synchronizedSet(smallSet))
 				.runTest();
-
+        
 		//Test self reference
         mySet = Collections.synchronizedSet(smallSet);
         mySet.add(smallSet);
@@ -1543,7 +1543,7 @@ public class CollectionsTest extends junit.framework.TestCase {
 	/**
 	 * @tests java.util.Collections#synchronizedSortedMap(java.util.SortedMap)
 	 */
-	/* TODO(user): enable when threading is supported.
+	/* TODO(tball): enable when threading is supported.
 	public void test_synchronizedSortedMapLjava_util_SortedMap() {
 		// Test for method java.util.SortedMap
 		// java.util.Collections.synchronizedSortedMap(java.util.SortedMap)
@@ -1603,7 +1603,7 @@ public class CollectionsTest extends junit.framework.TestCase {
 	/**
 	 * @tests java.util.Collections#synchronizedSortedSet(java.util.SortedSet)
 	 */
-	/* TODO(user): enable when threading is supported.
+	/* TODO(tball): enable when threading is supported.
 	public void test_synchronizedSortedSetLjava_util_SortedSet() {
 		// Test for method java.util.SortedSet
 		// java.util.Collections.synchronizedSortedSet(java.util.SortedSet)
@@ -1668,13 +1668,13 @@ public class CollectionsTest extends junit.framework.TestCase {
 		if (!exception) {
 			fail("Allowed modification of collection");
 		}
-
+		
 		try {
 			c.remove(new Object());
             fail("Allowed modification of collection");
 		} catch (UnsupportedOperationException e) {
 			// Correct
-		}
+		}		
 
 		Collection myCollection = new ArrayList();
 		myCollection.add(new Integer(20));
@@ -1726,13 +1726,13 @@ public class CollectionsTest extends junit.framework.TestCase {
 		if (!exception) {
 			fail("Allowed modification of list");
 		}
-
+		
 		try {
 			c.remove(new Object());
             fail("Allowed modification of list");
 		} catch (UnsupportedOperationException e) {
 			// Correct
-		}
+		}		
 
 		// test with a Random Access List
 		List smallList = new ArrayList();
@@ -1874,7 +1874,7 @@ public class CollectionsTest extends junit.framework.TestCase {
             fail("Allowed modification of set");
 		} catch (UnsupportedOperationException e) {
 			// Correct
-		}
+		}		
 
 		Set mySet = Collections.unmodifiableSet(new HashSet());
 		assertTrue("Should not contain null", !mySet.contains(null));
@@ -1955,7 +1955,7 @@ public class CollectionsTest extends junit.framework.TestCase {
 		}
 		fail("Allowed modification of set");
 	}
-
+ 
     /**
      * @tests {@link java.util.Collections#newSetFromMap(Map)}
      */
@@ -1963,7 +1963,7 @@ public class CollectionsTest extends junit.framework.TestCase {
         Integer testInt[] = new Integer[100];
         for (int i = 0; i < testInt.length; i++) {
             testInt[i] = new Integer(i);
-        }
+        }       
         Map<Integer,Boolean> map = new HashMap<Integer,Boolean>();
         Set<Integer> set = Collections.newSetFromMap(map);
         for (int i = 0; i < testInt.length; i++) {
@@ -1983,19 +1983,19 @@ public class CollectionsTest extends junit.framework.TestCase {
         while(setIter.hasNext()){
             assertEquals(mapIter.next(),setIter.next());
         }
-
+        
         // operator on set successed
         Integer testInt101 = new Integer(101);
         Integer testInt102 = new Integer(102);
         set.add(testInt101);
         assertTrue(set.contains(testInt101));
         assertTrue(map.get(testInt101));
-
+        
         // operator on map still passes
         map.put(testInt102, false);
         assertTrue(set.contains(testInt102));
         assertFalse(map.get(testInt102));
-
+        
         // exception thrown
         try {
             Collections.newSetFromMap(map);
@@ -2013,22 +2013,22 @@ public class CollectionsTest extends junit.framework.TestCase {
         Integer test101 = new Integer(101);
         for (int i = 0; i < testInt.length; i++) {
             testInt[i] = new Integer(i);
-        }
+        }    
         Deque deque = new ArrayDeque<Integer>();
         Queue<Integer> que = Collections.asLifoQueue(deque);
         for (int i = 0; i < testInt.length; i++) {
             que.add(testInt[i]);
-        }
+        }        
         assertEquals(100, deque.size());
         assertEquals(100, que.size());
         for (int i = testInt.length-1; i >=0 ; i--) {
             assertEquals(testInt[i], deque.pop());
-        }
+        }                
         assertEquals(0, deque.size());
         assertEquals(0, que.size());
         for (int i = 0; i < testInt.length; i++) {
             deque.push(testInt[i]);
-        }
+        }        
         assertEquals(100, deque.size());
         assertEquals(100, que.size());
         Collection col = new LinkedList<Integer>();
@@ -2037,11 +2037,11 @@ public class CollectionsTest extends junit.framework.TestCase {
         assertEquals(test101, que.remove());
         for (int i = testInt.length-1; i >=0 ; i--) {
             assertEquals(testInt[i], que.remove());
-        }
+        }          
         assertEquals(0, deque.size());
         assertEquals(0, que.size());
     }
-
+    
     /**
      * @tests java.util.Collections#emptyList()
      */
@@ -2068,32 +2068,32 @@ public class CollectionsTest extends junit.framework.TestCase {
         assertTrue(-1 != um.toString().indexOf("two=2"));
         assertTrue(-1 != um.toString().indexOf("one=1"));
     }
-
+    
     /**
      * @tests java.util.Collections#checkType(Object, Class)
      */
-    /* TODO(user): enable when method invocation supports arguments.
+    /* TODO(tball): enable when method invocation supports arguments.
     public void test_checkType_Ljava_lang_Object_Ljava_lang_Class() throws Exception {
         Method m = Collections.class.getDeclaredMethod("checkType", Object.class, Class.class);
    		m.setAccessible(true);
    		m.invoke(null, new Object(), Object.class);
-
+    		
    		try {
    			m.invoke(null, new Object(), int.class);
    			fail("should throw InvocationTargetException");
    		} catch (InvocationTargetException e) {
-   		    String errMsg = "Attempt to insert " + Object.class +
+   		    String errMsg = "Attempt to insert " + Object.class + 
    			    " element into collection with element type " + int.class;
    		    assertEquals(errMsg, e.getCause().getMessage());
    		}
     }
     */
-
+    
     public void test_binarySearch_asymmetry_with_comparator() throws Exception{
         List list = new ArrayList();
         String s1 = new String("a");
         String s2 = new String("aa");
-        String s3 = new String("aaa");
+        String s3 = new String("aaa");        
         list.add(s1);
         list.add(s2);
         list.add(s3);
@@ -2101,12 +2101,12 @@ public class CollectionsTest extends junit.framework.TestCase {
         Object o = Collections.binarySearch(list, 1, new StringComparator());
         assertSame(0,o);
     }
-
+    
     public void test_binarySearch_asymmetry() throws Exception{
         List list = new LinkedList();
         String s1 = new String("a");
         String s2 = new String("aa");
-        String s3 = new String("aaa");
+        String s3 = new String("aaa");        
         list.add(new MyComparable(s1));
         list.add(new MyComparable(s2));
         list.add(new MyComparable(s3));
@@ -2114,8 +2114,8 @@ public class CollectionsTest extends junit.framework.TestCase {
         Object o = Collections.binarySearch(list, 1);
         assertSame(0,o);
     }
-
-
+    
+    
     private class MyComparable implements Comparable {
 
         public String s;
@@ -2136,7 +2136,7 @@ public class CollectionsTest extends junit.framework.TestCase {
         }
 
     }
-
+    
     private class StringComparator implements Comparator {
 
         public int compare(Object object1, Object object2) {
@@ -2148,7 +2148,7 @@ public class CollectionsTest extends junit.framework.TestCase {
             else
             {
                 length = (Integer) object2;
-            }
+            }            
             return s.length() - length;
         }
     }

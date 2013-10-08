@@ -123,6 +123,9 @@ JUNIT_SOURCES = \
     org/junit/runners/model/Statement.java \
     org/junit/runners/model/TestClass.java
 
+# MOE:begin_strip
+JUNIT_SOURCES := $(JUNIT_SOURCES) org/junit/internal/MethodSorter.java
+# MOE:end_strip
 
 HAMCREST_SOURCES = \
     org/hamcrest/BaseDescription.java \
@@ -147,15 +150,11 @@ HAMCREST_SOURCES = \
     org/hamcrest/SelfDescribing.java \
     org/hamcrest/StringDescription.java
 
-OBJC_SOURCES = \
-    junit/JUnitRunner.m
-
 ORG_JUNIT_TEST_SRC = org/junit/Test.java
 ORG_JUNIT_TEST_OBJ = org/junit/OrgJunitTest.o
 
 OBJS = $(JUNIT_SOURCES:%.java=%.o) \
     $(HAMCREST_SOURCES:%.java=%.o) \
-    $(OBJC_SOURCES:%.m=%.o) \
     $(ORG_JUNIT_TEST_OBJ)
 
 IPHONE_SDK_DIR = $(shell bash ../scripts/sysroot_path.sh --iphoneos)
@@ -168,13 +167,9 @@ EXTRACTED_JAVA = $(JUNIT_SOURCES:%=$(JAVA_SRC_DIR)/%) \
 TRANSLATED_OBJC = $(JUNIT_SOURCES:%.java=$(BUILD_DIR)/%.m) \
     $(HAMCREST_SOURCES:%.java=$(BUILD_DIR)/%.m) \
     $(ORG_JUNIT_TEST_SRC:%.java=$(BUILD_DIR)/%.m)
-SOURCE_HEADERS = $(shell find $(OBJC_SOURCE_DIR) -name '*.h')
-SOURCE_HEADERS := $(SOURCE_HEADERS:$(OBJC_SOURCE_DIR)/%=%)
 GENERATED_HEADERS = $(JUNIT_SOURCES:%.java=%.h)
-RELATIVE_HEADERS = $(SOURCE_HEADERS) $(GENERATED_HEADERS) \
-    $(ORG_JUNIT_TEST_SRC:%.java=%.h)
-HEADERS = $(SOURCE_HEADERS:%=$(OBJC_SOURCE_DIR)/%) \
-    $(GENERATED_HEADERS:%=$(BUILD_DIR)/%)
+RELATIVE_HEADERS = $(GENERATED_HEADERS) $(ORG_JUNIT_TEST_SRC:%.java=%.h)
+HEADERS = $(GENERATED_HEADERS:%=$(BUILD_DIR)/%)
 ARCH_HEADERS = $(RELATIVE_HEADERS:%=$(ARCH_INCLUDE_DIR)/%)
 
 # Settings for building Mac OS X, iPhone, and iPhone simulator libraries.
@@ -182,6 +177,11 @@ EMULATION_MACOSX_LIB = $(BUILD_DIR)/macosx-libjunit.a
 EMULATION_IPHONE_LIB = $(BUILD_DIR)/iphone-libjunit.a
 EMULATION_IPHONEV7S_LIB = $(BUILD_DIR)/iphonev7s-libjunit.a
 EMULATION_SIMULATOR_LIB = $(BUILD_DIR)/simulator-libjunit.a
+ARCH_LIBS = $(J2OBJC_ARCHS)
+ARCH_LIBS := $(ARCH_LIBS:macosx=$(EMULATION_MACOSX_LIB))
+ARCH_LIBS := $(ARCH_LIBS:iphone=$(EMULATION_IPHONE_LIB))
+ARCH_LIBS := $(ARCH_LIBS:iphonev7s=$(EMULATION_IPHONEV7s_LIB))
+ARCH_LIBS := $(ARCH_LIBS:simulator=$(EMULATION_SIMULATOR_LIB))
 MACOSX_OBJS = $(OBJS:%=$(BUILD_DIR)/%)
 MACOSX_FLAGS = $(SDK_FLAGS)
 IPHONE_BUILD_DIR = $(BUILD_DIR)/iphone
@@ -201,8 +201,7 @@ lib: translate $(JUNIT_LIB)
 
 translate: pre_translate $(EXTRACTED_JAVA) $(TRANSLATED_OBJC)
 	@if [ `cat $(JAVA_SOURCE_LIST) | wc -l` -ge 1 ] ; then \
-	  $(J2OBJC) -sourcepath $(SOURCE_BASE)/java:$(JAVA_SRC_DIR) \
-	    `cat $(JAVA_SOURCE_LIST)` ; \
+	  $(J2OBJC) -sourcepath $(JAVA_SRC_DIR) `cat $(JAVA_SOURCE_LIST)`; \
 	fi
 
 pre_translate:
@@ -228,25 +227,24 @@ $(JUNIT_LIB): $(OBJS:%=$(TARGET_TEMP_DIR)/%)
 	@mkdir -p $(@D)
 	$(LIBTOOL) -static -o $@ $^
 else
-$(JUNIT_LIB): $(EMULATION_MACOSX_LIB) $(EMULATION_IPHONE_LIB) \
-    $(EMULATION_IPHONEV7S_LIB) $(EMULATION_SIMULATOR_LIB)
+$(JUNIT_LIB): $(ARCH_LIBS)
 	$(LIPO) -create $^ -output $@
 
 $(EMULATION_MACOSX_LIB): $(MACOSX_OBJS)
-	echo "building Mac OS X library"
-	$(LIBTOOL) -static -o $@ $^
+	@echo "building junit Mac OS X library"
+	@$(LIBTOOL) -static -o $@ $^
 
 $(EMULATION_IPHONE_LIB): $(IPHONE_OBJS)
-	echo "building iPhoneOS library"
-	$(LIBTOOL) -static -o $@ $^
+	@echo "building junit iPhoneOS library"
+	@$(LIBTOOL) -static -o $@ $^
 
 $(EMULATION_IPHONEV7S_LIB): $(IPHONEV7S_OBJS)
-	echo "building iPhonev7S library"
-	$(LIBTOOL) -static -o $@ $^
+	@echo "building junit iPhonev7S library"
+	@$(LIBTOOL) -static -o $@ $^
 
 $(EMULATION_SIMULATOR_LIB): $(SIMULATOR_OBJS)
-	echo "building iPhoneSimulator library"
-	$(LIBTOOL) -static -o $@ $^
+	@echo "building junit iPhoneSimulator library"
+	@$(LIBTOOL) -static -o $@ $^
 endif
 
 define compile_rules
@@ -254,11 +252,6 @@ $(1)/%.o: $(BUILD_DIR)/%.m | translate
 	@mkdir -p $$(@D)
 	$$(CLANG) -c $$? -o $$@ $(2) $$(OBJCFLAGS) -I$$(BUILD_DIR) \
 	  -I$(ARCH_INCLUDE_DIR)
-
-$(1)/%.o: $(OBJC_SOURCE_DIR)/%.m | translate
-	@mkdir -p $$(@D)
-	$$(CLANG) -c $$? -o $$@ $(2) $$(OBJCFLAGS) -I$$(BUILD_DIR) \
-	  -I$$(ARCH_INCLUDE_DIR)
 
 $(1)/$(ORG_JUNIT_TEST_OBJ): $(BUILD_DIR)/$(ORG_JUNIT_TEST_SRC:%.java=%.m) | translate
 	@mkdir -p $$(@D)
@@ -283,10 +276,6 @@ $(JUNIT_LIB_DIST): $(JUNIT_LIB)
 	install -m 0644 $< $@
 
 $(ARCH_INCLUDE_DIR)/%.h: $(BUILD_DIR)/%.h | translate
-	@mkdir -p $(@D)
-	install -m 0644 $< $@
-
-$(ARCH_INCLUDE_DIR)/%.h: $(OBJC_SOURCE_DIR)/%.h
 	@mkdir -p $(@D)
 	install -m 0644 $< $@
 

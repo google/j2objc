@@ -28,7 +28,7 @@
 
 - (id)initWithComponentType:(IOSClass *)type {
   if ((self = [super init])) {
-    componentType_ = RETAIN(type);
+    componentType_ = RETAIN_(type);
   }
   return self;
 }
@@ -60,6 +60,10 @@
 
 - (NSString *)getSimpleName {
   return [[[self getComponentType] getName] stringByAppendingString:@"Array"];
+}
+
+- (NSString *)objcName {
+  return [self getSimpleName];
 }
 
 - (id)newInstance {

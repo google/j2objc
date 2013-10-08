@@ -301,7 +301,7 @@ public class TreeMapTest extends junit.framework.TestCase {
         // Regression for Harmony-1066
         assertTrue(head instanceof Serializable);
 
-        /* TODO(user): Uncomment when Collator is added to jre_emul.
+        /* TODO(kstanger): Uncomment when Collator is added to jre_emul.
         // Regression for ill-behaved collator
         Collator c = new Collator() {
             @Override
@@ -344,7 +344,7 @@ public class TreeMapTest extends junit.framework.TestCase {
             fail("java.util.NoSuchElementException should be thrown");
         } catch(java.util.NoSuchElementException e) {
         }
-
+        
         try{
             sub.lastKey();
             fail("java.util.NoSuchElementException should be thrown");
@@ -364,7 +364,7 @@ public class TreeMapTest extends junit.framework.TestCase {
             fail("java.util.NoSuchElementException should be thrown");
         } catch(java.util.NoSuchElementException e) {
         }
-
+        
         try{
             sub.lastKey();
             fail("java.util.NoSuchElementException should be thrown");
@@ -496,8 +496,8 @@ public class TreeMapTest extends junit.framework.TestCase {
         SortedMap<String, String> sub = map.subMap("1", "3"); //$NON-NLS-1$ //$NON-NLS-2$
         assertEquals("2", sub.lastKey()); //$NON-NLS-1$
     }
-
-
+    
+    
     /**
      * @tests java.util.TreeMap#subMap(java.lang.Object, java.lang.Object)
      */
@@ -570,7 +570,7 @@ public class TreeMapTest extends junit.framework.TestCase {
             fail("java.util.NoSuchElementException should be thrown");
         } catch(java.util.NoSuchElementException e) {
         }
-
+        
         try{
             sub.lastKey();
             fail("java.util.NoSuchElementException should be thrown");
@@ -590,7 +590,7 @@ public class TreeMapTest extends junit.framework.TestCase {
             fail("java.util.NoSuchElementException should be thrown");
         } catch(java.util.NoSuchElementException e) {
         }
-
+        
         try{
             sub.lastKey();
             fail("java.util.NoSuchElementException should be thrown");

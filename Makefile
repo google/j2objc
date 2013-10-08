@@ -71,6 +71,18 @@ cycle_finder_dist: annotations_dist java_deps_dist translator_dist
 
 dist: translator_dist jre_emul_dist junit_dist cycle_finder_dist install-man-pages
 
+# MOE:begin_strip
+protobuf_runtime_dist: jre_emul_dist
+	@cd protobuf/runtime && $(MAKE) dist
+
+protobuf_compiler_dist:
+	@cd protobuf/compiler && $(MAKE) dist
+
+jsr305_dist: translator_dist jre_emul_dist java_deps_dist
+	@cd jsr305 && $(MAKE) dist
+
+dist: jsr305_dist protobuf_compiler_dist protobuf_runtime_dist
+# MOE:end_strip
 
 clean:
 	@rm -rf $(DIST_DIR)
@@ -79,7 +91,15 @@ clean:
 	@cd translator && $(MAKE) clean
 	@cd jre_emul && $(MAKE) clean
 	@cd junit && $(MAKE) clean
+# MOE:begin_strip
+	@cd jsr305 && $(MAKE) clean
+# MOE:end_strip
 	@cd cycle_finder && $(MAKE) clean
+# MOE:begin_strip
+	@cd protobuf/runtime && $(MAKE) clean
+	@cd protobuf/compiler && $(MAKE) clean
+	@cd protobuf/tests && $(MAKE) clean
+# MOE:end_strip
 
 test_translator: annotations_dist java_deps_dist
 	@cd translator && $(MAKE) test
@@ -95,3 +115,9 @@ test_cycle_finder:
 
 test: test_translator test_jre_emul test_jre_cycles test_cycle_finder
 
+# MOE:begin_strip
+test_protobuf: protobuf_compiler_dist protobuf_runtime_dist
+	@cd protobuf/tests && $(MAKE) test
+
+test: test_protobuf
+# MOE:end_strip

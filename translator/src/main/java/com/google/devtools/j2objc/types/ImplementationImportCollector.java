@@ -388,6 +388,8 @@ public class ImplementationImportCollector extends ErrorReportingASTVisitor {
         Object value = memberValuePair.getValue();
         if (value instanceof IVariableBinding) {
           addImports(((IVariableBinding) value).getType());
+        } else if (value instanceof ITypeBinding) {
+          addImports((ITypeBinding) value);
         }
       }
     }

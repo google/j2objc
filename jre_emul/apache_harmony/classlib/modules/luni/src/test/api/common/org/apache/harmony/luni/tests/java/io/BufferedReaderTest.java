@@ -135,7 +135,7 @@ public class BufferedReaderTest extends TestCase {
 		in.reset();
 		assertTrue("Wrong chars 2", in.read() == (char) 6
 				&& in.read() == (char) 7);
-
+		
         BufferedReader br = new BufferedReader(new StringReader("01234"), 2);
         br.mark(3);
         char[] carray = new char[3];
@@ -205,7 +205,7 @@ public class BufferedReaderTest extends TestCase {
 		} catch (IOException e) {
 			fail("Exception during read test 2:" + e);
 		}
-
+		
 		// regression test for HARMONY-841
 		assertTrue(new BufferedReader(new CharArrayReader(new char[5], 1, 0), 2).read() == -1);
 	}
@@ -217,7 +217,7 @@ public class BufferedReaderTest extends TestCase {
 		char[] ca = new char[2];
 		BufferedReader toRet = new BufferedReader(new InputStreamReader(
 				new ByteArrayInputStream(new byte[0])));
-
+		
 		/* Null buffer should throw NPE even when len == 0 */
 		try {
 			toRet.read(null, 1, 0);
@@ -225,13 +225,13 @@ public class BufferedReaderTest extends TestCase {
 		} catch (NullPointerException e) {
 			//expected
 		}
-
+		
 		try {
 			toRet.close();
 		} catch (IOException e) {
 			fail("unexpected 1: " + e);
 		}
-
+		
 		try {
 			toRet.read(null, 1, 0);
 			fail("null buffer reading zero bytes on closed stream should throw IOException");
@@ -321,16 +321,16 @@ public class BufferedReaderTest extends TestCase {
 		} catch (IOException e) {
 			fail("Unexpected: " + e);
 		}
-
+        
         //regression for HARMONY-831
-	/* TODO(user): enable with pipes are supported
+	/* TODO(tball): enable with pipes are supported
         try{
             new BufferedReader(new PipedReader(), 9).read(new char[] {}, 7, 0);
             fail("should throw IndexOutOfBoundsException");
         }catch(IndexOutOfBoundsException e){
         }
         */
-
+        
         // Regression for HARMONY-54
         char[] ch = {};
         BufferedReader reader = new BufferedReader(new CharArrayReader(ch));
@@ -369,14 +369,14 @@ public class BufferedReaderTest extends TestCase {
 		br = new BufferedReader(new Support_StringReader(testString));
 		char[] nullCharArray = null;
 		char[] charArray = testString.toCharArray();
-
+		
 		try {
 			br.read(nullCharArray, -1, -1);
 			fail("should throw IndexOutOfBoundsException");
 		} catch (IndexOutOfBoundsException e) {
 			// expected
 		}
-
+		
 		try {
 			br.read(nullCharArray, -1, 0);
 			fail("should throw IndexOutOfBoundsException");
@@ -397,14 +397,14 @@ public class BufferedReaderTest extends TestCase {
 		} catch (NullPointerException e) {
 			// expected
 		}
-
+		
 		try {
 			br.read(nullCharArray, 0, 1);
 			fail("should throw NullPointerException");
 		} catch (NullPointerException e) {
 			// expected
 		}
-
+		
 		try {
 			br.read(charArray, -1, -1);
 			fail("should throw IndexOutOfBoundsException");
@@ -422,14 +422,14 @@ public class BufferedReaderTest extends TestCase {
 		br.read(charArray, 0, 0);
         br.read(charArray, 0, charArray.length);
         br.read(charArray, charArray.length, 0);
-
+		
 		try {
 			br.read(charArray, charArray.length + 1, 0);
 			fail("should throw IndexOutOfBoundsException");
 		} catch (IndexOutOfBoundsException e) {
 			//expected
 		}
-
+		
 		try {
 			br.read(charArray, charArray.length + 1, 1);
 			fail("should throw IndexOutOfBoundsException");

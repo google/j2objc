@@ -146,7 +146,7 @@ public class AnonymousClassConverter extends ErrorReportingASTVisitor {
     // Add inner fields and a default constructor.
     List<IVariableBinding> innerVars = OuterReferenceResolver.getCapturedVars(typeBinding);
     List<IVariableBinding> innerFields = OuterReferenceResolver.getInnerFields(typeBinding);
-    createInnerFieldDeclarations(typeDecl, innerFields);
+    ASTFactory.createInnerFieldDeclarations(typeDecl, innerFields);
     if (!innerFields.isEmpty() || !parentArguments.isEmpty() || outerExpression != null) {
       GeneratedMethodBinding defaultConstructor =
           addDefaultConstructor(typeDecl, innerFields, parentArguments, outerExpression);
@@ -194,14 +194,6 @@ public class AnonymousClassConverter extends ErrorReportingASTVisitor {
     super.endVisit(node);
   }
 
-  private void createInnerFieldDeclarations(
-      TypeDeclaration node, List<IVariableBinding> innerFields) {
-    for (IVariableBinding field : innerFields) {
-      ASTUtil.getBodyDeclarations(node).add(
-          ASTFactory.newFieldDeclaration(node.getAST(), field, null));
-    }
-  }
-
   private GeneratedMethodBinding addDefaultConstructor(
       TypeDeclaration node, List<IVariableBinding> innerFields,
       List<Expression> invocationArguments, Expression outerExpression) {
@@ -234,8 +226,7 @@ public class AnonymousClassConverter extends ErrorReportingASTVisitor {
       ASTUtil.getParameters(constructor).add(0,
           ASTFactory.newSingleVariableDeclaration(ast, outerExpressionParam));
       binding.addParameter(0, outerExpressionType);
-      ASTUtil.getArguments(superCall).add(ASTFactory.newSimpleName(ast, outerExpressionParam));
-      superCallBinding.addParameter(0, outerExpressionType);
+      superCall.setExpression(ASTFactory.newSimpleName(ast, outerExpressionParam));
     }
 
     // The invocation arguments must become parameters of the generated

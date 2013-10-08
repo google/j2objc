@@ -144,7 +144,7 @@ public class ClassTest extends junit.framework.TestCase {
     /**
      * @tests java.lang.Class#getClasses()
      */
-    /* TODO(user): enable if Class.getClasses is mapped.
+    /* TODO(tball): enable if Class.getClasses is mapped.
     public void test_getClasses() {
         assertEquals("Incorrect class array returned",
                      2, ClassTest.class.getClasses().length);
@@ -154,7 +154,7 @@ public class ClassTest extends junit.framework.TestCase {
     /**
      * @tests java.lang.Class#getClasses()
      */
-    /* TODO(user): enable if Class.getClasses is mapped.
+    /* TODO(tball): enable if Class.getClasses is mapped.
     public void test_getClasses_subtest0() {
         final Permission privCheckPermission = new BasicPermission("Privilege check") {
             private static final long serialVersionUID = 1L;
@@ -369,7 +369,7 @@ public class ClassTest extends junit.framework.TestCase {
     /**
      * @tests java.lang.Class#getDeclaredClasses()
      */
-    /* TODO(user): enable if Class.getDeclaredClasses is mapped.
+    /* TODO(tball): enable if Class.getDeclaredClasses is mapped.
     public void test_getDeclaredClasses() {
         assertEquals("Incorrect class array returned", 2, ClassTest.class.getClasses().length);
     }
@@ -426,15 +426,15 @@ public class ClassTest extends junit.framework.TestCase {
      */
     public void test_getDeclaredMethods() throws Exception {
         Method[] m = TestClass.class.getDeclaredMethods();
-        assertEquals("Returned incorrect number of methods", 5, m.length);
+        assertEquals("Returned incorrect number of methods", 6, m.length);
         m = SubTestClass.class.getDeclaredMethods();
-        assertEquals("Returned incorrect number of methods", 0, m.length);
+        assertEquals("Returned incorrect number of methods", 1, m.length);
     }
 
     /**
      * @tests java.lang.Class#getDeclaringClass()
      */
-    /* TODO(user): enable if Class.getDeclaringClass is mapped.
+    /* TODO(tball): enable if Class.getDeclaringClass is mapped.
     public void test_getDeclaringClass() {
         assertEquals(ClassTest.class, TestClass.class.getDeclaringClass());
     }

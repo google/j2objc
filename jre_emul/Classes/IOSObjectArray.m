@@ -42,7 +42,7 @@
 - (id)initWithLength:(NSUInteger)length type:(IOSClass *)type {
   if ((self = [super initWithLength:length])) {
     buffer_ = (id __strong *) calloc(length, sizeof(id));
-    elementType_ = RETAIN(type);
+    elementType_ = RETAIN_(type);
   }
   return self;
 }
@@ -58,7 +58,7 @@
   if ((self = [self initWithLength:count type:type])) {
     if (objects != nil) {
       for (NSUInteger i = 0; i < count; i++) {
-        buffer_[i] = RETAIN(objects[i]);
+        buffer_[i] = RETAIN_(objects[i]);
       }
     }
   }
@@ -148,7 +148,7 @@ id IOSObjectArray_Set(
 #if ! __has_feature(objc_arc)
   [array->buffer_[index] autorelease];
 #endif
-  return array->buffer_[index] = RETAIN(value);
+  return array->buffer_[index] = RETAIN_(value);
 }
 
 - (id)replaceObjectAtIndex:(NSUInteger)index withObject:(id)value {
@@ -157,7 +157,7 @@ id IOSObjectArray_Set(
 #if ! __has_feature(objc_arc)
   [buffer_[index] autorelease];
 #endif
-  return buffer_[index] = RETAIN(value);
+  return buffer_[index] = RETAIN_(value);
 }
 
 - (void)getObjects:(NSObject **)buffer length:(NSUInteger)length {
@@ -308,6 +308,19 @@ void CopyWithMemmove(id __strong *buffer, NSUInteger src, NSUInteger dest, NSUIn
 #if ! __has_feature(objc_arc)
   [super dealloc];
 #endif
+}
+
+- (NSUInteger)countByEnumeratingWithState:(NSFastEnumerationState *)state
+                                  objects:(__unsafe_unretained id *)stackbuf
+                                    count:(NSUInteger)len {
+  if (state->state == 0) {
+    state->mutationsPtr = (unsigned long *) (ARCBRIDGE void *) self;
+    state->itemsPtr = (__unsafe_unretained id *) (void *) buffer_;
+    state->state = 1;
+    return size_;
+  } else {
+    return 0;
+  }
 }
 
 - (NSArray *)memDebugStrongReferences {

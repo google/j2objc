@@ -71,7 +71,7 @@ class NSLogHandler extends Handler {
        [[self getFormatter] formatWithJavaUtilLoggingLogRecord:record]);
     [[record getThrown] printStackTrace];
 
-    // TODO(user): replace NSLog above with stderr below, once desired format
+    // TODO(tball): replace NSLog above with stderr below, once desired format
     // is decided.
 //    NSString *msg =
 //        [[self getFormatter] formatWithJavaUtilLoggingLogRecord:record];

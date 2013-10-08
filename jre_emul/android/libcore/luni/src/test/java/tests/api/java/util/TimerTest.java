@@ -959,7 +959,7 @@ public class TimerTest extends TestCase {
      * let those exceptions bubble up, where they will both notify the thread's
      * uncaught exception handler and terminate the timer's thread.
      *
-     TODO(user): enable when Thread.setUncaughtExceptionHandler is supported.
+     TODO(tball): enable when Thread.setUncaughtExceptionHandler is supported.
     public void testThrowingTaskKillsTimerThread() throws Exception {
         final AtomicReference<Thread> threadRef = new AtomicReference<Thread>();
         new Timer().schedule(new TimerTask() {

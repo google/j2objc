@@ -33,7 +33,6 @@ import org.eclipse.jdt.core.dom.BodyDeclaration;
 import org.eclipse.jdt.core.dom.CompilationUnit;
 import org.eclipse.jdt.core.dom.ConstructorInvocation;
 import org.eclipse.jdt.core.dom.EnumDeclaration;
-import org.eclipse.jdt.core.dom.Expression;
 import org.eclipse.jdt.core.dom.IExtendedModifier;
 import org.eclipse.jdt.core.dom.IMethodBinding;
 import org.eclipse.jdt.core.dom.ITypeBinding;
@@ -41,7 +40,6 @@ import org.eclipse.jdt.core.dom.IVariableBinding;
 import org.eclipse.jdt.core.dom.MethodDeclaration;
 import org.eclipse.jdt.core.dom.Modifier;
 import org.eclipse.jdt.core.dom.Name;
-import org.eclipse.jdt.core.dom.SimpleName;
 import org.eclipse.jdt.core.dom.SingleVariableDeclaration;
 import org.eclipse.jdt.core.dom.Statement;
 import org.eclipse.jdt.core.dom.SuperConstructorInvocation;
@@ -155,6 +153,10 @@ public class InnerClassExtractor extends ErrorReportingASTVisitor {
     if (outerFieldBinding != null) {
       members.add(0, ASTFactory.newFieldDeclaration(ast, outerFieldBinding, null));
     }
+    if (!clazz.isAnonymous()) {  // Anonymous class fields added by AnonymousClassConverter.
+      List<IVariableBinding> innerFields = OuterReferenceResolver.getInnerFields(clazz);
+      ASTFactory.createInnerFieldDeclarations(node, innerFields);
+    }
 
     // Insert new parameters for each constructor in class.
     boolean needsConstructor = true;
@@ -190,19 +192,6 @@ public class InnerClassExtractor extends ErrorReportingASTVisitor {
       }
     }
     return null;
-  }
-
-  private boolean hasOuterArg(SuperConstructorInvocation superCall) {
-    List<Expression> superCallArgs = ASTUtil.getArguments(superCall);
-    if (superCallArgs.size() == 0) {
-      return false;
-    }
-    Expression firstArg = superCallArgs.get(0);
-    if (!(firstArg instanceof SimpleName)) {
-      return false;
-    }
-    SimpleName name = (SimpleName) firstArg;
-    return name.getIdentifier().startsWith("capture$");
   }
 
   protected void addOuterParameter(
@@ -242,7 +231,7 @@ public class InnerClassExtractor extends ErrorReportingASTVisitor {
     } else {
       ITypeBinding superType = binding.getDeclaringClass().getSuperclass().getTypeDeclaration();
       if (superType.getDeclaringClass() != null && !Modifier.isStatic(superType.getModifiers())
-          && (superCall == null || !hasOuterArg(superCall))) {
+          && (superCall == null || superCall.getExpression() == null)) {
         IMethodBinding superCallDecl = superCall != null ?
             Types.getMethodBinding(superCall).getMethodDeclaration() :
             getDefaultConstructorDeclaration(superType);

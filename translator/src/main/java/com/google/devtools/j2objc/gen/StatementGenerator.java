@@ -22,11 +22,13 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.devtools.j2objc.J2ObjC;
 import com.google.devtools.j2objc.Options;
+import com.google.devtools.j2objc.translate.ASTFactory;
 import com.google.devtools.j2objc.translate.DestructorGenerator;
 import com.google.devtools.j2objc.types.GeneratedMethodBinding;
 import com.google.devtools.j2objc.types.IOSMethod;
 import com.google.devtools.j2objc.types.IOSMethodBinding;
 import com.google.devtools.j2objc.types.IOSTypeBinding;
+import com.google.devtools.j2objc.types.NodeCopier;
 import com.google.devtools.j2objc.types.Types;
 import com.google.devtools.j2objc.util.ASTNodeException;
 import com.google.devtools.j2objc.util.ASTUtil;
@@ -334,12 +336,36 @@ public class StatementGenerator extends ErrorReportingASTVisitor {
 
   @Override
   public boolean visit(Assignment node) {
+    if (Types.hasDeferredFieldSetter(node)) {
+      printDeferredFieldSetter(node);
+      return false;
+    }
     node.getLeftHandSide().accept(this);
     buffer.append(' ');
     buffer.append(getOperatorStr(node.getOperator()));
     buffer.append(' ');
     node.getRightHandSide().accept(this);
     return false;
+  }
+
+  private void printDeferredFieldSetter(Assignment node) {
+    Expression lhs = node.getLeftHandSide();
+    IVariableBinding var = Types.getVariableBinding(lhs);
+    ITypeBinding declaringType = var.getDeclaringClass().getTypeDeclaration();
+    String setterName = String.format("%s_set_%s", NameTable.getFullName(declaringType),
+        NameTable.javaFieldToObjC(NameTable.getName(var)));
+    buffer.append(setterName);
+    buffer.append('(');
+    if (lhs instanceof QualifiedName) {
+      ((QualifiedName) lhs).getQualifier().accept(this);
+    } else if (lhs instanceof FieldAccess) {
+      ((FieldAccess) lhs).getExpression().accept(this);
+    } else {
+      buffer.append("self");
+    }
+    buffer.append(", ");
+    node.getRightHandSide().accept(this);
+    buffer.append(')');
   }
 
   private static String getOperatorStr(Assignment.Operator op) {
@@ -985,7 +1011,14 @@ public class StatementGenerator extends ErrorReportingASTVisitor {
       } else {
         buffer.append(", ");
       }
+      boolean hasNilCheck = Types.hasNilCheck(arg);
+      if (hasNilCheck) {
+        buffer.append("nil_chk(");
+      }
       arg.accept(this);
+      if (hasNilCheck) {
+        buffer.append(')');
+      }
     }
     buffer.append(')');
   }
@@ -998,7 +1031,20 @@ public class StatementGenerator extends ErrorReportingASTVisitor {
       buffer.append(NameTable.getFullName(binding.getDeclaringClass()));
     } else if (receiver != null) {
       needsCastNodes.put(receiver, true);
+      boolean castPrinted = false;
+      boolean hasNilCheck = Types.hasNilCheck(receiver);
+      if (hasNilCheck) {
+        castPrinted = maybePrintCastFromId(receiver);
+        needsCastNodes.remove(receiver);
+        buffer.append("nil_chk(");
+      }
       receiver.accept(this);
+      if (hasNilCheck) {
+        buffer.append(')');
+        if (castPrinted) {
+          buffer.append(')');
+        }
+      }
     } else {
       buffer.append("self");
     }

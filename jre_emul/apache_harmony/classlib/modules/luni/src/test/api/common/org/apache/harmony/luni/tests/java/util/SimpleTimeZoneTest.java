@@ -170,7 +170,7 @@ public class SimpleTimeZoneTest extends junit.framework.TestCase {
 	/**
 	 * @tests java.util.SimpleTimeZone#getOffset(int, int, int, int, int, int)
 	 *
-	TODO(user): getOffset broken in second test
+	TODO(tball): getOffset broken in second test
 	public void test_getOffsetIIIIII() {
 		// Test for method int java.util.SimpleTimeZone.getOffset(int, int, int,
 		// int, int, int)
@@ -183,11 +183,11 @@ public class SimpleTimeZoneTest extends junit.framework.TestCase {
         assertEquals("Incorrect offset returned", -(5 * 60 * 60 * 1000), st1
                 .getOffset(GregorianCalendar.AD, 1998, Calendar.JUNE, 11,
                         Calendar.THURSDAY, 0));
-
+        
         // Regression for HARMONY-5459
-        st1 = (TimeZone)TimeZone.getDefault();
-        int fourHours = 4*60*60*1000;
-        st1.setRawOffset(fourHours);
+        st1 = (TimeZone)TimeZone.getDefault(); 
+        int fourHours = 4*60*60*1000; 
+        st1.setRawOffset(fourHours); 
         assertEquals(fourHours, st1.getOffset(1, 2099, 01, 1, 5, 0));
 
 	}
@@ -227,7 +227,7 @@ public class SimpleTimeZoneTest extends junit.framework.TestCase {
 	/**
 	 * @tests java.util.SimpleTimeZone#inDaylightTime(java.util.Date)
 	 *
-	TODO(user): enable when in daylight time tables are added.
+	TODO(tball): enable when in daylight time tables are added.
 	public void test_inDaylightTimeLjava_util_Date() {
 		// Test for method boolean
 		// java.util.SimpleTimeZone.inDaylightTime(java.util.Date)

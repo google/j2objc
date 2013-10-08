@@ -38,7 +38,7 @@ import java.util.List;
  */
 @SuppressWarnings("unchecked")  // JDT lists are raw, but still safely typed.
 public class InitializationNormalizerTest extends GenerationTest {
-  // TODO(user): update bug id in comments to public issue numbers when
+  // TODO(tball): update bug id in comments to public issue numbers when
   // issue tracking is sync'd.
 
   InitializationNormalizer instance;

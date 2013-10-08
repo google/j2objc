@@ -56,16 +56,17 @@ public class CycleFinderTest extends TestCase {
 
   public void testRecursiveWildcard() throws Exception {
     addSourceFile("A.java", "class A<T> { A<? extends T> a; }");
+    addSourceFile("B.java", "class B<T> { B<? extends B<T>> b; }");
     findCycles();
     // This test passes if it doesn't hang or crash due to infinite recursion.
   }
 
-  public void testSuperWildcard() throws Exception {
-    addSourceFile("A.java", "class A { B<? super C> b; }");
+  public void testExtendsWildcard() throws Exception {
+    addSourceFile("A.java", "class A { B<? extends C> b; }");
     addSourceFile("B.java", "class B<T> { T t; }");
     addSourceFile("C.java", "class C { A a; }");
     findCycles();
-    assertCycle("LA;", "LB<LB;{0}-LC;>;", "LC;");
+    assertCycle("LA;", "LB<LB;{0}+LC;>;", "LB;{0}+LC;");
   }
 
   public void testWhitelistedField() throws Exception {

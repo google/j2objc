@@ -16,6 +16,7 @@
 
 package com.google.devtools.j2objc.gen;
 
+import com.google.common.base.Strings;
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.ListMultimap;
 import com.google.common.collect.Lists;
@@ -136,6 +137,8 @@ public class ObjectiveCImplementationGenerator extends ObjectiveCSourceFileGener
           if (!getStaticFieldsNeedingAccessors(
               Arrays.asList(node.getFields()), /* isInterface */ true).isEmpty()) {
             types.add(node);
+          } else if (!Options.stripReflection() && hasMetadata(Types.getTypeBinding(node))) {
+            types.add(node);
           }
         } else {
           types.add(node); // always print concrete types
@@ -233,7 +236,7 @@ public class ObjectiveCImplementationGenerator extends ObjectiveCSourceFileGener
     List<MethodDeclaration> methods = Lists.newArrayList(node.getMethods());
     fieldHiders = HiddenFieldDetector.getFieldNameConflicts(node);
     if (node.isInterface()) {
-      printStaticInterface(typeName, fields, methods);
+      printStaticInterface(node, typeName, fields, methods);
     } else {
       printf("@implementation %s\n\n", typeName);
       printStaticReferencesMethod(fields);
@@ -244,6 +247,7 @@ public class ObjectiveCImplementationGenerator extends ObjectiveCSourceFileGener
         printTypeAnnotationsMethod(node);
         printMethodAnnotationMethods(Lists.newArrayList(node.getMethods()));
         printFieldAnnotationMethods(Lists.newArrayList(node.getFields()));
+        printMetadata(node);
       }
 
       println("@end");
@@ -270,7 +274,10 @@ public class ObjectiveCImplementationGenerator extends ObjectiveCSourceFileGener
     println("- (IOSClass *)annotationType {");
     printf("  return [IOSClass classWithProtocol:@protocol(%s)];\n", typeName);
     println("}\n");
-    printTypeAnnotationsMethod(node);
+    if (!Options.stripReflection()) {
+      printTypeAnnotationsMethod(node);
+      printMetadata(node);
+    }
     println("@end\n");
   }
 
@@ -284,7 +291,7 @@ public class ObjectiveCImplementationGenerator extends ObjectiveCSourceFileGener
       ITypeBinding type = member.getReturnType();
       boolean needsRetain = !type.isPrimitive();
       if (needsRetain) {
-        print("RETAIN(");
+        print("RETAIN_(");
       }
       printf("%s_", name);
       if (needsRetain) {
@@ -497,12 +504,16 @@ public class ObjectiveCImplementationGenerator extends ObjectiveCSourceFileGener
     }
   }
 
-  private void printStaticInterface(
+  private void printStaticInterface(AbstractTypeDeclaration node,
       String typeName, List<FieldDeclaration> fields, List<MethodDeclaration> methods) {
     List<IVariableBinding> staticFields =
         getStaticFieldsNeedingAccessors(fields, /* isInterface */ true);
     if (staticFields.isEmpty()) {
-      return;
+      if (hasMetadata(Types.getTypeBinding(node))) {
+        printf("\n@interface %s : NSObject\n@end\n", typeName);
+      } else {
+        return;
+      }
     }
     printf("\n@implementation %s\n\n", typeName);
     printStaticVars(fields, /* isInterface */ true);
@@ -511,6 +522,9 @@ public class ObjectiveCImplementationGenerator extends ObjectiveCSourceFileGener
       if (method.getBody() != null) {
         printNormalMethod(method);
       }
+    }
+    if (!Options.stripReflection()) {
+      printMetadata(node);
     }
     println("@end");
   }
@@ -623,7 +637,10 @@ public class ObjectiveCImplementationGenerator extends ObjectiveCSourceFileGener
     printf("  return nil;\n");
     println("}\n");
 
-    printTypeAnnotationsMethod(node);
+    if (!Options.stripReflection()) {
+      printTypeAnnotationsMethod(node);
+      printMetadata(node);
+    }
     println("@end");
   }
 
@@ -679,13 +696,13 @@ public class ObjectiveCImplementationGenerator extends ObjectiveCSourceFileGener
       if (i > 0) {
         sb.append(", ");
       }
-      sb.append('[');
+      sb.append("[[");
       sb.append(NameTable.getFullName(exceptionTypes[i]));
-      sb.append(" getClass]");
+      sb.append(" class] getClass]");
     }
     sb.append(" } count:");
     sb.append(exceptionTypes.length);
-    sb.append(" type:[IOSClass getClass]];\n}\n\n");
+    sb.append(" type:[[IOSClass class] getClass]];\n}\n\n");
     return sb.toString();
   }
 
@@ -1099,7 +1116,7 @@ public class ObjectiveCImplementationGenerator extends ObjectiveCSourceFileGener
       printf("[%s %s]", NameTable.getFullName(declaringClass), var.getName());
     } else if (value instanceof ITypeBinding) {
       ITypeBinding type = (ITypeBinding) value;
-      printf("[%s getClass]", NameTable.getFullName(type));
+      printf("[[%s class] getClass]", NameTable.getFullName(type));
     } else if (value instanceof String) {
       StringLiteral node = ast.newStringLiteral();
       node.setLiteralValue((String) value);
@@ -1115,9 +1132,139 @@ public class ObjectiveCImplementationGenerator extends ObjectiveCSourceFileGener
         }
         printAnnotationValue(ast, array[i]);
       }
-      printf(" } count:%d type:[NSObject getClass]]", array.length);
+      printf(" } count:%d type:[[NSObject class] getClass]]", array.length);
     } else {
       assert false : "unknown annotation value type";
     }
+  }
+
+  private String getEnclosingName(ITypeBinding type) {
+    type = type.getDeclaringClass();
+    if (type == null) {
+      return "NULL";
+    }
+    StringBuilder sb = new StringBuilder("\"");
+    List<String> types = Lists.newArrayList();
+    while (type != null) {
+      types.add(type.getName());
+      type = type.getDeclaringClass();
+    }
+    for (int i = types.size() - 1; i >= 0; i--) {
+      sb.append(types.get(i));
+      if (i > 0) {
+        sb.append("$");
+      }
+    }
+    sb.append("\"");
+    return sb.toString();
+  }
+
+  private void printMetadata(AbstractTypeDeclaration node) {
+    ITypeBinding type = Types.getTypeBinding(node);
+    List<String> methodMetadata = Lists.newArrayList();
+    for (MethodDeclaration decl : ASTUtil.getMethodDeclarations(node)) {
+      String metadata = getMethodMetadata(Types.getMethodBinding(decl));
+      if (metadata != null) {
+        methodMetadata.add(metadata);
+      }
+    }
+    if (!hasMetadata(type) && methodMetadata.size() == 0) {
+      return;
+    }
+    String fullName = NameTable.getFullName(type);
+    println("+ (J2ObjcClassInfo *)__metadata {");
+    if (methodMetadata.size() > 0) {
+      println("  static J2ObjcMethodInfo methods[] = {");
+      for (String metadata : methodMetadata) {
+        print(metadata);
+      }
+      println("  };");
+    }
+    printf("  static J2ObjcClassInfo _%s = { ", fullName);
+    printf("\"%s\", ", type.getName());
+    String pkgName = type.getPackage().getName();
+    if (Strings.isNullOrEmpty(pkgName)) {
+      printf("NULL, ");
+    } else {
+      printf("\"%s\", ", pkgName);
+    }
+    printf("%s, ", getEnclosingName(type));
+    printf("0x%s, ", Integer.toHexString(getModifiers(type)));
+    printf("%s, ", Integer.toString(methodMetadata.size()));
+    print(methodMetadata.size() > 0 ? "methods" : "NULL");
+    println("};");
+    printf("  return &_%s;\n}\n\n", fullName);
+  }
+
+  private String getMethodMetadata(IMethodBinding method) {
+    if (method.isConstructor() || method.isSynthetic()) {
+      return null;
+    }
+    boolean needsMetadata = false;
+    ITypeBinding returnType = method.getReturnType();
+    String returnTypeStr = "NULL";
+    if (!returnType.isPrimitive()) {
+      returnTypeStr = "\"" + NameTable.getFullName(method.getReturnType()) + "\"";
+      needsMetadata = true;
+    }
+    String methodName = "NULL";
+    ITypeBinding[] paramTypes = method.getParameterTypes();
+    // Most of the time the method name can be parsed from the ObjC selector
+    // but not if the first parameter contains the substring "With".
+    if (paramTypes.length > 0 && NameTable.parameterKeyword(paramTypes[0]).contains("With")) {
+      methodName = "\"" + method.getName() + "\"";
+      needsMetadata = true;
+    }
+    if (!needsMetadata) {
+      return null;
+    }
+    return String.format("    { \"%s\", %s, %s },\n",
+        methodSelector(method), methodName, returnTypeStr);
+  }
+
+  private String methodSelector(IMethodBinding method) {
+    StringBuilder sb = new StringBuilder(NameTable.getName(method));
+    boolean first = true;
+    for (ITypeBinding paramType : method.getParameterTypes()) {
+      String keyword = NameTable.parameterKeyword(paramType);
+      if (first) {
+        keyword = NameTable.capitalize(keyword);
+        first = false;
+      }
+      sb.append(keyword).append(":");
+    }
+    return sb.toString();
+  }
+
+  /**
+   * Does this type need a metadata method?
+   */
+  private boolean hasMetadata(ITypeBinding type) {
+    return type.getPackage() != null ||
+        !type.getQualifiedName().equals(NameTable.getFullName(type));
+  }
+
+  /**
+   * Returns the modifiers for a specified type, including internal ones.
+   * All class modifiers are defined in the JVM specification, table 4.1.
+   */
+  private static int getModifiers(ITypeBinding type) {
+    int modifiers = type.getModifiers();
+    if (type.isInterface()) {
+      modifiers |= 0x200;
+    }
+    if (type.isSynthetic()) {
+      modifiers |= 0x1000;
+    }
+    if (type.isAnnotation()) {
+      modifiers |= 0x2000;
+    }
+    if (type.isEnum()) {
+      modifiers |= 0x4000;
+    }
+    if (type.isAnonymous()) {
+      modifiers |= 0x8000;
+    }
+    return modifiers;
   }
 }

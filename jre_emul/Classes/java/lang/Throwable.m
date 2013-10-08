@@ -50,13 +50,13 @@
                            reason:message
                          userInfo:nil])) {
     JreMemDebugAdd(self);
-    cause = RETAIN(causeArg);
-    detailMessage = RETAIN(message);
+    cause = RETAIN_(causeArg);
+    detailMessage = RETAIN_(message);
 
     void *callStack[MAX_STACK_FRAMES];
     unsigned nFrames = backtrace(callStack, MAX_STACK_FRAMES);
-    stackTrace = RETAIN([JavaLangThrowable stackTrace:callStack
-                                                count:nFrames]);
+    stackTrace = RETAIN_([JavaLangThrowable stackTrace:callStack
+                                                 count:nFrames]);
     suppressedExceptions = nil;
   }
   return self;
@@ -150,6 +150,7 @@
   [pw printlnWithNSString:[self description]];
   NSUInteger nFrames = [stackTrace count];
   for (NSUInteger i = 0; i < nFrames; i++) {
+    [pw printWithNSString:@"\tat "];
     id trace = stackTrace->buffer_[i];
     [pw printlnWithId:trace];
   }
@@ -163,6 +164,7 @@
   [ps printlnWithNSString:[self description]];
   NSUInteger nFrames = [stackTrace count];
   for (NSUInteger i = 0; i < nFrames; i++) {
+    [ps printWithNSString:@"\tat "];
     id trace = stackTrace->buffer_[i];
     [ps printlnWithId:trace];
   }
@@ -218,13 +220,10 @@
 }
 
 - (NSString *)description {
-  NSString *className = [[self class] description];
+  NSString *className = [[self getClass] getName];
   NSString *msg = [self getMessage];
   if (msg) {
     return [NSString stringWithFormat:@"%@: %@", className, msg];
-  } else if (cause) {
-    return [NSString stringWithFormat:@"%@: %@",
-            className, [cause description]];
   } else {
     return className;
   }

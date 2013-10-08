@@ -183,7 +183,7 @@ java.lang.String.equalsIgnoreCase(Ljava/lang/String;)Z = \
 java.lang.String.format(Ljava/lang/String;[Ljava/lang/Object;)Ljava/lang/String; = \
     NSString stringWithFormat:(NSString *)format ...
 java.lang.String.format(Ljava/util/Locale;Ljava/lang/String;[Ljava/lang/Object;)Ljava/lang/String; = \
-    NSString stringWithFormat:(NSString *)format locale:(id)locale ...
+    NSString stringWithLocale:(id)locale format:(NSString *)format ...
 java.lang.String.getBytes()[B = NSString getBytes
 java.lang.String.getBytes(Ljava/lang/String;)[B = NSString getBytesWithCharsetName:(NSString *)name
 java.lang.String.getBytes(Ljava/nio/charset/Charset;)[B = \
@@ -273,3 +273,4 @@ java.lang.CharSequence.subSequence(II)Ljava/lang/CharSequence; = \
     NSString subSequenceFrom:(int)start to:(int)end
 
 java.lang.Number.longValue()J = NSNumber longLongValue
+java.lang.Number.byteValue()B = NSNumber charValue

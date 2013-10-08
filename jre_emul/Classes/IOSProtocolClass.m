@@ -18,6 +18,7 @@
 //
 
 #import "IOSProtocolClass.h"
+#import "JavaMetadata.h"
 #import "java/lang/reflect/Method.h"
 #import "java/lang/reflect/Modifier.h"
 #import "objc/runtime.h"
@@ -28,7 +29,7 @@
 
 - (id)initWithProtocol:(Protocol *)protocol {
   if ((self = [super init])) {
-    protocol_ = RETAIN(protocol);
+    protocol_ = RETAIN_(protocol);
   }
   return self;
 }
@@ -38,11 +39,27 @@
 }
 
 - (NSString *)getName {
+  JavaClassMetadata *metadata = [self getMetadata];
+  return metadata ? [metadata qualifiedName] : NSStringFromProtocol(protocol_);
+}
+
+- (NSString *)getSimpleName {
+  JavaClassMetadata *metadata = [self getMetadata];
+  return metadata ? RETAIN_(metadata.typeName) : NSStringFromProtocol(protocol_);
+}
+
+- (NSString *)objcName {
   return NSStringFromProtocol(protocol_);
 }
 
+// Returns the class with the same name as the protocol, if it exists.
+- (Class) objcClass {
+  return objc_lookUpClass(protocol_getName(protocol_));
+}
+
 - (int)getModifiers {
-  return JavaLangReflectModifier_PUBLIC | JavaLangReflectModifier_INTERFACE;
+  return JavaLangReflectModifier_PUBLIC | JavaLangReflectModifier_INTERFACE |
+      JavaLangReflectModifier_ABSTRACT | JavaLangReflectModifier_STATIC;
 }
 
 - (BOOL)isAssignableFrom:(IOSClass *)cls {
@@ -58,6 +75,7 @@
 }
 
 - (void)collectMethods:(NSMutableDictionary *)methodMap {
+  JavaClassMetadata *metadata = [self getMetadata];
   unsigned int count;
   struct objc_method_description *descriptions =
       protocol_copyMethodDescriptionList(protocol_, YES, YES, &count);
@@ -65,8 +83,9 @@
     SEL sel = descriptions[i].name;
     NSString *key = NSStringFromSelector(sel);
     if (![methodMap objectForKey:key]) {
-      [methodMap setObject:[JavaLangReflectMethod methodWithSelector:sel withClass:self]
-                    forKey:key];
+      JavaLangReflectMethod *method = [JavaLangReflectMethod methodWithSelector:sel withClass:self
+          withMetadata:metadata ? [metadata findMethodInfo:key] : nil];
+      [methodMap setObject:method forKey:key];
     }
   }
   free(descriptions);
@@ -86,9 +105,23 @@
   }
   free(descriptions);
   if (result) {
-    return [JavaLangReflectMethod methodWithSelector:result withClass:self];
+    JavaClassMetadata *metadata = [self getMetadata];
+    return [JavaLangReflectMethod methodWithSelector:result withClass:self
+        withMetadata:metadata ? [metadata findMethodInfo:objcName] : nil];
   }
   return nil;
+}
+
+- (IOSObjectArray *)getInterfacesWithArrayType:(IOSClass *)arrayType {
+  unsigned int outCount;
+  Protocol * __unsafe_unretained *interfaces = protocol_copyProtocolList(protocol_, &outCount);
+  IOSObjectArray *result = [IOSObjectArray arrayWithLength:outCount type:[IOSClass getClass]];
+  for (unsigned i = 0; i < outCount; i++) {
+    IOSClass *interface = [IOSClass classWithProtocol:interfaces[i]];
+    [result replaceObjectAtIndex:i withObject:interface];
+  }
+  free(interfaces);
+  return result;
 }
 
 #if ! __has_feature(objc_arc)

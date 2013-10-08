@@ -42,6 +42,7 @@ public final class TimeZones {
     private static final ZoneStringsCache cachedZoneStrings = new ZoneStringsCache();
 
     public static class ZoneStringsCache extends BasicLruCache<Locale, String[][]> {
+        // De-duplicate the strings (http://b/2672057).
         private final HashMap<String, String> internTable = new HashMap<String, String>();
 
         public ZoneStringsCache() {

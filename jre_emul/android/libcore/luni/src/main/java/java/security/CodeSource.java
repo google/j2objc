@@ -24,7 +24,7 @@ import java.net.URL;
  * Legacy security code; do not use.
  */
 public class CodeSource implements Serializable {
-    /* TODO(user): enable when certificates and code signers are ported.
+    /* TODO(tball): enable when certificates and code signers are ported.
     public CodeSource(URL location, Certificate[] certs) { }
 
     public CodeSource(URL location, CodeSigner[] signers) { }

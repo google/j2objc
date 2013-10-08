@@ -19,6 +19,9 @@
 CWD = .
 SOURCE_DIR = src/main
 JAVA_SOURCE_DIR = $(SOURCE_DIR)/java
+# MOE:begin_strip
+GOOGLE3 = ../../../..
+# MOE:end_strip
 J2OBJC_ROOT = ..
 
 include ../make/common.mk

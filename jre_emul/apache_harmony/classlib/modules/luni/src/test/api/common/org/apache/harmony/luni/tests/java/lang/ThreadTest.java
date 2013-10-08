@@ -234,7 +234,7 @@ public class ThreadTest extends junit.framework.TestCase {
     /**
      * @tests java.lang.Thread#interrupted()
      *
-    TODO(user): rewrite to use separate thread, since iOS won't let the
+    TODO(tball): rewrite to use separate thread, since iOS won't let the
                  cancelled flag be set for the main thread.
     public void test_interrupted() {
 	assertFalse("Interrupted returned true for non-interrupted thread",
@@ -505,5 +505,50 @@ public class ThreadTest extends junit.framework.TestCase {
 	    ct = null;
 	} catch (Exception e) {
 	}
+    }
+
+    /**
+     * Test for holdsLock(Object obj)
+     */
+    public void testHoldsLock_False() {
+        Object lock = new Object();
+        assertFalse("lock should not be held", Thread.holdsLock(lock));
+    }
+
+    /**
+     * Test for holdsLock(Object obj)
+     */
+    public void testHoldsLock_True() {
+        Object lock = new Object();
+        synchronized (lock) {
+            assertTrue("lock should be held", Thread.holdsLock(lock));
+            try {
+                Thread.sleep(100);
+            } catch (InterruptedException e) {
+                fail("thread has been unexpectedly interrupted");
+            }
+            assertTrue("lock should be held after sleeping",
+                       Thread.holdsLock(lock));
+            try {
+                lock.wait(100);
+            } catch (InterruptedException e) {
+                fail("thread has been unexpectedly interrupted");
+            }
+            assertTrue("lock should be obtained after waiting",
+                      Thread.holdsLock(lock));
+        }
+        assertFalse("lock should not be held", Thread.holdsLock(lock));
+    }
+
+    /**
+     * Test for holdsLock(null)
+     */
+    public void testHoldsLock_Null() {
+        try {
+            Thread.holdsLock(null);
+            fail("NullPointerException has not been thrown");
+        } catch (NullPointerException e) {
+            return;
+        }
     }
 }

@@ -34,6 +34,7 @@
 @class JavaLangReflectMethod;
 @protocol JavaLangAnnotationAnnotation;
 @class JavaIoInputStream;
+@class JavaClassMetadata;
 @class JavaNetURL;
 
 // A wrapper class for an Objective-C Class or Protocol,
@@ -53,6 +54,7 @@
 + (IOSClass *)classWithClass:(Class)cls;
 + (IOSClass *)classWithProtocol:(Protocol *)protocol;
 + (IOSClass *)arrayClassWithComponentType:(IOSClass *)componentType;
++ (IOSClass *)classForIosName:(NSString *)iosName;
 
 // Primitive class instance getters.
 + (IOSClass *)byteClass;
@@ -138,6 +140,7 @@
 - (BOOL)isEnum;
 - (BOOL)isInterface;
 - (BOOL)isPrimitive;
+- (BOOL)isAnnotation;
 
 - (IOSObjectArray *)getInterfaces;
 - (IOSObjectArray *)getGenericInterfaces;
@@ -172,8 +175,19 @@
 - (void)collectMethods:(NSMutableDictionary *)methodMap;
 - (JavaLangReflectMethod *)findMethodWithTranslatedName:(NSString *)objcName;
 - (IOSObjectArray *)getInterfacesWithArrayType:(IOSClass *)arrayType;
+- (JavaClassMetadata *)getMetadata;
+- (NSString *)objcName;
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 extern NSString *IOSClass_GetTranslatedMethodName(
     NSString *name, IOSObjectArray *paramTypes);
+
+#ifdef __cplusplus
+}
+#endif
 
 @end
 

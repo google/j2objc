@@ -384,10 +384,10 @@ public class Rewriter extends ErrorReportingASTVisitor {
   }
 
   @Override
-  public boolean visit(LabeledStatement node) {
+  public void endVisit(LabeledStatement node) {
     Statement loopBody = getLoopBody(node.getBody());
     if (loopBody == null) {
-      return true;
+      return;
     }
 
     final AST ast = node.getAST();
@@ -434,7 +434,6 @@ public class Rewriter extends ErrorReportingASTVisitor {
       // Replace this node with its statement, thus deleting the label.
       ASTUtil.setProperty(node, NodeCopier.copySubtree(ast, node.getBody()));
     }
-    return true;
   }
 
   @Override
@@ -763,21 +762,20 @@ public class Rewriter extends ErrorReportingASTVisitor {
       if (args.isEmpty()) {
         return false;
       }
-      Expression first = args.get(0);
-      typeBinding = Types.getTypeBinding(first);
+      int iFormatArg = 0;
+      Expression formatArg = args.get(iFormatArg);
+      typeBinding = Types.getTypeBinding(args.get(iFormatArg));
       if (typeBinding.getQualifiedName().equals("java.util.Locale")) {
-        args.remove(0); // discard locale parameter
-        first = args.get(0);
-        typeBinding = Types.getTypeBinding(first);
+        typeBinding = Types.getTypeBinding(args.get(++iFormatArg));
       }
-      if (first instanceof StringLiteral) {
-        String format = ((StringLiteral) first).getLiteralValue();
-        String convertedFormat = convertStringFormatString(format, args);
+      if (formatArg instanceof StringLiteral) {
+        String format = ((StringLiteral) formatArg).getLiteralValue();
+        String convertedFormat = convertStringFormatString(format, args, iFormatArg + 1);
         if (!format.equals(convertedFormat)) {
           StringLiteral newLiteral = ast.newStringLiteral();
           newLiteral.setLiteralValue(convertedFormat);
           Types.addBinding(newLiteral, ast.resolveWellKnownType("java.lang.String"));
-          args.set(0, newLiteral);
+          args.set(iFormatArg, newLiteral);
         }
         return true;
       }
@@ -789,11 +787,10 @@ public class Rewriter extends ErrorReportingASTVisitor {
    * Convert a Java string format string into a NSString equivalent.
    */
   @SuppressWarnings("fallthrough")
-  private String convertStringFormatString(String s, List<Expression> args) {
+  private String convertStringFormatString(String s, List<Expression> args, int iFirstArg) {
     if (s.isEmpty()) {
       return s;
     }
-    int iArg = 1;  // First argument after format string.
     char[] chars = s.toCharArray();
     StringBuffer result = new StringBuffer();
     boolean inSpecifier = false;
@@ -808,27 +805,27 @@ public class Rewriter extends ErrorReportingASTVisitor {
           case 'S':
             result.append('@');
             inSpecifier = false;
-            iArg++;
+            iFirstArg++;
             break;
           case 'c':
           case 'C':
             result.append('C');
             inSpecifier = false;
-            iArg++;
+            iFirstArg++;
             break;
           case 'h':
           case 'H':
             result.append('x');
             inSpecifier = false;
-            iArg++;
+            iFirstArg++;
             break;
           case 'd':
-            if (Types.isLongType(Types.getTypeBinding(args.get(iArg)))) {
+            if (Types.isLongType(Types.getTypeBinding(args.get(iFirstArg)))) {
               result.append("ll");
             }
             result.append(c);
             inSpecifier = false;
-            iArg++;
+            iFirstArg++;
             break;
           case 'e':
           case 'f':
@@ -837,7 +834,7 @@ public class Rewriter extends ErrorReportingASTVisitor {
           case 'x':
             result.append(c);
             inSpecifier = false;
-            iArg++;
+            iFirstArg++;
             break;
           case '%':
             result.append(c);

@@ -29,6 +29,10 @@ SUPPORT_SOURCES = \
 	tests/support/Support_ListTest.java \
 	tests/support/Support_Locale.java \
 	tests/support/Support_MapTest2.java \
+	tests/support/Support_Proxy_I1.java \
+	tests/support/Support_Proxy_I2.java \
+	tests/support/Support_Proxy_ParentException.java \
+	tests/support/Support_Proxy_SubException.java \
 	tests/support/Support_SetTest.java \
 	tests/support/Support_StringReader.java \
 	tests/support/Support_StringWriter.java \
@@ -59,6 +63,7 @@ TEST_SOURCES = \
 	java/lang/ref/PhantomReferenceTest.java \
 	java/lang/ref/SoftReferenceTest.java \
 	java/lang/ref/WeakReferenceTest.java \
+	java/util/TreeMapTest.java \
 	java/util/WeakHashMapTest.java \
 	libcore/icu/ICUTest.java \
 	libcore/icu/LocaleDataTest.java \
@@ -238,6 +243,7 @@ TEST_SOURCES = \
 	org/apache/harmony/text/tests/java/text/ChoiceFormatTest.java \
 	org/apache/harmony/text/tests/java/text/CollatorTest.java \
 	org/apache/harmony/text/tests/java/text/MessageFormatTest.java \
+	tests/api/java/lang/reflect/ProxyTest.java \
 	tests/api/java/util/CalendarTest.java \
 	tests/api/java/util/ListResourceBundleTest.java \
 	tests/api/java/util/PropertyResourceBundleTest.java \
@@ -280,7 +286,9 @@ TEST_RESOURCES = $(TEST_RESOURCES_SRCS:%=$(TESTS_DIR)/%)
 # Broken tests, plus associated bug id.  Once bug is fixed, move line(s) up.
 #	$(TESTS_DIR)/org/apache/harmony/luni/tests/java/lang/StringBuilderTest.o               b/8842295
 
-JUNIT_JAR = ../dist/lib/junit-4.10.jar
+# MOE:begin_strip
+JUNIT_JAR = ../dist/lib/junit.jar
+# MOE:end_strip_and_replace JUNIT_JAR = ../dist/lib/junit-4.10.jar
 
 TEST_JOC = ../dist/j2objc -classpath $(JUNIT_JAR) -Werror \
 	-sourcepath $(TEST_SRC) -d $(TESTS_DIR)
@@ -311,7 +319,15 @@ $(TESTS_DIR)/%.txt: $(TEST_RESOURCES_ROOT)/%.txt
 	@cp $< $@
 
 run-tests: link resources $(TEST_BIN)
-	@/bin/sh ../scripts/runtests.sh $(TEST_BIN) $(subst /,.,$(TEST_SOURCES:%.java=%))
+	@$(TEST_BIN) org.junit.runner.JUnitCore $(subst /,.,$(TEST_SOURCES:%.java=%))
+
+# Run this when the above has errors and JUnit doesn't report which
+# test failed or hung.
+run-each-test: link resources $(TEST_BIN)
+	@for test in $(subst /,.,$(TEST_SOURCES:%.java=%)); do \
+	  echo $$test:; \
+	  $(TEST_BIN) org.junit.runner.JUnitCore $$test; \
+	done
 
 $(SUPPORT_LIB): $(SUPPORT_OBJS)
 	libtool -static -o $(SUPPORT_LIB) $(SUPPORT_OBJS)
@@ -328,8 +344,9 @@ $(TESTS_DIR):
 	@mkdir -p $@
 
 define java_source_rule
-$$(TESTS_DIR)/%.h $$(TESTS_DIR)/%.m: $(1)/%.java | pre_translate
-	@echo $$? >> $$(JAVA_SOURCE_LIST)
+$$(TESTS_DIR)/%.m: $(1)/%.java | pre_translate
+	@echo $$< >> $$(JAVA_SOURCE_LIST)
+	@if [ -e $$@ ]; then touch $$@; fi
 endef
 
 $(foreach srcdir,$(TEST_SRC_ROOTS),$(eval $(call java_source_rule,$(srcdir))))
@@ -342,4 +359,5 @@ $(TESTS_DIR)/%.o: $(TESTS_DIR)/%.m | translate
 
 $(TEST_BIN): $(TEST_OBJS) $(SUPPORT_LIB) \
         ../dist/lib/libjre_emul.a ../dist/lib/libjunit.a
-	$(TEST_JOCC) -o $@ $(TEST_OBJS)
+	@echo Building test executable...
+	@$(TEST_JOCC) -o $@ $(TEST_OBJS)
