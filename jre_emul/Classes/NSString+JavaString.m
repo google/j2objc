@@ -697,21 +697,21 @@ NSStringEncoding parseCharsetName(NSString *charset) {
   free(bytes);
 }
 
-+ (NSString *)stringWithFormat:(NSString *)format locale:(id)locale, ... {
++ (NSString *)stringWithLocale:(JavaUtilLocale *)javaLocale
+                        format:(NSString *)format, ... {
+  nil_chk(javaLocale);
+  nil_chk(format);
+  NSLocale *locale =
+      [[NSLocale alloc] initWithLocaleIdentifier:[javaLocale description]];
   va_list args;
-  va_start(args, locale);
-  if (!format) {
-    @throw makeException([JavaLangNullPointerException class]);
-  }
-  if (!locale) {
-    @throw makeException([JavaLangNullPointerException class]);
-  }
+  va_start(args, format);
   NSString *result = [[NSString alloc] initWithFormat:format
                                                locale:locale
                                             arguments:args];
   va_end(args);
 #if ! __has_feature(objc_arc)
   [result autorelease];
+  [locale release];
 #endif
   return result;
 }

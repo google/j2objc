@@ -235,7 +235,8 @@ destinationBegin:(int)dstBegin;
                 withDstBegin:(int)dstBegin;
 
 // String.format(Locale, String, ...)
-+ (NSString *)stringWithFormat:(NSString *)format locale:(id)locale, ...;
++ (NSString *)stringWithLocale:(JavaUtilLocale *)javaLocale
+                        format:(NSString *)format, ...;
 
 // String.startsWith(String, int)
 - (BOOL)hasPrefix:(NSString *)aString offset:(int)offset;
