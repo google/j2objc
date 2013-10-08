@@ -63,5 +63,10 @@ endif
 
 TRANSLATOR_DEPS = $(DIST_DIR)/j2objc $(DIST_JAR_DIR)/j2objc.jar
 
+JAVAC = javac
+ifdef J2OBJC_JAVAC
+JAVAC = $(J2OBJC_JAVAC)
+endif
+
 comma=,
 space=$(eval) $(eval)
