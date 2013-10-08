@@ -17,7 +17,7 @@
 #
 # Author: Tom Ball
 
-.PHONY: translator jre_emul dist test
+.PHONY: translator dist test
 
 J2OBJC_ROOT = .
 
@@ -31,6 +31,7 @@ J2OBJC = $(DIST_DIR)/j2objc
 default: dist
 
 $(J2OBJC): scripts/j2objc.sh
+	@mkdir -p $(@D)
 	@install -C $< $@
 
 install-scripts: $(J2OBJC)
@@ -54,16 +55,14 @@ translator: annotations_dist java_deps_dist
 jre_emul_jar_dist: annotations_dist
 	@cd jre_emul && $(MAKE) emul_jar_dist
 
-jre_emul_dist: translator_dist jre_emul
-
-jre_emul:
+jre_emul_dist: translator_dist
 	@cd jre_emul && $(MAKE) dist
 
 junit_dist: translator_dist jre_emul_dist
 	@cd junit && $(MAKE) dist
 
 # MOE:begin_strip
-jsr305_dist: translator_dist jre_emul_dist
+jsr305_dist: translator_dist jre_emul_dist java_deps_dist
 	@cd jsr305 && $(MAKE) dist
 # MOE:end_strip
 

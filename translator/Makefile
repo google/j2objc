@@ -124,7 +124,7 @@ deps:
 	  cd ../java_deps && make dist; \
 	fi
 
-$(J2OBJC_JAR): $(MANIFEST) $(RESOURCE_FILES) $(JAVA_SOURCES_FULL) | $(BUILD_DIR)
+$(J2OBJC_JAR): $(MANIFEST) $(RESOURCE_FILES) $(JAVA_SOURCES_FULL) | $(BUILD_DIR) deps
 	@echo Building j2objc jar
 	@javac -Xlint:unchecked -sourcepath $(SOURCEPATH) -classpath $(CLASSPATH) \
 	    -d $(CLASS_DIR) -encoding ISO-8859-1 -source 1.6 -target 1.6 -nowarn \
@@ -152,10 +152,10 @@ dist: deps $(J2OBJC_JAR_DIST)
 clean:
 	@rm -rf $(BUILD_DIR) $(J2OBJC_JAR_DIST)
 
-test: deps $(J2OBJC_JAR) compile-tests
+test: compile-tests
 	java -classpath $(TEST_CLASSPATH) junit.textui.TestRunner com.google.devtools.j2objc.SmallTests
 
-compile-tests:
+compile-tests: $(J2OBJC_JAR) deps
 	@rm -rf $(TEST_DIR)
 	@mkdir -p $(TEST_DIR)
 	@javac -Xlint:unchecked -sourcepath src/test/java -classpath $(TEST_CLASSPATH) \
