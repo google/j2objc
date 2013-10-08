@@ -700,8 +700,8 @@ public class ObjectiveCImplementationGeneratorTest extends GenerationTest {
         "class Test { void test() throws Exception, java.lang.Error {} }", "Test", "Test.m");
     assertTranslation(translation, "+ (IOSObjectArray *)__exceptions_test ");
     assertTranslation(translation,
-        "return [IOSObjectArray arrayWithObjects:(id[]) { [JavaLangException getClass], " +
-        "[JavaLangError getClass] } count:2 type:[IOSClass getClass]];");
+        "return [IOSObjectArray arrayWithObjects:(id[]) { [[JavaLangException class] getClass], " +
+        "[[JavaLangError class] getClass] } count:2 type:[[IOSClass class] getClass]];");
   }
 
   public void testFreeFormNativeCode() throws IOException {
