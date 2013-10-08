@@ -75,6 +75,7 @@
 }
 
 - (void)collectMethods:(NSMutableDictionary *)methodMap {
+  JavaClassMetadata *metadata = [self getMetadata];
   unsigned int count;
   struct objc_method_description *descriptions =
       protocol_copyMethodDescriptionList(protocol_, YES, YES, &count);
@@ -82,8 +83,9 @@
     SEL sel = descriptions[i].name;
     NSString *key = NSStringFromSelector(sel);
     if (![methodMap objectForKey:key]) {
-      [methodMap setObject:[JavaLangReflectMethod methodWithSelector:sel withClass:self]
-                    forKey:key];
+      JavaLangReflectMethod *method = [JavaLangReflectMethod methodWithSelector:sel withClass:self
+          withMetadata:metadata ? [metadata findMethodInfo:key] : nil];
+      [methodMap setObject:method forKey:key];
     }
   }
   free(descriptions);
@@ -103,7 +105,9 @@
   }
   free(descriptions);
   if (result) {
-    return [JavaLangReflectMethod methodWithSelector:result withClass:self];
+    JavaClassMetadata *metadata = [self getMetadata];
+    return [JavaLangReflectMethod methodWithSelector:result withClass:self
+        withMetadata:metadata ? [metadata findMethodInfo:objcName] : nil];
   }
   return nil;
 }

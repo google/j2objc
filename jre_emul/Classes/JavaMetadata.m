@@ -29,6 +29,7 @@
 
 - (id)initWithMetadata:(J2ObjcClassInfo *)metadata {
   if (self = [super init]) {
+    data_ = metadata;
     NSStringEncoding defaultEncoding = [NSString defaultCStringEncoding];
     typeName = [[NSString alloc] initWithCString:metadata->typeName encoding:defaultEncoding];
     if (metadata->packageName) {
@@ -56,6 +57,16 @@
   }
   [qName appendString:typeName];
   return qName;
+}
+
+- (const J2ObjcMethodInfo *)findMethodInfo:(NSString *)methodName {
+  const char *name = [methodName cStringUsingEncoding:[NSString defaultCStringEncoding]];
+  for (int i = 0; i < data_->methodCount; i++) {
+    if (strcmp(name, data_->methods[i].selector) == 0) {
+      return &data_->methods[i];
+    }
+  }
+  return NULL;
 }
 
 - (NSString *)description {
