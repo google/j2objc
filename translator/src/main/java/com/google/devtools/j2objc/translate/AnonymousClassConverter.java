@@ -146,7 +146,7 @@ public class AnonymousClassConverter extends ErrorReportingASTVisitor {
     // Add inner fields and a default constructor.
     List<IVariableBinding> innerVars = OuterReferenceResolver.getCapturedVars(typeBinding);
     List<IVariableBinding> innerFields = OuterReferenceResolver.getInnerFields(typeBinding);
-    createInnerFieldDeclarations(typeDecl, innerFields);
+    ASTFactory.createInnerFieldDeclarations(typeDecl, innerFields);
     if (!innerFields.isEmpty() || !parentArguments.isEmpty() || outerExpression != null) {
       GeneratedMethodBinding defaultConstructor =
           addDefaultConstructor(typeDecl, innerFields, parentArguments, outerExpression);
@@ -192,14 +192,6 @@ public class AnonymousClassConverter extends ErrorReportingASTVisitor {
     }
     OuterReferenceResolver.copyNode(node, typeDecl);
     super.endVisit(node);
-  }
-
-  private void createInnerFieldDeclarations(
-      TypeDeclaration node, List<IVariableBinding> innerFields) {
-    for (IVariableBinding field : innerFields) {
-      ASTUtil.getBodyDeclarations(node).add(
-          ASTFactory.newFieldDeclaration(node.getAST(), field, null));
-    }
   }
 
   private GeneratedMethodBinding addDefaultConstructor(
