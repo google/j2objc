@@ -119,13 +119,19 @@
 }
 
 - (IOSObjectArray *)getExceptionTypes {
-  JavaLangReflectMethod *method = [self getExceptionsAccessor:[self getName]];
+  JavaLangReflectMethod *method = [self getExceptionsAccessor:[self internalName]];
   if (method) {
     IOSObjectArray *noArgs = [IOSObjectArray arrayWithLength:0 type:[NSObject getClass]];
     return (IOSObjectArray *) [method invokeWithId:nil withNSObjectArray:noArgs];
   } else {
     return [IOSObjectArray arrayWithLength:0 type:[IOSClass getClass]];
   }
+}
+
+- (NSString *)internalName {
+  // can't call an abstract method
+  [self doesNotRecognizeSelector:_cmd];
+  return nil;
 }
 
 - (IOSObjectArray *)getParameterAnnotations {

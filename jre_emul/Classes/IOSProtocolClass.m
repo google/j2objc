@@ -18,6 +18,7 @@
 //
 
 #import "IOSProtocolClass.h"
+#import "JavaMetadata.h"
 #import "java/lang/reflect/Method.h"
 #import "java/lang/reflect/Modifier.h"
 #import "objc/runtime.h"
@@ -38,6 +39,16 @@
 }
 
 - (NSString *)getName {
+  JavaClassMetadata *metadata = [self getMetadata];
+  return metadata ? [metadata qualifiedName] : NSStringFromProtocol(protocol_);
+}
+
+- (NSString *)getSimpleName {
+  JavaClassMetadata *metadata = [self getMetadata];
+  return metadata ? RETAIN_(metadata.typeName) : NSStringFromProtocol(protocol_);
+}
+
+- (NSString *)objcName {
   return NSStringFromProtocol(protocol_);
 }
 

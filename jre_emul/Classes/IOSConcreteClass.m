@@ -18,6 +18,7 @@
 //
 
 #import "IOSConcreteClass.h"
+#import "JavaMetadata.h"
 #import "java/lang/ClassCastException.h"
 #import "java/lang/InstantiationException.h"
 #import "java/lang/NoSuchMethodException.h"
@@ -59,6 +60,16 @@
 }
 
 - (NSString *)getName {
+  JavaClassMetadata *metadata = [self getMetadata];
+  return metadata ? [metadata qualifiedName] : NSStringFromClass(class_);
+}
+
+- (NSString *)getSimpleName {
+  JavaClassMetadata *metadata = [self getMetadata];
+  return metadata ? metadata.typeName : NSStringFromClass(class_);
+}
+
+- (NSString *)objcName {
   return NSStringFromClass(class_);
 }
 

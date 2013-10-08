@@ -486,6 +486,9 @@
 		067228FD158FD6AF005318BD /* NoSuchFieldException.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = NoSuchFieldException.h; path = build_result/Classes/java/lang/NoSuchFieldException.h; sourceTree = "<group>"; };
 		067228FE158FD6AF005318BD /* NoSuchFieldException.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = NoSuchFieldException.m; path = build_result/Classes/java/lang/NoSuchFieldException.m; sourceTree = "<group>"; };
 		06734320171DF62600F26D4F /* TempFailureRetry.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TempFailureRetry.h; sourceTree = "<group>"; };
+		0675061217F0B3E10015B7E8 /* IOSReflection.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = IOSReflection.h; sourceTree = "<group>"; };
+		0675061317F0C7A30015B7E8 /* JavaMetadata.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = JavaMetadata.h; sourceTree = "<group>"; };
+		0675061417F0C7A30015B7E8 /* JavaMetadata.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = JavaMetadata.m; sourceTree = "<group>"; };
 		067855A5169F35AB0042431C /* JreMemDebug.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JreMemDebug.h; sourceTree = "<group>"; };
 		067855A6169F35AB0042431C /* JreMemDebug.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JreMemDebug.m; sourceTree = "<group>"; };
 		067855A7169F35AB0042431C /* JreMemDebugStrongReference.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JreMemDebugStrongReference.h; sourceTree = "<group>"; };
@@ -1026,9 +1029,12 @@
 				06ED3D4917D163F80014750E /* IOSProtocolClass.m */,
 				06898A7617BAF8C400D7B114 /* IOSReference.h */,
 				06898A7817BAFAB400D7B114 /* IOSReference.m */,
+				0675061217F0B3E10015B7E8 /* IOSReflection.h */,
 				066193B6155849BC0004DAFE /* IOSShortArray.h */,
 				066193B7155849BC0004DAFE /* IOSShortArray.m */,
 				06986A181767D781006EE92F /* J2ObjCMain.m */,
+				0675061317F0C7A30015B7E8 /* JavaMetadata.h */,
+				0675061417F0C7A30015B7E8 /* JavaMetadata.m */,
 				066193B8155849BC0004DAFE /* JavaObject.h */,
 				06389ACF176BADA20018B4EA /* JavaToIOSInputStreamAdapter.h */,
 				06389AD0176BADA20018B4EA /* JavaToIOSInputStreamAdapter.m */,
@@ -1880,7 +1886,7 @@
 /* Begin PBXLegacyTarget section */
 		067219231559BF3600645E1B /* j2objc build */ = {
 			isa = PBXLegacyTarget;
-			buildArgumentsString = "-c \"if [ x$ACTION == xclean ]; then make clean; else make dist; fi\"";
+			buildArgumentsString = "-c \"if [ x$ACTION == xclean ]; then make clean; else make -j dist; fi\"";
 			buildConfigurationList = 067219241559BF3600645E1B /* Build configuration list for PBXLegacyTarget "j2objc build" */;
 			buildPhases = (
 			);

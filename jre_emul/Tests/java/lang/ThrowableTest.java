@@ -67,7 +67,7 @@ public class ThrowableTest extends TestCase {
     testException.printStackTrace(out);
     out.flush();
     String trace = baos.toString("UTF-8");
-    assertTrue(trace.contains("JavaLangThrowableTest.testStackTraceWithPrintStream()"));
+    assertTrue(trace.contains("java.lang.ThrowableTest.testStackTraceWithPrintStream()"));
   }
 
   public void testStackTraceWithPrintWriter() throws Exception {
@@ -77,6 +77,6 @@ public class ThrowableTest extends TestCase {
     testException.printStackTrace(out);
     out.flush();
     String trace = sw.toString();
-    assertTrue(trace.contains("JavaLangThrowableTest.testStackTraceWithPrintWriter()"));
+    assertTrue(trace.contains("java.lang.ThrowableTest.testStackTraceWithPrintWriter()"));
   }
 }

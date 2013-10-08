@@ -54,6 +54,10 @@
   return name_;
 }
 
+- (NSString *)objcName {
+  return name_;
+}
+
 - (NSString *)description {
   return name_;
 }
