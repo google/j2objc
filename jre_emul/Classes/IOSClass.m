@@ -55,10 +55,6 @@
 
 @implementation IOSClass
 
-static NSMutableDictionary *IOSClass_classCache;
-static NSMutableDictionary *IOSClass_protocolCache;
-static NSMutableDictionary *IOSClass_arrayCache;
-
 static NSDictionary *IOSClass_mappedClasses;
 
 // Primitive class instances.
@@ -687,32 +683,48 @@ IOSObjectArray *copyFieldsToObjectArray(NSArray *fields) {
 }
 
 IOSClass *FetchClass(Class cls) {
-  NSValue *classKey = [NSValue valueWithPointer:(ARCBRIDGE void *) cls];
-  IOSClass *clazz = [IOSClass_classCache objectForKey:classKey];
-  if (!clazz) {
-    clazz = AUTORELEASE([[IOSConcreteClass alloc] initWithClass:cls]);
-    [IOSClass_classCache setObject:clazz forKey:classKey];
+  static int key;
+  IOSClass *iosClass = objc_getAssociatedObject(cls, &key);
+  if (!iosClass) {
+    @synchronized (cls) {
+      iosClass = objc_getAssociatedObject(cls, &key);
+      if (!iosClass) {
+        iosClass = AUTORELEASE([[IOSConcreteClass alloc] initWithClass:cls]);
+        objc_setAssociatedObject(cls, &key, iosClass, OBJC_ASSOCIATION_RETAIN);
+      }
+    }
   }
-  return clazz;
+  return iosClass;
 }
 
 IOSClass *FetchProtocol(Protocol *protocol) {
-  NSValue *protocolKey = [NSValue valueWithPointer:(ARCBRIDGE void *)protocol];
-  IOSClass *clazz = [IOSClass_classCache objectForKey:protocolKey];
-  if (!clazz) {
-    clazz = AUTORELEASE([[IOSProtocolClass alloc] initWithProtocol:protocol]);
-    [IOSClass_classCache setObject:clazz forKey:protocolKey];
+  static int key;
+  IOSClass *iosClass = objc_getAssociatedObject(protocol, &key);
+  if (!iosClass) {
+    @synchronized (protocol) {
+      iosClass = objc_getAssociatedObject(protocol, &key);
+      if (!iosClass) {
+        iosClass = AUTORELEASE([[IOSProtocolClass alloc] initWithProtocol:protocol]);
+        objc_setAssociatedObject(protocol, &key, iosClass, OBJC_ASSOCIATION_RETAIN);
+      }
+    }
   }
-  return clazz;
+  return iosClass;
 }
 
 IOSClass *FetchArray(IOSClass *componentType) {
-  IOSClass *clazz = [IOSClass_arrayCache objectForKey:componentType];
-  if (!clazz) {
-    clazz = AUTORELEASE([[IOSArrayClass alloc] initWithComponentType:componentType]);
-    [IOSClass_arrayCache setObject:clazz forKey:componentType];
+  static int key;
+  IOSClass *iosClass = objc_getAssociatedObject(componentType, &key);
+  if (!iosClass) {
+    @synchronized (componentType) {
+      iosClass = objc_getAssociatedObject(componentType, &key);
+      if (!iosClass) {
+        iosClass = AUTORELEASE([[IOSArrayClass alloc] initWithComponentType:componentType]);
+        objc_setAssociatedObject(componentType, &key, iosClass, OBJC_ASSOCIATION_RETAIN);
+      }
+    }
   }
-  return clazz;
+  return iosClass;
 }
 
 + (void)initialize {
@@ -736,10 +748,6 @@ IOSClass *FetchArray(IOSClass *componentType) {
     IOSClass_shortClass = [[IOSPrimitiveClass alloc] initWithName:@"short" type:@"S"];
     IOSClass_booleanClass = [[IOSPrimitiveClass alloc] initWithName:@"boolean" type:@"Z"];
     IOSClass_voidClass = [[IOSPrimitiveClass alloc] initWithName:@"void" type:@"V"];
-
-    IOSClass_classCache = [[NSMutableDictionary alloc] init];
-    IOSClass_protocolCache = [[NSMutableDictionary alloc] init];
-    IOSClass_arrayCache = [[NSMutableDictionary alloc] init];
 
     IOSClass_objectClass = FetchClass([NSObject class]);
   }
