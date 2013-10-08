@@ -87,6 +87,7 @@ public class Types {
 
   private final Set<Block> autoreleasePoolBlocks = Sets.newHashSet();
   private final Set<Expression> nilChecks = Sets.newHashSet();
+  private final Set<Expression> deferredFieldSetters = Sets.newHashSet();
 
   // The first argument of a iOS method isn't named, but Java requires some sort of valid parameter
   // name.  The method mapper therefore uses this string, which the generators ignore.
@@ -426,5 +427,13 @@ public class Types {
 
   public static boolean hasNilCheck(Expression expression) {
     return instance.nilChecks.contains(expression);
+  }
+
+  public static void addDeferredFieldSetter(Expression expression) {
+    instance.deferredFieldSetters.add(expression);
+  }
+
+  public static boolean hasDeferredFieldSetter(Expression expression) {
+    return instance.deferredFieldSetters.contains(expression);
   }
 }

@@ -27,12 +27,10 @@ import com.google.devtools.j2objc.util.NameTable;
 import org.eclipse.jdt.core.dom.AST;
 import org.eclipse.jdt.core.dom.Assignment;
 import org.eclipse.jdt.core.dom.Expression;
-import org.eclipse.jdt.core.dom.FieldAccess;
 import org.eclipse.jdt.core.dom.ITypeBinding;
 import org.eclipse.jdt.core.dom.IVariableBinding;
 import org.eclipse.jdt.core.dom.InfixExpression;
 import org.eclipse.jdt.core.dom.MethodInvocation;
-import org.eclipse.jdt.core.dom.QualifiedName;
 
 import java.util.List;
 
@@ -52,15 +50,6 @@ public class OperatorRewriter extends ErrorReportingASTVisitor {
         "JreOperatorRetainedAssign", idType, null, new PointerTypeBinding(idType), idType, idType);
   }
 
-  private static Expression getTarget(Expression node, IVariableBinding var) {
-    if (node instanceof QualifiedName) {
-      return ((QualifiedName) node).getQualifier();
-    } else if (node instanceof FieldAccess) {
-      return ((FieldAccess) node).getExpression();
-    }
-    return ASTFactory.newThisExpression(node.getAST(), var.getDeclaringClass());
-  }
-
   @Override
   public void endVisit(Assignment node) {
     AST ast = node.getAST();
@@ -77,8 +66,7 @@ public class OperatorRewriter extends ErrorReportingASTVisitor {
       if (BindingUtil.isStatic(var)) {
         ASTUtil.setProperty(node, newStaticAssignInvocation(ast, var, rhs));
       } else if (var.isField() && !BindingUtil.isWeakReference(var)) {
-        Expression target = getTarget(lhs, var);
-        ASTUtil.setProperty(node, newFieldSetterInvocation(ast, var, target, rhs));
+        Types.addDeferredFieldSetter(node);
       }
     } else if (op == Assignment.Operator.RIGHT_SHIFT_UNSIGNED_ASSIGN) {
       if (!lhsType.getName().equals("char")) {
@@ -118,20 +106,6 @@ public class OperatorRewriter extends ErrorReportingASTVisitor {
     args.add(ASTFactory.newAddressOf(ast, ASTFactory.newSimpleName(ast, var)));
     args.add(ASTFactory.newNullLiteral(ast));
     args.add(NodeCopier.copySubtree(ast, value));
-    return invocation;
-  }
-
-  private static MethodInvocation newFieldSetterInvocation(
-      AST ast, IVariableBinding var, Expression instance, Expression value) {
-    ITypeBinding varType = var.getType();
-    ITypeBinding declaringType = var.getDeclaringClass().getTypeDeclaration();
-    String setterName = String.format("%s_set_%s", NameTable.getFullName(declaringType),
-        NameTable.javaFieldToObjC(NameTable.getName(var)));
-    IOSMethodBinding binding = IOSMethodBinding.newFunction(
-        setterName, varType, declaringType, declaringType, varType);
-    MethodInvocation invocation = ASTFactory.newMethodInvocation(ast, binding, null);
-    ASTUtil.getArguments(invocation).add(NodeCopier.copySubtree(ast, instance));
-    ASTUtil.getArguments(invocation).add(NodeCopier.copySubtree(ast, value));
     return invocation;
   }
 
