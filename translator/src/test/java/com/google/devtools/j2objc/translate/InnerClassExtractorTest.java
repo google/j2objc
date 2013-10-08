@@ -53,8 +53,6 @@ import java.util.Map;
  * @author Tom Ball
  */
 public class InnerClassExtractorTest extends GenerationTest {
-  // TODO(tball): update bug id in comments to public issue numbers when
-  // issue tracking is sync'd.
 
   @Override
   protected void setUp() throws IOException {
@@ -845,5 +843,19 @@ public class InnerClassExtractorTest extends GenerationTest {
         "Test_Inner_set_this$0_(self, outer$);",
         "return JreMemDebugAdd([super init]);",
         "}");
+  }
+
+  public void testInnerClassOuterStackReference() throws IOException {
+    String translation = translateSourceFile(
+        "public class A { " +
+        "  void test() { " +
+        "    final Object obj = new Object(); " +
+        "    class TestThread extends Thread { " +
+        "      public void run() { " +
+        "        System.out.println(obj); }}}}",
+        "A", "A.m");
+    assertTranslation(translation, "printlnWithId:val$obj_");
+    translation = getTranslatedFile("A.h");
+    assertTranslation(translation, "id val$obj_;");
   }
 }

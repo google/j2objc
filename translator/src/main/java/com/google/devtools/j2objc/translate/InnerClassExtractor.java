@@ -155,6 +155,10 @@ public class InnerClassExtractor extends ErrorReportingASTVisitor {
     if (outerFieldBinding != null) {
       members.add(0, ASTFactory.newFieldDeclaration(ast, outerFieldBinding, null));
     }
+    if (!clazz.isAnonymous()) {  // Anonymous class fields added by AnonymousClassConverter.
+      List<IVariableBinding> innerFields = OuterReferenceResolver.getInnerFields(clazz);
+      ASTFactory.createInnerFieldDeclarations(node, innerFields);
+    }
 
     // Insert new parameters for each constructor in class.
     boolean needsConstructor = true;
