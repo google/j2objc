@@ -48,7 +48,7 @@ public class CalendarTest extends junit.framework.TestCase {
         assertEquals(25200000, cal.get(Calendar.ZONE_OFFSET));
     }
 
-    // TODO(user): enable when b/10533006 is fixed.
+    // TODO(tball): enable when b/10533006 is fixed.
 //    public void testAddOneDayOverDstForwardAdds23HoursAt0100() {
 //        Calendar calendar = new GregorianCalendar(AMERICA_SAO_PAULO);
 //        calendar.set(2011, 9, 15, 1, 0); // 01:00 GMT-3

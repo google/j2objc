@@ -333,7 +333,7 @@ public class NameTable {
     return result != null ? result : javaName;
   }
 
-  // TODO(user): See whether the logic in this method can be simplified.
+  // TODO(kstanger): See whether the logic in this method can be simplified.
   //     Also, what about type variables?
   private static String getArrayTypeParameterKeyword(ITypeBinding elementType, int dimensions) {
     if (elementType.isParameterizedType()) {

@@ -60,7 +60,7 @@ public class SecurityManager {
 
     public void checkMemberAccess(Class<?> cls, int type) { }
 
-    /* TODO(user): enable when java.net is supported.
+    /* TODO(tball): enable when java.net is supported.
     public void checkMulticast(InetAddress maddr) { }
 
     /**

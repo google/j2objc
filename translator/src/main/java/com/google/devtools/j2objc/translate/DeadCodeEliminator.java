@@ -697,7 +697,7 @@ public class DeadCodeEliminator extends ErrorReportingASTVisitor {
 
   /**
    * Creates an Expression with a suitable zero-value for the specified type.
-   * TODO(user): this doesn't take into account @NonNull annotations.
+   * TODO(dconnelly): this doesn't take into account @NonNull annotations.
    */
   private Expression getDefaultValue(AST ast, ITypeBinding type) {
     if (type.isPrimitive()) {

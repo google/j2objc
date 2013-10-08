@@ -35,7 +35,7 @@ public class FileHandler extends URLStreamHandler {
      *            URL The URL to which the connection is pointing to
      *
      *
-     TODO(user): enable when URLConnection is ported.
+     TODO(tball): enable when URLConnection is ported.
     @Override
     public URLConnection openConnection(URL url) throws IOException {
         return openConnection(url, null);
@@ -59,7 +59,7 @@ public class FileHandler extends URLStreamHandler {
      * @throws UnsupportedOperationException
      *             if the protocol handler doesn't support this method.
      *
-     TODO(user): enable when URLConnection is ported.
+     TODO(tball): enable when URLConnection is ported.
     @Override
     public URLConnection openConnection(URL url, Proxy proxy) throws IOException {
         if (url == null) {

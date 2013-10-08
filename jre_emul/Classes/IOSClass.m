@@ -553,7 +553,7 @@ static void GetFieldsFromClass(IOSClass *iosClass, NSMutableDictionary *fields) 
   free(ivars);
 }
 
-// TODO(user): add support for interface constants.
+// TODO(tball): add support for interface constants.
 - (JavaLangReflectField *)getDeclaredField:(NSString *)name {
   nil_chk(name);
   Class cls = self.objcClass;

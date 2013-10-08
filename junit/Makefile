@@ -123,6 +123,9 @@ JUNIT_SOURCES = \
     org/junit/runners/model/Statement.java \
     org/junit/runners/model/TestClass.java
 
+# MOE:begin_strip
+JUNIT_SOURCES := $(JUNIT_SOURCES) org/junit/internal/MethodSorter.java
+# MOE:end_strip
 
 HAMCREST_SOURCES = \
     org/hamcrest/BaseDescription.java \

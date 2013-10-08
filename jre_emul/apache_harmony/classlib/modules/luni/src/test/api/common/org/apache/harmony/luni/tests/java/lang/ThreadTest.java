@@ -234,7 +234,7 @@ public class ThreadTest extends junit.framework.TestCase {
     /**
      * @tests java.lang.Thread#interrupted()
      *
-    TODO(user): rewrite to use separate thread, since iOS won't let the
+    TODO(tball): rewrite to use separate thread, since iOS won't let the
                  cancelled flag be set for the main thread.
     public void test_interrupted() {
 	assertFalse("Interrupted returned true for non-interrupted thread",

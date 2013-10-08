@@ -225,7 +225,7 @@ public class HashtableTest extends junit.framework.TestCase {
 			assertTrue("Returned incorrect entry set", s2.contains(e
 					.nextElement()));
 
-		assertTrue("Not synchronized",
+		assertTrue("Not synchronized", 
 				s.getClass().getName().endsWith("SynchronizedSet"));
 
 		boolean exception = false;
@@ -258,8 +258,8 @@ public class HashtableTest extends junit.framework.TestCase {
 		Hashtable h = hashtableClone(htfull);
 		assertEquals("Could not retrieve element", "FVal 2", ((String) h.get("FKey 2"))
 				);
-
-
+		
+		
 		// Regression for HARMONY-262
 		ReusableKey k = new ReusableKey();
 		Hashtable h2 = new Hashtable();
@@ -291,7 +291,7 @@ public class HashtableTest extends junit.framework.TestCase {
 	/**
 	 * @tests java.util.Hashtable#isEmpty()
 	 */
-	/* TODO(user): enable when threading is supported.
+	/* TODO(tball): enable when threading is supported.
 	public void test_isEmpty() {
 		// Test for method boolean java.util.Hashtable.isEmpty()
 
@@ -353,7 +353,7 @@ public class HashtableTest extends junit.framework.TestCase {
             // Expected
         }
 	}
-
+	
 	/**
 	 * @tests java.util.Hashtable#keys()
 	 */
@@ -385,7 +385,7 @@ public class HashtableTest extends junit.framework.TestCase {
 			assertTrue("Returned incorrect key set", s
 					.contains(e.nextElement()));
 
-		assertTrue("Not synchronized",
+		assertTrue("Not synchronized", 
 			s.getClass().getName().endsWith("SynchronizedSet"));
 
 		Map map = new Hashtable(101);
@@ -431,7 +431,7 @@ public class HashtableTest extends junit.framework.TestCase {
 	/**
 	 * @tests java.util.Hashtable#keySet()
 	 */
-	/* TODO(user): enable when threading is supported.
+	/* TODO(tball): enable when threading is supported.
 	public void test_keySet_subtest0() {
 		Set s1 = ht10.keySet();
 		assertTrue("should contain key", s1.remove("Key 0"));
@@ -535,7 +535,7 @@ public class HashtableTest extends junit.framework.TestCase {
 	/**
 	 * @tests java.util.Hashtable#size()
 	 */
-        /* TODO(user): enable when threading is supported.
+        /* TODO(tball): enable when threading is supported.
 	public void test_size() {
 		// Test for method int java.util.Hashtable.size()
 		assertTrue("Returned invalid size", ht10.size() == 10
@@ -575,7 +575,7 @@ public class HashtableTest extends junit.framework.TestCase {
 	public void test_toString() {
 		// Test for method java.lang.String java.util.Hashtable.toString()
 		Hashtable h = new Hashtable();
-		assertEquals("Incorrect toString for Empty table",
+		assertEquals("Incorrect toString for Empty table", 
 				"{}", h.toString());
 
 		h.put("one", "1");
@@ -596,7 +596,7 @@ public class HashtableTest extends junit.framework.TestCase {
 		while (e.hasMoreElements())
 			assertTrue("Returned incorrect values", c.contains(e.nextElement()));
 
-		assertTrue("Not synchronized",
+		assertTrue("Not synchronized", 
 			c.getClass().getName().endsWith("SynchronizedCollection"));
 
 		Hashtable myHashtable = new Hashtable();
@@ -611,7 +611,7 @@ public class HashtableTest extends junit.framework.TestCase {
 				"Removing from the values collection should remove from the original map",
 				!myHashtable.containsValue(new Integer(0)));
 	}
-
+    
     /**
      * Regression Test for JIRA 2181
      */
@@ -620,12 +620,12 @@ public class HashtableTest extends junit.framework.TestCase {
         Hashtable<String,String> hashtable = new Hashtable<String,String>();
         hashtable.put("my.nonexistent.prop", "AAA");
         hashtable.put( "parse.error", "BBB" );
-        Iterator<Map.Entry<String,String>> iterator =
+        Iterator<Map.Entry<String,String>> iterator = 
             hashtable.entrySet().iterator();
         while(iterator.hasNext())
         {
             Map.Entry entry = iterator.next();
-            final Object value = entry.getValue();
+            final Object value = entry.getValue();           
             if(value.equals("AAA"))
             {
                iterator.remove();
@@ -633,7 +633,7 @@ public class HashtableTest extends junit.framework.TestCase {
         }
         assertFalse(hashtable.containsKey("my.nonexistent.prop"));
     }
-
+    
     /**
      * @tests java.util.Hashtable#elements()
      * @tests java.util.Hashtable#keys()

@@ -223,7 +223,7 @@ public class Options {
       } else if (arg.startsWith(XBOOTCLASSPATH)) {
         bootclasspath = arg.substring(XBOOTCLASSPATH.length());
       } else if (arg.equals("-Xno-jsni-delimiters")) {
-        // TODO(user): remove flag when all client builds stop using it.
+        // TODO(tball): remove flag when all client builds stop using it.
       } else if (arg.equals("--mem-debug")) {
         memoryDebug = true;
       } else if (arg.equals("--generate-native-stubs")) {

@@ -18,6 +18,7 @@ package libcore.java.text;
 
 import java.math.BigInteger;
 import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
 import java.text.FieldPosition;
 import java.text.NumberFormat;
 import java.text.ParsePosition;
@@ -43,7 +44,7 @@ public class NumberFormatTest extends junit.framework.TestCase {
 
     // NumberFormat.format(Object, StringBuffer, FieldPosition) guarantees it calls longValue for
     // any BigInteger with a bitLength strictly less than 64.
-    // TODO(user): enable when field position iterating on iOS is supported.
+    // TODO(tball): enable when field position iterating on iOS is supported.
 //    public void test_small_BigInteger_gets_longValue() throws Exception {
 //        class MyNumberFormat extends NumberFormat {
 //            public StringBuffer format(double value, StringBuffer b, FieldPosition f) {

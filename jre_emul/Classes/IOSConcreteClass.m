@@ -204,7 +204,7 @@ static JavaLangReflectConstructor *GetConstructorImpl(
   // Java's getConstructor() only returns the constructor if it's public.
   // However, all constructors in Objective-C are public, so this method
   // is identical to getDeclaredConstructor().
-  // TODO(user): Update when modifier metadata is implemented.
+  // TODO(tball): Update when modifier metadata is implemented.
   return GetConstructorImpl(self, parameterTypes);
 }
 
