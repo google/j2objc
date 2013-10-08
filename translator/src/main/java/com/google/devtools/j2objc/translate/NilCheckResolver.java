@@ -60,6 +60,12 @@ import java.util.Set;
  * Adds nil_chk calls where required to maintain compatibility Java's
  * NullPointerException being thrown when null is dereferenced.
  *
+ * TODO(kstanger): We need to be more strict with fields. When an external call
+ * such as a MethodInvocation or ConstructorInvocation is encountered it could
+ * have the side-effect of re-assigning the field. Therefore when encountering
+ * such nodes we need to clear all non-local variables from the set of safe
+ * vars.
+ *
  * @author Keith Stanger
  */
 public class NilCheckResolver extends ErrorReportingASTVisitor {
@@ -215,24 +221,9 @@ public class NilCheckResolver extends ErrorReportingASTVisitor {
 
     // We can't substitute the qualifier with a nil_chk because it must have a
     // Name type, so we have to convert to a FieldAccess node.
-    FieldAccess newNode = convertToFieldAccess(node);
+    FieldAccess newNode = ASTFactory.convertToFieldAccess(node);
     newNode.accept(this);
     return false;
-  }
-
-  private static FieldAccess convertToFieldAccess(QualifiedName node) {
-    AST ast = node.getAST();
-    ASTNode parent = node.getParent();
-    if (parent instanceof QualifiedName) {
-      FieldAccess newParent = convertToFieldAccess((QualifiedName) parent);
-      Expression expr = newParent.getExpression();
-      assert expr instanceof QualifiedName;
-      node = (QualifiedName) expr;
-    }
-    FieldAccess newNode = ASTFactory.newFieldAccess(
-        ast, Types.getVariableBinding(node), NodeCopier.copySubtree(ast, node.getQualifier()));
-    ASTUtil.setProperty(node, newNode);
-    return newNode;
   }
 
   @Override
