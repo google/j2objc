@@ -343,7 +343,7 @@ static NSString *IOSClass_JavaToIOSName(NSString *javaName) {
   return iosName;
 }
 
-static IOSClass *IOSClass_ClassForName(NSString *name) {
+IOSClass *IOSClass_ClassForName(NSString *name) {
   NSString *iosName = IOSClass_JavaToIOSName(name);
   Class clazz = NSClassFromString(iosName);
   if (clazz) {
