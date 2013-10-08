@@ -86,6 +86,12 @@
   }
 }
 
+- (NSString *)toGenericString {
+  // can't call an abstract method
+  [self doesNotRecognizeSelector:_cmd];
+  return nil;
+}
+
 @end
 
 // TODO(tball): is there a reasonable way to make these methods table-driven?

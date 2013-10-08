@@ -109,9 +109,12 @@
   return[IOSObjectArray arrayWithLength:0 type:typeVariableType];
 }
 
-
 - (IOSObjectArray *)getGenericParameterTypes {
   return [self getParameterTypes];
+}
+
+- (IOSObjectArray *)getGenericExceptionTypes {
+  return [self getExceptionTypes];
 }
 
 - (BOOL)isSynthetic {
@@ -165,6 +168,21 @@ static JavaLangReflectMethod *getAccessor(IOSClass *class, NSString *method, NSS
 
 - (JavaLangReflectMethod *)getParameterAnnotationsAccessor:(NSString *)methodName {
   return [self getAnnotationsAccessor:[NSString stringWithFormat:@"%@_params", methodName]];
+}
+
+- (NSString *)toGenericString {
+  // TODO(tball): implement as part of method metadata.
+  return nil;
+}
+
+- (BOOL)isVarArgs {
+  // TODO(tball): implement as part of method metadata.
+  return NO;
+}
+
+- (BOOL)isBridge {
+  // TODO(tball): implement as part of method metadata.
+  return NO;
 }
 
 @end

@@ -53,6 +53,9 @@
 - (NSObject *)invokeWithId:(id)object
                withNSObjectArray:(IOSObjectArray *)arguments;
 
+// Returns default value.
+- (id)getDefaultValue;
+
 @end
 
 #endif // _JavaLangReflectMethod_H_

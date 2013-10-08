@@ -84,12 +84,24 @@ public class Method extends AccessibleObject implements GenericDeclaration, Memb
   public Class[] getExceptionTypes() {
     return null;
   }
-  
-  /* Not implemented
-  public Type[] getGenericExceptionTypes();
-  public String toGenericString();
-  public boolean isBridge();
-  public boolean isVarArgs();
-  public Object getDefaultValue();
-  */
+
+  public Type[] getGenericExceptionTypes() {
+    return null;
+  }
+
+  public String toGenericString() {
+    return null;
+  }
+
+  public boolean isBridge() {
+    return false;
+  }
+
+  public boolean isVarArgs() {
+    return false;
+  }
+
+  public Object getDefaultValue() {
+    return null;
+  }
 }
