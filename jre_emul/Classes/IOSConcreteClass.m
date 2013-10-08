@@ -232,14 +232,22 @@ static JavaLangReflectConstructor *GetConstructorImpl(
 }
 
 - (IOSObjectArray *)getInterfacesWithArrayType:(IOSClass *)arrayType {
-  unsigned int outCount;
-  Protocol * __unsafe_unretained *interfaces = class_copyProtocolList(class_, &outCount);
-  IOSObjectArray *result = [IOSObjectArray arrayWithLength:outCount type:arrayType];
-  for (unsigned i = 0; i < outCount; i++) {
-    [result replaceObjectAtIndex:i withObject:[IOSClass classWithProtocol:interfaces[i]]];
+  NSMutableArray *allInterfaces = [NSMutableArray array];
+  Class cls = class_;
+  while (cls) {
+    unsigned int outCount;
+    Protocol * __unsafe_unretained *interfaces = class_copyProtocolList(class_, &outCount);
+    for (unsigned i = 0; i < outCount; i++) {
+      IOSClass *interface = [IOSClass classWithProtocol:interfaces[i]];
+      if (![allInterfaces containsObject:interface]) {
+        [allInterfaces addObject:interface];
+      }
+    }
+    free(interfaces);
+    cls = [cls superclass];
   }
-  free(interfaces);
-  return result;
+  return [IOSObjectArray arrayWithNSArray:allInterfaces
+                                     type:[IOSClass getClass]];
 }
 
 #if ! __has_feature(objc_arc)
