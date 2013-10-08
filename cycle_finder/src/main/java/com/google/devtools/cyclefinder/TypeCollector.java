@@ -47,51 +47,48 @@ class TypeCollector {
     if (allTypes.containsKey(type.getKey()) || type.isPrimitive()) {
       return;
     }
-    if (type.isParameterizedType()) {
-      for (ITypeBinding typeParam : type.getTypeArguments()) {
-        if (typeParam.isWildcardType() && typeParam.getBound() != null
-            && typeParam.getBound().isWildcardType()) {
-          // Double wildcard, this might recurse infinitely.
-          return;
-        }
-      }
+    if (hasNestedWildcard(type)) {
+      // Avoid infinite recursion caused by nested wildcard types.
+      return;
     }
     allTypes.put(type.getKey(), type);
     visitType(type.getSuperclass());
     visitType(type.getDeclaringClass());
     for (IVariableBinding field : type.getDeclaredFields()) {
-      // Directly checking the field type that has parameterized types
-      // that are self-referential causes the JDT to generate new types
-      // with each recursion:
-      //
-      // ImmutableMap<C,? extends ImmutableCollection><java.lang.Integer>>,
-      // ImmutableMap<C,? extends ImmutableCollection<
-      //    ? extends ImmutableCollection<java.lang.Integer>>>, etc.
-      // ImmutableMap<C,? extends ImmutableCollection<
-      //    ? extends ImmutableCollection<
-      //    ? extends ImmutableCollection<java.lang.Integer>>>>, etc.
-      //
-      // Separately visiting the erasure of the field type and its type
-      // arguments works around this issue. I'm not sure how to write a
-      // unit test for this, however, so I added a cycle_finder target
-      // to the Guava build, which has several of these cases.
       ITypeBinding fieldType = field.getType();
-      boolean mayRecurse = false;
       for (ITypeBinding typeParam : fieldType.getTypeArguments()) {
-        if (typeParam.isUpperbound()) {
-          mayRecurse = true;
-          break;
-        }
         visitType(typeParam);
-      }
-      if (mayRecurse) {
-        fieldType = fieldType.getErasure();
       }
       visitType(fieldType);
     }
     for (ITypeBinding interfaze : type.getInterfaces()) {
       visitType(interfaze);
     }
+  }
+
+  private static boolean hasWildcard(ITypeBinding type) {
+    if (type.isWildcardType()) {
+      return true;
+    }
+    for (ITypeBinding typeParam : type.getTypeArguments()) {
+      if (hasWildcard(typeParam)) {
+        return true;
+      }
+    }
+    return false;
+  }
+
+  private static boolean hasNestedWildcard(ITypeBinding type) {
+    ITypeBinding bound = type.getBound();
+    if (bound != null && hasWildcard(bound)) {
+      return true;
+    }
+    for (ITypeBinding typeParam : type.getTypeArguments()) {
+      if (hasNestedWildcard(typeParam)) {
+        return true;
+      }
+    }
+    return false;
   }
 
   public void visitAST(ASTNode ast) {
