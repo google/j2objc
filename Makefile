@@ -19,6 +19,11 @@
 
 .PHONY: translator dist test
 
+# Force test targets to be run sequentially to avoid interspersed output.
+ifeq "$(findstring test,$(MAKECMDGOALS))" "test"
+.NOTPARALLEL:
+endif
+
 J2OBJC_ROOT = .
 
 include make/common.mk
@@ -61,19 +66,10 @@ jre_emul_dist: translator_dist
 junit_dist: translator_dist jre_emul_dist
 	@cd junit && $(MAKE) dist
 
-# MOE:begin_strip
-jsr305_dist: translator_dist jre_emul_dist java_deps_dist
-	@cd jsr305 && $(MAKE) dist
-# MOE:end_strip
-
 cycle_finder_dist: annotations_dist java_deps_dist translator_dist
 	@cd cycle_finder && $(MAKE) dist
 
-# MOE:begin_strip
-dist: translator_dist jre_emul_dist junit_dist jsr305_dist cycle_finder_dist \
-  install-man-pages
-# MOE:end_strip
-# MOE:insert dist: translator_dist jre_emul_dist junit_dist cycle_finder_dist install-man-pages
+dist: translator_dist jre_emul_dist junit_dist cycle_finder_dist install-man-pages
 
 # MOE:begin_strip
 protobuf_runtime_dist: jre_emul_dist
@@ -82,7 +78,10 @@ protobuf_runtime_dist: jre_emul_dist
 protobuf_compiler_dist:
 	@cd protobuf/compiler && $(MAKE) dist
 
-dist: protobuf_compiler_dist protobuf_runtime_dist
+jsr305_dist: translator_dist jre_emul_dist java_deps_dist
+	@cd jsr305 && $(MAKE) dist
+
+dist: jsr305_dist protobuf_compiler_dist protobuf_runtime_dist
 # MOE:end_strip
 
 clean:
@@ -105,10 +104,20 @@ clean:
 test_translator: annotations_dist java_deps_dist
 	@cd translator && $(MAKE) test
 
-test: test_translator
+test_jre_emul: jre_emul_dist junit_dist
 	@cd jre_emul && $(MAKE) -f tests.mk
+
+test_jre_cycles:
 	@cd jre_emul && $(MAKE) find_cycles
+
+test_cycle_finder:
 	@cd cycle_finder && $(MAKE) test
+
+test: test_translator test_jre_emul test_jre_cycles test_cycle_finder
+
 # MOE:begin_strip
+test_protobuf: protobuf_compiler_dist protobuf_runtime_dist
 	@cd protobuf/tests && $(MAKE) test
+
+test: test_protobuf
 # MOE:end_strip
