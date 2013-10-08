@@ -689,13 +689,13 @@ public class ObjectiveCImplementationGenerator extends ObjectiveCSourceFileGener
       if (i > 0) {
         sb.append(", ");
       }
-      sb.append('[');
+      sb.append("[[");
       sb.append(NameTable.getFullName(exceptionTypes[i]));
-      sb.append(" getClass]");
+      sb.append(" class] getClass]");
     }
     sb.append(" } count:");
     sb.append(exceptionTypes.length);
-    sb.append(" type:[IOSClass getClass]];\n}\n\n");
+    sb.append(" type:[[IOSClass class] getClass]];\n}\n\n");
     return sb.toString();
   }
 
@@ -1109,7 +1109,7 @@ public class ObjectiveCImplementationGenerator extends ObjectiveCSourceFileGener
       printf("[%s %s]", NameTable.getFullName(declaringClass), var.getName());
     } else if (value instanceof ITypeBinding) {
       ITypeBinding type = (ITypeBinding) value;
-      printf("[%s getClass]", NameTable.getFullName(type));
+      printf("[[%s class] getClass]", NameTable.getFullName(type));
     } else if (value instanceof String) {
       StringLiteral node = ast.newStringLiteral();
       node.setLiteralValue((String) value);
@@ -1125,7 +1125,7 @@ public class ObjectiveCImplementationGenerator extends ObjectiveCSourceFileGener
         }
         printAnnotationValue(ast, array[i]);
       }
-      printf(" } count:%d type:[NSObject getClass]]", array.length);
+      printf(" } count:%d type:[[NSObject class] getClass]]", array.length);
     } else {
       assert false : "unknown annotation value type";
     }
