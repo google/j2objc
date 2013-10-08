@@ -65,7 +65,7 @@ public class StaticVarRewriter extends ErrorReportingASTVisitor {
         newValue.accept(this);
         return false;
       } else if (isPrimitive) {
-        ASTUtil.setProperty(lhs, newGetterInvocation(ast, lhsVar, true));
+        ASTUtil.setProperty(lhs, newGetterInvocation(ast, lhs, true));
       }
     }
     return true;
@@ -84,7 +84,7 @@ public class StaticVarRewriter extends ErrorReportingASTVisitor {
   private boolean visitName(Name node) {
     IVariableBinding var = Types.getVariableBinding(node);
     if (var != null && useAccessor(node, var)) {
-      ASTUtil.setProperty(node, newGetterInvocation(node.getAST(), var, false));
+      ASTUtil.setProperty(node, newGetterInvocation(node.getAST(), node, false));
       return false;
     }
     return true;
@@ -98,12 +98,13 @@ public class StaticVarRewriter extends ErrorReportingASTVisitor {
 
   @Override
   public boolean visit(PostfixExpression node) {
-    IVariableBinding operandVar = Types.getVariableBinding(node.getOperand());
+    Expression operand = node.getOperand();
+    IVariableBinding operandVar = Types.getVariableBinding(operand);
     PostfixExpression.Operator op = node.getOperator();
     boolean isIncOrDec = op == PostfixExpression.Operator.INCREMENT
         || op == PostfixExpression.Operator.DECREMENT;
     if (isIncOrDec && operandVar != null && useAccessor(node, operandVar)) {
-      node.setOperand(newGetterInvocation(node.getAST(), operandVar, true));
+      node.setOperand(newGetterInvocation(node.getAST(), operand, true));
       return false;
     }
     return true;
@@ -111,18 +112,20 @@ public class StaticVarRewriter extends ErrorReportingASTVisitor {
 
   @Override
   public boolean visit(PrefixExpression node) {
-    IVariableBinding operandVar = Types.getVariableBinding(node.getOperand());
+    Expression operand = node.getOperand();
+    IVariableBinding operandVar = Types.getVariableBinding(operand);
     PrefixExpression.Operator op = node.getOperator();
     boolean isIncOrDec = op == PrefixExpression.Operator.INCREMENT
         || op == PrefixExpression.Operator.DECREMENT;
     if (isIncOrDec && operandVar != null && useAccessor(node, operandVar)) {
-      node.setOperand(newGetterInvocation(node.getAST(), operandVar, true));
+      node.setOperand(newGetterInvocation(node.getAST(), operand, true));
       return false;
     }
     return true;
   }
 
-  private MethodInvocation newGetterInvocation(AST ast, IVariableBinding var, boolean assignable) {
+  private MethodInvocation newGetterInvocation(AST ast, Expression variable, boolean assignable) {
+    IVariableBinding var = Types.getVariableBinding(variable);
     ITypeBinding declaringType = var.getDeclaringClass().getTypeDeclaration();
     String getterName = var.isEnumConstant() ? NameTable.getName(var) :
         NameTable.getStaticAccessorName(var.getName());
@@ -138,6 +141,9 @@ public class StaticVarRewriter extends ErrorReportingASTVisitor {
         ast, binding, ASTFactory.newSimpleName(ast, declaringType));
     if (assignable) {
       invocation = ASTFactory.newDereference(ast, invocation);
+    }
+    if (Types.hasNilCheck(variable)) {
+      Types.addNilCheck(invocation);
     }
     return invocation;
   }
