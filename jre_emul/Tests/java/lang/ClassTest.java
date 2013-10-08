@@ -142,4 +142,36 @@ public class ClassTest extends TestCase {
     assertNull(boolean.class.getPackage());
     assertNull(int[].class.getPackage());
   }
+
+  public void testInnerClass() throws Exception {
+    Class<?> innerClass = Class.forName("java.lang.ClassTest$InnerClass");
+    assertEquals(InnerClass.class, innerClass);
+    assertEquals("java.lang.ClassTest$InnerClass", innerClass.getName());
+    assertEquals("InnerClass", innerClass.getSimpleName());
+    assertTrue(innerClass.isMemberClass());
+    assertEquals(ClassTest.class, innerClass.getEnclosingClass());
+  }
+
+  public void testInnerInterface() throws Exception {
+    Class<?> innerInterface = Class.forName("java.lang.ClassTest$InnerInterface");
+    assertEquals(InnerInterface.class, innerInterface);
+    assertEquals("java.lang.ClassTest$InnerInterface", innerInterface.getName());
+    assertEquals("InnerInterface", innerInterface.getSimpleName());
+    assertTrue(innerInterface.isMemberClass());
+    assertEquals(ClassTest.class, innerInterface.getEnclosingClass());
+  }
+
+  public void testAnonymousClass() throws Exception {
+    Object o = new Object() {};
+    Class<?> cls = o.getClass();
+    assertTrue(cls.isAnonymousClass());
+    assertFalse(cls.isMemberClass());
+    assertEquals(ClassTest.class, cls.getEnclosingClass());
+  }
+
+  static class InnerClass {
+  }
+
+  interface InnerInterface {
+  }
 }

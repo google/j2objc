@@ -24,22 +24,38 @@
 
 @synthesize typeName;
 @synthesize packageName;
+@synthesize enclosingName;
 @synthesize modifiers;
 
 - (id)initWithMetadata:(J2ObjcClassInfo *)metadata {
   if (self = [super init]) {
-    if (metadata) {
-      NSStringEncoding defaultEncoding = [NSString defaultCStringEncoding];
-      typeName = [[NSString alloc] initWithCString:metadata->typeName encoding:defaultEncoding];
-      packageName = [[NSString alloc] initWithCString:metadata->packageName encoding:defaultEncoding];
-      modifiers = metadata->modifiers;
+    NSStringEncoding defaultEncoding = [NSString defaultCStringEncoding];
+    typeName = [[NSString alloc] initWithCString:metadata->typeName encoding:defaultEncoding];
+    if (metadata->packageName) {
+      packageName =
+          [[NSString alloc] initWithCString:metadata->packageName encoding:defaultEncoding];
     }
+    if (metadata->enclosingName) {
+      enclosingName =
+          [[NSString alloc] initWithCString:metadata->enclosingName encoding:defaultEncoding];
+    }
+    modifiers = metadata->modifiers;
   }
   return self;
 }
 
 - (NSString *)qualifiedName {
-  return packageName ? [NSString stringWithFormat:@"%@.%@", packageName, typeName] : typeName;
+  NSMutableString *qName = [NSMutableString string];
+  if (packageName) {
+    [qName appendString:packageName];
+    [qName appendString:@"."];
+  }
+  if (enclosingName) {
+    [qName appendString:enclosingName];
+    [qName appendString:@"$"];
+  }
+  [qName appendString:typeName];
+  return qName;
 }
 
 - (NSString *)description {
@@ -54,6 +70,7 @@
 #if ! __has_feature(objc_arc)
   [typeName release];
   [packageName release];
+  [enclosingName release];
   [super dealloc];
 #endif
 }
