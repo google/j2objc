@@ -179,6 +179,7 @@ JAVA_SOURCES = \
 	java/io/PushbackInputStream.java \
 	java/io/PushbackReader.java \
 	java/io/Reader.java \
+	java/io/StreamTokenizer.java \
 	java/io/StringReader.java \
 	java/io/StringWriter.java \
 	java/io/SyncFailedException.java \

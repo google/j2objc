@@ -62,6 +62,7 @@ TEST_SOURCES = \
 	java/util/WeakHashMapTest.java \
 	libcore/icu/ICUTest.java \
 	libcore/icu/LocaleDataTest.java \
+	libcore/java/io/StreamTokenizerTest.java \
 	libcore/java/lang/ThrowableTest.java \
 	libcore/java/lang/reflect/AnnotationsTest.java \
 	libcore/java/lang/reflect/ArrayTest.java \
