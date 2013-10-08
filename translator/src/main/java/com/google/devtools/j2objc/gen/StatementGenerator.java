@@ -985,7 +985,14 @@ public class StatementGenerator extends ErrorReportingASTVisitor {
       } else {
         buffer.append(", ");
       }
+      boolean hasNilCheck = Types.hasNilCheck(arg);
+      if (hasNilCheck) {
+        buffer.append("nil_chk(");
+      }
       arg.accept(this);
+      if (hasNilCheck) {
+        buffer.append(')');
+      }
     }
     buffer.append(')');
   }
@@ -998,7 +1005,20 @@ public class StatementGenerator extends ErrorReportingASTVisitor {
       buffer.append(NameTable.getFullName(binding.getDeclaringClass()));
     } else if (receiver != null) {
       needsCastNodes.put(receiver, true);
+      boolean castPrinted = false;
+      boolean hasNilCheck = Types.hasNilCheck(receiver);
+      if (hasNilCheck) {
+        castPrinted = maybePrintCastFromId(receiver);
+        needsCastNodes.remove(receiver);
+        buffer.append("nil_chk(");
+      }
       receiver.accept(this);
+      if (hasNilCheck) {
+        buffer.append(')');
+        if (castPrinted) {
+          buffer.append(')');
+        }
+      }
     } else {
       buffer.append("self");
     }
