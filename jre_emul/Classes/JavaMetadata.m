@@ -30,8 +30,8 @@
   if (self = [super init]) {
     if (metadata) {
       NSStringEncoding defaultEncoding = [NSString defaultCStringEncoding];
-      typeName = [NSString stringWithCString:metadata->typeName encoding:defaultEncoding];
-      packageName = [NSString stringWithCString:metadata->packageName encoding:defaultEncoding];
+      typeName = [[NSString alloc] initWithCString:metadata->typeName encoding:defaultEncoding];
+      packageName = [[NSString alloc] initWithCString:metadata->packageName encoding:defaultEncoding];
       modifiers = metadata->modifiers;
     }
   }
