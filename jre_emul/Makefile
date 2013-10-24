@@ -593,20 +593,20 @@ $(EMULATION_LIB): $(EMULATION_MACOSX_LIB) $(EMULATION_IPHONE_LIB) \
 	$(LIPO) -create $^ -output $@
 
 $(EMULATION_MACOSX_LIB): $(MACOSX_OBJS)
-	echo "building Mac OS X library"
-	$(LIBTOOL) -static -o $@ $^
+	@echo "building Mac OS X library"
+	@$(LIBTOOL) -static -o $@ $^
 
 $(EMULATION_IPHONE_LIB): $(IPHONE_OBJS)
-	echo "building iPhoneOS library"
-	$(LIBTOOL) -static -o $@ $^
+	@echo "building iPhoneOS library"
+	@$(LIBTOOL) -static -o $@ $^
 
 $(EMULATION_IPHONEV7S_LIB): $(IPHONEV7S_OBJS)
-	echo "building iPhonev7S library"
-	$(LIBTOOL) -static -o $@ $^
+	@echo "building iPhonev7S library"
+	@$(LIBTOOL) -static -o $@ $^
 
 $(EMULATION_SIMULATOR_LIB): $(SIMULATOR_OBJS)
-	echo "building iPhoneSimulator library"
-	$(LIBTOOL) -static -o $@ $^
+	@echo "building iPhoneSimulator library"
+	@$(LIBTOOL) -static -o $@ $^
 
 $(XCODE_LIB): $(ALL_OBJS:%=$(TARGET_TEMP_DIR)/%)
 	@mkdir -p $(@D)

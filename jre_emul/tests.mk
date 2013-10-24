@@ -291,10 +291,7 @@ TEST_BIN = $(TESTS_DIR)/jre_unit_tests
 
 test: run-tests
 
-j2objc:
-	@cd .. && $(MAKE) -f Makefile dist
-
-translate: j2objc pre_translate $(SUPPORT_OBJS:.o=.m) $(TEST_OBJS:.o=.m)
+translate: pre_translate $(SUPPORT_OBJS:.o=.m) $(TEST_OBJS:.o=.m)
 	@if [ `cat $(JAVA_SOURCE_LIST) | wc -l` -ge 1 ] ; then \
 	  $(TEST_JOC) `cat $(JAVA_SOURCE_LIST)` ; \
 	fi
