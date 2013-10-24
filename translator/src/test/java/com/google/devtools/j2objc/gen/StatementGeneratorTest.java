@@ -295,7 +295,7 @@ public class StatementGeneratorTest extends GenerationTest {
     String translation = translateSourceFile(
       "public class Example<K,V> { String s = \"hello, \" + 50 + \"% of the world\\n\"; }",
       "Example", "Example.m");
-    //TODO(user): should copy the string below, not retain it.
+    //TODO(pankaj): should copy the string below, not retain it.
     assertTranslation(translation,
         "Example_set_s_(self, @\"hello, 50% of the world\\n\")");
   }

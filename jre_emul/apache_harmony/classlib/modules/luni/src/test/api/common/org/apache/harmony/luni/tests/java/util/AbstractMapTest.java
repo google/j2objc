@@ -240,7 +240,7 @@ public class AbstractMapTest extends junit.framework.TestCase {
     /**
      * @tests java.util.AbstractMap#clone()
      */
-    /* TODO(user): enable when Object.clone supports objects that don't
+    /* TODO(tball): enable when Object.clone supports objects that don't
      * implement the NSCopying protocol.
     public void test_clone() {
         class MyMap extends AbstractMap implements Cloneable {

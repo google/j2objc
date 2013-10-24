@@ -265,7 +265,7 @@ public class JSR166TestCase extends TestCase {
 
     /**
      * threadFail with message "should throw exception"
-     */
+     */ 
     public void threadShouldThrow() {
        try {
            threadFailed = true;
@@ -507,7 +507,7 @@ public class JSR166TestCase extends TestCase {
     /**
      * For use as ThreadFactory in constructors
      */
-    /** TODO(user): Uncomment when ThreadFactory is added.
+    /** TODO(kstanger): Uncomment when ThreadFactory is added.
     static class SimpleThreadFactory implements ThreadFactory{
         public Thread newThread(Runnable r){
             return new Thread(r);
@@ -570,7 +570,7 @@ public class JSR166TestCase extends TestCase {
     /**
      * For use as RejectedExecutionHandler in constructors
      */
-    /** TODO(user): Uncomment when RejectedExecutionHandler and
+    /** TODO(kstanger): Uncomment when RejectedExecutionHandler and
      * ThreadPoolExecutor are added.
     static class NoOpREHandler implements RejectedExecutionHandler{
         public void rejectedExecution(Runnable r, ThreadPoolExecutor executor){}

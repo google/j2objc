@@ -103,7 +103,7 @@ public class PrintWriterTest extends junit.framework.TestCase {
 		pw = new PrintWriter(sw = new Support_StringWriter());
 		pw.print("Hello");
 		pw.flush();
-		assertEquals("Failed to construct proper writer",
+		assertEquals("Failed to construct proper writer", 
 				"Hello", sw.toString());
 	}
 
@@ -116,7 +116,7 @@ public class PrintWriterTest extends junit.framework.TestCase {
 		pw = new PrintWriter(sw = new Support_StringWriter(), true);
 		pw.print("Hello");
 		// Auto-flush should have happened
-		assertEquals("Failed to construct proper writer",
+		assertEquals("Failed to construct proper writer", 
 				"Hello", sw.toString());
 	}
 
@@ -139,7 +139,7 @@ public class PrintWriterTest extends junit.framework.TestCase {
     public void test_ConstructorLjava_io_File_Ljava_lang_String() throws Exception {
         File file = File.createTempFile(getClass().getName(), null);
         try {
-            PrintWriter writer = new PrintWriter(file,
+            PrintWriter writer = new PrintWriter(file, 
                     Charset.defaultCharset().name());
             writer.close();
         } finally {
@@ -166,7 +166,7 @@ public class PrintWriterTest extends junit.framework.TestCase {
     public void test_ConstructorLjava_lang_String_Ljava_lang_String() throws Exception {
         File file = File.createTempFile(getClass().getName(), null);
         try {
-            PrintWriter writer = new PrintWriter(file.getPath(),
+            PrintWriter writer = new PrintWriter(file.getPath(), 
                     Charset.defaultCharset().name());
             writer.close();
         } finally {
@@ -641,7 +641,7 @@ public class PrintWriterTest extends junit.framework.TestCase {
 		}
 		assertTrue("Wrote incorrect char[] string: " + s, s.equals("World"));
 	}
-
+	
 	/**
 	 * @tests java.io.PrintWriter#append(char)
 	 */
@@ -658,14 +658,14 @@ public class PrintWriterTest extends junit.framework.TestCase {
 	 * @tests java.io.PrintWriter#append(CharSequence)
 	 */
 	public void test_appendCharSequence() {
-
+		
 		String testString = "My Test String";
 		ByteArrayOutputStream out = new ByteArrayOutputStream();
 		PrintWriter printWriter = new PrintWriter(out);
 		printWriter.append(testString);
 		printWriter.flush();
 		assertEquals(testString, out.toString());
-		printWriter.close();
+		printWriter.close();	
 
 	}
 
@@ -686,11 +686,11 @@ public class PrintWriterTest extends junit.framework.TestCase {
     /**
      * @tests java.io.PrintWriter#format(java.lang.String, java.lang.Object...)
      *
-     TODO(user): enable when java.text is supported. b/6372559
+     TODO(tball): enable when java.text is supported. b/6372559
     public void test_formatLjava_lang_StringLjava_lang_Object() {
         pw.format("%s %s", "Hello", "World");
         pw.flush();
-        assertEquals("Wrote incorrect string", "Hello World",
+        assertEquals("Wrote incorrect string", "Hello World", 
                 new String(bao.toByteArray()));
     }
     */
@@ -698,11 +698,11 @@ public class PrintWriterTest extends junit.framework.TestCase {
     /**
      * @tests java.io.PrintWriter#format(java.util.Locale, java.lang.String, java.lang.Object...)
      *
-     TODO(user): enable when java.text is supported. b/6372559
+     TODO(tball): enable when java.text is supported. b/6372559
     public void test_formatLjava_util_Locale_Ljava_lang_String_Ljava_lang_Object() {
         pw.format(Locale.US, "%s %s", "Hello", "World");
         pw.flush();
-        assertEquals("Wrote incorrect string", "Hello World",
+        assertEquals("Wrote incorrect string", "Hello World", 
                 new String(bao.toByteArray()));
     }
     */
@@ -710,11 +710,11 @@ public class PrintWriterTest extends junit.framework.TestCase {
     /**
      * @tests java.io.PrintWriter#printf(java.lang.String, java.lang.Object...)
      *
-     TODO(user): enable when java.text is supported. b/6372559
+     TODO(tball): enable when java.text is supported. b/6372559
     public void test_printfLjava_lang_StringLjava_lang_Object() {
         pw.printf("%s %s", "Hello", "World");
         pw.flush();
-        assertEquals("Wrote incorrect string", "Hello World",
+        assertEquals("Wrote incorrect string", "Hello World", 
                 new String(bao.toByteArray()));
     }
     */
@@ -722,11 +722,11 @@ public class PrintWriterTest extends junit.framework.TestCase {
     /**
      * @tests java.io.PrintWriter#printf(java.util.Locale, java.lang.String, java.lang.Object...)
      *
-     TODO(user): enable when java.text is supported. b/6372559
+     TODO(tball): enable when java.text is supported. b/6372559
     public void test_printfLjava_util_Locale_Ljava_lang_String_Ljava_lang_Object() {
         pw.printf(Locale.US, "%s %s", "Hello", "World");
         pw.flush();
-        assertEquals("Wrote incorrect string", "Hello World",
+        assertEquals("Wrote incorrect string", "Hello World", 
                 new String(bao.toByteArray()));
     }
     */

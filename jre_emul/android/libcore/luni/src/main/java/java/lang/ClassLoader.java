@@ -60,10 +60,10 @@ import java.util.Map;
  * {@code ClassLoader} is an abstract class that implements the common
  * infrastructure required by all class loaders. J2ObjC provides a native
  * implementation of the class, SystemClassLoader, which is the one typically
- * used. Other applications may implement subclasses of {@code ClassLoader}
+ * used. Other applications may implement subclasses of {@code ClassLoader} 
  * to provide special ways for loading classes.
  * </p><p>
- * Note: since classes cannot be dynamically created in iOS or OS X, class
+ * Note: since classes cannot be dynamically created in iOS or OS X, class 
  * loaders have a much more limited utility than with JVM-based systems like
  * Java and Android.
  * </p>
@@ -390,7 +390,7 @@ public abstract class ClassLoader {
         try {
             URL url = getResource(resName);
             if (url != null) {
-        	// TODO(user): reenable when URL.openStream is implemented.
+        	// TODO(tball): reenable when URL.openStream is implemented.
                 // return url.openStream();
                 return new FileInputStream(url.getFile());
             }

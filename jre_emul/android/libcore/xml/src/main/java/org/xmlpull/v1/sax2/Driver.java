@@ -287,7 +287,7 @@ public class Driver implements Locator, XMLReader, Attributes
                         errorHandler.fatalError(saxException);
                         return;
                     }
-                    // TODO(user): enable when java.net is supported.
+                    // TODO(tball): enable when java.net is supported.
 //                    try {
 //                        final URL url = new URL(systemId);
 //                        stream = url.openStream();

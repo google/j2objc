@@ -50,7 +50,7 @@ public class LinkedHashMapTest extends junit.framework.TestCase {
 			objArray2[i] = objArray[i].toString();
 		}
 	}
-
+    
     private static class MockMapNull extends AbstractMap {
         @Override
         public Set entrySet() {
@@ -155,7 +155,7 @@ public class LinkedHashMapTest extends junit.framework.TestCase {
 		// Test for method java.lang.Object
 		// java.util.LinkedHashMap.put(java.lang.Object, java.lang.Object)
 		hm.put("KEY", "VALUE");
-		assertEquals("Failed to install key/value pair",
+		assertEquals("Failed to install key/value pair", 
 				"VALUE", hm.get("KEY"));
 
 		LinkedHashMap m = new LinkedHashMap();
@@ -198,7 +198,7 @@ public class LinkedHashMapTest extends junit.framework.TestCase {
         } catch (NullPointerException e) {
             // expected.
         }
-    }
+    } 
 
 	/**
 	 * @tests java.util.LinkedHashMap#entrySet()
@@ -346,26 +346,26 @@ public class LinkedHashMapTest extends junit.framework.TestCase {
 		// get the keySet() and values() on the original Map
 		Set keys = map.keySet();
 		Collection values = map.values();
-		assertEquals("values() does not work",
+		assertEquals("values() does not work", 
 				"value", values.iterator().next());
-		assertEquals("keySet() does not work",
+		assertEquals("keySet() does not work", 
 				"key", keys.iterator().next());
 		AbstractMap map2 = (AbstractMap) map.clone();
 		map2.put("key", "value2");
 		Collection values2 = map2.values();
 		assertTrue("values() is identical", values2 != values);
-
+		
 		// values() and keySet() on the cloned() map should be different
-		assertEquals("values() was not cloned",
+		assertEquals("values() was not cloned", 
 				"value2", values2.iterator().next());
 		map2.clear();
 		map2.put("key2", "value3");
 		Set key2 = map2.keySet();
 		assertTrue("keySet() is identical", key2 != keys);
-		assertEquals("keySet() was not cloned",
+		assertEquals("keySet() was not cloned", 
 				"key2", key2.iterator().next());
 	}
-
+    
     // regresion test for HARMONY-4603
     public void test_clone_Mock() {
         LinkedHashMap hashMap = new MockMap();
@@ -388,7 +388,7 @@ public class LinkedHashMapTest extends junit.framework.TestCase {
         protected boolean removeEldestEntry(Map.Entry e) {
             return size() > 1;
         }
-    }
+    } 
 
 	/**
 	 * @tests java.util.LinkedHashMap#containsKey(java.lang.Object)
@@ -611,7 +611,7 @@ public class LinkedHashMapTest extends junit.framework.TestCase {
 		assertTrue("Entries left to iterate on", !it2.hasNext());
 	}
 
-	/*TODO(user): uncomment when Class.getInterfaces() is supported.
+	/*TODO(tball): uncomment when Class.getInterfaces() is supported.
 	public void test_getInterfaces() {
         Class<?>[] interfaces = HashMap.class.getInterfaces();
         assertEquals(3, interfaces.length);

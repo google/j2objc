@@ -22,6 +22,7 @@ import com.google.common.collect.Sets;
 import com.google.devtools.j2objc.J2ObjC;
 import com.google.devtools.j2objc.Options;
 import com.google.devtools.j2objc.util.BindingUtil;
+import com.google.devtools.j2objc.util.NameTable;
 
 import org.eclipse.jdt.core.dom.AST;
 import org.eclipse.jdt.core.dom.ASTNode;
@@ -46,7 +47,7 @@ import java.util.Set;
  *
  * @author Tom Ball
  */
-// TODO(user): convert to injectable implementation, to allow translator
+// TODO(tball): convert to injectable implementation, to allow translator
 // core to be reused for other languages.
 public class Types {
   private final AST ast;

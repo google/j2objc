@@ -25,7 +25,7 @@
 @interface JavaUtilLinkedHashMap () {
 @public
   BOOL accessOrder_;
-  // TODO(user): a CF version of LinkedHashMapEntry should be used
+  // TODO(tball): a CF version of LinkedHashMapEntry should be used
   // instead (CFLinkedHashMapEntry), so we can retain/release in ARC
   // using __bridge_retain and __bridge_transfer casts, rather than
   // use __unsafe_unretained.
