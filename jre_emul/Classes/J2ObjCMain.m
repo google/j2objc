@@ -29,6 +29,28 @@
 #include "java/lang/reflect/InvocationTargetException.h"
 #include "java/lang/reflect/Method.h"
 
+#include <execinfo.h>
+
+static void signalHandler(int sig) {
+  // Get void*'s for all entries on the stack.
+  void *array[64];
+  size_t frame_count = backtrace(array, 64);
+
+  // Print all the frames to stderr.
+  fprintf(stderr, "Error: signal %d:\n", sig);
+  backtrace_symbols_fd(array, frame_count, 2);
+  exit(1);
+}
+
+void installSignalHandler() {
+  signal(SIGABRT, signalHandler);
+  signal(SIGILL, signalHandler);
+  signal(SIGSEGV, signalHandler);
+  signal(SIGFPE, signalHandler);
+  signal(SIGBUS, signalHandler);
+  signal(SIGPIPE, signalHandler);
+}
+
 int main( int argc, const char *argv[] ) {
   if (argc < 2) {
     printf("Usage: %s class [args...]\n", *argv);
@@ -36,6 +58,7 @@ int main( int argc, const char *argv[] ) {
   }
   JrePrintNilChkCountAtExit();
   int exitCode = 0;
+  installSignalHandler();
   @autoreleasepool {
   const char *className = argv[1];
     @try {
