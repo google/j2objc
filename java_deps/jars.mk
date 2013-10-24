@@ -38,3 +38,4 @@ JSR305_SOURCE_JAR = jsr305-2.0.1.jar
 JUNIT_JAR = junit-4.10.jar
 JUNIT_SOURCE_JAR = junit-4.10-sources.jar
 HAMCREST_SOURCE_JAR = hamcrest-core-1.1.jar
+JUNIT_JARS = $(JUNIT_JAR)
