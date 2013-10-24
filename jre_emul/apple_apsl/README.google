@@ -20,3 +20,4 @@ Modifications:
   them to "j2objc_*", to make it more obvious which data is used.
 - Used NSLog instead internal logging function in objc_sync_enter().
 - Fixed assertion in objc_sync_wait() so valid time-outs don't fail.
+- Used NSSpinLock functions instead of private _spin_lock functions.
