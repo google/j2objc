@@ -310,6 +310,19 @@ void CopyWithMemmove(id __strong *buffer, NSUInteger src, NSUInteger dest, NSUIn
 #endif
 }
 
+- (NSUInteger)countByEnumeratingWithState:(NSFastEnumerationState *)state
+                                  objects:(__unsafe_unretained id *)stackbuf
+                                    count:(NSUInteger)len {
+  if (state->state == 0) {
+    state->mutationsPtr = (unsigned long *) self;
+    state->itemsPtr = (__unsafe_unretained id *) (void *) buffer_;
+    state->state = 1;
+    return size_;
+  } else {
+    return 0;
+  }
+}
+
 - (NSArray *)memDebugStrongReferences {
   NSMutableArray *result = [NSMutableArray array];
   for (NSUInteger i = 0; i < size_; i++) {

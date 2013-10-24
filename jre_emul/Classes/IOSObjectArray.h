@@ -28,7 +28,7 @@
 
 // An emulation class that represents a Java object array.  Like a Java array,
 // an IOSObjectArray is fixed-size but its elements are mutable.
-@interface IOSObjectArray : IOSArray {
+@interface IOSObjectArray : IOSArray <NSFastEnumeration> {
  @public
   id __strong *buffer_;
  @private
