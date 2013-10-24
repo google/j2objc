@@ -97,7 +97,7 @@ public class CalendarTest extends junit.framework.TestCase {
 		assertTrue("Incorrect result 0e: " + cal.getTime(), cal.getTime()
 				.getTime() == 1010898000000L);
 
-		// TODO(user): enable after b/10532393 is fixed.
+		// TODO(tball): enable after b/10532393 is fixed.
 //		cal.clear();
 //		cal.set(Calendar.YEAR, 2002);
 //		cal.set(Calendar.WEEK_OF_YEAR, 11);

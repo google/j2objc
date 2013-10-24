@@ -434,7 +434,7 @@ public final class NativeDecimalFormat implements Cloneable {
         }
 
         public static FieldPositionIterator forFieldPosition(FieldPosition fp) {
-            // TODO(user): figure out how to do field position iterating on iOS.
+            // TODO(tball): figure out how to do field position iterating on iOS.
 //            if (fp != null && fp.getField() != -1) {
 //                return new FieldPositionIterator();
 //            }
@@ -625,7 +625,7 @@ public final class NativeDecimalFormat implements Cloneable {
 
     private static native char[] formatDigitList(Object nativeFormatter, String value,
         FieldPositionIterator iter) /*-[
-      // TODO(user): figure out how to do field position iterating on iOS.
+      // TODO(tball): figure out how to do field position iterating on iOS.
       @throw [[JavaLangAssertionError alloc]
               initWithNSString:@"BigDecimal and BigNumber formatting not implemented"];
       return nil;

@@ -41,7 +41,7 @@ public class ArraysTest extends junit.framework.TestCase {
             return 0;
         }
     }
-
+    
 	final static int arraySize = 100;
 
 	static Object[] objArray;
@@ -272,7 +272,7 @@ public class ArraysTest extends junit.framework.TestCase {
 		assertTrue(
 				"Binary search succeeded for value not present in array 2",
 				Arrays.binarySearch(objectArray, new Integer(arraySize)) == -(arraySize + 1));
-
+        
         Object object = new Object();
         Object[] objects = new MockComparable[] { new MockComparable() };
         assertEquals("Should always return 0", 0, Arrays.binarySearch(objects, object));
@@ -817,7 +817,7 @@ public class ArraysTest extends junit.framework.TestCase {
             fail("ArrayIndexOutOfBoundsException expected (2)");
 		} catch (ArrayIndexOutOfBoundsException ignore) {
 		}
-
+		
 		//exception order testing
 		try {
 			Arrays.sort(new byte[1], startIndex + 1, startIndex);
@@ -877,7 +877,7 @@ public class ArraysTest extends junit.framework.TestCase {
             fail("ArrayIndexOutOfBoundsException expected (1)");
 		} catch (ArrayIndexOutOfBoundsException ignore) {
 		}
-
+        
 		try {
 			Arrays.sort(reversedArray, startIndex, reversedArray.length + 1);
             fail("ArrayIndexOutOfBoundsException expected (2)");
@@ -932,7 +932,7 @@ public class ArraysTest extends junit.framework.TestCase {
 			print2[i] = new Double(specials2[i]);
 		assertTrue("specials sort incorrectly 2: " + Arrays.asList(print2),
 				Arrays.equals(specials2, answer));
-
+        
         Arrays.sort(specials3);
         Object[] print3 = new Object[specials3.length];
         for (int i = 0; i < specials3.length; i++)
@@ -983,7 +983,7 @@ public class ArraysTest extends junit.framework.TestCase {
             fail("ArrayIndexOutOfBoundsException expected (2)");
 		} catch (ArrayIndexOutOfBoundsException ignore) {
 		}
-
+		
 		//exception order testing
 		try {
 			Arrays.sort(new double[1], startIndex + 1, startIndex);
@@ -1066,13 +1066,13 @@ public class ArraysTest extends junit.framework.TestCase {
             fail("ArrayIndexOutOfBoundsException expected (1)");
 		} catch (ArrayIndexOutOfBoundsException ignore) {
 		}
-
+        
 		try {
 			Arrays.sort(reversedArray, startIndex, reversedArray.length + 1);
             fail("ArrayIndexOutOfBoundsException expected (2)");
 		} catch (ArrayIndexOutOfBoundsException ignore) {
 		}
-
+		
 		//exception order testing
 		try {
 			Arrays.sort(new float[1], startIndex + 1, startIndex);
@@ -1131,13 +1131,13 @@ public class ArraysTest extends junit.framework.TestCase {
             fail("ArrayIndexOutOfBoundsException expected (1)");
 		} catch (ArrayIndexOutOfBoundsException ignore) {
 		}
-
+        
 		try {
 			Arrays.sort(reversedArray, startIndex, reversedArray.length + 1);
             fail("ArrayIndexOutOfBoundsException expected (2)");
 		} catch (ArrayIndexOutOfBoundsException ignore) {
 		}
-
+		
 		//exception order testing
 		try {
 			Arrays.sort(new int[1], startIndex + 1, startIndex);
@@ -1203,7 +1203,7 @@ public class ArraysTest extends junit.framework.TestCase {
             fail("ArrayIndexOutOfBoundsException expected (2)");
 		} catch (ArrayIndexOutOfBoundsException ignore) {
 		}
-
+        
 		//exception order testing
 		try {
 			Arrays.sort(new long[1], startIndex + 1, startIndex);
@@ -1258,7 +1258,7 @@ public class ArraysTest extends junit.framework.TestCase {
             fail("IllegalArgumentException expected");
 		} catch (IllegalArgumentException ignore) {
 		}
-
+        
 		try {
 			Arrays.sort(reversedArray, -1, startIndex);
             fail("ArrayIndexOutOfBoundsException expected (1)");
@@ -1270,7 +1270,7 @@ public class ArraysTest extends junit.framework.TestCase {
             fail("ArrayIndexOutOfBoundsException expected (2)");
 		} catch (ArrayIndexOutOfBoundsException ignore) {
 		}
-
+		
 		//exception order testing
 		try {
 			Arrays.sort(new Object[1], startIndex + 1, startIndex);
@@ -1400,26 +1400,26 @@ public class ArraysTest extends junit.framework.TestCase {
 		for (int counter = endIndex; counter < arraySize; counter++)
 			assertTrue("Array modified outside of bounds",
 					reversedArray[counter] == originalReversedArray[counter]);
-
+	
 		//exception testing
 		try {
 			Arrays.sort(reversedArray, startIndex + 1, startIndex);
             fail("IllegalArgumentException expected");
 		} catch (IllegalArgumentException ignore) {
 		}
-
+        
 		try {
 			Arrays.sort(reversedArray, -1, startIndex);
             fail("ArrayIndexOutOfBoundsException expected (1)");
 		} catch (ArrayIndexOutOfBoundsException ignore) {
 		}
-
+        
 		try {
 			Arrays.sort(reversedArray, startIndex, reversedArray.length + 1);
             fail("ArrayIndexOutOfBoundsException expected (2)");
 		} catch (ArrayIndexOutOfBoundsException ignore) {
 		}
-
+		
 		//exception order testing
 		try {
 			Arrays.sort(new short[1], startIndex + 1, startIndex);
@@ -1594,64 +1594,64 @@ public class ArraysTest extends junit.framework.TestCase {
             // Expected
         }
     }
-
+    
     /**
-     * @tests java.util.Arrays#deepEquals(Object[], Object[])
+     * @tests java.util.Arrays#deepEquals(Object[], Object[])      
      */
-    /* TODO(user): enable when Arrays.deepEquals is implemented.
+    /* TODO(tball): enable when Arrays.deepEquals is implemented.
     public void test_deepEquals$Ljava_lang_ObjectLjava_lang_Object() {
        int [] a1 = {1, 2, 3};
        short [] a2 = {0, 1};
        Object [] a3 = {new Integer(1), a2};
        int [] a4 = {6, 5, 4};
-
+       
        int [] b1 = {1, 2, 3};
        short [] b2 = {0, 1};
        Object [] b3 = {new Integer(1), b2};
-
+       
        Object a [] = {a1, a2, a3};
        Object b [] = {b1, b2, b3};
-
+       
        assertFalse(Arrays.equals(a, b));
        assertTrue(Arrays.deepEquals(a,b));
-
+       
        a[2] = a4;
-
+       
        assertFalse(Arrays.deepEquals(a, b));
     }
     */
-
+    
     /**
      * @tests java.util.Arrays#deepHashCode(Object[])
      */
-    /* TODO(user): enable when Arrays.deepHashCode is implemented.
+    /* TODO(tball): enable when Arrays.deepHashCode is implemented.
     public void test_deepHashCode$Ljava_lang_Object() {
         int [] a1 = {1, 2, 3};
         short [] a2 = {0, 1};
         Object [] a3 = {new Integer(1), a2};
-
+        
         int [] b1 = {1, 2, 3};
         short [] b2 = {0, 1};
         Object [] b3 = {new Integer(1), b2};
-
+        
         Object a [] = {a1, a2, a3};
         Object b [] = {b1, b2, b3};
-
+       
         int deep_hash_a = Arrays.deepHashCode(a);
         int deep_hash_b = Arrays.deepHashCode(b);
-
+        
         assertEquals(deep_hash_a, deep_hash_b);
      }
      */
-
+    
     /**
      * @tests java.util.Arrays#hashCode(boolean[] a)
      */
     public void test_hashCode$LZ() {
         int listHashCode;
         int arrayHashCode;
-
-        boolean [] boolArr = {true, false, false, true, false};
+        
+        boolean [] boolArr = {true, false, false, true, false};    
         List listOfBoolean = new LinkedList();
         for (int i = 0; i < boolArr.length; i++) {
             listOfBoolean.add(new Boolean(boolArr[i]));
@@ -1660,36 +1660,36 @@ public class ArraysTest extends junit.framework.TestCase {
         arrayHashCode = Arrays.hashCode(boolArr);
         assertEquals(listHashCode, arrayHashCode);
     }
-
+    
     /**
      * @tests java.util.Arrays#hashCode(int[] a)
      */
     public void test_hashCode$LI() {
         int listHashCode;
         int arrayHashCode;
-
-        int [] intArr = {10, 5, 134, 7, 19};
+        
+        int [] intArr = {10, 5, 134, 7, 19};    
         List listOfInteger = new LinkedList();
-
+         
         for (int i = 0; i < intArr.length; i++) {
-            listOfInteger.add(new Integer(intArr[i]));
-        }
+            listOfInteger.add(new Integer(intArr[i]));           
+        }               
         listHashCode = listOfInteger.hashCode();
-        arrayHashCode = Arrays.hashCode(intArr);
+        arrayHashCode = Arrays.hashCode(intArr);       
         assertEquals(listHashCode, arrayHashCode);
-
-        int [] intArr2 = {10, 5, 134, 7, 19};
+        
+        int [] intArr2 = {10, 5, 134, 7, 19};                
         assertEquals(Arrays.hashCode(intArr2), Arrays.hashCode(intArr));
     }
-
+    
     /**
      * @tests java.util.Arrays#hashCode(char[] a)
      */
     public void test_hashCode$LC() {
         int listHashCode;
         int arrayHashCode;
-
-        char [] charArr = {'a', 'g', 'x', 'c', 'm'};
+        
+        char [] charArr = {'a', 'g', 'x', 'c', 'm'};    
         List listOfCharacter = new LinkedList();
         for (int i = 0; i < charArr.length; i++) {
             listOfCharacter.add(new Character(charArr[i]));
@@ -1698,15 +1698,15 @@ public class ArraysTest extends junit.framework.TestCase {
         arrayHashCode = Arrays.hashCode(charArr);
         assertEquals(listHashCode, arrayHashCode);
     }
-
+    
     /**
      * @tests java.util.Arrays#hashCode(byte[] a)
      */
     public void test_hashCode$LB() {
         int listHashCode;
         int arrayHashCode;
-
-        byte [] byteArr = {5, 9, 7, 6, 17};
+        
+        byte [] byteArr = {5, 9, 7, 6, 17};    
         List listOfByte = new LinkedList();
         for (int i = 0; i < byteArr.length; i++) {
             listOfByte.add(new Byte(byteArr[i]));
@@ -1715,16 +1715,16 @@ public class ArraysTest extends junit.framework.TestCase {
         arrayHashCode = Arrays.hashCode(byteArr);
         assertEquals(listHashCode, arrayHashCode);
     }
-
+    
     /**
      * @tests java.util.Arrays#hashCode(long[] a)
      */
     public void test_hashCode$LJ() {
         int listHashCode;
         int arrayHashCode;
-
+        
         long [] longArr = {67890234512l, 97587236923425l, 257421912912l,
-                6754268100l, 5};
+                6754268100l, 5};    
         List listOfLong = new LinkedList();
         for (int i = 0; i < longArr.length; i++) {
             listOfLong.add(new Long(longArr[i]));
@@ -1733,15 +1733,15 @@ public class ArraysTest extends junit.framework.TestCase {
         arrayHashCode = Arrays.hashCode(longArr);
         assertEquals(listHashCode, arrayHashCode);
     }
-
+    
     /**
      * @tests java.util.Arrays#hashCode(float[] a)
      */
     public void test_hashCode$LF() {
         int listHashCode;
         int arrayHashCode;
-
-        float [] floatArr = {0.13497f, 0.268934f, 12e-5f, -3e+2f, 10e-4f};
+        
+        float [] floatArr = {0.13497f, 0.268934f, 12e-5f, -3e+2f, 10e-4f};    
         List listOfFloat = new LinkedList();
         for (int i = 0; i < floatArr.length; i++) {
             listOfFloat.add(new Float(floatArr[i]));
@@ -1749,19 +1749,19 @@ public class ArraysTest extends junit.framework.TestCase {
         listHashCode = listOfFloat.hashCode();
         arrayHashCode = Arrays.hashCode(floatArr);
         assertEquals(listHashCode, arrayHashCode);
-
+           
         float [] floatArr2 = {0.13497f, 0.268934f, 12e-5f, -3e+2f, 10e-4f};
         assertEquals(Arrays.hashCode(floatArr2), Arrays.hashCode(floatArr));
     }
-
+    
     /**
      * @tests java.util.Arrays#hashCode(double[] a)
      */
     public void test_hashCode$LD() {
         int listHashCode;
         int arrayHashCode;
-
-        double [] doubleArr = {0.134945657, 0.0038754, 11e-150, -30e-300, 10e-4};
+        
+        double [] doubleArr = {0.134945657, 0.0038754, 11e-150, -30e-300, 10e-4};    
         List listOfDouble = new LinkedList();
         for (int i = 0; i < doubleArr.length; i++) {
             listOfDouble.add(new Double(doubleArr[i]));
@@ -1770,15 +1770,15 @@ public class ArraysTest extends junit.framework.TestCase {
         arrayHashCode = Arrays.hashCode(doubleArr);
         assertEquals(listHashCode, arrayHashCode);
     }
-
+    
     /**
      * @tests java.util.Arrays#hashCode(short[] a)
      */
     public void test_hashCode$LS() {
         int listHashCode;
         int arrayHashCode;
-
-        short [] shortArr = {35, 13, 45, 2, 91};
+        
+        short [] shortArr = {35, 13, 45, 2, 91};    
         List listOfShort = new LinkedList();
         for (int i = 0; i < shortArr.length; i++) {
             listOfShort.add(new Short(shortArr[i]));
@@ -1787,14 +1787,14 @@ public class ArraysTest extends junit.framework.TestCase {
         arrayHashCode = Arrays.hashCode(shortArr);
         assertEquals(listHashCode, arrayHashCode);
     }
-
+    
     /**
      * @tests java.util.Arrays#hashCode(Object[] a)
      */
     public void test_hashCode$Ljava_lang_Object() {
         int listHashCode;
         int arrayHashCode;
-
+        
         Object[] objectArr = {new Integer(1), new Float(10e-12f), null};
         List listOfObject= new LinkedList();
         for (int i = 0; i < objectArr.length; i++) {
@@ -1804,7 +1804,7 @@ public class ArraysTest extends junit.framework.TestCase {
         arrayHashCode = Arrays.hashCode(objectArr);
         assertEquals(listHashCode, arrayHashCode);
     }
-
+    
 	/**
 	 * Sets up the fixture, for example, open a network connection. This method
 	 * is called before a test is executed.
@@ -1835,11 +1835,11 @@ public class ArraysTest extends junit.framework.TestCase {
 			booleanArray[counter + 1] = true;
 		}
 	}
-
+	
 	/**
      * @tests java.util.Arrays#swap(int, int, Object[])
      */
-    /* TODO(user): enable when reflection supports method parameters.
+    /* TODO(tball): enable when reflection supports method parameters.
     public void test_swap_I_I_$Ljava_lang_Object() throws Exception {
     	Method m = Arrays.class.getDeclaredMethod("swap", int.class, int.class, Object[].class);
     	m.setAccessible(true);

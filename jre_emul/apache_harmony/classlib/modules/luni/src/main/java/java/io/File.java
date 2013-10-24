@@ -37,7 +37,7 @@ import java.util.Random;
  * <p>
  * When manipulating file paths, the static fields of this class may be used to
  * determine the platform specific separators.
- *
+ * 
  * @see java.io.Serializable
  * @see java.lang.Comparable
  */
@@ -91,7 +91,7 @@ public class File implements Serializable, Comparable<File> {
 
     /**
      * Constructs a new file using the specified directory and name.
-     *
+     * 
      * @param dir
      *            the directory where the file is stored.
      * @param name
@@ -112,7 +112,7 @@ public class File implements Serializable, Comparable<File> {
 
     /**
      * Constructs a new file using the specified path.
-     *
+     * 
      * @param path
      *            the path to be used for the file.
      */
@@ -124,7 +124,7 @@ public class File implements Serializable, Comparable<File> {
     /**
      * Constructs a new File using the specified directory path and file name,
      * placing a path separator between the two.
-     *
+     * 
      * @param dirPath
      *            the path to the directory where the file is stored.
      * @param name
@@ -148,7 +148,7 @@ public class File implements Serializable, Comparable<File> {
      * needs to be an absolute and hierarchical Unified Resource Identifier with
      * file scheme and non-empty path component, but with undefined authority,
      * query or fragment components.
-     *
+     * 
      * @param uri
      *            the Unified Resource Identifier that is used to construct this
      *            file.
@@ -157,7 +157,7 @@ public class File implements Serializable, Comparable<File> {
      * @see #toURI
      * @see java.net.URI
      *
-     TODO(user): enable when java.net support is implemented.
+     TODO(tball): enable when java.net support is implemented.
     public File(URI uri) {
         // check pre-conditions
         checkURI(uri);
@@ -191,7 +191,7 @@ public class File implements Serializable, Comparable<File> {
         return dirPath;
     }
 
-    /* TODO(user): enable when java.net support is implemented.
+    /* TODO(tball): enable when java.net support is implemented.
     @SuppressWarnings("nls")
     private void checkURI(URI uri) {
         if (!uri.isAbsolute()) {
@@ -227,7 +227,7 @@ public class File implements Serializable, Comparable<File> {
     */
 
     private static native boolean isCaseSensitiveImpl() /*-[
-      // True for iOS, not OS X/simulator.
+      // True for iOS, not OS X/simulator.  
       struct utsname systemInfo;
       uname(&systemInfo);
       if (strcmp(systemInfo.machine, "i386") == 0 || strncmp(systemInfo.machine, "x86", 3) == 0) {
@@ -241,7 +241,7 @@ public class File implements Serializable, Comparable<File> {
      * file systems, each with its own platform-dependent root. Further, the
      * canonical pathname of any file on the system will always begin with one
      * of the returned file system roots.
-     *
+     * 
      * @return the array of file system roots.
      */
     public static File[] listRoots() {
@@ -294,7 +294,7 @@ public class File implements Serializable, Comparable<File> {
 
     /**
      * Indicates whether the current context is allowed to read from this file.
-     *
+     * 
      * @return {@code true} if this file can be read, {@code false} otherwise.
      * @throws SecurityException
      *             if a {@code SecurityManager} is installed and it denies the
@@ -310,7 +310,7 @@ public class File implements Serializable, Comparable<File> {
 
     /**
      * Indicates whether the current context is allowed to write to this file.
-     *
+     * 
      * @return {@code true} if this file can be written, {@code false}
      *         otherwise.
      * @throws SecurityException
@@ -329,7 +329,7 @@ public class File implements Serializable, Comparable<File> {
     /**
      * Returns the relative sort ordering of the paths for this file and the
      * file {@code another}. The ordering is platform dependent.
-     *
+     * 
      * @param another
      *            a file to compare this file to
      * @return an int determined by comparing the two paths. Possible values are
@@ -345,7 +345,7 @@ public class File implements Serializable, Comparable<File> {
 
     /**
      * Deletes this file. Directories must be empty before they will be deleted.
-     *
+     * 
      * @return {@code true} if this file was deleted, {@code false} otherwise.
      * @throws SecurityException
      *             if a {@code SecurityManager} is installed and it denies the
@@ -384,7 +384,7 @@ public class File implements Serializable, Comparable<File> {
      * Schedules this file to be automatically deleted once the virtual machine
      * terminates. This will only happen when the virtual machine terminates
      * normally as described by the Java Language Specification section 12.9.
-     *
+     * 
      * @throws SecurityException
      *             if a {@code SecurityManager} is installed and it denies the
      *             request.
@@ -396,7 +396,7 @@ public class File implements Serializable, Comparable<File> {
     /**
      * Compares {@code obj} to this file and returns {@code true} if they
      * represent the <em>same</em> object using a path specific comparison.
-     *
+     * 
      * @param obj
      *            the object to compare this file with.
      * @return {@code true} if {@code obj} is the same as this object,
@@ -416,7 +416,7 @@ public class File implements Serializable, Comparable<File> {
     /**
      * Returns a boolean indicating whether this file can be found on the
      * underlying file system.
-     *
+     * 
      * @return {@code true} if this file exists, {@code false} otherwise.
      * @throws SecurityException
      *             if a {@code SecurityManager} is installed and it denies read
@@ -437,7 +437,7 @@ public class File implements Serializable, Comparable<File> {
 
     /**
      * Returns the absolute path of this file.
-     *
+     * 
      * @return the absolute file path.
      * @see java.lang.SecurityManager#checkPropertyAccess
      */
@@ -447,7 +447,7 @@ public class File implements Serializable, Comparable<File> {
 
     /**
      * Returns a new file constructed using the absolute path of this file.
-     *
+     * 
      * @return a new file from this file's absolute path.
      * @see java.lang.SecurityManager#checkPropertyAccess
      */
@@ -464,7 +464,7 @@ public class File implements Serializable, Comparable<File> {
      * with a direct directory reference. If the file does not exist,
      * getCanonicalPath() may not resolve any references and simply returns an
      * absolute path name or throws an IOException.
-     *
+     * 
      * @return the canonical path of this file.
      * @throws IOException
      *             if an I/O error occurs.
@@ -473,7 +473,7 @@ public class File implements Serializable, Comparable<File> {
     public String getCanonicalPath() throws IOException {
         return getAbsolutePath();
     }
-
+    
     /*
      * Resolve symbolic links in the parent directories.
      */
@@ -564,7 +564,7 @@ public class File implements Serializable, Comparable<File> {
     /**
      * Returns a new file created using the canonical path of this file.
      * Equivalent to {@code new File(this.getCanonicalPath())}.
-     *
+     * 
      * @return the new file constructed from this file's canonical path.
      * @throws IOException
      *             if an I/O error occurs.
@@ -576,7 +576,7 @@ public class File implements Serializable, Comparable<File> {
 
     /**
      * Returns the name of the file or directory represented by this file.
-     *
+     * 
      * @return this file's name or an empty string if there is no name part in
      *         the file's path.
      */
@@ -590,7 +590,7 @@ public class File implements Serializable, Comparable<File> {
      * Returns the pathname of the parent of this file. This is the path up to
      * but not including the last name. {@code null} is returned if there is no
      * parent.
-     *
+     * 
      * @return this file's parent pathname or {@code null}.
      */
     public String getParent() {
@@ -613,7 +613,7 @@ public class File implements Serializable, Comparable<File> {
      * Returns a new file made from the pathname of the parent of this file.
      * This is the path up to but not including the last name. {@code null} is
      * returned when there is no parent.
-     *
+     * 
      * @return a new file representing this file's parent or {@code null}.
      */
     public File getParentFile() {
@@ -626,7 +626,7 @@ public class File implements Serializable, Comparable<File> {
 
     /**
      * Returns the path of this file.
-     *
+     * 
      * @return this file's path.
      */
     public String getPath() {
@@ -636,7 +636,7 @@ public class File implements Serializable, Comparable<File> {
     /**
      * Returns an integer hash code for the receiver. Any two objects for which
      * {@code equals} returns {@code true} must return the same hash code.
-     *
+     * 
      * @return this files's hash value.
      * @see #equals
      */
@@ -653,7 +653,7 @@ public class File implements Serializable, Comparable<File> {
      * absolute is platform specific. On UNIX, absolute paths must start with
      * the character '/'; on Windows it is absolute if either it starts with
      * '\\' (to represent a file server), or a letter followed by a colon.
-     *
+     * 
      * @return {@code true} if this file's pathname is absolute, {@code false}
      *         otherwise.
      * @see #getPath
@@ -666,7 +666,7 @@ public class File implements Serializable, Comparable<File> {
     /**
      * Indicates if this file represents a <em>directory</em> on the
      * underlying file system.
-     *
+     * 
      * @return {@code true} if this file is a directory, {@code false}
      *         otherwise.
      * @throws SecurityException
@@ -689,7 +689,7 @@ public class File implements Serializable, Comparable<File> {
     /**
      * Indicates if this file represents a <em>file</em> on the underlying
      * file system.
-     *
+     * 
      * @return {@code true} if this file is a file, {@code false} otherwise.
      * @throws SecurityException
      *             if a {@code SecurityManager} is installed and it denies read
@@ -714,7 +714,7 @@ public class File implements Serializable, Comparable<File> {
      * systems a file is considered hidden if its name starts with a ".". For
      * Windows systems there is an explicit flag in the file system for this
      * purpose.
-     *
+     * 
      * @return {@code true} if the file is hidden, {@code false} otherwise.
      * @throws SecurityException
      *             if a {@code SecurityManager} is installed and it denies read
@@ -746,7 +746,7 @@ public class File implements Serializable, Comparable<File> {
     /**
      * Returns the time when this file was last modified, measured in
      * milliseconds since January 1st, 1970, midnight.
-     *
+     * 
      * @return the time when this file was last modified.
      * @throws SecurityException
      *             if a {@code SecurityManager} is installed and it denies read
@@ -772,7 +772,7 @@ public class File implements Serializable, Comparable<File> {
     /**
      * Sets the time this file was last modified, measured in milliseconds since
      * January 1st, 1970, midnight.
-     *
+     * 
      * @param time
      *            the last modification time for this file.
      * @return {@code true} if the operation is successful, {@code false}
@@ -789,7 +789,7 @@ public class File implements Serializable, Comparable<File> {
         }
         return (setLastModifiedImpl(properPath(true), time));
     }
-
+    
     private native boolean setAttribute(String path, String attributeKey, Object value) /*-[
       NSMutableDictionary *attributes = [NSMutableDictionary dictionaryWithCapacity:1];
       [attributes setObject:value forKey:attributeKey];
@@ -807,7 +807,7 @@ public class File implements Serializable, Comparable<File> {
     /**
      * Marks this file or directory to be read-only as defined by the operating
      * system.
-     *
+     * 
      * @return {@code true} if the operation is successful, {@code false}
      *         otherwise.
      * @throws SecurityException
@@ -826,7 +826,7 @@ public class File implements Serializable, Comparable<File> {
 
     /**
      * Returns the length of this file in bytes.
-     *
+     * 
      * @return the number of bytes in this file.
      * @throws SecurityException
      *             if a {@code SecurityManager} is installed and it denies read
@@ -878,7 +878,7 @@ public class File implements Serializable, Comparable<File> {
      * file. The result is {@code null} if this file is not a directory. The
      * paths of the files in the array are absolute if the path of this file is
      * absolute, they are relative otherwise.
-     *
+     * 
      * @return an array of files or {@code null}.
      * @throws SecurityException
      *             if a {@code SecurityManager} is installed and it denies read
@@ -986,7 +986,7 @@ public class File implements Serializable, Comparable<File> {
      * <p>
      * The entries {@code .} and {@code ..} representing the current and parent
      * directories are not returned as part of the list.
-     *
+     * 
      * @param filter
      *            the filter to match names against, may be {@code null}.
      * @return an array of files or {@code null}.
@@ -1042,7 +1042,7 @@ public class File implements Serializable, Comparable<File> {
     /**
      * Creates the directory named by the trailing filename of this file. Does
      * not create the complete path required to create this directory.
-     *
+     * 
      * @return {@code true} if the directory has been created, {@code false}
      *         otherwise.
      * @throws SecurityException
@@ -1064,7 +1064,7 @@ public class File implements Serializable, Comparable<File> {
     /**
      * Creates the directory named by the trailing filename of this file,
      * including the complete directory path required to create this directory.
-     *
+     * 
      * @return {@code true} if the necessary directories have been created,
      *         {@code false} if the target directory already exists or one of
      *         the directories can not be created.
@@ -1097,7 +1097,7 @@ public class File implements Serializable, Comparable<File> {
     /**
      * Creates a new, empty file on the file system according to the path
      * information stored in this file.
-     *
+     * 
      * @return {@code true} if the file has been created, {@code false} if it
      *         already exists.
      * @throws IOException
@@ -1144,7 +1144,7 @@ public class File implements Serializable, Comparable<File> {
      * method is a convenience method that calls
      * {@link #createTempFile(String, String, File)} with the third argument
      * being {@code null}.
-     *
+     * 
      * @param prefix
      *            the prefix to the temp file name.
      * @param suffix
@@ -1161,7 +1161,7 @@ public class File implements Serializable, Comparable<File> {
     /**
      * Creates an empty temporary file in the given directory using the given
      * prefix and suffix as part of the file name.
-     *
+     * 
      * @param prefix
      *            the prefix to the temp file name.
      * @param suffix
@@ -1223,7 +1223,7 @@ public class File implements Serializable, Comparable<File> {
      * Returns a string representing the proper path for this file. If this file
      * path is absolute, the user.dir property is not prepended, otherwise it
      * is.
-     *
+     * 
      * @param internal
      *            is user.dir internal.
      * @return the proper path.
@@ -1262,7 +1262,7 @@ public class File implements Serializable, Comparable<File> {
     /**
      * Renames this file to the name represented by the {@code dest} file. This
      * works for both normal files and directories.
-     *
+     * 
      * @param dest
      *            the file containing the new name.
      * @return {@code true} if the File was renamed, {@code false} otherwise.
@@ -1281,7 +1281,7 @@ public class File implements Serializable, Comparable<File> {
     /**
      * Returns a string containing a concise, human-readable description of this
      * file.
-     *
+     * 
      * @return a printable representation of this file.
      */
     @Override
@@ -1293,10 +1293,10 @@ public class File implements Serializable, Comparable<File> {
      * Returns a Uniform Resource Identifier for this file. The URI is system
      * dependent and may not be transferable between different operating / file
      * systems.
-     *
+     * 
      * @return an URI for this file.
      */
-    /* TODO(user): enable when java.net support is implemented.
+    /* TODO(tball): enable when java.net support is implemented.
     @SuppressWarnings("nls")
     public URI toURI() {
         String name = getAbsoluteName();
@@ -1321,19 +1321,19 @@ public class File implements Serializable, Comparable<File> {
      * Returns a Uniform Resource Locator for this file. The URL is system
      * dependent and may not be transferable between different operating / file
      * systems.
-     *
+     * 
      * @return a URL for this file.
      * @throws java.net.MalformedURLException
      *             if the path cannot be transformed into a URL.
      */
-    /* TODO(user): enable when java.net support is implemented.
+    /* TODO(tball): enable when java.net support is implemented.
     @SuppressWarnings("nls")
     public URL toURL() throws java.net.MalformedURLException {
         String name = getAbsoluteName();
         if (!name.startsWith("/")) {
             // start with sep.
             return new URL(
-                    "file", EMPTY_STRING, -1, new StringBuilder(name.length() + 1) //$NON-NLS-1$
+                    "file", EMPTY_STRING, -1, new StringBuilder(name.length() + 1) //$NON-NLS-1$ 
                             .append('/').append(name).toString(), null);
         } else if (name.startsWith("//")) {
             return new URL("file:" + name); // UNC path

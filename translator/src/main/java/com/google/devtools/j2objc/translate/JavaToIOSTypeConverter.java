@@ -41,7 +41,7 @@ import java.util.List;
  */
 public class JavaToIOSTypeConverter extends ErrorReportingASTVisitor {
 
-  // TODO(user): Replace visitors below with visitors on the subclasses of Type.
+  // TODO(kstanger): Replace visitors below with visitors on the subclasses of Type.
   private void convertType(Type original) {
     if (original == null) {
       return;

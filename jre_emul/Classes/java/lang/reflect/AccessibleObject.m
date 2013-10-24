@@ -88,7 +88,7 @@
 
 @end
 
-// TODO(user): is there a reasonable way to make these methods table-driven?
+// TODO(tball): is there a reasonable way to make these methods table-driven?
 
 // Return a Obj-C type encoding as a Java type or wrapper type.
 IOSClass *decodeTypeEncoding(const char *type) {

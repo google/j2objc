@@ -69,7 +69,7 @@ public final class IoUtils {
     /**
      * Closes 'socket', ignoring any exceptions. Does nothing if 'socket' is null.
      *
-    TODO(user): enable when sockets are implemented.
+    TODO(tball): enable when sockets are implemented.
     public static void closeQuietly(Socket socket) {
         if (socket != null) {
             try {

@@ -17,7 +17,7 @@
 // The entrySet, keySet and valueSet methods return sets not backed
 // by the Map, so modifications to the map won't be reflected in the
 // sets and vice-versa.
-// TODO(user): Make this inherit from AbstractMap to get compliance
+// TODO(pankaj): Make this inherit from AbstractMap to get compliance
 // with spec.
 @interface NSDictionaryMap : NSObject<JavaUtilMap> {
 @private

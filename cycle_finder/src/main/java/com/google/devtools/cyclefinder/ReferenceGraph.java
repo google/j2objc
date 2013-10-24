@@ -62,7 +62,7 @@ public class ReferenceGraph {
     addSubtypeEdges();
     addSuperclassEdges();
     addOuterClassEdges();
-    // TODO(user): Capture edges should be added before subtype edges.
+    // TODO(kstanger): Capture edges should be added before subtype edges.
     addAnonymousClassCaptureEdges();
   }
 
