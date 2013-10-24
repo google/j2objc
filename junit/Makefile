@@ -182,6 +182,11 @@ EMULATION_MACOSX_LIB = $(BUILD_DIR)/macosx-libjunit.a
 EMULATION_IPHONE_LIB = $(BUILD_DIR)/iphone-libjunit.a
 EMULATION_IPHONEV7S_LIB = $(BUILD_DIR)/iphonev7s-libjunit.a
 EMULATION_SIMULATOR_LIB = $(BUILD_DIR)/simulator-libjunit.a
+ARCH_LIBS = $(J2OBJC_ARCHS)
+ARCH_LIBS := $(ARCH_LIBS:macosx=$(EMULATION_MACOSX_LIB))
+ARCH_LIBS := $(ARCH_LIBS:iphone=$(EMULATION_IPHONE_LIB))
+ARCH_LIBS := $(ARCH_LIBS:iphonev7s=$(EMULATION_IPHONEV7s_LIB))
+ARCH_LIBS := $(ARCH_LIBS:simulator=$(EMULATION_SIMULATOR_LIB))
 MACOSX_OBJS = $(OBJS:%=$(BUILD_DIR)/%)
 MACOSX_FLAGS = $(SDK_FLAGS)
 IPHONE_BUILD_DIR = $(BUILD_DIR)/iphone
@@ -228,25 +233,24 @@ $(JUNIT_LIB): $(OBJS:%=$(TARGET_TEMP_DIR)/%)
 	@mkdir -p $(@D)
 	$(LIBTOOL) -static -o $@ $^
 else
-$(JUNIT_LIB): $(EMULATION_MACOSX_LIB) $(EMULATION_IPHONE_LIB) \
-    $(EMULATION_IPHONEV7S_LIB) $(EMULATION_SIMULATOR_LIB)
+$(JUNIT_LIB): $(ARCH_LIBS)
 	$(LIPO) -create $^ -output $@
 
 $(EMULATION_MACOSX_LIB): $(MACOSX_OBJS)
-	echo "building Mac OS X library"
-	$(LIBTOOL) -static -o $@ $^
+	@echo "building junit Mac OS X library"
+	@$(LIBTOOL) -static -o $@ $^
 
 $(EMULATION_IPHONE_LIB): $(IPHONE_OBJS)
-	echo "building iPhoneOS library"
-	$(LIBTOOL) -static -o $@ $^
+	@echo "building junit iPhoneOS library"
+	@$(LIBTOOL) -static -o $@ $^
 
 $(EMULATION_IPHONEV7S_LIB): $(IPHONEV7S_OBJS)
-	echo "building iPhonev7S library"
-	$(LIBTOOL) -static -o $@ $^
+	@echo "building junit iPhonev7S library"
+	@$(LIBTOOL) -static -o $@ $^
 
 $(EMULATION_SIMULATOR_LIB): $(SIMULATOR_OBJS)
-	echo "building iPhoneSimulator library"
-	$(LIBTOOL) -static -o $@ $^
+	@echo "building junit iPhoneSimulator library"
+	@$(LIBTOOL) -static -o $@ $^
 endif
 
 define compile_rules
