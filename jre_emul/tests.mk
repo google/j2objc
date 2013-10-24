@@ -311,7 +311,7 @@ $(TESTS_DIR)/%.txt: $(TEST_RESOURCES_ROOT)/%.txt
 	@cp $< $@
 
 run-tests: link resources $(TEST_BIN)
-	@/bin/sh ../scripts/runtests.sh $(TEST_BIN) $(subst /,.,$(TEST_SOURCES:%.java=%))
+	@$(TEST_BIN) org.junit.runner.JUnitCore $(subst /,.,$(TEST_SOURCES:%.java=%))
 
 $(SUPPORT_LIB): $(SUPPORT_OBJS)
 	libtool -static -o $(SUPPORT_LIB) $(SUPPORT_OBJS)
