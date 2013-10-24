@@ -62,6 +62,7 @@ public class Options {
   private static boolean emitLineDirectives = false;
   private static boolean warningsAsErrors = false;
   private static boolean deprecatedDeclarations = false;
+  private static Map<String, String> classMappings = Maps.newLinkedHashMap();
   private static Map<String, String> methodMappings = Maps.newLinkedHashMap();
   private static boolean memoryDebug = false;
   private static boolean generateNativeStubs = false;
@@ -473,6 +474,10 @@ public class Options {
 
   public static boolean generateDeprecatedDeclarations() {
     return deprecatedDeclarations;
+  }
+
+  public static Map<String, String> getClassMappings() {
+    return classMappings;
   }
 
   public static Map<String, String> getMethodMappings() {

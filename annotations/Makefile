@@ -28,6 +28,7 @@ JAVA_SOURCE_DIR = src/main/java
 SOURCE_JAVA = \
     com/google/j2objc/annotations/AutoreleasePool.java \
     com/google/j2objc/annotations/LoopTranslation.java \
+    com/google/j2objc/annotations/ObjectiveCName.java \
     com/google/j2objc/annotations/Weak.java \
     com/google/j2objc/annotations/WeakOuter.java
 
