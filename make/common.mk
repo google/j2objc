@@ -28,6 +28,10 @@ ARCH_LIB_DIR = $(DIST_LIB_DIR)
 ARCH_INCLUDE_DIR = $(DIST_INCLUDE_DIR)
 endif
 
+ifndef J2OBJC_ARCHS
+J2OBJC_ARCHS = macosx iphone iphonev7s simulator
+endif
+
 # xcrun finds a specified tool in the current SDK /usr/bin directory.
 XCRUN = $(shell if test -f /usr/bin/xcrun; then echo xcrun; else echo ""; fi)
 MAKE = $(XCRUN) make
