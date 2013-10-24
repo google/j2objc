@@ -95,14 +95,12 @@ static BOOL in_low_memory_cleanup;
   AssociateReferenceWithReferent(reference->referent_, reference);
 }
 
-+ (void)retainReferent:(JavaLangRefReference *)reference {
++ (void)strengthenReferent:(JavaLangRefReference *)reference {
   [reference->referent_ retain];
 }
 
-+ (void)releaseReferent:(JavaLangRefReference *)reference {
-  if (reference->referent_) {
-    RealReferentRelease(reference->referent_);
-  }
++ (void)weakenReferent:(JavaLangRefReference *)reference {
+  [reference->referent_ autorelease];
 }
 
 + (void)deallocReferent:(JavaLangRefReference *)reference {
