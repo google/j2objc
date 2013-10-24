@@ -273,3 +273,4 @@ java.lang.CharSequence.subSequence(II)Ljava/lang/CharSequence; = \
     NSString subSequenceFrom:(int)start to:(int)end
 
 java.lang.Number.longValue()J = NSNumber longLongValue
+java.lang.Number.byteValue()B = NSNumber charValue

@@ -188,6 +188,8 @@ public class ObjectiveCHeaderGenerator extends ObjectiveCSourceFileGenerator {
     String valueMethod = primitiveName + "Value";
     if (primitiveName.equals("long")) {
       valueMethod = "longLongValue";
+    } else if (primitiveName.equals("byte")) {
+      valueMethod = "charValue";
     }
     newline();
     printf("BOXED_INC_AND_DEC(%s, %s, %s)\n", NameTable.capitalize(primitiveName), valueMethod,

@@ -317,10 +317,6 @@ public final class Byte extends Number implements Comparable<Byte> {
       return "c";
     }
 
-    - (char)charValue {
-      return value_;
-    }
-
     - (void)getValue:(void *)buffer {
       *((char *) buffer) = value_;
     }
