@@ -87,17 +87,6 @@
   return self;
 }
 
-- (IOSClass *)getEnclosingClass {
-  NSString *className = NSStringFromClass(class_);
-  NSRange r = [className rangeOfString:@"_" options:NSBackwardsSearch];
-  if (r.location == NSNotFound) {
-    return nil;
-  }
-  NSString *enclosingName = [className substringToIndex:r.location];
-  Class class = NSClassFromString(enclosingName);
-  return class ? [IOSClass classWithClass:class] : nil;
-}
-
 - (BOOL)isEnum {
   JavaClassMetadata *metadata = [self getMetadata];
   if (metadata) {
@@ -108,25 +97,12 @@
   }
 }
 
-- (BOOL)isMemberClass {
-  IOSClass *enclosingClass = [self getEnclosingClass];
-  if (!enclosingClass) {
-    return NO;
-  }
-
-  // Extract member class name.
-  NSString *className = NSStringFromClass(class_);
-  NSString *enclosingClassName = [enclosingClass getName];
-  NSString *memberClassName =
-      [className substringFromIndex:[enclosingClassName length] + 1];  // Include trailing '_'.
-
-  // Anonymous classes are not considered member classes.
-  NSRange range = [memberClassName rangeOfString:@"$"];
-  return range.location == NSNotFound;
-}
-
 - (BOOL)isAnonymousClass {
-  return strchr(class_getName(class_), '?') != NULL;
+  JavaClassMetadata *metadata = [self getMetadata];
+  if (metadata) {
+    return (metadata.modifiers & 0x8000) > 0;
+  }
+  return NO;
 }
 
 static void AddMethodOrConstructor(

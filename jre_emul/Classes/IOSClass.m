@@ -336,22 +336,34 @@ static NSString *IOSClass_JavaToIOSName(NSString *javaName) {
     return mappedName;
   }
   NSArray *parts = [javaName componentsSeparatedByString:@"."];
-  NSString *iosName = [NSString string];
+  NSMutableString *iosName = [NSMutableString string];
   for (NSString *part in parts) {
-    iosName = [iosName stringByAppendingString:Capitalize(part)];
+    [iosName appendString:Capitalize(part)];
   }
+  [iosName replaceOccurrencesOfString:@"$"
+                           withString:@"_"
+                              options:0
+                                range:NSMakeRange(0, [iosName length])];
   return iosName;
 }
 
 IOSClass *IOSClass_ClassForName(NSString *name) {
   NSString *iosName = IOSClass_JavaToIOSName(name);
-  Class clazz = NSClassFromString(iosName);
-  if (clazz) {
-    return FetchClass(clazz);
+  // Some protocols have a sibling class that contains the metadata and any
+  // constants that are defined. We must look for the protocol before the class
+  // to ensure we create a IOSProtocolClass for such cases. NSObject must be
+  // special-cased because it also has a protocol but we want to return an
+  // IOSConcreteClass instance for it.
+  if ([iosName isEqualToString:@"NSObject"]) {
+    return [IOSClass objectClass];
   }
   Protocol *protocol = NSProtocolFromString(iosName);
   if (protocol) {
     return FetchProtocol(protocol);
+  }
+  Class clazz = NSClassFromString(iosName);
+  if (clazz) {
+    return FetchClass(clazz);
   }
   return nil;
 }
@@ -428,7 +440,17 @@ static IOSClass *IOSClass_ArrayClassForName(NSString *name, NSUInteger index) {
 }
 
 - (IOSClass *)getEnclosingClass {
-  return nil;
+  JavaClassMetadata *metadata = [self getMetadata];
+  if (!metadata || !metadata.enclosingName) {
+    return nil;
+  }
+  NSMutableString *qName = [NSMutableString string];
+  if (metadata.packageName) {
+    [qName appendString:metadata.packageName];
+    [qName appendString:@"."];
+  }
+  [qName appendString:metadata.enclosingName];
+  return IOSClass_ClassForName(qName);
 }
 
 - (BOOL)isArray {
@@ -457,7 +479,8 @@ static BOOL hasModifier(IOSClass *cls, int flag) {
 }
 
 - (BOOL)isMemberClass {
-  return NO;
+  JavaClassMetadata *metadata = [self getMetadata];
+  return metadata && metadata.enclosingName && ![self isAnonymousClass];
 }
 
 - (BOOL)isSynthetic {
