@@ -208,6 +208,13 @@ public class AutoboxerTest extends GenerationTest {
     assertTranslation(translation, "b != nil ? [b booleanValue] : NO");
   }
 
+  public void testConditionalOnBoxedValue() throws IOException {
+    String translation = translateSourceFile(
+        "public class Test { int test(Boolean b) { return b ? 1 : 2; } }", "Test", "Test.m");
+    assertTranslation(translation,
+        "return [((JavaLangBoolean *) nil_chk(b)) booleanValue] ? 1 : 2;");
+  }
+
   public void testArrayInitializerNotBoxed() throws IOException {
     // Verify that an array with an initializer that has elements of the same
     // type isn't boxed.
