@@ -24,7 +24,7 @@ import java.util.Map;
 import java.util.WeakHashMap;
 
 /*-[
-#include "IOSProtocolClass.h"
+#include "IOSClass.h"
 #include "java/lang/reflect/Method.h"
 #include <objc/runtime.h>
 ]-*/
@@ -332,22 +332,22 @@ public class Proxy implements Serializable {
           IOSClass *iosProtocol = [IOSClass classWithProtocol:protocol];
           JavaLangReflectMethod *method =
               [iosProtocol findMethodWithTranslatedName:NSStringFromSelector(selector)];
-          NSMethodSignature *signature = [self methodSignatureForSelector:selector];
-          NSUInteger numArgs = [signature numberOfArguments] - 2;  // Skip first two hidden args.
+          IOSObjectArray *paramTypes = [method getParameterTypes];
+          NSUInteger numArgs = paramTypes->size_;
           IOSObjectArray *args = [IOSObjectArray arrayWithLength:numArgs
                                                             type:[NSObject getClass]];
 
           for (unsigned i = 0; i < numArgs; i++) {
             J2ObjcRawValue arg;
             [anInvocation getArgument:&arg atIndex:i + 2];
-            id javaArg = J2ObjcBoxValue(&arg, [signature getArgumentTypeAtIndex:i + 2]);
+            id javaArg = [paramTypes->buffer_[i] boxValue:&arg];
             [args replaceObjectAtIndex:i withObject:javaArg];
           }
           id javaResult = [handler_ invokeWithId:self
                        withJavaLangReflectMethod:method
                                withNSObjectArray:args];
           J2ObjcRawValue result;
-          J2ObjcUnboxValue(javaResult, [signature methodReturnType], &result);
+          [[method getReturnType] unboxValue:javaResult toRawValue:&result];
           [anInvocation setReturnValue:&result];
           return;  // success!
         }

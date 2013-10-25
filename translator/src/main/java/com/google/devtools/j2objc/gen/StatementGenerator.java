@@ -592,8 +592,13 @@ public class StatementGenerator extends ErrorReportingASTVisitor {
   @Override
   public boolean visit(ConstructorInvocation node) {
     IMethodBinding binding = Types.getMethodBinding(node);
-    buffer.append("[self init" + NameTable.getFullName(binding.getDeclaringClass()));
-    printArguments(binding, ASTUtil.getArguments(node));
+    ITypeBinding declaringClass = binding.getDeclaringClass();
+    List<Expression> args = ASTUtil.getArguments(node);
+    buffer.append("[self init" + NameTable.getFullName(declaringClass));
+    printArguments(binding, args);
+    if (declaringClass.isEnum()) {
+      buffer.append((args.isEmpty() ? "W" : " w") + "ithNSString:__name withInt:__ordinal");
+    }
     buffer.append("]");
     return false;
   }
@@ -730,6 +735,15 @@ public class StatementGenerator extends ErrorReportingASTVisitor {
     } else if (op.equals(InfixExpression.Operator.RIGHT_SHIFT_UNSIGNED) &&
         !lhsType.getName().equals("char")) {
       printUnsignedRightShift(lhs, rhs);
+    } else if (op.equals(InfixExpression.Operator.LEFT_SHIFT) && lhsType.getName().equals("long")) {
+      // The C compiler incorrectly shifts left when the shift is greater
+      // than 32 with signed longs, so cast the lhs to unsigned, then
+      // cast the result back to signed.
+      buffer.append("(long long) (((uint64_t) ");
+      lhs.accept(this);
+      buffer.append(") << ");
+      rhs.accept(this);
+      buffer.append(')');
     } else {
       lhs.accept(this);
       buffer.append(' ');
@@ -1415,7 +1429,12 @@ public class StatementGenerator extends ErrorReportingASTVisitor {
   @Override
   public boolean visit(SuperConstructorInvocation node) {
     buffer.append("[super init");
-    printArguments(Types.getMethodBinding(node), ASTUtil.getArguments(node));
+    List<Expression> args = ASTUtil.getArguments(node);
+    printArguments(Types.getMethodBinding(node), args);
+    if (Types.getTypeBinding(node).isEnum()
+        || Types.getTypeBinding(ASTUtil.getOwningType(node)).isEnum()) {
+      buffer.append((args.isEmpty() ? "W" : " w") + "ithNSString:__name withInt:__ordinal");
+    }
     buffer.append(']');
     return false;
   }

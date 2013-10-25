@@ -176,20 +176,18 @@ public final class MethodTest extends TestCase {
         assertEquals(anonymous.getClass(), method.getDeclaringClass());
     }
 
-    // Not valid: all iOS methods are public.
-//    public void testGetMethodDoesNotReturnPrivateMethodOfAnonymousClass() throws Exception {
-//        Object anonymous = new Object() {
-//            private void a() {
-//            }
-//        };
-//        try {
-//            anonymous.getClass().getMethod("a");
-//            fail();
-//        } catch (NoSuchMethodException expected) {
-//        }
-//    }
+    public void testGetMethodDoesNotReturnPrivateMethodOfAnonymousClass() throws Exception {
+        Object anonymous = new Object() {
+            private void a() {
+            }
+        };
+        try {
+            anonymous.getClass().getMethod("a");
+            fail();
+        } catch (NoSuchMethodException expected) {
+        }
+    }
 
-    // Not valid: all iOS methods are public.
     public void testGetDeclaredMethodReturnsPrivateMethodOfAnonymousClass() throws Exception {
         Object anonymous = new Object() {
             private void a() {

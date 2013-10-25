@@ -132,6 +132,16 @@ public final class Boolean implements Serializable, Comparable<Boolean> {
     }
 
     /**
+     * Compares two {@code boolean} values.
+     * @return 0 if lhs = rhs, less than 0 if lhs &lt; rhs, and greater than 0 if lhs &gt; rhs.
+     *         (Where true &gt; false.)
+     * @since 1.7
+     */
+    public static int compare(boolean lhs, boolean rhs) {
+        return lhs == rhs ? 0 : lhs ? 1 : -1;
+    }
+
+    /**
      * Returns an integer hash code for this boolean.
      *
      * @return this boolean's hash code, which is {@code 1231} for {@code true}
@@ -207,7 +217,7 @@ public final class Boolean implements Serializable, Comparable<Boolean> {
      * @see #parseBoolean(String)
      */
     public static Boolean valueOf(String string) {
-        return parseBoolean(string) ? Boolean.TRUE : Boolean.FALSE; 
+        return parseBoolean(string) ? Boolean.TRUE : Boolean.FALSE;
     }
 
     /**

@@ -299,7 +299,7 @@ public class AtomicLongArrayTest extends JSR166TestCase {
     /**
      * a deserialized serialized array holds same values
      *
-    // TODO(user): enable when serialization is supported.
+    // TODO(tball): enable when serialization is supported.
     public void testSerialization() {
         AtomicLongArray l = new AtomicLongArray(SIZE);
         for (int i = 0; i < SIZE; ++i)

@@ -23,6 +23,8 @@ import com.google.common.collect.Multimap;
 import com.google.common.collect.SetMultimap;
 import com.google.common.collect.Sets;
 import com.google.devtools.j2objc.translate.OuterReferenceResolver;
+import com.google.devtools.j2objc.util.BindingUtil;
+import com.google.j2objc.annotations.WeakOuter;
 
 import org.eclipse.jdt.core.dom.IAnnotationBinding;
 import org.eclipse.jdt.core.dom.ITypeBinding;
@@ -83,7 +85,7 @@ public class ReferenceGraph {
             && !Modifier.isStatic(field.getModifiers())
             // Exclude self-referential fields. (likely linked DS or delegate pattern)
             && !type.isAssignmentCompatible(fieldType)
-            && !isWeak(field)) {
+            && !BindingUtil.isWeakReference(field)) {
           addEdge(Edge.newFieldEdge(type, field));
         }
       }
@@ -150,9 +152,10 @@ public class ReferenceGraph {
   private void addOuterClassEdges() {
     for (ITypeBinding type : allTypes.values()) {
       if (OuterReferenceResolver.needsOuterReference(type.getTypeDeclaration())
-          && !isWeakOuter(type)) {
+          && !BindingUtil.hasAnnotation(type, WeakOuter.class)) {
         ITypeBinding declaringType = type.getDeclaringClass();
-        if (declaringType != null && !whitelist.containsType(declaringType)) {
+        if (declaringType != null && !whitelist.containsType(declaringType)
+            && !whitelist.hasOuterForType(type)) {
           addEdge(Edge.newOuterClassEdge(type, declaringType));
         }
       }
@@ -165,32 +168,13 @@ public class ReferenceGraph {
         for (IVariableBinding capturedVar :
              OuterReferenceResolver.getCapturedVars(type.getTypeDeclaration())) {
           ITypeBinding targetType = getElementType(capturedVar.getType());
-          if (!targetType.isPrimitive() && !whitelist.containsType(targetType)) {
+          if (!targetType.isPrimitive() && !whitelist.containsType(targetType)
+              && !BindingUtil.isWeakReference(capturedVar)) {
             addEdge(Edge.newCaptureEdge(type, capturedVar));
           }
         }
       }
     }
-  }
-
-  private static boolean isWeak(IVariableBinding field) {
-    for (IAnnotationBinding annotation : field.getAnnotations()) {
-      String name = annotation.getAnnotationType().getQualifiedName();
-      if (name.equals("com.google.j2objc.annotations.Weak")) {
-        return true;
-      }
-    }
-    return false;
-  }
-
-  private static boolean isWeakOuter(ITypeBinding type) {
-    for (IAnnotationBinding annotation : type.getAnnotations()) {
-      String name = annotation.getAnnotationType().getQualifiedName();
-      if (name.equals("com.google.j2objc.annotations.WeakOuter")) {
-        return true;
-      }
-    }
-    return false;
   }
 
   private void runTarjans() {

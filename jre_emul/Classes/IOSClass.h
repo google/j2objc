@@ -55,6 +55,7 @@
 + (IOSClass *)classWithProtocol:(Protocol *)protocol;
 + (IOSClass *)arrayClassWithComponentType:(IOSClass *)componentType;
 + (IOSClass *)classForIosName:(NSString *)iosName;
++ (IOSClass *)primitiveClassForChar:(unichar)c;
 
 // Primitive class instance getters.
 + (IOSClass *)byteClass;
@@ -171,8 +172,12 @@
 - (JavaNetURL *)getResource:(NSString *)name;
 - (JavaIoInputStream *)getResourceAsStream:(NSString *)name;
 
+// Boxing and unboxing
+- (id)boxValue:(J2ObjcRawValue *)rawValue;
+- (BOOL)unboxValue:(id)value toRawValue:(J2ObjcRawValue *)rawValue;
+
 // Internal methods
-- (void)collectMethods:(NSMutableDictionary *)methodMap;
+- (void)collectMethods:(NSMutableDictionary *)methodMap publicOnly:(BOOL)publicOnly;
 - (JavaLangReflectMethod *)findMethodWithTranslatedName:(NSString *)objcName;
 - (IOSObjectArray *)getInterfacesWithArrayType:(IOSClass *)arrayType;
 - (JavaClassMetadata *)getMetadata;

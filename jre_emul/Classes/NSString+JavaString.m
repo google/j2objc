@@ -34,6 +34,7 @@
 #import "java/nio/charset/IOSCharset.h"
 #import "java/nio/charset/UnsupportedCharsetException.h"
 #import "java/util/Comparator.h"
+#import "java/util/Formatter.h"
 #import "java/util/Locale.h"
 #import "java/util/regex/Pattern.h"
 #import "java/util/regex/PatternSyntaxException.h"
@@ -697,23 +698,19 @@ NSStringEncoding parseCharsetName(NSString *charset) {
   free(bytes);
 }
 
-+ (NSString *)stringWithLocale:(JavaUtilLocale *)javaLocale
-                        format:(NSString *)format, ... {
-  nil_chk(javaLocale);
-  nil_chk(format);
-  NSLocale *locale =
-      [[NSLocale alloc] initWithLocaleIdentifier:[javaLocale description]];
-  va_list args;
-  va_start(args, format);
-  NSString *result = [[NSString alloc] initWithFormat:format
-                                               locale:locale
-                                            arguments:args];
-  va_end(args);
-#if ! __has_feature(objc_arc)
-  [result autorelease];
-  [locale release];
-#endif
++ (NSString *)formatWithNSString:(NSString *)format withNSObjectArray:(IOSObjectArray *)args {
+  JavaUtilFormatter *formatter = [[JavaUtilFormatter alloc] init];
+  NSString *result = [[formatter formatWithNSString:format withNSObjectArray:args] description];
+  RELEASE_(formatter);
   return result;
+}
+
++ (NSString *)formatWithJavaUtilLocale:(JavaUtilLocale *)locale
+                          withNSString:(NSString *)format
+                     withNSObjectArray:(IOSObjectArray *)args {
+  JavaUtilFormatter *formatter =
+      AUTORELEASE([[JavaUtilFormatter alloc] initWithJavaUtilLocale:locale]);
+  return [[formatter formatWithNSString:format withNSObjectArray:args] description];
 }
 
 - (BOOL)hasPrefix:(NSString *)aString offset:(int)offset {

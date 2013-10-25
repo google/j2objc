@@ -302,7 +302,7 @@ public class AtomicIntegerArrayTest extends JSR166TestCase {
     /**
      * a deserialized serialized array holds same values
      *
-    // TODO(user): enable when serialization is supported.
+    // TODO(tball): enable when serialization is supported.
     public void testSerialization() {
         AtomicIntegerArray l = new AtomicIntegerArray(SIZE);
         for (int i = 0; i < SIZE; ++i)

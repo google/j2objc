@@ -161,12 +161,12 @@ typedef union {
   *field = value;
 }
 
-- (void)setByteWithId:(id)object withChar:(char)value {
+- (void)setByteWithId:(id)object withByte:(char)value {
   char *field = (char *) [self pvar:object];
   *field = value;
 }
 
-- (void)setCharWithId:(id)object withUnichar:(unichar)value {
+- (void)setCharWithId:(id)object withChar:(unichar)value {
   unichar *field = (unichar *) [self pvar:object];
   *field = value;
 }
@@ -191,7 +191,7 @@ typedef union {
   *field = value;
 }
 
-- (void)setShortWithId:(id)object withShortInt:(short)value {
+- (void)setShortWithId:(id)object withShort:(short)value {
   short *field = (short *) [self pvar:object];
   *field = value;
 }

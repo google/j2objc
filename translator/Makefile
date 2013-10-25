@@ -78,6 +78,7 @@ JAVA_SOURCES = \
 	translate/Rewriter.java \
 	translate/StaticVarRewriter.java \
 	translate/TypeSorter.java \
+	types/AbstractBinding.java \
 	types/AbstractTypeBinding.java \
 	types/BindingMapBuilder.java \
 	types/BindingMapVerifier.java \
@@ -92,7 +93,6 @@ JAVA_SOURCES = \
 	types/IOSMethodBinding.java \
 	types/IOSParameter.java \
 	types/IOSTypeBinding.java \
-	types/IOSVariableBinding.java \
 	types/JavaMethod.java \
 	types/ModifiedTypeBinding.java \
 	types/NodeCopier.java \

@@ -72,6 +72,10 @@ class Options {
     return classpath;
   }
 
+  public void setClasspath(String classpath) {
+    this.classpath = classpath;
+  }
+
   public String getBootclasspath() {
     return bootclasspath != null ? bootclasspath : System.getProperty("sun.boot.class.path");
   }

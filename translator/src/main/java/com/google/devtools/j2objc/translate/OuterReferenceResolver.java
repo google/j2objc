@@ -98,7 +98,8 @@ public class OuterReferenceResolver extends ASTVisitor {
 
   public static boolean needsOuterParam(ITypeBinding type) {
     assert instance != null;
-    return instance.outerVars.containsKey(type) || instance.usesOuterParam.contains(type);
+    return !type.isLocal() || instance.outerVars.containsKey(type)
+        || instance.usesOuterParam.contains(type);
   }
 
   public static IVariableBinding getOuterField(ITypeBinding type) {
@@ -178,8 +179,8 @@ public class OuterReferenceResolver extends ASTVisitor {
     // Ensure that the new outer field does not conflict with a field in a superclass.
     type = type.getSuperclass();
     int suffix = 0;
-    while (type.getDeclaringClass() != null) {
-      if (!Modifier.isStatic(type.getModifiers())) {
+    while (type != null) {
+      if (type.getDeclaringClass() != null && !Modifier.isStatic(type.getModifiers())) {
         suffix++;
       }
       type = type.getSuperclass();
@@ -213,9 +214,11 @@ public class OuterReferenceResolver extends ASTVisitor {
       }
     }
     if (innerField == null) {
-      innerField = new GeneratedVariableBinding(
+      GeneratedVariableBinding newField = new GeneratedVariableBinding(
           "val$" + var.getName(), Modifier.PRIVATE | Modifier.FINAL, var.getType(), true, false,
           declaringType, null);
+      newField.addAnnotations(var);
+      innerField = newField;
       captures.put(declaringType, new Capture(var, innerField));
     }
     return innerField;

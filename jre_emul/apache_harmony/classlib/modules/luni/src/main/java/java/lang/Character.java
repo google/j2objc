@@ -18,6 +18,7 @@
 package java.lang;
 
 import java.io.Serializable;
+import java.util.Arrays;
 import java.util.Comparator;
 import java.util.SortedMap;
 import java.util.TreeMap;
@@ -2710,6 +2711,12 @@ public final class Character implements Serializable, Comparable<Character> {
         return value;
     }
 
+    private static void checkValidCodePoint(int codePoint) {
+        if (!isValidCodePoint(codePoint)) {
+            throw new IllegalArgumentException("Invalid code point: " + codePoint);
+        }
+    }
+
     /**
      * Compares this object to the specified character object to determine their
      * relative order.
@@ -2727,7 +2734,16 @@ public final class Character implements Serializable, Comparable<Character> {
     public int compareTo(Character c) {
         return value - ((Character) c).value;
     }
-    
+
+    /**
+     * Compares two {@code char} values.
+     * @return 0 if lhs = rhs, less than 0 if lhs &lt; rhs, and greater than 0 if lhs &gt; rhs.
+     * @since 1.7
+     */
+    public static int compare(char lhs, char rhs) {
+        return lhs - rhs;
+    }
+
     /**
      * Returns a {@code Character} instance for the {@code char} value passed.
      * For ASCII/Latin-1 characters (and generally all characters with a Unicode
@@ -2819,6 +2835,14 @@ public final class Character implements Serializable, Comparable<Character> {
      */
     public static boolean isLowSurrogate(char ch) {
         return (MIN_LOW_SURROGATE <= ch && MAX_LOW_SURROGATE >= ch);
+    }
+
+    /**
+     * Returns true if the given character is a high or low surrogate.
+     * @since 1.7
+     */
+    public static boolean isSurrogate(char ch) {
+        return ch >= MIN_SURROGATE && ch <= MAX_SURROGATE;
     }
 
     /**
@@ -3387,10 +3411,91 @@ public final class Character implements Serializable, Comparable<Character> {
     }
 
     /**
+     * Determines the index in a subsequence of the specified character array
+     * that is offset {@code codePointOffset} code points from {@code index}.
+     * The subsequence is delineated by {@code start} and {@code count}.
+     *
+     * @param seq
+     *            the character array to find the index in.
+     * @param start
+     *            the inclusive index that marks the beginning of the
+     *            subsequence.
+     * @param count
+     *            the number of {@code char} values to include within the
+     *            subsequence.
+     * @param index
+     *            the start index in the subsequence of the char array.
+     * @param codePointOffset
+     *            the number of code points to look backwards or forwards; may
+     *            be a negative or positive value.
+     * @return the index in {@code seq} that is {@code codePointOffset} code
+     *         points away from {@code index}.
+     * @throws NullPointerException
+     *             if {@code seq} is {@code null}.
+     * @throws IndexOutOfBoundsException
+     *             if {@code start < 0}, {@code count < 0},
+     *             {@code index < start}, {@code index > start + count},
+     *             {@code start + count} is greater than the length of
+     *             {@code seq}, or if there are not enough values in
+     *             {@code seq} to skip {@code codePointOffset} code points
+     *             forward or backward (if {@code codePointOffset} is
+     *             negative) from {@code index}.
+     * @since 1.5
+     */
+    public static int offsetByCodePoints(char[] seq, int start, int count,
+            int index, int codePointOffset) {
+        Arrays.checkOffsetAndCount(seq.length, start, count);
+        int end = start + count;
+        if (index < start || index > end) {
+            throw new IndexOutOfBoundsException();
+        }
+
+        if (codePointOffset == 0) {
+            return index;
+        }
+
+        if (codePointOffset > 0) {
+            int codePoints = codePointOffset;
+            int i = index;
+            while (codePoints > 0) {
+                codePoints--;
+                if (i >= end) {
+                    throw new IndexOutOfBoundsException();
+                }
+                if (isHighSurrogate(seq[i])) {
+                    int next = i + 1;
+                    if (next < end && isLowSurrogate(seq[next])) {
+                        i++;
+                    }
+                }
+                i++;
+            }
+            return i;
+        }
+
+        int codePoints = -codePointOffset;
+        int i = index;
+        while (codePoints > 0) {
+            codePoints--;
+            i--;
+            if (i < start) {
+                throw new IndexOutOfBoundsException();
+            }
+            if (isLowSurrogate(seq[i])) {
+                int prev = i - 1;
+                if (prev >= start && isHighSurrogate(seq[prev])) {
+                    i--;
+                }
+            }
+        }
+        return i;
+    }
+
+    /**
      * Convenience method to determine the value of the specified character
      * {@code c} in the supplied radix. The value of {@code radix} must be
      * between MIN_RADIX and MAX_RADIX.
-     * 
+     *
      * @param c
      *            the character to determine the value of.
      * @param radix
@@ -3464,6 +3569,42 @@ public final class Character implements Serializable, Comparable<Character> {
     }
 
     /**
+     * Returns a human-readable name for the given code point,
+     * or null if the code point is unassigned.
+     *
+     * <p>As a fallback mechanism this method returns strings consisting of the Unicode
+     * block name (with underscores replaced by spaces), a single space, and the uppercase
+     * hex value of the code point, using as few digits as necessary.
+     *
+     * <p>Examples:
+     * <ul>
+     * <li>{@code Character.getName(0)} returns "NULL".
+     * <li>{@code Character.getName('e')} returns "LATIN SMALL LETTER E".
+     * <li>{@code Character.getName('\u0666')} returns "ARABIC-INDIC DIGIT SIX".
+     * <li>{@code Character.getName(0xe000)} returns "PRIVATE USE AREA E000".
+     * </ul>
+     *
+     * <p>Note that the exact strings returned will vary from release to release.
+     *
+     * @throws IllegalArgumentException if {@code codePoint} is not a valid code point.
+     * @since 1.7
+     */
+    public static String getName(int codePoint) {
+        checkValidCodePoint(codePoint);
+        if (getType(codePoint) == Character.UNASSIGNED) {
+            return null;
+        }
+        String result = getNameImpl(codePoint);
+        if (result == null) {
+            String blockName = Character.UnicodeBlock.of(codePoint).toString().replace('_', ' ');
+            result = blockName + " " + IntegralToString.intToHexString(codePoint, true, 0);
+        }
+        return result;
+    }
+
+    private static native String getNameImpl(int codePoint);
+
+    /**
      * Gets the numeric value of the specified Unicode character.
      * 
      * @param c
@@ -3527,6 +3668,24 @@ public final class Character implements Serializable, Comparable<Character> {
     }
 
     /**
+     * Gets the general Unicode category of the specified code point.
+     *
+     * @param codePoint
+     *            the Unicode code point to get the category of.
+     * @return the Unicode category of {@code codePoint}.
+     */
+    public static int getType(int codePoint) {
+        int type = getTypeImpl(codePoint);
+        // The type values returned by ICU are not RI-compatible. The RI skips the value 17.
+        if (type <= Character.FORMAT) {
+            return type;
+        }
+        return (type + 1);
+    }
+
+    private static native int getTypeImpl(int codePoint);
+
+    /**
      * Gets the Unicode directionality of the specified character.
      * 
      * @param c
@@ -3568,6 +3727,33 @@ public final class Character implements Serializable, Comparable<Character> {
     @Override
     public int hashCode() {
         return value;
+    }
+
+    /**
+     * Returns the high surrogate for the given code point. The result is meaningless if
+     * the given code point is not a supplementary character.
+     * @since 1.7
+     */
+    public static char highSurrogate(int codePoint) {
+        return (char) ((codePoint >> 10) + 0xd7c0);
+    }
+
+    /**
+     * Returns the low surrogate for the given code point. The result is meaningless if
+     * the given code point is not a supplementary character.
+     * @since 1.7
+     */
+    public static char lowSurrogate(int codePoint) {
+        return (char) ((codePoint & 0x3ff) | 0xdc00);
+    }
+
+    /**
+     * Returns true if the given code point is in the Basic Multilingual Plane (BMP).
+     * Such code points can be represented by a single {@code char}.
+     * @since 1.7
+     */
+    public static boolean isBmpCodePoint(int codePoint) {
+       return codePoint >= Character.MIN_VALUE && codePoint <= Character.MAX_VALUE;
     }
 
     /**

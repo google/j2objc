@@ -34,6 +34,14 @@ public class AssertionError extends Error {
     }
 
     /**
+     * Constructs a new {@code AssertionError} with the given detail message and cause.
+     * @since 1.7
+     */
+    public AssertionError(String detailMessage, Throwable cause) {
+        super(detailMessage, cause);
+    }
+
+    /**
      * Constructs a new {@code AssertionError} with a message based on calling
      * {@link String#valueOf(Object)} with the specified object. If the object
      * is an instance of {@link Throwable}, then it also becomes the cause of

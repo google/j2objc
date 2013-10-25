@@ -21,35 +21,22 @@
 
 #import "Constructor.h"
 #import "java/lang/AssertionError.h"
-#import "java/lang/Boolean.h"
-#import "java/lang/Byte.h"
-#import "java/lang/Character.h"
-#import "java/lang/Double.h"
 #import "java/lang/ExceptionInInitializerError.h"
-#import "java/lang/Float.h"
 #import "java/lang/IllegalArgumentException.h"
-#import "java/lang/Integer.h"
-#import "java/lang/Long.h"
-#import "java/lang/Short.h"
 #import "java/lang/Throwable.h"
 #import "java/lang/reflect/InvocationTargetException.h"
 #import "java/lang/reflect/Method.h"
 
 #import <objc/runtime.h>
 
-static id makeException(Class exceptionClass) {
-#if __has_feature(objc_arc)
-    return [[exceptionClass alloc] init];
-#else
-    return [[[exceptionClass alloc] init] autorelease];
-#endif
-}
-
 @implementation JavaLangReflectConstructor
 
-+ (id)constructorWithSelector:(SEL)aSelector withClass:(IOSClass *)aClass {
++ (id)constructorWithSelector:(SEL)aSelector
+                    withClass:(IOSClass *)aClass
+                 withMetadata:(const J2ObjcMethodInfo *)metadata {
   id c = [[JavaLangReflectConstructor alloc] initWithSelector:aSelector
-                                                    withClass:aClass];
+                                                    withClass:aClass
+                                                 withMetadata:metadata];
 #if ! __has_feature(objc_arc)
   [c autorelease];
 #endif
@@ -59,16 +46,10 @@ static id makeException(Class exceptionClass) {
 - (id)newInstanceWithNSObjectArray:(IOSObjectArray *)initArgs {
   id newInstance;
   @try {
-    newInstance = [class_.objcClass alloc];
+    newInstance = AUTORELEASE([class_.objcClass alloc]);
   }
   @catch (JavaLangThrowable *e) {
-    JavaLangThrowable *throwable =
-        [[JavaLangExceptionInInitializerError alloc]
-            initWithJavaLangThrowable:e];
-#if !__has_feature(objc_arc)
-    [throwable autorelease];
-#endif
-    @throw throwable;
+    @throw AUTORELEASE([[JavaLangExceptionInInitializerError alloc] initWithJavaLangThrowable:e]);
   }
 
   NSInvocation *invocation =
@@ -78,107 +59,27 @@ static id makeException(Class exceptionClass) {
 
   IOSObjectArray *parameterTypes = [self getParameterTypes];
   if ([initArgs count] != [parameterTypes count]) {
-    @throw makeException([JavaLangIllegalArgumentException class]);
+    @throw AUTORELEASE([[JavaLangIllegalArgumentException alloc] initWithNSString:
+        @"wrong number of arguments"]);
   }
 
   int count = [initArgs count];
   for (int i = 0; i < count; i++) {
-    int argIndex = i + 2;  // Add 2 to account for self and _cmd.
-
-    IOSClass *type = parameterTypes->buffer_[i];
-    id arg = initArgs->buffer_[i];
-
-    if ([type.objcClass isEqual:[NSObject class]] ||
-        [type.objcClass isEqual:[IOSClass class]]) {
-      [invocation setArgument:&arg atIndex:argIndex];
-
-    } else if ([type.objcClass isEqual:[JavaLangByte class]]) {
-      if (![arg isKindOfClass:[JavaLangByte class]]) {
-        @throw makeException([JavaLangIllegalArgumentException class]);
-      }
-
-      char primitiveArg = [(JavaLangByte *) arg charValue];
-      [invocation setArgument:&primitiveArg atIndex:argIndex];
-
-    } else if ([type.objcClass isEqual:[JavaLangCharacter class]]) {
-      if (![arg isKindOfClass:[JavaLangCharacter class]]) {
-        @throw makeException([JavaLangIllegalArgumentException class]);
-      }
-
-      unichar primitiveArg = [(JavaLangCharacter *) arg charValue];
-      [invocation setArgument:&primitiveArg atIndex:argIndex];
-
-    } else if ([type.objcClass isEqual:[JavaLangShort class]]) {
-      if (![arg isKindOfClass:[JavaLangShort class]]) {
-        @throw makeException([JavaLangIllegalArgumentException class]);
-      }
-
-      short primitiveArg = [(JavaLangShort *) arg charValue];
-      [invocation setArgument:&primitiveArg atIndex:argIndex];
-
-    } else if ([type.objcClass isEqual:[JavaLangInteger class]]) {
-      if (![arg isKindOfClass:[JavaLangInteger class]]) {
-        @throw makeException([JavaLangIllegalArgumentException class]);
-      }
-
-      int primitiveArg = [arg intValue];
-      [invocation setArgument:&primitiveArg atIndex:argIndex];
-
-    } else if ([type.objcClass isEqual:[JavaLangLong class]]) {
-      if (![arg isKindOfClass:[JavaLangLong class]]) {
-        @throw makeException([JavaLangIllegalArgumentException class]);
-      }
-
-      long primitiveArg = [arg longValue];
-      [invocation setArgument:&primitiveArg atIndex:argIndex];
-
-    } else if ([type.objcClass isEqual:[JavaLangFloat class]]) {
-      if (![arg isKindOfClass:[JavaLangFloat class]]) {
-        @throw makeException([JavaLangIllegalArgumentException class]);
-      }
-
-      float primitiveArg = [arg floatValue];
-      [invocation setArgument:&primitiveArg atIndex:argIndex];
-
-    } else if ([type.objcClass isEqual:[JavaLangDouble class]]) {
-      if (![arg isKindOfClass:[JavaLangDouble class]]) {
-        @throw makeException([JavaLangIllegalArgumentException class]);
-      }
-
-      double primitiveArg = [arg doubleValue];
-      [invocation setArgument:&primitiveArg atIndex:argIndex];
-
-    } else if ([type.objcClass isEqual:[JavaLangBoolean class]]) {
-      if (![arg isKindOfClass:[JavaLangBoolean class]]) {
-        @throw makeException([JavaLangIllegalArgumentException class]);
-      }
-
-      BOOL primitiveArg = [arg booleanValue];
-      [invocation setArgument:&primitiveArg atIndex:argIndex];
-
-    } else {
-      // Only remaining case is JavaLangVoid, which can't be a constructor
-      // argument.
-      @throw makeException([JavaLangIllegalArgumentException class]);
+    J2ObjcRawValue arg;
+    if (![parameterTypes->buffer_[i] unboxValue:initArgs->buffer_[i] toRawValue:&arg]) {
+      @throw AUTORELEASE([[JavaLangIllegalArgumentException alloc] initWithNSString:
+          @"argument type mismatch"]);
     }
+    [invocation setArgument:&arg atIndex:i + SKIPPED_ARGUMENTS];
   }
 
   @try {
     [invocation invoke];
   }
   @catch (JavaLangThrowable *e) {
-    JavaLangThrowable *throwable =
-        [[JavaLangReflectInvocationTargetException alloc]
-            initWithJavaLangThrowable:e];
-#if !__has_feature(objc_arc)
-    [throwable autorelease];
-#endif
-    @throw throwable;
+    @throw AUTORELEASE(
+        [[JavaLangReflectInvocationTargetException alloc] initWithJavaLangThrowable:e]);
   }
-
-#if !__has_feature(objc_arc)
-  [newInstance autorelease];
-#endif
 
   return newInstance;
 }

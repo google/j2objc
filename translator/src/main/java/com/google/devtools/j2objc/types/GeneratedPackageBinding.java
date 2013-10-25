@@ -26,7 +26,7 @@ import org.eclipse.jdt.core.dom.IPackageBinding;
  *
  * @author Keith Stanger
  */
-public class GeneratedPackageBinding implements IPackageBinding {
+public class GeneratedPackageBinding extends AbstractBinding implements IPackageBinding {
 
   private final String name;
 
@@ -68,35 +68,5 @@ public class GeneratedPackageBinding implements IPackageBinding {
   @Override
   public String getKey() {
     return name;
-  }
-
-  @Override
-  public IAnnotationBinding[] getAnnotations() {
-    return new IAnnotationBinding[0];
-  }
-
-  @Override
-  public IJavaElement getJavaElement() {
-    return null;
-  }
-
-  @Override
-  public boolean isSynthetic() {
-    return true;
-  }
-
-  @Override
-  public boolean isRecovered() {
-    return false;
-  }
-
-  @Override
-  public boolean isDeprecated() {
-    return false;
-  }
-
-  @Override
-  public int getModifiers() {
-    return 0;
   }
 }

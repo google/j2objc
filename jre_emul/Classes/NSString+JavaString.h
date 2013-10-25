@@ -234,9 +234,11 @@ destinationBegin:(int)dstBegin;
                      withDst:(IOSByteArray *)dst
                 withDstBegin:(int)dstBegin;
 
-// String.format(Locale, String, ...)
-+ (NSString *)stringWithLocale:(JavaUtilLocale *)javaLocale
-                        format:(NSString *)format, ...;
+// String.format(String, ...), String.format(Locale, String, ...)
++ (NSString *)formatWithNSString:(NSString *)format withNSObjectArray:(IOSObjectArray *)args;
++ (NSString *)formatWithJavaUtilLocale:(JavaUtilLocale *)locale
+                          withNSString:(NSString *)format
+                     withNSObjectArray:(IOSObjectArray *)args;
 
 // String.startsWith(String, int)
 - (BOOL)hasPrefix:(NSString *)aString offset:(int)offset;

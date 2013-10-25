@@ -21,7 +21,7 @@
 
 include environment.mk
 
-JUNIT_SOURCES = \
+JUNIT_PUBLIC_SOURCES = \
     junit/extensions/TestDecorator.java \
     junit/framework/Assert.java \
     junit/framework/AssertionFailedError.java \
@@ -32,7 +32,6 @@ JUNIT_SOURCES = \
     junit/framework/JUnit4TestCaseFacade.java \
     junit/framework/Protectable.java \
     junit/framework/Test.java \
-    junit/framework/TestCase.java \
     junit/framework/TestFailure.java \
     junit/framework/TestListener.java \
     junit/framework/TestResult.java \
@@ -52,6 +51,42 @@ JUNIT_SOURCES = \
     org/junit/ComparisonFailure.java \
     org/junit/Ignore.java \
     org/junit/Rule.java \
+    org/junit/Test.java \
+    org/junit/rules/MethodRule.java \
+    org/junit/rules/RunRules.java \
+    org/junit/rules/TestRule.java \
+    org/junit/runner/Computer.java \
+    org/junit/runner/Describable.java \
+    org/junit/runner/Description.java \
+    org/junit/runner/JUnitCore.java \
+    org/junit/runner/Request.java \
+    org/junit/runner/Result.java \
+    org/junit/runner/Runner.java \
+    org/junit/runner/RunWith.java \
+    org/junit/runner/manipulation/Filter.java \
+    org/junit/runner/manipulation/Filterable.java \
+    org/junit/runner/manipulation/NoTestsRemainException.java \
+    org/junit/runner/manipulation/Sortable.java \
+    org/junit/runner/manipulation/Sorter.java \
+    org/junit/runner/notification/Failure.java \
+    org/junit/runner/notification/RunListener.java \
+    org/junit/runner/notification/RunNotifier.java \
+    org/junit/runner/notification/StoppedByUserException.java \
+    org/junit/runners/BlockJUnit4ClassRunner.java \
+    org/junit/runners/JUnit4.java \
+    org/junit/runners/ParentRunner.java \
+    org/junit/runners/Suite.java \
+    org/junit/runners/model/FrameworkField.java \
+    org/junit/runners/model/FrameworkMember.java \
+    org/junit/runners/model/InitializationError.java \
+    org/junit/runners/model/MultipleFailureException.java \
+    org/junit/runners/model/NoGenericTypeParametersValidator.java \
+    org/junit/runners/model/RunnerBuilder.java \
+    org/junit/runners/model/RunnerScheduler.java \
+    org/junit/runners/model/Statement.java \
+    org/junit/runners/model/TestClass.java
+
+JUNIT_INTERNAL_SOURCES = \
     org/junit/internal/ArrayComparisonFailure.java \
     org/junit/internal/AssumptionViolatedException.java \
     org/junit/internal/builders/AllDefaultPossibilitiesBuilder.java \
@@ -87,47 +122,19 @@ JUNIT_SOURCES = \
     org/junit/internal/runners/statements/RunAfters.java \
     org/junit/internal/runners/statements/RunBefores.java \
     org/junit/internal/runners/SuiteMethod.java \
-    org/junit/internal/TextListener.java \
-    org/junit/rules/MethodRule.java \
-    org/junit/rules/RunRules.java \
-    org/junit/rules/TestRule.java \
-    org/junit/runner/Computer.java \
-    org/junit/runner/Describable.java \
-    org/junit/runner/Description.java \
-    org/junit/runner/JUnitCore.java \
-    org/junit/runner/Request.java \
-    org/junit/runner/Result.java \
-    org/junit/runner/Runner.java \
-    org/junit/runner/RunWith.java \
-    org/junit/runner/manipulation/Filter.java \
-    org/junit/runner/manipulation/Filterable.java \
-    org/junit/runner/manipulation/NoTestsRemainException.java \
-    org/junit/runner/manipulation/Sortable.java \
-    org/junit/runner/manipulation/Sorter.java \
-    org/junit/runner/notification/Failure.java \
-    org/junit/runner/notification/RunListener.java \
-    org/junit/runner/notification/RunNotifier.java \
-    org/junit/runner/notification/StoppedByUserException.java \
-    org/junit/runners/BlockJUnit4ClassRunner.java \
-    org/junit/runners/JUnit4.java \
-    org/junit/runners/ParentRunner.java \
-    org/junit/runners/Suite.java \
-    org/junit/runners/model/FrameworkField.java \
-    org/junit/runners/model/FrameworkMember.java \
-    org/junit/runners/model/FrameworkMethod.java \
-    org/junit/runners/model/InitializationError.java \
-    org/junit/runners/model/MultipleFailureException.java \
-    org/junit/runners/model/NoGenericTypeParametersValidator.java \
-    org/junit/runners/model/RunnerBuilder.java \
-    org/junit/runners/model/RunnerScheduler.java \
-    org/junit/runners/model/Statement.java \
-    org/junit/runners/model/TestClass.java
+    org/junit/internal/TextListener.java
+
+MODIFIED_SOURCES = \
+    junit/framework/TestCase.java \
+    org/junit/runners/model/FrameworkMethod.java
 
 # MOE:begin_strip
 JUNIT_SOURCES := $(JUNIT_SOURCES) org/junit/internal/MethodSorter.java
 # MOE:end_strip
 
-HAMCREST_SOURCES = \
+JUNIT_SOURCES = $(JUNIT_PUBLIC_SOURCES) $(JUNIT_INTERNAL_SOURCES)
+
+HAMCREST_PUBLIC_SOURCES = \
     org/hamcrest/BaseDescription.java \
     org/hamcrest/BaseMatcher.java \
     org/hamcrest/core/AllOf.java \
@@ -143,34 +150,55 @@ HAMCREST_SOURCES = \
     org/hamcrest/CoreMatchers.java \
     org/hamcrest/Description.java \
     org/hamcrest/Factory.java \
-    org/hamcrest/internal/ArrayIterator.java \
-    org/hamcrest/internal/SelfDescribingValue.java \
-    org/hamcrest/internal/SelfDescribingValueIterator.java \
     org/hamcrest/Matcher.java \
     org/hamcrest/SelfDescribing.java \
     org/hamcrest/StringDescription.java
 
-ORG_JUNIT_TEST_SRC = org/junit/Test.java
-ORG_JUNIT_TEST_OBJ = org/junit/OrgJunitTest.o
+HAMCREST_INTERNAL_SOURCES = \
+    org/hamcrest/internal/ArrayIterator.java \
+    org/hamcrest/internal/SelfDescribingValue.java \
+    org/hamcrest/internal/SelfDescribingValueIterator.java
 
-OBJS = $(JUNIT_SOURCES:%.java=%.o) \
+HAMCREST_SOURCES = $(HAMCREST_PUBLIC_SOURCES) $(HAMCREST_INTERNAL_SOURCES)
+
+# These source files have unique fully-qualified names, but the same class
+# name as other classes. This is an issue when building a native library,
+# as library entries don't include directories. By renaming the generated
+# object files for these sources (adding a OrgJunit prefix), libtool
+# warnings and possible link errors (though none reported) are avoided.
+DUPLICATE_NAME_SOURCES = \
+    org/junit/Test.java \
+    org/junit/Assert.java \
+    org/junit/ComparisonFailure.java \
+    org/junit/internal/runners/InitializationError.java \
+    org/junit/internal/runners/model/MultipleFailureException.java \
+    org/junit/runner/Description.java
+DUPLICATE_NAME_OBJS = \
+    $(foreach file,$(DUPLICATE_NAME_SOURCES), $(dir $(file))OrgJunit$(basename $(notdir $(file))).o)
+
+OBJS := $(JUNIT_SOURCES:%.java=%.o) \
     $(HAMCREST_SOURCES:%.java=%.o) \
-    $(ORG_JUNIT_TEST_OBJ)
+    $(DUPLICATE_NAME_OBJS) \
+    $(MODIFIED_SOURCES:%.java=%.o)
+OBJS := $(filter-out $(DUPLICATE_NAME_SOURCES:%.java=%.o),$(OBJS))
 
 IPHONE_SDK_DIR = $(shell bash ../scripts/sysroot_path.sh --iphoneos)
 SIMULATOR_SDK_DIR = $(shell bash ../scripts/sysroot_path.sh --iphonesimulator)
 
 JAVA_SOURCE_LIST = $(BUILD_DIR)/junit.classes.list
 EXTRACTED_JAVA = $(JUNIT_SOURCES:%=$(JAVA_SRC_DIR)/%) \
-    $(HAMCREST_SOURCES:%=$(JAVA_SRC_DIR)/%) \
-    $(JAVA_SRC_DIR)/$(ORG_JUNIT_TEST_SRC)
+    $(HAMCREST_SOURCES:%=$(JAVA_SRC_DIR)/%)
 TRANSLATED_OBJC = $(JUNIT_SOURCES:%.java=$(BUILD_DIR)/%.m) \
     $(HAMCREST_SOURCES:%.java=$(BUILD_DIR)/%.m) \
-    $(ORG_JUNIT_TEST_SRC:%.java=$(BUILD_DIR)/%.m)
-GENERATED_HEADERS = $(JUNIT_SOURCES:%.java=%.h)
-RELATIVE_HEADERS = $(GENERATED_HEADERS) $(ORG_JUNIT_TEST_SRC:%.java=%.h)
-HEADERS = $(GENERATED_HEADERS:%=$(BUILD_DIR)/%)
-ARCH_HEADERS = $(RELATIVE_HEADERS:%=$(ARCH_INCLUDE_DIR)/%)
+    $(MODIFIED_SOURCES:%.java=$(BUILD_DIR)/%.m)
+PUBLIC_HEADERS = \
+    $(JUNIT_PUBLIC_SOURCES:%.java=%.h) \
+    $(HAMCREST_PUBLIC_SOURCES:%.java=%.h) \
+    $(MODIFIED_SOURCES:%.java=%.h)
+INTERNAL_HEADERS = \
+    $(JUNIT_INTERNAL_SOURCES:%.java=%.h) \
+    $(HAMCREST_INTERNAL_SOURCES:%.java=%.h)
+ARCH_HEADERS = $(PUBLIC_HEADERS:%=$(ARCH_INCLUDE_DIR)/%)
 
 # Settings for building Mac OS X, iPhone, and iPhone simulator libraries.
 EMULATION_MACOSX_LIB = $(BUILD_DIR)/macosx-libjunit.a
@@ -196,12 +224,38 @@ SIMULATOR_FLAGS = -arch i386 -isysroot $(SIMULATOR_SDK_DIR)
 XCODE_BUILD_DIR = $(TARGET_TEMP_DIR)
 XCODE_FLAGS = $(ARCH_FLAGS) $(SDK_FLAGS)
 
+JAVA_SOURCES = \
+    $(EXTRACTED_JAVA) \
+    $(MODIFIED_SOURCES:%=$(MODIFIED_JAVA_SRC_DIR)/%)
+TRANSLATED_SOURCES = $(TRANSLATED_OBJC)
+JUNIT_JAR = $(BUILD_DIR)/j2objc_junit.jar
+JUNIT_DIST_JAR = $(DIST_JAR_DIR)/j2objc_junit.jar
+SOURCEPATH = $(JAVA_SRC_DIR):$(MODIFIED_JAVA_SRC_DIR)
+CLASSPATH = $(CLASSES_DIR):$(DIST_JAR_DIR)/j2objc_annotations.jar
+
+JAVA_SOURCES_MANIFEST = $(BUILD_DIR)/java_sources.mf
+OBJC_SOURCES_MANIFEST = $(BUILD_DIR)/objc_sources.mf
+
+java: $(JUNIT_DIST_JAR)
+
+$(JUNIT_JAR): $(JAVA_SOURCES) | $(BUILD_DIR)
+	@cd $(J2OBJC_ROOT)/annotations && make dist
+	@echo "building j2objc_junit.jar"
+	@rm -rf $(CLASSES_DIR)
+	@mkdir -p $(CLASSES_DIR)
+	@$(JAVAC) -sourcepath $(SOURCEPATH) -cp $(CLASSPATH) -d $(CLASSES_DIR) $^
+	@jar cf $@ -C $(CLASSES_DIR) .
+
+$(JUNIT_DIST_JAR): $(JUNIT_JAR) | $(DIST_JAR_DIR)
+	@install -m 0644 $< $@
+
 lib: translate $(JUNIT_LIB)
 	@:
 
 translate: pre_translate $(EXTRACTED_JAVA) $(TRANSLATED_OBJC)
 	@if [ `cat $(JAVA_SOURCE_LIST) | wc -l` -ge 1 ] ; then \
-	  $(J2OBJC) -sourcepath $(JAVA_SRC_DIR) `cat $(JAVA_SOURCE_LIST)`; \
+	  $(J2OBJC) -sourcepath $(MODIFIED_JAVA_SRC_DIR):$(JAVA_SRC_DIR) \
+	    `cat $(JAVA_SOURCE_LIST)`; \
 	fi
 
 pre_translate:
@@ -211,9 +265,8 @@ pre_translate:
 
 $(BUILD_DIR)/.extracted: $(JUNIT_SRC_JAR) $(HAMCREST_SRC_JAR)
 	@mkdir -p $(JAVA_SRC_DIR)
-	unzip -q -o -d $(JAVA_SRC_DIR) $(JUNIT_SRC_JAR) $(JUNIT_SOURCES) \
-	    $(ORG_JUNIT_TEST_SRC)
-	unzip -q -o -d $(JAVA_SRC_DIR) $(HAMCREST_SRC_JAR) $(HAMCREST_SOURCES)
+	@unzip -q -o -d $(JAVA_SRC_DIR) $(JUNIT_SRC_JAR) $(JUNIT_SOURCES)
+	@unzip -q -o -d $(JAVA_SRC_DIR) $(HAMCREST_SRC_JAR) $(HAMCREST_SOURCES)
 	@touch $(EXTRACTED_JAVA)
 	@touch $@
 
@@ -221,6 +274,28 @@ $(EXTRACTED_JAVA): $(BUILD_DIR)/.extracted
 
 $(BUILD_DIR)/%.h $(BUILD_DIR)/%.m: $(JAVA_SRC_DIR)/%.java | pre_translate
 	@echo "$?" >> $(JAVA_SOURCE_LIST)
+
+$(BUILD_DIR)/%.h $(BUILD_DIR)/%.m: $(MODIFIED_JAVA_SRC_DIR)/%.java | pre_translate
+	@echo "$?" >> $(JAVA_SOURCE_LIST)
+
+$(JAVA_SOURCES_MANIFEST): $(JAVA_SOURCES) | $(BUILD_DIR)
+	@echo "Building $$(basename $@)"
+	@if [ -e $@ ]; then rm $@; fi
+	@files='$^' && for i in $$files; do echo $$i >> $@; done
+
+java_sources_manifest: $(JAVA_SOURCES_MANIFEST)
+	@:
+
+$(OBJC_SOURCES_MANIFEST): $(TRANSLATED_SOURCES) | $(BUILD_DIR)
+	@echo "Building $$(basename $@)"
+	@if [ -e $@ ]; then rm $@; fi
+	@files='$^' && for i in $$files; do \
+	  echo $${i%.m}.h >> $@; \
+	  echo $$i >> $@; \
+	done
+
+objc_sources_manifest: $(OBJC_SOURCES_MANIFEST)
+	@:
 
 ifdef TARGET_TEMP_DIR
 $(JUNIT_LIB): $(OBJS:%=$(TARGET_TEMP_DIR)/%)
@@ -252,15 +327,21 @@ $(1)/%.o: $(BUILD_DIR)/%.m | translate
 	@mkdir -p $$(@D)
 	$$(CLANG) -c $$? -o $$@ $(2) $$(OBJCFLAGS) -I$$(BUILD_DIR) \
 	  -I$(ARCH_INCLUDE_DIR)
+endef
 
-$(1)/$(ORG_JUNIT_TEST_OBJ): $(BUILD_DIR)/$(ORG_JUNIT_TEST_SRC:%.java=%.m) | translate
+define rename_compile_rules
+$(1)/$(4): $(BUILD_DIR)/$(3) | translate
 	@mkdir -p $$(@D)
 	$$(CLANG) -c $$? -o $$@ $(2) $$(OBJCFLAGS) -I$$(BUILD_DIR) \
 	  -I$$(ARCH_INCLUDE_DIR)
 
+$(BUILD_DIR)/%.h $(BUILD_DIR)/%.m: $(MODIFIED_JAVA_SRC_DIR)/%.java
+	@echo "$?" >> $(JAVA_SOURCE_LIST)
 endef
 
-arch_compile_rules = $(eval $(call compile_rules,$(1),$(2)))
+arch_compile_rules = $(eval $(call compile_rules,$(1),$(2))) \
+  $(foreach file,$(DUPLICATE_NAME_SOURCES),$(eval $(call \
+  rename_compile_rules,$(1),$(2),$(file:%.java=%.m),$(dir $(file))OrgJunit$(basename $(notdir $(file))).o)))
 
 ifdef TARGET_TEMP_DIR
 $(call arch_compile_rules,$(XCODE_BUILD_DIR),$(XCODE_FLAGS),xcode)

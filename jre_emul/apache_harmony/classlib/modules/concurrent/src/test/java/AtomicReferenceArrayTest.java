@@ -165,7 +165,7 @@ public class AtomicReferenceArrayTest extends JSR166TestCase
     /**
      * a deserialized serialized array holds same values
      *
-     // TODO(user): enable when serialization is supported.
+     // TODO(tball): enable when serialization is supported.
     public void testSerialization() {
         AtomicReferenceArray l = new AtomicReferenceArray(SIZE);
         for (int i = 0; i < SIZE; ++i) {

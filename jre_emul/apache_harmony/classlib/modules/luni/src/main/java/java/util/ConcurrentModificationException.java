@@ -21,7 +21,7 @@ package java.util;
  * An {@code ConcurrentModificationException} is thrown when a Collection is
  * modified and an existing iterator on the Collection is used to modify the
  * Collection as well.
- * 
+ *
  * @see java.lang.RuntimeException
  */
 public class ConcurrentModificationException extends RuntimeException {
@@ -39,12 +39,29 @@ public class ConcurrentModificationException extends RuntimeException {
     /**
      * Constructs a new {@code ConcurrentModificationException} with the current
      * stack trace and message filled in.
-     * 
+     *
      * @param detailMessage
      *           the detail message for the exception.
      */
     public ConcurrentModificationException(String detailMessage) {
         super(detailMessage);
+    }
+
+    /**
+     * Constructs a new {@code ConcurrentModificationException} with the given detail
+     * message and cause.
+     * @since 1.7
+     */
+    public ConcurrentModificationException(String detailMessage, Throwable cause) {
+        super(detailMessage, cause);
+    }
+
+    /**
+     * Constructs a new {@code ConcurrentModificationException} with the given cause.
+     * @since 1.7
+     */
+    public ConcurrentModificationException(Throwable cause) {
+        super(cause);
     }
 
 }

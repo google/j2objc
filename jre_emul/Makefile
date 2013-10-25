@@ -26,6 +26,7 @@ include environment.mk
 
 # Native obj-c sources that do not emulate a specific java class.
 IOS_OBJS = \
+	cbigint.o \
 	IOSArray.o \
 	IOSArrayClass.o \
 	IOSBooleanArray.o \
@@ -55,6 +56,7 @@ IOS_OBJS = \
 	NSObject+JavaObject.o \
 	NSString+JavaString.o \
 	objc-sync.o \
+	java_lang_RealToString.o \
 	java/lang/reflect/ExecutableMember.o
 
 # Java classes with hand written obj-c implementations. Shouldn't be translated,
@@ -105,12 +107,14 @@ JRE_INTERFACES = \
 	java/util/Deque.h \
 	java/util/Enumeration.h \
 	java/util/EventListener.h \
+	java/util/Formattable.h \
 	java/util/Iterator.h \
 	java/util/List.h \
 	java/util/ListIterator.h \
 	java/util/Map.h \
 	java/util/NavigableMap.h \
 	java/util/NavigableSet.h \
+	java/util/Observer.h \
 	java/util/Queue.h \
 	java/util/RandomAccess.h \
 	java/util/Set.h \
@@ -153,6 +157,7 @@ JAVA_SOURCES = \
 	java/io/ByteArrayOutputStream.java \
 	java/io/CharArrayReader.java \
 	java/io/CharArrayWriter.java \
+	java/io/CharConversionException.java \
 	java/io/DataInputStream.java \
 	java/io/DataOutputStream.java \
 	java/io/EOFException.java \
@@ -172,15 +177,21 @@ JAVA_SOURCES = \
 	java/io/InterruptedIOException.java \
 	java/io/InvalidObjectException.java \
 	java/io/IOException.java \
+	java/io/LineNumberReader.java \
 	java/io/NotSerializableException.java \
 	java/io/ObjectStreamException.java \
 	java/io/OutputStream.java \
 	java/io/OutputStreamWriter.java \
+	java/io/PipedInputStream.java \
+	java/io/PipedOutputStream.java \
+	java/io/PipedReader.java \
+	java/io/PipedWriter.java \
 	java/io/PrintStream.java \
 	java/io/PrintWriter.java \
 	java/io/PushbackInputStream.java \
 	java/io/PushbackReader.java \
 	java/io/Reader.java \
+	java/io/SequenceInputStream.java \
 	java/io/StreamTokenizer.java \
 	java/io/StringReader.java \
 	java/io/StringWriter.java \
@@ -188,6 +199,7 @@ JAVA_SOURCES = \
 	java/io/UnsupportedEncodingException.java \
 	java/io/UTFDataFormatException.java \
 	java/io/Writer.java \
+	java/lang/AbstractStringBuilder.java \
 	java/lang/annotation/AnnotationFormatError.java \
 	java/lang/annotation/AnnotationTypeMismatchException.java \
 	java/lang/annotation/ElementType.java \
@@ -222,6 +234,7 @@ JAVA_SOURCES = \
 	java/lang/InternalError.java \
 	java/lang/IndexOutOfBoundsException.java \
 	java/lang/Integer.java \
+	java/lang/IntegralToString.java \
 	java/lang/InterruptedException.java \
 	java/lang/LinkageError.java \
 	java/lang/Long.java \
@@ -234,6 +247,7 @@ JAVA_SOURCES = \
 	java/lang/Override.java \
 	java/lang/Package.java \
 	java/lang/Readable.java \
+	java/lang/RealToString.java \
 	java/lang/annotation/Documented.java \
 	java/lang/annotation/Inherited.java \
 	java/lang/annotation/Retention.java \
@@ -263,6 +277,7 @@ JAVA_SOURCES = \
 	java/lang/ThreadDeath.java \
 	java/lang/ThreadGroup.java \
 	java/lang/ThreadLocal.java \
+	java/lang/TypeNotPresentException.java \
 	java/lang/UnsupportedOperationException.java \
 	java/lang/Void.java \
 	java/lang/ref/PhantomReference.java \
@@ -360,6 +375,7 @@ JAVA_SOURCES = \
 	java/security/PrivilegedExceptionAction.java \
 	java/security/ProtectionDomain.java \
 	java/security/SecureClassLoader.java \
+	java/security/SecureRandom.java \
 	java/security/SecurityPermission.java \
 	java/sql/Date.java \
 	java/sql/Time.java \
@@ -418,16 +434,28 @@ JAVA_SOURCES = \
 	java/util/Currency.java \
 	java/util/Date.java \
 	java/util/Dictionary.java \
+	java/util/DuplicateFormatFlagsException.java \
 	java/util/EnumMap.java \
 	java/util/EnumSet.java \
 	java/util/EventObject.java \
+	java/util/EventListenerProxy.java \
 	java/util/EmptyStackException.java \
+	java/util/FormatFlagsConversionMismatchException.java \
+	java/util/FormattableFlags.java \
+	java/util/Formatter.java \
+	java/util/FormatterClosedException.java \
 	java/util/Grego.java \
 	java/util/GregorianCalendar.java \
 	java/util/HashSet.java \
 	java/util/Hashtable.java \
 	java/util/HugeEnumSet.java \
 	java/util/IdentityHashMap.java \
+	java/util/IllegalFormatException.java \
+	java/util/IllegalFormatCodePointException.java \
+	java/util/IllegalFormatConversionException.java \
+	java/util/IllegalFormatFlagsException.java \
+	java/util/IllegalFormatPrecisionException.java \
+	java/util/IllegalFormatWidthException.java \
 	java/util/InputMismatchException.java \
 	java/util/InvalidPropertiesFormatException.java \
 	java/util/LinkedList.java \
@@ -443,21 +471,31 @@ JAVA_SOURCES = \
 	java/util/logging/NSLogHandler.java \
 	java/util/MapEntry.java \
 	java/util/MiniEnumSet.java \
+	java/util/MissingFormatArgumentException.java \
+	java/util/MissingFormatWidthException.java \
 	java/util/MissingResourceException.java \
 	java/util/NoSuchElementException.java \
+	java/util/Observable.java \
 	java/util/PriorityQueue.java \
 	java/util/Properties.java \
+	java/util/PropertyPermission.java \
 	java/util/PropertyResourceBundle.java \
 	java/util/Random.java \
 	java/util/ResourceBundle.java \
+	java/util/ServiceConfigurationError.java \
+	java/util/ServiceLoader.java \
 	java/util/SimpleTimeZone.java \
 	java/util/Stack.java \
 	java/util/StringTokenizer.java \
 	java/util/Timer.java \
 	java/util/TimerTask.java \
 	java/util/TimeZone.java \
+	java/util/TooManyListenersException.java \
 	java/util/TreeMap.java \
 	java/util/TreeSet.java \
+	java/util/UnknownFormatConversionException.java \
+	java/util/UnknownFormatFlagsException.java \
+	java/util/UUID.java \
 	java/util/Vector.java \
 	java/util/WeakHashMap.java \
 	java/util/regex/Matcher.java \
@@ -490,6 +528,7 @@ JAVA_SOURCES = \
 	libcore/io/Os.java \
 	libcore/io/OsConstants.java \
 	libcore/io/Posix.java \
+	libcore/math/MathUtils.java \
 	libcore/net/url/FileHandler.java \
 	libcore/net/url/UrlUtils.java \
 	libcore/util/BasicLruCache.java \
@@ -581,6 +620,14 @@ MAIN_LIB_OBJS = $(MAIN_OBJ:%=$(CLASS_DIR)/%)
 default: libs
 	@: # suppress make's "nothing to be done" message
 
+# Only build dependencies when called directly from command-line.
+ifeq ("$(CONFIGURATION_BUILD_DIR)x$(MAKELEVEL)", "x0")
+find_cycles_deps:
+	@cd .. && $(MAKE) cycle_finder_dist
+else
+find_cycles_deps:
+endif
+
 analyze: $(ALL_OBJS:%.o=$(CLASS_DIR)/%.plist)
 
 translate: pre_translate $(TRANSLATED_OBJC)
@@ -669,36 +716,36 @@ define compile_rules
 $(1)/%.o: $(3)/%.$(4) | translate
 	@mkdir -p $$(@D)
 	$$(CLANG) -c $$< -o $$@ $(2) $$(OBJCFLAGS) -I$$(EMULATION_CLASS_DIR) \
-	    -I$$(TRANSLATED_SOURCE_DIR)
+	    -I$$(TRANSLATED_SOURCE_DIR) -I$$(ANDROID_NATIVE_DIR)
 
 $(1)/%.plist: $(3)/%.$(4) | translate
 	@mkdir -p $$(@D)
 	$$(CLANG) -c $$< -o $$@ $(2) $$(OBJCFLAGS) $$(STATIC_ANALYZER_FLAGS) \
-	    -I$$(EMULATION_CLASS_DIR) -I$$(TRANSLATED_SOURCE_DIR)
+	    -I$$(EMULATION_CLASS_DIR) -I$$(TRANSLATED_SOURCE_DIR) -I$$(ANDROID_NATIVE_DIR)
 endef
 
 define compile_rules_no_arc
 $(1)/$(3:.m=.o): Classes/$(3) | translate
 	@mkdir -p $$(@D)
 	$$(CLANG) -c $$< -o $$@ $(2) $$(OBJCFLAGS_NO_ARC) \
-	    -I$$(EMULATION_CLASS_DIR) -I$$(TRANSLATED_SOURCE_DIR)
+	    -I$$(EMULATION_CLASS_DIR) -I$$(TRANSLATED_SOURCE_DIR) -I$$(ANDROID_NATIVE_DIR)
 
 $(1)/$(3:.m=.plist): Classes/$(3) | translate
 	@mkdir -p $$(@D)
 	$$(CLANG) -c $$< -o $$@ $(2) $$(OBJCFLAGS) $$(STATIC_ANALYZER_FLAGS) \
-	    -I$$(EMULATION_CLASS_DIR) -I$$(TRANSLATED_SOURCE_DIR)
+	    -I$$(EMULATION_CLASS_DIR) -I$$(TRANSLATED_SOURCE_DIR) -I$$(ANDROID_NATIVE_DIR)
 endef
 
 define additional_compile_rules
 $(1)/objc-sync.o: $(APPLE_ROOT)/objc-sync.m
 	@mkdir -p $$(@D)
 	$$(CLANG) -c $$< -o $$@ $(2) $$(OBJCFLAGS_NO_ARC) \
-	    -I$$(EMULATION_CLASS_DIR) -I$$(TRANSLATED_SOURCE_DIR)
+	    -I$$(EMULATION_CLASS_DIR) -I$$(TRANSLATED_SOURCE_DIR) -I$$(ANDROID_NATIVE_DIR)
 
 $(1)/objc-sync.plist: $(APPLE_ROOT)/objc-sync.m
 	@mkdir -p $$(@D)
 	$$(CLANG) -c $$< -o $$@ $(2) $$(OBJCFLAGS) $$(STATIC_ANALYZER_FLAGS) \
-	    -I$$(EMULATION_CLASS_DIR) -I$$(TRANSLATED_SOURCE_DIR)
+	    -I$$(EMULATION_CLASS_DIR) -I$$(TRANSLATED_SOURCE_DIR) -I$$(ANDROID_NATIVE_DIR)
 endef
 
 NON_ARC_SRCS = \
@@ -706,7 +753,7 @@ NON_ARC_SRCS = \
     java/util/LinkedHashMap.m \
     IOSReference.m
 
-OBJC_SOURCE_DIRS = $(EMULATION_CLASS_DIR) $(TRANSLATED_SOURCE_DIR)
+OBJC_SOURCE_DIRS = $(EMULATION_CLASS_DIR) $(TRANSLATED_SOURCE_DIR) $(ANDROID_NATIVE_DIR)
 OBJC_EXTENSIONS = m mm
 arch_compile_rules = $(foreach src_dir,$(OBJC_SOURCE_DIRS),$(foreach ext,$(OBJC_EXTENSIONS),\
     $(eval $(call compile_rules,$(1),$(2),$(src_dir),$(ext))))) \
@@ -773,8 +820,5 @@ $(OBJC_SOURCES_MANIFEST): $(ALL_JAVA_SOURCES) | $(BUILD_DIR)
 
 objc_sources_manifest: $(OBJC_SOURCES_MANIFEST)
 
-find_cycles: make_cycle_finder $(JAVA_SOURCES_MANIFEST)
+find_cycles: find_cycles_deps $(JAVA_SOURCES_MANIFEST)
 	$(DIST_DIR)/cycle_finder -w cycle_whitelist.txt `cat $(JAVA_SOURCES_MANIFEST)`
-
-make_cycle_finder:
-	@cd .. && $(MAKE) cycle_finder_dist

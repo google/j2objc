@@ -385,17 +385,17 @@ public class ModifierTest extends junit.framework.TestCase {
     }
 
     public void test_Method_Modifier() throws Exception {
-        assertEquals(Modifier.PUBLIC, MethodClass.class
-                .getMethod("publicAbstractMethod", new Class[0]).getModifiers());
+        assertEquals(Modifier.PUBLIC + Modifier.ABSTRACT, MethodClass.class
+            .getMethod("publicAbstractMethod", new Class[0]).getModifiers());
         assertEquals(Modifier.PUBLIC + Modifier.STATIC, MethodClass.class
                 .getMethod("publicStaticMethod", new Class[0]).getModifiers());
 
-        assertEquals(Modifier.PUBLIC, MethodClass.class
+        assertEquals(Modifier.PUBLIC + Modifier.FINAL, MethodClass.class
                 .getMethod("publicFinalMethod", new Class[0]).getModifiers());
 
-        assertEquals(Modifier.PUBLIC + Modifier.STATIC,
+        assertEquals(Modifier.PUBLIC + Modifier.STATIC + Modifier.FINAL,
                 MethodClass.class.getMethod("publicStaticFinalMethod",
-                        new Class[0]).getModifiers());
+                      new Class[0]).getModifiers());
     }
 
 	/**

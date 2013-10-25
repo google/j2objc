@@ -114,6 +114,15 @@ public final class Integer extends Number implements Comparable<Integer> {
     }
 
     /**
+     * Compares two {@code int} values.
+     * @return 0 if lhs = rhs, less than 0 if lhs &lt; rhs, and greater than 0 if lhs &gt; rhs.
+     * @since 1.7
+     */
+    public static int compare(int lhs, int rhs) {
+        return lhs < rhs ? -1 : (lhs == rhs ? 0 : 1);
+    }
+
+    /**
      * Parses the specified string and returns a {@code Integer} instance if the
      * string can be decoded into an integer value. The string may be an
      * optional minus sign "-" followed by a hexadecimal ("0x..." or "#..."),
@@ -381,89 +390,38 @@ public final class Integer extends Number implements Comparable<Integer> {
     /**
      * Converts the specified integer into its binary string representation. The
      * returned string is a concatenation of '0' and '1' characters.
-     * 
+     *
      * @param i
      *            the integer to convert.
      * @return the binary string representation of {@code i}.
      */
     public static String toBinaryString(int i) {
-        int count = 1, j = i;
-
-        if (i < 0) {
-            count = 32;
-        } else {
-            while ((j >>>= 1) != 0) {
-                count++;
-            }
-        }
-
-        char[] buffer = new char[count];
-        do {
-            buffer[--count] = (char) ((i & 1) + '0');
-            i >>>= 1;
-        } while (count > 0);
-        return new String(0, buffer.length, buffer);
+      return IntegralToString.intToBinaryString(i);
     }
 
     /**
      * Converts the specified integer into its hexadecimal string
      * representation. The returned string is a concatenation of characters from
      * '0' to '9' and 'a' to 'f'.
-     * 
+     *
      * @param i
      *            the integer to convert.
      * @return the hexadecimal string representation of {@code i}.
      */
     public static String toHexString(int i) {
-        int count = 1, j = i;
-
-        if (i < 0) {
-            count = 8;
-        } else {
-            while ((j >>>= 4) != 0) {
-                count++;
-            }
-        }
-
-        char[] buffer = new char[count];
-        do {
-            int t = i & 15;
-            if (t > 9) {
-                t = t - 10 + 'a';
-            } else {
-                t += '0';
-            }
-            buffer[--count] = (char) t;
-            i >>>= 4;
-        } while (count > 0);
-        return new String(0, buffer.length, buffer);
+      return IntegralToString.intToHexString(i, false, 0);
     }
 
     /**
      * Converts the specified integer into its octal string representation. The
      * returned string is a concatenation of characters from '0' to '7'.
-     * 
+     *
      * @param i
      *            the integer to convert.
      * @return the octal string representation of {@code i}.
      */
     public static String toOctalString(int i) {
-        int count = 1, j = i;
-
-        if (i < 0) {
-            count = 11;
-        } else {
-            while ((j >>>= 3) != 0) {
-                count++;
-            }
-        }
-
-        char[] buffer = new char[count];
-        do {
-            buffer[--count] = (char) ((i & 7) + '0');
-            i >>>= 3;
-        } while (count > 0);
-        return new String(0, buffer.length, buffer);
+      return IntegralToString.intToOctalString(i);
     }
 
     @Override
@@ -475,15 +433,14 @@ public final class Integer extends Number implements Comparable<Integer> {
      * Converts the specified integer into its decimal string representation.
      * The returned string is a concatenation of a minus sign if the number is
      * negative and characters from '0' to '9'.
-     * 
+     *
      * @param value
      *            the integer to convert.
      * @return the decimal string representation of {@code value}.
      */
-    public static native String toString(int value) /*-[
-      NSNumber *num = [NSNumber numberWithInt:value];
-      return [num stringValue];
-    ]-*/;
+    public static String toString(int value) {
+      return IntegralToString.intToString(value);
+    }
 
     /**
      * Converts the specified integer into a string representation based on the
@@ -500,42 +457,12 @@ public final class Integer extends Number implements Comparable<Integer> {
      * @return the string representation of {@code i}.
      */
     public static String toString(int i, int radix) {
-        if (radix < Character.MIN_RADIX || radix > Character.MAX_RADIX) {
-            radix = 10;
-        }
-        if (i == 0) {
-            return "0"; //$NON-NLS-1$
-        }
-
-        int count = 2, j = i;
-        boolean negative = i < 0;
-        if (!negative) {
-            count = 1;
-            j = -i;
-        }
-        while ((i /= radix) != 0) {
-            count++;
-        }
-
-        char[] buffer = new char[count];
-        do {
-            int ch = 0 - (j % radix);
-            if (ch > 9) {
-                ch = ch - 10 + 'a';
-            } else {
-                ch += '0';
-            }
-            buffer[--count] = (char) ch;
-        } while ((j /= radix) != 0);
-        if (negative) {
-            buffer[0] = '-';
-        }
-        return new String(0, buffer.length, buffer);
+      return IntegralToString.intToString(i, radix);
     }
 
     /**
      * Parses the specified string as a signed decimal integer value.
-     * 
+     *
      * @param string
      *            the string representation of an integer value.
      * @return an {@code Integer} instance containing the integer value

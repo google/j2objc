@@ -138,7 +138,7 @@
 #endif
     @throw exception;
   }
-  self->cause = causeArg;
+  self->cause = RETAIN_(causeArg);
   return self;
 }
 

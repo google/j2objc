@@ -408,9 +408,12 @@ public class TreeMapTest extends junit.framework.TestCase {
 
         // regression for Harmony-780
         tm = new TreeMap();
-        assertNull(tm.put(new Object(), new Object()));
+        // Android's TreeMap throws ClassCastException as soon as the
+        // non-comparable key is put in the map. Not when the next key is added.
+        //assertNull(tm.put(new Object(), new Object()));
         try {
-            tm.put(new Integer(1), new Object());
+            //tm.put(new Integer(1), new Object());
+            tm.put(new Object(), new Object());
             fail("should throw ClassCastException");
         } catch (ClassCastException e) {
             // expected
@@ -420,8 +423,9 @@ public class TreeMapTest extends junit.framework.TestCase {
         assertNull(tm.put(new Integer(1), new Object()));
 
         // regression for Harmony-2474
+        /* Not supported. Can't use a non-comparable key with a TreeMap.
         tm = new TreeMap();
-        tm.remove(o);
+        tm.remove(o);*/
     }
 
     /**
@@ -652,12 +656,13 @@ public class TreeMapTest extends junit.framework.TestCase {
         assertFalse("Maps should not be equal 4", m2.equals(m1));
 
         // comparing TreeMaps with not-comparable objects inside
+        /* Not supported. Can't put a non-comparable key into a TreeMap.
         m1 = new TreeMap();
         m2 = new TreeMap();
         m1.put(new Object(), "val1");
         m2.put(new Object(), "val1");
         assertFalse("Maps should not be equal 5", m1.equals(m2));
-        assertFalse("Maps should not be equal 6", m2.equals(m1));
+        assertFalse("Maps should not be equal 6", m2.equals(m1));*/
     }
 
     /**

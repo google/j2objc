@@ -111,7 +111,7 @@ public class AtomicBooleanTest extends JSR166TestCase {
     /**
      * a deserialized serialized atomic holds same value
      *
-     // TODO(user): enable when serialization is supported.
+     // TODO(tball): enable when serialization is supported.
     public void testSerialization() {
         AtomicBoolean l = new AtomicBoolean();
 

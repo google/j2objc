@@ -48,7 +48,13 @@ public class ImplementationImportCollectorTest extends GenerationTest {
     // Nothing to do; Successful translation is the test.
   }
 
-  // http://b/7106570
+  public void testOneArgumentAndVarargs() throws IOException {
+    translateSourceFile(
+        "class Test { Test(int count, int ... values) { } Test test = new Test(2, 42, 63); }",
+        "Test", "Test.m");
+    // Nothing to do; Successful translation is the test.
+  }
+
   public void testVarargsMethodManyArguments() throws IOException {
     translateSourceFile(
         "class Test { Test(int... values) { } Test test = new Test(1,2,3); }",
