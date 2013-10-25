@@ -24,7 +24,7 @@ import java.util.Map;
 import java.util.WeakHashMap;
 
 /*-[
-#include "IOSProtocolClass.h"
+#include "IOSClass.h"
 #include "java/lang/reflect/Method.h"
 #include <objc/runtime.h>
 ]-*/
@@ -347,7 +347,7 @@ public class Proxy implements Serializable {
                        withJavaLangReflectMethod:method
                                withNSObjectArray:args];
           J2ObjcRawValue result;
-          J2ObjcUnboxValue(javaResult, [signature methodReturnType], &result);
+          [[method getReturnType] unboxValue:javaResult toRawValue:&result];
           [anInvocation setReturnValue:&result];
           return;  // success!
         }

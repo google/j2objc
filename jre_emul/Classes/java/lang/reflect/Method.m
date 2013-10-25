@@ -24,6 +24,7 @@
 #import "IOSReflection.h"
 #import "JreEmulation.h"
 #import "java/lang/AssertionError.h"
+#import "java/lang/IllegalArgumentException.h"
 #import "java/lang/NullPointerException.h"
 #import "java/lang/reflect/Method.h"
 
@@ -103,21 +104,26 @@
 - (id)invokeWithId:(id)object
        withNSObjectArray:(IOSObjectArray *)arguments {
   if (!classMethod_ && object == nil) {
-    id exception =
-        [[JavaLangNullPointerException alloc]
-            initWithNSString:@"null object specified for non-final method"];
-#if ! __has_feature(objc_arc)
-    [exception autorelease];
-#endif
-    @throw exception;
+    @throw AUTORELEASE([[JavaLangNullPointerException alloc] initWithNSString:
+      @"null object specified for non-final method"]);
+  }
+
+  IOSObjectArray *paramTypes = [self getParameterTypes];
+  NSUInteger nArgs = arguments ? arguments->size_ : 0;
+  if (nArgs != paramTypes->size_) {
+    @throw AUTORELEASE([[JavaLangIllegalArgumentException alloc] initWithNSString:
+        @"wrong number of arguments"]);
   }
 
   NSInvocation *invocation =
       [NSInvocation invocationWithMethodSignature:methodSignature_];
   [invocation setSelector:selector_];
-  int nArgs = [arguments count];
   for (NSUInteger i = 0; i < nArgs; i++) {
-    NSObject *arg = arguments->buffer_[i];
+    J2ObjcRawValue arg;
+    if (![paramTypes->buffer_[i] unboxValue:arguments->buffer_[i] toRawValue:&arg]) {
+      @throw AUTORELEASE([[JavaLangIllegalArgumentException alloc] initWithNSString:
+          @"argument type mismatch"]);
+    }
     [invocation setArgument:&arg atIndex:i + SKIPPED_ARGUMENTS];
   }
   if (object == nil || [object isKindOfClass:[IOSClass class]]) {

@@ -134,10 +134,4 @@ typedef union {
 // If the raw value is an object, that value is returned.
 FOUNDATION_EXPORT id J2ObjcBoxValue(J2ObjcRawValue *value, const char *type);
 
-// Converts an object into its unwrapped value; for example,
-// unboxing a java.lang.Double returns a double result.  If
-// the object isn't a wrapper class, then the result is the
-// unmodified object.
-FOUNDATION_EXPORT void J2ObjcUnboxValue(id value, const char *type, J2ObjcRawValue *result);
-
 #endif
