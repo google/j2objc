@@ -77,27 +77,7 @@ public class OuterReferenceFixer extends ErrorReportingASTVisitor {
     }
 
     AST ast = node.getAST();
-    GeneratedMethodBinding binding = Types.getGeneratedMethodBinding(node);
-    addOuterArg(node, binding, declaringClass);
-
-    List<IVariableBinding> capturedVars = OuterReferenceResolver.getCapturedVars(newType);
-    for (IVariableBinding capturedVar : capturedVars) {
-      ASTUtil.getArguments(node).add(ASTFactory.newSimpleName(ast, capturedVar));
-      binding.addParameter(capturedVar.getType());
-    }
-
-    assert binding.isVarargs() || node.arguments().size() == binding.getParameterTypes().length;
-    return true;
-  }
-
-  private void addOuterArg(
-      ClassInstanceCreation node, GeneratedMethodBinding binding, ITypeBinding declaringClass) {
-    ITypeBinding type = Types.getTypeBinding(node);
-    if (!OuterReferenceResolver.needsOuterParam(type)) {
-      return;
-    }
-
-    AST ast = node.getAST();
+    IMethodBinding binding = Types.getMethodBinding(node).getMethodDeclaration();
     Expression outerExpr = node.getExpression();
     List<IVariableBinding> path = OuterReferenceResolver.getPath(node);
     Expression outerArg = null;
@@ -112,8 +92,15 @@ public class OuterReferenceFixer extends ErrorReportingASTVisitor {
       Types.addBinding(outerArg, declaringClass);
     }
 
-    ASTUtil.getArguments(node).add(0, outerArg);
-    binding.addParameter(0, declaringClass);
+    if (outerArg != null) {
+      ASTUtil.getArguments(node).add(0, outerArg);
+      GeneratedMethodBinding newBinding = new GeneratedMethodBinding(binding);
+      binding = newBinding;
+      newBinding.addParameter(0, declaringClass);
+      Types.addBinding(node, newBinding);
+    }
+    assert binding.isVarargs() || node.arguments().size() == binding.getParameterTypes().length;
+    return true;
   }
 
   @Override
@@ -160,9 +147,11 @@ public class OuterReferenceFixer extends ErrorReportingASTVisitor {
     }
     node.setExpression(null);
     ITypeBinding outerExpressionType = Types.getTypeBinding(outerExpression);
-    GeneratedMethodBinding binding = Types.getGeneratedMethodBinding(node);
+    IMethodBinding oldBinding = Types.getMethodBinding(node);
+    GeneratedMethodBinding newBinding = new GeneratedMethodBinding(oldBinding);
+    Types.addBinding(node, newBinding);
     ASTUtil.getArguments(node).add(0, outerExpression);
-    binding.addParameter(0, outerExpressionType);
+    newBinding.addParameter(0, outerExpressionType);
   }
 
   private List<IVariableBinding> fixPath(ASTNode node, List<IVariableBinding> path) {

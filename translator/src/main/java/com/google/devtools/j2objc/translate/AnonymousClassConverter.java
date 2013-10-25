@@ -39,7 +39,9 @@ import org.eclipse.jdt.core.dom.EnumDeclaration;
 import org.eclipse.jdt.core.dom.Expression;
 import org.eclipse.jdt.core.dom.IMethodBinding;
 import org.eclipse.jdt.core.dom.ITypeBinding;
+import org.eclipse.jdt.core.dom.IVariableBinding;
 import org.eclipse.jdt.core.dom.MethodDeclaration;
+import org.eclipse.jdt.core.dom.Modifier.ModifierKeyword;
 import org.eclipse.jdt.core.dom.NullLiteral;
 import org.eclipse.jdt.core.dom.SimpleName;
 import org.eclipse.jdt.core.dom.SuperConstructorInvocation;
@@ -101,7 +103,10 @@ public class AnonymousClassConverter extends ErrorReportingASTVisitor {
     List<Expression> parentArguments;
     Expression outerExpression = null;
     String newClassName = typeBinding.getName();
-    ITypeBinding innerType = RenamedTypeBinding.rename(newClassName, outerType, typeBinding, 0);
+    boolean isStatic = !OuterReferenceResolver.needsOuterParam(typeBinding);
+    int modifiers = isStatic ? Modifier.STATIC : 0;
+    ITypeBinding innerType = RenamedTypeBinding.rename(
+        newClassName, outerType, typeBinding, modifiers);
     if (parent instanceof ClassInstanceCreation) {
       newInvocation = (ClassInstanceCreation) parent;
       parentArguments = ASTUtil.getArguments(newInvocation);
@@ -118,6 +123,9 @@ public class AnonymousClassConverter extends ErrorReportingASTVisitor {
     // Create a type declaration for this anonymous class.
     AST ast = node.getAST();
     TypeDeclaration typeDecl = ast.newTypeDeclaration();
+    if (isStatic) {
+      ASTUtil.getModifiers(typeDecl).add(ast.newModifier(ModifierKeyword.STATIC_KEYWORD));
+    }
     Types.addBinding(typeDecl, innerType);
     typeDecl.setName(ast.newSimpleName(newClassName));
     Types.addBinding(typeDecl.getName(), innerType);
@@ -135,13 +143,19 @@ public class AnonymousClassConverter extends ErrorReportingASTVisitor {
       ASTUtil.getBodyDeclarations(typeDecl).add(NodeCopier.copySubtree(ast, decl));
     }
 
-    // Add a default constructor.
-    if (!parentArguments.isEmpty() || outerExpression != null) {
+    // Add inner fields and a default constructor.
+    List<IVariableBinding> innerVars = OuterReferenceResolver.getCapturedVars(typeBinding);
+    List<IVariableBinding> innerFields = OuterReferenceResolver.getInnerFields(typeBinding);
+    ASTFactory.createInnerFieldDeclarations(typeDecl, innerFields);
+    if (!innerFields.isEmpty() || !parentArguments.isEmpty() || outerExpression != null) {
       GeneratedMethodBinding defaultConstructor =
-          addDefaultConstructor(typeDecl, parentArguments, outerExpression);
+          addDefaultConstructor(typeDecl, innerFields, parentArguments, outerExpression);
       Types.addBinding(parent, defaultConstructor);
       if (outerExpression != null) {
         parentArguments.add(0, NodeCopier.copySubtree(ast, outerExpression));
+      }
+      for (IVariableBinding var : innerVars) {
+        parentArguments.add(ASTFactory.newSimpleName(ast, var));
       }
       assert defaultConstructor.getParameterTypes().length == parentArguments.size();
     }
@@ -181,7 +195,8 @@ public class AnonymousClassConverter extends ErrorReportingASTVisitor {
   }
 
   private GeneratedMethodBinding addDefaultConstructor(
-      TypeDeclaration node, List<Expression> invocationArguments, Expression outerExpression) {
+      TypeDeclaration node, List<IVariableBinding> innerFields,
+      List<Expression> invocationArguments, Expression outerExpression) {
     AST ast = node.getAST();
     ITypeBinding clazz = Types.getTypeBinding(node);
     MethodDeclaration constructor = ast.newMethodDeclaration();
@@ -202,10 +217,12 @@ public class AnonymousClassConverter extends ErrorReportingASTVisitor {
 
     // If there is an outer expression (eg myFoo.new Foo() {};), then this must
     // be passed to the super class as its outer reference.
+    int outerCount = 0;
     if (outerExpression != null) {
       ITypeBinding outerExpressionType = Types.getTypeBinding(outerExpression);
       GeneratedVariableBinding outerExpressionParam = new GeneratedVariableBinding(
-          "superOuter$", Modifier.FINAL, outerExpressionType, false, true, clazz, binding);
+          "capture$" + outerCount++, Modifier.FINAL, outerExpressionType, false, true, clazz,
+          binding);
       ASTUtil.getParameters(constructor).add(0,
           ASTFactory.newSingleVariableDeclaration(ast, outerExpressionParam));
       binding.addParameter(0, outerExpressionType);
@@ -227,6 +244,20 @@ public class AnonymousClassConverter extends ErrorReportingASTVisitor {
     }
     assert superCall.arguments().size() == superCallBinding.getParameterTypes().length;
 
+    // Add parameters and assignments for the captured inner vars.
+    for (IVariableBinding innerField : innerFields) {
+      GeneratedVariableBinding paramBinding = new GeneratedVariableBinding(
+          "capture$" + outerCount++, Modifier.FINAL, innerField.getType(), false, true, clazz,
+          binding);
+      ASTUtil.getParameters(constructor).add(
+          ASTFactory.newSingleVariableDeclaration(ast, paramBinding));
+      binding.addParameter(paramBinding.getType());
+      ASTUtil.getStatements(constructor.getBody()).add(
+          ast.newExpressionStatement(ASTFactory.newAssignment(ast,
+          ASTFactory.newSimpleName(ast, innerField), ASTFactory.newSimpleName(ast, paramBinding))));
+    }
+
+    // Call the super constructor after captured variables are initialized.
     ASTUtil.getStatements(constructor.getBody()).add(superCall);
 
     ASTUtil.getBodyDeclarations(node).add(constructor);
