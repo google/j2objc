@@ -353,4 +353,18 @@ public class TreeSet<E> extends AbstractSet<E> implements SortedSet<E>,
         }
         return new TreeSet<E>(backingMap.tailMap(start));
     }
+
+    /*-[
+    - (NSUInteger)countByEnumeratingWithState:(NSFastEnumerationState *)state
+                                      objects:(__unsafe_unretained id *)stackbuf
+                                        count:(NSUInteger)len {
+      // Note: TreeMap's KeySet implementation must not use extra[4].
+      __unsafe_unretained id keySet = (ARCBRIDGE id) (void *) state->extra[4];
+      if (!keySet) {
+        keySet = [backingMap_ keySet];
+        state->extra[4] = (unsigned long) keySet;
+      }
+      return [keySet countByEnumeratingWithState:state objects:stackbuf count:len];
+    }
+    ]-*/
 }

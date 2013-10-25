@@ -88,4 +88,12 @@ public class LinkedHashSet<E> extends HashSet<E> implements Set<E>, Cloneable,
     HashMap<E, Object> createBackingMap(int capacity, float loadFactor) {
         return new LinkedHashMap<E, Object>(capacity, loadFactor);
     }
+
+    /*-[
+    - (NSUInteger)countByEnumeratingWithState:(NSFastEnumerationState *)state
+                                      objects:(__unsafe_unretained id *)stackbuf
+                                        count:(NSUInteger)len {
+      return [super countByEnumeratingWithState:state objects:stackbuf count:len];
+    }
+    ]-*/
 }
