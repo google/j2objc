@@ -314,7 +314,7 @@ void CopyWithMemmove(id __strong *buffer, NSUInteger src, NSUInteger dest, NSUIn
                                   objects:(__unsafe_unretained id *)stackbuf
                                     count:(NSUInteger)len {
   if (state->state == 0) {
-    state->mutationsPtr = (unsigned long *) self;
+    state->mutationsPtr = (unsigned long *) (ARCBRIDGE void *) self;
     state->itemsPtr = (__unsafe_unretained id *) (void *) buffer_;
     state->state = 1;
     return size_;
