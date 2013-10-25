@@ -86,14 +86,14 @@ public class Field extends AccessibleObject implements Member {
   
   public void set(Object o, Object value) throws IllegalArgumentException,
       IllegalAccessException {}
-  public void set(Object o, boolean b) throws IllegalArgumentException, IllegalAccessException {}
-  public void set(Object o, byte b) throws IllegalArgumentException, IllegalAccessException {}
-  public void set(Object o, char c) throws IllegalArgumentException, IllegalAccessException {}
-  public void set(Object o, double d) throws IllegalArgumentException, IllegalAccessException {}
-  public void set(Object o, float f) throws IllegalArgumentException, IllegalAccessException {}
-  public void set(Object o, int i) throws IllegalArgumentException, IllegalAccessException {}
-  public void set(Object o, long l) throws IllegalArgumentException, IllegalAccessException {}
-  public void set(Object o, short s) throws IllegalArgumentException, IllegalAccessException {}
+  public void setBoolean(Object o, boolean b) throws IllegalArgumentException, IllegalAccessException {}
+  public void setByte(Object o, byte b) throws IllegalArgumentException, IllegalAccessException {}
+  public void setChar(Object o, char c) throws IllegalArgumentException, IllegalAccessException {}
+  public void setDouble(Object o, double d) throws IllegalArgumentException, IllegalAccessException {}
+  public void setFloat(Object o, float f) throws IllegalArgumentException, IllegalAccessException {}
+  public void setInt(Object o, int i) throws IllegalArgumentException, IllegalAccessException {}
+  public void setLong(Object o, long l) throws IllegalArgumentException, IllegalAccessException {}
+  public void setShort(Object o, short s) throws IllegalArgumentException, IllegalAccessException {}
   
   public <T extends Annotation> T getAnnotation(Class<T> annotationClass) {
     return null;
