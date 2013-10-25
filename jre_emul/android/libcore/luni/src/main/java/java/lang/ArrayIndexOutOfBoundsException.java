@@ -30,19 +30,18 @@ public class ArrayIndexOutOfBoundsException extends IndexOutOfBoundsException {
      * current stack trace.
      */
     public ArrayIndexOutOfBoundsException() {
-        super();
     }
 
     /**
      * Constructs a new {@code ArrayIndexOutOfBoundsException} with the current
      * stack trace and a detail message that is based on the specified invalid
      * {@code index}.
-     * 
+     *
      * @param index
      *            the invalid index.
      */
     public ArrayIndexOutOfBoundsException(int index) {
-        super("Array index out of range: " + index);
+        super("index=" + index);
     }
 
     /**
@@ -54,5 +53,23 @@ public class ArrayIndexOutOfBoundsException extends IndexOutOfBoundsException {
      */
     public ArrayIndexOutOfBoundsException(String detailMessage) {
         super(detailMessage);
+    }
+
+    /**
+     * Used internally for consistent high-quality error reporting.
+     * @hide
+     */
+    public ArrayIndexOutOfBoundsException(int sourceLength, int index) {
+        super("length=" + sourceLength + "; index=" + index);
+    }
+
+    /**
+     * Used internally for consistent high-quality error reporting.
+     * @hide
+     */
+    public ArrayIndexOutOfBoundsException(int sourceLength, int offset,
+            int count) {
+        super("length=" + sourceLength + "; regionStart=" + offset
+                + "; regionLength=" + count);
     }
 }
