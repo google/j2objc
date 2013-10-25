@@ -61,6 +61,7 @@
 
 // Returns the types of any declared exceptions.
 - (IOSObjectArray *)getExceptionTypes;
+- (IOSObjectArray *)getGenericExceptionTypes;
 
 // Returns the parameter types for this executable member.
 //
@@ -75,6 +76,12 @@
 - (BOOL)isSynthetic;
 
 - (IOSObjectArray *)getParameterAnnotations;
+
+// Returns true if this method has variable arguments.
+- (BOOL)isVarArgs;
+
+// Returns true if this is a bridge method.
+- (BOOL)isBridge;
 
 // Protected methods.
 - (NSString *)internalName;

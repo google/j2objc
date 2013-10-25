@@ -17,7 +17,9 @@
 
 package java.net;
 
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
@@ -447,12 +449,12 @@ public final class URL implements Serializable {
 
     /**
      * Equivalent to {@code openConnection().getInputStream(types)}.
-     *
-     TODO(tball): enable when connections are supported.
+     */
     public final InputStream openStream() throws IOException {
-        return openConnection().getInputStream();
+      // TODO(tball): enable when connections are supported.
+      //return openConnection().getInputStream();
+      return new FileInputStream(file);
     }
-    */
 
     /**
      * Returns a new connection to the resource referred to by this URL.

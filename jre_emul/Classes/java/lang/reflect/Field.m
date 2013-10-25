@@ -233,6 +233,11 @@ typedef union {
   return NO;
 }
 
+- (NSString *)toGenericString {
+  // TODO(tball): implement as part of method metadata.
+  return nil;
+}
+
 - (IOSObjectArray *)getDeclaredAnnotations {
   NSString *annotationsMethod =
       [NSString stringWithFormat:@"__annotations_%@_", [self getName]];
