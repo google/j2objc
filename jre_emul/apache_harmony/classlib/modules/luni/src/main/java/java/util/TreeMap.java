@@ -856,56 +856,6 @@ class MapEntry implements Map.Entry<K, V>, Cloneable {
             }
             return false;
         }
-
-        /*-[
-        - (NSUInteger)countByEnumeratingWithState:(NSFastEnumerationState *)state
-                                          objects:(__unsafe_unretained id *)stackbuf
-                                            count:(NSUInteger)len {
-          __unsafe_unretained JavaUtilTreeMap_Node *node, *endNode;
-          int idx, endIdx;
-          if (state->state == 0) {
-            if (subMap_->hasStart_) {
-              [subMap_ setFirstKey];
-              node = subMap_->firstKeyNode_;
-              idx = subMap_->firstKeyIndex_;
-            } else {
-              node = [JavaUtilTreeMap minimumWithJavaUtilTreeMap_Node:subMap_->backingMap_->root_];
-              idx = node ? node->left_idx_ : 0;
-            }
-            if (subMap_->hasEnd_) {
-              [subMap_ setLastKey];
-            }
-            state->state = 1;
-            state->mutationsPtr = (unsigned long *) &subMap_->backingMap_->modCount_;
-          } else {
-            node = (ARCBRIDGE id) (void *) state->extra[0];
-            idx = state->extra[1];
-          }
-          if (subMap_->hasEnd_) {
-            endNode = subMap_->lastKeyNode_;
-            endIdx = subMap_->lastKeyIndex_;
-          } else {
-            endNode = nil;
-            endIdx = 0;
-          }
-          state->itemsPtr = stackbuf;
-          NSUInteger objCount = 0;
-          while (node && objCount < len) {
-            *stackbuf++ =
-                [subMap_->backingMap_ newMapEntryWithJavaUtilTreeMap_Node:node withInt:idx++];
-            objCount++;
-            if (node == endNode && idx > endIdx) {
-              node = nil;
-            } else if (idx > node->right_idx_) {
-              node = node->next_;
-              idx = node ? node->left_idx_ : 0;
-            }
-          }
-          state->extra[0] = (unsigned long) node;
-          state->extra[1] = idx;
-          return objCount;
-        }
-        ]-*/
     }
 
     static class SubMapKeySet <K,V> extends AbstractSet<K> implements Set<K> {
@@ -961,49 +911,6 @@ class MapEntry implements Map.Entry<K, V>, Cloneable {
                from == null ? 0 : from.right_idx - fromIndex, subMap.backingMap, to,
                  to == null ? 0 : to.right_idx   - toIndex);
         }
-
-        /*-[
-        - (NSUInteger)countByEnumeratingWithState:(NSFastEnumerationState *)state
-                                          objects:(__unsafe_unretained id *)stackbuf
-                                            count:(NSUInteger)len {
-          // Note: Must not use extra[4] because it is set by TreeSet.
-          __unsafe_unretained JavaUtilTreeMap_Node *node, *endNode;
-          int idx, endIdx;
-          if (state->state == 0) {
-            if (subMap_->hasStart_) {
-              [subMap_ setFirstKey];
-              node = subMap_->firstKeyNode_;
-              idx = subMap_->firstKeyIndex_;
-            } else {
-              node = [JavaUtilTreeMap minimumWithJavaUtilTreeMap_Node:subMap_->backingMap_->root_];
-              idx = node ? node->left_idx_ : 0;
-            }
-            if (subMap_->hasEnd_) {
-              [subMap_ setLastKey];
-            }
-            state->state = 1;
-            state->mutationsPtr = (unsigned long *) &subMap_->backingMap_->modCount_;
-          } else {
-            node = (ARCBRIDGE id) (void *) state->extra[0];
-            idx = node ? node->left_idx_ : 0;
-          }
-          if (subMap_->hasEnd_) {
-            endNode = subMap_->lastKeyNode_;
-            endIdx = subMap_->lastKeyIndex_;
-          } else {
-            endNode = nil;
-            endIdx = 0;
-          }
-          if (node) {
-            state->itemsPtr = (__unsafe_unretained id *) (void *) node->keys_->buffer_ + idx;
-            int rightIdx = node == endNode ? endIdx : node->right_idx_;
-            state->extra[0] = (unsigned long) (node == endNode ? nil : node->next_);
-            return rightIdx - idx + 1;
-          } else {
-            return 0;
-          }
-        }
-        ]-*/
     }
 
     static class SubMapValuesCollection <K,V> extends AbstractCollection<V> {
@@ -1046,48 +953,6 @@ class MapEntry implements Map.Entry<K, V>, Cloneable {
         public int size() {
             return subMap.size();
         }
-
-        /*-[
-        - (NSUInteger)countByEnumeratingWithState:(NSFastEnumerationState *)state
-                                          objects:(__unsafe_unretained id *)stackbuf
-                                            count:(NSUInteger)len {
-          __unsafe_unretained JavaUtilTreeMap_Node *node, *endNode;
-          int idx, endIdx;
-          if (state->state == 0) {
-            if (subMap_->hasStart_) {
-              [subMap_ setFirstKey];
-              node = subMap_->firstKeyNode_;
-              idx = subMap_->firstKeyIndex_;
-            } else {
-              node = [JavaUtilTreeMap minimumWithJavaUtilTreeMap_Node:subMap_->backingMap_->root_];
-              idx = node ? node->left_idx_ : 0;
-            }
-            if (subMap_->hasEnd_) {
-              [subMap_ setLastKey];
-            }
-            state->state = 1;
-            state->mutationsPtr = (unsigned long *) &subMap_->backingMap_->modCount_;
-          } else {
-            node = (ARCBRIDGE id) (void *) state->extra[0];
-            idx = node ? node->left_idx_ : 0;
-          }
-          if (subMap_->hasEnd_) {
-            endNode = subMap_->lastKeyNode_;
-            endIdx = subMap_->lastKeyIndex_;
-          } else {
-            endNode = nil;
-            endIdx = 0;
-          }
-          if (node) {
-            state->itemsPtr = (__unsafe_unretained id *) (void *) node->values_->buffer_ + idx;
-            int rightIdx = node == endNode ? endIdx : node->right_idx_;
-            state->extra[0] = (unsigned long) (node == endNode ? nil : node->next_);
-            return rightIdx - idx + 1;
-          } else {
-            return 0;
-          }
-        }
-        ]-*/
     }
 
     /**
@@ -1374,37 +1239,6 @@ class MapEntry implements Map.Entry<K, V>, Cloneable {
         public Iterator<Map.Entry<K, V>> iterator() {
             return new UnboundedEntryIterator<K, V>(TreeMap.this);
         }
-
-        /*-[
-        - (NSUInteger)countByEnumeratingWithState:(NSFastEnumerationState *)state
-                                          objects:(__unsafe_unretained id *)stackbuf
-                                            count:(NSUInteger)len {
-          __unsafe_unretained JavaUtilTreeMap_Node *node;
-          int idx;
-          if (state->state == 0) {
-            state->state = 1;
-            state->mutationsPtr = (unsigned long *) &this$0_->modCount_;
-            node = [JavaUtilTreeMap minimumWithJavaUtilTreeMap_Node:this$0_->root_];
-            idx = node->left_idx_;
-          } else {
-            node = (ARCBRIDGE id) (void *) state->extra[0];
-            idx = state->extra[1];
-          }
-          state->itemsPtr = stackbuf;
-          NSUInteger objCount = 0;
-          while (node && objCount < len) {
-            *stackbuf++ = [this$0_ newMapEntryWithJavaUtilTreeMap_Node:node withInt:idx++];
-            objCount++;
-            if (idx > node->right_idx_) {
-              node = node->next_;
-              idx = node ? node->left_idx_ : 0;
-            }
-          }
-          state->extra[0] = (unsigned long) node;
-          state->extra[1] = idx;
-          return objCount;
-        }
-        ]-*/
     }
 
     /**
@@ -1563,30 +1397,6 @@ class MapEntry implements Map.Entry<K, V>, Cloneable {
         public Iterator<K> iterator() {
             return new UnboundedKeyIterator<K, V>(map);
         }
-
-        /*-[
-        - (NSUInteger)countByEnumeratingWithState:(NSFastEnumerationState *)state
-                                          objects:(__unsafe_unretained id *)stackbuf
-                                            count:(NSUInteger)len {
-          // Note: Must not use extra[4] because it is set by TreeSet.
-          __unsafe_unretained JavaUtilTreeMap_Node *node;
-          if (state->state == 0) {
-            state->state = 1;
-            state->mutationsPtr = (unsigned long *) &map_->modCount_;
-            node = [JavaUtilTreeMap minimumWithJavaUtilTreeMap_Node:map_->root_];
-          } else {
-            node = (ARCBRIDGE id) (void *) state->extra[0];
-          }
-          if (node) {
-            state->itemsPtr =
-                (__unsafe_unretained id *) (void *) node->keys_->buffer_ + node->left_idx_;
-            state->extra[0] = (unsigned long) node->next_;
-            return node->right_idx_ - node->left_idx_ + 1;
-          } else {
-            return 0;
-          }
-        }
-        ]-*/
     }
 
     /**
@@ -2583,29 +2393,6 @@ class MapEntry implements Map.Entry<K, V>, Cloneable {
       public Iterator<V> iterator() {
           return new UnboundedValueIterator<K, V>(map);
       }
-
-      /*-[
-      - (NSUInteger)countByEnumeratingWithState:(NSFastEnumerationState *)state
-                                        objects:(__unsafe_unretained id *)stackbuf
-                                          count:(NSUInteger)len {
-        __unsafe_unretained JavaUtilTreeMap_Node *node;
-        if (state->state == 0) {
-          state->state = 1;
-          state->mutationsPtr = (unsigned long *) &map_->modCount_;
-          node = [JavaUtilTreeMap minimumWithJavaUtilTreeMap_Node:map_->root_];
-        } else {
-          node = (ARCBRIDGE id) (void *) state->extra[0];
-        }
-        if (node) {
-          state->itemsPtr =
-              (__unsafe_unretained id *) (void *) node->values_->buffer_ + node->left_idx_;
-          state->extra[0] = (unsigned long) node->next_;
-          return node->right_idx_ - node->left_idx_ + 1;
-        } else {
-          return 0;
-        }
-      }
-      ]-*/
     }
 
     /**
