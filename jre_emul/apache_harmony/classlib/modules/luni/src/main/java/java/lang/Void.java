@@ -27,5 +27,5 @@ public final class Void extends Object {
     /**
      * The {@link Class} object that represents the primitive type {@code void}.
      */
-    public static final Class<Void> TYPE = Void.class;
+    public static final Class<Void> TYPE = void.class;
 }

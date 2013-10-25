@@ -55,6 +55,7 @@
 + (IOSClass *)classWithProtocol:(Protocol *)protocol;
 + (IOSClass *)arrayClassWithComponentType:(IOSClass *)componentType;
 + (IOSClass *)classForIosName:(NSString *)iosName;
++ (IOSClass *)primitiveClassForChar:(unichar)c;
 
 // Primitive class instance getters.
 + (IOSClass *)byteClass;

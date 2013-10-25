@@ -21,15 +21,6 @@
 
 #import "IOSClass.h"
 #import "java/lang/AssertionError.h"
-#import "java/lang/Boolean.h"
-#import "java/lang/Byte.h"
-#import "java/lang/Character.h"
-#import "java/lang/Double.h"
-#import "java/lang/Float.h"
-#import "java/lang/Integer.h"
-#import "java/lang/Long.h"
-#import "java/lang/Short.h"
-#import "java/lang/Void.h"
 #import "java/lang/reflect/AccessibleObject.h"
 #import "java/lang/reflect/Method.h"
 
@@ -131,7 +122,7 @@ IOSClass *decodeTypeEncoding(const char *type) {
     case 'B':
       return [IOSClass booleanClass];
     case 'v':
-      return [IOSClass classWithClass:[JavaLangVoid class]];
+      return [IOSClass voidClass];
   }
   NSString *errorMsg =
   [NSString stringWithFormat:@"unknown Java type encoding: '%s'", type];
