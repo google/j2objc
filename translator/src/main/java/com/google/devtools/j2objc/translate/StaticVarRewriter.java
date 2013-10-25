@@ -28,6 +28,7 @@ import org.eclipse.jdt.core.dom.AST;
 import org.eclipse.jdt.core.dom.ASTNode;
 import org.eclipse.jdt.core.dom.Assignment;
 import org.eclipse.jdt.core.dom.Expression;
+import org.eclipse.jdt.core.dom.FieldAccess;
 import org.eclipse.jdt.core.dom.ITypeBinding;
 import org.eclipse.jdt.core.dom.IVariableBinding;
 import org.eclipse.jdt.core.dom.MethodInvocation;
@@ -84,6 +85,13 @@ public class StaticVarRewriter extends ErrorReportingASTVisitor {
   private boolean visitName(Name node) {
     IVariableBinding var = Types.getVariableBinding(node);
     if (var != null && useAccessor(node, var)) {
+      ASTNode parent = node.getParent();
+      if (parent instanceof QualifiedName && node == ((QualifiedName) parent).getQualifier()) {
+        // QualifiedName nodes can only have qualifier children of type Name, so
+        // we must convert QualifiedName parents to FieldAccess nodes.
+        FieldAccess newParent = ASTFactory.convertToFieldAccess((QualifiedName) parent);
+        node = (Name) newParent.getExpression();
+      }
       ASTUtil.setProperty(node, newGetterInvocation(node.getAST(), node, false));
       return false;
     }

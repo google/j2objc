@@ -16,10 +16,12 @@ package com.google.devtools.j2objc.translate;
 
 import com.google.devtools.j2objc.types.IOSMethodBinding;
 import com.google.devtools.j2objc.types.IOSTypeBinding;
+import com.google.devtools.j2objc.types.NodeCopier;
 import com.google.devtools.j2objc.types.Types;
 import com.google.devtools.j2objc.util.ASTUtil;
 
 import org.eclipse.jdt.core.dom.AST;
+import org.eclipse.jdt.core.dom.ASTNode;
 import org.eclipse.jdt.core.dom.ArrayAccess;
 import org.eclipse.jdt.core.dom.ArrayCreation;
 import org.eclipse.jdt.core.dom.ArrayInitializer;
@@ -395,5 +397,25 @@ public final class ASTFactory {
     result.setExpression(expr);
     Types.addBinding(result, Types.getTypeBinding(expr));
     return result;
+  }
+
+  /**
+   * Replaces (in place) a QualifiedName node with an equivalent FieldAccess
+   * node. This is helpful when a mutation needs to replace the qualifier with
+   * a node that has Expression type but not Name type.
+   */
+  public static FieldAccess convertToFieldAccess(QualifiedName node) {
+    AST ast = node.getAST();
+    ASTNode parent = node.getParent();
+    if (parent instanceof QualifiedName) {
+      FieldAccess newParent = convertToFieldAccess((QualifiedName) parent);
+      Expression expr = newParent.getExpression();
+      assert expr instanceof QualifiedName;
+      node = (QualifiedName) expr;
+    }
+    FieldAccess newNode = newFieldAccess(
+        ast, Types.getVariableBinding(node), NodeCopier.copySubtree(ast, node.getQualifier()));
+    ASTUtil.setProperty(node, newNode);
+    return newNode;
   }
 }
