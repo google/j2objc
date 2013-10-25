@@ -1584,4 +1584,11 @@ public class StatementGeneratorTest extends GenerationTest {
         "Test", "Test.m");
     assertTranslation(translation, "[IOSClass classWithProtocol:@protocol(JavaLangDeprecated)]]");
   }
+
+  public void testEnumThisCallWithNoArguments() throws IOException {
+    String translation = translateSourceFile(
+        "enum Test { A, B; Test() {} Test(int i) { this(); } }", "Test", "Test.m");
+    assertTranslation(translation, "[super initWithNSString:__name withInt:__ordinal]");
+    assertOccurrences(translation, "[self initTestEnumWithNSString:__name withInt:__ordinal]", 2);
+  }
 }
