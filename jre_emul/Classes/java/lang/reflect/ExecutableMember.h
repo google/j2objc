@@ -41,9 +41,12 @@
   SEL selector_;
   BOOL classMethod_;
   NSMethodSignature *methodSignature_;
+  const J2ObjcMethodInfo *metadata_;
 }
 
-- (id)initWithSelector:(SEL)aSelector withClass:(IOSClass *)aClass;
+- (id)initWithSelector:(SEL)aSelector
+             withClass:(IOSClass *)aClass
+          withMetadata:(const J2ObjcMethodInfo *)metadata;
 
 - (NSString *)getName;
 
