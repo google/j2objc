@@ -177,9 +177,18 @@
 - (JavaClassMetadata *)getMetadata;
 - (NSString *)objcName;
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 extern NSString *IOSClass_GetTranslatedMethodName(
     NSString *name, IOSObjectArray *paramTypes);
+extern NSString *IOSClass_JavaToIOSName(NSString *javaName);
 extern IOSClass *IOSClass_ClassForName(NSString *name);
+
+#ifdef __cplusplus
+}
+#endif
 
 @end
 
