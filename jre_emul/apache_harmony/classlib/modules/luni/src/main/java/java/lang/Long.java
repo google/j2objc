@@ -114,6 +114,15 @@ public final class Long extends Number implements Comparable<Long> {
     }
 
     /**
+     * Compares two {@code long} values.
+     * @return 0 if lhs = rhs, less than 0 if lhs &lt; rhs, and greater than 0 if lhs &gt; rhs.
+     * @since 1.7
+     */
+    public static int compare(long lhs, long rhs) {
+        return lhs < rhs ? -1 : (lhs == rhs ? 0 : 1);
+    }
+
+    /**
      * Parses the specified string and returns a {@code Long} instance if the
      * string can be decoded into a long value. The string may be an optional
      * minus sign "-" followed by a hexadecimal ("0x..." or "#..."), octal

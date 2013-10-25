@@ -114,6 +114,15 @@ public final class Integer extends Number implements Comparable<Integer> {
     }
 
     /**
+     * Compares two {@code int} values.
+     * @return 0 if lhs = rhs, less than 0 if lhs &lt; rhs, and greater than 0 if lhs &gt; rhs.
+     * @since 1.7
+     */
+    public static int compare(int lhs, int rhs) {
+        return lhs < rhs ? -1 : (lhs == rhs ? 0 : 1);
+    }
+
+    /**
      * Parses the specified string and returns a {@code Integer} instance if the
      * string can be decoded into an integer value. The string may be an
      * optional minus sign "-" followed by a hexadecimal ("0x..." or "#..."),
