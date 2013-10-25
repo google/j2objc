@@ -92,6 +92,7 @@ TEST_SOURCES = \
 	org/apache/harmony/luni/tests/java/io/ByteArrayOutputStreamTest.java \
 	org/apache/harmony/luni/tests/java/io/CharArrayReaderTest.java \
 	org/apache/harmony/luni/tests/java/io/CharArrayWriterTest.java \
+	org/apache/harmony/luni/tests/java/io/CharConversionExceptionTest.java \
 	org/apache/harmony/luni/tests/java/io/DataInputStreamTest.java \
 	org/apache/harmony/luni/tests/java/io/DataOutputStreamTest.java \
 	org/apache/harmony/luni/tests/java/io/EOFExceptionTest.java \
@@ -108,6 +109,7 @@ TEST_SOURCES = \
 	org/apache/harmony/luni/tests/java/io/InputStreamTest.java \
 	org/apache/harmony/luni/tests/java/io/InterruptedIOExceptionTest.java \
 	org/apache/harmony/luni/tests/java/io/IOExceptionTest.java \
+	org/apache/harmony/luni/tests/java/io/LineNumberReaderTest.java \
 	org/apache/harmony/luni/tests/java/io/OutputStreamWriterTest.java \
 	org/apache/harmony/luni/tests/java/io/PipedInputStreamTest.java \
 	org/apache/harmony/luni/tests/java/io/PipedOutputStreamTest.java \
@@ -118,6 +120,7 @@ TEST_SOURCES = \
 	org/apache/harmony/luni/tests/java/io/PushbackInputStreamTest.java \
 	org/apache/harmony/luni/tests/java/io/PushbackReaderTest.java \
 	org/apache/harmony/luni/tests/java/io/ReaderTest.java \
+	org/apache/harmony/luni/tests/java/io/SequenceInputStreamTest.java \
 	org/apache/harmony/luni/tests/java/io/StringReaderTest.java \
 	org/apache/harmony/luni/tests/java/io/StringWriterTest.java \
 	org/apache/harmony/luni/tests/java/io/UnsupportedEncodingExceptionTest.java \
@@ -163,6 +166,7 @@ TEST_SOURCES = \
 	org/apache/harmony/luni/tests/java/lang/String2Test.java \
 	org/apache/harmony/luni/tests/java/lang/ThreadDeathTest.java \
 	org/apache/harmony/luni/tests/java/lang/ThreadTest.java \
+	org/apache/harmony/luni/tests/java/lang/TypeNotPresentExceptionTest.java \
 	org/apache/harmony/luni/tests/java/lang/UnsupportedOperationExceptionTest.java \
 	org/apache/harmony/luni/tests/util/UtilTest.java \
 	org/apache/harmony/nio/tests/java/nio/BufferOverflowExceptionTest.java \
@@ -225,6 +229,7 @@ TEST_SOURCES = \
 	org/apache/harmony/luni/tests/java/util/StackTest.java \
 	org/apache/harmony/luni/tests/java/util/StringTokenizerTest.java \
 	org/apache/harmony/luni/tests/java/util/TimeZoneTest.java \
+	org/apache/harmony/luni/tests/java/util/TooManyListenersExceptionTest.java \
 	org/apache/harmony/luni/tests/java/util/TreeMapTest.java \
 	org/apache/harmony/luni/tests/java/util/TreeSetTest.java \
 	org/apache/harmony/luni/tests/java/util/UUIDTest.java \
@@ -255,6 +260,7 @@ TEST_SOURCES = \
 	tests/api/java/util/CalendarTest.java \
 	tests/api/java/util/FormattableFlagsTest.java \
 	tests/api/java/util/ListResourceBundleTest.java \
+	tests/api/java/util/ObservableTest.java \
 	tests/api/java/util/PropertyResourceBundleTest.java \
 	tests/api/java/util/ResourceBundleTest.java \
 	tests/api/java/util/TimerTaskTest.java \

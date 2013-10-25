@@ -111,6 +111,7 @@ JRE_INTERFACES = \
 	java/util/Map.h \
 	java/util/NavigableMap.h \
 	java/util/NavigableSet.h \
+	java/util/Observer.h \
 	java/util/Queue.h \
 	java/util/RandomAccess.h \
 	java/util/Set.h \
@@ -153,6 +154,7 @@ JAVA_SOURCES = \
 	java/io/ByteArrayOutputStream.java \
 	java/io/CharArrayReader.java \
 	java/io/CharArrayWriter.java \
+	java/io/CharConversionException.java \
 	java/io/DataInputStream.java \
 	java/io/DataOutputStream.java \
 	java/io/EOFException.java \
@@ -172,6 +174,7 @@ JAVA_SOURCES = \
 	java/io/InterruptedIOException.java \
 	java/io/InvalidObjectException.java \
 	java/io/IOException.java \
+	java/io/LineNumberReader.java \
 	java/io/NotSerializableException.java \
 	java/io/ObjectStreamException.java \
 	java/io/OutputStream.java \
@@ -185,6 +188,7 @@ JAVA_SOURCES = \
 	java/io/PushbackInputStream.java \
 	java/io/PushbackReader.java \
 	java/io/Reader.java \
+	java/io/SequenceInputStream.java \
 	java/io/StreamTokenizer.java \
 	java/io/StringReader.java \
 	java/io/StringWriter.java \
@@ -267,6 +271,7 @@ JAVA_SOURCES = \
 	java/lang/ThreadDeath.java \
 	java/lang/ThreadGroup.java \
 	java/lang/ThreadLocal.java \
+	java/lang/TypeNotPresentException.java \
 	java/lang/UnsupportedOperationException.java \
 	java/lang/Void.java \
 	java/lang/ref/PhantomReference.java \
@@ -427,6 +432,7 @@ JAVA_SOURCES = \
 	java/util/EnumMap.java \
 	java/util/EnumSet.java \
 	java/util/EventObject.java \
+	java/util/EventListenerProxy.java \
 	java/util/EmptyStackException.java \
 	java/util/FormatFlagsConversionMismatchException.java \
 	java/util/FormattableFlags.java \
@@ -463,8 +469,10 @@ JAVA_SOURCES = \
 	java/util/MissingFormatWidthException.java \
 	java/util/MissingResourceException.java \
 	java/util/NoSuchElementException.java \
+	java/util/Observable.java \
 	java/util/PriorityQueue.java \
 	java/util/Properties.java \
+	java/util/PropertyPermission.java \
 	java/util/PropertyResourceBundle.java \
 	java/util/Random.java \
 	java/util/ResourceBundle.java \
@@ -476,6 +484,7 @@ JAVA_SOURCES = \
 	java/util/Timer.java \
 	java/util/TimerTask.java \
 	java/util/TimeZone.java \
+	java/util/TooManyListenersException.java \
 	java/util/TreeMap.java \
 	java/util/TreeSet.java \
 	java/util/UnknownFormatConversionException.java \
