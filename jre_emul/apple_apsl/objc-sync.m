@@ -92,7 +92,7 @@ typedef struct {
   struct SyncCache *syncCache;
 } j2objc_pthread_data;
 
-enum usage { ACQUIRE, RELEASE, CHECK };
+enum usage { ACQUIRE, RELEASE, CHECK, TEST };
 
 
 static void j2objc_destroy_key(void *thread_data) {
@@ -180,6 +180,7 @@ static SyncData* id2data(id object, enum usage why)
                 }
                 break;
             case CHECK:
+            case TEST:
                 // do nothing
                 break;
             }
@@ -187,6 +188,9 @@ static SyncData* id2data(id object, enum usage why)
         cache_done:            
             return result;
         }
+    }
+    if (why == TEST) {
+      return NULL;
     }
 
     // Thread cache didn't find anything.
@@ -245,7 +249,7 @@ static SyncData* id2data(id object, enum usage why)
         // handled by the per-thread cache above.
         
         require_string(result != NULL, really_done, "id2data is buggy");
-        require_action_string(why == ACQUIRE, really_done, 
+        require_action_string(why == ACQUIRE || why == TEST, really_done,
                               result = NULL, "id2data is buggy");
         require_action_string(result->object == object, really_done, 
                               result = NULL, "id2data is buggy");
@@ -393,6 +397,12 @@ done:
 }
 
 
+// Returns true if an object has a pthread_mutux allocated for it on this thread.
+BOOL j2objc_sync_holds_lock(id obj) {
+  nil_chk(obj);
+  SyncData* data = id2data(obj, TEST);
+  return data ? YES : NO;
+}
 
 
 
