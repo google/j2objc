@@ -28,7 +28,7 @@
 
 - (id)initWithProtocol:(Protocol *)protocol {
   if ((self = [super init])) {
-    protocol_ = RETAIN(protocol);
+    protocol_ = RETAIN_(protocol);
   }
   return self;
 }

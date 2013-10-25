@@ -55,7 +55,7 @@
 #  define ARCBRIDGE_TRANSFER
 #  define ARC_CONSUME_PARAMETER
 #  define AUTORELEASE(x) [x autorelease]
-#  define RETAIN(x) [x retain]
+#  define RETAIN_(x) [x retain]
 #  define RETAIN_AND_AUTORELEASE(x) [[x retain] autorelease]
 # endif
 

@@ -32,7 +32,7 @@
 
 - (id)initWithClass:(Class)cls {
   if ((self = [super init])) {
-    class_ = RETAIN(cls);
+    class_ = RETAIN_(cls);
   }
   return self;
 }

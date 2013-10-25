@@ -25,6 +25,7 @@
 #import "IOSBooleanArray.h"
 #import "IOSByteArray.h"
 #import "IOSCharArray.h"
+#import "IOSClass.h"
 #import "IOSDoubleArray.h"
 #import "IOSFloatArray.h"
 #import "IOSIntArray.h"
@@ -36,12 +37,7 @@
 #import "java/util/Date.h"
 
 // Unit tests for IOSArray.
-@interface IOSArrayTest : SenTestCase {
-}
-
-- (void)testCheckIndex;
-- (void)testCheckRange;
-- (void)testCheckRangeWithOffset;
+@interface IOSArrayTest : SenTestCase
 @end
 
 
@@ -179,13 +175,13 @@
 - (void)testBooleanMultiDimensionalCreate {
   // Verify single dimension array is correct type.
   id array =
-      [IOSBooleanArray arrayWithDimensions:1 lengths:(NSUInteger[]){2}];
+      [IOSBooleanArray arrayWithDimensions:1 lengths:(int[]){2}];
   STAssertTrue([array isMemberOfClass:[IOSBooleanArray class]],
                @"wrong array type: %@", [array class]);
 
   // Verify multiple dimension array is an array of arrays (of arrays).
   array =
-      [IOSBooleanArray arrayWithDimensions:3 lengths:(NSUInteger[]){2, 4, 6}];
+      [IOSBooleanArray arrayWithDimensions:3 lengths:(int[]){2, 4, 6}];
   STAssertTrue([array isMemberOfClass:[IOSObjectArray class]],
                @"wrong array type: %@", [array class]);
   STAssertTrue([array count] == 2, @"invalid array count");
@@ -210,14 +206,14 @@
 
   // Verify single dimension array is correct type.
   id array = [IOSObjectArray arrayWithDimensions:1
-                                         lengths:(NSUInteger[]){2}
+                                         lengths:(int[]){2}
                                             type:type];
   STAssertEqualObjects([array elementType], type,
                        @"wrong element type: %@", [array elementType]);
 
   // Verify multiple dimension array is an array of arrays (of arrays).
   array = [IOSObjectArray arrayWithDimensions:3
-                                      lengths:(NSUInteger[]){2, 4, 6}
+                                      lengths:(int[]){2, 4, 6}
                                          type:type];
   STAssertTrue([array isMemberOfClass:[IOSObjectArray class]],
                @"wrong array type: %@", [array class]);

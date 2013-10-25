@@ -28,7 +28,7 @@
 
 - (id)initWithComponentType:(IOSClass *)type {
   if ((self = [super init])) {
-    componentType_ = RETAIN(type);
+    componentType_ = RETAIN_(type);
   }
   return self;
 }
