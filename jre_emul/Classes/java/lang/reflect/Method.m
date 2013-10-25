@@ -51,18 +51,39 @@ typedef union {
 
 static id Box(JavaResult *value, const char *type);
 
-+ (id)methodWithSelector:(SEL)aSelector withClass:(IOSClass *)aClass {
-  id method = [[JavaLangReflectMethod alloc] initWithSelector:aSelector
-                                                    withClass:aClass];
-#if ! __has_feature(objc_arc)
-  [method autorelease];
-#endif
-  return method;
++ (id)methodWithSelector:(SEL)aSelector
+               withClass:(IOSClass *)aClass
+            withMetadata:(const J2ObjcMethodInfo *)metadata {
+  return AUTORELEASE([[JavaLangReflectMethod alloc]
+      initWithSelector:aSelector withClass:aClass withMetadata:metadata]);
+}
+
+- (id)initWithSelector:(SEL)aSelector
+             withClass:(IOSClass *)aClass
+          withMetadata:(const J2ObjcMethodInfo *)metadata {
+  if (self = [super initWithSelector:aSelector withClass:aClass]) {
+    metadata_ = metadata;
+  }
+  return self;
 }
 
 // Returns method name.
 - (NSString *)getName {
-  return NSStringFromSelector(selector_);
+  if (metadata_ && metadata_->javaName) {
+    return [NSString stringWithCString:metadata_->javaName encoding:
+        [NSString defaultCStringEncoding]];
+  }
+  NSString *name = NSStringFromSelector(selector_);
+  NSRange range = [name rangeOfString:@":"];
+  if (range.location == NSNotFound) {
+    return name;
+  }
+  range = [name rangeOfString:@"With" options:NSBackwardsSearch
+      range:NSMakeRange(0, range.location)];
+  if (range.location == NSNotFound) {
+    return name;
+  }
+  return [name substringToIndex:range.location];
 }
 
 - (NSString *)internalName {
@@ -70,6 +91,10 @@ static id Box(JavaResult *value, const char *type);
 }
 
 - (IOSClass *)getReturnType {
+  if (metadata_ && metadata_->returnType) {
+    return [IOSClass classForIosName:[NSString stringWithCString:metadata_->returnType encoding:
+        [NSString defaultCStringEncoding]]];
+  }
   const char *argType = [methodSignature_ methodReturnType];
   if (strlen(argType) != 1) {
     NSString *errorMsg =

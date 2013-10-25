@@ -330,7 +330,7 @@ NSString *IOSClass_GetTranslatedMethodName(NSString *name, IOSObjectArray *param
 }
 
 // Convert Java class name to camelcased iOS name.
-NSString *IOSClass_JavaToIOSName(NSString *javaName) {
+static NSString *IOSClass_JavaToIOSName(NSString *javaName) {
   NSString *mappedName = [IOSClass_mappedClasses objectForKey:javaName];
   if (mappedName) {
     return mappedName;
@@ -347,8 +347,7 @@ NSString *IOSClass_JavaToIOSName(NSString *javaName) {
   return iosName;
 }
 
-IOSClass *IOSClass_ClassForName(NSString *name) {
-  NSString *iosName = IOSClass_JavaToIOSName(name);
+static IOSClass *ClassForIosName(NSString *iosName) {
   // Some protocols have a sibling class that contains the metadata and any
   // constants that are defined. We must look for the protocol before the class
   // to ensure we create a IOSProtocolClass for such cases. NSObject must be
@@ -366,6 +365,14 @@ IOSClass *IOSClass_ClassForName(NSString *name) {
     return FetchClass(clazz);
   }
   return nil;
+}
+
++ (IOSClass *)classForIosName:(NSString *)iosName {
+  return ClassForIosName(iosName);
+}
+
+static IOSClass *ClassForJavaName(NSString *name) {
+  return ClassForIosName(IOSClass_JavaToIOSName(name));
 }
 
 static IOSClass *IOSClass_PrimitiveClassForChar(unichar c) {
@@ -391,7 +398,7 @@ static IOSClass *IOSClass_ArrayClassForName(NSString *name, NSUInteger index) {
       {
         NSUInteger length = [name length];
         if ([name characterAtIndex:length - 1] == ';') {
-          componentType = IOSClass_ClassForName(
+          componentType = ClassForJavaName(
               [name substringWithRange:NSMakeRange(index + 1, length - index - 2)]);
         }
         break;
@@ -418,7 +425,7 @@ static IOSClass *IOSClass_ArrayClassForName(NSString *name, NSUInteger index) {
     if ([className characterAtIndex:0] == '[') {
       iosClass = IOSClass_ArrayClassForName(className, 1);
     } else {
-      iosClass = IOSClass_ClassForName(className);
+      iosClass = ClassForJavaName(className);
     }
   }
   if (iosClass) {
@@ -450,7 +457,7 @@ static IOSClass *IOSClass_ArrayClassForName(NSString *name, NSUInteger index) {
     [qName appendString:@"."];
   }
   [qName appendString:metadata.enclosingName];
-  return IOSClass_ClassForName(qName);
+  return ClassForJavaName(qName);
 }
 
 - (BOOL)isArray {
