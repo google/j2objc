@@ -196,4 +196,9 @@ id Box(JavaResult *value, const char *type) {
   @throw exception;
 }
 
+- (id)getDefaultValue {
+  // TODO(tball): implement as part of method metadata.
+  return nil;
+}
+
 @end

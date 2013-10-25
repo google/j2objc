@@ -596,6 +596,8 @@
 		06AA056B17E111190017C34A /* PropertyResourceBundle.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = PropertyResourceBundle.m; path = build_result/Classes/java/util/PropertyResourceBundle.m; sourceTree = "<group>"; };
 		06AA056C17E111190017C34A /* ResourceBundle.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = ResourceBundle.h; path = build_result/Classes/java/util/ResourceBundle.h; sourceTree = "<group>"; };
 		06AA056D17E111190017C34A /* ResourceBundle.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = ResourceBundle.m; path = build_result/Classes/java/util/ResourceBundle.m; sourceTree = "<group>"; };
+		06B1E04F17F6403100F8940B /* Iterable.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = Iterable.h; path = java/lang/Iterable.h; sourceTree = "<group>"; };
+		06B1E05017F6403100F8940B /* Iterable.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = Iterable.m; path = java/lang/Iterable.m; sourceTree = "<group>"; };
 		06B6D20117C7D3DE00624B3C /* IOSLocaleData.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IOSLocaleData.h; sourceTree = "<group>"; };
 		06B6D20217C7D3DE00624B3C /* IOSLocaleData.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IOSLocaleData.m; sourceTree = "<group>"; };
 		06B6D20517C7D67400624B3C /* LocaleData.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = LocaleData.h; path = build_result/Classes/libcore/icu/LocaleData.h; sourceTree = "<group>"; };
@@ -1032,6 +1034,8 @@
 				0675061217F0B3E10015B7E8 /* IOSReflection.h */,
 				066193B6155849BC0004DAFE /* IOSShortArray.h */,
 				066193B7155849BC0004DAFE /* IOSShortArray.m */,
+				06B1E04F17F6403100F8940B /* Iterable.h */,
+				06B1E05017F6403100F8940B /* Iterable.m */,
 				06986A181767D781006EE92F /* J2ObjCMain.m */,
 				0675061317F0C7A30015B7E8 /* JavaMetadata.h */,
 				0675061417F0C7A30015B7E8 /* JavaMetadata.m */,
