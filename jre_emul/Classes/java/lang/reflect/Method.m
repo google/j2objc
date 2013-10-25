@@ -74,6 +74,12 @@
 
 - (IOSClass *)getReturnType {
   if (metadata_ && metadata_->returnType) {
+    if (strlen(metadata_->returnType) == 1) {
+      IOSClass *primitiveType = [IOSClass primitiveClassForChar:*metadata_->returnType];
+      if (primitiveType) {
+        return primitiveType;
+      }
+    }
     return [IOSClass classForIosName:[NSString stringWithCString:metadata_->returnType encoding:
         [NSString defaultCStringEncoding]]];
   }

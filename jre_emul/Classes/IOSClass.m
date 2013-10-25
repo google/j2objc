@@ -385,9 +385,13 @@ static IOSClass *IOSClass_PrimitiveClassForChar(unichar c) {
     case 'J': return IOSClass_longClass;
     case 'S': return IOSClass_shortClass;
     case 'Z': return IOSClass_booleanClass;
-    // void type purposfully excluded because you can't have a void array.
+    case 'V': return IOSClass_voidClass;
     default: return nil;
   }
+}
+
++ (IOSClass *)primitiveClassForChar:(unichar)c {
+  return IOSClass_PrimitiveClassForChar(c);
 }
 
 static IOSClass *IOSClass_ArrayClassForName(NSString *name, NSUInteger index) {

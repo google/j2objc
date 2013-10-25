@@ -1203,7 +1203,14 @@ public class ObjectiveCImplementationGenerator extends ObjectiveCSourceFileGener
     boolean needsMetadata = false;
     ITypeBinding returnType = method.getReturnType();
     String returnTypeStr = "NULL";
-    if (!returnType.isPrimitive()) {
+    if (returnType.isPrimitive()) {
+      returnTypeStr = "\"" + returnType.getBinaryName() + "\"";
+      // In ObjC BOOL is a typedef for unsigned char so booleans look the same
+      // as bytes.
+      if (returnType.getName().equals("boolean")) {
+        needsMetadata = true;
+      }
+    } else {
       returnTypeStr = "\"" + NameTable.getFullName(method.getReturnType()) + "\"";
       needsMetadata = true;
     }
