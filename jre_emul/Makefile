@@ -613,6 +613,14 @@ MAIN_LIB_OBJS = $(MAIN_OBJ:%=$(CLASS_DIR)/%)
 default: libs
 	@: # suppress make's "nothing to be done" message
 
+# Only build dependencies when called directly from command-line.
+ifeq ("$(CONFIGURATION_BUILD_DIR)x$(MAKELEVEL)", "x0")
+find_cycles_deps:
+	@cd .. && $(MAKE) cycle_finder_dist
+else
+find_cycles_deps:
+endif
+
 analyze: $(ALL_OBJS:%.o=$(CLASS_DIR)/%.plist)
 
 translate: pre_translate $(TRANSLATED_OBJC)
@@ -805,8 +813,5 @@ $(OBJC_SOURCES_MANIFEST): $(ALL_JAVA_SOURCES) | $(BUILD_DIR)
 
 objc_sources_manifest: $(OBJC_SOURCES_MANIFEST)
 
-find_cycles: make_cycle_finder $(JAVA_SOURCES_MANIFEST)
+find_cycles: find_cycles_deps $(JAVA_SOURCES_MANIFEST)
 	$(DIST_DIR)/cycle_finder -w cycle_whitelist.txt `cat $(JAVA_SOURCES_MANIFEST)`
-
-make_cycle_finder:
-	@cd .. && $(MAKE) cycle_finder_dist

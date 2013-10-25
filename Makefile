@@ -63,6 +63,9 @@ jre_emul_jar_dist: annotations_dist
 jre_emul_dist: translator_dist
 	@cd jre_emul && $(MAKE) dist
 
+jre_emul_java_manifest:
+	@cd jre_emul && $(MAKE) java_sources_manifest
+
 junit_dist: translator_dist jre_emul_dist
 	@cd junit && $(MAKE) dist
 
@@ -87,7 +90,7 @@ test_translator: annotations_dist java_deps_dist
 test_jre_emul: jre_emul_dist junit_dist
 	@cd jre_emul && $(MAKE) -f tests.mk
 
-test_jre_cycles:
+test_jre_cycles: cycle_finder_dist
 	@cd jre_emul && $(MAKE) find_cycles
 
 test_cycle_finder:
