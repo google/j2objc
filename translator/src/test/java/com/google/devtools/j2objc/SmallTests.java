@@ -39,6 +39,7 @@ import com.google.devtools.j2objc.translate.InnerClassExtractorTest;
 import com.google.devtools.j2objc.translate.JavaToIOSMethodTranslatorTest;
 import com.google.devtools.j2objc.translate.NilCheckResolverTest;
 import com.google.devtools.j2objc.translate.OperatorRewriterTest;
+import com.google.devtools.j2objc.translate.OuterReferenceFixerTest;
 import com.google.devtools.j2objc.translate.OuterReferenceResolverTest;
 import com.google.devtools.j2objc.translate.RewriterTest;
 import com.google.devtools.j2objc.translate.StaticVarRewriterTest;
@@ -96,6 +97,7 @@ public class SmallTests {
     ObjectiveCSourceFileGeneratorTest.class,
     OperatorRewriterTest.class,
     OptionsTest.class,
+    OuterReferenceFixerTest.class,
     OuterReferenceResolverTest.class,
     PrimitiveArrayTest.class,
     ProGuardUsageParserTest.class,
