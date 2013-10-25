@@ -17,12 +17,15 @@
 package com.google.devtools.j2objc.translate;
 
 import com.google.common.collect.Lists;
+import com.google.devtools.j2objc.J2ObjC;
 import com.google.devtools.j2objc.types.GeneratedMethodBinding;
 import com.google.devtools.j2objc.types.GeneratedVariableBinding;
 import com.google.devtools.j2objc.types.NodeCopier;
 import com.google.devtools.j2objc.types.Types;
 import com.google.devtools.j2objc.util.ASTUtil;
+import com.google.devtools.j2objc.util.BindingUtil;
 import com.google.devtools.j2objc.util.ErrorReportingASTVisitor;
+import com.google.j2objc.annotations.WeakOuter;
 
 import org.eclipse.jdt.core.dom.AST;
 import org.eclipse.jdt.core.dom.ASTNode;
@@ -139,6 +142,11 @@ public class InnerClassExtractor extends ErrorReportingASTVisitor {
         }
       }
       unitTypes.add(insertIdx, newTypeDecl);
+
+      // Check for erroneous WeakOuter annotation on static inner class.
+      if (BindingUtil.isStatic(type) && BindingUtil.hasAnnotation(type, WeakOuter.class)) {
+        J2ObjC.warning("static class " + type.getQualifiedName() + " has WeakOuter annotation");
+      }
     }
   }
 
