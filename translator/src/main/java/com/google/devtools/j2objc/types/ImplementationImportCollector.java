@@ -270,8 +270,9 @@ public class ImplementationImportCollector extends ErrorReportingASTVisitor {
       ITypeBinding[] parameterTypes = binding.getParameterTypes();
       int nParameters = parameterTypes.length;
       if (binding.isVarargs()) {
-        // Add IOSObjectArray import for varargs arguments.
-        addImports(Types.resolveArrayType(Types.getNSObject()));
+        // Only check type for varargs parameters, since the actual
+        // number of arguments will vary.
+        addImports(parameterTypes[nParameters - 1]);
         --nParameters;
       }
       for (int i = 0; i < nParameters; i++) {
