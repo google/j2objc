@@ -21,7 +21,7 @@
 
 include environment.mk
 
-JUNIT_SOURCES = \
+JUNIT_PUBLIC_SOURCES = \
     junit/extensions/TestDecorator.java \
     junit/framework/Assert.java \
     junit/framework/AssertionFailedError.java \
@@ -52,42 +52,6 @@ JUNIT_SOURCES = \
     org/junit/ComparisonFailure.java \
     org/junit/Ignore.java \
     org/junit/Rule.java \
-    org/junit/internal/ArrayComparisonFailure.java \
-    org/junit/internal/AssumptionViolatedException.java \
-    org/junit/internal/builders/AllDefaultPossibilitiesBuilder.java \
-    org/junit/internal/builders/AnnotatedBuilder.java \
-    org/junit/internal/builders/IgnoredBuilder.java \
-    org/junit/internal/builders/IgnoredClassRunner.java \
-    org/junit/internal/builders/JUnit3Builder.java \
-    org/junit/internal/builders/JUnit4Builder.java \
-    org/junit/internal/builders/NullBuilder.java \
-    org/junit/internal/builders/SuiteMethodBuilder.java \
-    org/junit/internal/ComparisonCriteria.java \
-    org/junit/internal/ExactComparisonCriteria.java \
-    org/junit/internal/InexactComparisonCriteria.java \
-    org/junit/internal/JUnitSystem.java \
-    org/junit/internal/matchers/Each.java \
-    org/junit/internal/matchers/IsCollectionContaining.java \
-    org/junit/internal/matchers/TypeSafeMatcher.java \
-    org/junit/internal/RealSystem.java \
-    org/junit/internal/requests/ClassRequest.java \
-    org/junit/internal/requests/FilterRequest.java \
-    org/junit/internal/requests/SortingRequest.java \
-    org/junit/internal/runners/ErrorReportingRunner.java \
-    org/junit/internal/runners/InitializationError.java \
-    org/junit/internal/runners/JUnit38ClassRunner.java \
-    org/junit/internal/runners/model/EachTestNotifier.java \
-    org/junit/internal/runners/model/MultipleFailureException.java \
-    org/junit/internal/runners/model/ReflectiveCallable.java \
-    org/junit/internal/runners/rules/RuleFieldValidator.java \
-    org/junit/internal/runners/statements/ExpectException.java \
-    org/junit/internal/runners/statements/Fail.java \
-    org/junit/internal/runners/statements/FailOnTimeout.java \
-    org/junit/internal/runners/statements/InvokeMethod.java \
-    org/junit/internal/runners/statements/RunAfters.java \
-    org/junit/internal/runners/statements/RunBefores.java \
-    org/junit/internal/runners/SuiteMethod.java \
-    org/junit/internal/TextListener.java \
     org/junit/rules/MethodRule.java \
     org/junit/rules/RunRules.java \
     org/junit/rules/TestRule.java \
@@ -123,8 +87,48 @@ JUNIT_SOURCES = \
     org/junit/runners/model/Statement.java \
     org/junit/runners/model/TestClass.java
 
+JUNIT_INTERNAL_SOURCES = \
+    org/junit/internal/ArrayComparisonFailure.java \
+    org/junit/internal/AssumptionViolatedException.java \
+    org/junit/internal/builders/AllDefaultPossibilitiesBuilder.java \
+    org/junit/internal/builders/AnnotatedBuilder.java \
+    org/junit/internal/builders/IgnoredBuilder.java \
+    org/junit/internal/builders/IgnoredClassRunner.java \
+    org/junit/internal/builders/JUnit3Builder.java \
+    org/junit/internal/builders/JUnit4Builder.java \
+    org/junit/internal/builders/NullBuilder.java \
+    org/junit/internal/builders/SuiteMethodBuilder.java \
+    org/junit/internal/ComparisonCriteria.java \
+    org/junit/internal/ExactComparisonCriteria.java \
+    org/junit/internal/InexactComparisonCriteria.java \
+    org/junit/internal/JUnitSystem.java \
+    org/junit/internal/matchers/Each.java \
+    org/junit/internal/matchers/IsCollectionContaining.java \
+    org/junit/internal/matchers/TypeSafeMatcher.java \
+    org/junit/internal/RealSystem.java \
+    org/junit/internal/requests/ClassRequest.java \
+    org/junit/internal/requests/FilterRequest.java \
+    org/junit/internal/requests/SortingRequest.java \
+    org/junit/internal/runners/ErrorReportingRunner.java \
+    org/junit/internal/runners/InitializationError.java \
+    org/junit/internal/runners/JUnit38ClassRunner.java \
+    org/junit/internal/runners/model/EachTestNotifier.java \
+    org/junit/internal/runners/model/MultipleFailureException.java \
+    org/junit/internal/runners/model/ReflectiveCallable.java \
+    org/junit/internal/runners/rules/RuleFieldValidator.java \
+    org/junit/internal/runners/statements/ExpectException.java \
+    org/junit/internal/runners/statements/Fail.java \
+    org/junit/internal/runners/statements/FailOnTimeout.java \
+    org/junit/internal/runners/statements/InvokeMethod.java \
+    org/junit/internal/runners/statements/RunAfters.java \
+    org/junit/internal/runners/statements/RunBefores.java \
+    org/junit/internal/runners/SuiteMethod.java \
+    org/junit/internal/TextListener.java
 
-HAMCREST_SOURCES = \
+
+JUNIT_SOURCES = $(JUNIT_PUBLIC_SOURCES) $(JUNIT_INTERNAL_SOURCES)
+
+HAMCREST_PUBLIC_SOURCES = \
     org/hamcrest/BaseDescription.java \
     org/hamcrest/BaseMatcher.java \
     org/hamcrest/core/AllOf.java \
@@ -140,12 +144,16 @@ HAMCREST_SOURCES = \
     org/hamcrest/CoreMatchers.java \
     org/hamcrest/Description.java \
     org/hamcrest/Factory.java \
-    org/hamcrest/internal/ArrayIterator.java \
-    org/hamcrest/internal/SelfDescribingValue.java \
-    org/hamcrest/internal/SelfDescribingValueIterator.java \
     org/hamcrest/Matcher.java \
     org/hamcrest/SelfDescribing.java \
     org/hamcrest/StringDescription.java
+
+HAMCREST_INTERNAL_SOURCES = \
+    org/hamcrest/internal/ArrayIterator.java \
+    org/hamcrest/internal/SelfDescribingValue.java \
+    org/hamcrest/internal/SelfDescribingValueIterator.java
+
+HAMCREST_SOURCES = $(HAMCREST_PUBLIC_SOURCES) $(HAMCREST_INTERNAL_SOURCES)
 
 ORG_JUNIT_TEST_SRC = org/junit/Test.java
 ORG_JUNIT_TEST_OBJ = org/junit/OrgJunitTest.o
@@ -164,10 +172,14 @@ EXTRACTED_JAVA = $(JUNIT_SOURCES:%=$(JAVA_SRC_DIR)/%) \
 TRANSLATED_OBJC = $(JUNIT_SOURCES:%.java=$(BUILD_DIR)/%.m) \
     $(HAMCREST_SOURCES:%.java=$(BUILD_DIR)/%.m) \
     $(ORG_JUNIT_TEST_SRC:%.java=$(BUILD_DIR)/%.m)
-GENERATED_HEADERS = $(JUNIT_SOURCES:%.java=%.h)
-RELATIVE_HEADERS = $(GENERATED_HEADERS) $(ORG_JUNIT_TEST_SRC:%.java=%.h)
-HEADERS = $(GENERATED_HEADERS:%=$(BUILD_DIR)/%)
-ARCH_HEADERS = $(RELATIVE_HEADERS:%=$(ARCH_INCLUDE_DIR)/%)
+PUBLIC_HEADERS = \
+    $(JUNIT_PUBLIC_SOURCES:%.java=%.h) \
+    $(HAMCREST_PUBLIC_SOURCES:%.java=%.h) \
+    $(ORG_JUNIT_TEST_SRC:%.java=%.h)
+INTERNAL_HEADERS = \
+    $(JUNIT_INTERNAL_SOURCES:%.java=%.h) \
+    $(HAMCREST_INTERNAL_SOURCES:%.java=%.h)
+ARCH_HEADERS = $(PUBLIC_HEADERS:%=$(ARCH_INCLUDE_DIR)/%)
 
 # Settings for building Mac OS X, iPhone, and iPhone simulator libraries.
 EMULATION_MACOSX_LIB = $(BUILD_DIR)/macosx-libjunit.a
