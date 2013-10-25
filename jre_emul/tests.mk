@@ -311,9 +311,7 @@ TEST_RESOURCES = \
 # Broken tests, plus associated bug id.  Once bug is fixed, move line(s) up.
 #	$(TESTS_DIR)/org/apache/harmony/luni/tests/java/lang/StringBuilderTest.o               b/8842295
 
-# MOE:begin_strip
-JUNIT_JAR = ../dist/lib/junit.jar
-# MOE:end_strip_and_replace JUNIT_JAR = ../dist/lib/junit-4.10.jar
+JUNIT_JAR = ../dist/lib/junit-4.10.jar
 
 TEST_JOC = ../dist/j2objc -classpath $(JUNIT_JAR) -Werror \
 	-sourcepath $(TEST_SRC) -d $(TESTS_DIR)

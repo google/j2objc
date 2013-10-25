@@ -50,7 +50,7 @@ public class PrintStream extends FilterOutputStream implements Appendable, Close
      * Constructs a new {@code PrintStream} with {@code out} as its target
      * stream. By default, the new print stream does not automatically flush its
      * contents to the target stream when a newline is encountered.
-     * 
+     *
      * @param out
      *            the target output stream.
      * @throws NullPointerException
@@ -68,7 +68,7 @@ public class PrintStream extends FilterOutputStream implements Appendable, Close
      * stream. The parameter {@code autoFlush} determines if the print stream
      * automatically flushes its contents to the target stream when a newline is
      * encountered.
-     * 
+     *
      * @param out
      *            the target output stream.
      * @param autoFlush
@@ -90,7 +90,7 @@ public class PrintStream extends FilterOutputStream implements Appendable, Close
      * stream and using the character encoding {@code charsetName} while writing. The
      * parameter {@code autoFlush} determines if the print stream automatically
      * flushes its contents to the target stream when a newline is encountered.
-     * 
+     *
      * @param out
      *            the target output stream.
      * @param autoFlush
@@ -168,7 +168,7 @@ public class PrintStream extends FilterOutputStream implements Appendable, Close
      * Constructs a new {@code PrintStream} with the file identified by
      * {@code fileName} as its target. The VM's default character
      * set is used for character encoding.
-     * 
+     *
      * @param fileName
      *            the target file's name. If the file already exists, its
      *            contents are removed, otherwise a new file is created.
@@ -183,7 +183,7 @@ public class PrintStream extends FilterOutputStream implements Appendable, Close
      * Constructs a new {@code PrintStream} with the file identified by
      * {@code fileName} as its target. The character set named {@code charsetName} is
      * used for character encoding.
-     * 
+     *
      * @param fileName
      *            the target file's name. If the file already exists, its
      *            contents are removed, otherwise a new file is created.
@@ -203,7 +203,7 @@ public class PrintStream extends FilterOutputStream implements Appendable, Close
 
     /**
      * Flushes this stream and returns the value of the error flag.
-     * 
+     *
      * @return {@code true} if either an {@code IOException} has been thrown
      *         previously or if {@code setError()} has been called;
      *         {@code false} otherwise.
@@ -287,7 +287,7 @@ public class PrintStream extends FilterOutputStream implements Appendable, Close
     /**
      * Writes a string formatted by an intermediate {@link Formatter} to this
      * stream using the specified locale, format string and arguments.
-     * 
+     *
      * @param l
      *            the locale used in the method. No localization will be applied
      *            if {@code l} is {@code null}.
@@ -337,7 +337,7 @@ public class PrintStream extends FilterOutputStream implements Appendable, Close
     /**
      * Prints a formatted string. The behavior of this method is the same as
      * this stream's {@code #format(Locale, String, Object...)} method.
-     * 
+     *
      * @param l
      *            the locale used in the method. No localization will be applied
      *            if {@code l} is {@code null}.
@@ -586,7 +586,7 @@ public class PrintStream extends FilterOutputStream implements Appendable, Close
      * <p>
      * This stream's error flag is set to {@code true} if it is closed or an I/O
      * error occurs.
-     * 
+     *
      * @param oneByte
      *            the byte to be written
      */

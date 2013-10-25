@@ -128,9 +128,6 @@ MODIFIED_SOURCES = \
     junit/framework/TestCase.java \
     org/junit/runners/model/FrameworkMethod.java
 
-# MOE:begin_strip
-JUNIT_SOURCES := $(JUNIT_SOURCES) org/junit/internal/MethodSorter.java
-# MOE:end_strip
 
 JUNIT_SOURCES = $(JUNIT_PUBLIC_SOURCES) $(JUNIT_INTERNAL_SOURCES)
 

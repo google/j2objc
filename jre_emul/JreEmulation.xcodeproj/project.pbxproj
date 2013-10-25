@@ -23,7 +23,6 @@
 
 /* Begin PBXBuildFile section */
 		0604932D1772407B0047D336 /* IOSClassTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 0604932C1772407B0047D336 /* IOSClassTest.m */; };
-		062889CF18047030007DDA39 /* IOSReflection.m in Sources */ = {isa = PBXBuildFile; fileRef = 062889CE18047030007DDA39 /* IOSReflection.m */; };
 		06619389155848D70004DAFE /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 06619388155848D70004DAFE /* Foundation.framework */; };
 		0672178415587E2C00645E1B /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 06619388155848D70004DAFE /* Foundation.framework */; };
 		067217D315587FC600645E1B /* IOSArrayTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 067217CD15587FC600645E1B /* IOSArrayTest.m */; };
@@ -2053,7 +2052,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				062889CF18047030007DDA39 /* IOSReflection.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

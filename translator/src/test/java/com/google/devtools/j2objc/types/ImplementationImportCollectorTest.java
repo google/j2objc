@@ -40,7 +40,6 @@ public class ImplementationImportCollectorTest extends GenerationTest {
     assertTranslation(translation, "#include \"FooException.h\"");
   }
 
-  // http://b/7073329
   public void testVarargsMethodNoActualArguments() throws IOException {
     translateSourceFile(
         "class Test { Test(String ... values) { } Test test = new Test(); }",

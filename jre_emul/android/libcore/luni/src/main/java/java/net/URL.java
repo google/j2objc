@@ -555,7 +555,7 @@ public final class URL implements Serializable {
             if (streamHandler == null) {
                 throw new IOException("Unknown protocol: " + protocol);
             }
-            hashCode = 0; // necessary until http://b/4471249 is fixed
+            hashCode = 0;
         } catch (ClassNotFoundException e) {
             throw new IOException(e);
         }
