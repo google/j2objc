@@ -54,5 +54,7 @@ enum {
 	OBJC_SYNC_NOT_INITIALIZED         = -3		
 };
 
+// Returns true if an object has a pthread_mutux allocated for it on this thread.
+BOOL j2objc_sync_holds_lock(id obj);
 
 #endif // __OBJC_SNYC_H_
