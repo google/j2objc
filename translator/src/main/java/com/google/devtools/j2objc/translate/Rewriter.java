@@ -384,10 +384,10 @@ public class Rewriter extends ErrorReportingASTVisitor {
   }
 
   @Override
-  public boolean visit(LabeledStatement node) {
+  public void endVisit(LabeledStatement node) {
     Statement loopBody = getLoopBody(node.getBody());
     if (loopBody == null) {
-      return true;
+      return;
     }
 
     final AST ast = node.getAST();
@@ -434,7 +434,6 @@ public class Rewriter extends ErrorReportingASTVisitor {
       // Replace this node with its statement, thus deleting the label.
       ASTUtil.setProperty(node, NodeCopier.copySubtree(ast, node.getBody()));
     }
-    return true;
   }
 
   @Override
