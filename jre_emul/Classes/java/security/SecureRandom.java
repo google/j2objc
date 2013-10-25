@@ -19,7 +19,7 @@ package java.security;
 
 /*-[
 #import "java/lang/InternalError.h"
-#import <SecRandom.h>
+#import <Security/SecRandom.h>
 ]-*/
 
 /**
