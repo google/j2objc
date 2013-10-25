@@ -330,7 +330,7 @@ NSString *IOSClass_GetTranslatedMethodName(NSString *name, IOSObjectArray *param
 }
 
 // Convert Java class name to camelcased iOS name.
-static NSString *IOSClass_JavaToIOSName(NSString *javaName) {
+NSString *IOSClass_JavaToIOSName(NSString *javaName) {
   NSString *mappedName = [IOSClass_mappedClasses objectForKey:javaName];
   if (mappedName) {
     return mappedName;
