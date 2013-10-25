@@ -198,7 +198,6 @@ public final class MethodTest extends TestCase {
     }
 
     // iOS: toString returns may be different than in Java.
-//    // http://b/1045939
 //    public void testMethodToString() throws Exception {
 //        assertEquals("public final native void java.lang.Object.clone()",
 //                Object.class.getMethod("clone", new Class[] { }).toString());

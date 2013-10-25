@@ -34,10 +34,7 @@
 // limited to those that can be derived from an Objective-C Method instance,
 // so instances can be created and released as needed.
 @interface JavaLangReflectMethod : ExecutableMember
-    < JavaLangReflectGenericDeclaration, JavaLangReflectMember > {
- @private
-  const J2ObjcMethodInfo *metadata_;
-}
+    < JavaLangReflectGenericDeclaration, JavaLangReflectMember >
 
 + (id)methodWithSelector:(SEL)aSelector
                withClass:(IOSClass *)aClass

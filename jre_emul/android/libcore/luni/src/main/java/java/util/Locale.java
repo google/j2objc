@@ -17,7 +17,6 @@
 
 package java.util;
 
-import java.io.IOException;
 import java.io.Serializable;
 import libcore.icu.ICU;
 
@@ -397,7 +396,6 @@ public final class Locale implements Cloneable, Serializable {
             return "";
         }
 
-        // http://b/8049507 --- frameworks/base should use fil_PH instead of tl_PH.
         // Until then, we're stuck covering their tracks, making it look like they're
         // using "fil" when they're not.
         String localeString = toString();

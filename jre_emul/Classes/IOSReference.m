@@ -105,14 +105,6 @@ static BOOL in_low_memory_cleanup;
   [reference->referent_ autorelease];
 }
 
-+ (void)strengthenReferent:(JavaLangRefReference *)reference {
-  [reference->referent_ retain];
-}
-
-+ (void)weakenReferent:(JavaLangRefReference *)reference {
-  [reference->referent_ autorelease];
-}
-
 + (void)deallocReferent:(JavaLangRefReference *)reference {
   if (reference->referent_) {
     RemoveReferenceAssociation(reference->referent_, reference);
