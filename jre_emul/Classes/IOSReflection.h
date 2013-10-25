@@ -129,9 +129,4 @@ typedef union {
   BOOL asBOOL;
 } J2ObjcRawValue;
 
-// Converts a raw value to an object wrapper; for example,
-// boxing a double value returns a java.lang.Double instance.
-// If the raw value is an object, that value is returned.
-FOUNDATION_EXPORT id J2ObjcBoxValue(J2ObjcRawValue *value, const char *type);
-
 #endif
