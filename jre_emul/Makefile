@@ -176,6 +176,10 @@ JAVA_SOURCES = \
 	java/io/ObjectStreamException.java \
 	java/io/OutputStream.java \
 	java/io/OutputStreamWriter.java \
+	java/io/PipedInputStream.java \
+	java/io/PipedOutputStream.java \
+	java/io/PipedReader.java \
+	java/io/PipedWriter.java \
 	java/io/PrintStream.java \
 	java/io/PrintWriter.java \
 	java/io/PushbackInputStream.java \
