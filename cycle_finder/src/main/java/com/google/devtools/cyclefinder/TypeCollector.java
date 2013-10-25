@@ -14,12 +14,13 @@
 
 package com.google.devtools.cyclefinder;
 
+import com.google.common.base.Strings;
 import com.google.common.collect.Maps;
 
-import org.eclipse.jdt.core.dom.ASTNode;
 import org.eclipse.jdt.core.dom.ASTVisitor;
 import org.eclipse.jdt.core.dom.AnonymousClassDeclaration;
 import org.eclipse.jdt.core.dom.ClassInstanceCreation;
+import org.eclipse.jdt.core.dom.CompilationUnit;
 import org.eclipse.jdt.core.dom.ITypeBinding;
 import org.eclipse.jdt.core.dom.IVariableBinding;
 import org.eclipse.jdt.core.dom.MethodInvocation;
@@ -35,8 +36,22 @@ class TypeCollector {
 
   private Map<String, ITypeBinding> allTypes = Maps.newHashMap();
 
+  private static Map<ITypeBinding, String> renamings = Maps.newHashMap();
+
   public Map<String, ITypeBinding> getTypes() {
     return allTypes;
+  }
+
+  public static String getNameForType(ITypeBinding type) {
+    String name = renamings.get(type);
+    if (name != null) {
+      return name;
+    }
+    name = type.getName();
+    if (!Strings.isNullOrEmpty(name)) {
+      return name;
+    }
+    return type.getKey();
   }
 
   public void visitType(ITypeBinding type) {
@@ -91,8 +106,8 @@ class TypeCollector {
     return false;
   }
 
-  public void visitAST(ASTNode ast) {
-    ast.accept(new ASTVisitor() {
+  public void visitAST(final CompilationUnit unit) {
+    unit.accept(new ASTVisitor() {
       @Override
       public boolean visit(TypeDeclaration node) {
         visitType(node.resolveBinding());
@@ -100,7 +115,9 @@ class TypeCollector {
       }
       @Override
       public boolean visit(AnonymousClassDeclaration node) {
-        visitType(node.resolveBinding());
+        ITypeBinding binding = node.resolveBinding();
+        visitType(binding);
+        renamings.put(binding, "anonymous:" + unit.getLineNumber(node.getStartPosition()));
         return true;
       }
       @Override
