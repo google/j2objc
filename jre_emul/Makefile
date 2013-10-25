@@ -391,9 +391,14 @@ JAVA_SOURCES = \
 	java/util/Calendar.java \
 	java/util/Collections.java \
 	java/util/ConcurrentModificationException.java \
+	java/util/concurrent/BrokenBarrierException.java \
+	java/util/concurrent/CancellationException.java \
 	java/util/concurrent/ConcurrentHashMap.java \
 	java/util/concurrent/CopyOnWriteArrayList.java \
 	java/util/concurrent/CopyOnWriteArraySet.java \
+	java/util/concurrent/ExecutionException.java \
+	java/util/concurrent/RejectedExecutionException.java \
+	java/util/concurrent/TimeoutException.java \
 	java/util/concurrent/TimeUnit.java \
 	java/util/concurrent/atomic/AtomicBoolean.java \
 	java/util/concurrent/atomic/AtomicInteger.java \
