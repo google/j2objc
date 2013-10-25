@@ -22,6 +22,10 @@
 #error "JavaUtilLinkedHashMap is not built with ARC"
 #endif
 
+static NSUInteger EnumerateEntries(
+    JavaUtilHashMap *map, NSFastEnumerationState *state, __unsafe_unretained id *stackbuf,
+    NSUInteger len);
+
 @implementation JavaUtilLinkedHashMap
 
 @synthesize accessOrder = accessOrder_;
@@ -441,6 +445,12 @@
                       initWithJavaUtilLinkedHashMap:(JavaUtilLinkedHashMap *) [self hashMap]]);
 }
 
+- (NSUInteger)countByEnumeratingWithState:(NSFastEnumerationState *)state
+                                  objects:(__unsafe_unretained id *)stackbuf
+                                    count:(NSUInteger)len {
+  return EnumerateEntries([self hashMap], state, stackbuf, len);
+}
+
 @end
 
 
@@ -501,6 +511,19 @@
   return self;
 }
 
+- (NSUInteger)countByEnumeratingWithState:(NSFastEnumerationState *)state
+                                  objects:(__unsafe_unretained id *)stackbuf
+                                    count:(NSUInteger)len {
+  NSUInteger objCount = EnumerateEntries(outer_, state, stackbuf, len);
+  __unsafe_unretained id *entries = state->itemsPtr;
+  __unsafe_unretained id *end = entries + objCount;
+  while (entries < end) {
+    *entries = ((JavaUtilMapEntry *) *entries)->key_;
+    entries++;
+  }
+  return objCount;
+}
+
 @end
 
 
@@ -530,4 +553,39 @@
   return self;
 }
 
+- (NSUInteger)countByEnumeratingWithState:(NSFastEnumerationState *)state
+                                  objects:(__unsafe_unretained id *)stackbuf
+                                    count:(NSUInteger)len {
+  NSUInteger objCount = EnumerateEntries(outer_, state, stackbuf, len);
+  __unsafe_unretained id *entries = state->itemsPtr;
+  __unsafe_unretained id *end = entries + objCount;
+  while (entries < end) {
+    *entries = ((JavaUtilMapEntry *) *entries)->value_;
+    entries++;
+  }
+  return objCount;
+}
+
 @end
+
+NSUInteger EnumerateEntries(
+    JavaUtilLinkedHashMap *map, NSFastEnumerationState *state, __unsafe_unretained id *stackbuf,
+    NSUInteger len) {
+  __unsafe_unretained JavaUtilLinkedHashMap_LinkedHashMapEntry *entry;
+  if (state->state == 0) {
+    state->state = 1;
+    state->mutationsPtr = (unsigned long *) &map->modCount_;
+    entry = map->head_;
+  } else {
+    entry = (ARCBRIDGE id) (void *) state->extra[0];
+  }
+  state->itemsPtr = stackbuf;
+  NSUInteger objCount = 0;
+  while (entry && objCount < len) {
+    *stackbuf++ = entry;
+    objCount++;
+    entry = entry->chainForward_;
+  }
+  state->extra[0] = (unsigned long) entry;
+  return objCount;
+}
