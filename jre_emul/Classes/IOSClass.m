@@ -538,7 +538,10 @@ static IOSClass *IOSClass_ArrayClassForName(NSString *name, NSUInteger index) {
   if (cls) {
     SEL sel = @selector(__metadata);
     if ([cls respondsToSelector:sel]) {
-      J2ObjcClassInfo *rawData = (J2ObjcClassInfo *) [cls performSelector:sel];
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Warc-performSelector-leaks"
+      J2ObjcClassInfo *rawData = (ARCBRIDGE J2ObjcClassInfo *) [cls performSelector:sel];
+#pragma clang diagnostic pop
       return AUTORELEASE([[JavaClassMetadata alloc] initWithMetadata:rawData]);
     }
   }
