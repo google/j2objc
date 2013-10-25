@@ -681,6 +681,7 @@ public class TreeMap<K, V> extends AbstractMap<K, V>
 
     private EntrySet entrySet;
     private KeySet keySet;
+    private ValuesCollection valuesCollection;
 
     @Override public Set<Entry<K, V>> entrySet() {
         EntrySet result = entrySet;
@@ -695,6 +696,11 @@ public class TreeMap<K, V> extends AbstractMap<K, V>
     public NavigableSet<K> navigableKeySet() {
         KeySet result = keySet;
         return result != null ? result : (keySet = new KeySet());
+    }
+
+    @Override public Collection<V> values() {
+      ValuesCollection result = valuesCollection;
+      return result != null ? result : (valuesCollection = new ValuesCollection());
     }
 
     public NavigableMap<K, V> subMap(K from, boolean fromInclusive, K to, boolean toInclusive) {
@@ -950,6 +956,14 @@ public class TreeMap<K, V> extends AbstractMap<K, V>
         @Override public void clear() {
             TreeMap.this.clear();
         }
+
+        /*-[
+        - (NSUInteger)countByEnumeratingWithState:(NSFastEnumerationState *)state
+                                          objects:(__unsafe_unretained id *)stackbuf
+                                            count:(NSUInteger)len {
+          return EnumerateEntries(this$0_, state, stackbuf, len, 0, YES);
+        }
+        ]-*/
     }
 
     @WeakOuter
@@ -1059,6 +1073,37 @@ public class TreeMap<K, V> extends AbstractMap<K, V>
         public NavigableSet<K> descendingSet() {
             return new BoundedMap(false, null, NO_BOUND, null, NO_BOUND).navigableKeySet();
         }
+
+        /*-[
+        - (NSUInteger)countByEnumeratingWithState:(NSFastEnumerationState *)state
+                                          objects:(__unsafe_unretained id *)stackbuf
+                                            count:(NSUInteger)len {
+          return EnumerateEntries(this$0_, state, stackbuf, len, 1, YES);
+        }
+        ]-*/
+    }
+
+    @WeakOuter
+    class ValuesCollection extends AbstractCollection<V> {
+        @Override public int size() {
+            return size;
+        }
+
+        @Override public Iterator<V> iterator() {
+            return new MapIterator<V>(root == null ? null : root.first()) {
+                public V next() {
+                    return stepForward().value;
+                }
+            };
+        }
+
+        /*-[
+        - (NSUInteger)countByEnumeratingWithState:(NSFastEnumerationState *)state
+                                          objects:(__unsafe_unretained id *)stackbuf
+                                            count:(NSUInteger)len {
+          return EnumerateEntries(this$0_, state, stackbuf, len, 2, YES);
+        }
+        ]-*/
     }
 
     /*
@@ -1383,6 +1428,7 @@ public class TreeMap<K, V> extends AbstractMap<K, V>
 
         private transient BoundedEntrySet entrySet;
         private transient BoundedKeySet keySet;
+        private transient BoundedValuesCollection valuesCollection;
 
         @Override public Set<Entry<K, V>> entrySet() {
             BoundedEntrySet result = entrySet;
@@ -1396,6 +1442,11 @@ public class TreeMap<K, V> extends AbstractMap<K, V>
         public NavigableSet<K> navigableKeySet() {
             BoundedKeySet result = keySet;
             return result != null ? result : (keySet = new BoundedKeySet());
+        }
+
+        @Override public Collection<V> values() {
+            BoundedValuesCollection result = valuesCollection;
+            return result != null ? result : (valuesCollection = new BoundedValuesCollection());
         }
 
         public NavigableMap<K, V> descendingMap() {
@@ -1536,6 +1587,16 @@ public class TreeMap<K, V> extends AbstractMap<K, V>
                 Entry<?, ?> entry = (Entry<?, ?>) o;
                 return isInBounds(entry.getKey()) && TreeMap.this.entrySet().remove(entry);
             }
+
+            /*-[
+            - (NSUInteger)countByEnumeratingWithState:(NSFastEnumerationState *)state
+                                              objects:(__unsafe_unretained id *)stackbuf
+                                                count:(NSUInteger)len {
+              SetEndpoints(this$0_, state);
+              return EnumerateEntries(
+                  this$0_->this$0_, state, stackbuf, len, 0, this$0_->ascending_);
+            }
+            ]-*/
         }
 
         @WeakOuter
@@ -1645,6 +1706,45 @@ public class TreeMap<K, V> extends AbstractMap<K, V>
             public NavigableSet<K> descendingSet() {
                 return new BoundedMap(!ascending, from, fromBound, to, toBound).navigableKeySet();
             }
+
+            /*-[
+            - (NSUInteger)countByEnumeratingWithState:(NSFastEnumerationState *)state
+                                              objects:(__unsafe_unretained id *)stackbuf
+                                                count:(NSUInteger)len {
+              SetEndpoints(this$0_, state);
+              return EnumerateEntries(
+                  this$0_->this$0_, state, stackbuf, len, 1, this$0_->ascending_);
+            }
+            ]-*/
+        }
+
+        @WeakOuter
+        final class BoundedValuesCollection extends AbstractCollection<V> {
+            @Override public int size() {
+                return BoundedMap.this.size();
+            }
+
+            @Override public boolean isEmpty() {
+                return BoundedMap.this.isEmpty();
+            }
+
+            @Override public Iterator<V> iterator() {
+                return new BoundedIterator<V>(endpoint(true)) {
+                    public V next() {
+                        return (ascending ? stepForward() : stepBackward()).value;
+                    }
+                };
+            }
+
+            /*-[
+            - (NSUInteger)countByEnumeratingWithState:(NSFastEnumerationState *)state
+                                              objects:(__unsafe_unretained id *)stackbuf
+                                                count:(NSUInteger)len {
+              SetEndpoints(this$0_, state);
+              return EnumerateEntries(
+                  this$0_->this$0_, state, stackbuf, len, 2, this$0_->ascending_);
+            }
+            ]-*/
         }
 
         Object writeReplace() throws ObjectStreamException {
@@ -1761,4 +1861,55 @@ public class TreeMap<K, V> extends AbstractMap<K, V>
             return new BoundedMap(true, (K) fromKey, fromBound, (K) toKey, toBound);
         }
     }
+
+    /*-[
+    static inline void SetEndpoints(
+        __unsafe_unretained JavaUtilTreeMap_BoundedMap *bMap, NSFastEnumerationState *state) {
+      if (state->state == 0) {
+        state->extra[1] = (unsigned long) [bMap endpointWithBoolean:YES];
+        state->extra[2] = (unsigned long) [bMap endpointWithBoolean:NO];
+      }
+    }
+    ]-*/
+
+    /*-[
+    static NSUInteger EnumerateEntries(
+        __unsafe_unretained JavaUtilTreeMap *map, NSFastEnumerationState *state,
+        __unsafe_unretained id *stackbuf, NSUInteger len, int type, BOOL forward) {
+      __unsafe_unretained JavaUtilTreeMap_Node *node;
+      __unsafe_unretained JavaUtilTreeMap_Node *startNode = (ARCBRIDGE id) (void *) state->extra[1];
+      __unsafe_unretained JavaUtilTreeMap_Node *endNode = (ARCBRIDGE id) (void *) state->extra[2];
+      if (state->state == 0) {
+        state->state = 1;
+        state->mutationsPtr = (unsigned long *) &map->modCount_;
+        if (startNode) {
+          node = startNode;
+        } else {
+          node = map->root_;
+          if (node) {
+            node = [node first];
+          }
+        }
+      } else {
+        node = (ARCBRIDGE id) (void *) state->extra[0];
+      }
+      state->itemsPtr = stackbuf;
+      NSUInteger objCount = 0;
+      while (node && objCount < len) {
+        switch (type) {
+          case 1 : *stackbuf++ = node->key_; break;
+          case 2 : *stackbuf++ = node->value_; break;
+          default : *stackbuf++ = node; break;
+        }
+        objCount++;
+        if (node == endNode) {
+          node = nil;
+        } else {
+          node = forward ? [node next] : [node prev];
+        }
+      }
+      state->extra[0] = (unsigned long) node;
+      return objCount;
+    }
+    ]-*/
 }
