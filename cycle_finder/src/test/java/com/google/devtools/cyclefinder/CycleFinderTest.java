@@ -54,6 +54,13 @@ public class CycleFinderTest extends TestCase {
     assertCycle("LA;", "LB;");
   }
 
+  public void testWeakField() throws Exception {
+    addSourceFile("A.java", "import com.google.j2objc.annotations.Weak; class A { @Weak B b; }");
+    addSourceFile("B.java", "class B { A a; }");
+    findCycles();
+    assertNoCycles();
+  }
+
   public void testRecursiveWildcard() throws Exception {
     addSourceFile("A.java", "class A<T> { A<? extends T> a; }");
     addSourceFile("B.java", "class B<T> { B<? extends B<T>> b; }");
@@ -167,6 +174,16 @@ public class CycleFinderTest extends TestCase {
     assertNoCycles();
   }
 
+  public void testWeakCapturedVariable() throws Exception {
+    addSourceFile("A.java", "import com.google.j2objc.annotations.Weak;"
+        + "class A { void test() {"
+        + " @Weak final B b = new B();"
+        + " A a = new A() { void test() { b.hashCode(); } }; } }");
+    addSourceFile("B.java", "class B { A a; }");
+    findCycles();
+    assertNoCycles();
+  }
+
   public void testFinalVarAfterAnonymousClassNotCaptured() throws Exception {
     addSourceFile("A.java", "class A { void test() {"
         + " A a = new A() {};"
@@ -251,6 +268,7 @@ public class CycleFinderTest extends TestCase {
       options.addWhitelistFile(whitelistFile.getAbsolutePath());
     }
     options.setSourceFiles(inputFiles);
+    options.setClasspath(System.getProperty("java.class.path"));
     ByteArrayOutputStream errorMessages = new ByteArrayOutputStream();
     CycleFinder finder = new CycleFinder(options, new PrintStream(new NullOutputStream()),
                                          new PrintStream(errorMessages));

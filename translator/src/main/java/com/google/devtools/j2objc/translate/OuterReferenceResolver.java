@@ -214,9 +214,11 @@ public class OuterReferenceResolver extends ASTVisitor {
       }
     }
     if (innerField == null) {
-      innerField = new GeneratedVariableBinding(
+      GeneratedVariableBinding newField = new GeneratedVariableBinding(
           "val$" + var.getName(), Modifier.PRIVATE | Modifier.FINAL, var.getType(), true, false,
           declaringType, null);
+      newField.addAnnotations(var);
+      innerField = newField;
       captures.put(declaringType, new Capture(var, innerField));
     }
     return innerField;
