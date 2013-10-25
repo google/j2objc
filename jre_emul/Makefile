@@ -43,6 +43,7 @@ IOS_OBJS = \
 	IOSProtocolClass.o \
 	IOSReference.o \
 	IOSShortArray.o \
+	JavaMetadata.o \
 	JavaToIOSInputStreamAdapter.o \
 	JreEmulation.o \
 	JreMemDebug.o \
