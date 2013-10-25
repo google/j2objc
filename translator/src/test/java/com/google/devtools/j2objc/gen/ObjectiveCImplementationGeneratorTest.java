@@ -760,4 +760,31 @@ public class ObjectiveCImplementationGeneratorTest extends GenerationTest {
         "Test", "Test.m");
     assertTranslation(translation, "@synchronized(self)");
   }
+
+  public void testMethodMetadata() throws IOException {
+    String translation = translateSourceFile(
+        // Separate methods are used so each only has one modifier.
+        "class Test { " +
+        " Object test1() { return null; }" +  // package-private
+        " private char test2() { return 'a'; }" +
+        " protected void test3() { }" +
+        " final long test4() { return 0L; }" +
+        " synchronized boolean test5() { return false; }" +
+        " String test6(String s, Object... args) { return null; }" +
+        " native void test7() /*-[ exit(0); ]-*/; " +
+        " public void noMetadata1() {}" +
+        " public static void noMetadata2() {}" +
+        "}",
+        "Test", "Test.m");
+    assertTranslatedLines(translation, "{ \"test1\", NULL, \"LNSObject\", 0x0 },");
+    assertTranslatedLines(translation, "{ \"test2\", NULL, \"C\", 0x2 },");
+    assertTranslatedLines(translation, "{ \"test3\", NULL, \"V\", 0x4 },");
+    assertTranslatedLines(translation, "{ \"test4\", NULL, \"J\", 0x10 },");
+    assertTranslatedLines(translation, "{ \"test5\", NULL, \"Z\", 0x20 },");
+    assertTranslatedLines(translation,
+        "{ \"test6WithNSString:withNSObjectArray:\", NULL, \"LNSString\", 0x80 }");
+    assertTranslatedLines(translation, "{ \"test7\", NULL, \"V\", 0x100 },");
+    assertNotInTranslation(translation, "{ \"noMetadata1\"");
+    assertNotInTranslation(translation, "{ \"noMetadata2\"");
+  }
 }

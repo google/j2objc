@@ -1180,25 +1180,31 @@ public class ObjectiveCImplementationGenerator extends ObjectiveCSourceFileGener
   }
 
   private String getMethodMetadata(IMethodBinding method) {
-    if (method.isConstructor() || method.isSynthetic()) {
+    ITypeBinding[] paramTypes = method.getParameterTypes();
+    if ((method.isConstructor() && paramTypes.length == 0) || method.isSynthetic()) {
       return null;
     }
-    boolean needsMetadata = false;
-    ITypeBinding returnType = method.getReturnType();
+
+    // Needs metadata if not a public static or instance method.
+    int modifiers = getModifiers(method);
+    boolean needsMetadata = (modifiers & ~Modifier.STATIC) != Modifier.PUBLIC;
+
     String returnTypeStr = "NULL";
-    if (returnType.isPrimitive()) {
-      returnTypeStr = "\"" + returnType.getBinaryName() + "\"";
-      // In ObjC BOOL is a typedef for unsigned char so booleans look the same
-      // as bytes.
-      if (returnType.getName().equals("boolean")) {
+    if (!method.isConstructor()) {
+      ITypeBinding returnType = method.getReturnType();
+      if (returnType.isPrimitive()) {
+        returnTypeStr = "\"" + returnType.getBinaryName() + "\"";
+        // In ObjC BOOL is a typedef for unsigned char so booleans look the same
+        // as bytes.
+        if (returnType.getName().equals("boolean")) {
+          needsMetadata = true;
+        }
+      } else {
+        returnTypeStr = "\"L" + NameTable.getFullName(method.getReturnType()) + "\"";
         needsMetadata = true;
       }
-    } else {
-      returnTypeStr = "\"L" + NameTable.getFullName(method.getReturnType()) + "\"";
-      needsMetadata = true;
     }
     String methodName = "NULL";
-    ITypeBinding[] paramTypes = method.getParameterTypes();
     // Most of the time the method name can be parsed from the ObjC selector
     // but not if the first parameter contains the substring "With".
     if (paramTypes.length > 0 && NameTable.parameterKeyword(paramTypes[0]).contains("With")) {
@@ -1208,8 +1214,8 @@ public class ObjectiveCImplementationGenerator extends ObjectiveCSourceFileGener
     if (!needsMetadata) {
       return null;
     }
-    return String.format("    { \"%s\", %s, %s },\n",
-        methodSelector(method), methodName, returnTypeStr);
+    return String.format("    { \"%s\", %s, %s, 0x%x },\n",
+        methodSelector(method), methodName, returnTypeStr, getModifiers(method));
   }
 
   private String methodSelector(IMethodBinding method) {
@@ -1254,6 +1260,21 @@ public class ObjectiveCImplementationGenerator extends ObjectiveCSourceFileGener
     }
     if (type.isAnonymous()) {
       modifiers |= 0x8000;
+    }
+    return modifiers;
+  }
+
+  /**
+   * Returns the modifiers for a specified method, including internal ones.
+   * All method modifiers are defined in the JVM specification, table 4.5.
+   */
+  private static int getModifiers(IMethodBinding type) {
+    int modifiers = type.getModifiers();
+    if (type.isVarargs()) {
+      modifiers |= 0x80;
+    }
+    if (type.isSynthetic()) {
+      modifiers |= 0x1000;
     }
     return modifiers;
   }

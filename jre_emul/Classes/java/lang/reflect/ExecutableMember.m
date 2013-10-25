@@ -28,12 +28,18 @@
 #import "java/lang/reflect/TypeVariable.h"
 #import "objc/runtime.h"
 
+#define VARARGS_MODIFIER 0x80
+#define SYNTHETIC_MODIFIER 0x1000
+
 @implementation ExecutableMember
 
-- (id)initWithSelector:(SEL)aSelector withClass:(IOSClass *)aClass {
+- (id)initWithSelector:(SEL)aSelector
+             withClass:(IOSClass *)aClass
+          withMetadata:(const J2ObjcMethodInfo *)metadata {
   if ((self = [super init])) {
     selector_ = aSelector;
     class_ = aClass;
+    metadata_ = metadata;
     if (class_.objcClass) {
       classMethod_ = ![class_.objcClass instancesRespondToSelector:selector_];
       if (classMethod_) {
@@ -73,6 +79,9 @@
 }
 
 - (int)getModifiers {
+  if (metadata_) {
+    return metadata_->modifiers;
+  }
   int mods = JavaLangReflectModifier_PUBLIC;
   if (classMethod_) {
     mods |= JavaLangReflectModifier_STATIC;
@@ -174,6 +183,9 @@ static IOSClass *ResolveParameterType(const char *objcType, NSString *paramKeywo
 }
 
 - (BOOL)isSynthetic {
+  if (metadata_) {
+    return (metadata_->modifiers & SYNTHETIC_MODIFIER) > 0;
+  }
   return NO;
 }
 
@@ -232,12 +244,14 @@ static JavaLangReflectMethod *getAccessor(IOSClass *class, NSString *method, NSS
 }
 
 - (BOOL)isVarArgs {
-  // TODO(tball): implement as part of method metadata.
+  if (metadata_) {
+    return (metadata_->modifiers & VARARGS_MODIFIER) > 0;
+  }
   return NO;
 }
 
 - (BOOL)isBridge {
-  // TODO(tball): implement as part of method metadata.
+  // Translator doesn't generate bridge methods.
   return NO;
 }
 

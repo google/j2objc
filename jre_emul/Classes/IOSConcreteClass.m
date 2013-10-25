@@ -111,39 +111,43 @@ static BOOL IsConstructor(NSString *name) {
 
 static void CreateMethodWrappers(
     Method *methods, unsigned count, IOSClass* clazz, NSMutableDictionary *map,
-    id (^methodCreator)(SEL)) {
+    BOOL publicOnly, id (^methodCreator)(SEL)) {
   for (NSUInteger i = 0; i < count; i++) {
     SEL sel = method_getName(methods[i]);
     NSString *key = NSStringFromSelector(sel);
     if ([map objectForKey:key]) {
       continue;
     }
-    id method = methodCreator(sel);
+    ExecutableMember *method = methodCreator(sel);
     if (method) {
+      if (publicOnly && ([method getModifiers] & JavaLangReflectModifier_PUBLIC) == 0) {
+        continue;
+      }
       [map setObject:method forKey:NSStringFromSelector(sel)];
     }
   }
 }
 
 static void CollectMethodsOrConstructors(
-    IOSConcreteClass *iosClass, NSMutableDictionary *methods, id (^methodCreator)(SEL)) {
+    IOSConcreteClass *iosClass, NSMutableDictionary *methods, BOOL publicOnly,
+    id (^methodCreator)(SEL)) {
   unsigned int nInstanceMethods, nClassMethods;
   // Copy first the instance, then the class methods into a combined
   // array of IOSMethod instances.  Method ordering is not defined or
   // important.
   Method *instanceMethods = class_copyMethodList(iosClass->class_, &nInstanceMethods);
-  CreateMethodWrappers(instanceMethods, nInstanceMethods, iosClass, methods, methodCreator);
+  CreateMethodWrappers(instanceMethods, nInstanceMethods, iosClass, methods, publicOnly, methodCreator);
 
   Method *classMethods = class_copyMethodList(object_getClass(iosClass->class_), &nClassMethods);
-  CreateMethodWrappers(classMethods, nClassMethods, iosClass, methods, methodCreator);
+  CreateMethodWrappers(classMethods, nClassMethods, iosClass, methods, publicOnly, methodCreator);
 
   free(instanceMethods);
   free(classMethods);
 }
 
-- (void)collectMethods:(NSMutableDictionary *)methodMap {
+- (void)collectMethods:(NSMutableDictionary *)methodMap publicOnly:(BOOL)publicOnly {
   JavaClassMetadata *metadata = [self getMetadata];
-  CollectMethodsOrConstructors(self, methodMap, ^ id (SEL sel) {
+  CollectMethodsOrConstructors(self, methodMap, publicOnly, ^ id (SEL sel) {
     NSString *selStr = NSStringFromSelector(sel);
     if (!IsConstructor(selStr)) {
       return [JavaLangReflectMethod methodWithSelector:sel withClass:self
@@ -153,20 +157,27 @@ static void CollectMethodsOrConstructors(
   });
 }
 
-- (IOSObjectArray *)getDeclaredConstructors {
+IOSObjectArray *getConstructorsImpl(IOSConcreteClass *clazz, BOOL publicOnly) {
+  JavaClassMetadata *metadata = [clazz getMetadata];
   NSMutableDictionary *methodMap = [NSMutableDictionary dictionary];
-  CollectMethodsOrConstructors(self, methodMap, ^ id (SEL sel) {
+  CollectMethodsOrConstructors(clazz, methodMap, publicOnly, ^ id (SEL sel) {
     if (IsConstructor(NSStringFromSelector(sel))) {
-      return [JavaLangReflectConstructor constructorWithSelector:sel withClass:self];
+      NSString *selStr = NSStringFromSelector(sel);
+      return [JavaLangReflectConstructor constructorWithSelector:sel withClass:clazz
+          withMetadata:metadata ? [metadata findMethodInfo:selStr] : nil];
     }
     return nil;
   });
   return [IOSObjectArray arrayWithNSArray:[methodMap allValues] type:
-      [IOSClass classWithClass:[JavaLangReflectConstructor class]]];
+          [IOSClass classWithClass:[JavaLangReflectConstructor class]]];
+}
+
+- (IOSObjectArray *)getDeclaredConstructors {
+  return getConstructorsImpl(self, NO);
 }
 
 - (IOSObjectArray *)getConstructors {
-  return [self getDeclaredConstructors];
+  return getConstructorsImpl(self, YES);
 }
 
 static SEL FindSelector(NSString *name, Class cls) {
@@ -205,17 +216,20 @@ static JavaLangReflectConstructor *GetConstructorImpl(
   NSString *name = IOSClass_GetTranslatedMethodName(@"init", paramTypes);
   SEL selector = FindSelector(name, iosClass->class_);
   if (selector) {
-    return [JavaLangReflectConstructor constructorWithSelector:selector withClass:iosClass];
+    NSString *objcName = NSStringFromSelector(selector);
+    JavaClassMetadata *metadata = [iosClass getMetadata];
+    return [JavaLangReflectConstructor constructorWithSelector:selector withClass:iosClass
+        withMetadata:metadata ? [metadata findMethodInfo:objcName] : nil];
   }
   @throw AUTORELEASE([[JavaLangNoSuchMethodException alloc] init]);
 }
 
 - (JavaLangReflectConstructor *)getConstructor:(IOSObjectArray *)parameterTypes {
-  // Java's getConstructor() only returns the constructor if it's public.
-  // However, all constructors in Objective-C are public, so this method
-  // is identical to getDeclaredConstructor().
-  // TODO(tball): Update when modifier metadata is implemented.
-  return GetConstructorImpl(self, parameterTypes);
+  JavaLangReflectConstructor *c = GetConstructorImpl(self, parameterTypes);
+  if (([c getModifiers] & JavaLangReflectModifier_PUBLIC) > 0) {
+    return c;
+  }
+  @throw AUTORELEASE([[JavaLangNoSuchMethodException alloc] init]);
 }
 
 - (JavaLangReflectConstructor *)getDeclaredConstructor:(IOSObjectArray *)parameterTypes {

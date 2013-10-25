@@ -186,7 +186,7 @@ static IOSClass *FetchArray(IOSClass *componentType);
   }
 }
 
-- (void)collectMethods:(NSMutableDictionary *)methodMap {
+- (void)collectMethods:(NSMutableDictionary *)methodMap publicOnly:(BOOL)publicOnly {
   // Overridden by subclasses.
 }
 
@@ -194,7 +194,7 @@ static IOSClass *FetchArray(IOSClass *componentType);
 // methods are not included.
 - (IOSObjectArray *)getDeclaredMethods {
   NSMutableDictionary *methodMap = [NSMutableDictionary dictionary];
-  [self collectMethods:methodMap];
+  [self collectMethods:methodMap publicOnly:NO];
   return [IOSObjectArray arrayWithNSArray:[methodMap allValues] type:
       FetchClass([JavaLangReflectMethod class])];
 }
@@ -211,7 +211,7 @@ static IOSClass *FetchArray(IOSClass *componentType);
   NSMutableDictionary *methodMap = [NSMutableDictionary dictionary];
   IOSClass *cls = self;
   while (cls) {
-    [cls collectMethods:methodMap];
+    [cls collectMethods:methodMap publicOnly:YES];
     cls = [cls getSuperclass];
   }
   return [IOSObjectArray arrayWithNSArray:[methodMap allValues] type:
@@ -282,6 +282,7 @@ static NSString *GetParameterKeyword(IOSClass *paramType) {
 // The format is "name" with no parameters, "nameWithType:" for one parameter,
 // and "nameWithType:withType:..." for multiple parameters.
 NSString *IOSClass_GetTranslatedMethodName(NSString *name, IOSObjectArray *parameterTypes) {
+  nil_chk(name);
   NSUInteger nParameters = [parameterTypes count];
   if (nParameters == 0) {
     return name;
@@ -348,6 +349,7 @@ static NSString *IOSClass_JavaToIOSName(NSString *javaName) {
 }
 
 static IOSClass *ClassForIosName(NSString *iosName) {
+  nil_chk(iosName);
   // Some protocols have a sibling class that contains the metadata and any
   // constants that are defined. We must look for the protocol before the class
   // to ensure we create a IOSProtocolClass for such cases. NSObject must be

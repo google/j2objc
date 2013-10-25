@@ -91,6 +91,7 @@ typedef struct J2ObjcMethodInfo {
   const char *selector;
   const char *javaName;
   const char *returnType;
+  uint16_t modifiers;
 } J2ObjcMethodInfo;
 
 typedef struct J2ObjcClassInfo {

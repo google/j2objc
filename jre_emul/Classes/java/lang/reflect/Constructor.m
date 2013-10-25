@@ -31,9 +31,12 @@
 
 @implementation JavaLangReflectConstructor
 
-+ (id)constructorWithSelector:(SEL)aSelector withClass:(IOSClass *)aClass {
++ (id)constructorWithSelector:(SEL)aSelector
+                    withClass:(IOSClass *)aClass
+                 withMetadata:(const J2ObjcMethodInfo *)metadata {
   id c = [[JavaLangReflectConstructor alloc] initWithSelector:aSelector
-                                                    withClass:aClass];
+                                                    withClass:aClass
+                                                 withMetadata:metadata];
 #if ! __has_feature(objc_arc)
   [c autorelease];
 #endif

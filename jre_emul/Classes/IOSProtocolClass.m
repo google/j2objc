@@ -74,7 +74,8 @@
   return YES;
 }
 
-- (void)collectMethods:(NSMutableDictionary *)methodMap {
+// All protocol methods are public, so publicOnly flag is ignored.
+- (void)collectMethods:(NSMutableDictionary *)methodMap publicOnly:(BOOL)publicOnly {
   JavaClassMetadata *metadata = [self getMetadata];
   unsigned int count;
   struct objc_method_description *descriptions =

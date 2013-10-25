@@ -40,10 +40,9 @@
 - (id)initWithSelector:(SEL)aSelector
              withClass:(IOSClass *)aClass
           withMetadata:(const J2ObjcMethodInfo *)metadata {
-  if (self = [super initWithSelector:aSelector withClass:aClass]) {
-    metadata_ = metadata;
-  }
-  return self;
+  return [super initWithSelector:aSelector
+                       withClass:aClass
+                    withMetadata:(const J2ObjcMethodInfo *)metadata];
 }
 
 // Returns method name.
