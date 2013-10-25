@@ -69,6 +69,7 @@ TEST_SOURCES = \
 	libcore/icu/ICUTest.java \
 	libcore/icu/LocaleDataTest.java \
 	libcore/java/io/StreamTokenizerTest.java \
+	libcore/java/lang/IntegralToStringTest.java \
 	libcore/java/lang/ThrowableTest.java \
 	libcore/java/lang/reflect/AnnotationsTest.java \
 	libcore/java/lang/reflect/ArrayTest.java \

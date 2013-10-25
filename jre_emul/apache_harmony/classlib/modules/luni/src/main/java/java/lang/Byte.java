@@ -247,6 +247,14 @@ public final class Byte extends Number implements Comparable<Byte> {
     }
 
     /**
+     * Returns a two-digit hex string. That is, -1 becomes "ff" or "FF" and 2 becomes "02".
+     * @hide internal use only
+     */
+    public static String toHexString(byte b, boolean upperCase) {
+        return IntegralToString.byteToHexString(b, upperCase);
+    }
+
+    /**
      * Returns a string containing a concise, human-readable description of the
      * specified byte value.
      *

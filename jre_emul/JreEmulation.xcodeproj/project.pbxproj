@@ -161,6 +161,16 @@
 		064FB7E91727081D00DC0D51 /* XMLReaderFactory.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = XMLReaderFactory.m; path = build_result/Classes/org/xml/sax/helpers/XMLReaderFactory.m; sourceTree = "<group>"; };
 		064FB8001727085500DC0D51 /* TypeInfo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = TypeInfo.h; path = build_result/Classes/org/w3c/dom/TypeInfo.h; sourceTree = "<group>"; };
 		064FB8021727086700DC0D51 /* LSResourceResolver.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = LSResourceResolver.h; path = build_result/Classes/org/w3c/dom/ls/LSResourceResolver.h; sourceTree = "<group>"; };
+		0661620B180F2A1900887D7D /* AbstractStringBuilder.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = AbstractStringBuilder.h; path = build_result/Classes/java/lang/AbstractStringBuilder.h; sourceTree = "<group>"; };
+		0661620C180F2A1900887D7D /* AbstractStringBuilder.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = AbstractStringBuilder.m; path = build_result/Classes/java/lang/AbstractStringBuilder.m; sourceTree = "<group>"; };
+		0661620D180F2A1900887D7D /* IntegralToString.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = IntegralToString.h; path = build_result/Classes/java/lang/IntegralToString.h; sourceTree = "<group>"; };
+		0661620E180F2A1900887D7D /* IntegralToString.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = IntegralToString.m; path = build_result/Classes/java/lang/IntegralToString.m; sourceTree = "<group>"; };
+		0661620F180F2A1900887D7D /* RealToString.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = RealToString.h; path = build_result/Classes/java/lang/RealToString.h; sourceTree = "<group>"; };
+		06616210180F2A1900887D7D /* RealToString.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = RealToString.m; path = build_result/Classes/java/lang/RealToString.m; sourceTree = "<group>"; };
+		06616211180F2A1900887D7D /* TypeNotPresentException.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = TypeNotPresentException.h; path = build_result/Classes/java/lang/TypeNotPresentException.h; sourceTree = "<group>"; };
+		06616212180F2A1900887D7D /* TypeNotPresentException.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = TypeNotPresentException.m; path = build_result/Classes/java/lang/TypeNotPresentException.m; sourceTree = "<group>"; };
+		06616213180F2A6100887D7D /* MathUtils.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = MathUtils.h; path = build_result/Classes/libcore/math/MathUtils.h; sourceTree = "<group>"; };
+		06616214180F2A6100887D7D /* MathUtils.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = MathUtils.m; path = build_result/Classes/libcore/math/MathUtils.m; sourceTree = "<group>"; };
 		06619385155848D70004DAFE /* libjre_emul.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libjre_emul.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		06619388155848D70004DAFE /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		0661938D155848D70004DAFE /* JreEmulation.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = JreEmulation.h; sourceTree = "<group>"; };
@@ -549,6 +559,9 @@
 		068677EB166C345F005A5AD7 /* Splitter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = Splitter.m; path = build_result/Classes/java/util/regex/Splitter.m; sourceTree = "<group>"; };
 		06898A7617BAF8C400D7B114 /* IOSReference.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IOSReference.h; sourceTree = "<group>"; };
 		06898A7817BAFAB400D7B114 /* IOSReference.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IOSReference.m; sourceTree = "<group>"; };
+		068BA721180F5C270087BAF4 /* cbigint.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = cbigint.h; path = android/libcore/luni/src/main/native/cbigint.h; sourceTree = SOURCE_ROOT; };
+		068BA722180F5C270087BAF4 /* cbigint.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = cbigint.m; path = android/libcore/luni/src/main/native/cbigint.m; sourceTree = SOURCE_ROOT; };
+		068BA723180F5C270087BAF4 /* java_lang_RealToString.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = java_lang_RealToString.m; path = android/libcore/luni/src/main/native/java_lang_RealToString.m; sourceTree = SOURCE_ROOT; };
 		0697F60315D190580027A7E4 /* Array.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Array.h; path = build_result/Classes/java/lang/reflect/Array.h; sourceTree = "<group>"; };
 		0697F60415D190580027A7E4 /* Array.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = Array.m; path = build_result/Classes/java/lang/reflect/Array.m; sourceTree = "<group>"; };
 		0697F60515D190580027A7E4 /* GenericDeclaration.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = GenericDeclaration.h; path = build_result/Classes/java/lang/reflect/GenericDeclaration.h; sourceTree = "<group>"; };
@@ -989,6 +1002,8 @@
 			children = (
 				067228F9158FB0B3005318BD /* AccessibleObject.h */,
 				067228FA158FB0B3005318BD /* AccessibleObject.m */,
+				068BA721180F5C270087BAF4 /* cbigint.h */,
+				068BA722180F5C270087BAF4 /* cbigint.m */,
 				067228ED158FB002005318BD /* CharSequence.h */,
 				067228EE158FB002005318BD /* Comparable.h */,
 				067228EF158FB002005318BD /* Constructor.h */,
@@ -1038,6 +1053,7 @@
 				06B1E04F17F6403100F8940B /* Iterable.h */,
 				06B1E05017F6403100F8940B /* Iterable.m */,
 				06986A181767D781006EE92F /* J2ObjCMain.m */,
+				068BA723180F5C270087BAF4 /* java_lang_RealToString.m */,
 				0675061317F0C7A30015B7E8 /* JavaMetadata.h */,
 				0675061417F0C7A30015B7E8 /* JavaMetadata.m */,
 				066193B8155849BC0004DAFE /* JavaObject.h */,
@@ -1113,6 +1129,8 @@
 				06721A2D1559C91600645E1B /* AbstractSequentialList.m */,
 				06721ACA1559CB4200645E1B /* AbstractSet.h */,
 				06721A2E1559C91600645E1B /* AbstractSet.m */,
+				0661620B180F2A1900887D7D /* AbstractStringBuilder.h */,
+				0661620C180F2A1900887D7D /* AbstractStringBuilder.m */,
 				06ED3D8A17D165500014750E /* AccessControlContext.h */,
 				06ED3D8B17D165500014750E /* AccessControlContext.m */,
 				06ED3D8C17D165500014750E /* AccessControlException.h */,
@@ -1447,6 +1465,8 @@
 				06DD32B616A13FA000AD7ACE /* IntBuffer.m */,
 				06721B461559CC0300645E1B /* Integer.h */,
 				067219E31559C87100645E1B /* Integer.m */,
+				0661620D180F2A1900887D7D /* IntegralToString.h */,
+				0661620E180F2A1900887D7D /* IntegralToString.m */,
 				06721B471559CC0300645E1B /* InternalError.h */,
 				067219E41559C87100645E1B /* InternalError.m */,
 				06721B481559CC0300645E1B /* InterruptedException.h */,
@@ -1540,6 +1560,8 @@
 				067219E81559C87100645E1B /* Math.m */,
 				067855D1169F37710042431C /* MathContext.h */,
 				067855D2169F37710042431C /* MathContext.m */,
+				06616213180F2A6100887D7D /* MathUtils.h */,
+				06616214180F2A6100887D7D /* MathUtils.m */,
 				06ED3D7A17D164DC0014750E /* Member.h */,
 				06ED3D7B17D164DC0014750E /* Member.m */,
 				06DD334016A1406A00AD7ACE /* MiniEnumSet.h */,
@@ -1687,6 +1709,8 @@
 				06DD32D816A13FA000AD7ACE /* ReadWriteLongArrayBuffer.m */,
 				06DD32D916A13FA000AD7ACE /* ReadWriteShortArrayBuffer.h */,
 				06DD32DA16A13FA000AD7ACE /* ReadWriteShortArrayBuffer.m */,
+				0661620F180F2A1900887D7D /* RealToString.h */,
+				06616210180F2A1900887D7D /* RealToString.m */,
 				06D7BDEB17DE685C00329964 /* Reference.h */,
 				06D7BDEC17DE685C00329964 /* Reference.m */,
 				06D7BDED17DE685C00329964 /* ReferenceQueue.h */,
@@ -1809,6 +1833,8 @@
 				064FB8001727085500DC0D51 /* TypeInfo.h */,
 				064FB7801727074100DC0D51 /* TypeInfoProvider.h */,
 				064FB7811727074100DC0D51 /* TypeInfoProvider.m */,
+				06616211180F2A1900887D7D /* TypeNotPresentException.h */,
+				06616212180F2A1900887D7D /* TypeNotPresentException.m */,
 				0697F60915D190580027A7E4 /* TypeVariable.h */,
 				0697F60A15D190580027A7E4 /* TypeVariable.m */,
 				06ED3D7E17D164DC0014750E /* UndeclaredThrowableException.h */,

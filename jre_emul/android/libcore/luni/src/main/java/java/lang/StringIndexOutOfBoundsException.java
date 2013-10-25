@@ -30,7 +30,6 @@ public class StringIndexOutOfBoundsException extends IndexOutOfBoundsException {
      * the current stack trace.
      */
     public StringIndexOutOfBoundsException() {
-        super();
     }
 
     /**
@@ -42,7 +41,7 @@ public class StringIndexOutOfBoundsException extends IndexOutOfBoundsException {
      *            the index which is out of bounds.
      */
     public StringIndexOutOfBoundsException(int index) {
-        super("String index out of range: " + index); //$NON-NLS-1$
+        super("String index out of range: " + index);
     }
 
     /**
@@ -54,5 +53,39 @@ public class StringIndexOutOfBoundsException extends IndexOutOfBoundsException {
      */
     public StringIndexOutOfBoundsException(String detailMessage) {
         super(detailMessage);
+    }
+
+    /**
+     * Used internally for consistent high-quality error reporting.
+     * @hide
+     */
+    public StringIndexOutOfBoundsException(String s, int index) {
+        this(s.length(), index);
+    }
+
+    /**
+     * Used internally for consistent high-quality error reporting.
+     * @hide
+     */
+    public StringIndexOutOfBoundsException(int sourceLength, int index) {
+        super("length=" + sourceLength + "; index=" + index);
+    }
+
+    /**
+     * Used internally for consistent high-quality error reporting.
+     * @hide
+     */
+    public StringIndexOutOfBoundsException(String s, int offset, int count) {
+        this(s.length(), offset, count);
+    }
+
+    /**
+     * Used internally for consistent high-quality error reporting.
+     * @hide
+     */
+    public StringIndexOutOfBoundsException(int sourceLength, int offset,
+            int count) {
+        super("length=" + sourceLength + "; regionStart=" + offset
+                + "; regionLength=" + count);
     }
 }
