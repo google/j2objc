@@ -80,6 +80,7 @@ TEST_SOURCES = \
 	libcore/java/text/DecimalFormatTest.java \
 	libcore/java/text/DecimalFormatSymbolsTest.java \
 	libcore/java/text/NumberFormatTest.java \
+	libcore/java/util/BitSetTest.java \
 	libcore/java/util/CalendarTest.java \
 	libcore/java/util/FormatterTest.java \
 	libcore/java/util/OldTimeZoneTest.java \
@@ -207,7 +208,6 @@ TEST_SOURCES = \
 	org/apache/harmony/luni/tests/java/util/AbstractSequentialListTest.java \
 	org/apache/harmony/luni/tests/java/util/ArrayListTest.java \
 	org/apache/harmony/luni/tests/java/util/ArraysTest.java \
-	org/apache/harmony/luni/tests/java/util/BitSetTest.java \
 	org/apache/harmony/luni/tests/java/util/CollectionsTest.java \
 	org/apache/harmony/luni/tests/java/util/DateTest.java \
 	org/apache/harmony/luni/tests/java/util/EmptyStackExceptionTest.java \
@@ -257,6 +257,7 @@ TEST_SOURCES = \
 	org/apache/harmony/text/tests/java/text/CollatorTest.java \
 	org/apache/harmony/text/tests/java/text/MessageFormatTest.java \
 	tests/api/java/lang/reflect/ProxyTest.java \
+	tests/api/java/util/BitSetTest.java \
 	tests/api/java/util/CalendarTest.java \
 	tests/api/java/util/FormattableFlagsTest.java \
 	tests/api/java/util/ListResourceBundleTest.java \

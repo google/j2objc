@@ -730,6 +730,15 @@ public class StatementGenerator extends ErrorReportingASTVisitor {
     } else if (op.equals(InfixExpression.Operator.RIGHT_SHIFT_UNSIGNED) &&
         !lhsType.getName().equals("char")) {
       printUnsignedRightShift(lhs, rhs);
+    } else if (op.equals(InfixExpression.Operator.LEFT_SHIFT) && lhsType.getName().equals("long")) {
+      // The C compiler incorrectly shifts left when the shift is greater
+      // than 32 with signed longs, so cast the lhs to unsigned, then
+      // cast the result back to signed.
+      buffer.append("(long long) (((uint64_t) ");
+      lhs.accept(this);
+      buffer.append(") << ");
+      rhs.accept(this);
+      buffer.append(')');
     } else {
       lhs.accept(this);
       buffer.append(' ');
