@@ -385,9 +385,9 @@ public class AnonymousClassConverterTest extends GenerationTest {
 
     assertTranslation(impl, "[super initWithNSString:__name withInt:__ordinal]");
     assertTranslation(impl,
-        "TestEnum_UP = [[TestEnum_$1 alloc] initWithNSString:@\"Test_UP\" withInt:0];");
+        "TestEnum_UP = [[TestEnum_$1 alloc] initWithNSString:@\"UP\" withInt:0];");
     assertTranslation(impl,
-        "TestEnum_DOWN = [[TestEnum_$2 alloc] initWithNSString:@\"Test_DOWN\" withInt:1];");
+        "TestEnum_DOWN = [[TestEnum_$2 alloc] initWithNSString:@\"DOWN\" withInt:1];");
   }
 
   public void testTwoOutersInAnonymousSubClassOfInner() throws IOException {
@@ -452,7 +452,7 @@ public class AnonymousClassConverterTest extends GenerationTest {
 
     // Verify constant initialization.
     assertTranslation(impl,
-        "[[ColorEnum_$1 alloc] initWithInt:42 withNSString:@\"Color_RED\" withInt:0]");
+        "[[ColorEnum_$1 alloc] initWithInt:42 withNSString:@\"RED\" withInt:0]");
   }
 
   public void testEnumWithInnerEnum() throws IOException {

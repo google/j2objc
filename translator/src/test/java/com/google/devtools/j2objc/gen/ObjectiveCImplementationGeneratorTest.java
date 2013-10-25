@@ -256,13 +256,13 @@ public class ObjectiveCImplementationGeneratorTest extends GenerationTest {
     assertTranslation(translation, "return ColorEnum_RED;");
     assertTranslation(translation,
         "ColorEnum_RED = [[ColorEnum alloc] " +
-        "initWithInt:(int) 0xff0000 withNSString:@\"Color_RED\" withInt:0];");
+        "initWithInt:(int) 0xff0000 withNSString:@\"RED\" withInt:0];");
     assertTranslation(translation,
       "ColorEnum_WHITE = [[ColorEnum alloc] " +
-      "initWithInt:(int) 0xffffff withNSString:@\"Color_WHITE\" withInt:1];");
+      "initWithInt:(int) 0xffffff withNSString:@\"WHITE\" withInt:1];");
     assertTranslation(translation,
       "ColorEnum_BLUE = [[ColorEnum alloc] " +
-      "initWithInt:(int) 0x0000ff withNSString:@\"Color_BLUE\" withInt:2];");
+      "initWithInt:(int) 0x0000ff withNSString:@\"BLUE\" withInt:2];");
     assertTranslation(translation, "- (int)getRgb {");
     assertTranslation(translation, "return rgb_;");
     translation = getTranslatedFile("Color.h");
@@ -464,7 +464,7 @@ public class ObjectiveCImplementationGeneratorTest extends GenerationTest {
     assertFalse(impl.contains("\n  return NO;\n  [super initWithTest_TypeEnum:arg$0]}"));
     assertTranslation(impl,
         "initWithTest_TypeEnum:[Test_TypeEnum STRING] " +
-        "withNSString:@\"Test_Field_STRING\" withInt:2");
+        "withNSString:@\"STRING\" withInt:2");
   }
 
   public void testAutoreleasePoolMethod() throws IOException {
