@@ -23,6 +23,7 @@ import com.google.common.collect.SetMultimap;
 import com.google.common.collect.Sets;
 
 import org.eclipse.jdt.core.dom.ITypeBinding;
+import org.eclipse.jdt.core.dom.IMethodBinding;
 import org.eclipse.jdt.core.dom.IVariableBinding;
 
 import java.io.BufferedReader;
@@ -79,10 +80,15 @@ public class Whitelist {
   }
 
   private static String fieldName(IVariableBinding field) {
-    return field.getDeclaringClass().getErasure().getQualifiedName() + "." + field.getName();
+    return typeName(field.getDeclaringClass()) + "." + field.getName();
   }
 
   private static String typeName(ITypeBinding type) {
+    IMethodBinding declaringMethod = type.getDeclaringMethod();
+    if (declaringMethod != null) {
+      return typeName(declaringMethod.getDeclaringClass()) + "." + declaringMethod.getName()
+          + "." + (type.isAnonymous() ? "$" : type.getName());
+    }
     return type.getErasure().getQualifiedName();
   }
 
