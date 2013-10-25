@@ -753,4 +753,11 @@ public class ObjectiveCImplementationGeneratorTest extends GenerationTest {
         "Test", "Test.m");
     assertOccurrences(translation, "countByEnumeratingWithState", 1);
   }
+
+  public void testSynchronizedNativeMethod() throws IOException {
+    String translation = translateSourceFile(
+        "class Test { public synchronized native void exit() /*-[ exit(0); ]-*/; }",
+        "Test", "Test.m");
+    assertTranslation(translation, "@synchronized(self)");
+  }
 }

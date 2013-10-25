@@ -723,16 +723,16 @@ public class ObjectiveCImplementationGenerator extends ObjectiveCSourceFileGener
   }
 
   private String generateMethodBody(MethodDeclaration m) {
+    String methodBody;
     if (Modifier.isNative(m.getModifiers())) {
       if (hasNativeCode(m, true)) {
-        return extractNativeMethodBody(m);
+        methodBody = extractNativeMethodBody(m);
       } else if (Options.generateNativeStubs()) {
         return generateNativeStub(m);
       } else {
         return null;
       }
-    }
-    if (Modifier.isAbstract(m.getModifiers())) {
+    } else if (Modifier.isAbstract(m.getModifiers())) {
       // Generate a body which throws a NSInvalidArgumentException.
       String body =
           "{\n // can't call an abstract method\n " +
@@ -741,9 +741,10 @@ public class ObjectiveCImplementationGenerator extends ObjectiveCSourceFileGener
         body += "return 0;\n"; // Never executes, but avoids a gcc warning.
       }
       return body + "}";
+    } else {
+      // generate a normal method body
+      methodBody = generateStatement(m.getBody(), false);
     }
-    // generate a normal method body
-    String methodBody = generateStatement(m.getBody(), false);
 
     boolean isStatic = (m.getModifiers() & Modifier.STATIC) != 0;
     boolean isSynchronized = (m.getModifiers() & Modifier.SYNCHRONIZED) != 0;
