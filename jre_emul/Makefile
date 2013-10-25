@@ -450,6 +450,8 @@ JAVA_SOURCES = \
 	java/util/PropertyResourceBundle.java \
 	java/util/Random.java \
 	java/util/ResourceBundle.java \
+	java/util/ServiceConfigurationError.java \
+	java/util/ServiceLoader.java \
 	java/util/SimpleTimeZone.java \
 	java/util/Stack.java \
 	java/util/StringTokenizer.java \
