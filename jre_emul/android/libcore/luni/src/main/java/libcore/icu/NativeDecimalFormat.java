@@ -653,10 +653,11 @@ public final class NativeDecimalFormat implements Cloneable {
                                          error:&error];
       if (success) {
         [position setIndexWithInt:start + range.length];
-        if ([formatter generatesDecimalNumbers]) {
-          return [JavaLangDouble valueOfWithDouble:[result doubleValue]];
-        } else {
+        NSString *decimalSeparator = [formatter decimalSeparator];
+        if ([string rangeOfString:decimalSeparator].location == NSNotFound) {
           return [JavaLangLong valueOfWithLong:[result longLongValue]];
+        } else {
+          return [JavaLangDouble valueOfWithDouble:[result doubleValue]];
         }
       } else {
         [position setErrorIndexWithInt:start];
