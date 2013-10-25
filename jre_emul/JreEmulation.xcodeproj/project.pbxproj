@@ -23,6 +23,7 @@
 
 /* Begin PBXBuildFile section */
 		0604932D1772407B0047D336 /* IOSClassTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 0604932C1772407B0047D336 /* IOSClassTest.m */; };
+		062889CF18047030007DDA39 /* IOSReflection.m in Sources */ = {isa = PBXBuildFile; fileRef = 062889CE18047030007DDA39 /* IOSReflection.m */; };
 		06619389155848D70004DAFE /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 06619388155848D70004DAFE /* Foundation.framework */; };
 		0672178415587E2C00645E1B /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 06619388155848D70004DAFE /* Foundation.framework */; };
 		067217D315587FC600645E1B /* IOSArrayTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 067217CD15587FC600645E1B /* IOSArrayTest.m */; };
@@ -64,6 +65,7 @@
 
 /* Begin PBXFileReference section */
 		0604932C1772407B0047D336 /* IOSClassTest.m */ = {isa = PBXFileReference; fileEncoding = 4; indentWidth = 2; lastKnownFileType = sourcecode.c.objc; name = IOSClassTest.m; path = Classes/IOSClassTest.m; sourceTree = SOURCE_ROOT; tabWidth = 2; wrapsLines = 0; };
+		062889CE18047030007DDA39 /* IOSReflection.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IOSReflection.m; sourceTree = "<group>"; };
 		06389ACF176BADA20018B4EA /* JavaToIOSInputStreamAdapter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JavaToIOSInputStreamAdapter.h; sourceTree = "<group>"; };
 		06389AD0176BADA20018B4EA /* JavaToIOSInputStreamAdapter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JavaToIOSInputStreamAdapter.m; sourceTree = "<group>"; };
 		064FB746172705F400DC0D51 /* URI.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = URI.h; path = build_result/Classes/java/net/URI.h; sourceTree = "<group>"; };
@@ -958,6 +960,7 @@
 			isa = PBXGroup;
 			children = (
 				0661938A155848D70004DAFE /* Classes */,
+				06E7B98C17F9F8060028B7F2 /* iOS Tests */,
 				0672178515587E2C00645E1B /* jre_emul_tests */,
 				067219221559B9D200645E1B /* Transpiled Classes */,
 				06619387155848D70004DAFE /* Frameworks */,
@@ -1032,6 +1035,7 @@
 				06898A7617BAF8C400D7B114 /* IOSReference.h */,
 				06898A7817BAFAB400D7B114 /* IOSReference.m */,
 				0675061217F0B3E10015B7E8 /* IOSReflection.h */,
+				062889CE18047030007DDA39 /* IOSReflection.m */,
 				066193B6155849BC0004DAFE /* IOSShortArray.h */,
 				066193B7155849BC0004DAFE /* IOSShortArray.m */,
 				06B1E04F17F6403100F8940B /* Iterable.h */,
@@ -1875,6 +1879,13 @@
 			name = "Transpiled Classes";
 			sourceTree = "<group>";
 		};
+		06E7B98C17F9F8060028B7F2 /* iOS Tests */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = "iOS Tests";
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXHeadersBuildPhase section */
@@ -2016,6 +2027,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				062889CF18047030007DDA39 /* IOSReflection.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

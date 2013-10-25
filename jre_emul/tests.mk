@@ -29,6 +29,10 @@ SUPPORT_SOURCES = \
 	tests/support/Support_ListTest.java \
 	tests/support/Support_Locale.java \
 	tests/support/Support_MapTest2.java \
+	tests/support/Support_Proxy_I1.java \
+	tests/support/Support_Proxy_I2.java \
+	tests/support/Support_Proxy_ParentException.java \
+	tests/support/Support_Proxy_SubException.java \
 	tests/support/Support_SetTest.java \
 	tests/support/Support_StringReader.java \
 	tests/support/Support_StringWriter.java \
@@ -239,6 +243,7 @@ TEST_SOURCES = \
 	org/apache/harmony/text/tests/java/text/ChoiceFormatTest.java \
 	org/apache/harmony/text/tests/java/text/CollatorTest.java \
 	org/apache/harmony/text/tests/java/text/MessageFormatTest.java \
+	tests/api/java/lang/reflect/ProxyTest.java \
 	tests/api/java/util/CalendarTest.java \
 	tests/api/java/util/ListResourceBundleTest.java \
 	tests/api/java/util/PropertyResourceBundleTest.java \
