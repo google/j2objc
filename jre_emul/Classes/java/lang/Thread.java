@@ -17,6 +17,9 @@
 
 package java.lang;
 
+import java.util.HashMap;
+import java.util.Map;
+
 /*-[
 #import "java/lang/IllegalThreadStateException.h"
 #import "java/lang/InterruptedException.h"
@@ -45,6 +48,7 @@ public class Thread implements Runnable {
 
   private boolean isDaemon;
   private boolean interrupted;
+  private boolean running;
 
   /** the park state of the thread */
   private int parkState = ParkState.UNPARKED;
@@ -110,6 +114,11 @@ public class Thread implements Runnable {
   }
 
   /**
+   * Holds the default handler for uncaught exceptions, in case there is one.
+   */
+  private static UncaughtExceptionHandler defaultUncaughtHandler;
+
+  /**
    * <p>
    * The maximum priority value allowed for a thread.
    * </p>
@@ -141,6 +150,7 @@ public class Thread implements Runnable {
   private static final String TARGET = "JreThread-TargetKey";
   private static final String THREADGROUP = "JreThread-GroupKey";
   private static final String THREAD_ID = "JreThread-IdKey";
+  private static final String UNCAUGHT_HANDLER = "JreThread-UncaughtHandler";
 
   // Milliseconds between polls for testing thread completion.
   private static final int POLL_INTERVAL = 100;
@@ -357,7 +367,7 @@ public class Thread implements Runnable {
     int priority = [currentThread isMainThread] ? 5 : [currentThread threadPriority] * 10;
     [self setPriority0WithInt:priority];
 
-    [group addWithJavaLangThread:self];
+    [threadGroup addWithJavaLangThread:self];
     nsThread_ = thread;
 #if !__has_feature(objc_arc)
     [thread retain];
@@ -417,7 +427,7 @@ public class Thread implements Runnable {
 #endif
       @throw e;
     }
-    [[self getThreadGroup] addWithJavaLangThread:self];
+    running_ = YES;
     [(NSThread *) nativeThread start];
   ]-*/;
 
@@ -432,12 +442,21 @@ public class Thread implements Runnable {
     }
   ]-*/;
 
+  public static int activeCount() {
+      return currentThread().getThreadGroup().activeCount();
+  }
+
   public boolean isDaemon() {
     return isDaemon;
   }
 
   public void setDaemon(boolean isDaemon) {
     this.isDaemon = isDaemon;
+  }
+
+  public static int enumerate(Thread[] threads) {
+    Thread thread = Thread.currentThread();
+    return thread.getThreadGroup().enumerate(threads);
   }
 
   public native long getId() /*-[
@@ -525,6 +544,11 @@ public class Thread implements Runnable {
     return result;
   }
 
+  @Deprecated
+  public int countStackFrames() {
+      return getStackTrace().length;
+  }
+
   /**
    * Posts an interrupt request to this {@code Thread}. Unless the caller is
    * the {@link #currentThread()}, the method {@code checkAccess()} is called
@@ -588,7 +612,9 @@ public class Thread implements Runnable {
    * @see Thread#isInterrupted
    */
   public native boolean isInterrupted() /*-[
-    return interrupted__;
+    BOOL result = interrupted__;
+    interrupted__ = NO;
+    return result;
   ]-*/;
 
   /**
@@ -653,7 +679,13 @@ public class Thread implements Runnable {
 
   public native boolean isAlive() /*-[
     NSThread *nativeThread = (NSThread *) nsThread_;
-    return [nativeThread isExecuting] && ![nativeThread isCancelled];
+    BOOL alive = [nativeThread isExecuting] && ![nativeThread isCancelled];
+    if (!alive && running_) {
+      // Thread finished, clean up.
+      running_ = NO;
+      [[self getThreadGroup] removeWithJavaLangThread:self];
+    }
+    return alive;
   ]-*/;
 
   public void checkAccess() {
@@ -861,4 +893,52 @@ public class Thread implements Runnable {
       }
     }
   }
+
+  /**
+   * Returns the default exception handler that's executed when uncaught
+   * exception terminates a thread.
+   *
+   * @return an {@link UncaughtExceptionHandler} or <code>null</code> if
+   *         none exists.
+   */
+  public static UncaughtExceptionHandler getDefaultUncaughtExceptionHandler() {
+      return defaultUncaughtHandler;
+  }
+
+  /**
+   * Sets the default uncaught exception handler. This handler is invoked in
+   * case any Thread dies due to an unhandled exception.
+   *
+   * @param handler
+   *            The handler to set or null.
+   */
+  public static void setDefaultUncaughtExceptionHandler(UncaughtExceptionHandler handler) {
+      Thread.defaultUncaughtHandler = handler;
+  }
+
+  /**
+   * Returns the thread's uncaught exception handler. If not explicitly set,
+   * then the ThreadGroup's handler is returned. If the thread is terminated,
+   * then <code>null</code> is returned.
+   *
+   * @return an {@link UncaughtExceptionHandler} instance or {@code null}.
+   */
+  public native UncaughtExceptionHandler getUncaughtExceptionHandler() /*-[
+    NSDictionary *threadData = [[NSThread currentThread] threadDictionary];
+    id<JavaLangThread_UncaughtExceptionHandler> uncaughtHandler =
+        [threadData objectForKey:JavaLangThread_UNCAUGHT_HANDLER_];
+    if (uncaughtHandler) {
+      return uncaughtHandler;
+    }
+    return [threadData objectForKey:JavaLangThread_THREADGROUP_]; // ThreadGroup is instance of UEH
+  ]-*/;
+
+  public native void setUncaughtExceptionHandler(UncaughtExceptionHandler handler) /*-[
+    NSMutableDictionary *threadData = [[NSThread currentThread] threadDictionary];
+    if (handler) {
+      [threadData setObject:handler forKey:JavaLangThread_UNCAUGHT_HANDLER_];
+    } else {
+      [threadData removeObjectForKey:JavaLangThread_UNCAUGHT_HANDLER_];
+    }
+  ]-*/;
 }
