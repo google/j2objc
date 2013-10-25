@@ -164,7 +164,7 @@ public class NilCheckResolver extends ErrorReportingASTVisitor {
     return node;
   }
 
-  private void addNilCheck(Expression node) {
+  private void addNilCheck(Expression node, boolean deferAdd) {
     Expression strippedNode = stripCastsAndParentheses(node);
     if (!needsNilCheck(strippedNode)) {
       return;
@@ -175,22 +175,26 @@ public class NilCheckResolver extends ErrorReportingASTVisitor {
       safeVarsTrue.add(var);
       safeVarsFalse.add(var);
     }
-    AST ast = node.getAST();
-    IOSMethodBinding nilChkBinding = IOSMethodBinding.newTypedInvocation(
-        NIL_CHK_DECL, Types.getTypeBinding(node));
-    MethodInvocation nilChkInvocation = ASTFactory.newMethodInvocation(ast, nilChkBinding, null);
-    ASTUtil.getArguments(nilChkInvocation).add(NodeCopier.copySubtree(ast, strippedNode));
-    ASTUtil.setProperty(node, nilChkInvocation);
+    if (deferAdd) {
+      Types.addNilCheck(strippedNode);
+    } else {
+      AST ast = node.getAST();
+      IOSMethodBinding nilChkBinding = IOSMethodBinding.newTypedInvocation(
+          NIL_CHK_DECL, Types.getTypeBinding(node));
+      MethodInvocation nilChkInvocation = ASTFactory.newMethodInvocation(ast, nilChkBinding, null);
+      ASTUtil.getArguments(nilChkInvocation).add(NodeCopier.copySubtree(ast, strippedNode));
+      ASTUtil.setProperty(node, nilChkInvocation);
+    }
   }
 
   @Override
   public void endVisit(ArrayAccess node) {
-    addNilCheck(node.getArray());
+    addNilCheck(node.getArray(), false);
   }
 
   @Override
   public void endVisit(FieldAccess node) {
-    addNilCheck(node.getExpression());
+    addNilCheck(node.getExpression(), false);
   }
 
   @Override
@@ -239,7 +243,7 @@ public class NilCheckResolver extends ErrorReportingASTVisitor {
     }
     Expression receiver = node.getExpression();
     if (receiver != null) {
-      addNilCheck(receiver);
+      addNilCheck(receiver, true);
     }
   }
 
