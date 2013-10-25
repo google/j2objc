@@ -90,7 +90,6 @@ JAVA_SOURCES = \
 	types/IOSMethodBinding.java \
 	types/IOSParameter.java \
 	types/IOSTypeBinding.java \
-	types/IOSVariableBinding.java \
 	types/JavaMethod.java \
 	types/ModifiedTypeBinding.java \
 	types/NodeCopier.java \
