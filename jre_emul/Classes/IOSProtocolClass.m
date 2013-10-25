@@ -108,6 +108,18 @@
   return nil;
 }
 
+- (IOSObjectArray *)getInterfacesWithArrayType:(IOSClass *)arrayType {
+  unsigned int outCount;
+  Protocol * __unsafe_unretained *interfaces = protocol_copyProtocolList(protocol_, &outCount);
+  IOSObjectArray *result = [IOSObjectArray arrayWithLength:outCount type:[IOSClass getClass]];
+  for (unsigned i = 0; i < outCount; i++) {
+    IOSClass *interface = [IOSClass classWithProtocol:interfaces[i]];
+    [result replaceObjectAtIndex:i withObject:interface];
+  }
+  free(interfaces);
+  return result;
+}
+
 #if ! __has_feature(objc_arc)
 - (void)dealloc {
   [protocol_ release];
