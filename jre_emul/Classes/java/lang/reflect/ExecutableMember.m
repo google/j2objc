@@ -101,6 +101,33 @@ static IOSClass *DecodePrimitiveParamKeyword(NSString *keyword) {
   return nil;
 }
 
+static IOSClass *ResolveParameterType(const char *objcType, NSString *paramKeyword) {
+  if (![paramKeyword hasPrefix:@"with"] && ![paramKeyword hasPrefix:@"With"]) {
+    // Not a direct java translation, do our best with the ObjC type info.
+    return decodeTypeEncoding(objcType);
+  }
+  // Remove "with" or "With" prefix.
+  paramKeyword = [paramKeyword substringFromIndex:4];
+  IOSClass *type = nil;
+  if (*objcType == '@') {
+    if ([paramKeyword hasSuffix:@"Array"]) {
+      paramKeyword = [paramKeyword substringToIndex:[paramKeyword length] - 5];
+      IOSClass *componentType = [IOSClass classForIosName:paramKeyword];
+      if (componentType) {
+        type = [IOSClass arrayClassWithComponentType:componentType];
+      }
+    } else {
+      type = [IOSClass classForIosName:paramKeyword];
+    }
+  } else {
+    type = DecodePrimitiveParamKeyword(paramKeyword);
+  }
+  if (type) {
+    return type;
+  }
+  return [IOSClass objectClass];
+}
+
 - (IOSObjectArray *)getParameterTypes {
   // First two slots are class and SEL.
   NSUInteger nArgs = [methodSignature_ numberOfArguments] - SKIPPED_ARGUMENTS;
@@ -118,27 +145,8 @@ static IOSClass *DecodePrimitiveParamKeyword(NSString *keyword) {
   NSArray *paramTypes = [selectorStr componentsSeparatedByString:@":"];
 
   for (NSUInteger i = 0; i < nArgs; i++) {
-    const char *argType =
-        [methodSignature_ getArgumentTypeAtIndex:i + SKIPPED_ARGUMENTS];
-    // Remove "with" or "With" prefix.
-    NSString *typeStr = [[paramTypes objectAtIndex:i] substringFromIndex:4];
-    IOSClass *paramType = nil;
-    if (*argType == '@') {
-      if ([typeStr hasSuffix:@"Array"]) {
-        typeStr = [typeStr substringToIndex:[typeStr length] - 5];
-        IOSClass *componentType = [IOSClass classForIosName:typeStr];
-        if (componentType) {
-          paramType = [IOSClass arrayClassWithComponentType:componentType];
-        }
-      } else {
-        paramType = [IOSClass classForIosName:typeStr];
-      }
-    } else {
-      paramType = DecodePrimitiveParamKeyword(typeStr);
-    }
-    if (!paramType) {
-      paramType = [IOSClass objectClass];
-    }
+    const char *argType = [methodSignature_ getArgumentTypeAtIndex:i + SKIPPED_ARGUMENTS];
+    IOSClass *paramType = ResolveParameterType(argType, [paramTypes objectAtIndex:i]);
     [parameters replaceObjectAtIndex:i withObject:paramType];
   }
   return parameters;
