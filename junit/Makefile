@@ -221,6 +221,31 @@ SIMULATOR_FLAGS = -arch i386 -isysroot $(SIMULATOR_SDK_DIR)
 XCODE_BUILD_DIR = $(TARGET_TEMP_DIR)
 XCODE_FLAGS = $(ARCH_FLAGS) $(SDK_FLAGS)
 
+JAVA_SOURCES = \
+    $(EXTRACTED_JAVA) \
+    $(MODIFIED_SOURCES:%=$(MODIFIED_JAVA_SRC_DIR)/%)
+TRANSLATED_SOURCES = $(TRANSLATED_OBJC)
+JUNIT_JAR = $(BUILD_DIR)/j2objc_junit.jar
+JUNIT_DIST_JAR = $(DIST_JAR_DIR)/j2objc_junit.jar
+SOURCEPATH = $(JAVA_SRC_DIR):$(MODIFIED_JAVA_SRC_DIR)
+CLASSPATH = $(CLASSES_DIR):$(DIST_JAR_DIR)/j2objc_annotations.jar
+
+JAVA_SOURCES_MANIFEST = $(BUILD_DIR)/java_sources.mf
+OBJC_SOURCES_MANIFEST = $(BUILD_DIR)/objc_sources.mf
+
+java: $(JUNIT_DIST_JAR)
+
+$(JUNIT_JAR): $(JAVA_SOURCES) | $(BUILD_DIR)
+	@cd $(J2OBJC_ROOT)/annotations && make dist
+	@echo "building j2objc_junit.jar"
+	@rm -rf $(CLASSES_DIR)
+	@mkdir -p $(CLASSES_DIR)
+	@$(JAVAC) -sourcepath $(SOURCEPATH) -cp $(CLASSPATH) -d $(CLASSES_DIR) $^
+	@jar cf $@ -C $(CLASSES_DIR) .
+
+$(JUNIT_DIST_JAR): $(JUNIT_JAR) | $(DIST_JAR_DIR)
+	@install -m 0644 $< $@
+
 lib: translate $(JUNIT_LIB)
 	@:
 
@@ -237,8 +262,8 @@ pre_translate:
 
 $(BUILD_DIR)/.extracted: $(JUNIT_SRC_JAR) $(HAMCREST_SRC_JAR)
 	@mkdir -p $(JAVA_SRC_DIR)
-	unzip -q -o -d $(JAVA_SRC_DIR) $(JUNIT_SRC_JAR) $(JUNIT_SOURCES)
-	unzip -q -o -d $(JAVA_SRC_DIR) $(HAMCREST_SRC_JAR) $(HAMCREST_SOURCES)
+	@unzip -q -o -d $(JAVA_SRC_DIR) $(JUNIT_SRC_JAR) $(JUNIT_SOURCES)
+	@unzip -q -o -d $(JAVA_SRC_DIR) $(HAMCREST_SRC_JAR) $(HAMCREST_SOURCES)
 	@touch $(EXTRACTED_JAVA)
 	@touch $@
 
@@ -249,6 +274,25 @@ $(BUILD_DIR)/%.h $(BUILD_DIR)/%.m: $(JAVA_SRC_DIR)/%.java | pre_translate
 
 $(BUILD_DIR)/%.h $(BUILD_DIR)/%.m: $(MODIFIED_JAVA_SRC_DIR)/%.java | pre_translate
 	@echo "$?" >> $(JAVA_SOURCE_LIST)
+
+$(JAVA_SOURCES_MANIFEST): $(JAVA_SOURCES) | $(BUILD_DIR)
+	@echo "Building $$(basename $@)"
+	@if [ -e $@ ]; then rm $@; fi
+	@files='$^' && for i in $$files; do echo $$i >> $@; done
+
+java_sources_manifest: $(JAVA_SOURCES_MANIFEST)
+	@:
+
+$(OBJC_SOURCES_MANIFEST): $(TRANSLATED_SOURCES) | $(BUILD_DIR)
+	@echo "Building $$(basename $@)"
+	@if [ -e $@ ]; then rm $@; fi
+	@files='$^' && for i in $$files; do \
+	  echo $${i%.m}.h >> $@; \
+	  echo $$i >> $@; \
+	done
+
+objc_sources_manifest: $(OBJC_SOURCES_MANIFEST)
+	@:
 
 ifdef TARGET_TEMP_DIR
 $(JUNIT_LIB): $(OBJS:%=$(TARGET_TEMP_DIR)/%)
