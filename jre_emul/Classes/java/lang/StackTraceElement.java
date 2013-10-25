@@ -114,9 +114,8 @@ public class StackTraceElement {
     char *start = strstr(*stackSymbol, "0x");  // Skip text before address.
     char *addressEnd = strstr(start, " ");
     char *hex = strndup(start, addressEnd - start);
-    hexAddress_ =
-        RETAIN_([NSString stringWithCString:hex
-                                   encoding:[NSString defaultCStringEncoding]]);
+    hexAddress_ = [[NSString alloc] initWithCString:hex
+                                           encoding:[NSString defaultCStringEncoding]];
     free(hex);
     start = addressEnd + 1;
 
@@ -125,26 +124,26 @@ public class StackTraceElement {
     char *rightBrace = strchr(start, ']');
     if (rightBrace && strlen(rightBrace) > 4) {  // If pattern is similar to: ...] + 123
       // Save trailing function address offset, then "remove" it.
-      offset_ =
-          RETAIN_([NSString stringWithCString:rightBrace + 4
-                                     encoding:[NSString defaultCStringEncoding]]);
+      offset_ = [[NSString alloc] initWithCString:rightBrace + 4
+                                         encoding:[NSString defaultCStringEncoding]];
       *(rightBrace + 1) = '\0';
     }
     if (leftBrace && rightBrace && (rightBrace - leftBrace) > 0) {
       char *signature = leftBrace + 1;
       char *className = strsep(&signature, "[ ]");
-      char *selector = strsep(&signature, "[ ]");
       if (className) {
-        className__ =
-            RETAIN_([NSString stringWithCString:className
-                                       encoding:[NSString defaultCStringEncoding]]);
+        className__ = [[NSString alloc] initWithCString:className
+                                               encoding:[NSString defaultCStringEncoding]];
         @try {
-          className__ = [[IOSClass forName:className__] getName];
+          className__ = RETAIN_([[IOSClass forName:className__] getName]);
         }
         @catch (JavaLangClassNotFoundException *e) {
           // Unknown name, ignore.
+          AUTORELEASE(className__);
+          className__ = nil;
         }
       }
+      char *selector = strsep(&signature, "[ ]");
       if (selector) {
         char *methodName = NULL;
 
@@ -167,16 +166,14 @@ public class StackTraceElement {
           methodName = selector;
         }
         if (methodName) {
-          methodName_ =
-              RETAIN_([NSString stringWithCString:methodName
-                                         encoding:[NSString defaultCStringEncoding]]);
+          methodName_ = [[NSString alloc] initWithCString:methodName
+                                                 encoding:[NSString defaultCStringEncoding]];
         }
       }
     } else {
       // Copy rest of stack symbol to methodName.
-      methodName_ =
-          RETAIN_([NSString stringWithCString:start
-                                     encoding:[NSString defaultCStringEncoding]]);
+      methodName_ = [[NSString alloc] initWithCString:start
+                                             encoding:[NSString defaultCStringEncoding]];
     }
     free(stackSymbol);
   ]-*/;
