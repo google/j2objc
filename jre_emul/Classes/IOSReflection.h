@@ -88,6 +88,7 @@ typedef struct J2ObjcInnerClassAttribute {
 typedef struct J2ObjcClassInfo {
   const char *typeName;
   const char *packageName;
+  const char *enclosingName;
   uint16_t modifiers;
   uint16_t attribute_count;
   // Inner classes, enclosing method, generic signature.

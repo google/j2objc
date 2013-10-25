@@ -27,6 +27,7 @@
 
 @property (readonly, retain) NSString *typeName;
 @property (readonly, retain) NSString *packageName;
+@property (readonly, retain) NSString *enclosingName;
 @property (readonly, assign) uint16_t modifiers;
 
 - (id)initWithMetadata:(J2ObjcClassInfo *)metadata;
