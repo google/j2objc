@@ -109,6 +109,7 @@ endif
 OBJCFLAGS := $(WARNINGS) $(OBJCFLAGS) -DU_DISABLE_RENAMING=1 \
   -fobjc-abi-version=2 -fobjc-legacy-dispatch $(DEBUGFLAGS) \
   -I/System/Library/Frameworks/ExceptionHandling.framework/Headers \
+  -I/System/Library/Frameworks/Security.framework/Headers \
   -I$(ANDROID_INCLUDE) -I$(ICU4C_I18N_INCLUDE) -I$(ICU4C_COMMON_INCLUDE) \
   -I$(APPLE_ROOT)
 

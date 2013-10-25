@@ -223,6 +223,7 @@ TEST_SOURCES = \
 	org/apache/harmony/luni/tests/java/util/TimeZoneTest.java \
 	org/apache/harmony/luni/tests/java/util/TreeMapTest.java \
 	org/apache/harmony/luni/tests/java/util/TreeSetTest.java \
+	org/apache/harmony/luni/tests/java/util/UUIDTest.java \
 	org/apache/harmony/luni/tests/java/util/VectorTest.java \
 	org/apache/harmony/tests/java/math/BigIntegerAddTest.java \
 	org/apache/harmony/tests/java/math/BigIntegerAndTest.java \
