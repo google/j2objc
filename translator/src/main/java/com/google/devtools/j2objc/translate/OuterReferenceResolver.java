@@ -98,7 +98,8 @@ public class OuterReferenceResolver extends ASTVisitor {
 
   public static boolean needsOuterParam(ITypeBinding type) {
     assert instance != null;
-    return instance.outerVars.containsKey(type) || instance.usesOuterParam.contains(type);
+    return !type.isLocal() || instance.outerVars.containsKey(type)
+        || instance.usesOuterParam.contains(type);
   }
 
   public static IVariableBinding getOuterField(ITypeBinding type) {
