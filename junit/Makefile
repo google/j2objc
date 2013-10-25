@@ -52,6 +52,7 @@ JUNIT_PUBLIC_SOURCES = \
     org/junit/ComparisonFailure.java \
     org/junit/Ignore.java \
     org/junit/Rule.java \
+    org/junit/Test.java \
     org/junit/rules/MethodRule.java \
     org/junit/rules/RunRules.java \
     org/junit/rules/TestRule.java \
@@ -155,27 +156,37 @@ HAMCREST_INTERNAL_SOURCES = \
 
 HAMCREST_SOURCES = $(HAMCREST_PUBLIC_SOURCES) $(HAMCREST_INTERNAL_SOURCES)
 
-ORG_JUNIT_TEST_SRC = org/junit/Test.java
-ORG_JUNIT_TEST_OBJ = org/junit/OrgJunitTest.o
+# These source files have unique fully-qualified names, but the same class
+# name as other classes. This is an issue when building a native library,
+# as library entries don't include directories. By renaming the generated
+# object files for these sources (adding a OrgJunit prefix), libtool
+# warnings and possible link errors (though none reported) are avoided.
+DUPLICATE_NAME_SOURCES = \
+    org/junit/Test.java \
+    org/junit/Assert.java \
+    org/junit/ComparisonFailure.java \
+    org/junit/internal/runners/InitializationError.java \
+    org/junit/internal/runners/model/MultipleFailureException.java \
+    org/junit/runner/Description.java
+DUPLICATE_NAME_OBJS = \
+    $(foreach file,$(DUPLICATE_NAME_SOURCES), $(dir $(file))OrgJunit$(basename $(notdir $(file))).o)
 
-OBJS = $(JUNIT_SOURCES:%.java=%.o) \
+OBJS := $(JUNIT_SOURCES:%.java=%.o) \
     $(HAMCREST_SOURCES:%.java=%.o) \
-    $(ORG_JUNIT_TEST_OBJ)
+    $(DUPLICATE_NAME_OBJS)
+OBJS := $(filter-out $(DUPLICATE_NAME_SOURCES:%.java=%.o),$(OBJS))
 
 IPHONE_SDK_DIR = $(shell bash ../scripts/sysroot_path.sh --iphoneos)
 SIMULATOR_SDK_DIR = $(shell bash ../scripts/sysroot_path.sh --iphonesimulator)
 
 JAVA_SOURCE_LIST = $(BUILD_DIR)/junit.classes.list
 EXTRACTED_JAVA = $(JUNIT_SOURCES:%=$(JAVA_SRC_DIR)/%) \
-    $(HAMCREST_SOURCES:%=$(JAVA_SRC_DIR)/%) \
-    $(JAVA_SRC_DIR)/$(ORG_JUNIT_TEST_SRC)
+    $(HAMCREST_SOURCES:%=$(JAVA_SRC_DIR)/%)
 TRANSLATED_OBJC = $(JUNIT_SOURCES:%.java=$(BUILD_DIR)/%.m) \
-    $(HAMCREST_SOURCES:%.java=$(BUILD_DIR)/%.m) \
-    $(ORG_JUNIT_TEST_SRC:%.java=$(BUILD_DIR)/%.m)
+    $(HAMCREST_SOURCES:%.java=$(BUILD_DIR)/%.m)
 PUBLIC_HEADERS = \
     $(JUNIT_PUBLIC_SOURCES:%.java=%.h) \
-    $(HAMCREST_PUBLIC_SOURCES:%.java=%.h) \
-    $(ORG_JUNIT_TEST_SRC:%.java=%.h)
+    $(HAMCREST_PUBLIC_SOURCES:%.java=%.h)
 INTERNAL_HEADERS = \
     $(JUNIT_INTERNAL_SOURCES:%.java=%.h) \
     $(HAMCREST_INTERNAL_SOURCES:%.java=%.h)
@@ -220,8 +231,7 @@ pre_translate:
 
 $(BUILD_DIR)/.extracted: $(JUNIT_SRC_JAR) $(HAMCREST_SRC_JAR)
 	@mkdir -p $(JAVA_SRC_DIR)
-	unzip -q -o -d $(JAVA_SRC_DIR) $(JUNIT_SRC_JAR) $(JUNIT_SOURCES) \
-	    $(ORG_JUNIT_TEST_SRC)
+	unzip -q -o -d $(JAVA_SRC_DIR) $(JUNIT_SRC_JAR) $(JUNIT_SOURCES)
 	unzip -q -o -d $(JAVA_SRC_DIR) $(HAMCREST_SRC_JAR) $(HAMCREST_SOURCES)
 	@touch $(EXTRACTED_JAVA)
 	@touch $@
@@ -261,15 +271,18 @@ $(1)/%.o: $(BUILD_DIR)/%.m | translate
 	@mkdir -p $$(@D)
 	$$(CLANG) -c $$? -o $$@ $(2) $$(OBJCFLAGS) -I$$(BUILD_DIR) \
 	  -I$(ARCH_INCLUDE_DIR)
+endef
 
-$(1)/$(ORG_JUNIT_TEST_OBJ): $(BUILD_DIR)/$(ORG_JUNIT_TEST_SRC:%.java=%.m) | translate
+define rename_compile_rules
+$(1)/$(4): $(BUILD_DIR)/$(3) | translate
 	@mkdir -p $$(@D)
 	$$(CLANG) -c $$? -o $$@ $(2) $$(OBJCFLAGS) -I$$(BUILD_DIR) \
 	  -I$$(ARCH_INCLUDE_DIR)
-
 endef
 
-arch_compile_rules = $(eval $(call compile_rules,$(1),$(2)))
+arch_compile_rules = $(eval $(call compile_rules,$(1),$(2))) \
+  $(foreach file,$(DUPLICATE_NAME_SOURCES),$(eval $(call \
+  rename_compile_rules,$(1),$(2),$(file:%.java=%.m),$(dir $(file))OrgJunit$(basename $(notdir $(file))).o)))
 
 ifdef TARGET_TEMP_DIR
 $(call arch_compile_rules,$(XCODE_BUILD_DIR),$(XCODE_FLAGS),xcode)
