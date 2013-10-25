@@ -88,4 +88,24 @@ public class NumberFormatTest extends junit.framework.TestCase {
         } catch (IllegalArgumentException expected) {
         }
     }
+
+    // Verify that default formatters use correct precision and rounding.
+    public void testDefaultNumberFormats() {
+      assertEquals(NumberFormat.getInstance().format(23.45678), "23.457");
+      assertEquals(NumberFormat.getCurrencyInstance().format(23.45678), "$23.46");
+      assertEquals(NumberFormat.getIntegerInstance().format(23.45678), "23");
+      assertEquals(NumberFormat.getNumberInstance().format(23.45678), "23.457");
+      assertEquals(NumberFormat.getPercentInstance().format(23.45678), "2,346%");
+   }
+
+    // Verify that default formatters use correct precision and rounding with
+    // the French locale.
+    public void testFrenchNumberFormats() {
+      Locale locale = Locale.FRANCE;
+      assertEquals(NumberFormat.getInstance(locale).format(23.45678), "23,457");
+      assertEquals(NumberFormat.getCurrencyInstance(locale).format(23.45678), "23.46 €");
+      assertEquals(NumberFormat.getIntegerInstance(locale).format(23.45678), "23");
+      assertEquals(NumberFormat.getNumberInstance(locale).format(23.45678), "23,457");
+      assertEquals(NumberFormat.getPercentInstance(locale).format(23.45678), "2 346 %");
+   }
 }

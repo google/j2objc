@@ -72,6 +72,7 @@ public final class NativeDecimalFormat implements Cloneable {
                     dfs.getMonetaryDecimalSeparator(), dfs.getNaN(), dfs.getPatternSeparator(),
                     dfs.getPercent(), dfs.getPerMill(), dfs.getZeroDigit());
             this.lastPattern = pattern;
+            this.setMultiplier(1);  // JRE default.
         } catch (NullPointerException npe) {
             throw npe;
         } catch (RuntimeException re) {
@@ -361,7 +362,8 @@ public final class NativeDecimalFormat implements Cloneable {
 
     public native void setMultiplier(int value) /*-[
       [(NSNumberFormatter *) nsFormatter_ setMultiplier:[NSNumber numberWithInt:value]];
-      multiplierBigDecimal_ = [JavaMathBigDecimal valueOfWithLong:value];
+      LibcoreIcuNativeDecimalFormat_set_multiplierBigDecimal_(self,
+          [JavaMathBigDecimal valueOfWithLong:value]);
     ]-*/;
 
     public native void setNegativePrefix(String value) /*-[
@@ -621,19 +623,41 @@ public final class NativeDecimalFormat implements Cloneable {
     private static native char[] formatDouble(Object nativeFormatter, double value,
         FieldPositionIterator iter) /*-[
       NSNumberFormatter *formatter = (NSNumberFormatter *) nativeFormatter;
-      [formatter setNumberStyle:NSNumberFormatterNoStyle];
       [formatter setAllowsFloats:YES];
-      NSString *string = [formatter stringFromNumber:[NSNumber numberWithDouble:value]];
-      return [IOSCharArray arrayWithNSString:string];
+      NSString *format = [formatter positiveFormat];
+      NSString *result;
+      if ([format hasPrefix:@"%"] || [format hasSuffix:@"%"]) {
+        [formatter setNumberStyle:NSNumberFormatterPercentStyle];
+        result = [formatter stringFromNumber:[NSNumber numberWithDouble:value * 100.0]];
+      } else if ([format hasPrefix:@"\u00A4"] || [format hasSuffix:@"\u00A4"]) {
+        [formatter setNumberStyle:NSNumberFormatterCurrencyStyle];
+        result = [formatter stringFromNumber:[NSNumber numberWithDouble:value]];
+      } else {
+        [formatter setNumberStyle:NSNumberFormatterNoStyle];
+        result = [formatter stringFromNumber:[NSNumber numberWithDouble:value]];
+      }
+      result = [result stringByReplacingOccurrencesOfString:@"\u00a0" withString:@" "];
+      return [IOSCharArray arrayWithNSString:result];
     ]-*/;
 
     private static native char[] formatLong(Object nativeFormatter, long value,
         FieldPositionIterator iter) /*-[
       NSNumberFormatter *formatter = (NSNumberFormatter *) nativeFormatter;
-      [formatter setNumberStyle:NSNumberFormatterNoStyle];
       [formatter setAllowsFloats:NO];
-      NSString *string = [formatter stringFromNumber:[NSNumber numberWithDouble:value]];
-      return [IOSCharArray arrayWithNSString:string];
+      NSString *format = [formatter positiveFormat];
+      NSString *result;
+      if ([format hasPrefix:@"%"] || [format hasSuffix:@"%"]) {
+        [formatter setNumberStyle:NSNumberFormatterPercentStyle];
+        result = [formatter stringFromNumber:[NSNumber numberWithLongLong:value * 100.0]];
+      } else if ([format hasPrefix:@"\u00A4"] || [format hasSuffix:@"\u00A4"]) {
+        [formatter setNumberStyle:NSNumberFormatterCurrencyStyle];
+        result = [formatter stringFromNumber:[NSNumber numberWithLongLong:value]];
+      } else {
+        [formatter setNumberStyle:NSNumberFormatterNoStyle];
+        result = [formatter stringFromNumber:[NSNumber numberWithLongLong:value]];
+      }
+      result = [result stringByReplacingOccurrencesOfString:@"\u00a0" withString:@" "];
+      return [IOSCharArray arrayWithNSString:result];
     ]-*/;
 
     private static native Number parse(Object nativeFormatter, String string,
