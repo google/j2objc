@@ -32,7 +32,6 @@ JUNIT_PUBLIC_SOURCES = \
     junit/framework/JUnit4TestCaseFacade.java \
     junit/framework/Protectable.java \
     junit/framework/Test.java \
-    junit/framework/TestCase.java \
     junit/framework/TestFailure.java \
     junit/framework/TestListener.java \
     junit/framework/TestResult.java \
@@ -79,7 +78,6 @@ JUNIT_PUBLIC_SOURCES = \
     org/junit/runners/Suite.java \
     org/junit/runners/model/FrameworkField.java \
     org/junit/runners/model/FrameworkMember.java \
-    org/junit/runners/model/FrameworkMethod.java \
     org/junit/runners/model/InitializationError.java \
     org/junit/runners/model/MultipleFailureException.java \
     org/junit/runners/model/NoGenericTypeParametersValidator.java \
@@ -125,6 +123,10 @@ JUNIT_INTERNAL_SOURCES = \
     org/junit/internal/runners/statements/RunBefores.java \
     org/junit/internal/runners/SuiteMethod.java \
     org/junit/internal/TextListener.java
+
+MODIFIED_SOURCES = \
+    junit/framework/TestCase.java \
+    org/junit/runners/model/FrameworkMethod.java
 
 
 JUNIT_SOURCES = $(JUNIT_PUBLIC_SOURCES) $(JUNIT_INTERNAL_SOURCES)
@@ -173,7 +175,8 @@ DUPLICATE_NAME_OBJS = \
 
 OBJS := $(JUNIT_SOURCES:%.java=%.o) \
     $(HAMCREST_SOURCES:%.java=%.o) \
-    $(DUPLICATE_NAME_OBJS)
+    $(DUPLICATE_NAME_OBJS) \
+    $(MODIFIED_SOURCES:%.java=%.o)
 OBJS := $(filter-out $(DUPLICATE_NAME_SOURCES:%.java=%.o),$(OBJS))
 
 IPHONE_SDK_DIR = $(shell bash ../scripts/sysroot_path.sh --iphoneos)
@@ -183,10 +186,12 @@ JAVA_SOURCE_LIST = $(BUILD_DIR)/junit.classes.list
 EXTRACTED_JAVA = $(JUNIT_SOURCES:%=$(JAVA_SRC_DIR)/%) \
     $(HAMCREST_SOURCES:%=$(JAVA_SRC_DIR)/%)
 TRANSLATED_OBJC = $(JUNIT_SOURCES:%.java=$(BUILD_DIR)/%.m) \
-    $(HAMCREST_SOURCES:%.java=$(BUILD_DIR)/%.m)
+    $(HAMCREST_SOURCES:%.java=$(BUILD_DIR)/%.m) \
+    $(MODIFIED_SOURCES:%.java=$(BUILD_DIR)/%.m)
 PUBLIC_HEADERS = \
     $(JUNIT_PUBLIC_SOURCES:%.java=%.h) \
-    $(HAMCREST_PUBLIC_SOURCES:%.java=%.h)
+    $(HAMCREST_PUBLIC_SOURCES:%.java=%.h) \
+    $(MODIFIED_SOURCES:%.java=%.h)
 INTERNAL_HEADERS = \
     $(JUNIT_INTERNAL_SOURCES:%.java=%.h) \
     $(HAMCREST_INTERNAL_SOURCES:%.java=%.h)
@@ -221,7 +226,8 @@ lib: translate $(JUNIT_LIB)
 
 translate: pre_translate $(EXTRACTED_JAVA) $(TRANSLATED_OBJC)
 	@if [ `cat $(JAVA_SOURCE_LIST) | wc -l` -ge 1 ] ; then \
-	  $(J2OBJC) -sourcepath $(JAVA_SRC_DIR) `cat $(JAVA_SOURCE_LIST)`; \
+	  $(J2OBJC) -sourcepath $(MODIFIED_JAVA_SRC_DIR):$(JAVA_SRC_DIR) \
+	    `cat $(JAVA_SOURCE_LIST)`; \
 	fi
 
 pre_translate:
@@ -239,6 +245,9 @@ $(BUILD_DIR)/.extracted: $(JUNIT_SRC_JAR) $(HAMCREST_SRC_JAR)
 $(EXTRACTED_JAVA): $(BUILD_DIR)/.extracted
 
 $(BUILD_DIR)/%.h $(BUILD_DIR)/%.m: $(JAVA_SRC_DIR)/%.java | pre_translate
+	@echo "$?" >> $(JAVA_SOURCE_LIST)
+
+$(BUILD_DIR)/%.h $(BUILD_DIR)/%.m: $(MODIFIED_JAVA_SRC_DIR)/%.java | pre_translate
 	@echo "$?" >> $(JAVA_SOURCE_LIST)
 
 ifdef TARGET_TEMP_DIR
@@ -278,6 +287,9 @@ $(1)/$(4): $(BUILD_DIR)/$(3) | translate
 	@mkdir -p $$(@D)
 	$$(CLANG) -c $$? -o $$@ $(2) $$(OBJCFLAGS) -I$$(BUILD_DIR) \
 	  -I$$(ARCH_INCLUDE_DIR)
+
+$(BUILD_DIR)/%.h $(BUILD_DIR)/%.m: $(MODIFIED_JAVA_SRC_DIR)/%.java
+	@echo "$?" >> $(JAVA_SOURCE_LIST)
 endef
 
 arch_compile_rules = $(eval $(call compile_rules,$(1),$(2))) \

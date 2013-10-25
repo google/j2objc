@@ -169,7 +169,13 @@ public class AtomicStampedReference<V> {
       void * volatile tmp = (__bridge void * volatile) pair_;
       return OSAtomicCompareAndSwapPtrBarrier((__bridge void *) cmp, (__bridge void *) val, &tmp);
 #else
-      return OSAtomicCompareAndSwapPtrBarrier(cmp, val, (void * volatile *) &pair_);
+      id tmp = pair_;
+      if (OSAtomicCompareAndSwapPtrBarrier(cmp, val, (void * volatile *) &pair_)) {
+        [pair_ retain];
+        [tmp release];
+        return YES;
+      }
+      return NO;
 #endif
     ]-*/;
 }
