@@ -37,6 +37,7 @@ import org.eclipse.jdt.core.dom.CompilationUnit;
 import org.eclipse.jdt.core.dom.ConstructorInvocation;
 import org.eclipse.jdt.core.dom.EnumDeclaration;
 import org.eclipse.jdt.core.dom.IExtendedModifier;
+import org.eclipse.jdt.core.dom.IMethodBinding;
 import org.eclipse.jdt.core.dom.ITypeBinding;
 import org.eclipse.jdt.core.dom.IVariableBinding;
 import org.eclipse.jdt.core.dom.MethodDeclaration;
@@ -128,12 +129,18 @@ public class InnerClassExtractor extends ErrorReportingASTVisitor {
       ITypeBinding type = Types.getTypeBinding(node);
       if (!type.isInterface() && !type.isAnnotation() && !Modifier.isStatic(type.getModifiers())) {
         addOuterFields(newTypeDecl);
-        updateConstructors(newTypeDecl);
       }
 
       // Make this node non-private, if necessary, and add it to the unit's type
       // list.
-      removePrivateModifier(newTypeDecl);
+      Iterator<IExtendedModifier> iter = ASTUtil.getModifiers(newTypeDecl).iterator();
+      while (iter.hasNext()) {
+        IExtendedModifier iem = iter.next();
+        if ((iem instanceof Modifier) && ((Modifier) iem).isPrivate()) {
+          iter.remove();
+          break;
+        }
+      }
       unitTypes.add(insertIdx, newTypeDecl);
 
       // Check for erroneous WeakOuter annotation on static inner class.
@@ -143,90 +150,68 @@ public class InnerClassExtractor extends ErrorReportingASTVisitor {
     }
   }
 
-  private void removePrivateModifier(AbstractTypeDeclaration node) {
-    Iterator<IExtendedModifier> iter = ASTUtil.getModifiers(node).iterator();
-    while (iter.hasNext()) {
-      IExtendedModifier iem = iter.next();
-      if ((iem instanceof Modifier) && ((Modifier) iem).isPrivate()) {
-        iter.remove();
-        break;
-      }
-    }
-  }
-
   private void addOuterFields(AbstractTypeDeclaration node) {
     List<BodyDeclaration> members = ASTUtil.getBodyDeclarations(node);
     AST ast = node.getAST();
     ITypeBinding clazz = Types.getTypeBinding(node);
-    assert clazz.getDeclaringClass() != null;
+    ITypeBinding outerClazz = clazz.getDeclaringClass();
+    assert outerClazz != null;
 
     IVariableBinding outerFieldBinding = OuterReferenceResolver.getOuterField(clazz);
     if (outerFieldBinding != null) {
       members.add(0, ASTFactory.newFieldDeclaration(ast, outerFieldBinding, null));
     }
-
-    List<IVariableBinding> innerFields = OuterReferenceResolver.getInnerFields(clazz);
-    for (IVariableBinding field : innerFields) {
-      ASTUtil.getBodyDeclarations(node).add(ASTFactory.newFieldDeclaration(ast, field, null));
+    if (!clazz.isAnonymous()) {  // Anonymous class fields added by AnonymousClassConverter.
+      List<IVariableBinding> innerFields = OuterReferenceResolver.getInnerFields(clazz);
+      ASTFactory.createInnerFieldDeclarations(node, innerFields);
     }
-  }
-
-  private void updateConstructors(AbstractTypeDeclaration node) {
-    AST ast = node.getAST();
 
     // Insert new parameters for each constructor in class.
     boolean needsConstructor = true;
     for (MethodDeclaration method : ASTUtil.getMethodDeclarations(node)) {
       if (method.isConstructor()) {
         needsConstructor = false;
-        addOuterParameters(node, method);
+        IMethodBinding oldBinding = Types.getMethodBinding(method);
+        GeneratedMethodBinding newBinding = new GeneratedMethodBinding(oldBinding);
+        Types.addBinding(method, newBinding);
+        addOuterParameter(node, method, newBinding, outerFieldBinding);
+        assert method.parameters().size() == newBinding.getParameterTypes().length;
       }
     }
 
     if (needsConstructor) {
-      GeneratedMethodBinding binding =
-          GeneratedMethodBinding.newConstructor(Types.getTypeBinding(node), 0);
+      GeneratedMethodBinding binding = GeneratedMethodBinding.newConstructor(clazz, 0);
       MethodDeclaration constructor = ASTFactory.newMethodDeclaration(ast, binding);
       constructor.setBody(ast.newBlock());
-      addOuterParameters(node, constructor);
-      ASTUtil.getBodyDeclarations(node).add(constructor);
+      addOuterParameter(node, constructor, binding, outerFieldBinding);
+      members.add(constructor);
+      assert constructor.parameters().size() == binding.getParameterTypes().length;
     }
   }
 
-  private GeneratedVariableBinding addParameter(
-      MethodDeclaration constructor, ITypeBinding paramType, String name, int idx) {
-    GeneratedMethodBinding constructorBinding = Types.getGeneratedMethodBinding(constructor);
-    GeneratedVariableBinding paramBinding = new GeneratedVariableBinding(
-        name, Modifier.FINAL, paramType, false, true, constructorBinding.getDeclaringClass(),
-        constructorBinding);
-    SingleVariableDeclaration paramNode =
-        ASTFactory.newSingleVariableDeclaration(constructor.getAST(), paramBinding);
-    if (idx == -1) {
-      ASTUtil.getParameters(constructor).add(paramNode);
-      constructorBinding.addParameter(paramType);
-    } else {
-      ASTUtil.getParameters(constructor).add(idx, paramNode);
-      constructorBinding.addParameter(idx, paramType);
+  private IMethodBinding getDefaultConstructorDeclaration(ITypeBinding type) {
+    for (IMethodBinding method : type.getTypeDeclaration().getDeclaredMethods()) {
+      if (method.isConstructor()) {
+        IMethodBinding decl = method.getMethodDeclaration();
+        if (decl.getParameterTypes().length == 0) {
+          return decl;
+        }
+      }
     }
-    return paramBinding;
+    return null;
   }
 
-  protected void addOuterParameters(
-      AbstractTypeDeclaration typeNode, MethodDeclaration constructor) {
+  protected void addOuterParameter(
+      AbstractTypeDeclaration typeNode, MethodDeclaration constructor,
+      GeneratedMethodBinding binding, IVariableBinding outerField) {
     AST ast = typeNode.getAST();
-    ITypeBinding type = Types.getTypeBinding(typeNode);
-    ITypeBinding outerType = type.getDeclaringClass();
-    IVariableBinding outerParamBinding = null;
-    if (OuterReferenceResolver.needsOuterParam(type)) {
-      outerParamBinding = addParameter(constructor, outerType, "outer$", 0);
-    }
-    List<IVariableBinding> innerFields = OuterReferenceResolver.getInnerFields(type);
-    List<IVariableBinding> captureParams = Lists.newArrayListWithCapacity(innerFields.size());
-    int captureCount = 0;
-    for (IVariableBinding innerField : innerFields) {
-      captureParams.add(addParameter(
-          constructor, innerField.getType(), "capture$" + captureCount++, -1));
-    }
+    ITypeBinding outerType = Types.getTypeBinding(typeNode).getDeclaringClass();
+    GeneratedVariableBinding outerParamBinding = new GeneratedVariableBinding(
+        "outer$", Modifier.FINAL, outerType, false, true, binding.getDeclaringClass(), binding);
+    SingleVariableDeclaration outerParam =
+        ASTFactory.newSingleVariableDeclaration(ast, outerParamBinding);
+    ASTUtil.getParameters(constructor).add(0, outerParam);
+    binding.addParameter(0, outerType);
 
     ConstructorInvocation thisCall = null;
     SuperConstructorInvocation superCall = null;
@@ -243,41 +228,27 @@ public class InnerClassExtractor extends ErrorReportingASTVisitor {
     }
 
     if (thisCall != null) {
-      GeneratedMethodBinding newThisBinding = Types.getGeneratedMethodBinding(thisCall);
-      if (outerParamBinding != null) {
-        ASTUtil.getArguments(thisCall).add(0, ASTFactory.newSimpleName(ast, outerParamBinding));
-        newThisBinding.addParameter(0, outerParamBinding.getType());
-      }
-      for (IVariableBinding captureParam : captureParams) {
-        ASTUtil.getArguments(thisCall).add(ASTFactory.newSimpleName(ast, captureParam));
-        newThisBinding.addParameter(captureParam.getType());
-      }
+      IMethodBinding thisBinding = Types.getMethodBinding(thisCall);
+      GeneratedMethodBinding newThisBinding =
+          new GeneratedMethodBinding(thisBinding.getMethodDeclaration());
+      ASTUtil.getArguments(thisCall).add(0, ASTFactory.newSimpleName(ast, outerParamBinding));
+      newThisBinding.addParameter(0, outerParamBinding.getType());
+      Types.addBinding(thisCall, newThisBinding);
     } else {
-      ITypeBinding superType = type.getSuperclass().getTypeDeclaration();
+      ITypeBinding superType = binding.getDeclaringClass().getSuperclass().getTypeDeclaration();
       if (superCall == null) {
         superCall = ASTFactory.newSuperConstructorInvocation(
             ast, GeneratedMethodBinding.newConstructor(superType, Modifier.PUBLIC));
         statements.add(0, superCall);
       }
       passOuterParamToSuper(typeNode, superCall, superType, outerParamBinding);
-      IVariableBinding outerField = OuterReferenceResolver.getOuterField(type);
-      int idx = 0;
       if (outerField != null) {
-        assert outerParamBinding != null;
-        statements.add(idx++,
+        statements.add(0,
             ast.newExpressionStatement(ASTFactory.newAssignment(ast,
             ASTFactory.newSimpleName(ast, outerField),
             ASTFactory.newSimpleName(ast, outerParamBinding))));
       }
-      for (int i = 0; i < innerFields.size(); i++) {
-        statements.add(idx++,
-            ast.newExpressionStatement(ASTFactory.newAssignment(ast,
-            ASTFactory.newSimpleName(ast, innerFields.get(i)),
-            ASTFactory.newSimpleName(ast, captureParams.get(i)))));
-      }
     }
-    assert constructor.parameters().size()
-        == Types.getMethodBinding(constructor).getParameterTypes().length;
   }
 
   private void passOuterParamToSuper(
@@ -287,9 +258,9 @@ public class InnerClassExtractor extends ErrorReportingASTVisitor {
         || superCall.getExpression() != null) {
       return;
     }
-    assert outerParamBinding != null;
     AST ast = typeNode.getAST();
-    GeneratedMethodBinding superCallBinding = Types.getGeneratedMethodBinding(superCall);
+    IMethodBinding superCallDecl = Types.getMethodBinding(superCall).getMethodDeclaration();
+    GeneratedMethodBinding superCallBinding = new GeneratedMethodBinding(superCallDecl);
 
     List<IVariableBinding> path = OuterReferenceResolver.getPath(typeNode);
     assert path != null && path.size() > 0;
@@ -299,5 +270,6 @@ public class InnerClassExtractor extends ErrorReportingASTVisitor {
 
     ASTUtil.getArguments(superCall).add(0, superOuterArg);
     superCallBinding.addParameter(0, superType.getDeclaringClass());
+    Types.addBinding(superCall, superCallBinding);
   }
 }

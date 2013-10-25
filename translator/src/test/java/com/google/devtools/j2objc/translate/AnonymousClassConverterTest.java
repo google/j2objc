@@ -402,7 +402,7 @@ public class AnonymousClassConverterTest extends GenerationTest {
     assertTranslation(translation,
         "[[[Test_A_$1 alloc] initWithTest_A:self withTest_B:b withInt:1 withTest_B:b]");
     assertTranslation(translation,
-        "[super initWithTest_B:superOuter$ withInt:arg$0]");
+        "[super initWithTest_B:capture$0 withInt:arg$0]");
   }
 
   public void testAnonymousClassInStaticBlock() throws IOException {

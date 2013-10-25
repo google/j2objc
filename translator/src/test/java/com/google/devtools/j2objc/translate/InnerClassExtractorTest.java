@@ -612,6 +612,7 @@ public class InnerClassExtractorTest extends GenerationTest {
     String translation = translateSourceFile(source, "A", "A.h");
     assertTranslation(translation, "@interface A_foo_MyRunnable : NSObject < JavaLangRunnable >");
     assertNotInTranslation(translation, "A *this");
+    assertTranslation(translation, "- (id)initWithA:(A *)outer$;");
   }
 
   public void testInnerClassConstructor() throws IOException {
@@ -856,29 +857,6 @@ public class InnerClassExtractorTest extends GenerationTest {
     assertTranslation(translation, "printlnWithId:val$obj_");
     translation = getTranslatedFile("A.h");
     assertTranslation(translation, "id val$obj_;");
-  }
-
-  public void testLocalClassWithCaptureVariables() throws IOException {
-    String translation = translateSourceFile(
-        "class Test { void test(final String s) { " +
-        "  class Inner { " +
-        "    Inner() { this(0); } " +
-        "    Inner(int i) { } " +
-        "    void foo() { s.toString(); } " +
-        "  } " +
-        "  new Inner(); } }",
-        "Test", "Test.m");
-    assertTranslation(translation, "[[Test_test_Inner alloc] initWithNSString:s]");
-    assertTranslatedLines(translation,
-        "- (id)initWithNSString:(NSString *)capture$0 {",
-        "return JreMemDebugAdd([self initTest_test_InnerWithInt:0 withNSString:capture$0]);",
-        "}");
-    assertTranslatedLines(translation,
-        "- (id)initTest_test_InnerWithInt:(int)i",
-        "withNSString:(NSString *)capture$0 {",
-        "Test_test_Inner_set_val$s_(self, capture$0);",
-        "return JreMemDebugAdd([super init]);",
-        "}");
   }
 
   public void testWeakStaticClass() throws IOException {
