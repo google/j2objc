@@ -586,22 +586,15 @@ public class ObjectiveCImplementationGenerator extends ObjectiveCSourceFileGener
       String constantTypeName =
           NameTable.getFullName(Types.getMethodBinding(constant).getDeclaringClass());
       printf("    %s_%s = [[%s alloc] init", typeName, name, constantTypeName);
-      boolean isSimpleEnum = constantTypeName.equals(typeName);
 
-      // Common-case: no extra fields and no constant anonymous classes.
-      if (args.isEmpty() && isSimpleEnum) {
-        printf("WithNSString:@\"%s\" withInt:%d];\n", name, i);
+      if (args.isEmpty()) {
+        print("With");
       } else {
-        String argString = StatementGenerator.generateArguments(Types.getMethodBinding(constant),
-            args, fieldHiders, getBuilder().getSourcePosition());
-        print(argString);
-        if (args.isEmpty()) {
-          print("With");
-        } else {
-          print(" with");
-        }
-        printf("NSString:@\"%s_%s\" withInt:%d];\n", typeName.replace("Enum", ""), name, i);
+        print(StatementGenerator.generateArguments(Types.getMethodBinding(constant),
+            args, fieldHiders, getBuilder().getSourcePosition()));
+        print(" with");
       }
+      printf("NSString:@\"%s\" withInt:%d];\n", name, i);
     }
     printf("    %s_values = [[IOSObjectArray alloc] initWithObjects:(id[]){ ", typeName);
     for (EnumConstantDeclaration constant : constants) {

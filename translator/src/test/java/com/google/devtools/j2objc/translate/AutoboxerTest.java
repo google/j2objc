@@ -302,10 +302,10 @@ public class AutoboxerTest extends GenerationTest {
     // but 1 and 2 should be because they are passed as varargs.
     assertTranslation(translation,
         "[[TestEnum alloc] initWithId:[JavaLangInteger valueOfWithInt:0] " +
-        "withNSString:@\"Test_INT\" withInt:0]");
+        "withNSString:@\"INT\" withInt:0]");
     assertTranslation(translation,
         "[[TestEnum alloc] initWithId:[JavaLangBoolean valueOfWithBoolean:NO] " +
-        "withNSString:@\"Test_BOOLEAN\" withInt:1]");
+        "withNSString:@\"BOOLEAN\" withInt:1]");
   }
 
   public void testBoxedBoolInIf() throws IOException {
