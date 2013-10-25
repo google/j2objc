@@ -96,7 +96,7 @@ static id makeException(Class exceptionClass) {
         @throw makeException([JavaLangIllegalArgumentException class]);
       }
 
-      char primitiveArg = [arg byteValue];
+      char primitiveArg = [(JavaLangByte *) arg charValue];
       [invocation setArgument:&primitiveArg atIndex:argIndex];
 
     } else if ([type.objcClass isEqual:[JavaLangCharacter class]]) {
@@ -104,7 +104,7 @@ static id makeException(Class exceptionClass) {
         @throw makeException([JavaLangIllegalArgumentException class]);
       }
 
-      unichar primitiveArg = [(JavaLangCharacter *)arg charValue];
+      unichar primitiveArg = [(JavaLangCharacter *) arg charValue];
       [invocation setArgument:&primitiveArg atIndex:argIndex];
 
     } else if ([type.objcClass isEqual:[JavaLangShort class]]) {
@@ -112,7 +112,7 @@ static id makeException(Class exceptionClass) {
         @throw makeException([JavaLangIllegalArgumentException class]);
       }
 
-      short primitiveArg = [arg byteValue];
+      short primitiveArg = [(JavaLangShort *) arg charValue];
       [invocation setArgument:&primitiveArg atIndex:argIndex];
 
     } else if ([type.objcClass isEqual:[JavaLangInteger class]]) {
