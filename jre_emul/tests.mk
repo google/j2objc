@@ -313,6 +313,14 @@ $(TESTS_DIR)/%.txt: $(TEST_RESOURCES_ROOT)/%.txt
 run-tests: link resources $(TEST_BIN)
 	@$(TEST_BIN) org.junit.runner.JUnitCore $(subst /,.,$(TEST_SOURCES:%.java=%))
 
+# Run this when the above has errors and JUnit doesn't report which
+# test failed or hung.
+run-each-test: link resources $(TEST_BIN)
+	@for test in $(subst /,.,$(TEST_SOURCES:%.java=%)); do \
+	  echo $$test:; \
+	  $(TEST_BIN) org.junit.runner.JUnitCore $$test; \
+	done
+
 $(SUPPORT_LIB): $(SUPPORT_OBJS)
 	libtool -static -o $(SUPPORT_LIB) $(SUPPORT_OBJS)
 
