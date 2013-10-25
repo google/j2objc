@@ -31,4 +31,11 @@ public class OuterReferenceFixerTest extends GenerationTest {
         "class B extends A.Inner { B(A a) { a.super(); } }", "B", "B.m");
     assertTranslation(translation, "[super initWithA:a]");
   }
+
+  public void testLocalClassCaptureVariablesInsideGenericClass() throws IOException {
+    String translation = translateSourceFile(
+        "class Test<T> { void test() { final Object o = null; class Inner { "
+        + "public void foo() { o.toString(); } } new Inner(); } }", "Test", "Test.m");
+    assertTranslation(translation, "[[Test_test_Inner alloc] initWithId:o]");
+  }
 }
