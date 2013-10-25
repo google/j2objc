@@ -70,7 +70,7 @@ public class OuterReferenceFixer extends ErrorReportingASTVisitor {
 
   @Override
   public boolean visit(ClassInstanceCreation node) {
-    ITypeBinding newType = Types.getTypeBinding(node);
+    ITypeBinding newType = Types.getTypeBinding(node).getTypeDeclaration();
     ITypeBinding declaringClass = newType.getDeclaringClass();
     if (Modifier.isStatic(newType.getModifiers()) || declaringClass == null) {
       return true;
