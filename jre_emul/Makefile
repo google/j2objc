@@ -360,6 +360,7 @@ JAVA_SOURCES = \
 	java/security/PrivilegedExceptionAction.java \
 	java/security/ProtectionDomain.java \
 	java/security/SecureClassLoader.java \
+	java/security/SecureRandom.java \
 	java/security/SecurityPermission.java \
 	java/sql/Date.java \
 	java/sql/Time.java \
@@ -475,6 +476,7 @@ JAVA_SOURCES = \
 	java/util/TreeSet.java \
 	java/util/UnknownFormatConversionException.java \
 	java/util/UnknownFormatFlagsException.java \
+	java/util/UUID.java \
 	java/util/Vector.java \
 	java/util/WeakHashMap.java \
 	java/util/regex/Matcher.java \
