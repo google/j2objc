@@ -128,6 +128,13 @@ public class CycleFinderTest extends TestCase {
     assertNoCycles();
   }
 
+  public void testWhitelistedOuterReference() throws Exception {
+    addSourceFile("A.java", "class A { Inner i; class Inner { void test() { A a = A.this; } } }");
+    whitelistEntries.add("OUTER A.Inner");
+    findCycles();
+    assertNoCycles();
+  }
+
   public void testWhitelistComment() throws Exception {
     addSourceFile("A.java", "class A { B b; }");
     addSourceFile("B.java", "class B { A a; }");

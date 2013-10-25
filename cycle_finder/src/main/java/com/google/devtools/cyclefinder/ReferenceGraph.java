@@ -154,7 +154,8 @@ public class ReferenceGraph {
       if (OuterReferenceResolver.needsOuterReference(type.getTypeDeclaration())
           && !BindingUtil.hasAnnotation(type, WeakOuter.class)) {
         ITypeBinding declaringType = type.getDeclaringClass();
-        if (declaringType != null && !whitelist.containsType(declaringType)) {
+        if (declaringType != null && !whitelist.containsType(declaringType)
+            && !whitelist.hasOuterForType(type)) {
           addEdge(Edge.newOuterClassEdge(type, declaringType));
         }
       }

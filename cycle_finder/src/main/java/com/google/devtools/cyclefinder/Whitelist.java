@@ -42,6 +42,7 @@ public class Whitelist {
   private SetMultimap<String, String> fieldsWithTypes = HashMultimap.create();
   private Set<String> types = Sets.newHashSet();
   private Set<String> namespaces = Sets.newHashSet();
+  private Set<String> outers = Sets.newHashSet();
 
   public boolean containsField(IVariableBinding field) {
     return fields.contains(fieldName(field));
@@ -53,6 +54,10 @@ public class Whitelist {
 
   public boolean isWhitelistedTypeForField(IVariableBinding field, ITypeBinding type) {
     return fieldsWithTypes.containsEntry(fieldName(field), typeName(type));
+  }
+
+  public boolean hasOuterForType(ITypeBinding type) {
+    return outers.contains(typeName(type));
   }
 
   public boolean containsType(ITypeBinding type) {
@@ -103,6 +108,8 @@ public class Whitelist {
       types.add(tokens[1]);
     } else if (entryType.equals("namespace") && tokens.length == 2) {
       namespaces.add(tokens[1]);
+    } else if (entryType.equals("outer") && tokens.length == 2) {
+      outers.add(tokens[1]);
     } else {
       badEntry(entry);
     }
