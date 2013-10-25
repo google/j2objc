@@ -162,6 +162,7 @@ public class TreeMap<K, V> extends AbstractMap<K, V>
             map.root = root != null ? root.copy(null) : null;
             map.entrySet = null;
             map.keySet = null;
+            map.valuesCollection = null;
             return map;
         } catch (CloneNotSupportedException e) {
             throw new AssertionError();
