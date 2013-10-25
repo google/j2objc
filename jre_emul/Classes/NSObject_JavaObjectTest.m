@@ -20,6 +20,7 @@
 //
 
 #import "NSObject+JavaObject.h"
+#import "IOSClass.h"
 #import "java/lang/CloneNotSupportedException.h"
 #import "java/util/ArrayList.h"
 #import "java/util/List.h"

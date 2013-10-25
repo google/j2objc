@@ -154,4 +154,13 @@
   STAssertEquals(2, [@"aba" lastIndexOf:'a'], @"Wrong index.");
 }
 
+// Empty test to workaround an Xcode race condition parsing the test
+// log. Without it, there are intermittant failures that one or more
+// unit tests did not finish, even though the log shows they did.
+// Lots of projects have run into this issue, and consensus is that
+// this "sleep for 1 second" does the trick.
+- (void)testThatMakesSureWeDontFinishTooFast
+{
+  [NSThread sleepForTimeInterval:1.0];
+}
 @end
