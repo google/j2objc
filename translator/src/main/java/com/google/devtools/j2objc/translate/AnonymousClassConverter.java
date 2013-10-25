@@ -226,8 +226,7 @@ public class AnonymousClassConverter extends ErrorReportingASTVisitor {
       ASTUtil.getParameters(constructor).add(0,
           ASTFactory.newSingleVariableDeclaration(ast, outerExpressionParam));
       binding.addParameter(0, outerExpressionType);
-      ASTUtil.getArguments(superCall).add(ASTFactory.newSimpleName(ast, outerExpressionParam));
-      superCallBinding.addParameter(0, outerExpressionType);
+      superCall.setExpression(ASTFactory.newSimpleName(ast, outerExpressionParam));
     }
 
     // The invocation arguments must become parameters of the generated

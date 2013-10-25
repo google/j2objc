@@ -33,6 +33,7 @@ import org.eclipse.jdt.core.dom.MethodInvocation;
 import org.eclipse.jdt.core.dom.Modifier;
 import org.eclipse.jdt.core.dom.SimpleName;
 import org.eclipse.jdt.core.dom.SingleVariableDeclaration;
+import org.eclipse.jdt.core.dom.SuperConstructorInvocation;
 import org.eclipse.jdt.core.dom.ThisExpression;
 
 import java.util.List;
@@ -136,6 +137,21 @@ public class OuterReferenceFixer extends ErrorReportingASTVisitor {
       node.setQualifier(null);
     }
     return true;
+  }
+
+  @Override
+  public void endVisit(SuperConstructorInvocation node) {
+    Expression outerExpression = node.getExpression();
+    if (outerExpression == null) {
+      return;
+    }
+    node.setExpression(null);
+    ITypeBinding outerExpressionType = Types.getTypeBinding(outerExpression);
+    IMethodBinding oldBinding = Types.getMethodBinding(node);
+    GeneratedMethodBinding newBinding = new GeneratedMethodBinding(oldBinding);
+    Types.addBinding(node, newBinding);
+    ASTUtil.getArguments(node).add(0, outerExpression);
+    newBinding.addParameter(0, outerExpressionType);
   }
 
   private List<IVariableBinding> fixPath(ASTNode node, List<IVariableBinding> path) {
