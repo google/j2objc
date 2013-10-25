@@ -1876,6 +1876,7 @@ public class TreeMap<K, V> extends AbstractMap<K, V>
     static NSUInteger EnumerateEntries(
         __unsafe_unretained JavaUtilTreeMap *map, NSFastEnumerationState *state,
         __unsafe_unretained id *stackbuf, NSUInteger len, int type, BOOL forward) {
+      // Note: Must not use extra[4] because it is set by TreeSet.
       __unsafe_unretained JavaUtilTreeMap_Node *node;
       __unsafe_unretained JavaUtilTreeMap_Node *startNode = (ARCBRIDGE id) (void *) state->extra[1];
       __unsafe_unretained JavaUtilTreeMap_Node *endNode = (ARCBRIDGE id) (void *) state->extra[2];
