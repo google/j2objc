@@ -20,12 +20,10 @@ import com.google.common.base.Preconditions;
 import com.google.common.collect.Lists;
 import com.google.devtools.j2objc.util.NameTable;
 
-import org.eclipse.jdt.core.IJavaElement;
 import org.eclipse.jdt.core.dom.IAnnotationBinding;
 import org.eclipse.jdt.core.dom.IBinding;
 import org.eclipse.jdt.core.dom.IMethodBinding;
 import org.eclipse.jdt.core.dom.ITypeBinding;
-import org.eclipse.jdt.core.dom.IVariableBinding;
 import org.eclipse.jdt.internal.compiler.ast.ASTNode;
 
 import java.util.Arrays;
@@ -85,9 +83,9 @@ public class GeneratedMethodBinding extends AbstractBinding implements IMethodBi
   }
 
   public static GeneratedMethodBinding newOverridingMethod(
-      IMethodBinding m, ITypeBinding declaringClass) {
+      IMethodBinding m, ITypeBinding declaringClass, int modifiers) {
     return new GeneratedMethodBinding(
-        m, m.getName(), m.getModifiers(), m.getReturnType(), null, declaringClass,
+        m, m.getName(), modifiers, m.getReturnType(), null, declaringClass,
         m.isConstructor(), m.isVarargs(), m.isSynthetic());
   }
 
