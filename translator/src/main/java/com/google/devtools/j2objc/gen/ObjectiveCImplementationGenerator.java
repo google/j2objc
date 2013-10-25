@@ -1205,7 +1205,7 @@ public class ObjectiveCImplementationGenerator extends ObjectiveCSourceFileGener
         needsMetadata = true;
       }
     } else {
-      returnTypeStr = "\"" + NameTable.getFullName(method.getReturnType()) + "\"";
+      returnTypeStr = "\"L" + NameTable.getFullName(method.getReturnType()) + "\"";
       needsMetadata = true;
     }
     String methodName = "NULL";

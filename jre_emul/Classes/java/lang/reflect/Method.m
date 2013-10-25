@@ -81,8 +81,8 @@
         return primitiveType;
       }
     }
-    return [IOSClass classForIosName:[NSString stringWithCString:metadata_->returnType encoding:
-        [NSString defaultCStringEncoding]]];
+    NSAssert(*(metadata_->returnType) == 'L', @"invalid return type %s", metadata_->returnType);
+    return [IOSClass classForIosName:[NSString stringWithUTF8String:&metadata_->returnType[1]]];
   }
   const char *argType = [methodSignature_ methodReturnType];
   if (strlen(argType) != 1) {
