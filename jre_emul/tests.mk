@@ -86,6 +86,7 @@ TEST_SOURCES = \
 	libcore/java/util/FormatterTest.java \
 	libcore/java/util/OldTimeZoneTest.java \
 	libcore/java/util/ServiceLoaderTest.java \
+	libcore/java/util/TreeMapTest.java \
 	org/apache/harmony/luni/tests/java/io/BufferedInputStreamTest.java \
 	org/apache/harmony/luni/tests/java/io/BufferedOutputStreamTest.java \
 	org/apache/harmony/luni/tests/java/io/BufferedReaderTest.java \
@@ -258,6 +259,7 @@ TEST_SOURCES = \
 	org/apache/harmony/text/tests/java/text/CollatorTest.java \
 	org/apache/harmony/text/tests/java/text/MessageFormatTest.java \
 	tests/api/java/lang/reflect/ProxyTest.java \
+	tests/api/java/util/AbstractMapTest.java \
 	tests/api/java/util/BitSetTest.java \
 	tests/api/java/util/CalendarTest.java \
 	tests/api/java/util/FormattableFlagsTest.java \
@@ -269,6 +271,7 @@ TEST_SOURCES = \
 	tests/api/java/util/TimerTest.java \
 
 FAILING_TESTS = \
+	libcore/java/util/TreeSetTest.java \
 	org/apache/harmony/luni/tests/java/lang/DoubleTest.java \
 	org/apache/harmony/luni/tests/java/lang/FloatTest.java \
 	org/apache/harmony/luni/tests/java/lang/StrictMathTest.java \
