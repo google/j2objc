@@ -33,6 +33,7 @@ public class ObjectiveCImplementationGeneratorTest extends GenerationTest {
   protected void tearDown() throws Exception {
     Options.resetDeprecatedDeclarations();
     Options.resetMemoryManagementOption();
+    Options.setStripReflection(false);
     super.tearDown();
   }
 
@@ -296,11 +297,21 @@ public class ObjectiveCImplementationGeneratorTest extends GenerationTest {
     assertTranslation(translation, "+ (int *)fieldPhiRef;");
   }
 
+  public void testEmptyInterfaceGenerationNoMetadata() throws IOException {
+    Options.setStripReflection(true);
+    String translation = translateSourceFile(
+        "package foo; public interface Compatible {}",
+        "Compatible", "foo/Compatible.m");
+    assertTranslation(translation, "void FooCompatible_unused() {}");
+  }
+
   public void testEmptyInterfaceGeneration() throws IOException {
     String translation = translateSourceFile(
-      "package foo; public interface Compatible {}",
-      "Compatible", "foo/Compatible.m");
-    assertTranslation(translation, "void FooCompatible_unused() {}");
+        "package foo; public interface Compatible {}",
+        "Compatible", "foo/Compatible.m");
+    assertTranslation(translation, "@interface FooCompatible : NSObject");
+    assertTranslation(translation, "@implementation FooCompatible");
+    assertTranslation(translation, "+ (J2ObjcClassInfo *)__metadata");
   }
 
   public void testInterfaceConstantGeneration() throws IOException {

@@ -626,4 +626,9 @@ public class Options {
   public static boolean stripReflection() {
     return stripReflection;
   }
+
+  @VisibleForTesting
+  public static void setStripReflection(boolean b) {
+    stripReflection = b;
+  }
 }
