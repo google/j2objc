@@ -743,7 +743,8 @@ public class Rewriter extends ErrorReportingASTVisitor {
   private void addAbstractMethod(
       AST ast, ITypeBinding typeBinding, IMethodBinding interfaceMethod,
       List<BodyDeclaration> decls) {
-    MethodDeclaration method = createInterfaceMethodBody(ast, typeBinding, interfaceMethod);
+    MethodDeclaration method = createInterfaceMethodBody(ast, typeBinding, interfaceMethod,
+        interfaceMethod.getModifiers());
 
     ASTUtil.getModifiers(method).add(ast.newModifier(ModifierKeyword.ABSTRACT_KEYWORD));
 
@@ -763,7 +764,8 @@ public class Rewriter extends ErrorReportingASTVisitor {
       List<BodyDeclaration> decls) {
     Logger.getAnonymousLogger().fine(String.format("adding %s to %s",
         interfaceMethod.getName(), typeBinding.getQualifiedName()));
-    MethodDeclaration method = createInterfaceMethodBody(ast, typeBinding, interfaceMethod);
+    MethodDeclaration method =
+        createInterfaceMethodBody(ast, typeBinding, interfaceMethod, Modifier.PUBLIC);
 
     // Add method body with single "super.method(parameters);" statement.
     Block body = ast.newBlock();
@@ -783,9 +785,9 @@ public class Rewriter extends ErrorReportingASTVisitor {
   }
 
   private MethodDeclaration createInterfaceMethodBody(
-      AST ast, ITypeBinding typeBinding, IMethodBinding interfaceMethod) {
+      AST ast, ITypeBinding typeBinding, IMethodBinding interfaceMethod, int modifiers) {
     GeneratedMethodBinding methodBinding =
-        GeneratedMethodBinding.newOverridingMethod(interfaceMethod, typeBinding);
+        GeneratedMethodBinding.newOverridingMethod(interfaceMethod, typeBinding, modifiers);
     MethodDeclaration method = ASTFactory.newMethodDeclaration(ast, methodBinding);
 
     ITypeBinding[] parameterTypes = interfaceMethod.getParameterTypes();

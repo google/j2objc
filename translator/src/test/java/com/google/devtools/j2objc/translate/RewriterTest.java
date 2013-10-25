@@ -261,6 +261,7 @@ public class RewriterTest extends GenerationTest {
     assertEquals(2, methods.length);
     MethodDeclaration equalsMethod = methods[0];
     assertEquals("isEqual", equalsMethod.getName().getIdentifier());
+    assertEquals(Modifier.PUBLIC, equalsMethod.getModifiers());
     assertEquals(1, equalsMethod.parameters().size());
     assertTrue(equalsMethod.parameters().get(0) instanceof SingleVariableDeclaration);
     List<Statement> stmts = equalsMethod.getBody().statements();
@@ -614,5 +615,23 @@ public class RewriterTest extends GenerationTest {
     assertTranslation(translation, "return c | d;");
     assertTranslatedLines(translation, "return (e & f) | (g & h) | i;");
     assertTranslatedLines(translation, "return j | k | (l & m & n);");
+  }
+
+  // Verify anonymous class for an interface that implements equals() has
+  // an isEquals: method defined in its implementation that calls its
+  // superclass implementation.
+  public void testSuperMethodsAddedToAnonymousClass() throws IOException {
+    String translation = translateSourceFile(
+        "class Test { " +
+        "  Foo test() {" +
+        "    return new Foo() {" +
+        "      @Override public int foo() { return 42; }};" +
+        "  }" +
+        "  interface Foo {" +
+        "    int foo();" +
+        "    @Override boolean equals(Object object);}}",
+        "Test", "Test.m");
+    assertNotInTranslation(translation, "doesNotRecognizeSelector:_cmd");
+    assertTranslation(translation, "return [super isEqual:param0];");
   }
 }
