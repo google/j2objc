@@ -42,6 +42,11 @@
   return packageName ? [NSString stringWithFormat:@"%@.%@", packageName, typeName] : typeName;
 }
 
+- (NSString *)description {
+  return [NSString stringWithFormat:@"{ typeName=%@ packageName=%@ modifiers=0x%x }",
+          typeName, packageName, modifiers];
+}
+
 - (void)dealloc {
   if (attributes) {
     free(attributes);

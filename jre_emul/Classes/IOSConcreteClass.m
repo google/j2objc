@@ -20,11 +20,13 @@
 #import "IOSConcreteClass.h"
 #import "JavaMetadata.h"
 #import "java/lang/ClassCastException.h"
+#import "java/lang/Enum.h"
 #import "java/lang/InstantiationException.h"
 #import "java/lang/NoSuchMethodException.h"
 #import "java/lang/Void.h"
 #import "java/lang/reflect/Constructor.h"
 #import "java/lang/reflect/Method.h"
+#import "java/lang/reflect/Modifier.h"
 #import "objc/runtime.h"
 
 @implementation IOSConcreteClass
@@ -97,7 +99,13 @@
 }
 
 - (BOOL)isEnum {
-  return class_ != nil && [NSStringFromClass(class_) hasSuffix:@"Enum"];
+  JavaClassMetadata *metadata = [self getMetadata];
+  if (metadata) {
+    return (metadata.modifiers & JavaLangReflectModifier_ENUM) > 0 &&
+        [self getSuperclass] == [JavaLangEnum getClass];
+  } else {
+    return class_ != nil && [NSStringFromClass(class_) hasSuffix:@"Enum"];
+  }
 }
 
 - (BOOL)isMemberClass {

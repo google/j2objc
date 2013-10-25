@@ -53,7 +53,8 @@
 }
 
 - (int)getModifiers {
-  return JavaLangReflectModifier_PUBLIC | JavaLangReflectModifier_INTERFACE;
+  return JavaLangReflectModifier_PUBLIC | JavaLangReflectModifier_INTERFACE |
+      JavaLangReflectModifier_ABSTRACT | JavaLangReflectModifier_STATIC;
 }
 
 - (BOOL)isAssignableFrom:(IOSClass *)cls {

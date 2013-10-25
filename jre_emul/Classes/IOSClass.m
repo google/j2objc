@@ -177,8 +177,13 @@ static IOSClass *FetchArray(IOSClass *componentType);
 }
 
 - (int)getModifiers {
-  // All Objective-C classes and protocols are public.
-  return JavaLangReflectModifier_PUBLIC;
+  JavaClassMetadata *metadata = [self getMetadata];
+  if (metadata) {
+    return metadata.modifiers & [JavaLangReflectModifier classModifiers];
+  } else {
+    // All Objective-C classes and protocols are public by default.
+    return JavaLangReflectModifier_PUBLIC;
+  }
 }
 
 - (void)collectMethods:(NSMutableDictionary *)methodMap {
@@ -442,8 +447,21 @@ static IOSClass *IOSClass_ArrayClassForName(NSString *name, NSUInteger index) {
   return NO;  // Overridden by IOSPrimitiveClass.
 }
 
+static BOOL hasModifier(IOSClass *cls, int flag) {
+  JavaClassMetadata *metadata = [cls getMetadata];
+  return metadata ? (metadata.modifiers & flag) > 0 : NO;
+}
+
+- (BOOL)isAnnotation {
+  return hasModifier(self, JavaLangReflectModifier_ANNOTATION);
+}
+
 - (BOOL)isMemberClass {
   return NO;
+}
+
+- (BOOL)isSynthetic {
+  return hasModifier(self, JavaLangReflectModifier_SYNTHETIC);
 }
 
 - (IOSObjectArray *)getInterfacesWithArrayType:(IOSClass *)arrayType {
