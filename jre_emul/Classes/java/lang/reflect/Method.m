@@ -21,35 +21,13 @@
 
 #import "IOSClass.h"
 #import "IOSObjectArray.h"
+#import "IOSReflection.h"
 #import "JreEmulation.h"
 #import "java/lang/AssertionError.h"
-#import "java/lang/Boolean.h"
-#import "java/lang/Byte.h"
-#import "java/lang/Character.h"
-#import "java/lang/Double.h"
-#import "java/lang/Float.h"
-#import "java/lang/Integer.h"
-#import "java/lang/Long.h"
 #import "java/lang/NullPointerException.h"
-#import "java/lang/Short.h"
-#import "java/lang/Void.h"
 #import "java/lang/reflect/Method.h"
 
 @implementation JavaLangReflectMethod
-
-typedef union {
-  void *asId;
-  char asChar;
-  unichar asUnichar;
-  short asShort;
-  int asInt;
-  long long asLong;
-  float asFloat;
-  double asDouble;
-  BOOL asBOOL;
-} JavaResult;
-
-static id Box(JavaResult *value, const char *type);
 
 + (id)methodWithSelector:(SEL)aSelector
                withClass:(IOSClass *)aClass
@@ -73,11 +51,15 @@ static id Box(JavaResult *value, const char *type);
     return [NSString stringWithCString:metadata_->javaName encoding:
         [NSString defaultCStringEncoding]];
   }
+
+  // Demangle signature to retrieve original method name.
   NSString *name = NSStringFromSelector(selector_);
   NSRange range = [name rangeOfString:@":"];
   if (range.location == NSNotFound) {
-    return name;
+    return name;  // It's not mangled.
   }
+
+  // The name ends with the last "WithType" before the first colon.
   range = [name rangeOfString:@"With" options:NSBackwardsSearch
       range:NSMakeRange(0, range.location)];
   if (range.location == NSNotFound) {
@@ -141,9 +123,9 @@ static id Box(JavaResult *value, const char *type);
   [invocation invoke];
   const char *returnType = [methodSignature_ methodReturnType];
   if (*returnType != 'v') {  // if not void
-    JavaResult returnValue;
+    J2ObjcRawValue returnValue;
     [invocation getReturnValue:&returnValue];
-    return Box(&returnValue, returnType);
+    return J2ObjcBoxValue(&returnValue, returnType);
   } else {
     return nil;
   }
@@ -178,47 +160,6 @@ static id Box(JavaResult *value, const char *type);
 - (IOSObjectArray *)getParameterAnnotations {
   JavaLangReflectMethod *method = [self getParameterAnnotationsAccessor:[self internalName]];
   return [self getAnnotationsFromAccessor:method];
-}
-
-// Return a wrapper object for a value with a specified Obj-C type encoding.
-id Box(JavaResult *value, const char *type) {
-  if (strlen(type) == 1) {
-    char typeChar = *type;
-    switch (typeChar) {
-      case '@':
-        return (ARCBRIDGE id)value->asId;
-      case '#':
-      return [IOSClass classWithClass:(ARCBRIDGE Class)value];
-      case 'c':
-        return [JavaLangByte valueOfWithByte:value->asChar];
-      case 'S':
-        // A Java character is an unsigned two-byte int; in other words,
-        // an unsigned short with an encoding of 'S'.
-        return [JavaLangCharacter valueOfWithChar:value->asUnichar];
-      case 's':
-        return [JavaLangShort valueOfWithShort:value->asShort];
-      case 'i':
-        return [JavaLangInteger valueOfWithInt:value->asInt];
-      case 'l':
-      case 'L':
-      case 'q':
-      case 'Q':
-        return [JavaLangLong valueOfWithLong:value->asLong];
-      case 'f':
-        return [JavaLangFloat valueOfWithFloat:value->asFloat];
-      case 'd':
-        return [JavaLangDouble valueOfWithDouble:value->asDouble];
-      case 'B':
-        return [JavaLangBoolean valueOfWithBoolean:value->asBOOL];
-    }
-  }
-  id exception =
-      [[JavaLangAssertionError alloc] initWithNSString:
-          [NSString stringWithFormat:@"unknown Java type encoding: %s", type]];
-#if ! __has_feature(objc_arc)
-  [exception autorelease];
-#endif
-  @throw exception;
 }
 
 - (id)getDefaultValue {

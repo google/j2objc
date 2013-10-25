@@ -91,6 +91,7 @@ static NSMutableSet *soft_references;
 static BOOL in_low_memory_cleanup;
 
 + (void)initReferent:(JavaLangRefReference *)reference {
+  nil_chk(reference->referent_);
   EnsureReferentSubclass(reference->referent_);
   AssociateReferenceWithReferent(reference->referent_, reference);
 }
