@@ -64,6 +64,7 @@
 
 /* Begin PBXFileReference section */
 		0604932C1772407B0047D336 /* IOSClassTest.m */ = {isa = PBXFileReference; fileEncoding = 4; indentWidth = 2; lastKnownFileType = sourcecode.c.objc; name = IOSClassTest.m; path = Classes/IOSClassTest.m; sourceTree = SOURCE_ROOT; tabWidth = 2; wrapsLines = 0; };
+		062272AA1816DB0B009BB2A2 /* jni.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = jni.h; sourceTree = "<group>"; };
 		06389ACF176BADA20018B4EA /* JavaToIOSInputStreamAdapter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JavaToIOSInputStreamAdapter.h; sourceTree = "<group>"; };
 		06389AD0176BADA20018B4EA /* JavaToIOSInputStreamAdapter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JavaToIOSInputStreamAdapter.m; sourceTree = "<group>"; };
 		064FB746172705F400DC0D51 /* URI.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = URI.h; path = build_result/Classes/java/net/URI.h; sourceTree = "<group>"; };
@@ -1059,6 +1060,7 @@
 				066193B8155849BC0004DAFE /* JavaObject.h */,
 				06389ACF176BADA20018B4EA /* JavaToIOSInputStreamAdapter.h */,
 				06389AD0176BADA20018B4EA /* JavaToIOSInputStreamAdapter.m */,
+				062272AA1816DB0B009BB2A2 /* jni.h */,
 				0661938D155848D70004DAFE /* JreEmulation.h */,
 				066193B9155849BC0004DAFE /* JreEmulation.m */,
 				067855A5169F35AB0042431C /* JreMemDebug.h */,

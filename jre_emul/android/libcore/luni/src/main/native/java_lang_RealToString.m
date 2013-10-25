@@ -16,7 +16,7 @@
  */
 
 // Modified version of Android's java_lang_RealToString.cpp, converted
-// to not use JNI and to use IOSIntArray.
+// to not use JNI calling convention.
 
 #define LOG_TAG "RealToString"
 
@@ -24,9 +24,10 @@
 #include <math.h>
 #include <stdlib.h>
 
-#include "java/lang/RealToString.h"
 #include "cbigint.h"
-#include "IOSIntArray.h"
+#include "java/lang/AssertionError.h"
+#include "java/lang/RealToString.h"
+#include "jni.h"
 
 #define INV_LOG_OF_TEN_BASE_2 (0.30102999566398114) /* Local */
 
@@ -62,11 +63,11 @@
  *           1.2341234124312331E107
  *
  */
-void RealToString_bigIntDigitGenerator(JavaLangRealToString *obj, long f, int e,
-        BOOL isDenormalized, int p) {
+void RealToString_bigIntDigitGenerator(JavaLangRealToString *obj, jlong f, jint e,
+        jboolean isDenormalized, jint p) {
   int RLength, SLength, TempLength, mplus_Length, mminus_Length;
   int high, low, i;
-  int k, firstK, U;
+  jint k, firstK, U;
 
   uint64_t R[RM_SIZE], S[STemp_SIZE], mplus[RM_SIZE], mminus[RM_SIZE], Temp[STemp_SIZE];
 
@@ -172,10 +173,10 @@ void RealToString_bigIntDigitGenerator(JavaLangRealToString *obj, long f, int e,
   if (obj->digits_ == NULL) {
     return;
   }
-  int max = obj->digits_->size_;
-  int *digits = malloc(max * sizeof(int));
+  jint *digits = IOSIntArray_GetRef(obj->digits_, 0);
+  int max = [obj->digits_ count];
 
-  int digitCount = 0;
+  jint digitCount = 0;
   do
     {
       U = 0;
@@ -213,11 +214,14 @@ void RealToString_bigIntDigitGenerator(JavaLangRealToString *obj, long f, int e,
         --mplus_Length;
       while (mminus_Length > 1 && mminus[mminus_Length - 1] == 0)
         --mminus_Length;
-      if (++digitCount == max + 1) { // include the digit below.
-        max += 64;
-        digits = realloc(digits, max);
+      digits[digitCount++] = U;
+      if (digitCount >= max) {
+        // Should only happen if there is a bug in the above, since digits is
+        // set to hold any valid double.
+        NSString *msg =
+            [NSString stringWithFormat:@"maximum digits length exceeded: %d", digitCount];
+        @throw AUTORELEASE([[JavaLangAssertionError alloc] initWithNSString:msg]);
       }
-      digits[digitCount] = U;
     }
   while (1);
 
@@ -231,7 +235,6 @@ void RealToString_bigIntDigitGenerator(JavaLangRealToString *obj, long f, int e,
   else
     digits[digitCount++] = U + 1;
 
-  obj->digits_ = [[IOSIntArray alloc] initWithInts:digits count:digitCount];
   obj->digitCount_ = digitCount;
   obj->firstK_ = firstK;
 }
