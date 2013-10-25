@@ -17,6 +17,7 @@ package com.google.devtools.j2objc.translate;
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.ListMultimap;
 import com.google.devtools.j2objc.GenerationTest;
+import com.google.devtools.j2objc.util.BindingUtil;
 
 import org.eclipse.jdt.core.dom.ASTNode;
 import org.eclipse.jdt.core.dom.ASTVisitor;
@@ -108,6 +109,20 @@ public class OuterReferenceResolverTest extends GenerationTest {
     assertNotNull(iPath);
     assertEquals(1, iPath.size());
     assertEquals("val$i", iPath.get(0).getName());
+  }
+
+  public void testCapturedWeakLocalVariable() {
+    resolveSource("Test",
+        "import com.google.j2objc.annotations.Weak;"
+        + "class Test { void test(@Weak final int i) { Runnable r = new Runnable() { "
+        + "public void run() { int i2 = i + 1; } }; } }");
+
+    AnonymousClassDeclaration runnableNode =
+        (AnonymousClassDeclaration) nodesByType.get(ASTNode.ANONYMOUS_CLASS_DECLARATION).get(0);
+    ITypeBinding runnableBinding = runnableNode.resolveBinding();
+    List<IVariableBinding> innerFields = OuterReferenceResolver.getInnerFields(runnableBinding);
+    assertEquals(1, innerFields.size());
+    assertTrue(BindingUtil.isWeakReference(innerFields.get(0)));
   }
 
   private void resolveSource(String name, String source) {

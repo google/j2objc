@@ -28,31 +28,11 @@ import org.eclipse.jdt.core.dom.IVariableBinding;
  *
  * @author Keith Stanger
  */
-public abstract class AbstractTypeBinding implements ITypeBinding {
-
-  @Override
-  public IAnnotationBinding[] getAnnotations() {
-    return new IAnnotationBinding[0];
-  }
+public abstract class AbstractTypeBinding extends AbstractBinding implements ITypeBinding {
 
   @Override
   public int getKind() {
     return IBinding.TYPE;
-  }
-
-  @Override
-  public boolean isDeprecated() {
-    return false;
-  }
-
-  @Override
-  public boolean isRecovered() {
-    return false;
-  }
-
-  @Override
-  public boolean isSynthetic() {
-    return true;
   }
 
   @Override
@@ -146,11 +126,6 @@ public abstract class AbstractTypeBinding implements ITypeBinding {
   }
 
   @Override
-  public IJavaElement getJavaElement() {
-    return null;
-  }
-
-  @Override
   public ITypeBinding getBound() {
     return null;
   }
@@ -208,11 +183,6 @@ public abstract class AbstractTypeBinding implements ITypeBinding {
   @Override
   public ITypeBinding getElementType() {
     return null;
-  }
-
-  @Override
-  public int getModifiers() {
-    return 0;
   }
 
   @Override

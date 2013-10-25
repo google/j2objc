@@ -17,6 +17,7 @@
 package com.google.devtools.j2objc.types;
 
 import com.google.common.base.Preconditions;
+import com.google.common.collect.Lists;
 
 import org.eclipse.jdt.core.IJavaElement;
 import org.eclipse.jdt.core.dom.IAnnotationBinding;
@@ -34,7 +35,7 @@ import javax.annotation.Nullable;
  *
  * @author Tom Ball
  */
-public class GeneratedVariableBinding implements IVariableBinding {
+public class GeneratedVariableBinding extends AbstractBinding implements IVariableBinding {
   private final String name;
   private final int modifiers;
   private final ITypeBinding type;
@@ -111,11 +112,6 @@ public class GeneratedVariableBinding implements IVariableBinding {
   }
 
   @Override
-  public IAnnotationBinding[] getAnnotations() {
-    return new IAnnotationBinding[0];
-  }
-
-  @Override
   public int getKind() {
     return IBinding.VARIABLE;
   }
@@ -123,26 +119,6 @@ public class GeneratedVariableBinding implements IVariableBinding {
   @Override
   public int getModifiers() {
     return modifiers;
-  }
-
-  @Override
-  public boolean isDeprecated() {
-    return false;
-  }
-
-  @Override
-  public boolean isRecovered() {
-    return false;
-  }
-
-  @Override
-  public boolean isSynthetic() {
-    return true;
-  }
-
-  @Override
-  public IJavaElement getJavaElement() {
-    throw new AssertionError("not implemented");
   }
 
   @Override

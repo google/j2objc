@@ -36,7 +36,7 @@ import java.util.List;
  *
  * @author Tom Ball
  */
-public class GeneratedMethodBinding implements IMethodBinding {
+public class GeneratedMethodBinding extends AbstractBinding implements IMethodBinding {
   private final IMethodBinding delegate;
   private final String name;
   private final int modifiers;
@@ -92,11 +92,6 @@ public class GeneratedMethodBinding implements IMethodBinding {
   }
 
   @Override
-  public IAnnotationBinding[] getAnnotations() {
-    return new IAnnotationBinding[0];
-  }
-
-  @Override
   public int getKind() {
     return IBinding.METHOD;
   }
@@ -107,23 +102,8 @@ public class GeneratedMethodBinding implements IMethodBinding {
   }
 
   @Override
-  public boolean isDeprecated() {
-    return false;
-  }
-
-  @Override
-  public boolean isRecovered() {
-    return false;
-  }
-
-  @Override
   public boolean isSynthetic() {
     return isSynthetic;
-  }
-
-  @Override
-  public IJavaElement getJavaElement() {
-    throw new AssertionError("not implemented");
   }
 
   @Override

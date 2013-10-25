@@ -75,6 +75,7 @@ JAVA_SOURCES = \
 	translate/Rewriter.java \
 	translate/StaticVarRewriter.java \
 	translate/TypeSorter.java \
+	types/AbstractBinding.java \
 	types/AbstractTypeBinding.java \
 	types/BindingMapBuilder.java \
 	types/BindingMapVerifier.java \
