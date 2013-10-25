@@ -192,7 +192,7 @@ public class ObjectiveCImplementationGenerator extends ObjectiveCSourceFileGener
     unit.accept(new ErrorReportingASTVisitor() {
       @Override
       public boolean visit(ConstructorInvocation node) {
-        invokedConstructors.add(parameterKey(Types.getMethodBinding(node)));
+        invokedConstructors.add(methodKey(Types.getMethodBinding(node)));
         return false;
       }
     });
@@ -801,7 +801,7 @@ public class ObjectiveCImplementationGenerator extends ObjectiveCSourceFileGener
       sb.append("}\nreturn self;\n}");
     }
     methodBody = sb.toString();
-    if (invokedConstructors.contains(parameterKey(binding))) {
+    if (invokedConstructors.contains(methodKey(binding))) {
       return super.constructorDeclaration(m, true) + " " + reindent(methodBody) + "\n\n"
           + super.constructorDeclaration(m, false) + " {\n  return "
           + generateStatement(createInnerConstructorInvocation(m), false) + ";\n}\n\n";
@@ -828,17 +828,11 @@ public class ObjectiveCImplementationGenerator extends ObjectiveCSourceFileGener
       IMethodBinding binding) {
     assert !statements.isEmpty();
 
-    // Append enum generated parameters to invocation.  The
-    // InitializationNormalizer should have fixed this constructor so the
+    // The InitializationNormalizer should have fixed this constructor so the
     // first statement is a constructor or super invocation.
     Statement s = statements.get(0);
     assert s instanceof ConstructorInvocation || s instanceof SuperConstructorInvocation;
-    String invocation = generateStatement(statements.get(0), false) + ";\n";
-    List<?> args = s instanceof ConstructorInvocation
-        ? ((ConstructorInvocation) s).arguments() : ((SuperConstructorInvocation) s).arguments();
-    String impliedArgs = (args.isEmpty() ? "W" : " w") + "ithNSString:__name withInt:__ordinal";
-    int index = invocation.lastIndexOf(']');
-    invocation = invocation.substring(0, index) + impliedArgs + ']';
+    String invocation = generateStatement(statements.get(0), false);
 
     StringBuffer sb = new StringBuffer();
     boolean memDebug = Options.memoryDebug();
@@ -863,15 +857,10 @@ public class ObjectiveCImplementationGenerator extends ObjectiveCSourceFileGener
       sb.append("}\nreturn self;\n}");
     }
 
-    // Insert synthetic parameters.
-    StringBuilder sb2 =
-        new StringBuilder(generateStatement(createInnerConstructorInvocation(m), false));
-    invocation = sb2.insert(sb2.length() - 1, " withNSString:__name withInt:__ordinal").toString();
-
-    if (invokedConstructors.contains(parameterKey(binding))) {
+    if (invokedConstructors.contains(methodKey(binding))) {
       return super.constructorDeclaration(m, true) + " " + reindent(sb.toString()) + "\n\n"
           + super.constructorDeclaration(m, false) + " {\n  return "
-          + invocation + ";\n}\n\n";
+          + generateStatement(createInnerConstructorInvocation(m), false) + ";\n}\n\n";
     } else {
       return super.constructorDeclaration(m, false) + " " + reindent(sb.toString()) + "\n\n";
     }

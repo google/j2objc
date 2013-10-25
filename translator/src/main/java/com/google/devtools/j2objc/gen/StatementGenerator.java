@@ -592,8 +592,13 @@ public class StatementGenerator extends ErrorReportingASTVisitor {
   @Override
   public boolean visit(ConstructorInvocation node) {
     IMethodBinding binding = Types.getMethodBinding(node);
-    buffer.append("[self init" + NameTable.getFullName(binding.getDeclaringClass()));
-    printArguments(binding, ASTUtil.getArguments(node));
+    ITypeBinding declaringClass = binding.getDeclaringClass();
+    List<Expression> args = ASTUtil.getArguments(node);
+    buffer.append("[self init" + NameTable.getFullName(declaringClass));
+    printArguments(binding, args);
+    if (declaringClass.isEnum()) {
+      buffer.append((args.isEmpty() ? "W" : " w") + "ithNSString:__name withInt:__ordinal");
+    }
     buffer.append("]");
     return false;
   }
@@ -1424,7 +1429,12 @@ public class StatementGenerator extends ErrorReportingASTVisitor {
   @Override
   public boolean visit(SuperConstructorInvocation node) {
     buffer.append("[super init");
-    printArguments(Types.getMethodBinding(node), ASTUtil.getArguments(node));
+    List<Expression> args = ASTUtil.getArguments(node);
+    printArguments(Types.getMethodBinding(node), args);
+    if (Types.getTypeBinding(node).isEnum()
+        || Types.getTypeBinding(ASTUtil.getOwningType(node)).isEnum()) {
+      buffer.append((args.isEmpty() ? "W" : " w") + "ithNSString:__name withInt:__ordinal");
+    }
     buffer.append(']');
     return false;
   }
