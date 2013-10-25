@@ -112,7 +112,10 @@ static IOSClass *ResolveParameterType(const char *objcType, NSString *paramKeywo
   if (*objcType == '@') {
     if ([paramKeyword hasSuffix:@"Array"]) {
       paramKeyword = [paramKeyword substringToIndex:[paramKeyword length] - 5];
-      IOSClass *componentType = [IOSClass classForIosName:paramKeyword];
+      IOSClass *componentType = DecodePrimitiveParamKeyword(paramKeyword);
+      if (!componentType) {
+        componentType = [IOSClass classForIosName:paramKeyword];
+      }
       if (componentType) {
         type = [IOSClass arrayClassWithComponentType:componentType];
       }

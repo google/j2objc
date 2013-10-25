@@ -42,7 +42,6 @@ IOS_OBJS = \
 	IOSPrimitiveClass.o \
 	IOSProtocolClass.o \
 	IOSReference.o \
-	IOSReflection.o \
 	IOSShortArray.o \
 	JavaMetadata.o \
 	JavaToIOSInputStreamAdapter.o \

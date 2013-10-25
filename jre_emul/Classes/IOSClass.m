@@ -721,6 +721,10 @@ IOSObjectArray *copyFieldsToObjectArray(NSArray *fields) {
   return [[self getClassLoader] getResourceAsStreamWithNSString:name];
 }
 
+- (id)boxValue:(J2ObjcRawValue *)rawValue {
+  return rawValue->asId;
+}
+
 - (BOOL)unboxValue:(id)value toRawValue:(J2ObjcRawValue *)rawValue {
   rawValue->asId = value;
   return true;

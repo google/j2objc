@@ -173,6 +173,7 @@
 - (JavaIoInputStream *)getResourceAsStream:(NSString *)name;
 
 // Boxing and unboxing
+- (id)boxValue:(J2ObjcRawValue *)rawValue;
 - (BOOL)unboxValue:(id)value toRawValue:(J2ObjcRawValue *)rawValue;
 
 // Internal methods

@@ -133,14 +133,13 @@
   }
 
   [invocation invoke];
-  const char *returnType = [methodSignature_ methodReturnType];
-  if (*returnType != 'v') {  // if not void
-    J2ObjcRawValue returnValue;
-    [invocation getReturnValue:&returnValue];
-    return J2ObjcBoxValue(&returnValue, returnType);
-  } else {
+  IOSClass *returnType = [self getReturnType];
+  if (returnType == [IOSClass voidClass]) {
     return nil;
   }
+  J2ObjcRawValue returnValue;
+  [invocation getReturnValue:&returnValue];
+  return [returnType boxValue:&returnValue];
 }
 
 - (NSString *)description {
