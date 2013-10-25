@@ -22,6 +22,7 @@ include environment.mk
 
 SUPPORT_SOURCES = \
 	JSR166TestCase.java \
+	libcore/java/util/ServiceLoaderTestInterface.java \
 	org/apache/harmony/nio/tests/java/nio/AbstractBufferTest.java \
 	org/apache/harmony/text/tests/java/text/Support_Format.java \
 	org/apache/harmony/text/tests/java/text/Support_MessageFormat.java \
@@ -81,6 +82,7 @@ TEST_SOURCES = \
 	libcore/java/text/NumberFormatTest.java \
 	libcore/java/util/CalendarTest.java \
 	libcore/java/util/OldTimeZoneTest.java \
+	libcore/java/util/ServiceLoaderTest.java \
 	org/apache/harmony/luni/tests/java/io/BufferedInputStreamTest.java \
 	org/apache/harmony/luni/tests/java/io/BufferedOutputStreamTest.java \
 	org/apache/harmony/luni/tests/java/io/BufferedReaderTest.java \
@@ -280,8 +282,13 @@ TEST_OBJS = $(TEST_SOURCES:%.java=$(TESTS_DIR)/%.o)
 TEST_RESOURCES_SRCS = \
     org/apache/harmony/luni/tests/test_resource.txt \
     org/apache/harmony/luni/tests/java/io/testfile-utf8.txt
+ANDROID_TEST_RESOURCES_SRCS = \
+    META-INF/services/libcore.java.util.ServiceLoaderTestInterface
 TEST_RESOURCES_ROOT = apache_harmony/classlib/modules/luni/src/test/resources
-TEST_RESOURCES = $(TEST_RESOURCES_SRCS:%=$(TESTS_DIR)/%)
+ANDROID_TEST_RESOURCES_ROOT = android/libcore/luni/src/test/resources
+TEST_RESOURCES = \
+    $(TEST_RESOURCES_SRCS:%=$(TESTS_DIR)/%) \
+    $(ANDROID_TEST_RESOURCES_SRCS:%=$(TESTS_DIR)/%)
 
 # Broken tests, plus associated bug id.  Once bug is fixed, move line(s) up.
 #	$(TESTS_DIR)/org/apache/harmony/luni/tests/java/lang/StringBuilderTest.o               b/8842295
@@ -313,6 +320,10 @@ resources: $(TEST_RESOURCES)
 	@:
 
 $(TESTS_DIR)/%.txt: $(TEST_RESOURCES_ROOT)/%.txt
+	@mkdir -p `dirname $@`
+	@cp $< $@
+
+$(TESTS_DIR)/%: $(ANDROID_TEST_RESOURCES_ROOT)/%
 	@mkdir -p `dirname $@`
 	@cp $< $@
 
