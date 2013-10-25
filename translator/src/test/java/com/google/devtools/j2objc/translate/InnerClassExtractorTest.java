@@ -858,4 +858,13 @@ public class InnerClassExtractorTest extends GenerationTest {
     translation = getTranslatedFile("A.h");
     assertTranslation(translation, "id val$obj_;");
   }
+
+  public void testWeakStaticClass() throws IOException {
+    String source = "import com.google.j2objc.annotations.WeakOuter; " +
+        "public class A { @WeakOuter static class B {}}";
+    String translation = translateSourceFile(source, "A", "A.h");
+    assertWarningCount(1);
+    assertErrorCount(0);
+    assertNotInTranslation(translation, "__weak");
+  }
 }
