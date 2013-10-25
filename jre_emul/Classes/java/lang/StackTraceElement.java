@@ -131,16 +131,12 @@ public class StackTraceElement {
     if (leftBrace && rightBrace && (rightBrace - leftBrace) > 0) {
       char *signature = leftBrace + 1;
       char *className = strsep(&signature, "[ ]");
-      if (className) {
-        className__ = [[NSString alloc] initWithCString:className
-                                               encoding:[NSString defaultCStringEncoding]];
-        @try {
-          className__ = RETAIN_([[IOSClass forName:className__] getName]);
-        }
-        @catch (JavaLangClassNotFoundException *e) {
-          // Unknown name, ignore.
-          AUTORELEASE(className__);
-          className__ = nil;
+      if (className && strlen(className) > 0) {
+        IOSClass *cls =
+            IOSClass_ClassForName([NSString stringWithCString:className
+                                                     encoding:[NSString defaultCStringEncoding]]);
+        if (cls) {
+          className__ = RETAIN_([cls getName]);
         }
       }
       char *selector = strsep(&signature, "[ ]");
