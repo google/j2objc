@@ -328,6 +328,23 @@ public class Types {
     return binding instanceof IMethodBinding ? ((IMethodBinding) binding) : null;
   }
 
+  /**
+   * Gets a GeneratedMethodBinding for an ASTNode, replacing the IMethodBinding
+   * if there is one.
+   */
+  public static GeneratedMethodBinding getGeneratedMethodBinding(Object node) {
+    IMethodBinding binding = getMethodBinding(node);
+    if (binding == null) {
+      return null;
+    }
+    // We must create a copy since the caller expects to mutate the binding and
+    // we need to avoid side-effect for other nodes that refer to the same
+    // binding.
+    GeneratedMethodBinding newBinding = new GeneratedMethodBinding(binding.getMethodDeclaration());
+    addBinding(node, newBinding);
+    return newBinding;
+  }
+
   public static IVariableBinding getVariableBinding(Object node) {
     IBinding binding = getBinding(node);
     return binding instanceof IVariableBinding ? ((IVariableBinding) binding) : null;

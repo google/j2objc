@@ -22,7 +22,6 @@ import com.google.devtools.j2objc.util.ASTUtil;
 
 import org.eclipse.jdt.core.dom.AST;
 import org.eclipse.jdt.core.dom.ASTNode;
-import org.eclipse.jdt.core.dom.AbstractTypeDeclaration;
 import org.eclipse.jdt.core.dom.ArrayAccess;
 import org.eclipse.jdt.core.dom.ArrayCreation;
 import org.eclipse.jdt.core.dom.ArrayInitializer;
@@ -418,12 +417,5 @@ public final class ASTFactory {
         ast, Types.getVariableBinding(node), NodeCopier.copySubtree(ast, node.getQualifier()));
     ASTUtil.setProperty(node, newNode);
     return newNode;
-  }
-
-  public static void createInnerFieldDeclarations(
-      AbstractTypeDeclaration node, List<IVariableBinding> innerFields) {
-    for (IVariableBinding field : innerFields) {
-      ASTUtil.getBodyDeclarations(node).add(newFieldDeclaration(node.getAST(), field, null));
-    }
   }
 }
