@@ -45,7 +45,6 @@ public class GeneratedVariableBinding extends AbstractBinding implements IVariab
   private final boolean isField;
   private String typeQualifiers;
 
-  public static final String UNNAMED_VARIABLE = "<unnamed-variable>";
   public static final String PLACEHOLDER_NAME = "<placeholder-variable>";
 
   public GeneratedVariableBinding(String name, int modifiers, ITypeBinding type,
@@ -68,24 +67,6 @@ public class GeneratedVariableBinding extends AbstractBinding implements IVariab
     this(oldBinding.getName(), oldBinding.getModifiers(), oldBinding.getType(),
         oldBinding.isField(), oldBinding.isParameter(), oldBinding.getDeclaringClass(),
         oldBinding.getDeclaringMethod());
-  }
-
-  /**
-   * For renaming variables: creates a new binding from a new declaration and
-   * the original binding.
-   */
-  public GeneratedVariableBinding(VariableDeclaration var, int modifiers, boolean isParameter,
-        IVariableBinding oldBinding) {
-    this(var.getName().getIdentifier(), modifiers, oldBinding.getType(), oldBinding.isField(),
-        isParameter, oldBinding.getDeclaringClass(), oldBinding.getDeclaringMethod());
-  }
-
-  /**
-   * Create a place-holder variable binding from a type binding.
-   */
-  public GeneratedVariableBinding(ITypeBinding binding, boolean isField, boolean isParameter,
-      ITypeBinding declaringClass, IMethodBinding declaringMethod) {
-    this(UNNAMED_VARIABLE, 0, binding, isField, isParameter, declaringClass, declaringMethod);
   }
 
   public static GeneratedVariableBinding newPlaceholder() {

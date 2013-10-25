@@ -23,7 +23,6 @@ import com.google.devtools.j2objc.J2ObjC;
 import com.google.devtools.j2objc.types.GeneratedMethodBinding;
 import com.google.devtools.j2objc.types.GeneratedTypeBinding;
 import com.google.devtools.j2objc.types.GeneratedVariableBinding;
-import com.google.devtools.j2objc.types.IOSVariableBinding;
 import com.google.devtools.j2objc.types.NodeCopier;
 import com.google.devtools.j2objc.types.PointerTypeBinding;
 import com.google.devtools.j2objc.types.Types;
@@ -769,14 +768,13 @@ public class Rewriter extends ErrorReportingASTVisitor {
     // Add method body with single "super.method(parameters);" statement.
     Block body = ast.newBlock();
     method.setBody(body);
-    SuperMethodInvocation superInvocation = ast.newSuperMethodInvocation();
-    superInvocation.setName(NodeCopier.copySubtree(ast, method.getName()));
+    SuperMethodInvocation superInvocation =
+        ASTFactory.newSuperMethodInvocation(ast, Types.getMethodBinding(method));
 
     for (SingleVariableDeclaration param : ASTUtil.getParameters(method)) {
       Expression arg = NodeCopier.copySubtree(ast, param.getName());
       ASTUtil.getArguments(superInvocation).add(arg);
     }
-    Types.addBinding(superInvocation, Types.getMethodBinding(method));
     ReturnStatement returnStmt = ast.newReturnStatement();
     returnStmt.setExpression(superInvocation);
     ASTUtil.getStatements(body).add(returnStmt);
@@ -793,9 +791,8 @@ public class Rewriter extends ErrorReportingASTVisitor {
     ITypeBinding[] parameterTypes = interfaceMethod.getParameterTypes();
     for (int i = 0; i < parameterTypes.length; i++) {
       ITypeBinding paramType = parameterTypes[i];
-      IVariableBinding paramBinding = IOSVariableBinding.newParameter(
-          "param" + i, i, paramType, methodBinding, paramType.getDeclaringClass(),
-          Modifier.isFinal(paramType.getModifiers()));
+      IVariableBinding paramBinding = new GeneratedVariableBinding(
+          "param" + i, 0, paramType, false, true, typeBinding, methodBinding);
       ASTUtil.getParameters(method).add(ASTFactory.newSingleVariableDeclaration(ast, paramBinding));
       methodBinding.addParameter(paramType);
     }
