@@ -1134,8 +1134,8 @@ public class ObjectiveCImplementationGenerator extends ObjectiveCSourceFileGener
     if (type.getPackage() != null || Modifier.isPublic(type.getModifiers()) ||
         !type.getQualifiedName().equals(fullName)) {
       printf("static J2ObjcClassInfo _%s = { ", fullName);
-      printf("@\"%s\", ", type.getName());
-      printf("@\"%s\", ", type.getPackage().getName());
+      printf("\"%s\", ", type.getName());
+      printf("\"%s\", ", type.getPackage().getName());
       printf("0x%s };\n\n", Integer.toHexString(type.getModifiers()));
       printf("+ (J2ObjcClassInfo *)__metadata {\n  return &_%s;\n}\n\n", fullName);
     }
