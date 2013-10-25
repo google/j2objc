@@ -28,12 +28,18 @@
 #import "java/lang/reflect/TypeVariable.h"
 #import "objc/runtime.h"
 
+#define VARARGS_MODIFIER 0x80
+#define SYNTHETIC_MODIFIER 0x1000
+
 @implementation ExecutableMember
 
-- (id)initWithSelector:(SEL)aSelector withClass:(IOSClass *)aClass {
+- (id)initWithSelector:(SEL)aSelector
+             withClass:(IOSClass *)aClass
+          withMetadata:(const J2ObjcMethodInfo *)metadata {
   if ((self = [super init])) {
     selector_ = aSelector;
     class_ = aClass;
+    metadata_ = metadata;
     if (class_.objcClass) {
       classMethod_ = ![class_.objcClass instancesRespondToSelector:selector_];
       if (classMethod_) {
@@ -73,6 +79,9 @@
 }
 
 - (int)getModifiers {
+  if (metadata_) {
+    return metadata_->modifiers;
+  }
   int mods = JavaLangReflectModifier_PUBLIC;
   if (classMethod_) {
     mods |= JavaLangReflectModifier_STATIC;
@@ -80,20 +89,76 @@
   return mods;
 }
 
+static IOSClass *DecodePrimitiveParamKeyword(NSString *keyword) {
+  if ([keyword isEqualToString:@"Byte"]) {
+    return [IOSClass byteClass];
+  } else if ([keyword isEqualToString:@"Short"]) {
+    return [IOSClass shortClass];
+  } else if ([keyword isEqualToString:@"Int"]) {
+    return [IOSClass intClass];
+  } else if ([keyword isEqualToString:@"Long"]) {
+    return [IOSClass longClass];
+  } else if ([keyword isEqualToString:@"Float"]) {
+    return [IOSClass floatClass];
+  } else if ([keyword isEqualToString:@"Double"]) {
+    return [IOSClass doubleClass];
+  } else if ([keyword isEqualToString:@"Char"]) {
+    return [IOSClass charClass];
+  } else if ([keyword isEqualToString:@"Boolean"]) {
+    return [IOSClass booleanClass];
+  }
+  return nil;
+}
+
+static IOSClass *ResolveParameterType(const char *objcType, NSString *paramKeyword) {
+  if (![paramKeyword hasPrefix:@"with"] && ![paramKeyword hasPrefix:@"With"]) {
+    // Not a direct java translation, do our best with the ObjC type info.
+    return decodeTypeEncoding(objcType);
+  }
+  // Remove "with" or "With" prefix.
+  paramKeyword = [paramKeyword substringFromIndex:4];
+  IOSClass *type = nil;
+  if (*objcType == '@') {
+    if ([paramKeyword hasSuffix:@"Array"]) {
+      paramKeyword = [paramKeyword substringToIndex:[paramKeyword length] - 5];
+      IOSClass *componentType = DecodePrimitiveParamKeyword(paramKeyword);
+      if (!componentType) {
+        componentType = [IOSClass classForIosName:paramKeyword];
+      }
+      if (componentType) {
+        type = [IOSClass arrayClassWithComponentType:componentType];
+      }
+    } else {
+      type = [IOSClass classForIosName:paramKeyword];
+    }
+  } else {
+    type = DecodePrimitiveParamKeyword(paramKeyword);
+  }
+  if (type) {
+    return type;
+  }
+  return [IOSClass objectClass];
+}
+
 - (IOSObjectArray *)getParameterTypes {
   // First two slots are class and SEL.
   NSUInteger nArgs = [methodSignature_ numberOfArguments] - SKIPPED_ARGUMENTS;
   IOSClass *classClass = [IOSClass classWithClass:[IOSClass class]];
   IOSObjectArray *parameters =
-      [[IOSObjectArray alloc] initWithLength:nArgs type:classClass];
-#if ! __has_feature(objc_arc)
-  [parameters autorelease];
-#endif
+      AUTORELEASE([[IOSObjectArray alloc] initWithLength:nArgs type:classClass]);
+
+  NSString *selectorStr = NSStringFromSelector(selector_);
+  // Remove method name prefix.
+  if ([selectorStr hasPrefix:@"init"]) {
+    selectorStr = [selectorStr substringFromIndex:4];
+  } else {
+    selectorStr = [selectorStr substringFromIndex:[[self getName] length]];
+  }
+  NSArray *paramTypes = [selectorStr componentsSeparatedByString:@":"];
 
   for (NSUInteger i = 0; i < nArgs; i++) {
-    const char *argType =
-        [methodSignature_ getArgumentTypeAtIndex:i + SKIPPED_ARGUMENTS];
-    IOSClass *paramType = decodeTypeEncoding(argType);
+    const char *argType = [methodSignature_ getArgumentTypeAtIndex:i + SKIPPED_ARGUMENTS];
+    IOSClass *paramType = ResolveParameterType(argType, [paramTypes objectAtIndex:i]);
     [parameters replaceObjectAtIndex:i withObject:paramType];
   }
   return parameters;
@@ -118,6 +183,9 @@
 }
 
 - (BOOL)isSynthetic {
+  if (metadata_) {
+    return (metadata_->modifiers & SYNTHETIC_MODIFIER) > 0;
+  }
   return NO;
 }
 
@@ -176,12 +244,14 @@ static JavaLangReflectMethod *getAccessor(IOSClass *class, NSString *method, NSS
 }
 
 - (BOOL)isVarArgs {
-  // TODO(tball): implement as part of method metadata.
+  if (metadata_) {
+    return (metadata_->modifiers & VARARGS_MODIFIER) > 0;
+  }
   return NO;
 }
 
 - (BOOL)isBridge {
-  // TODO(tball): implement as part of method metadata.
+  // Translator doesn't generate bridge methods.
   return NO;
 }
 

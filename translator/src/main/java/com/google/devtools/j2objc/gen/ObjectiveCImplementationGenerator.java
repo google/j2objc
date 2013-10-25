@@ -192,7 +192,7 @@ public class ObjectiveCImplementationGenerator extends ObjectiveCSourceFileGener
     unit.accept(new ErrorReportingASTVisitor() {
       @Override
       public boolean visit(ConstructorInvocation node) {
-        invokedConstructors.add(parameterKey(Types.getMethodBinding(node)));
+        invokedConstructors.add(methodKey(Types.getMethodBinding(node)));
         return false;
       }
     });
@@ -586,22 +586,15 @@ public class ObjectiveCImplementationGenerator extends ObjectiveCSourceFileGener
       String constantTypeName =
           NameTable.getFullName(Types.getMethodBinding(constant).getDeclaringClass());
       printf("    %s_%s = [[%s alloc] init", typeName, name, constantTypeName);
-      boolean isSimpleEnum = constantTypeName.equals(typeName);
 
-      // Common-case: no extra fields and no constant anonymous classes.
-      if (args.isEmpty() && isSimpleEnum) {
-        printf("WithNSString:@\"%s\" withInt:%d];\n", name, i);
+      if (args.isEmpty()) {
+        print("With");
       } else {
-        String argString = StatementGenerator.generateArguments(Types.getMethodBinding(constant),
-            args, fieldHiders, getBuilder().getSourcePosition());
-        print(argString);
-        if (args.isEmpty()) {
-          print("With");
-        } else {
-          print(" with");
-        }
-        printf("NSString:@\"%s_%s\" withInt:%d];\n", typeName.replace("Enum", ""), name, i);
+        print(StatementGenerator.generateArguments(Types.getMethodBinding(constant),
+            args, fieldHiders, getBuilder().getSourcePosition()));
+        print(" with");
       }
+      printf("NSString:@\"%s\" withInt:%d];\n", name, i);
     }
     printf("    %s_values = [[IOSObjectArray alloc] initWithObjects:(id[]){ ", typeName);
     for (EnumConstantDeclaration constant : constants) {
@@ -723,16 +716,16 @@ public class ObjectiveCImplementationGenerator extends ObjectiveCSourceFileGener
   }
 
   private String generateMethodBody(MethodDeclaration m) {
+    String methodBody;
     if (Modifier.isNative(m.getModifiers())) {
       if (hasNativeCode(m, true)) {
-        return extractNativeMethodBody(m);
+        methodBody = extractNativeMethodBody(m);
       } else if (Options.generateNativeStubs()) {
         return generateNativeStub(m);
       } else {
         return null;
       }
-    }
-    if (Modifier.isAbstract(m.getModifiers())) {
+    } else if (Modifier.isAbstract(m.getModifiers())) {
       // Generate a body which throws a NSInvalidArgumentException.
       String body =
           "{\n // can't call an abstract method\n " +
@@ -741,9 +734,10 @@ public class ObjectiveCImplementationGenerator extends ObjectiveCSourceFileGener
         body += "return 0;\n"; // Never executes, but avoids a gcc warning.
       }
       return body + "}";
+    } else {
+      // generate a normal method body
+      methodBody = generateStatement(m.getBody(), false);
     }
-    // generate a normal method body
-    String methodBody = generateStatement(m.getBody(), false);
 
     boolean isStatic = (m.getModifiers() & Modifier.STATIC) != 0;
     boolean isSynchronized = (m.getModifiers() & Modifier.SYNCHRONIZED) != 0;
@@ -807,7 +801,7 @@ public class ObjectiveCImplementationGenerator extends ObjectiveCSourceFileGener
       sb.append("}\nreturn self;\n}");
     }
     methodBody = sb.toString();
-    if (invokedConstructors.contains(parameterKey(binding))) {
+    if (invokedConstructors.contains(methodKey(binding))) {
       return super.constructorDeclaration(m, true) + " " + reindent(methodBody) + "\n\n"
           + super.constructorDeclaration(m, false) + " {\n  return "
           + generateStatement(createInnerConstructorInvocation(m), false) + ";\n}\n\n";
@@ -834,17 +828,11 @@ public class ObjectiveCImplementationGenerator extends ObjectiveCSourceFileGener
       IMethodBinding binding) {
     assert !statements.isEmpty();
 
-    // Append enum generated parameters to invocation.  The
-    // InitializationNormalizer should have fixed this constructor so the
+    // The InitializationNormalizer should have fixed this constructor so the
     // first statement is a constructor or super invocation.
     Statement s = statements.get(0);
     assert s instanceof ConstructorInvocation || s instanceof SuperConstructorInvocation;
-    String invocation = generateStatement(statements.get(0), false) + ";\n";
-    List<?> args = s instanceof ConstructorInvocation
-        ? ((ConstructorInvocation) s).arguments() : ((SuperConstructorInvocation) s).arguments();
-    String impliedArgs = (args.isEmpty() ? "W" : " w") + "ithNSString:__name withInt:__ordinal";
-    int index = invocation.lastIndexOf(']');
-    invocation = invocation.substring(0, index) + impliedArgs + ']';
+    String invocation = generateStatement(statements.get(0), false);
 
     StringBuffer sb = new StringBuffer();
     boolean memDebug = Options.memoryDebug();
@@ -869,15 +857,10 @@ public class ObjectiveCImplementationGenerator extends ObjectiveCSourceFileGener
       sb.append("}\nreturn self;\n}");
     }
 
-    // Insert synthetic parameters.
-    StringBuilder sb2 =
-        new StringBuilder(generateStatement(createInnerConstructorInvocation(m), false));
-    invocation = sb2.insert(sb2.length() - 1, " withNSString:__name withInt:__ordinal").toString();
-
-    if (invokedConstructors.contains(parameterKey(binding))) {
+    if (invokedConstructors.contains(methodKey(binding))) {
       return super.constructorDeclaration(m, true) + " " + reindent(sb.toString()) + "\n\n"
           + super.constructorDeclaration(m, false) + " {\n  return "
-          + invocation + ";\n}\n\n";
+          + generateStatement(createInnerConstructorInvocation(m), false) + ";\n}\n\n";
     } else {
       return super.constructorDeclaration(m, false) + " " + reindent(sb.toString()) + "\n\n";
     }
@@ -1197,18 +1180,31 @@ public class ObjectiveCImplementationGenerator extends ObjectiveCSourceFileGener
   }
 
   private String getMethodMetadata(IMethodBinding method) {
-    if (method.isConstructor() || method.isSynthetic()) {
+    ITypeBinding[] paramTypes = method.getParameterTypes();
+    if ((method.isConstructor() && paramTypes.length == 0) || method.isSynthetic()) {
       return null;
     }
-    boolean needsMetadata = false;
-    ITypeBinding returnType = method.getReturnType();
+
+    // Needs metadata if not a public static or instance method.
+    int modifiers = getModifiers(method);
+    boolean needsMetadata = (modifiers & ~Modifier.STATIC) != Modifier.PUBLIC;
+
     String returnTypeStr = "NULL";
-    if (!returnType.isPrimitive()) {
-      returnTypeStr = "\"" + NameTable.getFullName(method.getReturnType()) + "\"";
-      needsMetadata = true;
+    if (!method.isConstructor()) {
+      ITypeBinding returnType = method.getReturnType();
+      if (returnType.isPrimitive()) {
+        returnTypeStr = "\"" + returnType.getBinaryName() + "\"";
+        // In ObjC BOOL is a typedef for unsigned char so booleans look the same
+        // as bytes.
+        if (returnType.getName().equals("boolean")) {
+          needsMetadata = true;
+        }
+      } else {
+        returnTypeStr = "\"L" + NameTable.getFullName(method.getReturnType()) + "\"";
+        needsMetadata = true;
+      }
     }
     String methodName = "NULL";
-    ITypeBinding[] paramTypes = method.getParameterTypes();
     // Most of the time the method name can be parsed from the ObjC selector
     // but not if the first parameter contains the substring "With".
     if (paramTypes.length > 0 && NameTable.parameterKeyword(paramTypes[0]).contains("With")) {
@@ -1218,8 +1214,8 @@ public class ObjectiveCImplementationGenerator extends ObjectiveCSourceFileGener
     if (!needsMetadata) {
       return null;
     }
-    return String.format("    { \"%s\", %s, %s },\n",
-        methodSelector(method), methodName, returnTypeStr);
+    return String.format("    { \"%s\", %s, %s, 0x%x },\n",
+        methodSelector(method), methodName, returnTypeStr, getModifiers(method));
   }
 
   private String methodSelector(IMethodBinding method) {
@@ -1264,6 +1260,21 @@ public class ObjectiveCImplementationGenerator extends ObjectiveCSourceFileGener
     }
     if (type.isAnonymous()) {
       modifiers |= 0x8000;
+    }
+    return modifiers;
+  }
+
+  /**
+   * Returns the modifiers for a specified method, including internal ones.
+   * All method modifiers are defined in the JVM specification, table 4.5.
+   */
+  private static int getModifiers(IMethodBinding type) {
+    int modifiers = type.getModifiers();
+    if (type.isVarargs()) {
+      modifiers |= 0x80;
+    }
+    if (type.isSynthetic()) {
+      modifiers |= 0x1000;
     }
     return modifiers;
   }

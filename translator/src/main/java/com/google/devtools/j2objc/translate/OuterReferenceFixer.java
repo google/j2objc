@@ -70,14 +70,34 @@ public class OuterReferenceFixer extends ErrorReportingASTVisitor {
 
   @Override
   public boolean visit(ClassInstanceCreation node) {
-    ITypeBinding newType = Types.getTypeBinding(node);
+    ITypeBinding newType = Types.getTypeBinding(node).getTypeDeclaration();
     ITypeBinding declaringClass = newType.getDeclaringClass();
     if (Modifier.isStatic(newType.getModifiers()) || declaringClass == null) {
       return true;
     }
 
     AST ast = node.getAST();
-    IMethodBinding binding = Types.getMethodBinding(node).getMethodDeclaration();
+    GeneratedMethodBinding binding = Types.getGeneratedMethodBinding(node);
+    addOuterArg(node, binding, declaringClass);
+
+    List<IVariableBinding> capturedVars = OuterReferenceResolver.getCapturedVars(newType);
+    for (IVariableBinding capturedVar : capturedVars) {
+      ASTUtil.getArguments(node).add(ASTFactory.newSimpleName(ast, capturedVar));
+      binding.addParameter(capturedVar.getType());
+    }
+
+    assert binding.isVarargs() || node.arguments().size() == binding.getParameterTypes().length;
+    return true;
+  }
+
+  private void addOuterArg(
+      ClassInstanceCreation node, GeneratedMethodBinding binding, ITypeBinding declaringClass) {
+    ITypeBinding type = Types.getTypeBinding(node);
+    if (!OuterReferenceResolver.needsOuterParam(type)) {
+      return;
+    }
+
+    AST ast = node.getAST();
     Expression outerExpr = node.getExpression();
     List<IVariableBinding> path = OuterReferenceResolver.getPath(node);
     Expression outerArg = null;
@@ -92,15 +112,8 @@ public class OuterReferenceFixer extends ErrorReportingASTVisitor {
       Types.addBinding(outerArg, declaringClass);
     }
 
-    if (outerArg != null) {
-      ASTUtil.getArguments(node).add(0, outerArg);
-      GeneratedMethodBinding newBinding = new GeneratedMethodBinding(binding);
-      binding = newBinding;
-      newBinding.addParameter(0, declaringClass);
-      Types.addBinding(node, newBinding);
-    }
-    assert binding.isVarargs() || node.arguments().size() == binding.getParameterTypes().length;
-    return true;
+    ASTUtil.getArguments(node).add(0, outerArg);
+    binding.addParameter(0, declaringClass);
   }
 
   @Override
@@ -147,11 +160,9 @@ public class OuterReferenceFixer extends ErrorReportingASTVisitor {
     }
     node.setExpression(null);
     ITypeBinding outerExpressionType = Types.getTypeBinding(outerExpression);
-    IMethodBinding oldBinding = Types.getMethodBinding(node);
-    GeneratedMethodBinding newBinding = new GeneratedMethodBinding(oldBinding);
-    Types.addBinding(node, newBinding);
+    GeneratedMethodBinding binding = Types.getGeneratedMethodBinding(node);
     ASTUtil.getArguments(node).add(0, outerExpression);
-    newBinding.addParameter(0, outerExpressionType);
+    binding.addParameter(0, outerExpressionType);
   }
 
   private List<IVariableBinding> fixPath(ASTNode node, List<IVariableBinding> path) {

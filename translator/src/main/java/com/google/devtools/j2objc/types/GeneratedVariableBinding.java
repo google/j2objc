@@ -17,6 +17,7 @@
 package com.google.devtools.j2objc.types;
 
 import com.google.common.base.Preconditions;
+import com.google.common.collect.Lists;
 
 import org.eclipse.jdt.core.IJavaElement;
 import org.eclipse.jdt.core.dom.IAnnotationBinding;
@@ -34,7 +35,7 @@ import javax.annotation.Nullable;
  *
  * @author Tom Ball
  */
-public class GeneratedVariableBinding implements IVariableBinding {
+public class GeneratedVariableBinding extends AbstractBinding implements IVariableBinding {
   private final String name;
   private final int modifiers;
   private final ITypeBinding type;
@@ -44,7 +45,6 @@ public class GeneratedVariableBinding implements IVariableBinding {
   private final boolean isField;
   private String typeQualifiers;
 
-  public static final String UNNAMED_VARIABLE = "<unnamed-variable>";
   public static final String PLACEHOLDER_NAME = "<placeholder-variable>";
 
   public GeneratedVariableBinding(String name, int modifiers, ITypeBinding type,
@@ -67,24 +67,6 @@ public class GeneratedVariableBinding implements IVariableBinding {
     this(oldBinding.getName(), oldBinding.getModifiers(), oldBinding.getType(),
         oldBinding.isField(), oldBinding.isParameter(), oldBinding.getDeclaringClass(),
         oldBinding.getDeclaringMethod());
-  }
-
-  /**
-   * For renaming variables: creates a new binding from a new declaration and
-   * the original binding.
-   */
-  public GeneratedVariableBinding(VariableDeclaration var, int modifiers, boolean isParameter,
-        IVariableBinding oldBinding) {
-    this(var.getName().getIdentifier(), modifiers, oldBinding.getType(), oldBinding.isField(),
-        isParameter, oldBinding.getDeclaringClass(), oldBinding.getDeclaringMethod());
-  }
-
-  /**
-   * Create a place-holder variable binding from a type binding.
-   */
-  public GeneratedVariableBinding(ITypeBinding binding, boolean isField, boolean isParameter,
-      ITypeBinding declaringClass, IMethodBinding declaringMethod) {
-    this(UNNAMED_VARIABLE, 0, binding, isField, isParameter, declaringClass, declaringMethod);
   }
 
   public static GeneratedVariableBinding newPlaceholder() {
@@ -111,11 +93,6 @@ public class GeneratedVariableBinding implements IVariableBinding {
   }
 
   @Override
-  public IAnnotationBinding[] getAnnotations() {
-    return new IAnnotationBinding[0];
-  }
-
-  @Override
   public int getKind() {
     return IBinding.VARIABLE;
   }
@@ -123,26 +100,6 @@ public class GeneratedVariableBinding implements IVariableBinding {
   @Override
   public int getModifiers() {
     return modifiers;
-  }
-
-  @Override
-  public boolean isDeprecated() {
-    return false;
-  }
-
-  @Override
-  public boolean isRecovered() {
-    return false;
-  }
-
-  @Override
-  public boolean isSynthetic() {
-    return true;
-  }
-
-  @Override
-  public IJavaElement getJavaElement() {
-    throw new AssertionError("not implemented");
   }
 
   @Override

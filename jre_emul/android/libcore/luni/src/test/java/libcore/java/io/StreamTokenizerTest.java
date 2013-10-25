@@ -22,6 +22,7 @@ import java.util.Locale;
 import junit.framework.TestCase;
 
 public class StreamTokenizerTest extends TestCase {
+
     public void testLowerCase() throws Exception {
         Locale.setDefault(Locale.US);
         StreamTokenizer st = new StreamTokenizer(new StringReader("aIb aIb"));
@@ -29,8 +30,13 @@ public class StreamTokenizerTest extends TestCase {
         st.nextToken();
         assertEquals("aib", st.sval);
 
-        Locale.setDefault(new Locale("tr", "TR"));
-        st.nextToken();
-        assertEquals("a\u0131b", st.sval);
+        Locale oldDefault = Locale.getDefault();
+        try {
+          Locale.setDefault(new Locale("tr", "TR"));
+          st.nextToken();
+          assertEquals("a\u0131b", st.sval);
+        } finally {
+          Locale.setDefault(oldDefault);
+        }
     }
 }

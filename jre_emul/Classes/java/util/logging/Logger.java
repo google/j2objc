@@ -36,6 +36,7 @@ public class Logger {
   private boolean useParentHandlers;
 
   public static final String GLOBAL_LOGGER_NAME = "global";
+  private static final Logger global = new Logger(GLOBAL_LOGGER_NAME, null);
 
   public static synchronized Logger getLogger(String name) {
     LogManager manager = LogManager.getLogManager();
@@ -46,6 +47,14 @@ public class Logger {
       return newLogger;
     }
     return logger;
+  }
+
+  /**
+   * Returns the global {@code Logger}.
+   * @since 1.7
+   */
+  public static Logger getGlobal() {
+      return global;
   }
 
   protected Logger(String name, String resourceName) {

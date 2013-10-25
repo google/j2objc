@@ -17,6 +17,9 @@
 
 package java.lang;
 
+import java.util.HashMap;
+import java.util.Map;
+
 /*-[
 #import "java/lang/IllegalThreadStateException.h"
 #import "java/lang/InterruptedException.h"
@@ -35,6 +38,7 @@ package java.lang;
  * @author Tom Ball
  */
 public class Thread implements Runnable {
+  private static final int NANOS_PER_MILLI = 1000000;
 
   /**
    * The associated native NSThread instance.  Other instance data is stored
@@ -43,6 +47,14 @@ public class Thread implements Runnable {
   private Object nsThread;
 
   private boolean isDaemon;
+  private boolean interrupted;
+  private boolean running;
+
+  /** the park state of the thread */
+  private int parkState = ParkState.UNPARKED;
+
+  /** The synchronization object responsible for this thread parking. */
+  private Object parkBlocker = new Object();
 
   private static ThreadGroup systemThreadGroup;
   private static ThreadGroup mainThreadGroup;
@@ -83,11 +95,28 @@ public class Thread implements Runnable {
     TERMINATED
   }
 
+  /** Park states */
+  private static class ParkState {
+      /** park state indicating unparked */
+      private static final int UNPARKED = 1;
+
+      /** park state indicating preemptively unparked */
+      private static final int PREEMPTIVELY_UNPARKED = 2;
+
+      /** park state indicating parked */
+      private static final int PARKED = 3;
+  }
+
   public interface UncaughtExceptionHandler {
 
     void uncaughtException(Thread t, Throwable e);
 
   }
+
+  /**
+   * Holds the default handler for uncaught exceptions, in case there is one.
+   */
+  private static UncaughtExceptionHandler defaultUncaughtHandler;
 
   /**
    * <p>
@@ -121,6 +150,7 @@ public class Thread implements Runnable {
   private static final String TARGET = "JreThread-TargetKey";
   private static final String THREADGROUP = "JreThread-GroupKey";
   private static final String THREAD_ID = "JreThread-IdKey";
+  private static final String UNCAUGHT_HANDLER = "JreThread-UncaughtHandler";
 
   // Milliseconds between polls for testing thread completion.
   private static final int POLL_INTERVAL = 100;
@@ -271,7 +301,7 @@ public class Thread implements Runnable {
    * Shared native constructor code.
    */
   private native void create(ThreadGroup group, Runnable target, String name, long stack,
-	  boolean createThread) /*-[
+          boolean createThread) /*-[
     NSThread *currentThread = [NSThread currentThread];
     NSMutableDictionary *currentThreadData = [currentThread threadDictionary];
     JavaLangThreadGroup *threadGroup = nil;
@@ -337,7 +367,7 @@ public class Thread implements Runnable {
     int priority = [currentThread isMainThread] ? 5 : [currentThread threadPriority] * 10;
     [self setPriority0WithInt:priority];
 
-    [group addWithJavaLangThread:self];
+    [threadGroup addWithJavaLangThread:self];
     nsThread_ = thread;
 #if !__has_feature(objc_arc)
     [thread retain];
@@ -397,7 +427,7 @@ public class Thread implements Runnable {
 #endif
       @throw e;
     }
-    [[self getThreadGroup] addWithJavaLangThread:self];
+    running_ = YES;
     [(NSThread *) nativeThread start];
   ]-*/;
 
@@ -412,12 +442,21 @@ public class Thread implements Runnable {
     }
   ]-*/;
 
+  public static int activeCount() {
+      return currentThread().getThreadGroup().activeCount();
+  }
+
   public boolean isDaemon() {
     return isDaemon;
   }
 
   public void setDaemon(boolean isDaemon) {
     this.isDaemon = isDaemon;
+  }
+
+  public static int enumerate(Thread[] threads) {
+    Thread thread = Thread.currentThread();
+    return thread.getThreadGroup().enumerate(threads);
   }
 
   public native long getId() /*-[
@@ -505,6 +544,11 @@ public class Thread implements Runnable {
     return result;
   }
 
+  @Deprecated
+  public int countStackFrames() {
+      return getStackTrace().length;
+  }
+
   /**
    * Posts an interrupt request to this {@code Thread}. Unless the caller is
    * the {@link #currentThread()}, the method {@code checkAccess()} is called
@@ -537,6 +581,7 @@ public class Thread implements Runnable {
    * @see Thread#isInterrupted
    */
   public native void interrupt() /*-[
+    interrupted__ = YES;
     [(NSThread *) nsThread_ cancel];
   ]-*/;
 
@@ -567,7 +612,9 @@ public class Thread implements Runnable {
    * @see Thread#isInterrupted
    */
   public native boolean isInterrupted() /*-[
-    return [(NSThread *) nsThread_ isCancelled];
+    BOOL result = interrupted__;
+    interrupted__ = NO;
+    return result;
   ]-*/;
 
   /**
@@ -616,24 +663,29 @@ public class Thread implements Runnable {
   }
 
   private final native void join0(long millis, int pollInterval)
-	  throws InterruptedException /*-[
-      NSThread *thread = (NSThread *) nsThread_;
-      while (millis > 0 && [thread isExecuting]) {
-        millis -= pollInterval;
-        double timeInterval = pollInterval / 1000.0; // NSThread uses seconds.
-        [NSThread sleepForTimeInterval:timeInterval];
-      }
-      if ([thread isCancelled]) {
-        JavaLangInterruptedException *npe = [[JavaLangInterruptedException alloc] init];
-#if !__has_feature(objc_arc)
-        [npe autorelease];
-#endif
-        @throw npe;
-      }
-    ]-*/;
+          throws InterruptedException /*-[
+    interrupted__ = NO;
+    NSThread *thread = (NSThread *) nsThread_;
+    while (millis > 0 && [thread isExecuting] && ![thread isCancelled]) {
+      millis -= pollInterval;
+      double timeInterval = pollInterval / 1000.0; // NSThread uses seconds.
+      [NSThread sleepForTimeInterval:timeInterval];
+    }
+    if (interrupted__) {
+      interrupted__ = NO;  // throw exception clears flag.
+      @throw AUTORELEASE([[JavaLangInterruptedException alloc] init]);
+    }
+  ]-*/;
 
   public native boolean isAlive() /*-[
-    return [(NSThread *) nsThread_ isExecuting];
+    NSThread *nativeThread = (NSThread *) nsThread_;
+    BOOL alive = [nativeThread isExecuting] && ![nativeThread isCancelled];
+    if (!alive && running_) {
+      // Thread finished, clean up.
+      running_ = NO;
+      [[self getThreadGroup] removeWithJavaLangThread:self];
+    }
+    return alive;
   ]-*/;
 
   public void checkAccess() {
@@ -645,9 +697,15 @@ public class Thread implements Runnable {
   }
 
   public static native void sleep(long millis, int nanos) throws InterruptedException /*-[
+    JavaLangThread *currentThread = [JavaLangThread currentThread];
+    currentThread->interrupted__ = NO;
     long long ticks = (millis * 1000000L) + nanos;
     NSTimeInterval ti = ticks / 1000000000.0;
     [NSThread sleepForTimeInterval:ti];
+    if (currentThread->interrupted__) {
+      currentThread->interrupted__ = NO;  // throw exception clears flag.
+      @throw AUTORELEASE([[JavaLangInterruptedException alloc] init]);
+    }
   ]-*/;
 
   /**
@@ -695,4 +753,192 @@ public class Thread implements Runnable {
     }
     return "Thread[" + getName() + "," + getPriority() + ",]";
   }
+
+  /**
+   * Unparks this thread. This unblocks the thread it if it was
+   * previously parked, or indicates that the thread is "preemptively
+   * unparked" if it wasn't already parked. The latter means that the
+   * next time the thread is told to park, it will merely clear its
+   * latent park bit and carry on without blocking.
+   *
+   * <p>See {@link java.util.concurrent.locks.LockSupport} for more
+   * in-depth information of the behavior of this method.</p>
+   *
+   * @hide for Unsafe
+   */
+  public void unpark() {
+    synchronized (parkBlocker) {
+      switch (parkState) {
+        case ParkState.PREEMPTIVELY_UNPARKED: {
+          /*
+           * Nothing to do in this case: By definition, a
+           * preemptively unparked thread is to remain in
+           * the preemptively unparked state if it is told
+           * to unpark.
+           */
+          break;
+        }
+        case ParkState.UNPARKED: {
+          parkState = ParkState.PREEMPTIVELY_UNPARKED;
+          break;
+        }
+        default /*parked*/: {
+          parkState = ParkState.UNPARKED;
+          parkBlocker.notifyAll();
+          break;
+        }
+      }
+    }
+  }
+
+  /**
+   * Parks the current thread for a particular number of nanoseconds, or
+   * indefinitely. If not indefinitely, this method unparks the thread
+   * after the given number of nanoseconds if no other thread unparks it
+   * first. If the thread has been "preemptively unparked," this method
+   * cancels that unparking and returns immediately. This method may
+   * also return spuriously (that is, without the thread being told to
+   * unpark and without the indicated amount of time elapsing).
+   *
+   * <p>See {@link java.util.concurrent.locks.LockSupport} for more
+   * in-depth information of the behavior of this method.</p>
+   *
+   * <p>This method must only be called when <code>this</code> is the current
+   * thread.
+   *
+   * @param nanos number of nanoseconds to park for or <code>0</code>
+   * to park indefinitely
+   * @throws IllegalArgumentException thrown if <code>nanos &lt; 0</code>
+   *
+   * @hide for Unsafe
+   */
+  public void parkFor(long nanos) {
+    synchronized (parkBlocker) {
+      switch (parkState) {
+        case ParkState.PREEMPTIVELY_UNPARKED: {
+          parkState = ParkState.UNPARKED;
+          break;
+        }
+        case ParkState.UNPARKED: {
+          long millis = nanos / NANOS_PER_MILLI;
+          nanos %= NANOS_PER_MILLI;
+
+          parkState = ParkState.PARKED;
+          try {
+            parkBlocker.wait(millis, (int) nanos);
+          } catch (InterruptedException ex) {
+            interrupt();
+          } finally {
+            /*
+             * Note: If parkState manages to become
+             * PREEMPTIVELY_UNPARKED before hitting this
+             * code, it should left in that state.
+             */
+            if (parkState == ParkState.PARKED) {
+              parkState = ParkState.UNPARKED;
+            }
+          }
+          break;
+        }
+        default /*parked*/: {
+          throw new AssertionError("shouldn't happen: attempt to repark");
+        }
+      }
+    }
+  }
+
+  /**
+   * Parks the current thread until the specified system time. This
+   * method attempts to unpark the current thread immediately after
+   * <code>System.currentTimeMillis()</code> reaches the specified
+   * value, if no other thread unparks it first. If the thread has
+   * been "preemptively unparked," this method cancels that
+   * unparking and returns immediately. This method may also return
+   * spuriously (that is, without the thread being told to unpark
+   * and without the indicated amount of time elapsing).
+   *
+   * <p>See {@link java.util.concurrent.locks.LockSupport} for more
+   * in-depth information of the behavior of this method.</p>
+   *
+   * <p>This method must only be called when <code>this</code> is the
+   * current thread.
+   *
+   * @param time the time after which the thread should be unparked,
+   * in absolute milliseconds-since-the-epoch
+   *
+   * @hide for Unsafe
+   */
+  public void parkUntil(long time) {
+    synchronized (parkBlocker) {
+      /*
+       * Note: This conflates the two time bases of "wall clock"
+       * time and "monotonic uptime" time. However, given that
+       * the underlying system can only wait on monotonic time,
+       * it is unclear if there is any way to avoid the
+       * conflation. The downside here is that if, having
+       * calculated the delay, the wall clock gets moved ahead,
+       * this method may not return until well after the wall
+       * clock has reached the originally designated time. The
+       * reverse problem (the wall clock being turned back)
+       * isn't a big deal, since this method is allowed to
+       * spuriously return for any reason, and this situation
+       * can safely be construed as just such a spurious return.
+       */
+      long delayMillis = time - System.currentTimeMillis();
+
+      if (delayMillis <= 0) {
+        parkState = ParkState.UNPARKED;
+      } else {
+        parkFor(delayMillis * NANOS_PER_MILLI);
+      }
+    }
+  }
+
+  /**
+   * Returns the default exception handler that's executed when uncaught
+   * exception terminates a thread.
+   *
+   * @return an {@link UncaughtExceptionHandler} or <code>null</code> if
+   *         none exists.
+   */
+  public static UncaughtExceptionHandler getDefaultUncaughtExceptionHandler() {
+      return defaultUncaughtHandler;
+  }
+
+  /**
+   * Sets the default uncaught exception handler. This handler is invoked in
+   * case any Thread dies due to an unhandled exception.
+   *
+   * @param handler
+   *            The handler to set or null.
+   */
+  public static void setDefaultUncaughtExceptionHandler(UncaughtExceptionHandler handler) {
+      Thread.defaultUncaughtHandler = handler;
+  }
+
+  /**
+   * Returns the thread's uncaught exception handler. If not explicitly set,
+   * then the ThreadGroup's handler is returned. If the thread is terminated,
+   * then <code>null</code> is returned.
+   *
+   * @return an {@link UncaughtExceptionHandler} instance or {@code null}.
+   */
+  public native UncaughtExceptionHandler getUncaughtExceptionHandler() /*-[
+    NSDictionary *threadData = [[NSThread currentThread] threadDictionary];
+    id<JavaLangThread_UncaughtExceptionHandler> uncaughtHandler =
+        [threadData objectForKey:JavaLangThread_UNCAUGHT_HANDLER_];
+    if (uncaughtHandler) {
+      return uncaughtHandler;
+    }
+    return [threadData objectForKey:JavaLangThread_THREADGROUP_]; // ThreadGroup is instance of UEH
+  ]-*/;
+
+  public native void setUncaughtExceptionHandler(UncaughtExceptionHandler handler) /*-[
+    NSMutableDictionary *threadData = [[NSThread currentThread] threadDictionary];
+    if (handler) {
+      [threadData setObject:handler forKey:JavaLangThread_UNCAUGHT_HANDLER_];
+    } else {
+      [threadData removeObjectForKey:JavaLangThread_UNCAUGHT_HANDLER_];
+    }
+  ]-*/;
 }

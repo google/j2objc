@@ -256,13 +256,13 @@ public class ObjectiveCImplementationGeneratorTest extends GenerationTest {
     assertTranslation(translation, "return ColorEnum_RED;");
     assertTranslation(translation,
         "ColorEnum_RED = [[ColorEnum alloc] " +
-        "initWithInt:(int) 0xff0000 withNSString:@\"Color_RED\" withInt:0];");
+        "initWithInt:(int) 0xff0000 withNSString:@\"RED\" withInt:0];");
     assertTranslation(translation,
       "ColorEnum_WHITE = [[ColorEnum alloc] " +
-      "initWithInt:(int) 0xffffff withNSString:@\"Color_WHITE\" withInt:1];");
+      "initWithInt:(int) 0xffffff withNSString:@\"WHITE\" withInt:1];");
     assertTranslation(translation,
       "ColorEnum_BLUE = [[ColorEnum alloc] " +
-      "initWithInt:(int) 0x0000ff withNSString:@\"Color_BLUE\" withInt:2];");
+      "initWithInt:(int) 0x0000ff withNSString:@\"BLUE\" withInt:2];");
     assertTranslation(translation, "- (int)getRgb {");
     assertTranslation(translation, "return rgb_;");
     translation = getTranslatedFile("Color.h");
@@ -464,7 +464,7 @@ public class ObjectiveCImplementationGeneratorTest extends GenerationTest {
     assertFalse(impl.contains("\n  return NO;\n  [super initWithTest_TypeEnum:arg$0]}"));
     assertTranslation(impl,
         "initWithTest_TypeEnum:[Test_TypeEnum STRING] " +
-        "withNSString:@\"Test_Field_STRING\" withInt:2");
+        "withNSString:@\"STRING\" withInt:2");
   }
 
   public void testAutoreleasePoolMethod() throws IOException {
@@ -752,5 +752,39 @@ public class ObjectiveCImplementationGeneratorTest extends GenerationTest {
         "objects:(id *)stackbuf count:(NSUInteger)len { return 0; } ]-*/}",
         "Test", "Test.m");
     assertOccurrences(translation, "countByEnumeratingWithState", 1);
+  }
+
+  public void testSynchronizedNativeMethod() throws IOException {
+    String translation = translateSourceFile(
+        "class Test { public synchronized native void exit() /*-[ exit(0); ]-*/; }",
+        "Test", "Test.m");
+    assertTranslation(translation, "@synchronized(self)");
+  }
+
+  public void testMethodMetadata() throws IOException {
+    String translation = translateSourceFile(
+        // Separate methods are used so each only has one modifier.
+        "class Test { " +
+        " Object test1() { return null; }" +  // package-private
+        " private char test2() { return 'a'; }" +
+        " protected void test3() { }" +
+        " final long test4() { return 0L; }" +
+        " synchronized boolean test5() { return false; }" +
+        " String test6(String s, Object... args) { return null; }" +
+        " native void test7() /*-[ exit(0); ]-*/; " +
+        " public void noMetadata1() {}" +
+        " public static void noMetadata2() {}" +
+        "}",
+        "Test", "Test.m");
+    assertTranslatedLines(translation, "{ \"test1\", NULL, \"LNSObject\", 0x0 },");
+    assertTranslatedLines(translation, "{ \"test2\", NULL, \"C\", 0x2 },");
+    assertTranslatedLines(translation, "{ \"test3\", NULL, \"V\", 0x4 },");
+    assertTranslatedLines(translation, "{ \"test4\", NULL, \"J\", 0x10 },");
+    assertTranslatedLines(translation, "{ \"test5\", NULL, \"Z\", 0x20 },");
+    assertTranslatedLines(translation,
+        "{ \"test6WithNSString:withNSObjectArray:\", NULL, \"LNSString\", 0x80 }");
+    assertTranslatedLines(translation, "{ \"test7\", NULL, \"V\", 0x100 },");
+    assertNotInTranslation(translation, "{ \"noMetadata1\"");
+    assertNotInTranslation(translation, "{ \"noMetadata2\"");
   }
 }

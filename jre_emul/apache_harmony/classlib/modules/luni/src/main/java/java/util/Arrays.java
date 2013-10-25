@@ -22,7 +22,7 @@ import java.lang.reflect.Array;
 
 /**
  * {@code Arrays} contains static methods which operate on arrays.
- * 
+ *
  * @since 1.2
  */
 public class Arrays {
@@ -150,7 +150,7 @@ public class Arrays {
      * {@code List} cannot be modified, i.e. adding and removing are unsupported, but
      * the elements can be set. Setting an element modifies the underlying
      * array.
-     * 
+     *
      * @param array
      *            the array.
      * @return a {@code List} of the elements of the specified array.
@@ -164,7 +164,7 @@ public class Arrays {
      * ascending sorted array. Searching in an unsorted array has an undefined
      * result. It's also undefined which element is found if there are multiple
      * occurrences of the same element.
-     * 
+     *
      * @param array
      *            the sorted {@code byte} array to search.
      * @param value
@@ -667,7 +667,7 @@ public class Arrays {
 
     /**
      * Fills the specified array with the specified element.
-     * 
+     *
      * @param array
      *            the {@code byte} array to fill.
      * @param value
@@ -681,7 +681,7 @@ public class Arrays {
 
     /**
      * Fills the specified range in the array with the specified element.
-     * 
+     *
      * @param array
      *            the {@code byte} array to fill.
      * @param start
@@ -704,7 +704,7 @@ public class Arrays {
 
     /**
      * Fills the specified array with the specified element.
-     * 
+     *
      * @param array
      *            the {@code short} array to fill.
      * @param value
@@ -718,7 +718,7 @@ public class Arrays {
 
     /**
      * Fills the specified range in the array with the specified element.
-     * 
+     *
      * @param array
      *            the {@code short} array to fill.
      * @param start
@@ -741,7 +741,7 @@ public class Arrays {
 
     /**
      * Fills the specified array with the specified element.
-     * 
+     *
      * @param array
      *            the {@code char} array to fill.
      * @param value
@@ -755,7 +755,7 @@ public class Arrays {
 
     /**
      * Fills the specified range in the array with the specified element.
-     * 
+     *
      * @param array
      *            the {@code char} array to fill.
      * @param start
@@ -778,7 +778,7 @@ public class Arrays {
 
     /**
      * Fills the specified array with the specified element.
-     * 
+     *
      * @param array
      *            the {@code int} array to fill.
      * @param value
@@ -792,7 +792,7 @@ public class Arrays {
 
     /**
      * Fills the specified range in the array with the specified element.
-     * 
+     *
      * @param array
      *            the {@code int} array to fill.
      * @param start
@@ -815,7 +815,7 @@ public class Arrays {
 
     /**
      * Fills the specified array with the specified element.
-     * 
+     *
      * @param array
      *            the {@code long} array to fill.
      * @param value
@@ -829,7 +829,7 @@ public class Arrays {
 
     /**
      * Fills the specified range in the array with the specified element.
-     * 
+     *
      * @param array
      *            the {@code long} array to fill.
      * @param start
@@ -852,7 +852,7 @@ public class Arrays {
 
     /**
      * Fills the specified array with the specified element.
-     * 
+     *
      * @param array
      *            the {@code float} array to fill.
      * @param value
@@ -866,7 +866,7 @@ public class Arrays {
 
     /**
      * Fills the specified range in the array with the specified element.
-     * 
+     *
      * @param array
      *            the {@code float} array to fill.
      * @param start
@@ -889,7 +889,7 @@ public class Arrays {
 
     /**
      * Fills the specified array with the specified element.
-     * 
+     *
      * @param array
      *            the {@code double} array to fill.
      * @param value
@@ -903,7 +903,7 @@ public class Arrays {
 
     /**
      * Fills the specified range in the array with the specified element.
-     * 
+     *
      * @param array
      *            the {@code double} array to fill.
      * @param start
@@ -926,7 +926,7 @@ public class Arrays {
 
     /**
      * Fills the specified array with the specified element.
-     * 
+     *
      * @param array
      *            the {@code boolean} array to fill.
      * @param value
@@ -940,7 +940,7 @@ public class Arrays {
 
     /**
      * Fills the specified range in the array with the specified element.
-     * 
+     *
      * @param array
      *            the {@code boolean} array to fill.
      * @param start
@@ -963,7 +963,7 @@ public class Arrays {
 
     /**
      * Fills the specified array with the specified element.
-     * 
+     *
      * @param array
      *            the {@code Object} array to fill.
      * @param value
@@ -977,7 +977,7 @@ public class Arrays {
 
     /**
      * Fills the specified range in the array with the specified element.
-     * 
+     *
      * @param array
      *            the {@code Object} array to fill.
      * @param start
@@ -1009,7 +1009,7 @@ public class Arrays {
      * containing a sequence of {@link Boolean}} instances representing the
      * elements of array in the same order. If the array is {@code null}, the return
      * value is 0.
-     * 
+     *
      * @param array
      *            the array whose hash code to compute.
      * @return the hash code for {@code array}.
@@ -1037,7 +1037,7 @@ public class Arrays {
      * containing a sequence of {@link Integer}} instances representing the
      * elements of array in the same order. If the array is {@code null}, the return
      * value is 0.
-     * 
+     *
      * @param array
      *            the array whose hash code to compute.
      * @return the hash code for {@code array}.
@@ -1065,7 +1065,7 @@ public class Arrays {
      * containing a sequence of {@link Short}} instances representing the
      * elements of array in the same order. If the array is {@code null}, the return
      * value is 0.
-     * 
+     *
      * @param array
      *            the array whose hash code to compute.
      * @return the hash code for {@code array}.
@@ -1093,7 +1093,7 @@ public class Arrays {
      * containing a sequence of {@link Character}} instances representing the
      * elements of array in the same order. If the array is {@code null}, the return
      * value is 0.
-     * 
+     *
      * @param array
      *            the array whose hash code to compute.
      * @return the hash code for {@code array}.
@@ -1121,7 +1121,7 @@ public class Arrays {
      * containing a sequence of {@link Byte}} instances representing the
      * elements of array in the same order. If the array is {@code null}, the return
      * value is 0.
-     * 
+     *
      * @param array
      *            the array whose hash code to compute.
      * @return the hash code for {@code array}.
@@ -1149,7 +1149,7 @@ public class Arrays {
      * containing a sequence of {@link Long}} instances representing the
      * elements of array in the same order. If the array is {@code null}, the return
      * value is 0.
-     * 
+     *
      * @param array
      *            the array whose hash code to compute.
      * @return the hash code for {@code array}.
@@ -1181,7 +1181,7 @@ public class Arrays {
      * containing a sequence of {@link Float}} instances representing the
      * elements of array in the same order. If the array is {@code null}, the return
      * value is 0.
-     * 
+     *
      * @param array
      *            the array whose hash code to compute.
      * @return the hash code for {@code array}.
@@ -1212,7 +1212,7 @@ public class Arrays {
      * containing a sequence of {@link Double}} instances representing the
      * elements of array in the same order. If the array is {@code null}, the return
      * value is 0.
-     * 
+     *
      * @param array
      *            the array whose hash code to compute.
      * @return the hash code for {@code array}.
@@ -1249,7 +1249,7 @@ public class Arrays {
      * The value returned by this method is the same value as the method
      * Arrays.asList(array).hashCode(). If the array is {@code null}, the return value
      * is 0.
-     * 
+     *
      * @param array
      *            the array whose hash code to compute.
      * @return the hash code for {@code array}.
@@ -1294,7 +1294,7 @@ public class Arrays {
      * an array of a reference type. The value returned by this method is the
      * same value as the method {@code Arrays.asList(array).hashCode()}. If the array is
      * {@code null}, the return value is 0.
-     * 
+     *
      * @param array
      *            the array whose hash code to compute.
      * @return the hash code for {@code array}.
@@ -1305,7 +1305,7 @@ public class Arrays {
 
     /**
      * Compares the two arrays.
-     * 
+     *
      * @param array1
      *            the first {@code byte} array.
      * @param array2
@@ -1331,7 +1331,7 @@ public class Arrays {
 
     /**
      * Compares the two arrays.
-     * 
+     *
      * @param array1
      *            the first {@code short} array.
      * @param array2
@@ -1357,7 +1357,7 @@ public class Arrays {
 
     /**
      * Compares the two arrays.
-     * 
+     *
      * @param array1
      *            the first {@code char} array.
      * @param array2
@@ -1383,7 +1383,7 @@ public class Arrays {
 
     /**
      * Compares the two arrays.
-     * 
+     *
      * @param array1
      *            the first {@code int} array.
      * @param array2
@@ -1409,7 +1409,7 @@ public class Arrays {
 
     /**
      * Compares the two arrays.
-     * 
+     *
      * @param array1
      *            the first {@code long} array.
      * @param array2
@@ -1436,7 +1436,7 @@ public class Arrays {
     /**
      * Compares the two arrays. The values are compared in the same manner as
      * {@code Float.equals()}.
-     * 
+     *
      * @param array1
      *            the first {@code float} array.
      * @param array2
@@ -1465,7 +1465,7 @@ public class Arrays {
     /**
      * Compares the two arrays. The values are compared in the same manner as
      * {@code Double.equals()}.
-     * 
+     *
      * @param array1
      *            the first {@code double} array.
      * @param array2
@@ -1493,7 +1493,7 @@ public class Arrays {
 
     /**
      * Compares the two arrays.
-     * 
+     *
      * @param array1
      *            the first {@code boolean} array.
      * @param array2
@@ -1519,7 +1519,7 @@ public class Arrays {
 
     /**
      * Compares the two arrays.
-     * 
+     *
      * @param array1
      *            the first {@code Object} array.
      * @param array2
@@ -1571,7 +1571,7 @@ public class Arrays {
      * <p>
      * If either of the given arrays contain themselves as elements, the
      * behavior of this method is uncertain.
-     * 
+     *
      * @param array1
      *            the first {@code Object} array.
      * @param array2
@@ -1651,7 +1651,7 @@ public class Arrays {
         int f2 = Float.floatToRawIntBits(float2);
         return f1 == f2;
     }
-    
+
     private static boolean lessThan(float float1, float float2) {
         // A slightly specialized version of Float.compare(float1, float2) < 0.
 
@@ -1723,7 +1723,7 @@ public class Arrays {
 
     /**
      * Sorts the specified array in ascending numerical order.
-     * 
+     *
      * @param array
      *            the {@code byte} array to be sorted.
      */
@@ -1733,7 +1733,7 @@ public class Arrays {
 
     /**
      * Sorts the specified range in the array in ascending numerical order.
-     * 
+     *
      * @param array
      *            the {@code byte} array to be sorted.
      * @param start
@@ -1846,7 +1846,7 @@ public class Arrays {
 
     /**
      * Sorts the specified array in ascending numerical order.
-     * 
+     *
      * @param array
      *            the {@code char} array to be sorted.
      */
@@ -1856,7 +1856,7 @@ public class Arrays {
 
     /**
      * Sorts the specified range in the array in ascending numerical order.
-     * 
+     *
      * @param array
      *            the {@code char} array to be sorted.
      * @param start
@@ -1956,7 +1956,7 @@ public class Arrays {
 
     /**
      * Sorts the specified array in ascending numerical order.
-     * 
+     *
      * @param array
      *            the {@code double} array to be sorted.
      * @see #sort(double[], int, int)
@@ -1968,7 +1968,7 @@ public class Arrays {
     /**
      * Sorts the specified range in the array in ascending numerical order. The
      * values are sorted according to the order imposed by {@code Double.compareTo()}.
-     * 
+     *
      * @param array
      *            the {@code double} array to be sorted.
      * @param start
@@ -2069,7 +2069,7 @@ public class Arrays {
 
     /**
      * Sorts the specified array in ascending numerical order.
-     * 
+     *
      * @param array
      *            the {@code float} array to be sorted.
      * @see #sort(float[], int, int)
@@ -2081,7 +2081,7 @@ public class Arrays {
     /**
      * Sorts the specified range in the array in ascending numerical order. The
      * values are sorted according to the order imposed by {@code Float.compareTo()}.
-     * 
+     *
      * @param array
      *            the {@code float} array to be sorted.
      * @param start
@@ -2182,7 +2182,7 @@ public class Arrays {
 
     /**
      * Sorts the specified array in ascending numerical order.
-     * 
+     *
      * @param array
      *            the {@code int} array to be sorted.
      */
@@ -2192,7 +2192,7 @@ public class Arrays {
 
     /**
      * Sorts the specified range in the array in ascending numerical order.
-     * 
+     *
      * @param array
      *            the {@code int} array to be sorted.
      * @param start
@@ -2292,7 +2292,7 @@ public class Arrays {
 
     /**
      * Sorts the specified array in ascending numerical order.
-     * 
+     *
      * @param array
      *            the {@code long} array to be sorted.
      */
@@ -2302,7 +2302,7 @@ public class Arrays {
 
     /**
      * Sorts the specified range in the array in ascending numerical order.
-     * 
+     *
      * @param array
      *            the {@code long} array to be sorted.
      * @param start
@@ -2402,7 +2402,7 @@ public class Arrays {
 
     /**
      * Sorts the specified array in ascending natural order.
-     * 
+     *
      * @param array
      *            the {@code Object} array to be sorted.
      * @throws ClassCastException
@@ -2419,7 +2419,7 @@ public class Arrays {
      * elements must implement the {@code Comparable} interface and must be
      * comparable to each other without a {@code ClassCastException} being
      * thrown.
-     * 
+     *
      * @param array
      *            the {@code Object} array to be sorted.
      * @param start
@@ -2458,7 +2458,7 @@ public class Arrays {
 
     /**
      * Swaps the elements at the given indices in the array.
-     * 
+     *
      * @param a -
      *            the index of one element to be swapped.
      * @param b -
@@ -2478,7 +2478,7 @@ public class Arrays {
      * is performed by exponential search). n*log(n) performance is guaranteed
      * and in the average case it will be faster then any mergesort in which the
      * merge is performed by linear search.
-     * 
+     *
      * @param in -
      *            the array for sorting.
      * @param out -
@@ -2558,7 +2558,7 @@ public class Arrays {
      * is performed by exponential search). n*log(n) performance is guaranteed
      * and in the average case it will be faster then any mergesort in which the
      * merge is performed by linear search.
-     * 
+     *
      * @param in -
      *            the array for sorting.
      * @param out -
@@ -2638,24 +2638,24 @@ public class Arrays {
      * Finds the place in the given range of specified sorted array, where the
      * element should be inserted for getting sorted array. Uses exponential
      * search algorithm.
-     * 
+     *
      * @param arr -
      *            the array with already sorted range
-     * 
+     *
      * @param val -
      *            object to be inserted
-     * 
+     *
      * @param l -
      *            the start index
-     * 
+     *
      * @param r -
      *            the end index
-     * 
+     *
      * @param bnd -
      *            possible values 0,-1. "-1" - val is located at index more then
      *            elements equals to val. "0" - val is located at index less
      *            then elements equals to val.
-     * 
+     *
      */
     @SuppressWarnings("unchecked")
     private static int find(Object[] arr, Comparable val, int bnd, int l, int r) {
@@ -2686,7 +2686,7 @@ public class Arrays {
      * Finds the place of specified range of specified sorted array, where the
      * element should be inserted for getting sorted array. Uses exponential
      * search algorithm.
-     * 
+     *
      * @param arr -
      *            the array with already sorted range
      * @param val -
@@ -2754,7 +2754,7 @@ public class Arrays {
     /**
      * Copies object from one array to another array with reverse of objects
      * order. Source and destination arrays may be the same.
-     * 
+     *
      * @param src -
      *            the source array.
      * @param from -
@@ -2788,7 +2788,7 @@ public class Arrays {
     /**
      * Performs a sort on the given String array. Elements will be re-ordered into
      * ascending order.
-     * 
+     *
      * @param arr -
      *            the array to sort
      * @param start -
@@ -2804,7 +2804,7 @@ public class Arrays {
     /**
      * Performs a sort on the given String array. Elements will be re-ordered into
      * ascending order. Uses a stable ternary quick sort algorithm.
-     * 
+     *
      * @param arr -
      *            the array to sort
      * @param src -
@@ -2961,7 +2961,7 @@ public class Arrays {
     /**
      * Sorts the specified array using the specified {@code Comparator}. All elements
      * must be comparable to each other without a {@code ClassCastException} being thrown.
-     * 
+     *
      * @param array
      *            the {@code Object} array to be sorted.
      * @param comparator
@@ -2976,7 +2976,7 @@ public class Arrays {
 
     /**
      * Sorts the specified array in ascending numerical order.
-     * 
+     *
      * @param array
      *            the {@code short} array to be sorted.
      */
@@ -2986,7 +2986,7 @@ public class Arrays {
 
     /**
      * Sorts the specified range in the array in ascending numerical order.
-     * 
+     *
      * @param array
      *            the {@code short} array to be sorted.
      * @param start
@@ -3988,5 +3988,34 @@ public class Arrays {
         T[] result = (T[]) Array.newInstance(newType.getComponentType(), resultLength);
         System.arraycopy(original, start, result, 0, copyLength);
         return result;
+    }
+
+    /**
+     * Checks that the range described by {@code offset} and {@code count} doesn't exceed
+     * {@code arrayLength}.
+     *
+     * @hide
+     */
+    public static void checkOffsetAndCount(int arrayLength, int offset, int count) {
+        if ((offset | count) < 0 || offset > arrayLength || arrayLength - offset < count) {
+            throw new ArrayIndexOutOfBoundsException(arrayLength, offset,
+                    count);
+        }
+    }
+
+    /**
+     * Checks that the range described by {@code start} and {@code end} doesn't exceed
+     * {@code len}.
+     *
+     * @hide
+     */
+    public static void checkStartAndEnd(int len, int start, int end) {
+        if (start < 0 || end > len) {
+            throw new ArrayIndexOutOfBoundsException("start < 0 || end > len."
+                    + " start=" + start + ", end=" + end + ", len=" + len);
+        }
+        if (start > end) {
+            throw new IllegalArgumentException("start > end: " + start + " > " + end);
+        }
     }
 }

@@ -41,7 +41,7 @@ readonly LIB_PATH=${DIR}/lib
 declare CC_FLAGS="-Werror -Wno-parentheses"
 declare OBJC=-ObjC
 declare LIBS="-ljre_emul -l j2objc_main"
-declare FRAMEWORKS="-framework Foundation -framework ExceptionHandling"
+declare FRAMEWORKS="-framework Foundation -framework ExceptionHandling -framework Security"
 declare LOAD_FLAGS="-force_load ${LIB_PATH}/libjre_emul.a"
 declare LINK_FLAGS="${LIBS} ${FRAMEWORKS} -L ${LIB_PATH} ${LOAD_FLAGS}"
 

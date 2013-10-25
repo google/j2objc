@@ -180,10 +180,6 @@ java.lang.String.endsWith(Ljava/lang/String;)Z = NSString hasSuffix:(NSString *)
 java.lang.String.equals(Ljava/lang/Object;)Z = NSString isEqual:(id)anObject
 java.lang.String.equalsIgnoreCase(Ljava/lang/String;)Z = \
     NSString equalsIgnoreCase:(NSString *)aString
-java.lang.String.format(Ljava/lang/String;[Ljava/lang/Object;)Ljava/lang/String; = \
-    NSString stringWithFormat:(NSString *)format ...
-java.lang.String.format(Ljava/util/Locale;Ljava/lang/String;[Ljava/lang/Object;)Ljava/lang/String; = \
-    NSString stringWithLocale:(id)locale format:(NSString *)format ...
 java.lang.String.getBytes()[B = NSString getBytes
 java.lang.String.getBytes(Ljava/lang/String;)[B = NSString getBytesWithCharsetName:(NSString *)name
 java.lang.String.getBytes(Ljava/nio/charset/Charset;)[B = \

@@ -27,7 +27,7 @@ import static java.lang.annotation.RetentionPolicy.*;
  *
  * @author Tom Ball
  */
-@Target({FIELD, LOCAL_VARIABLE})
+@Target({FIELD, LOCAL_VARIABLE, PARAMETER})
 @Retention(CLASS)
 public @interface Weak {
 }

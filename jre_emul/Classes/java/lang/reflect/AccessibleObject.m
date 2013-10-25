@@ -21,15 +21,6 @@
 
 #import "IOSClass.h"
 #import "java/lang/AssertionError.h"
-#import "java/lang/Boolean.h"
-#import "java/lang/Byte.h"
-#import "java/lang/Character.h"
-#import "java/lang/Double.h"
-#import "java/lang/Float.h"
-#import "java/lang/Integer.h"
-#import "java/lang/Long.h"
-#import "java/lang/Short.h"
-#import "java/lang/Void.h"
 #import "java/lang/reflect/AccessibleObject.h"
 #import "java/lang/reflect/Method.h"
 
@@ -99,9 +90,10 @@
 
 // Return a Obj-C type encoding as a Java type or wrapper type.
 IOSClass *decodeTypeEncoding(const char *type) {
-  if (strlen(type) > 1 && type[0] == '@') {
-    // Format is '@"type-name"'.
-    char *typeNameAsC = strndup(type + 2, strlen(type) - 3);
+  if (strlen(type) > 3 && type[0] == '@') {
+    // Format is either '@"type-name"' for classes, or '@"<type-name>"' for protocols.
+    char *typeNameAsC = type[2] == '<'
+        ? strndup(type + 3, strlen(type) - 5) : strndup(type + 2, strlen(type) - 3);
     NSString *typeName = [NSString stringWithUTF8String:typeNameAsC];
     free(typeNameAsC);
     return [IOSClass forName:typeName];
@@ -131,7 +123,7 @@ IOSClass *decodeTypeEncoding(const char *type) {
     case 'B':
       return [IOSClass booleanClass];
     case 'v':
-      return [IOSClass classWithClass:[JavaLangVoid class]];
+      return [IOSClass voidClass];
   }
   NSString *errorMsg =
   [NSString stringWithFormat:@"unknown Java type encoding: '%s'", type];

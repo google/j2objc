@@ -39,11 +39,19 @@ public class LinkageError extends Error {
     /**
      * Constructs a new {@code LinkageError} with the current stack trace and
      * the specified detail message.
-     * 
+     *
      * @param detailMessage
      *            the detail message for this error.
      */
     public LinkageError(String detailMessage) {
         super(detailMessage);
+    }
+
+    /**
+     * Constructs a new {@code LinkageError} with the given detail message and cause.
+     * @since 1.7
+     */
+    public LinkageError(String detailMessage, Throwable cause) {
+        super(detailMessage, cause);
     }
 }

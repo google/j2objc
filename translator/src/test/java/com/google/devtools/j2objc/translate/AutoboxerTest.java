@@ -302,10 +302,10 @@ public class AutoboxerTest extends GenerationTest {
     // but 1 and 2 should be because they are passed as varargs.
     assertTranslation(translation,
         "[[TestEnum alloc] initWithId:[JavaLangInteger valueOfWithInt:0] " +
-        "withNSString:@\"Test_INT\" withInt:0]");
+        "withNSString:@\"INT\" withInt:0]");
     assertTranslation(translation,
         "[[TestEnum alloc] initWithId:[JavaLangBoolean valueOfWithBoolean:NO] " +
-        "withNSString:@\"Test_BOOLEAN\" withInt:1]");
+        "withNSString:@\"BOOLEAN\" withInt:1]");
   }
 
   public void testBoxedBoolInIf() throws IOException {
@@ -343,31 +343,6 @@ public class AutoboxerTest extends GenerationTest {
     String translation = translateSourceFile(source, "Test", "Test.m");
 
     assertTranslation(translation, "[[JavaLangDouble valueOfWithDouble:doubleValue_] hash]");
-  }
-
-  public void testNoBoxingFormatParameter() throws IOException {
-    String source = "public class Test { public int size() { return 3; } " +
-        "public String toString() { " +
-        "return String.format(\"<ByteString.Output@%s size=%d>\", " +
-        "Integer.toHexString(System.identityHashCode(this)), size()); }}";
-    String translation = translateSourceFile(source, "Test", "Test.m");
-
-    assertTranslation(translation,
-        "[JavaLangInteger toHexStringWithInt:[JavaLangSystem identityHashCodeWithId:self]], " +
-        "[self size], nil]");
-  }
-
-  public void testNoBoxingFormatPrimitiveParameter() throws IOException {
-    String source = "public class Test { " +
-        "boolean b; byte b2; char c; double d; float f; int i; long l; short s;" +
-        "public String toString() { " +
-        "return String.format(\"b=%d b2=%d c=%c d=%f f=%f i=%d l=%d s=%d\", " +
-        "  b, b2, c, d, f, i, l, s); }}";
-    String translation = translateSourceFile(source, "Test", "Test.m");
-
-    assertTranslation(translation,
-        "stringWithFormat:@\"b=%d b2=%d c=%C d=%f f=%f i=%d l=%lld s=%d\" , " +
-        "b_, b2_, c_, d_, f_, i_, l_, s_, nil];");
   }
 
   public void testAutoboxArrayIndex() throws IOException {
@@ -410,32 +385,12 @@ public class AutoboxerTest extends GenerationTest {
     assertTranslation(translation, "int i3 = 1 + 2 + [i1 intValue] + [i2 intValue]");
   }
 
-  public void testDoNotBoxStringFormatArg() throws IOException {
-    String source = "public class Test { String test(char sign, int hour, int minute) {" +
-            "return String.format(\"GMT%c%02d:%02d\", sign, hour, minute); }}";
-    String translation = translateSourceFile(source, "Test", "Test.m");
-    assertTranslation(translation,
-        "stringWithFormat:@\"GMT%C%02d:%02d\" , sign, hour, minute, nil];");
-  }
-
   public void testUnboxOfSwitchStatementExpression() throws IOException {
     String translation = translateSourceFile(
         "class Test { void test() {" +
         " Integer i = 3;" +
         " switch (i) { case 1: case 2: case 3: } } }", "Test", "Test.m");
     assertTranslation(translation, "switch ([i intValue]) {");
-  }
-
-  // Verify that a primitive referenced as an object in the format string is boxed.
-  public void testFormatAutoboxing() throws IOException {
-    String translation = translateSourceFile("public class Test { " +
-        "String test(int n) { return String.format(\"%s\", n); }" +
-        "String test2() { return String.format(\"%s %d %s\", \"foo\", 2, 4); }}", "Test", "Test.m");
-    assertTranslation(translation,
-        "[NSString stringWithFormat:@\"%@\" , [JavaLangInteger valueOfWithInt:n], nil]");
-    assertTranslation(translation,
-        "[NSString stringWithFormat:@\"%@ %d %@\" , @\"foo\", 2, " +
-        "[JavaLangInteger valueOfWithInt:4], nil]");
   }
 
   public void testInvokeSuperMethodAutoboxing() throws IOException {

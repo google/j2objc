@@ -23,7 +23,6 @@ import com.google.devtools.j2objc.J2ObjC;
 import com.google.devtools.j2objc.types.GeneratedMethodBinding;
 import com.google.devtools.j2objc.types.GeneratedTypeBinding;
 import com.google.devtools.j2objc.types.GeneratedVariableBinding;
-import com.google.devtools.j2objc.types.IOSVariableBinding;
 import com.google.devtools.j2objc.types.NodeCopier;
 import com.google.devtools.j2objc.types.PointerTypeBinding;
 import com.google.devtools.j2objc.types.Types;
@@ -71,7 +70,6 @@ import org.eclipse.jdt.core.dom.PrimitiveType;
 import org.eclipse.jdt.core.dom.ReturnStatement;
 import org.eclipse.jdt.core.dom.SingleVariableDeclaration;
 import org.eclipse.jdt.core.dom.Statement;
-import org.eclipse.jdt.core.dom.StringLiteral;
 import org.eclipse.jdt.core.dom.SuperMethodInvocation;
 import org.eclipse.jdt.core.dom.SwitchStatement;
 import org.eclipse.jdt.core.dom.ThrowStatement;
@@ -348,14 +346,10 @@ public class Rewriter extends ErrorReportingASTVisitor {
 
   @Override
   public boolean visit(MethodInvocation node) {
-    boolean visitChildren = true;
-    if (rewriteStringFormat(node)) {
-      visitChildren =  false;
-    }
     IMethodBinding binding = Types.getMethodBinding(node);
     String name = binding.getName();
     renameReservedNames(name, binding);
-    return visitChildren;
+    return true;
   }
 
   @Override
@@ -743,121 +737,14 @@ public class Rewriter extends ErrorReportingASTVisitor {
   }
 
   /**
-   * Rewrites String.format()'s format string to be iOS-compatible.
-   *
-   * @return true if the node was rewritten
-   */
-  private boolean rewriteStringFormat(MethodInvocation node) {
-    IMethodBinding binding = Types.getMethodBinding(node);
-    if (binding == null) {
-      // No binding due to error already reported.
-      return false;
-    }
-    ITypeBinding typeBinding = binding.getDeclaringClass();
-    AST ast = node.getAST();
-    if (typeBinding.equals(ast.resolveWellKnownType("java.lang.String"))
-        && binding.getName().equals("format")) {
-
-      List<Expression> args = ASTUtil.getArguments(node);
-      if (args.isEmpty()) {
-        return false;
-      }
-      int iFormatArg = 0;
-      Expression formatArg = args.get(iFormatArg);
-      typeBinding = Types.getTypeBinding(args.get(iFormatArg));
-      if (typeBinding.getQualifiedName().equals("java.util.Locale")) {
-        typeBinding = Types.getTypeBinding(args.get(++iFormatArg));
-      }
-      if (formatArg instanceof StringLiteral) {
-        String format = ((StringLiteral) formatArg).getLiteralValue();
-        String convertedFormat = convertStringFormatString(format, args, iFormatArg + 1);
-        if (!format.equals(convertedFormat)) {
-          StringLiteral newLiteral = ast.newStringLiteral();
-          newLiteral.setLiteralValue(convertedFormat);
-          Types.addBinding(newLiteral, ast.resolveWellKnownType("java.lang.String"));
-          args.set(iFormatArg, newLiteral);
-        }
-        return true;
-      }
-    }
-    return false;
-  }
-
-  /**
-   * Convert a Java string format string into a NSString equivalent.
-   */
-  @SuppressWarnings("fallthrough")
-  private String convertStringFormatString(String s, List<Expression> args, int iFirstArg) {
-    if (s.isEmpty()) {
-      return s;
-    }
-    char[] chars = s.toCharArray();
-    StringBuffer result = new StringBuffer();
-    boolean inSpecifier = false;
-    for (int i = 0; i < chars.length; i++) {
-      char c = chars[i];
-      if (c == '%') {
-        result.append('%');
-        inSpecifier = true;
-      } else if (inSpecifier) {
-        switch (c) {
-          case 's':
-          case 'S':
-            result.append('@');
-            inSpecifier = false;
-            iFirstArg++;
-            break;
-          case 'c':
-          case 'C':
-            result.append('C');
-            inSpecifier = false;
-            iFirstArg++;
-            break;
-          case 'h':
-          case 'H':
-            result.append('x');
-            inSpecifier = false;
-            iFirstArg++;
-            break;
-          case 'd':
-            if (Types.isLongType(Types.getTypeBinding(args.get(iFirstArg)))) {
-              result.append("ll");
-            }
-            result.append(c);
-            inSpecifier = false;
-            iFirstArg++;
-            break;
-          case 'e':
-          case 'f':
-          case 'g':
-          case 'o':
-          case 'x':
-            result.append(c);
-            inSpecifier = false;
-            iFirstArg++;
-            break;
-          case '%':
-            result.append(c);
-            inSpecifier = false;
-            break;
-          default:
-            result.append(c);
-        }
-      } else {
-        result.append(c);
-      }
-    }
-    return result.toString();
-  }
-
-  /**
    * Add an abstract method to the given type that implements the given
    * interface method binding.
    */
   private void addAbstractMethod(
       AST ast, ITypeBinding typeBinding, IMethodBinding interfaceMethod,
       List<BodyDeclaration> decls) {
-    MethodDeclaration method = createInterfaceMethodBody(ast, typeBinding, interfaceMethod);
+    MethodDeclaration method = createInterfaceMethodBody(ast, typeBinding, interfaceMethod,
+        interfaceMethod.getModifiers());
 
     ASTUtil.getModifiers(method).add(ast.newModifier(ModifierKeyword.ABSTRACT_KEYWORD));
 
@@ -877,19 +764,19 @@ public class Rewriter extends ErrorReportingASTVisitor {
       List<BodyDeclaration> decls) {
     Logger.getAnonymousLogger().fine(String.format("adding %s to %s",
         interfaceMethod.getName(), typeBinding.getQualifiedName()));
-    MethodDeclaration method = createInterfaceMethodBody(ast, typeBinding, interfaceMethod);
+    MethodDeclaration method =
+        createInterfaceMethodBody(ast, typeBinding, interfaceMethod, Modifier.PUBLIC);
 
     // Add method body with single "super.method(parameters);" statement.
     Block body = ast.newBlock();
     method.setBody(body);
-    SuperMethodInvocation superInvocation = ast.newSuperMethodInvocation();
-    superInvocation.setName(NodeCopier.copySubtree(ast, method.getName()));
+    SuperMethodInvocation superInvocation =
+        ASTFactory.newSuperMethodInvocation(ast, Types.getMethodBinding(method));
 
     for (SingleVariableDeclaration param : ASTUtil.getParameters(method)) {
       Expression arg = NodeCopier.copySubtree(ast, param.getName());
       ASTUtil.getArguments(superInvocation).add(arg);
     }
-    Types.addBinding(superInvocation, Types.getMethodBinding(method));
     ReturnStatement returnStmt = ast.newReturnStatement();
     returnStmt.setExpression(superInvocation);
     ASTUtil.getStatements(body).add(returnStmt);
@@ -898,17 +785,16 @@ public class Rewriter extends ErrorReportingASTVisitor {
   }
 
   private MethodDeclaration createInterfaceMethodBody(
-      AST ast, ITypeBinding typeBinding, IMethodBinding interfaceMethod) {
+      AST ast, ITypeBinding typeBinding, IMethodBinding interfaceMethod, int modifiers) {
     GeneratedMethodBinding methodBinding =
-        GeneratedMethodBinding.newOverridingMethod(interfaceMethod, typeBinding);
+        GeneratedMethodBinding.newOverridingMethod(interfaceMethod, typeBinding, modifiers);
     MethodDeclaration method = ASTFactory.newMethodDeclaration(ast, methodBinding);
 
     ITypeBinding[] parameterTypes = interfaceMethod.getParameterTypes();
     for (int i = 0; i < parameterTypes.length; i++) {
       ITypeBinding paramType = parameterTypes[i];
-      IVariableBinding paramBinding = IOSVariableBinding.newParameter(
-          "param" + i, i, paramType, methodBinding, paramType.getDeclaringClass(),
-          Modifier.isFinal(paramType.getModifiers()));
+      IVariableBinding paramBinding = new GeneratedVariableBinding(
+          "param" + i, 0, paramType, false, true, typeBinding, methodBinding);
       ASTUtil.getParameters(method).add(ASTFactory.newSingleVariableDeclaration(ast, paramBinding));
       methodBinding.addParameter(paramType);
     }

@@ -28,6 +28,13 @@ ARCH_LIB_DIR = $(DIST_LIB_DIR)
 ARCH_INCLUDE_DIR = $(DIST_INCLUDE_DIR)
 endif
 
+ifndef GEN_OBJC_DIR
+GEN_OBJC_DIR = $(BUILD_DIR)/objc
+endif
+ifndef GEN_JAVA_DIR
+GEN_JAVA_DIR = $(BUILD_DIR)/java
+endif
+
 ifndef J2OBJC_ARCHS
 J2OBJC_ARCHS = macosx iphone iphonev7s simulator
 endif

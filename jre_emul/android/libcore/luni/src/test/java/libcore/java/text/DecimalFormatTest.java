@@ -57,7 +57,6 @@ public class DecimalFormatTest extends junit.framework.TestCase {
 //        assertEquals(309, numberFormat.format(BigInteger.valueOf(123)).length());
 //    }
 
-    // Regression test for http://b/1897917: BigDecimal does not take into account multiplier.
     // TODO(tball): enable when field position iterating on iOS is supported.
 //    public void testBigDecimalBug1897917() {
 //        // For example. the BigDecimal 0.17 formatted in PercentInstance is 0% instead of 17%:

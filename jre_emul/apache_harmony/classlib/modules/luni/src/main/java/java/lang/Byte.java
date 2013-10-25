@@ -117,6 +117,15 @@ public final class Byte extends Number implements Comparable<Byte> {
     }
 
     /**
+     * Compares two {@code byte} values.
+     * @return 0 if lhs = rhs, less than 0 if lhs &lt; rhs, and greater than 0 if lhs &gt; rhs.
+     * @since 1.7
+     */
+    public static int compare(byte lhs, byte rhs) {
+        return lhs > rhs ? 1 : (lhs < rhs ? -1 : 0);
+    }
+
+    /**
      * Parses the specified string and returns a {@code Byte} instance if the
      * string can be decoded into a single byte value. The string may be an
      * optional minus sign "-" followed by a hexadecimal ("0x..." or "#..."),
@@ -235,6 +244,14 @@ public final class Byte extends Number implements Comparable<Byte> {
     @Override
     public String toString() {
         return Integer.toString(value);
+    }
+
+    /**
+     * Returns a two-digit hex string. That is, -1 becomes "ff" or "FF" and 2 becomes "02".
+     * @hide internal use only
+     */
+    public static String toHexString(byte b, boolean upperCase) {
+        return IntegralToString.byteToHexString(b, upperCase);
     }
 
     /**

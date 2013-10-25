@@ -24,6 +24,7 @@
 #import "IOSReflection.h"
 #import "JreEmulation.h"
 #import "java/lang/AssertionError.h"
+#import "java/lang/IllegalArgumentException.h"
 #import "java/lang/NullPointerException.h"
 #import "java/lang/reflect/Method.h"
 
@@ -39,10 +40,9 @@
 - (id)initWithSelector:(SEL)aSelector
              withClass:(IOSClass *)aClass
           withMetadata:(const J2ObjcMethodInfo *)metadata {
-  if (self = [super initWithSelector:aSelector withClass:aClass]) {
-    metadata_ = metadata;
-  }
-  return self;
+  return [super initWithSelector:aSelector
+                       withClass:aClass
+                    withMetadata:(const J2ObjcMethodInfo *)metadata];
 }
 
 // Returns method name.
@@ -74,8 +74,14 @@
 
 - (IOSClass *)getReturnType {
   if (metadata_ && metadata_->returnType) {
-    return [IOSClass classForIosName:[NSString stringWithCString:metadata_->returnType encoding:
-        [NSString defaultCStringEncoding]]];
+    if (strlen(metadata_->returnType) == 1) {
+      IOSClass *primitiveType = [IOSClass primitiveClassForChar:*metadata_->returnType];
+      if (primitiveType) {
+        return primitiveType;
+      }
+    }
+    NSAssert(*(metadata_->returnType) == 'L', @"invalid return type %s", metadata_->returnType);
+    return [IOSClass classForIosName:[NSString stringWithUTF8String:&metadata_->returnType[1]]];
   }
   const char *argType = [methodSignature_ methodReturnType];
   if (strlen(argType) != 1) {
@@ -97,21 +103,26 @@
 - (id)invokeWithId:(id)object
        withNSObjectArray:(IOSObjectArray *)arguments {
   if (!classMethod_ && object == nil) {
-    id exception =
-        [[JavaLangNullPointerException alloc]
-            initWithNSString:@"null object specified for non-final method"];
-#if ! __has_feature(objc_arc)
-    [exception autorelease];
-#endif
-    @throw exception;
+    @throw AUTORELEASE([[JavaLangNullPointerException alloc] initWithNSString:
+      @"null object specified for non-final method"]);
+  }
+
+  IOSObjectArray *paramTypes = [self getParameterTypes];
+  NSUInteger nArgs = arguments ? arguments->size_ : 0;
+  if (nArgs != paramTypes->size_) {
+    @throw AUTORELEASE([[JavaLangIllegalArgumentException alloc] initWithNSString:
+        @"wrong number of arguments"]);
   }
 
   NSInvocation *invocation =
       [NSInvocation invocationWithMethodSignature:methodSignature_];
   [invocation setSelector:selector_];
-  int nArgs = [arguments count];
   for (NSUInteger i = 0; i < nArgs; i++) {
-    NSObject *arg = arguments->buffer_[i];
+    J2ObjcRawValue arg;
+    if (![paramTypes->buffer_[i] unboxValue:arguments->buffer_[i] toRawValue:&arg]) {
+      @throw AUTORELEASE([[JavaLangIllegalArgumentException alloc] initWithNSString:
+          @"argument type mismatch"]);
+    }
     [invocation setArgument:&arg atIndex:i + SKIPPED_ARGUMENTS];
   }
   if (object == nil || [object isKindOfClass:[IOSClass class]]) {
@@ -121,14 +132,13 @@
   }
 
   [invocation invoke];
-  const char *returnType = [methodSignature_ methodReturnType];
-  if (*returnType != 'v') {  // if not void
-    J2ObjcRawValue returnValue;
-    [invocation getReturnValue:&returnValue];
-    return J2ObjcBoxValue(&returnValue, returnType);
-  } else {
+  IOSClass *returnType = [self getReturnType];
+  if (returnType == [IOSClass voidClass]) {
     return nil;
   }
+  J2ObjcRawValue returnValue;
+  [invocation getReturnValue:&returnValue];
+  return [returnType boxValue:&returnValue];
 }
 
 - (NSString *)description {

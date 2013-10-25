@@ -49,6 +49,7 @@
 #  define ARCBRIDGE_TRANSFER __bridge_transfer
 #  define ARC_CONSUME_PARAMETER __attribute((ns_consumed))
 #  define AUTORELEASE(x) x
+#  define RELEASE_(x) x
 #  define RETAIN_(x) x
 #  define RETAIN_AND_AUTORELEASE(x) x
 # else
@@ -56,6 +57,7 @@
 #  define ARCBRIDGE_TRANSFER
 #  define ARC_CONSUME_PARAMETER
 #  define AUTORELEASE(x) [x autorelease]
+#  define RELEASE_(x) [x release]
 #  define RETAIN_(x) [x retain]
 #  define RETAIN_AND_AUTORELEASE(x) [[x retain] autorelease]
 # endif
