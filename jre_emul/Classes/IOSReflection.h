@@ -43,7 +43,7 @@ typedef union J2ObjcConstantValue {
   int int_;
   long long long_;
   short short_;
-  const void *string;
+  const char *string;
 } J2ObjcConstantValue;
 
 // This type isn't actually used, but just defines the header shared
@@ -62,32 +62,32 @@ typedef struct J2ObjcConstantValueAttribute {
 typedef struct J2ObjcEnclosingMethodAttribute {
   uint16_t attribute_type;  // ENCLOSING_METHOD
   uint16_t length;          // sizeof(id) + 4
-  const void *selector;
+  const char *selector;
 } J2ObjcAnnotationDefaultAttribute;
 
 typedef struct J2ObjcExceptionsAttribute {
   uint16_t attribute_type;  // EXCEPTIONS
   uint16_t length;          // count * sizeof(id) + 6
   uint16_t count;
-  const void **exception_classnames;
+  const char **exception_classnames;
 } J2ObjcExceptionAttribute;
 
 typedef struct J2ObjcGenericSignatureAttribute {
   uint16_t attribute_type;  // GENERIC_SIGNATURE
   uint16_t length;          // sizeof(id) + 4
-  const void *selector;
+  const char *selector;
 } J2ObjcGenericSignatureAttribute;
 
 typedef struct J2ObjcInnerClassAttribute {
   uint16_t attribute_type;  // INNER_CLASSES
   uint16_t length;          // count * sizeof(id) + 6
   uint16_t count;
-  const void **exception_classnames;
+  const char **exception_classnames;
 } J2ObjcInnerClassAttribute;
 
 typedef struct J2ObjcClassInfo {
-  const void *typeName;
-  const void *packageName;
+  const char *typeName;
+  const char *packageName;
   uint16_t modifiers;
   uint16_t attribute_count;
   // Inner classes, enclosing method, generic signature.
@@ -95,7 +95,7 @@ typedef struct J2ObjcClassInfo {
 } J2ObjcClassInfo;
 
 typedef struct J2ObjcMemberInfo {
-  const void *name;
+  const char *name;
   uint16_t modifiers;
   uint16_t attribute_count;
   // Fields: constant value, generic signature.
