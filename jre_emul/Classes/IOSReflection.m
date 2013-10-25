@@ -70,34 +70,3 @@ id J2ObjcBoxValue(J2ObjcRawValue *value, const char *type) {
 #endif
   @throw exception;
 }
-
-// Returns the native value from a possible wrapper object. The type
-// parameter is used to differentiate from cases where a wrapper object
-// is the expected type. For example, some methods may return a float
-// and some may return a java.lang.Float -- the reflection code needs
-// to work with both as java.lang.Float instances until the result is
-// unboxed to the expected type.
-void J2ObjcUnboxValue(id value, const char *type, J2ObjcRawValue *result) {
-  char typeChar = *type;
-  if (typeChar == 'B' && [value isKindOfClass:[JavaLangBoolean class]]) {
-    result->asBOOL = [(JavaLangBoolean *) value booleanValue];
-  } else if (typeChar == 'c' && [value isKindOfClass:[JavaLangByte class]]) {
-    result->asChar = [(JavaLangByte *) value charValue];
-  } else if (typeChar == 'S' && [value isKindOfClass:[JavaLangCharacter class]]) {
-    result->asUnichar = [(JavaLangCharacter *) value charValue];
-  } else if (typeChar == 's' && [value isKindOfClass:[JavaLangShort class]]) {
-    result->asShort = [(JavaLangShort *) value shortValue];
-  } else if (typeChar == 'i' && [value isKindOfClass:[JavaLangInteger class]]) {
-    result->asInt = [(JavaLangInteger *) value intValue];
-  } else if ((typeChar == 'l' || typeChar == 'L' || typeChar == 'q' || typeChar == 'Q') &&
-             [value isKindOfClass:[JavaLangLong class]]) {
-    result->asLong = [(JavaLangLong *) value longValue];
-  } else if (typeChar == 'f' && [value isKindOfClass:[JavaLangFloat class]]) {
-    result->asFloat = [(JavaLangFloat *) value floatValue];
-  } else if (typeChar == 'd' && [value isKindOfClass:[JavaLangDouble class]]) {
-    result->asDouble = [(JavaLangDouble *) value doubleValue];
-  } else {
-    // No unboxing needed.
-    result->asId = value;
-  }
-}

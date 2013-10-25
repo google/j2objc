@@ -721,6 +721,11 @@ IOSObjectArray *copyFieldsToObjectArray(NSArray *fields) {
   return [[self getClassLoader] getResourceAsStreamWithNSString:name];
 }
 
+- (BOOL)unboxValue:(id)value toRawValue:(J2ObjcRawValue *)rawValue {
+  rawValue->asId = value;
+  return true;
+}
+
 // Implementing NSCopying allows IOSClass objects to be used as keys in the
 // class cache.
 - (id)copyWithZone:(NSZone *)zone {
