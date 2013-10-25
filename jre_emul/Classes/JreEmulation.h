@@ -30,6 +30,7 @@
 #import "NSObject+JavaObject.h"
 #import "NSString+JavaString.h"
 #import "JreMemDebug.h"
+#import "IOSReflection.h"
 
 # ifndef __has_attribute
 #  define __has_attribute(x) 0 // Compatibility with non-clang compilers.

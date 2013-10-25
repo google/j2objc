@@ -43,7 +43,7 @@ public class ClassTest extends TestCase {
   public void testForName() throws Exception {
     Class<?> thisClass = Class.forName("java.lang.ClassTest");
     assertNotNull(thisClass);
-    assertEquals("JavaLangClassTest", thisClass.getName());
+    assertEquals("java.lang.ClassTest", thisClass.getName());
     Method answerToLife = thisClass.getMethod("answerToLife");
     Integer answer = (Integer) answerToLife.invoke(this);
     assertEquals(42, answer.intValue());
@@ -123,5 +123,23 @@ public class ClassTest extends TestCase {
     c2 = String[][].class;
     assertFalse(c1 == c2);
     assertTrue(c1 == c2.getComponentType());
+  }
+
+  public void testGetPackage() throws Exception {
+    // Test package name for a class.
+    Class<?> listClass = Class.forName("java.util.ArrayList");
+    Package pkg = listClass.getPackage();
+    assertNotNull(pkg);
+    assertEquals("java.util", pkg.getName());
+
+    // Test package name for an interface.
+    Class<?> readerClass = Class.forName("java.io.Reader");
+    pkg = readerClass.getPackage();
+    assertNotNull(pkg);
+    assertEquals("java.io", pkg.getName());
+
+    // Test no package for arrays and primitive types.
+    assertNull(boolean.class.getPackage());
+    assertNull(int[].class.getPackage());
   }
 }

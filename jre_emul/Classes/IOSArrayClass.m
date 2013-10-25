@@ -62,6 +62,10 @@
   return [[[self getComponentType] getName] stringByAppendingString:@"Array"];
 }
 
+- (NSString *)objcName {
+  return [self getSimpleName];
+}
+
 - (id)newInstance {
   if (!componentType_) {
     @throw AUTORELEASE([[JavaLangInstantiationException alloc] init]);

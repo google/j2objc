@@ -244,6 +244,7 @@ public class ObjectiveCImplementationGenerator extends ObjectiveCSourceFileGener
         printTypeAnnotationsMethod(node);
         printMethodAnnotationMethods(Lists.newArrayList(node.getMethods()));
         printFieldAnnotationMethods(Lists.newArrayList(node.getFields()));
+        printMetadata(node);
       }
 
       println("@end");
@@ -270,7 +271,10 @@ public class ObjectiveCImplementationGenerator extends ObjectiveCSourceFileGener
     println("- (IOSClass *)annotationType {");
     printf("  return [IOSClass classWithProtocol:@protocol(%s)];\n", typeName);
     println("}\n");
-    printTypeAnnotationsMethod(node);
+    if (!Options.stripReflection()) {
+      printTypeAnnotationsMethod(node);
+      printMetadata(node);
+    }
     println("@end\n");
   }
 
@@ -623,7 +627,10 @@ public class ObjectiveCImplementationGenerator extends ObjectiveCSourceFileGener
     printf("  return nil;\n");
     println("}\n");
 
-    printTypeAnnotationsMethod(node);
+    if (!Options.stripReflection()) {
+      printTypeAnnotationsMethod(node);
+      printMetadata(node);
+    }
     println("@end");
   }
 
@@ -1118,6 +1125,19 @@ public class ObjectiveCImplementationGenerator extends ObjectiveCSourceFileGener
       printf(" } count:%d type:[NSObject getClass]]", array.length);
     } else {
       assert false : "unknown annotation value type";
+    }
+  }
+
+  private void printMetadata(AbstractTypeDeclaration node) {
+    ITypeBinding type = Types.getTypeBinding(node);
+    String fullName = NameTable.getFullName(type);
+    if (type.getPackage() != null || Modifier.isPublic(type.getModifiers()) ||
+        !type.getQualifiedName().equals(fullName)) {
+      printf("static J2ObjcClassInfo _%s = { ", fullName);
+      printf("@\"%s\", ", type.getName());
+      printf("@\"%s\", ", type.getPackage().getName());
+      printf("0x%s };\n\n", Integer.toHexString(type.getModifiers()));
+      printf("+ (J2ObjcClassInfo *)__metadata {\n  return &_%s;\n}\n\n", fullName);
     }
   }
 }

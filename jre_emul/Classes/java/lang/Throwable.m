@@ -220,13 +220,10 @@
 }
 
 - (NSString *)description {
-  NSString *className = [[self class] description];
+  NSString *className = [[self getClass] getName];
   NSString *msg = [self getMessage];
   if (msg) {
     return [NSString stringWithFormat:@"%@: %@", className, msg];
-  } else if (cause) {
-    return [NSString stringWithFormat:@"%@: %@",
-            className, [cause description]];
   } else {
     return className;
   }
