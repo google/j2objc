@@ -15,6 +15,7 @@
 package com.google.devtools.cyclefinder;
 
 import com.google.common.collect.HashMultimap;
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
@@ -66,6 +67,12 @@ public class ReferenceGraph {
     addAnonymousClassCaptureEdges();
   }
 
+  private void addEdge(Edge e) {
+    if (!e.getOrigin().getKey().equals(e.getTarget().getKey())) {
+      edges.put(e.getOrigin().getKey(), e);
+    }
+  }
+
   private void addFieldEdges() {
     for (ITypeBinding type : allTypes.values()) {
       for (IVariableBinding field : type.getDeclaredFields()) {
@@ -77,7 +84,7 @@ public class ReferenceGraph {
             // Exclude self-referential fields. (likely linked DS or delegate pattern)
             && !type.isAssignmentCompatible(fieldType)
             && !isWeak(field)) {
-          edges.put(type.getKey(), Edge.newFieldEdge(type, field));
+          addEdge(Edge.newFieldEdge(type, field));
         }
       }
     }
@@ -96,8 +103,7 @@ public class ReferenceGraph {
       collectSubtypes(type.getKey(), type, subtypes);
     }
     for (String type : allTypes.keySet()) {
-      Set<Edge> newEdges = Sets.newHashSet();
-      for (Edge e : edges.get(type)) {
+      for (Edge e : ImmutableList.copyOf(edges.get(type))) {
         Set<String> targetSubtypes = subtypes.get(e.getTarget().getKey());
         Set<String> whitelistKeys = Sets.newHashSet();
         IVariableBinding field = e.getField();
@@ -111,10 +117,9 @@ public class ReferenceGraph {
           }
         }
         for (String subtype : Sets.difference(targetSubtypes, whitelistKeys)) {
-          newEdges.add(Edge.newSubtypeEdge(e, allTypes.get(subtype)));
+          addEdge(Edge.newSubtypeEdge(e, allTypes.get(subtype)));
         }
       }
-      edges.putAll(type, newEdges);
     }
   }
 
@@ -132,15 +137,13 @@ public class ReferenceGraph {
 
   private void addSuperclassEdges() {
     for (ITypeBinding type : allTypes.values()) {
-      Set<Edge> newEdges = Sets.newHashSet();
       ITypeBinding superclass = type.getSuperclass();
       while (superclass != null) {
         for (Edge e : edges.get(superclass.getKey())) {
-          newEdges.add(Edge.newSuperclassEdge(e, type, superclass));
+          addEdge(Edge.newSuperclassEdge(e, type, superclass));
         }
         superclass = superclass.getSuperclass();
       }
-      edges.putAll(type.getKey(), newEdges);
     }
   }
 
@@ -150,7 +153,7 @@ public class ReferenceGraph {
           && !isWeakOuter(type)) {
         ITypeBinding declaringType = type.getDeclaringClass();
         if (declaringType != null && !whitelist.containsType(declaringType)) {
-          edges.put(type.getKey(), Edge.newOuterClassEdge(type, declaringType));
+          addEdge(Edge.newOuterClassEdge(type, declaringType));
         }
       }
     }
@@ -163,7 +166,7 @@ public class ReferenceGraph {
              OuterReferenceResolver.getCapturedVars(type.getTypeDeclaration())) {
           ITypeBinding targetType = getElementType(capturedVar.getType());
           if (!targetType.isPrimitive() && !whitelist.containsType(targetType)) {
-            edges.put(type.getKey(), Edge.newCaptureEdge(type, capturedVar));
+            addEdge(Edge.newCaptureEdge(type, capturedVar));
           }
         }
       }
