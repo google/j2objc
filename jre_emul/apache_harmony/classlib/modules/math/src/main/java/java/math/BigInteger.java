@@ -23,6 +23,10 @@ import java.io.ObjectOutputStream;
 import java.util.Random;
 import java.io.Serializable;
 
+/*-[
+#import "java/lang/CloneNotSupportedException.h"
+]-*/
+
 /**
  * This class represents immutable integer numbers of arbitrary length. Large
  * numbers are typically used in security applications and therefore BigIntegers
@@ -294,7 +298,7 @@ public class BigInteger extends Number implements Comparable<BigInteger>,
 
     /**
      * Constructs a number which array is of size 1.
-     * 
+     *
      * @param sign
      *            the sign of the number
      * @param value
@@ -309,7 +313,7 @@ public class BigInteger extends Number implements Comparable<BigInteger>,
     /**
      * Constructs a number without to create new space. This construct should be
      * used only if the three fields of representation are known.
-     * 
+     *
      * @param sign
      *            the sign of the number
      * @param numberLength
@@ -326,7 +330,7 @@ public class BigInteger extends Number implements Comparable<BigInteger>,
     /**
      * Creates a new {@code BigInteger} whose value is equal to the specified
      * {@code long}.
-     * 
+     *
      * @param sign
      *            the sign of the number
      * @param val
@@ -349,7 +353,7 @@ public class BigInteger extends Number implements Comparable<BigInteger>,
      * Creates a new {@code BigInteger} with the given sign and magnitude. This
      * constructor does not create a copy, so any changes to the reference will
      * affect the new number.
-     * 
+     *
      * @param signum
      *            The sign of the number represented by {@code digits}
      * @param digits
@@ -1560,5 +1564,20 @@ public class BigInteger extends Number implements Comparable<BigInteger>,
         resDigits[intCount] = 1 << bitN;
         return new BigInteger(1, intCount+1, resDigits);
     }
+
+    /*
+     * These ObjC methods are needed to support subclassing of NSNumber.
+     * objCType is used by descriptionWithLocale:.
+     * getValue: is used by copyWithZone:.
+     */
+    /*-[
+    - (const char *)objCType {
+      return "q";
+    }
+
+    - (void)getValue:(void *)buffer {
+      @throw AUTORELEASE([[JavaLangCloneNotSupportedException alloc] init]);
+    }
+    ]-*/
 }
 

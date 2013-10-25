@@ -105,6 +105,7 @@ JRE_INTERFACES = \
 	java/util/Deque.h \
 	java/util/Enumeration.h \
 	java/util/EventListener.h \
+	java/util/Formattable.h \
 	java/util/Iterator.h \
 	java/util/List.h \
 	java/util/ListIterator.h \
@@ -418,16 +419,27 @@ JAVA_SOURCES = \
 	java/util/Currency.java \
 	java/util/Date.java \
 	java/util/Dictionary.java \
+	java/util/DuplicateFormatFlagsException.java \
 	java/util/EnumMap.java \
 	java/util/EnumSet.java \
 	java/util/EventObject.java \
 	java/util/EmptyStackException.java \
+	java/util/FormatFlagsConversionMismatchException.java \
+	java/util/FormattableFlags.java \
+	java/util/Formatter.java \
+	java/util/FormatterClosedException.java \
 	java/util/Grego.java \
 	java/util/GregorianCalendar.java \
 	java/util/HashSet.java \
 	java/util/Hashtable.java \
 	java/util/HugeEnumSet.java \
 	java/util/IdentityHashMap.java \
+	java/util/IllegalFormatException.java \
+	java/util/IllegalFormatCodePointException.java \
+	java/util/IllegalFormatConversionException.java \
+	java/util/IllegalFormatFlagsException.java \
+	java/util/IllegalFormatPrecisionException.java \
+	java/util/IllegalFormatWidthException.java \
 	java/util/InputMismatchException.java \
 	java/util/InvalidPropertiesFormatException.java \
 	java/util/LinkedList.java \
@@ -443,6 +455,8 @@ JAVA_SOURCES = \
 	java/util/logging/NSLogHandler.java \
 	java/util/MapEntry.java \
 	java/util/MiniEnumSet.java \
+	java/util/MissingFormatArgumentException.java \
+	java/util/MissingFormatWidthException.java \
 	java/util/MissingResourceException.java \
 	java/util/NoSuchElementException.java \
 	java/util/PriorityQueue.java \
@@ -460,6 +474,8 @@ JAVA_SOURCES = \
 	java/util/TimeZone.java \
 	java/util/TreeMap.java \
 	java/util/TreeSet.java \
+	java/util/UnknownFormatConversionException.java \
+	java/util/UnknownFormatFlagsException.java \
 	java/util/Vector.java \
 	java/util/WeakHashMap.java \
 	java/util/regex/Matcher.java \
