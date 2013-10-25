@@ -90,9 +90,10 @@
 
 // Return a Obj-C type encoding as a Java type or wrapper type.
 IOSClass *decodeTypeEncoding(const char *type) {
-  if (strlen(type) > 1 && type[0] == '@') {
-    // Format is '@"type-name"'.
-    char *typeNameAsC = strndup(type + 2, strlen(type) - 3);
+  if (strlen(type) > 3 && type[0] == '@') {
+    // Format is either '@"type-name"' for classes, or '@"<type-name>"' for protocols.
+    char *typeNameAsC = type[2] == '<'
+        ? strndup(type + 3, strlen(type) - 5) : strndup(type + 2, strlen(type) - 3);
     NSString *typeName = [NSString stringWithUTF8String:typeNameAsC];
     free(typeNameAsC);
     return [IOSClass forName:typeName];
