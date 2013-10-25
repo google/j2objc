@@ -38,6 +38,7 @@ import org.eclipse.jdt.core.dom.ConditionalExpression;
 import org.eclipse.jdt.core.dom.ConstructorInvocation;
 import org.eclipse.jdt.core.dom.EnumConstantDeclaration;
 import org.eclipse.jdt.core.dom.EnumDeclaration;
+import org.eclipse.jdt.core.dom.Expression;
 import org.eclipse.jdt.core.dom.FieldAccess;
 import org.eclipse.jdt.core.dom.IBinding;
 import org.eclipse.jdt.core.dom.InfixExpression;
@@ -117,6 +118,9 @@ public class NodeCopier extends ASTMatcher {
 
     if (from instanceof ASTNode) {
       OuterReferenceResolver.copyNode((ASTNode) from, (ASTNode) to);
+    }
+    if (from instanceof Expression && Types.hasNilCheck((Expression) from)) {
+      Types.addNilCheck((Expression) to);
     }
   }
 
