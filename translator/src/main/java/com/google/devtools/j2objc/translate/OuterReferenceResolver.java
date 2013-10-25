@@ -179,8 +179,8 @@ public class OuterReferenceResolver extends ASTVisitor {
     // Ensure that the new outer field does not conflict with a field in a superclass.
     type = type.getSuperclass();
     int suffix = 0;
-    while (type.getDeclaringClass() != null) {
-      if (!Modifier.isStatic(type.getModifiers())) {
+    while (type != null) {
+      if (type.getDeclaringClass() != null && !Modifier.isStatic(type.getModifiers())) {
         suffix++;
       }
       type = type.getSuperclass();

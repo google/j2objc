@@ -99,6 +99,26 @@ public class CycleFinderTest extends TestCase {
     assertCycle("Ltest/foo/C;", "Ltest/foo/A;");
   }
 
+  public void testWhitelistedLocalType() throws Exception {
+    addSourceFile("test/foo/A.java",
+      "package test.foo; class A { B b; void test() { "
+      + "class Inner extends B { void foo() { A a = A.this; } } } }");
+    addSourceFile("test/foo/B.java", "package test.foo; class B {}");
+    whitelistEntries.add("TYPE test.foo.A.test.Inner");
+    findCycles();
+    assertNoCycles();
+  }
+
+  public void testWhitelistedAnonymousType() throws Exception {
+    addSourceFile("test/foo/A.java",
+      "package test.foo; class A { B b; B test() { "
+      + "return new B() { void foo() { A a = A.this; } }; } }");
+    addSourceFile("test/foo/B.java", "package test.foo; class B {}");
+    whitelistEntries.add("TYPE test.foo.A.test.$");
+    findCycles();
+    assertNoCycles();
+  }
+
   public void testSubtypeOfWhitelistedType() throws Exception {
     addSourceFile("test/foo/A.java", "package test.foo; class A { B b; }");
     addSourceFile("test/foo/B.java", "package test.foo; class B { A a; }");
