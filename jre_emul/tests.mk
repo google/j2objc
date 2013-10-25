@@ -81,6 +81,7 @@ TEST_SOURCES = \
 	libcore/java/text/DecimalFormatSymbolsTest.java \
 	libcore/java/text/NumberFormatTest.java \
 	libcore/java/util/CalendarTest.java \
+	libcore/java/util/FormatterTest.java \
 	libcore/java/util/OldTimeZoneTest.java \
 	libcore/java/util/ServiceLoaderTest.java \
 	org/apache/harmony/luni/tests/java/io/BufferedInputStreamTest.java \
@@ -247,6 +248,7 @@ TEST_SOURCES = \
 	org/apache/harmony/text/tests/java/text/MessageFormatTest.java \
 	tests/api/java/lang/reflect/ProxyTest.java \
 	tests/api/java/util/CalendarTest.java \
+	tests/api/java/util/FormattableFlagsTest.java \
 	tests/api/java/util/ListResourceBundleTest.java \
 	tests/api/java/util/PropertyResourceBundleTest.java \
 	tests/api/java/util/ResourceBundleTest.java \

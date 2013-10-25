@@ -16,7 +16,6 @@
 
 package com.google.devtools.j2objc.translate;
 
-import com.google.common.collect.Lists;
 import com.google.devtools.j2objc.types.IOSMethodBinding;
 import com.google.devtools.j2objc.types.NodeCopier;
 import com.google.devtools.j2objc.types.PointerTypeBinding;
@@ -48,7 +47,6 @@ import org.eclipse.jdt.core.dom.MethodInvocation;
 import org.eclipse.jdt.core.dom.PostfixExpression;
 import org.eclipse.jdt.core.dom.PrefixExpression;
 import org.eclipse.jdt.core.dom.ReturnStatement;
-import org.eclipse.jdt.core.dom.StringLiteral;
 import org.eclipse.jdt.core.dom.SuperConstructorInvocation;
 import org.eclipse.jdt.core.dom.SuperMethodInvocation;
 import org.eclipse.jdt.core.dom.SwitchStatement;
@@ -428,37 +426,6 @@ public class Autoboxer extends ErrorReportingASTVisitor {
     if (methodBinding instanceof IOSMethodBinding) {
       return; // already converted
     }
-    if (Types.isJavaStringType(methodBinding.getDeclaringClass()) &&
-        methodBinding.getName().equals("format")) {
-      // The String.format methods are mapped directly to NSString methods,
-      // but arguments referred to as objects by the format string need to
-      // be boxed.
-      if (!args.isEmpty()) {
-        Expression first = args.get(0);
-        int firstArg = 1;
-        ITypeBinding typeBinding = Types.getTypeBinding(first);
-        if (typeBinding.getQualifiedName().equals("java.util.Locale")) {
-          first = args.get(1);
-          firstArg = 2;
-          typeBinding = Types.getTypeBinding(first);
-        }
-        if (first instanceof StringLiteral) {
-          List<Boolean> formatSpecifiers =
-              getFormatSpecifiers(((StringLiteral) first).getLiteralValue());
-          for (int i = 0; i < formatSpecifiers.size(); i++) {
-            if (formatSpecifiers.get(i)) {
-              int iArg = i + firstArg;
-              Expression arg = args.get(iArg);
-              if (Types.getTypeBinding(arg).isPrimitive()) {
-                args.set(iArg, box(arg));
-              }
-            }
-          }
-        }
-      }
-      return;
-    }
-
     ITypeBinding[] paramTypes = methodBinding.getParameterTypes();
     for (int i = 0; i < args.size(); i++) {
       ITypeBinding paramType;
@@ -473,22 +440,6 @@ public class Autoboxer extends ErrorReportingASTVisitor {
         args.set(i, replacementArg);
       }
     }
-  }
-
-  // Returns a list of booleans indicating whether the format specifier
-  // refers to an object argument or not.
-  private List<Boolean> getFormatSpecifiers(String format) {
-    List<Boolean> specifiers = Lists.newArrayList();
-    int i = 0;
-    while ((i = format.indexOf('%', i)) != -1) {
-      if (format.charAt(++i) == '%') {
-        // Skip %% sequences, since they don't have associated args.
-        ++i;
-        continue;
-      }
-      specifiers.add(format.charAt(i) == '@');
-    }
-    return specifiers;
   }
 
   private Expression boxOrUnboxExpression(Expression arg, ITypeBinding argType) {

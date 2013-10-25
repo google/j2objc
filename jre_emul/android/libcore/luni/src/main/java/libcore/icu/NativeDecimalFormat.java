@@ -174,7 +174,8 @@ public final class NativeDecimalFormat implements Cloneable {
 
     public char[] formatBigDecimal(BigDecimal value, FieldPosition field) {
         FieldPositionIterator fpi = FieldPositionIterator.forFieldPosition(field);
-        char[] result = formatDigitList(this.nsFormatter, value.toString(), fpi);
+        // iOS doesn't have native support for big decimal formatting.
+        char[] result = value.toPlainString().toCharArray();
         if (fpi != null) {
             FieldPositionIterator.setFieldPosition(fpi, field);
         }
@@ -183,7 +184,8 @@ public final class NativeDecimalFormat implements Cloneable {
 
     public char[] formatBigInteger(BigInteger value, FieldPosition field) {
         FieldPositionIterator fpi = FieldPositionIterator.forFieldPosition(field);
-        char[] result = formatDigitList(this.nsFormatter, value.toString(10), fpi);
+        // iOS doesn't have native support for big integer formatting.
+        char[] result = value.toString().toCharArray();
         if (fpi != null) {
             FieldPositionIterator.setFieldPosition(fpi, field);
         }
@@ -231,8 +233,10 @@ public final class NativeDecimalFormat implements Cloneable {
         Number number = (Number) object;
         FieldPositionIterator fpIter = new FieldPositionIterator();
         String text;
-        if (number instanceof BigInteger || number instanceof BigDecimal) {
-            text = new String(formatDigitList(this.nsFormatter, number.toString(), fpIter));
+        if (number instanceof BigInteger) {
+          text = new String(formatBigInteger((BigInteger) number, null));
+        } else if (number instanceof BigDecimal) {
+            text = new String(formatBigDecimal((BigDecimal) number, null));
         } else if (number instanceof Double || number instanceof Float) {
             double dv = number.doubleValue();
             text = new String(formatDouble(this.nsFormatter, dv, fpIter));
@@ -621,14 +625,6 @@ public final class NativeDecimalFormat implements Cloneable {
       [formatter setAllowsFloats:YES];
       NSString *string = [formatter stringFromNumber:[NSNumber numberWithDouble:value]];
       return [IOSCharArray arrayWithNSString:string];
-    ]-*/;
-
-    private static native char[] formatDigitList(Object nativeFormatter, String value,
-        FieldPositionIterator iter) /*-[
-      // TODO(tball): figure out how to do field position iterating on iOS.
-      @throw [[JavaLangAssertionError alloc]
-              initWithNSString:@"BigDecimal and BigNumber formatting not implemented"];
-      return nil;
     ]-*/;
 
     private static native char[] formatLong(Object nativeFormatter, long value,
