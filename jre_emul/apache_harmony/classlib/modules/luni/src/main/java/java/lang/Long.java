@@ -396,23 +396,7 @@ public final class Long extends Number implements Comparable<Long> {
      * @return the binary string representation of {@code l}.
      */
     public static String toBinaryString(long l) {
-        int count = 1;
-        long j = l;
-
-        if (l < 0) {
-            count = 64;
-        } else {
-            while ((j >>= 1) != 0) {
-                count++;
-            }
-        }
-
-        char[] buffer = new char[count];
-        do {
-            buffer[--count] = (char) ((l & 1) + '0');
-            l >>= 1;
-        } while (count > 0);
-        return new String(0, buffer.length, buffer);
+      return IntegralToString.longToBinaryString(l);
     }
 
     /**
@@ -425,29 +409,7 @@ public final class Long extends Number implements Comparable<Long> {
      * @return the hexadecimal string representation of {@code l}.
      */
     public static String toHexString(long l) {
-        int count = 1;
-        long j = l;
-
-        if (l < 0) {
-            count = 16;
-        } else {
-            while ((j >>= 4) != 0) {
-                count++;
-            }
-        }
-
-        char[] buffer = new char[count];
-        do {
-            int t = (int) (l & 15);
-            if (t > 9) {
-                t = t - 10 + 'a';
-            } else {
-                t += '0';
-            }
-            buffer[--count] = (char) t;
-            l >>= 4;
-        } while (count > 0);
-        return new String(0, buffer.length, buffer);
+      return IntegralToString.longToHexString(l);
     }
 
     /**
@@ -459,23 +421,7 @@ public final class Long extends Number implements Comparable<Long> {
      * @return the octal string representation of {@code l}.
      */
     public static String toOctalString(long l) {
-        int count = 1;
-        long j = l;
-
-        if (l < 0) {
-            count = 22;
-        } else {
-            while ((j >>>= 3) != 0) {
-                count++;
-            }
-        }
-
-        char[] buffer = new char[count];
-        do {
-            buffer[--count] = (char) ((l & 7) + '0');
-            l >>>= 3;
-        } while (count > 0);
-        return new String(0, buffer.length, buffer);
+      return IntegralToString.longToOctalString(l);
     }
 
     @Override
@@ -493,7 +439,7 @@ public final class Long extends Number implements Comparable<Long> {
      * @return the decimal string representation of {@code l}.
      */
     public static String toString(long l) {
-        return toString(l, 10);
+      return IntegralToString.longToString(l);
     }
 
     /**
@@ -511,38 +457,7 @@ public final class Long extends Number implements Comparable<Long> {
      * @return the string representation of {@code l}.
      */
     public static String toString(long l, int radix) {
-        if (radix < Character.MIN_RADIX || radix > Character.MAX_RADIX) {
-            radix = 10;
-        }
-        if (l == 0) {
-            return "0"; //$NON-NLS-1$
-        }
-
-        int count = 2;
-        long j = l;
-        boolean negative = l < 0;
-        if (!negative) {
-            count = 1;
-            j = -l;
-        }
-        while ((l /= radix) != 0) {
-            count++;
-        }
-
-        char[] buffer = new char[count];
-        do {
-            int ch = 0 - (int) (j % radix);
-            if (ch > 9) {
-                ch = ch - 10 + 'a';
-            } else {
-                ch += '0';
-            }
-            buffer[--count] = (char) ch;
-        } while ((j /= radix) != 0);
-        if (negative) {
-            buffer[0] = '-';
-        }
-        return new String(0, buffer.length, buffer);
+      return IntegralToString.longToString(l, radix);
     }
 
     /**

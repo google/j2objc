@@ -18,6 +18,7 @@
 package java.lang;
 
 import java.io.Serializable;
+import java.util.Arrays;
 import java.util.Comparator;
 import java.util.SortedMap;
 import java.util.TreeMap;
@@ -3410,10 +3411,91 @@ public final class Character implements Serializable, Comparable<Character> {
     }
 
     /**
+     * Determines the index in a subsequence of the specified character array
+     * that is offset {@code codePointOffset} code points from {@code index}.
+     * The subsequence is delineated by {@code start} and {@code count}.
+     *
+     * @param seq
+     *            the character array to find the index in.
+     * @param start
+     *            the inclusive index that marks the beginning of the
+     *            subsequence.
+     * @param count
+     *            the number of {@code char} values to include within the
+     *            subsequence.
+     * @param index
+     *            the start index in the subsequence of the char array.
+     * @param codePointOffset
+     *            the number of code points to look backwards or forwards; may
+     *            be a negative or positive value.
+     * @return the index in {@code seq} that is {@code codePointOffset} code
+     *         points away from {@code index}.
+     * @throws NullPointerException
+     *             if {@code seq} is {@code null}.
+     * @throws IndexOutOfBoundsException
+     *             if {@code start < 0}, {@code count < 0},
+     *             {@code index < start}, {@code index > start + count},
+     *             {@code start + count} is greater than the length of
+     *             {@code seq}, or if there are not enough values in
+     *             {@code seq} to skip {@code codePointOffset} code points
+     *             forward or backward (if {@code codePointOffset} is
+     *             negative) from {@code index}.
+     * @since 1.5
+     */
+    public static int offsetByCodePoints(char[] seq, int start, int count,
+            int index, int codePointOffset) {
+        Arrays.checkOffsetAndCount(seq.length, start, count);
+        int end = start + count;
+        if (index < start || index > end) {
+            throw new IndexOutOfBoundsException();
+        }
+
+        if (codePointOffset == 0) {
+            return index;
+        }
+
+        if (codePointOffset > 0) {
+            int codePoints = codePointOffset;
+            int i = index;
+            while (codePoints > 0) {
+                codePoints--;
+                if (i >= end) {
+                    throw new IndexOutOfBoundsException();
+                }
+                if (isHighSurrogate(seq[i])) {
+                    int next = i + 1;
+                    if (next < end && isLowSurrogate(seq[next])) {
+                        i++;
+                    }
+                }
+                i++;
+            }
+            return i;
+        }
+
+        int codePoints = -codePointOffset;
+        int i = index;
+        while (codePoints > 0) {
+            codePoints--;
+            i--;
+            if (i < start) {
+                throw new IndexOutOfBoundsException();
+            }
+            if (isLowSurrogate(seq[i])) {
+                int prev = i - 1;
+                if (prev >= start && isHighSurrogate(seq[prev])) {
+                    i--;
+                }
+            }
+        }
+        return i;
+    }
+
+    /**
      * Convenience method to determine the value of the specified character
      * {@code c} in the supplied radix. The value of {@code radix} must be
      * between MIN_RADIX and MAX_RADIX.
-     * 
+     *
      * @param c
      *            the character to determine the value of.
      * @param radix
@@ -3515,7 +3597,7 @@ public final class Character implements Serializable, Comparable<Character> {
         String result = getNameImpl(codePoint);
         if (result == null) {
             String blockName = Character.UnicodeBlock.of(codePoint).toString().replace('_', ' ');
-            result = blockName + " " + Integer.toHexString(codePoint);
+            result = blockName + " " + IntegralToString.intToHexString(codePoint, true, 0);
         }
         return result;
     }

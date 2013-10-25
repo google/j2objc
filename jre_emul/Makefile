@@ -26,6 +26,7 @@ include environment.mk
 
 # Native obj-c sources that do not emulate a specific java class.
 IOS_OBJS = \
+	cbigint.o \
 	IOSArray.o \
 	IOSArrayClass.o \
 	IOSBooleanArray.o \
@@ -54,6 +55,7 @@ IOS_OBJS = \
 	NSObject+JavaObject.o \
 	NSString+JavaString.o \
 	objc-sync.o \
+	java_lang_RealToString.o \
 	java/lang/reflect/ExecutableMember.o
 
 # Java classes with hand written obj-c implementations. Shouldn't be translated,
@@ -196,6 +198,7 @@ JAVA_SOURCES = \
 	java/io/UnsupportedEncodingException.java \
 	java/io/UTFDataFormatException.java \
 	java/io/Writer.java \
+	java/lang/AbstractStringBuilder.java \
 	java/lang/annotation/AnnotationFormatError.java \
 	java/lang/annotation/AnnotationTypeMismatchException.java \
 	java/lang/annotation/ElementType.java \
@@ -230,6 +233,7 @@ JAVA_SOURCES = \
 	java/lang/InternalError.java \
 	java/lang/IndexOutOfBoundsException.java \
 	java/lang/Integer.java \
+	java/lang/IntegralToString.java \
 	java/lang/InterruptedException.java \
 	java/lang/LinkageError.java \
 	java/lang/Long.java \
@@ -242,6 +246,7 @@ JAVA_SOURCES = \
 	java/lang/Override.java \
 	java/lang/Package.java \
 	java/lang/Readable.java \
+	java/lang/RealToString.java \
 	java/lang/annotation/Documented.java \
 	java/lang/annotation/Inherited.java \
 	java/lang/annotation/Retention.java \
@@ -522,6 +527,7 @@ JAVA_SOURCES = \
 	libcore/io/Os.java \
 	libcore/io/OsConstants.java \
 	libcore/io/Posix.java \
+	libcore/math/MathUtils.java \
 	libcore/net/url/FileHandler.java \
 	libcore/net/url/UrlUtils.java \
 	libcore/util/BasicLruCache.java \
@@ -709,36 +715,36 @@ define compile_rules
 $(1)/%.o: $(3)/%.$(4) | translate
 	@mkdir -p $$(@D)
 	$$(CLANG) -c $$< -o $$@ $(2) $$(OBJCFLAGS) -I$$(EMULATION_CLASS_DIR) \
-	    -I$$(TRANSLATED_SOURCE_DIR)
+	    -I$$(TRANSLATED_SOURCE_DIR) -I$$(ANDROID_NATIVE_DIR)
 
 $(1)/%.plist: $(3)/%.$(4) | translate
 	@mkdir -p $$(@D)
 	$$(CLANG) -c $$< -o $$@ $(2) $$(OBJCFLAGS) $$(STATIC_ANALYZER_FLAGS) \
-	    -I$$(EMULATION_CLASS_DIR) -I$$(TRANSLATED_SOURCE_DIR)
+	    -I$$(EMULATION_CLASS_DIR) -I$$(TRANSLATED_SOURCE_DIR) -I$$(ANDROID_NATIVE_DIR)
 endef
 
 define compile_rules_no_arc
 $(1)/$(3:.m=.o): Classes/$(3) | translate
 	@mkdir -p $$(@D)
 	$$(CLANG) -c $$< -o $$@ $(2) $$(OBJCFLAGS_NO_ARC) \
-	    -I$$(EMULATION_CLASS_DIR) -I$$(TRANSLATED_SOURCE_DIR)
+	    -I$$(EMULATION_CLASS_DIR) -I$$(TRANSLATED_SOURCE_DIR) -I$$(ANDROID_NATIVE_DIR)
 
 $(1)/$(3:.m=.plist): Classes/$(3) | translate
 	@mkdir -p $$(@D)
 	$$(CLANG) -c $$< -o $$@ $(2) $$(OBJCFLAGS) $$(STATIC_ANALYZER_FLAGS) \
-	    -I$$(EMULATION_CLASS_DIR) -I$$(TRANSLATED_SOURCE_DIR)
+	    -I$$(EMULATION_CLASS_DIR) -I$$(TRANSLATED_SOURCE_DIR) -I$$(ANDROID_NATIVE_DIR)
 endef
 
 define additional_compile_rules
 $(1)/objc-sync.o: $(APPLE_ROOT)/objc-sync.m
 	@mkdir -p $$(@D)
 	$$(CLANG) -c $$< -o $$@ $(2) $$(OBJCFLAGS_NO_ARC) \
-	    -I$$(EMULATION_CLASS_DIR) -I$$(TRANSLATED_SOURCE_DIR)
+	    -I$$(EMULATION_CLASS_DIR) -I$$(TRANSLATED_SOURCE_DIR) -I$$(ANDROID_NATIVE_DIR)
 
 $(1)/objc-sync.plist: $(APPLE_ROOT)/objc-sync.m
 	@mkdir -p $$(@D)
 	$$(CLANG) -c $$< -o $$@ $(2) $$(OBJCFLAGS) $$(STATIC_ANALYZER_FLAGS) \
-	    -I$$(EMULATION_CLASS_DIR) -I$$(TRANSLATED_SOURCE_DIR)
+	    -I$$(EMULATION_CLASS_DIR) -I$$(TRANSLATED_SOURCE_DIR) -I$$(ANDROID_NATIVE_DIR)
 endef
 
 NON_ARC_SRCS = \
@@ -746,7 +752,7 @@ NON_ARC_SRCS = \
     java/util/LinkedHashMap.m \
     IOSReference.m
 
-OBJC_SOURCE_DIRS = $(EMULATION_CLASS_DIR) $(TRANSLATED_SOURCE_DIR)
+OBJC_SOURCE_DIRS = $(EMULATION_CLASS_DIR) $(TRANSLATED_SOURCE_DIR) $(ANDROID_NATIVE_DIR)
 OBJC_EXTENSIONS = m mm
 arch_compile_rules = $(foreach src_dir,$(OBJC_SOURCE_DIRS),$(foreach ext,$(OBJC_EXTENSIONS),\
     $(eval $(call compile_rules,$(1),$(2),$(src_dir),$(ext))))) \

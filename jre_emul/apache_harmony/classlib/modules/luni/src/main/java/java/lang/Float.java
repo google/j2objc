@@ -364,14 +364,9 @@ public final class Float extends Number implements Comparable<Float> {
      *             the float to convert to a string.
      * @return a printable representation of {@code f}.
      */
-    public native static String toString(float f) /*-[
-        NSString *s = [NSString stringWithFormat:@"%g", f];
-        // Append ".0" if no decimal, like Java does.
-        if ([s rangeOfString:@"."].location == NSNotFound) {
-          return [s stringByAppendingString:@".0"];
-        }
-        return s;
-    ]-*/;
+    public static String toString(float f) {
+      return RealToString.getInstance().floatToString(f);
+    }
 
     /**
      * Parses the specified string as a float value.

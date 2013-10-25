@@ -1425,10 +1425,10 @@ public final class Formatter implements Closeable, Flushable {
                 boolean needLocalizedDigits = (localeData.zeroDigit != '0');
                 if (out instanceof StringBuilder && !needLocalizedDigits) {
                     if (arg instanceof Integer || arg instanceof Short || arg instanceof Byte) {
-                        ((StringBuilder) out).append(((Number) arg).intValue());
+                        IntegralToString.appendInt((StringBuilder) out, ((Number) arg).intValue());
                         return null;
                     } else if (arg instanceof Long) {
-                        ((StringBuilder) out).append(((Long) arg).longValue());
+                        IntegralToString.appendLong((StringBuilder) out, ((Long) arg).longValue());
                         return null;
                     }
                 }
