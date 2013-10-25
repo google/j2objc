@@ -80,20 +80,65 @@
   return mods;
 }
 
+static IOSClass *DecodePrimitiveParamKeyword(NSString *keyword) {
+  if ([keyword isEqualToString:@"Byte"]) {
+    return [IOSClass byteClass];
+  } else if ([keyword isEqualToString:@"Short"]) {
+    return [IOSClass shortClass];
+  } else if ([keyword isEqualToString:@"Int"]) {
+    return [IOSClass intClass];
+  } else if ([keyword isEqualToString:@"Long"]) {
+    return [IOSClass longClass];
+  } else if ([keyword isEqualToString:@"Float"]) {
+    return [IOSClass floatClass];
+  } else if ([keyword isEqualToString:@"Double"]) {
+    return [IOSClass doubleClass];
+  } else if ([keyword isEqualToString:@"Char"]) {
+    return [IOSClass charClass];
+  } else if ([keyword isEqualToString:@"Boolean"]) {
+    return [IOSClass booleanClass];
+  }
+  return nil;
+}
+
 - (IOSObjectArray *)getParameterTypes {
   // First two slots are class and SEL.
   NSUInteger nArgs = [methodSignature_ numberOfArguments] - SKIPPED_ARGUMENTS;
   IOSClass *classClass = [IOSClass classWithClass:[IOSClass class]];
   IOSObjectArray *parameters =
-      [[IOSObjectArray alloc] initWithLength:nArgs type:classClass];
-#if ! __has_feature(objc_arc)
-  [parameters autorelease];
-#endif
+      AUTORELEASE([[IOSObjectArray alloc] initWithLength:nArgs type:classClass]);
+
+  NSString *selectorStr = NSStringFromSelector(selector_);
+  // Remove method name prefix.
+  if ([selectorStr hasPrefix:@"init"]) {
+    selectorStr = [selectorStr substringFromIndex:4];
+  } else {
+    selectorStr = [selectorStr substringFromIndex:[[self getName] length]];
+  }
+  NSArray *paramTypes = [selectorStr componentsSeparatedByString:@":"];
 
   for (NSUInteger i = 0; i < nArgs; i++) {
     const char *argType =
         [methodSignature_ getArgumentTypeAtIndex:i + SKIPPED_ARGUMENTS];
-    IOSClass *paramType = decodeTypeEncoding(argType);
+    // Remove "with" or "With" prefix.
+    NSString *typeStr = [[paramTypes objectAtIndex:i] substringFromIndex:4];
+    IOSClass *paramType = nil;
+    if (*argType == '@') {
+      if ([typeStr hasSuffix:@"Array"]) {
+        typeStr = [typeStr substringToIndex:[typeStr length] - 5];
+        IOSClass *componentType = [IOSClass classForIosName:typeStr];
+        if (componentType) {
+          paramType = [IOSClass arrayClassWithComponentType:componentType];
+        }
+      } else {
+        paramType = [IOSClass classForIosName:typeStr];
+      }
+    } else {
+      paramType = DecodePrimitiveParamKeyword(typeStr);
+    }
+    if (!paramType) {
+      paramType = [IOSClass objectClass];
+    }
     [parameters replaceObjectAtIndex:i withObject:paramType];
   }
   return parameters;
