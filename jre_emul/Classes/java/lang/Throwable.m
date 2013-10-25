@@ -150,6 +150,7 @@
   [pw printlnWithNSString:[self description]];
   NSUInteger nFrames = [stackTrace count];
   for (NSUInteger i = 0; i < nFrames; i++) {
+    [pw printWithNSString:@"\tat "];
     id trace = stackTrace->buffer_[i];
     [pw printlnWithId:trace];
   }
@@ -163,6 +164,7 @@
   [ps printlnWithNSString:[self description]];
   NSUInteger nFrames = [stackTrace count];
   for (NSUInteger i = 0; i < nFrames; i++) {
+    [ps printWithNSString:@"\tat "];
     id trace = stackTrace->buffer_[i];
     [ps printlnWithId:trace];
   }
