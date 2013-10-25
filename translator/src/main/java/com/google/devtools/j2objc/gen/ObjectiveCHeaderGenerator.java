@@ -119,10 +119,8 @@ public class ObjectiveCHeaderGenerator extends ObjectiveCSourceFileGenerator {
 
     printConstantDefines(node);
 
-    if (Options.generateDeprecatedDeclarations()) {
-      if (hasDeprecated(ASTUtil.getModifiers(node))) {
-        println(DEPRECATED_ATTRIBUTE);
-      }
+    if (needsDeprecatedAttribute(ASTUtil.getModifiers(node))) {
+      println(DEPRECATED_ATTRIBUTE);
     }
 
     if (isInterface) {
@@ -299,6 +297,10 @@ public class ObjectiveCHeaderGenerator extends ObjectiveCSourceFileGenerator {
       }
     }
 
+    if (needsDeprecatedAttribute(ASTUtil.getModifiers(node))) {
+      println(DEPRECATED_ATTRIBUTE);
+    }
+
     // Print enum type.
     printf("@interface %s : JavaLangEnum < NSCopying", typeName);
     ITypeBinding enumType = Types.getTypeBinding(node);
@@ -357,10 +359,8 @@ public class ObjectiveCHeaderGenerator extends ObjectiveCSourceFileGenerator {
          result += " OBJC_METHOD_FAMILY_NONE";
        }
 
-    if (Options.generateDeprecatedDeclarations()) {
-      if (hasDeprecated(ASTUtil.getModifiers(m))) {
-        result += " " + DEPRECATED_ATTRIBUTE;
-      }
+    if (needsDeprecatedAttribute(ASTUtil.getModifiers(m))) {
+      result += " " + DEPRECATED_ATTRIBUTE;
     }
 
     return result + ";\n";
@@ -648,6 +648,10 @@ public class ObjectiveCHeaderGenerator extends ObjectiveCSourceFileGenerator {
     if (hadConstant) {
       newline();
     }
+  }
+
+  private boolean needsDeprecatedAttribute(List<IExtendedModifier> modifiers) {
+    return Options.generateDeprecatedDeclarations() && hasDeprecated(modifiers);
   }
 
   /**
