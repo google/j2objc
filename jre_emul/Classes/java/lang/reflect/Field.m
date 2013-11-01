@@ -255,4 +255,8 @@ typedef union {
   return [IOSObjectArray arrayWithLength:0 type:annotationType];
 }
 
+- (int)unsafeOffset {
+  return ivar_getOffset(ivar_);
+}
+
 @end

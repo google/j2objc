@@ -198,6 +198,7 @@ JAVA_SOURCES = \
 	java/io/UnsupportedEncodingException.java \
 	java/io/UTFDataFormatException.java \
 	java/io/Writer.java \
+	java/lang/AbstractMethodError.java \
 	java/lang/AbstractStringBuilder.java \
 	java/lang/annotation/AnnotationFormatError.java \
 	java/lang/annotation/AnnotationTypeMismatchException.java \
@@ -229,11 +230,12 @@ JAVA_SOURCES = \
 	java/lang/IllegalMonitorStateException.java \
 	java/lang/IllegalStateException.java \
 	java/lang/IllegalThreadStateException.java \
-	java/lang/InstantiationException.java \
-	java/lang/InternalError.java \
+	java/lang/IncompatibleClassChangeError.java \
 	java/lang/IndexOutOfBoundsException.java \
+	java/lang/InstantiationException.java \
 	java/lang/Integer.java \
 	java/lang/IntegralToString.java \
+	java/lang/InternalError.java \
 	java/lang/InterruptedException.java \
 	java/lang/LinkageError.java \
 	java/lang/Long.java \
@@ -430,6 +432,16 @@ JAVA_SOURCES = \
 	java/util/concurrent/atomic/AtomicReferenceArray.java \
 	java/util/concurrent/atomic/AtomicStampedReference.java \
 	java/util/concurrent/atomic/Fences.java \
+	java/util/concurrent/locks/AbstractOwnableSynchronizer.java \
+	java/util/concurrent/locks/AbstractQueuedLongSynchronizer.java \
+	java/util/concurrent/locks/AbstractQueuedSynchronizer.java \
+	java/util/concurrent/locks/Condition.java \
+	java/util/concurrent/locks/Lock.java \
+	java/util/concurrent/locks/LockSupport.java \
+	java/util/concurrent/locks/ReadWriteLock.java \
+	java/util/concurrent/locks/ReentrantLock.java \
+	java/util/concurrent/locks/ReentrantReadWriteLock.java \
+	java/util/concurrent/locks/ReentrantLock.java \
 	java/util/Currency.java \
 	java/util/Date.java \
 	java/util/Dictionary.java \
@@ -564,7 +576,8 @@ JAVA_SOURCES = \
 	org/xmlpull/v1/XmlPullParser.java \
 	org/xmlpull/v1/XmlPullParserException.java \
 	org/xmlpull/v1/XmlPullParserFactory.java \
-	org/xmlpull/v1/sax2/Driver.java
+	org/xmlpull/v1/sax2/Driver.java \
+	sun/misc/Unsafe.java
 
 MAIN_OBJ = J2ObjCMain.o
 

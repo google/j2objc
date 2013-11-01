@@ -129,7 +129,13 @@ public class AtomicReference<V>  implements java.io.Serializable {
       return OSAtomicCompareAndSwapPtrBarrier(
           (__bridge void *) oldValue, (__bridge void *) newValue, &tmp);
 #else
-      return OSAtomicCompareAndSwapPtrBarrier(oldValue, newValue, (void * volatile *) &value_);
+      id tmp = value_;
+      if (OSAtomicCompareAndSwapPtrBarrier(oldValue, newValue, (void * volatile *) &value_)) {
+        [value_ retain];
+        [tmp release];
+        return YES;
+      }
+      return NO;
 #endif
     ]-*/;
 

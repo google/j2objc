@@ -48,6 +48,7 @@ SUPPORT_SOURCES = \
 	tests/support/Support_UnmodifiableMapTest.java
 
 TEST_SOURCES = \
+	AbstractQueuedSynchronizerTest.java \
 	AtomicBooleanTest.java \
 	AtomicIntegerArrayTest.java \
 	AtomicIntegerTest.java \
@@ -59,6 +60,9 @@ TEST_SOURCES = \
 	AtomicStampedReferenceTest.java \
 	CopyOnWriteArrayListTest.java \
 	CopyOnWriteArraySetTest.java \
+	ReentrantLockTest.java \
+	ReentrantReadWriteLockTest.java \
+	LockSupportTest.java \
 	java/lang/ClassTest.java \
 	java/lang/ThrowableTest.java \
 	java/lang/ref/PhantomReferenceTest.java \
