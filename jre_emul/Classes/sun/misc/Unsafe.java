@@ -20,6 +20,7 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 
 /*-[
+#include "java/lang/reflect/Array.h"
 #include <libkern/OSAtomic.h>
 ]-*/
 
@@ -74,70 +75,6 @@ public final class Unsafe {
      */
     private static native long objectFieldOffset0(Field field) /*-[
       return (long long) [field unsafeOffset];
-    ]-*/;
-
-    /**
-     * Gets the offset from the start of an array object's memory to
-     * the memory used to store its initial (zeroeth) element.
-     *
-     * @param clazz non-null; class in question; must be an array class
-     * @return the offset to the initial element
-     */
-    public int arrayBaseOffset(Class clazz) {
-        if (! clazz.isArray()) {
-            throw new IllegalArgumentException(
-                    "valid for array classes only");
-        }
-
-        return arrayBaseOffset0(clazz);
-    }
-
-    /**
-     * Helper for {@link #arrayBaseOffset}, which does all the work,
-     * assuming the parameter is deemed valid.
-     *
-     * @return the offset to the field
-     */
-    private static native int arrayBaseOffset0(Class clazz) /*-[
-      // All IOSArray classes have a size, followed by the native array pointer.
-      return sizeof(NSUInteger);
-    ]-*/;
-
-    /**
-     * Gets the size of each element of the given array class.
-     *
-     * @param clazz non-null; class in question; must be an array class
-     * @return &gt; 0; the size of each element of the array
-     */
-    public int arrayIndexScale(Class clazz) {
-        if (! clazz.isArray()) {
-            throw new IllegalArgumentException(
-                    "valid for array classes only");
-        }
-
-        return arrayIndexScale0(clazz);
-    }
-
-    /**
-     * Helper for {@link #arrayIndexScale}, which does all the work,
-     * assuming the parameter is deemed valid.
-     *
-     * @return the offset to the field
-     */
-    private static native int arrayIndexScale0(Class clazz) /*-]
-      NSString *componentType = [[clazz getComponentType] binaryName];
-      switch ([componentType characterAtIndex:0]) {
-        case 'B': return sizeof(char);
-        case 'C': return sizeof(unichar);
-        case 'D': return sizeof(double);
-        case 'F': return sizeof(float);
-        case 'I': return sizeof(int);
-        case 'J': return sizeof(long long);
-        case 'S': return sizeof(short);
-        case 'Z': return sizeof(char);
-        default:
-          return sizeof(id);
-      }
     ]-*/;
 
     /**
@@ -338,6 +275,7 @@ public final class Unsafe {
      */
     public native void putObject(Object obj, long offset, Object newValue) /*-[
       id *address = (id *) (((u_int8_t *) obj) + offset);
+      OSMemoryBarrier();
       id temp = *address;
       *address = RETAIN_(newValue);
       AUTORELEASE(temp);
@@ -348,6 +286,7 @@ public final class Unsafe {
      */
     public native void putOrderedObject(Object obj, long offset, Object newValue) /*-[
       id *address = (id *) (((u_int8_t *) obj) + offset);
+      OSMemoryBarrier();
       id temp = *address;
       *address = RETAIN_(newValue);
       AUTORELEASE(temp);
@@ -398,5 +337,86 @@ public final class Unsafe {
      */
     public native Object allocateInstance(Class<?> c) /*-[
       return [c.objcClass alloc];
+    ]-*/;
+
+    // iOS-specific methods, necessary because an array object's element
+    // buffer isn't inlined as the JVM's is. That makes calculating an
+    // offset from the array address impossible.
+
+    /**
+     * Gets an indexed element from the given array.
+     *
+     * @param array non-null
+     * @param index element index in <code>array</code>
+     * @return the retrieved value
+     */
+    public native Object getArrayObject(Object array, int index) /*-[
+      return ((IOSObjectArray *) array)->buffer_[index];
+    ]-*/;
+
+    /**
+     * Gets an indexed element from the given array,
+     * using <code>volatile</code> semantics.
+     *
+     * @param array non-null
+     * @param index element index in <code>array</code>
+     * @return the retrieved value
+     */
+    public native Object getArrayObjectVolatile(Object array, int index) /*-[
+      id volatile result = ((IOSObjectArray *) array)->buffer_[index];
+      return result;
+    ]-*/;
+
+    /**
+     * Stores an <code>Object</code> into the given array.
+     *
+     * @param array non-null
+     * @param index element index in <code>array</code>
+     * @param newValue the value to store
+     */
+    public native void putArrayObject(Object array, int index, Object newValue) /*-[
+      id *buffer = ((IOSObjectArray *) array)->buffer_;
+      id temp = buffer[index];
+      buffer[index] = RETAIN_(newValue);
+      AUTORELEASE(temp);
+    ]-*/;
+
+    /**
+     * Stores an <code>Object</code> into the given array.
+     *
+     * @param array non-null
+     * @param index element index in <code>array</code>
+     * @param newValue the value to store
+     */
+    public native void putArrayOrderedObject(Object array, int index, Object newValue) /*-[
+      id volatile *buffer = ((IOSObjectArray *) array)->buffer_;
+      id temp = buffer[index];
+      buffer[index] = RETAIN_(newValue);
+      AUTORELEASE(temp);
+    ]-*/;
+
+    /**
+     * Performs a compare-and-set operation on an indexed element
+     * within the given object.
+     *
+     * @param array non-null
+     * @param index element index in <code>array</code>
+     * @param expectedValue expected value of the field
+     * @param newValue new value to store in the field if the contents are
+     * as expected
+     * @return <code>true</code> if the new value was in fact stored, and
+     * <code>false</code> if not
+     */
+    public native boolean compareAndSwapArrayObject(Object array, int index,
+            Object expectedValue, Object newValue) /*-[
+      id volatile *buffer = ((IOSObjectArray *) array)->buffer_;
+      id tmp = buffer[index];
+      if (OSAtomicCompareAndSwapPtrBarrier(expectedValue, newValue,
+          (void * volatile *) (buffer + index))) {
+        [buffer[index] retain];
+        [tmp release];
+        return YES;
+      }
+      return NO;
     ]-*/;
 }
