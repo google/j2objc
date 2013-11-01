@@ -115,8 +115,6 @@ public class NumberFormatTest extends junit.framework.TestCase {
     public void testFrenchNumberFormats() {
       Locale locale = Locale.FRANCE;
       assertEquals(NumberFormat.getInstance(locale).format(23.45678), "23,457");
-      assertEquals("20ac", String.format("%04x",
-          (int) NumberFormat.getCurrencyInstance(locale).format(23.45678).charAt(6)));
       assertEquals(NumberFormat.getCurrencyInstance(locale).format(23.45678), "23.46 €");
       assertEquals(NumberFormat.getIntegerInstance(locale).format(23.45678), "23");
       assertEquals(NumberFormat.getNumberInstance(locale).format(23.45678), "23,457");
