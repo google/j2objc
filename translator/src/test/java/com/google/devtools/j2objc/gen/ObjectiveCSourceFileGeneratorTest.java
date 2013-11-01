@@ -127,4 +127,12 @@ public class ObjectiveCSourceFileGeneratorTest extends GenerationTest {
         "interface I<T extends Runnable> { T test(); }", "Test", "Test.h");
     assertTranslation(translation, "- (id)test;");
   }
+
+  public void testOverriddenGenericConstructor() throws IOException {
+    addSourceFile("class A<T> { A(T t) {} }", "A.java");
+    String translation = translateSourceFile(
+        "class B extends A<String> { B(String s) { super(s); } }", "B", "B.h");
+    assertTranslation(translation, "- (id)initWithId:(NSString *)s;");
+    assertNotInTranslation(translation, "initWithNSString");
+  }
 }
