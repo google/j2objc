@@ -116,7 +116,8 @@ public class Thread implements Runnable {
   /**
    * Holds the default handler for uncaught exceptions, in case there is one.
    */
-  private static UncaughtExceptionHandler defaultUncaughtHandler;
+  private static UncaughtExceptionHandler defaultUncaughtHandler =
+      new SystemUncaughtExceptionHandler();
 
   /**
    * <p>
@@ -320,8 +321,8 @@ public class Thread implements Runnable {
         // with run() overwritten (or it does nothing, like in Java).
         target = self;
       }
-      thread = [[NSThread alloc] initWithTarget:target
-                                       selector:@selector(run)
+      thread = [[NSThread alloc] initWithTarget:self
+                                       selector:@selector(run0WithId:)
                                          object:nil];
 #if ! __has_feature(objc_arc)
       [thread autorelease];
@@ -441,6 +442,24 @@ public class Thread implements Runnable {
       }
     }
   ]-*/;
+
+  /*
+   * Thread entry, called by NSThread initWithTarget:selector:object:.
+   * The arg parameter isn't used, but NSThread requires a message that
+   * has an optional one.
+   */
+  private void run0(Object arg) throws Throwable {
+    try {
+      run();
+    } catch (Throwable t) {
+      UncaughtExceptionHandler ueh = getUncaughtExceptionHandler();
+      if (ueh != null) {
+        ueh.uncaughtException(currentThread(), t);
+      } else {
+        throw(t);
+      }
+    }
+  }
 
   public static int activeCount() {
       return currentThread().getThreadGroup().activeCount();
@@ -941,4 +960,12 @@ public class Thread implements Runnable {
       [threadData removeObjectForKey:JavaLangThread_UNCAUGHT_HANDLER_];
     }
   ]-*/;
+
+  private static class SystemUncaughtExceptionHandler implements UncaughtExceptionHandler {
+    @Override
+    public synchronized void uncaughtException(Thread t, Throwable e) {
+      System.err.print("Exception in thread \"" + t.getName() + "\" ");
+      e.printStackTrace(System.err);
+    }
+  }
 }
