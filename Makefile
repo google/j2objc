@@ -98,3 +98,9 @@ test_cycle_finder:
 
 test: test_translator test_jre_emul test_jre_cycles test_cycle_finder
 
+
+print_environment:
+	@echo Locale: $${LANG}
+	@echo `uname -a`
+	@echo `xcodebuild -version`
+	@echo `xcrun cc -v`

@@ -25,6 +25,10 @@ import java.text.ParsePosition;
 import java.util.Locale;
 import tests.support.Support_Locale;
 
+/*-[
+#include <sys/utsname.h>
+]-*/
+
 public class NumberFormatTest extends junit.framework.TestCase {
     // NumberFormat.format(Object, StringBuffer, FieldPosition) guarantees it calls doubleValue for
     // custom Number subclasses.
@@ -71,9 +75,17 @@ public class NumberFormatTest extends junit.framework.TestCase {
             return;
         }
         NumberFormat numberFormat = NumberFormat.getNumberInstance(new Locale("ar"));
-        assertEquals("#0.###;#0.###-", ((DecimalFormat) numberFormat).toPattern());
+        if (onMavericks()) {
+            assertEquals("#0.###;#0.###", ((DecimalFormat) numberFormat).toPattern());
+        } else {
+            assertEquals("#0.###;#0.###-", ((DecimalFormat) numberFormat).toPattern());
+        }
         NumberFormat integerFormat = NumberFormat.getIntegerInstance(new Locale("ar"));
-        assertEquals("#0;#0-", ((DecimalFormat) integerFormat).toPattern());
+        if (onMavericks()) {
+            assertEquals("#0;#0", ((DecimalFormat) integerFormat).toPattern());
+        } else {
+            assertEquals("#0;#0-", ((DecimalFormat) integerFormat).toPattern());
+        }
     }
 
     // Formatting percentages is confusing but deliberate.
@@ -110,4 +122,12 @@ public class NumberFormatTest extends junit.framework.TestCase {
       assertEquals(NumberFormat.getNumberInstance(locale).format(23.45678), "23,457");
       assertEquals(NumberFormat.getPercentInstance(locale).format(23.45678), "2 346 %");
    }
+
+    private static native boolean onMavericks() /*-[
+      struct utsname uts;
+      if (uname(&uts) == 0) {
+        return atoi(uts.release) >= 13;
+      }
+      return NO;
+    ]-*/;
 }

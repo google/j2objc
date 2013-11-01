@@ -23,6 +23,10 @@ import java.util.TimeZone;
 import junit.framework.TestCase;
 import tests.support.Support_Locale;
 
+/*-[
+#include <sys/utsname.h>
+]-*/
+
 public class OldTimeZoneTest extends TestCase {
 
     class Mock_TimeZone extends TimeZone {
@@ -114,7 +118,11 @@ public class OldTimeZoneTest extends TestCase {
             assertEquals("Pacific Standard Time", tz.getDisplayName(false, 1, Locale.UK));
         }
         if (Support_Locale.isLocaleAvailable(Locale.FRANCE)) {
-            assertEquals("UTC-08:00", tz.getDisplayName(false, 0, Locale.FRANCE));
+            if (onMavericks()) {
+                assertEquals("UTC−8", tz.getDisplayName(false, 0, Locale.FRANCE));
+            } else {
+                assertEquals("UTC-08:00", tz.getDisplayName(false, 0, Locale.FRANCE));
+            }
             assertEquals("heure avanc\u00e9e du Pacifique", tz.getDisplayName(true,  1, Locale.FRANCE));
             assertEquals("heure normale du Pacifique", tz.getDisplayName(false, 1, Locale.FRANCE));
         }
@@ -148,4 +156,12 @@ public class OldTimeZoneTest extends TestCase {
         tz.setID("New ID for GMT-6");
         assertEquals("New ID for GMT-6", tz.getID());
     }
+
+    private static native boolean onMavericks() /*-[
+      struct utsname uts;
+      if (uname(&uts) == 0) {
+        return atoi(uts.release) >= 13;
+      }
+      return NO;
+    ]-*/;
 }
