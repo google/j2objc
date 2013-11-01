@@ -424,7 +424,7 @@ public class J2ObjC {
       int index = path.lastIndexOf(File.separatorChar);
       String outputName = index >= 0 ? path.substring(index + 1) : path;
       File outFile = new File(packageDir, outputName);
-      Files.write(newSource, outFile, Charsets.UTF_8);
+      Files.write(newSource, outFile, Options.getCharset());
       path = outFile.getAbsolutePath();
     }
 
