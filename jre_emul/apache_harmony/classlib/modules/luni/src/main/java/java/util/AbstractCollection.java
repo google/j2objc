@@ -56,7 +56,7 @@ public abstract class AbstractCollection<E> implements Collection<E> {
      * If the passed {@code Collection} is changed during the process of adding elements
      * to this {@code Collection}, the behavior depends on the behavior of the passed
      * {@code Collection}.
-     * 
+     *
      * @param collection
      *            the collection of objects.
      * @return {@code true} if this {@code Collection} is modified, {@code false}
@@ -92,7 +92,7 @@ public abstract class AbstractCollection<E> implements Collection<E> {
      * <p>
      * Concrete implementations usually can clear a {@code Collection} more efficiently
      * and should therefore overwrite this method.
-     * 
+     *
      * @throws UnsupportedOperationException
      *                it the iterator does not support removing elements from
      *                this {@code Collection}
@@ -116,7 +116,7 @@ public abstract class AbstractCollection<E> implements Collection<E> {
      * the iterator until the element is found. If {@code object == null} then
      * each element {@code e} returned by the iterator is compared with the test
      * {@code e == null}.
-     * 
+     *
      * @param object
      *            the object to search for.
      * @return {@code true} if object is an element of this {@code Collection}, {@code
@@ -150,7 +150,7 @@ public abstract class AbstractCollection<E> implements Collection<E> {
      * specified {@code Collection}. This implementation iterates over the specified
      * {@code Collection}. If one element returned by the iterator is not contained in
      * this {@code Collection}, then {@code false} is returned; {@code true} otherwise.
-     * 
+     *
      * @param collection
      *            the collection of objects.
      * @return {@code true} if all objects in the specified {@code Collection} are
@@ -178,7 +178,7 @@ public abstract class AbstractCollection<E> implements Collection<E> {
     /**
      * Returns if this {@code Collection} contains no elements. This implementation
      * tests, whether {@code size} returns 0.
-     * 
+     *
      * @return {@code true} if this {@code Collection} has no elements, {@code false}
      *         otherwise.
      *
@@ -196,7 +196,7 @@ public abstract class AbstractCollection<E> implements Collection<E> {
      * <p>
      * In this class this method is declared abstract and has to be implemented
      * by concrete {@code Collection} implementations.
-     * 
+     *
      * @return an iterator for accessing the {@code Collection} contents.
      */
     public abstract Iterator<E> iterator();
@@ -212,7 +212,7 @@ public abstract class AbstractCollection<E> implements Collection<E> {
      * {@code true} is returned, {@code false} otherwise. If the iterator does
      * not support removing elements, an {@code UnsupportedOperationException}
      * is thrown.
-     * 
+     *
      * @param object
      *            the object to remove.
      * @return {@code true} if this {@code Collection} is modified, {@code false}
@@ -257,7 +257,7 @@ public abstract class AbstractCollection<E> implements Collection<E> {
      * remove} method is called on the iterator. If the iterator does not
      * support removing elements, an {@code UnsupportedOperationException} is
      * thrown.
-     * 
+     *
      * @param collection
      *            the collection of objects to remove.
      * @return {@code true} if this {@code Collection} is modified, {@code false}
@@ -298,7 +298,7 @@ public abstract class AbstractCollection<E> implements Collection<E> {
      * remove} method is called on the iterator. If the iterator does not
      * support removing elements, an {@code UnsupportedOperationException} is
      * thrown.
-     * 
+     *
      * @param collection
      *            the collection of objects to retain.
      * @return {@code true} if this {@code Collection} is modified, {@code false}
@@ -332,7 +332,7 @@ public abstract class AbstractCollection<E> implements Collection<E> {
      * <p>
      * In this class this method is declared abstract and has to be implemented
      * by concrete {@code Collection} implementations.
-     * 
+     *
      * @return how many objects this {@code Collection} contains, or {@code Integer.MAX_VALUE}
      *         if there are more than {@code Integer.MAX_VALUE} elements in this
      *         {@code Collection}.
@@ -363,7 +363,7 @@ public abstract class AbstractCollection<E> implements Collection<E> {
       if ([contents count] < [self size]) {
         contents =
             [[IOSObjectArray alloc] initWithLength:[self size]
-                                              type:[IOSClass classWithClass:[NSObject class]]];
+                                              type:[[contents getClass] getComponentType]];
 #if ! __has_feature(objc_arc)
         [contents autorelease];
 #endif
@@ -380,7 +380,7 @@ public abstract class AbstractCollection<E> implements Collection<E> {
      * Returns the string representation of this {@code Collection}. The presentation
      * has a specific format. It is enclosed by square brackets ("[]"). Elements
      * are separated by ', ' (comma and space).
-     * 
+     *
      * @return the string representation of this {@code Collection}.
      */
     @Override
