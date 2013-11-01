@@ -44,6 +44,8 @@ public class Thread implements Runnable {
    * in the thread dictionary to reduce property lookup overhead.
    */
   private Object nsThread;
+  /** Android source declares this as the native VMThread class. */
+  private final Object vmThread = new Object();
   private boolean isDaemon;
   private boolean interrupted;
   private boolean running;
@@ -614,26 +616,25 @@ public class Thread implements Runnable {
    * @see Thread#interrupt
    * @see Thread#isInterrupted
    */
-  public static boolean interrupted() {
-      return currentThread().isInterrupted();
-  }
-
-  /**
-   * Returns a <code>boolean</code> indicating whether the current Thread (
-   * <code>currentThread()</code>) has a pending interrupt request (<code>
-   * true</code>) or not (<code>false</code>). It also has the side-effect of
-   * clearing the flag.
-   *
-   * @return a <code>boolean</code> indicating the interrupt status
-   * @see Thread#currentThread
-   * @see Thread#interrupt
-   * @see Thread#isInterrupted
-   */
-  public native boolean isInterrupted() /*-[
-    BOOL result = interrupted__;
-    interrupted__ = NO;
+  public static native boolean interrupted() /*-[
+    JavaLangThread *currentThread = [JavaLangThread currentThread];
+    BOOL result = currentThread->interrupted__;
+    currentThread->interrupted__ = NO;
     return result;
   ]-*/;
+
+  /**
+   * Returns a <code>boolean</code> indicating whether the receiver has a
+   * pending interrupt request (<code>true</code>) or not (
+   * <code>false</code>)
+   *
+   * @return a <code>boolean</code> indicating the interrupt status
+   * @see Thread#interrupt
+   * @see Thread#interrupted
+   */
+  public boolean isInterrupted() {
+    return interrupted;
+  }
 
   /**
    * Blocks the current Thread (<code>Thread.currentThread()</code>) until
@@ -792,7 +793,9 @@ public class Thread implements Runnable {
    * @hide for Unsafe
    */
   public void unpark() {
-    synchronized (parkBlocker) {
+    Object vmt = vmThread;
+
+    synchronized (vmt) {
       switch (parkState) {
         case ParkState.PREEMPTIVELY_UNPARKED: {
           /*
@@ -809,7 +812,7 @@ public class Thread implements Runnable {
         }
         default /*parked*/: {
           parkState = ParkState.UNPARKED;
-          parkBlocker.notifyAll();
+          vmt.notifyAll();
           break;
         }
       }
@@ -838,7 +841,9 @@ public class Thread implements Runnable {
    * @hide for Unsafe
    */
   public void parkFor(long nanos) {
-    synchronized (parkBlocker) {
+    Object vmt = vmThread;
+
+    synchronized (vmt) {
       switch (parkState) {
         case ParkState.PREEMPTIVELY_UNPARKED: {
           parkState = ParkState.UNPARKED;
@@ -850,7 +855,7 @@ public class Thread implements Runnable {
 
           parkState = ParkState.PARKED;
           try {
-            parkBlocker.wait(millis, (int) nanos);
+            vmt.wait(millis, (int) nanos);
           } catch (InterruptedException ex) {
             interrupt();
           } finally {
@@ -894,7 +899,9 @@ public class Thread implements Runnable {
    * @hide for Unsafe
    */
   public void parkUntil(long time) {
-    synchronized (parkBlocker) {
+    Object vmt = vmThread;
+
+    synchronized (vmt) {
       /*
        * Note: This conflates the two time bases of "wall clock"
        * time and "monotonic uptime" time. However, given that
