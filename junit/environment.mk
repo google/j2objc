@@ -31,7 +31,6 @@ JUNIT_SRC_JAR = $(JAVA_DEPS_JAR_DIR)/$(JUNIT_SOURCE_JAR)
 HAMCREST_SRC_JAR = $(JAVA_DEPS_JAR_DIR)/$(HAMCREST_SOURCE_JAR)
 MODIFIED_JAVA_SRC_DIR = $(CURDIR)/src/main/java
 
-JUNIT_LIB = $(ARCH_BUILD_DIR)/libjunit.a
 JUNIT_LIB_DIST = $(ARCH_LIB_DIR)/libjunit.a
 
 RUNNER_LIB = $(ARCH_BUILD_DIR)/libjunit_runner.a
@@ -48,7 +47,6 @@ OBJCFLAGS := -ObjC $(WARNINGS) \
 
 # J2ObjC settings
 J2OBJC = $(DIST_DIR)/j2objc -d $(BUILD_DIR)
-J2OBJCC = $(ARCH_BIN_DIR)/j2objcc -c $(OBJCFLAGS) -I$(GEN_OBJC_DIR)
 
 ifeq ("$(strip $(CLANG_ENABLE_OBJC_ARC))", "YES")
 J2OBJC := $(J2OBJC) -use-arc
