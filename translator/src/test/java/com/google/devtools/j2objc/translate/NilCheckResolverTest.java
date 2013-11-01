@@ -123,4 +123,17 @@ public class NilCheckResolverTest extends GenerationTest {
         "BOOL b2 = b || [((Test *) nil_chk(t2)) foo];",
         "[((Test *) nil_chk(t2)) foo];");
   }
+
+  public void testNilCheckEnhancedForExpression() throws IOException {
+    String translation = translateSourceFile(
+        "public class Test {" +
+        "  boolean test(String target, java.util.List<String> strings) {" +
+        "    for (String s : strings) {" +
+        "      if (s.equals(target)) return true;" +
+        "    }" +
+        "    return false;" +
+        "  }}",
+        "Test", "Test.m");
+    assertTranslation(translation, "nil_chk(strings)");
+  }
 }

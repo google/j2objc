@@ -384,6 +384,7 @@ public class NilCheckResolver extends ErrorReportingASTVisitor {
 
   @Override
   public boolean visit(EnhancedForStatement node) {
+    addNilCheck(node.getExpression(), false);
     node.getExpression().accept(this);
     pushScope();
     node.getBody().accept(this);
