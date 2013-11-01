@@ -297,8 +297,8 @@ public class CycleFinderTest extends TestCase {
     options.setSourceFiles(inputFiles);
     options.setClasspath(System.getProperty("java.class.path"));
     ByteArrayOutputStream errorMessages = new ByteArrayOutputStream();
-    CycleFinder finder = new CycleFinder(options, new PrintStream(new NullOutputStream()),
-                                         new PrintStream(errorMessages));
+    System.setErr(new PrintStream(errorMessages));
+    CycleFinder finder = new CycleFinder(options, new PrintStream(new NullOutputStream()));
     cycles = finder.findCycles();
     if (finder.errorCount() > 0) {
       fail("CycleFinder failed with errors:\n" + errorMessages.toString());
