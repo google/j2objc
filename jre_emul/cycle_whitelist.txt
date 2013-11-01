@@ -4,6 +4,8 @@ TYPE java.util.logging.LogManager  # Long lived.
 FIELD java.util.HashSet.backingMap
 FIELD java.util.TreeSet.backingMap
 
+FIELD java.util.concurrent.ConcurrentSkipListSet.m
+
 # These types are adapters of each other. If the cycle was created then a stack
 # overflow would be a larger problem then the memory leak.
 FIELD org.xml.sax.helpers.ParserAdapter.contentHandler org.xml.sax.helpers.XMLReaderAdapter

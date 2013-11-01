@@ -6,7 +6,7 @@
 
 package java.util.concurrent;
 
-import com.google.j2objc.annotations.Weak;
+import com.google.j2objc.annotations.WeakOuter;
 
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.ReentrantLock;
@@ -93,7 +93,6 @@ public class ArrayBlockingQueue<E> extends AbstractQueue<E>
      * are known not to be any.  Allows queue operations to update
      * iterator state.
      */
-    @Weak
     transient Itrs itrs = null;
 
     // Internal helper methods
@@ -773,6 +772,7 @@ public class ArrayBlockingQueue<E> extends AbstractQueue<E>
      * reentrantly invoking another such method, causing subtle
      * corruption bugs.
      */
+    @WeakOuter
     class Itrs {
 
         /**

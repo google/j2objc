@@ -325,16 +325,12 @@ public class ConcurrentSkipListMap<K,V> extends AbstractMap<K,V>
     private transient int randomSeed;
 
     /** Lazily initialized key set */
-    @Weak
     private transient KeySet<K> keySet;
     /** Lazily initialized entry set */
-    @Weak
     private transient EntrySet<K,V> entrySet;
     /** Lazily initialized values collection */
-    @Weak
     private transient Values<V> values;
     /** Lazily initialized descending key set */
-    @Weak
     private transient ConcurrentNavigableMap<K,V> descendingMap;
 
     /**
@@ -2473,7 +2469,6 @@ public class ConcurrentSkipListMap<K,V> extends AbstractMap<K,V>
 
         // Lazily initialized view holders
         private transient KeySet<K> keySetView;
-        @Weak
         private transient Set<Map.Entry<K,V>> entrySetView;
         private transient Collection<V> valuesView;
 
