@@ -1301,7 +1301,7 @@ public class StatementGeneratorTest extends GenerationTest {
         "class Test { static final String NAME = \"\\u4e2d\\u56fd\";" +
         " static final String CAPTION = \"China's name is \";" +
         " static final String TEST = CAPTION + NAME; }", "Test", "Test.m");
-    assertTranslation(translation, "Test_TEST_ = @\"China's name is \\u4e2d\\u56fd\"");
+    assertTranslation(translation, "Test_TEST_ = @\"China's name is \u4e2d\u56fd\"");
   }
 
   public void testPartialArrayCreation2D() throws IOException {
