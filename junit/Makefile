@@ -267,7 +267,7 @@ java_sources_manifest: $(JAVA_SOURCES_MANIFEST)
 $(OBJC_SOURCES_MANIFEST): | $(BUILD_DIR)
 	@echo "Building $$(basename $@)"
 	@if [ -e $@ ]; then rm $@; fi
-	@files='$(TRANSLATE_OBJC)' && for i in $$files; do \
+	@files='$(TRANSLATE_SOURCES)' && for i in $$files; do \
 	  echo $${i%.m}.h >> $@; \
 	  echo $$i >> $@; \
 	done
