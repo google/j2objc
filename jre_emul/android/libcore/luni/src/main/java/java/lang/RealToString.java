@@ -21,7 +21,7 @@ import libcore.math.MathUtils;
 
 /*-[
 extern void RealToString_bigIntDigitGenerator(
-    JavaLangRealToString *obj, long f, int e, BOOL isDenormalized, int p);
+    JavaLangRealToString *obj, long long f, int e, BOOL isDenormalized, int p);
 ]-*/
 
 final class RealToString {

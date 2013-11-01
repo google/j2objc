@@ -63,8 +63,8 @@
  *           1.2341234124312331E107
  *
  */
-void RealToString_bigIntDigitGenerator(JavaLangRealToString *obj, jlong f, jint e,
-        jboolean isDenormalized, jint p) {
+void RealToString_bigIntDigitGenerator(JavaLangRealToString *obj, long long int f, int e,
+        BOOL isDenormalized, int p) {
   int RLength, SLength, TempLength, mplus_Length, mminus_Length;
   int high, low, i;
   jint k, firstK, U;
