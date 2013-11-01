@@ -510,12 +510,7 @@ public class StatementGenerator extends ErrorReportingASTVisitor {
 
   @Override
   public boolean visit(CharacterLiteral node) {
-    int c = node.charValue();
-    if (c >= 0x20 && c <= 0x7E) { // if ASCII
-      buffer.append(UnicodeUtils.escapeUnicodeSequences(node.getEscapedValue()));
-    } else {
-      buffer.append(String.format("0x%04x", c));
-    }
+    buffer.append(UnicodeUtils.escapeCharLiteral(node.charValue()));
     return false;
   }
 
@@ -777,7 +772,7 @@ public class StatementGenerator extends ErrorReportingASTVisitor {
     // Copy all operands into a single list.
     List<Expression> operands = Lists.newArrayList(leftOperand, rightOperand);
     operands.addAll(extendedOperands);
-    String format = "@\"";
+    StringBuilder format = new StringBuilder();
 
     AST ast = leftOperand.getAST();
     List<Expression> args = Lists.newArrayList();
@@ -789,46 +784,34 @@ public class StatementGenerator extends ErrorReportingASTVisitor {
         Object value = var.getConstantValue();
         if (value instanceof String) {
           String s = (String) value;
-          StringLiteral literal = ast.newStringLiteral();
-          literal.setLiteralValue(s);
           if (UnicodeUtils.hasValidCppCharacters(s)) {
-            s = unquoteAndEscape(literal.getEscapedValue());
-            s = UnicodeUtils.escapeNonLatinCharacters(s);
-            format += UnicodeUtils.escapeStringLiteral(s);
+            format.append(s.replace("%", "%%"));
           } else {
             J2ObjC.error(operand,
                 "String constant has Unicode or octal escape sequences that are not valid in " +
                 "Objective-C.\nEither make string non-final, or remove characters.");
           }
           continue;
-        } else if (value instanceof Character) {
-          char c = (Character) value;
-          if (c == '"') {
-            format += '\\';
-          }
-          format += c;
-          continue;
         } else if (value != null) {
-          format += value.toString();
+          format.append(value.toString());
           continue;
         } // else fall through to next section.
       }
       if (operand instanceof StringLiteral) {
-        StringLiteral literal = (StringLiteral) operand;
-        if (UnicodeUtils.hasValidCppCharacters(literal.getLiteralValue())) {
-          String s = unquoteAndEscape(literal.getEscapedValue());
-          format += UnicodeUtils.escapeStringLiteral(s);
+        String s = ((StringLiteral) operand).getLiteralValue();
+        if (UnicodeUtils.hasValidCppCharacters(s)) {
+          format.append(s.replace("%", "%%"));
         } else {
           // Convert to NSString invocation when printing args.
-          format += "%@";
+          format.append("%@");
           args.add(operand);
         }
       } else if (operand instanceof BooleanLiteral) {
-        format += String.valueOf(((BooleanLiteral) operand).booleanValue());
+        format.append(String.valueOf(((BooleanLiteral) operand).booleanValue()));
       } else if (operand instanceof CharacterLiteral) {
-        format += unquoteAndEscape(((CharacterLiteral) operand).getEscapedValue());
+        format.append(((CharacterLiteral) operand).charValue());
       } else if (operand instanceof NumberLiteral) {
-        format += ((NumberLiteral) operand).getToken();
+        format.append(((NumberLiteral) operand).getToken());
       } else {
         args.add(operand);
 
@@ -841,39 +824,39 @@ public class StatementGenerator extends ErrorReportingASTVisitor {
             case 'B':  // byte
             case 'I':  // int
             case 'S':  // short
-              format += "%d";
+              format.append("%d");
               break;
             case 'J':  // long
-              format += "%lld";
+              format.append("%lld");
               break;
             case 'D':  // double
             case 'F':  // float
-              format += "%f";
+              format.append("%f");
               break;
             case 'C':  // char
-              format += "%C";
+              format.append("%C");
               break;
             case 'Z':  // boolean
-              format += "%@";
+              format.append("%@");
               break;
             default:
               throw new AssertionError("unknown primitive type: " + type);
           }
         } else {
-          format += "%@";
+          format.append("%@");
         }
       }
     }
-    format += '"';
 
+    String formatStr = UnicodeUtils.escapeStringLiteral(format.toString());
     if (args.isEmpty()) {
-      buffer.append(format.replace("%%", "%")); // unescape % character
+      buffer.append("@\"" + formatStr.replace("%%", "%") + "\""); // unescape % character
       return;
     }
 
-    buffer.append("[NSString stringWithFormat:");
-    buffer.append(format);
-    buffer.append(", ");
+    buffer.append("[NSString stringWithFormat:@\"");
+    buffer.append(formatStr);
+    buffer.append("\", ");
     for (Iterator<Expression> iter = args.iterator(); iter.hasNext(); ) {
       printStringConcatenationArg(iter.next());
       if (iter.hasNext()) {
@@ -881,23 +864,6 @@ public class StatementGenerator extends ErrorReportingASTVisitor {
       }
     }
     buffer.append(']');
-  }
-
-  // Remove surrounding single or double-quotes, and escape sequences.
-  private String unquoteAndEscape(String s) {
-    if (s == null || s.length() < 2) {
-      return s;
-    }
-    int len = s.length();
-    char start = s.charAt(0);
-    char end = s.charAt(len - 1);
-    assert (start == '\'' || start == '"');
-    assert (start == end);
-    s = s.substring(1, len - 1);
-    if (s.equals("\"")) {
-      s = "\\\"";
-    }
-    return s.replace("%", "%%");     // escape % characters
   }
 
   private void printStringConcatenationArg(Expression arg) {
@@ -1397,7 +1363,7 @@ public class StatementGenerator extends ErrorReportingASTVisitor {
 
   public static String generateStringLiteral(StringLiteral node) {
     if (UnicodeUtils.hasValidCppCharacters(node.getLiteralValue())) {
-      return "@" + UnicodeUtils.escapeStringLiteral(node.getEscapedValue());
+      return "@\"" + UnicodeUtils.escapeStringLiteral(node.getLiteralValue()) + "\"";
     } else {
       return buildStringFromChars(node.getLiteralValue());
     }

@@ -18,6 +18,9 @@ package com.google.devtools.j2objc.util;
 
 import com.google.devtools.j2objc.GenerationTest;
 
+import java.io.ByteArrayOutputStream;
+import java.io.PrintStream;
+
 /**
  * Unit tests for {@link UnicodeUtils}.
  *
@@ -27,33 +30,39 @@ public class UnicodeUtilsTest extends GenerationTest {
 
   // Verify that a string with just a Unicode escape sequence is converted.
   public void testSingleUnicodeEscapeSequence() {
-    String fragment = "\\u1234";
-    String escaped = UnicodeUtils.escapeUnicodeSequences(fragment);
-    assertEquals(fragment, escaped);
+    String fragment = "\u1234";
+    String escaped = UnicodeUtils.escapeStringLiteral(fragment);
+    assertEquals("\\u1234", escaped);
   }
 
   // Verify that a partial Unicode escape sequence, such as "\\u" is ignored.
   public void testUnicodeEscapeSequenceFragment() {
     String fragment = "\\u";
-    String escaped = UnicodeUtils.escapeUnicodeSequences(fragment);
-    assertEquals(fragment, escaped);
+    String escaped = UnicodeUtils.escapeStringLiteral(fragment);
+    assertEquals("\\\\u", escaped);
   }
 
   // Verify that a string with a Unicode escape that isn't a legal C99
   // sequence is reported as an error.
   public void testIllegalUnicodeEscapeSequence() {
-    String fragment = "abc\\uffff";
-    String escaped = UnicodeUtils.escapeUnicodeSequences(fragment, false);
-    assertErrorCount(1);
+    PrintStream savedErrStream = System.err;
+    try {
+      System.setErr(new PrintStream(new ByteArrayOutputStream()));
+      String fragment = "abc\uffff";
+      String escaped = UnicodeUtils.escapeStringLiteral(fragment);
+      assertErrorCount(1);
 
-    // Verify string wasn't modified (it's useful as a diagnostic).
-    assertEquals(fragment, escaped);
+      // Verify the unicode is emitted anyways (it's useful as a diagnostic).
+      assertEquals("abc\\uffff", escaped);
+    } finally {
+      System.setErr(savedErrStream);
+    }
   }
 
   public void testEscapeOctalSequences() {
-    String fragment = "abc\\200def\\377ghi\\177jkl\\30";
-    String escaped = UnicodeUtils.escapeOctalSequences(fragment);
-    assertEquals("abc\\xc2\\x80def\\xc3\\xbfghi\\177jkl\\30", escaped);
+    String fragment = "abc\200def\377ghi\177jkl";
+    String escaped = UnicodeUtils.escapeStringLiteral(fragment);
+    assertEquals("abc\\xc2\\x80\"\"def\\u00ffghi\\x7fjkl", escaped);
   }
 
   public void testHasValidCppCharacters() {
@@ -66,8 +75,8 @@ public class UnicodeUtilsTest extends GenerationTest {
   }
 
   public void testEscapedBackSlashesIgnored() {
-    String fragment = "abc\\\\u1234def\\\\x20ghi";
-    String escaped = UnicodeUtils.escapeUnicodeSequences(fragment);
-    assertEquals(fragment, escaped);
+    String fragment = "abc\\u1234def\\x20ghi";
+    String escaped = UnicodeUtils.escapeStringLiteral(fragment);
+    assertEquals("abc\\\\u1234def\\\\x20ghi", escaped);
   }
 }

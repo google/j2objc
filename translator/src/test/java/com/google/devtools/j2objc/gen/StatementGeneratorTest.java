@@ -1148,12 +1148,9 @@ public class StatementGeneratorTest extends GenerationTest {
     String translation = translateSourceFile(
       "public class A { String s1 = \"\\177\"; String s2 = \"\\200\"; String s3 = \"\\377\"; }",
       "A", "A.m");
-    // \177 (0x7f) is the highest legal octal value in C99.
-    assertTranslation(translation, "@\"\\177\"");
-
-    // \200-\377 (0x80-0xFF) is the illegal octal value range in C99.
+    assertTranslation(translation, "@\"\\x7f\"");
     assertTranslation(translation, "@\"\\xc2\\x80\"");
-    assertTranslation(translation, "@\"\\xc3\\xbf\"");
+    assertTranslation(translation, "@\"\\u00ff\"");
   }
 
   public void testCharLiteralsAreEscaped() throws IOException {

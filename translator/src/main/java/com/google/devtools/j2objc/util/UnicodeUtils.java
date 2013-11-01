@@ -16,12 +16,9 @@
 
 package com.google.devtools.j2objc.util;
 
-import com.google.common.annotations.VisibleForTesting;
 import com.google.devtools.j2objc.J2ObjC;
 
 import java.io.UnsupportedEncodingException;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 /**
  * Utility methods for translating Unicode strings to Objective-C.
@@ -34,82 +31,77 @@ public final class UnicodeUtils {
     // Don't instantiate.
   }
 
-  public static String escapeStringLiteral(String s) {
-    return escapeOctalSequences(escapeUnicodeSequences(s));
+  /**
+   * Returns a valid C/C++ character literal (including quotes).
+   */
+  public static String escapeCharLiteral(char c) {
+    if (c >= 0x20 && c <= 0x7E) { // if ASCII
+      switch (c) {
+        case '\'': return "'\\''";
+        case '\\': return "'\\\\'";
+      }
+      return "'" + c + "'";
+    } else {
+      return String.format("0x%04x", (int) c);
+    }
   }
 
   /**
-   * Converts Unicode sequences that aren't all valid C++ universal
-   * characters, as defined by ISO 14882, section 2.2, to either
-   * characters or hexadecimal escape sequences.
+   * Returns a valid ObjC string literal (excluding quotes).
    */
-  public static String escapeUnicodeSequences(String s) {
-    return escapeUnicodeSequences(s, true);
-  }
-
-  @VisibleForTesting
-  static String escapeUnicodeSequences(String s, boolean logErrorMessage) {
-    if (s.contains("\\u")) {
-      StringBuilder buffer = new StringBuilder();
-      int i, lastIndex = 0;
-      while ((i = s.indexOf("\\u", lastIndex)) != -1) {
-        String chunk = s.substring(lastIndex, i);
-        buffer.append(chunk);
-
-        if (i > 0 && s.charAt(i - 1) == '\\') {
-          // Escaped back slash, ignore.
-          buffer.append("\\u");
-          lastIndex = i + 2;
-          continue;
-        }
-
-        // Convert hex Unicode number; format valid due to compiler check.
-        if (s.length() >= i + 6) {
-          char value = (char) Integer.parseInt(s.substring(i + 2, i + 6), 16);
-          String convertedChar = escapeCharacter(value);
-          if (convertedChar != null) {
-            buffer.append(convertedChar);
-          } else {
-            if (!isValidCppCharacter(value)) {
-              if (logErrorMessage) {
-                J2ObjC.error(String.format("Illegal C/C++ Unicode character \\u%4x in \"%s\"",
-                    (int) value, s));
-              } else {
-                J2ObjC.error();
-              }
-              // Fall-through to print, so output is debug-able.
-            }
-            // Print Unicode sequence.
-            buffer.append(s.substring(i, i + 6));
-          }
-          lastIndex = i + 6;
-        } else {
-          buffer.append(s.substring(i));
-          lastIndex = s.length();
-        }
+  public static String escapeStringLiteral(String s) {
+    StringBuilder sb = null;
+    int len = s.length();
+    int lastIndex = 0;
+    for (int i = 0; i < len; i++) {
+      String replacement = escapeCharacterForStringLiteral(s.charAt(i), s, i);
+      if (replacement == null) {
+        continue;
       }
-      buffer.append(s.substring(lastIndex));
-      return buffer.toString();
+      if (sb == null) {
+        sb = new StringBuilder();
+      }
+      if (lastIndex < i) {
+        sb.append(s.substring(lastIndex, i));
+      }
+      lastIndex = i + 1;
+      sb.append(replacement);
+    }
+    if (sb != null) {
+      sb.append(s.substring(lastIndex, len));
+      return sb.toString();
     } else {
       return s;
     }
   }
 
-  private static final Pattern INVALID_OCTAL = Pattern.compile("\\\\([2-3][0-7][0-7])");
-
-  /**
-   * Replaces invalid octal escape sequences, from a C99 perspective.
-   */
-  @VisibleForTesting
-  static String escapeOctalSequences(String s) {
-    Matcher matcher = INVALID_OCTAL.matcher(s);
-    StringBuffer sb = new StringBuffer();
-    while (matcher.find()) {
-      matcher.appendReplacement(sb, "");
-      sb.append(escapeUtf8((char) Integer.parseInt(matcher.group(1), 8)));
+  private static String escapeCharacterForStringLiteral(char c, String s, int idx) {
+    switch (c) {
+      case '\\': return "\\\\";
+      case '"': return "\\\"";
+      case '\n': return "\\n";
+      case '\t': return "\\t";
     }
-    matcher.appendTail(sb);
-    return sb.toString();
+    if (c >= 0x20 && c <= 0x7E) {
+      // Printable ASCII character.
+      return null;
+    } else if (c < 0x20 || (c >= 0x7F && c < 0xA0)) {
+      // Invalid C++ Unicode number, convert to UTF-8 sequence.
+      if (idx + 1 < s.length() && isHexChar(s.charAt(idx + 1))) {
+        // If followed by another hex character, we must terminate the hex sequence.
+        return escapeUtf8(c) + "\"\"";
+      }
+      return escapeUtf8(c);
+    } else {
+      if (!isValidCppCharacter(c)) {
+        J2ObjC.error(String.format("Illegal C/C++ Unicode character \\u%4x in \"%s\"", (int) c, s));
+      }
+      return "\\u" + String.format("%04x", (int) c);
+    }
+  }
+
+  private static boolean isHexChar(char c) {
+    return c >= '0' && c <= '9' || c >= 'a' && c <= 'f' || c >= 'A' && c <= 'F';
   }
 
   /**
@@ -123,40 +115,6 @@ public final class UnicodeUtils {
       }
     }
     return true;
-  }
-
-  /**
-   * Restore Unicode escape sequences to a string that has non-ASCII
-   * characters.
-   */
-  public static String escapeNonLatinCharacters(String s) {
-    String result = "";
-    for (char c : s.toCharArray()) {
-      if (c <= 0x7f) {
-        result += c;
-      } else {
-        result += "\\u" + String.format("%04x", (int) c);
-      }
-    }
-    return result;
-  }
-
-  /**
-   * Converts a character into either a character or a hexadecimal sequence,
-   * depending on whether it is a valid C++ universal character, as defined
-   * by ISO 14882, section 2.2. Returns the converted character as a String,
-   * or null if the given value was not handled.
-   */
-  public static String escapeCharacter(char value) {
-    if (value >= 0x20 && value <= 0x7E) {
-      // Printable ASCII character.
-      return Character.toString(value);
-    } else if (value < 0x20 || (value >= 0x7F && value < 0xA0)) {
-      // Invalid C++ Unicode number, convert to UTF-8 sequence.
-      return escapeUtf8(value);
-    } else {
-      return null;
-    }
   }
 
   private static String escapeUtf8(char value) {

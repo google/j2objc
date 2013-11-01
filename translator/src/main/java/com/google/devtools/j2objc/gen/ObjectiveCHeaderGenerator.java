@@ -580,19 +580,7 @@ public class ObjectiveCHeaderGenerator extends ObjectiveCSourceFileGenerator {
         if (value instanceof Boolean) {
           println(((Boolean) value).booleanValue() ? "TRUE" : "FALSE");
         } else if (value instanceof Character) {
-          char c = ((Character) value).charValue();
-          String convertedChar = UnicodeUtils.escapeCharacter(c);
-          if (convertedChar != null) {
-            if (convertedChar.equals("'") || convertedChar.equals("\\")) {
-              printf("'\\%s'\n", convertedChar);
-            } else {
-              printf("'%s'\n", convertedChar);
-            }
-          } else {
-            // The Java char constant is likely not a valid C character; just
-            // print it as an int.
-            printf("0x%4x\n", c & 0xffff);
-          }
+          println(UnicodeUtils.escapeCharLiteral(((Character) value).charValue()));
         } else if (value instanceof Long) {
           long l = ((Long) value).longValue();
           if (l == Long.MIN_VALUE) {
