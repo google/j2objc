@@ -17,8 +17,7 @@
 
 package java.lang;
 
-import java.util.HashMap;
-import java.util.Map;
+import com.google.j2objc.annotations.Weak;
 
 /*-[
 #import "java/lang/IllegalThreadStateException.h"
@@ -45,10 +44,13 @@ public class Thread implements Runnable {
    * in the thread dictionary to reduce property lookup overhead.
    */
   private Object nsThread;
-  private ThreadGroup threadGroup;
   private boolean isDaemon;
   private boolean interrupted;
   private boolean running;
+  private ClassLoader contextClassLoader;
+
+  @Weak
+  private ThreadGroup threadGroup;
 
   /** the park state of the thread */
   private int parkState = ParkState.UNPARKED;
@@ -762,7 +764,11 @@ public class Thread implements Runnable {
    * @see java.lang.ClassLoader
    */
   public ClassLoader getContextClassLoader() {
-    return ClassLoader.getSystemClassLoader();
+    return contextClassLoader;
+  }
+
+  public void setContextClassLoader(ClassLoader cl) {
+    contextClassLoader = cl;
   }
 
   public String toString() {
