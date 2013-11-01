@@ -185,16 +185,10 @@ SIMULATOR_SDK_DIR = $(shell bash ../scripts/sysroot_path.sh --iphonesimulator)
 JAVA_SOURCE_LIST = $(BUILD_DIR)/junit.classes.list
 EXTRACTED_JAVA = $(JUNIT_SOURCES:%=$(JAVA_SRC_DIR)/%) \
     $(HAMCREST_SOURCES:%=$(JAVA_SRC_DIR)/%)
-TRANSLATED_OBJC = $(JUNIT_SOURCES:%.java=$(BUILD_DIR)/%.m) \
-    $(HAMCREST_SOURCES:%.java=$(BUILD_DIR)/%.m) \
-    $(MODIFIED_SOURCES:%.java=$(BUILD_DIR)/%.m)
 PUBLIC_HEADERS = \
     $(JUNIT_PUBLIC_SOURCES:%.java=%.h) \
     $(HAMCREST_PUBLIC_SOURCES:%.java=%.h) \
     $(MODIFIED_SOURCES:%.java=%.h)
-INTERNAL_HEADERS = \
-    $(JUNIT_INTERNAL_SOURCES:%.java=%.h) \
-    $(HAMCREST_INTERNAL_SOURCES:%.java=%.h)
 ARCH_HEADERS = $(PUBLIC_HEADERS:%=$(ARCH_INCLUDE_DIR)/%)
 
 # Settings for building Mac OS X, iPhone, and iPhone simulator libraries.
@@ -224,7 +218,6 @@ XCODE_FLAGS = $(ARCH_FLAGS) $(SDK_FLAGS)
 JAVA_SOURCES = \
     $(EXTRACTED_JAVA) \
     $(MODIFIED_SOURCES:%=$(MODIFIED_JAVA_SRC_DIR)/%)
-TRANSLATED_SOURCES = $(TRANSLATED_OBJC)
 JUNIT_JAR = $(BUILD_DIR)/j2objc_junit.jar
 JUNIT_DIST_JAR = $(DIST_JAR_DIR)/j2objc_junit.jar
 SOURCEPATH = $(JAVA_SRC_DIR):$(MODIFIED_JAVA_SRC_DIR)
@@ -232,6 +225,11 @@ CLASSPATH = $(CLASSES_DIR):$(DIST_JAR_DIR)/j2objc_annotations.jar
 
 JAVA_SOURCES_MANIFEST = $(BUILD_DIR)/java_sources.mf
 OBJC_SOURCES_MANIFEST = $(BUILD_DIR)/objc_sources.mf
+
+TRANSLATE_JAVA_FULL = $(JAVA_SOURCES)
+TRANSLATE_JAVA_RELATIVE = $(EXTRACTED_JAVA:$(JAVA_SRC_DIR)/%=%) $(MODIFIED_SOURCES)
+TRANSLATE_ARGS = -sourcepath $(MODIFIED_JAVA_SRC_DIR):$(JAVA_SRC_DIR)
+include ../make/translate.mk
 
 java: $(JUNIT_DIST_JAR)
 
@@ -246,19 +244,8 @@ $(JUNIT_JAR): $(JAVA_SOURCES) | $(BUILD_DIR)
 $(JUNIT_DIST_JAR): $(JUNIT_JAR) | $(DIST_JAR_DIR)
 	@install -m 0644 $< $@
 
-lib: translate $(JUNIT_LIB)
+lib: $(JUNIT_LIB)
 	@:
-
-translate: pre_translate $(EXTRACTED_JAVA) $(TRANSLATED_OBJC)
-	@if [ `cat $(JAVA_SOURCE_LIST) | wc -l` -ge 1 ] ; then \
-	  $(J2OBJC) -sourcepath $(MODIFIED_JAVA_SRC_DIR):$(JAVA_SRC_DIR) \
-	    `cat $(JAVA_SOURCE_LIST)`; \
-	fi
-
-pre_translate:
-	@mkdir -p $(BUILD_DIR)
-	@rm -f $(JAVA_SOURCE_LIST)
-	@touch $(JAVA_SOURCE_LIST)
 
 $(BUILD_DIR)/.extracted: $(JUNIT_SRC_JAR) $(HAMCREST_SRC_JAR)
 	@mkdir -p $(JAVA_SRC_DIR)
@@ -269,12 +256,6 @@ $(BUILD_DIR)/.extracted: $(JUNIT_SRC_JAR) $(HAMCREST_SRC_JAR)
 
 $(EXTRACTED_JAVA): $(BUILD_DIR)/.extracted
 
-$(BUILD_DIR)/%.h $(BUILD_DIR)/%.m: $(JAVA_SRC_DIR)/%.java | pre_translate
-	@echo "$?" >> $(JAVA_SOURCE_LIST)
-
-$(BUILD_DIR)/%.h $(BUILD_DIR)/%.m: $(MODIFIED_JAVA_SRC_DIR)/%.java | pre_translate
-	@echo "$?" >> $(JAVA_SOURCE_LIST)
-
 $(JAVA_SOURCES_MANIFEST): $(JAVA_SOURCES) | $(BUILD_DIR)
 	@echo "Building $$(basename $@)"
 	@if [ -e $@ ]; then rm $@; fi
@@ -283,10 +264,10 @@ $(JAVA_SOURCES_MANIFEST): $(JAVA_SOURCES) | $(BUILD_DIR)
 java_sources_manifest: $(JAVA_SOURCES_MANIFEST)
 	@:
 
-$(OBJC_SOURCES_MANIFEST): $(TRANSLATED_SOURCES) | $(BUILD_DIR)
+$(OBJC_SOURCES_MANIFEST): | $(BUILD_DIR)
 	@echo "Building $$(basename $@)"
 	@if [ -e $@ ]; then rm $@; fi
-	@files='$^' && for i in $$files; do \
+	@files='$(TRANSLATE_OBJC)' && for i in $$files; do \
 	  echo $${i%.m}.h >> $@; \
 	  echo $$i >> $@; \
 	done
@@ -320,20 +301,17 @@ $(EMULATION_SIMULATOR_LIB): $(SIMULATOR_OBJS)
 endif
 
 define compile_rules
-$(1)/%.o: $(BUILD_DIR)/%.m | translate
+$(1)/%.o: $(GEN_OBJC_DIR)/%.m
 	@mkdir -p $$(@D)
-	$$(CLANG) -c $$? -o $$@ $(2) $$(OBJCFLAGS) -I$$(BUILD_DIR) \
+	$$(CLANG) -c $$? -o $$@ $(2) $$(OBJCFLAGS) -I$$(GEN_OBJC_DIR) \
 	  -I$(ARCH_INCLUDE_DIR)
 endef
 
 define rename_compile_rules
-$(1)/$(4): $(BUILD_DIR)/$(3) | translate
+$(1)/$(4): $(GEN_OBJC_DIR)/$(3)
 	@mkdir -p $$(@D)
-	$$(CLANG) -c $$? -o $$@ $(2) $$(OBJCFLAGS) -I$$(BUILD_DIR) \
+	$$(CLANG) -c $$? -o $$@ $(2) $$(OBJCFLAGS) -I$$(GEN_OBJC_DIR) \
 	  -I$$(ARCH_INCLUDE_DIR)
-
-$(BUILD_DIR)/%.h $(BUILD_DIR)/%.m: $(MODIFIED_JAVA_SRC_DIR)/%.java
-	@echo "$?" >> $(JAVA_SOURCE_LIST)
 endef
 
 arch_compile_rules = $(eval $(call compile_rules,$(1),$(2))) \
@@ -353,9 +331,12 @@ $(JUNIT_LIB_DIST): $(JUNIT_LIB)
 	@mkdir -p $(@D)
 	install -m 0644 $< $@
 
-$(ARCH_INCLUDE_DIR)/%.h: $(BUILD_DIR)/%.h | translate
+$(ARCH_INCLUDE_DIR)/%.h: $(GEN_OBJC_DIR)/%.h
 	@mkdir -p $(@D)
 	install -m 0644 $< $@
+
+$(BUILD_DIR):
+	@mkdir -p $@
 
 clean:
 	@rm -rf $(BUILD_DIR) $(JUNIT_LIB_DIST)
