@@ -79,6 +79,9 @@
 + (NSString *)propertyName:(NSString *)name;
 + (NSString *)variableName:(NSString *)name;
 
+// Should only be used by sun.misc.Unsafe.
+- (int)unsafeOffset;
+
 @end
 
 #endif // _JavaLangReflectField_H_
