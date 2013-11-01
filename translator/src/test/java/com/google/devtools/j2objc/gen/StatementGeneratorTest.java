@@ -1522,7 +1522,7 @@ public class StatementGeneratorTest extends GenerationTest {
           "    return br.readLine(); } }}",
           "Test", "Test.m");
       assertTranslation(translation,
-          "JavaIoBufferedReader * br = [[[JavaIoBufferedReader alloc] initWithJavaIoReader:" +
+          "JavaIoBufferedReader *br = [[[JavaIoBufferedReader alloc] initWithJavaIoReader:" +
           "[[[JavaIoFileReader alloc] initWithNSString:path] autorelease]] autorelease];");
       assertTranslation(translation,
           "@try {\n      return [br readLine];\n    }");
@@ -1590,5 +1590,13 @@ public class StatementGeneratorTest extends GenerationTest {
         "enum Test { A, B; Test() {} Test(int i) { this(); } }", "Test", "Test.m");
     assertTranslation(translation, "[super initWithNSString:__name withInt:__ordinal]");
     assertOccurrences(translation, "[self initTestEnumWithNSString:__name withInt:__ordinal]", 2);
+  }
+
+  public void testForStatementWithMultipleInitializers() throws IOException {
+    String translation = translateSourceFile(
+        "class Test { void test() { " +
+        "for (String s1 = null, s2 = null;;) {}}}", "Test", "Test.m");
+    // C requires that each var have its own pointer.
+    assertTranslation(translation, "for (NSString *s1 = nil, *s2 = nil; ; )");
   }
 }

@@ -1683,13 +1683,20 @@ public class StatementGenerator extends ErrorReportingASTVisitor {
 
   @Override
   public boolean visit(VariableDeclarationExpression node) {
-    buffer.append(NameTable.getSpecificObjCType(Types.getTypeBinding(node)));
-    buffer.append(" ");
+    String typeString = NameTable.getSpecificObjCType(Types.getTypeBinding(node));
+    boolean needsAsterisk = typeString.endsWith("*");
+    buffer.append(typeString);
+    if (!needsAsterisk) {
+      buffer.append(' ');
+    }
     for (Iterator<?> it = node.fragments().iterator(); it.hasNext(); ) {
       VariableDeclarationFragment f = (VariableDeclarationFragment) it.next();
       f.accept(this);
       if (it.hasNext()) {
         buffer.append(", ");
+        if (needsAsterisk) {
+          buffer.append('*');
+        }
       }
     }
     return false;
