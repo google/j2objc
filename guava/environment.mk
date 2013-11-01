@@ -19,9 +19,6 @@ J2OBJC_ROOT = ..
 include ../make/common.mk
 include ../java_deps/jars.mk
 
-GOOGLE3 = ../../../..
-GUAVA_SRC_JAR = guava-14.0.1-sources.jar
-GUAVA_TESTS_SRC_JAR = guava-tests-14.0.1-test-sources.jar
 SRC_DIR = $(abspath sources)
 OBJS_DIR = $(BUILD_DIR)/objs
 
