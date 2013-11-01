@@ -74,6 +74,7 @@ public class LocaleDataTest extends junit.framework.TestCase {
     public void test_ru_RU() throws Exception {
         LocaleData l = LocaleData.get(new Locale("ru", "RU"));
 
+        assertEquals("0432", String.format("%04x", (int) l.longWeekdayNames[1].charAt(0)));
         assertEquals("воскресенье", l.longWeekdayNames[1]);
         assertEquals("вс", l.shortWeekdayNames[1]);
 
