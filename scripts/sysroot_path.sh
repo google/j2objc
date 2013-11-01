@@ -29,19 +29,19 @@ fi
 
 XCODE_ROOT=$(xcode-select --print-path)
 
-if [ ! -d ${XCODE_ROOT} ]; then
+if [ ! -d "${XCODE_ROOT}" ]; then
   echo "Xcode is not installed."
   exit 1
 fi
 
 # Try looking in the install directory for Xcode 4.x.
 PLATFORM_ROOT=${XCODE_ROOT}/Platforms/${SDK_TYPE}.platform
-if [ -d ${PLATFORM_ROOT} ]; then
+if [ -d "${PLATFORM_ROOT}" ]; then
   SDKS_ROOT=${PLATFORM_ROOT}/Developer/SDKs
-  if [ -d ${SDKS_ROOT} ]; then
+  if [ -d "${SDKS_ROOT}" ]; then
     # Return the alphabetically last SDK in the directory, which should be the
     # latest version.  This will need to be improved if iOS 10 ever releases.
-    SDK_PATH=$(ls -rd ${SDKS_ROOT}/${SDK_TYPE}* | head -1)
+    SDK_PATH=$(ls -rd "${SDKS_ROOT}/${SDK_TYPE}"* | head -1)
   fi
 fi
 
