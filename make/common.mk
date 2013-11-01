@@ -77,3 +77,15 @@ endif
 
 comma=,
 space=$(eval) $(eval)
+
+# Flags for the static analyzer.
+STATIC_ANALYZER_FLAGS = \
+  -Xclang -analyzer-checker -Xclang security.insecureAPI.UncheckedReturn \
+  -Xclang -analyzer-checker -Xclang security.insecureAPI.getpw \
+  -Xclang -analyzer-checker -Xclang security.insecureAPI.gets \
+  -Xclang -analyzer-checker -Xclang security.insecureAPI.mkstemp \
+  -Xclang -analyzer-checker -Xclang  security.insecureAPI.mktemp \
+  -Xclang -analyzer-disable-checker -Xclang security.insecureAPI.rand \
+  -Xclang -analyzer-disable-checker -Xclang security.insecureAPI.strcpy \
+  -Xclang -analyzer-checker -Xclang security.insecureAPI.vfork \
+  --analyze
