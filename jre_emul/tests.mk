@@ -49,6 +49,8 @@ SUPPORT_SOURCES = \
 
 TEST_SOURCES = \
 	AbstractQueuedSynchronizerTest.java \
+	AbstractQueueTest.java \
+	ArrayBlockingQueueTest.java \
 	AtomicBooleanTest.java \
 	AtomicIntegerArrayTest.java \
 	AtomicIntegerTest.java \
@@ -58,11 +60,16 @@ TEST_SOURCES = \
 	AtomicReferenceArrayTest.java \
 	AtomicReferenceTest.java \
 	AtomicStampedReferenceTest.java \
+	ConcurrentHashMapTest.java \
+	ConcurrentLinkedQueueTest.java \
 	CopyOnWriteArrayListTest.java \
 	CopyOnWriteArraySetTest.java \
+	LinkedListTest.java \
+	LockSupportTest.java \
+	PriorityQueueTest.java \
 	ReentrantLockTest.java \
 	ReentrantReadWriteLockTest.java \
-	LockSupportTest.java \
+	TimeUnitTest.java \
 	java/lang/ClassTest.java \
 	java/lang/ThrowableTest.java \
 	java/lang/ref/PhantomReferenceTest.java \
