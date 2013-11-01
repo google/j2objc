@@ -21,7 +21,6 @@ import com.google.devtools.j2objc.types.GeneratedMethodBinding;
 import com.google.devtools.j2objc.types.NodeCopier;
 import com.google.devtools.j2objc.types.Types;
 import com.google.devtools.j2objc.util.ASTUtil;
-import com.google.devtools.j2objc.util.BindingUtil;
 import com.google.devtools.j2objc.util.ErrorReportingASTVisitor;
 import com.google.devtools.j2objc.util.NameTable;
 import com.google.devtools.j2objc.util.UnicodeUtils;
@@ -34,7 +33,6 @@ import org.eclipse.jdt.core.dom.Block;
 import org.eclipse.jdt.core.dom.BodyDeclaration;
 import org.eclipse.jdt.core.dom.ConstructorInvocation;
 import org.eclipse.jdt.core.dom.EnumDeclaration;
-import org.eclipse.jdt.core.dom.Expression;
 import org.eclipse.jdt.core.dom.ExpressionStatement;
 import org.eclipse.jdt.core.dom.FieldDeclaration;
 import org.eclipse.jdt.core.dom.IMethodBinding;
@@ -44,7 +42,6 @@ import org.eclipse.jdt.core.dom.Initializer;
 import org.eclipse.jdt.core.dom.MethodDeclaration;
 import org.eclipse.jdt.core.dom.Modifier;
 import org.eclipse.jdt.core.dom.Statement;
-import org.eclipse.jdt.core.dom.StringLiteral;
 import org.eclipse.jdt.core.dom.SuperConstructorInvocation;
 import org.eclipse.jdt.core.dom.TypeDeclaration;
 import org.eclipse.jdt.core.dom.VariableDeclarationFragment;
@@ -173,32 +170,15 @@ public class InitializationNormalizer extends ErrorReportingASTVisitor {
    * be assigned to a literal value in ObjC.
    */
   private boolean requiresInitializer(VariableDeclarationFragment frag) {
-    Expression initializer = frag.getInitializer();
-    switch (initializer.getNodeType()) {
-      case ASTNode.BOOLEAN_LITERAL:
-      case ASTNode.CHARACTER_LITERAL:
-      case ASTNode.NULL_LITERAL:
-      case ASTNode.NUMBER_LITERAL:
-        return false;
-      case ASTNode.STRING_LITERAL:
-        return !UnicodeUtils.hasValidCppCharacters(((StringLiteral) initializer).getLiteralValue());
+    IVariableBinding binding = Types.getVariableBinding(frag);
+    Object constantValue = binding.getConstantValue();
+    if (constantValue == null) { // constants don't need initialization
+      return true;
     }
-    if (BindingUtil.isPrimitiveConstant(Types.getVariableBinding(frag))) {
-      return false;
+    if (constantValue instanceof String) {
+      return !UnicodeUtils.hasValidCppCharacters((String) constantValue);
     }
-    // If the initializer is not a literal, but has a constant value, convert it
-    // to a literal. (as javac would do)
-    Object constantValue = initializer.resolveConstantExpressionValue();
-    if (constantValue != null) {
-      if (constantValue instanceof String
-          && !UnicodeUtils.hasValidCppCharacters((String) constantValue)) {
-        return true;
-      }
-      frag.setInitializer(ASTFactory.makeLiteral(
-          frag.getAST(), constantValue, Types.getTypeBinding(frag)));
-      return false;
-    }
-    return true;
+    return false;
   }
 
   private ExpressionStatement makeAssignmentStatement(VariableDeclarationFragment fragment) {

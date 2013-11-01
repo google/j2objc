@@ -167,9 +167,11 @@ public class ObjectiveCImplementationGeneratorTest extends GenerationTest {
     String translation = translateSourceFile("public class Example { "
         + "void test() { Bar.FOO=2; } } class Bar { public static int FOO=1; }",
        "Example", "Example.m");
-    assertTranslation(translation, "static int Bar_FOO_ = 1;");
+    assertTranslation(translation, "static int Bar_FOO_;");
     assertTranslation(translation, "+ (int)FOO {");
     assertTranslation(translation, "return Bar_FOO_;");
+    assertTranslation(translation, "+ (void)initialize {");
+    assertTranslation(translation, "Bar_FOO_ = 1;");
     assertTranslation(translation, "+ (int *)FOORef {");
     assertTranslation(translation, "return &Bar_FOO_;");
     translation = getTranslatedFile("Example.m");
@@ -372,7 +374,8 @@ public class ObjectiveCImplementationGeneratorTest extends GenerationTest {
         initializeOffset + initializeSignature.length());
     assertTrue(initializeOffset == -1);
 
-    assertTranslation(translation, "static int ExampleEnum_foo_ = 42;");
+    assertTranslation(translation, "static int ExampleEnum_foo_;");
+    assertTranslation(translation, "ExampleEnum_foo_ = 42;");
   }
 
   public void testNativeCodeBlock() throws IOException {

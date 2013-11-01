@@ -271,11 +271,4 @@ public class InitializationNormalizerTest extends GenerationTest {
     assertTrue(translation.indexOf(setInit) < translation.indexOf(setAdd));
     assertTrue(translation.indexOf(setAdd) < translation.indexOf(setSize));
   }
-
-  public void testStaticFinalStringAssignedToStaticFinalString() throws IOException {
-    String translation = translateSourceFile(
-        "class Test { static final String FOO = Inner.BAR; " +
-        "class Inner { static final String BAR = \"bar\"; } }", "Test", "Test.m");
-    assertTranslation(translation, "static NSString * Test_FOO_ = @\"bar\";");
-  }
 }
