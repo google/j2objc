@@ -241,10 +241,13 @@ JAVA_SOURCES = \
 	java/lang/Long.java \
 	java/lang/Math.java \
 	java/lang/NegativeArraySizeException.java \
+	java/lang/NoSuchFieldError.java \
 	java/lang/NoSuchFieldException.java \
+	java/lang/NoSuchMethodError.java \
 	java/lang/NoSuchMethodException.java \
 	java/lang/NullPointerException.java \
 	java/lang/NumberFormatException.java \
+	java/lang/OutOfMemoryError.java \
 	java/lang/Override.java \
 	java/lang/Package.java \
 	java/lang/Readable.java \
@@ -262,6 +265,7 @@ JAVA_SOURCES = \
 	java/lang/reflect/Proxy.java \
 	java/lang/reflect/ReflectPermission.java \
 	java/lang/reflect/UndeclaredThrowableException.java \
+	java/lang/Runtime.java \
 	java/lang/RuntimeException.java \
 	java/lang/SafeVarargs.java \
 	java/lang/SecurityException.java \
@@ -280,6 +284,7 @@ JAVA_SOURCES = \
 	java/lang/ThreadLocal.java \
 	java/lang/TypeNotPresentException.java \
 	java/lang/UnsupportedOperationException.java \
+	java/lang/VirtualMachineError.java \
 	java/lang/Void.java \
 	java/lang/ref/PhantomReference.java \
 	java/lang/ref/Reference.java \
