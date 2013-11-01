@@ -30,6 +30,7 @@ import java.io.IOException;
 import java.io.PrintStream;
 import java.util.Collection;
 import java.util.List;
+import java.util.logging.Logger;
 
 /**
  * A tool for finding possible reference cycles in a Java program.
@@ -39,7 +40,6 @@ import java.util.List;
 public class CycleFinder {
 
   private final Options options;
-  private final PrintStream outStream;
   private final PrintStream errStream;
   private int nErrors = 0;
   private List<String> errors = Lists.newArrayList();
@@ -52,9 +52,10 @@ public class CycleFinder {
     }
   }
 
-  public CycleFinder(Options options, PrintStream outStream, PrintStream errStream) {
+  private static final Logger logger = Logger.getLogger(CycleFinder.class.getName());
+
+  public CycleFinder(Options options, PrintStream errStream) {
     this.options = options;
-    this.outStream = outStream;
     this.errStream = errStream;
   }
 
@@ -62,7 +63,7 @@ public class CycleFinder {
     return new FileASTRequestor() {
       @Override
       public void acceptAST(String sourceFilePath, CompilationUnit ast) {
-        outStream.println("acceptAST: " + sourceFilePath);
+        logger.fine("acceptAST: " + sourceFilePath);
         for (IProblem problem : ast.getProblems()) {
           if (problem.isError()) {
             error(String.format("%s:%s: %s",
@@ -175,7 +176,7 @@ public class CycleFinder {
       Options.help(true);
     }
     Options options = Options.parse(args);
-    CycleFinder finder = new CycleFinder(options, System.out, System.err);
+    CycleFinder finder = new CycleFinder(options, System.err);
     finder.testFileExistence();
     finder.exitOnErrors();
     List<List<Edge>> cycles = finder.findCycles();
