@@ -18,7 +18,12 @@ package libcore.icu;
 
 import java.util.Locale;
 
+/*-[
+#include <sys/utsname.h>
+]-*/
+
 public class LocaleDataTest extends junit.framework.TestCase {
+
     public void testAll() throws Exception {
         // Test that we can get the locale data for all known locales.
         for (Locale l : Locale.getAvailableLocales()) {
@@ -65,10 +70,20 @@ public class LocaleDataTest extends junit.framework.TestCase {
         LocaleData l = LocaleData.get(new Locale("cs", "CZ"));
 
         assertEquals("ledna", l.longMonthNames[0]);
-        assertEquals("ledna", l.shortMonthNames[0]);
+        if (onMavericks()) {
+            // Short January name fixed in 10.9.
+            assertEquals("led", l.shortMonthNames[0]);
+        } else {
+            assertEquals("ledna", l.shortMonthNames[0]);
+        }
 
         assertEquals("leden", l.longStandAloneMonthNames[0]);
-        assertEquals("1.", l.shortStandAloneMonthNames[0]);
+        if (onMavericks()) {
+            // Short January name fixed in 10.9.
+            assertEquals("led", l.shortMonthNames[0]);
+        } else {
+            assertEquals("1.", l.shortStandAloneMonthNames[0]);
+        }
     }
 
     public void test_ru_RU() throws Exception {
@@ -105,4 +120,12 @@ public class LocaleDataTest extends junit.framework.TestCase {
         assertEquals(',', es_AR.decimalSeparator);
         assertEquals('.', es_AR.groupingSeparator);
     }
+
+    private static native boolean onMavericks() /*-[
+      struct utsname uts;
+      if (uname(&uts) == 0) {
+        return atoi(uts.release) >= 13;
+      }
+      return NO;
+    ]-*/;
 }
