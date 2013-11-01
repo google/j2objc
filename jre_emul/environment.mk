@@ -95,7 +95,7 @@ CLANG=$(XCRUN) clang
 # J2ObjC settings
 J2OBJC := USE_SYSTEM_BOOT_PATH=TRUE $(DIST_DIR)/j2objc --mem-debug \
    -classpath $(EMULATION_JAR) -d $(TRANSLATED_SOURCE_DIR) \
-   $(J2OBJC_DEBUGFLAGS) -encoding ISO-8859-1
+   $(J2OBJC_DEBUGFLAGS) -encoding UTF-8
 
 # Clang warnings
 WARNINGS := $(WARNINGS) -Wall -Werror

@@ -815,7 +815,7 @@ $(EMULATION_JAR): $(ALL_JAVA_SOURCES) $(STUB_JAVA_SOURCES) | $(BUILD_DIR)
 	@echo "building jre_emul.jar"
 	@rm -rf $(EMULATION_STAGE)
 	@mkdir $(EMULATION_STAGE)
-	@$(JAVAC) -classpath $(ANNOTATIONS_JAR) -d $(EMULATION_STAGE) -encoding ISO-8859-1 \
+	@$(JAVAC) -classpath $(ANNOTATIONS_JAR) -d $(EMULATION_STAGE) -encoding UTF-8 \
 	    -source 1.6 -target 1.6 -nowarn $^
 	@jar cf $(EMULATION_JAR) -C $(EMULATION_STAGE) .
 
