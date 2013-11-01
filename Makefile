@@ -69,10 +69,17 @@ jre_emul_java_manifest:
 junit_dist: translator_dist jre_emul_dist
 	@cd junit && $(MAKE) dist
 
+jsr305_dist: translator_dist jre_emul_dist java_deps_dist
+	@cd jsr305 && $(MAKE) dist
+
+guava_dist: translator_dist jre_emul_dist jsr305_dist
+	@cd guava && $(MAKE) dist
+
 cycle_finder_dist: annotations_dist java_deps_dist translator_dist
 	@cd cycle_finder && $(MAKE) dist
 
-dist: translator_dist jre_emul_dist junit_dist cycle_finder_dist install-man-pages
+dist: translator_dist jre_emul_dist junit_dist jsr305_dist guava_dist cycle_finder_dist \
+    install-man-pages
 
 
 clean:
@@ -93,10 +100,13 @@ test_jre_emul: jre_emul_dist junit_dist
 test_jre_cycles: cycle_finder_dist
 	@cd jre_emul && $(MAKE) find_cycles
 
+test_guava_cycles: cycle_finder_dist jre_emul_java_manifest
+	@cd guava && $(MAKE) find_cycles
+
 test_cycle_finder:
 	@cd cycle_finder && $(MAKE) test
 
-test: test_translator test_jre_emul test_jre_cycles test_cycle_finder
+test: test_translator test_jre_emul test_jre_cycles test_guava_cycles test_cycle_finder
 
 
 print_environment:

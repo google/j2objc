@@ -1,0 +1,22 @@
+# *** REAL CYCLES ***
+# Inverses
+FIELD com.google.common.collect.AbstractBiMap.inverse
+FIELD com.google.common.collect.ImmutableListMultimap.inverse
+FIELD com.google.common.collect.ImmutableSetMultimap.inverse
+FIELD com.google.common.collect.MapConstraints.ConstrainedBiMap.inverse
+FIELD com.google.common.collect.Maps.FilteredEntryBiMap.inverse
+FIELD com.google.common.collect.Maps.UnmodifiableBiMap.inverse
+FIELD com.google.common.collect.SingletonImmutableBiMap.inverse
+FIELD com.google.common.collect.Synchronized.SynchronizedBiMap.inverse
+
+# Need to fix all "complement" fields in RangeSets.
+FIELD com.google.common.collect.ImmutableRangeSet.ranges com.google.common.collect.ImmutableRangeSet.ComplementRanges
+
+# *** FALSE POSITIVES ***
+FIELD com.google.common.collect.AbstractMapBasedMultimap.KeySet.subMap
+FIELD com.google.common.collect.AbstractMapBasedMultimap.map com.google.common.collect.AbstractMapBasedMultimap.AsMap
+FIELD com.google.common.collect.AbstractMultimap.keys com.google.common.collect.RegularImmutableMultiset
+FIELD com.google.common.collect.ImmutableCollection.asList
+FIELD com.google.common.collect.ImmutableMap.multimapView
+OUTER com.google.common.collect.ImmutableRangeMap.subRangeMap.$
+OUTER com.google.common.collect.ImmutableRangeSet.intersectRanges.$
