@@ -157,11 +157,15 @@ TEST_SOURCES = \
 	org/apache/harmony/luni/tests/java/lang/InterruptedExceptionTest.java \
 	org/apache/harmony/luni/tests/java/lang/LongTest.java \
 	org/apache/harmony/luni/tests/java/lang/NegativeArraySizeExceptionTest.java \
+	org/apache/harmony/luni/tests/java/lang/NoSuchFieldErrorTest.java \
+	org/apache/harmony/luni/tests/java/lang/NoSuchFieldExceptionTest.java \
+	org/apache/harmony/luni/tests/java/lang/NoSuchMethodErrorTest.java \
 	org/apache/harmony/luni/tests/java/lang/NoSuchMethodExceptionTest.java \
 	org/apache/harmony/luni/tests/java/lang/NullPointerExceptionTest.java \
 	org/apache/harmony/luni/tests/java/lang/NumberFormatExceptionTest.java \
 	org/apache/harmony/luni/tests/java/lang/NumberTest.java \
 	org/apache/harmony/luni/tests/java/lang/ObjectTest.java \
+	org/apache/harmony/luni/tests/java/lang/OutOfMemoryErrorTest.java \
 	org/apache/harmony/luni/tests/java/lang/reflect/ArrayTest.java \
 	org/apache/harmony/luni/tests/java/lang/reflect/ModifierTest.java \
 	org/apache/harmony/luni/tests/java/lang/RuntimeExceptionTest.java \
@@ -175,6 +179,7 @@ TEST_SOURCES = \
 	org/apache/harmony/luni/tests/java/lang/ThreadTest.java \
 	org/apache/harmony/luni/tests/java/lang/TypeNotPresentExceptionTest.java \
 	org/apache/harmony/luni/tests/java/lang/UnsupportedOperationExceptionTest.java \
+	org/apache/harmony/luni/tests/java/lang/VirtualMachineErrorTest.java \
 	org/apache/harmony/luni/tests/util/UtilTest.java \
 	org/apache/harmony/nio/tests/java/nio/BufferOverflowExceptionTest.java \
 	org/apache/harmony/nio/tests/java/nio/BufferTest.java \
