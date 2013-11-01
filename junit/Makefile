@@ -158,30 +158,6 @@ HAMCREST_INTERNAL_SOURCES = \
 
 HAMCREST_SOURCES = $(HAMCREST_PUBLIC_SOURCES) $(HAMCREST_INTERNAL_SOURCES)
 
-# These source files have unique fully-qualified names, but the same class
-# name as other classes. This is an issue when building a native library,
-# as library entries don't include directories. By renaming the generated
-# object files for these sources (adding a OrgJunit prefix), libtool
-# warnings and possible link errors (though none reported) are avoided.
-DUPLICATE_NAME_SOURCES = \
-    org/junit/Test.java \
-    org/junit/Assert.java \
-    org/junit/ComparisonFailure.java \
-    org/junit/internal/runners/InitializationError.java \
-    org/junit/internal/runners/model/MultipleFailureException.java \
-    org/junit/runner/Description.java
-DUPLICATE_NAME_OBJS = \
-    $(foreach file,$(DUPLICATE_NAME_SOURCES), $(dir $(file))OrgJunit$(basename $(notdir $(file))).o)
-
-OBJS := $(JUNIT_SOURCES:%.java=%.o) \
-    $(HAMCREST_SOURCES:%.java=%.o) \
-    $(DUPLICATE_NAME_OBJS) \
-    $(MODIFIED_SOURCES:%.java=%.o)
-OBJS := $(filter-out $(DUPLICATE_NAME_SOURCES:%.java=%.o),$(OBJS))
-
-IPHONE_SDK_DIR = $(shell bash ../scripts/sysroot_path.sh --iphoneos)
-SIMULATOR_SDK_DIR = $(shell bash ../scripts/sysroot_path.sh --iphonesimulator)
-
 JAVA_SOURCE_LIST = $(BUILD_DIR)/junit.classes.list
 EXTRACTED_JAVA = $(JUNIT_SOURCES:%=$(JAVA_SRC_DIR)/%) \
     $(HAMCREST_SOURCES:%=$(JAVA_SRC_DIR)/%)
@@ -190,30 +166,6 @@ PUBLIC_HEADERS = \
     $(HAMCREST_PUBLIC_SOURCES:%.java=%.h) \
     $(MODIFIED_SOURCES:%.java=%.h)
 ARCH_HEADERS = $(PUBLIC_HEADERS:%=$(ARCH_INCLUDE_DIR)/%)
-
-# Settings for building Mac OS X, iPhone, and iPhone simulator libraries.
-EMULATION_MACOSX_LIB = $(BUILD_DIR)/macosx-libjunit.a
-EMULATION_IPHONE_LIB = $(BUILD_DIR)/iphone-libjunit.a
-EMULATION_IPHONEV7S_LIB = $(BUILD_DIR)/iphonev7s-libjunit.a
-EMULATION_SIMULATOR_LIB = $(BUILD_DIR)/simulator-libjunit.a
-ARCH_LIBS = $(J2OBJC_ARCHS)
-ARCH_LIBS := $(ARCH_LIBS:macosx=$(EMULATION_MACOSX_LIB))
-ARCH_LIBS := $(ARCH_LIBS:iphone=$(EMULATION_IPHONE_LIB))
-ARCH_LIBS := $(ARCH_LIBS:iphonev7s=$(EMULATION_IPHONEV7s_LIB))
-ARCH_LIBS := $(ARCH_LIBS:simulator=$(EMULATION_SIMULATOR_LIB))
-MACOSX_OBJS = $(OBJS:%=$(BUILD_DIR)/%)
-MACOSX_FLAGS = $(SDK_FLAGS)
-IPHONE_BUILD_DIR = $(BUILD_DIR)/iphone
-IPHONE_OBJS = $(OBJS:%=$(IPHONE_BUILD_DIR)/%)
-IPHONE_FLAGS = -arch armv7 -isysroot $(IPHONE_SDK_DIR)
-IPHONEV7S_BUILD_DIR = $(BUILD_DIR)/iphonev7s
-IPHONEV7S_OBJS = $(OBJS:%=$(IPHONEV7S_BUILD_DIR)/%)
-IPHONEV7S_FLAGS = -arch armv7s -isysroot $(IPHONE_SDK_DIR)
-SIMULATOR_BUILD_DIR = $(BUILD_DIR)/simulator
-SIMULATOR_OBJS = $(OBJS:%=$(SIMULATOR_BUILD_DIR)/%)
-SIMULATOR_FLAGS = -arch i386 -isysroot $(SIMULATOR_SDK_DIR)
-XCODE_BUILD_DIR = $(TARGET_TEMP_DIR)
-XCODE_FLAGS = $(ARCH_FLAGS) $(SDK_FLAGS)
 
 JAVA_SOURCES = \
     $(EXTRACTED_JAVA) \
@@ -231,6 +183,13 @@ TRANSLATE_JAVA_RELATIVE = $(EXTRACTED_JAVA:$(JAVA_SRC_DIR)/%=%) $(MODIFIED_SOURC
 TRANSLATE_ARGS = -sourcepath $(MODIFIED_JAVA_SRC_DIR):$(JAVA_SRC_DIR)
 include ../make/translate.mk
 
+FAT_LIB_NAME = junit
+FAT_LIB_SOURCES_FULL = $(TRANSLATE_SOURCES)
+FAT_LIB_SOURCES_RELATIVE = $(TRANSLATE_SOURCES:$(GEN_OBJC_DIR)/%=%)
+FAT_LIB_SOURCE_DIRS = $(GEN_OBJC_DIR)
+FAT_LIB_COMPILE = $(CLANG) $(OBJCFLAGS) -I$(GEN_OBJC_DIR) -I$(ARCH_INCLUDE_DIR)
+include ../make/fat_lib.mk
+
 java: $(JUNIT_DIST_JAR)
 
 $(JUNIT_JAR): $(JAVA_SOURCES) | $(BUILD_DIR)
@@ -244,7 +203,7 @@ $(JUNIT_JAR): $(JAVA_SOURCES) | $(BUILD_DIR)
 $(JUNIT_DIST_JAR): $(JUNIT_JAR) | $(DIST_JAR_DIR)
 	@install -m 0644 $< $@
 
-lib: $(JUNIT_LIB)
+lib: $(FAT_LIB_LIBRARY)
 	@:
 
 $(BUILD_DIR)/.extracted: $(JUNIT_SRC_JAR) $(HAMCREST_SRC_JAR)
@@ -275,59 +234,7 @@ $(OBJC_SOURCES_MANIFEST): | $(BUILD_DIR)
 objc_sources_manifest: $(OBJC_SOURCES_MANIFEST)
 	@:
 
-ifdef TARGET_TEMP_DIR
-$(JUNIT_LIB): $(OBJS:%=$(TARGET_TEMP_DIR)/%)
-	@mkdir -p $(@D)
-	$(LIBTOOL) -static -o $@ $^
-else
-$(JUNIT_LIB): $(ARCH_LIBS)
-	$(LIPO) -create $^ -output $@
-
-$(EMULATION_MACOSX_LIB): $(MACOSX_OBJS)
-	@echo "building junit Mac OS X library"
-	@$(LIBTOOL) -static -o $@ $^
-
-$(EMULATION_IPHONE_LIB): $(IPHONE_OBJS)
-	@echo "building junit iPhoneOS library"
-	@$(LIBTOOL) -static -o $@ $^
-
-$(EMULATION_IPHONEV7S_LIB): $(IPHONEV7S_OBJS)
-	@echo "building junit iPhonev7S library"
-	@$(LIBTOOL) -static -o $@ $^
-
-$(EMULATION_SIMULATOR_LIB): $(SIMULATOR_OBJS)
-	@echo "building junit iPhoneSimulator library"
-	@$(LIBTOOL) -static -o $@ $^
-endif
-
-define compile_rules
-$(1)/%.o: $(GEN_OBJC_DIR)/%.m
-	@mkdir -p $$(@D)
-	$$(CLANG) -c $$? -o $$@ $(2) $$(OBJCFLAGS) -I$$(GEN_OBJC_DIR) \
-	  -I$(ARCH_INCLUDE_DIR)
-endef
-
-define rename_compile_rules
-$(1)/$(4): $(GEN_OBJC_DIR)/$(3)
-	@mkdir -p $$(@D)
-	$$(CLANG) -c $$? -o $$@ $(2) $$(OBJCFLAGS) -I$$(GEN_OBJC_DIR) \
-	  -I$$(ARCH_INCLUDE_DIR)
-endef
-
-arch_compile_rules = $(eval $(call compile_rules,$(1),$(2))) \
-  $(foreach file,$(DUPLICATE_NAME_SOURCES),$(eval $(call \
-  rename_compile_rules,$(1),$(2),$(file:%.java=%.m),$(dir $(file))OrgJunit$(basename $(notdir $(file))).o)))
-
-ifdef TARGET_TEMP_DIR
-$(call arch_compile_rules,$(XCODE_BUILD_DIR),$(XCODE_FLAGS),xcode)
-else
-$(call arch_compile_rules,$(BUILD_DIR),$(MACOSX_FLAGS),osx)
-$(call arch_compile_rules,$(IPHONE_BUILD_DIR),$(IPHONE_FLAGS),iphone)
-$(call arch_compile_rules,$(IPHONEV7S_BUILD_DIR),$(IPHONEV7S_FLAGS),iphone7)
-$(call arch_compile_rules,$(SIMULATOR_BUILD_DIR),$(SIMULATOR_FLAGS),simulator)
-endif
-
-$(JUNIT_LIB_DIST): $(JUNIT_LIB)
+$(JUNIT_LIB_DIST): $(FAT_LIB_LIBRARY)
 	@mkdir -p $(@D)
 	install -m 0644 $< $@
 
