@@ -259,8 +259,7 @@ public abstract class ObjectiveCSourceFileGenerator extends SourceFileGenerator 
     String baseDeclaration = String.format("%c (%s)%s", isStatic ? '+' : '-',
         NameTable.getObjCType(binding.getReturnType()), methodName);
     sb.append(baseDeclaration);
-    parametersDeclaration(BindingUtil.getOriginalMethodBinding(binding), ASTUtil.getParameters(m),
-        baseDeclaration, sb);
+    parametersDeclaration(binding, ASTUtil.getParameters(m), baseDeclaration, sb);
     return sb.toString();
   }
 
@@ -316,6 +315,7 @@ public abstract class ObjectiveCSourceFileGenerator extends SourceFileGenerator 
 
   private void parametersDeclaration(IMethodBinding method, List<SingleVariableDeclaration> params,
       String baseDeclaration, StringBuffer sb) throws AssertionError {
+    method = BindingUtil.getOriginalMethodBinding(method);
     if (!params.isEmpty()) {
       ITypeBinding[] parameterTypes = method.getParameterTypes();
       boolean first = true;
