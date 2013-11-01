@@ -5,6 +5,9 @@
  */
 
 package java.util.concurrent;
+
+import com.google.j2objc.annotations.Weak;
+
 import java.util.*;
 
 // BEGIN android-note
@@ -63,6 +66,7 @@ public class ConcurrentSkipListSet<E>
      * element.  This field is declared final for the sake of thread
      * safety, which entails some ugliness in clone()
      */
+    @Weak
     private final ConcurrentNavigableMap<E,Object> m;
 
     /**

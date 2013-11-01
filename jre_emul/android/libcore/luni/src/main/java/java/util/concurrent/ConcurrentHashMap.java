@@ -5,6 +5,9 @@
  */
 
 package java.util.concurrent;
+
+import com.google.j2objc.annotations.WeakOuter;
+
 import java.util.concurrent.locks.*;
 import java.util.*;
 import java.io.Serializable;
@@ -1314,6 +1317,7 @@ public class ConcurrentHashMap<K, V> extends AbstractMap<K, V>
         }
     }
 
+    @WeakOuter
     final class KeySet extends AbstractSet<K> {
         public Iterator<K> iterator() {
             return new KeyIterator();
@@ -1335,6 +1339,7 @@ public class ConcurrentHashMap<K, V> extends AbstractMap<K, V>
         }
     }
 
+    @WeakOuter
     final class Values extends AbstractCollection<V> {
         public Iterator<V> iterator() {
             return new ValueIterator();
@@ -1353,6 +1358,7 @@ public class ConcurrentHashMap<K, V> extends AbstractMap<K, V>
         }
     }
 
+    @WeakOuter
     final class EntrySet extends AbstractSet<Map.Entry<K,V>> {
         public Iterator<Map.Entry<K,V>> iterator() {
             return new EntryIterator();

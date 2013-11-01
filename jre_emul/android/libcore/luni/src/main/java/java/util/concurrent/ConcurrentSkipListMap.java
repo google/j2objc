@@ -5,6 +5,9 @@
  */
 
 package java.util.concurrent;
+
+import com.google.j2objc.annotations.Weak;
+
 import java.util.*;
 
 // BEGIN android-note
@@ -322,12 +325,16 @@ public class ConcurrentSkipListMap<K,V> extends AbstractMap<K,V>
     private transient int randomSeed;
 
     /** Lazily initialized key set */
+    @Weak
     private transient KeySet<K> keySet;
     /** Lazily initialized entry set */
+    @Weak
     private transient EntrySet<K,V> entrySet;
     /** Lazily initialized values collection */
+    @Weak
     private transient Values<V> values;
     /** Lazily initialized descending key set */
+    @Weak
     private transient ConcurrentNavigableMap<K,V> descendingMap;
 
     /**
@@ -2276,6 +2283,7 @@ public class ConcurrentSkipListMap<K,V> extends AbstractMap<K,V>
 
     static final class KeySet<E>
             extends AbstractSet<E> implements NavigableSet<E> {
+        @Weak
         private final ConcurrentNavigableMap<E,?> m;
         KeySet(ConcurrentNavigableMap<E,?> map) { m = map; }
         public int size() { return m.size(); }
@@ -2351,6 +2359,7 @@ public class ConcurrentSkipListMap<K,V> extends AbstractMap<K,V>
     }
 
     static final class Values<E> extends AbstractCollection<E> {
+        @Weak
         private final ConcurrentNavigableMap<?, E> m;
         Values(ConcurrentNavigableMap<?, E> map) {
             m = map;
@@ -2378,6 +2387,7 @@ public class ConcurrentSkipListMap<K,V> extends AbstractMap<K,V>
     }
 
     static final class EntrySet<K1,V1> extends AbstractSet<Map.Entry<K1,V1>> {
+        @Weak
         private final ConcurrentNavigableMap<K1, V1> m;
         EntrySet(ConcurrentNavigableMap<K1, V1> map) {
             m = map;
@@ -2463,6 +2473,7 @@ public class ConcurrentSkipListMap<K,V> extends AbstractMap<K,V>
 
         // Lazily initialized view holders
         private transient KeySet<K> keySetView;
+        @Weak
         private transient Set<Map.Entry<K,V>> entrySetView;
         private transient Collection<V> valuesView;
 

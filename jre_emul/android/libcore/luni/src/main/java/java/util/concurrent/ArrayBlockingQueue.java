@@ -5,6 +5,9 @@
  */
 
 package java.util.concurrent;
+
+import com.google.j2objc.annotations.Weak;
+
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.ReentrantLock;
 import java.util.AbstractQueue;
@@ -90,6 +93,7 @@ public class ArrayBlockingQueue<E> extends AbstractQueue<E>
      * are known not to be any.  Allows queue operations to update
      * iterator state.
      */
+    @Weak
     transient Itrs itrs = null;
 
     // Internal helper methods
