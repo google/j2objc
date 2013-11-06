@@ -1215,21 +1215,7 @@ public class ObjectiveCImplementationGenerator extends ObjectiveCSourceFileGener
       return null;
     }
     return String.format("    { \"%s\", %s, %s, 0x%x },\n",
-        methodSelector(method), methodName, returnTypeStr, getModifiers(method));
-  }
-
-  private String methodSelector(IMethodBinding method) {
-    StringBuilder sb = new StringBuilder(NameTable.getName(method));
-    boolean first = true;
-    for (ITypeBinding paramType : method.getParameterTypes()) {
-      String keyword = NameTable.parameterKeyword(paramType);
-      if (first) {
-        keyword = NameTable.capitalize(keyword);
-        first = false;
-      }
-      sb.append(keyword).append(":");
-    }
-    return sb.toString();
+        NameTable.getMethodSelector(method), methodName, returnTypeStr, getModifiers(method));
   }
 
   /**

@@ -1596,4 +1596,14 @@ public class StatementGeneratorTest extends GenerationTest {
     // C requires that each var have its own pointer.
     assertTranslation(translation, "for (NSString *s1 = nil, *s2 = nil; ; )");
   }
+
+  public void testQualifiedSuperMethodInvocation() throws IOException {
+    String translation = translateSourceFile(
+        "class Test { double foo(int i) { return 1.2; } " +
+        "static class Inner extends Test { Runnable test() { return new Runnable() { " +
+        "public void run() { Inner.super.foo(1); } }; } } }", "Test", "Test.m");
+    assertTranslation(translation,
+        "((double (*)(id, SEL, ...))[Test instanceMethodForSelector:@selector(fooWithInt:)])" +
+        "(this$0_, @selector(fooWithInt:), 1);");
+  }
 }
