@@ -37,8 +37,7 @@ public class ReentrantLockTest extends JSR166TestCase {
     /**
      * A runnable calling lockInterruptibly that expects to be
      * interrupted
-     *
-    TODO(tball): b/11356441
+     */
     class InterruptedLockRunnable implements Runnable {
         final ReentrantLock lock;
         InterruptedLockRunnable(ReentrantLock l) { lock = l; }
@@ -49,7 +48,6 @@ public class ReentrantLockTest extends JSR166TestCase {
             } catch(InterruptedException success){}
         }
     }
-    */
 
     /**
      * Subclass to expose protected methods
@@ -121,8 +119,7 @@ public class ReentrantLockTest extends JSR166TestCase {
 
     /**
      * hasQueuedThreads reports whether there are waiting threads
-     *
-    TODO(tball): b/11356441
+     */
     public void testhasQueuedThreads() {
 	final ReentrantLock lock = new ReentrantLock();
         Thread t1 = new Thread(new InterruptedLockRunnable(lock));
@@ -148,12 +145,10 @@ public class ReentrantLockTest extends JSR166TestCase {
             unexpectedException();
         }
     }
-    */
 
     /**
      * getQueueLength reports number of waiting threads
-     *
-    TODO(tball): b/11356441
+     */
     public void testGetQueueLength() {
 	final ReentrantLock lock = new ReentrantLock();
         Thread t1 = new Thread(new InterruptedLockRunnable(lock));
@@ -179,12 +174,10 @@ public class ReentrantLockTest extends JSR166TestCase {
             unexpectedException();
         }
     }
-    */
 
     /**
      * getQueueLength reports number of waiting threads
-     *
-    TODO(tball): b/11356441
+     */
     public void testGetQueueLength_fair() {
 	final ReentrantLock lock = new ReentrantLock(true);
         Thread t1 = new Thread(new InterruptedLockRunnable(lock));
@@ -209,7 +202,7 @@ public class ReentrantLockTest extends JSR166TestCase {
         } catch(Exception e){
             unexpectedException();
         }
-    }*/
+    }
 
     /**
      * hasQueuedThread(null) throws NPE
@@ -225,8 +218,7 @@ public class ReentrantLockTest extends JSR166TestCase {
 
     /**
      * hasQueuedThread reports whether a thread is queued.
-     *
-    TODO(tball): b/11356441
+     */
     public void testHasQueuedThread() {
 	final ReentrantLock sync = new ReentrantLock();
         Thread t1 = new Thread(new InterruptedLockRunnable(sync));
@@ -257,13 +249,11 @@ public class ReentrantLockTest extends JSR166TestCase {
             unexpectedException();
         }
     }
-    */
 
 
     /**
      * getQueuedThreads includes waiting threads
-     *
-    TODO(tball): b/11356441
+     */
     public void testGetQueuedThreads() {
 	final PublicReentrantLock lock = new PublicReentrantLock();
         Thread t1 = new Thread(new InterruptedLockRunnable(lock));
@@ -292,13 +282,11 @@ public class ReentrantLockTest extends JSR166TestCase {
             unexpectedException();
         }
     }
-    */
 
 
     /**
      * timed tryLock is interruptible.
-     *
-    TODO(tball): b/11356441
+     */
     public void testInterruptedException2() {
 	final ReentrantLock lock = new ReentrantLock();
 	lock.lock();
@@ -317,7 +305,6 @@ public class ReentrantLockTest extends JSR166TestCase {
             unexpectedException();
         }
     }
-    */
 
     /**
      * TryLock on a locked lock fails
@@ -414,8 +401,7 @@ public class ReentrantLockTest extends JSR166TestCase {
 
     /**
      * lockInterruptibly is interruptible.
-     *
-    TODO(tball): b/11356441
+     */
     public void testLockInterruptibly1() {
 	final ReentrantLock lock = new ReentrantLock();
 	lock.lock();
@@ -431,12 +417,10 @@ public class ReentrantLockTest extends JSR166TestCase {
             unexpectedException();
         }
     }
-    */
 
     /**
      * lockInterruptibly succeeds when unlocked, else is interruptible
-     *
-    TODO(tball): b/11356441
+     */
     public void testLockInterruptibly2() {
 	final ReentrantLock lock = new ReentrantLock();
 	try {
@@ -455,7 +439,6 @@ public class ReentrantLockTest extends JSR166TestCase {
             unexpectedException();
         }
     }
-    */
 
     /**
      * Calling await without holding lock throws IllegalMonitorStateException
@@ -910,8 +893,7 @@ public class ReentrantLockTest extends JSR166TestCase {
 
     /**
      * awaitUninterruptibly doesn't abort on interrupt
-     *
-    TODO(tball): b/11356441
+     */
     public void testAwaitUninterruptibly() {
         final ReentrantLock lock = new ReentrantLock();
         final Condition c = lock.newCondition();
@@ -940,12 +922,10 @@ public class ReentrantLockTest extends JSR166TestCase {
             unexpectedException();
         }
     }
-    */
 
     /**
      * await is interruptible
-     *
-    TODO(tball): b/11356441
+     */
     public void testAwait_Interrupt() {
 	final ReentrantLock lock = new ReentrantLock();
         final Condition c = lock.newCondition();
@@ -973,12 +953,10 @@ public class ReentrantLockTest extends JSR166TestCase {
             unexpectedException();
         }
     }
-    */
 
     /**
      * awaitNanos is interruptible
-     *
-    TODO(tball): b/11356441
+     */
     public void testAwaitNanos_Interrupt() {
 	final ReentrantLock lock = new ReentrantLock();
         final Condition c = lock.newCondition();
@@ -1006,12 +984,11 @@ public class ReentrantLockTest extends JSR166TestCase {
             unexpectedException();
         }
     }
-    */
 
     /**
      * awaitUntil is interruptible
      *
-    TODO(tball): b/11356441
+    TODO(tball): replace with pthread_cancel (b/11536576)
     public void testAwaitUntil_Interrupt() {
 	final ReentrantLock lock = new ReentrantLock();
         final Condition c = lock.newCondition();

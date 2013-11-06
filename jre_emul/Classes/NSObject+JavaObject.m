@@ -25,8 +25,10 @@
 #import "java/lang/CloneNotSupportedException.h"
 #import "java/lang/IllegalArgumentException.h"
 #import "java/lang/IllegalMonitorStateException.h"
+#import "java/lang/InterruptedException.h"
 #import "java/lang/InternalError.h"
 #import "java/lang/NullPointerException.h"
+#import "java/lang/Thread.h"
 #import "objc-sync.h"
 
 // A category that adds Java Object-compatible methods to NSObject.
@@ -93,8 +95,23 @@ static void doWait(id obj, long long timeout) {
   if (timeout < 0) {
     @throw AUTORELEASE([[JavaLangIllegalArgumentException alloc] init]);
   }
-  int result = objc_sync_wait(obj, timeout);
-  if (result == OBJC_SYNC_SUCCESS || result == OBJC_SYNC_TIMED_OUT) {
+  JavaLangThread *javaThread = [JavaLangThread currentThread];
+  int result = OBJC_SYNC_SUCCESS;
+  if (!javaThread->interrupted__) {
+    assert(javaThread->blocker_ == nil);
+    javaThread->blocker_ = obj;
+    result = objc_sync_wait(obj, timeout);
+    javaThread->blocker_ = nil;
+  }
+  BOOL wasInterrupted = javaThread->interrupted__;
+  javaThread->interrupted__ = NO;
+  if (wasInterrupted) {
+    @throw AUTORELEASE([[JavaLangInterruptedException alloc] init]);
+  }
+  if (result == OBJC_SYNC_SUCCESS) {
+    return;  // success
+  }
+  if (result == OBJC_SYNC_TIMED_OUT) {
     return;
   }
   if (result == OBJC_SYNC_NOT_OWNING_THREAD_ERROR) {

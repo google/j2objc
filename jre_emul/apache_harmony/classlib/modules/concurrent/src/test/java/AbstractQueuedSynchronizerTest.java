@@ -81,8 +81,7 @@ public class AbstractQueuedSynchronizerTest extends JSR166TestCase {
     /**
      * A runnable calling acquireInterruptibly that expects to be
      * interrupted
-     *
-    TODO(tball): b/11356441
+     */
     class InterruptedSyncRunnable implements Runnable {
         final Mutex sync;
         InterruptedSyncRunnable(Mutex l) { sync = l; }
@@ -93,7 +92,6 @@ public class AbstractQueuedSynchronizerTest extends JSR166TestCase {
             } catch(InterruptedException success){}
         }
     }
-    */
 
     /**
      * isHeldExclusively is false upon construction
@@ -126,8 +124,7 @@ public class AbstractQueuedSynchronizerTest extends JSR166TestCase {
 
     /**
      * hasQueuedThreads reports whether there are waiting threads
-     *
-    TODO(tball): b/11356441
+     */
     public void testhasQueuedThreads() {
 	final Mutex sync = new Mutex();
         Thread t1 = new Thread(new InterruptedSyncRunnable(sync));
@@ -153,7 +150,6 @@ public class AbstractQueuedSynchronizerTest extends JSR166TestCase {
             unexpectedException();
         }
     }
-    */
 
     /**
      * isQueued(null) throws NPE
@@ -169,8 +165,7 @@ public class AbstractQueuedSynchronizerTest extends JSR166TestCase {
 
     /**
      * isQueued reports whether a thread is queued.
-     *
-    TODO(tball): b/11356441
+     */
     public void testIsQueued() {
 	final Mutex sync = new Mutex();
         Thread t1 = new Thread(new InterruptedSyncRunnable(sync));
@@ -201,12 +196,10 @@ public class AbstractQueuedSynchronizerTest extends JSR166TestCase {
             unexpectedException();
         }
     }
-    */
 
     /**
      * getFirstQueuedThread returns first waiting thread or null if none
-     *
-    TODO(tball): b/11356441
+     */
     public void testGetFirstQueuedThread() {
 	final Mutex sync = new Mutex();
         Thread t1 = new Thread(new InterruptedSyncRunnable(sync));
@@ -233,13 +226,11 @@ public class AbstractQueuedSynchronizerTest extends JSR166TestCase {
             unexpectedException();
         }
     }
-    */
 
 
     /**
      * hasContended reports false if no thread has ever blocked, else true
-     *
-    TODO(tball): b/11356441
+     */
     public void testHasContended() {
 	final Mutex sync = new Mutex();
         Thread t1 = new Thread(new InterruptedSyncRunnable(sync));
@@ -265,12 +256,10 @@ public class AbstractQueuedSynchronizerTest extends JSR166TestCase {
             unexpectedException();
         }
     }
-    */
 
     /**
      * getQueuedThreads includes waiting threads
-     *
-    TODO(tball): b/11356441
+     */
     public void testGetQueuedThreads() {
 	final Mutex sync = new Mutex();
         Thread t1 = new Thread(new InterruptedSyncRunnable(sync));
@@ -299,12 +288,10 @@ public class AbstractQueuedSynchronizerTest extends JSR166TestCase {
             unexpectedException();
         }
     }
-    */
 
     /**
      * getExclusiveQueuedThreads includes waiting threads
-     *
-    TODO(tball): b/11356441
+     */
     public void testGetExclusiveQueuedThreads() {
 	final Mutex sync = new Mutex();
         Thread t1 = new Thread(new InterruptedSyncRunnable(sync));
@@ -333,12 +320,10 @@ public class AbstractQueuedSynchronizerTest extends JSR166TestCase {
             unexpectedException();
         }
     }
-    */
 
     /**
      * getSharedQueuedThreads does not include exclusively waiting threads
-     *
-    TODO(tball): b/11356441
+     */
     public void testGetSharedQueuedThreads() {
 	final Mutex sync = new Mutex();
         Thread t1 = new Thread(new InterruptedSyncRunnable(sync));
@@ -365,12 +350,10 @@ public class AbstractQueuedSynchronizerTest extends JSR166TestCase {
             unexpectedException();
         }
     }
-    */
 
     /**
      * tryAcquireNanos is interruptible.
-     *
-    TODO(tball): b/11356441
+     */
     public void testInterruptedException2() {
 	final Mutex sync = new Mutex();
 	sync.acquire(1);
@@ -389,7 +372,6 @@ public class AbstractQueuedSynchronizerTest extends JSR166TestCase {
             unexpectedException();
         }
     }
-    */
 
 
     /**
@@ -472,8 +454,7 @@ public class AbstractQueuedSynchronizerTest extends JSR166TestCase {
 
     /**
      * acquireInterruptibly is interruptible.
-     *
-    TODO(tball): b/11356441
+     */
     public void testAcquireInterruptibly1() {
 	final Mutex sync = new Mutex();
 	sync.acquire(1);
@@ -489,12 +470,10 @@ public class AbstractQueuedSynchronizerTest extends JSR166TestCase {
             unexpectedException();
         }
     }
-    */
 
     /**
      * acquireInterruptibly succeeds when released, else is interruptible
-     *
-    TODO(tball): b/11356441
+     */
     public void testAcquireInterruptibly2() {
 	final Mutex sync = new Mutex();
 	try {
@@ -512,7 +491,6 @@ public class AbstractQueuedSynchronizerTest extends JSR166TestCase {
             unexpectedException();
         }
     }
-    */
 
     /**
      * owns is true for a condition created by sync else false
@@ -984,8 +962,7 @@ public class AbstractQueuedSynchronizerTest extends JSR166TestCase {
 
     /**
      * await is interruptible
-     *
-    TODO(tball): b/11356441
+     */
     public void testAwait_Interrupt() {
 	final Mutex sync = new Mutex();
         final AbstractQueuedSynchronizer.ConditionObject c = sync.newCondition();
@@ -1013,12 +990,10 @@ public class AbstractQueuedSynchronizerTest extends JSR166TestCase {
             unexpectedException();
         }
     }
-    */
 
     /**
      * awaitNanos is interruptible
-     *
-    TODO(tball): b/11356441
+     */
     public void testAwaitNanos_Interrupt() {
 	final Mutex sync = new Mutex();
         final AbstractQueuedSynchronizer.ConditionObject c = sync.newCondition();
@@ -1046,12 +1021,11 @@ public class AbstractQueuedSynchronizerTest extends JSR166TestCase {
             unexpectedException();
         }
     }
-    */
 
     /**
      * awaitUntil is interruptible
      *
-    TODO(tball): b/11356441
+    TODO(tball): b/11536576
     public void testAwaitUntil_Interrupt() {
 	final Mutex sync = new Mutex();
         final AbstractQueuedSynchronizer.ConditionObject c = sync.newCondition();
@@ -1255,8 +1229,7 @@ public class AbstractQueuedSynchronizerTest extends JSR166TestCase {
 
     /**
      * acquireSharedInterruptibly throws IE if interrupted before released
-     *
-    TODO(tball): b/11356441
+     */
     public void testAcquireSharedInterruptibly_InterruptedException() {
         final BooleanLatch l = new BooleanLatch();
         Thread t = new Thread(new Runnable() {
@@ -1277,12 +1250,10 @@ public class AbstractQueuedSynchronizerTest extends JSR166TestCase {
             unexpectedException();
         }
     }
-    */
 
     /**
      * acquireSharedTimed throws IE if interrupted before released
-     *
-    TODO(tball): b/11356441
+     */
     public void testAcquireSharedNanos_InterruptedException() {
         final BooleanLatch l = new BooleanLatch();
         Thread t = new Thread(new Runnable() {
@@ -1304,7 +1275,6 @@ public class AbstractQueuedSynchronizerTest extends JSR166TestCase {
             unexpectedException();
         }
     }
-    */
 
     /**
      * acquireSharedTimed times out if not released before timeout

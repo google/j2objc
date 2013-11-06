@@ -37,8 +37,7 @@ public class ReentrantReadWriteLockTest extends JSR166TestCase {
     /**
      * A runnable calling lockInterruptibly that expects to be
      * interrupted
-     *
-    TODO(tball): b/11356441
+     */
     class InterruptedLockRunnable implements Runnable {
         final ReentrantReadWriteLock lock;
         InterruptedLockRunnable(ReentrantReadWriteLock l) { lock = l; }
@@ -49,7 +48,6 @@ public class ReentrantReadWriteLockTest extends JSR166TestCase {
             } catch(InterruptedException success){}
         }
     }
-    */
 
     /**
      * Subclass to expose protected methods
@@ -231,8 +229,7 @@ public class ReentrantReadWriteLockTest extends JSR166TestCase {
 
     /**
      * timed read-tryLock is interruptible
-     *
-    TODO(tball): b/11356441
+     */
     public void testReadTryLock_Interrupted() {
 	final ReentrantReadWriteLock lock = new ReentrantReadWriteLock();
 	lock.writeLock().lock();
@@ -252,7 +249,6 @@ public class ReentrantReadWriteLockTest extends JSR166TestCase {
             unexpectedException();
         }
     }
-    */
 
 
     /**
@@ -788,8 +784,7 @@ public class ReentrantReadWriteLockTest extends JSR166TestCase {
 
     /**
      * write lockInterruptibly succeeds if lock free else is interruptible
-     *
-    TODO(tball): b/11356441
+     */
     public void testWriteLockInterruptibly() {
 	final ReentrantReadWriteLock lock = new ReentrantReadWriteLock();
 	try {
@@ -818,12 +813,10 @@ public class ReentrantReadWriteLockTest extends JSR166TestCase {
             unexpectedException();
         }
     }
-    */
 
     /**
      *  read lockInterruptibly succeeds if lock free else is interruptible
-     *
-    TODO(tball): b/11356441
+     */
     public void testReadLockInterruptibly() {
 	final ReentrantReadWriteLock lock = new ReentrantReadWriteLock();
 	try {
@@ -851,7 +844,6 @@ public class ReentrantReadWriteLockTest extends JSR166TestCase {
             unexpectedException();
         }
     }
-    */
 
     /**
      * Calling await without holding lock throws IllegalMonitorStateException
@@ -998,8 +990,7 @@ public class ReentrantReadWriteLockTest extends JSR166TestCase {
 
     /**
      * awaitUninterruptibly doesn't abort on interrupt
-     *
-    TODO(tball): b/11356441
+     */
     public void testAwaitUninterruptibly() {
         final ReentrantReadWriteLock lock = new ReentrantReadWriteLock();
         final Condition c = lock.writeLock().newCondition();
@@ -1028,12 +1019,10 @@ public class ReentrantReadWriteLockTest extends JSR166TestCase {
             unexpectedException();
         }
     }
-    */
 
     /**
      * await is interruptible
-     *
-    TODO(tball): b/11356441
+     */
     public void testAwait_Interrupt() {
 	final ReentrantReadWriteLock lock = new ReentrantReadWriteLock();
         final Condition c = lock.writeLock().newCondition();
@@ -1061,12 +1050,10 @@ public class ReentrantReadWriteLockTest extends JSR166TestCase {
             unexpectedException();
         }
     }
-    */
 
     /**
      * awaitNanos is interruptible
-     *
-    TODO(tball): b/11356441
+     */
     public void testAwaitNanos_Interrupt() {
 	final ReentrantReadWriteLock lock = new ReentrantReadWriteLock();
         final Condition c = lock.writeLock().newCondition();
@@ -1094,11 +1081,11 @@ public class ReentrantReadWriteLockTest extends JSR166TestCase {
             unexpectedException();
         }
     }
-    */
 
     /**
      * awaitUntil is interruptible
      *
+    TODO(tball): replace with pthread_cancel (b/11536576)
     public void testAwaitUntil_Interrupt() {
 	final ReentrantReadWriteLock lock = new ReentrantReadWriteLock();
         final Condition c = lock.writeLock().newCondition();
@@ -1207,8 +1194,7 @@ public class ReentrantReadWriteLockTest extends JSR166TestCase {
 
     /**
      * hasQueuedThreads reports whether there are waiting threads
-     *
-    TODO(tball): b/11356441
+     */
     public void testhasQueuedThreads() {
 	final ReentrantReadWriteLock lock = new ReentrantReadWriteLock();
         Thread t1 = new Thread(new InterruptedLockRunnable(lock));
@@ -1234,7 +1220,6 @@ public class ReentrantReadWriteLockTest extends JSR166TestCase {
             unexpectedException();
         }
     }
-    */
 
     /**
      * hasQueuedThread(null) throws NPE
@@ -1250,8 +1235,7 @@ public class ReentrantReadWriteLockTest extends JSR166TestCase {
 
     /**
      * hasQueuedThread reports whether a thread is queued.
-     *
-    TODO(tball): b/11356441
+     */
     public void testHasQueuedThread() {
 	final ReentrantReadWriteLock sync = new ReentrantReadWriteLock();
         Thread t1 = new Thread(new InterruptedLockRunnable(sync));
@@ -1282,13 +1266,11 @@ public class ReentrantReadWriteLockTest extends JSR166TestCase {
             unexpectedException();
         }
     }
-    */
 
 
     /**
      * getQueueLength reports number of waiting threads
-     *
-    TODO(tball): b/11356441
+     */
     public void testGetQueueLength() {
 	final ReentrantReadWriteLock lock = new ReentrantReadWriteLock();
         Thread t1 = new Thread(new InterruptedLockRunnable(lock));
@@ -1314,12 +1296,10 @@ public class ReentrantReadWriteLockTest extends JSR166TestCase {
             unexpectedException();
         }
     }
-    */
 
     /**
      * getQueuedThreads includes waiting threads
-     *
-    TODO(tball): b/11356441
+     */
     public void testGetQueuedThreads() {
 	final PublicReentrantReadWriteLock lock = new PublicReentrantReadWriteLock();
         Thread t1 = new Thread(new InterruptedLockRunnable(lock));
@@ -1348,7 +1328,6 @@ public class ReentrantReadWriteLockTest extends JSR166TestCase {
             unexpectedException();
         }
     }
-    */
 
     /**
      * hasWaiters throws NPE if null

@@ -317,8 +317,7 @@ public class ArrayBlockingQueueTest extends JSR166TestCase {
 
     /**
      * put blocks interruptibly if full
-     *
-    TODO(tball): b/11356441
+     */
     public void testBlockingPut() {
         final ArrayBlockingQueue q = new ArrayBlockingQueue(SIZE);
         Thread t = new Thread(new Runnable() {
@@ -345,12 +344,10 @@ public class ArrayBlockingQueueTest extends JSR166TestCase {
 	    unexpectedException();
         }
     }
-    */
 
     /**
      * put blocks waiting for take when full
-     *
-    TODO(tball): b/11356441
+     */
     public void testPutWithTake() {
         final ArrayBlockingQueue q = new ArrayBlockingQueue(2);
         Thread t = new Thread(new Runnable() {
@@ -381,12 +378,10 @@ public class ArrayBlockingQueueTest extends JSR166TestCase {
             unexpectedException();
         }
     }
-    */
 
     /**
      * timed offer times out if full and elements not taken
-     *
-    TODO(tball): b/11356441
+     */
     public void testTimedOffer() {
         final ArrayBlockingQueue q = new ArrayBlockingQueue(2);
         Thread t = new Thread(new Runnable() {
@@ -410,7 +405,6 @@ public class ArrayBlockingQueueTest extends JSR166TestCase {
             unexpectedException();
         }
     }
-    */
 
     /**
      * take retrieves elements in FIFO order
@@ -428,8 +422,7 @@ public class ArrayBlockingQueueTest extends JSR166TestCase {
 
     /**
      * take blocks interruptibly when empty
-     *
-    TODO(tball): b/11356441
+     */
     public void testTakeFromEmpty() {
         final ArrayBlockingQueue q = new ArrayBlockingQueue(2);
         Thread t = new Thread(new Runnable() {
@@ -449,12 +442,10 @@ public class ArrayBlockingQueueTest extends JSR166TestCase {
             unexpectedException();
         }
     }
-    */
 
     /**
      * Take removes existing elements until empty, then blocks interruptibly
-     *
-    TODO(tball): b/11356441
+     */
     public void testBlockingTake() {
         Thread t = new Thread(new Runnable() {
                 public void run() {
@@ -478,7 +469,6 @@ public class ArrayBlockingQueueTest extends JSR166TestCase {
 	    unexpectedException();
         }
     }
-    */
 
 
     /**
@@ -552,8 +542,7 @@ public class ArrayBlockingQueueTest extends JSR166TestCase {
     /**
      *  timed poll before a delayed offer fails; after offer succeeds;
      *  on interruption throws
-     *
-    TODO(tball): b/11356441
+     */
     public void testTimedPollWithOffer() {
         final ArrayBlockingQueue q = new ArrayBlockingQueue(2);
         Thread t = new Thread(new Runnable() {
@@ -576,7 +565,6 @@ public class ArrayBlockingQueueTest extends JSR166TestCase {
             unexpectedException();
         }
     }
-    */
 
 
     /**
