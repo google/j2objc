@@ -22,6 +22,9 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.devtools.j2objc.Options;
 import com.google.devtools.j2objc.types.GeneratedVariableBinding;
+import com.google.devtools.j2objc.types.IOSMethod;
+import com.google.devtools.j2objc.types.IOSMethodBinding;
+import com.google.devtools.j2objc.types.IOSParameter;
 import com.google.devtools.j2objc.types.PointerTypeBinding;
 import com.google.devtools.j2objc.types.Types;
 import com.google.j2objc.annotations.ObjectiveCName;
@@ -376,6 +379,33 @@ public class NameTable {
 
   public static String parameterKeyword(ITypeBinding type) {
     return "with" + capitalize(getParameterTypeKeyword(type));
+  }
+
+  public static String getMethodSelector(IMethodBinding method) {
+    StringBuilder sb = new StringBuilder(NameTable.getName(method));
+    IOSMethod iosMethod = IOSMethodBinding.getIOSMethod(method);
+    if (iosMethod != null) {
+      List<IOSParameter> params = iosMethod.getParameters();
+      for (int i = 0; i < params.size(); i++) {
+        if (params.get(i).isVarArgs()) {
+          break;
+        }
+        if (i != 0) {
+          sb.append(params.get(i).getParameterName());
+        }
+        sb.append(":");
+      }
+    } else {
+      ITypeBinding[] paramTypes = method.getParameterTypes();
+      for (int i = 0; i < paramTypes.length; i++) {
+        String keyword = NameTable.parameterKeyword(paramTypes[i]);
+        if (i == 0) {
+          keyword = NameTable.capitalize(keyword);
+        }
+        sb.append(keyword).append(":");
+      }
+    }
+    return sb.toString();
   }
 
   /**

@@ -121,49 +121,41 @@ class BindingMapVerifier extends ErrorReportingASTVisitor {
   @Override
   public boolean visit(ArrayAccess node) {
     return verify(node);
-
   }
 
   @Override
   public boolean visit(ArrayCreation node) {
     return verify(node);
-
   }
 
   @Override
   public boolean visit(ArrayInitializer node) {
     return verify(node);
-
   }
 
   @Override
   public boolean visit(ArrayType node) {
     return verify(node);
-
   }
 
   @Override
   public boolean visit(Assignment node) {
     return verify(node);
-
   }
 
   @Override
   public boolean visit(BooleanLiteral node) {
     return verify(node);
-
   }
 
   @Override
   public boolean visit(CastExpression node) {
     return verify(node);
-
   }
 
   @Override
   public boolean visit(CharacterLiteral node) {
     return verify(node);
-
   }
 
   @Override
@@ -178,7 +170,6 @@ class BindingMapVerifier extends ErrorReportingASTVisitor {
   @Override
   public boolean visit(ConditionalExpression node) {
     return verify(node);
-
   }
 
   @Override
@@ -191,37 +182,31 @@ class BindingMapVerifier extends ErrorReportingASTVisitor {
   @Override
   public boolean visit(EnumConstantDeclaration node) {
     return verify(node);
-
   }
 
   @Override
   public boolean visit(EnumDeclaration node) {
     return verify(node);
-
   }
 
   @Override
   public boolean visit(FieldAccess node) {
     return verify(node);
-
   }
 
   @Override
   public boolean visit(InfixExpression node) {
     return verify(node);
-
   }
 
   @Override
   public boolean visit(InstanceofExpression node) {
     return verify(node);
-
   }
 
   @Override
   public boolean visit(MarkerAnnotation node) {
     return verify(node);
-
   }
 
   @Override
@@ -264,55 +249,46 @@ class BindingMapVerifier extends ErrorReportingASTVisitor {
   @Override
   public boolean visit(ParameterizedType node) {
     return verify(node);
-
   }
 
   @Override
   public boolean visit(ParenthesizedExpression node) {
     return verify(node);
-
   }
 
   @Override
   public boolean visit(PostfixExpression node) {
     return verify(node);
-
   }
 
   @Override
   public boolean visit(PrefixExpression node) {
     return verify(node);
-
   }
 
   @Override
   public boolean visit(PrimitiveType node) {
     return verify(node);
-
   }
 
   @Override
   public boolean visit(QualifiedName node) {
     return verify(node);
-
   }
 
   @Override
   public boolean visit(QualifiedType node) {
     return verify(node);
-
   }
 
   @Override
   public boolean visit(SimpleName node) {
     return verify(node);
-
   }
 
   @Override
   public boolean visit(SimpleType node) {
     return verify(node);
-
   }
 
   @Override
@@ -323,55 +299,51 @@ class BindingMapVerifier extends ErrorReportingASTVisitor {
   @Override
   public boolean visit(SingleVariableDeclaration node) {
     return verify(node);
-
   }
 
   @Override
   public boolean visit(StringLiteral node) {
     return verify(node);
-
   }
 
   @Override
   public boolean visit(SuperConstructorInvocation node) {
     return verify(node);
-
   }
 
   @Override
   public boolean visit(SuperFieldAccess node) {
     return verify(node);
-
   }
 
   @Override
   public boolean visit(SuperMethodInvocation node) {
-    return verify(node);
-
+    IBinding binding = bindingMap.get(node);
+    assert binding instanceof IMethodBinding;
+    IMethodBinding method = (IMethodBinding) binding;
+    assert method.isVarargs() || node.arguments().size() == method.getParameterTypes().length
+        || binding instanceof IOSMethodBinding;
+    return true;
   }
 
   @Override
   public boolean visit(ThisExpression node) {
     return verify(node);
-
   }
 
   @Override
   public boolean visit(TypeDeclaration node) {
     return verify(node);
-
   }
 
   @Override
   public boolean visit(TypeLiteral node) {
     return verify(node);
-
   }
 
   @Override
   public boolean visit(TypeParameter node) {
     return verify(node);
-
   }
 
   public boolean visit(UnionType node) {
@@ -381,12 +353,10 @@ class BindingMapVerifier extends ErrorReportingASTVisitor {
   @Override
   public boolean visit(VariableDeclarationExpression node) {
     return verify(node);
-
   }
 
   @Override
   public boolean visit(VariableDeclarationFragment node) {
     return verify(node);
-
   }
 }

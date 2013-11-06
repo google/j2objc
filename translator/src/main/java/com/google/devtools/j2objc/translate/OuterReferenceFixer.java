@@ -22,7 +22,6 @@ import com.google.devtools.j2objc.util.ASTUtil;
 import com.google.devtools.j2objc.util.ErrorReportingASTVisitor;
 
 import org.eclipse.jdt.core.dom.AST;
-import org.eclipse.jdt.core.dom.ASTNode;
 import org.eclipse.jdt.core.dom.ClassInstanceCreation;
 import org.eclipse.jdt.core.dom.Expression;
 import org.eclipse.jdt.core.dom.IMethodBinding;
@@ -34,6 +33,7 @@ import org.eclipse.jdt.core.dom.Modifier;
 import org.eclipse.jdt.core.dom.SimpleName;
 import org.eclipse.jdt.core.dom.SingleVariableDeclaration;
 import org.eclipse.jdt.core.dom.SuperConstructorInvocation;
+import org.eclipse.jdt.core.dom.SuperMethodInvocation;
 import org.eclipse.jdt.core.dom.ThisExpression;
 
 import java.util.List;
@@ -106,7 +106,7 @@ public class OuterReferenceFixer extends ErrorReportingASTVisitor {
       node.setExpression(null);
       outerArg = NodeCopier.copySubtree(ast, outerExpr);
     } else if (path != null) {
-      outerArg = ASTFactory.newName(ast, fixPath(node, path));
+      outerArg = ASTFactory.newName(ast, fixPath(path));
     } else {
       outerArg = ast.newThisExpression();
       Types.addBinding(outerArg, declaringClass);
@@ -120,9 +120,20 @@ public class OuterReferenceFixer extends ErrorReportingASTVisitor {
   public boolean visit(MethodInvocation node) {
     List<IVariableBinding> path = OuterReferenceResolver.getPath(node);
     if (path != null) {
-      node.setExpression(ASTFactory.newName(node.getAST(), fixPath(node, path)));
+      node.setExpression(ASTFactory.newName(node.getAST(), fixPath(path)));
     }
     return true;
+  }
+
+  @Override
+  public void endVisit(SuperMethodInvocation node) {
+    List<IVariableBinding> path = OuterReferenceResolver.getPath(node);
+    if (path != null) {
+      // We substitute the qualifying type name with the outer variable name.
+      node.setQualifier(ASTFactory.newName(node.getAST(), fixPath(path)));
+    } else {
+      node.setQualifier(null);
+    }
   }
 
   @Override
@@ -135,7 +146,7 @@ public class OuterReferenceFixer extends ErrorReportingASTVisitor {
         ASTUtil.setProperty(node,
             ASTFactory.makeLiteral(ast, var.getConstantValue(), var.getType()));
       } else {
-        ASTUtil.setProperty(node, ASTFactory.newName(ast, fixPath(node, path)));
+        ASTUtil.setProperty(node, ASTFactory.newName(ast, fixPath(path)));
       }
     }
     return true;
@@ -145,7 +156,7 @@ public class OuterReferenceFixer extends ErrorReportingASTVisitor {
   public boolean visit(ThisExpression node) {
     List<IVariableBinding> path = OuterReferenceResolver.getPath(node);
     if (path != null) {
-      ASTUtil.setProperty(node, ASTFactory.newName(node.getAST(), fixPath(node, path)));
+      ASTUtil.setProperty(node, ASTFactory.newName(node.getAST(), fixPath(path)));
     } else {
       node.setQualifier(null);
     }
@@ -165,7 +176,7 @@ public class OuterReferenceFixer extends ErrorReportingASTVisitor {
     binding.addParameter(0, outerExpressionType);
   }
 
-  private List<IVariableBinding> fixPath(ASTNode node, List<IVariableBinding> path) {
+  private List<IVariableBinding> fixPath(List<IVariableBinding> path) {
     if (path.get(0) == OuterReferenceResolver.OUTER_PARAMETER) {
       assert outerParam != null;
       path = Lists.newArrayList(path);

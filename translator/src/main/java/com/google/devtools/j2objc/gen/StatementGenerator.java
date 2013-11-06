@@ -1414,18 +1414,47 @@ public class StatementGenerator extends ErrorReportingASTVisitor {
   @Override
   public boolean visit(SuperMethodInvocation node) {
     IMethodBinding binding = Types.getMethodBinding(node);
-    boolean castPrinted = maybePrintCast(node, getActualReturnType(binding,
-        Types.getTypeBinding(ASTUtil.getOwningType(node)).getSuperclass()));
-    if (BindingUtil.isStatic(binding)) {
-      buffer.append("[[super class] ");
+    Name qualifier = node.getQualifier();
+    if (qualifier != null) {
+      String typeName = NameTable.getFullName(Types.getTypeBinding(qualifier).getSuperclass());
+      String selectorName = NameTable.getMethodSelector(binding);
+      ITypeBinding returnType = binding.getReturnType();
+      boolean castPrinted = false;
+      String closeImpCast = "";
+      if (returnType.isPrimitive()) {
+        // We must cast the IMP to have the correct return type.
+        buffer.append(String.format("((%s (*)(id, SEL, ...))",
+            NameTable.primitiveTypeToObjC(returnType.getName())));
+        closeImpCast = ")";
+      } else {
+        castPrinted = maybePrintCastFromId(node);
+      }
+      buffer.append(String.format(
+          "[%s instanceMethodForSelector:@selector(%s)]%s(", typeName, selectorName, closeImpCast));
+      qualifier.accept(this);
+      buffer.append(String.format(", @selector(%s)", selectorName));
+      for (Expression arg : ASTUtil.getArguments(node)) {
+        buffer.append(", ");
+        arg.accept(this);
+      }
+      buffer.append(")");
+      if (castPrinted) {
+        buffer.append(")");
+      }
     } else {
-      buffer.append("[super ");
-    }
-    buffer.append(NameTable.getName(binding));
-    printArguments(binding, ASTUtil.getArguments(node));
-    buffer.append(']');
-    if (castPrinted) {
-      buffer.append(')');
+      boolean castPrinted = maybePrintCast(node, getActualReturnType(binding,
+          Types.getTypeBinding(ASTUtil.getOwningType(node)).getSuperclass()));
+      if (BindingUtil.isStatic(binding)) {
+        buffer.append("[[super class] ");
+      } else {
+        buffer.append("[super ");
+      }
+      buffer.append(NameTable.getName(binding));
+      printArguments(binding, ASTUtil.getArguments(node));
+      buffer.append(']');
+      if (castPrinted) {
+        buffer.append(')');
+      }
     }
     return false;
   }

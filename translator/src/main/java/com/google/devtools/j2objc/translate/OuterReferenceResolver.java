@@ -40,6 +40,7 @@ import org.eclipse.jdt.core.dom.Name;
 import org.eclipse.jdt.core.dom.QualifiedName;
 import org.eclipse.jdt.core.dom.SimpleName;
 import org.eclipse.jdt.core.dom.SingleVariableDeclaration;
+import org.eclipse.jdt.core.dom.SuperMethodInvocation;
 import org.eclipse.jdt.core.dom.ThisExpression;
 import org.eclipse.jdt.core.dom.TypeDeclaration;
 import org.eclipse.jdt.core.dom.VariableDeclaration;
@@ -374,6 +375,14 @@ public class OuterReferenceResolver extends ASTVisitor {
     IMethodBinding method = node.resolveMethodBinding();
     if (node.getExpression() == null && !Modifier.isStatic(method.getModifiers())) {
       addPath(node, getOuterPathInherited(method.getDeclaringClass()));
+    }
+  }
+
+  @Override
+  public void endVisit(SuperMethodInvocation node) {
+    Name qualifier = node.getQualifier();
+    if (qualifier != null) {
+      addPath(node, getOuterPath(qualifier.resolveTypeBinding()));
     }
   }
 
