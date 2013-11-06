@@ -327,7 +327,9 @@ int objc_sync_wait(id obj, long long milliSecondsMaxWait)
     int result = OBJC_SYNC_SUCCESS;
             
     SyncData* data = id2data(obj, CHECK);
-    require_action_string(data != NULL, done, result = OBJC_SYNC_NOT_OWNING_THREAD_ERROR, "id2data failed");
+    if (!data) {
+      return OBJC_SYNC_NOT_OWNING_THREAD_ERROR;
+    }
     
     
     // XXX need to retry cond_wait under out-of-our-control failures
@@ -364,7 +366,9 @@ int objc_sync_notify(id obj)
     int result = OBJC_SYNC_SUCCESS;
         
     SyncData* data = id2data(obj, CHECK);
-    require_action_string(data != NULL, done, result = OBJC_SYNC_NOT_OWNING_THREAD_ERROR, "id2data failed");
+    if (!data) {
+      return OBJC_SYNC_NOT_OWNING_THREAD_ERROR;
+    }
 
     result = pthread_cond_signal(&data->conditionVariable);
     require_noerr_string(result, done, "pthread_cond_signal failed");
@@ -384,7 +388,9 @@ int objc_sync_notifyAll(id obj)
     int result = OBJC_SYNC_SUCCESS;
         
     SyncData* data = id2data(obj, CHECK);
-    require_action_string(data != NULL, done, result = OBJC_SYNC_NOT_OWNING_THREAD_ERROR, "id2data failed");
+    if (!data) {
+      return OBJC_SYNC_NOT_OWNING_THREAD_ERROR;
+    }
 
     result = pthread_cond_broadcast(&data->conditionVariable);
     require_noerr_string(result, done, "pthread_cond_broadcast failed");

@@ -51,6 +51,9 @@ public class Thread implements Runnable {
   private boolean running;
   private ClassLoader contextClassLoader;
 
+  /** The object the thread is waiting on (normally null). */
+  private Object blocker;
+
   @Weak
   private ThreadGroup threadGroup;
 
@@ -157,7 +160,7 @@ public class Thread implements Runnable {
   private static final String UNCAUGHT_HANDLER = "JreThread-UncaughtHandler";
 
   // Milliseconds between polls for testing thread completion.
-  private static final int POLL_INTERVAL = 100;
+  private static final int POLL_INTERVAL = 20;
 
   static {
     initializeThreadClass();
@@ -460,8 +463,15 @@ public class Thread implements Runnable {
       } else {
         throw(t);
       }
+    } finally {
+      cancelNativeThread();
     }
   }
+
+  private native void cancelNativeThread() /*-[
+    // TODO(tball): replace with pthread_cancel (b/11536576)
+    [(NSThread *) nsThread_ cancel];
+  ]-*/;
 
   public static int activeCount() {
       return currentThread().getThreadGroup().activeCount();
@@ -600,10 +610,19 @@ public class Thread implements Runnable {
    * @see Thread#interrupted
    * @see Thread#isInterrupted
    */
-  public native void interrupt() /*-[
-    interrupted__ = YES;
-    [(NSThread *) nsThread_ cancel];
-  ]-*/;
+  public void interrupt() {
+    synchronized(vmThread) {
+      if (interrupted) {
+        return;  // No further action needed.
+      }
+      interrupted = true;
+      if (blocker != null) {
+        synchronized(blocker) {
+          blocker.notify();
+        }
+      }
+    }
+  }
 
   /**
    * Returns a <code>boolean</code> indicating whether the current Thread (
@@ -646,7 +665,15 @@ public class Thread implements Runnable {
    * @see java.lang.ThreadDeath
    */
   public final void join() throws InterruptedException {
-      join(Long.MAX_VALUE);
+      if (!isAlive()) {
+          return;
+      }
+
+      synchronized (vmThread) {
+          while (isAlive()) {
+              vmThread.wait(POLL_INTERVAL);
+          }
+      }
   }
 
   /**
@@ -677,23 +704,51 @@ public class Thread implements Runnable {
    * @see java.lang.ThreadDeath
    */
   public final void join(long millis, int nanos) throws InterruptedException {
-      long millisToWait = millis + (nanos >= 500000 ? 1 : 0);
-      join0(millisToWait, POLL_INTERVAL);
-  }
+      if (millis < 0 || nanos < 0 || nanos >= NANOS_PER_MILLI) {
+          throw new IllegalArgumentException("bad timeout: millis=" + millis + ",nanos=" + nanos);
+      }
 
-  private final native void join0(long millis, int pollInterval)
-          throws InterruptedException /*-[
-    interrupted__ = NO;
-    while (millis > 0 && [self isAlive]) {
-      millis -= pollInterval;
-      double timeInterval = pollInterval / 1000.0; // NSThread uses seconds.
-      [NSThread sleepForTimeInterval:timeInterval];
-    }
-    if (interrupted__) {
-      interrupted__ = NO;  // throw exception clears flag.
-      @throw AUTORELEASE([[JavaLangInterruptedException alloc] init]);
-    }
-  ]-*/;
+      // avoid overflow: if total > 292,277 years, just wait forever
+      boolean overflow = millis >= (Long.MAX_VALUE - nanos) / NANOS_PER_MILLI;
+      boolean forever = (millis | nanos) == 0;
+      if (forever | overflow) {
+          join();
+          return;
+      }
+
+      if (!isAlive()) {
+          return;
+      }
+
+      synchronized (vmThread) {
+          if (!isAlive()) {
+              return;
+          }
+
+          // guaranteed not to overflow
+          long nanosToWait = millis * NANOS_PER_MILLI + nanos;
+
+          // wait until this thread completes or the timeout has elapsed
+          long start = System.nanoTime();
+          while (true) {
+              if (millis > POLL_INTERVAL) {
+                vmThread.wait(POLL_INTERVAL);
+              } else {
+                vmThread.wait(millis, nanos);
+              }
+              if (!isAlive()) {
+                  break;
+              }
+              long nanosElapsed = System.nanoTime() - start;
+              long nanosRemaining = nanosToWait - nanosElapsed;
+              if (nanosRemaining <= 0) {
+                  break;
+              }
+              millis = nanosRemaining / NANOS_PER_MILLI;
+              nanos = (int) (nanosRemaining - millis * NANOS_PER_MILLI);
+          }
+      }
+  }
 
   public native boolean isAlive() /*-[
     NSThread *nativeThread = (NSThread *) nsThread_;
@@ -718,17 +773,12 @@ public class Thread implements Runnable {
      sleep(millis, 0);
   }
 
-  public static native void sleep(long millis, int nanos) throws InterruptedException /*-[
-    JavaLangThread *currentThread = [JavaLangThread currentThread];
-    currentThread->interrupted__ = NO;
-    long long ticks = (millis * 1000000L) + nanos;
-    NSTimeInterval ti = ticks / 1000000000.0;
-    [NSThread sleepForTimeInterval:ti];
-    if (currentThread->interrupted__) {
-      currentThread->interrupted__ = NO;  // throw exception clears flag.
-      @throw AUTORELEASE([[JavaLangInterruptedException alloc] init]);
+  public static void sleep(long millis, int nanos) throws InterruptedException {
+    Object lock = currentThread().vmThread;
+    synchronized(lock) {
+      lock.wait(millis, nanos);
     }
-  ]-*/;
+  }
 
   /**
    * Causes the calling Thread to yield execution time to another Thread that

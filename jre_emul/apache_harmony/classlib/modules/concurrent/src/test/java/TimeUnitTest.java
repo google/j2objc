@@ -187,8 +187,7 @@ public class TimeUnitTest extends JSR166TestCase {
     /**
      *  Timed wait without holding lock throws
      *  IllegalMonitorStateException
-     *
-    TODO(tball): b/11356441
+     */
     public void testTimedWait_IllegalMonitorException() {
 	//created a new thread with anonymous runnable
 
@@ -217,12 +216,10 @@ public class TimeUnitTest extends JSR166TestCase {
             unexpectedException();
         }
     }
-    */
 
     /**
      * timedWait throws InterruptedException when interrupted
-     *
-    TODO(tball): b/11356441
+     */
     public void testTimedWait() {
 	Thread t = new Thread(new Runnable() {
 		public void run() {
@@ -250,13 +247,11 @@ public class TimeUnitTest extends JSR166TestCase {
             unexpectedException();
         }
     }
-    */
 
 
     /**
      * timedJoin throws InterruptedException when interrupted
-     *
-    TODO(tball): b/11356441
+     */
     public void testTimedJoin() {
 	Thread t = new Thread(new Runnable() {
 		public void run() {
@@ -285,12 +280,10 @@ public class TimeUnitTest extends JSR166TestCase {
             unexpectedException();
         }
     }
-    */
 
     /**
      *  timedSleep throws InterruptedException when interrupted
-     *
-    TODO(tball): b/11356441
+     */
     public void testTimedSleep() {
 	//created a new thread with anonymous runnable
 
@@ -313,7 +306,6 @@ public class TimeUnitTest extends JSR166TestCase {
             unexpectedException();
         }
     }
-    */
 
     /**
      * a deserialized serialized unit is equal

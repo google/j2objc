@@ -439,67 +439,66 @@ public class ThreadTest extends junit.framework.TestCase {
 		assertNull("ThreadGroup is not null", group);
 	}
 
-	// Hangs at line 480 below: b/11356441
-//	/**
-//	 * @tests java.lang.Thread#interrupt()
-//	 */
-//	public void test_interrupt() {
-//		// Test for method void java.lang.Thread.interrupt()
-//		final Object lock = new Object();
-//		class ChildThread1 extends Thread {
-//			Thread parent;
-//
-//			boolean sync;
-//
-//			@Override
-//            public void run() {
-//				if (sync) {
-//					synchronized (lock) {
-//						lock.notify();
-//						try {
-//							lock.wait();
-//						} catch (InterruptedException e) {
-//						}
-//					}
-//				}
-//				parent.interrupt();
-//			}
-//
-//			public ChildThread1(Thread p, String name, boolean sync) {
-//				super(name);
-//				parent = p;
-//				this.sync = sync;
-//			}
-//		}
-//		boolean interrupted = false;
-//		try {
-//			ct = new ChildThread1(Thread.currentThread(), "Interrupt Test1",
-//					false);
-//			synchronized (lock) {
-//				ct.start();
-//				lock.wait();
-//			}
-//		} catch (InterruptedException e) {
-//			interrupted = true;
-//		}
-//		assertTrue("Failed to Interrupt thread1", interrupted);
-//
-//		interrupted = false;
-//		try {
-//			ct = new ChildThread1(Thread.currentThread(), "Interrupt Test2",
-//					true);
-//			synchronized (lock) {
-//				ct.start();
-//				lock.wait();
-//				lock.notify();
-//			}
-//			Thread.sleep(20000);
-//		} catch (InterruptedException e) {
-//			interrupted = true;
-//		}
-//		assertTrue("Failed to Interrupt thread2", interrupted);
-//
-//	}
+	/**
+	 * @tests java.lang.Thread#interrupt()
+	 */
+	public void test_interrupt() {
+		// Test for method void java.lang.Thread.interrupt()
+		final Object lock = new Object();
+		class ChildThread1 extends Thread {
+			Thread parent;
+
+			boolean sync;
+
+			@Override
+            public void run() {
+				if (sync) {
+					synchronized (lock) {
+						lock.notify();
+						try {
+							lock.wait();
+						} catch (InterruptedException e) {
+						}
+					}
+				}
+				parent.interrupt();
+			}
+
+			public ChildThread1(Thread p, String name, boolean sync) {
+				super(name);
+				parent = p;
+				this.sync = sync;
+			}
+		}
+		boolean interrupted = false;
+		try {
+			ct = new ChildThread1(Thread.currentThread(), "Interrupt Test1",
+					false);
+			synchronized (lock) {
+				ct.start();
+				lock.wait();
+			}
+		} catch (InterruptedException e) {
+			interrupted = true;
+		}
+		assertTrue("Failed to Interrupt thread1", interrupted);
+
+		interrupted = false;
+		try {
+			ct = new ChildThread1(Thread.currentThread(), "Interrupt Test2",
+					true);
+			synchronized (lock) {
+				ct.start();
+				lock.wait();
+				lock.notify();
+			}
+			Thread.sleep(20000);
+		} catch (InterruptedException e) {
+			interrupted = true;
+		}
+		assertTrue("Failed to Interrupt thread2", interrupted);
+
+	}
 
 	/**
 	 * @tests java.lang.Thread#interrupted()
