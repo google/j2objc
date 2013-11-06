@@ -481,7 +481,7 @@ public class Thread implements Runnable {
   }
 
   public native long getId() /*-[
-    NSDictionary *threadData = [[NSThread currentThread] threadDictionary];
+    NSDictionary *threadData = [(NSThread *) nsThread_ threadDictionary];
     NSNumber *threadId = [threadData objectForKey:JavaLangThread_THREAD_ID_];
     return [threadId longLongValue];
   ]-*/;
@@ -956,7 +956,7 @@ public class Thread implements Runnable {
    * @return an {@link UncaughtExceptionHandler} instance or {@code null}.
    */
   public native UncaughtExceptionHandler getUncaughtExceptionHandler() /*-[
-    NSDictionary *threadData = [[NSThread currentThread] threadDictionary];
+    NSDictionary *threadData = [(NSThread *) nsThread_ threadDictionary];
     id<JavaLangThread_UncaughtExceptionHandler> uncaughtHandler =
         [threadData objectForKey:JavaLangThread_UNCAUGHT_HANDLER_];
     if (uncaughtHandler) {
@@ -970,7 +970,7 @@ public class Thread implements Runnable {
   ]-*/;
 
   public native void setUncaughtExceptionHandler(UncaughtExceptionHandler handler) /*-[
-    NSMutableDictionary *threadData = [[NSThread currentThread] threadDictionary];
+    NSMutableDictionary *threadData = [(NSThread *) nsThread_ threadDictionary];
     if (handler) {
       [threadData setObject:handler forKey:JavaLangThread_UNCAUGHT_HANDLER_];
     } else {
