@@ -32,8 +32,8 @@ GUAVA_JAR = guava-13.0.jar
 ICU4J_JAR = icu4j-51.1.jar
 ICU4J_SOURCE_JAR = icu4j-51.1-sources.jar
 
-JSR305_JAR = jsr305-2.0.1.jar
-JSR305_SOURCE_JAR = jsr305-2.0.1.jar
+JSR305_JAR = jsr305-2.0.2.jar
+JSR305_SOURCE_JAR = jsr305-2.0.2.jar
 
 JUNIT_JAR = junit-4.10.jar
 JUNIT_SOURCE_JAR = junit-4.10-sources.jar

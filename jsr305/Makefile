@@ -41,7 +41,6 @@ JAVA_SOURCES = \
     javax/annotation/Nullable.java \
     javax/annotation/OverridingMethodsMustInvokeSuper.java \
     javax/annotation/ParametersAreNonnullByDefault.java \
-    javax/annotation/ParametersAreNullableByDefault.java \
     javax/annotation/PropertyKey.java \
     javax/annotation/RegEx.java \
     javax/annotation/Signed.java \

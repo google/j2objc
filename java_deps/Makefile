@@ -31,7 +31,7 @@ ifndef M2_HOME
 M2_HOME = $(shell echo $$HOME)/.m2
 endif
 JUNIT_DIR = $(M2_HOME)/repository/junit/junit/4.10
-JSR305_DIR = $(M2_HOME)/repository/com/google/code/findbugs/jsr305/2.0.1
+JSR305_DIR = $(M2_HOME)/repository/com/google/code/findbugs/jsr305/2.0.2
 HAMCREST_DIR = $(M2_HOME)/repository/org/hamcrest/hamcrest-core/1.1
 ICU4J_DIR = $(M2_HOME)/repository/com/ibm/icu/icu4j/51.1
 
