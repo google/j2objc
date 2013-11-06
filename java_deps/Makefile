@@ -43,16 +43,16 @@ $(BUILD_DIR)/.maven_generate: | $(BUILD_DIR)
 	@touch $@
 
 $(BUILD_DIR)/$(JUNIT_SOURCE_JAR): $(JUNIT_DIR)/$(JUNIT_SOURCE_JAR) | $(BUILD_DIR)
-	cp -f $^ $@
+	cp -f $< $@
 
 $(BUILD_DIR)/$(HAMCREST_SOURCE_JAR): $(HAMCREST_DIR)/$(HAMCREST_SOURCE_JAR) | $(BUILD_DIR)
-	cp -f $^ $@
+	cp -f $< $@
 
 $(BUILD_DIR)/$(ICU4J_SOURCE_JAR): $(ICU4J_DIR)/$(ICU4J_SOURCE_JAR) | $(BUILD_DIR)
-	cp -f $^ $@
+	cp -f $< $@
 
 $(BUILD_DIR)/$(JSR305_SOURCE_JAR): $(JSR305_DIR)/$(JSR305_SOURCE_JAR) | $(BUILD_DIR)
-	cp -f $^ $@
+	cp -f $< $@
 
 $(BUILD_DIR) $(DIST_JAR_DIR):
 	@mkdir -p $@
