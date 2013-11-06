@@ -429,11 +429,11 @@ public abstract class TimeZone implements Serializable, Cloneable {
                             initWithInt:offset
                            withNSString:[tz name]
                                 withInt:[daylight month] - 1
-                                withInt:[daylight day] - 1
+                                withInt:[daylight day]
                                 withInt:0
                                 withInt:daylightTime
                                 withInt:[standard month] - 1
-                                withInt:[standard day] - 1
+                                withInt:[standard day]
                                 withInt:0
                                 withInt:standardTime
                                 withInt:savingsOffset]);
