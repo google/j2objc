@@ -40,7 +40,7 @@ J2OBJCC = $(ARCH_BIN_DIR)/j2objcc -c $(INCLUDE_DIRS:%=-I%)
 
 TRANSLATE_JAVA_FULL = $(JAVA_SOURCES)
 TRANSLATE_JAVA_RELATIVE = $(JAVA_SOURCES:$(SRC_DIR)/%=%)
-TRANSLATE_ARGS = --segmented-headers -cp $(CLASSPATH) -sourcepath $(SOURCEPATH)
+TRANSLATE_ARGS = --segmented-headers -cp $(CLASSPATH) -sourcepath $(SOURCEPATH) -encoding UTF-8
 include ../make/translate.mk
 
 FAT_LIB_NAME = guava
@@ -90,7 +90,7 @@ $(JAR): $(JAVA_SOURCES) | $(BUILD_DIR)
 	@echo "building j2objc_guava.jar"
 	@rm -rf $(JAR_STAGE_DIR)
 	@mkdir $(JAR_STAGE_DIR)
-	@$(JAVAC) -sourcepath $(SOURCEPATH) -cp $(CLASSPATH) -d $(JAR_STAGE_DIR) $^
+	@$(JAVAC) -sourcepath $(SOURCEPATH) -cp $(CLASSPATH) -encoding UTF-8 -d $(JAR_STAGE_DIR) $^
 	@jar cf $@ -C $(JAR_STAGE_DIR) .
 
 $(DIST_JAR): $(JAR) | $(DIST_JAR_DIR)
