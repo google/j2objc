@@ -508,4 +508,13 @@ public class AnonymousClassConverterTest extends GenerationTest {
       "Test", "Test.m");
     // The test is successful if the above doesn't throw an NPE.
   }
+
+  public void testAnonymousClassWithGenericConstructor() throws IOException {
+    String translation = translateSourceFile(
+        "class Test<T> { Test(T t) {} void test() { new Test<String>(\"foo\") {}; } }",
+        "Test", "Test.m");
+    assertTranslation(translation, "[[Test_$1 alloc] initWithNSString:@\"foo\"]");
+    assertTranslation(translation, "- (id)initWithNSString:(NSString *)arg$0 {");
+    assertTranslation(translation, "[super initWithId:arg$0]");
+  }
 }

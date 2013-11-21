@@ -132,7 +132,7 @@ public class ObjectiveCSourceFileGeneratorTest extends GenerationTest {
     addSourceFile("class A<T> { A(T t) {} }", "A.java");
     String translation = translateSourceFile(
         "class B extends A<String> { B(String s) { super(s); } }", "B", "B.h");
-    assertTranslation(translation, "- (id)initWithId:(NSString *)s;");
-    assertNotInTranslation(translation, "initWithNSString");
+    assertTranslation(translation, "- (id)initWithNSString:(NSString *)s;");
+    assertNotInTranslation(translation, "initWithId");
   }
 }

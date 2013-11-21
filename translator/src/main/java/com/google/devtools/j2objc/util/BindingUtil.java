@@ -69,10 +69,12 @@ public final class BindingUtil {
    * original declaration.
    */
   public static IMethodBinding getOriginalMethodBinding(IMethodBinding method) {
-    for (ITypeBinding inheritedType : getAllInheritedTypes(method.getDeclaringClass())) {
-      for (IMethodBinding interfaceMethod : inheritedType.getDeclaredMethods()) {
-        if (method.overrides(interfaceMethod)) {
-          method = interfaceMethod;
+    if (!method.isConstructor()) {
+      for (ITypeBinding inheritedType : getAllInheritedTypes(method.getDeclaringClass())) {
+        for (IMethodBinding interfaceMethod : inheritedType.getDeclaredMethods()) {
+          if (method.overrides(interfaceMethod)) {
+            method = interfaceMethod;
+          }
         }
       }
     }
