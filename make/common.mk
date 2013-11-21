@@ -89,3 +89,21 @@ STATIC_ANALYZER_FLAGS = \
   -Xclang -analyzer-disable-checker -Xclang security.insecureAPI.strcpy \
   -Xclang -analyzer-checker -Xclang security.insecureAPI.vfork \
   --analyze
+
+# Avoid bash 'arument list too long' errors.
+# See http://stackoverflow.com/questions/512567/create-a-file-from-a-large-makefile-variable
+# TODO(iroth): When make 3.82 is available, use the $(file ...) function instead.
+# See https://savannah.gnu.org/bugs/?35147
+define long_list_to_file
+@if [ -e $(1) ]; then rm $(1); fi
+@files='$(wordlist    1, 999,$(2))' && for i in $$files; do echo $$i >> $(1); done
+@files='$(wordlist 1000,1999,$(2))' && for i in $$files; do echo $$i >> $(1); done
+@files='$(wordlist 2000,2999,$(2))' && for i in $$files; do echo $$i >> $(1); done
+@files='$(wordlist 3000,3999,$(2))' && for i in $$files; do echo $$i >> $(1); done
+@files='$(wordlist 4000,4999,$(2))' && for i in $$files; do echo $$i >> $(1); done
+@files='$(wordlist 5000,5999,$(2))' && for i in $$files; do echo $$i >> $(1); done
+@files='$(wordlist 6000,6999,$(2))' && for i in $$files; do echo $$i >> $(1); done
+@files='$(wordlist 7000,7999,$(2))' && for i in $$files; do echo $$i >> $(1); done
+@files='$(wordlist 8000,8999,$(2))' && for i in $$files; do echo $$i >> $(1); done
+@files='$(wordlist 9000,9999,$(2))' && for i in $$files; do echo $$i >> $(1); done
+endef
