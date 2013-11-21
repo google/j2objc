@@ -16,10 +16,10 @@
 
 package com.google.devtools.j2objc.gen;
 
-import com.google.common.base.Strings;
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.ListMultimap;
 import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 import com.google.devtools.j2objc.J2ObjC;
 import com.google.devtools.j2objc.J2ObjC.Language;
@@ -66,6 +66,7 @@ import org.eclipse.jdt.core.dom.VariableDeclarationFragment;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -81,6 +82,8 @@ public class ObjectiveCImplementationGenerator extends ObjectiveCSourceFileGener
   private final Set<String> invokedConstructors = Sets.newHashSet();
   private final ListMultimap<AbstractTypeDeclaration, Comment> blockComments =
       ArrayListMultimap.create();
+  private final Map<AbstractTypeDeclaration, MetadataGenerator> metadataGenerators =
+      Maps.newHashMap();
 
   /**
    * Generate an Objective-C implementation file for each type declared in a
@@ -137,7 +140,7 @@ public class ObjectiveCImplementationGenerator extends ObjectiveCSourceFileGener
           if (!getStaticFieldsNeedingAccessors(
               Arrays.asList(node.getFields()), /* isInterface */ true).isEmpty()) {
             types.add(node);
-          } else if (!Options.stripReflection() && hasMetadata(Types.getTypeBinding(node))) {
+          } else if (!Options.stripReflection() && hasMetadata(node)) {
             types.add(node);
           }
         } else {
@@ -509,7 +512,7 @@ public class ObjectiveCImplementationGenerator extends ObjectiveCSourceFileGener
     List<IVariableBinding> staticFields =
         getStaticFieldsNeedingAccessors(fields, /* isInterface */ true);
     if (staticFields.isEmpty()) {
-      if (hasMetadata(Types.getTypeBinding(node))) {
+      if (hasMetadata(node)) {
         printf("\n@interface %s : NSObject\n@end\n", typeName);
       } else {
         return;
@@ -1121,173 +1124,26 @@ public class ObjectiveCImplementationGenerator extends ObjectiveCSourceFileGener
     }
   }
 
-  private String getEnclosingName(ITypeBinding type) {
-    type = type.getDeclaringClass();
-    if (type == null) {
-      return "NULL";
+  private MetadataGenerator getMetadataGenerator(AbstractTypeDeclaration node) {
+    MetadataGenerator generator = metadataGenerators.get(node);
+    if (generator == null) {
+      generator = new MetadataGenerator(node);
+      metadataGenerators.put(node, generator);
     }
-    StringBuilder sb = new StringBuilder("\"");
-    List<String> types = Lists.newArrayList();
-    while (type != null) {
-      types.add(type.getName());
-      type = type.getDeclaringClass();
-    }
-    for (int i = types.size() - 1; i >= 0; i--) {
-      sb.append(types.get(i));
-      if (i > 0) {
-        sb.append("$");
-      }
-    }
-    sb.append("\"");
-    return sb.toString();
+    return generator;
   }
 
   private void printMetadata(AbstractTypeDeclaration node) {
-    ITypeBinding type = Types.getTypeBinding(node);
-    List<String> methodMetadata = Lists.newArrayList();
-    for (MethodDeclaration decl : ASTUtil.getMethodDeclarations(node)) {
-      String metadata = getMethodMetadata(Types.getMethodBinding(decl));
-      if (metadata != null) {
-        methodMetadata.add(metadata);
-      }
+    MetadataGenerator metadataGenerator = getMetadataGenerator(node);
+    if (metadataGenerator.hasMetadata()) {
+      print(metadataGenerator.getMetadataSource());
     }
-    if (!hasMetadata(type) && methodMetadata.size() == 0) {
-      return;
-    }
-    String fullName = NameTable.getFullName(type);
-    println("+ (J2ObjcClassInfo *)__metadata {");
-    if (methodMetadata.size() > 0) {
-      println("  static J2ObjcMethodInfo methods[] = {");
-      for (String metadata : methodMetadata) {
-        print(metadata);
-      }
-      println("  };");
-    }
-    int superclassTypeArgsSize = printSuperclassTypeArguments(type);
-    printf("  static J2ObjcClassInfo _%s = { ", fullName);
-    printf("\"%s\", ", type.getName());
-    String pkgName = type.getPackage().getName();
-    if (pkgName == null) {
-      printf("NULL, ");
-    } else {
-      printf("\"%s\", ", pkgName);
-    }
-    printf("%s, ", getEnclosingName(type));
-    printf("0x%s, ", Integer.toHexString(getModifiers(type)));
-    printf("%s, ", Integer.toString(methodMetadata.size()));
-    print(methodMetadata.size() > 0 ? "methods, " : "NULL, ");
-    printf("%s, ", Integer.toString(superclassTypeArgsSize));
-    printf(superclassTypeArgsSize > 0 ? "superclass_type_args" : "NULL");
-    println("};");
-    printf("  return &_%s;\n}\n\n", fullName);
-  }
-
-  private int printSuperclassTypeArguments(ITypeBinding type) {
-    ITypeBinding superclass = type.getSuperclass();
-    if (superclass == null) {
-      return 0;
-    }
-    ITypeBinding[] typeArgs = superclass.getTypeArguments();
-    if (typeArgs.length == 0) {
-      return 0;
-    }
-    print("  static const char *superclass_type_args[] = {");
-    for (int i = 0; i < typeArgs.length; i++) {
-      if (i != 0) {
-        print(", ");
-      }
-      printf("\"%s\"", getTypeName(typeArgs[i]));
-    }
-    println("};");
-    return typeArgs.length;
-  }
-
-  private String getTypeName(ITypeBinding type) {
-    if (type.isTypeVariable()) {
-      return "T" + type.getName();
-    }
-    if (type.isPrimitive()) {
-      return type.getBinaryName();
-    }
-    return "L" + NameTable.getFullName(type);
-  }
-
-  private String getMethodMetadata(IMethodBinding method) {
-    ITypeBinding[] paramTypes = method.getParameterTypes();
-    if ((method.isConstructor() && paramTypes.length == 0) || method.isSynthetic()) {
-      return null;
-    }
-
-    // Needs metadata if not a public static or instance method.
-    int modifiers = getModifiers(method);
-    boolean needsMetadata = (modifiers & ~Modifier.STATIC) != Modifier.PUBLIC;
-
-    String returnTypeStr = "NULL";
-    if (!method.isConstructor()) {
-      ITypeBinding returnType = method.getReturnType();
-      returnTypeStr = String.format("\"%s\"", getTypeName(returnType));
-      if (!returnType.isPrimitive() || returnType.getName().equals("boolean")) {
-        needsMetadata = true;
-      }
-    }
-    String methodName = "NULL";
-    // Most of the time the method name can be parsed from the ObjC selector
-    // but not if the first parameter contains the substring "With".
-    if (paramTypes.length > 0 && NameTable.parameterKeyword(paramTypes[0]).contains("With")) {
-      methodName = "\"" + method.getName() + "\"";
-      needsMetadata = true;
-    }
-    if (!needsMetadata) {
-      return null;
-    }
-    return String.format("    { \"%s\", %s, %s, 0x%x },\n",
-        NameTable.getMethodSelector(method), methodName, returnTypeStr, getModifiers(method));
   }
 
   /**
    * Does this type need a metadata method?
    */
-  private boolean hasMetadata(ITypeBinding type) {
-    return type.getPackage() != null ||
-        !type.getQualifiedName().equals(NameTable.getFullName(type));
-  }
-
-  /**
-   * Returns the modifiers for a specified type, including internal ones.
-   * All class modifiers are defined in the JVM specification, table 4.1.
-   */
-  private static int getModifiers(ITypeBinding type) {
-    int modifiers = type.getModifiers();
-    if (type.isInterface()) {
-      modifiers |= 0x200;
-    }
-    if (type.isSynthetic()) {
-      modifiers |= 0x1000;
-    }
-    if (type.isAnnotation()) {
-      modifiers |= 0x2000;
-    }
-    if (type.isEnum()) {
-      modifiers |= 0x4000;
-    }
-    if (type.isAnonymous()) {
-      modifiers |= 0x8000;
-    }
-    return modifiers;
-  }
-
-  /**
-   * Returns the modifiers for a specified method, including internal ones.
-   * All method modifiers are defined in the JVM specification, table 4.5.
-   */
-  private static int getModifiers(IMethodBinding type) {
-    int modifiers = type.getModifiers();
-    if (type.isVarargs()) {
-      modifiers |= 0x80;
-    }
-    if (type.isSynthetic()) {
-      modifiers |= 0x1000;
-    }
-    return modifiers;
+  private boolean hasMetadata(AbstractTypeDeclaration node) {
+    return getMetadataGenerator(node).hasMetadata();
   }
 }
