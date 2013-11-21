@@ -74,14 +74,12 @@
 
 - (IOSClass *)getReturnType {
   if (metadata_ && metadata_->returnType) {
-    if (strlen(metadata_->returnType) == 1) {
-      IOSClass *primitiveType = [IOSClass primitiveClassForChar:*metadata_->returnType];
-      if (primitiveType) {
-        return primitiveType;
-      }
+    id<JavaLangReflectType> returnType = JreTypeForString(metadata_->returnType);
+    if (returnType && ![returnType isKindOfClass:[IOSClass class]]) {
+      return [IOSClass objectClass];
+    } else {
+      return (IOSClass *) returnType;
     }
-    NSAssert(*(metadata_->returnType) == 'L', @"invalid return type %s", metadata_->returnType);
-    return [IOSClass classForIosName:[NSString stringWithUTF8String:&metadata_->returnType[1]]];
   }
   const char *argType = [methodSignature_ methodReturnType];
   if (strlen(argType) != 1) {

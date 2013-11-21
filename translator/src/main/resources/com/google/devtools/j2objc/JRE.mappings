@@ -85,8 +85,6 @@ java.lang.Class.getField(Ljava/lang/String;)Ljava/lang/reflect/Field; = \
     IOSClass getField:(NSString *)name;
 java.lang.Class.getFields()[Ljava/lang/reflect/Field; = IOSClass getFields;
 java.lang.Class.getGenericInterfaces()[Ljava/lang/reflect/Type; = IOSClass getGenericInterfaces
-java.lang.Class.getGenericSuperclass()Ljava/lang/reflect/Type; = \
-    IOSClass getSuperclass
 java.lang.Class.getInterfaces()[Ljava/lang/Class; = IOSClass getInterfaces
 java.lang.Class.getMethod(Ljava/lang/String;[Ljava/lang/Class;)Ljava/lang/reflect/Method; = \
     IOSClass getMethod:(NSString *)name parameterTypes:(IOSObjectArray *)types

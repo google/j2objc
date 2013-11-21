@@ -27,6 +27,7 @@
 #import "java/lang/reflect/Constructor.h"
 #import "java/lang/reflect/Method.h"
 #import "java/lang/reflect/Modifier.h"
+#import "java/lang/reflect/ParameterizedTypeImpl.h"
 #import "objc/runtime.h"
 
 @implementation IOSConcreteClass
@@ -55,6 +56,26 @@
     return [IOSClass classWithClass:superclass];
   }
   return nil;
+}
+
+- (id<JavaLangReflectType>)getGenericSuperclass {
+  Class superclass = [class_ superclass];
+  if (!superclass) {
+    return nil;
+  }
+  IOSClass *rawType = [IOSClass classWithClass:superclass];
+  IOSObjectArray *typeArgs = nil;
+  JavaClassMetadata *metadata = [self getMetadata];
+  if (metadata) {
+    typeArgs = [metadata getSuperclassTypeArguments];
+  }
+  if (typeArgs) {
+    // TODO(kstanger): Fill in the ownerType.
+    return [JavaLangReflectParameterizedTypeImpl parameterizedTypeWithTypeArguments:typeArgs
+        ownerType:nil rawType:rawType];
+  } else {
+    return rawType;
+  }
 }
 
 - (BOOL)isInstance:(id)object {

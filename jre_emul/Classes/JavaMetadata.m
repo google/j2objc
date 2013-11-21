@@ -18,7 +18,10 @@
 //
 
 #import "JavaMetadata.h"
+
 #import "IOSClass.h"
+#import "IOSObjectArray.h"
+#import "IOSReflection.h"
 
 @implementation JavaClassMetadata
 
@@ -67,6 +70,19 @@
     }
   }
   return NULL;
+}
+
+- (IOSObjectArray *)getSuperclassTypeArguments {
+  uint16_t size = data_->superclassTypeArgsCount;
+  if (size == 0) {
+    return nil;
+  }
+  IOSObjectArray *result = [IOSObjectArray arrayWithLength:size type:
+      [IOSClass classWithProtocol:@protocol(JavaLangReflectType)]];
+  for (int i = 0; i < size; i++) {
+    IOSObjectArray_Set(result, i, JreTypeForString(data_->superclassTypeArgs[i]));
+  }
+  return result;
 }
 
 - (NSString *)description {

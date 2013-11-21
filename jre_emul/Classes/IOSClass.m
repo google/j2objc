@@ -153,6 +153,10 @@ static IOSClass *FetchArray(IOSClass *componentType);
   return nil;
 }
 
+- (id<JavaLangReflectType>)getGenericSuperclass {
+  return nil;
+}
+
 // Returns true if an object is an instance of this class.
 - (BOOL)isInstance:(id)object {
   return NO;

@@ -22,6 +22,9 @@ import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
+import java.lang.reflect.TypeVariable;
 
 /**
  * Command-line tests for java.lang.Class support (IOSClass)
@@ -169,9 +172,28 @@ public class ClassTest extends TestCase {
     assertEquals(ClassTest.class, cls.getEnclosingClass());
   }
 
+  public void testGetGenericSuperclass() throws Exception {
+    Class<?> cls = SubParameterizedClass.class;
+    Type genericSuperclass = cls.getGenericSuperclass();
+    assertTrue(genericSuperclass instanceof ParameterizedType);
+    ParameterizedType pType = (ParameterizedType) genericSuperclass;
+    assertEquals(ParameterizedClass.class, pType.getRawType());
+    Type[] typeArgs = pType.getActualTypeArguments();
+    assertEquals(2, typeArgs.length);
+    assertEquals(String.class, typeArgs[0]);
+    assertTrue(typeArgs[1] instanceof TypeVariable);
+    assertEquals("C", ((TypeVariable) typeArgs[1]).getName());
+  }
+
   static class InnerClass {
   }
 
   interface InnerInterface {
+  }
+
+  static class ParameterizedClass<A, B> {
+  }
+
+  static class SubParameterizedClass<C> extends ParameterizedClass<String, C> {
   }
 }

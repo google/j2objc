@@ -35,5 +35,6 @@
 
 - (NSString *)qualifiedName;
 - (const J2ObjcMethodInfo *)findMethodInfo:(NSString *)methodName;
+- (IOSObjectArray *)getSuperclassTypeArguments;
 
 @end
