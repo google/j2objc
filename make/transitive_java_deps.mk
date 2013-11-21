@@ -19,8 +19,8 @@
 #   TRANSITIVE_JAVA_DEPS_ROOT_SOURCES
 #     - List of relative java sources.
 #   TRANSITIVE_JAVA_DEPS_SOURCEPATH
-#   TRANSITIVE_JAVA_DEPS_JAR_DEPS
-#     - Jars that your sources depend on. They'll be added to the classpath.
+#   TRANSITIVE_JAVA_DEPS_DEPENDENCIES
+#     - Concrete targets that should force re-generation.
 #   TRANSITIVE_JAVA_DEPS_JAVAC_ARGS
 #
 # The following variables will be defined by this include:
@@ -29,8 +29,8 @@
 #   TRANSITIVE_JAVA_DEPS_JAR
 #     - The .jar file that is produced.
 #
-# The including makefile may also add dependent targets by adding requirements
-# to the "transitive_java_deps_dependencies" target.
+# The including makefile may also add dependent order-only targets by adding
+# requirements to the "transitive_java_deps_dependencies" target.
 #
 # Author: Keith Stanger
 
@@ -54,9 +54,6 @@ endif
 
 vpath %.java $(TRANSITIVE_JAVA_DEPS_SOURCEPATH)
 
-TRANSITIVE_JAVA_DEPS_JAR_DEPS := $(strip $(TRANSITIVE_JAVA_DEPS_JAR_DEPS))
-TRANSITIVE_JAVA_DEPS_CLASSPATH_ARG = \
-    $(if $(TRANSITIVE_JAVA_DEPS_JAR_DEPS),-cp $(subst $(space),:,$(TRANSITIVE_JAVA_DEPS_JAR_DEPS)),)
 TRANSITIVE_JAVA_DEPS_SOURCEPATH_ARG = \
     $(if $(TRANSITIVE_JAVA_DEPS_SOURCEPATH),-sourcepath $(TRANSITIVE_JAVA_DEPS_SOURCEPATH),)
 
@@ -72,13 +69,13 @@ $(TRANSITIVE_JAVA_DEPS_ROOT_LIST): $(TRANSITIVE_JAVA_DEPS_ROOT_SOURCES) \
 	@files='$^' && for i in $$files; do echo $$i >> $@; done
 
 TRANSITIVE_JAVA_DEPS_JAVAC_CMD =\
-    javac $(TRANSITIVE_JAVA_DEPS_SOURCEPATH_ARG) $(TRANSITIVE_JAVA_DEPS_CLASSPATH_ARG)\
+    javac $(TRANSITIVE_JAVA_DEPS_SOURCEPATH_ARG)\
     -d $(TRANSITIVE_JAVA_DEPS_STAGE_DIR) $(TRANSITIVE_JAVA_DEPS_JAVAC_ARGS)\
     `cat $(TRANSITIVE_JAVA_DEPS_ROOT_LIST)`
 
 $(TRANSITIVE_JAVA_DEPS_JAR): \
     $(TRANSITIVE_JAVA_DEPS_ROOT_LIST) $(TRANSITIVE_JAVA_DEPS_FULL_SOURCES) \
-    $(TRANSITIVE_JAVA_DEPS_JAR_DEPS)
+    $(TRANSITIVE_JAVA_DEPS_DEPENDENCIES)
 	@mkdir -p $(@D)
 	@echo "Building $(notdir $@)"
 	@rm -rf $(TRANSITIVE_JAVA_DEPS_STAGE_DIR)
