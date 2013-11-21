@@ -27,6 +27,7 @@
 #import "java/lang/IllegalArgumentException.h"
 #import "java/lang/NullPointerException.h"
 #import "java/lang/reflect/Method.h"
+#import "java/lang/reflect/TypeVariable.h"
 
 @implementation JavaLangReflectMethod
 
@@ -94,7 +95,13 @@
   return decodeTypeEncoding(argType);
 }
 
-- (IOSClass *)getGenericReturnType {
+- (id<JavaLangReflectType>)getGenericReturnType {
+  if (metadata_ && metadata_->returnType) {
+    id<JavaLangReflectType> returnType = JreTypeForString(metadata_->returnType);
+    if (returnType && [returnType conformsToProtocol:@protocol(JavaLangReflectTypeVariable)]) {
+      return returnType;
+    }
+  }
   return [self getReturnType];
 }
 
