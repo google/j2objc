@@ -496,6 +496,10 @@ static BOOL hasModifier(IOSClass *cls, int flag) {
   return metadata && metadata.enclosingName && ![self isAnonymousClass];
 }
 
+- (BOOL)isLocalClass {
+  return [self getEnclosingMethod] && ![self isAnonymousClass];
+}
+
 - (BOOL)isSynthetic {
   return hasModifier(self, JavaLangReflectModifier_SYNTHETIC);
 }

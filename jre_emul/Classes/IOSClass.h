@@ -136,6 +136,7 @@
 
 // Class.isMemberClass
 - (BOOL)isMemberClass;
+- (BOOL)isLocalClass;
 
 - (BOOL)isArray;
 - (BOOL)isEnum;
