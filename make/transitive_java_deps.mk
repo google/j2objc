@@ -17,7 +17,7 @@
 # The including makefile may define these variables:
 #   TRANSITIVE_JAVA_DEPS_NAME
 #   TRANSITIVE_JAVA_DEPS_ROOT_SOURCES
-#     - Fully qualified list of java sources.
+#     - List of relative java sources.
 #   TRANSITIVE_JAVA_DEPS_SOURCEPATH
 #   TRANSITIVE_JAVA_DEPS_JAR_DEPS
 #     - Jars that your sources depend on. They'll be added to the classpath.
@@ -26,12 +26,18 @@
 # The following variables will be defined by this include:
 #   TRANSITIVE_JAVA_DEPS_FULL_SOURCES
 #     - Relative list of all java files depended on by the root sources.
+#   TRANSITIVE_JAVA_DEPS_JAR
+#     - The .jar file that is produced.
+#
+# The including makefile may also add dependent targets by adding requirements
+# to the "transitive_java_deps_dependencies" target.
 #
 # Author: Keith Stanger
 
 TRANSITIVE_JAVA_DEPS_JAR = $(BUILD_DIR)/$(TRANSITIVE_JAVA_DEPS_NAME).jar
 TRANSITIVE_JAVA_DEPS_INCLUDE = $(BUILD_DIR)/$(TRANSITIVE_JAVA_DEPS_NAME)_transitive.mk
 TRANSITIVE_JAVA_DEPS_STAGE_DIR = /tmp/j2objc_$(TRANSITIVE_JAVA_DEPS_NAME)
+TRANSITIVE_JAVA_DEPS_ROOT_LIST = $(BUILD_DIR)/$(TRANSITIVE_JAVA_DEPS_NAME)_root_list
 
 ifneq ($(findstring clean,$(MAKECMDGOALS)),clean)
 ifeq ($(wildcard $(TRANSITIVE_JAVA_DEPS_INCLUDE)),)
@@ -54,19 +60,30 @@ TRANSITIVE_JAVA_DEPS_CLASSPATH_ARG = \
 TRANSITIVE_JAVA_DEPS_SOURCEPATH_ARG = \
     $(if $(TRANSITIVE_JAVA_DEPS_SOURCEPATH),-sourcepath $(TRANSITIVE_JAVA_DEPS_SOURCEPATH),)
 
+jar: $(TRANSITIVE_JAVA_DEPS_JAR)
+	@:
+
+transitive_java_deps_dependencies:
+	@:
+
+$(TRANSITIVE_JAVA_DEPS_ROOT_LIST): $(TRANSITIVE_JAVA_DEPS_ROOT_SOURCES) \
+    | transitive_java_deps_dependencies
+	@if [ -e $@ ]; then rm $@; fi
+	@files='$^' && for i in $$files; do echo $$i >> $@; done
+
 TRANSITIVE_JAVA_DEPS_JAVAC_CMD =\
     javac $(TRANSITIVE_JAVA_DEPS_SOURCEPATH_ARG) $(TRANSITIVE_JAVA_DEPS_CLASSPATH_ARG)\
     -d $(TRANSITIVE_JAVA_DEPS_STAGE_DIR) $(TRANSITIVE_JAVA_DEPS_JAVAC_ARGS)\
-    $(TRANSITIVE_JAVA_DEPS_ROOT_SOURCES)
+    `cat $(TRANSITIVE_JAVA_DEPS_ROOT_LIST)`
 
 $(TRANSITIVE_JAVA_DEPS_JAR): \
-    $(TRANSITIVE_JAVA_DEPS_ROOT_SOURCES) $(TRANSITIVE_JAVA_DEPS_FULL_SOURCES) \
+    $(TRANSITIVE_JAVA_DEPS_ROOT_LIST) $(TRANSITIVE_JAVA_DEPS_FULL_SOURCES) \
     $(TRANSITIVE_JAVA_DEPS_JAR_DEPS)
 	@mkdir -p $(@D)
 	@echo "Building $(notdir $@)"
 	@rm -rf $(TRANSITIVE_JAVA_DEPS_STAGE_DIR)
 	@mkdir $(TRANSITIVE_JAVA_DEPS_STAGE_DIR)
-	$(TRANSITIVE_JAVA_DEPS_JAVAC_CMD)
+	@$(TRANSITIVE_JAVA_DEPS_JAVAC_CMD)
 	@jar cf $@ -C $(TRANSITIVE_JAVA_DEPS_STAGE_DIR) .
 
 $(TRANSITIVE_JAVA_DEPS_INCLUDE): $(TRANSITIVE_JAVA_DEPS_JAR)
