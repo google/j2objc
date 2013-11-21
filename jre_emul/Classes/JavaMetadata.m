@@ -72,6 +72,16 @@
   return NULL;
 }
 
+- (const J2ObjcFieldInfo *)findFieldInfo:(Ivar)field {
+  const char *name = ivar_getName(field);
+  for (int i = 0; i < data_->fieldCount; i++) {
+    if (strcmp(name, data_->fields[i].name) == 0) {
+      return &data_->fields[i];
+    }
+  }
+  return NULL;
+}
+
 - (IOSObjectArray *)getSuperclassTypeArguments {
   uint16_t size = data_->superclassTypeArgsCount;
   if (size == 0) {

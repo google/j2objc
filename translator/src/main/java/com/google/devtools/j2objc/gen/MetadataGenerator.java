@@ -22,11 +22,16 @@ import com.google.devtools.j2objc.util.ASTUtil;
 import com.google.devtools.j2objc.util.NameTable;
 
 import org.eclipse.jdt.core.dom.AbstractTypeDeclaration;
+import org.eclipse.jdt.core.dom.FieldDeclaration;
 import org.eclipse.jdt.core.dom.IMethodBinding;
 import org.eclipse.jdt.core.dom.ITypeBinding;
+import org.eclipse.jdt.core.dom.IVariableBinding;
 import org.eclipse.jdt.core.dom.MethodDeclaration;
 import org.eclipse.jdt.core.dom.Modifier;
+import org.eclipse.jdt.core.dom.TypeDeclaration;
+import org.eclipse.jdt.core.dom.VariableDeclarationFragment;
 
+import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -41,6 +46,7 @@ public class MetadataGenerator {
   private final ITypeBinding type;
   private boolean generated = false;
   private int methodMetadataCount = 0;
+  private int fieldMetadataCount = 0;
 
   public MetadataGenerator(AbstractTypeDeclaration typeNode) {
     this.builder = new StringBuilder();
@@ -64,6 +70,7 @@ public class MetadataGenerator {
     String fullName = NameTable.getFullName(type);
     println("+ (J2ObjcClassInfo *)__metadata {");
     generateMethodsMetadata();
+    generateFieldsMetadata();
     int superclassTypeArgsSize = printSuperclassTypeArguments();
     printf("  static J2ObjcClassInfo _%s = { ", fullName);
     printf("\"%s\", ", type.getName());
@@ -77,6 +84,8 @@ public class MetadataGenerator {
     printf("0x%s, ", Integer.toHexString(getTypeModifiers()));
     printf("%s, ", Integer.toString(methodMetadataCount));
     print(methodMetadataCount > 0 ? "methods, " : "NULL, ");
+    printf("%s, ", Integer.toString(fieldMetadataCount));
+    print(fieldMetadataCount > 0 ? "fields, " : "NULL, ");
     printf("%s, ", Integer.toString(superclassTypeArgsSize));
     printf(superclassTypeArgsSize > 0 ? "superclass_type_args" : "NULL");
     println("};");
@@ -120,6 +129,42 @@ public class MetadataGenerator {
       builder.append("  };\n");
     }
     methodMetadataCount = methodMetadata.size();
+  }
+
+  private void generateFieldsMetadata() {
+    if (typeNode instanceof TypeDeclaration) {
+      TypeDeclaration typeDecl = (TypeDeclaration) typeNode;
+      List<String> fieldMetadata = Lists.newArrayList();
+      for (FieldDeclaration field : typeDecl.getFields()) {
+        int modifiers = field.getModifiers();
+        if (modifiers != Modifier.PRIVATE) {
+          for (Iterator<?> it = field.fragments().iterator(); it.hasNext(); ) {
+            VariableDeclarationFragment f = (VariableDeclarationFragment) it.next();
+            // Update modifiers from fragment binding.
+            modifiers = getFieldModifiers(Types.getVariableBinding(f));
+            String javaName = f.getName().getIdentifier();
+            String objcName = NameTable.javaFieldToObjC(NameTable.getName(f.getName()));
+            if (objcName.equals(javaName + '_')) {
+              // Don't print Java name if it matches the default pattern, to conserve space.
+              javaName = null;
+            }
+            String metadata = String.format("    { \"%s\", ", objcName);
+            metadata += javaName != null ? String.format("\"%s\", ", javaName) : "NULL, ";
+            metadata +=
+                String.format("0x%x, \"%s\" },\n", modifiers, getTypeName(Types.getTypeBinding(f)));
+            fieldMetadata.add(metadata);
+          }
+        }
+      }
+      if (fieldMetadata.size() > 0) {
+        builder.append("  static J2ObjcFieldInfo fields[] = {\n");
+        for (String metadata : fieldMetadata) {
+          builder.append(metadata);
+        }
+        builder.append("  };\n");
+      }
+      fieldMetadataCount = fieldMetadata.size();
+    }
   }
 
   private String getMethodMetadata(IMethodBinding method) {
@@ -237,6 +282,21 @@ public class MetadataGenerator {
     }
     if (type.isSynthetic()) {
       modifiers |= 0x1000;
+    }
+    return modifiers;
+  }
+
+  /**
+   * Returns the modifiers for a specified field, including internal ones.
+   * All method modifiers are defined in the JVM specification, table 4.4.
+   */
+  private static int getFieldModifiers(IVariableBinding type) {
+    int modifiers = type.getModifiers();
+    if (type.isSynthetic()) {
+      modifiers |= 0x1000;
+    }
+    if (type.isEnumConstant()) {
+      modifiers |= 0x4000;
     }
     return modifiers;
   }

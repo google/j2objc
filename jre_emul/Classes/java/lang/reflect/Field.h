@@ -36,12 +36,15 @@
 @protected
   Ivar ivar_;
   IOSClass *declaringClass_;
+  const J2ObjcFieldInfo *metadata_;
 }
 
-- (id)initWithName:(NSString *)name withClass:(IOSClass *)aClass;
-- (id)initWithIvar:(Ivar)ivar withClass:(IOSClass *)aClass;
-+ (id)fieldWithName:(NSString *)name withClass:(IOSClass *)aClass;
-+ (id)fieldWithIvar:(Ivar)ivar withClass:(IOSClass *)aClass;
+- (id)initWithIvar:(Ivar)ivar
+         withClass:(IOSClass *)aClass
+      withMetadata:(const J2ObjcFieldInfo *)metadata;
++ (id)fieldWithIvar:(Ivar)ivar
+          withClass:(IOSClass *)aClass
+       withMetadata:(const J2ObjcFieldInfo *)metadata;
 
 // Returns field name.
 - (NSString *)getName;
@@ -73,9 +76,10 @@
 - (IOSClass *)getType;
 
 // Returns type.
-- (IOSClass *)getGenericType;
+- (id<JavaLangReflectType>)getGenericType;
 
 // Convert between property and variable names.
+- (NSString *)propertyName;
 + (NSString *)propertyName:(NSString *)name;
 + (NSString *)variableName:(NSString *)name;
 

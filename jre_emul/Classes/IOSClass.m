@@ -629,12 +629,20 @@ static const char* GetFieldName(NSString *name) {
   return [name cStringUsingEncoding:[NSString defaultCStringEncoding]];
 }
 
+static JavaLangReflectField *FieldFromIvar(IOSClass *iosClass, Ivar ivar) {
+  JavaClassMetadata *metadata = [iosClass getMetadata];
+  const J2ObjcFieldInfo *fieldMetadata = metadata ? [metadata findFieldInfo:ivar] : nil;
+  return [JavaLangReflectField fieldWithIvar:ivar
+                                   withClass:iosClass
+                                withMetadata:fieldMetadata];
+}
+
 // Adds all the fields for a specified class to a specified dictionary.
 static void GetFieldsFromClass(IOSClass *iosClass, NSMutableDictionary *fields) {
   unsigned int count;
   Ivar *ivars = class_copyIvarList(iosClass.objcClass, &count);
   for (unsigned int i = 0; i < count; i++) {
-    JavaLangReflectField *field = [JavaLangReflectField fieldWithIvar:ivars[i] withClass:iosClass];
+    JavaLangReflectField *field = FieldFromIvar(iosClass, ivars[i]);
     NSString *name = [field getName];
     if (![fields valueForKey:name]) { // Don't add shadowed fields.
       [fields setObject:field forKey:name];
@@ -650,7 +658,7 @@ static void GetFieldsFromClass(IOSClass *iosClass, NSMutableDictionary *fields) 
   if (cls) {
     Ivar ivar = class_getInstanceVariable(cls, GetFieldName(name));
     if (ivar) {
-      return [JavaLangReflectField fieldWithIvar:ivar withClass:self];
+      return FieldFromIvar(self, ivar);
     }
   }
   @throw AUTORELEASE([[JavaLangNoSuchFieldException alloc] initWithNSString:name]);
@@ -664,7 +672,7 @@ static void GetFieldsFromClass(IOSClass *iosClass, NSMutableDictionary *fields) 
   while (iosClass && (cls = iosClass.objcClass)) {
     Ivar ivar = class_getInstanceVariable(cls, objcName);
     if (ivar) {
-      return [JavaLangReflectField fieldWithIvar:ivar withClass:iosClass];
+      return FieldFromIvar(self, ivar);
     }
     iosClass = [iosClass getSuperclass];
   }

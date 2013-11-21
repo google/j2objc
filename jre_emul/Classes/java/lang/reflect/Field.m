@@ -35,6 +35,7 @@
 #import "java/lang/reflect/Field.h"
 #import "java/lang/reflect/Method.h"
 #import "java/lang/reflect/Modifier.h"
+#import "java/lang/reflect/TypeVariable.h"
 #import "objc/runtime.h"
 
 @implementation JavaLangReflectField
@@ -51,38 +52,22 @@ typedef union {
   BOOL asBOOL;
 } JavaResult;
 
-- (id)initWithName:(NSString *)name withClass:(IOSClass *)aClass {
-  if ((self = [super init])) {
-    name = [JavaLangReflectField variableName:name];
-    const char* cname =
-        [name cStringUsingEncoding:[NSString defaultCStringEncoding]];
-    ivar_ = class_getInstanceVariable(aClass.objcClass, cname);
-    declaringClass_ = aClass;
-  }
-  return self;
-}
-
-- (id)initWithIvar:(Ivar)ivar withClass:(IOSClass *)aClass {
+- (id)initWithIvar:(Ivar)ivar
+         withClass:(IOSClass *)aClass
+      withMetadata:(const J2ObjcFieldInfo *)metadata {
   if ((self = [super init])) {
     ivar_ = ivar;
     declaringClass_ = aClass;
+    metadata_ = metadata;
   }
   return self;
 }
 
-+ (id)fieldWithName:(NSString *)name withClass:(IOSClass *)aClass {
++ (id)fieldWithIvar:(Ivar)ivar
+          withClass:(IOSClass *)aClass
+       withMetadata:(const J2ObjcFieldInfo *)metadata {
   JavaLangReflectField *field =
-      [[JavaLangReflectField alloc]
-       initWithName:name withClass:aClass];
-#if ! __has_feature(objc_arc)
-  [field autorelease];
-#endif
-  return field;
-}
-
-+ (id)fieldWithIvar:(Ivar)ivar withClass:(IOSClass *)aClass {
-  JavaLangReflectField *field =
-      [[JavaLangReflectField alloc] initWithIvar:ivar withClass:aClass];
+      [[JavaLangReflectField alloc] initWithIvar:ivar withClass:aClass withMetadata:metadata];
 #if ! __has_feature(objc_arc)
   [field autorelease];
 #endif
@@ -90,14 +75,14 @@ typedef union {
 }
 
 - (NSString *)getName {
-  NSString *name =
-      [NSString stringWithCString:ivar_getName(ivar_)
-                         encoding:[NSString defaultCStringEncoding]];
-  return [JavaLangReflectField propertyName:name];
+  return [self propertyName];
 }
 
 - (NSString *)description {
-    return [self getName];
+  NSString *mods =
+      metadata_ ? [JavaLangReflectModifier toStringWithInt:metadata_->modifiers ] : @"";
+  return [NSString stringWithFormat:@"%@ %@ %@.%@", mods, [self getType],
+          [self getDeclaringClass], [self propertyName]];
 }
 
 - (id)getWithId:(id)object {
@@ -201,17 +186,33 @@ typedef union {
   return decodeTypeEncoding(ivar_getTypeEncoding(ivar_));
 }
 
-- (IOSClass *)getGenericType {
+- (id<JavaLangReflectType>)getGenericType {
+  if (metadata_) {
+    return JreTypeForString(metadata_->type);
+  }
   return [self getType];
 }
 
 - (int)getModifiers {
+  if (metadata_) {
+    return metadata_->modifiers;
+  }
   // All Objective-C fields and methods are public at runtime.
   return JavaLangReflectModifier_PUBLIC;
 }
 
 - (IOSClass *)getDeclaringClass {
   return declaringClass_;
+}
+
+- (NSString *)propertyName {
+  if (metadata_ && metadata_->javaName) {
+    return [NSString stringWithCString:metadata_->javaName
+                              encoding:[NSString defaultCStringEncoding]];
+  }
+  NSString *name = [NSString stringWithCString:ivar_getName(ivar_)
+                                      encoding:[NSString defaultCStringEncoding]];
+  return [JavaLangReflectField propertyName:name];
 }
 
 + (NSString *)propertyName:(NSString *)name {
@@ -234,8 +235,13 @@ typedef union {
 }
 
 - (NSString *)toGenericString {
-  // TODO(tball): implement as part of method metadata.
-  return nil;
+  NSString *mods =
+      metadata_ ? [JavaLangReflectModifier toStringWithInt:metadata_->modifiers ] : @"";
+  id<JavaLangReflectType> type = [self getGenericType];
+  NSString *typeString = [type conformsToProtocol:@protocol(JavaLangReflectTypeVariable)] ?
+      [(id<JavaLangReflectTypeVariable>) type getName] : [type description];
+  return [NSString stringWithFormat:@"%@ %@ %@.%@", mods, typeString,
+          [self getDeclaringClass], [self propertyName]];
 }
 
 - (IOSObjectArray *)getDeclaredAnnotations {

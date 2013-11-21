@@ -98,6 +98,13 @@ typedef struct J2ObjcMethodInfo {
   const char *exceptions;
 } J2ObjcMethodInfo;
 
+typedef struct J2ObjcFieldInfo {
+  const char *name;
+  const char *javaName;
+  uint16_t modifiers;
+  const char *type;
+} J2ObjcFieldInfo;
+
 typedef struct J2ObjcClassInfo {
   const char *typeName;
   const char *packageName;
@@ -105,21 +112,14 @@ typedef struct J2ObjcClassInfo {
   uint16_t modifiers;
   uint16_t methodCount;
   const J2ObjcMethodInfo *methods;
+  uint16_t fieldCount;
+  const J2ObjcFieldInfo *fields;
   uint16_t superclassTypeArgsCount;
   const char **superclassTypeArgs;
   uint16_t attribute_count;
   // Inner classes, enclosing method, generic signature.
   const J2ObjCAttribute *attributes;
 } J2ObjcClassInfo;
-
-typedef struct J2ObjcMemberInfo {
-  const char *name;
-  uint16_t modifiers;
-  uint16_t attribute_count;
-  // Fields: constant value, generic signature.
-  // Methods: exceptions, generic signature,.
-  const J2ObjCAttribute *attributes;
-} J2ObjcMemberInfo;
 
 // Autoboxing support.
 
