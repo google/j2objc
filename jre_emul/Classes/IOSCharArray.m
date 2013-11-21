@@ -124,11 +124,11 @@ unichar *IOSCharArray_GetRef(__unsafe_unretained IOSCharArray *array, NSUInteger
           initWithCharacters:buffer_ count:size_];
 }
 
-#if ! __has_feature(objc_arc)
 - (void)dealloc {
   free(buffer_);
+#if ! __has_feature(objc_arc)
   [super dealloc];
-}
 #endif
+}
 
 @end
