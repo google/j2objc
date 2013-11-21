@@ -19,9 +19,6 @@
 .SUFFIXES: .java .m
 .PHONY: default clean
 
-# Uncomment to build with ARC by default.
-# CLANG_ENABLE_OBJC_ARC=YES
-
 include environment.mk
 
 # Native obj-c sources that do not emulate a specific java class.
@@ -103,7 +100,6 @@ JRE_INTERFACES = \
 	java/lang/reflect/WildcardType.h \
 	java/security/Guard.h \
 	java/security/PrivilegedAction.h \
-	java/text/CharacterIterator.h \
 	java/util/Collection.h \
 	java/util/Comparator.h \
 	java/util/Deque.h \
@@ -132,7 +128,6 @@ JRE_INTERFACES = \
 	java/util/concurrent/Executor.h \
 	java/util/concurrent/ExecutorService.h \
 	java/util/concurrent/Future.h \
-	java/util/concurrent/RejectedExecutionHandler.h \
 	java/util/concurrent/RunnableFuture.h \
 	java/util/concurrent/RunnableScheduledFuture.h \
 	java/util/concurrent/ScheduledExecutorService.h \
@@ -496,7 +491,6 @@ JAVA_SOURCES = \
 	java/util/concurrent/locks/ReadWriteLock.java \
 	java/util/concurrent/locks/ReentrantLock.java \
 	java/util/concurrent/locks/ReentrantReadWriteLock.java \
-	java/util/concurrent/locks/ReentrantLock.java \
 	java/util/Currency.java \
 	java/util/Date.java \
 	java/util/Dictionary.java \
@@ -646,22 +640,16 @@ JAVA_SOURCES = \
 
 MAIN_OBJ = J2ObjCMain.o
 
-JAVA_SOURCE_LIST = $(BUILD_DIR)/jre_emul.classes.list
-OBJC_OUT_LIST = $(BUILD_DIR)/jre_emul.objc.list
 JAVA_SOURCES_MANIFEST = $(BUILD_DIR)/java_sources.mf
 OBJC_SOURCES_MANIFEST = $(BUILD_DIR)/objc_sources.mf
 
 STUB_JAVA_SOURCES = $(shell find $(STUBS_DIR) -name *.java)
 ALL_JAVA_SOURCES = $(JAVA_SOURCES) $(IOS_JAVA_OBJS:.o=.java) $(IOS_INTERFACES:.h=.java) \
     $(JRE_INTERFACES:.h=.java)
-TRANSLATED_OBJC = $(JRE_INTERFACES:%.h=$(TRANSLATED_SOURCE_DIR)/%.m) \
-    $(JAVA_SOURCES:%.java=$(TRANSLATED_SOURCE_DIR)/%.m)
-TRANSLATED_HEADERS = $(JRE_INTERFACES:%=$(TRANSLATED_SOURCE_DIR)/%) \
-    $(JAVA_SOURCES:%.java=$(TRANSLATED_SOURCE_DIR)/%.h)
+JAVA_TO_TRANSLATE = $(JRE_INTERFACES:%.h=%.java) $(JAVA_SOURCES)
 ALL_OBJS = $(JAVA_SOURCES:.java=.o) $(IOS_OBJS) $(IOS_JAVA_OBJS)
 SOURCE_HEADERS = $(shell find $(EMULATION_CLASS_DIR) -name *.h)
-INCLUDES = $(TRANSLATED_HEADERS:$(TRANSLATED_SOURCE_DIR)/%=%) \
-    $(SOURCE_HEADERS:$(EMULATION_CLASS_DIR)/%=%)
+INCLUDES = $(JAVA_TO_TRANSLATE:.java=.h) $(SOURCE_HEADERS:$(EMULATION_CLASS_DIR)/%=%)
 DIST_INCLUDES = $(INCLUDES:%=$(DIST_INCLUDE_DIR)/%)
 ARCH_INCLUDES = $(INCLUDES:%=$(ARCH_INCLUDE_DIR)/%)
 
@@ -697,33 +685,23 @@ MAIN_LIB_OBJS = $(MAIN_OBJ:%=$(CLASS_DIR)/%)
 default: libs
 	@: # suppress make's "nothing to be done" message
 
-# Only build dependencies when called directly from command-line.
-ifeq ("$(CONFIGURATION_BUILD_DIR)x$(MAKELEVEL)", "x0")
-find_cycles_deps:
-	@cd .. && $(MAKE) cycle_finder_dist
-else
-find_cycles_deps:
-endif
+GEN_OBJC_DIR = $(TRANSLATED_SOURCE_DIR)
+TRANSLATE_JAVA_FULL = $(JAVA_TO_TRANSLATE)
+TRANSLATE_JAVA_RELATIVE = $(JAVA_TO_TRANSLATE)
+TRANSLATE_ARGS = --mem-debug -sourcepath $(JRE_SRC) -classpath $(EMULATION_JAR) \
+  $(J2OBJC_DEBUGFLAGS) -encoding UTF-8
+TRANSLATE_USE_SYSTEM_BOOT_PATH = TRUE
+include ../make/translate.mk
 
 analyze: $(ALL_OBJS:%.o=$(CLASS_DIR)/%.plist)
 
-translate: pre_translate $(TRANSLATED_OBJC)
-	@if [ `cat $(JAVA_SOURCE_LIST) | wc -l` -ge 1 ] ; then \
-	  rm -f `cat $(OBJC_OUT_LIST)`; \
-	  $(J2OBJC) -sourcepath .:$(JRE_SRC) `cat $(JAVA_SOURCE_LIST)` ; \
-	fi
-
-pre_translate: | $(BUILD_DIR)
-	@rm -f $(JAVA_SOURCE_LIST) $(OBJC_OUT_LIST)
-	@touch $(JAVA_SOURCE_LIST) $(OBJC_OUT_LIST)
-
-libs: translate $(EMULATION_LIB) $(MAIN_LIB)
+libs: $(EMULATION_LIB) $(MAIN_LIB)
 	@:
 
-xcode_build: translate $(XCODE_LIB) $(ARCH_BIN_DIR)/j2objcc $(ARCH_BUILD_DIR)/.includes
+xcode_build: $(XCODE_LIB) $(ARCH_BIN_DIR)/j2objcc $(ARCH_BUILD_DIR)/.includes
 
 xcode_clean:
-	@rm -rf $(TRANSLATED_SOURCE_DIR) $(ARCH_BIN_DIR)/j2objcc
+	@rm -rf $(GEN_OBJC_DIR) $(ARCH_BIN_DIR)/j2objcc
 
 xcode_analyze: $(ALL_OBJS:%.o=$(TARGET_TEMP_DIR)/%.plist)
 
@@ -753,23 +731,23 @@ $(XCODE_LIB): $(ALL_OBJS:%=$(TARGET_TEMP_DIR)/%)
 $(MAIN_LIB): $(MAIN_LIB_OBJS)
 	$(LIBTOOL) -static -o $@ $^
 
-dist_includes: translate $(BUILD_DIR)/.jre_dist_includes
+dist_includes: $(BUILD_DIR)/.jre_dist_includes
 
-$(BUILD_DIR)/.jre_dist_includes: $(TRANSLATED_HEADERS) $(SOURCE_HEADERS) | \
-    $(DIST_INCLUDE_DIR) translate
+$(BUILD_DIR)/.jre_dist_includes: $(TRANSLATE_HEADERS) $(SOURCE_HEADERS) | \
+    $(DIST_INCLUDE_DIR)
 	(cd $(EMULATION_CLASS_DIR) && tar cf - $(SOURCE_HEADERS:$(EMULATION_CLASS_DIR)/%=%)) \
 	    | (cd $(DIST_INCLUDE_DIR); tar xfp -)
-	(cd $(TRANSLATED_SOURCE_DIR) && tar cf - \
-	    $(TRANSLATED_HEADERS:$(TRANSLATED_SOURCE_DIR)/%=%)) \
+	(cd $(GEN_OBJC_DIR) && tar cf - \
+	    $(TRANSLATE_HEADERS:$(GEN_OBJC_DIR)/%=%)) \
 	    | (cd $(DIST_INCLUDE_DIR); tar xfp -)
 	touch $@
 
-$(ARCH_BUILD_DIR)/.includes: $(TRANSLATED_HEADERS) $(SOURCE_HEADERS) | \
-    $(ARCH_BUILD_DIR) $(ARCH_INCLUDE_DIR) translate
+$(ARCH_BUILD_DIR)/.includes: $(TRANSLATE_HEADERS) $(SOURCE_HEADERS) | \
+    $(ARCH_BUILD_DIR) $(ARCH_INCLUDE_DIR)
 	(cd $(EMULATION_CLASS_DIR) && tar cf - $(SOURCE_HEADERS:$(EMULATION_CLASS_DIR)/%=%)) \
 	    | (cd $(ARCH_INCLUDE_DIR); tar xfp -)
-	(cd $(TRANSLATED_SOURCE_DIR) && tar cf - \
-	    $(TRANSLATED_HEADERS:$(TRANSLATED_SOURCE_DIR)/%=%)) \
+	(cd $(GEN_OBJC_DIR) && tar cf - \
+	    $(TRANSLATE_HEADERS:$(GEN_OBJC_DIR)/%=%)) \
 	    | (cd $(ARCH_INCLUDE_DIR); tar xfp -)
 	touch $@
 
@@ -782,47 +760,40 @@ DIRS_TO_MAKE = $(BUILD_DIR) $(ARCH_BUILD_DIR) $(ARCH_INCLUDE_DIR) \
 $(sort $(DIRS_TO_MAKE)):
 	@mkdir -p $@
 
-$(TRANSLATED_SOURCE_DIR)/%.h $(TRANSLATED_SOURCE_DIR)/%.m: %.java $(TRANSLATOR_DEPS) | pre_translate
-	@echo "$<" >> $(JAVA_SOURCE_LIST)
-	@echo "$(TRANSLATED_SOURCE_DIR)/$*.h" >> $(OBJC_OUT_LIST)
-	@echo "$(TRANSLATED_SOURCE_DIR)/$*.m" >> $(OBJC_OUT_LIST)
-	@if [ -e $(TRANSLATED_SOURCE_DIR)/$*.h ]; then touch $(TRANSLATED_SOURCE_DIR)/$*.h; fi
-	@if [ -e $(TRANSLATED_SOURCE_DIR)/$*.m ]; then touch $(TRANSLATED_SOURCE_DIR)/$*.m; fi
-
 define compile_rules
 $(1)/%.o: $(3)/%.$(4) | translate
 	@mkdir -p $$(@D)
 	$$(CLANG) -c $$< -o $$@ $(2) $$(OBJCFLAGS) -I$$(EMULATION_CLASS_DIR) \
-	    -I$$(TRANSLATED_SOURCE_DIR) -I$$(ANDROID_NATIVE_DIR)
+	    -I$$(GEN_OBJC_DIR) -I$$(ANDROID_NATIVE_DIR)
 
 $(1)/%.plist: $(3)/%.$(4) | translate
 	@mkdir -p $$(@D)
 	$$(CLANG) -c $$< -o $$@ $(2) $$(OBJCFLAGS) $$(STATIC_ANALYZER_FLAGS) \
-	    -I$$(EMULATION_CLASS_DIR) -I$$(TRANSLATED_SOURCE_DIR) -I$$(ANDROID_NATIVE_DIR)
+	    -I$$(EMULATION_CLASS_DIR) -I$$(GEN_OBJC_DIR) -I$$(ANDROID_NATIVE_DIR)
 endef
 
 define compile_rules_no_arc
 $(1)/$(3:.m=.o): Classes/$(3) | translate
 	@mkdir -p $$(@D)
 	$$(CLANG) -c $$< -o $$@ $(2) $$(OBJCFLAGS_NO_ARC) \
-	    -I$$(EMULATION_CLASS_DIR) -I$$(TRANSLATED_SOURCE_DIR) -I$$(ANDROID_NATIVE_DIR)
+	    -I$$(EMULATION_CLASS_DIR) -I$$(GEN_OBJC_DIR) -I$$(ANDROID_NATIVE_DIR)
 
 $(1)/$(3:.m=.plist): Classes/$(3) | translate
 	@mkdir -p $$(@D)
 	$$(CLANG) -c $$< -o $$@ $(2) $$(OBJCFLAGS) $$(STATIC_ANALYZER_FLAGS) \
-	    -I$$(EMULATION_CLASS_DIR) -I$$(TRANSLATED_SOURCE_DIR) -I$$(ANDROID_NATIVE_DIR)
+	    -I$$(EMULATION_CLASS_DIR) -I$$(GEN_OBJC_DIR) -I$$(ANDROID_NATIVE_DIR)
 endef
 
 define additional_compile_rules
 $(1)/objc-sync.o: $(APPLE_ROOT)/objc-sync.m
 	@mkdir -p $$(@D)
 	$$(CLANG) -c $$< -o $$@ $(2) $$(OBJCFLAGS_NO_ARC) \
-	    -I$$(EMULATION_CLASS_DIR) -I$$(TRANSLATED_SOURCE_DIR) -I$$(ANDROID_NATIVE_DIR)
+	    -I$$(EMULATION_CLASS_DIR) -I$$(GEN_OBJC_DIR) -I$$(ANDROID_NATIVE_DIR)
 
 $(1)/objc-sync.plist: $(APPLE_ROOT)/objc-sync.m
 	@mkdir -p $$(@D)
 	$$(CLANG) -c $$< -o $$@ $(2) $$(OBJCFLAGS) $$(STATIC_ANALYZER_FLAGS) \
-	    -I$$(EMULATION_CLASS_DIR) -I$$(TRANSLATED_SOURCE_DIR) -I$$(ANDROID_NATIVE_DIR)
+	    -I$$(EMULATION_CLASS_DIR) -I$$(GEN_OBJC_DIR) -I$$(ANDROID_NATIVE_DIR)
 endef
 
 NON_ARC_SRCS = \
@@ -830,7 +801,7 @@ NON_ARC_SRCS = \
     java/util/LinkedHashMap.m \
     IOSReference.m
 
-OBJC_SOURCE_DIRS = $(EMULATION_CLASS_DIR) $(TRANSLATED_SOURCE_DIR) $(ANDROID_NATIVE_DIR)
+OBJC_SOURCE_DIRS = $(EMULATION_CLASS_DIR) $(GEN_OBJC_DIR) $(ANDROID_NATIVE_DIR)
 OBJC_EXTENSIONS = m mm
 arch_compile_rules = $(foreach src_dir,$(OBJC_SOURCE_DIRS),$(foreach ext,$(OBJC_EXTENSIONS),\
     $(eval $(call compile_rules,$(1),$(2),$(src_dir),$(ext))))) \
@@ -849,7 +820,7 @@ test: libs_dist $(DIST_DIR)/j2objcc
 	$(MAKE) -f tests.mk test
 
 clean:
-	@rm -rf $(BUILD_DIR) $(TRANSLATED_SOURCE_DIR)
+	@rm -rf $(BUILD_DIR) $(GEN_OBJC_DIR)
 	@rm -f $(DIST_DIR)/j2objcc $(EMULATION_JAR_DIST) $(EMULATION_LIB_DIST) $(MAIN_LIB_DIST)
 	@rm -f $(DIST_INCLUDES)
 
@@ -891,11 +862,11 @@ $(OBJC_SOURCES_MANIFEST): $(ALL_JAVA_SOURCES) | $(BUILD_DIR)
 	@echo "Building $$(basename $@)"
 	@if [ -e $@ ]; then rm $@; fi
 	@for i in $(JAVA_SOURCES); do \
-	  echo $(TRANSLATED_SOURCE_DIR)/$${i%.java}.h >> $@; \
-	  echo $(TRANSLATED_SOURCE_DIR)/$${i%.java}.m >> $@; \
+	  echo $(GEN_OBJC_DIR)/$${i%.java}.h >> $@; \
+	  echo $(GEN_OBJC_DIR)/$${i%.java}.m >> $@; \
 	done
 
 objc_sources_manifest: $(OBJC_SOURCES_MANIFEST)
 
-find_cycles: find_cycles_deps $(JAVA_SOURCES_MANIFEST)
+find_cycles: cycle_finder_dist $(JAVA_SOURCES_MANIFEST)
 	$(DIST_DIR)/cycle_finder -w cycle_whitelist.txt `cat $(JAVA_SOURCES_MANIFEST)`
