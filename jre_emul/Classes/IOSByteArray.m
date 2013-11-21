@@ -120,11 +120,11 @@ char *IOSByteArray_GetRef(__unsafe_unretained IOSByteArray *array, NSUInteger in
   return [NSData dataWithBytes:buffer_ length:size_];
 }
 
-#if ! __has_feature(objc_arc)
 - (void)dealloc {
   free(buffer_);
+#if ! __has_feature(objc_arc)
   [super dealloc];
-}
 #endif
+}
 
 @end

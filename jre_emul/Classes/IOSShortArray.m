@@ -105,11 +105,11 @@ short *IOSShortArray_GetRef(__unsafe_unretained IOSShortArray *array, NSUInteger
   return [[IOSShortArray allocWithZone:zone] initWithShorts:buffer_ count:size_];
 }
 
-#if ! __has_feature(objc_arc)
 - (void)dealloc {
   free(buffer_);
+#if ! __has_feature(objc_arc)
   [super dealloc];
-}
 #endif
+}
 
 @end

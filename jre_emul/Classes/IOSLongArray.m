@@ -105,11 +105,11 @@ long long *IOSLongArray_GetRef(__unsafe_unretained IOSLongArray *array, NSUInteg
   return [[IOSLongArray allocWithZone:zone] initWithLongs:buffer_ count:size_];
 }
 
-#if ! __has_feature(objc_arc)
 - (void)dealloc {
   free(buffer_);
+#if ! __has_feature(objc_arc)
   [super dealloc];
-}
 #endif
+}
 
 @end

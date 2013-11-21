@@ -105,11 +105,11 @@ int *IOSIntArray_GetRef(__unsafe_unretained IOSIntArray *array, NSUInteger index
   return [[IOSIntArray allocWithZone:zone] initWithInts:buffer_ count:size_];
 }
 
-#if ! __has_feature(objc_arc)
 - (void)dealloc {
   free(buffer_);
+#if ! __has_feature(objc_arc)
   [super dealloc];
-}
 #endif
+}
 
 @end
