@@ -60,6 +60,7 @@ J2OBJC_ROOT = ..
 ANDROID_INCLUDE = $(ANDROID_BASE)/include
 
 include ../make/common.mk
+include ../java_deps/jars.mk
 
 CLASS_DIR = $(BUILD_DIR)/Classes
 EMULATION_STAGE = /tmp/jre_emul

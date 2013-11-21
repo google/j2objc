@@ -18,6 +18,8 @@
 
 .SUFFIXES: .java .m
 
+default: test
+
 include environment.mk
 
 SUPPORT_SOURCES = \
@@ -308,8 +310,6 @@ FAILING_MATH_TESTS = \
 	org/apache/harmony/tests/java/math/BigIntegerXorTest.java \
 	tests/api/java/math/BigIntegerTest.java \
 
-JAVA_SOURCE_LIST = $(BUILD_DIR)/jre_emul.tests.list
-
 SUPPORT_OBJS = $(SUPPORT_SOURCES:%.java=$(TESTS_DIR)/%.o)
 TEST_OBJS = $(TEST_SOURCES:%.java=$(TESTS_DIR)/%.o)
 
@@ -327,23 +327,22 @@ TEST_RESOURCES = \
 # Broken tests, plus associated bug id.  Once bug is fixed, move line(s) up.
 #	$(TESTS_DIR)/org/apache/harmony/luni/tests/java/lang/StringBuilderTest.o               b/8842295
 
-JUNIT_JAR = ../dist/lib/junit-4.10.jar
+JUNIT_DIST_JAR = $(DIST_JAR_DIR)/$(JUNIT_JAR)
 
-TEST_JOC = ../dist/j2objc -classpath $(JUNIT_JAR) -Werror \
-	-sourcepath $(TEST_SRC) -encoding UTF-8 -d $(TESTS_DIR)
 TEST_JOCC = ../dist/j2objcc -g -I$(TESTS_DIR) -l junit -Werror \
 	-L$(TESTS_DIR) -l test-support
 SUPPORT_LIB = $(TESTS_DIR)/libtest-support.a
 TEST_BIN = $(TESTS_DIR)/jre_unit_tests
 
+GEN_OBJC_DIR = $(TESTS_DIR)
+TRANSLATE_JAVA_FULL = $(SUPPORT_SOURCES) $(TEST_SOURCES)
+TRANSLATE_JAVA_RELATIVE = $(SUPPORT_SOURCES) $(TEST_SOURCES)
+TRANSLATE_ARGS = -classpath $(JUNIT_DIST_JAR) -Werror -sourcepath $(TEST_SRC) -encoding UTF-8
+include ../make/translate.mk
+
 test: run-tests
 
-translate: pre_translate $(SUPPORT_OBJS:.o=.m) $(TEST_OBJS:.o=.m)
-	@if [ `cat $(JAVA_SOURCE_LIST) | wc -l` -ge 1 ] ; then \
-	  $(TEST_JOC) `cat $(JAVA_SOURCE_LIST)` ; \
-	fi
-
-support-lib: translate $(SUPPORT_LIB)
+support-lib: $(SUPPORT_LIB)
 
 build: support-lib $(TEST_OBJS)
 	@:
@@ -378,23 +377,10 @@ $(SUPPORT_LIB): $(SUPPORT_OBJS)
 clean:
 	@rm -rf $(TESTS_DIR)
 
-pre_translate:
-	@mkdir -p $(BUILD_DIR)
-	@rm -f $(JAVA_SOURCE_LIST)
-	@touch $(JAVA_SOURCE_LIST)
-
 $(TESTS_DIR):
 	@mkdir -p $@
 
-define java_source_rule
-$$(TESTS_DIR)/%.m: $(1)/%.java | pre_translate
-	@echo $$< >> $$(JAVA_SOURCE_LIST)
-	@if [ -e $$@ ]; then touch $$@; fi
-endef
-
-$(foreach srcdir,$(TEST_SRC_ROOTS),$(eval $(call java_source_rule,$(srcdir))))
-
-$(TESTS_DIR)/%.o: $(TESTS_DIR)/%.m | translate
+$(TESTS_DIR)/%.o: $(TESTS_DIR)/%.m
 	@mkdir -p `dirname $@`
 	../dist/j2objcc -g -I$(TESTS_DIR) -c $? -o $@ \
 	  -Wno-objc-redundant-literal-use -Wno-format \
