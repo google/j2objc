@@ -50,6 +50,7 @@ JAVA_SOURCES = \
 	Options.java \
 	Plugin.java \
 	gen/HiddenFieldDetector.java \
+	gen/MetadataGenerator.java \
 	gen/ObjectiveCHeaderGenerator.java \
 	gen/ObjectiveCImplementationGenerator.java \
 	gen/ObjectiveCSegmentedHeaderGenerator.java \
