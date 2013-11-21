@@ -66,10 +66,6 @@ import javax.annotation.Nullable;
  * "http://code.google.com/p/guava-libraries/wiki/OrderingExplained">
  * {@code Ordering}</a>.
  *
- * J2ObjC Modifications:
- * - Removed arbitrary() and the ArbitraryOrdering inner class which uses
- *   MapMaker.
- *
  * @author Jesse Wilson
  * @author Kevin Bourrillion
  * @since 2.0 (imported from Google Collections Library)
@@ -219,6 +215,81 @@ public abstract class Ordering<T> implements Comparator<T> {
   @GwtCompatible(serializable = true)
   public static Ordering<Object> usingToString() {
     return UsingToStringOrdering.INSTANCE;
+  }
+
+  /**
+   * Returns an arbitrary ordering over all objects, for which {@code compare(a,
+   * b) == 0} implies {@code a == b} (identity equality). There is no meaning
+   * whatsoever to the order imposed, but it is constant for the life of the VM.
+   *
+   * <p>Because the ordering is identity-based, it is not "consistent with
+   * {@link Object#equals(Object)}" as defined by {@link Comparator}. Use
+   * caution when building a {@link SortedSet} or {@link SortedMap} from it, as
+   * the resulting collection will not behave exactly according to spec.
+   *
+   * <p>This ordering is not serializable, as its implementation relies on
+   * {@link System#identityHashCode(Object)}, so its behavior cannot be
+   * preserved across serialization.
+   *
+   * @since 2.0
+   */
+  public static Ordering<Object> arbitrary() {
+    return ArbitraryOrderingHolder.ARBITRARY_ORDERING;
+  }
+
+  private static class ArbitraryOrderingHolder {
+    static final Ordering<Object> ARBITRARY_ORDERING = new ArbitraryOrdering();
+  }
+
+  @VisibleForTesting static class ArbitraryOrdering extends Ordering<Object> {
+    @SuppressWarnings("deprecation") // TODO(kevinb): ?
+    private Map<Object, Integer> uids =
+        Platform.tryWeakKeys(new MapMaker()).makeComputingMap(
+            new Function<Object, Integer>() {
+              final AtomicInteger counter = new AtomicInteger(0);
+              @Override
+              public Integer apply(Object from) {
+                return counter.getAndIncrement();
+              }
+            });
+
+    @Override public int compare(Object left, Object right) {
+      if (left == right) {
+        return 0;
+      } else if (left == null) {
+        return -1;
+      } else if (right == null) {
+        return 1;
+      }
+      int leftCode = identityHashCode(left);
+      int rightCode = identityHashCode(right);
+      if (leftCode != rightCode) {
+        return leftCode < rightCode ? -1 : 1;
+      }
+
+      // identityHashCode collision (rare, but not as rare as you'd think)
+      int result = uids.get(left).compareTo(uids.get(right));
+      if (result == 0) {
+        throw new AssertionError(); // extremely, extremely unlikely.
+      }
+      return result;
+    }
+
+    @Override public String toString() {
+      return "Ordering.arbitrary()";
+    }
+
+    /*
+     * We need to be able to mock identityHashCode() calls for tests, because it
+     * can take 1-10 seconds to find colliding objects. Mocking frameworks that
+     * can do magic to mock static method calls still can't do so for a system
+     * class, so we need the indirection. In production, Hotspot should still
+     * recognize that the call is 1-morphic and should still be willing to
+     * inline it if necessary.
+     */
+    int identityHashCode(Object object) {
+      return System.identityHashCode(object);
+    }
   }
 
   // Constructor

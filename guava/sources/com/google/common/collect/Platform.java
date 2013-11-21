@@ -31,9 +31,6 @@ import java.util.SortedSet;
 /**
  * Methods factored out so that they can be emulated differently in GWT.
  *
- * J2ObjC Modifications:
- * - Commented out tryWeakKeys which depends on MapMaker.
- *
  * @author Hayward Chan
  */
 @GwtCompatible(emulated = true)
@@ -69,9 +66,9 @@ class Platform {
    * server-side code could generate enough volume that reclamation becomes
    * important.
    */
-  /*static MapMaker tryWeakKeys(MapMaker mapMaker) {
+  static MapMaker tryWeakKeys(MapMaker mapMaker) {
     return mapMaker.weakKeys();
-  }*/
+  }
 
   static <K, V1, V2> SortedMap<K, V2> mapsTransformEntriesSortedMap(
       SortedMap<K, V1> fromMap,
