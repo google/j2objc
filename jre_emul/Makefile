@@ -475,11 +475,14 @@ JAVA_SOURCES = \
 	java/util/concurrent/atomic/AtomicBoolean.java \
 	java/util/concurrent/atomic/AtomicInteger.java \
 	java/util/concurrent/atomic/AtomicIntegerArray.java \
+	java/util/concurrent/atomic/AtomicIntegerFieldUpdater.java \
 	java/util/concurrent/atomic/AtomicLong.java \
 	java/util/concurrent/atomic/AtomicLongArray.java \
+	java/util/concurrent/atomic/AtomicLongFieldUpdater.java \
 	java/util/concurrent/atomic/AtomicMarkableReference.java \
 	java/util/concurrent/atomic/AtomicReference.java \
 	java/util/concurrent/atomic/AtomicReferenceArray.java \
+	java/util/concurrent/atomic/AtomicReferenceFieldUpdater.java \
 	java/util/concurrent/atomic/AtomicStampedReference.java \
 	java/util/concurrent/atomic/Fences.java \
 	java/util/concurrent/locks/AbstractOwnableSynchronizer.java \

@@ -69,6 +69,8 @@ public class AtomicIntegerFieldUpdaterTest extends JSR166TestCase {
     }
     static class Sub2 extends Base {}
 
+    /* Cannot test on iOS: protected field checking requires checking the
+     * calling method on the stack, and iOS uses a native stack, not VM one.
     public void testProtectedFieldOnAnotherSubtype() {
         Sub1 sub1 = new Sub1();
         Sub2 sub2 = new Sub2();
@@ -80,6 +82,7 @@ public class AtomicIntegerFieldUpdaterTest extends JSR166TestCase {
         } 
         catch (RuntimeException rt) {}
     }
+    */
 
     /**
      *  get returns the last value set or assigned

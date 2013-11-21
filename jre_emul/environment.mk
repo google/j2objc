@@ -55,6 +55,7 @@ ANDROID_TEST_SUPPORT_ROOT = $(ANDROID_BASE)/support/src/test/java
 ANDROID_XML_ROOT = $(ANDROID_BASE)/xml/src/main/java
 
 APPLE_ROOT = apple_apsl
+NHATMINHLE_ROOT = nhatminhle
 
 MISC_TEST_ROOT = Tests
 J2OBJC_ROOT = ..
@@ -111,7 +112,7 @@ OBJCFLAGS := $(WARNINGS) $(OBJCFLAGS) -DU_DISABLE_RENAMING=1 \
   -I/System/Library/Frameworks/ExceptionHandling.framework/Headers \
   -I/System/Library/Frameworks/Security.framework/Headers \
   -I$(ANDROID_INCLUDE) -I$(ICU4C_I18N_INCLUDE) -I$(ICU4C_COMMON_INCLUDE) \
-  -I$(APPLE_ROOT)
+  -I$(APPLE_ROOT) -I$(NHATMINHLE_ROOT)
 
 ifdef MAX_STACK_FRAMES
 OBJCFLAGS := $(OBJCFLAGS) -DMAX_STACK_FRAMES=$(MAX_STACK_FRAMES)

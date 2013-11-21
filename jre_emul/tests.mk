@@ -56,11 +56,14 @@ TEST_SOURCES = \
 	ArrayBlockingQueueTest.java \
 	AtomicBooleanTest.java \
 	AtomicIntegerArrayTest.java \
+	AtomicIntegerFieldUpdaterTest.java \
 	AtomicIntegerTest.java \
 	AtomicLongArrayTest.java \
+	AtomicLongFieldUpdaterTest.java \
 	AtomicLongTest.java \
 	AtomicMarkableReferenceTest.java \
 	AtomicReferenceArrayTest.java \
+	AtomicReferenceFieldUpdaterTest.java \
 	AtomicReferenceTest.java \
 	AtomicStampedReferenceTest.java \
 	ConcurrentHashMapTest.java \
