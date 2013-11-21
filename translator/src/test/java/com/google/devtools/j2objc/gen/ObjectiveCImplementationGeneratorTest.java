@@ -692,15 +692,6 @@ public class ObjectiveCImplementationGeneratorTest extends GenerationTest {
         "count:1 type:[IOSClass classWithProtocol:@protocol(JavaLangAnnotationAnnotation)]];");
   }
 
-  public void testExceptionsMetadata() throws IOException {
-    String translation = translateSourceFile(
-        "class Test { void test() throws Exception, java.lang.Error {} }", "Test", "Test.m");
-    assertTranslation(translation, "+ (IOSObjectArray *)__exceptions_test ");
-    assertTranslation(translation,
-        "return [IOSObjectArray arrayWithObjects:(id[]) { [[JavaLangException class] getClass], " +
-        "[[JavaLangError class] getClass] } count:2 type:[[IOSClass class] getClass]];");
-  }
-
   public void testFreeFormNativeCode() throws IOException {
     String translation = translateSourceFile(
         "class Test { void method1() {} /*-[ OCNI1 ]-*/ " +
@@ -761,7 +752,7 @@ public class ObjectiveCImplementationGeneratorTest extends GenerationTest {
   public void testMethodMetadata() throws IOException {
     String translation = translateSourceFile(
         // Separate methods are used so each only has one modifier.
-        "class Test { " +
+        "abstract class Test { " +
         " Object test1() { return null; }" +  // package-private
         " private char test2() { return 'a'; }" +
         " protected void test3() { }" +
@@ -769,18 +760,21 @@ public class ObjectiveCImplementationGeneratorTest extends GenerationTest {
         " synchronized boolean test5() { return false; }" +
         " String test6(String s, Object... args) { return null; }" +
         " native void test7() /*-[ exit(0); ]-*/; " +
+        " abstract void test8() throws InterruptedException, Error; " +
         " public void noMetadata1() {}" +
         " public static void noMetadata2() {}" +
         "}",
         "Test", "Test.m");
-    assertTranslatedLines(translation, "{ \"test1\", NULL, \"LNSObject\", 0x0 },");
-    assertTranslatedLines(translation, "{ \"test2\", NULL, \"C\", 0x2 },");
-    assertTranslatedLines(translation, "{ \"test3\", NULL, \"V\", 0x4 },");
-    assertTranslatedLines(translation, "{ \"test4\", NULL, \"J\", 0x10 },");
-    assertTranslatedLines(translation, "{ \"test5\", NULL, \"Z\", 0x20 },");
-    assertTranslatedLines(translation,
-        "{ \"test6WithNSString:withNSObjectArray:\", NULL, \"LNSString\", 0x80 }");
-    assertTranslatedLines(translation, "{ \"test7\", NULL, \"V\", 0x100 },");
+    assertTranslation(translation, "{ \"test1\", NULL, \"LNSObject\", 0x0, NULL },");
+    assertTranslation(translation, "{ \"test2\", NULL, \"C\", 0x2, NULL },");
+    assertTranslation(translation, "{ \"test3\", NULL, \"V\", 0x4, NULL },");
+    assertTranslation(translation, "{ \"test4\", NULL, \"J\", 0x10, NULL },");
+    assertTranslation(translation, "{ \"test5\", NULL, \"Z\", 0x20, NULL },");
+    assertTranslation(translation,
+        "{ \"test6WithNSString:withNSObjectArray:\", NULL, \"LNSString\", 0x80, NULL }");
+    assertTranslation(translation, "{ \"test7\", NULL, \"V\", 0x100, NULL },");
+    assertTranslation(translation,
+        "{ \"test8\", NULL, \"V\", 0x400, \"JavaLangInterruptedException;JavaLangError\" },");
     assertNotInTranslation(translation, "{ \"noMetadata1\"");
     assertNotInTranslation(translation, "{ \"noMetadata2\"");
   }

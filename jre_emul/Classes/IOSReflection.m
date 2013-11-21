@@ -19,7 +19,6 @@
 
 #import "IOSReflection.h"
 
-#import <Foundation/Foundation.h>
 #import "IOSClass.h"
 #import "java/lang/AssertionError.h"
 #import "java/lang/reflect/TypeVariableImpl.h"
@@ -40,4 +39,22 @@ id<JavaLangReflectType> JreTypeForString(const char *typeStr) {
   }
   NSString *msg = [NSString stringWithFormat:@"invalid type from metadata %s", typeStr];
   @throw AUTORELEASE([[JavaLangAssertionError alloc] initWithNSString:msg]);
+}
+
+Method JreFindInstanceMethod(Class cls, const char *name) {
+  unsigned int count;
+  Method result = nil;
+  Method *methods = class_copyMethodList(cls, &count);
+  for (NSUInteger i = 0; i < count; i++) {
+    if (strcmp(name, sel_getName(method_getName(methods[i]))) == 0) {
+      result = methods[i];
+      break;
+    }
+  }
+  free(methods);
+  return result;
+}
+
+Method JreFindClassMethod(Class cls, const char *name) {
+  return JreFindInstanceMethod(object_getClass(cls), name);
 }

@@ -21,6 +21,7 @@
 #define JreEmulation_IOSReflection_h
 
 #import <Foundation/Foundation.h>
+#import "objc/runtime.h"
 
 @protocol JavaLangReflectType;
 
@@ -94,6 +95,7 @@ typedef struct J2ObjcMethodInfo {
   const char *javaName;
   const char *returnType;
   uint16_t modifiers;
+  const char *exceptions;
 } J2ObjcMethodInfo;
 
 typedef struct J2ObjcClassInfo {
@@ -135,5 +137,7 @@ typedef union {
 } J2ObjcRawValue;
 
 extern id<JavaLangReflectType> JreTypeForString(const char *typeStr);
+extern Method JreFindInstanceMethod(Class cls, const char *name);
+extern Method JreFindClassMethod(Class cls, const char *name);
 
 #endif // JreEmulation_IOSReflection_h

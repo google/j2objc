@@ -19,7 +19,6 @@ package com.google.devtools.j2objc.gen;
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.ListMultimap;
 import com.google.common.collect.Lists;
-import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 import com.google.devtools.j2objc.J2ObjC;
 import com.google.devtools.j2objc.J2ObjC.Language;
@@ -66,7 +65,6 @@ import org.eclipse.jdt.core.dom.VariableDeclarationFragment;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -82,8 +80,6 @@ public class ObjectiveCImplementationGenerator extends ObjectiveCSourceFileGener
   private final Set<String> invokedConstructors = Sets.newHashSet();
   private final ListMultimap<AbstractTypeDeclaration, Comment> blockComments =
       ArrayListMultimap.create();
-  private final Map<AbstractTypeDeclaration, MetadataGenerator> metadataGenerators =
-      Maps.newHashMap();
 
   /**
    * Generate an Objective-C implementation file for each type declared in a
@@ -136,15 +132,11 @@ public class ObjectiveCImplementationGenerator extends ObjectiveCSourceFileGener
     unit.accept(new ErrorReportingASTVisitor() {
       @Override
       public boolean visit(TypeDeclaration node) {
-        if (node.isInterface()) {
-          if (!getStaticFieldsNeedingAccessors(
-              Arrays.asList(node.getFields()), /* isInterface */ true).isEmpty()) {
-            types.add(node);
-          } else if (!Options.stripReflection() && hasMetadata(node)) {
-            types.add(node);
-          }
-        } else {
-          types.add(node); // always print concrete types
+        if (!node.isInterface()
+            || !getStaticFieldsNeedingAccessors(
+                Arrays.asList(node.getFields()), /* isInterface */ true).isEmpty()
+            || !Options.stripReflection()) {
+          types.add(node);
         }
         return false;
       }
@@ -512,7 +504,7 @@ public class ObjectiveCImplementationGenerator extends ObjectiveCSourceFileGener
     List<IVariableBinding> staticFields =
         getStaticFieldsNeedingAccessors(fields, /* isInterface */ true);
     if (staticFields.isEmpty()) {
-      if (hasMetadata(node)) {
+      if (!Options.stripReflection()) {
         printf("\n@interface %s : NSObject\n@end\n", typeName);
       } else {
         return;
@@ -673,33 +665,7 @@ public class ObjectiveCImplementationGenerator extends ObjectiveCSourceFileGener
     if (methodBody == null) {
       return "";
     }
-    return super.methodDeclaration(m) + " " + reindent(methodBody) + "\n\n" +
-        methodExceptionsFunction(m);
-  }
-
-  protected String methodExceptionsFunction(MethodDeclaration m) {
-    if (m.thrownExceptions().isEmpty() || Options.stripReflection()) {
-      return "";
-    }
-    IMethodBinding method = Types.getMethodBinding(m);
-    StringBuilder sb = new StringBuilder();
-    sb.append("+ (IOSObjectArray *)__exceptions_");
-    sb.append(methodKey(method));
-    sb.append(" {\n");
-    ITypeBinding[] exceptionTypes = method.getExceptionTypes();
-    sb.append("  return [IOSObjectArray arrayWithObjects:(id[]) { ");
-    for (int i = 0; i < exceptionTypes.length; i++) {
-      if (i > 0) {
-        sb.append(", ");
-      }
-      sb.append("[[");
-      sb.append(NameTable.getFullName(exceptionTypes[i]));
-      sb.append(" class] getClass]");
-    }
-    sb.append(" } count:");
-    sb.append(exceptionTypes.length);
-    sb.append(" type:[[IOSClass class] getClass]];\n}\n\n");
-    return sb.toString();
+    return super.methodDeclaration(m) + " " + reindent(methodBody) + "\n\n";
   }
 
   private String generateNativeStub(MethodDeclaration m) {
@@ -809,8 +775,7 @@ public class ObjectiveCImplementationGenerator extends ObjectiveCSourceFileGener
           + super.constructorDeclaration(m, false) + " {\n  return "
           + generateStatement(createInnerConstructorInvocation(m), false) + ";\n}\n\n";
     } else {
-      return super.constructorDeclaration(m, false) + " " + reindent(methodBody) + "\n\n" +
-          methodExceptionsFunction(m);
+      return super.constructorDeclaration(m, false) + " " + reindent(methodBody) + "\n\n";
     }
   }
 
@@ -1124,26 +1089,7 @@ public class ObjectiveCImplementationGenerator extends ObjectiveCSourceFileGener
     }
   }
 
-  private MetadataGenerator getMetadataGenerator(AbstractTypeDeclaration node) {
-    MetadataGenerator generator = metadataGenerators.get(node);
-    if (generator == null) {
-      generator = new MetadataGenerator(node);
-      metadataGenerators.put(node, generator);
-    }
-    return generator;
-  }
-
   private void printMetadata(AbstractTypeDeclaration node) {
-    MetadataGenerator metadataGenerator = getMetadataGenerator(node);
-    if (metadataGenerator.hasMetadata()) {
-      print(metadataGenerator.getMetadataSource());
-    }
-  }
-
-  /**
-   * Does this type need a metadata method?
-   */
-  private boolean hasMetadata(AbstractTypeDeclaration node) {
-    return getMetadataGenerator(node).hasMetadata();
+    print(new MetadataGenerator(node).getMetadataSource());
   }
 }

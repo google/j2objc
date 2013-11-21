@@ -51,6 +51,7 @@
 #import "IOSProtocolClass.h"
 #import "IOSShortArray.h"
 #import "JavaMetadata.h"
+#import "objc/message.h"
 #import "objc/runtime.h"
 
 @implementation IOSClass
@@ -594,12 +595,10 @@ static BOOL hasModifier(IOSClass *cls, int flag) {
 - (JavaClassMetadata *)getMetadata {
   Class cls = [self objcClass];
   if (cls) {
-    SEL sel = @selector(__metadata);
-    if ([cls respondsToSelector:sel]) {
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Warc-performSelector-leaks"
-      J2ObjcClassInfo *rawData = (ARCBRIDGE J2ObjcClassInfo *) [cls performSelector:sel];
-#pragma clang diagnostic pop
+    // Can't use respondsToSelector here because that will search superclasses.
+    Method metadataMethod = JreFindClassMethod(cls, "__metadata");
+    if (metadataMethod) {
+      J2ObjcClassInfo *rawData = (ARCBRIDGE J2ObjcClassInfo *) method_invoke(cls, metadataMethod);
       return AUTORELEASE([[JavaClassMetadata alloc] initWithMetadata:rawData]);
     }
   }

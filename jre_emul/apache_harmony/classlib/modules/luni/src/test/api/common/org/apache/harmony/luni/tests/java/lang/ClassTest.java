@@ -354,8 +354,13 @@ public class ClassTest extends junit.framework.TestCase {
      */
     public void test_getConstructor$Ljava_lang_Class()
         throws NoSuchMethodException {
-        assertNotNull(TestClass.class.getConstructor(new Class[0]));
-        assertNotNull(TestClass.class.getConstructor(Object.class));
+        TestClass.class.getConstructor(new Class[0]);
+        try {
+            TestClass.class.getConstructor(Object.class);
+            fail("Found private constructor");
+        } catch (NoSuchMethodException e) {
+            // Correct - constructor with obj is private
+        }
     }
 
     /**
@@ -363,7 +368,7 @@ public class ClassTest extends junit.framework.TestCase {
      */
     public void test_getConstructors() throws Exception {
         Constructor<?>[] c = TestClass.class.getConstructors();
-        assertEquals("Incorrect number of constructors returned", 2, c.length);
+        assertEquals("Incorrect number of constructors returned", 1, c.length);
     }
 
     /**
