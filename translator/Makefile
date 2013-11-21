@@ -42,6 +42,8 @@ MAIN_CLASS = com.google.devtools.j2objc.J2ObjC
 MANIFEST = $(BUILD_DIR)/manifest.mf
 J2OBJC_JAR = $(BUILD_DIR)/j2objc.jar
 J2OBJC_JAR_DIST = $(DIST_JAR_DIR)/j2objc.jar
+J2OBJC_SH = $(J2OBJC_ROOT)/scripts/j2objc.sh
+J2OBJC_SH_DIST = $(DIST_DIR)/j2objc
 
 JAVA_SOURCES = \
 	J2ObjC.java \
@@ -143,11 +145,17 @@ $(CLASS_DIR) $(BUILD_DIR) $(DIST_JAR_DIR):
 $(J2OBJC_JAR_DIST): $(J2OBJC_JAR) | $(DIST_JAR_DIR)
 	@install -m 0644 $< $@
 
-dist: deps $(J2OBJC_JAR_DIST)
+# Re-install if the jar changes to update the timestamp. This will help other
+# makefiles detect when they need to re-translate their Java files.
+$(J2OBJC_SH_DIST): $(J2OBJC_SH) $(J2OBJC_JAR_DIST)
+	@mkdir -p $(@D)
+	@install $< $@
+
+dist: deps $(J2OBJC_JAR_DIST) $(J2OBJC_SH_DIST)
 	@:
 
 clean:
-	@rm -rf $(BUILD_DIR) $(J2OBJC_JAR_DIST)
+	@rm -rf $(BUILD_DIR) $(J2OBJC_JAR_DIST) $(J2OBJC_SH_DIST)
 
 test: compile-tests
 	java -classpath $(TEST_CLASSPATH) junit.textui.TestRunner com.google.devtools.j2objc.SmallTests

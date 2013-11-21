@@ -31,16 +31,7 @@ include make/common.mk
 MAN_DIR = doc/man
 MAN_PAGES = $(MAN_DIR)/j2objc.1 $(MAN_DIR)/j2objcc.1
 
-J2OBJC = $(DIST_DIR)/j2objc
-
 default: dist
-
-$(J2OBJC): scripts/j2objc.sh
-	@mkdir -p $(@D)
-	@install -C $< $@
-
-install-scripts: $(J2OBJC)
-	@:
 
 install-man-pages: $(MAN_PAGES)
 	@mkdir -p $(DIST_DIR)/man/man1
@@ -52,7 +43,7 @@ annotations_dist:
 java_deps_dist:
 	@cd java_deps && $(MAKE) dist
 
-translator_dist: translator jre_emul_jar_dist install-scripts
+translator_dist: translator jre_emul_jar_dist
 
 translator: annotations_dist java_deps_dist
 	@cd translator && $(MAKE) dist
@@ -95,7 +86,7 @@ test_translator: annotations_dist java_deps_dist
 	@cd translator && $(MAKE) test
 
 test_jre_emul: jre_emul_dist junit_dist
-	@cd jre_emul && $(MAKE) -f tests.mk
+	@cd jre_emul && $(MAKE) -f tests.mk test
 
 test_jre_cycles: cycle_finder_dist
 	@cd jre_emul && $(MAKE) find_cycles
