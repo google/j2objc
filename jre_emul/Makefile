@@ -320,6 +320,7 @@ JAVA_SOURCES = \
 	java/net/MalformedURLException.java \
 	java/net/URI.java \
 	java/net/URL.java \
+	java/net/URLEncoder.java \
 	java/net/URLStreamHandler.java \
 	java/net/URLStreamHandlerFactory.java \
 	java/net/URIEncoderDecoder.java \
@@ -594,6 +595,7 @@ JAVA_SOURCES = \
 	libcore/io/OsConstants.java \
 	libcore/io/Posix.java \
 	libcore/math/MathUtils.java \
+	libcore/net/UriCodec.java \
 	libcore/net/url/FileHandler.java \
 	libcore/net/url/UrlUtils.java \
 	libcore/util/BasicLruCache.java \
