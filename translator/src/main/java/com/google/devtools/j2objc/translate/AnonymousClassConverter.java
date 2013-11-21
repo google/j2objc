@@ -195,8 +195,8 @@ public class AnonymousClassConverter extends ErrorReportingASTVisitor {
     constructor.setName(name);
     constructor.setBody(ast.newBlock());
 
-    GeneratedMethodBinding superCallBinding = new GeneratedMethodBinding(
-        findSuperConstructorBinding(clazz.getSuperclass(), invocationArguments));
+    IMethodBinding superCallBinding =
+        findSuperConstructorBinding(clazz.getSuperclass(), invocationArguments);
     SuperConstructorInvocation superCall =
         ASTFactory.newSuperConstructorInvocation(ast, superCallBinding);
 
