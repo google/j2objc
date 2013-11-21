@@ -55,7 +55,7 @@ import java.util.Set;
 import java.util.SortedMap;
 import java.util.SortedSet;
 import java.util.TreeMap;
-//import java.util.concurrent.ConcurrentMap;
+import java.util.concurrent.ConcurrentMap;
 
 import javax.annotation.Nullable;
 
@@ -67,9 +67,6 @@ import javax.annotation.Nullable;
  * <p>See the Guava User Guide article on <a href=
  * "http://code.google.com/p/guava-libraries/wiki/CollectionUtilitiesExplained#Maps">
  * {@code Maps}</a>.
- *
- * J2ObjC Modifications:
- * - Commented out newConcurrentMap() which uses MapMaker.
  *
  * @author Kevin Bourrillion
  * @author Mike Bostock
@@ -248,9 +245,9 @@ public final class Maps {
    * @return a new, empty {@code ConcurrentMap}
    * @since 3.0
    */
-  /*public static <K, V> ConcurrentMap<K, V> newConcurrentMap() {
+  public static <K, V> ConcurrentMap<K, V> newConcurrentMap() {
     return new MapMaker().<K, V>makeMap();
-  }*/
+  }
 
   /**
    * Creates a <i>mutable</i>, empty {@code TreeMap} instance using the natural

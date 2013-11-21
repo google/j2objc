@@ -20,3 +20,7 @@ FIELD com.google.common.collect.ImmutableCollection.asList
 FIELD com.google.common.collect.ImmutableMap.multimapView
 OUTER com.google.common.collect.ImmutableRangeMap.subRangeMap.$
 OUTER com.google.common.collect.ImmutableRangeSet.intersectRanges.$
+
+FIELD java.util.concurrent.LinkedBlockingDeque.lock com.google.common.collect.MapMakerInternalMap.Segment
+FIELD java.util.concurrent.LinkedBlockingQueue.putLock com.google.common.collect.MapMakerInternalMap.Segment
+FIELD java.util.concurrent.SynchronousQueue.qlock com.google.common.collect.MapMakerInternalMap.Segment
