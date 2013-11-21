@@ -17,6 +17,8 @@
 
 package java.security;
 
+import com.google.j2objc.annotations.Weak;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.NotActiveException;
@@ -57,24 +59,30 @@ public abstract class Provider extends Properties {
 
     // Contains "Service.Algorithm" and Provider.Service classes added using
     // putService()
+    @Weak
     private transient LinkedHashMap<String, Service> serviceTable;
 
     // Contains "Service.Alias" and Provider.Service classes added using
     // putService()
+    @Weak
     private transient LinkedHashMap<String, Service> aliasTable;
 
     // Contains "Service.Algorithm" and Provider.Service classes added using
     // put()
+    @Weak
     private transient LinkedHashMap<String, Service> propertyServiceTable;
 
     // Contains "Service.Alias" and Provider.Service classes added using put()
+    @Weak
     private transient LinkedHashMap<String, Service> propertyAliasTable;
 
     // The properties changed via put()
+    @Weak
     private transient LinkedHashMap<Object, Object> changedProperties;
 
     // For getService(String type, String algorithm) optimization:
     // previous result
+    @Weak
     private transient Provider.Service returnedService;
     // previous parameters
     private transient String lastAlgorithm;
@@ -82,11 +90,13 @@ public abstract class Provider extends Properties {
     private transient String lastServiceName;
 
     // For getServices() optimization:
+    @Weak
     private transient Set<Service> lastServicesSet;
 
     // For getService(String type) optimization:
     private transient String lastType;
     // last Service found by type
+    @Weak
     private transient Provider.Service lastServicesByType;
 
     /**
