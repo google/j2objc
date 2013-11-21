@@ -26,6 +26,9 @@ package java.util.concurrent.atomic;
 public class AtomicLong extends Number implements java.io.Serializable {
     private static final long serialVersionUID = 1927816293512124184L;
 
+    // This unused field aligns value on an 8-byte boundary on ARM-64 processors.
+    private int alignmentPad;
+
     private volatile long value;
 
     /**

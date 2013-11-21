@@ -226,9 +226,12 @@ public final class Unsafe {
 
     /**
      * Lazy set an int field.
-     *
-    public native void putOrderedInt(Object obj, long offset, int newValue);
      */
+    public native void putOrderedInt(Object obj, long offset, int newValue) /*-[
+      int *address = (int *) (((u_int8_t *) obj) + offset);
+      OSMemoryBarrier();
+      *address = newValue;
+    ]-*/;
 
     /**
      * Gets a <code>long</code> field from the given object.
@@ -389,6 +392,21 @@ public final class Unsafe {
      * @param newValue the value to store
      */
     public native void putArrayOrderedObject(Object array, int index, Object newValue) /*-[
+      id *buffer = ((IOSObjectArray *) array)->buffer_;
+      OSMemoryBarrier();
+      id temp = buffer[index];
+      buffer[index] = RETAIN_(newValue);
+      AUTORELEASE(temp);
+    ]-*/;
+
+    /**
+     * Stores an <code>Object</code> into the given array.
+     *
+     * @param array non-null
+     * @param index element index in <code>array</code>
+     * @param newValue the value to store
+     */
+    public native void putArrayObjectVolatile(Object array, int index, Object newValue) /*-[
       id volatile *buffer = ((IOSObjectArray *) array)->buffer_;
       id temp = buffer[index];
       buffer[index] = RETAIN_(newValue);

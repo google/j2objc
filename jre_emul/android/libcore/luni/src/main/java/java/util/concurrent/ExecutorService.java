@@ -1,14 +1,16 @@
 /*
  * Written by Doug Lea with assistance from members of JCP JSR-166
  * Expert Group and released to the public domain, as explained at
- * http://creativecommons.org/licenses/publicdomain
+ * http://creativecommons.org/publicdomain/zero/1.0/
  */
 
 package java.util.concurrent;
 import java.util.List;
 import java.util.Collection;
-import java.security.PrivilegedAction;
-import java.security.PrivilegedExceptionAction;
+
+// BEGIN android-note
+// removed security manager docs
+// END android-note
 
 /**
  * An {@link Executor} that provides methods to manage termination and
@@ -44,7 +46,7 @@ import java.security.PrivilegedExceptionAction;
  * pool service incoming requests. It uses the preconfigured {@link
  * Executors#newFixedThreadPool} factory method:
  *
- * <pre>
+ *  <pre> {@code
  * class NetworkService implements Runnable {
  *   private final ServerSocket serverSocket;
  *   private final ExecutorService pool;
@@ -72,14 +74,13 @@ import java.security.PrivilegedExceptionAction;
  *   public void run() {
  *     // read and service request on socket
  *   }
- * }
- * </pre>
+ * }}</pre>
  *
  * The following method shuts down an <tt>ExecutorService</tt> in two phases,
  * first by calling <tt>shutdown</tt> to reject incoming tasks, and then
  * calling <tt>shutdownNow</tt>, if necessary, to cancel any lingering tasks:
  *
- * <pre>
+ *  <pre> {@code
  * void shutdownAndAwaitTermination(ExecutorService pool) {
  *   pool.shutdown(); // Disable new tasks from being submitted
  *   try {
@@ -96,8 +97,7 @@ import java.security.PrivilegedExceptionAction;
  *     // Preserve interrupt status
  *     Thread.currentThread().interrupt();
  *   }
- * }
- * </pre>
+ * }}</pre>
  *
  * <p>Memory consistency effects: Actions in a thread prior to the
  * submission of a {@code Runnable} or {@code Callable} task to an

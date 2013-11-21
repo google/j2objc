@@ -50,6 +50,7 @@ SUPPORT_SOURCES = \
 	tests/support/Support_UnmodifiableMapTest.java
 
 TEST_SOURCES = \
+	AbstractExecutorServiceTest.java \
 	AbstractQueuedSynchronizerTest.java \
 	AbstractQueueTest.java \
 	ArrayBlockingQueueTest.java \
@@ -66,11 +67,23 @@ TEST_SOURCES = \
 	ConcurrentLinkedQueueTest.java \
 	CopyOnWriteArrayListTest.java \
 	CopyOnWriteArraySetTest.java \
+	CountDownLatchTest.java \
+	CyclicBarrierTest.java \
+	DelayQueueTest.java \
+	ExchangerTest.java \
+	ExecutorCompletionServiceTest.java \
+	ExecutorsTest.java \
+	FutureTaskTest.java \
+	LinkedBlockingQueueTest.java \
 	LinkedListTest.java \
 	LockSupportTest.java \
+	PriorityBlockingQueueTest.java \
 	PriorityQueueTest.java \
 	ReentrantLockTest.java \
 	ReentrantReadWriteLockTest.java \
+	ScheduledExecutorTest.java \
+	SynchronousQueueTest.java \
+	ThreadPoolExecutorTest.java \
 	TimeUnitTest.java \
 	java/lang/ClassTest.java \
 	java/lang/ThrowableTest.java \
