@@ -346,9 +346,12 @@ public class Proxy implements Serializable {
           id javaResult = [handler_ invokeWithId:self
                        withJavaLangReflectMethod:method
                                withNSObjectArray:args];
-          J2ObjcRawValue result;
-          [[method getReturnType] unboxValue:javaResult toRawValue:&result];
-          [anInvocation setReturnValue:&result];
+          IOSClass *returnType = [method getReturnType];
+          if (returnType != [IOSClass voidClass]) {
+            J2ObjcRawValue result;
+            [[method getReturnType] unboxValue:javaResult toRawValue:&result];
+            [anInvocation setReturnValue:&result];
+          }
           return;  // success!
         }
       }
