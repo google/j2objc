@@ -113,6 +113,7 @@ TEST_SOURCES = \
 	libcore/java/util/OldTimeZoneTest.java \
 	libcore/java/util/ServiceLoaderTest.java \
 	libcore/java/util/TreeMapTest.java \
+	org/apache/harmony/archive/tests/java/util/zip/CRC32Test.java \
 	org/apache/harmony/luni/tests/java/io/BufferedInputStreamTest.java \
 	org/apache/harmony/luni/tests/java/io/BufferedOutputStreamTest.java \
 	org/apache/harmony/luni/tests/java/io/BufferedReaderTest.java \

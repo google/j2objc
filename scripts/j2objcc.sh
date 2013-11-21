@@ -38,10 +38,14 @@ else
 fi
 readonly LIB_PATH=${DIR}/lib
 
+declare FRAMEWORKS="-framework Foundation -framework Security"
+if [ "x${IPHONEOS_DEPLOYMENT_TARGET}" = "x" ]; then
+  FRAMEWORKS="${FRAMEWORKS} -framework ExceptionHandling"
+fi
+
 declare CC_FLAGS="-Werror -Wno-parentheses"
 declare OBJC=-ObjC
-declare LIBS="-ljre_emul -l j2objc_main"
-declare FRAMEWORKS="-framework Foundation -framework ExceptionHandling -framework Security"
+declare LIBS="-ljre_emul -l z -l j2objc_main"
 declare LOAD_FLAGS="-force_load ${LIB_PATH}/libjre_emul.a"
 declare LINK_FLAGS="${LIBS} ${FRAMEWORKS} -L ${LIB_PATH} ${LOAD_FLAGS}"
 
