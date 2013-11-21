@@ -50,7 +50,7 @@
 
 - (NSString *)qualifiedName {
   NSMutableString *qName = [NSMutableString string];
-  if (packageName) {
+  if ([packageName length] > 0) {
     [qName appendString:packageName];
     [qName appendString:@"."];
   }

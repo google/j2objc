@@ -26,6 +26,8 @@
 #include "java/lang/IllegalAccessException.h"
 #include "java/lang/NoSuchMethodException.h"
 #include "java/lang/System.h"
+#include "java/lang/Thread.h"
+#include "java/lang/Throwable.h"
 #include "java/lang/reflect/InvocationTargetException.h"
 #include "java/lang/reflect/Method.h"
 
@@ -95,6 +97,15 @@ int main( int argc, const char *argv[] ) {
     @catch (JavaLangIllegalAccessException *e) {
       [[JavaLangSystem err] printlnWithId:e];
       exitCode = 1;
+    }
+    @catch (JavaLangThrowable *e) {
+      JavaLangThread *current = [JavaLangThread currentThread];
+      id uncaughtHandler = [current getUncaughtExceptionHandler];
+      JavaLangThrowable *cause = [e getCause];
+      if (!cause) {
+        cause = e;
+      }
+      [uncaughtHandler uncaughtExceptionWithJavaLangThread:current withJavaLangThrowable:cause];
     }
   }
   return exitCode;
