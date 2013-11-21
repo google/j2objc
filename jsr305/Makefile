@@ -55,6 +55,10 @@ EXTRACTED_JAVA = $(JAVA_SOURCES:%=$(JAVA_SRC_DIR)/%)
 JAVA_SOURCES_MANIFEST = $(BUILD_DIR)/java_sources.mf
 OBJC_SOURCES_MANIFEST = $(BUILD_DIR)/objc_sources.mf
 
+CREATE_JAR_NAME = j2objc_jsr305
+CREATE_JAR_SOURCES = $(EXTRACTED_JAVA)
+include ../make/create_jar.mk
+
 TRANSLATE_JAVA_FULL = $(JAVA_SOURCES:%=$(JAVA_SRC_DIR)/%)
 TRANSLATE_JAVA_RELATIVE = $(JAVA_SOURCES)
 TRANSLATE_ARGS = -sourcepath $(JAVA_SRC_DIR)
@@ -71,8 +75,9 @@ include ../make/fat_lib.mk
 
 default: lib
 
-java: classes
+java: classes jar
 
+# TODO(kstanger): Remove this.
 classes: $(JAVA_SOURCES_MANIFEST)
 	@echo Building class files
 	@mkdir -p $(CLASSES_DIR)
@@ -90,6 +95,7 @@ $(BUILD_DIR)/.extracted: $(JSR305_SRC_JAR) | $(BUILD_DIR)
 	@touch $@
 
 $(EXTRACTED_JAVA): $(BUILD_DIR)/.extracted
+	@:
 
 $(JSR305_LIB_DIST): $(FAT_LIB_LIBRARY)
 	@mkdir -p $(@D)
