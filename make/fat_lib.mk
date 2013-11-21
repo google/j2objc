@@ -22,6 +22,9 @@
 # This file defines the following to be used by the including file:
 #   FAT_LIB_LIBRARY
 #
+# The including file may specify dependencies to compilation by adding
+# prerequisites to the "fat_lib_dependencies" target.
+#
 # Author: Keith Stanger
 
 FAT_LIB_LIBRARY = $(ARCH_BUILD_DIR)/lib$(FAT_LIB_NAME).a
@@ -46,14 +49,17 @@ arch_flags = $(strip \
   $(patsubst iphonev7s,$(FAT_LIB_IPHONEV7S_FLAGS),\
   $(patsubst simulator,$(FAT_LIB_SIMULATOR_FLAGS),$(1))))))
 
+fat_lib_dependencies:
+	@:
+
 define compile_rule
-$(1): $(2)
+$(1): $(2) | fat_lib_dependencies
 	@mkdir -p $$(@D)
 	$(FAT_LIB_COMPILE) $(3) -c $$< -o $$@
 endef
 
 define analyze_rule
-$(FAT_LIB_PLIST_DIR)/%.plist: $(1)/%.m
+$(FAT_LIB_PLIST_DIR)/%.plist: $(1)/%.m | fat_lib_dependencies
 	@mkdir -p $$(@D)
 	$(FAT_LIB_COMPILE) $(STATIC_ANALYZER_FLAGS) -c $$< -o $$@
 endef

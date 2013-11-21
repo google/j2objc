@@ -12,11 +12,14 @@
 
 # Defines the "translate" target.
 #
-# The including makefile must define the variables:
+# The including makefile may define the variables:
 #   TRANSLATE_JAVA_FULL
 #   TRANSLATE_JAVA_RELATIVE
 # And optional variables:
 #   TRANSLATE_ARGS
+#
+# This variable is intended for use only by the jre_emul library.
+#   TRANSLATE_USE_SYSTEM_BOOT_PATH
 #
 # Author: Keith Stanger
 
@@ -25,8 +28,23 @@ TRANSLATE_HEADERS = $(TRANSLATE_SOURCES:.m=.h)
 TRANSLATE_OBJC = $(TRANSLATE_SOURCES) $(TRANSLATE_HEADERS)
 TRANSLATE_TARGET = $(BUILD_DIR)/.translate_mark
 TRANSLATE_LIST = $(BUILD_DIR)/.translate_list
-TRANSLATE_EXE = $(DIST_DIR)/j2objc
 TRANSLATE_CMD = $(TRANSLATE_EXE) -d $(GEN_OBJC_DIR) $(TRANSLATE_ARGS)
+
+ifdef TRANSLATE_USE_SYSTEM_BOOT_PATH
+
+TRANSLATE_EXE = USE_SYSTEM_BOOT_PATH=TRUE $(DIST_DIR)/j2objc
+
+$(TRANSLATE_EXE): | translator
+	@:
+
+else
+
+TRANSLATE_EXE = $(DIST_DIR)/j2objc
+
+$(TRANSLATE_EXE): | translator_dist
+	@:
+
+endif
 
 translate: $(TRANSLATE_TARGET)
 	@:

@@ -50,17 +50,19 @@ FAT_LIB_SOURCE_DIRS = $(GEN_OBJC_DIR)
 FAT_LIB_COMPILE = $(J2OBJCC)
 include ../make/fat_lib.mk
 
+fat_lib_dependencies: jre_emul_dist jsr305_dist
+
 DIST_LIBRARY = $(ARCH_LIB_DIR)/libguava.a
 JAR = $(BUILD_DIR)/j2objc_guava.jar
 DIST_JAR = $(DIST_JAR_DIR)/j2objc_guava.jar
 
 JAR_STAGE_DIR = /tmp/j2objc_guava
 
-dist: deps $(DIST_LIBRARY) $(DIST_JAR)
+dist: $(DIST_LIBRARY) $(DIST_JAR)
 	@(cd $(GEN_OBJC_DIR) && tar cf - $(TRANSLATE_HEADERS:$(GEN_OBJC_DIR)/%=%)) \
 	    | (cd $(ARCH_INCLUDE_DIR); tar xfp -)
 
-test: deps $(FAT_LIB_LIBRARY)
+test: $(FAT_LIB_LIBRARY)
 	@$(MAKE) -f tests.mk test
 
 clean:
@@ -68,25 +70,8 @@ clean:
 
 java: $(DIST_JAR)
 
-# Only build dependencies when called directly from command-line.
-ifeq ("$(CONFIGURATION_BUILD_DIR)x$(MAKELEVEL)", "x0")
-deps:
-	@cd .. && $(MAKE) jre_emul_dist jsr305_dist
-
-java_deps:
-	@cd .. && $(MAKE) java_deps_dist annotations_dist
-
-find_cycles_deps:
-	@cd .. && $(MAKE) cycle_finder_dist
-	@cd ../jre_emul && $(MAKE) java_sources_manifest
-else
-deps:
-java_deps:
-find_cycles_deps:
-endif
-
 # TODO(kstanger): Add -Xlint:unchecked once warnings are fixed.
-$(JAR): $(JAVA_SOURCES) | $(BUILD_DIR)
+$(JAR): $(JAVA_SOURCES) | $(BUILD_DIR) java_deps_dist annotations_dist
 	@echo "building j2objc_guava.jar"
 	@rm -rf $(JAR_STAGE_DIR)
 	@mkdir $(JAR_STAGE_DIR)
@@ -117,7 +102,7 @@ $(OBJC_SOURCES_MANIFEST): $(TRANSLATE_JAVA_FULL) | $(BUILD_DIR)
 objc_sources_manifest: $(OBJC_SOURCES_MANIFEST)
 	@:
 
-find_cycles: find_cycles_deps $(JAVA_SOURCES_MANIFEST)
+find_cycles: $(JAVA_SOURCES_MANIFEST) | cycle_finder_dist jre_emul_java_manifest
 	$(DIST_DIR)/cycle_finder -sourcepath $(SOURCEPATH) -cp $(CLASSPATH) \
 	  -w ../jre_emul/cycle_whitelist.txt -w cycle_whitelist \
 	  -s ../jre_emul/$(BUILD_DIR_NAME)/java_sources.mf -s $(JAVA_SOURCES_MANIFEST)
