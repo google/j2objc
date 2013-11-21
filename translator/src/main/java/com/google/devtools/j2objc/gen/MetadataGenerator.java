@@ -40,18 +40,12 @@ public class MetadataGenerator {
   private final AbstractTypeDeclaration typeNode;
   private final ITypeBinding type;
   private boolean generated = false;
-  private boolean hasMetadata = false;
   private int methodMetadataCount = 0;
 
   public MetadataGenerator(AbstractTypeDeclaration typeNode) {
     this.builder = new StringBuilder();
     this.typeNode = Preconditions.checkNotNull(typeNode);
     this.type = Types.getTypeBinding(typeNode);
-  }
-
-  public boolean hasMetadata() {
-    ensureGenerated();
-    return hasMetadata;
   }
 
   public String getMetadataSource() {
@@ -78,7 +72,6 @@ public class MetadataGenerator {
       printf("NULL, ");
     } else {
       printf("\"%s\", ", pkgName);
-      hasMetadata = true;
     }
     printf("%s, ", getEnclosingName());
     printf("0x%s, ", Integer.toHexString(getTypeModifiers()));
@@ -95,7 +88,6 @@ public class MetadataGenerator {
     if (declaringType == null) {
       return "NULL";
     }
-    hasMetadata = true;
     StringBuilder sb = new StringBuilder("\"");
     List<String> types = Lists.newArrayList();
     while (declaringType != null) {
@@ -118,7 +110,6 @@ public class MetadataGenerator {
       String metadata = getMethodMetadata(Types.getMethodBinding(decl));
       if (metadata != null) {
         methodMetadata.add(metadata);
-        hasMetadata = true;
       }
     }
     if (methodMetadata.size() > 0) {
@@ -132,8 +123,7 @@ public class MetadataGenerator {
   }
 
   private String getMethodMetadata(IMethodBinding method) {
-    ITypeBinding[] paramTypes = method.getParameterTypes();
-    if ((method.isConstructor() && paramTypes.length == 0) || method.isSynthetic()) {
+    if (method.isSynthetic()) {
       return null;
     }
 
@@ -141,26 +131,45 @@ public class MetadataGenerator {
     int modifiers = getMethodModifiers(method);
     boolean needsMetadata = (modifiers & ~Modifier.STATIC) != Modifier.PUBLIC;
 
-    String returnTypeStr = "NULL";
+    String returnTypeStr = null;
     if (!method.isConstructor()) {
       ITypeBinding returnType = method.getReturnType();
-      returnTypeStr = String.format("\"%s\"", getTypeName(returnType));
+      returnTypeStr = getTypeName(returnType);
       if (!returnType.isPrimitive() || returnType.getName().equals("boolean")) {
         needsMetadata = true;
       }
     }
-    String methodName = "NULL";
+    String methodName = null;
+    ITypeBinding[] paramTypes = method.getParameterTypes();
     // Most of the time the method name can be parsed from the ObjC selector
     // but not if the first parameter contains the substring "With".
     if (paramTypes.length > 0 && NameTable.parameterKeyword(paramTypes[0]).contains("With")) {
-      methodName = "\"" + method.getName() + "\"";
+      methodName = method.getName();
       needsMetadata = true;
     }
+    String thrownExceptions = getThrownExceptions(method);
+    needsMetadata |= thrownExceptions != null;
     if (!needsMetadata) {
       return null;
     }
-    return String.format("    { \"%s\", %s, %s, 0x%x },\n",
-        NameTable.getMethodSelector(method), methodName, returnTypeStr, modifiers);
+    return String.format("    { \"%s\", %s, %s, 0x%x, %s },\n",
+        NameTable.getMethodSelector(method), cStr(methodName), cStr(returnTypeStr), modifiers,
+        cStr(thrownExceptions));
+  }
+
+  private String getThrownExceptions(IMethodBinding method) {
+    ITypeBinding[] exceptionTypes = method.getExceptionTypes();
+    if (exceptionTypes.length == 0) {
+      return null;
+    }
+    StringBuilder sb = new StringBuilder();
+    for (int i = 0; i < exceptionTypes.length; i++) {
+      if (i != 0) {
+        sb.append(';');
+      }
+      sb.append(NameTable.getFullName(exceptionTypes[i]));
+    }
+    return sb.toString();
   }
 
   private int printSuperclassTypeArguments() {
@@ -172,7 +181,6 @@ public class MetadataGenerator {
     if (typeArgs.length == 0) {
       return 0;
     }
-    hasMetadata = true;
     print("  static const char *superclass_type_args[] = {");
     for (int i = 0; i < typeArgs.length; i++) {
       if (i != 0) {
@@ -215,7 +223,6 @@ public class MetadataGenerator {
     if (type.isAnonymous()) {
       modifiers |= 0x8000;
     }
-    hasMetadata |= (modifiers & ~0x200) != Modifier.PUBLIC;
     return modifiers;
   }
 
@@ -234,15 +241,19 @@ public class MetadataGenerator {
     return modifiers;
   }
 
-  public void print(String s) {
+  private String cStr(String s) {
+    return s == null ? "NULL" : "\"" + s + "\"";
+  }
+
+  private void print(String s) {
     builder.append(s);
   }
 
-  public void printf(String format, Object... args) {
+  private void printf(String format, Object... args) {
     builder.append(String.format(format, args));
   }
 
-  public void println(String s) {
+  private void println(String s) {
     builder.append(s).append('\n');
   }
 }

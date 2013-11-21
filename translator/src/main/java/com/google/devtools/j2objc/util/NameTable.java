@@ -382,7 +382,12 @@ public class NameTable {
   }
 
   public static String getMethodSelector(IMethodBinding method) {
-    StringBuilder sb = new StringBuilder(NameTable.getName(method));
+    StringBuilder sb = new StringBuilder();
+    if (method.isConstructor()) {
+      sb.append("init");
+    } else {
+      sb.append(getName(method));
+    }
     IOSMethod iosMethod = IOSMethodBinding.getIOSMethod(method);
     if (iosMethod != null) {
       List<IOSParameter> params = iosMethod.getParameters();

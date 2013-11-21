@@ -190,10 +190,16 @@ static IOSClass *ResolveParameterType(const char *objcType, NSString *paramKeywo
 }
 
 - (IOSObjectArray *)getExceptionTypes {
-  JavaLangReflectMethod *method = [self getExceptionsAccessor:[self internalName]];
-  if (method) {
-    IOSObjectArray *noArgs = [IOSObjectArray arrayWithLength:0 type:[NSObject getClass]];
-    return (IOSObjectArray *) [method invokeWithId:nil withNSObjectArray:noArgs];
+  if (metadata_ && metadata_->exceptions) {
+    NSString *exceptionsStr = [NSString stringWithUTF8String:metadata_->exceptions];
+    NSArray *exceptionsArray = [exceptionsStr componentsSeparatedByString:@";"];
+    IOSObjectArray *result =
+      [IOSObjectArray arrayWithLength:[exceptionsArray count] type:[IOSClass getClass]];
+    NSUInteger count = 0;
+    for (NSString *thrownException in exceptionsArray) {
+      IOSObjectArray_Set(result, count++, [IOSClass classForIosName:thrownException]);
+    }
+    return result;
   } else {
     return [IOSObjectArray arrayWithLength:0 type:[IOSClass getClass]];
   }
@@ -228,10 +234,6 @@ static JavaLangReflectMethod *getAccessor(IOSClass *class, NSString *method, NSS
 
 - (JavaLangReflectMethod *)getAnnotationsAccessor:(NSString *)methodName {
   return getAccessor(class_, methodName, @"annotations");
-}
-
-- (JavaLangReflectMethod *)getExceptionsAccessor:(NSString *)methodName {
-  return getAccessor(class_, methodName, @"exceptions");
 }
 
 - (JavaLangReflectMethod *)getParameterAnnotationsAccessor:(NSString *)methodName {

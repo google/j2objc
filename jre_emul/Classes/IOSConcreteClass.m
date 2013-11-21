@@ -18,6 +18,7 @@
 //
 
 #import "IOSConcreteClass.h"
+#import "IOSReflection.h"
 #import "JavaMetadata.h"
 #import "java/lang/ClassCastException.h"
 #import "java/lang/Enum.h"
@@ -201,32 +202,15 @@ IOSObjectArray *getConstructorsImpl(IOSConcreteClass *clazz, BOOL publicOnly) {
   return getConstructorsImpl(self, YES);
 }
 
-static SEL FindSelector(NSString *name, Class cls) {
-  unsigned int count;
-  SEL result = nil;
-  Method *methods = class_copyMethodList(cls, &count);
-  for (NSUInteger i = 0; i < count; i++) {
-    SEL sel = method_getName(methods[i]);
-    if ([name isEqualToString:NSStringFromSelector(sel)]) {
-      result = sel;
-      break;
-    }
-  }
-  free(methods);
-  return result;
-}
-
 - (JavaLangReflectMethod *)findMethodWithTranslatedName:(NSString *)objcName {
-  SEL selector = FindSelector(objcName, class_);
-  if (selector) {
-    JavaClassMetadata *metadata = [self getMetadata];
-    return [JavaLangReflectMethod methodWithSelector:selector withClass:self
-        withMetadata:metadata ? [metadata findMethodInfo:objcName] : nil];
+  const char *name = [objcName UTF8String];
+  Method method = JreFindInstanceMethod(class_, name);
+  if (!method) {
+    method = JreFindClassMethod(class_, name);
   }
-  selector = FindSelector(objcName, object_getClass(class_));
-  if (selector) {
+  if (method) {
     JavaClassMetadata *metadata = [self getMetadata];
-    return [JavaLangReflectMethod methodWithSelector:selector withClass:self
+    return [JavaLangReflectMethod methodWithSelector:method_getName(method) withClass:self
         withMetadata:metadata ? [metadata findMethodInfo:objcName] : nil];
   }
   return nil;
@@ -235,12 +219,11 @@ static SEL FindSelector(NSString *name, Class cls) {
 static JavaLangReflectConstructor *GetConstructorImpl(
     IOSConcreteClass *iosClass, IOSObjectArray *paramTypes) {
   NSString *name = IOSClass_GetTranslatedMethodName(@"init", paramTypes);
-  SEL selector = FindSelector(name, iosClass->class_);
-  if (selector) {
-    NSString *objcName = NSStringFromSelector(selector);
+  Method method = JreFindInstanceMethod(iosClass->class_, [name UTF8String]);
+  if (method) {
     JavaClassMetadata *metadata = [iosClass getMetadata];
-    return [JavaLangReflectConstructor constructorWithSelector:selector withClass:iosClass
-        withMetadata:metadata ? [metadata findMethodInfo:objcName] : nil];
+    return [JavaLangReflectConstructor constructorWithSelector:method_getName(method)
+        withClass:iosClass withMetadata:metadata ? [metadata findMethodInfo:name] : nil];
   }
   @throw AUTORELEASE([[JavaLangNoSuchMethodException alloc] init]);
 }
