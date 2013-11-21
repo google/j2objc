@@ -63,6 +63,7 @@ import org.eclipse.jdt.core.dom.TypeDeclaration;
 import org.eclipse.jdt.core.dom.VariableDeclarationFragment;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
@@ -149,7 +150,9 @@ public class ObjectiveCImplementationGenerator extends ObjectiveCSourceFileGener
 
       @Override
       public boolean visit(AnnotationTypeDeclaration node) {
-        if (BindingUtil.isRuntimeAnnotation(Types.getTypeBinding(node))) {
+        if (BindingUtil.isRuntimeAnnotation(Types.getTypeBinding(node))
+            || !getStaticFieldsNeedingAccessors(
+                ASTUtil.getFieldDeclarations(node), /* isInterface */ true).isEmpty()) {
           types.add(node);
         }
         return false;
@@ -254,18 +257,25 @@ public class ObjectiveCImplementationGenerator extends ObjectiveCSourceFileGener
     syncLineNumbers(node.getName()); // avoid doc-comment
 
     String typeName = NameTable.getFullName(node);
-    printf("@implementation %sImpl\n", typeName);
-    List<AnnotationTypeMemberDeclaration> members = Lists.newArrayList();
-    for (BodyDeclaration decl : ASTUtil.getBodyDeclarations(node)) {
-      if (decl instanceof AnnotationTypeMemberDeclaration) {
-        members.add((AnnotationTypeMemberDeclaration) decl);
+    printf("@implementation %s\n", typeName);
+    if (BindingUtil.isRuntimeAnnotation(Types.getTypeBinding(node))) {
+      List<AnnotationTypeMemberDeclaration> members = Lists.newArrayList();
+      for (BodyDeclaration decl : ASTUtil.getBodyDeclarations(node)) {
+        if (decl instanceof AnnotationTypeMemberDeclaration) {
+          members.add((AnnotationTypeMemberDeclaration) decl);
+        }
       }
+      printAnnotationProperties(members);
+      if (!members.isEmpty()) {
+        printAnnotationConstructor(Types.getTypeBinding(node));
+      }
+      printAnnotationAccessors(members);
     }
-    printAnnotationProperties(members);
-    if (!members.isEmpty()) {
-      printAnnotationConstructor(Types.getTypeBinding(node));
-    }
-    printAnnotationAccessors(members);
+    List<FieldDeclaration> fields = ASTUtil.getFieldDeclarations(node);
+    List<IVariableBinding> fieldsNeedingAccessors =
+        getStaticFieldsNeedingAccessors(fields, /* isInterface */ true);
+    printStaticVars(fields, /* isInterface */ true);
+    printStaticFieldAccessors(fieldsNeedingAccessors, Collections.<MethodDeclaration>emptyList());
     println("- (IOSClass *)annotationType {");
     printf("  return [IOSClass classWithProtocol:@protocol(%s)];\n", typeName);
     println("}\n");
@@ -1030,7 +1040,7 @@ public class ObjectiveCImplementationGenerator extends ObjectiveCSourceFileGener
       if (Options.useReferenceCounting()) {
         print('[');
       }
-      printf("[[%sImpl alloc] init",
+      printf("[[%s alloc] init",
           NameTable.getFullName(Types.getTypeBinding(annotation)));
       printAnnotationParameters(annotation);
       print(']');

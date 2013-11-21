@@ -375,4 +375,14 @@ public final class ASTUtil {
     }
     return methods;
   }
+
+  public static List<FieldDeclaration> getFieldDeclarations(AbstractTypeDeclaration node) {
+    List<FieldDeclaration> fields = Lists.newArrayList();
+    for (BodyDeclaration bodyDecl : getBodyDeclarations(node)) {
+      if (bodyDecl instanceof FieldDeclaration) {
+        fields.add((FieldDeclaration) bodyDecl);
+      }
+    }
+    return fields;
+  }
 }

@@ -350,7 +350,7 @@ public class ObjectiveCHeaderGeneratorTest extends GenerationTest {
 
     // Test that the annotation was declared as a protocol and a value class.
     assertTranslation(translation, "@protocol FooCompatible < JavaLangAnnotationAnnotation >");
-    assertTranslation(translation, "@interface FooCompatibleImpl : NSObject < FooCompatible >");
+    assertTranslation(translation, "@interface FooCompatible : NSObject < FooCompatible >");
 
     // Verify that the value is defined as a property instead of a method.
     assertTranslation(translation, "@private\n  BOOL fooable;");
@@ -520,7 +520,7 @@ public class ObjectiveCHeaderGeneratorTest extends GenerationTest {
         "public @interface Initialize {}}";
     String translation = translateSourceFile(source, "Test", "Test.h");
     assertTranslation(translation, "@protocol Test_Initialize < JavaLangAnnotationAnnotation >");
-    assertTranslation(translation, "@interface Test_InitializeImpl : NSObject < Test_Initialize >");
+    assertTranslation(translation, "@interface Test_Initialize : NSObject < Test_Initialize >");
   }
 
   public void testFieldSetterGeneration() throws IOException {
