@@ -129,6 +129,7 @@ JRE_INTERFACES = \
 	java/util/concurrent/ExecutorService.h \
 	java/util/concurrent/Future.h \
 	java/util/concurrent/TransferQueue.h \
+	org/apache/harmony/security/fortress/SecurityAccess.h \
 	org/w3c/dom/TypeInfo.h \
 	org/w3c/dom/ls/LSInput.h \
 	org/w3c/dom/ls/LSResourceResolver.h \
@@ -270,6 +271,7 @@ JAVA_SOURCES = \
 	java/lang/reflect/UndeclaredThrowableException.java \
 	java/lang/Runtime.java \
 	java/lang/RuntimeException.java \
+	java/lang/RuntimePermission.java \
 	java/lang/SafeVarargs.java \
 	java/lang/SecurityException.java \
 	java/lang/SecurityManager.java \
@@ -374,17 +376,22 @@ JAVA_SOURCES = \
 	java/security/DomainCombiner.java \
 	java/security/GeneralSecurityException.java \
 	java/security/GuardedObject.java \
+	java/security/InvalidParameterException.java \
+	java/security/NoSuchAlgorithmException.java \
 	java/security/NoSuchProviderException.java \
 	java/security/Permission.java \
 	java/security/PermissionCollection.java \
 	java/security/Permissions.java \
 	java/security/PermissionsHash.java \
+	java/security/Policy.java \
 	java/security/Principal.java \
 	java/security/PrivilegedActionException.java \
 	java/security/PrivilegedExceptionAction.java \
 	java/security/ProtectionDomain.java \
+	java/security/Provider.java \
 	java/security/SecureClassLoader.java \
 	java/security/SecureRandom.java \
+	java/security/Security.java \
 	java/security/SecurityPermission.java \
 	java/sql/Date.java \
 	java/sql/Time.java \
@@ -566,9 +573,12 @@ JAVA_SOURCES = \
 	libcore/util/BasicLruCache.java \
 	libcore/util/EmptyArray.java \
 	libcore/util/Objects.java \
+	libcore/util/SneakyThrow.java \
 	org/apache/harmony/luni/platform/Endianness.java \
 	org/apache/harmony/luni/util/HistoricalNamesUtil.java \
 	org/apache/harmony/luni/util/Util.java \
+	org/apache/harmony/security/fortress/Engine.java \
+	org/apache/harmony/security/fortress/Services.java \
 	org/apache/harmony/xml/parsers/SAXParserFactoryImpl.java \
 	org/apache/harmony/xml/parsers/SAXParserImpl.java \
 	org/kxml2/io/KXmlParser.java \
