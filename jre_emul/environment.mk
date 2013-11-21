@@ -96,11 +96,6 @@ vpath %.java $(JRE_SRC):$(TEST_SRC):$(STUBS_DIR)
 
 CLANG=$(XCRUN) clang
 
-# J2ObjC settings
-J2OBJC := USE_SYSTEM_BOOT_PATH=TRUE $(DIST_DIR)/j2objc --mem-debug \
-   -classpath $(EMULATION_JAR) -d $(TRANSLATED_SOURCE_DIR) \
-   $(J2OBJC_DEBUGFLAGS) -encoding UTF-8
-
 # Clang warnings
 WARNINGS := $(WARNINGS) -Wall -Werror
 
@@ -130,8 +125,5 @@ endif
 OBJCFLAGS_NO_ARC := $(OBJCFLAGS)
 
 ifeq ("$(strip $(CLANG_ENABLE_OBJC_ARC))", "YES")
-J2OBJC := $(J2OBJC) -use-arc
-OBJCFLAGS := $(OBJCFLAGS) -fobjc-arc -fobjc-arc-exceptions \
-  -Wno-arc-bridge-casts-disallowed-in-nonarc \
-  -Xclang -fobjc-runtime-has-weak
+$(error The jre_emul build no longer supports an ARC build)
 endif
