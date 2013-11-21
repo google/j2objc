@@ -1,4 +1,5 @@
 TYPE java.util.logging.LogManager  # Long lived.
+TYPE java.security.Provider        # Long lived.
 
 # Breaks several false cycles.
 FIELD java.util.HashSet.backingMap
