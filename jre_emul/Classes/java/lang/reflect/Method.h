@@ -48,7 +48,7 @@
 - (IOSClass *)getReturnType;
 
 // Returns type.
-- (IOSClass *)getGenericReturnType;
+- (id<JavaLangReflectType>)getGenericReturnType;
 
 // iOS version of Method.invoke().
 //
