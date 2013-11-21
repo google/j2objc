@@ -6,6 +6,10 @@ FIELD java.util.HashSet.backingMap
 FIELD java.util.TreeSet.backingMap
 
 FIELD java.util.concurrent.ConcurrentSkipListSet.m
+FIELD java.util.concurrent.ForkJoinWorkerThread.pool
+FIELD java.util.concurrent.Phaser.QNode.phaser
+FIELD java.util.concurrent.ThreadPoolExecutor.workers
+FIELD java.util.concurrent.ThreadPoolExecutor.workQueue
 
 # These types are adapters of each other. If the cycle was created then a stack
 # overflow would be a larger problem then the memory leak.

@@ -265,7 +265,7 @@ public class JSR166TestCase extends TestCase {
 
     /**
      * threadFail with message "should throw exception"
-     */ 
+     */
     public void threadShouldThrow() {
        try {
            threadFailed = true;
@@ -353,7 +353,7 @@ public class JSR166TestCase extends TestCase {
      * A security policy where new permissions can be dynamically added
      * or all cleared.
      */
-    /*static class AdjustablePolicy extends java.security.Policy {
+    static class AdjustablePolicy extends java.security.Policy {
         Permissions perms = new Permissions();
         AdjustablePolicy() { }
         void addPermission(Permission perm) { perms.add(perm); }
@@ -368,7 +368,7 @@ public class JSR166TestCase extends TestCase {
 	    return perms.implies(p);
 	}
 	public void refresh() {}
-    }*/
+    }
 
 
     // Some convenient Runnable classes
@@ -507,12 +507,11 @@ public class JSR166TestCase extends TestCase {
     /**
      * For use as ThreadFactory in constructors
      */
-    /** TODO(kstanger): Uncomment when ThreadFactory is added.
     static class SimpleThreadFactory implements ThreadFactory{
         public Thread newThread(Runnable r){
             return new Thread(r);
         }
-    }*/
+    }
 
     static class TrackedShortRunnable implements Runnable {
         volatile boolean done = false;
@@ -570,11 +569,9 @@ public class JSR166TestCase extends TestCase {
     /**
      * For use as RejectedExecutionHandler in constructors
      */
-    /** TODO(kstanger): Uncomment when RejectedExecutionHandler and
-     * ThreadPoolExecutor are added.
     static class NoOpREHandler implements RejectedExecutionHandler{
         public void rejectedExecution(Runnable r, ThreadPoolExecutor executor){}
-    }*/
+    }
 
 
 }

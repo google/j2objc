@@ -122,12 +122,19 @@ JRE_INTERFACES = \
 	java/util/concurrent/BlockingDeque.h \
 	java/util/concurrent/BlockingQueue.h \
 	java/util/concurrent/Callable.h \
+	java/util/concurrent/CompletionService.h \
 	java/util/concurrent/ConcurrentMap.h \
 	java/util/concurrent/ConcurrentNavigableMap.h \
 	java/util/concurrent/Delayed.h \
 	java/util/concurrent/Executor.h \
 	java/util/concurrent/ExecutorService.h \
 	java/util/concurrent/Future.h \
+	java/util/concurrent/RejectedExecutionHandler.h \
+	java/util/concurrent/RunnableFuture.h \
+	java/util/concurrent/RunnableScheduledFuture.h \
+	java/util/concurrent/ScheduledExecutorService.h \
+	java/util/concurrent/ScheduledFuture.h \
+	java/util/concurrent/ThreadFactory.h \
 	java/util/concurrent/TransferQueue.h \
 	org/apache/harmony/security/fortress/SecurityAccess.h \
 	org/w3c/dom/TypeInfo.h \
@@ -428,26 +435,42 @@ JAVA_SOURCES = \
 	java/util/Calendar.java \
 	java/util/Collections.java \
 	java/util/ConcurrentModificationException.java \
+	java/util/concurrent/AbstractExecutorService.java \
 	java/util/concurrent/ArrayBlockingQueue.java \
 	java/util/concurrent/BrokenBarrierException.java \
 	java/util/concurrent/CancellationException.java \
 	java/util/concurrent/ConcurrentHashMap.java \
 	java/util/concurrent/ConcurrentLinkedDeque.java \
 	java/util/concurrent/ConcurrentLinkedQueue.java \
-	java/util/concurrent/ConcurrentNavigableMap.java \
 	java/util/concurrent/ConcurrentSkipListMap.java \
 	java/util/concurrent/ConcurrentSkipListSet.java \
+	java/util/concurrent/CountDownLatch.java \
 	java/util/concurrent/CopyOnWriteArrayList.java \
 	java/util/concurrent/CopyOnWriteArraySet.java \
+	java/util/concurrent/CyclicBarrier.java \
 	java/util/concurrent/DelayQueue.java \
+	java/util/concurrent/Exchanger.java \
+	java/util/concurrent/ExecutorCompletionService.java \
+	java/util/concurrent/Executors.java \
 	java/util/concurrent/ExecutionException.java \
+	java/util/concurrent/ForkJoinPool.java \
+	java/util/concurrent/ForkJoinTask.java \
+	java/util/concurrent/ForkJoinWorkerThread.java \
+	java/util/concurrent/FutureTask.java \
 	java/util/concurrent/LinkedBlockingDeque.java \
 	java/util/concurrent/LinkedBlockingQueue.java \
 	java/util/concurrent/LinkedTransferQueue.java \
+	java/util/concurrent/Phaser.java \
 	java/util/concurrent/PriorityBlockingQueue.java \
+	java/util/concurrent/RecursiveAction.java \
+	java/util/concurrent/RecursiveTask.java \
 	java/util/concurrent/RejectedExecutionException.java \
+	java/util/concurrent/RejectedExecutionHandler.java \
+	java/util/concurrent/ScheduledThreadPoolExecutor.java \
+	java/util/concurrent/Semaphore.java \
 	java/util/concurrent/SynchronousQueue.java \
 	java/util/concurrent/ThreadLocalRandom.java \
+	java/util/concurrent/ThreadPoolExecutor.java \
 	java/util/concurrent/TimeoutException.java \
 	java/util/concurrent/TimeUnit.java \
 	java/util/concurrent/atomic/AtomicBoolean.java \
