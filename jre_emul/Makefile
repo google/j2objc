@@ -570,6 +570,12 @@ JAVA_SOURCES = \
 	java/util/regex/Pattern.java \
 	java/util/regex/PatternSyntaxException.java \
 	java/util/regex/Splitter.java \
+	java/util/zip/Checksum.java \
+	java/util/zip/CRC32.java \
+	java/util/zip/DataFormatException.java \
+	java/util/zip/GZIPInputStream.java \
+	java/util/zip/Inflater.java \
+	java/util/zip/InflaterInputStream.java \
 	javax/xml/XMLConstants.java \
 	javax/xml/parsers/FactoryConfigurationError.java \
 	javax/xml/parsers/FilePathToURI.java \
