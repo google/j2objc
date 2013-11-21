@@ -1166,7 +1166,7 @@ public class ObjectiveCImplementationGenerator extends ObjectiveCSourceFileGener
     printf("  static J2ObjcClassInfo _%s = { ", fullName);
     printf("\"%s\", ", type.getName());
     String pkgName = type.getPackage().getName();
-    if (Strings.isNullOrEmpty(pkgName)) {
+    if (pkgName == null) {
       printf("NULL, ");
     } else {
       printf("\"%s\", ", pkgName);
