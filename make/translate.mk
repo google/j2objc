@@ -21,6 +21,9 @@
 # This variable is intended for use only by the jre_emul library.
 #   TRANSLATE_USE_SYSTEM_BOOT_PATH
 #
+# The including makefile may also add dependent order-only targets by adding
+# requirements to the "translate_dependencies" target.
+#
 # Author: Keith Stanger
 
 TRANSLATE_SOURCES = $(TRANSLATE_JAVA_RELATIVE:%.java=$(GEN_OBJC_DIR)/%.m)
@@ -49,11 +52,14 @@ endif
 translate: $(TRANSLATE_TARGET)
 	@:
 
+translate_dependencies:
+	@:
+
 TRANSLATE_MAKE_LIST = $(if $(filter $(TRANSLATE_EXE),$?),\
     $(filter-out $(TRANSLATE_EXE),$^),\
     $(filter-out $(TRANSLATE_EXE),$?))
 
-$(TRANSLATE_TARGET): $(TRANSLATE_JAVA_FULL) $(TRANSLATE_EXE)
+$(TRANSLATE_TARGET): $(TRANSLATE_JAVA_FULL) $(TRANSLATE_EXE) | translate_dependencies
 	@echo Translating sources.
 	@mkdir -p $(GEN_OBJC_DIR)
 	$(call long_list_to_file,$(TRANSLATE_LIST),$(TRANSLATE_MAKE_LIST))
