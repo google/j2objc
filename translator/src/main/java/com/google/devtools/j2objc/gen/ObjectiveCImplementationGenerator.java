@@ -1163,6 +1163,7 @@ public class ObjectiveCImplementationGenerator extends ObjectiveCSourceFileGener
       }
       println("  };");
     }
+    int superclassTypeArgsSize = printSuperclassTypeArguments(type);
     printf("  static J2ObjcClassInfo _%s = { ", fullName);
     printf("\"%s\", ", type.getName());
     String pkgName = type.getPackage().getName();
@@ -1174,9 +1175,41 @@ public class ObjectiveCImplementationGenerator extends ObjectiveCSourceFileGener
     printf("%s, ", getEnclosingName(type));
     printf("0x%s, ", Integer.toHexString(getModifiers(type)));
     printf("%s, ", Integer.toString(methodMetadata.size()));
-    print(methodMetadata.size() > 0 ? "methods" : "NULL");
+    print(methodMetadata.size() > 0 ? "methods, " : "NULL, ");
+    printf("%s, ", Integer.toString(superclassTypeArgsSize));
+    printf(superclassTypeArgsSize > 0 ? "superclass_type_args" : "NULL");
     println("};");
     printf("  return &_%s;\n}\n\n", fullName);
+  }
+
+  private int printSuperclassTypeArguments(ITypeBinding type) {
+    ITypeBinding superclass = type.getSuperclass();
+    if (superclass == null) {
+      return 0;
+    }
+    ITypeBinding[] typeArgs = superclass.getTypeArguments();
+    if (typeArgs.length == 0) {
+      return 0;
+    }
+    print("  static const char *superclass_type_args[] = {");
+    for (int i = 0; i < typeArgs.length; i++) {
+      if (i != 0) {
+        print(", ");
+      }
+      printf("\"%s\"", getTypeName(typeArgs[i]));
+    }
+    println("};");
+    return typeArgs.length;
+  }
+
+  private String getTypeName(ITypeBinding type) {
+    if (type.isTypeVariable()) {
+      return "T" + type.getName();
+    }
+    if (type.isPrimitive()) {
+      return type.getBinaryName();
+    }
+    return "L" + NameTable.getFullName(type);
   }
 
   private String getMethodMetadata(IMethodBinding method) {
@@ -1192,15 +1225,8 @@ public class ObjectiveCImplementationGenerator extends ObjectiveCSourceFileGener
     String returnTypeStr = "NULL";
     if (!method.isConstructor()) {
       ITypeBinding returnType = method.getReturnType();
-      if (returnType.isPrimitive()) {
-        returnTypeStr = "\"" + returnType.getBinaryName() + "\"";
-        // In ObjC BOOL is a typedef for unsigned char so booleans look the same
-        // as bytes.
-        if (returnType.getName().equals("boolean")) {
-          needsMetadata = true;
-        }
-      } else {
-        returnTypeStr = "\"L" + NameTable.getFullName(method.getReturnType()) + "\"";
+      returnTypeStr = String.format("\"%s\"", getTypeName(returnType));
+      if (!returnType.isPrimitive() || returnType.getName().equals("boolean")) {
         needsMetadata = true;
       }
     }

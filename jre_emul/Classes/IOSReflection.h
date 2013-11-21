@@ -22,6 +22,8 @@
 
 #import <Foundation/Foundation.h>
 
+@protocol JavaLangReflectType;
+
 // C data structures that hold "raw" metadata for use by the methods that
 // implement Java reflection. This information is necessary because not
 // all information provided by the reflection API is discoverable via the
@@ -101,6 +103,8 @@ typedef struct J2ObjcClassInfo {
   uint16_t modifiers;
   uint16_t methodCount;
   const J2ObjcMethodInfo *methods;
+  uint16_t superclassTypeArgsCount;
+  const char **superclassTypeArgs;
   uint16_t attribute_count;
   // Inner classes, enclosing method, generic signature.
   const J2ObjCAttribute *attributes;
@@ -130,4 +134,6 @@ typedef union {
   BOOL asBOOL;
 } J2ObjcRawValue;
 
-#endif
+extern id<JavaLangReflectType> JreTypeForString(const char *typeStr);
+
+#endif // JreEmulation_IOSReflection_h

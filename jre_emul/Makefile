@@ -43,6 +43,7 @@ IOS_OBJS = \
 	IOSPrimitiveClass.o \
 	IOSProtocolClass.o \
 	IOSReference.o \
+	IOSReflection.o \
 	IOSShortArray.o \
 	JavaMetadata.o \
 	JavaToIOSInputStreamAdapter.o \
@@ -56,7 +57,9 @@ IOS_OBJS = \
 	NSString+JavaString.o \
 	objc-sync.o \
 	java_lang_RealToString.o \
-	java/lang/reflect/ExecutableMember.o
+	java/lang/reflect/ExecutableMember.o \
+	java/lang/reflect/ParameterizedTypeImpl.o \
+	java/lang/reflect/TypeVariableImpl.o
 
 # Java classes with hand written obj-c implementations. Shouldn't be translated,
 # but need to include the .java file in jre_emul.jar and the .m file in
