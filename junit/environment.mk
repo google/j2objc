@@ -21,6 +21,7 @@
 J2OBJC_ROOT = ..
 
 include ../make/common.mk
+include ../make/j2objc_deps.mk
 include ../java_deps/jars.mk
 
 INCLUDE_DIR = $(BUILD_DIR)/include

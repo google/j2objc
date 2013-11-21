@@ -60,6 +60,7 @@ J2OBJC_ROOT = ..
 ANDROID_INCLUDE = $(ANDROID_BASE)/include
 
 include ../make/common.mk
+include ../make/j2objc_deps.mk
 include ../java_deps/jars.mk
 
 CLASS_DIR = $(BUILD_DIR)/Classes
