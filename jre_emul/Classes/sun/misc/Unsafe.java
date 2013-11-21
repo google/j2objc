@@ -20,6 +20,7 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 
 /*-[
+#include "stdatomic.h"
 #include "java/lang/reflect/Array.h"
 #include <libkern/OSAtomic.h>
 ]-*/
@@ -144,8 +145,11 @@ public final class Unsafe {
      * @param obj non-null; object containing the field
      * @param offset offset to the field within <code>obj</code>
      * @return the retrieved value
-     *
-    public native int getIntVolatile(Object obj, long offset);
+     */
+    public native int getIntVolatile(Object obj, long offset) /*-[
+      atomic_int *address = (atomic_int *) (((u_int8_t *) obj) + offset);
+      return atomic_load(address);
+    ]-*/;
 
     /**
      * Stores an <code>int</code> field into the given object,
@@ -154,8 +158,12 @@ public final class Unsafe {
      * @param obj non-null; object containing the field
      * @param offset offset to the field within <code>obj</code>
      * @param newValue the value to store
-     *
-    public native void putIntVolatile(Object obj, long offset, int newValue);
+     */
+    public native void putIntVolatile(Object obj, long offset, int newValue) /*-[
+      atomic_int *address = (atomic_int *) (((u_int8_t *) obj) + offset);
+      atomic_store(address, newValue);
+    ]-*/;
+
 
     /**
      * Gets a <code>long</code> field from the given object,
@@ -164,8 +172,11 @@ public final class Unsafe {
      * @param obj non-null; object containing the field
      * @param offset offset to the field within <code>obj</code>
      * @return the retrieved value
-     *
-    public native long getLongVolatile(Object obj, long offset);
+     */
+    public native long getLongVolatile(Object obj, long offset) /*-[
+      atomic_llong *address = (atomic_llong *) (((u_int8_t *) obj) + offset);
+      return atomic_load(address);
+    ]-*/;
 
     /**
      * Stores a <code>long</code> field into the given object,
@@ -174,8 +185,11 @@ public final class Unsafe {
      * @param obj non-null; object containing the field
      * @param offset offset to the field within <code>obj</code>
      * @param newValue the value to store
-     *
-    public native void putLongVolatile(Object obj, long offset, long newValue);
+     */
+    public native void putLongVolatile(Object obj, long offset, long newValue) /*-[
+      atomic_llong *address = (atomic_llong *) (((u_int8_t *) obj) + offset);
+      atomic_store(address, newValue);
+    ]-*/;
 
     /**
      * Gets an <code>Object</code> field from the given object,
@@ -212,8 +226,11 @@ public final class Unsafe {
      * @param obj non-null; object containing the field
      * @param offset offset to the field within <code>obj</code>
      * @return the retrieved value
-     *
-    public native int getInt(Object obj, long offset);
+     */
+    public native int getInt(Object obj, long offset) /*-[
+      int *address = (int *) (((u_int8_t *) obj) + offset);
+      return *address;
+    ]-*/;
 
     /**
      * Stores an <code>int</code> field into the given object.
@@ -221,8 +238,11 @@ public final class Unsafe {
      * @param obj non-null; object containing the field
      * @param offset offset to the field within <code>obj</code>
      * @param newValue the value to store
-     *
-    public native void putInt(Object obj, long offset, int newValue);
+     */
+    public native void putInt(Object obj, long offset, int newValue) /*-[
+      int *address = (int *) (((u_int8_t *) obj) + offset);
+      *address = newValue;
+    ]-*/;
 
     /**
      * Lazy set an int field.
@@ -239,8 +259,11 @@ public final class Unsafe {
      * @param obj non-null; object containing the field
      * @param offset offset to the field within <code>obj</code>
      * @return the retrieved value
-     *
-    public native long getLong(Object obj, long offset);
+     */
+    public native long getLong(Object obj, long offset) /*-[
+      long long *address = (long long *) (((u_int8_t *) obj) + offset);
+      return *address;
+    ]-*/;
 
     /**
      * Stores a <code>long</code> field into the given object.
@@ -248,14 +271,20 @@ public final class Unsafe {
      * @param obj non-null; object containing the field
      * @param offset offset to the field within <code>obj</code>
      * @param newValue the value to store
-     *
-    public native void putLong(Object obj, long offset, long newValue);
+     */
+    public native void putLong(Object obj, long offset, long newValue) /*-[
+      long long *address = (long long *) (((u_int8_t *) obj) + offset);
+      *address = newValue;
+    ]-*/;
 
     /**
      * Lazy set a long field.
-     *
-    public native void putOrderedLong(Object obj, long offset, long newValue);
      */
+    public native void putOrderedLong(Object obj, long offset, long newValue) /*-[
+      long long *address = (long long *) (((u_int8_t *) obj) + offset);
+      OSMemoryBarrier();
+      *address = newValue;
+    ]-*/;
 
     /**
      * Gets an <code>Object</code> field from the given object.
