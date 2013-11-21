@@ -29,9 +29,6 @@ ECLIPSE_JARS = \
 
 GUAVA_JAR = guava-13.0.jar
 
-ICU4J_JAR = icu4j-51.1.jar
-ICU4J_SOURCE_JAR = icu4j-51.1-sources.jar
-
 JSR305_JAR = jsr305-2.0.2.jar
 JSR305_SOURCE_JAR = jsr305-2.0.2.jar
 
@@ -39,3 +36,6 @@ JUNIT_JAR = junit-4.10.jar
 JUNIT_SOURCE_JAR = junit-4.10-sources.jar
 HAMCREST_SOURCE_JAR = hamcrest-core-1.1.jar
 JUNIT_JARS = $(JUNIT_JAR)
+
+MOCKITO_JAR = mockito-core-1.9.5.jar
+MOCKITO_SOURCE_JAR = mockito-core-1.9.5-sources.jar
