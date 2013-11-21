@@ -39,7 +39,7 @@ TRANSITIVE_JAVA_DEPS_INCLUDE = $(BUILD_DIR)/$(TRANSITIVE_JAVA_DEPS_NAME)_transit
 TRANSITIVE_JAVA_DEPS_STAGE_DIR = /tmp/j2objc_$(TRANSITIVE_JAVA_DEPS_NAME)
 TRANSITIVE_JAVA_DEPS_ROOT_LIST = $(BUILD_DIR)/$(TRANSITIVE_JAVA_DEPS_NAME)_root_list
 
-ifneq ($(findstring clean,$(MAKECMDGOALS)),clean)
+ifneq ($(findstring clean,$(notdir $(MAKECMDGOALS))),clean)
 ifeq ($(wildcard $(TRANSITIVE_JAVA_DEPS_INCLUDE)),)
 # Avoid a warning from the include directive that the file doesn't exist, then
 # immediately delete the file so that make rebuilds it correctly.
