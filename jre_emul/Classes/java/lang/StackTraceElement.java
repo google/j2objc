@@ -39,6 +39,7 @@ public class StackTraceElement {
   private String offset;
 
   public String getClassName() {
+    initializeFromAddress();
     return className;
   }
 
@@ -145,11 +146,9 @@ public class StackTraceElement {
         // Strip all parameter type mangling.
         char *colon = strchr(selector, ':');
         if (colon) {
-          if (strncmp(selector, "init", 4) == 0 &&
-              strncmp(selector + 4, className, strlen(className)) == 0) {
+          if (strlen(selector) > 8 &&
+              strncmp(selector, "initWith", 8) == 0) {
             methodName = "<init>";
-          } else if (strcmp(selector, "initialize") == 0) {
-            methodName = "<clinit>";
           } else {
             char *paramsStart = strstr(selector, "With");
             if (paramsStart) {
@@ -157,6 +156,10 @@ public class StackTraceElement {
             }
             methodName = selector;
           }
+        } else if (strcmp(selector, "init") == 0) {
+          methodName = "<init>";
+        } else if (strcmp(selector, "initialize") == 0) {
+          methodName = "<clinit>";
         } else {
           methodName = selector;
         }

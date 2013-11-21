@@ -56,8 +56,11 @@ public class JavaToIOSTypeConverter extends ErrorReportingASTVisitor {
   @Override
   public void endVisit(TypeDeclaration node) {
     ITypeBinding binding = Types.getTypeBinding(node);
-    assert binding == Types.mapType(binding); // don't try to translate the
-                                                 // types being mapped
+    if (binding != Types.mapType(binding)) {
+      // don't try to translate the types being mapped
+      return;
+    }
+
     if (!node.isInterface()) {
       Type superClass = node.getSuperclassType();
       if (superClass == null) {
