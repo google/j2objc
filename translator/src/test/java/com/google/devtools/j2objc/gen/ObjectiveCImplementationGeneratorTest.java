@@ -629,7 +629,7 @@ public class ObjectiveCImplementationGeneratorTest extends GenerationTest {
     assertTranslatedLines(translation,
         "+ (IOSObjectArray *)__annotations_foo {",
         "return [IOSObjectArray arrayWithObjects:(id[]) " +
-        "{ [[[OrgJunitAfterImpl alloc] init] autorelease] } " +
+        "{ [[[OrgJunitAfter alloc] init] autorelease] } " +
         "count:1 type:[IOSClass classWithProtocol:@protocol(JavaLangAnnotationAnnotation)]];");
   }
 
@@ -641,7 +641,7 @@ public class ObjectiveCImplementationGeneratorTest extends GenerationTest {
     assertTranslatedLines(translation,
         "+ (IOSObjectArray *)__annotations_fooWithInt_ {",
         "return [IOSObjectArray arrayWithObjects:(id[]) " +
-        "{ [[[OrgJunitAfterImpl alloc] init] autorelease] } " +
+        "{ [[[OrgJunitAfter alloc] init] autorelease] } " +
         "count:1 type:[IOSClass classWithProtocol:@protocol(JavaLangAnnotationAnnotation)]];");
   }
 
@@ -652,7 +652,7 @@ public class ObjectiveCImplementationGeneratorTest extends GenerationTest {
     assertTranslatedLines(translation,
         "+ (IOSObjectArray *)__annotations_Test {",
         "return [IOSObjectArray arrayWithObjects:(id[]) " +
-        "{ [[[JavaLangDeprecatedImpl alloc] init] autorelease] } " +
+        "{ [[[JavaLangDeprecated alloc] init] autorelease] } " +
         "count:1 type:[IOSClass classWithProtocol:@protocol(JavaLangAnnotationAnnotation)]];");
   }
 
@@ -663,7 +663,7 @@ public class ObjectiveCImplementationGeneratorTest extends GenerationTest {
     assertTranslatedLines(translation,
         "+ (IOSObjectArray *)__annotations_TestWithInt_ {",
         "return [IOSObjectArray arrayWithObjects:(id[]) " +
-        "{ [[[JavaLangDeprecatedImpl alloc] init] autorelease] } " +
+        "{ [[[JavaLangDeprecated alloc] init] autorelease] } " +
         "count:1 type:[IOSClass classWithProtocol:@protocol(JavaLangAnnotationAnnotation)]];");
   }
 
@@ -675,7 +675,7 @@ public class ObjectiveCImplementationGeneratorTest extends GenerationTest {
     assertTranslatedLines(translation,
         "+ (IOSObjectArray *)__annotations {",
         "return [IOSObjectArray arrayWithObjects:(id[]) " +
-        "{ [[[OrgJunitIgnoreImpl alloc] initWithValue:@\"\"] autorelease] } " +
+        "{ [[[OrgJunitIgnore alloc] initWithValue:@\"\"] autorelease] } " +
         "count:1 type:[IOSClass classWithProtocol:@protocol(JavaLangAnnotationAnnotation)]];");
   }
 
@@ -687,7 +687,7 @@ public class ObjectiveCImplementationGeneratorTest extends GenerationTest {
     assertTranslatedLines(translation,
         "+ (IOSObjectArray *)__annotations {",
         "return [IOSObjectArray arrayWithObjects:(id[]) " +
-        "{ [[[OrgJunitIgnoreImpl alloc] initWithValue:" +
+        "{ [[[OrgJunitIgnore alloc] initWithValue:" +
         "@\"some \\\"escaped\\n comment\"] autorelease] } " +
         "count:1 type:[IOSClass classWithProtocol:@protocol(JavaLangAnnotationAnnotation)]];");
   }
@@ -777,5 +777,18 @@ public class ObjectiveCImplementationGeneratorTest extends GenerationTest {
         "{ \"test8\", NULL, \"V\", 0x400, \"JavaLangInterruptedException;JavaLangError\" },");
     assertNotInTranslation(translation, "{ \"noMetadata1\"");
     assertNotInTranslation(translation, "{ \"noMetadata2\"");
+  }
+
+  public void testAnnotationWithField() throws IOException {
+    String translation = translateSourceFile(
+        "@interface Test { String FOO = \"foo\"; int I = 5; }", "Test", "Test.h");
+    assertTranslation(translation, "#define Test_I 5");
+    assertTranslation(translation, "@interface Test : NSObject < Test >");
+    assertTranslation(translation, "+ (NSString *)FOO;");
+    assertTranslation(translation, "+ (int)I;");
+    translation = getTranslatedFile("Test.m");
+    assertTranslation(translation, "static NSString * Test_FOO_ = @\"foo\";");
+    assertTranslatedLines(translation, "+ (NSString *)FOO {", "return Test_FOO_;", "}");
+    assertTranslatedLines(translation, "+ (int)I {", "return Test_I;", "}");
   }
 }

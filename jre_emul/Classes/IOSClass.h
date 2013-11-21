@@ -23,6 +23,7 @@
 #define _IOSClass_H_
 
 #import <Foundation/Foundation.h>
+#import "IOSReflection.h"
 #import "java/io/Serializable.h"
 #import "java/lang/reflect/AnnotatedElement.h"
 #import "java/lang/reflect/GenericDeclaration.h"

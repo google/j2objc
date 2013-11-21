@@ -111,6 +111,7 @@ public class ImplementationImportCollector extends ErrorReportingASTVisitor {
     ITypeBinding type = Types.getTypeBinding(node);
     addImports(type);
     addDeclaredType(type, false);
+    addImports(Types.resolveIOSType("IOSClass"));
     return true;
   }
 

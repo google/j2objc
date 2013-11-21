@@ -25,6 +25,7 @@ import com.google.devtools.j2objc.util.BindingUtil;
 
 import org.eclipse.jdt.core.dom.ASTNode;
 import org.eclipse.jdt.core.dom.ASTVisitor;
+import org.eclipse.jdt.core.dom.AnnotationTypeDeclaration;
 import org.eclipse.jdt.core.dom.AnonymousClassDeclaration;
 import org.eclipse.jdt.core.dom.ClassInstanceCreation;
 import org.eclipse.jdt.core.dom.EnumDeclaration;
@@ -337,6 +338,17 @@ public class OuterReferenceResolver extends ASTVisitor {
 
   @Override
   public void endVisit(EnumDeclaration node) {
+    popType(node.resolveBinding());
+  }
+
+  @Override
+  public boolean visit(AnnotationTypeDeclaration node) {
+    pushType(node, node.resolveBinding());
+    return true;
+  }
+
+  @Override
+  public void endVisit(AnnotationTypeDeclaration node) {
     popType(node.resolveBinding());
   }
 

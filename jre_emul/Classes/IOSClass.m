@@ -553,7 +553,7 @@ static BOOL hasModifier(IOSClass *cls, int flag) {
 
   // Check for any inherited annotations.
   IOSClass *cls = [self getSuperclass];
-  IOSClass *inheritedAnnotation = [JavaLangAnnotationInheritedImpl getClass];
+  IOSClass *inheritedAnnotation = [JavaLangAnnotationInherited getClass];
   while (cls) {
     IOSObjectArray *declared = [cls getDeclaredAnnotations];
     for (NSUInteger i = 0; i < [declared count]; i++) {

@@ -51,6 +51,7 @@ import org.eclipse.jdt.core.dom.Type;
 import org.eclipse.jdt.core.dom.TypeDeclaration;
 import org.eclipse.jdt.core.dom.VariableDeclarationFragment;
 
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
@@ -204,26 +205,39 @@ public class ObjectiveCHeaderGenerator extends ObjectiveCSourceFileGenerator {
       }
     }
 
+    printConstantDefines(node);
+
+    boolean isRuntime = BindingUtil.isRuntimeAnnotation(Types.getTypeBinding(node));
+
     // Print annotation as protocol.
     printf("@protocol %s < JavaLangAnnotationAnnotation >\n", typeName);
-    if (!members.isEmpty()) {
+    if (!members.isEmpty() && isRuntime) {
       newline();
       printAnnotationProperties(members);
     }
     println("@end\n");
 
-    if (BindingUtil.isRuntimeAnnotation(Types.getTypeBinding(node))) {
+    List<IVariableBinding> staticFields = getStaticFieldsNeedingAccessors(
+        ASTUtil.getFieldDeclarations(node), /* isInterface */ true);
+
+    if (isRuntime || !staticFields.isEmpty()) {
       // Print annotation implementation interface.
-      printf("@interface %sImpl : NSObject < %s >", typeName, typeName);
-      if (members.isEmpty()) {
-        newline();
+      printf("@interface %s : NSObject < %s >", typeName, typeName);
+      if (isRuntime) {
+        if (members.isEmpty()) {
+          newline();
+        } else {
+          println(" {\n @private");
+          printAnnotationVariables(members);
+          println("}\n");
+        }
+        printAnnotationConstructor(Types.getTypeBinding(node));
+        printAnnotationAccessors(members);
       } else {
-        println(" {\n @private");
-        printAnnotationVariables(members);
-        println("}\n");
+        newline();
+        newline();
       }
-      printAnnotationConstructor(Types.getTypeBinding(node));
-      printAnnotationAccessors(members);
+      printStaticFieldAccessors(staticFields, Collections.<MethodDeclaration>emptyList());
       println("@end");
     }
   }
