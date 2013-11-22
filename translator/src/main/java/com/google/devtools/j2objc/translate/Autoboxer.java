@@ -102,6 +102,16 @@ public class Autoboxer extends ErrorReportingASTVisitor {
     return invocation;
   }
 
+  private ITypeBinding findWrapperSuperclass(ITypeBinding type) {
+    while (type != null) {
+      if (Types.isBoxedPrimitive(type)) {
+        return type;
+      }
+      type = type.getSuperclass();
+    }
+    return null;
+  }
+
   /**
    * Convert a wrapper class instance to its primitive equivalent.  Each
    * wrapper class has a "classValue()" method, such as intValue() or
@@ -109,12 +119,12 @@ public class Autoboxer extends ErrorReportingASTVisitor {
    * "expr.classValue()".
    */
   private Expression unbox(Expression expr) {
-    ITypeBinding binding = Types.getTypeBinding(expr);
-    ITypeBinding primitiveType = Types.getPrimitiveType(binding);
+    ITypeBinding wrapperType = findWrapperSuperclass(Types.getTypeBinding(expr));
+    ITypeBinding primitiveType = Types.getPrimitiveType(wrapperType);
     if (primitiveType != null) {
       IMethodBinding valueMethod = BindingUtil.findDeclaredMethod(
-          binding, primitiveType.getName() + VALUE_METHOD);
-      assert valueMethod != null : "could not find value method for " + binding;
+          wrapperType, primitiveType.getName() + VALUE_METHOD);
+      assert valueMethod != null : "could not find value method for " + wrapperType;
       return ASTFactory.newMethodInvocation(ast, valueMethod, NodeCopier.copySubtree(ast, expr));
     } else {
       return NodeCopier.copySubtree(ast, expr);

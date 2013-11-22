@@ -418,4 +418,14 @@ public class AutoboxerTest extends GenerationTest {
     assertTranslation(translation, "PreIncrChar(&c);");
     assertTranslation(translation, "PreDecrDouble(&d);");
   }
+
+  public void testWildcardBoxType() throws IOException {
+    String translation = translateSourceFile(
+        "class Test { interface Entry<T> { T getValue(); } " +
+        "void test(Entry<? extends Long> entry) { long l = entry.getValue(); } }",
+        "Test", "Test.m");
+    assertTranslation(translation,
+        "long long int l = [((JavaLangLong *) nil_chk([((id<Test_Entry>) nil_chk(entry_)) " +
+        "getValue])) longLongValue];");
+  }
 }
