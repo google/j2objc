@@ -24,6 +24,7 @@ import com.google.common.annotations.Beta;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Queues;
 import com.google.common.util.concurrent.Service.State; // javadoc needs this
+import com.google.j2objc.annotations.WeakOuter;
 
 import java.util.List;
 import java.util.Queue;
@@ -93,8 +94,8 @@ public abstract class AbstractService implements Service {
   protected AbstractService() {
     // Add a listener to update the futures. This needs to be added first so that it is executed 
     // before the other listeners. This way the other listeners can access the completed futures.
-    addListener(
-        new Listener() {
+    @WeakOuter
+    class AbstractServiceListener implements Listener {
           @Override public void starting() {}
           
           @Override public void running() { 
@@ -133,7 +134,8 @@ public abstract class AbstractService implements Service {
                 throw new AssertionError("Unexpected from state: " + from);
             }
           }
-        }, 
+        }
+    addListener(new AbstractServiceListener(),
         MoreExecutors.sameThreadExecutor());
   }
   
@@ -357,6 +359,7 @@ public abstract class AbstractService implements Service {
   /**
    * A change from one service state to another, plus the result of the change.
    */
+  @WeakOuter
   private class Transition extends AbstractFuture<State> {
     @Override
     public State get(long timeout, TimeUnit unit)

@@ -1,3 +1,6 @@
+# Too many false positives through the Runnable type.
+TYPE java.lang.Runnable
+
 # *** REAL CYCLES ***
 # Inverses
 FIELD com.google.common.collect.AbstractBiMap.inverse
