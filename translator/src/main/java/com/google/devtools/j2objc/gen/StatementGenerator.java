@@ -1765,16 +1765,18 @@ public class StatementGenerator extends ErrorReportingASTVisitor {
   // Returns a string where all characters that will interfer in
   // a valid Objective-C string are quoted.
   private static String makeQuotedString(String originalString) {
-    int location;
+    int location = 0;
     StringBuffer buffer = new StringBuffer(originalString);
-    while ((location = buffer.indexOf("\\")) != -1) {
-      buffer.replace(location, location + 1, "\\\\");
+    while ((location = buffer.indexOf("\\", location)) != -1) {
+      buffer.replace(location++, location++, "\\\\");
     }
-    while ((location = buffer.indexOf("\"")) != -1) {
-      buffer.replace(location, location + 1, "\\\"");
+    location = 0;
+    while ((location = buffer.indexOf("\"", location)) != -1) {
+      buffer.replace(location++, location++, "\\\"");
     }
+    location = 0;
     while ((location = buffer.indexOf("\n")) != -1) {
-      buffer.replace(location, location + 1, "\\n");
+      buffer.replace(location++, location++, "\\n");
     }
     return buffer.toString();
   }
