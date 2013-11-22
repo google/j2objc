@@ -37,7 +37,6 @@ import org.eclipse.jdt.core.dom.ConstructorInvocation;
 import org.eclipse.jdt.core.dom.DoStatement;
 import org.eclipse.jdt.core.dom.EnumConstantDeclaration;
 import org.eclipse.jdt.core.dom.Expression;
-import org.eclipse.jdt.core.dom.IBinding;
 import org.eclipse.jdt.core.dom.IMethodBinding;
 import org.eclipse.jdt.core.dom.ITypeBinding;
 import org.eclipse.jdt.core.dom.IfStatement;
@@ -453,13 +452,7 @@ public class Autoboxer extends ErrorReportingASTVisitor {
   }
 
   private Expression boxOrUnboxExpression(Expression arg, ITypeBinding argType) {
-    ITypeBinding argBinding;
-    IBinding binding = Types.getBinding(arg);
-    if (binding instanceof IMethodBinding) {
-      argBinding = ((IMethodBinding) binding).getReturnType();
-    } else {
-      argBinding = Types.getTypeBinding(arg);
-    }
+    ITypeBinding argBinding = Types.getTypeBinding(arg);
     if (argType.isPrimitive() && !argBinding.isPrimitive()) {
       return unbox(arg);
     } else if (!argType.isPrimitive() && argBinding.isPrimitive()) {

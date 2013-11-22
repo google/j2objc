@@ -419,6 +419,16 @@ public class AutoboxerTest extends GenerationTest {
     assertTranslation(translation, "PreDecrDouble(&d);");
   }
 
+  // Verify that passing a new Double to a method that takes a double is unboxed.
+  public void testUnboxedDoubleParameter() throws Exception {
+    String translation = translateSourceFile(
+        "class Test { void takesDouble(double d) {} void test() { takesDouble(new Double(1.2)); }}",
+        "Test", "Test.m");
+    assertTranslation(translation,
+        "[self takesDoubleWithDouble:[((JavaLangDouble *) [[[JavaLangDouble alloc] " +
+        "initWithDouble:1.2] autorelease]) doubleValue]];");
+  }
+
   public void testWildcardBoxType() throws IOException {
     String translation = translateSourceFile(
         "class Test { interface Entry<T> { T getValue(); } " +
