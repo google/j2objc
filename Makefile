@@ -38,8 +38,8 @@ install-man-pages: $(MAN_PAGES)
 	@mkdir -p $(DIST_DIR)/man/man1
 	@install -C -m 0644 $? $(DIST_DIR)/man/man1
 
-dist: translator_dist jre_emul_dist junit_dist jsr305_dist guava_dist cycle_finder_dist \
-    install-man-pages
+dist: translator_dist jre_emul_dist junit_dist jsr305_dist guava_dist \
+    mockito_dist cycle_finder_dist install-man-pages
 
 
 clean:
@@ -51,6 +51,7 @@ clean:
 	@cd junit && $(MAKE) clean
 	@cd jsr305 && $(MAKE) clean
 	@cd guava && $(MAKE) clean
+	@cd testing/mockito && $(MAKE) clean
 	@cd cycle_finder && $(MAKE) clean
 
 test_translator: annotations_dist java_deps_dist
