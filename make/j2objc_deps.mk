@@ -70,6 +70,15 @@ guava_manifest:
 cycle_finder_dist: annotations_dist java_deps_dist translator_dist
 	@$(MAKE) -C $(J2OBJC_ROOT)/cycle_finder dist
 
+mockito_dist: translator_dist jre_emul_dist junit_dist
+	@$(MAKE) -C $(J2OBJC_ROOT)/testing/mockito dist
+
+mockito_java: java_deps_dist junit_java
+	@$(MAKE) -C $(J2OBJC_ROOT)/testing/mockito java
+
+mockito_manifest:
+	@$(MAKE) -C $(J2OBJC_ROOT)/testing/mockito java_sources_manifest
+
 
 else
 
@@ -88,5 +97,8 @@ guava_dist:
 guava_java:
 guava_manifest:
 cycle_finder_dist:
+mockito_dist:
+mockito_java:
+mockito_manifest:
 
 endif

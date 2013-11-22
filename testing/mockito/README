@@ -1,0 +1,10 @@
+This package creates an Objective-C library that support tests that use
+Mockito (https://code.google.com/p/mockito/). Source files in this project
+are those that were modified from the Mockito distribution; the others are
+extracted from the source distribution when building.
+
+Modifications:
+  Added a mock maker that works with iOS and Mac OS X.
+  Modified ClassPathLoader to load the iOS mock maker by default.
+  Stubbed out unused ASM and Cglib classes, removed use of Objenesis,
+    since iOS doesn't support bytecode.

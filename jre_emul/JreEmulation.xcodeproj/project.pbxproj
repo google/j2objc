@@ -67,6 +67,7 @@
 		062272AA1816DB0B009BB2A2 /* jni.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = jni.h; sourceTree = "<group>"; };
 		06389ACF176BADA20018B4EA /* JavaToIOSInputStreamAdapter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JavaToIOSInputStreamAdapter.h; sourceTree = "<group>"; };
 		06389AD0176BADA20018B4EA /* JavaToIOSInputStreamAdapter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JavaToIOSInputStreamAdapter.m; sourceTree = "<group>"; };
+		0643DFBC183FE39E0070EBD0 /* stdatomic.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = stdatomic.h; path = nhatminhle/stdatomic.h; sourceTree = SOURCE_ROOT; };
 		064FB746172705F400DC0D51 /* URI.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = URI.h; path = build_result/Classes/java/net/URI.h; sourceTree = "<group>"; };
 		064FB747172705F400DC0D51 /* URI.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = URI.m; path = build_result/Classes/java/net/URI.m; sourceTree = "<group>"; };
 		064FB748172705F400DC0D51 /* URIEncoderDecoder.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = URIEncoderDecoder.h; path = build_result/Classes/java/net/URIEncoderDecoder.h; sourceTree = "<group>"; };
@@ -1092,6 +1093,7 @@
 				066B71F717B94DC100A4CBBD /* objc-sync.m */,
 				06AFD3DB183E785D001C90C6 /* ParameterizedTypeImpl.h */,
 				06AFD3DC183E785D001C90C6 /* ParameterizedTypeImpl.m */,
+				0643DFBC183FE39E0070EBD0 /* stdatomic.h */,
 				06734320171DF62600F26D4F /* TempFailureRetry.h */,
 				067228F2158FB002005318BD /* Throwable.h */,
 				06721BA31559DE3800645E1B /* Throwable.m */,
