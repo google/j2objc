@@ -99,6 +99,8 @@ __attribute__ ((unused)) static inline id nil_chk(id __unsafe_unretained p) {
 __attribute__ ((unused)) static inline id check_class_cast(id __unsafe_unretained p, Class clazz) {
 #if !defined(J2OBJC_DISABLE_CAST_CHECKS)
   return (!p || [p isKindOfClass:clazz]) ? p : [NSObject throwClassCastException];
+#else
+  return p;
 #endif
 }
 
@@ -106,6 +108,8 @@ __attribute__ ((unused)) static inline id check_protocol_cast(id __unsafe_unreta
                                                               Protocol *protocol) {
 #if !defined(J2OBJC_DISABLE_CAST_CHECKS)
   return (!p || [p conformsToProtocol:protocol]) ? p : [NSObject throwClassCastException];
+#else
+  return p;
 #endif
 }
 
