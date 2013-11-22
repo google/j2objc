@@ -72,7 +72,7 @@
 + (IOSClass *)objectClass;
 
 // Class.newInstance()
-- (id)newInstance NS_RETURNS_RETAINED;
+- (id)newInstance NS_RETURNS_NOT_RETAINED;
 
 // Class.getSuperclass()
 - (IOSClass *)getSuperclass;
