@@ -1614,4 +1614,11 @@ public class StatementGeneratorTest extends GenerationTest {
         "Test", "Test.m");
     assertTranslation(translation, "return [Test_TypeEnum TYPE_BOOL_];");
   }
+
+  public void testMakeQuotedStringHang() throws IOException {
+    // Test hangs if bug makeQuotedString() isn't fixed.
+    translateSourceFile(
+        "public class Test { void test(String s) { assert !\"null\\foo\\nbar\".equals(s); }}",
+        "Test", "Test.m");
+  }
 }
