@@ -39,7 +39,7 @@ class NSLogHandler extends Handler {
       sb.append(": ");
       sb.append(record.getLevel().getLocalizedName());
       sb.append(": ");
-      sb.append(record.getMessage());
+      sb.append(formatMessage(record));
       return sb.toString();
     }
   }

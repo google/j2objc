@@ -18,6 +18,7 @@ package java.util.logging;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.ResourceBundle;
 
 /**
  *  An emulation of the java.util.logging.LogRecord class. See 
@@ -30,51 +31,64 @@ public class LogRecord implements Serializable {
   private String msg;
   private Throwable thrown = null;
   private long millis;
-  
+  private Object[] parameters = null;
+
   public LogRecord(Level level, String msg) {
     this.level = level;
     this.msg = msg;
     millis = new Date().getTime();
   }
-  
+
   protected LogRecord() {
     // for serialization
   }
-  
+
   public Level getLevel() {
     return level;
   }
-  
+
   public String getLoggerName() {
     return loggerName;
   }
-  
+
   public String getMessage() {
     return msg;
   }
-  
+
   public long getMillis() {
     return millis;
   }
-  
+
   public Throwable getThrown() {
     return thrown;
-  } 
-  
+  }
+
   public void setLevel(Level newLevel) {
     level = newLevel;
-  } 
-  
+  }
+
   public void setLoggerName(String newName) {
     loggerName = newName;
   }
-  
+
   public void setMessage(String newMessage) {
     msg = newMessage;
   }
-  
+
   public void setMillis(long newMillis) {
     millis = newMillis;
+  }
+
+  public void setParameters(Object[] parameters) {
+    this.parameters = parameters;
+  }
+
+  public Object[] getParameters() {
+    return parameters;
+  }
+
+  public ResourceBundle getResourceBundle() {
+    return null;
   }
 
   public void setThrown(Throwable newThrown) {
@@ -82,18 +96,15 @@ public class LogRecord implements Serializable {
   }
 
   /* Not Implemented */
-  // public Object[] getParameters() {} 
-  // public ResourceBundle getResourceBundle() {} 
   // public String getResourceBundleName() {}
   // public long getSequenceNumber() {}
   // public String getSourceClassName() {}
   // public String getSourceMethodName() {}
   // public int getThreadID() {}
-  // public void setParameters(Object[] parameters) {} 
-  // public void setResourceBundle(ResourceBundle bundle) {} 
+  // public void setResourceBundle(ResourceBundle bundle) {}
   // public void setResourceBundleName(String name) {}
   // public void setSequenceNumber(long seq) {}
-  // public void setSourceClassName(String sourceClassName) {} 
+  // public void setSourceClassName(String sourceClassName) {}
   // public void setSourceMethodName(String sourceMethodName) {}
   // public void setThreadID(int threadID) {}
 }

@@ -81,7 +81,24 @@ public class Logger {
   }
 
   public void log(Level level, String msg) {
-    log(level, msg, null);
+    if (isLoggable(level)) {
+      LogRecord lr = new LogRecord(level, msg);
+      lr.setLoggerName(getName());
+      log(lr);
+    }
+  }
+
+  public void log(Level level, String msg, Object param) {
+    log(level, msg, new Object[] { param });
+  }
+
+  public void log(Level level, String msg, Object[] params) {
+    if (isLoggable(level)) {
+      LogRecord lr = new LogRecord(level, msg);
+      lr.setLoggerName(getName());
+      lr.setParameters(params);
+      log(lr);
+    }
   }
 
   public void log(Level level, String msg, Throwable thrown) {
@@ -212,8 +229,6 @@ public class Logger {
   // public void entering(String sourceClass, String sourceMethod, Object[] params) {}
   // public void exiting(String sourceClass, String sourceMethod, Object result) {}
   // public void exiting(String sourceClass, String sourceMethod) {}
-  // public void log(Level level, String msg, Object param1) {}
-  // public void log(Level level, String msg, Object[] params) {}
   // public void logp(Level level, String sourceClass, String sourceMethod, String msg) {}
   // public void logp(Level level, String sourceClass, String sourceMethod, String msg,
   //     Object param1) {}
