@@ -10,7 +10,6 @@ The following packages are currently excluded:
 - com.google.common.io
 - com.google.common.cache
 - com.google.common.reflect
-- com.google.common.util.concurrent
 - com.google.common.eventbus
 - com.google.common.hash
 

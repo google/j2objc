@@ -36,7 +36,8 @@ SOURCEPATH = $(SRC_DIR)
 
 INCLUDE_DIRS = $(GEN_OBJC_DIR)
 
-J2OBJCC = $(ARCH_BIN_DIR)/j2objcc -c $(INCLUDE_DIRS:%=-I%)
+J2OBJCC = $(ARCH_BIN_DIR)/j2objcc -c -fobjc-abi-version=2 -fobjc-legacy-dispatch \
+  $(INCLUDE_DIRS:%=-I%)
 
 TRANSLATE_JAVA_FULL = $(JAVA_SOURCES)
 TRANSLATE_JAVA_RELATIVE = $(JAVA_SOURCES:$(SRC_DIR)/%=%)
