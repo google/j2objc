@@ -1606,4 +1606,12 @@ public class StatementGeneratorTest extends GenerationTest {
         "((double (*)(id, SEL, ...))[Test instanceMethodForSelector:@selector(fooWithInt:)])" +
         "(this$0_, @selector(fooWithInt:), 1);");
   }
+
+  // Verify that constant variables are directly referenced when expression is "self".
+  public void testSelfStaticVarAccess() throws IOException {
+    String translation = translateSourceFile(
+        "public class Test { enum Type { TYPE_BOOL; } Type test() { return Type.TYPE_BOOL; }}",
+        "Test", "Test.m");
+    assertTranslation(translation, "return [Test_TypeEnum TYPE_BOOL_];");
+  }
 }
