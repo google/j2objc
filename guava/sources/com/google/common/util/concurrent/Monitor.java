@@ -21,6 +21,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
 import com.google.common.annotations.Beta;
 import com.google.common.base.Throwables;
 import com.google.common.collect.Lists;
+import com.google.j2objc.annotations.Weak;
 
 import java.util.ArrayList;
 import java.util.concurrent.TimeUnit;
@@ -218,7 +219,7 @@ public final class Monitor {
   @Beta
   public abstract static class Guard {
     
-    final Monitor monitor;
+    @Weak final Monitor monitor;
     final Condition condition;
 
     @GuardedBy("monitor.lock")

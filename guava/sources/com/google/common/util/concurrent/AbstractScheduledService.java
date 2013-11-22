@@ -19,6 +19,7 @@ package com.google.common.util.concurrent;
 import com.google.common.annotations.Beta;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Throwables;
+import com.google.j2objc.annotations.WeakOuter;
 
 import java.util.concurrent.Callable;
 import java.util.concurrent.Executor;
@@ -152,7 +153,8 @@ public abstract class AbstractScheduledService implements Service {
   }
   
   /* use AbstractService for state management */
-  private final AbstractService delegate = new AbstractService() {
+  @WeakOuter
+  private final class ServiceDelegate extends AbstractService {
     
     // A handle to the running task so that we can stop it when a shutdown has been requested.
     // These two fields are volatile because their values will be accessed from multiple threads.
@@ -163,7 +165,8 @@ public abstract class AbstractScheduledService implements Service {
     // shutDown or runOneIteration) run concurrently with one another.
     private final ReentrantLock lock = new ReentrantLock();
     
-    private final Runnable task = new Runnable() {
+    @WeakOuter
+    private final class ServiceDelegateTask implements Runnable {
       @Override public void run() {
         lock.lock();
         try {
@@ -181,7 +184,8 @@ public abstract class AbstractScheduledService implements Service {
           lock.unlock();
         }
       }
-    };
+    }
+    private final Runnable task = new ServiceDelegateTask();
     
     @Override protected final void doStart() {
       executorService = executor();
@@ -228,7 +232,8 @@ public abstract class AbstractScheduledService implements Service {
         }
       });
     }
-  };
+  }
+  private final AbstractService delegate = new ServiceDelegate();
   
   /** Constructor for use by subclasses. */
   protected AbstractScheduledService() {}
@@ -276,10 +281,11 @@ public abstract class AbstractScheduledService implements Service {
    * {@linkplain Service.State#TERMINATED fails}.
    */
   protected ScheduledExecutorService executor() {
+    final String serviceName = serviceName();
     final ScheduledExecutorService executor = Executors.newSingleThreadScheduledExecutor(
         new ThreadFactory() {
           @Override public Thread newThread(Runnable runnable) {
-            return MoreExecutors.newThread(serviceName(), runnable);
+            return MoreExecutors.newThread(serviceName, runnable);
           }
         });
     // Add a listener to shutdown the executor after the service is stopped.  This ensures that the

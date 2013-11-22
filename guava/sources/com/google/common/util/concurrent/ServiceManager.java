@@ -32,6 +32,8 @@ import com.google.common.collect.Maps;
 import com.google.common.collect.Ordering;
 import com.google.common.collect.Queues;
 import com.google.common.util.concurrent.Service.State;
+import com.google.j2objc.annotations.Weak;
+import com.google.j2objc.annotations.WeakOuter;
 
 import java.util.List;
 import java.util.Map;
@@ -388,20 +390,30 @@ public final class ServiceManager {
      * Controls how long to wait for all the service manager to either become healthy or reach a 
      * state where it is guaranteed that it can never become healthy.
      */
-    final Monitor.Guard awaitHealthGuard = new Monitor.Guard(monitor) {
+    @WeakOuter
+    final class AwaitHealthGuard extends Monitor.Guard {
+      AwaitHealthGuard(Monitor m) {
+        super(m);
+      }
       @Override public boolean isSatisfied() {
         // All services have started or some service has terminated/failed.
         return unstartedServices == 0 || unstoppedServices != numberOfServices;
       }
-    };
+    }
+    final Monitor.Guard awaitHealthGuard = new AwaitHealthGuard(monitor);
     /**
      * Controls how long to wait for all services to reach a terminal state.
      */
-    final Monitor.Guard stoppedGuard = new Monitor.Guard(monitor) {
+    @WeakOuter
+    final class StoppedGuard extends Monitor.Guard {
+      StoppedGuard(Monitor m) {
+        super(m);
+      }
       @Override public boolean isSatisfied() {
         return unstoppedServices == 0;
       }
-    };
+    }
+    final Monitor.Guard stoppedGuard = new StoppedGuard(monitor);
     /** The listeners to notify during a state transition. */
     @GuardedBy("monitor")
     final List<ListenerExecutorPair> listeners = Lists.newArrayList();
@@ -592,7 +604,7 @@ public final class ServiceManager {
   private static final class ServiceListener implements Service.Listener {
     @GuardedBy("watch")  // AFAICT Stopwatch is not thread safe so we need to protect accesses
     final Stopwatch watch = new Stopwatch();
-    final Service service;
+    @Weak final Service service;
     final ServiceManagerState state;
     
     /**
