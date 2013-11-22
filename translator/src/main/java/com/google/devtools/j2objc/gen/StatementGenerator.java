@@ -22,13 +22,11 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.devtools.j2objc.J2ObjC;
 import com.google.devtools.j2objc.Options;
-import com.google.devtools.j2objc.translate.ASTFactory;
 import com.google.devtools.j2objc.translate.DestructorGenerator;
 import com.google.devtools.j2objc.types.GeneratedMethodBinding;
 import com.google.devtools.j2objc.types.IOSMethod;
 import com.google.devtools.j2objc.types.IOSMethodBinding;
 import com.google.devtools.j2objc.types.IOSTypeBinding;
-import com.google.devtools.j2objc.types.NodeCopier;
 import com.google.devtools.j2objc.types.Types;
 import com.google.devtools.j2objc.util.ASTNodeException;
 import com.google.devtools.j2objc.util.ASTUtil;
@@ -656,8 +654,11 @@ public class StatementGenerator extends ErrorReportingASTVisitor {
   public boolean visit(FieldAccess node) {
     Expression expr = node.getExpression();
     needsCastNodes.put(expr, true);
-    expr.accept(this);
-    buffer.append("->");
+    // self->static_var is invalid Objective-C.
+    if (!(expr instanceof ThisExpression && BindingUtil.isStatic(Types.getVariableBinding(node)))) {
+      expr.accept(this);
+      buffer.append("->");
+    }
     node.getName().accept(this);
     return false;
   }
@@ -774,7 +775,6 @@ public class StatementGenerator extends ErrorReportingASTVisitor {
     operands.addAll(extendedOperands);
     StringBuilder format = new StringBuilder();
 
-    AST ast = leftOperand.getAST();
     List<Expression> args = Lists.newArrayList();
     for (Expression operand : operands) {
       IBinding binding = Types.getBinding(operand);
