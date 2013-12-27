@@ -28,6 +28,8 @@
 @synthesize typeName;
 @synthesize packageName;
 @synthesize enclosingName;
+@synthesize fieldCount;
+@synthesize methodCount;
 @synthesize modifiers;
 
 - (id)initWithMetadata:(J2ObjcClassInfo *)metadata {
@@ -43,6 +45,8 @@
       enclosingName =
           [[NSString alloc] initWithCString:metadata->enclosingName encoding:defaultEncoding];
     }
+    fieldCount = metadata->fieldCount;
+    methodCount = metadata->methodCount;
     modifiers = metadata->modifiers;
   }
   return self;
@@ -72,10 +76,9 @@
   return NULL;
 }
 
-- (const J2ObjcFieldInfo *)findFieldInfo:(Ivar)field {
-  const char *name = ivar_getName(field);
+- (const J2ObjcFieldInfo *)findFieldInfo:(const char *)fieldName {
   for (int i = 0; i < data_->fieldCount; i++) {
-    if (strcmp(name, data_->fields[i].name) == 0) {
+    if (strcmp(fieldName, data_->fields[i].name) == 0) {
       return &data_->fields[i];
     }
   }
@@ -93,6 +96,14 @@
     IOSObjectArray_Set(result, i, JreTypeForString(data_->superclassTypeArgs[i]));
   }
   return result;
+}
+
+- (const J2ObjcFieldInfo *)allFields {
+  return data_->fields;
+}
+
+- (const J2ObjcMethodInfo *)allMethods {
+  return data_->methods;
 }
 
 - (NSString *)description {

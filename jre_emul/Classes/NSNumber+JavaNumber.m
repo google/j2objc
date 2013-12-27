@@ -21,4 +21,8 @@
 
 @implementation NSNumber (JavaNumber)
 
++ (long long int)serialVersionUID {
+  return -8742448824652078965L;
+}
+
 @end

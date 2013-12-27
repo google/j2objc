@@ -81,11 +81,43 @@ typedef union {
 - (NSString *)description {
   NSString *mods =
       metadata_ ? [JavaLangReflectModifier toStringWithInt:metadata_->modifiers ] : @"";
-  return [NSString stringWithFormat:@"%@ %@ %@.%@", mods, [self getType],
-          [self getDeclaringClass], [self propertyName]];
+  if ([mods length] > 0) {
+    return [NSString stringWithFormat:@"%@ %@ %@.%@", mods, [self getType],
+            [self getDeclaringClass], [self propertyName]];
+  }
+  return [NSString stringWithFormat:@"%@ %@.%@", [self getType], [self getDeclaringClass],
+          [self propertyName]];
+}
+
+static id GetStaticValue(JavaLangReflectField *field) {
+  JavaLangReflectMethod *getter = [field->declaringClass_ getMethod:[field getName]
+                                                     parameterTypes:nil];
+  return [getter invokeWithId:field->declaringClass_ withNSObjectArray:nil];
+}
+
+static void SetStaticValue(JavaLangReflectField *field, id value) {
+  NSString *fieldName = [field getName];
+  NSString *firstChar = [[fieldName substringToIndex:1] capitalizedString];
+  NSString *setterName =
+      [NSString stringWithFormat:@"set%@",
+       [fieldName stringByReplacingCharactersInRange:NSMakeRange(0, 1) withString:firstChar]];
+  IOSObjectArray *parameterTypes = [IOSObjectArray arrayWithLength:1 type:[IOSClass getClass]];
+  [parameterTypes replaceObjectAtIndex:0 withObject:[field getType]];
+  JavaLangReflectMethod *setter =
+      [field->declaringClass_ getMethod:setterName parameterTypes:parameterTypes];
+  IOSObjectArray *args = [IOSObjectArray arrayWithLength:1 type:[IOSClass objectClass]];
+  [args replaceObjectAtIndex:0 withObject:value];
+  [setter invokeWithId:field->declaringClass_ withNSObjectArray:nil];
+}
+
+BOOL IsStatic(JavaLangReflectField *field) {
+  return field->metadata_ && (field->metadata_->modifiers & JavaLangReflectModifier_STATIC) > 0;
 }
 
 - (id)getWithId:(id)object {
+  if (IsStatic(self)) {
+    return GetStaticValue(self);
+  }
   return object_getIvar(object, ivar_);
 }
 
@@ -95,34 +127,58 @@ typedef union {
 }
 
 - (BOOL)getBooleanWithId:(id)object {
+  if (IsStatic(self)) {
+    return [(JavaLangBoolean *) GetStaticValue(self) booleanValue];
+  }
   return *(BOOL *) [self pvar:object];
 }
 
 - (char)getByteWithId:(id)object {
+  if (IsStatic(self)) {
+    return [(JavaLangByte *) GetStaticValue(self) charValue];
+  }
   return *(char *) [self pvar:object];
 }
 
 - (unichar)getCharWithId:(id)object {
+  if (IsStatic(self)) {
+    return [(JavaLangCharacter *) GetStaticValue(self) charValue];
+  }
   return *(unichar *) [self pvar:object];
 }
 
 - (double)getDoubleWithId:(id)object {
+  if (IsStatic(self)) {
+    return [(JavaLangDouble *) GetStaticValue(self) doubleValue];
+  }
   return *(double *) [self pvar:object];
 }
 
 - (float)getFloatWithId:(id)object {
+  if (IsStatic(self)) {
+    return [(JavaLangFloat *) GetStaticValue(self) floatValue];
+  }
   return *(float *) [self pvar:object];
 }
 
 - (int)getIntWithId:(id)object {
+  if (IsStatic(self)) {
+    return [(JavaLangInteger *) GetStaticValue(self) intValue];
+  }
   return *(int *) [self pvar:object];
 }
 
 - (long long)getLongWithId:(id)object {
+  if (IsStatic(self)) {
+    return [(JavaLangLong *) GetStaticValue(self) longLongValue];
+  }
   return *(long long *) [self pvar:object];
 }
 
 - (short)getShortWithId:(id)object {
+  if (IsStatic(self)) {
+    return [(JavaLangShort *) GetStaticValue(self) shortValue];
+  }
   return *(short *) [self pvar:object];
 }
 
@@ -130,59 +186,103 @@ typedef union {
   object_setIvar(object, ivar_, value);
 }
 
-- (void)setWithId:(id)object withId:(id) value {
-  // Test for nil, since calling a method that consumes its parameters
-  // with nil causes a leak.
-  // http://clang.llvm.org/docs/AutomaticReferenceCounting.html#retain-count-semantics
-  if (value) {
-    [self setAndRetain:object withId:value];
+- (void)setWithId:(id)object withId:(id)value {
+  if (IsStatic(self)) {
+    SetStaticValue(self, value);
   } else {
-    object_setIvar(object, ivar_, value);
+    // Test for nil, since calling a method that consumes its parameters
+    // with nil causes a leak.
+    // http://clang.llvm.org/docs/AutomaticReferenceCounting.html#retain-count-semantics
+    if (value) {
+      [self setAndRetain:object withId:value];
+    } else {
+      object_setIvar(object, ivar_, value);
+    }
   }
 }
 
 - (void)setBooleanWithId:(id)object withBoolean:(BOOL)value {
-  BOOL *field = (BOOL *) [self pvar:object];
-  *field = value;
+  if (IsStatic(self)) {
+    SetStaticValue(self, value ? [JavaLangBoolean getTRUE] : [JavaLangBoolean getFALSE]);
+  } else {
+    BOOL *field = (BOOL *) [self pvar:object];
+    *field = value;
+  }
 }
 
 - (void)setByteWithId:(id)object withByte:(char)value {
-  char *field = (char *) [self pvar:object];
-  *field = value;
+  if (IsStatic(self)) {
+    SetStaticValue(self, [JavaLangByte valueOfWithByte:value]);
+  } else {
+    char *field = (char *) [self pvar:object];
+    *field = value;
+  }
 }
 
 - (void)setCharWithId:(id)object withChar:(unichar)value {
-  unichar *field = (unichar *) [self pvar:object];
-  *field = value;
+  if (IsStatic(self)) {
+    SetStaticValue(self, [JavaLangCharacter valueOfWithChar:value]);
+  } else {
+    unichar *field = (unichar *) [self pvar:object];
+    *field = value;
+  }
 }
 
 - (void)setDoubleWithId:(id)object withDouble:(double)value {
-  double *field = (double *) [self pvar:object];
-  *field = value;
+  if (IsStatic(self)) {
+    SetStaticValue(self, [JavaLangDouble valueOfWithDouble:value]);
+  } else {
+    double *field = (double *) [self pvar:object];
+    *field = value;
+  }
 }
 
 - (void)setFloatWithId:(id)object withFloat:(float)value {
-  float *field = (float *) [self pvar:object];
-  *field = value;
+  if (IsStatic(self)) {
+    SetStaticValue(self, [JavaLangFloat valueOfWithFloat:value]);
+  } else {
+    float *field = (float *) [self pvar:object];
+    *field = value;
+  }
 }
 
 - (void)setIntWithId:(id)object withInt:(int)value {
-  int *field = (int *) [self pvar:object];
-  *field = value;
+  if (IsStatic(self)) {
+    SetStaticValue(self, [JavaLangInteger valueOfWithInt:value]);
+  } else {
+    int *field = (int *) [self pvar:object];
+    *field = value;
+  }
 }
 
 - (void)setLongWithId:(id)object withLong:(long long)value {
-  long long *field = (long long *) [self pvar:object];
-  *field = value;
+  if (IsStatic(self)) {
+    SetStaticValue(self, [JavaLangLong valueOfWithLong:value]);
+  } else {
+    long long *field = (long long *) [self pvar:object];
+    *field = value;
+  }
 }
 
 - (void)setShortWithId:(id)object withShort:(short)value {
-  short *field = (short *) [self pvar:object];
-  *field = value;
+  if (IsStatic(self)) {
+    SetStaticValue(self, [JavaLangShort valueOfWithShort:value]);
+  } else {
+    short *field = (short *) [self pvar:object];
+    *field = value;
+  }
 }
 
 
 - (IOSClass *)getType {
+  if (!ivar_) {
+    // Static field, use accessor method's return type.
+    NSAssert(metadata_ != nil, @"malformed field instance");
+    JavaLangReflectMethod *accessor = [declaringClass_ getMethod:[self getName]
+                                                  parameterTypes:nil];
+    nil_chk(accessor);
+    return [accessor getReturnType];
+  }
   return decodeTypeEncoding(ivar_getTypeEncoding(ivar_));
 }
 
@@ -206,12 +306,14 @@ typedef union {
 }
 
 - (NSString *)propertyName {
-  if (metadata_ && metadata_->javaName) {
-    return [NSString stringWithCString:metadata_->javaName
+  NSString *name;
+  if (metadata_) {
+    name = [NSString stringWithCString:(metadata_->javaName ? metadata_->javaName : metadata_->name)
+                              encoding:[NSString defaultCStringEncoding]];
+  } else {
+    name = [NSString stringWithCString:ivar_getName(ivar_)
                               encoding:[NSString defaultCStringEncoding]];
   }
-  NSString *name = [NSString stringWithCString:ivar_getName(ivar_)
-                                      encoding:[NSString defaultCStringEncoding]];
   return [JavaLangReflectField propertyName:name];
 }
 

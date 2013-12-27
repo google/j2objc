@@ -633,7 +633,8 @@ static const char* GetFieldName(NSString *name) {
 
 static JavaLangReflectField *FieldFromIvar(IOSClass *iosClass, Ivar ivar) {
   JavaClassMetadata *metadata = [iosClass getMetadata];
-  const J2ObjcFieldInfo *fieldMetadata = metadata ? [metadata findFieldInfo:ivar] : nil;
+  const J2ObjcFieldInfo *fieldMetadata =
+      metadata ? [metadata findFieldInfo:ivar_getName(ivar)] : nil;
   return [JavaLangReflectField fieldWithIvar:ivar
                                    withClass:iosClass
                                 withMetadata:fieldMetadata];
@@ -650,10 +651,23 @@ static void GetFieldsFromClass(IOSClass *iosClass, NSMutableDictionary *fields) 
       [fields setObject:field forKey:name];
     }
   }
+  JavaClassMetadata *metadata = [iosClass getMetadata];
+  if (metadata) {
+    // Add static fields, if any.
+    const J2ObjcFieldInfo *fieldInfos = [metadata allFields];
+    for (unsigned i = 0; i < metadata.fieldCount; i++) {
+      JavaLangReflectField *field = [JavaLangReflectField fieldWithIvar:nil
+                                                              withClass:iosClass
+                                                           withMetadata:&fieldInfos[i]];
+      NSString *name = [field getName];
+      if (![fields valueForKey:name]) {
+        [fields setObject:field forKey:name];
+      }
+    };
+  }
   free(ivars);
 }
 
-// TODO(tball): add support for interface constants.
 - (JavaLangReflectField *)getDeclaredField:(NSString *)name {
   nil_chk(name);
   Class cls = self.objcClass;
@@ -661,6 +675,17 @@ static void GetFieldsFromClass(IOSClass *iosClass, NSMutableDictionary *fields) 
     Ivar ivar = class_getInstanceVariable(cls, GetFieldName(name));
     if (ivar) {
       return FieldFromIvar(self, ivar);
+    }
+
+    // Check static variables.
+    JavaClassMetadata *metadata = [self getMetadata];
+    if (metadata) {
+      const J2ObjcFieldInfo *fieldMeta = [metadata findFieldInfo:[name UTF8String]];
+      if (fieldMeta) {
+        return [JavaLangReflectField fieldWithIvar:nil
+                                         withClass:self
+                                      withMetadata:fieldMeta];
+      }
     }
   }
   @throw AUTORELEASE([[JavaLangNoSuchFieldException alloc] initWithNSString:name]);
@@ -675,6 +700,16 @@ static void GetFieldsFromClass(IOSClass *iosClass, NSMutableDictionary *fields) 
     Ivar ivar = class_getInstanceVariable(cls, objcName);
     if (ivar) {
       return FieldFromIvar(self, ivar);
+    }
+
+    JavaClassMetadata *metadata = [self getMetadata];
+    if (metadata) {
+      const J2ObjcFieldInfo *fieldMeta = [metadata findFieldInfo:[name UTF8String]];
+      if (fieldMeta) {
+        return [JavaLangReflectField fieldWithIvar:nil
+                                         withClass:self
+                                      withMetadata:fieldMeta];
+      }
     }
     iosClass = [iosClass getSuperclass];
   }

@@ -113,11 +113,7 @@ public abstract class ObjectiveCSourceFileGenerator extends SourceFileGenerator 
       if (Modifier.isStatic(f.getModifiers()) || isInterface) {
         for (VariableDeclarationFragment var : ASTUtil.getFragments(f)) {
           IVariableBinding binding = Types.getVariableBinding(var);
-          // Don't define accessors for private constants, since they can be
-          // directly referenced.
-          if (!(BindingUtil.isPrimitiveConstant(binding) && BindingUtil.isPrivate(binding))) {
-            bindings.add(binding);
-          }
+          bindings.add(binding);
         }
       }
     }
