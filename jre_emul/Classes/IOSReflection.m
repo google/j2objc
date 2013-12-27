@@ -30,12 +30,17 @@ id<JavaLangReflectType> JreTypeForString(const char *typeStr) {
       return primitiveType;
     }
   }
-  if (*typeStr == 'L') {
-    return [IOSClass classForIosName:[NSString stringWithUTF8String:&typeStr[1]]];
-  }
-  if (*typeStr == 'T') {
-    return [JavaLangReflectTypeVariableImpl typeVariableWithName:
-        [NSString stringWithUTF8String:&typeStr[1]]];
+  int typeLen = strlen(typeStr);
+  if (typeLen > 2) {
+    // Extract type from string starting with a 'L' or 'T' and ending with ';'.
+    NSString *typeName = [NSString stringWithUTF8String:typeStr];
+    NSString *className = [typeName substringWithRange:NSMakeRange(1, typeLen - 2)];
+    if (*typeStr == 'L') {
+      return [IOSClass classForIosName:className];
+    }
+    if (*typeStr == 'T') {
+      return [JavaLangReflectTypeVariableImpl typeVariableWithName:className];
+    }
   }
   NSString *msg = [NSString stringWithFormat:@"invalid type from metadata %s", typeStr];
   @throw AUTORELEASE([[JavaLangAssertionError alloc] initWithNSString:msg]);

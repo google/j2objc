@@ -431,7 +431,7 @@ public class ClassTest extends junit.framework.TestCase {
      */
     public void test_getDeclaredMethods() throws Exception {
         Method[] m = TestClass.class.getDeclaredMethods();
-        assertEquals("Returned incorrect number of methods", 5, m.length);
+        assertEquals("Returned incorrect number of methods", 3, m.length);
         m = SubTestClass.class.getDeclaredMethods();
         assertEquals("Returned incorrect number of methods", 0, m.length);
     }
@@ -494,10 +494,10 @@ public class ClassTest extends junit.framework.TestCase {
     public void test_getMethods() throws Exception {
         Method[] m = TestClass.class.getMethods();
         assertEquals("Returned incorrect number of methods",
-                     4 + Object.class.getMethods().length, m.length);
+                     2 + Object.class.getMethods().length, m.length);
         m = SubTestClass.class.getMethods();
         assertEquals("Returned incorrect number of sub-class methods",
-                     4 + Object.class.getMethods().length, m.length);
+                     2 + Object.class.getMethods().length, m.length);
         // Number of inherited methods
     }
 

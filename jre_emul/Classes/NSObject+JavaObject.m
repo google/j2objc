@@ -164,6 +164,8 @@ static void doWait(id obj, long long timeout) {
     { "waitWithLong:", NULL, "V", 0x11, "JavaLangInterruptedException" },
     { "waitWithLong:withInt:", NULL, "V", 0x11, "JavaLangInterruptedException" },
     { "wait", NULL, "V", 0x11, "JavaLangInterruptedException" },
+    { "description", NULL, "LJavaLangString", 0x1, NULL },
+    { "hash", NULL, "I", 0x1, NULL },
   };
   static J2ObjcClassInfo _JavaLangObject = {
     "Object", "java.lang", NULL, 0x1, 9, methods, 0, NULL, 0, NULL

@@ -153,7 +153,7 @@ static void CreateMethodWrappers(
   for (NSUInteger i = 0; i < count; i++) {
     SEL sel = method_getName(methods[i]);
     NSString *key = NSStringFromSelector(sel);
-    if ([map objectForKey:key] || sel == @selector(__metadata)) {
+    if ([map objectForKey:key]) {
       continue;
     }
     ExecutableMember *method = methodCreator(sel);
@@ -186,11 +186,19 @@ static void CollectMethodsOrConstructors(
   free(classMethods);
 }
 
-- (void)collectMethods:(NSMutableDictionary *)methodMap publicOnly:(BOOL)publicOnly {
+- (void)collectMethods:(NSMutableDictionary *)methodMap
+            publicOnly:(BOOL)publicOnly
+              javaOnly:(BOOL)javaOnly {
   JavaClassMetadata *metadata = [self getMetadata];
   CollectMethodsOrConstructors(self, methodMap, publicOnly, ^ id (SEL sel) {
     NSString *selStr = NSStringFromSelector(sel);
     if (!IsConstructor(selStr)) {
+      if (javaOnly && metadata && ![metadata findMethodMetadata:selStr]) {
+        return nil;  // Selector not in method list.
+      }
+      if ([selStr isEqualToString:@"__metadata"]) {
+        return nil;  // __metadata() doesn't return a valid Objective-C type.
+      }
       return [JavaLangReflectMethod methodWithSelector:sel withClass:self
           withMetadata:metadata ? [metadata findMethodMetadata:selStr] : nil];
     }
@@ -204,6 +212,9 @@ IOSObjectArray *getConstructorsImpl(IOSConcreteClass *clazz, BOOL publicOnly) {
   CollectMethodsOrConstructors(clazz, methodMap, publicOnly, ^ id (SEL sel) {
     if (IsConstructor(NSStringFromSelector(sel))) {
       NSString *selStr = NSStringFromSelector(sel);
+      if (metadata && ![metadata findMethodMetadata:selStr]) {
+        return nil;  // Selector not in method list.
+      }
       return [JavaLangReflectConstructor constructorWithSelector:sel withClass:clazz
           withMetadata:metadata ? [metadata findMethodMetadata:selStr] : nil];
     }

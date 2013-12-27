@@ -344,7 +344,7 @@ BOOL IsStatic(JavaLangReflectField *field) {
 - (IOSObjectArray *)getDeclaredAnnotations {
   NSString *annotationsMethod =
       [NSString stringWithFormat:@"__annotations_%@_", [self getName]];
-  IOSObjectArray *methods = [declaringClass_ getDeclaredMethods];
+  IOSObjectArray *methods = [declaringClass_ allDeclaredMethods];
   NSUInteger n = [methods count];
   for (NSUInteger i = 0; i < n; i++) {
     JavaLangReflectMethod *method = methods->buffer_[i];

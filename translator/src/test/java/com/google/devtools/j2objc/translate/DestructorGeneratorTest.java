@@ -44,7 +44,7 @@ public class DestructorGeneratorTest extends GenerationTest {
     translation = getTranslatedFile("Test.m");
     assertTranslation(translation, "- (void)dealloc ");
     assertTranslation(translation, "[super dealloc];");
-    assertFalse(translation.contains("finalize"));
+    assertFalse(translation.contains("- (void)finalize "));
   }
 
   public void testFinalizeMethodRenamedWithGC() throws IOException {
@@ -71,6 +71,6 @@ public class DestructorGeneratorTest extends GenerationTest {
     translation = getTranslatedFile("Test.m");
     assertTranslation(translation, "- (void)dealloc ");
     assertTranslation(translation, "[super dealloc];");
-    assertFalse(translation.contains("finalize"));
+    assertFalse(translation.contains("- (void)finalize "));
   }
 }

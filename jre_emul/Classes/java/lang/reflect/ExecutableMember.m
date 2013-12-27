@@ -152,8 +152,16 @@ static IOSClass *ResolveParameterType(const char *objcType, NSString *paramKeywo
   // Remove method name prefix.
   if ([selectorStr hasPrefix:@"init"]) {
     selectorStr = [selectorStr substringFromIndex:4];
-  } else {
-    selectorStr = [selectorStr substringFromIndex:[[self getName] length]];
+  } else if (nArgs > 0) {
+    NSRange range = [selectorStr rangeOfString:@":"];
+    if (range.location != NSNotFound) {
+      // The name ends with the last "WithType" before the first colon.
+      range = [selectorStr rangeOfString:@"With" options:NSBackwardsSearch
+                                   range:NSMakeRange(0, range.location)];
+      if (range.location != NSNotFound) {
+        selectorStr = [selectorStr substringFromIndex:range.location];
+      }
+    }
   }
   NSArray *paramTypes = [selectorStr componentsSeparatedByString:@":"];
 
@@ -213,7 +221,7 @@ static IOSClass *ResolveParameterType(const char *objcType, NSString *paramKeywo
 static JavaLangReflectMethod *getAccessor(IOSClass *class, NSString *method, NSString *accessor) {
   NSString *accessorMethod = [NSString stringWithFormat:@"__%@_%@", accessor,
      [method stringByReplacingOccurrencesOfString:@":" withString:@"_"]];
-  IOSObjectArray *methods = [class getDeclaredMethods];
+  IOSObjectArray *methods = [class allDeclaredMethods];
   NSUInteger n = [methods count];
   for (NSUInteger i = 0; i < n; i++) {
     JavaLangReflectMethod *method = methods->buffer_[i];

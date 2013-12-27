@@ -181,7 +181,10 @@
 - (BOOL)unboxValue:(id)value toRawValue:(J2ObjcRawValue *)rawValue;
 
 // Internal methods
-- (void)collectMethods:(NSMutableDictionary *)methodMap publicOnly:(BOOL)publicOnly;
+- (void)collectMethods:(NSMutableDictionary *)methodMap
+            publicOnly:(BOOL)publicOnly
+              javaOnly:(BOOL)javaOnly;
+- (IOSObjectArray *)allDeclaredMethods;
 - (JavaLangReflectMethod *)findMethodWithTranslatedName:(NSString *)objcName;
 - (IOSObjectArray *)getInterfacesWithArrayType:(IOSClass *)arrayType;
 - (JavaClassMetadata *)getMetadata;

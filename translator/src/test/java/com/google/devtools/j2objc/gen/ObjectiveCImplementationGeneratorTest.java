@@ -761,22 +761,18 @@ public class ObjectiveCImplementationGeneratorTest extends GenerationTest {
         " String test6(String s, Object... args) { return null; }" +
         " native void test7() /*-[ exit(0); ]-*/; " +
         " abstract void test8() throws InterruptedException, Error; " +
-        " public void noMetadata1() {}" +
-        " public static void noMetadata2() {}" +
         "}",
         "Test", "Test.m");
-    assertTranslation(translation, "{ \"test1\", NULL, \"LNSObject\", 0x0, NULL },");
+    assertTranslation(translation, "{ \"test1\", NULL, \"LNSObject;\", 0x0, NULL },");
     assertTranslation(translation, "{ \"test2\", NULL, \"C\", 0x2, NULL },");
     assertTranslation(translation, "{ \"test3\", NULL, \"V\", 0x4, NULL },");
     assertTranslation(translation, "{ \"test4\", NULL, \"J\", 0x10, NULL },");
     assertTranslation(translation, "{ \"test5\", NULL, \"Z\", 0x20, NULL },");
     assertTranslation(translation,
-        "{ \"test6WithNSString:withNSObjectArray:\", NULL, \"LNSString\", 0x80, NULL }");
+        "{ \"test6WithNSString:withNSObjectArray:\", \"test6\", \"LNSString;\", 0x80, NULL }");
     assertTranslation(translation, "{ \"test7\", NULL, \"V\", 0x100, NULL },");
     assertTranslation(translation,
         "{ \"test8\", NULL, \"V\", 0x400, \"JavaLangInterruptedException;JavaLangError\" },");
-    assertNotInTranslation(translation, "{ \"noMetadata1\"");
-    assertNotInTranslation(translation, "{ \"noMetadata2\"");
   }
 
   public void testAnnotationWithField() throws IOException {
