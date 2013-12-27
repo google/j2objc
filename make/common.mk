@@ -41,10 +41,18 @@ endif
 
 # xcrun finds a specified tool in the current SDK /usr/bin directory.
 XCRUN = $(shell if test -f /usr/bin/xcrun; then echo xcrun; else echo ""; fi)
-MAKE = $(XCRUN) make
-CLANG = $(XCRUN) clang
-LIBTOOL = $(XCRUN) libtool
-LIPO = $(XCRUN) lipo
+# xcrun can fail when run concurrently, so we find all the tools up-front.
+ifneq ($(XCRUN),)
+MAKE := $(shell xcrun --find make)
+CLANG := $(shell xcrun --find clang)
+LIBTOOL := $(shell xcrun --find libtool)
+LIPO := $(shell xcrun --find lipo)
+else
+MAKE = make
+CLANG = clang
+LIBTOOL = libtool
+LIPO = lipo
+endif
 
 ifndef CONFIGURATION_BUILD_DIR
 # Determine this makefile's path.

@@ -52,6 +52,7 @@ JUNIT_PUBLIC_SOURCES = \
     org/junit/Ignore.java \
     org/junit/Rule.java \
     org/junit/Test.java \
+    org/junit/internal/runners/model/ReflectiveCallable.java \
     org/junit/rules/MethodRule.java \
     org/junit/rules/RunRules.java \
     org/junit/rules/TestRule.java \
@@ -113,7 +114,6 @@ JUNIT_INTERNAL_SOURCES = \
     org/junit/internal/runners/JUnit38ClassRunner.java \
     org/junit/internal/runners/model/EachTestNotifier.java \
     org/junit/internal/runners/model/MultipleFailureException.java \
-    org/junit/internal/runners/model/ReflectiveCallable.java \
     org/junit/internal/runners/rules/RuleFieldValidator.java \
     org/junit/internal/runners/statements/ExpectException.java \
     org/junit/internal/runners/statements/Fail.java \

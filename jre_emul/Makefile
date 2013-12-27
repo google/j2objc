@@ -52,11 +52,13 @@ IOS_OBJS = \
 	NSDictionaryMap.o \
 	NSObject+JavaObject.o \
 	NSString+JavaString.o \
-	objc-sync.o \
 	java_lang_RealToString.o \
 	java/lang/reflect/ExecutableMember.o \
 	java/lang/reflect/ParameterizedTypeImpl.o \
 	java/lang/reflect/TypeVariableImpl.o
+
+APPLE_SRCS = \
+	objc-sync.m
 
 # Java classes with hand written obj-c implementations. Shouldn't be translated,
 # but need to include the .java file in jre_emul.jar and the .m file in
@@ -650,7 +652,6 @@ STUB_JAVA_SOURCES = $(shell find $(STUBS_DIR) -name *.java)
 ALL_JAVA_SOURCES = $(JAVA_SOURCES) $(IOS_JAVA_OBJS:.o=.java) $(IOS_INTERFACES:.h=.java) \
     $(JRE_INTERFACES:.h=.java)
 JAVA_TO_TRANSLATE = $(JRE_INTERFACES:%.h=%.java) $(JAVA_SOURCES)
-ALL_OBJS = $(JAVA_SOURCES:.java=.o) $(IOS_OBJS) $(IOS_JAVA_OBJS)
 SOURCE_HEADERS = $(shell find $(EMULATION_CLASS_DIR) -name *.h)
 INCLUDES = $(JAVA_TO_TRANSLATE:.java=.h) $(SOURCE_HEADERS:$(EMULATION_CLASS_DIR)/%=%)
 DIST_INCLUDES = $(INCLUDES:%=$(DIST_INCLUDE_DIR)/%)
@@ -658,30 +659,6 @@ ARCH_INCLUDES = $(INCLUDES:%=$(ARCH_INCLUDE_DIR)/%)
 
 ANNOTATIONS_JAR = $(DIST_JAR_DIR)/j2objc_annotations.jar
 
-IPHONE_SDK_DIR = $(shell bash ../scripts/sysroot_path.sh --iphoneos)
-SIMULATOR_SDK_DIR = $(shell bash ../scripts/sysroot_path.sh --iphonesimulator)
-
-# Settings for building both Mac OS X, iPhone, and iPhone simulator libraries.
-EMULATION_MACOSX_LIB = $(BUILD_DIR)/macosx-libjre_emul.a
-EMULATION_IPHONE_LIB = $(BUILD_DIR)/iphone-libjre_emul.a
-EMULATION_IPHONEV7S_LIB = $(BUILD_DIR)/iphonev7s-libjre_emul.a
-EMULATION_SIMULATOR_LIB = $(BUILD_DIR)/simulator-libjre_emul.a
-ARCH_LIBS = $(J2OBJC_ARCHS)
-ARCH_LIBS := $(ARCH_LIBS:macosx=$(EMULATION_MACOSX_LIB))
-ARCH_LIBS := $(ARCH_LIBS:iphone=$(EMULATION_IPHONE_LIB))
-ARCH_LIBS := $(ARCH_LIBS:iphonev7s=$(EMULATION_IPHONEV7S_LIB))
-ARCH_LIBS := $(ARCH_LIBS:simulator=$(EMULATION_SIMULATOR_LIB))
-MACOSX_OBJS = $(ALL_OBJS:%=$(CLASS_DIR)/%)
-MACOSX_FLAGS = $(SDK_FLAGS)
-IPHONE_BUILD_DIR = $(BUILD_DIR)/iphone
-IPHONE_OBJS = $(ALL_OBJS:%=$(IPHONE_BUILD_DIR)/%)
-IPHONE_FLAGS = -arch armv7 -isysroot $(IPHONE_SDK_DIR)
-IPHONEV7S_BUILD_DIR = $(BUILD_DIR)/iphonev7s
-IPHONEV7S_OBJS = $(ALL_OBJS:%=$(IPHONEV7S_BUILD_DIR)/%)
-IPHONEV7S_FLAGS = -arch armv7s -isysroot $(IPHONE_SDK_DIR)
-SIMULATOR_BUILD_DIR = $(BUILD_DIR)/simulator
-SIMULATOR_OBJS = $(ALL_OBJS:%=$(SIMULATOR_BUILD_DIR)/%)
-SIMULATOR_FLAGS = -arch i386 -isysroot $(SIMULATOR_SDK_DIR)
 MAIN_LIB_OBJS = $(MAIN_OBJ:%=$(CLASS_DIR)/%)
 
 # translate is the default so that Xcode can build its own object files
@@ -696,40 +673,28 @@ TRANSLATE_ARGS = --mem-debug -sourcepath $(JRE_SRC) -classpath $(EMULATION_JAR) 
 TRANSLATE_USE_SYSTEM_BOOT_PATH = TRUE
 include ../make/translate.mk
 
-analyze: $(ALL_OBJS:%.o=$(CLASS_DIR)/%.plist)
+FAT_LIB_NAME = jre_emul
+FAT_LIB_SOURCES_FULL = $(JAVA_SOURCES:%.java=$(GEN_OBJC_DIR)/%.m) \
+  $(IOS_OBJS:%.o=$(EMULATION_CLASS_DIR)/%.m) $(IOS_JAVA_OBJS:$(EMULATION_CLASS_DIR)/%.m) \
+  $(APPLE_SRCS:%=$(APPLE_ROOT)/%)
+FAT_LIB_SOURCES_RELATIVE = $(JAVA_SOURCES:.java=.m) $(IOS_OBJS:.o=.m) $(IOS_JAVA_OBJS:.o=.m) \
+  $(APPLE_SRCS)
+FAT_LIB_SOURCE_DIRS = $(EMULATION_CLASS_DIR) $(GEN_OBJC_DIR) $(APPLE_ROOT) $(ANDROID_NATIVE_DIR)
+FAT_LIB_COMPILE = $(CLANG) $(OBJCFLAGS) -I$(EMULATION_CLASS_DIR) -I$(GEN_OBJC_DIR) \
+  -I$(ANDROID_NATIVE_DIR)
+include ../make/fat_lib.mk
 
-libs: $(EMULATION_LIB) $(MAIN_LIB)
+fat_lib_dependencies: translate
+
+libs: $(FAT_LIB_LIBRARY) $(MAIN_LIB)
 	@:
 
-xcode_build: $(XCODE_LIB) $(ARCH_BIN_DIR)/j2objcc $(ARCH_BUILD_DIR)/.includes
+xcode_build: $(EMULATION_LIB_DIST) $(ARCH_BIN_DIR)/j2objcc $(ARCH_BUILD_DIR)/.includes
 
 xcode_clean:
 	@rm -rf $(GEN_OBJC_DIR) $(ARCH_BIN_DIR)/j2objcc
 
-xcode_analyze: $(ALL_OBJS:%.o=$(TARGET_TEMP_DIR)/%.plist)
-
-$(EMULATION_LIB): $(ARCH_LIBS)
-	$(LIPO) -create $^ -output $@
-
-$(EMULATION_MACOSX_LIB): $(MACOSX_OBJS)
-	@echo "building Mac OS X library"
-	@$(LIBTOOL) -static -o $@ $^
-
-$(EMULATION_IPHONE_LIB): $(IPHONE_OBJS)
-	@echo "building iPhoneOS library"
-	@$(LIBTOOL) -static -o $@ $^
-
-$(EMULATION_IPHONEV7S_LIB): $(IPHONEV7S_OBJS)
-	@echo "building iPhonev7S library"
-	@$(LIBTOOL) -static -o $@ $^
-
-$(EMULATION_SIMULATOR_LIB): $(SIMULATOR_OBJS)
-	@echo "building iPhoneSimulator library"
-	@$(LIBTOOL) -static -o $@ $^
-
-$(XCODE_LIB): $(ALL_OBJS:%=$(TARGET_TEMP_DIR)/%)
-	@mkdir -p $(@D)
-	$(LIBTOOL) -static -o $@ $^
+xcode_analyze: analyze
 
 $(MAIN_LIB): $(MAIN_LIB_OBJS)
 	$(LIBTOOL) -static -o $@ $^
@@ -763,61 +728,9 @@ DIRS_TO_MAKE = $(BUILD_DIR) $(ARCH_BUILD_DIR) $(ARCH_INCLUDE_DIR) \
 $(sort $(DIRS_TO_MAKE)):
 	@mkdir -p $@
 
-define compile_rules
-$(1)/%.o: $(3)/%.$(4) | translate
-	@mkdir -p $$(@D)
-	$$(CLANG) -c $$< -o $$@ $(2) $$(OBJCFLAGS) -I$$(EMULATION_CLASS_DIR) \
-	    -I$$(GEN_OBJC_DIR) -I$$(ANDROID_NATIVE_DIR)
-
-$(1)/%.plist: $(3)/%.$(4) | translate
-	@mkdir -p $$(@D)
-	$$(CLANG) -c $$< -o $$@ $(2) $$(OBJCFLAGS) $$(STATIC_ANALYZER_FLAGS) \
-	    -I$$(EMULATION_CLASS_DIR) -I$$(GEN_OBJC_DIR) -I$$(ANDROID_NATIVE_DIR)
-endef
-
-define compile_rules_no_arc
-$(1)/$(3:.m=.o): Classes/$(3) | translate
-	@mkdir -p $$(@D)
-	$$(CLANG) -c $$< -o $$@ $(2) $$(OBJCFLAGS_NO_ARC) \
-	    -I$$(EMULATION_CLASS_DIR) -I$$(GEN_OBJC_DIR) -I$$(ANDROID_NATIVE_DIR)
-
-$(1)/$(3:.m=.plist): Classes/$(3) | translate
-	@mkdir -p $$(@D)
-	$$(CLANG) -c $$< -o $$@ $(2) $$(OBJCFLAGS) $$(STATIC_ANALYZER_FLAGS) \
-	    -I$$(EMULATION_CLASS_DIR) -I$$(GEN_OBJC_DIR) -I$$(ANDROID_NATIVE_DIR)
-endef
-
-define additional_compile_rules
-$(1)/objc-sync.o: $(APPLE_ROOT)/objc-sync.m
-	@mkdir -p $$(@D)
-	$$(CLANG) -c $$< -o $$@ $(2) $$(OBJCFLAGS_NO_ARC) \
-	    -I$$(EMULATION_CLASS_DIR) -I$$(GEN_OBJC_DIR) -I$$(ANDROID_NATIVE_DIR)
-
-$(1)/objc-sync.plist: $(APPLE_ROOT)/objc-sync.m
-	@mkdir -p $$(@D)
-	$$(CLANG) -c $$< -o $$@ $(2) $$(OBJCFLAGS) $$(STATIC_ANALYZER_FLAGS) \
-	    -I$$(EMULATION_CLASS_DIR) -I$$(GEN_OBJC_DIR) -I$$(ANDROID_NATIVE_DIR)
-endef
-
-NON_ARC_SRCS = \
-    java/util/HashMap.m \
-    java/util/LinkedHashMap.m \
-    IOSReference.m
-
-OBJC_SOURCE_DIRS = $(EMULATION_CLASS_DIR) $(GEN_OBJC_DIR) $(ANDROID_NATIVE_DIR)
-OBJC_EXTENSIONS = m mm
-arch_compile_rules = $(foreach src_dir,$(OBJC_SOURCE_DIRS),$(foreach ext,$(OBJC_EXTENSIONS),\
-    $(eval $(call compile_rules,$(1),$(2),$(src_dir),$(ext))))) \
-    $(foreach src,$(NON_ARC_SRCS),$(eval $(call compile_rules_no_arc,$(1),$(2),$(src)))) \
-    $(eval $(call additional_compile_rules,$(1),$(2)))
-
-$(call arch_compile_rules,$(CLASS_DIR),$(MACOSX_FLAGS))
-$(call arch_compile_rules,$(IPHONE_BUILD_DIR),$(IPHONE_FLAGS))
-$(call arch_compile_rules,$(IPHONEV7S_BUILD_DIR),$(IPHONEV7S_FLAGS))
-$(call arch_compile_rules,$(SIMULATOR_BUILD_DIR),$(SIMULATOR_FLAGS))
-ifdef TARGET_TEMP_DIR
-$(call arch_compile_rules,$(TARGET_TEMP_DIR),$(ARCH_FLAGS) $(SDK_FLAGS))
-endif
+$(CLASS_DIR)/%.o: $(EMULATION_CLASS_DIR)/%.m | translate
+	@mkdir -p $(@D)
+	$(CLANG) $(OBJCFLAGS) -I$(EMULATION_CLASS_DIR) -I$(GEN_OBJC_DIR) -c $< -o $@
 
 test: libs_dist $(DIST_DIR)/j2objcc
 	$(MAKE) -f tests.mk test
@@ -831,7 +744,7 @@ dist: emul_jar_dist libs_dist $(DIST_DIR)/j2objcc
 
 libs_dist: libs dist_includes $(EMULATION_LIB_DIST) $(MAIN_LIB_DIST)
 
-$(EMULATION_LIB_DIST): $(EMULATION_LIB) | $(DIST_LIB_DIR)
+$(EMULATION_LIB_DIST): $(FAT_LIB_LIBRARY) | $(DIST_LIB_DIR)
 	@install -m 0644 $< $@
 
 $(MAIN_LIB_DIST): $(MAIN_LIB) | $(DIST_LIB_DIR)
