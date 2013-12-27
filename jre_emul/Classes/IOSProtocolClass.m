@@ -85,7 +85,7 @@
     NSString *key = NSStringFromSelector(sel);
     if (![methodMap objectForKey:key]) {
       JavaLangReflectMethod *method = [JavaLangReflectMethod methodWithSelector:sel withClass:self
-          withMetadata:metadata ? [metadata findMethodInfo:key] : nil];
+          withMetadata:metadata ? [metadata findMethodMetadata:key] : nil];
       [methodMap setObject:method forKey:key];
     }
   }
@@ -108,7 +108,7 @@
   if (result) {
     JavaClassMetadata *metadata = [self getMetadata];
     return [JavaLangReflectMethod methodWithSelector:result withClass:self
-        withMetadata:metadata ? [metadata findMethodInfo:objcName] : nil];
+        withMetadata:metadata ? [metadata findMethodMetadata:objcName] : nil];
   }
   return nil;
 }

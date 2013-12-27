@@ -60,27 +60,20 @@
                                                 withJavaNetURL:nil]);
 }
 
-static BOOL IsConstructor(NSString *name) {
-  return [name isEqualToString:@"init"] || [name hasPrefix:@"initWith"];
-}
-
 static void CollectMethodsOrConstructors(IOSClass *cls,
                                          NSMutableDictionary *methodMap,
                                          BOOL publicOnly,
                                          BOOL constructors) {
   JavaClassMetadata *metadata = [cls getMetadata];
-  const J2ObjcMethodInfo *methodInfos = [metadata allMethods];
+  IOSObjectArray *methodInfos = [metadata allMethods];
   for (unsigned i = 0; i < metadata.methodCount; i++) {
-    const J2ObjcMethodInfo methodInfo = methodInfos[i];
-    SEL sel = sel_registerName(methodInfo.selector);
-    NSString *name = NSStringFromSelector(sel);
-    if (IsConstructor(name) == constructors) {
-      if (!publicOnly || (methodInfo.modifiers & JavaLangReflectModifier_PUBLIC)) {
-        JavaLangReflectMethod *method = [JavaLangReflectMethod methodWithSelector:sel
+    JavaMethodMetadata *info = [methodInfos objectAtIndex:i];
+    if ([info isConstructor] == constructors) {
+      if (!publicOnly || ([info modifiers] & JavaLangReflectModifier_PUBLIC)) {
+        JavaLangReflectMethod *method = [JavaLangReflectMethod methodWithSelector:[info selector]
                                                                         withClass:cls
-                                                                     withMetadata:&methodInfo];
-
-        [methodMap setObject:method forKey:name];
+                                                                     withMetadata:info];
+        [methodMap setObject:method forKey:[info name]];
       }
     }
   }

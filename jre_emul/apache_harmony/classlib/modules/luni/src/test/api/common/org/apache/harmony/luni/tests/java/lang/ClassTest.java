@@ -494,10 +494,10 @@ public class ClassTest extends junit.framework.TestCase {
     public void test_getMethods() throws Exception {
         Method[] m = TestClass.class.getMethods();
         assertEquals("Returned incorrect number of methods",
-                     2 + Object.class.getMethods().length, m.length);
+                     4 + Object.class.getMethods().length, m.length);
         m = SubTestClass.class.getMethods();
         assertEquals("Returned incorrect number of sub-class methods",
-                     2 + Object.class.getMethods().length, m.length);
+                     4 + Object.class.getMethods().length, m.length);
         // Number of inherited methods
     }
 
@@ -627,7 +627,7 @@ public class ClassTest extends junit.framework.TestCase {
 
         clazz = Class.forName("java.lang.Object");
         assertEquals("Class toString printed wrong value",
-                     "class NSObject", clazz.toString());
+                     "class java.lang.Object", clazz.toString());
 
         clazz = Class.forName("[Ljava.lang.Object;");
         assertEquals("Class toString printed wrong value",

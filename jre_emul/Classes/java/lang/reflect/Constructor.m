@@ -20,6 +20,7 @@
 //
 
 #import "Constructor.h"
+#import "JavaMetadata.h"
 #import "java/lang/AssertionError.h"
 #import "java/lang/ExceptionInInitializerError.h"
 #import "java/lang/IllegalArgumentException.h"
@@ -33,7 +34,7 @@
 
 + (id)constructorWithSelector:(SEL)aSelector
                     withClass:(IOSClass *)aClass
-                 withMetadata:(const J2ObjcMethodInfo *)metadata {
+                 withMetadata:(JavaMethodMetadata *)metadata {
   id c = [[JavaLangReflectConstructor alloc] initWithSelector:aSelector
                                                     withClass:aClass
                                                  withMetadata:metadata];

@@ -73,7 +73,12 @@
       return &data_->methods[i];
     }
   }
-  return NULL;
+  return nil;
+}
+
+- (JavaMethodMetadata *)findMethodMetadata:(NSString *)methodName {
+  const J2ObjcMethodInfo *info = [self findMethodInfo:methodName];
+  return info ? AUTORELEASE([[JavaMethodMetadata alloc] initWithMetadata:info]) : nil;
 }
 
 - (const J2ObjcFieldInfo *)findFieldInfo:(const char *)fieldName {
@@ -82,7 +87,12 @@
       return &data_->fields[i];
     }
   }
-  return NULL;
+  return nil;
+}
+
+- (JavaFieldMetadata *)findFieldMetadata:(const char *)fieldName {
+  const J2ObjcFieldInfo *info = [self findFieldInfo:fieldName];
+  return info ? AUTORELEASE([[JavaFieldMetadata alloc] initWithMetadata:info]) : nil;
 }
 
 - (IOSObjectArray *)getSuperclassTypeArguments {
@@ -98,12 +108,26 @@
   return result;
 }
 
-- (const J2ObjcFieldInfo *)allFields {
-  return data_->fields;
+- (IOSObjectArray *)allFields {
+  IOSObjectArray *result =
+      [IOSObjectArray arrayWithLength:data_->fieldCount type:[JavaFieldMetadata getClass]];
+  J2ObjcFieldInfo *fields = (J2ObjcFieldInfo *) data_->fields;
+  for (int i = 0; i < data_->fieldCount; i++) {
+    [result replaceObjectAtIndex:i
+                      withObject:[[JavaFieldMetadata alloc] initWithMetadata:fields++]];
+  }
+  return result;
 }
 
-- (const J2ObjcMethodInfo *)allMethods {
-  return data_->methods;
+- (IOSObjectArray *)allMethods {
+  IOSObjectArray *result =
+      [IOSObjectArray arrayWithLength:data_->methodCount type:[JavaMethodMetadata getClass]];
+  J2ObjcMethodInfo *methods = (J2ObjcMethodInfo *) data_->methods;
+  for (int i = 0; i < data_->methodCount; i++) {
+    [result replaceObjectAtIndex:i
+                      withObject:[[JavaMethodMetadata alloc] initWithMetadata:methods++]];
+  }
+  return result;
 }
 
 - (NSString *)description {
@@ -121,6 +145,85 @@
   [enclosingName release];
   [super dealloc];
 #endif
+}
+
+@end
+
+@implementation JavaFieldMetadata
+
+- (id)initWithMetadata:(const J2ObjcFieldInfo *)metadata {
+  if (self = [super init]) {
+    data_ = metadata;
+  }
+  return self;
+}
+
+- (NSString *)name {
+  return data_->javaName ?
+      [NSString stringWithUTF8String:data_->javaName] :
+      [NSString stringWithUTF8String:data_->name];
+}
+
+- (NSString *)javaName {
+  return data_->javaName ? [NSString stringWithUTF8String:data_->javaName] : nil;
+}
+
+- (int)modifiers {
+  return data_->modifiers;
+}
+
+- (id<JavaLangReflectType>)type {
+  return JreTypeForString(data_->type);
+}
+
+@end
+
+@implementation JavaMethodMetadata
+
+- (id)initWithMetadata:(const J2ObjcMethodInfo *)metadata {
+  if (self = [super init]) {
+    data_ = metadata;
+  }
+  return self;
+}
+
+- (SEL)selector {
+  return sel_registerName(data_->selector);
+}
+
+- (NSString *)name {
+  return data_->javaName ?
+      [NSString stringWithUTF8String:data_->javaName] :
+      [NSString stringWithUTF8String:data_->selector];
+}
+
+- (NSString *)javaName {
+  return data_->javaName ? [NSString stringWithUTF8String:data_->javaName] : nil;
+}
+
+- (int)modifiers {
+  return data_->modifiers;
+}
+
+- (id<JavaLangReflectType>)returnType {
+  return JreTypeForString(data_->returnType);
+}
+
+- (IOSObjectArray *)exceptionTypes {
+  NSString *exceptionsStr = [NSString stringWithUTF8String:data_->exceptions];
+  NSArray *exceptionsArray = [exceptionsStr componentsSeparatedByString:@";"];
+  IOSObjectArray *result =
+      [IOSObjectArray arrayWithLength:[exceptionsArray count] type:[IOSClass getClass]];
+  NSUInteger count = 0;
+  for (NSString *thrownException in exceptionsArray) {
+    IOSObjectArray_Set(result, count++, [IOSClass classForIosName:thrownException]);
+  }
+  return result;
+}
+
+- (BOOL)isConstructor {
+  const char *name = data_->javaName ? data_->javaName : data_->selector;
+  return strcmp(name, "init") == 0 || strstr(name, "initWith") == name;
 }
 
 @end

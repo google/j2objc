@@ -27,6 +27,8 @@
 #import "java/lang/reflect/Member.h"
 #import "ExecutableMember.h"
 
+@class JavaMethodMetadata;
+
 // A native implementation of java.lang.reflect.Constructor.  Its methods are
 // limited to those that can be derived from an Objective-C Method instance,
 // so instances can be created and released as needed.
@@ -35,7 +37,7 @@
 
 + (id)constructorWithSelector:(SEL)aSelector
                     withClass:(IOSClass *)aClass
-                 withMetadata:(const J2ObjcMethodInfo *)metadata;
+                 withMetadata:(JavaMethodMetadata *)metadata;
 
 // Create a new instance using this constructor.
 - (id)newInstanceWithNSObjectArray:(IOSObjectArray *)initArgs;
