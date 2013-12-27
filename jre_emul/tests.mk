@@ -28,6 +28,7 @@ SUPPORT_SOURCES = \
 	org/apache/harmony/nio/tests/java/nio/AbstractBufferTest.java \
 	org/apache/harmony/text/tests/java/text/Support_Format.java \
 	org/apache/harmony/text/tests/java/text/Support_MessageFormat.java \
+	tests/security/MessageDigestTest.java \
 	tests/support/Support_CollectionTest.java \
 	tests/support/Support_ListTest.java \
 	tests/support/Support_Locale.java \
@@ -304,6 +305,11 @@ TEST_SOURCES = \
 	tests/api/java/util/ResourceBundleTest.java \
 	tests/api/java/util/TimerTaskTest.java \
 	tests/api/java/util/TimerTest.java \
+	tests/targets/security/MessageDigestTestMD5.java \
+	tests/targets/security/MessageDigestTestSHA1.java \
+	tests/targets/security/MessageDigestTestSHA256.java \
+	tests/targets/security/MessageDigestTestSHA384.java \
+	tests/targets/security/MessageDigestTestSHA512.java \
 
 FAILING_TESTS = \
 	libcore/java/util/TreeSetTest.java \
@@ -334,7 +340,18 @@ TEST_RESOURCES_SRCS = \
     org/apache/harmony/luni/tests/test_resource.txt \
     org/apache/harmony/luni/tests/java/io/testfile-utf8.txt
 ANDROID_TEST_RESOURCES_SRCS = \
-    META-INF/services/libcore.java.util.ServiceLoaderTestInterface
+    META-INF/services/libcore.java.util.ServiceLoaderTestInterface \
+    MD5.check \
+    MD5.data \
+    SHA-1.check \
+    SHA-1.data \
+    SHA-256.check \
+    SHA-256.data \
+    SHA-384.check \
+    SHA-384.data \
+    SHA-512.check \
+    SHA-512.data \
+
 TEST_RESOURCES_ROOT = apache_harmony/classlib/modules/luni/src/test/resources
 ANDROID_TEST_RESOURCES_ROOT = android/libcore/luni/src/test/resources
 TEST_RESOURCES = \
