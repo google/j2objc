@@ -176,9 +176,9 @@
 - (JavaNetURL *)getResource:(NSString *)name;
 - (JavaIoInputStream *)getResourceAsStream:(NSString *)name;
 
-// Boxing and unboxing
-- (id)boxValue:(J2ObjcRawValue *)rawValue;
-- (BOOL)unboxValue:(id)value toRawValue:(J2ObjcRawValue *)rawValue;
+// Boxing and unboxing (internal)
+- (id)__boxValue:(J2ObjcRawValue *)rawValue;
+- (BOOL)__unboxValue:(id)value toRawValue:(J2ObjcRawValue *)rawValue;
 
 // Internal methods
 - (void)collectMethods:(NSMutableDictionary *)methodMap

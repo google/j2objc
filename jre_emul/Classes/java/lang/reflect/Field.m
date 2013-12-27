@@ -276,6 +276,9 @@ BOOL IsStatic(JavaLangReflectField *field) {
 
 
 - (IOSClass *)getType {
+  if (metadata_) {
+    return (IOSClass *) [metadata_ type];
+  }
   if (!ivar_) {
     // Static field, use accessor method's return type.
     NSAssert(metadata_ != nil, @"malformed field instance");
@@ -288,9 +291,7 @@ BOOL IsStatic(JavaLangReflectField *field) {
 }
 
 - (id<JavaLangReflectType>)getGenericType {
-  if (metadata_) {
-    return [metadata_ type];
-  }
+  // TODO(tball): update when field metadata has a generic type attribute.
   return [self getType];
 }
 

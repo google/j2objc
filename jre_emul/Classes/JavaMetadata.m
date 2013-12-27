@@ -83,8 +83,16 @@
 
 - (const J2ObjcFieldInfo *)findFieldInfo:(const char *)fieldName {
   for (int i = 0; i < data_->fieldCount; i++) {
-    if (strcmp(fieldName, data_->fields[i].name) == 0) {
-      return &data_->fields[i];
+    if (data_->fields[i].javaName) {
+      if (strcmp(fieldName, data_->fields[i].javaName) == 0) {
+        return &data_->fields[i];
+      }
+    } else {
+      // Field name has standard trailing underscore added.
+      int n = strlen(data_->fields[i].name) - 1;
+      if (strncmp(fieldName, data_->fields[i].name, n) == 0) {
+        return &data_->fields[i];
+      }
     }
   }
   return nil;
@@ -212,11 +220,14 @@
 - (IOSObjectArray *)exceptionTypes {
   NSString *exceptionsStr = [NSString stringWithUTF8String:data_->exceptions];
   NSArray *exceptionsArray = [exceptionsStr componentsSeparatedByString:@";"];
-  IOSObjectArray *result =
-      [IOSObjectArray arrayWithLength:[exceptionsArray count] type:[IOSClass getClass]];
+  // The last string is empty, due to the trailing semi-colon of the last exception.
+  int n = [exceptionsArray count] - 1;
+  IOSObjectArray *result = [IOSObjectArray arrayWithLength:n type:[IOSClass getClass]];
   NSUInteger count = 0;
-  for (NSString *thrownException in exceptionsArray) {
-    IOSObjectArray_Set(result, count++, [IOSClass classForIosName:thrownException]);
+  for (int i = 0; i < n; i++) {
+    // Strip off leading 'L'.
+    NSString *thrownException = [[exceptionsArray objectAtIndex:i] substringFromIndex:1];
+    IOSObjectArray_Set(result, count++, [IOSClass forName:thrownException]);
   }
   return result;
 }

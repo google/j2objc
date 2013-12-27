@@ -460,11 +460,10 @@ public class ClassTest extends junit.framework.TestCase {
      */
     public void test_getFields() throws Exception {
         Field[] f = TestClass.class.getFields();
-        // NSObject has a isa field that points to a class description.
-        assertEquals("Incorrect number of fields", 5, f.length);
+        assertEquals("Incorrect number of fields", 4, f.length);
         f = SubTestClass.class.getFields();
         // Check inheritance of pub fields
-        assertEquals("Incorrect number of fields", 5, f.length);
+        assertEquals("Incorrect number of fields", 4, f.length);
     }
 
     /**
@@ -623,7 +622,7 @@ public class ClassTest extends junit.framework.TestCase {
         Class<?> clazz = null;
         clazz = Class.forName("[I");
         assertEquals("Class toString printed wrong value",
-                     "class intArray", clazz.toString());
+                     "class int[]", clazz.toString());
 
         clazz = Class.forName("java.lang.Object");
         assertEquals("Class toString printed wrong value",
@@ -631,6 +630,6 @@ public class ClassTest extends junit.framework.TestCase {
 
         clazz = Class.forName("[Ljava.lang.Object;");
         assertEquals("Class toString printed wrong value",
-                     "class NSObjectArray", clazz.toString());
+                     "class java.lang.Object[]", clazz.toString());
     }
 }

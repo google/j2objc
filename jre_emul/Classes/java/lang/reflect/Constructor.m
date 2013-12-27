@@ -67,7 +67,7 @@
   int count = [initArgs count];
   for (int i = 0; i < count; i++) {
     J2ObjcRawValue arg;
-    if (![parameterTypes->buffer_[i] unboxValue:initArgs->buffer_[i] toRawValue:&arg]) {
+    if (![parameterTypes->buffer_[i] __unboxValue:initArgs->buffer_[i] toRawValue:&arg]) {
       @throw AUTORELEASE([[JavaLangIllegalArgumentException alloc] initWithNSString:
           @"argument type mismatch"]);
     }

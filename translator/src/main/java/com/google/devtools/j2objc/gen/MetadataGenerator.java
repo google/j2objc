@@ -137,24 +137,20 @@ public class MetadataGenerator {
       TypeDeclaration typeDecl = (TypeDeclaration) typeNode;
       List<String> fieldMetadata = Lists.newArrayList();
       for (FieldDeclaration field : typeDecl.getFields()) {
-        int modifiers = field.getModifiers();
-        if (modifiers != Modifier.PRIVATE) {
-          for (Iterator<?> it = field.fragments().iterator(); it.hasNext(); ) {
-            VariableDeclarationFragment f = (VariableDeclarationFragment) it.next();
-            // Update modifiers from fragment binding.
-            modifiers = getFieldModifiers(Types.getVariableBinding(f));
-            String javaName = f.getName().getIdentifier();
-            String objcName = NameTable.javaFieldToObjC(NameTable.getName(f.getName()));
-            if (objcName.equals(javaName + '_')) {
-              // Don't print Java name if it matches the default pattern, to conserve space.
-              javaName = null;
-            }
-            String metadata = String.format("    { \"%s\", ", objcName);
-            metadata += javaName != null ? String.format("\"%s\", ", javaName) : "NULL, ";
-            metadata +=
-                String.format("0x%x, \"%s\" },\n", modifiers, getTypeName(Types.getTypeBinding(f)));
-            fieldMetadata.add(metadata);
+        for (Iterator<?> it = field.fragments().iterator(); it.hasNext(); ) {
+          VariableDeclarationFragment f = (VariableDeclarationFragment) it.next();
+          int modifiers = getFieldModifiers(Types.getVariableBinding(f));
+          String javaName = f.getName().getIdentifier();
+          String objcName = NameTable.javaFieldToObjC(NameTable.getName(f.getName()));
+          if (objcName.equals(javaName + '_')) {
+            // Don't print Java name if it matches the default pattern, to conserve space.
+            javaName = null;
           }
+          String metadata = String.format("    { \"%s\", ", objcName);
+          metadata += javaName != null ? String.format("\"%s\", ", javaName) : "NULL, ";
+          metadata +=
+              String.format("0x%x, \"%s\" },\n", modifiers, getTypeName(Types.getTypeBinding(f)));
+          fieldMetadata.add(metadata);
         }
       }
       if (fieldMetadata.size() > 0) {
@@ -193,10 +189,7 @@ public class MetadataGenerator {
     }
     StringBuilder sb = new StringBuilder();
     for (int i = 0; i < exceptionTypes.length; i++) {
-      if (i != 0) {
-        sb.append(';');
-      }
-      sb.append(NameTable.getFullName(exceptionTypes[i]));
+      sb.append(getTypeName(exceptionTypes[i]));
     }
     return sb.toString();
   }
@@ -225,10 +218,10 @@ public class MetadataGenerator {
     if (type.isTypeVariable()) {
       return "T" + type.getName() + ";";
     }
-    if (type.isPrimitive()) {
+    if (type.isPrimitive() || type.isArray()) {
       return type.getBinaryName();
     }
-    return "L" + NameTable.getFullName(type) + ";";
+    return "L" + type.getBinaryName() + ";";
   }
 
   /**

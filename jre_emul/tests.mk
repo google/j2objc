@@ -26,6 +26,7 @@ SUPPORT_SOURCES = \
 	JSR166TestCase.java \
 	libcore/java/util/ServiceLoaderTestInterface.java \
 	org/apache/harmony/nio/tests/java/nio/AbstractBufferTest.java \
+	org/apache/harmony/testframework/serialization/SerializationTest.java \
 	org/apache/harmony/text/tests/java/text/Support_Format.java \
 	org/apache/harmony/text/tests/java/text/Support_MessageFormat.java \
 	tests/security/MessageDigestTest.java \
@@ -85,6 +86,7 @@ TEST_SOURCES = \
 	PriorityQueueTest.java \
 	ReentrantLockTest.java \
 	ReentrantReadWriteLockTest.java \
+	SerializationTest.java \
 	ScheduledExecutorTest.java \
 	SynchronousQueueTest.java \
 	ThreadPoolExecutorTest.java \
@@ -273,6 +275,9 @@ TEST_SOURCES = \
 	org/apache/harmony/luni/tests/java/util/TreeSetTest.java \
 	org/apache/harmony/luni/tests/java/util/UUIDTest.java \
 	org/apache/harmony/luni/tests/java/util/VectorTest.java \
+	org/apache/harmony/tests/java/io/ObjectStreamClassTest.java \
+	org/apache/harmony/tests/java/io/ObjectStreamConstantsTest.java \
+	org/apache/harmony/tests/java/io/ObjectStreamFieldTest.java \
 	org/apache/harmony/tests/java/math/BigIntegerAddTest.java \
 	org/apache/harmony/tests/java/math/BigIntegerAndTest.java \
 	org/apache/harmony/tests/java/math/BigIntegerCompareTest.java \

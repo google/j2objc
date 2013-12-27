@@ -763,16 +763,16 @@ public class ObjectiveCImplementationGeneratorTest extends GenerationTest {
         " abstract void test8() throws InterruptedException, Error; " +
         "}",
         "Test", "Test.m");
-    assertTranslation(translation, "{ \"test1\", NULL, \"LNSObject;\", 0x0, NULL },");
+    assertTranslation(translation, "{ \"test1\", NULL, \"Ljava.lang.Object;\", 0x0, NULL },");
     assertTranslation(translation, "{ \"test2\", NULL, \"C\", 0x2, NULL },");
     assertTranslation(translation, "{ \"test3\", NULL, \"V\", 0x4, NULL },");
     assertTranslation(translation, "{ \"test4\", NULL, \"J\", 0x10, NULL },");
     assertTranslation(translation, "{ \"test5\", NULL, \"Z\", 0x20, NULL },");
-    assertTranslation(translation,
-        "{ \"test6WithNSString:withNSObjectArray:\", \"test6\", \"LNSString;\", 0x80, NULL }");
+    assertTranslation(translation, "{ \"test6WithNSString:withNSObjectArray:\", " +
+    		"\"test6\", \"Ljava.lang.String;\", 0x80, NULL }");
     assertTranslation(translation, "{ \"test7\", NULL, \"V\", 0x100, NULL },");
-    assertTranslation(translation,
-        "{ \"test8\", NULL, \"V\", 0x400, \"JavaLangInterruptedException;JavaLangError\" },");
+    assertTranslation(translation, "{ \"test8\", NULL, \"V\", 0x400, " +
+    		"\"Ljava.lang.InterruptedException;Ljava.lang.Error;\" },");
   }
 
   public void testAnnotationWithField() throws IOException {
