@@ -17,6 +17,8 @@
 
 package java.util.logging;
 
+import com.google.j2objc.annotations.Weak;
+
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -98,6 +100,7 @@ public class Logger {
     private volatile String name;
 
     /** The parent logger of this logger. */
+    @Weak
     Logger parent;
 
     /** The logging level of this logger, or null if none is set. */

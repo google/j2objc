@@ -13,6 +13,8 @@ FIELD java.util.concurrent.Phaser.QNode.phaser
 FIELD java.util.concurrent.ThreadPoolExecutor.workers
 FIELD java.util.concurrent.ThreadPoolExecutor.workQueue
 
+FIELD java.util.logging.Logger.children
+
 # These types are adapters of each other. If the cycle was created then a stack
 # overflow would be a larger problem then the memory leak.
 FIELD org.xml.sax.helpers.ParserAdapter.contentHandler org.xml.sax.helpers.XMLReaderAdapter
