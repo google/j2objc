@@ -20,6 +20,7 @@
 #import "IOSMappedClass.h"
 #import "IOSObjectArray.h"
 #import "JavaMetadata.h"
+#import "java/lang/Package.h"
 #import "java/lang/reflect/Method.h"
 #import "java/lang/reflect/Modifier.h"
 
@@ -49,7 +50,7 @@
 }
 
 - (id)getPackage {
-  return AUTORELEASE([[JavaLangPackage alloc] initWithNSString:packageName_
+  return AUTORELEASE([[JavaLangPackage alloc] initWithNSString:package_
                                                   withNSString:nil
                                                   withNSString:nil
                                                   withNSString:nil
