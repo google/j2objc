@@ -70,9 +70,7 @@ CLASS_DIR = $(BUILD_DIR)/Classes
 EMULATION_STAGE = /tmp/jre_emul
 EMULATION_JAR = $(BUILD_DIR)/jre_emul.jar
 EMULATION_JAR_DIST = $(DIST_JAR_DIR)/jre_emul.jar
-EMULATION_LIB = $(BUILD_DIR)/libjre_emul.a
-EMULATION_LIB_DIST = $(DIST_LIB_DIR)/libjre_emul.a
-XCODE_LIB = $(CONFIGURATION_BUILD_DIR)/libjre_emul.a
+EMULATION_LIB_DIST = $(ARCH_LIB_DIR)/libjre_emul.a
 MAIN_LIB = $(BUILD_DIR)/libj2objc_main.a
 MAIN_LIB_DIST = $(DIST_LIB_DIR)/libj2objc_main.a
 EMULATION_CLASS_DIR = Classes
@@ -94,8 +92,6 @@ TEST_SRC_ROOTS = $(JRE_TEST_ROOT) $(JRE_MATH_TEST_ROOT) $(JRE_NIO_TEST_ROOT) \
     $(JRE_TEXT_TEST_ROOT) $(ANDROID_JRE_TEST_ROOT) $(ARCHIVE_TEST_ROOT)
 TEST_SRC = $(subst $(eval) ,:,$(TEST_SRC_ROOTS))
 vpath %.java $(JRE_SRC):$(TEST_SRC):$(STUBS_DIR)
-
-CLANG=$(XCRUN) clang
 
 # Clang warnings
 WARNINGS := $(WARNINGS) -Wall -Werror

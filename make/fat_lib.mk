@@ -18,6 +18,8 @@
 #   FAT_LIB_SOURCES_RELATIVE
 #   FAT_LIB_SOURCE_DIRS
 #   FAT_LIB_COMPILE
+# The including makefile may define the following optional variables:
+#   FAT_LIB_EXTENSIONS
 #
 # This file defines the following to be used by the including file:
 #   FAT_LIB_LIBRARY
@@ -30,8 +32,11 @@
 FAT_LIB_LIBRARY = $(ARCH_BUILD_DIR)/lib$(FAT_LIB_NAME).a
 FAT_LIB_ARCH_LIBS = $(J2OBJC_ARCHS:%=$(BUILD_DIR)/%-lib$(FAT_LIB_NAME).a)
 
+FAT_LIB_EXTENSIONS ?= m
+
 FAT_LIB_PLIST_DIR = $(BUILD_DIR)/plists
-FAT_LIB_PLISTS = $(FAT_LIB_SOURCES_RELATIVE:%.m=$(FAT_LIB_PLIST_DIR)/%.plist)
+FAT_LIB_PLISTS = \
+  $(foreach src,$(FAT_LIB_SOURCES_RELATIVE),$(FAT_LIB_PLIST_DIR)/$(basename $(src)).plist)
 
 FAT_LIB_MACOSX_SDK_DIR = $(shell bash $(J2OBJC_ROOT)/scripts/sysroot_path.sh)
 FAT_LIB_IPHONE_SDK_DIR = $(shell bash $(J2OBJC_ROOT)/scripts/sysroot_path.sh --iphoneos)
@@ -59,15 +64,17 @@ $(1): $(2) | fat_lib_dependencies
 endef
 
 define analyze_rule
-$(FAT_LIB_PLIST_DIR)/%.plist: $(1)/%.m | fat_lib_dependencies
+$(FAT_LIB_PLIST_DIR)/%.plist: $(1) | fat_lib_dependencies
 	@mkdir -p $$(@D)
 	$(FAT_LIB_COMPILE) $(STATIC_ANALYZER_FLAGS) -c $$< -o $$@
 endef
 
-$(foreach src_dir,$(FAT_LIB_SOURCE_DIRS),$(eval $(call analyze_rule,$(src_dir))))
+$(foreach src_dir,$(FAT_LIB_SOURCE_DIRS),$(foreach ext,$(FAT_LIB_EXTENSIONS),\
+  $(eval $(call analyze_rule,$(src_dir)/%.$(ext)))))
 
 emit_general_compile_rules = $(foreach src_dir,$(FAT_LIB_SOURCE_DIRS),\
-  $(eval $(call compile_rule,$(1)/%.o,$(src_dir)/%.m,$(2))))
+  $(foreach ext,$(FAT_LIB_EXTENSIONS),\
+  $(eval $(call compile_rule,$(1)/%.o,$(src_dir)/%.$(ext),$(2)))))
 
 ifdef TARGET_TEMP_DIR
 emit_rename_compile_rules = \
