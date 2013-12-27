@@ -1621,4 +1621,22 @@ public class StatementGeneratorTest extends GenerationTest {
         "public class Test { void test(String s) { assert !\"null\\foo\\nbar\".equals(s); }}",
         "Test", "Test.m");
   }
+
+  // Verify that the type of superclass field's type variable is cast properly.
+  public void testSuperTypeVariable() throws IOException {
+    addSourceFile("import java.util.List; class TestList <T extends List> { " +
+        "  protected final T testField; TestList(T field) { testField = field; }}",
+        "TestList.java");
+    addSourceFile("import java.util.ArrayList; class TestArrayList extends TestList<ArrayList> { " +
+        "  TestArrayList(ArrayList list) { super(list); }}",
+        "TestArrayList.java");
+    String translation = translateSourceFile(
+        "import java.util.ArrayList; class Test extends TestArrayList { " +
+        "  Test(ArrayList list) { super(list); } " +
+        "  private class Inner {" +
+        "    void test() { testField.ensureCapacity(42); }}}",
+        "Test", "Test.m");
+    assertTranslation(translation,
+        "[((JavaUtilArrayList *) nil_chk(this$0_->testField_)) ensureCapacityWithInt:42];");
+  }
 }

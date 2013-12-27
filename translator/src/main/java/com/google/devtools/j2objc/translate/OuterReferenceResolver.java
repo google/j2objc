@@ -253,7 +253,6 @@ public class OuterReferenceResolver extends ASTVisitor {
   }
 
   private List<IVariableBinding> getPathForField(IVariableBinding var) {
-    var = var.getVariableDeclaration();
     List<IVariableBinding> path = getOuterPathInherited(var.getDeclaringClass());
     if (!path.isEmpty()) {
       path.add(var);
@@ -262,7 +261,6 @@ public class OuterReferenceResolver extends ASTVisitor {
   }
 
   private List<IVariableBinding> getPathForLocalVar(IVariableBinding var) {
-    var = var.getVariableDeclaration();
     boolean isConstant = var.getConstantValue() != null;
     List<IVariableBinding> path = Lists.newArrayList();
     Scope lastScope = null;
