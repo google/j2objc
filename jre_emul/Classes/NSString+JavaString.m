@@ -906,6 +906,10 @@ NSStringEncoding parseCharsetName(NSString *charset) {
   return [CaseInsensitiveComparator CASE_INSENSITIVE_ORDER];
 }
 
++ (long long int)serialVersionUID {
+  return -6849794470754667710L;
+}
+
 @end
 
 @implementation CaseInsensitiveComparator
@@ -922,6 +926,10 @@ static id<JavaUtilComparator> CaseInsensitiveComparator_CASE_INSENSITIVE_ORDER_;
 
 + (id<JavaUtilComparator>)CASE_INSENSITIVE_ORDER {
   return CaseInsensitiveComparator_CASE_INSENSITIVE_ORDER_;
+}
+
++ (long long int)serialVersionUID {
+  return 8575799808933029326L;
 }
 
 + (void)initialize {

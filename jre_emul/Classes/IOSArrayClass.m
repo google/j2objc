@@ -67,7 +67,7 @@
 }
 
 - (NSString *)objcName {
-  return [self getSimpleName];
+  return [[[self getComponentType] objcName] stringByAppendingString:@"Array"];
 }
 
 - (id)newInstance {

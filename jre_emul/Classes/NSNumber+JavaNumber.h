@@ -24,9 +24,6 @@
 #include "java/io/Serializable.h"
 #include "java/lang/AssertionError.h"
 
-#define NSNumber_serialVersionUID -8742448824652078965L
-#define JavaLangNumber_serialVersionUID NSNumber_serialVersionUID
-
 //
 // Adds the java.io.Serializable marker interface to NSNumber.
 //

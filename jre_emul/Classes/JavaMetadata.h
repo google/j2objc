@@ -29,13 +29,17 @@
 @property (readonly, retain) NSString *typeName;
 @property (readonly, retain) NSString *packageName;
 @property (readonly, retain) NSString *enclosingName;
+@property (readonly, assign) uint16_t fieldCount;
+@property (readonly, assign) uint16_t methodCount;
 @property (readonly, assign) uint16_t modifiers;
 
 - (id)initWithMetadata:(J2ObjcClassInfo *)metadata;
 
 - (NSString *)qualifiedName;
 - (const J2ObjcMethodInfo *)findMethodInfo:(NSString *)methodName;
-- (const J2ObjcFieldInfo *)findFieldInfo:(Ivar)field;
+- (const J2ObjcMethodInfo *)allMethods;
+- (const J2ObjcFieldInfo *)findFieldInfo:(const char *)fieldName;
+- (const J2ObjcFieldInfo *)allFields;
 - (IOSObjectArray *)getSuperclassTypeArguments;
 
 @end
