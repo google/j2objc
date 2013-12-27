@@ -21,6 +21,8 @@
 
 #import "NSString+JavaString.h"
 #import "JreEmulation.h"
+#import "IOSClass.h"
+#import "java/io/ObjectStreamField.h"
 #import "java/io/Serializable.h"
 #import "java/io/UnsupportedEncodingException.h"
 #import "java/lang/AssertionError.h"
@@ -376,6 +378,9 @@ destinationBegin:(int)destinationBegin {
 }
 
 - (unichar)charAtWithInt:(int)index {
+  if (index < 0 || index >= [self length]) {
+    @throw makeException([JavaLangStringIndexOutOfBoundsException class]);
+  }
   return [self characterAtIndex:(NSUInteger)index];
 }
 
@@ -910,6 +915,69 @@ NSStringEncoding parseCharsetName(NSString *charset) {
   return -6849794470754667710L;
 }
 
++ (IOSObjectArray *)serialPersistentFields {
+  return [IOSObjectArray arrayWithLength:0
+                                    type:[IOSClass classWithClass:[JavaIoObjectStreamField class]]];
+}
+
++ (J2ObjcClassInfo *)__metadata {
+  static J2ObjcMethodInfo methods[] = {
+    { "initWithByteArray:withInt:withInt:withJavaLangString:", NULL, NULL, 0x1, "JavaIoUnsupportedEncodingException" },
+    { "initWithByteArray:withJavaLangString:", NULL, NULL, 0x1, "JavaIoUnsupportedEncodingException" },
+    { "initWithInt:withInt:withCharArray:", NULL, NULL, 0x0, NULL },
+    { "copyValueOfWithCharArray:", NULL, "LJavaLangString", 0x9, NULL },
+    { "copyValueOfWithCharArray:withInt:withInt:", NULL, "LJavaLangString", 0x9, NULL },
+    { "formatWithJavaUtilLocale:withJavaLangString:withNSObjectArray:", NULL, "LJavaLangString", 0x89, NULL },
+    { "formatWithJavaLangString:withNSObjectArray:", NULL, "LJavaLangString", 0x89, NULL },
+    { "valueOfWithBoolean:", NULL, "LJavaLangString", 0x9, NULL },
+    { "valueOfWithChar:", NULL, "LJavaLangString", 0x9, NULL },
+    { "valueOfWithCharArray:", NULL, "LJavaLangString", 0x9, NULL },
+    { "valueOfWithCharArray:withInt:withInt:", NULL, "LJavaLangString", 0x9, NULL },
+    { "valueOfWithDouble:", NULL, "LJavaLangString", 0x9, NULL },
+    { "valueOfWithFloat:", NULL, "LJavaLangString", 0x9, NULL },
+    { "valueOfWithInt:", NULL, "LJavaLangString", 0x9, NULL },
+    { "valueOfWithLong:", NULL, "LJavaLangString", 0x9, NULL },
+    { "valueOfWithId:", NULL, "LJavaLangString", 0x9, NULL },
+    { "concatWithJavaLangString:", NULL, "LJavaLangString", 0x1, NULL },
+    { "containsWithJavaLangCharSequence:", NULL, "Z", 0x1, NULL },
+    { "endsWithWithJavaLangString:", NULL, "Z", 0x1, NULL },
+    { "equalsIgnoreCaseWithJavaLangString:", NULL, "Z", 0x1, NULL },
+    { "getBytes", NULL, "LIOSByteArray", 0x1, NULL },
+    { "getBytesWithJavaNioCharsetCharset:", NULL, "LIOSByteArray", 0x1, NULL },
+    { "getBytesWithJavaLangString:", NULL, "LIOSByteArray", 0x1, "JavaIoUnsupportedEncodingException" },
+    { "intern", NULL, "LJavaLangString", 0x1, NULL },
+    { "isEmpty", NULL, "Z", 0x1, NULL },
+    { "matchesWithJavaLangString:", NULL, "Z", 0x1, NULL },
+    { "regionMatchesWithBoolean:withInt:withJavaLangString:withInt:withInt:", NULL, "Z", 0x1, NULL },
+    { "regionMatchesWithInt:withJavaLangString:withInt:withInt:", NULL, "Z", 0x1, NULL },
+    { "replaceWithChar:withChar:", NULL, "LJavaLangString", 0x1, NULL },
+    { "replaceWithJavaLangCharSequence:withJavaLangCharSequence:", NULL, "LJavaLangString", 0x1, NULL },
+    { "replaceAllWithJavaLangString:withJavaLangString:", NULL, "LJavaLangString", 0x1, NULL },
+    { "replaceFirstWithJavaLangString:withJavaLangString:", NULL, "LJavaLangString", 0x1, NULL },
+    { "splitWithJavaLangString:", NULL, "LIOSObjectArray", 0x1, NULL },
+    { "splitWithJavaLangString:withInt:", NULL, "LIOSObjectArray", 0x1, NULL },
+    { "startsWithWithJavaLangString:", NULL, "Z", 0x1, NULL },
+    { "startsWithWithJavaLangString:withInt:", NULL, "Z", 0x1, NULL },
+    { "substringWithInt:", NULL, "LJavaLangString", 0x1, NULL },
+    { "substringWithInt:withInt:", NULL, "LJavaLangString", 0x1, NULL },
+    { "toCharArray", NULL, "LIOSCharArray", 0x1, NULL },
+    { "toLowerCase", NULL, "LJavaLangString", 0x1, NULL },
+    { "toLowerCaseWithJavaUtilLocale:", NULL, "LJavaLangString", 0x1, NULL },
+    { "toUpperCase", NULL, "LJavaLangString", 0x1, NULL },
+    { "toUpperCaseWithJavaUtilLocale:", NULL, "LJavaLangString", 0x1, NULL },
+    { "trim", NULL, "LJavaLangString", 0x1, NULL },
+    { "contentEqualsWithJavaLangCharSequence:", NULL, "Z", 0x1, NULL },
+    { "contentEqualsWithJavaLangStringBuffer:", NULL, "Z", 0x1, NULL },
+  };
+  static J2ObjcFieldInfo fields[] = {
+    { "CASE_INSENSITIVE_ORDER_", NULL, 0x19, "LJavaUtilComparator" },
+    { "serialPersistentFields_", NULL, 0x1a, "LIOSObjectArray" },
+    { "serialVersionUID_", NULL, 0x1a, "J" },
+  };
+  static J2ObjcClassInfo _JavaLangString = { "String", "java.lang", NULL, 0x1, 46, methods, 3, fields, 0, NULL};
+  return &_JavaLangString;
+}
+
 @end
 
 @implementation CaseInsensitiveComparator
@@ -943,6 +1011,16 @@ static id<JavaUtilComparator> CaseInsensitiveComparator_CASE_INSENSITIVE_ORDER_;
         [[[CaseInsensitiveComparator alloc] init] autorelease]);
 #endif
   }
+}
+
++ (J2ObjcClassInfo *)__metadata {
+  static J2ObjcFieldInfo fields[] = {
+    { "serialVersionUID_", NULL, 0x1a, "J" },
+  };
+  static J2ObjcClassInfo _JavaLangString_CaseInsensitiveComparator = {
+    "CaseInsensitiveComparator", "java.lang", "String", 0xa, 0, NULL, 1, fields, 0, NULL
+  };
+  return &_JavaLangString_CaseInsensitiveComparator;
 }
 
 @end

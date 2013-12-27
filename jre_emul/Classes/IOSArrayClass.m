@@ -59,7 +59,7 @@
 }
 
 - (NSString *)getSimpleName {
-  return [[[self getComponentType] getName] stringByAppendingString:@"Array"];
+  return [[[self getComponentType] objcName] stringByAppendingString:@"Array"];
 }
 
 - (NSString *)binaryName {
