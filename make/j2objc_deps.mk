@@ -49,7 +49,7 @@ jre_emul_java_manifest:
 junit_dist: translator_dist jre_emul_dist
 	@$(MAKE) -C $(J2OBJC_ROOT)/junit dist
 
-junit_java: java_deps_dist
+junit_java: java_deps_dist annotations_dist
 	@$(MAKE) -C $(J2OBJC_ROOT)/junit java
 
 junit_manifest:
