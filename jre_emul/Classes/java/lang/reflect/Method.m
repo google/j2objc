@@ -125,7 +125,7 @@
   [invocation setSelector:selector_];
   for (NSUInteger i = 0; i < nArgs; i++) {
     J2ObjcRawValue arg;
-    if (![paramTypes->buffer_[i] unboxValue:arguments->buffer_[i] toRawValue:&arg]) {
+    if (![paramTypes->buffer_[i] __unboxValue:arguments->buffer_[i] toRawValue:&arg]) {
       @throw AUTORELEASE([[JavaLangIllegalArgumentException alloc] initWithNSString:
           @"argument type mismatch"]);
     }
@@ -144,7 +144,7 @@
   }
   J2ObjcRawValue returnValue;
   [invocation getReturnValue:&returnValue];
-  return [returnType boxValue:&returnValue];
+  return [returnType __boxValue:&returnValue];
 }
 
 - (NSString *)description {

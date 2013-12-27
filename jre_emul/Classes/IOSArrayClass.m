@@ -55,11 +55,11 @@
 }
 
 - (NSString *)getName {
-  return [self getSimpleName];
+  return [self binaryName];
 }
 
 - (NSString *)getSimpleName {
-  return [[[self getComponentType] objcName] stringByAppendingString:@"Array"];
+  return [[[self getComponentType] getName] stringByAppendingString:@"[]"];
 }
 
 - (NSString *)binaryName {
@@ -80,6 +80,10 @@
 - (BOOL)isEqual:(id)anObject {
   return [anObject isKindOfClass:[IOSArrayClass class]] &&
     [componentType_ isEqual:[anObject getComponentType]];
+}
+
+- (NSString *)description {
+  return [NSString stringWithFormat:@"class %@", [self getSimpleName]];
 }
 
 #if ! __has_feature(objc_arc)

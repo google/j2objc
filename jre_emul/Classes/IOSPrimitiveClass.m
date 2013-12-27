@@ -149,7 +149,7 @@ getConstructorWithClasses:(IOSClass *)firstClass, ... {
   return type_;
 }
 
-- (id)boxValue:(J2ObjcRawValue *)rawValue {
+- (id)__boxValue:(J2ObjcRawValue *)rawValue {
   switch ([type_ characterAtIndex:0]) {
     case 'B': return [JavaLangByte valueOfWithByte:rawValue->asChar];
     case 'C': return [JavaLangCharacter valueOfWithChar:rawValue->asUnichar];
@@ -163,7 +163,7 @@ getConstructorWithClasses:(IOSClass *)firstClass, ... {
   return nil;
 }
 
-- (BOOL)unboxValue:(id)value toRawValue:(J2ObjcRawValue *)rawValue {
+- (BOOL)__unboxValue:(id)value toRawValue:(J2ObjcRawValue *)rawValue {
   if ([value isKindOfClass:[JavaLangByte class]]) {
     char byteValue = [(JavaLangByte *) value charValue];
     switch ([type_ characterAtIndex:0]) {

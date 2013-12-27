@@ -186,6 +186,9 @@ static void CollectMethodsOrConstructors(
   free(classMethods);
 }
 
+// Methods that have invalid parameter or return Objective-C types.
+static NSArray *_invalidMethodNames;
+
 - (void)collectMethods:(NSMutableDictionary *)methodMap
             publicOnly:(BOOL)publicOnly
               javaOnly:(BOOL)javaOnly {
@@ -196,8 +199,8 @@ static void CollectMethodsOrConstructors(
       if (javaOnly && metadata && ![metadata findMethodMetadata:selStr]) {
         return nil;  // Selector not in method list.
       }
-      if ([selStr isEqualToString:@"__metadata"]) {
-        return nil;  // __metadata() doesn't return a valid Objective-C type.
+      if ([_invalidMethodNames containsObject:selStr]) {
+        return nil;
       }
       return [JavaLangReflectMethod methodWithSelector:sel withClass:self
           withMetadata:metadata ? [metadata findMethodMetadata:selStr] : nil];
@@ -287,6 +290,13 @@ static JavaLangReflectConstructor *GetConstructorImpl(
   }
   return [IOSObjectArray arrayWithNSArray:allInterfaces
                                      type:[IOSClass getClass]];
+}
+
++ (void)initialize {
+  if (self == [IOSConcreteClass class]) {
+    _invalidMethodNames =
+        [NSArray arrayWithObjects:@"__metadata", @"__boxValue:", @"__unboxValue:toRawValue:", nil];
+  }
 }
 
 #if ! __has_feature(objc_arc)

@@ -258,14 +258,14 @@ void FillInStackTraceInternal(JavaLangThrowable *this) {
 + (J2ObjcClassInfo *)__metadata {
   static J2ObjcMethodInfo methods[] = {
     { "initWithNSString:withJavaLangThrowable:withBoolean:withBoolean:", NULL, NULL, 0x4, NULL },
-    { "fillInStackTrace", NULL, "LJavaLangThrowable", 0x1, NULL },
-    { "getCause", NULL, "LJavaLangThrowable", 0x1, NULL },
-    { "getLocalizedMessage", NULL, "LNSString", 0x1, NULL },
-    { "getMessage", NULL, "LNSString", 0x1, NULL },
-    { "getStackTrace", NULL, "LIOSObjectArray", 0x1, NULL },
-    { "initCauseWithJavaLangThrowable:", NULL, "LJavaLangThrowable", 0x1, NULL },
+    { "fillInStackTrace", NULL, "Ljava/lang/Throwable;", 0x1, NULL },
+    { "getCause", NULL, "Ljava/lang/Throwable;", 0x1, NULL },
+    { "getLocalizedMessage", NULL, "Ljava/lang/String;", 0x1, NULL },
+    { "getMessage", NULL, "Ljava/lang/String;", 0x1, NULL },
+    { "getStackTrace", NULL, "Ljava/lang/StackTraceElement;", 0x1, NULL },
+    { "initCauseWithJavaLangThrowable:", NULL, "Ljava/lang/Throwable;", 0x1, NULL },
     { "addSuppressedWithJavaLangThrowable:", NULL, "V", 0x11, NULL },
-    { "getSuppressed", NULL, "LIOSObjectArray", 0x11, NULL },
+    { "getSuppressed", NULL, "[Ljava/lang/Throwable;", 0x11, NULL },
   };
   static J2ObjcClassInfo _JavaLangThrowable = { "Throwable", "java.lang", NULL, 0x1, 9, methods, 0, NULL};
   return &_JavaLangThrowable;
