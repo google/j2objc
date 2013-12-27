@@ -40,7 +40,7 @@
   if ((self = [super init])) {
     selector_ = aSelector;
     class_ = aClass;
-    metadata_ = metadata;
+    metadata_ = RETAIN_(metadata);
     if (class_.objcClass) {
       classMethod_ = ![class_.objcClass instancesRespondToSelector:selector_];
       if (classMethod_) {
@@ -50,6 +50,7 @@
         methodSignature_ =
             [class_.objcClass instanceMethodSignatureForSelector:selector_];
       }
+      RETAIN_(methodSignature_);
     }
     if (class_.objcProtocol && !methodSignature_) {
       struct objc_method_description methodDesc =
@@ -261,5 +262,13 @@ static JavaLangReflectMethod *getAccessor(IOSClass *class, NSString *method, NSS
 - (NSMethodSignature *)signature {
   return methodSignature_;
 }
+
+#if ! __has_feature(objc_arc)
+- (void)dealloc {
+  [methodSignature_ release];
+  [metadata_ release];
+  [super dealloc];
+}
+#endif
 
 @end

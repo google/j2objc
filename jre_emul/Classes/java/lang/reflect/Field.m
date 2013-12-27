@@ -59,7 +59,7 @@ typedef union {
   if ((self = [super init])) {
     ivar_ = ivar;
     declaringClass_ = aClass;
-    metadata_ = metadata;
+    metadata_ = RETAIN_(metadata);
   }
   return self;
 }
@@ -361,5 +361,12 @@ BOOL IsStatic(JavaLangReflectField *field) {
 - (int)unsafeOffset {
   return ivar_getOffset(ivar_);
 }
+
+#if ! __has_feature(objc_arc)
+- (void)dealloc {
+  [metadata_ release];
+  [super dealloc];
+}
+#endif
 
 @end
