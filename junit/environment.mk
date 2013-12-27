@@ -41,7 +41,7 @@ WARNINGS = -Wno-trigraphs -Wunused-variable -Werror -Wincompatible-pointer-types
 
 # The -fobjc flags match XCode (a link fails without them because of
 # missing symbols of the form OBJC_CLASS_$_[classname]).
-OBJCFLAGS := -ObjC $(WARNINGS) \
+OBJCFLAGS := -ObjC $(WARNINGS) -std=c11 \
   -fobjc-abi-version=2 -fobjc-legacy-dispatch $(DEBUGFLAGS) \
   -I/System/Library/Frameworks/ExceptionHandling.framework/Headers
 

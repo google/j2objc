@@ -55,7 +55,6 @@ ANDROID_TEST_SUPPORT_ROOT = $(ANDROID_BASE)/support/src/test/java
 ANDROID_XML_ROOT = $(ANDROID_BASE)/xml/src/main/java
 
 APPLE_ROOT = apple_apsl
-NHATMINHLE_ROOT = nhatminhle
 
 MISC_TEST_ROOT = Tests
 J2OBJC_ROOT = ..
@@ -96,26 +95,29 @@ vpath %.java $(JRE_SRC):$(TEST_SRC):$(STUBS_DIR)
 # Clang warnings
 WARNINGS := $(WARNINGS) -Wall -Werror
 
+# Require C11 compilation to support Java volatile translation.
+OBJCFLAGS := -std=c11
+
 ifeq ("$(strip $(XCODE_VERSION_MAJOR))", "0500")
-WARNINGS := $(WARNINGS) -Wno-unsequenced
-OBJCFLAGS := -DSET_MIN_IOS_VERSION
+WARNINGS += -Wno-unsequenced
+OBJCFLAGS += -DSET_MIN_IOS_VERSION
 endif
 
 # The -fobjc flags match XCode (a link fails without them because of
 # missing symbols of the form OBJC_CLASS_$_[classname]).
-OBJCFLAGS := $(WARNINGS) $(OBJCFLAGS) -DU_DISABLE_RENAMING=1 \
+OBJCFLAGS += $(WARNINGS) -DU_DISABLE_RENAMING=1 \
   -fobjc-abi-version=2 -fobjc-legacy-dispatch $(DEBUGFLAGS) \
   -I/System/Library/Frameworks/ExceptionHandling.framework/Headers \
   -I/System/Library/Frameworks/Security.framework/Headers \
   -I$(ANDROID_INCLUDE) -I$(ICU4C_I18N_INCLUDE) -I$(ICU4C_COMMON_INCLUDE) \
-  -I$(APPLE_ROOT) -I$(NHATMINHLE_ROOT)
+  -I$(APPLE_ROOT)
 
 ifdef MAX_STACK_FRAMES
-OBJCFLAGS := $(OBJCFLAGS) -DMAX_STACK_FRAMES=$(MAX_STACK_FRAMES)
+OBJCFLAGS += -DMAX_STACK_FRAMES=$(MAX_STACK_FRAMES)
 endif
 
 ifdef NO_STACK_FRAME_SYMBOLS
-OBJCFLAGS := $(OBJCFLAGS) -DNO_STACK_FRAME_SYMBOLS=$(NO_STACK_FRAME_SYMBOLS)
+OBJCFLAGS += -DNO_STACK_FRAME_SYMBOLS=$(NO_STACK_FRAME_SYMBOLS)
 endif
 
 # Settings for classes that need to always compile without ARC.
