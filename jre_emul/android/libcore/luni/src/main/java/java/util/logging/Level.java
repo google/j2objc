@@ -107,6 +107,14 @@ public class Level implements Serializable {
             throw new NullPointerException("name == null");
         }
 
+        synchronized (levels) {
+            for (Level level : levels) {
+                if (name.equals(level.getName())) {
+                    return level;
+                }
+            }
+        }
+
         boolean isNameAnInt;
         int nameAsInt;
         try {
@@ -117,14 +125,8 @@ public class Level implements Serializable {
             isNameAnInt = false;
         }
 
-        synchronized (levels) {
-            for (Level level : levels) {
-                if (name.equals(level.getName())) {
-                    return level;
-                }
-            }
-
-            if (isNameAnInt) {
+        if (isNameAnInt) {
+            synchronized (levels) {
                 /*
                  * Loop through levels a second time, so that the returned
                  * instance will be passed on the order of construction.
@@ -135,9 +137,7 @@ public class Level implements Serializable {
                     }
                 }
             }
-        }
-
-        if (!isNameAnInt) {
+        } else {
             throw new IllegalArgumentException("Cannot parse name '" + name + "'");
         }
 
