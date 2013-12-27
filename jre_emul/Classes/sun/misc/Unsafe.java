@@ -20,8 +20,8 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 
 /*-[
-#include "stdatomic.h"
 #include "java/lang/reflect/Array.h"
+#include "volatile.h"
 #include <libkern/OSAtomic.h>
 ]-*/
 
@@ -147,8 +147,8 @@ public final class Unsafe {
      * @return the retrieved value
      */
     public native int getIntVolatile(Object obj, long offset) /*-[
-      atomic_int *address = (atomic_int *) (((u_int8_t *) obj) + offset);
-      return atomic_load(address);
+      volatile_int *address = (volatile_int *) (((u_int8_t *) obj) + offset);
+      return volatile_load(address);
     ]-*/;
 
     /**
@@ -160,8 +160,8 @@ public final class Unsafe {
      * @param newValue the value to store
      */
     public native void putIntVolatile(Object obj, long offset, int newValue) /*-[
-      atomic_int *address = (atomic_int *) (((u_int8_t *) obj) + offset);
-      atomic_store(address, newValue);
+      volatile_int *address = (volatile_int *) (((u_int8_t *) obj) + offset);
+      volatile_store(address, newValue);
     ]-*/;
 
 
@@ -174,8 +174,8 @@ public final class Unsafe {
      * @return the retrieved value
      */
     public native long getLongVolatile(Object obj, long offset) /*-[
-      atomic_llong *address = (atomic_llong *) (((u_int8_t *) obj) + offset);
-      return atomic_load(address);
+      volatile_long *address = (volatile_long *) (((u_int8_t *) obj) + offset);
+      return volatile_load(address);
     ]-*/;
 
     /**
@@ -187,8 +187,8 @@ public final class Unsafe {
      * @param newValue the value to store
      */
     public native void putLongVolatile(Object obj, long offset, long newValue) /*-[
-      atomic_llong *address = (atomic_llong *) (((u_int8_t *) obj) + offset);
-      atomic_store(address, newValue);
+      volatile_long *address = (volatile_long *) (((u_int8_t *) obj) + offset);
+      volatile_store(address, newValue);
     ]-*/;
 
     /**
