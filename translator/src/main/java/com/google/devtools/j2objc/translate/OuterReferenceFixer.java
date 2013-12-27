@@ -80,14 +80,24 @@ public class OuterReferenceFixer extends ErrorReportingASTVisitor {
     GeneratedMethodBinding binding = Types.getGeneratedMethodBinding(node);
     addOuterArg(node, binding, declaringClass);
 
-    List<IVariableBinding> capturedVars = OuterReferenceResolver.getCapturedVars(newType);
-    for (IVariableBinding capturedVar : capturedVars) {
+    for (IVariableBinding capturedVar : getCapturedVariables(node)) {
       ASTUtil.getArguments(node).add(ASTFactory.newSimpleName(ast, capturedVar));
       binding.addParameter(capturedVar.getType());
     }
 
     assert binding.isVarargs() || node.arguments().size() == binding.getParameterTypes().length;
     return true;
+  }
+
+  private List<IVariableBinding> getCapturedVariables(ClassInstanceCreation node) {
+    ITypeBinding newType = Types.getTypeBinding(node).getTypeDeclaration();
+    ITypeBinding owningType =
+        Types.getTypeBinding(ASTUtil.getOwningType(node)).getTypeDeclaration();
+    // Test for the recursive construction of a local class.
+    if (owningType.isEqualTo(newType)) {
+      return OuterReferenceResolver.getInnerFields(newType);
+    }
+    return OuterReferenceResolver.getCapturedVars(newType);
   }
 
   private void addOuterArg(
