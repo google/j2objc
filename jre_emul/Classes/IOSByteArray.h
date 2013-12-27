@@ -31,20 +31,7 @@
   char *buffer_;
 }
 
-// Create an array from a C char array and length.
-- (id)initWithBytes:(const char *)ints count:(NSUInteger)count;
-+ (id)arrayWithBytes:(const char *)ints count:(NSUInteger)count;
-
-// Return byte at a specified index, throws IndexOutOfBoundsException
-// if out out range.
-FOUNDATION_EXPORT char IOSByteArray_Get(IOSByteArray *array, NSUInteger index);
-FOUNDATION_EXPORT char *IOSByteArray_GetRef(IOSByteArray *array, NSUInteger index);
-- (char)byteAtIndex:(NSUInteger)index;
-- (char *)byteRefAtIndex:(NSUInteger)index;
-
-// Sets byte at a specified index, throws IndexOutOfBoundsException
-// if out out range.  Returns the replacement value.
-- (char)replaceByteAtIndex:(NSUInteger)index withByte:(char)byte;
+PRIMITIVE_ARRAY_INTERFACE(byte, Byte, char)
 
 // Copies the array contents into a specified buffer, up to the specified
 // length.  An IndexOutOfBoundsException is thrown if the specified length

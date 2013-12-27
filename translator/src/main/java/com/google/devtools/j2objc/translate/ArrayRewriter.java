@@ -69,7 +69,7 @@ public class ArrayRewriter extends ErrorReportingASTVisitor {
       ImmutableMap.<String, String>builder()
       .put("IOSBooleanArray", " arrayWithBooleans:(BOOL *)booleans count:(int)count")
       .put("IOSByteArray", " arrayWithBytes:(char *)bytes count:(int)count")
-      .put("IOSCharArray", " arrayWithCharacters:(unichar *)chars count:(int)count")
+      .put("IOSCharArray", " arrayWithChars:(unichar *)chars count:(int)count")
       .put("IOSDoubleArray", " arrayWithDoubles:(double *)doubles count:(int)count")
       .put("IOSFloatArray", " arrayWithFloats:(float *)floats count:(int)count")
       .put("IOSIntArray", " arrayWithInts:(int *)ints count:(int)count")

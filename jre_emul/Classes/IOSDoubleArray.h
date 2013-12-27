@@ -31,25 +31,7 @@
   double *buffer_;
 }
 
-// Create an array from a C double array and length.
-- (id)initWithDoubles:(const double *)doubles count:(NSUInteger)count;
-+ (id)arrayWithDoubles:(const double *)doubles count:(NSUInteger)count;
-
-// Return double at a specified index, throws IndexOutOfBoundsException
-// if out out range.
-FOUNDATION_EXPORT double IOSDoubleArray_Get(IOSDoubleArray *array, NSUInteger index);
-FOUNDATION_EXPORT double *IOSDoubleArray_GetRef(IOSDoubleArray *array, NSUInteger index);
-- (double)doubleAtIndex:(NSUInteger)index;
-- (double *)doubleRefAtIndex:(NSUInteger)index;
-
-// Sets double at a specified index, throws IndexOutOfBoundsException
-// if out out range.  Returns replacement value.
-- (double)replaceDoubleAtIndex:(NSUInteger)index withDouble:(double)value;
-
-// Copies the array contents into a specified buffer, up to the specified
-// length.  An IndexOutOfBoundsException is thrown if the specified length
-// is greater than the array size.
-- (void)getDoubles:(double *)buffer length:(NSUInteger)length;
+PRIMITIVE_ARRAY_INTERFACE(double, Double, double)
 
 @end
 

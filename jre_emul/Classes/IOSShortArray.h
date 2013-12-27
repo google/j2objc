@@ -31,25 +31,7 @@
   short *buffer_;
 }
 
-// Create an array from a C short array and length.
-- (id)initWithShorts:(const short *)shorts count:(NSUInteger)count;
-+ (id)arrayWithShorts:(const short *)shorts count:(NSUInteger)count;
-
-// Return short at a specified index, throws IndexOutOfBoundsException
-// if out out range.
-FOUNDATION_EXPORT short IOSShortArray_Get(IOSShortArray *array, NSUInteger index);
-FOUNDATION_EXPORT short *IOSShortArray_GetRef(IOSShortArray *array, NSUInteger index);
-- (short)shortAtIndex:(NSUInteger)index;
-- (short *)shortRefAtIndex:(NSUInteger)index;
-
-// Sets short at a specified index, throws IndexOutOfBoundsException
-// if out out range.  Returns replacement value.
-- (short)replaceShortAtIndex:(NSUInteger)index withShort:(short)value;
-
-// Copies the array contents into a specified buffer, up to the specified
-// length.  An IndexOutOfBoundsException is thrown if the specified length
-// is greater than the array size.
-- (void)getShorts:(short *)buffer length:(NSUInteger)length;
+PRIMITIVE_ARRAY_INTERFACE(short, Short, short)
 
 @end
 

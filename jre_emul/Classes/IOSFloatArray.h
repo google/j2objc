@@ -31,25 +31,7 @@
   float *buffer_;
 }
 
-// Create an array from a C float array and length.
-- (id)initWithFloats:(const float *)floats count:(NSUInteger)count;
-+ (id)arrayWithFloats:(const float *)floats count:(NSUInteger)count;
-
-// Return float at a specified index, throws IndexOutOfBoundsException
-// if out out range.
-FOUNDATION_EXPORT float IOSFloatArray_Get(IOSFloatArray *array, NSUInteger index);
-FOUNDATION_EXPORT float *IOSFloatArray_GetRef(IOSFloatArray *array, NSUInteger index);
-- (float)floatAtIndex:(NSUInteger)index;
-- (float *)floatRefAtIndex:(NSUInteger)index;
-
-// Sets float at a specified index, throws IndexOutOfBoundsException
-// if out out range.  Returns replacement value.
-- (float)replaceFloatAtIndex:(NSUInteger)index withFloat:(float)value;
-
-// Copies the array contents into a specified buffer, up to the specified
-// length.  An IndexOutOfBoundsException is thrown if the specified length
-// is greater than the array size.
-- (void)getFloats:(float *)buffer length:(NSUInteger)length;
+PRIMITIVE_ARRAY_INTERFACE(float, Float, float)
 
 @end
 

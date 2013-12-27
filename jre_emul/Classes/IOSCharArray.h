@@ -31,32 +31,14 @@
   unichar *buffer_;
 }
 
-// Create an array from a C unichar array and length.
-- (id)initWithCharacters:(const unichar *)chars count:(NSUInteger)count;
-+ (id)arrayWithCharacters:(const unichar *)chars count:(NSUInteger)count;
+PRIMITIVE_ARRAY_INTERFACE(char, Char, unichar)
 
 // Create an array from an NSString.
 - (id)initWithNSString:(NSString *)string;
 + (id)arrayWithNSString:(NSString *)string;
 
-// Return char at a specified index, throws IndexOutOfBoundsException
-// if out out range;
-FOUNDATION_EXPORT unichar IOSCharArray_Get(IOSCharArray *array, NSUInteger index);
-FOUNDATION_EXPORT unichar *IOSCharArray_GetRef(IOSCharArray *array, NSUInteger index);
-- (unichar)charAtIndex:(NSUInteger)index;
-- (unichar *)charRefAtIndex:(NSUInteger)index;
-
-// Sets char at a specified index, throws IndexOutOfBoundsException
-// if out out range.  Returns replacement value.
-- (unichar)replaceCharAtIndex:(NSUInteger)index withChar:(unichar)c;
-
 // Returns a copy of the array contents.
 - (unichar *)getChars;
-
-// Copies the array contents into a specified buffer, up to the specified
-// length.  An IndexOutOfBoundsException is thrown if the specified length
-// is greater than the array size.
-- (void)getChars:(unichar *)buffer length:(NSUInteger)length;
 
 @end
 
