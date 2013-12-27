@@ -16,6 +16,7 @@
 #   CREATE_JAR_NAME
 #   CREATE_JAR_SOURCES
 #   CREATE_JAR_JAVAC_ARGS
+#   CREATE_JAR_DEPENDENCIES
 # The including makefile may use the following variables:
 #   CREATE_JAR_RESULT
 #
@@ -27,7 +28,7 @@ CREATE_JAR_STAGE_DIR := $(shell echo /tmp/j2objc_$(CREATE_JAR_NAME)_$$$$)
 jar: $(CREATE_JAR_RESULT)
 	@:
 
-$(CREATE_JAR_RESULT): $(CREATE_JAR_SOURCES)
+$(CREATE_JAR_RESULT): $(CREATE_JAR_SOURCES) | $(CREATE_JAR_DEPENDENCIES)
 	@mkdir -p $(@D)
 	@echo "Building $(notdir $@)"
 	@rm -rf $(CREATE_JAR_STAGE_DIR)
