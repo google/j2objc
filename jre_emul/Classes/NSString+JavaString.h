@@ -27,6 +27,7 @@
 #import "IOSCharArray.h"
 #import "IOSIntArray.h"
 #import "IOSObjectArray.h"
+#import "java/io/Serializable.h"
 #import "java/lang/CharSequence.h"
 #import "java/lang/Comparable.h"
 
@@ -40,7 +41,7 @@
 // list is not exhaustive, since methods that can be directly substituted are
 // inlined.  For example, "foo".length() is directly translated to
 // [@"foo" length].
-@interface NSString (JavaString) <JavaLangComparable, JavaLangCharSequence>
+@interface NSString (JavaString) <JavaIoSerializable, JavaLangComparable, JavaLangCharSequence>
 
 // String.valueOf(Object)
 + (NSString *)valueOf:(id<NSObject>)obj;

@@ -40,6 +40,13 @@
 
 @implementation JavaLangThrowable
 
+void FillInStackTraceInternal(JavaLangThrowable *this) {
+  void *callStack[MAX_STACK_FRAMES];
+  unsigned nFrames = backtrace(callStack, MAX_STACK_FRAMES);
+  this->stackTrace = RETAIN_([JavaLangThrowable stackTrace:callStack
+                                                     count:nFrames]);
+}
+
 // This init message implementation is hand-modified to
 // invoke NSException.initWithName:reason:userInfo:.  This
 // is necessary so that JRE exceptions can be caught by
@@ -52,11 +59,7 @@
     JreMemDebugAdd(self);
     cause = RETAIN_(causeArg);
     detailMessage = RETAIN_(message);
-
-    void *callStack[MAX_STACK_FRAMES];
-    unsigned nFrames = backtrace(callStack, MAX_STACK_FRAMES);
-    stackTrace = RETAIN_([JavaLangThrowable stackTrace:callStack
-                                                 count:nFrames]);
+    FillInStackTraceInternal(self);
     suppressedExceptions = nil;
   }
   return self;
@@ -112,6 +115,7 @@
 }
 
 - (JavaLangThrowable *)fillInStackTrace {
+  FillInStackTraceInternal(self);
   return self;
 }
 
