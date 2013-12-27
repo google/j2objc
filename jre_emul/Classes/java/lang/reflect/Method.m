@@ -49,8 +49,7 @@
 // Returns method name.
 - (NSString *)getName {
   if (metadata_ && metadata_->javaName) {
-    return [NSString stringWithCString:metadata_->javaName encoding:
-        [NSString defaultCStringEncoding]];
+    return [NSString stringWithUTF8String:metadata_->javaName];
   }
 
   // Demangle signature to retrieve original method name.

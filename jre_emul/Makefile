@@ -36,6 +36,7 @@ IOS_OBJS = \
 	IOSIntArray.o \
 	IOSLocaleData.o \
 	IOSLongArray.o \
+	IOSMappedClass.o \
 	IOSObjectArray.o \
 	IOSPrimitiveClass.o \
 	IOSProtocolClass.o \

@@ -17,8 +17,10 @@
 
 package java.lang;
 
+import java.io.ObjectStreamField;
 import java.io.UnsupportedEncodingException;
 import java.nio.charset.Charset;
+import java.util.Comparator;
 
 /**
  * Stub implementation of java.lang.String.
@@ -27,7 +29,11 @@ import java.nio.charset.Charset;
  */
 public class String implements CharSequence, Comparable<String> {
 
-  public static final java.util.Comparator CASE_INSENSITIVE_ORDER = null;
+  public static final Comparator<String> CASE_INSENSITIVE_ORDER = new CaseInsensitiveComparator();
+
+  // Serialization constants.
+  private static final long serialVersionUID = -6849794470754667710L;
+  private static final ObjectStreamField[] serialPersistentFields = new ObjectStreamField[0];
 
   public String() {}
 
@@ -297,6 +303,15 @@ public class String implements CharSequence, Comparable<String> {
 
   public boolean contentEquals(StringBuffer sb) {
     return false;
+  }
+
+  private static class CaseInsensitiveComparator
+      implements Comparator<String>, java.io.Serializable {
+    private static final long serialVersionUID = 8575799808933029326L;
+
+    public int compare(String s1, String s2) {
+      return 0;
+    }
   }
 
   /* Unimplemented/mapped methods.

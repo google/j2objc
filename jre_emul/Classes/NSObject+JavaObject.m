@@ -153,6 +153,24 @@ static void doWait(id obj, long long timeout) {
   return nil;
 }
 
++ (J2ObjcClassInfo *)__metadata {
+  static J2ObjcMethodInfo methods[] = {
+    { "getClass", NULL, "LIOSClass", 0x11, NULL },
+    { "isEqual:", NULL, "Z", 0x1, NULL },
+    { "clone", NULL, "LJavaLangObject", 0x4, "JavaLangCloneNotSupportedException" },
+    { "dealloc", NULL, "V", 0x4, "JavaLangThrowable" },
+    { "notify", NULL, "V", 0x11, NULL },
+    { "notifyAll", NULL, "V", 0x11, NULL },
+    { "waitWithLong:", NULL, "V", 0x11, "JavaLangInterruptedException" },
+    { "waitWithLong:withInt:", NULL, "V", 0x11, "JavaLangInterruptedException" },
+    { "wait", NULL, "V", 0x11, "JavaLangInterruptedException" },
+  };
+  static J2ObjcClassInfo _JavaLangObject = {
+    "Object", "java.lang", NULL, 0x1, 9, methods, 0, NULL, 0, NULL
+  };
+  return &_JavaLangObject;
+}
+
 // Unimplemented private methods for java.lang.ref.Reference. The methods'
 // implementations are set when swizzling the Reference's referent class.
 - (void)_java_lang_ref_original_dealloc {}

@@ -214,6 +214,8 @@
 		0671FC1618529E28005D9D56 /* NSNumber+JavaNumber.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "NSNumber+JavaNumber.m"; sourceTree = "<group>"; };
 		0671FC171852A7CC005D9D56 /* Serializable.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Serializable.h; path = java/io/Serializable.h; sourceTree = "<group>"; };
 		0671FC191856425E005D9D56 /* Serializable.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = Serializable.m; path = java/io/Serializable.m; sourceTree = "<group>"; };
+		0671FC1C1857AD70005D9D56 /* IOSMappedClass.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = IOSMappedClass.h; sourceTree = "<group>"; };
+		0671FC1D1857AD70005D9D56 /* IOSMappedClass.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = IOSMappedClass.m; sourceTree = "<group>"; };
 		0672177F15587E2C00645E1B /* jre_emul_tests.octest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = jre_emul_tests.octest; sourceTree = BUILT_PRODUCTS_DIR; };
 		067217CD15587FC600645E1B /* IOSArrayTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = IOSArrayTest.m; path = Classes/IOSArrayTest.m; sourceTree = SOURCE_ROOT; };
 		067217CE15587FC600645E1B /* IOSObjectArrayTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = IOSObjectArrayTest.m; path = Classes/IOSObjectArrayTest.m; sourceTree = SOURCE_ROOT; };
@@ -1051,6 +1053,8 @@
 				06B6D20217C7D3DE00624B3C /* IOSLocaleData.m */,
 				066193AE155849BC0004DAFE /* IOSLongArray.h */,
 				066193AF155849BC0004DAFE /* IOSLongArray.m */,
+				0671FC1C1857AD70005D9D56 /* IOSMappedClass.h */,
+				0671FC1D1857AD70005D9D56 /* IOSMappedClass.m */,
 				066193B0155849BC0004DAFE /* IOSObjectArray.h */,
 				066193B1155849BC0004DAFE /* IOSObjectArray.m */,
 				066193B2155849BC0004DAFE /* IOSPrimitiveClass.h */,
