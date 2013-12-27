@@ -50,6 +50,7 @@ IOS_OBJS = \
 	NSDataInputStream.o \
 	NSDataOutputStream.o \
 	NSDictionaryMap.o \
+	NSNumber+JavaNumber.o \
 	NSObject+JavaObject.o \
 	NSString+JavaString.o \
 	java_lang_RealToString.o \
@@ -64,6 +65,7 @@ APPLE_SRCS = \
 # but need to include the .java file in jre_emul.jar and the .m file in
 # libjre_emul.a.
 IOS_JAVA_OBJS = \
+	java/io/Serializable.o \
 	java/lang/Iterable.o \
 	java/lang/Throwable.o \
 	java/lang/reflect/AccessibleObject.o \
@@ -92,7 +94,6 @@ JRE_INTERFACES = \
 	java/io/ObjectInput.h \
 	java/io/ObjectInputValidation.h \
 	java/io/ObjectOutput.h \
-	java/io/Serializable.h \
 	java/lang/Appendable.h \
 	java/lang/Runnable.h \
 	java/lang/annotation/Annotation.h \
