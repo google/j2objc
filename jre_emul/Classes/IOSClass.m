@@ -639,8 +639,7 @@ static const char* GetFieldName(NSString *name) {
 
 static JavaLangReflectField *FieldFromIvar(IOSClass *iosClass, Ivar ivar) {
   JavaClassMetadata *metadata = [iosClass getMetadata];
-  const J2ObjcFieldInfo *fieldMetadata =
-      metadata ? [metadata findFieldInfo:ivar_getName(ivar)] : nil;
+  JavaFieldMetadata *fieldMetadata = [metadata findFieldMetadata:ivar_getName(ivar)];
   return [JavaLangReflectField fieldWithIvar:ivar
                                    withClass:iosClass
                                 withMetadata:fieldMetadata];
@@ -660,11 +659,11 @@ static void GetFieldsFromClass(IOSClass *iosClass, NSMutableDictionary *fields) 
   JavaClassMetadata *metadata = [iosClass getMetadata];
   if (metadata) {
     // Add static fields, if any.
-    const J2ObjcFieldInfo *fieldInfos = [metadata allFields];
-    for (unsigned i = 0; i < metadata.fieldCount; i++) {
+    IOSObjectArray *infos = [metadata allFields];
+    for (unsigned i = 0; i < infos->size_; i++) {
       JavaLangReflectField *field = [JavaLangReflectField fieldWithIvar:nil
                                                               withClass:iosClass
-                                                           withMetadata:&fieldInfos[i]];
+                                                           withMetadata:[infos objectAtIndex:i]];
       NSString *name = [field getName];
       if (![fields valueForKey:name]) {
         [fields setObject:field forKey:name];
@@ -686,7 +685,7 @@ static void GetFieldsFromClass(IOSClass *iosClass, NSMutableDictionary *fields) 
     // Check static variables.
     JavaClassMetadata *metadata = [self getMetadata];
     if (metadata) {
-      const J2ObjcFieldInfo *fieldMeta = [metadata findFieldInfo:[name UTF8String]];
+      JavaFieldMetadata *fieldMeta = [metadata findFieldMetadata:[name UTF8String]];
       if (fieldMeta) {
         return [JavaLangReflectField fieldWithIvar:nil
                                          withClass:self
@@ -710,7 +709,7 @@ static void GetFieldsFromClass(IOSClass *iosClass, NSMutableDictionary *fields) 
 
     JavaClassMetadata *metadata = [self getMetadata];
     if (metadata) {
-      const J2ObjcFieldInfo *fieldMeta = [metadata findFieldInfo:[name UTF8String]];
+      JavaFieldMetadata *fieldMeta = [metadata findFieldMetadata:[name UTF8String]];
       if (fieldMeta) {
         return [JavaLangReflectField fieldWithIvar:nil
                                          withClass:self

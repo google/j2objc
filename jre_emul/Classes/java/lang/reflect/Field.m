@@ -21,6 +21,7 @@
 
 #import "IOSClass.h"
 #import "IOSObjectArray.h"
+#import "JavaMetadata.h"
 #import "java/lang/AssertionError.h"
 #import "java/lang/Boolean.h"
 #import "java/lang/Byte.h"
@@ -54,7 +55,7 @@ typedef union {
 
 - (id)initWithIvar:(Ivar)ivar
          withClass:(IOSClass *)aClass
-      withMetadata:(const J2ObjcFieldInfo *)metadata {
+      withMetadata:(JavaFieldMetadata *)metadata {
   if ((self = [super init])) {
     ivar_ = ivar;
     declaringClass_ = aClass;
@@ -65,7 +66,7 @@ typedef union {
 
 + (id)fieldWithIvar:(Ivar)ivar
           withClass:(IOSClass *)aClass
-       withMetadata:(const J2ObjcFieldInfo *)metadata {
+       withMetadata:(JavaFieldMetadata *)metadata {
   JavaLangReflectField *field =
       [[JavaLangReflectField alloc] initWithIvar:ivar withClass:aClass withMetadata:metadata];
 #if ! __has_feature(objc_arc)
@@ -80,7 +81,7 @@ typedef union {
 
 - (NSString *)description {
   NSString *mods =
-      metadata_ ? [JavaLangReflectModifier toStringWithInt:metadata_->modifiers ] : @"";
+      metadata_ ? [JavaLangReflectModifier toStringWithInt:[metadata_ modifiers]] : @"";
   if ([mods length] > 0) {
     return [NSString stringWithFormat:@"%@ %@ %@.%@", mods, [self getType],
             [self getDeclaringClass], [self propertyName]];
@@ -111,7 +112,7 @@ static void SetStaticValue(JavaLangReflectField *field, id value) {
 }
 
 BOOL IsStatic(JavaLangReflectField *field) {
-  return field->metadata_ && (field->metadata_->modifiers & JavaLangReflectModifier_STATIC) > 0;
+  return ([field->metadata_ modifiers] & JavaLangReflectModifier_STATIC) > 0;
 }
 
 - (id)getWithId:(id)object {
@@ -288,14 +289,14 @@ BOOL IsStatic(JavaLangReflectField *field) {
 
 - (id<JavaLangReflectType>)getGenericType {
   if (metadata_) {
-    return JreTypeForString(metadata_->type);
+    return [metadata_ type];
   }
   return [self getType];
 }
 
 - (int)getModifiers {
   if (metadata_) {
-    return metadata_->modifiers;
+    return [metadata_ modifiers];
   }
   // All Objective-C fields and methods are public at runtime.
   return JavaLangReflectModifier_PUBLIC;
@@ -306,14 +307,8 @@ BOOL IsStatic(JavaLangReflectField *field) {
 }
 
 - (NSString *)propertyName {
-  NSString *name;
-  if (metadata_) {
-    name = [NSString stringWithCString:(metadata_->javaName ? metadata_->javaName : metadata_->name)
-                              encoding:[NSString defaultCStringEncoding]];
-  } else {
-    name = [NSString stringWithCString:ivar_getName(ivar_)
-                              encoding:[NSString defaultCStringEncoding]];
-  }
+  NSString *name = metadata_ ?
+      [metadata_ name] : [NSString stringWithUTF8String:ivar_getName(ivar_)];
   return [JavaLangReflectField propertyName:name];
 }
 
@@ -338,7 +333,7 @@ BOOL IsStatic(JavaLangReflectField *field) {
 
 - (NSString *)toGenericString {
   NSString *mods =
-      metadata_ ? [JavaLangReflectModifier toStringWithInt:metadata_->modifiers ] : @"";
+      metadata_ ? [JavaLangReflectModifier toStringWithInt:[metadata_ modifiers]] : @"";
   id<JavaLangReflectType> type = [self getGenericType];
   NSString *typeString = [type conformsToProtocol:@protocol(JavaLangReflectTypeVariable)] ?
       [(id<JavaLangReflectTypeVariable>) type getName] : [type description];

@@ -19,8 +19,36 @@
 
 #import "JreEmulation.h"
 
-// An internal-use-only value object that contains the reflection metadata
+// Internal-use-only value classes that contain the reflection metadata
 // for an IOSClass.
+
+@interface JavaFieldMetadata : NSObject {
+  const J2ObjcFieldInfo *data_;
+}
+
+- (id)initWithMetadata:(const J2ObjcFieldInfo *)metadata;
+- (NSString *)name;
+- (NSString *)javaName;
+- (int)modifiers;
+- (id<JavaLangReflectType>)type;
+
+@end
+
+@interface JavaMethodMetadata : NSObject {
+  const J2ObjcMethodInfo *data_;
+}
+
+- (id)initWithMetadata:(const J2ObjcMethodInfo *)metadata;
+- (SEL)selector;
+- (NSString *)name;
+- (NSString *)javaName;
+- (int)modifiers;
+- (id<JavaLangReflectType>)returnType;
+- (IOSObjectArray *)exceptionTypes;
+- (BOOL)isConstructor;
+
+@end
+
 @interface JavaClassMetadata : NSObject {
   J2ObjcClassInfo *data_;
   J2ObjCAttribute *attributes;
@@ -36,10 +64,10 @@
 - (id)initWithMetadata:(J2ObjcClassInfo *)metadata;
 
 - (NSString *)qualifiedName;
-- (const J2ObjcMethodInfo *)findMethodInfo:(NSString *)methodName;
-- (const J2ObjcMethodInfo *)allMethods;
-- (const J2ObjcFieldInfo *)findFieldInfo:(const char *)fieldName;
-- (const J2ObjcFieldInfo *)allFields;
+- (JavaMethodMetadata *)findMethodMetadata:(NSString *)methodName;
+- (IOSObjectArray *)allMethods;
+- (JavaFieldMetadata *)findFieldMetadata:(const char *)fieldName;
+- (IOSObjectArray *)allFields;
 - (IOSObjectArray *)getSuperclassTypeArguments;
 
 @end

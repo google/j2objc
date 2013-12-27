@@ -192,7 +192,7 @@ static void CollectMethodsOrConstructors(
     NSString *selStr = NSStringFromSelector(sel);
     if (!IsConstructor(selStr)) {
       return [JavaLangReflectMethod methodWithSelector:sel withClass:self
-          withMetadata:metadata ? [metadata findMethodInfo:selStr] : nil];
+          withMetadata:metadata ? [metadata findMethodMetadata:selStr] : nil];
     }
     return nil;
   });
@@ -205,7 +205,7 @@ IOSObjectArray *getConstructorsImpl(IOSConcreteClass *clazz, BOOL publicOnly) {
     if (IsConstructor(NSStringFromSelector(sel))) {
       NSString *selStr = NSStringFromSelector(sel);
       return [JavaLangReflectConstructor constructorWithSelector:sel withClass:clazz
-          withMetadata:metadata ? [metadata findMethodInfo:selStr] : nil];
+          withMetadata:metadata ? [metadata findMethodMetadata:selStr] : nil];
     }
     return nil;
   });
@@ -230,7 +230,7 @@ IOSObjectArray *getConstructorsImpl(IOSConcreteClass *clazz, BOOL publicOnly) {
   if (method) {
     JavaClassMetadata *metadata = [self getMetadata];
     return [JavaLangReflectMethod methodWithSelector:method_getName(method) withClass:self
-        withMetadata:metadata ? [metadata findMethodInfo:objcName] : nil];
+        withMetadata:metadata ? [metadata findMethodMetadata:objcName] : nil];
   }
   return nil;
 }
@@ -242,7 +242,7 @@ static JavaLangReflectConstructor *GetConstructorImpl(
   if (method) {
     JavaClassMetadata *metadata = [iosClass getMetadata];
     return [JavaLangReflectConstructor constructorWithSelector:method_getName(method)
-        withClass:iosClass withMetadata:metadata ? [metadata findMethodInfo:name] : nil];
+        withClass:iosClass withMetadata:metadata ? [metadata findMethodMetadata:name] : nil];
   }
   @throw AUTORELEASE([[JavaLangNoSuchMethodException alloc] init]);
 }

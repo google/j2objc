@@ -22,6 +22,7 @@
 #import "IOSClass.h"
 #import "IOSObjectArray.h"
 #import "IOSReflection.h"
+#import "JavaMetadata.h"
 #import "JreEmulation.h"
 #import "java/lang/AssertionError.h"
 #import "java/lang/IllegalArgumentException.h"
@@ -33,23 +34,24 @@
 
 + (id)methodWithSelector:(SEL)aSelector
                withClass:(IOSClass *)aClass
-            withMetadata:(const J2ObjcMethodInfo *)metadata {
+            withMetadata:(JavaMethodMetadata *)metadata {
   return AUTORELEASE([[JavaLangReflectMethod alloc]
       initWithSelector:aSelector withClass:aClass withMetadata:metadata]);
 }
 
 - (id)initWithSelector:(SEL)aSelector
              withClass:(IOSClass *)aClass
-          withMetadata:(const J2ObjcMethodInfo *)metadata {
+          withMetadata:(JavaMethodMetadata *)metadata {
   return [super initWithSelector:aSelector
                        withClass:aClass
-                    withMetadata:(const J2ObjcMethodInfo *)metadata];
+                    withMetadata:metadata];
 }
 
 // Returns method name.
 - (NSString *)getName {
-  if (metadata_ && metadata_->javaName) {
-    return [NSString stringWithUTF8String:metadata_->javaName];
+  NSString *javaName = [metadata_ javaName];
+  if (javaName) {
+    return javaName;
   }
 
   // Demangle signature to retrieve original method name.
@@ -73,9 +75,9 @@
 }
 
 - (IOSClass *)getReturnType {
-  if (metadata_ && metadata_->returnType) {
-    id<JavaLangReflectType> returnType = JreTypeForString(metadata_->returnType);
-    if (returnType && ![returnType isKindOfClass:[IOSClass class]]) {
+  id<JavaLangReflectType> returnType = [metadata_ returnType];
+  if (returnType) {
+    if (![returnType isKindOfClass:[IOSClass class]]) {
       return [IOSClass objectClass];
     } else {
       return (IOSClass *) returnType;
@@ -95,8 +97,8 @@
 }
 
 - (id<JavaLangReflectType>)getGenericReturnType {
-  if (metadata_ && metadata_->returnType) {
-    id<JavaLangReflectType> returnType = JreTypeForString(metadata_->returnType);
+  id<JavaLangReflectType> returnType = [metadata_ returnType];
+  if (returnType) {
     if (returnType && [returnType conformsToProtocol:@protocol(JavaLangReflectTypeVariable)]) {
       return returnType;
     }

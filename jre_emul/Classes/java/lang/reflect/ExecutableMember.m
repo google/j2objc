@@ -22,6 +22,7 @@
 #import "ExecutableMember.h"
 #import "IOSClass.h"
 #import "IOSObjectArray.h"
+#import "JavaMetadata.h"
 #import "java/lang/NoSuchMethodException.h"
 #import "java/lang/reflect/Method.h"
 #import "java/lang/reflect/Modifier.h"
@@ -35,7 +36,7 @@
 
 - (id)initWithSelector:(SEL)aSelector
              withClass:(IOSClass *)aClass
-          withMetadata:(const J2ObjcMethodInfo *)metadata {
+          withMetadata:(JavaMethodMetadata *)metadata {
   if ((self = [super init])) {
     selector_ = aSelector;
     class_ = aClass;
@@ -80,7 +81,7 @@
 
 - (int)getModifiers {
   if (metadata_) {
-    return metadata_->modifiers;
+    return [metadata_ modifiers];
   }
   int mods = JavaLangReflectModifier_PUBLIC;
   if (classMethod_) {
@@ -184,25 +185,17 @@ static IOSClass *ResolveParameterType(const char *objcType, NSString *paramKeywo
 
 - (BOOL)isSynthetic {
   if (metadata_) {
-    return (metadata_->modifiers & SYNTHETIC_MODIFIER) > 0;
+    return ([metadata_ modifiers] & SYNTHETIC_MODIFIER) > 0;
   }
   return NO;
 }
 
 - (IOSObjectArray *)getExceptionTypes {
-  if (metadata_ && metadata_->exceptions) {
-    NSString *exceptionsStr = [NSString stringWithUTF8String:metadata_->exceptions];
-    NSArray *exceptionsArray = [exceptionsStr componentsSeparatedByString:@";"];
-    IOSObjectArray *result =
-      [IOSObjectArray arrayWithLength:[exceptionsArray count] type:[IOSClass getClass]];
-    NSUInteger count = 0;
-    for (NSString *thrownException in exceptionsArray) {
-      IOSObjectArray_Set(result, count++, [IOSClass classForIosName:thrownException]);
-    }
-    return result;
-  } else {
-    return [IOSObjectArray arrayWithLength:0 type:[IOSClass getClass]];
+  IOSObjectArray *result = [metadata_ exceptionTypes];
+  if (!result) {
+    result = [IOSObjectArray arrayWithLength:0 type:[IOSClass getClass]];
   }
+  return result;
 }
 
 - (NSString *)internalName {
@@ -247,7 +240,7 @@ static JavaLangReflectMethod *getAccessor(IOSClass *class, NSString *method, NSS
 
 - (BOOL)isVarArgs {
   if (metadata_) {
-    return (metadata_->modifiers & VARARGS_MODIFIER) > 0;
+    return ([metadata_ modifiers] & VARARGS_MODIFIER) > 0;
   }
   return NO;
 }

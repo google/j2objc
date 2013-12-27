@@ -31,6 +31,7 @@
 
 @class IOSClass;
 @class IOSObjectArray;
+@class JavaMethodMetadata;
 
 // Common parent of Member and Constructor with their shared functionality.
 // This class isn't directly called from translated Java, since Java's
@@ -41,14 +42,14 @@
   SEL selector_;
   BOOL classMethod_;
   NSMethodSignature *methodSignature_;
-  const J2ObjcMethodInfo *metadata_;
+  JavaMethodMetadata *metadata_;
 }
 
 @property (readonly) NSMethodSignature *signature;
 
 - (id)initWithSelector:(SEL)aSelector
              withClass:(IOSClass *)aClass
-          withMetadata:(const J2ObjcMethodInfo *)metadata;
+          withMetadata:(JavaMethodMetadata *)metadata;
 
 - (NSString *)getName;
 

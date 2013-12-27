@@ -28,6 +28,7 @@
 
 @class IOSClass;
 @class IOSObjectArray;
+@class JavaFieldMetadata;
 
 // A native implementation of java.lang.reflect.Field.  Its methods are
 // limited to those that can be derived from the Objective-C runtime,
@@ -36,15 +37,15 @@
 @protected
   Ivar ivar_;
   IOSClass *declaringClass_;
-  const J2ObjcFieldInfo *metadata_;
+  JavaFieldMetadata *metadata_;
 }
 
 - (id)initWithIvar:(Ivar)ivar
          withClass:(IOSClass *)aClass
-      withMetadata:(const J2ObjcFieldInfo *)metadata;
+      withMetadata:(JavaFieldMetadata *)metadata;
 + (id)fieldWithIvar:(Ivar)ivar
           withClass:(IOSClass *)aClass
-       withMetadata:(const J2ObjcFieldInfo *)metadata;
+       withMetadata:(JavaFieldMetadata *)metadata;
 
 // Returns field name.
 - (NSString *)getName;

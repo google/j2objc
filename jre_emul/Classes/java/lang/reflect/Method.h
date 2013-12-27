@@ -29,6 +29,7 @@
 
 @class IOSClass;
 @class IOSObjectArray;
+@class JavaMethodMetadata;
 
 // A native implementation of java.lang.reflect.Method.  Its methods are
 // limited to those that can be derived from an Objective-C Method instance,
@@ -38,11 +39,11 @@
 
 + (id)methodWithSelector:(SEL)aSelector
                withClass:(IOSClass *)aClass
-            withMetadata:(const J2ObjcMethodInfo *)metadata;
+            withMetadata:(JavaMethodMetadata *)metadata;
 
 - (id)initWithSelector:(SEL)aSelector
              withClass:(IOSClass *)aClass
-          withMetadata:(const J2ObjcMethodInfo *)metadata;
+          withMetadata:(JavaMethodMetadata *)metadata;
 
 // iOS version of Method.getReturnType();
 - (IOSClass *)getReturnType;
