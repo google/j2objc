@@ -17,6 +17,7 @@ package com.google.devtools.j2objc.gen;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
+import com.google.devtools.j2objc.types.GeneratedMethodBinding;
 import com.google.devtools.j2objc.types.Types;
 import com.google.devtools.j2objc.util.ASTUtil;
 import com.google.devtools.j2objc.util.NameTable;
@@ -171,35 +172,18 @@ public class MetadataGenerator {
     if (method.isSynthetic()) {
       return null;
     }
+    String methodName = method instanceof GeneratedMethodBinding ?
+        ((GeneratedMethodBinding) method).getJavaName() : method.getName();
+    String selector = NameTable.getMethodSelector(method);
+    if (selector.equals(methodName)) {
+      methodName = null;  // Reduce redundant data.
+    }
 
-    // Needs metadata if not a public static or instance method.
     int modifiers = getMethodModifiers(method);
-    boolean needsMetadata = (modifiers & ~Modifier.STATIC) != Modifier.PUBLIC;
-
-    String returnTypeStr = null;
-    if (!method.isConstructor()) {
-      ITypeBinding returnType = method.getReturnType();
-      returnTypeStr = getTypeName(returnType);
-      if (!returnType.isPrimitive() || returnType.getName().equals("boolean")) {
-        needsMetadata = true;
-      }
-    }
-    String methodName = null;
-    ITypeBinding[] paramTypes = method.getParameterTypes();
-    // Most of the time the method name can be parsed from the ObjC selector
-    // but not if the first parameter contains the substring "With".
-    if (paramTypes.length > 0 && NameTable.parameterKeyword(paramTypes[0]).contains("With")) {
-      methodName = method.getName();
-      needsMetadata = true;
-    }
-    String thrownExceptions = getThrownExceptions(method);
-    needsMetadata |= thrownExceptions != null;
-    if (!needsMetadata) {
-      return null;
-    }
+    String returnTypeStr = method.isConstructor() ? null : getTypeName(method.getReturnType());
     return String.format("    { \"%s\", %s, %s, 0x%x, %s },\n",
-        NameTable.getMethodSelector(method), cStr(methodName), cStr(returnTypeStr), modifiers,
-        cStr(thrownExceptions));
+        selector, cStr(methodName), cStr(returnTypeStr), modifiers,
+        cStr(getThrownExceptions(method)));
   }
 
   private String getThrownExceptions(IMethodBinding method) {
@@ -239,12 +223,12 @@ public class MetadataGenerator {
 
   private static String getTypeName(ITypeBinding type) {
     if (type.isTypeVariable()) {
-      return "T" + type.getName();
+      return "T" + type.getName() + ";";
     }
     if (type.isPrimitive()) {
       return type.getBinaryName();
     }
-    return "L" + NameTable.getFullName(type);
+    return "L" + NameTable.getFullName(type) + ";";
   }
 
   /**

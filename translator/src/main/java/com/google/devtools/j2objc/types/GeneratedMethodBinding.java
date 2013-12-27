@@ -44,6 +44,8 @@ public class GeneratedMethodBinding extends AbstractBinding implements IMethodBi
   private ITypeBinding declaringClass;
   private final boolean varargs;
   private final boolean isConstructor;
+
+  // TODO(tball): remove isSynthetic flag and constructor parameter, and use a modifier instead.
   private final boolean isSynthetic;
 
   public GeneratedMethodBinding(
@@ -79,7 +81,7 @@ public class GeneratedMethodBinding extends AbstractBinding implements IMethodBi
   public static GeneratedMethodBinding newConstructor(ITypeBinding clazz, int modifiers) {
     return new GeneratedMethodBinding(
         null, NameTable.INIT_NAME, modifiers, Types.mapTypeName("void"), null, clazz, true, false,
-        true);
+        false);
   }
 
   public static GeneratedMethodBinding newOverridingMethod(
@@ -101,7 +103,7 @@ public class GeneratedMethodBinding extends AbstractBinding implements IMethodBi
 
   @Override
   public boolean isSynthetic() {
-    return isSynthetic;
+    return isSynthetic || (modifiers & 0x1000) > 0;  // Modifier.SYNTHETIC.
   }
 
   @Override
@@ -127,6 +129,10 @@ public class GeneratedMethodBinding extends AbstractBinding implements IMethodBi
   @Override
   public String getName() {
     return name;
+  }
+
+  public String getJavaName() {
+    return delegate != null ? delegate.getName() : name;
   }
 
   @Override

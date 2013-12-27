@@ -96,6 +96,10 @@ static IOSObjectArray *emptyArray(IOSClass *arrayType) {
   return emptyArray([IOSClass classWithClass:[JavaLangReflectMethod class]]);
 }
 
+- (IOSObjectArray *)allDeclaredMethods {
+  return emptyArray([IOSClass classWithClass:[JavaLangReflectMethod class]]);
+}
+
 - (JavaLangReflectMethod *)getMethod:(NSString *)name, ... {
   id exception = [[JavaLangNoSuchMethodException alloc] init];
 #if ! __has_feature(objc_arc)

@@ -197,17 +197,30 @@ static IOSClass *FetchArray(IOSClass *componentType);
   }
 }
 
-- (void)collectMethods:(NSMutableDictionary *)methodMap publicOnly:(BOOL)publicOnly {
+// Returns all methods defined in a class. If javaOnly is true, methods
+// that aren't defined by the original Java class are ignored.
+- (void)collectMethods:(NSMutableDictionary *)methodMap
+            publicOnly:(BOOL)publicOnly
+              javaOnly:(BOOL)javaOnly {
   // Overridden by subclasses.
 }
 
-// Return the class and instance methods declared by this class.  Superclass
+// Return the class and instance methods declared by the Java class.  Superclass
 // methods are not included.
 - (IOSObjectArray *)getDeclaredMethods {
   NSMutableDictionary *methodMap = [NSMutableDictionary dictionary];
-  [self collectMethods:methodMap publicOnly:NO];
+  [self collectMethods:methodMap publicOnly:NO javaOnly:YES];
   return [IOSObjectArray arrayWithNSArray:[methodMap allValues] type:
       FetchClass([JavaLangReflectMethod class])];
+}
+
+// Return all class and instance methods declared by the Objective-C class,
+// including translator-created ones.
+- (IOSObjectArray *)allDeclaredMethods {
+  NSMutableDictionary *methodMap = [NSMutableDictionary dictionary];
+  [self collectMethods:methodMap publicOnly:NO javaOnly:NO];
+  return [IOSObjectArray arrayWithNSArray:[methodMap allValues] type:
+          FetchClass([JavaLangReflectMethod class])];
 }
 
 // Return the constructors declared by this class.  Superclass constructors
@@ -222,7 +235,7 @@ static IOSClass *FetchArray(IOSClass *componentType);
   NSMutableDictionary *methodMap = [NSMutableDictionary dictionary];
   IOSClass *cls = self;
   while (cls) {
-    [cls collectMethods:methodMap publicOnly:YES];
+    [cls collectMethods:methodMap publicOnly:YES javaOnly:YES];
     cls = [cls getSuperclass];
   }
   return [IOSObjectArray arrayWithNSArray:[methodMap allValues] type:
@@ -351,8 +364,12 @@ static NSString *IOSClass_JavaToIOSName(NSString *javaName) {
   }
   NSArray *parts = [javaName componentsSeparatedByString:@"."];
   NSMutableString *iosName = [NSMutableString string];
-  for (NSString *part in parts) {
-    [iosName appendString:Capitalize(part)];
+  if ([parts count] == 1) {
+    [iosName appendString:[parts objectAtIndex:0]];
+  } else {
+    for (NSString *part in parts) {
+      [iosName appendString:Capitalize(part)];
+    }
   }
   [iosName replaceOccurrencesOfString:@"$"
                            withString:@"_"
@@ -585,7 +602,7 @@ static BOOL hasModifier(IOSClass *cls, int flag) {
 }
 
 - (IOSObjectArray *)getDeclaredAnnotations {
-  IOSObjectArray *methods = [self getDeclaredMethods];
+  IOSObjectArray *methods = [self allDeclaredMethods];
   NSUInteger n = [methods count];
   for (NSUInteger i = 0; i < n; i++) {
     JavaLangReflectMethod *method = methods->buffer_[i];
@@ -632,7 +649,12 @@ static BOOL hasModifier(IOSClass *cls, int flag) {
   return [JavaLangClassLoader getSystemClassLoader];
 }
 
-static const char* GetFieldName(NSString *name) {
+static const char* GetFieldName(NSString *name, IOSClass *clazz) {
+  const char *cname = [name UTF8String];
+  JavaFieldMetadata *fieldMetadata = [[clazz getMetadata] findFieldMetadata:cname];
+  if (fieldMetadata) {
+    return [[fieldMetadata javaName] UTF8String];
+  }
   name = [JavaLangReflectField variableName:name];
   return [name cStringUsingEncoding:[NSString defaultCStringEncoding]];
 }
@@ -677,7 +699,7 @@ static void GetFieldsFromClass(IOSClass *iosClass, NSMutableDictionary *fields) 
   nil_chk(name);
   Class cls = self.objcClass;
   if (cls) {
-    Ivar ivar = class_getInstanceVariable(cls, GetFieldName(name));
+    Ivar ivar = class_getInstanceVariable(cls, GetFieldName(name, self));
     if (ivar) {
       return FieldFromIvar(self, ivar);
     }
@@ -698,7 +720,7 @@ static void GetFieldsFromClass(IOSClass *iosClass, NSMutableDictionary *fields) 
 
 - (JavaLangReflectField *)getField:(NSString *)name {
   nil_chk(name);
-  const char *objcName = GetFieldName(name);
+  const char *objcName = GetFieldName(name, self);
   IOSClass *iosClass = self;
   Class cls = nil;
   while (iosClass && (cls = iosClass.objcClass)) {
@@ -815,9 +837,13 @@ IOSClass *FetchClass(Class cls) {
                                                                   name:@"Object"]);
         } else if ([cls isSubclassOfClass:[NSString class]]) {
           // NSString is implemented by several subclasses.
-          iosClass = AUTORELEASE([[IOSMappedClass alloc] initWithClass:[NSString class]
-                                                               package:@"java.lang"
-                                                                  name:@"String"]);
+          if (!IOSClass_stringClass) {
+            IOSClass_stringClass =
+                AUTORELEASE([[IOSMappedClass alloc] initWithClass:[NSString class]
+                                                          package:@"java.lang"
+                                                             name:@"String"]);
+          }
+          iosClass = IOSClass_stringClass;
         } else {
           iosClass = AUTORELEASE([[IOSConcreteClass alloc] initWithClass:cls]);
         }

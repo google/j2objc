@@ -70,8 +70,9 @@ public class CopyAllFieldsWriter extends ErrorReportingASTVisitor {
     String typeName = NameTable.getFullName(type);
     IOSMethod iosMethod = IOSMethod.create(
         String.format("%s copyAllFieldsTo:(%s *)other", typeName, typeName));
+    int modifiers = Modifier.PUBLIC | 0x1000;  // Modifier.SYNTHETIC.
     IOSMethodBinding methodBinding = IOSMethodBinding.newMethod(
-        iosMethod, Modifier.PUBLIC, Types.resolveJavaType("void"), type);
+        iosMethod, modifiers, Types.resolveJavaType("void"), type);
     methodBinding.addParameter(type);
     GeneratedVariableBinding copyParamBinding = new GeneratedVariableBinding(
         "other", 0, type, false, true, null, methodBinding);

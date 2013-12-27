@@ -30,9 +30,10 @@ public class IOSMethodBinding extends GeneratedMethodBinding {
 
   private IOSMethodBinding(
       IOSMethod iosMethod, IMethodBinding original, int modifiers, ITypeBinding returnType,
-      IMethodBinding methodDeclaration, ITypeBinding declaringClass, boolean varargs) {
+      IMethodBinding methodDeclaration, ITypeBinding declaringClass, boolean varargs,
+      boolean synthetic) {
     super(original, iosMethod.getName(), modifiers, returnType, methodDeclaration, declaringClass,
-          false, varargs, true);
+          false, varargs, synthetic);
     this.iosMethod = iosMethod;
   }
 
@@ -45,7 +46,7 @@ public class IOSMethodBinding extends GeneratedMethodBinding {
     }
     IOSMethodBinding binding = new IOSMethodBinding(
         iosMethod, original, original.getModifiers(), returnType, null, declaringClass,
-        original.isVarargs());
+        original.isVarargs(), false);
     binding.addParameters(original);
     return binding;
   }
@@ -53,13 +54,13 @@ public class IOSMethodBinding extends GeneratedMethodBinding {
   public static IOSMethodBinding newMethod(
       IOSMethod iosMethod, int modifiers, ITypeBinding returnType, ITypeBinding declaringClass) {
     return new IOSMethodBinding(
-        iosMethod, null, modifiers, returnType, null, declaringClass, false);
+        iosMethod, null, modifiers, returnType, null, declaringClass, false, true);
   }
 
   public static IOSMethodBinding newTypedInvocation(IOSMethodBinding m, ITypeBinding returnType) {
     IOSMethodBinding binding = new IOSMethodBinding(
         m.getIOSMethod(), null, m.getModifiers(), returnType, m, m.getDeclaringClass(),
-        m.isVarargs());
+        m.isVarargs(), true);
     binding.addParameters(m);
     return binding;
   }
@@ -68,7 +69,7 @@ public class IOSMethodBinding extends GeneratedMethodBinding {
       String name, ITypeBinding returnType, ITypeBinding declaringClass,
       ITypeBinding... paramTypes) {
     IOSMethodBinding binding = new IOSMethodBinding(
-        IOSMethod.newFunction(name), null, 0, returnType, null, declaringClass, false);
+        IOSMethod.newFunction(name), null, 0, returnType, null, declaringClass, false, true);
     for (ITypeBinding paramType : paramTypes) {
       binding.addParameter(paramType);
     }
@@ -79,12 +80,12 @@ public class IOSMethodBinding extends GeneratedMethodBinding {
     assert type instanceof PointerTypeBinding : "Can't dereference a non-pointer.";
     return new IOSMethodBinding(
         IOSMethod.DEREFERENCE, null, 0, ((PointerTypeBinding) type).getPointeeType(), null, null,
-        false);
+        false, true);
   }
 
   public static IOSMethodBinding newAddressOf(ITypeBinding type) {
     return new IOSMethodBinding(
-        IOSMethod.ADDRESS_OF, null, 0, new PointerTypeBinding(type), null, null, false);
+        IOSMethod.ADDRESS_OF, null, 0, new PointerTypeBinding(type), null, null, false, true);
   }
 
   public static IOSMethod getIOSMethod(IMethodBinding binding) {
