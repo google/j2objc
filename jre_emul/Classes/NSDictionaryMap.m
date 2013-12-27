@@ -65,6 +65,13 @@
   return AUTORELEASE([[[self class] alloc] init]);
 }
 
+#if ! __has_feature(objc_arc)
+- (void)dealloc {
+  [dictionary_ autorelease];
+  [super dealloc];
+}
+#endif
+
 - (id)initWithDictionary:(NSDictionary *)dictionary {
   if ((self = [super init])) {
     dictionary_ = [nil_chk(dictionary) mutableCopy];
