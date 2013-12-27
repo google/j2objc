@@ -24,10 +24,6 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
 
-/*-[
-#import "CommonCrypto/CommonDigest.h"
-]-*/
-
 /**
  * UUID is an immutable representation of a 128-bit universally unique
  * identifier (UUID).
@@ -168,14 +164,12 @@ public final class UUID implements Serializable, Comparable<UUID> {
         }
 
         byte[] hash;
-        // TODO(tball): uncomment when MD5 hashing is supported.
-//        try {
-//            MessageDigest md = MessageDigest.getInstance("MD5"); //$NON-NLS-1$
-//            hash = md.digest(name);
-//        } catch (NoSuchAlgorithmException e) {
-//            throw new AssertionError(e);
-//        }
-        hash = md5(name);
+        try {
+            MessageDigest md = MessageDigest.getInstance("MD5"); //$NON-NLS-1$
+            hash = md.digest(name);
+        } catch (NoSuchAlgorithmException e) {
+            throw new AssertionError(e);
+        }
 
         long msb = (hash[0] & 0xFFL) << 56;
         msb |= (hash[1] & 0xFFL) << 48;
@@ -198,12 +192,6 @@ public final class UUID implements Serializable, Comparable<UUID> {
         lsb |= (hash[15] & 0xFFL);
         return new UUID(msb, lsb);
     }
-
-    private static native byte[] md5(byte[] name) /*-[
-      unsigned char digest[CC_MD5_DIGEST_LENGTH];
-      CC_MD5(name->buffer_, [name count], digest);
-      return [IOSByteArray arrayWithBytes:(const char *) digest count:CC_MD5_DIGEST_LENGTH];
-    ]-*/;
 
     /**
      * <p>

@@ -56,7 +56,7 @@ public final class Security {
     // Register default providers
     private static void registerDefaultProviders() {
         // TODO(tball): enable as packages are implemented.
-        // secprops.put("security.provider.1", "org.conscrypt.OpenSSLProvider");
+        secprops.put("security.provider.1", "com.google.j2objc.security.IosSecurityProvider");
         // secprops.put("security.provider.2", "org.apache.harmony.security.provider.cert.DRLCertFactory");
         // secprops.put("security.provider.3", "org.bouncycastle.jce.provider.BouncyCastleProvider");
         // secprops.put("security.provider.4", "org.apache.harmony.security.provider.crypto.CryptoProvider");

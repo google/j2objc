@@ -159,6 +159,9 @@ JRE_INTERFACES = \
 
 # Java sources to be translated normally.
 JAVA_SOURCES = \
+	com/google/j2objc/security/IosMD5MessageDigest.java \
+	com/google/j2objc/security/IosSecurityProvider.java \
+	com/google/j2objc/security/IosSHAMessageDigest.java \
 	java/io/BufferedInputStream.java \
 	java/io/BufferedOutputStream.java \
 	java/io/BufferedReader.java \
@@ -381,10 +384,13 @@ JAVA_SOURCES = \
 	java/security/AllPermissionCollection.java \
 	java/security/BasicPermission.java \
 	java/security/CodeSource.java \
+	java/security/DigestException.java \
 	java/security/DomainCombiner.java \
 	java/security/GeneralSecurityException.java \
 	java/security/GuardedObject.java \
 	java/security/InvalidParameterException.java \
+	java/security/MessageDigest.java \
+	java/security/MessageDigestSpi.java \
 	java/security/NoSuchAlgorithmException.java \
 	java/security/NoSuchProviderException.java \
 	java/security/Permission.java \
