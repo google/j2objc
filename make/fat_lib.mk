@@ -44,6 +44,7 @@ FAT_LIB_SIMULATOR_SDK_DIR = $(shell bash $(J2OBJC_ROOT)/scripts/sysroot_path.sh 
 
 FAT_LIB_MACOSX_FLAGS = -isysroot $(FAT_LIB_MACOSX_SDK_DIR)
 FAT_LIB_IPHONE_FLAGS = -arch armv7 -isysroot $(FAT_LIB_IPHONE_SDK_DIR)
+FAT_LIB_IPHONE64_FLAGS = -arch arm64 -isysroot $(FAT_LIB_IPHONE_SDK_DIR)
 FAT_LIB_IPHONEV7S_FLAGS = -arch armv7s -isysroot $(FAT_LIB_IPHONE_SDK_DIR)
 FAT_LIB_SIMULATOR_FLAGS = -arch i386 -isysroot $(FAT_LIB_SIMULATOR_SDK_DIR)
 FAT_LIB_XCODE_FLAGS = $(ARCH_FLAGS) -isysroot $(SDKROOT)
@@ -53,8 +54,9 @@ ifneq ($(MAKECMDGOALS),clean)
 arch_flags = $(strip \
   $(patsubst macosx,$(FAT_LIB_MACOSX_FLAGS),\
   $(patsubst iphone,$(FAT_LIB_IPHONE_FLAGS),\
+  $(patsubst iphone64,$(FAT_LIB_IPHONE64_FLAGS),\
   $(patsubst iphonev7s,$(FAT_LIB_IPHONEV7S_FLAGS),\
-  $(patsubst simulator,$(FAT_LIB_SIMULATOR_FLAGS),$(1))))))
+  $(patsubst simulator,$(FAT_LIB_SIMULATOR_FLAGS),$(1)))))))
 
 fat_lib_dependencies:
 	@:

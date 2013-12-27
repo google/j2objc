@@ -2180,11 +2180,8 @@
 		06619393155848D70004DAFE /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				"ARCHS[sdk=iphoneos*]" = (
-					armv6,
-					armv7,
-				);
-				"ARCHS[sdk=iphonesimulator*]" = i386;
+				"ARCHS[sdk=iphoneos*]" = "$(ARCHS_STANDARD_INCLUDING_64_BIT)";
+				"ARCHS[sdk=iphonesimulator*]" = "$(ARCHS_STANDARD)";
 				DSTROOT = /tmp/JreEmulation.dst;
 				GCC_PRECOMPILE_PREFIX_HEADER = NO;
 				GCC_PREFIX_HEADER = "";
@@ -2210,11 +2207,8 @@
 		06619394155848D70004DAFE /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				"ARCHS[sdk=iphoneos*]" = (
-					armv6,
-					armv7,
-				);
-				"ARCHS[sdk=iphonesimulator*]" = i386;
+				"ARCHS[sdk=iphoneos*]" = "$(ARCHS_STANDARD_INCLUDING_64_BIT)";
+				"ARCHS[sdk=iphonesimulator*]" = "$(ARCHS_STANDARD)";
 				DSTROOT = /tmp/JreEmulation.dst;
 				GCC_PRECOMPILE_PREFIX_HEADER = NO;
 				GCC_PREFIX_HEADER = "";
@@ -2261,11 +2255,8 @@
 		0672178F15587E2C00645E1B /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				"ARCHS[sdk=iphoneos*]" = (
-					armv6,
-					armv7,
-				);
-				"ARCHS[sdk=iphonesimulator*]" = i386;
+				"ARCHS[sdk=iphoneos*]" = "$(ARCHS_STANDARD_INCLUDING_64_BIT)";
+				"ARCHS[sdk=iphonesimulator*]" = "$(ARCHS_STANDARD)";
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(SDKROOT)/Developer/Library/Frameworks",
 					"$(DEVELOPER_LIBRARY_DIR)/Frameworks",
@@ -2292,11 +2283,8 @@
 		0672179015587E2C00645E1B /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				"ARCHS[sdk=iphoneos*]" = (
-					armv6,
-					armv7,
-				);
-				"ARCHS[sdk=iphonesimulator*]" = i386;
+				"ARCHS[sdk=iphoneos*]" = "$(ARCHS_STANDARD_INCLUDING_64_BIT)";
+				"ARCHS[sdk=iphonesimulator*]" = "$(ARCHS_STANDARD)";
 				COPY_PHASE_STRIP = YES;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(SDKROOT)/Developer/Library/Frameworks",
