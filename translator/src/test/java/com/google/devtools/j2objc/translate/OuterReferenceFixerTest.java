@@ -38,4 +38,11 @@ public class OuterReferenceFixerTest extends GenerationTest {
         + "public void foo() { o.toString(); } } new Inner(); } }", "Test", "Test.m");
     assertTranslation(translation, "[[Test_test_Inner alloc] initWithId:o]");
   }
+
+  public void testRecursiveConstructionOfLocalClass() throws IOException {
+    String translation = translateSourceFile(
+        "public class Test { void test(final Object bar) { "
+        + "class Foo { void foo() { bar.toString(); new Foo(); } } } }", "Test", "Test.m");
+    assertTranslation(translation, "[[Test_test_Foo alloc] initWithTest:this$0_ withId:val$bar_]");
+  }
 }
