@@ -192,6 +192,9 @@
   JavaLangInteger *minimalDays = [JavaLangInteger valueOfWithInt:[calendar minimumDaysInFirstWeek]];
   LibcoreIcuLocaleData_set_minimalDaysInFirstWeek_(result, minimalDays);
   [calendar setLocale:currentLocale];
+
+  RELEASE_(dateFormatter);
+  RELEASE_(numberFormatter);
 }
 
 @end
