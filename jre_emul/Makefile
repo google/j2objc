@@ -142,6 +142,8 @@ JRE_INTERFACES = \
 	java/util/concurrent/ScheduledFuture.h \
 	java/util/concurrent/ThreadFactory.h \
 	java/util/concurrent/TransferQueue.h \
+	java/util/logging/Filter.h \
+	java/util/logging/LoggingMXBean.h \
 	org/apache/harmony/security/fortress/SecurityAccess.h \
 	org/w3c/dom/TypeInfo.h \
 	org/w3c/dom/ls/LSInput.h \
@@ -168,6 +170,11 @@ JAVA_SOURCES = \
 	com/google/j2objc/security/IosMD5MessageDigest.java \
 	com/google/j2objc/security/IosSecurityProvider.java \
 	com/google/j2objc/security/IosSHAMessageDigest.java \
+	java/beans/IndexedPropertyChangeEvent.java \
+	java/beans/PropertyChangeEvent.java \
+	java/beans/PropertyChangeListener.java \
+	java/beans/PropertyChangeListenerProxy.java \
+	java/beans/PropertyChangeSupport.java \
 	java/io/BufferedInputStream.java \
 	java/io/BufferedOutputStream.java \
 	java/io/BufferedReader.java \
@@ -555,13 +562,20 @@ JAVA_SOURCES = \
 	java/util/LinkedHashSet.java \
 	java/util/ListResourceBundle.java \
 	java/util/Locale.java \
+	java/util/logging/ConsoleHandler.java \
+	java/util/logging/ErrorManager.java \
 	java/util/logging/Formatter.java \
 	java/util/logging/Handler.java \
 	java/util/logging/Level.java \
-	java/util/logging/Logger.java \
 	java/util/logging/LogManager.java \
 	java/util/logging/LogRecord.java \
+	java/util/logging/Logger.java \
+	java/util/logging/LoggingPermission.java \
+	java/util/logging/MemoryHandler.java \
 	java/util/logging/NSLogHandler.java \
+	java/util/logging/SimpleFormatter.java \
+	java/util/logging/StreamHandler.java \
+	java/util/logging/XMLFormatter.java \
 	java/util/MapEntry.java \
 	java/util/MiniEnumSet.java \
 	java/util/MissingFormatArgumentException.java \

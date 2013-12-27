@@ -35,8 +35,6 @@ class NSLogHandler extends Handler {
     @Override
     public String format(LogRecord record) {
       StringBuffer sb = new StringBuffer();
-      sb.append(record.getLoggerName());
-      sb.append(": ");
       sb.append(record.getLevel().getLocalizedName());
       sb.append(": ");
       sb.append(formatMessage(record));
@@ -67,16 +65,8 @@ class NSLogHandler extends Handler {
   }
 
   private native void log(LogRecord record) /*-[
-    NSLog(@"%@: %@", [NSThread currentThread],
-       [[self getFormatter] formatWithJavaUtilLoggingLogRecord:record]);
+    NSLog(@"%@", [[self getFormatter] formatWithJavaUtilLoggingLogRecord:record]);
     [[record getThrown] printStackTrace];
-
-    // TODO(tball): replace NSLog above with stderr below, once desired format
-    // is decided.
-//    NSString *msg =
-//        [[self getFormatter] formatWithJavaUtilLoggingLogRecord:record];
-//    const char *cmsg = [msg cStringUsingEncoding:NSASCIIStringEncoding];
-//    fprintf(stderr, "%s\n", cmsg);
   ]-*/;
 
 }
