@@ -85,9 +85,13 @@ JRE_INTERFACES = \
 	java/io/Closeable.h \
 	java/io/DataInput.h \
 	java/io/DataOutput.h \
+	java/io/Externalizable.h \
 	java/io/FileFilter.h \
 	java/io/FilenameFilter.h \
 	java/io/Flushable.h \
+	java/io/ObjectInput.h \
+	java/io/ObjectInputValidation.h \
+	java/io/ObjectOutput.h \
 	java/io/Serializable.h \
 	java/lang/Appendable.h \
 	java/lang/Runnable.h \
@@ -173,6 +177,9 @@ JAVA_SOURCES = \
 	java/io/CharConversionException.java \
 	java/io/DataInputStream.java \
 	java/io/DataOutputStream.java \
+	java/io/EmulatedFields.java \
+	java/io/EmulatedFieldsForDumping.java \
+	java/io/EmulatedFieldsForLoading.java \
 	java/io/EOFException.java \
 	java/io/File.java \
 	java/io/FileDescriptor.java \
@@ -188,11 +195,19 @@ JAVA_SOURCES = \
 	java/io/InputStream.java \
 	java/io/InputStreamReader.java \
 	java/io/InterruptedIOException.java \
+	java/io/InvalidClassException.java \
 	java/io/InvalidObjectException.java \
 	java/io/IOException.java \
 	java/io/LineNumberReader.java \
+	java/io/NotActiveException.java \
 	java/io/NotSerializableException.java \
+	java/io/ObjectInputStream.java \
+	java/io/ObjectOutputStream.java \
+	java/io/ObjectStreamClass.java \
+	java/io/ObjectStreamConstants.java \
 	java/io/ObjectStreamException.java \
+	java/io/ObjectStreamField.java \
+	java/io/OptionalDataException.java \
 	java/io/OutputStream.java \
 	java/io/OutputStreamWriter.java \
 	java/io/PipedInputStream.java \
@@ -205,12 +220,16 @@ JAVA_SOURCES = \
 	java/io/PushbackReader.java \
 	java/io/Reader.java \
 	java/io/SequenceInputStream.java \
+	java/io/SerializablePermission.java \
+	java/io/SerializationHandleMap.java \
+	java/io/StreamCorruptedException.java \
 	java/io/StreamTokenizer.java \
 	java/io/StringReader.java \
 	java/io/StringWriter.java \
 	java/io/SyncFailedException.java \
 	java/io/UnsupportedEncodingException.java \
 	java/io/UTFDataFormatException.java \
+	java/io/WriteAbortedException.java \
 	java/io/Writer.java \
 	java/lang/AbstractMethodError.java \
 	java/lang/AbstractStringBuilder.java \
@@ -374,6 +393,7 @@ JAVA_SOURCES = \
 	java/nio/charset/IOSCharsetDecoder.java \
 	java/nio/charset/IOSCharsetEncoder.java \
 	java/nio/charset/MalformedInputException.java \
+	java/nio/charset/ModifiedUtf8.java \
 	java/nio/charset/StandardCharsets.java \
 	java/nio/charset/UnmappableCharacterException.java \
 	java/nio/charset/UnsupportedCharsetException.java \
@@ -602,9 +622,11 @@ JAVA_SOURCES = \
 	libcore/io/ErrnoException.java \
 	libcore/io/IoUtils.java \
 	libcore/io/Libcore.java \
+	libcore/io/Memory.java \
 	libcore/io/Os.java \
 	libcore/io/OsConstants.java \
 	libcore/io/Posix.java \
+	libcore/io/SizeOf.java \
 	libcore/math/MathUtils.java \
 	libcore/net/UriCodec.java \
 	libcore/net/url/FileHandler.java \

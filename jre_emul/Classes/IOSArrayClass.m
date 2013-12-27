@@ -62,6 +62,10 @@
   return [[[self getComponentType] getName] stringByAppendingString:@"Array"];
 }
 
+- (NSString *)binaryName {
+  return [NSString stringWithFormat:@"[%@", [componentType_ binaryName]];
+}
+
 - (NSString *)objcName {
   return [self getSimpleName];
 }

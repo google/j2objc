@@ -257,4 +257,8 @@ static JavaLangReflectMethod *getAccessor(IOSClass *class, NSString *method, NSS
   return NO;
 }
 
+- (NSMethodSignature *)signature {
+  return methodSignature_;
+}
+
 @end

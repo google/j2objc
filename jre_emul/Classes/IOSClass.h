@@ -185,6 +185,7 @@
 - (IOSObjectArray *)getInterfacesWithArrayType:(IOSClass *)arrayType;
 - (JavaClassMetadata *)getMetadata;
 - (NSString *)objcName;
+- (NSString *)binaryName;
 
 #ifdef __cplusplus
 extern "C" {

@@ -462,20 +462,6 @@ public class ObjectOutputStream extends OutputStream implements ObjectOutput, Ob
         output.flush();
     }
 
-    /*
-     * These methods get the value of a field named fieldName of object
-     * instance. The field is declared by declaringClass. The field is the same
-     * type as the method return value.
-     *
-     * these methods could be implemented non-natively on top of
-     * java.lang.reflect at the expense of extra object creation
-     * (java.lang.reflect.Field). Otherwise Serialization could not fetch
-     * private fields, except by the use of a native method like this one.
-     *
-     * @throws NoSuchFieldError If the field does not exist.
-     */
-    private static native Object getFieldL(Object instance, Class<?> declaringClass, String fieldName, String fieldTypeName);
-
     /**
      * Return the next handle to be used to indicate cyclic
      * references being saved to the stream.

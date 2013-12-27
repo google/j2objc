@@ -17,16 +17,13 @@
 package com.google.devtools.j2objc.translate;
 
 import com.google.devtools.j2objc.GenerationTest;
-import com.google.devtools.j2objc.J2ObjC;
 import com.google.devtools.j2objc.types.Types;
 import com.google.devtools.j2objc.util.ASTUtil;
 import com.google.devtools.j2objc.util.NameTable;
 
 import org.eclipse.jdt.core.dom.Block;
-import org.eclipse.jdt.core.dom.BodyDeclaration;
 import org.eclipse.jdt.core.dom.CompilationUnit;
 import org.eclipse.jdt.core.dom.EmptyStatement;
-import org.eclipse.jdt.core.dom.FieldDeclaration;
 import org.eclipse.jdt.core.dom.ForStatement;
 import org.eclipse.jdt.core.dom.IBinding;
 import org.eclipse.jdt.core.dom.ITypeBinding;
@@ -41,7 +38,6 @@ import org.eclipse.jdt.core.dom.Statement;
 import org.eclipse.jdt.core.dom.SuperMethodInvocation;
 import org.eclipse.jdt.core.dom.SwitchStatement;
 import org.eclipse.jdt.core.dom.TypeDeclaration;
-import org.eclipse.jdt.core.dom.VariableDeclarationFragment;
 import org.eclipse.jdt.core.dom.VariableDeclarationStatement;
 
 import java.io.IOException;
@@ -347,38 +343,6 @@ public class RewriterTest extends GenerationTest {
         "class Test { Test(int[] i) {} Test() { this(new int[] {}); } }", "Test", "Test.m");
     assertTranslation(translation,
         "[self initTestWithIntArray:[IOSIntArray arrayWithInts:(int[]){  } count:0]]");
-  }
-
-  /**
-   * Verify serialization methods and fields are removed.
-   */
-  public void testSerializationRemoval() {
-    String source = "import java.io.*; public class Test implements Serializable { " +
-        "private int foo; " +
-
-        "private static long serialVersionUID; " +
-        "private void readObject(ObjectInputStream in) {} " +
-        "private void writeObject(ObjectOutputStream out) {} " +
-        "private void readObjectNoData() {} " +
-        "private Object readResolve() { return null; } " +
-        "private Object writeResolve() { return null;} " +
-
-        "public Test() {} " +
-        "private void testMethod() {} }";
-    CompilationUnit unit = compileType("Test", source);
-    TypeDeclaration type = (TypeDeclaration) unit.types().get(0);
-    List<BodyDeclaration> members = type.bodyDeclarations();
-    assertEquals(9, members.size());
-    J2ObjC.initializeTranslation(unit);
-    J2ObjC.translate(unit);
-    assertEquals(4, members.size());
-    FieldDeclaration f = (FieldDeclaration) members.get(0);
-    VariableDeclarationFragment var = (VariableDeclarationFragment) f.fragments().get(0);
-    assertEquals("foo", var.getName().getIdentifier());
-    MethodDeclaration m = (MethodDeclaration) members.get(1);
-    assertTrue(m.isConstructor());
-    m = (MethodDeclaration) members.get(2);
-    assertEquals("testMethod", m.getName().getIdentifier());
   }
 
   public void testAddsAbstractMethodsToEnum() throws IOException {

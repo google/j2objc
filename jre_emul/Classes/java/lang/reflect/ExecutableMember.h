@@ -44,6 +44,8 @@
   const J2ObjcMethodInfo *metadata_;
 }
 
+@property (readonly) NSMethodSignature *signature;
+
 - (id)initWithSelector:(SEL)aSelector
              withClass:(IOSClass *)aClass
           withMetadata:(const J2ObjcMethodInfo *)metadata;

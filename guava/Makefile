@@ -19,12 +19,6 @@ default: dist
 
 include environment.mk
 
-# Serialization.java is used by a number of readObject and writeObject methods
-# which get stripped by the translator. By keeping it around we avoid having to
-# manually remove those methods.
-SOURCES_TO_EXCLUDE = \
-    com/google/common/collect/Serialization.java
-
 JAVA_SOURCES = \
     $(filter-out $(SOURCES_TO_EXCLUDE:%=$(SRC_DIR)/%),$(shell find $(SRC_DIR) -name *.java))
 
