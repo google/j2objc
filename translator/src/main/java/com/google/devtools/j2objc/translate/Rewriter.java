@@ -66,7 +66,6 @@ import org.eclipse.jdt.core.dom.Modifier.ModifierKeyword;
 import org.eclipse.jdt.core.dom.ParenthesizedExpression;
 import org.eclipse.jdt.core.dom.PostfixExpression;
 import org.eclipse.jdt.core.dom.PrefixExpression;
-import org.eclipse.jdt.core.dom.PrimitiveType;
 import org.eclipse.jdt.core.dom.ReturnStatement;
 import org.eclipse.jdt.core.dom.SingleVariableDeclaration;
 import org.eclipse.jdt.core.dom.Statement;
@@ -163,8 +162,6 @@ public class Rewriter extends ErrorReportingASTVisitor {
         addForwardingMethods(ast, typeBinding, interfaceMethods, members);
       }
     }
-
-    removeSerialization(members);
 
     renameDuplicateMembers(typeBinding);
     return true;
@@ -799,65 +796,6 @@ public class Rewriter extends ErrorReportingASTVisitor {
       methodBinding.addParameter(paramType);
     }
     return method;
-  }
-
-  /**
-   * Remove private serialization methods and fields; since Java serialization
-   * isn't supported, they only take up space.  The list of methods is taken
-   * from the java.io.Serialization javadoc comments.
-   */
-  private void removeSerialization(List<BodyDeclaration> members) {
-    for (Iterator<BodyDeclaration> iterator = members.iterator(); iterator.hasNext(); ) {
-      BodyDeclaration member = iterator.next();
-      int mods = member.getModifiers();
-      if (member instanceof MethodDeclaration) {
-        IMethodBinding binding = Types.getMethodBinding(member);
-        String name = binding.getName();
-        ITypeBinding[] parameterTypes = binding.getParameterTypes();
-        ITypeBinding returnType = binding.getReturnType();
-        if (name.equals("readObject")
-            && Modifier.isPrivate(mods)
-            && parameterTypes.length == 1
-            && parameterTypes[0].getQualifiedName().equals("java.io.ObjectInputStream")
-            && returnType.getBinaryName().equals("V")) {
-          iterator.remove();
-          continue;
-        }
-        if (name.equals("writeObject")
-            && Modifier.isPrivate(mods)
-            && parameterTypes.length == 1
-            && parameterTypes[0].getQualifiedName().equals("java.io.ObjectOutputStream")
-            && returnType.getBinaryName().equals("V")) {
-          iterator.remove();
-          continue;
-        }
-        if (name.equals("readObjectNoData")
-            && Modifier.isPrivate(mods)
-            && parameterTypes.length == 0
-            && returnType.getBinaryName().equals("V")) {
-          iterator.remove();
-          continue;
-        }
-        if ((name.equals("readResolve") || name.equals("writeResolve"))
-            && Modifier.isPrivate(mods)
-            && parameterTypes.length == 0
-            && returnType.getQualifiedName().equals("java.lang.Object")) {
-          iterator.remove();
-          continue;
-        }
-      } else if (member instanceof FieldDeclaration) {
-        FieldDeclaration field = (FieldDeclaration) member;
-        Type type = field.getType();
-        VariableDeclarationFragment var = (VariableDeclarationFragment) field.fragments().get(0);
-        if (var.getName().getIdentifier().equals("serialVersionUID")
-            && type.isPrimitiveType()
-            && ((PrimitiveType) type).getPrimitiveTypeCode() == PrimitiveType.LONG
-            && Modifier.isPrivate(mods) && Modifier.isStatic(mods)) {
-          iterator.remove();
-          continue;
-        }
-      }
-    }
   }
 
   /**

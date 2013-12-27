@@ -144,6 +144,7 @@ TEST_SOURCES = \
 	org/apache/harmony/luni/tests/java/io/InterruptedIOExceptionTest.java \
 	org/apache/harmony/luni/tests/java/io/IOExceptionTest.java \
 	org/apache/harmony/luni/tests/java/io/LineNumberReaderTest.java \
+	org/apache/harmony/luni/tests/java/io/ObjectStreamClassTest.java \
 	org/apache/harmony/luni/tests/java/io/OutputStreamWriterTest.java \
 	org/apache/harmony/luni/tests/java/io/PipedInputStreamTest.java \
 	org/apache/harmony/luni/tests/java/io/PipedOutputStreamTest.java \

@@ -497,7 +497,6 @@ public class NameTable {
 
   /**
    * Return a comma-separated list of field names from a fragments list.
-   * Skip any discarded variables; currently that's just serialVersionUID.
    *
    * @param fragments a list of VariableDeclarationFragment instances
    */
@@ -510,11 +509,7 @@ public class NameTable {
       Object o = iterator.next();
       if (o instanceof VariableDeclarationFragment) {
         VariableDeclarationFragment fragment = (VariableDeclarationFragment) o;
-        String name = fragment.getName().getIdentifier();
-        if ("serialVersionUID".equals(name)) {
-          continue;
-        }
-        sb.append(name);
+        sb.append(fragment.getName().getIdentifier());
         if (iterator.hasNext()) {
           sb.append(", ");
         }

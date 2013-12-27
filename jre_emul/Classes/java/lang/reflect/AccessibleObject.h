@@ -45,6 +45,9 @@
 
 @end
 
+// Returns true if type can be mapped to a valid Java type.
+BOOL validTypeEncoding(const char *type);
+
 // Decodes an Objective-C type encoding, returning the associated iOS class.
 // For example, the type encoding 's' is decoded as JavaLangShort.
 IOSClass *decodeTypeEncoding(const char *type);

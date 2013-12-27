@@ -332,7 +332,9 @@ NSString *IOSClass_GetTranslatedMethodName(NSString *name, IOSObjectArray *param
 }
 
 - (NSString *)binaryName {
-  return [self getName];
+  NSString *name = [self getName];
+  return [NSString stringWithFormat:@"L%@;",
+          [name stringByReplacingOccurrencesOfString:@"." withString:@"/"]];
 }
 
 // Convert Java class name to camelcased iOS name.

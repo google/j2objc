@@ -17,7 +17,6 @@
 
 package java.io;
 
-import dalvik.system.VMStack;
 import java.io.EmulatedFields.ObjectSlot;
 import java.lang.reflect.Array;
 import java.lang.reflect.Field;
@@ -29,6 +28,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
+
 import libcore.util.EmptyArray;
 
 /**
@@ -2046,15 +2046,7 @@ public class ObjectInputStream extends InputStream implements ObjectInput, Objec
      * @return a user-defined class loader or null if one isn't found
      */
     private static ClassLoader getClosestUserClassLoader() {
-        Class<?>[] stackClasses = VMStack.getClasses(-1);
-        for (Class<?> stackClass : stackClasses) {
-            ClassLoader loader = stackClass.getClassLoader();
-            if (loader != null && loader != bootstrapLoader
-                    && loader != systemLoader) {
-                return loader;
-            }
-        }
-        return null;
+        return bootstrapLoader;
     }
 
     /**

@@ -131,18 +131,37 @@ static BOOL IsConstructor(NSString *name) {
   return [name isEqualToString:@"init"] || [name hasPrefix:@"initWith"];
 }
 
+// Returns true if the parameter and return types are all Objective-C
+// classes or primitive types.
+static BOOL IsValidMethod(ExecutableMember *method) {
+  if (!validTypeEncoding([method.signature methodReturnType])) {
+    return NO;
+  }
+  NSUInteger nArgs = [method.signature numberOfArguments];
+  // Check each argument type, skipping the self and selector arguments.
+  for (NSUInteger i = 2; i < nArgs; i++) {
+    if (!validTypeEncoding([method.signature getArgumentTypeAtIndex:i])) {
+      return NO;
+    }
+  }
+  return YES;
+}
+
 static void CreateMethodWrappers(
     Method *methods, unsigned count, IOSClass* clazz, NSMutableDictionary *map,
     BOOL publicOnly, id (^methodCreator)(SEL)) {
   for (NSUInteger i = 0; i < count; i++) {
     SEL sel = method_getName(methods[i]);
     NSString *key = NSStringFromSelector(sel);
-    if ([map objectForKey:key]) {
+    if ([map objectForKey:key] || sel == @selector(__metadata)) {
       continue;
     }
     ExecutableMember *method = methodCreator(sel);
     if (method) {
       if (publicOnly && ([method getModifiers] & JavaLangReflectModifier_PUBLIC) == 0) {
+        continue;
+      }
+      if (!IsValidMethod(method)) {
         continue;
       }
       [map setObject:method forKey:NSStringFromSelector(sel)];
