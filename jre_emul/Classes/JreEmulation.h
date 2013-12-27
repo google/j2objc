@@ -156,7 +156,7 @@ FOUNDATION_EXPORT
 
 #define MOD_ASSIGN_DEFN(NAME, TYPE) \
   static inline TYPE ModAssign##NAME(TYPE *pLhs, double rhs) { \
-    return *pLhs = fmod(*pLhs, rhs); \
+    return *pLhs = (TYPE) fmod(*pLhs, rhs); \
   }
 
 MOD_ASSIGN_DEFN(Byte, char)
