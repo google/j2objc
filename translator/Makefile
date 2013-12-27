@@ -22,6 +22,7 @@ JAVA_SOURCE_DIR = $(SOURCE_DIR)/java
 J2OBJC_ROOT = ..
 
 include ../make/common.mk
+include ../make/j2objc_deps.mk
 include ../java_deps/jars.mk
 
 CLASS_DIR = $(BUILD_DIR)/classes
@@ -117,14 +118,8 @@ RESOURCE_FILES = $(RESOURCES:%=$(CLASS_DIR)/$(BASE_PACKAGE)/%)
 default: $(J2OBJC_JAR)
 	@: # suppress make's "nothing to be done" message
 
-# Only build dependencies when called directly from command-line.
-deps:
-	@if [ "$(CONFIGURATION_BUILD_DIR)x$(MAKELEVEL)" == "x0" ]; then \
-	  cd ../annotations && make dist; \
-	  cd ../java_deps && make dist; \
-	fi
-
-$(J2OBJC_JAR): $(MANIFEST) $(RESOURCE_FILES) $(JAVA_SOURCES_FULL) | $(BUILD_DIR) deps
+$(J2OBJC_JAR): $(MANIFEST) $(RESOURCE_FILES) $(JAVA_SOURCES_FULL) \
+  | $(BUILD_DIR) java_deps_dist annotations_dist
 	@echo Building j2objc jar
 	@javac -Xlint:unchecked -sourcepath $(SOURCEPATH) -classpath $(CLASSPATH) \
 	    -d $(CLASS_DIR) -encoding ISO-8859-1 -source 1.6 -target 1.6 -nowarn \
@@ -152,7 +147,7 @@ $(J2OBJC_SH_DIST): $(J2OBJC_SH) $(J2OBJC_JAR_DIST)
 	@mkdir -p $(@D)
 	@install $< $@
 
-dist: deps $(J2OBJC_JAR_DIST) $(J2OBJC_SH_DIST)
+dist: $(J2OBJC_JAR_DIST) $(J2OBJC_SH_DIST)
 	@:
 
 clean:
@@ -161,7 +156,7 @@ clean:
 test: compile-tests
 	java -classpath $(TEST_CLASSPATH) junit.textui.TestRunner com.google.devtools.j2objc.SmallTests
 
-compile-tests: $(J2OBJC_JAR) deps
+compile-tests: $(J2OBJC_JAR)
 	@rm -rf $(TEST_DIR)
 	@mkdir -p $(TEST_DIR)
 	@javac -Xlint:unchecked -sourcepath src/test/java -classpath $(TEST_CLASSPATH) \

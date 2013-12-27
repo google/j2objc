@@ -170,10 +170,8 @@ ARCH_HEADERS = $(PUBLIC_HEADERS:%=$(ARCH_INCLUDE_DIR)/%)
 JAVA_SOURCES = \
     $(EXTRACTED_JAVA) \
     $(MODIFIED_SOURCES:%=$(MODIFIED_JAVA_SRC_DIR)/%)
-JUNIT_JAR = $(BUILD_DIR)/j2objc_junit.jar
 JUNIT_DIST_JAR = $(DIST_JAR_DIR)/j2objc_junit.jar
-SOURCEPATH = $(JAVA_SRC_DIR):$(MODIFIED_JAVA_SRC_DIR)
-CLASSPATH = $(CLASSES_DIR):$(DIST_JAR_DIR)/j2objc_annotations.jar
+CLASSPATH = $(DIST_JAR_DIR)/j2objc_annotations.jar
 
 JAVA_SOURCES_MANIFEST = $(BUILD_DIR)/java_sources.mf
 OBJC_SOURCES_MANIFEST = $(BUILD_DIR)/objc_sources.mf
@@ -190,21 +188,25 @@ FAT_LIB_SOURCE_DIRS = $(GEN_OBJC_DIR)
 FAT_LIB_COMPILE = $(CLANG) $(OBJCFLAGS) -I$(GEN_OBJC_DIR) -I$(ARCH_INCLUDE_DIR)
 include ../make/fat_lib.mk
 
+fat_lib_dependencies: jre_emul_dist
+
+CREATE_JAR_NAME = j2objc_junit
+CREATE_JAR_SOURCES = $(JAVA_SOURCES)
+CREATE_JAR_JAVAC_ARGS = -cp $(CLASSPATH)
+CREATE_JAR_DEPENDENCIES = annotations_dist
+include ../make/create_jar.mk
+
 java: $(JUNIT_DIST_JAR)
+	@:
 
-$(JUNIT_JAR): $(JAVA_SOURCES) | $(BUILD_DIR)
-	@cd $(J2OBJC_ROOT)/annotations && make dist
-	@echo "building j2objc_junit.jar"
-	@rm -rf $(CLASSES_DIR)
-	@mkdir -p $(CLASSES_DIR)
-	@$(JAVAC) -sourcepath $(SOURCEPATH) -cp $(CLASSPATH) -d $(CLASSES_DIR) $^
-	@jar cf $@ -C $(CLASSES_DIR) .
-
-$(JUNIT_DIST_JAR): $(JUNIT_JAR) | $(DIST_JAR_DIR)
+$(JUNIT_DIST_JAR): $(CREATE_JAR_RESULT)
+	@mkdir -p $(@D)
 	@install -m 0644 $< $@
 
 lib: $(FAT_LIB_LIBRARY)
 	@:
+
+$(JUNIT_SRC_JAR) $(HAMCREST_SRC_JAR): | java_deps_dist
 
 $(BUILD_DIR)/.extracted: $(JUNIT_SRC_JAR) $(HAMCREST_SRC_JAR)
 	@mkdir -p $(JAVA_SRC_DIR)
@@ -246,7 +248,7 @@ $(BUILD_DIR):
 	@mkdir -p $@
 
 clean:
-	@rm -rf $(BUILD_DIR) $(JUNIT_LIB_DIST)
+	@rm -rf $(BUILD_DIR) $(JUNIT_LIB_DIST) $(JUNIT_DIST_JAR)
 	@rm -rf $(ARCH_INCLUDE_DIR)/junit $(ARCH_INCLUDE_DIR)/org/junit
 
-dist: lib $(JUNIT_LIB_DIST) $(ARCH_HEADERS)
+dist: lib $(JUNIT_LIB_DIST) $(ARCH_HEADERS) $(JUNIT_DIST_JAR)

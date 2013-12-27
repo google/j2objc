@@ -22,6 +22,7 @@ RESOURCE_DIR = $(SOURCE_DIR)/resources
 J2OBJC_ROOT = ..
 
 include ../make/common.mk
+include ../make/j2objc_deps.mk
 include ../java_deps/jars.mk
 
 BUILD_DIR = build_result
@@ -60,18 +61,11 @@ ALL_LIBS = $(JAR) $(ECLIPSE_LIBS)
 default: $(JAR)
 	@:
 
-# Only build dependencies when called directly from command-line.
-deps:
-	@if [ "$(CONFIGURATION_BUILD_DIR)x$(MAKELEVEL)" == "x0" ]; then \
-	  cd ../annotations && make dist; \
-	  cd ../java_deps && make dist; \
-	  cd ../translator && make dist; \
-	fi
-
 clean:
 	@rm -rf $(BUILD_DIR) $(JAR_DIST) $(DIST_DIR)/cycle_finder
 
-$(JAR): $(MANIFEST) $(RESOURCE_FILES) $(JAVA_SOURCES_FULL) | $(CLASS_DIR)
+$(JAR): $(MANIFEST) $(RESOURCE_FILES) $(JAVA_SOURCES_FULL) \
+  | $(CLASS_DIR) java_deps_dist annotations_dist translator
 	javac -Xlint:unchecked -sourcepath $(JAVA_SOURCE_DIR) -classpath $(JAR_DEPS_PATH) \
 	    -d $(CLASS_DIR) -source 1.6 -target 1.6 -nowarn $(JAVA_SOURCES:%=$(JAVA_SOURCE_DIR)/%)
 	jar cfm $@ $(MANIFEST) -C $(CLASS_DIR) .
@@ -97,9 +91,9 @@ $(DIST_DIR)/cycle_finder: $(SOURCE_DIR)/bin/cycle_finder.sh | $(DIST_DIR)
 $(JAR_DIST): $(JAR) | $(DIST_JAR_DIR)
 	install -m 0644 $< $@
 
-dist: deps $(JAR_DIST) $(DIST_DIR)/cycle_finder
+dist: $(JAR_DIST) $(DIST_DIR)/cycle_finder
 
-test: deps compile-tests
+test: compile-tests
 	java -classpath $(TEST_CLASSPATH) junit.textui.TestRunner \
 	    com.google.devtools.cyclefinder.CycleFinderTest
 
