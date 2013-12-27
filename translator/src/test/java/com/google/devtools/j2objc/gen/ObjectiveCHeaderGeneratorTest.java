@@ -555,4 +555,10 @@ public class ObjectiveCHeaderGeneratorTest extends GenerationTest {
         "@Deprecated public enum Test { A, B }", "Test", "Test.h");
     assertTranslation(translation, "__attribute__((deprecated))\n@interface TestEnum");
   }
+
+  public void testLongConstants() throws IOException {
+    String translation = translateSourceFile(
+        "class Test { static final long FOO = 123; }", "Test", "Test.h");
+    assertTranslation(translation, "123LL");
+  }
 }

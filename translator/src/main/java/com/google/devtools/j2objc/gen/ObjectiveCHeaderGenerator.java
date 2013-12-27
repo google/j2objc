@@ -600,7 +600,7 @@ public class ObjectiveCHeaderGenerator extends ObjectiveCSourceFileGenerator {
           if (l == Long.MIN_VALUE) {
             println("((long long) 0x8000000000000000LL)");
           } else {
-            println(value.toString());
+            println(value.toString() + "LL");
           }
         } else if (value instanceof Integer) {
           long l = ((Integer) value).intValue();
