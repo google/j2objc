@@ -540,7 +540,7 @@ public class StatementGeneratorTest extends GenerationTest {
         result);
     result = generateStatement(stmts.get(1));
     assertEquals("IOSCharArray *b = " +
-        "[IOSCharArray arrayWithCharacters:(unichar[]){ '4', '5' } count:2];", result);
+        "[IOSCharArray arrayWithChars:(unichar[]){ '4', '5' } count:2];", result);
   }
 
   /**
@@ -555,7 +555,7 @@ public class StatementGeneratorTest extends GenerationTest {
         "[IOSIntArray arrayWithInts:(int[]){ 1, 2, 3 } count:3]);");
     assertTranslation(translation,
         "JreOperatorRetainedAssign(&Test_b_, nil, " +
-        "[IOSCharArray arrayWithCharacters:(unichar[]){ '4', '5' } count:2]);");
+        "[IOSCharArray arrayWithChars:(unichar[]){ '4', '5' } count:2]);");
   }
 
   public void testLocalArrayCreation() throws IOException {
@@ -564,7 +564,7 @@ public class StatementGeneratorTest extends GenerationTest {
             "return new char[] { (char) high, (char) low }; } }",
       "Example", "Example.m");
     assertTranslation(translation, "return [IOSCharArray " +
-        "arrayWithCharacters:(unichar[]){ (unichar) high, (unichar) low } count:2];");
+        "arrayWithChars:(unichar[]){ (unichar) high, (unichar) low } count:2];");
   }
 
   // Regression test: "case:" was output instead of "case".

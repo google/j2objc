@@ -117,7 +117,7 @@ public class ArrayCreationTest extends GenerationTest {
     assertEquals(1, stmts.size());
     String result = generateStatement(stmts.get(0));
     assertEquals("IOSCharArray *foo = " +
-        "[IOSCharArray arrayWithCharacters:(unichar[]){ 'A', 'z' } count:2];", result);
+        "[IOSCharArray arrayWithChars:(unichar[]){ 'A', 'z' } count:2];", result);
   }
 
   public void testDoubleArrayCreationNoDimension() {
@@ -133,7 +133,7 @@ public class ArrayCreationTest extends GenerationTest {
     assertEquals(1, stmts.size());
     String result = generateStatement(stmts.get(0));
     assertEquals("IOSFloatArray *foo = " +
-    		"[IOSFloatArray arrayWithFloats:(float[]){ 123.45f, -0.0001f } count:2];", result);
+        "[IOSFloatArray arrayWithFloats:(float[]){ 123.45f, -0.0001f } count:2];", result);
   }
 
   public void testIntArrayCreationNoDimension() {
@@ -181,7 +181,7 @@ public class ArrayCreationTest extends GenerationTest {
     assertEquals(1, stmts.size());
     String result = generateStatement(stmts.get(0));
     assertEquals("IOSCharArray *foo = " +
-        "[IOSCharArray arrayWithCharacters:(unichar[]){ 'A', 'z' } count:2];", result);
+        "[IOSCharArray arrayWithChars:(unichar[]){ 'A', 'z' } count:2];", result);
   }
 
   public void testDoubleArrayCreation() {

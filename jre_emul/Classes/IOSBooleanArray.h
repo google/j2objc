@@ -31,25 +31,7 @@
   BOOL *buffer_;
 }
 
-// Create an array from a Objective-C BOOL array and length.
-- (id)initWithBooleans:(const BOOL *)booleans count:(NSUInteger)count;
-+ (id)arrayWithBooleans:(const BOOL *)booleans count:(NSUInteger)count;
-
-// Return boolean at a specified index, throws IndexOutOfBoundsException
-// if out out range.
-FOUNDATION_EXPORT BOOL IOSBooleanArray_Get(IOSBooleanArray *array, NSUInteger index);
-FOUNDATION_EXPORT BOOL *IOSBooleanArray_GetRef(IOSBooleanArray *array, NSUInteger index);
-- (BOOL)booleanAtIndex:(NSUInteger)index;
-- (BOOL *)booleanRefAtIndex:(NSUInteger)index;
-
-// Sets boolean at a specified index, throws IndexOutOfBoundsException
-// if out out range.  Returns replacement value.
-- (BOOL)replaceBooleanAtIndex:(NSUInteger)index withBoolean:(BOOL)boolean;
-
-// Copies the array contents into a specified buffer, up to the specified
-// length.  An IndexOutOfBoundsException is thrown if the specified length
-// is greater than the array size.
-- (void)getBooleans:(BOOL *)buffer length:(NSUInteger)length;
+PRIMITIVE_ARRAY_INTERFACE(boolean, Boolean, BOOL)
 
 @end
 

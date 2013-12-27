@@ -31,25 +31,7 @@
   long long *buffer_;
 }
 
-// Create an array from a C long array and length.
-- (id)initWithLongs:(const long long *)longs count:(NSUInteger)count;
-+ (id)arrayWithLongs:(const long long *)longs count:(NSUInteger)count;
-
-// Return long at a specified index, throws IndexOutOfBoundsException
-// if out out range.
-FOUNDATION_EXPORT long long IOSLongArray_Get(IOSLongArray *array, NSUInteger index);
-FOUNDATION_EXPORT long long *IOSLongArray_GetRef(IOSLongArray *array, NSUInteger index);
-- (long long)longAtIndex:(NSUInteger)index;
-- (long long *)longRefAtIndex:(NSUInteger)index;
-
-// Sets long at a specified index, throws IndexOutOfBoundsException
-// if out out range.  Returns replacement value.
-- (long long)replaceLongAtIndex:(NSUInteger)index withLong:(long long)value;
-
-// Copies the array contents into a specified buffer, up to the specified
-// length.  An IndexOutOfBoundsException is thrown if the specified length
-// is greater than the array size.
-- (void)getLongs:(long long *)buffer length:(NSUInteger)length;
+PRIMITIVE_ARRAY_INTERFACE(long, Long, long long)
 
 @end
 

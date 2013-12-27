@@ -307,7 +307,7 @@ public class RewriterTest extends GenerationTest {
 
     assertEquals("IOSIntArray a=IOSIntArray.arrayWithInts({1,2,3},3);",
         stmts.get(0).toString().trim());
-    assertEquals("IOSCharArray b[]=IOSCharArray.arrayWithCharacters({'4','5'},2);",
+    assertEquals("IOSCharArray b[]=IOSCharArray.arrayWithChars({'4','5'},2);",
       stmts.get(1).toString().trim());
   }
 
@@ -324,7 +324,7 @@ public class RewriterTest extends GenerationTest {
         "JreOperatorRetainedAssign(&Test_a_, nil, " +
             "[IOSIntArray arrayWithInts:(int[]){ 1, 2, 3 } count:3]);",
         "JreOperatorRetainedAssign(&Test_b_, nil, " +
-            "[IOSCharArray arrayWithCharacters:(unichar[]){ '4', '5' } count:2]);",
+            "[IOSCharArray arrayWithChars:(unichar[]){ '4', '5' } count:2]);",
         "}",
         "}");
   }

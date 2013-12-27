@@ -24,56 +24,7 @@
 
 @implementation IOSByteArray
 
-- (id)initWithLength:(NSUInteger)length {
-  if ((self = [super initWithLength:length])) {
-    buffer_ = calloc(length, sizeof(char));
-  }
-  return self;
-}
-
-- (id)initWithBytes:(const char *)bytes count:(NSUInteger)count {
-  if ((self = [self initWithLength:count])) {
-    if (bytes != nil) {
-      memcpy(buffer_, bytes, count * sizeof(char));
-    }
-  }
-  return self;
-}
-
-+ (id)arrayWithBytes:(const char *)bytes count:(NSUInteger)count {
-  id array = [[IOSByteArray alloc] initWithBytes:bytes count:count];
-#if __has_feature(objc_arc)
-  return array;
-#else
-  return [array autorelease];
-#endif
-}
-
-char IOSByteArray_Get(__unsafe_unretained IOSByteArray *array, NSUInteger index) {
-  IOSArray_checkIndex(array->size_, index);
-  return array->buffer_[index];
-}
-
-char *IOSByteArray_GetRef(__unsafe_unretained IOSByteArray *array, NSUInteger index) {
-  IOSArray_checkIndex(array->size_, index);
-  return &array->buffer_[index];
-}
-
-- (char)byteAtIndex:(NSUInteger)index {
-  IOSArray_checkIndex(size_, index);
-  return buffer_[index];
-}
-
-- (char *)byteRefAtIndex:(NSUInteger)index {
-  IOSArray_checkIndex(size_, index);
-  return &buffer_[index];
-}
-
-- (char)replaceByteAtIndex:(NSUInteger)index withByte:(char)byte {
-  IOSArray_checkIndex(size_, index);
-  buffer_[index] = byte;
-  return byte;
-}
+PRIMITIVE_ARRAY_IMPLEMENTATION(byte, Byte, char)
 
 - (void)getBytes:(char *)buffer
           offset:(NSUInteger)offset
@@ -87,16 +38,6 @@ char *IOSByteArray_GetRef(__unsafe_unretained IOSByteArray *array, NSUInteger in
               offset:(NSUInteger)destOffset {
   IOSArray_checkRange(size_, NSMakeRange(destOffset, length));
   memcpy(&buffer_[destOffset], source, length);
-}
-
-- (void) arraycopy:(NSRange)sourceRange
-       destination:(IOSArray *)destination
-            offset:(NSInteger)offset {
-  IOSArray_checkRange(size_, sourceRange);
-  IOSArray_checkRange(destination->size_, NSMakeRange(offset, sourceRange.length));
-  memmove(((IOSByteArray *) destination)->buffer_ + offset,
-          self->buffer_ + sourceRange.location,
-          sourceRange.length * sizeof(char));
 }
 
 - (NSString *)descriptionOfElementAtIndex:(NSUInteger)index {

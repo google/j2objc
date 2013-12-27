@@ -24,26 +24,7 @@
 
 @implementation IOSCharArray
 
-- (id)initWithLength:(NSUInteger)length {
-  if ((self = [super initWithLength:length])) {
-    buffer_ = calloc(length, sizeof(unichar));
-  }
-  return self;
-}
-
-- (id)initWithCharacters:(const unichar *)chars count:(NSUInteger)count {
-  if ((self = [super initWithLength:count])) {
-    if (chars != nil) {
-      buffer_ = malloc(count * sizeof(unichar));
-      memcpy(buffer_, chars, count * sizeof(unichar));
-    }
-  }
-  return self;
-}
-
-+ (id)arrayWithCharacters:(const unichar *)chars count:(NSUInteger)count {
-  return AUTORELEASE([[IOSCharArray alloc] initWithCharacters:chars count:count]);
-}
+PRIMITIVE_ARRAY_IMPLEMENTATION(char, Char, unichar)
 
 - (id)initWithNSString:(NSString *)string {
   int length = [string length];
@@ -60,51 +41,10 @@
   return AUTORELEASE([[IOSCharArray alloc] initWithNSString:string]);
 }
 
-unichar IOSCharArray_Get(__unsafe_unretained IOSCharArray *array, NSUInteger index) {
-  IOSArray_checkIndex(array->size_, index);
-  return array->buffer_[index];
-}
-
-unichar *IOSCharArray_GetRef(__unsafe_unretained IOSCharArray *array, NSUInteger index) {
-  IOSArray_checkIndex(array->size_, index);
-  return &array->buffer_[index];
-}
-
-- (unichar)charAtIndex:(NSUInteger)index {
-  IOSArray_checkIndex(size_, index);
-  return buffer_[index];
-}
-
-- (unichar *)charRefAtIndex:(NSUInteger)index {
-  IOSArray_checkIndex(size_, index);
-  return &buffer_[index];
-}
-
-- (unichar)replaceCharAtIndex:(NSUInteger)index withChar:(unichar)c {
-  IOSArray_checkIndex(size_, index);
-  buffer_[index] = c;
-  return c;
-}
-
 - (unichar *)getChars {
   unichar *result = calloc(size_, sizeof(unichar));
   [self getChars:result length:size_];
   return result;
-}
-
-- (void)getChars:(unichar *)buffer length:(NSUInteger)length {
-  IOSArray_checkIndex(size_, length - 1);
-  memcpy(buffer, buffer_, length * sizeof(unichar));
-}
-
-- (void) arraycopy:(NSRange)sourceRange
-       destination:(IOSArray *)destination
-            offset:(NSInteger)offset {
-  IOSArray_checkRange(size_, sourceRange);
-  IOSArray_checkRange(destination->size_, NSMakeRange(offset, sourceRange.length));
-  memmove(((IOSCharArray *) destination)->buffer_ + offset,
-          self->buffer_ + sourceRange.location,
-          sourceRange.length * sizeof(unichar));
 }
 
 - (NSString *)descriptionOfElementAtIndex:(NSUInteger)index {
@@ -120,8 +60,7 @@ unichar *IOSCharArray_GetRef(__unsafe_unretained IOSCharArray *array, NSUInteger
 }
 
 - (id)copyWithZone:(NSZone *)zone {
-  return [[IOSCharArray allocWithZone:zone]
-          initWithCharacters:buffer_ count:size_];
+  return [[IOSCharArray allocWithZone:zone] initWithChars:buffer_ count:size_];
 }
 
 - (void)dealloc {

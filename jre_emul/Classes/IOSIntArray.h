@@ -31,25 +31,7 @@
   int *buffer_;
 }
 
-// Create an array from a C int array and length.
-- (id)initWithInts:(const int *)ints count:(NSUInteger)count;
-+ (id)arrayWithInts:(const int *)ints count:(NSUInteger)count;
-
-// Return int at a specified index, throws IndexOutOfBoundsException
-// if out out range;
-FOUNDATION_EXPORT int IOSIntArray_Get(IOSIntArray *array, NSUInteger index);
-FOUNDATION_EXPORT int *IOSIntArray_GetRef(IOSIntArray *array, NSUInteger index);
-- (int)intAtIndex:(NSUInteger)index;
-- (int *)intRefAtIndex:(NSUInteger)index;
-
-// Sets int at a specified index, throws IndexOutOfBoundsException
-// if out out range. Returns replacement value.
-- (int)replaceIntAtIndex:(NSUInteger)index withInt:(int)c;
-
-// Copies the array contents into a specified buffer, up to the specified
-// length.  An IndexOutOfBoundsException is thrown if the specified length
-// is greater than the array size.
-- (void)getInts:(int *)buffer length:(NSUInteger)length;
+PRIMITIVE_ARRAY_INTERFACE(int, Int, int)
 
 @end
 
