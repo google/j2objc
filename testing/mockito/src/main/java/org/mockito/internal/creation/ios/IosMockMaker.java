@@ -233,7 +233,7 @@ public final class IosMockMaker implements MockMaker {
         for (unsigned i = 0; i < numArgs; i++) {
           J2ObjcRawValue arg;
           [anInvocation getArgument:&arg atIndex:i + 2];
-          id javaArg = [paramTypes->buffer_[i] boxValue:&arg];
+          id javaArg = [paramTypes->buffer_[i] __boxValue:&arg];
           [args replaceObjectAtIndex:i withObject:javaArg];
         }
         id<JavaLangReflectInvocationHandler> handler = [self getHandler];
@@ -243,7 +243,7 @@ public final class IosMockMaker implements MockMaker {
         IOSClass *returnType = [method getReturnType];
         if (returnType != [IOSClass voidClass]) {
           J2ObjcRawValue result;
-          [[method getReturnType] unboxValue:javaResult toRawValue:&result];
+          [[method getReturnType] __unboxValue:javaResult toRawValue:&result];
           [anInvocation setReturnValue:&result];
         }
         return;  // success!
