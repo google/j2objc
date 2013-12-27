@@ -438,4 +438,10 @@ public class AutoboxerTest extends GenerationTest {
         "long long int l = [((JavaLangLong *) nil_chk([((id<Test_Entry>) nil_chk(entry_)) " +
         "getValue])) longLongValue];");
   }
+
+  public void testAssignmentWithCase() throws IOException {
+    String translation = translateSourceFile(
+        "class Test { void test() { Integer i; i = (Integer) 12; } }", "Test", "Test.m");
+    assertTranslation(translation, "i = [JavaLangInteger valueOfWithInt:12];");
+  }
 }

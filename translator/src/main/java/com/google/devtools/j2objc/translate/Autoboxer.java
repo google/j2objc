@@ -43,6 +43,7 @@ import org.eclipse.jdt.core.dom.IfStatement;
 import org.eclipse.jdt.core.dom.InfixExpression;
 import org.eclipse.jdt.core.dom.MethodDeclaration;
 import org.eclipse.jdt.core.dom.MethodInvocation;
+import org.eclipse.jdt.core.dom.ParenthesizedExpression;
 import org.eclipse.jdt.core.dom.PostfixExpression;
 import org.eclipse.jdt.core.dom.PrefixExpression;
 import org.eclipse.jdt.core.dom.ReturnStatement;
@@ -215,18 +216,10 @@ public class Autoboxer extends ErrorReportingASTVisitor {
     Expression expr = boxOrUnboxExpression(node.getExpression(), Types.getTypeBinding(node));
     if (expr != node.getExpression()) {
       ASTNode parent = node.getParent();
-      if (parent instanceof Expression) {
-        // Check if this cast is an argument or the invocation's expression.
-        if (parent instanceof MethodInvocation) {
-          List<Expression> args = ASTUtil.getArguments((MethodInvocation) parent);
-          for (int i = 0; i < args.size(); i++) {
-            if (node.equals(args.get(i))) {
-              args.set(i, expr);
-              return;
-            }
-          }
-        }
-        ASTUtil.setProperty(node.getParent(), expr);
+      if (parent instanceof ParenthesizedExpression) {
+        ASTUtil.setProperty(parent, expr);
+      } else {
+        ASTUtil.setProperty(node, expr);
       }
     }
   }
