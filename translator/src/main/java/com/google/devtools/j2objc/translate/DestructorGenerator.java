@@ -26,6 +26,7 @@ import com.google.devtools.j2objc.util.ErrorReportingASTVisitor;
 import com.google.devtools.j2objc.util.NameTable;
 
 import org.eclipse.jdt.core.dom.AST;
+import org.eclipse.jdt.core.dom.ASTNode;
 import org.eclipse.jdt.core.dom.ASTVisitor;
 import org.eclipse.jdt.core.dom.Assignment;
 import org.eclipse.jdt.core.dom.Block;
@@ -167,48 +168,48 @@ public class DestructorGenerator extends ErrorReportingASTVisitor {
         FINALIZE_METHOD.equals(methodName.getIdentifier());
   }
 
-  private void addReleaseStatements(MethodDeclaration method, List<IVariableBinding> fields) {
+  private SuperMethodInvocation findSuperFinalizeInvocation(ASTNode node) {
     // Find existing super.finalize(), if any.
-    final boolean[] hasSuperFinalize = new boolean[1];
-    method.accept(new ASTVisitor() {
+    final SuperMethodInvocation[] superFinalize = new SuperMethodInvocation[1];
+    node.accept(new ASTVisitor() {
       @Override
       public void endVisit(SuperMethodInvocation node) {
         if (FINALIZE_METHOD.equals(node.getName().getIdentifier())) {
-          hasSuperFinalize[0] = true;
+          superFinalize[0] = node;
         }
       }
     });
+    return superFinalize[0];
+  }
+
+  private void addReleaseStatements(MethodDeclaration method, List<IVariableBinding> fields) {
+    SuperMethodInvocation superFinalize = findSuperFinalizeInvocation(method);
 
     List<Statement> statements = ASTUtil.getStatements(method.getBody());
-    if (!statements.isEmpty() && statements.get(0) instanceof TryStatement) {
+    if (superFinalize != null) {
+      // Release statements must be inserted before the [super dealloc] call.
+      statements = ASTUtil.asStatementList(ASTUtil.getOwningStatement(superFinalize)).subList(0, 0);
+    } else if (!statements.isEmpty() && statements.get(0) instanceof TryStatement) {
       TryStatement tryStatement = ((TryStatement) statements.get(0));
       if (tryStatement.getBody() != null) {
         statements = ASTUtil.getStatements(tryStatement.getBody());
       }
     }
     AST ast = method.getAST();
-    int index = statements.size();
     for (IVariableBinding field : fields) {
       if (!field.getType().isPrimitive() && !BindingUtil.isWeakReference(field)) {
-        Assignment assign = ast.newAssignment();
-        SimpleName receiver = ast.newSimpleName(field.getName());
-        Types.addBinding(receiver, field);
-        assign.setLeftHandSide(receiver);
-        assign.setRightHandSide(ASTFactory.newNullLiteral(ast));
-        Types.addBinding(assign, field.getDeclaringClass());
+        Assignment assign = ASTFactory.newAssignment(
+            ast, ASTFactory.newSimpleName(ast, field), ASTFactory.newNullLiteral(ast));
         ExpressionStatement stmt = ast.newExpressionStatement(assign);
-        statements.add(index, stmt);
+        statements.add(stmt);
       }
     }
-    if (Options.useReferenceCounting() && !hasSuperFinalize[0]) {
-      SuperMethodInvocation call = ast.newSuperMethodInvocation();
+    if (Options.useReferenceCounting() && superFinalize == null) {
       IMethodBinding methodBinding = Types.getMethodBinding(method);
       GeneratedMethodBinding binding = GeneratedMethodBinding.newMethod(
           destructorName, Modifier.PUBLIC, Types.mapTypeName("void"),
           methodBinding.getDeclaringClass());
-      Types.addBinding(call, binding);
-      call.setName(ast.newSimpleName(destructorName));
-      Types.addBinding(call.getName(), binding);
+      SuperMethodInvocation call = ASTFactory.newSuperMethodInvocation(ast, binding);
       ExpressionStatement stmt = ast.newExpressionStatement(call);
       statements.add(stmt);
     }
@@ -220,16 +221,9 @@ public class DestructorGenerator extends ErrorReportingASTVisitor {
     int modifiers = Modifier.PUBLIC | 0x1000;  // Modifier.SYNTHETIC.
     GeneratedMethodBinding binding = GeneratedMethodBinding.newMethod(
         destructorName, modifiers, voidType, declaringClass);
-    MethodDeclaration method = ast.newMethodDeclaration();
-    Types.addBinding(method, binding);
-    method.setName(ast.newSimpleName(destructorName));
-    Types.addBinding(method.getName(), binding);
-    ASTUtil.getModifiers(method).add(ast.newModifier(ModifierKeyword.PUBLIC_KEYWORD));
+    MethodDeclaration method = ASTFactory.newMethodDeclaration(ast, binding);
     method.setBody(ast.newBlock());
     addReleaseStatements(method, fields);
-    Type returnType = ast.newPrimitiveType(PrimitiveType.VOID);
-    Types.addBinding(returnType, ast.resolveWellKnownType("void"));
-    method.setReturnType2(returnType);
     return method;
   }
 }

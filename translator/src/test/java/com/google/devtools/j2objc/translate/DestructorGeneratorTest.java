@@ -73,4 +73,13 @@ public class DestructorGeneratorTest extends GenerationTest {
     assertTranslation(translation, "[super dealloc];");
     assertFalse(translation.contains("- (void)finalize "));
   }
+
+  public void testReleaseStatementsBeforeSuperDealloc() throws IOException {
+    String translation = translateSourceFile(
+        "public class Test { Object o; public void finalize() throws Throwable { " +
+        "super.finalize(); } }", "Test", "Test.m");
+    assertTranslatedLines(translation,
+        "Test_set_o_(self, nil);",
+        "[super dealloc];");
+  }
 }

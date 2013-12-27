@@ -366,6 +366,20 @@ public final class ASTUtil {
     return null;
   }
 
+  /**
+   * Returns the statement which is the parent of the specified node.
+   */
+  public static Statement getOwningStatement(ASTNode node) {
+    ASTNode n = node;
+    while (n != null) {
+      if (n instanceof Statement) {
+        return (Statement) n;
+      }
+      n = n.getParent();
+    }
+    return null;
+  }
+
   public static List<MethodDeclaration> getMethodDeclarations(AbstractTypeDeclaration node) {
     List<MethodDeclaration> methods = Lists.newArrayList();
     for (BodyDeclaration bodyDecl : getBodyDeclarations(node)) {
