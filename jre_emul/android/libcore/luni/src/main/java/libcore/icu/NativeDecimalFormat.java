@@ -571,7 +571,7 @@ public final class NativeDecimalFormat implements Cloneable {
                                                             withChar:perMill
                                                             withChar:zeroDigit];
 
-      return formatter;
+      return AUTORELEASE(formatter);
     ]-*/;
 
     private static native void setDecimalFormatSymbols(Object nativeFormatter,
