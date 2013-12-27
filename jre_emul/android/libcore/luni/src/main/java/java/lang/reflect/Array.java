@@ -382,7 +382,7 @@ public final class Array {
      */
     private static native Object createObjectArray(Class<?> componentType, int length)
         throws NegativeArraySizeException /*-[
-      return [[IOSObjectArray alloc] initWithLength:length type:componentType];
+      return [IOSObjectArray arrayWithLength:length type:componentType];
     ]-*/;
 
     /**
