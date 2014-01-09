@@ -72,6 +72,7 @@ public class Options {
   private static boolean jsniWarnings = true;
   private static boolean buildClosure = false;
   private static boolean stripReflection = false;
+  private static boolean extractUnsequencedModifications = false;
 
   private static DeadCodeMap deadCodeMap = null;
   private static File proGuardUsageFile = null;
@@ -252,6 +253,8 @@ public class Options {
         segmentedHeaders = true;
       } else if (arg.equals("--build-closure")) {
         buildClosure = true;
+      } else if (arg.equals("--extract-unsequenced")) {
+        extractUnsequencedModifications = true;
       } else if (arg.startsWith("-h") || arg.equals("--help")) {
         help(false);
       } else if (arg.startsWith("-")) {
@@ -630,5 +633,19 @@ public class Options {
   @VisibleForTesting
   public static void setStripReflection(boolean b) {
     stripReflection = b;
+  }
+
+  public static boolean extractUnsequencedModifications() {
+    return extractUnsequencedModifications;
+  }
+
+  @VisibleForTesting
+  public static void enableExtractUnsequencedModifications() {
+    extractUnsequencedModifications = true;
+  }
+
+  @VisibleForTesting
+  public static void resetExtractUnsequencedModifications() {
+    extractUnsequencedModifications = false;
   }
 }
