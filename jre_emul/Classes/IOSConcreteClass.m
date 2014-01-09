@@ -98,7 +98,7 @@
 }
 
 - (BOOL)isAssignableFrom:(IOSClass *)cls {
-  return [cls.objcClass isSubclassOfClass:class_];
+  return class_ == [NSObject class] ? ![cls isPrimitive] : [cls.objcClass isSubclassOfClass:class_];
 }
 
 - (IOSClass *)asSubclass:(IOSClass *)cls {
