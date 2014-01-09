@@ -55,7 +55,7 @@
   return rawType_;
 }
 
-#if __has_feature(objc_arc)
+#if ! __has_feature(objc_arc)
 - (void)dealloc {
   [actualTypeArguments_ release];
   [ownerType_ release];
