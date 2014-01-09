@@ -658,7 +658,7 @@ public final class Matcher implements MatchResult {
           options |= NSMatchingWithTransparentBounds;
         }
       }
-      NSRange range = NSMakeRange(start, self->regionEnd__ - start);
+      NSRange range = NSMakeRange(self->regionStart__, self->regionEnd__);
 
       // Use enumerateMatchesInString to get progress state.
       __block BOOL matched = NO;
@@ -668,21 +668,25 @@ public final class Matcher implements MatchResult {
                            usingBlock:^(NSTextCheckingResult *match,
                                         NSMatchingFlags flags,
                                         BOOL *stop) {
-        self->progressFlags_ = flags;
-
-        // Update offsets.
-        NSUInteger nGroups = [match numberOfRanges];
-        for (NSUInteger i = 0; i < nGroups; i++) {
-          NSRange matchRange = [match rangeAtIndex:i];
-          [self->matchOffsets_ replaceIntAtIndex:i * 2
-                                         withInt:matchRange.location];
-          [self->matchOffsets_
-              replaceIntAtIndex:(i * 2) + 1
-                        withInt:matchRange.location + matchRange.length];
+        if (match.range.location < start) {
+          *stop = NO;
+        } else {
+          self->progressFlags_ = flags;
+  
+          // Update offsets.
+          NSUInteger nGroups = [match numberOfRanges];
+          for (NSUInteger i = 0; i < nGroups; i++) {
+            NSRange matchRange = [match rangeAtIndex:i];
+            [self->matchOffsets_ replaceIntAtIndex:i * 2
+                                           withInt:matchRange.location];
+            [self->matchOffsets_
+                replaceIntAtIndex:(i * 2) + 1
+                          withInt:matchRange.location + matchRange.length];
+          }
+  
+          matched = [match range].length > 0;  // No match if length is zero.
+          *stop = YES;
         }
-
-        matched = [match range].length > 0;  // No match if length is zero.
-        *stop = YES;
       }];
       
       return matched;

@@ -307,14 +307,13 @@ TEST_SOURCES = \
     org/apache/harmony/tests/java/math/BigIntegerNotTest.java \
     org/apache/harmony/tests/java/math/BigIntegerOrTest.java \
     org/apache/harmony/tests/java/math/BigIntegerSubtractTest.java \
-    org/apache/harmony/tests/java/util/regex/Matcher2Test.java \
-    org/apache/harmony/tests/java/util/regex/MatcherTest.java \
-    org/apache/harmony/tests/java/util/regex/Pattern2Test.java \
-    org/apache/harmony/tests/java/util/regex/PatternErrorTest.java \
-    org/apache/harmony/tests/java/util/regex/PatternSyntaxExceptionTest.java \
-    org/apache/harmony/tests/java/util/regex/PatternTest.java \
-    org/apache/harmony/tests/java/util/regex/ReplaceTest.java \
-    org/apache/harmony/tests/java/util/regex/SplitTest.java \
+    org/apache/harmony/regex/tests/java/util/regex/Matcher2Test.java \
+    org/apache/harmony/regex/tests/java/util/regex/ModeTest.java \
+    org/apache/harmony/regex/tests/java/util/regex/Pattern2Test.java \
+    org/apache/harmony/regex/tests/java/util/regex/PatternSyntaxExceptionTest.java \
+    org/apache/harmony/regex/tests/java/util/regex/PatternTest.java \
+    org/apache/harmony/regex/tests/java/util/regex/ReplaceTest.java \
+    org/apache/harmony/regex/tests/java/util/regex/SplitTest.java \
     org/apache/harmony/text/tests/java/text/ChoiceFormatTest.java \
     org/apache/harmony/text/tests/java/text/CollatorTest.java \
     org/apache/harmony/text/tests/java/text/MessageFormatTest.java \
@@ -404,7 +403,8 @@ TEST_BIN = $(TESTS_DIR)/jre_unit_tests
 GEN_OBJC_DIR = $(TESTS_DIR)
 TRANSLATE_JAVA_FULL = $(SUPPORT_SOURCES) $(TEST_SOURCES)
 TRANSLATE_JAVA_RELATIVE = $(SUPPORT_SOURCES) $(TEST_SOURCES)
-TRANSLATE_ARGS = -classpath $(JUNIT_DIST_JAR) -Werror -sourcepath $(TEST_SRC) -encoding UTF-8
+TRANSLATE_ARGS = -classpath $(JUNIT_DIST_JAR) -Werror -sourcepath $(TEST_SRC) \
+    --extract-unsequenced
 include ../make/translate.mk
 
 test: run-tests
