@@ -15,7 +15,9 @@
  *  limitations under the License.
  */
 
-package java.security;
+package com.google.j2objc.security;
+
+import java.security.SecureRandomSpi;
 
 /*-[
 #import "java/lang/InternalError.h"
@@ -23,21 +25,20 @@ package java.security;
 ]-*/
 
 /**
- * Simple iOS version of java.security.SecureRandom.  No code was shared,
- * just its public API.
- * <p>
- * This implementation uses the iOS/OSX Randomization Services API.
+ * Secure random number provider, implemented using the iOS Security Framework.
  *
  * @author Tom Ball
  */
-public class SecureRandom {
+public class IosSecureRandomImpl extends SecureRandomSpi {
 
-  public SecureRandom() {
+  @Override
+  protected void engineSetSeed(byte[] seed) {
+    /* not used */
   }
 
-  public native void nextBytes(byte[] bytes) /*-[
-    int error = SecRandomCopyBytes(kSecRandomDefault, [bytes count],
-        (uint8_t *) bytes->buffer_);
+  @Override
+  protected native void engineNextBytes(byte[] bytes) /*-[
+    int error = SecRandomCopyBytes(kSecRandomDefault, [bytes count], (uint8_t *) bytes->buffer_);
     if (error != 0) {
       NSString *errorMsg =
           [NSString stringWithFormat:@"SecRandomCopyBytes error: %s", strerror(error)];
@@ -45,7 +46,11 @@ public class SecureRandom {
     }
   ]-*/;
 
-  public String getAlgorithm() {
-    return "Apple";
+  @Override
+  protected byte[] engineGenerateSeed(int numBytes) {
+    byte[] result = new byte[numBytes];
+    engineNextBytes(result);
+    return result;
   }
+
 }

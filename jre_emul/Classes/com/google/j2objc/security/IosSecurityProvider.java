@@ -34,6 +34,9 @@ public class IosSecurityProvider extends Provider {
   public IosSecurityProvider() {
     super(PROVIDER_NAME, 1.0, "J2ObjC's iOS Security Framework-backed provider");
 
+    // Secure random implementation.
+    put("SecureRandom.SHA1PRNG", PREFIX + "IosSecureRandomImpl");
+
     /* === Message Digests === */
     put("MessageDigest.SHA-1", PREFIX + "IosSHAMessageDigest$SHA1");
     put("Alg.Alias.MessageDigest.SHA1", "SHA-1");
