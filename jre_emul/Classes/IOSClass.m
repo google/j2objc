@@ -265,6 +265,12 @@ static IOSClass *FetchArray(IOSClass *componentType);
       return method;
     }
   }
+  for (IOSProtocolClass *p in [self getInterfacesWithArrayType:FetchClass([IOSClass class])]) {
+    method = [p findMethodWithTranslatedName:translatedName];
+    if (method != nil) {
+      return method;
+    }
+  }
   @throw AUTORELEASE([[JavaLangNoSuchMethodException alloc] initWithNSString:name]);
 }
 

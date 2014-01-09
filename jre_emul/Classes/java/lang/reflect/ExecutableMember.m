@@ -50,7 +50,6 @@
         methodSignature_ =
             [class_.objcClass instanceMethodSignatureForSelector:selector_];
       }
-      RETAIN_(methodSignature_);
     }
     if (class_.objcProtocol && !methodSignature_) {
       struct objc_method_description methodDesc =
@@ -69,6 +68,7 @@
 #endif
       @throw exception;
     }
+    RETAIN_(methodSignature_);
   }
   return self;
 }
