@@ -485,21 +485,23 @@ public class UnsequencedExpressionRewriter extends ErrorReportingASTVisitor {
     expr.accept(this);
     extractUnsequenced(node);
     Expression msg = node.getMessage();
-    newExpression(msg);
-    msg.accept(this);
-    List<VariableAccess> toExtract = getUnsequencedAccesses();
-    if (!toExtract.isEmpty()) {
-      // If the message expression needs any extraction, then we first extract
-      // the entire boolean expression to preserve ordering between the two.
-      AST ast = node.getAST();
-      IVariableBinding exprVar = new GeneratedVariableBinding(
-          "unseq$" + count++, 0, Types.getTypeBinding(expr), false, false, null,
-          currentMethod);
-      ASTUtil.insertBefore(node, ASTFactory.newVariableDeclarationStatement(
-          ast, exprVar, NodeCopier.copySubtree(ast, node.getExpression())));
-      node.setExpression(ASTFactory.newSimpleName(ast, exprVar));
-      extractOrderedAccesses(
-          ast, ASTUtil.asStatementList(node).subList(0, 0), currentTopNode, toExtract);
+    if (msg != null) {
+      newExpression(msg);
+      msg.accept(this);
+      List<VariableAccess> toExtract = getUnsequencedAccesses();
+      if (!toExtract.isEmpty()) {
+        // If the message expression needs any extraction, then we first extract
+        // the entire boolean expression to preserve ordering between the two.
+        AST ast = node.getAST();
+        IVariableBinding exprVar = new GeneratedVariableBinding(
+            "unseq$" + count++, 0, Types.getTypeBinding(expr), false, false, null,
+            currentMethod);
+        ASTUtil.insertBefore(node, ASTFactory.newVariableDeclarationStatement(
+            ast, exprVar, NodeCopier.copySubtree(ast, node.getExpression())));
+        node.setExpression(ASTFactory.newSimpleName(ast, exprVar));
+        extractOrderedAccesses(
+            ast, ASTUtil.asStatementList(node).subList(0, 0), currentTopNode, toExtract);
+      }
     }
     return false;
   }
@@ -581,6 +583,9 @@ public class UnsequencedExpressionRewriter extends ErrorReportingASTVisitor {
     for (int i = 0; i < fragments.size(); i++) {
       VariableDeclarationFragment frag = fragments.get(i);
       Expression init = frag.getInitializer();
+      if (init == null) {
+        continue;
+      }
       newExpression(init);
       init.accept(this);
       List<VariableAccess> toExtract = getUnsequencedAccesses();
