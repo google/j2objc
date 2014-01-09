@@ -110,6 +110,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.regex.Pattern;
 
 /**
  * Returns an Objective-C equivalent of a Java AST node.
@@ -129,6 +130,7 @@ public class StatementGenerator extends ErrorReportingASTVisitor {
       "[+-]?\\d*\\.?\\d*[eE][+-]?\\d+";
   private static final String FLOATING_POINT_SUFFIX_REGEX = ".*[fFdD]";
   private static final String HEX_LITERAL_REGEX = "0[xX].*";
+  private static final Pattern TRIGRAPH_REGEX = Pattern.compile("@\".*\\?\\?[=/'()!<>-].*\"");
 
   public static String generate(ASTNode node, Set<IVariableBinding> fieldHiders,
       boolean asFunction, SourcePosition sourcePosition) throws ASTNodeException {
@@ -1357,7 +1359,19 @@ public class StatementGenerator extends ErrorReportingASTVisitor {
 
   @Override
   public boolean visit(StringLiteral node) {
-    buffer.append(generateStringLiteral(node));
+    String s = generateStringLiteral(node);
+    if (TRIGRAPH_REGEX.matcher(s).matches()) {
+      // Split string between the two '?' chars in the trigraph, so compiler
+      // will concatenate the string without interpreting the trigraph.
+      String[] substrings = s.split("\\?\\?");
+      buffer.append(substrings[0]);
+      for (int i = 1; i < substrings.length; i++) {
+        buffer.append("?\" \"?");
+        buffer.append(substrings[i]);
+      }
+    } else {
+      buffer.append(s);
+    }
     return false;
   }
 

@@ -1639,4 +1639,16 @@ public class StatementGeneratorTest extends GenerationTest {
     assertTranslation(translation,
         "[((JavaUtilArrayList *) nil_chk(this$0_->testField_)) ensureCapacityWithInt:42];");
   }
+
+  public void testNoTrigraphs() throws IOException {
+    String translation = translateSourceFile(
+        // C trigraph list from http://en.wikipedia.org/wiki/Digraphs_and_trigraphs#C.
+        "class Test { static final String S1 = \"??=??/??'??(??)??!??<??>??-\"; " +
+        // S2 has char sequences that start with ?? but aren't trigraphs.
+        " static final String S2 = \"??@??$??%??&??*??A??z??1??.\"; }",
+        "Test", "Test.m");
+    assertTranslation(translation,
+        "S1_ = @\"?\" \"?=?\" \"?/?\" \"?'?\" \"?(?\" \"?)?\" \"?!?\" \"?<?\" \"?>?\" \"?-\";");
+    assertTranslation(translation, "S2_ = @\"??@??$??%??&??*??A??z??1??.\";");
+  }
 }
