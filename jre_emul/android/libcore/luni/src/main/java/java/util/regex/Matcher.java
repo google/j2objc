@@ -658,7 +658,7 @@ public final class Matcher implements MatchResult {
           options |= NSMatchingWithTransparentBounds;
         }
       }
-      NSRange range = NSMakeRange(self->regionStart__, self->regionEnd__);
+      NSRange range = NSMakeRange(regionStart__, regionEnd__ - regionStart__);
 
       // Use enumerateMatchesInString to get progress state.
       __block BOOL matched = NO;
@@ -672,7 +672,7 @@ public final class Matcher implements MatchResult {
           *stop = NO;
         } else {
           self->progressFlags_ = flags;
-  
+
           // Update offsets.
           NSUInteger nGroups = [match numberOfRanges];
           for (NSUInteger i = 0; i < nGroups; i++) {
@@ -683,12 +683,12 @@ public final class Matcher implements MatchResult {
                 replaceIntAtIndex:(i * 2) + 1
                           withInt:matchRange.location + matchRange.length];
           }
-  
+
           matched = [match range].length > 0;  // No match if length is zero.
           *stop = YES;
         }
       }];
-      
+
       return matched;
     ]-*/;
 
