@@ -185,6 +185,14 @@ public class ClassTest extends TestCase {
     assertEquals("C", ((TypeVariable) typeArgs[1]).getName());
   }
 
+  public void testArrayIsAssignableToObject() throws Exception {
+    assertTrue(Object.class.isAssignableFrom(Object[].class));
+    assertTrue(Object.class.isAssignableFrom(Object[][].class));
+    assertTrue(Object.class.isAssignableFrom(String[].class));
+    assertTrue(Object.class.isAssignableFrom(int[].class));
+    assertFalse(String.class.isAssignableFrom(String[].class));
+  }
+
   static class InnerClass {
   }
 
