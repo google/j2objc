@@ -168,6 +168,7 @@ JRE_INTERFACES = \
 # Java sources to be translated normally.
 JAVA_SOURCES = \
 	com/google/j2objc/security/IosMD5MessageDigest.java \
+	com/google/j2objc/security/IosSecureRandomImpl.java \
 	com/google/j2objc/security/IosSecurityProvider.java \
 	com/google/j2objc/security/IosSHAMessageDigest.java \
 	java/beans/IndexedPropertyChangeEvent.java \
@@ -436,6 +437,7 @@ JAVA_SOURCES = \
 	java/security/Provider.java \
 	java/security/SecureClassLoader.java \
 	java/security/SecureRandom.java \
+	java/security/SecureRandomSpi.java \
 	java/security/Security.java \
 	java/security/SecurityPermission.java \
 	java/sql/Date.java \
