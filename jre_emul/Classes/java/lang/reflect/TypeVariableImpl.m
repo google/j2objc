@@ -51,7 +51,7 @@
   return name_;
 }
 
-#if __has_feature(objc_arc)
+#if ! __has_feature(objc_arc)
 - (void)dealloc {
   [name_ release];
   [super dealloc];
