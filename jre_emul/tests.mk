@@ -404,7 +404,7 @@ GEN_OBJC_DIR = $(TESTS_DIR)
 TRANSLATE_JAVA_FULL = $(SUPPORT_SOURCES) $(TEST_SOURCES)
 TRANSLATE_JAVA_RELATIVE = $(SUPPORT_SOURCES) $(TEST_SOURCES)
 TRANSLATE_ARGS = -classpath $(JUNIT_DIST_JAR) -Werror -sourcepath $(TEST_SRC) \
-    --extract-unsequenced
+    --extract-unsequenced -encoding UTF-8
 include ../make/translate.mk
 
 test: run-tests
