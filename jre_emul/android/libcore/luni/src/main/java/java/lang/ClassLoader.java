@@ -697,7 +697,8 @@ class SystemClassLoader extends ClassLoader {
   protected native URL findResource(String name) /*-[
     NSBundle *bundle = [NSBundle mainBundle];
     NSURL *nativeURL = [bundle URLForResource:name withExtension:nil];
-    return AUTORELEASE([[JavaNetURL alloc] initWithNSString:[nativeURL description]]);
+    return nativeURL ? AUTORELEASE([[JavaNetURL alloc] initWithNSString:[nativeURL description]])
+        : nil;
   ]-*/;
 
   @Override
