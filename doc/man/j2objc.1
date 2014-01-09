@@ -85,6 +85,12 @@ Do not generate metadata needed for Java reflection.
 \fB\-\-print\-converted\-sources\fR
 Print input source files after initial conversion
 .TP
+\fB\-\-extract\-unsequenced\fR
+Rewrite expressions that would produce unsequenced modification errors.
+.TP
+\fB\-\-segmented\-headers\fR
+Generates headers with guards around each declared type. Useful for breaking import cycles.
+.TP
 \fB\-t\fR, \fB\-\-timing\-info\fR
 Print time spent in translation steps
 .TP

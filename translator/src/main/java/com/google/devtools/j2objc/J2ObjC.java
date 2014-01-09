@@ -43,6 +43,7 @@ import com.google.devtools.j2objc.translate.OuterReferenceResolver;
 import com.google.devtools.j2objc.translate.Rewriter;
 import com.google.devtools.j2objc.translate.StaticVarRewriter;
 import com.google.devtools.j2objc.translate.TypeSorter;
+import com.google.devtools.j2objc.translate.UnsequencedExpressionRewriter;
 import com.google.devtools.j2objc.types.HeaderImportCollector;
 import com.google.devtools.j2objc.types.IOSTypeBinding;
 import com.google.devtools.j2objc.types.ImplementationImportCollector;
@@ -490,6 +491,12 @@ public class J2ObjC {
     // Fix references to outer scope and captured variables.
     new OuterReferenceFixer().run(unit);
     starttime = logTime("OuterReferenceFixer", starttime);
+
+    // Rewrites expressions that would cause unsequenced compile errors.
+    if (Options.extractUnsequencedModifications()) {
+      new UnsequencedExpressionRewriter().run(unit);
+      starttime = logTime("UnsequencedExpressionRewriter", starttime);
+    }
 
     // Breaks up deeply nested expressions such as chained method calls.
     new ComplexExpressionExtractor().run(unit);

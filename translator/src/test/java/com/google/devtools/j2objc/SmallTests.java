@@ -44,6 +44,7 @@ import com.google.devtools.j2objc.translate.OuterReferenceResolverTest;
 import com.google.devtools.j2objc.translate.RewriterTest;
 import com.google.devtools.j2objc.translate.StaticVarRewriterTest;
 import com.google.devtools.j2objc.translate.TypeSorterTest;
+import com.google.devtools.j2objc.translate.UnsequencedExpressionRewriterTest;
 import com.google.devtools.j2objc.types.BindingMapBuilderTest;
 import com.google.devtools.j2objc.types.HeaderImportCollectorTest;
 import com.google.devtools.j2objc.types.ImplementationImportCollectorTest;
@@ -106,7 +107,8 @@ public class SmallTests {
     StatementGeneratorTest.class,
     StaticVarRewriterTest.class,
     TypeSorterTest.class,
-    UnicodeUtilsTest.class
+    UnicodeUtilsTest.class,
+    UnsequencedExpressionRewriterTest.class
   };
 
   public static Test suite() {
