@@ -24,7 +24,7 @@ package java.lang.reflect;
  * @see Method#invoke
  * @see Constructor#newInstance
  */
-public class InvocationTargetException extends Exception {
+public class InvocationTargetException extends ReflectiveOperationException {
 
     private static final long serialVersionUID = 4085088731926701167L;
 
