@@ -4,9 +4,9 @@
  * The ASF licenses this file to You under the Apache License, Version 2.0
  * (the "License"); you may not use this file except in compliance with
  * the License.  You may obtain a copy of the License at
- * 
+ *
  *     http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -14,29 +14,26 @@
  * limitations under the License.
  */
 
-package org.apache.harmony.tests.java.util.regex;
-
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-import java.util.regex.PatternSyntaxException;
+package org.apache.harmony.regex.tests.java.util.regex;
 
 import junit.framework.TestCase;
+import java.util.regex.Pattern;
+import java.util.regex.Matcher;
+import java.util.regex.PatternSyntaxException;
 
-@SuppressWarnings("nls")
 public class ReplaceTest extends TestCase {
-
     public void testSimpleReplace() throws PatternSyntaxException {
         String target, pattern, repl;
 
-        target = "foobarfobarfoofo1";
+        target = "foobarfobarfoofo1barfort";
         pattern = "fo[^o]";
         repl = "xxx";
 
         Pattern p = Pattern.compile(pattern);
         Matcher m = p.matcher(target);
 
-        assertEquals("foobarxxxarfoofo1", m.replaceFirst(repl));
-        assertEquals("foobarxxxarfooxxx", m.replaceAll(repl));
+        assertEquals("foobarxxxarfoofo1barfort", m.replaceFirst(repl));
+        assertEquals("foobarxxxarfooxxxbarxxxt", m.replaceAll(repl));
     }
 
     public void testCaptureReplace() {
@@ -62,14 +59,12 @@ public class ReplaceTest extends TestCase {
         m = p.matcher(target);
         s = m.replaceFirst(repl);
         // System.out.println(s);
-        assertEquals(
-                "[63]zoo(42)bar{31}foo;[12]abc(34)def{56}ghi;{99}xyz[88]xyz(77)xyz;",
-                s);
+        assertEquals("[63]zoo(42)bar{31}foo;[12]abc(34)def{56}ghi;{99}xyz[88]xyz(77)xyz;", s
+                );
         s = m.replaceAll(repl);
         // System.out.println(s);
-        assertEquals(
-                "[63]zoo(42)bar{31}foo;[56]ghi(34)def{12}abc;{99}xyz[88]xyz(77)xyz;",
-                s);
+        assertEquals("[63]zoo(42)bar{31}foo;[56]ghi(34)def{12}abc;{99}xyz[88]xyz(77)xyz;", s
+                );
     }
 
     public void testEscapeReplace() {
