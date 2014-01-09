@@ -25,6 +25,8 @@ import java.util.WeakHashMap;
 
 /*-[
 #include "IOSClass.h"
+#include "IOSPrimitiveClass.h"
+#include "java/lang/IllegalArgumentException.h"
 #include "java/lang/reflect/Method.h"
 #include <objc/runtime.h>
 ]-*/
@@ -348,6 +350,14 @@ public class Proxy implements Serializable {
                                withNSObjectArray:args];
           IOSClass *returnType = [method getReturnType];
           if (returnType != [IOSClass voidClass]) {
+            IOSClass *resultType = [javaResult getClass];
+            if ([returnType isPrimitive]) {
+              // Return value is currently wrapped, so check wrapper type instead.
+              returnType = [(IOSPrimitiveClass *) returnType wrapperClass];
+            }
+            if (![returnType isAssignableFrom:resultType]) {
+              @throw AUTORELEASE([[JavaLangIllegalArgumentException alloc] init]);
+            }
             J2ObjcRawValue result;
             [[method getReturnType] __unboxValue:javaResult toRawValue:&result];
             [anInvocation setReturnValue:&result];
