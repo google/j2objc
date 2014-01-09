@@ -26,11 +26,16 @@ import com.google.devtools.j2objc.util.ErrorReportingASTVisitor;
 
 import org.eclipse.jdt.core.dom.AST;
 import org.eclipse.jdt.core.dom.ASTNode;
+import org.eclipse.jdt.core.dom.AssertStatement;
 import org.eclipse.jdt.core.dom.Assignment;
 import org.eclipse.jdt.core.dom.Block;
 import org.eclipse.jdt.core.dom.ConditionalExpression;
+import org.eclipse.jdt.core.dom.ConstructorInvocation;
+import org.eclipse.jdt.core.dom.DoStatement;
+import org.eclipse.jdt.core.dom.EnhancedForStatement;
 import org.eclipse.jdt.core.dom.Expression;
 import org.eclipse.jdt.core.dom.ExpressionStatement;
+import org.eclipse.jdt.core.dom.ForStatement;
 import org.eclipse.jdt.core.dom.IMethodBinding;
 import org.eclipse.jdt.core.dom.IVariableBinding;
 import org.eclipse.jdt.core.dom.IfStatement;
@@ -41,12 +46,12 @@ import org.eclipse.jdt.core.dom.PrefixExpression;
 import org.eclipse.jdt.core.dom.ReturnStatement;
 import org.eclipse.jdt.core.dom.SimpleName;
 import org.eclipse.jdt.core.dom.Statement;
+import org.eclipse.jdt.core.dom.VariableDeclarationExpression;
 import org.eclipse.jdt.core.dom.VariableDeclarationFragment;
 import org.eclipse.jdt.core.dom.VariableDeclarationStatement;
 import org.eclipse.jdt.core.dom.WhileStatement;
 
 import java.util.Collections;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
@@ -58,8 +63,7 @@ import java.util.Set;
  * otherwise extracted loop conditions will be out of order with the labels
  * inserted by the labeled break and continue rewriting.
  *
- * TODO(kstanger): For loops, do-while loops, case statements,
- * method invocation, etc.
+ * TODO(kstanger): Add support for remaining statement types.
  *
  * @author Keith Stanger
  */
@@ -68,7 +72,7 @@ public class UnsequencedExpressionRewriter extends ErrorReportingASTVisitor {
   private IMethodBinding currentMethod = null;
   private int count = 1;
   private List<VariableAccess> orderedAccesses = Lists.newArrayList();
-  private Expression currentExpressionHead = null;
+  private ASTNode currentTopNode = null;
   private boolean currentIsConditional = false;
   private boolean hasModification = false;
 
@@ -100,9 +104,9 @@ public class UnsequencedExpressionRewriter extends ErrorReportingASTVisitor {
     }
   }
 
-  private void newExpression(Expression expr) {
+  private void newExpression(ASTNode topNode) {
     orderedAccesses.clear();
-    currentExpressionHead = expr;
+    currentTopNode = topNode;
     hasModification = false;
   }
 
@@ -144,13 +148,12 @@ public class UnsequencedExpressionRewriter extends ErrorReportingASTVisitor {
     List<VariableAccess> accesses = getUnsequencedAccesses();
     if (!accesses.isEmpty()) {
       extractOrderedAccesses(
-          stmt.getAST(), ASTUtil.asStatementList(stmt).subList(0, 0), currentExpressionHead,
-          accesses);
+          stmt.getAST(), ASTUtil.asStatementList(stmt).subList(0, 0), currentTopNode, accesses);
     }
   }
 
   private void extractOrderedAccesses(
-      AST ast, List<Statement> stmtList, Expression subExpr, List<VariableAccess> toExtract) {
+      AST ast, List<Statement> stmtList, ASTNode subExpr, List<VariableAccess> toExtract) {
     for (int i = 0; i < toExtract.size(); i++) {
       VariableAccess access = toExtract.get(i);
       ASTNode topConditional = getTopConditional(access.expression, subExpr);
@@ -395,7 +398,7 @@ public class UnsequencedExpressionRewriter extends ErrorReportingASTVisitor {
 
   private Set<ASTNode> getAncestors(ASTNode node) {
     Set<ASTNode> ancestors = Sets.newHashSet();
-    while (node != currentExpressionHead) {
+    while (node != currentTopNode) {
       ancestors.add(node);
       node = node.getParent();
     }
@@ -404,9 +407,9 @@ public class UnsequencedExpressionRewriter extends ErrorReportingASTVisitor {
 
   private boolean isUnsequenced(
       VariableAccess modification, Set<ASTNode> modificationAncestors, VariableAccess access) {
-    ASTNode commonAncestor = currentExpressionHead;
+    ASTNode commonAncestor = currentTopNode;
     ASTNode node = access.expression;
-    while (node != currentExpressionHead) {
+    while (node != currentTopNode) {
       if (modificationAncestors.contains(node)) {
         commonAncestor = node;
         break;
@@ -476,60 +479,184 @@ public class UnsequencedExpressionRewriter extends ErrorReportingASTVisitor {
   }
 
   @Override
-  public boolean visit(VariableDeclarationStatement node) {
-    AST ast = node.getAST();
-    List<Statement> stmtList = ASTUtil.asStatementList(node);
-    VariableDeclarationStatement newDeclaration = null;
-    Iterator<VariableDeclarationFragment> iter = ASTUtil.getFragments(node).iterator();
-    while (iter.hasNext()) {
-      VariableDeclarationFragment frag = iter.next();
-      Expression expr = frag.getInitializer();
-      if (expr != null) {
-        newExpression(expr);
-        expr.accept(this);
-        List<VariableAccess> toExtract = getUnsequencedAccesses();
-        // For each fragment with unsequenced accesses we start a new
-        // declaration statement so that the extracted statements can be placed
-        // after the previous fragments and before the current fragment.
-        if (!toExtract.isEmpty()) {
-          extractOrderedAccesses(ast, stmtList, currentExpressionHead, toExtract);
-          newDeclaration = ASTFactory.newVariableDeclarationStatement(
-              ast, NodeCopier.copySubtree(ast, frag));
-          stmtList.add(newDeclaration);
-          iter.remove();
-        } else if (newDeclaration != null) {
-          ASTUtil.getFragments(newDeclaration).add(NodeCopier.copySubtree(ast, frag));
-          iter.remove();
-        }
-      }
-    }
-    if (ASTUtil.getFragments(node).isEmpty()) {
-      node.delete();
+  public boolean visit(AssertStatement node) {
+    Expression expr = node.getExpression();
+    newExpression(expr);
+    expr.accept(this);
+    extractUnsequenced(node);
+    Expression msg = node.getMessage();
+    newExpression(msg);
+    msg.accept(this);
+    List<VariableAccess> toExtract = getUnsequencedAccesses();
+    if (!toExtract.isEmpty()) {
+      // If the message expression needs any extraction, then we first extract
+      // the entire boolean expression to preserve ordering between the two.
+      AST ast = node.getAST();
+      IVariableBinding exprVar = new GeneratedVariableBinding(
+          "unseq$" + count++, 0, Types.getTypeBinding(expr), false, false, null,
+          currentMethod);
+      ASTUtil.insertBefore(node, ASTFactory.newVariableDeclarationStatement(
+          ast, exprVar, NodeCopier.copySubtree(ast, node.getExpression())));
+      node.setExpression(ASTFactory.newSimpleName(ast, exprVar));
+      extractOrderedAccesses(
+          ast, ASTUtil.asStatementList(node).subList(0, 0), currentTopNode, toExtract);
     }
     return false;
   }
 
   @Override
-  public boolean visit(WhileStatement node) {
-    node.getBody().accept(this);
+  public boolean visit(ConstructorInvocation node) {
+    newExpression(node);
+    for (Expression arg : ASTUtil.getArguments(node)) {
+      arg.accept(this);
+    }
+    extractUnsequenced(node);
+    return false;
+  }
+
+  @Override
+  public boolean visit(EnhancedForStatement node) {
     Expression expr = node.getExpression();
     newExpression(expr);
+    expr.accept(this);
+    extractUnsequenced(node);
+    node.getBody().accept(this);
+    return false;
+  }
+
+  @Override
+  public boolean visit(VariableDeclarationStatement node) {
+    extractVariableDeclarationFragments(
+        node.getAST(), ASTUtil.getFragments(node), ASTUtil.asStatementList(node).subList(0, 0));
+    return false;
+  }
+
+  private IfStatement createLoopTermination(Expression loopCondition) {
+    AST ast = loopCondition.getAST();
+    IfStatement newIf = ast.newIfStatement();
+    newIf.setExpression(ASTFactory.newPrefixExpression(
+        ast, PrefixExpression.Operator.NOT,
+        ASTFactory.newParenthesizedExpression(ast, NodeCopier.copySubtree(ast, loopCondition)),
+        "boolean"));
+    newIf.setThenStatement(ast.newBreakStatement());
+    return newIf;
+  }
+
+  @Override
+  public boolean visit(WhileStatement node) {
+    node.getBody().accept(this);
+    newExpression(node.getExpression());
     node.getExpression().accept(this);
     List<VariableAccess> toExtract = getUnsequencedAccesses();
     if (!toExtract.isEmpty()) {
       // Convert "while (cond)" into "while (true) { if (!(cond)) break; ... }".
       AST ast = node.getAST();
       List<Statement> stmtList = ASTUtil.asStatementList(node.getBody()).subList(0, 0);
-      extractOrderedAccesses(ast, stmtList, currentExpressionHead, toExtract);
-      IfStatement newIf = ast.newIfStatement();
-      newIf.setExpression(ASTFactory.newPrefixExpression(
-          ast, PrefixExpression.Operator.NOT,
-          ASTFactory.newParenthesizedExpression(ast, NodeCopier.copySubtree(ast, expr)),
-          "boolean"));
-      newIf.setThenStatement(ast.newBreakStatement());
-      stmtList.add(newIf);
+      extractOrderedAccesses(ast, stmtList, currentTopNode, toExtract);
+      stmtList.add(createLoopTermination(node.getExpression()));
       node.setExpression(ASTFactory.newBooleanLiteral(ast, true));
     }
+    return false;
+  }
+
+  @Override
+  public boolean visit(DoStatement node) {
+    node.getBody().accept(this);
+    newExpression(node.getExpression());
+    node.getExpression().accept(this);
+    List<VariableAccess> toExtract = getUnsequencedAccesses();
+    if (!toExtract.isEmpty()) {
+      // Convert "while (cond)" into "while (true) { if (!(cond)) break; ... }".
+      AST ast = node.getAST();
+      List<Statement> stmtList = ASTUtil.asStatementList(node.getBody());
+      extractOrderedAccesses(ast, stmtList, currentTopNode, toExtract);
+      stmtList.add(createLoopTermination(node.getExpression()));
+      node.setExpression(ASTFactory.newBooleanLiteral(ast, true));
+    }
+    return false;
+  }
+
+  private void extractVariableDeclarationFragments(
+      AST ast, List<VariableDeclarationFragment> fragments, List<Statement> stmtList) {
+    for (int i = 0; i < fragments.size(); i++) {
+      VariableDeclarationFragment frag = fragments.get(i);
+      Expression init = frag.getInitializer();
+      newExpression(init);
+      init.accept(this);
+      List<VariableAccess> toExtract = getUnsequencedAccesses();
+      if (!toExtract.isEmpty()) {
+        if (i > 0) {
+          // Extract all fragments before the current one to preserve ordering.
+          VariableDeclarationStatement newDecl = ASTFactory.newVariableDeclarationStatement(
+              ast, NodeCopier.copySubtree(ast, fragments.get(0)));
+          for (int j = 1; j < i; j++) {
+            ASTUtil.getFragments(newDecl).add(NodeCopier.copySubtree(ast, fragments.get(j)));
+          }
+          stmtList.add(newDecl);
+          fragments.subList(0, i).clear();
+        }
+        extractOrderedAccesses(ast, stmtList, currentTopNode, toExtract);
+        i = 0;
+      }
+    }
+  }
+
+  private void extractExpressionList(
+      AST ast, List<Expression> expressions, List<Statement> stmtList,
+      boolean extractModifiedExpression) {
+    for (int i = 0; i < expressions.size(); i++) {
+      Expression expr = expressions.get(i);
+      newExpression(expr);
+      expr.accept(this);
+      List<VariableAccess> unsequencedAccesses = getUnsequencedAccesses();
+      if (!unsequencedAccesses.isEmpty()) {
+        int numToExtract = extractModifiedExpression ? i + 1 : i;
+        for (int j = 0; j < i; j++) {
+          stmtList.add(ast.newExpressionStatement(
+              NodeCopier.copySubtree(ast, expressions.get(j))));
+        }
+        expressions.subList(0, i).clear();
+        extractOrderedAccesses(ast, stmtList, currentTopNode, unsequencedAccesses);
+        i = 0;
+        if (extractModifiedExpression) {
+          stmtList.add(ast.newExpressionStatement(
+              NodeCopier.copySubtree(ast, expressions.get(0))));
+          expressions.remove(0);
+          i = -1;
+        }
+      }
+    }
+  }
+
+  @Override
+  public boolean visit(ForStatement node) {
+    AST ast = node.getAST();
+    List<Expression> initializers = ASTUtil.getInitializers(node);
+    // The for-loop initializers can either be a single variable declaration
+    // expression or a list of initializer expressions.
+    if (initializers.size() == 1 && initializers.get(0) instanceof VariableDeclarationExpression) {
+      VariableDeclarationExpression decl = (VariableDeclarationExpression) initializers.get(0);
+      extractVariableDeclarationFragments(
+          ast, ASTUtil.getFragments(decl), ASTUtil.asStatementList(node).subList(0, 0));
+    } else {
+      extractExpressionList(ast, initializers, ASTUtil.asStatementList(node).subList(0, 0), false);
+    }
+    Expression expr = node.getExpression();
+    if (expr != null) {
+      newExpression(expr);
+      expr.accept(this);
+      List<VariableAccess> toExtract = getUnsequencedAccesses();
+      if (!toExtract.isEmpty()) {
+        // Convert "if (;cond;)" into "if (;;) { if (!(cond)) break; ...}".
+        List<Statement> stmtList = ASTUtil.asStatementList(node.getBody()).subList(0, 0);
+        extractOrderedAccesses(ast, stmtList, currentTopNode, toExtract);
+        stmtList.add(createLoopTermination(node.getExpression()));
+        node.setExpression(null);
+      }
+    }
+    extractExpressionList(
+        ast, ASTUtil.getUpdaters(node), ASTUtil.asStatementList(node.getBody()), true);
+    node.getBody().accept(this);
     return false;
   }
 

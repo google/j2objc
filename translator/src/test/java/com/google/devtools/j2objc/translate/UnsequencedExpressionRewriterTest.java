@@ -116,4 +116,66 @@ public class UnsequencedExpressionRewriterTest extends GenerationTest {
         "int unseq$2 = --k;",
         "int l = unseq$2 - k, m = 1;");
   }
+
+  public void testAssertStatement() throws IOException {
+    String translation = translateSourceFile(
+        "class Test { void test(int i) { assert i++ + i++ == 0 : \"foo\" + i++ + i++; } }",
+        "Test", "Test.m");
+    assertTranslatedLines(translation,
+        "int unseq$1 = i++;",
+        "BOOL unseq$2 = unseq$1 + i++ == 0;",
+        "int unseq$3 = i++;",
+        "NSAssert(unseq$2, [[NSString stringWithFormat:@\"foo%d%d\" J2OBJC_COMMA() unseq$3" +
+          " J2OBJC_COMMA() i++] description]);");
+  }
+
+  public void testForInitStatements() throws IOException {
+    String translation = translateSourceFile(
+        "class Test { void test() { int i = 0, j = 0, k = 0; " +
+        "for (i = i++ + i++, j = i++ + i++, k = i++ + i++;;) { } } }",
+        "Test", "Test.m");
+    assertTranslatedLines(translation,
+        "int i = 0, j = 0, k = 0;",
+        "int unseq$1 = i++;",
+        "int unseq$2 = i++;",
+        "i = unseq$1 + unseq$2;",
+        "int unseq$3 = i++;",
+        "j = unseq$3 + i++;",
+        "int unseq$4 = i++;",
+        "for (k = unseq$4 + i++; ; ) {",
+        "}");
+  }
+
+  public void testForInitWithDeclaration() throws IOException {
+    String translation = translateSourceFile(
+        "class Test { void test() { int k = 0; " +
+        "for (int i = k++ + k++, j = i++ + i++;;) { } } }",
+        "Test", "Test.m");
+    assertTranslatedLines(translation,
+        "int k = 0;",
+        "int unseq$1 = k++;",
+        "int i = unseq$1 + k++;",
+        "int unseq$2 = i++;",
+        "for (int j = unseq$2 + i++; ; ) {",
+        "}");
+  }
+
+  public void testIfConditionAndUpdaters() throws IOException {
+    String translation = translateSourceFile(
+        "class Test { void test() { int k = 0; " +
+        "for (int i = k++ + k++; i++ + i++ < 10; i++, k = i++ + i++) { " +
+        "  String s = \"foo\" + i; } } }",
+        "Test", "Test.m");
+    assertTranslatedLines(translation,
+        "int k = 0;",
+        "int unseq$1 = k++;",
+        "for (int i = unseq$1 + k++; ; ) {",
+        "  int unseq$2 = i++;",
+        "  if (!(unseq$2 + i++ < 10)) break;",
+        "  NSString *s = [NSString stringWithFormat:@\"foo%d\", i];",
+        "  i++;",
+        "  int unseq$3 = i++;",
+        "  k = unseq$3 + i++;",
+        "}");
+  }
 }
