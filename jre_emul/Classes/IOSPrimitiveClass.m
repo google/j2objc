@@ -163,6 +163,20 @@ getConstructorWithClasses:(IOSClass *)firstClass, ... {
   return nil;
 }
 
+- (id)wrapperClass {
+  switch ([type_ characterAtIndex:0]) {
+    case 'B': return [IOSClass classWithClass:[JavaLangByte class]];
+    case 'C': return [IOSClass classWithClass:[JavaLangCharacter class]];
+    case 'D': return [IOSClass classWithClass:[JavaLangDouble class]];
+    case 'F': return [IOSClass classWithClass:[JavaLangFloat class]];
+    case 'I': return [IOSClass classWithClass:[JavaLangInteger class]];
+    case 'J': return [IOSClass classWithClass:[JavaLangLong class]];
+    case 'S': return [IOSClass classWithClass:[JavaLangShort class]];
+    case 'Z': return [IOSClass classWithClass:[JavaLangBoolean class]];
+  }
+  return nil;
+}
+
 - (BOOL)__unboxValue:(id)value toRawValue:(J2ObjcRawValue *)rawValue {
   if ([value isKindOfClass:[JavaLangByte class]]) {
     char byteValue = [(JavaLangByte *) value charValue];
