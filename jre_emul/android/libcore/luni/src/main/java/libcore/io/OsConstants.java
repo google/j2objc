@@ -19,15 +19,15 @@ package libcore.io;
 public final class OsConstants {
     private OsConstants() { }
 
-    /*
     public static boolean S_ISBLK(int mode) { return (mode & S_IFMT) == S_IFBLK; }
     public static boolean S_ISCHR(int mode) { return (mode & S_IFMT) == S_IFCHR; }
     public static boolean S_ISDIR(int mode) { return (mode & S_IFMT) == S_IFDIR; }
     public static boolean S_ISFIFO(int mode) { return (mode & S_IFMT) == S_IFIFO; }
     public static boolean S_ISREG(int mode) { return (mode & S_IFMT) == S_IFREG; }
     public static boolean S_ISLNK(int mode) { return (mode & S_IFMT) == S_IFLNK; }
-    public static boolean S_ISSOCK(int mode) { return (mode & S_IFMT) == S_IFSOCK; }
 
+    /*
+    public static boolean S_ISSOCK(int mode) { return (mode & S_IFMT) == S_IFSOCK; }
     public static int WEXITSTATUS(int status) { return (status & 0xff00) >> 8; }
     public static boolean WCOREDUMP(int status) { return (status & 0x80) != 0; }
     public static int WTERMSIG(int status) { return status & 0x7f; }
@@ -59,7 +59,7 @@ public final class OsConstants {
     public static final int EAI_SOCKTYPE = placeholder();
     public static final int EAI_SYSTEM = placeholder();
     */
-    
+
     public static final int E2BIG = 7;
     public static final int EACCES = 13;
     public static final int EADDRINUSE = 48;
@@ -139,13 +139,10 @@ public final class OsConstants {
     public static final int ETXTBSY = 26;
     public static final int EWOULDBLOCK = EAGAIN;
     public static final int EXDEV = 18;
-    
-    /*
-    public static final int EXIT_FAILURE = placeholder();
-    public static final int EXIT_SUCCESS = placeholder();
-    public static final int FD_CLOEXEC = placeholder();
-    public static final int FIONREAD = placeholder();
-    */
+    public static final int EXIT_FAILURE = 1;
+    public static final int EXIT_SUCCESS = 0;
+    public static final int FD_CLOEXEC = 1;
+    public static final int FIONREAD = 0x4004667f;
     public static final int F_DUPFD = 0;
     public static final int F_GETFD = 1;
     public static final int F_GETFL = 3;
@@ -159,6 +156,29 @@ public final class OsConstants {
     public static final int F_SETLK = 8;
     //public static final int F_SETLK64 = ;
     public static final int F_SETLKW = 9;
+    public static final int O_ACCMODE = 0x0003;
+    public static final int O_APPEND = 0x0008;
+    public static final int O_CREAT = 0x0200;
+    public static final int O_EXCL = 0x0800;
+    public static final int O_NOCTTY = 0x20000;
+    public static final int O_NOFOLLOW = 0x0100;
+    public static final int O_NONBLOCK = 0x0004;
+    public static final int O_RDONLY = 0x0000;
+    public static final int O_RDWR = 0x0002;
+    public static final int O_SYNC = 0x0080;
+    public static final int O_TRUNC = 0x0400;
+    public static final int O_WRONLY = 0x0001;
+    public static final int SEEK_CUR = 1;
+    public static final int SEEK_END = 2;
+    public static final int SEEK_SET = 0;
+    public static final int S_IFBLK = 0060000;
+    public static final int S_IFCHR = 0020000;
+    public static final int S_IFDIR = 0040000;
+    public static final int S_IFIFO = 0010000;
+    public static final int S_IFLNK = 0120000;
+    public static final int S_IFMT = 0170000;
+    public static final int S_IFREG = 0100000;
+
     /*
     public static final int F_SETLKW64 = ;
     public static final int F_SETOWN = ;
@@ -226,20 +246,6 @@ public final class OsConstants {
     public static final int NI_NOFQDN = placeholder();
     public static final int NI_NUMERICHOST = placeholder();
     public static final int NI_NUMERICSERV = placeholder();
-    */
-    public static final int O_ACCMODE = 0x0003;
-    public static final int O_APPEND = 0x0008;
-    public static final int O_CREAT = 0x0200;
-    public static final int O_EXCL = 0x0800;
-    public static final int O_NOCTTY = 0x20000;
-    public static final int O_NOFOLLOW = 0x0100;
-    public static final int O_NONBLOCK = 0x0004;
-    public static final int O_RDONLY = 0x0000;
-    public static final int O_RDWR = 0x0002;
-    public static final int O_SYNC = 0x0080;
-    public static final int O_TRUNC = 0x0400;
-    public static final int O_WRONLY = 0x0001;
-    /*
     public static final int POLLERR = placeholder();
     public static final int POLLHUP = placeholder();
     public static final int POLLIN = placeholder();
@@ -255,9 +261,6 @@ public final class OsConstants {
     public static final int PROT_READ = placeholder();
     public static final int PROT_WRITE = placeholder();
     public static final int R_OK = placeholder();
-    public static final int SEEK_CUR = placeholder();
-    public static final int SEEK_END = placeholder();
-    public static final int SEEK_SET = placeholder();
     public static final int SHUT_RD = placeholder();
     public static final int SHUT_RDWR = placeholder();
     public static final int SHUT_WR = placeholder();
@@ -322,13 +325,6 @@ public final class OsConstants {
     public static final int STDERR_FILENO = placeholder();
     public static final int STDIN_FILENO = placeholder();
     public static final int STDOUT_FILENO = placeholder();
-    public static final int S_IFBLK = placeholder();
-    public static final int S_IFCHR = placeholder();
-    public static final int S_IFDIR = placeholder();
-    public static final int S_IFIFO = placeholder();
-    public static final int S_IFLNK = placeholder();
-    public static final int S_IFMT = placeholder();
-    public static final int S_IFREG = placeholder();
     public static final int S_IFSOCK = placeholder();
     public static final int S_IRGRP = placeholder();
     public static final int S_IROTH = placeholder();
@@ -444,7 +440,7 @@ public final class OsConstants {
     public static final int _SC_XOPEN_UNIX = placeholder();
     public static final int _SC_XOPEN_VERSION = placeholder();
     public static final int _SC_XOPEN_XCU_VERSION = placeholder();
-    
+
     public static String gaiName(int error) {
         if (error == EAI_AGAIN) {
             return "EAI_AGAIN";

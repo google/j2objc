@@ -227,6 +227,7 @@ JAVA_SOURCES = \
 	java/io/PrintWriter.java \
 	java/io/PushbackInputStream.java \
 	java/io/PushbackReader.java \
+	java/io/RandomAccessFile.java \
 	java/io/Reader.java \
 	java/io/SequenceInputStream.java \
 	java/io/SerializablePermission.java \
@@ -637,6 +638,7 @@ JAVA_SOURCES = \
 	libcore/icu/TimeZones.java \
 	libcore/internal/StringPool.java \
 	libcore/io/ErrnoException.java \
+	libcore/io/IoBridge.java \
 	libcore/io/IoUtils.java \
 	libcore/io/Libcore.java \
 	libcore/io/Memory.java \
@@ -644,12 +646,14 @@ JAVA_SOURCES = \
 	libcore/io/OsConstants.java \
 	libcore/io/Posix.java \
 	libcore/io/SizeOf.java \
+	libcore/io/StructStat.java \
 	libcore/math/MathUtils.java \
 	libcore/net/UriCodec.java \
 	libcore/net/url/FileHandler.java \
 	libcore/net/url/UrlUtils.java \
 	libcore/util/BasicLruCache.java \
 	libcore/util/EmptyArray.java \
+	libcore/util/MutableInt.java \
 	libcore/util/Objects.java \
 	libcore/util/SneakyThrow.java \
 	org/apache/harmony/luni/platform/Endianness.java \

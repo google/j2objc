@@ -295,6 +295,7 @@ TEST_SOURCES = \
     org/apache/harmony/tests/java/io/ObjectStreamClassTest.java \
     org/apache/harmony/tests/java/io/ObjectStreamConstantsTest.java \
     org/apache/harmony/tests/java/io/ObjectStreamFieldTest.java \
+    org/apache/harmony/tests/java/io/RandomAccessFileTest.java \
     org/apache/harmony/tests/java/math/BigIntegerAddTest.java \
     org/apache/harmony/tests/java/math/BigIntegerAndTest.java \
     org/apache/harmony/tests/java/math/BigIntegerCompareTest.java \

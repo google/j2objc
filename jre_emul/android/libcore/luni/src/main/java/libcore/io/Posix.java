@@ -18,9 +18,12 @@ package libcore.io;
 
 import java.io.FileDescriptor;
 
+import libcore.util.MutableInt;
+
 /*-[
 #import "TempFailureRetry.h"
 #import <fcntl.h>
+#import <sys/ioctl.h>
 #import <sys/stat.h>
 #include <termios.h>
 ]-*/
@@ -112,9 +115,35 @@ public final class Posix implements Os {
     [LibcoreIoPosix throwIfMinusOneWithNSString:@"fchown" withInt:rc];
   ]-*/;
 
+  public native int fcntlLong(FileDescriptor fd, int cmd, long arg) throws ErrnoException /*-[
+    int rc = TEMP_FAILURE_RETRY(fcntl((int) fd->descriptor_, cmd, arg));
+    return [LibcoreIoPosix throwIfMinusOneWithNSString:@"fcntl" withInt:rc];
+  ]-*/;
+
   public native int fcntlVoid(FileDescriptor fd, int cmd) throws ErrnoException /*-[
     int rc = TEMP_FAILURE_RETRY(fcntl((int) fd->descriptor_, cmd));
     return [LibcoreIoPosix throwIfMinusOneWithNSString:@"fcntl" withInt:rc];
+  ]-*/;
+
+  public native StructStat fstat(FileDescriptor fd) throws ErrnoException /*-[
+    struct stat sb;
+    int rc = TEMP_FAILURE_RETRY(fstat(fd->descriptor_, &sb));
+    if (rc == -1) {
+        [LibcoreIoPosix throwErrnoExceptionWithNSString:@"fstat" withInt:rc];
+    }
+    return AUTORELEASE([[LibcoreIoStructStat alloc] initWithLong:sb.st_dev
+                                                        withLong:sb.st_ino
+                                                         withInt:sb.st_mode
+                                                        withLong:sb.st_nlink
+                                                         withInt:sb.st_uid
+                                                         withInt:sb.st_gid
+                                                        withLong:sb.st_rdev
+                                                        withLong:sb.st_size
+                                                        withLong:sb.st_atime
+                                                        withLong:sb.st_mtime
+                                                        withLong:sb.st_ctime
+                                                        withLong:sb.st_blksize
+                                                        withLong:sb.st_blocks]);
   ]-*/;
 
   public native void fsync(FileDescriptor fd) throws ErrnoException /*-[
@@ -122,13 +151,29 @@ public final class Posix implements Os {
     [LibcoreIoPosix throwIfMinusOneWithNSString:@"fsync" withInt:rc];
   ]-*/;
 
-  public native int fcntlLong(FileDescriptor fd, int cmd, long arg) throws ErrnoException /*-[
-    int rc = TEMP_FAILURE_RETRY(fcntl((int) fd->descriptor_, cmd, arg));
-    return [LibcoreIoPosix throwIfMinusOneWithNSString:@"fcntl" withInt:rc];
+  public native void ftruncate(FileDescriptor fd, long length) throws ErrnoException /*-[
+    int rc = TEMP_FAILURE_RETRY(ftruncate((int) fd->descriptor_, (off_t) length));
+    [LibcoreIoPosix throwIfMinusOneWithNSString:@"ftruncate" withInt:rc];
+  ]-*/;
+
+  public native int ioctlInt(FileDescriptor fd, int cmd, MutableInt javaArg)
+      throws ErrnoException /*-[
+    int arg = javaArg->value_;
+    int rc = TEMP_FAILURE_RETRY(ioctl((int) fd->descriptor_, cmd, &arg));
+    if (rc == -1) {
+      [LibcoreIoPosix throwErrnoExceptionWithNSString:@"ioctl" withInt:rc];
+    }
+    javaArg->value_ = arg;
+    return rc;
   ]-*/;
 
   public native boolean isatty(FileDescriptor fd) /*-[
     return TEMP_FAILURE_RETRY(isatty((int) fd->descriptor_)) == 1;
+  ]-*/;
+
+  public native long lseek(FileDescriptor fd, long offset, int whence) throws ErrnoException /*-[
+    off_t rc = TEMP_FAILURE_RETRY(lseek((int) fd->descriptor_, (off_t) offset, whence));
+    return [LibcoreIoPosix throwIfMinusOneWithNSString:@"lseek" withInt:rc];
   ]-*/;
 
   public native FileDescriptor open(String path, int flags, int mode) throws ErrnoException /*-[
@@ -145,6 +190,17 @@ public final class Posix implements Os {
     return newFd;
   ]-*/;
 
+  public native int read(FileDescriptor fd, byte[] bytes, int byteOffset, int byteCount)
+      throws ErrnoException /*-[
+    if (!bytes) {
+      return -1;
+    }
+    IOSArray_checkRange([bytes count], NSMakeRange(byteOffset, byteCount));
+    int rc =
+        TEMP_FAILURE_RETRY(read((int) fd->descriptor_, bytes->buffer_ + byteOffset, byteCount));
+    return [LibcoreIoPosix throwIfMinusOneWithNSString:@"read" withInt:rc];
+  ]-*/;
+
   public native String strerror(int errno) /*-[
     char buffer[BUFSIZ];
     int ret = strerror_r(errno_, buffer, BUFSIZ);
@@ -159,14 +215,24 @@ public final class Posix implements Os {
     [LibcoreIoPosix throwIfMinusOneWithNSString:@"fcntl" withInt:rc];
   ]-*/;
 
+  public native int write(FileDescriptor fd, byte[] bytes, int byteOffset, int byteCount)
+      throws ErrnoException /*-[
+    if (!bytes) {
+      return -1;
+    }
+    IOSArray_checkRange([bytes count], NSMakeRange(byteOffset, byteCount));
+    int rc =
+        TEMP_FAILURE_RETRY(write((int) fd->descriptor_, bytes->buffer_ + byteOffset, byteCount));
+    return [LibcoreIoPosix throwIfMinusOneWithNSString:@"write" withInt:rc];
+  ]-*/;
+
 // Uncomment and implement as Os interface grows.
 //  public native String[] environ();
-//  public native int fcntlFlock(FileDescriptor fd, int cmd, StructFlock arg) 
+//  public native int fcntlFlock(FileDescriptor fd, int cmd, StructFlock arg)
 //      throws ErrnoException;
 //  public native void fdatasync(FileDescriptor fd) throws ErrnoException;
-//  public native StructStat fstat(FileDescriptor fd) throws ErrnoException;
+
 //  public native StructStatFs fstatfs(FileDescriptor fd) throws ErrnoException;
-//  public native void ftruncate(FileDescriptor fd, long length) throws ErrnoException;
 //  public native String gai_strerror(int error);
 //  public native int getegid();
 //  public native int geteuid();
@@ -178,18 +244,15 @@ public final class Posix implements Os {
 //  public native StructPasswd getpwuid(int uid) throws ErrnoException;
 //  public native int getuid();
 //  public native String if_indextoname(int index);
-//  public native int ioctlInt(FileDescriptor fd, int cmd, MutableInt arg)
-//      throws ErrnoException;
 //  public native void kill(int pid, int signal) throws ErrnoException;
 //  public native void lchown(String path, int uid, int gid) throws ErrnoException;
 //  public native void listen(FileDescriptor fd, int backlog) throws ErrnoException;
-//  public native long lseek(FileDescriptor fd, long offset, int whence) throws ErrnoException;
 //  public native StructStat lstat(String path) throws ErrnoException;
-//  public native void mincore(long address, long byteCount, byte[] vector) 
+//  public native void mincore(long address, long byteCount, byte[] vector)
 //      throws ErrnoException;
 //  public native void mkdir(String path, int mode) throws ErrnoException;
 //  public native void mlock(long address, long byteCount) throws ErrnoException;
-//  public native long mmap(long address, long byteCount, int prot, int flags, 
+//  public native long mmap(long address, long byteCount, int prot, int flags,
 //      FileDescriptor fd, long offset) throws ErrnoException;
 //  public native void msync(long address, long byteCount, int flags) throws ErrnoException;
 //  public native void munlock(long address, long byteCount) throws ErrnoException;
@@ -200,7 +263,7 @@ public final class Posix implements Os {
 //    if (buffer.isDirect()) {
 //      return preadBytes(fd, buffer, buffer.position(), buffer.remaining(), offset);
 //    } else {
-//      return preadBytes(fd, NioUtils.unsafeArray(buffer), 
+//      return preadBytes(fd, NioUtils.unsafeArray(buffer),
 //          NioUtils.unsafeArrayOffset(buffer) + buffer.position(), buffer.remaining(), offset);
 //    }
 //  }
@@ -232,12 +295,6 @@ public final class Posix implements Os {
 //          NioUtils.unsafeArrayOffset(buffer) + buffer.position(), buffer.remaining());
 //    }
 //  }
-//  public int read(FileDescriptor fd, byte[] bytes, int byteOffset, int byteCount)
-//      throws ErrnoException {
-//    return readBytes(fd, bytes, byteOffset, byteCount);
-//  }
-//  private native int readBytes(FileDescriptor fd, Object buffer, int offset, int byteCount)
-//      throws ErrnoException;
 //  public native int readv(FileDescriptor fd, Object[] buffers, int[] offsets, int[] byteCounts)
 //      throws ErrnoException;
 //  public native void remove(String path) throws ErrnoException;
@@ -277,15 +334,9 @@ public final class Posix implements Os {
 //          NioUtils.unsafeArrayOffset(buffer) + buffer.position(), buffer.remaining());
 //    }
 //  }
-//  public int write(FileDescriptor fd, byte[] bytes, int byteOffset, int byteCount)
-//      throws ErrnoException {
-//    return writeBytes(fd, bytes, byteOffset, byteCount);
-//  }
-//  private native int writeBytes(FileDescriptor fd, Object buffer, int offset, int byteCount)
-//      throws ErrnoException;
 //  public native int writev(FileDescriptor fd, Object[] buffers, int[] offsets, int[] byteCounts)
 //      throws ErrnoException;
-  
+
 // TODO(tball): implement these commented methods when java.net is ported.
 //  public native FileDescriptor accept(FileDescriptor fd, InetSocketAddress peerAddress) throws ErrnoException, SocketException;
 //  public native void bind(FileDescriptor fd, InetAddress address, int port) throws ErrnoException, SocketException;

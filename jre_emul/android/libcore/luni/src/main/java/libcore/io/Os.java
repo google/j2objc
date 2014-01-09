@@ -18,8 +18,10 @@ package libcore.io;
 
 import java.io.FileDescriptor;
 
+import libcore.util.MutableInt;
+
 public interface Os {
-    
+
     public boolean access(String path, int mode) throws ErrnoException;
     public void chmod(String path, int mode) throws ErrnoException;
     public void chown(String path, int uid, int gid) throws ErrnoException;
@@ -40,9 +42,9 @@ public interface Os {
 //    public String[] environ();
 //    public int fcntlFlock(FileDescriptor fd, int cmd, StructFlock arg) throws ErrnoException;
 //    public void fdatasync(FileDescriptor fd) throws ErrnoException;
-//    public StructStat fstat(FileDescriptor fd) throws ErrnoException;
+    public StructStat fstat(FileDescriptor fd) throws ErrnoException;
 //    public StructStatFs fstatfs(FileDescriptor fd) throws ErrnoException;
-//    public void ftruncate(FileDescriptor fd, long length) throws ErrnoException;
+    public void ftruncate(FileDescriptor fd, long length) throws ErrnoException;
 //    public int getegid();
 //    public int geteuid();
 //    public int getgid();
@@ -53,11 +55,11 @@ public interface Os {
 //    public StructPasswd getpwuid(int uid) throws ErrnoException;
 //    public int getuid();
 //    public String if_indextoname(int index);
-//    public int ioctlInt(FileDescriptor fd, int cmd, MutableInt arg) throws ErrnoException;
+    public int ioctlInt(FileDescriptor fd, int cmd, MutableInt arg) throws ErrnoException;
 //    public void kill(int pid, int signal) throws ErrnoException;
 //    public void lchown(String path, int uid, int gid) throws ErrnoException;
 //    public void listen(FileDescriptor fd, int backlog) throws ErrnoException;
-//    public long lseek(FileDescriptor fd, long offset, int whence) throws ErrnoException;
+    public long lseek(FileDescriptor fd, long offset, int whence) throws ErrnoException;
 //    public StructStat lstat(String path) throws ErrnoException;
 //    public void mincore(long address, long byteCount, byte[] vector) throws ErrnoException;
 //    public void mkdir(String path, int mode) throws ErrnoException;
@@ -78,8 +80,8 @@ public interface Os {
 //    public int pwrite(FileDescriptor fd, byte[] bytes, int byteOffset, int byteCount, long offset)
 //        throws ErrnoException;
 //    public int read(FileDescriptor fd, ByteBuffer buffer) throws ErrnoException;
-//    public int read(FileDescriptor fd, byte[] bytes, int byteOffset, int byteCount)
-//        throws ErrnoException;
+    public int read(FileDescriptor fd, byte[] bytes, int byteOffset, int byteCount)
+        throws ErrnoException;
 //    public int readv(FileDescriptor fd, Object[] buffers, int[] offsets, int[] byteCounts)
 //        throws ErrnoException;
 //    public void remove(String path) throws ErrnoException;
@@ -104,8 +106,8 @@ public interface Os {
 //    public void unsetenv(String name) throws ErrnoException;
 //    public int waitpid(int pid, MutableInt status, int options) throws ErrnoException;
 //    public int write(FileDescriptor fd, ByteBuffer buffer) throws ErrnoException;
-//    public int write(FileDescriptor fd, byte[] bytes, int byteOffset, int byteCount)
-//        throws ErrnoException;
+    public int write(FileDescriptor fd, byte[] bytes, int byteOffset, int byteCount)
+        throws ErrnoException;
 //    public int writev(FileDescriptor fd, Object[] buffers, int[] offsets, int[] byteCounts)
 //        throws ErrnoException;
 
@@ -148,7 +150,7 @@ public interface Os {
 //        throws ErrnoException;
 //    public void setsockoptIpMreqn(FileDescriptor fd, int level, int option, int value)
 //        throws ErrnoException;
-//    public void setsockoptGroupReq(FileDescriptor fd, int level, int option, 
+//    public void setsockoptGroupReq(FileDescriptor fd, int level, int option,
 //        StructGroupReq value) throws ErrnoException;
 //    public void setsockoptLinger(FileDescriptor fd, int level, int option, StructLinger value)
 //        throws ErrnoException;
