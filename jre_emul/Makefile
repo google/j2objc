@@ -307,6 +307,7 @@ JAVA_SOURCES = \
 	java/lang/reflect/Proxy.java \
 	java/lang/reflect/ReflectPermission.java \
 	java/lang/reflect/UndeclaredThrowableException.java \
+	java/lang/ReflectiveOperationException.java \
 	java/lang/Runtime.java \
 	java/lang/RuntimeException.java \
 	java/lang/RuntimePermission.java \

@@ -18,30 +18,28 @@
 package java.lang;
 
 /**
- * Thrown when a program attempts to access a field or method which is not
- * accessible from the location where the reference is made.
+ * Thrown when the VM notices that a program tries to reference,
+ * on a class or object, a field that does not exist.
  */
-public class IllegalAccessException extends Exception {
+public class NoSuchFieldException extends ReflectiveOperationException {
 
-    private static final long serialVersionUID = 6616958222490762034L;
+    private static final long serialVersionUID = -6143714805279938260L;
 
     /**
-     * Constructs a new {@code IllegalAccessException} that includes the current
+     * Constructs a new {@code NoSuchFieldException} that includes the current
      * stack trace.
      */
-    public IllegalAccessException() {
-        super();
+    public NoSuchFieldException() {
     }
 
     /**
-     * Constructs a new {@code IllegalAccessException} with the current stack
+     * Constructs a new {@code NoSuchFieldException} with the current stack
      * trace and the specified detail message.
-     * 
+     *
      * @param detailMessage
      *            the detail message for this exception.
      */
-    public IllegalAccessException(String detailMessage) {
+    public NoSuchFieldException(String detailMessage) {
         super(detailMessage);
     }
-
 }

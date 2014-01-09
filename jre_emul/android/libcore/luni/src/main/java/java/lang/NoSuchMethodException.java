@@ -18,29 +18,29 @@
 package java.lang;
 
 /**
- * Thrown when the virtual machine notices that a program tries to reference,
- * on a class or object, a field that does not exist.
+ * Thrown when the VM notices that a program tries to reference,
+ * on a class or object, a method that does not exist.
  */
-public class NoSuchFieldException extends java.lang.Exception {
+public class NoSuchMethodException extends ReflectiveOperationException {
 
-    private static final long serialVersionUID = -6143714805279938260L;
+    private static final long serialVersionUID = 5034388446362600923L;
 
     /**
-     * Constructs a new {@code NoSuchFieldException} that includes the current
+     * Constructs a new {@code NoSuchMethodException} that includes the current
      * stack trace.
      */
-    public NoSuchFieldException() {
-        super();
+    public NoSuchMethodException() {
     }
 
     /**
-     * Constructs a new {@code NoSuchFieldException} with the current stack
+     * Constructs a new {@code NoSuchMethodException} with the current stack
      * trace and the specified detail message.
-     * 
+     *
      * @param detailMessage
      *            the detail message for this exception.
      */
-    public NoSuchFieldException(String detailMessage) {
+    public NoSuchMethodException(String detailMessage) {
         super(detailMessage);
     }
+
 }

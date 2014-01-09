@@ -18,29 +18,28 @@
 package java.lang;
 
 /**
- * Thrown when the virtual machine notices that a program tries to reference,
- * on a class or object, a method that does not exist.
+ * Thrown when a program attempts to access a field or method which is not
+ * accessible from the location where the reference is made.
  */
-public class NoSuchMethodException extends java.lang.Exception {
+public class IllegalAccessException extends ReflectiveOperationException {
 
-    private static final long serialVersionUID = 5034388446362600923L;
+    private static final long serialVersionUID = 6616958222490762034L;
 
     /**
-     * Constructs a new {@code NoSuchMethodException} that includes the current
+     * Constructs a new {@code IllegalAccessException} that includes the current
      * stack trace.
      */
-   public NoSuchMethodException() {
-        super();
+    public IllegalAccessException() {
     }
 
-   /**
-     * Constructs a new {@code NoSuchMethodException} with the current stack
+    /**
+     * Constructs a new {@code IllegalAccessException} with the current stack
      * trace and the specified detail message.
-     * 
+     *
      * @param detailMessage
      *            the detail message for this exception.
      */
-    public NoSuchMethodException(String detailMessage) {
+    public IllegalAccessException(String detailMessage) {
         super(detailMessage);
     }
 
