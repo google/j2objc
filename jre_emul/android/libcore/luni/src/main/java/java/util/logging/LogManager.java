@@ -334,9 +334,9 @@ public class LogManager {
 
             InputStream input = null;
             try {
-                try {
+                if (new File(configFile).exists()) {
                     input = new FileInputStream(configFile);
-                } catch (IOException exception) {
+                } else {
                     // fall back to using the built-in logging.properties file
                     input = LogManager.class.getResourceAsStream("logging.properties");
                     if (input == null) {
