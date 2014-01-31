@@ -252,7 +252,9 @@ public class Deflater {
       if (!buf) {
         return -1;
       }
-      zStream->next_out = (Bytef *) [buf byteRefAtIndex:offset];
+      if ([buf count] > 0) {
+        zStream->next_out = (Bytef *) [buf byteRefAtIndex:offset];
+      }
       zStream->avail_out = byteCount;
 
       Bytef *initialNextIn = zStream->next_in;
