@@ -1449,11 +1449,10 @@ public class BigInteger extends Number implements Comparable<BigInteger>,
         int i = 0;
         // Put bytes to the int array starting from the end of the byte array
         while (bytesLen > highBytes) {
-            int tmp = (byteValues[--bytesLen] & 0xFF);
-            tmp |= (byteValues[--bytesLen] & 0xFF) << 8;
-            tmp |= (byteValues[--bytesLen] & 0xFF) << 16;
-            tmp |= (byteValues[--bytesLen] & 0xFF) << 24;
-            digits[i++] = tmp;
+            digits[i++] = (byteValues[--bytesLen] & 0xFF)
+                    | (byteValues[--bytesLen] & 0xFF) << 8
+                    | (byteValues[--bytesLen] & 0xFF) << 16
+                    | (byteValues[--bytesLen] & 0xFF) << 24;
         }
         // Put the first bytes in the highest element of the int array
         for (int j = 0; j < bytesLen; j++) {
@@ -1475,21 +1474,20 @@ public class BigInteger extends Number implements Comparable<BigInteger>,
         digits[numberLength - 1] = -1;
         // Put bytes to the int array starting from the end of the byte array
         while (bytesLen > highBytes) {
-            int tmp = (byteValues[--bytesLen] & 0xFF);
-            tmp |= (byteValues[--bytesLen] & 0xFF) << 8;
-            tmp |= (byteValues[--bytesLen] & 0xFF) << 16;
-            tmp |= (byteValues[--bytesLen] & 0xFF) << 24;
-            digits[i] = tmp;
+            digits[i] = (byteValues[--bytesLen] & 0xFF)
+                    | (byteValues[--bytesLen] & 0xFF) << 8
+                    | (byteValues[--bytesLen] & 0xFF) << 16
+                    | (byteValues[--bytesLen] & 0xFF) << 24;
             if (digits[i] != 0) {
                 digits[i] = -digits[i];
                 firstNonzeroDigit = i;
                 i++;
                 while (bytesLen > highBytes) {
-                    tmp = (byteValues[--bytesLen] & 0xFF);
-                    tmp |= (byteValues[--bytesLen] & 0xFF) << 8;
-                    tmp |= (byteValues[--bytesLen] & 0xFF) << 16;
-                    tmp |= (byteValues[--bytesLen] & 0xFF) << 24;
-                    digits[i] = ~tmp;
+                    digits[i] = (byteValues[--bytesLen] & 0xFF)
+                            | (byteValues[--bytesLen] & 0xFF) << 8
+                            | (byteValues[--bytesLen] & 0xFF) << 16
+                            | (byteValues[--bytesLen] & 0xFF) << 24;
+                    digits[i] = ~digits[i];
                     i++;
                 }
                 break;
