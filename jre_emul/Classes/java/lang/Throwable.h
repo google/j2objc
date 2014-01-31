@@ -35,6 +35,8 @@
   NSString *detailMessage;
   IOSObjectArray *stackTrace;
   IOSObjectArray *suppressedExceptions;
+  void **rawCallStack;
+  unsigned rawFrameCount;
 }
 - (id)init;
 - (id)initWithNSString:(NSString *)message;
