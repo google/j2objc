@@ -389,11 +389,12 @@ public class Executors {
             this.task = task;
             this.result = result;
         }
-        @AutoreleasePool
         public T call() {
-            task.run();
+            callInternal();
             return result;
         }
+        @AutoreleasePool
+        private void callInternal() { task.run(); }
     }
 
     /**
