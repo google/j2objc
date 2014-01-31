@@ -268,14 +268,12 @@ public class File implements Serializable, Comparable<File> {
                     foundSlash = true;
                 }
             } else {
-                // check for leading slashes before a drive
                 if (pathChar == ':'
                         && uncIndex > 0
                         && (newLength == 2 || (newLength == 3 && newPath[1] == separatorChar))
                         && newPath[0] == separatorChar) {
                     newPath[0] = newPath[newLength - 1];
                     newLength = 1;
-                    // allow trailing slash after drive letter
                     uncIndex = 2;
                 }
                 newPath[newLength++] = pathChar;
