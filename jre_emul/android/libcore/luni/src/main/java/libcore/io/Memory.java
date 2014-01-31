@@ -28,12 +28,54 @@ import java.nio.ByteOrder;
 public final class Memory {
     private Memory() { }
 
+    /*-[
+      // Use packed structures for access to unaligned data on targets with alignment restrictions.
+      // The compiler will generate appropriate code to access these structures without
+      // generating alignment exceptions.
+      static inline int get_unaligned_int(const int *address) {
+        typedef struct __attribute__ ((packed)) {
+          int v;
+        } unaligned;
+        const unaligned *p = (const unaligned *) address;
+        return p->v;
+      }
+
+      static inline void put_unaligned_int(int *address, int v) {
+        typedef struct __attribute__ ((packed)) {
+          int v;
+        } unaligned;
+        unaligned *p = (unaligned *) address;
+        p->v = v;
+      }
+    ]-*/
+
     /**
      * Used to optimize nio heap buffer bulk get operations. 'dst' must be a primitive array.
      * 'dstOffset' is measured in units of 'sizeofElements' bytes.
      */
 //    public static native void unsafeBulkGet(Object dst, int dstOffset, int byteCount,
 //            byte[] src, int srcOffset, int sizeofElements, boolean swap);
+
+    // Split above method into separate methods for each element type. So far, only support
+    // for int arrays is needed by HeapBufferIterator.
+    public static native void unsafeIntBulkGet(int[] dst, int dstOffset, int count,
+        byte[] src, int srcOffset, boolean swap) /*-[
+      if (!src || !dst) {
+        return;
+      }
+      int *dstInts = IOSIntArray_GetRef(dst, dstOffset);
+      const char *srcBytes = IOSByteArray_GetRef(src, srcOffset);
+      if (!swap) {
+        int byteCount = count * sizeof(int);
+        memcpy(dstInts, srcBytes, byteCount);
+        return;
+      }
+      const int *srcInts = (const int *) srcBytes;
+      for (size_t i = 0; i < count; ++i) {
+        int v = get_unaligned_int(srcInts++);
+        put_unaligned_int(dstInts++, OSSwapInt32(v));
+      }
+    ]-*/;
 
     /**
      * Used to optimize nio heap buffer bulk put operations. 'src' must be a primitive array.
