@@ -161,18 +161,8 @@ public class NilCheckResolver extends ErrorReportingASTVisitor {
     return false;
   }
 
-  private static Expression stripCastsAndParentheses(Expression node) {
-    if (node instanceof ParenthesizedExpression) {
-      return stripCastsAndParentheses(((ParenthesizedExpression) node).getExpression());
-    } else if (node instanceof CastExpression) {
-      return stripCastsAndParentheses(((CastExpression) node).getExpression());
-    }
-    return node;
-  }
-
   private void addNilCheck(Expression node, boolean deferAdd) {
-    Expression strippedNode = stripCastsAndParentheses(node);
-    if (!needsNilCheck(strippedNode)) {
+    if (!needsNilCheck(node)) {
       return;
     }
     IVariableBinding var = Types.getVariableBinding(node);
@@ -182,13 +172,13 @@ public class NilCheckResolver extends ErrorReportingASTVisitor {
       safeVarsFalse.add(var);
     }
     if (deferAdd) {
-      Types.addNilCheck(strippedNode);
+      Types.addNilCheck(node);
     } else {
       AST ast = node.getAST();
       IOSMethodBinding nilChkBinding = IOSMethodBinding.newTypedInvocation(
           NIL_CHK_DECL, Types.getTypeBinding(node));
       MethodInvocation nilChkInvocation = ASTFactory.newMethodInvocation(ast, nilChkBinding, null);
-      ASTUtil.getArguments(nilChkInvocation).add(NodeCopier.copySubtree(ast, strippedNode));
+      ASTUtil.getArguments(nilChkInvocation).add(NodeCopier.copySubtree(ast, node));
       ASTUtil.setProperty(node, nilChkInvocation);
     }
   }

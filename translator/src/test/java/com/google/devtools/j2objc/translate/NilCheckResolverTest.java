@@ -35,7 +35,8 @@ public class NilCheckResolverTest extends GenerationTest {
   public void testNilCheckOnCastExpression() throws IOException {
     String translation = translateSourceFile(
         "class Test { int i; void test(Object o) { int i = ((Test) o).i; } }", "Test", "Test.m");
-    assertTranslation(translation, "((Test *) nil_chk(o))->i_");
+    assertTranslation(translation,
+        "((Test *) nil_chk(((Test *) check_class_cast(o, [Test class]))))->i_");
   }
 
   public void testNoNilCheckOnSecondDereference() throws IOException {
