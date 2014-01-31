@@ -360,8 +360,7 @@ public class ObjectiveCHeaderGenerator extends ObjectiveCSourceFileGenerator {
     }
     String result = super.methodDeclaration(m);
     String methodName = NameTable.getName(Types.getMethodBinding(m));
-    if (methodName.startsWith("new") || methodName.startsWith("copy")
-        || methodName.startsWith("alloc") || methodName.startsWith("init")) {
+    if (needsObjcMethodFamilyNoneAttribute(methodName)) {
          // Getting around a clang warning.
          // clang assumes that methods with names starting with new, alloc or copy
          // return objects of the same type as the receiving class, regardless of
@@ -378,6 +377,11 @@ public class ObjectiveCHeaderGenerator extends ObjectiveCSourceFileGenerator {
     }
 
     return result + ";\n";
+  }
+
+  private boolean needsObjcMethodFamilyNoneAttribute(String name) {
+    return name.startsWith("new") || name.startsWith("copy") || name.startsWith("alloc")
+        || name.startsWith("init") || name.startsWith("mutableCopy");
   }
 
   @Override
@@ -556,8 +560,7 @@ public class ObjectiveCHeaderGenerator extends ObjectiveCSourceFileGenerator {
       String propertyName = NameTable.getName(member.getName());
       println(String.format("%s%s%s;", typeString, typeString.endsWith("*") ? "" : " ",
           propertyName));
-      if (propertyName.startsWith("new") || propertyName.startsWith("copy")
-          || propertyName.startsWith("alloc") || propertyName.startsWith("init")) {
+      if (needsObjcMethodFamilyNoneAttribute(propertyName)) {
         println(String.format("- (%s)%s OBJC_METHOD_FAMILY_NONE;", typeString, propertyName));
       }
       nPrinted++;
