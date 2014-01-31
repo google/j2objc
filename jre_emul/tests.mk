@@ -126,6 +126,17 @@ TEST_SOURCES = \
     libcore/java/util/OldTimeZoneTest.java \
     libcore/java/util/ServiceLoaderTest.java \
     libcore/java/util/TreeMapTest.java \
+    libcore/java/util/zip/DeflaterInputStreamTest.java \
+    libcore/java/util/zip/DeflaterOutputStreamTest.java \
+    libcore/java/util/zip/DeflaterTest.java \
+    libcore/java/util/zip/GZIPInputStreamTest.java \
+    libcore/java/util/zip/GZIPOutputStreamTest.java \
+    libcore/java/util/zip/InflaterTest.java \
+    libcore/java/util/zip/OldAndroidChecksumTest.java \
+    libcore/java/util/zip/OldAndroidDeflateTest.java \
+    libcore/java/util/zip/OldAndroidGZIPStreamTest.java \
+    libcore/java/util/zip/OldDataFormatExceptionTest.java \
+    libcore/java/util/zip/OldZipExceptionTest.java \
     org/apache/harmony/archive/tests/java/util/zip/CRC32Test.java \
     org/apache/harmony/logging/tests/java/util/logging/ConsoleHandlerTest.java \
     org/apache/harmony/logging/tests/java/util/logging/ErrorManagerTest.java \

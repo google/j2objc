@@ -246,10 +246,6 @@ public class Inflater {
      */
     public synchronized int inflate(byte[] buf, int offset, int byteCount) throws DataFormatException {
         Arrays.checkOffsetAndCount(buf.length, offset, byteCount);
-        if (byteCount == 0) {
-            return 0;
-        }
-
         checkOpen();
 
         if (needsInput()) {
@@ -266,48 +262,40 @@ public class Inflater {
     }
 
     private native int inflateImpl(byte[] buf, int offset, int byteCount, long handle) /*-[
-      char *bout = malloc(byteCount);
       z_stream *zStream = (z_stream*) handle;
-      int err = 0;
-      int sin, sout, inBytes = 0;
-
-      // We need to get the number of bytes already read
-      inBytes = inRead_;
-
+      if (!buf) {
+        return -1;
+      }
+      if ([buf count] > 0) {
+        zStream->next_out = (Bytef *) [buf byteRefAtIndex:offset];
+      }
       zStream->avail_out = byteCount;
-      sin = zStream->total_in;
-      sout = zStream->total_out;
-      [buf getBytes:bout offset:offset length:byteCount];
-      if (bout == NULL) {
-        @throw AUTORELEASE([[JavaLangOutOfMemoryError alloc] init]);
-      }
-      zStream->next_out = (Bytef *) bout;
-      err = inflate (zStream, Z_SYNC_FLUSH);
-      [buf replaceBytes:bout length:byteCount offset:offset];
-      free(bout);
 
-      if (err != Z_OK) {
-        if(err == Z_STREAM_ERROR) {
-            return 0;
-        }
-        if (err == Z_STREAM_END || err == Z_NEED_DICT) {
-          inRead_ = zStream->total_in - sin + inBytes;      // Update inRead
-          if (err == Z_STREAM_END) {
-            finished__ = YES;
-          } else {
-            needsDictionary__ = YES;
-          }
+      Bytef *initialNextIn = zStream->next_in;
+      Bytef *initialNextOut = zStream->next_out;
 
-          return zStream->total_out - sout;
-        } else {
+      int err = inflate(zStream, Z_SYNC_FLUSH);
+      switch (err) {
+        case Z_OK:
+          break;
+        case Z_NEED_DICT:
+          needsDictionary__ = YES;
+          break;
+        case Z_STREAM_END:
+          finished__ = YES;
+          break;
+        case Z_STREAM_ERROR:
+          return 0;
+        default:
           @throw AUTORELEASE([[JavaUtilZipDataFormatException alloc] init]);
-        }
       }
 
-      inRead_ = zStream->total_in - sin + inBytes;
+      int bytesRead = zStream->next_in - initialNextIn;
+      int bytesWritten = zStream->next_out - initialNextOut;
 
-      return zStream->total_out - sout;
-    ]-*/;;
+      inRead_ += bytesRead;
+      return bytesWritten;
+    ]-*/;
 
 
     /**
