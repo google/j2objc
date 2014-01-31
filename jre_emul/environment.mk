@@ -102,7 +102,6 @@ WARNINGS := $(WARNINGS) -Wall -Werror
 OBJCFLAGS := -std=c11
 
 ifeq ("$(strip $(XCODE_VERSION_MAJOR))", "0500")
-WARNINGS += -Wno-unsequenced
 OBJCFLAGS += -DSET_MIN_IOS_VERSION
 endif
 
