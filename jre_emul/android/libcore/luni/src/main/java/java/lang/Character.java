@@ -4377,7 +4377,7 @@ public final class Character implements Serializable, Comparable<Character> {
       NSString *s = [[NSString alloc] initWithCharactersNoCopy:(unichar *) &codePoint
                                                         length:1
                                                   freeWhenDone:NO];
-      NSString *s2 = AUTORELEASE([s lowercaseStringWithLocale:[NSLocale currentLocale]]);
+      NSString *s2 = [s lowercaseStringWithLocale:[NSLocale currentLocale]];
       RELEASE_(s);
       return [s2 characterAtIndex:0];
     ]-*/;
