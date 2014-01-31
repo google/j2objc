@@ -55,6 +55,7 @@ IOS_OBJS = \
 	NSObject+JavaObject.o \
 	NSString+JavaString.o \
 	java_lang_RealToString.o \
+	java_lang_StringToReal.o \
 	java/lang/reflect/ExecutableMember.o \
 	java/lang/reflect/ParameterizedTypeImpl.o \
 	java/lang/reflect/TypeVariableImpl.o
@@ -269,6 +270,7 @@ JAVA_SOURCES = \
 	java/lang/Exception.java \
 	java/lang/ExceptionInInitializerError.java \
 	java/lang/Float.java \
+	java/lang/HexStringParser.java \
 	java/lang/IllegalAccessException.java \
 	java/lang/IllegalArgumentException.java \
 	java/lang/IllegalMonitorStateException.java \
@@ -296,6 +298,7 @@ JAVA_SOURCES = \
 	java/lang/Package.java \
 	java/lang/Readable.java \
 	java/lang/RealToString.java \
+	java/lang/StringToReal.java \
 	java/lang/annotation/Documented.java \
 	java/lang/annotation/Inherited.java \
 	java/lang/annotation/Retention.java \

@@ -105,6 +105,8 @@ TEST_SOURCES = \
     libcore/icu/ICUTest.java \
     libcore/icu/LocaleDataTest.java \
     libcore/java/io/StreamTokenizerTest.java \
+    libcore/java/lang/DoubleTest.java \
+    libcore/java/lang/FloatTest.java \
     libcore/java/lang/IntegralToStringTest.java \
     libcore/java/lang/ThrowableTest.java \
     libcore/java/lang/reflect/AnnotationsTest.java \
@@ -292,6 +294,8 @@ TEST_SOURCES = \
     org/apache/harmony/luni/tests/java/util/TreeSetTest.java \
     org/apache/harmony/luni/tests/java/util/UUIDTest.java \
     org/apache/harmony/luni/tests/java/util/VectorTest.java \
+    org/apache/harmony/tests/java/lang/DoubleTest.java \
+    org/apache/harmony/tests/java/lang/FloatTest.java \
     org/apache/harmony/tests/java/io/ObjectStreamClassTest.java \
     org/apache/harmony/tests/java/io/ObjectStreamConstantsTest.java \
     org/apache/harmony/tests/java/io/ObjectStreamFieldTest.java \
@@ -336,8 +340,6 @@ TEST_SOURCES = \
 
 FAILING_TESTS = \
     libcore/java/util/TreeSetTest.java \
-    org/apache/harmony/luni/tests/java/lang/DoubleTest.java \
-    org/apache/harmony/luni/tests/java/lang/FloatTest.java \
     org/apache/harmony/luni/tests/java/lang/StrictMathTest.java \
     org/apache/harmony/luni/tests/java/lang/StringBuilderTest.java \
     org/apache/harmony/tests/java/util/regex/ModeTest.java \

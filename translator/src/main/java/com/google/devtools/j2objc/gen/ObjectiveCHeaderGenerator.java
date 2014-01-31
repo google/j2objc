@@ -620,10 +620,10 @@ public class ObjectiveCHeaderGenerator extends ObjectiveCSourceFileGenerator {
             println("-INFINITY");
           } else if (f == Float.MAX_VALUE) {
             println("__FLT_MAX__");
-          } else if (f == Float.MIN_VALUE) {
+          } else if (f == Float.MIN_NORMAL) {
             println("__FLT_MIN__");
           } else {
-            println(value.toString());
+            println(value.toString() + "f");
           }
         } else if (value instanceof Double) {
           double d = ((Double) value).doubleValue();
@@ -636,7 +636,7 @@ public class ObjectiveCHeaderGenerator extends ObjectiveCSourceFileGenerator {
             println("-INFINITY");
           } else if (d == Double.MAX_VALUE) {
             println("__DBL_MAX__");
-          } else if (d == Double.MIN_VALUE) {
+          } else if (d == Double.MIN_NORMAL) {
             println("__DBL_MIN__");
           } else {
             println(value.toString());
