@@ -508,9 +508,6 @@ public class Rewriter extends ErrorReportingASTVisitor {
       AST ast, Expression expression, ITypeBinding expressionType, IVariableBinding loopVariable,
       Statement loopBody) {
     ITypeBinding componentType = expressionType.getComponentType();
-    if (!componentType.isPrimitive()) {
-      componentType = Types.resolveIOSType("id");
-    }
     ITypeBinding iosArrayType = Types.resolveArrayType(componentType);
     PointerTypeBinding bufferType = new PointerTypeBinding(componentType);
     IVariableBinding arrayVariable = new GeneratedVariableBinding(

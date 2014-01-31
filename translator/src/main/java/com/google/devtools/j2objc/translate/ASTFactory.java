@@ -17,6 +17,7 @@ package com.google.devtools.j2objc.translate;
 import com.google.devtools.j2objc.types.IOSMethodBinding;
 import com.google.devtools.j2objc.types.IOSTypeBinding;
 import com.google.devtools.j2objc.types.NodeCopier;
+import com.google.devtools.j2objc.types.PointerTypeBinding;
 import com.google.devtools.j2objc.types.Types;
 import com.google.devtools.j2objc.util.ASTUtil;
 
@@ -385,6 +386,8 @@ public final class ASTFactory {
       type = ast.newPrimitiveType(PrimitiveType.toCode(binding.getName()));
     } else if (binding.isArray()) {
       type = ast.newArrayType(newType(ast, binding.getComponentType()));
+    } else if (binding instanceof PointerTypeBinding) {
+      type = newType(ast, ((PointerTypeBinding) binding).getPointeeType());
     } else {
       type = ast.newSimpleType(newSimpleName(ast, binding.getErasure()));
     }
