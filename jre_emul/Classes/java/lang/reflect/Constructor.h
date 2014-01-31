@@ -40,7 +40,7 @@
                  withMetadata:(JavaMethodMetadata *)metadata;
 
 // Create a new instance using this constructor.
-- (id)newInstanceWithNSObjectArray:(IOSObjectArray *)initArgs;
+- (id)newInstanceWithNSObjectArray:(IOSObjectArray *)initArgs OBJC_METHOD_FAMILY_NONE;
 
 @end
 
