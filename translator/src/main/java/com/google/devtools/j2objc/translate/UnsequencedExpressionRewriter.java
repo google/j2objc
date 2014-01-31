@@ -46,6 +46,10 @@ import org.eclipse.jdt.core.dom.PrefixExpression;
 import org.eclipse.jdt.core.dom.ReturnStatement;
 import org.eclipse.jdt.core.dom.SimpleName;
 import org.eclipse.jdt.core.dom.Statement;
+import org.eclipse.jdt.core.dom.SuperConstructorInvocation;
+import org.eclipse.jdt.core.dom.SwitchStatement;
+import org.eclipse.jdt.core.dom.SynchronizedStatement;
+import org.eclipse.jdt.core.dom.ThrowStatement;
 import org.eclipse.jdt.core.dom.VariableDeclarationExpression;
 import org.eclipse.jdt.core.dom.VariableDeclarationFragment;
 import org.eclipse.jdt.core.dom.VariableDeclarationStatement;
@@ -62,8 +66,6 @@ import java.util.Set;
  * This pass must occur after rewriting of labeled break and continue statements
  * otherwise extracted loop conditions will be out of order with the labels
  * inserted by the labeled break and continue rewriting.
- *
- * TODO(kstanger): Add support for remaining statement types.
  *
  * @author Keith Stanger
  */
@@ -149,6 +151,14 @@ public class UnsequencedExpressionRewriter extends ErrorReportingASTVisitor {
     if (!accesses.isEmpty()) {
       extractOrderedAccesses(
           stmt.getAST(), ASTUtil.asStatementList(stmt).subList(0, 0), currentTopNode, accesses);
+    }
+  }
+
+  private void visitAndExtract(Expression expr, Statement stmt) {
+    if (expr != null) {
+      newExpression(expr);
+      expr.accept(this);
+      extractUnsequenced(stmt);
     }
   }
 
@@ -460,30 +470,20 @@ public class UnsequencedExpressionRewriter extends ErrorReportingASTVisitor {
 
   @Override
   public boolean visit(ExpressionStatement node) {
-    Expression expr = node.getExpression();
-    newExpression(expr);
-    expr.accept(this);
-    extractUnsequenced(node);
+    visitAndExtract(node.getExpression(), node);
     return false;
   }
 
   @Override
   public boolean visit(ReturnStatement node) {
-    Expression expr = node.getExpression();
-    if (expr != null) {
-      newExpression(expr);
-      expr.accept(this);
-      extractUnsequenced(node);
-    }
+    visitAndExtract(node.getExpression(), node);
     return false;
   }
 
   @Override
   public boolean visit(AssertStatement node) {
     Expression expr = node.getExpression();
-    newExpression(expr);
-    expr.accept(this);
-    extractUnsequenced(node);
+    visitAndExtract(expr, node);
     Expression msg = node.getMessage();
     if (msg != null) {
       newExpression(msg);
@@ -517,11 +517,18 @@ public class UnsequencedExpressionRewriter extends ErrorReportingASTVisitor {
   }
 
   @Override
-  public boolean visit(EnhancedForStatement node) {
-    Expression expr = node.getExpression();
-    newExpression(expr);
-    expr.accept(this);
+  public boolean visit(SuperConstructorInvocation node) {
+    newExpression(node);
+    for (Expression arg : ASTUtil.getArguments(node)) {
+      arg.accept(this);
+    }
     extractUnsequenced(node);
+    return false;
+  }
+
+  @Override
+  public boolean visit(EnhancedForStatement node) {
+    visitAndExtract(node.getExpression(), node);
     node.getBody().accept(this);
     return false;
   }
@@ -530,6 +537,39 @@ public class UnsequencedExpressionRewriter extends ErrorReportingASTVisitor {
   public boolean visit(VariableDeclarationStatement node) {
     extractVariableDeclarationFragments(
         node.getAST(), ASTUtil.getFragments(node), ASTUtil.asStatementList(node).subList(0, 0));
+    return false;
+  }
+
+  @Override
+  public boolean visit(IfStatement node) {
+    visitAndExtract(node.getExpression(), node);
+    node.getThenStatement().accept(this);
+    Statement elseStmt = node.getElseStatement();
+    if (elseStmt != null) {
+      elseStmt.accept(this);
+    }
+    return false;
+  }
+
+  @Override
+  public boolean visit(SwitchStatement node) {
+    visitAndExtract(node.getExpression(), node);
+    for (Statement stmt : ASTUtil.getStatements(node)) {
+      stmt.accept(this);
+    }
+    return false;
+  }
+
+  @Override
+  public boolean visit(SynchronizedStatement node) {
+    visitAndExtract(node.getExpression(), node);
+    node.getBody().accept(this);
+    return false;
+  }
+
+  @Override
+  public boolean visit(ThrowStatement node) {
+    visitAndExtract(node.getExpression(), node);
     return false;
   }
 

@@ -178,4 +178,22 @@ public class UnsequencedExpressionRewriterTest extends GenerationTest {
         "  k = unseq$3 + i++;",
         "}");
   }
+
+  public void testIfStatement() throws IOException {
+    String translation = translateSourceFile(
+        "class Test { void test(int i) { " +
+        "if (i++ + i++ == 0) {} else if (i++ + i++ == 1) {} else {} } }",
+        "Test", "Test.m");
+    assertTranslatedLines(translation,
+        "int unseq$1 = i++;",
+        "if (unseq$1 + i++ == 0) {",
+        "}",
+        "else {",
+        "  int unseq$2 = i++;",
+        "  if (unseq$2 + i++ == 1) {",
+        "  }",
+        "  else {",
+        "  }",
+        "}");
+  }
 }
