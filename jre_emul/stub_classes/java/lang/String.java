@@ -47,6 +47,8 @@ public class String implements CharSequence, Comparable<String> {
 
   public String(byte[] bytes, int i, int j, String s) throws UnsupportedEncodingException {}
 
+  public String(byte bytes[], int offset, int length, Charset charset) {}
+
   public String(byte[] bytes, Charset cs) {}
 
   public String(byte[] bytes, String s) throws UnsupportedEncodingException {}
