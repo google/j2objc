@@ -5,6 +5,9 @@
  */
 
 package java.util.concurrent;
+
+import com.google.j2objc.annotations.AutoreleasePool;
+
 import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.security.AccessControlContext;
@@ -386,6 +389,7 @@ public class Executors {
             this.task = task;
             this.result = result;
         }
+        @AutoreleasePool
         public T call() {
             task.run();
             return result;

@@ -6,6 +6,8 @@
 
 package java.util.concurrent;
 
+import com.google.j2objc.annotations.AutoreleasePool;
+
 import java.io.Serializable;
 import java.util.Collection;
 import java.util.List;
@@ -1232,11 +1234,13 @@ public abstract class ForkJoinTask<V> implements Future<V>, Serializable {
         }
         public T getRawResult() { return result; }
         public void setRawResult(T v) { result = v; }
+        @AutoreleasePool
         public boolean exec() {
             runnable.run();
             result = resultOnCompletion;
             return true;
         }
+        @AutoreleasePool
         public void run() { invoke(); }
         private static final long serialVersionUID = 5232453952276885070L;
     }
@@ -1254,6 +1258,7 @@ public abstract class ForkJoinTask<V> implements Future<V>, Serializable {
         }
         public T getRawResult() { return result; }
         public void setRawResult(T v) { result = v; }
+        @AutoreleasePool
         public boolean exec() {
             try {
                 result = callable.call();
