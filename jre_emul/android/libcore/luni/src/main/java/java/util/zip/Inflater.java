@@ -19,6 +19,7 @@ package java.util.zip;
 
 /*-[
 #import "zlib.h"
+#import "java/io/FileInputStream.h"
 #import "java/lang/IllegalArgumentException.h"
 #import "java/lang/OutOfMemoryError.h"
 
@@ -29,8 +30,6 @@ import java.io.FileDescriptor;
 import java.util.Arrays;
 
 /**
- * Based on Android and Apache Harmony sources
- *
  * This class decompresses data that was compressed using the <i>DEFLATE</i>
  * algorithm (see <a href="http://www.gzip.org/algorithm.txt">specification</a>).
  *
@@ -57,7 +56,7 @@ import java.util.Arrays;
  * repeatedly on a temporary buffer, copying the bytes to a {@link java.io.ByteArrayOutputStream},
  * but this is probably another sign you'd be better off using {@link InflaterInputStream}.
  *
- * @author Alexander Jarvis
+ * Ported to j2objc by Alexander Jarvis
  */
 public class Inflater {
 
@@ -100,15 +99,16 @@ public class Inflater {
         zStream->zfree = Z_NULL;
         zStream->adler = 1;
 
-        if (noHeader)
+        if (noHeader) {
           wbits = wbits / -1;
+        }
 
         err = inflateInit2(zStream, wbits);
         if (err != Z_OK) {
           free(zStream);
-          @throw [[[JavaLangIllegalArgumentException alloc] init] autorelease];
+          @throw AUTORELEASE([[JavaLangIllegalArgumentException alloc] init]);
         }
-        return (long long)zStream;
+        return (long long) zStream;
     ]-*/;
 
     /**
@@ -127,7 +127,7 @@ public class Inflater {
     }
 
     private native void endImpl(long handle) /*-[
-        z_stream *zStream = (z_stream*)handle;
+        z_stream *zStream = (z_stream*) handle;
         inflateEnd(zStream);
         free(zStream);
     ]-*/;
@@ -159,7 +159,7 @@ public class Inflater {
     }
 
     private native int getAdlerImpl(long handle) /*-[
-        z_stream *zStream = (z_stream*)handle;
+        z_stream *zStream = (z_stream*) handle;
         return zStream->adler;
     ]-*/;
 
@@ -192,6 +192,15 @@ public class Inflater {
     }
 
     /**
+     * Returns the offset of the next byte to read in the underlying buffer.
+     *
+     * For internal use only.
+     */
+    synchronized int getCurrentOffset() {
+        return inRead;
+    }
+
+    /**
      * Returns the total number of bytes of input read by this {@code Inflater}. This
      * method is limited to 32 bits; use {@link #getBytesRead} instead.
      */
@@ -201,7 +210,7 @@ public class Inflater {
     }
 
     private native long getTotalInImpl(long handle) /*-[
-        z_stream *zStream = (z_stream*)handle;
+        z_stream *zStream = (z_stream*) handle;
         return zStream->total_in;
     ]-*/;
 
@@ -215,7 +224,7 @@ public class Inflater {
     }
 
     private native long getTotalOutImpl(long handle) /*-[
-        z_stream *zStream = (z_stream*)handle;
+        z_stream *zStream = (z_stream*) handle;
         return zStream->total_out;
     ]-*/;
 
@@ -265,7 +274,7 @@ public class Inflater {
 
     private native int inflateImpl(byte[] buf, int offset, int byteCount, long handle) /*-[
       char *bout = malloc(byteCount);
-      z_stream *zStream = (z_stream*)handle;
+      z_stream *zStream = (z_stream*) handle;
       int err = 0;
       int sin, sout, inBytes = 0;
 
@@ -277,33 +286,30 @@ public class Inflater {
       sout = zStream->total_out;
       [buf getBytes:bout offset:offset length:byteCount];
       if (bout == NULL) {
-        @throw [[[JavaLangOutOfMemoryError alloc] init] autorelease];
+        @throw AUTORELEASE([[JavaLangOutOfMemoryError alloc] init]);
       }
-      zStream->next_out = (Bytef *)bout;
+      zStream->next_out = (Bytef *) bout;
       err = inflate (zStream, Z_SYNC_FLUSH);
       [buf replaceBytes:bout length:byteCount offset:offset];
       free(bout);
 
-      if (err != Z_OK)
-        {
-          if(err == Z_STREAM_ERROR) {
-              return 0;
-          }
-          if (err == Z_STREAM_END || err == Z_NEED_DICT)
-            {
-              inRead_ = zStream->total_in - sin + inBytes;      // Update inRead
-              if (err == Z_STREAM_END)
-                finished__ = YES;
-              else
-                needsDictionary__ = YES;
-
-              return zStream->total_out - sout;
-            }
-          else
-            {
-              @throw [[[JavaUtilZipDataFormatException alloc] init] autorelease];
-            }
+      if (err != Z_OK) {
+        if(err == Z_STREAM_ERROR) {
+            return 0;
         }
+        if (err == Z_STREAM_END || err == Z_NEED_DICT) {
+          inRead_ = zStream->total_in - sin + inBytes;      // Update inRead
+          if (err == Z_STREAM_END) {
+            finished__ = YES;
+          } else {
+            needsDictionary__ = YES;
+          }
+
+          return zStream->total_out - sout;
+        } else {
+          @throw AUTORELEASE([[JavaUtilZipDataFormatException alloc] init]);
+        }
+      }
 
       inRead_ = zStream->total_in - sin + inBytes;
 
@@ -342,11 +348,11 @@ public class Inflater {
     }
 
     private native void resetImpl(long handle) /*-[
-      z_stream *zStream = (z_stream*)handle;
+      z_stream *zStream = (z_stream *) handle;
       int err = 0;
       err = inflateReset(zStream);
       if (err != Z_OK) {
-          @throw [[[JavaLangIllegalArgumentException alloc] init] autorelease];
+        @throw AUTORELEASE([[JavaLangIllegalArgumentException alloc] init]);
       }
     ]-*/;
 
@@ -394,23 +400,41 @@ public class Inflater {
     private native void setInputImpl(byte[] buf, int offset, int byteCount, long handle) /*-[
       char *in = malloc(byteCount);
       char *baseAddr;
-      z_stream *zStream = (z_stream*)handle;
+      z_stream *zStream = (z_stream *) handle;
 
       baseAddr = malloc(byteCount);
-      if (baseAddr == NULL)
-        {
-          @throw [[[JavaLangOutOfMemoryError alloc] init] autorelease];
-        }
-      zStream->next_in = (Bytef *)baseAddr;
+      if (baseAddr == NULL) {
+        @throw AUTORELEASE([[JavaLangOutOfMemoryError alloc] init]);
+      }
+      zStream->next_in = (Bytef *) baseAddr;
       zStream->avail_in = byteCount;
       [buf getBytes:in offset:offset length:byteCount];
       if (in == NULL) {
-        @throw [[[JavaLangOutOfMemoryError alloc] init] autorelease];
+        @throw AUTORELEASE([[JavaLangOutOfMemoryError alloc] init]);
       }
-      memcpy(baseAddr, (Bytef *)in, byteCount);
+      memcpy(baseAddr, (Bytef *) in, byteCount);
       [buf replaceBytes:in length:offset offset:byteCount];
       free(in);
-      return;
+    ]-*/;
+
+    synchronized int setFileInput(FileDescriptor fd, long offset, int byteCount) {
+        checkOpen();
+        inRead = 0;
+        inLength = setFileInputImpl(fd, offset, byteCount, streamHandle);
+        return inLength;
+    }
+
+    private native int setFileInputImpl(FileDescriptor fd, long offset, int byteCount,
+        long handle) /*-[
+      JavaIoFileInputStream *fileIn =
+          [[JavaIoFileInputStream alloc] initWithJavaIoFileDescriptor:fd];
+      [fileIn skipWithLong:offset];
+      IOSByteArray *in = [IOSByteArray arrayWithLength:byteCount];
+      [fileIn readWithByteArray:in withInt:0 withInt:byteCount];
+      [self setInputImplWithByteArray:in withInt:0 withInt:byteCount withLong:handle];
+      [fileIn close];
+      RELEASE_(fileIn);
+      return byteCount;
     ]-*/;
 
     private void checkOpen() {

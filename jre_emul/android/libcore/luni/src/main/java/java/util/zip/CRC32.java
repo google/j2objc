@@ -24,12 +24,10 @@ package java.util.zip;
 import java.util.Arrays;
 
 /**
- * Based on Android and Apache Harmony sources
- *
  * The CRC32 class is used to compute a CRC32 checksum from data provided as
  * input value. See also {@link Adler32} which is almost as good, but cheaper.
  *
- * @author Alexander Jarvis
+ * Ported to j2objc by Alexander Jarvis
  */
 public class CRC32 implements Checksum {
 
@@ -85,14 +83,7 @@ public class CRC32 implements Checksum {
     }
 
     private native long updateImpl(byte[] buf, int offset, int byteCount, long crc1) /*-[
-        char *buffer = malloc(byteCount);
-        [buf getBytes:buffer offset:offset length:byteCount];
-        if (buffer == NULL) {
-            return -1;
-        }
-        long long int result = crc32((uLong)crc1, (Bytef *)buffer, (uInt)byteCount);
-        free(buffer);
-        return result;
+        return crc32((uLong) crc1, (Bytef *) (buf->buffer_ + offset), (uInt) byteCount);
     ]-*/;
 
     private native long updateByteImpl(byte val, long crc1) /*-[

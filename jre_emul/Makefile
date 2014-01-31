@@ -618,12 +618,21 @@ JAVA_SOURCES = \
 	java/util/regex/Pattern.java \
 	java/util/regex/PatternSyntaxException.java \
 	java/util/regex/Splitter.java \
+	java/util/zip/Adler32.java \
+	java/util/zip/CheckedInputStream.java \
+	java/util/zip/CheckedOutputStream.java \
 	java/util/zip/Checksum.java \
 	java/util/zip/CRC32.java \
 	java/util/zip/DataFormatException.java \
 	java/util/zip/GZIPInputStream.java \
 	java/util/zip/Inflater.java \
 	java/util/zip/InflaterInputStream.java \
+	java/util/zip/InflaterOutputStream.java \
+	java/util/zip/ZipConstants.java \
+	java/util/zip/ZipEntry.java \
+	java/util/zip/ZipException.java \
+	java/util/zip/ZipFile.java \
+	java/util/zip/ZipInputStream.java \
 	javax/xml/XMLConstants.java \
 	javax/xml/parsers/FactoryConfigurationError.java \
 	javax/xml/parsers/FilePathToURI.java \
@@ -642,7 +651,9 @@ JAVA_SOURCES = \
 	libcore/icu/TimeZoneNames.java \
 	libcore/icu/TimeZones.java \
 	libcore/internal/StringPool.java \
+	libcore/io/BufferIterator.java \
 	libcore/io/ErrnoException.java \
+	libcore/io/HeapBufferIterator.java \
 	libcore/io/IoBridge.java \
 	libcore/io/IoUtils.java \
 	libcore/io/Libcore.java \
@@ -651,6 +662,7 @@ JAVA_SOURCES = \
 	libcore/io/OsConstants.java \
 	libcore/io/Posix.java \
 	libcore/io/SizeOf.java \
+	libcore/io/Streams.java \
 	libcore/io/StructStat.java \
 	libcore/math/MathUtils.java \
 	libcore/net/UriCodec.java \
