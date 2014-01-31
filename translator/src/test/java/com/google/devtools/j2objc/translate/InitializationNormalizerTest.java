@@ -225,7 +225,7 @@ public class InitializationNormalizerTest extends GenerationTest {
 
   public void testStringWithInvalidCppCharacters() throws IOException {
     String source = "class Test { static final String foo = \"\\uffff\"; }";
-    String translation = translateSourceFile(source, "Test", "test.m");
+    String translation = translateSourceFile(source, "Test", "Test.m");
     assertTranslation(translation, "static NSString * Test_foo_;");
     assertTranslation(translation,
         "JreOperatorRetainedAssign(&Test_foo_, nil, [NSString stringWithCharacters:(unichar[]) { "
@@ -234,7 +234,7 @@ public class InitializationNormalizerTest extends GenerationTest {
 
   public void testStringConcatWithInvalidCppCharacters() throws IOException {
     String source = "class Test { static final String foo = \"hello\" + \"\\uffff\"; }";
-    String translation = translateSourceFile(source, "Test", "test.m");
+    String translation = translateSourceFile(source, "Test", "Test.m");
     assertTranslation(translation, "static NSString * Test_foo_;");
     assertTranslation(translation,
         "JreOperatorRetainedAssign(&Test_foo_, nil, [NSString stringWithFormat:@\"hello%@\", "

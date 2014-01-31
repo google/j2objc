@@ -434,7 +434,7 @@ public class RewriterTest extends GenerationTest {
 
   public void testAdditionWithinStringConcatenation() throws IOException {
     String translation = translateSourceFile(
-        "class Test { void test() { String s = 1 + 2.3f + \"foo\"; } }", "Test", "test.m");
+        "class Test { void test() { String s = 1 + 2.3f + \"foo\"; } }", "Test", "Test.m");
     assertTranslation(translation,
         "NSString *s = [NSString stringWithFormat:@\"%ffoo\", 1 + 2.3f]");
   }

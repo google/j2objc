@@ -374,14 +374,14 @@ public class AutoboxerTest extends GenerationTest {
   public void testStringConcatenation() throws IOException {
     String translation = translateSourceFile(
         "class Test { void test() { Boolean b = Boolean.TRUE; Integer i = new Integer(3); " +
-        "String s = b + \"foo\" + i; } }", "Test", "test.m");
+        "String s = b + \"foo\" + i; } }", "Test", "Test.m");
     assertTranslation(translation, "NSString *s = [NSString stringWithFormat:@\"%@foo%@\", b, i]");
   }
 
   public void testExtendedOperandsAreUnboxed() throws IOException {
     String translation = translateSourceFile(
         "class Test { void test() { Integer i1 = new Integer(2); Integer i2 = new Integer(3); " +
-        "int i3 = 1 + 2 + i1 + i2; } }", "Test", "test.m");
+        "int i3 = 1 + 2 + i1 + i2; } }", "Test", "Test.m");
     assertTranslation(translation, "int i3 = 1 + 2 + [i1 intValue] + [i2 intValue]");
   }
 
