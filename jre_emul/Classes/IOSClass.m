@@ -36,6 +36,7 @@
 #import "java/lang/reflect/Field.h"
 #import "java/lang/reflect/Method.h"
 #import "java/lang/reflect/Modifier.h"
+#import "java/util/Properties.h"
 #import "IOSArray.h"
 #import "IOSArrayClass.h"
 #import "IOSBooleanArray.h"
@@ -78,6 +79,11 @@ static IOSClass *IOSClass_stringClass;
 static IOSClass *FetchClass(Class cls);
 static IOSClass *FetchProtocol(Protocol *protocol);
 static IOSClass *FetchArray(IOSClass *componentType);
+
+#define PREFIX_MAPPING_RESOURCE @"prefixes.properties"
+
+// Package to prefix mappings, initialized in FindMappedClass().
+static JavaUtilProperties *prefixMapping;
 
 - (id)init {
   if ((self = [super init])) {
@@ -405,12 +411,40 @@ static IOSClass *ClassForIosName(NSString *iosName) {
   return nil;
 }
 
+static IOSClass *FindMappedClass(NSString *name) {
+  static dispatch_once_t once;
+  dispatch_once(&once, ^{
+    prefixMapping = [[JavaUtilProperties alloc] init];
+    JavaIoInputStream *prefixesResource =
+        [IOSClass_objectClass getResourceAsStream:PREFIX_MAPPING_RESOURCE];
+    if (prefixesResource) {
+      [prefixMapping load__WithJavaIoInputStream:prefixesResource];
+    }
+  });
+  NSRange lastDot = [name rangeOfString:@"." options:NSBackwardsSearch];
+  if (lastDot.location == NSNotFound) {
+    return nil;   // No package in class name.
+  }
+  NSString *package = [name substringToIndex:lastDot.location];
+  NSString *prefix = [prefixMapping getPropertyWithNSString:package];
+  if (!prefix) {
+    return nil;   // No prefix for package.
+  }
+  NSString *mappedName =
+      [prefix stringByAppendingString:[name substringFromIndex:lastDot.location + 1]];
+  return ClassForIosName(mappedName);
+}
+
 + (IOSClass *)classForIosName:(NSString *)iosName {
   return ClassForIosName(iosName);
 }
 
 static IOSClass *ClassForJavaName(NSString *name) {
-  return ClassForIosName(IOSClass_JavaToIOSName(name));
+  IOSClass *cls = ClassForIosName(IOSClass_JavaToIOSName(name));
+  if (!cls) {
+    cls = FindMappedClass(name);
+  }
+  return cls;
 }
 
 static IOSClass *IOSClass_PrimitiveClassForChar(unichar c) {
