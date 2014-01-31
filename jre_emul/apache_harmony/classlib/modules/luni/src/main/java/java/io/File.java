@@ -468,8 +468,12 @@ public class File implements Serializable, Comparable<File> {
      * @see java.lang.SecurityManager#checkPropertyAccess
      */
     public String getCanonicalPath() throws IOException {
-        return getAbsolutePath();
+        return realpath(getAbsolutePath());
     }
+
+    private static native String realpath(String path) /*-[
+        return [path stringByStandardizingPath];
+    ]-*/;
 
     /*
      * Resolve symbolic links in the parent directories.
@@ -1108,31 +1112,28 @@ public class File implements Serializable, Comparable<File> {
         if (0 == path.length()) {
             throw new IOException("No such file or directory");
         }
-        int result = newFileImpl(properPath(true));
-        switch (result) {
-            case 0:
-                return true;
-            case 1:
-                return false;
-            default:
-                throw new IOException("Cannot create: " + path);
+        if (!isDirectory()) {  // true for paths like "dir/..", which can't be files.
+          int result = newFileImpl(properPath(true));
+          switch (result) {
+              case 0:
+                  return true;
+              case 1:
+                  return false;
+          }
         }
+        throw new IOException("Cannot create: " + path);
     }
 
     private native int newFileImpl(String filePath) /*-[
-      if ([self existsImplWithNSString:filePath]) {
-        return 1;
-      }
-      if ([[NSFileManager defaultManager] createFileAtPath:filePath
-                                                  contents:[NSData data]
-                                                attributes:nil]) {
+      const char *cPath = [[filePath stringByStandardizingPath] UTF8String];
+      int result = open(cPath, O_CREAT | O_EXCL, 0777);
+      if (result >= 0) {
         return 0;
       }
-      NSException *e = [[JavaIoIOException alloc] init];
-#if ! __has_feature(objc_arc)
-      [e autorelease];
-#endif
-      @throw e;
+      if (result == -1 && errno == EEXIST) {
+        return 1;
+      }
+      @throw AUTORELEASE([[JavaIoIOException alloc] init]);
     ]-*/;
 
     /**
