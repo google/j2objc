@@ -228,9 +228,9 @@ public class Rewriter extends ErrorReportingASTVisitor {
     IMethodBinding binding = Types.getMethodBinding(node);
 
     if (BindingUtil.hasAnnotation(binding, AutoreleasePool.class)) {
-      if (!Types.isVoidType(binding.getReturnType())) {
+      if (!binding.getReturnType().isPrimitive()) {
         J2ObjC.warning(
-            "Warning: Ignoring AutoreleasePool annotation on method with non-void return type");
+            "Warning: Ignoring AutoreleasePool annotation on method with retainable return type");
       } else if (node.getBody() != null) {
         Types.addAutoreleasePool(node.getBody());
       }
