@@ -106,6 +106,7 @@ TEST_SOURCES = \
     libcore/icu/LocaleDataTest.java \
     libcore/java/io/StreamTokenizerTest.java \
     libcore/java/lang/DoubleTest.java \
+    libcore/java/lang/CharacterTest.java \
     libcore/java/lang/FloatTest.java \
     libcore/java/lang/IntegralToStringTest.java \
     libcore/java/lang/ThrowableTest.java \
@@ -294,12 +295,13 @@ TEST_SOURCES = \
     org/apache/harmony/luni/tests/java/util/TreeSetTest.java \
     org/apache/harmony/luni/tests/java/util/UUIDTest.java \
     org/apache/harmony/luni/tests/java/util/VectorTest.java \
-    org/apache/harmony/tests/java/lang/DoubleTest.java \
-    org/apache/harmony/tests/java/lang/FloatTest.java \
     org/apache/harmony/tests/java/io/ObjectStreamClassTest.java \
     org/apache/harmony/tests/java/io/ObjectStreamConstantsTest.java \
     org/apache/harmony/tests/java/io/ObjectStreamFieldTest.java \
     org/apache/harmony/tests/java/io/RandomAccessFileTest.java \
+    org/apache/harmony/tests/java/lang/CharacterTest.java \
+    org/apache/harmony/tests/java/lang/DoubleTest.java \
+    org/apache/harmony/tests/java/lang/FloatTest.java \
     org/apache/harmony/tests/java/math/BigIntegerAddTest.java \
     org/apache/harmony/tests/java/math/BigIntegerAndTest.java \
     org/apache/harmony/tests/java/math/BigIntegerCompareTest.java \
