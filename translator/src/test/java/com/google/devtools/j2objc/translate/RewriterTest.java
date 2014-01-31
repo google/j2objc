@@ -559,7 +559,8 @@ public class RewriterTest extends GenerationTest {
         "return (object == this) || (object instanceof Test) && (i == ((Test) object).i); } }",
         "Test", "Test.m");
     assertTranslatedLines(translation, "(object == self) || " +
-        "(([object isKindOfClass:[Test class]]) && (i_ == ((Test *) nil_chk(object))->i_));");
+        "(([object isKindOfClass:[Test class]]) && (i_ == ((Test *) nil_chk(((Test *) " +
+        "check_class_cast(object, [Test class]))))->i_));");
   }
 
   // Objective-C requires that bit-wise and tests be surrounded by parens when mixed with or tests.
