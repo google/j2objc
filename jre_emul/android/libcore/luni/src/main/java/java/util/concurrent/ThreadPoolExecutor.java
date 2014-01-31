@@ -6,6 +6,8 @@
 
 package java.util.concurrent;
 
+import com.google.j2objc.annotations.AutoreleasePool;
+
 import java.util.concurrent.locks.*;
 import java.util.concurrent.atomic.*;
 import java.util.*;
@@ -1078,7 +1080,7 @@ public class ThreadPoolExecutor extends AbstractExecutorService {
                     beforeExecute(w.thread, task);
                     Throwable thrown = null;
                     try {
-                        task.run();
+                        runTask(task);
                     } catch (RuntimeException x) {
                         thrown = x; throw x;
                     } catch (Error x) {
@@ -1098,6 +1100,11 @@ public class ThreadPoolExecutor extends AbstractExecutorService {
         } finally {
             processWorkerExit(w, completedAbruptly);
         }
+    }
+
+    @AutoreleasePool
+    private void runTask(Runnable task) {
+      task.run();
     }
 
     // Public constructors and methods
