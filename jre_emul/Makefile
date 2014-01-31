@@ -624,15 +624,21 @@ JAVA_SOURCES = \
 	java/util/zip/Checksum.java \
 	java/util/zip/CRC32.java \
 	java/util/zip/DataFormatException.java \
+	java/util/zip/Deflater.java \
+	java/util/zip/DeflaterInputStream.java \
+	java/util/zip/DeflaterOutputStream.java \
 	java/util/zip/GZIPInputStream.java \
+	java/util/zip/GZIPOutputStream.java \
 	java/util/zip/Inflater.java \
 	java/util/zip/InflaterInputStream.java \
 	java/util/zip/InflaterOutputStream.java \
 	java/util/zip/ZipConstants.java \
 	java/util/zip/ZipEntry.java \
+	java/util/zip/ZipError.java \
 	java/util/zip/ZipException.java \
 	java/util/zip/ZipFile.java \
 	java/util/zip/ZipInputStream.java \
+	java/util/zip/ZipOutputStream.java \
 	javax/xml/XMLConstants.java \
 	javax/xml/parsers/FactoryConfigurationError.java \
 	javax/xml/parsers/FilePathToURI.java \

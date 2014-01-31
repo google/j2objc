@@ -91,19 +91,12 @@ public class Inflater {
 
     private native long createStream(boolean noHeader) /*-[
         z_stream *zStream = malloc(sizeof(z_stream));
-        int err = 0;
-        int wbits = DEF_WBITS;
-
         zStream->opaque = Z_NULL;
         zStream->zalloc = Z_NULL;
         zStream->zfree = Z_NULL;
         zStream->adler = 1;
 
-        if (noHeader) {
-          wbits = wbits / -1;
-        }
-
-        err = inflateInit2(zStream, wbits);
+        int err = inflateInit2(zStream, noHeader ? -DEF_WBITS : DEF_WBITS);
         if (err != Z_OK) {
           free(zStream);
           @throw AUTORELEASE([[JavaLangIllegalArgumentException alloc] init]);
@@ -375,7 +368,14 @@ public class Inflater {
         setDictionaryImpl(dictionary, offset, byteCount, streamHandle);
     }
 
-    private native void setDictionaryImpl(byte[] dictionary, int offset, int byteCount, long handle);
+    private native void setDictionaryImpl(byte[] buf, int offset, int byteCount, long handle) /*-[
+        z_stream *zStream = (z_stream*) handle;
+        const Bytef *dictionary = (const Bytef *) [buf byteRefAtIndex:offset];
+        int err = inflateSetDictionary(zStream, dictionary, byteCount);
+        if (err != Z_OK) {
+          @throw AUTORELEASE([[JavaLangIllegalArgumentException alloc] init]);
+        }
+    ]-*/;
 
     /**
      * Sets the current input to to be decompressed. This method should only be
