@@ -1271,6 +1271,7 @@ public abstract class ForkJoinTask<V> implements Future<V>, Serializable {
                 throw new RuntimeException(ex);
             }
         }
+        @AutoreleasePool
         public void run() { invoke(); }
         private static final long serialVersionUID = 2838392045355241008L;
     }
