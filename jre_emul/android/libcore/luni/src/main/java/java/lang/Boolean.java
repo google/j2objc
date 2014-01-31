@@ -26,6 +26,8 @@ import java.io.Serializable;
  */
 public final class Boolean implements Serializable, Comparable<Boolean> {
 
+    private static final long serialVersionUID = -3665804199014368530L;
+
     /**
      * The boolean value of the receiver.
      */
@@ -36,10 +38,9 @@ public final class Boolean implements Serializable, Comparable<Boolean> {
      * boolean}.
      */
     @SuppressWarnings("unchecked")
-    public static final Class<Boolean> TYPE = (Class<Boolean>) new boolean[0]
-            .getClass().getComponentType();
-
-    // Note: This can't be set to "boolean.class", since *that* is
+    public static final Class<Boolean> TYPE
+             = (Class<Boolean>) boolean[].class.getComponentType();
+    // Note: Boolean.TYPE can't be set to "boolean.class", since *that* is
     // defined to be "java.lang.Boolean.TYPE";
 
     /**
@@ -100,9 +101,9 @@ public final class Boolean implements Serializable, Comparable<Boolean> {
      *         {@code Boolean}; {@code false} otherwise.
      */
     @Override
+    //@FindBugsSuppressWarnings("RC_REF_COMPARISON_BAD_PRACTICE_BOOLEAN")
     public boolean equals(Object o) {
-        return (o == this)
-                || ((o instanceof Boolean) && (value == ((Boolean) o).value));
+        return (o == this) || ((o instanceof Boolean) && (((Boolean) o).value == value));
     }
 
     /**
@@ -120,15 +121,7 @@ public final class Boolean implements Serializable, Comparable<Boolean> {
      * @since 1.5
      */
     public int compareTo(Boolean that) {
-        if (that == null) {
-            throw new NullPointerException();
-        }
-
-        if (this.value == that.value) {
-            return 0;
-        }
-
-        return this.value ? 1 : -1;
+        return compare(value, that.value);
     }
 
     /**
@@ -176,10 +169,10 @@ public final class Boolean implements Serializable, Comparable<Boolean> {
      * @see System#getProperty(String)
      */
     public static boolean getBoolean(String string) {
-      if (string == null || string.length() == 0) {
-        return false;
-      }
-      return (parseBoolean(System.getProperty(string)));
+        if (string == null || string.length() == 0) {
+            return false;
+        }
+        return (parseBoolean(System.getProperty(string)));
     }
 
     /**
@@ -193,7 +186,7 @@ public final class Boolean implements Serializable, Comparable<Boolean> {
      * @since 1.5
      */
     public static boolean parseBoolean(String s) {
-        return "true".equalsIgnoreCase(s); //$NON-NLS-1$
+        return "true".equalsIgnoreCase(s);
     }
 
     /**
