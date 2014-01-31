@@ -34,14 +34,19 @@ import org.eclipse.jdt.core.dom.FieldDeclaration;
 import org.eclipse.jdt.core.dom.IMethodBinding;
 import org.eclipse.jdt.core.dom.ITypeBinding;
 import org.eclipse.jdt.core.dom.IVariableBinding;
+import org.eclipse.jdt.core.dom.Javadoc;
 import org.eclipse.jdt.core.dom.MethodDeclaration;
 import org.eclipse.jdt.core.dom.Modifier;
 import org.eclipse.jdt.core.dom.SingleVariableDeclaration;
+import org.eclipse.jdt.core.dom.TagElement;
+import org.eclipse.jdt.core.dom.TextElement;
 import org.eclipse.jdt.core.dom.TypeDeclaration;
 import org.eclipse.jdt.core.dom.VariableDeclarationFragment;
 
+import java.text.BreakIterator;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Locale;
 
 /**
  * Generates source files from AST types.  This class handles common actions
@@ -380,5 +385,120 @@ public abstract class ObjectiveCSourceFileGenerator extends SourceFileGenerator 
     if (Options.generateDeprecatedDeclarations()) {
       printf("#pragma clang diagnostic pop\n");
     }
+  }
+
+  @SuppressWarnings("unchecked")
+  protected void printDocComment(Javadoc javadoc) {
+    if (javadoc != null) {
+      newline();
+      printIndent();
+      println("/**");
+      List<TagElement> tags = javadoc.tags();
+      for (TagElement tag : tags) {
+
+        if (tag.getTagName() == null) {
+          // Description section.
+          StringBuilder sb = new StringBuilder();
+
+          // Each fragment is a source line, stripped of leading asterisk and trimmed.
+          List<?> fragments = tag.fragments();
+          for (Object fragment : fragments) {
+            if (fragment instanceof TextElement) {
+              if (sb.length() > 0) {
+                sb.append(' ');
+              }
+              sb.append((TextElement) fragment);
+            } else {
+              sb.append(printJavadocTag((TagElement) fragment));
+            }
+          }
+
+          // Extract first sentence from description.
+          String description = sb.toString();
+          sb = new StringBuilder();
+          BreakIterator iterator = BreakIterator.getSentenceInstance(Locale.US);
+          iterator.setText(description.toString());
+          int start = iterator.first();
+          int end = iterator.next();
+          if (end != BreakIterator.DONE) {
+            // Print brief tag first, since Quick Help shows it first. This makes the
+            // generated source easier to review.
+            printDocLine(String.format("@brief %s", description.substring(start, end)));
+            String remainder = description.substring(end).trim();
+            if (!remainder.isEmpty()) {
+              printDocLine(remainder);
+            }
+          } else {
+            printDocLine(description.trim());
+          }
+        } else {
+          String doc = printJavadocTag(tag);
+          if (!doc.isEmpty()) {
+            printDocLine(doc);
+          }
+        }
+      }
+      printIndent();
+      println(" */");
+    }
+  }
+
+  private void printDocLine(String line) {
+    printIndent();
+    print(' ');
+    println(line);
+  }
+
+  private String printJavadocTag(TagElement tag) {
+    String tagName = tag.getTagName();
+    // Xcode 5 compatible tags.
+    if (tagName.equals(TagElement.TAG_AUTHOR) ||
+        tagName.equals(TagElement.TAG_EXCEPTION) ||
+        tagName.equals(TagElement.TAG_PARAM) ||
+        tagName.equals(TagElement.TAG_RETURN) ||
+        tagName.equals(TagElement.TAG_SINCE) ||
+        tagName.equals(TagElement.TAG_THROWS) ||
+        tagName.equals(TagElement.TAG_VERSION)) {
+      return String.format("%s %s", tagName, printTagFragments(tag.fragments()));
+    }
+
+    if (tagName.equals(TagElement.TAG_DEPRECATED)) {
+      // Deprecated annotation translated instead.
+      return "";
+    }
+
+    if (tagName.equals(TagElement.TAG_SEE)) {
+      // TODO(tball): implement @see when Xcode quick help links are documented.
+      return "";
+    }
+
+    if (tagName.equals(TagElement.TAG_CODE)) {
+      return String.format("<code>%s</code>", printTagFragments(tag.fragments()));
+    }
+
+    // Remove tag, but return any text it has.
+    return printTagFragments(tag.fragments());
+  }
+
+  private String printTagFragments(List<?> fragments) {
+    StringBuilder sb = new StringBuilder();
+    for (Object fragment : fragments) {
+      if (fragment instanceof TextElement) {
+        if (sb.length() > 0) {
+          sb.append(' ');
+        }
+        String text = escapeDocText(((TextElement) fragment).getText());
+        sb.append(text);
+      } else if (fragment instanceof TagElement) {
+        sb.append(printJavadocTag((TagElement) fragment));
+      } else {
+        sb.append(escapeDocText(fragment.toString()));
+      }
+    }
+    return sb.toString().trim();
+  }
+
+  private String escapeDocText(String text) {
+    return text.replace("@", "@@").replace("/*", "/\\*");
   }
 }
