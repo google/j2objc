@@ -17,6 +17,9 @@
 
 package java.net;
 
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.io.UnsupportedEncodingException;
 import java.util.StringTokenizer;
@@ -1711,16 +1714,14 @@ public final class URI implements Comparable<URI>, Serializable {
      *             if an error occurs while creating the URL or no protocol
      *             handler could be found.
      *
-     TODO(tball): enable when URL is implemented.
+     */
     public URL toURL() throws MalformedURLException {
         if (!absolute) {
             throw new IllegalArgumentException("URI is not absolute" + ": " + toString());
         }
         return new URL(toString());
     }
-    */
 
-    /*
     private void readObject(ObjectInputStream in) throws IOException,
             ClassNotFoundException {
         in.defaultReadObject();
@@ -1737,5 +1738,4 @@ public final class URI implements Comparable<URI>, Serializable {
         toString();
         out.defaultWriteObject();
     }
-    */
 }
