@@ -255,6 +255,10 @@ public class Options {
         buildClosure = true;
       } else if (arg.equals("--extract-unsequenced")) {
         extractUnsequencedModifications = true;
+      } else if (arg.equals("--doc-comments")) {
+        // BodyDeclaration.getJavadoc() always returns null without this option enabled,
+        // so by default no doc comments are generated.
+        compilerOptions.put(org.eclipse.jdt.core.JavaCore.COMPILER_DOC_COMMENT_SUPPORT, "enabled");
       } else if (arg.startsWith("-h") || arg.equals("--help")) {
         help(false);
       } else if (arg.startsWith("-")) {

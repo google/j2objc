@@ -44,6 +44,7 @@ import org.eclipse.jdt.core.dom.IExtendedModifier;
 import org.eclipse.jdt.core.dom.IMethodBinding;
 import org.eclipse.jdt.core.dom.ITypeBinding;
 import org.eclipse.jdt.core.dom.IVariableBinding;
+import org.eclipse.jdt.core.dom.Javadoc;
 import org.eclipse.jdt.core.dom.MethodDeclaration;
 import org.eclipse.jdt.core.dom.Modifier;
 import org.eclipse.jdt.core.dom.Name;
@@ -120,6 +121,7 @@ public class ObjectiveCHeaderGenerator extends ObjectiveCSourceFileGenerator {
 
     printConstantDefines(node);
 
+    printDocComment(node.getJavadoc());
     if (needsDeprecatedAttribute(ASTUtil.getModifiers(node))) {
       println(DEPRECATED_ATTRIBUTE);
     }
@@ -400,6 +402,12 @@ public class ObjectiveCHeaderGenerator extends ObjectiveCSourceFileGenerator {
   }
 
   @Override
+  protected void printMethod(MethodDeclaration m) {
+    printDocComment(m.getJavadoc());
+    super.printMethod(m);
+  }
+
+  @Override
   protected void printNormalMethod(MethodDeclaration m) {
     IMethodBinding binding = Types.getMethodBinding(m);
     if (!binding.isSynthetic()) {
@@ -470,6 +478,7 @@ public class ObjectiveCHeaderGenerator extends ObjectiveCSourceFileGenerator {
           println(" @public");
           first = false;
         }
+        printDocComment(field.getJavadoc());
         printIndent();
         if (BindingUtil.isWeakReference(Types.getVariableBinding(var))) {
           // We must add this even without -use-arc because the header may be
