@@ -307,15 +307,8 @@ public final class Float extends Number implements Comparable<Float> {
      * @since 1.2
      */
     public static float parseFloat(String string) throws NumberFormatException {
-      if (!string.matches(Double.FLOATING_POINT_REGEX)) {
-        throw new NumberFormatException(string);
-      }
-      return nativeParseFloat(string);
+        return StringToReal.parseFloat(string);
     }
-
-    private native static float nativeParseFloat(String s) /*-[
-      return [s floatValue];
-    ]-*/;
 
     @Override
     public short shortValue() {

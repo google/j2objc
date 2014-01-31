@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.apache.harmony.luni.tests.java.lang;
+package org.apache.harmony.tests.java.lang;
 
 import java.util.Locale;
 
@@ -203,7 +203,7 @@ public class DoubleTest extends TestCase {
     }
 
     /**
-     * @tests java.lang.Double#Double(double)
+     * java.lang.Double#Double(double)
      */
     public void test_ConstructorD() {
         Double d = new Double(39089.88888888888888888888888888888888);
@@ -212,7 +212,7 @@ public class DoubleTest extends TestCase {
     }
 
     /**
-     * @tests java.lang.Double#Double(java.lang.String)
+     * java.lang.Double#Double(java.lang.String)
      */
     public void test_ConstructorLjava_lang_String() {
         Double d = new Double("39089.88888888888888888888888888888888");
@@ -226,14 +226,14 @@ public class DoubleTest extends TestCase {
         } catch (NumberFormatException e) {
             // expected
         }
-        
+
         // Regression test for HARMONY-329
         d = Double.parseDouble("-1.233999999999999965116738099630936817275852021384209929081813042837802886790127428328465579708849276001782791006814286802871737087810957327493372866733334925806221045495205250590286471187577636646208155890426896101636282423463443661040209738873506655844025580428394216030152374941053494694642722606658935546875E-112");
         assertEquals("Failed to parse long string", -1.234E-112D, d.doubleValue(), 0D);
     }
 
     /**
-     * @tests java.lang.Double#byteValue()
+     * java.lang.Double#byteValue()
      */
     public void test_byteValue() {
         Double d = new Double(1923311.47712);
@@ -241,8 +241,8 @@ public class DoubleTest extends TestCase {
     }
 
     /**
-     * @tests java.lang.Double#compareTo(java.lang.Double)
-     * @tests java.lang.Double#compare(double, double)
+     * java.lang.Double#compareTo(java.lang.Double)
+     * java.lang.Double#compare(double, double)
      */
     public void test_compare() {
         double[] values = new double[] { Double.NEGATIVE_INFINITY, -Double.MAX_VALUE, -2d,
@@ -275,7 +275,7 @@ public class DoubleTest extends TestCase {
     }
 
     /**
-     * @tests java.lang.Double#doubleToLongBits(double)
+     * java.lang.Double#doubleToLongBits(double)
      */
     public void test_doubleToLongBitsD() {
         // Test for method long java.lang.Double.doubleToLongBits(double)
@@ -287,7 +287,7 @@ public class DoubleTest extends TestCase {
     }
 
     /**
-     * @tests java.lang.Double#doubleToRawLongBits(double)
+     * java.lang.Double#doubleToRawLongBits(double)
      */
     public void test_doubleToRawLongBitsD() {
         long l = 0x7ff80000000004d2L;
@@ -296,7 +296,7 @@ public class DoubleTest extends TestCase {
     }
 
     /**
-     * @tests java.lang.Double#doubleValue()
+     * java.lang.Double#doubleValue()
      */
     public void test_doubleValue() {
         assertEquals("Incorrect double value returned", 999999999999999.9999999999999,
@@ -304,7 +304,7 @@ public class DoubleTest extends TestCase {
     }
 
     /**
-     * @tests java.lang.Double#floatValue()
+     * java.lang.Double#floatValue()
      */
     public void test_floatValue() {
         // Test for method float java.lang.Double.floatValue()
@@ -315,7 +315,7 @@ public class DoubleTest extends TestCase {
     }
 
     /**
-     * @tests java.lang.Double#hashCode()
+     * java.lang.Double#hashCode()
      */
     public void test_hashCode() {
         // Test for method int java.lang.Double.hashCode()
@@ -333,7 +333,7 @@ public class DoubleTest extends TestCase {
     }
 
     /**
-     * @tests java.lang.Double#intValue()
+     * java.lang.Double#intValue()
      */
     public void test_intValue() {
         // Test for method int java.lang.Double.intValue()
@@ -342,7 +342,7 @@ public class DoubleTest extends TestCase {
     }
 
     /**
-     * @tests java.lang.Double#isInfinite()
+     * java.lang.Double#isInfinite()
      */
     public void test_isInfinite() {
         // Test for method boolean java.lang.Double.isInfinite()
@@ -354,7 +354,7 @@ public class DoubleTest extends TestCase {
     }
 
     /**
-     * @tests java.lang.Double#isInfinite(double)
+     * java.lang.Double#isInfinite(double)
      */
     public void test_isInfiniteD() {
         // Test for method boolean java.lang.Double.isInfinite(double)
@@ -364,7 +364,7 @@ public class DoubleTest extends TestCase {
     }
 
     /**
-     * @tests java.lang.Double#isNaN()
+     * java.lang.Double#isNaN()
      */
     public void test_isNaN() {
         // Test for method boolean java.lang.Double.isNaN()
@@ -375,7 +375,7 @@ public class DoubleTest extends TestCase {
     }
 
     /**
-     * @tests java.lang.Double#isNaN(double)
+     * java.lang.Double#isNaN(double)
      */
     public void test_isNaND() {
         // Test for method boolean java.lang.Double.isNaN(double)
@@ -385,7 +385,7 @@ public class DoubleTest extends TestCase {
     }
 
     /**
-     * @tests java.lang.Double#longBitsToDouble(long)
+     * java.lang.Double#longBitsToDouble(long)
      */
     public void test_longBitsToDoubleJ() {
         // Test for method double java.lang.Double.longBitsToDouble(long)
@@ -398,7 +398,7 @@ public class DoubleTest extends TestCase {
     }
 
     /**
-     * @tests java.lang.Double#longValue()
+     * java.lang.Double#longValue()
      */
     public void test_longValue() {
         // Test for method long java.lang.Double.longValue()
@@ -407,7 +407,7 @@ public class DoubleTest extends TestCase {
     }
 
     /**
-     * @tests java.lang.Double#parseDouble(java.lang.String)
+     * java.lang.Double#parseDouble(java.lang.String)
      */
     public void test_parseDoubleLjava_lang_String() {
         assertEquals("Incorrect double returned, expected zero.", 0.0, Double
@@ -557,9 +557,9 @@ public class DoubleTest extends TestCase {
                 "-0.0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000055595409854908458349204328908234982349050934129878452378432452458968024357823490509341298784523784324524589680243578234905093412987845237843245245896802435782349050934129878452378432452458968024357868024357823490509341298784523784324524589680243578234905093412987845237843245245896802435786802435782349050934129878452378432452458968024357823490509341298784523784324524589680243578",
                 0x8000000000000001L, "-4.9E-324");
     }
-    
+
     /**
-     * @tests java.lang.Double#parseDouble(java.lang.String)
+     * java.lang.Double#parseDouble(java.lang.String)
      */
     public void test_parseDouble_LString_Illegal() {
         try {
@@ -625,9 +625,9 @@ public class DoubleTest extends TestCase {
             // expected
         }
     }
-    
+
     /**
-     * @tests java.lang.Double#parseDouble(java.lang.String)
+     * java.lang.Double#parseDouble(java.lang.String)
      */
     public void test_parseDouble_LString_FromHexString() {
         double actual;
@@ -655,488 +655,488 @@ public class DoubleTest extends TestCase {
                 .parseDouble("0x00000000000000000000000000000000001.0p-1");
         assertEquals("Returned incorrect value", 0.5, actual, 0.0D);
 
-         actual = Double.parseDouble("0x1.0p-00000000000000000000000000001");
-         assertEquals("Returned incorrect value", 0.5, actual, 0.0D);
+        actual = Double.parseDouble("0x1.0p-00000000000000000000000000001");
+        assertEquals("Returned incorrect value", 0.5, actual, 0.0D);
 
         actual = Double.parseDouble("0x.100000000000000000000000000000000p1");
         assertEquals("Returned incorrect value", 0.125, actual, 0.0D);
 
         actual = Double.parseDouble("0x0.0p999999999999999999999999999999999999999999999999999999999999999");
         assertEquals("Returned incorrect value", 0.0, actual, 0.0D);
-        
+
         actual = Double.parseDouble("0xf1.0p9999999999999999999999999999999999999999999999999999999999999999");
         assertEquals("Returned incorrect value", Double.POSITIVE_INFINITY, actual, 0.0D);
 
         actual = Double.parseDouble("0xffffffffffffffffffffffffffffffffffff.ffffffffffffffffffffffffffffffffffffffffffffffp1");
         expected = Double.longBitsToDouble(0x4900000000000000L);
         assertEquals("Returned incorrect value", expected, actual, 0.0D);
-        
+
         actual = Double.parseDouble("0x0.000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001p1600");
         expected = Double.longBitsToDouble(0x7f30000000000000L);
         assertEquals("Returned incorrect value", expected, actual, 0.0D);
-        
+
         actual = Double.parseDouble("0x0.0p-999999999999999999999999999999999999999999999999999999");
         assertEquals("Returned incorrect value", 0.0, actual, 0.0D);
-        
+
         actual = Double.parseDouble("0xf1.0p-9999999999999999999999999999999999999999999999999999999999999999");
         assertEquals("Returned incorrect value", 0.0, actual, 0.0D);
-        
+
         actual = Double.parseDouble("0x10000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000p-1600");
         expected = Double.longBitsToDouble(0xf0000000000000L);
         assertEquals("Returned incorrect value", expected, actual, 0.0D);
-        
+
         actual = Double.parseDouble("0x1.p9223372036854775807");
         assertEquals("Returned incorrect value", Double.POSITIVE_INFINITY, actual, 0.0D);
-        
+
         actual = Double.parseDouble("0x1.p9223372036854775808");
         assertEquals("Returned incorrect value", Double.POSITIVE_INFINITY, actual, 0.0D);
-        
+
         actual = Double.parseDouble("0x10.p9223372036854775808");
         assertEquals("Returned incorrect value", Double.POSITIVE_INFINITY, actual, 0.0D);
-        
+
         actual = Double.parseDouble("0xabcd.ffffffffp+2000");
         assertEquals("Returned incorrect value", Double.POSITIVE_INFINITY, actual, 0.0D);
-        
+
         actual = Double.parseDouble("0x1.p-9223372036854775808");
         assertEquals("Returned incorrect value", 0.0, actual, 0.0D);
-        
+
         actual = Double.parseDouble("0x1.p-9223372036854775809");
         assertEquals("Returned incorrect value", 0.0, actual, 0.0D);
-        
+
         actual = Double.parseDouble("0x.1p-9223372036854775809");
         assertEquals("Returned incorrect value", 0.0, actual, 0.0D);
-        
+
         actual = Double.parseDouble("0xabcd.ffffffffffffffp-2000");
         assertEquals("Returned incorrect value", 0.0, actual, 0.0D);
     }
-    
+
     /**
-     * @tests java.lang.Double#parseDouble(java.lang.String)
+     * java.lang.Double#parseDouble(java.lang.String)
      */
     public void test_parseDouble_LString_NormalPositiveExponent() {
         long[] expecteds = {
-                0x3f323456789abcdfL,                0x40e111012345678aL,                0x41a1110091a2b3c5L,
-                0x4259998091a2b3c5L,                0x4311110048d159e2L,                0x43c5554048d159e2L,
-                0x4479998048d159e2L,                0x452dddc048d159e2L,                0x45e111002468acf1L,
-                0x469333202468acf1L,                0x4751011001234568L,                0x4802112101234568L,
-                0x48b3213201234568L,                0x4964314301234568L,                0x4a15415401234568L,
-                0x4ac6516501234568L,                0x4b77617601234568L,                0x4c28718701234568L,
-                0x4cd9819801234568L,                0x4d9049048091a2b4L,                0x4e4101100091a2b4L,
-                0x4ef189188091a2b4L,                0x4fa211210091a2b4L,                0x505299298091a2b4L,
-                0x510321320091a2b4L,                0x51b3a93a8091a2b4L,                0x526431430091a2b4L,
-                0x5314b94b8091a2b4L,                0x53c841840091a2b4L,                0x5478c98c8091a2b4L,
-                0x552981980091a2b4L,                0x55da09a08091a2b4L,                0x568a91a90091a2b4L,
-                0x573b19b18091a2b4L,                0x57eba1ba0091a2b4L,                0x589c29c28091a2b4L,
-                0x594cb1cb0091a2b4L,                0x5a001d01c048d15aL,                0x5ab061060048d15aL,
-                0x5b60a50a4048d15aL,                0x5c1101100048d15aL,                0x5cc145144048d15aL,
-                0x5d7189188048d15aL,                0x5e21cd1cc048d15aL,                0x5ed211210048d15aL,
-                0x5f8255254048d15aL,                0x603419418048d15aL,                0x60e45d45c048d15aL,
-                0x6194a14a0048d15aL,                0x6244e54e4048d15aL,                0x62f541540048d15aL,
-                0x63a585584048d15aL,                0x6455c95c8048d15aL,                0x65060d60c048d15aL,
-                0x65b651650048d15aL,                0x666815814048d15aL,                0x671859858048d15aL,
-                0x67c89d89c048d15aL,                0x6878e18e0048d15aL,                0x692925924048d15aL,
-                0x69d981980048d15aL,                0x6a89c59c4048d15aL,                0x6b3a09a08048d15aL,
-                0x6bea4da4c048d15aL,                0x6c9c11c10048d15aL,                0x6d4c55c54048d15aL,
-                0x6dfc99c98048d15aL,                0x6eacddcdc048d15aL,                0x6f5d21d20048d15aL,
-                0x700d65d64048d15aL,                0x70bdc1dc0048d15aL,                0x716e05e04048d15aL,
-                0x721e49e48048d15aL,                0x72d00700602468adL,                0x73802902802468adL,
-                0x74304b04a02468adL,                0x74e06d06c02468adL,                0x75908f08e02468adL,
-                0x7640b10b002468adL,                0x76f0d30d202468adL,                0x77a10110002468adL,
-                0x78512312202468adL,                0x79020520402468adL,                0x79b22722602468adL,
-                0x7a624924802468adL,                0x7b126b26a02468adL,                0x7bc28d28c02468adL,
-                0x7c72af2ae02468adL,                0x7d22d12d002468adL,                0x7dd2f32f202468adL,
-                0x7e832132002468adL,                0x7f40011001012345L,                0x7ff0000000000000L,
-                0x7ff0000000000000L,                0x7ff0000000000000L,                0x7ff0000000000000L,
-                0x7ff0000000000000L,                0x7ff0000000000000L,                0x7ff0000000000000L,
-                0x7ff0000000000000L,                0x7ff0000000000000L,                0x7ff0000000000000L,
-                0x7ff0000000000000L,                0x7ff0000000000000L,                0x7ff0000000000000L,
-                0x7ff0000000000000L,                0x7ff0000000000000L,                0x7ff0000000000000L,
-                0x7ff0000000000000L,                0x7ff0000000000000L,                0x7ff0000000000000L,
-                0x7ff0000000000000L,                0x7ff0000000000000L  };
+                0x3f323456789abcdfL, 0x40e111012345678aL, 0x41a1110091a2b3c5L,
+                0x4259998091a2b3c5L, 0x4311110048d159e2L, 0x43c5554048d159e2L,
+                0x4479998048d159e2L, 0x452dddc048d159e2L, 0x45e111002468acf1L,
+                0x469333202468acf1L, 0x4751011001234568L, 0x4802112101234568L,
+                0x48b3213201234568L, 0x4964314301234568L, 0x4a15415401234568L,
+                0x4ac6516501234568L, 0x4b77617601234568L, 0x4c28718701234568L,
+                0x4cd9819801234568L, 0x4d9049048091a2b4L, 0x4e4101100091a2b4L,
+                0x4ef189188091a2b4L, 0x4fa211210091a2b4L, 0x505299298091a2b4L,
+                0x510321320091a2b4L, 0x51b3a93a8091a2b4L, 0x526431430091a2b4L,
+                0x5314b94b8091a2b4L, 0x53c841840091a2b4L, 0x5478c98c8091a2b4L,
+                0x552981980091a2b4L, 0x55da09a08091a2b4L, 0x568a91a90091a2b4L,
+                0x573b19b18091a2b4L, 0x57eba1ba0091a2b4L, 0x589c29c28091a2b4L,
+                0x594cb1cb0091a2b4L, 0x5a001d01c048d15aL, 0x5ab061060048d15aL,
+                0x5b60a50a4048d15aL, 0x5c1101100048d15aL, 0x5cc145144048d15aL,
+                0x5d7189188048d15aL, 0x5e21cd1cc048d15aL, 0x5ed211210048d15aL,
+                0x5f8255254048d15aL, 0x603419418048d15aL, 0x60e45d45c048d15aL,
+                0x6194a14a0048d15aL, 0x6244e54e4048d15aL, 0x62f541540048d15aL,
+                0x63a585584048d15aL, 0x6455c95c8048d15aL, 0x65060d60c048d15aL,
+                0x65b651650048d15aL, 0x666815814048d15aL, 0x671859858048d15aL,
+                0x67c89d89c048d15aL, 0x6878e18e0048d15aL, 0x692925924048d15aL,
+                0x69d981980048d15aL, 0x6a89c59c4048d15aL, 0x6b3a09a08048d15aL,
+                0x6bea4da4c048d15aL, 0x6c9c11c10048d15aL, 0x6d4c55c54048d15aL,
+                0x6dfc99c98048d15aL, 0x6eacddcdc048d15aL, 0x6f5d21d20048d15aL,
+                0x700d65d64048d15aL, 0x70bdc1dc0048d15aL, 0x716e05e04048d15aL,
+                0x721e49e48048d15aL, 0x72d00700602468adL, 0x73802902802468adL,
+                0x74304b04a02468adL, 0x74e06d06c02468adL, 0x75908f08e02468adL,
+                0x7640b10b002468adL, 0x76f0d30d202468adL, 0x77a10110002468adL,
+                0x78512312202468adL, 0x79020520402468adL, 0x79b22722602468adL,
+                0x7a624924802468adL, 0x7b126b26a02468adL, 0x7bc28d28c02468adL,
+                0x7c72af2ae02468adL, 0x7d22d12d002468adL, 0x7dd2f32f202468adL,
+                0x7e832132002468adL, 0x7f40011001012345L, 0x7ff0000000000000L,
+                0x7ff0000000000000L, 0x7ff0000000000000L, 0x7ff0000000000000L,
+                0x7ff0000000000000L, 0x7ff0000000000000L, 0x7ff0000000000000L,
+                0x7ff0000000000000L, 0x7ff0000000000000L, 0x7ff0000000000000L,
+                0x7ff0000000000000L, 0x7ff0000000000000L, 0x7ff0000000000000L,
+                0x7ff0000000000000L, 0x7ff0000000000000L, 0x7ff0000000000000L,
+                0x7ff0000000000000L, 0x7ff0000000000000L, 0x7ff0000000000000L,
+                0x7ff0000000000000L, 0x7ff0000000000000L };
 
         for (int i = 0; i < expecteds.length; i++) {
-            int part = i*11;
+            int part = i * 11;
             String inputString = "0x" + part + "." + part + "0123456789abcdefp" + part;
-            
+
             double actual = Double.parseDouble(inputString);
             double expected = Double.longBitsToDouble(expecteds[i]);
-            
+
             String expectedString = "0x" + Long.toHexString(Double.doubleToLongBits(expected));
             String actualString = "0x" + Long.toHexString(Double.doubleToLongBits(actual));
             String errorMsg = i + "th input string is:<" + inputString
                     + ">.The expected result should be:<" + expectedString
                     + ">, but was: <" + actualString + ">. ";
-            
+
             assertEquals(errorMsg, expected, actual, 0.0D);
         }
     }
-    
+
     /**
-     * @tests java.lang.Double#parseDouble(java.lang.String)
+     * java.lang.Double#parseDouble(java.lang.String)
      */
     public void test_parseDouble_LString_NormalNegativeExponent() {
         long[] expecteds = {
-                0x3f323456789abcdfL,                0x3f8111012345678aL,                0x3ee1110091a2b3c5L,
-                0x3e39998091a2b3c5L,                0x3d91110048d159e2L,                0x3ce5554048d159e2L,
-                0x3c39998048d159e2L,                0x3b8dddc048d159e2L,                0x3ae111002468acf1L,
-                0x3a3333202468acf1L,                0x3991011001234568L,                0x38e2112101234568L,
-                0x3833213201234568L,                0x3784314301234568L,                0x36d5415401234568L,
-                0x3626516501234568L,                0x3577617601234568L,                0x34c8718701234568L,
-                0x3419819801234568L,                0x337049048091a2b4L,                0x32c101100091a2b4L,
-                0x321189188091a2b4L,                0x316211210091a2b4L,                0x30b299298091a2b4L,
-                0x300321320091a2b4L,                0x2f53a93a8091a2b4L,                0x2ea431430091a2b4L,
-                0x2df4b94b8091a2b4L,                0x2d4841840091a2b4L,                0x2c98c98c8091a2b4L,
-                0x2be981980091a2b4L,                0x2b3a09a08091a2b4L,                0x2a8a91a90091a2b4L,
-                0x29db19b18091a2b4L,                0x292ba1ba0091a2b4L,                0x287c29c28091a2b4L,
-                0x27ccb1cb0091a2b4L,                0x27201d01c048d15aL,                0x267061060048d15aL,
-                0x25c0a50a4048d15aL,                0x251101100048d15aL,                0x246145144048d15aL,
-                0x23b189188048d15aL,                0x2301cd1cc048d15aL,                0x225211210048d15aL,
-                0x21a255254048d15aL,                0x20f419418048d15aL,                0x20445d45c048d15aL,
-                0x1f94a14a0048d15aL,                0x1ee4e54e4048d15aL,                0x1e3541540048d15aL,
-                0x1d8585584048d15aL,                0x1cd5c95c8048d15aL,                0x1c260d60c048d15aL,
-                0x1b7651650048d15aL,                0x1ac815814048d15aL,                0x1a1859858048d15aL,
-                0x19689d89c048d15aL,                0x18b8e18e0048d15aL,                0x180925924048d15aL,
-                0x175981980048d15aL,                0x16a9c59c4048d15aL,                0x15fa09a08048d15aL,
-                0x154a4da4c048d15aL,                0x149c11c10048d15aL,                0x13ec55c54048d15aL,
-                0x133c99c98048d15aL,                0x128cddcdc048d15aL,                0x11dd21d20048d15aL,
-                0x112d65d64048d15aL,                0x107dc1dc0048d15aL,                0xfce05e04048d15aL,
-                0xf1e49e48048d15aL,                0xe700700602468adL,                0xdc02902802468adL,
-                0xd104b04a02468adL,                0xc606d06c02468adL,                0xbb08f08e02468adL,
-                0xb00b10b002468adL,                0xa50d30d202468adL,                0x9a10110002468adL,
-                0x8f12312202468adL,                0x8420520402468adL,                0x7922722602468adL,
-                0x6e24924802468adL,                0x6326b26a02468adL,                0x5828d28c02468adL,
-                0x4d2af2ae02468adL,                0x422d12d002468adL,                0x372f32f202468adL,
-                0x2c32132002468adL,                0x220011001012345L,                0x170121012012345L,
-                0xc0231023012345L,                0x10341034012345L,                0x208a208a024L,
-                0x41584158L,                            0x83388L,                                0x108L,
-                0x0L,                                        0x0L,                                       0x0L,
-                0x0L,                                        0x0L,                                       0x0L,
-                0x0L,                                        0x0L,                                       0x0L,
-                0x0L,                                        0x0L,                                       0x0L,
-                0x0L,                                        0x0L };
+                0x3f323456789abcdfL, 0x3f8111012345678aL, 0x3ee1110091a2b3c5L,
+                0x3e39998091a2b3c5L, 0x3d91110048d159e2L, 0x3ce5554048d159e2L,
+                0x3c39998048d159e2L, 0x3b8dddc048d159e2L, 0x3ae111002468acf1L,
+                0x3a3333202468acf1L, 0x3991011001234568L, 0x38e2112101234568L,
+                0x3833213201234568L, 0x3784314301234568L, 0x36d5415401234568L,
+                0x3626516501234568L, 0x3577617601234568L, 0x34c8718701234568L,
+                0x3419819801234568L, 0x337049048091a2b4L, 0x32c101100091a2b4L,
+                0x321189188091a2b4L, 0x316211210091a2b4L, 0x30b299298091a2b4L,
+                0x300321320091a2b4L, 0x2f53a93a8091a2b4L, 0x2ea431430091a2b4L,
+                0x2df4b94b8091a2b4L, 0x2d4841840091a2b4L, 0x2c98c98c8091a2b4L,
+                0x2be981980091a2b4L, 0x2b3a09a08091a2b4L, 0x2a8a91a90091a2b4L,
+                0x29db19b18091a2b4L, 0x292ba1ba0091a2b4L, 0x287c29c28091a2b4L,
+                0x27ccb1cb0091a2b4L, 0x27201d01c048d15aL, 0x267061060048d15aL,
+                0x25c0a50a4048d15aL, 0x251101100048d15aL, 0x246145144048d15aL,
+                0x23b189188048d15aL, 0x2301cd1cc048d15aL, 0x225211210048d15aL,
+                0x21a255254048d15aL, 0x20f419418048d15aL, 0x20445d45c048d15aL,
+                0x1f94a14a0048d15aL, 0x1ee4e54e4048d15aL, 0x1e3541540048d15aL,
+                0x1d8585584048d15aL, 0x1cd5c95c8048d15aL, 0x1c260d60c048d15aL,
+                0x1b7651650048d15aL, 0x1ac815814048d15aL, 0x1a1859858048d15aL,
+                0x19689d89c048d15aL, 0x18b8e18e0048d15aL, 0x180925924048d15aL,
+                0x175981980048d15aL, 0x16a9c59c4048d15aL, 0x15fa09a08048d15aL,
+                0x154a4da4c048d15aL, 0x149c11c10048d15aL, 0x13ec55c54048d15aL,
+                0x133c99c98048d15aL, 0x128cddcdc048d15aL, 0x11dd21d20048d15aL,
+                0x112d65d64048d15aL, 0x107dc1dc0048d15aL, 0xfce05e04048d15aL,
+                0xf1e49e48048d15aL, 0xe700700602468adL, 0xdc02902802468adL,
+                0xd104b04a02468adL, 0xc606d06c02468adL, 0xbb08f08e02468adL,
+                0xb00b10b002468adL, 0xa50d30d202468adL, 0x9a10110002468adL,
+                0x8f12312202468adL, 0x8420520402468adL, 0x7922722602468adL,
+                0x6e24924802468adL, 0x6326b26a02468adL, 0x5828d28c02468adL,
+                0x4d2af2ae02468adL, 0x422d12d002468adL, 0x372f32f202468adL,
+                0x2c32132002468adL, 0x220011001012345L, 0x170121012012345L,
+                0xc0231023012345L, 0x10341034012345L, 0x208a208a024L,
+                0x41584158L, 0x83388L, 0x108L,
+                0x0L, 0x0L, 0x0L,
+                0x0L, 0x0L, 0x0L,
+                0x0L, 0x0L, 0x0L,
+                0x0L, 0x0L, 0x0L,
+                0x0L, 0x0L };
 
         for (int i = 0; i < expecteds.length; i++) {
-            int part = i*11;
+            int part = i * 11;
             String inputString = "0x" + part + "." + part + "0123456789abcdefp-" + part;
-            
+
             double actual = Double.parseDouble(inputString);
             double expected = Double.longBitsToDouble(expecteds[i]);
-            
+
             String expectedString = "0x" + Long.toHexString(Double.doubleToLongBits(expected));
             String actualString = "0x" + Long.toHexString(Double.doubleToLongBits(actual));
             String errorMsg = i + "th input string is:<" + inputString
                     + ">.The expected result should be:<" + expectedString
                     + ">, but was: <" + actualString + ">. ";
-            
+
             assertEquals(errorMsg, expected, actual, 0.0D);
         }
     }
-    
+
     /**
-     * @tests java.lang.Double#parseDouble(java.lang.String)
+     * java.lang.Double#parseDouble(java.lang.String)
      */
     public void test_parseDouble_LString_MaxNormalBoundary() {
-       long[] expecteds = {
-               0x7fefffffffffffffL,               0x7fefffffffffffffL,               0x7fefffffffffffffL,
-               0x7fefffffffffffffL,               0x7fefffffffffffffL,               0x7fefffffffffffffL,
-               0x7fefffffffffffffL,               0x7ff0000000000000L,               0x7ff0000000000000L,
-               0x7ff0000000000000L,               0x7ff0000000000000L,               0x7ff0000000000000L,
-               0x7ff0000000000000L,               0x7ff0000000000000L,               0x7ff0000000000000L,
-               
-               0xffefffffffffffffL,               0xffefffffffffffffL,               0xffefffffffffffffL,
-               0xffefffffffffffffL,               0xffefffffffffffffL,               0xffefffffffffffffL,
-               0xffefffffffffffffL,               0xfff0000000000000L,               0xfff0000000000000L,
-               0xfff0000000000000L,               0xfff0000000000000L,               0xfff0000000000000L,
-               0xfff0000000000000L,               0xfff0000000000000L,               0xfff0000000000000L };
-       
-       String[] inputs = {
-               "0x1.fffffffffffffp1023",
-               "0x1.fffffffffffff000000000000000000000000001p1023",
-               "0x1.fffffffffffff1p1023",
-               "0x1.fffffffffffff100000000000000000000000001p1023",
-               "0x1.fffffffffffff1fffffffffffffffffffffffffffffffffffffffffffffp1023",
-               "0x1.fffffffffffff7p1023",
-               "0x1.fffffffffffff700000000000000000000000001p1023",
-               "0x1.fffffffffffff8p1023",
-               "0x1.fffffffffffff800000000000000000000000001p1023",
-               "0x1.fffffffffffff8fffffffffffffffffffffffffffffffffffffffffffffp1023",
-               "0x1.fffffffffffff9p1023",
-               "0x1.fffffffffffff900000000000000000000000001p1023",
-               "0x1.ffffffffffffffp1023",
-               "0x1.ffffffffffffff00000000000000000000000001p1023",
-               "0x1.fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffp1023",
+        long[] expecteds = {
+                0x7fefffffffffffffL, 0x7fefffffffffffffL, 0x7fefffffffffffffL,
+                0x7fefffffffffffffL, 0x7fefffffffffffffL, 0x7fefffffffffffffL,
+                0x7fefffffffffffffL, 0x7ff0000000000000L, 0x7ff0000000000000L,
+                0x7ff0000000000000L, 0x7ff0000000000000L, 0x7ff0000000000000L,
+                0x7ff0000000000000L, 0x7ff0000000000000L, 0x7ff0000000000000L,
 
-               "-0x1.fffffffffffffp1023",
-               "-0x1.fffffffffffff000000000000000000000000001p1023",
-               "-0x1.fffffffffffff1p1023",
-               "-0x1.fffffffffffff100000000000000000000000001p1023",
-               "-0x1.fffffffffffff1fffffffffffffffffffffffffffffffffffffffffffffp1023",
-               "-0x1.fffffffffffff7p1023",
-               "-0x1.fffffffffffff700000000000000000000000001p1023",
-               "-0x1.fffffffffffff8p1023",
-               "-0x1.fffffffffffff800000000000000000000000001p1023",
-               "-0x1.fffffffffffff8fffffffffffffffffffffffffffffffffffffffffffffp1023",
-               "-0x1.fffffffffffff9p1023",
-               "-0x1.fffffffffffff900000000000000000000000001p1023",
-               "-0x1.ffffffffffffffp1023",
-               "-0x1.ffffffffffffff00000000000000000000000001p1023",
-               "-0x1.fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffp1023" };
-       
-       for (int i = 0; i < inputs.length; i++) {
-           double actual = Double.parseDouble(inputs[i]);
-           double expected = Double.longBitsToDouble(expecteds[i]);
-           
-           String expectedString = "0x" + Long.toHexString(Double.doubleToLongBits(expected));
-           String actualString = "0x" + Long.toHexString(Double.doubleToLongBits(actual));
-           String errorMsg = i + "th input string is:<" + inputs[i]
-                   + ">.The expected result should be:<" + expectedString
-                   + ">, but was: <" + actualString + ">. ";
-           
-           assertEquals(errorMsg, expected, actual, 0.0D);
-       }
+                0xffefffffffffffffL, 0xffefffffffffffffL, 0xffefffffffffffffL,
+                0xffefffffffffffffL, 0xffefffffffffffffL, 0xffefffffffffffffL,
+                0xffefffffffffffffL, 0xfff0000000000000L, 0xfff0000000000000L,
+                0xfff0000000000000L, 0xfff0000000000000L, 0xfff0000000000000L,
+                0xfff0000000000000L, 0xfff0000000000000L, 0xfff0000000000000L };
+
+        String[] inputs = {
+                "0x1.fffffffffffffp1023",
+                "0x1.fffffffffffff000000000000000000000000001p1023",
+                "0x1.fffffffffffff1p1023",
+                "0x1.fffffffffffff100000000000000000000000001p1023",
+                "0x1.fffffffffffff1fffffffffffffffffffffffffffffffffffffffffffffp1023",
+                "0x1.fffffffffffff7p1023",
+                "0x1.fffffffffffff700000000000000000000000001p1023",
+                "0x1.fffffffffffff8p1023",
+                "0x1.fffffffffffff800000000000000000000000001p1023",
+                "0x1.fffffffffffff8fffffffffffffffffffffffffffffffffffffffffffffp1023",
+                "0x1.fffffffffffff9p1023",
+                "0x1.fffffffffffff900000000000000000000000001p1023",
+                "0x1.ffffffffffffffp1023",
+                "0x1.ffffffffffffff00000000000000000000000001p1023",
+                "0x1.fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffp1023",
+
+                "-0x1.fffffffffffffp1023",
+                "-0x1.fffffffffffff000000000000000000000000001p1023",
+                "-0x1.fffffffffffff1p1023",
+                "-0x1.fffffffffffff100000000000000000000000001p1023",
+                "-0x1.fffffffffffff1fffffffffffffffffffffffffffffffffffffffffffffp1023",
+                "-0x1.fffffffffffff7p1023",
+                "-0x1.fffffffffffff700000000000000000000000001p1023",
+                "-0x1.fffffffffffff8p1023",
+                "-0x1.fffffffffffff800000000000000000000000001p1023",
+                "-0x1.fffffffffffff8fffffffffffffffffffffffffffffffffffffffffffffp1023",
+                "-0x1.fffffffffffff9p1023",
+                "-0x1.fffffffffffff900000000000000000000000001p1023",
+                "-0x1.ffffffffffffffp1023",
+                "-0x1.ffffffffffffff00000000000000000000000001p1023",
+                "-0x1.fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffp1023" };
+
+        for (int i = 0; i < inputs.length; i++) {
+            double actual = Double.parseDouble(inputs[i]);
+            double expected = Double.longBitsToDouble(expecteds[i]);
+
+            String expectedString = "0x" + Long.toHexString(Double.doubleToLongBits(expected));
+            String actualString = "0x" + Long.toHexString(Double.doubleToLongBits(actual));
+            String errorMsg = i + "th input string is:<" + inputs[i]
+                    + ">.The expected result should be:<" + expectedString
+                    + ">, but was: <" + actualString + ">. ";
+
+            assertEquals(errorMsg, expected, actual, 0.0D);
+        }
     }
-    
+
     /**
-     * @tests java.lang.Double#parseDouble(java.lang.String)
+     * java.lang.Double#parseDouble(java.lang.String)
      */
     public void test_parseDouble_LString_MinNormalBoundary() {
         long[] expecteds = {
-                0x10000000000000L,                0x10000000000000L,                0x10000000000000L,
-                0x10000000000000L,                0x10000000000000L,                0x10000000000000L,
-                0x10000000000000L,                0x10000000000000L,                0x10000000000001L,
-                0x10000000000001L,                0x10000000000001L,                0x10000000000001L,
-                0x10000000000001L,                0x10000000000001L,                0x10000000000001L,
-                
-                0x8010000000000000L,                0x8010000000000000L,                0x8010000000000000L,
-                0x8010000000000000L,                0x8010000000000000L,                0x8010000000000000L,
-                0x8010000000000000L,                0x8010000000000000L,                0x8010000000000001L,
-                0x8010000000000001L,                0x8010000000000001L,                0x8010000000000001L,
-                0x8010000000000001L,                0x8010000000000001L,                0x8010000000000001L };
-       
-       String[] inputs = {
-               "0x1.0p-1022",
-               "0x1.00000000000001p-1022",
-               "0x1.000000000000010000000000000000001p-1022",
-               "0x1.00000000000001fffffffffffffffffffffffffffffffffp-1022",
-               "0x1.00000000000007p-1022",
-               "0x1.000000000000070000000000000000001p-1022",
-               "0x1.00000000000007fffffffffffffffffffffffffffffffffp-1022",
-               "0x1.00000000000008p-1022",
-               "0x1.000000000000080000000000000000001p-1022",
-               "0x1.00000000000008fffffffffffffffffffffffffffffffffp-1022",
-               "0x1.00000000000009p-1022",
-               "0x1.000000000000090000000000000000001p-1022",
-               "0x1.00000000000009fffffffffffffffffffffffffffffffffp-1022",
-               "0x1.0000000000000fp-1022",
-               "0x1.0000000000000ffffffffffffffffffffffffffffffffffp-1022",
-               
-               "-0x1.0p-1022",
-               "-0x1.00000000000001p-1022",
-               "-0x1.000000000000010000000000000000001p-1022",
-               "-0x1.00000000000001fffffffffffffffffffffffffffffffffp-1022",
-               "-0x1.00000000000007p-1022",
-               "-0x1.000000000000070000000000000000001p-1022",
-               "-0x1.00000000000007fffffffffffffffffffffffffffffffffp-1022",
-               "-0x1.00000000000008p-1022",
-               "-0x1.000000000000080000000000000000001p-1022",
-               "-0x1.00000000000008fffffffffffffffffffffffffffffffffp-1022",
-               "-0x1.00000000000009p-1022",
-               "-0x1.000000000000090000000000000000001p-1022",
-               "-0x1.00000000000009fffffffffffffffffffffffffffffffffp-1022",
-               "-0x1.0000000000000fp-1022",
-               "-0x1.0000000000000ffffffffffffffffffffffffffffffffffp-1022" };
-       
-       for (int i = 0; i < inputs.length; i++) {
-           double actual = Double.parseDouble(inputs[i]);
-           double expected = Double.longBitsToDouble(expecteds[i]);
-           
-           String expectedString = "0x" + Long.toHexString(Double.doubleToLongBits(expected));
-           String actualString = "0x" + Long.toHexString(Double.doubleToLongBits(actual));
-           String errorMsg = i + "th input string is:<" + inputs[i]
-                   + ">.The expected result should be:<" + expectedString
-                   + ">, but was: <" + actualString + ">. ";
-           
-           assertEquals(errorMsg, expected, actual, 0.0D);
-       }
+                0x10000000000000L, 0x10000000000000L, 0x10000000000000L,
+                0x10000000000000L, 0x10000000000000L, 0x10000000000000L,
+                0x10000000000000L, 0x10000000000000L, 0x10000000000001L,
+                0x10000000000001L, 0x10000000000001L, 0x10000000000001L,
+                0x10000000000001L, 0x10000000000001L, 0x10000000000001L,
+
+                0x8010000000000000L, 0x8010000000000000L, 0x8010000000000000L,
+                0x8010000000000000L, 0x8010000000000000L, 0x8010000000000000L,
+                0x8010000000000000L, 0x8010000000000000L, 0x8010000000000001L,
+                0x8010000000000001L, 0x8010000000000001L, 0x8010000000000001L,
+                0x8010000000000001L, 0x8010000000000001L, 0x8010000000000001L };
+
+        String[] inputs = {
+                "0x1.0p-1022",
+                "0x1.00000000000001p-1022",
+                "0x1.000000000000010000000000000000001p-1022",
+                "0x1.00000000000001fffffffffffffffffffffffffffffffffp-1022",
+                "0x1.00000000000007p-1022",
+                "0x1.000000000000070000000000000000001p-1022",
+                "0x1.00000000000007fffffffffffffffffffffffffffffffffp-1022",
+                "0x1.00000000000008p-1022",
+                "0x1.000000000000080000000000000000001p-1022",
+                "0x1.00000000000008fffffffffffffffffffffffffffffffffp-1022",
+                "0x1.00000000000009p-1022",
+                "0x1.000000000000090000000000000000001p-1022",
+                "0x1.00000000000009fffffffffffffffffffffffffffffffffp-1022",
+                "0x1.0000000000000fp-1022",
+                "0x1.0000000000000ffffffffffffffffffffffffffffffffffp-1022",
+
+                "-0x1.0p-1022",
+                "-0x1.00000000000001p-1022",
+                "-0x1.000000000000010000000000000000001p-1022",
+                "-0x1.00000000000001fffffffffffffffffffffffffffffffffp-1022",
+                "-0x1.00000000000007p-1022",
+                "-0x1.000000000000070000000000000000001p-1022",
+                "-0x1.00000000000007fffffffffffffffffffffffffffffffffp-1022",
+                "-0x1.00000000000008p-1022",
+                "-0x1.000000000000080000000000000000001p-1022",
+                "-0x1.00000000000008fffffffffffffffffffffffffffffffffp-1022",
+                "-0x1.00000000000009p-1022",
+                "-0x1.000000000000090000000000000000001p-1022",
+                "-0x1.00000000000009fffffffffffffffffffffffffffffffffp-1022",
+                "-0x1.0000000000000fp-1022",
+                "-0x1.0000000000000ffffffffffffffffffffffffffffffffffp-1022" };
+
+        for (int i = 0; i < inputs.length; i++) {
+            double actual = Double.parseDouble(inputs[i]);
+            double expected = Double.longBitsToDouble(expecteds[i]);
+
+            String expectedString = "0x" + Long.toHexString(Double.doubleToLongBits(expected));
+            String actualString = "0x" + Long.toHexString(Double.doubleToLongBits(actual));
+            String errorMsg = i + "th input string is:<" + inputs[i]
+                    + ">.The expected result should be:<" + expectedString
+                    + ">, but was: <" + actualString + ">. ";
+
+            assertEquals(errorMsg, expected, actual, 0.0D);
+        }
     }
-    
+
     /**
-     * @tests java.lang.Double#parseDouble(java.lang.String)
+     * java.lang.Double#parseDouble(java.lang.String)
      */
     public void test_parseDouble_LString_MaxSubNormalBoundary() {
         long[] expecteds = {
-                0xfffffffffffffL,                0xfffffffffffffL,                0xfffffffffffffL,
-                0xfffffffffffffL,                0xfffffffffffffL,                0xfffffffffffffL,
-                0xfffffffffffffL,                0x10000000000000L,                0x10000000000000L,
-                0x10000000000000L,                0x10000000000000L,                0x10000000000000L,
-                0x10000000000000L,                0x10000000000000L,                0x10000000000000L,
-                
-                0x800fffffffffffffL,                0x800fffffffffffffL,                0x800fffffffffffffL,
-                0x800fffffffffffffL,                0x800fffffffffffffL,                0x800fffffffffffffL,
-                0x800fffffffffffffL,                0x8010000000000000L,                0x8010000000000000L,
-                0x8010000000000000L,                0x8010000000000000L,                0x8010000000000000L,
-                0x8010000000000000L,                0x8010000000000000L,                0x8010000000000000L };
-       
-       String[] inputs = {
-               "0x0.fffffffffffffp-1022",
-               "0x0.fffffffffffff00000000000000000000000000000000001p-1022",
-               "0x0.fffffffffffff1p-1022",
-               "0x0.fffffffffffff10000000000000000000000000000000001p-1022",
-               "0x0.fffffffffffff1ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffp-1022",
-               "0x0.fffffffffffff7p-1022",
-               "0x0.fffffffffffff7ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffp-1022",
-               "0x0.fffffffffffff8p-1022",
-               "0x0.fffffffffffff80000000000000000000000000000000001p-1022",
-               "0x0.fffffffffffff8ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffp-1022",
-               "0x0.fffffffffffff9p-1022",
-               "0x0.fffffffffffff9ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffp-1022",
-               "0x0.ffffffffffffffp-1022",
-               "0x0.ffffffffffffff0000000000000000000000000000000001p-1022",
-               "0x0.ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffp-1022",
+                0xfffffffffffffL, 0xfffffffffffffL, 0xfffffffffffffL,
+                0xfffffffffffffL, 0xfffffffffffffL, 0xfffffffffffffL,
+                0xfffffffffffffL, 0x10000000000000L, 0x10000000000000L,
+                0x10000000000000L, 0x10000000000000L, 0x10000000000000L,
+                0x10000000000000L, 0x10000000000000L, 0x10000000000000L,
 
-               "-0x0.fffffffffffffp-1022",
-               "-0x0.fffffffffffff00000000000000000000000000000000001p-1022",
-               "-0x0.fffffffffffff1p-1022",
-               "-0x0.fffffffffffff10000000000000000000000000000000001p-1022",
-               "-0x0.fffffffffffff1ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffp-1022",
-               "-0x0.fffffffffffff7p-1022",
-               "-0x0.fffffffffffff7ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffp-1022",
-               "-0x0.fffffffffffff8p-1022",
-               "-0x0.fffffffffffff80000000000000000000000000000000001p-1022",
-               "-0x0.fffffffffffff8ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffp-1022",
-               "-0x0.fffffffffffff9p-1022",
-               "-0x0.fffffffffffff9ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffp-1022",
-               "-0x0.ffffffffffffffp-1022",
-               "-0x0.ffffffffffffff0000000000000000000000000000000001p-1022",
-               "-0x0.ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffp-1022" };        
-       
-       for (int i = 0; i < inputs.length; i++) {
-           double actual = Double.parseDouble(inputs[i]);
-           double expected = Double.longBitsToDouble(expecteds[i]);
-           
-           String expectedString = "0x" + Long.toHexString(Double.doubleToLongBits(expected));
-           String actualString = "0x" + Long.toHexString(Double.doubleToLongBits(actual));
-           String errorMsg = i + "th input string is:<" + inputs[i]
-                   + ">.The expected result should be:<" + expectedString
-                   + ">, but was: <" + actualString + ">. ";
-           
-           assertEquals(errorMsg, expected, actual, 0.0D);
-       }
+                0x800fffffffffffffL, 0x800fffffffffffffL, 0x800fffffffffffffL,
+                0x800fffffffffffffL, 0x800fffffffffffffL, 0x800fffffffffffffL,
+                0x800fffffffffffffL, 0x8010000000000000L, 0x8010000000000000L,
+                0x8010000000000000L, 0x8010000000000000L, 0x8010000000000000L,
+                0x8010000000000000L, 0x8010000000000000L, 0x8010000000000000L };
+
+        String[] inputs = {
+                "0x0.fffffffffffffp-1022",
+                "0x0.fffffffffffff00000000000000000000000000000000001p-1022",
+                "0x0.fffffffffffff1p-1022",
+                "0x0.fffffffffffff10000000000000000000000000000000001p-1022",
+                "0x0.fffffffffffff1ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffp-1022",
+                "0x0.fffffffffffff7p-1022",
+                "0x0.fffffffffffff7ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffp-1022",
+                "0x0.fffffffffffff8p-1022",
+                "0x0.fffffffffffff80000000000000000000000000000000001p-1022",
+                "0x0.fffffffffffff8ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffp-1022",
+                "0x0.fffffffffffff9p-1022",
+                "0x0.fffffffffffff9ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffp-1022",
+                "0x0.ffffffffffffffp-1022",
+                "0x0.ffffffffffffff0000000000000000000000000000000001p-1022",
+                "0x0.ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffp-1022",
+
+                "-0x0.fffffffffffffp-1022",
+                "-0x0.fffffffffffff00000000000000000000000000000000001p-1022",
+                "-0x0.fffffffffffff1p-1022",
+                "-0x0.fffffffffffff10000000000000000000000000000000001p-1022",
+                "-0x0.fffffffffffff1ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffp-1022",
+                "-0x0.fffffffffffff7p-1022",
+                "-0x0.fffffffffffff7ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffp-1022",
+                "-0x0.fffffffffffff8p-1022",
+                "-0x0.fffffffffffff80000000000000000000000000000000001p-1022",
+                "-0x0.fffffffffffff8ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffp-1022",
+                "-0x0.fffffffffffff9p-1022",
+                "-0x0.fffffffffffff9ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffp-1022",
+                "-0x0.ffffffffffffffp-1022",
+                "-0x0.ffffffffffffff0000000000000000000000000000000001p-1022",
+                "-0x0.ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffp-1022" };
+
+        for (int i = 0; i < inputs.length; i++) {
+            double actual = Double.parseDouble(inputs[i]);
+            double expected = Double.longBitsToDouble(expecteds[i]);
+
+            String expectedString = "0x" + Long.toHexString(Double.doubleToLongBits(expected));
+            String actualString = "0x" + Long.toHexString(Double.doubleToLongBits(actual));
+            String errorMsg = i + "th input string is:<" + inputs[i]
+                    + ">.The expected result should be:<" + expectedString
+                    + ">, but was: <" + actualString + ">. ";
+
+            assertEquals(errorMsg, expected, actual, 0.0D);
+        }
     }
-    
+
     /**
-     * @tests java.lang.Double#parseDouble(java.lang.String)
+     * java.lang.Double#parseDouble(java.lang.String)
      */
     public void test_parseDouble_LString_MinSubNormalBoundary() {
         long[] expecteds = {
-                0x1L,                0x1L,                0x2L,
-                0x1L,                0x1L,                0x1L,
-                0x2L,                0x2L,                0x2L,
-                0x2L,                0x2L,                0x2L,
-                0x2L,                0x2L,                0x2L,
-                
-                0x8000000000000001L,                0x8000000000000001L,                0x8000000000000002L,
-                0x8000000000000001L,                0x8000000000000001L,                0x8000000000000001L,
-                0x8000000000000002L,                0x8000000000000002L,                0x8000000000000002L,
-                0x8000000000000002L,                0x8000000000000002L,                0x8000000000000002L,
-                0x8000000000000002L,                0x8000000000000002L,                0x8000000000000002L };
-       
-       String[] inputs = {
-               "0x0.0000000000001p-1022",
-               "0x0.00000000000010000000000000000001p-1022",
-               "0x0.0000000000001fffffffffffffffffffffffffffffffffp-1022",
-               "0x0.00000000000017p-1022",
-               "0x0.000000000000170000000000000000001p-1022",
-               "0x0.00000000000017fffffffffffffffffffffffffffffffffp-1022",
-               "0x0.00000000000018p-1022",
-               "0x0.000000000000180000000000000000001p-1022",
-               "0x0.00000000000018fffffffffffffffffffffffffffffffffp-1022",
-               "0x0.00000000000019p-1022",
-               "0x0.000000000000190000000000000000001p-1022",
-               "0x0.00000000000019fffffffffffffffffffffffffffffffffp-1022",
-               "0x0.0000000000001fp-1022",
-               "0x0.0000000000001f0000000000000000001p-1022",
-               "0x0.0000000000001ffffffffffffffffffffffffffffffffffp-1022",  
-               
-               "-0x0.0000000000001p-1022",
-               "-0x0.00000000000010000000000000000001p-1022",
-               "-0x0.0000000000001fffffffffffffffffffffffffffffffffp-1022",
-               "-0x0.00000000000017p-1022",
-               "-0x0.000000000000170000000000000000001p-1022",
-               "-0x0.00000000000017fffffffffffffffffffffffffffffffffp-1022",
-               "-0x0.00000000000018p-1022",
-               "-0x0.000000000000180000000000000000001p-1022",
-               "-0x0.00000000000018fffffffffffffffffffffffffffffffffp-1022",
-               "-0x0.00000000000019p-1022",
-               "-0x0.000000000000190000000000000000001p-1022",
-               "-0x0.00000000000019fffffffffffffffffffffffffffffffffp-1022",
-               "-0x0.0000000000001fp-1022",
-               "-0x0.0000000000001f0000000000000000001p-1022",
-               "-0x0.0000000000001ffffffffffffffffffffffffffffffffffp-1022" };
-       
-       for (int i = 0; i < inputs.length; i++) {
-           double actual = Double.parseDouble(inputs[i]);
-           double expected = Double.longBitsToDouble(expecteds[i]);
-           
-           String expectedString = "0x" + Long.toHexString(Double.doubleToLongBits(expected));
-           String actualString = "0x" + Long.toHexString(Double.doubleToLongBits(actual));
-           String errorMsg = i + "th input string is:<" + inputs[i]
-                   + ">.The expected result should be:<" + expectedString
-                   + ">, but was: <" + actualString + ">. ";
-           
-           assertEquals(errorMsg, expected, actual, 0.0D);
-       }
-    }
-    
-    /**
-     * @tests java.lang.Double#parseDouble(java.lang.String)
-     */
-    public void test_parseDouble_LString_ZeroBoundary() {
-        long[] expecteds = {
-                0x0L,                0x0L,                0x0L,
-                0x1L,                0x1L,                0x1L,
-                0x1L,                0x1L,                0x1L,
-                0x8000000000000000L,                0x8000000000000000L,                0x8000000000000000L,
-                0x8000000000000001L,                0x8000000000000001L,                0x8000000000000001L,
-                0x8000000000000001L,                0x8000000000000001L,                0x8000000000000001L };
-       
-       String[] inputs = {
-               "0x0.00000000000004p-1022",
-               "0x0.00000000000007ffffffffffffffffffffffp-1022",
-               "0x0.00000000000008p-1022",
-               "0x0.000000000000080000000000000000001p-1022",
-               "0x0.00000000000008fffffffffffffffffffffffffffffffp-1022",
-               "0x0.00000000000009p-1022",
-               "0x0.000000000000090000000000000000001p-1022",
-               "0x0.00000000000009fffffffffffffffffffffffffffffffffp-1022",
-               "0x0.0000000000000fffffffffffffffffffffffffffffffffffp-1022",
-          
-               "-0x0.00000000000004p-1022",
-               "-0x0.00000000000007ffffffffffffffffffffffp-1022",
-               "-0x0.00000000000008p-1022",
-               "-0x0.000000000000080000000000000000001p-1022",
-               "-0x0.00000000000008fffffffffffffffffffffffffffffffp-1022",
-               "-0x0.00000000000009p-1022",
-               "-0x0.000000000000090000000000000000001p-1022",
-               "-0x0.00000000000009fffffffffffffffffffffffffffffffffp-1022",
-               "-0x0.0000000000000fffffffffffffffffffffffffffffffffffp-1022" };
-       
-       for (int i = 0; i < inputs.length; i++) {
-           double actual = Double.parseDouble(inputs[i]);
-           double expected = Double.longBitsToDouble(expecteds[i]);
-           
-           String expectedString = "0x" + Long.toHexString(Double.doubleToLongBits(expected));
-           String actualString = "0x" + Long.toHexString(Double.doubleToLongBits(actual));
-           String errorMsg = i + "th input string is:<" + inputs[i]
-                   + ">.The expected result should be:<" + expectedString
-                   + ">, but was: <" + actualString + ">. ";
-           
-           assertEquals(errorMsg, expected, actual, 0.0D);
-       }
+                0x1L, 0x1L, 0x2L,
+                0x1L, 0x1L, 0x1L,
+                0x2L, 0x2L, 0x2L,
+                0x2L, 0x2L, 0x2L,
+                0x2L, 0x2L, 0x2L,
+
+                0x8000000000000001L, 0x8000000000000001L, 0x8000000000000002L,
+                0x8000000000000001L, 0x8000000000000001L, 0x8000000000000001L,
+                0x8000000000000002L, 0x8000000000000002L, 0x8000000000000002L,
+                0x8000000000000002L, 0x8000000000000002L, 0x8000000000000002L,
+                0x8000000000000002L, 0x8000000000000002L, 0x8000000000000002L };
+
+        String[] inputs = {
+                "0x0.0000000000001p-1022",
+                "0x0.00000000000010000000000000000001p-1022",
+                "0x0.0000000000001fffffffffffffffffffffffffffffffffp-1022",
+                "0x0.00000000000017p-1022",
+                "0x0.000000000000170000000000000000001p-1022",
+                "0x0.00000000000017fffffffffffffffffffffffffffffffffp-1022",
+                "0x0.00000000000018p-1022",
+                "0x0.000000000000180000000000000000001p-1022",
+                "0x0.00000000000018fffffffffffffffffffffffffffffffffp-1022",
+                "0x0.00000000000019p-1022",
+                "0x0.000000000000190000000000000000001p-1022",
+                "0x0.00000000000019fffffffffffffffffffffffffffffffffp-1022",
+                "0x0.0000000000001fp-1022",
+                "0x0.0000000000001f0000000000000000001p-1022",
+                "0x0.0000000000001ffffffffffffffffffffffffffffffffffp-1022",
+
+                "-0x0.0000000000001p-1022",
+                "-0x0.00000000000010000000000000000001p-1022",
+                "-0x0.0000000000001fffffffffffffffffffffffffffffffffp-1022",
+                "-0x0.00000000000017p-1022",
+                "-0x0.000000000000170000000000000000001p-1022",
+                "-0x0.00000000000017fffffffffffffffffffffffffffffffffp-1022",
+                "-0x0.00000000000018p-1022",
+                "-0x0.000000000000180000000000000000001p-1022",
+                "-0x0.00000000000018fffffffffffffffffffffffffffffffffp-1022",
+                "-0x0.00000000000019p-1022",
+                "-0x0.000000000000190000000000000000001p-1022",
+                "-0x0.00000000000019fffffffffffffffffffffffffffffffffp-1022",
+                "-0x0.0000000000001fp-1022",
+                "-0x0.0000000000001f0000000000000000001p-1022",
+                "-0x0.0000000000001ffffffffffffffffffffffffffffffffffp-1022" };
+
+        for (int i = 0; i < inputs.length; i++) {
+            double actual = Double.parseDouble(inputs[i]);
+            double expected = Double.longBitsToDouble(expecteds[i]);
+
+            String expectedString = "0x" + Long.toHexString(Double.doubleToLongBits(expected));
+            String actualString = "0x" + Long.toHexString(Double.doubleToLongBits(actual));
+            String errorMsg = i + "th input string is:<" + inputs[i]
+                    + ">.The expected result should be:<" + expectedString
+                    + ">, but was: <" + actualString + ">. ";
+
+            assertEquals(errorMsg, expected, actual, 0.0D);
+        }
     }
 
     /**
-     * @tests java.lang.Double#shortValue()
+     * java.lang.Double#parseDouble(java.lang.String)
+     */
+    public void test_parseDouble_LString_ZeroBoundary() {
+        long[] expecteds = {
+                0x0L, 0x0L, 0x0L,
+                0x1L, 0x1L, 0x1L,
+                0x1L, 0x1L, 0x1L,
+                0x8000000000000000L, 0x8000000000000000L, 0x8000000000000000L,
+                0x8000000000000001L, 0x8000000000000001L, 0x8000000000000001L,
+                0x8000000000000001L, 0x8000000000000001L, 0x8000000000000001L };
+
+        String[] inputs = {
+                "0x0.00000000000004p-1022",
+                "0x0.00000000000007ffffffffffffffffffffffp-1022",
+                "0x0.00000000000008p-1022",
+                "0x0.000000000000080000000000000000001p-1022",
+                "0x0.00000000000008fffffffffffffffffffffffffffffffp-1022",
+                "0x0.00000000000009p-1022",
+                "0x0.000000000000090000000000000000001p-1022",
+                "0x0.00000000000009fffffffffffffffffffffffffffffffffp-1022",
+                "0x0.0000000000000fffffffffffffffffffffffffffffffffffp-1022",
+
+                "-0x0.00000000000004p-1022",
+                "-0x0.00000000000007ffffffffffffffffffffffp-1022",
+                "-0x0.00000000000008p-1022",
+                "-0x0.000000000000080000000000000000001p-1022",
+                "-0x0.00000000000008fffffffffffffffffffffffffffffffp-1022",
+                "-0x0.00000000000009p-1022",
+                "-0x0.000000000000090000000000000000001p-1022",
+                "-0x0.00000000000009fffffffffffffffffffffffffffffffffp-1022",
+                "-0x0.0000000000000fffffffffffffffffffffffffffffffffffp-1022" };
+
+        for (int i = 0; i < inputs.length; i++) {
+            double actual = Double.parseDouble(inputs[i]);
+            double expected = Double.longBitsToDouble(expecteds[i]);
+
+            String expectedString = "0x" + Long.toHexString(Double.doubleToLongBits(expected));
+            String actualString = "0x" + Long.toHexString(Double.doubleToLongBits(actual));
+            String errorMsg = i + "th input string is:<" + inputs[i]
+                    + ">.The expected result should be:<" + expectedString
+                    + ">, but was: <" + actualString + ">. ";
+
+            assertEquals(errorMsg, expected, actual, 0.0D);
+        }
+    }
+
+    /**
+     * java.lang.Double#shortValue()
      */
     public void test_shortValue() {
         // Test for method short java.lang.Double.shortValue()
@@ -1145,7 +1145,7 @@ public class DoubleTest extends TestCase {
     }
 
     /**
-     * @tests java.lang.Double#toString()
+     * java.lang.Double#toString()
      */
     public void test_toString() {
         // Test for method java.lang.String java.lang.Double.toString()
@@ -1154,7 +1154,7 @@ public class DoubleTest extends TestCase {
     }
 
     /**
-     * @tests java.lang.Double#toString(double)
+     * java.lang.Double#toString(double)
      */
     public void test_toStringD() {
         // Test for method java.lang.String java.lang.Double.toString(double)
@@ -1241,7 +1241,7 @@ public class DoubleTest extends TestCase {
     }
 
     /**
-     * @tests java.lang.Double#valueOf(java.lang.String)
+     * java.lang.Double#valueOf(java.lang.String)
      */
     public void test_valueOfLjava_lang_String() {
         // Test for method java.lang.Double
@@ -1254,7 +1254,7 @@ public class DoubleTest extends TestCase {
             fail("Expected Double.valueOf(null) to throw NPE.");
         } catch (NullPointerException ex) {
             // expected
-        } 
+        }
 
         try {
             Double.valueOf("");
@@ -1295,8 +1295,8 @@ public class DoubleTest extends TestCase {
     }
 
     /**
-     * @tests java.lang.Double#compareTo(java.lang.Double)
-     * @tests java.lang.Double#compare(double, double)
+     * java.lang.Double#compareTo(java.lang.Double)
+     * java.lang.Double#compare(double, double)
      */
     public void test_compareToLjava_lang_Double() {
         // A selection of double values in ascending order.
@@ -1337,7 +1337,7 @@ public class DoubleTest extends TestCase {
     }
 
     /**
-     * @tests java.lang.Double#equals(java.lang.Object)
+     * java.lang.Double#equals(java.lang.Object)
      */
     public void test_equalsLjava_lang_Object() {
         Double d1 = new Double(87654321.12345d);
@@ -1359,7 +1359,7 @@ public class DoubleTest extends TestCase {
     }
 
     /**
-     * @tests java.lang.Double#toHexString(double)
+     * java.lang.Double#toHexString(double)
      */
     public void test_toHexStringF() {
         // the follow values come from the Double Javadoc/Spec
@@ -1385,13 +1385,13 @@ public class DoubleTest extends TestCase {
         assertEquals("0x1.2957874cccccdp23", Double.toHexString(9743299.65000D));
         assertEquals("0x1.2957874cccf63p23", Double.toHexString(9743299.650001234D));
         assertEquals("0x1.700d1061d3333p33", Double.toHexString(12349743299.65000D));
-        
+
         // test HARMONY-2132
         assertEquals("0x1.01p10", Double.toHexString(0x1.01p10));
     }
 
     /**
-     * @tests java.lang.Double#valueOf(double)
+     * java.lang.Double#valueOf(double)
      */
     public void test_valueOfD() {
         assertEquals(new Double(Double.MIN_VALUE), Double.valueOf(Double.MIN_VALUE));
@@ -1404,5 +1404,41 @@ public class DoubleTest extends TestCase {
             assertEquals(new Double(s + 0.1D), Double.valueOf(s + 0.1D));
             s++;
         }
+    }
+
+    /**
+     * {@link java.lang.Double#MAX_EXPONENT}
+     * @since 1.6
+     */
+    public void test_MAX_EXPONENT() {
+        assertTrue("Wrong value of java.lang.Double.MAX_EXPONENT",
+                Double.MAX_EXPONENT == 1023);
+        assertTrue("Wrong value of java.lang.Double.MAX_EXPONENT",
+                Double.MAX_EXPONENT == Math.getExponent(Double.MAX_VALUE));
+    }
+
+    /**
+     * {@link java.lang.Double#MIN_EXPONENT}
+     * @since 1.6
+     */
+    public void test_MIN_EXPONENT() {
+        assertTrue("Wrong value of java.lang.Double.MIN_EXPONENT",
+                Double.MIN_EXPONENT == -1022);
+        assertTrue("Wrong value of java.lang.Double.MIN_EXPONENT",
+                Double.MIN_EXPONENT == Math.getExponent(Double.MIN_NORMAL));
+    }
+
+    /**
+     * {@link java.lang.Double#MIN_NORMAL}
+     * @since 1.6
+     */
+    public void test_MIN_NORMAL() {
+        assertTrue("Wrong value of java.lang.Double.MIN_NORMAL",
+                Double.MIN_NORMAL == 0x1.0p-1022);
+        assertTrue("Wrong value of java.lang.Double.MIN_NORMAL",
+                Double.MIN_NORMAL == Double
+                        .longBitsToDouble(0x0010000000000000L));
+        assertTrue("Wrong value of java.lang.Double.MIN_NORMAL",
+                Double.MIN_NORMAL == 2.2250738585072014E-308);
     }
 }

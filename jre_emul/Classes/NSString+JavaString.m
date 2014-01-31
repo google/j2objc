@@ -434,6 +434,9 @@ destinationBegin:(int)destinationBegin {
 - (NSString *)replaceFirst:(NSString *)regex
            withReplacement:(NSString *)replacement {
   NSRange range = [self rangeOfString:regex options:NSRegularExpressionSearch];
+  if (range.location == NSNotFound) {
+    return self;
+  }
   return [self stringByReplacingOccurrencesOfString:regex
                                          withString:replacement
                                             options:NSRegularExpressionSearch

@@ -304,15 +304,8 @@ public final class Double extends Number implements Comparable<Double> {
      *             if {@code string} cannot be parsed as a double value.
      */
     public static double parseDouble(String string) throws NumberFormatException {
-      if (!string.matches(FLOATING_POINT_REGEX)) {
-         throw new NumberFormatException(string);
-      }
-      return nativeParseDouble(string);
+      return StringToReal.parseDouble(string);
     }
-
-    private native static double nativeParseDouble(String s) /*-[
-      return [s doubleValue];
-    ]-*/;
 
     @Override
     public short shortValue() {
