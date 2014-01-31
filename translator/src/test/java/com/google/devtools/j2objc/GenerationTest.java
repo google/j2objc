@@ -408,7 +408,7 @@ public abstract class GenerationTest extends TestCase {
    */
   protected String getTranslatedFile(String fileName) throws IOException {
     File f = new File(tempDir, fileName);
-    assertTrue(f.exists());
+    assertTrue(fileName + " not generated", f.exists());
     return Files.toString(f, Charset.defaultCharset());
   }
 
