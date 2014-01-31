@@ -378,9 +378,12 @@ public class RewriterTest extends GenerationTest {
   public void testEnhancedForWithBoxedType() throws IOException {
     String source = "import java.util.List;" +
         "public class A { " +
-        "List<Character> chars; " +
-        "void test() { for (char c : chars) {} } }";
+        "Character[] charArray; " +
+        "List<Character> charList; " +
+        "void test() { for (char c : charArray) {} for (char c : charList) {} } }";
     String translation = translateSourceFile(source, "A", "A.m");
+    assertTranslation(translation,
+        "unichar c = [((JavaLangCharacter *) nil_chk((*b__++))) charValue];");
     assertTranslation(translation,
         "unichar c = [((JavaLangCharacter *) nil_chk(boxed__)) charValue];");
   }
