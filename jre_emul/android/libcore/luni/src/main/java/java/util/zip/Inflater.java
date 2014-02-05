@@ -386,23 +386,16 @@ public class Inflater {
     }
 
     private native void setInputImpl(byte[] buf, int offset, int byteCount, long handle) /*-[
-      char *in = malloc(byteCount);
-      char *baseAddr;
       z_stream *zStream = (z_stream *) handle;
-
-      baseAddr = malloc(byteCount);
+      char *baseAddr = malloc(byteCount);
       if (baseAddr == NULL) {
         @throw AUTORELEASE([[JavaLangOutOfMemoryError alloc] init]);
       }
       zStream->next_in = (Bytef *) baseAddr;
       zStream->avail_in = byteCount;
-      [buf getBytes:in offset:offset length:byteCount];
-      if (in == NULL) {
-        @throw AUTORELEASE([[JavaLangOutOfMemoryError alloc] init]);
+      if (byteCount > 0) {
+        memcpy(baseAddr, [buf byteRefAtIndex:offset], byteCount);
       }
-      memcpy(baseAddr, (Bytef *) in, byteCount);
-      [buf replaceBytes:in length:offset offset:byteCount];
-      free(in);
     ]-*/;
 
     synchronized int setFileInput(FileDescriptor fd, long offset, int byteCount) {
