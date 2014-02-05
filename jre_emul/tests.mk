@@ -135,8 +135,13 @@ TEST_SOURCES = \
     libcore/java/util/zip/OldAndroidChecksumTest.java \
     libcore/java/util/zip/OldAndroidDeflateTest.java \
     libcore/java/util/zip/OldAndroidGZIPStreamTest.java \
+    libcore/java/util/zip/OldAndroidZipStreamTest.java \
     libcore/java/util/zip/OldDataFormatExceptionTest.java \
     libcore/java/util/zip/OldZipExceptionTest.java \
+    libcore/java/util/zip/ZipEntryTest.java \
+    libcore/java/util/zip/ZipFileTest.java \
+    libcore/java/util/zip/ZipInputStreamTest.java \
+    libcore/java/util/zip/ZipOutputStreamTest.java \
     org/apache/harmony/archive/tests/java/util/zip/CRC32Test.java \
     org/apache/harmony/logging/tests/java/util/logging/ConsoleHandlerTest.java \
     org/apache/harmony/logging/tests/java/util/logging/ErrorManagerTest.java \
@@ -351,6 +356,9 @@ TEST_SOURCES = \
     tests/targets/security/MessageDigestTestSHA384.java \
     tests/targets/security/MessageDigestTestSHA512.java \
 
+SUITE_SOURCES = \
+    libcore/java/util/zip/SmallTests.java \
+
 FAILING_TESTS = \
     libcore/java/util/TreeSetTest.java \
     org/apache/harmony/luni/tests/java/lang/StrictMathTest.java \
@@ -372,7 +380,9 @@ FAILING_MATH_TESTS = \
     tests/api/java/math/BigIntegerTest.java \
 
 SUPPORT_OBJS = $(SUPPORT_SOURCES:%.java=$(TESTS_DIR)/%.o)
-TEST_OBJS = $(TEST_SOURCES:%.java=$(TESTS_DIR)/%.o)
+TEST_OBJS = \
+    $(TEST_SOURCES:%.java=$(TESTS_DIR)/%.o) \
+    $(SUITE_SOURCES:%.java=$(TESTS_DIR)/%.o)
 
 TEST_RESOURCES_SRCS = \
     org/apache/harmony/luni/tests/test_resource.txt \
@@ -416,8 +426,8 @@ SUPPORT_LIB = $(TESTS_DIR)/libtest-support.a
 TEST_BIN = $(TESTS_DIR)/jre_unit_tests
 
 GEN_OBJC_DIR = $(TESTS_DIR)
-TRANSLATE_JAVA_FULL = $(SUPPORT_SOURCES) $(TEST_SOURCES)
-TRANSLATE_JAVA_RELATIVE = $(SUPPORT_SOURCES) $(TEST_SOURCES)
+TRANSLATE_JAVA_FULL = $(SUPPORT_SOURCES) $(TEST_SOURCES) $(SUITE_SOURCES)
+TRANSLATE_JAVA_RELATIVE = $(SUPPORT_SOURCES) $(TEST_SOURCES) $(SUITE_SOURCES)
 TRANSLATE_ARGS = -classpath $(JUNIT_DIST_JAR) -Werror -sourcepath $(TEST_SRC) \
     --extract-unsequenced -encoding UTF-8
 include ../make/translate.mk
@@ -448,6 +458,9 @@ $(TESTS_DIR)/%: $(LOGGING_TEST_RESOURCES_ROOT)/%
 
 run-tests: link resources $(TEST_BIN)
 	@$(TEST_BIN) org.junit.runner.JUnitCore $(subst /,.,$(TEST_SOURCES:%.java=%))
+
+run-zip-tests: link resources $(TEST_BIN)
+	@$(TEST_BIN) org.junit.runner.JUnitCore libcore.java.util.zip.SmallTests
 
 # Run this when the above has errors and JUnit doesn't report which
 # test failed or hung.
