@@ -853,7 +853,7 @@ NSStringEncoding parseCharsetName(NSString *charset) {
     @throw makeException([JavaLangNullPointerException class]);
   }
   if ([sequence sequenceLength] == 0) {
-    return 0;
+    return YES;
   }
   NSRange range = [self rangeOfString:[sequence description]];
   return range.location != NSNotFound;
