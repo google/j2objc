@@ -593,7 +593,9 @@ public final class NativeDecimalFormat implements Cloneable {
       [formatter setNotANumberSymbol:nan];
       [formatter setPercentSymbol:[NSString stringWithCharacters:&percent length:1]];
       [formatter setPerMillSymbol:[NSString stringWithCharacters:&perMill length:1]];
-      [formatter setZeroSymbol:[NSString stringWithCharacters:&zeroDigit length:1]];
+      if (zeroDigit != '0') {
+        [formatter setZeroSymbol:[NSString stringWithCharacters:&zeroDigit length:1]];
+      }
     ]-*/;
 
     /**
