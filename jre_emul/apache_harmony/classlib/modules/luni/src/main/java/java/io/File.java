@@ -54,6 +54,8 @@ public class File implements Serializable, Comparable<File> {
 
     transient String properPath;
 
+    private static List<File> deleteOnExitList;
+
     /**
      * The system dependent file separator character.
      */
@@ -387,7 +389,13 @@ public class File implements Serializable, Comparable<File> {
      *             request.
      */
     public void deleteOnExit() {
-        throw new AssertionError("not implemented");
+      synchronized (File.class) {
+        if (deleteOnExitList == null) {
+          deleteOnExitList = new ArrayList<File>();
+          registerDeleteAction();
+        }
+        deleteOnExitList.add(this);
+      }
     }
 
     /**
@@ -1345,4 +1353,16 @@ public class File implements Serializable, Comparable<File> {
         }
         return name;
     }
+
+    private static native void registerDeleteAction() /*-[
+      atexit_b(^{
+        int n = [JavaIoFile_deleteOnExitList_ size];
+        for (int i = 0; i < n; i++) {
+          JavaIoFile *f = [JavaIoFile_deleteOnExitList_ getWithInt:i];
+          [f delete__];
+        }
+        RELEASE_(JavaIoFile_deleteOnExitList_);
+        JavaIoFile_deleteOnExitList_ = nil;
+      });
+    ]-*/;
 }
