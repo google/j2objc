@@ -171,7 +171,7 @@ public class AtomicMarkableReference<V> {
       id tmp = pair_;
       if (OSAtomicCompareAndSwapPtrBarrier(cmp, val, (void * volatile *) &pair_)) {
         [pair_ retain];
-        [tmp release];
+        [tmp autorelease];
         return YES;
       }
       return NO;

@@ -132,7 +132,7 @@ public class AtomicReference<V>  implements java.io.Serializable {
       id tmp = value_;
       if (OSAtomicCompareAndSwapPtrBarrier(oldValue, newValue, (void * volatile *) &value_)) {
         [value_ retain];
-        [tmp release];
+        [tmp autorelease];
         return YES;
       }
       return NO;
