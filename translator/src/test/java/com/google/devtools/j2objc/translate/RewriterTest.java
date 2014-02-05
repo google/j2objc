@@ -581,8 +581,23 @@ public class RewriterTest extends GenerationTest {
         "Test", "Test.m");
     assertTranslation(translation, "return a & b;");
     assertTranslation(translation, "return c | d;");
-    assertTranslatedLines(translation, "return (e & f) | (g & h) | i;");
+    assertTranslatedLines(translation, "return ((e & f) | (g & h)) | i;");
     assertTranslatedLines(translation, "return j | k | (l & m & n);");
+  }
+
+  // C compiler requires that tests using & or | as boolean test have parentheses around
+  // infix operands.
+  public void testLowerPrecedence() throws IOException {
+    String translation = translateSourceFile(
+        "class Test { " +
+        "boolean test1(int o, int p, int q) {" +
+        "  return o < 0 | (o == 0 & p > q); } " +
+        "boolean test2(int r) {" +
+        "  return r < 0 & !isPowerOfTwo(r); } " +
+        "boolean isPowerOfTwo(int i) { return false; }}",
+        "Test", "Test.m");
+    assertTranslatedLines(translation, "return (o < 0) | ((o == 0) & (p > q));");
+    assertTranslatedLines(translation, "return (r < 0) & ![self isPowerOfTwoWithInt:r];");
   }
 
   // Verify anonymous class for an interface that implements equals() has
