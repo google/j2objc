@@ -293,7 +293,7 @@ a.download-button span {
   width: auto;
   height: auto;
   padding: 5px 10px;
-  padding-left: 45px;
+  /* padding-left: 45px; */
   display: inline-block;
   text-indent: 0!important;
   color: #fff;
