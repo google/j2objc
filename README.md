@@ -1,6 +1,5 @@
 # J2ObjC: Java to Objective-C Translator and Runtime #
 
-**Project site:** <http://j2objc.org><br>
 **J2ObjC blog:** <http://j2objc.blogspot.com><br>
 **Questions and discussion:** <http://groups.google.com/group/j2objc-discuss>
 
