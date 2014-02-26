@@ -142,6 +142,7 @@ TEST_SOURCES = \
     libcore/java/util/zip/ZipFileTest.java \
     libcore/java/util/zip/ZipInputStreamTest.java \
     libcore/java/util/zip/ZipOutputStreamTest.java \
+    libcore/net/url/UrlUtilsTest.java \
     org/apache/harmony/archive/tests/java/util/zip/CRC32Test.java \
     org/apache/harmony/logging/tests/java/util/logging/ConsoleHandlerTest.java \
     org/apache/harmony/logging/tests/java/util/logging/ErrorManagerTest.java \
