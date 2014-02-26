@@ -26,6 +26,7 @@ public final class OsConstants {
     public static boolean S_ISREG(int mode) { return (mode & S_IFMT) == S_IFREG; }
     public static boolean S_ISLNK(int mode) { return (mode & S_IFMT) == S_IFLNK; }
 
+    public static final int AF_UNIX = 1;
     /*
     public static boolean S_ISSOCK(int mode) { return (mode & S_IFMT) == S_IFSOCK; }
     public static int WEXITSTATUS(int status) { return (status & 0xff00) >> 8; }
@@ -38,7 +39,6 @@ public final class OsConstants {
 
     public static final int AF_INET = placeholder();
     public static final int AF_INET6 = placeholder();
-    public static final int AF_UNIX = placeholder();
     public static final int AF_UNSPEC = placeholder();
     public static final int AI_ADDRCONFIG = placeholder();
     public static final int AI_ALL = placeholder();
@@ -147,15 +147,26 @@ public final class OsConstants {
     public static final int F_GETFD = 1;
     public static final int F_GETFL = 3;
     public static final int F_GETLK = 7;
-    //public static final int F_GETLK64 = ;
+    public static final int F_GETLK64 = 12;
     public static final int F_GETOWN = 5;
-    //public static final int F_OK = ;
-    //public static final int F_RDLCK = ;
+    public static final int F_OK = 0;
+    public static final int F_RDLCK = 1;
     public static final int F_SETFD = 2;
     public static final int F_SETFL = 4;
     public static final int F_SETLK = 8;
-    //public static final int F_SETLK64 = ;
+    public static final int F_SETLK64 = 13;
     public static final int F_SETLKW = 9;
+    public static final int F_SETLKW64 = 14;
+    public static final int F_UNLCK = 2;
+    public static final int F_WRLCK = 3;
+    public static final int MAP_FIXED = 0x0010;
+    public static final int MAP_PRIVATE = 0x0002;
+    public static final int MAP_SHARED = 0x0001;
+    public static final int MCL_CURRENT = 0x0001;
+    public static final int MCL_FUTURE = 0x0002;
+    public static final int MS_ASYNC = 0x0001;
+    public static final int MS_INVALIDATE = 0x0002;
+    public static final int MS_SYNC = 0x0010;
     public static final int O_ACCMODE = 0x0003;
     public static final int O_APPEND = 0x0008;
     public static final int O_CREAT = 0x0200;
@@ -168,9 +179,17 @@ public final class OsConstants {
     public static final int O_SYNC = 0x0080;
     public static final int O_TRUNC = 0x0400;
     public static final int O_WRONLY = 0x0001;
+    public static final int POLLHUP = 0x0010;
+    public static final int POLLIN = 0x0001;
+    public static final int POLLOUT = 0x0004;
+    public static final int PROT_EXEC = 0x0004;
+    public static final int PROT_NONE = 0x0000;
+    public static final int PROT_READ = 0x0001;
+    public static final int PROT_WRITE = 0x0002;
     public static final int SEEK_CUR = 1;
     public static final int SEEK_END = 2;
     public static final int SEEK_SET = 0;
+    public static final int SOCK_STREAM = 1;
     public static final int S_IFBLK = 0060000;
     public static final int S_IFCHR = 0020000;
     public static final int S_IFDIR = 0040000;
@@ -178,12 +197,11 @@ public final class OsConstants {
     public static final int S_IFLNK = 0120000;
     public static final int S_IFMT = 0170000;
     public static final int S_IFREG = 0100000;
+    public static final int _SC_PAGESIZE = 29;
+    public static final int _SC_PAGE_SIZE = _SC_PAGESIZE;
 
     /*
-    public static final int F_SETLKW64 = ;
     public static final int F_SETOWN = ;
-    public static final int F_UNLCK = ;
-    public static final int F_WRLCK = ;
     public static final int IFF_ALLMULTI = placeholder();
     public static final int IFF_AUTOMEDIA = placeholder();
     public static final int IFF_BROADCAST = placeholder();
@@ -224,13 +242,8 @@ public final class OsConstants {
     public static final int IP_MULTICAST_TTL = placeholder();
     public static final int IP_TOS = placeholder();
     public static final int IP_TTL = placeholder();
-    public static final int MAP_FIXED = placeholder();
-    public static final int MAP_PRIVATE = placeholder();
-    public static final int MAP_SHARED = placeholder();
     public static final int MCAST_JOIN_GROUP = placeholder();
     public static final int MCAST_LEAVE_GROUP = placeholder();
-    public static final int MCL_CURRENT = placeholder();
-    public static final int MCL_FUTURE = placeholder();
     public static final int MSG_CTRUNC = placeholder();
     public static final int MSG_DONTROUTE = placeholder();
     public static final int MSG_EOR = placeholder();
@@ -238,28 +251,18 @@ public final class OsConstants {
     public static final int MSG_PEEK = placeholder();
     public static final int MSG_TRUNC = placeholder();
     public static final int MSG_WAITALL = placeholder();
-    public static final int MS_ASYNC = placeholder();
-    public static final int MS_INVALIDATE = placeholder();
-    public static final int MS_SYNC = placeholder();
     public static final int NI_DGRAM = placeholder();
     public static final int NI_NAMEREQD = placeholder();
     public static final int NI_NOFQDN = placeholder();
     public static final int NI_NUMERICHOST = placeholder();
     public static final int NI_NUMERICSERV = placeholder();
     public static final int POLLERR = placeholder();
-    public static final int POLLHUP = placeholder();
-    public static final int POLLIN = placeholder();
     public static final int POLLNVAL = placeholder();
-    public static final int POLLOUT = placeholder();
     public static final int POLLPRI = placeholder();
     public static final int POLLRDBAND = placeholder();
     public static final int POLLRDNORM = placeholder();
     public static final int POLLWRBAND = placeholder();
     public static final int POLLWRNORM = placeholder();
-    public static final int PROT_EXEC = placeholder();
-    public static final int PROT_NONE = placeholder();
-    public static final int PROT_READ = placeholder();
-    public static final int PROT_WRITE = placeholder();
     public static final int R_OK = placeholder();
     public static final int SHUT_RD = placeholder();
     public static final int SHUT_RDWR = placeholder();
@@ -304,7 +307,6 @@ public final class OsConstants {
     public static final int SOCK_DGRAM = placeholder();
     public static final int SOCK_RAW = placeholder();
     public static final int SOCK_SEQPACKET = placeholder();
-    public static final int SOCK_STREAM = placeholder();
     public static final int SOL_SOCKET = placeholder();
     public static final int SO_BINDTODEVICE = placeholder();
     public static final int SO_BROADCAST = placeholder();
@@ -394,8 +396,6 @@ public final class OsConstants {
     public static final int _SC_NPROCESSORS_CONF = placeholder();
     public static final int _SC_NPROCESSORS_ONLN = placeholder();
     public static final int _SC_OPEN_MAX = placeholder();
-    public static final int _SC_PAGESIZE = placeholder();
-    public static final int _SC_PAGE_SIZE = placeholder();
     public static final int _SC_PASS_MAX = placeholder();
     public static final int _SC_PHYS_PAGES = placeholder();
     public static final int _SC_PRIORITIZED_IO = placeholder();
