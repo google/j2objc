@@ -360,39 +360,38 @@ JAVA_SOURCES = \
 	java/net/URIEncoderDecoder.java \
 	java/net/URISyntaxException.java \
 	java/nio/Buffer.java \
-	java/nio/BufferFactory.java \
 	java/nio/BufferOverflowException.java \
 	java/nio/BufferUnderflowException.java \
+	java/nio/ByteArrayBuffer.java \
 	java/nio/ByteBuffer.java \
+	java/nio/ByteBufferAsCharBuffer.java \
+	java/nio/ByteBufferAsDoubleBuffer.java \
+	java/nio/ByteBufferAsFloatBuffer.java \
+	java/nio/ByteBufferAsIntBuffer.java \
+	java/nio/ByteBufferAsLongBuffer.java \
+	java/nio/ByteBufferAsShortBuffer.java \
 	java/nio/ByteOrder.java \
 	java/nio/CharArrayBuffer.java \
 	java/nio/CharBuffer.java \
 	java/nio/CharSequenceAdapter.java \
+	java/nio/DirectByteBuffer.java \
 	java/nio/DoubleArrayBuffer.java \
 	java/nio/DoubleBuffer.java \
+	java/nio/FileChannelImpl.java \
+	java/nio/FileDescriptorChannel.java \
 	java/nio/FloatArrayBuffer.java \
 	java/nio/FloatBuffer.java \
-	java/nio/HeapByteBuffer.java \
 	java/nio/IntArrayBuffer.java \
 	java/nio/IntBuffer.java \
 	java/nio/InvalidMarkException.java \
+	java/nio/IoVec.java \
 	java/nio/LongArrayBuffer.java \
 	java/nio/LongBuffer.java \
+	java/nio/MappedByteBuffer.java \
+	java/nio/MemoryBlock.java \
+	java/nio/NIOAccess.java \
+	java/nio/NioUtils.java \
 	java/nio/ReadOnlyBufferException.java \
-	java/nio/ReadOnlyCharArrayBuffer.java \
-	java/nio/ReadOnlyDoubleArrayBuffer.java \
-	java/nio/ReadOnlyFloatArrayBuffer.java \
-	java/nio/ReadOnlyHeapByteBuffer.java \
-	java/nio/ReadOnlyIntArrayBuffer.java \
-	java/nio/ReadOnlyLongArrayBuffer.java \
-	java/nio/ReadOnlyShortArrayBuffer.java \
-	java/nio/ReadWriteCharArrayBuffer.java \
-	java/nio/ReadWriteDoubleArrayBuffer.java \
-	java/nio/ReadWriteFloatArrayBuffer.java \
-	java/nio/ReadWriteHeapByteBuffer.java \
-	java/nio/ReadWriteIntArrayBuffer.java \
-	java/nio/ReadWriteLongArrayBuffer.java \
-	java/nio/ReadWriteShortArrayBuffer.java \
 	java/nio/ShortArrayBuffer.java \
 	java/nio/ShortBuffer.java \
 	java/nio/charset/CharacterCodingException.java \
@@ -412,6 +411,33 @@ JAVA_SOURCES = \
 	java/nio/charset/StandardCharsets.java \
 	java/nio/charset/UnmappableCharacterException.java \
 	java/nio/charset/UnsupportedCharsetException.java \
+	java/nio/channels/AlreadyConnectedException.java \
+	java/nio/channels/AsynchronousCloseException.java \
+	java/nio/channels/ByteChannel.java \
+	java/nio/channels/CancelledKeyException.java \
+	java/nio/channels/Channel.java \
+	java/nio/channels/ClosedByInterruptException.java \
+	java/nio/channels/ClosedChannelException.java \
+	java/nio/channels/ClosedSelectorException.java \
+	java/nio/channels/ConnectionPendingException.java \
+	java/nio/channels/FileChannel.java \
+	java/nio/channels/FileLock.java \
+	java/nio/channels/FileLockInterruptionException.java \
+	java/nio/channels/GatheringByteChannel.java \
+	java/nio/channels/IllegalBlockingModeException.java \
+	java/nio/channels/IllegalSelectorException.java \
+	java/nio/channels/InterruptibleChannel.java \
+	java/nio/channels/NoConnectionPendingException.java \
+	java/nio/channels/NonReadableChannelException.java \
+	java/nio/channels/NonWritableChannelException.java \
+	java/nio/channels/NotYetBoundException.java \
+	java/nio/channels/OverlappingFileLockException.java \
+	java/nio/channels/ReadableByteChannel.java \
+	java/nio/channels/ScatteringByteChannel.java \
+	java/nio/channels/UnresolvedAddressException.java \
+	java/nio/channels/UnsupportedAddressTypeException.java \
+	java/nio/channels/WritableByteChannel.java \
+	java/nio/channels/spi/AbstractInterruptibleChannel.java \
 	java/security/AccessControlContext.java \
 	java/security/AccessControlException.java \
 	java/security/AccessController.java \
@@ -609,6 +635,7 @@ JAVA_SOURCES = \
 	java/util/TreeSet.java \
 	java/util/UnknownFormatConversionException.java \
 	java/util/UnknownFormatFlagsException.java \
+	java/util/UnsafeArrayList.java \
 	java/util/UUID.java \
 	java/util/Vector.java \
 	java/util/WeakHashMap.java \

@@ -28,7 +28,7 @@
 // an IOSLongArray is fixed-size but its elements are mutable.
 @interface IOSLongArray : IOSArray {
  @public
-  long long *buffer_;
+  long long *buffer_;  // java.nio requires this be first field in IOSArray subclasses.
 }
 
 PRIMITIVE_ARRAY_INTERFACE(long, Long, long long)

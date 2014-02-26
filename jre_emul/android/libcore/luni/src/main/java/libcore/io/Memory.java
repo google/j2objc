@@ -199,8 +199,9 @@ public final class Memory {
       // dstArray may be any primitive array type; type-testing to get
       // the buffer is avoided because all IOS*Array classes define the
       // buffer at the same offset.
-      char *dst = IOSByteArray_GetRef((IOSByteArray *) dstArray, dstOffset * sizeofElements);
-      const char *src = IOSByteArray_GetRef((IOSByteArray *) srcArray, srcOffset);
+      char *dst = IOSByteArray_GetRef((IOSByteArray *) dstArray, dstOffset);
+      const char *src =
+          IOSByteArray_GetRef((IOSByteArray *) srcArray, 0) + srcOffset * sizeofElements;
       unsafeBulkCopy(dst, src, byteCount, sizeofElements, swap);
     ]-*/;
 
@@ -218,7 +219,8 @@ public final class Memory {
       // the buffer is avoided because all IOS*Array classes define the
       // buffer at the same offset.
       char *dst = IOSByteArray_GetRef((IOSByteArray *) dstArray, dstOffset);
-      const char *src = IOSByteArray_GetRef((IOSByteArray *) srcArray, srcOffset * sizeofElements);
+      const char *src =
+          IOSByteArray_GetRef((IOSByteArray *) srcArray, 0) + srcOffset * sizeofElements;
       unsafeBulkCopy(dst, src, byteCount, sizeofElements, swap);
     ]-*/;
 

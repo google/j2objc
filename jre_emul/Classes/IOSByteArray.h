@@ -28,7 +28,7 @@
 // an IOSByteArray is fixed-size but its elements are mutable.
 @interface IOSByteArray : IOSArray {
  @public
-  char *buffer_;
+  char *buffer_;  // java.nio requires this be first field in IOSArray subclasses.
 }
 
 PRIMITIVE_ARRAY_INTERFACE(byte, Byte, char)

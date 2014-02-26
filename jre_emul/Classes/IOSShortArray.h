@@ -28,7 +28,7 @@
 // an IOSShortArray is fixed-size but its elements are mutable.
 @interface IOSShortArray : IOSArray {
  @public
-  short *buffer_;
+  short *buffer_;  // java.nio requires this be first field in IOSArray subclasses.
 }
 
 PRIMITIVE_ARRAY_INTERFACE(short, Short, short)

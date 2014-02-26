@@ -28,7 +28,7 @@
 // an IOSBooleanArray is fixed-size but its elements are mutable.
 @interface IOSBooleanArray : IOSArray {
  @public
-  BOOL *buffer_;
+  BOOL *buffer_;  // java.nio requires this be first field in IOSArray subclasses.
 }
 
 PRIMITIVE_ARRAY_INTERFACE(boolean, Boolean, BOOL)

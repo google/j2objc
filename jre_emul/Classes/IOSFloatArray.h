@@ -28,7 +28,7 @@
 // an IOSFloatArray is fixed-size but its elements are mutable.
 @interface IOSFloatArray : IOSArray {
  @public
-  float *buffer_;
+  float *buffer_;  // java.nio requires this be first field in IOSArray subclasses.
 }
 
 PRIMITIVE_ARRAY_INTERFACE(float, Float, float)
