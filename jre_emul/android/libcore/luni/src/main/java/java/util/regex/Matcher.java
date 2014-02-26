@@ -717,6 +717,9 @@ public final class Matcher implements MatchResult {
           [regex firstMatchInString:self->input_
                             options:options
                               range:NSMakeRange(0, length)];
+      if (match == nil) {
+        return NO;
+      }
 
       // Update offsets.
       NSUInteger nGroups = [match numberOfRanges];
