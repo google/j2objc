@@ -54,4 +54,8 @@
 
 @end
 
+// Empty class to force category to be loaded.
+@interface JreObjectCategoryDummy : NSObject
+@end
+
 #endif // _NSObject_JavaObject_H_

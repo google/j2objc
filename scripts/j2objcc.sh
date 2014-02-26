@@ -44,10 +44,9 @@ if [ "x${IPHONEOS_DEPLOYMENT_TARGET}" = "x" ]; then
 fi
 
 declare CC_FLAGS="-Werror -Wno-parentheses"
-declare OBJC="-ObjC -std=c11"
+declare OBJC="-std=c11"
 declare LIBS="-ljre_emul -l z -l j2objc_main"
-declare LOAD_FLAGS="-force_load ${LIB_PATH}/libjre_emul.a"
-declare LINK_FLAGS="${LIBS} ${FRAMEWORKS} -L ${LIB_PATH} ${LOAD_FLAGS}"
+declare LINK_FLAGS="${LIBS} ${FRAMEWORKS} -L ${LIB_PATH}"
 
 for arg; do
   case $arg in

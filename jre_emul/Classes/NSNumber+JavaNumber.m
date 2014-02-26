@@ -26,3 +26,7 @@
 }
 
 @end
+
+// Empty class to force category to be loaded.
+@implementation JreNumberCategoryDummy
+@end
