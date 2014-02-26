@@ -153,8 +153,15 @@ public class NameTable {
       // Definitions from math.h
       "DOMAIN", "HUGE", "INFINITY", "NAN", "OVERFLOW", "SING", "UNDERFLOW",
 
+      // Definitions from mman.h
+      "MAP_FIXED", "MAP_PRIVATE", "MAP_SHARED", "MCL_CURRENT", "MCL_FUTURE", "MS_ASYNC",
+      "MS_INVALIDATE", "MS_SYNC", "PROT_EXEC", "PROT_NONE", "PROT_READ", "PROT_WRITE",
+
       // Definitions from stat.h
       "S_IFBLK", "S_IFCHR", "S_IFDIR", "S_IFIFO", "S_IFLNK", "S_IFMT", "S_IFREG",
+
+      // Definitions from unistd.h
+      "F_OK", "_SC_PAGESIZE", "_SC_PAGE_SIZE",
 
       // Cocoa definitions from ConditionalMacros.h
       "CFMSYSTEMCALLS", "CGLUESUPPORTED", "FUNCTION_PASCAL", "FUNCTION_DECLSPEC",
