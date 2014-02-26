@@ -138,7 +138,7 @@ public final class Posix implements Os {
 
     int rc = TEMP_FAILURE_RETRY(fcntl((int) fd->descriptor_, cmd, &lock));
     if (rc == -1) {
-      [LibcoreIoPosix throwIfMinusOneWithNSString:@"fchown" withInt:rc];
+      [LibcoreIoPosix throwErrnoExceptionWithNSString:@"fcntl" withInt:errno];
     }
     arg->l_type_ = lock.l_type;
     arg->l_whence_ = lock.l_whence;
@@ -254,9 +254,7 @@ public final class Posix implements Os {
     }
     const char* cpath = [path cStringUsingEncoding:LibcoreIoPosix_defaultEncoding_];
     int nativeFd = TEMP_FAILURE_RETRY(open(cpath, flags, mode));
-    if (nativeFd == -1) {
-      return nil;
-    }
+    [LibcoreIoPosix throwIfMinusOneWithNSString:@"munmap" withInt:nativeFd];
     JavaIoFileDescriptor *newFd = AUTORELEASE([[JavaIoFileDescriptor alloc] init]);
     newFd->descriptor_ = nativeFd;
     return newFd;
@@ -342,6 +340,9 @@ public final class Posix implements Os {
     const char *bytes = BytesRO(buffer);
     if (!bytes) {
         return -1;
+    }
+    if (byteCount + offset < 0) {  // If buffer overflow.
+      [LibcoreIoPosix throwErrnoExceptionWithNSString:@"pwrite" withInt:ERANGE];
     }
     int rc =
       TEMP_FAILURE_RETRY(pwrite64(fd->descriptor_, bytes + bufferOffset, byteCount, offset));

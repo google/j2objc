@@ -18,20 +18,27 @@
 package java.io;
 
 /**
- * An interface for filtering {@link File} objects based on their names
- * or other information.
- *
- * @see File#listFiles(FileFilter)
+ * Thrown when a file specified by a program cannot be found.
  */
-public abstract interface FileFilter {
+public class FileNotFoundException extends IOException {
+
+    private static final long serialVersionUID = -897856973823710492L;
 
     /**
-     * Indicating whether a specific file should be included in a pathname list.
-     * 
-     * @param pathname
-     *            the abstract file to check.
-     * @return {@code true} if the file should be included, {@code false}
-     *         otherwise.
+     * Constructs a new {@code FileNotFoundException} with its stack trace
+     * filled in.
      */
-    public abstract boolean accept(File pathname);
+    public FileNotFoundException() {
+    }
+
+    /**
+     * Constructs a new {@code FileNotFoundException} with its stack trace and
+     * detail message filled in.
+     *
+     * @param detailMessage
+     *            the detail message for this exception.
+     */
+    public FileNotFoundException(String detailMessage) {
+        super(detailMessage);
+    }
 }

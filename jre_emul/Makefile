@@ -197,6 +197,7 @@ JAVA_SOURCES = \
 	java/io/FileInputStream.java \
 	java/io/FileNotFoundException.java \
 	java/io/FileOutputStream.java \
+	java/io/FilePermission.java \
 	java/io/FileReader.java \
 	java/io/FileWriter.java \
 	java/io/FilterInputStream.java \
@@ -699,6 +700,7 @@ JAVA_SOURCES = \
 	libcore/io/StructFlock.java \
 	libcore/io/StructPollfd.java \
 	libcore/io/StructStat.java \
+	libcore/io/StructStatVfs.java \
 	libcore/math/MathUtils.java \
 	libcore/net/UriCodec.java \
 	libcore/net/MimeUtils.java \
