@@ -885,16 +885,11 @@ public class StatementGenerator extends ErrorReportingASTVisitor {
       buffer.append("@\"null\"");
       return;
     }
-    if (stringConcatenationArgNeedsIntCast(arg)) {
-      // Some native objective-c methods are declared to return NSUInteger.
-      buffer.append("(int) ");
-      arg.accept(this);
-      return;
-    }
     arg.accept(this);
   }
 
-  private boolean stringConcatenationArgNeedsIntCast(Expression arg) {
+  // Some native objective-c methods are declared to return NSUInteger.
+  private boolean returnValueNeedsIntCast(Expression arg) {
     if (arg instanceof MethodInvocation) {
       MethodInvocation invocation = (MethodInvocation) arg;
       String methodName = Types.getMethodBinding(invocation).getName();
@@ -964,6 +959,10 @@ public class StatementGenerator extends ErrorReportingASTVisitor {
       if (iosMethod != null && iosMethod.isFunction()) {
         printFunctionInvocation(iosMethod, ASTUtil.getArguments(node));
       } else {
+        if (returnValueNeedsIntCast(node)) {
+          buffer.append("((int) ");
+          castPrinted = true;
+        }
         printMethodInvocation(binding, methodName, receiver, ASTUtil.getArguments(node));
       }
       if (castPrinted) {

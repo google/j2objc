@@ -98,7 +98,7 @@ public class JavaToIOSMethodTranslatorTest extends GenerationTest {
     List<Statement> stmts = translateStatements(source);
     assertEquals(1, stmts.size());
     String result = generateStatement(stmts.get(0));
-    assertEquals("int test = [@\"foo\" hash];", result);
+    assertEquals("int test = ((int) [@\"foo\" hash]);", result);
   }
 
   public void testClassGetSuperclass() throws IOException {
