@@ -65,7 +65,8 @@ public final class HeapBufferIterator extends BufferIterator {
     }
 
     public void readIntArray(int[] dst, int dstOffset, int intCount) {
-        Memory.unsafeIntBulkGet(dst, dstOffset, intCount, buffer, offset + position, order.needsSwap);
+        final int byteCount = intCount * SizeOf.INT;
+        Memory.unsafeBulkGet(dst, dstOffset, byteCount, buffer, offset + position, SizeOf.INT, order.needsSwap);
         position += byteCount;
     }
 
