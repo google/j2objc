@@ -672,6 +672,8 @@ JAVA_SOURCES = \
 	libcore/io/StructStat.java \
 	libcore/math/MathUtils.java \
 	libcore/net/UriCodec.java \
+	libcore/net/MimeUtils.java \
+	libcore/net/http/HttpDate.java \
 	libcore/net/url/FileHandler.java \
 	libcore/net/url/UrlUtils.java \
 	libcore/util/BasicLruCache.java \
