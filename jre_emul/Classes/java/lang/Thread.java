@@ -19,6 +19,9 @@ package java.lang;
 
 import com.google.j2objc.annotations.Weak;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /*-[
 #import "java/lang/IllegalThreadStateException.h"
 #import "java/lang/InterruptedException.h"
@@ -62,6 +65,10 @@ public class Thread implements Runnable {
 
   /** The synchronization object responsible for this thread parking. */
   private Object parkBlocker = new Object();
+
+  /** Callbacks to run on interruption. */
+  @Weak
+  private final List<Runnable> interruptActions = new ArrayList<Runnable>();
 
   private static ThreadGroup systemThreadGroup;
   private static ThreadGroup mainThreadGroup;
@@ -612,6 +619,11 @@ public class Thread implements Runnable {
    */
   public void interrupt() {
     synchronized(vmThread) {
+      synchronized (interruptActions) {
+        for (int i = interruptActions.size() - 1; i >= 0; i--) {
+          interruptActions.get(i).run();
+        }
+      }
       if (interrupted) {
         return;  // No further action needed.
       }
@@ -1034,5 +1046,44 @@ public class Thread implements Runnable {
       System.err.print("Exception in thread \"" + t.getName() + "\" ");
       e.printStackTrace(System.err);
     }
+  }
+
+  /**
+   * Adds a runnable to be invoked upon interruption. If this thread has
+   * already been interrupted, the runnable will be invoked immediately. The
+   * action should be idempotent as it may be invoked multiple times for a
+   * single interruption.
+   *
+   * <p>Each call to this method must be matched with a corresponding call to
+   * {@link #popInterruptAction$}.
+   *
+   * @hide used by NIO
+   */
+  public final void pushInterruptAction$(Runnable interruptAction) {
+      synchronized (interruptActions) {
+          interruptActions.add(interruptAction);
+      }
+
+      if (interruptAction != null && isInterrupted()) {
+          interruptAction.run();
+      }
+  }
+
+  /**
+   * Removes {@code interruptAction} so it is not invoked upon interruption.
+   *
+   * @param interruptAction the pushed action, used to check that the call
+   *     stack is correctly nested.
+   *
+   * @hide used by NIO
+   */
+  public final void popInterruptAction$(Runnable interruptAction) {
+      synchronized (interruptActions) {
+          Runnable removed = interruptActions.remove(interruptActions.size() - 1);
+          if (interruptAction != removed) {
+              throw new IllegalArgumentException(
+                      "Expected " + interruptAction + " but was " + removed);
+          }
+      }
   }
 }
