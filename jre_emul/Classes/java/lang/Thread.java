@@ -67,7 +67,6 @@ public class Thread implements Runnable {
   private Object parkBlocker = new Object();
 
   /** Callbacks to run on interruption. */
-  @Weak
   private final List<Runnable> interruptActions = new ArrayList<Runnable>();
 
   private static ThreadGroup systemThreadGroup;
@@ -471,6 +470,7 @@ public class Thread implements Runnable {
         throw(t);
       }
     } finally {
+      interruptActions.clear();
       cancelNativeThread();
     }
   }
