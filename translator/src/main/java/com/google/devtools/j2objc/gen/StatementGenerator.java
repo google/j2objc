@@ -892,8 +892,10 @@ public class StatementGenerator extends ErrorReportingASTVisitor {
   private boolean returnValueNeedsIntCast(Expression arg) {
     if (arg instanceof MethodInvocation) {
       MethodInvocation invocation = (MethodInvocation) arg;
-      String methodName = Types.getMethodBinding(invocation).getName();
-      if (methodName.equals("hash")) {
+      IMethodBinding methodBinding = Types.getMethodBinding(invocation);
+      String methodName = methodBinding.getName();
+      if (methodName.equals("hash") &&
+          methodBinding.getReturnType().isEqualTo(arg.getAST().resolveWellKnownType("int"))) {
         return true;
       }
       if (invocation.getExpression() != null) {
