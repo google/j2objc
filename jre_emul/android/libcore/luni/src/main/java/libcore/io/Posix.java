@@ -114,6 +114,17 @@ public final class Posix implements Os {
     return (rc == 0);
   ]-*/;
 
+  /**
+   * Like access(), but returns false on error instead of throwing an exception.
+   */
+  public native boolean canAccess(String path, int mode) /*-[
+    if (!path) {
+      return NO;
+    }
+    const char* cpath = [path UTF8String];
+    return (TEMP_FAILURE_RETRY(access(cpath, mode)) == 0);
+  ]-*/;
+
   public native void chmod(String path, int mode) throws ErrnoException /*-[
     if (path) {
       const char* cpath = [path UTF8String];
