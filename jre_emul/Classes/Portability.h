@@ -67,10 +67,6 @@ static inline int mincore_(void* addr, size_t length, unsigned char* vec) {
 #endif
 }
 
-// For statfs(3).
-#include <sys/param.h>
-#include <sys/mount.h>
-#define f_frsize f_bsize // TODO: close enough?
 
 #else
 
@@ -78,7 +74,6 @@ static inline int mincore_(void* addr, size_t length, unsigned char* vec) {
 
 #include <byteswap.h>
 #include <sys/sendfile.h>
-#include <sys/statvfs.h>
 
 // The prebuilt toolchains tend to be rather old and don't include the newest
 // kernel headers. CAP_BLOCK_SUSPEND was introduced in 3.5, so until all of
@@ -89,5 +84,7 @@ static inline int mincore_(void* addr, size_t length, unsigned char* vec) {
 #endif // ifndef CAP_BLOCK_SUSPEND
 
 #endif
+
+#include <sys/statvfs.h>
 
 #endif  // PORTABILITY_H_included

@@ -380,9 +380,7 @@ public final class IoBridge {
     public static FileDescriptor open(String path, int flags) throws FileNotFoundException {
         FileDescriptor fd = null;
         try {
-            // On Android, we don't want default permissions to allow global access.
-            int mode = ((flags & O_ACCMODE) == O_RDONLY) ? 0 : 0600;
-            fd = Libcore.os.open(path, flags, mode);
+            fd = Libcore.os.open(path, flags, 0600);
             // Posix open(2) fails with EISDIR only if you ask for write permission.
             // Java disallows reading directories too.
             if (S_ISDIR(Libcore.os.fstat(fd).st_mode)) {

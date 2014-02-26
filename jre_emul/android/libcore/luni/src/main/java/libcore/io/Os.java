@@ -42,6 +42,7 @@ public interface Os {
     public int ioctlInt(FileDescriptor fd, int cmd, MutableInt arg) throws ErrnoException;
     public boolean isatty(FileDescriptor fd);
     public long lseek(FileDescriptor fd, long offset, int whence) throws ErrnoException;
+    public void mkdir(String path, int mode) throws ErrnoException;
     public void mincore(long address, long byteCount, byte[] vector) throws ErrnoException;
     public void mlock(long address, long byteCount) throws ErrnoException;
     public long mmap(long address, long byteCount, int prot, int flags, FileDescriptor fd,
@@ -59,12 +60,18 @@ public interface Os {
         throws ErrnoException;
     public int readv(FileDescriptor fd, Object[] buffers, int[] offsets, int[] byteCounts)
         throws ErrnoException;
+    public String realpath(String path);
+    public void remove(String path) throws ErrnoException;
+    public void rename(String oldPath, String newPath) throws ErrnoException;
     public long sendfile(FileDescriptor outFd, FileDescriptor inFd, MutableLong inOffset,
         long byteCount) throws ErrnoException;
     public void socketpair(int domain, int type, int protocol, FileDescriptor fd1,
         FileDescriptor fd2) throws ErrnoException;
+    public StructStat stat(String path) throws ErrnoException;
+    public StructStatVfs statvfs(String path) throws ErrnoException;
     public String strerror(int errno);
     public long sysconf(int name);
+    public void symlink(String oldPath, String newPath) throws ErrnoException;
     public void tcdrain(FileDescriptor fd) throws ErrnoException;
     public int write(FileDescriptor fd, ByteBuffer buffer) throws ErrnoException;
     public int write(FileDescriptor fd, byte[] bytes, int byteOffset, int byteCount)
@@ -89,15 +96,12 @@ public interface Os {
 //    public void lchown(String path, int uid, int gid) throws ErrnoException;
 //    public void listen(FileDescriptor fd, int backlog) throws ErrnoException;
 //    public StructStat lstat(String path) throws ErrnoException;
-//    public void mkdir(String path, int mode) throws ErrnoException;
 //    /* TODO: if we used the non-standard ppoll(2) behind the scenes, we could take a long
 //       timeout.*/
 //    public int pread(FileDescriptor fd, byte[] bytes, int byteOffset, int byteCount, long offset)
 //        throws ErrnoException;
 //    public int pwrite(FileDescriptor fd, byte[] bytes, int byteOffset, int byteCount, long offset)
 //        throws ErrnoException;
-//    public void remove(String path) throws ErrnoException;
-//    public void rename(String oldPath, String newPath) throws ErrnoException;
 //    public void setegid(int egid) throws ErrnoException;
 //    public void setenv(String name, String value, boolean overwrite) throws ErrnoException;
 //    public void seteuid(int euid) throws ErrnoException;
@@ -105,9 +109,6 @@ public interface Os {
 //    public int setsid() throws ErrnoException;
 //    public void setuid(int uid) throws ErrnoException;
 //    public void shutdown(FileDescriptor fd, int how) throws ErrnoException;
-//    public StructStat stat(String path) throws ErrnoException;
-//    /* TODO: replace statfs with statvfs. */
-//    public StructStatFs statfs(String path) throws ErrnoException;
 //    public void symlink(String oldPath, String newPath) throws ErrnoException;
 //    public void tcsendbreak(FileDescriptor fd, int duration) throws ErrnoException;
 //    public int umask(int mask);

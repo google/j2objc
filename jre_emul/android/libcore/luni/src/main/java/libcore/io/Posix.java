@@ -27,6 +27,7 @@ import libcore.util.MutableLong;
 #include "BufferUtils.h"
 #include "Portability.h"
 #include "TempFailureRetry.h"
+#include "libcore/io/StructStatVfs.h"
 #include "libcore/io/StructPollfd.h"
 
 #include <fcntl.h>
@@ -42,15 +43,53 @@ import libcore.util.MutableLong;
 public final class Posix implements Os {
   Posix() { }
 
-  private static int defaultEncoding;
-
-  static {
-    nativeInit();
+  /*-[
+  static id makeStructStat(const struct stat *sb) {
+      return AUTORELEASE([[LibcoreIoStructStat alloc]
+                          initWithLong:sb->st_dev
+                              withLong:sb->st_ino
+                               withInt:sb->st_mode
+                              withLong:sb->st_nlink
+                               withInt:sb->st_uid
+                               withInt:sb->st_gid
+                              withLong:sb->st_rdev
+                              withLong:sb->st_size
+                              withLong:sb->st_atime
+                              withLong:sb->st_mtime
+                              withLong:sb->st_ctime
+                              withLong:sb->st_blksize
+                              withLong:sb->st_blocks]);
   }
 
-  private static native void nativeInit() /*-[
-    LibcoreIoPosix_defaultEncoding_ = [NSString defaultCStringEncoding];
-  ]-*/;
+  static id makeStructStatVfs(const struct statvfs *sb) {
+    return AUTORELEASE([[LibcoreIoStructStatVfs alloc]
+                        initWithLong:(long long)sb->f_bsize
+                            withLong:(long long)sb->f_frsize
+                            withLong:(long long)sb->f_blocks
+                            withLong:(long long)sb->f_bfree
+                            withLong:(long long)sb->f_bavail
+                            withLong:(long long)sb->f_files
+                            withLong:(long long)sb->f_ffree
+                            withLong:(long long)sb->f_favail
+                            withLong:(long long)sb->f_fsid
+                            withLong:(long long)sb->f_flag
+                            withLong:255LL]);  // __DARWIN_MAXNAMLEN
+  }
+
+  static id doStat(NSString *path, BOOL isLstat) {
+    if (!path) {
+      return NO;
+    }
+    const char* cpath = [path UTF8String];
+    struct stat sb;
+    int rc = isLstat ? TEMP_FAILURE_RETRY(lstat(cpath, &sb))
+                     : TEMP_FAILURE_RETRY(stat(cpath, &sb));
+    if (rc == -1) {
+      [LibcoreIoPosix throwErrnoExceptionWithNSString:(isLstat ? @"lstat" : @"stat") withInt:errno];
+    }
+    return makeStructStat(&sb);
+  }
+  ]-*/
 
   private static void throwErrnoException(String message, int errorCode) throws ErrnoException {
     throw new ErrnoException(message, errorCode);
@@ -67,7 +106,7 @@ public final class Posix implements Os {
     if (!path) {
       return NO;
     }
-    const char* cpath = [path cStringUsingEncoding:LibcoreIoPosix_defaultEncoding_];
+    const char* cpath = [path UTF8String];
     int rc = TEMP_FAILURE_RETRY(access(cpath, mode));
     if (rc == -1) {
       [LibcoreIoPosix throwErrnoExceptionWithNSString:@"access" withInt:errno];
@@ -77,7 +116,7 @@ public final class Posix implements Os {
 
   public native void chmod(String path, int mode) throws ErrnoException /*-[
     if (path) {
-      const char* cpath = [path cStringUsingEncoding:LibcoreIoPosix_defaultEncoding_];
+      const char* cpath = [path UTF8String];
       int rc = TEMP_FAILURE_RETRY(chmod(cpath, mode));
       [LibcoreIoPosix throwIfMinusOneWithNSString:@"chmod" withInt:rc];
     }
@@ -85,7 +124,7 @@ public final class Posix implements Os {
 
   public native void chown(String path, int uid, int gid) throws ErrnoException /*-[
     if (path) {
-      const char* cpath = [path cStringUsingEncoding:LibcoreIoPosix_defaultEncoding_];
+      const char* cpath = [path UTF8String];
       int rc = TEMP_FAILURE_RETRY(chown(cpath, uid, gid));
       [LibcoreIoPosix throwIfMinusOneWithNSString:@"chown" withInt:rc];
     }
@@ -169,19 +208,7 @@ public final class Posix implements Os {
     if (rc == -1) {
         [LibcoreIoPosix throwErrnoExceptionWithNSString:@"fstat" withInt:rc];
     }
-    return AUTORELEASE([[LibcoreIoStructStat alloc] initWithLong:sb.st_dev
-                                                        withLong:sb.st_ino
-                                                         withInt:sb.st_mode
-                                                        withLong:sb.st_nlink
-                                                         withInt:sb.st_uid
-                                                         withInt:sb.st_gid
-                                                        withLong:sb.st_rdev
-                                                        withLong:sb.st_size
-                                                        withLong:sb.st_atime
-                                                        withLong:sb.st_mtime
-                                                        withLong:sb.st_ctime
-                                                        withLong:sb.st_blksize
-                                                        withLong:sb.st_blocks]);
+    return makeStructStat(&sb);
   ]-*/;
 
   public native void fsync(FileDescriptor fd) throws ErrnoException /*-[
@@ -214,9 +241,21 @@ public final class Posix implements Os {
     return [LibcoreIoPosix throwIfMinusOneWithNSString:@"lseek" withInt:rc];
   ]-*/;
 
+  public native StructStat lstat(String path) throws ErrnoException /*-[
+    return doStat(path, YES);
+  ]-*/;
+
   public native void mincore(long address, long byteCount, byte[] vector) throws ErrnoException /*-[
     int rc = TEMP_FAILURE_RETRY(mincore((caddr_t) address, (size_t) byteCount, vector->buffer_));
     [LibcoreIoPosix throwIfMinusOneWithNSString:@"mincore" withInt:rc];
+  ]-*/;
+
+  public native void mkdir(String path, int mode) throws ErrnoException /*-[
+    if (path) {
+      const char* cpath = [path UTF8String];
+      int rc = TEMP_FAILURE_RETRY(mkdir(cpath, mode));
+      [LibcoreIoPosix throwIfMinusOneWithNSString:@"mkdir" withInt:rc];
+    }
   ]-*/;
 
   public native void mlock(long address, long byteCount) throws ErrnoException /*-[
@@ -252,9 +291,9 @@ public final class Posix implements Os {
     if (!path) {
       return nil;
     }
-    const char* cpath = [path cStringUsingEncoding:LibcoreIoPosix_defaultEncoding_];
+    const char* cpath = [path UTF8String];
     int nativeFd = TEMP_FAILURE_RETRY(open(cpath, flags, mode));
-    [LibcoreIoPosix throwIfMinusOneWithNSString:@"munmap" withInt:nativeFd];
+    [LibcoreIoPosix throwIfMinusOneWithNSString:@"open" withInt:nativeFd];
     JavaIoFileDescriptor *newFd = AUTORELEASE([[JavaIoFileDescriptor alloc] init]);
     newFd->descriptor_ = nativeFd;
     return newFd;
@@ -392,6 +431,44 @@ public final class Posix implements Os {
     return [LibcoreIoPosix throwIfMinusOneWithNSString:@"readv" withInt:rc];
   ]-*/;
 
+  public native String realpath(String path) /*-[
+    if (!path) {
+      return nil;
+    }
+    NSFileManager *fileManager = [NSFileManager defaultManager];
+    NSString *standardizedPath = [path stringByStandardizingPath];
+    if (![fileManager fileExistsAtPath:standardizedPath]) {
+      return standardizedPath;
+    }
+    const char* cpath = [path UTF8String];
+    char *realPath = realpath(cpath, NULL);
+    if (!realPath) {
+      [LibcoreIoPosix throwErrnoExceptionWithNSString:@"realpath" withInt:errno];
+    }
+    NSString *result =
+        [[NSFileManager defaultManager] stringWithFileSystemRepresentation:realPath
+                                                                    length:strlen(realPath)];
+    free(realPath);
+    return result;
+  ]-*/;
+
+  public native void remove(String path) throws ErrnoException /*-[
+    if (path) {
+      const char* cpath = [path UTF8String];
+      int rc = TEMP_FAILURE_RETRY(remove(cpath));
+      [LibcoreIoPosix throwIfMinusOneWithNSString:@"remove" withInt:rc];
+    }
+  ]-*/;
+
+  public native void rename(String oldPath, String newPath) throws ErrnoException /*-[
+    if (oldPath && newPath) {
+      const char* cOldPath = [oldPath UTF8String];
+      const char* cNewPath = [newPath UTF8String];
+      int rc = TEMP_FAILURE_RETRY(rename(cOldPath, cNewPath));
+      [LibcoreIoPosix throwIfMinusOneWithNSString:@"rename" withInt:rc];
+    }
+  ]-*/;
+
   public native long sendfile(FileDescriptor outFd, FileDescriptor inFd, MutableLong inOffset,
       long byteCount) throws ErrnoException /*-[
     off_t offset = 0;
@@ -419,13 +496,30 @@ public final class Posix implements Os {
     [LibcoreIoPosix throwIfMinusOneWithNSString:@"socketpair" withInt:rc];
   ]-*/;
 
+  public native StructStat stat(String path) throws ErrnoException /*-[
+    return doStat(path, NO);
+  ]-*/;
+
+  public native StructStatVfs statvfs(String path) throws ErrnoException /*-[
+    if (!path) {
+      return NO;
+    }
+    const char* cpath = [path UTF8String];
+    struct statvfs sb;
+    int rc = TEMP_FAILURE_RETRY(statvfs(cpath, &sb));
+    if (rc == -1) {
+      [LibcoreIoPosix throwErrnoExceptionWithNSString:@"statvfs" withInt:errno];
+    }
+    return makeStructStatVfs(&sb);
+  ]-*/;
+
   public native String strerror(int errno) /*-[
     char buffer[BUFSIZ];
     int ret = strerror_r(errno_, buffer, BUFSIZ);
     if (ret != 0) {  // If not successful...
       snprintf(buffer, BUFSIZ, "errno %d", errno_);
     }
-    return [NSString stringWithCString:buffer encoding:LibcoreIoPosix_defaultEncoding_];
+    return [NSString stringWithUTF8String:buffer];
   ]-*/;
 
   public native long sysconf(int name) /*-[
@@ -436,6 +530,15 @@ public final class Posix implements Os {
       [LibcoreIoPosix throwErrnoExceptionWithNSString:@"sysconf" withInt:errno];
     }
     return result;
+  ]-*/;
+
+  public native void symlink(String oldPath, String newPath) throws ErrnoException /*-[
+    if (oldPath && newPath) {
+      const char* cOldPath = [oldPath UTF8String];
+      const char* cNewPath = [newPath UTF8String];
+      int rc = TEMP_FAILURE_RETRY(symlink(cOldPath, cNewPath));
+      [LibcoreIoPosix throwIfMinusOneWithNSString:@"symlink" withInt:rc];
+    }
   ]-*/;
 
   public native void tcdrain(FileDescriptor fd) throws ErrnoException /*-[
@@ -509,7 +612,6 @@ public final class Posix implements Os {
 //  public native void kill(int pid, int signal) throws ErrnoException;
 //  public native void lchown(String path, int uid, int gid) throws ErrnoException;
 //  public native void listen(FileDescriptor fd, int backlog) throws ErrnoException;
-//  public native StructStat lstat(String path) throws ErrnoException;
 //  public native void mkdir(String path, int mode) throws ErrnoException;
 //  public native int readv(FileDescriptor fd, Object[] buffers, int[] offsets, int[] byteCounts)
 //      throws ErrnoException;

@@ -971,13 +971,6 @@ public class FileTest extends TestCase {
         f3 = new File(parent, "");
 
         assertEquals(parent.getPath(), f3.getPath());
-
-        // Regression for HARMONY-3869
-        File file1 = new File("", "");
-        assertEquals(File.separator, file1.getPath());
-
-        File file2 = new File(new File(""), "");
-        assertEquals(File.separator, file2.getPath());
     }
 
     /**
@@ -1063,7 +1056,7 @@ public class FileTest extends TestCase {
         fos2.close();
         assertTrue("File returned hidden on Unix", !f.isHidden());
         assertTrue("File returned visible on Unix", f2.isHidden());
-        assertTrue("File did not delete.", f2.delete());
+        f2.delete();
         f.delete();
     }
 

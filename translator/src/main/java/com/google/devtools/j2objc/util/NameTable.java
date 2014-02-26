@@ -181,6 +181,10 @@ public class NameTable {
       // Definitions from sys/poll.h
       "POLLERR", "POLLHUP", "POLLIN", "POLLOUT",
 
+      // Definitions from types.h
+      "S_IRGRP", "S_IROTH", "S_IRUSR", "S_IRWXG", "S_IRWXO", "S_IRWXU", "S_IWGRP", "S_IWOTH",
+      "S_IWUSR", "S_IXGRP", "S_IXOTH", "S_IXUSR",
+
       // Definitions from unistd.h
       "F_OK", "R_OK", "STDERR_FILENO", "STDIN_FILENO", "STDOUT_FILENO", "W_OK", "X_OK",
       "_SC_PAGESIZE", "_SC_PAGE_SIZE",

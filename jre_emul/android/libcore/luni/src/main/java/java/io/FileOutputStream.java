@@ -52,7 +52,6 @@ import static libcore.io.OsConstants.*;
 public class FileOutputStream extends OutputStream {
 
     private FileDescriptor fd;
-    private final boolean shouldClose;
 
     /** The unique file channel. Lazily initialized because it's rarely needed. */
     private FileChannel channel;
@@ -83,7 +82,6 @@ public class FileOutputStream extends OutputStream {
         }
         this.mode = O_WRONLY | O_CREAT | (append ? O_APPEND : O_TRUNC);
         this.fd = IoBridge.open(file.getAbsolutePath(), mode);
-        this.shouldClose = true;
     }
 
     /**
@@ -96,7 +94,6 @@ public class FileOutputStream extends OutputStream {
             throw new NullPointerException("fd == null");
         }
         this.fd = fd;
-        this.shouldClose = false;
         this.mode = O_WRONLY;
         this.channel = NioUtils.newFileChannel(this, fd, mode);
     }
@@ -128,9 +125,7 @@ public class FileOutputStream extends OutputStream {
             if (channel != null) {
                 channel.close();
             }
-            if (shouldClose) {
-                IoUtils.close(fd);
-            }
+            IoUtils.close(fd);
         }
     }
 
