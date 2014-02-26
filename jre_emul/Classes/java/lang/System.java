@@ -56,12 +56,24 @@ public class System {
   public static final PrintStream out;
   public static final PrintStream err;
 
+  /*-[
+    static mach_timebase_info_data_t machTimeInfo_;
+  ]-*/
+  
   static {
     // Set up standard in, out, and err.
     err = new PrintStream(new FileOutputStream(FileDescriptor.err));
     out = new PrintStream(new FileOutputStream(FileDescriptor.out));
     in = new BufferedInputStream(new FileInputStream(FileDescriptor.in));
+
+    // Set up statics for time unit conversion.
+    setTimeInfoConsts();
   }
+
+  private static native void setTimeInfoConsts() /*-[
+    // Get the timebase info
+    mach_timebase_info(&machTimeInfo_);
+  ]-*/;
 
   public static native void setIn(InputStream newIn) /*-[
 #if __has_feature(objc_arc)
@@ -129,14 +141,10 @@ public class System {
   ]-*/;
 
   public native static long nanoTime() /*-[
-    // Get the timebase info
-    mach_timebase_info_data_t info;
-    mach_timebase_info(&info);
-
     uint64_t time = mach_absolute_time();
 
     // Convert to nanoseconds and return,
-    return (time * info.numer) / info.denom;
+    return (time * machTimeInfo_.numer) / machTimeInfo_.denom;
   ]-*/;
 
   public native static void exit(int status) /*-[
