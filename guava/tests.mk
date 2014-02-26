@@ -52,4 +52,4 @@ $(OBJS_DIR)/%.o: $(GEN_OBJC_DIR)/%.m
 	$(J2OBJCC) -c $(INCLUDE_DIRS:%=-I%) -o $@ $<
 
 $(TEST_BIN): $(OBJS)
-	$(J2OBJCC) -l junit -l jsr305 -L $(BUILD_DIR) -l guava -o $@ $<
+	$(J2OBJCC) -ObjC -l junit -l jsr305 -L $(BUILD_DIR) -l guava -o $@ $<
