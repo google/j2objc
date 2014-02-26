@@ -1651,11 +1651,15 @@ public class StatementGeneratorTest extends GenerationTest {
     assertTranslation(translation, "S2_ = @\"??@??$??%??&??*??A??z??1??.\";");
   }
 
-  // Verify that String.length() return values are cast in comparisons.
+  // Verify that String.length() and Object.hashCode() return values are cast when used.
   public void testStringLengthCompare() throws IOException {
     String translation = translateSourceFile(
-        "public class Test { boolean test(String s) { return -2 < \"1\".length(); }}",
+        "public class Test { boolean test(String s) { return -2 < \"1\".length(); }" +
+        "  void test2(Object o) { o.hashCode(); }}",
         "Test", "Test.m");
+    // Verify referenced return value is cast.
     assertTranslation(translation, "return -2 < ((int) [@\"1\" length]);");
+    // Verify unused return value isn't.
+    assertTranslation(translation, "[nil_chk(o) hash];");
   }
 }

@@ -891,6 +891,10 @@ public class StatementGenerator extends ErrorReportingASTVisitor {
   // Some native objective-c methods are declared to return NSUInteger.
   private boolean returnValueNeedsIntCast(Expression arg) {
     if (arg instanceof MethodInvocation) {
+      if (arg.getParent() instanceof ExpressionStatement) {
+        // Avoid "unused return value" warning.
+        return false;
+      }
       MethodInvocation invocation = (MethodInvocation) arg;
       IMethodBinding methodBinding = Types.getMethodBinding(invocation);
       String methodName = methodBinding.getName();
