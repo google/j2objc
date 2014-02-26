@@ -802,7 +802,7 @@ $(sort $(DIRS_TO_MAKE)):
 
 $(CLASS_DIR)/%.o: $(EMULATION_CLASS_DIR)/%.m | translate
 	@mkdir -p $(@D)
-	$(CLANG) $(OBJCFLAGS) -I$(EMULATION_CLASS_DIR) -I$(GEN_OBJC_DIR) -c $< -o $@
+	$(CLANG) $(OBJCFLAGS) -I$(EMULATION_CLASS_DIR) -I$(GEN_OBJC_DIR) $(SDK_FLAGS) -c $< -o $@
 
 test: libs_dist $(DIST_DIR)/j2objcc
 	$(MAKE) -f tests.mk test
