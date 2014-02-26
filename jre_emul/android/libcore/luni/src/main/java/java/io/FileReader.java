@@ -24,7 +24,7 @@ package java.io;
  * Since this may induce some performance penalty, in particular if many small
  * read requests are made, a FileReader is often wrapped by a
  * BufferedReader.
- * 
+ *
  * @see BufferedReader
  * @see FileWriter
  */
@@ -32,7 +32,7 @@ public class FileReader extends InputStreamReader {
 
     /**
      * Constructs a new FileReader on the given {@code file}.
-     * 
+     *
      * @param file
      *            a File to be opened for reading characters from.
      * @throws FileNotFoundException
@@ -46,7 +46,7 @@ public class FileReader extends InputStreamReader {
      * Construct a new FileReader on the given FileDescriptor {@code fd}. Since
      * a previously opened FileDescriptor is passed as an argument, no
      * FileNotFoundException can be thrown.
-     * 
+     *
      * @param fd
      *            the previously opened file descriptor.
      */
@@ -56,7 +56,7 @@ public class FileReader extends InputStreamReader {
 
     /**
      * Construct a new FileReader on the given file named {@code filename}.
-     * 
+     *
      * @param filename
      *            an absolute or relative path specifying the file to open.
      * @throws FileNotFoundException

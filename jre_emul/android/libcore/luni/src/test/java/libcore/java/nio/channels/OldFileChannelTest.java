@@ -26,7 +26,6 @@ import java.io.UnsupportedEncodingException;
 import java.nio.ByteBuffer;
 import java.nio.MappedByteBuffer;
 import java.nio.channels.ClosedChannelException;
-import java.nio.channels.DatagramChannel;
 import java.nio.channels.FileChannel;
 import java.nio.channels.FileLock;
 import java.nio.channels.NonWritableChannelException;
@@ -1050,6 +1049,8 @@ public final class OldFileChannelTest extends TestCase {
         }
     }
 
+    /*
+     TODO(tball): enable when network channels are available.
     public void test_transferToJJLWritableByteChannel_IllegalArgument()
             throws Exception {
         WritableByteChannel writableByteChannel = DatagramChannel.open();
@@ -1067,6 +1068,7 @@ public final class OldFileChannelTest extends TestCase {
             // expected
         }
     }
+    */
 
     private void assertLockFails(long position, long size) throws IOException {
         try {

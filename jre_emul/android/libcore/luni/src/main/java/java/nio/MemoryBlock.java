@@ -130,9 +130,11 @@ class MemoryBlock {
 
     public static native MemoryBlock allocate(int byteCount) /*-[
       IOSByteArray *array = [IOSByteArray arrayWithLength:byteCount];
-      return AUTORELEASE([[JavaNioMemoryBlock_NonMovableHeapBlock alloc] initWithByteArray:array
-          withLong:(long long) IOSByteArray_GetRef(array, 0)
-          withLong:byteCount]);
+      long long address = (long long) (uintptr_t) array->buffer_;
+      return AUTORELEASE(
+          [[JavaNioMemoryBlock_NonMovableHeapBlock alloc] initWithByteArray:array
+                                                                   withLong:address
+                                                                   withLong:byteCount]);
     ]-*/;
 
     public static MemoryBlock wrapFromJni(long address, long byteCount) {

@@ -22,17 +22,17 @@
 
 #import "JreEmulation.h"
 #import "IOSByteArray.h"
-// #import "java/nio/ByteArrayBuffer.h"
+#import "java/nio/ByteArrayBuffer.h"
 
 static inline char *BytesRW(id object) {
   nil_chk(object);
   if ([object isKindOfClass:[IOSByteArray class]]) {
       return IOSByteArray_GetRef(object, 0);
-//  } else if ([object isKindOfClass:[JavaNioBuffer class]]) {
-//    // All buffer concrete classes have byteBuffer at the same
-//    // offset by explicit design.
-//    JavaNioByteArrayBuffer *buffer = (JavaNioByteArrayBuffer *) object;
-//    return IOSByteArray_GetRef(buffer->backingArray_, 0);
+  } else if ([object isKindOfClass:[JavaNioBuffer class]]) {
+    // All buffer concrete classes have byteBuffer at the same
+    // offset by explicit design.
+    JavaNioBuffer *buffer = (JavaNioBuffer *) object;
+    return (char *) buffer->effectiveDirectAddress_;
   }
   return NULL;  // Unknown type.
 }

@@ -115,10 +115,13 @@ TEST_SOURCES = \
     libcore/java/lang/reflect/AnnotationsTest.java \
     libcore/java/lang/reflect/ArrayTest.java \
     libcore/java/lang/reflect/ConstructorTest.java \
+    libcore/java/nio/BufferTest.java \
     libcore/java/nio/NoArrayTest.java \
     libcore/java/nio/OldAndroidNIOTest.java \
     libcore/java/nio/OldDirectIntBufferTest.java \
     libcore/java/nio/OldDirectShortBufferTest.java \
+    libcore/java/nio/channels/FileChannelTest.java \
+    libcore/java/nio/channels/OldFileChannelTest.java \
     libcore/java/nio/charset/CharsetDecoderTest.java \
     libcore/java/nio/charset/CharsetEncoderTest.java \
     libcore/java/text/CollatorTest.java \

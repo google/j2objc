@@ -24,7 +24,7 @@ package java.io;
  * Since this may induce some performance penalty, in particular if many small
  * write requests are made, a FileWriter is often wrapped by a
  * BufferedWriter.
- * 
+ *
  * @see BufferedWriter
  * @see FileReader
  */
@@ -32,7 +32,7 @@ public class FileWriter extends OutputStreamWriter {
 
     /**
      * Creates a FileWriter using the File {@code file}.
-     * 
+     *
      * @param file
      *            the non-null File to write bytes to.
      * @throws IOException
@@ -46,7 +46,7 @@ public class FileWriter extends OutputStreamWriter {
      * Creates a FileWriter using the File {@code file}. The parameter
      * {@code append} determines whether or not the file is opened and appended
      * to or just opened and overwritten.
-     * 
+     *
      * @param file
      *            the non-null File to write bytes to.
      * @param append
@@ -60,7 +60,7 @@ public class FileWriter extends OutputStreamWriter {
 
     /**
      * Creates a FileWriter using the existing FileDescriptor {@code fd}.
-     * 
+     *
      * @param fd
      *            the non-null FileDescriptor to write bytes to.
      */
@@ -70,7 +70,7 @@ public class FileWriter extends OutputStreamWriter {
 
     /**
      * Creates a FileWriter using the platform dependent {@code filename}.
-     * 
+     *
      * @param filename
      *            the non-null name of the file to write bytes to.
      * @throws IOException
@@ -84,7 +84,7 @@ public class FileWriter extends OutputStreamWriter {
      * Creates a FileWriter using the platform dependent {@code filename}. The
      * parameter {@code append} determines whether or not the file is opened and
      * appended to or just opened and overwritten.
-     * 
+     *
      * @param filename
      *            the non-null name of the file to write bytes to.
      * @param append

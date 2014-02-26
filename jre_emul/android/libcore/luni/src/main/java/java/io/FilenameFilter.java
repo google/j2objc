@@ -18,28 +18,24 @@
 package java.io;
 
 /**
- * Thrown when a file specified by a program cannot be found.
+ * An interface for filtering {@link File} objects based on their names
+ * or the directory they reside in.
+ *
+ * @see File
+ * @see File#list(FilenameFilter)
  */
-public class FileNotFoundException extends IOException {
-
-    private static final long serialVersionUID = -897856973823710492L;
+public interface FilenameFilter {
 
     /**
-     * Constructs a new {@code FileNotFoundException} with its stack trace
-     * filled in.
+     * Indicates if a specific filename matches this filter.
+     *
+     * @param dir
+     *            the directory in which the {@code filename} was found.
+     * @param filename
+     *            the name of the file in {@code dir} to test.
+     * @return  {@code true} if the filename matches the filter
+     *            and can be included in the list, {@code false}
+     *            otherwise.
      */
-    public FileNotFoundException() {
-        super();
-    }
-
-    /**
-     * Constructs a new {@code FileNotFoundException} with its stack trace and
-     * detail message filled in.
-     * 
-     * @param detailMessage
-     *            the detail message for this exception.
-     */
-    public FileNotFoundException(String detailMessage) {
-        super(detailMessage);
-    }
+    public abstract boolean accept(File dir, String filename);
 }
