@@ -38,6 +38,7 @@ SUPPORT_SOURCES = \
     tests/support/Support_ListTest.java \
     tests/support/Support_Locale.java \
     tests/support/Support_MapTest2.java \
+    tests/support/Support_PlatformFile.java \
     tests/support/Support_Proxy_I1.java \
     tests/support/Support_Proxy_I2.java \
     tests/support/Support_Proxy_ParentException.java \
@@ -107,6 +108,16 @@ TEST_SOURCES = \
     libcore/icu/LocaleDataTest.java \
     libcore/io/MemoryTest.java \
     libcore/java/io/StreamTokenizerTest.java \
+    libcore/java/io/FileDescriptorTest.java \
+    libcore/java/io/FileInputStreamTest.java \
+    libcore/java/io/FileOutputStreamTest.java \
+    libcore/java/io/FileTest.java \
+    libcore/java/io/OldFileInputStreamTest.java \
+    libcore/java/io/OldFileReaderTest.java \
+    libcore/java/io/OldFileTest.java \
+    libcore/java/io/OldFileWriterTest.java \
+    libcore/java/io/OldRandomAccessFileTest.java \
+    libcore/java/io/RandomAccessFileTest.java \
     libcore/java/lang/DoubleTest.java \
     libcore/java/lang/CharacterTest.java \
     libcore/java/lang/FloatTest.java \

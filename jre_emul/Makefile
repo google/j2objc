@@ -686,6 +686,7 @@ JAVA_SOURCES = \
 	libcore/icu/TimeZones.java \
 	libcore/internal/StringPool.java \
 	libcore/io/BufferIterator.java \
+	libcore/io/DeleteOnExit.java \
 	libcore/io/ErrnoException.java \
 	libcore/io/HeapBufferIterator.java \
 	libcore/io/IoBridge.java \

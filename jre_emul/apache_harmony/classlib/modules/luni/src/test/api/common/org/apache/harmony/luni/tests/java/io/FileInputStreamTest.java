@@ -119,7 +119,7 @@ public class FileInputStreamTest extends TestCase {
         } catch (IOException e) {
             // Expected
         }
-        
+
         // Regression test for HARMONY-6642
         FileInputStream fis = new FileInputStream(fileName);
         FileInputStream fis2 = new FileInputStream(fis.getFD());
@@ -190,20 +190,6 @@ public class FileInputStreamTest extends TestCase {
         is.close();
         assertTrue("Failed to read correct data", new String(buf1, 0,
                 buf1.length).equals(fileString.substring(3000, 3100)));
-
-        // Regression test for HARMONY-285
-        File file = new File("FileInputStream.tmp");
-        file.createNewFile();
-        FileInputStream in = new FileInputStream(file);
-        try {
-            in.read(null, 0, 0);
-            fail("Should throw NullPointerException");
-        } catch (NullPointerException e) {
-            // Expected
-        } finally {
-            in.close();
-            file.delete();
-        }
     }
 
     /**
