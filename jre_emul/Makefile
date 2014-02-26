@@ -669,6 +669,8 @@ JAVA_SOURCES = \
 	libcore/io/Posix.java \
 	libcore/io/SizeOf.java \
 	libcore/io/Streams.java \
+	libcore/io/StructFlock.java \
+	libcore/io/StructPollfd.java \
 	libcore/io/StructStat.java \
 	libcore/math/MathUtils.java \
 	libcore/net/UriCodec.java \
@@ -679,6 +681,7 @@ JAVA_SOURCES = \
 	libcore/util/BasicLruCache.java \
 	libcore/util/EmptyArray.java \
 	libcore/util/MutableInt.java \
+	libcore/util/MutableLong.java \
 	libcore/util/Objects.java \
 	libcore/util/SneakyThrow.java \
 	org/apache/harmony/luni/platform/Endianness.java \

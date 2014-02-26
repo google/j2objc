@@ -1358,6 +1358,8 @@
 		06F2917818972E6800676F1D /* ZipInputStream.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = ZipInputStream.m; path = build_result/Classes/java/util/zip/ZipInputStream.m; sourceTree = "<group>"; };
 		06F2917918972E8200676F1D /* Unsafe.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = Unsafe.h; path = build_result/Classes/sun/misc/Unsafe.h; sourceTree = "<group>"; };
 		06F2917A18972E8200676F1D /* Unsafe.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = Unsafe.m; path = build_result/Classes/sun/misc/Unsafe.m; sourceTree = "<group>"; };
+		06F6ECFE18AAABD500875541 /* Portability.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Portability.h; sourceTree = "<group>"; };
+		06FACA1118AD34B8008501DD /* BufferUtils.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = BufferUtils.h; sourceTree = "<group>"; };
 		2CBD9CBA174A8BD7008A0086 /* NSDictionaryMap.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = NSDictionaryMap.h; sourceTree = "<group>"; };
 		2CBD9CBB174A8BD7008A0086 /* NSDictionaryMap.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = NSDictionaryMap.m; sourceTree = "<group>"; };
 		2CBD9CBC174ABC0D008A0086 /* NSDataInputStream.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = NSDataInputStream.h; sourceTree = "<group>"; };
@@ -1426,6 +1428,7 @@
 			children = (
 				067228F9158FB0B3005318BD /* AccessibleObject.h */,
 				067228FA158FB0B3005318BD /* AccessibleObject.m */,
+				06FACA1118AD34B8008501DD /* BufferUtils.h */,
 				068BA721180F5C270087BAF4 /* cbigint.h */,
 				068BA722180F5C270087BAF4 /* cbigint.m */,
 				067228ED158FB002005318BD /* CharSequence.h */,
@@ -1514,6 +1517,7 @@
 				066B71F717B94DC100A4CBBD /* objc-sync.m */,
 				06AFD3DB183E785D001C90C6 /* ParameterizedTypeImpl.h */,
 				06AFD3DC183E785D001C90C6 /* ParameterizedTypeImpl.m */,
+				06F6ECFE18AAABD500875541 /* Portability.h */,
 				0671FC171852A7CC005D9D56 /* Serializable.h */,
 				0671FC191856425E005D9D56 /* Serializable.m */,
 				06734320171DF62600F26D4F /* TempFailureRetry.h */,

@@ -104,6 +104,7 @@ TEST_SOURCES = \
     java/util/WeakHashMapTest.java \
     libcore/icu/ICUTest.java \
     libcore/icu/LocaleDataTest.java \
+    libcore/io/MemoryTest.java \
     libcore/java/io/StreamTokenizerTest.java \
     libcore/java/lang/DoubleTest.java \
     libcore/java/lang/CharacterTest.java \
