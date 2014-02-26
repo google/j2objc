@@ -320,11 +320,7 @@ public class NameTable {
       logger.fine(String.format("Changing previous rename: %s => %s, now: %s => %s",
           oldName.toString(), previousName, oldName, newName));
     }
-    rename(oldName, newName, false);
-  }
-
-  public static void rename(IBinding oldName, String newName, boolean allowPreviousRenames) {
-    instance.renamings.put(getBindingDeclaration(oldName), newName);
+    instance.renamings.put(oldName, newName);
   }
 
   /**
