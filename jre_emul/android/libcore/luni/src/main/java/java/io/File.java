@@ -311,11 +311,7 @@ public class File implements Serializable, Comparable<File> {
     }
 
     private boolean doAccess(int mode) {
-        try {
-            return Libcore.os.access(path, mode);
-        } catch (ErrnoException errnoException) {
-            return false;
-        }
+        return Libcore.os.canAccess(path, mode);
     }
 
     /**
