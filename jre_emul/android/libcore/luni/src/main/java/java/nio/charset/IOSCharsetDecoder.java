@@ -92,11 +92,15 @@ public class IOSCharsetDecoder extends CharsetDecoder {
   }
 
   private static native String decode(byte[] in, long encoding) /*-[
-    return AUTORELEASE([[NSString alloc] initWithBytes:[inArg byteRefAtIndex:0]
-                                                length:[inArg count]
-                                                encoding:(NSStringEncoding) encoding]);
+    NSString *result = AUTORELEASE([[NSString alloc] initWithBytes:[inArg byteRefAtIndex:0]
+                                                            length:[inArg count]
+                                                          encoding:(NSStringEncoding) encoding]);
+    // NSString will return nil if the byte sequence can't be encoded. Since
+    // that may happen when a byte sequence is larger than a buffer, return
+    // an empty string so that the caller stashes the partial buffer.
+    return result ? result : @"";
   ]-*/;
-  
+
   public int available() {
     return charBuffer != null ? (charBuffer.length - outIndex) : 0;
   }
