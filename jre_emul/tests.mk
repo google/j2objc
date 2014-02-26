@@ -104,6 +104,7 @@ TEST_SOURCES = \
     java/lang/ref/WeakReferenceTest.java \
     java/util/TreeMapTest.java \
     java/util/WeakHashMapTest.java \
+    java/util/regex/MatcherTest.java \
     libcore/icu/ICUTest.java \
     libcore/icu/LocaleDataTest.java \
     libcore/io/MemoryTest.java \
@@ -352,7 +353,6 @@ FAILING_TESTS = \
     libcore/java/util/TreeSetTest.java \
     org/apache/harmony/luni/tests/java/lang/StrictMathTest.java \
     org/apache/harmony/luni/tests/java/lang/StringBuilderTest.java \
-    org/apache/harmony/tests/java/util/regex/ModeTest.java \
 
 # Most of these tests are failing for a common index-out-of-range error.
 FAILING_MATH_TESTS = \
@@ -367,6 +367,8 @@ FAILING_MATH_TESTS = \
     org/apache/harmony/tests/java/math/BigIntegerToStringTest.java \
     org/apache/harmony/tests/java/math/BigIntegerXorTest.java \
     tests/api/java/math/BigIntegerTest.java \
+
+TESTS_TO_RUN = $(subst /,.,$(TEST_SOURCES:%.java=%))
 
 SUPPORT_OBJS = $(SUPPORT_SOURCES:%.java=$(TESTS_DIR)/%.o)
 TEST_OBJS = \
@@ -446,7 +448,7 @@ $(TESTS_DIR)/%: $(LOGGING_TEST_RESOURCES_ROOT)/%
 	@cp $< $@
 
 run-tests: link resources $(TEST_BIN)
-	@$(TEST_BIN) org.junit.runner.JUnitCore $(subst /,.,$(TEST_SOURCES:%.java=%))
+	@$(TEST_BIN) org.junit.runner.JUnitCore $(TESTS_TO_RUN)
 
 run-zip-tests: link resources $(TEST_BIN)
 	@$(TEST_BIN) org.junit.runner.JUnitCore libcore.java.util.zip.SmallTests
