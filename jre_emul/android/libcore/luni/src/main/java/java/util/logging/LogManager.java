@@ -149,9 +149,6 @@ public class LogManager {
     /** the property change listener */
     private PropertyChangeSupport listeners;
 
-    private static final String IOS_LOG_MANAGER_DEFAULTS =
-        ".level=INFO\nhandlers=java.util.logging.NSLogHandler\n";
-
     static {     // init LogManager singleton instance
         String className = System.getProperty("java.util.logging.manager");
         if (className != null) {
@@ -340,7 +337,8 @@ public class LogManager {
                     // fall back to using the built-in logging.properties file
                     input = LogManager.class.getResourceAsStream("logging.properties");
                     if (input == null) {
-                        input = new ByteArrayInputStream(IOS_LOG_MANAGER_DEFAULTS.getBytes());
+                        input = new ByteArrayInputStream(
+                            NSLogHandler.getDefaultProperties().getBytes());
                     }
                 }
                 readConfiguration(new BufferedInputStream(input));
