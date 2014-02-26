@@ -176,6 +176,7 @@ public class System {
       tmpDir = [tmpDir substringToIndex:iLast];
     }
     [props setPropertyWithNSString:@"java.io.tmpdir" withNSString:tmpDir];
+    [props setPropertyWithNSString:@"java.home" withNSString:[[NSBundle mainBundle] bundlePath]];
   ]-*/;
 
   public static String getProperty(String key) {

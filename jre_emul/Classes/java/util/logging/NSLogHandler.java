@@ -42,6 +42,9 @@ class NSLogHandler extends Handler {
     }
   }
 
+  private static final String IOS_LOG_MANAGER_DEFAULTS =
+      ".level=INFO\nhandlers=java.util.logging.NSLogHandler\n";
+
   public NSLogHandler() {
     setFormatter(new NSLogFormatter());
   }
@@ -69,4 +72,7 @@ class NSLogHandler extends Handler {
     [[record getThrown] printStackTrace];
   ]-*/;
 
+  public static String getDefaultProperties() {
+    return IOS_LOG_MANAGER_DEFAULTS;
+  }
 }
