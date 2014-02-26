@@ -210,6 +210,7 @@ JAVA_SOURCES = \
 	java/io/InvalidClassException.java \
 	java/io/InvalidObjectException.java \
 	java/io/IOException.java \
+	java/io/LineNumberInputStream.java \
 	java/io/LineNumberReader.java \
 	java/io/NotActiveException.java \
 	java/io/NotSerializableException.java \
@@ -237,6 +238,7 @@ JAVA_SOURCES = \
 	java/io/SerializationHandleMap.java \
 	java/io/StreamCorruptedException.java \
 	java/io/StreamTokenizer.java \
+	java/io/StringBufferInputStream.java \
 	java/io/StringReader.java \
 	java/io/StringWriter.java \
 	java/io/SyncFailedException.java \
