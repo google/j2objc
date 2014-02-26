@@ -6,12 +6,20 @@ For minor modifications and exclusions, grep for comments labeled
 "J2ObjC Modifications".
 
 The following packages are currently excluded:
-- com.google.common.net
-- com.google.common.io
-- com.google.common.cache
-- com.google.common.reflect
 - com.google.common.eventbus
-- com.google.common.hash
+- com.google.common.reflect
+
+The following classes are currently excluded:
+- com.google.common.io.Files
+  - missing java.nio.MappedByteBuffer
+  - missing java.nio.channels.FileChannel
+- com.google.common.net.HostSpecifier
+  - missing java.net.InetAddress
+- com.google.common.net.InetAddresses
+  - missing java.net.Inet4Address
+  - missing java.net.Inet6Address
+  - missing java.net.InetAddress
+  - missing java.net.UnknownHostException
 
 Finalizable references are excluded:
 - com.google.common.base.FinalizableReference
