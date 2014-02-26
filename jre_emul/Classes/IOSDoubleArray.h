@@ -28,7 +28,7 @@
 // an IOSDoubleArray is fixed-size but its elements are mutable.
 @interface IOSDoubleArray : IOSArray {
  @public
-  double *buffer_;
+  double *buffer_;  // java.nio requires this be first field in IOSArray subclasses.
 }
 
 PRIMITIVE_ARRAY_INTERFACE(double, Double, double)

@@ -24,11 +24,12 @@ include environment.mk
 
 SUPPORT_SOURCES = \
     JSR166TestCase.java \
+    libcore/java/nio/charset/Charset_TestGenerator.java \
+    libcore/java/nio/charset/OldCharset_AbstractTest.java \
     libcore/java/util/ServiceLoaderTestInterface.java \
     org/apache/harmony/logging/tests/java/util/logging/AllTests.java \
     org/apache/harmony/logging/tests/java/util/logging/LevelTestResource.java \
     org/apache/harmony/logging/tests/java/util/logging/util/EnvironmentHelper.java \
-    org/apache/harmony/nio/tests/java/nio/AbstractBufferTest.java \
     org/apache/harmony/testframework/serialization/SerializationTest.java \
     org/apache/harmony/text/tests/java/text/Support_Format.java \
     org/apache/harmony/text/tests/java/text/Support_MessageFormat.java \
@@ -114,9 +115,12 @@ TEST_SOURCES = \
     libcore/java/lang/reflect/AnnotationsTest.java \
     libcore/java/lang/reflect/ArrayTest.java \
     libcore/java/lang/reflect/ConstructorTest.java \
+    libcore/java/nio/NoArrayTest.java \
+    libcore/java/nio/OldAndroidNIOTest.java \
+    libcore/java/nio/OldDirectIntBufferTest.java \
+    libcore/java/nio/OldDirectShortBufferTest.java \
     libcore/java/nio/charset/CharsetDecoderTest.java \
     libcore/java/nio/charset/CharsetEncoderTest.java \
-    libcore/java/nio/charset/CharsetTest.java \
     libcore/java/text/CollatorTest.java \
     libcore/java/text/DecimalFormatTest.java \
     libcore/java/text/DecimalFormatSymbolsTest.java \
@@ -249,37 +253,6 @@ TEST_SOURCES = \
     org/apache/harmony/luni/tests/java/lang/UnsupportedOperationExceptionTest.java \
     org/apache/harmony/luni/tests/java/lang/VirtualMachineErrorTest.java \
     org/apache/harmony/luni/tests/util/UtilTest.java \
-    org/apache/harmony/nio/tests/java/nio/BufferOverflowExceptionTest.java \
-    org/apache/harmony/nio/tests/java/nio/BufferTest.java \
-    org/apache/harmony/nio/tests/java/nio/ByteBufferTest.java \
-    org/apache/harmony/nio/tests/java/nio/ByteOrderTest.java \
-    org/apache/harmony/nio/tests/java/nio/CharBufferTest.java \
-    org/apache/harmony/nio/tests/java/nio/DoubleBufferTest.java \
-    org/apache/harmony/nio/tests/java/nio/FloatBufferTest.java \
-    org/apache/harmony/nio/tests/java/nio/IntBufferTest.java \
-    org/apache/harmony/nio/tests/java/nio/InvalidMarkExceptionTest.java \
-    org/apache/harmony/nio/tests/java/nio/LongBufferTest.java \
-    org/apache/harmony/nio/tests/java/nio/ShortBufferTest.java \
-    org/apache/harmony/nio/tests/java/nio/HeapByteBufferTest.java \
-    org/apache/harmony/nio/tests/java/nio/HeapCharBufferTest.java \
-    org/apache/harmony/nio/tests/java/nio/HeapDoubleBufferTest.java \
-    org/apache/harmony/nio/tests/java/nio/HeapFloatBufferTest.java \
-    org/apache/harmony/nio/tests/java/nio/HeapIntBufferTest.java \
-    org/apache/harmony/nio/tests/java/nio/HeapLongBufferTest.java \
-    org/apache/harmony/nio/tests/java/nio/HeapShortBufferTest.java \
-    org/apache/harmony/nio/tests/java/nio/ReadOnlyCharBufferTest.java \
-    org/apache/harmony/nio/tests/java/nio/ReadOnlyDoubleBufferTest.java \
-    org/apache/harmony/nio/tests/java/nio/ReadOnlyFloatBufferTest.java \
-    org/apache/harmony/nio/tests/java/nio/ReadOnlyHeapByteBufferTest.java \
-    org/apache/harmony/nio/tests/java/nio/ReadOnlyHeapCharBufferTest.java \
-    org/apache/harmony/nio/tests/java/nio/ReadOnlyHeapDoubleBufferTest.java \
-    org/apache/harmony/nio/tests/java/nio/ReadOnlyHeapFloatBufferTest.java \
-    org/apache/harmony/nio/tests/java/nio/ReadOnlyHeapIntBufferTest.java \
-    org/apache/harmony/nio/tests/java/nio/ReadOnlyHeapLongBufferTest.java \
-    org/apache/harmony/nio/tests/java/nio/ReadOnlyHeapShortBufferTest.java \
-    org/apache/harmony/nio/tests/java/nio/ReadOnlyIntBufferTest.java \
-    org/apache/harmony/nio/tests/java/nio/ReadOnlyLongBufferTest.java \
-    org/apache/harmony/nio/tests/java/nio/ReadOnlyShortBufferTest.java \
     org/apache/harmony/luni/tests/java/util/AbstractCollectionTest.java \
     org/apache/harmony/luni/tests/java/util/AbstractListTest.java \
     org/apache/harmony/luni/tests/java/util/AbstractMapTest.java \

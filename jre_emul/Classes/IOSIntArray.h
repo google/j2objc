@@ -28,7 +28,7 @@
 // an IOSIntArray is fixed-size but its elements are mutable.
 @interface IOSIntArray : IOSArray {
  @public
-  int *buffer_;
+  int *buffer_;  // java.nio requires this be first field in IOSArray subclasses.
 }
 
 PRIMITIVE_ARRAY_INTERFACE(int, Int, int)

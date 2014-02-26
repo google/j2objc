@@ -17,17 +17,25 @@
 
 package java.io;
 
+import static libcore.io.OsConstants.O_CREAT;
+import static libcore.io.OsConstants.O_RDONLY;
+import static libcore.io.OsConstants.O_RDWR;
+import static libcore.io.OsConstants.O_SYNC;
+import static libcore.io.OsConstants.SEEK_CUR;
+import static libcore.io.OsConstants.SEEK_SET;
+
 import java.nio.ByteOrder;
+import java.nio.NioUtils;
 import java.nio.channels.FileChannel;
 import java.nio.charset.ModifiedUtf8;
 import java.util.Arrays;
+
 import libcore.io.ErrnoException;
 import libcore.io.IoBridge;
 import libcore.io.IoUtils;
 import libcore.io.Libcore;
 import libcore.io.Memory;
 import libcore.io.SizeOf;
-import static libcore.io.OsConstants.*;
 
 /**
  * Allows reading from and writing to a file in a random-access manner. This is
@@ -45,12 +53,9 @@ public class RandomAccessFile implements DataInput, DataOutput, Closeable {
 
     private boolean syncMetadata = false;
 
-    /*
-    TODO(tball): enable when NIO file channels are supported.
     // The unique file channel associated with this FileInputStream (lazily
     // initialized).
     private FileChannel channel;
-    */
 
     private int mode;
 
@@ -178,7 +183,7 @@ public class RandomAccessFile implements DataInput, DataOutput, Closeable {
      *
      * @return this file's file channel instance.
      *
-    TODO(tball): enable when NIO file channels are supported.
+     */
     public final synchronized FileChannel getChannel() {
         if(channel == null) {
             channel = NioUtils.newFileChannel(this, fd, mode);
