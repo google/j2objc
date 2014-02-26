@@ -650,13 +650,11 @@ public final class Matcher implements MatchResult {
     private native boolean findImpl(int start, boolean continuing) /*-[
       NSRegularExpression *regex = (NSRegularExpression *) self->pattern__->nativePattern_;
       NSMatchingOptions options = 0;
-      if (!continuing) {
-        if (self->anchoringBounds_) {
-          options |= NSMatchingAnchored;
-        }
-        if (self->transparentBounds_) {
-          options |= NSMatchingWithTransparentBounds;
-        }
+      if (!self->anchoringBounds_) {
+        options |= NSMatchingWithoutAnchoringBounds;
+      }
+      if (!continuing && self->transparentBounds_) {
+        options |= NSMatchingWithTransparentBounds;
       }
       NSRange range = NSMakeRange(regionStart__, regionEnd__ - regionStart__);
 
@@ -705,18 +703,19 @@ public final class Matcher implements MatchResult {
       NSRegularExpression *regex = (NSRegularExpression *) self->pattern__->nativePattern_;
       NSUInteger patternFlags = [regex options];
       NSMatchingOptions options = 0;
-      if (self->anchoringBounds_) {
-        options |= NSMatchingAnchored;
+      if (!self->anchoringBounds_) {
+        options |= NSMatchingWithoutAnchoringBounds;
       }
       if (self->transparentBounds_ ||
           (patternFlags & NSRegularExpressionAnchorsMatchLines) > 0) {
         options |= NSMatchingWithTransparentBounds;
       }
-      NSUInteger length = [self->input_ length];
+      NSUInteger length = regionEnd__ - regionStart__;
+      NSRange searchRange = NSMakeRange(regionStart__, length);
       NSTextCheckingResult *match =
           [regex firstMatchInString:self->input_
                             options:options
-                              range:NSMakeRange(0, length)];
+                              range:searchRange];
       if (match == nil) {
         return NO;
       }
@@ -732,7 +731,7 @@ public final class Matcher implements MatchResult {
                       withInt:matchRange.location + matchRange.length];
       }
       NSRange range = [match range];
-      return range.location == 0 && range.length == length;
+      return range.location == regionStart__ && range.length == length;
     ]-*/;
 
     private native boolean requireEndImpl() /*-[
