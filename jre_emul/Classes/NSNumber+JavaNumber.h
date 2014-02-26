@@ -31,4 +31,8 @@
 
 @end
 
+// Empty class to force category to be loaded.
+@interface JreNumberCategoryDummy : NSObject
+@end
+
 #endif // _JavaLangNumber_H_

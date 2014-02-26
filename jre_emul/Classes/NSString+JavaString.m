@@ -1027,3 +1027,6 @@ static id<JavaUtilComparator> CaseInsensitiveComparator_CASE_INSENSITIVE_ORDER_;
 }
 
 @end
+
+@implementation JreStringCategoryDummy
+@end

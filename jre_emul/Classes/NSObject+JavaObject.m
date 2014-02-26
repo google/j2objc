@@ -179,3 +179,6 @@ static void doWait(id obj, long long timeout) {
 - (void)_java_lang_ref_original_release {}
 
 @end
+
+@implementation JreObjectCategoryDummy
+@end

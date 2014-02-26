@@ -53,6 +53,9 @@
 #import "IOSProtocolClass.h"
 #import "IOSShortArray.h"
 #import "JavaMetadata.h"
+#import "NSNumber+JavaNumber.h"
+#import "NSObject+JavaObject.h"
+#import "NSString+JavaString.h"
 #import "objc/message.h"
 #import "objc/runtime.h"
 
@@ -926,13 +929,28 @@ IOSClass *FetchArray(IOSClass *componentType) {
 }
 
 + (void)load {
-  // Check that app was linked with -force-load flag, as otherwise JRE support
-  // will fail due to its categories not being loaded.
-  if ([[NSObject class] instanceMethodSignatureForSelector:@selector(compareToWithId:)] == NULL) {
+  // Force JRE categories to be loaded.
+  id objectCategoryLoader = [[JreObjectCategoryDummy alloc] init];
+  id stringCategoryLoader = [[JreStringCategoryDummy alloc] init];
+  id numberCategoryLoader = [[JreNumberCategoryDummy alloc] init];
+
+  // Check that categories successfully loaded.
+  if ([[NSObject class] instanceMethodSignatureForSelector:@selector(compareToWithId:)] == NULL ||
+      [[NSString class] instanceMethodSignatureForSelector:@selector(trim)] == NULL ||
+      ![NSNumber conformsToProtocol:@protocol(JavaIoSerializable)]) {
     [NSException raise:@"J2ObjCLinkError"
                 format:@"Your project is not configured to load categories from the JRE "
-     "emulation library. Did you forget the -force_load linker flag?"];
+                        "emulation library. Try adding the -force_load linker flag."];
   }
+
+#if ! __has_feature(objc_arc)
+  // Avoid "unused local variable" warnings.
+  numberCategoryLoader = objectCategoryLoader = stringCategoryLoader = nil;
+#else
+  [numberCategoryLoader release];
+  [objectCategoryLoader release];
+  [stringCategoryLoader release];
+#endif
 }
 
 + (void)initialize {

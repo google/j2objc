@@ -297,4 +297,8 @@ destinationBegin:(int)dstBegin;
 
 @end
 
+// Empty class to force category to be loaded.
+@interface JreStringCategoryDummy : NSObject
+@end
+
 #endif // _NSString_JavaString_H_
