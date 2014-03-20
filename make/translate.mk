@@ -55,16 +55,28 @@ translate: $(TRANSLATE_TARGET)
 translate_dependencies:
 	@:
 
-TRANSLATE_MAKE_LIST = $(if $(filter $(TRANSLATE_EXE),$?),\
-    $(filter-out $(TRANSLATE_EXE),$^),\
-    $(filter-out $(TRANSLATE_EXE),$?))
+# Resolved sources within the translate target.
+TRANSLATE_JAVA_PREREQ = $(filter-out $(TRANSLATE_EXE) translate_force,$^)
 
-$(TRANSLATE_TARGET): $(TRANSLATE_JAVA_FULL) $(TRANSLATE_EXE) | translate_dependencies
-	@echo Translating sources.
+# Find any files that may have been added to the list since the last translation
+TRANSLATE_LAST_FILES = $(shell if [ -e $(TRANSLATE_TARGET) ]; then cat $(TRANSLATE_TARGET); fi)
+TRANSLATE_NEW_FILES = $(filter-out $(TRANSLATE_LAST_FILES),$(TRANSLATE_JAVA_PREREQ))
+
+TRANSLATE_MAKE_LIST = $(if $(filter $(TRANSLATE_EXE),$?),\
+    $(TRANSLATE_JAVA_PREREQ),$(filter $? $(TRANSLATE_NEW_FILES),$(TRANSLATE_JAVA_PREREQ)))
+
+$(TRANSLATE_TARGET): $(TRANSLATE_JAVA_FULL) $(TRANSLATE_EXE) translate_force \
+    | translate_dependencies
 	@mkdir -p $(GEN_OBJC_DIR)
 	$(call long_list_to_file,$(TRANSLATE_LIST),$(TRANSLATE_MAKE_LIST))
-	@$(TRANSLATE_CMD) @$(TRANSLATE_LIST)
-	@touch $@
+	@if [ -s $(TRANSLATE_LIST) ]; then \
+	  echo Translating sources.; \
+	  $(TRANSLATE_CMD) @$(TRANSLATE_LIST); \
+	fi
+	$(call long_list_to_file,$@,$(TRANSLATE_JAVA_PREREQ))
+
+translate_force:
+	@:
 
 $(TRANSLATE_OBJC): $(TRANSLATE_TARGET)
 	@:

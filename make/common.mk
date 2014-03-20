@@ -115,4 +115,5 @@ define long_list_to_file
 @files='$(wordlist 7000,7999,$(2))' && for i in $$files; do echo $$i >> $(1); done
 @files='$(wordlist 8000,8999,$(2))' && for i in $$files; do echo $$i >> $(1); done
 @files='$(wordlist 9000,9999,$(2))' && for i in $$files; do echo $$i >> $(1); done
+@if [ ! -e $(1) ]; then touch $(1); fi
 endef
