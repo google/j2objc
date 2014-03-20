@@ -133,18 +133,15 @@ public class DeflaterInputStream extends FilterInputStream {
                     def.setInput(buf, 0, bytesRead);
                 }
             }
-            int bytesDeflated = def.deflate(buffer, byteOffset + count, byteCount - count);
+            int bytesDeflated = def.deflate(buf, 0, Math.min(buf.length, byteCount - count));
             if (bytesDeflated == -1) {
                 break;
             }
+            System.arraycopy(buf, 0, buffer, byteOffset + count, bytesDeflated);
             count += bytesDeflated;
         }
         if (count == 0) {
             count = -1;
-            available = false;
-        }
-
-        if (def.finished()) {
             available = false;
         }
         return count;

@@ -17,6 +17,7 @@
 
 package java.util.zip;
 
+import dalvik.system.CloseGuard;
 import java.io.BufferedInputStream;
 import java.io.Closeable;
 import java.io.DataInputStream;
@@ -38,7 +39,7 @@ import libcore.io.Streams;
  * the zip file's central directory up front (from the constructor), but if you're using
  * {@link #getEntry} to look up multiple files by name, you get the benefit of this index.
  *
- * <p>If you only want to iterate through all the files (using {@link #entries()}, you should
+ * <p>If you only want to iterate through all the files (using {@link #entries}, you should
  * consider {@link ZipInputStream}, which provides stream-like read access to a zip file and
  * has a lower up-front cost because you don't pay to build an in-memory index.
  *
@@ -95,6 +96,8 @@ public class ZipFile implements Closeable, ZipConstants {
 
     private String comment;
 
+    private final CloseGuard guard = CloseGuard.get();
+
     /**
      * Constructs a new {@code ZipFile} allowing read access to the contents of the given file.
      * @throws ZipException if a zip error occurs.
@@ -138,6 +141,21 @@ public class ZipFile implements Closeable, ZipConstants {
         raf = new RandomAccessFile(filename, "r");
 
         readCentralDir();
+        guard.open("close");
+    }
+
+    @Override protected void finalize() throws IOException {
+        try {
+            if (guard != null) {
+                guard.warnIfOpen();
+            }
+        } finally {
+            try {
+                super.finalize();
+            } catch (Throwable t) {
+                throw new AssertionError(t);
+            }
+        }
     }
 
     /**
@@ -148,6 +166,8 @@ public class ZipFile implements Closeable, ZipConstants {
      *             if an IOException occurs.
      */
     public void close() throws IOException {
+        guard.close();
+
         RandomAccessFile localRaf = raf;
         if (localRaf != null) { // Only close initialized instances
             synchronized (localRaf) {
@@ -366,7 +386,7 @@ public class ZipFile implements Closeable, ZipConstants {
         int commentLength = it.readShort() & 0xffff;
 
         if (numEntries != totalNumEntries || diskNumber != 0 || diskWithCentralDir != 0) {
-            throw new ZipException("Spanned archives not supported");
+            throw new ZipException("spanned archives not supported");
         }
 
         if (commentLength > 0) {
@@ -481,19 +501,8 @@ public class ZipFile implements Closeable, ZipConstants {
         }
 
         @Override public int read(byte[] buffer, int byteOffset, int byteCount) throws IOException {
-            final int i;
-            try {
-                i = super.read(buffer, byteOffset, byteCount);
-            } catch (IOException e) {
-                throw new IOException("Error reading data for " + entry.getName() + " near offset "
-                        + bytesRead, e);
-            }
-            if (i == -1) {
-                if (entry.size != bytesRead) {
-                    throw new IOException("Size mismatch on inflated file: " + bytesRead + " vs "
-                            + entry.size);
-                }
-            } else {
+            int i = super.read(buffer, byteOffset, byteCount);
+            if (i != -1) {
                 bytesRead += i;
             }
             return i;

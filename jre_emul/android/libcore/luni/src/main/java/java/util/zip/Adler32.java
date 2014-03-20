@@ -56,7 +56,7 @@ public class Adler32 implements Checksum {
      *            the byte to update checksum with.
      */
     public void update(int i) {
-        adler = updateByteImpl((byte) i, adler);
+        adler = updateByteImpl(i, adler);
     }
 
     /**
@@ -82,7 +82,7 @@ public class Adler32 implements Checksum {
         return adler32((uLong) adler1, (Bytef *) (buf->buffer_ + offset), (uInt) byteCount);
     ]-*/;
 
-    private native long updateByteImpl(byte val, long adler1) /*-[
+    private native long updateByteImpl(int val, long adler1) /*-[
         return adler32((uLong) adler1, (Bytef *) (&val), 1);
     ]-*/;
 }

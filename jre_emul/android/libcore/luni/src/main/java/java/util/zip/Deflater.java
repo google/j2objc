@@ -17,6 +17,7 @@
 
 package java.util.zip;
 
+import dalvik.system.CloseGuard;
 import java.util.Arrays;
 import libcore.util.EmptyArray;
 
@@ -160,6 +161,8 @@ public class Deflater {
 
     private int inLength;
 
+    private final CloseGuard guard = CloseGuard.get();
+
     /**
      * Constructs a new {@code Deflater} instance using the
      * default <a href="#compression_level">compression level</a>.
@@ -195,6 +198,7 @@ public class Deflater {
         }
         compressLevel = level;
         streamHandle = createStream(compressLevel, strategy, noHeader);
+        guard.open("end");
     }
 
     /**
@@ -290,6 +294,7 @@ public class Deflater {
      * called, other methods will typically throw {@code IllegalStateException}.
      */
     public synchronized void end() {
+        guard.close();
         endImpl();
     }
 
@@ -309,6 +314,9 @@ public class Deflater {
 
     @Override protected void finalize() {
         try {
+            if (guard != null) {
+                guard.warnIfOpen();
+            }
             synchronized (this) {
                 end(); // to allow overriding classes to clean up
                 endImpl(); // in case those classes don't call super.end()

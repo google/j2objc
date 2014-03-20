@@ -25,9 +25,9 @@ import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
+import libcore.io.Streams;
 import libcore.io.BufferIterator;
 import libcore.io.HeapBufferIterator;
-import libcore.io.Streams;
 
 /**
  * An entry within a zip file.
@@ -54,8 +54,6 @@ public class ZipEntry implements ZipConstants, Cloneable {
     int nameLength = -1;
     long localHeaderRelOffset = -1;
 
-    long dataOffset = -1;
-
     /**
      * Zip entry state: Deflated.
      */
@@ -65,23 +63,6 @@ public class ZipEntry implements ZipConstants, Cloneable {
      * Zip entry state: Stored.
      */
     public static final int STORED = 0;
-
-    ZipEntry(String name, String comment, long crc, long compressedSize,
-            long size, int compressionMethod, int time, int modDate, byte[] extra,
-            int nameLength, long localHeaderRelOffset, long dataOffset) {
-        this.name = name;
-        this.comment = comment;
-        this.crc = crc;
-        this.compressedSize = compressedSize;
-        this.size = size;
-        this.compressionMethod = compressionMethod;
-        this.time = time;
-        this.modDate = modDate;
-        this.extra = extra;
-        this.nameLength = nameLength;
-        this.localHeaderRelOffset = localHeaderRelOffset;
-        this.dataOffset = dataOffset;
-    }
 
     /**
      * Constructs a new {@code ZipEntry} with the specified name. The name is actually a path,
@@ -306,17 +287,6 @@ public class ZipEntry implements ZipConstants, Cloneable {
         }
     }
 
-
-    /** @hide */
-    public void setDataOffset(long value) {
-        dataOffset = value;
-    }
-
-    /** @hide */
-    public long getDataOffset() {
-        return dataOffset;
-    }
-
     /**
      * Returns the string representation of this {@code ZipEntry}.
      *
@@ -346,7 +316,6 @@ public class ZipEntry implements ZipConstants, Cloneable {
         extra = ze.extra;
         nameLength = ze.nameLength;
         localHeaderRelOffset = ze.localHeaderRelOffset;
-        dataOffset = ze.dataOffset;
     }
 
     /**
@@ -374,21 +343,19 @@ public class ZipEntry implements ZipConstants, Cloneable {
 
     /*
      * Internal constructor.  Creates a new ZipEntry by reading the
-     * Central Directory Entry (CDE) from "in", which must be positioned
-     * at the CDE signature.
+     * Central Directory Entry from "in", which must be positioned at
+     * the CDE signature.
      *
-     * On exit, "in" will be positioned at the start of the next entry
-     * in the Central Directory.
+     * On exit, "in" will be positioned at the start of the next entry.
      */
-    ZipEntry(byte[] cdeHdrBuf, InputStream cdStream) throws IOException {
-        Streams.readFully(cdStream, cdeHdrBuf, 0, cdeHdrBuf.length);
+    ZipEntry(byte[] hdrBuf, InputStream in) throws IOException {
+        Streams.readFully(in, hdrBuf, 0, hdrBuf.length);
 
-        BufferIterator it = HeapBufferIterator.iterator(cdeHdrBuf, 0, cdeHdrBuf.length,
-                ByteOrder.LITTLE_ENDIAN);
+        BufferIterator it = HeapBufferIterator.iterator(hdrBuf, 0, hdrBuf.length, ByteOrder.LITTLE_ENDIAN);
 
         int sig = it.readInt();
         if (sig != CENSIG) {
-            ZipFile.throwZipException("Central Directory Entry", sig);
+             throw new ZipException("Central Directory Entry not found");
         }
 
         it.seek(8);
@@ -416,26 +383,26 @@ public class ZipEntry implements ZipConstants, Cloneable {
         localHeaderRelOffset = ((long) it.readInt()) & 0xffffffffL;
 
         byte[] nameBytes = new byte[nameLength];
-        Streams.readFully(cdStream, nameBytes, 0, nameBytes.length);
+        Streams.readFully(in, nameBytes, 0, nameBytes.length);
         if (containsNulByte(nameBytes)) {
-            throw new ZipException("Filename contains NUL byte: " + Arrays.toString(nameBytes));
+           throw new ZipException("Filename contains NUL byte: " + Arrays.toString(nameBytes));
         }
         name = new String(nameBytes, 0, nameBytes.length, StandardCharsets.UTF_8);
 
         if (extraLength > 0) {
             extra = new byte[extraLength];
-            Streams.readFully(cdStream, extra, 0, extraLength);
+            Streams.readFully(in, extra, 0, extraLength);
         }
 
         // The RI has always assumed UTF-8. (If GPBF_UTF8_FLAG isn't set, the encoding is
         // actually IBM-437.)
         if (commentByteCount > 0) {
             byte[] commentBytes = new byte[commentByteCount];
-            Streams.readFully(cdStream, commentBytes, 0, commentByteCount);
+            Streams.readFully(in, commentBytes, 0, commentByteCount);
             comment = new String(commentBytes, 0, commentBytes.length, StandardCharsets.UTF_8);
         }
     }
-
+    
     private static boolean containsNulByte(byte[] bytes) {
         for (byte b : bytes) {
             if (b == 0) {
