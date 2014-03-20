@@ -943,7 +943,7 @@ IOSClass *FetchArray(IOSClass *componentType) {
                         "emulation library. Try adding the -force_load linker flag."];
   }
 
-#if ! __has_feature(objc_arc)
+#if __has_feature(objc_arc)
   // Avoid "unused local variable" warnings.
   numberCategoryLoader = objectCategoryLoader = stringCategoryLoader = nil;
 #else

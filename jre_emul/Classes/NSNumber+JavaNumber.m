@@ -25,6 +25,21 @@
   return -8742448824652078965L;
 }
 
++ (J2ObjcClassInfo *)__metadata {
+  static J2ObjcMethodInfo methods[] = {
+    { "charValue", "byteValue", "B", 0x1, NULL },
+    { "doubleValue", NULL, "D", 0x401, NULL },
+    { "floatValue", NULL, "F", 0x401, NULL },
+    { "intValue", NULL, "I", 0x401, NULL },
+    { "longLongValue", "longValue", "J", 0x401, NULL },
+    { "shortValue", NULL, "S", 0x401, NULL },
+  };
+  static J2ObjcClassInfo _JavaLangNumber = {
+    "Number", "java.lang", NULL, 0x401, 6, methods, 0, NULL, 0, NULL
+  };
+  return &_JavaLangNumber;
+}
+
 @end
 
 // Empty class to force category to be loaded.
