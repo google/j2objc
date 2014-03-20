@@ -134,6 +134,21 @@ public class Arrays {
             }
             return contents;
         }
+
+        /*-[
+        - (NSUInteger)countByEnumeratingWithState:(NSFastEnumerationState *)state
+                                          objects:(__unsafe_unretained id *)stackbuf
+                                            count:(NSUInteger)len {
+          if (state->state == 0) {
+            state->mutationsPtr = (unsigned long *) &modCount_;
+            state->itemsPtr = (__unsafe_unretained id *) (void *) a_->buffer_;
+            state->state = 1;
+            return a_->size_;
+          } else {
+            return 0;
+          }
+        }
+        ]-*/
     }
 
     private Arrays() {
