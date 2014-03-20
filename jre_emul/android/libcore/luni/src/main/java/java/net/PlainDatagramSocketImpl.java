@@ -17,8 +17,17 @@
 
 package java.net;
 
+import dalvik.system.CloseGuard;
 import java.io.FileDescriptor;
 import java.io.IOException;
+import java.net.DatagramPacket;
+import java.net.DatagramSocketImpl;
+import java.net.InetAddress;
+import java.net.InetSocketAddress;
+import java.net.NetworkInterface;
+import java.net.SocketAddress;
+import java.net.SocketException;
+import java.net.UnknownHostException;
 import libcore.io.ErrnoException;
 import libcore.io.IoBridge;
 import libcore.io.Libcore;
@@ -33,6 +42,8 @@ public class PlainDatagramSocketImpl extends DatagramSocketImpl {
 
     private volatile boolean isNativeConnected;
 
+    private final CloseGuard guard = CloseGuard.get();
+
     /**
      * used to keep address to which the socket was connected to at the native
      * level
@@ -44,6 +55,9 @@ public class PlainDatagramSocketImpl extends DatagramSocketImpl {
     public PlainDatagramSocketImpl(FileDescriptor fd, int localPort) {
         this.fd = fd;
         this.localPort = localPort;
+        if (fd.valid()) {
+            guard.open("close");
+        }
     }
 
     public PlainDatagramSocketImpl() {
@@ -64,20 +78,12 @@ public class PlainDatagramSocketImpl extends DatagramSocketImpl {
     }
 
     @Override
-    protected void onBind(InetAddress localAddress, int localPort) {
-        this.localPort = localPort;
-    }
-
-    @Override
     public synchronized void close() {
+        guard.close();
         try {
             IoBridge.closeSocket(fd);
         } catch (IOException ignored) {
         }
-    }
-
-    @Override
-    protected void onClose() {
     }
 
     @Override
@@ -87,6 +93,9 @@ public class PlainDatagramSocketImpl extends DatagramSocketImpl {
 
     @Override protected void finalize() throws Throwable {
         try {
+            if (guard != null) {
+                guard.warnIfOpen();
+            }
             close();
         } finally {
             super.finalize();
@@ -170,8 +179,7 @@ public class PlainDatagramSocketImpl extends DatagramSocketImpl {
     public void send(DatagramPacket packet) throws IOException {
         int port = isNativeConnected ? 0 : packet.getPort();
         InetAddress address = isNativeConnected ? null : packet.getAddress();
-        IoBridge.sendto(fd, packet.getData(), packet.getOffset(), packet.getLength(), 0, address,
-            port);
+        IoBridge.sendto(fd, packet.getData(), packet.getOffset(), packet.getLength(), 0, address, port);
     }
 
     public void setOption(int option, Object value) throws SocketException {
@@ -203,13 +211,6 @@ public class PlainDatagramSocketImpl extends DatagramSocketImpl {
     }
 
     @Override
-    protected void onConnect(InetAddress remoteAddress, int remotePort) {
-        isNativeConnected = true;
-        connectedAddress = remoteAddress;
-        connectedPort = remotePort;
-    }
-
-    @Override
     public void disconnect() {
         try {
             Libcore.os.connect(fd, InetAddress.UNSPECIFIED, 0);
@@ -218,13 +219,6 @@ public class PlainDatagramSocketImpl extends DatagramSocketImpl {
         } catch (SocketException ignored) {
             // Thrown if the socket has already been closed, but this method can't throw anything.
         }
-        connectedPort = -1;
-        connectedAddress = null;
-        isNativeConnected = false;
-    }
-
-    @Override
-    protected void onDisconnect() {
         connectedPort = -1;
         connectedAddress = null;
         isNativeConnected = false;

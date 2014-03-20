@@ -17,12 +17,7 @@
 
 package java.io;
 
-import static libcore.io.OsConstants.O_CREAT;
-import static libcore.io.OsConstants.O_RDONLY;
-import static libcore.io.OsConstants.O_RDWR;
-import static libcore.io.OsConstants.O_SYNC;
-import static libcore.io.OsConstants.SEEK_CUR;
-import static libcore.io.OsConstants.SEEK_SET;
+import dalvik.system.CloseGuard;
 
 import java.nio.ByteOrder;
 import java.nio.NioUtils;
@@ -36,6 +31,7 @@ import libcore.io.IoUtils;
 import libcore.io.Libcore;
 import libcore.io.Memory;
 import libcore.io.SizeOf;
+import static libcore.io.OsConstants.*;
 
 /**
  * Allows reading from and writing to a file in a random-access manner. This is
@@ -58,6 +54,8 @@ public class RandomAccessFile implements DataInput, DataOutput, Closeable {
     private FileChannel channel;
 
     private int mode;
+
+    private final CloseGuard guard = CloseGuard.get();
 
     private final byte[] scratch = new byte[8];
 
@@ -129,6 +127,7 @@ public class RandomAccessFile implements DataInput, DataOutput, Closeable {
                 // Ignored
             }
         }
+        guard.open("close");
     }
 
     /**
@@ -160,13 +159,21 @@ public class RandomAccessFile implements DataInput, DataOutput, Closeable {
      *             if an error occurs while closing this file.
      */
     public void close() throws IOException {
+        guard.close();
         synchronized (this) {
+            if (channel != null && channel.isOpen()) {
+                channel.close();
+                channel = null;
+            }
             IoUtils.close(fd);
         }
     }
 
     @Override protected void finalize() throws Throwable {
         try {
+            if (guard != null) {
+                guard.warnIfOpen();
+            }
             close();
         } finally {
             super.finalize();
@@ -182,7 +189,6 @@ public class RandomAccessFile implements DataInput, DataOutput, Closeable {
      * file channel's position and vice versa.
      *
      * @return this file's file channel instance.
-     *
      */
     public final synchronized FileChannel getChannel() {
         if(channel == null) {

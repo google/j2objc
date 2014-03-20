@@ -17,9 +17,9 @@
 
 package java.io;
 
+import dalvik.system.CloseGuard;
 import java.nio.NioUtils;
 import java.nio.channels.FileChannel;
-import java.util.Arrays;
 import libcore.io.IoBridge;
 import libcore.io.IoUtils;
 import static libcore.io.OsConstants.*;
@@ -52,12 +52,15 @@ import static libcore.io.OsConstants.*;
 public class FileOutputStream extends OutputStream {
 
     private FileDescriptor fd;
+    private final boolean shouldClose;
 
     /** The unique file channel. Lazily initialized because it's rarely needed. */
     private FileChannel channel;
 
     /** File access mode */
     private final int mode;
+
+    private final CloseGuard guard = CloseGuard.get();
 
     /**
      * Constructs a new {@code FileOutputStream} that writes to {@code file}. The file will be
@@ -82,6 +85,8 @@ public class FileOutputStream extends OutputStream {
         }
         this.mode = O_WRONLY | O_CREAT | (append ? O_APPEND : O_TRUNC);
         this.fd = IoBridge.open(file.getAbsolutePath(), mode);
+        this.shouldClose = true;
+        this.guard.open("close");
     }
 
     /**
@@ -94,8 +99,11 @@ public class FileOutputStream extends OutputStream {
             throw new NullPointerException("fd == null");
         }
         this.fd = fd;
+        this.shouldClose = false;
         this.mode = O_WRONLY;
         this.channel = NioUtils.newFileChannel(this, fd, mode);
+        // Note that we do not call guard.open here because the
+        // FileDescriptor is not owned by the stream.
     }
 
     /**
@@ -121,16 +129,25 @@ public class FileOutputStream extends OutputStream {
 
     @Override
     public void close() throws IOException {
+        guard.close();
         synchronized (this) {
             if (channel != null) {
                 channel.close();
             }
-            IoUtils.close(fd);
+            if (shouldClose) {
+                IoUtils.close(fd);
+            } else {
+                // An owned fd has been invalidated by IoUtils.close, but
+                fd = new FileDescriptor();
+            }
         }
     }
 
     @Override protected void finalize() throws IOException {
         try {
+            if (guard != null) {
+                guard.warnIfOpen();
+            }
             close();
         } finally {
             try {
