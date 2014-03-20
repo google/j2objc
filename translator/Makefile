@@ -47,9 +47,12 @@ J2OBJC_SH = $(J2OBJC_ROOT)/scripts/j2objc.sh
 J2OBJC_SH_DIST = $(DIST_DIR)/j2objc
 
 JAVA_SOURCES = \
+	DeadCodeProcessor.java \
+	FileProcessor.java \
 	J2ObjC.java \
 	Options.java \
 	Plugin.java \
+	TranslationProcessor.java \
 	gen/HiddenFieldDetector.java \
 	gen/MetadataGenerator.java \
 	gen/ObjectiveCHeaderGenerator.java \
@@ -106,8 +109,10 @@ JAVA_SOURCES = \
 	util/BindingUtil.java \
 	util/DeadCodeMap.java \
 	util/ErrorReportingASTVisitor.java \
+	util/ErrorUtil.java \
 	util/NameTable.java \
 	util/ProGuardUsageParser.java \
+	util/TimeTracker.java \
 	util/UnicodeUtils.java \
 
 RESOURCES = J2ObjC.properties JRE.mappings

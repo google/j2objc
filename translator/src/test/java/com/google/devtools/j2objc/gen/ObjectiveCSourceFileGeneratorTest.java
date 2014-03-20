@@ -18,6 +18,7 @@ package com.google.devtools.j2objc.gen;
 
 import com.google.devtools.j2objc.GenerationTest;
 import com.google.devtools.j2objc.Options;
+import com.google.devtools.j2objc.util.ErrorUtil;
 import com.google.devtools.j2objc.util.NameTable;
 
 import java.io.IOException;
@@ -71,7 +72,7 @@ public class ObjectiveCSourceFileGeneratorTest extends GenerationTest {
 
     // Now rebuild with warnings disabled.
     Options.setJsniWarnings(false);
-    resetWarningCount();
+    ErrorUtil.reset();
     translation = translateSourceFile(source, "Example", "Example.h");
     assertWarningCount(0);
 

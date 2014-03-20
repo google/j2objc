@@ -19,15 +19,19 @@ package com.google.devtools.j2objc;
 import com.google.common.base.Joiner;
 import com.google.common.collect.Lists;
 import com.google.common.io.Files;
-import com.google.devtools.j2objc.J2ObjC.Language;
 import com.google.devtools.j2objc.gen.ObjectiveCHeaderGenerator;
 import com.google.devtools.j2objc.gen.ObjectiveCImplementationGenerator;
 import com.google.devtools.j2objc.gen.ObjectiveCSegmentedHeaderGenerator;
 import com.google.devtools.j2objc.gen.SourceBuilder;
 import com.google.devtools.j2objc.gen.SourcePosition;
 import com.google.devtools.j2objc.gen.StatementGenerator;
+import com.google.devtools.j2objc.translate.DeadCodeEliminator;
 import com.google.devtools.j2objc.translate.DestructorGenerator;
+import com.google.devtools.j2objc.types.Types;
+import com.google.devtools.j2objc.util.DeadCodeMap;
+import com.google.devtools.j2objc.util.ErrorUtil;
 import com.google.devtools.j2objc.util.NameTable;
+import com.google.devtools.j2objc.util.TimeTracker;
 
 import junit.framework.TestCase;
 
@@ -66,6 +70,7 @@ import java.util.regex.Pattern;
 public abstract class GenerationTest extends TestCase {
   protected File tempDir;
   private String lastLog;
+  private DeadCodeMap deadCodeMap;
 
   @Override
   protected void setUp() throws IOException {
@@ -75,13 +80,22 @@ public abstract class GenerationTest extends TestCase {
       "--mem-debug" // Run tests with memory debugging by default.
     });
     lastLog = "";
+    deadCodeMap = null;
   }
 
   @Override
   protected void tearDown() throws Exception {
     deleteTempDir(tempDir);
-    J2ObjC.reset();
+    ErrorUtil.reset();
     lastLog = "";
+  }
+
+  protected void setDeadCodeMap(DeadCodeMap map) {
+    deadCodeMap = map;
+  }
+
+  protected DeadCodeMap getDeadCodeMap() {
+    return deadCodeMap;
   }
 
   /**
@@ -140,9 +154,12 @@ public abstract class GenerationTest extends TestCase {
         }
       });
       CompilationUnit unit = compileType(name, source, assertErrors);
-      J2ObjC.initializeTranslation(unit);
-      J2ObjC.removeDeadCode(unit, source);
-      J2ObjC.translate(unit);
+      NameTable.initialize(unit);
+      Types.initialize(unit);
+      if (deadCodeMap != null) {
+        new DeadCodeEliminator(deadCodeMap).run(unit);
+      }
+      new TranslationProcessor().applyMutations(unit, TimeTracker.noop());
       lastLog = stringWriter.toString();
       return unit;
     } finally {
@@ -388,7 +405,7 @@ public abstract class GenerationTest extends TestCase {
       } else {
         ObjectiveCHeaderGenerator.generate(sourceName, source, unit);
       }
-      ObjectiveCImplementationGenerator.generate(sourceName, Language.OBJECTIVE_C, unit, source);
+      ObjectiveCImplementationGenerator.generate(sourceName, unit, source);
       lastLog += stringWriter.toString();
       return getTranslatedFile(fileName);
     } finally {
@@ -417,7 +434,7 @@ public abstract class GenerationTest extends TestCase {
    * last translation.
    */
   protected void assertWarningCount(int expectedCount) {
-    assertEquals(expectedCount, J2ObjC.getWarningCount());
+    assertEquals(expectedCount, ErrorUtil.warningCount());
   }
 
   /**
@@ -425,7 +442,7 @@ public abstract class GenerationTest extends TestCase {
    * last translation.
    */
   protected void assertErrorCount(int expectedCount) {
-    assertEquals(expectedCount, J2ObjC.getErrorCount());
+    assertEquals(expectedCount, ErrorUtil.errorCount());
   }
 
   /**
@@ -436,13 +453,5 @@ public abstract class GenerationTest extends TestCase {
     if (!lastLog.contains(expectedText)) {
       fail("expected:\"" + expectedText + "\" in:\n" + lastLog);
     }
-  }
-
-  protected void resetWarningCount() {
-    J2ObjC.resetWarnings();
-  }
-
-  protected void resetErrorCount() {
-    J2ObjC.resetErrors();
   }
 }

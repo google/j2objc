@@ -16,8 +16,6 @@
 
 package com.google.devtools.j2objc.util;
 
-import com.google.devtools.j2objc.J2ObjC;
-
 import java.io.UnsupportedEncodingException;
 
 /**
@@ -94,7 +92,8 @@ public final class UnicodeUtils {
       return escapeUtf8(c);
     } else {
       if (!isValidCppCharacter(c)) {
-        J2ObjC.error(String.format("Illegal C/C++ Unicode character \\u%4x in \"%s\"", (int) c, s));
+        ErrorUtil.error(String.format(
+            "Illegal C/C++ Unicode character \\u%4x in \"%s\"", (int) c, s));
       }
       return "\\u" + String.format("%04x", (int) c);
     }

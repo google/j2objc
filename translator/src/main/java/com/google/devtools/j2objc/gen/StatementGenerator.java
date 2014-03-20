@@ -20,7 +20,6 @@ import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.CharMatcher;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
-import com.google.devtools.j2objc.J2ObjC;
 import com.google.devtools.j2objc.Options;
 import com.google.devtools.j2objc.translate.DestructorGenerator;
 import com.google.devtools.j2objc.types.GeneratedMethodBinding;
@@ -32,6 +31,7 @@ import com.google.devtools.j2objc.util.ASTNodeException;
 import com.google.devtools.j2objc.util.ASTUtil;
 import com.google.devtools.j2objc.util.BindingUtil;
 import com.google.devtools.j2objc.util.ErrorReportingASTVisitor;
+import com.google.devtools.j2objc.util.ErrorUtil;
 import com.google.devtools.j2objc.util.NameTable;
 import com.google.devtools.j2objc.util.UnicodeUtils;
 
@@ -789,7 +789,7 @@ public class StatementGenerator extends ErrorReportingASTVisitor {
           if (UnicodeUtils.hasValidCppCharacters(s)) {
             format.append(s.replace("%", "%%"));
           } else {
-            J2ObjC.error(operand,
+            ErrorUtil.error(operand,
                 "String constant has Unicode or octal escape sequences that are not valid in " +
                 "Objective-C.\nEither make string non-final, or remove characters.");
           }
