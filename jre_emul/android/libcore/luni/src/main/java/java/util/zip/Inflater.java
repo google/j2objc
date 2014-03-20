@@ -26,6 +26,7 @@ package java.util.zip;
 #define DEF_WBITS 15
 ]-*/
 
+import dalvik.system.CloseGuard;
 import java.io.FileDescriptor;
 import java.util.Arrays;
 
@@ -68,6 +69,8 @@ public class Inflater {
 
     private long streamHandle = -1;
 
+    private final CloseGuard guard = CloseGuard.get();
+
     /**
      * This constructor creates an inflater that expects a header from the input
      * stream. Use {@link #Inflater(boolean)} if the input comes without a ZLIB
@@ -87,6 +90,7 @@ public class Inflater {
      */
     public Inflater(boolean noHeader) {
         streamHandle = createStream(noHeader);
+        guard.open("end");
     }
 
     private native long createStream(boolean noHeader) /*-[
@@ -111,6 +115,7 @@ public class Inflater {
      * called, other methods will typically throw {@code IllegalStateException}.
      */
     public synchronized void end() {
+        guard.close();
         if (streamHandle != -1) {
             endImpl(streamHandle);
             inRead = 0;
@@ -126,7 +131,18 @@ public class Inflater {
     ]-*/;
 
     @Override protected void finalize() {
-        end();
+        try {
+            if (guard != null) {
+                guard.warnIfOpen();
+            }
+            end();
+        } finally {
+            try {
+                super.finalize();
+            } catch (Throwable t) {
+                throw new AssertionError(t);
+            }
+        }
     }
 
     /**
@@ -246,6 +262,7 @@ public class Inflater {
      */
     public synchronized int inflate(byte[] buf, int offset, int byteCount) throws DataFormatException {
         Arrays.checkOffsetAndCount(buf.length, offset, byteCount);
+
         checkOpen();
 
         if (needsInput()) {
