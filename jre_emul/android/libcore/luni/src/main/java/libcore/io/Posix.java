@@ -31,24 +31,75 @@ import libcore.util.MutableLong;
 #include "BufferUtils.h"
 #include "Portability.h"
 #include "TempFailureRetry.h"
+#include "java/lang/IllegalArgumentException.h"
+#include "java/lang/System.h"
+#include "java/net/Inet6Address.h"
+#include "java/net/InetAddress.h"
+#include "java/net/InetUnixAddress.h"
+#include "libcore/io/AsynchronousCloseMonitor.h"
 #include "libcore/io/StructStatVfs.h"
 #include "libcore/io/StructPollfd.h"
 
 #include <fcntl.h>
 #include <poll.h>
+#include <arpa/inet.h>
+#include <net/if.h>
+#include <netdb.h>
 #include <sys/ioctl.h>
 #include <sys/stat.h>
+#include <sys/socket.h>
 #include <sys/types.h>
 #include <sys/uio.h>
+#include <sys/un.h>
+#include <sys/utsname.h>
 #include <termios.h>
 #include <unistd.h>
+
+static inline BOOL throwIfClosed(JavaIoFileDescriptor *fd) {
+  if (fd->descriptor_ == -1) {
+    @throw AUTORELEASE([[JavaNetSocketException alloc] initWithNSString:@"Socket closed"]);
+  }
+  return YES;
+}
+
+#define NET_FAILURE_RETRY(return_type, syscall_name, java_fd, ...) ({ \
+  return_type _rc = -1; \
+  do { \
+    int _fd = java_fd->descriptor_; \
+    id _monitor = \
+        [LibcoreIoAsynchronousCloseMonitor newAsynchronousSocketCloseMonitorWithInt:_fd]; \
+    _rc = syscall_name(_fd, __VA_ARGS__); \
+    _monitor = nil; \
+    if (_rc == -1) { \
+      throwIfClosed(fd); \
+      if (errno != EINTR) { \
+        [LibcoreIoPosix \
+            throwErrnoExceptionWithNSString:[NSString stringWithFormat:@"%s", # syscall_name] \
+                                    withInt:_rc]; \
+      } \
+    } \
+  } while (_rc == -1); \
+  _rc; })
+
 ]-*/
 
 public final class Posix implements Os {
   Posix() { }
 
   /*-[
-  static id makeStructStat(const struct stat *sb) {
+  JavaNetInetAddress *sockaddrToInetAddress(const struct sockaddr_storage *ss, int *port);
+
+  static JavaNetInetSocketAddress *makeSocketAddress(const struct sockaddr_storage *ss) {
+    int port;
+    JavaNetInetAddress *inetAddress = sockaddrToInetAddress(ss, &port);
+    if (!inetAddress) {
+      return nil;
+    }
+    return AUTORELEASE([[JavaNetInetSocketAddress alloc]
+                        initWithJavaNetInetAddress:inetAddress withInt:port]);
+  }
+
+  static LibcoreIoStructStat *makeStructStat(const struct stat *sb) {
       return AUTORELEASE([[LibcoreIoStructStat alloc]
                           initWithLong:sb->st_dev
                               withLong:sb->st_ino
@@ -65,7 +116,7 @@ public final class Posix implements Os {
                               withLong:sb->st_blocks]);
   }
 
-  static id makeStructStatVfs(const struct statvfs *sb) {
+  static LibcoreIoStructStatVfs *makeStructStatVfs(const struct statvfs *sb) {
     return AUTORELEASE([[LibcoreIoStructStatVfs alloc]
                         initWithLong:(long long)sb->f_bsize
                             withLong:(long long)sb->f_frsize
@@ -80,6 +131,45 @@ public final class Posix implements Os {
                             withLong:255LL]);  // __DARWIN_MAXNAMLEN
   }
 
+  static LibcoreIoStructUtsname *makeStructUtsname(const struct utsname *buf) {
+    NSString *sysname = [NSString stringWithUTF8String:buf->sysname];
+    NSString *nodename = [NSString stringWithUTF8String:buf->nodename];
+    NSString *release = [NSString stringWithUTF8String:buf->release];
+    NSString *version = [NSString stringWithUTF8String:buf->version];
+    NSString *machine = [NSString stringWithUTF8String:buf->machine];
+    return AUTORELEASE([[LibcoreIoStructUtsname alloc] initWithNSString:sysname
+                                                           withNSString:nodename
+                                                           withNSString:release
+                                                           withNSString:version
+                                                           withNSString:machine]);
+  }
+
+  static BOOL fillIfreq(NSString *interfaceName, struct ifreq *req) {
+    if (!interfaceName) {
+      return NO;
+    }
+    memset(&req, 0, sizeof(req));
+    strncpy(req->ifr_name, [interfaceName UTF8String], sizeof(req->ifr_name));
+    req->ifr_name[sizeof(req->ifr_name) - 1] = '\0';
+    return YES;
+  }
+
+  static BOOL fillInetSocketAddress(int rc, JavaNetInetSocketAddress *srcAddress,
+      const struct sockaddr_storage *ss) {
+    if (rc == -1 || !srcAddress) {
+      return YES;
+    }
+    // Fill out the passed-in InetSocketAddress with the sender's IP address and port number.
+    int port;
+    JavaNetInetAddress *sender = sockaddrToInetAddress(ss, &port);
+    if (!sender) {
+      return NO;
+    }
+    srcAddress->addr_ = sender;
+    srcAddress->port_ = port;
+    return YES;
+ }
+
   static id doStat(NSString *path, BOOL isLstat) {
     if (!path) {
       return NO;
@@ -92,6 +182,187 @@ public final class Posix implements Os {
       [LibcoreIoPosix throwErrnoExceptionWithNSString:(isLstat ? @"lstat" : @"stat") withInt:errno];
     }
     return makeStructStat(&sb);
+  }
+
+  static JavaNetSocketAddress *doGetSockName(int fd, BOOL is_sockname) {
+    struct sockaddr_storage ss;
+    struct sockaddr *sa = (struct sockaddr *) &ss;
+    socklen_t byteCount = sizeof(ss);
+    memset(&ss, 0, byteCount);
+    int rc = is_sockname ? TEMP_FAILURE_RETRY(getsockname(fd, sa, &byteCount))
+        : TEMP_FAILURE_RETRY(getpeername(fd, sa, &byteCount));
+    if (rc == -1) {
+      [LibcoreIoPosix
+       throwErrnoExceptionWithNSString:(is_sockname ? @"getsockname" : @"getpeername") withInt:rc];
+    }
+    return makeSocketAddress(&ss);
+  }
+
+  JavaNetInetAddress *sockaddrToInetAddress(const struct sockaddr_storage *ss, int *port) {
+    // Convert IPv4-mapped IPv6 addresses to IPv4 addresses.
+    // The RI states "Java will never return an IPv4-mapped address".
+    const struct sockaddr_in6 *sin6 = (const struct sockaddr_in6 *) ss;
+    if (ss->ss_family == AF_INET6 && IN6_IS_ADDR_V4MAPPED(&sin6->sin6_addr)) {
+      // Copy the IPv6 address into the temporary sockaddr_storage.
+      struct sockaddr_storage tmp;
+      memset(&tmp, 0, sizeof(tmp));
+      memcpy(&tmp, ss, sizeof(struct sockaddr_in6));
+      // Unmap it into an IPv4 address.
+      struct sockaddr_in *sin = (struct sockaddr_in *) &tmp;
+      sin->sin_family = AF_INET;
+      sin->sin_port = sin6->sin6_port;
+      memcpy(&sin->sin_addr.s_addr, &sin6->sin6_addr.s6_addr[12], 4);
+      // Do the regular conversion using the unmapped address.
+      return sockaddrToInetAddress(&tmp, port);
+    }
+
+    const void *rawAddress;
+    size_t addressLength;
+    int sin_port = 0;
+    int scope_id = 0;
+    if (ss->ss_family == AF_INET) {
+      const struct sockaddr_in *sin = (const struct sockaddr_in *) ss;
+      rawAddress = &sin->sin_addr.s_addr;
+      addressLength = 4;
+      sin_port = ntohs(sin->sin_port);
+    } else if (ss->ss_family == AF_INET6) {
+      const struct sockaddr_in6 *sin6 = (const struct sockaddr_in6 *) ss;
+      rawAddress = &sin6->sin6_addr.s6_addr;
+      addressLength = 16;
+      sin_port = ntohs(sin6->sin6_port);
+      scope_id = sin6->sin6_scope_id;
+    } else if (ss->ss_family == AF_UNIX) {
+      const struct sockaddr_un *sun = (const struct sockaddr_un *) ss;
+      rawAddress = &sun->sun_path;
+      addressLength = strlen(sun->sun_path);
+    } else {
+      // We can't throw SocketException. We aren't meant to see bad addresses, so seeing one
+      // really does imply an internal error.
+      NSString *errMsg =
+          [NSString stringWithFormat:@"sockaddrToInetAddress unsupported ss_family: %i",
+              ss->ss_family];
+      @throw AUTORELEASE([[JavaLangIllegalArgumentException alloc] initWithNSString:errMsg]);
+    }
+    if (port != NULL) {
+      *port = sin_port;
+    }
+
+    IOSByteArray *byteArray =
+        [IOSByteArray arrayWithBytes:(const char *) rawAddress count:addressLength];
+
+    if (ss->ss_family == AF_UNIX) {
+        // Note that we get here for AF_UNIX sockets on accept(2). The unix(7) man page claims
+        // that the peer's sun_path will contain the path, but in practice it doesn't, and the
+        // peer length is returned as 2 (meaning only the sun_family field was set).
+        return AUTORELEASE([[JavaNetInetUnixAddress alloc] initWithByteArray:byteArray]);
+    }
+    return [JavaNetInetAddress getByAddressWithNSString:nil
+                                          withByteArray:byteArray
+                                                withInt:scope_id];
+  }
+
+  static BOOL inetAddressToSockaddrImpl(JavaNetInetAddress *inetAddress, int port,
+      struct sockaddr_storage *ss, socklen_t *sa_len, BOOL map) {
+    memset(ss, 0, sizeof(struct sockaddr_storage));
+    sa_len = 0;
+    nil_chk(inetAddress);
+
+    // Get the address family.
+    ss->ss_family = inetAddress->family_;
+    if (ss->ss_family == AF_UNSPEC) {
+      *sa_len = sizeof(ss->ss_family);
+      return YES; // Job done!
+    }
+
+    // Check this is an address family we support.
+    if (ss->ss_family != AF_INET && ss->ss_family != AF_INET6 && ss->ss_family != AF_UNIX) {
+      NSString *errMsg =
+          [NSString stringWithFormat:@"inetAddressToSockaddr bad family: %i", ss->ss_family];
+      @throw AUTORELEASE([[JavaLangIllegalArgumentException alloc] initWithNSString:errMsg]);
+    }
+
+    // Handle the AF_UNIX special case.
+    if (ss->ss_family == AF_UNIX) {
+      struct sockaddr_un *sun = (struct sockaddr_un *)ss;
+
+      size_t path_length = [inetAddress->ipaddress_ count];
+      if (path_length >= sizeof(sun->sun_path)) {
+        NSString *errMsg =
+            [NSString stringWithFormat:@"inetAddressToSockaddr path too long for AF_UNIX: %zi",
+                path_length];
+        @throw AUTORELEASE([[JavaLangIllegalArgumentException alloc] initWithNSString:errMsg]);
+      }
+
+      // Copy the bytes...
+      char* dst = (char *) sun->sun_path;
+      memset(dst, 0, sizeof(sun->sun_path));
+      [inetAddress->ipaddress_ getBytes:dst length:path_length];
+      *sa_len = sizeof(sun->sun_path);
+      return YES;
+    }
+
+    // We use AF_INET6 sockets, so we want an IPv6 address (which may be a IPv4-mapped address).
+    struct sockaddr_in6 *sin6 = (struct sockaddr_in6 *) ss;
+    sin6->sin6_port = htons(port);
+    if (ss->ss_family == AF_INET6) {
+      // IPv6 address. Copy the bytes...
+      char *dst = (char *) sin6->sin6_addr.s6_addr;
+      [inetAddress->ipaddress_ getBytes:dst length:16];
+      // ...and set the scope id...
+      sin6->sin6_scope_id = ((JavaNetInet6Address *) inetAddress)->scope_id_;
+      *sa_len = sizeof(struct sockaddr_in6);
+      return true;
+    }
+
+    // Deal with Inet4Address instances.
+    if (map) {
+      // We should represent this Inet4Address as an IPv4-mapped IPv6 sockaddr_in6.
+      // Change the family...
+      sin6->sin6_family = AF_INET6;
+      // Copy the bytes...
+      char *dst = (char *) &sin6->sin6_addr.s6_addr[12];
+      [inetAddress->ipaddress_ getBytes:dst length:4];
+      // INADDR_ANY and in6addr_any are both all-zeros...
+      if (!IN6_IS_ADDR_UNSPECIFIED(&sin6->sin6_addr)) {
+          // ...but all other IPv4-mapped addresses are ::ffff:a.b.c.d, so insert the ffff...
+          memset(&(sin6->sin6_addr.s6_addr[10]), 0xff, 2);
+      }
+      *sa_len = sizeof(struct sockaddr_in6);
+    } else {
+      // We should represent this Inet4Address as an IPv4 sockaddr_in.
+      struct sockaddr_in *sin = (struct sockaddr_in *) ss;
+      sin->sin_port = htons(port);
+      char *dst = (char *) &sin->sin_addr.s_addr;
+      [inetAddress->ipaddress_ getBytes:dst length:4];
+      *sa_len = sizeof(struct sockaddr_in);
+    }
+    return YES;
+  }
+
+  BOOL inetAddressToSockaddrVerbatim(JavaNetInetAddress *inetAddress, int port,
+      struct sockaddr_storage *ss, socklen_t *sa_len) {
+    return inetAddressToSockaddrImpl(inetAddress, port, ss, sa_len, NO);
+  }
+
+  BOOL inetAddressToSockaddr(JavaNetInetAddress *inetAddress, int port,
+      struct sockaddr_storage *ss, socklen_t *sa_len) {
+    return inetAddressToSockaddrImpl(inetAddress, port, ss, sa_len, YES);
+  }
+
+  BOOL setBlocking(int fd, bool blocking) {
+    int flags = fcntl(fd, F_GETFL);
+    if (flags == -1) {
+      return NO;
+    }
+
+    if (!blocking) {
+        flags |= O_NONBLOCK;
+    } else {
+        flags &= ~O_NONBLOCK;
+    }
+
+    int rc = fcntl(fd, F_SETFL, flags);
+    return (rc != -1);
   }
   ]-*/
 
@@ -116,6 +387,17 @@ public final class Posix implements Os {
       [LibcoreIoPosix throwErrnoExceptionWithNSString:@"access" withInt:errno];
     }
     return (rc == 0);
+  ]-*/;
+
+  public native void bind(FileDescriptor fd, InetAddress address, int port)
+      throws ErrnoException, SocketException /*-[
+    struct sockaddr_storage ss;
+    socklen_t sa_len;
+    if (!inetAddressToSockaddr(address, port, &ss, &sa_len)) {
+      return;
+    }
+    const struct sockaddr* sa = (const struct sockaddr *) &ss;
+    (void) NET_FAILURE_RETRY(int, bind, fd, sa, sa_len);
   ]-*/;
 
   /**
@@ -151,6 +433,17 @@ public final class Posix implements Os {
     int fd = (int) javaFd->descriptor_;
     javaFd->descriptor_ = -1L;
     [LibcoreIoPosix throwIfMinusOneWithNSString:@"close" withInt:close(fd)];
+  ]-*/;
+
+  public native void connect(FileDescriptor fd, InetAddress address, int port)
+      throws ErrnoException, SocketException /*-[
+    struct sockaddr_storage ss;
+    socklen_t sa_len;
+    if (!inetAddressToSockaddr(address, port, &ss, &sa_len)) {
+      return;
+    }
+    const struct sockaddr* sa = (const struct sockaddr *) &ss;
+    (void) NET_FAILURE_RETRY(int, connect, fd, sa, sa_len);
   ]-*/;
 
   public native FileDescriptor dup(FileDescriptor oldFd) throws ErrnoException /*-[
@@ -234,6 +527,140 @@ public final class Posix implements Os {
   public native void ftruncate(FileDescriptor fd, long length) throws ErrnoException /*-[
     int rc = TEMP_FAILURE_RETRY(ftruncate((int) fd->descriptor_, (off_t) length));
     [LibcoreIoPosix throwIfMinusOneWithNSString:@"ftruncate" withInt:rc];
+  ]-*/;
+
+  public native String gai_strerror(int error) /*-[
+    return [NSString stringWithUTF8String:gai_strerror(error)];
+  ]-*/;
+
+  public native InetAddress[] getaddrinfo(String node, StructAddrinfo javaHints)
+      throws GaiException /*-[
+    if (!node) {
+      return nil;
+    }
+
+    struct addrinfo hints;
+    memset(&hints, 0, sizeof(hints));
+    hints.ai_flags = javaHints->ai_flags_;
+    hints.ai_family = javaHints->ai_family_;
+    hints.ai_socktype = javaHints->ai_socktype_;
+    hints.ai_protocol = javaHints->ai_protocol_;
+
+    struct addrinfo* addressList = NULL;
+    errno = 0;
+    int rc = getaddrinfo([node UTF8String], NULL, &hints, &addressList);
+    if (rc != 0) {
+      @throw AUTORELEASE([[LibcoreIoGaiException alloc]
+                          initWithNSString:@"getaddrinfo" withInt:rc]);
+    }
+
+    // Count results so we know how to size the output array.
+    int addressCount = 0;
+    for (struct addrinfo* ai = addressList; ai != NULL; ai = ai->ai_next) {
+      if (ai->ai_family == AF_INET || ai->ai_family == AF_INET6) {
+        ++addressCount;
+      } else {
+        NSString *errMsg =
+            [NSString stringWithFormat:@"getaddrinfo unexpected ai_family %i", ai->ai_family];
+        [JavaLangSystem logEWithNSString:errMsg];
+      }
+    }
+    if (addressCount == 0) {
+      free(addressList);
+      return nil;
+    }
+
+    // Prepare output array.
+    IOSObjectArray *result =
+        [IOSObjectArray arrayWithLength:addressCount type:[JavaNetInetAddress getClass]];
+
+    // Examine returned addresses one by one, save them in the output array.
+    int index = 0;
+    for (struct addrinfo* ai = addressList; ai != NULL; ai = ai->ai_next) {
+      if (ai->ai_family != AF_INET && ai->ai_family != AF_INET6) {
+        // Unknown address family. Skip this address.
+        NSString *errMsg =
+            [NSString stringWithFormat:@"getaddrinfo unexpected ai_family %i", ai->ai_family];
+        [JavaLangSystem logEWithNSString:errMsg];
+        continue;
+      }
+
+      // Convert each IP address into a Java byte array.
+      struct sockaddr_storage address = *(struct sockaddr_storage *) ai->ai_addr;
+      JavaNetInetAddress *inetAddress = sockaddrToInetAddress(&address, NULL);
+      if (!inetAddress) {
+        free(addressList);
+        return nil;
+      }
+      [result replaceObjectAtIndex:index withObject:inetAddress];
+      ++index;
+    }
+    return result;
+  ]-*/;
+
+  public native String getnameinfo(InetAddress address, int flags) throws GaiException /*-[
+    struct sockaddr_storage ss;
+    socklen_t sa_len;
+    if (!inetAddressToSockaddrVerbatim(address, 0, &ss, &sa_len)) {
+      return nil;
+    }
+    char buf[NI_MAXHOST]; // NI_MAXHOST is longer than INET6_ADDRSTRLEN.
+    errno = 0;
+    int rc = getnameinfo((struct sockaddr *) &ss, sa_len, buf, sizeof(buf), NULL, 0, flags);
+    if (rc != 0) {
+      @throw AUTORELEASE([[LibcoreIoGaiException alloc]
+                          initWithNSString:@"getnameinfo" withInt:rc]);
+    }
+    return [NSString stringWithUTF8String:buf];
+  ]-*/;
+
+  public native SocketAddress getsockname(FileDescriptor fd) throws ErrnoException /*-[
+    return doGetSockName(fd->descriptor_, YES);
+  ]-*/;
+
+  public native int getsockoptInt(FileDescriptor fd, int level, int option)
+      throws ErrnoException /*-[
+    int result = 0;
+    socklen_t size = sizeof(result);
+    int rc = TEMP_FAILURE_RETRY(getsockopt(fd->descriptor_, level, option, &result, &size));
+    if (rc == -1) {
+      [LibcoreIoPosix throwErrnoExceptionWithNSString:@"getsockopt" withInt:rc];
+    }
+    return result;
+  ]-*/;
+
+  public native String if_indextoname(int index) /*-[
+    char buf[IF_NAMESIZE];
+    char *name = if_indextoname(index, buf);
+    // if_indextoname(3) returns NULL on failure. There's no useful information in errno,
+    // so we don't bother throwing. Callers can null-check.
+    return name ? [NSString stringWithUTF8String:name] : nil;
+]-*/;
+
+  public native InetAddress inet_pton(int family, String address) /*-[
+    if (!address) {
+      return nil;
+    }
+    struct sockaddr_storage ss;
+    memset(&ss, 0, sizeof(ss));
+    // sockaddr_in and sockaddr_in6 are at the same address, so we can use either here.
+    void *dst = &((struct sockaddr_in *) &ss)->sin_addr;
+    if (inet_pton(family, [address UTF8String], dst) != 1) {
+      return nil;
+    }
+    ss.ss_family = family;
+    return sockaddrToInetAddress(&ss, NULL);
+  ]-*/;
+
+  public native InetAddress ioctlInetAddress(FileDescriptor fd, int cmd,
+      String interfaceName) throws ErrnoException /*-[
+    struct ifreq req;
+    if (!fillIfreq(interfaceName, &req)) {
+      return nil;
+    }
+    int rc = TEMP_FAILURE_RETRY(ioctl(fd->descriptor_, cmd, &req));
+    [LibcoreIoPosix throwIfMinusOneWithNSString:@"ioctl" withInt:rc];
+    return sockaddrToInetAddress((struct sockaddr_storage *) &req.ifr_addr, NULL);
   ]-*/;
 
   public native int ioctlInt(FileDescriptor fd, int cmd, MutableInt javaArg)
@@ -467,6 +894,43 @@ public final class Posix implements Os {
     return result;
   ]-*/;
 
+  public int recvfrom(FileDescriptor fd, ByteBuffer buffer, int flags,
+      InetSocketAddress srcAddress) throws ErrnoException, SocketException {
+    if (buffer.isDirect()) {
+      return recvfromBytes(fd, buffer, buffer.position(), buffer.remaining(),
+          flags, srcAddress);
+    } else {
+      return recvfromBytes(fd, NioUtils.unsafeArray(buffer),
+          NioUtils.unsafeArrayOffset(buffer) + buffer.position(),
+          buffer.remaining(), flags, srcAddress);
+    }
+  }
+
+  public int recvfrom(FileDescriptor fd, byte[] bytes, int byteOffset,
+      int byteCount, int flags, InetSocketAddress srcAddress)
+      throws ErrnoException, SocketException {
+    // This indirection isn't strictly necessary, but ensures that our public
+    // interface is type safe.
+    return recvfromBytes(fd, bytes, byteOffset, byteCount, flags, srcAddress);
+  }
+
+  private native int recvfromBytes(FileDescriptor fd, Object buffer, int byteOffset, int byteCount,
+      int flags, InetSocketAddress srcAddress) throws ErrnoException, SocketException /*-[
+    char *bytes = BytesRW(buffer);
+    if (!bytes) {
+      return -1;
+    }
+    struct sockaddr_storage ss;
+    socklen_t sl = sizeof(ss);
+    memset(&ss, 0, sizeof(ss));
+    struct sockaddr* from = (srcAddress) ? (struct sockaddr *) &ss : NULL;
+    socklen_t* fromLength = (srcAddress) ? &sl : 0;
+    int recvCount = NET_FAILURE_RETRY(ssize_t, recvfrom, fd, bytes + byteOffset, byteCount,
+        flags, from, fromLength);
+    fillInetSocketAddress(recvCount, srcAddress, &ss);
+    return recvCount;
+  ]-*/;
+
   public native void remove(String path) throws ErrnoException /*-[
     if (path) {
       const char* cpath = [path UTF8String];
@@ -498,6 +962,54 @@ public final class Posix implements Os {
       inOffset->value_ = offset;
     }
     return [LibcoreIoPosix throwIfMinusOneWithNSString:@"sendfile" withInt:rc];
+  ]-*/;
+
+  public int sendto(FileDescriptor fd, ByteBuffer buffer, int flags, InetAddress inetAddress,
+      int port) throws ErrnoException, SocketException {
+    if (buffer.isDirect()) {
+      return sendtoBytes(fd, buffer, buffer.position(), buffer.remaining(),
+          flags, inetAddress, port);
+    } else {
+      return sendtoBytes(fd, NioUtils.unsafeArray(buffer),
+          NioUtils.unsafeArrayOffset(buffer) + buffer.position(),
+          buffer.remaining(), flags, inetAddress, port);
+    }
+  }
+
+  public int sendto(FileDescriptor fd, byte[] bytes, int byteOffset, int byteCount, int flags,
+      InetAddress inetAddress, int port) throws ErrnoException, SocketException {
+    // This indirection isn't strictly necessary, but ensures that our public
+    // interface is type safe.
+    return sendtoBytes(fd, bytes, byteOffset, byteCount, flags, inetAddress, port);
+  }
+
+  private native int sendtoBytes(FileDescriptor fd, Object buffer, int byteOffset, int byteCount,
+      int flags, InetAddress inetAddress, int port) throws ErrnoException, SocketException /*-[
+    const char *bytes = BytesRO(buffer);
+    if (!bytes) {
+      return -1;
+    }
+    struct sockaddr_storage ss;
+    socklen_t sa_len = 0;
+    if (inetAddress && !inetAddressToSockaddr(inetAddress, port, &ss, &sa_len)) {
+      return -1;
+    }
+    const struct sockaddr *to = inetAddress ? (const struct sockaddr *) &ss : NULL;
+    return NET_FAILURE_RETRY(ssize_t, sendto, fd, bytes + byteOffset, byteCount, flags, to, sa_len);
+  ]-*/;
+
+  public native void setsockoptInt(FileDescriptor fd, int level, int option, int value)
+      throws ErrnoException /*-[
+    int rc = TEMP_FAILURE_RETRY(setsockopt(fd->descriptor_, level, option, &value, sizeof(value)));
+    [LibcoreIoPosix throwIfMinusOneWithNSString:@"setsockopt" withInt:rc];
+  ]-*/;
+
+  public native FileDescriptor socket(int domain, int type, int protocol) throws ErrnoException /*-[
+    int nativeFd = TEMP_FAILURE_RETRY(socket(domain, type, protocol));
+    [LibcoreIoPosix throwIfMinusOneWithNSString:@"socket" withInt:nativeFd];
+    JavaIoFileDescriptor *newFd = AUTORELEASE([[JavaIoFileDescriptor alloc] init]);
+    newFd->descriptor_ = nativeFd;
+    return newFd;
   ]-*/;
 
   public native void socketpair(int domain, int type, int protocol, FileDescriptor fd1,
@@ -561,6 +1073,14 @@ public final class Posix implements Os {
     [LibcoreIoPosix throwIfMinusOneWithNSString:@"fcntl" withInt:rc];
   ]-*/;
 
+  public native StructUtsname uname() /*-[
+    struct utsname buf;
+    if (TEMP_FAILURE_RETRY(uname(&buf)) == -1) {
+      return nil;
+    }
+    return makeStructUtsname(&buf);
+  ]-*/;
+
   public int write(FileDescriptor fd, ByteBuffer buffer) throws ErrnoException {
     if (buffer.isDirect()) {
       return writeBytes(fd, buffer, buffer.position(), buffer.remaining());
@@ -609,126 +1129,10 @@ public final class Posix implements Os {
     return [LibcoreIoPosix throwIfMinusOneWithNSString:@"writev" withInt:rc];
   ]-*/;
 
-  @Override
-  public void bind(FileDescriptor fd, InetAddress address, int port)
-      throws ErrnoException, SocketException {
-    // TODO Auto-generated method stub
-
-  }
-
-  @Override
-  public void connect(FileDescriptor fd, InetAddress address, int port)
-      throws ErrnoException, SocketException {
-    // TODO Auto-generated method stub
-
-  }
-
-  @Override
-  public String gai_strerror(int error) {
-    // TODO Auto-generated method stub
-    return null;
-  }
-
-  @Override
-  public InetAddress[] getaddrinfo(String node, StructAddrinfo hints)
-      throws GaiException {
-    // TODO Auto-generated method stub
-    return null;
-  }
-
-  @Override
-  public String getnameinfo(InetAddress address, int flags) throws GaiException {
-    // TODO Auto-generated method stub
-    return null;
-  }
-
-  @Override
-  public SocketAddress getsockname(FileDescriptor fd) throws ErrnoException {
-    // TODO Auto-generated method stub
-    return null;
-  }
-
-  @Override
-  public int getsockoptInt(FileDescriptor fd, int level, int option)
-      throws ErrnoException {
-    // TODO Auto-generated method stub
-    return 0;
-  }
-
-  @Override
-  public InetAddress inet_pton(int family, String address) {
-    // TODO Auto-generated method stub
-    return null;
-  }
-
-  @Override
-  public int recvfrom(FileDescriptor fd, ByteBuffer buffer, int flags,
-      InetSocketAddress srcAddress) throws ErrnoException, SocketException {
-    // TODO Auto-generated method stub
-    return 0;
-  }
-
-  @Override
-  public int recvfrom(FileDescriptor fd, byte[] bytes, int byteOffset,
-      int byteCount, int flags, InetSocketAddress srcAddress)
-      throws ErrnoException, SocketException {
-    // TODO Auto-generated method stub
-    return 0;
-  }
-
-  @Override
-  public int sendto(FileDescriptor fd, ByteBuffer buffer, int flags,
-      InetAddress inetAddress, int port) throws ErrnoException, SocketException {
-    // TODO Auto-generated method stub
-    return 0;
-  }
-
-  @Override
-  public int sendto(FileDescriptor fd, byte[] bytes, int byteOffset,
-      int byteCount, int flags, InetAddress inetAddress, int port)
-      throws ErrnoException, SocketException {
-    // TODO Auto-generated method stub
-    return 0;
-  }
-
-  @Override
-  public void setsockoptInt(FileDescriptor fd, int level, int option, int value)
-      throws ErrnoException {
-    // TODO Auto-generated method stub
-
-  }
-
-  @Override
-  public FileDescriptor socket(int domain, int type, int protocol)
-      throws ErrnoException {
-    // TODO Auto-generated method stub
-    return null;
-  }
-
-  @Override
-  public StructUtsname uname() {
-    // TODO Auto-generated method stub
-    return null;
-  }
-
-  @Override
-  public String if_indextoname(int index) {
-    // TODO Auto-generated method stub
-    return null;
-  }
-
-  @Override
-  public InetAddress ioctlInetAddress(FileDescriptor fd, int cmd,
-      String interfaceName) throws ErrnoException {
-    // TODO Auto-generated method stub
-    return null;
-  }
-
 // Uncomment and implement as Os interface grows.
 //  public native String[] environ();
 
 //  public native StructStatFs fstatfs(FileDescriptor fd) throws ErrnoException;
-//  public native String gai_strerror(int error);
 //  public native int getegid();
 //  public native int geteuid();
 //  public native int getgid();
@@ -738,15 +1142,9 @@ public final class Posix implements Os {
 //  public native StructPasswd getpwnam(String name) throws ErrnoException;
 //  public native StructPasswd getpwuid(int uid) throws ErrnoException;
 //  public native int getuid();
-//  public native String if_indextoname(int index);
 //  public native void kill(int pid, int signal) throws ErrnoException;
 //  public native void lchown(String path, int uid, int gid) throws ErrnoException;
 //  public native void listen(FileDescriptor fd, int backlog) throws ErrnoException;
-//  public native void mkdir(String path, int mode) throws ErrnoException;
-//  public native int readv(FileDescriptor fd, Object[] buffers, int[] offsets, int[] byteCounts)
-//      throws ErrnoException;
-//  public native void remove(String path) throws ErrnoException;
-//  public native void rename(String oldPath, String newPath) throws ErrnoException;
 //  public native void setegid(int egid) throws ErrnoException;
 //  public native void setenv(String name, String value, boolean overwrite) throws ErrnoException;
 //  public native void seteuid(int euid) throws ErrnoException;
@@ -755,9 +1153,7 @@ public final class Posix implements Os {
 //  public native void setuid(int uid) throws ErrnoException;
 //  public native void shutdown(FileDescriptor fd, int how) throws ErrnoException;
 //  public native FileDescriptor socket(int domain, int type, int protocol) throws ErrnoException;
-//  public native StructStat stat(String path) throws ErrnoException;
 //  public native StructStatFs statfs(String path) throws ErrnoException;
-//  public native void symlink(String oldPath, String newPath) throws ErrnoException;
 //  public native void tcsendbreak(FileDescriptor fd, int duration) throws ErrnoException;
 //  public int umask(int mask) {
 //    if ((mask & 0777) != mask) {
@@ -766,51 +1162,19 @@ public final class Posix implements Os {
 //    return umaskImpl(mask);
 //  }
 //  private native int umaskImpl(int mask);
-//  public native StructUtsname uname();
 //  public native void unsetenv(String name) throws ErrnoException;
 //  public native int waitpid(int pid, MutableInt status, int options) throws ErrnoException;
 
 // TODO(tball): implement these commented methods when java.net is ported.
 //  public native FileDescriptor accept(FileDescriptor fd, InetSocketAddress peerAddress) throws ErrnoException, SocketException;
-//  public native void bind(FileDescriptor fd, InetAddress address, int port) throws ErrnoException, SocketException;
-//  public native void connect(FileDescriptor fd, InetAddress address, int port) throws ErrnoException, SocketException;
 //  public native InetAddress[] getaddrinfo(String node, StructAddrinfo hints) throws GaiException;
-//  public native String getnameinfo(InetAddress address, int flags) throws GaiException;
-//  public native SocketAddress getsockname(FileDescriptor fd) throws ErrnoException;
 //  public native InetAddress getsockoptInAddr(FileDescriptor fd, int level, int option) throws ErrnoException;
 //  public native int getsockoptByte(FileDescriptor fd, int level, int option) throws ErrnoException;
 //  public native int getsockoptInt(FileDescriptor fd, int level, int option) throws ErrnoException;
 //  public native StructLinger getsockoptLinger(FileDescriptor fd, int level, int option) throws ErrnoException;
 //  public native StructTimeval getsockoptTimeval(FileDescriptor fd, int level, int option) throws ErrnoException;
-//  public native InetAddress inet_pton(int family, String address);
-//  public native InetAddress ioctlInetAddress(FileDescriptor fd, int cmd, String interfaceName) throws ErrnoException;
-//  public int recvfrom(FileDescriptor fd, ByteBuffer buffer, int flags, InetSocketAddress srcAddress) throws ErrnoException, SocketException {
-//    if (buffer.isDirect()) {
-//      return recvfromBytes(fd, buffer, buffer.position(), buffer.remaining(), flags, srcAddress);
-//    } else {
-//      return recvfromBytes(fd, NioUtils.unsafeArray(buffer), NioUtils.unsafeArrayOffset(buffer) + buffer.position(), buffer.remaining(), flags, srcAddress);
-//    }
-//  }
-//  public int recvfrom(FileDescriptor fd, byte[] bytes, int byteOffset, int byteCount, int flags, InetSocketAddress srcAddress) throws ErrnoException, SocketException {
-//    // This indirection isn't strictly necessary, but ensures that our public interface is type safe.
-//    return recvfromBytes(fd, bytes, byteOffset, byteCount, flags, srcAddress);
-//  }
-//  private native int recvfromBytes(FileDescriptor fd, Object buffer, int byteOffset, int byteCount, int flags, InetSocketAddress srcAddress) throws ErrnoException, SocketException;
-//  public int sendto(FileDescriptor fd, ByteBuffer buffer, int flags, InetAddress inetAddress, int port) throws ErrnoException, SocketException {
-//    if (buffer.isDirect()) {
-//      return sendtoBytes(fd, buffer, buffer.position(), buffer.remaining(), flags, inetAddress, port);
-//    } else {
-//      return sendtoBytes(fd, NioUtils.unsafeArray(buffer), NioUtils.unsafeArrayOffset(buffer) + buffer.position(), buffer.remaining(), flags, inetAddress, port);
-//    }
-//  }
-//  public int sendto(FileDescriptor fd, byte[] bytes, int byteOffset, int byteCount, int flags, InetAddress inetAddress, int port) throws ErrnoException, SocketException {
-//    // This indirection isn't strictly necessary, but ensures that our public interface is type safe.
-//    return sendtoBytes(fd, bytes, byteOffset, byteCount, flags, inetAddress, port);
-//  }
-//  private native int sendtoBytes(FileDescriptor fd, Object buffer, int byteOffset, int byteCount, int flags, InetAddress inetAddress, int port) throws ErrnoException, SocketException;
 //  public native void setsockoptByte(FileDescriptor fd, int level, int option, int value) throws ErrnoException;
 //  public native void setsockoptIfreq(FileDescriptor fd, int level, int option, String value) throws ErrnoException;
-//  public native void setsockoptInt(FileDescriptor fd, int level, int option, int value) throws ErrnoException;
 //  public native void setsockoptIpMreqn(FileDescriptor fd, int level, int option, int value) throws ErrnoException;
 //  public native void setsockoptGroupReq(FileDescriptor fd, int level, int option, StructGroupReq value) throws ErrnoException;
 //  public native void setsockoptLinger(FileDescriptor fd, int level, int option, StructLinger value) throws ErrnoException;

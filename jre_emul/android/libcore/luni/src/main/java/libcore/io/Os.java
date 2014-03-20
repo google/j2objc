@@ -138,17 +138,13 @@ public interface Os {
 //    public int setsid() throws ErrnoException;
 //    public void setuid(int uid) throws ErrnoException;
 //    public void shutdown(FileDescriptor fd, int how) throws ErrnoException;
-//    public void symlink(String oldPath, String newPath) throws ErrnoException;
 //    public void tcsendbreak(FileDescriptor fd, int duration) throws ErrnoException;
 //    public int umask(int mask);
 //    public void unsetenv(String name) throws ErrnoException;
 //    public int waitpid(int pid, MutableInt status, int options) throws ErrnoException;
 
     // TODO(tball): implement these commented methods when java.net is ported.
-//    public FileDescriptor accept(FileDescriptor fd, InetSocketAddress peerAddress)
-//        throws ErrnoException, SocketException;
 //    /* TODO: break into getnameinfoHost and getnameinfoService? */
-//    public int getsockoptByte(FileDescriptor fd, int level, int option) throws ErrnoException;
 //    public StructLinger getsockoptLinger(FileDescriptor fd, int level, int option)
 //        throws ErrnoException;
 //    public StructTimeval getsockoptTimeval(FileDescriptor fd, int level, int option)
