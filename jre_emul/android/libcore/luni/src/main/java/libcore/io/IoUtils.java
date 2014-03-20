@@ -22,6 +22,8 @@ import java.io.FileDescriptor;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InterruptedIOException;
+import java.net.Socket;
+
 import static libcore.io.OsConstants.*;
 
 public final class IoUtils {
@@ -68,8 +70,7 @@ public final class IoUtils {
 
     /**
      * Closes 'socket', ignoring any exceptions. Does nothing if 'socket' is null.
-     *
-    TODO(tball): enable when sockets are implemented.
+     */
     public static void closeQuietly(Socket socket) {
         if (socket != null) {
             try {
@@ -78,7 +79,6 @@ public final class IoUtils {
             }
         }
     }
-    */
 
     /**
      * Sets 'fd' to be blocking or non-blocking, according to the state of 'blocking'.

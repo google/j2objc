@@ -17,7 +17,12 @@
 package java.nio;
 
 import java.io.FileDescriptor;
+import java.io.IOException;
+import java.net.SocketOption;
+import java.net.StandardSocketOptions;
+import java.nio.channels.ClosedChannelException;
 import java.nio.channels.FileChannel;
+import java.util.Set;
 
 /**
  * @hide internal use only
@@ -62,4 +67,66 @@ public final class NioUtils {
     public static int unsafeArrayOffset(ByteBuffer b) {
         return ((ByteArrayBuffer) b).arrayOffset;
     }
+
+    /**
+     * Sets the supplied option on the channel to have the value if option is a member of
+     * allowedOptions.
+     *
+     * @throws IOException
+     *          if the value could not be set due to IO errors.
+     * @throws IllegalArgumentException
+     *          if the socket option or the value is invalid.
+     * @throws UnsupportedOperationException
+     *          if the option is not a member of allowedOptions.
+     * @throws ClosedChannelException
+     *          if the channel is closed
+     */
+    public static <T> void setSocketOption(
+            FileDescriptorChannel channel, Set<SocketOption<?>> allowedOptions,
+            SocketOption<T> option, T value)
+            throws IOException {
+
+        if (!(option instanceof StandardSocketOptions.SocketOptionImpl)) {
+            throw new IllegalArgumentException("SocketOption must come from StandardSocketOptions");
+        }
+        if (!allowedOptions.contains(option)) {
+            throw new UnsupportedOperationException(
+                    option + " is not supported for this type of socket");
+        }
+        if (!channel.getFD().valid()) {
+            throw new ClosedChannelException();
+        }
+        ((StandardSocketOptions.SocketOptionImpl<T>) option).setValue(channel.getFD(), value);
+    }
+
+    /**
+     * Gets the supplied option from the channel if option is a member of allowedOptions.
+     *
+     * @throws IOException
+     *          if the value could not be read due to IO errors.
+     * @throws IllegalArgumentException
+     *          if the socket option is invalid.
+     * @throws UnsupportedOperationException
+     *          if the option is not a member of allowedOptions.
+     * @throws ClosedChannelException
+     *          if the channel is closed
+     */
+    public static <T> T getSocketOption(
+            FileDescriptorChannel channel, Set<SocketOption<?>> allowedOptions,
+            SocketOption<T> option)
+            throws IOException {
+
+        if (!(option instanceof StandardSocketOptions.SocketOptionImpl)) {
+            throw new IllegalArgumentException("SocketOption must come from StandardSocketOptions");
+        }
+        if (!allowedOptions.contains(option)) {
+            throw new UnsupportedOperationException(
+                    option + " is not supported for this type of socket");
+        }
+        if (!channel.getFD().valid()) {
+            throw new ClosedChannelException();
+        }
+        return ((StandardSocketOptions.SocketOptionImpl<T>) option).getValue(channel.getFD());
+    }
+
 }

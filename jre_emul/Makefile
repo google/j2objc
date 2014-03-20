@@ -371,22 +371,29 @@ JAVA_SOURCES = \
 	java/net/MulticastSocket.java \
 	java/net/NetworkInterface.java \
 	java/net/PlainDatagramSocketImpl.java \
+	java/net/PlainServerSocketImpl.java \
 	java/net/PlainSocketImpl.java \
 	java/net/PortUnreachableException.java \
 	java/net/Proxy.java \
+	java/net/ServerSocket.java \
 	java/net/Socket.java \
 	java/net/SocketAddress.java \
 	java/net/SocketException.java \
 	java/net/SocketImpl.java \
 	java/net/SocketImplFactory.java \
+	java/net/SocketOption.java \
 	java/net/SocketOptions.java \
 	java/net/SocketPermission.java \
 	java/net/SocketTimeoutException.java \
+	java/net/SocketUtils.java \
 	java/net/Socks4Message.java \
+	java/net/StandardSocketOptions.java \
 	java/net/UnknownHostException.java \
+	java/net/UnknownServiceException.java \
 	java/net/URI.java \
 	java/net/URISyntaxException.java \
 	java/net/URL.java \
+	java/net/URLDecoder.java \
 	java/net/URLEncoder.java \
 	java/net/URLStreamHandler.java \
 	java/net/URLStreamHandlerFactory.java \
@@ -405,6 +412,7 @@ JAVA_SOURCES = \
 	java/nio/CharArrayBuffer.java \
 	java/nio/CharBuffer.java \
 	java/nio/CharSequenceAdapter.java \
+	java/nio/DatagramChannelImpl.java \
 	java/nio/DirectByteBuffer.java \
 	java/nio/DoubleArrayBuffer.java \
 	java/nio/DoubleBuffer.java \
@@ -422,9 +430,15 @@ JAVA_SOURCES = \
 	java/nio/MemoryBlock.java \
 	java/nio/NIOAccess.java \
 	java/nio/NioUtils.java \
+	java/nio/PipeImpl.java \
 	java/nio/ReadOnlyBufferException.java \
+	java/nio/SelectionKeyImpl.java \
+	java/nio/SelectorImpl.java \
+	java/nio/SelectorProviderImpl.java \
 	java/nio/ShortArrayBuffer.java \
 	java/nio/ShortBuffer.java \
+	java/nio/ServerSocketChannelImpl.java \
+	java/nio/SocketChannelImpl.java \
 	java/nio/charset/CharacterCodingException.java \
 	java/nio/charset/Charset.java \
 	java/nio/charset/CharsetDecoder.java \
@@ -442,6 +456,7 @@ JAVA_SOURCES = \
 	java/nio/charset/StandardCharsets.java \
 	java/nio/charset/UnmappableCharacterException.java \
 	java/nio/charset/UnsupportedCharsetException.java \
+	java/nio/channels/AlreadyBoundException.java \
 	java/nio/channels/AlreadyConnectedException.java \
 	java/nio/channels/AsynchronousCloseException.java \
 	java/nio/channels/ByteChannel.java \
@@ -451,6 +466,7 @@ JAVA_SOURCES = \
 	java/nio/channels/ClosedChannelException.java \
 	java/nio/channels/ClosedSelectorException.java \
 	java/nio/channels/ConnectionPendingException.java \
+	java/nio/channels/DatagramChannel.java \
 	java/nio/channels/FileChannel.java \
 	java/nio/channels/FileLock.java \
 	java/nio/channels/FileLockInterruptionException.java \
@@ -458,17 +474,30 @@ JAVA_SOURCES = \
 	java/nio/channels/IllegalBlockingModeException.java \
 	java/nio/channels/IllegalSelectorException.java \
 	java/nio/channels/InterruptibleChannel.java \
+	java/nio/channels/NetworkChannel.java \
 	java/nio/channels/NoConnectionPendingException.java \
 	java/nio/channels/NonReadableChannelException.java \
 	java/nio/channels/NonWritableChannelException.java \
 	java/nio/channels/NotYetBoundException.java \
+	java/nio/channels/NotYetConnectedException.java \
 	java/nio/channels/OverlappingFileLockException.java \
+	java/nio/channels/Pipe.java \
 	java/nio/channels/ReadableByteChannel.java \
 	java/nio/channels/ScatteringByteChannel.java \
+	java/nio/channels/SeekableByteChannel.java \
+	java/nio/channels/SelectableChannel.java \
+	java/nio/channels/SelectionKey.java \
+	java/nio/channels/Selector.java \
+	java/nio/channels/ServerSocketChannel.java \
+	java/nio/channels/SocketChannel.java \
 	java/nio/channels/UnresolvedAddressException.java \
 	java/nio/channels/UnsupportedAddressTypeException.java \
 	java/nio/channels/WritableByteChannel.java \
 	java/nio/channels/spi/AbstractInterruptibleChannel.java \
+	java/nio/channels/spi/AbstractSelectableChannel.java \
+	java/nio/channels/spi/AbstractSelectionKey.java \
+	java/nio/channels/spi/AbstractSelector.java \
+	java/nio/channels/spi/SelectorProvider.java \
 	java/security/AccessControlContext.java \
 	java/security/AccessControlException.java \
 	java/security/AccessController.java \

@@ -19,8 +19,11 @@ package java.nio.channels;
 
 import java.io.IOException;
 import java.net.ServerSocket;
+import java.net.SocketAddress;
+import java.net.SocketOption;
 import java.nio.channels.spi.AbstractSelectableChannel;
 import java.nio.channels.spi.SelectorProvider;
+import java.util.Set;
 
 /**
  * A {@code ServerSocketChannel} is a partial abstraction of a selectable,
@@ -34,7 +37,8 @@ import java.nio.channels.spi.SelectorProvider;
  * {@link NotYetBoundException}. It can be bound by calling the bind method of a
  * related {@code ServerSocket} instance.
  */
-public abstract class ServerSocketChannel extends AbstractSelectableChannel {
+public abstract class ServerSocketChannel extends AbstractSelectableChannel
+        implements NetworkChannel {
 
     /**
      * Constructs a new {@link ServerSocketChannel}.
@@ -80,6 +84,76 @@ public abstract class ServerSocketChannel extends AbstractSelectableChannel {
      * @return the server-socket assigned to this channel.
      */
     public abstract ServerSocket socket();
+
+    /**
+     * {@inheritDoc}
+     *
+     * <p>This is equivalent to {@code bind(local, 0)}.
+     * @hide Until ready for a public API change
+     */
+    @Override
+    public final ServerSocketChannel bind(SocketAddress local) throws IOException {
+        return bind(local, 0);
+    }
+
+    /**
+     * Binds this server channel to the given local socket address. If the {@code localAddr} is set
+     * to {@code null} the socket will be bound to an available local address on any free port of
+     * the system.
+     *
+     * @param localAddr
+     *             the local machine address and port to bind on.
+     * @param backlog the maximum number of unaccepted connections. Passing 0 or
+     *             a negative value yields the default backlog of 50.
+     * @return this {@code ServerSocketChannel}.
+     * @throws UnsupportedAddressTypeException
+     *             if the {@code SocketAddress} is not supported.
+     * @throws ClosedChannelException
+     *             if the channel is closed.
+     * @throws AlreadyBoundException
+     *             if the channel is already bound.
+     * @throws IOException
+     *             if another I/O error occurs.
+     * @since 1.7
+     * @hide Until ready for a public API change
+     */
+    public ServerSocketChannel bind(SocketAddress localAddr, int backlog) throws IOException {
+        // This method was added for interoperability with Java 7, where it is abstract. It is
+        // concrete here to avoid breaking existing Android applications that extend this class.
+        throw new UnsupportedOperationException("Subclasses must override this method");
+    }
+
+    /** @hide Until ready for a public API change */
+     @Override
+    public SocketAddress getLocalAddress() throws IOException {
+        // This method was added for interoperability with Java 7, where it is abstract. It is
+        // concrete here to avoid breaking existing Android applications that extend this class.
+        throw new UnsupportedOperationException("Subclasses must override this method");
+    }
+
+    /** @hide Until ready for a public API change */
+    @Override
+    public <T> T getOption(SocketOption<T> option) throws IOException {
+        // This method was added for interoperability with Java 7, where it is abstract. It is
+        // concrete here to avoid breaking existing Android applications that extend this class.
+        throw new UnsupportedOperationException("Subclasses must override this method");
+    }
+
+    /** @hide Until ready for a public API change */
+    @Override
+    public <T> ServerSocketChannel setOption(SocketOption<T> option, T value) throws IOException {
+        // This method was added for interoperability with Java 7, where it is abstract. It is
+        // concrete here to avoid breaking existing Android applications that extend this class.
+        throw new UnsupportedOperationException("Subclasses must override this method");
+    }
+
+    /** @hide Until ready for a public API change */
+    @Override
+    public Set<SocketOption<?>> supportedOptions() {
+        // This method was added for interoperability with Java 7, where it is abstract. It is
+        // concrete here to avoid breaking existing Android applications that extend this class.
+        throw new UnsupportedOperationException("Subclasses must override this method");
+    }
 
     /**
      * Accepts a connection to this server-socket channel.

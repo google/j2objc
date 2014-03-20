@@ -417,7 +417,6 @@ final class FileChannelImpl extends FileChannel {
         count = Math.min(count, size() - position);
 
         // Try sendfile(2) first...
-        /* TODO(tball): enable when SocketChannel is implemented.
         boolean completed = false;
         if (target instanceof SocketChannelImpl) {
             FileDescriptor outFd = ((SocketChannelImpl) target).getFD();
@@ -439,7 +438,6 @@ final class FileChannelImpl extends FileChannel {
                 end(completed);
             }
         }
-        */
         // ...fall back to write(2).
         ByteBuffer buffer = null;
         try {
@@ -462,6 +460,9 @@ final class FileChannelImpl extends FileChannel {
             } catch (ErrnoException errnoException) {
                 throw errnoException.rethrowAsIOException();
             }
+        }
+        if (position() > size) {
+            position(size);
         }
         return this;
     }

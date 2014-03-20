@@ -41,19 +41,17 @@ public abstract class AbstractInterruptibleChannel implements Channel, Interrupt
 
     volatile boolean interrupted = false;
 
-    private final Runnable interruptAndCloseRunnable = new ChannelCloser();
-
     @WeakOuter
     private class ChannelCloser implements Runnable {
-      @Override
-      public void run() {
-        try {
-          interrupted = true;
-          AbstractInterruptibleChannel.this.close();
-        } catch (IOException ignored) {
+        @Override public void run() {
+            try {
+                interrupted = true;
+                AbstractInterruptibleChannel.this.close();
+            } catch (IOException ignored) {
+            }
         }
-      }
-    }
+    };
+    private final ChannelCloser interruptAndCloseRunnable = new ChannelCloser();
 
     protected AbstractInterruptibleChannel() {
     }

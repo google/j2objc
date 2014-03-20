@@ -20,6 +20,8 @@ package java.net;
 import java.io.Closeable;
 import java.io.FileDescriptor;
 import java.io.IOException;
+import java.nio.channels.DatagramChannel;
+
 import libcore.io.ErrnoException;
 import libcore.io.IoBridge;
 import libcore.io.Libcore;
@@ -693,8 +695,7 @@ public class DatagramSocket implements Closeable {
      * channel to a socket and back again, but you can't go from an arbitrary socket to a channel.)
      * In practice, this means that the socket must have been created by
      * {@link java.nio.channels.DatagramChannel#open}.
-     *
-    TODO(tball): enable for net support in java.nio.
+     */
     public DatagramChannel getChannel() {
         return null;
     }
