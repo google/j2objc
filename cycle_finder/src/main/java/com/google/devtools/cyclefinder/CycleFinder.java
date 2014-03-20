@@ -14,8 +14,7 @@
 
 package com.google.devtools.cyclefinder;
 
-import com.google.common.base.Splitter;
-import com.google.common.collect.Lists;
+import com.google.common.base.Strings;
 import com.google.devtools.j2objc.translate.OuterReferenceResolver;
 import com.google.devtools.j2objc.util.ErrorUtil;
 import com.google.devtools.j2objc.util.JdtParser;
@@ -52,23 +51,11 @@ public class CycleFinder {
     this.options = options;
   }
 
-  private static String[] splitEntries(String entries) {
-    if (entries == null) {
-      return new String[0];
-    }
-    List<String> entriesList = Lists.newArrayList();
-    for (String entry : Splitter.on(':').split(entries)) {
-      if (new File(entry).exists()) {  // JDT fails with bad path entries.
-        entriesList.add(entry);
-      }
-    }
-    return entriesList.toArray(new String[0]);
-  }
-
   private static JdtParser createParser(Options options) {
     JdtParser parser = new JdtParser();
-    parser.setSourcepath(splitEntries(options.getSourcepath()));
-    parser.setClasspath(splitEntries(options.getBootclasspath() + ":" + options.getClasspath()));
+    parser.addSourcepathEntries(Strings.nullToEmpty(options.getSourcepath()));
+    parser.addClasspathEntries(Strings.nullToEmpty(options.getBootclasspath()));
+    parser.addClasspathEntries(Strings.nullToEmpty(options.getClasspath()));
     parser.setEncoding(options.fileEncoding());
     return parser;
   }

@@ -14,6 +14,7 @@
 
 package com.google.devtools.j2objc.util;
 
+import com.google.common.base.Splitter;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 
@@ -23,6 +24,7 @@ import org.eclipse.jdt.core.dom.ASTParser;
 import org.eclipse.jdt.core.dom.CompilationUnit;
 import org.eclipse.jdt.core.dom.FileASTRequestor;
 
+import java.io.File;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
@@ -39,8 +41,8 @@ public class JdtParser {
   private static final Logger logger = Logger.getLogger(JdtParser.class.getName());
 
   private Map<String, String> compilerOptions = initCompilerOptions();
-  private String[] classpathEntries;
-  private String[] sourcepathEntries;
+  private List<String> classpathEntries = Lists.newArrayList();
+  private List<String> sourcepathEntries = Lists.newArrayList();
   private String encoding = null;
   private boolean ignoreMissingImports = false;
   private boolean includeRunningVMBootclasspath = true;
@@ -54,12 +56,38 @@ public class JdtParser {
     return compilerOptions;
   }
 
-  public void setClasspath(String[] classpath) {
-    classpathEntries = classpath;
+  public void addClasspathEntry(String entry) {
+    if (isValidPathEntry(entry)) {
+      classpathEntries.add(entry);
+    }
   }
 
-  public void setSourcepath(String[] sourcepath) {
-    sourcepathEntries = sourcepath;
+  public void addClasspathEntries(Iterable<String> entries) {
+    for (String entry : entries) {
+      addClasspathEntry(entry);
+    }
+  }
+
+  private static final Splitter PATH_SPLITTER = Splitter.on(":").omitEmptyStrings();
+
+  public void addClasspathEntries(String entries) {
+    addClasspathEntries(PATH_SPLITTER.split(entries));
+  }
+
+  public void addSourcepathEntry(String entry) {
+    if (isValidPathEntry(entry)) {
+      sourcepathEntries.add(entry);
+    }
+  }
+
+  public void addSourcepathEntries(Iterable<String> entries) {
+    for (String entry : entries) {
+      addSourcepathEntry(entry);
+    }
+  }
+
+  public void addSourcepathEntries(String entries) {
+    addSourcepathEntries(PATH_SPLITTER.split(entries));
   }
 
   public void setEncoding(String encoding) {
@@ -122,9 +150,19 @@ public class JdtParser {
     parser.setCompilerOptions(compilerOptions);
     parser.setResolveBindings(true);
     parser.setEnvironment(
-        classpathEntries, sourcepathEntries, getEncodings(sourcepathEntries.length),
-        includeRunningVMBootclasspath);
+        toArray(classpathEntries), toArray(sourcepathEntries),
+        getEncodings(sourcepathEntries.size()), includeRunningVMBootclasspath);
     return parser;
+  }
+
+  private String[] toArray(List<String> list) {
+    return list.toArray(new String[list.size()]);
+  }
+
+  private boolean isValidPathEntry(String path) {
+    // JDT requires that all path elements exist and can hold class files.
+    File f = new File(path);
+    return f.exists() && (f.isDirectory() || path.endsWith(".jar"));
   }
 
   private String[] getEncodings(int length) {

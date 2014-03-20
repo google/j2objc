@@ -86,7 +86,7 @@ public class Options {
   private static final String HELP_MSG_KEY = "help-message";
   private static String temporaryDirectory;
   private static final String XBOOTCLASSPATH = "-Xbootclasspath:";
-  private static String bootclasspath = null;
+  private static String bootclasspath = System.getProperty("sun.boot.class.path");
   private static Map<String, String> packagePrefixes = Maps.newHashMap();
 
   static {
@@ -356,8 +356,8 @@ public class Options {
     return docCommentsEnabled;
   }
 
-  public static String[] getSourcePathEntries() {
-    return sourcePathEntries.toArray(new String[0]);
+  public static List<String> getSourcePathEntries() {
+    return sourcePathEntries;
   }
 
   public static void appendSourcePath(String entry) {
@@ -368,8 +368,8 @@ public class Options {
     sourcePathEntries.add(index, entry);
   }
 
-  public static String[] getClassPathEntries() {
-    return classPathEntries.toArray(new String[classPathEntries.size()]);
+  public static List<String> getClassPathEntries() {
+    return classPathEntries;
   }
 
   public static String[] getPluginPathEntries() {
@@ -503,8 +503,8 @@ public class Options {
     return proGuardUsageFile;
   }
 
-  public static String getBootClasspath() {
-    return bootclasspath != null ? bootclasspath : System.getProperty("sun.boot.class.path");
+  public static List<String> getBootClasspath() {
+    return getPathArgument(bootclasspath);
   }
 
   public static Map<String, String> getPackagePrefixes() {
