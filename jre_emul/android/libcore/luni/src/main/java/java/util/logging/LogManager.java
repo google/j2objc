@@ -338,7 +338,7 @@ public class LogManager {
                     input = LogManager.class.getResourceAsStream("logging.properties");
                     if (input == null) {
                         input = new ByteArrayInputStream(
-                            NSLogHandler.getDefaultProperties().getBytes());
+                            IOSLogHandler.getDefaultProperties().getBytes());
                     }
                 }
                 readConfiguration(new BufferedInputStream(input));

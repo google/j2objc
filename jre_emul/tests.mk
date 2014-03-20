@@ -383,6 +383,7 @@ SUITE_SOURCES = \
     libcore/java/io/SmallTests.java \
     libcore/java/net/SmallTests.java \
     libcore/java/util/zip/SmallTests.java \
+    org/apache/harmony/logging/tests/java/util/logging/SmallTests.java \
 
 FAILING_TESTS = \
     libcore/java/util/TreeSetTest.java \
@@ -490,6 +491,10 @@ run-tests: link resources $(TEST_BIN)
 
 run-io-tests: link resources $(TEST_BIN)
 	@$(TEST_BIN) org.junit.runner.JUnitCore libcore.java.io.SmallTests
+
+run-logging-tests: link resources $(TEST_BIN)
+	@$(TEST_BIN) org.junit.runner.JUnitCore \
+	    org.apache.harmony.logging.tests.java.util.logging.SmallTests
 
 run-net-tests: link resources $(TEST_BIN)
 	@$(TEST_BIN) org.junit.runner.JUnitCore libcore.java.net.SmallTests
