@@ -17,7 +17,10 @@
 
 package libcore.net.url;
 
+import java.io.IOException;
+import java.net.Proxy;
 import java.net.URL;
+import java.net.URLConnection;
 import java.net.URLStreamHandler;
 
 /**
@@ -34,13 +37,11 @@ public class FileHandler extends URLStreamHandler {
      * @param url
      *            URL The URL to which the connection is pointing to
      *
-     *
-     TODO(tball): enable when URLConnection is ported.
+     */
     @Override
     public URLConnection openConnection(URL url) throws IOException {
         return openConnection(url, null);
     }
-    */
 
     /**
      * The behavior of this method is the same as openConnection(URL).
@@ -58,8 +59,7 @@ public class FileHandler extends URLStreamHandler {
      *             if the url argument is null.
      * @throws UnsupportedOperationException
      *             if the protocol handler doesn't support this method.
-     *
-     TODO(tball): enable when URLConnection is ported.
+     */
     @Override
     public URLConnection openConnection(URL url, Proxy proxy) throws IOException {
         if (url == null) {
@@ -75,7 +75,6 @@ public class FileHandler extends URLStreamHandler {
         URL ftpURL = new URL("ftp", host, url.getFile());
         return (proxy == null) ? ftpURL.openConnection() : ftpURL.openConnection(proxy);
     }
-    */
 
     /**
      * Parse the <code>string</code>str into <code>URL</code> u which

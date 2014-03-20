@@ -37,10 +37,8 @@ public abstract class URLStreamHandler {
      * @return the opened URLConnection to the specified resource.
      * @throws IOException
      *             if an I/O error occurs during opening the connection.
-     *
-     TODO(tball): enable when URLConnection is ported.
+     */
     protected abstract URLConnection openConnection(URL u) throws IOException;
-    */
 
     /**
      * Establishes a new connection to the resource specified by the URL {@code
@@ -59,12 +57,10 @@ public abstract class URLStreamHandler {
      *             wrong.
      * @throws UnsupportedOperationException
      *             if the protocol handler doesn't support this method.
-     *
-     TODO(tball): enable when URLConnection is ported.
+     */
     protected URLConnection openConnection(URL u, Proxy proxy) throws IOException {
         throw new UnsupportedOperationException();
     }
-    */
 
     /**
      * Parses the clear text URL in {@code str} into a URL object. URL strings
@@ -91,9 +87,7 @@ public abstract class URLStreamHandler {
             throw new SecurityException("Only a URL's stream handler is permitted to mutate it");
         }
         if (end < start) {
-            throw new StringIndexOutOfBoundsException(
-                "length=" + spec.length() + "; regionStart=" + start +
-                "; regionLength=" + (end - start));
+            throw new StringIndexOutOfBoundsException(spec, start, end - start);
         }
 
         int fileStart;
@@ -228,7 +222,7 @@ public abstract class URLStreamHandler {
      *            the file component.
      * @param ref
      *            the reference.
-     * @deprecated use setURL(URL, String String, int, String, String, String,
+     * @deprecated Use setURL(URL, String String, int, String, String, String,
      *             String, String) instead.
      */
     @Deprecated
@@ -354,32 +348,13 @@ public abstract class URLStreamHandler {
     }
 
     /**
-     * Returns true if {@code url1} and {@code url2} have the same protocol, host,
+     * Returns true if {@code a} and {@code b} have the same protocol, host,
      * port and file.
      */
-    protected boolean sameFile(URL url1, URL url2) {
-      String s1 = url1.getProtocol();
-      String s2 = url2.getProtocol();
-      if (s1 != s2 && (s1 == null || !s1.equals(s2))) {
-          return false;
-      }
-
-      s1 = url1.getFile();
-      s2 = url2.getFile();
-      if (s1 != s2 && (s1 == null || !s1.equals(s2))) {
-          return false;
-      }
-      if (!hostsEqual(url1, url2)) {
-          return false;
-      }
-      int p1 = url1.getPort();
-      if (p1 == -1) {
-          p1 = getDefaultPort();
-      }
-      int p2 = url2.getPort();
-      if (p2 == -1) {
-          p2 = getDefaultPort();
-      }
-      return p1 == p2;
+    protected boolean sameFile(URL a, URL b) {
+        return Objects.equal(a.getProtocol(), b.getProtocol())
+                && hostsEqual(a, b)
+                && a.getEffectivePort() == b.getEffectivePort()
+                && Objects.equal(a.getFile(), b.getFile());
     }
 }

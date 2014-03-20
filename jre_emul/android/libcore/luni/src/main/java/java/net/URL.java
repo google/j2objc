@@ -17,7 +17,6 @@
 
 package java.net;
 
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.ObjectInputStream;
@@ -397,6 +396,27 @@ public final class URL implements Serializable {
             }
         }
 
+        // Check if there is a list of packages which can provide handlers.
+        // If so, then walk this list looking for an applicable one.
+        String packageList = System.getProperty("java.protocol.handler.pkgs");
+        ClassLoader contextClassLoader = Thread.currentThread().getContextClassLoader();
+        if (packageList != null && contextClassLoader != null) {
+            for (String packageName : packageList.split("\\|")) {
+                String className = packageName + "." + protocol + ".Handler";
+                try {
+                    Class<?> c = contextClassLoader.loadClass(className);
+                    streamHandler = (URLStreamHandler) c.newInstance();
+                    if (streamHandler != null) {
+                        streamHandlers.put(protocol, streamHandler);
+                    }
+                    return;
+                } catch (IllegalAccessException ignored) {
+                } catch (InstantiationException ignored) {
+                } catch (ClassNotFoundException ignored) {
+                }
+            }
+        }
+
         // Fall back to a built-in stream handler if the user didn't supply one
         if (protocol.equals("file")) {
             streamHandler = new FileHandler();
@@ -429,48 +449,34 @@ public final class URL implements Serializable {
      * Returns the content of the resource which is referred by this URL. By
      * default this returns an {@code InputStream}, or null if the content type
      * of the response is unknown.
-     *
-     TODO(tball): enable when connections are supported.
+     */
     public final Object getContent() throws IOException {
         return openConnection().getContent();
     }
-    */
 
     /**
      * Equivalent to {@code openConnection().getContent(types)}.
-     *
-     TODO(tball): enable when connections are supported.
+     */
     @SuppressWarnings("unchecked") // Param not generic in spec
     public final Object getContent(Class[] types) throws IOException {
         return openConnection().getContent(types);
     }
-    */
 
     /**
      * Equivalent to {@code openConnection().getInputStream(types)}.
      */
     public final InputStream openStream() throws IOException {
-      // TODO(tball): enable when connections are supported.
-      //return openConnection().getInputStream();
-
-      // Workaround (delete when above is enabled).
-      try {
-        return new FileInputStream(toURI().getPath());
-      } catch (URISyntaxException e) {
-        return null;
-      }
+        return openConnection().getInputStream();
     }
 
     /**
      * Returns a new connection to the resource referred to by this URL.
      *
      * @throws IOException if an error occurs while opening the connection.
-     *
-     TODO(tball): enable when connections are supported.
+     */
     public URLConnection openConnection() throws IOException {
         return streamHandler.openConnection(this);
     }
-    */
 
     /**
      * Returns a new connection to the resource referred to by this URL.
@@ -481,15 +487,13 @@ public final class URL implements Serializable {
      *     an invalid type.
      * @throws UnsupportedOperationException if the protocol handler does not
      *     support opening connections through proxies.
-     *
-     TODO(tball): enable when connections are supported.
+     */
     public URLConnection openConnection(Proxy proxy) throws IOException {
         if (proxy == null) {
             throw new IllegalArgumentException("proxy == null");
         }
         return streamHandler.openConnection(this, proxy);
     }
-    */
 
     /**
      * Returns the URI equivalent to this URL.
@@ -562,6 +566,11 @@ public final class URL implements Serializable {
 
     private void writeObject(ObjectOutputStream s) throws IOException {
         s.defaultWriteObject();
+    }
+
+    /** @hide */
+    public int getEffectivePort() {
+        return URI.getEffectivePort(protocol, port);
     }
 
     /**
