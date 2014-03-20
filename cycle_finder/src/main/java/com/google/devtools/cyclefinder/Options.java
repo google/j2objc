@@ -54,7 +54,7 @@ class Options {
   private String bootclasspath;
   private List<String> whitelistFiles = Lists.newArrayList();
   private List<String> sourceFiles = Lists.newArrayList();
-  private static String fileEncoding = System.getProperty("file.encoding", "ISO-8859-1");
+  private String fileEncoding = System.getProperty("file.encoding", "ISO-8859-1");
 
   public List<String> getSourceFiles() {
     return sourceFiles;
@@ -101,7 +101,7 @@ class Options {
     }
   }
 
-  public static String fileEncoding() {
+  public String fileEncoding() {
     return fileEncoding;
   }
 
@@ -149,7 +149,7 @@ class Options {
         if (++nArg == args.length) {
           usage("-encoding requires an argument");
         }
-        fileEncoding = args[nArg];
+        options.fileEncoding = args[nArg];
       } else if (arg.startsWith("-h") || arg.equals("--help")) {
         help(false);
       } else if (arg.startsWith("-")) {

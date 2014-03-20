@@ -17,13 +17,13 @@ package com.google.devtools.cyclefinder;
 import com.google.common.base.Joiner;
 import com.google.common.collect.Lists;
 import com.google.common.io.Files;
+import com.google.devtools.j2objc.util.ErrorUtil;
 
 import junit.framework.TestCase;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
-import java.io.OutputStream;
 import java.io.PrintStream;
 import java.nio.charset.Charset;
 import java.util.List;
@@ -39,6 +39,11 @@ public class CycleFinderTest extends TestCase {
   List<String> inputFiles;
   List<List<Edge>> cycles;
   List<String> whitelistEntries;
+
+  static {
+    // Prevents errors and warnings from being printed to the console.
+    ErrorUtil.setTestMode();
+  }
 
   @Override
   protected void setUp() throws IOException {
@@ -297,11 +302,11 @@ public class CycleFinderTest extends TestCase {
     options.setSourceFiles(inputFiles);
     options.setClasspath(System.getProperty("java.class.path"));
     ByteArrayOutputStream errorMessages = new ByteArrayOutputStream();
-    System.setErr(new PrintStream(errorMessages));
-    CycleFinder finder = new CycleFinder(options, new PrintStream(new NullOutputStream()));
+    CycleFinder finder = new CycleFinder(options);
     cycles = finder.findCycles();
-    if (finder.errorCount() > 0) {
-      fail("CycleFinder failed with errors:\n" + errorMessages.toString());
+    if (ErrorUtil.errorCount() > 0) {
+      fail("CycleFinder failed with errors:\n"
+           + Joiner.on("\n").join(ErrorUtil.getErrorMessages()));
     }
   }
 
@@ -317,11 +322,5 @@ public class CycleFinderTest extends TestCase {
     tempDir.delete();
     tempDir.mkdir();
     return tempDir;
-  }
-
-  private static class NullOutputStream extends OutputStream {
-
-    public void write(int b) {
-    }
   }
 }

@@ -14,11 +14,14 @@
 
 package com.google.devtools.j2objc.util;
 
+import com.google.common.collect.Lists;
+
 import org.eclipse.jdt.core.dom.ASTNode;
 import org.eclipse.jdt.core.dom.CompilationUnit;
 
 import java.io.OutputStream;
 import java.io.PrintStream;
+import java.util.List;
 
 /**
  * Provides convenient static error and warning methods.
@@ -31,11 +34,13 @@ public class ErrorUtil {
   private static int warningCount = 0;
   private static String currentFileName = null;
   private static PrintStream errorStream = System.err;
+  private static List<String> errorMessages = Lists.newArrayList();
 
   public static void reset() {
     errorCount = 0;
     warningCount = 0;
     currentFileName = null;
+    errorMessages = Lists.newArrayList();
   }
 
   public static void setCurrentFileName(String name) {
@@ -50,6 +55,10 @@ public class ErrorUtil {
     return warningCount;
   }
 
+  public static List<String> getErrorMessages() {
+    return errorMessages;
+  }
+
   /**
    * To be called by unit tests. In test mode errors and warnings are not
    * printed to System.err.
@@ -61,6 +70,7 @@ public class ErrorUtil {
   }
 
   public static void error(String message) {
+    errorMessages.add(message);
     errorStream.println("error: " + message);
     errorCount++;
   }
