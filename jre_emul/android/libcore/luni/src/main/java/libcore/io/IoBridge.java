@@ -19,10 +19,23 @@ package libcore.io;
 import java.io.FileDescriptor;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.net.BindException;
+import java.net.ConnectException;
+import java.net.DatagramPacket;
+import java.net.Inet6Address;
+import java.net.InetAddress;
+import java.net.InetSocketAddress;
+import java.net.NetworkInterface;
+import java.net.PortUnreachableException;
+import java.net.SocketAddress;
+import java.net.SocketException;
+import java.net.SocketTimeoutException;
+import java.net.UnknownHostException;
 import java.nio.ByteBuffer;
 import java.util.Arrays;
-import static libcore.io.OsConstants.*;
+
 import libcore.util.MutableInt;
+import static libcore.io.OsConstants.*;
 
 /**
  * Implements java.io/java.net/java.nio semantics in terms of the underlying POSIX system calls.
@@ -56,8 +69,6 @@ public final class IoBridge {
     }
 
 
-    /*
-    TODO(tball): enable when java.net is supported.
     public static void bind(FileDescriptor fd, InetAddress address, int port) throws SocketException {
         if (address instanceof Inet6Address && ((Inet6Address) address).getScopeId() == 0) {
             // Linux won't let you bind a link-local address without a scope id. Find one.
@@ -82,8 +93,7 @@ public final class IoBridge {
     /**
      * Connects socket 'fd' to 'inetAddress' on 'port', with no timeout. The lack of a timeout
      * means this method won't throw SocketTimeoutException.
-     *
-    TODO(tball): enable when java.net is supported.
+     */
     public static boolean connect(FileDescriptor fd, InetAddress inetAddress, int port) throws SocketException {
         try {
             return IoBridge.connect(fd, inetAddress, port, 0);
@@ -95,8 +105,7 @@ public final class IoBridge {
     /**
      * Connects socket 'fd' to 'inetAddress' on 'port', with a the given 'timeoutMs'.
      * Use timeoutMs == 0 for a blocking connect with no timeout.
-     *
-    TODO(tball): enable when java.net is supported.
+     */
     public static boolean connect(FileDescriptor fd, InetAddress inetAddress, int port, int timeoutMs) throws SocketException, SocketTimeoutException {
         try {
             return connectErrno(fd, inetAddress, port, timeoutMs);
@@ -444,8 +453,6 @@ public final class IoBridge {
         }
     }
 
-    /*
-    TODO(tball): enable when java.net is supported.
     public static int sendto(FileDescriptor fd, byte[] bytes, int byteOffset, int byteCount, int flags, InetAddress inetAddress, int port) throws IOException {
         boolean isDatagram = (inetAddress != null);
         if (!isDatagram && byteCount <= 0) {
@@ -586,5 +593,4 @@ public final class IoBridge {
             throw errnoException.rethrowAsSocketException();
         }
     }
-    */
 }

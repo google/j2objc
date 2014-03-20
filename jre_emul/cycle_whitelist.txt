@@ -4,6 +4,8 @@ TYPE java.security.Provider        # Long lived.
 # Breaks several false cycles.
 FIELD java.io.ObjectOutputStream.currentPutField
 
+FIELD java.net.NetworkInterface.children
+
 FIELD java.util.HashSet.backingMap
 FIELD java.util.TreeSet.backingMap
 
@@ -26,3 +28,8 @@ FIELD org.xml.sax.helpers.XMLReaderAdapter.AttributesAdapter.attributes org.xml.
 
 # TODO(kstanger): Resolve these cycles.
 NAMESPACE org.xml
+
+# TODO(tball): temporary whitelisting so fix gets thorough review.
+
+# Problem is in InetAddress.isReachable().
+TYPE java.util.concurrent.CountDownLatch

@@ -33,7 +33,7 @@ public class URISyntaxException extends Exception {
      * Constructs a new {@code URISyntaxException} instance containing the
      * string that caused the exception, a description of the problem and the
      * index at which the error occurred.
-     * 
+     *
      * @param input
      *            the string that caused the exception.
      * @param reason
@@ -49,12 +49,14 @@ public class URISyntaxException extends Exception {
     public URISyntaxException(String input, String reason, int index) {
         super(reason);
 
-        if (input == null || reason == null) {
-            throw new NullPointerException();
+        if (input == null) {
+            throw new NullPointerException("input == null");
+        } else if (reason == null) {
+            throw new NullPointerException("reason == null");
         }
 
         if (index < -1) {
-            throw new IllegalArgumentException();
+            throw new IllegalArgumentException("Bad index: " + index);
         }
 
         this.input = input;
@@ -64,7 +66,7 @@ public class URISyntaxException extends Exception {
     /**
      * Constructs a new {@code URISyntaxException} instance containing the
      * string that caused the exception and a description of the problem.
-     * 
+     *
      *@param input
      *            the string that caused the exception.
      * @param reason
@@ -76,8 +78,10 @@ public class URISyntaxException extends Exception {
     public URISyntaxException(String input, String reason) {
         super(reason);
 
-        if (input == null || reason == null) {
-            throw new NullPointerException();
+        if (input == null) {
+            throw new NullPointerException("input == null");
+        } else if (reason == null) {
+            throw new NullPointerException("reason == null");
         }
 
         this.input = input;
@@ -87,7 +91,7 @@ public class URISyntaxException extends Exception {
     /**
      * Gets the index at which the syntax error was found or {@code -1} if the
      * index is unknown/unavailable.
-     * 
+     *
      * @return the index of the syntax error.
      */
     public int getIndex() {
@@ -96,7 +100,7 @@ public class URISyntaxException extends Exception {
 
     /**
      * Gets a description of the syntax error.
-     * 
+     *
      * @return the string describing the syntax error.
      */
     public String getReason() {
@@ -105,7 +109,7 @@ public class URISyntaxException extends Exception {
 
     /**
      * Gets the initial string that contains an invalid syntax.
-     * 
+     *
      * @return the string that caused the exception.
      */
     public String getInput() {
@@ -116,14 +120,13 @@ public class URISyntaxException extends Exception {
      * Gets a description of the exception, including the reason, the string
      * that caused the syntax error and the position of the syntax error if
      * available.
-     * 
+     *
      * @return a sting containing information about the exception.
      * @see java.lang.Throwable#getMessage()
      */
     @Override
     public String getMessage() {
         String reason = super.getMessage();
-
         if (index != -1) {
             return reason + " at index " + index + ": " + input;
         }
