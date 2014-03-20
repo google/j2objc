@@ -17,6 +17,9 @@ package com.google.devtools.j2objc.util;
 import org.eclipse.jdt.core.dom.ASTNode;
 import org.eclipse.jdt.core.dom.CompilationUnit;
 
+import java.io.OutputStream;
+import java.io.PrintStream;
+
 /**
  * Provides convenient static error and warning methods.
  *
@@ -27,6 +30,7 @@ public class ErrorUtil {
   private static int errorCount = 0;
   private static int warningCount = 0;
   private static String currentFileName = null;
+  private static PrintStream errorStream = System.err;
 
   public static void reset() {
     errorCount = 0;
@@ -46,13 +50,23 @@ public class ErrorUtil {
     return warningCount;
   }
 
+  /**
+   * To be called by unit tests. In test mode errors and warnings are not
+   * printed to System.err.
+   */
+  public static void setTestMode() {
+    errorStream = new PrintStream(new OutputStream() {
+      public void write(int b) {}
+    });
+  }
+
   public static void error(String message) {
-    System.err.println("error: " + message);
+    errorStream.println("error: " + message);
     errorCount++;
   }
 
   public static void warning(String message) {
-    System.err.println("warning: " + message);
+    errorStream.println("warning: " + message);
     warningCount++;
   }
 

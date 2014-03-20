@@ -46,7 +46,6 @@ import java.util.logging.Logger;
  */
 public class Options {
 
-  private static Map<String, String> compilerOptions;
   private static List<String> sourcePathEntries = Lists.newArrayList(".");
   private static List<String> classPathEntries = Lists.newArrayList(".");
   private static List<String> pluginPathEntries = Lists.newArrayList();
@@ -72,6 +71,7 @@ public class Options {
   private static boolean buildClosure = false;
   private static boolean stripReflection = false;
   private static boolean extractUnsequencedModifications = false;
+  private static boolean docCommentsEnabled = false;
 
   private static File proGuardUsageFile = null;
 
@@ -121,10 +121,6 @@ public class Options {
    * @throws IOException
    */
   public static String[] load(String[] args) throws IOException {
-    compilerOptions = Maps.newHashMap();
-    compilerOptions.put(org.eclipse.jdt.core.JavaCore.COMPILER_SOURCE, "1.7");
-    compilerOptions.put(org.eclipse.jdt.core.JavaCore.COMPILER_CODEGEN_TARGET_PLATFORM, "1.7");
-    compilerOptions.put(org.eclipse.jdt.core.JavaCore.COMPILER_COMPLIANCE, "1.7");
     logger.setLevel(Level.INFO);
 
     // Create a temporary directory as the sourcepath's first entry, so that
@@ -254,9 +250,7 @@ public class Options {
       } else if (arg.equals("--extract-unsequenced")) {
         extractUnsequencedModifications = true;
       } else if (arg.equals("--doc-comments")) {
-        // BodyDeclaration.getJavadoc() always returns null without this option enabled,
-        // so by default no doc comments are generated.
-        compilerOptions.put(org.eclipse.jdt.core.JavaCore.COMPILER_DOC_COMMENT_SUPPORT, "enabled");
+        docCommentsEnabled = true;
       } else if (arg.startsWith("-h") || arg.equals("--help")) {
         help(false);
       } else if (arg.startsWith("-")) {
@@ -358,8 +352,8 @@ public class Options {
     return entries;
   }
 
-  public static Map<String, String> getCompilerOptions() {
-    return compilerOptions;
+  public static boolean docCommentsEnabled() {
+    return docCommentsEnabled;
   }
 
   public static String[] getSourcePathEntries() {
@@ -570,19 +564,6 @@ public class Options {
 
   public static Charset getCharset() {
     return Charset.forName(fileEncoding);
-  }
-
-  /**
-   * Returns an array that has the same number of elements as the source path
-   * entries, containing the file encoding.
-   */
-  public static String[] getFileEncodings() {
-    int n = sourcePathEntries.size();
-    String[] result = new String[n];
-    for (int i = 0; i < n; i++) {
-      result[i] = fileEncoding;
-    }
-    return result;
   }
 
   public static boolean stripGwtIncompatibleMethods() {

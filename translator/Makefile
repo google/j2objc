@@ -110,6 +110,7 @@ JAVA_SOURCES = \
 	util/DeadCodeMap.java \
 	util/ErrorReportingASTVisitor.java \
 	util/ErrorUtil.java \
+	util/JdtParser.java \
 	util/NameTable.java \
 	util/ProGuardUsageParser.java \
 	util/TimeTracker.java \
