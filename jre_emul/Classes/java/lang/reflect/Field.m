@@ -37,6 +37,7 @@
 #import "java/lang/reflect/Method.h"
 #import "java/lang/reflect/Modifier.h"
 #import "java/lang/reflect/TypeVariable.h"
+#import "objc/message.h"
 #import "objc/runtime.h"
 
 @implementation JavaLangReflectField
@@ -343,16 +344,13 @@ BOOL IsStatic(JavaLangReflectField *field) {
 }
 
 - (IOSObjectArray *)getDeclaredAnnotations {
-  NSString *annotationsMethod =
-      [NSString stringWithFormat:@"__annotations_%@_", [self getName]];
-  IOSObjectArray *methods = [declaringClass_ allDeclaredMethods];
-  NSUInteger n = [methods count];
-  for (NSUInteger i = 0; i < n; i++) {
-    JavaLangReflectMethod *method = methods->buffer_[i];
-    if ([annotationsMethod isEqualToString:[method getName]] &&
-        [[method getParameterTypes] count] == 0) {
-      IOSObjectArray *noArgs = [IOSObjectArray arrayWithLength:0 type:[NSObject getClass]];
-      return (IOSObjectArray *) [method invokeWithId:nil withNSObjectArray:noArgs];
+  Class cls = declaringClass_.objcClass;
+  if (cls) {
+    NSString *annotationsMethodName =
+        [NSString stringWithFormat:@"__annotations_%@_", [self getName]];
+    Method annotationsMethod = JreFindClassMethod(cls, [annotationsMethodName UTF8String]);
+    if (annotationsMethod) {
+      return method_invoke(cls, annotationsMethod);
     }
   }
   IOSClass *annotationType = [IOSClass classWithProtocol:@protocol(JavaLangAnnotationAnnotation)];

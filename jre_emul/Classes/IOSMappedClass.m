@@ -94,8 +94,7 @@ static void CollectMethodsOrConstructors(IOSMappedClass *self,
 }
 
 - (void)collectMethods:(NSMutableDictionary *)methodMap
-            publicOnly:(BOOL)publicOnly
-              javaOnly:(BOOL)javaOnly {
+            publicOnly:(BOOL)publicOnly {
   CollectMethodsOrConstructors(self, methodMap, publicOnly, NO);
 }
 

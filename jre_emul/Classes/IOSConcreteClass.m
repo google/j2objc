@@ -194,15 +194,14 @@ static void CollectMethodsOrConstructors(
 }
 
 - (void)collectMethods:(NSMutableDictionary *)methodMap
-            publicOnly:(BOOL)publicOnly
-              javaOnly:(BOOL)javaOnly {
+            publicOnly:(BOOL)publicOnly {
   JavaClassMetadata *metadata = [self getMetadata];
   CollectMethodsOrConstructors(
       self, methodMap, publicOnly, ^ id (NSMethodSignature *signature, SEL sel, BOOL isStatic) {
     NSString *selStr = NSStringFromSelector(sel);
     if (!IsConstructor(selStr)) {
       JavaMethodMetadata *methodMetadata = [metadata findMethodMetadata:selStr];
-      if (javaOnly && metadata && !methodMetadata) {
+      if (metadata && !methodMetadata) {
         return nil;  // Selector not in method list.
       }
       return [JavaLangReflectMethod methodWithMethodSignature:signature

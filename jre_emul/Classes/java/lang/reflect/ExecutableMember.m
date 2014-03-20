@@ -27,6 +27,7 @@
 #import "java/lang/reflect/Method.h"
 #import "java/lang/reflect/Modifier.h"
 #import "java/lang/reflect/TypeVariable.h"
+#import "objc/message.h"
 #import "objc/runtime.h"
 
 #define VARARGS_MODIFIER 0x80
@@ -182,33 +183,35 @@ static IOSClass *ResolveParameterType(const char *objcType, NSString *paramKeywo
   return nil;
 }
 
-- (IOSObjectArray *)getParameterAnnotations {
-  // can't call an abstract method
-  [self doesNotRecognizeSelector:_cmd];
-  return nil;
-}
+#define SANITIZED_METHOD_NAME \
+  [[self internalName] stringByReplacingOccurrencesOfString:@":" withString:@"_"]
 
-static JavaLangReflectMethod *getAccessor(IOSClass *class, NSString *method, NSString *accessor) {
-  NSString *accessorMethod = [NSString stringWithFormat:@"__%@_%@", accessor,
-     [method stringByReplacingOccurrencesOfString:@":" withString:@"_"]];
-  IOSObjectArray *methods = [class allDeclaredMethods];
-  NSUInteger n = [methods count];
-  for (NSUInteger i = 0; i < n; i++) {
-    JavaLangReflectMethod *method = methods->buffer_[i];
-    if ([accessorMethod isEqualToString:[method getName]] &&
-        [[method getParameterTypes] count] == 0) {
-      return method;
+- (IOSObjectArray *)getDeclaredAnnotations {
+  Class cls = class_.objcClass;
+  if (cls) {
+    NSString *annotationsMethodName =
+        [NSString stringWithFormat:@"__annotations_%@", SANITIZED_METHOD_NAME];
+    Method annotationsMethod = JreFindClassMethod(cls, [annotationsMethodName UTF8String]);
+    if (annotationsMethod) {
+      return method_invoke(cls, annotationsMethod);
     }
   }
-  return nil;  // No accessor for this member.
+  IOSClass *annotationType = [IOSClass classWithProtocol:@protocol(JavaLangAnnotationAnnotation)];
+  return [IOSObjectArray arrayWithLength:0 type:annotationType];
 }
 
-- (JavaLangReflectMethod *)getAnnotationsAccessor:(NSString *)methodName {
-  return getAccessor(class_, methodName, @"annotations");
-}
-
-- (JavaLangReflectMethod *)getParameterAnnotationsAccessor:(NSString *)methodName {
-  return [self getAnnotationsAccessor:[NSString stringWithFormat:@"%@_params", methodName]];
+- (IOSObjectArray *)getParameterAnnotations {
+  Class cls = class_.objcClass;
+  if (cls) {
+    NSString *annotationsMethodName =
+        [NSString stringWithFormat:@"__annotations_%@_params", SANITIZED_METHOD_NAME];
+    Method annotationsMethod = JreFindClassMethod(cls, [annotationsMethodName UTF8String]);
+    if (annotationsMethod) {
+      return method_invoke(cls, annotationsMethod);
+    }
+  }
+  IOSClass *annotationType = [IOSClass classWithProtocol:@protocol(JavaLangAnnotationAnnotation)];
+  return [IOSObjectArray arrayWithDimensions:2 lengths:(int[]){0, 0} type:annotationType];
 }
 
 - (NSString *)toGenericString {

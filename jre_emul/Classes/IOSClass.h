@@ -182,9 +182,7 @@
 
 // Internal methods
 - (void)collectMethods:(NSMutableDictionary *)methodMap
-            publicOnly:(BOOL)publicOnly
-              javaOnly:(BOOL)javaOnly;
-- (IOSObjectArray *)allDeclaredMethods;
+            publicOnly:(BOOL)publicOnly;
 - (JavaLangReflectMethod *)findMethodWithTranslatedName:(NSString *)objcName;
 - (IOSObjectArray *)getInterfacesWithArrayType:(IOSClass *)arrayType;
 - (JavaClassMetadata *)getMetadata;
