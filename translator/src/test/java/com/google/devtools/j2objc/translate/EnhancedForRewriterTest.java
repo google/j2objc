@@ -1,0 +1,62 @@
+/*
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package com.google.devtools.j2objc.translate;
+
+import com.google.devtools.j2objc.GenerationTest;
+
+import java.io.IOException;
+
+/**
+ * Unit tests for {@link EnhancedForRewriter}.
+ *
+ * @author Keith Stanger
+ */
+public class EnhancedForRewriterTest extends GenerationTest {
+
+  // Regression test: Must call "charValue" on boxed type returned from iterator.
+  public void testEnhancedForWithBoxedType() throws IOException {
+    String source = "import java.util.List;" +
+        "public class A { " +
+        "Character[] charArray; " +
+        "List<Character> charList; " +
+        "void test() { for (char c : charArray) {} for (char c : charList) {} } }";
+    String translation = translateSourceFile(source, "A", "A.m");
+    assertTranslation(translation,
+        "unichar c = [((JavaLangCharacter *) nil_chk((*b__++))) charValue];");
+    assertTranslation(translation,
+        "unichar c = [((JavaLangCharacter *) nil_chk(boxed__)) charValue];");
+  }
+
+  public void testEnhancedForLoopAnnotation() throws IOException {
+    String translation = translateSourceFile(
+        "import com.google.j2objc.annotations.LoopTranslation;" +
+        "import com.google.j2objc.annotations.LoopTranslation.LoopStyle;" +
+        "class Test { void test(Iterable<String> strings) { " +
+        "for (@LoopTranslation(LoopStyle.JAVA_ITERATOR) String s : strings) {}" +
+        "for (@LoopTranslation(LoopStyle.FAST_ENUMERATION) String s : strings) {} } }",
+        "Test", "Test.m");
+    assertTranslatedLines(translation,
+        "- (void)testWithJavaLangIterable:(id<JavaLangIterable>)strings {",
+          "{",
+            "id<JavaUtilIterator> iter__ = [((id<JavaLangIterable>) nil_chk(strings)) iterator];",
+            "while ([((id<JavaUtilIterator>) nil_chk(iter__)) hasNext]) {",
+              "NSString *s = [iter__ next];",
+            "}",
+          "}",
+          "for (NSString * __strong s in strings) {",
+          "}",
+        "}");
+  }
+}

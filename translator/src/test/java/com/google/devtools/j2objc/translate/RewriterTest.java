@@ -129,6 +129,18 @@ public class RewriterTest extends GenerationTest {
     assertTrue(((LabeledStatement) labelStmt).getBody() instanceof EmptyStatement);
   }
 
+  public void testLabeledBreakOnSwitchStatement() throws IOException {
+    String translation = translateSourceFile(
+        "class Test { void main(int i) { outer: switch(i) { case 1: break outer; } } }",
+        "Test", "Test.m");
+    assertTranslatedLines(translation,
+        "switch (i) {",
+        "case 1:",
+        "goto break_outer;",
+        "}",
+        "break_outer: ;");
+  }
+
   /**
    * Verifies that abstract methods to implement an interface are added to an
    * abstract class.
@@ -372,41 +384,6 @@ public class RewriterTest extends GenerationTest {
         "void test() { A a = new A(); System.out.println(a.group()); }}";
     String translation = translateSourceFile(source, "A", "A.m");
     assertTranslation(translation, "printlnWithNSString:[a group]];");
-  }
-
-  // Regression test: Must call "charValue" on boxed type returned from iterator.
-  public void testEnhancedForWithBoxedType() throws IOException {
-    String source = "import java.util.List;" +
-        "public class A { " +
-        "Character[] charArray; " +
-        "List<Character> charList; " +
-        "void test() { for (char c : charArray) {} for (char c : charList) {} } }";
-    String translation = translateSourceFile(source, "A", "A.m");
-    assertTranslation(translation,
-        "unichar c = [((JavaLangCharacter *) nil_chk((*b__++))) charValue];");
-    assertTranslation(translation,
-        "unichar c = [((JavaLangCharacter *) nil_chk(boxed__)) charValue];");
-  }
-
-  public void testEnhancedForLoopAnnotation() throws IOException {
-    String translation = translateSourceFile(
-        "import com.google.j2objc.annotations.LoopTranslation;" +
-        "import com.google.j2objc.annotations.LoopTranslation.LoopStyle;" +
-        "class Test { void test(Iterable<String> strings) { " +
-        "for (@LoopTranslation(LoopStyle.JAVA_ITERATOR) String s : strings) {}" +
-        "for (@LoopTranslation(LoopStyle.FAST_ENUMERATION) String s : strings) {} } }",
-        "Test", "Test.m");
-    assertTranslatedLines(translation,
-        "- (void)testWithJavaLangIterable:(id<JavaLangIterable>)strings {",
-          "{",
-            "id<JavaUtilIterator> iter__ = [((id<JavaLangIterable>) nil_chk(strings)) iterator];",
-            "while ([((id<JavaUtilIterator>) nil_chk(iter__)) hasNext]) {",
-              "NSString *s = [iter__ next];",
-            "}",
-          "}",
-          "for (NSString * __strong s in strings) {",
-          "}",
-        "}");
   }
 
   public void testStaticArrayInitializerMove() throws IOException {

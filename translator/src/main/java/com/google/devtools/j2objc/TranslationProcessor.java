@@ -25,6 +25,7 @@ import com.google.devtools.j2objc.translate.Autoboxer;
 import com.google.devtools.j2objc.translate.ComplexExpressionExtractor;
 import com.google.devtools.j2objc.translate.CopyAllFieldsWriter;
 import com.google.devtools.j2objc.translate.DestructorGenerator;
+import com.google.devtools.j2objc.translate.EnhancedForRewriter;
 import com.google.devtools.j2objc.translate.GwtConverter;
 import com.google.devtools.j2objc.translate.InitializationNormalizer;
 import com.google.devtools.j2objc.translate.InnerClassExtractor;
@@ -164,6 +165,10 @@ class TranslationProcessor extends FileProcessor {
     // Modify AST to be more compatible with Objective C
     new Rewriter().run(unit);
     ticker.tick("Rewriter");
+
+    // Rewrite enhanced for loops into correct C code.
+    new EnhancedForRewriter().run(unit);
+    ticker.tick("EnhancedForRewriter");
 
     // Add auto-boxing conversions.
     new Autoboxer(unit.getAST()).run(unit);
