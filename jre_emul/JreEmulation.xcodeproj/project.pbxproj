@@ -333,7 +333,6 @@
 		06721A561559C99E00645E1B /* Logger.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = Logger.m; path = build_result/Classes/java/util/logging/Logger.m; sourceTree = "<group>"; };
 		06721A571559C99E00645E1B /* LogManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = LogManager.m; path = build_result/Classes/java/util/logging/LogManager.m; sourceTree = "<group>"; };
 		06721A581559C99E00645E1B /* LogRecord.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = LogRecord.m; path = build_result/Classes/java/util/logging/LogRecord.m; sourceTree = "<group>"; };
-		06721A591559C99E00645E1B /* NSLogHandler.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = NSLogHandler.m; path = build_result/Classes/java/util/logging/NSLogHandler.m; sourceTree = "<group>"; };
 		06721A5A1559C99E00645E1B /* MapEntry.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MapEntry.m; path = build_result/Classes/java/util/MapEntry.m; sourceTree = "<group>"; };
 		06721A5B1559C99E00645E1B /* NoSuchElementException.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = NoSuchElementException.m; path = build_result/Classes/java/util/NoSuchElementException.m; sourceTree = "<group>"; };
 		06721A5C1559C99E00645E1B /* PriorityQueue.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = PriorityQueue.m; path = build_result/Classes/java/util/PriorityQueue.m; sourceTree = "<group>"; };
@@ -417,7 +416,6 @@
 		06721AF31559CB9200645E1B /* Logger.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Logger.h; path = build_result/Classes/java/util/logging/Logger.h; sourceTree = "<group>"; };
 		06721AF41559CB9200645E1B /* LogManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = LogManager.h; path = build_result/Classes/java/util/logging/LogManager.h; sourceTree = "<group>"; };
 		06721AF51559CB9200645E1B /* LogRecord.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = LogRecord.h; path = build_result/Classes/java/util/logging/LogRecord.h; sourceTree = "<group>"; };
-		06721AF61559CB9200645E1B /* NSLogHandler.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = NSLogHandler.h; path = build_result/Classes/java/util/logging/NSLogHandler.h; sourceTree = "<group>"; };
 		06721AF71559CB9200645E1B /* Map.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Map.h; path = build_result/Classes/java/util/Map.h; sourceTree = "<group>"; };
 		06721AF81559CB9200645E1B /* MapEntry.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MapEntry.h; path = build_result/Classes/java/util/MapEntry.h; sourceTree = "<group>"; };
 		06721AF91559CB9200645E1B /* NoSuchElementException.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = NoSuchElementException.h; path = build_result/Classes/java/util/NoSuchElementException.h; sourceTree = "<group>"; };
@@ -459,7 +457,6 @@
 		06721B461559CC0300645E1B /* Integer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Integer.h; path = build_result/Classes/java/lang/Integer.h; sourceTree = "<group>"; };
 		06721B471559CC0300645E1B /* InternalError.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = InternalError.h; path = build_result/Classes/java/lang/InternalError.h; sourceTree = "<group>"; };
 		06721B481559CC0300645E1B /* InterruptedException.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = InterruptedException.h; path = build_result/Classes/java/lang/InterruptedException.h; sourceTree = "<group>"; };
-		06721B491559CC0300645E1B /* Iterable.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Iterable.h; path = build_result/Classes/java/lang/Iterable.h; sourceTree = "<group>"; };
 		06721B4A1559CC0300645E1B /* LinkageError.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = LinkageError.h; path = build_result/Classes/java/lang/LinkageError.h; sourceTree = "<group>"; };
 		06721B4B1559CC0300645E1B /* Long.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Long.h; path = build_result/Classes/java/lang/Long.h; sourceTree = "<group>"; };
 		06721B4C1559CC0300645E1B /* Math.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Math.h; path = build_result/Classes/java/lang/Math.h; sourceTree = "<group>"; };
@@ -582,6 +579,28 @@
 		0697F60915D190580027A7E4 /* TypeVariable.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = TypeVariable.h; path = build_result/Classes/java/lang/reflect/TypeVariable.h; sourceTree = "<group>"; };
 		0697F60A15D190580027A7E4 /* TypeVariable.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = TypeVariable.m; path = build_result/Classes/java/lang/reflect/TypeVariable.m; sourceTree = "<group>"; };
 		06986A181767D781006EE92F /* J2ObjCMain.m */ = {isa = PBXFileReference; fileEncoding = 4; indentWidth = 2; lastKnownFileType = sourcecode.c.objc; path = J2ObjCMain.m; sourceTree = "<group>"; tabWidth = 2; };
+		0699FF8218D7851500278029 /* ComparableTimSort.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = ComparableTimSort.h; path = build_result/Classes/java/util/ComparableTimSort.h; sourceTree = "<group>"; };
+		0699FF8318D7851500278029 /* ComparableTimSort.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = ComparableTimSort.m; path = build_result/Classes/java/util/ComparableTimSort.m; sourceTree = "<group>"; };
+		0699FF8418D7851500278029 /* DualPivotQuicksort.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = DualPivotQuicksort.h; path = build_result/Classes/java/util/DualPivotQuicksort.h; sourceTree = "<group>"; };
+		0699FF8518D7851500278029 /* DualPivotQuicksort.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = DualPivotQuicksort.m; path = build_result/Classes/java/util/DualPivotQuicksort.m; sourceTree = "<group>"; };
+		0699FF8618D7851500278029 /* IOSLogHandler.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = IOSLogHandler.h; path = build_result/Classes/java/util/logging/IOSLogHandler.h; sourceTree = "<group>"; };
+		0699FF8718D7851500278029 /* IOSLogHandler.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = IOSLogHandler.m; path = build_result/Classes/java/util/logging/IOSLogHandler.m; sourceTree = "<group>"; };
+		0699FF8818D7851500278029 /* TimSort.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = TimSort.h; path = build_result/Classes/java/util/TimSort.h; sourceTree = "<group>"; };
+		0699FF8918D7851500278029 /* TimSort.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = TimSort.m; path = build_result/Classes/java/util/TimSort.m; sourceTree = "<group>"; };
+		0699FF8A18D7851500278029 /* UnsafeArrayList.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = UnsafeArrayList.h; path = build_result/Classes/java/util/UnsafeArrayList.h; sourceTree = "<group>"; };
+		0699FF8B18D7851500278029 /* UnsafeArrayList.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = UnsafeArrayList.m; path = build_result/Classes/java/util/UnsafeArrayList.m; sourceTree = "<group>"; };
+		0699FF8C18D7851500278029 /* Deflater.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = Deflater.h; path = build_result/Classes/java/util/zip/Deflater.h; sourceTree = "<group>"; };
+		0699FF8D18D7851500278029 /* Deflater.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = Deflater.m; path = build_result/Classes/java/util/zip/Deflater.m; sourceTree = "<group>"; };
+		0699FF8E18D7851500278029 /* DeflaterInputStream.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = DeflaterInputStream.h; path = build_result/Classes/java/util/zip/DeflaterInputStream.h; sourceTree = "<group>"; };
+		0699FF8F18D7851500278029 /* DeflaterInputStream.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = DeflaterInputStream.m; path = build_result/Classes/java/util/zip/DeflaterInputStream.m; sourceTree = "<group>"; };
+		0699FF9018D7851500278029 /* DeflaterOutputStream.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = DeflaterOutputStream.h; path = build_result/Classes/java/util/zip/DeflaterOutputStream.h; sourceTree = "<group>"; };
+		0699FF9118D7851500278029 /* DeflaterOutputStream.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = DeflaterOutputStream.m; path = build_result/Classes/java/util/zip/DeflaterOutputStream.m; sourceTree = "<group>"; };
+		0699FF9218D7851500278029 /* GZIPOutputStream.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = GZIPOutputStream.h; path = build_result/Classes/java/util/zip/GZIPOutputStream.h; sourceTree = "<group>"; };
+		0699FF9318D7851500278029 /* GZIPOutputStream.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = GZIPOutputStream.m; path = build_result/Classes/java/util/zip/GZIPOutputStream.m; sourceTree = "<group>"; };
+		0699FF9418D7851500278029 /* ZipError.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = ZipError.h; path = build_result/Classes/java/util/zip/ZipError.h; sourceTree = "<group>"; };
+		0699FF9518D7851500278029 /* ZipError.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = ZipError.m; path = build_result/Classes/java/util/zip/ZipError.m; sourceTree = "<group>"; };
+		0699FF9618D7851500278029 /* ZipOutputStream.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = ZipOutputStream.h; path = build_result/Classes/java/util/zip/ZipOutputStream.h; sourceTree = "<group>"; };
+		0699FF9718D7851500278029 /* ZipOutputStream.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = ZipOutputStream.m; path = build_result/Classes/java/util/zip/ZipOutputStream.m; sourceTree = "<group>"; };
 		06AA054817E110D00017C34A /* CharacterCodingException.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = CharacterCodingException.h; path = build_result/Classes/java/nio/charset/CharacterCodingException.h; sourceTree = "<group>"; };
 		06AA054917E110D00017C34A /* CharacterCodingException.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = CharacterCodingException.m; path = build_result/Classes/java/nio/charset/CharacterCodingException.m; sourceTree = "<group>"; };
 		06AA054A17E110D00017C34A /* Charset.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = Charset.h; path = build_result/Classes/java/nio/charset/Charset.h; sourceTree = "<group>"; };
@@ -647,8 +666,6 @@
 		06D7BDFE17DE687200329964 /* WeakHashMap.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = WeakHashMap.m; path = build_result/Classes/java/util/WeakHashMap.m; sourceTree = "<group>"; };
 		06DD329716A13FA000AD7ACE /* Buffer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Buffer.h; path = build_result/Classes/java/nio/Buffer.h; sourceTree = "<group>"; };
 		06DD329816A13FA000AD7ACE /* Buffer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = Buffer.m; path = build_result/Classes/java/nio/Buffer.m; sourceTree = "<group>"; };
-		06DD329916A13FA000AD7ACE /* BufferFactory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = BufferFactory.h; path = build_result/Classes/java/nio/BufferFactory.h; sourceTree = "<group>"; };
-		06DD329A16A13FA000AD7ACE /* BufferFactory.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = BufferFactory.m; path = build_result/Classes/java/nio/BufferFactory.m; sourceTree = "<group>"; };
 		06DD329B16A13FA000AD7ACE /* BufferOverflowException.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = BufferOverflowException.h; path = build_result/Classes/java/nio/BufferOverflowException.h; sourceTree = "<group>"; };
 		06DD329C16A13FA000AD7ACE /* BufferOverflowException.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = BufferOverflowException.m; path = build_result/Classes/java/nio/BufferOverflowException.m; sourceTree = "<group>"; };
 		06DD329D16A13FA000AD7ACE /* BufferUnderflowException.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = BufferUnderflowException.h; path = build_result/Classes/java/nio/BufferUnderflowException.h; sourceTree = "<group>"; };
@@ -671,8 +688,6 @@
 		06DD32AE16A13FA000AD7ACE /* FloatArrayBuffer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = FloatArrayBuffer.m; path = build_result/Classes/java/nio/FloatArrayBuffer.m; sourceTree = "<group>"; };
 		06DD32AF16A13FA000AD7ACE /* FloatBuffer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = FloatBuffer.h; path = build_result/Classes/java/nio/FloatBuffer.h; sourceTree = "<group>"; };
 		06DD32B016A13FA000AD7ACE /* FloatBuffer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = FloatBuffer.m; path = build_result/Classes/java/nio/FloatBuffer.m; sourceTree = "<group>"; };
-		06DD32B116A13FA000AD7ACE /* HeapByteBuffer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = HeapByteBuffer.h; path = build_result/Classes/java/nio/HeapByteBuffer.h; sourceTree = "<group>"; };
-		06DD32B216A13FA000AD7ACE /* HeapByteBuffer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = HeapByteBuffer.m; path = build_result/Classes/java/nio/HeapByteBuffer.m; sourceTree = "<group>"; };
 		06DD32B316A13FA000AD7ACE /* IntArrayBuffer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = IntArrayBuffer.h; path = build_result/Classes/java/nio/IntArrayBuffer.h; sourceTree = "<group>"; };
 		06DD32B416A13FA000AD7ACE /* IntArrayBuffer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = IntArrayBuffer.m; path = build_result/Classes/java/nio/IntArrayBuffer.m; sourceTree = "<group>"; };
 		06DD32B516A13FA000AD7ACE /* IntBuffer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = IntBuffer.h; path = build_result/Classes/java/nio/IntBuffer.h; sourceTree = "<group>"; };
@@ -1697,8 +1712,6 @@
 				0672198F1559C7FC00645E1B /* BufferedReader.m */,
 				06721A7E1559CB2500645E1B /* BufferedWriter.h */,
 				067219901559C7FC00645E1B /* BufferedWriter.m */,
-				06DD329916A13FA000AD7ACE /* BufferFactory.h */,
-				06DD329A16A13FA000AD7ACE /* BufferFactory.m */,
 				06DD329B16A13FA000AD7ACE /* BufferOverflowException.h */,
 				06DD329C16A13FA000AD7ACE /* BufferOverflowException.m */,
 				06DD329D16A13FA000AD7ACE /* BufferUnderflowException.h */,
@@ -1781,6 +1794,8 @@
 				06F2908118972DA200676F1D /* Collection.m */,
 				06721ACF1559CB4200645E1B /* Collections.h */,
 				06721A321559C91600645E1B /* Collections.m */,
+				0699FF8218D7851500278029 /* ComparableTimSort.h */,
+				0699FF8318D7851500278029 /* ComparableTimSort.m */,
 				06721AD01559CB4200645E1B /* Comparator.h */,
 				06F2908218972DA200676F1D /* Comparator.m */,
 				06F290CB18972DF800676F1D /* CompletionService.h */,
@@ -1847,6 +1862,12 @@
 				064FB7D91727081D00DC0D51 /* DefaultHandler.m */,
 				064FB7AE172707D700DC0D51 /* DefaultHandler2.h */,
 				064FB7AF172707D700DC0D51 /* DefaultHandler2.m */,
+				0699FF8C18D7851500278029 /* Deflater.h */,
+				0699FF8D18D7851500278029 /* Deflater.m */,
+				0699FF8E18D7851500278029 /* DeflaterInputStream.h */,
+				0699FF8F18D7851500278029 /* DeflaterInputStream.m */,
+				0699FF9018D7851500278029 /* DeflaterOutputStream.h */,
+				0699FF9118D7851500278029 /* DeflaterOutputStream.m */,
 				06F290DF18972DF900676F1D /* Delayed.h */,
 				06F290E018972DF900676F1D /* Delayed.m */,
 				06F290E118972DF900676F1D /* DelayQueue.h */,
@@ -1875,6 +1896,8 @@
 				06ED3E1017D1674B0014750E /* Driver.h */,
 				06ED3E1117D1674B0014750E /* Driver.m */,
 				064FB7C4172707F200DC0D51 /* DTDHandler.h */,
+				0699FF8418D7851500278029 /* DualPivotQuicksort.h */,
+				0699FF8518D7851500278029 /* DualPivotQuicksort.m */,
 				06F2908418972DA200676F1D /* DuplicateFormatFlagsException.h */,
 				06F2908518972DA200676F1D /* DuplicateFormatFlagsException.m */,
 				067855CD169F37710042431C /* Elementary.h */,
@@ -2022,6 +2045,8 @@
 				06ED3D9E17D165510014750E /* GuardedObject.m */,
 				06F2916718972E6800676F1D /* GZIPInputStream.h */,
 				06F2916818972E6800676F1D /* GZIPInputStream.m */,
+				0699FF9218D7851500278029 /* GZIPOutputStream.h */,
+				0699FF9318D7851500278029 /* GZIPOutputStream.m */,
 				06721AF11559CB9200645E1B /* Handler.h */,
 				06721A541559C99E00645E1B /* Handler.m */,
 				064FB78E1727079100DC0D51 /* HandlerBase.h */,
@@ -2030,8 +2055,6 @@
 				06721A4D1559C99E00645E1B /* HashSet.m */,
 				06721AE81559CB9200645E1B /* Hashtable.h */,
 				06721A4E1559C99E00645E1B /* Hashtable.m */,
-				06DD32B116A13FA000AD7ACE /* HeapByteBuffer.h */,
-				06DD32B216A13FA000AD7ACE /* HeapByteBuffer.m */,
 				06F2903418972CCF00676F1D /* HexStringParser.h */,
 				06F2903518972CCF00676F1D /* HexStringParser.m */,
 				06DD333C16A1406A00AD7ACE /* HugeEnumSet.h */,
@@ -2128,6 +2151,8 @@
 				06AA055F17E110D00017C34A /* IOSCharsetEncoder.m */,
 				06ED3DD417D165DE0014750E /* IOSCollator.h */,
 				06ED3DD517D165DE0014750E /* IOSCollator.m */,
+				0699FF8618D7851500278029 /* IOSLogHandler.h */,
+				0699FF8718D7851500278029 /* IOSLogHandler.m */,
 				06F28FE118972C2300676F1D /* IosMD5MessageDigest.h */,
 				06F28FE218972C2300676F1D /* IosMD5MessageDigest.m */,
 				06F28FE318972C2300676F1D /* IosSecureRandomImpl.h */,
@@ -2138,7 +2163,6 @@
 				06F28FE818972C2300676F1D /* IosSHAMessageDigest.m */,
 				06ED3DEC17D1669D0014750E /* IoUtils.h */,
 				06ED3DED17D1669D0014750E /* IoUtils.m */,
-				06721B491559CC0300645E1B /* Iterable.h */,
 				06721AEB1559CB9200645E1B /* Iterator.h */,
 				06F2909F18972DA300676F1D /* Iterator.m */,
 				06ED3E0417D167000014750E /* KXmlParser.h */,
@@ -2281,8 +2305,6 @@
 				06F2900718972C9300676F1D /* NotActiveException.m */,
 				06ED3D5717D1645A0014750E /* NotSerializableException.h */,
 				06ED3D5817D1645A0014750E /* NotSerializableException.m */,
-				06721AF61559CB9200645E1B /* NSLogHandler.h */,
-				06721A591559C99E00645E1B /* NSLogHandler.m */,
 				06721B4F1559CC0300645E1B /* NullPointerException.h */,
 				067219EB1559C87100645E1B /* NullPointerException.m */,
 				06ED3DD617D165DE0014750E /* NumberFormat.h */,
@@ -2649,6 +2671,8 @@
 				06ED3DE717D1666A0014750E /* TimeZoneNames.m */,
 				06DDF48916E8401600A08BE0 /* TimeZones.h */,
 				06DDF48A16E8401600A08BE0 /* TimeZones.m */,
+				0699FF8818D7851500278029 /* TimSort.h */,
+				0699FF8918D7851500278029 /* TimSort.m */,
 				06F290B518972DA300676F1D /* TooManyListenersException.h */,
 				06F290B618972DA300676F1D /* TooManyListenersException.m */,
 				06F2911E18972DFA00676F1D /* TransferQueue.h */,
@@ -2676,6 +2700,8 @@
 				06AA056517E110D00017C34A /* UnmappableCharacterException.m */,
 				06F2917918972E8200676F1D /* Unsafe.h */,
 				06F2917A18972E8200676F1D /* Unsafe.m */,
+				0699FF8A18D7851500278029 /* UnsafeArrayList.h */,
+				0699FF8B18D7851500278029 /* UnsafeArrayList.m */,
 				06AA056617E110D00017C34A /* UnsupportedCharsetException.h */,
 				06AA056717E110D00017C34A /* UnsupportedCharsetException.m */,
 				06721A9E1559CB2500645E1B /* UnsupportedEncodingException.h */,
@@ -2747,12 +2773,16 @@
 				06F2917018972E6800676F1D /* ZipConstants.m */,
 				06F2917118972E6800676F1D /* ZipEntry.h */,
 				06F2917218972E6800676F1D /* ZipEntry.m */,
+				0699FF9418D7851500278029 /* ZipError.h */,
+				0699FF9518D7851500278029 /* ZipError.m */,
 				06F2917318972E6800676F1D /* ZipException.h */,
 				06F2917418972E6800676F1D /* ZipException.m */,
 				06F2917518972E6800676F1D /* ZipFile.h */,
 				06F2917618972E6800676F1D /* ZipFile.m */,
 				06F2917718972E6800676F1D /* ZipInputStream.h */,
 				06F2917818972E6800676F1D /* ZipInputStream.m */,
+				0699FF9618D7851500278029 /* ZipOutputStream.h */,
+				0699FF9718D7851500278029 /* ZipOutputStream.m */,
 			);
 			name = "Transpiled Classes";
 			sourceTree = "<group>";
