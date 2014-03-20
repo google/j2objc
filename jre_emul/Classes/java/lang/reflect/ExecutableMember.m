@@ -34,45 +34,18 @@
 
 @implementation ExecutableMember
 
-- (id)initWithSelector:(SEL)aSelector
-             withClass:(IOSClass *)aClass
-          withMetadata:(JavaMethodMetadata *)metadata {
+- (id)initWithMethodSignature:(NSMethodSignature *)methodSignature
+                     selector:(SEL)selector
+                        class:(IOSClass *)class
+                     metadata:(JavaMethodMetadata *)metadata {
   if ((self = [super init])) {
-    selector_ = aSelector;
-    class_ = aClass;
-    metadata_ = RETAIN_(metadata);
-    if (class_.objcClass) {
-      classMethod_ = ![class_.objcClass instancesRespondToSelector:selector_];
-      if (classMethod_) {
-        methodSignature_ =
-            [class_.objcClass methodSignatureForSelector:selector_];
-      } else {
-        methodSignature_ =
-            [class_.objcClass instanceMethodSignatureForSelector:selector_];
-      }
-    }
-    if (class_.objcProtocol && !methodSignature_) {
-      struct objc_method_description methodDesc =
-        protocol_getMethodDescription(class_.objcProtocol, aSelector, YES, YES);
-      if (methodDesc.name && methodDesc.types) {  // If method exists ...
-        methodSignature_ =
-            [NSMethodSignature signatureWithObjCTypes:methodDesc.types];
-      }
-    }
-    if (methodSignature_ == nil) {
-      id exception =
-          [[JavaLangNoSuchMethodException alloc]
-              initWithNSString:NSStringFromSelector(aSelector)];
-#if ! __has_feature(objc_arc)
-      [exception autorelease];
-#endif
-      @throw exception;
-    }
-    RETAIN_(methodSignature_);
+    methodSignature_ = [methodSignature retain];
+    selector_ = selector;
+    class_ = class; // IOSClass types are never dealloced.
+    metadata_ = [metadata retain];
   }
   return self;
 }
-
 
 - (NSString *)getName {
   // can't call an abstract method
@@ -84,11 +57,7 @@
   if (metadata_) {
     return [metadata_ modifiers];
   }
-  int mods = JavaLangReflectModifier_PUBLIC;
-  if (classMethod_) {
-    mods |= JavaLangReflectModifier_STATIC;
-  }
-  return mods;
+  return JavaLangReflectModifier_PUBLIC;
 }
 
 static IOSClass *DecodePrimitiveParamKeyword(NSString *keyword) {

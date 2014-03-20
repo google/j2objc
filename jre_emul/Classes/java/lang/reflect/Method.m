@@ -28,23 +28,35 @@
 #import "java/lang/IllegalArgumentException.h"
 #import "java/lang/NullPointerException.h"
 #import "java/lang/reflect/Method.h"
+#import "java/lang/reflect/Modifier.h"
 #import "java/lang/reflect/TypeVariable.h"
 
 @implementation JavaLangReflectMethod
 
-+ (id)methodWithSelector:(SEL)aSelector
-               withClass:(IOSClass *)aClass
-            withMetadata:(JavaMethodMetadata *)metadata {
-  return AUTORELEASE([[JavaLangReflectMethod alloc]
-      initWithSelector:aSelector withClass:aClass withMetadata:metadata]);
+- (id)initWithMethodSignature:(NSMethodSignature *)methodSignature
+                     selector:(SEL)selector
+                        class:(IOSClass *)class
+                     isStatic:(BOOL)isStatic
+                     metadata:(JavaMethodMetadata *)metadata {
+  if (self = [super initWithMethodSignature:methodSignature
+                                   selector:selector
+                                      class:class
+                                   metadata:metadata]) {
+    isStatic_ = isStatic;
+  }
+  return self;
 }
 
-- (id)initWithSelector:(SEL)aSelector
-             withClass:(IOSClass *)aClass
-          withMetadata:(JavaMethodMetadata *)metadata {
-  return [super initWithSelector:aSelector
-                       withClass:aClass
-                    withMetadata:metadata];
++ (id)methodWithMethodSignature:(NSMethodSignature *)methodSignature
+                       selector:(SEL)selector
+                          class:(IOSClass *)class
+                       isStatic:(BOOL)isStatic
+                       metadata:(JavaMethodMetadata *)metadata {
+  return [[[JavaLangReflectMethod alloc] initWithMethodSignature:methodSignature
+                                                        selector:selector
+                                                           class:class
+                                                        isStatic:isStatic
+                                                        metadata:metadata] autorelease];
 }
 
 // Returns method name.
@@ -72,6 +84,14 @@
 
 - (NSString *)internalName {
   return NSStringFromSelector(selector_);
+}
+
+- (int)getModifiers {
+  int mods = [super getModifiers];
+  if (isStatic_) {
+    mods |= JavaLangReflectModifier_STATIC;
+  }
+  return mods;
 }
 
 - (IOSClass *)getReturnType {
@@ -108,7 +128,7 @@
 
 - (id)invokeWithId:(id)object
        withNSObjectArray:(IOSObjectArray *)arguments {
-  if (!classMethod_ && object == nil) {
+  if (!isStatic_ && object == nil) {
     @throw AUTORELEASE([[JavaLangNullPointerException alloc] initWithNSString:
       @"null object specified for non-final method"]);
   }
@@ -148,7 +168,7 @@
 }
 
 - (NSString *)description {
-  NSString *kind = classMethod_ ? @"+" : @"-";
+  NSString *kind = isStatic_ ? @"+" : @"-";
   const char *argType = [methodSignature_ methodReturnType];
   NSString *returnType = [NSString stringWithUTF8String:argType];
   NSString *result = [NSString stringWithFormat:@"%@ %@ %@(", kind,

@@ -32,16 +32,14 @@
 
 @implementation JavaLangReflectConstructor
 
-+ (id)constructorWithSelector:(SEL)aSelector
-                    withClass:(IOSClass *)aClass
-                 withMetadata:(JavaMethodMetadata *)metadata {
-  id c = [[JavaLangReflectConstructor alloc] initWithSelector:aSelector
-                                                    withClass:aClass
-                                                 withMetadata:metadata];
-#if ! __has_feature(objc_arc)
-  [c autorelease];
-#endif
-  return c;
++ (id)constructorWithMethodSignature:(NSMethodSignature *)methodSignature
+                            selector:(SEL)selector
+                               class:(IOSClass *)class
+                            metadata:(JavaMethodMetadata *)metadata {
+  return [[[JavaLangReflectConstructor alloc] initWithMethodSignature:methodSignature
+                                                             selector:selector
+                                                                class:class
+                                                             metadata:metadata] autorelease];
 }
 
 - (id)newInstanceWithNSObjectArray:(IOSObjectArray *)initArgs {

@@ -139,5 +139,6 @@ typedef union {
 extern id<JavaLangReflectType> JreTypeForString(const char *typeStr);
 extern Method JreFindInstanceMethod(Class cls, const char *name);
 extern Method JreFindClassMethod(Class cls, const char *name);
+extern NSMethodSignature *JreSignatureOrNull(struct objc_method_description *methodDesc);
 
 #endif // JreEmulation_IOSReflection_h

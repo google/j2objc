@@ -35,15 +35,15 @@
 // limited to those that can be derived from an Objective-C Method instance,
 // so instances can be created and released as needed.
 @interface JavaLangReflectMethod : ExecutableMember
-    < JavaLangReflectGenericDeclaration, JavaLangReflectMember >
+    < JavaLangReflectGenericDeclaration, JavaLangReflectMember > {
+  BOOL isStatic_;
+}
 
-+ (id)methodWithSelector:(SEL)aSelector
-               withClass:(IOSClass *)aClass
-            withMetadata:(JavaMethodMetadata *)metadata;
-
-- (id)initWithSelector:(SEL)aSelector
-             withClass:(IOSClass *)aClass
-          withMetadata:(JavaMethodMetadata *)metadata;
++ (id)methodWithMethodSignature:(NSMethodSignature *)methodSignature
+                       selector:(SEL)selector
+                          class:(IOSClass *)class
+                       isStatic:(BOOL)isStatic
+                       metadata:(JavaMethodMetadata *)metadata;
 
 // iOS version of Method.getReturnType();
 - (IOSClass *)getReturnType;
