@@ -25,13 +25,16 @@ import org.junit.internal.TextListener;
 import org.junit.runner.Description;
 import org.junit.runner.JUnitCore;
 import org.junit.runner.Result;
+import org.junit.runner.RunWith;
 import org.junit.runner.notification.Failure;
 import org.junit.runner.notification.RunListener;
+import org.junit.runners.JUnit4;
 import org.junit.runners.Suite;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintStream;
+import java.lang.annotation.Annotation;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.Iterator;
@@ -213,7 +216,8 @@ public class JUnitTestRunner {
     classVector.resize(classCount);
     objc_getClassList(&classVector.front(), classCount);
     id<JavaUtilSet> result = [ComGoogleCommonCollectSets newHashSet];
-    for (Class const& cls : classVector) {
+    for (std::vector<Class>::iterator i = classVector.begin(); i != classVector.end(); i++) {
+      Class const& cls = *i;
       if (IsNSObjectClass(cls)) {
         IOSClass *javaClass = [IOSClass classWithClass:cls];
         if ([self isJUnitTestClassWithIOSClass:javaClass]) {
@@ -228,7 +232,7 @@ public class JUnitTestRunner {
    * @return true if {@param cls} is either a JUnit 3 or JUnit 4 test.
    */
   protected boolean isJUnitTestClass(Class cls) {
-    return isJUnit3TestClass(cls) || isJUnit4TestClass(cls);
+    return isJUnit3TestClass(cls) || isJUnit4TestSuite(cls) || isJUnit4TestClass(cls);
   }
 
   /**
@@ -245,9 +249,29 @@ public class JUnitTestRunner {
    * @return true if {@param cls} derives from {@link Suite} and is not part of the
    * {@link org.junit} package.
    */
+  protected boolean isJUnit4TestSuite(Class cls) {
+    // TODO: implement - check for the RunWith class annotation with a value of Suite.class:
+    // http://www.vogella.com/tutorials/JUnit/article.html#juniteclipse_testsuite
+    return false;
+  }
+
+  /**
+   * @return true if {@param cls} is {@link JUnit4} annotated.
+   */
   protected boolean isJUnit4TestClass(Class cls) {
-    return Suite.class.isAssignableFrom(cls)
-        && !getPackageName(cls).startsWith("org.junit");
+    // Need to find test classes, otherwise crashes with b/11790448.
+    if (!cls.getName().endsWith("Test")) {
+      return false;
+    }
+    // Check the annotations.
+    Annotation annotation = cls.getAnnotation(RunWith.class);
+    if (annotation != null) {
+      RunWith runWith = (RunWith) annotation;
+      if (runWith.value().equals(JUnit4.class)) {
+        return true;
+      }
+    }
+    return false;
   }
 
   /**
