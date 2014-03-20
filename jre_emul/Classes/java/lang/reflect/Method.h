@@ -41,7 +41,7 @@
 
 + (id)methodWithMethodSignature:(NSMethodSignature *)methodSignature
                        selector:(SEL)selector
-                          class:(IOSClass *)class
+                          class:(IOSClass *)aClass
                        isStatic:(BOOL)isStatic
                        metadata:(JavaMethodMetadata *)metadata;
 

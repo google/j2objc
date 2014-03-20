@@ -36,12 +36,12 @@
 
 - (id)initWithMethodSignature:(NSMethodSignature *)methodSignature
                      selector:(SEL)selector
-                        class:(IOSClass *)class
+                        class:(IOSClass *)aClass
                      metadata:(JavaMethodMetadata *)metadata {
   if ((self = [super init])) {
     methodSignature_ = [methodSignature retain];
     selector_ = selector;
-    class_ = class; // IOSClass types are never dealloced.
+    class_ = aClass; // IOSClass types are never dealloced.
     metadata_ = [metadata retain];
   }
   return self;
