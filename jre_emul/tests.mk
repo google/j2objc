@@ -199,6 +199,7 @@ TEST_SOURCES = \
     libcore/java/lang/reflect/ConstructorTest.java \
     libcore/java/net/DatagramSocketTest.java \
     libcore/java/net/InetSocketAddressTest.java \
+    libcore/java/net/NetworkInterfaceTest.java \
     libcore/java/net/ServerSocketTest.java \
     libcore/java/net/URITest.java \
     libcore/java/nio/BufferTest.java \

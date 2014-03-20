@@ -47,6 +47,7 @@ import libcore.util.MutableLong;
 #include <arpa/inet.h>
 #include <net/if.h>
 #include <netdb.h>
+#include <ifaddrs.h>
 #include <sys/ioctl.h>
 #include <sys/stat.h>
 #include <sys/socket.h>
@@ -150,7 +151,7 @@ public final class Posix implements Os {
     if (!interfaceName) {
       return NO;
     }
-    memset(&req, 0, sizeof(req));
+    memset(req, 0, sizeof(struct ifreq));
     strncpy(req->ifr_name, [interfaceName UTF8String], sizeof(req->ifr_name));
     req->ifr_name[sizeof(req->ifr_name) - 1] = '\0';
     return YES;
@@ -730,8 +731,36 @@ public final class Posix implements Os {
       return nil;
     }
     int rc = TEMP_FAILURE_RETRY(ioctl(fd->descriptor_, cmd, &req));
-    [LibcoreIoPosix throwIfMinusOneWithNSString:@"ioctl" withInt:rc];
-    return sockaddrToInetAddress((struct sockaddr_storage *) &req.ifr_addr, NULL);
+    if (rc == 0) {
+      return sockaddrToInetAddress((struct sockaddr_storage *) &req.ifr_addr, NULL);
+    }
+    int originalError = errno;
+    NSString *msg = [NSString stringWithFormat:@"ioctl (%d, %@)", cmd, interfaceName];
+    if (originalError != ENOTSUP && originalError != EOPNOTSUPP) {
+      [LibcoreIoPosix throwErrnoExceptionWithNSString:msg withInt:originalError];
+    }
+
+    // Interface doesn't support SIOCGIFADDR, try looking up using ifaddrs
+    struct ifaddrs *interfaces = NULL;
+    void *sinAddress = NULL;
+    if (getifaddrs(&interfaces) == 0) {
+      const char *cname = [interfaceName UTF8String];
+      struct ifaddrs *addr = interfaces;
+      while (addr) {
+        if (addr->ifa_addr->sa_family == AF_INET && strcmp(addr->ifa_name, cname) == 0) {
+          sinAddress = &((struct sockaddr_in *) addr->ifa_addr)->sin_addr.s_addr;
+        }
+        addr = addr->ifa_next;
+      }
+    }
+    freeifaddrs(interfaces);
+    if (!sinAddress) {
+      [LibcoreIoPosix throwErrnoExceptionWithNSString:msg withInt:originalError];
+    }
+    IOSByteArray *byteArray = [IOSByteArray arrayWithBytes:(const char *) sinAddress count:4];
+    return [JavaNetInetAddress getByAddressWithNSString:nil
+                                          withByteArray:byteArray
+                                                withInt:0];
   ]-*/;
 
   public native int ioctlInt(FileDescriptor fd, int cmd, MutableInt javaArg)

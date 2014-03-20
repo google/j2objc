@@ -25,6 +25,7 @@ public class SmallTests extends TestSuite {
   private static final Class<?>[] smallTestClasses = new Class[] {
     DatagramSocketTest.class,
     InetSocketAddressTest.class,
+    NetworkInterfaceTest.class,
     ServerSocketTest.class,
     URITest.class,
   };
