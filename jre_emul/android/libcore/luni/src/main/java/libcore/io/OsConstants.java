@@ -120,7 +120,7 @@ public final class OsConstants {
     public static final int ENOTSUP = 45;
     public static final int ENOTTY = 25;
     public static final int ENXIO = 6;
-    public static final int EOPNOTSUPP = ENOTSUP;
+    public static final int EOPNOTSUPP = 102;
     public static final int EOVERFLOW = 84;
     public static final int EPERM = 1;
     public static final int EPIPE = 32;
