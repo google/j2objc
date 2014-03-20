@@ -76,8 +76,7 @@
 
 // All protocol methods are public, so publicOnly flag is ignored.
 - (void)collectMethods:(NSMutableDictionary *)methodMap
-            publicOnly:(BOOL)publicOnly
-              javaOnly:(BOOL)javaOnly {
+            publicOnly:(BOOL)publicOnly {
   JavaClassMetadata *metadata = [self getMetadata];
   unsigned int count;
   struct objc_method_description *descriptions =
@@ -88,7 +87,7 @@
     NSString *key = NSStringFromSelector(sel);
     if (![methodMap objectForKey:key]) {
       JavaMethodMetadata *methodMetadata = [metadata findMethodMetadata:key];
-      if (javaOnly && metadata && !methodMetadata) {
+      if (metadata && !methodMetadata) {
         continue;  // Selector not in method list.
       }
       NSMethodSignature *signature = JreSignatureOrNull(methodDesc);

@@ -40,9 +40,6 @@
 - (IOSObjectArray *)getDeclaredAnnotations;
 - (NSString *)toGenericString;
 
-// Protected method.
-- (IOSObjectArray *)getAnnotationsFromAccessor:(JavaLangReflectMethod *)method;
-
 @end
 
 // Returns true if type can be mapped to a valid Java type.

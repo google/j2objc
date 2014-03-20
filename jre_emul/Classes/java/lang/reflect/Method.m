@@ -188,16 +188,6 @@
   return [result stringByAppendingString:@")"];
 }
 
-- (IOSObjectArray *)getDeclaredAnnotations {
-  JavaLangReflectMethod *method = [self getAnnotationsAccessor:[self internalName]];
-  return [self getAnnotationsFromAccessor:method];
-}
-
-- (IOSObjectArray *)getParameterAnnotations {
-  JavaLangReflectMethod *method = [self getParameterAnnotationsAccessor:[self internalName]];
-  return [self getAnnotationsFromAccessor:method];
-}
-
 - (id)getDefaultValue {
   // TODO(tball): implement as part of method metadata.
   return nil;

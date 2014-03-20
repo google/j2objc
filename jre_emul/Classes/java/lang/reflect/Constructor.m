@@ -88,16 +88,6 @@
   return [class_ getName];
 }
 
-- (IOSObjectArray *)getDeclaredAnnotations {
-  JavaLangReflectMethod *method = [self getAnnotationsAccessor:[self internalName]];
-  return [self getAnnotationsFromAccessor:method];
-}
-
-- (IOSObjectArray *)getParameterAnnotations {
-  JavaLangReflectMethod *method = [self getParameterAnnotationsAccessor:[self internalName]];
-  return [self getAnnotationsFromAccessor:method];
-}
-
 - (NSString *)internalName {
   return [class_ objcName];
 }

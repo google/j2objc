@@ -206,11 +206,10 @@ static JavaUtilProperties *prefixMapping;
   }
 }
 
-// Returns all methods defined in a class. If javaOnly is true, methods
-// that aren't defined by the original Java class are ignored.
+// Returns all methods defined in a class. Methods that aren't defined by the
+// original Java class are ignored.
 - (void)collectMethods:(NSMutableDictionary *)methodMap
-            publicOnly:(BOOL)publicOnly
-              javaOnly:(BOOL)javaOnly {
+            publicOnly:(BOOL)publicOnly {
   // Overridden by subclasses.
 }
 
@@ -218,18 +217,9 @@ static JavaUtilProperties *prefixMapping;
 // methods are not included.
 - (IOSObjectArray *)getDeclaredMethods {
   NSMutableDictionary *methodMap = [NSMutableDictionary dictionary];
-  [self collectMethods:methodMap publicOnly:NO javaOnly:YES];
+  [self collectMethods:methodMap publicOnly:NO];
   return [IOSObjectArray arrayWithNSArray:[methodMap allValues] type:
       FetchClass([JavaLangReflectMethod class])];
-}
-
-// Return all class and instance methods declared by the Objective-C class,
-// including translator-created ones.
-- (IOSObjectArray *)allDeclaredMethods {
-  NSMutableDictionary *methodMap = [NSMutableDictionary dictionary];
-  [self collectMethods:methodMap publicOnly:NO javaOnly:NO];
-  return [IOSObjectArray arrayWithNSArray:[methodMap allValues] type:
-          FetchClass([JavaLangReflectMethod class])];
 }
 
 // Return the constructors declared by this class.  Superclass constructors
@@ -244,7 +234,7 @@ static JavaUtilProperties *prefixMapping;
   NSMutableDictionary *methodMap = [NSMutableDictionary dictionary];
   IOSClass *cls = self;
   while (cls) {
-    [cls collectMethods:methodMap publicOnly:YES javaOnly:YES];
+    [cls collectMethods:methodMap publicOnly:YES];
     cls = [cls getSuperclass];
   }
   return [IOSObjectArray arrayWithNSArray:[methodMap allValues] type:
@@ -645,14 +635,11 @@ static BOOL hasModifier(IOSClass *cls, int flag) {
 }
 
 - (IOSObjectArray *)getDeclaredAnnotations {
-  IOSObjectArray *methods = [self allDeclaredMethods];
-  NSUInteger n = [methods count];
-  for (NSUInteger i = 0; i < n; i++) {
-    JavaLangReflectMethod *method = methods->buffer_[i];
-    if ([@"__annotations" isEqualToString:[method getName]] &&
-        [[method getParameterTypes] count] == 0) {
-      IOSObjectArray *noArgs = [IOSObjectArray arrayWithLength:0 type:[NSObject getClass]];
-      return (IOSObjectArray *) [method invokeWithId:nil withNSObjectArray:noArgs];
+  Class cls = self.objcClass;
+  if (cls) {
+    Method annotationsMethod = JreFindClassMethod(cls, "__annotations");
+    if (annotationsMethod) {
+      return method_invoke(cls, annotationsMethod);
     }
   }
   IOSClass *annotationType = [IOSClass classWithProtocol:@protocol(JavaLangAnnotationAnnotation)];

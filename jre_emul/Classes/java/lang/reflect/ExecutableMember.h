@@ -91,8 +91,6 @@
 
 // Protected methods.
 - (NSString *)internalName;
-- (JavaLangReflectMethod *)getAnnotationsAccessor:(NSString *)methodName;
-- (JavaLangReflectMethod *)getParameterAnnotationsAccessor:(NSString *)methodName;
 
 @end
 
