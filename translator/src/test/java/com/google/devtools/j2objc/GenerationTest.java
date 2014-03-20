@@ -85,8 +85,8 @@ public abstract class GenerationTest extends TestCase {
 
   private static JdtParser initializeParser(File tempDir) {
     JdtParser parser = new JdtParser();
-    parser.setClasspath(getComGoogleDevtoolsJ2objcPath());
-    parser.setSourcepath(new String[] { tempDir.getAbsolutePath() });
+    parser.addClasspathEntries(getComGoogleDevtoolsJ2objcPath());
+    parser.addSourcepathEntry(tempDir.getAbsolutePath());
     return parser;
   }
 
@@ -143,7 +143,7 @@ public abstract class GenerationTest extends TestCase {
     return unit;
   }
 
-  protected static String[] getComGoogleDevtoolsJ2objcPath() {
+  protected static List<String> getComGoogleDevtoolsJ2objcPath() {
     ClassLoader loader = GenerationTest.class.getClassLoader();
     List<String> classpath = Lists.newArrayList();
 
@@ -158,7 +158,7 @@ public abstract class GenerationTest extends TestCase {
         }
       }
     }
-    return classpath.toArray(new String[0]);
+    return classpath;
   }
 
   protected String generateStatement(Statement statement) {
