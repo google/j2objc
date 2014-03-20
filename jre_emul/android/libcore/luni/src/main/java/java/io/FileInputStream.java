@@ -17,9 +17,10 @@
 
 package java.io;
 
+import dalvik.system.CloseGuard;
+
 import java.nio.NioUtils;
 import java.nio.channels.FileChannel;
-import java.util.Arrays;
 import libcore.io.ErrnoException;
 import libcore.io.IoBridge;
 import libcore.io.IoUtils;
@@ -54,9 +55,12 @@ import static libcore.io.OsConstants.*;
 public class FileInputStream extends InputStream {
 
     private FileDescriptor fd;
+    private final boolean shouldClose;
 
     /** The unique file channel. Lazily initialized because it's rarely needed. */
     private FileChannel channel;
+
+    private final CloseGuard guard = CloseGuard.get();
 
     /**
      * Constructs a new {@code FileInputStream} that reads from {@code file}.
@@ -71,6 +75,8 @@ public class FileInputStream extends InputStream {
             throw new NullPointerException("file == null");
         }
         this.fd = IoBridge.open(file.getAbsolutePath(), O_RDONLY);
+        this.shouldClose = true;
+        guard.open("close");
     }
 
     /**
@@ -86,6 +92,9 @@ public class FileInputStream extends InputStream {
             throw new NullPointerException("fd == null");
         }
         this.fd = fd;
+        this.shouldClose = false;
+        // Note that we do not call guard.open here because the
+        // FileDescriptor is not owned by the stream.
     }
 
     /**
@@ -102,11 +111,17 @@ public class FileInputStream extends InputStream {
 
     @Override
     public void close() throws IOException {
+        guard.close();
         synchronized (this) {
             if (channel != null) {
                 channel.close();
             }
-            IoUtils.close(fd);
+            if (shouldClose) {
+                IoUtils.close(fd);
+            } else {
+                // An owned fd has been invalidated by IoUtils.close, but
+                fd = new FileDescriptor();
+            }
         }
     }
 
@@ -119,6 +134,9 @@ public class FileInputStream extends InputStream {
      */
     @Override protected void finalize() throws IOException {
         try {
+            if (guard != null) {
+                guard.warnIfOpen();
+            }
             close();
         } finally {
             try {

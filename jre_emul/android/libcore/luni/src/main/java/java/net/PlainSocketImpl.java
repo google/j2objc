@@ -17,10 +17,19 @@
 
 package java.net;
 
+import dalvik.system.CloseGuard;
 import java.io.FileDescriptor;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.net.InetAddress;
+import java.net.InetSocketAddress;
+import java.net.Proxy;
+import java.net.SocketAddress;
+import java.net.SocketException;
+import java.net.SocketImpl;
+import java.net.SocketTimeoutException;
+import java.net.UnknownHostException;
 import java.nio.ByteOrder;
 import java.util.Arrays;
 import libcore.io.ErrnoException;
@@ -47,8 +56,13 @@ public class PlainSocketImpl extends SocketImpl {
 
     private Proxy proxy;
 
+    private final CloseGuard guard = CloseGuard.get();
+
     public PlainSocketImpl(FileDescriptor fd) {
         this.fd = fd;
+        if (fd.valid()) {
+            guard.open("close");
+        }
     }
 
     public PlainSocketImpl(Proxy proxy) {
@@ -65,6 +79,9 @@ public class PlainSocketImpl extends SocketImpl {
         this.localport = localport;
         this.address = addr;
         this.port = port;
+        if (fd.valid()) {
+            guard.open("close");
+        }
     }
 
     @Override
@@ -101,6 +118,15 @@ public class PlainSocketImpl extends SocketImpl {
         return proxy != null && proxy.type() == Proxy.Type.SOCKS;
     }
 
+    public void initLocalPort(int localPort) {
+        this.localport = localPort;
+    }
+
+    public void initRemoteAddressAndPort(InetAddress remoteAddress, int remotePort) {
+        this.address = remoteAddress;
+        this.port = remotePort;
+    }
+
     private void checkNotClosed() throws IOException {
         if (!fd.valid()) {
             throw new SocketException("Socket is closed");
@@ -120,6 +146,7 @@ public class PlainSocketImpl extends SocketImpl {
 
     @Override protected void bind(InetAddress address, int port) throws IOException {
         IoBridge.bind(fd, address, port);
+        this.address = address;
         if (port != 0) {
             this.localport = port;
         } else {
@@ -128,17 +155,9 @@ public class PlainSocketImpl extends SocketImpl {
     }
 
     @Override
-    public void onBind(InetAddress localAddress, int localPort) {
-        localport = localPort;
-    }
-
-    @Override
     protected synchronized void close() throws IOException {
+        guard.close();
         IoBridge.closeSocket(fd);
-    }
-
-    @Override
-    public void onClose() {
     }
 
     @Override
@@ -170,14 +189,8 @@ public class PlainSocketImpl extends SocketImpl {
         } else {
             IoBridge.connect(fd, normalAddr, aPort, timeout);
         }
-        address = normalAddr;
-        port = aPort;
-    }
-
-    @Override
-    public void onConnect(InetAddress remoteAddress, int remotePort) {
-        address = remoteAddress;
-        port = remotePort;
+        super.address = normalAddr;
+        super.port = aPort;
     }
 
     @Override
@@ -188,6 +201,9 @@ public class PlainSocketImpl extends SocketImpl {
 
     @Override protected void finalize() throws Throwable {
         try {
+            if (guard != null) {
+                guard.warnIfOpen();
+            }
             close();
         } finally {
             super.finalize();

@@ -173,6 +173,8 @@ JAVA_SOURCES = \
 	com/google/j2objc/security/IosSecureRandomImpl.java \
 	com/google/j2objc/security/IosSecurityProvider.java \
 	com/google/j2objc/security/IosSHAMessageDigest.java \
+	dalvik/system/BlockGuard.java \
+	dalvik/system/CloseGuard.java \
 	java/beans/IndexedPropertyChangeEvent.java \
 	java/beans/PropertyChangeEvent.java \
 	java/beans/PropertyChangeListener.java \

@@ -17,6 +17,7 @@
 
 package java.net;
 
+import dalvik.system.BlockGuard;
 import java.io.FileDescriptor;
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -381,6 +382,7 @@ public class InetAddress implements Serializable {
      * @return the IP addresses of the host.
      */
     private static InetAddress[] lookupHostByName(String host) throws UnknownHostException {
+        BlockGuard.getThreadPolicy().onNetwork();
         // Do we have a result cached?
         Object cachedResult = addressCache.get(host);
         if (cachedResult != null) {
@@ -433,6 +435,7 @@ public class InetAddress implements Serializable {
     }
 
     private static InetAddress getHostByAddrImpl(InetAddress address) throws UnknownHostException {
+        BlockGuard.getThreadPolicy().onNetwork();
         try {
             String hostname = Libcore.os.getnameinfo(address, NI_NAMEREQD);
             return makeInetAddress(address.ipaddress.clone(), hostname);
