@@ -400,9 +400,6 @@ public final class URL implements Serializable {
         // Fall back to a built-in stream handler if the user didn't supply one
         if (protocol.equals("file")) {
             streamHandler = new FileHandler();
-        /* TODO(tball): enable as other stream handlers are implemented.
-        } else if (protocol.equals("ftp")) {
-            streamHandler = new FtpHandler();
         } else if (protocol.equals("http")) {
             try {
                 String name = "com.android.okhttp.HttpHandler";
@@ -417,9 +414,11 @@ public final class URL implements Serializable {
             } catch (Exception e) {
                 throw new AssertionError(e);
             }
-        } else if (protocol.equals("jar")) {
-            streamHandler = new JarHandler();
-        */
+        // TODO(tball): enable as other stream handlers are implemented.
+//      } else if (protocol.equals("ftp")) {
+//          streamHandler = new FtpHandler();
+//      } else if (protocol.equals("jar")) {
+//          streamHandler = new JarHandler();
         }
         if (streamHandler != null) {
             streamHandlers.put(protocol, streamHandler);

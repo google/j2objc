@@ -354,14 +354,30 @@ JAVA_SOURCES = \
 	java/math/Multiplication.java \
 	java/math/Primality.java \
 	java/math/RoundingMode.java \
+	java/net/AddressCache.java \
+	java/net/BindException.java \
+	java/net/ConnectException.java \
+	java/net/DatagramPacket.java \
+	java/net/Inet4Address.java \
+	java/net/Inet6Address.java \
+	java/net/InetAddress.java \
+	java/net/InetSocketAddress.java \
+	java/net/InetUnixAddress.java \
+	java/net/InterfaceAddress.java \
 	java/net/MalformedURLException.java \
+	java/net/NetworkInterface.java \
+	java/net/PortUnreachableException.java \
+	java/net/SocketAddress.java \
+	java/net/SocketException.java \
+	java/net/SocketPermission.java \
+	java/net/SocketTimeoutException.java \
+	java/net/UnknownHostException.java \
 	java/net/URI.java \
+	java/net/URISyntaxException.java \
 	java/net/URL.java \
 	java/net/URLEncoder.java \
 	java/net/URLStreamHandler.java \
 	java/net/URLStreamHandlerFactory.java \
-	java/net/URIEncoderDecoder.java \
-	java/net/URISyntaxException.java \
 	java/nio/Buffer.java \
 	java/nio/BufferOverflowException.java \
 	java/nio/BufferUnderflowException.java \
@@ -687,9 +703,11 @@ JAVA_SOURCES = \
 	libcore/icu/TimeZoneNames.java \
 	libcore/icu/TimeZones.java \
 	libcore/internal/StringPool.java \
+	libcore/io/AsynchronousCloseMonitor.java \
 	libcore/io/BufferIterator.java \
 	libcore/io/DeleteOnExit.java \
 	libcore/io/ErrnoException.java \
+	libcore/io/GaiException.java \
 	libcore/io/HeapBufferIterator.java \
 	libcore/io/IoBridge.java \
 	libcore/io/IoUtils.java \
@@ -700,10 +718,13 @@ JAVA_SOURCES = \
 	libcore/io/Posix.java \
 	libcore/io/SizeOf.java \
 	libcore/io/Streams.java \
+	libcore/io/StructAddrinfo.java \
 	libcore/io/StructFlock.java \
+	libcore/io/StructGroupReq.java \
 	libcore/io/StructPollfd.java \
 	libcore/io/StructStat.java \
 	libcore/io/StructStatVfs.java \
+	libcore/io/StructUtsname.java \
 	libcore/math/MathUtils.java \
 	libcore/net/UriCodec.java \
 	libcore/net/MimeUtils.java \
@@ -871,8 +892,8 @@ $(EMULATION_JAR): $(ALL_JAVA_SOURCES) $(STUB_JAVA_SOURCES) | $(BUILD_DIR)
 	@echo "building jre_emul.jar"
 	@rm -rf $(EMULATION_STAGE)
 	@mkdir $(EMULATION_STAGE)
-	@$(JAVAC) -classpath $(ANNOTATIONS_JAR) -d $(EMULATION_STAGE) -encoding UTF-8 \
-	    -source 1.6 -target 1.6 -nowarn $^
+	@$(JAVAC) -bootclasspath $(STUBS_DIR) -classpath $(ANNOTATIONS_JAR) \
+	    -d $(EMULATION_STAGE) -encoding UTF-8 -source 1.6 -target 1.6 -nowarn $^
 	@jar cf $(EMULATION_JAR) -C $(EMULATION_STAGE) .
 
 $(JAVA_SOURCES_MANIFEST): $(ALL_JAVA_SOURCES) $(STUB_JAVA_SOURCES) | $(BUILD_DIR)

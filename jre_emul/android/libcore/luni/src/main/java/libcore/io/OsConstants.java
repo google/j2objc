@@ -140,9 +140,6 @@ public final class OsConstants {
     public static final int EXIT_FAILURE = 1;
     public static final int EXIT_SUCCESS = 0;
     public static final int FD_CLOEXEC = 1;
-    public static final int STDERR_FILENO = 2;
-    public static final int STDIN_FILENO = 0;
-    public static final int STDOUT_FILENO = 1;
     public static final int FIONREAD = 0x4004667f;
     public static final int F_DUPFD = 0;
     public static final int F_GETFD = 1;
@@ -194,6 +191,7 @@ public final class OsConstants {
     public static final int MS_ASYNC = 0x0001;
     public static final int MS_INVALIDATE = 0x0002;
     public static final int NI_NAMEREQD = 0x00000004;
+    public static final int NI_NUMERICHOST = 0x00000002;
     public static final int NI_NUMERICSERV = 0x00000008;
     public static final int MS_SYNC = 0x0010;
     public static final int O_ACCMODE = 0x0003;
@@ -223,8 +221,17 @@ public final class OsConstants {
     public static final int SHUT_RD = 0;
     public static final int SHUT_RDWR = 2;
     public static final int SHUT_WR = 1;
+    public static final int SIOCGIFADDR = 0xc0206921;
+    public static final int SIOCGIFBRDADDR = 0xc0206923;
+    public static final int SIOCGIFDSTADDR = 0xc0206922;
+    public static final int SIOCGIFNETMASK = 0xc0206925;
     public static final int SOCK_DGRAM = 2;
     public static final int SOCK_STREAM = 1;
+    public static final int SOL_SOCKET = 0xffff;
+    public static final int SO_ERROR = 0x1007;
+    public static final int STDERR_FILENO = 2;
+    public static final int STDIN_FILENO = 0;
+    public static final int STDOUT_FILENO = 1;
     public static final int S_IFBLK = 0060000;
     public static final int S_IFCHR = 0020000;
     public static final int S_IFDIR = 0040000;
@@ -284,7 +291,6 @@ public final class OsConstants {
     public static final int MSG_WAITALL = placeholder();
     public static final int NI_DGRAM = placeholder();
     public static final int NI_NOFQDN = placeholder();
-    public static final int NI_NUMERICHOST = placeholder();
     public static final int POLLNVAL = placeholder();
     public static final int POLLPRI = placeholder();
     public static final int POLLRDBAND = placeholder();
@@ -330,12 +336,10 @@ public final class OsConstants {
     public static final int SIOCGIFNETMASK = placeholder();
     public static final int SOCK_RAW = placeholder();
     public static final int SOCK_SEQPACKET = placeholder();
-    public static final int SOL_SOCKET = placeholder();
     public static final int SO_BINDTODEVICE = placeholder();
     public static final int SO_BROADCAST = placeholder();
     public static final int SO_DEBUG = placeholder();
     public static final int SO_DONTROUTE = placeholder();
-    public static final int SO_ERROR = placeholder();
     public static final int SO_KEEPALIVE = placeholder();
     public static final int SO_LINGER = placeholder();
     public static final int SO_OOBINLINE = placeholder();

@@ -17,6 +17,10 @@
 package libcore.io;
 
 import java.io.FileDescriptor;
+import java.net.InetAddress;
+import java.net.InetSocketAddress;
+import java.net.SocketAddress;
+import java.net.SocketException;
 import java.nio.ByteBuffer;
 import java.nio.NioUtils;
 
@@ -604,6 +608,121 @@ public final class Posix implements Os {
     free(ioVecs);
     return [LibcoreIoPosix throwIfMinusOneWithNSString:@"writev" withInt:rc];
   ]-*/;
+
+  @Override
+  public void bind(FileDescriptor fd, InetAddress address, int port)
+      throws ErrnoException, SocketException {
+    // TODO Auto-generated method stub
+
+  }
+
+  @Override
+  public void connect(FileDescriptor fd, InetAddress address, int port)
+      throws ErrnoException, SocketException {
+    // TODO Auto-generated method stub
+
+  }
+
+  @Override
+  public String gai_strerror(int error) {
+    // TODO Auto-generated method stub
+    return null;
+  }
+
+  @Override
+  public InetAddress[] getaddrinfo(String node, StructAddrinfo hints)
+      throws GaiException {
+    // TODO Auto-generated method stub
+    return null;
+  }
+
+  @Override
+  public String getnameinfo(InetAddress address, int flags) throws GaiException {
+    // TODO Auto-generated method stub
+    return null;
+  }
+
+  @Override
+  public SocketAddress getsockname(FileDescriptor fd) throws ErrnoException {
+    // TODO Auto-generated method stub
+    return null;
+  }
+
+  @Override
+  public int getsockoptInt(FileDescriptor fd, int level, int option)
+      throws ErrnoException {
+    // TODO Auto-generated method stub
+    return 0;
+  }
+
+  @Override
+  public InetAddress inet_pton(int family, String address) {
+    // TODO Auto-generated method stub
+    return null;
+  }
+
+  @Override
+  public int recvfrom(FileDescriptor fd, ByteBuffer buffer, int flags,
+      InetSocketAddress srcAddress) throws ErrnoException, SocketException {
+    // TODO Auto-generated method stub
+    return 0;
+  }
+
+  @Override
+  public int recvfrom(FileDescriptor fd, byte[] bytes, int byteOffset,
+      int byteCount, int flags, InetSocketAddress srcAddress)
+      throws ErrnoException, SocketException {
+    // TODO Auto-generated method stub
+    return 0;
+  }
+
+  @Override
+  public int sendto(FileDescriptor fd, ByteBuffer buffer, int flags,
+      InetAddress inetAddress, int port) throws ErrnoException, SocketException {
+    // TODO Auto-generated method stub
+    return 0;
+  }
+
+  @Override
+  public int sendto(FileDescriptor fd, byte[] bytes, int byteOffset,
+      int byteCount, int flags, InetAddress inetAddress, int port)
+      throws ErrnoException, SocketException {
+    // TODO Auto-generated method stub
+    return 0;
+  }
+
+  @Override
+  public void setsockoptInt(FileDescriptor fd, int level, int option, int value)
+      throws ErrnoException {
+    // TODO Auto-generated method stub
+
+  }
+
+  @Override
+  public FileDescriptor socket(int domain, int type, int protocol)
+      throws ErrnoException {
+    // TODO Auto-generated method stub
+    return null;
+  }
+
+  @Override
+  public StructUtsname uname() {
+    // TODO Auto-generated method stub
+    return null;
+  }
+
+  @Override
+  public String if_indextoname(int index) {
+    // TODO Auto-generated method stub
+    return null;
+  }
+
+  @Override
+  public InetAddress ioctlInetAddress(FileDescriptor fd, int cmd,
+      String interfaceName) throws ErrnoException {
+    // TODO Auto-generated method stub
+    return null;
+  }
 
 // Uncomment and implement as Os interface grows.
 //  public native String[] environ();
