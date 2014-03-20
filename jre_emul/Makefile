@@ -534,7 +534,71 @@ JAVA_SOURCES = \
 	java/util/BitSet.java \
 	java/util/Calendar.java \
 	java/util/Collections.java \
+	java/util/ComparableTimSort.java \
 	java/util/ConcurrentModificationException.java \
+	java/util/Currency.java \
+	java/util/Date.java \
+	java/util/Dictionary.java \
+	java/util/DualPivotQuicksort.java \
+	java/util/DuplicateFormatFlagsException.java \
+	java/util/EnumMap.java \
+	java/util/EnumSet.java \
+	java/util/EventObject.java \
+	java/util/EventListenerProxy.java \
+	java/util/EmptyStackException.java \
+	java/util/FormatFlagsConversionMismatchException.java \
+	java/util/FormattableFlags.java \
+	java/util/Formatter.java \
+	java/util/FormatterClosedException.java \
+	java/util/Grego.java \
+	java/util/GregorianCalendar.java \
+	java/util/HashSet.java \
+	java/util/Hashtable.java \
+	java/util/HugeEnumSet.java \
+	java/util/IdentityHashMap.java \
+	java/util/IllegalFormatException.java \
+	java/util/IllegalFormatCodePointException.java \
+	java/util/IllegalFormatConversionException.java \
+	java/util/IllegalFormatFlagsException.java \
+	java/util/IllegalFormatPrecisionException.java \
+	java/util/IllegalFormatWidthException.java \
+	java/util/InputMismatchException.java \
+	java/util/InvalidPropertiesFormatException.java \
+	java/util/LinkedList.java \
+	java/util/LinkedHashSet.java \
+	java/util/ListResourceBundle.java \
+	java/util/Locale.java \
+	java/util/MapEntry.java \
+	java/util/MiniEnumSet.java \
+	java/util/MissingFormatArgumentException.java \
+	java/util/MissingFormatWidthException.java \
+	java/util/MissingResourceException.java \
+	java/util/NoSuchElementException.java \
+	java/util/Observable.java \
+	java/util/PriorityQueue.java \
+	java/util/Properties.java \
+	java/util/PropertyPermission.java \
+	java/util/PropertyResourceBundle.java \
+	java/util/Random.java \
+	java/util/ResourceBundle.java \
+	java/util/ServiceConfigurationError.java \
+	java/util/ServiceLoader.java \
+	java/util/SimpleTimeZone.java \
+	java/util/Stack.java \
+	java/util/StringTokenizer.java \
+	java/util/Timer.java \
+	java/util/TimerTask.java \
+	java/util/TimeZone.java \
+	java/util/TimSort.java \
+	java/util/TooManyListenersException.java \
+	java/util/TreeMap.java \
+	java/util/TreeSet.java \
+	java/util/UnknownFormatConversionException.java \
+	java/util/UnknownFormatFlagsException.java \
+	java/util/UnsafeArrayList.java \
+	java/util/UUID.java \
+	java/util/Vector.java \
+	java/util/WeakHashMap.java \
 	java/util/concurrent/AbstractExecutorService.java \
 	java/util/concurrent/ArrayBlockingQueue.java \
 	java/util/concurrent/BrokenBarrierException.java \
@@ -595,37 +659,6 @@ JAVA_SOURCES = \
 	java/util/concurrent/locks/ReadWriteLock.java \
 	java/util/concurrent/locks/ReentrantLock.java \
 	java/util/concurrent/locks/ReentrantReadWriteLock.java \
-	java/util/Currency.java \
-	java/util/Date.java \
-	java/util/Dictionary.java \
-	java/util/DuplicateFormatFlagsException.java \
-	java/util/EnumMap.java \
-	java/util/EnumSet.java \
-	java/util/EventObject.java \
-	java/util/EventListenerProxy.java \
-	java/util/EmptyStackException.java \
-	java/util/FormatFlagsConversionMismatchException.java \
-	java/util/FormattableFlags.java \
-	java/util/Formatter.java \
-	java/util/FormatterClosedException.java \
-	java/util/Grego.java \
-	java/util/GregorianCalendar.java \
-	java/util/HashSet.java \
-	java/util/Hashtable.java \
-	java/util/HugeEnumSet.java \
-	java/util/IdentityHashMap.java \
-	java/util/IllegalFormatException.java \
-	java/util/IllegalFormatCodePointException.java \
-	java/util/IllegalFormatConversionException.java \
-	java/util/IllegalFormatFlagsException.java \
-	java/util/IllegalFormatPrecisionException.java \
-	java/util/IllegalFormatWidthException.java \
-	java/util/InputMismatchException.java \
-	java/util/InvalidPropertiesFormatException.java \
-	java/util/LinkedList.java \
-	java/util/LinkedHashSet.java \
-	java/util/ListResourceBundle.java \
-	java/util/Locale.java \
 	java/util/logging/ConsoleHandler.java \
 	java/util/logging/ErrorManager.java \
 	java/util/logging/Formatter.java \
@@ -640,36 +673,6 @@ JAVA_SOURCES = \
 	java/util/logging/SimpleFormatter.java \
 	java/util/logging/StreamHandler.java \
 	java/util/logging/XMLFormatter.java \
-	java/util/MapEntry.java \
-	java/util/MiniEnumSet.java \
-	java/util/MissingFormatArgumentException.java \
-	java/util/MissingFormatWidthException.java \
-	java/util/MissingResourceException.java \
-	java/util/NoSuchElementException.java \
-	java/util/Observable.java \
-	java/util/PriorityQueue.java \
-	java/util/Properties.java \
-	java/util/PropertyPermission.java \
-	java/util/PropertyResourceBundle.java \
-	java/util/Random.java \
-	java/util/ResourceBundle.java \
-	java/util/ServiceConfigurationError.java \
-	java/util/ServiceLoader.java \
-	java/util/SimpleTimeZone.java \
-	java/util/Stack.java \
-	java/util/StringTokenizer.java \
-	java/util/Timer.java \
-	java/util/TimerTask.java \
-	java/util/TimeZone.java \
-	java/util/TooManyListenersException.java \
-	java/util/TreeMap.java \
-	java/util/TreeSet.java \
-	java/util/UnknownFormatConversionException.java \
-	java/util/UnknownFormatFlagsException.java \
-	java/util/UnsafeArrayList.java \
-	java/util/UUID.java \
-	java/util/Vector.java \
-	java/util/WeakHashMap.java \
 	java/util/regex/Matcher.java \
 	java/util/regex/MatchResult.java \
 	java/util/regex/MatchResultImpl.java \
