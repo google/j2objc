@@ -70,6 +70,7 @@ JAVA_SOURCES = \
 	translate/CopyAllFieldsWriter.java \
 	translate/DeadCodeEliminator.java \
 	translate/DestructorGenerator.java \
+	translate/EnhancedForRewriter.java \
 	translate/GwtConverter.java \
 	translate/InitializationNormalizer.java \
 	translate/InnerClassExtractor.java \
