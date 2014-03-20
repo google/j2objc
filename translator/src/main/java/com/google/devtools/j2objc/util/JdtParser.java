@@ -21,10 +21,12 @@ import org.eclipse.jdt.core.compiler.IProblem;
 import org.eclipse.jdt.core.dom.AST;
 import org.eclipse.jdt.core.dom.ASTParser;
 import org.eclipse.jdt.core.dom.CompilationUnit;
+import org.eclipse.jdt.core.dom.FileASTRequestor;
 
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Logger;
 
 /**
  * Adapts JDT's ASTParser to a more convenient interface for parsing source
@@ -33,6 +35,8 @@ import java.util.Map;
  * @author Tom Ball, Keith Stanger
  */
 public class JdtParser {
+
+  private static final Logger logger = Logger.getLogger(JdtParser.class.getName());
 
   private Map<String, String> compilerOptions = initCompilerOptions();
   private String[] classpathEntries;
@@ -79,11 +83,7 @@ public class JdtParser {
   }
 
   public CompilationUnit parse(String filename, String source) {
-    ASTParser parser = ASTParser.newParser(AST.JLS4);
-    parser.setCompilerOptions(compilerOptions);
-    parser.setResolveBindings(true);
-    parser.setEnvironment(
-        classpathEntries, sourcepathEntries, getEncodings(), includeRunningVMBootclasspath);
+    ASTParser parser = newASTParser();
     parser.setUnitName(filename);
     parser.setSource(source.toCharArray());
     CompilationUnit unit = (CompilationUnit) parser.createAST(null);
@@ -91,11 +91,47 @@ public class JdtParser {
     return unit;
   }
 
-  private String[] getEncodings() {
+  /**
+   * Handler to be provided when parsing multiple files. The provided
+   * implementation is called with the parsed units.
+   */
+  public interface Handler {
+    public void handleParsedUnit(String filePath, CompilationUnit unit);
+  }
+
+  public void parseFiles(List<String> filePaths, final Handler handler) {
+    ASTParser parser = newASTParser();
+    FileASTRequestor astRequestor = new FileASTRequestor() {
+      @Override
+      public void acceptAST(String sourceFilePath, CompilationUnit ast) {
+        logger.fine("acceptAST: " + sourceFilePath);
+        int errors = ErrorUtil.errorCount();
+        checkCompilationErrors(sourceFilePath, ast);
+        if (errors == ErrorUtil.errorCount()) {
+          handler.handleParsedUnit(sourceFilePath, ast);
+        }
+      }
+    };
+    parser.createASTs(
+        filePaths.toArray(new String[0]), getEncodings(filePaths.size()), new String[0],
+        astRequestor, null);
+  }
+
+  private ASTParser newASTParser() {
+    ASTParser parser = ASTParser.newParser(AST.JLS4);
+    parser.setCompilerOptions(compilerOptions);
+    parser.setResolveBindings(true);
+    parser.setEnvironment(
+        classpathEntries, sourcepathEntries, getEncodings(sourcepathEntries.length),
+        includeRunningVMBootclasspath);
+    return parser;
+  }
+
+  private String[] getEncodings(int length) {
     if (encoding == null) {
       return null;
     }
-    String[] encodings = new String[sourcepathEntries.length];
+    String[] encodings = new String[length];
     Arrays.fill(encodings, encoding);
     return encodings;
   }

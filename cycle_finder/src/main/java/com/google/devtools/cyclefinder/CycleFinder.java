@@ -15,15 +15,12 @@
 package com.google.devtools.cyclefinder;
 
 import com.google.common.base.Splitter;
-import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Lists;
 import com.google.devtools.j2objc.translate.OuterReferenceResolver;
+import com.google.devtools.j2objc.util.ErrorUtil;
+import com.google.devtools.j2objc.util.JdtParser;
 
-import org.eclipse.jdt.core.compiler.IProblem;
-import org.eclipse.jdt.core.dom.AST;
-import org.eclipse.jdt.core.dom.ASTParser;
 import org.eclipse.jdt.core.dom.CompilationUnit;
-import org.eclipse.jdt.core.dom.FileASTRequestor;
 
 import java.io.File;
 import java.io.IOException;
@@ -40,9 +37,6 @@ import java.util.logging.Logger;
 public class CycleFinder {
 
   private final Options options;
-  private final PrintStream errStream;
-  private int nErrors = 0;
-  private List<String> errors = Lists.newArrayList();
 
   static {
     // Enable assertions in the cycle finder.
@@ -54,26 +48,8 @@ public class CycleFinder {
 
   private static final Logger logger = Logger.getLogger(CycleFinder.class.getName());
 
-  public CycleFinder(Options options, PrintStream errStream) {
+  public CycleFinder(Options options) {
     this.options = options;
-    this.errStream = errStream;
-  }
-
-  private FileASTRequestor newASTRequestor(final TypeCollector typeCollector) {
-    return new FileASTRequestor() {
-      @Override
-      public void acceptAST(String sourceFilePath, CompilationUnit ast) {
-        logger.fine("acceptAST: " + sourceFilePath);
-        for (IProblem problem : ast.getProblems()) {
-          if (problem.isError()) {
-            error(String.format("%s:%s: %s",
-                sourceFilePath, problem.getSourceLineNumber(), problem.getMessage()));
-          }
-        }
-        typeCollector.visitAST(ast);
-        OuterReferenceResolver.resolve(ast);
-      }
-    };
   }
 
   private static String[] splitEntries(String entries) {
@@ -89,63 +65,48 @@ public class CycleFinder {
     return entriesList.toArray(new String[0]);
   }
 
-  private static ASTParser newParser(Options options) {
-    ASTParser parser = ASTParser.newParser(AST.JLS4);
-    parser.setCompilerOptions(ImmutableMap.of(
-        org.eclipse.jdt.core.JavaCore.COMPILER_SOURCE, "1.7",
-        org.eclipse.jdt.core.JavaCore.COMPILER_CODEGEN_TARGET_PLATFORM, "1.7",
-        org.eclipse.jdt.core.JavaCore.COMPILER_COMPLIANCE, "1.7"));
-    parser.setResolveBindings(true);
-    String[] sourcePathEntries = splitEntries(options.getSourcepath());
-    String[] encodings = new String[sourcePathEntries.length];
-    for (int i = 0; i < encodings.length; i++) {
-      encodings[i] = Options.fileEncoding();
-    }
-    parser.setEnvironment(
-        splitEntries(options.getBootclasspath() + ":" + options.getClasspath()),
-        sourcePathEntries, encodings, false);
+  private static JdtParser createParser(Options options) {
+    JdtParser parser = new JdtParser();
+    parser.setSourcepath(splitEntries(options.getSourcepath()));
+    parser.setClasspath(splitEntries(options.getBootclasspath() + ":" + options.getClasspath()));
+    parser.setEncoding(options.fileEncoding());
     return parser;
   }
 
-  private void error(String message) {
-    errors.add(message);
-    errStream.println("error: " + message);
-    nErrors++;
-  }
-
-  private void exitOnErrors() {
+  private static void exitOnErrors() {
+    int nErrors = ErrorUtil.errorCount();
     if (nErrors > 0) {
-      errStream.println("Failed with " + nErrors + " errors:");
-      for (String error : errors) {
-        errStream.println("error: " + error);
+      System.err.println("Failed with " + nErrors + " errors:");
+      for (String error : ErrorUtil.getErrorMessages()) {
+        System.err.println("error: " + error);
       }
       System.exit(nErrors);
     }
-  }
-
-  public int errorCount() {
-    return nErrors;
   }
 
   private void testFileExistence() {
     for (String filePath : options.getSourceFiles()) {
       File f = new File(filePath);
       if (!f.exists()) {
-        error("File not found: " + filePath);
+        ErrorUtil.error("File not found: " + filePath);
       }
     }
   }
 
   public List<List<Edge>> findCycles() throws IOException {
-    TypeCollector typeCollector = new TypeCollector();
+    final TypeCollector typeCollector = new TypeCollector();
 
-    // Parse all the source and populate type data.
-    ASTParser parser = newParser(options);
-    FileASTRequestor astRequestor = newASTRequestor(typeCollector);
-    String[] sourceFiles = options.getSourceFiles().toArray(new String[0]);
-    parser.createASTs(sourceFiles, null, new String[0], astRequestor, null);
+    JdtParser parser = createParser(options);
+    JdtParser.Handler handler = new JdtParser.Handler() {
+      @Override
+      public void handleParsedUnit(String filePath, CompilationUnit unit) {
+        typeCollector.visitAST(unit);
+        OuterReferenceResolver.resolve(unit);
+      }
+    };
+    parser.parseFiles(options.getSourceFiles(), handler);
 
-    if (nErrors > 0) {
+    if (ErrorUtil.errorCount() > 0) {
       return null;
     }
 
@@ -176,12 +137,12 @@ public class CycleFinder {
       Options.help(true);
     }
     Options options = Options.parse(args);
-    CycleFinder finder = new CycleFinder(options, System.err);
+    CycleFinder finder = new CycleFinder(options);
     finder.testFileExistence();
-    finder.exitOnErrors();
+    exitOnErrors();
     List<List<Edge>> cycles = finder.findCycles();
-    finder.exitOnErrors();
+    exitOnErrors();
     printCycles(cycles, System.out);
-    System.exit(finder.errorCount() + cycles.size());
+    System.exit(ErrorUtil.errorCount() + cycles.size());
   }
 }

@@ -66,7 +66,7 @@ test_jre_cycles: cycle_finder_dist
 test_guava_cycles: cycle_finder_dist jre_emul_java_manifest
 	@cd guava && $(MAKE) find_cycles
 
-test_cycle_finder:
+test_cycle_finder: cycle_finder_dist
 	@cd cycle_finder && $(MAKE) test
 
 test: test_translator test_jre_emul test_jre_cycles test_guava_cycles test_cycle_finder
