@@ -167,7 +167,7 @@ public final class Posix implements Os {
     if (!sender) {
       return NO;
     }
-    srcAddress->addr_ = sender;
+    srcAddress->addr_ = RETAIN_(sender);
     srcAddress->port_ = port;
     return YES;
  }
@@ -266,7 +266,7 @@ public final class Posix implements Os {
   static BOOL inetAddressToSockaddrImpl(JavaNetInetAddress *inetAddress, int port,
       struct sockaddr_storage *ss, socklen_t *sa_len, BOOL map) {
     memset(ss, 0, sizeof(struct sockaddr_storage));
-    sa_len = 0;
+    *sa_len = 0;
     nil_chk(inetAddress);
 
     // Get the address family.

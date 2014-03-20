@@ -504,6 +504,8 @@
 		067228FD158FD6AF005318BD /* NoSuchFieldException.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = NoSuchFieldException.h; path = build_result/Classes/java/lang/NoSuchFieldException.h; sourceTree = "<group>"; };
 		067228FE158FD6AF005318BD /* NoSuchFieldException.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = NoSuchFieldException.m; path = build_result/Classes/java/lang/NoSuchFieldException.m; sourceTree = "<group>"; };
 		06734320171DF62600F26D4F /* TempFailureRetry.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TempFailureRetry.h; sourceTree = "<group>"; };
+		0674EA5818C681E50027D484 /* DebugUtils.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = DebugUtils.m; sourceTree = "<group>"; };
+		0674EA5918C681F60027D484 /* DebugUtils.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = DebugUtils.h; sourceTree = "<group>"; };
 		0675061217F0B3E10015B7E8 /* IOSReflection.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = IOSReflection.h; sourceTree = "<group>"; };
 		0675061317F0C7A30015B7E8 /* JavaMetadata.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = JavaMetadata.h; sourceTree = "<group>"; };
 		0675061417F0C7A30015B7E8 /* JavaMetadata.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = JavaMetadata.m; sourceTree = "<group>"; };
@@ -1435,6 +1437,8 @@
 				067228EE158FB002005318BD /* Comparable.h */,
 				067228EF158FB002005318BD /* Constructor.h */,
 				06721BA01559DE3800645E1B /* Constructor.m */,
+				0674EA5918C681F60027D484 /* DebugUtils.h */,
+				0674EA5818C681E50027D484 /* DebugUtils.m */,
 				067228F0158FB002005318BD /* ExecutableMember.h */,
 				06721BA11559DE3800645E1B /* ExecutableMember.m */,
 				067228E4158FAEBC005318BD /* Field.h */,
