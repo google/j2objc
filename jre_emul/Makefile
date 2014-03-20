@@ -358,6 +358,9 @@ JAVA_SOURCES = \
 	java/net/BindException.java \
 	java/net/ConnectException.java \
 	java/net/DatagramPacket.java \
+	java/net/DatagramSocket.java \
+	java/net/DatagramSocketImpl.java \
+	java/net/DatagramSocketImplFactory.java \
 	java/net/Inet4Address.java \
 	java/net/Inet6Address.java \
 	java/net/InetAddress.java \
@@ -365,12 +368,21 @@ JAVA_SOURCES = \
 	java/net/InetUnixAddress.java \
 	java/net/InterfaceAddress.java \
 	java/net/MalformedURLException.java \
+	java/net/MulticastSocket.java \
 	java/net/NetworkInterface.java \
+	java/net/PlainDatagramSocketImpl.java \
+	java/net/PlainSocketImpl.java \
 	java/net/PortUnreachableException.java \
+	java/net/Proxy.java \
+	java/net/Socket.java \
 	java/net/SocketAddress.java \
 	java/net/SocketException.java \
+	java/net/SocketImpl.java \
+	java/net/SocketImplFactory.java \
+	java/net/SocketOptions.java \
 	java/net/SocketPermission.java \
 	java/net/SocketTimeoutException.java \
+	java/net/Socks4Message.java \
 	java/net/UnknownHostException.java \
 	java/net/URI.java \
 	java/net/URISyntaxException.java \
@@ -721,9 +733,11 @@ JAVA_SOURCES = \
 	libcore/io/StructAddrinfo.java \
 	libcore/io/StructFlock.java \
 	libcore/io/StructGroupReq.java \
+	libcore/io/StructLinger.java \
 	libcore/io/StructPollfd.java \
 	libcore/io/StructStat.java \
 	libcore/io/StructStatVfs.java \
+	libcore/io/StructTimeval.java \
 	libcore/io/StructUtsname.java \
 	libcore/math/MathUtils.java \
 	libcore/net/UriCodec.java \

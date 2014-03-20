@@ -37,8 +37,10 @@ import libcore.util.MutableLong;
 #include "java/net/InetAddress.h"
 #include "java/net/InetUnixAddress.h"
 #include "libcore/io/AsynchronousCloseMonitor.h"
-#include "libcore/io/StructStatVfs.h"
+#include "libcore/io/StructLinger.h"
 #include "libcore/io/StructPollfd.h"
+#include "libcore/io/StructStatVfs.h"
+#include "libcore/io/StructTimeval.h"
 
 #include <fcntl.h>
 #include <poll.h>
@@ -377,6 +379,26 @@ public final class Posix implements Os {
     return resultCode;
   ]-*/;
 
+  public native FileDescriptor accept(FileDescriptor fd, InetSocketAddress peerAddress)
+      throws ErrnoException, SocketException /*-[
+    struct sockaddr_storage ss;
+    socklen_t sl = sizeof(ss);
+    memset(&ss, 0, sizeof(ss));
+    struct sockaddr *peer = peerAddress ? (struct sockaddr *) &ss : NULL;
+    socklen_t *peerLength = peerAddress ? &sl : 0;
+    int clientFd = NET_FAILURE_RETRY(int, accept, fd, peer, peerLength);
+    if (clientFd == -1 || !fillInetSocketAddress(fd->descriptor_, peerAddress, &ss)) {
+      close(clientFd);
+      return nil;
+    }
+    if (clientFd == -1) {
+      return nil;
+    }
+    JavaIoFileDescriptor *newFd = AUTORELEASE([[JavaIoFileDescriptor alloc] init]);
+    newFd->descriptor_ = clientFd;
+    return newFd;
+  ]-*/;
+
   public native boolean access(String path, int mode) throws ErrnoException /*-[
     if (!path) {
       return NO;
@@ -618,6 +640,31 @@ public final class Posix implements Os {
     return doGetSockName(fd->descriptor_, YES);
   ]-*/;
 
+  public native int getsockoptByte(FileDescriptor fd, int level, int option)
+      throws ErrnoException /*-[
+    u_char result = 0;
+    socklen_t size = sizeof(result);
+    int rc = TEMP_FAILURE_RETRY(getsockopt(fd->descriptor_, level, option, &result, &size));
+    if (rc == -1) {
+      [LibcoreIoPosix throwErrnoExceptionWithNSString:@"getsockopt" withInt:rc];
+    }
+    return result;
+  ]-*/;
+
+  public native InetAddress getsockoptInAddr(FileDescriptor fd, int level, int option)
+      throws ErrnoException /*-[
+    struct sockaddr_storage ss;
+    memset(&ss, 0, sizeof(ss));
+    ss.ss_family = AF_INET; // This is only for the IPv4-only IP_MULTICAST_IF.
+    struct sockaddr_in* sa = (struct sockaddr_in *) &ss;
+    socklen_t size = sizeof(sa->sin_addr);
+    int rc = TEMP_FAILURE_RETRY(getsockopt(fd->descriptor_, level, option, &sa->sin_addr, &size));
+    if (rc == -1) {
+      [LibcoreIoPosix throwErrnoExceptionWithNSString:@"getsockopt" withInt:rc];
+    }
+    return sockaddrToInetAddress(&ss, NULL);
+  ]-*/;
+
   public native int getsockoptInt(FileDescriptor fd, int level, int option)
       throws ErrnoException /*-[
     int result = 0;
@@ -627,6 +674,30 @@ public final class Posix implements Os {
       [LibcoreIoPosix throwErrnoExceptionWithNSString:@"getsockopt" withInt:rc];
     }
     return result;
+  ]-*/;
+
+  public native StructLinger getsockoptLinger(FileDescriptor fd, int level, int option)
+      throws ErrnoException /*-[
+    struct linger l;
+    socklen_t size = sizeof(l);
+    memset(&l, 0, size);
+    int rc = TEMP_FAILURE_RETRY(getsockopt(fd->descriptor_, level, option, &l, &size));
+    if (rc == -1) {
+      [LibcoreIoPosix throwErrnoExceptionWithNSString:@"getsockopt" withInt:rc];
+    }
+    return AUTORELEASE([[LibcoreIoStructLinger alloc] initWithInt:l.l_onoff withInt:l.l_linger]);
+  ]-*/;
+
+  public native StructTimeval getsockoptTimeval(FileDescriptor fd, int level,
+      int option) throws ErrnoException /*-[
+    struct timeval tv;
+    socklen_t size = sizeof(tv);
+    memset(&tv, 0, size);
+    int rc = TEMP_FAILURE_RETRY(getsockopt(fd->descriptor_, level, option, &tv, &size));
+    if (rc == -1) {
+      [LibcoreIoPosix throwErrnoExceptionWithNSString:@"getsockopt" withInt:rc];
+    }
+    return AUTORELEASE([[LibcoreIoStructTimeval alloc] initWithLong:tv.tv_sec withLong:tv.tv_usec]);
   ]-*/;
 
   public native String if_indextoname(int index) /*-[
@@ -685,6 +756,11 @@ public final class Posix implements Os {
 
   public native StructStat lstat(String path) throws ErrnoException /*-[
     return doStat(path, YES);
+  ]-*/;
+
+  public native void listen(FileDescriptor fd, int backlog) throws ErrnoException /*-[
+    int rc = TEMP_FAILURE_RETRY(listen(fd->descriptor_, backlog));
+    [LibcoreIoPosix throwIfMinusOneWithNSString:@"listen" withInt:rc];
   ]-*/;
 
   public native void mincore(long address, long byteCount, byte[] vector) throws ErrnoException /*-[
@@ -998,10 +1074,88 @@ public final class Posix implements Os {
     return NET_FAILURE_RETRY(ssize_t, sendto, fd, bytes + byteOffset, byteCount, flags, to, sa_len);
   ]-*/;
 
+  public native void setsockoptByte(FileDescriptor fd, int level, int option, int value)
+      throws ErrnoException /*-[
+    u_char byte = value;
+    int rc = TEMP_FAILURE_RETRY(setsockopt(fd->descriptor_, level, option, &byte, sizeof(byte)));
+    [LibcoreIoPosix throwIfMinusOneWithNSString:@"setsockopt" withInt:rc];
+  ]-*/;
+
+  public native void setsockoptGroupReq(FileDescriptor fd, int level, int option,
+      StructGroupReq structGroupReq) throws ErrnoException /*-[
+    struct group_req req;
+    memset(&req, 0, sizeof(req));
+    req.gr_interface = structGroupReq->gr_interface_;
+    // Get the IPv4 or IPv6 multicast address to join or leave.
+    JavaNetInetAddress *group = structGroupReq->gr_group_;
+    socklen_t sa_len;
+    if (!inetAddressToSockaddrVerbatim(group, 0, &req.gr_group, &sa_len)) {
+      return;
+    }
+
+    int rc = TEMP_FAILURE_RETRY(setsockopt(fd->descriptor_, level, option, &req, sizeof(req)));
+    if (rc == -1 && errno == EINVAL) {
+        // Maybe we're a 32-bit binary talking to a 64-bit kernel?
+        // glibc doesn't automatically handle this.
+        struct group_req64 {
+            uint32_t gr_interface;
+            uint32_t my_padding;
+            struct sockaddr_storage gr_group;
+        };
+        struct group_req64 req64;
+        req64.gr_interface = req.gr_interface;
+        memcpy(&req64.gr_group, &req.gr_group, sizeof(req.gr_group));
+        rc = TEMP_FAILURE_RETRY(setsockopt(fd->descriptor_, level, option, &req64, sizeof(req64)));
+    }
+    [LibcoreIoPosix throwIfMinusOneWithNSString:@"setsockopt" withInt:rc];
+  ]-*/;
+
+  public native void setsockoptIfreq(FileDescriptor fd, int level, int option,
+      String interfaceName) throws ErrnoException /*-[
+    struct ifreq req;
+    if (!fillIfreq(interfaceName, &req)) {
+      return;
+    }
+    int rc = TEMP_FAILURE_RETRY(setsockopt(fd->descriptor_, level, option, &req, sizeof(req)));
+    [LibcoreIoPosix throwIfMinusOneWithNSString:@"setsockopt" withInt:rc];
+  ]-*/;
+
   public native void setsockoptInt(FileDescriptor fd, int level, int option, int value)
       throws ErrnoException /*-[
     int rc = TEMP_FAILURE_RETRY(setsockopt(fd->descriptor_, level, option, &value, sizeof(value)));
     [LibcoreIoPosix throwIfMinusOneWithNSString:@"setsockopt" withInt:rc];
+  ]-*/;
+
+  public native void setsockoptIpMreqn(FileDescriptor fd, int level, int option,
+      int value) throws ErrnoException /*-[
+    struct ip_mreqn req;
+    memset(&req, 0, sizeof(req));
+    req.imr_ifindex = value;
+    int rc = TEMP_FAILURE_RETRY(setsockopt(fd->descriptor_, level, option, &req, sizeof(req)));
+    [LibcoreIoPosix throwIfMinusOneWithNSString:@"setsockopt" withInt:rc];
+  ]-*/;
+
+  public native void setsockoptLinger(FileDescriptor fd, int level, int option,
+      StructLinger structLinger) throws ErrnoException /*-[
+    struct linger value;
+    value.l_onoff = structLinger->l_onoff_;
+    value.l_linger = structLinger->l_linger_;
+    int rc = TEMP_FAILURE_RETRY(setsockopt(fd->descriptor_, level, option, &value, sizeof(value)));
+    [LibcoreIoPosix throwIfMinusOneWithNSString:@"setsockopt" withInt:rc];
+  ]-*/;
+
+  public native void setsockoptTimeval(FileDescriptor fd, int level, int option,
+      StructTimeval structTimeval) throws ErrnoException /*-[
+    struct timeval value;
+    value.tv_sec = structTimeval->tv_sec_;
+    value.tv_usec = structTimeval->tv_usec_;
+    int rc = TEMP_FAILURE_RETRY(setsockopt(fd->descriptor_, level, option, &value, sizeof(value)));
+    [LibcoreIoPosix throwIfMinusOneWithNSString:@"setsockopt" withInt:rc];
+  ]-*/;
+
+  public native void shutdown(FileDescriptor fd, int how) throws ErrnoException /*-[
+    int rc = TEMP_FAILURE_RETRY(shutdown(fd->descriptor_, how));
+    [LibcoreIoPosix throwIfMinusOneWithNSString:@"shutdown" withInt:rc];
   ]-*/;
 
   public native FileDescriptor socket(int domain, int type, int protocol) throws ErrnoException /*-[
@@ -1151,7 +1305,6 @@ public final class Posix implements Os {
 //  public native void setgid(int gid) throws ErrnoException;
 //  public native int setsid() throws ErrnoException;
 //  public native void setuid(int uid) throws ErrnoException;
-//  public native void shutdown(FileDescriptor fd, int how) throws ErrnoException;
 //  public native FileDescriptor socket(int domain, int type, int protocol) throws ErrnoException;
 //  public native StructStatFs statfs(String path) throws ErrnoException;
 //  public native void tcsendbreak(FileDescriptor fd, int duration) throws ErrnoException;
@@ -1164,19 +1317,4 @@ public final class Posix implements Os {
 //  private native int umaskImpl(int mask);
 //  public native void unsetenv(String name) throws ErrnoException;
 //  public native int waitpid(int pid, MutableInt status, int options) throws ErrnoException;
-
-// TODO(tball): implement these commented methods when java.net is ported.
-//  public native FileDescriptor accept(FileDescriptor fd, InetSocketAddress peerAddress) throws ErrnoException, SocketException;
-//  public native InetAddress[] getaddrinfo(String node, StructAddrinfo hints) throws GaiException;
-//  public native InetAddress getsockoptInAddr(FileDescriptor fd, int level, int option) throws ErrnoException;
-//  public native int getsockoptByte(FileDescriptor fd, int level, int option) throws ErrnoException;
-//  public native int getsockoptInt(FileDescriptor fd, int level, int option) throws ErrnoException;
-//  public native StructLinger getsockoptLinger(FileDescriptor fd, int level, int option) throws ErrnoException;
-//  public native StructTimeval getsockoptTimeval(FileDescriptor fd, int level, int option) throws ErrnoException;
-//  public native void setsockoptByte(FileDescriptor fd, int level, int option, int value) throws ErrnoException;
-//  public native void setsockoptIfreq(FileDescriptor fd, int level, int option, String value) throws ErrnoException;
-//  public native void setsockoptIpMreqn(FileDescriptor fd, int level, int option, int value) throws ErrnoException;
-//  public native void setsockoptGroupReq(FileDescriptor fd, int level, int option, StructGroupReq value) throws ErrnoException;
-//  public native void setsockoptLinger(FileDescriptor fd, int level, int option, StructLinger value) throws ErrnoException;
-//  public native void setsockoptTimeval(FileDescriptor fd, int level, int option, StructTimeval value) throws ErrnoException;
 }

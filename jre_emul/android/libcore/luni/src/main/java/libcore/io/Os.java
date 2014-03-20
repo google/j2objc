@@ -28,6 +28,8 @@ import libcore.util.MutableLong;
 
 public interface Os {
 
+    public FileDescriptor accept(FileDescriptor fd, InetSocketAddress peerAddress)
+        throws ErrnoException, SocketException;
     public boolean access(String path, int mode) throws ErrnoException;
     public boolean canAccess(String path, int mode);
     public void bind(FileDescriptor fd, InetAddress address, int port)
@@ -52,13 +54,21 @@ public interface Os {
     public InetAddress[] getaddrinfo(String node, StructAddrinfo hints) throws GaiException;
     public String getnameinfo(InetAddress address, int flags) throws GaiException;
     public SocketAddress getsockname(FileDescriptor fd) throws ErrnoException;
+    public int getsockoptByte(FileDescriptor fd, int level, int option) throws ErrnoException;
+    public InetAddress getsockoptInAddr(FileDescriptor fd, int level, int option)
+        throws ErrnoException;
     public int getsockoptInt(FileDescriptor fd, int level, int option) throws ErrnoException;
+    public StructLinger getsockoptLinger(FileDescriptor fd, int level, int option)
+        throws ErrnoException;
+    public StructTimeval getsockoptTimeval(FileDescriptor fd, int level, int option)
+        throws ErrnoException;
     public String if_indextoname(int index);
     public InetAddress inet_pton(int family, String address);
     public InetAddress ioctlInetAddress(FileDescriptor fd, int cmd, String interfaceName)
         throws ErrnoException;
     public int ioctlInt(FileDescriptor fd, int cmd, MutableInt arg) throws ErrnoException;
     public boolean isatty(FileDescriptor fd);
+    public void listen(FileDescriptor fd, int backlog) throws ErrnoException;
     public long lseek(FileDescriptor fd, long offset, int whence) throws ErrnoException;
     public void mkdir(String path, int mode) throws ErrnoException;
     public void mincore(long address, long byteCount, byte[] vector) throws ErrnoException;
@@ -91,8 +101,21 @@ public interface Os {
         int port) throws ErrnoException, SocketException;
     public int sendto(FileDescriptor fd, byte[] bytes, int byteOffset, int byteCount, int flags,
         InetAddress inetAddress, int port) throws ErrnoException, SocketException;
+    public void setsockoptByte(FileDescriptor fd, int level, int option, int value)
+        throws ErrnoException;
+    public void setsockoptGroupReq(FileDescriptor fd, int level, int option,
+        StructGroupReq value) throws ErrnoException;
+    public void setsockoptIfreq(FileDescriptor fd, int level, int option, String value)
+        throws ErrnoException;
     public void setsockoptInt(FileDescriptor fd, int level, int option, int value)
         throws ErrnoException;
+    public void setsockoptIpMreqn(FileDescriptor fd, int level, int option, int value)
+        throws ErrnoException;
+    public void setsockoptLinger(FileDescriptor fd, int level, int option, StructLinger value)
+        throws ErrnoException;
+    public void setsockoptTimeval(FileDescriptor fd, int level, int option, StructTimeval value)
+        throws ErrnoException;
+    public void shutdown(FileDescriptor fd, int how) throws ErrnoException;
     public FileDescriptor socket(int domain, int type, int protocol) throws ErrnoException;
     public void socketpair(int domain, int type, int protocol, FileDescriptor fd1,
         FileDescriptor fd2) throws ErrnoException;
@@ -123,10 +146,7 @@ public interface Os {
 //    public int getuid();
 //    public void kill(int pid, int signal) throws ErrnoException;
 //    public void lchown(String path, int uid, int gid) throws ErrnoException;
-//    public void listen(FileDescriptor fd, int backlog) throws ErrnoException;
 //    public StructStat lstat(String path) throws ErrnoException;
-//    /* TODO: if we used the non-standard ppoll(2) behind the scenes, we could take a long
-//       timeout.*/
 //    public int pread(FileDescriptor fd, byte[] bytes, int byteOffset, int byteCount, long offset)
 //        throws ErrnoException;
 //    public int pwrite(FileDescriptor fd, byte[] bytes, int byteOffset, int byteCount, long offset)
@@ -137,30 +157,8 @@ public interface Os {
 //    public void setgid(int gid) throws ErrnoException;
 //    public int setsid() throws ErrnoException;
 //    public void setuid(int uid) throws ErrnoException;
-//    public void shutdown(FileDescriptor fd, int how) throws ErrnoException;
 //    public void tcsendbreak(FileDescriptor fd, int duration) throws ErrnoException;
 //    public int umask(int mask);
 //    public void unsetenv(String name) throws ErrnoException;
 //    public int waitpid(int pid, MutableInt status, int options) throws ErrnoException;
-
-    // TODO(tball): implement these commented methods when java.net is ported.
-//    /* TODO: break into getnameinfoHost and getnameinfoService? */
-//    public StructLinger getsockoptLinger(FileDescriptor fd, int level, int option)
-//        throws ErrnoException;
-//    public StructTimeval getsockoptTimeval(FileDescriptor fd, int level, int option)
-//        throws ErrnoException;
-//    public InetAddress getsockoptInAddr(FileDescriptor fd, int level, int option)
-//        throws ErrnoException;
-//    public void setsockoptByte(FileDescriptor fd, int level, int option, int value)
-//        throws ErrnoException;
-//    public void setsockoptIfreq(FileDescriptor fd, int level, int option, String value)
-//        throws ErrnoException;
-//    public void setsockoptIpMreqn(FileDescriptor fd, int level, int option, int value)
-//        throws ErrnoException;
-//    public void setsockoptGroupReq(FileDescriptor fd, int level, int option,
-//        StructGroupReq value) throws ErrnoException;
-//    public void setsockoptLinger(FileDescriptor fd, int level, int option, StructLinger value)
-//        throws ErrnoException;
-//    public void setsockoptTimeval(FileDescriptor fd, int level, int option, StructTimeval value)
-//        throws ErrnoException;
 }

@@ -22,6 +22,7 @@ import java.io.IOException;
 import java.net.BindException;
 import java.net.ConnectException;
 import java.net.DatagramPacket;
+import java.net.Inet4Address;
 import java.net.Inet6Address;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
@@ -29,6 +30,7 @@ import java.net.NetworkInterface;
 import java.net.PortUnreachableException;
 import java.net.SocketAddress;
 import java.net.SocketException;
+import java.net.SocketOptions;
 import java.net.SocketTimeoutException;
 import java.net.UnknownHostException;
 import java.nio.ByteBuffer;
@@ -230,8 +232,7 @@ public final class IoBridge {
     /**
      * java.net has its own socket options similar to the underlying Unix ones. We paper over the
      * differences here.
-     *
-    TODO(tball): enable when java.net is supported.
+     */
     public static Object getSocketOption(FileDescriptor fd, int option) throws SocketException {
         try {
             return getSocketOptionErrno(fd, option);
@@ -298,8 +299,7 @@ public final class IoBridge {
     /**
      * java.net has its own socket options similar to the underlying Unix ones. We paper over the
      * differences here.
-     *
-    TODO(tball): enable when java.net is supported.
+     */
     public static void setSocketOption(FileDescriptor fd, int option, Object value) throws SocketException {
         try {
             setSocketOptionErrno(fd, option, value);
