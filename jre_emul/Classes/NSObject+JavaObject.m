@@ -156,16 +156,16 @@ static void doWait(id obj, long long timeout) {
 + (J2ObjcClassInfo *)__metadata {
   static J2ObjcMethodInfo methods[] = {
     { "getClass", NULL, "LIOSClass", 0x11, NULL },
-    { "isEqual:", NULL, "Z", 0x1, NULL },
+    { "isEqual:", "equals", "Z", 0x1, NULL },
     { "clone", NULL, "LJavaLangObject", 0x4, "JavaLangCloneNotSupportedException" },
-    { "dealloc", NULL, "V", 0x4, "JavaLangThrowable" },
+    { "dealloc", "finalize", "V", 0x4, "JavaLangThrowable" },
     { "notify", NULL, "V", 0x11, NULL },
     { "notifyAll", NULL, "V", 0x11, NULL },
-    { "waitWithLong:", NULL, "V", 0x11, "JavaLangInterruptedException" },
-    { "waitWithLong:withInt:", NULL, "V", 0x11, "JavaLangInterruptedException" },
+    { "waitWithLong:", "wait", "V", 0x11, "JavaLangInterruptedException" },
+    { "waitWithLong:withInt:", "wait", "V", 0x11, "JavaLangInterruptedException" },
     { "wait", NULL, "V", 0x11, "JavaLangInterruptedException" },
-    { "description", NULL, "LJavaLangString", 0x1, NULL },
-    { "hash", NULL, "I", 0x1, NULL },
+    { "description", "toString", "LJavaLangString", 0x1, NULL },
+    { "hash", "hashCode", "I", 0x1, NULL },
   };
   static J2ObjcClassInfo _JavaLangObject = {
     "Object", "java.lang", NULL, 0x1, 9, methods, 0, NULL, 0, NULL

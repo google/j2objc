@@ -25,6 +25,7 @@ import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.lang.reflect.TypeVariable;
+import java.util.Arrays;
 
 /**
  * Command-line tests for java.lang.Class support (IOSClass)
@@ -191,6 +192,25 @@ public class ClassTest extends TestCase {
     assertTrue(Object.class.isAssignableFrom(String[].class));
     assertTrue(Object.class.isAssignableFrom(int[].class));
     assertFalse(String.class.isAssignableFrom(String[].class));
+  }
+
+  public void testGetMappedMethods() throws Exception {
+    Class<?> objectClass = Class.forName("java.lang.Object");
+    Method[] methods = objectClass.getDeclaredMethods();
+    assertTrue("not all Object methods returned, only: " +
+        methods.length + " " + Arrays.toString(methods), methods.length >= 7);
+    Class<?> classClass = Class.forName("java.lang.Class");
+    methods = classClass.getDeclaredMethods();
+    assertTrue("not all Class methods returned, only: " +
+        methods.length + " " + Arrays.toString(methods), methods.length >= 5);
+    Class<?> stringClass = Class.forName("java.lang.String");
+    methods = stringClass.getDeclaredMethods();
+    assertTrue("not all String methods returned, only: " +
+        methods.length + " " + Arrays.toString(methods), methods.length >= 35);
+    Class<?> numberClass = Class.forName("java.lang.Number");
+    methods = numberClass.getDeclaredMethods();
+    assertTrue("not all Number methods returned, only: " +
+        methods.length + " " + Arrays.toString(methods), methods.length >= 6);
   }
 
   static class InnerClass {
