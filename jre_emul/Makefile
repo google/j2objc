@@ -24,6 +24,7 @@ include environment.mk
 # Native obj-c sources that do not emulate a specific java class.
 IOS_OBJS = \
 	cbigint.o \
+	DebugUtils.o \
 	IOSArray.o \
 	IOSArrayClass.o \
 	IOSBooleanArray.o \
