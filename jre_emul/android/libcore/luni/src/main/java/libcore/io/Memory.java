@@ -73,7 +73,6 @@ public final class Memory {
 
       PUT_UNALIGNED(short, short);
       PUT_UNALIGNED(int, int);
-      PUT_UNALIGNED(long long, long);
 
       // Byte-swap 2 short values packed in an int.
       static inline int bswap_2x16(int v) {
