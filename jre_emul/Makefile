@@ -358,10 +358,17 @@ JAVA_SOURCES = \
 	java/net/AddressCache.java \
 	java/net/BindException.java \
 	java/net/ConnectException.java \
+	java/net/ContentHandler.java \
+	java/net/ContentHandlerFactory.java \
 	java/net/DatagramPacket.java \
 	java/net/DatagramSocket.java \
 	java/net/DatagramSocketImpl.java \
 	java/net/DatagramSocketImplFactory.java \
+	java/net/DefaultFileNameMap.java \
+	java/net/FileNameMap.java \
+	java/net/HttpCookie.java \
+	java/net/HttpRetryException.java \
+	java/net/HttpURLConnection.java \
 	java/net/Inet4Address.java \
 	java/net/Inet6Address.java \
 	java/net/InetAddress.java \
@@ -375,6 +382,7 @@ JAVA_SOURCES = \
 	java/net/PlainServerSocketImpl.java \
 	java/net/PlainSocketImpl.java \
 	java/net/PortUnreachableException.java \
+	java/net/ProtocolException.java \
 	java/net/Proxy.java \
 	java/net/ServerSocket.java \
 	java/net/Socket.java \
@@ -394,6 +402,7 @@ JAVA_SOURCES = \
 	java/net/URI.java \
 	java/net/URISyntaxException.java \
 	java/net/URL.java \
+	java/net/URLConnection.java \
 	java/net/URLDecoder.java \
 	java/net/URLEncoder.java \
 	java/net/URLStreamHandler.java \
@@ -777,6 +786,7 @@ JAVA_SOURCES = \
 	libcore/net/MimeUtils.java \
 	libcore/net/http/HttpDate.java \
 	libcore/net/url/FileHandler.java \
+	libcore/net/url/FileURLConnection.java \
 	libcore/net/url/UrlUtils.java \
 	libcore/util/BasicLruCache.java \
 	libcore/util/EmptyArray.java \

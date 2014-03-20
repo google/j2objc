@@ -27,6 +27,7 @@ SUPPORT_SOURCES = \
     libcore/java/nio/charset/Charset_TestGenerator.java \
     libcore/java/nio/charset/OldCharset_AbstractTest.java \
     libcore/java/util/ServiceLoaderTestInterface.java \
+    libcore/util/SerializationTester.java \
     org/apache/harmony/logging/tests/java/util/logging/AllTests.java \
     org/apache/harmony/logging/tests/java/util/logging/LevelTestResource.java \
     org/apache/harmony/logging/tests/java/util/logging/util/EnvironmentHelper.java \
@@ -196,6 +197,10 @@ TEST_SOURCES = \
     libcore/java/lang/reflect/AnnotationsTest.java \
     libcore/java/lang/reflect/ArrayTest.java \
     libcore/java/lang/reflect/ConstructorTest.java \
+    libcore/java/net/DatagramSocketTest.java \
+    libcore/java/net/InetSocketAddressTest.java \
+    libcore/java/net/ServerSocketTest.java \
+    libcore/java/net/URITest.java \
     libcore/java/nio/BufferTest.java \
     libcore/java/nio/NoArrayTest.java \
     libcore/java/nio/OldAndroidNIOTest.java \
@@ -375,6 +380,7 @@ TEST_SOURCES = \
 
 SUITE_SOURCES = \
     libcore/java/io/SmallTests.java \
+    libcore/java/net/SmallTests.java \
     libcore/java/util/zip/SmallTests.java \
 
 FAILING_TESTS = \
@@ -483,6 +489,9 @@ run-tests: link resources $(TEST_BIN)
 
 run-io-tests: link resources $(TEST_BIN)
 	@$(TEST_BIN) org.junit.runner.JUnitCore libcore.java.io.SmallTests
+
+run-net-tests: link resources $(TEST_BIN)
+	@$(TEST_BIN) org.junit.runner.JUnitCore libcore.java.net.SmallTests
 
 run-zip-tests: link resources $(TEST_BIN)
 	@$(TEST_BIN) org.junit.runner.JUnitCore libcore.java.util.zip.SmallTests
