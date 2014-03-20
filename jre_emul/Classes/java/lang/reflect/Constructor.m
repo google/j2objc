@@ -34,11 +34,11 @@
 
 + (id)constructorWithMethodSignature:(NSMethodSignature *)methodSignature
                             selector:(SEL)selector
-                               class:(IOSClass *)class
+                               class:(IOSClass *)aClass
                             metadata:(JavaMethodMetadata *)metadata {
   return [[[JavaLangReflectConstructor alloc] initWithMethodSignature:methodSignature
                                                              selector:selector
-                                                                class:class
+                                                                class:aClass
                                                              metadata:metadata] autorelease];
 }
 

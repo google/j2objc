@@ -35,12 +35,12 @@
 
 - (id)initWithMethodSignature:(NSMethodSignature *)methodSignature
                      selector:(SEL)selector
-                        class:(IOSClass *)class
+                        class:(IOSClass *)aClass
                      isStatic:(BOOL)isStatic
                      metadata:(JavaMethodMetadata *)metadata {
   if (self = [super initWithMethodSignature:methodSignature
                                    selector:selector
-                                      class:class
+                                      class:aClass
                                    metadata:metadata]) {
     isStatic_ = isStatic;
   }
@@ -49,12 +49,12 @@
 
 + (id)methodWithMethodSignature:(NSMethodSignature *)methodSignature
                        selector:(SEL)selector
-                          class:(IOSClass *)class
+                          class:(IOSClass *)aClass
                        isStatic:(BOOL)isStatic
                        metadata:(JavaMethodMetadata *)metadata {
   return [[[JavaLangReflectMethod alloc] initWithMethodSignature:methodSignature
                                                         selector:selector
-                                                           class:class
+                                                           class:aClass
                                                         isStatic:isStatic
                                                         metadata:metadata] autorelease];
 }

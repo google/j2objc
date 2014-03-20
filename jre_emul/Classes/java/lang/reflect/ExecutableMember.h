@@ -48,7 +48,7 @@
 
 - (id)initWithMethodSignature:(NSMethodSignature *)methodSignature
                      selector:(SEL)selector
-                        class:(IOSClass *)class
+                        class:(IOSClass *)aClass
                      metadata:(JavaMethodMetadata *)metadata;
 
 - (NSString *)getName;
