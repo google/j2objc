@@ -20,6 +20,7 @@ import com.google.common.io.Files;
 import com.google.devtools.j2objc.translate.DeadCodeEliminator;
 import com.google.devtools.j2objc.util.DeadCodeMap;
 import com.google.devtools.j2objc.util.ErrorUtil;
+import com.google.devtools.j2objc.util.JdtParser;
 import com.google.devtools.j2objc.util.ProGuardUsageParser;
 import com.google.devtools.j2objc.util.TimeTracker;
 
@@ -49,23 +50,24 @@ public class DeadCodeProcessor extends FileProcessor {
   private final File tempDir;
   private List<String> resultSources = Lists.newArrayList();
 
-  private DeadCodeProcessor(DeadCodeMap deadCodeMap, File tempDir) {
+  private DeadCodeProcessor(JdtParser parser, DeadCodeMap deadCodeMap, File tempDir) {
+    super(parser);
     this.deadCodeMap = deadCodeMap;
     this.tempDir = tempDir;
   }
 
-  public static DeadCodeProcessor create() {
+  public static DeadCodeProcessor create(JdtParser parser) {
     DeadCodeMap deadCodeMap = loadDeadCodeMap();
     if (deadCodeMap != null) {
-      return createWithMap(deadCodeMap);
+      return createWithMap(parser, deadCodeMap);
     } else {
       return null;
     }
   }
 
-  public static DeadCodeProcessor createWithMap(DeadCodeMap deadCodeMap) {
+  public static DeadCodeProcessor createWithMap(JdtParser parser, DeadCodeMap deadCodeMap) {
     try {
-      return new DeadCodeProcessor(deadCodeMap, new File(Options.getTemporaryDirectory()));
+      return new DeadCodeProcessor(parser, deadCodeMap, new File(Options.getTemporaryDirectory()));
     } catch (IOException e) {
       throw new AssertionError(e);
     }
@@ -86,7 +88,7 @@ public class DeadCodeProcessor extends FileProcessor {
   @Override
   protected void processUnit(String path, String source, CompilationUnit unit, TimeTracker ticker) {
     logger.finest("removing dead code: " + path);
-    String newSource = rewriteSource(source, unit, ticker);
+    String newSource = rewriteSource(source, unit, deadCodeMap, ticker);
 
     if (!newSource.equals(source)) {
       // Save the new source to the tmpdir and update the files list.
@@ -103,13 +105,14 @@ public class DeadCodeProcessor extends FileProcessor {
   }
 
   @VisibleForTesting
-  public String rewriteSource(String source, CompilationUnit unit, TimeTracker ticker) {
+  public static String rewriteSource(
+      String source, CompilationUnit unit, DeadCodeMap deadCodeMap, TimeTracker ticker) {
     unit.recordModifications();
     new DeadCodeEliminator(deadCodeMap).run(unit);
     ticker.tick("Dead code eliminator pass");
 
     Document doc = new Document(source);
-    TextEdit edit = unit.rewrite(doc, Options.getCompilerOptions());
+    TextEdit edit = unit.rewrite(doc, null);
     try {
       edit.apply(doc);
     } catch (MalformedTreeException e) {

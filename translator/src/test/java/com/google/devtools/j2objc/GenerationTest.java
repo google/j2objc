@@ -19,25 +19,18 @@ package com.google.devtools.j2objc;
 import com.google.common.base.Joiner;
 import com.google.common.collect.Lists;
 import com.google.common.io.Files;
-import com.google.devtools.j2objc.gen.ObjectiveCHeaderGenerator;
-import com.google.devtools.j2objc.gen.ObjectiveCImplementationGenerator;
-import com.google.devtools.j2objc.gen.ObjectiveCSegmentedHeaderGenerator;
 import com.google.devtools.j2objc.gen.SourceBuilder;
 import com.google.devtools.j2objc.gen.SourcePosition;
 import com.google.devtools.j2objc.gen.StatementGenerator;
-import com.google.devtools.j2objc.translate.DeadCodeEliminator;
 import com.google.devtools.j2objc.translate.DestructorGenerator;
 import com.google.devtools.j2objc.types.Types;
-import com.google.devtools.j2objc.util.DeadCodeMap;
 import com.google.devtools.j2objc.util.ErrorUtil;
+import com.google.devtools.j2objc.util.JdtParser;
 import com.google.devtools.j2objc.util.NameTable;
 import com.google.devtools.j2objc.util.TimeTracker;
 
 import junit.framework.TestCase;
 
-import org.eclipse.jdt.core.compiler.IProblem;
-import org.eclipse.jdt.core.dom.AST;
-import org.eclipse.jdt.core.dom.ASTParser;
 import org.eclipse.jdt.core.dom.ASTVisitor;
 import org.eclipse.jdt.core.dom.CompilationUnit;
 import org.eclipse.jdt.core.dom.IVariableBinding;
@@ -47,9 +40,7 @@ import org.eclipse.jdt.core.dom.Statement;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
-import java.io.PrintStream;
 import java.io.StringReader;
-import java.io.StringWriter;
 import java.io.UnsupportedEncodingException;
 import java.net.URL;
 import java.net.URLClassLoader;
@@ -69,8 +60,12 @@ import java.util.regex.Pattern;
  */
 public abstract class GenerationTest extends TestCase {
   protected File tempDir;
-  private String lastLog;
-  private DeadCodeMap deadCodeMap;
+  private JdtParser parser;
+
+  static {
+    // Prevents errors and warnings from being printed to the console.
+    ErrorUtil.setTestMode();
+  }
 
   @Override
   protected void setUp() throws IOException {
@@ -79,23 +74,20 @@ public abstract class GenerationTest extends TestCase {
       "-d", tempDir.getAbsolutePath(),
       "--mem-debug" // Run tests with memory debugging by default.
     });
-    lastLog = "";
-    deadCodeMap = null;
+    parser = initializeParser(tempDir);
   }
 
   @Override
   protected void tearDown() throws Exception {
     deleteTempDir(tempDir);
     ErrorUtil.reset();
-    lastLog = "";
   }
 
-  protected void setDeadCodeMap(DeadCodeMap map) {
-    deadCodeMap = map;
-  }
-
-  protected DeadCodeMap getDeadCodeMap() {
-    return deadCodeMap;
+  private static JdtParser initializeParser(File tempDir) {
+    JdtParser parser = new JdtParser();
+    parser.setClasspath(getComGoogleDevtoolsJ2objcPath());
+    parser.setSourcepath(new String[] { tempDir.getAbsolutePath() });
+    return parser;
   }
 
   /**
@@ -108,7 +100,6 @@ public abstract class GenerationTest extends TestCase {
     // Wrap statements in test class, so type resolution works.
     String source = "public class Test { void test() { " + stmts + "}}";
     CompilationUnit unit = translateType("Test", source);
-    assertNoCompilationErrors(unit);
     final List<Statement> statements = Lists.newArrayList();
     unit.accept(new ASTVisitor() {
       @SuppressWarnings("unchecked")
@@ -131,40 +122,11 @@ public abstract class GenerationTest extends TestCase {
    * @return the translated compilation unit
    */
   protected CompilationUnit translateType(String name, String source) {
-    return translateType(name, source, true);
-  }
-
-  /**
-   * Translates Java source, as contained in a source file.
-   *
-   * @param name the name of the public type being declared
-   * @param source the source code
-   * @param assertErrors assert that no compilation errors were reported
-   * @return the translated compilation unit
-   */
-  protected CompilationUnit translateType(String name, String source, boolean assertErrors) {
-    PrintStream errStream = System.err;
-    try {
-      // Capture error and warning message text.
-      final StringWriter stringWriter = new StringWriter();
-      System.setErr(new PrintStream(System.err) {
-        @Override
-        public void println(String msg) {
-          stringWriter.append(msg);
-        }
-      });
-      CompilationUnit unit = compileType(name, source, assertErrors);
-      NameTable.initialize(unit);
-      Types.initialize(unit);
-      if (deadCodeMap != null) {
-        new DeadCodeEliminator(deadCodeMap).run(unit);
-      }
-      new TranslationProcessor().applyMutations(unit, TimeTracker.noop());
-      lastLog = stringWriter.toString();
-      return unit;
-    } finally {
-      System.setErr(errStream);
-    }
+    CompilationUnit unit = compileType(name, source);
+    NameTable.initialize(unit);
+    Types.initialize(unit);
+    TranslationProcessor.applyMutations(unit, TimeTracker.noop());
+    return unit;
   }
 
   /**
@@ -175,55 +137,28 @@ public abstract class GenerationTest extends TestCase {
    * @return the parsed compilation unit
    */
   protected CompilationUnit compileType(String name, String source) {
-    return compileType(name, source, true);
-  }
-
-  /**
-   * Compiles Java source, as contained in a source file.
-   *
-   * @param name the name of the public type being declared
-   * @param source the source code
-   * @param assertErrors assert that no compilation errors were reported
-   * @return the parsed compilation unit
-   */
-  protected CompilationUnit compileType(String name, String source, boolean assertErrors) {
-    ASTParser parser = ASTParser.newParser(AST.JLS4);
-    parser.setCompilerOptions(Options.getCompilerOptions());
-    parser.setSource(source.toCharArray());
-    parser.setResolveBindings(true);
-    parser.setUnitName(name + ".java");
-    parser.setEnvironment(new String[] { getComGoogleDevtoolsJ2objcPath() },
-        new String[] { tempDir.getAbsolutePath() }, null, true);
-    CompilationUnit unit = (CompilationUnit) parser.createAST(null);
-    assertNoCompilationErrors(unit);
+    int errors = ErrorUtil.errorCount();
+    CompilationUnit unit = parser.parse(name, source);
+    assertEquals(errors, ErrorUtil.errorCount());
     return unit;
   }
 
-  protected String getComGoogleDevtoolsJ2objcPath() {
+  protected static String[] getComGoogleDevtoolsJ2objcPath() {
     ClassLoader loader = GenerationTest.class.getClassLoader();
-
-    // Used when running tests with Maven.
-    String classpath = "";
-    File classesDir = new File("target/classes/");
-    if (classesDir.exists()) {
-      classpath = classesDir.getAbsolutePath();
-    }
+    List<String> classpath = Lists.newArrayList();
 
     if (loader instanceof URLClassLoader) {
       URL[] urls = ((URLClassLoader) GenerationTest.class.getClassLoader()).getURLs();
       String encoding = System.getProperty("file.encoding");
       for (int i = 0; i < urls.length; i++) {
         try {
-          if (classpath.length() > 0) {
-            classpath += File.pathSeparatorChar;
-          }
-          classpath += URLDecoder.decode(urls[i].getFile(), encoding);
+          classpath.add(URLDecoder.decode(urls[i].getFile(), encoding));
         } catch (UnsupportedEncodingException e) {
           throw new AssertionError("System doesn't have the default encoding");
         }
       }
     }
-    return classpath;
+    return classpath.toArray(new String[0]);
   }
 
   protected String generateStatement(Statement statement) {
@@ -256,15 +191,6 @@ public abstract class GenerationTest extends TestCase {
         }
       }
       dir.delete();
-    }
-  }
-
-  /**
-   * Asserts that a compilation unit is error-free.
-   */
-  protected void assertNoCompilationErrors(CompilationUnit unit) {
-    for (IProblem problem : unit.getProblems()) {
-      assertFalse(problem.getMessage(), problem.isError());
     }
   }
 
@@ -344,7 +270,6 @@ public abstract class GenerationTest extends TestCase {
     // Wrap statements in test class, so type resolution works.
     String source = "public class Test { " + method + " }";
     CompilationUnit unit = translateType("Test", source);
-    assertNoCompilationErrors(unit);
     final MethodDeclaration[] result = new MethodDeclaration[1];
     unit.accept(new ASTVisitor() {
       @Override
@@ -387,30 +312,10 @@ public abstract class GenerationTest extends TestCase {
    */
   protected String translateSourceFile(String source, String typeName, String fileName)
       throws IOException {
-    PrintStream errStream = System.err;
-    try {
-      // Append any error or warning messages from generation.
-      final StringWriter stringWriter = new StringWriter();
-      System.setErr(new PrintStream(System.err) {
-        @Override
-        public void println(String msg) {
-          stringWriter.append(msg);
-        }
-      });
-      CompilationUnit unit = translateType(typeName, source);
-      assertNoCompilationErrors(unit);
-      String sourceName = typeName + ".java";
-      if (Options.generateSegmentedHeaders()) {
-        ObjectiveCSegmentedHeaderGenerator.generate(sourceName, source, unit);
-      } else {
-        ObjectiveCHeaderGenerator.generate(sourceName, source, unit);
-      }
-      ObjectiveCImplementationGenerator.generate(sourceName, unit, source);
-      lastLog += stringWriter.toString();
-      return getTranslatedFile(fileName);
-    } finally {
-      System.setErr(errStream);
-    }
+    CompilationUnit unit = translateType(typeName, source);
+    String sourceName = typeName + ".java";
+    TranslationProcessor.generateObjectiveCSource(sourceName, source, unit, TimeTracker.noop());
+    return getTranslatedFile(fileName);
   }
 
   protected void addSourceFile(String source, String fileName) throws IOException {
@@ -443,15 +348,5 @@ public abstract class GenerationTest extends TestCase {
    */
   protected void assertErrorCount(int expectedCount) {
     assertEquals(expectedCount, ErrorUtil.errorCount());
-  }
-
-  /**
-   * Asserts that the last translation log output contains a specified
-   * string fragment.
-   */
-  protected void assertTranslationLog(String expectedText) {
-    if (!lastLog.contains(expectedText)) {
-      fail("expected:\"" + expectedText + "\" in:\n" + lastLog);
-    }
   }
 }

@@ -44,6 +44,7 @@ import com.google.devtools.j2objc.types.ImplementationImportCollector;
 import com.google.devtools.j2objc.types.Import;
 import com.google.devtools.j2objc.types.Types;
 import com.google.devtools.j2objc.util.ErrorUtil;
+import com.google.devtools.j2objc.util.JdtParser;
 import com.google.devtools.j2objc.util.TimeTracker;
 
 import org.eclipse.jdt.core.dom.CompilationUnit;
@@ -83,6 +84,10 @@ class TranslationProcessor extends FileProcessor {
   Set<String> processedFiles = Sets.newHashSet();
   // Relative paths of files that have either been processed or added to pendingfiles.
   Set<String> seenFiles = Sets.newHashSet();
+
+  public TranslationProcessor(JdtParser parser) {
+    super(parser);
+  }
 
   @Override
   public void processFiles(Iterable<String> files) {
@@ -127,17 +132,8 @@ class TranslationProcessor extends FileProcessor {
 
     logger.finest("writing output file(s) to " + Options.getOutputDirectory().getAbsolutePath());
 
-    // write header
-    if (Options.generateSegmentedHeaders()) {
-      ObjectiveCSegmentedHeaderGenerator.generate(path, source, unit);
-    } else {
-      ObjectiveCHeaderGenerator.generate(path, source, unit);
-    }
-    ticker.tick("Header generation");
-
-    // write implementation file
-    ObjectiveCImplementationGenerator.generate(path, unit, source);
-    ticker.tick("Implementation generation");
+    generateObjectiveCSource(path, source, unit, ticker);
+    ticker.tick("Source generation");
 
     if (Options.buildClosure()) {
       // Add out-of-date dependencies to translation list.
@@ -155,7 +151,7 @@ class TranslationProcessor extends FileProcessor {
    * also modified to add support for iOS memory management, extract inner
    * classes, etc.
    */
-  public void applyMutations(CompilationUnit unit, TimeTracker ticker) {
+  public static void applyMutations(CompilationUnit unit, TimeTracker ticker) {
     ticker.push();
 
     OuterReferenceResolver.resolve(unit);
@@ -245,6 +241,25 @@ class TranslationProcessor extends FileProcessor {
     ticker.pop();
   }
 
+  public static void generateObjectiveCSource(
+      String path, String source, CompilationUnit unit, TimeTracker ticker) {
+    ticker.push();
+
+    // write header
+    if (Options.generateSegmentedHeaders()) {
+      ObjectiveCSegmentedHeaderGenerator.generate(path, source, unit);
+    } else {
+      ObjectiveCHeaderGenerator.generate(path, source, unit);
+    }
+    ticker.tick("Header generation");
+
+    // write implementation file
+    ObjectiveCImplementationGenerator.generate(path, unit, source);
+    ticker.tick("Implementation generation");
+
+    ticker.pop();
+  }
+
   public void postProcess() {
     for (Plugin plugin : Options.getPlugins()) {
       plugin.endProcessing(Options.getOutputDirectory());
@@ -326,7 +341,7 @@ class TranslationProcessor extends FileProcessor {
   private void saveConvertedSource(String filename, String source, CompilationUnit unit) {
     try {
       Document doc = new Document(source);
-      TextEdit edit = unit.rewrite(doc, Options.getCompilerOptions());
+      TextEdit edit = unit.rewrite(doc, null);
       edit.apply(doc);
       File outputFile = new File(Options.getOutputDirectory(), filename);
       outputFile.getParentFile().mkdirs();
@@ -340,7 +355,7 @@ class TranslationProcessor extends FileProcessor {
     }
   }
 
-  private void loadMappingFiles() {
+  private static void loadMappingFiles() {
     for (String resourceName : Options.getMappingFiles()) {
       Properties mappings = new Properties();
       try {

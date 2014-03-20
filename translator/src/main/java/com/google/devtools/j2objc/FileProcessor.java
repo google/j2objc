@@ -14,17 +14,15 @@
 
 package com.google.devtools.j2objc;
 
-import com.google.common.collect.Lists;
+import com.google.common.base.Preconditions;
 import com.google.common.io.CharStreams;
 import com.google.common.io.Files;
 import com.google.devtools.j2objc.types.Types;
 import com.google.devtools.j2objc.util.ErrorUtil;
+import com.google.devtools.j2objc.util.JdtParser;
 import com.google.devtools.j2objc.util.NameTable;
 import com.google.devtools.j2objc.util.TimeTracker;
 
-import org.eclipse.jdt.core.compiler.IProblem;
-import org.eclipse.jdt.core.dom.AST;
-import org.eclipse.jdt.core.dom.ASTParser;
 import org.eclipse.jdt.core.dom.CompilationUnit;
 import org.eclipse.jdt.core.dom.PackageDeclaration;
 
@@ -32,9 +30,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.Reader;
-import java.lang.reflect.Field;
 import java.util.Enumeration;
-import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.zip.ZipEntry;
@@ -49,6 +45,12 @@ import java.util.zip.ZipFile;
 abstract class FileProcessor {
 
   private static final Logger logger = Logger.getLogger(FileProcessor.class.getName());
+
+  private final JdtParser parser;
+
+  public FileProcessor(JdtParser parser) {
+    this.parser = Preconditions.checkNotNull(parser);
+  }
 
   public void processFiles(Iterable<String> files) {
     for (String file : files) {
@@ -182,15 +184,12 @@ abstract class FileProcessor {
     logger.finest("parsing " + path);
     TimeTracker ticker = getTicker(path);
     ticker.push();
-    ASTParser parser = ASTParser.newParser(AST.JLS4);
-    parser.setCompilerOptions(Options.getCompilerOptions());
-    parser.setSource(source.toCharArray());
-    parser.setResolveBindings(true);
-    setPaths(parser);
-    parser.setUnitName(path);
-    CompilationUnit unit = (CompilationUnit) parser.createAST(null);
 
-    checkCompilationErrors(path, unit);
+    int errorCount = ErrorUtil.errorCount();
+    CompilationUnit unit = parser.parse(path, source);
+    if (ErrorUtil.errorCount() > errorCount) {
+      return;
+    }
 
     ticker.tick("Parsing file");
 
@@ -226,57 +225,6 @@ abstract class FileProcessor {
     } else {
       return pkg.getName().getFullyQualifiedName().replace('.', File.separatorChar)
           + File.separatorChar + name;
-    }
-  }
-
-  private static void setPaths(ASTParser parser) {
-    // Add existing boot classpath after declared path, so that core files
-    // referenced, but not being translated, are included.  This only matters
-    // when compiling the JRE emulation library sources.
-    List<String> fullClasspath = Lists.newArrayList();
-    String[] classpathEntries = Options.getClassPathEntries();
-    for (int i = 0; i < classpathEntries.length; i++) {
-      fullClasspath.add(classpathEntries[i]);
-    }
-    String bootclasspath = Options.getBootClasspath();
-    for (String path : bootclasspath.split(":")) {
-      // JDT requires that all path elements exist and can hold class files.
-      File f = new File(path);
-      if (f.exists() && (f.isDirectory() || path.endsWith(".jar"))) {
-        fullClasspath.add(path);
-      }
-    }
-    parser.setEnvironment(fullClasspath.toArray(new String[0]), Options.getSourcePathEntries(),
-        Options.getFileEncodings(), true);
-
-    // Workaround for ASTParser.setEnvironment() bug, which ignores its
-    // last parameter.  This has been fixed in the Eclipse post-3.7 Java7
-    // branch.
-    try {
-      Field field = parser.getClass().getDeclaredField("bits");
-      field.setAccessible(true);
-      int bits = field.getInt(parser);
-      // Turn off CompilationUnitResolver.INCLUDE_RUNNING_VM_BOOTCLASSPATH
-      bits &= ~0x20;
-      field.setInt(parser, bits);
-    } catch (Exception e) {
-      // should never happen, since only the one known class is manipulated
-      e.printStackTrace();
-      System.exit(1);
-    }
-  }
-
-  private void checkCompilationErrors(String filename, CompilationUnit unit) {
-    List<IProblem> errors = Lists.newArrayList();
-    for (IProblem problem : unit.getProblems()) {
-      if (problem.isError()) {
-        if (((problem.getID() & IProblem.ImportRelated) != 0) && Options.ignoreMissingImports()) {
-          continue;
-        } else {
-          ErrorUtil.error(String.format(
-              "%s:%s: %s", filename, problem.getSourceLineNumber(), problem.getMessage()));
-        }
-      }
     }
   }
 

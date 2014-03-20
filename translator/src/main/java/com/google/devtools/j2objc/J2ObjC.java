@@ -17,7 +17,9 @@
 package com.google.devtools.j2objc;
 
 import com.google.common.base.Charsets;
+import com.google.common.collect.Lists;
 import com.google.devtools.j2objc.util.ErrorUtil;
+import com.google.devtools.j2objc.util.JdtParser;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -29,6 +31,7 @@ import java.net.URLClassLoader;
 import java.text.DateFormat;
 import java.util.Arrays;
 import java.util.Date;
+import java.util.List;
 import java.util.jar.JarEntry;
 import java.util.jar.JarInputStream;
 import java.util.logging.Level;
@@ -138,6 +141,35 @@ public class J2ObjC {
     }
   }
 
+  // TODO(kstanger): Move this logic into JdtParser so it can be shared with CycleFinder.
+  private static String[] getClasspathForParser() {
+    List<String> fullClasspath = Lists.newArrayList();
+    String[] classpathEntries = Options.getClassPathEntries();
+    for (int i = 0; i < classpathEntries.length; i++) {
+      fullClasspath.add(classpathEntries[i]);
+    }
+    String bootclasspath = Options.getBootClasspath();
+    for (String path : bootclasspath.split(":")) {
+      // JDT requires that all path elements exist and can hold class files.
+      File f = new File(path);
+      if (f.exists() && (f.isDirectory() || path.endsWith(".jar"))) {
+        fullClasspath.add(path);
+      }
+    }
+    return fullClasspath.toArray(new String[0]);
+  }
+
+  private static JdtParser createParser() {
+    JdtParser parser = new JdtParser();
+    parser.setClasspath(getClasspathForParser());
+    parser.setSourcepath(Options.getSourcePathEntries());
+    parser.setIncludeRunningVMBootclasspath(false);
+    parser.setEncoding(Options.fileEncoding());
+    parser.setIgnoreMissingImports(Options.ignoreMissingImports());
+    parser.setEnableDocComments(Options.docCommentsEnabled());
+    return parser;
+  }
+
   /**
    * Entry point for tool.
    *
@@ -165,16 +197,18 @@ public class J2ObjC {
       error(e);
     }
 
+    JdtParser parser = createParser();
+
     // Remove dead-code first, so modified file paths are replaced in the
     // translation list.
-    DeadCodeProcessor deadCodeProcessor = DeadCodeProcessor.create();
+    DeadCodeProcessor deadCodeProcessor = DeadCodeProcessor.create(parser);
     if (deadCodeProcessor != null) {
       deadCodeProcessor.processFiles(Arrays.asList(files));
       checkErrors();
       files = deadCodeProcessor.postProcess().toArray(new String[0]);
     }
 
-    TranslationProcessor translationProcessor = new TranslationProcessor();
+    TranslationProcessor translationProcessor = new TranslationProcessor(parser);
     translationProcessor.processFiles(Arrays.asList(files));
     translationProcessor.postProcess();
     checkErrors();
