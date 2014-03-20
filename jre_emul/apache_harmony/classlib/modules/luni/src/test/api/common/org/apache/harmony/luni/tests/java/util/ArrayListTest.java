@@ -59,10 +59,10 @@ public class ArrayListTest extends junit.framework.TestCase {
         // Test for method java.util.ArrayList(int)
         ArrayList al = new ArrayList(5);
         assertEquals("Incorrect arrayList created", 0, al.size());
-        
+
         al = new ArrayList(0);
         assertEquals("Incorrect arrayList created", 0, al.size());
-        
+
         try {
             al = new ArrayList(-1);
             fail("Should throw IllegalArgumentException");
@@ -108,7 +108,7 @@ public class ArrayListTest extends junit.framework.TestCase {
         assertNull("Should have returned null", alist.get(25));
         assertTrue("Should have returned the old item from slot 25", alist
                 .get(26) == oldItem);
-        
+
         alist.add(0, o = new Object());
         assertEquals("Failed to add Object", alist.get(0), o);
         assertEquals(alist.get(1), objArray[0]);
@@ -172,7 +172,7 @@ public class ArrayListTest extends junit.framework.TestCase {
         assertEquals(alist.get(size - 2), objArray[size - 2]);
         assertEquals(alist.get(size - 1), objArray[size - 1]);
     }
-    
+
     /**
      * @tests java.util.ArrayList#add(java.lang.Object)
      */
@@ -290,7 +290,7 @@ public class ArrayListTest extends junit.framework.TestCase {
             assertEquals(strings[i], list1.get(i + integers.length - 1));
         }
     }
-    
+
     /**
      * @tests java.util.ArrayList#addAll(int, java.util.Collection)
      */
@@ -395,7 +395,7 @@ public class ArrayListTest extends junit.framework.TestCase {
         } catch (NullPointerException e) {
             // Excepted
         }
-        
+
         // Regression test for Harmony-3481
         ArrayList<Integer> originalList = new ArrayList<Integer>(12);
         for (int j = 0; j < 12; j++) {
@@ -437,7 +437,7 @@ public class ArrayListTest extends junit.framework.TestCase {
             assertEquals(1, arrayList.get(index));
         }
     }
-        
+
     // Regression test for HARMONY-5839
     public void testaddAllHarmony5839() {
         Collection coll = Arrays.asList(new String[] { "1", "2" });
@@ -665,7 +665,7 @@ public class ArrayListTest extends junit.framework.TestCase {
             assertNotNull(e.getMessage());
         }
     }
-    
+
     /**
      * @tests java.util.ArrayList#remove(int)
      */
@@ -732,7 +732,7 @@ public class ArrayListTest extends junit.framework.TestCase {
         assertNull("Setting to null did not work", alist.get(50));
         assertTrue("Setting increased the list's size to: " + alist.size(),
                 alist.size() == 100);
-        
+
         obj = new Object();
         alist.set(0, obj);
         assertTrue("Failed to set object", alist.get(0) == obj);
@@ -790,7 +790,7 @@ public class ArrayListTest extends junit.framework.TestCase {
         String result = l.toString();
         assertTrue("should contain self ref", result.indexOf("(this") > -1);
     }
-    
+
     /**
      * @tests java.util.ArrayList#toArray()
      */
@@ -852,7 +852,9 @@ public class ArrayListTest extends junit.framework.TestCase {
                     .get(i) == objArray[i]);
         Vector v = new Vector();
         v.add("a");
+        v.add("b");
         ArrayList al = new ArrayList(v);
+        al.remove("a");
         Iterator it = al.iterator();
         al.trimToSize();
         try {
@@ -952,7 +954,7 @@ public class ArrayListTest extends junit.framework.TestCase {
         public int size() {
             return 0;
         }
-        
+
         public void removeRange(int start, int end) {
             super.removeRange(start, end);
         }
