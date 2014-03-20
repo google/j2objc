@@ -16,10 +16,10 @@
 
 package com.google.devtools.j2objc.translate;
 
+import com.google.devtools.j2objc.DeadCodeProcessor;
 import com.google.devtools.j2objc.GenerationTest;
-import com.google.devtools.j2objc.J2ObjC;
-import com.google.devtools.j2objc.Options;
 import com.google.devtools.j2objc.util.DeadCodeMap;
+import com.google.devtools.j2objc.util.TimeTracker;
 
 import org.eclipse.jdt.core.dom.CompilationUnit;
 
@@ -34,16 +34,13 @@ public class DeadCodeEliminatorTest extends GenerationTest {
 
   @Override
   public void tearDown() throws Exception {
-    Options.setDeadCodeMap(null);
     super.tearDown();
   }
 
   private String getStrippedCode(String typeName, String source) {
     CompilationUnit unit = compileType(typeName, source);
-    unit.recordModifications();
-    source = J2ObjC.removeDeadCode(unit, source);
-    compileType(typeName, source);
-    return source;
+    DeadCodeProcessor deadCodeProcessor = DeadCodeProcessor.createWithMap(getDeadCodeMap());
+    return deadCodeProcessor.rewriteSource(source, unit, TimeTracker.noop());
   }
 
   public void testDeadMethod() {
@@ -58,7 +55,7 @@ public class DeadCodeEliminatorTest extends GenerationTest {
     DeadCodeMap map = DeadCodeMap.builder()
         .addDeadMethod("A$B", "bar", "()Ljava/lang/String;")
         .build();
-    Options.setDeadCodeMap(map);
+    setDeadCodeMap(map);
     String stripped = getStrippedCode("A", source);
     assertTranslation(stripped, "A");
     assertTranslation(stripped, "interface B");
@@ -79,7 +76,7 @@ public class DeadCodeEliminatorTest extends GenerationTest {
             "max",
             "(Ljava/util/Collection;Ljava/util/Comparator;)Ljava/lang/Object;")
         .build();
-    Options.setDeadCodeMap(map);
+    setDeadCodeMap(map);
     String stripped = getStrippedCode("A", source);
     assertRemoved(stripped, "import static java.util.Collections.max");
   }
@@ -93,7 +90,7 @@ public class DeadCodeEliminatorTest extends GenerationTest {
             "max",
             "(Ljava/util/Collection;Ljava/util/Comparator;)Ljava/lang/Object;")
         .build();
-    Options.setDeadCodeMap(map);
+    setDeadCodeMap(map);
     String stripped = getStrippedCode("A", source);
     assertTranslation(stripped, "import static java.util.Collections.max");
   }
@@ -109,7 +106,7 @@ public class DeadCodeEliminatorTest extends GenerationTest {
     DeadCodeMap map = DeadCodeMap.builder()
         .addDeadMethod("A", "foo", "()V")
         .build();
-    Options.setDeadCodeMap(map);
+    setDeadCodeMap(map);
     String stripped = getStrippedCode("A", source);
     assertTranslation(stripped, "void foo();");
     assertTranslation(stripped, "void foo() {");
@@ -127,7 +124,7 @@ public class DeadCodeEliminatorTest extends GenerationTest {
     DeadCodeMap map = DeadCodeMap.builder()
         .addDeadMethod("A", "foo", "()V")
         .build();
-    Options.setDeadCodeMap(map);
+    setDeadCodeMap(map);
     String stripped = getStrippedCode("A", source);
     assertTranslation(stripped, "void foo();");
     assertRemoved(stripped, "void foo() {}");
@@ -147,7 +144,7 @@ public class DeadCodeEliminatorTest extends GenerationTest {
         .addDeadMethod("A", "foo", "()V")
         .addDeadMethod("C", "foo", "()V")
         .build();
-    Options.setDeadCodeMap(map);
+    setDeadCodeMap(map);
     String stripped = getStrippedCode("A", source);
     assertRemoved(stripped, "void foo()");
   }
@@ -164,7 +161,7 @@ public class DeadCodeEliminatorTest extends GenerationTest {
         .addDeadMethod("A", "foo", "()V")
         .addDeadMethod("C", "foo", "()V")
         .build();
-    Options.setDeadCodeMap(map);
+    setDeadCodeMap(map);
     String stripped = getStrippedCode("A", source);
     assertRemoved(stripped, "void foo()");
   }
@@ -185,7 +182,7 @@ public class DeadCodeEliminatorTest extends GenerationTest {
         .addDeadMethod("B", "foo", "()V")
         .addDeadMethod("B", "bar", "()V")
         .build();
-    Options.setDeadCodeMap(map);
+    setDeadCodeMap(map);
     String stripped = getStrippedCode("A", source);
     assertRemoved(stripped, "void foo() {}");
     assertRemoved(stripped, "void bar() {}");
@@ -208,7 +205,7 @@ public class DeadCodeEliminatorTest extends GenerationTest {
     DeadCodeMap map = DeadCodeMap.builder()
         .addDeadMethod("B", "foo", "()V")
         .build();
-    Options.setDeadCodeMap(map);
+    setDeadCodeMap(map);
     String stripped = getStrippedCode("A", source);
     assertRemoved(stripped, "void foo() {}");
     assertTranslation(stripped, "void foo() { bar(); }");
@@ -230,7 +227,7 @@ public class DeadCodeEliminatorTest extends GenerationTest {
     DeadCodeMap map = DeadCodeMap.builder()
         .addDeadMethod("B", "foo", "()V")
         .build();
-    Options.setDeadCodeMap(map);
+    setDeadCodeMap(map);
     String stripped = getStrippedCode("A", source);
     assertRemoved(stripped, "void foo() {}");
     assertTranslation(stripped, "void foo() { bar(); }");
@@ -247,21 +244,21 @@ public class DeadCodeEliminatorTest extends GenerationTest {
     DeadCodeMap map = DeadCodeMap.builder()
         .addDeadMethod("A$1", "foo", "()V")
         .build();
-    Options.setDeadCodeMap(map);
+    setDeadCodeMap(map);
     String stripped = getStrippedCode("A", source);
     assertRemoved(stripped, "public void foo() {}");
   }
 
   public void testDeadMethod_InnerClassConstructor() {
     String source = "class A {\n" +
-    	"  class B {\n" +
-    	"    B() {}\n" +
-    	"  }\n" +
-    	"}\n";
+        "  class B {\n" +
+        "    B() {}\n" +
+        "  }\n" +
+        "}\n";
     DeadCodeMap map = DeadCodeMap.builder()
         .addDeadMethod("A$B", "A$B", "()V")
         .build();
-    Options.setDeadCodeMap(map);
+    setDeadCodeMap(map);
     String stripped = getStrippedCode("A", source);
     assertRemoved(stripped, "B() {}");
   }
@@ -276,7 +273,7 @@ public class DeadCodeEliminatorTest extends GenerationTest {
     DeadCodeMap map = DeadCodeMap.builder()
         .addDeadMethod("A", "A", "()V")
         .build();
-    Options.setDeadCodeMap(map);
+    setDeadCodeMap(map);
     String stripped = getStrippedCode("A", source);
     assertTranslation(stripped, "a = null");
     assertTranslation(stripped, "b = \"foo\"");
@@ -289,7 +286,7 @@ public class DeadCodeEliminatorTest extends GenerationTest {
         "  private final String a, b = \"foo\", c;\n" +
         "  A() { a = null; c = null; }\n" +
         "}\n";
-    Options.setDeadCodeMap(DeadCodeMap.builder().build());
+    setDeadCodeMap(DeadCodeMap.builder().build());
     String stripped = getStrippedCode("A", source);
     assertTranslation(stripped, "A()");
     assertEquals(source, stripped);
@@ -309,7 +306,7 @@ public class DeadCodeEliminatorTest extends GenerationTest {
     DeadCodeMap map = DeadCodeMap.builder()
         .addDeadMethod("A", "foo", "(I[[Ljava/lang/String;Ljava/util/List;Ljava/util/Map;)V")
         .build();
-    Options.setDeadCodeMap(map);
+    setDeadCodeMap(map);
     String stripped = getStrippedCode("A", source);
     assertTranslation(stripped, "<T extends Comparable<T>> void foo(");
     assertTranslation(stripped, "int arg0");
@@ -321,18 +318,18 @@ public class DeadCodeEliminatorTest extends GenerationTest {
 
   public void testMethodGeneration_DoNotQualifyInScope() {
     String source = "interface C {\n" +
-    	"  A.B foo();\n" +
-    	"}\n" +
-    	"class D {\n" +
-    	"  public A.B foo() { return null; }\n" +
-    	"}\n" +
-    	"class A extends D implements C{\n" +
-    	"  class B {}\n" +
-    	"}\n";
+        "  A.B foo();\n" +
+        "}\n" +
+        "class D {\n" +
+        "  public A.B foo() { return null; }\n" +
+        "}\n" +
+        "class A extends D implements C{\n" +
+        "  class B {}\n" +
+        "}\n";
     DeadCodeMap map = DeadCodeMap.builder()
         .addDeadClass("D")
         .build();
-    Options.setDeadCodeMap(map);
+    setDeadCodeMap(map);
     String stripped = getStrippedCode("A", source);
     assertRemoved(stripped, "public A.B foo() { return null; }");
     assertTranslation(stripped, "public B foo()");
@@ -340,14 +337,14 @@ public class DeadCodeEliminatorTest extends GenerationTest {
 
   public void testMethodGeneration_DoNotDuplicateInheritedConcrete() {
     String source = "interface C<V> {\n" +
-    	"  void foo(V x);\n" +
-    	"}\n" +
-    	"abstract class B<V> {\n" +
-    	"  public final void foo(V x) {}\n" +
-    	"}\n" +
-    	"class A<V> extends B<V> implements C<V> {}\n";
+        "  void foo(V x);\n" +
+        "}\n" +
+        "abstract class B<V> {\n" +
+        "  public final void foo(V x) {}\n" +
+        "}\n" +
+        "class A<V> extends B<V> implements C<V> {}\n";
     DeadCodeMap map = DeadCodeMap.builder().build();
-    Options.setDeadCodeMap(map);
+    setDeadCodeMap(map);
     String stripped = getStrippedCode("A", source);
     assertOnce(stripped, "foo(V x) {");
   }
@@ -371,7 +368,7 @@ public class DeadCodeEliminatorTest extends GenerationTest {
     DeadCodeMap map = DeadCodeMap.builder()
         .addDeadClass("E")
         .build();
-    Options.setDeadCodeMap(map);
+    setDeadCodeMap(map);
     String stripped = getStrippedCode("A", source);
     assertRemoved(stripped, "public Object foo(String bar) { return null; }");
     assertRemoved(stripped, "public String foo(Object bar) { return null; }");
@@ -400,7 +397,7 @@ public class DeadCodeEliminatorTest extends GenerationTest {
     DeadCodeMap map = DeadCodeMap.builder()
         .addDeadMethod("B", "foo", "(Ljava/lang/String;)Ljava/lang/String;")
         .build();
-    Options.setDeadCodeMap(map);
+    setDeadCodeMap(map);
     String stripped = getStrippedCode("A", source);
     assertRemoved(stripped, "public String foo(String bar)");
     assertTranslation(stripped, "abstract class J2OBJC_DUMMY_CLASS_0");
@@ -412,8 +409,8 @@ public class DeadCodeEliminatorTest extends GenerationTest {
 
   public void testDeadFields() {
     String source = "import static java.lang.System.out;\n" +
-    	"import static java.lang.System.in;\n" +
-    	"class A {\n" +
+        "import static java.lang.System.in;\n" +
+        "class A {\n" +
         "  private static final int foo = 1;\n" +
         "  public static final String bar = \"bar\";\n" +
         "  static final double pi = 3.2; // in Indiana only\n" +
@@ -425,7 +422,7 @@ public class DeadCodeEliminatorTest extends GenerationTest {
         .addDeadField("A", "baz")
         .addDeadField("java.lang.System", "in")
         .build();
-    Options.setDeadCodeMap(map);
+    setDeadCodeMap(map);
     String stripped = getStrippedCode("A", source);
     assertTranslation(stripped, "private static final int foo = 1;");
     assertTranslation(stripped, "public static final String bar = \"bar\";");
@@ -445,7 +442,7 @@ public class DeadCodeEliminatorTest extends GenerationTest {
         "}\n";
     DeadCodeMap map = DeadCodeMap.builder()
         .addDeadClass("A").build();
-    Options.setDeadCodeMap(map);
+    setDeadCodeMap(map);
     String stripped = getStrippedCode("A", source);
     assertTranslation(stripped, "class A");
     assertTranslation(stripped, "static final int baz = 9");
@@ -466,7 +463,7 @@ public class DeadCodeEliminatorTest extends GenerationTest {
     DeadCodeMap map = DeadCodeMap.builder()
         .addDeadClass("A$Thing")
         .build();
-    Options.setDeadCodeMap(map);
+    setDeadCodeMap(map);
     String stripped = getStrippedCode("A", source);
     assertTranslation(stripped, "class A");
     assertTranslation(stripped, "private static void foo() {}");
@@ -491,7 +488,7 @@ public class DeadCodeEliminatorTest extends GenerationTest {
         .addDeadClass("A")
         .addDeadMethod("C", "C", "()V")
         .build();
-    Options.setDeadCodeMap(map);
+    setDeadCodeMap(map);
     String stripped = getStrippedCode("A", source);
     assertRemoved(stripped, "public A() {");
     assertRemoved(stripped, "super(1, true, \"foo\", new java.util.ArrayList())");

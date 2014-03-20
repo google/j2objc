@@ -17,8 +17,8 @@
 package com.google.devtools.j2objc.gen;
 
 import com.google.common.io.Files;
-import com.google.devtools.j2objc.J2ObjC;
 import com.google.devtools.j2objc.Options;
+import com.google.devtools.j2objc.util.ErrorUtil;
 import com.google.devtools.j2objc.util.NameTable;
 
 import org.eclipse.jdt.core.dom.ASTNode;
@@ -124,7 +124,7 @@ public abstract class SourceFileGenerator {
         if (start != -1 && end > start) {
           String message = String.format("JSNI comment found: %s:%d",
               sourceFileName, builder.getLineNumber(offset));
-          J2ObjC.warning(message);
+          ErrorUtil.warning(message);
         }
       }
       return null;
@@ -138,7 +138,7 @@ public abstract class SourceFileGenerator {
       File dir = outputFile.getParentFile();
       if (dir != null && !dir.exists()) {
         if (!dir.mkdirs()) {
-          J2ObjC.warning("cannot create output directory: " + outputDirectory);
+          ErrorUtil.warning("cannot create output directory: " + outputDirectory);
         }
       }
       String source = builder.toString();
@@ -150,7 +150,7 @@ public abstract class SourceFileGenerator {
 
       Files.write(source, outputFile, Options.getCharset());
     } catch (IOException e) {
-      J2ObjC.error(e.getMessage());
+      ErrorUtil.error(e.getMessage());
     } finally {
       reset();
     }

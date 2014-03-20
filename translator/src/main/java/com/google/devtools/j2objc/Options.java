@@ -22,8 +22,7 @@ import com.google.common.base.Splitter;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.io.Resources;
-import com.google.devtools.j2objc.J2ObjC.Language;
-import com.google.devtools.j2objc.util.DeadCodeMap;
+import com.google.devtools.j2objc.util.ErrorUtil;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -55,7 +54,7 @@ public class Options {
   private static List<Plugin> plugins = new ArrayList<Plugin>();
   private static File outputDirectory = new File(".");
   private static boolean usePackageDirectories = true;
-  private static Language language = Language.OBJECTIVE_C;
+  private static String implementationSuffix = ".m";
   private static boolean printConvertedSources = false;
   private static boolean ignoreMissingImports = false;
   private static MemoryManagementOption memoryManagementOption = null;
@@ -74,7 +73,6 @@ public class Options {
   private static boolean stripReflection = false;
   private static boolean extractUnsequencedModifications = false;
 
-  private static DeadCodeMap deadCodeMap = null;
   private static File proGuardUsageFile = null;
 
   private static final String JRE_MAPPINGS_FILE = "JRE.mappings";
@@ -192,9 +190,9 @@ public class Options {
         }
         String s = args[nArg];
         if (s.equals("objective-c")) {
-          language = Language.OBJECTIVE_C;
+          implementationSuffix = ".m";
         } else if (s.equals("objective-c++")) {
-          language = Language.OBJECTIVE_CPP;
+          implementationSuffix = ".mm";
         } else {
           usage("unsupported language: " + s);
         }
@@ -241,7 +239,7 @@ public class Options {
           // Verify encoding has a supported charset.
           Charset.forName(fileEncoding);
         } catch (UnsupportedCharsetException e) {
-          J2ObjC.warning(e.getMessage());
+          ErrorUtil.warning(e.getMessage());
         }
       } else if (arg.equals("--strip-gwt-incompatible")) {
         stripGwtIncompatible = true;
@@ -420,8 +418,8 @@ public class Options {
     return usePackageDirectories;
   }
 
-  public static Language getLanguage() {
-    return language;
+  public static String getImplementationFileSuffix() {
+    return implementationSuffix;
   }
 
   public static boolean printConvertedSources() {
@@ -509,14 +507,6 @@ public class Options {
 
   public static File getProGuardUsageFile() {
     return proGuardUsageFile;
-  }
-
-  public static DeadCodeMap getDeadCodeMap() {
-    return deadCodeMap;
-  }
-
-  public static void setDeadCodeMap(DeadCodeMap map) {
-    deadCodeMap = map;
   }
 
   public static String getBootClasspath() {

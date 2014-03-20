@@ -20,7 +20,6 @@ import com.google.common.base.Function;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
-import com.google.devtools.j2objc.J2ObjC;
 import com.google.devtools.j2objc.types.GeneratedMethodBinding;
 import com.google.devtools.j2objc.types.GeneratedVariableBinding;
 import com.google.devtools.j2objc.types.IOSMethod;
@@ -31,6 +30,7 @@ import com.google.devtools.j2objc.types.NodeCopier;
 import com.google.devtools.j2objc.types.Types;
 import com.google.devtools.j2objc.util.ASTUtil;
 import com.google.devtools.j2objc.util.ErrorReportingASTVisitor;
+import com.google.devtools.j2objc.util.ErrorUtil;
 import com.google.devtools.j2objc.util.NameTable;
 
 import org.eclipse.jdt.core.dom.AST;
@@ -212,7 +212,7 @@ public class JavaToIOSMethodTranslator extends ErrorReportingASTVisitor {
 
         ASTUtil.setProperty(node, newInvocation);
       } else {
-        J2ObjC.error(node, createMissingMethodMessage(binding));
+        ErrorUtil.error(node, createMissingMethodMessage(binding));
       }
     }
     return true;
@@ -254,7 +254,7 @@ public class JavaToIOSMethodTranslator extends ErrorReportingASTVisitor {
       String key = md.getKey();
       IOSMethod iosMethod = methodMappings.get(key);
       if (iosMethod == null) {
-        J2ObjC.error(node, createMissingMethodMessage(binding));
+        ErrorUtil.error(node, createMissingMethodMessage(binding));
         return;
       }
       IOSMethodBinding newBinding = IOSMethodBinding.newMappedMethod(iosMethod, binding);

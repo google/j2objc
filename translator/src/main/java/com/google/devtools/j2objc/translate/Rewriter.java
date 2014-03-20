@@ -19,7 +19,6 @@ package com.google.devtools.j2objc.translate;
 import com.google.common.collect.LinkedListMultimap;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
-import com.google.devtools.j2objc.J2ObjC;
 import com.google.devtools.j2objc.types.GeneratedMethodBinding;
 import com.google.devtools.j2objc.types.GeneratedTypeBinding;
 import com.google.devtools.j2objc.types.GeneratedVariableBinding;
@@ -29,6 +28,7 @@ import com.google.devtools.j2objc.types.Types;
 import com.google.devtools.j2objc.util.ASTUtil;
 import com.google.devtools.j2objc.util.BindingUtil;
 import com.google.devtools.j2objc.util.ErrorReportingASTVisitor;
+import com.google.devtools.j2objc.util.ErrorUtil;
 import com.google.devtools.j2objc.util.NameTable;
 import com.google.j2objc.annotations.AutoreleasePool;
 import com.google.j2objc.annotations.LoopTranslation;
@@ -229,8 +229,8 @@ public class Rewriter extends ErrorReportingASTVisitor {
 
     if (BindingUtil.hasAnnotation(binding, AutoreleasePool.class)) {
       if (!binding.getReturnType().isPrimitive()) {
-        J2ObjC.warning(
-            "Warning: Ignoring AutoreleasePool annotation on method with retainable return type");
+        ErrorUtil.warning(
+            "Ignoring AutoreleasePool annotation on method with retainable return type");
       } else if (node.getBody() != null) {
         Types.addAutoreleasePool(node.getBody());
       }
