@@ -17,6 +17,8 @@
 
 package java.nio.channels.spi;
 
+import com.google.j2objc.annotations.WeakOuter;
+
 import java.io.IOException;
 import java.nio.channels.SelectionKey;
 import java.nio.channels.Selector;
@@ -37,11 +39,13 @@ public abstract class AbstractSelector extends Selector {
 
     private final Set<SelectionKey> cancelledKeysSet = new HashSet<SelectionKey>();
 
-    private final Runnable wakeupRunnable = new Runnable() {
+    @WeakOuter
+    private final class WakeUpTask implements Runnable {
         @Override public void run() {
             wakeup();
         }
     };
+    private final Runnable wakeupRunnable = new WakeUpTask();
 
     protected AbstractSelector(SelectorProvider selectorProvider) {
         provider = selectorProvider;

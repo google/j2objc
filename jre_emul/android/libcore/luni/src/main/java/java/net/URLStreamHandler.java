@@ -274,36 +274,30 @@ public abstract class URLStreamHandler {
         String authority = url.getAuthority();
         if (authority != null) {
             result.append("//");
-            /* TODO(tball): enable when URI encoders are ported.
             if (escapeIllegalCharacters) {
                 URI.AUTHORITY_ENCODER.appendPartiallyEncoded(result, authority);
             } else {
-            */
                 result.append(authority);
-            // }
+            }
         }
 
         String fileAndQuery = url.getFile();
         if (fileAndQuery != null) {
-          /* TODO(tball): enable when URI encoders are ported.
             if (escapeIllegalCharacters) {
                 URI.FILE_AND_QUERY_ENCODER.appendPartiallyEncoded(result, fileAndQuery);
             } else {
-            */
                 result.append(fileAndQuery);
-            //}
+            }
         }
 
         String ref = url.getRef();
         if (ref != null) {
             result.append('#');
-            /* TODO(tball): enable when URI encoders are ported.
             if (escapeIllegalCharacters) {
                 URI.ALL_LEGAL_ENCODER.appendPartiallyEncoded(result, ref);
             } else {
-            */
                 result.append(ref);
-            //}
+            }
         }
 
         return result.toString();
@@ -329,8 +323,7 @@ public abstract class URLStreamHandler {
 
     /**
      * Returns the host address of {@code url}.
-     *
-     TODO(tball): enable when InetAddress is ported.
+     */
     protected InetAddress getHostAddress(URL url) {
         try {
             String host = url.getHost();

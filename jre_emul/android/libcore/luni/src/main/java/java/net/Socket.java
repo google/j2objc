@@ -22,6 +22,8 @@ import java.io.FileDescriptor;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.nio.channels.SocketChannel;
+
 import libcore.io.IoBridge;
 
 /**
@@ -1007,12 +1009,10 @@ public class Socket implements Closeable {
      * In practice, this means that the socket must have been created by
      * {@link java.nio.channels.ServerSocketChannel#accept} or
      * {@link java.nio.channels.SocketChannel#open}.
-     *
-    TODO(tball): enable for net support in java.nio.
+     */
     public SocketChannel getChannel() {
         return null;
     }
-    */
 
     /**
      * @hide internal use only
