@@ -40,16 +40,16 @@
  @protected
   IOSClass *class_;
   SEL selector_;
-  BOOL classMethod_;
   NSMethodSignature *methodSignature_;
   JavaMethodMetadata *metadata_;
 }
 
 @property (readonly) NSMethodSignature *signature;
 
-- (id)initWithSelector:(SEL)aSelector
-             withClass:(IOSClass *)aClass
-          withMetadata:(JavaMethodMetadata *)metadata;
+- (id)initWithMethodSignature:(NSMethodSignature *)methodSignature
+                     selector:(SEL)selector
+                        class:(IOSClass *)class
+                     metadata:(JavaMethodMetadata *)metadata;
 
 - (NSString *)getName;
 

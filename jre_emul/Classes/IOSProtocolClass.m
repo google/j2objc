@@ -83,14 +83,24 @@
   struct objc_method_description *descriptions =
       protocol_copyMethodDescriptionList(protocol_, YES, YES, &count);
   for (unsigned int i = 0; i < count; i++) {
-    SEL sel = descriptions[i].name;
+    struct objc_method_description *methodDesc = &descriptions[i];
+    SEL sel = methodDesc->name;
     NSString *key = NSStringFromSelector(sel);
     if (![methodMap objectForKey:key]) {
-      if (javaOnly && metadata && ![metadata findMethodMetadata:key]) {
+      JavaMethodMetadata *methodMetadata = [metadata findMethodMetadata:key];
+      if (javaOnly && metadata && !methodMetadata) {
         continue;  // Selector not in method list.
       }
-      JavaLangReflectMethod *method = [JavaLangReflectMethod methodWithSelector:sel withClass:self
-          withMetadata:metadata ? [metadata findMethodMetadata:key] : nil];
+      NSMethodSignature *signature = JreSignatureOrNull(methodDesc);
+      if (!signature) {
+        continue;
+      }
+      JavaLangReflectMethod *method =
+          [JavaLangReflectMethod methodWithMethodSignature:signature
+                                                  selector:sel
+                                                     class:self
+                                                  isStatic:NO
+                                                  metadata:methodMetadata];
       [methodMap setObject:method forKey:key];
     }
   }
@@ -99,23 +109,27 @@
 
 - (JavaLangReflectMethod *)findMethodWithTranslatedName:(NSString *)objcName {
   unsigned int count;
-  SEL result = nil;
+  JavaLangReflectMethod *result = nil;
   struct objc_method_description *descriptions =
       protocol_copyMethodDescriptionList(protocol_, YES, YES, &count);
   for (unsigned int i = 0; i < count; i++) {
-    SEL sel = descriptions[i].name;
+    struct objc_method_description *methodDesc = &descriptions[i];
+    SEL sel = methodDesc->name;
     if ([objcName isEqualToString:NSStringFromSelector(sel)]) {
-      result = sel;
+      NSMethodSignature *signature = JreSignatureOrNull(methodDesc);
+      if (signature) {
+        JavaMethodMetadata *methodMetadata = [[self getMetadata] findMethodMetadata:objcName];
+        result = [JavaLangReflectMethod methodWithMethodSignature:signature
+                                                         selector:sel
+                                                            class:self
+                                                         isStatic:NO
+                                                         metadata:methodMetadata];
+      }
       break;
     }
   }
   free(descriptions);
-  if (result) {
-    JavaClassMetadata *metadata = [self getMetadata];
-    return [JavaLangReflectMethod methodWithSelector:result withClass:self
-        withMetadata:metadata ? [metadata findMethodMetadata:objcName] : nil];
-  }
-  return nil;
+  return result;
 }
 
 - (IOSObjectArray *)getInterfacesWithArrayType:(IOSClass *)arrayType {

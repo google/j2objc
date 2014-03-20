@@ -60,19 +60,33 @@
                                                 withJavaNetURL:nil]);
 }
 
-static void CollectMethodsOrConstructors(IOSClass *cls,
+static void CollectMethodsOrConstructors(IOSMappedClass *self,
                                          NSMutableDictionary *methodMap,
                                          BOOL publicOnly,
                                          BOOL constructors) {
-  JavaClassMetadata *metadata = [cls getMetadata];
+  JavaClassMetadata *metadata = [self getMetadata];
   IOSObjectArray *methodInfos = [metadata allMethods];
   for (unsigned i = 0; i < metadata.methodCount; i++) {
     JavaMethodMetadata *info = [methodInfos objectAtIndex:i];
     if ([info isConstructor] == constructors) {
-      if (!publicOnly || ([info modifiers] & JavaLangReflectModifier_PUBLIC)) {
-        JavaLangReflectMethod *method = [JavaLangReflectMethod methodWithSelector:[info selector]
-                                                                        withClass:cls
-                                                                     withMetadata:info];
+      int mods = [info modifiers];
+      if (publicOnly && !(mods & JavaLangReflectModifier_PUBLIC)) {
+        continue;
+      }
+      SEL sel = [info selector];
+      BOOL isStatic = (mods & JavaLangReflectModifier_STATIC) != 0;
+      NSMethodSignature *signature = nil;
+      if (isStatic) {
+        signature = [self->class_ methodSignatureForSelector:sel];
+      } else {
+        signature = [self->class_ instanceMethodSignatureForSelector:sel];
+      }
+      if (signature) {
+        JavaLangReflectMethod *method = [JavaLangReflectMethod methodWithMethodSignature:signature
+                                                                                selector:sel
+                                                                                   class:self
+                                                                                isStatic:isStatic
+                                                                                metadata:info];
         [methodMap setObject:method forKey:[info name]];
       }
     }

@@ -69,3 +69,13 @@ Method JreFindInstanceMethod(Class cls, const char *name) {
 Method JreFindClassMethod(Class cls, const char *name) {
   return JreFindInstanceMethod(object_getClass(cls), name);
 }
+
+NSMethodSignature *JreSignatureOrNull(struct objc_method_description *methodDesc) {
+  @try {
+    // Fails when non-ObjC types are included in the type encoding.
+    return [NSMethodSignature signatureWithObjCTypes:methodDesc->types];
+  }
+  @catch (NSException *e) {
+    return nil;
+  }
+}
