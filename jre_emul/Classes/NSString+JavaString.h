@@ -22,6 +22,8 @@
 #ifndef _NSString_JavaString_H_
 #define _NSString_JavaString_H_
 
+#import "IOSObjectArray.h"
+#import "IOSPrimitiveArray.h"
 #import "J2ObjC_common.h"
 #import "java/io/Serializable.h"
 #import "java/lang/CharSequence.h"
