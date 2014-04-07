@@ -181,27 +181,19 @@
 		06619398155849BB0004DAFE /* IOSArrayClass.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IOSArrayClass.h; sourceTree = "<group>"; };
 		06619399155849BB0004DAFE /* IOSArrayClass.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IOSArrayClass.m; sourceTree = "<group>"; };
 		0661939A155849BB0004DAFE /* IOSBooleanArray.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IOSBooleanArray.h; sourceTree = "<group>"; };
-		0661939B155849BB0004DAFE /* IOSBooleanArray.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IOSBooleanArray.m; sourceTree = "<group>"; };
 		0661939C155849BB0004DAFE /* IOSByteArray.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IOSByteArray.h; sourceTree = "<group>"; };
-		0661939D155849BB0004DAFE /* IOSByteArray.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IOSByteArray.m; sourceTree = "<group>"; };
 		0661939E155849BB0004DAFE /* IOSCharArray.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IOSCharArray.h; sourceTree = "<group>"; };
-		0661939F155849BC0004DAFE /* IOSCharArray.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IOSCharArray.m; sourceTree = "<group>"; };
 		066193A0155849BC0004DAFE /* IOSClass.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IOSClass.h; sourceTree = "<group>"; };
 		066193A1155849BC0004DAFE /* IOSClass.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IOSClass.m; sourceTree = "<group>"; };
 		066193A4155849BC0004DAFE /* IOSDoubleArray.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IOSDoubleArray.h; sourceTree = "<group>"; };
-		066193A5155849BC0004DAFE /* IOSDoubleArray.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IOSDoubleArray.m; sourceTree = "<group>"; };
 		066193A6155849BC0004DAFE /* IOSFloatArray.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IOSFloatArray.h; sourceTree = "<group>"; };
-		066193A7155849BC0004DAFE /* IOSFloatArray.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IOSFloatArray.m; sourceTree = "<group>"; };
 		066193A8155849BC0004DAFE /* IOSIntArray.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IOSIntArray.h; sourceTree = "<group>"; };
-		066193A9155849BC0004DAFE /* IOSIntArray.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IOSIntArray.m; sourceTree = "<group>"; };
 		066193AE155849BC0004DAFE /* IOSLongArray.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IOSLongArray.h; sourceTree = "<group>"; };
-		066193AF155849BC0004DAFE /* IOSLongArray.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IOSLongArray.m; sourceTree = "<group>"; };
 		066193B0155849BC0004DAFE /* IOSObjectArray.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IOSObjectArray.h; sourceTree = "<group>"; };
 		066193B1155849BC0004DAFE /* IOSObjectArray.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IOSObjectArray.m; sourceTree = "<group>"; };
 		066193B2155849BC0004DAFE /* IOSPrimitiveClass.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IOSPrimitiveClass.h; sourceTree = "<group>"; };
 		066193B3155849BC0004DAFE /* IOSPrimitiveClass.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IOSPrimitiveClass.m; sourceTree = "<group>"; };
 		066193B6155849BC0004DAFE /* IOSShortArray.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IOSShortArray.h; sourceTree = "<group>"; };
-		066193B7155849BC0004DAFE /* IOSShortArray.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IOSShortArray.m; sourceTree = "<group>"; };
 		066193B8155849BC0004DAFE /* JavaObject.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JavaObject.h; sourceTree = "<group>"; };
 		066193B9155849BC0004DAFE /* JreEmulation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JreEmulation.m; sourceTree = "<group>"; };
 		066193E4155849F80004DAFE /* NSObject+JavaObject.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSObject+JavaObject.h"; sourceTree = "<group>"; };
@@ -1384,6 +1376,8 @@
 		2CBD9CBD174ABC0D008A0086 /* NSDataInputStream.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = NSDataInputStream.m; sourceTree = "<group>"; };
 		2CBD9CBE174ABCF8008A0086 /* NSDataOutputStream.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = NSDataOutputStream.h; sourceTree = "<group>"; };
 		2CBD9CBF174ABCF8008A0086 /* NSDataOutputStream.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = NSDataOutputStream.m; sourceTree = "<group>"; };
+		51719E5318EEDDCE006DEEB7 /* IOSPrimitiveArray.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = IOSPrimitiveArray.h; sourceTree = "<group>"; };
+		51719E5418EEDDCE006DEEB7 /* IOSPrimitiveArray.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = IOSPrimitiveArray.m; sourceTree = "<group>"; };
 		A34A99EB1630A9DA006DEC32 /* Tests-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = "Tests-Info.plist"; path = "Tests/Tests-Info.plist"; sourceTree = SOURCE_ROOT; };
 		A34A99EC1630A9DA006DEC32 /* Tests-Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "Tests-Prefix.pch"; path = "Tests/Tests-Prefix.pch"; sourceTree = SOURCE_ROOT; };
 		A34A99F01630A9E7006DEC32 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = Tests/en.lproj/InfoPlist.strings; sourceTree = SOURCE_ROOT; };
@@ -1467,29 +1461,24 @@
 				06619398155849BB0004DAFE /* IOSArrayClass.h */,
 				06619399155849BB0004DAFE /* IOSArrayClass.m */,
 				0661939A155849BB0004DAFE /* IOSBooleanArray.h */,
-				0661939B155849BB0004DAFE /* IOSBooleanArray.m */,
 				0661939C155849BB0004DAFE /* IOSByteArray.h */,
-				0661939D155849BB0004DAFE /* IOSByteArray.m */,
 				0661939E155849BB0004DAFE /* IOSCharArray.h */,
-				0661939F155849BC0004DAFE /* IOSCharArray.m */,
 				066193A0155849BC0004DAFE /* IOSClass.h */,
 				066193A1155849BC0004DAFE /* IOSClass.m */,
 				06ED3D4617D163F80014750E /* IOSConcreteClass.h */,
 				06ED3D4717D163F80014750E /* IOSConcreteClass.m */,
 				066193A4155849BC0004DAFE /* IOSDoubleArray.h */,
-				066193A5155849BC0004DAFE /* IOSDoubleArray.m */,
 				066193A6155849BC0004DAFE /* IOSFloatArray.h */,
-				066193A7155849BC0004DAFE /* IOSFloatArray.m */,
 				066193A8155849BC0004DAFE /* IOSIntArray.h */,
-				066193A9155849BC0004DAFE /* IOSIntArray.m */,
 				06B6D20117C7D3DE00624B3C /* IOSLocaleData.h */,
 				06B6D20217C7D3DE00624B3C /* IOSLocaleData.m */,
 				066193AE155849BC0004DAFE /* IOSLongArray.h */,
-				066193AF155849BC0004DAFE /* IOSLongArray.m */,
 				0671FC1C1857AD70005D9D56 /* IOSMappedClass.h */,
 				0671FC1D1857AD70005D9D56 /* IOSMappedClass.m */,
 				066193B0155849BC0004DAFE /* IOSObjectArray.h */,
 				066193B1155849BC0004DAFE /* IOSObjectArray.m */,
+				51719E5318EEDDCE006DEEB7 /* IOSPrimitiveArray.h */,
+				51719E5418EEDDCE006DEEB7 /* IOSPrimitiveArray.m */,
 				066193B2155849BC0004DAFE /* IOSPrimitiveClass.h */,
 				066193B3155849BC0004DAFE /* IOSPrimitiveClass.m */,
 				06ED3D4817D163F80014750E /* IOSProtocolClass.h */,
@@ -1499,7 +1488,6 @@
 				0675061217F0B3E10015B7E8 /* IOSReflection.h */,
 				06AFD3DA183D3F4D001C90C6 /* IOSReflection.m */,
 				066193B6155849BC0004DAFE /* IOSShortArray.h */,
-				066193B7155849BC0004DAFE /* IOSShortArray.m */,
 				06B1E04F17F6403100F8940B /* Iterable.h */,
 				06B1E05017F6403100F8940B /* Iterable.m */,
 				06BED66A18EDE33F004EA17D /* J2ObjC_common.h */,
