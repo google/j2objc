@@ -172,13 +172,20 @@ public abstract class ObjectiveCSourceFileGenerator extends SourceFileGenerator 
   protected List<IVariableBinding> getStaticFieldsNeedingAccessors(
       List<FieldDeclaration> fields, boolean isInterface) {
     List<IVariableBinding> bindings = Lists.newArrayList();
-    for (VariableDeclarationFragment fragment : getStaticFieldFragments(fields, isInterface)) {
-      bindings.add(Types.getVariableBinding(fragment));
+    for (FieldDeclaration f : fields) {
+      if (Modifier.isStatic(f.getModifiers()) || isInterface) {
+        for (VariableDeclarationFragment var : ASTUtil.getFragments(f)) {
+          bindings.add(Types.getVariableBinding(var));
+        }
+      }
     }
     return bindings;
   }
 
-  protected List<VariableDeclarationFragment> getStaticFieldFragments(
+  /**
+   * Excludes primitive constants which will not have variables declared for them.
+   */
+  protected List<VariableDeclarationFragment> getStaticFieldsNeedingInitialization(
       List<FieldDeclaration> fields, boolean isInterface) {
     List<VariableDeclarationFragment> fragments = Lists.newArrayList();
     for (FieldDeclaration f : fields) {
