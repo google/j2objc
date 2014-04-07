@@ -20,7 +20,6 @@
 #ifndef _JavaLangReflectParameterizedTypeImpl_H_
 #define _JavaLangReflectParameterizedTypeImpl_H_
 
-#import <Foundation/Foundation.h>
 #import "java/lang/reflect/ParameterizedType.h"
 
 @class IOSObjectArray;

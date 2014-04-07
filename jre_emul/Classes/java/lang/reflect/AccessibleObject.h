@@ -22,7 +22,6 @@
 #ifndef _AccessibleObject_H_
 #define _AccessibleObject_H_
 
-#import <Foundation/Foundation.h>
 #import "IOSClass.h"
 #import "java/lang/reflect/AnnotatedElement.h"
 

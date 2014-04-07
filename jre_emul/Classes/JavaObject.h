@@ -22,7 +22,7 @@
 #ifndef _JavaObject_H_
 #define _JavaObject_H_
 
-#import <Foundation/Foundation.h>
+#import "J2ObjC_common.h"
 
 @class IOSClass;
 

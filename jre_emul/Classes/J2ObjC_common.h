@@ -12,6 +12,11 @@
 
 // Common defines needed by all J2ObjC header files.
 
+#ifndef _J2OBJC_COMMON_H_
+#define _J2OBJC_COMMON_H_
+
+#import <Foundation/Foundation.h>
+
 /*!
  * Defines an init function for a class that will ensure that the class is
  * initialized. For class "Foo" the function will have the following signature:
@@ -83,3 +88,5 @@
     return JreOperatorRetainedAssign(&CLASS##_##FIELD, nil, value); \
   }
 #endif
+
+#endif // _J2OBJC_COMMON_H_

@@ -20,7 +20,6 @@
 #ifndef _JavaLangReflectTypeVariableImpl_H_
 #define _JavaLangReflectTypeVariableImpl_H_
 
-#import <Foundation/Foundation.h>
 #import "java/lang/reflect/TypeVariable.h"
 
 @interface JavaLangReflectTypeVariableImpl : NSObject <JavaLangReflectTypeVariable> {

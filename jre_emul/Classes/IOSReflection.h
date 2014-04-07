@@ -20,7 +20,7 @@
 #ifndef JreEmulation_IOSReflection_h
 #define JreEmulation_IOSReflection_h
 
-#import <Foundation/Foundation.h>
+#import "J2ObjC_common.h"
 #import "objc/runtime.h"
 
 @protocol JavaLangReflectType;

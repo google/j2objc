@@ -9,8 +9,6 @@
 #ifndef _NSDictionaryMap_H_
 #define _NSDictionaryMap_H_
 
-#import <Foundation/Foundation.h>
-
 #import "java/util/Map.h"
 
 // An implementation of java.util.Map backed by an NSDictionary.

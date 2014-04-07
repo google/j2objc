@@ -22,7 +22,7 @@
 #ifndef _IOSARRAY_H
 #define _IOSARRAY_H
 
-#import <Foundation/Foundation.h>
+#import "J2ObjC_common.h"
 
 @class IOSClass;
 

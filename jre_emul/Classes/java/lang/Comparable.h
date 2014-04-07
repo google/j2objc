@@ -19,12 +19,12 @@
 //  Created by tball on 10/18/11.
 //
 
-#import "Foundation/Foundation.h"
+#import "JavaObject.h"
 
 #ifndef JAVALANGCOMPARABLE_H
 #define JAVALANGCOMPARABLE_H
 
-@protocol JavaLangComparable < NSObject >
+@protocol JavaLangComparable < NSObject, JavaObject >
 - (int)compareToWithId:(id)another;
 @end
 

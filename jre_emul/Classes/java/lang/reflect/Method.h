@@ -22,7 +22,6 @@
 #ifndef _JavaLangReflectMethod_H_
 #define _JavaLangReflectMethod_H_
 
-#import <Foundation/Foundation.h>
 #import "java/lang/reflect/ExecutableMember.h"
 #import "java/lang/reflect/GenericDeclaration.h"
 #import "java/lang/reflect/Member.h"

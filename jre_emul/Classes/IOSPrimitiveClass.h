@@ -22,7 +22,6 @@
 #ifndef _IOSPrimitiveClass_H_
 #define _IOSPrimitiveClass_H_
 
-#import <Foundation/Foundation.h>
 #import "IOSClass.h"
 
 // An IOSClass instance for primitive Java types, which allow primitives to

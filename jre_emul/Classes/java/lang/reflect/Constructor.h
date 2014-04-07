@@ -22,7 +22,6 @@
 #ifndef _JAVA_LANG_REFLECT_CONSTRUCTOR_H
 #define _JAVA_LANG_REFLECT_CONSTRUCTOR_H
 
-#import <Foundation/Foundation.h>
 #import "java/lang/reflect/GenericDeclaration.h"
 #import "java/lang/reflect/Member.h"
 #import "ExecutableMember.h"

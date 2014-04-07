@@ -22,7 +22,6 @@
 #ifndef _IOSClass_H_
 #define _IOSClass_H_
 
-#import <Foundation/Foundation.h>
 #import "IOSReflection.h"
 #import "java/io/Serializable.h"
 #import "java/lang/reflect/AnnotatedElement.h"

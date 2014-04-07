@@ -25,7 +25,6 @@
 #endif
 
 #ifdef __OBJC__
-#import <Foundation/Foundation.h>
 #import "J2ObjC_common.h"
 #import "JavaObject.h"
 #import "NSObject+JavaObject.h"

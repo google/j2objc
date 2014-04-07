@@ -22,7 +22,6 @@
 #ifndef _NSString_JavaString_H_
 #define _NSString_JavaString_H_
 
-#import <Foundation/Foundation.h>
 #import "IOSByteArray.h"
 #import "IOSCharArray.h"
 #import "IOSIntArray.h"
