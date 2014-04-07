@@ -350,10 +350,11 @@ public class ObjectiveCHeaderGenerator extends ObjectiveCSourceFileGenerator {
     printStaticInitFunction(node, methods);
     printf("\nFOUNDATION_EXPORT %s *%s_values[];\n", typeName, typeName);
     for (EnumConstantDeclaration constant : constants) {
+      String varName = NameTable.getStaticVarName(Types.getVariableBinding(constant.getName()));
       String valueName = constant.getName().getIdentifier();
       printf("\n#define %s_%s %s_values[%s_%s]\n",
-             typeName, valueName, typeName, bareTypeName, valueName);
-      printf("J2OBJC_STATIC_FIELD_GETTER(%s, %s, %s *)\n", typeName, valueName, typeName);
+             typeName, varName, typeName, bareTypeName, valueName);
+      printf("J2OBJC_STATIC_FIELD_GETTER(%s, %s, %s *)\n", typeName, varName, typeName);
     }
     printStaticFields(fields, /* isInterface */ false);
     printFieldSetters(enumType, fields);
