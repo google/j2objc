@@ -104,16 +104,9 @@ import java.security.cert.X509Certificate;
  * connection will be retried with SSLv3 only.
  */
 public abstract class HttpsURLConnection extends HttpURLConnection {
-    /*
-     * Holds default instances so class preloading doesn't create an instance of
-     * it.
-     */
-    private static class NoPreloadHolder {
-        public static HostnameVerifier defaultHostnameVerifier = new DefaultHostnameVerifier();
 
-        public static SSLSocketFactory defaultSSLSocketFactory = (SSLSocketFactory) SSLSocketFactory
-                .getDefault();
-    }
+    private static HostnameVerifier defaultHostnameVerifier;
+    private static SSLSocketFactory defaultSSLSocketFactory;
 
     /**
      * Sets the default hostname verifier to be used by new instances.
@@ -123,11 +116,11 @@ public abstract class HttpsURLConnection extends HttpURLConnection {
      * @throws IllegalArgumentException
      *             if the specified verifier is {@code null}.
      */
-    public static void setDefaultHostnameVerifier(HostnameVerifier v) {
+    public static synchronized void setDefaultHostnameVerifier(HostnameVerifier v) {
         if (v == null) {
             throw new IllegalArgumentException("HostnameVerifier is null");
         }
-        NoPreloadHolder.defaultHostnameVerifier = v;
+        defaultHostnameVerifier = v;
     }
 
     /**
@@ -135,8 +128,11 @@ public abstract class HttpsURLConnection extends HttpURLConnection {
      *
      * @return the default hostname verifier.
      */
-    public static HostnameVerifier getDefaultHostnameVerifier() {
-        return NoPreloadHolder.defaultHostnameVerifier;
+    public static synchronized HostnameVerifier getDefaultHostnameVerifier() {
+        if (defaultHostnameVerifier == null) {
+            defaultHostnameVerifier = new DefaultHostnameVerifier();
+        }
+        return defaultHostnameVerifier;
     }
 
     /**
@@ -147,11 +143,11 @@ public abstract class HttpsURLConnection extends HttpURLConnection {
      * @throws IllegalArgumentException
      *             if the specified socket factory is {@code null}.
      */
-    public static void setDefaultSSLSocketFactory(SSLSocketFactory sf) {
+    public static synchronized void setDefaultSSLSocketFactory(SSLSocketFactory sf) {
         if (sf == null) {
             throw new IllegalArgumentException("SSLSocketFactory is null");
         }
-        NoPreloadHolder.defaultSSLSocketFactory = sf;
+        defaultSSLSocketFactory = sf;
     }
 
     /**
@@ -159,8 +155,11 @@ public abstract class HttpsURLConnection extends HttpURLConnection {
      *
      * @return the default SSL socket factory for new instances.
      */
-    public static SSLSocketFactory getDefaultSSLSocketFactory() {
-        return NoPreloadHolder.defaultSSLSocketFactory;
+    public static synchronized SSLSocketFactory getDefaultSSLSocketFactory() {
+        if (defaultSSLSocketFactory == null) {
+            defaultSSLSocketFactory = (SSLSocketFactory) SSLSocketFactory.getDefault();
+        }
+        return defaultSSLSocketFactory;
     }
 
     /**
@@ -181,8 +180,8 @@ public abstract class HttpsURLConnection extends HttpURLConnection {
      */
     protected HttpsURLConnection(URL url) {
         super(url);
-        hostnameVerifier = NoPreloadHolder.defaultHostnameVerifier;
-        sslSocketFactory = NoPreloadHolder.defaultSSLSocketFactory;
+        hostnameVerifier = getDefaultHostnameVerifier();
+        sslSocketFactory = getDefaultSSLSocketFactory();
     }
 
     /**
