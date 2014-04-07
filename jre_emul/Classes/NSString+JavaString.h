@@ -27,6 +27,7 @@
 #import "IOSCharArray.h"
 #import "IOSIntArray.h"
 #import "IOSObjectArray.h"
+#import "J2ObjC_common.h"
 #import "java/io/Serializable.h"
 #import "java/lang/CharSequence.h"
 #import "java/lang/Comparable.h"
@@ -36,6 +37,8 @@
 @class JavaNioCharsetCharset;
 @class JavaUtilLocale;
 @protocol JavaUtilComparator;
+
+#define NSString_serialVersionUID -6849794470754667710LL
 
 // A category that adds java.lang.String-like methods to NSString.  The method
 // list is not exhaustive, since methods that can be directly substituted are
@@ -293,12 +296,24 @@ destinationBegin:(int)dstBegin;
 
 // String.offsetByCodePoints(int, int)
 
-+ (id<JavaUtilComparator>)CASE_INSENSITIVE_ORDER;
-
 @end
 
 // Empty class to force category to be loaded.
 @interface JreStringCategoryDummy : NSObject
 @end
+
+// Use the category dummy to initialize static variables for the String class.
+FOUNDATION_EXPORT BOOL NSString_initialized;
+__attribute__((always_inline)) inline void NSString_init() { \
+  if (!__builtin_expect(NSString_initialized, YES)) { \
+    [JreStringCategoryDummy class];
+  }
+}
+
+FOUNDATION_EXPORT id<JavaUtilComparator> NSString_CASE_INSENSITIVE_ORDER_;
+J2OBJC_STATIC_FIELD_GETTER(NSString, CASE_INSENSITIVE_ORDER_, id<JavaUtilComparator>)
+
+FOUNDATION_EXPORT IOSObjectArray *NSString_serialPersistentFields_;
+J2OBJC_STATIC_FIELD_GETTER(NSString, serialPersistentFields_, IOSObjectArray *)
 
 #endif // _NSString_JavaString_H_

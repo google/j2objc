@@ -31,7 +31,7 @@ public class StaticVarRewriterTest extends GenerationTest {
         + "static class Other { void test() { test.obj.toString(); test.obj.toString(); } } }",
         "Test", "Test.m");
     assertTranslatedLines(translation,
-        "[nil_chk(((Test *) nil_chk([Test test]))->obj_) description];",
-        "[[Test test]->obj_ description];");
+        "[nil_chk(((Test *) nil_chk(Test_get_test_()))->obj_) description];",
+        "[Test_get_test_()->obj_ description];");
   }
 }

@@ -52,6 +52,16 @@ id<JavaLangReflectType> JreTypeForString(const char *typeStr) {
   @throw AUTORELEASE([[JavaLangAssertionError alloc] initWithNSString:msg]);
 }
 
+IOSClass *TypeToClass(id<JavaLangReflectType> type) {
+  if (!type) {
+    return nil;
+  }
+  if ([type isKindOfClass:[IOSClass class]]) {
+    return (IOSClass *)type;
+  }
+  return [IOSClass objectClass];
+}
+
 Method JreFindInstanceMethod(Class cls, const char *name) {
   unsigned int count;
   Method result = nil;

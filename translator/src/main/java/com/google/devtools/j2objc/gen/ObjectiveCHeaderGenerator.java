@@ -142,24 +142,23 @@ public class ObjectiveCHeaderGenerator extends ObjectiveCSourceFileGenerator {
       }
       print(isInterface ? ", NSObject, JavaObject >" : " >");
     } else if (isInterface) {
-      print(" < NSObject, JavaObject >");
+      println(" < NSObject, JavaObject >");
     }
-    if (isInterface) {
-      newline();
-    } else {
+    if (!isInterface) {
       println(" {");
       printInstanceVariables(fields);
-      println("}\n");
+      println("}");
       printStaticFieldAccessors(fields, methods, isInterface);
     }
     printMethods(methods);
-    println("@end");
-    if (!isInterface) {
-      printFieldSetters(binding, fields);
-    }
+    println("\n@end");
 
     if (isInterface) {
-      printStaticInterface(typeName, fields, methods);
+      printStaticInterface(node, fields, methods);
+    } else {
+      printStaticInitFunction(node, methods);
+      printFieldSetters(binding, fields);
+      printStaticFields(fields, isInterface);
     }
 
     printIncrementAndDecrementFunctions(binding);
@@ -217,30 +216,35 @@ public class ObjectiveCHeaderGenerator extends ObjectiveCSourceFileGenerator {
       newline();
       printAnnotationProperties(members);
     }
-    println("@end\n");
+    println("\n@end");
 
     List<IVariableBinding> staticFields = getStaticFieldsNeedingAccessors(
         ASTUtil.getFieldDeclarations(node), /* isInterface */ true);
 
     if (isRuntime || !staticFields.isEmpty()) {
       // Print annotation implementation interface.
-      printf("@interface %s : NSObject < %s >", typeName, typeName);
+      printf("\n@interface %s : NSObject < %s >", typeName, typeName);
       if (isRuntime) {
         if (members.isEmpty()) {
           newline();
         } else {
           println(" {\n @private");
           printAnnotationVariables(members);
-          println("}\n");
+          println("}");
         }
         printAnnotationConstructor(Types.getTypeBinding(node));
         printAnnotationAccessors(members);
       } else {
         newline();
-        newline();
       }
-      printStaticFieldAccessors(staticFields, Collections.<MethodDeclaration>emptyList());
-      println("@end");
+      printStaticFieldAccessors(
+          ASTUtil.getFieldDeclarations(node), Collections.<MethodDeclaration>emptyList(),
+          /* isInterface */ true);
+      println("\n@end");
+      printStaticInitFunction(node, ASTUtil.getMethodDeclarations(node));
+      for (IVariableBinding field : staticFields) {
+        printStaticField(field);
+      }
     }
   }
 
@@ -265,16 +269,22 @@ public class ObjectiveCHeaderGenerator extends ObjectiveCSourceFileGenerator {
   }
 
   private void printStaticInterface(
-      String typeName, List<FieldDeclaration> fields, List<MethodDeclaration> methods) {
+      TypeDeclaration node, List<FieldDeclaration> fields, List<MethodDeclaration> methods) {
     // Print @interface for static constants, if any.
     List<IVariableBinding> staticFields =
         getStaticFieldsNeedingAccessors(fields, /* isInterface */ true);
     if (staticFields.isEmpty()) {
       return;
     }
-    printf("\n@interface %s : NSObject {\n}\n", typeName);
-    printStaticFieldAccessors(staticFields, methods);
-    println("@end");
+    ITypeBinding binding = Types.getTypeBinding(node);
+    String typeName = NameTable.getFullName(binding);
+    printf("\n@interface %s : NSObject\n", typeName);
+    printStaticFieldAccessors(fields, methods, /* isInterface */ true);
+    println("\n@end");
+    printStaticInitFunction(node, methods);
+    for (IVariableBinding field : staticFields) {
+      printStaticField(field);
+    }
   }
 
   @Override
@@ -337,30 +347,83 @@ public class ObjectiveCHeaderGenerator extends ObjectiveCSourceFileGenerator {
     printStaticFieldAccessors(fields, methods, /* isInterface */ false);
     printMethods(methods);
     println("@end");
+    printStaticInitFunction(node, methods);
+    for (EnumConstantDeclaration constant : constants) {
+      IVariableBinding var = Types.getVariableBinding(constant.getName());
+      printStaticField(var);
+    }
+    printStaticFields(fields, /* isInterface */ false);
     printFieldSetters(enumType, fields);
   }
 
   @Override
   protected void printStaticFieldGetter(IVariableBinding var) {
-    printf(staticFieldGetterSignature(var) + ";\n");
+    newline();
+    println(staticFieldGetterSignature(var));
+    println(";");
   }
 
   @Override
   protected void printStaticFieldReferenceGetter(IVariableBinding var) {
-    printf(staticFieldReferenceGetterSignature(var) + ";\n");
+    newline();
+    println(staticFieldReferenceGetterSignature(var));
+    println(";");
   }
 
   @Override
   protected void printStaticFieldSetter(IVariableBinding var) {
-    printf(staticFieldSetterSignature(var) + ";\n");
+    newline();
+    println(staticFieldSetterSignature(var));
+    println(";");
+  }
+
+  private void printStaticInitFunction(
+      AbstractTypeDeclaration node, List<MethodDeclaration> methods) {
+    ITypeBinding binding = Types.getTypeBinding(node);
+    String typeName = NameTable.getFullName(binding);
+    if (hasInitializeMethod(node, methods)) {
+      printf("\nFOUNDATION_EXPORT BOOL %s_initialized;\n", typeName);
+      printf("J2OBJC_STATIC_INIT(%s)\n", typeName);
+    } else {
+      printf("\n__attribute__((always_inline)) inline void %s_init() {}\n", typeName);
+    }
+  }
+
+  private void printStaticFields(List<FieldDeclaration> fields, boolean isInterface) {
+    for (IVariableBinding var : getStaticFieldsNeedingAccessors(fields, isInterface)) {
+      printStaticField(var);
+    }
+  }
+
+  protected void printStaticField(IVariableBinding var) {
+    String objcType = NameTable.getObjCType(var.getType());
+    String typeWithSpace = objcType + (objcType.endsWith("*") ? "" : " ");
+    String name = NameTable.getStaticVarName(var);
+    String className = NameTable.getFullName(var.getDeclaringClass());
+    boolean isFinal = Modifier.isFinal(var.getModifiers());
+    boolean isPrimitive = var.getType().isPrimitive();
+    printf("\nFOUNDATION_EXPORT %s%s_%s;\n", typeWithSpace, className, name);
+    printf("J2OBJC_STATIC_FIELD_GETTER(%s, %s, %s)\n", className, name, objcType);
+    if (!isFinal) {
+      if (isPrimitive) {
+        printf("J2OBJC_STATIC_FIELD_REF_GETTER(%s, %s, %s)\n", className, name, objcType);
+      } else {
+        printf("J2OBJC_STATIC_FIELD_SETTER(%s, %s, %s)\n", className, name, objcType);
+      }
+    }
   }
 
   @Override
-  protected String methodDeclaration(MethodDeclaration m) {
-    if ((m.getModifiers() & Modifier.NATIVE) > 0 && !hasNativeCode(m)) {
-      return "";
+  protected void printNormalMethod(MethodDeclaration m) {
+    IMethodBinding binding = Types.getMethodBinding(m);
+    if (binding.isSynthetic()) {
+      return;
     }
-    String result = super.methodDeclaration(m);
+    if ((m.getModifiers() & Modifier.NATIVE) > 0 && !hasNativeCode(m)) {
+      return;
+    }
+    newline();
+    print(super.methodDeclaration(m));
     String methodName = NameTable.getName(Types.getMethodBinding(m));
     if (needsObjcMethodFamilyNoneAttribute(methodName)) {
          // Getting around a clang warning.
@@ -371,14 +434,13 @@ public class ObjectiveCHeaderGenerator extends ObjectiveCSourceFileGenerator {
          // See http://clang.llvm.org/docs/AutomaticReferenceCounting.html
          // Sections 5.1 (Explicit method family control)
          // and 5.2.2 (Related result types)
-         result += " OBJC_METHOD_FAMILY_NONE";
+         print(" OBJC_METHOD_FAMILY_NONE");
        }
 
     if (needsDeprecatedAttribute(ASTUtil.getModifiers(m))) {
-      result += " " + DEPRECATED_ATTRIBUTE;
+      print(" " + DEPRECATED_ATTRIBUTE);
     }
-
-    return result + ";\n";
+    println(";");
   }
 
   private boolean needsObjcMethodFamilyNoneAttribute(String name) {
@@ -388,12 +450,13 @@ public class ObjectiveCHeaderGenerator extends ObjectiveCSourceFileGenerator {
 
   @Override
   protected String mappedMethodDeclaration(MethodDeclaration method, IOSMethod mappedMethod) {
-    return super.mappedMethodDeclaration(method, mappedMethod) + ";\n";
+    return "\n" + super.mappedMethodDeclaration(method, mappedMethod) + ";\n";
   }
 
   @Override
-  protected String constructorDeclaration(MethodDeclaration m) {
-    return super.constructorDeclaration(m) + ";\n";
+  protected void printConstructor(MethodDeclaration m) {
+    newline();
+    println(super.constructorDeclaration(m) + ";");
   }
 
   @Override
@@ -405,14 +468,6 @@ public class ObjectiveCHeaderGenerator extends ObjectiveCSourceFileGenerator {
   protected void printMethod(MethodDeclaration m) {
     printDocComment(m.getJavadoc());
     super.printMethod(m);
-  }
-
-  @Override
-  protected void printNormalMethod(MethodDeclaration m) {
-    IMethodBinding binding = Types.getMethodBinding(m);
-    if (!binding.isSynthetic()) {
-      super.printNormalMethod(m);
-    }
   }
 
   protected void printForwardDeclarations(Set<Import> forwardDecls) {
@@ -529,8 +584,9 @@ public class ObjectiveCHeaderGenerator extends ObjectiveCSourceFileGenerator {
 
   private void printAnnotationConstructor(ITypeBinding annotation) {
     if (annotation.getDeclaredMethods().length > 0) {
+      newline();
       print(annotationConstructorDeclaration(annotation));
-      println(";\n");
+      println(";");
     }
   }
 
@@ -580,18 +636,18 @@ public class ObjectiveCHeaderGenerator extends ObjectiveCSourceFileGenerator {
   }
 
   private void printAnnotationAccessors(List<AnnotationTypeMemberDeclaration> members) {
-    int nPrinted = 0;
+    boolean printedNewline = false;
     for (AnnotationTypeMemberDeclaration member : members) {
       if (member.getDefault() != null) {
+        if (!printedNewline) {
+          newline();
+          printedNewline = true;
+        }
         ITypeBinding type = Types.getTypeBinding(member.getType());
         String typeString = NameTable.getSpecificObjCType(type);
         String propertyName = NameTable.getName(member.getName());
         printf("+ (%s)%sDefault;\n", typeString, propertyName);
-        nPrinted++;
       }
-    }
-    if (nPrinted > 0) {
-      newline();
     }
   }
 

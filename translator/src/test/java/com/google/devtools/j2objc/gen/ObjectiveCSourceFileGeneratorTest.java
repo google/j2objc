@@ -93,22 +93,19 @@ public class ObjectiveCSourceFileGeneratorTest extends GenerationTest {
         " private static final String finalBar = \"test\";" +
         " }", "Test", "Test.h");
     assertTranslation(header, "#define Test_finalFoo 12");
-    String implementation = getTranslatedFile("Test.m");
-    for (String translation : new String[] { header, implementation }) {
-      assertTranslation(translation, "+ (int)foo");
-      assertTranslation(translation, "+ (int *)fooRef");
-      assertTranslation(translation, "+ (NSString *)bar");
-      assertTranslation(translation, "+ (void)setBar:(NSString *)bar");
-      assertTranslation(translation, "+ (NSString *)finalBar");
-      assertFalse(translation.contains("setFinalBar"));
-    }
+    assertTranslation(header, "J2OBJC_STATIC_FIELD_GETTER(Test, foo_, int)");
+    assertTranslation(header, "J2OBJC_STATIC_FIELD_REF_GETTER(Test, foo_, int)");
+    assertTranslation(header, "J2OBJC_STATIC_FIELD_GETTER(Test, bar_, NSString *)");
+    assertTranslation(header, "J2OBJC_STATIC_FIELD_SETTER(Test, bar_, NSString *)");
+    assertTranslation(header, "J2OBJC_STATIC_FIELD_GETTER(Test, finalBar_, NSString *)");
+    assertNotInTranslation(header, "J2OBJC_STATIC_FIELD_SETTER(Test, finalBar_, NSString *)");
   }
 
   public void testStaticReaderAddedWhenSameMethodNameExists() throws IOException {
     String translation = translateSourceFile(
         "class Test { private static int foo; void foo(String s) {}}", "Test", "Test.h");
-    assertTranslation(translation, "+ (int)foo;");
-    assertTranslation(translation, "+ (int *)fooRef;");
+    assertTranslation(translation, "J2OBJC_STATIC_FIELD_GETTER(Test, foo__, int)");
+    assertTranslation(translation, "J2OBJC_STATIC_FIELD_REF_GETTER(Test, foo__, int)");
     assertTranslation(translation, "- (void)fooWithNSString:(NSString *)s;");
   }
 

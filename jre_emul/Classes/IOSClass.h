@@ -179,6 +179,9 @@
 // Boxing and unboxing (internal)
 - (id)__boxValue:(J2ObjcRawValue *)rawValue;
 - (BOOL)__unboxValue:(id)value toRawValue:(J2ObjcRawValue *)rawValue;
+- (void)__readRawValue:(J2ObjcRawValue *)rawValue fromAddress:(const void *)addr;
+- (void)__writeRawValue:(J2ObjcRawValue *)rawValue toAddress:(const void *)addr;
+- (BOOL)__convertRawValue:(J2ObjcRawValue *)rawValue toType:(IOSClass *)type;
 
 // Internal methods
 - (void)collectMethods:(NSMutableDictionary *)methodMap

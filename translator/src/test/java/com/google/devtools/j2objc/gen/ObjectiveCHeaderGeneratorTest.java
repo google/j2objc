@@ -174,8 +174,10 @@ public class ObjectiveCHeaderGeneratorTest extends GenerationTest {
     String translation = translateSourceFile(
         "public class Example { public static java.util.Date today; }",
         "Example", "Example.h");
-    assertTranslation(translation, "+ (JavaUtilDate *)today;");
-    assertTranslation(translation, "+ (void)setToday:(JavaUtilDate *)today;");
+    assertTranslatedLines(translation,
+        "FOUNDATION_EXPORT JavaUtilDate *Example_today_;",
+        "J2OBJC_STATIC_FIELD_GETTER(Example, today_, JavaUtilDate *)",
+        "J2OBJC_STATIC_FIELD_SETTER(Example, today_, JavaUtilDate *)");
     assertFalse(translation.contains("initialize"));
     assertFalse(translation.contains("dealloc"));
   }
@@ -184,8 +186,10 @@ public class ObjectiveCHeaderGeneratorTest extends GenerationTest {
     String translation = translateSourceFile(
         "public class Example { public static java.util.Date today = new java.util.Date(); }",
         "Example", "Example.h");
-    assertTranslation(translation, "+ (JavaUtilDate *)today;");
-    assertTranslation(translation, "+ (void)setToday:(JavaUtilDate *)today;");
+    assertTranslatedLines(translation,
+        "FOUNDATION_EXPORT JavaUtilDate *Example_today_;",
+        "J2OBJC_STATIC_FIELD_GETTER(Example, today_, JavaUtilDate *)",
+        "J2OBJC_STATIC_FIELD_SETTER(Example, today_, JavaUtilDate *)");
     assertFalse(translation.contains("+ (void)initialize;"));
     assertFalse(translation.contains("dealloc"));
   }
@@ -276,11 +280,17 @@ public class ObjectiveCHeaderGeneratorTest extends GenerationTest {
     assertTranslation(translation, "Color_BLUE = 2,");
     assertTranslation(translation, "} Color;");
     assertTranslation(translation, "@interface ColorEnum : JavaLangEnum < NSCopying > {");
-    assertTranslation(translation, "+ (ColorEnum *)RED;");
-    assertTranslation(translation, "+ (ColorEnum *)WHITE;");
-    assertTranslation(translation, "+ (ColorEnum *)BLUE;");
     assertTranslation(translation, "+ (IOSObjectArray *)values;");
     assertTranslation(translation, "+ (ColorEnum *)valueOfWithNSString:(NSString *)name;");
+    assertTranslatedLines(translation,
+        "FOUNDATION_EXPORT ColorEnum *ColorEnum_RED;",
+        "J2OBJC_STATIC_FIELD_GETTER(ColorEnum, RED, ColorEnum *)");
+    assertTranslatedLines(translation,
+        "FOUNDATION_EXPORT ColorEnum *ColorEnum_WHITE;",
+        "J2OBJC_STATIC_FIELD_GETTER(ColorEnum, WHITE, ColorEnum *)");
+    assertTranslatedLines(translation,
+        "FOUNDATION_EXPORT ColorEnum *ColorEnum_BLUE;",
+        "J2OBJC_STATIC_FIELD_GETTER(ColorEnum, BLUE, ColorEnum *)");
   }
 
   public void testEnumWithParameters() throws IOException {
@@ -399,7 +409,7 @@ public class ObjectiveCHeaderGeneratorTest extends GenerationTest {
         "MyEnum", "MyEnum.h");
     assertTranslation(translation, "} MyEnum;");
     assertTranslation(translation, "@interface MyEnumEnum : JavaLangEnum");
-    assertTranslation(translation, "+ (MyEnumEnum *)ONE;");
+    assertTranslation(translation, "FOUNDATION_EXPORT MyEnumEnum *MyEnumEnum_ONE;");
   }
 
   public void testNoImportForMappedTypes() throws IOException {

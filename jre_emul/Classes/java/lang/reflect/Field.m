@@ -23,16 +23,9 @@
 #import "IOSObjectArray.h"
 #import "JavaMetadata.h"
 #import "java/lang/AssertionError.h"
-#import "java/lang/Boolean.h"
-#import "java/lang/Byte.h"
-#import "java/lang/Character.h"
-#import "java/lang/Double.h"
-#import "java/lang/Float.h"
-#import "java/lang/Integer.h"
-#import "java/lang/Long.h"
+#import "java/lang/IllegalAccessException.h"
+#import "java/lang/IllegalArgumentException.h"
 #import "java/lang/NullPointerException.h"
-#import "java/lang/Short.h"
-#import "java/lang/Void.h"
 #import "java/lang/reflect/Field.h"
 #import "java/lang/reflect/Method.h"
 #import "java/lang/reflect/Modifier.h"
@@ -91,194 +84,165 @@ typedef union {
           [self propertyName]];
 }
 
-static id GetStaticValue(JavaLangReflectField *field) {
-  JavaLangReflectMethod *getter = [field->declaringClass_ getMethod:[field getName]
-                                                     parameterTypes:nil];
-  return [getter invokeWithId:field->declaringClass_ withNSObjectArray:nil];
-}
-
-static void SetStaticValue(JavaLangReflectField *field, id value) {
-  NSString *fieldName = [field getName];
-  NSString *firstChar = [[fieldName substringToIndex:1] capitalizedString];
-  NSString *setterName =
-      [NSString stringWithFormat:@"set%@",
-       [fieldName stringByReplacingCharactersInRange:NSMakeRange(0, 1) withString:firstChar]];
-  IOSObjectArray *parameterTypes = [IOSObjectArray arrayWithLength:1 type:[IOSClass getClass]];
-  [parameterTypes replaceObjectAtIndex:0 withObject:[field getType]];
-  JavaLangReflectMethod *setter =
-      [field->declaringClass_ getMethod:setterName parameterTypes:parameterTypes];
-  IOSObjectArray *args = [IOSObjectArray arrayWithLength:1 type:[IOSClass objectClass]];
-  [args replaceObjectAtIndex:0 withObject:value];
-  [setter invokeWithId:field->declaringClass_ withNSObjectArray:nil];
-}
-
-BOOL IsStatic(JavaLangReflectField *field) {
+static BOOL IsStatic(JavaLangReflectField *field) {
   return ([field->metadata_ modifiers] & JavaLangReflectModifier_STATIC) > 0;
 }
 
-- (id)getWithId:(id)object {
-  if (IsStatic(self)) {
-    return GetStaticValue(self);
-  }
-  return object_getIvar(object, ivar_);
+static BOOL IsFinal(JavaLangReflectField *field) {
+  return ([field->metadata_ modifiers] & JavaLangReflectModifier_FINAL) > 0;
 }
 
-// Returns a pointer to this field's value for a specified object.
-- (void *)pvar:(id)object {
-  return ((ARCBRIDGE void *) object) + ivar_getOffset(ivar_);
+static void ReadRawValue(
+    J2ObjcRawValue *rawValue, JavaLangReflectField *field, id object, IOSClass *toType) {
+  IOSClass *type = TypeToClass([field->metadata_ type]);
+  if (!type) {
+    // Reflection stripped, assume the caller knows the correct type.
+    type = toType;
+  }
+  if (IsStatic(field)) {
+    const void *addr = [field->metadata_ staticRef];
+    if (addr) {
+      [type __readRawValue:rawValue fromAddress:addr];
+    } else {
+      *rawValue = *[field->metadata_ getConstantValue];
+    }
+  } else {
+    nil_chk(object);
+    [type __readRawValue:rawValue fromAddress:((void *)object) + ivar_getOffset(field->ivar_)];
+  }
+  if (![type __convertRawValue:rawValue toType:toType]) {
+    @throw AUTORELEASE([[JavaLangIllegalArgumentException alloc] initWithNSString:
+        @"field type mismatch"]);
+  }
+}
+
+static void SetWithRawValue(
+    J2ObjcRawValue *rawValue, JavaLangReflectField *field, id object, IOSClass *fromType) {
+  IOSClass *type = TypeToClass([field->metadata_ type]);
+  if (!type) {
+    // Reflection stripped, assume the caller knows the correct type.
+    type = fromType;
+  }
+  if (![fromType __convertRawValue:rawValue toType:type]) {
+    @throw AUTORELEASE([[JavaLangIllegalArgumentException alloc] initWithNSString:
+        @"field type mismatch"]);
+  }
+  if (IsStatic(field)) {
+    if (IsFinal(field)) {
+      @throw AUTORELEASE([[JavaLangIllegalAccessException alloc] initWithNSString:
+          @"Can not set static final field"]);
+    }
+    const void *addr = [field->metadata_ staticRef];
+    [type __writeRawValue:rawValue toAddress:addr];
+  } else {
+    nil_chk(object);
+    [type __writeRawValue:rawValue toAddress:((void *)object) + ivar_getOffset(field->ivar_)];
+  }
+}
+
+- (id)getWithId:(id)object {
+  J2ObjcRawValue rawValue;
+  ReadRawValue(&rawValue, self, object, [IOSClass objectClass]);
+  return rawValue.asId;
 }
 
 - (BOOL)getBooleanWithId:(id)object {
-  if (IsStatic(self)) {
-    return [(JavaLangBoolean *) GetStaticValue(self) booleanValue];
-  }
-  return *(BOOL *) [self pvar:object];
+  J2ObjcRawValue rawValue;
+  ReadRawValue(&rawValue, self, object, [IOSClass booleanClass]);
+  return rawValue.asBOOL;
 }
 
 - (char)getByteWithId:(id)object {
-  if (IsStatic(self)) {
-    return [(JavaLangByte *) GetStaticValue(self) charValue];
-  }
-  return *(char *) [self pvar:object];
+  J2ObjcRawValue rawValue;
+  ReadRawValue(&rawValue, self, object, [IOSClass byteClass]);
+  return rawValue.asChar;
 }
 
 - (unichar)getCharWithId:(id)object {
-  if (IsStatic(self)) {
-    return [(JavaLangCharacter *) GetStaticValue(self) charValue];
-  }
-  return *(unichar *) [self pvar:object];
+  J2ObjcRawValue rawValue;
+  ReadRawValue(&rawValue, self, object, [IOSClass charClass]);
+  return rawValue.asUnichar;
 }
 
 - (double)getDoubleWithId:(id)object {
-  if (IsStatic(self)) {
-    return [(JavaLangDouble *) GetStaticValue(self) doubleValue];
-  }
-  return *(double *) [self pvar:object];
+  J2ObjcRawValue rawValue;
+  ReadRawValue(&rawValue, self, object, [IOSClass doubleClass]);
+  return rawValue.asDouble;
 }
 
 - (float)getFloatWithId:(id)object {
-  if (IsStatic(self)) {
-    return [(JavaLangFloat *) GetStaticValue(self) floatValue];
-  }
-  return *(float *) [self pvar:object];
+  J2ObjcRawValue rawValue;
+  ReadRawValue(&rawValue, self, object, [IOSClass floatClass]);
+  return rawValue.asFloat;
 }
 
 - (int)getIntWithId:(id)object {
-  if (IsStatic(self)) {
-    return [(JavaLangInteger *) GetStaticValue(self) intValue];
-  }
-  return *(int *) [self pvar:object];
+  J2ObjcRawValue rawValue;
+  ReadRawValue(&rawValue, self, object, [IOSClass intClass]);
+  return rawValue.asInt;
 }
 
 - (long long)getLongWithId:(id)object {
-  if (IsStatic(self)) {
-    return [(JavaLangLong *) GetStaticValue(self) longLongValue];
-  }
-  return *(long long *) [self pvar:object];
+  J2ObjcRawValue rawValue;
+  ReadRawValue(&rawValue, self, object, [IOSClass longClass]);
+  return rawValue.asLong;
 }
 
 - (short)getShortWithId:(id)object {
-  if (IsStatic(self)) {
-    return [(JavaLangShort *) GetStaticValue(self) shortValue];
-  }
-  return *(short *) [self pvar:object];
-}
-
-- (void)setAndRetain:(id)object withId:(id) ARC_CONSUME_PARAMETER value {
-  object_setIvar(object, ivar_, value);
+  J2ObjcRawValue rawValue;
+  ReadRawValue(&rawValue, self, object, [IOSClass shortClass]);
+  return rawValue.asShort;
 }
 
 - (void)setWithId:(id)object withId:(id)value {
-  if (IsStatic(self)) {
-    SetStaticValue(self, value);
-  } else {
-    // Test for nil, since calling a method that consumes its parameters
-    // with nil causes a leak.
-    // http://clang.llvm.org/docs/AutomaticReferenceCounting.html#retain-count-semantics
-    if (value) {
-      [self setAndRetain:object withId:value];
-    } else {
-      object_setIvar(object, ivar_, value);
-    }
-  }
+  J2ObjcRawValue rawValue = { .asId = value };
+  SetWithRawValue(&rawValue, self, object, [IOSClass objectClass]);
 }
 
 - (void)setBooleanWithId:(id)object withBoolean:(BOOL)value {
-  if (IsStatic(self)) {
-    SetStaticValue(self, value ? [JavaLangBoolean getTRUE] : [JavaLangBoolean getFALSE]);
-  } else {
-    BOOL *field = (BOOL *) [self pvar:object];
-    *field = value;
-  }
+  J2ObjcRawValue rawValue = { .asBOOL = value };
+  SetWithRawValue(&rawValue, self, object, [IOSClass booleanClass]);
 }
 
 - (void)setByteWithId:(id)object withByte:(char)value {
-  if (IsStatic(self)) {
-    SetStaticValue(self, [JavaLangByte valueOfWithByte:value]);
-  } else {
-    char *field = (char *) [self pvar:object];
-    *field = value;
-  }
+  J2ObjcRawValue rawValue = { .asChar = value };
+  SetWithRawValue(&rawValue, self, object, [IOSClass byteClass]);
 }
 
 - (void)setCharWithId:(id)object withChar:(unichar)value {
-  if (IsStatic(self)) {
-    SetStaticValue(self, [JavaLangCharacter valueOfWithChar:value]);
-  } else {
-    unichar *field = (unichar *) [self pvar:object];
-    *field = value;
-  }
+  J2ObjcRawValue rawValue = { .asUnichar = value };
+  SetWithRawValue(&rawValue, self, object, [IOSClass charClass]);
 }
 
 - (void)setDoubleWithId:(id)object withDouble:(double)value {
-  if (IsStatic(self)) {
-    SetStaticValue(self, [JavaLangDouble valueOfWithDouble:value]);
-  } else {
-    double *field = (double *) [self pvar:object];
-    *field = value;
-  }
+  J2ObjcRawValue rawValue = { .asDouble = value };
+  SetWithRawValue(&rawValue, self, object, [IOSClass doubleClass]);
 }
 
 - (void)setFloatWithId:(id)object withFloat:(float)value {
-  if (IsStatic(self)) {
-    SetStaticValue(self, [JavaLangFloat valueOfWithFloat:value]);
-  } else {
-    float *field = (float *) [self pvar:object];
-    *field = value;
-  }
+  J2ObjcRawValue rawValue = { .asFloat = value };
+  SetWithRawValue(&rawValue, self, object, [IOSClass floatClass]);
 }
 
 - (void)setIntWithId:(id)object withInt:(int)value {
-  if (IsStatic(self)) {
-    SetStaticValue(self, [JavaLangInteger valueOfWithInt:value]);
-  } else {
-    int *field = (int *) [self pvar:object];
-    *field = value;
-  }
+  J2ObjcRawValue rawValue = { .asInt = value };
+  SetWithRawValue(&rawValue, self, object, [IOSClass intClass]);
 }
 
 - (void)setLongWithId:(id)object withLong:(long long)value {
-  if (IsStatic(self)) {
-    SetStaticValue(self, [JavaLangLong valueOfWithLong:value]);
-  } else {
-    long long *field = (long long *) [self pvar:object];
-    *field = value;
-  }
+  J2ObjcRawValue rawValue = { .asLong = value };
+  SetWithRawValue(&rawValue, self, object, [IOSClass longClass]);
 }
 
 - (void)setShortWithId:(id)object withShort:(short)value {
-  if (IsStatic(self)) {
-    SetStaticValue(self, [JavaLangShort valueOfWithShort:value]);
-  } else {
-    short *field = (short *) [self pvar:object];
-    *field = value;
-  }
+  J2ObjcRawValue rawValue = { .asShort = value };
+  SetWithRawValue(&rawValue, self, object, [IOSClass shortClass]);
 }
 
 
 - (IOSClass *)getType {
   if (metadata_) {
-    return (IOSClass *) [metadata_ type];
+    return TypeToClass([metadata_ type]);
   }
   if (!ivar_) {
     // Static field, use accessor method's return type.

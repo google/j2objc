@@ -842,6 +842,19 @@ IOSObjectArray *copyFieldsToObjectArray(NSArray *fields) {
   return true;
 }
 
+- (void)__readRawValue:(J2ObjcRawValue *)rawValue fromAddress:(const void *)addr {
+  rawValue->asId = *(id *)addr;
+}
+
+- (void)__writeRawValue:(J2ObjcRawValue *)rawValue toAddress:(const void *)addr {
+  *(id *)addr = rawValue->asId;
+}
+
+- (BOOL)__convertRawValue:(J2ObjcRawValue *)rawValue toType:(IOSClass *)type {
+  // No conversion necessary if both types are ids.
+  return ![type isPrimitive];
+}
+
 // Implementing NSCopying allows IOSClass objects to be used as keys in the
 // class cache.
 - (id)copyWithZone:(NSZone *)zone {

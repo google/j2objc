@@ -117,9 +117,7 @@ public class AnonymousClassConverterTest extends GenerationTest {
         "+ (void)initialize {",
         "if (self == [Test class]) {",
         "JreOperatorRetainedAssign(&Test_t_, nil, [[[Test_$1 alloc] " +
-            "initWithIOSClass:[IOSClass classWithClass:[Test class]]] autorelease]);",
-        "}",
-        "}");
+            "initWithIOSClass:[IOSClass classWithClass:[Test class]]] autorelease]);");
   }
 
   public void testFinalParameter() throws IOException {
@@ -181,14 +179,12 @@ public class AnonymousClassConverterTest extends GenerationTest {
         "  public boolean hasMoreElements() { return false; }" +
         "  public Object nextElement() { throw new NoSuchElementException(); }}; }",
         "Test", "Test.m");
-    assertTranslation(translation, "static id<JavaUtilEnumeration> Test_EMPTY_ENUMERATION_;");
+    assertTranslation(translation, "id<JavaUtilEnumeration> Test_EMPTY_ENUMERATION_;");
     assertTranslatedLines(translation,
         "+ (void)initialize {",
         "if (self == [Test class]) {",
         "JreOperatorRetainedAssign(&Test_EMPTY_ENUMERATION_, nil, " +
-            "[[[Test_$1 alloc] init] autorelease]);",
-        "}",
-        "}");
+            "[[[Test_$1 alloc] init] autorelease]);");
   }
 
   public void testFinalParameterAccess() throws IOException {
@@ -244,7 +240,7 @@ public class AnonymousClassConverterTest extends GenerationTest {
         "  }}}";
     String translation = translateSourceFile(source, "Test", "Test.m");
     assertTranslation(translation,
-        "[((JavaIoPrintStream *) nil_chk([JavaLangSystem out])) printlnWithNSString:val$s_];");
+        "[((JavaIoPrintStream *) nil_chk(JavaLangSystem_get_out_())) printlnWithNSString:val$s_];");
   }
 
   public void testMethodVarInNestedAnonymousClass() throws IOException {

@@ -91,11 +91,11 @@ int main( int argc, const char *argv[] ) {
       exitCode = 1;
     }
     @catch (JavaLangReflectInvocationTargetException *e) {
-      [[JavaLangSystem err] printlnWithId:e];
+      [JavaLangSystem_get_err_() printlnWithId:e];
       exitCode = 1;
     }
     @catch (JavaLangIllegalAccessException *e) {
-      [[JavaLangSystem err] printlnWithId:e];
+      [JavaLangSystem_get_err_() printlnWithId:e];
       exitCode = 1;
     }
     @catch (JavaLangThrowable *e) {

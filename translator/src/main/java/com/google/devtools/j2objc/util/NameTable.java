@@ -652,6 +652,10 @@ public class NameTable {
     return getFullName(declaringType) + "_" + getName(var) + (var.isEnumConstant() ? "" : "_");
   }
 
+  public static String getStaticVarName(IVariableBinding var) {
+    return getName(var) + (var.isEnumConstant() ? "" : "_");
+  }
+
   public static String getPrimitiveConstantName(IVariableBinding constant) {
     return String.format("%s_%s", getFullName(constant.getDeclaringClass()), constant.getName());
   }
