@@ -22,33 +22,6 @@
 #ifndef _IOSBYTEARRAY_H
 #define _IOSBYTEARRAY_H
 
-#import "IOSArray.h"
-
-// An emulation class that represents a Java byte array.  Like a Java array,
-// an IOSByteArray is fixed-size but its elements are mutable.
-@interface IOSByteArray : IOSArray {
- @public
-  char *buffer_;  // java.nio requires this be first field in IOSArray subclasses.
-}
-
-PRIMITIVE_ARRAY_INTERFACE(byte, Byte, char)
-
-// Copies the array contents into a specified buffer, up to the specified
-// length.  An IndexOutOfBoundsException is thrown if the specified length
-// is greater than the array size.
-- (void)getBytes:(char *)buffer
-          offset:(NSUInteger)offset
-          length:(NSUInteger)length;
-
-// Copies the specified native buffer into this array at the specified offset.
-- (void)replaceBytes:(const char *)source
-              length:(NSUInteger)length
-              offset:(NSUInteger)destOffset;
-
-// Returns the bytes of the array encapsulated in an NSData *. Copies the
-// underlying data.
-- (NSData *)toNSData;
-
-@end
+#import "IOSPrimitiveArray.h"
 
 #endif // _IOSBYTEARRAY_H

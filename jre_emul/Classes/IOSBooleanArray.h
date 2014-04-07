@@ -22,17 +22,6 @@
 #ifndef _IOSBooleanArray_H_
 #define _IOSBooleanArray_H_
 
-#import "IOSArray.h"
-
-// An emulation class that represents a Java boolean array.  Like a Java array,
-// an IOSBooleanArray is fixed-size but its elements are mutable.
-@interface IOSBooleanArray : IOSArray {
- @public
-  BOOL *buffer_;  // java.nio requires this be first field in IOSArray subclasses.
-}
-
-PRIMITIVE_ARRAY_INTERFACE(boolean, Boolean, BOOL)
-
-@end
+#import "IOSPrimitiveArray.h"
 
 #endif // _IOSBooleanArray_H_

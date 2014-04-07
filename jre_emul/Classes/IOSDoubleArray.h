@@ -22,17 +22,6 @@
 #ifndef _IOSDoubleArray_H_
 #define _IOSDoubleArray_H_
 
-#import "IOSArray.h"
-
-// An emulation class that represents a Java double array.  Like a Java array,
-// an IOSDoubleArray is fixed-size but its elements are mutable.
-@interface IOSDoubleArray : IOSArray {
- @public
-  double *buffer_;  // java.nio requires this be first field in IOSArray subclasses.
-}
-
-PRIMITIVE_ARRAY_INTERFACE(double, Double, double)
-
-@end
+#import "IOSPrimitiveArray.h"
 
 #endif // _IOSDoubleArray_H_

@@ -22,17 +22,6 @@
 #ifndef _IOSShortArray_H_
 #define _IOSShortArray_H_
 
-#import "IOSArray.h"
-
-// An emulation class that represents a Java short array.  Like a Java array,
-// an IOSShortArray is fixed-size but its elements are mutable.
-@interface IOSShortArray : IOSArray {
- @public
-  short *buffer_;  // java.nio requires this be first field in IOSArray subclasses.
-}
-
-PRIMITIVE_ARRAY_INTERFACE(short, Short, short)
-
-@end
+#import "IOSPrimitiveArray.h"
 
 #endif // _IOSShortArray_H_
