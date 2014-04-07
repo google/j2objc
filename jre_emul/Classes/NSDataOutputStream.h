@@ -9,8 +9,6 @@
 #ifndef _NSDataOutputStream_H_
 #define _NSDataOutputStream_H_
 
-#import <Foundation/Foundation.h>
-
 #import "java/io/OutputStream.h"
 
 // A concrete subclass of java.io.InputStream that writes into

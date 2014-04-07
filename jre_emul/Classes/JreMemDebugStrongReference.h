@@ -19,7 +19,7 @@
 #ifndef _JreMemDebugStrongReference_H_
 #define _JreMemDebugStrongReference_H_
 
-#import <Foundation/Foundation.h>
+#import "J2ObjC_common.h"
 
 @interface JreMemDebugStrongReference : NSObject
 

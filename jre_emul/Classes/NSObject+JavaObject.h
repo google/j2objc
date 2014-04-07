@@ -22,7 +22,6 @@
 #ifndef _NSObject_JavaObject_H_
 #define _NSObject_JavaObject_H_
 
-#import <Foundation/Foundation.h>
 #import "JavaObject.h"
 
 @class IOSClass;

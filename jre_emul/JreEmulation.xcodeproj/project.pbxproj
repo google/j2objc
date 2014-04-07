@@ -650,6 +650,7 @@
 		06B6D20217C7D3DE00624B3C /* IOSLocaleData.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IOSLocaleData.m; sourceTree = "<group>"; };
 		06B6D20517C7D67400624B3C /* LocaleData.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = LocaleData.h; path = build_result/Classes/libcore/icu/LocaleData.h; sourceTree = "<group>"; };
 		06B6D20617C7D67400624B3C /* LocaleData.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = LocaleData.m; path = build_result/Classes/libcore/icu/LocaleData.m; sourceTree = "<group>"; };
+		06BED66A18EDE33F004EA17D /* J2ObjC_common.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = J2ObjC_common.h; sourceTree = "<group>"; };
 		06C6B7FB159BCBD1004B800C /* PatternSyntaxException.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PatternSyntaxException.h; path = build_result/Classes/java/util/regex/PatternSyntaxException.h; sourceTree = "<group>"; };
 		06C6B7FC159BCBD1004B800C /* PatternSyntaxException.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = PatternSyntaxException.m; path = build_result/Classes/java/util/regex/PatternSyntaxException.m; sourceTree = "<group>"; };
 		06D7BDE917DE685C00329964 /* PhantomReference.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PhantomReference.h; path = build_result/Classes/java/lang/ref/PhantomReference.h; sourceTree = "<group>"; };
@@ -1501,6 +1502,7 @@
 				066193B7155849BC0004DAFE /* IOSShortArray.m */,
 				06B1E04F17F6403100F8940B /* Iterable.h */,
 				06B1E05017F6403100F8940B /* Iterable.m */,
+				06BED66A18EDE33F004EA17D /* J2ObjC_common.h */,
 				06986A181767D781006EE92F /* J2ObjCMain.m */,
 				068BA723180F5C270087BAF4 /* java_lang_RealToString.m */,
 				0675061317F0C7A30015B7E8 /* JavaMetadata.h */,

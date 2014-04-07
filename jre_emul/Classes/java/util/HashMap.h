@@ -9,7 +9,6 @@
 #ifndef _JavaUtilHashMap_H_
 #define _JavaUtilHashMap_H_
 
-#import <Foundation/Foundation.h>
 #include "java/io/Serializable.h"
 #include "java/util/AbstractMap.h"
 #include "java/util/Map.h"

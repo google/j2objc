@@ -19,12 +19,12 @@
 //  Created by tball on 10/18/11.
 //
 
-#import <Foundation/Foundation.h>
+#import "JavaObject.h"
 
 #ifndef JAVALANGCHARSEQUENCE_H
 #define JAVALANGCHARSEQUENCE_H
 
-@protocol JavaLangCharSequence < NSObject >
+@protocol JavaLangCharSequence < NSObject, JavaObject >
 - (int)sequenceLength;
 - (unichar)charAtWithInt:(int)index;
 - (id<JavaLangCharSequence>)subSequenceFrom:(int)start to:(int)end;

@@ -1,15 +1,15 @@
 /*
  * Copyright (c) 1999-2007 Apple Inc.  All Rights Reserved.
- * 
+ *
  * @APPLE_LICENSE_HEADER_START@
- * 
+ *
  * This file contains Original Code and/or Modifications of Original Code
  * as defined in and that are subject to the Apple Public Source License
  * Version 2.0 (the 'License'). You may not use this file except in
  * compliance with the License. Please obtain a copy of the License at
  * http://www.opensource.apple.com/apsl/ and read it before using this
  * file.
- * 
+ *
  * The Original Code and all software distributed under the License are
  * distributed on an 'AS IS' basis, WITHOUT WARRANTY OF ANY KIND, EITHER
  * EXPRESS OR IMPLIED, AND APPLE HEREBY DISCLAIMS ALL SUCH WARRANTIES,
@@ -17,7 +17,7 @@
  * FITNESS FOR A PARTICULAR PURPOSE, QUIET ENJOYMENT OR NON-INFRINGEMENT.
  * Please see the License for the specific language governing rights and
  * limitations under the License.
- * 
+ *
  * @APPLE_LICENSE_HEADER_END@
  */
 
@@ -28,13 +28,19 @@
 #include "JreEmulation.h"
 #include "objc-sync.h"
 
+// Redefine DEBUG_ASSERT_MESSAGE macro to not call the deprecated DebugAssert call.
+#undef DEBUG_ASSERT_MESSAGE
+#define DEBUG_ASSERT_MESSAGE(name, assertion, label, message, file, line, value) \
+  fprintf(stderr, "Assertion failed: %s, %s file: %s, line: %d\n", \
+      assertion, (message != 0) ? message : "", file, line);
+
 //
 // Allocate a lock only when needed.  Since few locks are needed at any point
 // in time, keep them on a single list.
 //
-
 static pthread_mutexattr_t	sRecursiveLockAttr;
 static bool			sRecursiveLockAttrIntialized = false;
+
 
 static pthread_mutexattr_t* recursiveAttributes()
 {
@@ -126,7 +132,7 @@ static SyncCache *fetch_cache(BOOL create)
             return NULL;
         } else {
             int count = 4;
-            data->syncCache = calloc(1, sizeof(SyncCache) + 
+            data->syncCache = calloc(1, sizeof(SyncCache) +
                                      count*sizeof(SyncCacheItem));
             data->syncCache->allocated = count;
         }
@@ -135,8 +141,8 @@ static SyncCache *fetch_cache(BOOL create)
     // Make sure there's at least one open slot in the list.
     if (data->syncCache->allocated == data->syncCache->used) {
         data->syncCache->allocated *= 2;
-        data->syncCache = 
-            realloc(data->syncCache, sizeof(SyncCache) 
+        data->syncCache =
+            realloc(data->syncCache, sizeof(SyncCache)
                     + data->syncCache->allocated * sizeof(SyncCacheItem));
     }
 
@@ -161,11 +167,11 @@ static SyncData* id2data(id object, enum usage why)
 
             // Found a match.
             result = item->data;
-            require_action_string(result->threadCount > 0, cache_done, 
+            require_action_string(result->threadCount > 0, cache_done,
                                   result = NULL, "id2data cache is buggy");
-            require_action_string(item->lockCount > 0, cache_done, 
+            require_action_string(item->lockCount > 0, cache_done,
                                   result = NULL, "id2data cache is buggy");
-                
+
             switch(why) {
             case ACQUIRE:
                 item->lockCount++;
@@ -185,7 +191,7 @@ static SyncData* id2data(id object, enum usage why)
                 break;
             }
 
-        cache_done:            
+        cache_done:
             return result;
         }
     }
@@ -195,11 +201,11 @@ static SyncData* id2data(id object, enum usage why)
 
     // Thread cache didn't find anything.
     // Walk in-use list looking for matching object
-    // Spinlock prevents multiple threads from creating multiple 
+    // Spinlock prevents multiple threads from creating multiple
     // locks for the same new object.
     // We could keep the nodes in some hash table if we find that there are
     // more than 20 or so distinct locks active, but we don't do that now.
-    
+
     OSSpinLockLock(lockp);
 
     SyncData* p;
@@ -214,11 +220,11 @@ static SyncData* id2data(id object, enum usage why)
         if ( (firstUnused == NULL) && (p->threadCount == 0) )
             firstUnused = p;
     }
-    
+
     // no SyncData currently associated with object
     if ( (why == RELEASE) || (why == CHECK) )
 	goto done;
-    
+
     // an unused one was found, use it
     if ( firstUnused != NULL ) {
         result = firstUnused;
@@ -226,7 +232,7 @@ static SyncData* id2data(id object, enum usage why)
         result->threadCount = 1;
         goto done;
     }
-                            
+
     // malloc a new SyncData and add to list.
     // XXX calling malloc with a global lock held is bad practice,
     // might be worth releasing the lock, mallocing, and searching again.
@@ -240,20 +246,20 @@ static SyncData* id2data(id object, enum usage why)
     require_noerr_string(err, done, "pthread_cond_init failed");
     result->nextData = *listp;
     *listp = result;
-    
+
  done:
     OSSpinLockUnlock(lockp);
     if (result) {
         // Only new ACQUIRE should get here.
-        // All RELEASE and CHECK and recursive ACQUIRE are 
+        // All RELEASE and CHECK and recursive ACQUIRE are
         // handled by the per-thread cache above.
-        
+
         require_string(result != NULL, really_done, "id2data is buggy");
         require_action_string(why == ACQUIRE || why == TEST, really_done,
                               result = NULL, "id2data is buggy");
-        require_action_string(result->object == object, really_done, 
+        require_action_string(result->object == object, really_done,
                               result = NULL, "id2data is buggy");
-        
+
         if (!cache) cache = fetch_cache(YES);
         cache->list[cache->used++] = (SyncCacheItem){result, 1};
     }
@@ -270,9 +276,9 @@ int objc_sync_nil(void)
 }
 
 
-// Begin synchronizing on 'obj'.  
+// Begin synchronizing on 'obj'.
 // Allocates recursive pthread_mutex associated with 'obj' if needed.
-// Returns OBJC_SYNC_SUCCESS once lock is acquired.  
+// Returns OBJC_SYNC_SUCCESS once lock is acquired.
 int objc_sync_enter(id obj)
 {
     int result = OBJC_SYNC_SUCCESS;
@@ -280,7 +286,7 @@ int objc_sync_enter(id obj)
     if (obj) {
         SyncData* data = id2data(obj, ACQUIRE);
         require_action_string(data != NULL, done, result = OBJC_SYNC_NOT_INITIALIZED, "id2data failed");
-	
+
         result = pthread_mutex_lock(&data->mutex);
         require_noerr_string(result, done, "pthread_mutex_lock failed");
     } else {
@@ -291,27 +297,27 @@ int objc_sync_enter(id obj)
         result = objc_sync_nil();
     }
 
-done: 
+done:
     return result;
 }
 
 
-// End synchronizing on 'obj'. 
+// End synchronizing on 'obj'.
 // Returns OBJC_SYNC_SUCCESS or OBJC_SYNC_NOT_OWNING_THREAD_ERROR
 int objc_sync_exit(id obj)
 {
     int result = OBJC_SYNC_SUCCESS;
-    
+
     if (obj) {
-        SyncData* data = id2data(obj, RELEASE); 
+        SyncData* data = id2data(obj, RELEASE);
         require_action_string(data != NULL, done, result = OBJC_SYNC_NOT_OWNING_THREAD_ERROR, "id2data failed");
-        
+
         result = pthread_mutex_unlock(&data->mutex);
         require_noerr_string(result, done, "pthread_mutex_unlock failed");
     } else {
         // @synchronized(nil) does nothing
     }
-	
+
 done:
     if ( result == EPERM )
         result = OBJC_SYNC_NOT_OWNING_THREAD_ERROR;
@@ -325,13 +331,13 @@ done:
 int objc_sync_wait(id obj, long long milliSecondsMaxWait)
 {
     int result = OBJC_SYNC_SUCCESS;
-            
+
     SyncData* data = id2data(obj, CHECK);
     if (!data) {
       return OBJC_SYNC_NOT_OWNING_THREAD_ERROR;
     }
-    
-    
+
+
     // XXX need to retry cond_wait under out-of-our-control failures
     if ( milliSecondsMaxWait == 0 ) {
         result = pthread_cond_wait(&data->conditionVariable, &data->mutex);
@@ -354,7 +360,7 @@ done:
         result = OBJC_SYNC_NOT_OWNING_THREAD_ERROR;
     else if ( result == ETIMEDOUT )
         result = OBJC_SYNC_TIMED_OUT;
-    
+
     return result;
 }
 
@@ -364,7 +370,7 @@ done:
 int objc_sync_notify(id obj)
 {
     int result = OBJC_SYNC_SUCCESS;
-        
+
     SyncData* data = id2data(obj, CHECK);
     if (!data) {
       return OBJC_SYNC_NOT_OWNING_THREAD_ERROR;
@@ -376,7 +382,7 @@ int objc_sync_notify(id obj)
 done:
     if ( result == EPERM )
         result = OBJC_SYNC_NOT_OWNING_THREAD_ERROR;
-    
+
     return result;
 }
 
@@ -386,7 +392,7 @@ done:
 int objc_sync_notifyAll(id obj)
 {
     int result = OBJC_SYNC_SUCCESS;
-        
+
     SyncData* data = id2data(obj, CHECK);
     if (!data) {
       return OBJC_SYNC_NOT_OWNING_THREAD_ERROR;
@@ -398,7 +404,7 @@ int objc_sync_notifyAll(id obj)
 done:
     if ( result == EPERM )
         result = OBJC_SYNC_NOT_OWNING_THREAD_ERROR;
-    
+
     return result;
 }
 

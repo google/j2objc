@@ -22,14 +22,14 @@
 #ifndef _JavaLangThrowable_H_
 #define _JavaLangThrowable_H_
 
-#import <Foundation/Foundation.h>
+#import "JavaObject.h"
 #import "java/io/Serializable.h"
 
 @class JavaIoPrintStream;
 @class JavaIoPrintWriter;
 @class IOSObjectArray;
 
-@interface JavaLangThrowable : NSException < JavaIoSerializable > {
+@interface JavaLangThrowable : NSException < JavaIoSerializable, JavaObject > {
  @private
   JavaLangThrowable *cause;
   NSString *detailMessage;

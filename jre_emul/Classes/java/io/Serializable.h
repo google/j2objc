@@ -17,7 +17,6 @@
 //  Created by Tom Ball on 12/6/13.
 //
 
-#import "Foundation/Foundation.h"
 #import "JavaObject.h"
 
 #ifndef _JavaIoSerializable_H_

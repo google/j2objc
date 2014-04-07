@@ -20,6 +20,7 @@
 #   FAT_LIB_COMPILE
 # The including makefile may define the following optional variables:
 #   FAT_LIB_EXTENSIONS
+#   FAT_LIB_PRECOMPILED_HEADER
 #
 # This file defines the following to be used by the including file:
 #   FAT_LIB_LIBRARY
@@ -49,6 +50,12 @@ FAT_LIB_IPHONEV7S_FLAGS = -arch armv7s -isysroot $(FAT_LIB_IPHONE_SDK_DIR)
 FAT_LIB_SIMULATOR_FLAGS = -arch i386 -isysroot $(FAT_LIB_SIMULATOR_SDK_DIR)
 FAT_LIB_XCODE_FLAGS = $(ARCH_FLAGS) -isysroot $(SDKROOT)
 
+ifdef FAT_LIB_PRECOMPILED_HEADER
+ifndef CONFIGURATION_BUILD_DIR
+J2OBJC_PRECOMPILED_HEADER = $(FAT_LIB_PRECOMPILED_HEADER)
+endif
+endif
+
 ifneq ($(MAKECMDGOALS),clean)
 
 arch_flags = $(strip \
@@ -61,12 +68,33 @@ arch_flags = $(strip \
 fat_lib_dependencies:
 	@:
 
+# Generates compile rule.
+# Args:
+#   1: output file pattern
+#   2: input file pattern
+#   3: precompiled header file, if J2OBJC_PRECOMPILED_HEADER is defined
+#   4: precompiled header include, if J2OBJC_PRECOMPILED_HEADER is defined
+#   5: other compiler flags
 define compile_rule
-$(1): $(2) | fat_lib_dependencies
+$(1): $(2) $(3) | fat_lib_dependencies
 	@mkdir -p $$(@D)
-	$(FAT_LIB_COMPILE) $(3) -c $$< -o $$@
+	$(FAT_LIB_COMPILE) $(4) $(5) -c $$< -o $$@
 endef
 
+# Generates rule to build precompiled headers file.
+# Args:
+#   1: output file name
+#   2: input file
+#   3: other compiler flags
+define compile_pch_rule
+$(1): $(2) | fat_lib_dependencies
+	@mkdir -p $$(@D)
+	$(FAT_LIB_COMPILE) -x objective-c-header $(3) -c $$< -o $$@
+endef
+
+# Generates analyze rule.
+# Args:
+#   1: input file pattern
 define analyze_rule
 $(FAT_LIB_PLIST_DIR)/%.plist: $(1) | fat_lib_dependencies
 	@mkdir -p $$(@D)
@@ -76,16 +104,40 @@ endef
 $(foreach src_dir,$(FAT_LIB_SOURCE_DIRS),$(foreach ext,$(FAT_LIB_EXTENSIONS),\
   $(eval $(call analyze_rule,$(src_dir)/%.$(ext)))))
 
+# Generates compile rules when there aren't object file clashes.
+# Args:
+#   1: output directory
+#   2: compilation flags
 emit_general_compile_rules = $(foreach src_dir,$(FAT_LIB_SOURCE_DIRS),\
+  $(eval $(call compile_pch_rule,$(1)/%.pch,$(src_dir)/%,$(2)))\
   $(foreach ext,$(FAT_LIB_EXTENSIONS),\
-  $(eval $(call compile_rule,$(1)/%.o,$(src_dir)/%.$(ext),$(2)))))
+  $(if $(J2OBJC_PRECOMPILED_HEADER),\
+  $(eval $(call compile_rule,$(1)/%.o,$(src_dir)/%.$(ext),\
+    $(1)/$(J2OBJC_PRECOMPILED_HEADER).pch,\
+    -include $(1)/$(J2OBJC_PRECOMPILED_HEADER),$(2))),\
+  $(eval $(call compile_rule,$(1)/%.o,$(src_dir)/%.$(ext),,,$(2))))))
 
+# Generates compile rules when there are object file clashes, appending
+# underscores to .o names to make them unique.
+# Args:
+#   1: output file name
+#   2: input file name
 ifdef TARGET_TEMP_DIR
 emit_rename_compile_rules = \
-  $(eval $(call compile_rule,$(TARGET_TEMP_DIR)/$(1),$(2),$(FAT_LIB_XCODE_FLAGS)))
+  $(if $(J2OBJC_PRECOMPILED_HEADER),\
+  $(eval $(call compile_rule,$(TARGET_TEMP_DIR)/$(1),$(2),\
+    $(TARGET_TEMP_DIR)/$(J2OBJC_PRECOMPILED_HEADER).pch,\
+    -include $(TARGET_TEMP_DIR)/$(J2OBJC_PRECOMPILED_HEADER),\
+    $(FAT_LIB_XCODE_FLAGS))),\
+  $(eval $(call compile_rule,$(TARGET_TEMP_DIR)/$(1),$(2),,,$(FAT_LIB_XCODE_FLAGS))))
 else
-emit_rename_compile_rules = $(foreach arch,$(J2OBJC_ARCHS),$(eval \
-  $(call compile_rule,$(BUILD_DIR)/objs-$(arch)/$(1),$(2),$(call arch_flags,$(arch)))))
+emit_rename_compile_rules = $(foreach arch,$(J2OBJC_ARCHS),\
+  $(if $(J2OBJC_PRECOMPILED_HEADER),\
+  $(eval $(call compile_rule,$(BUILD_DIR)/objs-$(arch)/$(1),$(2),\
+    $(BUILD_DIR)/objs-$(arch)/$(J2OBJC_PRECOMPILED_HEADER).pch,\
+    -include $(BUILD_DIR)/objs-$(arch)/$(J2OBJC_PRECOMPILED_HEADER),\
+    $(call arch_flags,$(arch)))),\
+  $(eval $(call compile_rule,$(BUILD_DIR)/objs-$(arch)/$(1),$(2),,,$(call arch_flags,$(arch))))))
 endif
 
 # Builds the list of .o files, resolving duplicates by adding underscores and
@@ -121,9 +173,11 @@ $(FAT_LIB_LIBRARY): $(FAT_LIB_ARCH_LIBS)
 	$(LIPO) -create $^ -output $@
 
 define arch_lib_rule
-$(BUILD_DIR)/$(1)-lib$(FAT_LIB_NAME).a: $(FAT_LIB_OBJS:%=$(BUILD_DIR)/objs-$(1)/%)
+$(BUILD_DIR)/$(1)-lib$(FAT_LIB_NAME).a: \
+    $(J2OBJC_PRECOMPILED_HEADER:%=$(BUILD_DIR)/objs-$(1)/%.pch) \
+    $(FAT_LIB_OBJS:%=$(BUILD_DIR)/objs-$(1)/%)
 	@echo "Building $$(notdir $$@)"
-	@$(LIBTOOL) -static -o $$@ $$^
+	@$(LIBTOOL) -static -o $$@ $(FAT_LIB_OBJS:%=$(BUILD_DIR)/objs-$(1)/%)
 endef
 
 $(foreach arch,$(J2OBJC_ARCHS),$(eval $(call arch_lib_rule,$(arch))))

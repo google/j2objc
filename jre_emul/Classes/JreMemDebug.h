@@ -25,7 +25,6 @@
 #define JREMEMDEBUG_OVERHEAD_ENABLED 1
 
 #ifdef __OBJC__
-# import <Foundation/Foundation.h>
 # import "JreMemDebugStrongReference.h"
 
     // Predeclare private functions.
