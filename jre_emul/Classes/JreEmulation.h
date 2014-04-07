@@ -27,10 +27,12 @@
 #ifdef __OBJC__
 #import "J2ObjC_common.h"
 #import "JavaObject.h"
+#import "JreMemDebug.h"
+#import "IOSObjectArray.h"
+#import "IOSPrimitiveArray.h"
+#import "IOSReflection.h"
 #import "NSObject+JavaObject.h"
 #import "NSString+JavaString.h"
-#import "JreMemDebug.h"
-#import "IOSReflection.h"
 
 # ifndef __has_attribute
 #  define __has_attribute(x) 0 // Compatibility with non-clang compilers.
