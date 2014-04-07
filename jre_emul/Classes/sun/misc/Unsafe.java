@@ -214,10 +214,13 @@ public final class Unsafe {
      */
     public native void putObjectVolatile(Object obj, long offset,
             Object newValue) /*-[
-      id volatile *address = (id volatile *) (((u_int8_t *) obj) + offset);
-      id temp = *address;
-      *address = RETAIN_(newValue);
-      AUTORELEASE(temp);
+      id *address = (id *) (((u_int8_t *) obj) + offset);
+      id oldValue = nil;
+      [newValue retain];
+      do {
+        oldValue = *address;
+      } while (!OSAtomicCompareAndSwapPtrBarrier(oldValue, newValue, (void * volatile *)address));
+      [oldValue autorelease];
     ]-*/;
 
     /**
@@ -307,10 +310,12 @@ public final class Unsafe {
      */
     public native void putObject(Object obj, long offset, Object newValue) /*-[
       id *address = (id *) (((u_int8_t *) obj) + offset);
-      OSMemoryBarrier();
-      id temp = *address;
-      *address = RETAIN_(newValue);
-      AUTORELEASE(temp);
+      id oldValue = nil;
+      [newValue retain];
+      do {
+        oldValue = *address;
+      } while (!OSAtomicCompareAndSwapPtr(oldValue, newValue, (void * volatile *)address));
+      [oldValue autorelease];
     ]-*/;
 
     /**
@@ -318,10 +323,12 @@ public final class Unsafe {
      */
     public native void putOrderedObject(Object obj, long offset, Object newValue) /*-[
       id *address = (id *) (((u_int8_t *) obj) + offset);
-      OSMemoryBarrier();
-      id temp = *address;
-      *address = RETAIN_(newValue);
-      AUTORELEASE(temp);
+      id oldValue = nil;
+      [newValue retain];
+      do {
+        oldValue = *address;
+      } while (!OSAtomicCompareAndSwapPtrBarrier(oldValue, newValue, (void * volatile *)address));
+      [oldValue autorelease];
     ]-*/;
 
     /**
@@ -407,10 +414,13 @@ public final class Unsafe {
      * @param newValue the value to store
      */
     public native void putArrayObject(Object array, int index, Object newValue) /*-[
-      id *buffer = ((IOSObjectArray *) array)->buffer_;
-      id temp = buffer[index];
-      buffer[index] = RETAIN_(newValue);
-      AUTORELEASE(temp);
+      id *address = &((IOSObjectArray *) array)->buffer_[index];
+      id oldValue = nil;
+      [newValue retain];
+      do {
+        oldValue = *address;
+      } while (!OSAtomicCompareAndSwapPtr(oldValue, newValue, (void * volatile *)address));
+      [oldValue autorelease];
     ]-*/;
 
     /**
@@ -421,11 +431,13 @@ public final class Unsafe {
      * @param newValue the value to store
      */
     public native void putArrayOrderedObject(Object array, int index, Object newValue) /*-[
-      id *buffer = ((IOSObjectArray *) array)->buffer_;
-      OSMemoryBarrier();
-      id temp = buffer[index];
-      buffer[index] = RETAIN_(newValue);
-      AUTORELEASE(temp);
+      id *address = &((IOSObjectArray *) array)->buffer_[index];
+      id oldValue = nil;
+      [newValue retain];
+      do {
+        oldValue = *address;
+      } while (!OSAtomicCompareAndSwapPtrBarrier(oldValue, newValue, (void * volatile *)address));
+      [oldValue autorelease];
     ]-*/;
 
     /**
@@ -436,10 +448,13 @@ public final class Unsafe {
      * @param newValue the value to store
      */
     public native void putArrayObjectVolatile(Object array, int index, Object newValue) /*-[
-      id volatile *buffer = ((IOSObjectArray *) array)->buffer_;
-      id temp = buffer[index];
-      buffer[index] = RETAIN_(newValue);
-      AUTORELEASE(temp);
+      id *address = &((IOSObjectArray *) array)->buffer_[index];
+      id oldValue = nil;
+      [newValue retain];
+      do {
+        oldValue = *address;
+      } while (!OSAtomicCompareAndSwapPtrBarrier(oldValue, newValue, (void * volatile *)address));
+      [oldValue autorelease];
     ]-*/;
 
     /**
