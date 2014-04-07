@@ -47,20 +47,22 @@ CONCURRENT_TEST_ROOT = $(APACHE_HARMONY_BASE)/concurrent/src/test/java
 ARCHIVE_TEST_ROOT = $(APACHE_HARMONY_BASE)/archive/src/test/java
 LOGGING_TEST_ROOT = $(APACHE_HARMONY_BASE)/logging/src/test/java
 
-ANDROID_BASE = android/libcore
-ANDROID_DALVIK_ROOT = $(ANDROID_BASE)/dalvik/src/main/java
-ANDROID_LUNI_ROOT = $(ANDROID_BASE)/luni/src/main/java
-ANDROID_LUNI_TEST_ROOT = $(ANDROID_BASE)/luni/src/test/java
-ANDROID_TEST_SUPPORT_ROOT = $(ANDROID_BASE)/support/src/test/java
-ANDROID_XML_ROOT = $(ANDROID_BASE)/xml/src/main/java
-ANDROID_APACHE_TEST_ROOT = $(ANDROID_BASE)/harmony-tests/src/test/java
+ANDROID_BASE = android
+ANDROID_CORE_ROOT = $(ANDROID_BASE)/frameworks/base/core/java
+LIBCORE_BASE = $(ANDROID_BASE)/libcore
+ANDROID_DALVIK_ROOT = $(LIBCORE_BASE)/dalvik/src/main/java
+ANDROID_LUNI_ROOT = $(LIBCORE_BASE)/luni/src/main/java
+ANDROID_LUNI_TEST_ROOT = $(LIBCORE_BASE)/luni/src/test/java
+ANDROID_TEST_SUPPORT_ROOT = $(LIBCORE_BASE)/support/src/test/java
+ANDROID_XML_ROOT = $(LIBCORE_BASE)/xml/src/main/java
+ANDROID_APACHE_TEST_ROOT = $(LIBCORE_BASE)/harmony-tests/src/test/java
 
 APPLE_ROOT = apple_apsl
 
 MISC_TEST_ROOT = Tests
 J2OBJC_ROOT = ..
 
-ANDROID_INCLUDE = $(ANDROID_BASE)/include
+ANDROID_INCLUDE = $(LIBCORE_BASE)/include
 
 include ../make/common.mk
 include ../make/j2objc_deps.mk
@@ -76,7 +78,7 @@ MAIN_LIB_DIST = $(DIST_LIB_DIR)/libj2objc_main.a
 EMULATION_CLASS_DIR = Classes
 TESTS_DIR = $(BUILD_DIR)/tests
 STUBS_DIR = stub_classes
-ANDROID_NATIVE_DIR = $(ANDROID_BASE)/luni/src/main/native
+ANDROID_NATIVE_DIR = $(LIBCORE_BASE)/luni/src/main/native
 
 ifndef TRANSLATED_SOURCE_DIR
 TRANSLATED_SOURCE_DIR = $(CLASS_DIR)
@@ -84,7 +86,8 @@ endif
 
 JRE_SRC_ROOTS = $(JRE_ROOT) $(JRE_CONCURRENT_ROOT) $(JRE_KERNEL_ROOT) \
     $(JRE_MATH_ROOT) $(ANDROID_DALVIK_ROOT) $(ANDROID_LUNI_ROOT) \
-    $(ANDROID_XML_ROOT) $(EMULATION_CLASS_DIR) $(JRE_ARCHIVE_ROOT)
+    $(ANDROID_XML_ROOT) $(EMULATION_CLASS_DIR) $(JRE_ARCHIVE_ROOT) \
+    $(ANDROID_CORE_ROOT)
 JRE_SRC = $(subst $(eval) ,:,$(JRE_SRC_ROOTS))
 TEST_SRC_ROOTS = $(JRE_TEST_ROOT) $(JRE_MATH_TEST_ROOT) \
     $(TEST_SUPPORT_ROOT) $(MATH_TEST_SUPPORT_ROOT) $(REGEX_TEST_ROOT) \

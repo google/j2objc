@@ -22,6 +22,9 @@
         withFloat:(float)loadFactor
       withBoolean:(BOOL)accessOrder;
 
+// Android addition.
+- (id<JavaUtilMap_Entry>)eldest;
+
 @end
 
 #endif // _JavaUtilLinkedHashMap_H_
