@@ -45,15 +45,16 @@ import java.util.Date;
  */
 public abstract class X509Certificate extends Certificate {
 
-    private static Constructor constructor;
-    static {
-        try {
-            String classname = Security.getProperty("cert.provider.x509v1");
-            Class cl = Class.forName(classname);
-            constructor = cl.getConstructor(new Class[] {InputStream.class});
-        } catch (Throwable e) {
-        }
-    }
+// iOS: always use default cert provider.
+//    private static Constructor constructor;
+//    static {
+//        try {
+//            String classname = Security.getProperty("cert.provider.x509v1");
+//            Class cl = Class.forName(classname);
+//            constructor = cl.getConstructor(new Class[] {InputStream.class});
+//        } catch (Throwable e) {
+//        }
+//    }
 
     /**
      * Creates a new {@code X509Certificate}.
@@ -76,14 +77,15 @@ public abstract class X509Certificate extends Certificate {
         if (inStream == null) {
             throw new CertificateException("inStream == null");
         }
-        if (constructor != null) {
-            try {
-                return (X509Certificate)
-                    constructor.newInstance(new Object[] {inStream});
-            } catch (Throwable e) {
-                throw new CertificateException(e.getMessage());
-            }
-        }
+// iOS: always use default cert provider.
+//        if (constructor != null) {
+//            try {
+//                return (X509Certificate)
+//                    constructor.newInstance(new Object[] {inStream});
+//            } catch (Throwable e) {
+//                throw new CertificateException(e.getMessage());
+//            }
+//        }
 
         final java.security.cert.X509Certificate cert;
         try {
