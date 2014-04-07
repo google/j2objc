@@ -132,7 +132,7 @@ public final class Unsafe {
       id tmp = *address;
       if (OSAtomicCompareAndSwapPtrBarrier(expectedValue, newValue, (void * volatile *) address)) {
         [*address retain];
-        [tmp release];
+        [tmp autorelease];
         return YES;
       }
       return NO;
@@ -476,7 +476,7 @@ public final class Unsafe {
       if (OSAtomicCompareAndSwapPtrBarrier(expectedValue, newValue,
           (void * volatile *) (buffer + index))) {
         [buffer[index] retain];
-        [tmp release];
+        [tmp autorelease];
         return YES;
       }
       return NO;
