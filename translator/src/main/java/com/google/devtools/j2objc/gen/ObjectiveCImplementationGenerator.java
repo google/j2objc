@@ -384,7 +384,7 @@ public class ObjectiveCImplementationGenerator extends ObjectiveCSourceFileGener
           if (nativeCode != null) {
             nativeCode = reindent(nativeCode.trim());
             findMethodSignatures(nativeCode, methodsPrinted);
-            print(nativeCode + "\n\n");
+            print("\n" + nativeCode + "\n");
           }
         }
         nextComment = commentsIter.hasNext() ? commentsIter.next() : null;

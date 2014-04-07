@@ -191,4 +191,8 @@ public abstract class Enum<E extends Enum<E>> implements Serializable,
             return null;
         }
     }
+
+    /*-[
+    J2OBJC_ETERNAL_SINGLETON
+    ]-*/
 }
