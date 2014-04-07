@@ -17,15 +17,8 @@
 package java.lang;
 
 /*-[
-#import "IOSBooleanArray.h"
-#import "IOSByteArray.h"
-#import "IOSCharArray.h"
-#import "IOSDoubleArray.h"
-#import "IOSFloatArray.h"
-#import "IOSIntArray.h"
-#import "IOSLongArray.h"
 #import "IOSObjectArray.h"
-#import "IOSShortArray.h"
+#import "IOSPrimitiveArray.h"
 #import "java/lang/ArrayIndexOutOfBoundsException.h"
 #import "java/lang/ArrayStoreException.h"
 #import "java/lang/IllegalArgumentException.h"

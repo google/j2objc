@@ -21,7 +21,7 @@
 #define JreEmulation_BufferUtils_h
 
 #import "JreEmulation.h"
-#import "IOSByteArray.h"
+#import "IOSPrimitiveArray.h"
 #import "java/nio/ByteArrayBuffer.h"
 
 static inline char *BytesRW(id object) {

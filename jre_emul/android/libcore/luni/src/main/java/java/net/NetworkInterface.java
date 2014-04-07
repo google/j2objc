@@ -30,7 +30,7 @@ import libcore.io.Libcore;
 import static libcore.io.OsConstants.*;
 
 /*-[
-#include "IOSByteArray.h"
+#include "IOSPrimitiveArray.h"
 #include <arpa/inet.h>
 #include <sys/types.h>
 #include <sys/socket.h>
