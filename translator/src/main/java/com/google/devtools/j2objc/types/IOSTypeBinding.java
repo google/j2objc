@@ -27,6 +27,8 @@ import org.eclipse.jdt.core.dom.ITypeBinding;
 public class IOSTypeBinding extends GeneratedTypeBinding {
 
   private final ITypeBinding mappedType;
+  // To be used if the header declaring this type does not match the type name.
+  private String header = null;
 
   protected IOSTypeBinding(
       String name, ITypeBinding mappedType, ITypeBinding superClass, boolean isInterface) {
@@ -49,6 +51,14 @@ public class IOSTypeBinding extends GeneratedTypeBinding {
 
   public static IOSTypeBinding newInterface(String name, ITypeBinding mappedType) {
     return new IOSTypeBinding(name, mappedType, null, true);
+  }
+
+  public void setHeader(String header) {
+    this.header = header;
+  }
+
+  public String getHeader() {
+    return header;
   }
 
   @Override
