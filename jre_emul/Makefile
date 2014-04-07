@@ -521,7 +521,11 @@ JAVA_SOURCES = \
 	java/security/DomainCombiner.java \
 	java/security/GeneralSecurityException.java \
 	java/security/GuardedObject.java \
+	java/security/InvalidKeyException.java \
 	java/security/InvalidParameterException.java \
+	java/security/Key.java \
+	java/security/KeyException.java \
+	java/security/KeyManagementException.java \
 	java/security/MessageDigest.java \
 	java/security/MessageDigestSpi.java \
 	java/security/NoSuchAlgorithmException.java \
@@ -536,11 +540,26 @@ JAVA_SOURCES = \
 	java/security/PrivilegedExceptionAction.java \
 	java/security/ProtectionDomain.java \
 	java/security/Provider.java \
+	java/security/PublicKey.java \
 	java/security/SecureClassLoader.java \
 	java/security/SecureRandom.java \
 	java/security/SecureRandomSpi.java \
 	java/security/Security.java \
 	java/security/SecurityPermission.java \
+	java/security/SignatureException.java \
+	java/security/cert/CRL.java \
+	java/security/cert/CRLException.java \
+	java/security/cert/CertPath.java \
+	java/security/cert/Certificate.java \
+	java/security/cert/CertificateEncodingException.java \
+	java/security/cert/CertificateException.java \
+	java/security/cert/CertificateExpiredException.java \
+	java/security/cert/CertificateFactory.java \
+	java/security/cert/CertificateFactorySpi.java \
+	java/security/cert/CertificateNotYetValidException.java \
+	java/security/cert/CertificateParsingException.java \
+	java/security/cert/X509Certificate.java \
+	java/security/cert/X509Extension.java \
 	java/sql/Date.java \
 	java/sql/Time.java \
 	java/sql/Timestamp.java \
@@ -741,6 +760,41 @@ JAVA_SOURCES = \
 	java/util/zip/ZipFile.java \
 	java/util/zip/ZipInputStream.java \
 	java/util/zip/ZipOutputStream.java \
+	javax/net/DefaultServerSocketFactory.java \
+	javax/net/DefaultSocketFactory.java \
+	javax/net/ServerSocketFactory.java \
+	javax/net/SocketFactory.java \
+	javax/net/ssl/DefaultHostnameVerifier.java \
+	javax/net/ssl/DefaultSSLServerSocketFactory.java \
+	javax/net/ssl/DefaultSSLSocketFactory.java \
+	javax/net/ssl/DistinguishedNameParser.java \
+	javax/net/ssl/HandshakeCompletedEvent.java \
+	javax/net/ssl/HandshakeCompletedListener.java \
+	javax/net/ssl/HostnameVerifier.java \
+	javax/net/ssl/HttpsURLConnection.java \
+	javax/net/ssl/KeyManager.java \
+	javax/net/ssl/SSLContext.java \
+	javax/net/ssl/SSLContextSpi.java \
+	javax/net/ssl/SSLEngine.java \
+	javax/net/ssl/SSLEngineResult.java \
+	javax/net/ssl/SSLException.java \
+	javax/net/ssl/SSLHandshakeException.java \
+	javax/net/ssl/SSLParameters.java \
+	javax/net/ssl/SSLPeerUnverifiedException.java \
+	javax/net/ssl/SSLProtocolException.java \
+	javax/net/ssl/SSLServerSocketFactory.java \
+	javax/net/ssl/SSLSession.java \
+	javax/net/ssl/SSLSessionContext.java \
+	javax/net/ssl/SSLSocket.java \
+	javax/net/ssl/SSLSocketFactory.java \
+	javax/net/ssl/TrustManager.java \
+	javax/security/auth/x500/X500Principal.java \
+	javax/security/cert/Certificate.java \
+	javax/security/cert/CertificateEncodingException.java \
+	javax/security/cert/CertificateException.java \
+	javax/security/cert/CertificateExpiredException.java \
+	javax/security/cert/CertificateNotYetValidException.java \
+	javax/security/cert/X509Certificate.java \
 	javax/xml/XMLConstants.java \
 	javax/xml/parsers/FactoryConfigurationError.java \
 	javax/xml/parsers/FilePathToURI.java \
@@ -799,8 +853,39 @@ JAVA_SOURCES = \
 	org/apache/harmony/luni/platform/Endianness.java \
 	org/apache/harmony/luni/util/HistoricalNamesUtil.java \
 	org/apache/harmony/luni/util/Util.java \
+	org/apache/harmony/security/asn1/ASN1Any.java \
+	org/apache/harmony/security/asn1/ASN1Choice.java \
+	org/apache/harmony/security/asn1/ASN1Constants.java \
+	org/apache/harmony/security/asn1/ASN1Constructed.java \
+	org/apache/harmony/security/asn1/ASN1Exception.java \
+	org/apache/harmony/security/asn1/ASN1Explicit.java \
+	org/apache/harmony/security/asn1/ASN1Oid.java \
+	org/apache/harmony/security/asn1/ASN1Primitive.java \
+	org/apache/harmony/security/asn1/ASN1Sequence.java \
+	org/apache/harmony/security/asn1/ASN1SequenceOf.java \
+	org/apache/harmony/security/asn1/ASN1Set.java \
+	org/apache/harmony/security/asn1/ASN1SetOf.java \
+	org/apache/harmony/security/asn1/ASN1StringType.java \
+	org/apache/harmony/security/asn1/ASN1Time.java \
+	org/apache/harmony/security/asn1/ASN1Type.java \
+	org/apache/harmony/security/asn1/ASN1TypeCollection.java \
+	org/apache/harmony/security/asn1/ASN1UTCTime.java \
+	org/apache/harmony/security/asn1/ASN1ValueCollection.java \
+	org/apache/harmony/security/asn1/BerInputStream.java \
+	org/apache/harmony/security/asn1/BerOutputStream.java \
+	org/apache/harmony/security/asn1/BitString.java \
+	org/apache/harmony/security/asn1/DerInputStream.java \
+	org/apache/harmony/security/asn1/DerOutputStream.java \
+	org/apache/harmony/security/asn1/ObjectIdentifier.java \
 	org/apache/harmony/security/fortress/Engine.java \
 	org/apache/harmony/security/fortress/Services.java \
+	org/apache/harmony/security/utils/ObjectIdentifier.java \
+	org/apache/harmony/security/x501/AttributeTypeAndValue.java \
+	org/apache/harmony/security/x501/AttributeTypeAndValueComparator.java \
+	org/apache/harmony/security/x501/AttributeValue.java \
+	org/apache/harmony/security/x501/DirectoryString.java \
+	org/apache/harmony/security/x501/Name.java \
+	org/apache/harmony/security/x509/DNParser.java \
 	org/apache/harmony/xml/parsers/SAXParserFactoryImpl.java \
 	org/apache/harmony/xml/parsers/SAXParserImpl.java \
 	org/kxml2/io/KXmlParser.java \
