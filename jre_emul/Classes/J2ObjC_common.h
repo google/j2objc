@@ -89,4 +89,16 @@
   }
 #endif
 
+/*!
+ * Adds noop implementations for the memory management methods. This helps to
+ * avoid the cost of incrementing and decrementing the retain count for objects
+ * that should never be dealloc'ed.
+ *
+ * @define J2OBJC_ETERNAL_SINGLETON
+ */
+#define J2OBJC_ETERNAL_SINGLETON \
+  - (id)retain { return self; } \
+  - (oneway void)release {} \
+  - (id)autorelease { return self; }
+
 #endif // _J2OBJC_COMMON_H_
