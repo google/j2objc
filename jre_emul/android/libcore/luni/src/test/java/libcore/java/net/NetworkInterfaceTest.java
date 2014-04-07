@@ -17,6 +17,9 @@
 package libcore.java.net;
 
 import junit.framework.TestCase;
+
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.net.Inet4Address;
 import java.net.Inet6Address;
 import java.net.InetAddress;
@@ -56,9 +59,14 @@ public class NetworkInterfaceTest extends TestCase {
     public void testDumpAll() throws Exception {
         Set<String> allNames = new HashSet<String>();
         Set<Integer> allIndexes = new HashSet<Integer>();
+
+        // Log output isn't checked here, as just calling toString() on these
+        // objects ensures their internal state has been initialized.
+        PrintWriter out = new PrintWriter(new StringWriter());
+
         for (NetworkInterface nif : Collections.list(NetworkInterface.getNetworkInterfaces())) {
-            System.err.println(nif);
-            System.err.println(nif.getInterfaceAddresses());
+            out.println(nif);
+            out.println(nif.getInterfaceAddresses());
             String flags = nif.isUp() ? "UP" : "DOWN";
             if (nif.isLoopback()) {
                 flags += " LOOPBACK";
@@ -83,8 +91,8 @@ public class NetworkInterfaceTest extends TestCase {
                     flags += String.format("%02x", mac[i]);
                 }
             }
-            System.err.println(flags);
-            System.err.println("-");
+            out.println(flags);
+            out.println("-");
 
             assertFalse(allNames.contains(nif.getName()));
             allNames.add(nif.getName());
