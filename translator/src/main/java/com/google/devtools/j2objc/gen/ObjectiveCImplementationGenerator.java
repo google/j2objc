@@ -466,10 +466,6 @@ public class ObjectiveCImplementationGenerator extends ObjectiveCSourceFileGener
     }
   }
 
-  private void printStaticReferencesMethod(List<FieldDeclaration> fields) {
-    printStaticReferencesMethod(fields, null);
-  }
-
   // We generate the runtime debug method +memDebugStaticReferences.
   // This method will return an array of NSNumber containing pointers (casted into unsigned long)
   // to the objects referenced by a class variable with a strong reference.
@@ -479,7 +475,7 @@ public class ObjectiveCImplementationGenerator extends ObjectiveCSourceFileGener
   // must be the same size.
   //
   // In case of a Java enum, valuesVarNameis the name of the array of enum values.
-  private void printStaticReferencesMethod(List<FieldDeclaration> fields, String valuesVarName) {
+  private void printStaticReferencesMethod(List<FieldDeclaration> fields) {
     if (Options.memoryDebug()) {
       newline();
       if (!Options.useReferenceCounting()) {
@@ -502,10 +498,6 @@ public class ObjectiveCImplementationGenerator extends ObjectiveCSourceFileGener
             }
           }
         }
-      }
-      if (valuesVarName != null) {
-        println(String.format("  [result addObject:[JreMemDebugStrongReference " +
-            "strongReferenceWithObject:%s name:@\"enumValues\"]];", valuesVarName));
       }
       println("  return result;");
       println("}");
@@ -561,16 +553,12 @@ public class ObjectiveCImplementationGenerator extends ObjectiveCSourceFileGener
     String typeName = NameTable.getFullName(node);
     printInitFlagDefinition(node, methods);
     newline();
-    for (EnumConstantDeclaration constant : constants) {
-      IVariableBinding var = Types.getVariableBinding(constant.getName());
-      printf("%s *%s;\n", typeName, NameTable.getStaticVarQualifiedName(var));
-    }
-    printf("IOSObjectArray *%s_values;\n", typeName);
-    newline();
+    printf("%s *%s_values[%s];\n", typeName, typeName, constants.size());
 
+    newline();
     printf("@implementation %s\n", typeName);
     printStaticVars(fields, /* isInterface */ false);
-    printStaticReferencesMethod(fields, typeName + "_values");
+    printStaticReferencesMethod(fields);
 
     newline();
     for (EnumConstantDeclaration constant : constants) {
@@ -606,12 +594,6 @@ public class ObjectiveCImplementationGenerator extends ObjectiveCSourceFileGener
       }
       printf("NSString:@\"%s\" withInt:%d];\n", name, i);
     }
-    printf("    %s_values = [[IOSObjectArray alloc] initWithObjects:(id[]){ ", typeName);
-    for (EnumConstantDeclaration constant : constants) {
-      printf("%s_%s, ", typeName, NameTable.getName(constant.getName()));
-    }
-    printf("nil } count:%d type:[IOSClass classWithClass:[%s class]]];\n",
-        constants.size(), typeName);
     if (initializeMethod != null) {
       for (Statement s : ASTUtil.getStatements(initializeMethod.getBody())) {
         printf("    %s", StatementGenerator.generate(s, fieldHiders, false,
@@ -623,11 +605,12 @@ public class ObjectiveCImplementationGenerator extends ObjectiveCSourceFileGener
 
     // Print generated values and valueOf methods.
     println("+ (IOSObjectArray *)values {");
-    printf("  return [IOSObjectArray arrayWithArray:%s_values];\n", typeName);
+    printf("  return [IOSObjectArray arrayWithObjects:%s_values count:%s type:" +
+           "[IOSClass classWithClass:[%s class]]];\n", typeName, constants.size(), typeName);
     println("}\n");
     printf("+ (%s *)valueOfWithNSString:(NSString *)name {\n", typeName);
-    printf("  for (int i = 0; i < [%s_values count]; i++) {\n", typeName);
-    printf("    %s *e = %s_values->buffer_[i];\n", typeName, typeName);
+    printf("  for (int i = 0; i < %s; i++) {\n", constants.size());
+    printf("    %s *e = %s_values[i];\n", typeName, typeName);
     printf("    if ([name isEqual:[e name]]) {\n");
     printf("      return e;\n");
     printf("    }\n");

@@ -293,14 +293,14 @@ public class ObjectiveCHeaderGenerator extends ObjectiveCSourceFileGenerator {
     String typeName = NameTable.getFullName(node);
     List<EnumConstantDeclaration> constants = ASTUtil.getEnumConstants(node);
 
+    // Strip enum type suffix.
+    String bareTypeName = typeName.endsWith("Enum") ?
+        typeName.substring(0, typeName.length() - 4) : typeName;
+
     // C doesn't allow empty enum declarations.  Java does, so we skip the
     // C enum declaration and generate the type declaration.
     if (!constants.isEmpty()) {
       println("typedef enum {");
-
-      // Strip enum type suffix.
-      String bareTypeName = typeName.endsWith("Enum") ?
-          typeName.substring(0, typeName.length() - 4) : typeName;
 
       // Print C enum typedef.
       indent();
@@ -348,9 +348,12 @@ public class ObjectiveCHeaderGenerator extends ObjectiveCSourceFileGenerator {
     printMethods(methods);
     println("@end");
     printStaticInitFunction(node, methods);
+    printf("\nFOUNDATION_EXPORT %s *%s_values[];\n", typeName, typeName);
     for (EnumConstantDeclaration constant : constants) {
-      IVariableBinding var = Types.getVariableBinding(constant.getName());
-      printStaticField(var);
+      String valueName = constant.getName().getIdentifier();
+      printf("\n#define %s_%s %s_values[%s_%s]\n",
+             typeName, valueName, typeName, bareTypeName, valueName);
+      printf("J2OBJC_STATIC_FIELD_GETTER(%s, %s, %s *)\n", typeName, valueName, typeName);
     }
     printStaticFields(fields, /* isInterface */ false);
     printFieldSetters(enumType, fields);
