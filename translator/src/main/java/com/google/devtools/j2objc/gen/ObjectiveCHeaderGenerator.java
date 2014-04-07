@@ -359,21 +359,21 @@ public class ObjectiveCHeaderGenerator extends ObjectiveCSourceFileGenerator {
   @Override
   protected void printStaticFieldGetter(IVariableBinding var) {
     newline();
-    println(staticFieldGetterSignature(var));
+    print(staticFieldGetterSignature(var));
     println(";");
   }
 
   @Override
   protected void printStaticFieldReferenceGetter(IVariableBinding var) {
     newline();
-    println(staticFieldReferenceGetterSignature(var));
+    print(staticFieldReferenceGetterSignature(var));
     println(";");
   }
 
   @Override
   protected void printStaticFieldSetter(IVariableBinding var) {
     newline();
-    println(staticFieldSetterSignature(var));
+    print(staticFieldSetterSignature(var));
     println(";");
   }
 
@@ -402,7 +402,12 @@ public class ObjectiveCHeaderGenerator extends ObjectiveCSourceFileGenerator {
     String className = NameTable.getFullName(var.getDeclaringClass());
     boolean isFinal = Modifier.isFinal(var.getModifiers());
     boolean isPrimitive = var.getType().isPrimitive();
-    printf("\nFOUNDATION_EXPORT %s%s_%s;\n", typeWithSpace, className, name);
+    newline();
+    if (BindingUtil.isPrimitiveConstant(var)) {
+      name = var.getName();
+    } else {
+      printf("FOUNDATION_EXPORT %s%s_%s;\n", typeWithSpace, className, name);
+    }
     printf("J2OBJC_STATIC_FIELD_GETTER(%s, %s, %s)\n", className, name, objcType);
     if (!isFinal) {
       if (isPrimitive) {

@@ -931,7 +931,8 @@ public class ObjectiveCImplementationGenerator extends ObjectiveCSourceFileGener
   }
 
   private void printStaticVars(List<FieldDeclaration> fields, boolean isInterface) {
-    List<VariableDeclarationFragment> fragments = getStaticFieldFragments(fields, isInterface);
+    List<VariableDeclarationFragment> fragments =
+        getStaticFieldsNeedingInitialization(fields, isInterface);
     if (!fragments.isEmpty()) {
       newline();
     }
