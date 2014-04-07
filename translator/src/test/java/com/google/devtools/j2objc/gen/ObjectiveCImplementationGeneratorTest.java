@@ -212,16 +212,12 @@ public class ObjectiveCImplementationGeneratorTest extends GenerationTest {
     String translation = translateSourceFile(
       "public enum Color { RED, WHITE, BLUE }",
       "Color", "Color.m");
-    assertTranslation(translation, "ColorEnum *ColorEnum_RED;");
+    assertTranslation(translation, "ColorEnum *ColorEnum_values[3];");
     assertTranslation(translation, "@implementation ColorEnum");
     assertTranslation(translation,
         "ColorEnum_RED = [[ColorEnum alloc] initWithNSString:@\"RED\" withInt:0];");
-    assertTranslation(translation,
-        "ColorEnum_values = [[IOSObjectArray alloc] initWithObjects:(id[]){ " +
-        "ColorEnum_RED, ColorEnum_WHITE, ColorEnum_BLUE, nil } " +
-        "count:3 type:[IOSClass classWithClass:[ColorEnum class]]];");
-    assertTranslation(translation, "for (int i = 0; i < [ColorEnum_values count]; i++) {");
-    assertTranslation(translation, "ColorEnum *e = ColorEnum_values->buffer_[i];");
+    assertTranslation(translation, "for (int i = 0; i < 3; i++) {");
+    assertTranslation(translation, "ColorEnum *e = ColorEnum_values[i];");
   }
 
   public void testEnumWithParameters() throws IOException {
@@ -232,7 +228,6 @@ public class ObjectiveCImplementationGeneratorTest extends GenerationTest {
         + "public int getRgb() { return rgb; }}";
     String translation = translateSourceFile(sourceContent,
       "Color", "Color.m");
-    assertTranslation(translation, "ColorEnum *ColorEnum_RED;");
     assertTranslation(translation, "@implementation ColorEnum");
     assertTranslation(translation,
         "ColorEnum_RED = [[ColorEnum alloc] " +
