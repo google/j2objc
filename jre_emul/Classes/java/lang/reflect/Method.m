@@ -157,7 +157,18 @@
     [invocation setTarget:object];
   }
 
-  [invocation invoke];
+  IOSClass *declaringClass = [self getDeclaringClass];
+  if (object &&
+      ([self getModifiers] & JavaLangReflectModifier_PRIVATE) > 0 &&
+      declaringClass != [object getClass]) {
+    // A superclass's private instance method is invoked, so temporarily
+    // change the object's type to the superclass.
+    Class originalClass = object_setClass(object, declaringClass.objcClass);
+    [invocation invoke];
+    object_setClass(object, originalClass);
+  } else {
+    [invocation invoke];
+  }
   IOSClass *returnType = [self getReturnType];
   if (returnType == [IOSClass voidClass]) {
     return nil;
