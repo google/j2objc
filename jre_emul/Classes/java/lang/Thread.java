@@ -539,12 +539,12 @@ public class Thread implements Runnable {
 
   public native State getState() /*-[
     if ([(NSThread *) nsThread_ isCancelled] || [(NSThread *) nsThread_ isFinished]) {
-      return [JavaLangThread_StateEnum TERMINATED];
+      return JavaLangThread_StateEnum_get_TERMINATED();
     }
     if ([(NSThread *) nsThread_ isExecuting]) {
-      return [JavaLangThread_StateEnum RUNNABLE];
+      return JavaLangThread_StateEnum_get_RUNNABLE();
     }
-    return [JavaLangThread_StateEnum NEW];
+    return JavaLangThread_StateEnum_get_NEW();
   ]-*/;
 
   public ThreadGroup getThreadGroup() {

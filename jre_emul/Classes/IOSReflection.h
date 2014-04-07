@@ -24,6 +24,20 @@
 #import "objc/runtime.h"
 
 @protocol JavaLangReflectType;
+@class IOSClass;
+
+// A raw value is the union of all possible native types.
+typedef union {
+  void *asId;
+  char asChar;
+  unichar asUnichar;
+  short asShort;
+  int asInt;
+  long long asLong;
+  float asFloat;
+  double asDouble;
+  BOOL asBOOL;
+} J2ObjcRawValue;
 
 // C data structures that hold "raw" metadata for use by the methods that
 // implement Java reflection. This information is necessary because not
@@ -103,6 +117,8 @@ typedef struct J2ObjcFieldInfo {
   const char *javaName;
   uint16_t modifiers;
   const char *type;
+  const void *staticRef;
+  J2ObjcRawValue constantValue;
 } J2ObjcFieldInfo;
 
 typedef struct J2ObjcClassInfo {
@@ -123,20 +139,8 @@ typedef struct J2ObjcClassInfo {
 
 // Autoboxing support.
 
-// A raw value is the union of all possible native types.
-typedef union {
-  void *asId;
-  char asChar;
-  unichar asUnichar;
-  short asShort;
-  int asInt;
-  long long asLong;
-  float asFloat;
-  double asDouble;
-  BOOL asBOOL;
-} J2ObjcRawValue;
-
 extern id<JavaLangReflectType> JreTypeForString(const char *typeStr);
+extern IOSClass *TypeToClass(id<JavaLangReflectType>);
 extern Method JreFindInstanceMethod(Class cls, const char *name);
 extern Method JreFindClassMethod(Class cls, const char *name);
 extern NSMethodSignature *JreSignatureOrNull(struct objc_method_description *methodDesc);

@@ -135,18 +135,17 @@ public class StaticVarRewriter extends ErrorReportingASTVisitor {
   private MethodInvocation newGetterInvocation(AST ast, Expression variable, boolean assignable) {
     IVariableBinding var = Types.getVariableBinding(variable);
     ITypeBinding declaringType = var.getDeclaringClass().getTypeDeclaration();
-    String getterName = var.isEnumConstant() ? NameTable.getName(var) :
-        NameTable.getStaticAccessorName(var.getName());
+    String varName = NameTable.getStaticVarName(var);
+    String getterName = "get";
     ITypeBinding returnType = var.getType();
     if (assignable) {
       getterName += "Ref";
       returnType = new PointerTypeBinding(returnType);
     }
-    IOSMethod iosMethod = IOSMethod.create(NameTable.getFullName(declaringType) + " " + getterName);
-    IOSMethodBinding binding = IOSMethodBinding.newMethod(
-        iosMethod, Modifier.PUBLIC | Modifier.STATIC, returnType, declaringType);
-    MethodInvocation invocation = ASTFactory.newMethodInvocation(
-        ast, binding, ASTFactory.newSimpleName(ast, declaringType));
+    IOSMethodBinding binding = IOSMethodBinding.newFunction(
+        NameTable.getFullName(declaringType) + "_" + getterName + "_" + varName, returnType,
+        declaringType);
+    MethodInvocation invocation = ASTFactory.newMethodInvocation(ast, binding, null);
     if (assignable) {
       invocation = ASTFactory.newDereference(ast, invocation);
     }
@@ -159,14 +158,10 @@ public class StaticVarRewriter extends ErrorReportingASTVisitor {
   private MethodInvocation newSetterInvocation(AST ast, IVariableBinding var, Expression value) {
     ITypeBinding varType = var.getType();
     ITypeBinding declaringType = var.getDeclaringClass();
-    IOSMethod iosMethod = IOSMethod.create(String.format(
-        "%s set%s:(%s)value", NameTable.getFullName(declaringType),
-        NameTable.capitalize(var.getName()), NameTable.getSpecificObjCType(varType)));
-    IOSMethodBinding binding = IOSMethodBinding.newMethod(
-        iosMethod, Modifier.PUBLIC | Modifier.STATIC, varType, declaringType);
-    binding.addParameter(varType);
-    MethodInvocation invocation = ASTFactory.newMethodInvocation(
-        ast, binding, ASTFactory.newSimpleName(ast, declaringType));
+    IOSMethodBinding binding = IOSMethodBinding.newFunction(
+        NameTable.getFullName(declaringType) + "_set_" + NameTable.getStaticVarName(var), varType,
+        declaringType, varType);
+    MethodInvocation invocation = ASTFactory.newMethodInvocation(ast, binding, null);
     ASTUtil.getArguments(invocation).add(value);
     return invocation;
   }

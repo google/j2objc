@@ -184,6 +184,14 @@
   return JreTypeForString(data_->type);
 }
 
+- (const void *)staticRef {
+  return data_->staticRef;
+}
+
+- (const J2ObjcRawValue * const)getConstantValue {
+  return &data_->constantValue;
+}
+
 @end
 
 @implementation JavaMethodMetadata

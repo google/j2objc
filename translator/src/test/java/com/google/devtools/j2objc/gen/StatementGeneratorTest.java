@@ -43,7 +43,7 @@ public class StatementGeneratorTest extends GenerationTest {
     String translation = translateSourceFile(
         "public class Test { enum Type { TYPE_BOOL; } Type test() { return Type.TYPE_BOOL; }}",
         "Test", "Test.m");
-    assertTranslation(translation, "return [Test_TypeEnum TYPE_BOOL_];");
+    assertTranslation(translation, "return Test_TypeEnum_get_TYPE_BOOL_();");
   }
 
   // Verify that super.method(), where method is static, sends the
@@ -208,9 +208,7 @@ public class StatementGeneratorTest extends GenerationTest {
       + "int foo; { foo = Bar.FOO; } }",
       "Example", "Example.m");
     assertTranslation(translation, "foo_ = Example_Bar_FOO;");
-    assertFalse(translation.contains("static int Example_Bar_FOO_ = 1;"));
-    assertTranslation(translation, "+ (int)FOO {");
-    assertTranslation(translation, "return Example_Bar_FOO;");
+    assertFalse(translation.contains("int Example_Bar_FOO_ = 1;"));
     translation = getTranslatedFile("Example.h");
     assertTranslation(translation, "#define Example_Bar_FOO 1");
   }
@@ -220,10 +218,11 @@ public class StatementGeneratorTest extends GenerationTest {
       "public class Example { static class Bar { public static final String FOO=\"Mumble\"; } "
       + "String foo; { foo = Bar.FOO; } }",
       "Example", "Example.m");
-    assertTranslation(translation, "Example_set_foo_(self, [Example_Bar FOO])");
-    assertTranslation(translation, "static NSString * Example_Bar_FOO_ = @\"Mumble\";");
-    assertTranslation(translation, "+ (NSString *)FOO {");
-    assertTranslation(translation, "return Example_Bar_FOO_;");
+    assertTranslation(translation, "Example_set_foo_(self, Example_Bar_get_FOO_())");
+    assertTranslation(translation, "NSString * Example_Bar_FOO_ = @\"Mumble\";");
+    translation = getTranslatedFile("Example.h");
+    assertTranslation(translation, "FOUNDATION_EXPORT NSString *Example_Bar_FOO_;");
+    assertTranslation(translation, "J2OBJC_STATIC_FIELD_GETTER(Example_Bar, FOO_, NSString *)");
   }
 
   public void testMultipleVariableDeclarations() throws IOException {
@@ -246,9 +245,9 @@ public class StatementGeneratorTest extends GenerationTest {
         "public class Example { Boolean b1 = Boolean.TRUE; Boolean b2 = Boolean.FALSE; }",
         "Example", "Example.m");
     assertTranslation(translation,
-        "Example_set_b1_(self, [JavaLangBoolean getTRUE])");
+        "Example_set_b1_(self, JavaLangBoolean_get_TRUE__())");
     assertTranslation(translation,
-        "Example_set_b2_(self, [JavaLangBoolean getFALSE])");
+        "Example_set_b2_(self, JavaLangBoolean_get_FALSE__())");
   }
 
   public void testStringConcatenation() throws IOException {
@@ -359,7 +358,7 @@ public class StatementGeneratorTest extends GenerationTest {
       "public class Test { public static final Object FOO = new Object(); " +
       "static class Inner { Object test() { return FOO; }}}",
       "Test", "Test.m");
-    assertTranslation(translation, "return [Test FOO];");
+    assertTranslation(translation, "return Test_get_FOO_();");
   }
 
   public void testReservedIdentifierReference() throws IOException {
@@ -469,7 +468,7 @@ public class StatementGeneratorTest extends GenerationTest {
         "public class Test { enum TicTacToe { X, Y } " +
         "boolean isX(TicTacToe ttt) { return ttt == TicTacToe.X; } }",
         "Test", "Test.m");
-    assertTranslation(translation, "return ttt == [Test_TicTacToeEnum X];");
+    assertTranslation(translation, "return ttt == Test_TicTacToeEnum_get_X();");
   }
 
   public void testArrayLocalVariable() throws IOException {
@@ -804,7 +803,7 @@ public class StatementGeneratorTest extends GenerationTest {
         "class Foo { public static final int DEFAULT = 1; " +
         "public static final Object LOCK = null; }", "Test", "Test.m");
     assertTranslation(translation, "int i = Foo_DEFAULT;");
-    assertTranslation(translation, "id lock = [Foo LOCK];");
+    assertTranslation(translation, "id lock = Foo_get_LOCK_();");
   }
 
   public void testCastGenericReturnType() throws IOException {
@@ -887,7 +886,7 @@ public class StatementGeneratorTest extends GenerationTest {
         "public class Example { public static java.util.Date today; }" +
         "class Test { void test(java.util.Date now) { Example.today = now; }}",
         "Example", "Example.m");
-    assertTranslation(translation, "[Example setToday:now];");
+    assertTranslation(translation, "Example_set_today_(now);");
   }
 
   // b/5872533: reserved method name not renamed correctly in super invocation.
@@ -1001,7 +1000,7 @@ public class StatementGeneratorTest extends GenerationTest {
     assertTranslation(translation,
         "c3 = [[IOSClass classWithClass:[Test class]] getConstructor:" +
         "[IOSObjectArray arrayWithObjects:(id[]){ [IOSClass classWithClass:[NSString class]], " +
-        "[JavaLangByte TYPE] } count:2 type:[IOSClass classWithClass:[IOSClass class]]]];");
+        "JavaLangByte_get_TYPE_() } count:2 type:[IOSClass classWithClass:[IOSClass class]]]];");
 
     // Array contents should be expanded.
     assertTranslation(translation,
@@ -1086,7 +1085,8 @@ public class StatementGeneratorTest extends GenerationTest {
       "public class A { String prefix(Object o) { return new String(o + B.separator); }}",
       "A", "A.m");
     assertTranslation(translation,
-        "[NSString stringWithString:[NSString stringWithFormat:@\"%@%@\", o, [B separator]]];");
+        "[NSString stringWithString:" +
+        "[NSString stringWithFormat:@\"%@%@\", o, B_get_separator_()]];");
   }
 
   public void testStringConcatWithBoolean() throws IOException {
@@ -1171,7 +1171,7 @@ public class StatementGeneratorTest extends GenerationTest {
         "interface Assigner { void assign(String s); } static { " +
         "new Assigner() { public void assign(String s) { foo = s; }}; }}",
         "Test", "Test.m");
-    assertTranslation(translation, "[Test setFoo:s];");
+    assertTranslation(translation, "Test_set_foo_(s);");
   }
 
   public void testNoAutoreleasePoolForStatement() throws IOException {
@@ -1611,7 +1611,7 @@ public class StatementGeneratorTest extends GenerationTest {
     String translation = translateSourceFile(
         "public class Test { enum Type { TYPE_BOOL; } Type test() { return Type.TYPE_BOOL; }}",
         "Test", "Test.m");
-    assertTranslation(translation, "return [Test_TypeEnum TYPE_BOOL_];");
+    assertTranslation(translation, "return Test_TypeEnum_get_TYPE_BOOL_();");
   }
 
   public void testMakeQuotedStringHang() throws IOException {

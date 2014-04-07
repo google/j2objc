@@ -174,65 +174,130 @@ getConstructorWithClasses:(IOSClass *)firstClass, ... {
 }
 
 - (BOOL)__unboxValue:(id)value toRawValue:(J2ObjcRawValue *)rawValue {
+  IOSClass *fromType = nil;
   if ([value isKindOfClass:[JavaLangByte class]]) {
-    char byteValue = [(JavaLangByte *) value charValue];
-    switch ([type_ characterAtIndex:0]) {
-      case 'B': rawValue->asChar = byteValue; return YES;
-      case 'D': rawValue->asDouble = byteValue; return YES;
-      case 'F': rawValue->asFloat = byteValue; return YES;
-      case 'I': rawValue->asInt = byteValue; return YES;
-      case 'J': rawValue->asLong = byteValue; return YES;
-      case 'S': rawValue->asShort = byteValue; return YES;
-    }
+    rawValue->asChar = [(JavaLangByte *) value charValue];
+    fromType = [IOSClass byteClass];
   } else if ([value isKindOfClass:[JavaLangCharacter class]]) {
-    unichar charValue = [(JavaLangCharacter *) value charValue];
-    switch ([type_ characterAtIndex:0]) {
-      case 'C': rawValue->asUnichar = charValue; return YES;
-      case 'D': rawValue->asDouble = charValue; return YES;
-      case 'F': rawValue->asFloat = charValue; return YES;
-      case 'I': rawValue->asInt = charValue; return YES;
-      case 'J': rawValue->asLong = charValue; return YES;
-    }
+    rawValue->asUnichar = [(JavaLangCharacter *) value charValue];
+    fromType = [IOSClass charClass];
   } else if ([value isKindOfClass:[JavaLangDouble class]]) {
-    double doubleValue = [(JavaLangDouble *) value doubleValue];
-    switch ([type_ characterAtIndex:0]) {
-      case 'D': rawValue->asDouble = doubleValue; return YES;
-    }
+    rawValue->asDouble = [(JavaLangDouble *) value doubleValue];
+    fromType = [IOSClass doubleClass];
   } else if ([value isKindOfClass:[JavaLangFloat class]]) {
-    float floatValue = [(JavaLangFloat *) value floatValue];
-    switch ([type_ characterAtIndex:0]) {
-      case 'D': rawValue->asDouble = floatValue; return YES;
-      case 'F': rawValue->asFloat = floatValue; return YES;
-    }
+    rawValue->asFloat = [(JavaLangFloat *) value floatValue];
+    fromType = [IOSClass floatClass];
   } else if ([value isKindOfClass:[JavaLangInteger class]]) {
-    int intValue = [(JavaLangInteger *) value intValue];
-    switch ([type_ characterAtIndex:0]) {
-      case 'D': rawValue->asDouble = intValue; return YES;
-      case 'F': rawValue->asFloat = intValue; return YES;
-      case 'I': rawValue->asInt = intValue; return YES;
-      case 'J': rawValue->asLong = intValue; return YES;
-    }
+    rawValue->asInt = [(JavaLangInteger *) value intValue];
+    fromType = [IOSClass intClass];
   } else if ([value isKindOfClass:[JavaLangLong class]]) {
-    long long longValue = [(JavaLangLong *) value longValue];
-    switch ([type_ characterAtIndex:0]) {
-      case 'D': rawValue->asDouble = longValue; return YES;
-      case 'F': rawValue->asFloat = longValue; return YES;
-      case 'J': rawValue->asLong = longValue; return YES;
-    }
+    rawValue->asLong = [(JavaLangLong *) value longValue];
+    fromType = [IOSClass longClass];
   } else if ([value isKindOfClass:[JavaLangShort class]]) {
-    short shortValue = [(JavaLangShort *) value shortValue];
-    switch ([type_ characterAtIndex:0]) {
-      case 'D': rawValue->asDouble = shortValue; return YES;
-      case 'F': rawValue->asFloat = shortValue; return YES;
-      case 'I': rawValue->asInt = shortValue; return YES;
-      case 'J': rawValue->asLong = shortValue; return YES;
-      case 'S': rawValue->asShort = shortValue; return YES;
-    }
+    rawValue->asShort = [(JavaLangShort *) value shortValue];
+    fromType = [IOSClass shortClass];
   } else if ([value isKindOfClass:[JavaLangBoolean class]]) {
-    BOOL boolValue = [(JavaLangBoolean *) value booleanValue];
-    switch ([type_ characterAtIndex:0]) {
-      case 'Z': rawValue->asBOOL = boolValue; return YES;
-    }
+    rawValue->asBOOL = [(JavaLangBoolean *) value booleanValue];
+    fromType = [IOSClass booleanClass];
+  }
+
+  if (fromType) {
+    return [fromType __convertRawValue:rawValue toType:self];
+  }
+  return NO;
+}
+
+- (void)__readRawValue:(J2ObjcRawValue *)rawValue fromAddress:(const void *)addr {
+  switch ([type_ characterAtIndex:0]) {
+    case 'B': rawValue->asChar = *(char *)addr; return;
+    case 'C': rawValue->asUnichar = *(unichar *)addr; return;
+    case 'D': rawValue->asDouble = *(double *)addr; return;
+    case 'F': rawValue->asFloat = *(float *)addr; return;
+    case 'I': rawValue->asInt = *(int *)addr; return;
+    case 'J': rawValue->asLong = *(long long *)addr; return;
+    case 'S': rawValue->asShort = *(short *)addr; return;
+    case 'Z': rawValue->asBOOL = *(BOOL *)addr; return;
+  }
+}
+
+- (void)__writeRawValue:(J2ObjcRawValue *)rawValue toAddress:(const void *)addr {
+  switch ([type_ characterAtIndex:0]) {
+    case 'B': *(char *)addr = rawValue->asChar; return;
+    case 'C': *(unichar *)addr = rawValue->asUnichar; return;
+    case 'D': *(double *)addr = rawValue->asDouble; return;
+    case 'F': *(float *)addr = rawValue->asFloat; return;
+    case 'I': *(int *)addr = rawValue->asInt; return;
+    case 'J': *(long long *)addr = rawValue->asLong; return;
+    case 'S': *(short *)addr = rawValue->asShort; return;
+    case 'Z': *(BOOL *)addr = rawValue->asBOOL; return;
+  }
+}
+
+- (BOOL)__convertRawValue:(J2ObjcRawValue *)rawValue toType:(IOSClass *)toType {
+  if (![toType isPrimitive]) {
+    return NO;
+  }
+  unichar toTypeChar = [((IOSPrimitiveClass *)toType)->type_ characterAtIndex:0];
+  switch ([type_ characterAtIndex:0]) {
+    case 'B':
+      switch (toTypeChar) {
+        case 'B': return YES;
+        case 'D': rawValue->asDouble = rawValue->asChar; return YES;
+        case 'F': rawValue->asFloat = rawValue->asChar; return YES;
+        case 'I': rawValue->asInt = rawValue->asChar; return YES;
+        case 'J': rawValue->asLong = rawValue->asChar; return YES;
+        case 'S': rawValue->asShort = rawValue->asChar; return YES;
+      }
+      return NO;
+    case 'C':
+      switch (toTypeChar) {
+        case 'C': return YES;
+        case 'D': rawValue->asDouble = rawValue->asUnichar; return YES;
+        case 'F': rawValue->asFloat = rawValue->asUnichar; return YES;
+        case 'I': rawValue->asInt = rawValue->asUnichar; return YES;
+        case 'J': rawValue->asLong = rawValue->asUnichar; return YES;
+      }
+      return NO;
+    case 'D':
+      switch (toTypeChar) {
+        case 'D': return YES;
+      }
+      return NO;
+    case 'F':
+      switch (toTypeChar) {
+        case 'D': rawValue->asDouble = rawValue->asFloat; return YES;
+        case 'F': return YES;
+      }
+      return NO;
+    case 'I':
+      switch (toTypeChar) {
+        case 'D': rawValue->asDouble = rawValue->asInt; return YES;
+        case 'F': rawValue->asFloat = rawValue->asInt; return YES;
+        case 'I': return YES;
+        case 'J': rawValue->asLong = rawValue->asInt; return YES;
+      }
+      return NO;
+    case 'J':
+      switch (toTypeChar) {
+        case 'D': rawValue->asDouble = rawValue->asLong; return YES;
+        case 'F': rawValue->asFloat = rawValue->asLong; return YES;
+        case 'J': return YES;
+      }
+      return NO;
+    case 'S':
+      switch (toTypeChar) {
+        case 'D': rawValue->asDouble = rawValue->asShort; return YES;
+        case 'F': rawValue->asFloat = rawValue->asShort; return YES;
+        case 'I': rawValue->asInt = rawValue->asShort; return YES;
+        case 'J': rawValue->asLong = rawValue->asShort; return YES;
+        case 'S': return YES;
+      }
+      return NO;
+    case 'Z':
+      switch (toTypeChar) {
+        case 'Z': return YES;
+      }
+      return NO;
   }
   return NO;
 }

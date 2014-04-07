@@ -20,6 +20,7 @@ import com.google.common.collect.Lists;
 import com.google.devtools.j2objc.types.GeneratedMethodBinding;
 import com.google.devtools.j2objc.types.Types;
 import com.google.devtools.j2objc.util.ASTUtil;
+import com.google.devtools.j2objc.util.BindingUtil;
 import com.google.devtools.j2objc.util.NameTable;
 
 import org.eclipse.jdt.core.dom.AbstractTypeDeclaration;
@@ -69,7 +70,7 @@ public class MetadataGenerator {
 
   private void generateMetadata() {
     String fullName = NameTable.getFullName(type);
-    println("+ (J2ObjcClassInfo *)__metadata {");
+    println("\n+ (J2ObjcClassInfo *)__metadata {");
     generateMethodsMetadata();
     generateFieldsMetadata();
     int superclassTypeArgsSize = printSuperclassTypeArguments();
@@ -90,7 +91,7 @@ public class MetadataGenerator {
     printf("%s, ", Integer.toString(superclassTypeArgsSize));
     printf(superclassTypeArgsSize > 0 ? "superclass_type_args" : "NULL");
     println("};");
-    printf("  return &_%s;\n}\n\n", fullName);
+    printf("  return &_%s;\n}\n", fullName);
   }
 
   private String getEnclosingName() {
@@ -136,9 +137,10 @@ public class MetadataGenerator {
     if (typeNode instanceof TypeDeclaration) {
       TypeDeclaration typeDecl = (TypeDeclaration) typeNode;
       List<String> fieldMetadata = Lists.newArrayList();
+      String typeName = NameTable.getFullName(type);
       for (FieldDeclaration field : typeDecl.getFields()) {
-        for (Iterator<?> it = field.fragments().iterator(); it.hasNext(); ) {
-          VariableDeclarationFragment f = (VariableDeclarationFragment) it.next();
+        for (VariableDeclarationFragment f : ASTUtil.getFragments(field)) {
+          IVariableBinding var = Types.getVariableBinding(f);
           int modifiers = getFieldModifiers(Types.getVariableBinding(f));
           String javaName = f.getName().getIdentifier();
           String objcName = NameTable.javaFieldToObjC(NameTable.getName(f.getName()));
@@ -146,10 +148,20 @@ public class MetadataGenerator {
             // Don't print Java name if it matches the default pattern, to conserve space.
             javaName = null;
           }
-          String metadata = String.format("    { \"%s\", ", objcName);
-          metadata += javaName != null ? String.format("\"%s\", ", javaName) : "NULL, ";
-          metadata +=
-              String.format("0x%x, \"%s\" },\n", modifiers, getTypeName(Types.getTypeBinding(f)));
+          String staticRef = "NULL";
+          String constantValue = "";
+          if (BindingUtil.isStatic(var)) {
+            if (BindingUtil.isPrimitiveConstant(var)) {
+              constantValue = String.format(".constantValue.%s = %s",
+                  getRawValueField(var), NameTable.getPrimitiveConstantName(var));
+            } else {
+              staticRef = String.format("&%s_%s", typeName, objcName);
+            }
+          }
+          String metadata = String.format(
+              "    { \"%s\", %s, 0x%x, \"%s\", %s, %s },\n",
+              objcName, cStr(javaName), modifiers, getTypeName(Types.getTypeBinding(f)), staticRef,
+              constantValue);
           fieldMetadata.add(metadata);
         }
       }
@@ -162,6 +174,22 @@ public class MetadataGenerator {
       }
       fieldMetadataCount = fieldMetadata.size();
     }
+  }
+
+  private String getRawValueField(IVariableBinding var) {
+    ITypeBinding type = var.getType();
+    assert type.isPrimitive();
+    switch (type.getBinaryName().charAt(0)) {
+      case 'B': return "asChar";
+      case 'C': return "asUnichar";
+      case 'D': return "asDouble";
+      case 'F': return "asFloat";
+      case 'I': return "asInt";
+      case 'J': return "asLong";
+      case 'S': return "asShort";
+      case 'Z': return "asBOOL";
+    }
+    throw new AssertionError();
   }
 
   private String getMethodMetadata(IMethodBinding method) {

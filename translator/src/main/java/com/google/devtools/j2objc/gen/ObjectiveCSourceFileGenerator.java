@@ -92,10 +92,24 @@ public abstract class ObjectiveCSourceFileGenerator extends SourceFileGenerator 
 
   protected void printStaticFieldAccessors(
       List<FieldDeclaration> fields, List<MethodDeclaration> methods, boolean isInterface) {
-    printStaticFieldAccessors(getStaticFieldsNeedingAccessors(fields, isInterface), methods);
+    printStaticFieldAccessors(getStaticFieldsNeedingAccessorsOld(fields, isInterface), methods);
   }
 
-  protected void printStaticFieldAccessors(
+  protected List<IVariableBinding> getStaticFieldsNeedingAccessorsOld(
+            List<FieldDeclaration> fields, boolean isInterface) {
+    List<IVariableBinding> bindings = Lists.newArrayList();
+    for (FieldDeclaration f : fields) {
+      if (Modifier.isStatic(f.getModifiers()) || isInterface) {
+        for (VariableDeclarationFragment var : ASTUtil.getFragments(f)) {
+          IVariableBinding binding = Types.getVariableBinding(var);
+          bindings.add(binding);
+        }
+      }
+    }
+    return bindings;
+  }
+
+  private void printStaticFieldAccessors(
       List<IVariableBinding> bindings, List<MethodDeclaration> methods) {
     for (IVariableBinding binding : bindings) {
       if (needsGetter(binding, methods)) {
@@ -109,20 +123,6 @@ public abstract class ObjectiveCSourceFileGenerator extends SourceFileGenerator 
         }
       }
     }
-  }
-
-  protected List<IVariableBinding> getStaticFieldsNeedingAccessors(
-      List<FieldDeclaration> fields, boolean isInterface) {
-    List<IVariableBinding> bindings = Lists.newArrayList();
-    for (FieldDeclaration f : fields) {
-      if (Modifier.isStatic(f.getModifiers()) || isInterface) {
-        for (VariableDeclarationFragment var : ASTUtil.getFragments(f)) {
-          IVariableBinding binding = Types.getVariableBinding(var);
-          bindings.add(binding);
-        }
-      }
-    }
-    return bindings;
   }
 
   /**
@@ -144,18 +144,16 @@ public abstract class ObjectiveCSourceFileGenerator extends SourceFileGenerator 
     return true;
   }
 
-  protected void printStaticFieldGetter(IVariableBinding var) {
-    printf(staticFieldGetterSignature(var));
-  }
+  protected abstract void printStaticFieldGetter(IVariableBinding var);
+
+  protected abstract void printStaticFieldReferenceGetter(IVariableBinding var);
+
+  protected abstract void printStaticFieldSetter(IVariableBinding var);
 
   protected String staticFieldGetterSignature(IVariableBinding var) {
     String objcType = NameTable.getObjCType(var.getType());
     String accessorName = NameTable.getStaticAccessorName(var.getName());
     return String.format("+ (%s)%s", objcType, accessorName);
-  }
-
-  protected void printStaticFieldReferenceGetter(IVariableBinding var) {
-    printf(staticFieldReferenceGetterSignature(var));
   }
 
   protected String staticFieldReferenceGetterSignature(IVariableBinding var) {
@@ -164,15 +162,53 @@ public abstract class ObjectiveCSourceFileGenerator extends SourceFileGenerator 
     return String.format("+ (%s *)%sRef", objcType, accessorName);
   }
 
-  protected void printStaticFieldSetter(IVariableBinding var) {
-    printf(staticFieldSetterSignature(var));
-  }
-
   protected String staticFieldSetterSignature(IVariableBinding var) {
     String objcType = NameTable.getObjCType(var.getType());
     String paramName = NameTable.getName(var);
-    return String.format("+ (void)set%s:(%s)%s", NameTable.capitalize(var.getName()), objcType,
-                         paramName);
+    return String.format("+ (void)set%s:(%s)%s",
+        NameTable.capitalize(var.getName()), objcType, paramName);
+  }
+
+  protected List<IVariableBinding> getStaticFieldsNeedingAccessors(
+      List<FieldDeclaration> fields, boolean isInterface) {
+    List<IVariableBinding> bindings = Lists.newArrayList();
+    for (VariableDeclarationFragment fragment : getStaticFieldFragments(fields, isInterface)) {
+      bindings.add(Types.getVariableBinding(fragment));
+    }
+    return bindings;
+  }
+
+  protected List<VariableDeclarationFragment> getStaticFieldFragments(
+      List<FieldDeclaration> fields, boolean isInterface) {
+    List<VariableDeclarationFragment> fragments = Lists.newArrayList();
+    for (FieldDeclaration f : fields) {
+      if (Modifier.isStatic(f.getModifiers()) || isInterface) {
+        for (VariableDeclarationFragment var : ASTUtil.getFragments(f)) {
+          if (!BindingUtil.isPrimitiveConstant(Types.getVariableBinding(var))) {
+            fragments.add(var);
+          }
+        }
+      }
+    }
+    return fragments;
+  }
+
+  protected boolean isInitializeMethod(MethodDeclaration m) {
+    return Modifier.isStatic(m.getModifiers()) &&
+        NameTable.CLINIT_NAME.equals(m.getName().getIdentifier());
+  }
+
+  protected boolean hasInitializeMethod(
+      AbstractTypeDeclaration node, List<MethodDeclaration> methods) {
+    if (node instanceof EnumDeclaration) {
+      return true;
+    }
+    for (MethodDeclaration m : methods) {
+      if (isInitializeMethod(m)) {
+        return true;
+      }
+    }
+    return false;
   }
 
   /**
@@ -185,24 +221,22 @@ public abstract class ObjectiveCSourceFileGenerator extends SourceFileGenerator 
   }
 
   protected void printMethod(MethodDeclaration m) {
-    syncLineNumbers(m.getName());  // avoid doc-comment
     IMethodBinding binding = Types.getMethodBinding(m);
     IOSMethod iosMethod = IOSMethodBinding.getIOSMethod(binding);
     if (iosMethod != null) {
       print(mappedMethodDeclaration(m, iosMethod));
     } else if (m.isConstructor()) {
-      print(constructorDeclaration(m));
-    } else if (Modifier.isStatic(m.getModifiers()) &&
-        NameTable.CLINIT_NAME.equals(m.getName().getIdentifier())) {
+      printConstructor(m);
+    } else if (isInitializeMethod(m)) {
       printStaticConstructorDeclaration(m);
     } else {
       printNormalMethod(m);
     }
   }
 
-  protected void printNormalMethod(MethodDeclaration m) {
-    print(methodDeclaration(m));
-  }
+  protected abstract void printNormalMethod(MethodDeclaration m);
+
+  protected abstract void printConstructor(MethodDeclaration m);
 
   /**
    * Create an Objective-C method or constructor declaration string for an

@@ -16,6 +16,7 @@
 
 package com.google.devtools.j2objc.gen;
 
+import com.google.common.base.CharMatcher;
 import com.google.common.io.LineReader;
 
 import org.eclipse.jdt.core.dom.ASTNode;
@@ -95,8 +96,11 @@ public class SourceBuilder {
     return buffer.toString();
   }
 
+  private static final CharMatcher NEWLINE_MATCHER = CharMatcher.is('\n');
+
   public void print(String s) {
     buffer.append(s);
+    currentLine += NEWLINE_MATCHER.countIn(s);
   }
 
   public void print(char c) {
@@ -112,7 +116,6 @@ public class SourceBuilder {
 
   public void printf(String format, Object... args) {
     print(String.format(format, args));
-    currentLine += countNewLines(format);
   }
 
   public void println(String s) {
@@ -204,18 +207,6 @@ public class SourceBuilder {
     if (emitLineDirectives) {
       buffer.append(String.format("#line 1 \"%s\"\n\n", path));
     }
-  }
-
-  /**
-   * Returns the number of line endings in a string.
-   */
-  private int countNewLines(String s) {
-    int c = 0;
-    int i = -1;
-    while ((i = s.indexOf('\n', i + 1)) != -1) {
-      c++;
-    }
-    return c;
   }
 
   /**

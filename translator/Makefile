@@ -59,6 +59,7 @@ JAVA_SOURCES = \
 	gen/ObjectiveCImplementationGenerator.java \
 	gen/ObjectiveCSegmentedHeaderGenerator.java \
 	gen/ObjectiveCSourceFileGenerator.java \
+	gen/SourceBuilder.java \
 	gen/SourceFileGenerator.java \
 	gen/SourcePosition.java \
 	gen/StatementGenerator.java \

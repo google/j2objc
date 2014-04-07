@@ -96,14 +96,12 @@ public class InitializationNormalizerTest extends GenerationTest {
     String translation = translateSourceFile(
         "class Test { static java.util.Date date = new java.util.Date(); }", "Test", "Test.m");
     // test that initializer was stripped from the declaration
-    assertTranslation(translation, "static JavaUtilDate * Test_date_;");
+    assertTranslation(translation, "JavaUtilDate * Test_date_;");
     // test that initializer was moved to new initialize method
     assertTranslatedLines(translation,
         "+ (void)initialize {",
         "if (self == [Test class]) {",
-        "JreOperatorRetainedAssign(&Test_date_, nil, [[[JavaUtilDate alloc] init] autorelease]);",
-        "}",
-        "}");
+        "JreOperatorRetainedAssign(&Test_date_, nil, [[[JavaUtilDate alloc] init] autorelease]);");
   }
 
   public void testFieldInitializer() throws IOException {
@@ -147,7 +145,8 @@ public class InitializationNormalizerTest extends GenerationTest {
         "+ (void)initialize {",
         "if (self == [Test class]) {",
         "{",
-        "[((JavaIoPrintStream *) nil_chk([JavaLangSystem out])) printlnWithNSString:@\"foo\"];");
+        "[((JavaIoPrintStream *) nil_chk(JavaLangSystem_get_out_())) " +
+            "printlnWithNSString:@\"foo\"];");
   }
 
   public void testIsDesignatedConstructor() {
@@ -184,7 +183,7 @@ public class InitializationNormalizerTest extends GenerationTest {
         "{",
         "Test_set_date_(self, [[[JavaUtilDate alloc] init] autorelease]);",
         "}",
-        "[((JavaIoPrintStream *) nil_chk([JavaLangSystem out])) printlnWithInt:i];",
+        "[((JavaIoPrintStream *) nil_chk(JavaLangSystem_get_out_())) printlnWithInt:i];",
         "JreMemDebugAdd(self);",
         "}",
         "return self;",
@@ -226,7 +225,7 @@ public class InitializationNormalizerTest extends GenerationTest {
   public void testStringWithInvalidCppCharacters() throws IOException {
     String source = "class Test { static final String foo = \"\\uffff\"; }";
     String translation = translateSourceFile(source, "Test", "Test.m");
-    assertTranslation(translation, "static NSString * Test_foo_;");
+    assertTranslation(translation, "NSString * Test_foo_;");
     assertTranslation(translation,
         "JreOperatorRetainedAssign(&Test_foo_, nil, [NSString stringWithCharacters:(unichar[]) { "
         + "(int) 0xffff } length:1]);");
@@ -235,7 +234,7 @@ public class InitializationNormalizerTest extends GenerationTest {
   public void testStringConcatWithInvalidCppCharacters() throws IOException {
     String source = "class Test { static final String foo = \"hello\" + \"\\uffff\"; }";
     String translation = translateSourceFile(source, "Test", "Test.m");
-    assertTranslation(translation, "static NSString * Test_foo_;");
+    assertTranslation(translation, "NSString * Test_foo_;");
     assertTranslation(translation,
         "JreOperatorRetainedAssign(&Test_foo_, nil, [NSString stringWithFormat:@\"hello%@\", "
         + "[NSString stringWithCharacters:(unichar[]) { (int) 0xffff } length:1]]);");
@@ -276,6 +275,6 @@ public class InitializationNormalizerTest extends GenerationTest {
     String translation = translateSourceFile(
         "class Test { static final String FOO = Inner.BAR; " +
         "class Inner { static final String BAR = \"bar\"; } }", "Test", "Test.m");
-    assertTranslation(translation, "static NSString * Test_FOO_ = @\"bar\";");
+    assertTranslation(translation, "NSString * Test_FOO_ = @\"bar\";");
   }
 }

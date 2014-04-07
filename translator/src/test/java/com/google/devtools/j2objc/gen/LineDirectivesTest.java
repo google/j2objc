@@ -62,7 +62,8 @@ public class LineDirectivesTest extends GenerationTest {
         "A", "A.m");
     assertTranslation(translation, "#line 3\n@implementation A");
     assertTranslation(translation, "#line 6\n- (void)one");
-    assertTranslation(translation, "#line 9\n- (void)two");
+    // Lines match up between one() and two() so no need for the directive.
+    assertNotInTranslation(translation, "#line 9\n- (void)two");
     assertTranslation(translation, "#line 10\n- (void)three");
   }
 

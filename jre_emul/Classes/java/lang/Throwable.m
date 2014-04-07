@@ -169,7 +169,7 @@ void FillInStackTraceInternal(JavaLangThrowable *this) {
 }
 
 - (void)printStackTrace {
-  [self printStackTraceWithJavaIoPrintStream:[JavaLangSystem err]];
+  [self printStackTraceWithJavaIoPrintStream:JavaLangSystem_get_err_()];
 }
 
 - (void)printStackTraceWithJavaIoPrintWriter:(JavaIoPrintWriter *)pw {

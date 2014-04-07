@@ -31,6 +31,8 @@
 - (NSString *)javaName;
 - (int)modifiers;
 - (id<JavaLangReflectType>)type;
+- (const void *)staticRef;
+- (const J2ObjcRawValue * const)getConstantValue;
 
 @end
 

@@ -336,9 +336,7 @@ public class RewriterTest extends GenerationTest {
         "JreOperatorRetainedAssign(&Test_a_, nil, " +
             "[IOSIntArray arrayWithInts:(int[]){ 1, 2, 3 } count:3]);",
         "JreOperatorRetainedAssign(&Test_b_, nil, " +
-            "[IOSCharArray arrayWithChars:(unichar[]){ '4', '5' } count:2]);",
-        "}",
-        "}");
+            "[IOSCharArray arrayWithChars:(unichar[]){ '4', '5' } count:2]);");
   }
 
   public void testNonStaticMultiDimArrayInitializer() throws IOException {
@@ -372,9 +370,9 @@ public class RewriterTest extends GenerationTest {
 
   public void testInterfaceFieldsAreStaticFinal() throws IOException {
     String source = "interface Test { String foo = \"bar\"; }";
-    String translation = translateSourceFile(source, "Test", "Test.m");
-    assertTranslation(translation, "+ (NSString *)foo {");
-    assertFalse(translation.contains("setFoo"));
+    String translation = translateSourceFile(source, "Test", "Test.h");
+    assertTranslation(translation, "J2OBJC_STATIC_FIELD_GETTER(Test, foo_, NSString *)");
+    assertFalse(translation.contains("J2OBJC_STATIC_FIELD_SETTER"));
   }
 
   // Regression test: the wrong method name used for "f.group()" translation.
