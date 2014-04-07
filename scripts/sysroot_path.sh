@@ -27,6 +27,12 @@ if [ $# -gt 0 ]; then
   esac
 fi
 
+if [[ "$OSTYPE" != "darwin"* ]]; then
+  OS_NAME=$(uname -s)
+  echo "Apple development tools not available on $OS_NAME."
+  exit 1
+fi
+
 XCODE_ROOT=$(xcode-select --print-path)
 
 if [ ! -d "${XCODE_ROOT}" ]; then
