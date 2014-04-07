@@ -22,24 +22,6 @@
 #ifndef _IOSCHARARRAY_H
 #define _IOSCHARARRAY_H
 
-#import "IOSArray.h"
-
-// An emulation class that represents a Java char array.  Like a Java array,
-// an IOSCharArray is fixed-size but its elements are mutable.
-@interface IOSCharArray : IOSArray {
- @public
-  unichar *buffer_;  // java.nio requires this be first field in IOSArray subclasses.
-}
-
-PRIMITIVE_ARRAY_INTERFACE(char, Char, unichar)
-
-// Create an array from an NSString.
-- (id)initWithNSString:(NSString *)string;
-+ (id)arrayWithNSString:(NSString *)string;
-
-// Returns a copy of the array contents.
-- (unichar *)getChars;
-
-@end
+#import "IOSPrimitiveArray.h"
 
 #endif // _IOSCHARARRAY_H

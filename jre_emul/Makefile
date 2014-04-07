@@ -27,23 +27,16 @@ IOS_OBJS = \
 	DebugUtils.o \
 	IOSArray.o \
 	IOSArrayClass.o \
-	IOSBooleanArray.o \
-	IOSByteArray.o \
-	IOSCharArray.o \
 	IOSClass.o \
 	IOSConcreteClass.o \
-	IOSDoubleArray.o \
-	IOSFloatArray.o \
-	IOSIntArray.o \
 	IOSLocaleData.o \
-	IOSLongArray.o \
 	IOSMappedClass.o \
 	IOSObjectArray.o \
+	IOSPrimitiveArray.o \
 	IOSPrimitiveClass.o \
 	IOSProtocolClass.o \
 	IOSReference.o \
 	IOSReflection.o \
-	IOSShortArray.o \
 	JavaMetadata.o \
 	JavaToIOSInputStreamAdapter.o \
 	JreEmulation.o \

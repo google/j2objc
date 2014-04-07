@@ -22,17 +22,6 @@
 #ifndef _IOSFloatArray_H_
 #define _IOSFloatArray_H_
 
-#import "IOSArray.h"
-
-// An emulation class that represents a Java float array.  Like a Java array,
-// an IOSFloatArray is fixed-size but its elements are mutable.
-@interface IOSFloatArray : IOSArray {
- @public
-  float *buffer_;  // java.nio requires this be first field in IOSArray subclasses.
-}
-
-PRIMITIVE_ARRAY_INTERFACE(float, Float, float)
-
-@end
+#import "IOSPrimitiveArray.h"
 
 #endif // _IOSFloatArray_H_

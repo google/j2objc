@@ -22,17 +22,6 @@
 #ifndef _IOSLongArray_H_
 #define _IOSLongArray_H_
 
-#import "IOSArray.h"
-
-// An emulation class that represents a Java long array.  Like a Java array,
-// an IOSLongArray is fixed-size but its elements are mutable.
-@interface IOSLongArray : IOSArray {
- @public
-  long long *buffer_;  // java.nio requires this be first field in IOSArray subclasses.
-}
-
-PRIMITIVE_ARRAY_INTERFACE(long, Long, long long)
-
-@end
+#import "IOSPrimitiveArray.h"
 
 #endif // _IOSLongArray_H_
