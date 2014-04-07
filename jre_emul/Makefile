@@ -162,6 +162,16 @@ JRE_INTERFACES = \
 
 # Java sources to be translated normally.
 JAVA_SOURCES = \
+	android/os/SystemClock.java \
+	android/util/ContainerHelpers.java \
+	android/util/Log.java \
+	android/util/LruCache.java \
+	android/util/Pair.java \
+	android/util/SparseArray.java \
+	android/util/SparseBooleanArray.java \
+	android/util/SparseIntArray.java \
+	android/util/SparseLongArray.java \
+	com/android/internal/util/ArrayUtils.java \
 	com/google/j2objc/security/IosMD5MessageDigest.java \
 	com/google/j2objc/security/IosSecureRandomImpl.java \
 	com/google/j2objc/security/IosSecurityProvider.java \

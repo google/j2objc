@@ -315,6 +315,10 @@ static NSUInteger EnumerateEntries(
   other.accessOrder = accessOrder_;
 }
 
+- (id<JavaUtilMap_Entry>)eldest {
+  return head_;
+}
+
 @end
 
 
