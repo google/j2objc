@@ -165,6 +165,7 @@ public class Types {
   private void initializePrimitiveArray(String javaTypeName, String iosTypeName) {
     ITypeBinding javaType = ast.resolveWellKnownType(javaTypeName);
     IOSTypeBinding iosType = mapIOSType(IOSTypeBinding.newUnmappedClass(iosTypeName));
+    iosType.setHeader("IOSPrimitiveArray");
     arrayBindingMap.put(javaType, iosType);
   }
 

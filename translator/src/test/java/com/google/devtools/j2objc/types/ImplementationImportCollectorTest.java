@@ -65,7 +65,7 @@ public class ImplementationImportCollectorTest extends GenerationTest {
     addSourceFile("class A { boolean[] b; }", "A.java");
     String translation = translateSourceFile(
         "class B { int test() { return new A().b.length; }}", "B", "B.m");
-    assertTranslation(translation, "#include \"IOSBooleanArray.h\"");
+    assertTranslation(translation, "#include \"IOSPrimitiveArray.h\"");
   }
 
   public void testPrimitiveArrayAsParameterImport() throws IOException {
@@ -73,7 +73,7 @@ public class ImplementationImportCollectorTest extends GenerationTest {
         "class B { protected char bits[]; public B(char[] bits_) { bits = bits_;} }", "B.java");
     String translation = translateSourceFile(
         "class A { public static final B test = new B(new char[]{'a', 'b'}); }", "A", "A.m");
-    assertTranslation(translation, "#include \"IOSCharArray.h\"");
+    assertTranslation(translation, "#include \"IOSPrimitiveArray.h\"");
   }
 
   public void testObjectArrayImport() throws IOException {

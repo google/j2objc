@@ -67,6 +67,13 @@ public class Import implements Comparable<Import> {
 
   private static String getImportFileName(ITypeBinding type) {
     String javaName = type.getErasure().getQualifiedName();
+    if (type instanceof IOSTypeBinding) {
+      // Some IOS types are declared in a different header.
+      String header = ((IOSTypeBinding) type).getHeader();
+      if (header != null) {
+        javaName = header;
+      }
+    }
     // Always use JRE and JUnit package directories, since the j2objc
     // distribution is (currently) built with package directories.
     if (Options.usePackageDirectories() || javaName.startsWith("java")

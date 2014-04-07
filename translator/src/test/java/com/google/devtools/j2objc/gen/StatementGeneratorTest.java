@@ -1304,7 +1304,7 @@ public class StatementGeneratorTest extends GenerationTest {
     String translation = translateSourceFile(
         "class Test { void foo() { char[][] c = new char[3][]; } }", "Test", "Test.m");
     assertTranslation(translation, "#include \"IOSObjectArray.h\"");
-    assertTranslation(translation, "#include \"IOSCharArray.h\"");
+    assertTranslation(translation, "#include \"IOSPrimitiveArray.h\"");
     assertTranslation(translation,
         "IOSObjectArray *c = [IOSObjectArray arrayWithLength:3 type:[IOSCharArray iosClass]]");
   }
