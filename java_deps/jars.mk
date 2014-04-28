@@ -39,6 +39,3 @@ JUNIT_JARS = $(JUNIT_JAR)
 
 MOCKITO_JAR = mockito-core-1.9.5.jar
 MOCKITO_SOURCE_JAR = mockito-core-1.9.5-sources.jar
-
-OKHTTP_JAR = okhttp-1.3.0.jar
-OKHTTP_SOURCE_JAR = okhttp-1.3.0-sources.jar

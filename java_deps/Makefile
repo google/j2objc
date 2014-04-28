@@ -35,7 +35,6 @@ JUNIT_DIR = $(M2_HOME)/repository/junit/junit/4.10
 JSR305_DIR = $(M2_HOME)/repository/com/google/code/findbugs/jsr305/2.0.2
 HAMCREST_DIR = $(M2_HOME)/repository/org/hamcrest/hamcrest-core/1.1
 MOCKITO_DIR = $(M2_HOME)/repository/org/mockito/mockito-core/1.9.5
-OKHTTP_DIR = $(M2_HOME)/repository/com/squareup/okhttp/okhttp/1.3.0
 
 MAVEN_RESULTS = $(DISTRIBUTION_JARS:%=$(BUILD_DIR)/%) $(JUNIT_DIR)/$(JUNIT_SOURCE_JAR)
 $(MAVEN_RESULTS): $(BUILD_DIR)/.maven_generate
