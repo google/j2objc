@@ -201,6 +201,8 @@ TEST_SOURCES = \
     libcore/java/net/InetAddressTest.java \
     libcore/java/net/InetSocketAddressTest.java \
     libcore/java/net/NetworkInterfaceTest.java \
+    libcore/java/net/OldAuthenticatorTest.java \
+    libcore/java/net/OldPasswordAuthenticationTest.java \
     libcore/java/net/ServerSocketTest.java \
     libcore/java/net/URITest.java \
     libcore/java/nio/BufferTest.java \
