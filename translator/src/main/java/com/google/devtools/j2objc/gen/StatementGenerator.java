@@ -1309,7 +1309,14 @@ public class StatementGenerator extends ErrorReportingASTVisitor {
       } else if (BindingUtil.isStatic(var)) {
         buffer.append(NameTable.getStaticVarQualifiedName(var));
       } else if (var.isField()) {
+        boolean castPrinted = false;
+        if (var.getVariableDeclaration().getType().isTypeVariable()) {
+          castPrinted = maybePrintCastFromId(node);
+        }
         buffer.append(NameTable.javaFieldToObjC(NameTable.getName(var)));
+        if (castPrinted) {
+          buffer.append(')');
+        }
       } else {
         String name = NameTable.getName(var);
         buffer.append(name);
