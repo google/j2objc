@@ -128,8 +128,8 @@ static void SetWithRawValue(
     @throw AUTORELEASE([[JavaLangIllegalArgumentException alloc] initWithNSString:
         @"field type mismatch"]);
   }
-  if (IsStatic(field) && !field->accessible_) {
-    if (IsFinal(field)) {
+  if (IsStatic(field)) {
+    if (IsFinal(field) && !field->accessible_) {
       @throw AUTORELEASE([[JavaLangIllegalAccessException alloc] initWithNSString:
           @"Cannot set static final field"]);
     }
