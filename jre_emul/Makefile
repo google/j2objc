@@ -163,15 +163,45 @@ JRE_INTERFACES = \
 # Java sources to be translated normally.
 JAVA_SOURCES = \
 	android/os/SystemClock.java \
+	android/test/suitebuilder/annotation/LargeTest.java \
+	android/test/suitebuilder/annotation/MediumTest.java \
+	android/test/suitebuilder/annotation/SmallTest.java \
+	android/test/suitebuilder/annotation/Smoke.java \
+	android/test/suitebuilder/annotation/Suppress.java \
+	android/text/Editable.java \
+	android/text/GetChars.java \
+	android/text/InputFilter.java \
+	android/text/InputType.java \
+	android/text/NoCopySpan.java \
+	android/text/Selection.java \
+	android/text/Spannable.java \
+	android/text/SpannableString.java \
+	android/text/SpannableStringBuilder.java \
+	android/text/SpannableStringInternal.java \
+	android/text/Spanned.java \
+	android/text/SpannedString.java \
+	android/text/SpanSet.java \
+	android/text/SpanWatcher.java \
+	android/text/TextUtils.java \
+	android/text/TextWatcher.java \
+	android/text/util/Rfc822Token.java \
+	android/text/util/Rfc822Tokenizer.java \
+	android/util/ArrayMap.java \
+	android/util/ArraySet.java \
 	android/util/ContainerHelpers.java \
 	android/util/Log.java \
 	android/util/LruCache.java \
+	android/util/MapCollections.java \
 	android/util/Pair.java \
+	android/util/Printer.java \
 	android/util/SparseArray.java \
 	android/util/SparseBooleanArray.java \
 	android/util/SparseIntArray.java \
 	android/util/SparseLongArray.java \
 	com/android/internal/util/ArrayUtils.java \
+	com/google/android/collect/Lists.java \
+	com/google/android/collect/Maps.java \
+	com/google/android/collect/Sets.java \
 	com/google/j2objc/security/IosMD5MessageDigest.java \
 	com/google/j2objc/security/IosSecureRandomImpl.java \
 	com/google/j2objc/security/IosSecurityProvider.java \
