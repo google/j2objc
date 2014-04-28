@@ -108,9 +108,6 @@ public class JUnitTestRunner {
   }
 
   public static int main(String[] args) {
-    // This is a workaround for b/10914294.
-    Class voidClass = Void.TYPE;
-
     // Create JUnit test runner.
     JUnitTestRunner runner = new JUnitTestRunner();
     runner.loadPropertiesFromResource(PROPERTIES_FILE_NAME);
