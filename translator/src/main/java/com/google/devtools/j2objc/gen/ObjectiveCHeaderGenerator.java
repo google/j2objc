@@ -148,7 +148,6 @@ public class ObjectiveCHeaderGenerator extends ObjectiveCSourceFileGenerator {
       println(" {");
       printInstanceVariables(fields);
       println("}");
-      printStaticFieldAccessors(fields, methods, isInterface);
     }
     printMethods(methods);
     println("\n@end");
@@ -237,9 +236,6 @@ public class ObjectiveCHeaderGenerator extends ObjectiveCSourceFileGenerator {
       } else {
         newline();
       }
-      printStaticFieldAccessors(
-          ASTUtil.getFieldDeclarations(node), Collections.<MethodDeclaration>emptyList(),
-          /* isInterface */ true);
       println("\n@end");
       printStaticInitFunction(node, ASTUtil.getMethodDeclarations(node));
       for (IVariableBinding field : staticFields) {
@@ -279,7 +275,6 @@ public class ObjectiveCHeaderGenerator extends ObjectiveCSourceFileGenerator {
     ITypeBinding binding = Types.getTypeBinding(node);
     String typeName = NameTable.getFullName(binding);
     printf("\n@interface %s : NSObject\n", typeName);
-    printStaticFieldAccessors(fields, methods, /* isInterface */ true);
     println("\n@end");
     printStaticInitFunction(node, methods);
     for (IVariableBinding field : staticFields) {
@@ -338,13 +333,9 @@ public class ObjectiveCHeaderGenerator extends ObjectiveCSourceFileGenerator {
     println(" > {");
     printInstanceVariables(fields);
     println("}");
-    for (EnumConstantDeclaration constant : constants) {
-      printf("+ (%s *)%s;\n", typeName, NameTable.getName(constant.getName()));
-    }
     println("+ (IOSObjectArray *)values;");
     printf("+ (%s *)valueOfWithNSString:(NSString *)name;\n", typeName);
     println("- (id)copyWithZone:(NSZone *)zone;");
-    printStaticFieldAccessors(fields, methods, /* isInterface */ false);
     printMethods(methods);
     println("@end");
     printStaticInitFunction(node, methods);
@@ -358,27 +349,6 @@ public class ObjectiveCHeaderGenerator extends ObjectiveCSourceFileGenerator {
     }
     printStaticFields(fields, /* isInterface */ false);
     printFieldSetters(enumType, fields);
-  }
-
-  @Override
-  protected void printStaticFieldGetter(IVariableBinding var) {
-    newline();
-    print(staticFieldGetterSignature(var));
-    println(";");
-  }
-
-  @Override
-  protected void printStaticFieldReferenceGetter(IVariableBinding var) {
-    newline();
-    print(staticFieldReferenceGetterSignature(var));
-    println(";");
-  }
-
-  @Override
-  protected void printStaticFieldSetter(IVariableBinding var) {
-    newline();
-    print(staticFieldSetterSignature(var));
-    println(";");
   }
 
   private void printStaticInitFunction(
