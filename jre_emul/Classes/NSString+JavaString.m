@@ -303,8 +303,15 @@ destinationBegin:(int)destinationBegin {
   if ([s length] == 0) {
     return 0;
   }
+  NSUInteger max = [self length];
+  if (index >= max) {
+    return -1;
+  }
+  if (index < 0) {
+    index = 0;
+  }
   NSRange searchRange = NSMakeRange((NSUInteger) index,
-                                    [self length] - (NSUInteger) index);
+                                    max - (NSUInteger) index);
   NSRange range = [self rangeOfString:s
                               options:NSLiteralSearch
                                 range:searchRange];
