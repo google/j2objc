@@ -57,7 +57,11 @@ public class IosHttpURLConnection extends HttpURLConnection {
   private List<HeaderEntry> headers = new ArrayList<HeaderEntry>();
   private int contentLength;
 
-  private static final Map<Integer,String> responseCodes = new HashMap<Integer,String>();
+  // Cache response failure, so multiple requests to a bad response throw the same exception.
+  private IOException responseException;
+
+  private static final String HTTP_DATE_FORMAT = "EEE, dd MMM yyyy HH:mm:ss zzz";
+  private static final Map<Integer,String> RESPONSE_CODES = new HashMap<Integer,String>();
 
   public IosHttpURLConnection(URL url) {
     super(url);
@@ -69,6 +73,7 @@ public class IosHttpURLConnection extends HttpURLConnection {
     nativeRequestData = null;
     responseDataStream = null;
     errorDataStream = null;
+    responseException = null;
   }
 
   @Override
@@ -81,7 +86,7 @@ public class IosHttpURLConnection extends HttpURLConnection {
     if (!doInput) {
       throw new ProtocolException("This protocol does not support input");
     }
-    tryConnect();
+    getResponse();
     if (responseCode >= HTTP_BAD_REQUEST) {
       throw new FileNotFoundException(url.toString());
     }
@@ -90,53 +95,62 @@ public class IosHttpURLConnection extends HttpURLConnection {
 
   @Override
   public void connect() throws IOException {
-    tryConnect();
+    connected = true;
+    // Native connection created when request is made to server.
   }
 
   @Override
   public Map<String, List<String>> getHeaderFields() {
     try {
-      tryConnect();
+      Map<String, List<String>> map = new HashMap<String, List<String>>();
+      for (HeaderEntry entry : getHeaders()) {
+        map.put(entry.getKey(), entry.getValue());
+      }
+      return map;
     } catch (IOException e) {
       return Collections.EMPTY_MAP;
     }
-    return copyHeaders();
   }
 
-  private Map<String, List<String>> copyHeaders() {
-    Map<String, List<String>> map = new HashMap<String, List<String>>();
-    for (HeaderEntry entry : headers) {
-      map.put(entry.getKey(), entry.getValue());
-    }
-    return map;
+  private List<IosHttpURLConnection.HeaderEntry> getHeaders() throws IOException {
+    getResponse();
+    return headers;
   }
 
   @Override
   public String getHeaderField(int pos) {
-    return headers.get(pos).getValueAsString();
+    try {
+      return getHeaders().get(pos).getValueAsString();
+    } catch (IOException e) {
+      return null;
+    }
   }
 
   @Override
   public String getHeaderField(String key) {
-    for (HeaderEntry entry : headers) {
-      if (key == null) {
-        if (entry.getKey() == null) {
+    try {
+      for (HeaderEntry entry : getHeaders()) {
+        if (key == null) {
+          if (entry.getKey() == null) {
+            return entry.getValueAsString();
+          }
+          continue;
+        }
+        if (key.equals(entry.getKey())) {
           return entry.getValueAsString();
         }
-        continue;
       }
-      if (key.equals(entry.getKey())) {
-        return entry.getValueAsString();
-      }
+      return null;
+    } catch (IOException e) {
+      return null;
     }
-    return null;
   }
 
   @Override
   public long getHeaderFieldDate(String field, long defaultValue) {
     String dateString = getHeaderField(field);
     try {
-      SimpleDateFormat format = new SimpleDateFormat("EEE, dd MMM yyyy HH:mm:ss zzz");
+      SimpleDateFormat format = new SimpleDateFormat(HTTP_DATE_FORMAT);
       Date d = format.parse(dateString);
       return d.getTime();
     } catch (ParseException e) {
@@ -146,7 +160,11 @@ public class IosHttpURLConnection extends HttpURLConnection {
 
   @Override
   public String getHeaderFieldKey(int posn) {
-    return headers.get(posn).getKey();
+    try {
+      return getHeaders().get(posn).getKey();
+    } catch (IOException e) {
+      return null;
+    }
   }
 
   @Override
@@ -179,6 +197,36 @@ public class IosHttpURLConnection extends HttpURLConnection {
   }
 
   @Override
+  public void setRequestProperty(String field, String newValue) {
+    if (connected) {
+      throw new IllegalStateException("Cannot set request property after connection is made");
+    }
+    if (field == null) {
+      throw new NullPointerException("field == null");
+    }
+    setHeader(field, newValue);
+  }
+
+  @Override
+  public void addRequestProperty(String field, String newValue) {
+    if (connected) {
+      throw new IllegalStateException("Cannot add request property after connection is made");
+    }
+    if (field == null) {
+      throw new NullPointerException("field == null");
+    }
+    addHeader(field, newValue);
+  }
+
+  @Override
+  public String getRequestProperty(String field) {
+    if (field == null) {
+      return null;
+    }
+    return getHeaderField(field);
+  }
+
+  @Override
   public InputStream getErrorStream() {
     return errorDataStream;
   }
@@ -189,21 +237,42 @@ public class IosHttpURLConnection extends HttpURLConnection {
   }
 
   @Override
-  public native OutputStream getOutputStream() throws IOException /*-[
-    if (responseCode_ == -1) {
-      @throw AUTORELEASE([[JavaIoIOException alloc] initWithNSString:@"output not enabled"]);
+  public void setIfModifiedSince(long newValue) {
+    super.setIfModifiedSince(newValue);
+    if (ifModifiedSince != 0) {
+      SimpleDateFormat format = new SimpleDateFormat(HTTP_DATE_FORMAT);
+      String dateString = format.format(new Date(ifModifiedSince));
+      setHeader("If-Modified-Since", dateString);
+    } else {
+      removeHeader("If-Modified-Since");
     }
+  }
+
+  @Override
+  public native OutputStream getOutputStream() throws IOException /*-[
     if (!nativeRequestData_) {  // Don't reallocate if requested twice.
-      ComGoogleJ2objcNetIosHttpURLConnection_set_nativeRequestData_(self, nativeRequestData_);
+      ComGoogleJ2objcNetIosHttpURLConnection_set_nativeRequestData_(
+          self, [NSDataOutputStream stream]);
     }
     return nativeRequestData_;
   ]-*/;
 
-  private native void tryConnect() throws IOException /*-[
-    if (connected_) {
+  private void getResponse() throws IOException {
+    if (responseCode != -1) {
+      // Request already made.
       return;
     }
-    connected_ = YES;
+    makeSynchronousRequest();
+  }
+
+  private native void makeSynchronousRequest() throws IOException /*-[
+    if (responseCode_ != -1) {
+      // Request already made.
+      return;
+    }
+    if (responseException_) {
+      @throw responseException_;
+    }
 
     NSMutableURLRequest *request =
         [NSMutableURLRequest requestWithURL:[NSURL URLWithString:[url_ toExternalForm]]];
@@ -225,7 +294,8 @@ public class IosHttpURLConnection extends HttpURLConnection {
       } else if (![method_ isEqualToString:@"POST"] && ![method_ isEqualToString:@"PUT"] &&
                  ![method_ isEqualToString:@"PATCH"]) {
         NSString *errMsg = [NSString stringWithFormat:@"%@ does not support writing", method_];
-        @throw AUTORELEASE([[JavaNetProtocolException alloc] initWithNSString:errMsg]);
+        responseException_ = [[JavaNetProtocolException alloc] initWithNSString:errMsg];
+        @throw responseException_;
       }
       [request setValue:contentType_ forHTTPHeaderField:@"Content-Type"];
       if (nativeRequestData_) {
@@ -258,19 +328,20 @@ public class IosHttpURLConnection extends HttpURLConnection {
       if ([[error domain] isEqualToString:@"NSURLErrorDomain"]) {
         switch ([error code]) {
           case NSURLErrorBadURL:
-            @throw AUTORELEASE([[JavaNetMalformedURLException alloc] initWithNSString:url]); break;
+            responseException_ = [[JavaNetMalformedURLException alloc] initWithNSString:url]; break;
           case NSURLErrorCannotConnectToHost:
           case NSURLErrorNotConnectedToInternet:
           case NSURLErrorSecureConnectionFailed:
-            @throw AUTORELEASE([[JavaNetConnectException alloc]
-                                initWithNSString:[error description]]); break;
+            responseException_ = [[JavaNetConnectException alloc]
+                                  initWithNSString:[error description]]; break;
           case NSURLErrorCannotFindHost:
-            @throw AUTORELEASE([[JavaNetUnknownHostException alloc] initWithNSString:url]); break;
+            responseException_ = [[JavaNetUnknownHostException alloc] initWithNSString:url]; break;
         }
       }
-      if (error || !response) {
-        @throw AUTORELEASE([[JavaIoIOException alloc] initWithNSString:[error description]]);
+      if (!responseException_) {
+        responseException_ = [[JavaIoIOException alloc] initWithNSString:[error description]];
       }
+      @throw responseException_;
     }
 
     // The HttpURLConnection headerFields map uses a null key for Status-Line.
@@ -286,6 +357,39 @@ public class IosHttpURLConnection extends HttpURLConnection {
 
   private void addHeader(String k, String v) {
     headers.add(new HeaderEntry(k, v));
+  }
+
+  private List<String> getHeader(String k) {
+    for (HeaderEntry entry : headers) {
+      if (entry.key == k) {
+        return entry.value;
+      }
+    }
+    return null;
+  }
+
+  private void removeHeader(String k) {
+    Iterator<HeaderEntry> iter = headers.iterator();
+    while (iter.hasNext()) {
+      HeaderEntry entry = iter.next();
+      if (entry.key == k) {
+        iter.remove();
+        return;
+      }
+    }
+  }
+
+  private void setHeader(String k, String v) {
+    for (HeaderEntry entry : headers) {
+      if (entry.key == k) {
+        for (String entryVal : entry.value) {
+          if (entryVal.equals(v)) {
+            return;  // already set.
+          }
+        }
+        entry.value.add(v);
+      }
+    }
   }
 
   private static class HeaderEntry implements Map.Entry<String, List<String>> {
@@ -328,57 +432,57 @@ public class IosHttpURLConnection extends HttpURLConnection {
   }
 
   private static String getResponseStatusText(int responseCode) {
-    return responseCodes.get(responseCode);
+    return RESPONSE_CODES.get(responseCode);
   }
 
   static {
-    responseCodes.put(100, "Continue");
-    responseCodes.put(101, "Switching Protocols");
-    responseCodes.put(102, "Processing");
-    responseCodes.put(HTTP_OK, "OK");
-    responseCodes.put(HTTP_CREATED, "Created");
-    responseCodes.put(HTTP_ACCEPTED, "Accepted");
-    responseCodes.put(HTTP_NOT_AUTHORITATIVE, "Non Authoritative Information");
-    responseCodes.put(HTTP_NO_CONTENT, "No Content");
-    responseCodes.put(HTTP_RESET, "Reset Content");
-    responseCodes.put(HTTP_PARTIAL, "Partial Content");
-    responseCodes.put(207, "Multi-Status");
-    responseCodes.put(HTTP_MULT_CHOICE, "Multiple Choices");
-    responseCodes.put(HTTP_MOVED_PERM, "Moved Permanently");
-    responseCodes.put(HTTP_MOVED_TEMP, "Moved Temporarily");
-    responseCodes.put(HTTP_SEE_OTHER, "See Other");
-    responseCodes.put(HTTP_NOT_MODIFIED, "Not Modified");
-    responseCodes.put(HTTP_USE_PROXY, "Use Proxy");
-    responseCodes.put(307, "Temporary Redirect");
-    responseCodes.put(HTTP_BAD_REQUEST, "Bad Request");
-    responseCodes.put(HTTP_UNAUTHORIZED, "Unauthorized");
-    responseCodes.put(HTTP_PAYMENT_REQUIRED, "Payment Required");
-    responseCodes.put(HTTP_FORBIDDEN, "Forbidden");
-    responseCodes.put(HTTP_NOT_FOUND, "Not Found");
-    responseCodes.put(HTTP_BAD_METHOD, "Method Not Allowed");
-    responseCodes.put(HTTP_NOT_ACCEPTABLE, "Not Acceptable");
-    responseCodes.put(HTTP_PROXY_AUTH, "Proxy Authentication Required");
-    responseCodes.put(HTTP_CLIENT_TIMEOUT, "Request Timeout");
-    responseCodes.put(HTTP_CONFLICT, "Conflict");
-    responseCodes.put(HTTP_GONE, "Gone");
-    responseCodes.put(HTTP_LENGTH_REQUIRED, "Length Required");
-    responseCodes.put(HTTP_PRECON_FAILED, "Precondition Failed");
-    responseCodes.put(HTTP_ENTITY_TOO_LARGE, "Request Too Long");
-    responseCodes.put(HTTP_REQ_TOO_LONG, "Request-URI Too Long");
-    responseCodes.put(HTTP_UNSUPPORTED_TYPE, "Unsupported Media Type");
-    responseCodes.put(416, "Requested Range Not Satisfiable");
-    responseCodes.put(417, "Expectation Failed");
-    responseCodes.put(418, "Unprocessable Entity");
-    responseCodes.put(419, "Insufficient Space On Resource");
-    responseCodes.put(420, "Method Failure");
-    responseCodes.put(423, "Locked");
-    responseCodes.put(424, "Failed Dependency");
-    responseCodes.put(HTTP_INTERNAL_ERROR, "Internal Server Error");
-    responseCodes.put(HTTP_NOT_IMPLEMENTED, "Not Implemented");
-    responseCodes.put(HTTP_BAD_GATEWAY, "Bad Gateway");
-    responseCodes.put(HTTP_UNAVAILABLE, "Service Unavailable");
-    responseCodes.put(HTTP_GATEWAY_TIMEOUT, "Gateway Timeout");
-    responseCodes.put(HTTP_VERSION, "Http Version Not Supported");
-    responseCodes.put(507, "Insufficient Storage");
+    RESPONSE_CODES.put(100, "Continue");
+    RESPONSE_CODES.put(101, "Switching Protocols");
+    RESPONSE_CODES.put(102, "Processing");
+    RESPONSE_CODES.put(HTTP_OK, "OK");
+    RESPONSE_CODES.put(HTTP_CREATED, "Created");
+    RESPONSE_CODES.put(HTTP_ACCEPTED, "Accepted");
+    RESPONSE_CODES.put(HTTP_NOT_AUTHORITATIVE, "Non Authoritative Information");
+    RESPONSE_CODES.put(HTTP_NO_CONTENT, "No Content");
+    RESPONSE_CODES.put(HTTP_RESET, "Reset Content");
+    RESPONSE_CODES.put(HTTP_PARTIAL, "Partial Content");
+    RESPONSE_CODES.put(207, "Multi-Status");
+    RESPONSE_CODES.put(HTTP_MULT_CHOICE, "Multiple Choices");
+    RESPONSE_CODES.put(HTTP_MOVED_PERM, "Moved Permanently");
+    RESPONSE_CODES.put(HTTP_MOVED_TEMP, "Moved Temporarily");
+    RESPONSE_CODES.put(HTTP_SEE_OTHER, "See Other");
+    RESPONSE_CODES.put(HTTP_NOT_MODIFIED, "Not Modified");
+    RESPONSE_CODES.put(HTTP_USE_PROXY, "Use Proxy");
+    RESPONSE_CODES.put(307, "Temporary Redirect");
+    RESPONSE_CODES.put(HTTP_BAD_REQUEST, "Bad Request");
+    RESPONSE_CODES.put(HTTP_UNAUTHORIZED, "Unauthorized");
+    RESPONSE_CODES.put(HTTP_PAYMENT_REQUIRED, "Payment Required");
+    RESPONSE_CODES.put(HTTP_FORBIDDEN, "Forbidden");
+    RESPONSE_CODES.put(HTTP_NOT_FOUND, "Not Found");
+    RESPONSE_CODES.put(HTTP_BAD_METHOD, "Method Not Allowed");
+    RESPONSE_CODES.put(HTTP_NOT_ACCEPTABLE, "Not Acceptable");
+    RESPONSE_CODES.put(HTTP_PROXY_AUTH, "Proxy Authentication Required");
+    RESPONSE_CODES.put(HTTP_CLIENT_TIMEOUT, "Request Timeout");
+    RESPONSE_CODES.put(HTTP_CONFLICT, "Conflict");
+    RESPONSE_CODES.put(HTTP_GONE, "Gone");
+    RESPONSE_CODES.put(HTTP_LENGTH_REQUIRED, "Length Required");
+    RESPONSE_CODES.put(HTTP_PRECON_FAILED, "Precondition Failed");
+    RESPONSE_CODES.put(HTTP_ENTITY_TOO_LARGE, "Request Too Long");
+    RESPONSE_CODES.put(HTTP_REQ_TOO_LONG, "Request-URI Too Long");
+    RESPONSE_CODES.put(HTTP_UNSUPPORTED_TYPE, "Unsupported Media Type");
+    RESPONSE_CODES.put(416, "Requested Range Not Satisfiable");
+    RESPONSE_CODES.put(417, "Expectation Failed");
+    RESPONSE_CODES.put(418, "Unprocessable Entity");
+    RESPONSE_CODES.put(419, "Insufficient Space On Resource");
+    RESPONSE_CODES.put(420, "Method Failure");
+    RESPONSE_CODES.put(423, "Locked");
+    RESPONSE_CODES.put(424, "Failed Dependency");
+    RESPONSE_CODES.put(HTTP_INTERNAL_ERROR, "Internal Server Error");
+    RESPONSE_CODES.put(HTTP_NOT_IMPLEMENTED, "Not Implemented");
+    RESPONSE_CODES.put(HTTP_BAD_GATEWAY, "Bad Gateway");
+    RESPONSE_CODES.put(HTTP_UNAVAILABLE, "Service Unavailable");
+    RESPONSE_CODES.put(HTTP_GATEWAY_TIMEOUT, "Gateway Timeout");
+    RESPONSE_CODES.put(HTTP_VERSION, "Http Version Not Supported");
+    RESPONSE_CODES.put(507, "Insufficient Storage");
   }
 }
