@@ -16,6 +16,8 @@
 
 package android.util;
 
+import com.google.j2objc.annotations.WeakOuter;
+
 import java.lang.reflect.Array;
 import java.util.Collection;
 import java.util.Iterator;
@@ -570,53 +572,55 @@ public final class ArraySet<E> implements Collection<E>, Set<E> {
     // ------------------------------------------------------------------------
 
     private MapCollections<E, E> getCollection() {
+        @WeakOuter
+        class InteropMapCollections extends MapCollections<E, E> {
+            @Override
+            protected int colGetSize() {
+                return mSize;
+            }
+
+            @Override
+            protected Object colGetEntry(int index, int offset) {
+                return mArray[index];
+            }
+
+            @Override
+            protected int colIndexOfKey(Object key) {
+                return key == null ? indexOfNull() : indexOf(key, key.hashCode());
+            }
+
+            @Override
+            protected int colIndexOfValue(Object value) {
+                return value == null ? indexOfNull() : indexOf(value, value.hashCode());
+            }
+
+            @Override
+            protected Map<E, E> colGetMap() {
+                throw new UnsupportedOperationException("not a map");
+            }
+
+            @Override
+            protected void colPut(E key, E value) {
+                add(key);
+            }
+
+            @Override
+            protected E colSetValue(int index, E value) {
+                throw new UnsupportedOperationException("not a map");
+            }
+
+            @Override
+            protected void colRemoveAt(int index) {
+                removeAt(index);
+            }
+
+            @Override
+            protected void colClear() {
+                clear();
+            }
+        }
         if (mCollections == null) {
-            mCollections = new MapCollections<E, E>() {
-                @Override
-                protected int colGetSize() {
-                    return mSize;
-                }
-
-                @Override
-                protected Object colGetEntry(int index, int offset) {
-                    return mArray[index];
-                }
-
-                @Override
-                protected int colIndexOfKey(Object key) {
-                    return key == null ? indexOfNull() : indexOf(key, key.hashCode());
-                }
-
-                @Override
-                protected int colIndexOfValue(Object value) {
-                    return value == null ? indexOfNull() : indexOf(value, value.hashCode());
-                }
-
-                @Override
-                protected Map<E, E> colGetMap() {
-                    throw new UnsupportedOperationException("not a map");
-                }
-
-                @Override
-                protected void colPut(E key, E value) {
-                    add(key);
-                }
-
-                @Override
-                protected E colSetValue(int index, E value) {
-                    throw new UnsupportedOperationException("not a map");
-                }
-
-                @Override
-                protected void colRemoveAt(int index) {
-                    removeAt(index);
-                }
-
-                @Override
-                protected void colClear() {
-                    clear();
-                }
-            };
+            mCollections = new InteropMapCollections();
         }
         return mCollections;
     }
