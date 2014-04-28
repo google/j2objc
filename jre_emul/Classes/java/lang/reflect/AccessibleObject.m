@@ -23,21 +23,30 @@
 #import "java/lang/AssertionError.h"
 #import "java/lang/reflect/AccessibleObject.h"
 #import "java/lang/reflect/Method.h"
+#import "java/lang/reflect/Modifier.h"
 
 @implementation JavaLangReflectAccessibleObject
 
+- (id)init {
+  if ((self = [super init])) {
+    accessible_ = NO;
+  }
+  return self;
+}
+
 - (BOOL)isAccessible {
-  // Everything in Objective-C is accessible at runtime.
-  return YES;
+  return accessible_;
 }
 
 - (void)setAccessibleWithBoolean:(BOOL)b {
-  // do nothing
+  accessible_ = b;
 }
 
 + (void)setAccessibleWithJavaLangReflectAccessibleObjectArray:(IOSObjectArray *)objects
                                                   withBoolean:(BOOL)b {
-  // do nothing
+  for (NSObject *o in objects) {
+    [(JavaLangReflectAccessibleObject *)o setAccessibleWithBoolean:b];
+  }
 }
 
 - (id)getAnnotationWithIOSClass:(IOSClass *)annotationType {

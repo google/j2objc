@@ -128,7 +128,7 @@ static void SetWithRawValue(
     @throw AUTORELEASE([[JavaLangIllegalArgumentException alloc] initWithNSString:
         @"field type mismatch"]);
   }
-  if (IsStatic(field)) {
+  if (IsStatic(field) && !field->accessible_) {
     if (IsFinal(field)) {
       @throw AUTORELEASE([[JavaLangIllegalAccessException alloc] initWithNSString:
           @"Cannot set static final field"]);
@@ -137,7 +137,7 @@ static void SetWithRawValue(
     [type __writeRawValue:rawValue toAddress:addr];
   } else {
     nil_chk(object);
-    if (IsFinal(field)) {
+    if (IsFinal(field) && !field->accessible_) {
       @throw AUTORELEASE([[JavaLangIllegalAccessException alloc] initWithNSString:
                           @"Cannot set final field"]);
     }
