@@ -26,8 +26,12 @@ public class SmallTests extends TestSuite {
     DatagramSocketTest.class,
     InetSocketAddressTest.class,
     NetworkInterfaceTest.class,
+    OldAuthenticatorTest.class,
+    OldPasswordAuthenticationTest.class,
     ServerSocketTest.class,
+    SocketTest.class,
     URITest.class,
+    UrlEncodingTest.class
   };
 
   public static Test suite() {

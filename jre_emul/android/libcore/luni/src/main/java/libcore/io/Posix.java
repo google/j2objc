@@ -78,7 +78,7 @@ static inline BOOL throwIfClosed(JavaIoFileDescriptor *fd) {
       if (errno != EINTR) { \
         [LibcoreIoPosix \
             throwErrnoExceptionWithNSString:[NSString stringWithFormat:@"%s", # syscall_name] \
-                                    withInt:_rc]; \
+                                    withInt:errno]; \
       } \
     } \
   } while (_rc == -1); \
@@ -1134,6 +1134,45 @@ public final class Posix implements Os {
         struct group_req64 req64;
         req64.gr_interface = req.gr_interface;
         memcpy(&req64.gr_group, &req.gr_group, sizeof(req.gr_group));
+        rc = TEMP_FAILURE_RETRY(setsockopt(fd->descriptor_, level, option, &req64, sizeof(req64)));
+    }
+    [LibcoreIoPosix throwIfMinusOneWithNSString:@"setsockopt" withInt:rc];
+  ]-*/;
+
+  public native void setsockoptGroupSourceReq(FileDescriptor fd, int level, int option,
+      StructGroupSourceReq structGroupSourceReq) throws ErrnoException /*-[
+    socklen_t sa_len;
+    struct group_source_req req;
+    memset(&req, 0, sizeof(req));
+    req.gsr_interface = structGroupSourceReq->gsr_interface_;
+
+    // Get the IPv4 or IPv6 multicast address to join or leave.
+    JavaNetInetAddress *group = structGroupSourceReq->gsr_group_;
+    if (!inetAddressToSockaddrVerbatim(group, 0, &req.gsr_group, &sa_len)) {
+      return;
+    }
+
+    // Get the IPv4 or IPv6 multicast address to add to the filter.
+    JavaNetInetAddress *source = structGroupSourceReq->gsr_source_;
+    if (!inetAddressToSockaddrVerbatim(source, 0, &req.gsr_source, &sa_len)) {
+      return;
+    }
+
+    int rc = TEMP_FAILURE_RETRY(setsockopt(fd->descriptor_, level, option, &req, sizeof(req)));
+    if (rc == -1 && errno == EINVAL) {
+        // Maybe we're a 32-bit binary talking to a 64-bit kernel?
+        // glibc doesn't automatically handle this.
+        // http://sourceware.org/bugzilla/show_bug.cgi?id=12080
+        struct group_source_req64 {
+            uint32_t gsr_interface;
+            uint32_t my_padding;
+            struct sockaddr_storage gsr_group;
+            struct sockaddr_storage gsr_source;
+        };
+        struct group_source_req64 req64;
+        req64.gsr_interface = req.gsr_interface;
+        memcpy(&req64.gsr_group, &req.gsr_group, sizeof(req.gsr_group));
+        memcpy(&req64.gsr_source, &req.gsr_source, sizeof(req.gsr_source));
         rc = TEMP_FAILURE_RETRY(setsockopt(fd->descriptor_, level, option, &req64, sizeof(req64)));
     }
     [LibcoreIoPosix throwIfMinusOneWithNSString:@"setsockopt" withInt:rc];

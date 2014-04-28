@@ -184,6 +184,10 @@ public final class OsConstants {
     public static final int MAP_SHARED = 0x0001;
     public static final int MCAST_JOIN_GROUP = 80;
     public static final int MCAST_LEAVE_GROUP = 81;
+    public static final int MCAST_JOIN_SOURCE_GROUP = 82;
+    public static final int MCAST_LEAVE_SOURCE_GROUP = 83;
+    public static final int MCAST_BLOCK_SOURCE = 84;
+    public static final int MCAST_UNBLOCK_SOURCE = 85;
     public static final int MCL_CURRENT = 0x0001;
     public static final int MCL_FUTURE = 0x0002;
     public static final int MSG_OOB = 0x1;

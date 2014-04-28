@@ -24,6 +24,7 @@ include environment.mk
 
 SUPPORT_SOURCES = \
     JSR166TestCase.java \
+    libcore/java/net/customstreamhandler/http/Handler.java \
     libcore/java/nio/charset/Charset_TestGenerator.java \
     libcore/java/nio/charset/OldCharset_AbstractTest.java \
     libcore/java/util/ServiceLoaderTestInterface.java \
@@ -204,7 +205,9 @@ TEST_SOURCES = \
     libcore/java/net/OldAuthenticatorTest.java \
     libcore/java/net/OldPasswordAuthenticationTest.java \
     libcore/java/net/ServerSocketTest.java \
+    libcore/java/net/SocketTest.java \
     libcore/java/net/URITest.java \
+    libcore/java/net/UrlEncodingTest.java \
     libcore/java/nio/BufferTest.java \
     libcore/java/nio/NoArrayTest.java \
     libcore/java/nio/OldAndroidNIOTest.java \

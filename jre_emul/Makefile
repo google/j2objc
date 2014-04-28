@@ -911,6 +911,7 @@ JAVA_SOURCES = \
 	libcore/io/StructAddrinfo.java \
 	libcore/io/StructFlock.java \
 	libcore/io/StructGroupReq.java \
+	libcore/io/StructGroupSourceReq.java \
 	libcore/io/StructLinger.java \
 	libcore/io/StructPollfd.java \
 	libcore/io/StructStat.java \

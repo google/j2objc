@@ -105,6 +105,8 @@ public interface Os {
         throws ErrnoException;
     public void setsockoptGroupReq(FileDescriptor fd, int level, int option,
         StructGroupReq value) throws ErrnoException;
+    public void setsockoptGroupSourceReq(FileDescriptor fd, int level, int option,
+        StructGroupSourceReq value) throws ErrnoException;
     public void setsockoptIfreq(FileDescriptor fd, int level, int option, String value)
         throws ErrnoException;
     public void setsockoptInt(FileDescriptor fd, int level, int option, int value)
