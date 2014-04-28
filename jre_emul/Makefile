@@ -745,6 +745,7 @@ JAVA_SOURCES = \
 	java/util/MissingFormatWidthException.java \
 	java/util/MissingResourceException.java \
 	java/util/NoSuchElementException.java \
+	java/util/Objects.java \
 	java/util/Observable.java \
 	java/util/PriorityQueue.java \
 	java/util/Properties.java \
