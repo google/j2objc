@@ -154,6 +154,7 @@ public class Deflater {
     private int strategy = DEFAULT_STRATEGY;
 
     private long streamHandle = -1;
+    private long inBuffer = 0L; // Address to malloc'd memory for next_in.
 
     private byte[] inputBuffer;
 
@@ -309,6 +310,7 @@ public class Deflater {
     private native void endImpl(long handle) /*-[
         z_stream *zStream = (z_stream*) handle;
         deflateEnd(zStream);
+        free((void*) inBuffer_);
         free(zStream);
     ]-*/;
 
@@ -495,6 +497,10 @@ public class Deflater {
       if (baseAddr == NULL) {
         @throw AUTORELEASE([[JavaLangOutOfMemoryError alloc] init]);
       }
+      if (inBuffer_ != 0L) {
+        free((void *) inBuffer_);
+      }
+      inBuffer_ = (long long) baseAddr;
       zStream->next_in = (Bytef *) baseAddr;
       zStream->avail_in = byteCount;
       if (byteCount > 0) {
