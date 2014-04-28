@@ -29,4 +29,3 @@ FIELD org.xml.sax.helpers.XMLReaderAdapter.AttributesAdapter.attributes org.xml.
 
 # TODO(kstanger,tball): Resolve these cycles.
 NAMESPACE org.xml
-NAMESPACE com.squareup.okhttp
