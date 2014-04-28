@@ -17,6 +17,7 @@ package com.google.devtools.j2objc.util;
 import com.google.common.collect.AbstractIterator;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
+import com.google.devtools.j2objc.types.Types;
 
 import org.eclipse.jdt.core.dom.ASTNode;
 import org.eclipse.jdt.core.dom.AbstractTypeDeclaration;
@@ -38,6 +39,7 @@ import org.eclipse.jdt.core.dom.Expression;
 import org.eclipse.jdt.core.dom.FieldDeclaration;
 import org.eclipse.jdt.core.dom.ForStatement;
 import org.eclipse.jdt.core.dom.IExtendedModifier;
+import org.eclipse.jdt.core.dom.ITypeBinding;
 import org.eclipse.jdt.core.dom.InfixExpression;
 import org.eclipse.jdt.core.dom.MethodDeclaration;
 import org.eclipse.jdt.core.dom.MethodInvocation;
@@ -425,7 +427,8 @@ public final class ASTUtil {
     for (IExtendedModifier mod : modifiers) {
       if (mod.isAnnotation()) {
         Annotation ann = (Annotation) mod;
-        if (ann.getTypeName().toString().equals(annotation.getName())) {
+        ITypeBinding annotationType = Types.getAnnotationBinding(ann).getAnnotationType();
+        if (annotationType.getQualifiedName().equals(annotation.getName())) {
           return true;
         }
       }
