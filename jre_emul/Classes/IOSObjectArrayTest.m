@@ -32,8 +32,7 @@
 
 - (void)testInitialization {
   IOSClass * elementType = [IOSClass classWithClass:[NSObject class]];
-  IOSObjectArray *array =
-      [[IOSObjectArray alloc] initWithLength:10 type:elementType];
+  IOSObjectArray *array = [IOSObjectArray arrayWithLength:10 type:elementType];
   int length = (int) [array count];
   STAssertEquals(length, 10, @"incorrect array size: %d", length);
   for (NSUInteger i = 0; i < 10; i++) {
@@ -44,8 +43,7 @@
 
 - (void)testElementAccess {
   IOSClass * elementType = [IOSClass classWithClass:[NSString class]];
-  IOSObjectArray *array =
-      [[IOSObjectArray alloc] initWithLength:3 type:elementType];
+  IOSObjectArray *array = [IOSObjectArray arrayWithLength:3 type:elementType];
   [array replaceObjectAtIndex:0 withObject:@"zero"];
   [array replaceObjectAtIndex:2 withObject:@"two"];
   STAssertEquals([array objectAtIndex:0], @"zero", @"incorrect element", nil);
@@ -55,8 +53,7 @@
 
 - (void)testGetObjects {
   IOSClass * elementType = [IOSClass classWithClass:[NSString class]];
-  IOSObjectArray *array =
-      [[IOSObjectArray alloc] initWithLength:3 type:elementType];
+  IOSObjectArray *array = [IOSObjectArray arrayWithLength:3 type:elementType];
   [array replaceObjectAtIndex:0 withObject:@"zero"];
   [array replaceObjectAtIndex:2 withObject:@"two"];
   NSObject **copy = malloc(3 * sizeof(NSObject *));
@@ -69,8 +66,7 @@
 
 - (void)testReplaceObject {
   IOSClass * elementType = [IOSClass classWithClass:[NSString class]];
-  IOSObjectArray *array =
-      [[IOSObjectArray alloc] initWithLength:1 type:elementType];
+  IOSObjectArray *array = [IOSObjectArray arrayWithLength:1 type:elementType];
   NSObject *item = @"foo";
   id result = [array replaceObjectAtIndex:0 withObject:item];
   STAssertEquals(item, result, @"same item wasn't returned", nil);
@@ -80,8 +76,7 @@
 
 - (void)testArrayCopy {
   IOSClass *type = [IOSClass classWithClass:[NSNumber class]];
-  IOSObjectArray *numbers = [[IOSObjectArray alloc] initWithLength:5
-                                                              type:type];
+  IOSObjectArray *numbers = [IOSObjectArray arrayWithLength:5 type:type];
   for (int i = 0; i < 5; i++) {
     [numbers replaceObjectAtIndex:i
                        withObject:[NSNumber numberWithInt:i]];
@@ -102,8 +97,7 @@
 
 - (void)testOverlappingArrayCopy {
   IOSClass *type = [IOSClass classWithClass:[NSNumber class]];
-  IOSObjectArray *numbers = [[IOSObjectArray alloc] initWithLength:5
-                                                              type:type];
+  IOSObjectArray *numbers = [IOSObjectArray arrayWithLength:5 type:type];
   for (int i = 0; i < 5; i++) {
     [numbers replaceObjectAtIndex:i
                        withObject:[NSNumber numberWithInt:i]];
@@ -120,8 +114,7 @@
 
 - (void)testCopy {
   IOSClass *type = [IOSClass classWithClass:[NSNumber class]];
-  IOSObjectArray *array = [[IOSObjectArray alloc] initWithLength:10
-                                                            type:type];
+  IOSObjectArray *array = [IOSObjectArray arrayWithLength:10 type:type];
   for (int i = 0; i < 10; i++) {
     [array replaceObjectAtIndex:i
                      withObject:[NSNumber numberWithInt:i]];

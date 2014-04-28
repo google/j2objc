@@ -20,34 +20,49 @@
 #import "IOSClass.h"
 
 /*!
- * Implements the common initializers for the primitive array types.
- * @define PRIMITIVE_ARRAY_INIT_IMPL
- */
-#define PRIMITIVE_ARRAY_INIT_IMPL(U_NAME, C_TYPE) \
-  - (id)initWithLength:(NSUInteger)length { \
-    if ((self = [super initWithLength:length])) { \
-      buffer_ = calloc(length, sizeof(C_TYPE)); \
-    } \
-    return self; \
-  } \
-  \
-  - (id)initWith##U_NAME##s:(const C_TYPE *)buf count:(NSUInteger)count { \
-    if ((self = [self initWithLength:count])) { \
-      if (buf != nil) { \
-        memcpy(buffer_, buf, count * sizeof(C_TYPE)); \
-      } \
-    } \
-    return self; \
-  }
-
-/*!
  * Implements the common constructors for the primitive array types.
  * @define PRIMITIVE_ARRAY_CTOR_IMPL
  */
 #define PRIMITIVE_ARRAY_CTOR_IMPL(U_NAME, C_TYPE) \
+  static IOS##U_NAME##Array *IOS##U_NAME##Array_NewArray(NSUInteger length) { \
+    IOS##U_NAME##Array *array = [IOS##U_NAME##Array alloc]; \
+    array->size_ = length; \
+    array->buffer_ = calloc(length, sizeof(C_TYPE)); \
+    return array; \
+  } \
+  \
+  static IOS##U_NAME##Array *IOS##U_NAME##Array_NewArrayWith##U_NAME##s( \
+      NSUInteger length, const C_TYPE *buf) { \
+    IOS##U_NAME##Array *array = IOS##U_NAME##Array_NewArray(length); \
+    memcpy(array->buffer_, buf, length * sizeof(C_TYPE)); \
+    return array; \
+  } \
+  \
+  + (id)newArrayWithLength:(NSUInteger)length { \
+    return IOS##U_NAME##Array_NewArray(length); \
+  } \
+  \
+  + (id)arrayWithLength:(NSUInteger)length { \
+    return [IOS##U_NAME##Array_NewArray(length) autorelease]; \
+  } \
+  \
+  + (id)newArrayWith##U_NAME##s:(const C_TYPE *)buf count:(NSUInteger)count { \
+    return IOS##U_NAME##Array_NewArrayWith##U_NAME##s(count, buf); \
+  } \
+  \
   + (id)arrayWith##U_NAME##s:(const C_TYPE *)buf count:(NSUInteger)count { \
-    return AUTORELEASE([[IOS##U_NAME##Array alloc] initWith##U_NAME##s:buf count:count]); \
+    return [IOS##U_NAME##Array_NewArrayWith##U_NAME##s(count, buf) autorelease]; \
   }
+
+/*!
+ * Implements the dealloc method for primitive arrays.
+ * @define PRIMITIVE_ARRAY_DEALLOC_IMPL
+ */
+#define PRIMITIVE_ARRAY_DEALLOC_IMPL \
+  - (void)dealloc { \
+    free(buffer_); \
+    [super dealloc]; \
+  } \
 
 /*!
  * Implements the common accessor methods for the primitive array types.
@@ -90,7 +105,7 @@
  * Implements the arraycopy method used by System.arraycopy.
  * @define PRIMITIVE_ARRAY_COPY_IMPL
  */
-#define PRIMITIVE_ARRAY_COPY_IMPL(U_NAME, C_TYPE) \
+#define PRIMITIVE_ARRAY_RANGE_COPY_IMPL(U_NAME, C_TYPE) \
   - (void)arraycopy:(NSRange)sourceRange \
         destination:(IOSArray *)destination \
              offset:(NSInteger)offset { \
@@ -99,6 +114,11 @@
     memmove(((IOS##U_NAME##Array *) destination)->buffer_ + offset, \
             self->buffer_ + sourceRange.location, \
             sourceRange.length * sizeof(C_TYPE)); \
+  }
+
+#define PRIMITIVE_ARRAY_COPY_IMPL(U_NAME) \
+  - (id)copyWithZone:(NSZone *)zone { \
+    return [IOS##U_NAME##Array newArrayWith##U_NAME##s:buffer_ count:size_]; \
   }
 
 /*!
@@ -110,10 +130,11 @@
  * @param C_TYPE Objective-C type for the primitive type, (e.g. "unichar")
  */
 #define PRIMITIVE_ARRAY_IMPLEMENTATION(L_NAME, U_NAME, C_TYPE) \
-  PRIMITIVE_ARRAY_INIT_IMPL(U_NAME, C_TYPE) \
   PRIMITIVE_ARRAY_CTOR_IMPL(U_NAME, C_TYPE) \
   PRIMITIVE_ARRAY_ACCESSORS_IMPL(L_NAME, U_NAME, C_TYPE) \
-  PRIMITIVE_ARRAY_COPY_IMPL(U_NAME, C_TYPE)
+  PRIMITIVE_ARRAY_RANGE_COPY_IMPL(U_NAME, C_TYPE) \
+  PRIMITIVE_ARRAY_COPY_IMPL(U_NAME) \
+  PRIMITIVE_ARRAY_DEALLOC_IMPL
 
 
 // ********** IOSBooleanArray **********
@@ -134,16 +155,6 @@ PRIMITIVE_ARRAY_IMPLEMENTATION(boolean, Boolean, BOOL)
   return [IOSClass arrayClassWithComponentType:[IOSClass booleanClass]];
 }
 
-- (id)copyWithZone:(NSZone *)zone {
-  return [[IOSBooleanArray allocWithZone:zone]
-          initWithBooleans:buffer_ count:size_];
-}
-
-- (void)dealloc {
-  free(buffer_);
-  [super dealloc];
-}
-
 @end
 
 
@@ -153,19 +164,13 @@ PRIMITIVE_ARRAY_IMPLEMENTATION(boolean, Boolean, BOOL)
 
 PRIMITIVE_ARRAY_IMPLEMENTATION(char, Char, unichar)
 
-- (id)initWithNSString:(NSString *)string {
-  int length = [string length];
-  if ((self = [super initWithLength:length])) {
-    if (length > 0) {
-      buffer_ = malloc(length * sizeof(unichar));
-      [string getCharacters:buffer_ range:NSMakeRange(0, length)];
-    }
-  }
-  return self;
-}
-
 + (id)arrayWithNSString:(NSString *)string {
-  return AUTORELEASE([[IOSCharArray alloc] initWithNSString:string]);
+  NSUInteger length = [string length];
+  IOSCharArray *array = IOSCharArray_NewArray(length);
+  if (length > 0) {
+    [string getCharacters:array->buffer_ range:NSMakeRange(0, length)];
+  }
+  return [array autorelease];
 }
 
 - (unichar *)getChars {
@@ -184,15 +189,6 @@ PRIMITIVE_ARRAY_IMPLEMENTATION(char, Char, unichar)
 
 + (IOSClass *)iosClass {
   return [IOSClass arrayClassWithComponentType:[IOSClass charClass]];
-}
-
-- (id)copyWithZone:(NSZone *)zone {
-  return [[IOSCharArray allocWithZone:zone] initWithChars:buffer_ count:size_];
-}
-
-- (void)dealloc {
-  free(buffer_);
-  [super dealloc];
 }
 
 @end
@@ -230,18 +226,8 @@ PRIMITIVE_ARRAY_IMPLEMENTATION(byte, Byte, char)
   return [IOSClass arrayClassWithComponentType:[IOSClass byteClass]];
 }
 
-- (id)copyWithZone:(NSZone *)zone {
-  return [[IOSByteArray allocWithZone:zone]
-          initWithBytes:buffer_ count:size_];
-}
-
 - (NSData *)toNSData {
   return [NSData dataWithBytes:buffer_ length:size_];
-}
-
-- (void)dealloc {
-  free(buffer_);
-  [super dealloc];
 }
 
 @end
@@ -265,15 +251,6 @@ PRIMITIVE_ARRAY_IMPLEMENTATION(short, Short, short)
   return [IOSClass arrayClassWithComponentType:[IOSClass shortClass]];
 }
 
-- (id)copyWithZone:(NSZone *)zone {
-  return [[IOSShortArray allocWithZone:zone] initWithShorts:buffer_ count:size_];
-}
-
-- (void)dealloc {
-  free(buffer_);
-  [super dealloc];
-}
-
 @end
 
 
@@ -293,15 +270,6 @@ PRIMITIVE_ARRAY_IMPLEMENTATION(int, Int, int)
 
 + (IOSClass *)iosClass {
   return [IOSClass arrayClassWithComponentType:[IOSClass intClass]];
-}
-
-- (id)copyWithZone:(NSZone *)zone {
-  return [[IOSIntArray allocWithZone:zone] initWithInts:buffer_ count:size_];
-}
-
-- (void)dealloc {
-  free(buffer_);
-  [super dealloc];
 }
 
 @end
@@ -325,15 +293,6 @@ PRIMITIVE_ARRAY_IMPLEMENTATION(long, Long, long long)
   return [IOSClass arrayClassWithComponentType:[IOSClass longClass]];
 }
 
-- (id)copyWithZone:(NSZone *)zone {
-  return [[IOSLongArray allocWithZone:zone] initWithLongs:buffer_ count:size_];
-}
-
-- (void)dealloc {
-  free(buffer_);
-  [super dealloc];
-}
-
 @end
 
 
@@ -355,16 +314,6 @@ PRIMITIVE_ARRAY_IMPLEMENTATION(float, Float, float)
   return [IOSClass arrayClassWithComponentType:[IOSClass floatClass]];
 }
 
-- (id)copyWithZone:(NSZone *)zone {
-  return [[IOSFloatArray allocWithZone:zone]
-          initWithFloats:buffer_ count:size_];
-}
-
-- (void)dealloc {
-  free(buffer_);
-  [super dealloc];
-}
-
 @end
 
 
@@ -384,16 +333,6 @@ PRIMITIVE_ARRAY_IMPLEMENTATION(double, Double, double)
 
 + (IOSClass *)iosClass {
   return [IOSClass arrayClassWithComponentType:[IOSClass doubleClass]];
-}
-
-- (id)copyWithZone:(NSZone *)zone {
-  return [[IOSDoubleArray allocWithZone:zone]
-          initWithDoubles:buffer_ count:size_];
-}
-
-- (void)dealloc {
-  free(buffer_);
-  [super dealloc];
 }
 
 @end

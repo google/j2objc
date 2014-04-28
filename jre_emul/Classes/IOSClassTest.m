@@ -21,7 +21,7 @@
 #import "JreEmulation.h"
 
 #import "IOSClass.h"
-#import "IOSDoubleArray.h"
+#import "IOSPrimitiveArray.h"
 #import "IOSObjectArray.h"
 #import "java/lang/Double.h"
 #import "java/util/Arrays.h"
@@ -38,7 +38,8 @@
 - (void)testCheckDoubleParameterNaming {
   IOSClass *arraysClass = [JavaUtilArrays getClass];
   IOSObjectArray *argTypes =
-      [IOSObjectArray arrayWithObjects:(id[]){ [IOSDoubleArray iosClass], [JavaLangDouble TYPE] }
+      [IOSObjectArray arrayWithObjects:
+          (id[]){ [IOSDoubleArray iosClass], JavaLangDouble_get_TYPE_() }
                                  count:2
                                   type:[IOSClass getClass]];
   id method = [arraysClass getMethod:@"binarySearch" parameterTypes:argTypes];

@@ -22,15 +22,8 @@
 #import <SenTestingKit/SenTestingKit.h>
 #import <objc/runtime.h>
 #import "IOSArray.h"
-#import "IOSBooleanArray.h"
-#import "IOSByteArray.h"
-#import "IOSCharArray.h"
 #import "IOSClass.h"
-#import "IOSDoubleArray.h"
-#import "IOSFloatArray.h"
-#import "IOSIntArray.h"
-#import "IOSLongArray.h"
-#import "IOSShortArray.h"
+#import "IOSPrimitiveArray.h"
 #import "JreEmulation.h"
 #import "java/lang/IndexOutOfBoundsException.h"
 #import "java/util/Calendar.h"
@@ -105,7 +98,7 @@
 
 - (void)testCharArrayCopy {
   const unichar *chars = (unichar[]){ 'a', 'b', 'c', 'd' };
-  IOSCharArray *a1 = [IOSCharArray arrayWithCharacters:chars count:4];
+  IOSCharArray *a1 = [IOSCharArray arrayWithChars:chars count:4];
   IOSCharArray *a2 = [[a1 copy] autorelease];
   STAssertEquals([a1 count], [a2 count], @"bad array size");
   for (NSUInteger i = 0; i < 4; i++) {

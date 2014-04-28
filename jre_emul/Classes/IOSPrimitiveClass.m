@@ -83,17 +83,9 @@
       JavaLangReflectModifier_ABSTRACT;
 }
 
-static IOSObjectArray *emptyArray(IOSClass *arrayType) {
-  IOSObjectArray *result =
-      [[IOSObjectArray alloc] initWithLength:0 type:arrayType];
-#if ! __has_feature(objc_arc)
-  [result autorelease];
-#endif
-  return result;
-}
-
 - (IOSObjectArray *)getDeclaredMethods {
-  return emptyArray([IOSClass classWithClass:[JavaLangReflectMethod class]]);
+  return [IOSObjectArray arrayWithLength:0
+      type:[IOSClass classWithClass:[JavaLangReflectMethod class]]];
 }
 
 - (JavaLangReflectMethod *)getMethod:(NSString *)name, ... {

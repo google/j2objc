@@ -50,16 +50,12 @@ FOUNDATION_EXPORT
   if (argc <= 1) {
     return [IOSObjectArray arrayWithLength:0 type:stringType];
   }
-  IOSObjectArray *args = [[IOSObjectArray alloc] initWithLength:argc - 1
-                                                           type:stringType];
-#if ! __has_feature(objc_arc)
-  [args autorelease];
-#endif
+  IOSObjectArray *args = [IOSObjectArray arrayWithLength:argc - 1 type:stringType];
   for (int i = 1; i < argc; i++) {
     NSString *arg =
         [NSString stringWithCString:argv[i]
                            encoding:[NSString defaultCStringEncoding]];
-    [args replaceObjectAtIndex:i - 1 withObject:arg];
+    IOSObjectArray_Set(args, i - 1, arg);
   }
   return args;
 }

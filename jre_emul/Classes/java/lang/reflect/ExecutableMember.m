@@ -116,8 +116,7 @@ static IOSClass *ResolveParameterType(const char *objcType, NSString *paramKeywo
   // First two slots are class and SEL.
   NSUInteger nArgs = [methodSignature_ numberOfArguments] - SKIPPED_ARGUMENTS;
   IOSClass *classClass = [IOSClass classWithClass:[IOSClass class]];
-  IOSObjectArray *parameters =
-      AUTORELEASE([[IOSObjectArray alloc] initWithLength:nArgs type:classClass]);
+  IOSObjectArray *parameters = [IOSObjectArray arrayWithLength:nArgs type:classClass];
 
   NSString *selectorStr = NSStringFromSelector(selector_);
   // Remove method name prefix.

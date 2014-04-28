@@ -41,13 +41,13 @@
   // Test with class.
   JavaUtilArrayList *one = [[[JavaUtilArrayList alloc] init] autorelease];
   IOSClass *clazz = [one getClass];
-  STAssertEqualObjects([clazz getName], @"JavaUtilArrayList",
+  STAssertEqualObjects([clazz getName], @"java.util.ArrayList",
                  @"incorrect class name", nil);
 
   // Now with a protocol.
   id<JavaUtilList> two = [[[JavaUtilArrayList alloc] init] autorelease];
   clazz = [(id<JavaObject>) two getClass];
-  STAssertEqualObjects([clazz getName], @"JavaUtilArrayList",
+  STAssertEqualObjects([clazz getName], @"java.util.ArrayList",
                  @"incorrect class name", nil);
 }
 
