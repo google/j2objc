@@ -17,15 +17,15 @@
 JAVA_DEPS_JAR_DIR = $(J2OBJC_ROOT)/java_deps/$(BUILD_DIR_NAME)
 
 ECLIPSE_JARS = \
-    org.eclipse.core.contenttype-3.4.100.v20100505-1235.jar \
-    org.eclipse.core.jobs-3.5.0.v20100515.jar \
-    org.eclipse.core.resources-3.6.0.v20100526-0737.jar \
-    org.eclipse.core.runtime-3.6.0.v20100505.jar \
-    org.eclipse.equinox.common-3.6.0.v20100503.jar \
-    org.eclipse.equinox.preferences-3.3.0.v20100503.jar \
-    org.eclipse.jdt.core-3.8.1.v20120531-0637.jar \
-    org.eclipse.osgi-3.6.0.v20100517.jar \
-    org.eclipse.text-3.5.100.v20110505-0800.jar
+    org.eclipse.core.contenttype_3.4.200.v20130326-1255.jar \
+    org.eclipse.core.jobs_3.5.300.v20130429-1813.jar \
+    org.eclipse.core.resources_3.8.101.v20130717-0806.jar \
+    org.eclipse.core.runtime_3.9.100.v20131218-1515.jar \
+    org.eclipse.equinox.common_3.6.200.v20130402-1505.jar \
+    org.eclipse.equinox.preferences_3.5.100.v20130422-1538.jar \
+    org.eclipse.jdt.core_3.9.1.v20130905-0837.jar \
+    org.eclipse.osgi_3.9.1-v20140110-1610.jar \
+    org.eclipse.text_3.5.101.jar
 
 GUAVA_JAR = guava-13.0.jar
 
