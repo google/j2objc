@@ -97,9 +97,9 @@
       <scope>compile</scope>
     </dependency>
     <dependency>
-      <groupId>org.eclipse.core</groupId>
-      <artifactId>runtime</artifactId>
-      <version>3.9.100-v20131218-1515</version>
+      <groupId>org.eclipse.birt.runtime</groupId>
+      <artifactId>org.eclipse.core.runtime</artifactId>
+      <version>3.9.0.v20130326-1255</version>
       <exclusions>
         <exclusion>
           <groupId>org.eclipse.equinox</groupId>
@@ -135,9 +135,9 @@
       <scope>compile</scope>
     </dependency>
     <dependency>
-      <groupId>org.eclipse</groupId>
-      <artifactId>osgi</artifactId>
-      <version>3.9.1-v20140110-1610</version>
+      <groupId>org.eclipse.birt.runtime</groupId>
+      <artifactId>org.eclipse.osgi</artifactId>
+      <version>3.9.1.v20130814-1242</version>
       <scope>compile</scope>
     </dependency>
     <dependency>
