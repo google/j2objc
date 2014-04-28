@@ -215,6 +215,8 @@ TEST_SOURCES = \
     libcore/java/net/SocketTest.java \
     libcore/java/net/URITest.java \
     libcore/java/net/UrlEncodingTest.java \
+    libcore/java/net/URLStreamHandlerFactoryTest.java \
+    libcore/java/net/URLTest.java \
     libcore/java/nio/BufferTest.java \
     libcore/java/nio/NoArrayTest.java \
     libcore/java/nio/OldAndroidNIOTest.java \
