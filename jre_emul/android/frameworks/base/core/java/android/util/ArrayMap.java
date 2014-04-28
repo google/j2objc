@@ -16,6 +16,8 @@
 
 package android.util;
 
+import com.google.j2objc.annotations.WeakOuter;
+
 import java.util.Collection;
 import java.util.Map;
 import java.util.Set;
@@ -693,53 +695,55 @@ public final class ArrayMap<K, V> implements Map<K, V> {
     // ------------------------------------------------------------------------
 
     private MapCollections<K, V> getCollection() {
+        @WeakOuter
+        class InteropMapCollections extends MapCollections<K, V> {
+            @Override
+            protected int colGetSize() {
+                return mSize;
+            }
+
+            @Override
+            protected Object colGetEntry(int index, int offset) {
+                return mArray[(index<<1) + offset];
+            }
+
+            @Override
+            protected int colIndexOfKey(Object key) {
+                return key == null ? indexOfNull() : indexOf(key, key.hashCode());
+            }
+
+            @Override
+            protected int colIndexOfValue(Object value) {
+                return indexOfValue(value);
+            }
+
+            @Override
+            protected Map<K, V> colGetMap() {
+                return ArrayMap.this;
+            }
+
+            @Override
+            protected void colPut(K key, V value) {
+                put(key, value);
+            }
+
+            @Override
+            protected V colSetValue(int index, V value) {
+                return setValueAt(index, value);
+            }
+
+            @Override
+            protected void colRemoveAt(int index) {
+                removeAt(index);
+            }
+
+            @Override
+            protected void colClear() {
+                clear();
+            }
+        }
         if (mCollections == null) {
-            mCollections = new MapCollections<K, V>() {
-                @Override
-                protected int colGetSize() {
-                    return mSize;
-                }
-
-                @Override
-                protected Object colGetEntry(int index, int offset) {
-                    return mArray[(index<<1) + offset];
-                }
-
-                @Override
-                protected int colIndexOfKey(Object key) {
-                    return key == null ? indexOfNull() : indexOf(key, key.hashCode());
-                }
-
-                @Override
-                protected int colIndexOfValue(Object value) {
-                    return indexOfValue(value);
-                }
-
-                @Override
-                protected Map<K, V> colGetMap() {
-                    return ArrayMap.this;
-                }
-
-                @Override
-                protected void colPut(K key, V value) {
-                    put(key, value);
-                }
-
-                @Override
-                protected V colSetValue(int index, V value) {
-                    return setValueAt(index, value);
-                }
-
-                @Override
-                protected void colRemoveAt(int index) {
-                    removeAt(index);
-                }
-
-                @Override
-                protected void colClear() {
-                    clear();
-                }
-            };
+            mCollections = new InteropMapCollections();
         }
         return mCollections;
     }
