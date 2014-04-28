@@ -100,7 +100,6 @@ import java.util.logging.Logger;
 public class Rewriter extends ErrorReportingASTVisitor {
 
   private Map<IVariableBinding, IVariableBinding> localRefs = Maps.newHashMap();
-  private ITypeBinding localRefType;
 
   /**
    * The list of Objective-C type qualifier keywords.
@@ -714,42 +713,6 @@ public class Rewriter extends ErrorReportingASTVisitor {
   }
 
   @Override
-  public boolean visit(VariableDeclarationStatement node) {
-    // Scan modifiers since variable declarations don't have variable bindings.
-    if (ASTUtil.hasAnnotation(RetainedLocalRef.class, ASTUtil.getModifiers(node))) {
-      AST ast = node.getAST();
-      node.setType(ASTFactory.newType(ast, getLocalRefType(ast)));
-      Types.addBinding(node, getLocalRefType(ast));
-
-      // Convert fragments to retained local refs.
-      for (VariableDeclarationFragment fragment : ASTUtil.getFragments(node)) {
-        IVariableBinding var = Types.getVariableBinding(fragment);
-        GeneratedVariableBinding newVar = new GeneratedVariableBinding(
-            var.getName(), var.getModifiers(), getLocalRefType(ast), false, false,
-            var.getDeclaringClass(), var.getDeclaringMethod());
-        localRefs.put(var, newVar);
-
-        // Create a constructor for a ScopedLocalRef for this fragment.
-        IMethodBinding constructor = null;
-        for (IMethodBinding m : getLocalRefType(ast).getDeclaredMethods()) {
-          if (m.isConstructor()) {
-            constructor = m;
-            break;
-          }
-        }
-        assert constructor != null : "failed finding ScopedLocalRef(var)";
-        ClassInstanceCreation newInvocation = ASTFactory.newClassInstanceCreation(ast, constructor);
-        ASTUtil.getArguments(newInvocation).add(
-            NodeCopier.copySubtree(ast, fragment.getInitializer()));
-        fragment.setInitializer(newInvocation);
-        Types.addBinding(fragment, newVar);
-      }
-      return false;
-    }
-    return true;
-  }
-
-  @Override
   public void endVisit(VariableDeclarationStatement node) {
     AST ast = node.getAST();
     LinkedListMultimap<Integer, VariableDeclarationFragment> newDeclarations =
@@ -766,6 +729,40 @@ public class Rewriter extends ErrorReportingASTVisitor {
             ASTFactory.newVariableDeclarationStatement(ast, fragments.get(0));
         ASTUtil.getFragments(newDecl).addAll(fragments.subList(1, fragments.size()));
         statements.add(++location, newDecl);
+      }
+    }
+    // Scan modifiers since variable declarations don't have variable bindings.
+    if (ASTUtil.hasAnnotation(RetainedLocalRef.class, ASTUtil.getModifiers(node))) {
+      ITypeBinding localRefType = Types.getLocalRefType();
+      node.setType(ASTFactory.newType(ast, localRefType));
+      Types.addBinding(node, localRefType);
+
+      // Convert fragments to retained local refs.
+      for (VariableDeclarationFragment fragment : ASTUtil.getFragments(node)) {
+        IVariableBinding var = Types.getVariableBinding(fragment);
+        GeneratedVariableBinding newVar = new GeneratedVariableBinding(
+            var.getName(), var.getModifiers(), localRefType, false, false,
+            var.getDeclaringClass(), var.getDeclaringMethod());
+        localRefs.put(var, newVar);
+
+        Expression initializer = fragment.getInitializer();
+        if (localRefs.containsKey(Types.getBinding(initializer))) {
+          initializer.accept(this);
+        } else {
+          // Create a constructor for a ScopedLocalRef for this fragment.
+          IMethodBinding constructor = null;
+          for (IMethodBinding m : localRefType.getDeclaredMethods()) {
+            if (m.isConstructor()) {
+              constructor = m;
+              break;
+            }
+          }
+          assert constructor != null : "failed finding ScopedLocalRef(var)";
+          ClassInstanceCreation newInvocation = ASTFactory.newClassInstanceCreation(ast, constructor);
+          ASTUtil.getArguments(newInvocation).add(NodeCopier.copySubtree(ast, initializer));
+          fragment.setInitializer(newInvocation);
+          Types.addBinding(fragment, newVar);
+        }
       }
     }
   }
@@ -799,7 +796,7 @@ public class Rewriter extends ErrorReportingASTVisitor {
       if (localRef != null) {
         AST ast = node.getAST();
         SimpleName localRefField =
-            ASTFactory.newSimpleName(ast, getLocalRefType(ast).getDeclaredFields()[0]);
+            ASTFactory.newSimpleName(ast, Types.getLocalRefType().getDeclaredFields()[0]);
         Expression newQualifier = NodeCopier.copySubtree(ast, node.getQualifier());
         Types.addBinding(newQualifier, localRef);
         FieldAccess localRefAccess = ASTFactory.newFieldAccess(
@@ -841,8 +838,11 @@ public class Rewriter extends ErrorReportingASTVisitor {
     if (localRef != null) {
       AST ast = node.getAST();
       FieldAccess access = ASTFactory.newFieldAccess(ast,
-          getLocalRefType(ast).getDeclaredFields()[0], ASTFactory.newSimpleName(ast, localRef));
-      ASTUtil.setProperty(node, access);
+          Types.getLocalRefType().getDeclaredFields()[0], ASTFactory.newSimpleName(ast, localRef));
+      CastExpression newCast = ASTFactory.newCastExpression(
+          ast, access, Types.getTypeBinding(node));
+      ParenthesizedExpression newParens = ASTFactory.newParenthesizedExpression(ast, newCast);
+      ASTUtil.setProperty(node, newParens);
     }
   }
 
@@ -893,22 +893,5 @@ public class Rewriter extends ErrorReportingASTVisitor {
           ast, NodeCopier.copySubtree(ast, lhs), InfixExpression.Operator.PLUS,
           NodeCopier.copySubtree(ast, rhs), lhsType));
     }
-  }
-
-  private ITypeBinding getLocalRefType(AST ast) {
-    if (localRefType == null) {
-      ITypeBinding objectType = ast.resolveWellKnownType("java.lang.Object");
-      GeneratedTypeBinding refType = GeneratedTypeBinding.newTypeBinding("com.google.j2objc.util.ScopedLocalRef",
-          objectType, false);
-      GeneratedVariableBinding varBinding = new GeneratedVariableBinding("var", Modifier.PUBLIC,
-          objectType, true, false, refType, null);
-      refType.addField(varBinding);
-      GeneratedMethodBinding constructor =
-          GeneratedMethodBinding.newConstructor(refType, Modifier.PUBLIC);
-      constructor.addParameter(objectType);
-      refType.addMethod(constructor);
-      localRefType = refType;
-    }
-    return localRefType;
   }
 }

@@ -33,6 +33,7 @@ import org.eclipse.jdt.core.dom.IBinding;
 import org.eclipse.jdt.core.dom.IMethodBinding;
 import org.eclipse.jdt.core.dom.ITypeBinding;
 import org.eclipse.jdt.core.dom.IVariableBinding;
+import org.eclipse.jdt.core.dom.Modifier;
 import org.eclipse.jdt.core.dom.SimpleType;
 import org.eclipse.jdt.core.dom.Type;
 
@@ -67,6 +68,9 @@ public class Types {
   private final ITypeBinding javaVoidType;
   private final ITypeBinding voidType;
   private final ITypeBinding booleanType;
+
+  // Lazily load localRefType, since its initialization requires Types to be fully initialized.
+  private ITypeBinding localRefType;
 
   private static Types instance;
 
@@ -453,5 +457,25 @@ public class Types {
 
   public static boolean hasDeferredFieldSetter(Expression expression) {
     return instance.deferredFieldSetters.contains(expression);
+  }
+
+  public static ITypeBinding getLocalRefType() {
+    synchronized (instance) {
+      if (instance.localRefType == null) {
+        ITypeBinding objectType = instance.ast.resolveWellKnownType("java.lang.Object");
+        GeneratedTypeBinding refType =
+            GeneratedTypeBinding.newTypeBinding("com.google.j2objc.util.ScopedLocalRef",
+            objectType, false);
+        GeneratedVariableBinding varBinding = new GeneratedVariableBinding("var", Modifier.PUBLIC,
+            objectType, true, false, refType, null);
+        refType.addField(varBinding);
+        GeneratedMethodBinding constructor =
+            GeneratedMethodBinding.newConstructor(refType, Modifier.PUBLIC);
+        constructor.addParameter(objectType);
+        refType.addMethod(constructor);
+        instance.localRefType = refType;
+      }
+      return instance.localRefType;
+    }
   }
 }
