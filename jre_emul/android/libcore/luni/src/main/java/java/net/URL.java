@@ -17,6 +17,9 @@
 
 package java.net;
 
+import com.google.j2objc.net.IosHttpHandler;
+import com.google.j2objc.net.IosHttpsHandler;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.ObjectInputStream;
@@ -422,15 +425,13 @@ public final class URL implements Serializable {
             streamHandler = new FileHandler();
         } else if (protocol.equals("http")) {
             try {
-                String name = "com.android.okhttp.HttpHandler";
-                streamHandler = (URLStreamHandler) Class.forName(name).newInstance();
+                streamHandler = new IosHttpHandler();
             } catch (Exception e) {
                 throw new AssertionError(e);
             }
         } else if (protocol.equals("https")) {
             try {
-                String name = "com.android.okhttp.HttpsHandler";
-                streamHandler = (URLStreamHandler) Class.forName(name).newInstance();
+              streamHandler = new IosHttpsHandler();
             } catch (Exception e) {
                 throw new AssertionError(e);
             }
