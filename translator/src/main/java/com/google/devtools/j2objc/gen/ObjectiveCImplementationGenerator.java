@@ -238,7 +238,6 @@ public class ObjectiveCImplementationGenerator extends ObjectiveCSourceFileGener
       printf("@implementation %s\n", typeName);
       printStaticReferencesMethod(fields);
       printStaticVars(fields, /* isInterface */ false);
-      printStaticFieldAccessors(fields, methods, /* isInterface */ false);
       printMethods(node);
       if (!Options.stripReflection()) {
         printTypeAnnotationsMethod(node);
@@ -274,8 +273,6 @@ public class ObjectiveCImplementationGenerator extends ObjectiveCSourceFileGener
     }
     List<FieldDeclaration> fields = ASTUtil.getFieldDeclarations(node);
     printStaticVars(fields, /* isInterface */ true);
-    printStaticFieldAccessors(
-        fields, Collections.<MethodDeclaration>emptyList(), /* isInterface */ true);
     println("\n- (IOSClass *)annotationType {");
     printf("  return [IOSClass classWithProtocol:@protocol(%s)];\n", typeName);
     println("}");
@@ -518,7 +515,6 @@ public class ObjectiveCImplementationGenerator extends ObjectiveCSourceFileGener
     printInitFlagDefinition(node, methods);
     printf("\n@implementation %s\n", typeName);
     printStaticVars(fields, /* isInterface */ true);
-    printStaticFieldAccessors(fields, methods, /* isInterface */ true);
     for (MethodDeclaration method : methods) {
       if (method.getBody() != null) {
         printMethod(method);
@@ -560,20 +556,11 @@ public class ObjectiveCImplementationGenerator extends ObjectiveCSourceFileGener
     printStaticVars(fields, /* isInterface */ false);
     printStaticReferencesMethod(fields);
 
-    newline();
-    for (EnumConstantDeclaration constant : constants) {
-      String name = NameTable.getName(constant.getName());
-      printf("+ (%s *)%s {\n", typeName, name);
-      printf("  return %s_%s;\n", typeName, name);
-      println("}");
-    }
-
     // Enum constants needs to implement NSCopying.  Being singletons, they
     // can just return self, as long the retain count is incremented.
     String selfString = Options.useReferenceCounting() ? "[self retain]" : "self";
     printf("\n- (id)copyWithZone:(NSZone *)zone {\n  return %s;\n}\n", selfString);
 
-    printStaticFieldAccessors(fields, methods, /* isInterface */ false);
     printMethodsAndOcni(node, methods, blockComments.get(node));
 
     printf("\n+ (void)initialize {\n  if (self == [%s class]) {\n", typeName);
@@ -629,33 +616,6 @@ public class ObjectiveCImplementationGenerator extends ObjectiveCSourceFileGener
       printMetadata(node);
     }
     println("\n@end");
-  }
-
-  @Override
-  protected void printStaticFieldGetter(IVariableBinding var) {
-    String name = BindingUtil.isPrimitiveConstant(var) ?
-        NameTable.getPrimitiveConstantName(var) :
-        NameTable.getStaticVarQualifiedName(var);
-    printf("\n%s {\n  return %s;\n}\n", staticFieldGetterSignature(var), name);
-  }
-
-  @Override
-  protected void printStaticFieldReferenceGetter(IVariableBinding var) {
-    printf("\n%s {\n  return &%s;\n}\n", staticFieldReferenceGetterSignature(var),
-        NameTable.getStaticVarQualifiedName(var));
-  }
-
-  @Override
-  protected void printStaticFieldSetter(IVariableBinding var) {
-    String fieldName = NameTable.getStaticVarQualifiedName(var);
-    String paramName = NameTable.getName(var);
-    String signature = staticFieldSetterSignature(var);
-    if (Options.useReferenceCounting()) {
-      printf("\n%s {\n  JreOperatorRetainedAssign(&%s, nil, %s);\n}\n",
-          signature, fieldName, paramName);
-    } else {
-      printf("\n%s {\n  %s = %s;\n}\n", signature, fieldName, paramName);
-    }
   }
 
   private void printInitFlagDefinition(
