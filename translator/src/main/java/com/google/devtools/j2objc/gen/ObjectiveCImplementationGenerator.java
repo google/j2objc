@@ -132,7 +132,7 @@ public class ObjectiveCImplementationGenerator extends ObjectiveCSourceFileGener
       @Override
       public boolean visit(TypeDeclaration node) {
         if (!node.isInterface()
-            || !getStaticFieldsNeedingAccessors(
+            || !getStaticFieldsNeedingInitialization(
                 Arrays.asList(node.getFields()), /* isInterface */ true).isEmpty()
             || !Options.stripReflection()) {
           types.add(node);
@@ -149,7 +149,7 @@ public class ObjectiveCImplementationGenerator extends ObjectiveCSourceFileGener
       @Override
       public boolean visit(AnnotationTypeDeclaration node) {
         if (BindingUtil.isRuntimeAnnotation(Types.getTypeBinding(node))
-            || !getStaticFieldsNeedingAccessors(
+            || !getStaticFieldsNeedingInitialization(
                 ASTUtil.getFieldDeclarations(node), /* isInterface */ true).isEmpty()) {
           types.add(node);
         }
@@ -503,18 +503,16 @@ public class ObjectiveCImplementationGenerator extends ObjectiveCSourceFileGener
 
   private void printStaticInterface(AbstractTypeDeclaration node,
       String typeName, List<FieldDeclaration> fields, List<MethodDeclaration> methods) {
-    List<IVariableBinding> staticFields =
-        getStaticFieldsNeedingAccessors(fields, /* isInterface */ true);
-    if (staticFields.isEmpty()) {
-      if (!Options.stripReflection()) {
-        printf("\n@interface %s : NSObject\n@end\n", typeName);
-      } else {
-        return;
-      }
+    boolean needsImplementation = !methods.isEmpty() || !Options.stripReflection();
+    if (needsImplementation && !hasInitializeMethod(node, methods)) {
+      printf("\n@interface %s : NSObject\n@end\n", typeName);
     }
     printInitFlagDefinition(node, methods);
-    printf("\n@implementation %s\n", typeName);
     printStaticVars(fields, /* isInterface */ true);
+    if (!needsImplementation) {
+      return;
+    }
+    printf("\n@implementation %s\n", typeName);
     for (MethodDeclaration method : methods) {
       if (method.getBody() != null) {
         printMethod(method);
