@@ -225,7 +225,9 @@ public class AnonymousClassConverter extends ErrorReportingASTVisitor {
       binding.addParameter(argType);
       ASTUtil.getArguments(superCall).add(ASTFactory.newSimpleName(ast, argBinding));
     }
-    assert superCall.arguments().size() == superCallBinding.getParameterTypes().length;
+    assert superCall.arguments().size() == superCallBinding.getParameterTypes().length ||
+        superCallBinding.isVarargs() &&
+            superCall.arguments().size() >= superCallBinding.getParameterTypes().length;
 
     ASTUtil.getStatements(constructor.getBody()).add(superCall);
 
@@ -243,8 +245,13 @@ public class AnonymousClassConverter extends ErrorReportingASTVisitor {
     outer: for (IMethodBinding m : clazz.getDeclaredMethods()) {
       if (m.isConstructor()) {
         ITypeBinding[] paramTypes = m.getParameterTypes();
-        if (superArgs.size() == paramTypes.length) {
+        if (superArgs.size() == paramTypes.length ||
+            m.isVarargs() && superArgs.size() >= paramTypes.length) {
           for (int i = 0; i < paramTypes.length; i++) {
+            if (m.isVarargs() && i == (paramTypes.length - 1)) {
+              // Matched through vararg parameter.
+              break;
+            }
             ITypeBinding argType = Types.getTypeBinding(superArgs.get(i)).getErasure();
             if (!argType.isAssignmentCompatible(paramTypes[i].getErasure())) {
               continue outer;
