@@ -31,9 +31,7 @@ public class IosHttpHandler extends URLStreamHandler {
 
   @Override
   protected URLConnection openConnection(URL url) throws IOException {
-    URLConnection connection = new IosHttpURLConnection(url);
-    connection.connect();
-    return connection;
+    return new IosHttpURLConnection(url);
   }
 
   @Override
