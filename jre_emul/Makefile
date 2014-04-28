@@ -176,6 +176,74 @@ JAVA_SOURCES = \
 	com/google/j2objc/security/IosSecureRandomImpl.java \
 	com/google/j2objc/security/IosSecurityProvider.java \
 	com/google/j2objc/security/IosSHAMessageDigest.java \
+	com/squareup/okhttp/Address.java \
+	com/squareup/okhttp/CacheControl.java \
+	com/squareup/okhttp/Connection.java \
+	com/squareup/okhttp/ConnectionPool.java \
+	com/squareup/okhttp/Dispatcher.java \
+	com/squareup/okhttp/Failure.java \
+	com/squareup/okhttp/Handshake.java \
+	com/squareup/okhttp/Headers.java \
+	com/squareup/okhttp/HttpHandler.java \
+	com/squareup/okhttp/HttpResponseCache.java \
+	com/squareup/okhttp/HttpsHandler.java \
+	com/squareup/okhttp/Job.java \
+	com/squareup/okhttp/MediaType.java \
+	com/squareup/okhttp/OkAuthenticator.java \
+	com/squareup/okhttp/OkHttpClient.java \
+	com/squareup/okhttp/OkResponseCache.java \
+	com/squareup/okhttp/Protocol.java \
+	com/squareup/okhttp/Request.java \
+	com/squareup/okhttp/Response.java \
+	com/squareup/okhttp/ResponseSource.java \
+	com/squareup/okhttp/Route.java \
+	com/squareup/okhttp/RouteDatabase.java \
+	com/squareup/okhttp/TunnelRequest.java \
+	com/squareup/okhttp/internal/BitArray.java \
+	com/squareup/okhttp/internal/DiskLruCache.java \
+	com/squareup/okhttp/internal/Dns.java \
+	com/squareup/okhttp/internal/NamedRunnable.java \
+	com/squareup/okhttp/internal/Platform.java \
+	com/squareup/okhttp/internal/Util.java \
+	com/squareup/okhttp/internal/http/CacheStrategy.java \
+	com/squareup/okhttp/internal/http/DelegatingHttpsURLConnection.java \
+	com/squareup/okhttp/internal/http/HeaderParser.java \
+	com/squareup/okhttp/internal/http/HttpAuthenticator.java \
+	com/squareup/okhttp/internal/http/HttpConnection.java \
+	com/squareup/okhttp/internal/http/HttpDate.java \
+	com/squareup/okhttp/internal/http/HttpEngine.java \
+	com/squareup/okhttp/internal/http/HttpMethod.java \
+	com/squareup/okhttp/internal/http/HttpsURLConnectionImpl.java \
+	com/squareup/okhttp/internal/http/HttpTransport.java \
+	com/squareup/okhttp/internal/http/HttpURLConnectionImpl.java \
+	com/squareup/okhttp/internal/http/JavaApiConverter.java \
+	com/squareup/okhttp/internal/http/OkHeaders.java \
+	com/squareup/okhttp/internal/http/RequestLine.java \
+	com/squareup/okhttp/internal/http/ResponseCacheAdapter.java \
+	com/squareup/okhttp/internal/http/RetryableSink.java \
+	com/squareup/okhttp/internal/http/RouteSelector.java \
+	com/squareup/okhttp/internal/http/SpdyTransport.java \
+	com/squareup/okhttp/internal/http/StatusLine.java \
+	com/squareup/okhttp/internal/http/Transport.java \
+	com/squareup/okhttp/internal/spdy/ErrorCode.java \
+	com/squareup/okhttp/internal/spdy/FrameReader.java \
+	com/squareup/okhttp/internal/spdy/FrameWriter.java \
+	com/squareup/okhttp/internal/spdy/Header.java \
+	com/squareup/okhttp/internal/spdy/HeadersMode.java \
+	com/squareup/okhttp/internal/spdy/HpackDraft05.java \
+	com/squareup/okhttp/internal/spdy/Http20Draft09.java \
+	com/squareup/okhttp/internal/spdy/Huffman.java \
+	com/squareup/okhttp/internal/spdy/IncomingStreamHandler.java \
+	com/squareup/okhttp/internal/spdy/NameValueBlockReader.java \
+	com/squareup/okhttp/internal/spdy/Ping.java \
+	com/squareup/okhttp/internal/spdy/PushObserver.java \
+	com/squareup/okhttp/internal/spdy/Settings.java \
+	com/squareup/okhttp/internal/spdy/Spdy3.java \
+	com/squareup/okhttp/internal/spdy/SpdyConnection.java \
+	com/squareup/okhttp/internal/spdy/SpdyStream.java \
+	com/squareup/okhttp/internal/spdy/Variant.java \
+	com/squareup/okhttp/internal/tls/DistinguishedNameParser.java \
+	com/squareup/okhttp/internal/tls/OkHostnameVerifier.java \
 	dalvik/system/BlockGuard.java \
 	dalvik/system/CloseGuard.java \
 	java/beans/IndexedPropertyChangeEvent.java \
@@ -862,6 +930,23 @@ JAVA_SOURCES = \
 	libcore/util/MutableLong.java \
 	libcore/util/Objects.java \
 	libcore/util/SneakyThrow.java \
+	okio/Base64.java \
+	okio/BufferedSink.java \
+	okio/BufferedSource.java \
+	okio/ByteString.java \
+	okio/Deadline.java \
+	okio/DeflaterSink.java \
+	okio/GzipSource.java \
+	okio/InflaterSource.java \
+	okio/OkBuffer.java \
+	okio/Okio.java \
+	okio/RealBufferedSink.java \
+	okio/RealBufferedSource.java \
+	okio/Segment.java \
+	okio/SegmentPool.java \
+	okio/Sink.java \
+	okio/Source.java \
+	okio/Util.java \
 	org/apache/harmony/luni/platform/Endianness.java \
 	org/apache/harmony/luni/util/HistoricalNamesUtil.java \
 	org/apache/harmony/luni/util/Util.java \
