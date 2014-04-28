@@ -14,6 +14,8 @@
 
 package com.google.devtools.j2objc.util;
 
+import com.google.common.collect.AbstractIterator;
+import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 
 import org.eclipse.jdt.core.dom.ASTNode;
@@ -55,6 +57,7 @@ import org.eclipse.jdt.core.dom.VariableDeclarationExpression;
 import org.eclipse.jdt.core.dom.VariableDeclarationFragment;
 import org.eclipse.jdt.core.dom.VariableDeclarationStatement;
 
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -390,13 +393,31 @@ public final class ASTUtil {
     return methods;
   }
 
-  public static List<FieldDeclaration> getFieldDeclarations(AbstractTypeDeclaration node) {
-    List<FieldDeclaration> fields = Lists.newArrayList();
-    for (BodyDeclaration bodyDecl : getBodyDeclarations(node)) {
-      if (bodyDecl instanceof FieldDeclaration) {
-        fields.add((FieldDeclaration) bodyDecl);
+  public static Iterable<FieldDeclaration> getFieldDeclarations(AbstractTypeDeclaration node) {
+    return Iterables.filter(getBodyDeclarations(node), FieldDeclaration.class);
+  }
+
+  public static Iterable<VariableDeclarationFragment> getAllFields(
+      AbstractTypeDeclaration node) {
+    final Iterable<FieldDeclaration> fieldDecls = getFieldDeclarations(node);
+    return new Iterable<VariableDeclarationFragment>() {
+      public Iterator<VariableDeclarationFragment> iterator() {
+        final Iterator<FieldDeclaration> fieldIter = fieldDecls.iterator();
+        return new AbstractIterator<VariableDeclarationFragment>() {
+          private Iterator<VariableDeclarationFragment> fragIter;
+          @Override protected VariableDeclarationFragment computeNext() {
+            do {
+              if (fragIter != null && fragIter.hasNext()) {
+                return fragIter.next();
+              }
+              if (fieldIter.hasNext()) {
+                fragIter = ASTUtil.getFragments(fieldIter.next()).iterator();
+              }
+            } while (fieldIter.hasNext() || (fragIter != null && fragIter.hasNext()));
+            return endOfData();
+          }
+        };
       }
-    }
-    return fields;
+    };
   }
 }

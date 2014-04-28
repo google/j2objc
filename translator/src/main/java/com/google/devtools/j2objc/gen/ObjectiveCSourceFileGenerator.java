@@ -16,7 +16,9 @@
 
 package com.google.devtools.j2objc.gen;
 
-import com.google.common.collect.Lists;
+import com.google.common.base.Function;
+import com.google.common.base.Predicate;
+import com.google.common.collect.Iterables;
 import com.google.devtools.j2objc.Options;
 import com.google.devtools.j2objc.types.IOSMethod;
 import com.google.devtools.j2objc.types.IOSMethodBinding;
@@ -26,11 +28,11 @@ import com.google.devtools.j2objc.util.ASTUtil;
 import com.google.devtools.j2objc.util.BindingUtil;
 import com.google.devtools.j2objc.util.NameTable;
 
+import org.eclipse.jdt.core.dom.ASTNode;
 import org.eclipse.jdt.core.dom.AbstractTypeDeclaration;
 import org.eclipse.jdt.core.dom.AnnotationTypeDeclaration;
 import org.eclipse.jdt.core.dom.CompilationUnit;
 import org.eclipse.jdt.core.dom.EnumDeclaration;
-import org.eclipse.jdt.core.dom.FieldDeclaration;
 import org.eclipse.jdt.core.dom.IMethodBinding;
 import org.eclipse.jdt.core.dom.ITypeBinding;
 import org.eclipse.jdt.core.dom.IVariableBinding;
@@ -90,35 +92,40 @@ public abstract class ObjectiveCSourceFileGenerator extends SourceFileGenerator 
     save(getOutputFileName(node));
   }
 
-  protected List<IVariableBinding> getStaticFieldsNeedingAccessors(
-      List<FieldDeclaration> fields, boolean isInterface) {
-    List<IVariableBinding> bindings = Lists.newArrayList();
-    for (FieldDeclaration f : fields) {
-      if (Modifier.isStatic(f.getModifiers()) || isInterface) {
-        for (VariableDeclarationFragment var : ASTUtil.getFragments(f)) {
-          bindings.add(Types.getVariableBinding(var));
-        }
-      }
+  private static final Function<ASTNode, IVariableBinding> GET_VARIABLE_BINDING_FUNC =
+      new Function<ASTNode, IVariableBinding>() {
+    public IVariableBinding apply(ASTNode node) {
+      return Types.getVariableBinding(node);
     }
-    return bindings;
+  };
+
+  private static final Predicate<ASTNode> IS_STATIC_VARIABLE_PRED = new Predicate<ASTNode>() {
+    public boolean apply(ASTNode node) {
+      return BindingUtil.isStatic(Types.getVariableBinding(node));
+    }
+  };
+
+  private static final Predicate<VariableDeclarationFragment> NEEDS_INITIALIZATION_PRED =
+      new Predicate<VariableDeclarationFragment>() {
+    public boolean apply(VariableDeclarationFragment frag) {
+      IVariableBinding binding = Types.getVariableBinding(frag);
+      return BindingUtil.isStatic(binding) && !BindingUtil.isPrimitiveConstant(binding);
+    }
+  };
+
+  protected Iterable<IVariableBinding> getStaticFieldsNeedingAccessors(
+      AbstractTypeDeclaration node) {
+    return Iterables.transform(
+        Iterables.filter(ASTUtil.getAllFields(node), IS_STATIC_VARIABLE_PRED),
+        GET_VARIABLE_BINDING_FUNC);
   }
 
   /**
    * Excludes primitive constants which will not have variables declared for them.
    */
-  protected List<VariableDeclarationFragment> getStaticFieldsNeedingInitialization(
-      List<FieldDeclaration> fields, boolean isInterface) {
-    List<VariableDeclarationFragment> fragments = Lists.newArrayList();
-    for (FieldDeclaration f : fields) {
-      if (Modifier.isStatic(f.getModifiers()) || isInterface) {
-        for (VariableDeclarationFragment var : ASTUtil.getFragments(f)) {
-          if (!BindingUtil.isPrimitiveConstant(Types.getVariableBinding(var))) {
-            fragments.add(var);
-          }
-        }
-      }
-    }
-    return fragments;
+  protected Iterable<VariableDeclarationFragment> getStaticFieldsNeedingInitialization(
+      AbstractTypeDeclaration node) {
+    return Iterables.filter(ASTUtil.getAllFields(node), NEEDS_INITIALIZATION_PRED);
   }
 
   protected boolean isInitializeMethod(MethodDeclaration m) {

@@ -17,6 +17,7 @@
 package com.google.devtools.j2objc.gen;
 
 import com.google.common.collect.ArrayListMultimap;
+import com.google.common.collect.Iterables;
 import com.google.common.collect.ListMultimap;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
@@ -63,7 +64,6 @@ import org.eclipse.jdt.core.dom.TypeDeclaration;
 import org.eclipse.jdt.core.dom.VariableDeclarationFragment;
 
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
@@ -132,8 +132,7 @@ public class ObjectiveCImplementationGenerator extends ObjectiveCSourceFileGener
       @Override
       public boolean visit(TypeDeclaration node) {
         if (!node.isInterface()
-            || !getStaticFieldsNeedingInitialization(
-                Arrays.asList(node.getFields()), /* isInterface */ true).isEmpty()
+            || !Iterables.isEmpty(getStaticFieldsNeedingInitialization(node))
             || !Options.stripReflection()) {
           types.add(node);
         }
@@ -149,8 +148,7 @@ public class ObjectiveCImplementationGenerator extends ObjectiveCSourceFileGener
       @Override
       public boolean visit(AnnotationTypeDeclaration node) {
         if (BindingUtil.isRuntimeAnnotation(Types.getTypeBinding(node))
-            || !getStaticFieldsNeedingInitialization(
-                ASTUtil.getFieldDeclarations(node), /* isInterface */ true).isEmpty()) {
+            || !Iterables.isEmpty(getStaticFieldsNeedingInitialization(node))) {
           types.add(node);
         }
         return false;
@@ -226,23 +224,22 @@ public class ObjectiveCImplementationGenerator extends ObjectiveCSourceFileGener
   @Override
   public void generate(TypeDeclaration node) {
     String typeName = NameTable.getFullName(node);
-    List<FieldDeclaration> fields = Lists.newArrayList(node.getFields());
     List<MethodDeclaration> methods = Lists.newArrayList(node.getMethods());
     fieldHiders = HiddenFieldDetector.getFieldNameConflicts(node);
     if (node.isInterface()) {
-      printStaticInterface(node, typeName, fields, methods);
+      printStaticInterface(node, typeName, methods);
     } else {
       printInitFlagDefinition(node, methods);
       newline();
       syncLineNumbers(node.getName()); // avoid doc-comment
       printf("@implementation %s\n", typeName);
-      printStaticReferencesMethod(fields);
-      printStaticVars(fields, /* isInterface */ false);
+      printStaticReferencesMethod(node);
+      printStaticVars(node);
       printMethods(node);
       if (!Options.stripReflection()) {
         printTypeAnnotationsMethod(node);
         printMethodAnnotationMethods(Lists.newArrayList(node.getMethods()));
-        printFieldAnnotationMethods(Lists.newArrayList(node.getFields()));
+        printFieldAnnotationMethods(node);
         printMetadata(node);
       }
 
@@ -271,8 +268,7 @@ public class ObjectiveCImplementationGenerator extends ObjectiveCSourceFileGener
       }
       printAnnotationAccessors(members);
     }
-    List<FieldDeclaration> fields = ASTUtil.getFieldDeclarations(node);
-    printStaticVars(fields, /* isInterface */ true);
+    printStaticVars(node);
     println("\n- (IOSClass *)annotationType {");
     printf("  return [IOSClass classWithProtocol:@protocol(%s)];\n", typeName);
     println("}");
@@ -472,7 +468,7 @@ public class ObjectiveCImplementationGenerator extends ObjectiveCSourceFileGener
   // must be the same size.
   //
   // In case of a Java enum, valuesVarNameis the name of the array of enum values.
-  private void printStaticReferencesMethod(List<FieldDeclaration> fields) {
+  private void printStaticReferencesMethod(AbstractTypeDeclaration node) {
     if (Options.memoryDebug()) {
       newline();
       if (!Options.useReferenceCounting()) {
@@ -483,16 +479,14 @@ public class ObjectiveCImplementationGenerator extends ObjectiveCSourceFileGener
       }
       println("+ (NSArray *)memDebugStaticReferences {");
       println("  NSMutableArray *result = [NSMutableArray array];");
-      for (FieldDeclaration f : fields) {
-        if (Modifier.isStatic(f.getModifiers())) {
-          for (VariableDeclarationFragment var : ASTUtil.getFragments(f)) {
-            IVariableBinding binding = Types.getVariableBinding(var);
-            // All non-primitive static variables are strong references.
-            if (!binding.getType().isPrimitive()) {
-              String name = NameTable.getStaticVarQualifiedName(binding);
-              println(String.format("  [result addObject:[JreMemDebugStrongReference " +
-                  "strongReferenceWithObject:%s name:@\"%s\"]];", name, name));
-            }
+      for (VariableDeclarationFragment var : ASTUtil.getAllFields(node)) {
+        IVariableBinding binding = Types.getVariableBinding(var);
+        if (BindingUtil.isStatic(binding)) {
+          // All non-primitive static variables are strong references.
+          if (!binding.getType().isPrimitive()) {
+            String name = NameTable.getStaticVarQualifiedName(binding);
+            println(String.format("  [result addObject:[JreMemDebugStrongReference " +
+                "strongReferenceWithObject:%s name:@\"%s\"]];", name, name));
           }
         }
       }
@@ -502,13 +496,13 @@ public class ObjectiveCImplementationGenerator extends ObjectiveCSourceFileGener
   }
 
   private void printStaticInterface(AbstractTypeDeclaration node,
-      String typeName, List<FieldDeclaration> fields, List<MethodDeclaration> methods) {
+      String typeName, List<MethodDeclaration> methods) {
     boolean needsImplementation = !methods.isEmpty() || !Options.stripReflection();
     if (needsImplementation && !hasInitializeMethod(node, methods)) {
       printf("\n@interface %s : NSObject\n@end\n", typeName);
     }
     printInitFlagDefinition(node, methods);
-    printStaticVars(fields, /* isInterface */ true);
+    printStaticVars(node);
     if (!needsImplementation) {
       return;
     }
@@ -528,18 +522,12 @@ public class ObjectiveCImplementationGenerator extends ObjectiveCSourceFileGener
   protected void generate(EnumDeclaration node) {
     List<EnumConstantDeclaration> constants = ASTUtil.getEnumConstants(node);
     List<MethodDeclaration> methods = Lists.newArrayList();
-    List<FieldDeclaration> fields = Lists.newArrayList();
     MethodDeclaration initializeMethod = null;
-    for (BodyDeclaration decl : ASTUtil.getBodyDeclarations(node)) {
-      if (decl instanceof FieldDeclaration) {
-        fields.add((FieldDeclaration) decl);
-      } else if (decl instanceof MethodDeclaration) {
-        MethodDeclaration md = (MethodDeclaration) decl;
-        if (md.getName().getIdentifier().equals("initialize")) {
-          initializeMethod = md;
-        } else {
-          methods.add(md);
-        }
+    for (MethodDeclaration md : ASTUtil.getMethodDeclarations(node)) {
+      if (isInitializeMethod(md)) {
+        initializeMethod = md;
+      } else {
+        methods.add(md);
       }
     }
     syncLineNumbers(node.getName()); // avoid doc-comment
@@ -551,8 +539,8 @@ public class ObjectiveCImplementationGenerator extends ObjectiveCSourceFileGener
 
     newline();
     printf("@implementation %s\n", typeName);
-    printStaticVars(fields, /* isInterface */ false);
-    printStaticReferencesMethod(fields);
+    printStaticVars(node);
+    printStaticReferencesMethod(node);
 
     // Enum constants needs to implement NSCopying.  Being singletons, they
     // can just return self, as long the retain count is incremented.
@@ -871,10 +859,9 @@ public class ObjectiveCImplementationGenerator extends ObjectiveCSourceFileGener
     }
   }
 
-  private void printStaticVars(List<FieldDeclaration> fields, boolean isInterface) {
-    List<VariableDeclarationFragment> fragments =
-        getStaticFieldsNeedingInitialization(fields, isInterface);
-    if (!fragments.isEmpty()) {
+  private void printStaticVars(AbstractTypeDeclaration node) {
+    Iterable<VariableDeclarationFragment> fragments = getStaticFieldsNeedingInitialization(node);
+    if (!Iterables.isEmpty(fragments)) {
       newline();
     }
     for (VariableDeclarationFragment var : fragments) {
@@ -963,8 +950,8 @@ public class ObjectiveCImplementationGenerator extends ObjectiveCSourceFileGener
     }
   }
 
-  private void printFieldAnnotationMethods(List<FieldDeclaration> fields) {
-    for (FieldDeclaration field : fields) {
+  private void printFieldAnnotationMethods(AbstractTypeDeclaration node) {
+    for (FieldDeclaration field : ASTUtil.getFieldDeclarations(node)) {
       List<Annotation> runtimeAnnotations =
           ASTUtil.getRuntimeAnnotations(ASTUtil.getModifiers(field));
       if (runtimeAnnotations.size() > 0) {
