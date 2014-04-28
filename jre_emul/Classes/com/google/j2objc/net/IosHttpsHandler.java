@@ -17,15 +17,6 @@
 
 package com.google.j2objc.net;
 
-import java.net.Proxy;
-import java.net.ResponseCache;
-import java.util.Arrays;
-import java.util.List;
-
-import javax.net.ssl.DefaultHostnameVerifier;
-import javax.net.ssl.HostnameVerifier;
-import javax.net.ssl.HttpsURLConnection;
-
 /**
  * HTTPS handler that uses IosHttpURLConnection.
  *
