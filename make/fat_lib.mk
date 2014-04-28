@@ -44,10 +44,10 @@ FAT_LIB_IPHONE_SDK_DIR = $(shell bash $(J2OBJC_ROOT)/scripts/sysroot_path.sh --i
 FAT_LIB_SIMULATOR_SDK_DIR = $(shell bash $(J2OBJC_ROOT)/scripts/sysroot_path.sh --iphonesimulator)
 
 FAT_LIB_MACOSX_FLAGS = -isysroot $(FAT_LIB_MACOSX_SDK_DIR)
-FAT_LIB_IPHONE_FLAGS = -arch armv7 -isysroot $(FAT_LIB_IPHONE_SDK_DIR)
-FAT_LIB_IPHONE64_FLAGS = -arch arm64 -isysroot $(FAT_LIB_IPHONE_SDK_DIR)
-FAT_LIB_IPHONEV7S_FLAGS = -arch armv7s -isysroot $(FAT_LIB_IPHONE_SDK_DIR)
-FAT_LIB_SIMULATOR_FLAGS = -arch i386 -isysroot $(FAT_LIB_SIMULATOR_SDK_DIR)
+FAT_LIB_IPHONE_FLAGS = -arch armv7 -miphoneos-version-min=5.0 -isysroot $(FAT_LIB_IPHONE_SDK_DIR)
+FAT_LIB_IPHONE64_FLAGS = -arch arm64 -miphoneos-version-min=5.0 -isysroot $(FAT_LIB_IPHONE_SDK_DIR)
+FAT_LIB_IPHONEV7S_FLAGS = -arch armv7s -miphoneos-version-min=5.0 -isysroot $(FAT_LIB_IPHONE_SDK_DIR)
+FAT_LIB_SIMULATOR_FLAGS = -arch i386 -miphoneos-version-min=5.0 -isysroot $(FAT_LIB_SIMULATOR_SDK_DIR)
 FAT_LIB_XCODE_FLAGS = $(ARCH_FLAGS) -isysroot $(SDKROOT)
 
 ifdef FAT_LIB_PRECOMPILED_HEADER
