@@ -70,11 +70,15 @@ $(JAR): $(MANIFEST) $(RESOURCE_FILES) $(JAVA_SOURCES_FULL) \
 	    -d $(CLASS_DIR) -source 1.6 -target 1.6 -nowarn $(JAVA_SOURCES:%=$(JAVA_SOURCE_DIR)/%)
 	jar cfm $@ $(MANIFEST) -C $(CLASS_DIR) .
 
+# Format manifest classpath with each jar on a separate line, to avoid
+# maximum line length of 72 bytes in UTF-8 encoding.
+# http://docs.oracle.com/javase/7/docs/technotes/guides/jar/jar.html
 $(MANIFEST): | $(BUILD_DIR)
 	@echo creating $@
 	@echo "Manifest-Version: 1.0" > $@
 	@echo "Main-Class:" $(MAIN_CLASS) >> $@
-	@echo "Class-Path:" $(JAR_DEPS) >> $@
+	@/bin/echo -n "Class-Path:" >> $@
+	@for lib in $(JAR_DEPS); do echo " " $$lib; done >> $@
 
 $(CLASS_DIR)/%: $(RESOURCE_DIR)/%
 	@mkdir -p $(@D)
