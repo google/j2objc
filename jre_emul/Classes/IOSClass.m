@@ -691,6 +691,17 @@ static JavaLangReflectField *FieldFromIvar(IOSClass *iosClass, Ivar ivar) {
 
 // Adds all the fields for a specified class to a specified dictionary.
 static void GetFieldsFromClass(IOSClass *iosClass, NSMutableDictionary *fields) {
+  unsigned int count;
+  Ivar *ivars = class_copyIvarList(iosClass.objcClass, &count);
+  for (unsigned int i = 0; i < count; i++) {
+    JavaLangReflectField *field = FieldFromIvar(iosClass, ivars[i]);
+    NSString *name = [field getName];
+    if (![fields valueForKey:name]) { // Don't add shadowed fields.
+      [fields setObject:field forKey:name];
+    }
+  }
+  free(ivars);
+
   JavaClassMetadata *metadata = [iosClass getMetadata];
   if (metadata) {
     // Add static fields, if any.
@@ -704,17 +715,6 @@ static void GetFieldsFromClass(IOSClass *iosClass, NSMutableDictionary *fields) 
         [fields setObject:field forKey:name];
       }
     };
-  } else {
-    unsigned int count;
-    Ivar *ivars = class_copyIvarList(iosClass.objcClass, &count);
-    for (unsigned int i = 0; i < count; i++) {
-      JavaLangReflectField *field = FieldFromIvar(iosClass, ivars[i]);
-      NSString *name = [field getName];
-      if (![fields valueForKey:name]) { // Don't add shadowed fields.
-        [fields setObject:field forKey:name];
-      }
-    }
-    free(ivars);
   }
 }
 
