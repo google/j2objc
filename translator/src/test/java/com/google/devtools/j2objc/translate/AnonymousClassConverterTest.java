@@ -512,4 +512,15 @@ public class AnonymousClassConverterTest extends GenerationTest {
     assertTranslation(translation, "- (id)initWithNSString:(NSString *)arg$0 {");
     assertTranslation(translation, "[super initWithId:arg$0]");
   }
+
+  public void testAnonymousClassWithVarargsConstructor() throws IOException {
+    String translation = translateSourceFile(
+        "class Test { Test(String fmt, Object... args) {} " +
+        "  void test() { new Test(\"%s %s\", \"1\", \"2\") {}; } }",
+        "Test", "Test.m");
+    assertTranslation(translation,
+        "[super initWithNSString:arg$0 withNSObjectArray:" +
+        "[IOSObjectArray arrayWithObjects:(id[]){ arg$1, arg$2 } count:2 " +
+        "type:[IOSClass classWithClass:[NSObject class]]]]");
+  }
 }
