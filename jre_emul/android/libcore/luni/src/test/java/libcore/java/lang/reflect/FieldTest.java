@@ -26,4 +26,27 @@ public final class FieldTest extends TestCase {
         Field field = getClass().getDeclaredField("MY_LONG");
         assertEquals(5073258162644648461L, field.getLong(null));
     }
+
+    public void testEqualConstructorEqualsAndHashCode() throws Exception {
+        Field f1 = FieldTestHelper.class.getField("a");
+        Field f2 = FieldTestHelper.class.getField("a");
+        assertEquals(f1, f2);
+        assertEquals(f1.hashCode(), f2.hashCode());
+    }
+
+    public void testHashCodeSpec() throws Exception {
+        Field f1 = FieldTestHelper.class.getField("a");
+        assertEquals(FieldTestHelper.class.getName().hashCode() ^ "a".hashCode(), f1.hashCode());
+    }
+
+    public void testDifferentConstructorEqualsAndHashCode() throws Exception {
+        Field f1 = FieldTestHelper.class.getField("a");
+        Field f2 = FieldTestHelper.class.getField("b");
+        assertFalse(f1.equals(f2));
+    }
+
+    static class FieldTestHelper {
+        public String a;
+        public Object b;
+    }
 }
