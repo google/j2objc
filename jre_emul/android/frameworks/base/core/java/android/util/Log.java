@@ -16,9 +16,14 @@
 
 package android.util;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.net.UnknownHostException;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Properties;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -82,6 +87,46 @@ public final class Log {
      */
     public static final int ASSERT = 7;
 
+    private static Logger globalLogger = Logger.getGlobal();
+    private static Map<String, Integer> tagLevels = new HashMap<String, Integer>();
+    private static final String LOG_TAG_PREFIX = "log.tag.";
+
+    static {
+      InputStream input = Log.class.getResourceAsStream("/data/local.prop");
+      if (input != null) {
+        try {
+          Properties props = new Properties();
+          props.load(input);
+          for (Map.Entry<Object,Object> entry : props.entrySet()) {
+            String key = (String) entry.getKey();
+            if (key.startsWith(LOG_TAG_PREFIX)) {
+              String tag = key.substring(LOG_TAG_PREFIX.length());
+              String value = (String) entry.getValue();
+              int level;
+              if ("ASSERT".equals(value)) {
+                level = ASSERT;
+              } else if ("DEBUG".equals(value)) {
+                level = DEBUG;
+              } else if ("ERROR".equals(value)) {
+                level = ERROR;
+              } else if ("INFO".equals(value)) {
+                level = INFO;
+              } else if ("VERBOSE".equals(value)) {
+                level = VERBOSE;
+              } else if ("WARN".equals(value)) {
+                level = WARN;
+              } else {
+                level = 0;
+              }
+              tagLevels.put(tag, Integer.valueOf(level));
+            }
+          }
+        } catch (IOException e) {
+          globalLogger.log(Level.WARNING, "failed parsing /data/local.prop", e);
+        }
+      }
+    }
+
     /**
      * Exception class used to capture a stack trace in {@link #wtf}.
      */
@@ -100,7 +145,7 @@ public final class Log {
 
     private static TerribleFailureHandler sWtfHandler = new TerribleFailureHandler() {
         public void onTerribleFailure(String tag, TerribleFailure what) {
-            Logger.getGlobal().log(Level.SEVERE, tag, what);
+            globalLogger.log(Level.SEVERE, tag, what);
         }
     };
 
@@ -209,7 +254,13 @@ public final class Log {
      * @return Whether or not that this is allowed to be logged.
      * @throws IllegalArgumentException is thrown if the tag.length() > 23.
      */
-    public static native boolean isLoggable(String tag, int level);
+    public static boolean isLoggable(String tag, int level) {
+      Integer minimumLevel = tagLevels.get(tag);
+      if (minimumLevel != null) {
+        return level > minimumLevel.intValue();
+      }
+      return true;  // Let java.util.logging filter it.
+    }
 
     /*
      * Send a {@link #WARN} log message and log the exception.
@@ -352,6 +403,23 @@ public final class Log {
     /** @hide */ public static final int LOG_ID_EVENTS = 2;
     /** @hide */ public static final int LOG_ID_SYSTEM = 3;
 
-    /** @hide */ public static native int println_native(int bufID,
-            int priority, String tag, String msg);
+    /** @hide */ public static int println_native(int bufID,
+            int priority, String tag, String msg) {
+      String logMessage = String.format("%s: %s", tag, msg);
+      globalLogger.log(priorityToLevel(priority), logMessage);
+      return logMessage.length();
+    }
+
+    private static Level priorityToLevel(int priority) {
+      switch (priority) {
+        case ASSERT:
+        case ERROR: return Level.SEVERE;
+        case WARN: return Level.WARNING;
+        case INFO: return Level.INFO;
+        case DEBUG: return Level.FINE;
+        case VERBOSE: return Level.FINER;
+        default:
+          return Level.FINEST;
+      }
+    }
 }
