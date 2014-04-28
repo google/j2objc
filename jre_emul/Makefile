@@ -176,6 +176,7 @@ JAVA_SOURCES = \
 	com/google/j2objc/security/IosSecureRandomImpl.java \
 	com/google/j2objc/security/IosSecurityProvider.java \
 	com/google/j2objc/security/IosSHAMessageDigest.java \
+	com/google/j2objc/util/ScopedLocalRef.java \
 	com/squareup/okhttp/Address.java \
 	com/squareup/okhttp/CacheControl.java \
 	com/squareup/okhttp/Connection.java \

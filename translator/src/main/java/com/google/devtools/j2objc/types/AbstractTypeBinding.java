@@ -14,8 +14,6 @@
 
 package com.google.devtools.j2objc.types;
 
-import org.eclipse.jdt.core.IJavaElement;
-import org.eclipse.jdt.core.dom.IAnnotationBinding;
 import org.eclipse.jdt.core.dom.IBinding;
 import org.eclipse.jdt.core.dom.IMethodBinding;
 import org.eclipse.jdt.core.dom.IPackageBinding;

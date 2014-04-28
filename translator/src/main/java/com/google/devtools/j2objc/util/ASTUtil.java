@@ -420,4 +420,17 @@ public final class ASTUtil {
       }
     };
   }
+
+  public static boolean hasAnnotation(Class<?> annotation, List<IExtendedModifier> modifiers) {
+    for (IExtendedModifier mod : modifiers) {
+      if (mod.isAnnotation()) {
+        Annotation ann = (Annotation) mod;
+        if (ann.getTypeName().toString().equals(annotation.getName())) {
+          return true;
+        }
+      }
+    }
+    return false;
+  }
+
 }

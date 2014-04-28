@@ -17,15 +17,11 @@
 package com.google.devtools.j2objc.types;
 
 import com.google.common.base.Preconditions;
-import com.google.common.collect.Lists;
 
-import org.eclipse.jdt.core.IJavaElement;
-import org.eclipse.jdt.core.dom.IAnnotationBinding;
 import org.eclipse.jdt.core.dom.IBinding;
 import org.eclipse.jdt.core.dom.IMethodBinding;
 import org.eclipse.jdt.core.dom.ITypeBinding;
 import org.eclipse.jdt.core.dom.IVariableBinding;
-import org.eclipse.jdt.core.dom.VariableDeclaration;
 import org.eclipse.jdt.internal.compiler.ast.ASTNode;
 
 import javax.annotation.Nullable;
