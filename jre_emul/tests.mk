@@ -231,6 +231,7 @@ TEST_SOURCES = \
     libcore/java/util/BitSetTest.java \
     libcore/java/util/CalendarTest.java \
     libcore/java/util/FormatterTest.java \
+    libcore/java/util/ObjectsTest.java \
     libcore/java/util/OldAndroidArrayListTest.java \
     libcore/java/util/OldTimeZoneTest.java \
     libcore/java/util/ServiceLoaderTest.java \
