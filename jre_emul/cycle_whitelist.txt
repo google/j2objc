@@ -27,5 +27,6 @@ FIELD org.xml.sax.helpers.ParserAdapter.contentHandler org.xml.sax.helpers.XMLRe
 FIELD org.xml.sax.helpers.ParserAdapter.parser org.xml.sax.helpers.XMLReaderAdapter
 FIELD org.xml.sax.helpers.XMLReaderAdapter.AttributesAdapter.attributes org.xml.sax.helpers.ParserAdapter.AttributeListAdapter
 
-# TODO(kstanger): Resolve these cycles.
+# TODO(kstanger,tball): Resolve these cycles.
 NAMESPACE org.xml
+NAMESPACE com.squareup.okhttp
