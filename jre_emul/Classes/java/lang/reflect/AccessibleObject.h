@@ -26,7 +26,9 @@
 #import "java/lang/reflect/AnnotatedElement.h"
 
 // Base class for fields, methods, and constructors.
-@interface JavaLangReflectAccessibleObject : NSObject < JavaLangReflectAnnotatedElement >
+@interface JavaLangReflectAccessibleObject : NSObject < JavaLangReflectAnnotatedElement > {
+  BOOL accessible_;
+}
 
 - (BOOL)isAccessible;
 - (void)setAccessibleWithBoolean:(BOOL)b;
