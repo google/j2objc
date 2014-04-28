@@ -27,23 +27,11 @@
 
 @implementation IOSArray
 
-- (id)initWithLength:(NSUInteger)length {
-  if ((self = [super init])) {
-    JreMemDebugAdd(self);
-    size_ = length;
-  }
-  return self;
-}
-
 - (void)dealloc {
   JreMemDebugRemove(self);
 #if ! __has_feature(objc_arc)
   [super dealloc];
 #endif
-}
-
-+ (id)arrayWithLength:(NSUInteger)length {
-  return AUTORELEASE([[[self class] alloc] initWithLength:length]);
 }
 
 + (id)arrayWithDimensions:(NSUInteger)dimensionCount
@@ -74,9 +62,9 @@
   // If dimension of 1, just return a regular array.
   if (dimensionCount == 1) {
     if (componentType) {
-      return AUTORELEASE([[IOSObjectArray alloc] initWithLength:size type:componentType]);
+      return [IOSObjectArray arrayWithLength:size type:componentType];
     } else {
-      return AUTORELEASE([[[self class] alloc] initWithLength:size]);
+      return [[self class] arrayWithLength:size];
     }
   }
 
@@ -88,8 +76,7 @@
                                              lengths:dimensionLengths + 1
                                                types:componentTypes + 1];
   }
-  return AUTORELEASE([[IOSObjectArray alloc]
-      initWithObjects:subarrays count:size type:componentType]);
+  return [IOSObjectArray arrayWithObjects:subarrays count:size type:componentType];
 }
 
 + (id)iosClass {

@@ -342,11 +342,8 @@ public abstract class AbstractCollection<E> implements Collection<E> {
     @Override
     public native Object[] toArray() /*-[
       IOSObjectArray *result =
-          [[IOSObjectArray alloc] initWithLength:[self size]
-                                            type:[IOSClass classWithClass:[NSObject class]]];
-#if ! __has_feature(objc_arc)
-      [result autorelease];
-#endif
+          [IOSObjectArray arrayWithLength:[self size]
+                                     type:[IOSClass classWithClass:[NSObject class]]];
       return [self toArrayWithNSObjectArray:result];
     ]-*/;
 
@@ -362,16 +359,13 @@ public abstract class AbstractCollection<E> implements Collection<E> {
       }
       if ([contents count] < [self size]) {
         contents =
-            [[IOSObjectArray alloc] initWithLength:[self size]
-                                              type:[[contents getClass] getComponentType]];
-#if ! __has_feature(objc_arc)
-        [contents autorelease];
-#endif
+            [IOSObjectArray arrayWithLength:[self size]
+                                       type:[[contents getClass] getComponentType]];
       }
       NSUInteger i = 0;
       id<JavaUtilIterator> it = [self iterator];
       while ([it hasNext]) {
-        [contents replaceObjectAtIndex:i++ withObject:[it next]];
+        IOSObjectArray_Set(contents, i++, [it next]);
       }
       return contents;
     ]-*/;

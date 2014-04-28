@@ -52,7 +52,7 @@ static double defaultValue = 3.1416;
                                          parameterTypes:nil];
   STAssertNotNil(hashMethod, @"hashMethod not found", nil);
   NSString *name = [hashMethod getName];
-  STAssertEqualObjects(name, @"hash", @"wrong method name", nil);
+  STAssertEqualObjects(name, @"hashCode", @"wrong method name", nil);
 }
 
 - (void)testGetReturnType {
@@ -62,16 +62,14 @@ static double defaultValue = 3.1416;
   IOSClass *returnType = [sizeMethod getReturnType];
   STAssertNotNil(returnType, @"no return type returned", nil);
   NSString *typeName = [returnType getName];
-  STAssertEqualObjects(typeName, @"JavaLangInteger", 
-                       @"wrong return type returned", nil);
+  STAssertEqualObjects(typeName, @"int", @"wrong return type returned", nil);
 }
 
 - (void)testInvocation {
   JavaLangReflectMethod *sizeMethod = [class_ getMethod:@"size"
                                          parameterTypes:nil];
   IOSClass *objectType = [IOSClass classWithClass:[NSObject class]];
-  IOSObjectArray *parameters =
-      [[[IOSObjectArray alloc] initWithLength:0 type:objectType] autorelease];
+  IOSObjectArray *parameters = [IOSObjectArray arrayWithLength:0 type:objectType];
   id result = [sizeMethod invokeWithId:object_
                            withNSObjectArray:parameters];
   STAssertTrue([result isKindOfClass:[JavaLangInteger class]],
@@ -87,9 +85,7 @@ static id invokeValueMethod(NSString *methodName) {
   JavaLangReflectMethod *method = [doubleClass getMethod:methodName
                                           parameterTypes:nil];
   IOSClass *objectType = [IOSClass classWithClass:[NSObject class]];
-  IOSObjectArray *parameters =
-      [[[IOSObjectArray alloc] initWithLength:0
-                                         type:objectType] autorelease];
+  IOSObjectArray *parameters = [IOSObjectArray arrayWithLength:0 type:objectType];
   return [method invokeWithId:value
                   withNSObjectArray:parameters];
 }

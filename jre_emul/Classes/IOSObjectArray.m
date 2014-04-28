@@ -24,54 +24,45 @@
 #import "java/lang/ArrayStoreException.h"
 #import "java/lang/AssertionError.h"
 
+static IOSObjectArray *IOSObjectArray_NewArray(NSUInteger length, IOSClass *type) {
+  IOSObjectArray *array = [IOSObjectArray alloc];
+  array->size_ = length;
+  array->elementType_ = type; // All IOSClass types are singleton so don't need to retain.
+  array->buffer_ = calloc(length, sizeof(id));
+  return array;
+}
+
+static IOSObjectArray *IOSObjectArray_NewArrayWithObjects(
+    NSUInteger length, IOSClass *type, const id *objects) {
+  IOSObjectArray *array = IOSObjectArray_NewArray(length, type);
+  for (NSUInteger i = 0; i < length; i++) {
+    array->buffer_[i] = [objects[i] retain];
+  }
+  return array;
+}
+
 @implementation IOSObjectArray
 
 @synthesize elementType = elementType_;
 
-- (id)initWithLength:(NSUInteger)length {
-  id exception = [[JavaLangAssertionError alloc]
-                  initWithNSString:@"type argument not specified"];
-  @throw AUTORELEASE(exception);
-  return nil;
-}
-
-// Initializes buffer_ with a CFMutableArray.  This array has a fixed size like
-// Java, done by setting its maximum size.  If no objects are specified, the
-// array slots are initialized to null, which also provides access to the slot
-// regardless of whether it holds an id or not.
-- (id)initWithLength:(NSUInteger)length type:(IOSClass *)type {
-  if ((self = [super initWithLength:length])) {
-    buffer_ = (id __strong *) calloc(length, sizeof(id));
-    elementType_ = RETAIN_(type);
-  }
-  return self;
++ (id)newArrayWithLength:(NSUInteger)length type:(IOSClass *)type {
+  return IOSObjectArray_NewArray(length, type);
 }
 
 + (id)arrayWithLength:(NSUInteger)length type:(IOSClass *)type {
-  id array = [[IOSObjectArray alloc] initWithLength:length type:type];
-  return AUTORELEASE(array);
+  return [IOSObjectArray_NewArray(length, type) autorelease];
 }
 
-- (id)initWithObjects:(const id *)objects
-                count:(NSUInteger)count
-                 type:(IOSClass *)type {
-  if ((self = [self initWithLength:count type:type])) {
-    if (objects != nil) {
-      for (NSUInteger i = 0; i < count; i++) {
-        buffer_[i] = RETAIN_(objects[i]);
-      }
-    }
-  }
-  return self;
++ (id)newArrayWithObjects:(const id *)objects
+                    count:(NSUInteger)count
+                     type:(IOSClass *)type {
+  return IOSObjectArray_NewArrayWithObjects(count, type, objects);
 }
 
 + (id)arrayWithObjects:(const id *)objects
                  count:(NSUInteger)count
                   type:(IOSClass *)type {
-  id array = [[IOSObjectArray alloc] initWithObjects:objects
-                                               count:count
-                                                type:type];
-  return AUTORELEASE(array);
+  return [IOSObjectArray_NewArrayWithObjects(count, type, objects) autorelease];
 }
 
 + (id)arrayWithArray:(IOSObjectArray *)array {
@@ -276,15 +267,9 @@ void CopyWithMemmove(id __strong *buffer, NSUInteger src, NSUInteger dest, NSUIn
 }
 
 - (id)copyWithZone:(NSZone *)zone {
-  IOSObjectArray *result =
-      [[IOSObjectArray allocWithZone:zone] initWithLength:size_
-                                                     type:elementType_];
+  IOSObjectArray *result = IOSObjectArray_NewArray(size_, elementType_);
   for (NSUInteger i = 0; i < size_; i++) {
-    id element = buffer_[i];
-#if ! __has_feature(objc_arc)
-    [element retain];
-#endif
-    result->buffer_[i] = element;
+    result->buffer_[i] = [buffer_[i] retain];
   }
   return result;
 }
@@ -294,20 +279,11 @@ void CopyWithMemmove(id __strong *buffer, NSUInteger src, NSUInteger dest, NSUIn
 }
 
 - (void)dealloc {
-#if ! __has_feature(objc_arc)
-  [elementType_ release];
-#endif
   for (NSUInteger i = 0; i < size_; i++) {
-#if __has_feature(objc_arc)
-    buffer_[i] = nil;
-#else
     [buffer_[i] release];
-#endif
   }
   free(buffer_);
-#if ! __has_feature(objc_arc)
   [super dealloc];
-#endif
 }
 
 - (NSUInteger)countByEnumeratingWithState:(NSFastEnumerationState *)state

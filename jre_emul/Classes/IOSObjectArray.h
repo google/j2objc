@@ -30,23 +30,22 @@
 // an IOSObjectArray is fixed-size but its elements are mutable.
 @interface IOSObjectArray : IOSArray <NSFastEnumeration> {
  @public
-  id __strong *buffer_;
- @private
   IOSClass *elementType_;
+  id __strong *buffer_;
 }
 
 @property (readonly) IOSClass *elementType;
 
 // Create an array from a C object array, length, and type.
-- (id)initWithObjects:(const id *)objects
-                count:(NSUInteger)count
-                 type:(IOSClass *)type;
++ (id)newArrayWithObjects:(const id *)objects
+                    count:(NSUInteger)count
+                     type:(IOSClass *)type;
 + (id)arrayWithObjects:(const id *)objects
                  count:(NSUInteger)count
                   type:(IOSClass *)type;
 
 // Create an empty array with a type and length.
-- (id)initWithLength:(NSUInteger)length type:(IOSClass *)type;
++ (id)newArrayWithLength:(NSUInteger)length type:(IOSClass *)type;
 + (id)arrayWithLength:(NSUInteger)length type:(IOSClass *)type;
 
 // Create an empty multidimensional array.
