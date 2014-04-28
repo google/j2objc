@@ -61,6 +61,7 @@ import org.eclipse.jdt.core.dom.Modifier.ModifierKeyword;
 import org.eclipse.jdt.core.dom.ParenthesizedExpression;
 import org.eclipse.jdt.core.dom.PrefixExpression;
 import org.eclipse.jdt.core.dom.ReturnStatement;
+import org.eclipse.jdt.core.dom.SimpleName;
 import org.eclipse.jdt.core.dom.SingleVariableDeclaration;
 import org.eclipse.jdt.core.dom.Statement;
 import org.eclipse.jdt.core.dom.SuperMethodInvocation;
@@ -741,6 +742,28 @@ public class Rewriter extends ErrorReportingASTVisitor {
         FieldDeclaration newDecl = ASTFactory.newFieldDeclaration(ast, fragments.get(0));
         ASTUtil.getFragments(newDecl).addAll(fragments.subList(1, fragments.size()));
         bodyDecls.add(++location, newDecl);
+      }
+    }
+  }
+
+  @Override
+  public void endVisit(SimpleName node) {
+    // Check for enum fields with reserved names.
+    IVariableBinding var = Types.getVariableBinding(node);
+    if (var != null) {
+      var = var.getVariableDeclaration();
+      ITypeBinding type = var.getDeclaringClass();
+      if (type != null && !type.isArray()) {
+        String fieldName = NameTable.getName(var);
+        while ((type = type.getSuperclass()) != null) {
+          for (IVariableBinding superField : type.getDeclaredFields()) {
+            if (superField.getName().equals(fieldName)) {
+              fieldName += '_' + NameTable.getName(var.getDeclaringClass());
+              NameTable.rename(var, fieldName);
+              return;
+            }
+          }
+        }
       }
     }
   }
