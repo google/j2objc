@@ -24,6 +24,8 @@ include environment.mk
 
 SUPPORT_SOURCES = \
     JSR166TestCase.java \
+    android/test/MoreAsserts.java \
+    android/text/SpannableTest.java \
     libcore/java/net/customstreamhandler/http/Handler.java \
     libcore/java/nio/charset/Charset_TestGenerator.java \
     libcore/java/nio/charset/OldCharset_AbstractTest.java \
@@ -109,6 +111,9 @@ TEST_SOURCES = \
     SynchronousQueueTest.java \
     ThreadPoolExecutorTest.java \
     TimeUnitTest.java \
+    android/text/SpannableStringBuilderTest.java \
+    android/text/SpannableStringTest.java \
+    android/text/TextUtilsTest.java \
     java/lang/ClassTest.java \
     java/lang/ThrowableTest.java \
     java/lang/ref/PhantomReferenceTest.java \

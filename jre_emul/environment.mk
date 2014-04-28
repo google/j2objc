@@ -49,6 +49,7 @@ LOGGING_TEST_ROOT = $(APACHE_HARMONY_BASE)/logging/src/test/java
 
 ANDROID_BASE = android
 ANDROID_CORE_ROOT = $(ANDROID_BASE)/frameworks/base/core/java
+ANDROID_CORE_TESTS_ROOT = $(ANDROID_BASE)/frameworks/base/core/tests/coretests/src
 ANDROID_OKHTTP_ROOT = $(ANDROID_BASE)/external/okhttp/android/main/java
 ANDROID_OKIO_ROOT = $(ANDROID_BASE)/external/okhttp/okio/src/main/java
 LIBCORE_BASE = $(ANDROID_BASE)/libcore
@@ -58,6 +59,7 @@ ANDROID_LUNI_TEST_ROOT = $(LIBCORE_BASE)/luni/src/test/java
 ANDROID_TEST_SUPPORT_ROOT = $(LIBCORE_BASE)/support/src/test/java
 ANDROID_XML_ROOT = $(LIBCORE_BASE)/xml/src/main/java
 ANDROID_APACHE_TEST_ROOT = $(LIBCORE_BASE)/harmony-tests/src/test/java
+ANDROID_TESTS_RUNNER_ROOT = $(ANDROID_BASE)/frameworks/base/tests-runner/src
 
 APPLE_ROOT = apple_apsl
 
@@ -95,7 +97,8 @@ TEST_SRC_ROOTS = $(JRE_TEST_ROOT) $(JRE_MATH_TEST_ROOT) \
     $(TEST_SUPPORT_ROOT) $(MATH_TEST_SUPPORT_ROOT) $(REGEX_TEST_ROOT) \
     $(CONCURRENT_TEST_ROOT) $(MISC_TEST_ROOT) $(ANDROID_TEST_SUPPORT_ROOT) \
     $(JRE_TEXT_TEST_ROOT) $(ANDROID_LUNI_TEST_ROOT) $(ARCHIVE_TEST_ROOT) \
-    $(ANDROID_APACHE_TEST_ROOT) $(LOGGING_TEST_ROOT)
+    $(ANDROID_APACHE_TEST_ROOT) $(LOGGING_TEST_ROOT) \
+    $(ANDROID_CORE_TESTS_ROOT) $(ANDROID_TESTS_RUNNER_ROOT)
 TEST_SRC = $(subst $(eval) ,:,$(TEST_SRC_ROOTS))
 vpath %.java $(JRE_SRC):$(TEST_SRC):$(STUBS_DIR)
 
