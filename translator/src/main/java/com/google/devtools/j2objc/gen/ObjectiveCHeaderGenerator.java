@@ -17,6 +17,7 @@
 package com.google.devtools.j2objc.gen;
 
 import com.google.common.collect.ImmutableSet;
+import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 import com.google.devtools.j2objc.J2ObjC;
@@ -44,7 +45,6 @@ import org.eclipse.jdt.core.dom.IExtendedModifier;
 import org.eclipse.jdt.core.dom.IMethodBinding;
 import org.eclipse.jdt.core.dom.ITypeBinding;
 import org.eclipse.jdt.core.dom.IVariableBinding;
-import org.eclipse.jdt.core.dom.Javadoc;
 import org.eclipse.jdt.core.dom.MethodDeclaration;
 import org.eclipse.jdt.core.dom.Modifier;
 import org.eclipse.jdt.core.dom.Name;
@@ -52,7 +52,6 @@ import org.eclipse.jdt.core.dom.Type;
 import org.eclipse.jdt.core.dom.TypeDeclaration;
 import org.eclipse.jdt.core.dom.VariableDeclarationFragment;
 
-import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
@@ -115,7 +114,6 @@ public class ObjectiveCHeaderGenerator extends ObjectiveCSourceFileGenerator {
     ITypeBinding binding = Types.getTypeBinding(node);
     String typeName = NameTable.getFullName(binding);
     String superName = getSuperTypeName(node);
-    List<FieldDeclaration> fields = Lists.newArrayList(node.getFields());
     List<MethodDeclaration> methods = Lists.newArrayList(node.getMethods());
     boolean isInterface = node.isInterface();
 
@@ -146,18 +144,18 @@ public class ObjectiveCHeaderGenerator extends ObjectiveCSourceFileGenerator {
     }
     if (!isInterface) {
       println(" {");
-      printInstanceVariables(fields);
+      printInstanceVariables(node);
       println("}");
     }
     printMethods(methods);
     println("\n@end");
 
     if (isInterface) {
-      printStaticInterface(node, fields, methods);
+      printStaticInterface(node, methods);
     } else {
       printStaticInitFunction(node, methods);
-      printFieldSetters(binding, fields);
-      printStaticFields(fields, isInterface);
+      printFieldSetters(node);
+      printStaticFields(node);
     }
 
     printIncrementAndDecrementFunctions(binding);
@@ -217,10 +215,9 @@ public class ObjectiveCHeaderGenerator extends ObjectiveCSourceFileGenerator {
     }
     println("\n@end");
 
-    List<IVariableBinding> staticFields = getStaticFieldsNeedingAccessors(
-        ASTUtil.getFieldDeclarations(node), /* isInterface */ true);
+    Iterable<IVariableBinding> staticFields = getStaticFieldsNeedingAccessors(node);
 
-    if (isRuntime || !staticFields.isEmpty()) {
+    if (isRuntime || !Iterables.isEmpty(staticFields)) {
       // Print annotation implementation interface.
       printf("\n@interface %s : NSObject < %s >", typeName, typeName);
       if (isRuntime) {
@@ -264,11 +261,8 @@ public class ObjectiveCHeaderGenerator extends ObjectiveCSourceFileGenerator {
     }
   }
 
-  private void printStaticInterface(
-      TypeDeclaration node, List<FieldDeclaration> fields, List<MethodDeclaration> methods) {
+  private void printStaticInterface(TypeDeclaration node, List<MethodDeclaration> methods) {
     // Print @interface for static constants, if any.
-    List<IVariableBinding> staticFields =
-        getStaticFieldsNeedingAccessors(fields, /* isInterface */ true);
     if (hasInitializeMethod(node, methods)) {
       ITypeBinding binding = Types.getTypeBinding(node);
       String typeName = NameTable.getFullName(binding);
@@ -276,7 +270,7 @@ public class ObjectiveCHeaderGenerator extends ObjectiveCSourceFileGenerator {
       println("\n@end");
     }
     printStaticInitFunction(node, methods);
-    for (IVariableBinding field : staticFields) {
+    for (IVariableBinding field : getStaticFieldsNeedingAccessors(node)) {
       printStaticField(field);
     }
   }
@@ -307,15 +301,7 @@ public class ObjectiveCHeaderGenerator extends ObjectiveCSourceFileGenerator {
       printf("} %s;\n\n", bareTypeName);
     }
 
-    List<FieldDeclaration> fields = Lists.newArrayList();
-    List<MethodDeclaration> methods = Lists.newArrayList();
-    for (Object decl : node.bodyDeclarations()) {
-      if (decl instanceof FieldDeclaration) {
-        fields.add((FieldDeclaration) decl);
-      } else if (decl instanceof MethodDeclaration) {
-        methods.add((MethodDeclaration) decl);
-      }
-    }
+    List<MethodDeclaration> methods = ASTUtil.getMethodDeclarations(node);
 
     if (needsDeprecatedAttribute(ASTUtil.getModifiers(node))) {
       println(DEPRECATED_ATTRIBUTE);
@@ -330,7 +316,7 @@ public class ObjectiveCHeaderGenerator extends ObjectiveCSourceFileGenerator {
       }
     }
     println(" > {");
-    printInstanceVariables(fields);
+    printInstanceVariables(node);
     println("}");
     println("+ (IOSObjectArray *)values;");
     printf("+ (%s *)valueOfWithNSString:(NSString *)name;\n", typeName);
@@ -346,8 +332,8 @@ public class ObjectiveCHeaderGenerator extends ObjectiveCSourceFileGenerator {
              typeName, varName, typeName, bareTypeName, valueName);
       printf("J2OBJC_STATIC_FIELD_GETTER(%s, %s, %s *)\n", typeName, varName, typeName);
     }
-    printStaticFields(fields, /* isInterface */ false);
-    printFieldSetters(enumType, fields);
+    printStaticFields(node);
+    printFieldSetters(node);
   }
 
   private void printStaticInitFunction(
@@ -362,8 +348,8 @@ public class ObjectiveCHeaderGenerator extends ObjectiveCSourceFileGenerator {
     }
   }
 
-  private void printStaticFields(List<FieldDeclaration> fields, boolean isInterface) {
-    for (IVariableBinding var : getStaticFieldsNeedingAccessors(fields, isInterface)) {
+  private void printStaticFields(AbstractTypeDeclaration node) {
+    for (IVariableBinding var : getStaticFieldsNeedingAccessors(node)) {
       printStaticField(var);
     }
   }
@@ -497,11 +483,11 @@ public class ObjectiveCHeaderGenerator extends ObjectiveCSourceFileGenerator {
     printf("#endif // _%s_H_\n", mainTypeName);
   }
 
-  private void printInstanceVariables(List<FieldDeclaration> fields) {
+  private void printInstanceVariables(AbstractTypeDeclaration node) {
     indent();
     boolean first = true;
-    for (FieldDeclaration field : fields) {
-      if ((field.getModifiers() & Modifier.STATIC) == 0) {
+    for (FieldDeclaration field : ASTUtil.getFieldDeclarations(node)) {
+      if (!Modifier.isStatic(field.getModifiers())) {
         List<VariableDeclarationFragment> vars = ASTUtil.getFragments(field);
         assert !vars.isEmpty();
         VariableDeclarationFragment var = vars.get(0);
@@ -568,9 +554,10 @@ public class ObjectiveCHeaderGenerator extends ObjectiveCSourceFileGenerator {
     }
   }
 
-  private void printFieldSetters(ITypeBinding declaringType, List<FieldDeclaration> fields) {
+  private void printFieldSetters(AbstractTypeDeclaration node) {
+    ITypeBinding declaringType = Types.getTypeBinding(node);
     boolean newlinePrinted = false;
-    for (FieldDeclaration field : fields) {
+    for (FieldDeclaration field : ASTUtil.getFieldDeclarations(node)) {
       ITypeBinding type = Types.getTypeBinding(field.getType());
       int modifiers = field.getModifiers();
       if (Modifier.isStatic(modifiers) || type.isPrimitive()) {
