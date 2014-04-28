@@ -613,7 +613,8 @@ public class RewriterTest extends GenerationTest {
     		"[[[ComGoogleJ2objcUtilScopedLocalRef alloc] " +
     		"initWithId:NSString_get_CASE_INSENSITIVE_ORDER_()] autorelease];");
     assertTranslation(translation,
-        "return [nil_chk(c->var_) compareWithId:s1 withId:s2] == 0;");
+        "return [((id<JavaUtilComparator>) nil_chk(((id<JavaUtilComparator>) " +
+        "check_protocol_cast(c->var_, @protocol(JavaUtilComparator))))) compareWithId:s1 withId:s2] == 0;");
     assertTranslation(translation, "ComGoogleJ2objcUtilScopedLocalRef *thing = " +
     		"[[[ComGoogleJ2objcUtilScopedLocalRef alloc] initWithId:t] autorelease];");
     assertTranslation(translation,
