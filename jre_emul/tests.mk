@@ -41,6 +41,7 @@ SUPPORT_SOURCES = \
     tests/support/Support_ASimpleReader.java \
     tests/support/Support_ASimpleWriter.java \
     tests/support/Support_CollectionTest.java \
+    tests/support/Support_Field.java \
     tests/support/Support_GetPutFields.java \
     tests/support/Support_GetPutFieldsDefaulted.java \
     tests/support/Support_GetPutFieldsDeprecated.java \
@@ -198,6 +199,7 @@ TEST_SOURCES = \
     libcore/java/lang/reflect/AnnotationsTest.java \
     libcore/java/lang/reflect/ArrayTest.java \
     libcore/java/lang/reflect/ConstructorTest.java \
+    libcore/java/lang/reflect/FieldTest.java \
     libcore/java/net/DatagramSocketTest.java \
     libcore/java/net/InetAddressTest.java \
     libcore/java/net/InetSocketAddressTest.java \
@@ -293,6 +295,7 @@ TEST_SOURCES = \
     org/apache/harmony/luni/tests/java/lang/ObjectTest.java \
     org/apache/harmony/luni/tests/java/lang/OutOfMemoryErrorTest.java \
     org/apache/harmony/luni/tests/java/lang/reflect/ArrayTest.java \
+    org/apache/harmony/luni/tests/java/lang/reflect/FieldTest.java \
     org/apache/harmony/luni/tests/java/lang/reflect/ModifierTest.java \
     org/apache/harmony/luni/tests/java/lang/RuntimeExceptionTest.java \
     org/apache/harmony/luni/tests/java/lang/ShortTest.java \

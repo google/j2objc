@@ -21,6 +21,7 @@
 
 #import "IOSClass.h"
 #import "IOSObjectArray.h"
+#import "IOSPrimitiveClass.h"
 #import "JavaMetadata.h"
 #import "java/lang/AssertionError.h"
 #import "java/lang/IllegalAccessException.h"
@@ -78,9 +79,9 @@ typedef union {
       metadata_ ? [JavaLangReflectModifier toStringWithInt:[metadata_ modifiers]] : @"";
   if ([mods length] > 0) {
     return [NSString stringWithFormat:@"%@ %@ %@.%@", mods, [self getType],
-            [self getDeclaringClass], [self propertyName]];
+            [[self getDeclaringClass] getName], [self propertyName]];
   }
-  return [NSString stringWithFormat:@"%@ %@.%@", [self getType], [self getDeclaringClass],
+  return [NSString stringWithFormat:@"%@ %@.%@", [self getType], [[self getDeclaringClass] getName],
           [self propertyName]];
 }
 
@@ -130,20 +131,25 @@ static void SetWithRawValue(
   if (IsStatic(field)) {
     if (IsFinal(field)) {
       @throw AUTORELEASE([[JavaLangIllegalAccessException alloc] initWithNSString:
-          @"Can not set static final field"]);
+          @"Cannot set static final field"]);
     }
     const void *addr = [field->metadata_ staticRef];
     [type __writeRawValue:rawValue toAddress:addr];
   } else {
     nil_chk(object);
+    if (IsFinal(field)) {
+      @throw AUTORELEASE([[JavaLangIllegalAccessException alloc] initWithNSString:
+                          @"Cannot set final field"]);
+    }
     [type __writeRawValue:rawValue toAddress:((void *)object) + ivar_getOffset(field->ivar_)];
   }
 }
 
 - (id)getWithId:(id)object {
   J2ObjcRawValue rawValue;
-  ReadRawValue(&rawValue, self, object, [IOSClass objectClass]);
-  return rawValue.asId;
+  IOSClass *fieldType = [self getType];
+  ReadRawValue(&rawValue, self, object, fieldType);
+  return [fieldType __boxValue:&rawValue];
 }
 
 - (BOOL)getBooleanWithId:(id)object {
@@ -195,8 +201,10 @@ static void SetWithRawValue(
 }
 
 - (void)setWithId:(id)object withId:(id)value {
-  J2ObjcRawValue rawValue = { .asId = value };
-  SetWithRawValue(&rawValue, self, object, [IOSClass objectClass]);
+  J2ObjcRawValue rawValue;
+  IOSClass *fieldType = [self getType];
+  [fieldType __unboxValue:value toRawValue:&rawValue];
+  SetWithRawValue(&rawValue, self, object, fieldType);
 }
 
 - (void)setBooleanWithId:(id)object withBoolean:(BOOL)value {
@@ -323,6 +331,20 @@ static void SetWithRawValue(
 
 - (int)unsafeOffset {
   return ivar_getOffset(ivar_);
+}
+
+// isEqual and hash are uniquely identified by their class and field names.
+- (BOOL)isEqual:(id)anObject {
+  if (![anObject isKindOfClass:[JavaLangReflectField class]]) {
+    return NO;
+  }
+  JavaLangReflectField *other = (JavaLangReflectField *) anObject;
+  return declaringClass_ == other->declaringClass_ &&
+      [[self propertyName] isEqual:[other propertyName]];
+}
+
+- (NSUInteger)hash {
+  return [[declaringClass_ getName] hash] ^ [[self propertyName] hash];
 }
 
 #if ! __has_feature(objc_arc)
