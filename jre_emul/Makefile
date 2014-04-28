@@ -361,10 +361,14 @@ JAVA_SOURCES = \
 	java/math/Primality.java \
 	java/math/RoundingMode.java \
 	java/net/AddressCache.java \
+	java/net/Authenticator.java \
 	java/net/BindException.java \
+	java/net/CacheRequest.java \
+	java/net/CacheResponse.java \
 	java/net/ConnectException.java \
 	java/net/ContentHandler.java \
 	java/net/ContentHandlerFactory.java \
+	java/net/CookieHandler.java \
 	java/net/DatagramPacket.java \
 	java/net/DatagramSocket.java \
 	java/net/DatagramSocketImpl.java \
@@ -383,12 +387,17 @@ JAVA_SOURCES = \
 	java/net/MalformedURLException.java \
 	java/net/MulticastSocket.java \
 	java/net/NetworkInterface.java \
+	java/net/PasswordAuthentication.java \
 	java/net/PlainDatagramSocketImpl.java \
 	java/net/PlainServerSocketImpl.java \
 	java/net/PlainSocketImpl.java \
 	java/net/PortUnreachableException.java \
 	java/net/ProtocolException.java \
 	java/net/Proxy.java \
+	java/net/ProxySelector.java \
+	java/net/ProxySelectorImpl.java \
+	java/net/ResponseCache.java \
+	java/net/SecureCacheResponse.java \
 	java/net/ServerSocket.java \
 	java/net/Socket.java \
 	java/net/SocketAddress.java \
