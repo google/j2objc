@@ -159,8 +159,14 @@
 // unit tests did not finish, even though the log shows they did.
 // Lots of projects have run into this issue, and consensus is that
 // this "sleep for 1 second" does the trick.
-- (void)testThatMakesSureWeDontFinishTooFast
-{
+- (void)testThatMakesSureWeDontFinishTooFast {
   [NSThread sleepForTimeInterval:1.0];
+}
+
+// Verify that an index sent to indexOf:int: with an offset greater
+// than the string's length returns -1 as spec'd, rather than throw
+// an NSRangeException.
+- (void)testIndexOfOffsetTooLarge {
+  STAssertEquals(-1, [@"12345" indexOfString:@"3" fromIndex:20], @"missing range check");
 }
 @end
