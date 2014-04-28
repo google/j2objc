@@ -66,11 +66,14 @@ import okio.ByteString;
  * reflection in Android 4.1+.
  */
 public class Platform {
-  private static final Platform PLATFORM = findPlatform();
+  private static Platform PLATFORM = null;
 
   private Constructor<DeflaterOutputStream> deflaterConstructor;
 
-  public static Platform get() {
+  public static synchronized Platform get() {
+    if (PLATFORM == null) {
+      PLATFORM = findPlatform();
+    }
     return PLATFORM;
   }
 
