@@ -269,13 +269,12 @@ public class ObjectiveCHeaderGenerator extends ObjectiveCSourceFileGenerator {
     // Print @interface for static constants, if any.
     List<IVariableBinding> staticFields =
         getStaticFieldsNeedingAccessors(fields, /* isInterface */ true);
-    if (staticFields.isEmpty()) {
-      return;
+    if (hasInitializeMethod(node, methods)) {
+      ITypeBinding binding = Types.getTypeBinding(node);
+      String typeName = NameTable.getFullName(binding);
+      printf("\n@interface %s : NSObject\n", typeName);
+      println("\n@end");
     }
-    ITypeBinding binding = Types.getTypeBinding(node);
-    String typeName = NameTable.getFullName(binding);
-    printf("\n@interface %s : NSObject\n", typeName);
-    println("\n@end");
     printStaticInitFunction(node, methods);
     for (IVariableBinding field : staticFields) {
       printStaticField(field);
