@@ -592,4 +592,32 @@ public class RewriterTest extends GenerationTest {
     assertNotInTranslation(translation, "doesNotRecognizeSelector:_cmd");
     assertTranslation(translation, "return [super isEqual:param0];");
   }
+
+  public void testRetainedLocalRef() throws IOException {
+    String translation = translateSourceFile(
+        "class Test { " +
+        "  boolean test1(String s1, String s2) {" +
+        "    @com.google.j2objc.annotations.RetainedLocalRef" +
+        "    java.util.Comparator<String> c = String.CASE_INSENSITIVE_ORDER;" +
+        "    return c.compare(s1, s2) == 0;" +
+        "    }   " +
+        "  boolean test2(Thing t, String s1, String s2) {" +
+        "    @com.google.j2objc.annotations.RetainedLocalRef" +
+        "    Thing thing = t;" +
+        "    return t.comp.compare(s1, s2) == 0;" +
+        "  }" +
+        "  private static class Thing { public java.util.Comparator<String> comp; }}",
+        "Test", "Test.m");
+    assertNotInTranslation(translation, "RetainedLocalRef");
+    assertTranslation(translation, "ComGoogleJ2objcUtilScopedLocalRef *c = " +
+    		"[[[ComGoogleJ2objcUtilScopedLocalRef alloc] " +
+    		"initWithId:NSString_get_CASE_INSENSITIVE_ORDER_()] autorelease];");
+    assertTranslation(translation,
+        "return [nil_chk(c->var_) compareWithId:s1 withId:s2] == 0;");
+    assertTranslation(translation, "ComGoogleJ2objcUtilScopedLocalRef *thing = " +
+    		"[[[ComGoogleJ2objcUtilScopedLocalRef alloc] initWithId:t] autorelease];");
+    assertTranslation(translation,
+        "return [((id<JavaUtilComparator>) nil_chk(((Test_Thing *) nil_chk(t))->comp_)) " +
+        "compareWithId:s1 withId:s2] == 0;");
+  }
 }
