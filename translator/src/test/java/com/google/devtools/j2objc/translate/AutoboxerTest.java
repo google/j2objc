@@ -444,4 +444,11 @@ public class AutoboxerTest extends GenerationTest {
         "class Test { void test() { Integer i; i = (Integer) 12; } }", "Test", "Test.m");
     assertTranslation(translation, "i = [JavaLangInteger valueOfWithInt:12];");
   }
+
+  public void testAssertMessage() throws IOException {
+    String translation = translateSourceFile(
+        "class Test { void test(int i) { assert i == 0 : i; }}", "Test", "Test.m");
+    assertTranslation(translation,
+        "NSAssert(i == 0, [[JavaLangInteger valueOfWithInt:i] description]);");
+  }
 }

@@ -29,6 +29,7 @@ import org.eclipse.jdt.core.dom.AST;
 import org.eclipse.jdt.core.dom.ASTNode;
 import org.eclipse.jdt.core.dom.ArrayAccess;
 import org.eclipse.jdt.core.dom.ArrayInitializer;
+import org.eclipse.jdt.core.dom.AssertStatement;
 import org.eclipse.jdt.core.dom.Assignment;
 import org.eclipse.jdt.core.dom.CastExpression;
 import org.eclipse.jdt.core.dom.ClassInstanceCreation;
@@ -207,6 +208,17 @@ public class Autoboxer extends ErrorReportingASTVisitor {
       Expression result = boxOrUnboxExpression(expr, type);
       if (expr != result) {
         expressions.set(i, result);
+      }
+    }
+  }
+
+  @Override
+  public void endVisit(AssertStatement node) {
+    Expression expression = node.getMessage();
+    if (expression != null) {
+      ITypeBinding exprType = Types.getTypeBinding(expression);
+      if (exprType.isPrimitive()) {
+        node.setMessage(box(expression));
       }
     }
   }
