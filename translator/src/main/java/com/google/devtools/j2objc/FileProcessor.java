@@ -15,6 +15,7 @@
 package com.google.devtools.j2objc;
 
 import com.google.common.base.Preconditions;
+import com.google.common.collect.Lists;
 import com.google.common.io.CharStreams;
 import com.google.common.io.Files;
 import com.google.devtools.j2objc.types.Types;
@@ -31,6 +32,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.util.Enumeration;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.zip.ZipEntry;
@@ -47,6 +49,8 @@ abstract class FileProcessor {
   private static final Logger logger = Logger.getLogger(FileProcessor.class.getName());
 
   private final JdtParser parser;
+  private final List<String> batchSources = Lists.newArrayList();
+  private final boolean doBatching = Options.batchTranslateMaximum() > 0;
 
   public FileProcessor(JdtParser parser) {
     this.parser = Preconditions.checkNotNull(parser);
@@ -56,6 +60,7 @@ abstract class FileProcessor {
     for (String file : files) {
       processFile(file);
     }
+    processBatchSources();
   }
 
   public void processFile(String file) {
@@ -101,7 +106,11 @@ abstract class FileProcessor {
   protected void processJavaFile(String filename) {
     File f = getFileOrNull(filename);
     if (f != null) {
-      processFoundJavaFile(filename, f);
+      if (doBatching) {
+        batchSources.add(filename);
+      } else {
+        processSource(filename);
+      }
       return;
     }
     if (f == null) {
@@ -115,21 +124,17 @@ abstract class FileProcessor {
         } else {
           f = getFileOrNull(pathEntry + File.separatorChar + filename);
           if (f != null) {
-            processFoundJavaFile(filename, f);
+            if (doBatching) {
+              batchSources.add(f.getPath());
+            } else {
+              processSource(f.getPath());
+            }
             return;
           }
         }
       }
     }
     ErrorUtil.error("No such file: " + filename);
-  }
-
-  protected void processFoundJavaFile(String filename, File file) {
-    try {
-      processSource(filename, Files.toString(file, Options.getCharset()));
-    } catch (IOException e) {
-      ErrorUtil.error(e.getMessage());
-    }
   }
 
   private String getJarEntryOrNull(String jarFile, String path) {
@@ -180,6 +185,14 @@ abstract class FileProcessor {
     }
   }
 
+  protected void processSource(String path) {
+    try {
+      processSource(path, Files.toString(new File(path), Options.getCharset()));
+    } catch (IOException e) {
+      ErrorUtil.warning(e.getMessage());
+    }
+  }
+
   protected void processSource(String path, String source) {
     logger.finest("parsing " + path);
     TimeTracker ticker = getTicker(path);
@@ -203,6 +216,49 @@ abstract class FileProcessor {
     ticker.pop();
     ticker.tick("Total processing time");
     ticker.printResults(System.out);
+  }
+
+  protected void processBatchSources() {
+    if (batchSources.isEmpty()) {
+      return;
+    }
+
+    JdtParser.Handler handler = new JdtParser.Handler() {
+      @Override
+      public void handleParsedUnit(String path, CompilationUnit unit) {
+        if (logger.isLoggable(Level.INFO)) {
+          System.out.println("translating " + path);
+        }
+        TimeTracker ticker = getTicker(path);
+        ticker.push();
+        processUnit(path, unit, ticker);
+      }
+    };
+    final int maxBatchSize = Options.batchTranslateMaximum();
+    for (int from = 0; from < batchSources.size(); from += maxBatchSize) {
+      int to = from + maxBatchSize;
+      if ( to > batchSources.size()) {
+        to = batchSources.size();
+      }
+      parser.parseFiles(batchSources.subList(from, to), handler);
+    }
+  }
+
+  private void processUnit(String path, CompilationUnit unit, TimeTracker ticker) {
+    try {
+      ErrorUtil.setCurrentFileName(path);
+      NameTable.initialize(unit);
+      Types.initialize(unit);
+      processUnit(path, Files.toString(new File(path), Options.getCharset()), unit, ticker);
+      NameTable.cleanup();
+      Types.cleanup();
+
+      ticker.pop();
+      ticker.tick("Total processing time");
+      ticker.printResults(System.out);
+    } catch (IOException e) {
+      ErrorUtil.error(e.getMessage());
+    }
   }
 
   protected TimeTracker getTicker(String name) {

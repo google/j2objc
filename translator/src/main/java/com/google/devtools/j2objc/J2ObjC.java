@@ -16,7 +16,6 @@
 
 package com.google.devtools.j2objc;
 
-import com.google.common.base.Charsets;
 import com.google.devtools.j2objc.util.ErrorUtil;
 import com.google.devtools.j2objc.util.JdtParser;
 
