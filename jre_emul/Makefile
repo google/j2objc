@@ -605,9 +605,54 @@ JAVA_SOURCES = \
 	java/security/cert/CertificateParsingException.java \
 	java/security/cert/X509Certificate.java \
 	java/security/cert/X509Extension.java \
+	java/sql/Array.java \
+	java/sql/BatchUpdateException.java \
+	java/sql/Blob.java \
+	java/sql/CallableStatement.java \
+	java/sql/ClientInfoStatus.java \
+	java/sql/Clob.java \
+	java/sql/Connection.java \
+	java/sql/DatabaseMetaData.java \
+	java/sql/DataTruncation.java \
 	java/sql/Date.java \
+	java/sql/Driver.java \
+	java/sql/DriverManager.java \
+	java/sql/DriverPropertyInfo.java \
+	java/sql/NClob.java \
+	java/sql/ParameterMetaData.java \
+	java/sql/PreparedStatement.java \
+	java/sql/Ref.java \
+	java/sql/ResultSet.java \
+	java/sql/ResultSetMetaData.java \
+	java/sql/RowId.java \
+	java/sql/RowIdLifetime.java \
+	java/sql/Savepoint.java \
+	java/sql/SQLClientInfoException.java \
+	java/sql/SQLData.java \
+	java/sql/SQLDataException.java \
+	java/sql/SQLException.java \
+	java/sql/SQLFeatureNotSupportedException.java \
+	java/sql/SQLInput.java \
+	java/sql/SQLIntegrityConstraintViolationException.java \
+	java/sql/SQLInvalidAuthorizationSpecException.java \
+	java/sql/SQLNonTransientConnectionException.java \
+	java/sql/SQLNonTransientException.java \
+	java/sql/SQLOutput.java \
+	java/sql/SQLPermission.java \
+	java/sql/SQLRecoverableException.java \
+	java/sql/SQLSyntaxErrorException.java \
+	java/sql/SQLTimeoutException.java \
+	java/sql/SQLTransactionRollbackException.java \
+	java/sql/SQLTransientConnectionException.java \
+	java/sql/SQLTransientException.java \
+	java/sql/SQLWarning.java \
+	java/sql/SQLXML.java \
+	java/sql/Statement.java \
+	java/sql/Struct.java \
 	java/sql/Time.java \
 	java/sql/Timestamp.java \
+	java/sql/Types.java \
+	java/sql/Wrapper.java \
 	java/text/Annotation.java \
 	java/text/AttributedCharacterIterator.java \
 	java/text/AttributedString.java \
