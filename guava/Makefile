@@ -35,8 +35,8 @@ J2OBJCC = $(ARCH_BIN_DIR)/j2objcc -c -fobjc-abi-version=2 -fobjc-legacy-dispatch
 
 TRANSLATE_JAVA_FULL = $(JAVA_SOURCES)
 TRANSLATE_JAVA_RELATIVE = $(JAVA_SOURCES:$(SRC_DIR)/%=%)
-TRANSLATE_ARGS = --segmented-headers --extract-unsequenced \
-    -cp $(CLASSPATH) -sourcepath $(SOURCEPATH) -encoding UTF-8
+TRANSLATE_ARGS = --segmented-headers --extract-unsequenced --batch-translate-max=300 \
+    -cp $(CLASSPATH) -sourcepath $(SOURCEPATH) -encoding UTF-8 -J-Xmx2G
 include ../make/translate.mk
 
 FAT_LIB_NAME = guava

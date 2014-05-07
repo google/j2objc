@@ -1,5 +1,4 @@
 #!/bin/bash
-# Copyright 2011 Google Inc.  All Rights Reserved.
 #
 # Run j2objc translation tool.
 #
@@ -9,6 +8,8 @@
 #     [-classpath <path>]
 #     [-sourcepath <path>]
 #     [-d <output-directory>]
+#     [j2objc arg] ...
+#     [-J<java arg>] ...
 #     <file.java> ...
 #
 
@@ -49,6 +50,7 @@ while [ $# -gt 0 ]; do
     -end-java-args) PARSING_JAVA_ARGS=0;;
     -classpath|-cp) CLASSPATH="${CLASSPATH}:$2"; CLASSPATH_SET=1; shift;;
     -sourcepath) SOURCEPATH=$2; SOURCEPATH_SET=1; shift;;
+    -J*) JAVA_ARGS[iJavaArgs++]=${1:2};;
     *)
       if [ ${PARSING_JAVA_ARGS} -eq 0 ]; then
         J2OBJC_ARGS[iArgs++]=$1
