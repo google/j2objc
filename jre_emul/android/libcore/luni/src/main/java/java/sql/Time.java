@@ -39,7 +39,7 @@ public class Time extends Date {
      * <p>
      * The result is undefined if any argument is out of bounds.
      *
-     * @deprecated Use the constructor {@link #Time(long)}.
+     * @deprecated Use the constructor {@link #Time(long)} instead.
      * @param theHour
      *            a value in the range {@code [0,23]}.
      * @param theMinute
@@ -67,7 +67,7 @@ public class Time extends Date {
 
     /**
      * @deprecated This method is deprecated and must not be used. An SQL
-     *             {@code Time} object does not have a {@code Date} component.
+     *             {@code Time} object does not have a date component.
      * @return does not return anything.
      * @throws IllegalArgumentException
      *             if this method is called.
@@ -81,7 +81,7 @@ public class Time extends Date {
 
     /**
      * @deprecated This method is deprecated and must not be used. An SQL
-     *             {@code Time} object does not have a <i>Day</i> component.
+     *             {@code Time} object does not have a day component.
      * @return does not return anything.
      * @throws IllegalArgumentException
      *             if this method is called.
@@ -95,7 +95,7 @@ public class Time extends Date {
 
     /**
      * @deprecated This method is deprecated and must not be used. An SQL
-     *             {@code Time} object does not have a <i>Month</i> component.
+     *             {@code Time} object does not have a month component.
      * @return does not return anything.
      * @throws IllegalArgumentException
      *             if this method is called.
@@ -109,7 +109,7 @@ public class Time extends Date {
 
     /**
      * @deprecated This method is deprecated and must not be used. An SQL
-     *             {@code Time} object does not have a <i>Year</i> component.
+     *             {@code Time} object does not have a year component.
      * @return does not return anything.
      * @throws IllegalArgumentException
      *             if this method is called.
@@ -123,7 +123,7 @@ public class Time extends Date {
 
     /**
      * @deprecated This method is deprecated and must not be used. An SQL
-     *             {@code Time} object does not have a {@code Date} component.
+     *             {@code Time} object does not have a date component.
      * @throws IllegalArgumentException
      *             if this method is called.
      */
@@ -136,7 +136,7 @@ public class Time extends Date {
 
     /**
      * @deprecated This method is deprecated and must not be used. An SQL
-     *             {@code Time} object does not have a <i>Month</i> component.
+     *             {@code Time} object does not have a month component.
      * @throws IllegalArgumentException
      *             if this method is called.
      */
@@ -149,7 +149,7 @@ public class Time extends Date {
 
     /**
      * @deprecated This method is deprecated and must not be used. An SQL
-     *             {@code Time} object does not have a <i>Year</i> component.
+     *             {@code Time} object does not have a year component.
      * @throws IllegalArgumentException
      *             if this method is called.
      */

@@ -59,7 +59,7 @@ public class Timestamp extends Date {
      * supplied values for <i>Year</i>, <i>Month</i>, <i>Date</i>, <i>Hour</i>,
      * <i>Minutes</i>, <i>Seconds</i> and <i>Nanoseconds</i>.
      *
-     * @deprecated Use the constructor {@link #Timestamp(long)}.
+     * @deprecated Use the constructor {@link #Timestamp(long)} instead.
      * @param theYear
      *            specified as the year minus 1900.
      * @param theMonth
