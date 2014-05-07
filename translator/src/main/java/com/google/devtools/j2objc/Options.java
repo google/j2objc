@@ -72,6 +72,7 @@ public class Options {
   private static boolean stripReflection = false;
   private static boolean extractUnsequencedModifications = false;
   private static boolean docCommentsEnabled = false;
+  private static int batchTranslateMaximum = 0;
 
   private static File proGuardUsageFile = null;
 
@@ -88,6 +89,7 @@ public class Options {
   private static final String XBOOTCLASSPATH = "-Xbootclasspath:";
   private static String bootclasspath = System.getProperty("sun.boot.class.path");
   private static Map<String, String> packagePrefixes = Maps.newHashMap();
+  private static final String BATCH_PROCESSING_MAX_FLAG = "--batch-translate-max=";
 
   static {
     // Load string resources.
@@ -241,8 +243,6 @@ public class Options {
         stripGwtIncompatible = true;
       } else if (arg.equals("--strip-reflection")) {
         stripReflection = true;
-      } else if (arg.equals("--generate-test-main") || arg.equals("--no-generate-test-main")) {
-        // obsolete
       } else if (arg.equals("--segmented-headers")) {
         segmentedHeaders = true;
       } else if (arg.equals("--build-closure")) {
@@ -251,6 +251,9 @@ public class Options {
         extractUnsequencedModifications = true;
       } else if (arg.equals("--doc-comments")) {
         docCommentsEnabled = true;
+      } else if (arg.startsWith(BATCH_PROCESSING_MAX_FLAG)) {
+        batchTranslateMaximum =
+            Integer.parseInt(arg.substring(BATCH_PROCESSING_MAX_FLAG.length()));
       } else if (arg.startsWith("-h") || arg.equals("--help")) {
         help(false);
       } else if (arg.startsWith("-")) {
@@ -622,5 +625,9 @@ public class Options {
   @VisibleForTesting
   public static void resetExtractUnsequencedModifications() {
     extractUnsequencedModifications = false;
+  }
+
+  public static int batchTranslateMaximum() {
+    return batchTranslateMaximum;
   }
 }

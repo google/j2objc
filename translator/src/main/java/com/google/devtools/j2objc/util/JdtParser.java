@@ -140,9 +140,12 @@ public class JdtParser {
         }
       }
     };
-    parser.createASTs(
-        filePaths.toArray(new String[0]), getEncodings(filePaths.size()), new String[0],
-        astRequestor, null);
+    // JDT fails to resolve all secondary bindings unless there are the same
+    // number of "binding key" strings as source files. It doesn't appear to
+    // matter what the binding key strings should be (as long as they're non-
+    // null), so the paths array is reused.
+    String[] paths = filePaths.toArray(new String[0]);
+    parser.createASTs(paths, getEncodings(paths.length), paths, astRequestor, null);
   }
 
   private ASTParser newASTParser() {
@@ -175,7 +178,6 @@ public class JdtParser {
   }
 
   private void checkCompilationErrors(String filename, CompilationUnit unit) {
-    List<IProblem> errors = Lists.newArrayList();
     for (IProblem problem : unit.getProblems()) {
       if (problem.isError()) {
         if (((problem.getID() & IProblem.ImportRelated) != 0) && ignoreMissingImports) {
