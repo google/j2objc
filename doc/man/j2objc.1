@@ -9,7 +9,8 @@
 .\" WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 .\" See the License for the specific language governing permissions and
 .\" limitations under the License.
-.TH J2OBJC "1" "September 2012" "j2objc 0.5" "User Commands"
+.na
+.TH J2OBJC "1" "May 2014" "j2objc" "User Commands"
 .SH NAME
 .B j2objc
 \- translate Java source files to Objective-C
@@ -24,7 +25,7 @@ The
 tool translates specified Java source files into either Objective-C or
 Objective-C++ sources for use in an iOS application.
 
-The following options are available:
+.SH COMMON OPTIONS
 .TP \w'\fB\-copyright\fP\fI\ nnnn\fP'u+10n
 .BI \-sourcepath " path "
 Specify where to find input source files
@@ -35,24 +36,11 @@ Specify where to find user class files
 .BI \-d " directory "
 Specify where to place generated Objective\-C files
 .TP
+.BI \-encoding " encoding "
+Specify character encoding used by source files
+.TP
 .BI \-g
 Generate debugging support
-.TP
-.BI \-x " language "
-Specify what language to output.  Possible values
-are objective\-c (default) and objective\-c++
-.TP
-.BI \-use\-gc
-Generate Objective\-C code to support garbage collection (requires libjre_emul.a rebuild)
-.TP
-.BI \-use\-arc
-Generate Objective\-C code to support Automatic Reference Counting (ARC)
-.TP
-.BI \-\-ignore\-missing\-imports
-Continue translation if an imported class is not found on the class or source paths.
-.TP
-.BI \-Werror
-Make all warnings into errors
 .TP
 \fB\-q\fR, \fB\-\-quiet\fR
 Do not print status messages
@@ -60,12 +48,47 @@ Do not print status messages
 \fB\-v\fR, \fB\-\-verbose
 Output messages about what the translator is doing
 .TP
-.BI \-use\-reference\-counting
-Generate Objective\-C code to support iOS manual
-reference counting (default)
+.BI \-Werror
+Make all warnings into errors
+.TP
+\fB\-h\fR, \fB\-\-help\fR
+Print this message.
+
+.SH OTHER OPTIONS
+.TP
+\fB\-batch-translate-max\fR\=\fIn\fR
+The maximum number of source files that are translated together. Batching
+speeds up translation, but requires more memory.
+.TP
+.BI \-\-build\-closure
+Translate dependent classes if out-of-date.
+.TP
+.BI \-\-dead\-code\-report " file "
+Specify a ProGuard usage report for dead code elimination.
 .TP
 .BI \-\-doc\-comments
-Translate Javadoc comments into Xcode-compatible comments
+Translate Javadoc comments into Xcode-compatible comments.
+.TP
+.BI \-\-extract\-unsequenced
+Rewrite expressions that would produce unsequenced modification errors.
+.TP
+.BI \-\-generate\-deprecated
+Generate deprecated attributes for deprecated methods, classes, and interfaces.
+.TP
+.BI \-\-generate\-native\-stubs
+Generate method bodies for native methods that do not have OCNI native code comments.
+.TP
+.BI \-\-ignore\-missing\-imports
+Continue translation if an imported class is not found on the class or source paths.
+.TP
+.BI \-\-mapping " file "
+Add a method mapping file.
+.TP
+.BI \-\-mem\-debug
+Generate code to display memory allocation graphs.
+.TP
+.BI \-\-no\-package\-directories
+Generate output files to specified directory, without creating package sub-directories
 .TP
 .BI -pluginpath " path "
 Specify where to find plugin class files
@@ -73,40 +96,53 @@ Specify where to find plugin class files
 .BI \-pluginoptions " options "
 Comma separated key=value pairs passed to all plugins
 .TP
-.BI \-\-mapping " file "
-Add a method mapping file
+.BI \-\-prefix " package=prefix "
+Substitute a specified prefix for a package name.
 .TP
-.BI \-\-dead\-code\-report " file "
-Specify a ProGuard usage report for dead code elimination.
-.TP
-\fB\-\-generate\-deprecated\fR
-Generate deprecated attributes for deprecated methods, classes, and interfaces.
-.TP
-\fB\-\-strip\-reflection\fR
-Do not generate metadata needed for Java reflection.
+.BI \-\-prefixes " file "
+Specify a properties file with prefix definitions.
 .TP
 \fB\-\-print\-converted\-sources\fR
 Print input source files after initial conversion
 .TP
-\fB\-\-extract\-unsequenced\fR
-Rewrite expressions that would produce unsequenced modification errors.
+.BI \-\-strip\-gwt\-incompatible
+Removes methods that are marked with a GwtIncompatible
+annotation, unless its value is known to be compatible.
+.TP
+.BI \-\-strip\-reflection
+Do not generate metadata needed for Java reflection.
 .TP
 \fB\-\-segmented\-headers\fR
 Generates headers with guards around each declared type. Useful for breaking import cycles.
 .TP
 \fB\-t\fR, \fB\-\-timing\-info\fR
-Print time spent in translation steps
+Print time spent in translation steps.
+.TP
+.BI \-use\-arc
+Generate Objective\-C code to support Automatic Reference Counting (ARC).
+.TP
+.BI \-use\-gc
+Generate Objective\-C code to support garbage collection (requires
+libjre_emul.a rebuild).
+.TP
+.BI \-use\-reference\-counting
+Generate Objective\-C code to support iOS manual reference counting (default).
+.TP
+.BI \-x " language "
+Specify what language to output.  Possible values are objective\-c (default)
+and objective\-c++.
 .TP
 .BI \-Xbootclasspath\fR:\fIpath
 Boot path used by translation (not the tool itself).
 .TP
-\fB\-h\fR, \fB\-\-help\fR
-Print this message.
+.BI \-Xno\-jsni\-warnings
+Warn if JSNI (GWT) native code delimiters are used instead of OCNI delimiters.
+
 .SH "SEE ALSO"
 .BR j2objcc (1)
 .PP
 The full documentation for
 .B j2objc
 is maintained on the project site at
-\fIhttp://j2objc.googlecode.com/\fR.
+\fIhttp://j2objc.org/\fR.
 
