@@ -72,6 +72,7 @@ public class Options {
   private static boolean stripReflection = false;
   private static boolean extractUnsequencedModifications = false;
   private static boolean docCommentsEnabled = false;
+  private static boolean finalMethodsAsFunctions = false;
   private static int batchTranslateMaximum = 0;
 
   private static File proGuardUsageFile = null;
@@ -258,6 +259,8 @@ public class Options {
       } else if (arg.startsWith(BATCH_PROCESSING_MAX_FLAG)) {
         batchTranslateMaximum =
             Integer.parseInt(arg.substring(BATCH_PROCESSING_MAX_FLAG.length()));
+      } else if (arg.equals("--final-methods-as-functions")) {
+        finalMethodsAsFunctions = true;
       } else if (arg.startsWith("-h") || arg.equals("--help")) {
         help(false);
       } else if (arg.startsWith("-")) {
@@ -633,5 +636,19 @@ public class Options {
 
   public static int batchTranslateMaximum() {
     return batchTranslateMaximum;
+  }
+
+  public static boolean finalMethodsAsFunctions() {
+    return finalMethodsAsFunctions;
+  }
+
+  @VisibleForTesting
+  public static void enableFinalMethodsAsFunctions() {
+    finalMethodsAsFunctions = true;
+  }
+
+  @VisibleForTesting
+  public static void resetFinalMethodsAsFunctions() {
+    finalMethodsAsFunctions = false;
   }
 }

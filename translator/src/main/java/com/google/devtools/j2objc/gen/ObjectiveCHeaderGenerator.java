@@ -430,6 +430,10 @@ public class ObjectiveCHeaderGenerator extends ObjectiveCSourceFileGenerator {
 
   @Override
   protected void printMethod(MethodDeclaration m) {
+    IMethodBinding binding = Types.getMethodBinding(m);
+    if (BindingUtil.isFunction(binding)) {
+      return;  // All function declarations are private.
+    }
     printDocComment(m.getJavadoc());
     super.printMethod(m);
   }

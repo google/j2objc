@@ -19,6 +19,7 @@ package com.google.devtools.j2objc.types;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
 
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -45,7 +46,7 @@ public class IOSMethod {
     this.name = name;
     this.isFunction = isFunction;
     this.declaringClass = declaringClass;
-    this.parameters = parameters;
+    this.parameters = parameters != null ? parameters : Collections.<IOSParameter>emptyList();
     this.varArgs = varArgs;
   }
 
@@ -77,7 +78,11 @@ public class IOSMethod {
   }
 
   public static IOSMethod newFunction(String name) {
-    return new IOSMethod(name, true, null, null, false);
+    return newFunction(name, false);
+  }
+
+  public static IOSMethod newFunction(String name, boolean varargs) {
+    return new IOSMethod(name, true, null, null, varargs);
   }
 
   public String getName() {

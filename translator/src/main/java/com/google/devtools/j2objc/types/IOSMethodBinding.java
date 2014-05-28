@@ -18,6 +18,7 @@ package com.google.devtools.j2objc.types;
 
 import org.eclipse.jdt.core.dom.IMethodBinding;
 import org.eclipse.jdt.core.dom.ITypeBinding;
+import org.eclipse.jdt.core.dom.Modifier;
 
 /**
  * IOSMethodBinding: synthetic binding for an iOS method.
@@ -27,13 +28,17 @@ import org.eclipse.jdt.core.dom.ITypeBinding;
 public class IOSMethodBinding extends GeneratedMethodBinding {
 
   private final IOSMethod iosMethod;
+  private final ITypeBinding[] exceptionTypes;
+
+  private static final ITypeBinding[] EMPTY_TYPES = new ITypeBinding[0];
 
   private IOSMethodBinding(
       IOSMethod iosMethod, IMethodBinding original, int modifiers, ITypeBinding returnType,
-      IMethodBinding methodDeclaration, ITypeBinding declaringClass, boolean varargs,
-      boolean synthetic) {
+      IMethodBinding methodDeclaration, ITypeBinding declaringClass, ITypeBinding[] exceptionTypes,
+      boolean varargs, boolean synthetic) {
     super(original, iosMethod.getName(), modifiers, returnType, methodDeclaration, declaringClass,
           false, varargs, synthetic);
+    this.exceptionTypes = exceptionTypes != null ? exceptionTypes : EMPTY_TYPES;
     this.iosMethod = iosMethod;
   }
 
@@ -46,7 +51,7 @@ public class IOSMethodBinding extends GeneratedMethodBinding {
     }
     IOSMethodBinding binding = new IOSMethodBinding(
         iosMethod, original, original.getModifiers(), returnType, null, declaringClass,
-        original.isVarargs(), false);
+        null, original.isVarargs(), false);
     binding.addParameters(original);
     return binding;
   }
@@ -54,13 +59,13 @@ public class IOSMethodBinding extends GeneratedMethodBinding {
   public static IOSMethodBinding newMethod(
       IOSMethod iosMethod, int modifiers, ITypeBinding returnType, ITypeBinding declaringClass) {
     return new IOSMethodBinding(
-        iosMethod, null, modifiers, returnType, null, declaringClass, false, true);
+        iosMethod, null, modifiers, returnType, null, declaringClass, null, false, true);
   }
 
   public static IOSMethodBinding newTypedInvocation(IOSMethodBinding m, ITypeBinding returnType) {
     IOSMethodBinding binding = new IOSMethodBinding(
         m.getIOSMethod(), null, m.getModifiers(), returnType, m, m.getDeclaringClass(),
-        m.isVarargs(), true);
+        null, m.isVarargs(), true);
     binding.addParameters(m);
     return binding;
   }
@@ -68,8 +73,25 @@ public class IOSMethodBinding extends GeneratedMethodBinding {
   public static IOSMethodBinding newFunction(
       String name, ITypeBinding returnType, ITypeBinding declaringClass,
       ITypeBinding... paramTypes) {
+    return newFunction(name, Modifier.STATIC, returnType, declaringClass, false, paramTypes);
+  }
+
+  public static IOSMethodBinding newFunction(
+      String name, int modifiers, ITypeBinding returnType, ITypeBinding declaringClass,
+      boolean varargs, ITypeBinding... paramTypes) {
+    IOSMethodBinding binding = new IOSMethodBinding(IOSMethod.newFunction(name, varargs),
+        null, modifiers, returnType, null, declaringClass, null, varargs, true);
+    for (ITypeBinding paramType : paramTypes) {
+      binding.addParameter(paramType);
+    }
+    return binding;
+  }
+
+  public static IOSMethodBinding newFunction(IMethodBinding m, String functionName,
+      ITypeBinding[] paramTypes) {
     IOSMethodBinding binding = new IOSMethodBinding(
-        IOSMethod.newFunction(name), null, 0, returnType, null, declaringClass, false, true);
+        IOSMethod.newFunction(functionName, m.isVarargs()), null, m.getModifiers(),
+        m.getReturnType(), null, m.getDeclaringClass(), m.getExceptionTypes(), m.isVarargs(), true);
     for (ITypeBinding paramType : paramTypes) {
       binding.addParameter(paramType);
     }
@@ -80,12 +102,12 @@ public class IOSMethodBinding extends GeneratedMethodBinding {
     assert type instanceof PointerTypeBinding : "Can't dereference a non-pointer.";
     return new IOSMethodBinding(
         IOSMethod.DEREFERENCE, null, 0, ((PointerTypeBinding) type).getPointeeType(), null, null,
-        false, true);
+        null, false, true);
   }
 
   public static IOSMethodBinding newAddressOf(ITypeBinding type) {
     return new IOSMethodBinding(
-        IOSMethod.ADDRESS_OF, null, 0, new PointerTypeBinding(type), null, null, false, true);
+        IOSMethod.ADDRESS_OF, null, 0, new PointerTypeBinding(type), null, null, null, false, true);
   }
 
   public static IOSMethod getIOSMethod(IMethodBinding binding) {
@@ -105,5 +127,10 @@ public class IOSMethodBinding extends GeneratedMethodBinding {
       return iosMethod.isVarArgs();
     }
     return false;
+  }
+
+  @Override
+  public ITypeBinding[] getExceptionTypes() {
+    return exceptionTypes;
   }
 }

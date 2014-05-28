@@ -119,8 +119,13 @@ public class NodeCopier extends ASTMatcher {
     if (from instanceof ASTNode) {
       OuterReferenceResolver.copyNode((ASTNode) from, (ASTNode) to);
     }
-    if (from instanceof Expression && Types.hasNilCheck((Expression) from)) {
-      Types.addNilCheck((Expression) to);
+    if (from instanceof Expression) {
+      if (Types.hasNilCheck((Expression) from)) {
+        Types.addNilCheck((Expression) to);
+      }
+      if (Types.hasDeferredFieldSetter((Expression) from)) {
+        Types.addDeferredFieldSetter((Expression) to);
+      }
     }
   }
 

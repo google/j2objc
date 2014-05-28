@@ -605,7 +605,27 @@ public class NameTable {
    * enum types.
    */
   public static String makeFunctionName(AbstractTypeDeclaration cls, MethodDeclaration method) {
-    return getFullName(cls) + '_' + method.getName().getIdentifier();
+    return makeFunctionName(Types.getTypeBinding(cls), Types.getMethodBinding(method));
+  }
+
+  public static String makeFunctionName(ITypeBinding classBinding, IMethodBinding methodBinding) {
+    String className = getFullName(classBinding);
+    String methodName = methodBinding.getName();
+
+    // If method name is overloaded, get its declaration index. For example if a class has
+    // private foo(int) and foo(long) methods, the function names would be foo1(int) and foo2(long).
+    int index = 0;
+    for (IMethodBinding m : classBinding.getDeclaredMethods()) {
+      if (m.getName().equals(methodName)) {
+        index++;
+        if (m.isEqualTo(methodBinding)) {
+          break;
+        }
+      }
+    }
+
+    return String.format("%s_%s_%s", className, methodName,
+        index > 1 ? Integer.toString(index) : "");
   }
 
   public static boolean isReservedName(String name) {

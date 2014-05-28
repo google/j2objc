@@ -42,6 +42,7 @@ import org.eclipse.jdt.core.dom.Modifier;
 import org.eclipse.jdt.core.dom.SingleVariableDeclaration;
 import org.eclipse.jdt.core.dom.TagElement;
 import org.eclipse.jdt.core.dom.TextElement;
+import org.eclipse.jdt.core.dom.Type;
 import org.eclipse.jdt.core.dom.TypeDeclaration;
 import org.eclipse.jdt.core.dom.VariableDeclarationFragment;
 
@@ -178,6 +179,9 @@ public abstract class ObjectiveCSourceFileGenerator extends SourceFileGenerator 
    * inlined method.
    */
   protected String mappedMethodDeclaration(MethodDeclaration method, IOSMethod mappedMethod) {
+    if (mappedMethod.isFunction()) {
+      return functionDeclaration(method, mappedMethod);
+    }
     StringBuffer sb = new StringBuffer();
 
     // Explicitly test hashCode() because of NSObject's hash return value.
@@ -215,6 +219,29 @@ public abstract class ObjectiveCSourceFileGenerator extends SourceFileGenerator 
     sb.append(iosParameter.getType());
     sb.append(')');
     sb.append(var.getName().getIdentifier());
+  }
+
+  protected String functionDeclaration(MethodDeclaration method, IOSMethod mappedMethod) {
+    StringBuffer sb = new StringBuffer();
+    IMethodBinding m = Types.getMethodBinding(method);
+    sb.append(BindingUtil.isStatic(m) ? "" : "__attribute__ ((unused)) static ");
+    Type returnType = method.getReturnType2();
+    sb.append(String.format("%s %s(",
+        NameTable.getObjCType(Types.getTypeBinding(returnType)),
+        m.getName()));
+
+    Iterator<SingleVariableDeclaration> parameters = ASTUtil.getParameters(method).iterator();
+    while (parameters.hasNext()) {
+      IVariableBinding varType = Types.getVariableBinding(parameters.next());
+      sb.append(String.format("%s %s",
+          NameTable.getObjCType(varType.getType()),
+          NameTable.getName(varType)));
+      if (parameters.hasNext()) {
+        sb.append(", ");
+      }
+    }
+    sb.append(')');
+    return sb.toString();
   }
 
   /**
