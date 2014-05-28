@@ -397,6 +397,7 @@ TEST_SOURCES = \
     tests/targets/security/MessageDigestTestSHA512.java \
 
 SUITE_SOURCES = \
+    ConcurrencyTests.java \
     libcore/java/io/SmallTests.java \
     libcore/java/net/SmallTests.java \
     libcore/java/util/zip/SmallTests.java \
@@ -505,6 +506,9 @@ $(TESTS_DIR)/%: $(LOGGING_TEST_RESOURCES_ROOT)/%
 
 run-tests: link resources $(TEST_BIN)
 	@$(TEST_BIN) org.junit.runner.JUnitCore $(TESTS_TO_RUN)
+
+run-concurrency-tests: link resources $(TEST_BIN)
+	@$(TEST_BIN) org.junit.runner.JUnitCore ConcurrencyTests
 
 run-io-tests: link resources $(TEST_BIN)
 	@$(TEST_BIN) org.junit.runner.JUnitCore libcore.java.io.SmallTests
