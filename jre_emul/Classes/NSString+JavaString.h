@@ -190,9 +190,6 @@ destinationBegin:(int)dstBegin;
 // CharSequence.charAt(int)
 - (unichar)charAtWithInt:(int)index;
 
-// CharSequence.toString()
-- (NSString *)sequenceDescription;
-
 // CharSequence.length()
 - (int)sequenceLength;
 

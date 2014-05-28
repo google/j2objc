@@ -262,7 +262,6 @@ java.lang.String.copyValueOf([CII)Ljava/lang/String; = \
     NSString valueOfChars:(IOSCharArray *)data offset:(int)offset count:(int)count
 
 java.lang.CharSequence.length()I = JavaLangCharSequence sequenceLength
-java.lang.CharSequence.toString()Ljava/lang/String; = JavaLangCharSequence sequenceDescription
 java.lang.CharSequence.subSequence(II)Ljava/lang/CharSequence; = \
     NSString subSequenceFrom:(int)start to:(int)end
 

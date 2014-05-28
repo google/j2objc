@@ -119,11 +119,6 @@ public class JavaToIOSMethodTranslator extends ErrorReportingASTVisitor {
         NameTable.rename(method, "sequenceLength");
         mappedMethods.add(method);
         addDescription(method);
-      } else if (method.getName().equals("toString")) {
-        overridableMethods.add(0, method);
-        NameTable.rename(method, "sequenceDescription");
-        mappedMethods.add(method);
-        addDescription(method);
       } else if (method.getName().equals("subSequence")) {
         overridableMethods.add(0, method);
         NameTable.rename(method, "subSequenceFrom");
