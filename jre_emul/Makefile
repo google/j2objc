@@ -363,6 +363,7 @@ JAVA_SOURCES = \
 	java/lang/SecurityException.java \
 	java/lang/SecurityManager.java \
 	java/lang/Short.java \
+	java/lang/StackOverflowError.java \
 	java/lang/StackTraceElement.java \
 	java/lang/StrictMath.java \
 	java/lang/StringBuffer.java \
