@@ -1009,7 +1009,7 @@ TRANSLATE_JAVA_FULL = $(JAVA_TO_TRANSLATE)
 TRANSLATE_JAVA_RELATIVE = $(JAVA_TO_TRANSLATE)
 TRANSLATE_ARGS = --mem-debug -sourcepath $(JRE_SRC) -classpath $(EMULATION_JAR) \
   $(J2OBJC_DEBUGFLAGS) -encoding UTF-8 --extract-unsequenced --batch-translate-max=300 \
-  -J-Xmx2G
+  -J-Xmx2G --final-methods-as-functions
 TRANSLATE_USE_SYSTEM_BOOT_PATH = TRUE
 include ../make/translate.mk
 
