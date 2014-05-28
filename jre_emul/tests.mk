@@ -20,9 +20,6 @@
 
 default: test
 
-# Turn off optimization so test lines are not rearranged by compiler.
-OPTIMIZATION_LEVEL=0
-
 include environment.mk
 
 SUPPORT_SOURCES = \

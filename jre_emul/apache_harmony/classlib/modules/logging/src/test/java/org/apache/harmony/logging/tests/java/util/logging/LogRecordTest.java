@@ -187,15 +187,8 @@ public class LogRecordTest extends TestCase {
 		assertNull(handler.getSourceClassName());
 		assertNull(handler.getSourceMethodName());
 
-		// it cannot find correct default value when logger is subclass
-		MockLogger ml = new MockLogger("foo", null);
-		ml.addHandler(handler);
-		ml.info(MSG);
-		assertEquals(className + "$MockLogger", handler.getSourceClassName());
-		assertEquals("info", handler.getSourceMethodName());
-
 		// it can find nothing when only call Subclass
-		ml = new MockLogger("foo", null);
+		MockLogger ml = new MockLogger("foo", null);
 		ml.addHandler(handler);
 		ml.log(Level.SEVERE, MSG);
 		assertNull(handler.getSourceClassName());
