@@ -23,6 +23,7 @@ import com.google.devtools.j2objc.types.Types;
 import com.google.devtools.j2objc.util.ASTUtil;
 import com.google.devtools.j2objc.util.BindingUtil;
 import com.google.devtools.j2objc.util.ErrorReportingASTVisitor;
+import com.google.devtools.j2objc.util.ErrorUtil;
 import com.google.devtools.j2objc.util.NameTable;
 
 import org.eclipse.jdt.core.dom.AST;
@@ -106,6 +107,7 @@ public class Functionizer extends ErrorReportingASTVisitor {
         setFunctionCaller(method, function);
         functions.add(function);
         functionMap.put(m, Types.getMethodBinding(function));
+        ErrorUtil.functionizedMethod();
       }
     }
     ASTUtil.getBodyDeclarations(node).addAll(functions);

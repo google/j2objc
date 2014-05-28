@@ -281,6 +281,10 @@ class TranslationProcessor extends FileProcessor {
           "Translated %d %s: %d errors, %d warnings",
           nFiles, nFiles == 1 ? "file" : "files", ErrorUtil.errorCount(),
           ErrorUtil.warningCount()));
+      if (Options.finalMethodsAsFunctions()) {
+        System.out.println(String.format("Translated %d methods as functions",
+            ErrorUtil.functionizedMethodCount()));
+      }
     }
   }
 
