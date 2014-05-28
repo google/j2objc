@@ -24,6 +24,7 @@ import com.google.common.collect.Sets;
 import com.google.devtools.j2objc.J2ObjC;
 import com.google.devtools.j2objc.Options;
 import com.google.devtools.j2objc.types.IOSMethod;
+import com.google.devtools.j2objc.types.IOSMethodBinding;
 import com.google.devtools.j2objc.types.ImplementationImportCollector;
 import com.google.devtools.j2objc.types.Import;
 import com.google.devtools.j2objc.types.Types;
@@ -235,6 +236,7 @@ public class ObjectiveCImplementationGenerator extends ObjectiveCSourceFileGener
       printf("@implementation %s\n", typeName);
       printStaticReferencesMethod(node);
       printStaticVars(node);
+      printFinalFunctionDecls(node);
       printMethods(node);
       if (!Options.stripReflection()) {
         printTypeAnnotationsMethod(node);
@@ -629,6 +631,8 @@ public class ObjectiveCImplementationGenerator extends ObjectiveCSourceFileGener
   }
 
   private String generateMethodBody(MethodDeclaration m) {
+    IMethodBinding binding = Types.getMethodBinding(m);
+    boolean isFunction = BindingUtil.isFunction(binding);
     String methodBody;
     if (Modifier.isNative(m.getModifiers())) {
       if (hasNativeCode(m, true)) {
@@ -649,15 +653,17 @@ public class ObjectiveCImplementationGenerator extends ObjectiveCSourceFileGener
       return body + "}";
     } else {
       // generate a normal method body
-      methodBody = generateStatement(m.getBody(), false);
+      methodBody = generateStatement(m.getBody(), isFunction);
     }
 
     boolean isStatic = (m.getModifiers() & Modifier.STATIC) != 0;
     boolean isSynchronized = (m.getModifiers() & Modifier.SYNCHRONIZED) != 0;
     if (isStatic && isSynchronized) {
-      methodBody = "{\n@synchronized([self class]) {\n" + methodBody + "}\n}\n";
+      methodBody = String.format("{\n@synchronized([%s getClass]) {\n%s}\n}\n",
+          NameTable.getFullName(binding.getDeclaringClass()), methodBody);
     } else if (isSynchronized) {
-      methodBody = "{\n@synchronized(self) {\n" + methodBody + "}\n}\n";
+      methodBody = String.format("{\n@synchronized(%s) {\n%s}\n}\n",
+          isFunction ? "this$" : "self", methodBody);
     }
 
     return methodBody;
@@ -862,6 +868,20 @@ public class ObjectiveCImplementationGenerator extends ObjectiveCSourceFileGener
         printf("%s %s = %s;\n", objcType, name, generateExpression(initializer));
       } else {
         printf("%s %s;\n", objcType, name);
+      }
+    }
+  }
+
+  private void printFinalFunctionDecls(TypeDeclaration node) {
+    boolean needsNewLine = true;
+    for (MethodDeclaration method : ASTUtil.getMethodDeclarations(node)) {
+      IMethodBinding m = Types.getMethodBinding(method);
+      if (BindingUtil.isFunction(m)) {
+        if (needsNewLine) {
+          newline();  // Start a new section.
+          needsNewLine = false;
+        }
+        printf("%s;\n", functionDeclaration(method, IOSMethodBinding.getIOSMethod(m)));
       }
     }
   }

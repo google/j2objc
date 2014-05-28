@@ -523,7 +523,7 @@ public class ObjectiveCImplementationGeneratorTest extends GenerationTest {
         "  public static synchronized void foo() {} }",
         "Test", "Test.m");
     assertTranslation(translation, "+ (void)foo {\n" +
-        "  @synchronized([self class]) {");
+        "  @synchronized([Test getClass]) {");
   }
 
   public void testNoGenMethodStubs() throws IOException {
