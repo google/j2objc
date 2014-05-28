@@ -78,7 +78,7 @@ fat_lib_dependencies:
 define compile_rule
 $(1): $(2) $(3) | fat_lib_dependencies
 	@mkdir -p $$(@D)
-	$(FAT_LIB_COMPILE) $(4) $(5) -c $$< -o $$@
+	$(FAT_LIB_COMPILE) $(4) $(5) -MD -c $$< -o $$@
 endef
 
 # Generates rule to build precompiled headers file.
@@ -159,6 +159,8 @@ $(foreach file,$(FAT_LIB_SOURCES_RELATIVE),\
 ifdef TARGET_TEMP_DIR
 # Targets specific to an xcode build
 
+-include $(FAT_LIB_OBJS:%.o=$(TARGET_TEMP_DIR)/%.d)
+
 $(FAT_LIB_LIBRARY): $(FAT_LIB_OBJS:%=$(TARGET_TEMP_DIR)/%)
 	@mkdir -p $(@D)
 	@echo "Building $(notdir $@)"
@@ -173,6 +175,8 @@ $(FAT_LIB_LIBRARY): $(FAT_LIB_ARCH_LIBS)
 	$(LIPO) -create $^ -output $@
 
 define arch_lib_rule
+-include $(FAT_LIB_OBJS:%.o=$(BUILD_DIR)/objs-$(1)/%.d)
+
 $(BUILD_DIR)/$(1)-lib$(FAT_LIB_NAME).a: \
     $(J2OBJC_PRECOMPILED_HEADER:%=$(BUILD_DIR)/objs-$(1)/%.pch) \
     $(FAT_LIB_OBJS:%=$(BUILD_DIR)/objs-$(1)/%)
