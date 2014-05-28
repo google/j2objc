@@ -32,6 +32,7 @@ public class ErrorUtil {
 
   private static int errorCount = 0;
   private static int warningCount = 0;
+  private static int functionizedMethodCount = 0;
   private static String currentFileName = null;
   private static PrintStream errorStream = System.err;
   private static List<String> errorMessages = Lists.newArrayList();
@@ -99,5 +100,13 @@ public class ErrorUtil {
   private static int getNodeLine(ASTNode node) {
     CompilationUnit unit = (CompilationUnit) node.getRoot();
     return unit.getLineNumber(node.getStartPosition());
+  }
+
+  public static void functionizedMethod() {
+    ++functionizedMethodCount;
+  }
+
+  public static int functionizedMethodCount() {
+    return functionizedMethodCount;
   }
 }
