@@ -205,6 +205,9 @@ public class NameTable {
       // Core Foundation definitions
       "BIG_ENDIAN", "BYTE_ORDER", "LITTLE_ENDIAN", "PDP_ENDIAN",
 
+      // CoreServices definitions
+      "positiveInfinity", "negativeInfinity",
+
       // Common preprocessor definitions.
       "DEBUG", "NDEBUG",
 
