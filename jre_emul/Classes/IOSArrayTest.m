@@ -19,7 +19,7 @@
 //  Created by Tom Ball on 7/6/11.
 //
 
-#import <SenTestingKit/SenTestingKit.h>
+#import <XCTest/XCTest.h>
 #import <objc/runtime.h>
 #import "IOSArray.h"
 #import "IOSClass.h"
@@ -30,47 +30,47 @@
 #import "java/util/Date.h"
 
 // Unit tests for IOSArray.
-@interface IOSArrayTest : SenTestCase
+@interface IOSArrayTest : XCTestCase
 @end
 
 
 @implementation IOSArrayTest
 
 - (void)testCheckIndex {
-  STAssertNoThrowSpecific(IOSArray_checkIndex(2, 0),
+  XCTAssertNoThrowSpecific(IOSArray_checkIndex(2, 0),
                           JavaLangIndexOutOfBoundsException,
                           @"Exception was thrown for a valid index");
-  STAssertNoThrowSpecific(IOSArray_checkIndex(2, 1),
+  XCTAssertNoThrowSpecific(IOSArray_checkIndex(2, 1),
                           JavaLangIndexOutOfBoundsException,
                           @"Exception was thrown for a valid index");
-  STAssertThrowsSpecific(IOSArray_checkIndex(2, -1),
+  XCTAssertThrowsSpecific(IOSArray_checkIndex(2, -1),
                          JavaLangIndexOutOfBoundsException,
                          @"Exception was not thrown for an invalid index");
-  STAssertThrowsSpecific(IOSArray_checkIndex(2, 2),
+  XCTAssertThrowsSpecific(IOSArray_checkIndex(2, 2),
                          JavaLangIndexOutOfBoundsException,
                          @"Exception was not thrown for an invalid index");
 }
 
 - (void)testCheckRange {
-  STAssertNoThrowSpecific(IOSArray_checkRange(2, NSMakeRange(0, 1)),
+  XCTAssertNoThrowSpecific(IOSArray_checkRange(2, NSMakeRange(0, 1)),
                           JavaLangIndexOutOfBoundsException,
                           @"Exception was thrown for a valid index");
-  STAssertNoThrowSpecific(IOSArray_checkRange(2, NSMakeRange(0, 2)),
+  XCTAssertNoThrowSpecific(IOSArray_checkRange(2, NSMakeRange(0, 2)),
                           JavaLangIndexOutOfBoundsException,
                           @"Exception was thrown for a valid index");
-  STAssertNoThrowSpecific(IOSArray_checkRange(2, NSMakeRange(1, 1)),
+  XCTAssertNoThrowSpecific(IOSArray_checkRange(2, NSMakeRange(1, 1)),
                           JavaLangIndexOutOfBoundsException,
                           @"Exception was thrown for a valid index");
-  STAssertThrowsSpecific(IOSArray_checkRange(2, NSMakeRange(-1, 2)),
+  XCTAssertThrowsSpecific(IOSArray_checkRange(2, NSMakeRange(-1, 2)),
                           JavaLangIndexOutOfBoundsException,
                           @"Exception was not thrown for an invalid index");
-  STAssertThrowsSpecific(IOSArray_checkRange(2, NSMakeRange(0, 3)),
+  XCTAssertThrowsSpecific(IOSArray_checkRange(2, NSMakeRange(0, 3)),
                          JavaLangIndexOutOfBoundsException,
                          @"Exception was not thrown for an invalid index");
-  STAssertThrowsSpecific(IOSArray_checkRange(2, NSMakeRange(1, 2)),
+  XCTAssertThrowsSpecific(IOSArray_checkRange(2, NSMakeRange(1, 2)),
                          JavaLangIndexOutOfBoundsException,
                          @"Exception was not thrown for an invalid index");
-  STAssertNoThrow(IOSArray_checkRange(2, NSMakeRange(2, 0)),
+  XCTAssertNoThrow(IOSArray_checkRange(2, NSMakeRange(2, 0)),
                          @"Exception was thrown for a zero length range");
 }
 
@@ -78,9 +78,9 @@
   const BOOL *bools = (BOOL[]){ TRUE, FALSE, TRUE, FALSE };
   IOSBooleanArray *a1 = [IOSBooleanArray arrayWithBooleans:bools count:4];
   IOSBooleanArray *a2 = [[a1 copy] autorelease];
-  STAssertEquals([a1 count], [a2 count], @"bad array size");
+  XCTAssertEqual([a1 count], [a2 count], @"bad array size");
   for (NSUInteger i = 0; i < 4; i++) {
-    STAssertEquals([a1 booleanAtIndex:i], [a2 booleanAtIndex:i],
+    XCTAssertEqual([a1 booleanAtIndex:i], [a2 booleanAtIndex:i],
                    @"bad IOSBooleanArray element");
   }
 }
@@ -89,9 +89,9 @@
   const char *bytes = (char[]){ 1, 2, 3, 4 };
   IOSByteArray *a1 = [IOSByteArray arrayWithBytes:bytes count:4];
   IOSByteArray *a2 = [[a1 copy] autorelease];
-  STAssertEquals([a1 count], [a2 count], @"bad array size");
+  XCTAssertEqual([a1 count], [a2 count], @"bad array size");
   for (NSUInteger i = 0; i < 4; i++) {
-    STAssertEquals([a1 byteAtIndex:i], [a2 byteAtIndex:i],
+    XCTAssertEqual([a1 byteAtIndex:i], [a2 byteAtIndex:i],
                    @"bad IOSByteArray element");
   }
 }
@@ -100,9 +100,9 @@
   const unichar *chars = (unichar[]){ 'a', 'b', 'c', 'd' };
   IOSCharArray *a1 = [IOSCharArray arrayWithChars:chars count:4];
   IOSCharArray *a2 = [[a1 copy] autorelease];
-  STAssertEquals([a1 count], [a2 count], @"bad array size");
+  XCTAssertEqual([a1 count], [a2 count], @"bad array size");
   for (NSUInteger i = 0; i < 4; i++) {
-    STAssertEquals([a1 charAtIndex:i], [a2 charAtIndex:i],
+    XCTAssertEqual([a1 charAtIndex:i], [a2 charAtIndex:i],
                    @"bad IOSCharArray element");
   }
 }
@@ -111,9 +111,9 @@
   const double *doubles = (double[]){ 1.1, 2.2, 3.3, 4.4 };
   IOSDoubleArray *a1 = [IOSDoubleArray arrayWithDoubles:doubles count:4];
   IOSDoubleArray *a2 = [[a1 copy] autorelease];
-  STAssertEquals([a1 count], [a2 count], @"bad array size");
+  XCTAssertEqual([a1 count], [a2 count], @"bad array size");
   for (NSUInteger i = 0; i < 4; i++) {
-    STAssertEquals([a1 doubleAtIndex:i], [a2 doubleAtIndex:i],
+    XCTAssertEqual([a1 doubleAtIndex:i], [a2 doubleAtIndex:i],
                    @"bad IOSDoubleArray element");
   }
 }
@@ -122,9 +122,9 @@
   const float *floats = (float[]){ 1.1f, 2.2f, 3.3f, 4.4f };
   IOSFloatArray *a1 = [IOSFloatArray arrayWithFloats:floats count:4];
   IOSFloatArray *a2 = [[a1 copy] autorelease];
-  STAssertEquals([a1 count], [a2 count], @"bad array size");
+  XCTAssertEqual([a1 count], [a2 count], @"bad array size");
   for (NSUInteger i = 0; i < 4; i++) {
-    STAssertEquals([a1 floatAtIndex:i], [a2 floatAtIndex:i],
+    XCTAssertEqual([a1 floatAtIndex:i], [a2 floatAtIndex:i],
                    @"bad IOSFloatArray element");
   }
 }
@@ -133,9 +133,9 @@
   const int *ints = (int[]){ 1, 2, 3, 4 };
   IOSIntArray *a1 = [IOSIntArray arrayWithInts:ints count:4];
   IOSIntArray *a2 = [[a1 copy] autorelease];
-  STAssertEquals([a1 count], [a2 count], @"bad array size");
+  XCTAssertEqual([a1 count], [a2 count], @"bad array size");
   for (NSUInteger i = 0; i < 4; i++) {
-    STAssertEquals([a1 intAtIndex:i], [a2 intAtIndex:i],
+    XCTAssertEqual([a1 intAtIndex:i], [a2 intAtIndex:i],
                    @"bad IOSIntArray element");
   }
 }
@@ -144,9 +144,9 @@
   const long long *longs = (long long[]){ 1, 2, 3, 4 };
   IOSLongArray *a1 = [IOSLongArray arrayWithLongs:longs count:4];
   IOSLongArray *a2 = [[a1 copy] autorelease];
-  STAssertEquals([a1 count], [a2 count], @"bad array size");
+  XCTAssertEqual([a1 count], [a2 count], @"bad array size");
   for (NSUInteger i = 0; i < 4; i++) {
-    STAssertEquals([a1 longAtIndex:i], [a2 longAtIndex:i],
+    XCTAssertEqual([a1 longAtIndex:i], [a2 longAtIndex:i],
                    @"bad IOSLongArray element");
   }
 }
@@ -155,9 +155,9 @@
   const short *shorts = (short[]){ 1, 2, 3, 4 };
   IOSShortArray *a1 = [IOSShortArray arrayWithShorts:shorts count:4];
   IOSShortArray *a2 = [[a1 copy] autorelease];
-  STAssertEquals([a1 count], [a2 count], @"bad array size");
+  XCTAssertEqual([a1 count], [a2 count], @"bad array size");
   for (NSUInteger i = 0; i < 4; i++) {
-    STAssertEquals([a1 shortAtIndex:i], [a2 shortAtIndex:i],
+    XCTAssertEqual([a1 shortAtIndex:i], [a2 shortAtIndex:i],
                    @"bad IOSShortArray element");
   }
 }
@@ -169,25 +169,25 @@
   // Verify single dimension array is correct type.
   id array =
       [IOSBooleanArray arrayWithDimensions:1 lengths:(int[]){2}];
-  STAssertTrue([array isMemberOfClass:[IOSBooleanArray class]],
+  XCTAssertTrue([array isMemberOfClass:[IOSBooleanArray class]],
                @"wrong array type: %@", [array class]);
 
   // Verify multiple dimension array is an array of arrays (of arrays).
   array =
       [IOSBooleanArray arrayWithDimensions:3 lengths:(int[]){2, 4, 6}];
-  STAssertTrue([array isMemberOfClass:[IOSObjectArray class]],
+  XCTAssertTrue([array isMemberOfClass:[IOSObjectArray class]],
                @"wrong array type: %@", [array class]);
-  STAssertTrue([array count] == 2, @"invalid array count");
+  XCTAssertTrue([array count] == 2, @"invalid array count");
   for (NSUInteger i = 0; i < 2; i++) {
     id subarray = [array objectAtIndex:i];
-    STAssertTrue([subarray isMemberOfClass:[IOSObjectArray class]],
+    XCTAssertTrue([subarray isMemberOfClass:[IOSObjectArray class]],
                  @"wrong subarray type: %@", [subarray class]);
-    STAssertTrue([subarray count] == 4, @"invalid subarray count");
+    XCTAssertTrue([subarray count] == 4, @"invalid subarray count");
     for (NSUInteger i = 0; i < 4; i++) {
       id subsubarray = [subarray objectAtIndex:i];
-      STAssertTrue([subsubarray isMemberOfClass:[IOSBooleanArray class]],
+      XCTAssertTrue([subsubarray isMemberOfClass:[IOSBooleanArray class]],
                    @"wrong subarray type: %@", [subarray class]);
-      STAssertTrue([subsubarray count] == 6, @"invalid subarray count");
+      XCTAssertTrue([subsubarray count] == 6, @"invalid subarray count");
     }
   }
 }
@@ -201,30 +201,30 @@
   id array = [IOSObjectArray arrayWithDimensions:1
                                          lengths:(int[]){2}
                                             type:type];
-  STAssertEqualObjects([array elementType], type,
+  XCTAssertEqualObjects([array elementType], type,
                        @"wrong element type: %@", [array elementType]);
 
   // Verify multiple dimension array is an array of arrays (of arrays).
   array = [IOSObjectArray arrayWithDimensions:3
                                       lengths:(int[]){2, 4, 6}
                                          type:type];
-  STAssertTrue([array isMemberOfClass:[IOSObjectArray class]],
+  XCTAssertTrue([array isMemberOfClass:[IOSObjectArray class]],
                @"wrong array type: %@", [array class]);
-  STAssertTrue([array count] == 2,
+  XCTAssertTrue([array count] == 2,
                @"invalid array count, was %d", [array count]);
   for (NSUInteger i = 0; i < 2; i++) {
     id subarray = [array objectAtIndex:i];
-    STAssertTrue([subarray isMemberOfClass:[IOSObjectArray class]],
+    XCTAssertTrue([subarray isMemberOfClass:[IOSObjectArray class]],
                  @"wrong subarray type: %@", [subarray class]);
-    STAssertTrue([subarray count] == 4,
+    XCTAssertTrue([subarray count] == 4,
                  @"invalid subarray count, was %d", [subarray count]);
     for (NSUInteger i = 0; i < 4; i++) {
       id subsubarray = [subarray objectAtIndex:i];
-      STAssertTrue([subsubarray isMemberOfClass:[IOSObjectArray class]],
+      XCTAssertTrue([subsubarray isMemberOfClass:[IOSObjectArray class]],
                    @"wrong subarray type: %@", [subarray class]);
-      STAssertTrue([subsubarray count] == 6,
+      XCTAssertTrue([subsubarray count] == 6,
                    @"invalid subsubarray count, was %d", [subsubarray count]);
-      STAssertEqualObjects([subsubarray elementType], type,
+      XCTAssertEqualObjects([subsubarray elementType], type,
                            @"wrong array type: %@", [subsubarray elementType]);
     }
   }
@@ -235,23 +235,23 @@
   // Verify primitive array types are equal ...
   IOSBooleanArray *boolArray1 = [IOSBooleanArray arrayWithLength:0];
   IOSBooleanArray *boolArray2 = [IOSBooleanArray arrayWithLength:10];
-  STAssertTrue([[boolArray1 getClass] isEqual:[boolArray2 getClass]],
+  XCTAssertTrue([[boolArray1 getClass] isEqual:[boolArray2 getClass]],
                @"boolean array types not equal");
   IOSIntArray *intArray1 = [IOSIntArray arrayWithLength:0];
   IOSIntArray *intArray2 = [IOSIntArray arrayWithLength:10];
-  STAssertTrue([[intArray1 getClass] isEqual:[intArray2 getClass]], @"int array types not equal");
+  XCTAssertTrue([[intArray1 getClass] isEqual:[intArray2 getClass]], @"int array types not equal");
 
   // ... but not to each other.
-  STAssertFalse([[boolArray1 getClass] isEqual:[intArray2 getClass]],
+  XCTAssertFalse([[boolArray1 getClass] isEqual:[intArray2 getClass]],
                 @"different primitive array types equal");
 
   // Verify object array types are equal only if their element type is equal.
   IOSObjectArray *dateArray1 = [IOSObjectArray arrayWithLength:0 type:[JavaUtilDate getClass]];
   IOSObjectArray *dateArray2 = [IOSObjectArray arrayWithLength:10 type:[JavaUtilDate getClass]];
   IOSObjectArray *calArray = [IOSObjectArray arrayWithLength:0 type:[JavaUtilCalendar getClass]];
-  STAssertTrue([[dateArray1 getClass] isEqual:[dateArray2 getClass]],
+  XCTAssertTrue([[dateArray1 getClass] isEqual:[dateArray2 getClass]],
                @"Date array types not equal");
-  STAssertFalse([[dateArray1 getClass] isEqual:[calArray getClass]],
+  XCTAssertFalse([[dateArray1 getClass] isEqual:[calArray getClass]],
                 @"different object array types equal");
 }
 

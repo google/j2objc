@@ -19,7 +19,7 @@
 //  Created by Tom Ball on 12/7/11.
 //
 
-#import <SenTestingKit/SenTestingKit.h>
+#import <XCTest/XCTest.h>
 #import "IOSClass.h"
 #import "java/lang/Byte.h"
 #import "java/lang/Double.h"
@@ -32,7 +32,7 @@
 
 static double defaultValue = 3.1416;
 
-@interface JavaLangReflectMethodTest : SenTestCase {
+@interface JavaLangReflectMethodTest : XCTestCase {
  @private
   JavaUtilLinkedList *object_;
   IOSClass *class_;
@@ -50,19 +50,19 @@ static double defaultValue = 3.1416;
 - (void)testGetName {
   JavaLangReflectMethod *hashMethod = [class_ getMethod:@"hash"
                                          parameterTypes:nil];
-  STAssertNotNil(hashMethod, @"hashMethod not found", nil);
+  XCTAssertNotNil(hashMethod, @"hashMethod not found", nil);
   NSString *name = [hashMethod getName];
-  STAssertEqualObjects(name, @"hashCode", @"wrong method name", nil);
+  XCTAssertEqualObjects(name, @"hashCode", @"wrong method name", nil);
 }
 
 - (void)testGetReturnType {
   JavaLangReflectMethod *sizeMethod = [class_ getMethod:@"size"
                                          parameterTypes:nil];
-  STAssertNotNil(sizeMethod, @"sizeMethod not found", nil);
+  XCTAssertNotNil(sizeMethod, @"sizeMethod not found", nil);
   IOSClass *returnType = [sizeMethod getReturnType];
-  STAssertNotNil(returnType, @"no return type returned", nil);
+  XCTAssertNotNil(returnType, @"no return type returned", nil);
   NSString *typeName = [returnType getName];
-  STAssertEqualObjects(typeName, @"int", @"wrong return type returned", nil);
+  XCTAssertEqualObjects(typeName, @"int", @"wrong return type returned", nil);
 }
 
 - (void)testInvocation {
@@ -72,10 +72,10 @@ static double defaultValue = 3.1416;
   IOSObjectArray *parameters = [IOSObjectArray arrayWithLength:0 type:objectType];
   id result = [sizeMethod invokeWithId:object_
                            withNSObjectArray:parameters];
-  STAssertTrue([result isKindOfClass:[JavaLangInteger class]],
+  XCTAssertTrue([result isKindOfClass:[JavaLangInteger class]],
                 @"incorrect type returned", nil);
   JavaLangInteger *integer = (JavaLangInteger *) result;
-  STAssertEquals([integer intValue], 0, @"invalid result", nil);
+  XCTAssertEqual([integer intValue], 0, @"invalid result", nil);
 }
 
 static id invokeValueMethod(NSString *methodName) {
@@ -92,50 +92,50 @@ static id invokeValueMethod(NSString *methodName) {
 
 - (void)testByteReturn {
   id result = invokeValueMethod(@"charValue");
-  STAssertTrue([result isKindOfClass:[JavaLangByte class]],
+  XCTAssertTrue([result isKindOfClass:[JavaLangByte class]],
                @"incorrect type returned", nil);
   JavaLangByte *b = (JavaLangByte *) result;
-  STAssertEquals([b charValue], (char) 3, @"invalid result", nil);
+  XCTAssertEqual([b charValue], (char) 3, @"invalid result", nil);
 }
 
 - (void)testDoubleReturn {
   id result = invokeValueMethod(@"doubleValue");
-  STAssertTrue([result isKindOfClass:[JavaLangDouble class]],
+  XCTAssertTrue([result isKindOfClass:[JavaLangDouble class]],
                @"incorrect type returned", nil);
   JavaLangDouble *d = (JavaLangDouble *) result;
-  STAssertEquals([d doubleValue], 3.1416, @"invalid result", nil);
+  XCTAssertEqual([d doubleValue], 3.1416, @"invalid result", nil);
 }
 
 - (void)testFloatReturn {
   id result = invokeValueMethod(@"floatValue");
-  STAssertTrue([result isKindOfClass:[JavaLangFloat class]],
+  XCTAssertTrue([result isKindOfClass:[JavaLangFloat class]],
                @"incorrect type returned", nil);
   JavaLangFloat *f = (JavaLangFloat *) result;
-  STAssertEquals([f floatValue], 3.1416f, @"invalid result", nil);
+  XCTAssertEqual([f floatValue], 3.1416f, @"invalid result", nil);
 }
 
 - (void)testIntegerReturn {
   id result = invokeValueMethod(@"intValue");
-  STAssertTrue([result isKindOfClass:[JavaLangInteger class]],
+  XCTAssertTrue([result isKindOfClass:[JavaLangInteger class]],
                @"incorrect type returned", nil);
   JavaLangInteger *i = (JavaLangInteger *) result;
-  STAssertEquals([i intValue], 3, @"invalid result", nil);
+  XCTAssertEqual([i intValue], 3, @"invalid result", nil);
 }
 
 - (void)testLongReturn {
   id result = invokeValueMethod(@"longLongValue");
-  STAssertTrue([result isKindOfClass:[JavaLangLong class]],
+  XCTAssertTrue([result isKindOfClass:[JavaLangLong class]],
                @"incorrect type returned", nil);
   JavaLangLong *l = (JavaLangLong *) result;
-  STAssertEquals([l longLongValue], 3LL, @"invalid result", nil);
+  XCTAssertEqual([l longLongValue], 3LL, @"invalid result", nil);
 }
 
 - (void)testShortReturn {
   id result = invokeValueMethod(@"shortValue");
-  STAssertTrue([result isKindOfClass:[JavaLangShort class]],
+  XCTAssertTrue([result isKindOfClass:[JavaLangShort class]],
                @"incorrect type returned", nil);
   JavaLangShort *s = (JavaLangShort *) result;
-  STAssertEquals([s shortValue], (short) 3, @"invalid result", nil);
+  XCTAssertEqual([s shortValue], (short) 3, @"invalid result", nil);
 }
 
 @end
