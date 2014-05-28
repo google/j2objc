@@ -45,6 +45,18 @@ public final class FieldTest extends TestCase {
         assertFalse(f1.equals(f2));
     }
 
+    public void testSetObject() throws Exception {
+      Field f1 = FieldTestHelper.class.getField("a");
+      Field f2 = FieldTestHelper.class.getField("b");
+      FieldTestHelper fth = new FieldTestHelper();
+      assertNull(fth.a);
+      assertNull(fth.b);
+      f1.set(fth, "abc");
+      f2.set(fth, FieldTest.class);
+      assertEquals("abc", fth.a);
+      assertEquals(FieldTest.class, fth.b);
+    }
+
     static class FieldTestHelper {
         public String a;
         public Object b;

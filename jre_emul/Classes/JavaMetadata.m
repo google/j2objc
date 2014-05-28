@@ -172,6 +172,10 @@
       [NSString stringWithUTF8String:data_->name];
 }
 
+- (NSString *)iosName {
+  return [NSString stringWithUTF8String:data_->name];
+}
+
 - (NSString *)javaName {
   return data_->javaName ? [NSString stringWithUTF8String:data_->javaName] : nil;
 }

@@ -489,10 +489,14 @@ static IOSClass *IOSClass_ArrayClassForName(NSString *name, NSUInteger index) {
       iosClass = ClassForJavaName(className);
     }
   }
+  if (!iosClass) {
+    // See if it's an enum.
+    iosClass = ClassForJavaName([className stringByAppendingString:@"Enum"]);
+  }
   if (iosClass) {
     return iosClass;
   }
-  @throw AUTORELEASE([[JavaLangClassNotFoundException alloc] init]);
+  @throw AUTORELEASE([[JavaLangClassNotFoundException alloc] initWithNSString:className]);
 }
 
 + (IOSClass *)forName:(NSString *)className
@@ -693,12 +697,13 @@ static JavaLangReflectField *FieldFromIvar(IOSClass *iosClass, Ivar ivar) {
 static void GetFieldsFromClass(IOSClass *iosClass, NSMutableDictionary *fields) {
   JavaClassMetadata *metadata = [iosClass getMetadata];
   if (metadata) {
-    // Add static fields, if any.
     IOSObjectArray *infos = [metadata allFields];
     for (unsigned i = 0; i < infos->size_; i++) {
-      JavaLangReflectField *field = [JavaLangReflectField fieldWithIvar:nil
+      JavaFieldMetadata *fieldMeta = [infos objectAtIndex:i];
+      Ivar ivar = class_getInstanceVariable(iosClass.objcClass, [[fieldMeta iosName] UTF8String]);
+      JavaLangReflectField *field = [JavaLangReflectField fieldWithIvar:ivar
                                                               withClass:iosClass
-                                                           withMetadata:[infos objectAtIndex:i]];
+                                                           withMetadata:fieldMeta];
       NSString *name = [field getName];
       if (![fields valueForKey:name]) {
         [fields setObject:field forKey:name];
@@ -727,12 +732,12 @@ static void GetFieldsFromClass(IOSClass *iosClass, NSMutableDictionary *fields) 
       return FieldFromIvar(self, ivar);
     }
 
-    // Check static variables.
     JavaClassMetadata *metadata = [self getMetadata];
     if (metadata) {
       JavaFieldMetadata *fieldMeta = [metadata findFieldMetadata:[name UTF8String]];
       if (fieldMeta) {
-        return [JavaLangReflectField fieldWithIvar:nil
+        ivar = class_getInstanceVariable(cls, [[fieldMeta iosName] UTF8String]);
+        return [JavaLangReflectField fieldWithIvar:ivar
                                          withClass:self
                                       withMetadata:fieldMeta];
       }
@@ -756,7 +761,8 @@ static void GetFieldsFromClass(IOSClass *iosClass, NSMutableDictionary *fields) 
     if (metadata) {
       JavaFieldMetadata *fieldMeta = [metadata findFieldMetadata:[name UTF8String]];
       if (fieldMeta) {
-        return [JavaLangReflectField fieldWithIvar:nil
+        ivar = class_getInstanceVariable(cls, [[fieldMeta iosName] UTF8String]);
+        return [JavaLangReflectField fieldWithIvar:ivar
                                          withClass:self
                                       withMetadata:fieldMeta];
       }

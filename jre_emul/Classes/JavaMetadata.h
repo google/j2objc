@@ -28,6 +28,7 @@
 
 - (id)initWithMetadata:(const J2ObjcFieldInfo *)metadata;
 - (NSString *)name;
+- (NSString *)iosName;
 - (NSString *)javaName;
 - (int)modifiers;
 - (id<JavaLangReflectType>)type;
