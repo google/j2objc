@@ -18,6 +18,7 @@
 package java.lang;
 
 import java.io.ObjectStreamField;
+import java.io.Serializable;
 import java.io.UnsupportedEncodingException;
 import java.nio.charset.Charset;
 import java.util.Comparator;
@@ -27,7 +28,7 @@ import java.util.Comparator;
  *
  * @see java.lang.Object
  */
-public class String implements CharSequence, Comparable<String> {
+public class String implements CharSequence, Comparable<String>, Serializable {
 
   public static final Comparator<String> CASE_INSENSITIVE_ORDER = new CaseInsensitiveComparator();
 
