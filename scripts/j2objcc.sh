@@ -43,7 +43,7 @@ if [ "x${IPHONEOS_DEPLOYMENT_TARGET}" = "x" ]; then
   FRAMEWORKS="${FRAMEWORKS} -framework ExceptionHandling"
 fi
 
-declare CC_FLAGS="-Werror -Wno-parentheses"
+declare CC_FLAGS="-Werror -Wno-parentheses -fno-strict-overflow"
 declare OBJC="-std=c11"
 declare LIBS="-ljre_emul -l z -l j2objc_main"
 declare LINK_FLAGS="${LIBS} ${FRAMEWORKS} -L ${LIB_PATH}"
