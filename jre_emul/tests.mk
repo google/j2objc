@@ -20,6 +20,9 @@
 
 default: test
 
+# Turn off optimization so test lines are not rearranged by compiler.
+OPTIMIZATION_LEVEL=0
+
 include environment.mk
 
 SUPPORT_SOURCES = \
@@ -263,6 +266,8 @@ TEST_SOURCES = \
     org/apache/harmony/logging/tests/java/util/logging/HandlerTest.java \
     org/apache/harmony/logging/tests/java/util/logging/LevelTest.java \
     org/apache/harmony/logging/tests/java/util/logging/LogManagerTest.java \
+    org/apache/harmony/logging/tests/java/util/logging/LogRecordTest.java \
+    org/apache/harmony/logging/tests/java/util/logging/LoggerTest.java \
     org/apache/harmony/logging/tests/java/util/logging/MemoryHandlerTest.java \
     org/apache/harmony/logging/tests/java/util/logging/SimpleFormatterTest.java \
     org/apache/harmony/logging/tests/java/util/logging/StreamHandlerTest.java \
@@ -287,7 +292,9 @@ TEST_SOURCES = \
     org/apache/harmony/luni/tests/java/lang/IllegalThreadStateExceptionTest.java \
     org/apache/harmony/luni/tests/java/lang/IndexOutOfBoundsExceptionTest.java \
     org/apache/harmony/luni/tests/java/lang/InstantiationExceptionTest.java \
+    org/apache/harmony/luni/tests/java/lang/IntegerTest.java \
     org/apache/harmony/luni/tests/java/lang/InterruptedExceptionTest.java \
+    org/apache/harmony/luni/tests/java/lang/LongTest.java \
     org/apache/harmony/luni/tests/java/lang/NegativeArraySizeExceptionTest.java \
     org/apache/harmony/luni/tests/java/lang/NoSuchFieldErrorTest.java \
     org/apache/harmony/luni/tests/java/lang/NoSuchFieldExceptionTest.java \
@@ -345,12 +352,15 @@ TEST_SOURCES = \
     org/apache/harmony/luni/tests/java/util/TooManyListenersExceptionTest.java \
     org/apache/harmony/luni/tests/java/util/TreeMapTest.java \
     org/apache/harmony/luni/tests/java/util/TreeSetTest.java \
+    org/apache/harmony/luni/tests/java/util/UUIDTest.java \
     org/apache/harmony/luni/tests/java/util/VectorTest.java \
     org/apache/harmony/tests/java/io/ObjectStreamClassTest.java \
     org/apache/harmony/tests/java/io/ObjectStreamConstantsTest.java \
     org/apache/harmony/tests/java/io/ObjectStreamFieldTest.java \
     org/apache/harmony/tests/java/io/RandomAccessFileTest.java \
     org/apache/harmony/tests/java/lang/CharacterTest.java \
+    org/apache/harmony/tests/java/lang/DoubleTest.java \
+    org/apache/harmony/tests/java/lang/FloatTest.java \
     org/apache/harmony/tests/java/math/BigIntegerAddTest.java \
     org/apache/harmony/tests/java/math/BigIntegerAndTest.java \
     org/apache/harmony/tests/java/math/BigIntegerCompareTest.java \
@@ -399,17 +409,6 @@ FAILING_TESTS = \
     libcore/java/util/TreeSetTest.java \
     org/apache/harmony/luni/tests/java/lang/StrictMathTest.java \
     org/apache/harmony/luni/tests/java/lang/StringBuilderTest.java \
-
-# These tests have failures only when the JRE is compiled with -Os.
-# https://github.com/google/j2objc/issues/364
-FAILING_TESTS_OPTIMIZED = \
-    org/apache/harmony/logging/tests/java/util/logging/LogRecordTest.java \
-    org/apache/harmony/logging/tests/java/util/logging/LoggerTest.java \
-    org/apache/harmony/luni/tests/java/lang/IntegerTest.java \
-    org/apache/harmony/luni/tests/java/lang/LongTest.java \
-    org/apache/harmony/luni/tests/java/util/UUIDTest.java \
-    org/apache/harmony/tests/java/lang/DoubleTest.java \
-    org/apache/harmony/tests/java/lang/FloatTest.java \
 
 # Most of these tests are failing for a common index-out-of-range error.
 FAILING_MATH_TESTS = \
