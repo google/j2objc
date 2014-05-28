@@ -28,6 +28,7 @@ import com.google.devtools.j2objc.gen.PrimitiveArrayTest;
 import com.google.devtools.j2objc.gen.StatementGeneratorTest;
 import com.google.devtools.j2objc.translate.ASTFactoryTest;
 import com.google.devtools.j2objc.translate.AnonymousClassConverterTest;
+import com.google.devtools.j2objc.translate.ArrayRewriterTest;
 import com.google.devtools.j2objc.translate.AutoboxerTest;
 import com.google.devtools.j2objc.translate.ComplexExpressionExtractorTest;
 import com.google.devtools.j2objc.translate.CopyAllFieldsWriterTest;
@@ -73,6 +74,7 @@ public class SmallTests {
     AnonymousClassConverterTest.class,
     ArrayAccessTest.class,
     ArrayCreationTest.class,
+    ArrayRewriterTest.class,
     AutoboxerTest.class,
     BindingMapBuilderTest.class,
     BindingUtilTest.class,

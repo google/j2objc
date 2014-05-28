@@ -144,6 +144,9 @@ public class ArrayRewriter extends ErrorReportingASTVisitor {
     int varargsSize = args.size() - paramTypes.length + 1;
     if (varargsSize == 1) {
       ITypeBinding lastArgType = Types.getTypeBinding(args.get(args.size() - 1));
+      if (lastArgType.isNullType()) {
+        return;
+      }
       if (lastParam.getDimensions() == lastArgType.getDimensions()) {
         // Last argument is already an array.
         return;
