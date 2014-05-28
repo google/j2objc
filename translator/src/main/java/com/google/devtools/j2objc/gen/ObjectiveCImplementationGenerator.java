@@ -397,17 +397,6 @@ public class ObjectiveCImplementationGenerator extends ObjectiveCSourceFileGener
 
   private void printMethods(TypeDeclaration node) {
     printMethodsAndOcni(node, Arrays.asList(node.getMethods()), blockComments.get(node));
-
-    // If node implements CharSequence, add forwarding method from the
-    // sequenceDescription method to description (toString()).  See
-    // JavaToIOSMethodTranslator.loadCharSequenceMethods() for details.
-    ITypeBinding binding = Types.getTypeBinding(node);
-    for (ITypeBinding interfaze : binding.getInterfaces()) {
-      if (interfaze.getQualifiedName().equals("java.lang.CharSequence")) {
-        println("- (NSString *)description {\n  return [self sequenceDescription];\n}\n");
-      }
-    }
-
     List<VariableDeclarationFragment> properties = getProperties(node.getFields());
     if (properties.size() > 0) {
       printStrongReferencesMethod(properties);

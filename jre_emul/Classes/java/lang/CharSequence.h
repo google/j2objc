@@ -28,7 +28,6 @@
 - (int)sequenceLength;
 - (unichar)charAtWithInt:(int)index;
 - (id<JavaLangCharSequence>)subSequenceFrom:(int)start to:(int)end;
-- (NSString *)sequenceDescription;
 @end
 
 #endif /* JAVALANGCHARSEQUENCE_H */

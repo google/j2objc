@@ -226,14 +226,14 @@ destinationBegin:(int)destinationBegin {
 }
 
 + (NSString *)stringWithJavaLangStringBuffer:(JavaLangStringBuffer *)sb {
-  return [sb sequenceDescription];
+  return [sb description];
 }
 
 + (NSString *)stringWithJavaLangStringBuilder:(JavaLangStringBuilder *)sb {
   if (!sb) {
     @throw makeException([JavaLangNullPointerException class]);
   }
-  return [sb sequenceDescription];
+  return [sb description];
 }
 
 - (int)compareToWithId:(id)another {
@@ -382,10 +382,6 @@ destinationBegin:(int)destinationBegin {
   return [self characterAtIndex:(NSUInteger)index];
 }
 
-- (NSString *)sequenceDescription {
-  return self;
-}
-
 - (int)sequenceLength {
   return (int) [self length];
 }
@@ -413,8 +409,8 @@ destinationBegin:(int)destinationBegin {
 
 - (NSString *)replace:(id<JavaLangCharSequence>)oldSequence
          withSequence:(id<JavaLangCharSequence>)newSequence {
-  NSString *oldString = [oldSequence sequenceDescription];
-  NSString *newString = [newSequence sequenceDescription];
+  NSString *oldString = [oldSequence description];
+  NSString *newString = [newSequence description];
   return [self stringByReplacingOccurrencesOfString:oldString
                                          withString:newString];
 }
