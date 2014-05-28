@@ -213,6 +213,11 @@ public class ClassTest extends TestCase {
         methods.length + " " + Arrays.toString(methods), methods.length >= 6);
   }
 
+  public void testGetEnum() throws Exception {
+    Class<?> innerEnum = Class.forName("java.lang.ClassTest$InnerEnum");
+    assertNotNull(innerEnum);
+  }
+
   static class InnerClass {
   }
 
@@ -223,5 +228,9 @@ public class ClassTest extends TestCase {
   }
 
   static class SubParameterizedClass<C> extends ParameterizedClass<String, C> {
+  }
+
+  static enum InnerEnum {
+    A, B, C;
   }
 }
