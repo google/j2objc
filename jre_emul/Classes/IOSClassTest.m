@@ -26,10 +26,10 @@
 #import "java/lang/Double.h"
 #import "java/util/Arrays.h"
 
-#import <SenTestingKit/SenTestingKit.h>
+#import <XCTest/XCTest.h>
 
 // Unit tests for IOSClass.
-@interface IOSClassTest : SenTestCase
+@interface IOSClassTest : XCTestCase
 @end
 
 
@@ -43,7 +43,7 @@
                                  count:2
                                   type:[IOSClass getClass]];
   id method = [arraysClass getMethod:@"binarySearch" parameterTypes:argTypes];
-  STAssertNotNil(method, @"Arrays.binarySearch(double[], double) not found");
+  XCTAssertNotNil(method, @"Arrays.binarySearch(double[], double) not found");
 }
 
 @end

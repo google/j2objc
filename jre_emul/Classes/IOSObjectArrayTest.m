@@ -21,10 +21,10 @@
 
 #import "IOSClass.h"
 #import "IOSObjectArray.h"
-#import <SenTestingKit/SenTestingKit.h>
+#import <XCTest/XCTest.h>
 
 // Unit tests for IOSObjectArray.
-@interface IOSObjectArrayTest : SenTestCase {
+@interface IOSObjectArrayTest : XCTestCase {
 }
 @end
 
@@ -34,10 +34,10 @@
   IOSClass * elementType = [IOSClass classWithClass:[NSObject class]];
   IOSObjectArray *array = [IOSObjectArray arrayWithLength:10 type:elementType];
   int length = (int) [array count];
-  STAssertEquals(length, 10, @"incorrect array size: %d", length);
+  XCTAssertEqual(length, 10, @"incorrect array size: %d", length);
   for (NSUInteger i = 0; i < 10; i++) {
     id element = [array objectAtIndex:i];
-    STAssertNil(element, @"non-nil array element at index %d", i);
+    XCTAssertNil(element, @"non-nil array element at index %d", i);
   }
 }
 
@@ -46,9 +46,9 @@
   IOSObjectArray *array = [IOSObjectArray arrayWithLength:3 type:elementType];
   [array replaceObjectAtIndex:0 withObject:@"zero"];
   [array replaceObjectAtIndex:2 withObject:@"two"];
-  STAssertEquals([array objectAtIndex:0], @"zero", @"incorrect element", nil);
-  STAssertNil([array objectAtIndex:1], @"non-nil object", nil);
-  STAssertEquals([array objectAtIndex:2], @"two", @"incorrect element", nil);
+  XCTAssertEqual([array objectAtIndex:0], @"zero", @"incorrect element", nil);
+  XCTAssertNil([array objectAtIndex:1], @"non-nil object", nil);
+  XCTAssertEqual([array objectAtIndex:2], @"two", @"incorrect element", nil);
 }
 
 - (void)testGetObjects {
@@ -58,9 +58,9 @@
   [array replaceObjectAtIndex:2 withObject:@"two"];
   NSObject **copy = malloc(3 * sizeof(NSObject *));
   [array getObjects:copy length:3];
-  STAssertEquals(*copy, @"zero", @"incorrect element", nil);
-  STAssertNil(*(copy + 1), @"non-nil object", nil);
-  STAssertEquals(*(copy + 2), @"two", @"incorrect element", nil);
+  XCTAssertEqual(*copy, @"zero", @"incorrect element", nil);
+  XCTAssertNil(*(copy + 1), @"non-nil object", nil);
+  XCTAssertEqual(*(copy + 2), @"two", @"incorrect element", nil);
   free(copy);
 }
 
@@ -69,9 +69,9 @@
   IOSObjectArray *array = [IOSObjectArray arrayWithLength:1 type:elementType];
   NSObject *item = @"foo";
   id result = [array replaceObjectAtIndex:0 withObject:item];
-  STAssertEquals(item, result, @"same item wasn't returned", nil);
+  XCTAssertEqual(item, result, @"same item wasn't returned", nil);
   result = [array objectAtIndex:0];
-  STAssertEquals(item, result, @"same item wasn't returned", nil);
+  XCTAssertEqual(item, result, @"same item wasn't returned", nil);
 }
 
 - (void)testArrayCopy {
@@ -88,11 +88,11 @@
   [numbers2 arraycopy:NSMakeRange(1, 1)
           destination:numbers
                offset:2];
-  STAssertEquals([[numbers objectAtIndex:0] intValue], 0, @"incorrect element", nil);
-  STAssertEquals([[numbers objectAtIndex:1] intValue], 1, @"incorrect element", nil);
-  STAssertEquals([[numbers objectAtIndex:2] intValue], 12, @"incorrect element", nil);
-  STAssertEquals([[numbers objectAtIndex:3] intValue], 3, @"incorrect element", nil);
-  STAssertEquals([[numbers objectAtIndex:4] intValue], 4, @"incorrect element", nil);
+  XCTAssertEqual([[numbers objectAtIndex:0] intValue], 0, @"incorrect element", nil);
+  XCTAssertEqual([[numbers objectAtIndex:1] intValue], 1, @"incorrect element", nil);
+  XCTAssertEqual([[numbers objectAtIndex:2] intValue], 12, @"incorrect element", nil);
+  XCTAssertEqual([[numbers objectAtIndex:3] intValue], 3, @"incorrect element", nil);
+  XCTAssertEqual([[numbers objectAtIndex:4] intValue], 4, @"incorrect element", nil);
 }
 
 - (void)testOverlappingArrayCopy {
@@ -105,11 +105,11 @@
   [numbers arraycopy:NSMakeRange(1, 3)
          destination:numbers
               offset:2];
-  STAssertEquals([[numbers objectAtIndex:0] intValue], 0, @"incorrect element", nil);
-  STAssertEquals([[numbers objectAtIndex:1] intValue], 1, @"incorrect element", nil);
-  STAssertEquals([[numbers objectAtIndex:2] intValue], 1, @"incorrect element", nil);
-  STAssertEquals([[numbers objectAtIndex:3] intValue], 2, @"incorrect element", nil);
-  STAssertEquals([[numbers objectAtIndex:4] intValue], 3, @"incorrect element", nil);
+  XCTAssertEqual([[numbers objectAtIndex:0] intValue], 0, @"incorrect element", nil);
+  XCTAssertEqual([[numbers objectAtIndex:1] intValue], 1, @"incorrect element", nil);
+  XCTAssertEqual([[numbers objectAtIndex:2] intValue], 1, @"incorrect element", nil);
+  XCTAssertEqual([[numbers objectAtIndex:3] intValue], 2, @"incorrect element", nil);
+  XCTAssertEqual([[numbers objectAtIndex:4] intValue], 3, @"incorrect element", nil);
 }
 
 - (void)testCopy {
@@ -120,9 +120,9 @@
                      withObject:[NSNumber numberWithInt:i]];
   }
   IOSObjectArray *clone = [array copy];
-  STAssertEquals([array count], [clone count], @"counts don't match", nil);
+  XCTAssertEqual([array count], [clone count], @"counts don't match", nil);
   for (int i = 0; i < 10; i++) {
-    STAssertEquals([array objectAtIndex:i], [clone objectAtIndex:i],
+    XCTAssertEqual([array objectAtIndex:i], [clone objectAtIndex:i],
                    @"elements don't match at index: %d", i);
   }
 }

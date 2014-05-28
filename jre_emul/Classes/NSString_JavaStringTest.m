@@ -19,26 +19,26 @@
 //  Created by Tom Ball on 10/4/11.
 //
 
-#import <SenTestingKit/SenTestingKit.h>
+#import <XCTest/XCTest.h>
 #import "JreEmulation.h"
 
-@interface NSString_JavaStringTest : SenTestCase {
+@interface NSString_JavaStringTest : XCTestCase {
 }
 @end
 
 @implementation NSString_JavaStringTest
 
 - (void)testAddedProtocols {
-  STAssertTrue([NSString conformsToProtocol:@protocol(JavaLangCharSequence)],
+  XCTAssertTrue([NSString conformsToProtocol:@protocol(JavaLangCharSequence)],
                @"NSString does not include JavaString category", nil);
-  STAssertTrue([NSString conformsToProtocol:@protocol(JavaLangComparable)],
+  XCTAssertTrue([NSString conformsToProtocol:@protocol(JavaLangComparable)],
                @"NSString does not include JavaString category", nil);
 }
 
 - (void)testCharSequenceLength {
   id<JavaLangCharSequence> cs = @"12345";
   NSUInteger len = [cs sequenceLength];
-  STAssertEquals(len, (NSUInteger) 5,
+  XCTAssertEqual(len, (NSUInteger) 5,
                  @"char sequence length should be 5, but was %d",
                  len);
 }
@@ -46,56 +46,56 @@
 - (void)testSplit {
   // Interspersed occurrences.
   IOSObjectArray *parts = [@"ababa" split:@"b"];
-  STAssertEquals((NSUInteger) 3, [parts count], @"Wrong number of parts.");
-  STAssertEqualObjects(@"a", [parts objectAtIndex:0], @"Wrong part.");
-  STAssertEqualObjects(@"a", [parts objectAtIndex:1], @"Wrong part.");
-  STAssertEqualObjects(@"a", [parts objectAtIndex:2], @"Wrong part.");
+  XCTAssertEqual((NSUInteger) 3, [parts count], @"Wrong number of parts.");
+  XCTAssertEqualObjects(@"a", [parts objectAtIndex:0], @"Wrong part.");
+  XCTAssertEqualObjects(@"a", [parts objectAtIndex:1], @"Wrong part.");
+  XCTAssertEqualObjects(@"a", [parts objectAtIndex:2], @"Wrong part.");
 
   // String begins and ends with token.
   parts = [@"bbbabacbb" split:@"b"];
-  STAssertEquals((NSUInteger) 5, [parts count], @"Wrong number of parts.");
-  STAssertEqualObjects(@"", [parts objectAtIndex:0], @"Wrong part.");
-  STAssertEqualObjects(@"", [parts objectAtIndex:1], @"Wrong part.");
-  STAssertEqualObjects(@"", [parts objectAtIndex:2], @"Wrong part.");
-  STAssertEqualObjects(@"a", [parts objectAtIndex:3], @"Wrong part.");
-  STAssertEqualObjects(@"ac", [parts objectAtIndex:4], @"Wrong part.");
+  XCTAssertEqual((NSUInteger) 5, [parts count], @"Wrong number of parts.");
+  XCTAssertEqualObjects(@"", [parts objectAtIndex:0], @"Wrong part.");
+  XCTAssertEqualObjects(@"", [parts objectAtIndex:1], @"Wrong part.");
+  XCTAssertEqualObjects(@"", [parts objectAtIndex:2], @"Wrong part.");
+  XCTAssertEqualObjects(@"a", [parts objectAtIndex:3], @"Wrong part.");
+  XCTAssertEqualObjects(@"ac", [parts objectAtIndex:4], @"Wrong part.");
 
   // Regular expression.
   parts = [@"abba" split:@"[b]+"];
-  STAssertEquals((NSUInteger) 2, [parts count], @"Wrong number of parts.");
-  STAssertEqualObjects(@"a", [parts objectAtIndex:0], @"Wrong part.");
-  STAssertEqualObjects(@"a", [parts objectAtIndex:1], @"Wrong part.");
+  XCTAssertEqual((NSUInteger) 2, [parts count], @"Wrong number of parts.");
+  XCTAssertEqualObjects(@"a", [parts objectAtIndex:0], @"Wrong part.");
+  XCTAssertEqualObjects(@"a", [parts objectAtIndex:1], @"Wrong part.");
 
   // Space regular expression.
   parts = [@"what up" split:@"\\s+"];
-  STAssertEquals((NSUInteger) 2, [parts count], @"Wrong number of parts.");
-  STAssertEqualObjects(@"what", [parts objectAtIndex:0],
+  XCTAssertEqual((NSUInteger) 2, [parts count], @"Wrong number of parts.");
+  XCTAssertEqualObjects(@"what", [parts objectAtIndex:0],
                        @"First part is wrong.");
-  STAssertEqualObjects(@"up", [parts objectAtIndex:1],
+  XCTAssertEqualObjects(@"up", [parts objectAtIndex:1],
                        @"Second part is wrong.");
 
   // Regular expression occurs at beginning and end.
   parts = [@"   what  up " split:@"\\s+"];
-  STAssertEquals((NSUInteger) 3, [parts count], @"Wrong number of parts.");
-  STAssertEqualObjects(@"", [parts objectAtIndex:0], @"Wrong part.");
-  STAssertEqualObjects(@"what", [parts objectAtIndex:1], @"Wrong part.");
-  STAssertEqualObjects(@"up", [parts objectAtIndex:2], @"Wrong part.");
+  XCTAssertEqual((NSUInteger) 3, [parts count], @"Wrong number of parts.");
+  XCTAssertEqualObjects(@"", [parts objectAtIndex:0], @"Wrong part.");
+  XCTAssertEqualObjects(@"what", [parts objectAtIndex:1], @"Wrong part.");
+  XCTAssertEqualObjects(@"up", [parts objectAtIndex:2], @"Wrong part.");
 
   // Empty string.
   parts = [@"" split:@"\\s+"];
-  STAssertEquals((NSUInteger) 1, [parts count], @"Wrong number of parts.");
-  STAssertEqualObjects(@"", [parts objectAtIndex:0], @"Wrong part.");
+  XCTAssertEqual((NSUInteger) 1, [parts count], @"Wrong number of parts.");
+  XCTAssertEqualObjects(@"", [parts objectAtIndex:0], @"Wrong part.");
 
   // No matches, not regex.
   parts = [@"a" split:@"b"];
-  STAssertEquals((NSUInteger) 1, [parts count], @"Wrong number of parts.");
-  STAssertEqualObjects(@"a", [parts objectAtIndex:0],
+  XCTAssertEqual((NSUInteger) 1, [parts count], @"Wrong number of parts.");
+  XCTAssertEqualObjects(@"a", [parts objectAtIndex:0],
                        @"First part is wrong.");
 
   // No matches with regex.
   parts = [@"a" split:@"\\s+"];
-  STAssertEquals((NSUInteger) 1, [parts count], @"Wrong number of parts.");
-  STAssertEqualObjects(@"a", [parts objectAtIndex:0],
+  XCTAssertEqual((NSUInteger) 1, [parts count], @"Wrong number of parts.");
+  XCTAssertEqualObjects(@"a", [parts objectAtIndex:0],
                        @"First part is wrong.");
 }
 
@@ -103,12 +103,12 @@
   NSString *s = @"red-yellow-green-yellow";
   NSString *replacement = [s replaceFirst:@"yellow" withReplacement:@"blue"];
   // Regular string replacement.
-  STAssertTrue([@"red-blue-green-yellow" isEqualToString:replacement],
+  XCTAssertTrue([@"red-blue-green-yellow" isEqualToString:replacement],
                @"Incorrect replacement");
 
   replacement = [s replaceFirst:@"y[a-z]+w" withReplacement:@"blue"];
   // Regex string replacement.
-  STAssertTrue([@"red-blue-green-yellow" isEqualToString:replacement],
+  XCTAssertTrue([@"red-blue-green-yellow" isEqualToString:replacement],
                @"Incorrect replacement");
 }
 
@@ -117,41 +117,41 @@
   NSString *replacement = [s replaceAll:@"yellow" withReplacement:@"blue"];
 
   // Regular string replacement.
-  STAssertTrue([@"red-blue-green-blue" isEqualToString:replacement],
+  XCTAssertTrue([@"red-blue-green-blue" isEqualToString:replacement],
                @"Incorrect replacement");
 
   replacement = [s replaceAll:@"y[a-z]+w" withReplacement:@"blue"];
   // Regex string replacement.
-  STAssertTrue([@"red-blue-green-blue" isEqualToString:replacement],
+  XCTAssertTrue([@"red-blue-green-blue" isEqualToString:replacement],
                @"Incorrect replacement");
 }
 
 - (void)testIndexOfCharacters {
   // Single character.
-  STAssertEquals(0, [@"a" indexOf:'a'], @"Wrong index.");
-  STAssertEquals(-1, [@"a" indexOf:'b'], @"Wrong index.");
+  XCTAssertEqual(0, [@"a" indexOf:'a'], @"Wrong index.");
+  XCTAssertEqual(-1, [@"a" indexOf:'b'], @"Wrong index.");
 
   // Not single characters
-  STAssertEquals(0, [@"ab" indexOf:'a'], @"Wrong index.");
-  STAssertEquals(1, [@"ab" indexOf:'b'], @"Wrong index.");
-  STAssertEquals(-1, [@"ab" indexOf:'c'], @"Wrong index.");
+  XCTAssertEqual(0, [@"ab" indexOf:'a'], @"Wrong index.");
+  XCTAssertEqual(1, [@"ab" indexOf:'b'], @"Wrong index.");
+  XCTAssertEqual(-1, [@"ab" indexOf:'c'], @"Wrong index.");
 
   // Finds first occurrence properly.
-  STAssertEquals(0, [@"aba" indexOf:'a'], @"Wrong index.");
+  XCTAssertEqual(0, [@"aba" indexOf:'a'], @"Wrong index.");
 }
 
 - (void)testLastIndexOfCharacters {
   // Single character.
-  STAssertEquals(0, [@"a" lastIndexOf:'a'], @"Wrong index.");
-  STAssertEquals(-1, [@"a" lastIndexOf:'b'], @"Wrong index.");
+  XCTAssertEqual(0, [@"a" lastIndexOf:'a'], @"Wrong index.");
+  XCTAssertEqual(-1, [@"a" lastIndexOf:'b'], @"Wrong index.");
 
   // Not single characters
-  STAssertEquals(0, [@"ab" lastIndexOf:'a'], @"Wrong index.");
-  STAssertEquals(1, [@"ab" lastIndexOf:'b'], @"Wrong index.");
-  STAssertEquals(-1, [@"ab" lastIndexOf:'c'], @"Wrong index.");
+  XCTAssertEqual(0, [@"ab" lastIndexOf:'a'], @"Wrong index.");
+  XCTAssertEqual(1, [@"ab" lastIndexOf:'b'], @"Wrong index.");
+  XCTAssertEqual(-1, [@"ab" lastIndexOf:'c'], @"Wrong index.");
 
   // Finds last occurrence properly.
-  STAssertEquals(2, [@"aba" lastIndexOf:'a'], @"Wrong index.");
+  XCTAssertEqual(2, [@"aba" lastIndexOf:'a'], @"Wrong index.");
 }
 
 // Empty test to workaround an Xcode race condition parsing the test
@@ -167,6 +167,6 @@
 // than the string's length returns -1 as spec'd, rather than throw
 // an NSRangeException.
 - (void)testIndexOfOffsetTooLarge {
-  STAssertEquals(-1, [@"12345" indexOfString:@"3" fromIndex:20], @"missing range check");
+  XCTAssertEqual(-1, [@"12345" indexOfString:@"3" fromIndex:20], @"missing range check");
 }
 @end
