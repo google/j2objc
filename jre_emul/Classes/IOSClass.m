@@ -930,31 +930,6 @@ IOSClass *FetchArray(IOSClass *componentType) {
   return iosClass;
 }
 
-+ (void)load {
-  // Force JRE categories to be loaded.
-  id objectCategoryLoader = [[JreObjectCategoryDummy alloc] init];
-  id stringCategoryLoader = [[JreStringCategoryDummy alloc] init];
-  id numberCategoryLoader = [[JreNumberCategoryDummy alloc] init];
-
-  // Check that categories successfully loaded.
-  if ([[NSObject class] instanceMethodSignatureForSelector:@selector(compareToWithId:)] == NULL ||
-      [[NSString class] instanceMethodSignatureForSelector:@selector(trim)] == NULL ||
-      ![NSNumber conformsToProtocol:@protocol(JavaIoSerializable)]) {
-    [NSException raise:@"J2ObjCLinkError"
-                format:@"Your project is not configured to load categories from the JRE "
-                        "emulation library. Try adding the -force_load linker flag."];
-  }
-
-#if __has_feature(objc_arc)
-  // Avoid "unused local variable" warnings.
-  numberCategoryLoader = objectCategoryLoader = stringCategoryLoader = nil;
-#else
-  [numberCategoryLoader release];
-  [objectCategoryLoader release];
-  [stringCategoryLoader release];
-#endif
-}
-
 + (void)initialize {
   if (self == [IOSClass class]) {
     // Explicitly mapped classes are defined in Types.initializeTypeMap().
@@ -979,6 +954,20 @@ IOSClass *FetchArray(IOSClass *componentType) {
 
     IOSClass_objectClass = FetchClass([NSObject class]);
     IOSClass_stringClass = FetchClass([NSString class]);
+
+    // Load and initialize JRE categories, using their dummy classes.
+    AUTORELEASE([[JreObjectCategoryDummy alloc] init]);
+    AUTORELEASE([[JreStringCategoryDummy alloc] init]);
+    AUTORELEASE([[JreNumberCategoryDummy alloc] init]);
+
+    // Verify that these categories successfully loaded.
+    if ([[NSObject class] instanceMethodSignatureForSelector:@selector(compareToWithId:)] == NULL ||
+        [[NSString class] instanceMethodSignatureForSelector:@selector(trim)] == NULL ||
+        ![NSNumber conformsToProtocol:@protocol(JavaIoSerializable)]) {
+      [NSException raise:@"J2ObjCLinkError"
+                  format:@"Your project is not configured to load categories from the JRE "
+                          "emulation library. Try adding the -force_load linker flag."];
+    }
   }
 }
 
