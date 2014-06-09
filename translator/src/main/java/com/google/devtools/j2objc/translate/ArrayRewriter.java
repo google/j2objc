@@ -147,7 +147,8 @@ public class ArrayRewriter extends ErrorReportingASTVisitor {
       if (lastArgType.isNullType()) {
         return;
       }
-      if (lastParam.getDimensions() == lastArgType.getDimensions()) {
+      if (lastParam.getDimensions() == lastArgType.getDimensions() &&
+          lastParam.getElementType().isPrimitive() == lastArgType.getElementType().isPrimitive()) {
         // Last argument is already an array.
         return;
       }

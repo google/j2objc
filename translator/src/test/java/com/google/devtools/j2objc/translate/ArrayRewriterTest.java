@@ -42,4 +42,33 @@ public class ArrayRewriterTest extends GenerationTest {
     assertNotInTranslation(translation,
         "[self fooWithCharArray:[IOSCharArray arrayWithChars:(unichar[]){ nil } count:1]];");
   }
+
+  // Verify that a single object array argument to an object varargs method is passed unchanged.
+  public void testObjectArrayVarargs() throws IOException {
+    String translation = translateSourceFile(
+        "class Test { void test(Object[] array) { java.util.Arrays.asList(array); }}",
+        "Test", "Test.m");
+    assertTranslation(translation, "[JavaUtilArrays asListWithNSObjectArray:array];");
+  }
+
+  // Verify that a single primitive array argument to a primitive varargs method is
+  // passed unchanged.
+  public void testPrimitiveArrayVarargs() throws IOException {
+    String translation = translateSourceFile(
+        "class Test { void doVarargs(int... ints) {}" +
+        "void test(int[] array) { doVarargs(array); }}",
+        "Test", "Test.m");
+    assertTranslation(translation, "[self doVarargsWithIntArray:array];");
+  }
+
+  // Verify that a single primitive array argument to an object varargs method is just treated
+  // like any other object.
+  public void testPrimitiveArrayToObjectVarargs() throws IOException {
+    String translation = translateSourceFile(
+        "class Test { void test(float[] array) { java.util.Arrays.asList(array); }}",
+        "Test", "Test.m");
+    assertTranslation(translation, "[JavaUtilArrays asListWithNSObjectArray:" +
+        "[IOSObjectArray arrayWithObjects:(id[]){ array } count:1 " +
+        "type:[IOSClass classWithClass:[NSObject class]]]];");
+  }
 }
