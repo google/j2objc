@@ -93,7 +93,7 @@ public class System {
   ]-*/;
 
   public static native long currentTimeMillis() /*-[
-    return (long long) ([[NSDate date] timeIntervalSince1970] * 1000);
+    return (long long) ((CFAbsoluteTimeGetCurrent() + kCFAbsoluteTimeIntervalSince1970) * 1000);
   ]-*/;
 
   public static native int identityHashCode(Object anObject) /*-[
