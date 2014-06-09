@@ -37,7 +37,7 @@ import java.util.List;
 public class GeneratedMethodBinding extends AbstractBinding implements IMethodBinding {
   private final IMethodBinding delegate;
   private final String name;
-  private final int modifiers;
+  private int modifiers;
   private final List<ITypeBinding> parameters = Lists.newArrayList();
   private final ITypeBinding returnType;
   private final IMethodBinding methodDeclaration;
@@ -230,6 +230,10 @@ public class GeneratedMethodBinding extends AbstractBinding implements IMethodBi
   @Override
   public boolean overrides(IMethodBinding method) {
     return delegate != null && (delegate.equals(method) || delegate.overrides(method));
+  }
+
+  public void setModifiers(int modifiers) {
+    this.modifiers = modifiers;
   }
 
   @Override

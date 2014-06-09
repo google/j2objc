@@ -165,12 +165,12 @@ public class AtomicMarkableReference<V> {
 
     private native boolean casPair(Pair<V> cmp, Pair<V> val) /*-[
 #if __has_feature(objc_arc)
-      void * volatile tmp = (__bridge void * volatile) pair_;
+      void * volatile tmp = (__bridge void * volatile) self->pair_;
       return OSAtomicCompareAndSwapPtrBarrier((__bridge void *) cmp, (__bridge void *) val, &tmp);
 #else
-      id tmp = pair_;
-      if (OSAtomicCompareAndSwapPtrBarrier(cmp, val, (void * volatile *) &pair_)) {
-        [pair_ retain];
+      id tmp = self->pair_;
+      if (OSAtomicCompareAndSwapPtrBarrier(cmp, val, (void * volatile *) &self->pair_)) {
+        [self->pair_ retain];
         [tmp autorelease];
         return YES;
       }

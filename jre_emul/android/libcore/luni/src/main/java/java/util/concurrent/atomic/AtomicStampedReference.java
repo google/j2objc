@@ -166,12 +166,13 @@ public class AtomicStampedReference<V> {
 
     private native boolean casPair(Pair<V> cmp, Pair<V> val) /*-[
 #if __has_feature(objc_arc)
-      void * volatile tmp = (__bridge void * volatile) pair_;
-      return OSAtomicCompareAndSwapPtrBarrier((__bridge void *) cmp, (__bridge void *) val, &tmp);
+      void * volatile tmp = (__bridge void * volatile) self->pair_;
+      return OSAtomicCompareAndSwapPtrBarrier((__bridge void *) cmp,
+                                              (__bridge void *) val, &self->tmp);
 #else
-      id tmp = pair_;
-      if (OSAtomicCompareAndSwapPtrBarrier(cmp, val, (void * volatile *) &pair_)) {
-        [pair_ retain];
+      id tmp = self->pair_;
+      if (OSAtomicCompareAndSwapPtrBarrier(cmp, val, (void * volatile *) &self->pair_)) {
+        [self->pair_ retain];
         [tmp release];
         return YES;
       }

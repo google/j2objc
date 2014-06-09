@@ -248,7 +248,7 @@ public class AtomicInteger extends Number implements java.io.Serializable {
     ]-*/;
 
     private native boolean compareAndSwapValue(int oldValue, int newValue) /*-[
-      return OSAtomicCompareAndSwapIntBarrier(oldValue, newValue, &value_);
+      return OSAtomicCompareAndSwapIntBarrier(oldValue, newValue, &self->value_);
     ]-*/;
 
 }

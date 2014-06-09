@@ -266,40 +266,43 @@ public class IosHttpURLConnection extends HttpURLConnection {
   }
 
   private native void makeSynchronousRequest() throws IOException /*-[
-    if (responseCode_ != -1) {
+    if (self->responseCode_ != -1) {
       // Request already made.
       return;
     }
-    if (responseException_) {
-      @throw responseException_;
+    if (self->responseException_) {
+      @throw self->responseException_;
     }
 
     NSMutableURLRequest *request =
-        [NSMutableURLRequest requestWithURL:[NSURL URLWithString:[url_ toExternalForm]]];
-    request.HTTPMethod = method_;
-    request.cachePolicy = useCaches_ ?
+        [NSMutableURLRequest requestWithURL:[NSURL URLWithString:[self->url_ toExternalForm]]];
+    request.HTTPMethod = self->method_;
+    request.cachePolicy = self->useCaches_ ?
         NSURLRequestUseProtocolCachePolicy : NSURLRequestReloadIgnoringLocalCacheData;
-    request.timeoutInterval = readTimeout_ > 0 ? (readTimeout_ / 1000.0) : JavaLangDouble_MAX_VALUE;
-    int n = [headers_ size];
+    request.timeoutInterval =
+        self->readTimeout_ > 0 ? (self->readTimeout_ / 1000.0) : JavaLangDouble_MAX_VALUE;
+    int n = [self->headers_ size];
     for (int i = 0; i < n; i++) {
-      ComGoogleJ2objcNetIosHttpURLConnection_HeaderEntry *entry = [headers_ getWithInt:i];
+      ComGoogleJ2objcNetIosHttpURLConnection_HeaderEntry *entry = [self->headers_ getWithInt:i];
       if (entry->key_) {
         [request setValue:[entry getValueAsString] forHTTPHeaderField:entry->key_];
       }
     }
 
-    if (doOutput_) {
-      if ([method_ isEqualToString:@"GET"]) {
-        method_ = @"POST";  // GET doesn't support output, so assume POST.
-      } else if (![method_ isEqualToString:@"POST"] && ![method_ isEqualToString:@"PUT"] &&
-                 ![method_ isEqualToString:@"PATCH"]) {
-        NSString *errMsg = [NSString stringWithFormat:@"%@ does not support writing", method_];
-        responseException_ = [[JavaNetProtocolException alloc] initWithNSString:errMsg];
-        @throw responseException_;
+    if (self->doOutput_) {
+      if ([self->method_ isEqualToString:@"GET"]) {
+        self->method_ = @"POST";  // GET doesn't support output, so assume POST.
+      } else if (![self->method_ isEqualToString:@"POST"] &&
+                 ![self->method_ isEqualToString:@"PUT"] &&
+                 ![self->method_ isEqualToString:@"PATCH"]) {
+        NSString *errMsg =
+            [NSString stringWithFormat:@"%@ does not support writing", self->method_];
+        self->responseException_ = [[JavaNetProtocolException alloc] initWithNSString:errMsg];
+        @throw self->responseException_;
       }
-      [request setValue:contentType_ forHTTPHeaderField:@"Content-Type"];
-      if (nativeRequestData_) {
-        request.HTTPBody = [(NSDataOutputStream *) nativeRequestData_ data];
+      [request setValue:self->contentType_ forHTTPHeaderField:@"Content-Type"];
+      if (self->nativeRequestData_) {
+        request.HTTPBody = [(NSDataOutputStream *) self->nativeRequestData_ data];
       }
     }
 
@@ -308,10 +311,10 @@ public class IosHttpURLConnection extends HttpURLConnection {
     NSData *responseData = [NSURLConnection sendSynchronousRequest:request
                                                  returningResponse:&response
                                                              error:&error];
-    responseCode_ = response ? [response statusCode] : [error code];
-    responseMessage_ =
-        [ComGoogleJ2objcNetIosHttpURLConnection getResponseStatusTextWithInt:responseCode_];
-    contentLength_ = [responseData length];
+    self->responseCode_ = response ? [response statusCode] : [error code];
+    self->responseMessage_ =
+        [ComGoogleJ2objcNetIosHttpURLConnection getResponseStatusTextWithInt:self->responseCode_];
+    self->contentLength_ = [responseData length];
 
     if (error || [response statusCode] >= JavaNetHttpURLConnection_HTTP_BAD_REQUEST) {
       if (responseData) {
@@ -323,30 +326,32 @@ public class IosHttpURLConnection extends HttpURLConnection {
           [[NSDataInputStream alloc] initWithData:responseData]);
     }
 
-    NSString *url = [url_ description];  // Use original URL in any error text.
+    NSString *url = [self->url_ description];  // Use original URL in any error text.
     if (error) {
       if ([[error domain] isEqualToString:@"NSURLErrorDomain"]) {
         switch ([error code]) {
           case NSURLErrorBadURL:
-            responseException_ = [[JavaNetMalformedURLException alloc] initWithNSString:url]; break;
+            self->responseException_ =
+                [[JavaNetMalformedURLException alloc] initWithNSString:url]; break;
           case NSURLErrorCannotConnectToHost:
           case NSURLErrorNotConnectedToInternet:
           case NSURLErrorSecureConnectionFailed:
-            responseException_ = [[JavaNetConnectException alloc]
-                                  initWithNSString:[error description]]; break;
+            self->responseException_ =
+                [[JavaNetConnectException alloc] initWithNSString:[error description]]; break;
           case NSURLErrorCannotFindHost:
-            responseException_ = [[JavaNetUnknownHostException alloc] initWithNSString:url]; break;
+            self->responseException_ =
+                [[JavaNetUnknownHostException alloc] initWithNSString:url]; break;
         }
       }
-      if (!responseException_) {
-        responseException_ = [[JavaIoIOException alloc] initWithNSString:[error description]];
+      if (!self->responseException_) {
+        self->responseException_ = [[JavaIoIOException alloc] initWithNSString:[error description]];
       }
-      @throw responseException_;
+      @throw self->responseException_;
     }
 
     // The HttpURLConnection headerFields map uses a null key for Status-Line.
     NSString *statusLine =
-        [NSString stringWithFormat:@"HTTP/1.1 %d %@", responseCode_, responseMessage_];
+        [NSString stringWithFormat:@"HTTP/1.1 %d %@", self->responseCode_, self->responseMessage_];
     [self addHeaderWithNSString:nil withNSString:statusLine];
 
     // Copy remaining response headers.
