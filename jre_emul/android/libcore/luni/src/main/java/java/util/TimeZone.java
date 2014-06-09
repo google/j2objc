@@ -250,7 +250,7 @@ public abstract class TimeZone implements Serializable, Cloneable {
         nativeLocale = [NSLocale currentLocale];
       }
 
-      return [(NSTimeZone *) nativeTimeZone_ localizedName:zoneStyle locale:nativeLocale];
+      return [(NSTimeZone *) self->nativeTimeZone_ localizedName:zoneStyle locale:nativeLocale];
     ]-*/;
 
     private void appendNumber(StringBuilder builder, int count, int value) {
@@ -330,7 +330,7 @@ public abstract class TimeZone implements Serializable, Cloneable {
      * time.
      */
     public native int getRawOffset() /*-[
-      return (int) [(NSTimeZone *) nativeTimeZone_ secondsFromGMT] * 1000;
+      return (int) [(NSTimeZone *) self->nativeTimeZone_ secondsFromGMT] * 1000;
     ]-*/;
 
     /**
@@ -501,7 +501,7 @@ public abstract class TimeZone implements Serializable, Cloneable {
      * this time zone.
      */
     public native boolean inDaylightTime(Date time) /*-[
-      return [(NSTimeZone *) nativeTimeZone_ isDaylightSavingTime];
+      return [(NSTimeZone *) self->nativeTimeZone_ isDaylightSavingTime];
     ]-*/;
 
     /**
@@ -563,6 +563,6 @@ public abstract class TimeZone implements Serializable, Cloneable {
      * <p>Most applications should not use this method.
      */
     public native boolean useDaylightTime() /*-[
-      return [(NSTimeZone *) nativeTimeZone_ nextDaylightSavingTimeTransition] != nil;
+      return [(NSTimeZone *) self->nativeTimeZone_ nextDaylightSavingTimeTransition] != nil;
     ]-*/;
 }

@@ -244,7 +244,7 @@ public final class Pattern implements Serializable {
     /**
      * This constant specifies that the meta characters '^' and '$' match only
      * the beginning and end of an input line, respectively. Normally, they
-     * match the beginning and the end of the complete input. Corresponds to 
+     * match the beginning and the end of the complete input. Corresponds to
      * {@code (?m)}.
      */
     public static final int MULTILINE = 0x08;
@@ -495,12 +495,12 @@ public final class Pattern implements Serializable {
 #if ! __has_feature(objc_arc)
       [regex retain];
 #endif
-      nativePattern_ = regex;
+      self->nativePattern_ = regex;
     ]-*/;
 
     native void releaseNativePattern() /*-[
 #if ! __has_feature(objc_arc)
-      [nativePattern_ release];
+      [self->nativePattern_ release];
 #endif
       nativePattern_ = 0;
     ]-*/;

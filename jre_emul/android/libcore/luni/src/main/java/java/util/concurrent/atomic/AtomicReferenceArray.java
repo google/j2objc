@@ -165,10 +165,10 @@ public class AtomicReferenceArray<E> implements java.io.Serializable {
     private native boolean compareAndSetRaw(int i, E expect, E update) /*-[
       OSSpinLock lock = OS_SPINLOCK_INIT;
       OSSpinLockLock(&lock);
-      id current = [array_ objectAtIndex:i];
+      id current = [self->array_ objectAtIndex:i];
       BOOL swap = current == expect;
       if (swap) {
-        [array_ replaceObjectAtIndex:i withObject:update];
+        [self->array_ replaceObjectAtIndex:i withObject:update];
       }
       OSSpinLockUnlock(&lock);
       return swap;

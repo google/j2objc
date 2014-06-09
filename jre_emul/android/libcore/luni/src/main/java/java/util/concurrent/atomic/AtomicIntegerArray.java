@@ -228,7 +228,7 @@ public class AtomicIntegerArray implements java.io.Serializable {
     ]-*/;
 
     private native boolean compareAndSetRaw(int i, int expect, int update) /*-[
-      return OSAtomicCompareAndSwapIntBarrier(expect, update, [array_ intRefAtIndex:i]);
+      return OSAtomicCompareAndSwapIntBarrier(expect, update, [self->array_ intRefAtIndex:i]);
     ]-*/;
 
 }

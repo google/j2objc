@@ -656,7 +656,7 @@ public final class Matcher implements MatchResult {
       if (!continuing && self->transparentBounds_) {
         options |= NSMatchingWithTransparentBounds;
       }
-      NSRange range = NSMakeRange(regionStart__, regionEnd__ - regionStart__);
+      NSRange range = NSMakeRange(self->regionStart__, self->regionEnd__ - self->regionStart__);
 
       // Use enumerateMatchesInString to get progress state.
       __block BOOL matched = NO;
@@ -710,8 +710,8 @@ public final class Matcher implements MatchResult {
           (patternFlags & NSRegularExpressionAnchorsMatchLines) > 0) {
         options |= NSMatchingWithTransparentBounds;
       }
-      NSUInteger length = regionEnd__ - regionStart__;
-      NSRange searchRange = NSMakeRange(regionStart__, length);
+      NSUInteger length = self->regionEnd__ - self->regionStart__;
+      NSRange searchRange = NSMakeRange(self->regionStart__, length);
       NSTextCheckingResult *match =
           [regex firstMatchInString:self->input_
                             options:options
@@ -731,7 +731,7 @@ public final class Matcher implements MatchResult {
                       withInt:matchRange.location + matchRange.length];
       }
       NSRange range = [match range];
-      return range.location == regionStart__ && range.length == length;
+      return range.location == self->regionStart__ && range.length == length;
     ]-*/;
 
     private native boolean requireEndImpl() /*-[

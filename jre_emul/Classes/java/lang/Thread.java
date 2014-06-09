@@ -323,7 +323,7 @@ public class Thread implements Runnable {
       group = [currentJavaThread getThreadGroup];
     }
     assert(group != nil);
-    threadGroup_ = RETAIN_(group);
+    self->threadGroup_ = RETAIN_(group);
 
     NSThread *thread;
     NSMutableDictionary *newThreadData;
@@ -379,8 +379,8 @@ public class Thread implements Runnable {
     int priority = [currentThread isMainThread] ? 5 : [currentThread threadPriority] * 10;
     [self setPriority0WithInt:priority];
 
-    [threadGroup_ addWithJavaLangThread:self];
-    nsThread_ = thread;
+    [self->threadGroup_ addWithJavaLangThread:self];
+    self->nsThread_ = thread;
 #if !__has_feature(objc_arc)
     [thread retain];
 #endif
@@ -477,7 +477,7 @@ public class Thread implements Runnable {
 
   private native void cancelNativeThread() /*-[
     // TODO(tball): replace with pthread_cancel (b/11536576)
-    [(NSThread *) nsThread_ cancel];
+    [(NSThread *) self->nsThread_ cancel];
   ]-*/;
 
   public static int activeCount() {
@@ -498,13 +498,13 @@ public class Thread implements Runnable {
   }
 
   public native long getId() /*-[
-    NSDictionary *threadData = [(NSThread *) nsThread_ threadDictionary];
+    NSDictionary *threadData = [(NSThread *) self->nsThread_ threadDictionary];
     NSNumber *threadId = [threadData objectForKey:JavaLangThread_THREAD_ID_];
     return [threadId longLongValue];
   ]-*/;
 
   public native String getName() /*-[
-    return [(NSThread *) nsThread_ name];
+    return [(NSThread *) self->nsThread_ name];
   ]-*/;
 
   public native void setName(String name) /*-[
@@ -515,11 +515,11 @@ public class Thread implements Runnable {
 #endif
       @throw npe;
     }
-    [(NSThread *) nsThread_ setName:name];
+    [(NSThread *) self->nsThread_ setName:name];
   ]-*/;
 
   public native int getPriority() /*-[
-    double nativePriority = [(NSThread *) nsThread_ threadPriority];
+    double nativePriority = [(NSThread *) self->nsThread_ threadPriority];
     return (int) (nativePriority * 10);
   ]-*/;
 
@@ -534,14 +534,14 @@ public class Thread implements Runnable {
   }
 
   private native void setPriority0(int priority) /*-[
-    [(NSThread *) nsThread_ setThreadPriority:priority / 10.0];
+    [(NSThread *) self->nsThread_ setThreadPriority:priority / 10.0];
   ]-*/;
 
   public native State getState() /*-[
-    if ([(NSThread *) nsThread_ isCancelled] || [(NSThread *) nsThread_ isFinished]) {
+    if ([(NSThread *) self->nsThread_ isCancelled] || [(NSThread *) self->nsThread_ isFinished]) {
       return JavaLangThread_StateEnum_get_TERMINATED();
     }
-    if ([(NSThread *) nsThread_ isExecuting]) {
+    if ([(NSThread *) self->nsThread_ isExecuting]) {
       return JavaLangThread_StateEnum_get_RUNNABLE();
     }
     return JavaLangThread_StateEnum_get_NEW();
@@ -763,15 +763,15 @@ public class Thread implements Runnable {
   }
 
   public native boolean isAlive() /*-[
-    NSThread *nativeThread = (NSThread *) nsThread_;
+    NSThread *nativeThread = (NSThread *) self->nsThread_;
     BOOL alive = [nativeThread isExecuting] && ![nativeThread isCancelled];
     if (!alive && running_) {
       // Thread finished, clean up.
       running_ = NO;
-      if (threadGroup_) {
+      if (self->threadGroup_) {
         [threadGroup_ removeWithJavaLangThread:self];
-        AUTORELEASE(threadGroup_);
-        threadGroup_ = nil;
+        AUTORELEASE(self->threadGroup_);
+        self->threadGroup_ = nil;
       }
     }
     return alive;

@@ -228,7 +228,7 @@ public class AtomicLongArray implements java.io.Serializable {
     ]-*/;
 
     private native boolean compareAndSetRaw(int i, long expect, long update) /*-[
-      return OSAtomicCompareAndSwap64Barrier(expect, update, [array_ longRefAtIndex:i]);
+      return OSAtomicCompareAndSwap64Barrier(expect, update, [self->array_ longRefAtIndex:i]);
     ]-*/;
 
 }

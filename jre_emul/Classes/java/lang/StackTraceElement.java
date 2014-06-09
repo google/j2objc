@@ -104,19 +104,19 @@ public class StackTraceElement {
    * Implements lazy loading of symbol information from application.
    */
   private native void initializeFromAddress() /*-[
-    if (address_ == 0L || methodName_) {
+    if (self->address_ == 0L || self->methodName_) {
       return;
     }
     void *shortStack[1];
-    shortStack[0] = (void *)address_;
+    shortStack[0] = (void *)self->address_;
     char **stackSymbol = backtrace_symbols(shortStack, 1);
 
     // Extract hexAddress.
     char *start = strstr(*stackSymbol, "0x");  // Skip text before address.
     char *addressEnd = strstr(start, " ");
     char *hex = strndup(start, addressEnd - start);
-    hexAddress_ = [[NSString alloc] initWithCString:hex
-                                           encoding:[NSString defaultCStringEncoding]];
+    self->hexAddress_ = [[NSString alloc] initWithCString:hex
+                                                 encoding:[NSString defaultCStringEncoding]];
     free(hex);
     start = addressEnd + 1;
 
@@ -125,8 +125,8 @@ public class StackTraceElement {
     char *rightBrace = strchr(start, ']');
     if (rightBrace && strlen(rightBrace) > 4) {  // If pattern is similar to: ...] + 123
       // Save trailing function address offset, then "remove" it.
-      offset_ = [[NSString alloc] initWithCString:rightBrace + 4
-                                         encoding:[NSString defaultCStringEncoding]];
+      self->offset_ = [[NSString alloc] initWithCString:rightBrace + 4
+                                               encoding:[NSString defaultCStringEncoding]];
       *(rightBrace + 1) = '\0';
     }
     if (leftBrace && rightBrace && (rightBrace - leftBrace) > 0) {
@@ -136,7 +136,7 @@ public class StackTraceElement {
         IOSClass *cls = [IOSClass classForIosName:[NSString stringWithCString:className
             encoding:[NSString defaultCStringEncoding]]];
         if (cls) {
-          className__ = RETAIN_([cls getName]);
+          self->className__ = RETAIN_([cls getName]);
         }
       }
       char *selector = strsep(&signature, "[ ]");
@@ -164,14 +164,14 @@ public class StackTraceElement {
           methodName = selector;
         }
         if (methodName) {
-          methodName_ = [[NSString alloc] initWithCString:methodName
-                                                 encoding:[NSString defaultCStringEncoding]];
+          self->methodName_ = [[NSString alloc] initWithCString:methodName
+                                                       encoding:[NSString defaultCStringEncoding]];
         }
       }
     } else {
       // Copy rest of stack symbol to methodName.
-      methodName_ = [[NSString alloc] initWithCString:start
-                                             encoding:[NSString defaultCStringEncoding]];
+      self->methodName_ = [[NSString alloc] initWithCString:start
+                                                   encoding:[NSString defaultCStringEncoding]];
     }
     free(stackSymbol);
   ]-*/;

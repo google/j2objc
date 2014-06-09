@@ -128,7 +128,7 @@ public class Inflater {
     private native void endImpl(long handle) /*-[
         z_stream *zStream = (z_stream*) handle;
         inflateEnd(zStream);
-        free((void*) inBuffer_);
+        free((void*) self->inBuffer_);
         free(zStream);
     ]-*/;
 
@@ -298,10 +298,10 @@ public class Inflater {
         case Z_OK:
           break;
         case Z_NEED_DICT:
-          needsDictionary__ = YES;
+          self->needsDictionary__ = YES;
           break;
         case Z_STREAM_END:
-          finished__ = YES;
+          self->finished__ = YES;
           break;
         case Z_STREAM_ERROR:
           return 0;
@@ -312,7 +312,7 @@ public class Inflater {
       int bytesRead = zStream->next_in - initialNextIn;
       int bytesWritten = zStream->next_out - initialNextOut;
 
-      inRead_ += bytesRead;
+      self->inRead_ += bytesRead;
       return bytesWritten;
     ]-*/;
 
@@ -410,10 +410,10 @@ public class Inflater {
       if (baseAddr == NULL) {
         @throw AUTORELEASE([[JavaLangOutOfMemoryError alloc] init]);
       }
-      if (inBuffer_ != 0L) {
-        free((void *) inBuffer_);
+      if (self->inBuffer_ != 0L) {
+        free((void *) self->inBuffer_);
       }
-      inBuffer_ = (long long) baseAddr;
+      self->inBuffer_ = (long long) baseAddr;
       zStream->next_in = (Bytef *) baseAddr;
       zStream->avail_in = byteCount;
       if (byteCount > 0) {
