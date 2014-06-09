@@ -164,7 +164,8 @@ ifdef TARGET_TEMP_DIR
 $(FAT_LIB_LIBRARY): $(FAT_LIB_OBJS:%=$(TARGET_TEMP_DIR)/%)
 	@mkdir -p $(@D)
 	@echo "Building $(notdir $@)"
-	@$(LIBTOOL) -static -o $@ $^
+	$(call long_list_to_file,$(ARCH_BUILD_DIR)/fat_lib_objs_list,$^)
+	@$(LIBTOOL) -static -o $@ -filelist $(ARCH_BUILD_DIR)/fat_lib_objs_list
 
 $(call emit_general_compile_rules,$(TARGET_TEMP_DIR),$(FAT_LIB_XCODE_FLAGS))
 
@@ -181,7 +182,9 @@ $(BUILD_DIR)/$(1)-lib$(FAT_LIB_NAME).a: \
     $(J2OBJC_PRECOMPILED_HEADER:%=$(BUILD_DIR)/objs-$(1)/%.pch) \
     $(FAT_LIB_OBJS:%=$(BUILD_DIR)/objs-$(1)/%)
 	@echo "Building $$(notdir $$@)"
-	@$(LIBTOOL) -static -o $$@ $(FAT_LIB_OBJS:%=$(BUILD_DIR)/objs-$(1)/%)
+	$$(call long_list_to_file,$(BUILD_DIR)/objs-$(1)/fat_lib_objs_list,\
+	  $(FAT_LIB_OBJS:%=$(BUILD_DIR)/objs-$(1)/%))
+	@$(LIBTOOL) -static -o $$@ -filelist $(BUILD_DIR)/objs-$(1)/fat_lib_objs_list
 endef
 
 $(foreach arch,$(J2OBJC_ARCHS),$(eval $(call arch_lib_rule,$(arch))))
