@@ -665,6 +665,10 @@ public final class NativeDecimalFormat implements Cloneable {
     private static native Number parse(Object nativeFormatter, String string,
         ParsePosition position, boolean parseBigDecimal) /*-[
       NSNumberFormatter *formatter = (NSNumberFormatter *) nativeFormatter;
+      // iOS bug: numbers that are zero digits only (like "0000") fail to parse
+      // when allowsFloats is false.
+      BOOL allowsFloats = [formatter allowsFloats];
+      [formatter setAllowsFloats:YES];
       NSNumber *result;
       int start = [position getIndex];
       NSRange range = NSMakeRange(start, [string length] - start);
@@ -673,6 +677,7 @@ public final class NativeDecimalFormat implements Cloneable {
                                      forString:string
                                          range:&range
                                          error:&error];
+      [formatter setAllowsFloats:allowsFloats];
       if (success) {
         [position setIndexWithInt:start + range.length];
         NSString *decimalSeparator = [formatter decimalSeparator];
