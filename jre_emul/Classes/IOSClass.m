@@ -364,8 +364,12 @@ static NSString *IOSClass_JavaToIOSName(NSString *javaName) {
   if ([parts count] == 1) {
     [iosName appendString:[parts objectAtIndex:0]];
   } else {
+    id lastPart = [parts lastObject];
     for (NSString *part in parts) {
-      [iosName appendString:Capitalize(part)];
+      if (part != lastPart) {
+        part = Capitalize(part);
+      }
+      [iosName appendString:part];
     }
   }
   [iosName replaceOccurrencesOfString:@"$"
