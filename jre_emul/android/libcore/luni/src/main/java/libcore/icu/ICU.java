@@ -164,9 +164,15 @@ public final class ICU {
       return result;
     ]-*/;
 
-    private static native String[] getAvailableBreakIteratorLocalesNative();
+    private static native String[] getAvailableBreakIteratorLocalesNative() /*-[
+      // Foundation framework doesn't support break iterators.
+      return [IOSObjectArray arrayWithLength:0 type:[NSString getClass]];
+    ]-*/;
 
-    private static native String[] getAvailableCollatorLocalesNative();
+    private static native String[] getAvailableCollatorLocalesNative() /*-[
+      // Foundation framework doesn't support collators.
+      return [IOSObjectArray arrayWithLength:0 type:[NSString getClass]];
+    ]-*/;
 
     private static native String[] getAvailableLocalesNative() /*-[
       NSArray *localeIds = [NSLocale availableLocaleIdentifiers];
