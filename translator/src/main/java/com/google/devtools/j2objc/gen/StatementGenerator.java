@@ -1320,7 +1320,7 @@ public class StatementGenerator extends ErrorReportingASTVisitor {
       } else {
         String name = NameTable.getName(var);
         buffer.append(name);
-        if (!var.isField() && (fieldHiders.contains(var) || NameTable.isReservedName(name))) {
+        if (!var.isField() && (fieldHiders.contains(var))) {
           buffer.append("Arg");
         }
       }

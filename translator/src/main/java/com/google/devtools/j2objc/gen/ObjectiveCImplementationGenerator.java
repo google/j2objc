@@ -370,7 +370,7 @@ public class ObjectiveCImplementationGenerator extends ObjectiveCSourceFileGener
       if (methodStartPos < commentStartPos) {
         assert nextMethod != null;
         printMethod(nextMethod);
-        minPos = methodStartPos + nextMethod.getLength();
+        minPos = Math.max(minPos, methodStartPos + nextMethod.getLength());
         nextMethod = methodsIter.hasNext() ? methodsIter.next() : null;
       } else {
         assert nextComment != null;

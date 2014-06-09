@@ -16,6 +16,7 @@ package com.google.devtools.j2objc.translate;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
+import com.google.devtools.j2objc.types.GeneratedMethodBinding;
 import com.google.devtools.j2objc.types.GeneratedVariableBinding;
 import com.google.devtools.j2objc.types.IOSMethodBinding;
 import com.google.devtools.j2objc.types.NodeCopier;
@@ -116,7 +117,7 @@ public class Functionizer extends ErrorReportingASTVisitor {
 
   private boolean canFunctionize(IMethodBinding m) {
     return BindingUtil.isPrivate(m) && !BindingUtil.isFunction(m) && !BindingUtil.isAbstract(m) &&
-        !BindingUtil.isNative(m) && !m.isConstructor() && !m.isAnnotationMember();
+        !m.isConstructor() && !m.isAnnotationMember();
   }
 
   @Override
@@ -153,12 +154,12 @@ public class Functionizer extends ErrorReportingASTVisitor {
       if (BindingUtil.isFunction(enclosingBinding) &&
           !BindingUtil.isStatic(enclosingBinding) && needsReceiver) {
         // Add self parameter.
-        GeneratedVariableBinding selfParam = new GeneratedVariableBinding("self",
+        GeneratedVariableBinding selfParam = new GeneratedVariableBinding(NameTable.SELF_NAME,
             binding.getModifiers() | SYNTHETIC, declaringClass, false, true, declaringClass, null);
         args.add(0, ASTFactory.newSimpleName(node.getAST(), selfParam));
       } else {
         boolean needsInstanceParam = isInstance && needsReceiver;
-        if (sameClassMember(binding, declaringClass, getEnclosingType(enclosingMethod)) &&
+        if (sameClassMember(declaringClass, getEnclosingType(enclosingMethod)) &&
             needsInstanceParam) {
           // Add this parameter.
           ThisExpression thisExpr = ASTFactory.newThisExpression(node.getAST(), declaringClass);
@@ -232,8 +233,7 @@ public class Functionizer extends ErrorReportingASTVisitor {
             Types.getVariableBinding(ASTUtil.getParameters(enclosingMethod).get(0));
         args.add(0, ASTFactory.newSimpleName(ast, selfParam));
       } else {
-        if (sameClassMember(binding, declaringClass, getEnclosingType(enclosingMethod)) &&
-            isInstance) {
+        if (sameClassMember(declaringClass, getEnclosingType(enclosingMethod)) && isInstance) {
           // Add this parameter.
           ThisExpression thisExpr = ASTFactory.newThisExpression(ast, declaringClass);
           args.add(0, thisExpr);
@@ -269,7 +269,7 @@ public class Functionizer extends ErrorReportingASTVisitor {
       List<ITypeBinding> list = Lists.newArrayList(paramTypes);
       list.add(0, m.getDeclaringClass());
       paramTypes = list.toArray(new ITypeBinding[list.size()]);
-      GeneratedVariableBinding var = new GeneratedVariableBinding("self", 0,
+      GeneratedVariableBinding var = new GeneratedVariableBinding(NameTable.SELF_NAME, 0,
           declaringClass, false, true, declaringClass, null);
       SingleVariableDeclaration param =
           ASTFactory.newSingleVariableDeclaration(ast, var);
@@ -280,12 +280,35 @@ public class Functionizer extends ErrorReportingASTVisitor {
         IOSMethodBinding.newFunction(m, functionName, paramTypes);
     MethodDeclaration function = ASTFactory.newMethodDeclaration(ast, newBinding);
     ASTUtil.getParameters(function).addAll(params);
+
+    if (BindingUtil.isNative(m)) {
+      // Add body to method, for forwarding function invocation.
+      method.setBody(ast.newBlock());
+      Iterator<IExtendedModifier> modifiers = ASTUtil.getModifiers(method).iterator();
+      while (modifiers.hasNext()) {
+        IExtendedModifier mod = modifiers.next();
+        if (mod instanceof Modifier && ((Modifier) mod).isNative()) {
+          modifiers.remove();
+          break;
+        }
+      }
+
+      // Make method binding non-native, now that functionBinding copied its modifiers.
+      GeneratedMethodBinding gennedBinding = new GeneratedMethodBinding(m);
+      newBinding.setModifiers(m.getModifiers() & ~Modifier.NATIVE);
+      Types.addBinding(method, gennedBinding);
+      m = gennedBinding;
+
+      // Set source positions, so function's native code can be extracted.
+      function.setSourceRange(method.getStartPosition(), method.getLength());
+    }
+
     if (BindingUtil.isSynchronized(m)) {
       SynchronizedStatement syncStmt = ast.newSynchronizedStatement();
       if (BindingUtil.isStatic(m)) {
         syncStmt.setExpression(ASTFactory.newTypeLiteral(ast, declaringClass));
       } else {
-        GeneratedVariableBinding selfParam = new GeneratedVariableBinding("self", 0,
+        GeneratedVariableBinding selfParam = new GeneratedVariableBinding(NameTable.SELF_NAME, 0,
             declaringClass, false, true, declaringClass, null);
         SimpleName self = ASTFactory.newSimpleName(ast, selfParam);
         syncStmt.setExpression(self);
@@ -306,6 +329,7 @@ public class Functionizer extends ErrorReportingASTVisitor {
     } else {
       function.setBody(NodeCopier.copySubtree(ast, method.getBody()));
     }
+
     if (BindingUtil.isStatic(m)) {
       // Add class initialization invocation, since this may be the first use of this class.
       String initName = String.format("%s_init", NameTable.getFullName(declaringClass));
@@ -321,7 +345,7 @@ public class Functionizer extends ErrorReportingASTVisitor {
   /**
    *  Replace method block statements with single statement that invokes function.
    */
-  public void setFunctionCaller(MethodDeclaration method, MethodDeclaration function) {
+  private void setFunctionCaller(MethodDeclaration method, MethodDeclaration function) {
     AST ast = method.getAST();
     IMethodBinding functionBinding = Types.getMethodBinding(function);
     List<Statement> stmts = ASTUtil.getStatements(method.getBody());
@@ -343,8 +367,7 @@ public class Functionizer extends ErrorReportingASTVisitor {
   /**
    *  Check if binding is to an instance method or field in the same class as the current method.
    */
-  private static boolean sameClassMember(IBinding binding, ITypeBinding declaringClass,
-      ITypeBinding enclosingType) {
+  private static boolean sameClassMember(ITypeBinding declaringClass, ITypeBinding enclosingType) {
     if (declaringClass == null) {
       return false;
     }
@@ -390,7 +413,7 @@ public class Functionizer extends ErrorReportingASTVisitor {
       } else {
         IVariableBinding var = Types.getVariableBinding(node);
         if (isField(receiver) && receiver instanceof SimpleName &&
-            !sameClassMember(var, var.getDeclaringClass(), binding.getDeclaringClass())) {
+            !sameClassMember(var.getDeclaringClass(), binding.getDeclaringClass())) {
           // Change outer field expression to this$->expression.
           node.setExpression(ASTFactory.newQualifiedName(ast, selfNode,
               NodeCopier.copySubtree(ast, (SimpleName) receiver)));
@@ -449,7 +472,7 @@ public class Functionizer extends ErrorReportingASTVisitor {
     @Override
     public void endVisit(ThisExpression node) {
       ITypeBinding declaringClass = binding.getDeclaringClass();
-      GeneratedVariableBinding selfParam = new GeneratedVariableBinding("self", 0,
+      GeneratedVariableBinding selfParam = new GeneratedVariableBinding(NameTable.SELF_NAME, 0,
           declaringClass, false, true, declaringClass, null);
       SimpleName self = ASTFactory.newSimpleName(node.getAST(), selfParam);
       ASTUtil.setProperty(node, self);

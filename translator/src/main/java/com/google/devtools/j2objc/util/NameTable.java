@@ -62,6 +62,11 @@ public class NameTable {
   public static final String INIT_NAME = "init";
   public static final String CLINIT_NAME = "initialize";
 
+  // The self name in Java is reserved in Objective-C, but functionized methods
+  // actually want the first parameter to be self. This is an internal name,
+  // converted to self during generation.
+  public static final String SELF_NAME = "$$self$$";
+
   public static final String ID_TYPE = "id";
 
   private static final Logger logger = Logger.getLogger(NameTable.class.getName());
@@ -282,7 +287,7 @@ public class NameTable {
         }
       }
     }
-    return name;
+    return name.equals(SELF_NAME) ? "self" : name;
   }
 
   private static IBinding getBindingDeclaration(IBinding binding) {
