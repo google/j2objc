@@ -29,9 +29,9 @@ using Android's API, web app UIs using GWT, etc.).
 
 ## Requirements ##
 
-* JDK 1.6 or higher
-* Xcode 4 or higher
-* Mac OS X 10.7 or higher
+* JDK 1.7 or higher
+* Xcode 5 or higher
+* Mac OS X 10.9 or higher
 
 ## License ##
 
