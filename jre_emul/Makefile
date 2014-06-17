@@ -953,6 +953,12 @@ JAVA_SOURCES = \
 	org/apache/harmony/security/x509/DNParser.java \
 	org/apache/harmony/xml/parsers/SAXParserFactoryImpl.java \
 	org/apache/harmony/xml/parsers/SAXParserImpl.java \
+	org/json/JSON.java \
+	org/json/JSONArray.java \
+	org/json/JSONException.java \
+	org/json/JSONObject.java \
+	org/json/JSONStringer.java \
+	org/json/JSONTokener.java \
 	org/kxml2/io/KXmlParser.java \
 	org/kxml2/io/KXmlSerializer.java \
 	org/xml/sax/HandlerBase.java \
