@@ -82,4 +82,40 @@ public class LineDirectivesTest extends GenerationTest {
     assertTranslation(translation, "#line 4\n  int i = 0;");
     assertTranslation(translation, "#line 7\n  return [JavaLangInteger toStringWithInt:i];");
   }
+
+  public void testForIfWhileStatementsWithoutBlocks() throws IOException {
+    String translation = translateSourceFile(
+        "public class Test {\n" +
+        "  void test(int n) {\n" +
+        "    for (int i = 0; i < 10; i++)\n" +
+        "      if ((n % 2) == 0)\n" +
+        "        n += i;\n" +
+        "    \n" +
+        "    for (int j = 0; j < 100; j++)\n" +
+        "      for (int k = 0; k < 1000; k++)\n" +
+        "        n += j + k;\n" +
+        "    \n" +
+        "    while (n > 0)\n" +
+        "      n--;" +
+       "  }}",
+        "Test", "Test.m");
+    assertTranslatedLines(translation,
+        "for (int i = 0; i < 10; i++)",
+        "#line 4",
+        "if ((n % 2) == 0)",
+        "#line 5",
+        "n += i;",
+        "",
+        "#line 7",
+        "for (int j = 0; j < 100; j++)",
+        "#line 8",
+        "for (int k = 0; k < 1000; k++)",
+        "#line 9",
+        "n += j + k;",
+        "",
+        "#line 11",
+        "while (n > 0)",
+        "#line 12",
+        "n--;");
+  }
 }
