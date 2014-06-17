@@ -726,8 +726,10 @@ NSStringEncoding parseCharsetName(NSString *charset) {
 }
 
 - (NSString *)trim {
-  return [self stringByTrimmingCharactersInSet:
-          [NSCharacterSet whitespaceAndNewlineCharacterSet]];
+  // Java's String.trim() trims characters <= u0020, not NSString whitespace.
+  NSMutableCharacterSet *trimCharacterSet =
+      [NSCharacterSet characterSetWithRange:NSMakeRange(0, 0x21)];
+  return [self stringByTrimmingCharactersInSet:trimCharacterSet];
 }
 
 - (IOSObjectArray *)split:(NSString *)str {
