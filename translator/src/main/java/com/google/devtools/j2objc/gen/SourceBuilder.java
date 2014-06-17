@@ -191,7 +191,7 @@ public class SourceBuilder {
   }
 
   public void syncLineNumbers(ASTNode node) {
-    if (emitLineDirectives) {
+    if (emitLineDirectives && unit != null) {
       int position = node.getStartPosition();
       if (position != -1) {
         int sourceLine = unit.getLineNumber(position);
