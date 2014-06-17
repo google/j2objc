@@ -104,7 +104,14 @@ public class IosHttpURLConnection extends HttpURLConnection {
     try {
       Map<String, List<String>> map = new HashMap<String, List<String>>();
       for (HeaderEntry entry : getHeaders()) {
-        map.put(entry.getKey(), entry.getValue());
+        String k = entry.getKey();
+        String v = entry.getValue();
+        List<String> values = map.get(k);
+        if (values == null) {
+          values = new ArrayList<String>();
+          map.put(k, values);
+        }
+        values.add(v);
       }
       return map;
     } catch (IOException e) {
@@ -364,7 +371,7 @@ public class IosHttpURLConnection extends HttpURLConnection {
     headers.add(new HeaderEntry(k, v));
   }
 
-  private List<String> getHeader(String k) {
+  private String getHeader(String k) {
     for (HeaderEntry entry : headers) {
       if (entry.key == k) {
         return entry.value;
@@ -387,23 +394,20 @@ public class IosHttpURLConnection extends HttpURLConnection {
   private void setHeader(String k, String v) {
     for (HeaderEntry entry : headers) {
       if (entry.key == k) {
-        for (String entryVal : entry.value) {
-          if (entryVal.equals(v)) {
-            return;  // already set.
-          }
-        }
-        entry.value.add(v);
+        headers.remove(entry);
+        break;
       }
     }
+    headers.add(new HeaderEntry(k, v));
   }
 
-  private static class HeaderEntry implements Map.Entry<String, List<String>> {
+  private static class HeaderEntry implements Map.Entry<String, String> {
     private final String key;
-    private final List<String> value;
+    private final String value;
 
     HeaderEntry(String k, String v) {
       this.key = k;
-      this.value = Arrays.asList(v.split("[s,]+"));
+      this.value = v;
     }
 
     @Override
@@ -412,27 +416,17 @@ public class IosHttpURLConnection extends HttpURLConnection {
     }
 
     @Override
-    public List<String> getValue() {
+    public String getValue() {
       return value;
     }
 
     @Override
-    public List<String> setValue(List<String> object) {
+    public String setValue(String object) {
       throw new AssertionError("mutable method called on immutable class");
     }
 
     public String getValueAsString() {
-      if (value.isEmpty()) {
-        return "";
-      }
-      StringBuilder sb = new StringBuilder();
-      Iterator<String> iter = value.iterator();
-      sb.append(iter.next());
-      while (iter.hasNext()) {
-        sb.append(", ");
-        sb.append(iter.next());
-      }
-      return sb.toString();
+      return value;
     }
   }
 
