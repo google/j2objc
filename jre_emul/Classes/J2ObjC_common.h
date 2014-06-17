@@ -101,4 +101,23 @@
   - (oneway void)release {} \
   - (id)autorelease { return self; }
 
+/*!
+ * Returns correct result when casting a double to an integral type. In C, a
+ * float >= Integer.MAX_VALUE (allowing for rounding) returns 0x80000000,
+ * while Java requires 0x7FFFFFFF.  A double >= Long.MAX_VALUE returns
+ * 0x8000000000000000L, while Java requires 0x7FFFFFFFFFFFFFFFL.
+ */
+__attribute__((always_inline)) inline int J2ObjCFpToInt(double d) {
+  int tmp = (int) d;
+  return tmp == 0x80000000 ? (d >= 0 ? 0x7FFFFFFF : tmp) : tmp;
+}
+__attribute__((always_inline)) inline long long J2ObjCFpToLong(double d) {
+  long long tmp = (long long) d;
+  return tmp == 0x8000000000000000LL ? (d >= 0 ? 0x7FFFFFFFFFFFFFFFL : tmp) : tmp;
+}
+__attribute__((always_inline)) inline unichar J2ObjCFpToUnichar(double d) {
+  unsigned tmp = (unsigned) d;
+  return tmp > 0xFFFF || (tmp == 0 && d > 0) ? 0xFFFF : (unichar) tmp;
+}
+
 #endif // _J2OBJC_COMMON_H_

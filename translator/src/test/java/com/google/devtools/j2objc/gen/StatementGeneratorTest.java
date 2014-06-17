@@ -1691,4 +1691,43 @@ public class StatementGeneratorTest extends GenerationTest {
     // Verify foo.derivedMethod() has cast of appropriate type variable.
     assertTranslation(translation, "[((Test_DerivedFoo *) foo_) derivedMethod];");
   }
+
+  // Verify that casting from a floating point primitive to an integral primitive
+  // uses the right cast macro.
+  public void testFloatingPointCasts() throws IOException {
+    String translation = translateSourceFile(
+        "public class Test { " +
+        "  byte testByte(float f) { return (byte) f; }" +
+        "  char testChar(float f) { return (char) f; }" +
+        "  short testShort(float f) { return (short) f; }" +
+        "  int testInt(float f) { return (int) f; }" +
+        "  long testLong(float f) { return (long) f; }" +
+        "  byte testByte(double d) { return (byte) d; }" +
+        "  char testChar(double d) { return (char) d; }" +
+        "  short testShort(double d) { return (short) d; }" +
+        "  int testInt(double d) { return (int) d; }" +
+        "  long testLong(double d) { return (long) d; }}",
+        "Test", "Test.m");
+    // Verify referenced return value is cast.
+    assertTranslatedLines(translation,
+        "- (char)testByteWithFloat:(float)f {", "return (char) J2ObjCFpToInt(f);");
+    assertTranslatedLines(translation,
+        "- (unichar)testCharWithFloat:(float)f {", "return J2ObjCFpToUnichar(f);");
+    assertTranslatedLines(translation,
+        "- (short int)testShortWithFloat:(float)f {", "return (short int) J2ObjCFpToInt(f);");
+    assertTranslatedLines(translation,
+        "- (int)testIntWithFloat:(float)f {", "return J2ObjCFpToInt(f);");
+    assertTranslatedLines(translation,
+        "- (long long int)testLongWithFloat:(float)f {", "return J2ObjCFpToLong(f);");
+    assertTranslatedLines(translation,
+        "- (char)testByteWithDouble:(double)d {", "return (char) J2ObjCFpToInt(d);");
+    assertTranslatedLines(translation,
+        "- (unichar)testCharWithDouble:(double)d {", "return J2ObjCFpToUnichar(d);");
+    assertTranslatedLines(translation,
+        "- (short int)testShortWithDouble:(double)d {", "return (short int) J2ObjCFpToInt(d);");
+    assertTranslatedLines(translation,
+        "- (int)testIntWithDouble:(double)d {", "return J2ObjCFpToInt(d);");
+    assertTranslatedLines(translation,
+        "- (long long int)testLongWithDouble:(double)d {", "return J2ObjCFpToLong(d);");
+  }
 }
