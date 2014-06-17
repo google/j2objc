@@ -120,15 +120,25 @@ STATIC_ANALYZER_FLAGS = \
 # See https://savannah.gnu.org/bugs/?35147
 define long_list_to_file
 @if [ -e $(1) ]; then rm $(1); fi
-@files='$(wordlist    1, 999,$(2))' && for i in $$files; do echo $$i >> $(1); done
-@files='$(wordlist 1000,1999,$(2))' && for i in $$files; do echo $$i >> $(1); done
-@files='$(wordlist 2000,2999,$(2))' && for i in $$files; do echo $$i >> $(1); done
-@files='$(wordlist 3000,3999,$(2))' && for i in $$files; do echo $$i >> $(1); done
-@files='$(wordlist 4000,4999,$(2))' && for i in $$files; do echo $$i >> $(1); done
-@files='$(wordlist 5000,5999,$(2))' && for i in $$files; do echo $$i >> $(1); done
-@files='$(wordlist 6000,6999,$(2))' && for i in $$files; do echo $$i >> $(1); done
-@files='$(wordlist 7000,7999,$(2))' && for i in $$files; do echo $$i >> $(1); done
-@files='$(wordlist 8000,8999,$(2))' && for i in $$files; do echo $$i >> $(1); done
-@files='$(wordlist 9000,9999,$(2))' && for i in $$files; do echo $$i >> $(1); done
+@files='$(wordlist    1, 499,$(2))' && for i in $$files; do echo $$i >> $(1); done
+@files='$(wordlist  500, 999,$(2))' && for i in $$files; do echo $$i >> $(1); done
+@files='$(wordlist 1000,1499,$(2))' && for i in $$files; do echo $$i >> $(1); done
+@files='$(wordlist 1500,1999,$(2))' && for i in $$files; do echo $$i >> $(1); done
+@files='$(wordlist 2000,2499,$(2))' && for i in $$files; do echo $$i >> $(1); done
+@files='$(wordlist 2500,2999,$(2))' && for i in $$files; do echo $$i >> $(1); done
+@files='$(wordlist 3000,3499,$(2))' && for i in $$files; do echo $$i >> $(1); done
+@files='$(wordlist 3500,3999,$(2))' && for i in $$files; do echo $$i >> $(1); done
+@files='$(wordlist 4000,4499,$(2))' && for i in $$files; do echo $$i >> $(1); done
+@files='$(wordlist 4500,4999,$(2))' && for i in $$files; do echo $$i >> $(1); done
+@files='$(wordlist 5000,5499,$(2))' && for i in $$files; do echo $$i >> $(1); done
+@files='$(wordlist 5500,5999,$(2))' && for i in $$files; do echo $$i >> $(1); done
+@files='$(wordlist 6000,6499,$(2))' && for i in $$files; do echo $$i >> $(1); done
+@files='$(wordlist 6500,6999,$(2))' && for i in $$files; do echo $$i >> $(1); done
+@files='$(wordlist 7000,7499,$(2))' && for i in $$files; do echo $$i >> $(1); done
+@files='$(wordlist 7500,7999,$(2))' && for i in $$files; do echo $$i >> $(1); done
+@files='$(wordlist 8000,8499,$(2))' && for i in $$files; do echo $$i >> $(1); done
+@files='$(wordlist 8500,8999,$(2))' && for i in $$files; do echo $$i >> $(1); done
+@files='$(wordlist 9000,9499,$(2))' && for i in $$files; do echo $$i >> $(1); done
+@files='$(wordlist 9500,9999,$(2))' && for i in $$files; do echo $$i >> $(1); done
 @if [ ! -e $(1) ]; then touch $(1); fi
 endef
