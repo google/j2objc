@@ -421,6 +421,7 @@ static IOSClass *FindMappedClass(NSString *name) {
   }
   NSString *mappedName =
       [prefix stringByAppendingString:[name substringFromIndex:lastDot.location + 1]];
+  mappedName = [mappedName stringByReplacingOccurrencesOfString:@"$" withString:@"_"];
   return ClassForIosName(mappedName);
 }
 
