@@ -94,6 +94,7 @@ public class NodeCopier extends ASTMatcher {
   public static <E extends ASTNode> E copySubtree(AST ast, E node) {
     E newNode = (E) ASTNode.copySubtree(ast, node);
     instance.safeSubtreeMatch(node, newNode);
+    copyProperties(node, newNode);
     return newNode;
   }
 
@@ -109,6 +110,22 @@ public class NodeCopier extends ASTMatcher {
           result.add(newNode);
       }
       return result;
+  }
+
+  /**
+   * Copy the properties from one expression to another.
+   */
+  public static <E extends ASTNode> void copyProperties(E oldNode, E newNode) {
+    if (oldNode instanceof Expression) {
+      if (Types.hasNilCheck((Expression) oldNode)) {
+        Types.addNilCheck((Expression) newNode);
+      }
+      if (Types.hasDeferredFieldSetter((Expression) oldNode)) {
+        Types.addDeferredFieldSetter((Expression) newNode);
+      }
+    } else if (oldNode instanceof Block && Types.hasAutoreleasePool((Block) oldNode)) {
+      Types.addAutoreleasePool((Block) newNode);
+    }
   }
 
   private void copy(Object from, Object to) {

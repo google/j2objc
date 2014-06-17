@@ -456,6 +456,7 @@ public class Functionizer extends ErrorReportingASTVisitor {
         SimpleName qualifier = ASTFactory.newSimpleName(node.getAST(), selfParam);
         QualifiedName fqn = ASTFactory.newQualifiedName(node.getAST(), qualifier,
             NodeCopier.copySubtree(node.getAST(), node));
+        NodeCopier.copyProperties(node, fqn);
         ASTUtil.setProperty(node, fqn);
       }
     }
