@@ -380,6 +380,12 @@ TEST_SOURCES = \
     org/apache/harmony/text/tests/java/text/ChoiceFormatTest.java \
     org/apache/harmony/text/tests/java/text/CollatorTest.java \
     org/apache/harmony/text/tests/java/text/MessageFormatTest.java \
+    org/json/JSONArrayTest.java \
+    org/json/JSONObjectTest.java \
+    org/json/JSONStringerTest.java \
+    org/json/JSONTokenerTest.java \
+    org/json/ParsingTest.java \
+    org/json/SelfUseTest.java \
     tests/api/java/lang/reflect/ProxyTest.java \
     tests/api/java/util/AbstractMapTest.java \
     tests/api/java/util/BitSetTest.java \
@@ -403,6 +409,7 @@ SUITE_SOURCES = \
     libcore/java/net/SmallTests.java \
     libcore/java/util/zip/SmallTests.java \
     org/apache/harmony/logging/tests/java/util/logging/SmallTests.java \
+    org/json/SmallTests.java
 
 FAILING_TESTS = \
     libcore/java/util/TreeSetTest.java \
@@ -513,6 +520,9 @@ run-concurrency-tests: link resources $(TEST_BIN)
 
 run-io-tests: link resources $(TEST_BIN)
 	@$(TEST_BIN) org.junit.runner.JUnitCore libcore.java.io.SmallTests
+
+run-json-tests: link resources $(TEST_BIN)
+	@$(TEST_BIN) org.junit.runner.JUnitCore org.json.SmallTests
 
 run-logging-tests: link resources $(TEST_BIN)
 	@$(TEST_BIN) org.junit.runner.JUnitCore \
