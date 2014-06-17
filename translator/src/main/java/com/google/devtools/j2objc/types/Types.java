@@ -268,6 +268,16 @@ public class Types {
         type == instance.ast.resolveWellKnownType("java.lang.Boolean");
   }
 
+  public static boolean isIntegralType(ITypeBinding type) {
+    return type.isEqualTo(instance.ast.resolveWellKnownType("byte")) ||
+        type.isEqualTo(instance.ast.resolveWellKnownType("short")) ||
+        type.isEqualTo(instance.ast.resolveWellKnownType("int")) ||
+        type == instance.ast.resolveWellKnownType("java.lang.Byte") ||
+        type == instance.ast.resolveWellKnownType("java.lang.Short") ||
+        type == instance.ast.resolveWellKnownType("java.lang.Integer") ||
+        isLongType(type);
+  }
+
   public static boolean isLongType(ITypeBinding type) {
     return type.isEqualTo(instance.ast.resolveWellKnownType("long")) ||
         type == instance.ast.resolveWellKnownType("java.lang.Long");

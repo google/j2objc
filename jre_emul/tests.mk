@@ -102,6 +102,7 @@ TEST_SOURCES = \
     LinkedBlockingQueueTest.java \
     LinkedListTest.java \
     LockSupportTest.java \
+    MaxFloatingPointTest.java \
     PriorityBlockingQueueTest.java \
     PriorityQueueTest.java \
     ReentrantLockTest.java \

@@ -477,6 +477,31 @@ public class StatementGenerator extends ErrorReportingASTVisitor {
   @Override
   public boolean visit(CastExpression node) {
     ITypeBinding type = Types.getTypeBinding(node.getType());
+    ITypeBinding exprType = Types.getTypeBinding(node.getExpression());
+    if (Types.isFloatingPointType(exprType)) {
+      if (Types.isLongType(type)) {
+        buffer.append("J2ObjCFpToLong(");
+        node.getExpression().accept(this);
+        buffer.append(')');
+        return false;
+      } else if (type.isEqualTo(node.getAST().resolveWellKnownType("char"))) {
+        buffer.append("J2ObjCFpToUnichar(");
+        node.getExpression().accept(this);
+        buffer.append(')');
+        return false;
+      } else if (Types.isIntegralType(type)) {
+        if (!type.isEqualTo(node.getAST().resolveWellKnownType("int"))) {
+          buffer.append('(');
+          buffer.append(NameTable.getSpecificObjCType(type));
+          buffer.append(") ");
+        }
+        buffer.append("J2ObjCFpToInt(");
+        node.getExpression().accept(this);
+        buffer.append(')');
+        return false;
+      }
+      // else fall-through.
+    }
     buffer.append("(");
     buffer.append(NameTable.getSpecificObjCType(type));
     buffer.append(") ");
