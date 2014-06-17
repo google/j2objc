@@ -196,7 +196,7 @@ public class SourceBuilder {
       if (position != -1) {
         int sourceLine = unit.getLineNumber(position);
         if (currentLine != sourceLine) {
-          buffer.append(String.format("#line %d\n", sourceLine));
+          buffer.append(String.format("\n#line %d\n", sourceLine));
           currentLine = sourceLine;
         }
       }

@@ -246,6 +246,14 @@ public class StatementGenerator extends ErrorReportingASTVisitor {
   }
 
   @Override
+  public void preVisit(ASTNode node) {
+    super.preVisit(node);
+    if (!(node instanceof Block)) {
+      buffer.syncLineNumbers(node);
+    }
+  }
+
+  @Override
   public boolean visit(AnonymousClassDeclaration node) {
     // Multi-method anonymous classes should have been converted by the
     // InnerClassExtractor.
@@ -444,7 +452,6 @@ public class StatementGenerator extends ErrorReportingASTVisitor {
   private void printStatements(List<?> statements) {
     for (Iterator<?> it = statements.iterator(); it.hasNext(); ) {
       Statement s = (Statement) it.next();
-      buffer.syncLineNumbers(s);
       s.accept(this);
     }
   }
@@ -495,14 +502,12 @@ public class StatementGenerator extends ErrorReportingASTVisitor {
   private void printMultiCatch(CatchClause node, boolean hasResources) {
     SingleVariableDeclaration exception = node.getException();
     for (Type exceptionType : ASTUtil.getTypes(((UnionType) exception.getType()))) {
-      buffer.syncLineNumbers(node);
       buffer.append("@catch (");
       exceptionType.accept(this);
       buffer.append(' ');
       exception.getName().accept(this);
       buffer.append(") {\n");
       printMainExceptionStore(hasResources, node);
-      buffer.syncLineNumbers(node);
       printStatements(ASTUtil.getStatements(node.getBody()));
       buffer.append("}\n");
     }
@@ -1531,7 +1536,6 @@ public class StatementGenerator extends ErrorReportingASTVisitor {
     buffer.append("{\n");
     List<Statement> stmts = ASTUtil.getStatements(node);
     for (Statement stmt : stmts) {
-      buffer.syncLineNumbers(stmt);
       stmt.accept(this);
     }
     if (!stmts.isEmpty() && stmts.get(stmts.size() - 1) instanceof SwitchCase) {
@@ -1558,20 +1562,16 @@ public class StatementGenerator extends ErrorReportingASTVisitor {
         }
       }
     }
-    buffer.syncLineNumbers(node);
     buffer.append("NSArray *__caseValues = [NSArray arrayWithObjects:");
     for (String value : caseValues) {
       buffer.append("@" + value + ", ");
     }
     buffer.append("nil];\n");
-    buffer.syncLineNumbers(node);
     buffer.append("NSUInteger __index = [__caseValues indexOfObject:");
     node.getExpression().accept(this);
     buffer.append("];\n");
-    buffer.syncLineNumbers(node);
     buffer.append("switch (__index) {\n");
     for (Statement stmt : stmts) {
-      buffer.syncLineNumbers(stmt);
       if (stmt instanceof SwitchCase) {
         SwitchCase caseStmt = (SwitchCase) stmt;
         if (caseStmt.isDefault()) {
@@ -1619,11 +1619,9 @@ public class StatementGenerator extends ErrorReportingASTVisitor {
     boolean hasResources = !resources.isEmpty();
     if (hasResources) {
       buffer.append("{\n");
-      buffer.syncLineNumbers(node);
       buffer.append("JavaLangThrowable *__mainException = nil;\n");
     }
     for (VariableDeclarationExpression var : resources) {
-      buffer.syncLineNumbers(var);
       var.accept(this);
       buffer.append(";\n");
     }
@@ -1635,12 +1633,10 @@ public class StatementGenerator extends ErrorReportingASTVisitor {
       if (cc.getException().getType().isUnionType()) {
         printMultiCatch(cc, hasResources);
       }
-      buffer.syncLineNumbers(cc);
       buffer.append("@catch (");
       cc.getException().accept(this);
       buffer.append(") {\n");
       printMainExceptionStore(hasResources, cc);
-      buffer.syncLineNumbers(cc);
       printStatements(ASTUtil.getStatements(cc.getBody()));
       buffer.append("}\n");
     }
@@ -1651,21 +1647,16 @@ public class StatementGenerator extends ErrorReportingASTVisitor {
       }
       for (VariableDeclarationExpression var : resources) {
         for (VariableDeclarationFragment frag : ASTUtil.getFragments(var)) {
-          buffer.syncLineNumbers(var);
           buffer.append("@try {\n[");
           buffer.append(frag.getName().getFullyQualifiedName());
           buffer.append(" close];\n}\n");
           buffer.append("@catch (JavaLangThrowable *e) {\n");
-          buffer.syncLineNumbers(var);
           buffer.append("if (__mainException) {\n");
-          buffer.syncLineNumbers(var);
           buffer.append("[__mainException addSuppressedWithJavaLangThrowable:e];\n} else {\n");
-          buffer.syncLineNumbers(var);
           buffer.append("__mainException = e;\n}\n");
           buffer.append("}\n");
         }
       }
-      buffer.syncLineNumbers(node);
       if (hasResources) {
         buffer.append("if (__mainException) {\n@throw __mainException;\n}\n");
       }
