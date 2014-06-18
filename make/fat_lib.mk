@@ -48,7 +48,7 @@ FAT_LIB_IPHONE_FLAGS = -arch armv7 -miphoneos-version-min=5.0 -isysroot $(FAT_LI
 FAT_LIB_IPHONE64_FLAGS = -arch arm64 -miphoneos-version-min=5.0 -isysroot $(FAT_LIB_IPHONE_SDK_DIR)
 FAT_LIB_IPHONEV7S_FLAGS = -arch armv7s -miphoneos-version-min=5.0 -isysroot $(FAT_LIB_IPHONE_SDK_DIR)
 FAT_LIB_SIMULATOR_FLAGS = -arch i386 -miphoneos-version-min=5.0 -isysroot $(FAT_LIB_SIMULATOR_SDK_DIR)
-FAT_LIB_XCODE_FLAGS = $(ARCH_FLAGS) -isysroot $(SDKROOT)
+FAT_LIB_XCODE_FLAGS = $(ARCH_FLAGS) -miphoneos-version-min=5.0 -isysroot $(SDKROOT)
 
 ifdef FAT_LIB_PRECOMPILED_HEADER
 ifndef CONFIGURATION_BUILD_DIR
