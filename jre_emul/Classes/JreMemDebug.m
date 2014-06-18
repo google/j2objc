@@ -472,11 +472,11 @@ FOUNDATION_EXPORT void JreMemDebugGenerateAllocationsReport(void) {
       sortedArrayUsingSelector:@selector(compare:)]) {
     NSData *stacktrace = [identifierToStacktrace objectForKey:identifier];
     void *addresses[512];
-    int count;
+    size_t count;
     memcpy(addresses, [stacktrace bytes], [stacktrace length]);
     count = [stacktrace length] / sizeof(addresses[0]);
     fprintf(f, "%s:", [identifier UTF8String]);
-    for (unsigned int i = 0 ; i < count ; i ++) {
+    for (size_t i = 0 ; i < count ; i ++) {
       fprintf(f, " %p", addresses[i]);
     }
     fprintf(f, "\n");

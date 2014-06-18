@@ -42,7 +42,7 @@
 
   __unsafe_unretained IOSClass *componentTypes[dimensionCount];
   componentTypes[dimensionCount - 1] = nil;
-  for (int i = dimensionCount - 2; i >= 0; i--) {
+  for (NSInteger i = (NSInteger) dimensionCount - 2; i >= 0; i--) {
     __unsafe_unretained IOSClass *last = componentTypes[i + 1];
     if (last) {
       componentTypes[i] = [IOSClass arrayClassWithComponentType:last];

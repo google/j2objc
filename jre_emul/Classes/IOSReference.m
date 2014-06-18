@@ -173,7 +173,7 @@ static Class GetReferentSubclass(id obj) {
 // (since they are never GC'd), with this test they will do nothing in
 // iOS as well.
 static BOOL IsConstantObject(id obj) {
-  unsigned int retainCount = [obj retainCount];
+  NSUInteger retainCount = [obj retainCount];
   return retainCount == UINT_MAX || retainCount == INT_MAX;
 }
 

@@ -64,7 +64,7 @@ id makeException(Class exceptionClass) {
 }
 
 + (NSString *)valueOfChars:(IOSCharArray *)data {
-  return [NSString valueOfChars:data offset:0 count:[data count]];
+  return [NSString valueOfChars:data offset:0 count:(int) [data count]];
 }
 
 + (NSString *)valueOfChars:(IOSCharArray *)data
@@ -153,10 +153,10 @@ destinationBegin:(int)destinationBegin {
   }
 
   NSRange range = NSMakeRange(sourceBegin, sourceEnd - sourceBegin);
-  int destinationLength = [destination count];
+  int destinationLength = (int) [destination count];
   if (destinationBegin + range.length > destinationLength) {
     exception = [[JavaLangStringIndexOutOfBoundsException alloc]
-                 initWithInt:destinationBegin + range.length];
+                 initWithInt:(int) (destinationBegin + range.length)];
 #if ! __has_feature(objc_arc)
     [exception autorelease];
 #endif
@@ -175,7 +175,7 @@ destinationBegin:(int)destinationBegin {
 }
 
 + (NSString *)stringWithCharacters:(IOSCharArray *)value {
-  return [NSString stringWithCharacters:value offset:0 length:[value count]];
+  return [NSString stringWithCharacters:value offset:0 length:(int) [value count]];
 }
 
 + (NSString *)stringWithCharacters:(IOSCharArray *)value
@@ -339,7 +339,7 @@ destinationBegin:(int)destinationBegin {
     @throw makeException([JavaLangNullPointerException class]);
   }
   if ([s length] == 0) {
-    return [self length];
+    return (int) [self length];
   }
   NSRange range = [self rangeOfString:s options:NSBackwardsSearch];
   return range.location == NSNotFound ? -1 : (int) range.location;
@@ -349,14 +349,14 @@ destinationBegin:(int)destinationBegin {
   if (!s) {
     @throw makeException([JavaLangNullPointerException class]);
   }
-  NSUInteger max = [self length];
+  int max = (int) [self length];
   if (index < 0) {
     return -1;
   }
   if (max == 0) {
     return max;
   }
-  NSUInteger sLen = [s length];
+  int sLen = (int) [s length];
   if (sLen == 0) {
     return index;
   }
@@ -442,7 +442,7 @@ destinationBegin:(int)destinationBegin {
   NSStringEncoding encoding = [NSString defaultCStringEncoding];
   return [self stringWithBytes:value
                         offset:0
-                        length:[value count]
+                        length:(int) [value count]
                encoding:encoding];
 }
 
@@ -450,7 +450,7 @@ destinationBegin:(int)destinationBegin {
                   charsetName:(NSString *)charsetName {
   return [self stringWithBytes:value
                         offset:0
-                        length:[value count]
+                        length:(int) [value count]
                    charsetName:charsetName];
 }
 
@@ -458,7 +458,7 @@ destinationBegin:(int)destinationBegin {
                       charset:(JavaNioCharsetCharset *)charset {
   return [self stringWithBytes:value
                         offset:0
-                        length:[value count]
+                        length:(int) [value count]
                        charset:charset];
 }
 
@@ -633,7 +633,7 @@ NSStringEncoding parseCharsetName(NSString *charset) {
   if (!encoding) {
     @throw makeException([JavaLangNullPointerException class]);
   }
-  int max_length = [self maximumLengthOfBytesUsingEncoding:encoding];
+  int max_length = (int) [self maximumLengthOfBytesUsingEncoding:encoding];
   char *buffer = malloc(max_length * sizeof(char));
   NSRange range = NSMakeRange(0, [self length]);
   NSUInteger used_length;

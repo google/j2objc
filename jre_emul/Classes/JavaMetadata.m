@@ -89,7 +89,7 @@
       }
     } else {
       // Field name has standard trailing underscore added.
-      int n = strlen(data_->fields[i].name) - 1;
+      size_t n = (size_t) strlen(data_->fields[i].name) - 1;
       if (strncmp(fieldName, data_->fields[i].name, n) == 0) {
         return &data_->fields[i];
       }
@@ -233,7 +233,7 @@
   NSString *exceptionsStr = [NSString stringWithUTF8String:data_->exceptions];
   NSArray *exceptionsArray = [exceptionsStr componentsSeparatedByString:@";"];
   // The last string is empty, due to the trailing semi-colon of the last exception.
-  int n = [exceptionsArray count] - 1;
+  NSUInteger n = [exceptionsArray count] - 1;
   IOSObjectArray *result = [IOSObjectArray arrayWithLength:n type:[IOSClass getClass]];
   NSUInteger count = 0;
   for (int i = 0; i < n; i++) {

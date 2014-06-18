@@ -168,7 +168,7 @@
 }
 
 - (int)size {
-  return [dictionary_ count];
+  return (int) [dictionary_ count];
 }
 
 - (id<JavaUtilCollection>)values {

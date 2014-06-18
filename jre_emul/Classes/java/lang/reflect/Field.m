@@ -287,7 +287,7 @@ static void SetWithRawValue(
 }
 
 + (NSString *)propertyName:(NSString *)name {
-  int lastCharIndex = [name length] - 1;
+  NSUInteger lastCharIndex = [name length] - 1;
   if ([name characterAtIndex:lastCharIndex] == '_') {
     return [name substringToIndex:lastCharIndex];
   }
@@ -330,7 +330,7 @@ static void SetWithRawValue(
 }
 
 - (int)unsafeOffset {
-  return ivar_getOffset(ivar_);
+  return (int) ivar_getOffset(ivar_);
 }
 
 // isEqual and hash are uniquely identified by their class and field names.

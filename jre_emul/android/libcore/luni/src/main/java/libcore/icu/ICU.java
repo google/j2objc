@@ -287,6 +287,6 @@ public final class ICU {
     public static native int getCurrencyFractionDigits(String currencyCode) /*-[
       NSNumberFormatter *formatter = AUTORELEASE([[NSNumberFormatter alloc] init]);
       [formatter setCurrencyCode:currencyCode];
-      return [formatter maximumFractionDigits];
+      return (int) [formatter maximumFractionDigits];
     ]-*/;
 }

@@ -62,8 +62,8 @@
         @"wrong number of arguments"]);
   }
 
-  int count = [initArgs count];
-  for (int i = 0; i < count; i++) {
+  NSUInteger count = [initArgs count];
+  for (NSUInteger i = 0; i < count; i++) {
     J2ObjcRawValue arg;
     if (![parameterTypes->buffer_[i] __unboxValue:initArgs->buffer_[i] toRawValue:&arg]) {
       @throw AUTORELEASE([[JavaLangIllegalArgumentException alloc] initWithNSString:

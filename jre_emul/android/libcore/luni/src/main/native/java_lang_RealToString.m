@@ -174,7 +174,7 @@ void RealToString_bigIntDigitGenerator(JavaLangRealToString *obj, long long int 
     return;
   }
   jint *digits = IOSIntArray_GetRef(obj->digits_, 0);
-  int max = [obj->digits_ count];
+  NSUInteger max = [obj->digits_ count];
 
   jint digitCount = 0;
   do

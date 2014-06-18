@@ -13,7 +13,7 @@
   NSData *data_;
   const char *bytes_;
   int position_;
-  int length_;
+  size_t length_;
 }
 
 @end
@@ -63,7 +63,7 @@
     return -1;
   }
 
-  int remaining = [data_ length] - position_;
+  int remaining = (int) [data_ length] - position_;
   if (remaining < len) {
     len = remaining;
   }

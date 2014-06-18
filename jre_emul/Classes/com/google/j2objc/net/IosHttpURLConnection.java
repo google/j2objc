@@ -318,10 +318,10 @@ public class IosHttpURLConnection extends HttpURLConnection {
     NSData *responseData = [NSURLConnection sendSynchronousRequest:request
                                                  returningResponse:&response
                                                              error:&error];
-    self->responseCode_ = response ? [response statusCode] : [error code];
+    self->responseCode_ = (int) (response ? [response statusCode] : [error code]);
     self->responseMessage_ =
         [ComGoogleJ2objcNetIosHttpURLConnection getResponseStatusTextWithInt:self->responseCode_];
-    self->contentLength_ = [responseData length];
+    self->contentLength_ = (int) ([responseData length]);
 
     if (error || [response statusCode] >= JavaNetHttpURLConnection_HTTP_BAD_REQUEST) {
       if (responseData) {

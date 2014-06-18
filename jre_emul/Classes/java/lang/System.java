@@ -39,7 +39,7 @@ import java.util.logging.Logger;
 /**
  * Simple iOS version of java.lang.System.  No code was shared, just its
  * public API.
- * 
+ *
  * @author Tom Ball
  */
 public class System {
@@ -52,7 +52,7 @@ public class System {
   /*-[
     static mach_timebase_info_data_t machTimeInfo_;
   ]-*/
-  
+
   static {
     // Set up standard in, out, and err.
     err = new PrintStream(new FileOutputStream(FileDescriptor.err));
@@ -99,7 +99,7 @@ public class System {
   public static native int identityHashCode(Object anObject) /*-[
     return (int) (intptr_t) anObject;
   ]-*/;
-  
+
   public static native void arraycopy(Object src, int srcPos, Object dest, int destPos,
       int length) /*-[
     if (!src || !dest) {
@@ -121,7 +121,7 @@ public class System {
           [src class], [dest class]];
       @throw AUTORELEASE([[JavaLangArrayStoreException alloc] initWithNSString:msg]);
     }
-    
+
     // Check for negative positions and length, since the array classes use unsigned ints.
     if (srcPos < 0 || destPos < 0 || length < 0) {
       @throw AUTORELEASE([[JavaLangArrayIndexOutOfBoundsException alloc] init]);
@@ -164,7 +164,7 @@ public class System {
     [props setPropertyWithNSString:@"user.dir" withNSString:curDir];
 
     NSString *tmpDir = NSTemporaryDirectory();
-    int iLast = [tmpDir length] - 1;
+    int iLast = (int) [tmpDir length] - 1;
     if (iLast >= 0 && [tmpDir characterAtIndex:iLast] == '/') {
       tmpDir = [tmpDir substringToIndex:iLast];
     }

@@ -205,8 +205,8 @@ void FillInStackTraceInternal(JavaLangThrowable *this) {
   nil_chk(stackTraceArg);
   @synchronized (self) {
     [self maybeFreeRawCallStack];
-    int count = [stackTraceArg count];
-    for (int i = 0; i < count; i++) {
+    size_t count = [stackTraceArg count];
+    for (size_t i = 0; i < count; i++) {
       nil_chk(stackTraceArg->buffer_[i]);
     }
 #if __has_feature(objc_arc)

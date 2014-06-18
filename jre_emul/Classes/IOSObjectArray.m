@@ -90,7 +90,7 @@ static IOSObjectArray *IOSObjectArray_NewArrayWithObjects(
 
   __unsafe_unretained IOSClass *componentTypes[dimensionCount];
   componentTypes[dimensionCount - 1] = type;
-  for (int i = dimensionCount - 2; i >= 0; i--) {
+  for (NSInteger i = (NSInteger) dimensionCount - 2; i >= 0; i--) {
     componentTypes[i] = [IOSClass arrayClassWithComponentType:componentTypes[i + 1]];
   }
   return [self arrayWithDimensions:dimensionCount lengths:dimensionLengths types:componentTypes];

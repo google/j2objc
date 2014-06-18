@@ -399,7 +399,7 @@ static NSUInteger EnumerateEntries(
 }
 
 + (int)computeHashCodeWithId:(id)key {
-  return [nil_chk(key) hash];
+  return (int) [nil_chk(key) hash];
 }
 
 + (BOOL)areEqualKeysWithId:(id)key1

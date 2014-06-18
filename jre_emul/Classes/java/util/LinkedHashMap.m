@@ -124,7 +124,7 @@ static NSUInteger EnumerateEntries(
     m = (JavaUtilLinkedHashMap_LinkedHashMapEntry *) [self findNullKeyEntry];
   }
   else {
-    int hash_ = [key hash];
+    int hash_ = (int) [key hash];
     int index = (hash_ & (int) 0x7FFFFFFF) % elementDataLength_;
     m = (JavaUtilLinkedHashMap_LinkedHashMapEntry *)
         [self findNonNullKeyEntryWithId:key withInt:index withInt:hash_];
@@ -191,7 +191,7 @@ static NSUInteger EnumerateEntries(
     }
   }
   else {
-    int hash_ = [key hash];
+    int hash_ = (int) [key hash];
     int index = (hash_ & (int) 0x7FFFFFFF) % elementDataLength_;
     m = (JavaUtilLinkedHashMap_LinkedHashMapEntry *)
         [self findNonNullKeyEntryWithId:key withInt:index withInt:hash_];

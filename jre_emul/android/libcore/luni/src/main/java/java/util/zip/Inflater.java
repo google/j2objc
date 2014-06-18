@@ -171,7 +171,7 @@ public class Inflater {
 
     private native int getAdlerImpl(long handle) /*-[
         z_stream *zStream = (z_stream*) handle;
-        return zStream->adler;
+        return (int) zStream->adler;
     ]-*/;
 
     /**
@@ -309,8 +309,8 @@ public class Inflater {
           @throw AUTORELEASE([[JavaUtilZipDataFormatException alloc] init]);
       }
 
-      int bytesRead = zStream->next_in - initialNextIn;
-      int bytesWritten = zStream->next_out - initialNextOut;
+      int bytesRead = (int) (zStream->next_in - initialNextIn);
+      int bytesWritten = (int) (zStream->next_out - initialNextOut);
 
       self->inRead_ += bytesRead;
       return bytesWritten;
