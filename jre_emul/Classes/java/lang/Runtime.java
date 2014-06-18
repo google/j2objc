@@ -34,7 +34,7 @@ public class Runtime {
   }
 
   public native int availableProcessors() /*-[
-    return [[NSProcessInfo processInfo] processorCount];
+    return (int) [[NSProcessInfo processInfo] processorCount];
   ]-*/;
 
   public native void exit(int status) /*-[

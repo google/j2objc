@@ -36,7 +36,7 @@
 static void signalHandler(int sig) {
   // Get void*'s for all entries on the stack.
   void *array[64];
-  size_t frame_count = backtrace(array, 64);
+  int frame_count = (int) backtrace(array, 64);
 
   // Print all the frames to stderr.
   fprintf(stderr, "Error: signal %d:\n", sig);

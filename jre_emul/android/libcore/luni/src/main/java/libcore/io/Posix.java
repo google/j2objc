@@ -779,8 +779,11 @@ public final class Posix implements Os {
   ]-*/;
 
   public native long lseek(FileDescriptor fd, long offset, int whence) throws ErrnoException /*-[
-    off_t rc = TEMP_FAILURE_RETRY(lseek((int) fd->descriptor_, (off_t) offset, whence));
-    return [LibcoreIoPosix throwIfMinusOneWithNSString:@"lseek" withInt:rc];
+    off_t rc = TEMP_FAILURE_RETRY(lseek((int) fd->descriptor_, offset, whence));
+    if (rc == -1) {
+      [LibcoreIoPosix throwErrnoExceptionWithNSString:@"lseek" withInt:errno];
+    }
+    return rc;
   ]-*/;
 
   public native StructStat lstat(String path) throws ErrnoException /*-[
@@ -806,13 +809,13 @@ public final class Posix implements Os {
   ]-*/;
 
   public native void mlock(long address, long byteCount) throws ErrnoException /*-[
-    int rc = TEMP_FAILURE_RETRY(mlock((void *) address, byteCount));
+    int rc = TEMP_FAILURE_RETRY(mlock((void *) address, (size_t) byteCount));
     [LibcoreIoPosix throwIfMinusOneWithNSString:@"mlock" withInt:rc];
   ]-*/;
 
   public native long mmap(long address, long byteCount, int prot, int flags,
       FileDescriptor fd, long offset) throws ErrnoException /*-[
-    void* ptr = mmap((void *) address, byteCount, prot, flags, fd->descriptor_, offset);
+    void* ptr = mmap((void *) address, (size_t) byteCount, prot, flags, fd->descriptor_, offset);
     if (ptr == MAP_FAILED) {
       [LibcoreIoPosix throwErrnoExceptionWithNSString:@"mmap" withInt:errno];
     }
@@ -820,17 +823,17 @@ public final class Posix implements Os {
   ]-*/;
 
   public native void msync(long address, long byteCount, int flags) throws ErrnoException /*-[
-    int rc = TEMP_FAILURE_RETRY(msync((void *) address, byteCount, flags));
+    int rc = TEMP_FAILURE_RETRY(msync((void *) address, (size_t) byteCount, flags));
     [LibcoreIoPosix throwIfMinusOneWithNSString:@"msync" withInt:rc];
   ]-*/;
 
   public native void munlock(long address, long byteCount) throws ErrnoException /*-[
-    int rc = TEMP_FAILURE_RETRY(munlock((void *) address, byteCount));
+    int rc = TEMP_FAILURE_RETRY(munlock((void *) address, (size_t) byteCount));
     [LibcoreIoPosix throwIfMinusOneWithNSString:@"munlock" withInt:rc];
   ]-*/;
 
   public native void munmap(long address, long byteCount) throws ErrnoException /*-[
-    int rc = TEMP_FAILURE_RETRY(munmap((void *) address, byteCount));
+    int rc = TEMP_FAILURE_RETRY(munmap((void *) address, (size_t) byteCount));
     [LibcoreIoPosix throwIfMinusOneWithNSString:@"munmap" withInt:rc];
   ]-*/;
 
@@ -859,7 +862,7 @@ public final class Posix implements Os {
   ]-*/;
 
   public native int poll(StructPollfd[] fds, int timeoutMs) throws ErrnoException /*-[
-    size_t count = [fds count];
+    nfds_t count = (nfds_t) [fds count];
     struct pollfd *pollFds = calloc(count, sizeof(struct pollfd));
     for (int i = 0; i < count; i++) {
       LibcoreIoStructPollfd *javaPollFd = [fds objectAtIndex:i];
@@ -962,7 +965,7 @@ public final class Posix implements Os {
 
   public native int readv(FileDescriptor fd, Object[] buffers, int[] offsets, int[] byteCounts)
       throws ErrnoException /*-[
-    int nIoVecs = [buffers count];
+    int nIoVecs = (int) [buffers count];
     struct iovec *ioVecs = malloc(nIoVecs * sizeof (struct iovec));
     for (int i = 0; i < nIoVecs; i++) {
       char *bytes = BytesRW([buffers objectAtIndex:i]);
@@ -1030,7 +1033,7 @@ public final class Posix implements Os {
     memset(&ss, 0, sizeof(ss));
     struct sockaddr* from = (srcAddress) ? (struct sockaddr *) &ss : NULL;
     socklen_t* fromLength = (srcAddress) ? &sl : 0;
-    int recvCount = NET_FAILURE_RETRY(ssize_t, recvfrom, fd, bytes + byteOffset, byteCount,
+    int recvCount = (int) NET_FAILURE_RETRY(ssize_t, recvfrom, fd, bytes + byteOffset, byteCount,
         flags, from, fromLength);
     fillInetSocketAddress(recvCount, srcAddress, &ss);
     return recvCount;
@@ -1061,8 +1064,8 @@ public final class Posix implements Os {
       offset = inOffset->value_;
       offsetPtr = &offset;
     }
-    int rc =
-        TEMP_FAILURE_RETRY(sendfile_(outFd->descriptor_, inFd->descriptor_, offsetPtr, byteCount));
+    int rc = TEMP_FAILURE_RETRY(sendfile_(outFd->descriptor_, inFd->descriptor_,
+        offsetPtr, (size_t) byteCount));
     if (inOffset != NULL) {
       inOffset->value_ = offset;
     }
@@ -1100,7 +1103,8 @@ public final class Posix implements Os {
       return -1;
     }
     const struct sockaddr *to = inetAddress ? (const struct sockaddr *) &ss : NULL;
-    return NET_FAILURE_RETRY(ssize_t, sendto, fd, bytes + byteOffset, byteCount, flags, to, sa_len);
+    return (int) NET_FAILURE_RETRY(
+        ssize_t, sendto, fd, bytes + byteOffset, byteCount, flags, to, sa_len);
   ]-*/;
 
   public native void setsockoptByte(FileDescriptor fd, int level, int option, int value)
@@ -1215,8 +1219,8 @@ public final class Posix implements Os {
   public native void setsockoptTimeval(FileDescriptor fd, int level, int option,
       StructTimeval structTimeval) throws ErrnoException /*-[
     struct timeval value;
-    value.tv_sec = structTimeval->tv_sec_;
-    value.tv_usec = structTimeval->tv_usec_;
+    value.tv_sec = (long) structTimeval->tv_sec_;
+    value.tv_usec = (int) structTimeval->tv_usec_;
     int rc = TEMP_FAILURE_RETRY(setsockopt(fd->descriptor_, level, option, &value, sizeof(value)));
     [LibcoreIoPosix throwIfMinusOneWithNSString:@"setsockopt" withInt:rc];
   ]-*/;
@@ -1335,7 +1339,7 @@ public final class Posix implements Os {
 
   public native int writev(FileDescriptor fd, Object[] buffers, int[] offsets, int[] byteCounts)
       throws ErrnoException /*-[
-    int nIoVecs = [buffers count];
+    int nIoVecs = (int) [buffers count];
     struct iovec *ioVecs = malloc(nIoVecs * sizeof (struct iovec));
     for (int i = 0; i < nIoVecs; i++) {
       const char *bytes = BytesRO([buffers objectAtIndex:i]);

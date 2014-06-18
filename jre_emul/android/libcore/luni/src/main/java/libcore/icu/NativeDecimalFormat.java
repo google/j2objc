@@ -272,23 +272,23 @@ public final class NativeDecimalFormat implements Cloneable {
     // start getter and setter
 
     public native int getMaximumFractionDigits() /*-[
-      return [(NSNumberFormatter *) nsFormatter_ maximumFractionDigits];
+      return (int) [(NSNumberFormatter *) nsFormatter_ maximumFractionDigits];
     ]-*/;
 
     public native int getMaximumIntegerDigits() /*-[
-      return [(NSNumberFormatter *) nsFormatter_ maximumIntegerDigits];
+      return (int) [(NSNumberFormatter *) nsFormatter_ maximumIntegerDigits];
     ]-*/;
 
     public native int getMinimumFractionDigits() /*-[
-      return [(NSNumberFormatter *) nsFormatter_ minimumFractionDigits];
+      return (int) [(NSNumberFormatter *) nsFormatter_ minimumFractionDigits];
     ]-*/;
 
     public native int getMinimumIntegerDigits() /*-[
-      return [(NSNumberFormatter *) nsFormatter_ minimumIntegerDigits];
+      return (int) [(NSNumberFormatter *) nsFormatter_ minimumIntegerDigits];
     ]-*/;
 
     public native int getGroupingSize() /*-[
-      return [(NSNumberFormatter *) nsFormatter_ groupingSize];
+      return (int) [(NSNumberFormatter *) nsFormatter_ groupingSize];
     ]-*/;
 
     public native int getMultiplier() /*-[
@@ -679,7 +679,7 @@ public final class NativeDecimalFormat implements Cloneable {
                                          error:&error];
       [formatter setAllowsFloats:allowsFloats];
       if (success) {
-        [position setIndexWithInt:start + range.length];
+        [position setIndexWithInt:start + (int) range.length];
         NSString *decimalSeparator = [formatter decimalSeparator];
         if ([string rangeOfString:decimalSeparator].location == NSNotFound) {
           return [JavaLangLong valueOfWithLong:[result longLongValue]];

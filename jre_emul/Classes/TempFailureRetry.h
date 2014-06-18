@@ -19,8 +19,8 @@
 /* Used to retry syscalls that can return EINTR. */
 # define TEMP_FAILURE_RETRY(expression)           \
   (__extension__                                  \
-    ({ long int __result;                         \
-      do __result = (long int) (expression);      \
-      while (__result == -1L && errno == EINTR);  \
+    ({ int __result;                              \
+      do __result = (int) (expression);           \
+      while (__result == -1 && errno == EINTR);   \
       __result; }))
 #endif

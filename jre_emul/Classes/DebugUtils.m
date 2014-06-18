@@ -31,7 +31,7 @@ static void LogStack(NSUInteger nFrames) {
   }
 
   void *callStack[nFrames + FRAMES_TO_IGNORE];
-  NSUInteger callFrames = backtrace(callStack, nFrames + FRAMES_TO_IGNORE);
+  NSUInteger callFrames = backtrace(callStack, (int) nFrames + FRAMES_TO_IGNORE);
 
   for (NSUInteger i = FRAMES_TO_IGNORE; i <= callFrames; i++) {
     void *shortStack[1];

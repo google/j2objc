@@ -52,7 +52,7 @@ static inline ssize_t sendfile_(int out_fd, int in_fd, off_t* offset, size_t cou
   if (result == -1) {
     return -1;
   }
-  return in_out_count;
+  return (ssize_t) in_out_count;
 }
 
 // For mincore(3).

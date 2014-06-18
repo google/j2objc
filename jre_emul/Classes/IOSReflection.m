@@ -30,7 +30,7 @@ id<JavaLangReflectType> JreTypeForString(const char *typeStr) {
       return primitiveType;
     }
   }
-  int typeLen = strlen(typeStr);
+  NSUInteger typeLen = strlen(typeStr);
   if (typeLen >= 2) {
     if (*typeStr == '[') {
       IOSClass *componentType = (IOSClass *) JreTypeForString(typeStr + 1);

@@ -280,7 +280,7 @@ public class Proxy implements Serializable {
     private static native Class generateProxy(String name, Class[] interfaces,
         ClassLoader loader) throws IllegalArgumentException /*-[
       Class proxyClass = objc_allocateClassPair([JavaLangReflectProxy class], [name UTF8String], 0);
-      unsigned interfaceCount = [interfaces count];
+      NSUInteger interfaceCount = [interfaces count];
       for (unsigned i = 0; i < interfaceCount; i++) {
         IOSClass *intrface = (IOSClass *) [interfaces objectAtIndex:i];
         if (![intrface isInterface]) {
