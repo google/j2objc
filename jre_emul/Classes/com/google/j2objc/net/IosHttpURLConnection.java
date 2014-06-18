@@ -119,7 +119,7 @@ public class IosHttpURLConnection extends HttpURLConnection {
     }
   }
 
-  private List<IosHttpURLConnection.HeaderEntry> getHeaders() throws IOException {
+  private List<HeaderEntry> getHeaders() throws IOException {
     getResponse();
     return headers;
   }
@@ -127,16 +127,25 @@ public class IosHttpURLConnection extends HttpURLConnection {
   @Override
   public String getHeaderField(int pos) {
     try {
-      return getHeaders().get(pos).getValueAsString();
+      List<HeaderEntry> headers = getHeaders();
+      return pos < headers.size() ? headers.get(pos).getValueAsString() : null;
     } catch (IOException e) {
       return null;
     }
   }
 
+  /**
+   * Returns the value of the named header field.
+   *
+   * If called on a connection that sets the same header multiple times with
+   * possibly different values, only the last value is returned.
+   */
   @Override
   public String getHeaderField(String key) {
     try {
-      for (HeaderEntry entry : getHeaders()) {
+      List<HeaderEntry> headers = getHeaders();
+      for (int i = headers.size() - 1; i >= 0; i--) {
+        HeaderEntry entry = headers.get(i);
         if (key == null) {
           if (entry.getKey() == null) {
             return entry.getValueAsString();
@@ -168,7 +177,8 @@ public class IosHttpURLConnection extends HttpURLConnection {
   @Override
   public String getHeaderFieldKey(int posn) {
     try {
-      return getHeaders().get(posn).getKey();
+      List<HeaderEntry> headers = getHeaders();
+      return posn < headers.size() ? headers.get(posn).getKey() : null;
     } catch (IOException e) {
       return null;
     }
