@@ -102,24 +102,29 @@ public class IosHttpURLConnection extends HttpURLConnection {
   @Override
   public Map<String, List<String>> getHeaderFields() {
     try {
-      Map<String, List<String>> map = new HashMap<String, List<String>>();
-      for (HeaderEntry entry : getHeaders()) {
-        String k = entry.getKey();
-        String v = entry.getValue();
-        List<String> values = map.get(k);
-        if (values == null) {
-          values = new ArrayList<String>();
-          map.put(k, values);
-        }
-        values.add(v);
-      }
-      return map;
+      getResponse();
+      return getHeaderFieldsDoNotForceResponse();
     } catch (IOException e) {
       return Collections.EMPTY_MAP;
     }
   }
 
-  private List<HeaderEntry> getHeaders() throws IOException {
+  private Map<String, List<String>> getHeaderFieldsDoNotForceResponse() {
+    Map<String, List<String>> map = new HashMap<String, List<String>>();
+    for (HeaderEntry entry : headers) {
+      String k = entry.getKey();
+      String v = entry.getValue();
+       List<String> values = map.get(k);
+      if (values == null) {
+        values = new ArrayList<String>();
+        map.put(k, values);
+      }
+      values.add(v);
+    }
+    return map;
+  }
+
+  private List<HeaderEntry> getResponseHeaders() throws IOException {
     getResponse();
     return headers;
   }
@@ -127,8 +132,8 @@ public class IosHttpURLConnection extends HttpURLConnection {
   @Override
   public String getHeaderField(int pos) {
     try {
-      List<HeaderEntry> headers = getHeaders();
-      return pos < headers.size() ? headers.get(pos).getValueAsString() : null;
+      List<HeaderEntry> headers = getResponseHeaders();
+      return pos < headers.size() ? headers.get(pos).getValue() : null;
     } catch (IOException e) {
       return null;
     }
@@ -143,23 +148,27 @@ public class IosHttpURLConnection extends HttpURLConnection {
   @Override
   public String getHeaderField(String key) {
     try {
-      List<HeaderEntry> headers = getHeaders();
-      for (int i = headers.size() - 1; i >= 0; i--) {
-        HeaderEntry entry = headers.get(i);
-        if (key == null) {
-          if (entry.getKey() == null) {
-            return entry.getValueAsString();
-          }
-          continue;
-        }
-        if (key.equals(entry.getKey())) {
-          return entry.getValueAsString();
-        }
-      }
-      return null;
-    } catch (IOException e) {
+      getResponse();
+      return getHeaderFieldDoNotForceResponse(key);
+    } catch(IOException e) {
       return null;
     }
+  }
+
+  private String getHeaderFieldDoNotForceResponse(String key) {
+    for (int i = headers.size() - 1; i >= 0; i--) {
+      HeaderEntry entry = headers.get(i);
+      if (key == null) {
+        if (entry.getKey() == null) {
+          return entry.getValue();
+        }
+        continue;
+      }
+      if (key.equals(entry.getKey())) {
+        return entry.getValue();
+      }
+    }
+    return null;
   }
 
   @Override
@@ -177,7 +186,7 @@ public class IosHttpURLConnection extends HttpURLConnection {
   @Override
   public String getHeaderFieldKey(int posn) {
     try {
-      List<HeaderEntry> headers = getHeaders();
+      List<HeaderEntry> headers = getResponseHeaders();
       return posn < headers.size() ? headers.get(posn).getKey() : null;
     } catch (IOException e) {
       return null;
@@ -197,8 +206,17 @@ public class IosHttpURLConnection extends HttpURLConnection {
   @Override
   public long getHeaderFieldLong(String field, long defaultValue) {
     String longString = getHeaderField(field);
+    return headerValueToLong(longString, defaultValue);
+  }
+
+  private long getHeaderFieldLongDoNotForceResponse(String field, long defaultValue) {
+    String longString = getHeaderFieldDoNotForceResponse(field);
+    return headerValueToLong(longString, defaultValue);
+  }
+
+  private long headerValueToLong(String value, long defaultValue) {
     try {
-      return Long.parseLong(longString);
+      return Long.parseLong(value);
     } catch (NumberFormatException e) {
       return defaultValue;
     }
@@ -210,7 +228,7 @@ public class IosHttpURLConnection extends HttpURLConnection {
       throw new IllegalStateException(
           "Cannot access request header fields after connection is set");
     }
-    return getHeaderFields();
+    return getHeaderFieldsDoNotForceResponse();
   }
 
   @Override
@@ -240,7 +258,7 @@ public class IosHttpURLConnection extends HttpURLConnection {
     if (field == null) {
       return null;
     }
-    return getHeaderField(field);
+    return getHeaderFieldDoNotForceResponse(field);
   }
 
   @Override
@@ -250,7 +268,7 @@ public class IosHttpURLConnection extends HttpURLConnection {
 
   @Override
   public long getIfModifiedSince() {
-    return getHeaderFieldLong("If-Modified-Since", 0L);
+    return getHeaderFieldLongDoNotForceResponse("If-Modified-Since", 0L);
   }
 
   @Override
@@ -267,6 +285,9 @@ public class IosHttpURLConnection extends HttpURLConnection {
 
   @Override
   public native OutputStream getOutputStream() throws IOException /*-[
+    if(self->connected_) {
+      @throw [[JavaLangIllegalStateException alloc] initWithNSString:@"Cannot get output stream after connection is made"];
+    }
     if (!nativeRequestData_) {  // Don't reallocate if requested twice.
       ComGoogleJ2objcNetIosHttpURLConnection_set_nativeRequestData_(
           self, [NSDataOutputStream stream]);
@@ -290,9 +311,11 @@ public class IosHttpURLConnection extends HttpURLConnection {
     if (self->responseException_) {
       @throw self->responseException_;
     }
+    [self connect];
 
     NSMutableURLRequest *request =
         [NSMutableURLRequest requestWithURL:[NSURL URLWithString:[self->url_ toExternalForm]]];
+    request.HTTPShouldHandleCookies = NO;
     request.HTTPMethod = self->method_;
     request.cachePolicy = self->useCaches_ ?
         NSURLRequestUseProtocolCachePolicy : NSURLRequestReloadIgnoringLocalCacheData;
@@ -302,7 +325,7 @@ public class IosHttpURLConnection extends HttpURLConnection {
     for (int i = 0; i < n; i++) {
       ComGoogleJ2objcNetIosHttpURLConnection_HeaderEntry *entry = [self->headers_ getWithInt:i];
       if (entry->key_) {
-        [request setValue:[entry getValueAsString] forHTTPHeaderField:entry->key_];
+        [request setValue:[entry getValue] forHTTPHeaderField:entry->key_];
       }
     }
 
@@ -317,7 +340,6 @@ public class IosHttpURLConnection extends HttpURLConnection {
         self->responseException_ = [[JavaNetProtocolException alloc] initWithNSString:errMsg];
         @throw self->responseException_;
       }
-      [request setValue:self->contentType_ forHTTPHeaderField:@"Content-Type"];
       if (self->nativeRequestData_) {
         request.HTTPBody = [(NSDataOutputStream *) self->nativeRequestData_ data];
       }
@@ -366,6 +388,9 @@ public class IosHttpURLConnection extends HttpURLConnection {
       @throw self->responseException_;
     }
 
+    // Remove request properties and make room for response headers
+    [self->headers_ clear];
+
     // The HttpURLConnection headerFields map uses a null key for Status-Line.
     NSString *statusLine =
         [NSString stringWithFormat:@"HTTP/1.1 %d %@", self->responseCode_, self->responseMessage_];
@@ -379,15 +404,6 @@ public class IosHttpURLConnection extends HttpURLConnection {
 
   private void addHeader(String k, String v) {
     headers.add(new HeaderEntry(k, v));
-  }
-
-  private String getHeader(String k) {
-    for (HeaderEntry entry : headers) {
-      if (entry.key == k) {
-        return entry.value;
-      }
-    }
-    return null;
   }
 
   private void removeHeader(String k) {
@@ -433,10 +449,6 @@ public class IosHttpURLConnection extends HttpURLConnection {
     @Override
     public String setValue(String object) {
       throw new AssertionError("mutable method called on immutable class");
-    }
-
-    public String getValueAsString() {
-      return value;
     }
   }
 
