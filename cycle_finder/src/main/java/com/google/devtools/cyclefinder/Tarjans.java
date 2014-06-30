@@ -21,6 +21,7 @@ import com.google.common.collect.SetMultimap;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * An implementation of Tarjan's strongly connected components algorithm.
@@ -29,24 +30,27 @@ import java.util.Map;
 class Tarjans {
 
   private final SetMultimap<String, Edge> edges;
+  private final Set<String> seedTypes;
   private int vIndex = 0;
   // In case of performance issues, consider a data structure with faster .contains().
   private ArrayList<Vertex> stack = Lists.newArrayList();
   private Map<String, Vertex> vertices = Maps.newHashMap();
   private List<List<String>> stronglyConnectedComponents = Lists.newArrayList();
 
-  private Tarjans(SetMultimap<String, Edge> edges) {
+  private Tarjans(SetMultimap<String, Edge> edges, Set<String> seedTypes) {
     this.edges = edges;
+    this.seedTypes = seedTypes;
   }
 
-  public static List<List<String>> getStronglyConnectedComponents(SetMultimap<String, Edge> edges) {
-    Tarjans tarjans = new Tarjans(edges);
+  public static List<List<String>> getStronglyConnectedComponents(
+      SetMultimap<String, Edge> edges, Set<String> seedTypes) {
+    Tarjans tarjans = new Tarjans(edges, seedTypes);
     tarjans.run();
     return tarjans.stronglyConnectedComponents;
   }
 
   private void run() {
-    for (String type : edges.keySet()) {
+    for (String type : seedTypes) {
       Vertex v = getVertex(type);
       if (v.index == -1) {
         visit(v);

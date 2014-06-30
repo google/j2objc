@@ -32,6 +32,7 @@ import org.eclipse.jdt.core.dom.IVariableBinding;
 import org.eclipse.jdt.core.dom.Modifier;
 
 import java.util.Collection;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -45,13 +46,15 @@ import java.util.Set;
 public class ReferenceGraph {
 
   private final Map<String, ITypeBinding> allTypes;
-  private final Whitelist whitelist;
+  private final NameList whitelist;
+  private final NameList blacklist;
   private SetMultimap<String, Edge> edges = HashMultimap.create();
   private List<List<Edge>> cycles = Lists.newArrayList();
 
-  public ReferenceGraph(TypeCollector typeCollector, Whitelist whitelist) {
+  public ReferenceGraph(TypeCollector typeCollector, NameList whitelist, NameList blacklist) {
     this.allTypes = typeCollector.getTypes();
     this.whitelist = whitelist;
+    this.blacklist = blacklist;
   }
 
   public List<List<Edge>> findCycles() {
@@ -178,7 +181,18 @@ public class ReferenceGraph {
   }
 
   private void runTarjans() {
-    List<List<String>> stronglyConnectedComponents = Tarjans.getStronglyConnectedComponents(edges);
+    Set<String> seedTypes = edges.keySet();
+    if (blacklist != null) {
+      seedTypes = Sets.newHashSet(seedTypes);
+      Iterator<String> it = seedTypes.iterator();
+      while (it.hasNext()) {
+        if (!blacklist.containsType(allTypes.get(it.next()))) {
+          it.remove();
+        }
+      }
+    }
+    List<List<String>> stronglyConnectedComponents =
+        Tarjans.getStronglyConnectedComponents(edges, seedTypes);
     for (List<String> component : stronglyConnectedComponents) {
       handleStronglyConnectedComponent(makeSubgraph(edges, component));
     }
@@ -191,11 +205,25 @@ public class ReferenceGraph {
       String root = Iterables.getFirst(unusedTypes, null);
       assert root != null;
       List<Edge> cycle = runDijkstras(subgraph, root);
-      cycles.add(cycle);
+      if (shouldAddCycle(cycle)) {
+        cycles.add(cycle);
+      }
       for (Edge e : cycle) {
         unusedTypes.remove(e.getOrigin().getKey());
       }
     }
+  }
+
+  private boolean shouldAddCycle(List<Edge> cycle) {
+    if (blacklist == null) {
+      return true;
+    }
+    for (Edge e : cycle) {
+      if (blacklist.containsType(e.getOrigin())) {
+        return true;
+      }
+    }
+    return false;
   }
 
   /**

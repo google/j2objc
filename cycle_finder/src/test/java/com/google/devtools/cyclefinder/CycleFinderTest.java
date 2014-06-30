@@ -39,6 +39,7 @@ public class CycleFinderTest extends TestCase {
   List<String> inputFiles;
   List<List<Edge>> cycles;
   List<String> whitelistEntries;
+  List<String> blacklistEntries;
 
   static {
     // Prevents errors and warnings from being printed to the console.
@@ -50,6 +51,7 @@ public class CycleFinderTest extends TestCase {
     tempDir = createTempDir();
     inputFiles = Lists.newArrayList();
     whitelistEntries = Lists.newArrayList();
+    blacklistEntries = Lists.newArrayList();
   }
 
   public void testEasyCycle() throws Exception {
@@ -263,6 +265,16 @@ public class CycleFinderTest extends TestCase {
     assertCycle("LA<LB;>;", "LB;", "LA<LB;>.C;");
   }
 
+  public void testBlacklist() throws Exception {
+    addSourceFile("A.java", "class A { B b; C c; }");
+    addSourceFile("B.java", "class B { A a; }");
+    addSourceFile("C.java", "class C { A a; }");
+    blacklistEntries.add("TYPE C");
+    findCycles();
+    assertEquals(1, cycles.size());
+    assertCycle("LA;", "LC;");
+  }
+
   private void assertNoCycles() {
     assertNotNull(cycles);
     assertTrue("Expected no cycles: " + printCyclesToString(), cycles.isEmpty());
@@ -298,6 +310,11 @@ public class CycleFinderTest extends TestCase {
       File whitelistFile = new File(tempDir, "whitelist");
       Files.write(Joiner.on("\n").join(whitelistEntries), whitelistFile, Charset.defaultCharset());
       options.addWhitelistFile(whitelistFile.getAbsolutePath());
+    }
+    if (!blacklistEntries.isEmpty()) {
+      File blacklistFile = new File(tempDir, "type_filter");
+      Files.write(Joiner.on("\n").join(blacklistEntries), blacklistFile, Charset.defaultCharset());
+      options.addBlacklistFile(blacklistFile.getAbsolutePath());
     }
     options.setSourceFiles(inputFiles);
     options.setClasspath(System.getProperty("java.class.path"));
