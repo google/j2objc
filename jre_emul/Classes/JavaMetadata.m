@@ -83,16 +83,18 @@
 
 - (const J2ObjcFieldInfo *)findFieldInfo:(const char *)fieldName {
   for (int i = 0; i < data_->fieldCount; i++) {
-    if (data_->fields[i].javaName) {
-      if (strcmp(fieldName, data_->fields[i].javaName) == 0) {
-        return &data_->fields[i];
-      }
-    } else {
-      // Field name has standard trailing underscore added.
-      size_t n = (size_t) strlen(data_->fields[i].name) - 1;
-      if (strncmp(fieldName, data_->fields[i].name, n) == 0) {
-        return &data_->fields[i];
-      }
+    const J2ObjcFieldInfo *fieldInfo = &data_->fields[i];
+    if (fieldInfo->javaName && strcmp(fieldName, fieldInfo->javaName) == 0) {
+      return fieldInfo;
+    }
+    if (strcmp(fieldName, fieldInfo->name) == 0) {
+      return fieldInfo;
+    }
+    // See if field name has trailing underscore added.
+    size_t max  = strlen(fieldInfo->name) - 1;
+    if (fieldInfo->name[max] == '_' && strlen(fieldName) == max &&
+        strncmp(fieldName, fieldInfo->name, max) == 0) {
+      return fieldInfo;
     }
   }
   return nil;
