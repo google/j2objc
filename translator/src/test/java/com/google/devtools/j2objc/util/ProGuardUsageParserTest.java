@@ -16,11 +16,12 @@
 
 package com.google.devtools.j2objc.util;
 
-import com.google.common.io.CharStreams;
+import com.google.common.io.CharSource;
 
 import junit.framework.TestCase;
 
 import java.io.IOException;
+import java.io.StringReader;
 
 /**
  * Unit tests for the ProGuardUsageParser.
@@ -33,13 +34,13 @@ public class ProGuardUsageParserTest extends TestCase {
     String listing = "ProGuard, version 4.7\n" +
         "Reading program jar [/foo/bar/baz.jar\n" +
         "Reading library jar [/foo/bar/bah.jar]\n";
-    DeadCodeMap report = ProGuardUsageParser.parse(CharStreams.newReaderSupplier(listing));
+    DeadCodeMap report = ProGuardUsageParser.parse(asCharSource(listing));
     assertTrue(report.isEmpty());
   }
 
   public void testParse_Class() throws IOException {
     String listing = "com.google.apps.docs.commands.AbstractCommand\n";
-    DeadCodeMap dead = ProGuardUsageParser.parse(CharStreams.newReaderSupplier(listing));
+    DeadCodeMap dead = ProGuardUsageParser.parse(asCharSource(listing));
     assertTrue(dead.isDeadClass("com.google.apps.docs.commands.AbstractCommand"));
   }
 
@@ -47,7 +48,7 @@ public class ProGuardUsageParserTest extends TestCase {
     String listing = "com.google.apps.docs.commands.Command:\n" +
         "    public abstract com.google.apps.docs.commands.Command " +
             "transform(com.google.apps.docs.commands.Command,boolean)\n";
-    DeadCodeMap dead = ProGuardUsageParser.parse(CharStreams.newReaderSupplier(listing));
+    DeadCodeMap dead = ProGuardUsageParser.parse(asCharSource(listing));
     assertTrue(dead.isDeadMethod(
         "com.google.apps.docs.commands.Command",
         "transform",
@@ -56,7 +57,7 @@ public class ProGuardUsageParserTest extends TestCase {
 
   public void testParse_Method_LineNumbers() throws IOException {
     String listing = "com.foo.Baz:\n    312:313:public com.foo.Bar baz()\n";
-    DeadCodeMap dead = ProGuardUsageParser.parse(CharStreams.newReaderSupplier(listing));
+    DeadCodeMap dead = ProGuardUsageParser.parse(asCharSource(listing));
     assertTrue(dead.isDeadMethod("com.foo.Baz", "baz", "()Lcom/foo/Bar;"));
   }
 
@@ -67,7 +68,7 @@ public class ProGuardUsageParserTest extends TestCase {
         "    private native com.google.Baz[] Hello(WORLD,int,byte[])\n" +
         "    java.lang.String trim()\n" +
         "    Constructor(int)\n";
-    DeadCodeMap dead = ProGuardUsageParser.parse(CharStreams.newReaderSupplier(listing));
+    DeadCodeMap dead = ProGuardUsageParser.parse(asCharSource(listing));
     assertTrue(dead.isDeadMethod("com.foo.Baz", "fooBar", "()V"));
     assertTrue(dead.isDeadMethod(
         "com.foo.Baz", "foo_bar_baz", "(Ljava/lang/String;[[[Lcom/google/Bar;)I"));
@@ -78,24 +79,33 @@ public class ProGuardUsageParserTest extends TestCase {
 
   public void testParse_Fields_NoLineNumbers() throws IOException {
     String listing = "com.foo.Baz:\n    int FOO\n";
-    DeadCodeMap dead = ProGuardUsageParser.parse(CharStreams.newReaderSupplier(listing));
+    DeadCodeMap dead = ProGuardUsageParser.parse(asCharSource(listing));
     assertTrue(dead.isDeadField("com.foo.Baz", "FOO"));
   }
 
   public void testParse_Fields_LineNumbers() throws IOException {
     String listing = "com.foo.Baz:\n    28:29:int FOO\n";
-    DeadCodeMap dead = ProGuardUsageParser.parse(CharStreams.newReaderSupplier(listing));
+    DeadCodeMap dead = ProGuardUsageParser.parse(asCharSource(listing));
     assertTrue(dead.isDeadField("com.foo.Baz", "FOO"));
   }
 
   public void testParse_Method_MissingClass() {
     String listing = "    312:313:public com.google.common.base.Foo Bar()\n";
     try {
-      ProGuardUsageParser.parse(CharStreams.newReaderSupplier(listing));
+      ProGuardUsageParser.parse(asCharSource(listing));
       fail("Parsing method with no attached class should throw IOException");
     } catch (IOException e) {
       // ok
     }
   }
 
+  // TODO(user): Use CharSource.wrap once guava_jdk5 is updated to a newer version
+  private static CharSource asCharSource(final String string) {
+    return new CharSource() {
+      @Override
+      public StringReader openStream() {
+        return new StringReader(string);
+      }
+    };
+  }
 }
