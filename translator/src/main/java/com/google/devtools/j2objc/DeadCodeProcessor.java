@@ -77,7 +77,7 @@ public class DeadCodeProcessor extends FileProcessor {
     File file = Options.getProGuardUsageFile();
     if (file != null) {
       try {
-        return ProGuardUsageParser.parse(Files.newReaderSupplier(file, Charset.defaultCharset()));
+        return ProGuardUsageParser.parse(Files.asCharSource(file, Charset.defaultCharset()));
       } catch (IOException e) {
         throw new AssertionError(e);
       }

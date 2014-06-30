@@ -16,14 +16,14 @@
 
 package com.google.devtools.j2objc.util;
 
-import com.google.common.io.CharStreams;
+import com.google.common.io.CharSource;
+import com.google.common.io.Closer;
 import com.google.common.io.Files;
-import com.google.common.io.InputSupplier;
 import com.google.common.io.LineProcessor;
 
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
-import java.io.Reader;
 import java.nio.charset.Charset;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -116,8 +116,8 @@ public class ProGuardUsageParser {
     return signature.toString();
   }
 
-  public static DeadCodeMap parse(InputSupplier<? extends Reader> listing) throws IOException {
-    return CharStreams.readLines(listing, new LineProcessor<DeadCodeMap>() {
+  public static DeadCodeMap parse(CharSource listing) throws IOException {
+    LineProcessor<DeadCodeMap> processor = new LineProcessor<DeadCodeMap>() {
       DeadCodeMap.Builder dead = DeadCodeMap.builder();
       String lastClass;
 
@@ -168,12 +168,28 @@ public class ProGuardUsageParser {
         }
         return true;
       }
-    });
+    };
+
+    // TODO(user): Just use listing.readLines(processor) once guava_jdk5 is upgraded to a newer
+    // version.
+    Closer closer = Closer.create();
+    try {
+      BufferedReader reader = closer.register(listing.openBufferedStream());
+      String line;
+      while ((line = reader.readLine()) != null) {
+        processor.processLine(line);
+      }
+      return processor.getResult();
+    } catch (Throwable e) {
+      throw closer.rethrow(e);
+    } finally {
+      closer.close();
+    }
   }
 
   // Used for testing.
   public static void main(String[] args) throws IOException {
-    ProGuardUsageParser.parse(Files.newReaderSupplier(new File(args[0]), Charset.defaultCharset()));
+    ProGuardUsageParser.parse(Files.asCharSource(new File(args[0]), Charset.defaultCharset()));
   }
 
 }
