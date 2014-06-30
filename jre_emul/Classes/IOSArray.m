@@ -113,7 +113,7 @@ void IOSArray_throwOutOfBounds(NSUInteger size, NSUInteger index) {
     return @"[]";
   }
   NSString *result = @"[";
-  for (int i = 0; i < size_; i++) {
+  for (NSUInteger i = 0; i < size_; i++) {
     NSString *separator = i < size_ - 1 ? @", " : @"]";
     result = [result stringByAppendingFormat:@"%@%@",
                      [self descriptionOfElementAtIndex:i], separator];

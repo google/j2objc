@@ -250,13 +250,13 @@ void CopyWithMemmove(id __strong *buffer, NSUInteger src, NSUInteger dest, NSUIn
   if (self == dest) {
     CopyWithMemmove(buffer_, sourceRange.location, offset, sourceRange.length);
   } else if (skipElementCheck) {
-    for (int i = 0; i < sourceRange.length; i++) {
+    for (NSUInteger i = 0; i < sourceRange.length; i++) {
       id newElement = buffer_[i + sourceRange.location];
       [dest->buffer_[i + offset] autorelease];
       dest->buffer_[i + offset] = [newElement retain];
     }
   } else {
-    for (int i = 0; i < sourceRange.length; i++) {
+    for (NSUInteger i = 0; i < sourceRange.length; i++) {
       id newElement = skipElementCheck ? buffer_[i + sourceRange.location] :
           IOSObjectArray_checkValue(dest, buffer_[i + sourceRange.location]);
       [dest->buffer_[i + offset] autorelease];

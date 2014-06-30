@@ -109,11 +109,12 @@
  */
 __attribute__((always_inline)) inline int J2ObjCFpToInt(double d) {
   int tmp = (int) d;
-  return tmp == 0x80000000 ? (d >= 0 ? 0x7FFFFFFF : tmp) : tmp;
+  return tmp == (int) 0x80000000 ? (d >= 0 ? 0x7FFFFFFF : tmp) : tmp;
 }
 __attribute__((always_inline)) inline long long J2ObjCFpToLong(double d) {
   long long tmp = (long long) d;
-  return tmp == 0x8000000000000000LL ? (d >= 0 ? 0x7FFFFFFFFFFFFFFFL : tmp) : tmp;
+  return (unsigned long long) tmp == 0x8000000000000000LL ?
+      (d >= 0 ? 0x7FFFFFFFFFFFFFFFL : tmp) : tmp;
 }
 __attribute__((always_inline)) inline unichar J2ObjCFpToUnichar(double d) {
   unsigned tmp = (unsigned) d;

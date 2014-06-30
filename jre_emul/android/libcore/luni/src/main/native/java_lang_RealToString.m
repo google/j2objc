@@ -215,7 +215,7 @@ void RealToString_bigIntDigitGenerator(JavaLangRealToString *obj, long long int 
       while (mminus_Length > 1 && mminus[mminus_Length - 1] == 0)
         --mminus_Length;
       digits[digitCount++] = U;
-      if (digitCount >= max) {
+      if ((NSUInteger) digitCount >= max) {
         // Should only happen if there is a bug in the above, since digits is
         // set to hold any valid double.
         NSString *msg =

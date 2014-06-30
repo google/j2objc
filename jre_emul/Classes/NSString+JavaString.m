@@ -85,7 +85,7 @@ id makeException(Class exceptionClass) {
     [exception autorelease];
 #endif
   }
-  if (offset + count > [data count]) {
+  if (offset + count > (int) [data count]) {
     exception = [[JavaLangStringIndexOutOfBoundsException alloc]
                  initWithInt:offset];
 #if ! __has_feature(objc_arc)
@@ -134,7 +134,7 @@ destinationBegin:(int)destinationBegin {
     [exception autorelease];
 #endif
   }
-  if (sourceEnd > [self length]) {
+  if (sourceEnd > (int) [self length]) {
     exception = [[JavaLangStringIndexOutOfBoundsException alloc]
                  initWithInt:sourceEnd];
 #if ! __has_feature(objc_arc)
@@ -153,7 +153,7 @@ destinationBegin:(int)destinationBegin {
   }
 
   NSRange range = NSMakeRange(sourceBegin, sourceEnd - sourceBegin);
-  int destinationLength = (int) [destination count];
+  NSUInteger destinationLength = [destination count];
   if (destinationBegin + range.length > destinationLength) {
     exception = [[JavaLangStringIndexOutOfBoundsException alloc]
                  initWithInt:(int) (destinationBegin + range.length)];
@@ -167,7 +167,7 @@ destinationBegin:(int)destinationBegin {
 
   unichar * buffer = calloc(destinationLength, sizeof(unichar));
   [self getCharacters:buffer range:range];
-  for (int i = 0; i < range.length; i++) {
+  for (NSUInteger i = 0; i < range.length; i++) {
     unichar c = *(buffer + i);
     [destination replaceCharAtIndex:i + destinationBegin withChar:c];
   }
@@ -196,7 +196,7 @@ destinationBegin:(int)destinationBegin {
     [exception autorelease];
 #endif
   }
-  if (offset > [value count] - count) {
+  if (offset > (int) [value count] - count) {
     exception = [[JavaLangStringIndexOutOfBoundsException alloc]
                  initWithInt:offset + count];
 #if ! __has_feature(objc_arc)
@@ -267,7 +267,7 @@ destinationBegin:(int)destinationBegin {
     @throw AUTORELEASE([[JavaLangStringIndexOutOfBoundsException alloc]
                         initWithInt:endIndex - beginIndex]);
   }
-  if (endIndex > [self length]) {
+  if (endIndex > (int) [self length]) {
     @throw AUTORELEASE([[JavaLangStringIndexOutOfBoundsException alloc]
                         initWithInt:endIndex]);
   }
@@ -304,7 +304,7 @@ destinationBegin:(int)destinationBegin {
     return 0;
   }
   NSUInteger max = [self length];
-  if (index >= max) {
+  if ((NSUInteger) index >= max) {
     return -1;
   }
   if (index < 0) {
@@ -376,7 +376,7 @@ destinationBegin:(int)destinationBegin {
 }
 
 - (unichar)charAtWithInt:(int)index {
-  if (index < 0 || index >= [self length]) {
+  if (index < 0 || index >= (int) [self length]) {
     @throw makeException([JavaLangStringIndexOutOfBoundsException class]);
   }
   return [self characterAtIndex:(NSUInteger)index];
@@ -389,7 +389,7 @@ destinationBegin:(int)destinationBegin {
 - (id<JavaLangCharSequence>)subSequenceFrom:(int)start
                                          to:(int)end {
   NSUInteger maxLength = [self length];
-  if (start < 0 || start > end || end > maxLength) {
+  if (start < 0 || start > end || (NSUInteger) end > maxLength) {
     @throw makeException([JavaLangStringIndexOutOfBoundsException class]);
     return nil;
   }
@@ -534,7 +534,7 @@ NSStringEncoding parseCharsetName(NSString *charset) {
   char *bytes = malloc(max);
   [value getBytes:bytes offset:0 length:max];
   unichar *chars = calloc(length, sizeof(unichar));
-  for (int i = 0; i < length; i++) {
+  for (NSUInteger i = 0; i < length; i++) {
     char b = bytes[i + offset];
     // Expression from String(byte[],int) javadoc.
     chars[i] = (unichar)(((hibyte & 0xff) << 8) | (b & 0xff));
@@ -564,7 +564,7 @@ NSStringEncoding parseCharsetName(NSString *charset) {
     [exception autorelease];
 #endif
   }
-  if (offset > [value count] - count) {
+  if (offset > (int) [value count] - count) {
     exception = [[JavaLangStringIndexOutOfBoundsException alloc]
                  initWithInt:offset + count];
 #if ! __has_feature(objc_arc)
@@ -659,9 +659,9 @@ NSStringEncoding parseCharsetName(NSString *charset) {
     badParamMsg = @"srcBegin < 0";
   } else if (srcBegin > srcEnd) {
     badParamMsg = @"srcBegin > srcEnd";
-  } else if (srcEnd > [self length]) {
+  } else if (srcEnd > (int) [self length]) {
     badParamMsg = @"srcEnd > string length";
-  } else if (copyLength > [self length]) {
+  } else if (copyLength > (int) [self length]) {
     badParamMsg = @"dstBegin+(srcEnd-srcBegin) > dst.length";
   }
   if (badParamMsg) {
@@ -808,18 +808,18 @@ NSStringEncoding parseCharsetName(NSString *charset) {
               aString:(NSString *)aString
           otherOffset:(int)otherOffset
                 count:(int)count {
-  if (thisOffset < 0 || count > [self length] - thisOffset) {
+  if (thisOffset < 0 || count > (int) [self length] - thisOffset) {
     return NO;
   }
-  if (otherOffset < 0 || count > [aString length] - otherOffset) {
+  if (otherOffset < 0 || count > (int) [aString length] - otherOffset) {
     return NO;
   }
   if (!aString) {
     @throw makeException([JavaLangNullPointerException class]);
   }
-  NSString *this = (thisOffset == 0 && count == [self length])
+  NSString *this = (thisOffset == 0 && count == (int) [self length])
       ? self : [self substringWithRange:NSMakeRange(thisOffset, count)];
-  NSString *other = (otherOffset == 0 && count == [aString length])
+  NSString *other = (otherOffset == 0 && count == (int) [aString length])
       ? aString : [aString substringWithRange:NSMakeRange(otherOffset, count)];
   NSUInteger options = NSLiteralSearch;
   if (caseInsensitive) {

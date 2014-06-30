@@ -97,7 +97,7 @@ void FillInStackTraceInternal(JavaLangThrowable *this) {
     @synchronized (self) {
       if (rawCallStack) {
         NSMutableArray *frames = [NSMutableArray array];
-        for (int i = 0; i < rawFrameCount; i++) {
+        for (unsigned i = 0; i < rawFrameCount; i++) {
           JavaLangStackTraceElement *element = AUTORELEASE(
               [[JavaLangStackTraceElement alloc] initWithLong:(long long int) rawCallStack[i]]);
           // Filter out native functions (no class), NSInvocation methods, and internal constructor.
