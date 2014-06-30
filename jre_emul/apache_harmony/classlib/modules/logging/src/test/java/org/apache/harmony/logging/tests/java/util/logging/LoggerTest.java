@@ -82,6 +82,7 @@ public class LoggerTest extends TestCase {
 	protected void tearDown() throws Exception {
         CallVerificationStack.getInstance().clear();
 		Locale.setDefault(oldLocale);
+        LogManager.getLogManager().reset();
         super.tearDown();
 	}
 
