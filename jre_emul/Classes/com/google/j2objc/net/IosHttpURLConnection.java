@@ -282,6 +282,12 @@ public class IosHttpURLConnection extends HttpURLConnection {
     makeSynchronousRequest();
   }
 
+  @Override
+  public int getResponseCode() throws IOException {
+    getResponse();
+    return responseCode;
+  }
+
   private native void makeSynchronousRequest() throws IOException /*-[
     if (self->responseCode_ != -1) {
       // Request already made.
@@ -290,6 +296,7 @@ public class IosHttpURLConnection extends HttpURLConnection {
     if (self->responseException_) {
       @throw self->responseException_;
     }
+    [self connect];
 
     NSMutableURLRequest *request =
         [NSMutableURLRequest requestWithURL:[NSURL URLWithString:[self->url_ toExternalForm]]];
@@ -365,6 +372,9 @@ public class IosHttpURLConnection extends HttpURLConnection {
       }
       @throw self->responseException_;
     }
+
+    // Clear request headers, and add response headers.
+    [self->headers_ clear];
 
     // The HttpURLConnection headerFields map uses a null key for Status-Line.
     NSString *statusLine =
