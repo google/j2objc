@@ -305,7 +305,10 @@ static JavaLangReflectConstructor *GetConstructorImpl(
     Protocol * __unsafe_unretained *interfaces = class_copyProtocolList(class_, &outCount);
     for (unsigned i = 0; i < outCount; i++) {
       IOSClass *interface = [IOSClass classWithProtocol:interfaces[i]];
-      if (![allInterfaces containsObject:interface]) {
+      NSString *name = [interface getName];
+      // Don't include NSObject and JavaObject interfaces, since java.lang.Object is a class.
+      if (![allInterfaces containsObject:interface] && ![name isEqualToString:@"JavaObject"] &&
+          ![name isEqualToString:@"java.lang.Object"]) {
         [allInterfaces addObject:interface];
       }
     }
