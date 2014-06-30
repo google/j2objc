@@ -63,7 +63,7 @@
     return -1;
   }
 
-  int remaining = (int) [data_ length] - position_;
+  int remaining = (int) ([data_ length] - position_);
   if (remaining < len) {
     len = remaining;
   }
