@@ -39,7 +39,6 @@ import org.eclipse.jdt.core.dom.ExpressionStatement;
 import org.eclipse.jdt.core.dom.FieldDeclaration;
 import org.eclipse.jdt.core.dom.IMethodBinding;
 import org.eclipse.jdt.core.dom.ITypeBinding;
-import org.eclipse.jdt.core.dom.IVariableBinding;
 import org.eclipse.jdt.core.dom.Initializer;
 import org.eclipse.jdt.core.dom.MethodDeclaration;
 import org.eclipse.jdt.core.dom.Modifier;
@@ -194,9 +193,15 @@ public class InitializationNormalizer extends ErrorReportingASTVisitor {
           && !UnicodeUtils.hasValidCppCharacters((String) constantValue)) {
         return true;
       }
-      frag.setInitializer(ASTFactory.makeLiteral(
-          frag.getAST(), constantValue, Types.getTypeBinding(frag)));
-      return false;
+      try {
+        frag.setInitializer(ASTFactory.makeLiteral(
+            frag.getAST(), constantValue, Types.getTypeBinding(frag)));
+        return false;
+      } catch (IllegalArgumentException e) {
+        // JDT fails for number constants that return non-numbers from toString(), like
+        // Float.POSITIVE_INFINITY returns ">Infinity<". So fall through and leave the
+        // initializer unchanged.
+      }
     }
     return true;
   }
