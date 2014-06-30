@@ -727,8 +727,7 @@ NSStringEncoding parseCharsetName(NSString *charset) {
 
 - (NSString *)trim {
   // Java's String.trim() trims characters <= u0020, not NSString whitespace.
-  NSMutableCharacterSet *trimCharacterSet =
-      [NSCharacterSet characterSetWithRange:NSMakeRange(0, 0x21)];
+  NSCharacterSet *trimCharacterSet = [NSCharacterSet characterSetWithRange:NSMakeRange(0, 0x21)];
   return [self stringByTrimmingCharactersInSet:trimCharacterSet];
 }
 
