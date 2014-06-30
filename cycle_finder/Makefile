@@ -32,11 +32,11 @@ TEST_CLASS_DIR = $(BUILD_DIR)/test
 JAVA_SOURCES = \
     com/google/devtools/cyclefinder/CycleFinder.java \
     com/google/devtools/cyclefinder/Edge.java \
+    com/google/devtools/cyclefinder/NameList.java \
     com/google/devtools/cyclefinder/Options.java \
     com/google/devtools/cyclefinder/ReferenceGraph.java \
     com/google/devtools/cyclefinder/Tarjans.java \
-    com/google/devtools/cyclefinder/TypeCollector.java \
-    com/google/devtools/cyclefinder/Whitelist.java
+    com/google/devtools/cyclefinder/TypeCollector.java
 
 RESOURCES = \
     com/google/devtools/cyclefinder/CycleFinder.properties

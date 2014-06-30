@@ -53,6 +53,7 @@ class Options {
   private String classpath;
   private String bootclasspath;
   private List<String> whitelistFiles = Lists.newArrayList();
+  private List<String> blacklistFiles = Lists.newArrayList();
   private List<String> sourceFiles = Lists.newArrayList();
   private String fileEncoding = System.getProperty("file.encoding", "ISO-8859-1");
 
@@ -86,6 +87,14 @@ class Options {
 
   public void addWhitelistFile(String fileName) {
     whitelistFiles.add(fileName);
+  }
+
+  public List<String> getBlacklistFiles() {
+    return blacklistFiles;
+  }
+
+  public void addBlacklistFile(String fileName) {
+    blacklistFiles.add(fileName);
   }
 
   private void addManifest(String manifestFile) throws IOException {
@@ -138,6 +147,11 @@ class Options {
           usage("--whitelist requires an argument");
         }
         options.whitelistFiles.add(args[nArg]);
+      } else if (arg.equals("--blacklist")) {
+        if (++nArg == args.length) {
+          usage("--blacklist requires an argument");
+        }
+        options.blacklistFiles.add(args[nArg]);
       } else if (arg.equals("--sourcefilelist") || arg.equals("-s")) {
         if (++nArg == args.length) {
           usage("--sourcefilelist requires an argument");

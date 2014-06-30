@@ -33,11 +33,11 @@ import java.io.IOException;
 import java.util.Set;
 
 /**
- * Manages the set of whitelist entries and parses whitelist files.
+ * Manages a set of whitelist or blacklist entries.
  *
  * @author Keith Stanger
  */
-public class Whitelist {
+public class NameList {
 
   private Set<String> fields = Sets.newHashSet();
   private SetMultimap<String, String> fieldsWithTypes = HashMultimap.create();
@@ -139,11 +139,11 @@ public class Whitelist {
     }
   }
 
-  public static Whitelist createFromFiles(Iterable<String> files) throws IOException {
-    Whitelist whitelist = new Whitelist();
+  public static NameList createFromFiles(Iterable<String> files) throws IOException {
+    NameList nameList = new NameList();
     for (String file : files) {
-      whitelist.addFile(file);
+      nameList.addFile(file);
     }
-    return whitelist;
+    return nameList;
   }
 }

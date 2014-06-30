@@ -80,6 +80,14 @@ public class CycleFinder {
     }
   }
 
+  private NameList getBlacklist() throws IOException {
+    List<String> blackListFiles = options.getBlacklistFiles();
+    if (blackListFiles.isEmpty()) {
+      return null;
+    }
+    return NameList.createFromFiles(blackListFiles);
+  }
+
   public List<List<Edge>> findCycles() throws IOException {
     final TypeCollector typeCollector = new TypeCollector();
 
@@ -98,8 +106,9 @@ public class CycleFinder {
     }
 
     // Construct the graph and find cycles.
-    ReferenceGraph graph = new ReferenceGraph(typeCollector,
-        Whitelist.createFromFiles(options.getWhitelistFiles()));
+    ReferenceGraph graph = new ReferenceGraph(
+        typeCollector, NameList.createFromFiles(options.getWhitelistFiles()),
+        getBlacklist());
     return graph.findCycles();
   }
 
