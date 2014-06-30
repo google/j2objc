@@ -411,6 +411,9 @@ SUITE_SOURCES = \
     org/apache/harmony/logging/tests/java/util/logging/SmallTests.java \
     org/json/SmallTests.java
 
+TESTS_TO_SKIP = \
+    ExchangerTest.java
+
 FAILING_TESTS = \
     libcore/java/util/TreeSetTest.java \
     org/apache/harmony/luni/tests/java/lang/StrictMathTest.java \
@@ -430,7 +433,8 @@ FAILING_MATH_TESTS = \
     org/apache/harmony/tests/java/math/BigIntegerXorTest.java \
     tests/api/java/math/BigIntegerTest.java \
 
-TESTS_TO_RUN = $(subst /,.,$(TEST_SOURCES:%.java=%))
+TESTS_TO_RUN = $(filter-out $(TESTS_TO_SKIP),$(TEST_SOURCES))
+TESTS_TO_RUN := $(subst /,.,$(TESTS_TO_RUN:%.java=%))
 
 SUPPORT_OBJS = $(SUPPORT_SOURCES:%.java=$(TESTS_DIR)/%.o)
 TEST_OBJS = \
