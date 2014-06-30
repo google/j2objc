@@ -605,9 +605,7 @@ NSStringEncoding parseCharsetName(NSString *charset) {
 }
 
 - (IOSByteArray *)getBytes  {
-  // UTF-8 is the Java default charset, unless the file.encoding system
-  // property is set.
-  return [self getBytesWithEncoding:NSUTF8StringEncoding];
+  return [self getBytesWithCharsetName:[[JavaNioCharsetCharset defaultCharset] name]];
 }
 
 - (IOSByteArray *)getBytesWithCharsetName:(NSString *)charsetName {
@@ -629,18 +627,23 @@ NSStringEncoding parseCharsetName(NSString *charset) {
   return [self getBytesWithEncoding:encoding];
 }
 
-- (IOSByteArray *)getBytesWithEncoding:(NSStringEncoding)encoding  {
+- (IOSByteArray *)getBytesWithEncoding:(NSStringEncoding)encoding {
   if (!encoding) {
     @throw makeException([JavaLangNullPointerException class]);
   }
   int max_length = (int) [self maximumLengthOfBytesUsingEncoding:encoding];
+  BOOL includeBOM = (encoding == NSUTF16StringEncoding);
+  if (includeBOM) {
+    max_length += 2;
+  }
   char *buffer = malloc(max_length * sizeof(char));
   NSRange range = NSMakeRange(0, [self length]);
   NSUInteger used_length;
   [self getBytes:buffer
        maxLength:max_length
       usedLength:&used_length
-        encoding:encoding options:0
+        encoding:encoding
+         options:includeBOM ? NSStringEncodingConversionExternalRepresentation : 0
            range:range
   remainingRange:NULL];
   IOSByteArray *result = [IOSByteArray arrayWithBytes:buffer
