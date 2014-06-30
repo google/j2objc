@@ -151,10 +151,12 @@ HAMCREST_PUBLIC_SOURCES = \
     org/hamcrest/SelfDescribing.java \
     org/hamcrest/StringDescription.java
 
+
 HAMCREST_INTERNAL_SOURCES = \
     org/hamcrest/internal/ArrayIterator.java \
     org/hamcrest/internal/SelfDescribingValue.java \
     org/hamcrest/internal/SelfDescribingValueIterator.java
+
 
 HAMCREST_SOURCES = $(HAMCREST_PUBLIC_SOURCES) $(HAMCREST_INTERNAL_SOURCES)
 
