@@ -357,7 +357,7 @@ public abstract class AbstractCollection<E> implements Collection<E> {
         @throw exception;
         return nil;
       }
-      if ([contents count] < [self size]) {
+      if ([contents count] < (unsigned) [self size]) {
         contents =
             [IOSObjectArray arrayWithLength:[self size]
                                        type:[[contents getClass] getComponentType]];

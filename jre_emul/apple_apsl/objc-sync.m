@@ -160,7 +160,7 @@ static SyncData* id2data(id object, enum usage why)
     // Check per-thread cache of already-owned locks for matching object
     SyncCache *cache = fetch_cache(NO);
     if (cache) {
-        int i;
+        unsigned i;
         for (i = 0; i < cache->used; i++) {
             SyncCacheItem *item = &cache->list[i];
             if (item->data->object != object) continue;

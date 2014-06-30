@@ -236,7 +236,7 @@
   NSUInteger n = [exceptionsArray count] - 1;
   IOSObjectArray *result = [IOSObjectArray arrayWithLength:n type:[IOSClass getClass]];
   NSUInteger count = 0;
-  for (int i = 0; i < n; i++) {
+  for (NSUInteger i = 0; i < n; i++) {
     // Strip off leading 'L'.
     NSString *thrownException = [[exceptionsArray objectAtIndex:i] substringFromIndex:1];
     IOSObjectArray_Set(result, count++, [IOSClass forName:thrownException]);

@@ -666,7 +666,7 @@ public final class Matcher implements MatchResult {
                            usingBlock:^(NSTextCheckingResult *match,
                                         NSMatchingFlags flags,
                                         BOOL *stop) {
-        if (match.range.location < start) {
+        if (match.range.location < (NSUInteger) start) {
           *stop = NO;
         } else {
           self->progressFlags_ = flags;
@@ -731,7 +731,7 @@ public final class Matcher implements MatchResult {
                       withInt:(int) (matchRange.location + matchRange.length)];
       }
       NSRange range = [match range];
-      return range.location == self->regionStart__ && range.length == length;
+      return range.location == (NSUInteger) self->regionStart__ && range.length == length;
     ]-*/;
 
     private native boolean requireEndImpl() /*-[

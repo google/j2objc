@@ -778,7 +778,7 @@ NSUInteger EnumerateEntries(
     if (entry) {
       entry = entry->next_;
     }
-    while (!entry && position < map->elementDataLength_) {
+    while (!entry && position < (NSUInteger) map->elementDataLength_) {
       entry = map->elementData_[position++];
     }
     if (!entry) {

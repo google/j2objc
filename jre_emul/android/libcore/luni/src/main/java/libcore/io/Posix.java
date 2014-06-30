@@ -862,9 +862,9 @@ public final class Posix implements Os {
   ]-*/;
 
   public native int poll(StructPollfd[] fds, int timeoutMs) throws ErrnoException /*-[
-    nfds_t count = (nfds_t) [fds count];
+    unsigned count = (unsigned) [fds count];
     struct pollfd *pollFds = calloc(count, sizeof(struct pollfd));
-    for (int i = 0; i < count; i++) {
+    for (unsigned i = 0; i < count; i++) {
       LibcoreIoStructPollfd *javaPollFd = [fds objectAtIndex:i];
       pollFds[i].fd = javaPollFd->fd_->descriptor_;
       pollFds[i].events = javaPollFd->events_;
@@ -874,7 +874,7 @@ public final class Posix implements Os {
       free(pollFds);
       [LibcoreIoPosix throwErrnoExceptionWithNSString:@"poll" withInt:rc];
     }
-    for (int i = 0; i < count; i++) {
+    for (unsigned i = 0; i < count; i++) {
       LibcoreIoStructPollfd *javaPollFd = [fds objectAtIndex:i];
       javaPollFd->revents_ = pollFds[i].revents;
     }

@@ -12,7 +12,7 @@
 @private
   NSData *data_;
   const char *bytes_;
-  int position_;
+  size_t position_;
   size_t length_;
 }
 
@@ -59,7 +59,7 @@
     return 0;
   }
 
-  if (position_ == length_) {
+  if ((size_t) position_ == length_) {
     return -1;
   }
 
