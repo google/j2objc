@@ -175,7 +175,7 @@ public final class Posix implements Os {
 
   static id doStat(NSString *path, BOOL isLstat) {
     if (!path) {
-      return NO;
+      return nil;
     }
     const char* cpath = [path UTF8String];
     struct stat sb;
@@ -1255,7 +1255,7 @@ public final class Posix implements Os {
 
   public native StructStatVfs statvfs(String path) throws ErrnoException /*-[
     if (!path) {
-      return NO;
+      return nil;
     }
     const char* cpath = [path UTF8String];
     struct statvfs sb;
