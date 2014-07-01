@@ -57,6 +57,7 @@ import org.eclipse.jdt.core.dom.TryStatement;
 import org.eclipse.jdt.core.dom.Type;
 import org.eclipse.jdt.core.dom.TypeDeclaration;
 import org.eclipse.jdt.core.dom.TypeLiteral;
+import org.eclipse.jdt.core.dom.UnionType;
 import org.eclipse.jdt.core.dom.VariableDeclarationExpression;
 import org.eclipse.jdt.core.dom.VariableDeclarationStatement;
 
@@ -87,7 +88,11 @@ public class ImplementationImportCollector extends ErrorReportingASTVisitor {
   }
 
   private void addImports(Type type) {
-    if (type != null) {
+    if (type instanceof UnionType) {
+      for (Type t : ASTUtil.getTypes((UnionType) type)) {
+        addImports(t);
+      }
+    } else if (type != null) {
       addImports(Types.getTypeBinding(type));
     }
   }
