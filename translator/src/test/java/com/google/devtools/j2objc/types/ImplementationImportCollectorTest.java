@@ -124,4 +124,17 @@ public class ImplementationImportCollectorTest extends GenerationTest {
         "Test", "Test.m");
     assertTranslation(translation, "#include \"IOSObjectArray.h\"");
   }
+
+  // Verify that a multi-catch clause imports are all collected.
+  public void testMultiCatchClauses() throws IOException {
+    String translation = translateSourceFile(
+        "class Test { void test() {" +
+        "  try { System.out.println(); } catch (ArithmeticException | AssertionError | " +
+        "      ClassCastException | SecurityException e) {} }}",
+        "Test", "Test.m");
+    assertTranslation(translation, "#include \"java/lang/ArithmeticException.h\"");
+    assertTranslation(translation, "#include \"java/lang/AssertionError.h\"");
+    assertTranslation(translation, "#include \"java/lang/ClassCastException.h\"");
+    assertTranslation(translation, "#include \"java/lang/SecurityException.h\"");
+  }
 }
