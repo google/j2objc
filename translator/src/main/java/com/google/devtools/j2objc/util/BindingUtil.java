@@ -44,6 +44,14 @@ import java.util.Set;
  */
 public final class BindingUtil {
 
+  // Flags defined in JVM spec, table 4.1. These constants are also defined in
+  // java.lang.reflect.Modifier, but aren't public.
+  public static final int ACC_BRIDGE = 0x40;
+  public static final int ACC_VARARGS = 0x80;
+  public static final int ACC_SYNTHETIC = 0x1000;
+  public static final int ACC_ANNOTATION = 0x2000;
+  public static final int ACC_ENUM = 0x4000;
+
   public static boolean isStatic(IBinding binding) {
     return Modifier.isStatic(binding.getModifiers());
   }
@@ -75,6 +83,10 @@ public final class BindingUtil {
 
   public static boolean isSynchronized(IBinding binding) {
     return Modifier.isSynchronized(binding.getModifiers());
+  }
+
+  public static boolean isSynthetic(IMethodBinding m) {
+    return (m.getModifiers() & ACC_SYNTHETIC) > 0;
   }
 
   /**

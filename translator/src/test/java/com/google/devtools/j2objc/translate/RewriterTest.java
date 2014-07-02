@@ -621,4 +621,12 @@ public class RewriterTest extends GenerationTest {
         "return [((id<JavaUtilComparator>) nil_chk(((Test_Thing *) nil_chk(t))->comp_)) " +
         "compareWithId:s1 withId:s2] == 0;");
   }
+
+  public void testInitializeRenamed() throws IOException {
+    String translation = translateSourceFile(
+        "class Test { " +
+        "  public static void initialize() {}}",
+        "Test", "Test.m");
+    assertTranslation(translation, "+ (void)initialize__ {");
+  }
 }

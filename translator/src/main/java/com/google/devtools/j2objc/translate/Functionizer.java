@@ -75,8 +75,6 @@ public class Functionizer extends ErrorReportingASTVisitor {
   // Map each functionalized method to its function.
   private Map<IMethodBinding, IMethodBinding> functionMap = Maps.newHashMap();
 
-  private static final int SYNTHETIC = 0x1000;
-
   @Override
   public boolean visit(AnnotationTypeDeclaration node) {
     return false;
@@ -155,7 +153,8 @@ public class Functionizer extends ErrorReportingASTVisitor {
           !BindingUtil.isStatic(enclosingBinding) && needsReceiver) {
         // Add self parameter.
         GeneratedVariableBinding selfParam = new GeneratedVariableBinding(NameTable.SELF_NAME,
-            binding.getModifiers() | SYNTHETIC, declaringClass, false, true, declaringClass, null);
+            binding.getModifiers() | BindingUtil.ACC_SYNTHETIC, declaringClass, false, true,
+            declaringClass, null);
         args.add(0, ASTFactory.newSimpleName(node.getAST(), selfParam));
       } else {
         boolean needsInstanceParam = isInstance && needsReceiver;

@@ -33,7 +33,6 @@ import org.eclipse.jdt.core.dom.Modifier;
 import org.eclipse.jdt.core.dom.TypeDeclaration;
 import org.eclipse.jdt.core.dom.VariableDeclarationFragment;
 
-import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -259,16 +258,16 @@ public class MetadataGenerator {
   private int getTypeModifiers() {
     int modifiers = type.getModifiers();
     if (type.isInterface()) {
-      modifiers |= 0x200;
+      modifiers |= java.lang.reflect.Modifier.INTERFACE;
     }
     if (type.isSynthetic()) {
-      modifiers |= 0x1000;
+      modifiers |= BindingUtil.ACC_SYNTHETIC;
     }
     if (type.isAnnotation()) {
-      modifiers |= 0x2000;
+      modifiers |= BindingUtil.ACC_ANNOTATION;
     }
     if (type.isEnum()) {
-      modifiers |= 0x4000;
+      modifiers |= BindingUtil.ACC_ENUM;
     }
     if (type.isAnonymous()) {
       modifiers |= 0x8000;
@@ -283,10 +282,10 @@ public class MetadataGenerator {
   private static int getMethodModifiers(IMethodBinding type) {
     int modifiers = type.getModifiers();
     if (type.isVarargs()) {
-      modifiers |= 0x80;
+      modifiers |= BindingUtil.ACC_VARARGS;
     }
     if (type.isSynthetic()) {
-      modifiers |= 0x1000;
+      modifiers |= BindingUtil.ACC_SYNTHETIC;
     }
     return modifiers;
   }
@@ -298,10 +297,10 @@ public class MetadataGenerator {
   private static int getFieldModifiers(IVariableBinding type) {
     int modifiers = type.getModifiers();
     if (type.isSynthetic()) {
-      modifiers |= 0x1000;
+      modifiers |= BindingUtil.ACC_SYNTHETIC;
     }
     if (type.isEnumConstant()) {
-      modifiers |= 0x4000;
+      modifiers |= BindingUtil.ACC_ENUM;
     }
     return modifiers;
   }

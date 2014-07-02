@@ -215,7 +215,7 @@ public class DestructorGenerator extends ErrorReportingASTVisitor {
   private MethodDeclaration buildFinalizeMethod(AST ast, ITypeBinding declaringClass,
         List<IVariableBinding> fields) {
     ITypeBinding voidType = Types.mapTypeName("void");
-    int modifiers = Modifier.PUBLIC | 0x1000;  // Modifier.SYNTHETIC.
+    int modifiers = Modifier.PUBLIC | BindingUtil.ACC_SYNTHETIC;
     GeneratedMethodBinding binding = GeneratedMethodBinding.newMethod(
         destructorName, modifiers, voidType, declaringClass);
     MethodDeclaration method = ASTFactory.newMethodDeclaration(ast, binding);
