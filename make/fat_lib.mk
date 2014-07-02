@@ -56,6 +56,11 @@ J2OBJC_PRECOMPILED_HEADER = $(FAT_LIB_PRECOMPILED_HEADER)
 endif
 endif
 
+# Command-line pattern for calling libtool and filtering the "same member name"
+# errors from having object files of the same name. (but in different directory)
+fat_lib_filtered_libtool = set -o pipefail && $(LIBTOOL) -static -o $1 -filelist $2 2>&1 \
+  | (grep -v "same member name" || true)
+
 ifneq ($(MAKECMDGOALS),clean)
 
 arch_flags = $(strip \
@@ -117,44 +122,7 @@ emit_general_compile_rules = $(foreach src_dir,$(FAT_LIB_SOURCE_DIRS),\
     -include $(1)/$(J2OBJC_PRECOMPILED_HEADER),$(2))),\
   $(eval $(call compile_rule,$(1)/%.o,$(src_dir)/%.$(ext),,,$(2))))))
 
-# Generates compile rules when there are object file clashes, appending
-# underscores to .o names to make them unique.
-# Args:
-#   1: output file name
-#   2: input file name
-ifdef TARGET_TEMP_DIR
-emit_rename_compile_rules = \
-  $(if $(J2OBJC_PRECOMPILED_HEADER),\
-  $(eval $(call compile_rule,$(TARGET_TEMP_DIR)/$(1),$(2),\
-    $(TARGET_TEMP_DIR)/$(J2OBJC_PRECOMPILED_HEADER).pch,\
-    -include $(TARGET_TEMP_DIR)/$(J2OBJC_PRECOMPILED_HEADER),\
-    $(FAT_LIB_XCODE_FLAGS))),\
-  $(eval $(call compile_rule,$(TARGET_TEMP_DIR)/$(1),$(2),,,$(FAT_LIB_XCODE_FLAGS))))
-else
-emit_rename_compile_rules = $(foreach arch,$(J2OBJC_ARCHS),\
-  $(if $(J2OBJC_PRECOMPILED_HEADER),\
-  $(eval $(call compile_rule,$(BUILD_DIR)/objs-$(arch)/$(1),$(2),\
-    $(BUILD_DIR)/objs-$(arch)/$(J2OBJC_PRECOMPILED_HEADER).pch,\
-    -include $(BUILD_DIR)/objs-$(arch)/$(J2OBJC_PRECOMPILED_HEADER),\
-    $(call arch_flags,$(arch)))),\
-  $(eval $(call compile_rule,$(BUILD_DIR)/objs-$(arch)/$(1),$(2),,,$(call arch_flags,$(arch))))))
-endif
-
-# Builds the list of .o files, resolving duplicates by adding underscores and
-# adding targets for renamed files.
-FAT_LIB_OBJS :=
-seen :=
-get_obj_name = $(if $(filter $(1),${seen}),$(call get_obj_name,$(1)_),$(eval seen += $(1))$(1))
-$(foreach file,$(FAT_LIB_SOURCES_RELATIVE),\
-  $(eval src_name := $(basename $(notdir $(file))))\
-  $(eval obj_name := $(call get_obj_name,$(src_name)))\
-  $(eval obj_name_full := $(subst ./,,$(dir $(file)))$(obj_name).o)\
-  $(eval FAT_LIB_OBJS += $(obj_name_full))\
-  $(if $(filter $(obj_name),$(src_name)),,\
-    $(foreach src_dir,$(FAT_LIB_SOURCE_DIRS),\
-      $(eval src_name_full := $(filter $(src_dir)/$(file),$(FAT_LIB_SOURCES_FULL)))\
-      $(if $(src_name_full),\
-        $(call emit_rename_compile_rules,$(obj_name_full),$(src_name_full)),))))
+FAT_LIB_OBJS = $(foreach file,$(FAT_LIB_SOURCES_RELATIVE),$(basename $(file)).o)
 
 ifdef TARGET_TEMP_DIR
 # Targets specific to an xcode build
@@ -165,7 +133,7 @@ $(FAT_LIB_LIBRARY): $(FAT_LIB_OBJS:%=$(TARGET_TEMP_DIR)/%)
 	@mkdir -p $(@D)
 	@echo "Building $(notdir $@)"
 	$(call long_list_to_file,$(ARCH_BUILD_DIR)/fat_lib_objs_list,$^)
-	@$(LIBTOOL) -static -o $@ -filelist $(ARCH_BUILD_DIR)/fat_lib_objs_list
+	@$(call fat_lib_filtered_libtool,$@,$(ARCH_BUILD_DIR)/fat_lib_objs_list)
 
 $(call emit_general_compile_rules,$(TARGET_TEMP_DIR),$(FAT_LIB_XCODE_FLAGS))
 
@@ -184,7 +152,7 @@ $(BUILD_DIR)/$(1)-lib$(FAT_LIB_NAME).a: \
 	@echo "Building $$(notdir $$@)"
 	$$(call long_list_to_file,$(BUILD_DIR)/objs-$(1)/fat_lib_objs_list,\
 	  $(FAT_LIB_OBJS:%=$(BUILD_DIR)/objs-$(1)/%))
-	@$(LIBTOOL) -static -o $$@ -filelist $(BUILD_DIR)/objs-$(1)/fat_lib_objs_list
+	@$$(call fat_lib_filtered_libtool,$$@,$(BUILD_DIR)/objs-$(1)/fat_lib_objs_list)
 endef
 
 $(foreach arch,$(J2OBJC_ARCHS),$(eval $(call arch_lib_rule,$(arch))))
