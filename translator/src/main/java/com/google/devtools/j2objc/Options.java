@@ -422,6 +422,10 @@ public class Options {
     return usePackageDirectories;
   }
 
+  public static void setPackageDirectories(boolean b) {
+    usePackageDirectories = b;
+  }
+
   public static String getImplementationFileSuffix() {
     return implementationSuffix;
   }

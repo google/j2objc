@@ -17,6 +17,7 @@
 package com.google.devtools.j2objc.types;
 
 import com.google.devtools.j2objc.GenerationTest;
+import com.google.devtools.j2objc.Options;
 
 import java.io.IOException;
 
@@ -26,6 +27,12 @@ import java.io.IOException;
  * @author Tom Ball
  */
 public class ImplementationImportCollectorTest extends GenerationTest {
+
+  @Override
+  protected void tearDown() throws Exception {
+    Options.setPackageDirectories(true);
+    super.tearDown();
+  }
 
   // Verify that invoked method's return value has associated header.
   public void testMethodReturnHasHeader() throws IOException {
@@ -136,5 +143,24 @@ public class ImplementationImportCollectorTest extends GenerationTest {
     assertTranslation(translation, "#include \"java/lang/AssertionError.h\"");
     assertTranslation(translation, "#include \"java/lang/ClassCastException.h\"");
     assertTranslation(translation, "#include \"java/lang/SecurityException.h\"");
+  }
+
+  // Verify that platform class packages aren't truncated with --no-package-directories.
+  public void testPlatformImports() throws IOException {
+    Options.setPackageDirectories(false);
+    String translation = translateSourceFile(
+        "package foo.bar; import org.xml.sax.*; import org.xml.sax.helpers.*; " +
+        "class Test { XMLReader test() { " +
+        "  try { return XMLReaderFactory.createXMLReader(); } catch (SAXException e) {} " +
+        "  return null; }}",
+        "Test", "Test.m");
+
+    // Test file's import should not have package.
+    assertTranslation(translation, "#include \"Test.h\"");
+
+    // Platform file's imports should.
+    assertTranslation(translation, "#include \"org/xml/sax/SAXException.h\"");
+    assertTranslation(translation, "#include \"org/xml/sax/XMLReader.h\"");
+    assertTranslation(translation, "#include \"org/xml/sax/helpers/XMLReaderFactory.h\"");
   }
 }
