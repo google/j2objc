@@ -305,17 +305,33 @@ class TranslationProcessor extends FileProcessor {
     if (type instanceof IOSTypeBinding) {
       return;  // Ignore core types.
     }
-    String sourceName = type.getErasure().getQualifiedName().replace('.', '/') + ".java";
+    String typeName = type.getErasure().getQualifiedName();
+    String sourceName = typeName.replace('.', '/') + ".java";
     if (seenFiles.contains(sourceName)) {
       return;
     }
     seenFiles.add(sourceName);
 
     // Check if source file exists.
+    String originalTypeName = typeName;
     File sourceFile = findSourceFile(sourceName);
-    if (sourceFile == null) {
-      ErrorUtil.warning("could not find source path for " + sourceName);
-      return;
+    while (sourceFile == null && !sourceName.isEmpty()) {
+      // Check if class exists on classpath.
+      if (findClassFile(typeName)) {
+        logger.finest("no source for " + typeName + ", class found");
+        return;
+      }
+      int iDot = typeName.lastIndexOf('.');
+      if (iDot == -1) {
+        ErrorUtil.warning("could not find source path for " + originalTypeName);
+        return;
+      }
+      typeName = typeName.substring(0, iDot);
+      sourceName = typeName.replace('.', '/') + ".java";
+      if (seenFiles.contains(sourceName)) {
+        return;
+      }
+      sourceFile = findSourceFile(sourceName);
     }
 
     // Check if the source file is older than the generated header file.
@@ -328,26 +344,52 @@ class TranslationProcessor extends FileProcessor {
 
   private File findSourceFile(String path) {
     for (String sourcePath : Options.getSourcePathEntries()) {
-      File f = new File(sourcePath);
-      if (f.isDirectory()) {
-        File source = new File(f, path);
-        if (source.exists()) {
-          return source;
-        }
-      } else if (f.isFile() && sourcePath.endsWith(".jar")) {
+      File f = findFile(path, sourcePath);
+      if (f != null) {
+        return f;
+      }
+    }
+    return null;
+  }
+
+  private boolean findClassFile(String typeName) {
+    String path = typeName.replace('.', '/') + ".class";
+    for (String classPath : Options.getClassPathEntries()) {
+      File f = findFile(path, classPath);
+      if (f != null) {
+        return true;
+      }
+    }
+    // See if it's a JRE class.
+    try {
+      Class.forName(typeName);
+      return true;
+    } catch (ClassNotFoundException e) {
+      // Fall-through.
+    }
+    return false;
+  }
+
+  private File findFile(String path, String sourcePath) {
+    File f = new File(sourcePath);
+    if (f.isDirectory()) {
+      File source = new File(f, path);
+      if (source.exists()) {
+        return source;
+      }
+    } else if (f.isFile() && sourcePath.endsWith(".jar")) {
+      try {
+        ZipFile zfile = new ZipFile(f);
         try {
-          ZipFile zfile = new ZipFile(f);
-          try {
-            ZipEntry entry = zfile.getEntry(path);
-            if (entry != null) {
-              return f;
-            }
-          } finally {
-            zfile.close();
+          ZipEntry entry = zfile.getEntry(path);
+          if (entry != null) {
+            return f;
           }
-        } catch (IOException e) {
-          ErrorUtil.warning(e.getMessage());
+        } finally {
+          zfile.close();
         }
+      } catch (IOException e) {
+        ErrorUtil.warning(e.getMessage());
       }
     }
     return null;
