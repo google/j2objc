@@ -129,9 +129,10 @@ public abstract class ObjectiveCSourceFileGenerator extends SourceFileGenerator 
     return Iterables.filter(ASTUtil.getAllFields(node), NEEDS_INITIALIZATION_PRED);
   }
 
-  protected boolean isInitializeMethod(MethodDeclaration m) {
-    return Modifier.isStatic(m.getModifiers()) &&
-        NameTable.CLINIT_NAME.equals(m.getName().getIdentifier());
+  protected boolean isInitializeMethod(MethodDeclaration method) {
+    IMethodBinding m = Types.getMethodBinding(method);
+    return BindingUtil.isStatic(m) && NameTable.CLINIT_NAME.equals(m.getName())
+        && m.getParameterTypes().length == 0 && BindingUtil.isSynthetic(m);
   }
 
   protected boolean hasInitializeMethod(
