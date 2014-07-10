@@ -98,7 +98,7 @@ public final class BindingUtil {
     }
     // Local types can't be declared static, but if the declaring method is
     // static then the local type is effectively static.
-    IMethodBinding declaringMethod = type.getDeclaringMethod();
+    IMethodBinding declaringMethod = type.getTypeDeclaration().getDeclaringMethod();
     if (declaringMethod != null) {
       return !BindingUtil.isStatic(declaringMethod);
     }
