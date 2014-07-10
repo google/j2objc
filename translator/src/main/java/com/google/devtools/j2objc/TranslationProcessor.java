@@ -306,7 +306,7 @@ class TranslationProcessor extends FileProcessor {
       return;  // Ignore core types.
     }
     String typeName = type.getErasure().getQualifiedName();
-    String sourceName = typeName.replace('.', '/') + ".java";
+    String sourceName = typeName.replace('.', File.pathSeparatorChar) + ".java";
     if (seenFiles.contains(sourceName)) {
       return;
     }
@@ -327,7 +327,7 @@ class TranslationProcessor extends FileProcessor {
         return;
       }
       typeName = typeName.substring(0, iDot);
-      sourceName = typeName.replace('.', '/') + ".java";
+      sourceName = typeName.replace('.', File.pathSeparatorChar) + ".java";
       if (seenFiles.contains(sourceName)) {
         return;
       }
@@ -353,6 +353,7 @@ class TranslationProcessor extends FileProcessor {
   }
 
   private boolean findClassFile(String typeName) {
+    // Zip/jar files always use forward slashes.
     String path = typeName.replace('.', '/') + ".class";
     for (String classPath : Options.getClassPathEntries()) {
       File f = findFile(path, classPath);

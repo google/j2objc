@@ -63,7 +63,7 @@ public abstract class SourceFileGenerator {
     String javaName = NameTable.getMainJavaName(node, sourceFileName);
     PackageDeclaration pkg = node.getPackage();
     if (Options.usePackageDirectories() || pkg == null) {
-      return javaName.replace('.', '/') + getSuffix();
+      return javaName.replace('.', File.separatorChar) + getSuffix();
     } else {
       String pkgName = pkg.getName().getFullyQualifiedName();
       return javaName.substring(pkgName.length() + 1) + getSuffix();
