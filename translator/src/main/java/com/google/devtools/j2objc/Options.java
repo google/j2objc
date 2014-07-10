@@ -347,7 +347,7 @@ public class Options {
 
   private static List<String> getPathArgument(String argument) {
     List<String> entries = Lists.newArrayList();
-    for (String entry : Splitter.on(':').split(argument)) {
+    for (String entry : Splitter.on(File.pathSeparatorChar).split(argument)) {
       if (new File(entry).exists()) {  // JDT fails with bad path entries.
         entries.add(entry);
       } else if (entry.startsWith("~/")) {
