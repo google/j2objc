@@ -75,6 +75,7 @@
 - (IOSClass *)getDeclaringClass;
 - (int)getModifiers;
 - (IOSClass *)getType;
+- (BOOL)isEnumConstant;
 
 // Returns type.
 - (id<JavaLangReflectType>)getGenericType;

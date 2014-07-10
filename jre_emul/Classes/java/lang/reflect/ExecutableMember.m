@@ -30,9 +30,6 @@
 #import "objc/message.h"
 #import "objc/runtime.h"
 
-#define VARARGS_MODIFIER 0x80
-#define SYNTHETIC_MODIFIER 0x1000
-
 @implementation ExecutableMember
 
 - (id)initWithMethodSignature:(NSMethodSignature *)methodSignature
@@ -163,7 +160,7 @@ static IOSClass *ResolveParameterType(const char *objcType, NSString *paramKeywo
 
 - (BOOL)isSynthetic {
   if (metadata_) {
-    return ([metadata_ modifiers] & SYNTHETIC_MODIFIER) > 0;
+    return ([metadata_ modifiers] & JavaLangReflectModifier_SYNTHETIC) > 0;
   }
   return NO;
 }
@@ -220,7 +217,7 @@ static IOSClass *ResolveParameterType(const char *objcType, NSString *paramKeywo
 
 - (BOOL)isVarArgs {
   if (metadata_) {
-    return ([metadata_ modifiers] & VARARGS_MODIFIER) > 0;
+    return ([metadata_ modifiers] & JavaLangReflectModifier_VARARGS) > 0;
   }
   return NO;
 }

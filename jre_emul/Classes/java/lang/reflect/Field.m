@@ -302,7 +302,17 @@ static void SetWithRawValue(
 }
 
 - (BOOL)isSynthetic {
+  if (metadata_) {
+    return ([metadata_ modifiers] & JavaLangReflectModifier_SYNTHETIC) > 0;
+  }
   return NO;
+}
+
+- (BOOL)isEnumConstant {
+  if (metadata_) {
+    return ([metadata_ modifiers] & JavaLangReflectModifier_ENUM) > 0;
+  }
+  return [declaringClass_ isEnum] && [[self getType] isEqual:declaringClass_];
 }
 
 - (NSString *)toGenericString {
