@@ -28,6 +28,7 @@
 # CLANG_ENABLE_OBJC_ARC=YES Translate and build with ARC
 # MAX_STACK_FRAMES          The maximum number of exception stack trace frames
 # NO_STACK_FRAME_SYMBOLS    If set, exception stack traces only have addresses
+# GENERATE_TEST_COVERAGE    If set, adds flags to generate test coverage files.
 #
 # Author: Tom Ball
 
@@ -128,6 +129,10 @@ endif
 
 ifdef NO_STACK_FRAME_SYMBOLS
 OBJCFLAGS += -DNO_STACK_FRAME_SYMBOLS=$(NO_STACK_FRAME_SYMBOLS)
+endif
+
+ifdef GENERATE_TEST_COVERAGE
+OBJCFLAGS += -ftest-coverage -fprofile-arcs
 endif
 
 # Settings for classes that need to always compile without ARC.

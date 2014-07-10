@@ -492,6 +492,11 @@ TRANSLATE_ARGS = -classpath $(JUNIT_DIST_JAR) -Werror -sourcepath $(TEST_SRC) \
     --extract-unsequenced -encoding UTF-8
 include ../make/translate.mk
 
+ifdef GENERATE_TEST_COVERAGE
+GCOV_FLAGS = -ftest-coverage -fprofile-arcs
+TEST_JOCC += $(GCOV_FLAGS)
+endif
+
 test: run-tests
 
 support-lib: $(SUPPORT_LIB)
@@ -559,7 +564,7 @@ $(TESTS_DIR)/%.o: $(TESTS_DIR)/%.m
 	@mkdir -p `dirname $@`
 	../dist/j2objcc -g -I$(TESTS_DIR) -c $? -o $@ \
 	  -Wno-objc-redundant-literal-use -Wno-format \
-	  -Werror -Wno-parentheses -I$(EMULATION_TESTS_DIR) -I$(TESTS_DIR)
+	  -Werror -Wno-parentheses $(GCOV_FLAGS)
 
 $(TEST_BIN): $(TEST_OBJS) $(SUPPORT_LIB) \
         ../dist/lib/libjre_emul.a ../dist/lib/libjunit.a
