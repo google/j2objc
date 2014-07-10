@@ -5,14 +5,9 @@ Guava version: 14.0.1
 For minor modifications and exclusions, grep for comments labeled
 "J2ObjC Modifications".
 
-The following packages are currently excluded:
-- com.google.common.eventbus
-- com.google.common.reflect
-
 The following classes are currently excluded:
 - com.google.common.io.Files
   - missing java.nio.MappedByteBuffer
-  - missing java.nio.channels.FileChannel
 - com.google.common.net.HostSpecifier
   - missing java.net.InetAddress
 - com.google.common.net.InetAddresses
@@ -20,6 +15,9 @@ The following classes are currently excluded:
   - missing java.net.Inet6Address
   - missing java.net.InetAddress
   - missing java.net.UnknownHostException
+- com.google.common.reflect.ClassPath
+  - missing java.util.jar package
+  - missing java.net.URLClassLoader
 
 Finalizable references are excluded:
 - com.google.common.base.FinalizableReference
