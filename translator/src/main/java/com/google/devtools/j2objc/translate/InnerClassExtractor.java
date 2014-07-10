@@ -283,8 +283,7 @@ public class InnerClassExtractor extends ErrorReportingASTVisitor {
   private void passOuterParamToSuper(
       AbstractTypeDeclaration typeNode, SuperConstructorInvocation superCall,
       ITypeBinding superType, IVariableBinding outerParamBinding) {
-    if (superType.getDeclaringClass() == null || Modifier.isStatic(superType.getModifiers())
-        || superCall.getExpression() != null) {
+    if (!BindingUtil.hasOuterContext(superType) || superCall.getExpression() != null) {
       return;
     }
     assert outerParamBinding != null;

@@ -90,6 +90,22 @@ public final class BindingUtil {
   }
 
   /**
+   * Determines if a type can access fields and methods from an outer class.
+   */
+  public static boolean hasOuterContext(ITypeBinding type) {
+    if (type.getDeclaringClass() == null) {
+      return false;
+    }
+    // Local types can't be declared static, but if the declaring method is
+    // static then the local type is effectively static.
+    IMethodBinding declaringMethod = type.getDeclaringMethod();
+    if (declaringMethod != null) {
+      return !BindingUtil.isStatic(declaringMethod);
+    }
+    return !BindingUtil.isStatic(type);
+  }
+
+  /**
    * If this method overrides another method, return the binding for the
    * original declaration.
    */

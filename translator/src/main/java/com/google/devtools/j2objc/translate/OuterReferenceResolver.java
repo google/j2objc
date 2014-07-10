@@ -182,7 +182,7 @@ public class OuterReferenceResolver extends ASTVisitor {
     type = type.getSuperclass();
     int suffix = 0;
     while (type != null) {
-      if (type.getDeclaringClass() != null && !Modifier.isStatic(type.getModifiers())) {
+      if (BindingUtil.hasOuterContext(type)) {
         suffix++;
       }
       type = type.getSuperclass();
@@ -294,11 +294,8 @@ public class OuterReferenceResolver extends ASTVisitor {
     scopeStack.add(new Scope(type));
 
     ITypeBinding superclass = type.getSuperclass();
-    if (superclass != null && !Modifier.isStatic(superclass.getModifiers())) {
-      ITypeBinding declaringClass = superclass.getDeclaringClass();
-      if (declaringClass != null) {
-        addPath(node, getOuterPathInherited(declaringClass));
-      }
+    if (superclass != null && BindingUtil.hasOuterContext(superclass)) {
+      addPath(node, getOuterPathInherited(superclass.getDeclaringClass()));
     }
   }
 
@@ -399,11 +396,8 @@ public class OuterReferenceResolver extends ASTVisitor {
   @Override
   public void endVisit(ClassInstanceCreation node) {
     ITypeBinding type = node.resolveTypeBinding();
-    if (node.getExpression() == null && !Modifier.isStatic(type.getModifiers())) {
-      ITypeBinding declaringClass = type.getDeclaringClass();
-      if (declaringClass != null) {
-        addPath(node, getOuterPathInherited(declaringClass));
-      }
+    if (node.getExpression() == null && BindingUtil.hasOuterContext(type)) {
+      addPath(node, getOuterPathInherited(type.getDeclaringClass()));
     }
   }
 

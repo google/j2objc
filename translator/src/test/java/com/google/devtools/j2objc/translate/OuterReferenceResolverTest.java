@@ -125,6 +125,16 @@ public class OuterReferenceResolverTest extends GenerationTest {
     assertTrue(BindingUtil.isWeakReference(innerFields.get(0)));
   }
 
+  public void testAnonymousClassInheritsLocalClassInStaticMethod() {
+    resolveSource("Test",
+        "class Test { static void test() { class LocalClass {}; new LocalClass() {}; } }");
+
+    AnonymousClassDeclaration decl =
+        (AnonymousClassDeclaration) nodesByType.get(ASTNode.ANONYMOUS_CLASS_DECLARATION).get(0);
+    ITypeBinding type = decl.resolveBinding();
+    assertFalse(OuterReferenceResolver.needsOuterParam(type));
+  }
+
   private void resolveSource(String name, String source) {
     CompilationUnit unit = compileType(name, source);
     OuterReferenceResolver.resolve(unit);
