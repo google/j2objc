@@ -41,6 +41,7 @@ import org.eclipse.jdt.core.dom.EnumDeclaration;
 import org.eclipse.jdt.core.dom.Expression;
 import org.eclipse.jdt.core.dom.FieldAccess;
 import org.eclipse.jdt.core.dom.IBinding;
+import org.eclipse.jdt.core.dom.IVariableBinding;
 import org.eclipse.jdt.core.dom.InfixExpression;
 import org.eclipse.jdt.core.dom.InstanceofExpression;
 import org.eclipse.jdt.core.dom.MarkerAnnotation;
@@ -241,7 +242,14 @@ public class NodeCopier extends ASTMatcher {
 
   @Override
   public boolean match(EnumConstantDeclaration node, Object other) {
+    // Enum constants have two bindings; first, copy the constructor binding.
     copy(node, other);
+
+    // Now the variable binding.
+    IVariableBinding varBinding = Types.getEnumConstantBinding(node);
+    assert varBinding != null;
+    Types.addBinding(other, varBinding);
+
     return super.match(node, other);
   }
 

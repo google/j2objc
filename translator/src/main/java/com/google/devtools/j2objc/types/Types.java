@@ -27,6 +27,7 @@ import org.eclipse.jdt.core.dom.AST;
 import org.eclipse.jdt.core.dom.ASTNode;
 import org.eclipse.jdt.core.dom.Block;
 import org.eclipse.jdt.core.dom.CompilationUnit;
+import org.eclipse.jdt.core.dom.EnumConstantDeclaration;
 import org.eclipse.jdt.core.dom.Expression;
 import org.eclipse.jdt.core.dom.IAnnotationBinding;
 import org.eclipse.jdt.core.dom.IBinding;
@@ -53,6 +54,7 @@ import java.util.Set;
 public class Types {
   private final AST ast;
   private final Map<Object, IBinding> bindingMap;
+  private final Map<EnumConstantDeclaration, IVariableBinding> enumConstantsMap;
   private final Map<ITypeBinding, ITypeBinding> typeMap = Maps.newHashMap();
   private final Map<ITypeBinding, ITypeBinding> renamedTypeMap = Maps.newHashMap();
   private final Map<ITypeBinding, ITypeBinding> primitiveToWrapperTypes =
@@ -125,6 +127,7 @@ public class Types {
     initializeCommonJavaTypes();
     populatePrimitiveAndWrapperTypeMaps();
     bindingMap = BindingMapBuilder.buildBindingMap(unit);
+    enumConstantsMap = BindingMapBuilder.buildEnumConstantMap(unit);
   }
 
   private IOSTypeBinding mapIOSType(IOSTypeBinding type) {
@@ -304,7 +307,11 @@ public class Types {
 
   public static void addBinding(Object node, IBinding binding) {
     assert binding != null;
-    instance.bindingMap.put(node, binding);
+    if (node instanceof EnumConstantDeclaration && binding instanceof IVariableBinding) {
+      instance.enumConstantsMap.put((EnumConstantDeclaration) node, (IVariableBinding) binding);
+    } else {
+      instance.bindingMap.put(node, binding);
+    }
   }
 
   /**
@@ -363,6 +370,10 @@ public class Types {
   public static IVariableBinding getVariableBinding(Object node) {
     IBinding binding = getBinding(node);
     return binding instanceof IVariableBinding ? ((IVariableBinding) binding) : null;
+  }
+
+  public static IVariableBinding getEnumConstantBinding(EnumConstantDeclaration node) {
+    return instance.enumConstantsMap.get(node);
   }
 
   /**
