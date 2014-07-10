@@ -654,6 +654,11 @@ public class NameTable {
 
   private static String getClassNameFromSourceFileName(String sourceFileName) {
     int begin = sourceFileName.lastIndexOf(File.separatorChar) + 1;
+    // Also check for /, since this may be a jar'd source when translating on Windows.
+    int n = sourceFileName.lastIndexOf('/') + 1;
+    if (n > begin) {
+      begin = n;
+    }
     int end = sourceFileName.lastIndexOf(".java");
     String className = sourceFileName.substring(begin, end);
     return className;
