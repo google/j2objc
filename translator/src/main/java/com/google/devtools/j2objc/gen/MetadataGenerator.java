@@ -24,12 +24,15 @@ import com.google.devtools.j2objc.util.BindingUtil;
 import com.google.devtools.j2objc.util.NameTable;
 
 import org.eclipse.jdt.core.dom.AbstractTypeDeclaration;
+import org.eclipse.jdt.core.dom.BodyDeclaration;
+import org.eclipse.jdt.core.dom.EnumConstantDeclaration;
+import org.eclipse.jdt.core.dom.EnumDeclaration;
 import org.eclipse.jdt.core.dom.FieldDeclaration;
 import org.eclipse.jdt.core.dom.IMethodBinding;
 import org.eclipse.jdt.core.dom.ITypeBinding;
 import org.eclipse.jdt.core.dom.IVariableBinding;
 import org.eclipse.jdt.core.dom.MethodDeclaration;
-import org.eclipse.jdt.core.dom.Modifier;
+import org.eclipse.jdt.core.dom.SimpleName;
 import org.eclipse.jdt.core.dom.TypeDeclaration;
 import org.eclipse.jdt.core.dom.VariableDeclarationFragment;
 
@@ -133,46 +136,63 @@ public class MetadataGenerator {
   }
 
   private void generateFieldsMetadata() {
+    List<String> fieldMetadata = Lists.newArrayList();
+    String typeName = NameTable.getFullName(type);
     if (typeNode instanceof TypeDeclaration) {
       TypeDeclaration typeDecl = (TypeDeclaration) typeNode;
-      List<String> fieldMetadata = Lists.newArrayList();
-      String typeName = NameTable.getFullName(type);
       for (FieldDeclaration field : typeDecl.getFields()) {
         for (VariableDeclarationFragment f : ASTUtil.getFragments(field)) {
-          IVariableBinding var = Types.getVariableBinding(f);
-          int modifiers = getFieldModifiers(Types.getVariableBinding(f));
-          String javaName = f.getName().getIdentifier();
-          String objcName = NameTable.javaFieldToObjC(NameTable.getName(f.getName()));
-          if (objcName.equals(javaName + '_')) {
-            // Don't print Java name if it matches the default pattern, to conserve space.
-            javaName = null;
-          }
-          String staticRef = "NULL";
-          String constantValue = "";
-          if (BindingUtil.isStatic(var)) {
-            if (BindingUtil.isPrimitiveConstant(var)) {
-              constantValue = String.format(".constantValue.%s = %s",
-                  getRawValueField(var), NameTable.getPrimitiveConstantName(var));
-            } else {
-              staticRef = String.format("&%s_%s", typeName, objcName);
-            }
-          }
-          String metadata = String.format(
-              "    { \"%s\", %s, 0x%x, \"%s\", %s, %s },\n",
-              objcName, cStr(javaName), modifiers, getTypeName(Types.getTypeBinding(f)), staticRef,
-              constantValue);
-          fieldMetadata.add(metadata);
+          fieldMetadata.add(generateFieldMetadata(Types.getVariableBinding(f), f.getName(),
+              typeName));
         }
       }
-      if (fieldMetadata.size() > 0) {
-        builder.append("  static J2ObjcFieldInfo fields[] = {\n");
-        for (String metadata : fieldMetadata) {
-          builder.append(metadata);
-        }
-        builder.append("  };\n");
+    } else if (typeNode instanceof EnumDeclaration) {
+      for (EnumConstantDeclaration decl : ASTUtil.getEnumConstants((EnumDeclaration) typeNode)) {
+        fieldMetadata.add(
+            generateFieldMetadata(Types.getEnumConstantBinding(decl), decl.getName(), typeName));
       }
-      fieldMetadataCount = fieldMetadata.size();
+      for (BodyDeclaration decl : ASTUtil.getBodyDeclarations(typeNode)) {
+        if (decl instanceof FieldDeclaration) {
+          for (VariableDeclarationFragment f : ASTUtil.getFragments((FieldDeclaration) decl)) {
+            fieldMetadata.add(generateFieldMetadata(Types.getVariableBinding(f), f.getName(),
+                typeName));
+          }
+        }
+      }
     }
+    if (fieldMetadata.size() > 0) {
+      builder.append("  static J2ObjcFieldInfo fields[] = {\n");
+      for (String metadata : fieldMetadata) {
+        builder.append(metadata);
+      }
+      builder.append("  };\n");
+    }
+    fieldMetadataCount = fieldMetadata.size();
+  }
+
+  private String generateFieldMetadata(IVariableBinding var, SimpleName name, String typeName) {
+    int modifiers = getFieldModifiers(var);
+    String javaName = name.getIdentifier();
+    String objcName = var.isEnumConstant() ? NameTable.getName(var)
+        : NameTable.javaFieldToObjC(NameTable.getName(var));
+    if (objcName.equals(javaName + '_')) {
+      // Don't print Java name if it matches the default pattern, to conserve space.
+      javaName = null;
+    }
+    String staticRef = "NULL";
+    String constantValue = "";
+    if (BindingUtil.isStatic(var)) {
+      if (BindingUtil.isPrimitiveConstant(var)) {
+        constantValue = String.format(".constantValue.%s = %s",
+            getRawValueField(var), NameTable.getPrimitiveConstantName(var));
+      } else {
+        staticRef = String.format("&%s_%s", typeName, objcName);
+      }
+    }
+    return String.format(
+        "    { \"%s\", %s, 0x%x, \"%s\", %s, %s },\n",
+        objcName, cStr(javaName), modifiers, getTypeName(var.getType()), staticRef,
+        constantValue);
   }
 
   private String getRawValueField(IVariableBinding var) {

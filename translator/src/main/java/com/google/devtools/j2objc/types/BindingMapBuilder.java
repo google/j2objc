@@ -20,6 +20,7 @@ import com.google.common.collect.Maps;
 import com.google.devtools.j2objc.util.ErrorReportingASTVisitor;
 
 import org.eclipse.jdt.core.dom.ASTNode;
+import org.eclipse.jdt.core.dom.ASTVisitor;
 import org.eclipse.jdt.core.dom.AnnotationTypeDeclaration;
 import org.eclipse.jdt.core.dom.AnnotationTypeMemberDeclaration;
 import org.eclipse.jdt.core.dom.AnonymousClassDeclaration;
@@ -42,6 +43,7 @@ import org.eclipse.jdt.core.dom.EnumDeclaration;
 import org.eclipse.jdt.core.dom.FieldAccess;
 import org.eclipse.jdt.core.dom.IBinding;
 import org.eclipse.jdt.core.dom.ITypeBinding;
+import org.eclipse.jdt.core.dom.IVariableBinding;
 import org.eclipse.jdt.core.dom.InfixExpression;
 import org.eclipse.jdt.core.dom.InstanceofExpression;
 import org.eclipse.jdt.core.dom.LabeledStatement;
@@ -96,6 +98,19 @@ class BindingMapBuilder extends ErrorReportingASTVisitor {
     builder.run(unit);
     BindingMapVerifier.verify(unit, builder.bindingMap);
     return builder.bindingMap;
+  }
+
+  // Separate mapping for enum constant variable bindings, since they also have
+  // method bindings.
+  public static Map<EnumConstantDeclaration, IVariableBinding> buildEnumConstantMap(CompilationUnit unit) {
+    final Map<EnumConstantDeclaration, IVariableBinding> bindingMap = Maps.newHashMap();
+    unit.accept(new ASTVisitor() {
+      @Override
+      public void endVisit(EnumConstantDeclaration node) {
+        bindingMap.put(node, node.resolveVariable());
+      }
+    });
+    return bindingMap;
   }
 
   private void put(ASTNode node, IBinding binding) {
