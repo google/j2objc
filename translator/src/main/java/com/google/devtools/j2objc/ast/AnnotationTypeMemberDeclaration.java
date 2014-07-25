@@ -24,9 +24,9 @@ import org.eclipse.jdt.core.dom.IMethodBinding;
 public class AnnotationTypeMemberDeclaration extends BodyDeclaration {
 
   private IMethodBinding methodBinding = null;
-  private ChildLink<Type> type = ChildLink.create(this);
-  private ChildLink<SimpleName> name = ChildLink.create(this);
-  private ChildLink<Expression> defaultValue = ChildLink.create(this);
+  private ChildLink<Type> type = ChildLink.create(Type.class, this);
+  private ChildLink<SimpleName> name = ChildLink.create(SimpleName.class, this);
+  private ChildLink<Expression> defaultValue = ChildLink.create(Expression.class, this);
 
   public AnnotationTypeMemberDeclaration(
       org.eclipse.jdt.core.dom.AnnotationTypeMemberDeclaration jdtNode) {

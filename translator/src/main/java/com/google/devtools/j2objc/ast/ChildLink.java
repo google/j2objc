@@ -20,15 +20,17 @@ package com.google.devtools.j2objc.ast;
  */
 class ChildLink<T extends TreeNode> {
 
+  private final Class<T> childType;
   private final TreeNode parent;
   private T child = null;
 
-  public ChildLink(TreeNode parent) {
+  public ChildLink(Class<T> childType, TreeNode parent) {
+    this.childType = childType;
     this.parent = parent;
   }
 
-  public static <T extends TreeNode> ChildLink<T> create(TreeNode parent) {
-    return new ChildLink<T>(parent);
+  public static <T extends TreeNode> ChildLink<T> create(Class<T> childType, TreeNode parent) {
+    return new ChildLink<T>(childType, parent);
   }
 
   public TreeNode getParent() {
@@ -53,8 +55,16 @@ class ChildLink<T extends TreeNode> {
   }
 
   @SuppressWarnings("unchecked")
+  public void setDynamic(TreeNode newChild) {
+    assert childType.isInstance(newChild)
+        : "Cannot assign node of type " + newChild.getClass().getName() + " to child of type "
+            + childType.getName();
+    set((T) newChild);
+  }
+
+  @SuppressWarnings("unchecked")
   public void copyFrom(T other) {
-    set((T) other.copy());
+    set(other != null ? (T) other.copy() : null);
   }
 
   public void accept(TreeVisitor visitor) {

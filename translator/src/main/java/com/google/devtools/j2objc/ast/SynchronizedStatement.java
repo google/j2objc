@@ -19,8 +19,8 @@ package com.google.devtools.j2objc.ast;
  */
 public class SynchronizedStatement extends Statement {
 
-  private ChildLink<Expression> expression = ChildLink.create(this);
-  private ChildLink<Block> body = ChildLink.create(this);
+  private ChildLink<Expression> expression = ChildLink.create(Expression.class, this);
+  private ChildLink<Block> body = ChildLink.create(Block.class, this);
 
   public SynchronizedStatement(org.eclipse.jdt.core.dom.SynchronizedStatement jdtNode) {
     super(jdtNode);
@@ -34,8 +34,16 @@ public class SynchronizedStatement extends Statement {
     body.copyFrom(other.getBody());
   }
 
+  public SynchronizedStatement() {
+    body.set(new Block());
+  }
+
   public Expression getExpression() {
     return expression.get();
+  }
+
+  public void setExpression(Expression newExpression) {
+    expression.set(newExpression);
   }
 
   public Block getBody() {

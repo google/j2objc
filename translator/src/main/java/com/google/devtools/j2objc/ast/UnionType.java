@@ -21,7 +21,7 @@ import java.util.List;
  */
 public class UnionType extends Type {
 
-  private ChildList<Type> types = ChildList.create(this);
+  private ChildList<Type> types = ChildList.create(Type.class, this);
 
   public UnionType(org.eclipse.jdt.core.dom.UnionType jdtNode) {
     super(jdtNode);

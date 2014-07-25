@@ -14,6 +14,8 @@
 
 package com.google.devtools.j2objc.ast;
 
+import org.eclipse.jdt.core.dom.ITypeBinding;
+
 /**
  * Node type for "this".
  */
@@ -25,6 +27,10 @@ public class ThisExpression extends Expression {
 
   public ThisExpression(ThisExpression other) {
     super(other);
+  }
+
+  public ThisExpression(ITypeBinding typeBinding) {
+    super(typeBinding);
   }
 
   @Override

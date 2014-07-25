@@ -52,12 +52,22 @@ public abstract class TreeNode {
     owner = newOwner;
   }
 
+  public void replaceWith(TreeNode other) {
+    assert owner != null : "Can't replace a parentless node.";
+    owner.setDynamic(other);
+  }
+
   public final int getStartPosition() {
     return startPosition;
   }
 
   public final int getLength() {
     return length;
+  }
+
+  public void setSourceRange(int newStartPosition, int newLength) {
+    startPosition = newStartPosition;
+    length = newLength;
   }
 
   public final int getLineNumber() {

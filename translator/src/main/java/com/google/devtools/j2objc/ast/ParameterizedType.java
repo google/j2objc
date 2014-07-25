@@ -19,7 +19,7 @@ package com.google.devtools.j2objc.ast;
  */
 public class ParameterizedType extends Type {
 
-  private ChildLink<Type> type = ChildLink.create(this);
+  private ChildLink<Type> type = ChildLink.create(Type.class, this);
 
   public ParameterizedType(org.eclipse.jdt.core.dom.ParameterizedType jdtNode) {
     super(jdtNode);

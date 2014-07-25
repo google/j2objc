@@ -19,8 +19,8 @@ package com.google.devtools.j2objc.ast;
  */
 public class CastExpression extends Expression {
 
-  private ChildLink<Type> type = ChildLink.create(this);
-  private ChildLink<Expression> expression = ChildLink.create(this);
+  private ChildLink<Type> type = ChildLink.create(Type.class, this);
+  private ChildLink<Expression> expression = ChildLink.create(Expression.class, this);
 
   public CastExpression(org.eclipse.jdt.core.dom.CastExpression jdtNode) {
     super(jdtNode);

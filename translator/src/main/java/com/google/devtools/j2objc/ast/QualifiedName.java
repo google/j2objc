@@ -14,13 +14,15 @@
 
 package com.google.devtools.j2objc.ast;
 
+import org.eclipse.jdt.core.dom.IBinding;
+
 /**
  * Node for a qualified name. Defined recursively as a simple name preceded by a name.
  */
 public class QualifiedName extends Name {
 
-  private ChildLink<Name> qualifier = ChildLink.create(this);
-  private ChildLink<SimpleName> name = ChildLink.create(this);
+  private ChildLink<Name> qualifier = ChildLink.create(Name.class, this);
+  private ChildLink<SimpleName> name = ChildLink.create(SimpleName.class, this);
 
   public QualifiedName(org.eclipse.jdt.core.dom.QualifiedName jdtNode) {
     super(jdtNode);
@@ -32,6 +34,12 @@ public class QualifiedName extends Name {
     super(other);
     qualifier.copyFrom(other.getQualifier());
     name.copyFrom(other.getName());
+  }
+
+  public QualifiedName(IBinding binding, Name qualifier) {
+    super(binding);
+    this.qualifier.set(qualifier);
+    name.set(new SimpleName(binding));
   }
 
   public Name getQualifier() {

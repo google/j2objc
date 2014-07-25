@@ -14,6 +14,8 @@
 
 package com.google.devtools.j2objc.ast;
 
+import org.eclipse.jdt.core.dom.IVariableBinding;
+
 import java.util.List;
 
 /**
@@ -23,8 +25,8 @@ import java.util.List;
 public class SingleVariableDeclaration extends VariableDeclaration {
 
   private boolean isVarargs = false;
-  private ChildList<Annotation> annotations = ChildList.create(this);
-  private ChildLink<Type> type = ChildLink.create(this);
+  private ChildList<Annotation> annotations = ChildList.create(Annotation.class, this);
+  private ChildLink<Type> type = ChildLink.create(Type.class, this);
 
   public SingleVariableDeclaration(org.eclipse.jdt.core.dom.SingleVariableDeclaration jdtNode) {
     super(jdtNode);
@@ -42,6 +44,11 @@ public class SingleVariableDeclaration extends VariableDeclaration {
     isVarargs = other.isVarargs();
     annotations.copyFrom(other.getAnnotations());
     type.copyFrom(other.getType());
+  }
+
+  public SingleVariableDeclaration(IVariableBinding variableBinding) {
+    super(variableBinding);
+    type.set(Type.newType(variableBinding.getType()));
   }
 
   public boolean isVarargs() {

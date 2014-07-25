@@ -22,8 +22,8 @@ import java.util.List;
 public class TypeDeclaration extends AbstractTypeDeclaration {
 
   private boolean isInterface = false;
-  private ChildLink<Type> superclassType = ChildLink.create(this);
-  private ChildList<Type> superInterfaceTypes = ChildList.create(this);
+  private ChildLink<Type> superclassType = ChildLink.create(Type.class, this);
+  private ChildList<Type> superInterfaceTypes = ChildList.create(Type.class, this);
 
   public TypeDeclaration(org.eclipse.jdt.core.dom.TypeDeclaration jdtNode) {
     super(jdtNode);

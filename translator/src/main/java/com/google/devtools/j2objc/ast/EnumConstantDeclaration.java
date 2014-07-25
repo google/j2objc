@@ -28,8 +28,8 @@ public class EnumConstantDeclaration extends BodyDeclaration {
 
   private IVariableBinding variableBinding = null;
   private IMethodBinding methodBinding = null;
-  private ChildLink<SimpleName> name = ChildLink.create(this);
-  private ChildList<Expression> arguments = ChildList.create(this);
+  private ChildLink<SimpleName> name = ChildLink.create(SimpleName.class, this);
+  private ChildList<Expression> arguments = ChildList.create(Expression.class, this);
 
   public EnumConstantDeclaration(org.eclipse.jdt.core.dom.EnumConstantDeclaration jdtNode) {
     super(jdtNode);

@@ -19,7 +19,7 @@ package com.google.devtools.j2objc.ast;
  */
 public class ThrowStatement extends Statement {
 
-  private ChildLink<Expression> expression = ChildLink.create(this);
+  private ChildLink<Expression> expression = ChildLink.create(Expression.class, this);
 
   public ThrowStatement(org.eclipse.jdt.core.dom.ThrowStatement jdtNode) {
     super(jdtNode);

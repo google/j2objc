@@ -14,6 +14,8 @@
 
 package com.google.devtools.j2objc.ast;
 
+import org.eclipse.jdt.core.dom.ITypeBinding;
+
 /**
  * Creates a type node by wrapping a name.
  */
@@ -25,6 +27,10 @@ public class SimpleType extends Type {
 
   public SimpleType(SimpleType other) {
     super(other);
+  }
+
+  public SimpleType(ITypeBinding typeBinding) {
+    super(typeBinding);
   }
 
   @Override

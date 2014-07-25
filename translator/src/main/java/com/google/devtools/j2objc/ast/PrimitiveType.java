@@ -14,6 +14,8 @@
 
 package com.google.devtools.j2objc.ast;
 
+import org.eclipse.jdt.core.dom.ITypeBinding;
+
 /**
  * Node type for a primitive type.
  */
@@ -25,6 +27,10 @@ public class PrimitiveType extends Type {
 
   public PrimitiveType(PrimitiveType other) {
     super(other);
+  }
+
+  public PrimitiveType(ITypeBinding typeBinding) {
+    super(typeBinding);
   }
 
   @Override

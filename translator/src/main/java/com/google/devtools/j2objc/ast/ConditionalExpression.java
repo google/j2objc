@@ -19,9 +19,9 @@ package com.google.devtools.j2objc.ast;
  */
 public class ConditionalExpression extends Expression {
 
-  private ChildLink<Expression> expression = ChildLink.create(this);
-  private ChildLink<Expression> thenExpression = ChildLink.create(this);
-  private ChildLink<Expression> elseExpression = ChildLink.create(this);
+  private ChildLink<Expression> expression = ChildLink.create(Expression.class, this);
+  private ChildLink<Expression> thenExpression = ChildLink.create(Expression.class, this);
+  private ChildLink<Expression> elseExpression = ChildLink.create(Expression.class, this);
 
   public ConditionalExpression(org.eclipse.jdt.core.dom.ConditionalExpression jdtNode) {
     super(jdtNode);

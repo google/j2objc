@@ -19,8 +19,8 @@ package com.google.devtools.j2objc.ast;
  */
 public class MemberValuePair extends TreeNode {
 
-  private ChildLink<SimpleName> name = ChildLink.create(this);
-  private ChildLink<Expression> value = ChildLink.create(this);
+  private ChildLink<SimpleName> name = ChildLink.create(SimpleName.class, this);
+  private ChildLink<Expression> value = ChildLink.create(Expression.class, this);
 
   public MemberValuePair(org.eclipse.jdt.core.dom.MemberValuePair jdtNode) {
     super(jdtNode);

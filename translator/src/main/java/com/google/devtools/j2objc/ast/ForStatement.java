@@ -21,10 +21,10 @@ import java.util.List;
  */
 public class ForStatement extends Statement {
 
-  private ChildList<Expression> initializers = ChildList.create(this);
-  private ChildLink<Expression> expression = ChildLink.create(this);
-  private ChildList<Expression> updaters = ChildList.create(this);
-  private ChildLink<Statement> body = ChildLink.create(this);
+  private ChildList<Expression> initializers = ChildList.create(Expression.class, this);
+  private ChildLink<Expression> expression = ChildLink.create(Expression.class, this);
+  private ChildList<Expression> updaters = ChildList.create(Expression.class, this);
+  private ChildLink<Statement> body = ChildLink.create(Statement.class, this);
 
   public ForStatement(org.eclipse.jdt.core.dom.ForStatement jdtNode) {
     super(jdtNode);

@@ -19,8 +19,8 @@ package com.google.devtools.j2objc.ast;
  */
 public class InstanceofExpression extends Expression {
 
-  private ChildLink<Expression> leftOperand = ChildLink.create(this);
-  private ChildLink<Type> rightOperand = ChildLink.create(this);
+  private ChildLink<Expression> leftOperand = ChildLink.create(Expression.class, this);
+  private ChildLink<Type> rightOperand = ChildLink.create(Type.class, this);
 
   public InstanceofExpression(org.eclipse.jdt.core.dom.InstanceofExpression jdtNode) {
     super(jdtNode);

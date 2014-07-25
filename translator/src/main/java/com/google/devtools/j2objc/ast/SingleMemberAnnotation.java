@@ -19,7 +19,7 @@ package com.google.devtools.j2objc.ast;
  */
 public class SingleMemberAnnotation extends Annotation {
 
-  private ChildLink<Expression> value = ChildLink.create(this);
+  private ChildLink<Expression> value = ChildLink.create(Expression.class, this);
 
   public SingleMemberAnnotation(org.eclipse.jdt.core.dom.SingleMemberAnnotation jdtNode) {
     super(jdtNode);

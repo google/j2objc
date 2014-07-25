@@ -14,13 +14,15 @@
 
 package com.google.devtools.j2objc.ast;
 
+import org.eclipse.jdt.core.dom.ITypeBinding;
+
 /**
  * Array type node. Array types are expressed recursively, one dimension at a
  * time.
  */
 public class ArrayType extends Type {
 
-  private ChildLink<Type> componentType = ChildLink.create(this);
+  private ChildLink<Type> componentType = ChildLink.create(Type.class, this);
 
   public ArrayType(org.eclipse.jdt.core.dom.ArrayType jdtNode) {
     super(jdtNode);
@@ -30,6 +32,11 @@ public class ArrayType extends Type {
   public ArrayType(ArrayType other) {
     super(other);
     componentType.copyFrom(other.getComponentType());
+  }
+
+  public ArrayType(ITypeBinding typeBinding) {
+    super(typeBinding);
+    componentType.set(Type.newType(typeBinding.getComponentType()));
   }
 
   public Type getComponentType() {

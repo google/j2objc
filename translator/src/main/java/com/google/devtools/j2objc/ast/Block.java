@@ -23,7 +23,7 @@ import java.util.List;
  */
 public class Block extends Statement {
 
-  private ChildList<Statement> statements = ChildList.create(this);
+  private ChildList<Statement> statements = ChildList.create(Statement.class, this);
   private boolean hasAutoreleasePool = false;
 
   public Block(org.eclipse.jdt.core.dom.Block jdtNode) {
@@ -39,6 +39,8 @@ public class Block extends Statement {
     statements.copyFrom(other.getStatements());
     hasAutoreleasePool = other.hasAutoreleasePool();
   }
+
+  public Block() {}
 
   public List<Statement> getStatements() {
     return statements;

@@ -24,7 +24,7 @@ import org.eclipse.jdt.core.dom.IAnnotationBinding;
 public abstract class Annotation extends TreeNode {
 
   private IAnnotationBinding annotationBinding = null;
-  protected ChildLink<Name> typeName = ChildLink.create(this);
+  protected ChildLink<Name> typeName = ChildLink.create(Name.class, this);
 
   protected Annotation(org.eclipse.jdt.core.dom.Annotation jdtNode) {
     super(jdtNode);

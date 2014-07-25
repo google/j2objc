@@ -21,8 +21,8 @@ import java.util.List;
  */
 public class SwitchStatement extends Statement {
 
-  private ChildLink<Expression> expression = ChildLink.create(this);
-  private ChildList<Statement> statements = ChildList.create(this);
+  private ChildLink<Expression> expression = ChildLink.create(Expression.class, this);
+  private ChildList<Statement> statements = ChildList.create(Statement.class, this);
 
   public SwitchStatement(org.eclipse.jdt.core.dom.SwitchStatement jdtNode) {
     super(jdtNode);

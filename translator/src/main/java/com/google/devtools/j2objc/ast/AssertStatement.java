@@ -19,8 +19,8 @@ package com.google.devtools.j2objc.ast;
  */
 public class AssertStatement extends Statement {
 
-  private ChildLink<Expression> expression = ChildLink.create(this);
-  private ChildLink<Expression> message = ChildLink.create(this);
+  private ChildLink<Expression> expression = ChildLink.create(Expression.class, this);
+  private ChildLink<Expression> message = ChildLink.create(Expression.class, this);
 
   public AssertStatement(org.eclipse.jdt.core.dom.AssertStatement jdtNode) {
     super(jdtNode);
@@ -30,8 +30,8 @@ public class AssertStatement extends Statement {
 
   public AssertStatement(AssertStatement other) {
     super(other);
-    expression.copyFrom(other.getExpression().copy());
-    message.copyFrom(other.getMessage().copy());
+    expression.copyFrom(other.getExpression());
+    message.copyFrom(other.getMessage());
   }
 
   public Expression getExpression() {

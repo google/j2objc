@@ -26,8 +26,8 @@ import java.util.List;
 public class SuperMethodInvocation extends Expression {
 
   private IMethodBinding methodBinding = null;
-  private ChildLink<SimpleName> qualifier = ChildLink.create(this);
-  private ChildList<Expression> arguments = ChildList.create(this);
+  private ChildLink<SimpleName> qualifier = ChildLink.create(SimpleName.class, this);
+  private ChildList<Expression> arguments = ChildList.create(Expression.class, this);
 
   public SuperMethodInvocation(org.eclipse.jdt.core.dom.SuperMethodInvocation jdtNode) {
     super(jdtNode);

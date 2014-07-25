@@ -26,10 +26,11 @@ import java.util.List;
 public class ClassInstanceCreation extends Expression {
 
   private IMethodBinding methodBinding = null;
-  private ChildLink<Expression> expression = ChildLink.create(this);
-  private ChildLink<Type> type = ChildLink.create(this);
-  private ChildList<Expression> arguments = ChildList.create(this);
-  private ChildLink<AnonymousClassDeclaration> anonymousClassDeclaration = ChildLink.create(this);
+  private ChildLink<Expression> expression = ChildLink.create(Expression.class, this);
+  private ChildLink<Type> type = ChildLink.create(Type.class, this);
+  private ChildList<Expression> arguments = ChildList.create(Expression.class, this);
+  private ChildLink<AnonymousClassDeclaration> anonymousClassDeclaration =
+      ChildLink.create(AnonymousClassDeclaration.class, this);
 
   public ClassInstanceCreation(org.eclipse.jdt.core.dom.ClassInstanceCreation jdtNode) {
     super(jdtNode);

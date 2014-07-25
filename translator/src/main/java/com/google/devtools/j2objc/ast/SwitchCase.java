@@ -20,7 +20,7 @@ package com.google.devtools.j2objc.ast;
 public class SwitchCase extends Statement {
 
   private boolean isDefault = false;
-  private ChildLink<Expression> expression = ChildLink.create(this);
+  private ChildLink<Expression> expression = ChildLink.create(Expression.class, this);
 
   public SwitchCase(org.eclipse.jdt.core.dom.SwitchCase jdtNode) {
     super(jdtNode);

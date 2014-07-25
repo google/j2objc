@@ -22,8 +22,9 @@ import java.util.List;
  */
 public class VariableDeclarationExpression extends Expression {
 
-  private ChildLink<Type> type = ChildLink.create(this);
-  private ChildList<VariableDeclarationFragment> fragments = ChildList.create(this);
+  private ChildLink<Type> type = ChildLink.create(Type.class, this);
+  private ChildList<VariableDeclarationFragment> fragments =
+      ChildList.create(VariableDeclarationFragment.class, this);
 
   public VariableDeclarationExpression(
       org.eclipse.jdt.core.dom.VariableDeclarationExpression jdtNode) {

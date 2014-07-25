@@ -14,12 +14,14 @@
 
 package com.google.devtools.j2objc.ast;
 
+import org.eclipse.jdt.core.dom.ITypeBinding;
+
 /**
  * Type literal node type.
  */
 public class TypeLiteral extends Expression {
 
-  private ChildLink<Type> type = ChildLink.create(this);
+  private ChildLink<Type> type = ChildLink.create(Type.class, this);
 
   public TypeLiteral(org.eclipse.jdt.core.dom.TypeLiteral jdtNode) {
     super(jdtNode);
@@ -29,6 +31,11 @@ public class TypeLiteral extends Expression {
   public TypeLiteral(TypeLiteral other) {
     super(other);
     type.copyFrom(other.getType());
+  }
+
+  public TypeLiteral(ITypeBinding typeBinding) {
+    super(typeBinding);
+    type.set(Type.newType(typeBinding));
   }
 
   public Type getType() {

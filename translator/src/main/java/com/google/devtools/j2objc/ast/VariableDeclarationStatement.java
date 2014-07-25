@@ -21,8 +21,9 @@ import java.util.List;
  */
 public class VariableDeclarationStatement extends Statement {
 
-  private ChildLink<Type> type = ChildLink.create(this);
-  private ChildList<VariableDeclarationFragment> fragments = ChildList.create(this);
+  private ChildLink<Type> type = ChildLink.create(Type.class, this);
+  private ChildList<VariableDeclarationFragment> fragments =
+      ChildList.create(VariableDeclarationFragment.class, this);
 
   public VariableDeclarationStatement(
       org.eclipse.jdt.core.dom.VariableDeclarationStatement jdtNode) {

@@ -25,15 +25,17 @@ import java.util.List;
  */
 class ChildList<T extends TreeNode> extends AbstractList<T> {
 
+  private final Class<T> childType;
   private final TreeNode parent;
   private List<ChildLink<T>> delegate = Lists.newArrayList();
 
-  public ChildList(TreeNode parent) {
+  public ChildList(Class<T> childType, TreeNode parent) {
+    this.childType = childType;
     this.parent = parent;
   }
 
-  public static <T extends TreeNode> ChildList<T> create(TreeNode parent) {
-    return new ChildList<T>(parent);
+  public static <T extends TreeNode> ChildList<T> create(Class<T> childType, TreeNode parent) {
+    return new ChildList<T>(childType, parent);
   }
 
   @Override
@@ -47,10 +49,18 @@ class ChildList<T extends TreeNode> extends AbstractList<T> {
   }
 
   @Override
-  public boolean add(T node) {
-    ChildLink<T> link = ChildLink.create(parent);
+  public void add(int index, T node) {
+    ChildLink<T> link = ChildLink.create(childType, parent);
     link.set(node);
-    return delegate.add(link);
+    delegate.add(index, link);
+  }
+
+  @Override
+  public T remove(int index) {
+    ChildLink<T> link = delegate.remove(index);
+    T node = link.get();
+    link.set(null);
+    return node;
   }
 
   @SuppressWarnings("unchecked")

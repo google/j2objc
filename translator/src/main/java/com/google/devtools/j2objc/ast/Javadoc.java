@@ -21,7 +21,7 @@ import java.util.List;
  */
 public class Javadoc extends Comment {
 
-  private ChildList<TagElement> tags = ChildList.create(this);
+  private ChildList<TagElement> tags = ChildList.create(TagElement.class, this);
 
   public Javadoc(org.eclipse.jdt.core.dom.Javadoc jdtNode) {
     super(jdtNode);
