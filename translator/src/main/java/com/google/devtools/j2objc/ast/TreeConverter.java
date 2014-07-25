@@ -113,8 +113,6 @@ public class TreeConverter {
         return new LineComment((org.eclipse.jdt.core.dom.LineComment) jdtNode);
       case ASTNode.MARKER_ANNOTATION:
         return new MarkerAnnotation((org.eclipse.jdt.core.dom.MarkerAnnotation) jdtNode);
-      case ASTNode.MEMBER_REF:
-        return new MemberRef((org.eclipse.jdt.core.dom.MemberRef) jdtNode);
       case ASTNode.METHOD_DECLARATION:
         return new MethodDeclaration((org.eclipse.jdt.core.dom.MethodDeclaration) jdtNode);
       case ASTNode.METHOD_INVOCATION:
@@ -196,6 +194,12 @@ public class TreeConverter {
             (org.eclipse.jdt.core.dom.VariableDeclarationStatement) jdtNode);
       case ASTNode.WHILE_STATEMENT:
         return new WhileStatement((org.eclipse.jdt.core.dom.WhileStatement) jdtNode);
+      // These nodes only appear in comments and J2ObjC doens't need any
+      // information from their subtree so we just convert them to TextElement.
+      case ASTNode.MEMBER_REF:
+      case ASTNode.METHOD_REF:
+      case ASTNode.METHOD_REF_PARAMETER:
+        return new TextElement(jdtNode);
       default:
         throw new AssertionError("Unknown node type: " + jdtNode.getClass().getName());
     }
