@@ -152,7 +152,6 @@ JAVA_SOURCES = \
 	gen/ObjectiveCSourceFileGenerator.java \
 	gen/SourceBuilder.java \
 	gen/SourceFileGenerator.java \
-	gen/SourcePosition.java \
 	gen/StatementGenerator.java \
 	translate/ASTFactory.java \
 	translate/AnonymousClassConverter.java \

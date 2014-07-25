@@ -23,7 +23,6 @@ import com.google.devtools.j2objc.ast.MethodDeclaration;
 import com.google.devtools.j2objc.ast.PackageDeclaration;
 import com.google.devtools.j2objc.ast.TreeNode;
 import com.google.devtools.j2objc.util.ErrorUtil;
-import com.google.devtools.j2objc.util.NameTable;
 
 import org.eclipse.jdt.core.dom.Modifier;
 
@@ -41,12 +40,11 @@ public abstract class SourceFileGenerator {
   private final CompilationUnit unit;
   private final File outputDirectory;
   private final String sourceFileName;
-  private final String source;
 
-  public SourceFileGenerator(String sourceFileName, String source, CompilationUnit unit, boolean emitLineDirectives) {
-    builder = new SourceBuilder(unit, sourceFileName, source, emitLineDirectives);
+  public SourceFileGenerator(
+      String sourceFileName, CompilationUnit unit, boolean emitLineDirectives) {
+    builder = new SourceBuilder(emitLineDirectives);
     this.sourceFileName = sourceFileName;
-    this.source = source;
     this.unit = unit;
     this.outputDirectory = Options.getOutputDirectory();
   }
@@ -112,7 +110,7 @@ public abstract class SourceFileGenerator {
    *     a pair of JSNI delimiters aren't in the specified text range
    */
   protected String extractNativeCode(int offset, int length, boolean reportWarnings) {
-    String text = source.substring(offset, offset + length);
+    String text = unit.getSource().substring(offset, offset + length);
     int start = text.indexOf("/*-[");  // start after the bracket
     int end = text.lastIndexOf("]-*/");
 
@@ -122,7 +120,7 @@ public abstract class SourceFileGenerator {
         end = text.lastIndexOf("}-*/");
         if (start != -1 && end > start) {
           String message = String.format("JSNI comment found: %s:%d",
-              sourceFileName, builder.getLineNumber(offset));
+              sourceFileName, unit.getLineNumber(offset));
           ErrorUtil.warning(message);
         }
       }

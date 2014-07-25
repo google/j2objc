@@ -267,7 +267,7 @@ public class AnonymousClassConverterTest extends GenerationTest {
     assertTrue("required field not found", found);
 
     // Verify constructor takes both outer field and var.
-    ObjectiveCImplementationGenerator.generate("Test.java", unit, source);
+    ObjectiveCImplementationGenerator.generate("Test.java", unit);
     String translation = getTranslatedFile("Test.m");
     assertTranslation(translation,
         "r2 = [[[Test_$1_$1 alloc] initWithJavaLangInteger:i] autorelease]");
@@ -296,7 +296,7 @@ public class AnonymousClassConverterTest extends GenerationTest {
     assertTrue("required field not found", found);
 
     // Verify method var is passed to constructor.
-    ObjectiveCImplementationGenerator.generate("Test.java", unit, source);
+    ObjectiveCImplementationGenerator.generate("Test.java", unit);
     String translation = getTranslatedFile("Test.m");
     assertTranslation(translation, "r = [[[Test_$1 alloc] initWithJavaLangInteger:i] autorelease]");
   }
@@ -325,7 +325,7 @@ public class AnonymousClassConverterTest extends GenerationTest {
     assertTrue("required field not found", found);
 
     // Verify method var is passed to constructor.
-    ObjectiveCImplementationGenerator.generate("Test.java", unit, source);
+    ObjectiveCImplementationGenerator.generate("Test.java", unit);
     String translation = getTranslatedFile("Test.m");
     assertTranslation(translation,
         "r = [[[Test_$1 alloc] initWithJavaLangInteger:i] autorelease]");

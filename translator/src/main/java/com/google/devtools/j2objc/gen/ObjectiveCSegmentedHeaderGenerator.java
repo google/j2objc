@@ -37,13 +37,12 @@ public class ObjectiveCSegmentedHeaderGenerator extends ObjectiveCHeaderGenerato
 
   private Map<AbstractTypeDeclaration, HeaderImportCollector> importCollectors = Maps.newHashMap();
 
-  protected ObjectiveCSegmentedHeaderGenerator(
-      String fileName, String source, CompilationUnit unit) {
-    super(fileName, source, unit);
+  protected ObjectiveCSegmentedHeaderGenerator(String fileName, CompilationUnit unit) {
+    super(fileName, unit);
   }
 
-  public static void generate(String fileName, String source, CompilationUnit unit) {
-    new ObjectiveCSegmentedHeaderGenerator(fileName, source, unit).generate(unit);
+  public static void generate(String fileName, CompilationUnit unit) {
+    new ObjectiveCSegmentedHeaderGenerator(fileName, unit).generate(unit);
   }
 
   @Override

@@ -66,9 +66,9 @@ public abstract class ObjectiveCSourceFileGenerator extends SourceFileGenerator 
    * @param sourceFileName the name of the source file being translated
    * @param outputDirectory the top-level directory for output file(s)
    */
-  protected ObjectiveCSourceFileGenerator(String sourceFileName, String source,
-      CompilationUnit unit, boolean emitLineDirectives) {
-    super(sourceFileName, source, unit, emitLineDirectives);
+  protected ObjectiveCSourceFileGenerator(
+      String sourceFileName, CompilationUnit unit, boolean emitLineDirectives) {
+    super(sourceFileName, unit, emitLineDirectives);
   }
 
   /**
@@ -436,13 +436,13 @@ public abstract class ObjectiveCSourceFileGenerator extends SourceFileGenerator 
   private String printJavadocTag(TagElement tag) {
     String tagName = tag.getTagName();
     // Xcode 5 compatible tags.
-    if (tagName.equals(TagElement.TAG_AUTHOR) ||
-        tagName.equals(TagElement.TAG_EXCEPTION) ||
-        tagName.equals(TagElement.TAG_PARAM) ||
-        tagName.equals(TagElement.TAG_RETURN) ||
-        tagName.equals(TagElement.TAG_SINCE) ||
-        tagName.equals(TagElement.TAG_THROWS) ||
-        tagName.equals(TagElement.TAG_VERSION)) {
+    if (tagName.equals(TagElement.TAG_AUTHOR)
+        || tagName.equals(TagElement.TAG_EXCEPTION)
+        || tagName.equals(TagElement.TAG_PARAM)
+        || tagName.equals(TagElement.TAG_RETURN)
+        || tagName.equals(TagElement.TAG_SINCE)
+        || tagName.equals(TagElement.TAG_THROWS)
+        || tagName.equals(TagElement.TAG_VERSION)) {
       return String.format("%s %s", tagName, printTagFragments(tag.getFragments()));
     }
 

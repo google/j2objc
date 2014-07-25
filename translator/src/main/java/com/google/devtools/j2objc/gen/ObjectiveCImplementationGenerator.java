@@ -83,14 +83,14 @@ public class ObjectiveCImplementationGenerator extends ObjectiveCSourceFileGener
    * Generate an Objective-C implementation file for each type declared in a
    * specified compilation unit.
    */
-  public static void generate(String fileName, CompilationUnit unit, String source) {
+  public static void generate(String fileName, CompilationUnit unit) {
     ObjectiveCImplementationGenerator implementationGenerator =
-        new ObjectiveCImplementationGenerator(fileName, unit, source);
+        new ObjectiveCImplementationGenerator(fileName, unit);
     implementationGenerator.generate(unit);
   }
 
-  private ObjectiveCImplementationGenerator(String fileName, CompilationUnit unit, String source) {
-    super(fileName, source, unit, Options.emitLineDirectives());
+  private ObjectiveCImplementationGenerator(String fileName, CompilationUnit unit) {
+    super(fileName, unit, Options.emitLineDirectives());
     fieldHiders = HiddenFieldDetector.getFieldNameConflicts(unit);
     suffix = Options.getImplementationFileSuffix();
   }
@@ -553,7 +553,7 @@ public class ObjectiveCImplementationGenerator extends ObjectiveCSourceFileGener
         print("With");
       } else {
         print(StatementGenerator.generateArguments(constant.getMethodBinding(),
-            args, fieldHiders, getBuilder().getSourcePosition()));
+            args, fieldHiders, getBuilder().getCurrentLine()));
         print(" with");
       }
       printf("NSString:@\"%s\" withInt:%d];\n", name, i);
@@ -561,7 +561,7 @@ public class ObjectiveCImplementationGenerator extends ObjectiveCSourceFileGener
     if (initializeMethod != null) {
       for (Statement s : initializeMethod.getBody().getStatements()) {
         printf("    %s", StatementGenerator.generate(
-            s, fieldHiders, false, getBuilder().getSourcePosition()));
+            s, fieldHiders, false, getBuilder().getCurrentLine()));
       }
     }
     printf("    %s_initialized = YES;\n", typeName);
@@ -797,12 +797,12 @@ public class ObjectiveCImplementationGenerator extends ObjectiveCSourceFileGener
 
   private String generateStatement(Statement stmt, boolean asFunction) {
     return StatementGenerator.generate(
-        stmt, fieldHiders, asFunction, getBuilder().getSourcePosition());
+        stmt, fieldHiders, asFunction, getBuilder().getCurrentLine());
   }
 
   private String generateExpression(Expression expr) {
     return StatementGenerator.generate(
-        expr, fieldHiders, false, getBuilder().getSourcePosition());
+        expr, fieldHiders, false, getBuilder().getCurrentLine());
   }
 
   private String extractNativeMethodBody(MethodDeclaration m) {

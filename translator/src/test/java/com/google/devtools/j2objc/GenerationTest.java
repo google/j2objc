@@ -24,7 +24,6 @@ import com.google.devtools.j2objc.ast.MethodDeclaration;
 import com.google.devtools.j2objc.ast.Statement;
 import com.google.devtools.j2objc.ast.TreeVisitor;
 import com.google.devtools.j2objc.gen.SourceBuilder;
-import com.google.devtools.j2objc.gen.SourcePosition;
 import com.google.devtools.j2objc.gen.StatementGenerator;
 import com.google.devtools.j2objc.types.Types;
 import com.google.devtools.j2objc.util.ErrorUtil;
@@ -164,7 +163,7 @@ public abstract class GenerationTest extends TestCase {
   protected String generateStatement(Statement statement) {
     return StatementGenerator.generate(
         statement, Collections.<IVariableBinding>emptySet(), false,
-        new SourcePosition(null, SourceBuilder.BEGINNING_OF_FILE, null)).trim();
+        SourceBuilder.BEGINNING_OF_FILE).trim();
   }
 
   /**
@@ -314,7 +313,7 @@ public abstract class GenerationTest extends TestCase {
       throws IOException {
     CompilationUnit unit = translateType(typeName, source);
     String sourceName = typeName + ".java";
-    TranslationProcessor.generateObjectiveCSource(sourceName, source, unit, TimeTracker.noop());
+    TranslationProcessor.generateObjectiveCSource(sourceName, unit, TimeTracker.noop());
     return getTranslatedFile(fileName);
   }
 
