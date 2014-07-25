@@ -23,6 +23,7 @@ import com.google.devtools.j2objc.util.BindingUtil;
 import org.eclipse.jdt.core.dom.IBinding;
 import org.eclipse.jdt.core.dom.IVariableBinding;
 
+import java.io.File;
 import java.util.Iterator;
 import java.util.List;
 
@@ -136,5 +137,19 @@ public class TreeUtil {
       return ((SuperFieldAccess) node).getVariableBinding();
     }
     return null;
+  }
+
+  /**
+   * Gets the relative file path of the source java file for this compilation
+   * unit.
+   */
+  public static String getSourceFileName(CompilationUnit unit) {
+    PackageDeclaration pkg = unit.getPackage();
+    if (pkg != null) {
+      return pkg.getName().getFullyQualifiedName().replace('.', File.separatorChar)
+          + File.separatorChar + unit.getMainTypeName() + ".java";
+    } else {
+      return unit.getMainTypeName() + ".java";
+    }
   }
 }

@@ -116,6 +116,8 @@ import java.util.regex.Pattern;
  * @author Tom Ball
  */
 public class StatementGenerator extends TreeVisitor {
+
+  private final CompilationUnit unit;
   private final SourceBuilder buffer;
   private final Set<IVariableBinding> fieldHiders;
   private final boolean asFunction;
@@ -132,9 +134,9 @@ public class StatementGenerator extends TreeVisitor {
 
   public static String generate(
       TreeNode node, Set<IVariableBinding> fieldHiders, boolean asFunction,
-      SourcePosition sourcePosition) throws ASTNodeException {
+      int currentLine) throws ASTNodeException {
     StatementGenerator generator = new StatementGenerator(
-        node, fieldHiders, asFunction, sourcePosition);
+        node, fieldHiders, asFunction, currentLine);
     if (node == null) {
       throw new NullPointerException("cannot generate a null statement");
     }
@@ -143,9 +145,9 @@ public class StatementGenerator extends TreeVisitor {
   }
 
   public static String generateArguments(IMethodBinding method, List<Expression> args,
-      Set<IVariableBinding> fieldHiders, SourcePosition sourcePosition) {
+      Set<IVariableBinding> fieldHiders, int currentLine) {
     StatementGenerator generator = new StatementGenerator(
-        null, fieldHiders, false, sourcePosition);
+        null, fieldHiders, false, currentLine);
     if (IOSMethodBinding.hasVarArgsTarget(method)) {
       generator.printVarArgs(method, args);
     } else {
@@ -163,9 +165,9 @@ public class StatementGenerator extends TreeVisitor {
 
   private StatementGenerator(
       TreeNode node, Set<IVariableBinding> fieldHiders, boolean asFunction,
-      SourcePosition sourcePosition) {
-    CompilationUnit unit = TreeUtil.getCompilationUnit(node);
-    buffer = new SourceBuilder(unit, Options.emitLineDirectives(), sourcePosition);
+      int currentLine) {
+    this.unit = TreeUtil.getCompilationUnit(node);
+    buffer = new SourceBuilder(Options.emitLineDirectives(), currentLine);
     this.fieldHiders = fieldHiders;
     this.asFunction = asFunction;
     useReferenceCounting = !Options.useARC();
@@ -278,8 +280,8 @@ public class StatementGenerator extends TreeVisitor {
     ITypeBinding type = node.getTypeBinding();
     assert type.isArray();
     ITypeBinding componentType = type.getComponentType();
-    String componentTypeName = componentType.isPrimitive() ?
-        NameTable.primitiveTypeToObjC(componentType.getName()) : "id";
+    String componentTypeName = componentType.isPrimitive()
+        ? NameTable.primitiveTypeToObjC(componentType.getName()) : "id";
     buffer.append(String.format("(%s[]){ ", componentTypeName));
     for (Iterator<Expression> it = node.getExpressions().iterator(); it.hasNext(); ) {
       it.next().accept(this);
@@ -326,15 +328,15 @@ public class StatementGenerator extends TreeVisitor {
         buffer.append(" description]");
       }
     } else {
+      int startPos = node.getStartPosition();
       String assertStatementString =
-          extractNodeCode(buffer.getSourcePosition().getSource(), node);
+          unit.getSource().substring(startPos, startPos + node.getLength());
       assertStatementString = CharMatcher.WHITESPACE.trimFrom(assertStatementString);
       assertStatementString = makeQuotedString(assertStatementString);
       // Generates the following string:
       // filename.java:456 condition failed: foobar != fish.
-      buffer.append("@\"" + buffer.getSourcePosition().getFilename() + ":"
-                  + buffer.getLineNumber(node)
-                  + " condition failed: " + assertStatementString + "\"");
+      buffer.append("@\"" + TreeUtil.getSourceFileName(unit) + ":" + node.getLineNumber()
+          + " condition failed: " + assertStatementString + "\"");
     }
     buffer.append(");\n");
     return false;
@@ -550,8 +552,8 @@ public class StatementGenerator extends TreeVisitor {
     buffer.append(" alloc] init");
     IMethodBinding method = node.getMethodBinding();
     List<Expression> arguments = node.getArguments();
-    if (node.getExpression() != null && type.isMember() && arguments.size() > 0 &&
-        !Types.getTypeBinding(arguments.get(0)).isEqualTo(outerType)) {
+    if (node.getExpression() != null && type.isMember() && arguments.size() > 0
+        && !Types.getTypeBinding(arguments.get(0)).isEqualTo(outerType)) {
       // This is calling an untranslated "Outer.new Inner()" method,
       // so update its binding and arguments as if it had been translated.
       GeneratedMethodBinding newBinding = new GeneratedMethodBinding(method);
@@ -577,9 +579,9 @@ public class StatementGenerator extends TreeVisitor {
     ITypeBinding thenType = node.getThenExpression().getTypeBinding();
     ITypeBinding elseType = node.getElseExpression().getTypeBinding();
 
-    if (!thenType.equals(elseType) &&
-        !(node.getThenExpression() instanceof NullLiteral) &&
-        !(node.getElseExpression() instanceof NullLiteral)) {
+    if (!thenType.equals(elseType)
+        && !(node.getThenExpression() instanceof NullLiteral)
+        && !(node.getElseExpression() instanceof NullLiteral)) {
       // gcc fails to compile a conditional expression where the two clauses of
       // the expression have different type. So cast any interface type down to
       // "id" to make the compiler happy. Concrete object types all have a
@@ -740,8 +742,8 @@ public class StatementGenerator extends TreeVisitor {
     List<Expression> extendedOperands = node.getExtendedOperands();
     ITypeBinding type = node.getTypeBinding();
     ITypeBinding lhsType = lhs.getTypeBinding();
-    if (Types.isJavaStringType(type) &&
-        op.equals(InfixExpression.Operator.PLUS)) {
+    if (Types.isJavaStringType(type)
+        && op.equals(InfixExpression.Operator.PLUS)) {
       printStringConcatenation(lhs, rhs, extendedOperands);
     } else if ((op.equals(InfixExpression.Operator.EQUALS)
         || op.equals(InfixExpression.Operator.NOT_EQUALS))
@@ -758,8 +760,8 @@ public class StatementGenerator extends TreeVisitor {
       buffer.append(" isEqual:");
       second.accept(this);
       buffer.append("]");
-    } else if (op.equals(InfixExpression.Operator.RIGHT_SHIFT_UNSIGNED) &&
-        !lhsType.getName().equals("char")) {
+    } else if (op.equals(InfixExpression.Operator.RIGHT_SHIFT_UNSIGNED)
+        && !lhsType.getName().equals("char")) {
       printUnsignedRightShift(lhs, rhs);
     } else if (op.equals(InfixExpression.Operator.LEFT_SHIFT) && lhsType.getName().equals("long")) {
       // The C compiler incorrectly shifts left when the shift is greater
@@ -817,8 +819,8 @@ public class StatementGenerator extends TreeVisitor {
             format.append(s.replace("%", "%%"));
           } else {
             ErrorUtil.error(operand,
-                "String constant has Unicode or octal escape sequences that are not valid in " +
-                "Objective-C.\nEither make string non-final, or remove characters.");
+                "String constant has Unicode or octal escape sequences that are not valid in "
+                + "Objective-C.\nEither make string non-final, or remove characters.");
           }
           continue;
         } else if (value != null) {
@@ -925,8 +927,8 @@ public class StatementGenerator extends TreeVisitor {
       MethodInvocation invocation = (MethodInvocation) arg;
       IMethodBinding methodBinding = invocation.getMethodBinding();
       String methodName = methodBinding.getName();
-      if (methodName.equals("hash") &&
-          methodBinding.getReturnType().isEqualTo(Types.resolveJavaType("int"))) {
+      if (methodName.equals("hash")
+          && methodBinding.getReturnType().isEqualTo(Types.resolveJavaType("int"))) {
         return true;
       }
       if (invocation.getExpression() != null) {
@@ -980,11 +982,11 @@ public class StatementGenerator extends TreeVisitor {
 
     // Object receiving the message, or null if it's a method in this class.
     Expression receiver = node.getExpression();
-    ITypeBinding receiverType = receiver != null ? receiver.getTypeBinding() :
-        binding.getDeclaringClass();
+    ITypeBinding receiverType = receiver != null ? receiver.getTypeBinding()
+        : binding.getDeclaringClass();
 
-    if (methodName.equals("isAssignableFrom") &&
-        binding.getDeclaringClass().equals(Types.getIOSClass())) {
+    if (methodName.equals("isAssignableFrom")
+        && binding.getDeclaringClass().equals(Types.getIOSClass())) {
       printIsAssignableFromExpression(node);
     } else {
       IOSMethod iosMethod = IOSMethodBinding.getIOSMethod(binding);
@@ -1525,8 +1527,8 @@ public class StatementGenerator extends TreeVisitor {
       boolean isEnumConstant = expr.getTypeBinding().isEnum();
       if (isEnumConstant) {
         String typeName = NameTable.getFullName(expr.getTypeBinding());
-        String bareTypeName = typeName.endsWith("Enum") ?
-            typeName.substring(0, typeName.length() - 4) : typeName;
+        String bareTypeName = typeName.endsWith("Enum")
+            ? typeName.substring(0, typeName.length() - 4) : typeName;
         buffer.append(bareTypeName).append("_");
       }
       if (isEnumConstant && expr instanceof SimpleName) {
@@ -1792,16 +1794,6 @@ public class StatementGenerator extends TreeVisitor {
     // All Initializer nodes should have been converted during initialization
     // normalization.
     throw new AssertionError("initializer node not converted");
-  }
-
-  // Returns a string of the source at the location given by offset of the given length.
-  private static String extractCode(String source, int offset, int length) {
-    return source.substring(offset, offset + length);
-  }
-
-  // Returns a string of the code referenced by the given node.
-  private static String extractNodeCode(String source, TreeNode node) {
-    return extractCode(source, node.getStartPosition(), node.getLength());
   }
 
   // Returns a string where all characters that will interfer in

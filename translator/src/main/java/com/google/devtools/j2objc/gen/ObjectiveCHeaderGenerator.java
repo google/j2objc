@@ -69,14 +69,13 @@ public class ObjectiveCHeaderGenerator extends ObjectiveCSourceFileGenerator {
    * Generate an Objective-C header file for each type declared in a specified
    * compilation unit.
    */
-  public static void generate(String fileName, String source, CompilationUnit unit) {
-    ObjectiveCHeaderGenerator headerGenerator =
-        new ObjectiveCHeaderGenerator(fileName, source, unit);
+  public static void generate(String fileName, CompilationUnit unit) {
+    ObjectiveCHeaderGenerator headerGenerator = new ObjectiveCHeaderGenerator(fileName, unit);
     headerGenerator.generate(unit);
   }
 
-  protected ObjectiveCHeaderGenerator(String fileName, String source, CompilationUnit unit) {
-    super(fileName, source, unit, false);
+  protected ObjectiveCHeaderGenerator(String fileName, CompilationUnit unit) {
+    super(fileName, unit, false);
     mainTypeName = NameTable.getMainTypeFullName(unit);
   }
 

@@ -18,7 +18,6 @@ package com.google.devtools.j2objc.gen;
 
 import com.google.common.base.CharMatcher;
 import com.google.common.io.LineReader;
-import com.google.devtools.j2objc.ast.CompilationUnit;
 import com.google.devtools.j2objc.ast.TreeNode;
 
 import java.io.IOException;
@@ -32,10 +31,7 @@ import java.io.StringReader;
  */
 public class SourceBuilder {
   private final StringBuilder buffer = new StringBuilder();
-  private final CompilationUnit unit;
   private int indention = 0;
-  private String filename = null;
-  private String source = null;
   private int currentLine = -1;
 
   /**
@@ -51,11 +47,10 @@ public class SourceBuilder {
   /**
    * Create a new SourceBuilder.
    *
-   * @param unit the compilation unit this source is based upon
    * @param emitLineDirectives if true, generate CPP line directives
    */
-  public SourceBuilder(CompilationUnit unit, String filename, String source, boolean emitLineDirectives) {
-    this(unit, emitLineDirectives, new SourcePosition(filename, BEGINNING_OF_FILE, source));
+  public SourceBuilder(boolean emitLineDirectives) {
+    this(emitLineDirectives, BEGINNING_OF_FILE);
   }
 
   /**
@@ -63,31 +58,12 @@ public class SourceBuilder {
    * syncing.  This is normally only used for building complex statements,
    * where the generated source is used in another builder.
    *
-   * @param unit the compilation unit this source is based upon
    * @param emitLineDirectives if true, generate CPP line directives
    * @param int startLine the initial line number, or -1 if at start of file
    */
-  public SourceBuilder(CompilationUnit unit, boolean emitLineDirectives,
-                       SourcePosition sourcePosition) {
-    this.unit = unit;
+  public SourceBuilder(boolean emitLineDirectives, int startLine) {
     this.emitLineDirectives = emitLineDirectives;
-    this.source = sourcePosition.getSource();
-    this.filename = sourcePosition.getFilename();
-    this.currentLine = sourcePosition.getLineNumber();
-  }
-
-  /**
-   * Constructor used when line numbers are never needed, such as tests.
-   */
-  public SourceBuilder() {
-    this(null, null, null, false);
-  }
-
-  /**
-   * Copy constructor.
-   */
-  public SourceBuilder(SourceBuilder original) {
-    this(original.unit, original.emitLineDirectives, original.getSourcePosition());
+    this.currentLine = startLine;
   }
 
   @Override
@@ -251,19 +227,7 @@ public class SourceBuilder {
     }
   }
 
-  public int getLineNumber(TreeNode node) {
-    int position = node.getStartPosition();
-    if (position == -1) {
-      return -1;
-    }
-    return getLineNumber(position);
-  }
-
-  public int getLineNumber(int position) {
-    return unit.getLineNumber(position);
-  }
-
-  public SourcePosition getSourcePosition() {
-    return new SourcePosition(filename, currentLine, source);
+  public int getCurrentLine() {
+    return currentLine;
   }
 }

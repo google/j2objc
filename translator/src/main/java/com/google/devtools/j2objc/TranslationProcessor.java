@@ -127,7 +127,7 @@ class TranslationProcessor extends FileProcessor {
 
     logger.finest("writing output file(s) to " + Options.getOutputDirectory().getAbsolutePath());
 
-    generateObjectiveCSource(path, source, newUnit, ticker);
+    generateObjectiveCSource(path, newUnit, ticker);
     ticker.tick("Source generation");
 
     if (Options.buildClosure()) {
@@ -255,19 +255,19 @@ class TranslationProcessor extends FileProcessor {
   }
 
   public static void generateObjectiveCSource(
-      String path, String source, CompilationUnit unit, TimeTracker ticker) {
+      String path, CompilationUnit unit, TimeTracker ticker) {
     ticker.push();
 
     // write header
     if (Options.generateSegmentedHeaders()) {
-      ObjectiveCSegmentedHeaderGenerator.generate(path, source, unit);
+      ObjectiveCSegmentedHeaderGenerator.generate(path, unit);
     } else {
-      ObjectiveCHeaderGenerator.generate(path, source, unit);
+      ObjectiveCHeaderGenerator.generate(path, unit);
     }
     ticker.tick("Header generation");
 
     // write implementation file
-    ObjectiveCImplementationGenerator.generate(path, unit, source);
+    ObjectiveCImplementationGenerator.generate(path, unit);
     ticker.tick("Implementation generation");
 
     ticker.pop();
