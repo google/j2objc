@@ -16,51 +16,47 @@ package com.google.devtools.j2objc.translate;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
+import com.google.devtools.j2objc.ast.AbstractTypeDeclaration;
+import com.google.devtools.j2objc.ast.AnnotationTypeDeclaration;
+import com.google.devtools.j2objc.ast.Block;
+import com.google.devtools.j2objc.ast.BodyDeclaration;
+import com.google.devtools.j2objc.ast.CompilationUnit;
+import com.google.devtools.j2objc.ast.EnumDeclaration;
+import com.google.devtools.j2objc.ast.Expression;
+import com.google.devtools.j2objc.ast.ExpressionStatement;
+import com.google.devtools.j2objc.ast.FieldAccess;
+import com.google.devtools.j2objc.ast.MethodDeclaration;
+import com.google.devtools.j2objc.ast.MethodInvocation;
+import com.google.devtools.j2objc.ast.Name;
+import com.google.devtools.j2objc.ast.NormalAnnotation;
+import com.google.devtools.j2objc.ast.QualifiedName;
+import com.google.devtools.j2objc.ast.ReturnStatement;
+import com.google.devtools.j2objc.ast.SimpleName;
+import com.google.devtools.j2objc.ast.SingleMemberAnnotation;
+import com.google.devtools.j2objc.ast.SingleVariableDeclaration;
+import com.google.devtools.j2objc.ast.Statement;
+import com.google.devtools.j2objc.ast.SuperFieldAccess;
+import com.google.devtools.j2objc.ast.SuperMethodInvocation;
+import com.google.devtools.j2objc.ast.SynchronizedStatement;
+import com.google.devtools.j2objc.ast.ThisExpression;
+import com.google.devtools.j2objc.ast.TreeUtil;
+import com.google.devtools.j2objc.ast.TreeVisitor;
+import com.google.devtools.j2objc.ast.TypeDeclaration;
+import com.google.devtools.j2objc.ast.TypeLiteral;
 import com.google.devtools.j2objc.types.GeneratedMethodBinding;
 import com.google.devtools.j2objc.types.GeneratedVariableBinding;
 import com.google.devtools.j2objc.types.IOSMethodBinding;
-import com.google.devtools.j2objc.types.NodeCopier;
 import com.google.devtools.j2objc.types.Types;
-import com.google.devtools.j2objc.util.ASTUtil;
 import com.google.devtools.j2objc.util.BindingUtil;
-import com.google.devtools.j2objc.util.ErrorReportingASTVisitor;
 import com.google.devtools.j2objc.util.ErrorUtil;
 import com.google.devtools.j2objc.util.NameTable;
 
-import org.eclipse.jdt.core.dom.AST;
-import org.eclipse.jdt.core.dom.ASTNode;
-import org.eclipse.jdt.core.dom.ASTVisitor;
-import org.eclipse.jdt.core.dom.AbstractTypeDeclaration;
-import org.eclipse.jdt.core.dom.AnnotationTypeDeclaration;
-import org.eclipse.jdt.core.dom.Block;
-import org.eclipse.jdt.core.dom.BodyDeclaration;
-import org.eclipse.jdt.core.dom.CompilationUnit;
-import org.eclipse.jdt.core.dom.EnumDeclaration;
-import org.eclipse.jdt.core.dom.Expression;
-import org.eclipse.jdt.core.dom.FieldAccess;
 import org.eclipse.jdt.core.dom.IBinding;
-import org.eclipse.jdt.core.dom.IExtendedModifier;
 import org.eclipse.jdt.core.dom.IMethodBinding;
 import org.eclipse.jdt.core.dom.ITypeBinding;
 import org.eclipse.jdt.core.dom.IVariableBinding;
-import org.eclipse.jdt.core.dom.MethodDeclaration;
-import org.eclipse.jdt.core.dom.MethodInvocation;
 import org.eclipse.jdt.core.dom.Modifier;
-import org.eclipse.jdt.core.dom.Name;
-import org.eclipse.jdt.core.dom.NormalAnnotation;
-import org.eclipse.jdt.core.dom.QualifiedName;
-import org.eclipse.jdt.core.dom.ReturnStatement;
-import org.eclipse.jdt.core.dom.SimpleName;
-import org.eclipse.jdt.core.dom.SingleMemberAnnotation;
-import org.eclipse.jdt.core.dom.SingleVariableDeclaration;
-import org.eclipse.jdt.core.dom.Statement;
-import org.eclipse.jdt.core.dom.SuperFieldAccess;
-import org.eclipse.jdt.core.dom.SuperMethodInvocation;
-import org.eclipse.jdt.core.dom.SynchronizedStatement;
-import org.eclipse.jdt.core.dom.ThisExpression;
-import org.eclipse.jdt.core.dom.TypeDeclaration;
 
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Stack;
@@ -72,7 +68,7 @@ import java.util.Stack;
  *
  * @author Tom Ball
  */
-public class Functionizer extends ErrorReportingASTVisitor {
+public class Functionizer extends TreeVisitor {
   private Stack<MethodDeclaration> methodStack = new Stack<MethodDeclaration>();
   private Map<IMethodBinding, Integer> referenceCounts = Maps.newHashMap();
 
@@ -94,10 +90,10 @@ public class Functionizer extends ErrorReportingASTVisitor {
    */
   private void determineReferenceCounts(CompilationUnit node) {
     final List<IMethodBinding> invalidMethods = Lists.newArrayList();
-    node.accept(new ASTVisitor() {
+    node.accept(new TreeVisitor() {
       @Override
       public void endVisit(MethodDeclaration node) {
-        IMethodBinding m = Types.getMethodBinding(node);
+        IMethodBinding m = node.getMethodBinding();
         if (!BindingUtil.isFunction(m) && !referenceCounts.containsKey(m)) {
           referenceCounts.put(m, 0);
         }
@@ -105,7 +101,7 @@ public class Functionizer extends ErrorReportingASTVisitor {
 
       @Override
       public void endVisit(MethodInvocation node) {
-        IMethodBinding m = getDeclaration(Types.getMethodBinding(node));
+        IMethodBinding m = getDeclaration(node.getMethodBinding());
         if (!BindingUtil.isFunction(m)) {
           Integer n = referenceCounts.get(m);
           if (n == null) {
@@ -117,8 +113,8 @@ public class Functionizer extends ErrorReportingASTVisitor {
 
       @Override
       public void endVisit(SuperMethodInvocation node) {
-        MethodDeclaration method = ASTUtil.getOwningMethod(node);
-        invalidMethods.add(getDeclaration(Types.getMethodBinding(method)));
+        MethodDeclaration method = TreeUtil.getOwningMethod(node);
+        invalidMethods.add(getDeclaration(method.getMethodBinding()));
       }
     });
     for (IMethodBinding m : invalidMethods) {
@@ -127,7 +123,7 @@ public class Functionizer extends ErrorReportingASTVisitor {
   }
 
   private void functionize(CompilationUnit unit) {
-    for (AbstractTypeDeclaration decl : ASTUtil.getTypes(unit)) {
+    for (AbstractTypeDeclaration decl : unit.getTypes()) {
       if (decl instanceof TypeDeclaration) {
         functionizeType((TypeDeclaration) decl);
       }
@@ -136,19 +132,19 @@ public class Functionizer extends ErrorReportingASTVisitor {
 
   private void functionizeType(TypeDeclaration node) {
     List<MethodDeclaration> functions = Lists.newArrayList();
-    for (MethodDeclaration method : ASTUtil.getMethodDeclarations(node)) {
-      IMethodBinding m = Types.getMethodBinding(method);
+    for (MethodDeclaration method : TreeUtil.getMethodDeclarations(node)) {
+      IMethodBinding m = method.getMethodBinding();
       if (canFunctionize(m)) {
-        MethodDeclaration function = makeFunction(method, m);
+        MethodDeclaration function = makeFunction(method);
         setFunctionCaller(method, function);
         functions.add(function);
-        functionMap.put(m, Types.getMethodBinding(function));
+        functionMap.put(m, function.getMethodBinding());
         ErrorUtil.functionizedMethod();
       }
     }
-    ASTUtil.getBodyDeclarations(node).addAll(functions);
+    node.getBodyDeclarations().addAll(functions);
 
-    for (BodyDeclaration decl : ASTUtil.getBodyDeclarations(node)) {
+    for (BodyDeclaration decl : node.getBodyDeclarations()) {
       if (decl instanceof TypeDeclaration) {
         functionizeType((TypeDeclaration) decl);
       }
@@ -179,15 +175,15 @@ public class Functionizer extends ErrorReportingASTVisitor {
     m = getDeclaration(m);
 
     // Never functionize these types of methods.
-    if (BindingUtil.isFunction(m) || BindingUtil.isAbstract(m) || BindingUtil.isSynthetic(m) ||
-        m.isAnnotationMember() || m.isConstructor() || BindingUtil.isDestructor(m)) {
+    if (BindingUtil.isFunction(m) || BindingUtil.isAbstract(m) || BindingUtil.isSynthetic(m)
+        || m.isAnnotationMember() || m.isConstructor() || BindingUtil.isDestructor(m)) {
       return false;
     }
 
     // Don't functionize equals/hash, since they are often called by collections.
     String name = m.getName();
-    if ((name.equals("hashCode") && m.getParameterTypes().length == 0) ||
-        (name.equals("equals") && m.getParameterTypes().length == 1)) {
+    if ((name.equals("hashCode") && m.getParameterTypes().length == 0)
+        || (name.equals("equals") && m.getParameterTypes().length == 1)) {
       return false;
     }
 
@@ -202,13 +198,12 @@ public class Functionizer extends ErrorReportingASTVisitor {
 
   @Override
   public void endVisit(MethodInvocation node) {
-    IMethodBinding binding = Types.getMethodBinding(node);
+    IMethodBinding binding = node.getMethodBinding();
     ITypeBinding declaringClass = binding.getDeclaringClass();
     if (declaringClass == null) {
       // Unrelated function, such as address_of: skip.
       return;
     }
-    AST ast = node.getAST();
     List<Expression> args = null;
     IMethodBinding functionBinding = functionMap.get(binding);
     if (functionBinding == null && BindingUtil.isFunction(binding)) {
@@ -216,35 +211,33 @@ public class Functionizer extends ErrorReportingASTVisitor {
     }
     boolean isFunction = functionBinding != null;
     if (isFunction) {
-      MethodInvocation functionInvocation =
-          ASTFactory.newMethodInvocation(ast, functionBinding, null);
-      args = ASTUtil.getArguments(functionInvocation);
-      args.addAll(NodeCopier.copySubtrees(ast, ASTUtil.getArguments(node)));
-      ASTUtil.setProperty(node, functionInvocation);
+      MethodInvocation functionInvocation = new MethodInvocation(functionBinding, null);
+      args = functionInvocation.getArguments();
+      TreeUtil.moveList(node.getArguments(), args);
+      node.replaceWith(functionInvocation);
     } else {
-      args = ASTUtil.getArguments(node);
+      args = node.getArguments();
     }
 
     MethodDeclaration enclosingMethod = methodStack.peek();
-    IMethodBinding enclosingBinding = Types.getMethodBinding(enclosingMethod);
+    IMethodBinding enclosingBinding = enclosingMethod.getMethodBinding();
     Expression expr = node.getExpression();
     boolean isInstance = !BindingUtil.isStatic(binding);
     if (isFunction && isInstance) {
       boolean needsReceiver = expr == null || expr instanceof ThisExpression;
-      if (BindingUtil.isFunction(enclosingBinding) &&
-          !BindingUtil.isStatic(enclosingBinding) && needsReceiver) {
+      if (BindingUtil.isFunction(enclosingBinding)
+          && !BindingUtil.isStatic(enclosingBinding) && needsReceiver) {
         // Add self parameter.
         GeneratedVariableBinding selfParam = new GeneratedVariableBinding(NameTable.SELF_NAME,
             binding.getModifiers() | BindingUtil.ACC_SYNTHETIC, declaringClass, false, true,
             declaringClass, null);
-        args.add(0, ASTFactory.newSimpleName(node.getAST(), selfParam));
+        args.add(0, new SimpleName(selfParam));
       } else {
         boolean needsInstanceParam = isInstance && needsReceiver;
-        if (sameClassMember(declaringClass, getEnclosingType(enclosingMethod)) &&
-            needsInstanceParam) {
+        if (sameClassMember(declaringClass, getEnclosingType(enclosingMethod))
+            && needsInstanceParam) {
           // Add this parameter.
-          ThisExpression thisExpr = ASTFactory.newThisExpression(node.getAST(), declaringClass);
-          args.add(0, thisExpr);
+          args.add(0, new ThisExpression(declaringClass));
         } else if (expr != null) {
           // Move expression to first parameter. The expression has to be to an outer
           // class instance (i.e., this$0), since the method is private.
@@ -254,15 +247,14 @@ public class Functionizer extends ErrorReportingASTVisitor {
         }
       }
     } else {
-      if (!BindingUtil.isStatic(binding) && !BindingUtil.isStatic(enclosingBinding) &&
-          BindingUtil.isFunction(enclosingBinding)) {
+      if (!BindingUtil.isStatic(binding) && !BindingUtil.isStatic(enclosingBinding)
+          && BindingUtil.isFunction(enclosingBinding)) {
         // Dynamic method invocation inside function.
         Expression receiver = expr;
         if ((receiver == null || receiver instanceof ThisExpression)) {
           // Change message receiver to self.
-          IVariableBinding selfParam =
-              Types.getVariableBinding(ASTUtil.getParameters(enclosingMethod).get(0));
-          node.setExpression(ASTFactory.newSimpleName(node.getAST(), selfParam));
+          IVariableBinding selfParam = enclosingMethod.getParameters().get(0).getVariableBinding();
+          node.setExpression(new SimpleName(selfParam));
         }
       }
     }
@@ -284,44 +276,34 @@ public class Functionizer extends ErrorReportingASTVisitor {
    * method, a "self" parameter is added to the beginning of the parameter list (that
    * way, variable functions can be supported).
    */
-  private MethodDeclaration makeFunction(MethodDeclaration method, IMethodBinding m) {
-    final AST ast = method.getAST();
+  private MethodDeclaration makeFunction(MethodDeclaration method) {
+    IMethodBinding m = method.getMethodBinding();
     ITypeBinding declaringClass = m.getDeclaringClass();
     ITypeBinding[] paramTypes = m.getParameterTypes();
-    List<SingleVariableDeclaration> params =
-        NodeCopier.copySubtrees(ast, ASTUtil.getParameters(method));
+    List<SingleVariableDeclaration> params = TreeUtil.copyList(method.getParameters());
     if (!BindingUtil.isStatic(m)) {
       List<ITypeBinding> list = Lists.newArrayList(paramTypes);
       list.add(0, m.getDeclaringClass());
       paramTypes = list.toArray(new ITypeBinding[list.size()]);
       GeneratedVariableBinding var = new GeneratedVariableBinding(NameTable.SELF_NAME, 0,
           declaringClass, false, true, declaringClass, null);
-      SingleVariableDeclaration param =
-          ASTFactory.newSingleVariableDeclaration(ast, var);
-      params.add(0, param);
+      params.add(0, new SingleVariableDeclaration(var));
     }
     String functionName = NameTable.makeFunctionName(declaringClass, m);
     IOSMethodBinding newBinding =
         IOSMethodBinding.newFunction(m, functionName, paramTypes);
-    MethodDeclaration function = ASTFactory.newMethodDeclaration(ast, newBinding);
-    ASTUtil.getParameters(function).addAll(params);
+    MethodDeclaration function = new MethodDeclaration(newBinding);
+    function.getParameters().addAll(params);
 
     if (BindingUtil.isNative(m)) {
       // Add body to method, for forwarding function invocation.
-      method.setBody(ast.newBlock());
-      Iterator<IExtendedModifier> modifiers = ASTUtil.getModifiers(method).iterator();
-      while (modifiers.hasNext()) {
-        IExtendedModifier mod = modifiers.next();
-        if (mod instanceof Modifier && ((Modifier) mod).isNative()) {
-          modifiers.remove();
-          break;
-        }
-      }
+      method.setBody(new Block());
+      method.removeModifiers(Modifier.NATIVE);
 
       // Make method binding non-native, now that functionBinding copied its modifiers.
       GeneratedMethodBinding gennedBinding = new GeneratedMethodBinding(m);
       newBinding.setModifiers(m.getModifiers() & ~Modifier.NATIVE);
-      Types.addBinding(method, gennedBinding);
+      method.setMethodBinding(gennedBinding);
       m = gennedBinding;
 
       // Set source positions, so function's native code can be extracted.
@@ -329,39 +311,31 @@ public class Functionizer extends ErrorReportingASTVisitor {
     }
 
     if (BindingUtil.isSynchronized(m)) {
-      SynchronizedStatement syncStmt = ast.newSynchronizedStatement();
+      SynchronizedStatement syncStmt = new SynchronizedStatement();
       if (BindingUtil.isStatic(m)) {
-        syncStmt.setExpression(ASTFactory.newTypeLiteral(ast, declaringClass));
+        syncStmt.setExpression(new TypeLiteral(declaringClass));
       } else {
         GeneratedVariableBinding selfParam = new GeneratedVariableBinding(NameTable.SELF_NAME, 0,
             declaringClass, false, true, declaringClass, null);
-        SimpleName self = ASTFactory.newSimpleName(ast, selfParam);
+        SimpleName self = new SimpleName(selfParam);
         syncStmt.setExpression(self);
       }
-      ASTUtil.getStatements(syncStmt.getBody()).addAll((
-          NodeCopier.copySubtrees(ast, ASTUtil.getStatements(method.getBody()))));
-      Block block = ast.newBlock();
-      ASTUtil.getStatements(block).add(syncStmt);
+      TreeUtil.copyList(method.getBody().getStatements(), syncStmt.getBody().getStatements());
+      Block block = new Block();
+      block.getStatements().add(syncStmt);
       function.setBody(block);
-      Iterator<IExtendedModifier> modifiers = ASTUtil.getModifiers(function).iterator();
-      while (modifiers.hasNext()) {
-        IExtendedModifier mod = modifiers.next();
-        if (mod instanceof Modifier && ((Modifier) mod).isSynchronized()) {
-          modifiers.remove();
-          break;
-        }
-      }
+      function.removeModifiers(Modifier.SYNCHRONIZED);
     } else {
-      function.setBody(NodeCopier.copySubtree(ast, method.getBody()));
+      function.setBody(method.getBody().copy());
     }
 
     if (BindingUtil.isStatic(m)) {
       // Add class initialization invocation, since this may be the first use of this class.
       String initName = String.format("%s_init", NameTable.getFullName(declaringClass));
       IOSMethodBinding initBinding =
-          IOSMethodBinding.newFunction(initName, ast.resolveWellKnownType("void"), declaringClass);
-      MethodInvocation initCall = ASTFactory.newMethodInvocation(ast, initBinding, null);
-      ASTUtil.getStatements(function.getBody()).add(0, ast.newExpressionStatement(initCall));
+          IOSMethodBinding.newFunction(initName, Types.resolveJavaType("void"), declaringClass);
+      MethodInvocation initCall = new MethodInvocation(initBinding, null);
+      function.getBody().getStatements().add(0, new ExpressionStatement(initCall));
     }
     FunctionConverter.convert(function, newBinding);
     return function;
@@ -371,21 +345,18 @@ public class Functionizer extends ErrorReportingASTVisitor {
    *  Replace method block statements with single statement that invokes function.
    */
   private void setFunctionCaller(MethodDeclaration method, MethodDeclaration function) {
-    AST ast = method.getAST();
-    IMethodBinding functionBinding = Types.getMethodBinding(function);
-    List<Statement> stmts = ASTUtil.getStatements(method.getBody());
+    IMethodBinding functionBinding = function.getMethodBinding();
+    List<Statement> stmts = method.getBody().getStatements();
     stmts.clear();
-    MethodInvocation invocation = ASTFactory.newMethodInvocation(ast, functionBinding, null);
-    List<Expression> args = ASTUtil.getArguments(invocation);
-    for (SingleVariableDeclaration param : ASTUtil.getParameters(method)) {
-      args.add(ASTFactory.newSimpleName(ast, Types.getVariableBinding(param)));
+    MethodInvocation invocation = new MethodInvocation(functionBinding, null);
+    List<Expression> args = invocation.getArguments();
+    for (SingleVariableDeclaration param : method.getParameters()) {
+      args.add(new SimpleName(param.getVariableBinding()));
     }
     if (Types.isVoidType(functionBinding.getReturnType())) {
-      stmts.add(ast.newExpressionStatement(invocation));
+      stmts.add(new ExpressionStatement(invocation));
     } else {
-      ReturnStatement stmt = ast.newReturnStatement();
-      stmt.setExpression(invocation);
-      stmts.add(stmt);
+      stmts.add(new ReturnStatement(invocation));
     }
   }
 
@@ -403,8 +374,7 @@ public class Functionizer extends ErrorReportingASTVisitor {
   }
 
   private static ITypeBinding getEnclosingType(MethodDeclaration md) {
-    ASTNode enclosingType = ASTUtil.getOwningType(md);
-    return Types.getTypeBinding(enclosingType).getErasure();
+    return TreeUtil.getOwningType(md).getTypeBinding().getErasure();
   }
 
   /**
@@ -422,14 +392,13 @@ public class Functionizer extends ErrorReportingASTVisitor {
   /**
    * Convert references to "this" in the function to a "self" parameter.
    */
-  private static class FunctionConverter extends ASTVisitor {
+  private static class FunctionConverter extends TreeVisitor {
     private final IMethodBinding binding;
     private final IVariableBinding selfParam;
 
     static void convert(MethodDeclaration function, IMethodBinding binding) {
       if (!BindingUtil.isStatic(binding)) {
-        IVariableBinding selfParam =
-            Types.getVariableBinding(ASTUtil.getParameters(function).get(0));
+        IVariableBinding selfParam = function.getParameters().get(0).getVariableBinding();
         function.accept(new FunctionConverter(binding, selfParam));
       }
     }
@@ -441,19 +410,17 @@ public class Functionizer extends ErrorReportingASTVisitor {
 
     @Override
     public void endVisit(FieldAccess node) {
-      AST ast = node.getAST();
       Expression receiver = node.getExpression();
-      SimpleName selfNode = ASTFactory.newSimpleName(ast, selfParam);
+      SimpleName selfNode = new SimpleName(selfParam);
       if (receiver == null || receiver instanceof ThisExpression) {
         // Change field expression to this$.
         node.setExpression(selfNode);
       } else {
-        IVariableBinding var = Types.getVariableBinding(node);
-        if (isField(receiver) && receiver instanceof SimpleName &&
-            !sameClassMember(var.getDeclaringClass(), binding.getDeclaringClass())) {
+        IVariableBinding var = node.getVariableBinding();
+        if (isField(receiver) && receiver instanceof SimpleName
+            && !sameClassMember(var.getDeclaringClass(), binding.getDeclaringClass())) {
           // Change outer field expression to this$->expression.
-          node.setExpression(ASTFactory.newQualifiedName(ast, selfNode,
-              NodeCopier.copySubtree(ast, (SimpleName) receiver)));
+          node.setExpression(new QualifiedName(((SimpleName) receiver).getBinding(), selfNode));
         }
       }
     }
@@ -461,50 +428,46 @@ public class Functionizer extends ErrorReportingASTVisitor {
     @Override
     public boolean visit(QualifiedName node) {
       Name qual = node.getQualifier();
-      IBinding qualBinding = Types.getBinding(qual);
+      IBinding qualBinding = qual.getBinding();
       if (qualBinding instanceof IVariableBinding && !BindingUtil.isStatic(qualBinding)) {
         IVariableBinding var = (IVariableBinding) qualBinding;
         if (var.isField()) {
-          AST ast = node.getAST();
           if (!BindingUtil.isStatic(binding)) {
-            FieldAccess qualFieldAccess = ASTFactory.newFieldAccess(ast, var,
-                ASTFactory.newSimpleName(node.getAST(), selfParam));
-            FieldAccess fieldAccess = ASTFactory.newFieldAccess(ast, Types.getVariableBinding(node),
-                qualFieldAccess);
-            ASTUtil.setProperty(node, fieldAccess);
+            FieldAccess qualFieldAccess = new FieldAccess(var, new SimpleName(selfParam));
+            FieldAccess fieldAccess =
+                new FieldAccess((IVariableBinding) node.getBinding(), qualFieldAccess);
+            node.replaceWith(fieldAccess);
           }
         }
       }
-    return true;
+      return true;
     }
 
     @Override
     public void endVisit(SimpleName node) {
-      IBinding binding = Types.getBinding(node);
-      if (binding instanceof IVariableBinding && !BindingUtil.isStatic(binding) &&
-          !(node.getParent() instanceof FieldAccess) &&
-          !(node.getParent() instanceof SuperFieldAccess) &&
-          !(node.getParent() instanceof QualifiedName)) {
+      IBinding binding = node.getBinding();
+      if (binding instanceof IVariableBinding && !BindingUtil.isStatic(binding)
+          && !(node.getParent() instanceof FieldAccess)
+          && !(node.getParent() instanceof SuperFieldAccess)
+          && !(node.getParent() instanceof QualifiedName)) {
         IVariableBinding var = (IVariableBinding) binding;
         if (!var.isField() || BindingUtil.isConstant(var)) {
           return;
         }
         // Convert name to self->name.
-        SimpleName qualifier = ASTFactory.newSimpleName(node.getAST(), selfParam);
-        QualifiedName fqn = ASTFactory.newQualifiedName(node.getAST(), qualifier,
-            NodeCopier.copySubtree(node.getAST(), node));
-        NodeCopier.copyProperties(node, fqn);
-        ASTUtil.setProperty(node, fqn);
+        SimpleName qualifier = new SimpleName(selfParam);
+        QualifiedName fqn = new QualifiedName(binding, qualifier);
+        fqn.setHasNilCheck(node.hasNilCheck());
+        node.replaceWith(fqn);
       }
     }
 
     @Override
     public void endVisit(SuperFieldAccess node) {
       // Change super.field expression to self.field.
-      SimpleName qualifier = ASTFactory.newSimpleName(node.getAST(), selfParam);
-      FieldAccess newAccess =
-          ASTFactory.newFieldAccess(node.getAST(), Types.getVariableBinding(node), qualifier);
-      ASTUtil.setProperty(node, newAccess);
+      SimpleName qualifier = new SimpleName(selfParam);
+      FieldAccess newAccess = new FieldAccess(node.getVariableBinding(), qualifier);
+      node.replaceWith(newAccess);
     }
 
     @Override
@@ -512,16 +475,13 @@ public class Functionizer extends ErrorReportingASTVisitor {
       ITypeBinding declaringClass = binding.getDeclaringClass();
       GeneratedVariableBinding selfParam = new GeneratedVariableBinding(NameTable.SELF_NAME, 0,
           declaringClass, false, true, declaringClass, null);
-      SimpleName self = ASTFactory.newSimpleName(node.getAST(), selfParam);
-      ASTUtil.setProperty(node, self);
+      SimpleName self = new SimpleName(selfParam);
+      node.replaceWith(self);
     }
 
     private boolean isField(Expression receiver) {
-      IBinding b = Types.getBinding(receiver);
-      if (b instanceof IVariableBinding) {
-        return ((IVariableBinding) b).isField();
-      }
-      return false;
+      IVariableBinding variableBinding = TreeUtil.getVariableBinding(receiver);
+      return variableBinding != null && variableBinding.isField();
     }
   }
 }
