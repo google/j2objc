@@ -35,6 +35,59 @@
 		06C73D3F1917FFBE001D3CC8 /* NSString_JavaStringTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 067217D215587FC600645E1B /* NSString_JavaStringTest.m */; };
 		06C73F5819180E64001D3CC8 /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 06C73F5719180E64001D3CC8 /* Security.framework */; };
 		06C73F5A19180E6D001D3CC8 /* libz.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 06C73F5919180E6D001D3CC8 /* libz.dylib */; };
+		06ED87B919759EFF00633227 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 06619388155848D70004DAFE /* Foundation.framework */; };
+		06ED87BA19759EFF00633227 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 067A99561954DF06009171DD /* CoreGraphics.framework */; };
+		06ED87BB19759EFF00633227 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 067A99581954DF06009171DD /* UIKit.framework */; };
+		06ED87C119759EFF00633227 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 06ED87BF19759EFF00633227 /* InfoPlist.strings */; };
+		06ED87C319759EFF00633227 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 06ED87C219759EFF00633227 /* main.m */; };
+		06ED87C719759EFF00633227 /* JREAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 06ED87C619759EFF00633227 /* JREAppDelegate.m */; };
+		06ED87C919759EFF00633227 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 06ED87C819759EFF00633227 /* Images.xcassets */; };
+		06ED87E41975CE5E00633227 /* JRELogPane.m in Sources */ = {isa = PBXBuildFile; fileRef = 06ED87E31975CE5E00633227 /* JRELogPane.m */; };
+		06ED87ED1975F8AD00633227 /* JRELogOutputStream.m in Sources */ = {isa = PBXBuildFile; fileRef = 06ED87EC1975F8AD00633227 /* JRELogOutputStream.m */; };
+		06ED87EE1977298400633227 /* libjre_emul.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 06619385155848D70004DAFE /* libjre_emul.a */; };
+		06ED87F119772B3600633227 /* libz.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 06C73F5919180E6D001D3CC8 /* libz.dylib */; };
+		06ED884A1977422100633227 /* AbstractExecutorServiceTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 06ED87F91977422100633227 /* AbstractExecutorServiceTest.m */; };
+		06ED884B1977422100633227 /* AbstractQueuedSynchronizerTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 06ED87FB1977422100633227 /* AbstractQueuedSynchronizerTest.m */; };
+		06ED884C1977422100633227 /* AbstractQueueTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 06ED87FD1977422100633227 /* AbstractQueueTest.m */; };
+		06ED884D1977422100633227 /* ArrayBlockingQueueTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 06ED87FF1977422100633227 /* ArrayBlockingQueueTest.m */; };
+		06ED884E1977422100633227 /* AtomicBooleanTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 06ED88011977422100633227 /* AtomicBooleanTest.m */; };
+		06ED884F1977422100633227 /* AtomicIntegerArrayTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 06ED88031977422100633227 /* AtomicIntegerArrayTest.m */; };
+		06ED88501977422100633227 /* AtomicIntegerFieldUpdaterTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 06ED88051977422100633227 /* AtomicIntegerFieldUpdaterTest.m */; };
+		06ED88511977422100633227 /* AtomicIntegerTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 06ED88071977422100633227 /* AtomicIntegerTest.m */; };
+		06ED88521977422100633227 /* AtomicLongArrayTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 06ED88091977422100633227 /* AtomicLongArrayTest.m */; };
+		06ED88531977422100633227 /* AtomicLongFieldUpdaterTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 06ED880B1977422100633227 /* AtomicLongFieldUpdaterTest.m */; };
+		06ED88541977422100633227 /* AtomicLongTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 06ED880D1977422100633227 /* AtomicLongTest.m */; };
+		06ED88551977422100633227 /* AtomicMarkableReferenceTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 06ED880F1977422100633227 /* AtomicMarkableReferenceTest.m */; };
+		06ED88561977422100633227 /* AtomicReferenceArrayTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 06ED88111977422100633227 /* AtomicReferenceArrayTest.m */; };
+		06ED88571977422100633227 /* AtomicReferenceFieldUpdaterTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 06ED88131977422100633227 /* AtomicReferenceFieldUpdaterTest.m */; };
+		06ED88581977422100633227 /* AtomicReferenceTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 06ED88151977422100633227 /* AtomicReferenceTest.m */; };
+		06ED88591977422100633227 /* AtomicStampedReferenceTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 06ED88171977422100633227 /* AtomicStampedReferenceTest.m */; };
+		06ED885A1977422100633227 /* ConcurrentHashMapTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 06ED88191977422100633227 /* ConcurrentHashMapTest.m */; };
+		06ED885B1977422100633227 /* ConcurrentLinkedQueueTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 06ED881B1977422100633227 /* ConcurrentLinkedQueueTest.m */; };
+		06ED885C1977422100633227 /* CopyOnWriteArrayListTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 06ED881D1977422100633227 /* CopyOnWriteArrayListTest.m */; };
+		06ED885D1977422100633227 /* CopyOnWriteArraySetTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 06ED881F1977422100633227 /* CopyOnWriteArraySetTest.m */; };
+		06ED885E1977422100633227 /* CountDownLatchTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 06ED88211977422100633227 /* CountDownLatchTest.m */; };
+		06ED885F1977422100633227 /* CyclicBarrierTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 06ED88231977422100633227 /* CyclicBarrierTest.m */; };
+		06ED88601977422100633227 /* DelayQueueTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 06ED88251977422100633227 /* DelayQueueTest.m */; };
+		06ED88611977422100633227 /* ExchangerTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 06ED88271977422100633227 /* ExchangerTest.m */; };
+		06ED88621977422100633227 /* ExecutorCompletionServiceTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 06ED88291977422100633227 /* ExecutorCompletionServiceTest.m */; };
+		06ED88631977422100633227 /* ExecutorsTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 06ED882B1977422100633227 /* ExecutorsTest.m */; };
+		06ED88641977422100633227 /* FutureTaskTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 06ED882D1977422100633227 /* FutureTaskTest.m */; };
+		06ED88651977422100633227 /* JSR166TestCase.m in Sources */ = {isa = PBXBuildFile; fileRef = 06ED882F1977422100633227 /* JSR166TestCase.m */; };
+		06ED88661977422100633227 /* LinkedBlockingQueueTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 06ED88311977422100633227 /* LinkedBlockingQueueTest.m */; };
+		06ED88671977422100633227 /* LinkedListTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 06ED88331977422100633227 /* LinkedListTest.m */; };
+		06ED88681977422100633227 /* LockSupportTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 06ED88351977422100633227 /* LockSupportTest.m */; };
+		06ED88691977422100633227 /* MaxFloatingPointTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 06ED88371977422100633227 /* MaxFloatingPointTest.m */; };
+		06ED886A1977422100633227 /* PriorityBlockingQueueTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 06ED88391977422100633227 /* PriorityBlockingQueueTest.m */; };
+		06ED886B1977422100633227 /* PriorityQueueTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 06ED883B1977422100633227 /* PriorityQueueTest.m */; };
+		06ED886C1977422100633227 /* ReentrantLockTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 06ED883D1977422100633227 /* ReentrantLockTest.m */; };
+		06ED886D1977422100633227 /* ReentrantReadWriteLockTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 06ED883F1977422100633227 /* ReentrantReadWriteLockTest.m */; };
+		06ED886E1977422100633227 /* ScheduledExecutorTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 06ED88411977422100633227 /* ScheduledExecutorTest.m */; };
+		06ED886F1977422100633227 /* SerializationTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 06ED88431977422100633227 /* SerializationTest.m */; };
+		06ED88701977422100633227 /* SynchronousQueueTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 06ED88451977422100633227 /* SynchronousQueueTest.m */; };
+		06ED88711977422100633227 /* ThreadPoolExecutorTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 06ED88471977422100633227 /* ThreadPoolExecutorTest.m */; };
+		06ED88721977422100633227 /* TimeUnitTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 06ED88491977422100633227 /* TimeUnitTest.m */; };
+		06ED8875197742CC00633227 /* ConcurrencyTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 06ED8874197742CC00633227 /* ConcurrencyTests.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -53,6 +106,13 @@
 			remoteInfo = "j2objc build";
 		};
 		06C73D341917FDE5001D3CC8 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 0661937C155848D70004DAFE /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 06619384155848D70004DAFE;
+			remoteInfo = jre_emul;
+		};
+		06ED87EF197729AF00633227 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 0661937C155848D70004DAFE /* Project object */;
 			proxyType = 1;
@@ -190,6 +250,7 @@
 		066193E5155849F80004DAFE /* NSObject+JavaObject.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSObject+JavaObject.m"; sourceTree = "<group>"; };
 		066193E6155849F80004DAFE /* NSString+JavaString.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSString+JavaString.h"; sourceTree = "<group>"; };
 		066193E7155849F80004DAFE /* NSString+JavaString.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSString+JavaString.m"; sourceTree = "<group>"; };
+		0666CCC41978457C00A22C57 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = text; path = README.md; sourceTree = "<group>"; };
 		066B71F617B94DC100A4CBBD /* objc-sync.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "objc-sync.h"; path = "apple_apsl/objc-sync.h"; sourceTree = SOURCE_ROOT; };
 		066B71F717B94DC100A4CBBD /* objc-sync.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "objc-sync.m"; path = "apple_apsl/objc-sync.m"; sourceTree = SOURCE_ROOT; };
 		0671FC1518529E28005D9D56 /* NSNumber+JavaNumber.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "NSNumber+JavaNumber.h"; sourceTree = "<group>"; };
@@ -523,6 +584,8 @@
 		067855D6169F37710042431C /* Primality.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = Primality.m; path = build_result/Classes/java/math/Primality.m; sourceTree = "<group>"; };
 		067855D7169F37710042431C /* RoundingMode.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = RoundingMode.h; path = build_result/Classes/java/math/RoundingMode.h; sourceTree = "<group>"; };
 		067855D8169F37710042431C /* RoundingMode.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = RoundingMode.m; path = build_result/Classes/java/math/RoundingMode.m; sourceTree = "<group>"; };
+		067A99561954DF06009171DD /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
+		067A99581954DF06009171DD /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		067C211A1846AF800004C1A6 /* volatile.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = volatile.h; sourceTree = "<group>"; };
 		068677CB166C342C005A5AD7 /* ArrayDeque.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ArrayDeque.h; path = build_result/Classes/java/util/ArrayDeque.h; sourceTree = "<group>"; };
 		068677CC166C342C005A5AD7 /* ArrayDeque.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ArrayDeque.m; path = build_result/Classes/java/util/ArrayDeque.m; sourceTree = "<group>"; };
@@ -1400,6 +1463,103 @@
 		06ED3E0F17D1673A0014750E /* XmlSerializer.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = XmlSerializer.h; path = build_result/Classes/org/xmlpull/v1/XmlSerializer.h; sourceTree = "<group>"; };
 		06ED3E1017D1674B0014750E /* Driver.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = Driver.h; path = build_result/Classes/org/xmlpull/v1/sax2/Driver.h; sourceTree = "<group>"; };
 		06ED3E1117D1674B0014750E /* Driver.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = Driver.m; path = build_result/Classes/org/xmlpull/v1/sax2/Driver.m; sourceTree = "<group>"; };
+		06ED87B819759EFF00633227 /* junit_tests.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = junit_tests.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		06ED87BE19759EFF00633227 /* junit_tests-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "junit_tests-Info.plist"; sourceTree = "<group>"; };
+		06ED87C019759EFF00633227 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
+		06ED87C219759EFF00633227 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
+		06ED87C419759EFF00633227 /* junit_tests-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "junit_tests-Prefix.pch"; sourceTree = "<group>"; };
+		06ED87C519759EFF00633227 /* JREAppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = JREAppDelegate.h; sourceTree = "<group>"; };
+		06ED87C619759EFF00633227 /* JREAppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = JREAppDelegate.m; sourceTree = "<group>"; };
+		06ED87C819759EFF00633227 /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
+		06ED87E21975CE5E00633227 /* JRELogPane.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JRELogPane.h; sourceTree = "<group>"; };
+		06ED87E31975CE5E00633227 /* JRELogPane.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JRELogPane.m; sourceTree = "<group>"; };
+		06ED87E91975E17000633227 /* Reveal.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Reveal.framework; path = "../../../../../../../Downloads/Reveal.app/Contents/SharedSupport/iOS-Libraries/Reveal.framework"; sourceTree = "<group>"; };
+		06ED87EB1975F8AD00633227 /* JRELogOutputStream.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JRELogOutputStream.h; sourceTree = "<group>"; };
+		06ED87EC1975F8AD00633227 /* JRELogOutputStream.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JRELogOutputStream.m; sourceTree = "<group>"; };
+		06ED87F81977422100633227 /* AbstractExecutorServiceTest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AbstractExecutorServiceTest.h; path = build_result/tests/AbstractExecutorServiceTest.h; sourceTree = SOURCE_ROOT; };
+		06ED87F91977422100633227 /* AbstractExecutorServiceTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = AbstractExecutorServiceTest.m; path = build_result/tests/AbstractExecutorServiceTest.m; sourceTree = SOURCE_ROOT; };
+		06ED87FA1977422100633227 /* AbstractQueuedSynchronizerTest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AbstractQueuedSynchronizerTest.h; path = build_result/tests/AbstractQueuedSynchronizerTest.h; sourceTree = SOURCE_ROOT; };
+		06ED87FB1977422100633227 /* AbstractQueuedSynchronizerTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = AbstractQueuedSynchronizerTest.m; path = build_result/tests/AbstractQueuedSynchronizerTest.m; sourceTree = SOURCE_ROOT; };
+		06ED87FC1977422100633227 /* AbstractQueueTest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AbstractQueueTest.h; path = build_result/tests/AbstractQueueTest.h; sourceTree = SOURCE_ROOT; };
+		06ED87FD1977422100633227 /* AbstractQueueTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = AbstractQueueTest.m; path = build_result/tests/AbstractQueueTest.m; sourceTree = SOURCE_ROOT; };
+		06ED87FE1977422100633227 /* ArrayBlockingQueueTest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ArrayBlockingQueueTest.h; path = build_result/tests/ArrayBlockingQueueTest.h; sourceTree = SOURCE_ROOT; };
+		06ED87FF1977422100633227 /* ArrayBlockingQueueTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ArrayBlockingQueueTest.m; path = build_result/tests/ArrayBlockingQueueTest.m; sourceTree = SOURCE_ROOT; };
+		06ED88001977422100633227 /* AtomicBooleanTest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AtomicBooleanTest.h; path = build_result/tests/AtomicBooleanTest.h; sourceTree = SOURCE_ROOT; };
+		06ED88011977422100633227 /* AtomicBooleanTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = AtomicBooleanTest.m; path = build_result/tests/AtomicBooleanTest.m; sourceTree = SOURCE_ROOT; };
+		06ED88021977422100633227 /* AtomicIntegerArrayTest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AtomicIntegerArrayTest.h; path = build_result/tests/AtomicIntegerArrayTest.h; sourceTree = SOURCE_ROOT; };
+		06ED88031977422100633227 /* AtomicIntegerArrayTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = AtomicIntegerArrayTest.m; path = build_result/tests/AtomicIntegerArrayTest.m; sourceTree = SOURCE_ROOT; };
+		06ED88041977422100633227 /* AtomicIntegerFieldUpdaterTest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AtomicIntegerFieldUpdaterTest.h; path = build_result/tests/AtomicIntegerFieldUpdaterTest.h; sourceTree = SOURCE_ROOT; };
+		06ED88051977422100633227 /* AtomicIntegerFieldUpdaterTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = AtomicIntegerFieldUpdaterTest.m; path = build_result/tests/AtomicIntegerFieldUpdaterTest.m; sourceTree = SOURCE_ROOT; };
+		06ED88061977422100633227 /* AtomicIntegerTest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AtomicIntegerTest.h; path = build_result/tests/AtomicIntegerTest.h; sourceTree = SOURCE_ROOT; };
+		06ED88071977422100633227 /* AtomicIntegerTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = AtomicIntegerTest.m; path = build_result/tests/AtomicIntegerTest.m; sourceTree = SOURCE_ROOT; };
+		06ED88081977422100633227 /* AtomicLongArrayTest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AtomicLongArrayTest.h; path = build_result/tests/AtomicLongArrayTest.h; sourceTree = SOURCE_ROOT; };
+		06ED88091977422100633227 /* AtomicLongArrayTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = AtomicLongArrayTest.m; path = build_result/tests/AtomicLongArrayTest.m; sourceTree = SOURCE_ROOT; };
+		06ED880A1977422100633227 /* AtomicLongFieldUpdaterTest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AtomicLongFieldUpdaterTest.h; path = build_result/tests/AtomicLongFieldUpdaterTest.h; sourceTree = SOURCE_ROOT; };
+		06ED880B1977422100633227 /* AtomicLongFieldUpdaterTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = AtomicLongFieldUpdaterTest.m; path = build_result/tests/AtomicLongFieldUpdaterTest.m; sourceTree = SOURCE_ROOT; };
+		06ED880C1977422100633227 /* AtomicLongTest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AtomicLongTest.h; path = build_result/tests/AtomicLongTest.h; sourceTree = SOURCE_ROOT; };
+		06ED880D1977422100633227 /* AtomicLongTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = AtomicLongTest.m; path = build_result/tests/AtomicLongTest.m; sourceTree = SOURCE_ROOT; };
+		06ED880E1977422100633227 /* AtomicMarkableReferenceTest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AtomicMarkableReferenceTest.h; path = build_result/tests/AtomicMarkableReferenceTest.h; sourceTree = SOURCE_ROOT; };
+		06ED880F1977422100633227 /* AtomicMarkableReferenceTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = AtomicMarkableReferenceTest.m; path = build_result/tests/AtomicMarkableReferenceTest.m; sourceTree = SOURCE_ROOT; };
+		06ED88101977422100633227 /* AtomicReferenceArrayTest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AtomicReferenceArrayTest.h; path = build_result/tests/AtomicReferenceArrayTest.h; sourceTree = SOURCE_ROOT; };
+		06ED88111977422100633227 /* AtomicReferenceArrayTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = AtomicReferenceArrayTest.m; path = build_result/tests/AtomicReferenceArrayTest.m; sourceTree = SOURCE_ROOT; };
+		06ED88121977422100633227 /* AtomicReferenceFieldUpdaterTest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AtomicReferenceFieldUpdaterTest.h; path = build_result/tests/AtomicReferenceFieldUpdaterTest.h; sourceTree = SOURCE_ROOT; };
+		06ED88131977422100633227 /* AtomicReferenceFieldUpdaterTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = AtomicReferenceFieldUpdaterTest.m; path = build_result/tests/AtomicReferenceFieldUpdaterTest.m; sourceTree = SOURCE_ROOT; };
+		06ED88141977422100633227 /* AtomicReferenceTest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AtomicReferenceTest.h; path = build_result/tests/AtomicReferenceTest.h; sourceTree = SOURCE_ROOT; };
+		06ED88151977422100633227 /* AtomicReferenceTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = AtomicReferenceTest.m; path = build_result/tests/AtomicReferenceTest.m; sourceTree = SOURCE_ROOT; };
+		06ED88161977422100633227 /* AtomicStampedReferenceTest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AtomicStampedReferenceTest.h; path = build_result/tests/AtomicStampedReferenceTest.h; sourceTree = SOURCE_ROOT; };
+		06ED88171977422100633227 /* AtomicStampedReferenceTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = AtomicStampedReferenceTest.m; path = build_result/tests/AtomicStampedReferenceTest.m; sourceTree = SOURCE_ROOT; };
+		06ED88181977422100633227 /* ConcurrentHashMapTest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ConcurrentHashMapTest.h; path = build_result/tests/ConcurrentHashMapTest.h; sourceTree = SOURCE_ROOT; };
+		06ED88191977422100633227 /* ConcurrentHashMapTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ConcurrentHashMapTest.m; path = build_result/tests/ConcurrentHashMapTest.m; sourceTree = SOURCE_ROOT; };
+		06ED881A1977422100633227 /* ConcurrentLinkedQueueTest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ConcurrentLinkedQueueTest.h; path = build_result/tests/ConcurrentLinkedQueueTest.h; sourceTree = SOURCE_ROOT; };
+		06ED881B1977422100633227 /* ConcurrentLinkedQueueTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ConcurrentLinkedQueueTest.m; path = build_result/tests/ConcurrentLinkedQueueTest.m; sourceTree = SOURCE_ROOT; };
+		06ED881C1977422100633227 /* CopyOnWriteArrayListTest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = CopyOnWriteArrayListTest.h; path = build_result/tests/CopyOnWriteArrayListTest.h; sourceTree = SOURCE_ROOT; };
+		06ED881D1977422100633227 /* CopyOnWriteArrayListTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = CopyOnWriteArrayListTest.m; path = build_result/tests/CopyOnWriteArrayListTest.m; sourceTree = SOURCE_ROOT; };
+		06ED881E1977422100633227 /* CopyOnWriteArraySetTest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = CopyOnWriteArraySetTest.h; path = build_result/tests/CopyOnWriteArraySetTest.h; sourceTree = SOURCE_ROOT; };
+		06ED881F1977422100633227 /* CopyOnWriteArraySetTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = CopyOnWriteArraySetTest.m; path = build_result/tests/CopyOnWriteArraySetTest.m; sourceTree = SOURCE_ROOT; };
+		06ED88201977422100633227 /* CountDownLatchTest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = CountDownLatchTest.h; path = build_result/tests/CountDownLatchTest.h; sourceTree = SOURCE_ROOT; };
+		06ED88211977422100633227 /* CountDownLatchTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = CountDownLatchTest.m; path = build_result/tests/CountDownLatchTest.m; sourceTree = SOURCE_ROOT; };
+		06ED88221977422100633227 /* CyclicBarrierTest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = CyclicBarrierTest.h; path = build_result/tests/CyclicBarrierTest.h; sourceTree = SOURCE_ROOT; };
+		06ED88231977422100633227 /* CyclicBarrierTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = CyclicBarrierTest.m; path = build_result/tests/CyclicBarrierTest.m; sourceTree = SOURCE_ROOT; };
+		06ED88241977422100633227 /* DelayQueueTest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = DelayQueueTest.h; path = build_result/tests/DelayQueueTest.h; sourceTree = SOURCE_ROOT; };
+		06ED88251977422100633227 /* DelayQueueTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = DelayQueueTest.m; path = build_result/tests/DelayQueueTest.m; sourceTree = SOURCE_ROOT; };
+		06ED88261977422100633227 /* ExchangerTest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ExchangerTest.h; path = build_result/tests/ExchangerTest.h; sourceTree = SOURCE_ROOT; };
+		06ED88271977422100633227 /* ExchangerTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ExchangerTest.m; path = build_result/tests/ExchangerTest.m; sourceTree = SOURCE_ROOT; };
+		06ED88281977422100633227 /* ExecutorCompletionServiceTest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ExecutorCompletionServiceTest.h; path = build_result/tests/ExecutorCompletionServiceTest.h; sourceTree = SOURCE_ROOT; };
+		06ED88291977422100633227 /* ExecutorCompletionServiceTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ExecutorCompletionServiceTest.m; path = build_result/tests/ExecutorCompletionServiceTest.m; sourceTree = SOURCE_ROOT; };
+		06ED882A1977422100633227 /* ExecutorsTest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ExecutorsTest.h; path = build_result/tests/ExecutorsTest.h; sourceTree = SOURCE_ROOT; };
+		06ED882B1977422100633227 /* ExecutorsTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ExecutorsTest.m; path = build_result/tests/ExecutorsTest.m; sourceTree = SOURCE_ROOT; };
+		06ED882C1977422100633227 /* FutureTaskTest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = FutureTaskTest.h; path = build_result/tests/FutureTaskTest.h; sourceTree = SOURCE_ROOT; };
+		06ED882D1977422100633227 /* FutureTaskTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = FutureTaskTest.m; path = build_result/tests/FutureTaskTest.m; sourceTree = SOURCE_ROOT; };
+		06ED882E1977422100633227 /* JSR166TestCase.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = JSR166TestCase.h; path = build_result/tests/JSR166TestCase.h; sourceTree = SOURCE_ROOT; };
+		06ED882F1977422100633227 /* JSR166TestCase.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = JSR166TestCase.m; path = build_result/tests/JSR166TestCase.m; sourceTree = SOURCE_ROOT; };
+		06ED88301977422100633227 /* LinkedBlockingQueueTest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = LinkedBlockingQueueTest.h; path = build_result/tests/LinkedBlockingQueueTest.h; sourceTree = SOURCE_ROOT; };
+		06ED88311977422100633227 /* LinkedBlockingQueueTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = LinkedBlockingQueueTest.m; path = build_result/tests/LinkedBlockingQueueTest.m; sourceTree = SOURCE_ROOT; };
+		06ED88321977422100633227 /* LinkedListTest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = LinkedListTest.h; path = build_result/tests/LinkedListTest.h; sourceTree = SOURCE_ROOT; };
+		06ED88331977422100633227 /* LinkedListTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = LinkedListTest.m; path = build_result/tests/LinkedListTest.m; sourceTree = SOURCE_ROOT; };
+		06ED88341977422100633227 /* LockSupportTest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = LockSupportTest.h; path = build_result/tests/LockSupportTest.h; sourceTree = SOURCE_ROOT; };
+		06ED88351977422100633227 /* LockSupportTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = LockSupportTest.m; path = build_result/tests/LockSupportTest.m; sourceTree = SOURCE_ROOT; };
+		06ED88361977422100633227 /* MaxFloatingPointTest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MaxFloatingPointTest.h; path = build_result/tests/MaxFloatingPointTest.h; sourceTree = SOURCE_ROOT; };
+		06ED88371977422100633227 /* MaxFloatingPointTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MaxFloatingPointTest.m; path = build_result/tests/MaxFloatingPointTest.m; sourceTree = SOURCE_ROOT; };
+		06ED88381977422100633227 /* PriorityBlockingQueueTest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PriorityBlockingQueueTest.h; path = build_result/tests/PriorityBlockingQueueTest.h; sourceTree = SOURCE_ROOT; };
+		06ED88391977422100633227 /* PriorityBlockingQueueTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = PriorityBlockingQueueTest.m; path = build_result/tests/PriorityBlockingQueueTest.m; sourceTree = SOURCE_ROOT; };
+		06ED883A1977422100633227 /* PriorityQueueTest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PriorityQueueTest.h; path = build_result/tests/PriorityQueueTest.h; sourceTree = SOURCE_ROOT; };
+		06ED883B1977422100633227 /* PriorityQueueTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = PriorityQueueTest.m; path = build_result/tests/PriorityQueueTest.m; sourceTree = SOURCE_ROOT; };
+		06ED883C1977422100633227 /* ReentrantLockTest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ReentrantLockTest.h; path = build_result/tests/ReentrantLockTest.h; sourceTree = SOURCE_ROOT; };
+		06ED883D1977422100633227 /* ReentrantLockTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ReentrantLockTest.m; path = build_result/tests/ReentrantLockTest.m; sourceTree = SOURCE_ROOT; };
+		06ED883E1977422100633227 /* ReentrantReadWriteLockTest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ReentrantReadWriteLockTest.h; path = build_result/tests/ReentrantReadWriteLockTest.h; sourceTree = SOURCE_ROOT; };
+		06ED883F1977422100633227 /* ReentrantReadWriteLockTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ReentrantReadWriteLockTest.m; path = build_result/tests/ReentrantReadWriteLockTest.m; sourceTree = SOURCE_ROOT; };
+		06ED88401977422100633227 /* ScheduledExecutorTest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ScheduledExecutorTest.h; path = build_result/tests/ScheduledExecutorTest.h; sourceTree = SOURCE_ROOT; };
+		06ED88411977422100633227 /* ScheduledExecutorTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ScheduledExecutorTest.m; path = build_result/tests/ScheduledExecutorTest.m; sourceTree = SOURCE_ROOT; };
+		06ED88421977422100633227 /* SerializationTest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SerializationTest.h; path = build_result/tests/SerializationTest.h; sourceTree = SOURCE_ROOT; };
+		06ED88431977422100633227 /* SerializationTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = SerializationTest.m; path = build_result/tests/SerializationTest.m; sourceTree = SOURCE_ROOT; };
+		06ED88441977422100633227 /* SynchronousQueueTest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SynchronousQueueTest.h; path = build_result/tests/SynchronousQueueTest.h; sourceTree = SOURCE_ROOT; };
+		06ED88451977422100633227 /* SynchronousQueueTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = SynchronousQueueTest.m; path = build_result/tests/SynchronousQueueTest.m; sourceTree = SOURCE_ROOT; };
+		06ED88461977422100633227 /* ThreadPoolExecutorTest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ThreadPoolExecutorTest.h; path = build_result/tests/ThreadPoolExecutorTest.h; sourceTree = SOURCE_ROOT; };
+		06ED88471977422100633227 /* ThreadPoolExecutorTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ThreadPoolExecutorTest.m; path = build_result/tests/ThreadPoolExecutorTest.m; sourceTree = SOURCE_ROOT; };
+		06ED88481977422100633227 /* TimeUnitTest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = TimeUnitTest.h; path = build_result/tests/TimeUnitTest.h; sourceTree = SOURCE_ROOT; };
+		06ED88491977422100633227 /* TimeUnitTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = TimeUnitTest.m; path = build_result/tests/TimeUnitTest.m; sourceTree = SOURCE_ROOT; };
+		06ED8873197742CC00633227 /* ConcurrencyTests.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ConcurrencyTests.h; path = build_result/tests/ConcurrencyTests.h; sourceTree = SOURCE_ROOT; };
+		06ED8874197742CC00633227 /* ConcurrencyTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ConcurrencyTests.m; path = build_result/tests/ConcurrencyTests.m; sourceTree = SOURCE_ROOT; };
 		06F28FE118972C2300676F1D /* IosMD5MessageDigest.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = IosMD5MessageDigest.h; path = build_result/Classes/com/google/j2objc/security/IosMD5MessageDigest.h; sourceTree = "<group>"; };
 		06F28FE218972C2300676F1D /* IosMD5MessageDigest.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = IosMD5MessageDigest.m; path = build_result/Classes/com/google/j2objc/security/IosMD5MessageDigest.m; sourceTree = "<group>"; };
 		06F28FE318972C2300676F1D /* IosSecureRandomImpl.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = IosSecureRandomImpl.h; path = build_result/Classes/com/google/j2objc/security/IosSecureRandomImpl.h; sourceTree = "<group>"; };
@@ -1842,6 +2002,18 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		06ED87B519759EFF00633227 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				06ED87F119772B3600633227 /* libz.dylib in Frameworks */,
+				06ED87EE1977298400633227 /* libjre_emul.a in Frameworks */,
+				06ED87BA19759EFF00633227 /* CoreGraphics.framework in Frameworks */,
+				06ED87BB19759EFF00633227 /* UIKit.framework in Frameworks */,
+				06ED87B919759EFF00633227 /* Foundation.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
@@ -1851,6 +2023,7 @@
 				0661938A155848D70004DAFE /* Classes */,
 				067219221559B9D200645E1B /* Transpiled Classes */,
 				06C73D2B1917FDE5001D3CC8 /* jre_emul_tests */,
+				06ED87BC19759EFF00633227 /* junit_tests */,
 				06619387155848D70004DAFE /* Frameworks */,
 				06619386155848D70004DAFE /* Products */,
 			);
@@ -1861,6 +2034,7 @@
 			children = (
 				06619385155848D70004DAFE /* libjre_emul.a */,
 				06C73D271917FDE5001D3CC8 /* jre_emul_tests.xctest */,
+				06ED87B819759EFF00633227 /* junit_tests.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -1873,6 +2047,8 @@
 				06619388155848D70004DAFE /* Foundation.framework */,
 				067217DE1558945C00645E1B /* SenTestingKit.framework */,
 				062095AF1917FA3400B19671 /* XCTest.framework */,
+				067A99561954DF06009171DD /* CoreGraphics.framework */,
+				067A99581954DF06009171DD /* UIKit.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -1880,6 +2056,7 @@
 		0661938A155848D70004DAFE /* Classes */ = {
 			isa = PBXGroup;
 			children = (
+				06ED87E91975E17000633227 /* Reveal.framework */,
 				067228F9158FB0B3005318BD /* AccessibleObject.h */,
 				067228FA158FB0B3005318BD /* AccessibleObject.m */,
 				06FACA1118AD34B8008501DD /* BufferUtils.h */,
@@ -3657,6 +3834,125 @@
 			name = "Supporting Files";
 			sourceTree = "<group>";
 		};
+		06ED87BC19759EFF00633227 /* junit_tests */ = {
+			isa = PBXGroup;
+			children = (
+				06ED87C519759EFF00633227 /* JREAppDelegate.h */,
+				06ED87C619759EFF00633227 /* JREAppDelegate.m */,
+				06ED87E21975CE5E00633227 /* JRELogPane.h */,
+				06ED87E31975CE5E00633227 /* JRELogPane.m */,
+				06ED87EB1975F8AD00633227 /* JRELogOutputStream.h */,
+				06ED87EC1975F8AD00633227 /* JRELogOutputStream.m */,
+				06ED87C819759EFF00633227 /* Images.xcassets */,
+				06ED87F71977418500633227 /* Translated Tests */,
+				06ED87BD19759EFF00633227 /* Supporting Files */,
+			);
+			path = junit_tests;
+			sourceTree = "<group>";
+		};
+		06ED87BD19759EFF00633227 /* Supporting Files */ = {
+			isa = PBXGroup;
+			children = (
+				0666CCC41978457C00A22C57 /* README.md */,
+				06ED87BE19759EFF00633227 /* junit_tests-Info.plist */,
+				06ED87BF19759EFF00633227 /* InfoPlist.strings */,
+				06ED87C219759EFF00633227 /* main.m */,
+				06ED87C419759EFF00633227 /* junit_tests-Prefix.pch */,
+			);
+			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		06ED87F71977418500633227 /* Translated Tests */ = {
+			isa = PBXGroup;
+			children = (
+				06ED8873197742CC00633227 /* ConcurrencyTests.h */,
+				06ED8874197742CC00633227 /* ConcurrencyTests.m */,
+				06ED87F81977422100633227 /* AbstractExecutorServiceTest.h */,
+				06ED87F91977422100633227 /* AbstractExecutorServiceTest.m */,
+				06ED87FA1977422100633227 /* AbstractQueuedSynchronizerTest.h */,
+				06ED87FB1977422100633227 /* AbstractQueuedSynchronizerTest.m */,
+				06ED87FC1977422100633227 /* AbstractQueueTest.h */,
+				06ED87FD1977422100633227 /* AbstractQueueTest.m */,
+				06ED87FE1977422100633227 /* ArrayBlockingQueueTest.h */,
+				06ED87FF1977422100633227 /* ArrayBlockingQueueTest.m */,
+				06ED88001977422100633227 /* AtomicBooleanTest.h */,
+				06ED88011977422100633227 /* AtomicBooleanTest.m */,
+				06ED88021977422100633227 /* AtomicIntegerArrayTest.h */,
+				06ED88031977422100633227 /* AtomicIntegerArrayTest.m */,
+				06ED88041977422100633227 /* AtomicIntegerFieldUpdaterTest.h */,
+				06ED88051977422100633227 /* AtomicIntegerFieldUpdaterTest.m */,
+				06ED88061977422100633227 /* AtomicIntegerTest.h */,
+				06ED88071977422100633227 /* AtomicIntegerTest.m */,
+				06ED88081977422100633227 /* AtomicLongArrayTest.h */,
+				06ED88091977422100633227 /* AtomicLongArrayTest.m */,
+				06ED880A1977422100633227 /* AtomicLongFieldUpdaterTest.h */,
+				06ED880B1977422100633227 /* AtomicLongFieldUpdaterTest.m */,
+				06ED880C1977422100633227 /* AtomicLongTest.h */,
+				06ED880D1977422100633227 /* AtomicLongTest.m */,
+				06ED880E1977422100633227 /* AtomicMarkableReferenceTest.h */,
+				06ED880F1977422100633227 /* AtomicMarkableReferenceTest.m */,
+				06ED88101977422100633227 /* AtomicReferenceArrayTest.h */,
+				06ED88111977422100633227 /* AtomicReferenceArrayTest.m */,
+				06ED88121977422100633227 /* AtomicReferenceFieldUpdaterTest.h */,
+				06ED88131977422100633227 /* AtomicReferenceFieldUpdaterTest.m */,
+				06ED88141977422100633227 /* AtomicReferenceTest.h */,
+				06ED88151977422100633227 /* AtomicReferenceTest.m */,
+				06ED88161977422100633227 /* AtomicStampedReferenceTest.h */,
+				06ED88171977422100633227 /* AtomicStampedReferenceTest.m */,
+				06ED88181977422100633227 /* ConcurrentHashMapTest.h */,
+				06ED88191977422100633227 /* ConcurrentHashMapTest.m */,
+				06ED881A1977422100633227 /* ConcurrentLinkedQueueTest.h */,
+				06ED881B1977422100633227 /* ConcurrentLinkedQueueTest.m */,
+				06ED881C1977422100633227 /* CopyOnWriteArrayListTest.h */,
+				06ED881D1977422100633227 /* CopyOnWriteArrayListTest.m */,
+				06ED881E1977422100633227 /* CopyOnWriteArraySetTest.h */,
+				06ED881F1977422100633227 /* CopyOnWriteArraySetTest.m */,
+				06ED88201977422100633227 /* CountDownLatchTest.h */,
+				06ED88211977422100633227 /* CountDownLatchTest.m */,
+				06ED88221977422100633227 /* CyclicBarrierTest.h */,
+				06ED88231977422100633227 /* CyclicBarrierTest.m */,
+				06ED88241977422100633227 /* DelayQueueTest.h */,
+				06ED88251977422100633227 /* DelayQueueTest.m */,
+				06ED88261977422100633227 /* ExchangerTest.h */,
+				06ED88271977422100633227 /* ExchangerTest.m */,
+				06ED88281977422100633227 /* ExecutorCompletionServiceTest.h */,
+				06ED88291977422100633227 /* ExecutorCompletionServiceTest.m */,
+				06ED882A1977422100633227 /* ExecutorsTest.h */,
+				06ED882B1977422100633227 /* ExecutorsTest.m */,
+				06ED882C1977422100633227 /* FutureTaskTest.h */,
+				06ED882D1977422100633227 /* FutureTaskTest.m */,
+				06ED882E1977422100633227 /* JSR166TestCase.h */,
+				06ED882F1977422100633227 /* JSR166TestCase.m */,
+				06ED88301977422100633227 /* LinkedBlockingQueueTest.h */,
+				06ED88311977422100633227 /* LinkedBlockingQueueTest.m */,
+				06ED88321977422100633227 /* LinkedListTest.h */,
+				06ED88331977422100633227 /* LinkedListTest.m */,
+				06ED88341977422100633227 /* LockSupportTest.h */,
+				06ED88351977422100633227 /* LockSupportTest.m */,
+				06ED88361977422100633227 /* MaxFloatingPointTest.h */,
+				06ED88371977422100633227 /* MaxFloatingPointTest.m */,
+				06ED88381977422100633227 /* PriorityBlockingQueueTest.h */,
+				06ED88391977422100633227 /* PriorityBlockingQueueTest.m */,
+				06ED883A1977422100633227 /* PriorityQueueTest.h */,
+				06ED883B1977422100633227 /* PriorityQueueTest.m */,
+				06ED883C1977422100633227 /* ReentrantLockTest.h */,
+				06ED883D1977422100633227 /* ReentrantLockTest.m */,
+				06ED883E1977422100633227 /* ReentrantReadWriteLockTest.h */,
+				06ED883F1977422100633227 /* ReentrantReadWriteLockTest.m */,
+				06ED88401977422100633227 /* ScheduledExecutorTest.h */,
+				06ED88411977422100633227 /* ScheduledExecutorTest.m */,
+				06ED88421977422100633227 /* SerializationTest.h */,
+				06ED88431977422100633227 /* SerializationTest.m */,
+				06ED88441977422100633227 /* SynchronousQueueTest.h */,
+				06ED88451977422100633227 /* SynchronousQueueTest.m */,
+				06ED88461977422100633227 /* ThreadPoolExecutorTest.h */,
+				06ED88471977422100633227 /* ThreadPoolExecutorTest.m */,
+				06ED88481977422100633227 /* TimeUnitTest.h */,
+				06ED88491977422100633227 /* TimeUnitTest.m */,
+			);
+			name = "Translated Tests";
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXHeadersBuildPhase section */
@@ -3724,6 +4020,24 @@
 			productReference = 06C73D271917FDE5001D3CC8 /* jre_emul_tests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
 		};
+		06ED87B719759EFF00633227 /* JRE JUnit Tests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 06ED87DC19759F0000633227 /* Build configuration list for PBXNativeTarget "JRE JUnit Tests" */;
+			buildPhases = (
+				06ED87B419759EFF00633227 /* Sources */,
+				06ED87B519759EFF00633227 /* Frameworks */,
+				06ED87B619759EFF00633227 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				06ED87F0197729AF00633227 /* PBXTargetDependency */,
+			);
+			name = "JRE JUnit Tests";
+			productName = junit_tests;
+			productReference = 06ED87B819759EFF00633227 /* junit_tests.app */;
+			productType = "com.apple.product-type.application";
+		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
@@ -3733,7 +4047,7 @@
 				LastUpgradeCheck = 0430;
 				TargetAttributes = {
 					06C73D261917FDE5001D3CC8 = {
-						TestTargetID = 06C73F961918113B001D3CC8;
+						TestTargetID = 06ED87B719759EFF00633227;
 					};
 				};
 			};
@@ -3754,6 +4068,7 @@
 				06619426155877510004DAFE /* jre_framework */,
 				067219231559BF3600645E1B /* j2objc build */,
 				06C73D261917FDE5001D3CC8 /* jre_emul_tests */,
+				06ED87B719759EFF00633227 /* JRE JUnit Tests */,
 			);
 		};
 /* End PBXProject section */
@@ -3764,6 +4079,15 @@
 			buildActionMask = 2147483647;
 			files = (
 				06C73D301917FDE5001D3CC8 /* InfoPlist.strings in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		06ED87B619759EFF00633227 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				06ED87C119759EFF00633227 /* InfoPlist.strings in Resources */,
+				06ED87C919759EFF00633227 /* Images.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -3821,6 +4145,59 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		06ED87B419759EFF00633227 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				06ED885B1977422100633227 /* ConcurrentLinkedQueueTest.m in Sources */,
+				06ED884A1977422100633227 /* AbstractExecutorServiceTest.m in Sources */,
+				06ED87C719759EFF00633227 /* JREAppDelegate.m in Sources */,
+				06ED87E41975CE5E00633227 /* JRELogPane.m in Sources */,
+				06ED886A1977422100633227 /* PriorityBlockingQueueTest.m in Sources */,
+				06ED886D1977422100633227 /* ReentrantReadWriteLockTest.m in Sources */,
+				06ED885E1977422100633227 /* CountDownLatchTest.m in Sources */,
+				06ED88511977422100633227 /* AtomicIntegerTest.m in Sources */,
+				06ED88581977422100633227 /* AtomicReferenceTest.m in Sources */,
+				06ED87C319759EFF00633227 /* main.m in Sources */,
+				06ED886F1977422100633227 /* SerializationTest.m in Sources */,
+				06ED886B1977422100633227 /* PriorityQueueTest.m in Sources */,
+				06ED88531977422100633227 /* AtomicLongFieldUpdaterTest.m in Sources */,
+				06ED88661977422100633227 /* LinkedBlockingQueueTest.m in Sources */,
+				06ED88561977422100633227 /* AtomicReferenceArrayTest.m in Sources */,
+				06ED884B1977422100633227 /* AbstractQueuedSynchronizerTest.m in Sources */,
+				06ED88651977422100633227 /* JSR166TestCase.m in Sources */,
+				06ED88631977422100633227 /* ExecutorsTest.m in Sources */,
+				06ED87ED1975F8AD00633227 /* JRELogOutputStream.m in Sources */,
+				06ED88711977422100633227 /* ThreadPoolExecutorTest.m in Sources */,
+				06ED886E1977422100633227 /* ScheduledExecutorTest.m in Sources */,
+				06ED885C1977422100633227 /* CopyOnWriteArrayListTest.m in Sources */,
+				06ED88611977422100633227 /* ExchangerTest.m in Sources */,
+				06ED88541977422100633227 /* AtomicLongTest.m in Sources */,
+				06ED88671977422100633227 /* LinkedListTest.m in Sources */,
+				06ED885F1977422100633227 /* CyclicBarrierTest.m in Sources */,
+				06ED88621977422100633227 /* ExecutorCompletionServiceTest.m in Sources */,
+				06ED88571977422100633227 /* AtomicReferenceFieldUpdaterTest.m in Sources */,
+				06ED88721977422100633227 /* TimeUnitTest.m in Sources */,
+				06ED885D1977422100633227 /* CopyOnWriteArraySetTest.m in Sources */,
+				06ED886C1977422100633227 /* ReentrantLockTest.m in Sources */,
+				06ED884E1977422100633227 /* AtomicBooleanTest.m in Sources */,
+				06ED884F1977422100633227 /* AtomicIntegerArrayTest.m in Sources */,
+				06ED885A1977422100633227 /* ConcurrentHashMapTest.m in Sources */,
+				06ED88701977422100633227 /* SynchronousQueueTest.m in Sources */,
+				06ED884C1977422100633227 /* AbstractQueueTest.m in Sources */,
+				06ED88641977422100633227 /* FutureTaskTest.m in Sources */,
+				06ED88551977422100633227 /* AtomicMarkableReferenceTest.m in Sources */,
+				06ED88501977422100633227 /* AtomicIntegerFieldUpdaterTest.m in Sources */,
+				06ED88591977422100633227 /* AtomicStampedReferenceTest.m in Sources */,
+				06ED88521977422100633227 /* AtomicLongArrayTest.m in Sources */,
+				06ED884D1977422100633227 /* ArrayBlockingQueueTest.m in Sources */,
+				06ED8875197742CC00633227 /* ConcurrencyTests.m in Sources */,
+				06ED88691977422100633227 /* MaxFloatingPointTest.m in Sources */,
+				06ED88681977422100633227 /* LockSupportTest.m in Sources */,
+				06ED88601977422100633227 /* DelayQueueTest.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
@@ -3839,6 +4216,11 @@
 			target = 06619384155848D70004DAFE /* jre_emul */;
 			targetProxy = 06C73D341917FDE5001D3CC8 /* PBXContainerItemProxy */;
 		};
+		06ED87F0197729AF00633227 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 06619384155848D70004DAFE /* jre_emul */;
+			targetProxy = 06ED87EF197729AF00633227 /* PBXContainerItemProxy */;
+		};
 /* End PBXTargetDependency section */
 
 /* Begin PBXVariantGroup section */
@@ -3846,6 +4228,14 @@
 			isa = PBXVariantGroup;
 			children = (
 				06C73D2F1917FDE5001D3CC8 /* en */,
+			);
+			name = InfoPlist.strings;
+			sourceTree = "<group>";
+		};
+		06ED87BF19759EFF00633227 /* InfoPlist.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				06ED87C019759EFF00633227 /* en */,
 			);
 			name = InfoPlist.strings;
 			sourceTree = "<group>";
@@ -4027,7 +4417,7 @@
 		06C73D371917FDE5001D3CC8 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				BUNDLE_LOADER = "";
+				BUNDLE_LOADER = "$(BUILT_PRODUCTS_DIR)/junit_tests.app/junit_tests";
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
 				CLANG_CXX_LIBRARY = "libc++";
 				CLANG_ENABLE_MODULES = YES;
@@ -4082,7 +4472,7 @@
 		06C73D381917FDE5001D3CC8 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				BUNDLE_LOADER = "";
+				BUNDLE_LOADER = "$(BUILT_PRODUCTS_DIR)/junit_tests.app/junit_tests";
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
 				CLANG_CXX_LIBRARY = "libc++";
 				CLANG_ENABLE_MODULES = YES;
@@ -4131,6 +4521,125 @@
 			};
 			name = Release;
 		};
+		06ED87DD19759F0000633227 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
+				CLANG_ANALYZER_OBJC_UNUSED_IVARS = YES;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = NO;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "junit_tests/junit_tests-Prefix.pch";
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VALUE = YES;
+				GCC_WARN_UNUSED_VARIABLE = NO;
+				HEADER_SEARCH_PATHS = (
+					Classes,
+					build_result/Classes,
+					../dist/include,
+					"${DERIVED_FILES_DIR}",
+					build_result/tests,
+				);
+				INFOPLIST_FILE = "junit_tests/junit_tests-Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 7.1;
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					build_result,
+					../dist/lib,
+				);
+				ONLY_ACTIVE_ARCH = YES;
+				OTHER_LDFLAGS = (
+					"-ObjC",
+					"-ljunit",
+					"-lguava",
+					"-ljsr305",
+				);
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				TARGETED_DEVICE_FAMILY = "1,2";
+				VALID_ARCHS = "armv7 armv7s i386 x86_64 arm64";
+				WRAPPER_EXTENSION = app;
+			};
+			name = Debug;
+		};
+		06ED87DE19759F0000633227 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
+				CLANG_ANALYZER_OBJC_UNUSED_IVARS = YES;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = NO;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				COPY_PHASE_STRIP = YES;
+				ENABLE_NS_ASSERTIONS = NO;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "junit_tests/junit_tests-Prefix.pch";
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VALUE = YES;
+				GCC_WARN_UNUSED_VARIABLE = NO;
+				HEADER_SEARCH_PATHS = (
+					Classes,
+					build_result/Classes,
+					../dist/include,
+					"${DERIVED_FILES_DIR}",
+					build_result/tests,
+				);
+				INFOPLIST_FILE = "junit_tests/junit_tests-Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 7.1;
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					build_result,
+					../dist/lib,
+				);
+				OTHER_LDFLAGS = (
+					"-ObjC",
+					"-ljunit",
+					"-lguava",
+					"-ljsr305",
+				);
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				TARGETED_DEVICE_FAMILY = "1,2";
+				VALID_ARCHS = "armv7 armv7s i386 x86_64 arm64";
+				WRAPPER_EXTENSION = app;
+			};
+			name = Release;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -4175,6 +4684,15 @@
 			buildConfigurations = (
 				06C73D371917FDE5001D3CC8 /* Debug */,
 				06C73D381917FDE5001D3CC8 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		06ED87DC19759F0000633227 /* Build configuration list for PBXNativeTarget "JRE JUnit Tests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				06ED87DD19759F0000633227 /* Debug */,
+				06ED87DE19759F0000633227 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
