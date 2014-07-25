@@ -24,6 +24,7 @@ package java.lang;
 #import "java/lang/IllegalArgumentException.h"
 #import "java/lang/NullPointerException.h"
 #include "mach/mach_time.h"
+#include "TargetConditionals.h"
 ]-*/
 
 import java.io.BufferedInputStream;
@@ -147,7 +148,6 @@ public class System {
   public static Properties getProperties() {
     if (props == null) {
       props = new Properties();
-      props.setProperty("os.name", "Mac OS X");
       props.setProperty("file.separator", "/");
       props.setProperty("line.separator", "\n");
       props.setProperty("path.separator", ":");
@@ -158,10 +158,23 @@ public class System {
   }
 
   private static native void setSystemProperties(Properties props) /*-[
-    [props setPropertyWithNSString:@"user.home" withNSString:NSHomeDirectory()];
+    NSString *homeDirectory = NSHomeDirectory();
+    [props setPropertyWithNSString:@"user.home" withNSString:homeDirectory];
     [props setPropertyWithNSString:@"user.name" withNSString:NSUserName()];
+
+#if TARGET_OS_IPHONE
+    [props setPropertyWithNSString:@"os.name" withNSString:@"iPhone"];
+    [props setPropertyWithNSString:@"user.dir"
+                      withNSString:[homeDirectory stringByAppendingString:@"/Documents"]];
+#elif TARGET_IPHONE_SIMULATOR
+    [props setPropertyWithNSString:@"os.name" withNSString:@"iPhone Simulator"];
+    [props setPropertyWithNSString:@"user.dir"
+                      withNSString:[homeDirectory stringByAppendingString:@"/Documents"]];
+#else
+    [props setPropertyWithNSString:@"os.name" withNSString:@"Mac OS X"];
     NSString *curDir = [[NSFileManager defaultManager] currentDirectoryPath];
     [props setPropertyWithNSString:@"user.dir" withNSString:curDir];
+#endif
 
     NSString *tmpDir = NSTemporaryDirectory();
     int iLast = (int) [tmpDir length] - 1;
