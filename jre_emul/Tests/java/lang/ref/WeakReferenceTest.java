@@ -34,6 +34,8 @@ package java.lang.ref;
 
 import com.google.j2objc.annotations.AutoreleasePool;
 
+import junit.framework.TestCase;
+
 import org.junit.Test;
 
 import static org.junit.Assert.*;
@@ -46,7 +48,7 @@ import static org.junit.Assert.*;
  *
  * @author Tom Ball
  */
-public class WeakReferenceTest {
+public class WeakReferenceTest extends TestCase {
   private WeakReference<?> weakRef;
 
   @Test

@@ -31,7 +31,6 @@ SUPPORT_SOURCES = \
     libcore/java/nio/charset/OldCharset_AbstractTest.java \
     libcore/java/util/ServiceLoaderTestInterface.java \
     libcore/util/SerializationTester.java \
-    org/apache/harmony/logging/tests/java/util/logging/AllTests.java \
     org/apache/harmony/logging/tests/java/util/logging/LevelTestResource.java \
     org/apache/harmony/logging/tests/java/util/logging/util/EnvironmentHelper.java \
     org/apache/harmony/testframework/serialization/SerializationTest.java \
@@ -408,8 +407,8 @@ SUITE_SOURCES = \
     libcore/java/io/SmallTests.java \
     libcore/java/net/SmallTests.java \
     libcore/java/util/zip/SmallTests.java \
-    org/apache/harmony/logging/tests/java/util/logging/SmallTests.java \
-    org/json/SmallTests.java
+    org/apache/harmony/logging/tests/java/util/logging/AllTests.java \
+    org/json/SmallTests.java \
 
 TESTS_TO_SKIP = \
     ExchangerTest.java
@@ -492,6 +491,9 @@ TRANSLATE_ARGS = -classpath $(JUNIT_DIST_JAR) -Werror -sourcepath $(TEST_SRC) \
     --extract-unsequenced -encoding UTF-8
 include ../make/translate.mk
 
+ALL_TESTS_CLASS = AllJreTests
+ALL_TESTS_SOURCE = $(RELATIVE_TESTS_DIR)/AllJreTests.java
+
 ifdef GENERATE_TEST_COVERAGE
 GCOV_FLAGS = -ftest-coverage -fprofile-arcs
 TEST_JOCC += $(GCOV_FLAGS)
@@ -501,7 +503,7 @@ test: run-tests
 
 support-lib: $(SUPPORT_LIB)
 
-build: support-lib $(TEST_OBJS)
+build: support-lib $(TEST_OBJS) $(ALL_TESTS_SOURCE:%.java=%.o)
 	@:
 
 link: build $(TEST_BIN)
@@ -522,7 +524,7 @@ $(TESTS_DIR)/%: $(LOGGING_TEST_RESOURCES_ROOT)/%
 	@cp $< $@
 
 run-tests: link resources $(TEST_BIN)
-	@$(TEST_BIN) org.junit.runner.JUnitCore $(TESTS_TO_RUN)
+	@$(TEST_BIN) org.junit.runner.JUnitCore $(ALL_TESTS_CLASS)
 
 run-concurrency-tests: link resources $(TEST_BIN)
 	@$(TEST_BIN) org.junit.runner.JUnitCore ConcurrencyTests
@@ -535,7 +537,7 @@ run-json-tests: link resources $(TEST_BIN)
 
 run-logging-tests: link resources $(TEST_BIN)
 	@$(TEST_BIN) org.junit.runner.JUnitCore \
-	    org.apache.harmony.logging.tests.java.util.logging.SmallTests
+	    org.apache.harmony.logging.tests.java.util.logging.AllTests
 
 run-net-tests: link resources $(TEST_BIN)
 	@$(TEST_BIN) org.junit.runner.JUnitCore libcore.java.net.SmallTests
@@ -566,7 +568,17 @@ $(TESTS_DIR)/%.o: $(TESTS_DIR)/%.m
 	  -Wno-objc-redundant-literal-use -Wno-format \
 	  -Werror -Wno-parentheses $(GCOV_FLAGS)
 
-$(TEST_BIN): $(TEST_OBJS) $(SUPPORT_LIB) \
+$(TEST_BIN): $(TEST_OBJS) $(SUPPORT_LIB) $(ALL_TESTS_SOURCE:%.java=%.o) \
         ../dist/lib/libjre_emul.a ../dist/lib/libjunit.a
 	@echo Building test executable...
-	@$(TEST_JOCC) -o $@ $(TEST_OBJS)
+	@$(TEST_JOCC) -o $@ $(TEST_OBJS) $(ALL_TESTS_SOURCE:%.java=%.o)
+
+$(ALL_TESTS_SOURCE): | $(TESTS_DIR)
+	@./gen_all_tests.sh $(TESTS_TO_RUN) > $@
+
+$(ALL_TESTS_SOURCE:%.java=%.m): $(ALL_TESTS_SOURCE)
+	@$(TRANSLATE_CMD) $?
+
+$(ALL_TESTS_SOURCE:%.java=%.o): $(ALL_TESTS_SOURCE:%.java=%.m) $(TEST_OBJS:%.o=%.h)
+	../dist/j2objcc -g -I$(TESTS_DIR) \
+	    -c $(ALL_TESTS_SOURCE:%.java=%.m) -o $(ALL_TESTS_SOURCE:%.java=%.o)

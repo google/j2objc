@@ -82,6 +82,7 @@ MAIN_LIB = $(BUILD_DIR)/libj2objc_main.a
 MAIN_LIB_DIST = $(DIST_LIB_DIR)/libj2objc_main.a
 EMULATION_CLASS_DIR = Classes
 TESTS_DIR = $(BUILD_DIR)/tests
+RELATIVE_TESTS_DIR = $(BUILD_DIR_NAME)/tests
 STUBS_DIR = stub_classes
 ANDROID_NATIVE_DIR = $(LIBCORE_BASE)/luni/src/main/native
 
