@@ -113,6 +113,8 @@ public class TreeConverter {
         return new LineComment((org.eclipse.jdt.core.dom.LineComment) jdtNode);
       case ASTNode.MARKER_ANNOTATION:
         return new MarkerAnnotation((org.eclipse.jdt.core.dom.MarkerAnnotation) jdtNode);
+      case ASTNode.MEMBER_REF:
+        return new MemberRef((org.eclipse.jdt.core.dom.MemberRef) jdtNode);
       case ASTNode.METHOD_DECLARATION:
         return new MethodDeclaration((org.eclipse.jdt.core.dom.MethodDeclaration) jdtNode);
       case ASTNode.METHOD_INVOCATION:
@@ -167,6 +169,10 @@ public class TreeConverter {
         return new SwitchStatement((org.eclipse.jdt.core.dom.SwitchStatement) jdtNode);
       case ASTNode.SYNCHRONIZED_STATEMENT:
         return new SynchronizedStatement((org.eclipse.jdt.core.dom.SynchronizedStatement) jdtNode);
+      case ASTNode.TAG_ELEMENT:
+        return new TagElement((org.eclipse.jdt.core.dom.TagElement) jdtNode);
+      case ASTNode.TEXT_ELEMENT:
+        return new TextElement((org.eclipse.jdt.core.dom.TextElement) jdtNode);
       case ASTNode.THIS_EXPRESSION:
         return new ThisExpression((org.eclipse.jdt.core.dom.ThisExpression) jdtNode);
       case ASTNode.THROW_STATEMENT:
