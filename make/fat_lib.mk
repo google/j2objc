@@ -94,7 +94,7 @@ endef
 define compile_pch_rule
 $(1): $(2) | fat_lib_dependencies
 	@mkdir -p $$(@D)
-	$(FAT_LIB_COMPILE) -x objective-c-header $(3) -c $$< -o $$@
+	$(FAT_LIB_COMPILE) -x objective-c-header $(3) -MD -c $$< -o $$@
 endef
 
 # Generates analyze rule.
@@ -128,6 +128,7 @@ ifdef TARGET_TEMP_DIR
 # Targets specific to an xcode build
 
 -include $(FAT_LIB_OBJS:%.o=$(TARGET_TEMP_DIR)/%.d)
+-include $(TARGET_TEMP_DIR)/$(J2OBJC_PRECOMPILED_HEADER).d
 
 $(FAT_LIB_LIBRARY): $(FAT_LIB_OBJS:%=$(TARGET_TEMP_DIR)/%)
 	@mkdir -p $(@D)
@@ -145,6 +146,7 @@ $(FAT_LIB_LIBRARY): $(FAT_LIB_ARCH_LIBS)
 
 define arch_lib_rule
 -include $(FAT_LIB_OBJS:%.o=$(BUILD_DIR)/objs-$(1)/%.d)
+-include $(BUILD_DIR)/objs-$(1)/$(J2OBJC_PRECOMPILED_HEADER).d
 
 $(BUILD_DIR)/$(1)-lib$(FAT_LIB_NAME).a: \
     $(J2OBJC_PRECOMPILED_HEADER:%=$(BUILD_DIR)/objs-$(1)/%.pch) \
