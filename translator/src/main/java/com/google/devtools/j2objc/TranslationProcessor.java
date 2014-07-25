@@ -118,18 +118,12 @@ class TranslationProcessor extends FileProcessor {
     processedFiles.add(relativePath);
     seenFiles.add(relativePath);
 
-    // Needed for saving converted sources.
-    unit.recordModifications();
     applyMutations(unit, ticker);
     ticker.tick("Tree mutations");
 
     if (unit.types().isEmpty()) {
       logger.finest("skipping dead file " + path);
       return;
-    }
-
-    if (Options.printConvertedSources()) {
-      saveConvertedSource(path, source, unit);
     }
 
     logger.finest("writing output file(s) to " + Options.getOutputDirectory().getAbsolutePath());
@@ -394,23 +388,6 @@ class TranslationProcessor extends FileProcessor {
       }
     }
     return null;
-  }
-
-  private void saveConvertedSource(String filename, String source, CompilationUnit unit) {
-    try {
-      Document doc = new Document(source);
-      TextEdit edit = unit.rewrite(doc, null);
-      edit.apply(doc);
-      File outputFile = new File(Options.getOutputDirectory(), filename);
-      outputFile.getParentFile().mkdirs();
-      Files.write(doc.get(), outputFile, Options.getCharset());
-    } catch (MalformedTreeException e) {
-      throw new AssertionError(e);
-    } catch (BadLocationException e) {
-      throw new AssertionError(e);
-    } catch (IOException e) {
-      ErrorUtil.error(e.getMessage());
-    }
   }
 
   private static void loadMappingFiles() {

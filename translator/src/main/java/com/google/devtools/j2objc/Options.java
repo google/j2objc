@@ -54,7 +54,6 @@ public class Options {
   private static File outputDirectory = new File(".");
   private static boolean usePackageDirectories = true;
   private static String implementationSuffix = ".m";
-  private static boolean printConvertedSources = false;
   private static boolean ignoreMissingImports = false;
   private static MemoryManagementOption memoryManagementOption = null;
   private static boolean emitLineDirectives = false;
@@ -199,8 +198,6 @@ public class Options {
         } else {
           usage("unsupported language: " + s);
         }
-      } else if (arg.equals("--print-converted-sources")) {
-        printConvertedSources = true;
       } else if (arg.equals("--ignore-missing-imports")) {
         ignoreMissingImports = true;
       } else if (arg.equals("-use-reference-counting")) {
@@ -428,10 +425,6 @@ public class Options {
 
   public static String getImplementationFileSuffix() {
     return implementationSuffix;
-  }
-
-  public static boolean printConvertedSources() {
-    return printConvertedSources;
   }
 
   public static boolean ignoreMissingImports() {
