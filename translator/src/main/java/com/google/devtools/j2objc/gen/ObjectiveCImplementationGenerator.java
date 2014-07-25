@@ -113,6 +113,12 @@ public class ObjectiveCImplementationGenerator extends ObjectiveCSourceFileGener
       printStart(getSourceFileName());
       printImports(unit);
       pushIgnoreDeprecatedDeclarationsPragma();
+      boolean needsNewLine = true;
+      for (AbstractTypeDeclaration type : typesToGenerate) {
+        if (type instanceof TypeDeclaration) {
+          needsNewLine = printFinalFunctionDecls((TypeDeclaration) type, needsNewLine);
+        }
+      }
       for (AbstractTypeDeclaration type : typesToGenerate) {
         generate(type);
       }
@@ -236,7 +242,6 @@ public class ObjectiveCImplementationGenerator extends ObjectiveCSourceFileGener
       printf("@implementation %s\n", typeName);
       printStaticReferencesMethod(node);
       printStaticVars(node);
-      printFinalFunctionDecls(node);
       printMethods(node);
       if (!Options.stripReflection()) {
         printTypeAnnotationsMethod(node);
@@ -872,8 +877,7 @@ public class ObjectiveCImplementationGenerator extends ObjectiveCSourceFileGener
     }
   }
 
-  private void printFinalFunctionDecls(TypeDeclaration node) {
-    boolean needsNewLine = true;
+  private boolean printFinalFunctionDecls(TypeDeclaration node, boolean needsNewLine) {
     for (MethodDeclaration method : ASTUtil.getMethodDeclarations(node)) {
       IMethodBinding m = Types.getMethodBinding(method);
       if (BindingUtil.isFunction(m)) {
@@ -884,6 +888,7 @@ public class ObjectiveCImplementationGenerator extends ObjectiveCSourceFileGener
         printf("%s;\n", functionDeclaration(method, IOSMethodBinding.getIOSMethod(m)));
       }
     }
+    return needsNewLine;
   }
 
   private void printAnnotationProperties(List<AnnotationTypeMemberDeclaration> members) {
