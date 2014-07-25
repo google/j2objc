@@ -14,6 +14,7 @@
 
 package com.google.devtools.j2objc;
 
+import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.Sets;
 import com.google.devtools.j2objc.ast.TreeConverter;
 import com.google.devtools.j2objc.gen.ObjectiveCHeaderGenerator;
@@ -125,14 +126,14 @@ class TranslationProcessor extends FileProcessor {
     logger.finest("writing output file(s) to " + Options.getOutputDirectory().getAbsolutePath());
 
     com.google.devtools.j2objc.ast.CompilationUnit newUnit =
-        TreeConverter.convertCompilationUnit(unit);
+        TreeConverter.convertCompilationUnit(unit, getClassNameFromFilePath(path));
 
     generateObjectiveCSource(path, source, newUnit, ticker);
     ticker.tick("Source generation");
 
     if (Options.buildClosure()) {
       // Add out-of-date dependencies to translation list.
-      checkDependencies(path, newUnit);
+      checkDependencies(newUnit);
     }
 
     OuterReferenceResolver.cleanup();
@@ -282,12 +283,11 @@ class TranslationProcessor extends FileProcessor {
     }
   }
 
-  private void checkDependencies(
-      String sourceFile, com.google.devtools.j2objc.ast.CompilationUnit unit) {
+  private void checkDependencies(com.google.devtools.j2objc.ast.CompilationUnit unit) {
     HeaderImportCollector hdrCollector = new HeaderImportCollector();
     hdrCollector.collect(unit);
     ImplementationImportCollector implCollector = new ImplementationImportCollector();
-    implCollector.collect(unit, sourceFile);
+    implCollector.collect(unit);
     Set<Import> imports = hdrCollector.getForwardDeclarations();
     imports.addAll(hdrCollector.getSuperTypes());
     imports.addAll(implCollector.getImports());
@@ -432,5 +432,21 @@ class TranslationProcessor extends FileProcessor {
         }
       }
     }
+  }
+
+  /**
+   * Gets the name of the file, stripped of any directory or extension.
+   */
+  @VisibleForTesting
+  public static String getClassNameFromFilePath(String sourceFileName) {
+    int begin = sourceFileName.lastIndexOf(File.separatorChar) + 1;
+    // Also check for /, since this may be a jar'd source when translating on Windows.
+    int n = sourceFileName.lastIndexOf('/') + 1;
+    if (n > begin) {
+      begin = n;
+    }
+    int end = sourceFileName.lastIndexOf(".java");
+    String className = sourceFileName.substring(begin, end);
+    return className;
   }
 }

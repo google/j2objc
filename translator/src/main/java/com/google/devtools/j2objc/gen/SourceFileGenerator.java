@@ -60,13 +60,12 @@ public abstract class SourceFileGenerator {
    * Note: class names are still camel-cased to avoid name collisions.
    */
   protected String getOutputFileName(CompilationUnit node) {
-    String javaName = NameTable.getMainJavaName(node.jdtNode(), sourceFileName);
     PackageDeclaration pkg = node.getPackage();
-    if (Options.usePackageDirectories() || pkg == null) {
-      return javaName.replace('.', File.separatorChar) + getSuffix();
+    if (pkg != null && Options.usePackageDirectories()) {
+      return pkg.getName().getFullyQualifiedName().replace('.', File.separatorChar)
+          + File.separatorChar + node.getMainTypeName() + getSuffix();
     } else {
-      String pkgName = pkg.getName().getFullyQualifiedName();
-      return javaName.substring(pkgName.length() + 1) + getSuffix();
+      return node.getMainTypeName() + getSuffix();
     }
   }
 

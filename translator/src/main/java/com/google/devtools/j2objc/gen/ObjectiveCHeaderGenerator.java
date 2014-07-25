@@ -77,7 +77,7 @@ public class ObjectiveCHeaderGenerator extends ObjectiveCSourceFileGenerator {
 
   protected ObjectiveCHeaderGenerator(String fileName, String source, CompilationUnit unit) {
     super(fileName, source, unit, false);
-    mainTypeName = NameTable.getMainTypeName(unit.jdtNode(), fileName);
+    mainTypeName = NameTable.getMainTypeFullName(unit);
   }
 
   @Override
