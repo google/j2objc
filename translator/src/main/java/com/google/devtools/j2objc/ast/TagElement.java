@@ -14,8 +14,6 @@
 
 package com.google.devtools.j2objc.ast;
 
-import com.google.common.collect.Lists;
-
 import java.util.List;
 
 /**
@@ -35,14 +33,20 @@ public class TagElement extends TreeNode {
   public static final String TAG_VERSION = "@version";
 
   private String tagName;
-  private List<TreeNode> fragments = Lists.newArrayList();
+  private ChildList<TreeNode> fragments = ChildList.create(this);
+
+  public TagElement(org.eclipse.jdt.core.dom.TagElement jdtNode) {
+    super(jdtNode);
+    tagName = jdtNode.getTagName();
+    for (Object fragment : jdtNode.fragments()) {
+      fragments.add(TreeConverter.convert(fragment));
+    }
+  }
 
   public TagElement(TagElement other) {
     super(other);
-    setTagName(other.getTagName());
-    for (TreeNode fragment : other.getFragments()) {
-      fragments.add(fragment.copy());
-    }
+    tagName = other.getTagName();
+    fragments.copyFrom(other.getFragments());
   }
 
   public String getTagName() {
@@ -60,9 +64,7 @@ public class TagElement extends TreeNode {
   @Override
   protected void acceptInner(TreeVisitor visitor) {
     if (visitor.visit(this)) {
-      for (TreeNode fragment : fragments) {
-        fragment.accept(visitor);
-      }
+      fragments.accept(visitor);
     }
     visitor.endVisit(this);
   }

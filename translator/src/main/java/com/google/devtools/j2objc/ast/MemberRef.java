@@ -15,24 +15,16 @@
 package com.google.devtools.j2objc.ast;
 
 /**
- * Node for text within a doc comment.
+ * Node type for a member reference within a javadoc comment.
  */
-public class TextElement extends TreeNode {
+public class MemberRef extends TreeNode {
 
-  private String text;
-
-  public TextElement(org.eclipse.jdt.core.dom.TextElement jdtNode) {
+  public MemberRef(org.eclipse.jdt.core.dom.MemberRef jdtNode) {
     super(jdtNode);
-    text = jdtNode.getText();
   }
 
-  public TextElement(TextElement other) {
+  public MemberRef(MemberRef other) {
     super(other);
-    text = other.getText();
-  }
-
-  public String getText() {
-    return text;
   }
 
   @Override
@@ -42,7 +34,7 @@ public class TextElement extends TreeNode {
   }
 
   @Override
-  public TextElement copy() {
-    return new TextElement(this);
+  public MemberRef copy() {
+    return new MemberRef(this);
   }
 }

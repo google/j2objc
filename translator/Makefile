@@ -53,6 +53,97 @@ JAVA_SOURCES = \
 	Options.java \
 	Plugin.java \
 	TranslationProcessor.java \
+	ast/AbstractTypeDeclaration.java \
+	ast/Annotation.java \
+	ast/AnnotationTypeDeclaration.java \
+	ast/AnnotationTypeMemberDeclaration.java \
+	ast/AnonymousClassDeclaration.java \
+	ast/ArrayAccess.java \
+	ast/ArrayCreation.java \
+	ast/ArrayInitializer.java \
+	ast/ArrayType.java \
+	ast/AssertStatement.java \
+	ast/Assignment.java \
+	ast/Block.java \
+	ast/BlockComment.java \
+	ast/BodyDeclaration.java \
+	ast/BooleanLiteral.java \
+	ast/BreakStatement.java \
+	ast/CastExpression.java \
+	ast/CatchClause.java \
+	ast/CharacterLiteral.java \
+	ast/ChildLink.java \
+	ast/ChildList.java \
+	ast/ClassInstanceCreation.java \
+	ast/Comment.java \
+	ast/CompilationUnit.java \
+	ast/ConditionalExpression.java \
+	ast/ConstructorInvocation.java \
+	ast/ContinueStatement.java \
+	ast/DoStatement.java \
+	ast/EmptyStatement.java \
+	ast/EnhancedForStatement.java \
+	ast/EnumConstantDeclaration.java \
+	ast/EnumDeclaration.java \
+	ast/Expression.java \
+	ast/ExpressionStatement.java \
+	ast/FieldAccess.java \
+	ast/FieldDeclaration.java \
+	ast/ForStatement.java \
+	ast/IfStatement.java \
+	ast/InfixExpression.java \
+	ast/Initializer.java \
+	ast/InstanceofExpression.java \
+	ast/Javadoc.java \
+	ast/LabeledStatement.java \
+	ast/LineComment.java \
+	ast/MarkerAnnotation.java \
+	ast/MemberRef.java \
+	ast/MethodDeclaration.java \
+	ast/MethodInvocation.java \
+	ast/Name.java \
+	ast/NormalAnnotation.java \
+	ast/NullLiteral.java \
+	ast/NumberLiteral.java \
+	ast/PackageDeclaration.java \
+	ast/ParameterizedType.java \
+	ast/ParenthesizedExpression.java \
+	ast/PostfixExpression.java \
+	ast/PrefixExpression.java \
+	ast/PrimitiveType.java \
+	ast/QualifiedName.java \
+	ast/QualifiedType.java \
+	ast/ReturnStatement.java \
+	ast/SimpleName.java \
+	ast/SimpleType.java \
+	ast/SingleMemberAnnotation.java \
+	ast/SingleVariableDeclaration.java \
+	ast/Statement.java \
+	ast/StringLiteral.java \
+	ast/SuperConstructorInvocation.java \
+	ast/SuperFieldAccess.java \
+	ast/SuperMethodInvocation.java \
+	ast/SwitchCase.java \
+	ast/SwitchStatement.java \
+	ast/SynchronizedStatement.java \
+	ast/TagElement.java \
+	ast/TextElement.java \
+	ast/ThisExpression.java \
+	ast/ThrowStatement.java \
+	ast/TreeConverter.java \
+	ast/TreeNode.java \
+	ast/TreeUtil.java \
+	ast/TreeVisitor.java \
+	ast/TryStatement.java \
+	ast/Type.java \
+	ast/TypeDeclaration.java \
+	ast/TypeLiteral.java \
+	ast/UnionType.java \
+	ast/VariableDeclaration.java \
+	ast/VariableDeclarationExpression.java \
+	ast/VariableDeclarationFragment.java \
+	ast/VariableDeclarationStatement.java \
+	ast/WhileStatement.java \
 	gen/HiddenFieldDetector.java \
 	gen/MetadataGenerator.java \
 	gen/ObjectiveCHeaderGenerator.java \
@@ -168,7 +259,7 @@ clean:
 	@rm -rf $(BUILD_DIR) $(J2OBJC_JAR_DIST) $(J2OBJC_SH_DIST)
 
 test: compile-tests
-	java -classpath $(TEST_CLASSPATH) junit.textui.TestRunner com.google.devtools.j2objc.SmallTests
+	java -classpath $(TEST_CLASSPATH) -ea junit.textui.TestRunner com.google.devtools.j2objc.SmallTests
 
 compile-tests: $(J2OBJC_JAR)
 	@rm -rf $(TEST_DIR)
