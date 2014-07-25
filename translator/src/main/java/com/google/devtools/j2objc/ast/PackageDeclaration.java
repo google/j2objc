@@ -55,8 +55,8 @@ public class PackageDeclaration extends TreeNode {
   }
 
   @Override
-  public void validate() {
-    super.validate();
+  public void validateInner() {
+    super.validateInner();
     Preconditions.checkNotNull(name);
   }
 }

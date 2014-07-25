@@ -508,7 +508,7 @@ public class ObjectiveCHeaderGeneratorTest extends GenerationTest {
       throws IOException {
     Options.enableDeprecatedDeclarations();
 
-    String sourceContent = "";
+    String sourceContent = "class Test {}";
     String translation = translateSourceFile(sourceContent, "FooBar", "FooBar.h");
 
     assertTranslation(translation, "#pragma clang diagnostic push");
@@ -518,7 +518,7 @@ public class ObjectiveCHeaderGeneratorTest extends GenerationTest {
 
   public void testDoNotAddIgnoreDeprecationWarningsPragmaIfDeprecatedDeclarationsIsDisabled()
       throws IOException {
-    String sourceContent = "";
+    String sourceContent = "class Test {}";
     String translation = translateSourceFile(sourceContent, "FooBar", "FooBar.h");
 
     assertNotInTranslation(translation, "#pragma clang diagnostic push");

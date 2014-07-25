@@ -26,15 +26,12 @@ import java.util.List;
  */
 public abstract class AbstractTypeDeclaration extends BodyDeclaration {
 
-  // TODO(kstanger): Eventually remove this.
-  private final org.eclipse.jdt.core.dom.AbstractTypeDeclaration jdtNode;
   private ITypeBinding typeBinding = null;
   protected ChildLink<SimpleName> name = ChildLink.create(this);
   protected ChildList<BodyDeclaration> bodyDeclarations = ChildList.create(this);
 
   public AbstractTypeDeclaration(org.eclipse.jdt.core.dom.AbstractTypeDeclaration jdtNode) {
     super(jdtNode);
-    this.jdtNode = jdtNode;
     typeBinding = Types.getTypeBinding(jdtNode);
     name.set((SimpleName) TreeConverter.convert(jdtNode.getName()));
     for (Object bodyDecl : jdtNode.bodyDeclarations()) {
@@ -44,14 +41,9 @@ public abstract class AbstractTypeDeclaration extends BodyDeclaration {
 
   public AbstractTypeDeclaration(AbstractTypeDeclaration other) {
     super(other);
-    jdtNode = other.jdtNode();
     typeBinding = other.getTypeBinding();
     name.copyFrom(other.getName());
     bodyDeclarations.copyFrom(other.getBodyDeclarations());
-  }
-
-  public org.eclipse.jdt.core.dom.AbstractTypeDeclaration jdtNode() {
-    return jdtNode;
   }
 
   public ITypeBinding getTypeBinding() {
@@ -75,8 +67,8 @@ public abstract class AbstractTypeDeclaration extends BodyDeclaration {
   }
 
   @Override
-  public void validate() {
-    Preconditions.checkNotNull(jdtNode);
+  public void validateInner() {
+    super.validateInner();
     Preconditions.checkNotNull(typeBinding);
     Preconditions.checkNotNull(name.get());
   }

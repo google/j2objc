@@ -190,14 +190,11 @@ public class SourceBuilder {
   }
 
   public void syncLineNumbers(TreeNode node) {
-    if (emitLineDirectives && unit != null) {
-      int position = node.getStartPosition();
-      if (position != -1) {
-        int sourceLine = unit.getLineNumber(position);
-        if (currentLine != sourceLine) {
-          buffer.append(String.format("\n#line %d\n", sourceLine));
-          currentLine = sourceLine;
-        }
+    if (emitLineDirectives) {
+      int sourceLine = node.getLineNumber();
+      if (sourceLine > 0 && currentLine != sourceLine) {
+        buffer.append(String.format("\n#line %d\n", sourceLine));
+        currentLine = sourceLine;
       }
     }
   }

@@ -92,8 +92,7 @@ public class ErrorUtil {
   }
 
   public static void error(TreeNode node, String message) {
-    int line = TreeUtil.getNodeLine(node);
-    error(String.format("%s:%s: %s", currentFileName, line, message));
+    error(String.format("%s:%s: %s", currentFileName, node.getLineNumber(), message));
   }
 
   /**
@@ -105,8 +104,7 @@ public class ErrorUtil {
   }
 
   public static void warning(TreeNode node, String message) {
-    int line = TreeUtil.getNodeLine(node);
-    warning(String.format("%s:%s: %s", currentFileName, line, message));
+    warning(String.format("%s:%s: %s", currentFileName, node.getLineNumber(), message));
   }
 
   private static int getNodeLine(ASTNode node) {

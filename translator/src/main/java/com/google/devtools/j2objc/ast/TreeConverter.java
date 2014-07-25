@@ -22,8 +22,8 @@ import org.eclipse.jdt.core.dom.ASTNode;
 public class TreeConverter {
 
   public static CompilationUnit convertCompilationUnit(
-      org.eclipse.jdt.core.dom.CompilationUnit jdtUnit, String mainTypeName) {
-    return new CompilationUnit((org.eclipse.jdt.core.dom.CompilationUnit) jdtUnit, mainTypeName);
+      org.eclipse.jdt.core.dom.CompilationUnit jdtUnit, String mainTypeName, String source) {
+    return new CompilationUnit(jdtUnit, mainTypeName, source);
   }
 
   public static Statement convertStatement(org.eclipse.jdt.core.dom.Statement jdtStatement) {

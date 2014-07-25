@@ -24,15 +24,23 @@ public abstract class TreeNode {
   private ChildLink<? extends TreeNode> owner = null;
   private int startPosition = -1;
   private int length = 0;
+  private int lineNumber = -1;
 
   protected TreeNode() {}
 
   protected TreeNode(ASTNode jdtNode) {
     startPosition = jdtNode.getStartPosition();
     length = jdtNode.getLength();
+    ASTNode root = jdtNode.getRoot();
+    if (root instanceof org.eclipse.jdt.core.dom.CompilationUnit) {
+      lineNumber = ((org.eclipse.jdt.core.dom.CompilationUnit) root).getLineNumber(startPosition);
+    }
   }
 
   protected TreeNode(TreeNode other) {
+    startPosition = other.getStartPosition();
+    length = other.getLength();
+    lineNumber = other.getLineNumber();
   }
 
   public TreeNode getParent() {
@@ -52,7 +60,11 @@ public abstract class TreeNode {
     return length;
   }
 
-  public void accept(TreeVisitor visitor) {
+  public final int getLineNumber() {
+    return lineNumber;
+  }
+
+  public final void accept(TreeVisitor visitor) {
     if (visitor.preVisit(this)) {
       acceptInner(visitor);
     }
@@ -69,5 +81,15 @@ public abstract class TreeNode {
   /**
    * Validates the tree to preemptively catch errors.
    */
-  public void validate() {}
+  public final void validate() {
+    this.accept(new TreeVisitor() {
+      @Override
+      public boolean preVisit(TreeNode node) {
+        node.validateInner();
+        return true;
+      }
+    });
+  }
+
+  public void validateInner() {}
 }
