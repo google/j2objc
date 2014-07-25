@@ -20,6 +20,7 @@ import com.google.common.collect.Maps;
 import com.google.devtools.j2objc.GenerationTest;
 import com.google.devtools.j2objc.Options;
 import com.google.devtools.j2objc.Options.MemoryManagementOption;
+import com.google.devtools.j2objc.ast.TreeConverter;
 import com.google.devtools.j2objc.gen.SourceBuilder;
 import com.google.devtools.j2objc.gen.SourcePosition;
 import com.google.devtools.j2objc.gen.StatementGenerator;
@@ -483,7 +484,8 @@ public class InnerClassExtractorTest extends GenerationTest {
     VariableDeclarationStatement field =
         (VariableDeclarationStatement) method.getBody().statements().get(0);
     assertEquals("Test_B", NameTable.getFullName(Types.getTypeBinding(field.getType())));
-    String result = StatementGenerator.generate(field, Collections.<IVariableBinding>emptySet(),
+    String result = StatementGenerator.generate(
+        TreeConverter.convert(field), Collections.<IVariableBinding>emptySet(),
         false, new SourcePosition(null, SourceBuilder.BEGINNING_OF_FILE, null)).trim();
     assertEquals("Test_B *b = " +
         "[[[Test_B alloc] initWithTest:[[[Test alloc] init] autorelease]] autorelease];", result);
@@ -542,7 +544,8 @@ public class InnerClassExtractorTest extends GenerationTest {
     VariableDeclarationStatement field =
         (VariableDeclarationStatement) method.getBody().statements().get(0);
     assertEquals("Test_B", NameTable.getFullName(Types.getTypeBinding(field.getType())));
-    String result = StatementGenerator.generate(field, Collections.<IVariableBinding>emptySet(),
+    String result = StatementGenerator.generate(
+        TreeConverter.convert(field), Collections.<IVariableBinding>emptySet(),
         false, new SourcePosition(null, SourceBuilder.BEGINNING_OF_FILE, null)).trim();
     assertEquals("Test_B *b = " +
         "[[[Test_B alloc] initWithTest:[[[Test alloc] init] autorelease]] autorelease];", result);

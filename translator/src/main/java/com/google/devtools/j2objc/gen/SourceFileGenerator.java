@@ -18,14 +18,14 @@ package com.google.devtools.j2objc.gen;
 
 import com.google.common.io.Files;
 import com.google.devtools.j2objc.Options;
+import com.google.devtools.j2objc.ast.CompilationUnit;
+import com.google.devtools.j2objc.ast.MethodDeclaration;
+import com.google.devtools.j2objc.ast.PackageDeclaration;
+import com.google.devtools.j2objc.ast.TreeNode;
 import com.google.devtools.j2objc.util.ErrorUtil;
 import com.google.devtools.j2objc.util.NameTable;
 
-import org.eclipse.jdt.core.dom.ASTNode;
-import org.eclipse.jdt.core.dom.CompilationUnit;
-import org.eclipse.jdt.core.dom.MethodDeclaration;
 import org.eclipse.jdt.core.dom.Modifier;
-import org.eclipse.jdt.core.dom.PackageDeclaration;
 
 import java.io.File;
 import java.io.IOException;
@@ -60,7 +60,7 @@ public abstract class SourceFileGenerator {
    * Note: class names are still camel-cased to avoid name collisions.
    */
   protected String getOutputFileName(CompilationUnit node) {
-    String javaName = NameTable.getMainJavaName(node, sourceFileName);
+    String javaName = NameTable.getMainJavaName(node.jdtNode(), sourceFileName);
     PackageDeclaration pkg = node.getPackage();
     if (Options.usePackageDirectories() || pkg == null) {
       return javaName.replace('.', File.separatorChar) + getSuffix();
@@ -196,7 +196,7 @@ public abstract class SourceFileGenerator {
     builder.reset();
   }
 
-  protected void syncLineNumbers(ASTNode node) {
+  protected void syncLineNumbers(TreeNode node) {
     builder.syncLineNumbers(node);
   }
 

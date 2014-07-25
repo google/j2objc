@@ -16,6 +16,7 @@ package com.google.devtools.j2objc;
 
 import com.google.common.collect.Sets;
 import com.google.common.io.Files;
+import com.google.devtools.j2objc.ast.TreeConverter;
 import com.google.devtools.j2objc.gen.ObjectiveCHeaderGenerator;
 import com.google.devtools.j2objc.gen.ObjectiveCImplementationGenerator;
 import com.google.devtools.j2objc.gen.ObjectiveCSegmentedHeaderGenerator;
@@ -250,16 +251,19 @@ class TranslationProcessor extends FileProcessor {
       String path, String source, CompilationUnit unit, TimeTracker ticker) {
     ticker.push();
 
+    com.google.devtools.j2objc.ast.CompilationUnit newUnit =
+        TreeConverter.convertCompilationUnit(unit);
+
     // write header
     if (Options.generateSegmentedHeaders()) {
-      ObjectiveCSegmentedHeaderGenerator.generate(path, source, unit);
+      ObjectiveCSegmentedHeaderGenerator.generate(path, source, newUnit);
     } else {
-      ObjectiveCHeaderGenerator.generate(path, source, unit);
+      ObjectiveCHeaderGenerator.generate(path, source, newUnit);
     }
     ticker.tick("Header generation");
 
     // write implementation file
-    ObjectiveCImplementationGenerator.generate(path, unit, source);
+    ObjectiveCImplementationGenerator.generate(path, newUnit, source);
     ticker.tick("Implementation generation");
 
     ticker.pop();

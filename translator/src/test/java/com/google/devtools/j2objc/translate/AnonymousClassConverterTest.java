@@ -17,6 +17,7 @@
 package com.google.devtools.j2objc.translate;
 
 import com.google.devtools.j2objc.GenerationTest;
+import com.google.devtools.j2objc.ast.TreeConverter;
 import com.google.devtools.j2objc.gen.ObjectiveCImplementationGenerator;
 import com.google.devtools.j2objc.util.NameTable;
 
@@ -281,7 +282,8 @@ public class AnonymousClassConverterTest extends GenerationTest {
     assertTrue("required field not found", found);
 
     // Verify constructor takes both outer field and var.
-    ObjectiveCImplementationGenerator.generate("Test.java", unit, source);
+    ObjectiveCImplementationGenerator.generate(
+        "Test.java", TreeConverter.convertCompilationUnit(unit), source);
     String translation = getTranslatedFile("Test.m");
     assertTranslation(translation,
         "r2 = [[[Test_$1_$1 alloc] initWithJavaLangInteger:i] autorelease]");
@@ -313,7 +315,8 @@ public class AnonymousClassConverterTest extends GenerationTest {
     assertTrue("required field not found", found);
 
     // Verify method var is passed to constructor.
-    ObjectiveCImplementationGenerator.generate("Test.java", unit, source);
+    ObjectiveCImplementationGenerator.generate(
+        "Test.java", TreeConverter.convertCompilationUnit(unit), source);
     String translation = getTranslatedFile("Test.m");
     assertTranslation(translation, "r = [[[Test_$1 alloc] initWithJavaLangInteger:i] autorelease]");
   }
@@ -345,7 +348,8 @@ public class AnonymousClassConverterTest extends GenerationTest {
     assertTrue("required field not found", found);
 
     // Verify method var is passed to constructor.
-    ObjectiveCImplementationGenerator.generate("Test.java", unit, source);
+    ObjectiveCImplementationGenerator.generate(
+        "Test.java", TreeConverter.convertCompilationUnit(unit), source);
     String translation = getTranslatedFile("Test.m");
     assertTranslation(translation,
         "r = [[[Test_$1 alloc] initWithJavaLangInteger:i] autorelease]");

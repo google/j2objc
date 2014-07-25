@@ -17,24 +17,24 @@ package com.google.devtools.j2objc.gen;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
+import com.google.devtools.j2objc.ast.AbstractTypeDeclaration;
+import com.google.devtools.j2objc.ast.EnumConstantDeclaration;
+import com.google.devtools.j2objc.ast.EnumDeclaration;
+import com.google.devtools.j2objc.ast.MethodDeclaration;
+import com.google.devtools.j2objc.ast.SimpleName;
+import com.google.devtools.j2objc.ast.TreeUtil;
+import com.google.devtools.j2objc.ast.TypeDeclaration;
+import com.google.devtools.j2objc.ast.VariableDeclarationFragment;
 import com.google.devtools.j2objc.types.GeneratedMethodBinding;
 import com.google.devtools.j2objc.types.Types;
 import com.google.devtools.j2objc.util.ASTUtil;
 import com.google.devtools.j2objc.util.BindingUtil;
 import com.google.devtools.j2objc.util.NameTable;
 
-import org.eclipse.jdt.core.dom.AbstractTypeDeclaration;
-import org.eclipse.jdt.core.dom.BodyDeclaration;
-import org.eclipse.jdt.core.dom.EnumConstantDeclaration;
-import org.eclipse.jdt.core.dom.EnumDeclaration;
 import org.eclipse.jdt.core.dom.FieldDeclaration;
 import org.eclipse.jdt.core.dom.IMethodBinding;
 import org.eclipse.jdt.core.dom.ITypeBinding;
 import org.eclipse.jdt.core.dom.IVariableBinding;
-import org.eclipse.jdt.core.dom.MethodDeclaration;
-import org.eclipse.jdt.core.dom.SimpleName;
-import org.eclipse.jdt.core.dom.TypeDeclaration;
-import org.eclipse.jdt.core.dom.VariableDeclarationFragment;
 
 import java.util.List;
 
@@ -55,7 +55,7 @@ public class MetadataGenerator {
   public MetadataGenerator(AbstractTypeDeclaration typeNode) {
     this.builder = new StringBuilder();
     this.typeNode = Preconditions.checkNotNull(typeNode);
-    this.type = Types.getTypeBinding(typeNode);
+    this.type = typeNode.getTypeBinding();
   }
 
   public String getMetadataSource() {
@@ -119,8 +119,8 @@ public class MetadataGenerator {
 
   private void generateMethodsMetadata() {
     List<String> methodMetadata = Lists.newArrayList();
-    for (MethodDeclaration decl : ASTUtil.getMethodDeclarations(typeNode)) {
-      String metadata = getMethodMetadata(Types.getMethodBinding(decl));
+    for (MethodDeclaration decl : TreeUtil.getMethodDeclarations(typeNode)) {
+      String metadata = getMethodMetadata(decl.getMethodBinding());
       if (metadata != null) {
         methodMetadata.add(metadata);
       }
@@ -138,27 +138,14 @@ public class MetadataGenerator {
   private void generateFieldsMetadata() {
     List<String> fieldMetadata = Lists.newArrayList();
     String typeName = NameTable.getFullName(type);
-    if (typeNode instanceof TypeDeclaration) {
-      TypeDeclaration typeDecl = (TypeDeclaration) typeNode;
-      for (FieldDeclaration field : typeDecl.getFields()) {
-        for (VariableDeclarationFragment f : ASTUtil.getFragments(field)) {
-          fieldMetadata.add(generateFieldMetadata(Types.getVariableBinding(f), f.getName(),
-              typeName));
-        }
-      }
-    } else if (typeNode instanceof EnumDeclaration) {
-      for (EnumConstantDeclaration decl : ASTUtil.getEnumConstants((EnumDeclaration) typeNode)) {
+    if (typeNode instanceof EnumDeclaration) {
+      for (EnumConstantDeclaration decl : ((EnumDeclaration) typeNode).getEnumConstants()) {
         fieldMetadata.add(
-            generateFieldMetadata(Types.getEnumConstantBinding(decl), decl.getName(), typeName));
+            generateFieldMetadata(decl.getVariableBinding(), decl.getName(), typeName));
       }
-      for (BodyDeclaration decl : ASTUtil.getBodyDeclarations(typeNode)) {
-        if (decl instanceof FieldDeclaration) {
-          for (VariableDeclarationFragment f : ASTUtil.getFragments((FieldDeclaration) decl)) {
-            fieldMetadata.add(generateFieldMetadata(Types.getVariableBinding(f), f.getName(),
-                typeName));
-          }
-        }
-      }
+    }
+    for (VariableDeclarationFragment f : TreeUtil.getAllFields(typeNode)) {
+      fieldMetadata.add(generateFieldMetadata(f.getVariableBinding(), f.getName(), typeName));
     }
     if (fieldMetadata.size() > 0) {
       builder.append("  static J2ObjcFieldInfo fields[] = {\n");

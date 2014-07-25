@@ -15,6 +15,8 @@
 package com.google.devtools.j2objc.util;
 
 import com.google.common.collect.Lists;
+import com.google.devtools.j2objc.ast.TreeNode;
+import com.google.devtools.j2objc.ast.TreeUtil;
 
 import org.eclipse.jdt.core.dom.ASTNode;
 import org.eclipse.jdt.core.dom.CompilationUnit;
@@ -89,11 +91,21 @@ public class ErrorUtil {
     error(String.format("%s:%s: %s", currentFileName, line, message));
   }
 
+  public static void error(TreeNode node, String message) {
+    int line = TreeUtil.getNodeLine(node);
+    error(String.format("%s:%s: %s", currentFileName, line, message));
+  }
+
   /**
    * Report a warning with a specific AST node.
    */
   public static void warning(ASTNode node, String message) {
     int line = getNodeLine(node);
+    warning(String.format("%s:%s: %s", currentFileName, line, message));
+  }
+
+  public static void warning(TreeNode node, String message) {
+    int line = TreeUtil.getNodeLine(node);
     warning(String.format("%s:%s: %s", currentFileName, line, message));
   }
 
