@@ -18,20 +18,17 @@ package com.google.devtools.j2objc.gen;
 
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
-import com.google.devtools.j2objc.types.Types;
-import com.google.devtools.j2objc.util.ASTNodeException;
-import com.google.devtools.j2objc.util.ASTUtil;
-import com.google.devtools.j2objc.util.ErrorReportingASTVisitor;
+import com.google.devtools.j2objc.ast.MethodDeclaration;
+import com.google.devtools.j2objc.ast.SingleVariableDeclaration;
+import com.google.devtools.j2objc.ast.TreeNode;
+import com.google.devtools.j2objc.ast.TreeVisitor;
+import com.google.devtools.j2objc.ast.TypeDeclaration;
 import com.google.devtools.j2objc.util.NameTable;
 
-import org.eclipse.jdt.core.dom.ASTNode;
 import org.eclipse.jdt.core.dom.IMethodBinding;
 import org.eclipse.jdt.core.dom.ITypeBinding;
 import org.eclipse.jdt.core.dom.IVariableBinding;
-import org.eclipse.jdt.core.dom.MethodDeclaration;
 import org.eclipse.jdt.core.dom.Modifier;
-import org.eclipse.jdt.core.dom.SingleVariableDeclaration;
-import org.eclipse.jdt.core.dom.TypeDeclaration;
 
 import java.util.Map;
 import java.util.Set;
@@ -42,7 +39,7 @@ import java.util.Set;
  *
  * @author Tom Ball
  */
-public class HiddenFieldDetector extends ErrorReportingASTVisitor {
+public class HiddenFieldDetector extends TreeVisitor {
   private final Set<IVariableBinding> fieldNameConflicts = Sets.newLinkedHashSet();
 
   /**
@@ -51,8 +48,7 @@ public class HiddenFieldDetector extends ErrorReportingASTVisitor {
   Map<String, Set<String>> fieldNameMap = Maps.newHashMap();
   private static final Set<String> NO_FIELDS = Sets.newLinkedHashSet();
 
-  public static Set<IVariableBinding> getFieldNameConflicts(ASTNode node)
-      throws ASTNodeException {
+  public static Set<IVariableBinding> getFieldNameConflicts(TreeNode node) {
     HiddenFieldDetector detector = new HiddenFieldDetector();
     detector.run(node);
     return detector.fieldNameConflicts;
@@ -63,7 +59,7 @@ public class HiddenFieldDetector extends ErrorReportingASTVisitor {
   public boolean visit(TypeDeclaration node) {
     if (!node.isInterface()) {
       Set<String> names = Sets.newLinkedHashSet();
-      ITypeBinding binding = Types.getTypeBinding(node);
+      ITypeBinding binding = node.getTypeBinding();
       addFields(binding, true, names);
       fieldNameMap.put(binding.getBinaryName(), names);
     }
@@ -84,15 +80,15 @@ public class HiddenFieldDetector extends ErrorReportingASTVisitor {
 
   @Override
   public boolean visit(MethodDeclaration node) {
-    IMethodBinding binding = Types.getMethodBinding(node);
+    IMethodBinding binding = node.getMethodBinding();
     if (binding != null) {
       Set<String> fieldNames = fieldNameMap.get(binding.getDeclaringClass().getBinaryName());
       if (fieldNames == null) {
         fieldNames = NO_FIELDS;
       }
 
-      for (SingleVariableDeclaration param : ASTUtil.getParameters(node)) {
-        IVariableBinding varBinding = Types.getVariableBinding(param);
+      for (SingleVariableDeclaration param : node.getParameters()) {
+        IVariableBinding varBinding = param.getVariableBinding();
         if (varBinding != null && fieldNames.contains(varBinding.getName())) {
           fieldNameConflicts.add(varBinding);
         }
