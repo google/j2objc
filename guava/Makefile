@@ -40,7 +40,6 @@ TRANSLATE_ARGS = --segmented-headers --extract-unsequenced --batch-translate-max
 include ../make/translate.mk
 
 FAT_LIB_NAME = guava
-FAT_LIB_SOURCES_FULL = $(TRANSLATE_SOURCES)
 FAT_LIB_SOURCES_RELATIVE = $(TRANSLATE_SOURCES:$(GEN_OBJC_DIR)/%=%)
 FAT_LIB_SOURCE_DIRS = $(GEN_OBJC_DIR)
 FAT_LIB_COMPILE = $(J2OBJCC)
