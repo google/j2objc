@@ -14,6 +14,8 @@
 
 package com.google.devtools.j2objc.ast;
 
+import com.google.devtools.j2objc.types.Types;
+
 /**
  * Null literal node type.
  */
@@ -25,6 +27,10 @@ public class NullLiteral extends Expression {
 
   public NullLiteral(NullLiteral other) {
     super(other);
+  }
+
+  public NullLiteral() {
+    super(Types.resolveJavaType("java.lang.Object"));
   }
 
   @Override

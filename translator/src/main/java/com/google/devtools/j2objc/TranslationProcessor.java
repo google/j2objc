@@ -219,22 +219,22 @@ class TranslationProcessor extends FileProcessor {
     TypeSorter.sortTypes(unit);
     ticker.tick("TypeSorter");
 
-    // Add dealloc/finalize method(s), if necessary.  This is done
-    // after inner class extraction, so that each class releases
-    // only its own instance variables.
-    new DestructorGenerator().run(unit);
-    ticker.tick("DestructorGenerator");
-
-    new CopyAllFieldsWriter().run(unit);
-    ticker.tick("CopyAllFieldsWriter");
-
-    new OperatorRewriter().run(unit);
-    ticker.tick("OperatorRewriter");
-
     // Verify all modified nodes have type bindings
     Types.verifyNode(unit);
 
     CompilationUnit newUnit = TreeConverter.convertCompilationUnit(unit, path, source);
+
+    // Add dealloc/finalize method(s), if necessary.  This is done
+    // after inner class extraction, so that each class releases
+    // only its own instance variables.
+    new DestructorGenerator().run(newUnit);
+    ticker.tick("DestructorGenerator");
+
+    new CopyAllFieldsWriter().run(newUnit);
+    ticker.tick("CopyAllFieldsWriter");
+
+    new OperatorRewriter().run(newUnit);
+    ticker.tick("OperatorRewriter");
 
     if (Options.finalMethodsAsFunctions()) {
       new Functionizer().run(newUnit);

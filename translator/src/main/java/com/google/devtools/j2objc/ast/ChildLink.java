@@ -54,9 +54,13 @@ class ChildLink<T extends TreeNode> {
     child = newChild;
   }
 
+  public void remove() {
+    set(null);
+  }
+
   @SuppressWarnings("unchecked")
   public void setDynamic(TreeNode newChild) {
-    assert childType.isInstance(newChild)
+    assert newChild == null || childType.isInstance(newChild)
         : "Cannot assign node of type " + newChild.getClass().getName() + " to child of type "
             + childType.getName();
     set((T) newChild);

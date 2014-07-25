@@ -89,6 +89,13 @@ public class Assignment extends Expression {
     rightHandSide.copyFrom(other.getRightHandSide());
   }
 
+  public Assignment(Expression lhs, Expression rhs) {
+    super(lhs.getTypeBinding());
+    operator = Operator.ASSIGN;
+    leftHandSide.set(lhs);
+    rightHandSide.set(rhs);
+  }
+
   public Operator getOperator() {
     return operator;
   }

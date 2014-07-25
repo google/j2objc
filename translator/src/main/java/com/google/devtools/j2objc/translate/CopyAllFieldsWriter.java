@@ -15,25 +15,27 @@
 package com.google.devtools.j2objc.translate;
 
 import com.google.common.collect.Lists;
+import com.google.devtools.j2objc.ast.Assignment;
+import com.google.devtools.j2objc.ast.Block;
+import com.google.devtools.j2objc.ast.ExpressionStatement;
+import com.google.devtools.j2objc.ast.FieldAccess;
+import com.google.devtools.j2objc.ast.MethodDeclaration;
+import com.google.devtools.j2objc.ast.SimpleName;
+import com.google.devtools.j2objc.ast.SingleVariableDeclaration;
+import com.google.devtools.j2objc.ast.Statement;
+import com.google.devtools.j2objc.ast.SuperMethodInvocation;
+import com.google.devtools.j2objc.ast.TreeVisitor;
+import com.google.devtools.j2objc.ast.TypeDeclaration;
 import com.google.devtools.j2objc.types.GeneratedVariableBinding;
 import com.google.devtools.j2objc.types.IOSMethod;
 import com.google.devtools.j2objc.types.IOSMethodBinding;
 import com.google.devtools.j2objc.types.Types;
-import com.google.devtools.j2objc.util.ASTUtil;
 import com.google.devtools.j2objc.util.BindingUtil;
-import com.google.devtools.j2objc.util.ErrorReportingASTVisitor;
 import com.google.devtools.j2objc.util.NameTable;
 
-import org.eclipse.jdt.core.dom.AST;
-import org.eclipse.jdt.core.dom.Block;
 import org.eclipse.jdt.core.dom.ITypeBinding;
 import org.eclipse.jdt.core.dom.IVariableBinding;
-import org.eclipse.jdt.core.dom.MethodDeclaration;
 import org.eclipse.jdt.core.dom.Modifier;
-import org.eclipse.jdt.core.dom.SingleVariableDeclaration;
-import org.eclipse.jdt.core.dom.Statement;
-import org.eclipse.jdt.core.dom.SuperMethodInvocation;
-import org.eclipse.jdt.core.dom.TypeDeclaration;
 
 import java.util.List;
 
@@ -43,7 +45,7 @@ import java.util.List;
  *
  * @author Keith Stanger
  */
-public class CopyAllFieldsWriter extends ErrorReportingASTVisitor {
+public class CopyAllFieldsWriter extends TreeVisitor {
 
   private static final IOSMethod COPY_ALL_PROPERTIES =
       IOSMethod.create("NSObject copyAllFieldsTo:(id)other");
@@ -60,13 +62,12 @@ public class CopyAllFieldsWriter extends ErrorReportingASTVisitor {
 
   @Override
   public void endVisit(TypeDeclaration node) {
-    ITypeBinding type = Types.getTypeBinding(node);
+    ITypeBinding type = node.getTypeBinding();
     List<IVariableBinding> fields = getNonStaticFields(type);
     if (fields.size() == 0) {
       return;
     }
 
-    AST ast = node.getAST();
     String typeName = NameTable.getFullName(type);
     IOSMethod iosMethod = IOSMethod.create(
         String.format("%s copyAllFieldsTo:(%s *)other", typeName, typeName));
@@ -77,25 +78,24 @@ public class CopyAllFieldsWriter extends ErrorReportingASTVisitor {
     GeneratedVariableBinding copyParamBinding = new GeneratedVariableBinding(
         "other", 0, type, false, true, null, methodBinding);
 
-    MethodDeclaration declaration = ASTFactory.newMethodDeclaration(node.getAST(), methodBinding);
-    ASTUtil.getBodyDeclarations(node).add(declaration);
+    MethodDeclaration declaration = new MethodDeclaration(methodBinding);
+    node.getBodyDeclarations().add(declaration);
 
-    SingleVariableDeclaration copyParam =
-        ASTFactory.newSingleVariableDeclaration(ast, copyParamBinding);
-    ASTUtil.getParameters(declaration).add(copyParam);
+    SingleVariableDeclaration copyParam = new SingleVariableDeclaration(copyParamBinding);
+    declaration.getParameters().add(copyParam);
 
-    Block body = ast.newBlock();
+    Block body = new Block();
     declaration.setBody(body);
-    List<Statement> statements = ASTUtil.getStatements(body);
+    List<Statement> statements = body.getStatements();
 
-    SuperMethodInvocation superCall = ASTFactory.newSuperMethodInvocation(ast, nsObjectCopyAll);
-    ASTUtil.getArguments(superCall).add(ASTFactory.newSimpleName(ast, copyParamBinding));
-    statements.add(ast.newExpressionStatement(superCall));
+    SuperMethodInvocation superCall = new SuperMethodInvocation(nsObjectCopyAll);
+    superCall.getArguments().add(new SimpleName(copyParamBinding));
+    statements.add(new ExpressionStatement(superCall));
 
     for (IVariableBinding field : fields) {
-      statements.add(ast.newExpressionStatement(ASTFactory.newAssignment(ast,
-          ASTFactory.newFieldAccess(ast, field, ASTFactory.newSimpleName(ast, copyParamBinding)),
-          ASTFactory.newSimpleName(ast, field))));
+      statements.add(new ExpressionStatement(new Assignment(
+          new FieldAccess(field, new SimpleName(copyParamBinding)),
+          new SimpleName(field))));
     }
   }
 

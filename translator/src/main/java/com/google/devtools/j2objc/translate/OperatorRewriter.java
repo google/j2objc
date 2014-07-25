@@ -15,22 +15,22 @@
 package com.google.devtools.j2objc.translate;
 
 import com.google.devtools.j2objc.Options;
+import com.google.devtools.j2objc.ast.Assignment;
+import com.google.devtools.j2objc.ast.Expression;
+import com.google.devtools.j2objc.ast.InfixExpression;
+import com.google.devtools.j2objc.ast.MethodInvocation;
+import com.google.devtools.j2objc.ast.NullLiteral;
+import com.google.devtools.j2objc.ast.SimpleName;
+import com.google.devtools.j2objc.ast.TreeUtil;
+import com.google.devtools.j2objc.ast.TreeVisitor;
 import com.google.devtools.j2objc.types.IOSMethodBinding;
-import com.google.devtools.j2objc.types.NodeCopier;
 import com.google.devtools.j2objc.types.PointerTypeBinding;
 import com.google.devtools.j2objc.types.Types;
-import com.google.devtools.j2objc.util.ASTUtil;
 import com.google.devtools.j2objc.util.BindingUtil;
-import com.google.devtools.j2objc.util.ErrorReportingASTVisitor;
 import com.google.devtools.j2objc.util.NameTable;
 
-import org.eclipse.jdt.core.dom.AST;
-import org.eclipse.jdt.core.dom.Assignment;
-import org.eclipse.jdt.core.dom.Expression;
 import org.eclipse.jdt.core.dom.ITypeBinding;
 import org.eclipse.jdt.core.dom.IVariableBinding;
-import org.eclipse.jdt.core.dom.InfixExpression;
-import org.eclipse.jdt.core.dom.MethodInvocation;
 
 import java.util.List;
 
@@ -40,7 +40,7 @@ import java.util.List;
  *
  * @author Keith Stanger
  */
-public class OperatorRewriter extends ErrorReportingASTVisitor {
+public class OperatorRewriter extends TreeVisitor {
 
   private final IOSMethodBinding retainedAssignBinding;
 
@@ -52,46 +52,44 @@ public class OperatorRewriter extends ErrorReportingASTVisitor {
 
   @Override
   public void endVisit(Assignment node) {
-    AST ast = node.getAST();
     Assignment.Operator op = node.getOperator();
     Expression lhs = node.getLeftHandSide();
     Expression rhs = node.getRightHandSide();
-    ITypeBinding lhsType = Types.getTypeBinding(lhs);
-    ITypeBinding rhsType = Types.getTypeBinding(rhs);
+    ITypeBinding lhsType = lhs.getTypeBinding();
+    ITypeBinding rhsType = rhs.getTypeBinding();
     if (op == Assignment.Operator.ASSIGN) {
-      IVariableBinding var = Types.getVariableBinding(lhs);
+      IVariableBinding var = TreeUtil.getVariableBinding(lhs);
       if (var == null || var.getType().isPrimitive() || !Options.useReferenceCounting()) {
         return;
       }
       if (BindingUtil.isStatic(var)) {
-        ASTUtil.setProperty(node, newStaticAssignInvocation(ast, var, rhs));
+        node.replaceWith(newStaticAssignInvocation(var, rhs));
       } else if (var.isField() && !BindingUtil.isWeakReference(var)) {
-        Types.addDeferredFieldSetter(node);
+        node.setIsDeferredFieldSetter(true);
       }
     } else if (op == Assignment.Operator.RIGHT_SHIFT_UNSIGNED_ASSIGN) {
       if (!lhsType.getName().equals("char")) {
-        ASTUtil.setProperty(node, newUnsignedRightShift(ast, lhsType, lhs, rhs));
+        node.replaceWith(newUnsignedRightShift(lhsType, lhs, rhs));
       }
     } else if (op == Assignment.Operator.REMAINDER_ASSIGN) {
       if (isFloatingPoint(lhsType) || isFloatingPoint(rhsType)) {
-        ASTUtil.setProperty(node, newModAssign(ast, lhsType, rhsType, lhs, rhs));
+        node.replaceWith(newModAssign(lhsType, rhsType, lhs, rhs));
       }
     }
   }
 
   public void endVisit(InfixExpression node) {
     InfixExpression.Operator op = node.getOperator();
-    ITypeBinding nodeType = Types.getTypeBinding(node);
+    ITypeBinding nodeType = node.getTypeBinding();
     if (op == InfixExpression.Operator.REMAINDER && isFloatingPoint(nodeType)) {
-      AST ast = node.getAST();
       String funcName = nodeType.getName().equals("float") ? "fmodf" : "fmod";
       IOSMethodBinding binding = IOSMethodBinding.newFunction(
           funcName, nodeType, null, nodeType, nodeType);
-      MethodInvocation invocation = ASTFactory.newMethodInvocation(ast, binding, null);
-      List<Expression> args = ASTUtil.getArguments(invocation);
-      args.add(NodeCopier.copySubtree(ast, node.getLeftOperand()));
-      args.add(NodeCopier.copySubtree(ast, node.getRightOperand()));
-      ASTUtil.setProperty(node, invocation);
+      MethodInvocation invocation = new MethodInvocation(binding, null);
+      List<Expression> args = invocation.getArguments();
+      args.add(TreeUtil.remove(node.getLeftOperand()));
+      args.add(TreeUtil.remove(node.getRightOperand()));
+      node.replaceWith(invocation);
     }
   }
 
@@ -99,38 +97,37 @@ public class OperatorRewriter extends ErrorReportingASTVisitor {
     return type.getName().equals("double") || type.getName().equals("float");
   }
 
-  private MethodInvocation newStaticAssignInvocation(
-      AST ast, IVariableBinding var, Expression value) {
-    MethodInvocation invocation = ASTFactory.newMethodInvocation(ast, retainedAssignBinding, null);
-    List<Expression> args = ASTUtil.getArguments(invocation);
-    args.add(ASTFactory.newAddressOf(ast, ASTFactory.newSimpleName(ast, var)));
-    args.add(ASTFactory.newNullLiteral(ast));
-    args.add(NodeCopier.copySubtree(ast, value));
+  private MethodInvocation newStaticAssignInvocation(IVariableBinding var, Expression value) {
+    MethodInvocation invocation = new MethodInvocation(retainedAssignBinding, null);
+    List<Expression> args = invocation.getArguments();
+    args.add(MethodInvocation.newAddressOf(new SimpleName(var)));
+    args.add(new NullLiteral());
+    args.add(value.copy());
     return invocation;
   }
 
   private static MethodInvocation newUnsignedRightShift(
-      AST ast, ITypeBinding assignType, Expression lhs, Expression rhs) {
+      ITypeBinding assignType, Expression lhs, Expression rhs) {
     String funcName = "URShiftAssign" + NameTable.capitalize(assignType.getName());
     IOSMethodBinding binding = IOSMethodBinding.newFunction(
         funcName, assignType, null, new PointerTypeBinding(assignType),
         Types.resolveJavaType("int"));
-    MethodInvocation invocation = ASTFactory.newMethodInvocation(ast, binding, null);
-    List<Expression> args = ASTUtil.getArguments(invocation);
-    args.add(ASTFactory.newAddressOf(ast, NodeCopier.copySubtree(ast, lhs)));
-    args.add(NodeCopier.copySubtree(ast, rhs));
+    MethodInvocation invocation = new MethodInvocation(binding, null);
+    List<Expression> args = invocation.getArguments();
+    args.add(MethodInvocation.newAddressOf(lhs.copy()));
+    args.add(rhs.copy());
     return invocation;
   }
 
   private static MethodInvocation newModAssign(
-      AST ast, ITypeBinding lhsType, ITypeBinding rhsType, Expression lhs, Expression rhs) {
+      ITypeBinding lhsType, ITypeBinding rhsType, Expression lhs, Expression rhs) {
     String funcName = "ModAssign" + NameTable.capitalize(lhsType.getName());
     IOSMethodBinding binding = IOSMethodBinding.newFunction(
         funcName, lhsType, null, new PointerTypeBinding(lhsType), rhsType);
-    MethodInvocation invocation = ASTFactory.newMethodInvocation(ast, binding, null);
-    List<Expression> args = ASTUtil.getArguments(invocation);
-    args.add(ASTFactory.newAddressOf(ast, NodeCopier.copySubtree(ast, lhs)));
-    args.add(NodeCopier.copySubtree(ast, rhs));
+    MethodInvocation invocation = new MethodInvocation(binding, null);
+    List<Expression> args = invocation.getArguments();
+    args.add(MethodInvocation.newAddressOf(lhs.copy()));
+    args.add(rhs.copy());
     return invocation;
   }
 }

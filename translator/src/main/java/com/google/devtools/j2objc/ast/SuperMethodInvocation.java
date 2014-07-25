@@ -26,13 +26,15 @@ import java.util.List;
 public class SuperMethodInvocation extends Expression {
 
   private IMethodBinding methodBinding = null;
-  private ChildLink<SimpleName> qualifier = ChildLink.create(SimpleName.class, this);
+  private ChildLink<Name> qualifier = ChildLink.create(Name.class, this);
+  private ChildLink<SimpleName> name = ChildLink.create(SimpleName.class, this);
   private ChildList<Expression> arguments = ChildList.create(Expression.class, this);
 
   public SuperMethodInvocation(org.eclipse.jdt.core.dom.SuperMethodInvocation jdtNode) {
     super(jdtNode);
     methodBinding = Types.getMethodBinding(jdtNode);
-    qualifier.set((SimpleName) TreeConverter.convert(jdtNode.getQualifier()));
+    qualifier.set((Name) TreeConverter.convert(jdtNode.getQualifier()));
+    name.set((SimpleName) TreeConverter.convert(jdtNode.getName()));
     for (Object argument : jdtNode.arguments()) {
       arguments.add((Expression) TreeConverter.convert(argument));
     }
@@ -42,15 +44,26 @@ public class SuperMethodInvocation extends Expression {
     super(other);
     methodBinding = other.getMethodBinding();
     qualifier.copyFrom(other.getQualifier());
+    name.copyFrom(other.getName());
     arguments.copyFrom(other.getArguments());
+  }
+
+  public SuperMethodInvocation(IMethodBinding methodBinding) {
+    super(methodBinding.getReturnType());
+    this.methodBinding = methodBinding;
+    name.set(new SimpleName(methodBinding));
   }
 
   public IMethodBinding getMethodBinding() {
     return methodBinding;
   }
 
-  public SimpleName getQualifier() {
+  public Name getQualifier() {
     return qualifier.get();
+  }
+
+  public SimpleName getName() {
+    return name.get();
   }
 
   public List<Expression> getArguments() {
