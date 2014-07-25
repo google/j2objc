@@ -34,6 +34,8 @@ package java.util;
 
 import com.google.j2objc.annotations.AutoreleasePool;
 
+import junit.framework.TestCase;
+
 import org.junit.Before;
 import org.junit.Test;
 
@@ -47,7 +49,7 @@ import static org.junit.Assert.*;
  *
  * @author Tom Ball
  */
-public class WeakHashMapTest {
+public class WeakHashMapTest extends TestCase {
 
   @Test
   public void testWeakHashMap() {

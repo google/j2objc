@@ -34,6 +34,8 @@ package java.lang.ref;
 
 import com.google.j2objc.annotations.AutoreleasePool;
 
+import junit.framework.TestCase;
+
 import org.junit.Test;
 
 import static org.junit.Assert.*;
@@ -54,7 +56,7 @@ import static org.junit.Assert.*;
  *
  * @author Tom Ball
  */
-public class SoftReferenceTest {
+public class SoftReferenceTest extends TestCase {
   private SoftReference<?> softRef;
 
   @Test
