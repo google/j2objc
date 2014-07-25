@@ -396,24 +396,9 @@ public abstract class ObjectiveCSourceFileGenerator extends SourceFileGenerator 
 
         if (tag.getTagName() == null) {
           // Description section.
-          StringBuilder sb = new StringBuilder();
-
-          // Each fragment is a source line, stripped of leading asterisk and trimmed.
-          List<?> fragments = tag.fragments();
-          for (Object fragment : fragments) {
-            if (fragment instanceof TextElement) {
-              if (sb.length() > 0) {
-                sb.append(' ');
-              }
-              sb.append((TextElement) fragment);
-            } else {
-              sb.append(printJavadocTag((TagElement) fragment));
-            }
-          }
+          String description = printTagFragments(tag.fragments());
 
           // Extract first sentence from description.
-          String description = sb.toString();
-          sb = new StringBuilder();
           BreakIterator iterator = BreakIterator.getSentenceInstance(Locale.US);
           iterator.setText(description.toString());
           int start = iterator.first();
@@ -421,7 +406,7 @@ public abstract class ObjectiveCSourceFileGenerator extends SourceFileGenerator 
           if (end != BreakIterator.DONE) {
             // Print brief tag first, since Quick Help shows it first. This makes the
             // generated source easier to review.
-            printDocLine(String.format("@brief %s", description.substring(start, end)));
+            printDocLine(String.format("@brief %s", description.substring(start, end).trim()));
             String remainder = description.substring(end).trim();
             if (!remainder.isEmpty()) {
               printDocLine(remainder);
@@ -481,16 +466,14 @@ public abstract class ObjectiveCSourceFileGenerator extends SourceFileGenerator 
   private String printTagFragments(List<?> fragments) {
     StringBuilder sb = new StringBuilder();
     for (Object fragment : fragments) {
+      sb.append(' ');
       if (fragment instanceof TextElement) {
-        if (sb.length() > 0) {
-          sb.append(' ');
-        }
         String text = escapeDocText(((TextElement) fragment).getText());
-        sb.append(text);
+        sb.append(text.trim());
       } else if (fragment instanceof TagElement) {
         sb.append(printJavadocTag((TagElement) fragment));
       } else {
-        sb.append(escapeDocText(fragment.toString()));
+        sb.append(escapeDocText(fragment.toString()).trim());
       }
     }
     return sb.toString().trim();
