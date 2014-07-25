@@ -59,12 +59,8 @@ import java.util.List;
 public class DestructorGenerator extends ErrorReportingASTVisitor {
   private final String destructorName;
 
-  // TODO(kstanger): Move these to NameTable.java.
-  public static final String FINALIZE_METHOD = "finalize";
-  public static final String DEALLOC_METHOD = "dealloc";
-
   public DestructorGenerator() {
-    destructorName = Options.useGC() ? FINALIZE_METHOD : DEALLOC_METHOD;
+    destructorName = Options.useGC() ? NameTable.FINALIZE_METHOD : NameTable.DEALLOC_METHOD;
   }
 
   @Override
@@ -93,7 +89,7 @@ public class DestructorGenerator extends ErrorReportingASTVisitor {
 
       // If a destructor method already exists, append release statements.
       for (MethodDeclaration method : node.getMethods()) {
-        if (FINALIZE_METHOD.equals(method.getName().getIdentifier())) {
+        if (NameTable.FINALIZE_METHOD.equals(method.getName().getIdentifier())) {
           if (Options.useARC()) {
             removeSuperFinalizeStatement(method.getBody());
           }
@@ -161,8 +157,8 @@ public class DestructorGenerator extends ErrorReportingASTVisitor {
   }
 
   private boolean needsRenaming(SimpleName methodName) {
-    return destructorName.equals(DEALLOC_METHOD) &&
-        FINALIZE_METHOD.equals(methodName.getIdentifier());
+    return destructorName.equals(NameTable.DEALLOC_METHOD) &&
+        NameTable.FINALIZE_METHOD.equals(methodName.getIdentifier());
   }
 
   private SuperMethodInvocation findSuperFinalizeInvocation(ASTNode node) {
@@ -171,7 +167,7 @@ public class DestructorGenerator extends ErrorReportingASTVisitor {
     node.accept(new ASTVisitor() {
       @Override
       public void endVisit(SuperMethodInvocation node) {
-        if (FINALIZE_METHOD.equals(node.getName().getIdentifier())) {
+        if (NameTable.FINALIZE_METHOD.equals(node.getName().getIdentifier())) {
           superFinalize[0] = node;
         }
       }

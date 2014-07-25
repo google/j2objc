@@ -21,7 +21,6 @@ import com.google.common.base.CharMatcher;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.devtools.j2objc.Options;
-import com.google.devtools.j2objc.translate.DestructorGenerator;
 import com.google.devtools.j2objc.types.GeneratedMethodBinding;
 import com.google.devtools.j2objc.types.IOSMethod;
 import com.google.devtools.j2objc.types.IOSMethodBinding;
@@ -432,10 +431,7 @@ public class StatementGenerator extends ErrorReportingASTVisitor {
         if (subnode instanceof SuperMethodInvocation) {
           SuperMethodInvocation invocation = (SuperMethodInvocation) subnode;
           IMethodBinding binding = Types.getMethodBinding(invocation);
-          String methodName = NameTable.getName(binding);
-          if (Options.memoryDebug() &&
-              ((methodName.equals(DestructorGenerator.FINALIZE_METHOD)) ||
-               (methodName.equals(DestructorGenerator.DEALLOC_METHOD)))) {
+          if (Options.memoryDebug() && BindingUtil.isDestructor(binding)) {
             buffer.append("JreMemDebugRemove(self);\n");
           }
         }
