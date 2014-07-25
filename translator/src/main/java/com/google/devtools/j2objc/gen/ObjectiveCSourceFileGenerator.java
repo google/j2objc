@@ -63,12 +63,11 @@ public abstract class ObjectiveCSourceFileGenerator extends SourceFileGenerator 
   /**
    * Create a new generator.
    *
-   * @param sourceFileName the name of the source file being translated
-   * @param outputDirectory the top-level directory for output file(s)
+   * @param unit The AST of the source to generate
+   * @param emitLineDirectives if true, generate CPP line directives
    */
-  protected ObjectiveCSourceFileGenerator(
-      String sourceFileName, CompilationUnit unit, boolean emitLineDirectives) {
-    super(sourceFileName, unit, emitLineDirectives);
+  protected ObjectiveCSourceFileGenerator(CompilationUnit unit, boolean emitLineDirectives) {
+    super(unit, emitLineDirectives);
   }
 
   /**

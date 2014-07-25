@@ -14,7 +14,6 @@
 
 package com.google.devtools.j2objc;
 
-import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.Sets;
 import com.google.devtools.j2objc.ast.CompilationUnit;
 import com.google.devtools.j2objc.ast.TreeConverter;
@@ -117,7 +116,7 @@ class TranslationProcessor extends FileProcessor {
     processedFiles.add(relativePath);
     seenFiles.add(relativePath);
 
-    CompilationUnit newUnit = applyMutations(unit, getClassNameFromFilePath(path), source, ticker);
+    CompilationUnit newUnit = applyMutations(unit, path, source, ticker);
     ticker.tick("Tree mutations");
 
     if (unit.types().isEmpty()) {
@@ -127,7 +126,7 @@ class TranslationProcessor extends FileProcessor {
 
     logger.finest("writing output file(s) to " + Options.getOutputDirectory().getAbsolutePath());
 
-    generateObjectiveCSource(path, newUnit, ticker);
+    generateObjectiveCSource(newUnit, ticker);
     ticker.tick("Source generation");
 
     if (Options.buildClosure()) {
@@ -147,7 +146,7 @@ class TranslationProcessor extends FileProcessor {
    * classes, etc.
    */
   public static CompilationUnit applyMutations(
-      org.eclipse.jdt.core.dom.CompilationUnit unit, String mainTypeName, String source,
+      org.eclipse.jdt.core.dom.CompilationUnit unit, String path, String source,
       TimeTracker ticker) {
     ticker.push();
 
@@ -240,7 +239,7 @@ class TranslationProcessor extends FileProcessor {
     // Verify all modified nodes have type bindings
     Types.verifyNode(unit);
 
-    CompilationUnit newUnit = TreeConverter.convertCompilationUnit(unit, mainTypeName, source);
+    CompilationUnit newUnit = TreeConverter.convertCompilationUnit(unit, path, source);
 
     for (Plugin plugin : Options.getPlugins()) {
       plugin.processUnit(newUnit);
@@ -254,20 +253,19 @@ class TranslationProcessor extends FileProcessor {
     return newUnit;
   }
 
-  public static void generateObjectiveCSource(
-      String path, CompilationUnit unit, TimeTracker ticker) {
+  public static void generateObjectiveCSource(CompilationUnit unit, TimeTracker ticker) {
     ticker.push();
 
     // write header
     if (Options.generateSegmentedHeaders()) {
-      ObjectiveCSegmentedHeaderGenerator.generate(path, unit);
+      ObjectiveCSegmentedHeaderGenerator.generate(unit);
     } else {
-      ObjectiveCHeaderGenerator.generate(path, unit);
+      ObjectiveCHeaderGenerator.generate(unit);
     }
     ticker.tick("Header generation");
 
     // write implementation file
-    ObjectiveCImplementationGenerator.generate(path, unit);
+    ObjectiveCImplementationGenerator.generate(unit);
     ticker.tick("Implementation generation");
 
     ticker.pop();
@@ -439,21 +437,5 @@ class TranslationProcessor extends FileProcessor {
         }
       }
     }
-  }
-
-  /**
-   * Gets the name of the file, stripped of any directory or extension.
-   */
-  @VisibleForTesting
-  public static String getClassNameFromFilePath(String sourceFileName) {
-    int begin = sourceFileName.lastIndexOf(File.separatorChar) + 1;
-    // Also check for /, since this may be a jar'd source when translating on Windows.
-    int n = sourceFileName.lastIndexOf('/') + 1;
-    if (n > begin) {
-      begin = n;
-    }
-    int end = sourceFileName.lastIndexOf(".java");
-    String className = sourceFileName.substring(begin, end);
-    return className;
   }
 }
