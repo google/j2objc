@@ -387,6 +387,7 @@ public class ObjectiveCHeaderGenerator extends ObjectiveCSourceFileGenerator {
       return;
     }
     newline();
+    printDocComment(m.getJavadoc());
     print(super.methodDeclaration(m));
     String methodName = NameTable.getName(Types.getMethodBinding(m));
     if (needsObjcMethodFamilyNoneAttribute(methodName)) {
@@ -413,13 +414,16 @@ public class ObjectiveCHeaderGenerator extends ObjectiveCSourceFileGenerator {
   }
 
   @Override
-  protected String mappedMethodDeclaration(MethodDeclaration method, IOSMethod mappedMethod) {
-    return "\n" + super.mappedMethodDeclaration(method, mappedMethod) + ";\n";
+  protected void printMappedMethodDeclaration(MethodDeclaration m, IOSMethod mappedMethod) {
+    newline();
+    printDocComment(m.getJavadoc());
+    println(super.mappedMethodDeclaration(m, mappedMethod) + ";");
   }
 
   @Override
   protected void printConstructor(MethodDeclaration m) {
     newline();
+    printDocComment(m.getJavadoc());
     println(super.constructorDeclaration(m) + ";");
   }
 
@@ -434,7 +438,6 @@ public class ObjectiveCHeaderGenerator extends ObjectiveCSourceFileGenerator {
     if (BindingUtil.isFunction(binding)) {
       return;  // All function declarations are private.
     }
-    printDocComment(m.getJavadoc());
     super.printMethod(m);
   }
 

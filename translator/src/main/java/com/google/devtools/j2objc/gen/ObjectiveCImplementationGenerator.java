@@ -626,13 +626,12 @@ public class ObjectiveCImplementationGenerator extends ObjectiveCSourceFileGener
   }
 
   @Override
-  protected String mappedMethodDeclaration(MethodDeclaration method, IOSMethod mappedMethod) {
-    String methodBody = generateMethodBody(method);
-    if (methodBody == null) {
-      return "";
+  protected void printMappedMethodDeclaration(MethodDeclaration m, IOSMethod mappedMethod) {
+    String methodBody = generateMethodBody(m);
+    if (methodBody != null) {
+      newline();
+      println(super.mappedMethodDeclaration(m, mappedMethod) + " " + reindent(methodBody));
     }
-    return "\n" + super.mappedMethodDeclaration(method, mappedMethod)
-        + " " + reindent(methodBody) + "\n";
   }
 
   private String generateMethodBody(MethodDeclaration m) {

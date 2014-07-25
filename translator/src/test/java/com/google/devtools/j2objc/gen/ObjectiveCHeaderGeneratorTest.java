@@ -31,6 +31,7 @@ public class ObjectiveCHeaderGeneratorTest extends GenerationTest {
   @Override
   protected void tearDown() throws Exception {
     Options.resetDeprecatedDeclarations();
+    Options.setDocCommentsEnabled(false);
     super.tearDown();
   }
 
@@ -572,5 +573,24 @@ public class ObjectiveCHeaderGeneratorTest extends GenerationTest {
     String translation = translateSourceFile(
         "class Test { static final long FOO = 123; }", "Test", "Test.h");
     assertTranslation(translation, "123LL");
+  }
+
+  public void testDocComments() throws IOException {
+    Options.setDocCommentsEnabled(true);
+    String translation = translateSourceFile(
+        "/** Class javadoc for {@link Test}. */ class Test { \n" +
+        "/** Field javadoc. */\n" +
+        "int i;" +
+        "/** Method javadoc.\n" +
+        "  * @param foo Unused.\n" +
+        "  * @return always false.\n" +
+        "  */\n" +
+        "boolean test(int foo) { return false; } }", "Test", "Test.h");
+    assertTranslation(translation, "@brief Class javadoc for Test .");
+    assertTranslation(translation, "@brief Field javadoc.");
+    assertTranslatedLines(translation,
+        "@brief Method javadoc.",
+        "@param foo  Unused.",
+        "@return always false.");
   }
 }

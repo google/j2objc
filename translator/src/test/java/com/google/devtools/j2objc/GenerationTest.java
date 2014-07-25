@@ -137,6 +137,7 @@ public abstract class GenerationTest extends TestCase {
    */
   protected CompilationUnit compileType(String name, String source) {
     int errors = ErrorUtil.errorCount();
+    parser.setEnableDocComments(Options.docCommentsEnabled());
     CompilationUnit unit = parser.parse(name, source);
     assertEquals(errors, ErrorUtil.errorCount());
     return unit;

@@ -161,7 +161,7 @@ public abstract class ObjectiveCSourceFileGenerator extends SourceFileGenerator 
     IMethodBinding binding = Types.getMethodBinding(m);
     IOSMethod iosMethod = IOSMethodBinding.getIOSMethod(binding);
     if (iosMethod != null) {
-      print(mappedMethodDeclaration(m, iosMethod));
+      printMappedMethodDeclaration(m, iosMethod);
     } else if (m.isConstructor()) {
       printConstructor(m);
     } else if (isInitializeMethod(m)) {
@@ -174,6 +174,13 @@ public abstract class ObjectiveCSourceFileGenerator extends SourceFileGenerator 
   protected abstract void printNormalMethod(MethodDeclaration m);
 
   protected abstract void printConstructor(MethodDeclaration m);
+
+  /**
+   * Print an Objective-C constructor declaration string.
+   */
+  protected abstract void printStaticConstructorDeclaration(MethodDeclaration m);
+
+  protected abstract void printMappedMethodDeclaration(MethodDeclaration m, IOSMethod mappedMethod);
 
   /**
    * Create an Objective-C method or constructor declaration string for an
@@ -306,11 +313,6 @@ public abstract class ObjectiveCSourceFileGenerator extends SourceFileGenerator 
     return sb.toString();
   }
 
-  /**
-   * Print an Objective-C constructor declaration string.
-   */
-  protected abstract void printStaticConstructorDeclaration(MethodDeclaration m);
-
   private void parametersDeclaration(IMethodBinding method, List<SingleVariableDeclaration> params,
       String baseDeclaration, StringBuffer sb) throws AssertionError {
     method = BindingUtil.getOriginalMethodBinding(method);
@@ -387,7 +389,6 @@ public abstract class ObjectiveCSourceFileGenerator extends SourceFileGenerator 
   @SuppressWarnings("unchecked")
   protected void printDocComment(Javadoc javadoc) {
     if (javadoc != null) {
-      newline();
       printIndent();
       println("/**");
       List<TagElement> tags = javadoc.tags();
