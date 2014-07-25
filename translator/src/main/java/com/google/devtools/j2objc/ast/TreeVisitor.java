@@ -263,12 +263,6 @@ public class TreeVisitor {
 
   public void endVisit(MarkerAnnotation node) {}
 
-  public boolean visit(MemberRef node) {
-    return true;
-  }
-
-  public void endVisit(MemberRef node) {}
-
   public boolean visit(MethodDeclaration node) {
     return true;
   }
