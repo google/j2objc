@@ -305,6 +305,13 @@ public class Types {
     return binding;
   }
 
+  /**
+   * Same as getBinding but does not check if the result it null.
+   */
+  public static IBinding getBindingUnsafe(Object node) {
+    return instance.bindingMap.get(node);
+  }
+
   public static void addBinding(Object node, IBinding binding) {
     assert binding != null;
     if (node instanceof EnumConstantDeclaration && binding instanceof IVariableBinding) {
@@ -319,18 +326,7 @@ public class Types {
    * no type binding exists.
    */
   public static ITypeBinding getTypeBinding(Object node) {
-    IBinding binding = getBinding(node);
-    if (binding instanceof ITypeBinding) {
-      return (ITypeBinding) binding;
-    } else if (binding instanceof IMethodBinding) {
-      IMethodBinding m = (IMethodBinding) binding;
-      return m.isConstructor() ? m.getDeclaringClass() : m.getReturnType();
-    } else if (binding instanceof IVariableBinding) {
-      return ((IVariableBinding) binding).getType();
-    } else if (binding instanceof IAnnotationBinding) {
-      return ((IAnnotationBinding) binding).getAnnotationType();
-    }
-    return null;
+    return BindingUtil.toTypeBinding(getBinding(node));
   }
 
   /**

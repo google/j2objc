@@ -44,6 +44,11 @@ public class SimpleName extends Name {
   }
 
   @Override
+  public String toString() {
+    return identifier;
+  }
+
+  @Override
   protected void acceptInner(TreeVisitor visitor) {
     visitor.visit(this);
     visitor.endVisit(this);

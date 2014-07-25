@@ -36,6 +36,11 @@ public class TextElement extends TreeNode {
   }
 
   @Override
+  public String toString() {
+    return text;
+  }
+
+  @Override
   protected void acceptInner(TreeVisitor visitor) {
     visitor.visit(this);
     visitor.endVisit(this);

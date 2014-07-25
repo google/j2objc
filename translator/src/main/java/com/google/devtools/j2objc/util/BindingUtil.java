@@ -106,6 +106,24 @@ public final class BindingUtil {
   }
 
   /**
+   * Convert an IBinding to a ITypeBinding. Returns null if the binding cannot
+   * be converted to a type binding.
+   */
+  public static ITypeBinding toTypeBinding(IBinding binding) {
+    if (binding instanceof ITypeBinding) {
+      return (ITypeBinding) binding;
+    } else if (binding instanceof IMethodBinding) {
+      IMethodBinding m = (IMethodBinding) binding;
+      return m.isConstructor() ? m.getDeclaringClass() : m.getReturnType();
+    } else if (binding instanceof IVariableBinding) {
+      return ((IVariableBinding) binding).getType();
+    } else if (binding instanceof IAnnotationBinding) {
+      return ((IAnnotationBinding) binding).getAnnotationType();
+    }
+    return null;
+  }
+
+  /**
    * If this method overrides another method, return the binding for the
    * original declaration.
    */
