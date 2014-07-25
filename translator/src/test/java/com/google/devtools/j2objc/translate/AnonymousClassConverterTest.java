@@ -16,20 +16,19 @@
 
 package com.google.devtools.j2objc.translate;
 
+import com.google.common.collect.Iterables;
+import com.google.common.collect.Lists;
 import com.google.devtools.j2objc.GenerationTest;
-import com.google.devtools.j2objc.ast.TreeConverter;
+import com.google.devtools.j2objc.ast.AbstractTypeDeclaration;
+import com.google.devtools.j2objc.ast.ClassInstanceCreation;
+import com.google.devtools.j2objc.ast.CompilationUnit;
+import com.google.devtools.j2objc.ast.MethodDeclaration;
+import com.google.devtools.j2objc.ast.ReturnStatement;
+import com.google.devtools.j2objc.ast.TreeUtil;
+import com.google.devtools.j2objc.ast.TypeDeclaration;
+import com.google.devtools.j2objc.ast.VariableDeclarationFragment;
 import com.google.devtools.j2objc.gen.ObjectiveCImplementationGenerator;
 import com.google.devtools.j2objc.util.NameTable;
-
-import org.eclipse.jdt.core.dom.ASTVisitor;
-import org.eclipse.jdt.core.dom.ClassInstanceCreation;
-import org.eclipse.jdt.core.dom.CompilationUnit;
-import org.eclipse.jdt.core.dom.FieldDeclaration;
-import org.eclipse.jdt.core.dom.MethodDeclaration;
-import org.eclipse.jdt.core.dom.ReturnStatement;
-import org.eclipse.jdt.core.dom.TypeDeclaration;
-import org.eclipse.jdt.core.dom.VariableDeclaration;
-import org.eclipse.jdt.core.dom.VariableDeclarationFragment;
 
 import java.io.IOException;
 import java.util.List;
@@ -39,13 +38,12 @@ import java.util.List;
  *
  * @author Tom Ball
  */
-@SuppressWarnings("unchecked")  // JDT lists are raw, but still safely typed.
 public class AnonymousClassConverterTest extends GenerationTest {
 
   protected List<TypeDeclaration> translateClassBody(String testSource) {
     String source = "public class Test { " + testSource + " }";
     CompilationUnit unit = translateType("Test", source);
-    return unit.types();
+    return Lists.newArrayList(Iterables.filter(unit.getTypes(), TypeDeclaration.class));
   }
 
   public void testAnonymousClassNaming() throws IOException {
@@ -99,8 +97,8 @@ public class AnonymousClassConverterTest extends GenerationTest {
 
     type = types.get(0);
     assertEquals("Test", type.getName().getIdentifier());
-    MethodDeclaration testMethod = (MethodDeclaration) type.bodyDeclarations().get(0);
-    ReturnStatement stmt = (ReturnStatement) testMethod.getBody().statements().get(0);
+    MethodDeclaration testMethod = (MethodDeclaration) type.getBodyDeclarations().get(0);
+    ReturnStatement stmt = (ReturnStatement) testMethod.getBody().getStatements().get(0);
     ClassInstanceCreation expr = (ClassInstanceCreation) stmt.getExpression();
     assertNull(expr.getAnonymousClassDeclaration());
   }
@@ -156,21 +154,14 @@ public class AnonymousClassConverterTest extends GenerationTest {
     assertTranslation(translation, "[nil_chk(val$foo_) description]");
   }
 
-  public void testAnonymousClassInvokingOuterMethod() {
-    List<TypeDeclaration> types = translateClassBody(
-      "public int getCount() { return 0; } " +
-      "Object test() { return new Object() { int getCount() { return Test.this.getCount(); }}; }");
-    assertEquals(2, types.size());
-
-    final int[] testsFound = { 0 };
-    types.get(1).accept(new ASTVisitor() {
-      @Override
-      public void endVisit(ReturnStatement node) {
-        assertEquals("return this$0.getCount();", node.toString().trim());
-        ++testsFound[0];
-      }
-    });
-    assertEquals(1, testsFound[0]);
+  public void testAnonymousClassInvokingOuterMethod() throws IOException {
+    String translation = translateSourceFile(
+        "class Test { public int getCount() { return 0; } " +
+        "Object test() { return new Object() { " +
+        "int getCount() { return Test.this.getCount(); } }; } }", "Test", "Test.m");
+    assertTranslatedLines(translation,
+        "- (int)getCount {",
+        "return [this$0_ getCount];");
   }
 
   public void testAnonymousClassAsInitializer() throws IOException {
@@ -255,35 +246,28 @@ public class AnonymousClassConverterTest extends GenerationTest {
 
     // Verify method var in r1.run() isn't mistakenly made a field in r1.
     CompilationUnit unit = translateType("Test", source);
-    List<TypeDeclaration> types = unit.types();
-    TypeDeclaration r1 = types.get(1);
-    assertEquals("Test_$1", NameTable.getFullName(r1));
-    for (FieldDeclaration field : r1.getFields()) {
-      List<VariableDeclarationFragment> vars = field.fragments();
-      for (VariableDeclaration var : vars) {
-        if (var.getName().getIdentifier().equals("val$i")) {
-          fail("found field that shouldn't be declared");
-        }
+    List<AbstractTypeDeclaration> types = unit.getTypes();
+    AbstractTypeDeclaration r1 = types.get(1);
+    assertEquals("Test_$1", NameTable.getFullName(r1.getTypeBinding()));
+    for (VariableDeclarationFragment var : TreeUtil.getAllFields(r1)) {
+      if (var.getName().getIdentifier().equals("val$i")) {
+        fail("found field that shouldn't be declared");
       }
     }
 
     // Method var in r1.run() becomes a field in r2.
-    TypeDeclaration r2 = types.get(2);
-    assertEquals("Test_$1_$1", NameTable.getFullName(r2));
+    AbstractTypeDeclaration r2 = types.get(2);
+    assertEquals("Test_$1_$1", NameTable.getFullName(r2.getTypeBinding()));
     boolean found = false;
-    for (FieldDeclaration field : r2.getFields()) {
-      List<VariableDeclarationFragment> vars = field.fragments();
-      for (VariableDeclaration var : vars) {
-        if (var.getName().getIdentifier().equals("val$i")) {
-          found = true;
-        }
+    for (VariableDeclarationFragment var : TreeUtil.getAllFields(r2)) {
+      if (var.getName().getIdentifier().equals("val$i")) {
+        found = true;
       }
     }
     assertTrue("required field not found", found);
 
     // Verify constructor takes both outer field and var.
-    ObjectiveCImplementationGenerator.generate(
-        "Test.java", TreeConverter.convertCompilationUnit(unit, "Test"), source);
+    ObjectiveCImplementationGenerator.generate("Test.java", unit, source);
     String translation = getTranslatedFile("Test.m");
     assertTranslation(translation,
         "r2 = [[[Test_$1_$1 alloc] initWithJavaLangInteger:i] autorelease]");
@@ -300,23 +284,19 @@ public class AnonymousClassConverterTest extends GenerationTest {
 
     // Verify method var in r1.run() isn't mistakenly made a field in r1.
     CompilationUnit unit = translateType("Test", source);
-    List<TypeDeclaration> types = unit.types();
-    TypeDeclaration r1 = types.get(1);
-    assertEquals("Test_$1", NameTable.getFullName(r1));
+    List<AbstractTypeDeclaration> types = unit.getTypes();
+    AbstractTypeDeclaration r1 = types.get(1);
+    assertEquals("Test_$1", NameTable.getFullName(r1.getTypeBinding()));
     boolean found = false;
-    for (FieldDeclaration field : r1.getFields()) {
-      List<VariableDeclarationFragment> vars = field.fragments();
-      for (VariableDeclaration var : vars) {
-        if (var.getName().getIdentifier().equals("val$i")) {
-          found = true;
-        }
+    for (VariableDeclarationFragment var : TreeUtil.getAllFields(r1)) {
+      if (var.getName().getIdentifier().equals("val$i")) {
+        found = true;
       }
     }
     assertTrue("required field not found", found);
 
     // Verify method var is passed to constructor.
-    ObjectiveCImplementationGenerator.generate(
-        "Test.java", TreeConverter.convertCompilationUnit(unit, "Test"), source);
+    ObjectiveCImplementationGenerator.generate("Test.java", unit, source);
     String translation = getTranslatedFile("Test.m");
     assertTranslation(translation, "r = [[[Test_$1 alloc] initWithJavaLangInteger:i] autorelease]");
   }
@@ -333,23 +313,19 @@ public class AnonymousClassConverterTest extends GenerationTest {
 
     // Verify method var in r1.run() isn't mistakenly made a field in r1.
     CompilationUnit unit = translateType("Test", source);
-    List<TypeDeclaration> types = unit.types();
-    TypeDeclaration r1 = types.get(2);
-    assertEquals("Test_$1", NameTable.getFullName(r1));
+    List<AbstractTypeDeclaration> types = unit.getTypes();
+    AbstractTypeDeclaration r1 = types.get(2);
+    assertEquals("Test_$1", NameTable.getFullName(r1.getTypeBinding()));
     boolean found = false;
-    for (FieldDeclaration field : r1.getFields()) {
-      List<VariableDeclarationFragment> vars = field.fragments();
-      for (VariableDeclaration var : vars) {
-        if (var.getName().getIdentifier().equals("val$i")) {
-          found = true;
-        }
+    for (VariableDeclarationFragment var : TreeUtil.getAllFields(r1)) {
+      if (var.getName().getIdentifier().equals("val$i")) {
+        found = true;
       }
     }
     assertTrue("required field not found", found);
 
     // Verify method var is passed to constructor.
-    ObjectiveCImplementationGenerator.generate(
-        "Test.java", TreeConverter.convertCompilationUnit(unit, "Test"), source);
+    ObjectiveCImplementationGenerator.generate("Test.java", unit, source);
     String translation = getTranslatedFile("Test.m");
     assertTranslation(translation,
         "r = [[[Test_$1 alloc] initWithJavaLangInteger:i] autorelease]");
@@ -522,8 +498,8 @@ public class AnonymousClassConverterTest extends GenerationTest {
         "  void test() { new Test(\"%s %s\", \"1\", \"2\") {}; } }",
         "Test", "Test.m");
     assertTranslation(translation,
-        "[super initWithNSString:arg$0 withNSObjectArray:" +
-        "[IOSObjectArray arrayWithObjects:(id[]){ arg$1, arg$2 } count:2 " +
-        "type:[IOSClass classWithClass:[NSObject class]]]]");
+        "[super initWithNSString:arg$0 withNSObjectArray:"
+        + "[IOSObjectArray arrayWithObjects:(id[]){ arg$1, arg$2 } count:2 "
+        + "type:[IOSClass classWithClass:[NSObject class]]]]");
   }
 }

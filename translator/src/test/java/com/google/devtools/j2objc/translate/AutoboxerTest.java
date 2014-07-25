@@ -17,8 +17,7 @@
 package com.google.devtools.j2objc.translate;
 
 import com.google.devtools.j2objc.GenerationTest;
-
-import org.eclipse.jdt.core.dom.Statement;
+import com.google.devtools.j2objc.ast.Statement;
 
 import java.io.IOException;
 import java.util.List;

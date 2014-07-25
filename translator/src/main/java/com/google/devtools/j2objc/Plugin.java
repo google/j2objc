@@ -17,8 +17,7 @@
 package com.google.devtools.j2objc;
 
 import com.google.common.base.Preconditions;
-
-import org.eclipse.jdt.core.dom.CompilationUnit;
+import com.google.devtools.j2objc.ast.CompilationUnit;
 
 import java.io.File;
 import java.io.IOException;

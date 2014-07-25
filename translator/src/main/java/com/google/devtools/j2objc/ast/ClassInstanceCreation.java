@@ -29,6 +29,7 @@ public class ClassInstanceCreation extends Expression {
   private ChildLink<Expression> expression = ChildLink.create(this);
   private ChildLink<Type> type = ChildLink.create(this);
   private ChildList<Expression> arguments = ChildList.create(this);
+  private ChildLink<AnonymousClassDeclaration> anonymousClassDeclaration = ChildLink.create(this);
 
   public ClassInstanceCreation(org.eclipse.jdt.core.dom.ClassInstanceCreation jdtNode) {
     super(jdtNode);
@@ -38,6 +39,8 @@ public class ClassInstanceCreation extends Expression {
     for (Object argument : jdtNode.arguments()) {
       arguments.add((Expression) TreeConverter.convert(argument));
     }
+    anonymousClassDeclaration.set(
+        (AnonymousClassDeclaration) TreeConverter.convert(jdtNode.getAnonymousClassDeclaration()));
   }
 
   public ClassInstanceCreation(ClassInstanceCreation other) {
@@ -46,6 +49,7 @@ public class ClassInstanceCreation extends Expression {
     expression.copyFrom(other.getExpression());
     type.copyFrom(other.getType());
     arguments.copyFrom(other.getArguments());
+    anonymousClassDeclaration.copyFrom(other.getAnonymousClassDeclaration());
   }
 
   public IMethodBinding getMethodBinding() {
@@ -64,12 +68,17 @@ public class ClassInstanceCreation extends Expression {
     return arguments;
   }
 
+  public AnonymousClassDeclaration getAnonymousClassDeclaration() {
+    return anonymousClassDeclaration.get();
+  }
+
   @Override
   protected void acceptInner(TreeVisitor visitor) {
     if (visitor.visit(this)) {
       expression.accept(visitor);
       type.accept(visitor);
       arguments.accept(visitor);
+      anonymousClassDeclaration.accept(visitor);
     }
     visitor.endVisit(this);
   }

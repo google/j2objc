@@ -17,28 +17,28 @@
 package com.google.devtools.j2objc.translate;
 
 import com.google.devtools.j2objc.GenerationTest;
+import com.google.devtools.j2objc.ast.AbstractTypeDeclaration;
+import com.google.devtools.j2objc.ast.Block;
+import com.google.devtools.j2objc.ast.CompilationUnit;
+import com.google.devtools.j2objc.ast.EmptyStatement;
+import com.google.devtools.j2objc.ast.ForStatement;
+import com.google.devtools.j2objc.ast.IfStatement;
+import com.google.devtools.j2objc.ast.LabeledStatement;
+import com.google.devtools.j2objc.ast.MethodDeclaration;
+import com.google.devtools.j2objc.ast.ReturnStatement;
+import com.google.devtools.j2objc.ast.SingleVariableDeclaration;
+import com.google.devtools.j2objc.ast.Statement;
+import com.google.devtools.j2objc.ast.SuperMethodInvocation;
+import com.google.devtools.j2objc.ast.SwitchStatement;
+import com.google.devtools.j2objc.ast.TreeUtil;
+import com.google.devtools.j2objc.ast.TypeDeclaration;
+import com.google.devtools.j2objc.ast.VariableDeclarationStatement;
 import com.google.devtools.j2objc.types.Types;
-import com.google.devtools.j2objc.util.ASTUtil;
 import com.google.devtools.j2objc.util.NameTable;
 
-import org.eclipse.jdt.core.dom.Block;
-import org.eclipse.jdt.core.dom.CompilationUnit;
-import org.eclipse.jdt.core.dom.EmptyStatement;
-import org.eclipse.jdt.core.dom.ForStatement;
-import org.eclipse.jdt.core.dom.IBinding;
 import org.eclipse.jdt.core.dom.ITypeBinding;
 import org.eclipse.jdt.core.dom.IVariableBinding;
-import org.eclipse.jdt.core.dom.IfStatement;
-import org.eclipse.jdt.core.dom.LabeledStatement;
-import org.eclipse.jdt.core.dom.MethodDeclaration;
 import org.eclipse.jdt.core.dom.Modifier;
-import org.eclipse.jdt.core.dom.ReturnStatement;
-import org.eclipse.jdt.core.dom.SingleVariableDeclaration;
-import org.eclipse.jdt.core.dom.Statement;
-import org.eclipse.jdt.core.dom.SuperMethodInvocation;
-import org.eclipse.jdt.core.dom.SwitchStatement;
-import org.eclipse.jdt.core.dom.TypeDeclaration;
-import org.eclipse.jdt.core.dom.VariableDeclarationStatement;
 
 import java.io.IOException;
 import java.util.List;
@@ -84,7 +84,7 @@ public class RewriterTest extends GenerationTest {
     ForStatement fs = (ForStatement) s;
     Statement forStmt = fs.getBody();
     assertTrue(forStmt instanceof Block);
-    stmts = ((Block) forStmt).statements();
+    stmts = ((Block) forStmt).getStatements();
     assertEquals(2, stmts.size());
     Statement lastStmt = stmts.get(1);
     assertTrue(lastStmt instanceof LabeledStatement);
@@ -101,7 +101,7 @@ public class RewriterTest extends GenerationTest {
     ForStatement fs = (ForStatement) s;
     Statement forStmt = fs.getBody();
     assertTrue(forStmt instanceof Block);
-    assertEquals(1, ((Block) forStmt).statements().size());
+    assertEquals(1, ((Block) forStmt).getStatements().size());
     Statement lastStmt = stmts.get(2);
     assertTrue(lastStmt instanceof LabeledStatement);
     assertTrue(((LabeledStatement) lastStmt).getBody() instanceof EmptyStatement);
@@ -116,14 +116,14 @@ public class RewriterTest extends GenerationTest {
     assertTrue(s instanceof IfStatement);
     s = ((IfStatement) s).getThenStatement();
     assertTrue(s instanceof Block);
-    stmts = ((Block) s).statements();
+    stmts = ((Block) s).getStatements();
     assertEquals(2, stmts.size());
     s = stmts.get(0);
     assertTrue(s instanceof ForStatement);  // not LabeledStatement
     ForStatement fs = (ForStatement) s;
     Statement forStmt = fs.getBody();
     assertTrue(forStmt instanceof Block);
-    assertEquals(1, ((Block) forStmt).statements().size());
+    assertEquals(1, ((Block) forStmt).getStatements().size());
     Statement labelStmt = stmts.get(1);
     assertTrue(labelStmt instanceof LabeledStatement);
     assertTrue(((LabeledStatement) labelStmt).getBody() instanceof EmptyStatement);
@@ -150,12 +150,12 @@ public class RewriterTest extends GenerationTest {
         "import java.util.Iterator; public abstract class Test implements Iterator<Test> { "
             + "public boolean hasNext() { return true; } }";
     CompilationUnit unit = translateType("Test", source);
-    List<?> types = unit.types();
+    List<AbstractTypeDeclaration> types = unit.getTypes();
     assertEquals(1, types.size());
     assertTrue(types.get(0) instanceof TypeDeclaration);
     TypeDeclaration testType = (TypeDeclaration) types.get(0);
-    MethodDeclaration[] methods = testType.getMethods();
-    assertEquals(4, methods.length);
+    List<MethodDeclaration> methods = TreeUtil.getMethodDeclarationsList(testType);
+    assertEquals(4, methods.size());
 
     // verify added methods are abstract, and that existing method wasn't changed
     for (MethodDeclaration m : methods) {
@@ -170,12 +170,12 @@ public class RewriterTest extends GenerationTest {
       } else {
         // it's an added method
         assertTrue(Modifier.isAbstract(modifiers));
-        assertEquals(0, m.parameters().size());
+        assertEquals(0, m.getParameters().size());
         if (name.equals("next")) {
-          assertEquals(testType.resolveBinding(), Types.getBinding(m.getReturnType2()));
+          assertEquals(testType.getTypeBinding(), m.getReturnType().getTypeBinding());
         } else if (name.equals("remove")) {
-          ITypeBinding voidType = m.getAST().resolveWellKnownType("void");
-          assertEquals(voidType, m.getReturnType2().resolveBinding());
+          ITypeBinding voidType = Types.resolveJavaType("void");
+          assertEquals(voidType, m.getReturnType().getTypeBinding());
         } else {
           fail("unknown method added: " + name);
         }
@@ -191,12 +191,12 @@ public class RewriterTest extends GenerationTest {
         "import java.util.List; public abstract class Test implements List<Object> { "
             + "public boolean isEmpty() { return true; } }";
     CompilationUnit unit = translateType("Test", source);
-    List<?> types = unit.types();
+    List<AbstractTypeDeclaration> types = unit.getTypes();
     assertEquals(1, types.size());
     assertTrue(types.get(0) instanceof TypeDeclaration);
     TypeDeclaration testType = (TypeDeclaration) types.get(0);
-    MethodDeclaration[] methods = testType.getMethods();
-    assertEquals(26, methods.length);
+    List<MethodDeclaration> methods = TreeUtil.getMethodDeclarationsList(testType);
+    assertEquals(26, methods.size());
 
     // verify added methods are abstract, and that existing method wasn't changed
     for (MethodDeclaration m : methods) {
@@ -211,16 +211,14 @@ public class RewriterTest extends GenerationTest {
       } else {
         // it's an added method
         assertTrue(Modifier.isAbstract(modifiers));
-        ITypeBinding returnType = Types.getTypeBinding(m.getReturnType2());
+        ITypeBinding returnType = m.getReturnType().getTypeBinding();
         if (name.equals("toArray")) {
           assertEquals("IOSObjectArray", returnType.getName());
-          if (!m.parameters().isEmpty()) {
-            assertEquals(1, m.parameters().size());
-            Object param = m.parameters().get(0);
-            IBinding paramBinding = Types.getBinding(param);
-            assertTrue(paramBinding instanceof IVariableBinding);
-            ITypeBinding paramType = ((IVariableBinding) paramBinding).getType();
-            assertTrue(paramType.isArray());
+          if (!m.getParameters().isEmpty()) {
+            assertEquals(1, m.getParameters().size());
+            SingleVariableDeclaration param = m.getParameters().get(0);
+            IVariableBinding paramBinding = param.getVariableBinding();
+            assertTrue(paramBinding.getType().isArray());
           }
         }
       }
@@ -237,17 +235,17 @@ public class RewriterTest extends GenerationTest {
         "  public interface I2 extends I1 { void bar(); } " +
         "  public abstract class Inner implements I2 { } }";
     CompilationUnit unit = translateType("Test", source);
-    List<?> types = unit.types();
+    List<AbstractTypeDeclaration> types = unit.getTypes();
     assertEquals(4, types.size());
     assertTrue(types.get(3) instanceof TypeDeclaration);
     TypeDeclaration innerType = (TypeDeclaration) types.get(3);
     assertEquals("Inner", innerType.getName().toString());
 
-    MethodDeclaration[] methods = innerType.getMethods();
-    assertEquals(3, methods.length);
-    String name0 = methods[0].getName().getIdentifier();
+    List<MethodDeclaration> methods = TreeUtil.getMethodDeclarationsList(innerType);
+    assertEquals(3, methods.size());
+    String name0 = methods.get(0).getName().getIdentifier();
     assertTrue(name0.matches("foo|bar"));
-    String name1 = methods[1].getName().getIdentifier();
+    String name1 = methods.get(1).getName().getIdentifier();
     assertTrue(name1.matches("foo|bar"));
     assertNotSame(name0, name1);
   }
@@ -261,18 +259,18 @@ public class RewriterTest extends GenerationTest {
         "public class Test implements Equateable {} " +
         "interface Equateable { boolean equals(Object o); }";
     CompilationUnit unit = translateType("Test", source);
-    assertEquals(2, unit.types().size());
-    TypeDeclaration innerType = (TypeDeclaration) unit.types().get(1);
+    assertEquals(2, unit.getTypes().size());
+    TypeDeclaration innerType = (TypeDeclaration) unit.getTypes().get(1);
     assertEquals("Test", innerType.getName().toString());
 
-    MethodDeclaration[] methods = innerType.getMethods();
-    assertEquals(2, methods.length);
-    MethodDeclaration equalsMethod = methods[0];
+    List<MethodDeclaration> methods = TreeUtil.getMethodDeclarationsList(innerType);
+    assertEquals(2, methods.size());
+    MethodDeclaration equalsMethod = methods.get(0);
     assertEquals("isEqual", equalsMethod.getName().getIdentifier());
     assertEquals(Modifier.PUBLIC, equalsMethod.getModifiers());
-    assertEquals(1, equalsMethod.parameters().size());
-    assertTrue(equalsMethod.parameters().get(0) instanceof SingleVariableDeclaration);
-    List<Statement> stmts = equalsMethod.getBody().statements();
+    assertEquals(1, equalsMethod.getParameters().size());
+    assertTrue(equalsMethod.getParameters().get(0) instanceof SingleVariableDeclaration);
+    List<Statement> stmts = equalsMethod.getBody().getStatements();
     assertEquals(1, stmts.size());
     Statement stmt = stmts.get(0);
     assertTrue(stmt instanceof ReturnStatement);
@@ -288,17 +286,17 @@ public class RewriterTest extends GenerationTest {
         "interface Equateable { boolean equals(Object o); }" +
         "public class Test { public void foo() { Equateable e = new Equateable() { }; } } ";
     CompilationUnit unit = translateType("Test", source);
-    assertEquals(3, unit.types().size());
-    TypeDeclaration innerType = (TypeDeclaration) unit.types().get(2);
+    assertEquals(3, unit.getTypes().size());
+    TypeDeclaration innerType = (TypeDeclaration) unit.getTypes().get(2);
     assertEquals("$1", innerType.getName().toString());
 
-    MethodDeclaration[] methods = innerType.getMethods();
-    assertEquals(2, methods.length); // isEqual, init
-    MethodDeclaration equalsMethod = methods[0];
+    List<MethodDeclaration> methods = TreeUtil.getMethodDeclarationsList(innerType);
+    assertEquals(2, methods.size()); // isEqual, init
+    MethodDeclaration equalsMethod = methods.get(0);
     assertEquals("isEqual", equalsMethod.getName().getIdentifier());
-    assertEquals(1, equalsMethod.parameters().size());
-    assertTrue(equalsMethod.parameters().get(0) instanceof SingleVariableDeclaration);
-    List<Statement> stmts = equalsMethod.getBody().statements();
+    assertEquals(1, equalsMethod.getParameters().size());
+    assertTrue(equalsMethod.getParameters().get(0) instanceof SingleVariableDeclaration);
+    List<Statement> stmts = equalsMethod.getBody().getStatements();
     assertEquals(1, stmts.size());
     Statement stmt = stmts.get(0);
     assertTrue(stmt instanceof ReturnStatement);
@@ -308,19 +306,13 @@ public class RewriterTest extends GenerationTest {
   /**
    * Verify that array initializers are rewritten as method calls.
    */
-  public void testArrayInitializerRewrite() {
-    String source =
-        "public class Test { void test() { int[] a = { 1, 2, 3 }; char b[] = { '4', '5' }; } }";
-    CompilationUnit unit = translateType("Test", source);
-    TypeDeclaration clazz = (TypeDeclaration) unit.types().get(0);
-    MethodDeclaration md = (MethodDeclaration) clazz.bodyDeclarations().get(0);
-    List<Statement> stmts = md.getBody().statements();
-    assertEquals(2, stmts.size());
-
-    assertEquals("IOSIntArray a=IOSIntArray.arrayWithInts({1,2,3},3);",
-        stmts.get(0).toString().trim());
-    assertEquals("IOSCharArray b[]=IOSCharArray.arrayWithChars({'4','5'},2);",
-      stmts.get(1).toString().trim());
+  public void testArrayInitializerRewrite() throws IOException {
+    String translation = translateSourceFile(
+        "public class Test { void test() { int[] a = { 1, 2, 3 }; char b[] = { '4', '5' }; } }",
+        "Test", "Test.m");
+    assertTranslatedLines(translation,
+        "IOSIntArray *a = [IOSIntArray arrayWithInts:(int[]){ 1, 2, 3 } count:3];",
+        "IOSCharArray *b = [IOSCharArray arrayWithChars:(unichar[]){ '4', '5' } count:2];");
   }
 
   /**
@@ -441,12 +433,12 @@ public class RewriterTest extends GenerationTest {
         "case 2: log(i); break; " +
         "case 3: log(i); int k = i, l = 42; break; }}" +
         "private void log(int i) {}}");
-    TypeDeclaration testType = (TypeDeclaration) unit.types().get(0);
-    MethodDeclaration method = testType.getMethods()[0];
-    List<Statement> stmts = ASTUtil.getStatements(method.getBody());
+    TypeDeclaration testType = (TypeDeclaration) unit.getTypes().get(0);
+    MethodDeclaration method = TreeUtil.getMethodDeclarationsList(testType).get(0);
+    List<Statement> stmts = method.getBody().getStatements();
     assertEquals(1, stmts.size());
     Block block = (Block) stmts.get(0);
-    stmts = ASTUtil.getStatements(block);
+    stmts = block.getStatements();
     assertEquals(3, stmts.size());
     assertTrue(stmts.get(0) instanceof VariableDeclarationStatement);
     assertTrue(stmts.get(1) instanceof VariableDeclarationStatement);
@@ -564,12 +556,12 @@ public class RewriterTest extends GenerationTest {
   // infix operands.
   public void testLowerPrecedence() throws IOException {
     String translation = translateSourceFile(
-        "class Test { " +
-        "boolean test1(int o, int p, int q) {" +
-        "  return o < 0 | (o == 0 & p > q); } " +
-        "boolean test2(int r) {" +
-        "  return r < 0 & !isPowerOfTwo(r); } " +
-        "boolean isPowerOfTwo(int i) { return false; }}",
+        "class Test { "
+        + "boolean test1(int o, int p, int q) {"
+        + "  return o < 0 | (o == 0 & p > q); } "
+        + "boolean test2(int r) {"
+        + "  return r < 0 & !isPowerOfTwo(r); } "
+        + "boolean isPowerOfTwo(int i) { return false; }}",
         "Test", "Test.m");
     assertTranslatedLines(translation, "return (o < 0) | ((o == 0) & (p > q));");
     assertTranslatedLines(translation, "return (r < 0) & ![self isPowerOfTwoWithInt:r];");
@@ -580,14 +572,14 @@ public class RewriterTest extends GenerationTest {
   // superclass implementation.
   public void testSuperMethodsAddedToAnonymousClass() throws IOException {
     String translation = translateSourceFile(
-        "class Test { " +
-        "  Foo test() {" +
-        "    return new Foo() {" +
-        "      @Override public int foo() { return 42; }};" +
-        "  }" +
-        "  interface Foo {" +
-        "    int foo();" +
-        "    @Override boolean equals(Object object);}}",
+        "class Test { "
+        + "  Foo test() {"
+        + "    return new Foo() {"
+        + "      @Override public int foo() { return 42; }};"
+        + "  }"
+        + "  interface Foo {"
+        + "    int foo();"
+        + "    @Override boolean equals(Object object);}}",
         "Test", "Test.m");
     assertNotInTranslation(translation, "doesNotRecognizeSelector:_cmd");
     assertTranslation(translation, "return [super isEqual:param0];");
@@ -595,28 +587,29 @@ public class RewriterTest extends GenerationTest {
 
   public void testRetainedLocalRef() throws IOException {
     String translation = translateSourceFile(
-        "class Test { " +
-        "  boolean test1(String s1, String s2) {" +
-        "    @com.google.j2objc.annotations.RetainedLocalRef" +
-        "    java.util.Comparator<String> c = String.CASE_INSENSITIVE_ORDER;" +
-        "    return c.compare(s1, s2) == 0;" +
-        "    }   " +
-        "  boolean test2(Thing t, String s1, String s2) {" +
-        "    @com.google.j2objc.annotations.RetainedLocalRef" +
-        "    Thing thing = t;" +
-        "    return t.comp.compare(s1, s2) == 0;" +
-        "  }" +
-        "  private static class Thing { public java.util.Comparator<String> comp; }}",
+        "class Test { "
+        + "  boolean test1(String s1, String s2) {"
+        + "    @com.google.j2objc.annotations.RetainedLocalRef"
+        + "    java.util.Comparator<String> c = String.CASE_INSENSITIVE_ORDER;"
+        + "    return c.compare(s1, s2) == 0;"
+        + "    }   "
+        + "  boolean test2(Thing t, String s1, String s2) {"
+        + "    @com.google.j2objc.annotations.RetainedLocalRef"
+        + "    Thing thing = t;"
+        + "    return t.comp.compare(s1, s2) == 0;"
+        + "  }"
+        + "  private static class Thing { public java.util.Comparator<String> comp; }}",
         "Test", "Test.m");
     assertNotInTranslation(translation, "RetainedLocalRef");
-    assertTranslation(translation, "ComGoogleJ2objcUtilScopedLocalRef *c = " +
-    		"[[[ComGoogleJ2objcUtilScopedLocalRef alloc] " +
-    		"initWithId:NSString_get_CASE_INSENSITIVE_ORDER_()] autorelease];");
+    assertTranslation(translation, "ComGoogleJ2objcUtilScopedLocalRef *c = "
+        + "[[[ComGoogleJ2objcUtilScopedLocalRef alloc] "
+        + "initWithId:NSString_get_CASE_INSENSITIVE_ORDER_()] autorelease];");
     assertTranslation(translation,
-        "return [((id<JavaUtilComparator>) nil_chk(((id<JavaUtilComparator>) " +
-        "check_protocol_cast(c->var_, @protocol(JavaUtilComparator))))) compareWithId:s1 withId:s2] == 0;");
-    assertTranslation(translation, "ComGoogleJ2objcUtilScopedLocalRef *thing = " +
-    		"[[[ComGoogleJ2objcUtilScopedLocalRef alloc] initWithId:t] autorelease];");
+        "return [((id<JavaUtilComparator>) nil_chk(((id<JavaUtilComparator>) "
+        + "check_protocol_cast(c->var_, @protocol(JavaUtilComparator))))) "
+        + "compareWithId:s1 withId:s2] == 0;");
+    assertTranslation(translation, "ComGoogleJ2objcUtilScopedLocalRef *thing = "
+        + "[[[ComGoogleJ2objcUtilScopedLocalRef alloc] initWithId:t] autorelease];");
     assertTranslation(translation,
         "return [((id<JavaUtilComparator>) nil_chk(((Test_Thing *) nil_chk(t))->comp_)) " +
         "compareWithId:s1 withId:s2] == 0;");
@@ -624,8 +617,8 @@ public class RewriterTest extends GenerationTest {
 
   public void testInitializeRenamed() throws IOException {
     String translation = translateSourceFile(
-        "class Test { " +
-        "  public static void initialize() {}}",
+        "class Test { "
+        + "  public static void initialize() {}}",
         "Test", "Test.m");
     assertTranslation(translation, "+ (void)initialize__ {");
   }

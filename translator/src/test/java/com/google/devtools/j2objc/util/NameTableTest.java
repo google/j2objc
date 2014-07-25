@@ -18,14 +18,13 @@ package com.google.devtools.j2objc.util;
 
 import com.google.devtools.j2objc.GenerationTest;
 import com.google.devtools.j2objc.Options;
-import com.google.devtools.j2objc.types.Types;
+import com.google.devtools.j2objc.ast.AbstractTypeDeclaration;
+import com.google.devtools.j2objc.ast.CompilationUnit;
+import com.google.devtools.j2objc.ast.MethodDeclaration;
+import com.google.devtools.j2objc.ast.TreeVisitor;
 
-import org.eclipse.jdt.core.dom.ASTVisitor;
-import org.eclipse.jdt.core.dom.CompilationUnit;
 import org.eclipse.jdt.core.dom.IMethodBinding;
 import org.eclipse.jdt.core.dom.ITypeBinding;
-import org.eclipse.jdt.core.dom.MethodDeclaration;
-import org.eclipse.jdt.core.dom.TypeDeclaration;
 
 import java.io.IOException;
 
@@ -45,61 +44,51 @@ public class NameTableTest extends GenerationTest {
   public void testGetFullNameWithPrefix() {
     String source = "package foo.bar; public class SomeClass {}";
     CompilationUnit unit = translateType("SomeClass", source);
-    TypeDeclaration decl = (TypeDeclaration) unit.types().get(0);
+    AbstractTypeDeclaration decl = unit.getTypes().get(0);
     NameTable.mapPackageToPrefix("foo.bar", "FB");
-    assertEquals("FBSomeClass", NameTable.getFullName(decl));
-    ITypeBinding binding = Types.getTypeBinding(decl);
-    assertEquals("FBSomeClass", NameTable.getFullName(binding));
+    assertEquals("FBSomeClass", NameTable.getFullName(decl.getTypeBinding()));
   }
 
   // Verify inner class name with prefix.
   public void testGetFullNameWithInnerClassAndPrefix() {
     String source = "package foo.bar; public class SomeClass { static class Inner {}}";
     CompilationUnit unit = translateType("SomeClass", source);
-    TypeDeclaration decl = (TypeDeclaration) unit.types().get(1);
+    AbstractTypeDeclaration decl = unit.getTypes().get(1);
     NameTable.mapPackageToPrefix("foo.bar", "FB");
-    assertEquals("FBSomeClass_Inner", NameTable.getFullName(decl));
-    ITypeBinding binding = Types.getTypeBinding(decl);
-    assertEquals("FBSomeClass_Inner", NameTable.getFullName(binding));
+    assertEquals("FBSomeClass_Inner", NameTable.getFullName(decl.getTypeBinding()));
   }
 
   // Verify class name without package is unchanged.
   public void testGetFullNameNoPackage() {
     String source = "public class SomeClass {}";
     CompilationUnit unit = translateType("SomeClass", source);
-    TypeDeclaration decl = (TypeDeclaration) unit.types().get(0);
-    assertEquals("SomeClass", NameTable.getFullName(decl));
-    ITypeBinding binding = Types.getTypeBinding(decl);
-    assertEquals("SomeClass", NameTable.getFullName(binding));
+    AbstractTypeDeclaration decl = unit.getTypes().get(0);
+    assertEquals("SomeClass", NameTable.getFullName(decl.getTypeBinding()));
   }
 
   // Verify class name with package is camel-cased.
   public void testGetFullNameWithPackage() {
     String source = "package foo.bar; public class SomeClass {}";
     CompilationUnit unit = translateType("SomeClass", source);
-    TypeDeclaration decl = (TypeDeclaration) unit.types().get(0);
-    assertEquals("FooBarSomeClass", NameTable.getFullName(decl));
-    ITypeBinding binding = Types.getTypeBinding(decl);
-    assertEquals("FooBarSomeClass", NameTable.getFullName(binding));
+    AbstractTypeDeclaration decl = unit.getTypes().get(0);
+    assertEquals("FooBarSomeClass", NameTable.getFullName(decl.getTypeBinding()));
   }
 
   // Verify inner class name with package is camel-cased.
   public void testGetFullNameWithInnerClass() {
     String source = "package foo.bar; public class SomeClass { static class Inner {}}";
     CompilationUnit unit = translateType("SomeClass", source);
-    TypeDeclaration decl = (TypeDeclaration) unit.types().get(1);
-    assertEquals("FooBarSomeClass_Inner", NameTable.getFullName(decl));
-    ITypeBinding binding = Types.getTypeBinding(decl);
-    assertEquals("FooBarSomeClass_Inner", NameTable.getFullName(binding));
+    AbstractTypeDeclaration decl = unit.getTypes().get(1);
+    assertEquals("FooBarSomeClass_Inner", NameTable.getFullName(decl.getTypeBinding()));
   }
 
   public void testTypeVariableWithTypeVariableBounds() {
     String source = "class A<T> { <E extends T> void foo(E e) {} }";
     CompilationUnit unit = translateType("A", source);
     final IMethodBinding[] methodBinding = new IMethodBinding[1];
-    unit.accept(new ASTVisitor() {
+    unit.accept(new TreeVisitor() {
       @Override public void endVisit(MethodDeclaration node) {
-        IMethodBinding binding = Types.getMethodBinding(node);
+        IMethodBinding binding = node.getMethodBinding();
         if (binding.getName().equals("foo")) {
           methodBinding[0] = binding;
         }
@@ -111,10 +100,10 @@ public class NameTableTest extends GenerationTest {
   }
 
   public void testPrimitiveArrayParameterName() throws IOException {
-    String translation = translateSourceFile("public class A { " +
-        "void foo(int[] value1) {}" +
-        "void foo(Integer[] value2) {}" +
-        "void foo(String[] value3) {}}", "A", "A.h");
+    String translation = translateSourceFile("public class A { "
+        + "void foo(int[] value1) {}"
+        + "void foo(Integer[] value2) {}"
+        + "void foo(String[] value3) {}}", "A", "A.h");
     assertTranslation(translation, "- (void)fooWithIntArray:(IOSIntArray *)value1");
     assertTranslation(translation,
         "- (void)fooWithJavaLangIntegerArray:(IOSObjectArray *)value2");
@@ -123,18 +112,18 @@ public class NameTableTest extends GenerationTest {
   }
 
   public void testMultiDimArrayName() throws IOException {
-    String translation = translateSourceFile("public class A { " +
-        "void foo(int[] values) {}" +
-        "void foo(int[][] values) {}" +
-        "void foo(int[][][] values) {}}", "A", "A.h");
+    String translation = translateSourceFile("public class A { "
+        + "void foo(int[] values) {}"
+        + "void foo(int[][] values) {}"
+        + "void foo(int[][][] values) {}}", "A", "A.h");
     assertTranslation(translation, "- (void)fooWithIntArray:(IOSIntArray *)values");
     assertTranslation(translation, "- (void)fooWithIntArray2:(IOSObjectArray *)values");
     assertTranslation(translation, "- (void)fooWithIntArray3:(IOSObjectArray *)values");
   }
 
   public void testRenameAnnotation() throws IOException {
-    addSourceFile("@com.google.j2objc.annotations.ObjectiveCName(\"TestName\") " +
-    		"public class A { static void test() {}}", "A.java");
+    addSourceFile("@com.google.j2objc.annotations.ObjectiveCName(\"TestName\") "
+        + "public class A { static void test() {}}", "A.java");
     addSourceFile(
         "public class B { void test() { A.test(); }}", "B.java");
     String translation = translateSourceFile("A", "A.h");

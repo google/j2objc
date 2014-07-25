@@ -17,16 +17,17 @@
 package com.google.devtools.j2objc.translate;
 
 import com.google.devtools.j2objc.GenerationTest;
+import com.google.devtools.j2objc.ast.AbstractTypeDeclaration;
+import com.google.devtools.j2objc.ast.BodyDeclaration;
+import com.google.devtools.j2objc.ast.CompilationUnit;
+import com.google.devtools.j2objc.ast.ExpressionStatement;
+import com.google.devtools.j2objc.ast.MethodDeclaration;
+import com.google.devtools.j2objc.ast.Statement;
+import com.google.devtools.j2objc.ast.SuperConstructorInvocation;
+import com.google.devtools.j2objc.ast.TypeDeclaration;
 
-import org.eclipse.jdt.core.dom.BodyDeclaration;
-import org.eclipse.jdt.core.dom.CompilationUnit;
-import org.eclipse.jdt.core.dom.ExpressionStatement;
 import org.eclipse.jdt.core.dom.IMethodBinding;
-import org.eclipse.jdt.core.dom.MethodDeclaration;
 import org.eclipse.jdt.core.dom.Modifier;
-import org.eclipse.jdt.core.dom.Statement;
-import org.eclipse.jdt.core.dom.SuperConstructorInvocation;
-import org.eclipse.jdt.core.dom.TypeDeclaration;
 
 import java.io.IOException;
 import java.util.List;
@@ -36,7 +37,6 @@ import java.util.List;
  *
  * @author Tom Ball
  */
-@SuppressWarnings("unchecked")  // JDT lists are raw, but still safely typed.
 public class InitializationNormalizerTest extends GenerationTest {
   // TODO(tball): update bug id in comments to public issue numbers when
   // issue tracking is sync'd.
@@ -52,7 +52,7 @@ public class InitializationNormalizerTest extends GenerationTest {
   private TypeDeclaration translateClassBody(String testSource) {
     String source = "public class Test { " + testSource + " }";
     CompilationUnit unit = translateType("Test", source);
-    List<?> types = unit.types();
+    List<AbstractTypeDeclaration> types = unit.getTypes();
     assertEquals(1, types.size());
     assertTrue(types.get(0) instanceof TypeDeclaration);
     return (TypeDeclaration) types.get(0);
@@ -149,25 +149,6 @@ public class InitializationNormalizerTest extends GenerationTest {
             "printlnWithNSString:@\"foo\"];");
   }
 
-  public void testIsDesignatedConstructor() {
-    TypeDeclaration clazz = translateClassBody(
-        "Test() { this(42); } Test(int i) {} Test(int i, byte b) { System.out.print(b); }");
-    List<BodyDeclaration> classMembers = clazz.bodyDeclarations();
-    assertEquals(3, classMembers.size());
-
-    BodyDeclaration decl = classMembers.get(0);
-    assertTrue(decl instanceof MethodDeclaration);
-    assertFalse(instance.isDesignatedConstructor((MethodDeclaration) decl));
-
-    decl = classMembers.get(1);
-    assertTrue(decl instanceof MethodDeclaration);
-    assertTrue(instance.isDesignatedConstructor((MethodDeclaration) decl));
-
-    decl = classMembers.get(2);
-    assertTrue(decl instanceof MethodDeclaration);
-    assertTrue(instance.isDesignatedConstructor((MethodDeclaration) decl));
-  }
-
   public void testInitializerMovedToDesignatedConstructor() throws IOException {
     String translation = translateSourceFile(
         "class Test { java.util.Date date; { date = new java.util.Date(); } "
@@ -193,22 +174,22 @@ public class InitializationNormalizerTest extends GenerationTest {
   public void testInitializerMovedToEmptyConstructor() {
     TypeDeclaration clazz = translateClassBody(
         "java.util.Date date = new java.util.Date(); public Test() {}");
-    List<BodyDeclaration> classMembers = clazz.bodyDeclarations();
+    List<BodyDeclaration> classMembers = clazz.getBodyDeclarations();
     assertEquals(4, classMembers.size());  // dealloc() was also added to release date
 
     // Test that the constructor had super() and initialization statements added.
     BodyDeclaration decl = classMembers.get(1);
     MethodDeclaration method = (MethodDeclaration) decl;
-    IMethodBinding binding = method.resolveBinding();
+    IMethodBinding binding = method.getMethodBinding();
     assertTrue(binding.isConstructor());
     assertEquals(Modifier.PUBLIC, method.getModifiers());
-    assertTrue(method.parameters().isEmpty());
-    List<Statement> generatedStatements = method.getBody().statements();
+    assertTrue(method.getParameters().isEmpty());
+    List<Statement> generatedStatements = method.getBody().getStatements();
     assertEquals(2, generatedStatements.size());
     assertTrue(generatedStatements.get(0) instanceof SuperConstructorInvocation);
     SuperConstructorInvocation superInvoke =
         (SuperConstructorInvocation) generatedStatements.get(0);
-    assertTrue(superInvoke.arguments().isEmpty());
+    assertTrue(superInvoke.getArguments().isEmpty());
     assertTrue(generatedStatements.get(1) instanceof ExpressionStatement);
   }
 

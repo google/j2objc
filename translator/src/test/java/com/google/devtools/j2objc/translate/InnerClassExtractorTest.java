@@ -16,37 +16,16 @@
 
 package com.google.devtools.j2objc.translate;
 
-import com.google.common.collect.Maps;
 import com.google.devtools.j2objc.GenerationTest;
 import com.google.devtools.j2objc.Options;
 import com.google.devtools.j2objc.Options.MemoryManagementOption;
-import com.google.devtools.j2objc.ast.TreeConverter;
-import com.google.devtools.j2objc.gen.SourceBuilder;
-import com.google.devtools.j2objc.gen.SourcePosition;
-import com.google.devtools.j2objc.gen.StatementGenerator;
-import com.google.devtools.j2objc.types.Types;
-import com.google.devtools.j2objc.util.ASTUtil;
-import com.google.devtools.j2objc.util.NameTable;
-
-import org.eclipse.jdt.core.dom.ASTVisitor;
-import org.eclipse.jdt.core.dom.AbstractTypeDeclaration;
-import org.eclipse.jdt.core.dom.Assignment;
-import org.eclipse.jdt.core.dom.BodyDeclaration;
-import org.eclipse.jdt.core.dom.CompilationUnit;
-import org.eclipse.jdt.core.dom.ConstructorInvocation;
-import org.eclipse.jdt.core.dom.ExpressionStatement;
-import org.eclipse.jdt.core.dom.FieldDeclaration;
-import org.eclipse.jdt.core.dom.IVariableBinding;
-import org.eclipse.jdt.core.dom.MethodDeclaration;
-import org.eclipse.jdt.core.dom.MethodInvocation;
-import org.eclipse.jdt.core.dom.ReturnStatement;
-import org.eclipse.jdt.core.dom.SingleVariableDeclaration;
-import org.eclipse.jdt.core.dom.VariableDeclarationStatement;
+import com.google.devtools.j2objc.ast.AbstractTypeDeclaration;
+import com.google.devtools.j2objc.ast.CompilationUnit;
+import com.google.devtools.j2objc.ast.MethodInvocation;
+import com.google.devtools.j2objc.ast.TreeVisitor;
 
 import java.io.IOException;
-import java.util.Collections;
 import java.util.List;
-import java.util.Map;
 
 /**
  * Unit tests for {@link InnerClassExtractor}.
@@ -65,7 +44,7 @@ public class InnerClassExtractorTest extends GenerationTest {
   protected List<AbstractTypeDeclaration> translateClassBody(String testSource) {
     String source = "public class Test { " + testSource + " }";
     CompilationUnit unit = translateType("Test", source);
-    return ASTUtil.getTypes(unit);
+    return unit.getTypes();
   }
 
   public void testSimpleInnerClass() throws IOException {
@@ -149,33 +128,27 @@ public class InnerClassExtractorTest extends GenerationTest {
   /**
    * Verify that a static inner class is extracted.
    */
-  public void testStaticInnerClass() {
-    List<AbstractTypeDeclaration> types = translateClassBody(
-        "static class Foo { int i; Foo() { this(0); } Foo(int i) { this.i = i; } }");
-    assertEquals(2, types.size());
-    List<BodyDeclaration> classMembers = ASTUtil.getBodyDeclarations(types.get(0));
-    assertTrue(classMembers.size() == 1);
-    AbstractTypeDeclaration innerClass = types.get(1);
-    assertEquals(4, innerClass.bodyDeclarations().size());
-    List<BodyDeclaration> members = ASTUtil.getBodyDeclarations(innerClass);
+  public void testStaticInnerClass() throws IOException {
+    String translation = translateSourceFile(
+        "class Test { static class Foo { int i; Foo() { this(0); } Foo(int i) { this.i = i; } } }",
+        "Test", "Test.h");
+    assertTranslatedLines(translation,
+        "@interface Test_Foo : NSObject {",
+        "@public",
+        "int i_;",
+        "}");
 
-    FieldDeclaration field = (FieldDeclaration) members.get(0);
-    assertEquals("int", field.getType().toString());
-
-    MethodDeclaration method = (MethodDeclaration) members.get(1);
-    assertTrue(method.isConstructor());
-    assertTrue(method.parameters().isEmpty());
-    assertEquals(1, method.getBody().statements().size());
-    ConstructorInvocation stmt = (ConstructorInvocation) method.getBody().statements().get(0);
-    assertEquals(1, stmt.arguments().size());
-
-
-    method = (MethodDeclaration) members.get(2);
-    assertTrue(method.isConstructor());
-    assertEquals(1, method.parameters().size());
-    assertEquals(2, method.getBody().statements().size());
-    ExpressionStatement expr = (ExpressionStatement) method.getBody().statements().get(1);
-    assertTrue(expr.getExpression() instanceof Assignment);
+    translation = getTranslatedFile("Test.m");
+    assertTranslatedLines(translation,
+        "- (instancetype)init {",
+        "return JreMemDebugAdd([self initTest_FooWithInt:0]);");
+    assertTranslatedLines(translation,
+        "- (instancetype)initTest_FooWithInt:(int)i {",
+        "if (self = [super init]) {",
+        "self->i_ = i;");
+    assertTranslatedLines(translation,
+        "- (instancetype)initWithInt:(int)i {",
+        "return [self initTest_FooWithInt:i];");
   }
 
   /**
@@ -201,7 +174,7 @@ public class InnerClassExtractorTest extends GenerationTest {
     assertEquals(2, types.size());
 
     final int[] testsFound = { 0 };
-    types.get(0).accept(new ASTVisitor() {
+    types.get(0).accept(new TreeVisitor() {
       @Override
       public void endVisit(MethodInvocation node) {
         // Verify that Test.test() wasn't translated to this$0.test().
@@ -220,21 +193,11 @@ public class InnerClassExtractorTest extends GenerationTest {
     assertTranslation(translation, "return [this$0_ size];");
   }
 
-  public void testInnerClassInvokingOuterMethod() {
-    List<AbstractTypeDeclaration> types = translateClassBody(
-      "public int size() { return 0; } " +
-      "class Inner { int getCount() { return size(); }}");
-    assertEquals(2, types.size());
-
-    final int[] testsFound = { 0 };
-    types.get(1).accept(new ASTVisitor() {
-      @Override
-      public void endVisit(ReturnStatement node) {
-        assertEquals("return this$0.size();", node.toString().trim());
-        ++testsFound[0];
-      }
-    });
-    assertEquals(1, testsFound[0]);
+  public void testInnerClassInvokingOuterMethod() throws IOException {
+    String translation = translateSourceFile(
+        "class Test { public int size() { return 0; } " +
+        "class Inner { int getCount() { return size(); } } }", "Test", "Test.m");
+    assertTranslation(translation, "return [this$0_ size];");
   }
 
   public void testInnerSubclassInvokingOuterMethod() throws IOException {
@@ -255,29 +218,15 @@ public class InnerClassExtractorTest extends GenerationTest {
     assertTranslation(translation, "Test_Inner_set_this$0_(self, outer$);");
   }
 
-  public void testOuterClassAccessOuterVars() {
-    List<AbstractTypeDeclaration> types = translateClassBody(
-      "int elementCount;" +
-      "public Test() { " +
-      "  elementCount = 0; }" +
-      "private class Iterator {" +
-      "  public void remove() {" +
-      "    elementCount--;" +
-      "  }}");
-    assertEquals(2, types.size());
-
-    final int[] testsFound = { 0 };
-    types.get(0).accept(new ASTVisitor() {
-      @Override
-      public void endVisit(MethodDeclaration node) {
-        if (node.isConstructor()) {
-          // No this$0 qualifier should have been added.
-          assertEquals("elementCount=0;", node.getBody().statements().get(1).toString().trim());
-          ++testsFound[0];
-        }
-      };
-    });
-    assertEquals(1, testsFound[0]);
+  public void testOuterClassAccessOuterVars() throws IOException {
+    String translation = translateSourceFile(
+        "class Test { int elementCount;" +
+        "public Test() { elementCount = 0; }" +
+        "private class Iterator { public void remove() { elementCount--; } } }", "Test", "Test.m");
+    assertTranslatedLines(translation, "elementCount_ = 0;");
+    assertTranslatedLines(translation,
+        "- (void)remove {",
+        "this$0_->elementCount_--;");
   }
 
   public void testOuterInterfaceMethodReference() throws IOException {
@@ -308,7 +257,7 @@ public class InnerClassExtractorTest extends GenerationTest {
         "      new Foo() { public void doSomething() { " +
         "      Inner.this.x = 2; A.this.x = 3; }}; }}}";
     CompilationUnit unit = translateType("A", source);
-    List<AbstractTypeDeclaration> types = ASTUtil.getTypes(unit);
+    List<AbstractTypeDeclaration> types = unit.getTypes();
     assertEquals(4, types.size());
 
     String translation = translateSourceFile(source, "A", "A.m");
@@ -336,7 +285,7 @@ public class InnerClassExtractorTest extends GenerationTest {
         "      new Foo() { public void doSomething() { " +
         "      Inner.this.x = 3; A.this.x = 4; }}; }}}";
     CompilationUnit unit = translateType("A", source);
-    List<AbstractTypeDeclaration> types = ASTUtil.getTypes(unit);
+    List<AbstractTypeDeclaration> types = unit.getTypes();
     assertEquals(4, types.size());
 
     String translation = translateSourceFile(source, "A", "A.m");
@@ -467,52 +416,34 @@ public class InnerClassExtractorTest extends GenerationTest {
         "class B extends A { " +
         "  public class BInner extends A.Inner { } } " +
         "public static void main(String[] args) { B b = new Test().new B(); }}";
-    CompilationUnit unit = translateType("Test", source);
-    List<AbstractTypeDeclaration> types = ASTUtil.getTypes(unit);
-    assertEquals(5, types.size());
-    Map<String, AbstractTypeDeclaration> typesByName = Maps.newHashMap();
-    for (AbstractTypeDeclaration type : types) {
-      typesByName.put(NameTable.getFullName(type), type);
-    }
-
-    // Verify that main method creates a new instanceof B associated with
-    // a new instance of Test.
-    List<BodyDeclaration> classMembers = ASTUtil.getBodyDeclarations(typesByName.get("Test"));
-    assertEquals(4, classMembers.size());
-    MethodDeclaration method = (MethodDeclaration) classMembers.get(1);
-    assertEquals("main", method.getName().getIdentifier());
-    VariableDeclarationStatement field =
-        (VariableDeclarationStatement) method.getBody().statements().get(0);
-    assertEquals("Test_B", NameTable.getFullName(Types.getTypeBinding(field.getType())));
-    String result = StatementGenerator.generate(
-        TreeConverter.convert(field), Collections.<IVariableBinding>emptySet(),
-        false, new SourcePosition(null, SourceBuilder.BEGINNING_OF_FILE, null)).trim();
-    assertEquals("Test_B *b = " +
-        "[[[Test_B alloc] initWithTest:[[[Test alloc] init] autorelease]] autorelease];", result);
-
-    // Verify that A has a Test field (this$0).
-    AbstractTypeDeclaration classA = typesByName.get("Test_A");
-    assertNotNull(classA);
-    classMembers = ASTUtil.getBodyDeclarations(classA);
-    assertEquals(4, classMembers.size());  // Test field, init, foo, dealloc.
-
-    // Verify that B has a Test field (this$0).
-    AbstractTypeDeclaration classB = typesByName.get("Test_B");
-    assertNotNull(classB);
-    classMembers = ASTUtil.getBodyDeclarations(classB);
-    assertEquals(1, classMembers.size());  // init
-
-    // Verify that B has a constructor that takes a Test instance.
-    method = (MethodDeclaration) classMembers.get(0);
-    assertTrue(method.isConstructor());
-    assertEquals(1, method.parameters().size());
-    SingleVariableDeclaration param = (SingleVariableDeclaration) method.parameters().get(0);
-    assertEquals("Test", param.getType().toString());
 
     // Verify that B's translation has the Test field declared.
     String translation = translateSourceFile(source, "Test", "Test.h");
     assertTranslation(translation, "Test *this$0_;");
+
+    // Verify that A has a Test field (this$0).
+    assertTranslatedLines(translation,
+        "@interface Test_A : NSObject {",
+        "@public",
+        "Test *this$0_;",
+        "}");
+
+    // Verify that B does not have a Test field.
+    assertTranslatedLines(translation,
+        "@interface Test_B : Test_A {",
+        "}");
+
     translation = getTranslatedFile("Test.m");
+
+    // Verify that main method creates a new instanceof B associated with
+    // a new instance of Test.
+    assertTranslatedLines(translation,
+        "+ (void)mainWithNSStringArray:(IOSObjectArray *)args {",
+        "Test_B *b = [[[Test_B alloc] initWithTest:[[[Test alloc] init] autorelease]] "
+            + "autorelease];");
+
+    // Verify that BInner's constructor takes a B instance and correctly calls
+    // the super constructor.
     assertTranslation(translation, "- (instancetype)initWithTest_B:(Test_B *)outer$ {");
     assertTranslation(translation, "[super initWithTest_A:outer$]");
   }
@@ -527,52 +458,34 @@ public class InnerClassExtractorTest extends GenerationTest {
         "  private void foo() { i++; } " +
         "  public class Inner { Inner() { foo(); } } } " +
         "public static void main(String[] args) { B b = new Test().new B(); }}";
-    CompilationUnit unit = translateType("Test", source);
-    List<AbstractTypeDeclaration> types = ASTUtil.getTypes(unit);
-    assertEquals(5, types.size());
-    Map<String, AbstractTypeDeclaration> typesByName = Maps.newHashMap();
-    for (AbstractTypeDeclaration type : types) {
-      typesByName.put(NameTable.getFullName(type), type);
-    }
-
-    // Verify that main method creates a new instanceof B associated with
-    // a new instance of Test.
-    List<BodyDeclaration> classMembers = ASTUtil.getBodyDeclarations(typesByName.get("Test"));
-    assertEquals(4, classMembers.size());
-    MethodDeclaration method = (MethodDeclaration) classMembers.get(1);
-    assertEquals("main", method.getName().getIdentifier());
-    VariableDeclarationStatement field =
-        (VariableDeclarationStatement) method.getBody().statements().get(0);
-    assertEquals("Test_B", NameTable.getFullName(Types.getTypeBinding(field.getType())));
-    String result = StatementGenerator.generate(
-        TreeConverter.convert(field), Collections.<IVariableBinding>emptySet(),
-        false, new SourcePosition(null, SourceBuilder.BEGINNING_OF_FILE, null)).trim();
-    assertEquals("Test_B *b = " +
-        "[[[Test_B alloc] initWithTest:[[[Test alloc] init] autorelease]] autorelease];", result);
-
-    // Verify that A has a Test field (this$0).
-    AbstractTypeDeclaration classA = typesByName.get("Test_A");
-    assertNotNull(classA);
-    classMembers = ASTUtil.getBodyDeclarations(classA);
-    assertEquals(4, classMembers.size());  // Test field, init, foo, dealloc.
-
-    // Verify that B has a Test field (this$0).
-    AbstractTypeDeclaration classB = typesByName.get("Test_B");
-    assertNotNull(classB);
-    classMembers = ASTUtil.getBodyDeclarations(classB);
-    assertEquals(1, classMembers.size());  // init
-
-    // Verify that B has a constructor that takes a Test instance.
-    method = (MethodDeclaration) classMembers.get(0);
-    assertTrue(method.isConstructor());
-    assertEquals(1, method.parameters().size());
-    SingleVariableDeclaration param = (SingleVariableDeclaration) method.parameters().get(0);
-    assertEquals("Test", param.getType().toString());
 
     // Verify that B's translation has the Test field declared.
     String translation = translateSourceFile(source, "Test", "Test.h");
     assertTranslation(translation, "Test *this$0_;");
+
+    // Verify that A has a Test field (this$0).
+    assertTranslatedLines(translation,
+        "@interface Test_A : NSObject {",
+        "@public",
+        "Test *this$0_;",
+        "}");
+
+    // Verify that B does not have a Test field.
+    assertTranslatedLines(translation,
+        "@interface Test_B : Test_A {",
+        "}");
+
     translation = getTranslatedFile("Test.m");
+
+    // Verify that main method creates a new instanceof B associated with
+    // a new instance of Test.
+    assertTranslatedLines(translation,
+        "+ (void)mainWithNSStringArray:(IOSObjectArray *)args {",
+        "Test_B *b = [[[Test_B alloc] initWithTest:[[[Test alloc] init] autorelease]] "
+            + "autorelease];");
+
+    // Verify that BInner's constructor takes a B instance and correctly calls
+    // the super constructor.
     assertTranslation(translation, "- (instancetype)initWithTest_B:(Test_B *)outer$ {");
     assertTranslation(translation, "[super initWithTest_A:outer$]");
   }

@@ -19,8 +19,7 @@ package com.google.devtools.j2objc.gen;
 import com.google.devtools.j2objc.GenerationTest;
 import com.google.devtools.j2objc.Options;
 import com.google.devtools.j2objc.Options.MemoryManagementOption;
-
-import org.eclipse.jdt.core.dom.Statement;
+import com.google.devtools.j2objc.ast.Statement;
 
 import java.io.IOException;
 import java.util.List;
@@ -396,10 +395,11 @@ public class StatementGeneratorTest extends GenerationTest {
 
   public void testInnerInnerClassFieldAccess() throws IOException {
     String translation = translateSourceFile(
-      "public class Test { static class One {} static class Two extends Test { " +
-      "Integer i; Two(Integer i) { this.i = i; } int getI() { return i.intValue(); }}}",
-      "Test", "Test.m");
-    assertTranslation(translation, "- (instancetype)initWithJavaLangInteger:(JavaLangInteger *)i {");
+        "public class Test { static class One {} static class Two extends Test { "
+        + "Integer i; Two(Integer i) { this.i = i; } int getI() { return i.intValue(); }}}",
+        "Test", "Test.m");
+    assertTranslation(translation,
+        "- (instancetype)initWithJavaLangInteger:(JavaLangInteger *)i {");
     assertTranslation(translation, "return [((JavaLangInteger *) nil_chk(i_)) intValue];");
   }
 
@@ -645,8 +645,8 @@ public class StatementGeneratorTest extends GenerationTest {
     List<Statement> stmts = translateStatements(source);
     assertEquals(1, stmts.size());
     String result = generateStatement(stmts.get(0));
-    assertEquals("int i = ((int) [((JavaLangThrowable *) " +
-    		"[[[JavaLangThrowable alloc] init] autorelease]) hash]);", result);
+    assertEquals("int i = ((int) [((JavaLangThrowable *) "
+        + "[[[JavaLangThrowable alloc] init] autorelease]) hash]);", result);
   }
 
   public void testInnerClassCreation() throws IOException {
@@ -1665,29 +1665,29 @@ public class StatementGeneratorTest extends GenerationTest {
 
   public void testDerivedTypeVariableInvocation() throws IOException {
     String translation = translateSourceFile(
-        "public class Test {" +
-        "  static class Base <T extends BaseFoo> {" +
-        "    protected T foo;" +
-        "    public Base(T foo) {" +
-        "      this.foo = foo;" +
-        "    }" +
-        "  }" +
-        "  static class BaseFoo {" +
-        "    void baseMethod() {}" +
-        "  }" +
-        "  static class Derived extends Base<DerivedFoo> {" +
-        "    public Derived(DerivedFoo foo) {" +
-        "      super(foo);" +
-        "    }" +
-        "    void test() {" +
-        "      foo.baseMethod();" +
-        "      foo.derivedMethod();" +
-        "    }" +
-        "  }" +
-        "  static class DerivedFoo extends BaseFoo {" +
-        "    void derivedMethod() {}" +
-        "  }" +
-        "}", "Test", "Test.m");
+        "public class Test {"
+        + "  static class Base <T extends BaseFoo> {"
+        + "    protected T foo;"
+        + "    public Base(T foo) {"
+        + "      this.foo = foo;"
+        + "    }"
+        + "  }"
+        + "  static class BaseFoo {"
+        + "    void baseMethod() {}"
+        + "  }"
+        + "  static class Derived extends Base<DerivedFoo> {"
+        + "    public Derived(DerivedFoo foo) {"
+        + "      super(foo);"
+        + "    }"
+        + "    void test() {"
+        + "      foo.baseMethod();"
+        + "      foo.derivedMethod();"
+        + "    }"
+        + "  }"
+        + "  static class DerivedFoo extends BaseFoo {"
+        + "    void derivedMethod() {}"
+        + "  }"
+        + "}", "Test", "Test.m");
     // Verify foo.derivedMethod() has cast of appropriate type variable.
     assertTranslation(translation, "[((Test_DerivedFoo *) foo_) derivedMethod];");
   }
@@ -1696,17 +1696,17 @@ public class StatementGeneratorTest extends GenerationTest {
   // uses the right cast macro.
   public void testFloatingPointCasts() throws IOException {
     String translation = translateSourceFile(
-        "public class Test { " +
-        "  byte testByte(float f) { return (byte) f; }" +
-        "  char testChar(float f) { return (char) f; }" +
-        "  short testShort(float f) { return (short) f; }" +
-        "  int testInt(float f) { return (int) f; }" +
-        "  long testLong(float f) { return (long) f; }" +
-        "  byte testByte(double d) { return (byte) d; }" +
-        "  char testChar(double d) { return (char) d; }" +
-        "  short testShort(double d) { return (short) d; }" +
-        "  int testInt(double d) { return (int) d; }" +
-        "  long testLong(double d) { return (long) d; }}",
+        "public class Test { "
+        + "  byte testByte(float f) { return (byte) f; }"
+        + "  char testChar(float f) { return (char) f; }"
+        + "  short testShort(float f) { return (short) f; }"
+        + "  int testInt(float f) { return (int) f; }"
+        + "  long testLong(float f) { return (long) f; }"
+        + "  byte testByte(double d) { return (byte) d; }"
+        + "  char testChar(double d) { return (char) d; }"
+        + "  short testShort(double d) { return (short) d; }"
+        + "  int testInt(double d) { return (int) d; }"
+        + "  long testLong(double d) { return (long) d; }}",
         "Test", "Test.m");
     // Verify referenced return value is cast.
     assertTranslatedLines(translation,

@@ -256,7 +256,7 @@ public class InitializationNormalizer extends ErrorReportingASTVisitor {
    * "this(...)".  This constructors are skipped so initializers
    * aren't run more than once per instance creation.
    */
-  boolean isDesignatedConstructor(MethodDeclaration node) {
+  private static boolean isDesignatedConstructor(MethodDeclaration node) {
     if (!node.isConstructor()) {
       return false;
     }

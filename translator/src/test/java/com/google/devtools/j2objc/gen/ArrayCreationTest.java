@@ -17,8 +17,7 @@
 package com.google.devtools.j2objc.gen;
 
 import com.google.devtools.j2objc.GenerationTest;
-
-import org.eclipse.jdt.core.dom.Statement;
+import com.google.devtools.j2objc.ast.Statement;
 
 import java.util.List;
 
