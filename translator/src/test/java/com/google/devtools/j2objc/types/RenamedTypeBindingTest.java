@@ -17,10 +17,9 @@
 package com.google.devtools.j2objc.types;
 
 import com.google.devtools.j2objc.GenerationTest;
+import com.google.devtools.j2objc.ast.CompilationUnit;
 
-import org.eclipse.jdt.core.dom.CompilationUnit;
 import org.eclipse.jdt.core.dom.ITypeBinding;
-import org.eclipse.jdt.core.dom.TypeDeclaration;
 
 import java.io.IOException;
 
@@ -39,7 +38,7 @@ public class RenamedTypeBindingTest extends GenerationTest {
     super.setUp();
     unit = translateType(
         "Foo", "package com.google.test; public class Foo extends java.util.Observable {}");
-    originalBinding = ((TypeDeclaration) unit.types().get(0)).resolveBinding();
+    originalBinding = unit.getTypes().get(0).getTypeBinding();
     renamedBinding = RenamedTypeBinding.rename("Test", originalBinding);
   }
 
@@ -69,7 +68,7 @@ public class RenamedTypeBindingTest extends GenerationTest {
     renamedBinding = RenamedTypeBinding.rename("Test2", originalBinding);
     assertEquals(originalBinding.getDeclaringClass(), renamedBinding.getDeclaringClass());
 
-    ITypeBinding stringBinding = unit.getAST().resolveWellKnownType("java.util.String");
+    ITypeBinding stringBinding = Types.resolveJavaType("java.util.String");
     renamedBinding = RenamedTypeBinding.rename("Test", stringBinding, originalBinding);
     assertEquals(stringBinding, renamedBinding.getDeclaringClass());
   }

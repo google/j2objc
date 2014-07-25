@@ -16,6 +16,7 @@ package com.google.devtools.j2objc;
 
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.Sets;
+import com.google.devtools.j2objc.ast.CompilationUnit;
 import com.google.devtools.j2objc.ast.TreeConverter;
 import com.google.devtools.j2objc.gen.ObjectiveCHeaderGenerator;
 import com.google.devtools.j2objc.gen.ObjectiveCImplementationGenerator;
@@ -50,7 +51,6 @@ import com.google.devtools.j2objc.util.ErrorUtil;
 import com.google.devtools.j2objc.util.JdtParser;
 import com.google.devtools.j2objc.util.TimeTracker;
 
-import org.eclipse.jdt.core.dom.CompilationUnit;
 import org.eclipse.jdt.core.dom.ITypeBinding;
 
 import java.io.File;
@@ -110,12 +110,14 @@ class TranslationProcessor extends FileProcessor {
   }
 
   @Override
-  protected void processUnit(String path, String source, CompilationUnit unit, TimeTracker ticker) {
+  protected void processUnit(
+      String path, String source, org.eclipse.jdt.core.dom.CompilationUnit unit,
+      TimeTracker ticker) {
     String relativePath = getRelativePath(path, unit);
     processedFiles.add(relativePath);
     seenFiles.add(relativePath);
 
-    applyMutations(unit, ticker);
+    CompilationUnit newUnit = applyMutations(unit, getClassNameFromFilePath(path), ticker);
     ticker.tick("Tree mutations");
 
     if (unit.types().isEmpty()) {
@@ -124,9 +126,6 @@ class TranslationProcessor extends FileProcessor {
     }
 
     logger.finest("writing output file(s) to " + Options.getOutputDirectory().getAbsolutePath());
-
-    com.google.devtools.j2objc.ast.CompilationUnit newUnit =
-        TreeConverter.convertCompilationUnit(unit, getClassNameFromFilePath(path));
 
     generateObjectiveCSource(path, source, newUnit, ticker);
     ticker.tick("Source generation");
@@ -147,7 +146,8 @@ class TranslationProcessor extends FileProcessor {
    * also modified to add support for iOS memory management, extract inner
    * classes, etc.
    */
-  public static void applyMutations(CompilationUnit unit, TimeTracker ticker) {
+  public static CompilationUnit applyMutations(
+      org.eclipse.jdt.core.dom.CompilationUnit unit, String mainTypeName, TimeTracker ticker) {
     ticker.push();
 
     OuterReferenceResolver.resolve(unit);
@@ -236,19 +236,25 @@ class TranslationProcessor extends FileProcessor {
       ticker.tick("Functionizer");
     }
 
-    for (Plugin plugin : Options.getPlugins()) {
-      plugin.processUnit(unit);
-    }
-
     // Verify all modified nodes have type bindings
     Types.verifyNode(unit);
 
+    CompilationUnit newUnit = TreeConverter.convertCompilationUnit(unit, mainTypeName);
+
+    for (Plugin plugin : Options.getPlugins()) {
+      plugin.processUnit(newUnit);
+    }
+
+    // Make sure we still have a valid AST.
+    newUnit.validate();
+
     ticker.pop();
+
+    return newUnit;
   }
 
   public static void generateObjectiveCSource(
-      String path, String source, com.google.devtools.j2objc.ast.CompilationUnit unit,
-      TimeTracker ticker) {
+      String path, String source, CompilationUnit unit, TimeTracker ticker) {
     ticker.push();
 
     // write header
@@ -283,7 +289,7 @@ class TranslationProcessor extends FileProcessor {
     }
   }
 
-  private void checkDependencies(com.google.devtools.j2objc.ast.CompilationUnit unit) {
+  private void checkDependencies(CompilationUnit unit) {
     HeaderImportCollector hdrCollector = new HeaderImportCollector();
     hdrCollector.collect(unit);
     ImplementationImportCollector implCollector = new ImplementationImportCollector();

@@ -15,13 +15,12 @@
 package com.google.devtools.j2objc.util;
 
 import com.google.devtools.j2objc.GenerationTest;
-import com.google.devtools.j2objc.types.Types;
+import com.google.devtools.j2objc.ast.AbstractTypeDeclaration;
+import com.google.devtools.j2objc.ast.Annotation;
+import com.google.devtools.j2objc.ast.CompilationUnit;
 
-import org.eclipse.jdt.core.dom.CompilationUnit;
-import org.eclipse.jdt.core.dom.IExtendedModifier;
 import org.eclipse.jdt.core.dom.IMethodBinding;
 import org.eclipse.jdt.core.dom.ITypeBinding;
-import org.eclipse.jdt.core.dom.TypeDeclaration;
 
 import java.io.IOException;
 
@@ -37,8 +36,7 @@ public class BindingUtilTest extends GenerationTest {
         + "static class A<T> { void foo(T x) {} } "
         + "static class B extends A<Double> { void foo(Double x) {} } "
         + "static class C extends B { void foo(Double x) {} } }");
-    ITypeBinding cType =
-        BindingUtil.findDeclaredType(Types.getTypeBinding(ASTUtil.getTypes(unit).get(0)), "C");
+    ITypeBinding cType = BindingUtil.findDeclaredType(unit.getTypes().get(0).getTypeBinding(), "C");
     assertNotNull(cType);
     IMethodBinding fooMethod = BindingUtil.findDeclaredMethod(cType, "foo", "java.lang.Double");
     assertNotNull(fooMethod);
@@ -52,16 +50,14 @@ public class BindingUtilTest extends GenerationTest {
   public void testIsRuntimeAnnotation() throws IOException {
     // SuppressWarnings is a source-level annotation.
     CompilationUnit unit = translateType("Example", "@SuppressWarnings(\"test\") class Example {}");
-    TypeDeclaration decl = (TypeDeclaration) unit.types().get(0);
-    IExtendedModifier mod = ASTUtil.getModifiers(decl).get(0);
-    assertTrue(mod.isAnnotation());
-    assertFalse(BindingUtil.isRuntimeAnnotation(Types.getTypeBinding(mod)));
+    AbstractTypeDeclaration decl = unit.getTypes().get(0);
+    Annotation annotation = decl.getAnnotations().get(0);
+    assertFalse(BindingUtil.isRuntimeAnnotation(annotation.getAnnotationBinding()));
 
     // Deprecated is a runtime annotation..
     unit = translateType("Example", "@Deprecated class Example {}");
-    decl = (TypeDeclaration) unit.types().get(0);
-    mod = ASTUtil.getModifiers(decl).get(0);
-    assertTrue(mod.isAnnotation());
-    assertTrue(BindingUtil.isRuntimeAnnotation(mod));
+    decl = unit.getTypes().get(0);
+    annotation = decl.getAnnotations().get(0);
+    assertTrue(BindingUtil.isRuntimeAnnotation(annotation.getAnnotationBinding()));
   }
 }

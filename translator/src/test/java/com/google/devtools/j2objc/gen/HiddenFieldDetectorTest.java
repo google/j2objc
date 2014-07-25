@@ -17,9 +17,8 @@
 package com.google.devtools.j2objc.gen;
 
 import com.google.devtools.j2objc.GenerationTest;
-import com.google.devtools.j2objc.ast.TreeConverter;
+import com.google.devtools.j2objc.ast.CompilationUnit;
 
-import org.eclipse.jdt.core.dom.CompilationUnit;
 import org.eclipse.jdt.core.dom.IVariableBinding;
 
 import java.util.Set;
@@ -32,15 +31,14 @@ import java.util.Set;
 public class HiddenFieldDetectorTest extends GenerationTest {
 
   public void testFieldHidingParameter() {
-    String source = "import java.util.*; public class Test {" +
-        "private static class CheckedCollection<E> extends AbstractCollection<E> {" +
-        "  Collection<E> c;" +
-        "  public CheckedCollection(Collection<E> c_) { this.c = c_; }" +
-        "  public int size() { return 0; }" +
-        "  public Iterator<E> iterator() { return null; }}}";
+    String source = "import java.util.*; public class Test {"
+        + "private static class CheckedCollection<E> extends AbstractCollection<E> {"
+        + "  Collection<E> c;"
+        + "  public CheckedCollection(Collection<E> c_) { this.c = c_; }"
+        + "  public int size() { return 0; }"
+        + "  public Iterator<E> iterator() { return null; }}}";
     CompilationUnit unit = translateType("Test", source);
-    Set<IVariableBinding> hiddenFields = HiddenFieldDetector.getFieldNameConflicts(
-        TreeConverter.convertCompilationUnit(unit, "Test"));
+    Set<IVariableBinding> hiddenFields = HiddenFieldDetector.getFieldNameConflicts(unit);
     assertEquals(1, hiddenFields.size());
     IVariableBinding param = hiddenFields.iterator().next();
     assertEquals("c_", param.getName());

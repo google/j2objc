@@ -17,9 +17,7 @@
 package com.google.devtools.j2objc.translate;
 
 import com.google.devtools.j2objc.GenerationTest;
-
-import org.eclipse.jdt.core.dom.MethodDeclaration;
-import org.eclipse.jdt.core.dom.Statement;
+import com.google.devtools.j2objc.ast.Statement;
 
 import java.io.IOException;
 import java.util.List;
@@ -66,15 +64,12 @@ public class JavaToIOSMethodTranslatorTest extends GenerationTest {
    * Verify that statements within a translated method get translated, too.
    */
   public void testMethodAndStatementTranslation() throws IOException {
-    String source = "public String toString(boolean value) { return String.valueOf(value); }";
-    MethodDeclaration method = translateMethod(source);
-    assertNotNull(method);
-    assertEquals("NSString", method.getReturnType2().toString());
-    @SuppressWarnings("unchecked")
-    List<Statement> stmts = method.getBody().statements();  // safe by design
-    assertEquals(1, stmts.size());
-    String result = generateStatement(stmts.get(0));
-    assertEquals("return [NSString valueOfBool:value];", result);
+    String translation = translateSourceFile(
+        "class Test { public String toString(boolean value) { return String.valueOf(value); } }",
+        "Test", "Test.m");
+    assertTranslatedLines(translation,
+        "- (NSString *)toStringWithBoolean:(BOOL)value {",
+        "return [NSString valueOfBool:value];");
   }
 
   public void testStringDefaultConstructor() throws IOException {

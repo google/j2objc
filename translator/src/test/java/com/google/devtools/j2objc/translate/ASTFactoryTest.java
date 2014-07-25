@@ -40,7 +40,8 @@ public class ASTFactoryTest extends GenerationTest {
   protected void setUp() throws IOException {
     super.setUp();
     // Compile any file to initialize Types instance.
-    unit = translateType("Example", "public class Example {}");
+    unit = compileType("Example", "public class Example {}");
+    Types.initialize(unit);
     ast = unit.getAST();
   }
 

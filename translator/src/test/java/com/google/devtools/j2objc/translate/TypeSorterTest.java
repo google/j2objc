@@ -15,10 +15,8 @@
 package com.google.devtools.j2objc.translate;
 
 import com.google.devtools.j2objc.GenerationTest;
-import com.google.devtools.j2objc.util.ASTUtil;
-
-import org.eclipse.jdt.core.dom.AbstractTypeDeclaration;
-import org.eclipse.jdt.core.dom.CompilationUnit;
+import com.google.devtools.j2objc.ast.AbstractTypeDeclaration;
+import com.google.devtools.j2objc.ast.CompilationUnit;
 
 import java.io.IOException;
 import java.util.List;
@@ -33,7 +31,7 @@ public class TypeSorterTest extends GenerationTest {
   public void testTypeSortInnerInterface() throws IOException {
     CompilationUnit unit = translateType("Example",
         "public class Example { Foo foo; Bar bar; class Bar implements Foo {} interface Foo {} }");
-    List<AbstractTypeDeclaration> types = ASTUtil.getTypes(unit);
+    List<AbstractTypeDeclaration> types = unit.getTypes();
     assertEquals(3, types.size());
 
     // Expecting Foo before Bar, otherwise no sort change, one forward.
