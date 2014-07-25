@@ -20,7 +20,7 @@
 
 @implementation NSDictionaryMap_Entry
 
-- (id)initWithDictionary:(NSMutableDictionary *)dictionary key:(id)key {
+- (instancetype)initWithDictionary:(NSMutableDictionary *)dictionary key:(id)key {
   if ((self = [super init])) {
     dictionary_ = RETAIN_(dictionary);
     key_ = RETAIN_(key);
@@ -54,14 +54,14 @@
 
 @implementation NSDictionaryMap
 
-- (id)init {
+- (instancetype)init {
   if ((self = [super init])) {
     dictionary_ = [NSMutableDictionary dictionary];
   }
   return self;
 }
 
-+ (NSDictionaryMap *)map {
++ (instancetype)map {
   return AUTORELEASE([[[self class] alloc] init]);
 }
 
@@ -72,14 +72,14 @@
 }
 #endif
 
-- (id)initWithDictionary:(NSDictionary *)dictionary {
+- (instancetype)initWithDictionary:(NSDictionary *)dictionary {
   if ((self = [super init])) {
     dictionary_ = [nil_chk(dictionary) mutableCopy];
   }
   return self;
 }
 
-+ (NSDictionaryMap *)mapWithDictionary:(NSDictionary *)dictionary {
++ (instancetype)mapWithDictionary:(NSDictionary *)dictionary {
   return AUTORELEASE([[[self class] alloc] initWithDictionary:dictionary]);
 }
 

@@ -46,10 +46,10 @@
 
 @property (readonly) NSMethodSignature *signature;
 
-- (id)initWithMethodSignature:(NSMethodSignature *)methodSignature
-                     selector:(SEL)selector
-                        class:(IOSClass *)aClass
-                     metadata:(JavaMethodMetadata *)metadata;
+- (instancetype)initWithMethodSignature:(NSMethodSignature *)methodSignature
+                               selector:(SEL)selector
+                                  class:(IOSClass *)aClass
+                               metadata:(JavaMethodMetadata *)metadata;
 
 - (NSString *)getName;
 

@@ -38,19 +38,19 @@
     return array; \
   } \
   \
-  + (id)newArrayWithLength:(NSUInteger)length { \
+  + (instancetype)newArrayWithLength:(NSUInteger)length { \
     return IOS##U_NAME##Array_NewArray(length); \
   } \
   \
-  + (id)arrayWithLength:(NSUInteger)length { \
+  + (instancetype)arrayWithLength:(NSUInteger)length { \
     return [IOS##U_NAME##Array_NewArray(length) autorelease]; \
   } \
   \
-  + (id)newArrayWith##U_NAME##s:(const C_TYPE *)buf count:(NSUInteger)count { \
+  + (instancetype)newArrayWith##U_NAME##s:(const C_TYPE *)buf count:(NSUInteger)count { \
     return IOS##U_NAME##Array_NewArrayWith##U_NAME##s(count, buf); \
   } \
   \
-  + (id)arrayWith##U_NAME##s:(const C_TYPE *)buf count:(NSUInteger)count { \
+  + (instancetype)arrayWith##U_NAME##s:(const C_TYPE *)buf count:(NSUInteger)count { \
     return [IOS##U_NAME##Array_NewArrayWith##U_NAME##s(count, buf) autorelease]; \
   }
 
@@ -117,7 +117,7 @@
   }
 
 #define PRIMITIVE_ARRAY_COPY_IMPL(U_NAME) \
-  - (id)copyWithZone:(NSZone *)zone { \
+  - (instancetype)copyWithZone:(NSZone *)zone { \
     return [IOS##U_NAME##Array newArrayWith##U_NAME##s:buffer_ count:size_]; \
   }
 
@@ -164,7 +164,7 @@ PRIMITIVE_ARRAY_IMPLEMENTATION(boolean, Boolean, BOOL)
 
 PRIMITIVE_ARRAY_IMPLEMENTATION(char, Char, unichar)
 
-+ (id)arrayWithNSString:(NSString *)string {
++ (instancetype)arrayWithNSString:(NSString *)string {
   NSUInteger length = [string length];
   IOSCharArray *array = IOSCharArray_NewArray(length);
   if (length > 0) {

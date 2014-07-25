@@ -23,7 +23,7 @@
 
 @implementation JavaToIOSInputStreamAdapter
 
-- (id)initWithJavaInputStream:(JavaIoInputStream *)javaStream {
+- (instancetype)initWithJavaInputStream:(JavaIoInputStream *)javaStream {
   if ((self = [super init])) {
     delegate_ = RETAIN_(javaStream);
   }

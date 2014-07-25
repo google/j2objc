@@ -282,7 +282,7 @@ public abstract class ObjectiveCSourceFileGenerator extends SourceFileGenerator 
     assert m.isConstructor();
     StringBuffer sb = new StringBuffer();
     IMethodBinding binding = m.getMethodBinding();
-    String baseDeclaration = "- (id)init";
+    String baseDeclaration = "- (instancetype)init";
     if (isInner) {
       baseDeclaration += NameTable.getFullName(binding.getDeclaringClass());
     }
@@ -297,7 +297,7 @@ public abstract class ObjectiveCSourceFileGenerator extends SourceFileGenerator 
    */
   protected String annotationConstructorDeclaration(ITypeBinding annotation) {
     StringBuffer sb = new StringBuffer();
-    sb.append("- (id)init");
+    sb.append("- (instancetype)init");
     IMethodBinding[] members = BindingUtil.getSortedAnnotationMembers(annotation);
     for (int i = 0; i < members.length; i++) {
       if (i == 0) {

@@ -32,7 +32,7 @@ static NSUInteger EnumerateEntries(
 @synthesize head = head_;
 @synthesize tail = tail_;
 
-- (id)init {
+- (instancetype)init {
   if ((self = [super init])) {
     accessOrder_ = NO;
 #if ! __has_feature(objc_arc)
@@ -43,7 +43,7 @@ static NSUInteger EnumerateEntries(
   return self;
 }
 
-- (id)initWithInt:(int)s {
+- (instancetype)initWithInt:(int)s {
   if ((self = [super initWithInt:s])) {
     accessOrder_ = NO;
 #if ! __has_feature(objc_arc)
@@ -54,8 +54,8 @@ static NSUInteger EnumerateEntries(
   return self;
 }
 
-- (id)initWithInt:(int)s
-        withFloat:(float)lf {
+- (instancetype)initWithInt:(int)s
+                  withFloat:(float)lf {
   if ((self = [super initWithInt:s withFloat:lf])) {
     accessOrder_ = NO;
 #if ! __has_feature(objc_arc)
@@ -68,9 +68,9 @@ static NSUInteger EnumerateEntries(
   return self;
 }
 
-- (id)initWithInt:(int)s
-        withFloat:(float)lf
-      withBoolean:(BOOL)order {
+- (instancetype)initWithInt:(int)s
+                  withFloat:(float)lf
+                withBoolean:(BOOL)order {
   if ((self = [super initWithInt:s withFloat:lf])) {
     accessOrder_ = order;
 #if ! __has_feature(objc_arc)
@@ -83,7 +83,7 @@ static NSUInteger EnumerateEntries(
   return self;
 }
 
-- (id)initWithJavaUtilMap:(id<JavaUtilMap>)m {
+- (instancetype)initWithJavaUtilMap:(id<JavaUtilMap>)m {
   if ((self = [super init])) {
     accessOrder_ = NO;
 #if ! __has_feature(objc_arc)
@@ -324,7 +324,7 @@ static NSUInteger EnumerateEntries(
 
 @implementation JavaUtilLinkedHashMap_AbstractMapIterator
 
-- (id)initWithJavaUtilLinkedHashMap:(JavaUtilLinkedHashMap *)map {
+- (instancetype)initWithJavaUtilLinkedHashMap:(JavaUtilLinkedHashMap *)map {
   if ((self = [super init])) {
     expectedModCount_ = map.modCount;
     futureEntry_ = map.head;
@@ -398,7 +398,7 @@ static NSUInteger EnumerateEntries(
 
 @implementation JavaUtilLinkedHashMap_EntryIterator
 
-- (id)initWithJavaUtilLinkedHashMap:(JavaUtilLinkedHashMap *)map {
+- (instancetype)initWithJavaUtilLinkedHashMap:(JavaUtilLinkedHashMap *)map {
   return [super initWithJavaUtilLinkedHashMap:map];
 }
 
@@ -412,7 +412,7 @@ static NSUInteger EnumerateEntries(
 
 @implementation JavaUtilLinkedHashMap_KeyIterator
 
-- (id)initWithJavaUtilLinkedHashMap:(JavaUtilLinkedHashMap *)map {
+- (instancetype)initWithJavaUtilLinkedHashMap:(JavaUtilLinkedHashMap *)map {
   return [super initWithJavaUtilLinkedHashMap:map];
 }
 
@@ -426,7 +426,7 @@ static NSUInteger EnumerateEntries(
 
 @implementation JavaUtilLinkedHashMap_ValueIterator
 
-- (id)initWithJavaUtilLinkedHashMap:(JavaUtilLinkedHashMap *)map {
+- (instancetype)initWithJavaUtilLinkedHashMap:(JavaUtilLinkedHashMap *)map {
   return [super initWithJavaUtilLinkedHashMap:map];
 }
 
@@ -440,7 +440,7 @@ static NSUInteger EnumerateEntries(
 
 @implementation JavaUtilLinkedHashMap_LinkedHashMapEntrySet
 
-- (id)initWithJavaUtilLinkedHashMap:(JavaUtilLinkedHashMap *)lhm {
+- (instancetype)initWithJavaUtilLinkedHashMap:(JavaUtilLinkedHashMap *)lhm {
   return [super initWithJavaUtilHashMap:lhm];
 }
 
@@ -460,8 +460,8 @@ static NSUInteger EnumerateEntries(
 
 @implementation JavaUtilLinkedHashMap_LinkedHashMapEntry
 
-- (id)initWithId:(id)theKey
-          withId:(id)theValue {
+- (instancetype)initWithId:(id)theKey
+                    withId:(id)theValue {
   if ((self = [super initWithId:theKey withId:theValue])) {
     chainForward_ = nil;
     chainBackward_ = nil;
@@ -469,8 +469,8 @@ static NSUInteger EnumerateEntries(
   return self;
 }
 
-- (id)initWithId:(id)theKey
-         withInt:(int)hash_ {
+- (instancetype)initWithId:(id)theKey
+                   withInt:(int)hash_ {
   if ((self = [super initWithId:theKey withInt:hash_])) {
     chainForward_ = nil;
     chainBackward_ = nil;
@@ -508,7 +508,7 @@ static NSUInteger EnumerateEntries(
                       initWithJavaUtilLinkedHashMap:outer_]);
 }
 
-- (id)initWithJavaUtilLinkedHashMap:(JavaUtilLinkedHashMap *)outer {
+- (instancetype)initWithJavaUtilLinkedHashMap:(JavaUtilLinkedHashMap *)outer {
   if ((self = [super init])) {
     outer_ = outer;
   }
@@ -550,7 +550,7 @@ static NSUInteger EnumerateEntries(
                       initWithJavaUtilLinkedHashMap:outer_]);
 }
 
-- (id)initWithJavaUtilLinkedHashMap:(JavaUtilLinkedHashMap *)outer {
+- (instancetype)initWithJavaUtilLinkedHashMap:(JavaUtilLinkedHashMap *)outer {
   if ((self = [super init])) {
     outer_ = outer;
   }

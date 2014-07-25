@@ -32,13 +32,12 @@
   id<JavaLangReflectType> rawType_;
 }
 
-- (id)initWithTypeArguments:(IOSObjectArray *)typeArgs
-                  ownerType:(id<JavaLangReflectType>)ownerType
-                    rawType:(id<JavaLangReflectType>)rawType;
-+ (JavaLangReflectParameterizedTypeImpl *)
-    parameterizedTypeWithTypeArguments:(IOSObjectArray *)typeArgs
-                             ownerType:(id<JavaLangReflectType>)ownerType
-                               rawType:(id<JavaLangReflectType>)rawType;
+- (instancetype)initWithTypeArguments:(IOSObjectArray *)typeArgs
+                            ownerType:(id<JavaLangReflectType>)ownerType
+                              rawType:(id<JavaLangReflectType>)rawType;
++ (instancetype)parameterizedTypeWithTypeArguments:(IOSObjectArray *)typeArgs
+                                         ownerType:(id<JavaLangReflectType>)ownerType
+                                           rawType:(id<JavaLangReflectType>)rawType;
 
 - (IOSObjectArray *)getActualTypeArguments;
 - (id<JavaLangReflectType>)getOwnerType;

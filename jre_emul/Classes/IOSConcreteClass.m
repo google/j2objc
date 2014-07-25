@@ -35,7 +35,7 @@
 
 @synthesize objcClass = class_;
 
-- (id)initWithClass:(Class)cls {
+- (instancetype)initWithClass:(Class)cls {
   if ((self = [super init])) {
     class_ = RETAIN_(cls);
   }

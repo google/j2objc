@@ -27,7 +27,7 @@
 
 @implementation JavaLangReflectAccessibleObject
 
-- (id)init {
+- (instancetype)init {
   if ((self = [super init])) {
     accessible_ = NO;
   }

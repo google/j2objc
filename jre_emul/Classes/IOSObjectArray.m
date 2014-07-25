@@ -45,33 +45,33 @@ static IOSObjectArray *IOSObjectArray_NewArrayWithObjects(
 
 @synthesize elementType = elementType_;
 
-+ (id)newArrayWithLength:(NSUInteger)length type:(IOSClass *)type {
++ (instancetype)newArrayWithLength:(NSUInteger)length type:(IOSClass *)type {
   return IOSObjectArray_NewArray(length, type);
 }
 
-+ (id)arrayWithLength:(NSUInteger)length type:(IOSClass *)type {
++ (instancetype)arrayWithLength:(NSUInteger)length type:(IOSClass *)type {
   return [IOSObjectArray_NewArray(length, type) autorelease];
 }
 
-+ (id)newArrayWithObjects:(const id *)objects
-                    count:(NSUInteger)count
-                     type:(IOSClass *)type {
++ (instancetype)newArrayWithObjects:(const id *)objects
+                              count:(NSUInteger)count
+                               type:(IOSClass *)type {
   return IOSObjectArray_NewArrayWithObjects(count, type, objects);
 }
 
-+ (id)arrayWithObjects:(const id *)objects
-                 count:(NSUInteger)count
-                  type:(IOSClass *)type {
++ (instancetype)arrayWithObjects:(const id *)objects
+                           count:(NSUInteger)count
+                            type:(IOSClass *)type {
   return [IOSObjectArray_NewArrayWithObjects(count, type, objects) autorelease];
 }
 
-+ (id)arrayWithArray:(IOSObjectArray *)array {
++ (instancetype)arrayWithArray:(IOSObjectArray *)array {
   return [IOSObjectArray arrayWithObjects:array->buffer_
                                     count:array->size_
                                      type:array->elementType_];
 }
 
-+ (id)arrayWithNSArray:(NSArray *)array type:(IOSClass *)type {
++ (instancetype)arrayWithNSArray:(NSArray *)array type:(IOSClass *)type {
   NSUInteger count = [array count];
   id __unsafe_unretained *objects =
       (id __unsafe_unretained *) malloc(sizeof(id) * count);
@@ -81,9 +81,9 @@ static IOSObjectArray *IOSObjectArray_NewArrayWithObjects(
   return result;
 }
 
-+ (id)arrayWithDimensions:(NSUInteger)dimensionCount
-                  lengths:(const int *)dimensionLengths
-                     type:(IOSClass *)type {
++ (instancetype)arrayWithDimensions:(NSUInteger)dimensionCount
+                            lengths:(const int *)dimensionLengths
+                               type:(IOSClass *)type {
   if (dimensionCount == 0) {
     @throw AUTORELEASE([[JavaLangAssertionError alloc] initWithId:@"invalid dimension count"]);
   }

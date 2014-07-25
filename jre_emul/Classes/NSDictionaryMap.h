@@ -24,8 +24,8 @@
 }
 
 // Initializes an empty map.
-- (id)init;
-+ (NSDictionaryMap *)map;
+- (instancetype)init;
++ (instancetype)map;
 
 // Initializes a map with the given dictionary.
 - (id)initWithDictionary:(NSDictionary *)dictionary;

@@ -26,7 +26,7 @@
   Class class_;
 }
 
-- (id)initWithClass:(Class)cls;
+- (instancetype)initWithClass:(Class)cls;
 
 @end
 

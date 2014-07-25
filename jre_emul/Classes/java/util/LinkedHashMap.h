@@ -18,9 +18,9 @@
 
 @interface JavaUtilLinkedHashMap : JavaUtilHashMap < JavaUtilMap >
 
-- (id)initWithInt:(int)capacity
-        withFloat:(float)loadFactor
-      withBoolean:(BOOL)accessOrder;
+- (instancetype)initWithInt:(int)capacity
+                  withFloat:(float)loadFactor
+                withBoolean:(BOOL)accessOrder;
 
 // Android addition.
 - (id<JavaUtilMap_Entry>)eldest;

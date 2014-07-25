@@ -47,7 +47,7 @@
 // Returns the size of this array.
 - (NSUInteger)count;
 
-- (NSString*)descriptionOfElementAtIndex:(NSUInteger)index;
+- (NSString *)descriptionOfElementAtIndex:(NSUInteger)index;
 
 // Returns the element type of this array.
 - (IOSClass *)elementType;

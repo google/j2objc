@@ -17,7 +17,7 @@
 
 @implementation NSDataOutputStream
 
-- (id)init {
+- (instancetype)init {
   if ((self = [super init])) {
     data_ = [[NSMutableData alloc] init];
   }

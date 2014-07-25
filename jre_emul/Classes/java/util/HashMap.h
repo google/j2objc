@@ -19,9 +19,9 @@
 // implementation.
 @interface JavaUtilHashMap : JavaUtilAbstractMap < JavaUtilMap, NSCopying, JavaIoSerializable >
 
-- (id)initWithInt:(int)capacity;
-- (id)initWithInt:(int)capacity withFloat:(float)loadFactor;
-- (id)initWithJavaUtilMap:(id<JavaUtilMap>)map;
+- (instancetype)initWithInt:(int)capacity;
+- (instancetype)initWithInt:(int)capacity withFloat:(float)loadFactor;
+- (instancetype)initWithJavaUtilMap:(id<JavaUtilMap>)map;
 
 @end
 

@@ -304,7 +304,7 @@ public class ObjectiveCImplementationGeneratorTest extends GenerationTest {
     assertTranslation(translation, "@synthesize fooable;");
 
     // Verify constructor generated.
-    assertTranslation(translation, "- (id)initWithFooable:(BOOL)fooable_");
+    assertTranslation(translation, "- (instancetype)initWithFooable:(BOOL)fooable_");
     assertTranslation(translation, "fooable = fooable_;");
 
     // Verify default value accessor.
@@ -492,8 +492,8 @@ public class ObjectiveCImplementationGeneratorTest extends GenerationTest {
         "  public Test() { this(42); }" +
         "  public Test(int i) {} }",
         "Test", "Test.m");
-    assertTranslation(translation, "- (id)initWithInt:(int)i {");
-    assertTranslation(translation, "- (id)initTestWithInt:(int)i {");
+    assertTranslation(translation, "- (instancetype)initWithInt:(int)i {");
+    assertTranslation(translation, "- (instancetype)initTestWithInt:(int)i {");
     assertTranslation(translation, "[self initTestWithInt:42]");
   }
 
@@ -504,7 +504,7 @@ public class ObjectiveCImplementationGeneratorTest extends GenerationTest {
         "    public Inner() { this(42); }" +
         "    public Inner(int i) {} } }",
         "Test", "Test.m");
-    assertTranslation(translation, "- (id)initTest_InnerWithTest:(Test *)");
+    assertTranslation(translation, "- (instancetype)initTest_InnerWithTest:(Test *)");
     assertTranslation(translation, "[self initTest_InnerWithTest:");
   }
 

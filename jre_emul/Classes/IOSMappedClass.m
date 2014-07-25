@@ -29,7 +29,7 @@
 // Objective-C specific methods or classes.
 @implementation IOSMappedClass
 
-- (id)initWithClass:(Class)cls package:(NSString *)package name:(NSString *)name {
+- (instancetype)initWithClass:(Class)cls package:(NSString *)package name:(NSString *)name {
   if ((self = [super initWithClass:cls])) {
     package_ = RETAIN_(package);
     name_ = RETAIN_(name);

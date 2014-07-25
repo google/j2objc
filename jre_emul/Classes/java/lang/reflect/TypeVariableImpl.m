@@ -24,14 +24,14 @@
 
 @implementation JavaLangReflectTypeVariableImpl
 
-- (id)initWithName:(NSString *)name {
+- (instancetype)initWithName:(NSString *)name {
   if ((self = [super init])) {
     name_ = RETAIN_(name);
   }
   return self;
 }
 
-+ (JavaLangReflectTypeVariableImpl *)typeVariableWithName:(NSString *)name {
++ (instancetype)typeVariableWithName:(NSString *)name {
   return AUTORELEASE([[JavaLangReflectTypeVariableImpl alloc] initWithName:name]);
 }
 

@@ -38,11 +38,11 @@
   BOOL isStatic_;
 }
 
-+ (id)methodWithMethodSignature:(NSMethodSignature *)methodSignature
-                       selector:(SEL)selector
-                          class:(IOSClass *)aClass
-                       isStatic:(BOOL)isStatic
-                       metadata:(JavaMethodMetadata *)metadata;
++ (instancetype)methodWithMethodSignature:(NSMethodSignature *)methodSignature
+                                 selector:(SEL)selector
+                                    class:(IOSClass *)aClass
+                                 isStatic:(BOOL)isStatic
+                                 metadata:(JavaMethodMetadata *)metadata;
 
 // iOS version of Method.getReturnType();
 - (IOSClass *)getReturnType;
