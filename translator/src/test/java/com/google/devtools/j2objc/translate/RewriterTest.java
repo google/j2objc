@@ -163,8 +163,8 @@ public class RewriterTest extends GenerationTest {
       String name = m.getName().getIdentifier();
       if (name.equals("hasNext")) {
         assertFalse(Modifier.isAbstract(modifiers));
-      } else if (name.equals(DestructorGenerator.FINALIZE_METHOD)
-          || name.equals(DestructorGenerator.DEALLOC_METHOD)
+      } else if (name.equals(NameTable.FINALIZE_METHOD)
+          || name.equals(NameTable.DEALLOC_METHOD)
           || name.equals(NameTable.INIT_NAME)) {
         // it's ok.
       } else {
@@ -204,8 +204,8 @@ public class RewriterTest extends GenerationTest {
       String name = m.getName().getIdentifier();
       if (name.equals("isEmpty")) {
         assertFalse(Modifier.isAbstract(modifiers));
-      } else if (name.equals(DestructorGenerator.FINALIZE_METHOD)
-          || name.equals(DestructorGenerator.DEALLOC_METHOD)
+      } else if (name.equals(NameTable.FINALIZE_METHOD)
+          || name.equals(NameTable.DEALLOC_METHOD)
           || name.equals(NameTable.INIT_NAME)) {
         // it's ok.
       } else {

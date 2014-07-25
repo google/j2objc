@@ -22,7 +22,6 @@ import com.google.common.io.Files;
 import com.google.devtools.j2objc.gen.SourceBuilder;
 import com.google.devtools.j2objc.gen.SourcePosition;
 import com.google.devtools.j2objc.gen.StatementGenerator;
-import com.google.devtools.j2objc.translate.DestructorGenerator;
 import com.google.devtools.j2objc.types.Types;
 import com.google.devtools.j2objc.util.ErrorUtil;
 import com.google.devtools.j2objc.util.JdtParser;
@@ -276,8 +275,8 @@ public abstract class GenerationTest extends TestCase {
       public boolean visit(MethodDeclaration node) {
         String name = node.getName().getIdentifier();
         if (name.equals(NameTable.INIT_NAME) ||
-            name.equals(DestructorGenerator.FINALIZE_METHOD) ||
-            name.equals(DestructorGenerator.DEALLOC_METHOD)) {
+            name.equals(NameTable.FINALIZE_METHOD) ||
+            name.equals(NameTable.DEALLOC_METHOD)) {
           return false;
         }
         assert result[0] == null;

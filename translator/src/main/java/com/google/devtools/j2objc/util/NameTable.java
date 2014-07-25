@@ -61,6 +61,8 @@ public class NameTable {
 
   public static final String INIT_NAME = "init";
   public static final String CLINIT_NAME = "initialize";
+  public static final String DEALLOC_METHOD = "dealloc";
+  public static final String FINALIZE_METHOD = "finalize";
 
   // The self name in Java is reserved in Objective-C, but functionized methods
   // actually want the first parameter to be self. This is an internal name,

@@ -345,4 +345,13 @@ public final class BindingUtil {
   public static boolean isFunction(IMethodBinding m) {
     return m instanceof IOSMethodBinding && IOSMethodBinding.getIOSMethod(m).isFunction();
   }
+
+  /**
+   * Returns true if method is an Objective-C dealloc method.
+   */
+  public static boolean isDestructor(IMethodBinding m) {
+    String methodName = NameTable.getName(m);
+    return methodName.equals(NameTable.FINALIZE_METHOD) ||
+        methodName.equals(NameTable.DEALLOC_METHOD);
+  }
 }
