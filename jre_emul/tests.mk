@@ -506,6 +506,9 @@ support-lib: $(SUPPORT_LIB)
 build: support-lib $(TEST_OBJS) $(ALL_TESTS_SOURCE:%.java=%.o)
 	@:
 
+translate-all: translate $(ALL_TESTS_SOURCE:%.java=%.m)
+	@:
+
 link: build $(TEST_BIN)
 
 resources: $(TEST_RESOURCES)

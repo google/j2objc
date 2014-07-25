@@ -362,7 +362,18 @@ public class InetAddress implements Serializable {
      */
     public static InetAddress getLocalHost() throws UnknownHostException {
         String host = Libcore.os.uname().nodename;
-        return lookupHostByName(host)[0];
+        try {
+          return lookupHostByName(host)[0];
+        } catch (UnknownHostException e) {
+          try {
+            // iOS devices don't map the hostname to an ip.
+            InetAddress[] result = lookupHostByName("127.0.0.1");
+            addressCache.put(host, result);
+            return result[0];
+          } catch (UnknownHostException e2) {
+            throw e;
+          }
+        }
     }
 
     /**
