@@ -56,6 +56,8 @@ public class TypeDeclaration extends AbstractTypeDeclaration {
   @Override
   protected void acceptInner(TreeVisitor visitor) {
     if (visitor.visit(this)) {
+      javadoc.accept(visitor);
+      annotations.accept(visitor);
       name.accept(visitor);
       superclassType.accept(visitor);
       superInterfaceTypes.accept(visitor);

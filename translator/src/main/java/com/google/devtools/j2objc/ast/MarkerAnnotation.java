@@ -30,7 +30,7 @@ public class MarkerAnnotation extends Annotation {
   @Override
   protected void acceptInner(TreeVisitor visitor) {
     if (visitor.visit(this)) {
-      typeName.get().accept(visitor);
+      typeName.accept(visitor);
     }
     visitor.endVisit(this);
   }

@@ -15,31 +15,44 @@
 package com.google.devtools.j2objc.ast;
 
 /**
- * Node type for an annotation type declaration.
+ * Node type for a member value pair in a normal annotation.
  */
-public class AnnotationTypeDeclaration extends AbstractTypeDeclaration {
+public class MemberValuePair extends TreeNode {
 
-  public AnnotationTypeDeclaration(org.eclipse.jdt.core.dom.AnnotationTypeDeclaration jdtNode) {
+  private ChildLink<SimpleName> name = ChildLink.create(this);
+  private ChildLink<Expression> value = ChildLink.create(this);
+
+  public MemberValuePair(org.eclipse.jdt.core.dom.MemberValuePair jdtNode) {
     super(jdtNode);
+    name.set((SimpleName) TreeConverter.convert(jdtNode.getName()));
+    value.set((Expression) TreeConverter.convert(jdtNode.getValue()));
   }
 
-  public AnnotationTypeDeclaration(AnnotationTypeDeclaration other) {
+  public MemberValuePair(MemberValuePair other) {
     super(other);
+    name.copyFrom(other.getName());
+    value.copyFrom(other.getValue());
+  }
+
+  public SimpleName getName() {
+    return name.get();
+  }
+
+  public Expression getValue() {
+    return value.get();
   }
 
   @Override
   protected void acceptInner(TreeVisitor visitor) {
     if (visitor.visit(this)) {
-      javadoc.accept(visitor);
-      annotations.accept(visitor);
       name.accept(visitor);
-      bodyDeclarations.accept(visitor);
+      value.accept(visitor);
     }
     visitor.endVisit(this);
   }
 
   @Override
-  public AnnotationTypeDeclaration copy() {
-    return new AnnotationTypeDeclaration(this);
+  public MemberValuePair copy() {
+    return new MemberValuePair(this);
   }
 }

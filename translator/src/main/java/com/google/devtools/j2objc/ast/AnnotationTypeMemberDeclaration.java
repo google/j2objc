@@ -64,6 +64,8 @@ public class AnnotationTypeMemberDeclaration extends BodyDeclaration {
   @Override
   protected void acceptInner(TreeVisitor visitor) {
     if (visitor.visit(this)) {
+      javadoc.accept(visitor);
+      annotations.accept(visitor);
       type.accept(visitor);
       name.accept(visitor);
       defaultValue.accept(visitor);

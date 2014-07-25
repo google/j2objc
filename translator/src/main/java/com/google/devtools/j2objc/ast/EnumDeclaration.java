@@ -42,6 +42,8 @@ public class EnumDeclaration extends AbstractTypeDeclaration {
   @Override
   protected void acceptInner(TreeVisitor visitor) {
     if (visitor.visit(this)) {
+      javadoc.accept(visitor);
+      annotations.accept(visitor);
       name.accept(visitor);
       enumConstants.accept(visitor);
       bodyDeclarations.accept(visitor);

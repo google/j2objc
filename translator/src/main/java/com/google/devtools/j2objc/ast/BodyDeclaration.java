@@ -22,8 +22,8 @@ import java.util.List;
 public abstract class BodyDeclaration extends TreeNode {
 
   private int modifiers = 0;
-  private ChildLink<Javadoc> javadoc = ChildLink.create(this);
-  private ChildList<Annotation> annotations = ChildList.create(this);
+  protected ChildLink<Javadoc> javadoc = ChildLink.create(this);
+  protected ChildList<Annotation> annotations = ChildList.create(this);
 
   public BodyDeclaration() {}
 

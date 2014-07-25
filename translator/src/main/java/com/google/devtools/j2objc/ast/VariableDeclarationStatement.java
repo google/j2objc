@@ -21,11 +21,13 @@ import java.util.List;
  */
 public class VariableDeclarationStatement extends Statement {
 
+  private ChildLink<Type> type = ChildLink.create(this);
   private ChildList<VariableDeclarationFragment> fragments = ChildList.create(this);
 
   public VariableDeclarationStatement(
       org.eclipse.jdt.core.dom.VariableDeclarationStatement jdtNode) {
     super(jdtNode);
+    type.set((Type) TreeConverter.convert(jdtNode.getType()));
     for (Object fragment : jdtNode.fragments()) {
       fragments.add((VariableDeclarationFragment) TreeConverter.convert(fragment));
     }
@@ -33,7 +35,12 @@ public class VariableDeclarationStatement extends Statement {
 
   public VariableDeclarationStatement(VariableDeclarationStatement other) {
     super(other);
+    type.copyFrom(other.getType());
     fragments.copyFrom(other.getFragments());
+  }
+
+  public Type getType() {
+    return type.get();
   }
 
   public List<VariableDeclarationFragment> getFragments() {
@@ -43,6 +50,7 @@ public class VariableDeclarationStatement extends Statement {
   @Override
   protected void acceptInner(TreeVisitor visitor) {
     if (visitor.visit(this)) {
+      type.accept(visitor);
       fragments.accept(visitor);
     }
     visitor.endVisit(this);

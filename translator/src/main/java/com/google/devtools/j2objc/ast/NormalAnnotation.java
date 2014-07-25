@@ -14,22 +14,37 @@
 
 package com.google.devtools.j2objc.ast;
 
+import java.util.List;
+
 /**
  * Node type for an annotation with member value pairs.
  */
 public class NormalAnnotation extends Annotation {
 
+  private ChildList<MemberValuePair> values = ChildList.create(this);
+
   public NormalAnnotation(org.eclipse.jdt.core.dom.NormalAnnotation jdtNode) {
     super(jdtNode);
+    for (Object value : jdtNode.values()) {
+      values.add((MemberValuePair) TreeConverter.convert(value));
+    }
   }
 
   public NormalAnnotation(NormalAnnotation other) {
     super(other);
+    values.copyFrom(other.getValues());
+  }
+
+  public List<MemberValuePair> getValues() {
+    return values;
   }
 
   @Override
   protected void acceptInner(TreeVisitor visitor) {
-    visitor.visit(this);
+    if (visitor.visit(this)) {
+      typeName.accept(visitor);
+      values.accept(visitor);
+    }
     visitor.endVisit(this);
   }
 
