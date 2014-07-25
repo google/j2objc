@@ -124,12 +124,15 @@ class TranslationProcessor extends FileProcessor {
 
     logger.finest("writing output file(s) to " + Options.getOutputDirectory().getAbsolutePath());
 
-    generateObjectiveCSource(path, source, unit, ticker);
+    com.google.devtools.j2objc.ast.CompilationUnit newUnit =
+        TreeConverter.convertCompilationUnit(unit);
+
+    generateObjectiveCSource(path, source, newUnit, ticker);
     ticker.tick("Source generation");
 
     if (Options.buildClosure()) {
       // Add out-of-date dependencies to translation list.
-      checkDependencies(path, unit);
+      checkDependencies(path, newUnit);
     }
 
     OuterReferenceResolver.cleanup();
@@ -243,22 +246,20 @@ class TranslationProcessor extends FileProcessor {
   }
 
   public static void generateObjectiveCSource(
-      String path, String source, CompilationUnit unit, TimeTracker ticker) {
+      String path, String source, com.google.devtools.j2objc.ast.CompilationUnit unit,
+      TimeTracker ticker) {
     ticker.push();
-
-    com.google.devtools.j2objc.ast.CompilationUnit newUnit =
-        TreeConverter.convertCompilationUnit(unit);
 
     // write header
     if (Options.generateSegmentedHeaders()) {
-      ObjectiveCSegmentedHeaderGenerator.generate(path, source, newUnit);
+      ObjectiveCSegmentedHeaderGenerator.generate(path, source, unit);
     } else {
-      ObjectiveCHeaderGenerator.generate(path, source, newUnit);
+      ObjectiveCHeaderGenerator.generate(path, source, unit);
     }
     ticker.tick("Header generation");
 
     // write implementation file
-    ObjectiveCImplementationGenerator.generate(path, newUnit, source);
+    ObjectiveCImplementationGenerator.generate(path, unit, source);
     ticker.tick("Implementation generation");
 
     ticker.pop();
@@ -281,7 +282,8 @@ class TranslationProcessor extends FileProcessor {
     }
   }
 
-  private void checkDependencies(String sourceFile, CompilationUnit unit) {
+  private void checkDependencies(
+      String sourceFile, com.google.devtools.j2objc.ast.CompilationUnit unit) {
     HeaderImportCollector hdrCollector = new HeaderImportCollector();
     hdrCollector.collect(unit);
     ImplementationImportCollector implCollector = new ImplementationImportCollector();

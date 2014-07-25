@@ -441,8 +441,8 @@ public class ObjectiveCImplementationGenerator extends ObjectiveCSourceFileGener
         String propName = NameTable.getName(property.getName().getBinding());
         String objCFieldName = NameTable.javaFieldToObjC(propName);
         if (isStrongReferenceProperty(property)) {
-          println(String.format("  [result addObject:[JreMemDebugStrongReference " +
-              "strongReferenceWithObject:%s name:@\"%s\"]];", objCFieldName, propName));
+          println(String.format("  [result addObject:[JreMemDebugStrongReference "
+              + "strongReferenceWithObject:%s name:@\"%s\"]];", objCFieldName, propName));
         }
       }
       println("  return result;");
@@ -476,8 +476,8 @@ public class ObjectiveCImplementationGenerator extends ObjectiveCSourceFileGener
           // All non-primitive static variables are strong references.
           if (!binding.getType().isPrimitive()) {
             String name = NameTable.getStaticVarQualifiedName(binding);
-            println(String.format("  [result addObject:[JreMemDebugStrongReference " +
-                "strongReferenceWithObject:%s name:@\"%s\"]];", name, name));
+            println(String.format("  [result addObject:[JreMemDebugStrongReference "
+                + "strongReferenceWithObject:%s name:@\"%s\"]];", name, name));
           }
         }
       }
@@ -569,8 +569,8 @@ public class ObjectiveCImplementationGenerator extends ObjectiveCSourceFileGener
 
     // Print generated values and valueOf methods.
     println("+ (IOSObjectArray *)values {");
-    printf("  return [IOSObjectArray arrayWithObjects:%s_values count:%s type:" +
-           "[IOSClass classWithClass:[%s class]]];\n", typeName, constants.size(), typeName);
+    printf("  return [IOSObjectArray arrayWithObjects:%s_values count:%s type:"
+           + "[IOSClass classWithClass:[%s class]]];\n", typeName, constants.size(), typeName);
     println("}\n");
     printf("+ (%s *)valueOfWithNSString:(NSString *)name {\n", typeName);
     printf("  for (int i = 0; i < %s; i++) {\n", constants.size());
@@ -644,8 +644,7 @@ public class ObjectiveCImplementationGenerator extends ObjectiveCSourceFileGener
     } else if (Modifier.isAbstract(m.getModifiers())) {
       // Generate a body which throws a NSInvalidArgumentException.
       String body =
-          "{\n // can't call an abstract method\n " +
-              "[self doesNotRecognizeSelector:_cmd];\n ";
+          "{\n // can't call an abstract method\n [self doesNotRecognizeSelector:_cmd];\n ";
       if (!Types.isVoidType(m.getReturnType().getTypeBinding())) {
         body += "return 0;\n"; // Never executes, but avoids a gcc warning.
       }
@@ -701,8 +700,8 @@ public class ObjectiveCImplementationGenerator extends ObjectiveCSourceFileGener
     while (idx < constructorIdx) {
       sb.append(generateStatement(statements.get(idx++), false));
     }
-    String superCall = idx == constructorIdx ?
-        generateStatement(statements.get(idx++), false) : "[super init]";
+    String superCall =
+        idx == constructorIdx ? generateStatement(statements.get(idx++), false) : "[super init]";
     if (idx >= statements.size()) {
       sb.append("return ");
       if (memDebug) {
@@ -724,8 +723,8 @@ public class ObjectiveCImplementationGenerator extends ObjectiveCSourceFileGener
     syncLineNumbers(m.getName());  // avoid doc-comment
     if (invokedConstructors.contains(methodKey(binding))) {
       print(super.constructorDeclaration(m, true) + " " + reindent(methodBody) + "\n\n");
-      print(super.constructorDeclaration(m, false) + " {\n" +
-          "  return " + generateStatement(createInnerConstructorInvocation(m), false) + ";\n}\n");
+      print(super.constructorDeclaration(m, false) + " {\n"
+          + "  return " + generateStatement(createInnerConstructorInvocation(m), false) + ";\n}\n");
     } else {
       print(super.constructorDeclaration(m, false) + " " + reindent(methodBody) + "\n");
     }
@@ -776,8 +775,8 @@ public class ObjectiveCImplementationGenerator extends ObjectiveCSourceFileGener
     syncLineNumbers(m.getName());  // avoid doc-comment
     if (invokedConstructors.contains(methodKey(binding))) {
       print(super.constructorDeclaration(m, true) + " " + reindent(sb.toString()) + "\n\n");
-      print(super.constructorDeclaration(m, false) + " {\n" +
-          "  return " + generateStatement(createInnerConstructorInvocation(m), false) + ";\n}\n");
+      print(super.constructorDeclaration(m, false) + " {\n"
+          + "  return " + generateStatement(createInnerConstructorInvocation(m), false) + ";\n}\n");
     } else {
       print(super.constructorDeclaration(m, false) + " " + reindent(sb.toString()) + "\n");
     }
@@ -818,7 +817,7 @@ public class ObjectiveCImplementationGenerator extends ObjectiveCSourceFileGener
 
   private void printImports(CompilationUnit node) {
     ImplementationImportCollector collector = new ImplementationImportCollector();
-    collector.collect(node.jdtNode(), getSourceFileName());
+    collector.collect(node, getSourceFileName());
     Set<Import> imports = collector.getImports();
 
     if (!imports.isEmpty()) {
@@ -938,15 +937,15 @@ public class ObjectiveCImplementationGenerator extends ObjectiveCSourceFileGener
         if (runtimeAnnotations.size() > 0) {
           print("[IOSObjectArray arrayWithObjects:(id[]) { ");
           printAnnotations(runtimeAnnotations);
-          printf(" } count:%d type:[IOSClass classWithProtocol:" +
-              "@protocol(JavaLangAnnotationAnnotation)]]", runtimeAnnotations.size());
+          printf(" } count:%d type:[IOSClass classWithProtocol:"
+              + "@protocol(JavaLangAnnotationAnnotation)]]", runtimeAnnotations.size());
         } else {
-          print("[IOSObjectArray arrayWithLength:0 " +
-              "type:[IOSClass classWithProtocol:@protocol(JavaLangAnnotationAnnotation)]]");
+          print("[IOSObjectArray arrayWithLength:0 "
+              + "type:[IOSClass classWithProtocol:@protocol(JavaLangAnnotationAnnotation)]]");
         }
       }
-      printf(" } count:%d type:[IOSClass classWithProtocol:" +
-          "@protocol(JavaLangAnnotationAnnotation)]];\n}\n", params.size());
+      printf(" } count:%d type:[IOSClass classWithProtocol:"
+          + "@protocol(JavaLangAnnotationAnnotation)]];\n}\n", params.size());
     }
   }
 
@@ -966,8 +965,8 @@ public class ObjectiveCImplementationGenerator extends ObjectiveCSourceFileGener
   private void printAnnotationCreate(List<Annotation> runtimeAnnotations) {
     print("  return [IOSObjectArray arrayWithObjects:(id[]) { ");
     printAnnotations(runtimeAnnotations);
-    printf(" } count:%d type:[IOSClass " +
-        "classWithProtocol:@protocol(JavaLangAnnotationAnnotation)]];\n}\n\n",
+    printf(" } count:%d type:[IOSClass "
+        + "classWithProtocol:@protocol(JavaLangAnnotationAnnotation)]];\n}\n\n",
         runtimeAnnotations.size());
   }
 

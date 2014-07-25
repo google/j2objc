@@ -17,19 +17,18 @@
 package com.google.devtools.j2objc.types;
 
 import com.google.common.collect.Sets;
-import com.google.devtools.j2objc.util.ASTUtil;
-import com.google.devtools.j2objc.util.ErrorReportingASTVisitor;
+import com.google.devtools.j2objc.ast.AnnotationTypeDeclaration;
+import com.google.devtools.j2objc.ast.AnnotationTypeMemberDeclaration;
+import com.google.devtools.j2objc.ast.EnumDeclaration;
+import com.google.devtools.j2objc.ast.FieldDeclaration;
+import com.google.devtools.j2objc.ast.MethodDeclaration;
+import com.google.devtools.j2objc.ast.TreeNode;
+import com.google.devtools.j2objc.ast.TreeVisitor;
+import com.google.devtools.j2objc.ast.Type;
+import com.google.devtools.j2objc.ast.TypeDeclaration;
 
-import org.eclipse.jdt.core.dom.ASTNode;
-import org.eclipse.jdt.core.dom.AnnotationTypeDeclaration;
-import org.eclipse.jdt.core.dom.AnnotationTypeMemberDeclaration;
-import org.eclipse.jdt.core.dom.EnumDeclaration;
-import org.eclipse.jdt.core.dom.FieldDeclaration;
 import org.eclipse.jdt.core.dom.IMethodBinding;
 import org.eclipse.jdt.core.dom.ITypeBinding;
-import org.eclipse.jdt.core.dom.MethodDeclaration;
-import org.eclipse.jdt.core.dom.Type;
-import org.eclipse.jdt.core.dom.TypeDeclaration;
 
 import java.util.Set;
 
@@ -38,13 +37,13 @@ import java.util.Set;
  *
  * @author Tom Ball
  */
-public class HeaderImportCollector extends ErrorReportingASTVisitor {
+public class HeaderImportCollector extends TreeVisitor {
 
   private Set<Import> forwardDecls = Sets.newLinkedHashSet();
   private Set<Import> superTypes = Sets.newLinkedHashSet();
   private Set<Import> declaredTypes = Sets.newHashSet();
 
-  public void collect(ASTNode node) {
+  public void collect(TreeNode node) {
     run(node);
     for (Import imp : superTypes) {
       if (forwardDecls.contains(imp)) {
@@ -63,7 +62,7 @@ public class HeaderImportCollector extends ErrorReportingASTVisitor {
 
   private void addForwardDecl(Type type) {
     if (type != null) {
-      addForwardDecl(Types.getTypeBinding(type));
+      addForwardDecl(type.getTypeBinding());
     }
   }
 
@@ -73,7 +72,7 @@ public class HeaderImportCollector extends ErrorReportingASTVisitor {
 
   private void addSuperType(Type type) {
     if (type != null) {
-      addSuperType(Types.getTypeBinding(type));
+      addSuperType(type.getTypeBinding());
     }
   }
 
@@ -99,8 +98,8 @@ public class HeaderImportCollector extends ErrorReportingASTVisitor {
 
   @Override
   public boolean visit(MethodDeclaration node) {
-    addForwardDecl(node.getReturnType2());
-    IMethodBinding binding = Types.getMethodBinding(node);
+    addForwardDecl(node.getReturnType());
+    IMethodBinding binding = node.getMethodBinding();
     for (ITypeBinding paramType : binding.getParameterTypes()) {
       addForwardDecl(paramType);
     }
@@ -109,13 +108,13 @@ public class HeaderImportCollector extends ErrorReportingASTVisitor {
 
   @Override
   public boolean visit(TypeDeclaration node) {
-    ITypeBinding binding = Types.getTypeBinding(node);
+    ITypeBinding binding = node.getTypeBinding();
     addDeclaredType(binding);
     if (binding.isEqualTo(Types.getNSObject())) {
       return false;
     }
     addSuperType(node.getSuperclassType());
-    for (Type interfaze : ASTUtil.getSuperInterfaceTypes(node)) {
+    for (Type interfaze : node.getSuperInterfaceTypes()) {
       addSuperType(interfaze);
     }
     return true;
@@ -127,7 +126,7 @@ public class HeaderImportCollector extends ErrorReportingASTVisitor {
   @Override
   public boolean visit(EnumDeclaration node) {
     addSuperType(JAVA_LANG_ENUM);
-    ITypeBinding binding = Types.getTypeBinding(node);
+    ITypeBinding binding = node.getTypeBinding();
     addDeclaredType(binding);
     for (ITypeBinding interfaze : binding.getInterfaces()) {
       addSuperType(interfaze);
@@ -141,7 +140,7 @@ public class HeaderImportCollector extends ErrorReportingASTVisitor {
   @Override
   public boolean visit(AnnotationTypeDeclaration node) {
     addSuperType(JAVA_LANG_ANNOTATION);
-    ITypeBinding binding = Types.getTypeBinding(node);
+    ITypeBinding binding = node.getTypeBinding();
     addDeclaredType(binding);
     return true;
   }
