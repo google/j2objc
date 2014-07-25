@@ -14,6 +14,8 @@
 
 package com.google.devtools.j2objc.ast;
 
+import com.google.common.base.Preconditions;
+
 /**
  * Node type for an initializer block.
  */
@@ -25,12 +27,20 @@ public class Initializer extends BodyDeclaration {
 
   @Override
   protected void acceptInner(TreeVisitor visitor) {
-    visitor.visit(this);
+    if (visitor.visit(this)) {
+      javadoc.accept(visitor);
+      // annotations should be empty.
+    }
     visitor.endVisit(this);
   }
 
   @Override
   public Initializer copy() {
     return new Initializer(this);
+  }
+
+  @Override
+  public void validate() {
+    Preconditions.checkState(annotations.isEmpty());
   }
 }

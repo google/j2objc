@@ -49,6 +49,8 @@ public class FieldDeclaration extends BodyDeclaration {
   @Override
   protected void acceptInner(TreeVisitor visitor) {
     if (visitor.visit(this)) {
+      javadoc.accept(visitor);
+      annotations.accept(visitor);
       type.accept(visitor);
       fragments.accept(visitor);
     }

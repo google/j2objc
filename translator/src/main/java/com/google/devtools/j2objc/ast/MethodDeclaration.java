@@ -85,6 +85,8 @@ public class MethodDeclaration extends BodyDeclaration {
   @Override
   protected void acceptInner(TreeVisitor visitor) {
     if (visitor.visit(this)) {
+      javadoc.accept(visitor);
+      annotations.accept(visitor);
       returnType.accept(visitor);
       name.accept(visitor);
       parameters.accept(visitor);

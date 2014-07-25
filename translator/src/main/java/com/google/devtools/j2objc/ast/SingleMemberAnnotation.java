@@ -19,18 +19,27 @@ package com.google.devtools.j2objc.ast;
  */
 public class SingleMemberAnnotation extends Annotation {
 
+  private ChildLink<Expression> value = ChildLink.create(this);
+
   public SingleMemberAnnotation(org.eclipse.jdt.core.dom.SingleMemberAnnotation jdtNode) {
     super(jdtNode);
+    value.set((Expression) TreeConverter.convert(jdtNode.getValue()));
   }
 
   public SingleMemberAnnotation(SingleMemberAnnotation other) {
     super(other);
+    value.copyFrom(other.getValue());
+  }
+
+  public Expression getValue() {
+    return value.get();
   }
 
   @Override
   protected void acceptInner(TreeVisitor visitor) {
     if (visitor.visit(this)) {
-      typeName.get().accept(visitor);
+      typeName.accept(visitor);
+      value.accept(visitor);
     }
     visitor.endVisit(this);
   }

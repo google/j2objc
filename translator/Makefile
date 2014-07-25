@@ -98,6 +98,7 @@ JAVA_SOURCES = \
 	ast/LabeledStatement.java \
 	ast/LineComment.java \
 	ast/MarkerAnnotation.java \
+	ast/MemberValuePair.java \
 	ast/MethodDeclaration.java \
 	ast/MethodInvocation.java \
 	ast/Name.java \

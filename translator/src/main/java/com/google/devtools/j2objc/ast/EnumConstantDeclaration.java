@@ -68,6 +68,8 @@ public class EnumConstantDeclaration extends BodyDeclaration {
   @Override
   protected void acceptInner(TreeVisitor visitor) {
     if (visitor.visit(this)) {
+      javadoc.accept(visitor);
+      annotations.accept(visitor);
       name.accept(visitor);
       arguments.accept(visitor);
     }
