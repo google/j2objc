@@ -363,6 +363,11 @@ public class Options {
     return docCommentsEnabled;
   }
 
+  @VisibleForTesting
+  public static void setDocCommentsEnabled(boolean value) {
+    docCommentsEnabled = value;
+  }
+
   public static List<String> getSourcePathEntries() {
     return sourcePathEntries;
   }
