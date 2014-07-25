@@ -55,6 +55,10 @@ public abstract class Type extends TreeNode {
     return typeBinding;
   }
 
+  public boolean isPrimitiveType() {
+    return false;
+  }
+
   @Override
   public abstract Type copy();
 

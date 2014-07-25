@@ -52,6 +52,12 @@ public abstract class TreeNode {
     owner = newOwner;
   }
 
+  public void remove() {
+    if (owner != null) {
+      owner.remove();
+    }
+  }
+
   public void replaceWith(TreeNode other) {
     assert owner != null : "Can't replace a parentless node.";
     owner.setDynamic(other);

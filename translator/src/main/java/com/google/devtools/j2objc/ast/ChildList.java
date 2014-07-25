@@ -50,7 +50,7 @@ class ChildList<T extends TreeNode> extends AbstractList<T> {
 
   @Override
   public void add(int index, T node) {
-    ChildLink<T> link = ChildLink.create(childType, parent);
+    ChildLink<T> link = new Link(childType, parent);
     link.set(node);
     delegate.add(index, link);
   }
@@ -71,8 +71,24 @@ class ChildList<T extends TreeNode> extends AbstractList<T> {
   }
 
   public void accept(TreeVisitor visitor) {
-    for (ChildLink<T> link : delegate) {
+    // Copy all the children into an array to avoid a
+    // ConcurrentModificationException if the visitor removes one of the nodes.
+    ChildLink<?>[] array = delegate.toArray(new ChildLink<?>[delegate.size()]);
+    for (ChildLink<?> link : array) {
       link.accept(visitor);
+    }
+  }
+
+  private class Link extends ChildLink<T> {
+
+    public Link(Class<T> childType, TreeNode parent) {
+      super(childType, parent);
+    }
+
+    @Override
+    public void remove() {
+      super.remove();
+      delegate.remove(this);
     }
   }
 }

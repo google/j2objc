@@ -34,6 +34,11 @@ public class PrimitiveType extends Type {
   }
 
   @Override
+  public boolean isPrimitiveType() {
+    return true;
+  }
+
+  @Override
   protected void acceptInner(TreeVisitor visitor) {
     visitor.visit(this);
     visitor.endVisit(this);

@@ -18,33 +18,31 @@ package com.google.devtools.j2objc.translate;
 
 import com.google.common.collect.Lists;
 import com.google.devtools.j2objc.Options;
+import com.google.devtools.j2objc.ast.Assignment;
+import com.google.devtools.j2objc.ast.Block;
+import com.google.devtools.j2objc.ast.Expression;
+import com.google.devtools.j2objc.ast.ExpressionStatement;
+import com.google.devtools.j2objc.ast.FieldDeclaration;
+import com.google.devtools.j2objc.ast.MethodDeclaration;
+import com.google.devtools.j2objc.ast.MethodInvocation;
+import com.google.devtools.j2objc.ast.NullLiteral;
+import com.google.devtools.j2objc.ast.SimpleName;
+import com.google.devtools.j2objc.ast.Statement;
+import com.google.devtools.j2objc.ast.SuperMethodInvocation;
+import com.google.devtools.j2objc.ast.TreeUtil;
+import com.google.devtools.j2objc.ast.TreeVisitor;
+import com.google.devtools.j2objc.ast.TryStatement;
+import com.google.devtools.j2objc.ast.TypeDeclaration;
+import com.google.devtools.j2objc.ast.VariableDeclarationFragment;
 import com.google.devtools.j2objc.types.GeneratedMethodBinding;
 import com.google.devtools.j2objc.types.Types;
-import com.google.devtools.j2objc.util.ASTUtil;
 import com.google.devtools.j2objc.util.BindingUtil;
-import com.google.devtools.j2objc.util.ErrorReportingASTVisitor;
 import com.google.devtools.j2objc.util.NameTable;
 
-import org.eclipse.jdt.core.dom.AST;
-import org.eclipse.jdt.core.dom.ASTNode;
-import org.eclipse.jdt.core.dom.ASTVisitor;
-import org.eclipse.jdt.core.dom.Assignment;
-import org.eclipse.jdt.core.dom.Block;
-import org.eclipse.jdt.core.dom.Expression;
-import org.eclipse.jdt.core.dom.ExpressionStatement;
-import org.eclipse.jdt.core.dom.FieldDeclaration;
 import org.eclipse.jdt.core.dom.IMethodBinding;
 import org.eclipse.jdt.core.dom.ITypeBinding;
 import org.eclipse.jdt.core.dom.IVariableBinding;
-import org.eclipse.jdt.core.dom.MethodDeclaration;
-import org.eclipse.jdt.core.dom.MethodInvocation;
 import org.eclipse.jdt.core.dom.Modifier;
-import org.eclipse.jdt.core.dom.SimpleName;
-import org.eclipse.jdt.core.dom.Statement;
-import org.eclipse.jdt.core.dom.SuperMethodInvocation;
-import org.eclipse.jdt.core.dom.TryStatement;
-import org.eclipse.jdt.core.dom.TypeDeclaration;
-import org.eclipse.jdt.core.dom.VariableDeclarationFragment;
 
 import java.util.List;
 
@@ -56,7 +54,7 @@ import java.util.List;
  *
  * @author Tom Ball
  */
-public class DestructorGenerator extends ErrorReportingASTVisitor {
+public class DestructorGenerator extends TreeVisitor {
   private final String destructorName;
 
   public DestructorGenerator() {
@@ -66,12 +64,12 @@ public class DestructorGenerator extends ErrorReportingASTVisitor {
   @Override
   public boolean visit(TypeDeclaration node) {
     final List<IVariableBinding> releaseableFields = Lists.newArrayList();
-    for (final FieldDeclaration field : node.getFields()) {
+    for (final FieldDeclaration field : TreeUtil.getFieldDeclarations(node)) {
       if (!field.getType().isPrimitiveType() && !isStatic(field)) {
-        ErrorReportingASTVisitor varFinder = new ErrorReportingASTVisitor() {
+        TreeVisitor varFinder = new TreeVisitor() {
           @Override
           public boolean visit(VariableDeclarationFragment node) {
-            IVariableBinding binding = Types.getVariableBinding(node);
+            IVariableBinding binding = node.getVariableBinding();
             if (!Modifier.isStatic(field.getModifiers())) {
               releaseableFields.add(binding);
             }
@@ -83,12 +81,10 @@ public class DestructorGenerator extends ErrorReportingASTVisitor {
     }
     // We always generate a destructor method except if the type is an interface.
     if (!node.isInterface()) {
-      Types.addReleaseableFields(releaseableFields);
-
       boolean foundDestructor = false;
 
       // If a destructor method already exists, append release statements.
-      for (MethodDeclaration method : node.getMethods()) {
+      for (MethodDeclaration method : TreeUtil.getMethodDeclarations(node)) {
         if (NameTable.FINALIZE_METHOD.equals(method.getName().getIdentifier())) {
           if (Options.useARC()) {
             removeSuperFinalizeStatement(method.getBody());
@@ -101,33 +97,32 @@ public class DestructorGenerator extends ErrorReportingASTVisitor {
       // No destructor, so create a new one if there are releasable fields.
       if (!foundDestructor && !Options.useARC() && !releaseableFields.isEmpty()) {
         MethodDeclaration finalizeMethod =
-            buildFinalizeMethod(node.getAST(), Types.getTypeBinding(node), releaseableFields);
-        ASTUtil.getBodyDeclarations(node).add(finalizeMethod);
+            buildFinalizeMethod(node.getTypeBinding(), releaseableFields);
+        node.getBodyDeclarations().add(finalizeMethod);
       }
     }
 
     // Rename method to correct destructor name.  This is down outside of
     // the loop above, because a class may have a finalize() method but no
     // releasable fields.
-    for (MethodDeclaration method : node.getMethods()) {
+    for (MethodDeclaration method : TreeUtil.getMethodDeclarations(node)) {
       if (needsRenaming(method.getName())) {
-        NameTable.rename(Types.getBinding(method), destructorName);
+        NameTable.rename(method.getMethodBinding(), destructorName);
       }
     }
     return super.visit(node);
   }
 
   private void removeSuperFinalizeStatement(Block body) {
-    body.accept(new ASTVisitor() {
+    body.accept(new TreeVisitor() {
       @Override
       public boolean visit(final ExpressionStatement node) {
         Expression e = node.getExpression();
         if (e instanceof SuperMethodInvocation) {
-          IMethodBinding m = Types.getMethodBinding(e);
-          if (!Modifier.isStatic(m.getModifiers()) && m.getName().equals("finalize") &&
-              m.getParameterTypes().length == 0) {
-            assert node.getParent() instanceof Block;
-            ASTUtil.getStatements((Block) node.getParent()).remove(node);
+          IMethodBinding m = ((SuperMethodInvocation) e).getMethodBinding();
+          if (!Modifier.isStatic(m.getModifiers()) && m.getName().equals(NameTable.FINALIZE_METHOD)
+              && m.getParameterTypes().length == 0) {
+            node.remove();
             return false;
           }
         }
@@ -139,7 +134,7 @@ public class DestructorGenerator extends ErrorReportingASTVisitor {
   @Override
   public boolean visit(MethodInvocation node) {
     if (needsRenaming(node.getName())) {
-      NameTable.rename(Types.getBinding(node), destructorName);
+      NameTable.rename(node.getMethodBinding(), destructorName);
     }
     return true;
   }
@@ -147,7 +142,7 @@ public class DestructorGenerator extends ErrorReportingASTVisitor {
   @Override
   public boolean visit(SuperMethodInvocation node) {
     if (needsRenaming(node.getName())) {
-      NameTable.rename(Types.getBinding(node), destructorName);
+      NameTable.rename(node.getMethodBinding(), destructorName);
     }
     return true;
   }
@@ -157,14 +152,14 @@ public class DestructorGenerator extends ErrorReportingASTVisitor {
   }
 
   private boolean needsRenaming(SimpleName methodName) {
-    return destructorName.equals(NameTable.DEALLOC_METHOD) &&
-        NameTable.FINALIZE_METHOD.equals(methodName.getIdentifier());
+    return destructorName.equals(NameTable.DEALLOC_METHOD)
+        && NameTable.FINALIZE_METHOD.equals(methodName.getIdentifier());
   }
 
-  private SuperMethodInvocation findSuperFinalizeInvocation(ASTNode node) {
+  private SuperMethodInvocation findSuperFinalizeInvocation(MethodDeclaration node) {
     // Find existing super.finalize(), if any.
     final SuperMethodInvocation[] superFinalize = new SuperMethodInvocation[1];
-    node.accept(new ASTVisitor() {
+    node.accept(new TreeVisitor() {
       @Override
       public void endVisit(SuperMethodInvocation node) {
         if (NameTable.FINALIZE_METHOD.equals(node.getName().getIdentifier())) {
@@ -178,44 +173,43 @@ public class DestructorGenerator extends ErrorReportingASTVisitor {
   private void addReleaseStatements(MethodDeclaration method, List<IVariableBinding> fields) {
     SuperMethodInvocation superFinalize = findSuperFinalizeInvocation(method);
 
-    List<Statement> statements = ASTUtil.getStatements(method.getBody());
+    List<Statement> statements = method.getBody().getStatements();
     if (superFinalize != null) {
       // Release statements must be inserted before the [super dealloc] call.
-      statements = ASTUtil.asStatementList(ASTUtil.getOwningStatement(superFinalize)).subList(0, 0);
+      statements =
+          TreeUtil.asStatementList(TreeUtil.getOwningStatement(superFinalize)).subList(0, 0);
     } else if (!statements.isEmpty() && statements.get(0) instanceof TryStatement) {
       TryStatement tryStatement = ((TryStatement) statements.get(0));
       if (tryStatement.getBody() != null) {
-        statements = ASTUtil.getStatements(tryStatement.getBody());
+        statements = tryStatement.getBody().getStatements();
       }
     }
-    AST ast = method.getAST();
     for (IVariableBinding field : fields) {
       if (!field.getType().isPrimitive() && !BindingUtil.isWeakReference(field)) {
-        Assignment assign = ASTFactory.newAssignment(
-            ast, ASTFactory.newSimpleName(ast, field), ASTFactory.newNullLiteral(ast));
-        ExpressionStatement stmt = ast.newExpressionStatement(assign);
+        Assignment assign = new Assignment(new SimpleName(field), new NullLiteral());
+        ExpressionStatement stmt = new ExpressionStatement(assign);
         statements.add(stmt);
       }
     }
     if (Options.useReferenceCounting() && superFinalize == null) {
-      IMethodBinding methodBinding = Types.getMethodBinding(method);
+      IMethodBinding methodBinding = method.getMethodBinding();
       GeneratedMethodBinding binding = GeneratedMethodBinding.newMethod(
           destructorName, Modifier.PUBLIC, Types.mapTypeName("void"),
           methodBinding.getDeclaringClass());
-      SuperMethodInvocation call = ASTFactory.newSuperMethodInvocation(ast, binding);
-      ExpressionStatement stmt = ast.newExpressionStatement(call);
+      SuperMethodInvocation call = new SuperMethodInvocation(binding);
+      ExpressionStatement stmt = new ExpressionStatement(call);
       statements.add(stmt);
     }
   }
 
-  private MethodDeclaration buildFinalizeMethod(AST ast, ITypeBinding declaringClass,
-        List<IVariableBinding> fields) {
+  private MethodDeclaration buildFinalizeMethod(
+      ITypeBinding declaringClass, List<IVariableBinding> fields) {
     ITypeBinding voidType = Types.mapTypeName("void");
     int modifiers = Modifier.PUBLIC | BindingUtil.ACC_SYNTHETIC;
     GeneratedMethodBinding binding = GeneratedMethodBinding.newMethod(
         destructorName, modifiers, voidType, declaringClass);
-    MethodDeclaration method = ASTFactory.newMethodDeclaration(ast, binding);
-    method.setBody(ast.newBlock());
+    MethodDeclaration method = new MethodDeclaration(binding);
+    method.setBody(new Block());
     addReleaseStatements(method, fields);
     return method;
   }

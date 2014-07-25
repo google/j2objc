@@ -15,6 +15,7 @@
 package com.google.devtools.j2objc.ast;
 
 import com.google.common.base.Preconditions;
+import com.google.devtools.j2objc.types.IOSMethodBinding;
 import com.google.devtools.j2objc.types.Types;
 
 import org.eclipse.jdt.core.dom.IMethodBinding;
@@ -54,6 +55,14 @@ public class MethodInvocation extends Expression {
     methodBinding = binding;
     this.expression.set(expression);
     name.set(new SimpleName(binding));
+  }
+
+  // TODO(kstanger): This should eventually be a PrefixExpression node.
+  public static MethodInvocation newAddressOf(Expression expression) {
+    MethodInvocation node = new MethodInvocation(
+        IOSMethodBinding.newAddressOf(expression.getTypeBinding()), null);
+    node.getArguments().add(expression);
+    return node;
   }
 
   public IMethodBinding getMethodBinding() {

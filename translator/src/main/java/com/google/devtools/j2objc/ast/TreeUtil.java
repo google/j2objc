@@ -32,6 +32,11 @@ import java.util.List;
  */
 public class TreeUtil {
 
+  public static <T extends TreeNode> T remove(T node) {
+    node.remove();
+    return node;
+  }
+
   public static <T extends TreeNode> List<T> copyList(List<T> originalList) {
     List<T> newList = Lists.newArrayListWithCapacity(originalList.size());
     copyList(originalList, newList);
@@ -93,6 +98,20 @@ public class TreeUtil {
     while (n != null) {
       if (n instanceof AbstractTypeDeclaration) {
         return (AbstractTypeDeclaration) n;
+      }
+      n = n.getParent();
+    }
+    return null;
+  }
+
+  /**
+   * Returns the statement which is the parent of the specified node.
+   */
+  public static Statement getOwningStatement(TreeNode node) {
+    TreeNode n = node;
+    while (n != null) {
+      if (n instanceof Statement) {
+        return (Statement) n;
       }
       n = n.getParent();
     }
@@ -176,5 +195,31 @@ public class TreeUtil {
     } else {
       return unit.getMainTypeName() + ".java";
     }
+  }
+
+  /**
+   * Returns the given statement as a list of statements that can be added to.
+   * If node is a Block, then returns it's statement list. If node is the direct
+   * child of a Block, returns the sublist containing node as the only element.
+   * Otherwise, creates a new Block node in the place of node and returns its
+   * list of statements.
+   */
+  public static List<Statement> asStatementList(Statement node) {
+    if (node instanceof Block) {
+      return ((Block) node).getStatements();
+    }
+    TreeNode parent = node.getParent();
+    if (parent instanceof Block) {
+      List<Statement> stmts = ((Block) parent).getStatements();
+      for (int i = 0; i < stmts.size(); i++) {
+        if (stmts.get(i) == node) {
+          return stmts.subList(i, i + 1);
+        }
+      }
+    }
+    Block block = new Block();
+    node.replaceWith(block);
+    block.getStatements().add(node);
+    return block.getStatements();
   }
 }
