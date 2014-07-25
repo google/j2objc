@@ -185,6 +185,10 @@ public class EnhancedForRewriter extends ErrorReportingASTVisitor {
       AST ast, EnhancedForStatement node, ITypeBinding expressionType,
       IVariableBinding loopVariable) {
     ITypeBinding[] typeArgs = expressionType.getTypeArguments();
+    if (typeArgs.length == 0) {
+      ITypeBinding iterableType = BindingUtil.findInterface(expressionType, "java.lang.Iterable");
+      typeArgs = iterableType != null ? iterableType.getTypeArguments() : new ITypeBinding[0];
+    }
     assert typeArgs.length == 1 && Types.isBoxedPrimitive(typeArgs[0]);
     IVariableBinding boxVariable = new GeneratedVariableBinding(
         "boxed__", 0, typeArgs[0], false, false, null, null);
