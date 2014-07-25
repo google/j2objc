@@ -14,12 +14,10 @@
 #
 # The including makefile must define the variables:
 #   FAT_LIB_NAME
-#   FAT_LIB_SOURCES_FULL
 #   FAT_LIB_SOURCES_RELATIVE
 #   FAT_LIB_SOURCE_DIRS
 #   FAT_LIB_COMPILE
 # The including makefile may define the following optional variables:
-#   FAT_LIB_EXTENSIONS
 #   FAT_LIB_PRECOMPILED_HEADER
 #
 # This file defines the following to be used by the including file:
@@ -32,8 +30,6 @@
 
 FAT_LIB_LIBRARY = $(ARCH_BUILD_DIR)/lib$(FAT_LIB_NAME).a
 FAT_LIB_ARCH_LIBS = $(J2OBJC_ARCHS:%=$(BUILD_DIR)/%-lib$(FAT_LIB_NAME).a)
-
-FAT_LIB_EXTENSIONS ?= m
 
 FAT_LIB_PLIST_DIR = $(BUILD_DIR)/plists
 FAT_LIB_PLISTS = \
@@ -75,15 +71,19 @@ fat_lib_dependencies:
 
 # Generates compile rule.
 # Args:
-#   1: output file pattern
-#   2: input file pattern
+#   1: output directory
+#   2: input directory
 #   3: precompiled header file, if J2OBJC_PRECOMPILED_HEADER is defined
 #   4: precompiled header include, if J2OBJC_PRECOMPILED_HEADER is defined
 #   5: other compiler flags
 define compile_rule
-$(1): $(2) $(3) | fat_lib_dependencies
+$(1)/%.o: $(2)/%.m $(3) | fat_lib_dependencies
 	@mkdir -p $$(@D)
 	$(FAT_LIB_COMPILE) $(4) $(5) -MD -c $$< -o $$@
+
+$(1)/%.o: $(2)/%.mm $(3) | fat_lib_dependencies
+	@mkdir -p $$(@D)
+	$(FAT_LIB_COMPILE) -x objective-c++ $(4) $(5) -MD -c $$< -o $$@
 endef
 
 # Generates rule to build precompiled headers file.
@@ -99,28 +99,30 @@ endef
 
 # Generates analyze rule.
 # Args:
-#   1: input file pattern
+#   1: source directory
 define analyze_rule
-$(FAT_LIB_PLIST_DIR)/%.plist: $(1) | fat_lib_dependencies
+$(FAT_LIB_PLIST_DIR)/%.plist: $(1)/%.m | fat_lib_dependencies
 	@mkdir -p $$(@D)
 	$(FAT_LIB_COMPILE) $(STATIC_ANALYZER_FLAGS) -c $$< -o $$@
+
+$(FAT_LIB_PLIST_DIR)/%.plist: $(1)/%.mm | fat_lib_dependencies
+	@mkdir -p $$(@D)
+	$(FAT_LIB_COMPILE) -x objective-c++ $(STATIC_ANALYZER_FLAGS) -c $$< -o $$@
 endef
 
-$(foreach src_dir,$(FAT_LIB_SOURCE_DIRS),$(foreach ext,$(FAT_LIB_EXTENSIONS),\
-  $(eval $(call analyze_rule,$(src_dir)/%.$(ext)))))
+$(foreach src_dir,$(FAT_LIB_SOURCE_DIRS),$(eval $(call analyze_rule,$(src_dir))))
 
-# Generates compile rules when there aren't object file clashes.
+# Generates compile rules.
 # Args:
 #   1: output directory
 #   2: compilation flags
 emit_general_compile_rules = $(foreach src_dir,$(FAT_LIB_SOURCE_DIRS),\
   $(eval $(call compile_pch_rule,$(1)/%.pch,$(src_dir)/%,$(2)))\
-  $(foreach ext,$(FAT_LIB_EXTENSIONS),\
   $(if $(J2OBJC_PRECOMPILED_HEADER),\
-  $(eval $(call compile_rule,$(1)/%.o,$(src_dir)/%.$(ext),\
+  $(eval $(call compile_rule,$(1),$(src_dir),\
     $(1)/$(J2OBJC_PRECOMPILED_HEADER).pch,\
     -include $(1)/$(J2OBJC_PRECOMPILED_HEADER),$(2))),\
-  $(eval $(call compile_rule,$(1)/%.o,$(src_dir)/%.$(ext),,,$(2))))))
+  $(eval $(call compile_rule,$(1),$(src_dir),,,$(2)))))
 
 FAT_LIB_OBJS = $(foreach file,$(FAT_LIB_SOURCES_RELATIVE),$(basename $(file)).o)
 
