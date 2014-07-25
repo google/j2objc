@@ -47,6 +47,7 @@ import org.eclipse.jdt.core.dom.ReturnStatement;
 import org.eclipse.jdt.core.dom.SimpleName;
 import org.eclipse.jdt.core.dom.SingleVariableDeclaration;
 import org.eclipse.jdt.core.dom.Statement;
+import org.eclipse.jdt.core.dom.StringLiteral;
 import org.eclipse.jdt.core.dom.SuperMethodInvocation;
 import org.eclipse.jdt.core.dom.TypeDeclaration;
 
@@ -195,6 +196,14 @@ public class JavaToIOSMethodTranslator extends ErrorReportingASTVisitor {
     JavaMethod md = descriptions.get(binding);
     if (md != null) {
       String key = md.getKey();
+      if (key.equals("java.lang.String.String(Ljava/lang/String;)V")) {
+        // Special case: replace new String(constant) to constant (avoid clang warning).
+        Expression arg = ASTUtil.getArguments(node).get(0);
+        if (arg instanceof StringLiteral) {
+          ASTUtil.setProperty(node, NodeCopier.copySubtree(ast, arg));
+          return false;
+        }
+      }
       IOSMethod iosMethod = methodMappings.get(key);
       if (iosMethod != null) {
         IOSMethodBinding methodBinding = IOSMethodBinding.newMappedMethod(iosMethod, binding);
