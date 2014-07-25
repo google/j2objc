@@ -17,6 +17,7 @@
 package com.google.devtools.j2objc.gen;
 
 import com.google.devtools.j2objc.GenerationTest;
+import com.google.devtools.j2objc.ast.TreeConverter;
 
 import org.eclipse.jdt.core.dom.CompilationUnit;
 import org.eclipse.jdt.core.dom.IVariableBinding;
@@ -38,7 +39,8 @@ public class HiddenFieldDetectorTest extends GenerationTest {
         "  public int size() { return 0; }" +
         "  public Iterator<E> iterator() { return null; }}}";
     CompilationUnit unit = translateType("Test", source);
-    Set<IVariableBinding> hiddenFields = HiddenFieldDetector.getFieldNameConflicts(unit);
+    Set<IVariableBinding> hiddenFields = HiddenFieldDetector.getFieldNameConflicts(
+        TreeConverter.convertCompilationUnit(unit, "Test"));
     assertEquals(1, hiddenFields.size());
     IVariableBinding param = hiddenFields.iterator().next();
     assertEquals("c_", param.getName());

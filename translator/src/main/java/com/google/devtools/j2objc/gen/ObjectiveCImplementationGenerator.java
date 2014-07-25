@@ -91,7 +91,7 @@ public class ObjectiveCImplementationGenerator extends ObjectiveCSourceFileGener
 
   private ObjectiveCImplementationGenerator(String fileName, CompilationUnit unit, String source) {
     super(fileName, source, unit, Options.emitLineDirectives());
-    fieldHiders = HiddenFieldDetector.getFieldNameConflicts(unit.jdtNode());
+    fieldHiders = HiddenFieldDetector.getFieldNameConflicts(unit);
     suffix = Options.getImplementationFileSuffix();
   }
 
