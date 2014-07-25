@@ -110,7 +110,7 @@ public class FunctionizerTest extends GenerationTest {
   public void testSuperFieldAccessInFunction() throws IOException {
     String translation = translateSourceFile(
         "class A { String hello = \"hello\";" +
-        "  static class B extends A { " +
+        "  static class B extends A { void use() { str(); }" +
         "  private String str() { super.hello = \"hi\"; return super.hello; }}}",
         "A", "A.m");
       assertTranslatedLines(translation,
@@ -119,22 +119,24 @@ public class FunctionizerTest extends GenerationTest {
           "return self->hello_;");
   }
 
-  // Verify super method invocation in function.
+  // Verify there isn't any super method invocations in functions.
   public void testSuperMethodInvocationInFunction() throws IOException {
     String translation = translateSourceFile(
         "class A { " +
         "  private String hello() { return \"hello\"; } " +
         "  public String shout() { return \"HELLO\"; } " +
+        "  void use() { hello(); } " +
         "  static class B extends A { " +
         "  private String test1() { return super.hello(); } " +
-        "  private String test2() { return super.shout(); }}}",
+        "  private String test2() { return super.shout(); }" +
+        "  void use() { test1(); test2(); }}}",
         "A", "A.m");
       assertTranslatedLines(translation,
-          "__attribute__ ((unused)) static NSString * A_B_test1_(A_B * self) {",
-          "return A_hello_(self);");
+          "- (NSString *)test1 {",
+          "return [super hello];");
       assertTranslatedLines(translation,
-          "__attribute__ ((unused)) static NSString * A_B_test2_(A_B * self) {",
-          "return [self shout];");
+          "- (NSString *)test2 {",
+          "return [super shout];");
   }
 
   // Verify functions can call other functions, correctly passing the instance variable.
@@ -169,7 +171,7 @@ public class FunctionizerTest extends GenerationTest {
   // Verify that a call to a private method in an outer class is converted correctly.
   public void testOuterCall() throws IOException {
     String translation = translateSourceFile(
-        "class A { int outerN = 0; private int str() { return 0; }" +
+        "class A { int outerN = str(); private int str() { return 0; }" +
         "  class B { " +
         "    private int test1() { return str(); } " +
         "    private int test2() { return A.this.str(); }" +
@@ -179,14 +181,14 @@ public class FunctionizerTest extends GenerationTest {
         "__attribute__ ((unused)) static int A_str_(A * self) {",
         "return 0;");
     assertTranslatedLines(translation,
-        "__attribute__ ((unused)) static int A_B_test1_(A_B * self) {",
-        "return A_str_(self->this$0_);");
+        "- (int)test1 {",
+        "return A_str_(this$0_);");
     assertTranslatedLines(translation,
-        "__attribute__ ((unused)) static int A_B_test2_(A_B * self) {",
-        "return A_str_(self->this$0_);");
+        "- (int)test2 {",
+        "return A_str_(this$0_);");
     assertTranslatedLines(translation,
-        "__attribute__ ((unused)) static int A_B_test3_(A_B * self) {",
-        "return self->this$0_->outerN_;");
+        "- (int)test3 {",
+        "return this$0_->outerN_;");
   }
 
   // Verify that a call to a private method in an outer class is converted correctly.
@@ -199,7 +201,7 @@ public class FunctionizerTest extends GenerationTest {
         "    private void test(B b) { b.test(); }}}",
         "A", "A.m");
     assertTranslatedLines(translation,
-        "__attribute__ ((unused)) static void A_C_test_(A_C * self, A_B * b) {",
+        "- (void)testWithA_B:(A_B *)b {",
         "A_B_test_(nil_chk(b));");
   }
 
@@ -257,7 +259,8 @@ public class FunctionizerTest extends GenerationTest {
 
   public void testAssertInFunction() throws IOException {
     String translation = translateSourceFile(
-        "class A { private void test(String msg) { assert msg != null : \"null msg\"; }}",
+        "class A { void use(String s) { test(s); } " +
+        "  private void test(String msg) { assert msg != null : \"null msg\"; }}",
         "A", "A.m");
     assertTranslation(translation, "NSCAssert");
     assertNotInTranslation(translation, "NSAssert");
@@ -302,7 +305,8 @@ public class FunctionizerTest extends GenerationTest {
         "class A { static Object o = new Object(); " +
         "  private static Object foo() { return o; }" +
         "  void test() { A.foo(); }" +
-        "  private void test2() {}}",
+        "  private void test2() {}" +
+        "  void use() { test2(); }}",
         "A", "A.m");
     // Verify static class function calls class init.
     assertTranslatedLines(translation, "id A_foo_() {", "A_init();", "return A_o_;", "}");
@@ -315,7 +319,8 @@ public class FunctionizerTest extends GenerationTest {
 
   public void testPrivateNativeMethod() throws IOException {
     String translation = translateSourceFile(
-        "class A { Object o; private native void setO(Object o) /*-[ self->o_ = o; ]-*/; }",
+        "class A { Object o; void use() { setO(null); } " +
+        "  private native void setO(Object o) /*-[ self->o_ = o; ]-*/; }",
         "A", "A.m");
     assertTranslation(translation, "static void A_setO_(A * self, id o) { self->o_ = o; }");
     assertTranslatedLines(translation, "- (void)setOWithId:(id)o {", "A_setO_(self, o);", "}");

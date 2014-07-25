@@ -30,8 +30,11 @@ import com.google.devtools.j2objc.util.NameTable;
 import org.eclipse.jdt.core.dom.AST;
 import org.eclipse.jdt.core.dom.ASTNode;
 import org.eclipse.jdt.core.dom.ASTVisitor;
+import org.eclipse.jdt.core.dom.AbstractTypeDeclaration;
 import org.eclipse.jdt.core.dom.AnnotationTypeDeclaration;
 import org.eclipse.jdt.core.dom.Block;
+import org.eclipse.jdt.core.dom.BodyDeclaration;
+import org.eclipse.jdt.core.dom.CompilationUnit;
 import org.eclipse.jdt.core.dom.EnumDeclaration;
 import org.eclipse.jdt.core.dom.Expression;
 import org.eclipse.jdt.core.dom.FieldAccess;
@@ -71,9 +74,86 @@ import java.util.Stack;
  */
 public class Functionizer extends ErrorReportingASTVisitor {
   private Stack<MethodDeclaration> methodStack = new Stack<MethodDeclaration>();
+  private Map<IMethodBinding, Integer> referenceCounts = Maps.newHashMap();
 
   // Map each functionalized method to its function.
   private Map<IMethodBinding, IMethodBinding> functionMap = Maps.newHashMap();
+
+  @Override
+  public boolean visit(CompilationUnit node) {
+    determineReferenceCounts(node);
+    functionize(node);
+    return true;
+  }
+
+  /**
+   * Determine how often each method in this node is invoked within this node.
+   * This is used to determine whether or not to functionize the method, since
+   * a private class can have public methods that aren't invoked if it implements
+   * an interface (a private implementation of List, for example).
+   */
+  private void determineReferenceCounts(CompilationUnit node) {
+    final List<IMethodBinding> invalidMethods = Lists.newArrayList();
+    node.accept(new ASTVisitor() {
+      @Override
+      public void endVisit(MethodDeclaration node) {
+        IMethodBinding m = Types.getMethodBinding(node);
+        if (!BindingUtil.isFunction(m) && !referenceCounts.containsKey(m)) {
+          referenceCounts.put(m, 0);
+        }
+      }
+
+      @Override
+      public void endVisit(MethodInvocation node) {
+        IMethodBinding m = getDeclaration(Types.getMethodBinding(node));
+        if (!BindingUtil.isFunction(m)) {
+          Integer n = referenceCounts.get(m);
+          if (n == null) {
+            n = 0;
+          }
+          referenceCounts.put(m, n + 1);
+        }
+      }
+
+      @Override
+      public void endVisit(SuperMethodInvocation node) {
+        MethodDeclaration method = ASTUtil.getOwningMethod(node);
+        invalidMethods.add(getDeclaration(Types.getMethodBinding(method)));
+      }
+    });
+    for (IMethodBinding m : invalidMethods) {
+      referenceCounts.remove(m);
+    }
+  }
+
+  private void functionize(CompilationUnit unit) {
+    for (AbstractTypeDeclaration decl : ASTUtil.getTypes(unit)) {
+      if (decl instanceof TypeDeclaration) {
+        functionizeType((TypeDeclaration) decl);
+      }
+    }
+  }
+
+  private void functionizeType(TypeDeclaration node) {
+    List<MethodDeclaration> functions = Lists.newArrayList();
+    for (MethodDeclaration method : ASTUtil.getMethodDeclarations(node)) {
+      IMethodBinding m = Types.getMethodBinding(method);
+      if (canFunctionize(m)) {
+        MethodDeclaration function = makeFunction(method, m);
+        setFunctionCaller(method, function);
+        functions.add(function);
+        functionMap.put(m, Types.getMethodBinding(function));
+        ErrorUtil.functionizedMethod();
+      }
+    }
+    ASTUtil.getBodyDeclarations(node).addAll(functions);
+
+    for (BodyDeclaration decl : ASTUtil.getBodyDeclarations(node)) {
+      if (decl instanceof TypeDeclaration) {
+        functionizeType((TypeDeclaration) decl);
+      }
+    }
+  }
 
   @Override
   public boolean visit(AnnotationTypeDeclaration node) {
@@ -82,7 +162,6 @@ public class Functionizer extends ErrorReportingASTVisitor {
 
   @Override
   public boolean visit(EnumDeclaration node) {
-    // TODO(tball): add enum support.
     return false;
   }
 
@@ -96,26 +175,29 @@ public class Functionizer extends ErrorReportingASTVisitor {
     return false;
   }
 
-  @Override
-  public boolean visit(TypeDeclaration node) {
-    List<MethodDeclaration> functions = Lists.newArrayList();
-    for (MethodDeclaration method : ASTUtil.getMethodDeclarations(node)) {
-      IMethodBinding m = Types.getMethodBinding(method);
-      if (canFunctionize(m)) {
-        MethodDeclaration function = makeFunction(method, m);
-        setFunctionCaller(method, function);
-        functions.add(function);
-        functionMap.put(m, Types.getMethodBinding(function));
-        ErrorUtil.functionizedMethod();
-      }
-    }
-    ASTUtil.getBodyDeclarations(node).addAll(functions);
-    return true;
-  }
-
   private boolean canFunctionize(IMethodBinding m) {
-    return BindingUtil.isPrivate(m) && !BindingUtil.isFunction(m) && !BindingUtil.isAbstract(m) &&
-        !m.isConstructor() && !m.isAnnotationMember();
+    m = getDeclaration(m);
+
+    // Never functionize these types of methods.
+    if (BindingUtil.isFunction(m) || BindingUtil.isAbstract(m) || BindingUtil.isSynthetic(m) ||
+        m.isAnnotationMember() || m.isConstructor() || BindingUtil.isDestructor(m)) {
+      return false;
+    }
+
+    // Don't functionize equals/hash, since they are often called by collections.
+    String name = m.getName();
+    if ((name.equals("hashCode") && m.getParameterTypes().length == 0) ||
+        (name.equals("equals") && m.getParameterTypes().length == 1)) {
+      return false;
+    }
+
+    if (BindingUtil.isPrivate(m) || BindingUtil.isPrivate(m.getDeclaringClass())) {
+      // Only functionize if the method is invoked from within the outer class or any
+      // of its member classes.
+      Integer n = referenceCounts.get(m);
+      return n == null ? false : n.intValue() > 0;
+    }
+    return false;
   }
 
   @Override
@@ -195,62 +277,6 @@ public class Functionizer extends ErrorReportingASTVisitor {
   @Override
   public void endVisit(MethodDeclaration node) {
     methodStack.pop();
-  }
-
-  @Override
-  public void endVisit(SuperMethodInvocation node) {
-    IMethodBinding binding = Types.getMethodBinding(node);
-    ITypeBinding declaringClass = binding.getDeclaringClass();
-    if (declaringClass == null) {
-      // Unrelated function, such as address_of: skip.
-      return;
-    }
-    AST ast = node.getAST();
-    List<Expression> args = null;
-    IMethodBinding functionBinding = functionMap.get(binding);
-    if (functionBinding == null && BindingUtil.isFunction(binding)) {
-      functionBinding = binding;
-    }
-    boolean isFunction = functionBinding != null;
-    if (isFunction) {
-      MethodInvocation functionInvocation =
-          ASTFactory.newMethodInvocation(ast, functionBinding, null);
-      args = ASTUtil.getArguments(functionInvocation);
-      args.addAll(NodeCopier.copySubtrees(ast, ASTUtil.getArguments(node)));
-      ASTUtil.setProperty(node, functionInvocation);
-    } else {
-      args = ASTUtil.getArguments(node);
-    }
-
-    MethodDeclaration enclosingMethod = methodStack.peek();
-    IMethodBinding enclosingBinding = Types.getMethodBinding(enclosingMethod);
-    boolean isInstance = !BindingUtil.isStatic(binding);
-    if (isFunction && isInstance) {
-      if (BindingUtil.isFunction(enclosingBinding) && !BindingUtil.isStatic(enclosingBinding)) {
-        // Add self parameter.
-        IVariableBinding selfParam =
-            Types.getVariableBinding(ASTUtil.getParameters(enclosingMethod).get(0));
-        args.add(0, ASTFactory.newSimpleName(ast, selfParam));
-      } else {
-        if (sameClassMember(declaringClass, getEnclosingType(enclosingMethod)) && isInstance) {
-          // Add this parameter.
-          ThisExpression thisExpr = ASTFactory.newThisExpression(ast, declaringClass);
-          args.add(0, thisExpr);
-        }
-      }
-    } else {
-      if (!BindingUtil.isStatic(binding) && !BindingUtil.isStatic(enclosingBinding) &&
-          BindingUtil.isFunction(enclosingBinding)) {
-        // Change message receiver to self->method(args).
-        IVariableBinding selfParam =
-            Types.getVariableBinding(ASTUtil.getParameters(enclosingMethod).get(0));
-        MethodInvocation invocation = ASTFactory.newMethodInvocation(ast, binding,
-            ASTFactory.newSimpleName(ast, selfParam));
-        ASTUtil.getArguments(invocation).addAll(
-            NodeCopier.copySubtrees(ast, ASTUtil.getArguments(node)));
-        ASTUtil.setProperty(node, invocation);
-      }
-    }
   }
 
   /**
@@ -379,6 +405,18 @@ public class Functionizer extends ErrorReportingASTVisitor {
   private static ITypeBinding getEnclosingType(MethodDeclaration md) {
     ASTNode enclosingType = ASTUtil.getOwningType(md);
     return Types.getTypeBinding(enclosingType).getErasure();
+  }
+
+  /**
+   * Returns method declaration if declared in binding class, no superclass or
+   * interface declarations returned.
+   */
+  private IMethodBinding getDeclaration(IMethodBinding m) {
+    if (BindingUtil.isFunction(m)) {
+      return m;
+    }
+    IMethodBinding decl = m.getMethodDeclaration();
+    return m.getDeclaringClass().isEqualTo(decl.getDeclaringClass()) ? decl : m;
   }
 
   /**
