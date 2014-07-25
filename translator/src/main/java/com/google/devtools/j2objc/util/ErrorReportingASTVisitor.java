@@ -19,7 +19,6 @@ package com.google.devtools.j2objc.util;
 import org.eclipse.jdt.core.dom.ASTNode;
 import org.eclipse.jdt.core.dom.ASTVisitor;
 import org.eclipse.jdt.core.dom.ImportDeclaration;
-import org.eclipse.jdt.core.dom.PackageDeclaration;
 
 import java.util.Stack;
 
