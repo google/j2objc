@@ -87,14 +87,6 @@ public class TreeUtil {
     return null;
   }
 
-  public static int getNodeLine(TreeNode node) {
-    CompilationUnit unit = getCompilationUnit(node);
-    if (unit != null) {
-      return unit.getLineNumber(node.getStartPosition());
-    }
-    return -1;
-  }
-
   public static Iterable<FieldDeclaration> getFieldDeclarations(AbstractTypeDeclaration node) {
     return Iterables.filter(node.getBodyDeclarations(), FieldDeclaration.class);
   }

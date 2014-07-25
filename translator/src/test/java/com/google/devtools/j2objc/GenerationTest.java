@@ -124,7 +124,8 @@ public abstract class GenerationTest extends TestCase {
     NameTable.initialize();
     Types.initialize(unit);
     return TranslationProcessor.applyMutations(
-        unit, TranslationProcessor.getClassNameFromFilePath(name + ".java"), TimeTracker.noop());
+        unit, TranslationProcessor.getClassNameFromFilePath(name + ".java"), source,
+        TimeTracker.noop());
   }
 
   /**

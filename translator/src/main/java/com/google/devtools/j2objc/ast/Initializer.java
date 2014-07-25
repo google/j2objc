@@ -40,7 +40,8 @@ public class Initializer extends BodyDeclaration {
   }
 
   @Override
-  public void validate() {
+  public void validateInner() {
+    super.validateInner();
     Preconditions.checkState(annotations.isEmpty());
   }
 }

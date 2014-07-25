@@ -117,7 +117,7 @@ class TranslationProcessor extends FileProcessor {
     processedFiles.add(relativePath);
     seenFiles.add(relativePath);
 
-    CompilationUnit newUnit = applyMutations(unit, getClassNameFromFilePath(path), ticker);
+    CompilationUnit newUnit = applyMutations(unit, getClassNameFromFilePath(path), source, ticker);
     ticker.tick("Tree mutations");
 
     if (unit.types().isEmpty()) {
@@ -147,7 +147,8 @@ class TranslationProcessor extends FileProcessor {
    * classes, etc.
    */
   public static CompilationUnit applyMutations(
-      org.eclipse.jdt.core.dom.CompilationUnit unit, String mainTypeName, TimeTracker ticker) {
+      org.eclipse.jdt.core.dom.CompilationUnit unit, String mainTypeName, String source,
+      TimeTracker ticker) {
     ticker.push();
 
     OuterReferenceResolver.resolve(unit);
@@ -239,7 +240,7 @@ class TranslationProcessor extends FileProcessor {
     // Verify all modified nodes have type bindings
     Types.verifyNode(unit);
 
-    CompilationUnit newUnit = TreeConverter.convertCompilationUnit(unit, mainTypeName);
+    CompilationUnit newUnit = TreeConverter.convertCompilationUnit(unit, mainTypeName, source);
 
     for (Plugin plugin : Options.getPlugins()) {
       plugin.processUnit(newUnit);

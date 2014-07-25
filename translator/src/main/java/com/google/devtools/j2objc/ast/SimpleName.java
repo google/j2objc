@@ -14,6 +14,8 @@
 
 package com.google.devtools.j2objc.ast;
 
+import com.google.common.base.Preconditions;
+
 /**
  * Node for a simple (unqualified) name.
  */
@@ -57,5 +59,11 @@ public class SimpleName extends Name {
   @Override
   public SimpleName copy() {
     return new SimpleName(this);
+  }
+
+  @Override
+  public void validateInner() {
+    super.validateInner();
+    Preconditions.checkNotNull(identifier);
   }
 }

@@ -15,6 +15,7 @@
 package com.google.devtools.j2objc.ast;
 
 import com.google.common.base.Preconditions;
+import com.google.common.collect.Lists;
 
 import org.eclipse.jdt.core.dom.ASTNode;
 
@@ -25,17 +26,19 @@ import java.util.List;
  */
 public class CompilationUnit extends TreeNode {
 
-  // TODO(kstanger): Eventually remove this.
-  private final org.eclipse.jdt.core.dom.CompilationUnit jdtNode;
   private final String mainTypeName;
+  private final String source;
+  private final int[] newlines;
   private ChildLink<PackageDeclaration> packageDeclaration = ChildLink.create(this);
   private ChildList<Comment> comments = ChildList.create(this);
   private ChildList<AbstractTypeDeclaration> types = ChildList.create(this);
 
-  public CompilationUnit(org.eclipse.jdt.core.dom.CompilationUnit jdtNode, String mainTypeName) {
+  public CompilationUnit(
+      org.eclipse.jdt.core.dom.CompilationUnit jdtNode, String mainTypeName, String source) {
     super(jdtNode);
-    this.jdtNode = Preconditions.checkNotNull(jdtNode);
     this.mainTypeName = Preconditions.checkNotNull(mainTypeName);
+    this.source = Preconditions.checkNotNull(source);
+    newlines = findNewlines(source);
     packageDeclaration.set((PackageDeclaration) TreeConverter.convert(jdtNode.getPackage()));
     for (Object comment : jdtNode.getCommentList()) {
       // Comments are not normally parented in the JDT AST. Javadoc nodes are
@@ -53,19 +56,21 @@ public class CompilationUnit extends TreeNode {
 
   public CompilationUnit(CompilationUnit other) {
     super(other);
-    jdtNode = other.jdtNode();
     mainTypeName = other.getMainTypeName();
+    source = other.getSource();
+    newlines = new int[other.newlines.length];
+    System.arraycopy(other.newlines, 0, newlines, 0, newlines.length);
     packageDeclaration.copyFrom(other.getPackage());
     comments.copyFrom(other.getCommentList());
     types.copyFrom(other.getTypes());
   }
 
-  public org.eclipse.jdt.core.dom.CompilationUnit jdtNode() {
-    return jdtNode;
-  }
-
   public String getMainTypeName() {
     return mainTypeName;
+  }
+
+  public String getSource() {
+    return source;
   }
 
   public PackageDeclaration getPackage() {
@@ -84,10 +89,40 @@ public class CompilationUnit extends TreeNode {
     return types;
   }
 
-  // TODO(kstanger): Find an effective way to lookup the line number for a node.
-  // Possibly by adding a line number field to TreeNodee.
   public int getLineNumber(int position) {
-    return jdtNode.getLineNumber(position);
+    if (position < 0 || position >= source.length()) {
+      return -1;
+    }
+    return getLineNumber(position, 0, newlines.length - 1);
+  }
+
+  private int getLineNumber(int position, int start, int end) {
+    if (start == end) {
+      return start + 1;
+    }
+    int middle = (start + end + 1) / 2;
+    if (newlines[middle] > position) {
+      return getLineNumber(position, start, middle - 1);
+    } else {
+      return getLineNumber(position, middle, end);
+    }
+  }
+
+  private static int[] findNewlines(String source) {
+    List<Integer> newlinesList = Lists.newArrayList();
+    newlinesList.add(0);
+    int len = source.length();
+    for (int i = 0; i < len; i++) {
+      if (source.charAt(i) == '\n') {
+        newlinesList.add(i + 1);
+      }
+    }
+    int size = newlinesList.size();
+    int[] newlines = new int[size];
+    for (int i = 0; i < size; i++) {
+      newlines[i] = newlinesList.get(i);
+    }
+    return newlines;
   }
 
   @Override
@@ -106,8 +141,10 @@ public class CompilationUnit extends TreeNode {
   }
 
   @Override
-  public void validate() {
-    super.validate();
-    Preconditions.checkNotNull(jdtNode);
+  public void validateInner() {
+    super.validateInner();
+    Preconditions.checkNotNull(mainTypeName);
+    Preconditions.checkNotNull(source);
+    Preconditions.checkState(!types.isEmpty());
   }
 }
