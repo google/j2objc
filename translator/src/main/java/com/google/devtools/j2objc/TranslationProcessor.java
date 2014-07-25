@@ -231,15 +231,15 @@ class TranslationProcessor extends FileProcessor {
     new OperatorRewriter().run(unit);
     ticker.tick("OperatorRewriter");
 
-    if (Options.finalMethodsAsFunctions()) {
-      new Functionizer().run(unit);
-      ticker.tick("Functionizer");
-    }
-
     // Verify all modified nodes have type bindings
     Types.verifyNode(unit);
 
     CompilationUnit newUnit = TreeConverter.convertCompilationUnit(unit, path, source);
+
+    if (Options.finalMethodsAsFunctions()) {
+      new Functionizer().run(newUnit);
+      ticker.tick("Functionizer");
+    }
 
     for (Plugin plugin : Options.getPlugins()) {
       plugin.processUnit(newUnit);
