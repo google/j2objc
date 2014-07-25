@@ -83,14 +83,12 @@ public class ObjectiveCImplementationGenerator extends ObjectiveCSourceFileGener
    * Generate an Objective-C implementation file for each type declared in a
    * specified compilation unit.
    */
-  public static void generate(String fileName, CompilationUnit unit) {
-    ObjectiveCImplementationGenerator implementationGenerator =
-        new ObjectiveCImplementationGenerator(fileName, unit);
-    implementationGenerator.generate(unit);
+  public static void generate(CompilationUnit unit) {
+    new ObjectiveCImplementationGenerator(unit).generate();
   }
 
-  private ObjectiveCImplementationGenerator(String fileName, CompilationUnit unit) {
-    super(fileName, unit, Options.emitLineDirectives());
+  private ObjectiveCImplementationGenerator(CompilationUnit unit) {
+    super(unit, Options.emitLineDirectives());
     fieldHiders = HiddenFieldDetector.getFieldNameConflicts(unit);
     suffix = Options.getImplementationFileSuffix();
   }
@@ -100,13 +98,14 @@ public class ObjectiveCImplementationGenerator extends ObjectiveCSourceFileGener
     return suffix;
   }
 
-  public void generate(CompilationUnit unit) {
-    println(J2ObjC.getFileHeader(getSourceFileName()));
+  public void generate() {
+    CompilationUnit unit = getUnit();
+    println(J2ObjC.getFileHeader(unit.getSourceFileFullPath()));
     List<AbstractTypeDeclaration> typesToGenerate = collectTypes(unit);
     if (!typesToGenerate.isEmpty()) {
       findBlockComments(unit, typesToGenerate);
       findInvokedConstructors(unit);
-      printStart(getSourceFileName());
+      printStart(unit.getSourceFileFullPath());
       printImports(unit);
       pushIgnoreDeprecatedDeclarationsPragma();
       boolean needsNewLine = true;

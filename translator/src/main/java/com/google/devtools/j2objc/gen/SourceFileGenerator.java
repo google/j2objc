@@ -39,12 +39,9 @@ public abstract class SourceFileGenerator {
   private final SourceBuilder builder;
   private final CompilationUnit unit;
   private final File outputDirectory;
-  private final String sourceFileName;
 
-  public SourceFileGenerator(
-      String sourceFileName, CompilationUnit unit, boolean emitLineDirectives) {
+  public SourceFileGenerator(CompilationUnit unit, boolean emitLineDirectives) {
     builder = new SourceBuilder(emitLineDirectives);
-    this.sourceFileName = sourceFileName;
     this.unit = unit;
     this.outputDirectory = Options.getOutputDirectory();
   }
@@ -120,7 +117,7 @@ public abstract class SourceFileGenerator {
         end = text.lastIndexOf("}-*/");
         if (start != -1 && end > start) {
           String message = String.format("JSNI comment found: %s:%d",
-              sourceFileName, unit.getLineNumber(offset));
+              unit.getSourceFileFullPath(), unit.getLineNumber(offset));
           ErrorUtil.warning(message);
         }
       }
@@ -211,9 +208,5 @@ public abstract class SourceFileGenerator {
 
   protected SourceBuilder getBuilder() {
     return builder;
-  }
-
-  protected String getSourceFileName() {
-    return sourceFileName;
   }
 }

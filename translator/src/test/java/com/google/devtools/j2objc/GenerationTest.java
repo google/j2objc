@@ -122,9 +122,7 @@ public abstract class GenerationTest extends TestCase {
     org.eclipse.jdt.core.dom.CompilationUnit unit = compileType(name, source);
     NameTable.initialize();
     Types.initialize(unit);
-    return TranslationProcessor.applyMutations(
-        unit, TranslationProcessor.getClassNameFromFilePath(name + ".java"), source,
-        TimeTracker.noop());
+    return TranslationProcessor.applyMutations(unit, name + ".java", source, TimeTracker.noop());
   }
 
   /**
@@ -312,8 +310,7 @@ public abstract class GenerationTest extends TestCase {
   protected String translateSourceFile(String source, String typeName, String fileName)
       throws IOException {
     CompilationUnit unit = translateType(typeName, source);
-    String sourceName = typeName + ".java";
-    TranslationProcessor.generateObjectiveCSource(sourceName, unit, TimeTracker.noop());
+    TranslationProcessor.generateObjectiveCSource(unit, TimeTracker.noop());
     return getTranslatedFile(fileName);
   }
 

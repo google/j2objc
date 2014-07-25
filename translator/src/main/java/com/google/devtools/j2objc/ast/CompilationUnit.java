@@ -26,6 +26,7 @@ import java.util.List;
  */
 public class CompilationUnit extends TreeNode {
 
+  private final String sourceFileFullPath;
   private final String mainTypeName;
   private final String source;
   private final int[] newlines;
@@ -34,8 +35,10 @@ public class CompilationUnit extends TreeNode {
   private ChildList<AbstractTypeDeclaration> types = ChildList.create(this);
 
   public CompilationUnit(
-      org.eclipse.jdt.core.dom.CompilationUnit jdtNode, String mainTypeName, String source) {
+      org.eclipse.jdt.core.dom.CompilationUnit jdtNode, String sourceFileFullPath,
+      String mainTypeName, String source) {
     super(jdtNode);
+    this.sourceFileFullPath = Preconditions.checkNotNull(sourceFileFullPath);
     this.mainTypeName = Preconditions.checkNotNull(mainTypeName);
     this.source = Preconditions.checkNotNull(source);
     newlines = findNewlines(source);
@@ -56,6 +59,7 @@ public class CompilationUnit extends TreeNode {
 
   public CompilationUnit(CompilationUnit other) {
     super(other);
+    sourceFileFullPath = other.getSourceFileFullPath();
     mainTypeName = other.getMainTypeName();
     source = other.getSource();
     newlines = new int[other.newlines.length];
@@ -63,6 +67,10 @@ public class CompilationUnit extends TreeNode {
     packageDeclaration.copyFrom(other.getPackage());
     comments.copyFrom(other.getCommentList());
     types.copyFrom(other.getTypes());
+  }
+
+  public String getSourceFileFullPath() {
+    return sourceFileFullPath;
   }
 
   public String getMainTypeName() {
@@ -143,6 +151,7 @@ public class CompilationUnit extends TreeNode {
   @Override
   public void validateInner() {
     super.validateInner();
+    Preconditions.checkNotNull(sourceFileFullPath);
     Preconditions.checkNotNull(mainTypeName);
     Preconditions.checkNotNull(source);
     Preconditions.checkState(!types.isEmpty());
