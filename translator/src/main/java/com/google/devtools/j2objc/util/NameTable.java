@@ -21,6 +21,8 @@ import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.devtools.j2objc.Options;
+import com.google.devtools.j2objc.ast.CompilationUnit;
+import com.google.devtools.j2objc.ast.PackageDeclaration;
 import com.google.devtools.j2objc.types.GeneratedVariableBinding;
 import com.google.devtools.j2objc.types.IOSMethod;
 import com.google.devtools.j2objc.types.IOSMethodBinding;
@@ -30,7 +32,6 @@ import com.google.devtools.j2objc.types.Types;
 import com.google.j2objc.annotations.ObjectiveCName;
 
 import org.eclipse.jdt.core.dom.AbstractTypeDeclaration;
-import org.eclipse.jdt.core.dom.CompilationUnit;
 import org.eclipse.jdt.core.dom.IAnnotationBinding;
 import org.eclipse.jdt.core.dom.IBinding;
 import org.eclipse.jdt.core.dom.IMethodBinding;
@@ -38,7 +39,6 @@ import org.eclipse.jdt.core.dom.IPackageBinding;
 import org.eclipse.jdt.core.dom.ITypeBinding;
 import org.eclipse.jdt.core.dom.IVariableBinding;
 import org.eclipse.jdt.core.dom.MethodDeclaration;
-import org.eclipse.jdt.core.dom.PackageDeclaration;
 import org.eclipse.jdt.core.dom.PrimitiveType;
 import org.eclipse.jdt.core.dom.SimpleName;
 import org.eclipse.jdt.core.dom.VariableDeclarationFragment;
@@ -252,7 +252,7 @@ public class NameTable {
   /**
    * Initialize this service using the AST returned by the parser.
    */
-  public static void initialize(CompilationUnit unit) {
+  public static void initialize() {
     instance = new NameTable(Options.getPackagePrefixes());
   }
 
@@ -642,38 +642,12 @@ public class NameTable {
     return reservedNames.contains(name) || nsObjectMessages.contains(name);
   }
 
-  /**
-   * Returns the fully-qualified main class for a given compilation unit.
-   */
-  public static String getMainJavaName(CompilationUnit node, String sourceFileName) {
-    String className = getClassNameFromSourceFileName(sourceFileName);
-    PackageDeclaration pkgDecl = node.getPackage();
-    if (pkgDecl != null) {
-      className = pkgDecl.getName().getFullyQualifiedName()  + '.' + className;
-    }
-    return className;
-  }
-
-  private static String getClassNameFromSourceFileName(String sourceFileName) {
-    int begin = sourceFileName.lastIndexOf(File.separatorChar) + 1;
-    // Also check for /, since this may be a jar'd source when translating on Windows.
-    int n = sourceFileName.lastIndexOf('/') + 1;
-    if (n > begin) {
-      begin = n;
-    }
-    int end = sourceFileName.lastIndexOf(".java");
-    String className = sourceFileName.substring(begin, end);
-    return className;
-  }
-
-  public static String getMainTypeName(CompilationUnit node, String sourceFileName) {
-    String className = getClassNameFromSourceFileName(sourceFileName);
-    PackageDeclaration pkgDecl = node.getPackage();
-    if (pkgDecl != null) {
-      String pkgName = getPrefix(pkgDecl.getName().getFullyQualifiedName());
-      return pkgName + className;
+  public static String getMainTypeFullName(CompilationUnit unit) {
+    PackageDeclaration pkg = unit.getPackage();
+    if (pkg != null) {
+      return getPrefix(pkg.getName().getFullyQualifiedName()) + unit.getMainTypeName();
     } else {
-      return className;
+      return unit.getMainTypeName();
     }
   }
 

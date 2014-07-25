@@ -207,7 +207,7 @@ abstract class FileProcessor {
     ticker.tick("Parsing file");
 
     ErrorUtil.setCurrentFileName(path);
-    NameTable.initialize(unit);
+    NameTable.initialize();
     Types.initialize(unit);
     processUnit(path, source, unit, ticker);
     NameTable.cleanup();
@@ -247,7 +247,7 @@ abstract class FileProcessor {
   private void processUnit(String path, CompilationUnit unit, TimeTracker ticker) {
     try {
       ErrorUtil.setCurrentFileName(path);
-      NameTable.initialize(unit);
+      NameTable.initialize();
       Types.initialize(unit);
       processUnit(path, Files.toString(new File(path), Options.getCharset()), unit, ticker);
       NameTable.cleanup();

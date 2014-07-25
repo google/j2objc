@@ -123,7 +123,7 @@ public abstract class GenerationTest extends TestCase {
    */
   protected CompilationUnit translateType(String name, String source) {
     CompilationUnit unit = compileType(name, source);
-    NameTable.initialize(unit);
+    NameTable.initialize();
     Types.initialize(unit);
     TranslationProcessor.applyMutations(unit, TimeTracker.noop());
     return unit;
@@ -316,7 +316,9 @@ public abstract class GenerationTest extends TestCase {
     CompilationUnit unit = translateType(typeName, source);
     String sourceName = typeName + ".java";
     TranslationProcessor.generateObjectiveCSource(
-        sourceName, source, TreeConverter.convertCompilationUnit(unit), TimeTracker.noop());
+        sourceName, source, TreeConverter.convertCompilationUnit(
+            unit, TranslationProcessor.getClassNameFromFilePath(sourceName)),
+        TimeTracker.noop());
     return getTranslatedFile(fileName);
   }
 

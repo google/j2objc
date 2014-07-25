@@ -27,13 +27,15 @@ public class CompilationUnit extends TreeNode {
 
   // TODO(kstanger): Eventually remove this.
   private final org.eclipse.jdt.core.dom.CompilationUnit jdtNode;
+  private final String mainTypeName;
   private ChildLink<PackageDeclaration> packageDeclaration = ChildLink.create(this);
   private ChildList<Comment> comments = ChildList.create(this);
   private ChildList<AbstractTypeDeclaration> types = ChildList.create(this);
 
-  public CompilationUnit(org.eclipse.jdt.core.dom.CompilationUnit jdtNode) {
+  public CompilationUnit(org.eclipse.jdt.core.dom.CompilationUnit jdtNode, String mainTypeName) {
     super(jdtNode);
     this.jdtNode = Preconditions.checkNotNull(jdtNode);
+    this.mainTypeName = Preconditions.checkNotNull(mainTypeName);
     packageDeclaration.set((PackageDeclaration) TreeConverter.convert(jdtNode.getPackage()));
     for (Object comment : jdtNode.getCommentList()) {
       // Comments are not normally parented in the JDT AST. Javadoc nodes are
@@ -51,7 +53,8 @@ public class CompilationUnit extends TreeNode {
 
   public CompilationUnit(CompilationUnit other) {
     super(other);
-    this.jdtNode = other.jdtNode;
+    jdtNode = other.jdtNode();
+    mainTypeName = other.getMainTypeName();
     packageDeclaration.copyFrom(other.getPackage());
     comments.copyFrom(other.getCommentList());
     types.copyFrom(other.getTypes());
@@ -59,6 +62,10 @@ public class CompilationUnit extends TreeNode {
 
   public org.eclipse.jdt.core.dom.CompilationUnit jdtNode() {
     return jdtNode;
+  }
+
+  public String getMainTypeName() {
+    return mainTypeName;
   }
 
   public PackageDeclaration getPackage() {

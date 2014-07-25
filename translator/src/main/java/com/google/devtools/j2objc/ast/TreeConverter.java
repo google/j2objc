@@ -22,8 +22,8 @@ import org.eclipse.jdt.core.dom.ASTNode;
 public class TreeConverter {
 
   public static CompilationUnit convertCompilationUnit(
-      org.eclipse.jdt.core.dom.CompilationUnit jdtUnit) {
-    return (CompilationUnit) convert(jdtUnit);
+      org.eclipse.jdt.core.dom.CompilationUnit jdtUnit, String mainTypeName) {
+    return new CompilationUnit((org.eclipse.jdt.core.dom.CompilationUnit) jdtUnit, mainTypeName);
   }
 
   public static Statement convertStatement(org.eclipse.jdt.core.dom.Statement jdtStatement) {
@@ -72,8 +72,6 @@ public class TreeConverter {
         return new CharacterLiteral((org.eclipse.jdt.core.dom.CharacterLiteral) jdtNode);
       case ASTNode.CLASS_INSTANCE_CREATION:
         return new ClassInstanceCreation((org.eclipse.jdt.core.dom.ClassInstanceCreation) jdtNode);
-      case ASTNode.COMPILATION_UNIT:
-        return new CompilationUnit((org.eclipse.jdt.core.dom.CompilationUnit) jdtNode);
       case ASTNode.CONDITIONAL_EXPRESSION:
         return new ConditionalExpression((org.eclipse.jdt.core.dom.ConditionalExpression) jdtNode);
       case ASTNode.CONSTRUCTOR_INVOCATION:
@@ -202,6 +200,9 @@ public class TreeConverter {
       case ASTNode.METHOD_REF:
       case ASTNode.METHOD_REF_PARAMETER:
         return new TextElement(jdtNode);
+      case ASTNode.COMPILATION_UNIT:
+        throw new AssertionError(
+            "CompilationUnit must be converted using convertCompilationUnit()");
       default:
         throw new AssertionError("Unknown node type: " + jdtNode.getClass().getName());
     }

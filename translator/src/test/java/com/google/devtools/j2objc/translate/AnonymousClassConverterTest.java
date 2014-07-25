@@ -283,7 +283,7 @@ public class AnonymousClassConverterTest extends GenerationTest {
 
     // Verify constructor takes both outer field and var.
     ObjectiveCImplementationGenerator.generate(
-        "Test.java", TreeConverter.convertCompilationUnit(unit), source);
+        "Test.java", TreeConverter.convertCompilationUnit(unit, "Test"), source);
     String translation = getTranslatedFile("Test.m");
     assertTranslation(translation,
         "r2 = [[[Test_$1_$1 alloc] initWithJavaLangInteger:i] autorelease]");
@@ -316,7 +316,7 @@ public class AnonymousClassConverterTest extends GenerationTest {
 
     // Verify method var is passed to constructor.
     ObjectiveCImplementationGenerator.generate(
-        "Test.java", TreeConverter.convertCompilationUnit(unit), source);
+        "Test.java", TreeConverter.convertCompilationUnit(unit, "Test"), source);
     String translation = getTranslatedFile("Test.m");
     assertTranslation(translation, "r = [[[Test_$1 alloc] initWithJavaLangInteger:i] autorelease]");
   }
@@ -349,7 +349,7 @@ public class AnonymousClassConverterTest extends GenerationTest {
 
     // Verify method var is passed to constructor.
     ObjectiveCImplementationGenerator.generate(
-        "Test.java", TreeConverter.convertCompilationUnit(unit), source);
+        "Test.java", TreeConverter.convertCompilationUnit(unit, "Test"), source);
     String translation = getTranslatedFile("Test.m");
     assertTranslation(translation,
         "r = [[[Test_$1 alloc] initWithJavaLangInteger:i] autorelease]");
