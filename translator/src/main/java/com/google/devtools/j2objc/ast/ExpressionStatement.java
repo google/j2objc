@@ -19,7 +19,7 @@ package com.google.devtools.j2objc.ast;
  */
 public class ExpressionStatement extends Statement {
 
-  private ChildLink<Expression> expression = ChildLink.create(this);
+  private ChildLink<Expression> expression = ChildLink.create(Expression.class, this);
 
   public ExpressionStatement(org.eclipse.jdt.core.dom.ExpressionStatement jdtNode) {
     super(jdtNode);
@@ -29,6 +29,10 @@ public class ExpressionStatement extends Statement {
   public ExpressionStatement(ExpressionStatement other) {
     super(other);
     expression.copyFrom(other.getExpression());
+  }
+
+  public ExpressionStatement(Expression expression) {
+    this.expression.set(expression);
   }
 
   public Expression getExpression() {

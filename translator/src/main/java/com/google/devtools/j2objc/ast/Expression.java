@@ -28,8 +28,6 @@ public abstract class Expression extends TreeNode {
   // TODO(kstanger): Eventually remove this.
   private boolean hasNilCheck = false;
 
-  protected Expression() {}
-
   protected Expression(org.eclipse.jdt.core.dom.Expression jdtNode) {
     super(jdtNode);
     typeBinding = BindingUtil.toTypeBinding(Types.getBindingUnsafe(jdtNode));
@@ -42,12 +40,21 @@ public abstract class Expression extends TreeNode {
     hasNilCheck = other.hasNilCheck();
   }
 
-  public ITypeBinding getTypeBinding() {
+  protected Expression(ITypeBinding binding) {
+    super();
+    typeBinding = binding;
+  }
+
+  public final ITypeBinding getTypeBinding() {
     return typeBinding;
   }
 
   public boolean hasNilCheck() {
     return hasNilCheck;
+  }
+
+  public void setHasNilCheck(boolean newHasNilCheck) {
+    hasNilCheck = newHasNilCheck;
   }
 
   @Override

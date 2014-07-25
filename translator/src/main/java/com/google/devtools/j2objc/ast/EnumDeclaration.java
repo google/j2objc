@@ -21,7 +21,8 @@ import java.util.List;
  */
 public class EnumDeclaration extends AbstractTypeDeclaration {
 
-  private ChildList<EnumConstantDeclaration> enumConstants = ChildList.create(this);
+  private ChildList<EnumConstantDeclaration> enumConstants =
+      ChildList.create(EnumConstantDeclaration.class, this);
 
   public EnumDeclaration(org.eclipse.jdt.core.dom.EnumDeclaration jdtNode) {
     super(jdtNode);

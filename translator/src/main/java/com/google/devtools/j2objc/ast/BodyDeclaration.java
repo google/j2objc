@@ -14,6 +14,8 @@
 
 package com.google.devtools.j2objc.ast;
 
+import org.eclipse.jdt.core.dom.IBinding;
+
 import java.util.List;
 
 /**
@@ -22,8 +24,8 @@ import java.util.List;
 public abstract class BodyDeclaration extends TreeNode {
 
   private int modifiers = 0;
-  protected ChildLink<Javadoc> javadoc = ChildLink.create(this);
-  protected ChildList<Annotation> annotations = ChildList.create(this);
+  protected ChildLink<Javadoc> javadoc = ChildLink.create(Javadoc.class, this);
+  protected ChildList<Annotation> annotations = ChildList.create(Annotation.class, this);
 
   public BodyDeclaration() {}
 
@@ -45,8 +47,16 @@ public abstract class BodyDeclaration extends TreeNode {
     annotations.copyFrom(other.getAnnotations());
   }
 
+  public BodyDeclaration(IBinding binding) {
+    modifiers = binding.getModifiers();
+  }
+
   public int getModifiers() {
     return modifiers;
+  }
+
+  public void removeModifiers(int modifiersToRemove) {
+    modifiers &= ~modifiersToRemove;
   }
 
   public Javadoc getJavadoc() {

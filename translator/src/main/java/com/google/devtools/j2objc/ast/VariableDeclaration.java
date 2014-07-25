@@ -23,14 +23,14 @@ import org.eclipse.jdt.core.dom.IVariableBinding;
  */
 public abstract class VariableDeclaration extends TreeNode {
 
-  private IVariableBinding binding;
+  private IVariableBinding variableBinding;
   private int extraDimensions = 0;
-  protected ChildLink<SimpleName> name = ChildLink.create(this);
-  protected ChildLink<Expression> initializer = ChildLink.create(this);
+  protected ChildLink<SimpleName> name = ChildLink.create(SimpleName.class, this);
+  protected ChildLink<Expression> initializer = ChildLink.create(Expression.class, this);
 
   public VariableDeclaration(org.eclipse.jdt.core.dom.VariableDeclaration jdtNode) {
     super(jdtNode);
-    binding = Types.getVariableBinding(jdtNode);
+    variableBinding = Types.getVariableBinding(jdtNode);
     extraDimensions = jdtNode.getExtraDimensions();
     name.set((SimpleName) TreeConverter.convert(jdtNode.getName()));
     initializer.set((Expression) TreeConverter.convert(jdtNode.getInitializer()));
@@ -38,14 +38,20 @@ public abstract class VariableDeclaration extends TreeNode {
 
   public VariableDeclaration(VariableDeclaration other) {
     super(other);
-    binding = other.getVariableBinding();
+    variableBinding = other.getVariableBinding();
     extraDimensions = other.getExtraDimensions();
     name.copyFrom(other.getName());
     initializer.copyFrom(other.getInitializer());
   }
 
+  public VariableDeclaration(IVariableBinding variableBinding) {
+    super();
+    this.variableBinding = variableBinding;
+    name.set(new SimpleName(variableBinding));
+  }
+
   public IVariableBinding getVariableBinding() {
-    return binding;
+    return variableBinding;
   }
 
   public int getExtraDimensions() {

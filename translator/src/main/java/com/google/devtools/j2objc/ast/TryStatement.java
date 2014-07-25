@@ -21,10 +21,11 @@ import java.util.List;
  */
 public class TryStatement extends Statement {
 
-  private ChildList<VariableDeclarationExpression> resources = ChildList.create(this);
-  private ChildLink<Block> body = ChildLink.create(this);
-  private ChildList<CatchClause> catchClauses = ChildList.create(this);
-  private ChildLink<Block> finallyBlock = ChildLink.create(this);
+  private ChildList<VariableDeclarationExpression> resources =
+      ChildList.create(VariableDeclarationExpression.class, this);
+  private ChildLink<Block> body = ChildLink.create(Block.class, this);
+  private ChildList<CatchClause> catchClauses = ChildList.create(CatchClause.class, this);
+  private ChildLink<Block> finallyBlock = ChildLink.create(Block.class, this);
 
   public TryStatement(org.eclipse.jdt.core.dom.TryStatement jdtNode) {
     super(jdtNode);

@@ -70,8 +70,8 @@ public class Assignment extends Expression {
   private Operator operator;
   // TODO(kstanger): Eventually remove this.
   private boolean isDeferredFieldSetter = false;
-  private ChildLink<Expression> leftHandSide = ChildLink.create(this);
-  private ChildLink<Expression> rightHandSide = ChildLink.create(this);
+  private ChildLink<Expression> leftHandSide = ChildLink.create(Expression.class, this);
+  private ChildLink<Expression> rightHandSide = ChildLink.create(Expression.class, this);
 
   public Assignment(org.eclipse.jdt.core.dom.Assignment jdtNode) {
     super(jdtNode);

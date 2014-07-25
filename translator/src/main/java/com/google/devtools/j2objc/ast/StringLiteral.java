@@ -14,14 +14,14 @@
 
 package com.google.devtools.j2objc.ast;
 
+import com.google.devtools.j2objc.types.Types;
+
 /**
  * Node type for string literals.
  */
 public class StringLiteral extends Expression {
 
   private String literalValue = null;
-
-  public StringLiteral() {}
 
   public StringLiteral(org.eclipse.jdt.core.dom.StringLiteral jdtNode) {
     super(jdtNode);
@@ -33,12 +33,13 @@ public class StringLiteral extends Expression {
     literalValue = other.getLiteralValue();
   }
 
-  public String getLiteralValue() {
-    return literalValue;
+  public StringLiteral(String literalValue) {
+    super(Types.resolveJavaType("java.lang.String"));
+    this.literalValue = literalValue;
   }
 
-  public void setLiteralValue(String literalValue) {
-    this.literalValue = literalValue;
+  public String getLiteralValue() {
+    return literalValue;
   }
 
   @Override

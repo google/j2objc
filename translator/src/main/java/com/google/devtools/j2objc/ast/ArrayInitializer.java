@@ -21,7 +21,7 @@ import java.util.List;
  */
 public class ArrayInitializer extends Expression {
 
-  private ChildList<Expression> expressions = ChildList.create(this);
+  private ChildList<Expression> expressions = ChildList.create(Expression.class, this);
 
   public ArrayInitializer(org.eclipse.jdt.core.dom.ArrayInitializer jdtNode) {
     super(jdtNode);

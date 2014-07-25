@@ -19,9 +19,10 @@ package com.google.devtools.j2objc.ast;
  */
 public class EnhancedForStatement extends Statement {
 
-  private ChildLink<SingleVariableDeclaration> parameter = ChildLink.create(this);
-  private ChildLink<Expression> expression = ChildLink.create(this);
-  private ChildLink<Statement> body = ChildLink.create(this);
+  private ChildLink<SingleVariableDeclaration> parameter =
+      ChildLink.create(SingleVariableDeclaration.class, this);
+  private ChildLink<Expression> expression = ChildLink.create(Expression.class, this);
+  private ChildLink<Statement> body = ChildLink.create(Statement.class, this);
 
   public EnhancedForStatement(org.eclipse.jdt.core.dom.EnhancedForStatement jdtNode) {
     super(jdtNode);

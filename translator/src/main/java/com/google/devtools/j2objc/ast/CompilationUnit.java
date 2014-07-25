@@ -30,9 +30,11 @@ public class CompilationUnit extends TreeNode {
   private final String mainTypeName;
   private final String source;
   private final int[] newlines;
-  private ChildLink<PackageDeclaration> packageDeclaration = ChildLink.create(this);
-  private ChildList<Comment> comments = ChildList.create(this);
-  private ChildList<AbstractTypeDeclaration> types = ChildList.create(this);
+  private ChildLink<PackageDeclaration> packageDeclaration =
+      ChildLink.create(PackageDeclaration.class, this);
+  private ChildList<Comment> comments = ChildList.create(Comment.class, this);
+  private ChildList<AbstractTypeDeclaration> types =
+      ChildList.create(AbstractTypeDeclaration.class, this);
 
   public CompilationUnit(
       org.eclipse.jdt.core.dom.CompilationUnit jdtNode, String sourceFileFullPath,

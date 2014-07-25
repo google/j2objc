@@ -24,8 +24,8 @@ import org.eclipse.jdt.core.dom.IVariableBinding;
 public class FieldAccess extends Expression {
 
   private IVariableBinding variableBinding = null;
-  private ChildLink<Expression> expression = ChildLink.create(this);
-  private ChildLink<SimpleName> name = ChildLink.create(this);
+  private ChildLink<Expression> expression = ChildLink.create(Expression.class, this);
+  private ChildLink<SimpleName> name = ChildLink.create(SimpleName.class, this);
 
   public FieldAccess(org.eclipse.jdt.core.dom.FieldAccess jdtNode) {
     super(jdtNode);
@@ -41,12 +41,23 @@ public class FieldAccess extends Expression {
     name.copyFrom(other.getName());
   }
 
+  public FieldAccess(IVariableBinding variableBinding, Expression expression) {
+    super(variableBinding.getType());
+    this.variableBinding = variableBinding;
+    this.expression.set(expression);
+    name.set(new SimpleName(variableBinding));
+  }
+
   public IVariableBinding getVariableBinding() {
     return variableBinding;
   }
 
   public Expression getExpression() {
     return expression.get();
+  }
+
+  public void setExpression(Expression newExpression) {
+    expression.set(newExpression);
   }
 
   public SimpleName getName() {

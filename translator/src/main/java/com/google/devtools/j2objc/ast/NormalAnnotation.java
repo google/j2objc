@@ -21,7 +21,7 @@ import java.util.List;
  */
 public class NormalAnnotation extends Annotation {
 
-  private ChildList<MemberValuePair> values = ChildList.create(this);
+  private ChildList<MemberValuePair> values = ChildList.create(MemberValuePair.class, this);
 
   public NormalAnnotation(org.eclipse.jdt.core.dom.NormalAnnotation jdtNode) {
     super(jdtNode);

@@ -26,7 +26,7 @@ import java.util.List;
 public class SuperConstructorInvocation extends Statement {
 
   private IMethodBinding methodBinding = null;
-  private ChildList<Expression> arguments = ChildList.create(this);
+  private ChildList<Expression> arguments = ChildList.create(Expression.class, this);
 
   public SuperConstructorInvocation(org.eclipse.jdt.core.dom.SuperConstructorInvocation jdtNode) {
     super(jdtNode);

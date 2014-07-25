@@ -21,8 +21,9 @@ import java.util.List;
  */
 public class FieldDeclaration extends BodyDeclaration {
 
-  private ChildLink<Type> type = ChildLink.create(this);
-  private ChildList<VariableDeclarationFragment> fragments = ChildList.create(this);
+  private ChildLink<Type> type = ChildLink.create(Type.class, this);
+  private ChildList<VariableDeclarationFragment> fragments =
+      ChildList.create(VariableDeclarationFragment.class, this);
 
   public FieldDeclaration(org.eclipse.jdt.core.dom.FieldDeclaration jdtNode) {
     super(jdtNode);

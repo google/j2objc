@@ -61,7 +61,7 @@ public class PrefixExpression extends Expression {
   }
 
   private Operator operator = null;
-  private ChildLink<Expression> operand = ChildLink.create(this);
+  private ChildLink<Expression> operand = ChildLink.create(Expression.class, this);
 
   public PrefixExpression(org.eclipse.jdt.core.dom.PrefixExpression jdtNode) {
     super(jdtNode);

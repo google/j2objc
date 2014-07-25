@@ -14,6 +14,7 @@
 
 package com.google.devtools.j2objc.ast;
 
+import com.google.common.base.Preconditions;
 import com.google.devtools.j2objc.types.Types;
 
 import org.eclipse.jdt.core.dom.IMethodBinding;
@@ -26,13 +27,15 @@ import java.util.List;
 public class MethodInvocation extends Expression {
 
   private IMethodBinding methodBinding = null;
-  private ChildLink<Expression> expression = ChildLink.create(this);
-  private ChildList<Expression> arguments = ChildList.create(this);
+  private ChildLink<Expression> expression = ChildLink.create(Expression.class, this);
+  private ChildLink<SimpleName> name = ChildLink.create(SimpleName.class, this);
+  private ChildList<Expression> arguments = ChildList.create(Expression.class, this);
 
   public MethodInvocation(org.eclipse.jdt.core.dom.MethodInvocation jdtNode) {
     super(jdtNode);
     methodBinding = Types.getMethodBinding(jdtNode);
     expression.set((Expression) TreeConverter.convert(jdtNode.getExpression()));
+    name.set((SimpleName) TreeConverter.convert(jdtNode.getName()));
     for (Object argument : jdtNode.arguments()) {
       arguments.add((Expression) TreeConverter.convert(argument));
     }
@@ -42,7 +45,15 @@ public class MethodInvocation extends Expression {
     super(other);
     methodBinding = other.getMethodBinding();
     expression.copyFrom(other.getExpression());
+    name.copyFrom(other.getName());
     arguments.copyFrom(other.getArguments());
+  }
+
+  public MethodInvocation(IMethodBinding binding, Expression expression) {
+    super(binding.getReturnType());
+    methodBinding = binding;
+    this.expression.set(expression);
+    name.set(new SimpleName(binding));
   }
 
   public IMethodBinding getMethodBinding() {
@@ -53,6 +64,14 @@ public class MethodInvocation extends Expression {
     return expression.get();
   }
 
+  public void setExpression(Expression newExpression) {
+    expression.set(newExpression);
+  }
+
+  public SimpleName getName() {
+    return name.get();
+  }
+
   public List<Expression> getArguments() {
     return arguments;
   }
@@ -61,6 +80,7 @@ public class MethodInvocation extends Expression {
   protected void acceptInner(TreeVisitor visitor) {
     if (visitor.visit(this)) {
       expression.accept(visitor);
+      name.accept(visitor);
       arguments.accept(visitor);
     }
     visitor.endVisit(this);
@@ -69,5 +89,12 @@ public class MethodInvocation extends Expression {
   @Override
   public MethodInvocation copy() {
     return new MethodInvocation(this);
+  }
+
+  @Override
+  public void validateInner() {
+    super.validateInner();
+    Preconditions.checkNotNull(methodBinding);
+    Preconditions.checkNotNull(name.get());
   }
 }

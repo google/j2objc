@@ -16,6 +16,8 @@ package com.google.devtools.j2objc.ast;
 
 import com.google.common.base.Preconditions;
 
+import org.eclipse.jdt.core.dom.IBinding;
+
 /**
  * Node for a simple (unqualified) name.
  */
@@ -31,6 +33,11 @@ public class SimpleName extends Name {
   public SimpleName(SimpleName other) {
     super(other);
     identifier = other.getIdentifier();
+  }
+
+  public SimpleName(IBinding binding) {
+    super(binding);
+    identifier = binding.getName();
   }
 
   public String getIdentifier() {

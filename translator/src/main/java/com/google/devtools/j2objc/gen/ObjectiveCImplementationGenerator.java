@@ -1019,8 +1019,7 @@ public class ObjectiveCImplementationGenerator extends ObjectiveCSourceFileGener
       ITypeBinding type = (ITypeBinding) value;
       printf("[[%s class] getClass]", NameTable.getFullName(type));
     } else if (value instanceof String) {
-      StringLiteral node = new StringLiteral();
-      node.setLiteralValue((String) value);
+      StringLiteral node = new StringLiteral((String) value);
       print(StatementGenerator.generateStringLiteral(node));
     } else if (value instanceof Number || value instanceof Character || value instanceof Boolean) {
       print(value.toString());

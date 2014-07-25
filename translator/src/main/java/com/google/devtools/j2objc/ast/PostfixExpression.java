@@ -57,7 +57,7 @@ public class PostfixExpression extends Expression {
   }
 
   private Operator operator = null;
-  private ChildLink<Expression> operand = ChildLink.create(this);
+  private ChildLink<Expression> operand = ChildLink.create(Expression.class, this);
 
   public PostfixExpression(org.eclipse.jdt.core.dom.PostfixExpression jdtNode) {
     super(jdtNode);

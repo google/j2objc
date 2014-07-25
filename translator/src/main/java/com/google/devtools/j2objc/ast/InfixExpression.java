@@ -75,9 +75,9 @@ public class InfixExpression extends Expression {
   }
 
   private Operator operator = null;
-  private ChildLink<Expression> leftOperand = ChildLink.create(this);
-  private ChildLink<Expression> rightOperand = ChildLink.create(this);
-  private ChildList<Expression> extendedOperands = ChildList.create(this);
+  private ChildLink<Expression> leftOperand = ChildLink.create(Expression.class, this);
+  private ChildLink<Expression> rightOperand = ChildLink.create(Expression.class, this);
+  private ChildList<Expression> extendedOperands = ChildList.create(Expression.class, this);
 
   public InfixExpression(org.eclipse.jdt.core.dom.InfixExpression jdtNode) {
     super(jdtNode);

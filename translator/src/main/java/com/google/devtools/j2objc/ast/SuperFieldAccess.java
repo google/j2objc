@@ -24,7 +24,7 @@ import org.eclipse.jdt.core.dom.IVariableBinding;
 public class SuperFieldAccess extends Expression {
 
   private IVariableBinding variableBinding = null;
-  private ChildLink<SimpleName> name = ChildLink.create(this);
+  private ChildLink<SimpleName> name = ChildLink.create(SimpleName.class, this);
 
   public SuperFieldAccess(org.eclipse.jdt.core.dom.SuperFieldAccess jdtNode) {
     super(jdtNode);

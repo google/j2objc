@@ -22,7 +22,8 @@ import java.util.List;
  */
 public class AnonymousClassDeclaration extends TreeNode {
 
-  private ChildList<BodyDeclaration> bodyDeclarations = ChildList.create(this);
+  private ChildList<BodyDeclaration> bodyDeclarations =
+      ChildList.create(BodyDeclaration.class, this);
 
   public AnonymousClassDeclaration(AnonymousClassDeclaration other) {
     super(other);

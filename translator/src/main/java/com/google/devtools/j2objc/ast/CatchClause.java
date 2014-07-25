@@ -19,8 +19,9 @@ package com.google.devtools.j2objc.ast;
  */
 public class CatchClause extends TreeNode {
 
-  private ChildLink<SingleVariableDeclaration> exception = ChildLink.create(this);
-  private ChildLink<Block> body = ChildLink.create(this);
+  private ChildLink<SingleVariableDeclaration> exception =
+      ChildLink.create(SingleVariableDeclaration.class, this);
+  private ChildLink<Block> body = ChildLink.create(Block.class, this);
 
   public CatchClause(org.eclipse.jdt.core.dom.CatchClause jdtNode) {
     super(jdtNode);

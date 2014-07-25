@@ -19,7 +19,7 @@ package com.google.devtools.j2objc.ast;
  */
 public class ParenthesizedExpression extends Expression {
 
-  private ChildLink<Expression> expression = ChildLink.create(this);
+  private ChildLink<Expression> expression = ChildLink.create(Expression.class, this);
 
   public ParenthesizedExpression(org.eclipse.jdt.core.dom.ParenthesizedExpression jdtNode) {
     super(jdtNode);

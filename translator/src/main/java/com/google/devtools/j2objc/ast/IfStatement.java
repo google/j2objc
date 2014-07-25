@@ -19,9 +19,9 @@ package com.google.devtools.j2objc.ast;
  */
 public class IfStatement extends Statement {
 
-  private ChildLink<Expression> expression = ChildLink.create(this);
-  private ChildLink<Statement> thenStatement = ChildLink.create(this);
-  private ChildLink<Statement> elseStatement = ChildLink.create(this);
+  private ChildLink<Expression> expression = ChildLink.create(Expression.class, this);
+  private ChildLink<Statement> thenStatement = ChildLink.create(Statement.class, this);
+  private ChildLink<Statement> elseStatement = ChildLink.create(Statement.class, this);
 
   public IfStatement(org.eclipse.jdt.core.dom.IfStatement jdtNode) {
     super(jdtNode);

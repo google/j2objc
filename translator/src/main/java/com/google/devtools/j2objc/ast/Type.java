@@ -14,6 +14,7 @@
 
 package com.google.devtools.j2objc.ast;
 
+import com.google.common.base.Preconditions;
 import com.google.devtools.j2objc.types.Types;
 
 import org.eclipse.jdt.core.dom.ITypeBinding;
@@ -32,6 +33,22 @@ public abstract class Type extends TreeNode {
 
   public Type(Type other) {
     super(other);
+    typeBinding = other.getTypeBinding();
+  }
+
+  public Type(ITypeBinding typeBinding) {
+    super();
+    this.typeBinding = typeBinding;
+  }
+
+  public static Type newType(ITypeBinding binding) {
+    if (binding.isPrimitive()) {
+      return new PrimitiveType(binding);
+    } else if (binding.isArray()) {
+      return new ArrayType(binding);
+    } else {
+      return new SimpleType(binding);
+    }
   }
 
   public ITypeBinding getTypeBinding() {
@@ -40,4 +57,10 @@ public abstract class Type extends TreeNode {
 
   @Override
   public abstract Type copy();
+
+  @Override
+  public void validateInner() {
+    super.validateInner();
+    Preconditions.checkNotNull(typeBinding);
+  }
 }

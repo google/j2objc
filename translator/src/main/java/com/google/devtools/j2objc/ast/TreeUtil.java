@@ -32,6 +32,31 @@ import java.util.List;
  */
 public class TreeUtil {
 
+  public static <T extends TreeNode> List<T> copyList(List<T> originalList) {
+    List<T> newList = Lists.newArrayListWithCapacity(originalList.size());
+    copyList(originalList, newList);
+    return newList;
+  }
+
+  @SuppressWarnings("unchecked")
+  public static <T extends TreeNode> void copyList(List<T> fromList, List<T> toList) {
+    for (T elem : fromList) {
+      toList.add((T) elem.copy());
+    }
+  }
+
+  /**
+   * Moves nodes from one list to another, ensuring that they are not
+   * double-parented in the process.
+   */
+  public static <T> void moveList(List<T> fromList, List<T> toList) {
+    for (Iterator<T> iter = fromList.iterator(); iter.hasNext(); ) {
+      T elem = iter.next();
+      iter.remove();
+      toList.add(elem);
+    }
+  }
+
   private static final Predicate<Annotation> IS_RUNTIME_PREDICATE = new Predicate<Annotation>() {
     public boolean apply(Annotation annotation) {
       return BindingUtil.isRuntimeAnnotation(annotation.getAnnotationBinding());

@@ -19,8 +19,8 @@ package com.google.devtools.j2objc.ast;
  */
 public class WhileStatement extends Statement {
 
-  private ChildLink<Expression> expression = ChildLink.create(this);
-  private ChildLink<Statement> body = ChildLink.create(this);
+  private ChildLink<Expression> expression = ChildLink.create(Expression.class, this);
+  private ChildLink<Statement> body = ChildLink.create(Statement.class, this);
 
   public WhileStatement(org.eclipse.jdt.core.dom.WhileStatement jdtNode) {
     super(jdtNode);

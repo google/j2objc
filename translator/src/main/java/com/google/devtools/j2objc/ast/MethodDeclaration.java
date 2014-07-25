@@ -27,10 +27,11 @@ public class MethodDeclaration extends BodyDeclaration {
 
   private IMethodBinding methodBinding = null;
   private boolean isConstructor = false;
-  private ChildLink<Type> returnType = ChildLink.create(this);
-  private ChildLink<SimpleName> name = ChildLink.create(this);
-  private ChildList<SingleVariableDeclaration> parameters = ChildList.create(this);
-  private ChildLink<Block> body = ChildLink.create(this);
+  private ChildLink<Type> returnType = ChildLink.create(Type.class, this);
+  private ChildLink<SimpleName> name = ChildLink.create(SimpleName.class, this);
+  private ChildList<SingleVariableDeclaration> parameters =
+      ChildList.create(SingleVariableDeclaration.class, this);
+  private ChildLink<Block> body = ChildLink.create(Block.class, this);
 
   public MethodDeclaration(org.eclipse.jdt.core.dom.MethodDeclaration jdtNode) {
     super(jdtNode);
@@ -52,6 +53,14 @@ public class MethodDeclaration extends BodyDeclaration {
     name.copyFrom(other.getName());
     parameters.copyFrom(other.getParameters());
     body.copyFrom(other.getBody());
+  }
+
+  public MethodDeclaration(IMethodBinding methodBinding) {
+    super(methodBinding);
+    this.methodBinding = methodBinding;
+    isConstructor = methodBinding.isConstructor();
+    returnType.set(Type.newType(methodBinding.getReturnType()));
+    name.set(new SimpleName(methodBinding));
   }
 
   public IMethodBinding getMethodBinding() {
@@ -80,6 +89,10 @@ public class MethodDeclaration extends BodyDeclaration {
 
   public Block getBody() {
     return body.get();
+  }
+
+  public void setBody(Block newBody) {
+    body.set(newBody);
   }
 
   @Override

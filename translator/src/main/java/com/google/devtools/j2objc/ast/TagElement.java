@@ -33,7 +33,7 @@ public class TagElement extends TreeNode {
   public static final String TAG_VERSION = "@version";
 
   private String tagName;
-  private ChildList<TreeNode> fragments = ChildList.create(this);
+  private ChildList<TreeNode> fragments = ChildList.create(TreeNode.class, this);
 
   public TagElement(org.eclipse.jdt.core.dom.TagElement jdtNode) {
     super(jdtNode);

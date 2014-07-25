@@ -21,7 +21,7 @@ import com.google.common.base.Preconditions;
  */
 public class PackageDeclaration extends TreeNode {
 
-  private ChildLink<Name> name = ChildLink.create(this);
+  private ChildLink<Name> name = ChildLink.create(Name.class, this);
 
   public PackageDeclaration(org.eclipse.jdt.core.dom.PackageDeclaration jdtNode) {
     super(jdtNode);

@@ -19,8 +19,8 @@ package com.google.devtools.j2objc.ast;
  */
 public class DoStatement extends Statement {
 
-  private ChildLink<Expression> expression = ChildLink.create(this);
-  private ChildLink<Statement> body = ChildLink.create(this);
+  private ChildLink<Expression> expression = ChildLink.create(Expression.class, this);
+  private ChildLink<Statement> body = ChildLink.create(Statement.class, this);
 
   public DoStatement(org.eclipse.jdt.core.dom.DoStatement jdtNode) {
     super(jdtNode);
