@@ -27,7 +27,7 @@ public abstract class Name extends Expression {
 
   public Name(org.eclipse.jdt.core.dom.Name jdtNode) {
     super(jdtNode);
-    binding = Types.getBinding(jdtNode);
+    binding = Types.getBindingUnsafe(jdtNode);
   }
 
   public Name(Name other) {

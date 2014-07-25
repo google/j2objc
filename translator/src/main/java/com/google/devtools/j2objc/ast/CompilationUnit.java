@@ -16,6 +16,8 @@ package com.google.devtools.j2objc.ast;
 
 import com.google.common.base.Preconditions;
 
+import org.eclipse.jdt.core.dom.ASTNode;
+
 import java.util.List;
 
 /**
@@ -34,7 +36,13 @@ public class CompilationUnit extends TreeNode {
     this.jdtNode = Preconditions.checkNotNull(jdtNode);
     packageDeclaration.set((PackageDeclaration) TreeConverter.convert(jdtNode.getPackage()));
     for (Object comment : jdtNode.getCommentList()) {
-      comments.add((Comment) TreeConverter.convert(comment));
+      // Comments are not normally parented in the JDT AST. Javadoc nodes are
+      // normally parented by the BodyDeclaration they apply do, so here we only
+      // keep the unparented comments to avoid duplicate comment nodes.
+      ASTNode commentParent = ((ASTNode) comment).getParent();
+      if (commentParent == null || commentParent == jdtNode) {
+        comments.add((Comment) TreeConverter.convert(comment));
+      }
     }
     for (Object type : jdtNode.types()) {
       types.add((AbstractTypeDeclaration) TreeConverter.convert(type));

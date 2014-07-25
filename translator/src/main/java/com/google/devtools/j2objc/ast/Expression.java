@@ -15,6 +15,7 @@
 package com.google.devtools.j2objc.ast;
 
 import com.google.devtools.j2objc.types.Types;
+import com.google.devtools.j2objc.util.BindingUtil;
 
 import org.eclipse.jdt.core.dom.ITypeBinding;
 
@@ -31,7 +32,7 @@ public abstract class Expression extends TreeNode {
 
   protected Expression(org.eclipse.jdt.core.dom.Expression jdtNode) {
     super(jdtNode);
-    typeBinding = Types.getTypeBinding(jdtNode);
+    typeBinding = BindingUtil.toTypeBinding(Types.getBindingUnsafe(jdtNode));
     hasNilCheck = Types.hasNilCheck(jdtNode);
   }
 
