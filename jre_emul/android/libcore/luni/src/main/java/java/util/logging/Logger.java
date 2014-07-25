@@ -88,10 +88,6 @@ public class Logger {
     @Deprecated
     public static final Logger global = new Logger(GLOBAL_LOGGER_NAME, null);
 
-    static {
-      global.setLevel(Level.ALL);
-    }
-
     /**
      * When converting the concurrent collection of handlers to an array, we
      * always pass a zero-length array to avoid size miscalculations. Passing

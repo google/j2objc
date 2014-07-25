@@ -92,6 +92,7 @@ public final class Log {
     private static final String LOG_TAG_PREFIX = "log.tag.";
 
     static {
+      globalLogger.setLevel(Level.ALL);  // Android's logging.properties global logging level.
       InputStream input = Log.class.getResourceAsStream("/data/local.prop");
       if (input != null) {
         try {
