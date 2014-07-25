@@ -18,9 +18,8 @@ package com.google.devtools.j2objc.gen;
 
 import com.google.common.base.CharMatcher;
 import com.google.common.io.LineReader;
-
-import org.eclipse.jdt.core.dom.ASTNode;
-import org.eclipse.jdt.core.dom.CompilationUnit;
+import com.google.devtools.j2objc.ast.CompilationUnit;
+import com.google.devtools.j2objc.ast.TreeNode;
 
 import java.io.IOException;
 import java.io.StringReader;
@@ -190,7 +189,7 @@ public class SourceBuilder {
     buffer.setLength(0);
   }
 
-  public void syncLineNumbers(ASTNode node) {
+  public void syncLineNumbers(TreeNode node) {
     if (emitLineDirectives && unit != null) {
       int position = node.getStartPosition();
       if (position != -1) {
@@ -255,7 +254,7 @@ public class SourceBuilder {
     }
   }
 
-  public int getLineNumber(ASTNode node) {
+  public int getLineNumber(TreeNode node) {
     int position = node.getStartPosition();
     if (position == -1) {
       return -1;

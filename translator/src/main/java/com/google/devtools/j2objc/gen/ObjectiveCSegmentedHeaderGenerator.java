@@ -16,13 +16,12 @@ package com.google.devtools.j2objc.gen;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
+import com.google.devtools.j2objc.ast.AbstractTypeDeclaration;
+import com.google.devtools.j2objc.ast.CompilationUnit;
 import com.google.devtools.j2objc.types.HeaderImportCollector;
 import com.google.devtools.j2objc.types.Import;
 import com.google.devtools.j2objc.util.ASTUtil;
 import com.google.devtools.j2objc.util.NameTable;
-
-import org.eclipse.jdt.core.dom.AbstractTypeDeclaration;
-import org.eclipse.jdt.core.dom.CompilationUnit;
 
 import java.util.Collections;
 import java.util.List;
@@ -57,11 +56,11 @@ public class ObjectiveCSegmentedHeaderGenerator extends ObjectiveCHeaderGenerato
     println("#endif");
     printf("#undef %s_RESTRICT\n", mainTypeName);
 
-    List<AbstractTypeDeclaration> types = Lists.newArrayList(ASTUtil.getTypes(getUnit()));
+    List<AbstractTypeDeclaration> types = Lists.newArrayList(getUnit().getTypes());
     Collections.reverse(types);
     for (AbstractTypeDeclaration type : types) {
       HeaderImportCollector collector = new HeaderImportCollector();
-      collector.collect(type);
+      collector.collect(type.jdtNode());
       importCollectors.put(type, collector);
       printLocalIncludes(type, collector);
     }
@@ -75,7 +74,7 @@ public class ObjectiveCSegmentedHeaderGenerator extends ObjectiveCHeaderGenerato
       }
     }
     if (!localImports.isEmpty()) {
-      printf("#if %s_INCLUDE\n", NameTable.getFullName(type));
+      printf("#if %s_INCLUDE\n", NameTable.getFullName(type.getTypeBinding()));
       for (Import imp : localImports) {
         printf("#define %s_INCLUDE 1\n", imp.getTypeName());
       }
@@ -90,7 +89,7 @@ public class ObjectiveCSegmentedHeaderGenerator extends ObjectiveCHeaderGenerato
 
   @Override
   public void generate(AbstractTypeDeclaration node) {
-    String typeName = NameTable.getFullName(node);
+    String typeName = NameTable.getFullName(node.getTypeBinding());
     printf("#if !defined (_%s_) && (%s_INCLUDE_ALL || %s_INCLUDE)\n", typeName, mainTypeName,
            typeName);
     printf("#define _%s_\n", typeName);

@@ -59,11 +59,6 @@ public class ErrorReportingASTVisitor extends ASTVisitor {
   }
 
   @Override
-  public boolean visit(PackageDeclaration node) {
-    return false;
-  }
-
-  @Override
   public boolean visit(ImportDeclaration node) {
     return false;
   }

@@ -19,6 +19,7 @@ package com.google.devtools.j2objc;
 import com.google.common.base.Joiner;
 import com.google.common.collect.Lists;
 import com.google.common.io.Files;
+import com.google.devtools.j2objc.ast.TreeConverter;
 import com.google.devtools.j2objc.gen.SourceBuilder;
 import com.google.devtools.j2objc.gen.SourcePosition;
 import com.google.devtools.j2objc.gen.StatementGenerator;
@@ -162,7 +163,7 @@ public abstract class GenerationTest extends TestCase {
   }
 
   protected String generateStatement(Statement statement) {
-    return StatementGenerator.generate(statement,
+    return StatementGenerator.generate(TreeConverter.convertStatement(statement),
         Collections.<IVariableBinding>emptySet(), false,
         new SourcePosition(null, SourceBuilder.BEGINNING_OF_FILE, null)).trim();
   }
