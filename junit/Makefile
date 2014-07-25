@@ -52,6 +52,8 @@ JUNIT_PUBLIC_SOURCES = \
     org/junit/Ignore.java \
     org/junit/Rule.java \
     org/junit/Test.java \
+    org/junit/internal/JUnitSystem.java \
+    org/junit/internal/RealSystem.java \
     org/junit/internal/runners/model/ReflectiveCallable.java \
     org/junit/rules/MethodRule.java \
     org/junit/rules/RunRules.java \
@@ -101,11 +103,9 @@ JUNIT_INTERNAL_SOURCES = \
     org/junit/internal/ComparisonCriteria.java \
     org/junit/internal/ExactComparisonCriteria.java \
     org/junit/internal/InexactComparisonCriteria.java \
-    org/junit/internal/JUnitSystem.java \
     org/junit/internal/matchers/Each.java \
     org/junit/internal/matchers/IsCollectionContaining.java \
     org/junit/internal/matchers/TypeSafeMatcher.java \
-    org/junit/internal/RealSystem.java \
     org/junit/internal/requests/ClassRequest.java \
     org/junit/internal/requests/FilterRequest.java \
     org/junit/internal/requests/SortingRequest.java \
