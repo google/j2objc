@@ -37,7 +37,7 @@
 
 @implementation IOSPrimitiveClass
 
-- (id)initWithName:(NSString *)name type:(NSString *)type {
+- (instancetype)initWithName:(NSString *)name type:(NSString *)type {
   if ((self = [super init])) {
 #if __has_feature(objc_arc)
     name_ = name;

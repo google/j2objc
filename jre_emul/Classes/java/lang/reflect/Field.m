@@ -48,9 +48,9 @@ typedef union {
   BOOL asBOOL;
 } JavaResult;
 
-- (id)initWithIvar:(Ivar)ivar
-         withClass:(IOSClass *)aClass
-      withMetadata:(JavaFieldMetadata *)metadata {
+- (instancetype)initWithIvar:(Ivar)ivar
+                   withClass:(IOSClass *)aClass
+                withMetadata:(JavaFieldMetadata *)metadata {
   if ((self = [super init])) {
     ivar_ = ivar;
     declaringClass_ = aClass;
@@ -59,9 +59,9 @@ typedef union {
   return self;
 }
 
-+ (id)fieldWithIvar:(Ivar)ivar
-          withClass:(IOSClass *)aClass
-       withMetadata:(JavaFieldMetadata *)metadata {
++ (instancetype)fieldWithIvar:(Ivar)ivar
+                    withClass:(IOSClass *)aClass
+                 withMetadata:(JavaFieldMetadata *)metadata {
   JavaLangReflectField *field =
       [[JavaLangReflectField alloc] initWithIvar:ivar withClass:aClass withMetadata:metadata];
 #if ! __has_feature(objc_arc)

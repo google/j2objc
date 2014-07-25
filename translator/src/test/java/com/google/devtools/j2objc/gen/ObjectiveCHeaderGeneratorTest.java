@@ -248,7 +248,7 @@ public class ObjectiveCHeaderGeneratorTest extends GenerationTest {
       "Example", "Example.h");
     assertTranslation(translation, "@interface Example_Inner : NSObject");
     assertNotInTranslation(translation, "Example *this");
-    assertTranslation(translation, "- (id)initWithExample:(Example *)outer$;");
+    assertTranslation(translation, "- (instancetype)initWithExample:(Example *)outer$;");
   }
 
   public void testInnerClassDeclarationWithOuterReference() throws IOException {
@@ -257,7 +257,7 @@ public class ObjectiveCHeaderGeneratorTest extends GenerationTest {
       "Example", "Example.h");
     assertTranslation(translation, "@interface Example_Inner : NSObject");
     assertTranslation(translation, "Example *this$0_;");
-    assertTranslation(translation, "- (id)initWithExample:(Example *)outer$;");
+    assertTranslation(translation, "- (instancetype)initWithExample:(Example *)outer$;");
   }
 
   public void testAnonymousClassDeclaration() throws IOException {
@@ -304,7 +304,7 @@ public class ObjectiveCHeaderGeneratorTest extends GenerationTest {
     assertTranslation(translation, "@interface ColorEnum : JavaLangEnum");
     assertTranslation(translation, "int rgb_;");
     assertTranslatedLines(translation,
-        "- (id)initWithInt:(int)rgb",
+        "- (instancetype)initWithInt:(int)rgb",
         "withNSString:(NSString *)__name",
         "withInt:(int)__ordinal;");
   }
@@ -321,11 +321,11 @@ public class ObjectiveCHeaderGeneratorTest extends GenerationTest {
     assertTranslation(translation, "@interface ColorEnum : JavaLangEnum");
     assertTranslation(translation, "BOOL primary_;");
     assertTranslatedLines(translation,
-        "- (id)initWithInt:(int)rgb",
+        "- (instancetype)initWithInt:(int)rgb",
         "withNSString:(NSString *)__name",
         "withInt:(int)__ordinal;");
     assertTranslatedLines(translation,
-        "- (id)initWithInt:(int)rgb",
+        "- (instancetype)initWithInt:(int)rgb",
         "withBoolean:(BOOL)primary",
         "withNSString:(NSString *)__name",
         "withInt:(int)__ordinal;");
@@ -372,7 +372,7 @@ public class ObjectiveCHeaderGeneratorTest extends GenerationTest {
     assertTranslation(translation, "+ (BOOL)fooableDefault;");
 
     // Check that constructor was created with the property as parameter.
-    assertTranslation(translation, "- (id)initWithFooable:(BOOL)fooable_;");
+    assertTranslation(translation, "- (instancetype)initWithFooable:(BOOL)fooable_;");
   }
 
   public void testCharacterEdgeValues() throws IOException {
@@ -556,7 +556,7 @@ public class ObjectiveCHeaderGeneratorTest extends GenerationTest {
     assertTranslation(translation, "NSString *name_Test_;");
     assertTranslation(translation, "int ordinal_Test_;");
     assertTranslatedLines(translation,
-        "- (id)initWithNSString:(NSString *)name",
+        "- (instancetype)initWithNSString:(NSString *)name",
         "withInt:(int)ordinal",
         "withNSString:(NSString *)__name",
         "withInt:(int)__ordinal;");

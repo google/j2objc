@@ -35,12 +35,12 @@ static NSUInteger EnumerateEntries(
 @synthesize threshold = threshold_;
 
 
-- (id)init {
+- (instancetype)init {
   return [self initJavaUtilHashMapWithInt:JavaUtilHashMap_DEFAULT_SIZE
                                 withFloat:JavaUtilHashMap_DEFAULT_LOAD_FACTOR];
 }
 
-- (id)initWithInt:(int)capacity {
+- (instancetype)initWithInt:(int)capacity {
   return [self initJavaUtilHashMapWithInt:capacity withFloat:JavaUtilHashMap_DEFAULT_LOAD_FACTOR];
 }
 
@@ -60,8 +60,8 @@ static NSUInteger EnumerateEntries(
   return x + 1;
 }
 
-- (id)initJavaUtilHashMapWithInt:(int)capacity
-                       withFloat:(float)loadFactor {
+- (instancetype)initJavaUtilHashMapWithInt:(int)capacity
+                                 withFloat:(float)loadFactor {
   if ((self = [super init])) {
     JreMemDebugAdd(self);
     modCount_ = 0;
@@ -82,12 +82,12 @@ static NSUInteger EnumerateEntries(
   return self;
 }
 
-- (id)initWithInt:(int)capacity
-        withFloat:(float)loadFactor {
+- (instancetype)initWithInt:(int)capacity
+                  withFloat:(float)loadFactor {
   return [self initJavaUtilHashMapWithInt:capacity withFloat:loadFactor];
 }
 
-- (id)initWithJavaUtilMap:(id<JavaUtilMap>)map {
+- (instancetype)initWithJavaUtilMap:(id<JavaUtilMap>)map {
   if ((self = [self initJavaUtilHashMapWithInt:
       [JavaUtilHashMap calculateCapacityWithInt:[((id<JavaUtilMap>) nil_chk(map)) size]]
       withFloat:JavaUtilHashMap_DEFAULT_LOAD_FACTOR])) {
@@ -121,7 +121,7 @@ static NSUInteger EnumerateEntries(
   other.threshold = threshold_;
 }
 
-- (id)clone {
+- (instancetype)clone {
   @try {
     JavaUtilHashMap *map = (JavaUtilHashMap *) [super clone];
     map.elementCount = 0;
@@ -412,7 +412,7 @@ static NSUInteger EnumerateEntries(
   return (value1 == value2) || [nil_chk(value1) isEqual:value2];
 }
 
-- (id)copyWithZone:(NSZone *)zone {
+- (instancetype)copyWithZone:(NSZone *)zone {
   id clone = [self clone];
 #if ! __has_feature(objc_arc)
   [clone retain];
@@ -449,16 +449,16 @@ static NSUInteger EnumerateEntries(
 
 @implementation JavaUtilHashMap_Entry
 
-- (id)initWithId:(id)theKey
-         withInt:(int)hash_ {
+- (instancetype)initWithId:(id)theKey
+                   withInt:(int)hash_ {
   if ((self = [super initWithId:theKey withId:nil])) {
     origKeyHash_ = hash_;
   }
   return self;
 }
 
-- (id)initWithId:(id)theKey
-          withId:(id)theValue {
+- (instancetype)initWithId:(id)theKey
+                    withId:(id)theValue {
   if ((self = [super initWithId:theKey withId:theValue])) {
     origKeyHash_ = (theKey == nil ? 0 : [JavaUtilHashMap computeHashCodeWithId:theKey]);
   }
@@ -478,7 +478,7 @@ static NSUInteger EnumerateEntries(
 @synthesize associatedMap = associatedMap_;
 
 
-- (id)initWithJavaUtilHashMap:(JavaUtilHashMap *)hm {
+- (instancetype)initWithJavaUtilHashMap:(JavaUtilHashMap *)hm {
   if ((self = [super init])) {
     position_ = 0;
 #if ! __has_feature(objc_arc)
@@ -567,7 +567,7 @@ static NSUInteger EnumerateEntries(
 
 @implementation JavaUtilHashMap_EntryIterator
 
-- (id)initWithJavaUtilHashMap:(JavaUtilHashMap *)map {
+- (instancetype)initWithJavaUtilHashMap:(JavaUtilHashMap *)map {
   return [super initWithJavaUtilHashMap:map];
 }
 
@@ -581,7 +581,7 @@ static NSUInteger EnumerateEntries(
 
 @implementation JavaUtilHashMap_KeyIterator
 
-- (id)initWithJavaUtilHashMap:(JavaUtilHashMap *)map {
+- (instancetype)initWithJavaUtilHashMap:(JavaUtilHashMap *)map {
   return [super initWithJavaUtilHashMap:map];
 }
 
@@ -595,7 +595,7 @@ static NSUInteger EnumerateEntries(
 
 @implementation JavaUtilHashMap_ValueIterator
 
-- (id)initWithJavaUtilHashMap:(JavaUtilHashMap *)map {
+- (instancetype)initWithJavaUtilHashMap:(JavaUtilHashMap *)map {
   return [super initWithJavaUtilHashMap:map];
 }
 
@@ -609,7 +609,7 @@ static NSUInteger EnumerateEntries(
 
 @implementation JavaUtilHashMap_HashMapEntrySet
 
-- (id)initWithJavaUtilHashMap:(JavaUtilHashMap *)hm {
+- (instancetype)initWithJavaUtilHashMap:(JavaUtilHashMap *)hm {
   if ((self = [super init])) {
     associatedMap_ = hm;
   }
@@ -696,7 +696,7 @@ static NSUInteger EnumerateEntries(
                       initWithJavaUtilHashMap:outer_]);
 }
 
-- (id)initWithJavaUtilHashMap:(JavaUtilHashMap *)outer {
+- (instancetype)initWithJavaUtilHashMap:(JavaUtilHashMap *)outer {
   if ((self = [super init])) {
     outer_ = outer;
   }
@@ -738,7 +738,7 @@ static NSUInteger EnumerateEntries(
                       initWithJavaUtilHashMap:outer_]);
 }
 
-- (id)initWithJavaUtilHashMap:(JavaUtilHashMap *)outer {
+- (instancetype)initWithJavaUtilHashMap:(JavaUtilHashMap *)outer {
   if ((self = [super init])) {
     outer_ = outer;
   }

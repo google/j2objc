@@ -26,7 +26,7 @@
   Protocol *protocol_;
 }
 
-- (id)initWithProtocol:(Protocol *)protocol;
+- (instancetype)initWithProtocol:(Protocol *)protocol;
 
 @end
 

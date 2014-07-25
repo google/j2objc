@@ -66,25 +66,25 @@ void FillInStackTraceInternal(JavaLangThrowable *this) {
   return self;
 }
 
-- (id)init {
+- (instancetype)init {
   return [self initJavaLangThrowableWithNSString:nil withJavaLangThrowable:nil];
 }
 
-- (id)initWithNSString:(NSString *)message {
+- (instancetype)initWithNSString:(NSString *)message {
   return [self initJavaLangThrowableWithNSString:message withJavaLangThrowable:nil];
 }
 
-- (id)initWithNSString:(NSString *)message
+- (instancetype)initWithNSString:(NSString *)message
     withJavaLangThrowable:(JavaLangThrowable *)causeArg {
   return [self initJavaLangThrowableWithNSString:message withJavaLangThrowable:causeArg];
 }
 
-- (id)initWithJavaLangThrowable:(JavaLangThrowable *)causeArg {
+- (instancetype)initWithJavaLangThrowable:(JavaLangThrowable *)causeArg {
   return [self initJavaLangThrowableWithNSString:causeArg ? [causeArg description] : nil
                            withJavaLangThrowable:causeArg];
 }
 
-- (id)initWithNSString:(NSString *)message
+- (instancetype)initWithNSString:(NSString *)message
  withJavaLangThrowable:(JavaLangThrowable *)causeArg
            withBoolean:(BOOL)enableSuppression
            withBoolean:(BOOL)writeableStackTrace {

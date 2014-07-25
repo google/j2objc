@@ -29,7 +29,7 @@
   JavaIoInputStream *delegate_;
 }
 
-- (id)initWithJavaInputStream:(JavaIoInputStream *)javaStream;
+- (instancetype)initWithJavaInputStream:(JavaIoInputStream *)javaStream;
 
 + (JavaToIOSInputStreamAdapter *)fromJavaInputStream:(JavaIoInputStream *)javaStream;
 

@@ -32,7 +32,7 @@
 @synthesize methodCount;
 @synthesize modifiers;
 
-- (id)initWithMetadata:(J2ObjcClassInfo *)metadata {
+- (instancetype)initWithMetadata:(J2ObjcClassInfo *)metadata {
   if (self = [super init]) {
     data_ = metadata;
     NSStringEncoding defaultEncoding = [NSString defaultCStringEncoding];
@@ -161,7 +161,7 @@
 
 @implementation JavaFieldMetadata
 
-- (id)initWithMetadata:(const J2ObjcFieldInfo *)metadata {
+- (instancetype)initWithMetadata:(const J2ObjcFieldInfo *)metadata {
   if (self = [super init]) {
     data_ = metadata;
   }
@@ -202,7 +202,7 @@
 
 @implementation JavaMethodMetadata
 
-- (id)initWithMetadata:(const J2ObjcMethodInfo *)metadata {
+- (instancetype)initWithMetadata:(const J2ObjcMethodInfo *)metadata {
   if (self = [super init]) {
     data_ = metadata;
   }

@@ -40,12 +40,12 @@
   JavaFieldMetadata *metadata_;
 }
 
-- (id)initWithIvar:(Ivar)ivar
-         withClass:(IOSClass *)aClass
-      withMetadata:(JavaFieldMetadata *)metadata;
-+ (id)fieldWithIvar:(Ivar)ivar
-          withClass:(IOSClass *)aClass
-       withMetadata:(JavaFieldMetadata *)metadata;
+- (instancetype)initWithIvar:(Ivar)ivar
+                   withClass:(IOSClass *)aClass
+                withMetadata:(JavaFieldMetadata *)metadata;
++ (instancetype)fieldWithIvar:(Ivar)ivar
+                    withClass:(IOSClass *)aClass
+                 withMetadata:(JavaFieldMetadata *)metadata;
 
 // Returns field name.
 - (NSString *)getName;

@@ -78,7 +78,7 @@ public class AnonymousClassConverterTest extends GenerationTest {
     String impl = getTranslatedFile("Test.m");
     assertTranslation(header, "IOSBooleanArray *val$bar_;");
     assertTranslation(header,
-        "- (id)initWithBooleanArray:(IOSBooleanArray *)capture$0;");
+        "- (instancetype)initWithBooleanArray:(IOSBooleanArray *)capture$0;");
     assertTranslation(impl, "IOSBooleanArray *bar = [IOSBooleanArray arrayWithLength:1];");
     assertTranslation(impl, "[[Test_$1 alloc] initWithBooleanArray:bar]");
     assertTranslation(impl, "(*IOSBooleanArray_GetRef(nil_chk(val$bar_), 0)) = YES;");
@@ -131,7 +131,7 @@ public class AnonymousClassConverterTest extends GenerationTest {
     assertTranslation(translation,
         "id<JavaLangRunnable> r = [[[Test_$1 alloc] initWithId:test] autorelease];");
     assertTranslatedLines(translation,
-        "- (id)initWithId:(id)capture$0 {",
+        "- (instancetype)initWithId:(id)capture$0 {",
         "Test_$1_set_val$test_(self, capture$0);",
         "return JreMemDebugAdd([super init]);",
         "}");
@@ -149,7 +149,7 @@ public class AnonymousClassConverterTest extends GenerationTest {
     assertTranslation(translation,
         "id<JavaLangRunnable> r = [[[Test_$1 alloc] initWithId:foo] autorelease];");
     assertTranslatedLines(translation,
-        "- (id)initWithId:(id)capture$0 {",
+        "- (instancetype)initWithId:(id)capture$0 {",
         "Test_$1_set_val$foo_(self, capture$0);",
         "return JreMemDebugAdd([super init]);",
         "}");
@@ -380,7 +380,7 @@ public class AnonymousClassConverterTest extends GenerationTest {
     assertTranslation(header, "@interface TestEnum_$1 : TestEnum");
     assertTranslation(header, "@interface TestEnum_$2 : TestEnum");
     assertTranslation(header,
-        "- (id)initWithNSString:(NSString *)__name withInt:(int)__ordinal");
+        "- (instancetype)initWithNSString:(NSString *)__name withInt:(int)__ordinal");
 
     assertTranslation(impl, "[super initWithNSString:__name withInt:__ordinal]");
     assertTranslation(impl,
@@ -422,7 +422,7 @@ public class AnonymousClassConverterTest extends GenerationTest {
         "  } " +
         "  void bar(Object o) { A a = new A(o) { void foo() { } }; } }",
         "Test", "Test.h");
-    assertTranslation(translation, "- (id)initWithId:");
+    assertTranslation(translation, "- (instancetype)initWithId:");
   }
 
   public void testEnumWithParametersAndInnerClasses() throws IOException {
@@ -436,18 +436,17 @@ public class AnonymousClassConverterTest extends GenerationTest {
 
     // Verify ColorEnum constructor.
     assertTranslation(impl,
-        "- (id)initWithInt:(int)n\n" +
-        "     withNSString:(NSString *)__name\n" +
-        "          withInt:(int)__ordinal {\n" +
+        "- (instancetype)initWithInt:(int)n\n" +
+        "               withNSString:(NSString *)__name\n" +
+        "                    withInt:(int)__ordinal {\n" +
         "  return JreMemDebugAdd([super initWithNSString:__name withInt:__ordinal]);\n}");
 
     // Verify ColorEnum_$1 constructor.
-    assertTranslation(impl,
-        "- (id)initWithInt:(int)arg$0\n" +
-        "     withNSString:(NSString *)__name\n" +
-        "          withInt:(int)__ordinal {\n" +
-        "  return JreMemDebugAdd([super initWithInt:arg$0 " +
-        "withNSString:__name withInt:__ordinal]);\n}");
+    assertTranslatedLines(impl,
+        "- (instancetype)initWithInt:(int)arg$0",
+        "withNSString:(NSString *)__name",
+        "withInt:(int)__ordinal {",
+        "return JreMemDebugAdd([super initWithInt:arg$0 withNSString:__name withInt:__ordinal]);");
 
     // Verify constant initialization.
     assertTranslation(impl,
@@ -513,7 +512,7 @@ public class AnonymousClassConverterTest extends GenerationTest {
         "class Test<T> { Test(T t) {} void test() { new Test<String>(\"foo\") {}; } }",
         "Test", "Test.m");
     assertTranslation(translation, "[[Test_$1 alloc] initWithNSString:@\"foo\"]");
-    assertTranslation(translation, "- (id)initWithNSString:(NSString *)arg$0 {");
+    assertTranslation(translation, "- (instancetype)initWithNSString:(NSString *)arg$0 {");
     assertTranslation(translation, "[super initWithId:arg$0]");
   }
 

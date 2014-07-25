@@ -41,8 +41,8 @@
  * this would declare the following for IOSIntArray:
  *
  *  Constructors:
- *  + (id)newArrayWithInts:(const int *)buf count:(NSUInteger)count;
- *  + (id)arrayWithInts:(const int *)buf count:(NSUInteger)count;
+ *  + (instancetype)newArrayWithInts:(const int *)buf count:(NSUInteger)count;
+ *  + (instancetype)arrayWithInts:(const int *)buf count:(NSUInteger)count;
  *
  *  Accessors - These throw IndexOutOfBoundsException if index is out of range:
  *  FOUNDATION_EXPORT int IOSIntArray_Get(IOSIntrray *array, NSUInteger index);
@@ -58,10 +58,10 @@
  * @param C_TYPE Objective-C type for the primitive type, (e.g. "unichar")
  */
 #define PRIMITIVE_ARRAY_INTERFACE(L_NAME, U_NAME, C_TYPE) \
-+ (id)newArrayWithLength:(NSUInteger)length; \
-+ (id)arrayWithLength:(NSUInteger)length; \
-+ (id)newArrayWith##U_NAME##s:(const C_TYPE *)buf count:(NSUInteger)count; \
-+ (id)arrayWith##U_NAME##s:(const C_TYPE *)buf count:(NSUInteger)count; \
++ (instancetype)newArrayWithLength:(NSUInteger)length; \
++ (instancetype)arrayWithLength:(NSUInteger)length; \
++ (instancetype)newArrayWith##U_NAME##s:(const C_TYPE *)buf count:(NSUInteger)count; \
++ (instancetype)arrayWith##U_NAME##s:(const C_TYPE *)buf count:(NSUInteger)count; \
 FOUNDATION_EXPORT C_TYPE IOS##U_NAME##Array_Get(IOS##U_NAME##Array *array, NSUInteger index); \
 FOUNDATION_EXPORT C_TYPE *IOS##U_NAME##Array_GetRef(IOS##U_NAME##Array *array, NSUInteger index); \
 - (C_TYPE)L_NAME##AtIndex:(NSUInteger)index; \
@@ -92,7 +92,7 @@ PRIMITIVE_ARRAY_INTERFACE(boolean, Boolean, BOOL)
 PRIMITIVE_ARRAY_INTERFACE(char, Char, unichar)
 
 // Create an array from an NSString.
-+ (id)arrayWithNSString:(NSString *)string;
++ (instancetype)arrayWithNSString:(NSString *)string;
 
 // Returns a copy of the array contents.
 - (unichar *)getChars;

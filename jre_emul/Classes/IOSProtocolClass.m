@@ -27,7 +27,7 @@
 
 @synthesize objcProtocol = protocol_;
 
-- (id)initWithProtocol:(Protocol *)protocol {
+- (instancetype)initWithProtocol:(Protocol *)protocol {
   if ((self = [super init])) {
     protocol_ = RETAIN_(protocol);
   }

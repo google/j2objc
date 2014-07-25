@@ -26,7 +26,7 @@
   const J2ObjcFieldInfo *data_;
 }
 
-- (id)initWithMetadata:(const J2ObjcFieldInfo *)metadata;
+- (instancetype)initWithMetadata:(const J2ObjcFieldInfo *)metadata;
 - (NSString *)name;
 - (NSString *)iosName;
 - (NSString *)javaName;
@@ -41,7 +41,7 @@
   const J2ObjcMethodInfo *data_;
 }
 
-- (id)initWithMetadata:(const J2ObjcMethodInfo *)metadata;
+- (instancetype)initWithMetadata:(const J2ObjcMethodInfo *)metadata;
 - (SEL)selector;
 - (NSString *)name;
 - (NSString *)javaName;

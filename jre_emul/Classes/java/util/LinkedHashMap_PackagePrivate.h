@@ -63,7 +63,7 @@
   JavaUtilLinkedHashMap __unsafe_unretained *associatedMap_;
 }
 
-- (id)initWithJavaUtilLinkedHashMap:(JavaUtilLinkedHashMap *)map;
+- (instancetype)initWithJavaUtilLinkedHashMap:(JavaUtilLinkedHashMap *)map;
 - (BOOL)hasNext;
 - (void)checkConcurrentMod;
 - (void)makeNext;
@@ -73,28 +73,28 @@
 @interface JavaUtilLinkedHashMap_EntryIterator : JavaUtilLinkedHashMap_AbstractMapIterator < JavaUtilIterator > {
 }
 
-- (id)initWithJavaUtilLinkedHashMap:(JavaUtilLinkedHashMap *)map;
+- (instancetype)initWithJavaUtilLinkedHashMap:(JavaUtilLinkedHashMap *)map;
 - (id<JavaUtilMap_Entry>)next;
 @end
 
 @interface JavaUtilLinkedHashMap_KeyIterator : JavaUtilLinkedHashMap_AbstractMapIterator < JavaUtilIterator > {
 }
 
-- (id)initWithJavaUtilLinkedHashMap:(JavaUtilLinkedHashMap *)map;
+- (instancetype)initWithJavaUtilLinkedHashMap:(JavaUtilLinkedHashMap *)map;
 - (id)next;
 @end
 
 @interface JavaUtilLinkedHashMap_ValueIterator : JavaUtilLinkedHashMap_AbstractMapIterator < JavaUtilIterator > {
 }
 
-- (id)initWithJavaUtilLinkedHashMap:(JavaUtilLinkedHashMap *)map;
+- (instancetype)initWithJavaUtilLinkedHashMap:(JavaUtilLinkedHashMap *)map;
 - (id)next;
 @end
 
 @interface JavaUtilLinkedHashMap_LinkedHashMapEntrySet : JavaUtilHashMap_HashMapEntrySet {
 }
 
-- (id)initWithJavaUtilLinkedHashMap:(JavaUtilLinkedHashMap *)lhm;
+- (instancetype)initWithJavaUtilLinkedHashMap:(JavaUtilLinkedHashMap *)lhm;
 - (id<JavaUtilIterator>)iterator;
 @end
 
@@ -103,10 +103,10 @@
   JavaUtilLinkedHashMap_LinkedHashMapEntry *chainForward_, *chainBackward_;
 }
 
-- (id)initWithId:(id)theKey
-          withId:(id)theValue;
-- (id)initWithId:(id)theKey
-         withInt:(int)hash_;
+- (instancetype)initWithId:(id)theKey
+                    withId:(id)theValue;
+- (instancetype)initWithId:(id)theKey
+                   withInt:(int)hash_;
 @end
 
 @interface JavaUtilLinkedHashMap_KeySet : JavaUtilAbstractSet {
@@ -119,7 +119,7 @@
 - (void)clear;
 - (BOOL)removeWithId:(id)key;
 - (id<JavaUtilIterator>)iterator;
-- (id)initWithJavaUtilLinkedHashMap:(JavaUtilLinkedHashMap *)outer;
+- (instancetype)initWithJavaUtilLinkedHashMap:(JavaUtilLinkedHashMap *)outer;
 @end
 
 @interface JavaUtilLinkedHashMap_ValuesCollection : JavaUtilAbstractCollection {
@@ -131,7 +131,7 @@
 - (int)size;
 - (void)clear;
 - (id<JavaUtilIterator>)iterator;
-- (id)initWithJavaUtilLinkedHashMap:(JavaUtilLinkedHashMap *)outer;
+- (instancetype)initWithJavaUtilLinkedHashMap:(JavaUtilLinkedHashMap *)outer;
 @end
 
 #endif // _JavaUtilLinkedHashMap_PackagePrivate_H_

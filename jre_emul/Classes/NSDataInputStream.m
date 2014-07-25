@@ -20,7 +20,7 @@
 
 @implementation NSDataInputStream
 
-- (id)initWithData:(NSData *)data {
+- (instancetype)initWithData:(NSData *)data {
   if ((self = [super init])) {
     data_ = [nil_chk(data) copy];
     bytes_ = (const char *) [data_ bytes];

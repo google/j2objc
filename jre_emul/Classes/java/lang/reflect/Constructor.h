@@ -34,10 +34,10 @@
 @interface JavaLangReflectConstructor : ExecutableMember
     < JavaLangReflectGenericDeclaration, JavaLangReflectMember >
 
-+ (id)constructorWithMethodSignature:(NSMethodSignature *)methodSignature
-                            selector:(SEL)selector
-                               class:(IOSClass *)aClass
-                            metadata:(JavaMethodMetadata *)metadata;
++ (instancetype)constructorWithMethodSignature:(NSMethodSignature *)methodSignature
+                                      selector:(SEL)selector
+                                         class:(IOSClass *)aClass
+                                      metadata:(JavaMethodMetadata *)metadata;
 
 // Create a new instance using this constructor.
 - (id)newInstanceWithNSObjectArray:(IOSObjectArray *)initArgs OBJC_METHOD_FAMILY_NONE;

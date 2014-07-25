@@ -33,11 +33,11 @@
 
 @implementation JavaLangReflectMethod
 
-- (id)initWithMethodSignature:(NSMethodSignature *)methodSignature
-                     selector:(SEL)selector
-                        class:(IOSClass *)aClass
-                     isStatic:(BOOL)isStatic
-                     metadata:(JavaMethodMetadata *)metadata {
+- (instancetype)initWithMethodSignature:(NSMethodSignature *)methodSignature
+                               selector:(SEL)selector
+                                  class:(IOSClass *)aClass
+                               isStatic:(BOOL)isStatic
+                               metadata:(JavaMethodMetadata *)metadata {
   if (self = [super initWithMethodSignature:methodSignature
                                    selector:selector
                                       class:aClass
@@ -47,11 +47,11 @@
   return self;
 }
 
-+ (id)methodWithMethodSignature:(NSMethodSignature *)methodSignature
-                       selector:(SEL)selector
-                          class:(IOSClass *)aClass
-                       isStatic:(BOOL)isStatic
-                       metadata:(JavaMethodMetadata *)metadata {
++ (instancetype)methodWithMethodSignature:(NSMethodSignature *)methodSignature
+                                 selector:(SEL)selector
+                                    class:(IOSClass *)aClass
+                                 isStatic:(BOOL)isStatic
+                                 metadata:(JavaMethodMetadata *)metadata {
   return [[[JavaLangReflectMethod alloc] initWithMethodSignature:methodSignature
                                                         selector:selector
                                                            class:aClass

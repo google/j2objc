@@ -32,10 +32,10 @@
 
 @implementation JavaLangReflectConstructor
 
-+ (id)constructorWithMethodSignature:(NSMethodSignature *)methodSignature
-                            selector:(SEL)selector
-                               class:(IOSClass *)aClass
-                            metadata:(JavaMethodMetadata *)metadata {
++ (instancetype)constructorWithMethodSignature:(NSMethodSignature *)methodSignature
+                                      selector:(SEL)selector
+                                         class:(IOSClass *)aClass
+                                      metadata:(JavaMethodMetadata *)metadata {
   return [[[JavaLangReflectConstructor alloc] initWithMethodSignature:methodSignature
                                                              selector:selector
                                                                 class:aClass

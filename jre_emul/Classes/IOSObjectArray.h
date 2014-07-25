@@ -37,24 +37,24 @@
 @property (readonly) IOSClass *elementType;
 
 // Create an array from a C object array, length, and type.
-+ (id)newArrayWithObjects:(const id *)objects
-                    count:(NSUInteger)count
-                     type:(IOSClass *)type;
-+ (id)arrayWithObjects:(const id *)objects
-                 count:(NSUInteger)count
-                  type:(IOSClass *)type;
++ (instancetype)newArrayWithObjects:(const id *)objects
+                              count:(NSUInteger)count
+                               type:(IOSClass *)type;
++ (instancetype)arrayWithObjects:(const id *)objects
+                           count:(NSUInteger)count
+                            type:(IOSClass *)type;
 
 // Create an empty array with a type and length.
-+ (id)newArrayWithLength:(NSUInteger)length type:(IOSClass *)type;
-+ (id)arrayWithLength:(NSUInteger)length type:(IOSClass *)type;
++ (instancetype)newArrayWithLength:(NSUInteger)length type:(IOSClass *)type;
++ (instancetype)arrayWithLength:(NSUInteger)length type:(IOSClass *)type;
 
 // Create an empty multidimensional array.
-+ (id)arrayWithDimensions:(NSUInteger)dimensionCount
-                  lengths:(const int *)dimensionLengths
-                     type:(IOSClass *)type;
++ (instancetype)arrayWithDimensions:(NSUInteger)dimensionCount
+                            lengths:(const int *)dimensionLengths
+                               type:(IOSClass *)type;
 
-+ (id)arrayWithArray:(IOSObjectArray *)array;
-+ (id)arrayWithNSArray:(NSArray *)array type:(IOSClass *)type;
++ (instancetype)arrayWithArray:(IOSObjectArray *)array;
++ (instancetype)arrayWithNSArray:(NSArray *)array type:(IOSClass *)type;
 
 + (id)iosClassWithType:(IOSClass *)type;
 + (id)iosClassWithDimensions:(NSUInteger)dimensions type:(IOSClass *)type;

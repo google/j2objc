@@ -46,7 +46,7 @@
 
 + (int)calculateCapacityWithInt:(int)x;
 - (void)clear;
-- (id)clone;
+- (instancetype)clone;
 - (void)computeThreshold;
 - (BOOL)containsKeyWithId:(id)key;
 - (BOOL)containsValueWithId:(id)value;
@@ -89,10 +89,10 @@
   JavaUtilHashMap_Entry *next_;
 }
 
-- (id)initWithId:(id)theKey
-         withInt:(int)hash_;
-- (id)initWithId:(id)theKey
-          withId:(id)theValue;
+- (instancetype)initWithId:(id)theKey
+                   withInt:(int)hash_;
+- (instancetype)initWithId:(id)theKey
+                    withId:(id)theValue;
 @end
 
 @interface JavaUtilHashMap_AbstractMapIterator : NSObject {
@@ -112,7 +112,7 @@
 @property (nonatomic, assign) JavaUtilHashMap_Entry *prevEntry;
 @property (nonatomic, strong) JavaUtilHashMap *associatedMap;
 
-- (id)initWithJavaUtilHashMap:(JavaUtilHashMap *)hm;
+- (instancetype)initWithJavaUtilHashMap:(JavaUtilHashMap *)hm;
 - (BOOL)hasNext;
 - (void)checkConcurrentMod;
 - (void)makeNext;
@@ -122,21 +122,21 @@
 @interface JavaUtilHashMap_EntryIterator : JavaUtilHashMap_AbstractMapIterator < JavaUtilIterator > {
 }
 
-- (id)initWithJavaUtilHashMap:(JavaUtilHashMap *)map;
+- (instancetype)initWithJavaUtilHashMap:(JavaUtilHashMap *)map;
 - (id<JavaUtilMap_Entry>)next;
 @end
 
 @interface JavaUtilHashMap_KeyIterator : JavaUtilHashMap_AbstractMapIterator < JavaUtilIterator > {
 }
 
-- (id)initWithJavaUtilHashMap:(JavaUtilHashMap *)map;
+- (instancetype)initWithJavaUtilHashMap:(JavaUtilHashMap *)map;
 - (id)next;
 @end
 
 @interface JavaUtilHashMap_ValueIterator : JavaUtilHashMap_AbstractMapIterator < JavaUtilIterator > {
 }
 
-- (id)initWithJavaUtilHashMap:(JavaUtilHashMap *)map;
+- (instancetype)initWithJavaUtilHashMap:(JavaUtilHashMap *)map;
 - (id)next;
 @end
 
@@ -145,7 +145,7 @@
   JavaUtilHashMap *associatedMap_;
 }
 
-- (id)initWithJavaUtilHashMap:(JavaUtilHashMap *)hm;
+- (instancetype)initWithJavaUtilHashMap:(JavaUtilHashMap *)hm;
 - (JavaUtilHashMap *)hashMap;
 - (int)size;
 - (void)clear;
@@ -166,7 +166,7 @@
 - (void)clear;
 - (BOOL)removeWithId:(id)key;
 - (id<JavaUtilIterator>)iterator;
-- (id)initWithJavaUtilHashMap:(JavaUtilHashMap *)outer;
+- (instancetype)initWithJavaUtilHashMap:(JavaUtilHashMap *)outer;
 @end
 
 @interface JavaUtilHashMap_ValuesCollection : JavaUtilAbstractCollection {
@@ -178,7 +178,7 @@
 - (int)size;
 - (void)clear;
 - (id<JavaUtilIterator>)iterator;
-- (id)initWithJavaUtilHashMap:(JavaUtilHashMap *)outer;
+- (instancetype)initWithJavaUtilHashMap:(JavaUtilHashMap *)outer;
 @end
 
 #endif // _JavaUtilHashMap_PackagePrivate_H_

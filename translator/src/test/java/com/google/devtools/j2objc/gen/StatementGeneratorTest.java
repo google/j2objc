@@ -399,7 +399,7 @@ public class StatementGeneratorTest extends GenerationTest {
       "public class Test { static class One {} static class Two extends Test { " +
       "Integer i; Two(Integer i) { this.i = i; } int getI() { return i.intValue(); }}}",
       "Test", "Test.m");
-    assertTranslation(translation, "- (id)initWithJavaLangInteger:(JavaLangInteger *)i {");
+    assertTranslation(translation, "- (instancetype)initWithJavaLangInteger:(JavaLangInteger *)i {");
     assertTranslation(translation, "return [((JavaLangInteger *) nil_chk(i_)) intValue];");
   }
 
@@ -408,7 +408,7 @@ public class StatementGeneratorTest extends GenerationTest {
       "public class Test { static class One { int i; One(int i) { this.i = i; }} " +
       "static class Two extends One { Two(int i) { super(i); }}}",
       "Test", "Test.m");
-    assertTranslation(translation, "- (id)initWithInt:(int)i");
+    assertTranslation(translation, "- (instancetype)initWithInt:(int)i");
     assertTranslation(translation, "[super initWithInt:i]");
   }
 
@@ -417,7 +417,7 @@ public class StatementGeneratorTest extends GenerationTest {
       "public class Test { protected int foo; " +
       "static class One extends Test { int i; One() { i = foo; } int test() { return i; }}}",
       "Test", "Test.m");
-    assertTranslation(translation, "- (id)init {");
+    assertTranslation(translation, "- (instancetype)init {");
     assertTranslation(translation, "i_ = foo_;");
     assertTranslation(translation, "return i_;");
   }
@@ -460,7 +460,7 @@ public class StatementGeneratorTest extends GenerationTest {
         "return [[[Test_$1 alloc] initWithJavaUtilCollection:collection] autorelease];");
     translation = getTranslatedFile("Test.h");
     assertTranslation(translation,
-        "- (id)initWithJavaUtilCollection:(id<JavaUtilCollection>)capture$0;");
+        "- (instancetype)initWithJavaUtilCollection:(id<JavaUtilCollection>)capture$0;");
   }
 
   public void testEnumInEqualsTest() throws IOException {
@@ -895,7 +895,7 @@ public class StatementGeneratorTest extends GenerationTest {
     addSourceFile(
         "public class B extends A { B() {} public void init(int b) { super.init(b); }}", "B.java");
     String translation = translateSourceFile("A", "A.h");
-    assertTranslation(translation, "- (id)init;");
+    assertTranslation(translation, "- (instancetype)init;");
     assertTranslation(translation, "- (void)init__WithInt:(int)a");
     translation = translateSourceFile("B", "B.m");
     assertTranslation(translation, "return JreMemDebugAdd([super init]);");

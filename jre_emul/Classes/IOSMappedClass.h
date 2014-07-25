@@ -28,7 +28,7 @@
   NSString *name_;
 }
 
-- (id)initWithClass:(Class)cls package:(NSString *)pkg name:(NSString *)name;
+- (instancetype)initWithClass:(Class)cls package:(NSString *)pkg name:(NSString *)name;
 
 @end
 

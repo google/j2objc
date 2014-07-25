@@ -29,7 +29,7 @@
   IOSClass *componentType_;
 }
 
-- (id)initWithComponentType:(IOSClass *)type;
+- (instancetype)initWithComponentType:(IOSClass *)type;
 
 @end
 

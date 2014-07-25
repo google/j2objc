@@ -32,10 +32,10 @@
 
 @implementation ExecutableMember
 
-- (id)initWithMethodSignature:(NSMethodSignature *)methodSignature
-                     selector:(SEL)selector
-                        class:(IOSClass *)aClass
-                     metadata:(JavaMethodMetadata *)metadata {
+- (instancetype)initWithMethodSignature:(NSMethodSignature *)methodSignature
+                               selector:(SEL)selector
+                                  class:(IOSClass *)aClass
+                               metadata:(JavaMethodMetadata *)metadata {
   if ((self = [super init])) {
     methodSignature_ = [methodSignature retain];
     selector_ = selector;

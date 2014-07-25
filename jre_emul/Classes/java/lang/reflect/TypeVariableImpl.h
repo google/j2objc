@@ -27,8 +27,8 @@
   NSString *name_;
 }
 
-- (id)initWithName:(NSString *)name;
-+ (JavaLangReflectTypeVariableImpl *)typeVariableWithName:(NSString *)name;
+- (instancetype)initWithName:(NSString *)name;
++ (instancetype)typeVariableWithName:(NSString *)name;
 
 - (IOSObjectArray *)getBounds;
 - (id)getGenericDeclaration;

@@ -23,9 +23,9 @@
 
 @implementation JavaLangReflectParameterizedTypeImpl
 
-- (id)initWithTypeArguments:(IOSObjectArray *)typeArgs
-                  ownerType:(id<JavaLangReflectType>)ownerType
-                    rawType:(id<JavaLangReflectType>)rawType {
+- (instancetype)initWithTypeArguments:(IOSObjectArray *)typeArgs
+                            ownerType:(id<JavaLangReflectType>)ownerType
+                              rawType:(id<JavaLangReflectType>)rawType {
   if ((self = [super init])) {
     actualTypeArguments_ = RETAIN_(typeArgs);
     ownerType_ = RETAIN_(ownerType);
@@ -34,10 +34,9 @@
   return self;
 }
 
-+ (JavaLangReflectParameterizedTypeImpl *)
-    parameterizedTypeWithTypeArguments:(IOSObjectArray *)typeArgs
-                             ownerType:(id<JavaLangReflectType>)ownerType
-                               rawType:(id<JavaLangReflectType>)rawType {
++ (instancetype)parameterizedTypeWithTypeArguments:(IOSObjectArray *)typeArgs
+                                         ownerType:(id<JavaLangReflectType>)ownerType
+                                           rawType:(id<JavaLangReflectType>)rawType {
   return AUTORELEASE([[JavaLangReflectParameterizedTypeImpl alloc] initWithTypeArguments:typeArgs
                                                                                ownerType:ownerType
                                                                                  rawType:rawType]);

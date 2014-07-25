@@ -17,7 +17,7 @@
 // be mutable) will not be visible.
 @interface NSDataInputStream : JavaIoInputStream
 
-- (id)initWithData:(NSData *)data;
+- (instancetype)initWithData:(NSData *)data;
 + (NSDataInputStream *)streamWithData:(NSData *)data;
 
 @end

@@ -26,7 +26,7 @@
 
 @implementation IOSArrayClass
 
-- (id)initWithComponentType:(IOSClass *)type {
+- (instancetype)initWithComponentType:(IOSClass *)type {
   if ((self = [super init])) {
     componentType_ = RETAIN_(type);
   }

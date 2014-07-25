@@ -38,15 +38,15 @@
   void **rawCallStack;
   unsigned rawFrameCount;
 }
-- (id)init;
-- (id)initWithNSString:(NSString *)message;
-- (id)initWithNSString:(NSString *)message
+- (instancetype)init;
+- (instancetype)initWithNSString:(NSString *)message;
+- (instancetype)initWithNSString:(NSString *)message
  withJavaLangThrowable:(JavaLangThrowable *)cause;
-- (id)initWithJavaLangThrowable:(JavaLangThrowable *)cause;
-- (id)initWithNSString:(NSString *)message
- withJavaLangThrowable:(JavaLangThrowable *)cause
-           withBoolean:(BOOL)enableSuppression
-           withBoolean:(BOOL)writeableStackTrace;
+- (instancetype)initWithJavaLangThrowable:(JavaLangThrowable *)cause;
+- (instancetype)initWithNSString:(NSString *)message
+           withJavaLangThrowable:(JavaLangThrowable *)cause
+                     withBoolean:(BOOL)enableSuppression
+                     withBoolean:(BOOL)writeableStackTrace;
 - (JavaLangThrowable *)fillInStackTrace;
 - (JavaLangThrowable *)getCause;
 - (NSString *)getLocalizedMessage;
