@@ -40,8 +40,10 @@ class IOSLogHandler extends Handler {
     }
   }
 
-  private static final String IOS_LOG_MANAGER_DEFAULTS =
+  private static final String IOS_LOG_MANAGER_DEFAULTS_DEBUG =
       ".level=INFO\nhandlers=java.util.logging.IOSLogHandler\n";
+  private static final String IOS_LOG_MANAGER_DEFAULTS_PRODUCTION =
+      ".level=SEVERE\nhandlers=java.util.logging.IOSLogHandler\n";
 
   public IOSLogHandler() {
     setFormatter(new IOSLogFormatter());
@@ -99,7 +101,11 @@ class IOSLogHandler extends Handler {
     asl_log(NULL, NULL, aslLevel, "%s", [logMessage UTF8String]);
   ]-*/;
 
-  public static String getDefaultProperties() {
-    return IOS_LOG_MANAGER_DEFAULTS;
-  }
+  public static native String getDefaultProperties() /*-[
+#ifdef DEBUG
+    return JavaUtilLoggingIOSLogHandler_IOS_LOG_MANAGER_DEFAULTS_DEBUG_;
+#else
+    return JavaUtilLoggingIOSLogHandler_IOS_LOG_MANAGER_DEFAULTS_PRODUCTION_;
+#endif
+  ]-*/;
 }
