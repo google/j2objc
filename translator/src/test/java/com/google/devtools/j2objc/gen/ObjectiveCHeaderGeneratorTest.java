@@ -590,7 +590,7 @@ public class ObjectiveCHeaderGeneratorTest extends GenerationTest {
     assertTranslation(translation, "@brief Field javadoc.");
     assertTranslatedLines(translation,
         "@brief Method javadoc.",
-        "@param foo  Unused.",
+        "@param foo Unused.",
         "@return always false.");
   }
 }
