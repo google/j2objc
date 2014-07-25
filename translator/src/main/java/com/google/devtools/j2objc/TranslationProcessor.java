@@ -15,7 +15,6 @@
 package com.google.devtools.j2objc;
 
 import com.google.common.collect.Sets;
-import com.google.common.io.Files;
 import com.google.devtools.j2objc.ast.TreeConverter;
 import com.google.devtools.j2objc.gen.ObjectiveCHeaderGenerator;
 import com.google.devtools.j2objc.gen.ObjectiveCImplementationGenerator;
@@ -52,10 +51,6 @@ import com.google.devtools.j2objc.util.TimeTracker;
 
 import org.eclipse.jdt.core.dom.CompilationUnit;
 import org.eclipse.jdt.core.dom.ITypeBinding;
-import org.eclipse.jface.text.BadLocationException;
-import org.eclipse.jface.text.Document;
-import org.eclipse.text.edits.MalformedTreeException;
-import org.eclipse.text.edits.TextEdit;
 
 import java.io.File;
 import java.io.FileReader;
