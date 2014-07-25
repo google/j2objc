@@ -318,7 +318,6 @@ public class CycleFinderTest extends TestCase {
     }
     options.setSourceFiles(inputFiles);
     options.setClasspath(System.getProperty("java.class.path"));
-    ByteArrayOutputStream errorMessages = new ByteArrayOutputStream();
     CycleFinder finder = new CycleFinder(options);
     cycles = finder.findCycles();
     if (ErrorUtil.errorCount() > 0) {

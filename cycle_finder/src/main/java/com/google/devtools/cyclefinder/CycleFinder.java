@@ -26,7 +26,6 @@ import java.io.IOException;
 import java.io.PrintStream;
 import java.util.Collection;
 import java.util.List;
-import java.util.logging.Logger;
 
 /**
  * A tool for finding possible reference cycles in a Java program.
@@ -44,8 +43,6 @@ public class CycleFinder {
       loader.setPackageAssertionStatus(CycleFinder.class.getPackage().getName(), true);
     }
   }
-
-  private static final Logger logger = Logger.getLogger(CycleFinder.class.getName());
 
   public CycleFinder(Options options) {
     this.options = options;

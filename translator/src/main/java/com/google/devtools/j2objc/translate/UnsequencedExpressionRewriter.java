@@ -75,7 +75,6 @@ public class UnsequencedExpressionRewriter extends ErrorReportingASTVisitor {
   private int count = 1;
   private List<VariableAccess> orderedAccesses = Lists.newArrayList();
   private ASTNode currentTopNode = null;
-  private boolean currentIsConditional = false;
   private boolean hasModification = false;
 
   /**
@@ -87,22 +86,19 @@ public class UnsequencedExpressionRewriter extends ErrorReportingASTVisitor {
     private final IVariableBinding variable;
     private final Expression expression;
     private final boolean isModification;
-    private final boolean isConditional;
 
     private VariableAccess(
-        IVariableBinding variable, Expression expression, boolean isModification,
-        boolean isConditional) {
+        IVariableBinding variable, Expression expression, boolean isModification) {
       this.variable = variable;
       this.expression = expression;
       this.isModification = isModification;
-      this.isConditional = isConditional;
     }
   }
 
   private void addVariableAccess(IVariableBinding var, Expression node, boolean isModification) {
     if (var != null) {
       hasModification |= isModification;
-      orderedAccesses.add(new VariableAccess(var, node, isModification, currentIsConditional));
+      orderedAccesses.add(new VariableAccess(var, node, isModification));
     }
   }
 
@@ -655,7 +651,6 @@ public class UnsequencedExpressionRewriter extends ErrorReportingASTVisitor {
       expr.accept(this);
       List<VariableAccess> unsequencedAccesses = getUnsequencedAccesses();
       if (!unsequencedAccesses.isEmpty()) {
-        int numToExtract = extractModifiedExpression ? i + 1 : i;
         for (int j = 0; j < i; j++) {
           stmtList.add(ast.newExpressionStatement(
               NodeCopier.copySubtree(ast, expressions.get(j))));
