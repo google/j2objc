@@ -276,9 +276,9 @@ public abstract class GenerationTest extends TestCase {
       @Override
       public boolean visit(MethodDeclaration node) {
         String name = node.getName().getIdentifier();
-        if (name.equals(NameTable.INIT_NAME) ||
-            name.equals(NameTable.FINALIZE_METHOD) ||
-            name.equals(NameTable.DEALLOC_METHOD)) {
+        if (name.equals(NameTable.INIT_NAME)
+            || name.equals(NameTable.FINALIZE_METHOD)
+            || name.equals(NameTable.DEALLOC_METHOD)) {
           return false;
         }
         assert result[0] == null;
@@ -315,7 +315,8 @@ public abstract class GenerationTest extends TestCase {
       throws IOException {
     CompilationUnit unit = translateType(typeName, source);
     String sourceName = typeName + ".java";
-    TranslationProcessor.generateObjectiveCSource(sourceName, source, unit, TimeTracker.noop());
+    TranslationProcessor.generateObjectiveCSource(
+        sourceName, source, TreeConverter.convertCompilationUnit(unit), TimeTracker.noop());
     return getTranslatedFile(fileName);
   }
 

@@ -276,8 +276,8 @@ public class ObjectiveCHeaderGenerator extends ObjectiveCSourceFileGenerator {
     List<EnumConstantDeclaration> constants = node.getEnumConstants();
 
     // Strip enum type suffix.
-    String bareTypeName = typeName.endsWith("Enum") ?
-        typeName.substring(0, typeName.length() - 4) : typeName;
+    String bareTypeName =
+        typeName.endsWith("Enum") ? typeName.substring(0, typeName.length() - 4) : typeName;
 
     // C doesn't allow empty enum declarations.  Java does, so we skip the
     // C enum declaration and generate the type declaration.
@@ -455,7 +455,7 @@ public class ObjectiveCHeaderGenerator extends ObjectiveCSourceFileGenerator {
     newline();
 
     HeaderImportCollector collector = new HeaderImportCollector();
-    collector.collect(getUnit().jdtNode());
+    collector.collect(getUnit());
 
     printForwardDeclarations(collector.getForwardDeclarations());
 
@@ -699,8 +699,8 @@ public class ObjectiveCHeaderGenerator extends ObjectiveCSourceFileGenerator {
   boolean hasDeprecated(List<Annotation> annotations) {
     for (Annotation annotation : annotations) {
       Name annotationTypeName = annotation.getTypeName();
-      String expectedTypeName = annotationTypeName.isQualifiedName() ?
-          "java.lang.Deprecated" : "Deprecated";
+      String expectedTypeName =
+          annotationTypeName.isQualifiedName() ? "java.lang.Deprecated" : "Deprecated";
       if (expectedTypeName.equals(annotationTypeName.getFullyQualifiedName())) {
         return true;
       }
