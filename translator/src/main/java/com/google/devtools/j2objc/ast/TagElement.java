@@ -1,0 +1,74 @@
+/*
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package com.google.devtools.j2objc.ast;
+
+import com.google.common.collect.Lists;
+
+import java.util.List;
+
+/**
+ * Node for a tag within a doc comment.
+ */
+public class TagElement extends TreeNode {
+
+  public static final String TAG_AUTHOR = "@author";
+  public static final String TAG_CODE = "@code";
+  public static final String TAG_DEPRECATED = "@deprecated";
+  public static final String TAG_EXCEPTION = "@exception";
+  public static final String TAG_PARAM = "@param";
+  public static final String TAG_RETURN = "@return";
+  public static final String TAG_SEE = "@see";
+  public static final String TAG_SINCE = "@since";
+  public static final String TAG_THROWS = "@throws";
+  public static final String TAG_VERSION = "@version";
+
+  private String tagName;
+  private List<TreeNode> fragments = Lists.newArrayList();
+
+  public TagElement(TagElement other) {
+    super(other);
+    setTagName(other.getTagName());
+    for (TreeNode fragment : other.getFragments()) {
+      fragments.add(fragment.copy());
+    }
+  }
+
+  public String getTagName() {
+    return tagName;
+  }
+
+  public void setTagName(String tagName) {
+    this.tagName = tagName;
+  }
+
+  public List<TreeNode> getFragments() {
+    return fragments;
+  }
+
+  @Override
+  protected void acceptInner(TreeVisitor visitor) {
+    if (visitor.visit(this)) {
+      for (TreeNode fragment : fragments) {
+        fragment.accept(visitor);
+      }
+    }
+    visitor.endVisit(this);
+  }
+
+  @Override
+  public TagElement copy() {
+    return new TagElement(this);
+  }
+}
