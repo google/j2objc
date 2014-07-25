@@ -31,6 +31,7 @@ import libcore.util.MutableLong;
 #include "BufferUtils.h"
 #include "Portability.h"
 #include "TempFailureRetry.h"
+#include "java/io/File.h"
 #include "java/lang/IllegalArgumentException.h"
 #include "java/lang/System.h"
 #include "java/net/Inet6Address.h"
@@ -177,7 +178,7 @@ public final class Posix implements Os {
     if (!path) {
       return nil;
     }
-    const char* cpath = [path UTF8String];
+    const char* cpath = absolutePath(path);
     struct stat sb;
     int rc = isLstat ? TEMP_FAILURE_RETRY(lstat(cpath, &sb))
                      : TEMP_FAILURE_RETRY(stat(cpath, &sb));
@@ -367,6 +368,18 @@ public final class Posix implements Os {
     int rc = fcntl(fd, F_SETFL, flags);
     return (rc != -1);
   }
+
+  const char *absolutePath(NSString *path) {
+    if ([path length] == 0) {
+      return "";
+    }
+    if ([path characterAtIndex:0] != '/') {
+      JavaIoFile *f = [[JavaIoFile alloc] initWithNSString:path];
+      path = [f getAbsolutePath];
+      RELEASE_(f);
+    }
+    return [path fileSystemRepresentation];
+  }
   ]-*/
 
   private static void throwErrnoException(String message, int errorCode) throws ErrnoException {
@@ -404,7 +417,7 @@ public final class Posix implements Os {
     if (!path) {
       return NO;
     }
-    const char* cpath = [path UTF8String];
+    const char* cpath = absolutePath(path);
     int rc = TEMP_FAILURE_RETRY(access(cpath, mode));
     if (rc == -1) {
       [LibcoreIoPosix throwErrnoExceptionWithNSString:@"access" withInt:errno];
@@ -430,13 +443,13 @@ public final class Posix implements Os {
     if (!path) {
       return NO;
     }
-    const char* cpath = [path UTF8String];
+    const char* cpath = absolutePath(path);
     return (TEMP_FAILURE_RETRY(access(cpath, mode)) == 0);
   ]-*/;
 
   public native void chmod(String path, int mode) throws ErrnoException /*-[
     if (path) {
-      const char* cpath = [path UTF8String];
+      const char* cpath = absolutePath(path);
       int rc = TEMP_FAILURE_RETRY(chmod(cpath, mode));
       [LibcoreIoPosix throwIfMinusOneWithNSString:@"chmod" withInt:rc];
     }
@@ -444,7 +457,7 @@ public final class Posix implements Os {
 
   public native void chown(String path, int uid, int gid) throws ErrnoException /*-[
     if (path) {
-      const char* cpath = [path UTF8String];
+      const char* cpath = absolutePath(path);
       int rc = TEMP_FAILURE_RETRY(chown(cpath, uid, gid));
       [LibcoreIoPosix throwIfMinusOneWithNSString:@"chown" withInt:rc];
     }
@@ -802,7 +815,7 @@ public final class Posix implements Os {
 
   public native void mkdir(String path, int mode) throws ErrnoException /*-[
     if (path) {
-      const char* cpath = [path UTF8String];
+      const char* cpath = absolutePath(path);
       int rc = TEMP_FAILURE_RETRY(mkdir(cpath, mode));
       [LibcoreIoPosix throwIfMinusOneWithNSString:@"mkdir" withInt:rc];
     }
@@ -841,7 +854,7 @@ public final class Posix implements Os {
     if (!path) {
       return nil;
     }
-    const char* cpath = [path UTF8String];
+    const char* cpath = absolutePath(path);
     int nativeFd = TEMP_FAILURE_RETRY(open(cpath, flags, mode));
     [LibcoreIoPosix throwIfMinusOneWithNSString:@"open" withInt:nativeFd];
     JavaIoFileDescriptor *newFd = AUTORELEASE([[JavaIoFileDescriptor alloc] init]);
@@ -1041,7 +1054,7 @@ public final class Posix implements Os {
 
   public native void remove(String path) throws ErrnoException /*-[
     if (path) {
-      const char* cpath = [path UTF8String];
+      const char* cpath = absolutePath(path);
       int rc = TEMP_FAILURE_RETRY(remove(cpath));
       [LibcoreIoPosix throwIfMinusOneWithNSString:@"remove" withInt:rc];
     }
@@ -1049,8 +1062,8 @@ public final class Posix implements Os {
 
   public native void rename(String oldPath, String newPath) throws ErrnoException /*-[
     if (oldPath && newPath) {
-      const char* cOldPath = [oldPath UTF8String];
-      const char* cNewPath = [newPath UTF8String];
+      const char* cOldPath = absolutePath(oldPath);
+      const char* cNewPath = absolutePath(newPath);
       int rc = TEMP_FAILURE_RETRY(rename(cOldPath, cNewPath));
       [LibcoreIoPosix throwIfMinusOneWithNSString:@"rename" withInt:rc];
     }
@@ -1257,7 +1270,7 @@ public final class Posix implements Os {
     if (!path) {
       return nil;
     }
-    const char* cpath = [path UTF8String];
+    const char* cpath = absolutePath(path);
     struct statvfs sb;
     int rc = TEMP_FAILURE_RETRY(statvfs(cpath, &sb));
     if (rc == -1) {
