@@ -62,14 +62,14 @@ public class UnsequencedExpressionRewriterTest extends GenerationTest {
         "Test", "Test.m");
     assertTranslatedLines(translation,
         "BOOL unseq$1;",
-        "if (!(unseq$1 = i == 0 || i == 1)) {",
+        "if (!(unseq$1 = (i == 0 || i == 1))) {",
         "  int unseq$2 = ++i;",
-        "  unseq$1 = unseq$1 || unseq$2 + i == 2;",
+        "  unseq$1 = (unseq$1 || unseq$2 + i == 2);",
         "}",
         "BOOL unseq$3;",
         "if (!(unseq$3 = unseq$1)) {",
         "  int unseq$4 = i++;",
-        "  unseq$3 = unseq$3 || unseq$4 + i == 3;",
+        "  unseq$3 = (unseq$3 || unseq$4 + i == 3);",
         "}",
         "return unseq$3 || i == 4;");
   }
@@ -84,14 +84,14 @@ public class UnsequencedExpressionRewriterTest extends GenerationTest {
         "if (i == 0) {",
         "  int unseq$2 = i++;",
         "  BOOL unseq$3;",
-        "  if (!(unseq$3 = unseq$2 + i == 0)) {",
+        "  if (!(unseq$3 = (unseq$2 + i == 0))) {",
         "    int unseq$4 = i++;",
-        "    unseq$3 = unseq$3 || unseq$4 + i == 0;",
+        "    unseq$3 = (unseq$3 || unseq$4 + i == 0);",
         "  }",
         "  unseq$1 = unseq$3;",
         "}",
         "else {",
-        "  unseq$1 = ++i == 1;",
+        "  unseq$1 = (++i == 1);",
         "}",
         "return unseq$1;");
   }
