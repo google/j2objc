@@ -43,7 +43,6 @@ import org.eclipse.jdt.core.dom.PrimitiveType;
 import org.eclipse.jdt.core.dom.SimpleName;
 import org.eclipse.jdt.core.dom.VariableDeclarationFragment;
 
-import java.io.File;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -413,6 +412,10 @@ public class NameTable {
 
   private static String getParameterTypeKeyword(ITypeBinding type) {
     if (isIdType(type) || type.isTypeVariable()) {
+      ITypeBinding[] bounds = type.getTypeBounds();
+      if (bounds.length > 0) {
+        return getParameterTypeKeyword(bounds[0]);
+      }
       return ID_TYPE;
     } else if (type.isPrimitive()) {
       return type.getName();
