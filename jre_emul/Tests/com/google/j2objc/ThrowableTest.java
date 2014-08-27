@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package java.lang;
+package com.google.j2objc;
 
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
@@ -67,7 +67,7 @@ public class ThrowableTest extends TestCase {
     testException.printStackTrace(out);
     out.flush();
     String trace = baos.toString("UTF-8");
-    assertTrue(trace.contains("java.lang.ThrowableTest.testStackTraceWithPrintStream()"));
+    assertTrue(trace.contains("com.google.j2objc.ThrowableTest.testStackTraceWithPrintStream("));
   }
 
   public void testStackTraceWithPrintWriter() throws Exception {
@@ -77,6 +77,6 @@ public class ThrowableTest extends TestCase {
     testException.printStackTrace(out);
     out.flush();
     String trace = sw.toString();
-    assertTrue(trace.contains("java.lang.ThrowableTest.testStackTraceWithPrintWriter()"));
+    assertTrue(trace.contains("com.google.j2objc.ThrowableTest.testStackTraceWithPrintWriter("));
   }
 }

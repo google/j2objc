@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package java.lang;
+package com.google.j2objc;
 
 import junit.framework.TestCase;
 
@@ -45,30 +45,30 @@ public class ClassTest extends TestCase {
   }
 
   public void testForName() throws Exception {
-    Class<?> thisClass = Class.forName("java.lang.ClassTest");
+    Class<?> thisClass = Class.forName("com.google.j2objc.ClassTest");
     assertNotNull(thisClass);
-    assertEquals("java.lang.ClassTest", thisClass.getName());
+    assertEquals("com.google.j2objc.ClassTest", thisClass.getName());
     Method answerToLife = thisClass.getMethod("answerToLife");
     Integer answer = (Integer) answerToLife.invoke(this);
     assertEquals(42, answer.intValue());
   }
 
   public void testGetDefaultConstructor() throws Exception {
-    Class<?> foo = Class.forName("java.lang.ClassTest");
+    Class<?> foo = Class.forName("com.google.j2objc.ClassTest");
     Constructor<?> c = foo.getConstructor();
     Class<?>[] paramTypes = c.getParameterTypes();
     assertEquals(0, paramTypes.length);
   }
 
   public void testGetConstructor() throws Exception {
-    Class<?> foo = Class.forName("java.lang.ClassTest");
+    Class<?> foo = Class.forName("com.google.j2objc.ClassTest");
     Constructor<?> c = foo.getConstructor(Double.class);
     Class<?>[] paramTypes = c.getParameterTypes();
     assertEquals(1, paramTypes.length);
   }
 
   public void testGetDeclaredConstructor() throws Exception {
-    Class<?> foo = Class.forName("java.lang.ClassTest");
+    Class<?> foo = Class.forName("com.google.j2objc.ClassTest");
     Constructor<?> c = foo.getConstructor();
     Class<?>[] paramTypes = c.getParameterTypes();
     assertEquals(0, paramTypes.length);
@@ -148,18 +148,18 @@ public class ClassTest extends TestCase {
   }
 
   public void testInnerClass() throws Exception {
-    Class<?> innerClass = Class.forName("java.lang.ClassTest$InnerClass");
+    Class<?> innerClass = Class.forName("com.google.j2objc.ClassTest$InnerClass");
     assertEquals(InnerClass.class, innerClass);
-    assertEquals("java.lang.ClassTest$InnerClass", innerClass.getName());
+    assertEquals("com.google.j2objc.ClassTest$InnerClass", innerClass.getName());
     assertEquals("InnerClass", innerClass.getSimpleName());
     assertTrue(innerClass.isMemberClass());
     assertEquals(ClassTest.class, innerClass.getEnclosingClass());
   }
 
   public void testInnerInterface() throws Exception {
-    Class<?> innerInterface = Class.forName("java.lang.ClassTest$InnerInterface");
+    Class<?> innerInterface = Class.forName("com.google.j2objc.ClassTest$InnerInterface");
     assertEquals(InnerInterface.class, innerInterface);
-    assertEquals("java.lang.ClassTest$InnerInterface", innerInterface.getName());
+    assertEquals("com.google.j2objc.ClassTest$InnerInterface", innerInterface.getName());
     assertEquals("InnerInterface", innerInterface.getSimpleName());
     assertTrue(innerInterface.isMemberClass());
     assertEquals(ClassTest.class, innerInterface.getEnclosingClass());
@@ -214,7 +214,7 @@ public class ClassTest extends TestCase {
   }
 
   public void testGetEnum() throws Exception {
-    Class<?> innerEnum = Class.forName("java.lang.ClassTest$InnerEnum");
+    Class<?> innerEnum = Class.forName("com.google.j2objc.ClassTest$InnerEnum");
     assertNotNull(innerEnum);
   }
 
