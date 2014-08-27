@@ -46,6 +46,11 @@ public class ConstructorInvocation extends Statement {
     arguments.copyFrom(other.getArguments());
   }
 
+  @Override
+  public Kind getKind() {
+    return Kind.CONSTRUCTOR_INVOCATION;
+  }
+
   public IMethodBinding getMethodBinding() {
     return methodBinding;
   }

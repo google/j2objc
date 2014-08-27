@@ -53,6 +53,11 @@ public class ClassInstanceCreation extends Expression {
     anonymousClassDeclaration.copyFrom(other.getAnonymousClassDeclaration());
   }
 
+  @Override
+  public Kind getKind() {
+    return Kind.CLASS_INSTANCE_CREATION;
+  }
+
   public IMethodBinding getMethodBinding() {
     return methodBinding;
   }

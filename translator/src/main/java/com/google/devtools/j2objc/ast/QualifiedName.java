@@ -42,6 +42,11 @@ public class QualifiedName extends Name {
     name.set(new SimpleName(binding));
   }
 
+  @Override
+  public Kind getKind() {
+    return Kind.QUALIFIED_NAME;
+  }
+
   public Name getQualifier() {
     return qualifier.get();
   }

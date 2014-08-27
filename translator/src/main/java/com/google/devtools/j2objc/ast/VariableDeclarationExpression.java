@@ -41,6 +41,11 @@ public class VariableDeclarationExpression extends Expression {
     fragments.copyFrom(other.getFragments());
   }
 
+  @Override
+  public Kind getKind() {
+    return Kind.VARIABLE_DECLARATION_EXPRESSION;
+  }
+
   public Type getType() {
     return type.get();
   }

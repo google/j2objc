@@ -47,6 +47,11 @@ public class TryStatement extends Statement {
     finallyBlock.copyFrom(other.getFinally());
   }
 
+  @Override
+  public Kind getKind() {
+    return Kind.TRY_STATEMENT;
+  }
+
   public List<VariableDeclarationExpression> getResources() {
     return resources;
   }

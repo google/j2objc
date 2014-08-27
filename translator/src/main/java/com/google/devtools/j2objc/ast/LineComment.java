@@ -27,6 +27,11 @@ public class LineComment extends Comment {
     super(other);
   }
 
+  @Override
+  public Kind getKind() {
+    return Kind.LINE_COMMENT;
+  }
+
   public boolean isLineComment() {
     return true;
   }

@@ -38,6 +38,11 @@ public class TextElement extends TreeNode {
     text = other.getText();
   }
 
+  @Override
+  public Kind getKind() {
+    return Kind.TEXT_ELEMENT;
+  }
+
   public String getText() {
     return text;
   }

@@ -38,6 +38,11 @@ public class TypeLiteral extends Expression {
     type.set(Type.newType(typeBinding));
   }
 
+  @Override
+  public Kind getKind() {
+    return Kind.TYPE_LITERAL;
+  }
+
   public Type getType() {
     return type.get();
   }

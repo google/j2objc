@@ -40,6 +40,11 @@ public class NumberLiteral extends Expression {
     this.token = token;
   }
 
+  @Override
+  public Kind getKind() {
+    return Kind.NUMBER_LITERAL;
+  }
+
   public static NumberLiteral newIntLiteral(int i) {
     return new NumberLiteral(Types.resolveJavaType("int"), Integer.toString(i));
   }

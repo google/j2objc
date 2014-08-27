@@ -39,6 +39,11 @@ public class FieldDeclaration extends BodyDeclaration {
     fragments.copyFrom(other.getFragments());
   }
 
+  @Override
+  public Kind getKind() {
+    return Kind.FIELD_DECLARATION;
+  }
+
   public Type getType() {
     return type.get();
   }

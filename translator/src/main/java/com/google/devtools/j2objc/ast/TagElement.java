@@ -49,6 +49,11 @@ public class TagElement extends TreeNode {
     fragments.copyFrom(other.getFragments());
   }
 
+  @Override
+  public Kind getKind() {
+    return Kind.TAG_ELEMENT;
+  }
+
   public String getTagName() {
     return tagName;
   }

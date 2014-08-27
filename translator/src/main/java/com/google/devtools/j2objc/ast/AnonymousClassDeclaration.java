@@ -30,6 +30,11 @@ public class AnonymousClassDeclaration extends TreeNode {
     bodyDeclarations.copyFrom(other.getBodyDeclarations());
   }
 
+  @Override
+  public Kind getKind() {
+    return Kind.ANONYMOUS_CLASS_DECLARATION;
+  }
+
   public List<BodyDeclaration> getBodyDeclarations() {
     return bodyDeclarations;
   }

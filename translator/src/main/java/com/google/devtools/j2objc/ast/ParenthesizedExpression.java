@@ -31,6 +31,11 @@ public class ParenthesizedExpression extends Expression {
     expression.copyFrom(other.getExpression());
   }
 
+  @Override
+  public Kind getKind() {
+    return Kind.PARENTHESIZED_EXPRESSION;
+  }
+
   public Expression getExpression() {
     return expression.get();
   }

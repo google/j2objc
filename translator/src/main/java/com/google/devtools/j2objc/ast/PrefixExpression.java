@@ -75,6 +75,11 @@ public class PrefixExpression extends Expression {
     operand.copyFrom(other.getOperand());
   }
 
+  @Override
+  public Kind getKind() {
+    return Kind.PREFIX_EXPRESSION;
+  }
+
   public Operator getOperator() {
     return operator;
   }

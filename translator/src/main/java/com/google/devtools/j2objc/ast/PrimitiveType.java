@@ -34,6 +34,11 @@ public class PrimitiveType extends Type {
   }
 
   @Override
+  public Kind getKind() {
+    return Kind.PRIMITIVE_TYPE;
+  }
+
+  @Override
   public boolean isPrimitiveType() {
     return true;
   }

@@ -34,6 +34,11 @@ public class AssertStatement extends Statement {
     message.copyFrom(other.getMessage());
   }
 
+  @Override
+  public Kind getKind() {
+    return Kind.ASSERT_STATEMENT;
+  }
+
   public Expression getExpression() {
     return expression.get();
   }

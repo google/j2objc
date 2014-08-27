@@ -38,6 +38,11 @@ public class EnhancedForStatement extends Statement {
     body.copyFrom(other.getBody());
   }
 
+  @Override
+  public Kind getKind() {
+    return Kind.ENHANCED_FOR_STATEMENT;
+  }
+
   public SingleVariableDeclaration getParameter() {
     return parameter.get();
   }

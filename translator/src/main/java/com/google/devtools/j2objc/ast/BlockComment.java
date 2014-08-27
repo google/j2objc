@@ -27,6 +27,11 @@ public class BlockComment extends Comment {
     super(other);
   }
 
+  @Override
+  public Kind getKind() {
+    return Kind.BLOCK_COMMENT;
+  }
+
   public boolean isBlockComment() {
     return true;
   }

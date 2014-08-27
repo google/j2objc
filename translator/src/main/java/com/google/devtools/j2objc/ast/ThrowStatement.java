@@ -31,6 +31,11 @@ public class ThrowStatement extends Statement {
     expression.copyFrom(other.getExpression());
   }
 
+  @Override
+  public Kind getKind() {
+    return Kind.THROW_STATEMENT;
+  }
+
   public Expression getExpression() {
     return expression.get();
   }

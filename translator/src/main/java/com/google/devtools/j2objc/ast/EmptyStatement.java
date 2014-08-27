@@ -28,6 +28,11 @@ public class EmptyStatement extends Statement {
   }
 
   @Override
+  public Kind getKind() {
+    return Kind.EMPTY_STATEMENT;
+  }
+
+  @Override
   protected void acceptInner(TreeVisitor visitor) {
     visitor.visit(this);
     visitor.endVisit(this);

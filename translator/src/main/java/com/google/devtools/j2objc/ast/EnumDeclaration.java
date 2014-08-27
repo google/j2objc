@@ -36,6 +36,11 @@ public class EnumDeclaration extends AbstractTypeDeclaration {
     enumConstants.copyFrom(other.getEnumConstants());
   }
 
+  @Override
+  public Kind getKind() {
+    return Kind.ENUM_DECLARATION;
+  }
+
   public List<EnumConstantDeclaration> getEnumConstants() {
     return enumConstants;
   }

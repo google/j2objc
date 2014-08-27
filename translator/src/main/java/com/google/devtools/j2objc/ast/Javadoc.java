@@ -35,6 +35,11 @@ public class Javadoc extends Comment {
     tags.copyFrom(other.getTags());
   }
 
+  @Override
+  public Kind getKind() {
+    return Kind.JAVADOC;
+  }
+
   public List<TagElement> getTags() {
     return tags;
   }

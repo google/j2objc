@@ -34,6 +34,11 @@ public class SimpleType extends Type {
   }
 
   @Override
+  public Kind getKind() {
+    return Kind.SIMPLE_TYPE;
+  }
+
+  @Override
   protected void acceptInner(TreeVisitor visitor) {
     visitor.visit(this);
     visitor.endVisit(this);

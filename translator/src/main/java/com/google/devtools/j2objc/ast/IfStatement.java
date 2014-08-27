@@ -37,6 +37,11 @@ public class IfStatement extends Statement {
     elseStatement.copyFrom(other.getElseStatement());
   }
 
+  @Override
+  public Kind getKind() {
+    return Kind.IF_STATEMENT;
+  }
+
   public Expression getExpression() {
     return expression.get();
   }

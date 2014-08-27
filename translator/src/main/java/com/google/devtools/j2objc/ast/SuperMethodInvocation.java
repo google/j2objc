@@ -54,6 +54,11 @@ public class SuperMethodInvocation extends Expression {
     name.set(new SimpleName(methodBinding));
   }
 
+  @Override
+  public Kind getKind() {
+    return Kind.SUPER_METHOD_INVOCATION;
+  }
+
   public IMethodBinding getMethodBinding() {
     return methodBinding;
   }

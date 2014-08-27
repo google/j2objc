@@ -34,6 +34,11 @@ public class SwitchCase extends Statement {
     expression.copyFrom(other.getExpression());
   }
 
+  @Override
+  public Kind getKind() {
+    return Kind.SWITCH_CASE;
+  }
+
   public boolean isDefault() {
     return isDefault;
   }

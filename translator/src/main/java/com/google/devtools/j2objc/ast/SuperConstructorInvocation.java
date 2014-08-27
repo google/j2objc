@@ -42,6 +42,11 @@ public class SuperConstructorInvocation extends Statement {
     arguments.copyFrom(other.getArguments());
   }
 
+  @Override
+  public Kind getKind() {
+    return Kind.SUPER_CONSTRUCTOR_INVOCATION;
+  }
+
   public IMethodBinding getMethodBinding() {
     return methodBinding;
   }

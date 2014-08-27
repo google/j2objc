@@ -38,6 +38,11 @@ public class SuperFieldAccess extends Expression {
     name.copyFrom(other.getName());
   }
 
+  @Override
+  public Kind getKind() {
+    return Kind.SUPER_FIELD_ACCESS;
+  }
+
   public IVariableBinding getVariableBinding() {
     return variableBinding;
   }

@@ -28,6 +28,11 @@ public class QualifiedType extends Type {
   }
 
   @Override
+  public Kind getKind() {
+    return Kind.QUALIFIED_TYPE;
+  }
+
+  @Override
   protected void acceptInner(TreeVisitor visitor) {
     visitor.visit(this);
     visitor.endVisit(this);

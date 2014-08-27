@@ -97,6 +97,11 @@ public class InfixExpression extends Expression {
     extendedOperands.copyFrom(other.getExtendedOperands());
   }
 
+  @Override
+  public Kind getKind() {
+    return Kind.INFIX_EXPRESSION;
+  }
+
   public Operator getOperator() {
     return operator;
   }

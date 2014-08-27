@@ -35,6 +35,11 @@ public class CatchClause extends TreeNode {
     body.copyFrom(other.getBody());
   }
 
+  @Override
+  public Kind getKind() {
+    return Kind.CATCH_CLAUSE;
+  }
+
   public SingleVariableDeclaration getException() {
     return exception.get();
   }

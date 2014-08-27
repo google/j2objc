@@ -33,6 +33,11 @@ public class PackageDeclaration extends TreeNode {
     name.copyFrom(other.getName());
   }
 
+  @Override
+  public Kind getKind() {
+    return Kind.PACKAGE_DECLARATION;
+  }
+
   public Name getName() {
     return name.get();
   }

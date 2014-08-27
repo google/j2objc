@@ -40,6 +40,11 @@ public class VariableDeclarationStatement extends Statement {
     fragments.copyFrom(other.getFragments());
   }
 
+  @Override
+  public Kind getKind() {
+    return Kind.VARIABLE_DECLARATION_STATEMENT;
+  }
+
   public Type getType() {
     return type.get();
   }

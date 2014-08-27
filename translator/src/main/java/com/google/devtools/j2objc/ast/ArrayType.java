@@ -39,6 +39,11 @@ public class ArrayType extends Type {
     componentType.set(Type.newType(typeBinding.getComponentType()));
   }
 
+  @Override
+  public Kind getKind() {
+    return Kind.ARRAY_TYPE;
+  }
+
   public Type getComponentType() {
     return componentType.get();
   }

@@ -35,6 +35,11 @@ public class ExpressionStatement extends Statement {
     this.expression.set(expression);
   }
 
+  @Override
+  public Kind getKind() {
+    return Kind.EXPRESSION_STATEMENT;
+  }
+
   public Expression getExpression() {
     return expression.get();
   }

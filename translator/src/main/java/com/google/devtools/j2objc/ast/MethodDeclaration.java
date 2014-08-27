@@ -63,6 +63,11 @@ public class MethodDeclaration extends BodyDeclaration {
     name.set(new SimpleName(methodBinding));
   }
 
+  @Override
+  public Kind getKind() {
+    return Kind.METHOD_DECLARATION;
+  }
+
   public IMethodBinding getMethodBinding() {
     return methodBinding;
   }
