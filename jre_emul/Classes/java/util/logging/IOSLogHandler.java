@@ -20,6 +20,30 @@ import java.io.StringWriter;
 /*-[
 #import "java/lang/Throwable.h"
 #import <asl.h>
+
+// Simple value holder, so aslclient is closed when thread dictionary is deallocated.
+@interface ASLClientHolder : NSObject {
+ @public
+  aslclient _client;
+}
+@end
+
+@implementation ASLClientHolder
+- (instancetype)initWithClient:(aslclient)client {
+  self = [super init];
+  if (self) {
+    _client = client;
+  }
+  return self;
+}
+
+- (void)dealloc {
+  asl_close(_client);
+#if !__has_feature(objc_arc)
+  [super dealloc];
+#endif
+}
+@end
 ]-*/
 
 /**
@@ -44,6 +68,8 @@ class IOSLogHandler extends Handler {
       ".level=INFO\nhandlers=java.util.logging.IOSLogHandler\n";
   private static final String IOS_LOG_MANAGER_DEFAULTS_PRODUCTION =
       ".level=SEVERE\nhandlers=java.util.logging.IOSLogHandler\n";
+
+  private static final String ASLCLIENT = "IOSLogHandler-aslclient";
 
   public IOSLogHandler() {
     setFormatter(new IOSLogFormatter());
@@ -98,7 +124,16 @@ class IOSLogHandler extends Handler {
         asl_add_log_file(NULL, STDERR_FILENO);
     });
 
-    asl_log(NULL, NULL, aslLevel, "%s", [logMessage UTF8String]);
+    NSThread *currentThread = [NSThread currentThread];
+    NSMutableDictionary *threadData = [currentThread threadDictionary];
+    ASLClientHolder *logClient = [threadData objectForKey:JavaUtilLoggingIOSLogHandler_ASLCLIENT_];
+    if (!logClient) {
+      aslclient aslClient = asl_open([[currentThread name] UTF8String],
+          [[[NSBundle mainBundle] bundleIdentifier] UTF8String], ASL_OPT_NO_DELAY | ASL_OPT_STDERR);
+      logClient = AUTORELEASE([[ASLClientHolder alloc] initWithClient:aslClient]);
+      [threadData setObject:logClient forKey:JavaUtilLoggingIOSLogHandler_ASLCLIENT_];
+    }
+    asl_log(logClient->_client, NULL, aslLevel, "%s", [logMessage UTF8String]);
   ]-*/;
 
   public static native String getDefaultProperties() /*-[
