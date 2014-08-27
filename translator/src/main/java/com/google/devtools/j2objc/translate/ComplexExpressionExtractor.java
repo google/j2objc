@@ -26,6 +26,7 @@ import com.google.devtools.j2objc.util.ErrorReportingASTVisitor;
 
 import org.eclipse.jdt.core.dom.AST;
 import org.eclipse.jdt.core.dom.ASTNode;
+import org.eclipse.jdt.core.dom.Assignment;
 import org.eclipse.jdt.core.dom.Expression;
 import org.eclipse.jdt.core.dom.IMethodBinding;
 import org.eclipse.jdt.core.dom.ITypeBinding;
@@ -33,6 +34,7 @@ import org.eclipse.jdt.core.dom.IVariableBinding;
 import org.eclipse.jdt.core.dom.InfixExpression;
 import org.eclipse.jdt.core.dom.MethodDeclaration;
 import org.eclipse.jdt.core.dom.MethodInvocation;
+import org.eclipse.jdt.core.dom.ParenthesizedExpression;
 import org.eclipse.jdt.core.dom.Statement;
 
 import java.util.Collection;
@@ -123,5 +125,18 @@ public class ComplexExpressionExtractor extends ErrorReportingASTVisitor {
       children.add(receiver);
     }
     handleNode(node, children);
+  }
+
+  @Override
+  public void endVisit(Assignment node) {
+    if (Types.isBooleanType(Types.getTypeBinding(node)) &&
+        node.getRightHandSide() instanceof InfixExpression) {
+      // Avoid clang precedence warning by putting parentheses around expression.
+      AST ast = node.getAST();
+      Expression expr = node.getRightHandSide();
+      ParenthesizedExpression newExpr = ASTFactory.newParenthesizedExpression(
+          ast, NodeCopier.copySubtree(ast, expr));
+      ASTUtil.setProperty(expr, newExpr);
+    }
   }
 }
