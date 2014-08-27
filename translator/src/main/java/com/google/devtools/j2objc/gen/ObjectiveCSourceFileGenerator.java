@@ -482,4 +482,13 @@ public abstract class ObjectiveCSourceFileGenerator extends SourceFileGenerator 
   private String escapeDocText(String text) {
     return text.replace("@", "@@").replace("/*", "/\\*");
   }
+
+  @Override
+  protected String getOutputFileName(CompilationUnit node) {
+    String result = super.getOutputFileName(node);
+    if (node.getMainTypeName().equals(NameTable.PACKAGE_INFO_MAIN_TYPE)) {
+      return result.replace(NameTable.PACKAGE_INFO_MAIN_TYPE, NameTable.PACKAGE_INFO_FILE_NAME);
+    }
+    return result;
+  }
 }
