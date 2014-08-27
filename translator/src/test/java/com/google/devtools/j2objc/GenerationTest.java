@@ -22,6 +22,7 @@ import com.google.common.io.Files;
 import com.google.devtools.j2objc.ast.CompilationUnit;
 import com.google.devtools.j2objc.ast.MethodDeclaration;
 import com.google.devtools.j2objc.ast.Statement;
+import com.google.devtools.j2objc.ast.TreeConverter;
 import com.google.devtools.j2objc.ast.TreeVisitor;
 import com.google.devtools.j2objc.gen.SourceBuilder;
 import com.google.devtools.j2objc.gen.StatementGenerator;
@@ -122,7 +123,9 @@ public abstract class GenerationTest extends TestCase {
     org.eclipse.jdt.core.dom.CompilationUnit unit = compileType(name, source);
     NameTable.initialize();
     Types.initialize(unit);
-    return TranslationProcessor.applyMutations(unit, name + ".java", source, TimeTracker.noop());
+    CompilationUnit newUnit = TreeConverter.convertCompilationUnit(unit, name + ".java", source);
+    TranslationProcessor.applyMutations(newUnit, TimeTracker.noop());
+    return newUnit;
   }
 
   /**
