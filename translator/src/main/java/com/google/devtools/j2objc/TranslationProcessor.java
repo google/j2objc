@@ -24,6 +24,7 @@ import com.google.devtools.j2objc.translate.AnonymousClassConverter;
 import com.google.devtools.j2objc.translate.ArrayRewriter;
 import com.google.devtools.j2objc.translate.Autoboxer;
 import com.google.devtools.j2objc.translate.ComplexExpressionExtractor;
+import com.google.devtools.j2objc.translate.ConstantBranchPruner;
 import com.google.devtools.j2objc.translate.CopyAllFieldsWriter;
 import com.google.devtools.j2objc.translate.DestructorGenerator;
 import com.google.devtools.j2objc.translate.EnhancedForRewriter;
@@ -240,6 +241,9 @@ class TranslationProcessor extends FileProcessor {
       new Functionizer().run(newUnit);
       ticker.tick("Functionizer");
     }
+
+    new ConstantBranchPruner().run(newUnit);
+    ticker.tick("ConstantBranchPruner");
 
     for (Plugin plugin : Options.getPlugins()) {
       plugin.processUnit(newUnit);

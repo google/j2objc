@@ -68,7 +68,7 @@ public class GwtConverterTest extends GenerationTest {
         "class Test { boolean test() { " +
         "  if (GWT.isClient() || GWT.isScript()) { return true; } return false; }}",
         "Test", "Test.m");
-    assertTranslation(translation, "if (NO || NO) {");  // What part of "no" don't you understand?
+    assertTranslatedLines(translation, "- (BOOL)test {", "return NO;", "}");
   }
 
   // Verify GwtIncompatible method is not stripped by default.

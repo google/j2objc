@@ -31,6 +31,7 @@ import com.google.devtools.j2objc.translate.AnonymousClassConverterTest;
 import com.google.devtools.j2objc.translate.ArrayRewriterTest;
 import com.google.devtools.j2objc.translate.AutoboxerTest;
 import com.google.devtools.j2objc.translate.ComplexExpressionExtractorTest;
+import com.google.devtools.j2objc.translate.ConstantBranchPrunerTest;
 import com.google.devtools.j2objc.translate.CopyAllFieldsWriterTest;
 import com.google.devtools.j2objc.translate.DeadCodeEliminatorTest;
 import com.google.devtools.j2objc.translate.DestructorGeneratorTest;
@@ -79,6 +80,7 @@ public class SmallTests {
     BindingMapBuilderTest.class,
     BindingUtilTest.class,
     ComplexExpressionExtractorTest.class,
+    ConstantBranchPrunerTest.class,
     CopyAllFieldsWriterTest.class,
     DeadCodeEliminatorTest.class,
     DeadCodeMapTest.class,

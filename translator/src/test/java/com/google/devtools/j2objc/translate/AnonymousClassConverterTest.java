@@ -275,9 +275,10 @@ public class AnonymousClassConverterTest extends GenerationTest {
 
   public void testMethodVarInAnonymousClass() throws IOException {
     String source = "class Test { "
+        + "  boolean debug;"
         + "  void foo() { "
         + "    if (true) {"
-        + "      if (false) {"
+        + "      if (debug) {"
         + "        final Integer i = 1;"
         + "        Runnable r = new Runnable() { "
         + "          public void run() { int j = i + 1; } }; }}}}";
