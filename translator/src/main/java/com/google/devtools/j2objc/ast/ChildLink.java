@@ -76,4 +76,9 @@ class ChildLink<T extends TreeNode> {
       child.accept(visitor);
     }
   }
+
+  @Override
+  public String toString() {
+    return child != null ? child.toString() : "null";
+  }
 }
