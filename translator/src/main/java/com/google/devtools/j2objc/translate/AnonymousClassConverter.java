@@ -160,7 +160,6 @@ public class AnonymousClassConverter extends TreeVisitor {
       outerDecl.getBodyDeclarations().add(typeDecl);
     }
     typeDecl.setKey(node.getKey());
-    typeDecl.setJdtNode(node.getJdtNode());
     super.endVisit(node);
   }
 
