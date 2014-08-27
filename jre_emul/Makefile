@@ -209,6 +209,8 @@ JAVA_SOURCES = \
 	com/google/j2objc/security/IosSecureRandomImpl.java \
 	com/google/j2objc/security/IosSecurityProvider.java \
 	com/google/j2objc/security/IosSHAMessageDigest.java \
+	com/google/j2objc/security/cert/IosCertificateFactory.java \
+	com/google/j2objc/security/cert/IosX509Certificate.java \
 	com/google/j2objc/util/ScopedLocalRef.java \
 	dalvik/system/BlockGuard.java \
 	dalvik/system/CloseGuard.java \
@@ -924,6 +926,7 @@ JAVA_SOURCES = \
 	org/apache/harmony/security/asn1/ASN1Constructed.java \
 	org/apache/harmony/security/asn1/ASN1Exception.java \
 	org/apache/harmony/security/asn1/ASN1Explicit.java \
+	org/apache/harmony/security/asn1/ASN1Integer.java \
 	org/apache/harmony/security/asn1/ASN1Oid.java \
 	org/apache/harmony/security/asn1/ASN1Primitive.java \
 	org/apache/harmony/security/asn1/ASN1Sequence.java \
