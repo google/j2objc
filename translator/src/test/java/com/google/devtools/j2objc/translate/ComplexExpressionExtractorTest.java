@@ -67,6 +67,27 @@ public class ComplexExpressionExtractorTest extends GenerationTest {
     String translation = translateSourceFile(
         "class Test { boolean b; void test(int i) { if (b = i == 0) {} } }",
         "Test", "Test.m");
-    assertTranslation(translation, "if (b_ = (i == 0)) {");
+    assertTranslation(translation, "if ((b_ = (i == 0))) {");
+  }
+
+  public void testIfAssignExpression() throws IOException {
+    String translation = translateSourceFile(
+        "class Test { boolean foo; void test(boolean b) { if (foo = b) {} } }",
+        "Test", "Test.m");
+    assertTranslation(translation, "if ((foo_ = b)) {");
+  }
+
+  public void testWhileAssignExpression() throws IOException {
+    String translation = translateSourceFile(
+        "class Test { boolean foo; void test(boolean b) { while (foo = b) {} } }",
+        "Test", "Test.m");
+    assertTranslation(translation, "while ((foo_ = b)) {");
+  }
+
+  public void testDoAssignExpression() throws IOException {
+    String translation = translateSourceFile(
+        "class Test { boolean foo; void test(boolean b) { do {} while (foo = b); } }",
+        "Test", "Test.m");
+    assertTranslation(translation, "while ((foo_ = b));");
   }
 }
