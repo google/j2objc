@@ -35,9 +35,9 @@ FAT_LIB_PLIST_DIR = $(BUILD_DIR)/plists
 FAT_LIB_PLISTS = \
   $(foreach src,$(FAT_LIB_SOURCES_RELATIVE),$(FAT_LIB_PLIST_DIR)/$(basename $(src)).plist)
 
-FAT_LIB_MACOSX_SDK_DIR = $(shell bash $(J2OBJC_ROOT)/scripts/sysroot_path.sh)
-FAT_LIB_IPHONE_SDK_DIR = $(shell bash $(J2OBJC_ROOT)/scripts/sysroot_path.sh --iphoneos)
-FAT_LIB_SIMULATOR_SDK_DIR = $(shell bash $(J2OBJC_ROOT)/scripts/sysroot_path.sh --iphonesimulator)
+FAT_LIB_MACOSX_SDK_DIR := $(shell bash $(J2OBJC_ROOT)/scripts/sysroot_path.sh)
+FAT_LIB_IPHONE_SDK_DIR := $(shell bash $(J2OBJC_ROOT)/scripts/sysroot_path.sh --iphoneos)
+FAT_LIB_SIMULATOR_SDK_DIR := $(shell bash $(J2OBJC_ROOT)/scripts/sysroot_path.sh --iphonesimulator)
 
 FAT_LIB_MACOSX_FLAGS = -isysroot $(FAT_LIB_MACOSX_SDK_DIR)
 FAT_LIB_IPHONE_FLAGS = -arch armv7 -miphoneos-version-min=5.0 -isysroot $(FAT_LIB_IPHONE_SDK_DIR)

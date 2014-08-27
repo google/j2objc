@@ -40,7 +40,7 @@ J2OBJC_ARCHS = macosx iphone iphone64 iphonev7s simulator
 endif
 
 # xcrun finds a specified tool in the current SDK /usr/bin directory.
-XCRUN = $(shell if test -f /usr/bin/xcrun; then echo xcrun; else echo ""; fi)
+XCRUN := $(shell if test -f /usr/bin/xcrun; then echo xcrun; else echo ""; fi)
 # xcrun can fail when run concurrently, so we find all the tools up-front.
 ifneq ($(XCRUN),)
 MAKE := $(shell xcrun --find make)
