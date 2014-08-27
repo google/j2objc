@@ -159,7 +159,7 @@ public class NilCheckResolver extends TreeVisitor {
     return false;
   }
 
-  private void addNilCheck(Expression node, boolean deferAdd) {
+  private void addNilCheck(Expression node) {
     if (!needsNilCheck(node)) {
       return;
     }
@@ -169,25 +169,21 @@ public class NilCheckResolver extends TreeVisitor {
       safeVarsTrue.add(var);
       safeVarsFalse.add(var);
     }
-    if (deferAdd) {
-      node.setHasNilCheck(true);
-    } else {
-      IOSMethodBinding nilChkBinding = IOSMethodBinding.newTypedInvocation(
-          NIL_CHK_DECL, node.getTypeBinding());
-      MethodInvocation nilChkInvocation = new MethodInvocation(nilChkBinding, null);
-      node.replaceWith(nilChkInvocation);
-      nilChkInvocation.getArguments().add(node);
-    }
+    IOSMethodBinding nilChkBinding = IOSMethodBinding.newTypedInvocation(
+        NIL_CHK_DECL, node.getTypeBinding());
+    MethodInvocation nilChkInvocation = new MethodInvocation(nilChkBinding, null);
+    node.replaceWith(nilChkInvocation);
+    nilChkInvocation.getArguments().add(node);
   }
 
   @Override
   public void endVisit(ArrayAccess node) {
-    addNilCheck(node.getArray(), false);
+    addNilCheck(node.getArray());
   }
 
   @Override
   public void endVisit(FieldAccess node) {
-    addNilCheck(node.getExpression(), false);
+    addNilCheck(node.getExpression());
   }
 
   @Override
@@ -221,7 +217,7 @@ public class NilCheckResolver extends TreeVisitor {
     }
     Expression receiver = node.getExpression();
     if (receiver != null) {
-      addNilCheck(receiver, true);
+      addNilCheck(receiver);
     }
   }
 
@@ -372,7 +368,7 @@ public class NilCheckResolver extends TreeVisitor {
 
   @Override
   public boolean visit(EnhancedForStatement node) {
-    addNilCheck(node.getExpression(), false);
+    addNilCheck(node.getExpression());
     node.getExpression().accept(this);
     pushScope();
     node.getBody().accept(this);

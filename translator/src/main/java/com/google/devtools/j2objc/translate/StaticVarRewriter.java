@@ -60,7 +60,7 @@ public class StaticVarRewriter extends TreeVisitor {
         rhs.accept(this);
         return false;
       } else if (isPrimitive) {
-        lhs.replaceWith(newGetterInvocation(lhs, true));
+        lhs.replaceWith(newGetterInvocation(lhsVar, true));
       }
     }
     return true;
@@ -86,7 +86,7 @@ public class StaticVarRewriter extends TreeVisitor {
         FieldAccess newParent = TreeUtil.convertToFieldAccess((QualifiedName) parent);
         node = (Name) newParent.getExpression();
       }
-      node.replaceWith(newGetterInvocation(node, false));
+      node.replaceWith(newGetterInvocation(var, false));
       return false;
     }
     return true;
@@ -100,13 +100,12 @@ public class StaticVarRewriter extends TreeVisitor {
 
   @Override
   public boolean visit(PostfixExpression node) {
-    Expression operand = node.getOperand();
-    IVariableBinding operandVar = TreeUtil.getVariableBinding(operand);
+    IVariableBinding operandVar = TreeUtil.getVariableBinding(node.getOperand());
     PostfixExpression.Operator op = node.getOperator();
     boolean isIncOrDec = op == PostfixExpression.Operator.INCREMENT
         || op == PostfixExpression.Operator.DECREMENT;
     if (isIncOrDec && operandVar != null && useAccessor(node, operandVar)) {
-      node.setOperand(newGetterInvocation(operand, true));
+      node.setOperand(newGetterInvocation(operandVar, true));
       return false;
     }
     return true;
@@ -114,20 +113,18 @@ public class StaticVarRewriter extends TreeVisitor {
 
   @Override
   public boolean visit(PrefixExpression node) {
-    Expression operand = node.getOperand();
-    IVariableBinding operandVar = TreeUtil.getVariableBinding(operand);
+    IVariableBinding operandVar = TreeUtil.getVariableBinding(node.getOperand());
     PrefixExpression.Operator op = node.getOperator();
     boolean isIncOrDec = op == PrefixExpression.Operator.INCREMENT
         || op == PrefixExpression.Operator.DECREMENT;
     if (isIncOrDec && operandVar != null && useAccessor(node, operandVar)) {
-      node.setOperand(newGetterInvocation(operand, true));
+      node.setOperand(newGetterInvocation(operandVar, true));
       return false;
     }
     return true;
   }
 
-  private MethodInvocation newGetterInvocation(Expression variable, boolean assignable) {
-    IVariableBinding var = TreeUtil.getVariableBinding(variable);
+  private MethodInvocation newGetterInvocation(IVariableBinding var, boolean assignable) {
     ITypeBinding declaringType = var.getDeclaringClass().getTypeDeclaration();
     String varName = NameTable.getStaticVarName(var);
     String getterName = "get";
@@ -142,9 +139,6 @@ public class StaticVarRewriter extends TreeVisitor {
     MethodInvocation invocation = new MethodInvocation(binding, null);
     if (assignable) {
       invocation = MethodInvocation.newDereference(invocation);
-    }
-    if (variable.hasNilCheck()) {
-      invocation.setHasNilCheck(true);
     }
     return invocation;
   }

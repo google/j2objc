@@ -457,7 +457,6 @@ public class Functionizer extends TreeVisitor {
         // Convert name to self->name.
         SimpleName qualifier = new SimpleName(selfParam);
         QualifiedName fqn = new QualifiedName(binding, qualifier);
-        fqn.setHasNilCheck(node.hasNilCheck());
         node.replaceWith(fqn);
       }
     }
