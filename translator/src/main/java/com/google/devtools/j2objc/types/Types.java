@@ -51,8 +51,6 @@ import java.util.Set;
 // core to be reused for other languages.
 public class Types {
   private final AST ast;
-  private final Map<Object, IBinding> bindingMap;
-  private final Map<EnumConstantDeclaration, IVariableBinding> enumConstantsMap;
   private final Map<ITypeBinding, ITypeBinding> typeMap = Maps.newHashMap();
   private final Map<ITypeBinding, ITypeBinding> renamedTypeMap = Maps.newHashMap();
   private final Map<ITypeBinding, ITypeBinding> primitiveToWrapperTypes =
@@ -123,8 +121,6 @@ public class Types {
     initializeTypeMap();
     initializeCommonJavaTypes();
     populatePrimitiveAndWrapperTypeMaps();
-    bindingMap = BindingMapBuilder.buildBindingMap(unit);
-    enumConstantsMap = BindingMapBuilder.buildEnumConstantMap(unit);
   }
 
   private IOSTypeBinding mapIOSType(IOSTypeBinding type) {
@@ -296,76 +292,6 @@ public class Types {
     return arrayBinding != null ? arrayBinding : instance.IOSObjectArray;
   }
 
-  public static IBinding getBinding(Object node) {
-    IBinding binding = instance.bindingMap.get(node);
-    assert binding != null;
-    return binding;
-  }
-
-  /**
-   * Same as getBinding but does not check if the result it null.
-   */
-  public static IBinding getBindingUnsafe(Object node) {
-    return instance.bindingMap.get(node);
-  }
-
-  public static void addBinding(Object node, IBinding binding) {
-    assert binding != null;
-    if (node instanceof EnumConstantDeclaration && binding instanceof IVariableBinding) {
-      instance.enumConstantsMap.put((EnumConstantDeclaration) node, (IVariableBinding) binding);
-    } else {
-      instance.bindingMap.put(node, binding);
-    }
-  }
-
-  /**
-   * Return a type binding for a specified ASTNode or IOS node, or null if
-   * no type binding exists.
-   */
-  public static ITypeBinding getTypeBinding(Object node) {
-    return BindingUtil.toTypeBinding(getBinding(node));
-  }
-
-  /**
-   * Return a type binding for a specified ASTNode or IOS node, or null if
-   * no type binding exists.
-   */
-  public static IAnnotationBinding getAnnotationBinding(Object node) {
-    IBinding binding = getBinding(node);
-    if (binding instanceof IAnnotationBinding) {
-      return (IAnnotationBinding) binding;
-    }
-    return null;
-  }
-
-  public static IMethodBinding getMethodBinding(Object node) {
-    IBinding binding = getBinding(node);
-    return binding instanceof IMethodBinding ? ((IMethodBinding) binding) : null;
-  }
-
-  public static IVariableBinding getVariableBinding(Object node) {
-    IBinding binding = getBinding(node);
-    return binding instanceof IVariableBinding ? ((IVariableBinding) binding) : null;
-  }
-
-  public static IVariableBinding getEnumConstantBinding(EnumConstantDeclaration node) {
-    return instance.enumConstantsMap.get(node);
-  }
-
-  /**
-   * Walks an AST and asserts there is a resolved binding for every
-   * ASTNode type that is supposed to have one.
-   */
-  public static void verifyNode(ASTNode node) {
-    BindingMapVerifier.verify(node, instance.bindingMap);
-  }
-
-  public static void verifyNodes(List<? extends ASTNode> nodes) {
-    for (ASTNode node : nodes) {
-      BindingMapVerifier.verify(node, instance.bindingMap);
-    }
-  }
-
   public static ITypeBinding renameTypeBinding(String newName, ITypeBinding newDeclaringClass,
       ITypeBinding originalBinding) {
     ITypeBinding renamedBinding =
@@ -377,10 +303,6 @@ public class Types {
   public static ITypeBinding getRenamedBinding(ITypeBinding original) {
     return original != null && instance.renamedTypeMap.containsKey(original)
         ? instance.renamedTypeMap.get(original) : original;
-  }
-
-  public static boolean isVoidType(Type type) {
-    return isVoidType(getTypeBinding(type));
   }
 
   public static boolean isVoidType(ITypeBinding type) {
