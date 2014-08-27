@@ -339,36 +339,12 @@ public class StatementGenerator extends TreeVisitor {
 
   @Override
   public boolean visit(Assignment node) {
-    if (node.isDeferredFieldSetter()) {
-      printDeferredFieldSetter(node);
-      return false;
-    }
     node.getLeftHandSide().accept(this);
     buffer.append(' ');
     buffer.append(getOperatorStr(node.getOperator()));
     buffer.append(' ');
     node.getRightHandSide().accept(this);
     return false;
-  }
-
-  private void printDeferredFieldSetter(Assignment node) {
-    Expression lhs = node.getLeftHandSide();
-    IVariableBinding var = TreeUtil.getVariableBinding(lhs);
-    ITypeBinding declaringType = var.getDeclaringClass().getTypeDeclaration();
-    String setterName = String.format("%s_set_%s", NameTable.getFullName(declaringType),
-        NameTable.javaFieldToObjC(NameTable.getName(var)));
-    buffer.append(setterName);
-    buffer.append('(');
-    if (lhs instanceof QualifiedName) {
-      ((QualifiedName) lhs).getQualifier().accept(this);
-    } else if (lhs instanceof FieldAccess) {
-      ((FieldAccess) lhs).getExpression().accept(this);
-    } else {
-      buffer.append("self");
-    }
-    buffer.append(", ");
-    node.getRightHandSide().accept(this);
-    buffer.append(')');
   }
 
   private static String getOperatorStr(Assignment.Operator op) {
