@@ -987,14 +987,7 @@ public class StatementGenerator extends TreeVisitor {
       } else {
         buffer.append(", ");
       }
-      boolean hasNilCheck = arg.hasNilCheck();
-      if (hasNilCheck) {
-        buffer.append("nil_chk(");
-      }
       arg.accept(this);
-      if (hasNilCheck) {
-        buffer.append(')');
-      }
     }
     buffer.append(')');
   }
@@ -1007,20 +1000,7 @@ public class StatementGenerator extends TreeVisitor {
       buffer.append(NameTable.getFullName(binding.getDeclaringClass()));
     } else if (receiver != null) {
       needsCastNodes.put(receiver, true);
-      boolean castPrinted = false;
-      boolean hasNilCheck = receiver.hasNilCheck();
-      if (hasNilCheck) {
-        castPrinted = maybePrintCastFromId(receiver);
-        needsCastNodes.remove(receiver);
-        buffer.append("nil_chk(");
-      }
       receiver.accept(this);
-      if (hasNilCheck) {
-        buffer.append(')');
-        if (castPrinted) {
-          buffer.append(')');
-        }
-      }
     } else {
       buffer.append("self");
     }

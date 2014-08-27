@@ -14,8 +14,6 @@
 
 package com.google.devtools.j2objc.ast;
 
-import com.google.devtools.j2objc.types.Types;
-
 import org.eclipse.jdt.core.dom.ITypeBinding;
 
 /**
@@ -24,19 +22,15 @@ import org.eclipse.jdt.core.dom.ITypeBinding;
 public abstract class Expression extends TreeNode {
 
   private Object constantValue = null;
-  // TODO(kstanger): Eventually remove this.
-  private boolean hasNilCheck = false;
 
   protected Expression(org.eclipse.jdt.core.dom.Expression jdtNode) {
     super(jdtNode);
     constantValue = jdtNode.resolveConstantExpressionValue();
-    hasNilCheck = Types.hasNilCheck(jdtNode);
   }
 
   protected Expression(Expression other) {
     super(other);
     constantValue = other.getConstantValue();
-    hasNilCheck = other.hasNilCheck();
   }
 
   protected Expression() {}
@@ -45,14 +39,6 @@ public abstract class Expression extends TreeNode {
 
   public Object getConstantValue() {
     return constantValue;
-  }
-
-  public boolean hasNilCheck() {
-    return hasNilCheck;
-  }
-
-  public void setHasNilCheck(boolean newHasNilCheck) {
-    hasNilCheck = newHasNilCheck;
   }
 
   @Override

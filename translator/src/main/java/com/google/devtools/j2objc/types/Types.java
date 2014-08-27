@@ -25,7 +25,6 @@ import com.google.devtools.j2objc.util.ErrorUtil;
 import org.eclipse.jdt.core.dom.AST;
 import org.eclipse.jdt.core.dom.Block;
 import org.eclipse.jdt.core.dom.CompilationUnit;
-import org.eclipse.jdt.core.dom.Expression;
 import org.eclipse.jdt.core.dom.ITypeBinding;
 import org.eclipse.jdt.core.dom.Modifier;
 import org.eclipse.jdt.core.dom.SimpleType;
@@ -80,7 +79,6 @@ public class Types {
   private final Map<ITypeBinding, IOSTypeBinding> arrayBindingMap = Maps.newHashMap();
 
   private final Set<Block> autoreleasePoolBlocks = Sets.newHashSet();
-  private final Set<Expression> nilChecks = Sets.newHashSet();
 
   // The first argument of a iOS method isn't named, but Java requires some sort of valid parameter
   // name.  The method mapper therefore uses this string, which the generators ignore.
@@ -342,14 +340,6 @@ public class Types {
 
   public static boolean hasAutoreleasePool(Block block) {
     return instance.autoreleasePoolBlocks.contains(block);
-  }
-
-  public static void addNilCheck(Expression expression) {
-    instance.nilChecks.add(expression);
-  }
-
-  public static boolean hasNilCheck(Expression expression) {
-    return instance.nilChecks.contains(expression);
   }
 
   public static ITypeBinding getLocalRefType() {
