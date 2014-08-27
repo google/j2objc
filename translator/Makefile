@@ -179,8 +179,6 @@ JAVA_SOURCES = \
 	translate/UnsequencedExpressionRewriter.java \
 	types/AbstractBinding.java \
 	types/AbstractTypeBinding.java \
-	types/BindingMapBuilder.java \
-	types/BindingMapVerifier.java \
 	types/GeneratedMethodBinding.java \
 	types/GeneratedPackageBinding.java \
 	types/GeneratedTypeBinding.java \

@@ -151,9 +151,6 @@ class TranslationProcessor extends FileProcessor {
       TimeTracker ticker) {
     ticker.push();
 
-    // Verify all modified nodes have type bindings
-    Types.verifyNode(unit);
-
     CompilationUnit newUnit = TreeConverter.convertCompilationUnit(unit, path, source);
 
     OuterReferenceResolver.resolve(newUnit);
