@@ -125,7 +125,7 @@ public final class AsynchronousCloseMonitor {
     }
 
     public static native void signalBlockedThreads(FileDescriptor fd) /*-[
-      [AsynchronousSocketCloseMonitor signalBlockedThreads:fd->descriptor_];
+      [AsynchronousSocketCloseMonitor signalBlockedThreads:[fd getInt$]];
     ]-*/;
 
     public static native Object newAsynchronousSocketCloseMonitor(int fd) /*-[

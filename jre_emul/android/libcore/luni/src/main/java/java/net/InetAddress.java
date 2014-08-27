@@ -778,7 +778,7 @@ public class InetAddress implements Serializable {
         return getByAddress(hostName, ipAddress, 0);
     }
 
-    private static InetAddress getByAddress(String hostName, byte[] ipAddress, int scopeId) throws UnknownHostException {
+    public static InetAddress getByAddress(String hostName, byte[] ipAddress, int scopeId) throws UnknownHostException {
         if (ipAddress == null) {
             throw new UnknownHostException("ipAddress == null");
         }
@@ -862,5 +862,9 @@ public class InetAddress implements Serializable {
      */
     private Object readResolve() throws ObjectStreamException {
         return new Inet4Address(ipaddress, hostName);
+    }
+
+    public int getFamily() {
+      return family;
     }
 }
