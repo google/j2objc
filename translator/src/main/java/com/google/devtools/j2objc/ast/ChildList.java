@@ -79,6 +79,11 @@ class ChildList<T extends TreeNode> extends AbstractList<T> {
     }
   }
 
+  @Override
+  public String toString() {
+    return delegate.toString();
+  }
+
   private class Link extends ChildLink<T> {
 
     public Link(Class<T> childType, TreeNode parent) {
