@@ -49,6 +49,8 @@ public class TreeMapTest extends TestCase {
     }
     iterationHelper(map, 1498500, 499500, 999000);
     iterationHelper(map.subMap(200, 750), 782925, 260975, 521950);
+    iterationHelper(map.subMap(1001, 1002), 0, 0, 0);
+    iterationHelper(map.subMap(-2, -1), 0, 0, 0);
     iterationHelper(new TreeMap<Integer, Integer>(), 0, 0, 0);
   }
 }
