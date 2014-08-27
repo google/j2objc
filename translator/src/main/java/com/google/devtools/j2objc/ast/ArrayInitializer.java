@@ -14,6 +14,8 @@
 
 package com.google.devtools.j2objc.ast;
 
+import org.eclipse.jdt.core.dom.ITypeBinding;
+
 import java.util.List;
 
 /**
@@ -33,6 +35,10 @@ public class ArrayInitializer extends Expression {
   public ArrayInitializer(ArrayInitializer other) {
     super(other);
     expressions.copyFrom(other.getExpressions());
+  }
+
+  public ArrayInitializer(ITypeBinding typeBinding) {
+    super(typeBinding);
   }
 
   public List<Expression> getExpressions() {

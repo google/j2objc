@@ -14,18 +14,45 @@
 
 package com.google.devtools.j2objc.ast;
 
+import java.util.List;
+
 /**
  * Node type for array creation.
  */
 public class ArrayCreation extends Expression {
 
+  private final ChildList<Expression> dimensions = ChildList.create(Expression.class, this);
+  private final ChildLink<ArrayInitializer> initializer =
+      ChildLink.create(ArrayInitializer.class, this);
+
+  public ArrayCreation(org.eclipse.jdt.core.dom.ArrayCreation jdtNode) {
+    super(jdtNode);
+    for (Object dimension : jdtNode.dimensions()) {
+      dimensions.add((Expression) TreeConverter.convert(dimension));
+    }
+    initializer.set((ArrayInitializer) TreeConverter.convert(jdtNode.getInitializer()));
+  }
+
   public ArrayCreation(ArrayCreation other) {
     super(other);
+    dimensions.copyFrom(other.getDimensions());
+    initializer.copyFrom(other.getInitializer());
+  }
+
+  public List<Expression> getDimensions() {
+    return dimensions;
+  }
+
+  public ArrayInitializer getInitializer() {
+    return initializer.get();
   }
 
   @Override
   protected void acceptInner(TreeVisitor visitor) {
-    visitor.visit(this);
+    if (visitor.visit(this)) {
+      dimensions.accept(visitor);
+      initializer.accept(visitor);
+    }
     visitor.endVisit(this);
   }
 

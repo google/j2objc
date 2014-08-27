@@ -66,6 +66,10 @@ public class TreeConverter {
       case ASTNode.ANNOTATION_TYPE_MEMBER_DECLARATION:
         return new AnnotationTypeMemberDeclaration(
             (org.eclipse.jdt.core.dom.AnnotationTypeMemberDeclaration) jdtNode);
+      case ASTNode.ARRAY_ACCESS:
+        return new ArrayAccess((org.eclipse.jdt.core.dom.ArrayAccess) jdtNode);
+      case ASTNode.ARRAY_CREATION:
+        return new ArrayCreation((org.eclipse.jdt.core.dom.ArrayCreation) jdtNode);
       case ASTNode.ARRAY_INITIALIZER:
         return new ArrayInitializer((org.eclipse.jdt.core.dom.ArrayInitializer) jdtNode);
       case ASTNode.ARRAY_TYPE:

@@ -79,6 +79,10 @@ public class PostfixExpression extends Expression {
     return operand.get();
   }
 
+  public void setOperand(Expression newOperand) {
+    operand.set(newOperand);
+  }
+
   @Override
   protected void acceptInner(TreeVisitor visitor) {
     if (visitor.visit(this)) {

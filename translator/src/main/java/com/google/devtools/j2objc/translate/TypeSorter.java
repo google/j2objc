@@ -18,11 +18,9 @@ import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Multimap;
-import com.google.devtools.j2objc.types.Types;
-import com.google.devtools.j2objc.util.ASTUtil;
+import com.google.devtools.j2objc.ast.AbstractTypeDeclaration;
+import com.google.devtools.j2objc.ast.CompilationUnit;
 
-import org.eclipse.jdt.core.dom.AbstractTypeDeclaration;
-import org.eclipse.jdt.core.dom.CompilationUnit;
 import org.eclipse.jdt.core.dom.ITypeBinding;
 
 import java.util.ArrayList;
@@ -63,11 +61,11 @@ public class TypeSorter {
   }
 
   public static void sortTypes(CompilationUnit unit) {
-    List<AbstractTypeDeclaration> typeNodes = ASTUtil.getTypes(unit);
+    List<AbstractTypeDeclaration> typeNodes = unit.getTypes();
     Map<String, AbstractTypeDeclaration> nodeMap = Maps.newHashMap();
     LinkedHashMap<String, ITypeBinding> bindingMap = Maps.newLinkedHashMap();
     for (AbstractTypeDeclaration node : typeNodes) {
-      ITypeBinding typeBinding = Types.getTypeBinding(node);
+      ITypeBinding typeBinding = node.getTypeBinding();
       String key = typeBinding.getKey();
       nodeMap.put(key, node);
       bindingMap.put(key, typeBinding);
