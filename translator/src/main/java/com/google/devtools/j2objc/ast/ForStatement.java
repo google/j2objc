@@ -71,6 +71,10 @@ public class ForStatement extends Statement {
     return body.get();
   }
 
+  public void setBody(Statement newBody) {
+    body.set(newBody);
+  }
+
   @Override
   protected void acceptInner(TreeVisitor visitor) {
     if (visitor.visit(this)) {

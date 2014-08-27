@@ -121,8 +121,16 @@ public class InfixExpression extends Expression {
     return leftOperand.get();
   }
 
+  public void setLeftOperand(Expression newLeftOperand) {
+    leftOperand.set(newLeftOperand);
+  }
+
   public Expression getRightOperand() {
     return rightOperand.get();
+  }
+
+  public void setRightOperand(Expression newRightOperand) {
+    rightOperand.set(newRightOperand);
   }
 
   public List<Expression> getExtendedOperands() {

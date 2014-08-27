@@ -14,6 +14,10 @@
 
 package com.google.devtools.j2objc.ast;
 
+import com.google.devtools.j2objc.types.Types;
+
+import org.eclipse.jdt.core.dom.ITypeBinding;
+
 /**
  * Instanceof expression node type.
  */
@@ -32,6 +36,12 @@ public class InstanceofExpression extends Expression {
     super(other);
     leftOperand.copyFrom(other.getLeftOperand());
     rightOperand.copyFrom(other.getRightOperand());
+  }
+
+  public InstanceofExpression(Expression lhs, ITypeBinding rhsType) {
+    super(Types.resolveJavaType("boolean"));
+    leftOperand.set(lhs);
+    rightOperand.set(Type.newType(rhsType));
   }
 
   @Override

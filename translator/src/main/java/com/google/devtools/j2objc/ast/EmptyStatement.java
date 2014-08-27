@@ -27,6 +27,8 @@ public class EmptyStatement extends Statement {
     super(other);
   }
 
+  public EmptyStatement() {}
+
   @Override
   public Kind getKind() {
     return Kind.EMPTY_STATEMENT;

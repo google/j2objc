@@ -42,6 +42,10 @@ public class BreakStatement extends Statement {
     return label.get();
   }
 
+  public void setLabel(SimpleName newLabel) {
+    label.set(newLabel);
+  }
+
   @Override
   protected void acceptInner(TreeVisitor visitor) {
     if (visitor.visit(this)) {

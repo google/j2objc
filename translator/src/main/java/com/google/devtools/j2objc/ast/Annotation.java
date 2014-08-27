@@ -45,4 +45,8 @@ public abstract class Annotation extends TreeNode {
   public Name getTypeName() {
     return typeName.get();
   }
+
+  public boolean isSingleMemberAnnotation() {
+    return false;
+  }
 }

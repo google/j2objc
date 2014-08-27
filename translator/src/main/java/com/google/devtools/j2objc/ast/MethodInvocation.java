@@ -98,6 +98,10 @@ public class MethodInvocation extends Expression {
     return name.get();
   }
 
+  public void setName(SimpleName newName) {
+    name.set(newName);
+  }
+
   public List<Expression> getArguments() {
     return arguments;
   }

@@ -41,6 +41,10 @@ public class ThisExpression extends Expression {
     return qualifier.get();
   }
 
+  public void setQualifier(Name newQualifier) {
+    qualifier.set(newQualifier);
+  }
+
   @Override
   public Kind getKind() {
     return Kind.THIS_EXPRESSION;

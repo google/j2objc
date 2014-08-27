@@ -47,6 +47,10 @@ public class SwitchStatement extends Statement {
     return expression.get();
   }
 
+  public void setExpression(Expression newExpression) {
+    expression.set(newExpression);
+  }
+
   public List<Statement> getStatements() {
     return statements;
   }

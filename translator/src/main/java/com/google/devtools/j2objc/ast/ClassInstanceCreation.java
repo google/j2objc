@@ -53,6 +53,12 @@ public class ClassInstanceCreation extends Expression {
     anonymousClassDeclaration.copyFrom(other.getAnonymousClassDeclaration());
   }
 
+  public ClassInstanceCreation(IMethodBinding methodBinding) {
+    super(methodBinding.getDeclaringClass());
+    this.methodBinding = methodBinding;
+    type.set(Type.newType(methodBinding.getDeclaringClass()));
+  }
+
   @Override
   public Kind getKind() {
     return Kind.CLASS_INSTANCE_CREATION;
@@ -62,12 +68,24 @@ public class ClassInstanceCreation extends Expression {
     return methodBinding;
   }
 
+  public void setMethodBinding(IMethodBinding newMethodBinding) {
+    methodBinding = newMethodBinding;
+  }
+
   public Expression getExpression() {
     return expression.get();
   }
 
+  public void setExpression(Expression newExpression) {
+    expression.set(newExpression);
+  }
+
   public Type getType() {
     return type.get();
+  }
+
+  public void setType(Type newType) {
+    type.set(newType);
   }
 
   public List<Expression> getArguments() {
@@ -76,6 +94,10 @@ public class ClassInstanceCreation extends Expression {
 
   public AnonymousClassDeclaration getAnonymousClassDeclaration() {
     return anonymousClassDeclaration.get();
+  }
+
+  public void setAnonymousClassDeclaration(AnonymousClassDeclaration newAnonymousClassDeclaration) {
+    anonymousClassDeclaration.set(newAnonymousClassDeclaration);
   }
 
   @Override

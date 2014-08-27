@@ -38,7 +38,7 @@ public class Assignment extends Expression {
     BIT_XOR_ASSIGN("^="),
     REMAINDER_ASSIGN("%="),
     LEFT_SHIFT_ASSIGN("<<="),
-    RIGHT_SHIFT_ASSIGN(">>="),
+    RIGHT_SHIFT_SIGNED_ASSIGN(">>="),
     RIGHT_SHIFT_UNSIGNED_ASSIGN(">>>=");
 
     private final String opString;

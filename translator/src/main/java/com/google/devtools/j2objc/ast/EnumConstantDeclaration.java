@@ -28,9 +28,9 @@ public class EnumConstantDeclaration extends BodyDeclaration {
 
   private IVariableBinding variableBinding = null;
   private IMethodBinding methodBinding = null;
-  private ChildLink<SimpleName> name = ChildLink.create(SimpleName.class, this);
-  private ChildList<Expression> arguments = ChildList.create(Expression.class, this);
-  private ChildLink<AnonymousClassDeclaration> anonymousClassDeclaration =
+  private final ChildLink<SimpleName> name = ChildLink.create(SimpleName.class, this);
+  private final ChildList<Expression> arguments = ChildList.create(Expression.class, this);
+  private final ChildLink<AnonymousClassDeclaration> anonymousClassDeclaration =
       ChildLink.create(AnonymousClassDeclaration.class, this);
 
   public EnumConstantDeclaration(org.eclipse.jdt.core.dom.EnumConstantDeclaration jdtNode) {
@@ -67,6 +67,10 @@ public class EnumConstantDeclaration extends BodyDeclaration {
     return methodBinding;
   }
 
+  public void setMethodBinding(IMethodBinding newMethodBinding) {
+    methodBinding = newMethodBinding;
+  }
+
   public SimpleName getName() {
     return name.get();
   }
@@ -77,6 +81,10 @@ public class EnumConstantDeclaration extends BodyDeclaration {
 
   public AnonymousClassDeclaration getAnonymousClassDeclaration() {
     return anonymousClassDeclaration.get();
+  }
+
+  public void setAnonymousClassDeclaration(AnonymousClassDeclaration newAnonymousClassDeclaration) {
+    anonymousClassDeclaration.set(newAnonymousClassDeclaration);
   }
 
   @Override

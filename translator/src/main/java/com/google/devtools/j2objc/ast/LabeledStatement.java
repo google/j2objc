@@ -34,6 +34,10 @@ public class LabeledStatement extends Statement {
     body.copyFrom(other.getBody());
   }
 
+  public LabeledStatement(String label) {
+    this.label.set(new SimpleName(label));
+  }
+
   @Override
   public Kind getKind() {
     return Kind.LABELED_STATEMENT;
@@ -43,8 +47,16 @@ public class LabeledStatement extends Statement {
     return label.get();
   }
 
+  public void setLabel(SimpleName newLabel) {
+    label.set(newLabel);
+  }
+
   public Statement getBody() {
     return body.get();
+  }
+
+  public void setBody(Statement newBody) {
+    body.set(newBody);
   }
 
   @Override

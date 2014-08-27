@@ -55,6 +55,10 @@ public abstract class BodyDeclaration extends TreeNode {
     return modifiers;
   }
 
+  public void addModifiers(int modifiersToAdd) {
+    modifiers |= modifiersToAdd;
+  }
+
   public void removeModifiers(int modifiersToRemove) {
     modifiers &= ~modifiersToRemove;
   }

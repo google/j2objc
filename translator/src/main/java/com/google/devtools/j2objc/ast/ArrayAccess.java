@@ -47,6 +47,10 @@ public class ArrayAccess extends Expression {
     return index.get();
   }
 
+  public void setIndex(Expression newIndex) {
+    index.set(newIndex);
+  }
+
   @Override
   protected void acceptInner(TreeVisitor visitor) {
     if (visitor.visit(this)) {

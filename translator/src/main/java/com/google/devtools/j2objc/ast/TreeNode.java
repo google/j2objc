@@ -22,13 +22,17 @@ import org.eclipse.jdt.core.dom.ASTNode;
 public abstract class TreeNode {
 
   private ChildLink<? extends TreeNode> owner = null;
+  private Key key;
   private int startPosition = -1;
   private int length = 0;
   private int lineNumber = -1;
 
-  protected TreeNode() {}
+  protected TreeNode() {
+    key = new Key();
+  }
 
   protected TreeNode(ASTNode jdtNode) {
+    this();
     startPosition = jdtNode.getStartPosition();
     length = jdtNode.getLength();
     ASTNode root = jdtNode.getRoot();
@@ -38,12 +42,21 @@ public abstract class TreeNode {
   }
 
   protected TreeNode(TreeNode other) {
+    key = other.getKey();
     startPosition = other.getStartPosition();
     length = other.getLength();
     lineNumber = other.getLineNumber();
   }
 
   public abstract Kind getKind();
+
+  public Key getKey() {
+    return key;
+  }
+
+  public void setKey(Key newKey) {
+    key = newKey;
+  }
 
   public TreeNode getParent() {
     return owner == null ? null : owner.getParent();
@@ -120,6 +133,10 @@ public abstract class TreeNode {
     }
   }
 
+  public static class Key {
+    private Key() {}
+  }
+
   public enum Kind {
     ANNOTATION_TYPE_DECLARATION,
     ANNOTATION_TYPE_MEMBER_DECLARATION,
@@ -191,6 +208,7 @@ public abstract class TreeNode {
     THROW_STATEMENT,
     TRY_STATEMENT,
     TYPE_DECLARATION,
+    TYPE_DECLARATION_STATEMENT,
     TYPE_LITERAL,
     UNION_TYPE,
     VARIABLE_DECLARATION_EXPRESSION,
