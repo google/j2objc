@@ -72,12 +72,12 @@ static IOSObjectArray *IOSObjectArray_NewArrayWithObjects(
 
 + (instancetype)arrayWithNSArray:(NSArray *)array type:(IOSClass *)type {
   NSUInteger count = [array count];
-  id __unsafe_unretained *objects =
-      (id __unsafe_unretained *) malloc(sizeof(id) * count);
-  [array getObjects:objects range:NSMakeRange(0, count)];
-  id result = [IOSObjectArray arrayWithObjects:objects count:count type:type];
-  free(objects);
-  return result;
+  IOSObjectArray *result = IOSObjectArray_NewArray(count, type);
+  [array getObjects:result->buffer_ range:NSMakeRange(0, count)];
+  for (NSUInteger i = 0; i < count; i++) {
+    [result->buffer_[i] retain];
+  }
+  return [result autorelease];
 }
 
 + (instancetype)arrayWithDimensions:(NSUInteger)dimensionCount
