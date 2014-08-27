@@ -503,7 +503,7 @@ public class InnerClassExtractorTest extends GenerationTest {
 
     // Make sure that the call to super(null) in B.BInner's constructor
     // is translated with the right keyword for the generic second parameter.
-    assertTranslation(translation, "[super initWithTest_A:outer$ withId:nil");
+    assertTranslation(translation, "[super initWithTest_A:outer$ withTest_A_Inner:nil");
   }
 
   public void testStaticImportReferenceInInnerClass() throws IOException {
