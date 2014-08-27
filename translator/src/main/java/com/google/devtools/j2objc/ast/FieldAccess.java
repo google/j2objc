@@ -16,6 +16,7 @@ package com.google.devtools.j2objc.ast;
 
 import com.google.devtools.j2objc.types.Types;
 
+import org.eclipse.jdt.core.dom.ITypeBinding;
 import org.eclipse.jdt.core.dom.IVariableBinding;
 
 /**
@@ -42,7 +43,6 @@ public class FieldAccess extends Expression {
   }
 
   public FieldAccess(IVariableBinding variableBinding, Expression expression) {
-    super(variableBinding.getType());
     this.variableBinding = variableBinding;
     this.expression.set(expression);
     name.set(new SimpleName(variableBinding));
@@ -51,6 +51,11 @@ public class FieldAccess extends Expression {
   @Override
   public Kind getKind() {
     return Kind.FIELD_ACCESS;
+  }
+
+  @Override
+  public ITypeBinding getTypeBinding() {
+    return variableBinding.getType();
   }
 
   public IVariableBinding getVariableBinding() {

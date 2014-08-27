@@ -194,6 +194,7 @@ JAVA_SOURCES = \
 	types/IOSTypeBinding.java \
 	types/JavaMethod.java \
 	types/NodeCopier.java \
+	types/NullTypeBinding.java \
 	types/PointerTypeBinding.java \
 	types/RenamedTypeBinding.java \
 	types/Types.java \

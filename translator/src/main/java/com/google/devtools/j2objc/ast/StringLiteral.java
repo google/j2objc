@@ -16,6 +16,8 @@ package com.google.devtools.j2objc.ast;
 
 import com.google.devtools.j2objc.types.Types;
 
+import org.eclipse.jdt.core.dom.ITypeBinding;
+
 /**
  * Node type for string literals.
  */
@@ -34,13 +36,17 @@ public class StringLiteral extends Expression {
   }
 
   public StringLiteral(String literalValue) {
-    super(Types.resolveJavaType("java.lang.String"));
     this.literalValue = literalValue;
   }
 
   @Override
   public Kind getKind() {
     return Kind.STRING_LITERAL;
+  }
+
+  @Override
+  public ITypeBinding getTypeBinding() {
+    return Types.resolveJavaType("java.lang.String");
   }
 
   public String getLiteralValue() {

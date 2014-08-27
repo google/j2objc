@@ -14,6 +14,8 @@
 
 package com.google.devtools.j2objc.ast;
 
+import org.eclipse.jdt.core.dom.ITypeBinding;
+
 /**
  * Array access node type.
  */
@@ -37,6 +39,13 @@ public class ArrayAccess extends Expression {
   @Override
   public Kind getKind() {
     return Kind.ARRAY_ACCESS;
+  }
+
+  @Override
+  public ITypeBinding getTypeBinding() {
+    Expression arrayNode = array.get();
+    ITypeBinding arrayType = arrayNode != null ? arrayNode.getTypeBinding() : null;
+    return arrayType != null ? arrayType.getComponentType() : null;
   }
 
   public Expression getArray() {

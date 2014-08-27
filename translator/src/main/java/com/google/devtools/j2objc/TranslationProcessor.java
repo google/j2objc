@@ -202,6 +202,9 @@ class TranslationProcessor extends FileProcessor {
     new NilCheckResolver().run(newUnit);
     ticker.tick("NilCheckResolver");
 
+    new ArrayRewriter().run(newUnit);
+    ticker.tick("ArrayRewriter");
+
     // Translate core Java type use to similar iOS types
     new JavaToIOSTypeConverter().run(newUnit);
     ticker.tick("JavaToIOSTypeConverter");
@@ -212,9 +215,6 @@ class TranslationProcessor extends FileProcessor {
     }
     new JavaToIOSMethodTranslator(methodMappings).run(newUnit);
     ticker.tick("JavaToIOSMethodTranslator");
-
-    new ArrayRewriter().run(newUnit);
-    ticker.tick("ArrayRewriter");
 
     new StaticVarRewriter().run(newUnit);
     ticker.tick("StaticVarRewriter");

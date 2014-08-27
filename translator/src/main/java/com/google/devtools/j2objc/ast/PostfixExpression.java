@@ -16,6 +16,7 @@ package com.google.devtools.j2objc.ast;
 
 import com.google.common.collect.Maps;
 
+import org.eclipse.jdt.core.dom.ITypeBinding;
 import org.eclipse.jdt.core.dom.IVariableBinding;
 
 import java.util.Map;
@@ -74,7 +75,6 @@ public class PostfixExpression extends Expression {
   }
 
   public PostfixExpression(IVariableBinding var, Operator op) {
-    super(var.getType());
     operator = op;
     operand.set(new SimpleName(var));
   }
@@ -82,6 +82,12 @@ public class PostfixExpression extends Expression {
   @Override
   public Kind getKind() {
     return Kind.POSTFIX_EXPRESSION;
+  }
+
+  @Override
+  public ITypeBinding getTypeBinding() {
+    Expression operandNode = operand.get();
+    return operandNode != null ? operandNode.getTypeBinding() : null;
   }
 
   public Operator getOperator() {

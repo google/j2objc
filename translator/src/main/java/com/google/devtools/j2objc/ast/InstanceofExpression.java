@@ -39,7 +39,6 @@ public class InstanceofExpression extends Expression {
   }
 
   public InstanceofExpression(Expression lhs, ITypeBinding rhsType) {
-    super(Types.resolveJavaType("boolean"));
     leftOperand.set(lhs);
     rightOperand.set(Type.newType(rhsType));
   }
@@ -47,6 +46,11 @@ public class InstanceofExpression extends Expression {
   @Override
   public Kind getKind() {
     return Kind.INSTANCEOF_EXPRESSION;
+  }
+
+  @Override
+  public ITypeBinding getTypeBinding() {
+    return Types.resolveJavaType("boolean");
   }
 
   public Expression getLeftOperand() {

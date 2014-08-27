@@ -17,6 +17,8 @@ package com.google.devtools.j2objc.ast;
 import com.google.common.collect.Maps;
 import com.google.devtools.j2objc.types.Types;
 
+import org.eclipse.jdt.core.dom.ITypeBinding;
+
 import java.util.Map;
 
 /**
@@ -90,7 +92,6 @@ public class Assignment extends Expression {
   }
 
   public Assignment(Expression lhs, Expression rhs) {
-    super(lhs.getTypeBinding());
     operator = Operator.ASSIGN;
     leftHandSide.set(lhs);
     rightHandSide.set(rhs);
@@ -99,6 +100,12 @@ public class Assignment extends Expression {
   @Override
   public Kind getKind() {
     return Kind.ASSIGNMENT;
+  }
+
+  @Override
+  public ITypeBinding getTypeBinding() {
+    Expression leftHandSideNode = leftHandSide.get();
+    return leftHandSideNode != null ? leftHandSideNode.getTypeBinding() : null;
   }
 
   public Operator getOperator() {

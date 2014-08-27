@@ -15,6 +15,7 @@
 package com.google.devtools.j2objc.ast;
 
 import com.google.common.collect.Maps;
+import com.google.devtools.j2objc.types.Types;
 
 import org.eclipse.jdt.core.dom.ITypeBinding;
 
@@ -76,6 +77,9 @@ public class InfixExpression extends Expression {
     }
   }
 
+  // In theory the type binding can be resolved from the operator and operands
+  // but we'll keep it simple for now.
+  private ITypeBinding typeBinding = null;
   private Operator operator = null;
   private ChildLink<Expression> leftOperand = ChildLink.create(Expression.class, this);
   private ChildLink<Expression> rightOperand = ChildLink.create(Expression.class, this);
@@ -83,6 +87,7 @@ public class InfixExpression extends Expression {
 
   public InfixExpression(org.eclipse.jdt.core.dom.InfixExpression jdtNode) {
     super(jdtNode);
+    typeBinding = Types.getTypeBinding(jdtNode);
     operator = Operator.fromJdtOperator(jdtNode.getOperator());
     leftOperand.set((Expression) TreeConverter.convert(jdtNode.getLeftOperand()));
     rightOperand.set((Expression) TreeConverter.convert(jdtNode.getRightOperand()));
@@ -93,6 +98,7 @@ public class InfixExpression extends Expression {
 
   public InfixExpression(InfixExpression other) {
     super(other);
+    typeBinding = other.getTypeBinding();
     operator = other.getOperator();
     leftOperand.copyFrom(other.getLeftOperand());
     rightOperand.copyFrom(other.getRightOperand());
@@ -102,7 +108,7 @@ public class InfixExpression extends Expression {
   public InfixExpression(
       ITypeBinding typeBinding, Operator operator, Expression leftOperand,
       Expression rightOperand) {
-    super(typeBinding);
+    this.typeBinding = typeBinding;
     this.operator = operator;
     this.leftOperand.set(leftOperand);
     this.rightOperand.set(rightOperand);
@@ -111,6 +117,11 @@ public class InfixExpression extends Expression {
   @Override
   public Kind getKind() {
     return Kind.INFIX_EXPRESSION;
+  }
+
+  @Override
+  public ITypeBinding getTypeBinding() {
+    return typeBinding;
   }
 
   public Operator getOperator() {

@@ -54,6 +54,16 @@ public abstract class AbstractTypeBinding extends AbstractBinding implements ITy
   }
 
   @Override
+  public boolean isArray() {
+    return false;
+  }
+
+  @Override
+  public boolean isClass() {
+    return false;
+  }
+
+  @Override
   public boolean isEnum() {
     return false;
   }
@@ -65,6 +75,11 @@ public abstract class AbstractTypeBinding extends AbstractBinding implements ITy
 
   @Override
   public boolean isGenericType() {
+    return false;
+  }
+
+  @Override
+  public boolean isInterface() {
     return false;
   }
 

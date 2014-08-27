@@ -14,7 +14,9 @@
 
 package com.google.devtools.j2objc.ast;
 
-import com.google.devtools.j2objc.types.Types;
+import com.google.devtools.j2objc.types.NullTypeBinding;
+
+import org.eclipse.jdt.core.dom.ITypeBinding;
 
 /**
  * Null literal node type.
@@ -29,13 +31,16 @@ public class NullLiteral extends Expression {
     super(other);
   }
 
-  public NullLiteral() {
-    super(Types.resolveJavaType("java.lang.Object"));
-  }
+  public NullLiteral() {}
 
   @Override
   public Kind getKind() {
     return Kind.NULL_LITERAL;
+  }
+
+  @Override
+  public ITypeBinding getTypeBinding() {
+    return NullTypeBinding.getInstance();
   }
 
   @Override

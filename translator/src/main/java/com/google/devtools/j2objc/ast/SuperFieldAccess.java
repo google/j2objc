@@ -16,6 +16,7 @@ package com.google.devtools.j2objc.ast;
 
 import com.google.devtools.j2objc.types.Types;
 
+import org.eclipse.jdt.core.dom.ITypeBinding;
 import org.eclipse.jdt.core.dom.IVariableBinding;
 
 /**
@@ -48,6 +49,11 @@ public class SuperFieldAccess extends Expression {
 
   public IVariableBinding getVariableBinding() {
     return variableBinding;
+  }
+
+  @Override
+  public ITypeBinding getTypeBinding() {
+    return variableBinding != null ? variableBinding.getType() : null;
   }
 
   public Name getQualifier() {

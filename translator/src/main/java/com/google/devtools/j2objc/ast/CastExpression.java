@@ -37,7 +37,6 @@ public class CastExpression extends Expression {
   }
 
   public CastExpression(ITypeBinding typeBinding, Expression expression) {
-    super(typeBinding);
     type.set(Type.newType(typeBinding));
     this.expression.set(expression);
   }
@@ -45,6 +44,12 @@ public class CastExpression extends Expression {
   @Override
   public Kind getKind() {
     return Kind.CAST_EXPRESSION;
+  }
+
+  @Override
+  public ITypeBinding getTypeBinding() {
+    Type typeNode = type.get();
+    return typeNode != null ? typeNode.getTypeBinding() : null;
   }
 
   public Type getType() {
