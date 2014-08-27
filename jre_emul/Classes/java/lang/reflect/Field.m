@@ -201,10 +201,18 @@ static void SetWithRawValue(
 }
 
 - (void)setWithId:(id)object withId:(id)value {
-  J2ObjcRawValue rawValue;
+  // TODO(kstanger): correctly handle @Weak fields.
   IOSClass *fieldType = [self getType];
+  BOOL needsRetain = ![fieldType isPrimitive];
+  if (needsRetain) {
+    AUTORELEASE([self getWithId:object]);
+  }
+  J2ObjcRawValue rawValue;
   [fieldType __unboxValue:value toRawValue:&rawValue];
   SetWithRawValue(&rawValue, self, object, fieldType);
+  if (needsRetain) {
+    RETAIN_(value);
+  }
 }
 
 - (void)setBooleanWithId:(id)object withBoolean:(BOOL)value {
