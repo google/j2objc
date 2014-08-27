@@ -51,9 +51,18 @@ public final class UnsignedLong extends Number implements Comparable<UnsignedLon
 
   private final long value;
 
+/*-[
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wobjc-designated-initializers"
+]-*/
+
   private UnsignedLong(long value) {
     this.value = value;
   }
+
+/*-[
+#pragma clang diagnostic pop
+]-*/
 
   /**
    * Returns an {@code UnsignedLong} that, when treated as signed, is equal to {@code value}. The

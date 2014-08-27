@@ -50,10 +50,19 @@ public final class UnsignedInteger extends Number implements Comparable<Unsigned
 
   private final int value;
 
+/*-[
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wobjc-designated-initializers"
+]-*/
+
   private UnsignedInteger(int value) {
     // GWT doesn't consistently overflow values to make them 32-bit, so we need to force it.
     this.value = value & 0xffffffff;
   }
+
+/*-[
+#pragma clang diagnostic pop
+]-*/
 
   /**
    * Returns an {@code UnsignedInteger} that, when treated as signed, is

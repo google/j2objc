@@ -28,6 +28,11 @@ public class AtomicInteger extends Number implements java.io.Serializable {
 
     private volatile int value;
 
+/*-[
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wobjc-designated-initializers"
+]-*/
+
     /**
      * Creates a new AtomicInteger with the given initial value.
      *
@@ -36,6 +41,10 @@ public class AtomicInteger extends Number implements java.io.Serializable {
     public AtomicInteger(int initialValue) {
         value = initialValue;
     }
+
+/*-[
+#pragma clang diagnostic pop
+]-*/
 
     /**
      * Creates a new AtomicInteger with initial value {@code 0}.

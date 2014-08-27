@@ -60,6 +60,11 @@ public class AtomicDouble extends Number implements java.io.Serializable {
   private static final AtomicLongFieldUpdater<AtomicDouble> updater =
       AtomicLongFieldUpdater.newUpdater(AtomicDouble.class, "value");
 
+/*-[
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wobjc-designated-initializers"
+]-*/
+
   /**
    * Creates a new {@code AtomicDouble} with the given initial value.
    *
@@ -68,6 +73,10 @@ public class AtomicDouble extends Number implements java.io.Serializable {
   public AtomicDouble(double initialValue) {
     value = doubleToRawLongBits(initialValue);
   }
+
+/*-[
+#pragma clang diagnostic pop
+]-*/
 
   /**
    * Creates a new {@code AtomicDouble} with initial value {@code 0.0}.
