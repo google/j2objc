@@ -14,6 +14,8 @@
 #
 # Author: Tom Ball, Keith Stanger
 
+SUFFIXES:
+
 J2OBJC_ROOT = ..
 
 include ../make/common.mk

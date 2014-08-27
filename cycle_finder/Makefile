@@ -16,6 +16,8 @@
 #
 # Author: Keith Stanger
 
+SUFFIXES:
+
 SOURCE_DIR = src/main
 JAVA_SOURCE_DIR = $(SOURCE_DIR)/java
 RESOURCE_DIR = $(SOURCE_DIR)/resources
@@ -96,6 +98,7 @@ $(JAR_DIST): $(JAR) | $(DIST_JAR_DIR)
 	install -m 0644 $< $@
 
 dist: $(JAR_DIST) $(DIST_DIR)/cycle_finder
+	@:
 
 test: compile-tests
 	java -classpath $(TEST_CLASSPATH) junit.textui.TestRunner \

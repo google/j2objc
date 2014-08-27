@@ -15,6 +15,8 @@
 # Author: Keith Stanger
 # TODO(kstanger): Build a fat library to distribute.
 
+SUFFIXES:
+
 default: dist
 
 include environment.mk

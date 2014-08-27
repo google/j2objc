@@ -14,7 +14,7 @@
 #
 # Author: Tom Ball
 
-.SUFFIXES: .java .m
+.SUFFIXES:
 .PHONY: default clean
 
 include environment.mk

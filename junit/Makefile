@@ -16,7 +16,7 @@
 #
 # Author: Tom Ball
 
-.SUFFIXES: .java .m
+.SUFFIXES:
 .PHONY: default j2objc clean
 
 include environment.mk

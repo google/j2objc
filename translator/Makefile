@@ -16,6 +16,8 @@
 #
 # Author: Tom Ball, Keith Stanger
 
+SUFFIXES:
+
 CWD = .
 SOURCE_DIR = src/main
 JAVA_SOURCE_DIR = $(SOURCE_DIR)/java
