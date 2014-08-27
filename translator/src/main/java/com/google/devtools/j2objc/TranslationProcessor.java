@@ -173,7 +173,7 @@ class TranslationProcessor extends FileProcessor {
     new AnonymousClassConverter(unit).run(unit);
     ticker.tick("AnonymousClassConverter");
     new InnerClassExtractor(unit).run(unit);
-    ticker.tick("InnerClassConverter");
+    ticker.tick("InnerClassExtractor");
 
     // Normalize init statements
     new InitializationNormalizer().run(unit);
@@ -197,21 +197,21 @@ class TranslationProcessor extends FileProcessor {
     new NilCheckResolver().run(unit);
     ticker.tick("NilCheckResolver");
 
+    // Verify all modified nodes have type bindings
+    Types.verifyNode(unit);
+
+    CompilationUnit newUnit = TreeConverter.convertCompilationUnit(unit, path, source);
+
     // Translate core Java type use to similar iOS types
-    new JavaToIOSTypeConverter().run(unit);
+    new JavaToIOSTypeConverter().run(newUnit);
     ticker.tick("JavaToIOSTypeConverter");
     Map<String, String> methodMappings = Options.getMethodMappings();
     if (methodMappings.isEmpty()) {
       // Method maps are loaded here so tests can call translate() directly.
       loadMappingFiles();
     }
-    new JavaToIOSMethodTranslator(unit.getAST(), methodMappings).run(unit);
+    new JavaToIOSMethodTranslator(methodMappings).run(newUnit);
     ticker.tick("JavaToIOSMethodTranslator");
-
-    // Verify all modified nodes have type bindings
-    Types.verifyNode(unit);
-
-    CompilationUnit newUnit = TreeConverter.convertCompilationUnit(unit, path, source);
 
     new ArrayRewriter().run(newUnit);
     ticker.tick("ArrayRewriter");

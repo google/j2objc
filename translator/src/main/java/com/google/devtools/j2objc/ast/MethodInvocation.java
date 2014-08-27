@@ -77,6 +77,10 @@ public class MethodInvocation extends Expression {
     return methodBinding;
   }
 
+  public void setMethodBinding(IMethodBinding newMethodBinding) {
+    methodBinding = newMethodBinding;
+  }
+
   public Expression getExpression() {
     return expression.get();
   }

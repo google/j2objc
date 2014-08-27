@@ -83,6 +83,10 @@ public class MethodDeclaration extends BodyDeclaration {
     return name.get();
   }
 
+  public void setName(SimpleName newName) {
+    name.set(newName);
+  }
+
   public List<SingleVariableDeclaration> getParameters() {
     return parameters;
   }
