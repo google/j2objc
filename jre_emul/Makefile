@@ -856,6 +856,7 @@ JAVA_SOURCES = \
 	java/util/zip/ZipFile.java \
 	java/util/zip/ZipInputStream.java \
 	java/util/zip/ZipOutputStream.java \
+	javax/lang/model/element/Modifier.java \
 	javax/security/auth/x500/X500Principal.java \
 	javax/security/cert/Certificate.java \
 	javax/security/cert/CertificateEncodingException.java \
