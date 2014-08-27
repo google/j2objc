@@ -114,6 +114,7 @@ TEST_SOURCES = \
     android/text/SpannableStringBuilderTest.java \
     android/text/SpannableStringTest.java \
     android/text/TextUtilsTest.java \
+    com/google/j2objc/security/IosSecureRandomImplTest.java \
     java/lang/ClassTest.java \
     java/lang/ThrowableTest.java \
     java/lang/ref/PhantomReferenceTest.java \
