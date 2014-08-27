@@ -17,10 +17,13 @@ package com.google.devtools.j2objc.translate;
 import com.google.devtools.j2objc.Options;
 import com.google.devtools.j2objc.ast.Assignment;
 import com.google.devtools.j2objc.ast.Expression;
+import com.google.devtools.j2objc.ast.FieldAccess;
 import com.google.devtools.j2objc.ast.InfixExpression;
 import com.google.devtools.j2objc.ast.MethodInvocation;
 import com.google.devtools.j2objc.ast.NullLiteral;
+import com.google.devtools.j2objc.ast.QualifiedName;
 import com.google.devtools.j2objc.ast.SimpleName;
+import com.google.devtools.j2objc.ast.ThisExpression;
 import com.google.devtools.j2objc.ast.TreeUtil;
 import com.google.devtools.j2objc.ast.TreeVisitor;
 import com.google.devtools.j2objc.types.IOSMethodBinding;
@@ -50,6 +53,15 @@ public class OperatorRewriter extends TreeVisitor {
         "JreOperatorRetainedAssign", idType, null, new PointerTypeBinding(idType), idType, idType);
   }
 
+  private static Expression getTarget(Expression node, IVariableBinding var) {
+    if (node instanceof QualifiedName) {
+      return ((QualifiedName) node).getQualifier();
+    } else if (node instanceof FieldAccess) {
+      return ((FieldAccess) node).getExpression();
+    }
+    return new ThisExpression(var.getDeclaringClass());
+  }
+
   @Override
   public void endVisit(Assignment node) {
     Assignment.Operator op = node.getOperator();
@@ -65,7 +77,8 @@ public class OperatorRewriter extends TreeVisitor {
       if (BindingUtil.isStatic(var)) {
         node.replaceWith(newStaticAssignInvocation(var, rhs));
       } else if (var.isField() && !BindingUtil.isWeakReference(var)) {
-        node.setIsDeferredFieldSetter(true);
+        Expression target = getTarget(lhs, var);
+        node.replaceWith(newFieldSetterInvocation(var, target, rhs));
       }
     } else if (op == Assignment.Operator.RIGHT_SHIFT_UNSIGNED_ASSIGN) {
       if (!lhsType.getName().equals("char")) {
@@ -103,6 +116,20 @@ public class OperatorRewriter extends TreeVisitor {
     args.add(MethodInvocation.newAddressOf(new SimpleName(var)));
     args.add(new NullLiteral());
     args.add(value.copy());
+    return invocation;
+  }
+
+  private static MethodInvocation newFieldSetterInvocation(
+      IVariableBinding var, Expression instance, Expression value) {
+    ITypeBinding varType = var.getType();
+    ITypeBinding declaringType = var.getDeclaringClass().getTypeDeclaration();
+    String setterName = String.format("%s_set_%s", NameTable.getFullName(declaringType),
+        NameTable.javaFieldToObjC(NameTable.getName(var)));
+    IOSMethodBinding binding = IOSMethodBinding.newFunction(
+        setterName, varType, declaringType, declaringType, varType);
+    MethodInvocation invocation = new MethodInvocation(binding, null);
+    invocation.getArguments().add(instance.copy());
+    invocation.getArguments().add(value.copy());
     return invocation;
   }
 
