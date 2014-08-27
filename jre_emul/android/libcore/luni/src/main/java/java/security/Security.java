@@ -17,6 +17,8 @@
 
 package java.security;
 
+import com.google.j2objc.security.IosSecurityProvider;
+
 import java.io.BufferedInputStream;
 import java.io.InputStream;
 import java.util.Enumeration;
@@ -28,6 +30,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Properties;
 import java.util.Set;
+
 import org.apache.harmony.security.fortress.Engine;
 import org.apache.harmony.security.fortress.SecurityAccess;
 import org.apache.harmony.security.fortress.Services;
@@ -392,4 +395,7 @@ public final class Security {
             return p.getService(type);
         }
     }
+
+    // Unused iOS-specific reference to IosSecurityProvider to ensure it gets linked into apps.
+    private static final Class<?> unused = IosSecurityProvider.class;
 }
