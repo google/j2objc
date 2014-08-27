@@ -111,6 +111,15 @@ public abstract class TreeNode {
 
   public void validateInner() {}
 
+  public String toString() {
+    try {
+      return DebugASTPrinter.toString(this);
+    } catch (RuntimeException e) {
+      // Debugger may sometimes call toString methods on an instance that is partially initialized.
+      return super.toString();
+    }
+  }
+
   public enum Kind {
     ANNOTATION_TYPE_DECLARATION,
     ANNOTATION_TYPE_MEMBER_DECLARATION,

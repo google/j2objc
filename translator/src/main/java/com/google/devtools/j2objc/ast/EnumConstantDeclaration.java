@@ -30,6 +30,8 @@ public class EnumConstantDeclaration extends BodyDeclaration {
   private IMethodBinding methodBinding = null;
   private ChildLink<SimpleName> name = ChildLink.create(SimpleName.class, this);
   private ChildList<Expression> arguments = ChildList.create(Expression.class, this);
+  private ChildLink<AnonymousClassDeclaration> anonymousClassDeclaration =
+      ChildLink.create(AnonymousClassDeclaration.class, this);
 
   public EnumConstantDeclaration(org.eclipse.jdt.core.dom.EnumConstantDeclaration jdtNode) {
     super(jdtNode);
@@ -39,6 +41,8 @@ public class EnumConstantDeclaration extends BodyDeclaration {
     for (Object argument : jdtNode.arguments()) {
       arguments.add((Expression) TreeConverter.convert(argument));
     }
+    anonymousClassDeclaration.set((AnonymousClassDeclaration)
+        TreeConverter.convert(jdtNode.getAnonymousClassDeclaration()));
   }
 
   public EnumConstantDeclaration(EnumConstantDeclaration other) {
@@ -47,6 +51,7 @@ public class EnumConstantDeclaration extends BodyDeclaration {
     methodBinding = other.getMethodBinding();
     name.copyFrom(other.getName());
     arguments.copyFrom(other.getArguments());
+    anonymousClassDeclaration.copyFrom(other.getAnonymousClassDeclaration());
   }
 
   @Override
@@ -70,6 +75,10 @@ public class EnumConstantDeclaration extends BodyDeclaration {
     return arguments;
   }
 
+  public AnonymousClassDeclaration getAnonymousClassDeclaration() {
+    return anonymousClassDeclaration.get();
+  }
+
   @Override
   protected void acceptInner(TreeVisitor visitor) {
     if (visitor.visit(this)) {
@@ -77,6 +86,7 @@ public class EnumConstantDeclaration extends BodyDeclaration {
       annotations.accept(visitor);
       name.accept(visitor);
       arguments.accept(visitor);
+      anonymousClassDeclaration.accept(visitor);
     }
     visitor.endVisit(this);
   }
