@@ -444,6 +444,7 @@
 		06E4E86F197F273F005DDE69 /* res2.properties in CopyFiles */ = {isa = PBXBuildFile; fileRef = 06E4E86A197F273E005DDE69 /* res2.properties */; };
 		06E4E870197F273F005DDE69 /* res3.properties in CopyFiles */ = {isa = PBXBuildFile; fileRef = 06E4E86B197F273F005DDE69 /* res3.properties */; };
 		06E4E873197F276E005DDE69 /* logging.config in CopyFiles */ = {isa = PBXBuildFile; fileRef = 06E4E872197F276D005DDE69 /* logging.config */; };
+		06E9874E199BDC23008016E2 /* IosSecureRandomImplTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 06E9874D199BDC23008016E2 /* IosSecureRandomImplTest.m */; };
 		06ED87B919759EFF00633227 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 06619388155848D70004DAFE /* Foundation.framework */; };
 		06ED87BA19759EFF00633227 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 067A99561954DF06009171DD /* CoreGraphics.framework */; };
 		06ED87BB19759EFF00633227 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 067A99581954DF06009171DD /* UIKit.framework */; };
@@ -2513,6 +2514,8 @@
 		06E4E86A197F273E005DDE69 /* res2.properties */ = {isa = PBXFileReference; lastKnownFileType = text; name = res2.properties; path = ../build_result/tests/bundles/java/util/logging/res2.properties; sourceTree = "<group>"; };
 		06E4E86B197F273F005DDE69 /* res3.properties */ = {isa = PBXFileReference; lastKnownFileType = text; name = res3.properties; path = ../build_result/tests/bundles/java/util/logging/res3.properties; sourceTree = "<group>"; };
 		06E4E872197F276D005DDE69 /* logging.config */ = {isa = PBXFileReference; lastKnownFileType = text; name = logging.config; path = ../build_result/tests/config/java/util/logging/logging.config; sourceTree = "<group>"; };
+		06E9874C199BDC23008016E2 /* IosSecureRandomImplTest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = IosSecureRandomImplTest.h; path = com/google/j2objc/security/IosSecureRandomImplTest.h; sourceTree = "<group>"; };
+		06E9874D199BDC23008016E2 /* IosSecureRandomImplTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = IosSecureRandomImplTest.m; path = com/google/j2objc/security/IosSecureRandomImplTest.m; sourceTree = "<group>"; };
 		06ED3D4617D163F80014750E /* IOSConcreteClass.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = IOSConcreteClass.h; sourceTree = "<group>"; };
 		06ED3D4717D163F80014750E /* IOSConcreteClass.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = IOSConcreteClass.m; sourceTree = "<group>"; };
 		06ED3D4817D163F80014750E /* IOSProtocolClass.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = IOSProtocolClass.h; sourceTree = "<group>"; };
@@ -5063,6 +5066,8 @@
 				06E4E3AA197F1D46005DDE69 /* ExecutorsTest.m */,
 				06E4E3AB197F1D46005DDE69 /* FutureTaskTest.h */,
 				06E4E3AC197F1D46005DDE69 /* FutureTaskTest.m */,
+				06E9874C199BDC23008016E2 /* IosSecureRandomImplTest.h */,
+				06E9874D199BDC23008016E2 /* IosSecureRandomImplTest.m */,
 				06E4E3AD197F1D46005DDE69 /* java */,
 				06E4E3C2197F1D46005DDE69 /* JSR166TestCase.h */,
 				06E4E3C3197F1D46005DDE69 /* JSR166TestCase.m */,
@@ -6718,6 +6723,7 @@
 				06E4E74F197F1D47005DDE69 /* BitSetTest.m in Sources */,
 				06E4E722197F1D47005DDE69 /* OldStringReaderTest.m in Sources */,
 				06E4E71C197F1D47005DDE69 /* OldPushbackReaderTest.m in Sources */,
+				06E9874E199BDC23008016E2 /* IosSecureRandomImplTest.m in Sources */,
 				06E4E7ED197F1D48005DDE69 /* CollatorTest.m in Sources */,
 				06E4E773197F1D47005DDE69 /* FilterTest.m in Sources */,
 				06E4E76F197F1D47005DDE69 /* CRC32Test.m in Sources */,
