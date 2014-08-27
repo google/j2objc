@@ -306,7 +306,7 @@ class TranslationProcessor extends FileProcessor {
       return;  // Ignore core types.
     }
     String typeName = type.getErasure().getQualifiedName();
-    String sourceName = typeName.replace('.', File.pathSeparatorChar) + ".java";
+    String sourceName = typeName.replace('.', File.separatorChar) + ".java";
     if (seenFiles.contains(sourceName)) {
       return;
     }
