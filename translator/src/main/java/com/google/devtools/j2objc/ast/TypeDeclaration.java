@@ -46,6 +46,13 @@ public class TypeDeclaration extends AbstractTypeDeclaration {
   public TypeDeclaration(ITypeBinding typeBinding) {
     super(typeBinding);
     isInterface = typeBinding.isInterface();
+    ITypeBinding superclassTypeBinding = typeBinding.getSuperclass();
+    if (superclassTypeBinding != null) {
+      superclassType.set(Type.newType(superclassTypeBinding));
+    }
+    for (ITypeBinding interfaceTypeBinding : typeBinding.getInterfaces()) {
+      superInterfaceTypes.add(Type.newType(interfaceTypeBinding));
+    }
   }
 
   @Override
