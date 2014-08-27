@@ -26,7 +26,6 @@ import com.google.devtools.j2objc.gen.ObjectiveCSegmentedHeaderGeneratorTest;
 import com.google.devtools.j2objc.gen.ObjectiveCSourceFileGeneratorTest;
 import com.google.devtools.j2objc.gen.PrimitiveArrayTest;
 import com.google.devtools.j2objc.gen.StatementGeneratorTest;
-import com.google.devtools.j2objc.translate.ASTFactoryTest;
 import com.google.devtools.j2objc.translate.AnonymousClassConverterTest;
 import com.google.devtools.j2objc.translate.ArrayRewriterTest;
 import com.google.devtools.j2objc.translate.AutoboxerTest;
@@ -71,7 +70,6 @@ import junit.framework.TestSuite;
 public class SmallTests {
 
   private static final Class<?>[] smallTestClasses = new Class[] {
-    ASTFactoryTest.class,
     AnonymousClassConverterTest.class,
     ArrayAccessTest.class,
     ArrayCreationTest.class,
