@@ -77,60 +77,42 @@ public class TreeUtil {
     return Lists.newArrayList(getRuntimeAnnotations(annotations));
   }
 
+  public static <T extends TreeNode> T getNearestAncestorWithType(Class<T> type, TreeNode node) {
+    while (node != null) {
+      if (type.isInstance(node)) {
+        return type.cast(node);
+      }
+      node = node.getParent();
+    }
+    return null;
+  }
+
   /**
    * Returns the method which is the parent of the specified node.
    */
   public static MethodDeclaration getOwningMethod(TreeNode node) {
-    TreeNode n = node;
-    while (n != null) {
-      if (n instanceof MethodDeclaration) {
-        return (MethodDeclaration) n;
-      }
-      n = n.getParent();
-    }
-    return null;
+    return getNearestAncestorWithType(MethodDeclaration.class, node);
   }
 
   /**
    * Returns the type declaration which the specified node is part of.
    */
   public static AbstractTypeDeclaration getOwningType(TreeNode node) {
-    TreeNode n = node;
-    while (n != null) {
-      if (n instanceof AbstractTypeDeclaration) {
-        return (AbstractTypeDeclaration) n;
-      }
-      n = n.getParent();
-    }
-    return null;
+    return getNearestAncestorWithType(AbstractTypeDeclaration.class, node);
   }
 
   /**
    * Returns the statement which is the parent of the specified node.
    */
   public static Statement getOwningStatement(TreeNode node) {
-    TreeNode n = node;
-    while (n != null) {
-      if (n instanceof Statement) {
-        return (Statement) n;
-      }
-      n = n.getParent();
-    }
-    return null;
+    return getNearestAncestorWithType(Statement.class, node);
   }
 
   /**
    * Gets the CompilationUnit ancestor of this node.
    */
   public static CompilationUnit getCompilationUnit(TreeNode node) {
-    TreeNode n = node;
-    while (n != null) {
-      if (n instanceof CompilationUnit) {
-        return (CompilationUnit) n;
-      }
-      n = n.getParent();
-    }
-    return null;
+    return getNearestAncestorWithType(CompilationUnit.class, node);
   }
 
   public static Iterable<FieldDeclaration> getFieldDeclarations(AbstractTypeDeclaration node) {
