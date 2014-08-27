@@ -77,10 +77,10 @@ JUNIT_PUBLIC_SOURCES = \
     org/junit/runner/notification/StoppedByUserException.java \
     org/junit/runners/BlockJUnit4ClassRunner.java \
     org/junit/runners/JUnit4.java \
-    org/junit/runners/ParentRunner.java \
     org/junit/runners/Suite.java \
     org/junit/runners/model/FrameworkField.java \
     org/junit/runners/model/FrameworkMember.java \
+    org/junit/runners/model/FrameworkMethod.java \
     org/junit/runners/model/InitializationError.java \
     org/junit/runners/model/MultipleFailureException.java \
     org/junit/runners/model/NoGenericTypeParametersValidator.java \
@@ -126,7 +126,7 @@ JUNIT_INTERNAL_SOURCES = \
 
 MODIFIED_SOURCES = \
     junit/framework/TestCase.java \
-    org/junit/runners/model/FrameworkMethod.java
+    org/junit/runners/ParentRunner.java
 
 JUNIT_SOURCES = $(JUNIT_PUBLIC_SOURCES) $(JUNIT_INTERNAL_SOURCES)
 
