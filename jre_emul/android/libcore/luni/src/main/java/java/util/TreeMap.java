@@ -588,8 +588,12 @@ public class TreeMap<K, V> extends AbstractMap<K, V>
         return entry == null ? null : new SimpleImmutableEntry<K, V>(entry);
     }
 
+    private Node<K, V> firstNode() {
+        return root == null ? null : root.first();
+    }
+
     public Entry<K, V> firstEntry() {
-        return immutableCopy(root == null ? null : root.first());
+        return immutableCopy(firstNode());
     }
 
     private Entry<K, V> internalPollFirstEntry() {
@@ -612,8 +616,12 @@ public class TreeMap<K, V> extends AbstractMap<K, V>
         return root.first().getKey();
     }
 
+    private Node<K, V> lastNode() {
+      return root == null ? null : root.last();
+    }
+
     public Entry<K, V> lastEntry() {
-        return immutableCopy(root == null ? null : root.last());
+        return immutableCopy(lastNode());
     }
 
     private Entry<K, V> internalPollLastEntry() {
@@ -930,7 +938,7 @@ public class TreeMap<K, V> extends AbstractMap<K, V>
         }
 
         @Override public Iterator<Entry<K, V>> iterator() {
-            return new MapIterator<Entry<K, V>>(root == null ? null : root.first()) {
+            return new MapIterator<Entry<K, V>>(firstNode()) {
                 public Entry<K, V> next() {
                     return stepForward();
                 }
@@ -962,6 +970,7 @@ public class TreeMap<K, V> extends AbstractMap<K, V>
         - (NSUInteger)countByEnumeratingWithState:(NSFastEnumerationState *)state
                                           objects:(__unsafe_unretained id *)stackbuf
                                             count:(NSUInteger)len {
+          SetEndpoints(this$0_, state);
           return EnumerateEntries(this$0_, state, stackbuf, len, 0, YES);
         }
         ]-*/
@@ -974,7 +983,7 @@ public class TreeMap<K, V> extends AbstractMap<K, V>
         }
 
         @Override public Iterator<K> iterator() {
-            return new MapIterator<K>(root == null ? null : root.first()) {
+            return new MapIterator<K>(firstNode()) {
                 public K next() {
                     return stepForward().key;
                 }
@@ -982,7 +991,7 @@ public class TreeMap<K, V> extends AbstractMap<K, V>
         }
 
         public Iterator<K> descendingIterator() {
-            return new MapIterator<K>(root == null ? null : root.last()) {
+            return new MapIterator<K>(lastNode()) {
                 public K next() {
                     return stepBackward().key;
                 }
@@ -1079,6 +1088,7 @@ public class TreeMap<K, V> extends AbstractMap<K, V>
         - (NSUInteger)countByEnumeratingWithState:(NSFastEnumerationState *)state
                                           objects:(__unsafe_unretained id *)stackbuf
                                             count:(NSUInteger)len {
+          SetEndpoints(this$0_, state);
           return EnumerateEntries(this$0_, state, stackbuf, len, 1, YES);
         }
         ]-*/
@@ -1091,7 +1101,7 @@ public class TreeMap<K, V> extends AbstractMap<K, V>
         }
 
         @Override public Iterator<V> iterator() {
-            return new MapIterator<V>(root == null ? null : root.first()) {
+            return new MapIterator<V>(firstNode()) {
                 public V next() {
                     return stepForward().value;
                 }
@@ -1102,6 +1112,7 @@ public class TreeMap<K, V> extends AbstractMap<K, V>
         - (NSUInteger)countByEnumeratingWithState:(NSFastEnumerationState *)state
                                           objects:(__unsafe_unretained id *)stackbuf
                                             count:(NSUInteger)len {
+          SetEndpoints(this$0_, state);
           return EnumerateEntries(this$0_, state, stackbuf, len, 2, YES);
         }
         ]-*/
@@ -1295,7 +1306,7 @@ public class TreeMap<K, V> extends AbstractMap<K, V>
             if (ascending == first) {
                 switch (fromBound) {
                     case NO_BOUND:
-                        node = root == null ? null : root.first();
+                        node = firstNode();
                         break;
                     case INCLUSIVE:
                         node = find(from, CEILING);
@@ -1310,7 +1321,7 @@ public class TreeMap<K, V> extends AbstractMap<K, V>
             } else {
                 switch (toBound) {
                     case NO_BOUND:
-                        node = root == null ? null : root.last();
+                        node = lastNode();
                         break;
                     case INCLUSIVE:
                         node = find(to, FLOOR);
@@ -1593,7 +1604,7 @@ public class TreeMap<K, V> extends AbstractMap<K, V>
             - (NSUInteger)countByEnumeratingWithState:(NSFastEnumerationState *)state
                                               objects:(__unsafe_unretained id *)stackbuf
                                                 count:(NSUInteger)len {
-              SetEndpoints(this$0_, state);
+              SetBoundedMapEndpoints(this$0_, state);
               return EnumerateEntries(
                   this$0_->this$0_, state, stackbuf, len, 0, this$0_->ascending_);
             }
@@ -1712,7 +1723,7 @@ public class TreeMap<K, V> extends AbstractMap<K, V>
             - (NSUInteger)countByEnumeratingWithState:(NSFastEnumerationState *)state
                                               objects:(__unsafe_unretained id *)stackbuf
                                                 count:(NSUInteger)len {
-              SetEndpoints(this$0_, state);
+              SetBoundedMapEndpoints(this$0_, state);
               return EnumerateEntries(
                   this$0_->this$0_, state, stackbuf, len, 1, this$0_->ascending_);
             }
@@ -1741,7 +1752,7 @@ public class TreeMap<K, V> extends AbstractMap<K, V>
             - (NSUInteger)countByEnumeratingWithState:(NSFastEnumerationState *)state
                                               objects:(__unsafe_unretained id *)stackbuf
                                                 count:(NSUInteger)len {
-              SetEndpoints(this$0_, state);
+              SetBoundedMapEndpoints(this$0_, state);
               return EnumerateEntries(
                   this$0_->this$0_, state, stackbuf, len, 2, this$0_->ascending_);
             }
@@ -1865,6 +1876,16 @@ public class TreeMap<K, V> extends AbstractMap<K, V>
 
     /*-[
     static inline void SetEndpoints(
+        __unsafe_unretained JavaUtilTreeMap *map, NSFastEnumerationState *state) {
+      if (state->state == 0) {
+        state->extra[1] = (unsigned long) [map firstNode];
+        state->extra[2] = (unsigned long) [map lastNode];
+      }
+    }
+    ]-*/
+
+    /*-[
+    static inline void SetBoundedMapEndpoints(
         __unsafe_unretained JavaUtilTreeMap_BoundedMap *bMap, NSFastEnumerationState *state) {
       if (state->state == 0) {
         state->extra[1] = (unsigned long) [bMap endpointWithBoolean:YES];
@@ -1884,14 +1905,7 @@ public class TreeMap<K, V> extends AbstractMap<K, V>
       if (state->state == 0) {
         state->state = 1;
         state->mutationsPtr = (unsigned long *) &map->modCount_;
-        if (startNode) {
-          node = startNode;
-        } else {
-          node = map->root_;
-          if (node) {
-            node = [node first];
-          }
-        }
+        node = startNode;
       } else {
         node = (ARCBRIDGE id) (void *) state->extra[0];
       }
