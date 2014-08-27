@@ -53,6 +53,18 @@ public class ClassTest extends TestCase {
     assertEquals(42, answer.intValue());
   }
 
+  public void testArrayForName() throws Exception {
+    Class<?> arrayClass = Class.forName("[Ljava.lang.String;");
+    assertNotNull(arrayClass);
+    assertEquals("[Ljava.lang.String;", arrayClass.getName());
+    String[] array = new String[0];
+    assertEquals(array.getClass(), arrayClass);
+
+    // Test that array types not referenced in source can be loaded.
+    arrayClass = Class.forName("[[[Ljava.lang.Integer;");
+    assertNotNull(arrayClass);
+  }
+
   public void testGetDefaultConstructor() throws Exception {
     Class<?> foo = Class.forName("com.google.j2objc.ClassTest");
     Constructor<?> c = foo.getConstructor();
