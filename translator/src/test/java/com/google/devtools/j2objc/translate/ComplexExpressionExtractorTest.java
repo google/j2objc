@@ -62,4 +62,11 @@ public class ComplexExpressionExtractorTest extends GenerationTest {
     assertTranslation(translation, "int complex$2 = complex$1 - 5 + 6 - 7;");
     assertTranslation(translation, "return complex$2 + 8 - 9;");
   }
+
+  public void testAssignCompareExpression() throws IOException {
+    String translation = translateSourceFile(
+        "class Test { boolean b; void test(int i) { if (b = i == 0) {} } }",
+        "Test", "Test.m");
+    assertTranslation(translation, "if (b_ = (i == 0)) {");
+  }
 }
