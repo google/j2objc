@@ -16,6 +16,7 @@
 
 package libcore.io;
 
+import java.io.File;
 import java.io.FileDescriptor;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -35,6 +36,7 @@ import java.net.SocketTimeoutException;
 import java.net.UnknownHostException;
 import java.nio.ByteBuffer;
 import java.util.Arrays;
+
 import static libcore.io.OsConstants.*;
 import libcore.util.MutableInt;
 
@@ -430,7 +432,7 @@ public final class IoBridge {
             fd = Libcore.os.open(path, flags, mode);
             // Posix open(2) fails with EISDIR only if you ask for write permission.
             // Java disallows reading directories too.
-            if (S_ISDIR(Libcore.os.fstat(fd).st_mode)) {
+            if (isDirectory(path)) {
                 throw new ErrnoException("open", EISDIR);
             }
             return fd;
@@ -446,6 +448,11 @@ public final class IoBridge {
             throw ex;
         }
     }
+
+    private static native boolean isDirectory(String path) /*-[
+      NSDictionary *attrs = [[NSFileManager defaultManager] attributesOfItemAtPath:path error:nil];
+      return [[attrs fileType] isEqualToString:NSFileTypeDirectory];
+    ]-*/;
 
     /**
      * java.io thinks that a read at EOF is an error and should return -1, contrary to traditional
