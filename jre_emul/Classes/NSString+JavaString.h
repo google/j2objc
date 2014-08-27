@@ -289,6 +289,7 @@ destinationBegin:(int)dstBegin;
 - (BOOL)contentEqualsStringBuffer:(JavaLangStringBuffer *)sb;
 
 // String.offsetByCodePoints(int, int)
+- (int)offsetByCodePoints:(int)index codePointOffset:(int)offset;
 
 @end
 
