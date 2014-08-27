@@ -32,6 +32,7 @@ public class ObjectiveCImplementationGeneratorTest extends GenerationTest {
   @Override
   protected void tearDown() throws Exception {
     Options.resetDeprecatedDeclarations();
+    Options.resetDocComments();
     Options.resetMemoryManagementOption();
     Options.setStripReflection(false);
     super.tearDown();
@@ -750,5 +751,60 @@ public class ObjectiveCImplementationGeneratorTest extends GenerationTest {
     assertTranslation(translation, "J2OBJC_STATIC_FIELD_GETTER(Test, FOO_, NSString *)");
     translation = getTranslatedFile("Test.m");
     assertTranslation(translation, "NSString * Test_FOO_ = @\"foo\";");
+  }
+
+  public void testPackageInfoAnnotationAndDoc() throws IOException {
+    Options.setDocCommentsEnabled(true);
+    addSourceFile("package foo.annotations;\n"
+        + "import java.lang.annotation.*;\n"
+        + "@Retention(RetentionPolicy.RUNTIME)\n"
+        + "@Target(ElementType.PACKAGE)\n"
+        + "public @interface Test {}",
+        "foo/annotations/Test.java");
+    String translation = translateSourceFile(
+        "/** A package doc-comment. */\n"
+        + "@Test\n"
+        + "package foo.bar.mumble;\n"
+        + "import foo.annotations.Test;",
+        "package-info", "foo/bar/mumble/package_info.h");
+    assertTranslation(translation, "_FooBarMumblepackage_info_H_");
+    assertTranslatedLines(translation, "/**", "@brief A package doc-comment.", "*/");
+    translation = getTranslatedFile("foo/bar/mumble/package_info.m");
+    assertTranslation(translation, "@implementation FooBarMumblepackage_info");
+    assertTranslation(translation, "+ (IOSObjectArray *)__annotations");
+    assertTranslation(translation, "[FooAnnotationsTest alloc]");
+  }
+
+  public void testPackageInfoAnnotationNoDoc() throws IOException {
+    addSourceFile("package foo.annotations;\n"
+        + "import java.lang.annotation.*;\n"
+        + "@Retention(RetentionPolicy.RUNTIME)\n"
+        + "@Target(ElementType.PACKAGE)\n"
+        + "public @interface Test {}",
+        "foo/annotations/Test.java");
+    String translation = translateSourceFile(
+        "@Test\n"
+        + "package foo.bar.mumble;\n"
+        + "import foo.annotations.Test;",
+        "package-info", "foo/bar/mumble/package_info.h");
+    assertTranslation(translation, "_FooBarMumblepackage_info_H_");
+    assertNotInTranslation(translation, "/**");
+    translation = getTranslatedFile("foo/bar/mumble/package_info.m");
+    assertTranslation(translation, "@implementation FooBarMumblepackage_info");
+    assertTranslation(translation, "+ (IOSObjectArray *)__annotations");
+    assertTranslation(translation, "[FooAnnotationsTest alloc]");
+  }
+
+  public void testPackageInfoDocNoAnnotation() throws IOException {
+    Options.setDocCommentsEnabled(true);
+    String translation = translateSourceFile(
+        "/** A package doc-comment. */\n"
+        + "package foo.bar.mumble;",
+        "package-info", "foo/bar/mumble/package_info.h");
+    assertTranslation(translation, "_FooBarMumblepackage_info_H_");
+    assertTranslatedLines(translation, "/**", "@brief A package doc-comment.", "*/");
+    translation = getTranslatedFile("foo/bar/mumble/package_info.m");
+    assertNotInTranslation(translation, "@implementation FooBarMumblepackage_info");
+    assertNotInTranslation(translation, "+ (IOSObjectArray *)__annotations");
   }
 }

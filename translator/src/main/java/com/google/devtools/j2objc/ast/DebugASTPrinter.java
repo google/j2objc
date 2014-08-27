@@ -237,7 +237,7 @@ public class DebugASTPrinter extends TreeVisitor {
 
   @Override
   public boolean visit(CompilationUnit node) {
-    if (node.getPackage() != null) {
+    if (!node.getPackage().isDefaultPackage()) {
       node.getPackage().accept(this);
     }
     for (Iterator<AbstractTypeDeclaration> it = node.getTypes().iterator(); it.hasNext(); ) {
@@ -590,6 +590,7 @@ public class DebugASTPrinter extends TreeVisitor {
 
   @Override
   public boolean visit(PackageDeclaration node) {
+    printAnnotations(node.getAnnotations());
     sb.print("package ");
     node.getName().accept(this);
     sb.println(';');
@@ -951,9 +952,7 @@ public class DebugASTPrinter extends TreeVisitor {
     Iterator<Annotation> iterator = annotations.iterator();
     while (iterator.hasNext()) {
       iterator.next().accept(this);
-      if (iterator.hasNext()) {
-        sb.print(' ');
-      }
+      sb.print(' ');
     }
   }
 

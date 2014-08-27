@@ -37,6 +37,7 @@ import com.google.devtools.j2objc.ast.EnumDeclaration;
 import com.google.devtools.j2objc.ast.Expression;
 import com.google.devtools.j2objc.ast.FieldDeclaration;
 import com.google.devtools.j2objc.ast.MethodDeclaration;
+import com.google.devtools.j2objc.ast.PackageDeclaration;
 import com.google.devtools.j2objc.ast.SingleVariableDeclaration;
 import com.google.devtools.j2objc.ast.Statement;
 import com.google.devtools.j2objc.ast.StringLiteral;
@@ -118,6 +119,9 @@ public class ObjectiveCImplementationGenerator extends ObjectiveCSourceFileGener
         generate(type);
       }
       popIgnoreDeprecatedDeclarationsPragma();
+    } else if (unit.getMainTypeName().endsWith(NameTable.PACKAGE_INFO_MAIN_TYPE) &&
+        unit.getPackage().getAnnotations().size() > 0) {
+      generate(unit.getPackage());
     } else {
       // Print a dummy C function so compiled object file is valid.
       List<AbstractTypeDeclaration> types = unit.getTypes();
@@ -320,6 +324,18 @@ public class ObjectiveCImplementationGenerator extends ObjectiveCSourceFileGener
     }
     if (nPrinted > 0) {
       newline();
+    }
+  }
+
+  private void generate(PackageDeclaration node) {
+    List<Annotation> runtimeAnnotations = TreeUtil.getRuntimeAnnotationsList(node.getAnnotations());
+    if (runtimeAnnotations.size() > 0 && !Options.stripReflection()) {
+      String typeName = NameTable.getPrefix(node.getName().getFullyQualifiedName())
+          + NameTable.PACKAGE_INFO_MAIN_TYPE;
+      printf("@implementation %s\n", typeName);
+      println("+ (IOSObjectArray *)__annotations {");
+      printAnnotationCreate(runtimeAnnotations);
+      println("\n@end");
     }
   }
 

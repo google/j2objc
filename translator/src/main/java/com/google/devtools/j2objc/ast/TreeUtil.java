@@ -214,11 +214,11 @@ public class TreeUtil {
    */
   public static String getSourceFileName(CompilationUnit unit) {
     PackageDeclaration pkg = unit.getPackage();
-    if (pkg != null) {
+    if (pkg.isDefaultPackage()) {
+      return unit.getMainTypeName() + ".java";
+    } else {
       return pkg.getName().getFullyQualifiedName().replace('.', File.separatorChar)
           + File.separatorChar + unit.getMainTypeName() + ".java";
-    } else {
-      return unit.getMainTypeName() + ".java";
     }
   }
 

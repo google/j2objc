@@ -16,6 +16,7 @@ package com.google.devtools.j2objc.ast;
 
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Lists;
+import com.google.devtools.j2objc.util.NameTable;
 
 import org.eclipse.jdt.core.dom.ASTNode;
 
@@ -41,10 +42,19 @@ public class CompilationUnit extends TreeNode {
       String mainTypeName, String source) {
     super(jdtNode);
     this.sourceFileFullPath = Preconditions.checkNotNull(sourceFileFullPath);
-    this.mainTypeName = Preconditions.checkNotNull(mainTypeName);
+    Preconditions.checkNotNull(mainTypeName);
+    if (mainTypeName.endsWith(NameTable.PACKAGE_INFO_FILE_NAME)) {
+      mainTypeName =
+          mainTypeName.replace(NameTable.PACKAGE_INFO_FILE_NAME, NameTable.PACKAGE_INFO_MAIN_TYPE);
+    }
+    this.mainTypeName = mainTypeName;
     this.source = Preconditions.checkNotNull(source);
     newlines = findNewlines(source);
-    packageDeclaration.set((PackageDeclaration) TreeConverter.convert(jdtNode.getPackage()));
+    if (jdtNode.getPackage() == null) {
+      packageDeclaration.set(new PackageDeclaration());
+    } else {
+      packageDeclaration.set((PackageDeclaration) TreeConverter.convert(jdtNode.getPackage()));
+    }
     for (Object comment : jdtNode.getCommentList()) {
       // Comments are not normally parented in the JDT AST. Javadoc nodes are
       // normally parented by the BodyDeclaration they apply do, so here we only
@@ -161,6 +171,6 @@ public class CompilationUnit extends TreeNode {
     Preconditions.checkNotNull(sourceFileFullPath);
     Preconditions.checkNotNull(mainTypeName);
     Preconditions.checkNotNull(source);
-    Preconditions.checkState(!types.isEmpty());
+    Preconditions.checkNotNull(packageDeclaration);
   }
 }
