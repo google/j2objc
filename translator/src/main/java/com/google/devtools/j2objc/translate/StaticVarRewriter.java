@@ -14,57 +14,53 @@
 
 package com.google.devtools.j2objc.translate;
 
+import com.google.devtools.j2objc.ast.Assignment;
+import com.google.devtools.j2objc.ast.Expression;
+import com.google.devtools.j2objc.ast.FieldAccess;
+import com.google.devtools.j2objc.ast.MethodInvocation;
+import com.google.devtools.j2objc.ast.Name;
+import com.google.devtools.j2objc.ast.PostfixExpression;
+import com.google.devtools.j2objc.ast.PrefixExpression;
+import com.google.devtools.j2objc.ast.QualifiedName;
+import com.google.devtools.j2objc.ast.SimpleName;
+import com.google.devtools.j2objc.ast.SwitchCase;
+import com.google.devtools.j2objc.ast.TreeNode;
+import com.google.devtools.j2objc.ast.TreeUtil;
+import com.google.devtools.j2objc.ast.TreeVisitor;
 import com.google.devtools.j2objc.types.IOSMethodBinding;
-import com.google.devtools.j2objc.types.NodeCopier;
 import com.google.devtools.j2objc.types.PointerTypeBinding;
-import com.google.devtools.j2objc.types.Types;
-import com.google.devtools.j2objc.util.ASTUtil;
 import com.google.devtools.j2objc.util.BindingUtil;
-import com.google.devtools.j2objc.util.ErrorReportingASTVisitor;
 import com.google.devtools.j2objc.util.NameTable;
 
-import org.eclipse.jdt.core.dom.AST;
-import org.eclipse.jdt.core.dom.ASTNode;
-import org.eclipse.jdt.core.dom.Assignment;
-import org.eclipse.jdt.core.dom.Expression;
-import org.eclipse.jdt.core.dom.FieldAccess;
 import org.eclipse.jdt.core.dom.ITypeBinding;
 import org.eclipse.jdt.core.dom.IVariableBinding;
-import org.eclipse.jdt.core.dom.MethodInvocation;
-import org.eclipse.jdt.core.dom.Name;
-import org.eclipse.jdt.core.dom.PostfixExpression;
-import org.eclipse.jdt.core.dom.PrefixExpression;
-import org.eclipse.jdt.core.dom.QualifiedName;
-import org.eclipse.jdt.core.dom.SimpleName;
-import org.eclipse.jdt.core.dom.SwitchCase;
 
 /**
  * Converts static variable access to static method calls where necessary.
  *
  * @author Keith Stanger
  */
-public class StaticVarRewriter extends ErrorReportingASTVisitor {
+public class StaticVarRewriter extends TreeVisitor {
 
-  private boolean useAccessor(ASTNode currentNode, IVariableBinding var) {
+  private boolean useAccessor(TreeNode currentNode, IVariableBinding var) {
     return BindingUtil.isStatic(var) && !BindingUtil.isPrimitiveConstant(var)
-        && !Types.getTypeBinding(ASTUtil.getOwningType(currentNode)).getTypeDeclaration().isEqualTo(
+        && !TreeUtil.getOwningType(currentNode).getTypeBinding().getTypeDeclaration().isEqualTo(
             var.getDeclaringClass().getTypeDeclaration());
   }
 
   @Override
   public boolean visit(Assignment node) {
-    AST ast = node.getAST();
     Expression lhs = node.getLeftHandSide();
-    IVariableBinding lhsVar = Types.getVariableBinding(lhs);
+    IVariableBinding lhsVar = TreeUtil.getVariableBinding(lhs);
     if (lhsVar != null && useAccessor(node, lhsVar)) {
       boolean isPrimitive = lhsVar.getType().isPrimitive();
       if (node.getOperator() == Assignment.Operator.ASSIGN && !isPrimitive) {
-        Expression newValue = NodeCopier.copySubtree(ast, node.getRightHandSide());
-        ASTUtil.setProperty(node, newSetterInvocation(ast, lhsVar, newValue));
-        newValue.accept(this);
+        Expression rhs = node.getRightHandSide();
+        node.replaceWith(newSetterInvocation(lhsVar, TreeUtil.remove(rhs)));
+        rhs.accept(this);
         return false;
       } else if (isPrimitive) {
-        ASTUtil.setProperty(lhs, newGetterInvocation(ast, lhs, true));
+        lhs.replaceWith(newGetterInvocation(lhs, true));
       }
     }
     return true;
@@ -81,16 +77,16 @@ public class StaticVarRewriter extends ErrorReportingASTVisitor {
   }
 
   private boolean visitName(Name node) {
-    IVariableBinding var = Types.getVariableBinding(node);
+    IVariableBinding var = TreeUtil.getVariableBinding(node);
     if (var != null && useAccessor(node, var)) {
-      ASTNode parent = node.getParent();
+      TreeNode parent = node.getParent();
       if (parent instanceof QualifiedName && node == ((QualifiedName) parent).getQualifier()) {
         // QualifiedName nodes can only have qualifier children of type Name, so
         // we must convert QualifiedName parents to FieldAccess nodes.
-        FieldAccess newParent = ASTFactory.convertToFieldAccess((QualifiedName) parent);
+        FieldAccess newParent = TreeUtil.convertToFieldAccess((QualifiedName) parent);
         node = (Name) newParent.getExpression();
       }
-      ASTUtil.setProperty(node, newGetterInvocation(node.getAST(), node, false));
+      node.replaceWith(newGetterInvocation(node, false));
       return false;
     }
     return true;
@@ -105,12 +101,12 @@ public class StaticVarRewriter extends ErrorReportingASTVisitor {
   @Override
   public boolean visit(PostfixExpression node) {
     Expression operand = node.getOperand();
-    IVariableBinding operandVar = Types.getVariableBinding(operand);
+    IVariableBinding operandVar = TreeUtil.getVariableBinding(operand);
     PostfixExpression.Operator op = node.getOperator();
     boolean isIncOrDec = op == PostfixExpression.Operator.INCREMENT
         || op == PostfixExpression.Operator.DECREMENT;
     if (isIncOrDec && operandVar != null && useAccessor(node, operandVar)) {
-      node.setOperand(newGetterInvocation(node.getAST(), operand, true));
+      node.setOperand(newGetterInvocation(operand, true));
       return false;
     }
     return true;
@@ -119,19 +115,19 @@ public class StaticVarRewriter extends ErrorReportingASTVisitor {
   @Override
   public boolean visit(PrefixExpression node) {
     Expression operand = node.getOperand();
-    IVariableBinding operandVar = Types.getVariableBinding(operand);
+    IVariableBinding operandVar = TreeUtil.getVariableBinding(operand);
     PrefixExpression.Operator op = node.getOperator();
     boolean isIncOrDec = op == PrefixExpression.Operator.INCREMENT
         || op == PrefixExpression.Operator.DECREMENT;
     if (isIncOrDec && operandVar != null && useAccessor(node, operandVar)) {
-      node.setOperand(newGetterInvocation(node.getAST(), operand, true));
+      node.setOperand(newGetterInvocation(operand, true));
       return false;
     }
     return true;
   }
 
-  private MethodInvocation newGetterInvocation(AST ast, Expression variable, boolean assignable) {
-    IVariableBinding var = Types.getVariableBinding(variable);
+  private MethodInvocation newGetterInvocation(Expression variable, boolean assignable) {
+    IVariableBinding var = TreeUtil.getVariableBinding(variable);
     ITypeBinding declaringType = var.getDeclaringClass().getTypeDeclaration();
     String varName = NameTable.getStaticVarName(var);
     String getterName = "get";
@@ -143,24 +139,24 @@ public class StaticVarRewriter extends ErrorReportingASTVisitor {
     IOSMethodBinding binding = IOSMethodBinding.newFunction(
         NameTable.getFullName(declaringType) + "_" + getterName + "_" + varName, returnType,
         declaringType);
-    MethodInvocation invocation = ASTFactory.newMethodInvocation(ast, binding, null);
+    MethodInvocation invocation = new MethodInvocation(binding, null);
     if (assignable) {
-      invocation = ASTFactory.newDereference(ast, invocation);
+      invocation = MethodInvocation.newDereference(invocation);
     }
-    if (Types.hasNilCheck(variable)) {
-      Types.addNilCheck(invocation);
+    if (variable.hasNilCheck()) {
+      invocation.setHasNilCheck(true);
     }
     return invocation;
   }
 
-  private MethodInvocation newSetterInvocation(AST ast, IVariableBinding var, Expression value) {
+  private MethodInvocation newSetterInvocation(IVariableBinding var, Expression value) {
     ITypeBinding varType = var.getType();
     ITypeBinding declaringType = var.getDeclaringClass();
     IOSMethodBinding binding = IOSMethodBinding.newFunction(
         NameTable.getFullName(declaringType) + "_set_" + NameTable.getStaticVarName(var), varType,
         declaringType, varType);
-    MethodInvocation invocation = ASTFactory.newMethodInvocation(ast, binding, null);
-    ASTUtil.getArguments(invocation).add(value);
+    MethodInvocation invocation = new MethodInvocation(binding, null);
+    invocation.getArguments().add(value);
     return invocation;
   }
 }

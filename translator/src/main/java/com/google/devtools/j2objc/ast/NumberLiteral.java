@@ -14,6 +14,10 @@
 
 package com.google.devtools.j2objc.ast;
 
+import com.google.devtools.j2objc.types.Types;
+
+import org.eclipse.jdt.core.dom.ITypeBinding;
+
 /**
  * Number literal node type.
  */
@@ -29,6 +33,15 @@ public class NumberLiteral extends Expression {
   public NumberLiteral(NumberLiteral other) {
     super(other);
     token = other.getToken();
+  }
+
+  public NumberLiteral(ITypeBinding typeBinding, String token) {
+    super(typeBinding);
+    this.token = token;
+  }
+
+  public static NumberLiteral newIntLiteral(int i) {
+    return new NumberLiteral(Types.resolveJavaType("int"), Integer.toString(i));
   }
 
   public String getToken() {

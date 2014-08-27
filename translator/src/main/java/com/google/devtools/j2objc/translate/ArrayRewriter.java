@@ -17,39 +17,39 @@ package com.google.devtools.j2objc.translate;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
+import com.google.devtools.j2objc.ast.ArrayAccess;
+import com.google.devtools.j2objc.ast.ArrayCreation;
+import com.google.devtools.j2objc.ast.ArrayInitializer;
+import com.google.devtools.j2objc.ast.Assignment;
+import com.google.devtools.j2objc.ast.CastExpression;
+import com.google.devtools.j2objc.ast.ClassInstanceCreation;
+import com.google.devtools.j2objc.ast.ConstructorInvocation;
+import com.google.devtools.j2objc.ast.EnumConstantDeclaration;
+import com.google.devtools.j2objc.ast.Expression;
+import com.google.devtools.j2objc.ast.FieldAccess;
+import com.google.devtools.j2objc.ast.InstanceofExpression;
+import com.google.devtools.j2objc.ast.MethodInvocation;
+import com.google.devtools.j2objc.ast.NumberLiteral;
+import com.google.devtools.j2objc.ast.PostfixExpression;
+import com.google.devtools.j2objc.ast.PrefixExpression;
+import com.google.devtools.j2objc.ast.QualifiedName;
+import com.google.devtools.j2objc.ast.SimpleName;
+import com.google.devtools.j2objc.ast.SuperConstructorInvocation;
+import com.google.devtools.j2objc.ast.SuperMethodInvocation;
+import com.google.devtools.j2objc.ast.TreeNode;
+import com.google.devtools.j2objc.ast.TreeUtil;
+import com.google.devtools.j2objc.ast.TreeVisitor;
+import com.google.devtools.j2objc.ast.TypeLiteral;
 import com.google.devtools.j2objc.types.GeneratedTypeBinding;
 import com.google.devtools.j2objc.types.IOSMethod;
 import com.google.devtools.j2objc.types.IOSMethodBinding;
 import com.google.devtools.j2objc.types.IOSTypeBinding;
-import com.google.devtools.j2objc.types.NodeCopier;
 import com.google.devtools.j2objc.types.PointerTypeBinding;
 import com.google.devtools.j2objc.types.Types;
-import com.google.devtools.j2objc.util.ASTUtil;
-import com.google.devtools.j2objc.util.ErrorReportingASTVisitor;
 
-import org.eclipse.jdt.core.dom.AST;
-import org.eclipse.jdt.core.dom.ASTNode;
-import org.eclipse.jdt.core.dom.ArrayAccess;
-import org.eclipse.jdt.core.dom.ArrayCreation;
-import org.eclipse.jdt.core.dom.ArrayInitializer;
-import org.eclipse.jdt.core.dom.Assignment;
-import org.eclipse.jdt.core.dom.ClassInstanceCreation;
-import org.eclipse.jdt.core.dom.ConstructorInvocation;
-import org.eclipse.jdt.core.dom.EnumConstantDeclaration;
-import org.eclipse.jdt.core.dom.Expression;
-import org.eclipse.jdt.core.dom.FieldAccess;
 import org.eclipse.jdt.core.dom.IMethodBinding;
 import org.eclipse.jdt.core.dom.ITypeBinding;
-import org.eclipse.jdt.core.dom.InstanceofExpression;
-import org.eclipse.jdt.core.dom.MethodInvocation;
 import org.eclipse.jdt.core.dom.Modifier;
-import org.eclipse.jdt.core.dom.PostfixExpression;
-import org.eclipse.jdt.core.dom.PrefixExpression;
-import org.eclipse.jdt.core.dom.QualifiedName;
-import org.eclipse.jdt.core.dom.SimpleName;
-import org.eclipse.jdt.core.dom.SuperConstructorInvocation;
-import org.eclipse.jdt.core.dom.SuperMethodInvocation;
-import org.eclipse.jdt.core.dom.TypeLiteral;
 
 import java.util.List;
 import java.util.Map;
@@ -61,7 +61,7 @@ import java.util.Map;
  *
  * @author Keith Stanger
  */
-public class ArrayRewriter extends ErrorReportingASTVisitor {
+public class ArrayRewriter extends TreeVisitor {
 
   private static final IOSTypeBinding ARRAY_BASE_TYPE = IOSTypeBinding.newUnmappedClass("IOSArray");
 
@@ -100,32 +100,30 @@ public class ArrayRewriter extends ErrorReportingASTVisitor {
 
   @Override
   public void endVisit(ArrayCreation node) {
-    ASTUtil.setProperty(node, createInvocation(node));
+    node.replaceWith(createInvocation(node));
   }
 
   private MethodInvocation createInvocation(ArrayCreation node) {
-    AST ast = node.getAST();
-    ITypeBinding arrayType = Types.getTypeBinding(node);
+    ITypeBinding arrayType = node.getTypeBinding();
     assert arrayType.isArray();
     ArrayInitializer initializer = node.getInitializer();
     if (initializer != null) {
-      return newInitializedArrayInvocation(ast, arrayType, ASTUtil.getExpressions(initializer));
+      return newInitializedArrayInvocation(arrayType, initializer.getExpressions());
     } else {
-      List<Expression> dimensions = ASTUtil.getDimensions(node);
+      List<Expression> dimensions = node.getDimensions();
       if (dimensions.size() == 1) {
-        return newSingleDimensionArrayInvocation(ast, arrayType, dimensions.get(0));
+        return newSingleDimensionArrayInvocation(arrayType, dimensions.get(0));
       } else {
-        return newMultiDimensionArrayInvocation(ast, arrayType, dimensions);
+        return newMultiDimensionArrayInvocation(arrayType, dimensions);
       }
     }
   }
 
   @Override
   public void endVisit(ArrayInitializer node) {
-    ASTNode parent = node.getParent();
+    TreeNode parent = node.getParent();
     if (!(parent instanceof ArrayCreation)) {
-      ASTUtil.setProperty(node, newInitializedArrayInvocation(
-          node.getAST(), Types.getTypeBinding(node), ASTUtil.getExpressions(node)));
+      node.replaceWith(newInitializedArrayInvocation(node.getTypeBinding(), node.getExpressions()));
     }
   }
 
@@ -133,7 +131,7 @@ public class ArrayRewriter extends ErrorReportingASTVisitor {
    * Varargs rewriting must be done in a visit (not a endVisit) because it needs
    * the dimensions of the args before they are rewritten.
    */
-  private void rewriteVarargs(IMethodBinding method, List<Expression> args, AST ast) {
+  private void rewriteVarargs(IMethodBinding method, List<Expression> args) {
     method = method.getMethodDeclaration();
     if (!method.isVarargs() || IOSMethodBinding.hasVarArgsTarget(method)) {
       return;
@@ -143,12 +141,13 @@ public class ArrayRewriter extends ErrorReportingASTVisitor {
     assert lastParam.isArray();
     int varargsSize = args.size() - paramTypes.length + 1;
     if (varargsSize == 1) {
-      ITypeBinding lastArgType = Types.getTypeBinding(args.get(args.size() - 1));
+      ITypeBinding lastArgType = args.get(args.size() - 1).getTypeBinding();
       if (lastArgType.isNullType()) {
         return;
       }
-      if (lastParam.getDimensions() == lastArgType.getDimensions() &&
-          lastParam.getElementType().isPrimitive() == lastArgType.getElementType().isPrimitive()) {
+      if (lastParam.getDimensions() == lastArgType.getDimensions()
+          && lastParam.getElementType().isPrimitive()
+              == lastArgType.getElementType().isPrimitive()) {
         // Last argument is already an array.
         return;
       }
@@ -158,40 +157,36 @@ public class ArrayRewriter extends ErrorReportingASTVisitor {
     List<Expression> varargsCopy = Lists.newArrayList(varargs);
     varargs.clear();
     if (varargsCopy.isEmpty()) {
-      args.add(newSingleDimensionArrayInvocation(
-          ast, lastParam, ASTFactory.makeIntLiteral(ast, 0)));
+      args.add(newSingleDimensionArrayInvocation(lastParam, NumberLiteral.newIntLiteral(0)));
     } else {
-      ArrayInitializer newArray = ast.newArrayInitializer();
-      Types.addBinding(newArray, lastParam);
-      ASTUtil.getExpressions(newArray).addAll(varargsCopy);
+      ArrayInitializer newArray = new ArrayInitializer(lastParam);
+      newArray.getExpressions().addAll(varargsCopy);
       args.add(newArray);
     }
   }
 
   private MethodInvocation newInitializedArrayInvocation(
-      AST ast, ITypeBinding arrayType, List<Expression> elements) {
+      ITypeBinding arrayType, List<Expression> elements) {
     ITypeBinding componentType = arrayType.getComponentType();
     IOSTypeBinding iosArrayBinding = Types.resolveArrayType(componentType);
 
     IOSMethodBinding methodBinding = getInitializeMethod(iosArrayBinding);
-    MethodInvocation invocation = ASTFactory.newMethodInvocation(
-        ast, methodBinding, ASTFactory.newSimpleName(ast, iosArrayBinding));
+    MethodInvocation invocation =
+        new MethodInvocation(methodBinding, new SimpleName(iosArrayBinding));
 
     // Create the array initializer and add it as the first parameter.
-    ArrayInitializer arrayInit = ast.newArrayInitializer();
-    Types.addBinding(arrayInit, arrayType);
+    ArrayInitializer arrayInit = new ArrayInitializer(arrayType);
     for (Expression element : elements) {
-      ASTUtil.getExpressions(arrayInit).add(NodeCopier.copySubtree(ast, element));
+      arrayInit.getExpressions().add(element.copy());
     }
-    ASTUtil.getArguments(invocation).add(arrayInit);
+    invocation.getArguments().add(arrayInit);
 
     // Add the array size parameter.
-    ASTUtil.getArguments(invocation).add(
-        ASTFactory.makeIntLiteral(ast, arrayInit.expressions().size()));
+    invocation.getArguments().add(NumberLiteral.newIntLiteral(arrayInit.getExpressions().size()));
 
     // Add the type argument for object arrays.
     if (!componentType.isPrimitive()) {
-      ASTUtil.getArguments(invocation).add(newTypeLiteral(ast, componentType));
+      invocation.getArguments().add(newTypeLiteral(componentType));
     }
 
     return invocation;
@@ -217,20 +212,20 @@ public class ArrayRewriter extends ErrorReportingASTVisitor {
   }
 
   private MethodInvocation newSingleDimensionArrayInvocation(
-      AST ast, ITypeBinding arrayType, Expression dimensionExpr) {
+      ITypeBinding arrayType, Expression dimensionExpr) {
     ITypeBinding componentType = arrayType.getComponentType();
     IOSTypeBinding iosArrayBinding = Types.resolveArrayType(componentType);
 
     IOSMethodBinding methodBinding = getSingleDimensionMethod(iosArrayBinding);
-    MethodInvocation invocation = ASTFactory.newMethodInvocation(
-        ast, methodBinding, ASTFactory.newSimpleName(ast, iosArrayBinding));
+    MethodInvocation invocation =
+        new MethodInvocation(methodBinding, new SimpleName(iosArrayBinding));
 
     // Add the array length argument.
-    ASTUtil.getArguments(invocation).add(NodeCopier.copySubtree(ast, dimensionExpr));
+    invocation.getArguments().add(dimensionExpr.copy());
 
     // Add the type argument for object arrays.
     if (!componentType.isPrimitive()) {
-      ASTUtil.getArguments(invocation).add(newTypeLiteral(ast, componentType));
+      invocation.getArguments().add(newTypeLiteral(componentType));
     }
 
     return invocation;
@@ -256,7 +251,7 @@ public class ArrayRewriter extends ErrorReportingASTVisitor {
   }
 
   private MethodInvocation newMultiDimensionArrayInvocation(
-      AST ast, ITypeBinding arrayType, List<Expression> dimensions) {
+      ITypeBinding arrayType, List<Expression> dimensions) {
     assert dimensions.size() > 1;
     ITypeBinding componentType = arrayType;
     for (int i = 0; i < dimensions.size(); i++) {
@@ -265,23 +260,22 @@ public class ArrayRewriter extends ErrorReportingASTVisitor {
     IOSTypeBinding iosArrayBinding = Types.resolveArrayType(componentType);
 
     IOSMethodBinding methodBinding = getMultiDimensionMethod(iosArrayBinding);
-    MethodInvocation invocation = ASTFactory.newMethodInvocation(
-        ast, methodBinding, ASTFactory.newSimpleName(ast, iosArrayBinding));
+    MethodInvocation invocation =
+        new MethodInvocation(methodBinding, new SimpleName(iosArrayBinding));
 
     // Add the dimension count argument.
-    ASTUtil.getArguments(invocation).add(ASTFactory.makeIntLiteral(ast, dimensions.size()));
+    invocation.getArguments().add(NumberLiteral.newIntLiteral(dimensions.size()));
 
     // Create the dimensions array.
-    ArrayInitializer dimensionsArg = ast.newArrayInitializer();
-    Types.addBinding(dimensionsArg,
+    ArrayInitializer dimensionsArg = new ArrayInitializer(
         GeneratedTypeBinding.newArrayType(Types.resolveJavaType("int")));
     for (Expression e : dimensions) {
-      ASTUtil.getExpressions(dimensionsArg).add(NodeCopier.copySubtree(ast, e));
+      dimensionsArg.getExpressions().add(e.copy());
     }
-    ASTUtil.getArguments(invocation).add(dimensionsArg);
+    invocation.getArguments().add(dimensionsArg);
 
     if (!componentType.isPrimitive()) {
-      ASTUtil.getArguments(invocation).add(newTypeLiteral(ast, componentType));
+      invocation.getArguments().add(newTypeLiteral(componentType));
     }
 
     return invocation;
@@ -312,8 +306,7 @@ public class ArrayRewriter extends ErrorReportingASTVisitor {
 
   @Override
   public void endVisit(ArrayAccess node) {
-    AST ast = node.getAST();
-    ITypeBinding arrayType = Types.getTypeBinding(node.getArray());
+    ITypeBinding arrayType = node.getArray().getTypeBinding();
     assert arrayType.isArray();
     ITypeBinding componentType = arrayType.getComponentType();
     IOSTypeBinding iosArrayBinding = Types.resolveArrayType(componentType);
@@ -321,16 +314,15 @@ public class ArrayRewriter extends ErrorReportingASTVisitor {
     Assignment assignment = getArrayAssignment(node);
     if (assignment != null && !componentType.isPrimitive()) {
       assignment.getRightHandSide().accept(this);
-      ASTUtil.setProperty(assignment, newArrayAssignment(ast, assignment, node, componentType));
+      assignment.replaceWith(newArrayAssignment(assignment, node, componentType));
     } else {
       boolean assignable = assignment != null || needsAssignableAccess(node);
-      ASTUtil.setProperty(node, newArrayAccess(
-          ast, node, componentType, iosArrayBinding, assignable));
+      node.replaceWith(newArrayAccess(node, componentType, iosArrayBinding, assignable));
     }
   }
 
   private static Assignment getArrayAssignment(ArrayAccess node) {
-    ASTNode parent = node.getParent();
+    TreeNode parent = node.getParent();
     if (parent instanceof Assignment) {
       Assignment assignment = (Assignment) parent;
       if (node == assignment.getLeftHandSide()) {
@@ -341,7 +333,7 @@ public class ArrayRewriter extends ErrorReportingASTVisitor {
   }
 
   private static boolean needsAssignableAccess(ArrayAccess node) {
-    ASTNode parent = node.getParent();
+    TreeNode parent = node.getParent();
     if (parent instanceof PostfixExpression) {
       PostfixExpression.Operator op = ((PostfixExpression) parent).getOperator();
       if (op == PostfixExpression.Operator.INCREMENT
@@ -380,17 +372,17 @@ public class ArrayRewriter extends ErrorReportingASTVisitor {
   }
 
   private MethodInvocation newArrayAccess(
-      AST ast, ArrayAccess arrayAccessNode, ITypeBinding componentType,
-      IOSTypeBinding iosArrayBinding, boolean assignable) {
+      ArrayAccess arrayAccessNode, ITypeBinding componentType, IOSTypeBinding iosArrayBinding,
+      boolean assignable) {
     IOSMethodBinding binding = getArrayAccessBinding(componentType, iosArrayBinding, assignable);
     if (!componentType.isPrimitive()) {
       binding = IOSMethodBinding.newTypedInvocation(binding, componentType);
     }
-    MethodInvocation invocation = ASTFactory.newMethodInvocation(ast, binding, null);
-    ASTUtil.getArguments(invocation).add(NodeCopier.copySubtree(ast, arrayAccessNode.getArray()));
-    ASTUtil.getArguments(invocation).add(NodeCopier.copySubtree(ast, arrayAccessNode.getIndex()));
+    MethodInvocation invocation = new MethodInvocation(binding, null);
+    invocation.getArguments().add(arrayAccessNode.getArray().copy());
+    invocation.getArguments().add(arrayAccessNode.getIndex().copy());
     if (assignable) {
-      invocation = ASTFactory.newDereference(ast, invocation);
+      invocation = MethodInvocation.newDereference(invocation);
     }
     return invocation;
   }
@@ -406,7 +398,7 @@ public class ArrayRewriter extends ErrorReportingASTVisitor {
   private IOSMethodBinding objectArrayAssignmentFunction = createObjectArrayAssignmentFunction();
 
   private MethodInvocation newArrayAssignment(
-      AST ast, Assignment assignmentNode, ArrayAccess arrayAccessNode, ITypeBinding componentType) {
+      Assignment assignmentNode, ArrayAccess arrayAccessNode, ITypeBinding componentType) {
     Assignment.Operator op = assignmentNode.getOperator();
     assert !componentType.isPrimitive();
     assert op == Assignment.Operator.ASSIGN;
@@ -414,11 +406,11 @@ public class ArrayRewriter extends ErrorReportingASTVisitor {
     IOSMethodBinding binding =
         IOSMethodBinding.newTypedInvocation(objectArrayAssignmentFunction, componentType);
 
-    MethodInvocation invocation = ASTFactory.newMethodInvocation(ast, binding, null);
-    List<Expression> args = ASTUtil.getArguments(invocation);
-    args.add(NodeCopier.copySubtree(ast, arrayAccessNode.getArray()));
-    args.add(NodeCopier.copySubtree(ast, arrayAccessNode.getIndex()));
-    args.add(NodeCopier.copySubtree(ast, assignmentNode.getRightHandSide()));
+    MethodInvocation invocation = new MethodInvocation(binding, null);
+    List<Expression> args = invocation.getArguments();
+    args.add(arrayAccessNode.getArray().copy());
+    args.add(arrayAccessNode.getIndex().copy());
+    args.add(assignmentNode.getRightHandSide().copy());
     return invocation;
   }
 
@@ -433,47 +425,43 @@ public class ArrayRewriter extends ErrorReportingASTVisitor {
   }
 
   private void maybeRewriteArrayLength(Expression node, SimpleName name, Expression expr) {
-    if (name.getIdentifier().equals("length") && Types.getTypeBinding(expr).isArray()) {
-      AST ast = node.getAST();
+    if (name.getIdentifier().equals("length") && expr.getTypeBinding().isArray()) {
       // needs cast: count returns an unsigned value
-      ASTUtil.setProperty(node, ASTFactory.newCastExpression(ast,
-          ASTFactory.newMethodInvocation(ast, arrayCountMethod, NodeCopier.copySubtree(ast, expr)),
-          Types.resolveJavaType("int")));
+      node.replaceWith(new CastExpression(
+          Types.resolveJavaType("int"), new MethodInvocation(arrayCountMethod, expr.copy())));
     }
   }
 
   @Override
   public void endVisit(InstanceofExpression node) {
-    ITypeBinding type = Types.getTypeBinding(node.getRightOperand());
+    ITypeBinding type = node.getRightOperand().getTypeBinding();
     if (!type.isArray() || type.getComponentType().isPrimitive()) {
       return;
     }
-    AST ast = node.getAST();
     IOSMethodBinding binding = IOSMethodBinding.newMethod(
         ISINSTANCE_METHOD, Modifier.PUBLIC, Types.resolveJavaType("boolean"), Types.getIOSClass());
     binding.addParameter(Types.resolveIOSType("id"));
-    MethodInvocation invocation = ASTFactory.newMethodInvocation(
-        ast, binding, newTypeLiteralInvocation(ast, type));
-    ASTUtil.getArguments(invocation).add(NodeCopier.copySubtree(ast, node.getLeftOperand()));
-    ASTUtil.setProperty(node, invocation);
+    MethodInvocation invocation = new MethodInvocation(binding, newTypeLiteralInvocation(type));
+    invocation.getArguments().add(TreeUtil.remove(node.getLeftOperand()));
+    node.replaceWith(invocation);
   }
 
   @Override
   public void endVisit(TypeLiteral node) {
-    ITypeBinding type = Types.getTypeBinding(node.getType());
+    ITypeBinding type = node.getType().getTypeBinding();
     if (type.isArray()) {
-      ASTUtil.setProperty(node, newTypeLiteralInvocation(node.getAST(), type));
+      node.replaceWith(newTypeLiteralInvocation(type));
     }
   }
 
-  private static Expression newTypeLiteral(AST ast, ITypeBinding type) {
+  private static Expression newTypeLiteral(ITypeBinding type) {
     if (type.isArray()) {
-      return newTypeLiteralInvocation(ast, type);
+      return newTypeLiteralInvocation(type);
     }
-    return ASTFactory.newTypeLiteral(ast, type);
+    return new TypeLiteral(type);
   }
 
-  private static MethodInvocation newTypeLiteralInvocation(AST ast, ITypeBinding type) {
+  private static MethodInvocation newTypeLiteralInvocation(ITypeBinding type) {
     assert type.isArray();
     ITypeBinding elementType = type.getElementType();
     IOSTypeBinding iosArrayType = Types.resolveArrayType(elementType);
@@ -481,16 +469,14 @@ public class ArrayRewriter extends ErrorReportingASTVisitor {
     IOSMethodBinding binding = IOSMethodBinding.newMethod(
         getTypeLiteralMethod(elementType, dimensions), Modifier.PUBLIC | Modifier.STATIC,
         Types.getIOSClass(), iosArrayType);
-    MethodInvocation invocation = ASTFactory.newMethodInvocation(
-        ast, binding, ASTFactory.newSimpleName(ast, iosArrayType));
+    MethodInvocation invocation = new MethodInvocation(binding, new SimpleName(iosArrayType));
     if (dimensions > 1) {
       binding.addParameter(Types.resolveJavaType("int"));
-      ASTUtil.getArguments(invocation).add(
-          ASTFactory.makeLiteral(ast, Integer.valueOf(dimensions), Types.resolveJavaType("int")));
+      invocation.getArguments().add(NumberLiteral.newIntLiteral(dimensions));
     }
     if (!elementType.isPrimitive()) {
       binding.addParameter(Types.getIOSClass());
-      ASTUtil.getArguments(invocation).add(newTypeLiteral(ast, elementType));
+      invocation.getArguments().add(newTypeLiteral(elementType));
     }
     return invocation;
   }
@@ -513,37 +499,37 @@ public class ArrayRewriter extends ErrorReportingASTVisitor {
 
   @Override
   public boolean visit(ClassInstanceCreation node) {
-    rewriteVarargs(Types.getMethodBinding(node), ASTUtil.getArguments(node), node.getAST());
+    rewriteVarargs(node.getMethodBinding(), node.getArguments());
     return true;
   }
 
   @Override
   public boolean visit(ConstructorInvocation node) {
-    rewriteVarargs(Types.getMethodBinding(node), ASTUtil.getArguments(node), node.getAST());
+    rewriteVarargs(node.getMethodBinding(), node.getArguments());
     return true;
   }
 
   @Override
   public boolean visit(EnumConstantDeclaration node) {
-    rewriteVarargs(Types.getMethodBinding(node), ASTUtil.getArguments(node), node.getAST());
+    rewriteVarargs(node.getMethodBinding(), node.getArguments());
     return true;
   }
 
   @Override
   public boolean visit(MethodInvocation node) {
-    rewriteVarargs(Types.getMethodBinding(node), ASTUtil.getArguments(node), node.getAST());
+    rewriteVarargs(node.getMethodBinding(), node.getArguments());
     return true;
   }
 
   @Override
   public boolean visit(SuperConstructorInvocation node) {
-    rewriteVarargs(Types.getMethodBinding(node), ASTUtil.getArguments(node), node.getAST());
+    rewriteVarargs(node.getMethodBinding(), node.getArguments());
     return true;
   }
 
   @Override
   public boolean visit(SuperMethodInvocation node) {
-    rewriteVarargs(Types.getMethodBinding(node), ASTUtil.getArguments(node), node.getAST());
+    rewriteVarargs(node.getMethodBinding(), node.getArguments());
     return true;
   }
 }

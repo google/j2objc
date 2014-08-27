@@ -208,21 +208,21 @@ class TranslationProcessor extends FileProcessor {
     new JavaToIOSMethodTranslator(unit.getAST(), methodMappings).run(unit);
     ticker.tick("JavaToIOSMethodTranslator");
 
-    new ArrayRewriter().run(unit);
-    ticker.tick("ArrayRewriter");
-
-    new StaticVarRewriter().run(unit);
-    ticker.tick("StaticVarRewriter");
-
-    // Reorders the types so that superclasses are declared before classes that
-    // extend them.
-    TypeSorter.sortTypes(unit);
-    ticker.tick("TypeSorter");
-
     // Verify all modified nodes have type bindings
     Types.verifyNode(unit);
 
     CompilationUnit newUnit = TreeConverter.convertCompilationUnit(unit, path, source);
+
+    new ArrayRewriter().run(newUnit);
+    ticker.tick("ArrayRewriter");
+
+    new StaticVarRewriter().run(newUnit);
+    ticker.tick("StaticVarRewriter");
+
+    // Reorders the types so that superclasses are declared before classes that
+    // extend them.
+    TypeSorter.sortTypes(newUnit);
+    ticker.tick("TypeSorter");
 
     // Add dealloc/finalize method(s), if necessary.  This is done
     // after inner class extraction, so that each class releases

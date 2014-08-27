@@ -65,6 +65,14 @@ public class MethodInvocation extends Expression {
     return node;
   }
 
+  // TODO(kstanger): This should eventually be a PrefixExpression node.
+  public static MethodInvocation newDereference(Expression expression) {
+    MethodInvocation node = new MethodInvocation(
+        IOSMethodBinding.newDereference(expression.getTypeBinding()), null);
+    node.getArguments().add(expression);
+    return node;
+  }
+
   public IMethodBinding getMethodBinding() {
     return methodBinding;
   }

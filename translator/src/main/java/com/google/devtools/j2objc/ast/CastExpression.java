@@ -14,6 +14,8 @@
 
 package com.google.devtools.j2objc.ast;
 
+import org.eclipse.jdt.core.dom.ITypeBinding;
+
 /**
  * Node type for a type cast.
  */
@@ -32,6 +34,12 @@ public class CastExpression extends Expression {
     super(other);
     type.copyFrom(other.getType());
     expression.copyFrom(other.getExpression());
+  }
+
+  public CastExpression(ITypeBinding typeBinding, Expression expression) {
+    super(typeBinding);
+    type.set(Type.newType(typeBinding));
+    this.expression.set(expression);
   }
 
   public Type getType() {

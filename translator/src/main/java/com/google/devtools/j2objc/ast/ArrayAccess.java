@@ -19,13 +19,35 @@ package com.google.devtools.j2objc.ast;
  */
 public class ArrayAccess extends Expression {
 
+  private final ChildLink<Expression> array = ChildLink.create(Expression.class, this);
+  private final ChildLink<Expression> index = ChildLink.create(Expression.class, this);
+
+  public ArrayAccess(org.eclipse.jdt.core.dom.ArrayAccess jdtNode) {
+    super(jdtNode);
+    array.set((Expression) TreeConverter.convert(jdtNode.getArray()));
+    index.set((Expression) TreeConverter.convert(jdtNode.getIndex()));
+  }
+
   public ArrayAccess(ArrayAccess other) {
     super(other);
+    array.copyFrom(other.getArray());
+    index.copyFrom(other.getIndex());
+  }
+
+  public Expression getArray() {
+    return array.get();
+  }
+
+  public Expression getIndex() {
+    return index.get();
   }
 
   @Override
   protected void acceptInner(TreeVisitor visitor) {
-    visitor.visit(this);
+    if (visitor.visit(this)) {
+      array.accept(visitor);
+      index.accept(visitor);
+    }
     visitor.endVisit(this);
   }
 

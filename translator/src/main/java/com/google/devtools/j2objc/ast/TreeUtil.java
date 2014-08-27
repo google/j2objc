@@ -175,12 +175,16 @@ public class TreeUtil {
     if (node instanceof FieldAccess) {
       return ((FieldAccess) node).getVariableBinding();
     } else if (node instanceof Name) {
-      IBinding binding = ((Name) node).getBinding();
-      return (binding instanceof IVariableBinding) ? (IVariableBinding) binding : null;
+      return getVariableBinding((Name) node);
     } else if (node instanceof SuperFieldAccess) {
       return ((SuperFieldAccess) node).getVariableBinding();
     }
     return null;
+  }
+
+  public static IVariableBinding getVariableBinding(Name node) {
+    IBinding binding = node.getBinding();
+    return (binding instanceof IVariableBinding) ? (IVariableBinding) binding : null;
   }
 
   /**
@@ -221,5 +225,25 @@ public class TreeUtil {
     node.replaceWith(block);
     block.getStatements().add(node);
     return block.getStatements();
+  }
+
+  /**
+   * Replaces (in place) a QualifiedName node with an equivalent FieldAccess
+   * node. This is helpful when a mutation needs to replace the qualifier with
+   * a node that has Expression type but not Name type.
+   */
+  public static FieldAccess convertToFieldAccess(QualifiedName node) {
+    TreeNode parent = node.getParent();
+    if (parent instanceof QualifiedName) {
+      FieldAccess newParent = convertToFieldAccess((QualifiedName) parent);
+      Expression expr = newParent.getExpression();
+      assert expr instanceof QualifiedName;
+      node = (QualifiedName) expr;
+    }
+    IVariableBinding variableBinding = getVariableBinding(node);
+    assert variableBinding != null : "node must be a variable";
+    FieldAccess newNode = new FieldAccess(variableBinding, remove(node.getQualifier()));
+    node.replaceWith(newNode);
+    return newNode;
   }
 }
