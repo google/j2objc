@@ -19,65 +19,66 @@ package com.google.devtools.j2objc.translate;
 import com.google.common.collect.LinkedListMultimap;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
+import com.google.devtools.j2objc.ast.AnnotationTypeDeclaration;
+import com.google.devtools.j2objc.ast.AnonymousClassDeclaration;
+import com.google.devtools.j2objc.ast.Assignment;
+import com.google.devtools.j2objc.ast.Block;
+import com.google.devtools.j2objc.ast.BodyDeclaration;
+import com.google.devtools.j2objc.ast.BreakStatement;
+import com.google.devtools.j2objc.ast.CastExpression;
+import com.google.devtools.j2objc.ast.ClassInstanceCreation;
+import com.google.devtools.j2objc.ast.ContinueStatement;
+import com.google.devtools.j2objc.ast.DoStatement;
+import com.google.devtools.j2objc.ast.EmptyStatement;
+import com.google.devtools.j2objc.ast.EnhancedForStatement;
+import com.google.devtools.j2objc.ast.EnumDeclaration;
+import com.google.devtools.j2objc.ast.Expression;
+import com.google.devtools.j2objc.ast.ExpressionStatement;
+import com.google.devtools.j2objc.ast.FieldAccess;
+import com.google.devtools.j2objc.ast.FieldDeclaration;
+import com.google.devtools.j2objc.ast.ForStatement;
+import com.google.devtools.j2objc.ast.IfStatement;
+import com.google.devtools.j2objc.ast.InfixExpression;
+import com.google.devtools.j2objc.ast.InstanceofExpression;
+import com.google.devtools.j2objc.ast.LabeledStatement;
+import com.google.devtools.j2objc.ast.MethodDeclaration;
+import com.google.devtools.j2objc.ast.MethodInvocation;
+import com.google.devtools.j2objc.ast.Name;
+import com.google.devtools.j2objc.ast.NullLiteral;
+import com.google.devtools.j2objc.ast.ParenthesizedExpression;
+import com.google.devtools.j2objc.ast.PrefixExpression;
+import com.google.devtools.j2objc.ast.QualifiedName;
+import com.google.devtools.j2objc.ast.ReturnStatement;
+import com.google.devtools.j2objc.ast.SimpleName;
+import com.google.devtools.j2objc.ast.SingleVariableDeclaration;
+import com.google.devtools.j2objc.ast.Statement;
+import com.google.devtools.j2objc.ast.SuperMethodInvocation;
+import com.google.devtools.j2objc.ast.SwitchStatement;
+import com.google.devtools.j2objc.ast.ThrowStatement;
+import com.google.devtools.j2objc.ast.TreeUtil;
+import com.google.devtools.j2objc.ast.TreeVisitor;
+import com.google.devtools.j2objc.ast.Type;
+import com.google.devtools.j2objc.ast.TypeDeclaration;
+import com.google.devtools.j2objc.ast.VariableDeclarationExpression;
+import com.google.devtools.j2objc.ast.VariableDeclarationFragment;
+import com.google.devtools.j2objc.ast.VariableDeclarationStatement;
+import com.google.devtools.j2objc.ast.WhileStatement;
 import com.google.devtools.j2objc.types.GeneratedMethodBinding;
 import com.google.devtools.j2objc.types.GeneratedTypeBinding;
 import com.google.devtools.j2objc.types.GeneratedVariableBinding;
-import com.google.devtools.j2objc.types.NodeCopier;
 import com.google.devtools.j2objc.types.Types;
-import com.google.devtools.j2objc.util.ASTUtil;
 import com.google.devtools.j2objc.util.BindingUtil;
-import com.google.devtools.j2objc.util.ErrorReportingASTVisitor;
 import com.google.devtools.j2objc.util.ErrorUtil;
 import com.google.devtools.j2objc.util.NameTable;
 import com.google.j2objc.annotations.AutoreleasePool;
 import com.google.j2objc.annotations.RetainedLocalRef;
 
-import org.eclipse.jdt.core.dom.AST;
-import org.eclipse.jdt.core.dom.ASTVisitor;
-import org.eclipse.jdt.core.dom.AnnotationTypeDeclaration;
-import org.eclipse.jdt.core.dom.AnonymousClassDeclaration;
-import org.eclipse.jdt.core.dom.Assignment;
-import org.eclipse.jdt.core.dom.Block;
-import org.eclipse.jdt.core.dom.BodyDeclaration;
-import org.eclipse.jdt.core.dom.BreakStatement;
-import org.eclipse.jdt.core.dom.CastExpression;
-import org.eclipse.jdt.core.dom.ClassInstanceCreation;
-import org.eclipse.jdt.core.dom.ContinueStatement;
-import org.eclipse.jdt.core.dom.DoStatement;
-import org.eclipse.jdt.core.dom.EnhancedForStatement;
-import org.eclipse.jdt.core.dom.EnumDeclaration;
-import org.eclipse.jdt.core.dom.Expression;
-import org.eclipse.jdt.core.dom.FieldAccess;
-import org.eclipse.jdt.core.dom.FieldDeclaration;
-import org.eclipse.jdt.core.dom.ForStatement;
 import org.eclipse.jdt.core.dom.IBinding;
 import org.eclipse.jdt.core.dom.IMethodBinding;
 import org.eclipse.jdt.core.dom.IPackageBinding;
 import org.eclipse.jdt.core.dom.ITypeBinding;
 import org.eclipse.jdt.core.dom.IVariableBinding;
-import org.eclipse.jdt.core.dom.IfStatement;
-import org.eclipse.jdt.core.dom.InfixExpression;
-import org.eclipse.jdt.core.dom.LabeledStatement;
-import org.eclipse.jdt.core.dom.MethodDeclaration;
-import org.eclipse.jdt.core.dom.MethodInvocation;
 import org.eclipse.jdt.core.dom.Modifier;
-import org.eclipse.jdt.core.dom.Modifier.ModifierKeyword;
-import org.eclipse.jdt.core.dom.ParenthesizedExpression;
-import org.eclipse.jdt.core.dom.PrefixExpression;
-import org.eclipse.jdt.core.dom.QualifiedName;
-import org.eclipse.jdt.core.dom.ReturnStatement;
-import org.eclipse.jdt.core.dom.SimpleName;
-import org.eclipse.jdt.core.dom.SingleVariableDeclaration;
-import org.eclipse.jdt.core.dom.Statement;
-import org.eclipse.jdt.core.dom.SuperMethodInvocation;
-import org.eclipse.jdt.core.dom.SwitchStatement;
-import org.eclipse.jdt.core.dom.ThrowStatement;
-import org.eclipse.jdt.core.dom.Type;
-import org.eclipse.jdt.core.dom.TypeDeclaration;
-import org.eclipse.jdt.core.dom.VariableDeclarationExpression;
-import org.eclipse.jdt.core.dom.VariableDeclarationFragment;
-import org.eclipse.jdt.core.dom.VariableDeclarationStatement;
-import org.eclipse.jdt.core.dom.WhileStatement;
 
 import java.util.Arrays;
 import java.util.Iterator;
@@ -97,7 +98,7 @@ import java.util.logging.Logger;
  *
  * @author Tom Ball
  */
-public class Rewriter extends ErrorReportingASTVisitor {
+public class Rewriter extends TreeVisitor {
 
   private Map<IVariableBinding, IVariableBinding> localRefs = Maps.newHashMap();
 
@@ -109,30 +110,26 @@ public class Rewriter extends ErrorReportingASTVisitor {
 
   @Override
   public boolean visit(TypeDeclaration node) {
-    return visitType(node.getAST(), Types.getTypeBinding(node), ASTUtil.getBodyDeclarations(node),
-                     node.getModifiers());
+    return visitType(node.getTypeBinding(), node.getBodyDeclarations(), node.getModifiers());
   }
 
   @Override
   public boolean visit(EnumDeclaration node) {
-    return visitType(node.getAST(), Types.getTypeBinding(node), ASTUtil.getBodyDeclarations(node),
-                     node.getModifiers());
+    return visitType(node.getTypeBinding(), node.getBodyDeclarations(), node.getModifiers());
   }
 
   @Override
   public boolean visit(AnonymousClassDeclaration node) {
-    return visitType(node.getAST(), Types.getTypeBinding(node), ASTUtil.getBodyDeclarations(node),
-                     Modifier.NONE);
+    return visitType(node.getTypeBinding(), node.getBodyDeclarations(), Modifier.NONE);
   }
 
   @Override
   public boolean visit(AnnotationTypeDeclaration node) {
-    return visitType(node.getAST(), Types.getTypeBinding(node), ASTUtil.getBodyDeclarations(node),
-                     node.getModifiers());
+    return visitType(node.getTypeBinding(), node.getBodyDeclarations(), node.getModifiers());
   }
 
   private boolean visitType(
-      AST ast, ITypeBinding typeBinding, List<BodyDeclaration> members, int modifiers) {
+      ITypeBinding typeBinding, List<BodyDeclaration> members, int modifiers) {
     ITypeBinding[] interfaces = typeBinding.getInterfaces();
     if (interfaces.length > 0) {
       if (Modifier.isAbstract(modifiers) || typeBinding.isEnum()) {
@@ -149,7 +146,7 @@ public class Rewriter extends ErrorReportingASTVisitor {
             interfaceMethods.addAll(Arrays.asList(intrface.getDeclaredMethods()));
             interfaceQueue.addAll(Arrays.asList(intrface.getInterfaces()));
           }
-          addMissingMethods(ast, typeBinding, interfaceMethods, members);
+          addMissingMethods(typeBinding, interfaceMethods, members);
         }
       } else if (!typeBinding.isInterface()) {
         // Check for methods that the type *explicitly implements* for cases
@@ -161,7 +158,7 @@ public class Rewriter extends ErrorReportingASTVisitor {
         for (ITypeBinding intrface : interfaces) {
           interfaceMethods.addAll(Arrays.asList(intrface.getDeclaredMethods()));
         }
-        addForwardingMethods(ast, typeBinding, interfaceMethods, members);
+        addForwardingMethods(typeBinding, interfaceMethods, members);
       }
     }
 
@@ -170,25 +167,23 @@ public class Rewriter extends ErrorReportingASTVisitor {
   }
 
   private void addMissingMethods(
-      AST ast, ITypeBinding typeBinding, Set<IMethodBinding> interfaceMethods,
-      List<BodyDeclaration> decls) {
+      ITypeBinding typeBinding, Set<IMethodBinding> interfaceMethods, List<BodyDeclaration> decls) {
     for (IMethodBinding interfaceMethod : interfaceMethods) {
       if (!isMethodImplemented(typeBinding, interfaceMethod, decls)) {
-        addAbstractMethod(ast, typeBinding, interfaceMethod, decls);
+        addAbstractMethod(typeBinding, interfaceMethod, decls);
       }
     }
   }
 
   private void addForwardingMethods(
-      AST ast, ITypeBinding typeBinding, Set<IMethodBinding> interfaceMethods,
-      List<BodyDeclaration> decls) {
+      ITypeBinding typeBinding, Set<IMethodBinding> interfaceMethods, List<BodyDeclaration> decls) {
     for (IMethodBinding interfaceMethod : interfaceMethods) {
       String methodName = interfaceMethod.getName();
       // These are the only java.lang.Object methods that are both overridable
       // and translated to Obj-C.
       if (methodName.matches("equals|hashCode|toString")) {
         if (!isMethodImplemented(typeBinding, interfaceMethod, decls)) {
-          addForwardingMethod(ast, typeBinding, interfaceMethod, decls);
+          addForwardingMethod(typeBinding, interfaceMethod, decls);
         }
       }
     }
@@ -197,11 +192,8 @@ public class Rewriter extends ErrorReportingASTVisitor {
   private boolean isMethodImplemented(
       ITypeBinding type, IMethodBinding interfaceMethod, List<BodyDeclaration> decls) {
     for (BodyDeclaration decl : decls) {
-      if (!(decl instanceof MethodDeclaration)) {
-        continue;
-      }
-
-      if (Types.getMethodBinding(decl).isSubsignature(interfaceMethod)) {
+      if (decl instanceof MethodDeclaration
+          && ((MethodDeclaration) decl).getMethodBinding().isSubsignature(interfaceMethod)) {
         return true;
       }
     }
@@ -214,10 +206,10 @@ public class Rewriter extends ErrorReportingASTVisitor {
     }
 
     for (IMethodBinding m : type.getDeclaredMethods()) {
-      if (method.isSubsignature(m) ||
-          (method.getName().equals(m.getName()) &&
-          method.getReturnType().getErasure().isEqualTo(m.getReturnType().getErasure()) &&
-          Arrays.equals(method.getParameterTypes(), m.getParameterTypes()))) {
+      if (method.isSubsignature(m)
+          || (method.getName().equals(m.getName())
+          && method.getReturnType().getErasure().isEqualTo(m.getReturnType().getErasure())
+          && Arrays.equals(method.getParameterTypes(), m.getParameterTypes()))) {
         return true;
       }
     }
@@ -227,14 +219,14 @@ public class Rewriter extends ErrorReportingASTVisitor {
 
   @Override
   public boolean visit(MethodDeclaration node) {
-    IMethodBinding binding = Types.getMethodBinding(node);
+    IMethodBinding binding = node.getMethodBinding();
 
     if (BindingUtil.hasAnnotation(binding, AutoreleasePool.class)) {
       if (!binding.getReturnType().isPrimitive()) {
         ErrorUtil.warning(
             "Ignoring AutoreleasePool annotation on method with retainable return type");
       } else if (node.getBody() != null) {
-        Types.addAutoreleasePool(node.getBody());
+        node.getBody().setHasAutoreleasePool(true);
       }
     }
 
@@ -244,21 +236,20 @@ public class Rewriter extends ErrorReportingASTVisitor {
 
     handleCompareToMethod(node, binding);
 
-    List<SingleVariableDeclaration> params = ASTUtil.getParameters(node);
+    List<SingleVariableDeclaration> params = node.getParameters();
     for (int i = 0; i < params.size(); i++) {
       // Change the names of any parameters that are type qualifier keywords.
       SingleVariableDeclaration param = params.get(i);
       name = param.getName().getIdentifier();
       if (typeQualifierKeywords.contains(name)) {
-        IVariableBinding varBinding = Types.getVariableBinding(param);
+        IVariableBinding varBinding = param.getVariableBinding();
         NameTable.rename(varBinding, name + "Arg");
       }
     }
 
     // Rename any labels that have the same names; legal in Java but not C.
     final Map<String, Integer> labelCounts = Maps.newHashMap();
-    final AST ast = node.getAST();
-    node.accept(new ASTVisitor() {
+    node.accept(new TreeVisitor() {
       @Override
       public void endVisit(LabeledStatement labeledStatement) {
         final String name = labeledStatement.getLabel().getIdentifier();
@@ -266,19 +257,19 @@ public class Rewriter extends ErrorReportingASTVisitor {
         labelCounts.put(name, value);
         if (value > 1) {
           final String newName = name + '_' + value;
-          labeledStatement.setLabel(ASTFactory.newLabel(ast, newName));
+          labeledStatement.setLabel(new SimpleName(newName));
           // Update references to this label.
-          labeledStatement.accept(new ASTVisitor() {
+          labeledStatement.accept(new TreeVisitor() {
             @Override
             public void endVisit(ContinueStatement node) {
               if (node.getLabel() != null && node.getLabel().getIdentifier().equals(name)) {
-                node.setLabel(ASTFactory.newLabel(ast, newName));
+                node.setLabel(new SimpleName(newName));
               }
             }
             @Override
             public void endVisit(BreakStatement node) {
               if (node.getLabel() != null && node.getLabel().getIdentifier().equals(name)) {
-                node.setLabel(ASTFactory.newLabel(ast, newName));
+                node.setLabel(new SimpleName(newName));
               }
             }
           });
@@ -310,42 +301,37 @@ public class Rewriter extends ErrorReportingASTVisitor {
       return;
     }
 
-    AST ast = node.getAST();
-    IVariableBinding param = Types.getVariableBinding(ASTUtil.getParameters(node).get(0));
+    IVariableBinding param = node.getParameters().get(0).getVariableBinding();
 
-    Expression nullCheck = ASTFactory.newInfixExpression(
-        ast, ASTFactory.newSimpleName(ast, param), InfixExpression.Operator.NOT_EQUALS,
-        ASTFactory.newNullLiteral(ast), ast.resolveWellKnownType("boolean"));
-    Expression instanceofExpr = ASTFactory.newInstanceofExpression(
-        ast, ASTFactory.newSimpleName(ast, param), typeArguments[0]);
-    instanceofExpr = ASTFactory.newPrefixExpression(
-        ast, PrefixExpression.Operator.NOT, instanceofExpr, "boolean");
+    Expression nullCheck = new InfixExpression(
+        Types.resolveJavaType("boolean"), InfixExpression.Operator.NOT_EQUALS,
+        new SimpleName(param), new NullLiteral());
+    Expression instanceofExpr = new InstanceofExpression(new SimpleName(param), typeArguments[0]);
+    instanceofExpr = new PrefixExpression(
+        Types.resolveJavaType("boolean"), PrefixExpression.Operator.NOT, instanceofExpr);
 
     ITypeBinding cceType = GeneratedTypeBinding.newTypeBinding(
-        "java.lang.ClassCastException", ast.resolveWellKnownType("java.lang.RuntimeException"),
-        false);
-    ClassInstanceCreation newCce = ast.newClassInstanceCreation();
-    newCce.setType(ASTFactory.newType(ast, cceType));
-    Types.addBinding(newCce, GeneratedMethodBinding.newConstructor(cceType, 0));
+        "java.lang.ClassCastException", Types.resolveJavaType("java.lang.RuntimeException"), false);
+    ClassInstanceCreation newCce = new ClassInstanceCreation(
+        GeneratedMethodBinding.newConstructor(cceType, 0));
 
-    ThrowStatement throwStmt = ast.newThrowStatement();
-    throwStmt.setExpression(newCce);
+    ThrowStatement throwStmt = new ThrowStatement(newCce);
 
-    Block ifBlock = ast.newBlock();
-    ASTUtil.getStatements(ifBlock).add(throwStmt);
+    Block ifBlock = new Block();
+    ifBlock.getStatements().add(throwStmt);
 
-    IfStatement ifStmt = ast.newIfStatement();
-    ifStmt.setExpression(ASTFactory.newInfixExpression(
-        ast, nullCheck, InfixExpression.Operator.CONDITIONAL_AND, instanceofExpr,
-        ast.resolveWellKnownType("boolean")));
+    IfStatement ifStmt = new IfStatement();
+    ifStmt.setExpression(new InfixExpression(
+        Types.resolveJavaType("boolean"), InfixExpression.Operator.CONDITIONAL_AND, nullCheck,
+        instanceofExpr));
     ifStmt.setThenStatement(ifBlock);
 
-    ASTUtil.getStatements(node.getBody()).add(0, ifStmt);
+    node.getBody().getStatements().add(0, ifStmt);
   }
 
   @Override
   public boolean visit(MethodInvocation node) {
-    IMethodBinding binding = Types.getMethodBinding(node);
+    IMethodBinding binding = node.getMethodBinding();
     String name = binding.getName();
     renameReservedNames(name, binding);
     return true;
@@ -353,7 +339,7 @@ public class Rewriter extends ErrorReportingASTVisitor {
 
   @Override
   public boolean visit(SuperMethodInvocation node) {
-    renameReservedNames(node.getName().getIdentifier(), Types.getMethodBinding(node));
+    renameReservedNames(node.getName().getIdentifier(), node.getMethodBinding());
     return true;
   }
 
@@ -380,50 +366,47 @@ public class Rewriter extends ErrorReportingASTVisitor {
   public void endVisit(LabeledStatement node) {
     Statement loopBody = getLoopBody(node.getBody());
 
-    final AST ast = node.getAST();
     final String labelIdentifier = node.getLabel().getIdentifier();
 
     final boolean[] hasContinue = new boolean[1];
     final boolean[] hasBreak = new boolean[1];
-    node.accept(new ASTVisitor() {
+    node.accept(new TreeVisitor() {
       @Override
       public void endVisit(ContinueStatement node) {
         if (node.getLabel() != null && node.getLabel().getIdentifier().equals(labelIdentifier)) {
           hasContinue[0] = true;
-          node.setLabel(ASTFactory.newLabel(ast, "continue_" + labelIdentifier));
+          node.setLabel(new SimpleName("continue_" + labelIdentifier));
         }
       }
       @Override
       public void endVisit(BreakStatement node) {
         if (node.getLabel() != null && node.getLabel().getIdentifier().equals(labelIdentifier)) {
           hasBreak[0] = true;
-          node.setLabel(ASTFactory.newLabel(ast, "break_" + labelIdentifier));
+          node.setLabel(new SimpleName("break_" + labelIdentifier));
         }
       }
     });
 
     if (hasContinue[0]) {
       assert loopBody != null : "Continue statements must be inside a loop.";
-      LabeledStatement newLabelStmt = ast.newLabeledStatement();
-      newLabelStmt.setLabel(ASTFactory.newLabel(ast, "continue_" + labelIdentifier));
-      newLabelStmt.setBody(ast.newEmptyStatement());
+      LabeledStatement newLabelStmt = new LabeledStatement("continue_" + labelIdentifier);
+      newLabelStmt.setBody(new EmptyStatement());
       // Put the loop body into an inner block so the continue label is outside
       // the scope of any variable initializations.
-      Block newBlock = ast.newBlock();
-      ASTUtil.setProperty(loopBody, newBlock);
-      ASTUtil.getStatements(newBlock).add(loopBody);
-      ASTUtil.getStatements(newBlock).add(newLabelStmt);
+      Block newBlock = new Block();
+      loopBody.replaceWith(newBlock);
+      newBlock.getStatements().add(loopBody);
+      newBlock.getStatements().add(newLabelStmt);
     }
     if (hasBreak[0]) {
-      LabeledStatement newLabelStmt = ast.newLabeledStatement();
-      newLabelStmt.setLabel(ASTFactory.newLabel(ast, "break_" + labelIdentifier));
-      newLabelStmt.setBody(ast.newEmptyStatement());
-      ASTUtil.insertAfter(node, newLabelStmt);
+      LabeledStatement newLabelStmt = new LabeledStatement("break_" + labelIdentifier);
+      newLabelStmt.setBody(new EmptyStatement());
+      TreeUtil.insertAfter(node, newLabelStmt);
     }
 
     if (hasContinue[0] || hasBreak[0]) {
       // Replace this node with its statement, thus deleting the label.
-      ASTUtil.setProperty(node, NodeCopier.copySubtree(ast, node.getBody()));
+      node.replaceWith(TreeUtil.remove(node.getBody()));
     }
   }
 
@@ -431,21 +414,20 @@ public class Rewriter extends ErrorReportingASTVisitor {
   public void endVisit(ForStatement node) {
     // It should not be possible to have multiple VariableDeclarationExpression
     // nodes in the initializers.
-    if (node.initializers().size() == 1) {
-      Object initializer = node.initializers().get(0);
+    if (node.getInitializers().size() == 1) {
+      Object initializer = node.getInitializers().get(0);
       if (initializer instanceof VariableDeclarationExpression) {
         List<VariableDeclarationFragment> fragments =
-            ASTUtil.getFragments((VariableDeclarationExpression) initializer);
+            ((VariableDeclarationExpression) initializer).getFragments();
         for (VariableDeclarationFragment fragment : fragments) {
-          if (BindingUtil.hasAnnotation(Types.getBinding(fragment), AutoreleasePool.class)) {
+          if (BindingUtil.hasAnnotation(fragment.getVariableBinding(), AutoreleasePool.class)) {
             Statement loopBody = node.getBody();
             if (!(loopBody instanceof Block)) {
-              AST ast = node.getAST();
-              Block block = ast.newBlock();
-              ASTUtil.getStatements(block).add(NodeCopier.copySubtree(ast, loopBody));
+              Block block = new Block();
               node.setBody(block);
+              block.getStatements().add(loopBody);
             }
-            Types.addAutoreleasePool((Block) node.getBody());
+            ((Block) node.getBody()).setHasAutoreleasePool(true);
           }
         }
       }
@@ -454,29 +436,28 @@ public class Rewriter extends ErrorReportingASTVisitor {
 
   @Override
   public void endVisit(InfixExpression node) {
-    AST ast = node.getAST();
     InfixExpression.Operator op = node.getOperator();
-    ITypeBinding type = Types.getTypeBinding(node);
-    ITypeBinding lhsType = Types.getTypeBinding(node.getLeftOperand());
-    ITypeBinding rhsType = Types.getTypeBinding(node.getRightOperand());
+    ITypeBinding type = node.getTypeBinding();
+    ITypeBinding lhsType = node.getLeftOperand().getTypeBinding();
+    ITypeBinding rhsType = node.getRightOperand().getTypeBinding();
     if (Types.isJavaStringType(type) && op == InfixExpression.Operator.PLUS
         && !Types.isJavaStringType(lhsType) && !Types.isJavaStringType(rhsType)) {
       // String concatenation where the first two operands are not strings.
       // We move all the preceding non-string operands into a sub-expression.
-      ITypeBinding nonStringExprType = getAdditionType(ast, lhsType, rhsType);
-      InfixExpression nonStringExpr = ast.newInfixExpression();
-      InfixExpression stringExpr = ast.newInfixExpression();
-      nonStringExpr.setOperator(InfixExpression.Operator.PLUS);
-      stringExpr.setOperator(InfixExpression.Operator.PLUS);
-      nonStringExpr.setLeftOperand(NodeCopier.copySubtree(ast, node.getLeftOperand()));
-      nonStringExpr.setRightOperand(NodeCopier.copySubtree(ast, node.getRightOperand()));
-      List<Expression> extendedOperands = ASTUtil.getExtendedOperands(node);
-      List<Expression> nonStringOperands = ASTUtil.getExtendedOperands(nonStringExpr);
-      List<Expression> stringOperands = ASTUtil.getExtendedOperands(stringExpr);
+      ITypeBinding nonStringExprType = getAdditionType(lhsType, rhsType);
+      InfixExpression nonStringExpr = new InfixExpression(
+          nonStringExprType, InfixExpression.Operator.PLUS, TreeUtil.remove(node.getLeftOperand()),
+          TreeUtil.remove(node.getRightOperand()));
+      InfixExpression stringExpr = new InfixExpression(
+          Types.resolveJavaType("java.lang.String"), InfixExpression.Operator.PLUS, nonStringExpr,
+          null);
+      List<Expression> extendedOperands = node.getExtendedOperands();
+      List<Expression> nonStringOperands = nonStringExpr.getExtendedOperands();
+      List<Expression> stringOperands = stringExpr.getExtendedOperands();
       boolean foundStringType = false;
       for (Expression expr : extendedOperands) {
-        Expression copiedExpr = NodeCopier.copySubtree(ast, expr);
-        ITypeBinding exprType = Types.getTypeBinding(expr);
+        Expression copiedExpr = expr.copy();
+        ITypeBinding exprType = expr.getTypeBinding();
         if (foundStringType || Types.isJavaStringType(exprType)) {
           if (foundStringType) {
             stringOperands.add(copiedExpr);
@@ -486,70 +467,58 @@ public class Rewriter extends ErrorReportingASTVisitor {
           foundStringType = true;
         } else {
           nonStringOperands.add(copiedExpr);
-          nonStringExprType = getAdditionType(ast, nonStringExprType, exprType);
+          nonStringExprType = getAdditionType(nonStringExprType, exprType);
         }
       }
-      Types.addBinding(nonStringExpr, nonStringExprType);
-      stringExpr.setLeftOperand(nonStringExpr);
-      Types.addBinding(stringExpr, ast.resolveWellKnownType("java.lang.String"));
-      ASTUtil.setProperty(node, stringExpr);
+      nonStringExpr.setTypeBinding(nonStringExprType);
+      node.replaceWith(stringExpr);
     } else if (op == InfixExpression.Operator.CONDITIONAL_AND) {
       // Avoid logical-op-parentheses compiler warnings.
       if (node.getParent() instanceof InfixExpression) {
         InfixExpression parent = (InfixExpression) node.getParent();
         if (parent.getOperator() == InfixExpression.Operator.CONDITIONAL_OR) {
-          ParenthesizedExpression expr =
-              ASTFactory.newParenthesizedExpression(ast, NodeCopier.copySubtree(ast, node));
-          ASTUtil.setProperty(node, expr);
+          ParenthesizedExpression.parenthesizeAndReplace(node);
         }
       }
     } else if (op == InfixExpression.Operator.AND) {
       // Avoid bitwise-op-parentheses compiler warnings.
-      if (node.getParent() instanceof InfixExpression &&
-          ((InfixExpression) node.getParent()).getOperator() == InfixExpression.Operator.OR) {
-        ParenthesizedExpression expr =
-            ASTFactory.newParenthesizedExpression(ast, NodeCopier.copySubtree(ast, node));
-        ASTUtil.setProperty(node, expr);
+      if (node.getParent() instanceof InfixExpression
+          && ((InfixExpression) node.getParent()).getOperator() == InfixExpression.Operator.OR) {
+        ParenthesizedExpression.parenthesizeAndReplace(node);
       }
     }
 
     // Avoid lower precedence compiler warnings.
     if (op == InfixExpression.Operator.AND || op == InfixExpression.Operator.OR) {
       if (node.getLeftOperand() instanceof InfixExpression) {
-        Expression lhs = node.getLeftOperand();
-        ParenthesizedExpression expr =
-            ASTFactory.newParenthesizedExpression(ast, NodeCopier.copySubtree(ast, lhs));
-        ASTUtil.setProperty(lhs, expr);
+        ParenthesizedExpression.parenthesizeAndReplace(node.getLeftOperand());
       }
       if (node.getRightOperand() instanceof InfixExpression) {
-        Expression rhs = node.getRightOperand();
-        ParenthesizedExpression expr =
-            ASTFactory.newParenthesizedExpression(ast, NodeCopier.copySubtree(ast, rhs));
-        ASTUtil.setProperty(rhs, expr);
+        ParenthesizedExpression.parenthesizeAndReplace(node.getRightOperand());
       }
     }
   }
 
-  private ITypeBinding getAdditionType(AST ast, ITypeBinding aType, ITypeBinding bType) {
-    ITypeBinding doubleType = ast.resolveWellKnownType("double");
-    ITypeBinding boxedDoubleType = ast.resolveWellKnownType("java.lang.Double");
+  private ITypeBinding getAdditionType(ITypeBinding aType, ITypeBinding bType) {
+    ITypeBinding doubleType = Types.resolveJavaType("double");
+    ITypeBinding boxedDoubleType = Types.resolveJavaType("java.lang.Double");
     if (aType == doubleType || bType == doubleType
         || aType == boxedDoubleType || bType == boxedDoubleType) {
       return doubleType;
     }
-    ITypeBinding floatType = ast.resolveWellKnownType("float");
-    ITypeBinding boxedFloatType = ast.resolveWellKnownType("java.lang.Float");
+    ITypeBinding floatType = Types.resolveJavaType("float");
+    ITypeBinding boxedFloatType = Types.resolveJavaType("java.lang.Float");
     if (aType == floatType || bType == floatType
         || aType == boxedFloatType || bType == boxedFloatType) {
       return floatType;
     }
-    ITypeBinding longType = ast.resolveWellKnownType("long");
-    ITypeBinding boxedLongType = ast.resolveWellKnownType("java.lang.Long");
+    ITypeBinding longType = Types.resolveJavaType("long");
+    ITypeBinding boxedLongType = Types.resolveJavaType("java.lang.Long");
     if (aType == longType || bType == longType
         || aType == boxedLongType || bType == boxedLongType) {
       return longType;
     }
-    return ast.resolveWellKnownType("int");
+    return Types.resolveJavaType("int");
   }
 
   /**
@@ -557,35 +526,32 @@ public class Rewriter extends ErrorReportingASTVisitor {
    */
   @Override
   public void endVisit(SwitchStatement node) {
-    AST ast = node.getAST();
-    List<Statement> statements = ASTUtil.getStatements(node);
+    List<Statement> statements = node.getStatements();
     int insertIdx = 0;
-    Block block = ast.newBlock();
-    List<Statement> blockStmts = ASTUtil.getStatements(block);
+    Block block = new Block();
+    List<Statement> blockStmts = block.getStatements();
     for (int i = 0; i < statements.size(); i++) {
       Statement stmt = statements.get(i);
       if (stmt instanceof VariableDeclarationStatement) {
         VariableDeclarationStatement declStmt = (VariableDeclarationStatement) stmt;
         statements.remove(i--);
-        List<VariableDeclarationFragment> fragments = ASTUtil.getFragments(declStmt);
+        List<VariableDeclarationFragment> fragments = declStmt.getFragments();
         for (VariableDeclarationFragment decl : fragments) {
           Expression initializer = decl.getInitializer();
           if (initializer != null) {
-            Assignment assignment = ASTFactory.newAssignment(ast,
-                NodeCopier.copySubtree(ast, decl.getName()),
-                NodeCopier.copySubtree(ast, initializer));
-            statements.add(++i, ast.newExpressionStatement(assignment));
+            Assignment assignment = new Assignment(decl.getName().copy(), initializer.copy());
+            statements.add(++i, new ExpressionStatement(assignment));
             decl.setInitializer(null);
           }
         }
-        blockStmts.add(insertIdx++, NodeCopier.copySubtree(ast, declStmt));
+        blockStmts.add(insertIdx++, declStmt.copy());
       }
     }
     if (blockStmts.size() > 0) {
       // There is at least one variable declaration, so copy this switch
       // statement into the new block and replace it in the parent list.
-      blockStmts.add(NodeCopier.copySubtree(ast, node));
-      ASTUtil.setProperty(node, block);
+      node.replaceWith(block);
+      blockStmts.add(node);
     }
   }
 
@@ -594,12 +560,11 @@ public class Rewriter extends ErrorReportingASTVisitor {
    * interface method binding.
    */
   private void addAbstractMethod(
-      AST ast, ITypeBinding typeBinding, IMethodBinding interfaceMethod,
-      List<BodyDeclaration> decls) {
-    MethodDeclaration method = createInterfaceMethodBody(ast, typeBinding, interfaceMethod,
-        interfaceMethod.getModifiers());
+      ITypeBinding typeBinding, IMethodBinding interfaceMethod, List<BodyDeclaration> decls) {
+    MethodDeclaration method = createInterfaceMethodBody(
+        typeBinding, interfaceMethod, interfaceMethod.getModifiers());
 
-    ASTUtil.getModifiers(method).add(ast.newModifier(ModifierKeyword.ABSTRACT_KEYWORD));
+    method.addModifiers(Modifier.ABSTRACT);
 
     decls.add(method);
   }
@@ -613,42 +578,38 @@ public class Rewriter extends ErrorReportingASTVisitor {
    * an implementation, so it issues a warning.
    */
   private void addForwardingMethod(
-      AST ast, ITypeBinding typeBinding, IMethodBinding interfaceMethod,
-      List<BodyDeclaration> decls) {
+      ITypeBinding typeBinding, IMethodBinding interfaceMethod, List<BodyDeclaration> decls) {
     Logger.getAnonymousLogger().fine(String.format("adding %s to %s",
         interfaceMethod.getName(), typeBinding.getQualifiedName()));
     MethodDeclaration method =
-        createInterfaceMethodBody(ast, typeBinding, interfaceMethod, Modifier.PUBLIC);
+        createInterfaceMethodBody(typeBinding, interfaceMethod, Modifier.PUBLIC);
 
     // Add method body with single "super.method(parameters);" statement.
-    Block body = ast.newBlock();
+    Block body = new Block();
     method.setBody(body);
-    SuperMethodInvocation superInvocation =
-        ASTFactory.newSuperMethodInvocation(ast, Types.getMethodBinding(method));
+    SuperMethodInvocation superInvocation = new SuperMethodInvocation(method.getMethodBinding());
 
-    for (SingleVariableDeclaration param : ASTUtil.getParameters(method)) {
-      Expression arg = NodeCopier.copySubtree(ast, param.getName());
-      ASTUtil.getArguments(superInvocation).add(arg);
+    for (SingleVariableDeclaration param : method.getParameters()) {
+      Expression arg = param.getName().copy();
+      superInvocation.getArguments().add(arg);
     }
-    ReturnStatement returnStmt = ast.newReturnStatement();
-    returnStmt.setExpression(superInvocation);
-    ASTUtil.getStatements(body).add(returnStmt);
+    body.getStatements().add(new ReturnStatement(superInvocation));
 
     decls.add(method);
   }
 
   private MethodDeclaration createInterfaceMethodBody(
-      AST ast, ITypeBinding typeBinding, IMethodBinding interfaceMethod, int modifiers) {
+      ITypeBinding typeBinding, IMethodBinding interfaceMethod, int modifiers) {
     GeneratedMethodBinding methodBinding =
         GeneratedMethodBinding.newOverridingMethod(interfaceMethod, typeBinding, modifiers);
-    MethodDeclaration method = ASTFactory.newMethodDeclaration(ast, methodBinding);
+    MethodDeclaration method = new MethodDeclaration(methodBinding);
 
     ITypeBinding[] parameterTypes = interfaceMethod.getParameterTypes();
     for (int i = 0; i < parameterTypes.length; i++) {
       ITypeBinding paramType = parameterTypes[i];
       IVariableBinding paramBinding = new GeneratedVariableBinding(
           "param" + i, 0, paramType, false, true, typeBinding, methodBinding);
-      ASTUtil.getParameters(method).add(ASTFactory.newSingleVariableDeclaration(ast, paramBinding));
+      method.getParameters().add(new SingleVariableDeclaration(paramBinding));
       methodBinding.addParameter(paramType);
     }
     return method;
@@ -707,46 +668,43 @@ public class Rewriter extends ErrorReportingASTVisitor {
   @Override
   public void endVisit(SingleVariableDeclaration node) {
     if (node.getExtraDimensions() > 0) {
-      node.setType(ASTFactory.newType(node.getAST(), Types.getTypeBinding(node)));
+      node.setType(Type.newType(node.getVariableBinding().getType()));
       node.setExtraDimensions(0);
     }
   }
 
   @Override
   public void endVisit(VariableDeclarationStatement node) {
-    AST ast = node.getAST();
     LinkedListMultimap<Integer, VariableDeclarationFragment> newDeclarations =
-        rewriteExtraDimensions(ast, node.getType(), ASTUtil.getFragments(node));
+        rewriteExtraDimensions(node.getType(), node.getFragments());
     if (newDeclarations != null) {
-      List<Statement> statements = ASTUtil.getStatements((Block) node.getParent());
+      List<Statement> statements = ((Block) node.getParent()).getStatements();
       int location = 0;
       while (location < statements.size() && !node.equals(statements.get(location))) {
         location++;
       }
       for (Integer dimensions : newDeclarations.keySet()) {
         List<VariableDeclarationFragment> fragments = newDeclarations.get(dimensions);
-        VariableDeclarationStatement newDecl =
-            ASTFactory.newVariableDeclarationStatement(ast, fragments.get(0));
-        ASTUtil.getFragments(newDecl).addAll(fragments.subList(1, fragments.size()));
+        VariableDeclarationStatement newDecl = new VariableDeclarationStatement(fragments.get(0));
+        newDecl.getFragments().addAll(fragments.subList(1, fragments.size()));
         statements.add(++location, newDecl);
       }
     }
     // Scan modifiers since variable declarations don't have variable bindings.
-    if (ASTUtil.hasAnnotation(RetainedLocalRef.class, ASTUtil.getModifiers(node))) {
+    if (TreeUtil.hasAnnotation(RetainedLocalRef.class, node.getAnnotations())) {
       ITypeBinding localRefType = Types.getLocalRefType();
-      node.setType(ASTFactory.newType(ast, localRefType));
-      Types.addBinding(node, localRefType);
+      node.setType(Type.newType(localRefType));
 
       // Convert fragments to retained local refs.
-      for (VariableDeclarationFragment fragment : ASTUtil.getFragments(node)) {
-        IVariableBinding var = Types.getVariableBinding(fragment);
+      for (VariableDeclarationFragment fragment : node.getFragments()) {
+        IVariableBinding var = fragment.getVariableBinding();
         GeneratedVariableBinding newVar = new GeneratedVariableBinding(
             var.getName(), var.getModifiers(), localRefType, false, false,
             var.getDeclaringClass(), var.getDeclaringMethod());
         localRefs.put(var, newVar);
 
         Expression initializer = fragment.getInitializer();
-        if (localRefs.containsKey(Types.getBinding(initializer))) {
+        if (localRefs.containsKey(TreeUtil.getVariableBinding(initializer))) {
           initializer.accept(this);
         } else {
           // Create a constructor for a ScopedLocalRef for this fragment.
@@ -758,10 +716,10 @@ public class Rewriter extends ErrorReportingASTVisitor {
             }
           }
           assert constructor != null : "failed finding ScopedLocalRef(var)";
-          ClassInstanceCreation newInvocation = ASTFactory.newClassInstanceCreation(ast, constructor);
-          ASTUtil.getArguments(newInvocation).add(NodeCopier.copySubtree(ast, initializer));
+          ClassInstanceCreation newInvocation = new ClassInstanceCreation(constructor);
+          newInvocation.getArguments().add(initializer.copy());
           fragment.setInitializer(newInvocation);
-          Types.addBinding(fragment, newVar);
+          fragment.setVariableBinding(newVar);
         }
       }
     }
@@ -769,19 +727,18 @@ public class Rewriter extends ErrorReportingASTVisitor {
 
   @Override
   public void endVisit(FieldDeclaration node) {
-    AST ast = node.getAST();
     LinkedListMultimap<Integer, VariableDeclarationFragment> newDeclarations =
-        rewriteExtraDimensions(ast, node.getType(), ASTUtil.getFragments(node));
+        rewriteExtraDimensions(node.getType(), node.getFragments());
     if (newDeclarations != null) {
-      List<BodyDeclaration> bodyDecls = ASTUtil.getBodyDeclarations(node.getParent());
+      List<BodyDeclaration> bodyDecls = TreeUtil.getBodyDeclarations(node.getParent());
       int location = 0;
       while (location < bodyDecls.size() && !node.equals(bodyDecls.get(location))) {
         location++;
       }
       for (Integer dimensions : newDeclarations.keySet()) {
         List<VariableDeclarationFragment> fragments = newDeclarations.get(dimensions);
-        FieldDeclaration newDecl = ASTFactory.newFieldDeclaration(ast, fragments.get(0));
-        ASTUtil.getFragments(newDecl).addAll(fragments.subList(1, fragments.size()));
+        FieldDeclaration newDecl = new FieldDeclaration(fragments.get(0));
+        newDecl.getFragments().addAll(fragments.subList(1, fragments.size()));
         bodyDecls.add(++location, newDecl);
       }
     }
@@ -790,22 +747,20 @@ public class Rewriter extends ErrorReportingASTVisitor {
   @Override
   public boolean visit(QualifiedName node) {
     // Check for ScopedLocalRefs.
-    IBinding var = Types.getBinding(node);
+    IBinding var = node.getBinding();
     if (var instanceof IVariableBinding) {
-      IVariableBinding localRef = localRefs.get(Types.getBinding(node.getQualifier()));
+      IVariableBinding localRef = localRefs.get(node.getQualifier().getBinding());
       if (localRef != null) {
-        AST ast = node.getAST();
-        SimpleName localRefField =
-            ASTFactory.newSimpleName(ast, Types.getLocalRefType().getDeclaredFields()[0]);
-        Expression newQualifier = NodeCopier.copySubtree(ast, node.getQualifier());
-        Types.addBinding(newQualifier, localRef);
-        FieldAccess localRefAccess = ASTFactory.newFieldAccess(
-            ast, Types.getVariableBinding(localRefField), newQualifier);
-        CastExpression newCast = ASTFactory.newCastExpression(
-            ast, localRefAccess, Types.getTypeBinding(node.getQualifier()));
-        ParenthesizedExpression newParens = ASTFactory.newParenthesizedExpression(ast, newCast);
-        FieldAccess access = ASTFactory.newFieldAccess(ast, (IVariableBinding) var, newParens);
-        ASTUtil.setProperty(node, access);
+        IVariableBinding localRefFieldBinding = Types.getLocalRefType().getDeclaredFields()[0];
+        SimpleName localRefField = new SimpleName(localRefFieldBinding);
+        Name newQualifier = node.getQualifier().copy();
+        newQualifier.setBinding(localRef);
+        FieldAccess localRefAccess = new FieldAccess(localRefFieldBinding, newQualifier);
+        CastExpression newCast = new CastExpression(
+            node.getQualifier().getTypeBinding(), localRefAccess);
+        ParenthesizedExpression newParens = ParenthesizedExpression.parenthesize(newCast);
+        FieldAccess access = new FieldAccess((IVariableBinding) var, newParens);
+        node.replaceWith(access);
         return false;
       }
     }
@@ -815,7 +770,7 @@ public class Rewriter extends ErrorReportingASTVisitor {
   @Override
   public void endVisit(SimpleName node) {
     // Check for enum fields with reserved names.
-    IVariableBinding var = Types.getVariableBinding(node);
+    IVariableBinding var = TreeUtil.getVariableBinding(node);
     if (var != null) {
       var = var.getVariableDeclaration();
       ITypeBinding type = var.getDeclaringClass();
@@ -834,20 +789,18 @@ public class Rewriter extends ErrorReportingASTVisitor {
     }
 
     // Check for ScopedLocalRefs.
-    IVariableBinding localRef = localRefs.get(Types.getBinding(node));
+    IVariableBinding localRef = localRefs.get(node.getBinding());
     if (localRef != null) {
-      AST ast = node.getAST();
-      FieldAccess access = ASTFactory.newFieldAccess(ast,
-          Types.getLocalRefType().getDeclaredFields()[0], ASTFactory.newSimpleName(ast, localRef));
-      CastExpression newCast = ASTFactory.newCastExpression(
-          ast, access, Types.getTypeBinding(node));
-      ParenthesizedExpression newParens = ASTFactory.newParenthesizedExpression(ast, newCast);
-      ASTUtil.setProperty(node, newParens);
+      FieldAccess access = new FieldAccess(
+          Types.getLocalRefType().getDeclaredFields()[0], new SimpleName(localRef));
+      CastExpression newCast = new CastExpression(node.getTypeBinding(), access);
+      ParenthesizedExpression newParens = ParenthesizedExpression.parenthesize(newCast);
+      node.replaceWith(newParens);
     }
   }
 
   private LinkedListMultimap<Integer, VariableDeclarationFragment> rewriteExtraDimensions(
-      AST ast, Type typeNode, List<VariableDeclarationFragment> fragments) {
+      Type typeNode, List<VariableDeclarationFragment> fragments) {
     // Removes extra dimensions on variable declaration fragments and creates extra field
     // declaration nodes if necessary.
     // eg. "int i1, i2[], i3[][];" becomes "int i1; int[] i2; int[][] i3".
@@ -857,19 +810,18 @@ public class Rewriter extends ErrorReportingASTVisitor {
     while (iter.hasNext()) {
       VariableDeclarationFragment frag = iter.next();
       int dimensions = frag.getExtraDimensions();
-      ITypeBinding binding = Types.getTypeBinding(frag);
+      ITypeBinding binding = frag.getVariableBinding().getType();
       if (masterDimensions == -1) {
         masterDimensions = dimensions;
         if (dimensions != 0) {
-          ASTUtil.setProperty(typeNode, ASTFactory.newType(ast, binding));
+          typeNode.replaceWith(Type.newType(binding));
         }
       } else if (dimensions != masterDimensions) {
         if (newDeclarations == null) {
           newDeclarations = LinkedListMultimap.create();
         }
-        VariableDeclarationFragment newFrag = ASTFactory.newVariableDeclarationFragment(
-            ast, Types.getVariableBinding(frag),
-            NodeCopier.copySubtree(ast, frag.getInitializer()));
+        VariableDeclarationFragment newFrag = new VariableDeclarationFragment(
+            frag.getVariableBinding(), TreeUtil.remove(frag.getInitializer()));
         newDeclarations.put(dimensions, newFrag);
         iter.remove();
       } else {
@@ -881,17 +833,15 @@ public class Rewriter extends ErrorReportingASTVisitor {
 
   @Override
   public void endVisit(Assignment node) {
-    AST ast = node.getAST();
     Assignment.Operator op = node.getOperator();
     Expression lhs = node.getLeftHandSide();
     Expression rhs = node.getRightHandSide();
-    ITypeBinding lhsType = Types.getTypeBinding(lhs);
+    ITypeBinding lhsType = lhs.getTypeBinding();
     if (op == Assignment.Operator.PLUS_ASSIGN && Types.isJavaStringType(lhsType)) {
       // Change "str1 += str2" to "str1 = str1 + str2".
       node.setOperator(Assignment.Operator.ASSIGN);
-      node.setRightHandSide(ASTFactory.newInfixExpression(
-          ast, NodeCopier.copySubtree(ast, lhs), InfixExpression.Operator.PLUS,
-          NodeCopier.copySubtree(ast, rhs), lhsType));
+      node.setRightHandSide(new InfixExpression(
+          lhsType, InfixExpression.Operator.PLUS, lhs.copy(), rhs.copy()));
     }
   }
 }

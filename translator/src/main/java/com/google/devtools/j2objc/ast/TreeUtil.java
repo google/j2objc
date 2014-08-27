@@ -35,6 +35,9 @@ import java.util.List;
 public class TreeUtil {
 
   public static <T extends TreeNode> T remove(T node) {
+    if (node == null) {
+      return null;
+    }
     node.remove();
     return node;
   }

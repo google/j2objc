@@ -124,6 +124,10 @@ public class InfixExpression extends Expression {
     return typeBinding;
   }
 
+  public void setTypeBinding(ITypeBinding newTypeBinding) {
+    typeBinding = newTypeBinding;
+  }
+
   public Operator getOperator() {
     return operator;
   }

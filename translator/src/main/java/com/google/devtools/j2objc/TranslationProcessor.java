@@ -154,18 +154,18 @@ class TranslationProcessor extends FileProcessor {
     OuterReferenceResolver.resolve(unit);
     ticker.tick("OuterReferenceResolver");
 
-    // Update code that has GWT references.
-    new GwtConverter().run(unit);
-    ticker.tick("GwtConverter");
-
-    // Modify AST to be more compatible with Objective C
-    new Rewriter().run(unit);
-    ticker.tick("Rewriter");
-
     // Verify all modified nodes have type bindings
     Types.verifyNode(unit);
 
     CompilationUnit newUnit = TreeConverter.convertCompilationUnit(unit, path, source);
+
+    // Update code that has GWT references.
+    new GwtConverter().run(newUnit);
+    ticker.tick("GwtConverter");
+
+    // Modify AST to be more compatible with Objective C
+    new Rewriter().run(newUnit);
+    ticker.tick("Rewriter");
 
     // Rewrite enhanced for loops into correct C code.
     new EnhancedForRewriter().run(newUnit);
