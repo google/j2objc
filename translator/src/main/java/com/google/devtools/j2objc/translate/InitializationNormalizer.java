@@ -192,16 +192,8 @@ public class InitializationNormalizer extends TreeVisitor {
           && !UnicodeUtils.hasValidCppCharacters((String) constantValue)) {
         return true;
       }
-      try {
-        // TODO(kstanger): Correctly handle edge-case number constants.
-        ASTFactory.makeLiteral(Types.getAST(), constantValue, frag.getVariableBinding().getType());
-        frag.setInitializer(TreeUtil.newLiteral(constantValue));
-        return false;
-      } catch (IllegalArgumentException e) {
-        // JDT fails for number constants that return non-numbers from toString(), like
-        // Float.POSITIVE_INFINITY returns ">Infinity<". So fall through and leave the
-        // initializer unchanged.
-      }
+      frag.setInitializer(TreeUtil.newLiteral(constantValue));
+      return false;
     }
     return true;
   }

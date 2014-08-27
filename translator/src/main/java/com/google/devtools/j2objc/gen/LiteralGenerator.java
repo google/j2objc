@@ -14,6 +14,8 @@
 
 package com.google.devtools.j2objc.gen;
 
+import com.google.devtools.j2objc.util.UnicodeUtils;
+
 import org.eclipse.jdt.core.dom.ITypeBinding;
 
 /**
@@ -96,6 +98,18 @@ public class LiteralGenerator {
       token = "(int) " + token;  // Ensure constant is treated as signed.
     }
     return token;
+  }
+
+  public static String generate(Object value) {
+    if (value instanceof Boolean) {
+      return ((Boolean) value).booleanValue() ? "YES" : "NO";
+    } else if (value instanceof Character) {
+      return UnicodeUtils.escapeCharLiteral(((Character) value).charValue());
+    } else if (value instanceof Number) {
+      return generate((Number) value);
+    } else {
+      return value.toString();
+    }
   }
 
   public static String generate(Number value) {
