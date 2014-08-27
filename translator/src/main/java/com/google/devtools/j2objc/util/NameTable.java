@@ -31,16 +31,13 @@ import com.google.devtools.j2objc.types.PointerTypeBinding;
 import com.google.devtools.j2objc.types.Types;
 import com.google.j2objc.annotations.ObjectiveCName;
 
-import org.eclipse.jdt.core.dom.AbstractTypeDeclaration;
 import org.eclipse.jdt.core.dom.IAnnotationBinding;
 import org.eclipse.jdt.core.dom.IBinding;
 import org.eclipse.jdt.core.dom.IMethodBinding;
 import org.eclipse.jdt.core.dom.IPackageBinding;
 import org.eclipse.jdt.core.dom.ITypeBinding;
 import org.eclipse.jdt.core.dom.IVariableBinding;
-import org.eclipse.jdt.core.dom.MethodDeclaration;
 import org.eclipse.jdt.core.dom.PrimitiveType;
-import org.eclipse.jdt.core.dom.SimpleName;
 import org.eclipse.jdt.core.dom.VariableDeclarationFragment;
 
 import java.util.Iterator;
@@ -309,22 +306,8 @@ public class NameTable {
     return binding;
   }
 
-  /**
-   * Returns a name for a SimpleName that may have been renamed by a
-   * translation phase.
-   *
-   * @return the new name, or the old name if no renaming exists
-   */
-  public static String getName(SimpleName node) {
-    return getName(Types.getBinding(node));
-  }
-
   public static boolean isRenamed(IBinding binding) {
     return instance.renamings.containsKey(binding);
-  }
-
-  public static boolean isRenamed(SimpleName node) {
-    return isRenamed(Types.getBinding(node));
   }
 
   /**
@@ -338,13 +321,6 @@ public class NameTable {
           oldName.toString(), previousName, oldName, newName));
     }
     instance.renamings.put(oldName, newName);
-  }
-
-  /**
-   * Adds a SimpleName to the renamings map.
-   */
-  public static void rename(SimpleName node, String newName) {
-    rename(Types.getBinding(node), newName);
   }
 
   /**
@@ -580,10 +556,6 @@ public class NameTable {
    * name plus the inner class name; for example, java.util.ArrayList.ListItr's
    * name is "JavaUtilArrayList_ListItr".
    */
-  public static String getFullName(AbstractTypeDeclaration typeDecl) {
-    return getFullName(Types.getTypeBinding(typeDecl));
-  }
-
   public static String getFullName(ITypeBinding binding) {
     binding = Types.mapType(binding.getErasure());  // Make sure type variables aren't included.
     String suffix = binding.isEnum() ? "Enum" : "";
@@ -622,10 +594,6 @@ public class NameTable {
    * Returns a "Type_method" function name for static methods, such as from
    * enum types.
    */
-  public static String makeFunctionName(AbstractTypeDeclaration cls, MethodDeclaration method) {
-    return makeFunctionName(Types.getTypeBinding(cls), Types.getMethodBinding(method));
-  }
-
   public static String makeFunctionName(ITypeBinding classBinding, IMethodBinding methodBinding) {
     String className = getFullName(classBinding);
     String methodName = methodBinding.getName();

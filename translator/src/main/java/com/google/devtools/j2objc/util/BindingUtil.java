@@ -17,13 +17,11 @@ package com.google.devtools.j2objc.util;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 import com.google.devtools.j2objc.types.IOSMethodBinding;
-import com.google.devtools.j2objc.types.Types;
 import com.google.j2objc.annotations.Weak;
 import com.google.j2objc.annotations.WeakOuter;
 
 import org.eclipse.jdt.core.dom.IAnnotationBinding;
 import org.eclipse.jdt.core.dom.IBinding;
-import org.eclipse.jdt.core.dom.IExtendedModifier;
 import org.eclipse.jdt.core.dom.IMemberValuePairBinding;
 import org.eclipse.jdt.core.dom.IMethodBinding;
 import org.eclipse.jdt.core.dom.ITypeBinding;
@@ -297,10 +295,6 @@ public final class BindingUtil {
    * Returns true if the specified binding is of an annotation that has
    * a runtime retention policy.
    */
-  public static boolean isRuntimeAnnotation(IExtendedModifier mod) {
-    return mod.isAnnotation() ? isRuntimeAnnotation(Types.getTypeBinding(mod)) : false;
-  }
-
   public static boolean isRuntimeAnnotation(IAnnotationBinding binding) {
     return isRuntimeAnnotation(binding.getAnnotationType());
   }
@@ -369,7 +363,7 @@ public final class BindingUtil {
    */
   public static boolean isDestructor(IMethodBinding m) {
     String methodName = NameTable.getName(m);
-    return methodName.equals(NameTable.FINALIZE_METHOD) ||
-        methodName.equals(NameTable.DEALLOC_METHOD);
+    return methodName.equals(NameTable.FINALIZE_METHOD)
+        || methodName.equals(NameTable.DEALLOC_METHOD);
   }
 }

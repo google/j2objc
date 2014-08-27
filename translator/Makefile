@@ -155,7 +155,6 @@ JAVA_SOURCES = \
 	gen/SourceBuilder.java \
 	gen/SourceFileGenerator.java \
 	gen/StatementGenerator.java \
-	translate/ASTFactory.java \
 	translate/AnonymousClassConverter.java \
 	translate/ArrayRewriter.java \
 	translate/Autoboxer.java \
@@ -194,7 +193,6 @@ JAVA_SOURCES = \
 	types/IOSParameter.java \
 	types/IOSTypeBinding.java \
 	types/JavaMethod.java \
-	types/NodeCopier.java \
 	types/NullTypeBinding.java \
 	types/PointerTypeBinding.java \
 	types/RenamedTypeBinding.java \
