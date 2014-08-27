@@ -100,8 +100,6 @@ public class AnonymousClassConverter extends ErrorReportingASTVisitor {
     EnumConstantDeclaration enumConstant = null;
     List<Expression> parentArguments;
     Expression outerExpression = null;
-    String newClassName = typeBinding.getName();
-    ITypeBinding innerType = RenamedTypeBinding.rename(newClassName, outerType, typeBinding, 0);
     if (parent instanceof ClassInstanceCreation) {
       newInvocation = (ClassInstanceCreation) parent;
       parentArguments = ASTUtil.getArguments(newInvocation);
@@ -118,14 +116,13 @@ public class AnonymousClassConverter extends ErrorReportingASTVisitor {
     // Create a type declaration for this anonymous class.
     AST ast = node.getAST();
     TypeDeclaration typeDecl = ast.newTypeDeclaration();
-    Types.addBinding(typeDecl, innerType);
-    typeDecl.setName(ast.newSimpleName(newClassName));
-    Types.addBinding(typeDecl.getName(), innerType);
+    Types.addBinding(typeDecl, typeBinding);
+    typeDecl.setName(ASTFactory.newSimpleName(ast, typeBinding));
     typeDecl.setSourceRange(node.getStartPosition(), node.getLength());
 
-    Type superType = ASTFactory.newType(ast, Types.mapType(innerType.getSuperclass()));
+    Type superType = ASTFactory.newType(ast, Types.mapType(typeBinding.getSuperclass()));
     typeDecl.setSuperclassType(superType);
-    for (ITypeBinding interfaceType : innerType.getInterfaces()) {
+    for (ITypeBinding interfaceType : typeBinding.getInterfaces()) {
       ASTUtil.getSuperInterfaceTypes(typeDecl).add(
           ASTFactory.newType(ast, Types.mapType(interfaceType)));
     }
@@ -149,11 +146,11 @@ public class AnonymousClassConverter extends ErrorReportingASTVisitor {
     // If invocation, replace anonymous class invocation with the new constructor.
     if (newInvocation != null) {
       newInvocation.setAnonymousClassDeclaration(null);
-      newInvocation.setType(ASTFactory.newType(ast, innerType));
+      newInvocation.setType(ASTFactory.newType(ast, typeBinding));
       IMethodBinding oldBinding = Types.getMethodBinding(newInvocation);
       if (oldBinding != null) {
         GeneratedMethodBinding invocationBinding = new GeneratedMethodBinding(oldBinding);
-        invocationBinding.setDeclaringClass(innerType);
+        invocationBinding.setDeclaringClass(typeBinding);
         Types.addBinding(newInvocation, invocationBinding);
       }
     } else {
