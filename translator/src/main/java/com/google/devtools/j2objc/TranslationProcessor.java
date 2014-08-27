@@ -162,18 +162,18 @@ class TranslationProcessor extends FileProcessor {
     new Rewriter().run(unit);
     ticker.tick("Rewriter");
 
-    // Rewrite enhanced for loops into correct C code.
-    new EnhancedForRewriter().run(unit);
-    ticker.tick("EnhancedForRewriter");
-
-    // Add auto-boxing conversions.
-    new Autoboxer(unit.getAST()).run(unit);
-    ticker.tick("Autoboxer");
-
     // Verify all modified nodes have type bindings
     Types.verifyNode(unit);
 
     CompilationUnit newUnit = TreeConverter.convertCompilationUnit(unit, path, source);
+
+    // Rewrite enhanced for loops into correct C code.
+    new EnhancedForRewriter().run(newUnit);
+    ticker.tick("EnhancedForRewriter");
+
+    // Add auto-boxing conversions.
+    new Autoboxer().run(newUnit);
+    ticker.tick("Autoboxer");
 
     // Extract inner and anonymous classes
     new AnonymousClassConverter().run(newUnit);
