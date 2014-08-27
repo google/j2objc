@@ -59,7 +59,7 @@ translate_dependencies:
 TRANSLATE_JAVA_PREREQ = $(filter-out $(TRANSLATE_EXE) translate_force,$^)
 
 # Find any files that may have been added to the list since the last translation
-TRANSLATE_LAST_FILES = $(shell if [ -e $(TRANSLATE_TARGET) ]; then cat $(TRANSLATE_TARGET); fi)
+TRANSLATE_LAST_FILES := $(shell if [ -e $(TRANSLATE_TARGET) ]; then cat $(TRANSLATE_TARGET); fi)
 TRANSLATE_NEW_FILES = $(filter-out $(TRANSLATE_LAST_FILES),$(TRANSLATE_JAVA_PREREQ))
 
 TRANSLATE_MAKE_LIST = $(if $(filter $(TRANSLATE_EXE),$?),\

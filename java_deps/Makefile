@@ -29,7 +29,7 @@ BUILD_DIR_JARS = $(DISTRIBUTION_JARS:%=$(BUILD_DIR)/%) $(INTERNAL_JARS:%=$(BUILD
 
 
 ifndef M2_HOME
-M2_HOME = $(shell echo $$HOME)/.m2
+M2_HOME := $(shell echo $$HOME)/.m2
 endif
 JUNIT_DIR = $(M2_HOME)/repository/junit/junit/4.10
 JSR305_DIR = $(M2_HOME)/repository/com/google/code/findbugs/jsr305/2.0.2
