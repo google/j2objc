@@ -18,42 +18,43 @@ import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.ListMultimap;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
+import com.google.devtools.j2objc.ast.AssertStatement;
+import com.google.devtools.j2objc.ast.Assignment;
+import com.google.devtools.j2objc.ast.Block;
+import com.google.devtools.j2objc.ast.BooleanLiteral;
+import com.google.devtools.j2objc.ast.BreakStatement;
+import com.google.devtools.j2objc.ast.ConditionalExpression;
+import com.google.devtools.j2objc.ast.ConstructorInvocation;
+import com.google.devtools.j2objc.ast.DoStatement;
+import com.google.devtools.j2objc.ast.EnhancedForStatement;
+import com.google.devtools.j2objc.ast.Expression;
+import com.google.devtools.j2objc.ast.ExpressionStatement;
+import com.google.devtools.j2objc.ast.ForStatement;
+import com.google.devtools.j2objc.ast.IfStatement;
+import com.google.devtools.j2objc.ast.InfixExpression;
+import com.google.devtools.j2objc.ast.MethodDeclaration;
+import com.google.devtools.j2objc.ast.ParenthesizedExpression;
+import com.google.devtools.j2objc.ast.PostfixExpression;
+import com.google.devtools.j2objc.ast.PrefixExpression;
+import com.google.devtools.j2objc.ast.ReturnStatement;
+import com.google.devtools.j2objc.ast.SimpleName;
+import com.google.devtools.j2objc.ast.Statement;
+import com.google.devtools.j2objc.ast.SuperConstructorInvocation;
+import com.google.devtools.j2objc.ast.SwitchStatement;
+import com.google.devtools.j2objc.ast.SynchronizedStatement;
+import com.google.devtools.j2objc.ast.ThrowStatement;
+import com.google.devtools.j2objc.ast.TreeNode;
+import com.google.devtools.j2objc.ast.TreeUtil;
+import com.google.devtools.j2objc.ast.TreeVisitor;
+import com.google.devtools.j2objc.ast.VariableDeclarationExpression;
+import com.google.devtools.j2objc.ast.VariableDeclarationFragment;
+import com.google.devtools.j2objc.ast.VariableDeclarationStatement;
+import com.google.devtools.j2objc.ast.WhileStatement;
 import com.google.devtools.j2objc.types.GeneratedVariableBinding;
-import com.google.devtools.j2objc.types.NodeCopier;
 import com.google.devtools.j2objc.types.Types;
-import com.google.devtools.j2objc.util.ASTUtil;
-import com.google.devtools.j2objc.util.ErrorReportingASTVisitor;
 
-import org.eclipse.jdt.core.dom.AST;
-import org.eclipse.jdt.core.dom.ASTNode;
-import org.eclipse.jdt.core.dom.AssertStatement;
-import org.eclipse.jdt.core.dom.Assignment;
-import org.eclipse.jdt.core.dom.Block;
-import org.eclipse.jdt.core.dom.ConditionalExpression;
-import org.eclipse.jdt.core.dom.ConstructorInvocation;
-import org.eclipse.jdt.core.dom.DoStatement;
-import org.eclipse.jdt.core.dom.EnhancedForStatement;
-import org.eclipse.jdt.core.dom.Expression;
-import org.eclipse.jdt.core.dom.ExpressionStatement;
-import org.eclipse.jdt.core.dom.ForStatement;
 import org.eclipse.jdt.core.dom.IMethodBinding;
 import org.eclipse.jdt.core.dom.IVariableBinding;
-import org.eclipse.jdt.core.dom.IfStatement;
-import org.eclipse.jdt.core.dom.InfixExpression;
-import org.eclipse.jdt.core.dom.MethodDeclaration;
-import org.eclipse.jdt.core.dom.PostfixExpression;
-import org.eclipse.jdt.core.dom.PrefixExpression;
-import org.eclipse.jdt.core.dom.ReturnStatement;
-import org.eclipse.jdt.core.dom.SimpleName;
-import org.eclipse.jdt.core.dom.Statement;
-import org.eclipse.jdt.core.dom.SuperConstructorInvocation;
-import org.eclipse.jdt.core.dom.SwitchStatement;
-import org.eclipse.jdt.core.dom.SynchronizedStatement;
-import org.eclipse.jdt.core.dom.ThrowStatement;
-import org.eclipse.jdt.core.dom.VariableDeclarationExpression;
-import org.eclipse.jdt.core.dom.VariableDeclarationFragment;
-import org.eclipse.jdt.core.dom.VariableDeclarationStatement;
-import org.eclipse.jdt.core.dom.WhileStatement;
 
 import java.util.Collections;
 import java.util.List;
@@ -69,12 +70,12 @@ import java.util.Set;
  *
  * @author Keith Stanger
  */
-public class UnsequencedExpressionRewriter extends ErrorReportingASTVisitor {
+public class UnsequencedExpressionRewriter extends TreeVisitor {
 
   private IMethodBinding currentMethod = null;
   private int count = 1;
   private List<VariableAccess> orderedAccesses = Lists.newArrayList();
-  private ASTNode currentTopNode = null;
+  private TreeNode currentTopNode = null;
   private boolean hasModification = false;
 
   /**
@@ -102,7 +103,7 @@ public class UnsequencedExpressionRewriter extends ErrorReportingASTVisitor {
     }
   }
 
-  private void newExpression(ASTNode topNode) {
+  private void newExpression(TreeNode topNode) {
     orderedAccesses.clear();
     currentTopNode = topNode;
     hasModification = false;
@@ -110,7 +111,7 @@ public class UnsequencedExpressionRewriter extends ErrorReportingASTVisitor {
 
   @Override
   public boolean visit(MethodDeclaration node) {
-    currentMethod = Types.getMethodBinding(node);
+    currentMethod = node.getMethodBinding();
     count = 1;
     return true;
   }
@@ -146,7 +147,7 @@ public class UnsequencedExpressionRewriter extends ErrorReportingASTVisitor {
     List<VariableAccess> accesses = getUnsequencedAccesses();
     if (!accesses.isEmpty()) {
       extractOrderedAccesses(
-          stmt.getAST(), ASTUtil.asStatementList(stmt).subList(0, 0), currentTopNode, accesses);
+          TreeUtil.asStatementList(stmt).subList(0, 0), currentTopNode, accesses);
     }
   }
 
@@ -159,10 +160,10 @@ public class UnsequencedExpressionRewriter extends ErrorReportingASTVisitor {
   }
 
   private void extractOrderedAccesses(
-      AST ast, List<Statement> stmtList, ASTNode subExpr, List<VariableAccess> toExtract) {
+      List<Statement> stmtList, TreeNode subExpr, List<VariableAccess> toExtract) {
     for (int i = 0; i < toExtract.size(); i++) {
       VariableAccess access = toExtract.get(i);
-      ASTNode topConditional = getTopConditional(access.expression, subExpr);
+      TreeNode topConditional = getTopConditional(access.expression, subExpr);
       if (topConditional != null) {
         // Conditional expressions require special handling when extracting the
         // access because execution of the access may not be guaranteed.
@@ -176,10 +177,10 @@ public class UnsequencedExpressionRewriter extends ErrorReportingASTVisitor {
         }
         if (topConditional instanceof InfixExpression) {
           extractInfixConditional(
-              ast, stmtList, (InfixExpression) topConditional, toExtract.subList(i, j));
+              stmtList, (InfixExpression) topConditional, toExtract.subList(i, j));
         } else if (topConditional instanceof ConditionalExpression) {
           extractConditionalExpression(
-              ast, stmtList, (ConditionalExpression) topConditional, toExtract.subList(i, j));
+              stmtList, (ConditionalExpression) topConditional, toExtract.subList(i, j));
         } else {
           throw new AssertionError(
               "Unexpected conditional node type: " + topConditional.getClass().toString());
@@ -187,17 +188,16 @@ public class UnsequencedExpressionRewriter extends ErrorReportingASTVisitor {
         i = j - 1;
       } else {
         IVariableBinding newVar = new GeneratedVariableBinding(
-            "unseq$" + count++, 0, Types.getTypeBinding(access.expression), false, false, null,
+            "unseq$" + count++, 0, access.expression.getTypeBinding(), false, false, null,
             currentMethod);
-        stmtList.add(ASTFactory.newVariableDeclarationStatement(
-            ast, newVar, NodeCopier.copySubtree(ast, access.expression)));
-        ASTUtil.setProperty(access.expression, ASTFactory.newSimpleName(ast, newVar));
+        stmtList.add(new VariableDeclarationStatement(newVar, access.expression.copy()));
+        access.expression.replaceWith(new SimpleName(newVar));
       }
     }
   }
 
-  private ASTNode getTopConditional(ASTNode node, ASTNode limit) {
-    ASTNode topConditional = null;
+  private TreeNode getTopConditional(TreeNode node, TreeNode limit) {
+    TreeNode topConditional = null;
     while (node != limit) {
       node = node.getParent();
       if (isConditional(node)) {
@@ -208,8 +208,7 @@ public class UnsequencedExpressionRewriter extends ErrorReportingASTVisitor {
   }
 
   private void extractConditionalExpression(
-      AST ast, List<Statement> stmtList, ConditionalExpression conditional,
-      List<VariableAccess> toExtract) {
+      List<Statement> stmtList, ConditionalExpression conditional, List<VariableAccess> toExtract) {
     Expression condition = conditional.getExpression();
     Expression thenExpr = conditional.getThenExpression();
     Expression elseExpr = conditional.getElseExpression();
@@ -218,7 +217,7 @@ public class UnsequencedExpressionRewriter extends ErrorReportingASTVisitor {
     List<VariableAccess> elseAccesses = Lists.newArrayList();
     boolean needsExtraction = false;
     for (VariableAccess access : toExtract) {
-      ASTNode node = access.expression;
+      TreeNode node = access.expression;
       while (node.getParent() != conditional) {
         node = node.getParent();
       }
@@ -237,43 +236,41 @@ public class UnsequencedExpressionRewriter extends ErrorReportingASTVisitor {
         needsExtraction = true;
       }
     }
-    extractOrderedAccesses(ast, stmtList, condition, conditionAccesses);
+    extractOrderedAccesses(stmtList, condition, conditionAccesses);
     // The recursive call might replace the condition child.
     condition = conditional.getExpression();
     if (needsExtraction) {
       IVariableBinding resultVar = new GeneratedVariableBinding(
-          "unseq$" + count++, 0, Types.getTypeBinding(conditional), false, false, null,
-          currentMethod);
-      ASTUtil.setProperty(conditional, ASTFactory.newSimpleName(ast, resultVar));
-      stmtList.add(ASTFactory.newVariableDeclarationStatement(ast, resultVar, null));
-      IfStatement newIf = ast.newIfStatement();
-      newIf.setExpression(NodeCopier.copySubtree(ast, condition));
+          "unseq$" + count++, 0, conditional.getTypeBinding(), false, false, null, currentMethod);
+      conditional.replaceWith(new SimpleName(resultVar));
+      stmtList.add(new VariableDeclarationStatement(resultVar, null));
+      IfStatement newIf = new IfStatement();
+      newIf.setExpression(condition.copy());
       stmtList.add(newIf);
-      Block thenBlock = ast.newBlock();
+      Block thenBlock = new Block();
       newIf.setThenStatement(thenBlock);
-      List<Statement> thenStmts = ASTUtil.getStatements(thenBlock);
-      extractOrderedAccesses(ast, thenStmts, thenExpr, thenAccesses);
+      List<Statement> thenStmts = thenBlock.getStatements();
+      extractOrderedAccesses(thenStmts, thenExpr, thenAccesses);
       // The recursive call might replace the then expression child.
       thenExpr = conditional.getThenExpression();
-      thenStmts.add(ast.newExpressionStatement(ASTFactory.newAssignment(
-          ast, ASTFactory.newSimpleName(ast, resultVar), NodeCopier.copySubtree(ast, thenExpr))));
-      Block elseBlock = ast.newBlock();
+      thenStmts.add(new ExpressionStatement(
+          new Assignment(new SimpleName(resultVar), thenExpr.copy())));
+      Block elseBlock = new Block();
       newIf.setElseStatement(elseBlock);
-      List<Statement> elseStmts = ASTUtil.getStatements(elseBlock);
-      extractOrderedAccesses(ast, elseStmts, elseExpr, elseAccesses);
+      List<Statement> elseStmts = elseBlock.getStatements();
+      extractOrderedAccesses(elseStmts, elseExpr, elseAccesses);
       // The recursive call might replace the else expression child.
       thenExpr = conditional.getElseExpression();
-      elseStmts.add(ast.newExpressionStatement(ASTFactory.newAssignment(
-          ast, ASTFactory.newSimpleName(ast, resultVar), NodeCopier.copySubtree(ast, elseExpr))));
+      elseStmts.add(new ExpressionStatement(
+          new Assignment(new SimpleName(resultVar), elseExpr.copy())));
     } else {
-      extractOrderedAccesses(ast, stmtList, thenExpr, thenAccesses);
-      extractOrderedAccesses(ast, stmtList, elseExpr, elseAccesses);
+      extractOrderedAccesses(stmtList, thenExpr, thenAccesses);
+      extractOrderedAccesses(stmtList, elseExpr, elseAccesses);
     }
   }
 
   private void extractInfixConditional(
-      AST ast, List<Statement> stmtList, InfixExpression conditional,
-      List<VariableAccess> toExtract) {
+      List<Statement> stmtList, InfixExpression conditional, List<VariableAccess> toExtract) {
     InfixExpression.Operator op = conditional.getOperator();
     List<Expression> branches = getBranches(conditional);
     int lastIfExtractIdx = 0;
@@ -282,7 +279,7 @@ public class UnsequencedExpressionRewriter extends ErrorReportingASTVisitor {
     Expression lastBranch = null;
     for (int i = 0; i < toExtract.size(); i++) {
       VariableAccess access = toExtract.get(i);
-      ASTNode node = access.expression;
+      TreeNode node = access.expression;
       while (node.getParent() != conditional) {
         node = node.getParent();
       }
@@ -291,7 +288,7 @@ public class UnsequencedExpressionRewriter extends ErrorReportingASTVisitor {
 
       // Extract all accesses from the previous branch.
       if (lastBranch != null && branch != lastBranch) {
-        extractOrderedAccesses(ast, stmtList, lastBranch, toExtract.subList(lastExtracted, i));
+        extractOrderedAccesses(stmtList, lastBranch, toExtract.subList(lastExtracted, i));
         // The recursive call might replace some of the children.
         branches = getBranches(conditional);
         lastExtracted = i;
@@ -304,38 +301,36 @@ public class UnsequencedExpressionRewriter extends ErrorReportingASTVisitor {
           conditionalVar = new GeneratedVariableBinding(
               "unseq$" + count++, 0, Types.resolveJavaType("boolean"), false, false, null,
               currentMethod);
-          ASTUtil.setProperty(conditional, ASTFactory.newSimpleName(ast, conditionalVar));
-          stmtList.add(ASTFactory.newVariableDeclarationStatement(ast, conditionalVar, null));
+          conditional.replaceWith(new SimpleName(conditionalVar));
+          stmtList.add(new VariableDeclarationStatement(conditionalVar, null));
         }
         List<Expression> subBranches = branches.subList(lastIfExtractIdx, branches.indexOf(branch));
-        IfStatement newIf = ast.newIfStatement();
-        Expression ifExpr = ASTFactory.newAssignment(
-            ast, ASTFactory.newSimpleName(ast, conditionalVar),
-            conditionalFromSubBranches(ast, subBranches, op));
+        IfStatement newIf = new IfStatement();
+        Expression ifExpr = new Assignment(
+            new SimpleName(conditionalVar), conditionalFromSubBranches(subBranches, op));
         if (op == InfixExpression.Operator.CONDITIONAL_OR) {
-          ifExpr = ASTFactory.newPrefixExpression(
-              ast, PrefixExpression.Operator.NOT,
-              ASTFactory.newParenthesizedExpression(ast, ifExpr), "boolean");
+          ifExpr = new PrefixExpression(
+              Types.resolveJavaType("boolean"), PrefixExpression.Operator.NOT,
+              ParenthesizedExpression.parenthesize(ifExpr));
         }
         newIf.setExpression(ifExpr);
         stmtList.add(newIf);
-        Block thenBlock = ast.newBlock();
-        stmtList = ASTUtil.getStatements(thenBlock);
+        Block thenBlock = new Block();
+        stmtList = thenBlock.getStatements();
         newIf.setThenStatement(thenBlock);
         lastIfExtractIdx = branches.indexOf(branch);
       }
     }
     extractOrderedAccesses(
-        ast, stmtList, lastBranch, toExtract.subList(lastExtracted, toExtract.size()));
+        stmtList, lastBranch, toExtract.subList(lastExtracted, toExtract.size()));
     // The recursive call might replace some of the children.
     branches = getBranches(conditional);
     if (conditionalVar != null) {
       List<Expression> remainingBranches = Lists.newArrayList();
-      remainingBranches.add(ASTFactory.newSimpleName(ast, conditionalVar));
+      remainingBranches.add(new SimpleName(conditionalVar));
       remainingBranches.addAll(branches.subList(lastIfExtractIdx, branches.size()));
-      stmtList.add(ast.newExpressionStatement(ASTFactory.newAssignment(
-          ast, ASTFactory.newSimpleName(ast, conditionalVar),
-          conditionalFromSubBranches(ast, remainingBranches, op))));
+      stmtList.add(new ExpressionStatement(new Assignment(
+          new SimpleName(conditionalVar), conditionalFromSubBranches(remainingBranches, op))));
     }
   }
 
@@ -343,27 +338,26 @@ public class UnsequencedExpressionRewriter extends ErrorReportingASTVisitor {
     List<Expression> result = Lists.newArrayList();
     result.add(expr.getLeftOperand());
     result.add(expr.getRightOperand());
-    result.addAll(ASTUtil.getExtendedOperands(expr));
+    result.addAll(expr.getExtendedOperands());
     return result;
   }
 
   private Expression conditionalFromSubBranches(
-      AST ast, List<Expression> branches, InfixExpression.Operator op) {
+      List<Expression> branches, InfixExpression.Operator op) {
     assert branches.size() >= 1;
     if (branches.size() == 1) {
-      return NodeCopier.copySubtree(ast, branches.get(0));
+      return branches.get(0).copy();
     } else {
-      InfixExpression result = ASTFactory.newInfixExpression(
-          ast, NodeCopier.copySubtree(ast, branches.get(0)), op,
-          NodeCopier.copySubtree(ast, branches.get(1)), Types.resolveJavaType("boolean"));
+      InfixExpression result = new InfixExpression(
+          Types.resolveJavaType("boolean"), op, branches.get(0).copy(), branches.get(1).copy());
       for (int i = 2; i < branches.size(); i++) {
-        ASTUtil.getExtendedOperands(result).add(branches.get(i));
+        result.getExtendedOperands().add(branches.get(i));
       }
       return result;
     }
   }
 
-  private boolean isConditional(ASTNode node) {
+  private boolean isConditional(TreeNode node) {
     if (node instanceof InfixExpression) {
       InfixExpression infixExpr = (InfixExpression) node;
       InfixExpression.Operator op = infixExpr.getOperator();
@@ -389,7 +383,7 @@ public class UnsequencedExpressionRewriter extends ErrorReportingASTVisitor {
       }
     }
     for (VariableAccess modification : modifications) {
-      Set<ASTNode> ancestors = getAncestors(modification.expression);
+      Set<TreeNode> ancestors = getAncestors(modification.expression);
       boolean seenMod = false;
       for (VariableAccess access : accesses) {
         if (modification == access) {
@@ -402,8 +396,8 @@ public class UnsequencedExpressionRewriter extends ErrorReportingASTVisitor {
     }
   }
 
-  private Set<ASTNode> getAncestors(ASTNode node) {
-    Set<ASTNode> ancestors = Sets.newHashSet();
+  private Set<TreeNode> getAncestors(TreeNode node) {
+    Set<TreeNode> ancestors = Sets.newHashSet();
     while (node != currentTopNode) {
       ancestors.add(node);
       node = node.getParent();
@@ -412,9 +406,9 @@ public class UnsequencedExpressionRewriter extends ErrorReportingASTVisitor {
   }
 
   private boolean isUnsequenced(
-      VariableAccess modification, Set<ASTNode> modificationAncestors, VariableAccess access) {
-    ASTNode commonAncestor = currentTopNode;
-    ASTNode node = access.expression;
+      VariableAccess modification, Set<TreeNode> modificationAncestors, VariableAccess access) {
+    TreeNode commonAncestor = currentTopNode;
+    TreeNode node = access.expression;
     while (node != currentTopNode) {
       if (modificationAncestors.contains(node)) {
         commonAncestor = node;
@@ -436,9 +430,9 @@ public class UnsequencedExpressionRewriter extends ErrorReportingASTVisitor {
     return true;
   }
 
-  private boolean isWithinConditionalBranch(ASTNode node, ASTNode limit) {
+  private boolean isWithinConditionalBranch(TreeNode node, TreeNode limit) {
     while (node != limit) {
-      ASTNode parent = node.getParent();
+      TreeNode parent = node.getParent();
       if (isConditional(parent) && getConditionChild(parent) != node) {
         return true;
       }
@@ -447,7 +441,7 @@ public class UnsequencedExpressionRewriter extends ErrorReportingASTVisitor {
     return false;
   }
 
-  private Expression getConditionChild(ASTNode conditional) {
+  private Expression getConditionChild(TreeNode conditional) {
     if (conditional instanceof InfixExpression) {
       return ((InfixExpression) conditional).getLeftOperand();
     } else if (conditional instanceof ConditionalExpression) {
@@ -460,7 +454,7 @@ public class UnsequencedExpressionRewriter extends ErrorReportingASTVisitor {
 
   @Override
   public void endVisit(SimpleName node) {
-    IVariableBinding var = Types.getVariableBinding(node);
+    IVariableBinding var = TreeUtil.getVariableBinding(node);
     addVariableAccess(var, node, false);
   }
 
@@ -488,15 +482,13 @@ public class UnsequencedExpressionRewriter extends ErrorReportingASTVisitor {
       if (!toExtract.isEmpty()) {
         // If the message expression needs any extraction, then we first extract
         // the entire boolean expression to preserve ordering between the two.
-        AST ast = node.getAST();
         IVariableBinding exprVar = new GeneratedVariableBinding(
-            "unseq$" + count++, 0, Types.getTypeBinding(expr), false, false, null,
-            currentMethod);
-        ASTUtil.insertBefore(node, ASTFactory.newVariableDeclarationStatement(
-            ast, exprVar, NodeCopier.copySubtree(ast, node.getExpression())));
-        node.setExpression(ASTFactory.newSimpleName(ast, exprVar));
+            "unseq$" + count++, 0, expr.getTypeBinding(), false, false, null, currentMethod);
+        TreeUtil.insertBefore(node, new VariableDeclarationStatement(
+            exprVar, node.getExpression().copy()));
+        node.setExpression(new SimpleName(exprVar));
         extractOrderedAccesses(
-            ast, ASTUtil.asStatementList(node).subList(0, 0), currentTopNode, toExtract);
+            TreeUtil.asStatementList(node).subList(0, 0), currentTopNode, toExtract);
       }
     }
     return false;
@@ -505,7 +497,7 @@ public class UnsequencedExpressionRewriter extends ErrorReportingASTVisitor {
   @Override
   public boolean visit(ConstructorInvocation node) {
     newExpression(node);
-    for (Expression arg : ASTUtil.getArguments(node)) {
+    for (Expression arg : node.getArguments()) {
       arg.accept(this);
     }
     extractUnsequenced(node);
@@ -515,7 +507,7 @@ public class UnsequencedExpressionRewriter extends ErrorReportingASTVisitor {
   @Override
   public boolean visit(SuperConstructorInvocation node) {
     newExpression(node);
-    for (Expression arg : ASTUtil.getArguments(node)) {
+    for (Expression arg : node.getArguments()) {
       arg.accept(this);
     }
     extractUnsequenced(node);
@@ -532,7 +524,7 @@ public class UnsequencedExpressionRewriter extends ErrorReportingASTVisitor {
   @Override
   public boolean visit(VariableDeclarationStatement node) {
     extractVariableDeclarationFragments(
-        node.getAST(), ASTUtil.getFragments(node), ASTUtil.asStatementList(node).subList(0, 0));
+        node.getFragments(), TreeUtil.asStatementList(node).subList(0, 0));
     return false;
   }
 
@@ -550,7 +542,7 @@ public class UnsequencedExpressionRewriter extends ErrorReportingASTVisitor {
   @Override
   public boolean visit(SwitchStatement node) {
     visitAndExtract(node.getExpression(), node);
-    for (Statement stmt : ASTUtil.getStatements(node)) {
+    for (Statement stmt : node.getStatements()) {
       stmt.accept(this);
     }
     return false;
@@ -570,13 +562,11 @@ public class UnsequencedExpressionRewriter extends ErrorReportingASTVisitor {
   }
 
   private IfStatement createLoopTermination(Expression loopCondition) {
-    AST ast = loopCondition.getAST();
-    IfStatement newIf = ast.newIfStatement();
-    newIf.setExpression(ASTFactory.newPrefixExpression(
-        ast, PrefixExpression.Operator.NOT,
-        ASTFactory.newParenthesizedExpression(ast, NodeCopier.copySubtree(ast, loopCondition)),
-        "boolean"));
-    newIf.setThenStatement(ast.newBreakStatement());
+    IfStatement newIf = new IfStatement();
+    newIf.setExpression(new PrefixExpression(
+        Types.resolveJavaType("boolean"), PrefixExpression.Operator.NOT,
+        ParenthesizedExpression.parenthesize(loopCondition.copy())));
+    newIf.setThenStatement(new BreakStatement());
     return newIf;
   }
 
@@ -588,11 +578,10 @@ public class UnsequencedExpressionRewriter extends ErrorReportingASTVisitor {
     List<VariableAccess> toExtract = getUnsequencedAccesses();
     if (!toExtract.isEmpty()) {
       // Convert "while (cond)" into "while (true) { if (!(cond)) break; ... }".
-      AST ast = node.getAST();
-      List<Statement> stmtList = ASTUtil.asStatementList(node.getBody()).subList(0, 0);
-      extractOrderedAccesses(ast, stmtList, currentTopNode, toExtract);
+      List<Statement> stmtList = TreeUtil.asStatementList(node.getBody()).subList(0, 0);
+      extractOrderedAccesses(stmtList, currentTopNode, toExtract);
       stmtList.add(createLoopTermination(node.getExpression()));
-      node.setExpression(ASTFactory.newBooleanLiteral(ast, true));
+      node.setExpression(new BooleanLiteral(true));
     }
     return false;
   }
@@ -605,17 +594,16 @@ public class UnsequencedExpressionRewriter extends ErrorReportingASTVisitor {
     List<VariableAccess> toExtract = getUnsequencedAccesses();
     if (!toExtract.isEmpty()) {
       // Convert "while (cond)" into "while (true) { if (!(cond)) break; ... }".
-      AST ast = node.getAST();
-      List<Statement> stmtList = ASTUtil.asStatementList(node.getBody());
-      extractOrderedAccesses(ast, stmtList, currentTopNode, toExtract);
+      List<Statement> stmtList = TreeUtil.asStatementList(node.getBody());
+      extractOrderedAccesses(stmtList, currentTopNode, toExtract);
       stmtList.add(createLoopTermination(node.getExpression()));
-      node.setExpression(ASTFactory.newBooleanLiteral(ast, true));
+      node.setExpression(new BooleanLiteral(true));
     }
     return false;
   }
 
   private void extractVariableDeclarationFragments(
-      AST ast, List<VariableDeclarationFragment> fragments, List<Statement> stmtList) {
+      List<VariableDeclarationFragment> fragments, List<Statement> stmtList) {
     for (int i = 0; i < fragments.size(); i++) {
       VariableDeclarationFragment frag = fragments.get(i);
       Expression init = frag.getInitializer();
@@ -628,23 +616,22 @@ public class UnsequencedExpressionRewriter extends ErrorReportingASTVisitor {
       if (!toExtract.isEmpty()) {
         if (i > 0) {
           // Extract all fragments before the current one to preserve ordering.
-          VariableDeclarationStatement newDecl = ASTFactory.newVariableDeclarationStatement(
-              ast, NodeCopier.copySubtree(ast, fragments.get(0)));
+          VariableDeclarationStatement newDecl =
+              new VariableDeclarationStatement(fragments.get(0).copy());
           for (int j = 1; j < i; j++) {
-            ASTUtil.getFragments(newDecl).add(NodeCopier.copySubtree(ast, fragments.get(j)));
+            newDecl.getFragments().add(fragments.get(j).copy());
           }
           stmtList.add(newDecl);
           fragments.subList(0, i).clear();
         }
-        extractOrderedAccesses(ast, stmtList, currentTopNode, toExtract);
+        extractOrderedAccesses(stmtList, currentTopNode, toExtract);
         i = 0;
       }
     }
   }
 
   private void extractExpressionList(
-      AST ast, List<Expression> expressions, List<Statement> stmtList,
-      boolean extractModifiedExpression) {
+      List<Expression> expressions, List<Statement> stmtList, boolean extractModifiedExpression) {
     for (int i = 0; i < expressions.size(); i++) {
       Expression expr = expressions.get(i);
       newExpression(expr);
@@ -652,15 +639,13 @@ public class UnsequencedExpressionRewriter extends ErrorReportingASTVisitor {
       List<VariableAccess> unsequencedAccesses = getUnsequencedAccesses();
       if (!unsequencedAccesses.isEmpty()) {
         for (int j = 0; j < i; j++) {
-          stmtList.add(ast.newExpressionStatement(
-              NodeCopier.copySubtree(ast, expressions.get(j))));
+          stmtList.add(new ExpressionStatement(expressions.get(j).copy()));
         }
         expressions.subList(0, i).clear();
-        extractOrderedAccesses(ast, stmtList, currentTopNode, unsequencedAccesses);
+        extractOrderedAccesses(stmtList, currentTopNode, unsequencedAccesses);
         i = 0;
         if (extractModifiedExpression) {
-          stmtList.add(ast.newExpressionStatement(
-              NodeCopier.copySubtree(ast, expressions.get(0))));
+          stmtList.add(new ExpressionStatement(expressions.get(0).copy()));
           expressions.remove(0);
           i = -1;
         }
@@ -670,16 +655,15 @@ public class UnsequencedExpressionRewriter extends ErrorReportingASTVisitor {
 
   @Override
   public boolean visit(ForStatement node) {
-    AST ast = node.getAST();
-    List<Expression> initializers = ASTUtil.getInitializers(node);
+    List<Expression> initializers = node.getInitializers();
     // The for-loop initializers can either be a single variable declaration
     // expression or a list of initializer expressions.
     if (initializers.size() == 1 && initializers.get(0) instanceof VariableDeclarationExpression) {
       VariableDeclarationExpression decl = (VariableDeclarationExpression) initializers.get(0);
       extractVariableDeclarationFragments(
-          ast, ASTUtil.getFragments(decl), ASTUtil.asStatementList(node).subList(0, 0));
+          decl.getFragments(), TreeUtil.asStatementList(node).subList(0, 0));
     } else {
-      extractExpressionList(ast, initializers, ASTUtil.asStatementList(node).subList(0, 0), false);
+      extractExpressionList(initializers, TreeUtil.asStatementList(node).subList(0, 0), false);
     }
     Expression expr = node.getExpression();
     if (expr != null) {
@@ -688,14 +672,13 @@ public class UnsequencedExpressionRewriter extends ErrorReportingASTVisitor {
       List<VariableAccess> toExtract = getUnsequencedAccesses();
       if (!toExtract.isEmpty()) {
         // Convert "if (;cond;)" into "if (;;) { if (!(cond)) break; ...}".
-        List<Statement> stmtList = ASTUtil.asStatementList(node.getBody()).subList(0, 0);
-        extractOrderedAccesses(ast, stmtList, currentTopNode, toExtract);
+        List<Statement> stmtList = TreeUtil.asStatementList(node.getBody()).subList(0, 0);
+        extractOrderedAccesses(stmtList, currentTopNode, toExtract);
         stmtList.add(createLoopTermination(node.getExpression()));
         node.setExpression(null);
       }
     }
-    extractExpressionList(
-        ast, ASTUtil.getUpdaters(node), ASTUtil.asStatementList(node.getBody()), true);
+    extractExpressionList(node.getUpdaters(), TreeUtil.asStatementList(node.getBody()), true);
     node.getBody().accept(this);
     return false;
   }
@@ -705,7 +688,7 @@ public class UnsequencedExpressionRewriter extends ErrorReportingASTVisitor {
     // We can't visit the left hand side otherwise the SimpleName visitor will
     // add an additional access for the assigned variable.
     node.getRightHandSide().accept(this);
-    addVariableAccess(Types.getVariableBinding(node.getLeftHandSide()), node, true);
+    addVariableAccess(TreeUtil.getVariableBinding(node.getLeftHandSide()), node, true);
     return false;
   }
 
@@ -713,7 +696,7 @@ public class UnsequencedExpressionRewriter extends ErrorReportingASTVisitor {
   public boolean visit(PrefixExpression node) {
     PrefixExpression.Operator op = node.getOperator();
     if (op == PrefixExpression.Operator.INCREMENT || op == PrefixExpression.Operator.DECREMENT) {
-      addVariableAccess(Types.getVariableBinding(node.getOperand()), node, true);
+      addVariableAccess(TreeUtil.getVariableBinding(node.getOperand()), node, true);
     } else {
       node.getOperand().accept(this);
     }
@@ -724,7 +707,7 @@ public class UnsequencedExpressionRewriter extends ErrorReportingASTVisitor {
   public boolean visit(PostfixExpression node) {
     PostfixExpression.Operator op = node.getOperator();
     assert op == PostfixExpression.Operator.INCREMENT || op == PostfixExpression.Operator.DECREMENT;
-    addVariableAccess(Types.getVariableBinding(node.getOperand()), node, true);
+    addVariableAccess(TreeUtil.getVariableBinding(node.getOperand()), node, true);
     return false;
   }
 }

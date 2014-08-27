@@ -16,6 +16,8 @@ package com.google.devtools.j2objc.ast;
 
 import com.google.common.collect.Maps;
 
+import org.eclipse.jdt.core.dom.ITypeBinding;
+
 import java.util.Map;
 
 /**
@@ -73,6 +75,12 @@ public class PrefixExpression extends Expression {
     super(other);
     operator = other.getOperator();
     operand.copyFrom(other.getOperand());
+  }
+
+  public PrefixExpression(ITypeBinding typeBinding, Operator operator, Expression operand) {
+    super(typeBinding);
+    this.operator = operator;
+    this.operand.set(operand);
   }
 
   @Override

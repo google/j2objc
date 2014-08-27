@@ -59,6 +59,10 @@ public class ForStatement extends Statement {
     return expression.get();
   }
 
+  public void setExpression(Expression newExpression) {
+    expression.set(newExpression);
+  }
+
   public List<Expression> getUpdaters() {
     return updaters;
   }

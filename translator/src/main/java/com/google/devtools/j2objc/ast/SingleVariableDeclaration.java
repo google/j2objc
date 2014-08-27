@@ -47,7 +47,7 @@ public class SingleVariableDeclaration extends VariableDeclaration {
   }
 
   public SingleVariableDeclaration(IVariableBinding variableBinding) {
-    super(variableBinding);
+    super(variableBinding, null);
     type.set(Type.newType(variableBinding.getType()));
   }
 

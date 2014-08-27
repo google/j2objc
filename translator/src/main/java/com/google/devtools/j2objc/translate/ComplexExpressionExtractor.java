@@ -18,24 +18,24 @@ import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
+import com.google.devtools.j2objc.ast.Assignment;
+import com.google.devtools.j2objc.ast.Expression;
+import com.google.devtools.j2objc.ast.InfixExpression;
+import com.google.devtools.j2objc.ast.MethodDeclaration;
+import com.google.devtools.j2objc.ast.MethodInvocation;
+import com.google.devtools.j2objc.ast.ParenthesizedExpression;
+import com.google.devtools.j2objc.ast.SimpleName;
+import com.google.devtools.j2objc.ast.Statement;
+import com.google.devtools.j2objc.ast.TreeNode;
+import com.google.devtools.j2objc.ast.TreeUtil;
+import com.google.devtools.j2objc.ast.TreeVisitor;
+import com.google.devtools.j2objc.ast.VariableDeclarationStatement;
 import com.google.devtools.j2objc.types.GeneratedVariableBinding;
-import com.google.devtools.j2objc.types.NodeCopier;
 import com.google.devtools.j2objc.types.Types;
-import com.google.devtools.j2objc.util.ASTUtil;
-import com.google.devtools.j2objc.util.ErrorReportingASTVisitor;
 
-import org.eclipse.jdt.core.dom.AST;
-import org.eclipse.jdt.core.dom.ASTNode;
-import org.eclipse.jdt.core.dom.Assignment;
-import org.eclipse.jdt.core.dom.Expression;
 import org.eclipse.jdt.core.dom.IMethodBinding;
 import org.eclipse.jdt.core.dom.ITypeBinding;
 import org.eclipse.jdt.core.dom.IVariableBinding;
-import org.eclipse.jdt.core.dom.InfixExpression;
-import org.eclipse.jdt.core.dom.MethodDeclaration;
-import org.eclipse.jdt.core.dom.MethodInvocation;
-import org.eclipse.jdt.core.dom.ParenthesizedExpression;
-import org.eclipse.jdt.core.dom.Statement;
 
 import java.util.Collection;
 import java.util.List;
@@ -46,7 +46,7 @@ import java.util.Map;
  *
  * @author Keith Stanger
  */
-public class ComplexExpressionExtractor extends ErrorReportingASTVisitor {
+public class ComplexExpressionExtractor extends TreeVisitor {
 
   // The ObjC compiler tends to fail with roughly 100 chained method calls.
   private static final int DEFAULT_MAX_DEPTH = 50;
@@ -77,32 +77,31 @@ public class ComplexExpressionExtractor extends ErrorReportingASTVisitor {
       depth = Math.max(depth, childDepth != null ? childDepth : 1);
     }
     if (depth >= maxDepth) {
-      AST ast = node.getAST();
-      ITypeBinding type = Types.getTypeBinding(node);
+      ITypeBinding type = node.getTypeBinding();
       assert currentMethod != null; // Should be OK if run after InitializationNormalizer.
       IVariableBinding newVar = new GeneratedVariableBinding(
           "complex$" + count++, 0, type, false, false, null, currentMethod);
-      Statement newStmt = ASTFactory.newVariableDeclarationStatement(
-          ast, newVar, NodeCopier.copySubtree(ast, node));
+      Statement newStmt = new VariableDeclarationStatement(newVar, node.copy());
       assert currentStatement != null;
-      ASTUtil.insertBefore(currentStatement, newStmt);
-      ASTUtil.setProperty(node, ASTFactory.newSimpleName(ast, newVar));
+      TreeUtil.insertBefore(currentStatement, newStmt);
+      node.replaceWith(new SimpleName(newVar));
     } else {
       depths.put(node, depth + 1);
     }
   }
 
   @Override
-  public void preVisit(ASTNode node) {
+  public boolean preVisit(TreeNode node) {
     super.preVisit(node);
     if (node instanceof Statement) {
       currentStatement = (Statement) node;
     }
+    return true;
   }
 
   @Override
   public boolean visit(MethodDeclaration node) {
-    currentMethod = Types.getMethodBinding(node);
+    currentMethod = node.getMethodBinding();
     return true;
   }
 
@@ -119,24 +118,23 @@ public class ComplexExpressionExtractor extends ErrorReportingASTVisitor {
   @Override
   public void endVisit(MethodInvocation node) {
     Expression receiver = node.getExpression();
-    List<Expression> args = ASTUtil.getArguments(node);
+    List<Expression> args = node.getArguments();
     List<Expression> children = Lists.newArrayListWithCapacity(args.size() + 1);
     if (receiver != null) {
       children.add(receiver);
     }
+    children.addAll(args);
     handleNode(node, children);
   }
 
   @Override
   public void endVisit(Assignment node) {
-    if (Types.isBooleanType(Types.getTypeBinding(node)) &&
-        node.getRightHandSide() instanceof InfixExpression) {
+    if (Types.isBooleanType(node.getTypeBinding())
+        && node.getRightHandSide() instanceof InfixExpression) {
       // Avoid clang precedence warning by putting parentheses around expression.
-      AST ast = node.getAST();
       Expression expr = node.getRightHandSide();
-      ParenthesizedExpression newExpr = ASTFactory.newParenthesizedExpression(
-          ast, NodeCopier.copySubtree(ast, expr));
-      ASTUtil.setProperty(expr, newExpr);
+      ParenthesizedExpression newExpr = ParenthesizedExpression.parenthesize(expr.copy());
+      expr.replaceWith(newExpr);
     }
   }
 }

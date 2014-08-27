@@ -14,6 +14,8 @@
 
 package com.google.devtools.j2objc.ast;
 
+import org.eclipse.jdt.core.dom.ITypeBinding;
+
 /**
  * Adds parentheses to a wrapped expression.
  */
@@ -29,6 +31,15 @@ public class ParenthesizedExpression extends Expression {
   public ParenthesizedExpression(ParenthesizedExpression other) {
     super(other);
     expression.copyFrom(other.getExpression());
+  }
+
+  public ParenthesizedExpression(ITypeBinding type, Expression expression) {
+    super(type);
+    this.expression.set(expression);
+  }
+
+  public static ParenthesizedExpression parenthesize(Expression expression) {
+    return new ParenthesizedExpression(expression.getTypeBinding(), expression);
   }
 
   @Override

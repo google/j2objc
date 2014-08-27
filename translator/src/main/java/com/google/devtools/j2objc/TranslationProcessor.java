@@ -183,24 +183,24 @@ class TranslationProcessor extends FileProcessor {
     new OuterReferenceFixer().run(unit);
     ticker.tick("OuterReferenceFixer");
 
-    // Rewrites expressions that would cause unsequenced compile errors.
-    if (Options.extractUnsequencedModifications()) {
-      new UnsequencedExpressionRewriter().run(unit);
-      ticker.tick("UnsequencedExpressionRewriter");
-    }
-
-    // Breaks up deeply nested expressions such as chained method calls.
-    new ComplexExpressionExtractor().run(unit);
-    ticker.tick("ComplexExpressionExtractor");
-
-    // Adds nil_chk calls wherever an expression is dereferenced.
-    new NilCheckResolver().run(unit);
-    ticker.tick("NilCheckResolver");
-
     // Verify all modified nodes have type bindings
     Types.verifyNode(unit);
 
     CompilationUnit newUnit = TreeConverter.convertCompilationUnit(unit, path, source);
+
+    // Rewrites expressions that would cause unsequenced compile errors.
+    if (Options.extractUnsequencedModifications()) {
+      new UnsequencedExpressionRewriter().run(newUnit);
+      ticker.tick("UnsequencedExpressionRewriter");
+    }
+
+    // Breaks up deeply nested expressions such as chained method calls.
+    new ComplexExpressionExtractor().run(newUnit);
+    ticker.tick("ComplexExpressionExtractor");
+
+    // Adds nil_chk calls wherever an expression is dereferenced.
+    new NilCheckResolver().run(newUnit);
+    ticker.tick("NilCheckResolver");
 
     // Translate core Java type use to similar iOS types
     new JavaToIOSTypeConverter().run(newUnit);

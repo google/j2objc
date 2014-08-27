@@ -21,6 +21,7 @@ import com.google.common.collect.Lists;
 import com.google.devtools.j2objc.util.BindingUtil;
 
 import org.eclipse.jdt.core.dom.IBinding;
+import org.eclipse.jdt.core.dom.IMethodBinding;
 import org.eclipse.jdt.core.dom.IVariableBinding;
 
 import java.io.File;
@@ -172,19 +173,35 @@ public class TreeUtil {
    * represents a variable. Returns null otherwise.
    */
   public static IVariableBinding getVariableBinding(Expression node) {
-    if (node instanceof FieldAccess) {
-      return ((FieldAccess) node).getVariableBinding();
-    } else if (node instanceof Name) {
-      return getVariableBinding((Name) node);
-    } else if (node instanceof SuperFieldAccess) {
-      return ((SuperFieldAccess) node).getVariableBinding();
+    switch (node.getKind()) {
+      case FIELD_ACCESS:
+        return ((FieldAccess) node).getVariableBinding();
+      case SUPER_FIELD_ACCESS:
+        return ((SuperFieldAccess) node).getVariableBinding();
+      case QUALIFIED_NAME:
+      case SIMPLE_NAME:
+        return getVariableBinding((Name) node);
+      default:
+        return null;
     }
-    return null;
   }
 
   public static IVariableBinding getVariableBinding(Name node) {
     IBinding binding = node.getBinding();
     return (binding instanceof IVariableBinding) ? (IVariableBinding) binding : null;
+  }
+
+  public static IMethodBinding getMethodBinding(Expression node) {
+    switch (node.getKind()) {
+      case CLASS_INSTANCE_CREATION:
+        return ((ClassInstanceCreation) node).getMethodBinding();
+      case METHOD_INVOCATION:
+        return ((MethodInvocation) node).getMethodBinding();
+      case SUPER_METHOD_INVOCATION:
+        return ((SuperMethodInvocation) node).getMethodBinding();
+      default:
+        return null;
+    }
   }
 
   /**
@@ -225,6 +242,14 @@ public class TreeUtil {
     node.replaceWith(block);
     block.getStatements().add(node);
     return block.getStatements();
+  }
+
+  public static void insertAfter(Statement node, Statement toInsert) {
+    asStatementList(node).add(toInsert);
+  }
+
+  public static void insertBefore(Statement node, Statement toInsert) {
+    asStatementList(node).add(0, toInsert);
   }
 
   /**

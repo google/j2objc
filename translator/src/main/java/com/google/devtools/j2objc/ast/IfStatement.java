@@ -37,6 +37,8 @@ public class IfStatement extends Statement {
     elseStatement.copyFrom(other.getElseStatement());
   }
 
+  public IfStatement() {}
+
   @Override
   public Kind getKind() {
     return Kind.IF_STATEMENT;
@@ -46,12 +48,24 @@ public class IfStatement extends Statement {
     return expression.get();
   }
 
+  public void setExpression(Expression newExpression) {
+    expression.set(newExpression);
+  }
+
   public Statement getThenStatement() {
     return thenStatement.get();
   }
 
+  public void setThenStatement(Statement newThenStatement) {
+    thenStatement.set(newThenStatement);
+  }
+
   public Statement getElseStatement() {
     return elseStatement.get();
+  }
+
+  public void setElseStatement(Statement newElseStatement) {
+    elseStatement.set(newElseStatement);
   }
 
   @Override

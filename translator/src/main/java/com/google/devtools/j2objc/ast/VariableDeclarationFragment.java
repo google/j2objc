@@ -14,6 +14,8 @@
 
 package com.google.devtools.j2objc.ast;
 
+import org.eclipse.jdt.core.dom.IVariableBinding;
+
 /**
  * A declaration fragment contains the declaration and optional initialization
  * of a single variable.
@@ -26,6 +28,10 @@ public class VariableDeclarationFragment extends VariableDeclaration {
 
   public VariableDeclarationFragment(VariableDeclarationFragment other) {
     super(other);
+  }
+
+  public VariableDeclarationFragment(IVariableBinding variableBinding, Expression initializer) {
+    super(variableBinding, initializer);
   }
 
   @Override
