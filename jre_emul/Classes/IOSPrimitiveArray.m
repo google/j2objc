@@ -25,9 +25,9 @@
  */
 #define PRIMITIVE_ARRAY_CTOR_IMPL(U_NAME, C_TYPE) \
   static IOS##U_NAME##Array *IOS##U_NAME##Array_NewArray(NSUInteger length) { \
-    IOS##U_NAME##Array *array = [IOS##U_NAME##Array alloc]; \
+    IOS##U_NAME##Array *array = NSAllocateObject( \
+        [IOS##U_NAME##Array class], length * sizeof(C_TYPE), nil); \
     array->size_ = length; \
-    array->buffer_ = calloc(length, sizeof(C_TYPE)); \
     return array; \
   } \
   \
@@ -53,16 +53,6 @@
   + (instancetype)arrayWith##U_NAME##s:(const C_TYPE *)buf count:(NSUInteger)count { \
     return [IOS##U_NAME##Array_NewArrayWith##U_NAME##s(count, buf) autorelease]; \
   }
-
-/*!
- * Implements the dealloc method for primitive arrays.
- * @define PRIMITIVE_ARRAY_DEALLOC_IMPL
- */
-#define PRIMITIVE_ARRAY_DEALLOC_IMPL \
-  - (void)dealloc { \
-    free(buffer_); \
-    [super dealloc]; \
-  } \
 
 /*!
  * Implements the common accessor methods for the primitive array types.
@@ -133,8 +123,7 @@
   PRIMITIVE_ARRAY_CTOR_IMPL(U_NAME, C_TYPE) \
   PRIMITIVE_ARRAY_ACCESSORS_IMPL(L_NAME, U_NAME, C_TYPE) \
   PRIMITIVE_ARRAY_RANGE_COPY_IMPL(U_NAME, C_TYPE) \
-  PRIMITIVE_ARRAY_COPY_IMPL(U_NAME) \
-  PRIMITIVE_ARRAY_DEALLOC_IMPL
+  PRIMITIVE_ARRAY_COPY_IMPL(U_NAME)
 
 
 // ********** IOSBooleanArray **********

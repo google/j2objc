@@ -74,7 +74,7 @@ FOUNDATION_EXPORT C_TYPE *IOS##U_NAME##Array_GetRef(IOS##U_NAME##Array *array, N
 
 @interface IOSBooleanArray : IOSArray {
  @public
-  BOOL *buffer_;  // java.nio requires this be first field in IOSArray subclasses.
+  BOOL buffer_[0];  // java.nio requires this be first field in IOSArray subclasses.
 }
 
 PRIMITIVE_ARRAY_INTERFACE(boolean, Boolean, BOOL)
@@ -86,7 +86,7 @@ PRIMITIVE_ARRAY_INTERFACE(boolean, Boolean, BOOL)
 
 @interface IOSCharArray : IOSArray {
  @public
-  unichar *buffer_;  // java.nio requires this be first field in IOSArray subclasses.
+  unichar buffer_[0];  // java.nio requires this be first field in IOSArray subclasses.
 }
 
 PRIMITIVE_ARRAY_INTERFACE(char, Char, unichar)
@@ -104,7 +104,7 @@ PRIMITIVE_ARRAY_INTERFACE(char, Char, unichar)
 
 @interface IOSByteArray : IOSArray {
  @public
-  char *buffer_;  // java.nio requires this be first field in IOSArray subclasses.
+  char buffer_[0];  // java.nio requires this be first field in IOSArray subclasses.
 }
 
 PRIMITIVE_ARRAY_INTERFACE(byte, Byte, char)
@@ -132,7 +132,7 @@ PRIMITIVE_ARRAY_INTERFACE(byte, Byte, char)
 
 @interface IOSShortArray : IOSArray {
  @public
-  short *buffer_;  // java.nio requires this be first field in IOSArray subclasses.
+  short buffer_[0];  // java.nio requires this be first field in IOSArray subclasses.
 }
 
 PRIMITIVE_ARRAY_INTERFACE(short, Short, short)
@@ -144,7 +144,7 @@ PRIMITIVE_ARRAY_INTERFACE(short, Short, short)
 
 @interface IOSIntArray : IOSArray {
  @public
-  int *buffer_;  // java.nio requires this be first field in IOSArray subclasses.
+  int buffer_[0];  // java.nio requires this be first field in IOSArray subclasses.
 }
 
 PRIMITIVE_ARRAY_INTERFACE(int, Int, int)
@@ -156,7 +156,7 @@ PRIMITIVE_ARRAY_INTERFACE(int, Int, int)
 
 @interface IOSLongArray : IOSArray {
  @public
-  long long *buffer_;  // java.nio requires this be first field in IOSArray subclasses.
+  long long buffer_[0];  // java.nio requires this be first field in IOSArray subclasses.
 }
 
 PRIMITIVE_ARRAY_INTERFACE(long, Long, long long)
@@ -168,7 +168,7 @@ PRIMITIVE_ARRAY_INTERFACE(long, Long, long long)
 
 @interface IOSFloatArray : IOSArray {
  @public
-  float *buffer_;  // java.nio requires this be first field in IOSArray subclasses.
+  float buffer_[0];  // java.nio requires this be first field in IOSArray subclasses.
 }
 
 PRIMITIVE_ARRAY_INTERFACE(float, Float, float)
@@ -180,7 +180,7 @@ PRIMITIVE_ARRAY_INTERFACE(float, Float, float)
 
 @interface IOSDoubleArray : IOSArray {
  @public
-  double *buffer_;  // java.nio requires this be first field in IOSArray subclasses.
+  double buffer_[0];  // java.nio requires this be first field in IOSArray subclasses.
 }
 
 PRIMITIVE_ARRAY_INTERFACE(double, Double, double)
