@@ -148,7 +148,7 @@ public class OuterReferenceFixer extends TreeVisitor {
     if (path != null) {
       if (path.size() == 1 && path.get(0).getConstantValue() != null) {
         IVariableBinding var = path.get(0);
-        node.replaceWith(TreeUtil.newLiteral(var.getConstantValue(), var.getType()));
+        node.replaceWith(TreeUtil.newLiteral(var.getConstantValue()));
       } else {
         node.replaceWith(Name.newName(fixPath(path)));
       }
