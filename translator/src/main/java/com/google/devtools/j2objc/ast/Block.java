@@ -14,8 +14,6 @@
 
 package com.google.devtools.j2objc.ast;
 
-import com.google.devtools.j2objc.types.Types;
-
 import java.util.List;
 
 /**
@@ -31,7 +29,6 @@ public class Block extends Statement {
     for (Object statement : jdtNode.statements()) {
       statements.add((Statement) TreeConverter.convert(statement));
     }
-    hasAutoreleasePool = Types.hasAutoreleasePool(jdtNode);
   }
 
   public Block(Block other) {
