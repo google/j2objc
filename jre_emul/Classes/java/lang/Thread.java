@@ -50,12 +50,12 @@ public class Thread implements Runnable {
   /** Android source declares this as the native VMThread class. */
   private final Object vmThread = new Object();
   private boolean isDaemon;
-  private boolean interrupted;
+  boolean interrupted;
   private boolean running;
   private ClassLoader contextClassLoader;
 
   /** The object the thread is waiting on (normally null). */
-  private Object blocker;
+  Object blocker;
 
   @Weak
   private ThreadGroup threadGroup;

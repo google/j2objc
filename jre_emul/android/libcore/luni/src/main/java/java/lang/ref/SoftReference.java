@@ -77,7 +77,7 @@ package java.lang.ref;
  */
 public class SoftReference<T> extends Reference<T> {
     // Used by IOSReference.
-    private boolean queued = false;
+    boolean queued = false;
 
     /**
      * Constructs a new soft reference to the given referent. The newly created

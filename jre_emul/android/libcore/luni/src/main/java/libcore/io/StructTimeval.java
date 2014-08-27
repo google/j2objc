@@ -27,7 +27,7 @@ public final class StructTimeval {
     /** Microseconds. */
     public final long tv_usec;
 
-    private StructTimeval(long tv_sec, long tv_usec) {
+    StructTimeval(long tv_sec, long tv_usec) {
         this.tv_sec = tv_sec;
         this.tv_usec = tv_usec;
     }

@@ -33,17 +33,17 @@ final class RealToString {
 
     private static final double invLogOfTenBaseTwo = Math.log(2.0) / Math.log(10.0);
 
-    private int firstK;
+    int firstK;
 
     /**
      * An array of decimal digits, filled by longDigitGenerator or bigIntDigitGenerator.
      */
-    private final int[] digits = new int[64];
+    final int[] digits = new int[64];
 
     /**
      * Number of valid entries in 'digits'.
      */
-    private int digitCount;
+    int digitCount;
 
     private RealToString() {
     }
