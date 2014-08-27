@@ -66,6 +66,9 @@ public class TreeConverter {
       case ASTNode.ANNOTATION_TYPE_MEMBER_DECLARATION:
         return new AnnotationTypeMemberDeclaration(
             (org.eclipse.jdt.core.dom.AnnotationTypeMemberDeclaration) jdtNode);
+      case ASTNode.ANONYMOUS_CLASS_DECLARATION:
+        return new AnonymousClassDeclaration(
+            (org.eclipse.jdt.core.dom.AnonymousClassDeclaration) jdtNode);
       case ASTNode.ARRAY_ACCESS:
         return new ArrayAccess((org.eclipse.jdt.core.dom.ArrayAccess) jdtNode);
       case ASTNode.ARRAY_CREATION:
@@ -203,6 +206,9 @@ public class TreeConverter {
         return new TryStatement((org.eclipse.jdt.core.dom.TryStatement) jdtNode);
       case ASTNode.TYPE_DECLARATION:
         return new TypeDeclaration((org.eclipse.jdt.core.dom.TypeDeclaration) jdtNode);
+      case ASTNode.TYPE_DECLARATION_STATEMENT:
+        return new TypeDeclarationStatement(
+            (org.eclipse.jdt.core.dom.TypeDeclarationStatement) jdtNode);
       case ASTNode.TYPE_LITERAL:
         return new TypeLiteral((org.eclipse.jdt.core.dom.TypeLiteral) jdtNode);
       case ASTNode.UNION_TYPE:

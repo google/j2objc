@@ -17,34 +17,32 @@
 package com.google.devtools.j2objc.translate;
 
 import com.google.common.annotations.VisibleForTesting;
+import com.google.devtools.j2objc.ast.AbstractTypeDeclaration;
+import com.google.devtools.j2objc.ast.AnonymousClassDeclaration;
+import com.google.devtools.j2objc.ast.Block;
+import com.google.devtools.j2objc.ast.BodyDeclaration;
+import com.google.devtools.j2objc.ast.ClassInstanceCreation;
+import com.google.devtools.j2objc.ast.CompilationUnit;
+import com.google.devtools.j2objc.ast.EnumConstantDeclaration;
+import com.google.devtools.j2objc.ast.EnumDeclaration;
+import com.google.devtools.j2objc.ast.Expression;
+import com.google.devtools.j2objc.ast.MethodDeclaration;
+import com.google.devtools.j2objc.ast.NullLiteral;
+import com.google.devtools.j2objc.ast.SimpleName;
+import com.google.devtools.j2objc.ast.SingleVariableDeclaration;
+import com.google.devtools.j2objc.ast.SuperConstructorInvocation;
+import com.google.devtools.j2objc.ast.TreeNode;
+import com.google.devtools.j2objc.ast.TreeUtil;
+import com.google.devtools.j2objc.ast.TreeVisitor;
+import com.google.devtools.j2objc.ast.Type;
+import com.google.devtools.j2objc.ast.TypeDeclaration;
 import com.google.devtools.j2objc.types.GeneratedMethodBinding;
 import com.google.devtools.j2objc.types.GeneratedVariableBinding;
-import com.google.devtools.j2objc.types.NodeCopier;
-import com.google.devtools.j2objc.types.RenamedTypeBinding;
 import com.google.devtools.j2objc.types.Types;
-import com.google.devtools.j2objc.util.ASTUtil;
-import com.google.devtools.j2objc.util.ErrorReportingASTVisitor;
 import com.google.devtools.j2objc.util.NameTable;
 
-import org.eclipse.jdt.core.dom.AST;
-import org.eclipse.jdt.core.dom.ASTNode;
-import org.eclipse.jdt.core.dom.ASTVisitor;
-import org.eclipse.jdt.core.dom.AbstractTypeDeclaration;
-import org.eclipse.jdt.core.dom.AnonymousClassDeclaration;
-import org.eclipse.jdt.core.dom.BodyDeclaration;
-import org.eclipse.jdt.core.dom.ClassInstanceCreation;
-import org.eclipse.jdt.core.dom.CompilationUnit;
-import org.eclipse.jdt.core.dom.EnumConstantDeclaration;
-import org.eclipse.jdt.core.dom.EnumDeclaration;
-import org.eclipse.jdt.core.dom.Expression;
 import org.eclipse.jdt.core.dom.IMethodBinding;
 import org.eclipse.jdt.core.dom.ITypeBinding;
-import org.eclipse.jdt.core.dom.MethodDeclaration;
-import org.eclipse.jdt.core.dom.NullLiteral;
-import org.eclipse.jdt.core.dom.SimpleName;
-import org.eclipse.jdt.core.dom.SuperConstructorInvocation;
-import org.eclipse.jdt.core.dom.Type;
-import org.eclipse.jdt.core.dom.TypeDeclaration;
 
 import java.lang.reflect.Modifier;
 import java.util.List;
@@ -59,13 +57,7 @@ import java.util.Stack;
  *
  * @author Tom Ball
  */
-public class AnonymousClassConverter extends ErrorReportingASTVisitor {
-
-  private final CompilationUnit unit;
-
-  public AnonymousClassConverter(CompilationUnit unit) {
-    this.unit = unit;
-  }
+public class AnonymousClassConverter extends TreeVisitor {
 
   @Override
   public boolean visit(CompilationUnit node) {
@@ -93,52 +85,53 @@ public class AnonymousClassConverter extends ErrorReportingASTVisitor {
    */
   @Override
   public void endVisit(AnonymousClassDeclaration node) {
-    ITypeBinding typeBinding = Types.getTypeBinding(node);
+    ITypeBinding typeBinding = node.getTypeBinding();
     ITypeBinding outerType = typeBinding.getDeclaringClass();
-    ASTNode parent = node.getParent();
+    TreeNode parent = node.getParent();
     ClassInstanceCreation newInvocation = null;
     EnumConstantDeclaration enumConstant = null;
     List<Expression> parentArguments;
     Expression outerExpression = null;
     if (parent instanceof ClassInstanceCreation) {
       newInvocation = (ClassInstanceCreation) parent;
-      parentArguments = ASTUtil.getArguments(newInvocation);
+      parentArguments = newInvocation.getArguments();
       outerExpression = newInvocation.getExpression();
       newInvocation.setExpression(null);
     } else if (parent instanceof EnumConstantDeclaration) {
       enumConstant = (EnumConstantDeclaration) parent;
-      parentArguments = ASTUtil.getArguments(enumConstant);
+      parentArguments = enumConstant.getArguments();
     } else {
       throw new AssertionError(
           "unknown anonymous class declaration parent: " + parent.getClass().getName());
     }
 
     // Create a type declaration for this anonymous class.
-    AST ast = node.getAST();
-    TypeDeclaration typeDecl = ast.newTypeDeclaration();
-    Types.addBinding(typeDecl, typeBinding);
-    typeDecl.setName(ASTFactory.newSimpleName(ast, typeBinding));
+    TypeDeclaration typeDecl = new TypeDeclaration(typeBinding);
     typeDecl.setSourceRange(node.getStartPosition(), node.getLength());
 
-    Type superType = ASTFactory.newType(ast, Types.mapType(typeBinding.getSuperclass()));
+    // TODO(kstanger): Do this in the TypeDeclaration constructor. Can we get away with not mapping
+    // the type?
+    Type superType = Type.newType(Types.mapType(typeBinding.getSuperclass()));
     typeDecl.setSuperclassType(superType);
     for (ITypeBinding interfaceType : typeBinding.getInterfaces()) {
-      ASTUtil.getSuperInterfaceTypes(typeDecl).add(
-          ASTFactory.newType(ast, Types.mapType(interfaceType)));
+      typeDecl.getSuperInterfaceTypes().add(Type.newType(Types.mapType(interfaceType)));
     }
 
-    for (Object bodyDecl : node.bodyDeclarations()) {
-      BodyDeclaration decl = (BodyDeclaration) bodyDecl;
-      ASTUtil.getBodyDeclarations(typeDecl).add(NodeCopier.copySubtree(ast, decl));
+    for (BodyDeclaration decl : node.getBodyDeclarations()) {
+      typeDecl.getBodyDeclarations().add(decl.copy());
     }
 
     // Add a default constructor.
     if (!parentArguments.isEmpty() || outerExpression != null) {
       GeneratedMethodBinding defaultConstructor =
           addDefaultConstructor(typeDecl, parentArguments, outerExpression);
-      Types.addBinding(parent, defaultConstructor);
+      if (newInvocation != null) {
+        newInvocation.setMethodBinding(defaultConstructor);
+      } else {
+        enumConstant.setMethodBinding(defaultConstructor);
+      }
       if (outerExpression != null) {
-        parentArguments.add(0, NodeCopier.copySubtree(ast, outerExpression));
+        parentArguments.add(0, outerExpression.copy());
       }
       assert defaultConstructor.getParameterTypes().length == parentArguments.size();
     }
@@ -146,12 +139,12 @@ public class AnonymousClassConverter extends ErrorReportingASTVisitor {
     // If invocation, replace anonymous class invocation with the new constructor.
     if (newInvocation != null) {
       newInvocation.setAnonymousClassDeclaration(null);
-      newInvocation.setType(ASTFactory.newType(ast, typeBinding));
-      IMethodBinding oldBinding = Types.getMethodBinding(newInvocation);
+      newInvocation.setType(Type.newType(typeBinding));
+      IMethodBinding oldBinding = newInvocation.getMethodBinding();
       if (oldBinding != null) {
         GeneratedMethodBinding invocationBinding = new GeneratedMethodBinding(oldBinding);
         invocationBinding.setDeclaringClass(typeBinding);
-        Types.addBinding(newInvocation, invocationBinding);
+        newInvocation.setMethodBinding(invocationBinding);
       }
     } else {
       enumConstant.setAnonymousClassDeclaration(null);
@@ -159,54 +152,38 @@ public class AnonymousClassConverter extends ErrorReportingASTVisitor {
 
     // Add type declaration to enclosing type.
     if (outerType.isAnonymous()) {
-      // Get outerType node.
-      ASTNode n = parent.getParent();
-      while (!(n instanceof AnonymousClassDeclaration) && !(n instanceof TypeDeclaration)) {
-        n = n.getParent();
-      }
-      if (n instanceof AnonymousClassDeclaration) {
-        AnonymousClassDeclaration outerDecl = (AnonymousClassDeclaration) n;
-        ASTUtil.getBodyDeclarations(outerDecl).add(typeDecl);
-      }
+      AnonymousClassDeclaration outerDecl =
+          TreeUtil.getNearestAncestorWithType(AnonymousClassDeclaration.class, parent);
+      outerDecl.getBodyDeclarations().add(typeDecl);
     } else {
-      AbstractTypeDeclaration outerDecl =
-          (AbstractTypeDeclaration) unit.findDeclaringNode(outerType);
-      ASTUtil.getBodyDeclarations(outerDecl).add(typeDecl);
+      AbstractTypeDeclaration outerDecl = TreeUtil.getOwningType(parent);
+      outerDecl.getBodyDeclarations().add(typeDecl);
     }
-    OuterReferenceResolver.copyNode(node, typeDecl);
+    typeDecl.setKey(node.getKey());
+    typeDecl.setJdtNode(node.getJdtNode());
     super.endVisit(node);
   }
 
   private GeneratedMethodBinding addDefaultConstructor(
       TypeDeclaration node, List<Expression> invocationArguments, Expression outerExpression) {
-    AST ast = node.getAST();
-    ITypeBinding clazz = Types.getTypeBinding(node);
-    MethodDeclaration constructor = ast.newMethodDeclaration();
-    constructor.setConstructor(true);
-    ITypeBinding voidType = ast.resolveWellKnownType("void");
+    ITypeBinding clazz = node.getTypeBinding();
     GeneratedMethodBinding binding = GeneratedMethodBinding.newConstructor(clazz, 0);
-    Types.addBinding(constructor, binding);
-    Types.addBinding(constructor.getReturnType2(), voidType);
-    SimpleName name = ast.newSimpleName("init");
-    Types.addBinding(name, binding);
-    constructor.setName(name);
-    constructor.setBody(ast.newBlock());
+    MethodDeclaration constructor = new MethodDeclaration(binding);
+    constructor.setBody(new Block());
 
     IMethodBinding superCallBinding =
         findSuperConstructorBinding(clazz.getSuperclass(), invocationArguments);
-    SuperConstructorInvocation superCall =
-        ASTFactory.newSuperConstructorInvocation(ast, superCallBinding);
+    SuperConstructorInvocation superCall = new SuperConstructorInvocation(superCallBinding);
 
     // If there is an outer expression (eg myFoo.new Foo() {};), then this must
     // be passed to the super class as its outer reference.
     if (outerExpression != null) {
-      ITypeBinding outerExpressionType = Types.getTypeBinding(outerExpression);
+      ITypeBinding outerExpressionType = outerExpression.getTypeBinding();
       GeneratedVariableBinding outerExpressionParam = new GeneratedVariableBinding(
           "superOuter$", Modifier.FINAL, outerExpressionType, false, true, clazz, binding);
-      ASTUtil.getParameters(constructor).add(0,
-          ASTFactory.newSingleVariableDeclaration(ast, outerExpressionParam));
+      constructor.getParameters().add(0, new SingleVariableDeclaration(outerExpressionParam));
       binding.addParameter(0, outerExpressionType);
-      superCall.setExpression(ASTFactory.newSimpleName(ast, outerExpressionParam));
+      superCall.setExpression(new SimpleName(outerExpressionParam));
     }
 
     // The invocation arguments must become parameters of the generated
@@ -214,22 +191,21 @@ public class AnonymousClassConverter extends ErrorReportingASTVisitor {
     int argCount = 0;
     for (Expression arg : invocationArguments) {
       ITypeBinding argType =
-          arg instanceof NullLiteral ? Types.getNSObject() : Types.getTypeBinding(arg);
+          arg instanceof NullLiteral ? Types.getNSObject() : arg.getTypeBinding();
       GeneratedVariableBinding argBinding = new GeneratedVariableBinding(
           "arg$" + argCount++, 0, argType, false, true, clazz, binding);
-      ASTUtil.getParameters(constructor).add(
-          ASTFactory.newSingleVariableDeclaration(ast, argBinding));
+      constructor.getParameters().add(new SingleVariableDeclaration(argBinding));
       binding.addParameter(argType);
-      ASTUtil.getArguments(superCall).add(ASTFactory.newSimpleName(ast, argBinding));
+      superCall.getArguments().add(new SimpleName(argBinding));
     }
-    assert superCall.arguments().size() == superCallBinding.getParameterTypes().length ||
-        superCallBinding.isVarargs() &&
-            superCall.arguments().size() >= superCallBinding.getParameterTypes().length;
+    assert superCall.getArguments().size() == superCallBinding.getParameterTypes().length
+        || superCallBinding.isVarargs()
+            && superCall.getArguments().size() >= superCallBinding.getParameterTypes().length;
 
-    ASTUtil.getStatements(constructor.getBody()).add(superCall);
+    constructor.getBody().getStatements().add(superCall);
 
-    ASTUtil.getBodyDeclarations(node).add(constructor);
-    assert constructor.parameters().size() == binding.getParameterTypes().length;
+    node.getBodyDeclarations().add(constructor);
+    assert constructor.getParameters().size() == binding.getParameterTypes().length;
 
     return binding;
   }
@@ -242,14 +218,14 @@ public class AnonymousClassConverter extends ErrorReportingASTVisitor {
     outer: for (IMethodBinding m : clazz.getDeclaredMethods()) {
       if (m.isConstructor()) {
         ITypeBinding[] paramTypes = m.getParameterTypes();
-        if (superArgs.size() == paramTypes.length ||
-            m.isVarargs() && superArgs.size() >= paramTypes.length) {
+        if (superArgs.size() == paramTypes.length
+            || m.isVarargs() && superArgs.size() >= paramTypes.length) {
           for (int i = 0; i < paramTypes.length; i++) {
             if (m.isVarargs() && i == (paramTypes.length - 1)) {
               // Matched through vararg parameter.
               break;
             }
-            ITypeBinding argType = Types.getTypeBinding(superArgs.get(i)).getErasure();
+            ITypeBinding argType = superArgs.get(i).getTypeBinding().getErasure();
             if (!argType.isAssignmentCompatible(paramTypes[i].getErasure())) {
               continue outer;
             }
@@ -267,7 +243,7 @@ public class AnonymousClassConverter extends ErrorReportingASTVisitor {
    * is used to ensure that anonymous classes defined inside of other
    * anonymous classes are numbered correctly.
    */
-  static class AnonymousClassRenamer extends ASTVisitor {
+  static class AnonymousClassRenamer extends TreeVisitor {
 
     private static class Frame {
       int classCount = 0;
@@ -294,9 +270,9 @@ public class AnonymousClassConverter extends ErrorReportingASTVisitor {
       Frame parentFrame = classIndex.peek();
 
       String className = "$" + ++parentFrame.classCount;
-      ITypeBinding innerType = renameClass(className, Types.getTypeBinding(node));
-      Types.addBinding(node, innerType);
-      NameTable.rename(Types.getTypeBinding(node), className);
+      ITypeBinding innerType = renameClass(className, node.getTypeBinding());
+      node.setTypeBinding(innerType);
+      NameTable.rename(node.getTypeBinding(), className);
 
       classIndex.push(new Frame());
       return true;

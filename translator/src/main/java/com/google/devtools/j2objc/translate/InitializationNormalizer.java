@@ -17,36 +17,35 @@
 package com.google.devtools.j2objc.translate;
 
 import com.google.common.collect.Lists;
+import com.google.devtools.j2objc.ast.AbstractTypeDeclaration;
+import com.google.devtools.j2objc.ast.AnnotationTypeDeclaration;
+import com.google.devtools.j2objc.ast.Assignment;
+import com.google.devtools.j2objc.ast.Block;
+import com.google.devtools.j2objc.ast.BodyDeclaration;
+import com.google.devtools.j2objc.ast.ConstructorInvocation;
+import com.google.devtools.j2objc.ast.EnumDeclaration;
+import com.google.devtools.j2objc.ast.Expression;
+import com.google.devtools.j2objc.ast.ExpressionStatement;
+import com.google.devtools.j2objc.ast.FieldDeclaration;
+import com.google.devtools.j2objc.ast.Initializer;
+import com.google.devtools.j2objc.ast.MethodDeclaration;
+import com.google.devtools.j2objc.ast.SimpleName;
+import com.google.devtools.j2objc.ast.Statement;
+import com.google.devtools.j2objc.ast.StringLiteral;
+import com.google.devtools.j2objc.ast.SuperConstructorInvocation;
+import com.google.devtools.j2objc.ast.TreeUtil;
+import com.google.devtools.j2objc.ast.TreeVisitor;
+import com.google.devtools.j2objc.ast.TypeDeclaration;
+import com.google.devtools.j2objc.ast.VariableDeclarationFragment;
 import com.google.devtools.j2objc.types.GeneratedMethodBinding;
-import com.google.devtools.j2objc.types.NodeCopier;
 import com.google.devtools.j2objc.types.Types;
-import com.google.devtools.j2objc.util.ASTUtil;
 import com.google.devtools.j2objc.util.BindingUtil;
-import com.google.devtools.j2objc.util.ErrorReportingASTVisitor;
 import com.google.devtools.j2objc.util.NameTable;
 import com.google.devtools.j2objc.util.UnicodeUtils;
 
-import org.eclipse.jdt.core.dom.AST;
-import org.eclipse.jdt.core.dom.ASTNode;
-import org.eclipse.jdt.core.dom.AbstractTypeDeclaration;
-import org.eclipse.jdt.core.dom.AnnotationTypeDeclaration;
-import org.eclipse.jdt.core.dom.Block;
-import org.eclipse.jdt.core.dom.BodyDeclaration;
-import org.eclipse.jdt.core.dom.ConstructorInvocation;
-import org.eclipse.jdt.core.dom.EnumDeclaration;
-import org.eclipse.jdt.core.dom.Expression;
-import org.eclipse.jdt.core.dom.ExpressionStatement;
-import org.eclipse.jdt.core.dom.FieldDeclaration;
 import org.eclipse.jdt.core.dom.IMethodBinding;
 import org.eclipse.jdt.core.dom.ITypeBinding;
-import org.eclipse.jdt.core.dom.Initializer;
-import org.eclipse.jdt.core.dom.MethodDeclaration;
 import org.eclipse.jdt.core.dom.Modifier;
-import org.eclipse.jdt.core.dom.Statement;
-import org.eclipse.jdt.core.dom.StringLiteral;
-import org.eclipse.jdt.core.dom.SuperConstructorInvocation;
-import org.eclipse.jdt.core.dom.TypeDeclaration;
-import org.eclipse.jdt.core.dom.VariableDeclarationFragment;
 
 import java.util.Iterator;
 import java.util.List;
@@ -60,7 +59,7 @@ import java.util.List;
  *
  * @author Tom Ball
  */
-public class InitializationNormalizer extends ErrorReportingASTVisitor {
+public class InitializationNormalizer extends TreeVisitor {
 
   @Override
   public void endVisit(TypeDeclaration node) {
@@ -85,26 +84,26 @@ public class InitializationNormalizer extends ErrorReportingASTVisitor {
     List<Statement> initStatements = Lists.newArrayList();
     List<Statement> classInitStatements = Lists.newArrayList();
     List<MethodDeclaration> methods = Lists.newArrayList();
-    ITypeBinding binding = Types.getTypeBinding(node);
+    ITypeBinding binding = node.getTypeBinding();
 
     // Scan class, gathering initialization statements in declaration order.
-    List<BodyDeclaration> members = ASTUtil.getBodyDeclarations(node);
+    List<BodyDeclaration> members = node.getBodyDeclarations();
     Iterator<BodyDeclaration> iterator = members.iterator();
     while (iterator.hasNext()) {
       BodyDeclaration member = iterator.next();
-      switch (member.getNodeType()) {
-        case ASTNode.ENUM_DECLARATION:
-        case ASTNode.TYPE_DECLARATION:
+      switch (member.getKind()) {
+        case ENUM_DECLARATION:
+        case TYPE_DECLARATION:
           normalizeMembers((AbstractTypeDeclaration) member);
           break;
-        case ASTNode.METHOD_DECLARATION:
+        case METHOD_DECLARATION:
           methods.add((MethodDeclaration) member);
           break;
-        case ASTNode.INITIALIZER:
+        case INITIALIZER:
           addInitializer(member, initStatements, classInitStatements);
           iterator.remove();
           break;
-        case ASTNode.FIELD_DECLARATION:
+        case FIELD_DECLARATION:
           addFieldInitializer(member, binding.isInterface(), initStatements, classInitStatements);
           break;
       }
@@ -120,13 +119,13 @@ public class InitializationNormalizer extends ErrorReportingASTVisitor {
         normalizeMethod(md, initStatements);
       }
       if (needsConstructor) {
-        addDefaultConstructor(binding, members, initStatements, node.getAST());
+        addDefaultConstructor(binding, members, initStatements);
       }
     }
 
     // Create an initialize method, if necessary.
     if (!classInitStatements.isEmpty()) {
-      addClassInitializer(binding, members, classInitStatements, node.getAST());
+      addClassInitializer(binding, members, classInitStatements);
     }
   }
 
@@ -150,7 +149,7 @@ public class InitializationNormalizer extends ErrorReportingASTVisitor {
       BodyDeclaration member, boolean isInterface, List<Statement> initStatements,
       List<Statement> classInitStatements) {
     FieldDeclaration field = (FieldDeclaration) member;
-    for (VariableDeclarationFragment frag : ASTUtil.getFragments(field)) {
+    for (VariableDeclarationFragment frag : field.getFragments()) {
       if (frag.getInitializer() != null) {
         Statement assignStmt = makeAssignmentStatement(frag);
         if (Modifier.isStatic(field.getModifiers()) || isInterface) {
@@ -173,29 +172,31 @@ public class InitializationNormalizer extends ErrorReportingASTVisitor {
    */
   private boolean requiresInitializer(VariableDeclarationFragment frag) {
     Expression initializer = frag.getInitializer();
-    switch (initializer.getNodeType()) {
-      case ASTNode.BOOLEAN_LITERAL:
-      case ASTNode.CHARACTER_LITERAL:
-      case ASTNode.NULL_LITERAL:
-      case ASTNode.NUMBER_LITERAL:
+    switch (initializer.getKind()) {
+      case BOOLEAN_LITERAL:
+      case CHARACTER_LITERAL:
+      case NULL_LITERAL:
+      case NUMBER_LITERAL:
         return false;
-      case ASTNode.STRING_LITERAL:
+      case STRING_LITERAL:
         return !UnicodeUtils.hasValidCppCharacters(((StringLiteral) initializer).getLiteralValue());
     }
-    if (BindingUtil.isPrimitiveConstant(Types.getVariableBinding(frag))) {
+    if (BindingUtil.isPrimitiveConstant(frag.getVariableBinding())) {
       return false;
     }
     // If the initializer is not a literal, but has a constant value, convert it
     // to a literal. (as javac would do)
-    Object constantValue = initializer.resolveConstantExpressionValue();
+    Object constantValue = initializer.getConstantValue();
     if (constantValue != null) {
       if (constantValue instanceof String
           && !UnicodeUtils.hasValidCppCharacters((String) constantValue)) {
         return true;
       }
       try {
-        frag.setInitializer(ASTFactory.makeLiteral(
-            frag.getAST(), constantValue, Types.getTypeBinding(frag)));
+        // TODO(kstanger): Correctly handle edge-case number constants.
+        ASTFactory.makeLiteral(Types.getAST(), constantValue, frag.getVariableBinding().getType());
+        frag.setInitializer(
+            TreeUtil.newLiteral(constantValue, frag.getVariableBinding().getType()));
         return false;
       } catch (IllegalArgumentException e) {
         // JDT fails for number constants that return non-numbers from toString(), like
@@ -207,10 +208,8 @@ public class InitializationNormalizer extends ErrorReportingASTVisitor {
   }
 
   private ExpressionStatement makeAssignmentStatement(VariableDeclarationFragment fragment) {
-    AST ast = fragment.getAST();
-    return ast.newExpressionStatement(ASTFactory.newAssignment(
-        ast, ASTFactory.newSimpleName(ast, Types.getVariableBinding(fragment)),
-        NodeCopier.copySubtree(ast, fragment.getInitializer())));
+    return new ExpressionStatement(new Assignment(
+        new SimpleName(fragment.getVariableBinding()), fragment.getInitializer().copy()));
   }
 
   /**
@@ -223,22 +222,20 @@ public class InitializationNormalizer extends ErrorReportingASTVisitor {
    */
   void normalizeMethod(MethodDeclaration node, List<Statement> initStatements) {
     if (isDesignatedConstructor(node)) {
-      AST ast = node.getAST();
-      List<Statement> stmts = ASTUtil.getStatements(node.getBody());
+      List<Statement> stmts = node.getBody().getStatements();
       int superCallIdx = findSuperConstructorInvocation(stmts);
 
       // Insert initializer statements after the super invocation. If there
       // isn't a super invocation, add one (like all Java compilers do).
       if (superCallIdx == -1) {
-        ITypeBinding superType = Types.getTypeBinding(node).getSuperclass();
+        ITypeBinding superType = node.getMethodBinding().getDeclaringClass().getSuperclass();
         GeneratedMethodBinding newBinding = GeneratedMethodBinding.newConstructor(
             superType, Modifier.PUBLIC);
-        stmts.add(0, ASTFactory.newSuperConstructorInvocation(ast, newBinding));
+        stmts.add(0, new SuperConstructorInvocation(newBinding));
         superCallIdx = 0;
       }
 
-      List<Statement> unparentedStmts = NodeCopier.copySubtrees(ast, initStatements);
-      stmts.addAll(superCallIdx + 1, unparentedStmts);
+      TreeUtil.copyList(initStatements, stmts.subList(0, superCallIdx + 1));
     }
   }
 
@@ -264,7 +261,7 @@ public class InitializationNormalizer extends ErrorReportingASTVisitor {
     if (body == null) {
       return false;
     }
-    List<Statement> stmts = ASTUtil.getStatements(body);
+    List<Statement> stmts = body.getStatements();
     if (stmts.isEmpty()) {
       return true;
     }
@@ -272,35 +269,29 @@ public class InitializationNormalizer extends ErrorReportingASTVisitor {
     return !(firstStmt instanceof ConstructorInvocation);
   }
 
-  void addDefaultConstructor(ITypeBinding type, List<BodyDeclaration> members,
-      List<Statement> initStatements, AST ast) {
-    SuperConstructorInvocation superCall = ast.newSuperConstructorInvocation();
+  void addDefaultConstructor(
+      ITypeBinding type, List<BodyDeclaration> members, List<Statement> initStatements) {
     int constructorModifier =
         type.getModifiers() & (Modifier.PUBLIC | Modifier.PROTECTED | Modifier.PRIVATE);
     GeneratedMethodBinding binding = GeneratedMethodBinding.newConstructor(
         type.getSuperclass(), constructorModifier);
-    Types.addBinding(superCall, binding);
-    initStatements.add(0, superCall);
-    members.add(createMethod(ast, GeneratedMethodBinding.newConstructor(type, constructorModifier),
+    initStatements.add(0, new SuperConstructorInvocation(binding));
+    members.add(createMethod(GeneratedMethodBinding.newConstructor(type, constructorModifier),
                              initStatements));
   }
 
-  void addClassInitializer(ITypeBinding type, List<BodyDeclaration> members,
-      List<Statement> classInitStatements, AST ast) {
+  void addClassInitializer(
+      ITypeBinding type, List<BodyDeclaration> members, List<Statement> classInitStatements) {
     int modifiers = Modifier.PUBLIC | Modifier.STATIC;
-    members.add(createMethod(ast, GeneratedMethodBinding.newMethod(NameTable.CLINIT_NAME, modifiers,
-        ast.resolveWellKnownType("void"), type), classInitStatements));
+    GeneratedMethodBinding binding = GeneratedMethodBinding.newMethod(
+        NameTable.CLINIT_NAME, modifiers, Types.resolveJavaType("void"), type);
+    members.add(createMethod(binding, classInitStatements));
   }
 
-  private MethodDeclaration createMethod(
-      AST ast, IMethodBinding binding, List<Statement> statements) {
-    Block body = ast.newBlock();
-    List<Statement> stmts = ASTUtil.getStatements(body);
-    for (Statement stmt : statements) {
-      Statement newStmt = NodeCopier.copySubtree(ast, stmt);
-      stmts.add(newStmt);
-    }
-    MethodDeclaration method = ASTFactory.newMethodDeclaration(ast, binding);
+  private MethodDeclaration createMethod(IMethodBinding binding, List<Statement> statements) {
+    Block body = new Block();
+    TreeUtil.copyList(statements, body.getStatements());
+    MethodDeclaration method = new MethodDeclaration(binding);
     method.setBody(body);
     return method;
   }

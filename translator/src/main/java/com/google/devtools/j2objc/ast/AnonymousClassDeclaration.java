@@ -14,6 +14,8 @@
 
 package com.google.devtools.j2objc.ast;
 
+import com.google.devtools.j2objc.types.Types;
+
 import org.eclipse.jdt.core.dom.ITypeBinding;
 
 import java.util.List;
@@ -27,6 +29,14 @@ public class AnonymousClassDeclaration extends TreeNode {
   private ITypeBinding typeBinding = null;
   private final ChildList<BodyDeclaration> bodyDeclarations =
       ChildList.create(BodyDeclaration.class, this);
+
+  public AnonymousClassDeclaration(org.eclipse.jdt.core.dom.AnonymousClassDeclaration jdtNode) {
+    super(jdtNode);
+    typeBinding = Types.getTypeBinding(jdtNode);
+    for (Object bodyDecl : jdtNode.bodyDeclarations()) {
+      bodyDeclarations.add((BodyDeclaration) TreeConverter.convert(bodyDecl));
+    }
+  }
 
   public AnonymousClassDeclaration(AnonymousClassDeclaration other) {
     super(other);

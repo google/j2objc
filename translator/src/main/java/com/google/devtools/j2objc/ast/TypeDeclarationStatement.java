@@ -22,6 +22,11 @@ public class TypeDeclarationStatement extends Statement {
   private final ChildLink<AbstractTypeDeclaration> declaration =
       ChildLink.create(AbstractTypeDeclaration.class, this);
 
+  public TypeDeclarationStatement(org.eclipse.jdt.core.dom.TypeDeclarationStatement jdtNode) {
+    super(jdtNode);
+    declaration.set((AbstractTypeDeclaration) TreeConverter.convert(jdtNode.getDeclaration()));
+  }
+
   public TypeDeclarationStatement(TypeDeclarationStatement other) {
     super(other);
     declaration.copyFrom(other.getDeclaration());

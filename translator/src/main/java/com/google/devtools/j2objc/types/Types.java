@@ -203,6 +203,10 @@ public class Types {
     instance = null;
   }
 
+  public static AST getAST() {
+    return instance.ast;
+  }
+
   /**
    * Given a JDT type binding created by the parser, either replace it with an iOS
    * equivalent, or return the given type.

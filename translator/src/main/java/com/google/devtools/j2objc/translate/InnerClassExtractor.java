@@ -17,39 +17,38 @@
 package com.google.devtools.j2objc.translate;
 
 import com.google.common.collect.Lists;
+import com.google.devtools.j2objc.ast.AbstractTypeDeclaration;
+import com.google.devtools.j2objc.ast.AnnotationTypeDeclaration;
+import com.google.devtools.j2objc.ast.Assignment;
+import com.google.devtools.j2objc.ast.Block;
+import com.google.devtools.j2objc.ast.BodyDeclaration;
+import com.google.devtools.j2objc.ast.CompilationUnit;
+import com.google.devtools.j2objc.ast.ConstructorInvocation;
+import com.google.devtools.j2objc.ast.EnumDeclaration;
+import com.google.devtools.j2objc.ast.ExpressionStatement;
+import com.google.devtools.j2objc.ast.FieldDeclaration;
+import com.google.devtools.j2objc.ast.MethodDeclaration;
+import com.google.devtools.j2objc.ast.Name;
+import com.google.devtools.j2objc.ast.SimpleName;
+import com.google.devtools.j2objc.ast.SingleVariableDeclaration;
+import com.google.devtools.j2objc.ast.Statement;
+import com.google.devtools.j2objc.ast.SuperConstructorInvocation;
+import com.google.devtools.j2objc.ast.TreeNode;
+import com.google.devtools.j2objc.ast.TreeUtil;
+import com.google.devtools.j2objc.ast.TreeVisitor;
+import com.google.devtools.j2objc.ast.TypeDeclaration;
+import com.google.devtools.j2objc.ast.TypeDeclarationStatement;
 import com.google.devtools.j2objc.types.GeneratedMethodBinding;
 import com.google.devtools.j2objc.types.GeneratedVariableBinding;
-import com.google.devtools.j2objc.types.NodeCopier;
-import com.google.devtools.j2objc.types.Types;
-import com.google.devtools.j2objc.util.ASTUtil;
 import com.google.devtools.j2objc.util.BindingUtil;
-import com.google.devtools.j2objc.util.ErrorReportingASTVisitor;
 import com.google.devtools.j2objc.util.ErrorUtil;
 import com.google.j2objc.annotations.WeakOuter;
 
-import org.eclipse.jdt.core.dom.AST;
-import org.eclipse.jdt.core.dom.ASTNode;
-import org.eclipse.jdt.core.dom.AbstractTypeDeclaration;
-import org.eclipse.jdt.core.dom.AnnotationTypeDeclaration;
-import org.eclipse.jdt.core.dom.Block;
-import org.eclipse.jdt.core.dom.BodyDeclaration;
-import org.eclipse.jdt.core.dom.CompilationUnit;
-import org.eclipse.jdt.core.dom.ConstructorInvocation;
-import org.eclipse.jdt.core.dom.EnumDeclaration;
-import org.eclipse.jdt.core.dom.IExtendedModifier;
 import org.eclipse.jdt.core.dom.ITypeBinding;
 import org.eclipse.jdt.core.dom.IVariableBinding;
-import org.eclipse.jdt.core.dom.MethodDeclaration;
 import org.eclipse.jdt.core.dom.Modifier;
-import org.eclipse.jdt.core.dom.Name;
-import org.eclipse.jdt.core.dom.SingleVariableDeclaration;
-import org.eclipse.jdt.core.dom.Statement;
-import org.eclipse.jdt.core.dom.SuperConstructorInvocation;
-import org.eclipse.jdt.core.dom.TypeDeclaration;
-import org.eclipse.jdt.core.dom.TypeDeclarationStatement;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -59,14 +58,14 @@ import java.util.List;
  *
  * @author Tom Ball
  */
-public class InnerClassExtractor extends ErrorReportingASTVisitor {
+public class InnerClassExtractor extends TreeVisitor {
 
   private final List<AbstractTypeDeclaration> unitTypes;
   // Helps keep types in the order they are visited.
   private ArrayList<Integer> typeOrderStack = Lists.newArrayList();
 
   public InnerClassExtractor(CompilationUnit unit) {
-    unitTypes = ASTUtil.getTypes(unit);
+    unitTypes = unit.getTypes();
   }
 
   @Override
@@ -106,35 +105,24 @@ public class InnerClassExtractor extends ErrorReportingASTVisitor {
 
   private void endHandleType(AbstractTypeDeclaration node) {
     int insertIdx = typeOrderStack.remove(typeOrderStack.size() - 1);
-    ASTNode parentNode = node.getParent();
+    TreeNode parentNode = node.getParent();
     if (!(parentNode instanceof CompilationUnit)) {
       // Remove this type declaration from its current location.
-      if (parentNode instanceof AbstractTypeDeclaration) {
-        // Remove declaration from declaring type.
-        boolean success =
-            ASTUtil.getBodyDeclarations((AbstractTypeDeclaration) parentNode).remove(node);
-        assert success;
-      } else {
-        TypeDeclarationStatement typeStatement = (TypeDeclarationStatement) parentNode;
-        // Remove stmt from method body (or an if/else/try/catch/finally clause).
-        Block body = (Block) typeStatement.getParent();
-        boolean success = ASTUtil.getStatements(body).remove(typeStatement);
-        assert success;
+      node.remove();
+      if (parentNode instanceof TypeDeclarationStatement) {
+        parentNode.remove();
       }
 
-      // Make a copy to add to add as a top-level type.
-      AbstractTypeDeclaration newTypeDecl = NodeCopier.copySubtree(node.getAST(), node);
-
-      ITypeBinding type = Types.getTypeBinding(node);
+      ITypeBinding type = node.getTypeBinding();
       if (!type.isInterface() && !type.isAnnotation() && !Modifier.isStatic(type.getModifiers())) {
-        addOuterFields(newTypeDecl);
-        updateConstructors(newTypeDecl);
+        addOuterFields(node);
+        updateConstructors(node);
       }
 
       // Make this node non-private, if necessary, and add it to the unit's type
       // list.
-      removePrivateModifier(newTypeDecl);
-      unitTypes.add(insertIdx, newTypeDecl);
+      node.removeModifiers(Modifier.PRIVATE);
+      unitTypes.add(insertIdx, node);
 
       // Check for erroneous WeakOuter annotation on static inner class.
       if (BindingUtil.isStatic(type) && BindingUtil.hasAnnotation(type, WeakOuter.class)) {
@@ -143,40 +131,26 @@ public class InnerClassExtractor extends ErrorReportingASTVisitor {
     }
   }
 
-  private void removePrivateModifier(AbstractTypeDeclaration node) {
-    Iterator<IExtendedModifier> iter = ASTUtil.getModifiers(node).iterator();
-    while (iter.hasNext()) {
-      IExtendedModifier iem = iter.next();
-      if ((iem instanceof Modifier) && ((Modifier) iem).isPrivate()) {
-        iter.remove();
-        break;
-      }
-    }
-  }
-
   private void addOuterFields(AbstractTypeDeclaration node) {
-    List<BodyDeclaration> members = ASTUtil.getBodyDeclarations(node);
-    AST ast = node.getAST();
-    ITypeBinding clazz = Types.getTypeBinding(node);
+    List<BodyDeclaration> members = node.getBodyDeclarations();
+    ITypeBinding clazz = node.getTypeBinding();
     assert clazz.getDeclaringClass() != null;
 
     IVariableBinding outerFieldBinding = OuterReferenceResolver.getOuterField(clazz);
     if (outerFieldBinding != null) {
-      members.add(0, ASTFactory.newFieldDeclaration(ast, outerFieldBinding, null));
+      members.add(0, new FieldDeclaration(outerFieldBinding, null));
     }
 
     List<IVariableBinding> innerFields = OuterReferenceResolver.getInnerFields(clazz);
     for (IVariableBinding field : innerFields) {
-      ASTUtil.getBodyDeclarations(node).add(ASTFactory.newFieldDeclaration(ast, field, null));
+      node.getBodyDeclarations().add(new FieldDeclaration(field, null));
     }
   }
 
   private void updateConstructors(AbstractTypeDeclaration node) {
-    AST ast = node.getAST();
-
     // Insert new parameters for each constructor in class.
     boolean needsConstructor = true;
-    for (MethodDeclaration method : ASTUtil.getMethodDeclarations(node)) {
+    for (MethodDeclaration method : TreeUtil.getMethodDeclarations(node)) {
       if (method.isConstructor()) {
         needsConstructor = false;
         addOuterParameters(node, method);
@@ -185,27 +159,28 @@ public class InnerClassExtractor extends ErrorReportingASTVisitor {
 
     if (needsConstructor) {
       GeneratedMethodBinding binding =
-          GeneratedMethodBinding.newConstructor(Types.getTypeBinding(node), 0);
-      MethodDeclaration constructor = ASTFactory.newMethodDeclaration(ast, binding);
-      constructor.setBody(ast.newBlock());
+          GeneratedMethodBinding.newConstructor(node.getTypeBinding(), 0);
+      MethodDeclaration constructor = new MethodDeclaration(binding);
+      constructor.setBody(new Block());
       addOuterParameters(node, constructor);
-      ASTUtil.getBodyDeclarations(node).add(constructor);
+      node.getBodyDeclarations().add(constructor);
     }
   }
 
   private GeneratedVariableBinding addParameter(
       MethodDeclaration constructor, ITypeBinding paramType, String name, int idx) {
-    GeneratedMethodBinding constructorBinding = Types.getGeneratedMethodBinding(constructor);
+    GeneratedMethodBinding constructorBinding =
+        new GeneratedMethodBinding(constructor.getMethodBinding().getMethodDeclaration());
+    constructor.setMethodBinding(constructorBinding);
     GeneratedVariableBinding paramBinding = new GeneratedVariableBinding(
         name, Modifier.FINAL, paramType, false, true, constructorBinding.getDeclaringClass(),
         constructorBinding);
-    SingleVariableDeclaration paramNode =
-        ASTFactory.newSingleVariableDeclaration(constructor.getAST(), paramBinding);
+    SingleVariableDeclaration paramNode = new SingleVariableDeclaration(paramBinding);
     if (idx == -1) {
-      ASTUtil.getParameters(constructor).add(paramNode);
+      constructor.getParameters().add(paramNode);
       constructorBinding.addParameter(paramType);
     } else {
-      ASTUtil.getParameters(constructor).add(idx, paramNode);
+      constructor.getParameters().add(idx, paramNode);
       constructorBinding.addParameter(idx, paramType);
     }
     return paramBinding;
@@ -213,8 +188,7 @@ public class InnerClassExtractor extends ErrorReportingASTVisitor {
 
   protected void addOuterParameters(
       AbstractTypeDeclaration typeNode, MethodDeclaration constructor) {
-    AST ast = typeNode.getAST();
-    ITypeBinding type = Types.getTypeBinding(typeNode);
+    ITypeBinding type = typeNode.getTypeBinding();
     ITypeBinding outerType = type.getDeclaringClass();
     IVariableBinding outerParamBinding = null;
     if (OuterReferenceResolver.needsOuterParam(type)) {
@@ -231,7 +205,7 @@ public class InnerClassExtractor extends ErrorReportingASTVisitor {
     ConstructorInvocation thisCall = null;
     SuperConstructorInvocation superCall = null;
 
-    List<Statement> statements = ASTUtil.getStatements(constructor.getBody());
+    List<Statement> statements = constructor.getBody().getStatements();
     for (Statement stmt : statements) {
       if (stmt instanceof ConstructorInvocation) {
         thisCall = (ConstructorInvocation) stmt;
@@ -243,20 +217,22 @@ public class InnerClassExtractor extends ErrorReportingASTVisitor {
     }
 
     if (thisCall != null) {
-      GeneratedMethodBinding newThisBinding = Types.getGeneratedMethodBinding(thisCall);
+      GeneratedMethodBinding newThisBinding =
+          new GeneratedMethodBinding(thisCall.getMethodBinding().getMethodDeclaration());
+      thisCall.setMethodBinding(newThisBinding);
       if (outerParamBinding != null) {
-        ASTUtil.getArguments(thisCall).add(0, ASTFactory.newSimpleName(ast, outerParamBinding));
+        thisCall.getArguments().add(0, new SimpleName(outerParamBinding));
         newThisBinding.addParameter(0, outerParamBinding.getType());
       }
       for (IVariableBinding captureParam : captureParams) {
-        ASTUtil.getArguments(thisCall).add(ASTFactory.newSimpleName(ast, captureParam));
+        thisCall.getArguments().add(new SimpleName(captureParam));
         newThisBinding.addParameter(captureParam.getType());
       }
     } else {
       ITypeBinding superType = type.getSuperclass().getTypeDeclaration();
       if (superCall == null) {
-        superCall = ASTFactory.newSuperConstructorInvocation(
-            ast, GeneratedMethodBinding.newConstructor(superType, Modifier.PUBLIC));
+        superCall = new SuperConstructorInvocation(
+            GeneratedMethodBinding.newConstructor(superType, Modifier.PUBLIC));
         statements.add(0, superCall);
       }
       passOuterParamToSuper(typeNode, superCall, superType, outerParamBinding);
@@ -264,20 +240,16 @@ public class InnerClassExtractor extends ErrorReportingASTVisitor {
       int idx = 0;
       if (outerField != null) {
         assert outerParamBinding != null;
-        statements.add(idx++,
-            ast.newExpressionStatement(ASTFactory.newAssignment(ast,
-            ASTFactory.newSimpleName(ast, outerField),
-            ASTFactory.newSimpleName(ast, outerParamBinding))));
+        statements.add(idx++, new ExpressionStatement(
+            new Assignment(new SimpleName(outerField), new SimpleName(outerParamBinding))));
       }
       for (int i = 0; i < innerFields.size(); i++) {
-        statements.add(idx++,
-            ast.newExpressionStatement(ASTFactory.newAssignment(ast,
-            ASTFactory.newSimpleName(ast, innerFields.get(i)),
-            ASTFactory.newSimpleName(ast, captureParams.get(i)))));
+        statements.add(idx++, new ExpressionStatement(new Assignment(
+            new SimpleName(innerFields.get(i)), new SimpleName(captureParams.get(i)))));
       }
     }
-    assert constructor.parameters().size()
-        == Types.getMethodBinding(constructor).getParameterTypes().length;
+    assert constructor.getParameters().size()
+        == constructor.getMethodBinding().getParameterTypes().length;
   }
 
   private void passOuterParamToSuper(
@@ -287,16 +259,17 @@ public class InnerClassExtractor extends ErrorReportingASTVisitor {
       return;
     }
     assert outerParamBinding != null;
-    AST ast = typeNode.getAST();
-    GeneratedMethodBinding superCallBinding = Types.getGeneratedMethodBinding(superCall);
+    GeneratedMethodBinding superCallBinding =
+        new GeneratedMethodBinding(superCall.getMethodBinding().getMethodDeclaration());
+    superCall.setMethodBinding(superCallBinding);
 
     List<IVariableBinding> path = OuterReferenceResolver.getPath(typeNode);
     assert path != null && path.size() > 0;
     path = Lists.newArrayList(path);
     path.set(0, outerParamBinding);
-    Name superOuterArg = ASTFactory.newName(ast, path);
+    Name superOuterArg = Name.newName(path);
 
-    ASTUtil.getArguments(superCall).add(0, superOuterArg);
+    superCall.getArguments().add(0, superOuterArg);
     superCallBinding.addParameter(0, superType.getDeclaringClass());
   }
 }
