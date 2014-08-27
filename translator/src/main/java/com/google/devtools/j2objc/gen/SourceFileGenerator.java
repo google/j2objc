@@ -56,7 +56,7 @@ public abstract class SourceFileGenerator {
    */
   protected String getOutputFileName(CompilationUnit node) {
     PackageDeclaration pkg = node.getPackage();
-    if (pkg != null && Options.usePackageDirectories()) {
+    if (!pkg.isDefaultPackage() && Options.usePackageDirectories()) {
       return pkg.getName().getFullyQualifiedName().replace('.', File.separatorChar)
           + File.separatorChar + node.getMainTypeName() + getSuffix();
     } else {

@@ -16,21 +16,34 @@ package com.google.devtools.j2objc.ast;
 
 import com.google.common.base.Preconditions;
 
+import java.util.List;
+
 /**
  * Tree node for a package declaration.
  */
 public class PackageDeclaration extends TreeNode {
 
+  private ChildLink<Javadoc> javadoc = ChildLink.create(Javadoc.class, this);
+  private ChildList<Annotation> annotations = ChildList.create(Annotation.class, this);
   private ChildLink<Name> name = ChildLink.create(Name.class, this);
 
   public PackageDeclaration(org.eclipse.jdt.core.dom.PackageDeclaration jdtNode) {
     super(jdtNode);
+    javadoc.set((Javadoc) TreeConverter.convert(jdtNode.getJavadoc()));
+    for (Object modifier : jdtNode.annotations()) {
+      annotations.add((Annotation) TreeConverter.convert(modifier));
+    }
     name.set((Name) TreeConverter.convert(jdtNode.getName()));
   }
 
   public PackageDeclaration(PackageDeclaration other) {
     super(other);
     name.copyFrom(other.getName());
+  }
+
+  // Used by CompilationUnit to represent the default package.
+  PackageDeclaration() {
+    name.set(new SimpleName(""));
   }
 
   @Override
@@ -46,9 +59,19 @@ public class PackageDeclaration extends TreeNode {
     name.set(newName);
   }
 
+  public Javadoc getJavadoc() {
+    return javadoc.get();
+  }
+
+  public List<Annotation> getAnnotations() {
+    return annotations;
+  }
+
   @Override
   protected void acceptInner(TreeVisitor visitor) {
     if (visitor.visit(this)) {
+      javadoc.accept(visitor);
+      annotations.accept(visitor);
       name.accept(visitor);
     }
     visitor.endVisit(this);
@@ -63,5 +86,9 @@ public class PackageDeclaration extends TreeNode {
   public void validateInner() {
     super.validateInner();
     Preconditions.checkNotNull(name);
+  }
+
+  public boolean isDefaultPackage() {
+    return name.get().getFullyQualifiedName().isEmpty();
   }
 }

@@ -120,7 +120,7 @@ class TranslationProcessor extends FileProcessor {
     CompilationUnit newUnit = applyMutations(unit, path, source, ticker);
     ticker.tick("Tree mutations");
 
-    if (unit.types().isEmpty()) {
+    if (unit.types().isEmpty() && !newUnit.getMainTypeName().endsWith("package_info")) {
       logger.finest("skipping dead file " + path);
       return;
     }

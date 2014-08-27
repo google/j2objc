@@ -89,6 +89,11 @@ public class ObjectiveCHeaderGenerator extends ObjectiveCSourceFileGenerator {
 
     generateFileHeader();
 
+    if (unit.getPackage().getJavadoc() != null && Options.docCommentsEnabled()) {
+      newline();
+      printDocComment(unit.getPackage().getJavadoc());
+    }
+
     for (AbstractTypeDeclaration type : unit.getTypes()) {
       newline();
       generate(type);

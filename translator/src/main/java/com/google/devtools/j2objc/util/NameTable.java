@@ -63,6 +63,11 @@ public class NameTable {
   public static final String DEALLOC_METHOD = "dealloc";
   public static final String FINALIZE_METHOD = "finalize";
 
+  // The JDT compiler requires package-info files be named as "package-info",
+  // but that's an illegal type to generate.
+  public static final String PACKAGE_INFO_FILE_NAME = "package-info";
+  public static final String PACKAGE_INFO_MAIN_TYPE = "package_info";
+
   // The self name in Java is reserved in Objective-C, but functionized methods
   // actually want the first parameter to be self. This is an internal name,
   // converted to self during generation.
@@ -647,10 +652,10 @@ public class NameTable {
 
   public static String getMainTypeFullName(CompilationUnit unit) {
     PackageDeclaration pkg = unit.getPackage();
-    if (pkg != null) {
-      return getPrefix(pkg.getName().getFullyQualifiedName()) + unit.getMainTypeName();
-    } else {
+    if (pkg.isDefaultPackage()) {
       return unit.getMainTypeName();
+    } else {
+      return getPrefix(pkg.getName().getFullyQualifiedName()) + unit.getMainTypeName();
     }
   }
 
