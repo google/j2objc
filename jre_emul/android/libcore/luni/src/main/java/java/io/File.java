@@ -547,6 +547,19 @@ public class File implements Serializable, Comparable<File> {
         return path.length() > 0 && path.charAt(0) == separatorChar;
     }
 
+    /*-[
+    static NSString *getFileType(NSString *path) {
+      if (!path) {
+        return nil;
+      }
+      NSDictionary *attrs = [[NSFileManager defaultManager] attributesOfItemAtPath:path error:nil];
+      if (!attrs) {
+        return nil;
+      }
+      return [attrs fileType];
+    }
+    ]-*/
+
     /**
      * Indicates if this file represents a <em>directory</em> on the
      * underlying file system.
@@ -554,14 +567,13 @@ public class File implements Serializable, Comparable<File> {
      * @return {@code true} if this file is a directory, {@code false}
      *         otherwise.
      */
-    public boolean isDirectory() {
-        try {
-            return S_ISDIR(Libcore.os.stat(path).st_mode);
-        } catch (ErrnoException errnoException) {
-            // The RI returns false on error. (Even for errors like EACCES or ELOOP.)
-            return false;
-        }
-    }
+    public native boolean isDirectory() /*-[
+      NSString *type = getFileType(self->path_);
+      if (!type) {
+        return false;
+      }
+      return [type isEqualToString:NSFileTypeDirectory];
+    ]-*/;
 
     /**
      * Indicates if this file represents a <em>file</em> on the underlying
@@ -569,14 +581,13 @@ public class File implements Serializable, Comparable<File> {
      *
      * @return {@code true} if this file is a file, {@code false} otherwise.
      */
-    public boolean isFile() {
-        try {
-            return S_ISREG(Libcore.os.stat(path).st_mode);
-        } catch (ErrnoException errnoException) {
-            // The RI returns false on error. (Even for errors like EACCES or ELOOP.)
-            return false;
-        }
-    }
+    public native boolean isFile() /*-[
+      NSString *type = getFileType(self->path_);
+      if (!type) {
+        return false;
+      }
+      return [type isEqualToString:NSFileTypeRegular];
+    ]-*/;
 
     /**
      * Returns whether or not this file is a hidden file as defined by the
@@ -601,14 +612,23 @@ public class File implements Serializable, Comparable<File> {
      *
      * @return the time when this file was last modified.
      */
-    public long lastModified() {
-        try {
-            return Libcore.os.stat(path).st_mtime * 1000L;
-        } catch (ErrnoException errnoException) {
-            // The RI returns 0 on error. (Even for errors like EACCES or ELOOP.)
-            return 0;
-        }
-    }
+    public native long lastModified() /*-[
+      if (!self->path_) {
+        return 0;
+      }
+      NSDictionary *attrs =
+          [[NSFileManager defaultManager] attributesOfItemAtPath:self->path_ error:nil];
+      if (!attrs) {
+        // The RI returns 0 on error.
+        return 0;
+      }
+      NSDate *modifyDate = [attrs fileModificationDate];
+      if (!modifyDate) {
+        return 0;
+      }
+      NSTimeInterval seconds = [modifyDate timeIntervalSince1970];
+      return (long long) seconds * 1000;
+    ]-*/;
 
     /**
      * Sets the time this file was last modified, measured in milliseconds since
@@ -745,16 +765,25 @@ public class File implements Serializable, Comparable<File> {
         return setWritable(writable, true);
     }
 
-    private boolean doChmod(int mask, boolean set) {
-        try {
-            StructStat sb = Libcore.os.stat(path);
-            int newMode = set ? (sb.st_mode | mask) : (sb.st_mode & ~mask);
-            Libcore.os.chmod(path, newMode);
-            return true;
-        } catch (ErrnoException errnoException) {
-            return false;
-        }
-    }
+    private native boolean doChmod(int mask, boolean set) /*-[
+      if (!self->path_) {
+        return false;
+      }
+      NSDictionary *attrs =
+          [[NSFileManager defaultManager] attributesOfItemAtPath:self->path_ error:nil];
+      if (!attrs) {
+        return false;
+      }
+      int oldMode = (int) [attrs filePosixPermissions];
+      int newMode = set ? (oldMode | mask) : (oldMode & ~mask);
+      NSNumber *newPermissions = [NSNumber numberWithInt:newMode];
+      NSMutableDictionary *newAttrs = [[NSMutableDictionary alloc] init];
+      [newAttrs addEntriesFromDictionary:attrs];
+      [newAttrs setObject:newPermissions forKey:NSFilePosixPermissions];
+      return [[NSFileManager defaultManager] setAttributes:newAttrs
+                                              ofItemAtPath:self->path_
+                                                     error:nil];
+    ]-*/;
 
     /**
      * Returns the length of this file in bytes.
@@ -763,14 +792,18 @@ public class File implements Serializable, Comparable<File> {
      *
      * @return the number of bytes in this file.
      */
-    public long length() {
-        try {
-            return Libcore.os.stat(path).st_size;
-        } catch (ErrnoException errnoException) {
-            // The RI returns 0 on error. (Even for errors like EACCES or ELOOP.)
-            return 0;
-        }
-    }
+    public native long length() /*-[
+      if (!self->path_) {
+        return 0;
+      }
+      NSDictionary *attrs =
+          [[NSFileManager defaultManager] attributesOfItemAtPath:self->path_ error:nil];
+      if (!attrs) {
+        // The RI returns 0 on error.
+        return 0;
+      }
+      return [attrs fileSize];
+    ]-*/;
 
     /**
      * Returns an array of strings with the file names in the directory
