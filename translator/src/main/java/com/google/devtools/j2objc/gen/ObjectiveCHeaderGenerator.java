@@ -633,52 +633,8 @@ public class ObjectiveCHeaderGenerator extends ObjectiveCSourceFileGenerator {
           println(((Boolean) value).booleanValue() ? "TRUE" : "FALSE");
         } else if (value instanceof Character) {
           println(UnicodeUtils.escapeCharLiteral(((Character) value).charValue()));
-        } else if (value instanceof Long) {
-          long l = ((Long) value).longValue();
-          if (l == Long.MIN_VALUE) {
-            println("((long long) 0x8000000000000000LL)");
-          } else {
-            println(value.toString() + "LL");
-          }
-        } else if (value instanceof Integer) {
-          long l = ((Integer) value).intValue();
-          if (l == Integer.MIN_VALUE) {
-            println("((int) 0x80000000)");
-          } else {
-            println(value.toString());
-          }
-        } else if (value instanceof Float) {
-          float f = ((Float) value).floatValue();
-          if (Float.isNaN(f)) {
-            println("NAN");
-          } else if (f == Float.POSITIVE_INFINITY) {
-            println("INFINITY");
-          } else if (f == Float.NEGATIVE_INFINITY) {
-            // FP representations are symmetrical.
-            println("-INFINITY");
-          } else if (f == Float.MAX_VALUE) {
-            println("__FLT_MAX__");
-          } else if (f == Float.MIN_NORMAL) {
-            println("__FLT_MIN__");
-          } else {
-            println(value.toString() + "f");
-          }
-        } else if (value instanceof Double) {
-          double d = ((Double) value).doubleValue();
-          if (Double.isNaN(d)) {
-            println("NAN");
-          } else if (d == Double.POSITIVE_INFINITY) {
-            println("INFINITY");
-          } else if (d == Double.NEGATIVE_INFINITY) {
-            // FP representations are symmetrical.
-            println("-INFINITY");
-          } else if (d == Double.MAX_VALUE) {
-            println("__DBL_MAX__");
-          } else if (d == Double.MIN_NORMAL) {
-            println("__DBL_MIN__");
-          } else {
-            println(value.toString());
-          }
+        } else if (value instanceof Number) {
+          println(LiteralGenerator.generate((Number) value));
         } else {
           println(value.toString());
         }

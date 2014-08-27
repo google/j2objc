@@ -276,13 +276,13 @@ public class TreeUtil {
     return newNode;
   }
 
-  public static Expression newLiteral(Object value, ITypeBinding type) {
+  public static Expression newLiteral(Object value) {
     if (value instanceof Boolean) {
       return new BooleanLiteral((Boolean) value);
     } else if (value instanceof Character) {
       return new CharacterLiteral((Character) value);
     } else if (value instanceof Number) {
-      return new NumberLiteral(type, value.toString());
+      return new NumberLiteral((Number) value);
     } else if (value instanceof String) {
       return new StringLiteral((String) value);
     }

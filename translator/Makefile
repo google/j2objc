@@ -146,6 +146,7 @@ JAVA_SOURCES = \
 	ast/VariableDeclarationStatement.java \
 	ast/WhileStatement.java \
 	gen/HiddenFieldDetector.java \
+	gen/LiteralGenerator.java \
 	gen/MetadataGenerator.java \
 	gen/ObjectiveCHeaderGenerator.java \
 	gen/ObjectiveCImplementationGenerator.java \

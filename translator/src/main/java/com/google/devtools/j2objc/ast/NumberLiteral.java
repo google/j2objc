@@ -25,26 +25,33 @@ public class NumberLiteral extends Expression {
 
   private ITypeBinding typeBinding = null;
   private String token = null;
+  private Number value = null;
 
   public NumberLiteral(org.eclipse.jdt.core.dom.NumberLiteral jdtNode) {
     super(jdtNode);
     typeBinding = Types.getTypeBinding(jdtNode);
     token = jdtNode.getToken();
+    Object constantValue = jdtNode.resolveConstantExpressionValue();
+    // TODO(kstanger): We should be able to remove the null test once all the
+    // mutations are converted to the new AST.
+    assert constantValue == null || constantValue instanceof Number;
+    value = (Number) constantValue;
   }
 
   public NumberLiteral(NumberLiteral other) {
     super(other);
     typeBinding = other.getTypeBinding();
     token = other.getToken();
+    value = other.getValue();
   }
 
-  public NumberLiteral(ITypeBinding typeBinding, String token) {
-    this.typeBinding = typeBinding;
-    this.token = token;
+  public NumberLiteral(Number value) {
+    typeBinding = typeForNumber(value);
+    this.value = value;
   }
 
-  public static NumberLiteral newIntLiteral(int i) {
-    return new NumberLiteral(Types.resolveJavaType("int"), Integer.toString(i));
+  public static NumberLiteral newIntLiteral(Integer i) {
+    return new NumberLiteral(i);
   }
 
   @Override
@@ -61,6 +68,10 @@ public class NumberLiteral extends Expression {
     return token;
   }
 
+  public Number getValue() {
+    return value;
+  }
+
   @Override
   protected void acceptInner(TreeVisitor visitor) {
     visitor.visit(this);
@@ -70,5 +81,23 @@ public class NumberLiteral extends Expression {
   @Override
   public NumberLiteral copy() {
     return new NumberLiteral(this);
+  }
+
+  private ITypeBinding typeForNumber(Number value) {
+    if (value instanceof Byte) {
+      return Types.resolveJavaType("byte");
+    } else if (value instanceof Short) {
+      return Types.resolveJavaType("short");
+    } else if (value instanceof Integer) {
+      return Types.resolveJavaType("int");
+    } else if (value instanceof Long) {
+      return Types.resolveJavaType("long");
+    } else if (value instanceof Float) {
+      return Types.resolveJavaType("float");
+    } else if (value instanceof Double) {
+      return Types.resolveJavaType("double");
+    } else {
+      throw new AssertionError("Invalid number literal type: " + value.getClass().getName());
+    }
   }
 }

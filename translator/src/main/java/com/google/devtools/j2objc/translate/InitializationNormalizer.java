@@ -195,8 +195,7 @@ public class InitializationNormalizer extends TreeVisitor {
       try {
         // TODO(kstanger): Correctly handle edge-case number constants.
         ASTFactory.makeLiteral(Types.getAST(), constantValue, frag.getVariableBinding().getType());
-        frag.setInitializer(
-            TreeUtil.newLiteral(constantValue, frag.getVariableBinding().getType()));
+        frag.setInitializer(TreeUtil.newLiteral(constantValue));
         return false;
       } catch (IllegalArgumentException e) {
         // JDT fails for number constants that return non-numbers from toString(), like
