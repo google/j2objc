@@ -14,6 +14,8 @@
 
 package com.google.devtools.j2objc.ast;
 
+import com.google.devtools.j2objc.types.Types;
+
 /**
  * Either "true" or "false".
  */
@@ -29,6 +31,11 @@ public class BooleanLiteral extends Expression {
   public BooleanLiteral(BooleanLiteral other) {
     super(other);
     booleanValue = other.booleanValue();
+  }
+
+  public BooleanLiteral(boolean booleanValue) {
+    super(Types.resolveJavaType("boolean"));
+    this.booleanValue = booleanValue;
   }
 
   @Override

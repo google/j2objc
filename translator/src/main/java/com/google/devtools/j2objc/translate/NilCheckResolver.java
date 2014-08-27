@@ -16,42 +16,40 @@ package com.google.devtools.j2objc.translate;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
+import com.google.devtools.j2objc.ast.ArrayAccess;
+import com.google.devtools.j2objc.ast.Assignment;
+import com.google.devtools.j2objc.ast.Block;
+import com.google.devtools.j2objc.ast.CastExpression;
+import com.google.devtools.j2objc.ast.CatchClause;
+import com.google.devtools.j2objc.ast.ConditionalExpression;
+import com.google.devtools.j2objc.ast.DoStatement;
+import com.google.devtools.j2objc.ast.EnhancedForStatement;
+import com.google.devtools.j2objc.ast.Expression;
+import com.google.devtools.j2objc.ast.FieldAccess;
+import com.google.devtools.j2objc.ast.ForStatement;
+import com.google.devtools.j2objc.ast.IfStatement;
+import com.google.devtools.j2objc.ast.InfixExpression;
+import com.google.devtools.j2objc.ast.MethodDeclaration;
+import com.google.devtools.j2objc.ast.MethodInvocation;
+import com.google.devtools.j2objc.ast.NullLiteral;
+import com.google.devtools.j2objc.ast.ParenthesizedExpression;
+import com.google.devtools.j2objc.ast.QualifiedName;
+import com.google.devtools.j2objc.ast.Statement;
+import com.google.devtools.j2objc.ast.SwitchCase;
+import com.google.devtools.j2objc.ast.SwitchStatement;
+import com.google.devtools.j2objc.ast.TreeNode;
+import com.google.devtools.j2objc.ast.TreeUtil;
+import com.google.devtools.j2objc.ast.TreeVisitor;
+import com.google.devtools.j2objc.ast.TryStatement;
+import com.google.devtools.j2objc.ast.VariableDeclarationExpression;
+import com.google.devtools.j2objc.ast.VariableDeclarationFragment;
+import com.google.devtools.j2objc.ast.WhileStatement;
 import com.google.devtools.j2objc.types.IOSMethodBinding;
-import com.google.devtools.j2objc.types.NodeCopier;
 import com.google.devtools.j2objc.types.Types;
-import com.google.devtools.j2objc.util.ASTUtil;
 import com.google.devtools.j2objc.util.BindingUtil;
-import com.google.devtools.j2objc.util.ErrorReportingASTVisitor;
 
-import org.eclipse.jdt.core.dom.AST;
-import org.eclipse.jdt.core.dom.ASTNode;
-import org.eclipse.jdt.core.dom.ArrayAccess;
-import org.eclipse.jdt.core.dom.Assignment;
-import org.eclipse.jdt.core.dom.Block;
-import org.eclipse.jdt.core.dom.CastExpression;
-import org.eclipse.jdt.core.dom.CatchClause;
-import org.eclipse.jdt.core.dom.ConditionalExpression;
-import org.eclipse.jdt.core.dom.DoStatement;
-import org.eclipse.jdt.core.dom.EnhancedForStatement;
-import org.eclipse.jdt.core.dom.Expression;
-import org.eclipse.jdt.core.dom.FieldAccess;
-import org.eclipse.jdt.core.dom.ForStatement;
 import org.eclipse.jdt.core.dom.IMethodBinding;
 import org.eclipse.jdt.core.dom.IVariableBinding;
-import org.eclipse.jdt.core.dom.IfStatement;
-import org.eclipse.jdt.core.dom.InfixExpression;
-import org.eclipse.jdt.core.dom.MethodDeclaration;
-import org.eclipse.jdt.core.dom.MethodInvocation;
-import org.eclipse.jdt.core.dom.NullLiteral;
-import org.eclipse.jdt.core.dom.ParenthesizedExpression;
-import org.eclipse.jdt.core.dom.QualifiedName;
-import org.eclipse.jdt.core.dom.Statement;
-import org.eclipse.jdt.core.dom.SwitchCase;
-import org.eclipse.jdt.core.dom.SwitchStatement;
-import org.eclipse.jdt.core.dom.TryStatement;
-import org.eclipse.jdt.core.dom.VariableDeclarationExpression;
-import org.eclipse.jdt.core.dom.VariableDeclarationFragment;
-import org.eclipse.jdt.core.dom.WhileStatement;
 
 import java.util.ArrayList;
 import java.util.Set;
@@ -68,7 +66,7 @@ import java.util.Set;
  *
  * @author Keith Stanger
  */
-public class NilCheckResolver extends ErrorReportingASTVisitor {
+public class NilCheckResolver extends TreeVisitor {
 
   private static final IOSMethodBinding NIL_CHK_DECL = IOSMethodBinding.newFunction(
       "nil_chk", Types.resolveIOSType("id"), null, Types.resolveIOSType("id"));
@@ -134,13 +132,13 @@ public class NilCheckResolver extends ErrorReportingASTVisitor {
   }
 
   private boolean needsNilCheck(Expression e) {
-    IVariableBinding sym = Types.getVariableBinding(e);
+    IVariableBinding sym = TreeUtil.getVariableBinding(e);
     if (sym != null) {
       // Outer class references should always be non-nil.
       return !isSafeVar(sym) && !sym.getName().startsWith("this$")
           && !sym.getName().equals("outer$");
     }
-    IMethodBinding method = Types.getMethodBinding(e);
+    IMethodBinding method = TreeUtil.getMethodBinding(e);
     if (method != null) {
       // Check for some common cases where the result is known not to be null.
       return !method.isConstructor() && !method.getName().equals("getClass")
@@ -153,9 +151,9 @@ public class NilCheckResolver extends ErrorReportingASTVisitor {
     if (e instanceof CastExpression) {
       return needsNilCheck(((CastExpression) e).getExpression());
     }
-    switch (e.getNodeType()) {
-      case ASTNode.ARRAY_ACCESS:
-      case ASTNode.NULL_LITERAL:
+    switch (e.getKind()) {
+      case ARRAY_ACCESS:
+      case NULL_LITERAL:
         return true;
     }
     return false;
@@ -165,21 +163,20 @@ public class NilCheckResolver extends ErrorReportingASTVisitor {
     if (!needsNilCheck(node)) {
       return;
     }
-    IVariableBinding var = Types.getVariableBinding(node);
+    IVariableBinding var = TreeUtil.getVariableBinding(node);
     if (var != null) {
       addSafeVar(var);
       safeVarsTrue.add(var);
       safeVarsFalse.add(var);
     }
     if (deferAdd) {
-      Types.addNilCheck(node);
+      node.setHasNilCheck(true);
     } else {
-      AST ast = node.getAST();
       IOSMethodBinding nilChkBinding = IOSMethodBinding.newTypedInvocation(
-          NIL_CHK_DECL, Types.getTypeBinding(node));
-      MethodInvocation nilChkInvocation = ASTFactory.newMethodInvocation(ast, nilChkBinding, null);
-      ASTUtil.getArguments(nilChkInvocation).add(NodeCopier.copySubtree(ast, node));
-      ASTUtil.setProperty(node, nilChkInvocation);
+          NIL_CHK_DECL, node.getTypeBinding());
+      MethodInvocation nilChkInvocation = new MethodInvocation(nilChkBinding, null);
+      node.replaceWith(nilChkInvocation);
+      nilChkInvocation.getArguments().add(node);
     }
   }
 
@@ -202,8 +199,8 @@ public class NilCheckResolver extends ErrorReportingASTVisitor {
     // Instance references to static fields don't need to be nil-checked.
     // This is true in Java (surprisingly), where instance.FIELD returns
     // FIELD even when instance is null.
-    IVariableBinding var = Types.getVariableBinding(node);
-    IVariableBinding qualifierVar = Types.getVariableBinding(node.getQualifier());
+    IVariableBinding var = TreeUtil.getVariableBinding(node);
+    IVariableBinding qualifierVar = TreeUtil.getVariableBinding(node.getQualifier());
     if (var != null && qualifierVar != null && BindingUtil.isStatic(var)
         && !BindingUtil.isStatic(qualifierVar)) {
       return true;
@@ -211,14 +208,14 @@ public class NilCheckResolver extends ErrorReportingASTVisitor {
 
     // We can't substitute the qualifier with a nil_chk because it must have a
     // Name type, so we have to convert to a FieldAccess node.
-    FieldAccess newNode = ASTFactory.convertToFieldAccess(node);
+    FieldAccess newNode = TreeUtil.convertToFieldAccess(node);
     newNode.accept(this);
     return false;
   }
 
   @Override
   public void endVisit(MethodInvocation node) {
-    IMethodBinding binding = Types.getMethodBinding(node);
+    IMethodBinding binding = node.getMethodBinding();
     if (BindingUtil.isStatic(binding)) {
       return;
     }
@@ -252,7 +249,7 @@ public class NilCheckResolver extends ErrorReportingASTVisitor {
         node.getExpression(), node.getThenExpression(), node.getElseExpression());
   }
 
-  private boolean handleConditional(Expression expr, ASTNode thenNode, ASTNode elseNode) {
+  private boolean handleConditional(Expression expr, TreeNode thenNode, TreeNode elseNode) {
     clearConditionalSafeVars();
     expr.accept(this);
     Set<IVariableBinding> safeVarsElse = getAllSafeVars();
@@ -285,9 +282,9 @@ public class NilCheckResolver extends ErrorReportingASTVisitor {
       Expression rhs = node.getRightOperand();
       IVariableBinding maybeNullVar = null;
       if (lhs instanceof NullLiteral) {
-        maybeNullVar = Types.getVariableBinding(rhs);
+        maybeNullVar = TreeUtil.getVariableBinding(rhs);
       } else if (rhs instanceof NullLiteral) {
-        maybeNullVar = Types.getVariableBinding(lhs);
+        maybeNullVar = TreeUtil.getVariableBinding(lhs);
       }
       if (maybeNullVar != null) {
         if (equals) {
@@ -320,7 +317,7 @@ public class NilCheckResolver extends ErrorReportingASTVisitor {
     } else {
       newSafeVarsFalse.addAll(safeVarsFalse);
     }
-    for (Expression extendedOperand : ASTUtil.getExtendedOperands(node)) {
+    for (Expression extendedOperand : node.getExtendedOperands()) {
       pushScope();
       addSafeVars(logicalAnd ? safeVarsTrue : safeVarsFalse);
       pushCount++;
@@ -351,7 +348,8 @@ public class NilCheckResolver extends ErrorReportingASTVisitor {
   @Override
   public void endVisit(Assignment node) {
     if (node.getOperator() == Assignment.Operator.ASSIGN) {
-      handleAssignment(Types.getVariableBinding(node.getLeftHandSide()), node.getRightHandSide());
+      handleAssignment(
+          TreeUtil.getVariableBinding(node.getLeftHandSide()), node.getRightHandSide());
     }
   }
 
@@ -359,7 +357,7 @@ public class NilCheckResolver extends ErrorReportingASTVisitor {
   public void endVisit(VariableDeclarationFragment node) {
     Expression initializer = node.getInitializer();
     if (initializer != null) {
-      handleAssignment(Types.getVariableBinding(node), initializer);
+      handleAssignment(node.getVariableBinding(), initializer);
     }
   }
 
@@ -384,7 +382,7 @@ public class NilCheckResolver extends ErrorReportingASTVisitor {
 
   @Override
   public boolean visit(ForStatement node) {
-    for (Expression initializer : ASTUtil.getInitializers(node)) {
+    for (Expression initializer : node.getInitializers()) {
       initializer.accept(this);
     }
     Expression expr = node.getExpression();
@@ -393,7 +391,7 @@ public class NilCheckResolver extends ErrorReportingASTVisitor {
     }
     pushScope();
     node.getBody().accept(this);
-    for (Expression updater : ASTUtil.getUpdaters(node)) {
+    for (Expression updater : node.getUpdaters()) {
       updater.accept(this);
     }
     popScope();
@@ -404,7 +402,7 @@ public class NilCheckResolver extends ErrorReportingASTVisitor {
   public boolean visit(SwitchStatement node) {
     node.getExpression().accept(this);
     pushScope();
-    for (Statement stmt : ASTUtil.getStatements(node)) {
+    for (Statement stmt : node.getStatements()) {
       stmt.accept(this);
     }
     popScope();
@@ -421,12 +419,12 @@ public class NilCheckResolver extends ErrorReportingASTVisitor {
   @Override
   public boolean visit(TryStatement node) {
     pushScope();
-    for (VariableDeclarationExpression resource : ASTUtil.getResources(node)) {
+    for (VariableDeclarationExpression resource : node.getResources()) {
       resource.accept(this);
     }
     node.getBody().accept(this);
     popScope();
-    for (CatchClause catchClause : ASTUtil.getCatchClauses(node)) {
+    for (CatchClause catchClause : node.getCatchClauses()) {
       pushScope();
       catchClause.accept(this);
       popScope();

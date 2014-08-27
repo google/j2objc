@@ -14,6 +14,8 @@
 
 package com.google.devtools.j2objc.ast;
 
+import org.eclipse.jdt.core.dom.IVariableBinding;
+
 import java.util.List;
 
 /**
@@ -21,6 +23,7 @@ import java.util.List;
  */
 public class VariableDeclarationStatement extends Statement {
 
+  private int modifiers = 0;
   private ChildLink<Type> type = ChildLink.create(Type.class, this);
   private ChildList<VariableDeclarationFragment> fragments =
       ChildList.create(VariableDeclarationFragment.class, this);
@@ -40,9 +43,24 @@ public class VariableDeclarationStatement extends Statement {
     fragments.copyFrom(other.getFragments());
   }
 
+  public VariableDeclarationStatement(VariableDeclarationFragment fragment) {
+    IVariableBinding variableBinding = fragment.getVariableBinding();
+    modifiers = variableBinding.getModifiers();
+    type.set(Type.newType(variableBinding.getType()));
+    fragments.add(fragment);
+  }
+
+  public VariableDeclarationStatement(IVariableBinding variableBinding, Expression initializer) {
+    this(new VariableDeclarationFragment(variableBinding, initializer));
+  }
+
   @Override
   public Kind getKind() {
     return Kind.VARIABLE_DECLARATION_STATEMENT;
+  }
+
+  public int getModifiers() {
+    return modifiers;
   }
 
   public Type getType() {

@@ -16,6 +16,8 @@ package com.google.devtools.j2objc.ast;
 
 import com.google.common.collect.Maps;
 
+import org.eclipse.jdt.core.dom.ITypeBinding;
+
 import java.util.List;
 import java.util.Map;
 
@@ -95,6 +97,15 @@ public class InfixExpression extends Expression {
     leftOperand.copyFrom(other.getLeftOperand());
     rightOperand.copyFrom(other.getRightOperand());
     extendedOperands.copyFrom(other.getExtendedOperands());
+  }
+
+  public InfixExpression(
+      ITypeBinding typeBinding, Operator operator, Expression leftOperand,
+      Expression rightOperand) {
+    super(typeBinding);
+    this.operator = operator;
+    this.leftOperand.set(leftOperand);
+    this.rightOperand.set(rightOperand);
   }
 
   @Override

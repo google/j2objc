@@ -43,6 +43,10 @@ public class DoStatement extends Statement {
     return expression.get();
   }
 
+  public void setExpression(Expression newExpression) {
+    expression.set(newExpression);
+  }
+
   public Statement getBody() {
     return body.get();
   }

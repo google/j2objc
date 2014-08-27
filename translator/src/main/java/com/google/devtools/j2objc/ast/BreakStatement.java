@@ -31,6 +31,8 @@ public class BreakStatement extends Statement {
     label.copyFrom(other.getLabel());
   }
 
+  public BreakStatement() {}
+
   @Override
   public Kind getKind() {
     return Kind.BREAK_STATEMENT;
