@@ -76,7 +76,7 @@ public class ConstantBranchPruner extends TreeVisitor {
       if (operator == CONDITIONAL_AND) {
         if (left == TRUE) {
           node.replaceWith(node.getRightOperand().copy());
-        } if (right == TRUE) {
+        } else if (right == TRUE) {
           node.replaceWith(node.getLeftOperand().copy());
         } else {
           node.replaceWith(new BooleanLiteral(false));
@@ -84,7 +84,7 @@ public class ConstantBranchPruner extends TreeVisitor {
       } else {
         if (left == FALSE) {
           node.replaceWith(node.getRightOperand().copy());
-        } if (right == FALSE) {
+        } else if (right == FALSE) {
           node.replaceWith(node.getLeftOperand().copy());
         } else {
           node.replaceWith(new BooleanLiteral(true));
