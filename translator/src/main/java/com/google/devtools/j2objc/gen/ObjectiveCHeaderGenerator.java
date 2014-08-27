@@ -43,7 +43,6 @@ import com.google.devtools.j2objc.types.Import;
 import com.google.devtools.j2objc.types.Types;
 import com.google.devtools.j2objc.util.BindingUtil;
 import com.google.devtools.j2objc.util.NameTable;
-import com.google.devtools.j2objc.util.UnicodeUtils;
 
 import org.eclipse.jdt.core.dom.IMethodBinding;
 import org.eclipse.jdt.core.dom.ITypeBinding;
@@ -629,15 +628,7 @@ public class ObjectiveCHeaderGenerator extends ObjectiveCSourceFileGenerator {
         printf("#define %s ", NameTable.getPrimitiveConstantName(field));
         Object value = field.getConstantValue();
         assert value != null;
-        if (value instanceof Boolean) {
-          println(((Boolean) value).booleanValue() ? "TRUE" : "FALSE");
-        } else if (value instanceof Character) {
-          println(UnicodeUtils.escapeCharLiteral(((Character) value).charValue()));
-        } else if (value instanceof Number) {
-          println(LiteralGenerator.generate((Number) value));
-        } else {
-          println(value.toString());
-        }
+        println(LiteralGenerator.generate(value));
         hadConstant = true;
       }
     }
