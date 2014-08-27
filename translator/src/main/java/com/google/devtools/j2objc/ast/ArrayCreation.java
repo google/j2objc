@@ -21,12 +21,15 @@ import java.util.List;
  */
 public class ArrayCreation extends Expression {
 
+  private final ChildLink<ArrayType> arrayType =
+      ChildLink.create(ArrayType.class, this);
   private final ChildList<Expression> dimensions = ChildList.create(Expression.class, this);
   private final ChildLink<ArrayInitializer> initializer =
       ChildLink.create(ArrayInitializer.class, this);
 
   public ArrayCreation(org.eclipse.jdt.core.dom.ArrayCreation jdtNode) {
     super(jdtNode);
+    arrayType.set((ArrayType) TreeConverter.convert(jdtNode.getType()));
     for (Object dimension : jdtNode.dimensions()) {
       dimensions.add((Expression) TreeConverter.convert(dimension));
     }
@@ -35,6 +38,7 @@ public class ArrayCreation extends Expression {
 
   public ArrayCreation(ArrayCreation other) {
     super(other);
+    arrayType.copyFrom(other.getType());
     dimensions.copyFrom(other.getDimensions());
     initializer.copyFrom(other.getInitializer());
   }
@@ -42,6 +46,10 @@ public class ArrayCreation extends Expression {
   @Override
   public Kind getKind() {
     return Kind.ARRAY_CREATION;
+  }
+
+  public ArrayType getType() {
+    return arrayType.get();
   }
 
   public List<Expression> getDimensions() {
@@ -55,6 +63,7 @@ public class ArrayCreation extends Expression {
   @Override
   protected void acceptInner(TreeVisitor visitor) {
     if (visitor.visit(this)) {
+      arrayType.accept(visitor);
       dimensions.accept(visitor);
       initializer.accept(visitor);
     }

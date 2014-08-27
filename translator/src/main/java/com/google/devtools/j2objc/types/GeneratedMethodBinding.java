@@ -181,7 +181,7 @@ public class GeneratedMethodBinding extends AbstractBinding implements IMethodBi
 
   @Override
   public ITypeBinding[] getTypeParameters() {
-    throw new AssertionError("not implemented");
+    return new ITypeBinding[0];
   }
 
   @Override

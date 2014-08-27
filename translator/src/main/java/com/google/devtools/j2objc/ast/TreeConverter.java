@@ -123,6 +123,8 @@ public class TreeConverter {
         return new IfStatement((org.eclipse.jdt.core.dom.IfStatement) jdtNode);
       case ASTNode.INFIX_EXPRESSION:
         return new InfixExpression((org.eclipse.jdt.core.dom.InfixExpression) jdtNode);
+      case ASTNode.INITIALIZER:
+        return new Initializer((org.eclipse.jdt.core.dom.Initializer) jdtNode);
       case ASTNode.INSTANCEOF_EXPRESSION:
         return new InstanceofExpression((org.eclipse.jdt.core.dom.InstanceofExpression) jdtNode);
       case ASTNode.JAVADOC:

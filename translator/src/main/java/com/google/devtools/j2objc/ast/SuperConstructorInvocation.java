@@ -26,11 +26,13 @@ import java.util.List;
 public class SuperConstructorInvocation extends Statement {
 
   private IMethodBinding methodBinding = null;
+  private ChildLink<Expression> expression = ChildLink.create(Expression.class,  this);
   private ChildList<Expression> arguments = ChildList.create(Expression.class, this);
 
   public SuperConstructorInvocation(org.eclipse.jdt.core.dom.SuperConstructorInvocation jdtNode) {
     super(jdtNode);
     methodBinding = Types.getMethodBinding(jdtNode);
+    expression.set((Expression) TreeConverter.convert(jdtNode.getExpression()));
     for (Object argument : jdtNode.arguments()) {
       arguments.add((Expression) TreeConverter.convert(argument));
     }
@@ -39,6 +41,7 @@ public class SuperConstructorInvocation extends Statement {
   public SuperConstructorInvocation(SuperConstructorInvocation other) {
     super(other);
     methodBinding = other.getMethodBinding();
+    expression.copyFrom(other.getExpression());
     arguments.copyFrom(other.getArguments());
   }
 
@@ -51,6 +54,10 @@ public class SuperConstructorInvocation extends Statement {
     return methodBinding;
   }
 
+  public Expression getExpression() {
+    return expression.get();
+  }
+
   public List<Expression> getArguments() {
     return arguments;
   }
@@ -58,6 +65,7 @@ public class SuperConstructorInvocation extends Statement {
   @Override
   protected void acceptInner(TreeVisitor visitor) {
     if (visitor.visit(this)) {
+      expression.accept(visitor);
       arguments.accept(visitor);
     }
     visitor.endVisit(this);

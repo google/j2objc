@@ -98,6 +98,11 @@ public class SourceBuilder {
     newline();
   }
 
+  public void println(char c) {
+    print(c);
+    newline();
+  }
+
   public void newline() {
     buffer.append('\n');
     currentLine++;

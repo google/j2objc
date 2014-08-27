@@ -24,17 +24,20 @@ import org.eclipse.jdt.core.dom.IVariableBinding;
 public class SuperFieldAccess extends Expression {
 
   private IVariableBinding variableBinding = null;
+  private ChildLink<Name> qualifier = ChildLink.create(Name.class, this);
   private ChildLink<SimpleName> name = ChildLink.create(SimpleName.class, this);
 
   public SuperFieldAccess(org.eclipse.jdt.core.dom.SuperFieldAccess jdtNode) {
     super(jdtNode);
     variableBinding = Types.getVariableBinding(jdtNode);
+    qualifier.set((Name) TreeConverter.convert(jdtNode.getQualifier()));
     name.set((SimpleName) TreeConverter.convert(jdtNode.getName()));
   }
 
   public SuperFieldAccess(SuperFieldAccess other) {
     super(other);
     variableBinding = other.getVariableBinding();
+    qualifier.copyFrom(other.getQualifier());
     name.copyFrom(other.getName());
   }
 
@@ -47,6 +50,10 @@ public class SuperFieldAccess extends Expression {
     return variableBinding;
   }
 
+  public Name getQualifier() {
+    return qualifier.get();
+  }
+
   public SimpleName getName() {
     return name.get();
   }
@@ -54,6 +61,7 @@ public class SuperFieldAccess extends Expression {
   @Override
   protected void acceptInner(TreeVisitor visitor) {
     if (visitor.visit(this)) {
+      qualifier.accept(visitor);
       name.accept(visitor);
     }
     visitor.endVisit(this);

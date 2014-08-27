@@ -21,16 +21,24 @@ import org.eclipse.jdt.core.dom.ITypeBinding;
  */
 public class ThisExpression extends Expression {
 
+  private ChildLink<Name> qualifier = ChildLink.create(Name.class, this);
+
   public ThisExpression(org.eclipse.jdt.core.dom.ThisExpression jdtNode) {
     super(jdtNode);
+    qualifier.set((Name) TreeConverter.convert(jdtNode.getQualifier()));
   }
 
   public ThisExpression(ThisExpression other) {
     super(other);
+    qualifier.copyFrom(other.getQualifier());
   }
 
   public ThisExpression(ITypeBinding typeBinding) {
     super(typeBinding);
+  }
+
+  public Name getQualifier() {
+    return qualifier.get();
   }
 
   @Override
@@ -40,7 +48,9 @@ public class ThisExpression extends Expression {
 
   @Override
   protected void acceptInner(TreeVisitor visitor) {
-    visitor.visit(this);
+    if (visitor.visit(this)) {
+      qualifier.accept(visitor);
+    }
     visitor.endVisit(this);
   }
 

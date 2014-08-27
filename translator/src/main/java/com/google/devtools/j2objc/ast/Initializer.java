@@ -21,8 +21,20 @@ import com.google.common.base.Preconditions;
  */
 public class Initializer extends BodyDeclaration {
 
+  private ChildLink<Block> body = ChildLink.create(Block.class, this);
+
+  public Initializer(org.eclipse.jdt.core.dom.Initializer jdtNode) {
+    super(jdtNode);
+    body.set((Block) TreeConverter.convert(jdtNode.getBody()));
+  }
+
   public Initializer(Initializer other) {
     super(other);
+    body.copyFrom(other.getBody());
+  }
+
+  public Block getBody() {
+    return body.get();
   }
 
   @Override
@@ -35,6 +47,7 @@ public class Initializer extends BodyDeclaration {
     if (visitor.visit(this)) {
       javadoc.accept(visitor);
       // annotations should be empty.
+      body.accept(visitor);
     }
     visitor.endVisit(this);
   }
