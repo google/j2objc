@@ -31,7 +31,7 @@
 @interface IOSObjectArray : IOSArray <NSFastEnumeration> {
  @public
   IOSClass *elementType_;
-  id __strong *buffer_;
+  id __strong buffer_[0];
 }
 
 @property (readonly) IOSClass *elementType;

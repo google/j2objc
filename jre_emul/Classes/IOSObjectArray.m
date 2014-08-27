@@ -25,10 +25,9 @@
 #import "java/lang/AssertionError.h"
 
 static IOSObjectArray *IOSObjectArray_NewArray(NSUInteger length, IOSClass *type) {
-  IOSObjectArray *array = [IOSObjectArray alloc];
+  IOSObjectArray *array = NSAllocateObject([IOSObjectArray class], length * sizeof(id), nil);
   array->size_ = length;
   array->elementType_ = type; // All IOSClass types are singleton so don't need to retain.
-  array->buffer_ = calloc(length, sizeof(id));
   return array;
 }
 
@@ -282,7 +281,6 @@ void CopyWithMemmove(id __strong *buffer, NSUInteger src, NSUInteger dest, NSUIn
   for (NSUInteger i = 0; i < size_; i++) {
     [buffer_[i] release];
   }
-  free(buffer_);
   [super dealloc];
 }
 
