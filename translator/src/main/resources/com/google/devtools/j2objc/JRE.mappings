@@ -206,6 +206,8 @@ java.lang.String.lastIndexOf(Ljava/lang/String;I)I = \
     NSString lastIndexOfString:(NSString *)s fromIndex:(int)index
 java.lang.String.length()I = NSString length
 java.lang.String.matches(Ljava/lang/String;)Z = NSString matches:(NSString *)regex
+java.lang.String.offsetByCodePoints(II)I = NSString offsetByCodePoints:(int)index \
+                                                       codePointOffset:(int)offset
 java.lang.String.regionMatches(ILjava/lang/String;II)Z = \
     NSString regionMatches:(int)thisOffset \
                    aString:(NSString *)aString \
