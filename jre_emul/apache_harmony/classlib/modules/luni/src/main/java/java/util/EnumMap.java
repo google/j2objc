@@ -4,9 +4,9 @@
  * The ASF licenses this file to You under the Apache License, Version 2.0
  * (the "License"); you may not use this file except in compliance with
  * the License.  You may obtain a copy of the License at
- * 
+ *
  *     http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -152,7 +152,7 @@ public class EnumMap<K extends Enum<K>, V> extends AbstractMap<K, V> implements
                 throw new NoSuchElementException();
             }
             prePosition = position++;
-            return type.get(new MapEntry(enumMap.keys[prePosition],
+            return (E) type.get(new MapEntry(enumMap.keys[prePosition],
                     enumMap.values[prePosition]));
         }
 
@@ -387,7 +387,7 @@ public class EnumMap<K extends Enum<K>, V> extends AbstractMap<K, V> implements
      * is an {@code EnumMap} instance, this constructor behaves in the exactly the same
      * way as {@link EnumMap#EnumMap(EnumMap)}}. Otherwise, the given map
      * should contain at least one mapping.
-     * 
+     *
      * @param map
      *            the map from which this {@code EnumMap} is initialized.
      * @throws IllegalArgumentException
@@ -431,7 +431,7 @@ public class EnumMap<K extends Enum<K>, V> extends AbstractMap<K, V> implements
 
     /**
      * Returns a shallow copy of this {@code EnumMap}.
-     * 
+     *
      * @return a shallow copy of this {@code EnumMap}.
      */
     @SuppressWarnings("unchecked")
@@ -448,7 +448,7 @@ public class EnumMap<K extends Enum<K>, V> extends AbstractMap<K, V> implements
 
     /**
      * Returns whether this {@code EnumMap} contains the specified key.
-     * 
+     *
      * @param key
      *            the key to search for.
      * @return {@code true} if this {@code EnumMap} contains the specified key,
@@ -465,7 +465,7 @@ public class EnumMap<K extends Enum<K>, V> extends AbstractMap<K, V> implements
 
     /**
      * Returns whether this {@code EnumMap} contains the specified value.
-     * 
+     *
      * @param value
      *            the value to search for.
      * @return {@code true} if this {@code EnumMap} contains the specified value,
@@ -510,7 +510,7 @@ public class EnumMap<K extends Enum<K>, V> extends AbstractMap<K, V> implements
     /**
      * Compares the argument to the receiver, and returns {@code true} if the
      * specified {@code Object} is an {@code EnumMap} and both {@code EnumMap}s contain the same mappings.
-     * 
+     *
      * @param object
      *            the {@code Object} to compare with this {@code EnumMap}.
      * @return boolean {@code true} if {@code object} is the same as this {@code EnumMap},
@@ -537,7 +537,7 @@ public class EnumMap<K extends Enum<K>, V> extends AbstractMap<K, V> implements
 
     /**
      * Returns the value of the mapping with the specified key.
-     * 
+     *
      * @param key
      *            the key.
      * @return the value of the mapping with the specified key, or {@code null}
@@ -560,7 +560,7 @@ public class EnumMap<K extends Enum<K>, V> extends AbstractMap<K, V> implements
      * <p>
      * The order of the set will be the order that the enum keys were declared
      * in.
-     * 
+     *
      * @return a {@code Set} of the keys.
      */
     @Override
@@ -573,7 +573,7 @@ public class EnumMap<K extends Enum<K>, V> extends AbstractMap<K, V> implements
 
     /**
      * Maps the specified key to the specified value.
-     * 
+     *
      * @param key
      *            the key.
      * @param value
@@ -599,7 +599,7 @@ public class EnumMap<K extends Enum<K>, V> extends AbstractMap<K, V> implements
 
     /**
      * Copies every mapping in the specified {@code Map} to this {@code EnumMap}.
-     * 
+     *
      * @param map
      *            the {@code Map} to copy mappings from.
      * @throws UnsupportedOperationException
@@ -621,7 +621,7 @@ public class EnumMap<K extends Enum<K>, V> extends AbstractMap<K, V> implements
 
     /**
      * Removes a mapping with the specified key from this {@code EnumMap}.
-     * 
+     *
      * @param key
      *            the key of the mapping to remove.
      * @return the value of the removed mapping or {@code null} if no mapping
@@ -647,7 +647,7 @@ public class EnumMap<K extends Enum<K>, V> extends AbstractMap<K, V> implements
 
     /**
      * Returns the number of elements in this {@code EnumMap}.
-     * 
+     *
      * @return the number of elements in this {@code EnumMap}.
      */
     @Override
@@ -664,7 +664,7 @@ public class EnumMap<K extends Enum<K>, V> extends AbstractMap<K, V> implements
      * <p>
      * The order of the values in the collection will be the order that their
      * corresponding enum keys were declared in.
-     * 
+     *
      * @return a collection of the values contained in this {@code EnumMap}.
      */
     @Override
