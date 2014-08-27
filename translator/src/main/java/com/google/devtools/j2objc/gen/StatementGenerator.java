@@ -826,16 +826,7 @@ public class StatementGenerator extends TreeVisitor {
       } else if (operand instanceof CharacterLiteral) {
         format.append(((CharacterLiteral) operand).charValue());
       } else if (operand instanceof NumberLiteral) {
-        NumberLiteral numLiteral = (NumberLiteral) operand;
-        Number numberValue = numLiteral.getValue();
-        // TODO(kstanger): Eventually the number value should be guaranteed non-null.
-        if (numberValue != null) {
-          format.append(numberValue.toString());
-        } else {
-          String token = numLiteral.getToken();
-          assert token != null;
-          format.append(token);
-        }
+        format.append(((NumberLiteral) operand).getValue().toString());
       } else {
         args.add(operand);
 

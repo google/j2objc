@@ -14,6 +14,7 @@
 
 package com.google.devtools.j2objc.ast;
 
+import com.google.common.base.Preconditions;
 import com.google.devtools.j2objc.types.Types;
 
 import org.eclipse.jdt.core.dom.ITypeBinding;
@@ -23,30 +24,24 @@ import org.eclipse.jdt.core.dom.ITypeBinding;
  */
 public class NumberLiteral extends Expression {
 
-  private ITypeBinding typeBinding = null;
   private String token = null;
   private Number value = null;
 
   public NumberLiteral(org.eclipse.jdt.core.dom.NumberLiteral jdtNode) {
     super(jdtNode);
-    typeBinding = jdtNode.resolveTypeBinding();
     token = jdtNode.getToken();
     Object constantValue = jdtNode.resolveConstantExpressionValue();
-    // TODO(kstanger): We should be able to remove the null test once all the
-    // mutations are converted to the new AST.
-    assert constantValue == null || constantValue instanceof Number;
+    assert constantValue instanceof Number;
     value = (Number) constantValue;
   }
 
   public NumberLiteral(NumberLiteral other) {
     super(other);
-    typeBinding = other.getTypeBinding();
     token = other.getToken();
     value = other.getValue();
   }
 
   public NumberLiteral(Number value) {
-    typeBinding = typeForNumber(value);
     this.value = value;
   }
 
@@ -61,7 +56,7 @@ public class NumberLiteral extends Expression {
 
   @Override
   public ITypeBinding getTypeBinding() {
-    return typeBinding;
+    return typeForNumber(value);
   }
 
   public String getToken() {
@@ -81,6 +76,12 @@ public class NumberLiteral extends Expression {
   @Override
   public NumberLiteral copy() {
     return new NumberLiteral(this);
+  }
+
+  @Override
+  public void validateInner() {
+    super.validateInner();
+    Preconditions.checkNotNull(value);
   }
 
   private ITypeBinding typeForNumber(Number value) {
