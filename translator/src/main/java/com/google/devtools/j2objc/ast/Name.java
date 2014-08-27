@@ -18,6 +18,7 @@ import com.google.devtools.j2objc.types.Types;
 import com.google.devtools.j2objc.util.BindingUtil;
 
 import org.eclipse.jdt.core.dom.IBinding;
+import org.eclipse.jdt.core.dom.ITypeBinding;
 
 import java.util.List;
 
@@ -39,7 +40,6 @@ public abstract class Name extends Expression {
   }
 
   public Name(IBinding binding) {
-    super(BindingUtil.toTypeBinding(binding));
     this.binding = binding;
   }
 
@@ -59,6 +59,11 @@ public abstract class Name extends Expression {
 
   public IBinding getBinding() {
     return binding;
+  }
+
+  @Override
+  public ITypeBinding getTypeBinding() {
+    return BindingUtil.toTypeBinding(binding);
   }
 
   public void setBinding(IBinding newBinding) {

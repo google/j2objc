@@ -14,6 +14,8 @@
 
 package com.google.devtools.j2objc.ast;
 
+import org.eclipse.jdt.core.dom.ITypeBinding;
+
 import java.util.List;
 
 /**
@@ -46,6 +48,12 @@ public class ArrayCreation extends Expression {
   @Override
   public Kind getKind() {
     return Kind.ARRAY_CREATION;
+  }
+
+  @Override
+  public ITypeBinding getTypeBinding() {
+    ArrayType arrayTypeNode = arrayType.get();
+    return arrayTypeNode != null ? arrayTypeNode.getTypeBinding() : null;
   }
 
   public ArrayType getType() {

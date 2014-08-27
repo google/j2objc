@@ -15,7 +15,6 @@
 package com.google.devtools.j2objc.ast;
 
 import com.google.devtools.j2objc.types.Types;
-import com.google.devtools.j2objc.util.BindingUtil;
 
 import org.eclipse.jdt.core.dom.ITypeBinding;
 
@@ -24,37 +23,25 @@ import org.eclipse.jdt.core.dom.ITypeBinding;
  */
 public abstract class Expression extends TreeNode {
 
-  private ITypeBinding typeBinding = null;
   private Object constantValue = null;
   // TODO(kstanger): Eventually remove this.
   private boolean hasNilCheck = false;
 
   protected Expression(org.eclipse.jdt.core.dom.Expression jdtNode) {
     super(jdtNode);
-    typeBinding = BindingUtil.toTypeBinding(Types.getBindingUnsafe(jdtNode));
     constantValue = jdtNode.resolveConstantExpressionValue();
     hasNilCheck = Types.hasNilCheck(jdtNode);
   }
 
   protected Expression(Expression other) {
     super(other);
-    typeBinding = other.getTypeBinding();
     constantValue = other.getConstantValue();
     hasNilCheck = other.hasNilCheck();
   }
 
-  protected Expression(ITypeBinding binding) {
-    super();
-    typeBinding = binding;
-  }
+  protected Expression() {}
 
-  public final ITypeBinding getTypeBinding() {
-    return typeBinding;
-  }
-
-  public void setTypeBinding(ITypeBinding newTypeBinding) {
-    typeBinding = newTypeBinding;
-  }
+  public abstract ITypeBinding getTypeBinding();
 
   public Object getConstantValue() {
     return constantValue;

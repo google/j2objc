@@ -14,17 +14,23 @@
 
 package com.google.devtools.j2objc.ast;
 
+import com.google.devtools.j2objc.types.Types;
+
+import org.eclipse.jdt.core.dom.ITypeBinding;
+
 /**
  * Conditional expression node type. (e.g. "useFoo ? foo : bar")
  */
 public class ConditionalExpression extends Expression {
 
+  private ITypeBinding typeBinding = null;
   private ChildLink<Expression> expression = ChildLink.create(Expression.class, this);
   private ChildLink<Expression> thenExpression = ChildLink.create(Expression.class, this);
   private ChildLink<Expression> elseExpression = ChildLink.create(Expression.class, this);
 
   public ConditionalExpression(org.eclipse.jdt.core.dom.ConditionalExpression jdtNode) {
     super(jdtNode);
+    typeBinding = Types.getTypeBinding(jdtNode);
     expression.set((Expression) TreeConverter.convert(jdtNode.getExpression()));
     thenExpression.set((Expression) TreeConverter.convert(jdtNode.getThenExpression()));
     elseExpression.set((Expression) TreeConverter.convert(jdtNode.getElseExpression()));
@@ -32,6 +38,7 @@ public class ConditionalExpression extends Expression {
 
   public ConditionalExpression(ConditionalExpression other) {
     super(other);
+    typeBinding = other.getTypeBinding();
     expression.copyFrom(other.getExpression());
     thenExpression.copyFrom(other.getThenExpression());
     elseExpression.copyFrom(other.getElseExpression());
@@ -40,6 +47,11 @@ public class ConditionalExpression extends Expression {
   @Override
   public Kind getKind() {
     return Kind.CONDITIONAL_EXPRESSION;
+  }
+
+  @Override
+  public ITypeBinding getTypeBinding() {
+    return typeBinding;
   }
 
   public Expression getExpression() {

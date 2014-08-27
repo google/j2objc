@@ -19,6 +19,7 @@ import com.google.devtools.j2objc.types.IOSMethodBinding;
 import com.google.devtools.j2objc.types.Types;
 
 import org.eclipse.jdt.core.dom.IMethodBinding;
+import org.eclipse.jdt.core.dom.ITypeBinding;
 
 import java.util.List;
 
@@ -51,7 +52,6 @@ public class MethodInvocation extends Expression {
   }
 
   public MethodInvocation(IMethodBinding binding, Expression expression) {
-    super(binding.getReturnType());
     methodBinding = binding;
     this.expression.set(expression);
     name.set(new SimpleName(binding));
@@ -84,6 +84,11 @@ public class MethodInvocation extends Expression {
 
   public void setMethodBinding(IMethodBinding newMethodBinding) {
     methodBinding = newMethodBinding;
+  }
+
+  @Override
+  public ITypeBinding getTypeBinding() {
+    return methodBinding != null ? methodBinding.getReturnType() : null;
   }
 
   public Expression getExpression() {

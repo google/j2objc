@@ -23,21 +23,28 @@ import org.eclipse.jdt.core.dom.ITypeBinding;
  */
 public class NumberLiteral extends Expression {
 
+  private ITypeBinding typeBinding = null;
   private String token = null;
 
   public NumberLiteral(org.eclipse.jdt.core.dom.NumberLiteral jdtNode) {
     super(jdtNode);
+    typeBinding = Types.getTypeBinding(jdtNode);
     token = jdtNode.getToken();
   }
 
   public NumberLiteral(NumberLiteral other) {
     super(other);
+    typeBinding = other.getTypeBinding();
     token = other.getToken();
   }
 
   public NumberLiteral(ITypeBinding typeBinding, String token) {
-    super(typeBinding);
+    this.typeBinding = typeBinding;
     this.token = token;
+  }
+
+  public static NumberLiteral newIntLiteral(int i) {
+    return new NumberLiteral(Types.resolveJavaType("int"), Integer.toString(i));
   }
 
   @Override
@@ -45,8 +52,9 @@ public class NumberLiteral extends Expression {
     return Kind.NUMBER_LITERAL;
   }
 
-  public static NumberLiteral newIntLiteral(int i) {
-    return new NumberLiteral(Types.resolveJavaType("int"), Integer.toString(i));
+  @Override
+  public ITypeBinding getTypeBinding() {
+    return typeBinding;
   }
 
   public String getToken() {

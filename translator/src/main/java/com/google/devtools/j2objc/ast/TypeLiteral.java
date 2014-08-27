@@ -14,6 +14,8 @@
 
 package com.google.devtools.j2objc.ast;
 
+import com.google.devtools.j2objc.types.Types;
+
 import org.eclipse.jdt.core.dom.ITypeBinding;
 
 /**
@@ -34,13 +36,17 @@ public class TypeLiteral extends Expression {
   }
 
   public TypeLiteral(ITypeBinding typeBinding) {
-    super(typeBinding);
     type.set(Type.newType(typeBinding));
   }
 
   @Override
   public Kind getKind() {
     return Kind.TYPE_LITERAL;
+  }
+
+  @Override
+  public ITypeBinding getTypeBinding() {
+    return Types.resolveJavaType("java.lang.Class");
   }
 
   public Type getType() {

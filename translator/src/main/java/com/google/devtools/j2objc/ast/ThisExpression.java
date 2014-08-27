@@ -14,6 +14,8 @@
 
 package com.google.devtools.j2objc.ast;
 
+import com.google.devtools.j2objc.types.Types;
+
 import org.eclipse.jdt.core.dom.ITypeBinding;
 
 /**
@@ -21,20 +23,33 @@ import org.eclipse.jdt.core.dom.ITypeBinding;
  */
 public class ThisExpression extends Expression {
 
+  private ITypeBinding typeBinding = null;
   private ChildLink<Name> qualifier = ChildLink.create(Name.class, this);
 
   public ThisExpression(org.eclipse.jdt.core.dom.ThisExpression jdtNode) {
     super(jdtNode);
+    typeBinding = Types.getTypeBinding(jdtNode);
     qualifier.set((Name) TreeConverter.convert(jdtNode.getQualifier()));
   }
 
   public ThisExpression(ThisExpression other) {
     super(other);
+    typeBinding = other.getTypeBinding();
     qualifier.copyFrom(other.getQualifier());
   }
 
   public ThisExpression(ITypeBinding typeBinding) {
-    super(typeBinding);
+    this.typeBinding = typeBinding;
+  }
+
+  @Override
+  public Kind getKind() {
+    return Kind.THIS_EXPRESSION;
+  }
+
+  @Override
+  public ITypeBinding getTypeBinding() {
+    return typeBinding;
   }
 
   public Name getQualifier() {
@@ -43,11 +58,6 @@ public class ThisExpression extends Expression {
 
   public void setQualifier(Name newQualifier) {
     qualifier.set(newQualifier);
-  }
-
-  @Override
-  public Kind getKind() {
-    return Kind.THIS_EXPRESSION;
   }
 
   @Override
