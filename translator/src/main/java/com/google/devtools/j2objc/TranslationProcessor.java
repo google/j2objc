@@ -46,7 +46,6 @@ import com.google.devtools.j2objc.types.HeaderImportCollector;
 import com.google.devtools.j2objc.types.IOSTypeBinding;
 import com.google.devtools.j2objc.types.ImplementationImportCollector;
 import com.google.devtools.j2objc.types.Import;
-import com.google.devtools.j2objc.types.Types;
 import com.google.devtools.j2objc.util.ErrorUtil;
 import com.google.devtools.j2objc.util.JdtParser;
 import com.google.devtools.j2objc.util.TimeTracker;
@@ -117,7 +116,9 @@ class TranslationProcessor extends FileProcessor {
     processedFiles.add(relativePath);
     seenFiles.add(relativePath);
 
-    CompilationUnit newUnit = applyMutations(unit, path, source, ticker);
+    CompilationUnit newUnit = TreeConverter.convertCompilationUnit(unit, path, source);
+
+    applyMutations(newUnit, ticker);
     ticker.tick("Tree mutations");
 
     if (unit.types().isEmpty() && !newUnit.getMainTypeName().endsWith("package_info")) {
@@ -146,112 +147,106 @@ class TranslationProcessor extends FileProcessor {
    * also modified to add support for iOS memory management, extract inner
    * classes, etc.
    */
-  public static CompilationUnit applyMutations(
-      org.eclipse.jdt.core.dom.CompilationUnit unit, String path, String source,
-      TimeTracker ticker) {
+  public static void applyMutations(CompilationUnit unit, TimeTracker ticker) {
     ticker.push();
 
-    CompilationUnit newUnit = TreeConverter.convertCompilationUnit(unit, path, source);
-
-    OuterReferenceResolver.resolve(newUnit);
+    OuterReferenceResolver.resolve(unit);
     ticker.tick("OuterReferenceResolver");
 
     // Update code that has GWT references.
-    new GwtConverter().run(newUnit);
+    new GwtConverter().run(unit);
     ticker.tick("GwtConverter");
 
     // Modify AST to be more compatible with Objective C
-    new Rewriter().run(newUnit);
+    new Rewriter().run(unit);
     ticker.tick("Rewriter");
 
     // Rewrite enhanced for loops into correct C code.
-    new EnhancedForRewriter().run(newUnit);
+    new EnhancedForRewriter().run(unit);
     ticker.tick("EnhancedForRewriter");
 
     // Add auto-boxing conversions.
-    new Autoboxer().run(newUnit);
+    new Autoboxer().run(unit);
     ticker.tick("Autoboxer");
 
     // Extract inner and anonymous classes
-    new AnonymousClassConverter().run(newUnit);
+    new AnonymousClassConverter().run(unit);
     ticker.tick("AnonymousClassConverter");
-    new InnerClassExtractor(newUnit).run(newUnit);
+    new InnerClassExtractor(unit).run(unit);
     ticker.tick("InnerClassExtractor");
 
     // Normalize init statements
-    new InitializationNormalizer().run(newUnit);
+    new InitializationNormalizer().run(unit);
     ticker.tick("InitializationNormalizer");
 
     // Fix references to outer scope and captured variables.
-    new OuterReferenceFixer().run(newUnit);
+    new OuterReferenceFixer().run(unit);
     ticker.tick("OuterReferenceFixer");
 
     // Rewrites expressions that would cause unsequenced compile errors.
     if (Options.extractUnsequencedModifications()) {
-      new UnsequencedExpressionRewriter().run(newUnit);
+      new UnsequencedExpressionRewriter().run(unit);
       ticker.tick("UnsequencedExpressionRewriter");
     }
 
     // Breaks up deeply nested expressions such as chained method calls.
-    new ComplexExpressionExtractor().run(newUnit);
+    new ComplexExpressionExtractor().run(unit);
     ticker.tick("ComplexExpressionExtractor");
 
     // Adds nil_chk calls wherever an expression is dereferenced.
-    new NilCheckResolver().run(newUnit);
+    new NilCheckResolver().run(unit);
     ticker.tick("NilCheckResolver");
 
-    new ArrayRewriter().run(newUnit);
+    new ArrayRewriter().run(unit);
     ticker.tick("ArrayRewriter");
 
     // Translate core Java type use to similar iOS types
-    new JavaToIOSTypeConverter().run(newUnit);
+    new JavaToIOSTypeConverter().run(unit);
     ticker.tick("JavaToIOSTypeConverter");
     Map<String, String> methodMappings = Options.getMethodMappings();
     if (methodMappings.isEmpty()) {
       // Method maps are loaded here so tests can call translate() directly.
       loadMappingFiles();
     }
-    new JavaToIOSMethodTranslator(methodMappings).run(newUnit);
+    new JavaToIOSMethodTranslator(methodMappings).run(unit);
     ticker.tick("JavaToIOSMethodTranslator");
 
-    new StaticVarRewriter().run(newUnit);
+    new StaticVarRewriter().run(unit);
     ticker.tick("StaticVarRewriter");
 
     // Reorders the types so that superclasses are declared before classes that
     // extend them.
-    TypeSorter.sortTypes(newUnit);
+    TypeSorter.sortTypes(unit);
     ticker.tick("TypeSorter");
 
     // Add dealloc/finalize method(s), if necessary.  This is done
     // after inner class extraction, so that each class releases
     // only its own instance variables.
-    new DestructorGenerator().run(newUnit);
+    new DestructorGenerator().run(unit);
     ticker.tick("DestructorGenerator");
 
-    new CopyAllFieldsWriter().run(newUnit);
+    new CopyAllFieldsWriter().run(unit);
     ticker.tick("CopyAllFieldsWriter");
 
-    new OperatorRewriter().run(newUnit);
+    new OperatorRewriter().run(unit);
     ticker.tick("OperatorRewriter");
 
     if (Options.finalMethodsAsFunctions()) {
-      new Functionizer().run(newUnit);
+      new Functionizer().run(unit);
       ticker.tick("Functionizer");
     }
 
-    new ConstantBranchPruner().run(newUnit);
+    new ConstantBranchPruner().run(unit);
     ticker.tick("ConstantBranchPruner");
 
     for (Plugin plugin : Options.getPlugins()) {
-      plugin.processUnit(newUnit);
+      plugin.processUnit(unit);
     }
 
     // Make sure we still have a valid AST.
-    newUnit.validate();
+    unit.validate();
 
     ticker.pop();
-
-    return newUnit;
   }
 
   public static void generateObjectiveCSource(CompilationUnit unit, TimeTracker ticker) {
