@@ -251,6 +251,7 @@ JAVA_SOURCES = \
 	java/io/InterruptedIOException.java \
 	java/io/InvalidClassException.java \
 	java/io/InvalidObjectException.java \
+	java/io/IOError.java \
 	java/io/IOException.java \
 	java/io/LineNumberInputStream.java \
 	java/io/LineNumberReader.java \
@@ -316,6 +317,7 @@ JAVA_SOURCES = \
 	java/lang/ExceptionInInitializerError.java \
 	java/lang/Float.java \
 	java/lang/HexStringParser.java \
+	java/lang/IllegalAccessError.java \
 	java/lang/IllegalAccessException.java \
 	java/lang/IllegalArgumentException.java \
 	java/lang/IllegalMonitorStateException.java \
