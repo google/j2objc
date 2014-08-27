@@ -49,6 +49,11 @@ public class EnumConstantDeclaration extends BodyDeclaration {
     arguments.copyFrom(other.getArguments());
   }
 
+  @Override
+  public Kind getKind() {
+    return Kind.ENUM_CONSTANT_DECLARATION;
+  }
+
   public IVariableBinding getVariableBinding() {
     return variableBinding;
   }

@@ -34,6 +34,11 @@ public class ThisExpression extends Expression {
   }
 
   @Override
+  public Kind getKind() {
+    return Kind.THIS_EXPRESSION;
+  }
+
+  @Override
   protected void acceptInner(TreeVisitor visitor) {
     visitor.visit(this);
     visitor.endVisit(this);

@@ -34,6 +34,11 @@ public class NullLiteral extends Expression {
   }
 
   @Override
+  public Kind getKind() {
+    return Kind.NULL_LITERAL;
+  }
+
+  @Override
   protected void acceptInner(TreeVisitor visitor) {
     visitor.visit(this);
     visitor.endVisit(this);

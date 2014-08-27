@@ -42,6 +42,11 @@ public class CastExpression extends Expression {
     this.expression.set(expression);
   }
 
+  @Override
+  public Kind getKind() {
+    return Kind.CAST_EXPRESSION;
+  }
+
   public Type getType() {
     return type.get();
   }

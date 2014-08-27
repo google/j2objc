@@ -31,6 +31,11 @@ public class SingleMemberAnnotation extends Annotation {
     value.copyFrom(other.getValue());
   }
 
+  @Override
+  public Kind getKind() {
+    return Kind.SINGLE_MEMBER_ANNOTATION;
+  }
+
   public Expression getValue() {
     return value.get();
   }

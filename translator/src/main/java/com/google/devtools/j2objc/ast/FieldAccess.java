@@ -48,6 +48,11 @@ public class FieldAccess extends Expression {
     name.set(new SimpleName(variableBinding));
   }
 
+  @Override
+  public Kind getKind() {
+    return Kind.FIELD_ACCESS;
+  }
+
   public IVariableBinding getVariableBinding() {
     return variableBinding;
   }

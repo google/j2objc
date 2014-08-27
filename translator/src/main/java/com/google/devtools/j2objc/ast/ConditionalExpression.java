@@ -37,6 +37,11 @@ public class ConditionalExpression extends Expression {
     elseExpression.copyFrom(other.getElseExpression());
   }
 
+  @Override
+  public Kind getKind() {
+    return Kind.CONDITIONAL_EXPRESSION;
+  }
+
   public Expression getExpression() {
     return expression.get();
   }

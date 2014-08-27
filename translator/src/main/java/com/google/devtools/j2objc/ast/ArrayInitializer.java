@@ -41,6 +41,11 @@ public class ArrayInitializer extends Expression {
     super(typeBinding);
   }
 
+  @Override
+  public Kind getKind() {
+    return Kind.ARRAY_INITIALIZER;
+  }
+
   public List<Expression> getExpressions() {
     return expressions;
   }

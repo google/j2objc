@@ -96,6 +96,11 @@ public class Assignment extends Expression {
     rightHandSide.set(rhs);
   }
 
+  @Override
+  public Kind getKind() {
+    return Kind.ASSIGNMENT;
+  }
+
   public Operator getOperator() {
     return operator;
   }

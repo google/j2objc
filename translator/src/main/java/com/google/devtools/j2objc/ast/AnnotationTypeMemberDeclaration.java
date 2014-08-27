@@ -45,6 +45,11 @@ public class AnnotationTypeMemberDeclaration extends BodyDeclaration {
     defaultValue.copyFrom(other.getDefault());
   }
 
+  @Override
+  public Kind getKind() {
+    return Kind.ANNOTATION_TYPE_MEMBER_DECLARATION;
+  }
+
   public IMethodBinding getMethodBinding() {
     return methodBinding;
   }

@@ -41,6 +41,11 @@ public class TypeDeclaration extends AbstractTypeDeclaration {
     superInterfaceTypes.copyFrom(other.getSuperInterfaceTypes());
   }
 
+  @Override
+  public Kind getKind() {
+    return Kind.TYPE_DECLARATION;
+  }
+
   public boolean isInterface() {
     return isInterface;
   }

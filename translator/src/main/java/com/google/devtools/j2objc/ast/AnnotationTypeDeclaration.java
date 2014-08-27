@@ -28,6 +28,11 @@ public class AnnotationTypeDeclaration extends AbstractTypeDeclaration {
   }
 
   @Override
+  public Kind getKind() {
+    return Kind.ANNOTATION_TYPE_DECLARATION;
+  }
+
+  @Override
   protected void acceptInner(TreeVisitor visitor) {
     if (visitor.visit(this)) {
       javadoc.accept(visitor);

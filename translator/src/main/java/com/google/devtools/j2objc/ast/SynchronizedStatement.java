@@ -34,6 +34,11 @@ public class SynchronizedStatement extends Statement {
     body.copyFrom(other.getBody());
   }
 
+  @Override
+  public Kind getKind() {
+    return Kind.SYNCHRONIZED_STATEMENT;
+  }
+
   public SynchronizedStatement() {
     body.set(new Block());
   }

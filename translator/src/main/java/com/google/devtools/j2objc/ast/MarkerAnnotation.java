@@ -28,6 +28,11 @@ public class MarkerAnnotation extends Annotation {
   }
 
   @Override
+  public Kind getKind() {
+    return Kind.MARKER_ANNOTATION;
+  }
+
+  @Override
   protected void acceptInner(TreeVisitor visitor) {
     if (visitor.visit(this)) {
       typeName.accept(visitor);

@@ -35,6 +35,11 @@ public class NormalAnnotation extends Annotation {
     values.copyFrom(other.getValues());
   }
 
+  @Override
+  public Kind getKind() {
+    return Kind.NORMAL_ANNOTATION;
+  }
+
   public List<MemberValuePair> getValues() {
     return values;
   }

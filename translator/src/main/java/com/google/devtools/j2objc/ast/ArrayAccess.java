@@ -34,6 +34,11 @@ public class ArrayAccess extends Expression {
     index.copyFrom(other.getIndex());
   }
 
+  @Override
+  public Kind getKind() {
+    return Kind.ARRAY_ACCESS;
+  }
+
   public Expression getArray() {
     return array.get();
   }

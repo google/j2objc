@@ -26,6 +26,11 @@ public class Initializer extends BodyDeclaration {
   }
 
   @Override
+  public Kind getKind() {
+    return Kind.INITIALIZER;
+  }
+
+  @Override
   protected void acceptInner(TreeVisitor visitor) {
     if (visitor.visit(this)) {
       javadoc.accept(visitor);

@@ -31,6 +31,11 @@ public class ParameterizedType extends Type {
     type.copyFrom(other.getType());
   }
 
+  @Override
+  public Kind getKind() {
+    return Kind.PARAMETERIZED_TYPE;
+  }
+
   public Type getType() {
     return type.get();
   }

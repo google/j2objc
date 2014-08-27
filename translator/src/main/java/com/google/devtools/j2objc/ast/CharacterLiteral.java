@@ -31,6 +31,11 @@ public class CharacterLiteral extends Expression {
     charValue = other.charValue();
   }
 
+  @Override
+  public Kind getKind() {
+    return Kind.CHARACTER_LITERAL;
+  }
+
   public char charValue() {
     return charValue;
   }

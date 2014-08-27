@@ -57,6 +57,11 @@ public class MethodInvocation extends Expression {
     name.set(new SimpleName(binding));
   }
 
+  @Override
+  public Kind getKind() {
+    return Kind.METHOD_INVOCATION;
+  }
+
   // TODO(kstanger): This should eventually be a PrefixExpression node.
   public static MethodInvocation newAddressOf(Expression expression) {
     MethodInvocation node = new MethodInvocation(

@@ -42,6 +42,11 @@ public class Block extends Statement {
 
   public Block() {}
 
+  @Override
+  public Kind getKind() {
+    return Kind.BLOCK;
+  }
+
   public List<Statement> getStatements() {
     return statements;
   }

@@ -51,6 +51,11 @@ public class SingleVariableDeclaration extends VariableDeclaration {
     type.set(Type.newType(variableBinding.getType()));
   }
 
+  @Override
+  public Kind getKind() {
+    return Kind.SINGLE_VARIABLE_DECLARATION;
+  }
+
   public boolean isVarargs() {
     return isVarargs;
   }

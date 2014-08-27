@@ -71,6 +71,11 @@ public class PostfixExpression extends Expression {
     operand.copyFrom(other.getOperand());
   }
 
+  @Override
+  public Kind getKind() {
+    return Kind.POSTFIX_EXPRESSION;
+  }
+
   public Operator getOperator() {
     return operator;
   }

@@ -38,6 +38,11 @@ public class StringLiteral extends Expression {
     this.literalValue = literalValue;
   }
 
+  @Override
+  public Kind getKind() {
+    return Kind.STRING_LITERAL;
+  }
+
   public String getLiteralValue() {
     return literalValue;
   }

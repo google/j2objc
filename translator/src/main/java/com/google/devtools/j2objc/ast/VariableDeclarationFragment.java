@@ -29,6 +29,11 @@ public class VariableDeclarationFragment extends VariableDeclaration {
   }
 
   @Override
+  public Kind getKind() {
+    return Kind.VARIABLE_DECLARATION_FRAGMENT;
+  }
+
+  @Override
   protected void acceptInner(TreeVisitor visitor) {
     if (visitor.visit(this)) {
       name.accept(visitor);

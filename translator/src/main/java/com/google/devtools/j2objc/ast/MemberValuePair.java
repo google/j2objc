@@ -34,6 +34,11 @@ public class MemberValuePair extends TreeNode {
     value.copyFrom(other.getValue());
   }
 
+  @Override
+  public Kind getKind() {
+    return Kind.MEMBER_VALUE_PAIR;
+  }
+
   public SimpleName getName() {
     return name.get();
   }

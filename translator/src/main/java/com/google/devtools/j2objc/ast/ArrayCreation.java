@@ -39,6 +39,11 @@ public class ArrayCreation extends Expression {
     initializer.copyFrom(other.getInitializer());
   }
 
+  @Override
+  public Kind getKind() {
+    return Kind.ARRAY_CREATION;
+  }
+
   public List<Expression> getDimensions() {
     return dimensions;
   }

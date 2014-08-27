@@ -31,6 +31,11 @@ public class BooleanLiteral extends Expression {
     booleanValue = other.booleanValue();
   }
 
+  @Override
+  public Kind getKind() {
+    return Kind.BOOLEAN_LITERAL;
+  }
+
   public boolean booleanValue() {
     return booleanValue;
   }

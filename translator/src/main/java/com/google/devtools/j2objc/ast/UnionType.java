@@ -35,6 +35,11 @@ public class UnionType extends Type {
     types.copyFrom(other.getTypes());
   }
 
+  @Override
+  public Kind getKind() {
+    return Kind.UNION_TYPE;
+  }
+
   public List<Type> getTypes() {
     return types;
   }

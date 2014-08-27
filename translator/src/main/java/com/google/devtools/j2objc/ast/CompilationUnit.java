@@ -71,6 +71,11 @@ public class CompilationUnit extends TreeNode {
     types.copyFrom(other.getTypes());
   }
 
+  @Override
+  public Kind getKind() {
+    return Kind.COMPILATION_UNIT;
+  }
+
   public String getSourceFileFullPath() {
     return sourceFileFullPath;
   }

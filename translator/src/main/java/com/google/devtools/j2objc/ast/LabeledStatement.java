@@ -34,6 +34,11 @@ public class LabeledStatement extends Statement {
     body.copyFrom(other.getBody());
   }
 
+  @Override
+  public Kind getKind() {
+    return Kind.LABELED_STATEMENT;
+  }
+
   public SimpleName getLabel() {
     return label.get();
   }

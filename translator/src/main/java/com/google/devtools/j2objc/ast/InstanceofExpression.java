@@ -34,6 +34,11 @@ public class InstanceofExpression extends Expression {
     rightOperand.copyFrom(other.getRightOperand());
   }
 
+  @Override
+  public Kind getKind() {
+    return Kind.INSTANCEOF_EXPRESSION;
+  }
+
   public Expression getLeftOperand() {
     return leftOperand.get();
   }

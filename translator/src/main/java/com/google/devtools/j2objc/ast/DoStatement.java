@@ -34,6 +34,11 @@ public class DoStatement extends Statement {
     body.copyFrom(other.getBody());
   }
 
+  @Override
+  public Kind getKind() {
+    return Kind.DO_STATEMENT;
+  }
+
   public Expression getExpression() {
     return expression.get();
   }
