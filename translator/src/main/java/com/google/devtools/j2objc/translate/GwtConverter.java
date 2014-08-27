@@ -19,31 +19,24 @@ package com.google.devtools.j2objc.translate;
 import com.google.common.annotations.GwtIncompatible;
 import com.google.common.collect.Sets;
 import com.google.devtools.j2objc.Options;
-import com.google.devtools.j2objc.types.NodeCopier;
+import com.google.devtools.j2objc.ast.Annotation;
+import com.google.devtools.j2objc.ast.Block;
+import com.google.devtools.j2objc.ast.BooleanLiteral;
+import com.google.devtools.j2objc.ast.ConditionalExpression;
+import com.google.devtools.j2objc.ast.EmptyStatement;
+import com.google.devtools.j2objc.ast.Expression;
+import com.google.devtools.j2objc.ast.IfStatement;
+import com.google.devtools.j2objc.ast.MethodDeclaration;
+import com.google.devtools.j2objc.ast.MethodInvocation;
+import com.google.devtools.j2objc.ast.SimpleName;
+import com.google.devtools.j2objc.ast.SingleMemberAnnotation;
+import com.google.devtools.j2objc.ast.StringLiteral;
+import com.google.devtools.j2objc.ast.TreeUtil;
+import com.google.devtools.j2objc.ast.TreeVisitor;
 import com.google.devtools.j2objc.types.Types;
-import com.google.devtools.j2objc.util.ASTUtil;
 import com.google.devtools.j2objc.util.BindingUtil;
-import com.google.devtools.j2objc.util.ErrorReportingASTVisitor;
 
-import org.eclipse.jdt.core.dom.AST;
-import org.eclipse.jdt.core.dom.ASTNode;
-import org.eclipse.jdt.core.dom.AbstractTypeDeclaration;
-import org.eclipse.jdt.core.dom.Annotation;
-import org.eclipse.jdt.core.dom.AnonymousClassDeclaration;
-import org.eclipse.jdt.core.dom.Block;
-import org.eclipse.jdt.core.dom.BooleanLiteral;
-import org.eclipse.jdt.core.dom.ConditionalExpression;
-import org.eclipse.jdt.core.dom.Expression;
-import org.eclipse.jdt.core.dom.IBinding;
-import org.eclipse.jdt.core.dom.IExtendedModifier;
 import org.eclipse.jdt.core.dom.IMethodBinding;
-import org.eclipse.jdt.core.dom.IfStatement;
-import org.eclipse.jdt.core.dom.MethodDeclaration;
-import org.eclipse.jdt.core.dom.MethodInvocation;
-import org.eclipse.jdt.core.dom.SimpleName;
-import org.eclipse.jdt.core.dom.SingleMemberAnnotation;
-import org.eclipse.jdt.core.dom.StringLiteral;
-import org.eclipse.jdt.core.dom.TypeDeclarationStatement;
 
 import java.util.List;
 import java.util.Set;
@@ -55,7 +48,7 @@ import java.util.Set;
  *
  * @author Tom Ball
  */
-public class GwtConverter extends ErrorReportingASTVisitor {
+public class GwtConverter extends TreeVisitor {
 
   private static final String GWT_CLASS = "com.google.gwt.core.client.GWT";
 
@@ -82,7 +75,7 @@ public class GwtConverter extends ErrorReportingASTVisitor {
   public boolean visit(ConditionalExpression node) {
     if (isGwtTest(node.getExpression())) {
       // Replace this node with the else expression, removing this conditional.
-      ASTUtil.setProperty(node, NodeCopier.copySubtree(node.getAST(), node.getElseExpression()));
+      node.replaceWith(TreeUtil.remove(node.getElseExpression()));
     }
     node.getElseExpression().accept(this);
     return false;
@@ -93,16 +86,15 @@ public class GwtConverter extends ErrorReportingASTVisitor {
     if (isGwtTest(node.getExpression())) {
       if (node.getElseStatement() != null) {
         // Replace this node with the else statement.
-        ASTUtil.setProperty(node, NodeCopier.copySubtree(node.getAST(), node.getElseStatement()));
+        node.replaceWith(TreeUtil.remove(node.getElseStatement()));
         node.getElseStatement().accept(this);
       } else {
         // No else statement, so remove this if statement or replace it
         // with an empty statement.
-        ASTNode parent = node.getParent();
-        if (parent instanceof Block) {
-          ASTUtil.getStatements((Block) parent).remove(node);
+        if (node.getParent() instanceof Block) {
+          node.remove();
         } else {
-          ASTUtil.setProperty(node, node.getAST().newEmptyStatement());
+          node.replaceWith(new EmptyStatement());
         }
       }
       return false;
@@ -112,45 +104,30 @@ public class GwtConverter extends ErrorReportingASTVisitor {
 
   @Override
   public boolean visit(MethodDeclaration node) {
-    if (Options.stripGwtIncompatibleMethods()
-        && hasAnnotation(GwtIncompatible.class, ASTUtil.getModifiers(node))) {
+    if (Options.stripGwtIncompatibleMethods() && isIncompatible(node.getAnnotations())) {
       // Remove method from its declaring class.
-      ASTNode parent = node.getParent();
-      if (parent instanceof TypeDeclarationStatement) {
-        parent = ((TypeDeclarationStatement) parent).getDeclaration();
-      }
-      if (parent instanceof AbstractTypeDeclaration) {
-        ((AbstractTypeDeclaration) parent).bodyDeclarations().remove(node);
-      } else if (parent instanceof AnonymousClassDeclaration) {
-        ((AnonymousClassDeclaration) parent).bodyDeclarations().remove(node);
-      } else {
-        throw new AssertionError("unknown parent type: " + parent.getClass().getSimpleName());
-      }
+      node.remove();
+      return false;
     }
     return true;
   }
 
   @Override
   public boolean visit(MethodInvocation node) {
-    AST ast = node.getAST();
-    IMethodBinding method = Types.getMethodBinding(node);
-    List<Expression> args = ASTUtil.getArguments(node);
-    if (method.getName().equals("create") &&
-        method.getDeclaringClass().getQualifiedName().equals(GWT_CLASS) &&
-        args.size() == 1) {
+    IMethodBinding method = node.getMethodBinding();
+    List<Expression> args = node.getArguments();
+    if (method.getName().equals("create")
+        && method.getDeclaringClass().getQualifiedName().equals(GWT_CLASS)
+        && args.size() == 1) {
       // Convert GWT.create(Foo.class) to Foo.class.newInstance().
-      SimpleName name = ast.newSimpleName("newInstance");
-      node.setName(name);
-      Expression clazz = NodeCopier.copySubtree(ast, args.get(0));
-      args.remove(0);
-      node.setExpression(clazz);
       IMethodBinding newBinding = BindingUtil.findDeclaredMethod(
-          ast.resolveWellKnownType("java.lang.Class"), "newInstance");
-      Types.addBinding(name, newBinding);
-      Types.addBinding(node, newBinding);
+          Types.resolveJavaType("java.lang.Class"), "newInstance");
+      node.setName(new SimpleName(newBinding));
+      Expression clazz = args.remove(0);
+      node.setExpression(clazz);
+      node.setMethodBinding(newBinding);
     } else if (isGwtTest(node)) {
-      BooleanLiteral falseLiteral = ASTFactory.newBooleanLiteral(ast, false);
-      ASTUtil.setProperty(node, falseLiteral);
+      node.replaceWith(new BooleanLiteral(false));
     }
     return true;
   }
@@ -167,9 +144,8 @@ public class GwtConverter extends ErrorReportingASTVisitor {
    * code like this is translated.
    */
   private boolean isGwtTest(Expression node) {
-    IBinding binding = Types.getBinding(node);
-    if (binding instanceof IMethodBinding) {
-      IMethodBinding method = (IMethodBinding) binding;
+    IMethodBinding method = TreeUtil.getMethodBinding(node);
+    if (method != null) {
       if (method.getDeclaringClass().getQualifiedName().equals(GWT_CLASS)) {
         String name = method.getName();
         return name.equals("isClient") || name.equals("isScript");
@@ -178,28 +154,25 @@ public class GwtConverter extends ErrorReportingASTVisitor {
     return false;
   }
 
-  private boolean hasAnnotation(Class<?> annotation, List<IExtendedModifier> modifiers) {
+  private boolean isIncompatible(List<Annotation> annotations) {
     // Annotation bindings don't have the annotation's package.
-    String annotationName = annotation.getSimpleName();
-    for (IExtendedModifier mod : modifiers) {
-      if (mod.isAnnotation()) {
-        Annotation annotationNode = (Annotation) mod;
-        String modName = annotationNode.getTypeName().getFullyQualifiedName();
-        if (modName.equals(annotationName)) {
-          if (annotationName.equals("GwtIncompatible") &&
-              annotationNode.isSingleMemberAnnotation()) {
-            Expression value = ((SingleMemberAnnotation) annotationNode).getValue();
-            if (value instanceof StringLiteral) {
-              if (compatibleAPIs.contains(((StringLiteral) value).getLiteralValue())) {
-                // Pretend incompatible annotation isn't present, since what it's
-                // flagging is J2ObjC-compatible.
-                return false;
-              }
-            }
+    for (Annotation annotationNode : annotations) {
+      String annotationName =
+          annotationNode.getAnnotationBinding().getAnnotationType().getQualifiedName();
+      if (!annotationName.equals(GwtIncompatible.class.getName())) {
+        continue;
+      }
+      if (annotationNode.isSingleMemberAnnotation()) {
+        Expression value = ((SingleMemberAnnotation) annotationNode).getValue();
+        if (value instanceof StringLiteral) {
+          if (compatibleAPIs.contains(((StringLiteral) value).getLiteralValue())) {
+            // Pretend incompatible annotation isn't present, since what it's
+            // flagging is J2ObjC-compatible.
+            return false;
           }
-          return true;
         }
       }
+      return true;
     }
     return false;
   }
