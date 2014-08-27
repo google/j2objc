@@ -19,6 +19,7 @@
 
 #import "IOSProtocolClass.h"
 #import "JavaMetadata.h"
+#import "java/lang/IllegalArgumentException.h"
 #import "java/lang/reflect/Method.h"
 #import "java/lang/reflect/Modifier.h"
 #import "objc/runtime.h"
@@ -128,6 +129,22 @@
     }
   }
   free(descriptions);
+  if (!result) {
+    // Search super-interfaces.
+    for (IOSClass *cls in [self getInterfacesWithArrayType:nil]) {
+      if (cls != self) {
+        result = [cls findMethodWithTranslatedName:objcName];
+        if (result) {
+          break;
+        }
+      }
+    }
+  }
+  if (!result) {
+    NSString *errMsg = [NSString stringWithFormat:@"no such method %@ in %@ interface",
+                        objcName, [self getName]];
+    @throw AUTORELEASE([[JavaLangIllegalArgumentException alloc] initWithNSString:errMsg]);
+  }
   return result;
 }
 
