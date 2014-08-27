@@ -179,14 +179,14 @@ class TranslationProcessor extends FileProcessor {
     new InitializationNormalizer().run(unit);
     ticker.tick("InitializationNormalizer");
 
-    // Fix references to outer scope and captured variables.
-    new OuterReferenceFixer().run(unit);
-    ticker.tick("OuterReferenceFixer");
-
     // Verify all modified nodes have type bindings
     Types.verifyNode(unit);
 
     CompilationUnit newUnit = TreeConverter.convertCompilationUnit(unit, path, source);
+
+    // Fix references to outer scope and captured variables.
+    new OuterReferenceFixer().run(newUnit);
+    ticker.tick("OuterReferenceFixer");
 
     // Rewrites expressions that would cause unsequenced compile errors.
     if (Options.extractUnsequencedModifications()) {

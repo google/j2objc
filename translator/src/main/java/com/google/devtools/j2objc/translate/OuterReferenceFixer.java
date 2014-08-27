@@ -15,26 +15,24 @@
 package com.google.devtools.j2objc.translate;
 
 import com.google.common.collect.Lists;
+import com.google.devtools.j2objc.ast.ClassInstanceCreation;
+import com.google.devtools.j2objc.ast.Expression;
+import com.google.devtools.j2objc.ast.MethodDeclaration;
+import com.google.devtools.j2objc.ast.MethodInvocation;
+import com.google.devtools.j2objc.ast.Name;
+import com.google.devtools.j2objc.ast.SimpleName;
+import com.google.devtools.j2objc.ast.SingleVariableDeclaration;
+import com.google.devtools.j2objc.ast.SuperConstructorInvocation;
+import com.google.devtools.j2objc.ast.SuperMethodInvocation;
+import com.google.devtools.j2objc.ast.ThisExpression;
+import com.google.devtools.j2objc.ast.TreeUtil;
+import com.google.devtools.j2objc.ast.TreeVisitor;
 import com.google.devtools.j2objc.types.GeneratedMethodBinding;
-import com.google.devtools.j2objc.types.NodeCopier;
-import com.google.devtools.j2objc.types.Types;
-import com.google.devtools.j2objc.util.ASTUtil;
-import com.google.devtools.j2objc.util.ErrorReportingASTVisitor;
 
-import org.eclipse.jdt.core.dom.AST;
-import org.eclipse.jdt.core.dom.ClassInstanceCreation;
-import org.eclipse.jdt.core.dom.Expression;
 import org.eclipse.jdt.core.dom.IMethodBinding;
 import org.eclipse.jdt.core.dom.ITypeBinding;
 import org.eclipse.jdt.core.dom.IVariableBinding;
-import org.eclipse.jdt.core.dom.MethodDeclaration;
-import org.eclipse.jdt.core.dom.MethodInvocation;
 import org.eclipse.jdt.core.dom.Modifier;
-import org.eclipse.jdt.core.dom.SimpleName;
-import org.eclipse.jdt.core.dom.SingleVariableDeclaration;
-import org.eclipse.jdt.core.dom.SuperConstructorInvocation;
-import org.eclipse.jdt.core.dom.SuperMethodInvocation;
-import org.eclipse.jdt.core.dom.ThisExpression;
 
 import java.util.List;
 
@@ -44,17 +42,17 @@ import java.util.List;
  *
  * @author Keith Stanger
  */
-public class OuterReferenceFixer extends ErrorReportingASTVisitor {
+public class OuterReferenceFixer extends TreeVisitor {
 
   private IVariableBinding outerParam = null;
 
   @Override
   public boolean visit(MethodDeclaration node) {
-    IMethodBinding binding = Types.getMethodBinding(node);
+    IMethodBinding binding = node.getMethodBinding();
     if (binding.isConstructor()) {
-      List<SingleVariableDeclaration> params = ASTUtil.getParameters(node);
+      List<SingleVariableDeclaration> params = node.getParameters();
       if (params.size() > 0) {
-        IVariableBinding firstParam = Types.getVariableBinding(params.get(0));
+        IVariableBinding firstParam = params.get(0).getVariableBinding();
         if (firstParam.getName().equals("outer$")) {
           outerParam = firstParam;
         }
@@ -70,29 +68,29 @@ public class OuterReferenceFixer extends ErrorReportingASTVisitor {
 
   @Override
   public boolean visit(ClassInstanceCreation node) {
-    ITypeBinding newType = Types.getTypeBinding(node).getTypeDeclaration();
+    ITypeBinding newType = node.getTypeBinding().getTypeDeclaration();
     ITypeBinding declaringClass = newType.getDeclaringClass();
     if (Modifier.isStatic(newType.getModifiers()) || declaringClass == null) {
       return true;
     }
 
-    AST ast = node.getAST();
-    GeneratedMethodBinding binding = Types.getGeneratedMethodBinding(node);
+    GeneratedMethodBinding binding =
+        new GeneratedMethodBinding(node.getMethodBinding().getMethodDeclaration());
+    node.setMethodBinding(binding);
     addOuterArg(node, binding, declaringClass);
 
     for (IVariableBinding capturedVar : getCapturedVariables(node)) {
-      ASTUtil.getArguments(node).add(ASTFactory.newSimpleName(ast, capturedVar));
+      node.getArguments().add(new SimpleName(capturedVar));
       binding.addParameter(capturedVar.getType());
     }
 
-    assert binding.isVarargs() || node.arguments().size() == binding.getParameterTypes().length;
+    assert binding.isVarargs() || node.getArguments().size() == binding.getParameterTypes().length;
     return true;
   }
 
   private List<IVariableBinding> getCapturedVariables(ClassInstanceCreation node) {
-    ITypeBinding newType = Types.getTypeBinding(node).getTypeDeclaration();
-    ITypeBinding owningType =
-        Types.getTypeBinding(ASTUtil.getOwningType(node)).getTypeDeclaration();
+    ITypeBinding newType = node.getTypeBinding().getTypeDeclaration();
+    ITypeBinding owningType = TreeUtil.getOwningType(node).getTypeBinding().getTypeDeclaration();
     // Test for the recursive construction of a local class.
     if (owningType.isEqualTo(newType)) {
       return OuterReferenceResolver.getInnerFields(newType);
@@ -102,27 +100,25 @@ public class OuterReferenceFixer extends ErrorReportingASTVisitor {
 
   private void addOuterArg(
       ClassInstanceCreation node, GeneratedMethodBinding binding, ITypeBinding declaringClass) {
-    ITypeBinding type = Types.getTypeBinding(node);
+    ITypeBinding type = node.getTypeBinding().getTypeDeclaration();
     if (!OuterReferenceResolver.needsOuterParam(type)) {
       return;
     }
 
-    AST ast = node.getAST();
     Expression outerExpr = node.getExpression();
     List<IVariableBinding> path = OuterReferenceResolver.getPath(node);
     Expression outerArg = null;
 
     if (outerExpr != null) {
       node.setExpression(null);
-      outerArg = NodeCopier.copySubtree(ast, outerExpr);
+      outerArg = outerExpr;
     } else if (path != null) {
-      outerArg = ASTFactory.newName(ast, fixPath(path));
+      outerArg = Name.newName(fixPath(path));
     } else {
-      outerArg = ast.newThisExpression();
-      Types.addBinding(outerArg, declaringClass);
+      outerArg = new ThisExpression(declaringClass);
     }
 
-    ASTUtil.getArguments(node).add(0, outerArg);
+    node.getArguments().add(0, outerArg);
     binding.addParameter(0, declaringClass);
   }
 
@@ -130,7 +126,7 @@ public class OuterReferenceFixer extends ErrorReportingASTVisitor {
   public boolean visit(MethodInvocation node) {
     List<IVariableBinding> path = OuterReferenceResolver.getPath(node);
     if (path != null) {
-      node.setExpression(ASTFactory.newName(node.getAST(), fixPath(path)));
+      node.setExpression(Name.newName(fixPath(path)));
     }
     return true;
   }
@@ -140,7 +136,7 @@ public class OuterReferenceFixer extends ErrorReportingASTVisitor {
     List<IVariableBinding> path = OuterReferenceResolver.getPath(node);
     if (path != null) {
       // We substitute the qualifying type name with the outer variable name.
-      node.setQualifier(ASTFactory.newName(node.getAST(), fixPath(path)));
+      node.setQualifier(Name.newName(fixPath(path)));
     } else {
       node.setQualifier(null);
     }
@@ -150,13 +146,11 @@ public class OuterReferenceFixer extends ErrorReportingASTVisitor {
   public boolean visit(SimpleName node) {
     List<IVariableBinding> path = OuterReferenceResolver.getPath(node);
     if (path != null) {
-      AST ast = node.getAST();
       if (path.size() == 1 && path.get(0).getConstantValue() != null) {
         IVariableBinding var = path.get(0);
-        ASTUtil.setProperty(node,
-            ASTFactory.makeLiteral(ast, var.getConstantValue(), var.getType()));
+        node.replaceWith(TreeUtil.newLiteral(var.getConstantValue(), var.getType()));
       } else {
-        ASTUtil.setProperty(node, ASTFactory.newName(ast, fixPath(path)));
+        node.replaceWith(Name.newName(fixPath(path)));
       }
     }
     return true;
@@ -166,7 +160,7 @@ public class OuterReferenceFixer extends ErrorReportingASTVisitor {
   public boolean visit(ThisExpression node) {
     List<IVariableBinding> path = OuterReferenceResolver.getPath(node);
     if (path != null) {
-      ASTUtil.setProperty(node, ASTFactory.newName(node.getAST(), fixPath(path)));
+      node.replaceWith(Name.newName(fixPath(path)));
     } else {
       node.setQualifier(null);
     }
@@ -180,9 +174,11 @@ public class OuterReferenceFixer extends ErrorReportingASTVisitor {
       return;
     }
     node.setExpression(null);
-    ITypeBinding outerExpressionType = Types.getTypeBinding(outerExpression);
-    GeneratedMethodBinding binding = Types.getGeneratedMethodBinding(node);
-    ASTUtil.getArguments(node).add(0, outerExpression);
+    ITypeBinding outerExpressionType = outerExpression.getTypeBinding();
+    GeneratedMethodBinding binding =
+        new GeneratedMethodBinding(node.getMethodBinding().getMethodDeclaration());
+    node.setMethodBinding(binding);
+    node.getArguments().add(0, outerExpression);
     binding.addParameter(0, outerExpressionType);
   }
 

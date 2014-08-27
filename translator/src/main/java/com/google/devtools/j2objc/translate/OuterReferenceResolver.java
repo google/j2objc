@@ -20,6 +20,7 @@ import com.google.common.collect.ListMultimap;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
+import com.google.devtools.j2objc.ast.TreeNode;
 import com.google.devtools.j2objc.types.GeneratedVariableBinding;
 import com.google.devtools.j2objc.util.BindingUtil;
 
@@ -132,6 +133,10 @@ public class OuterReferenceResolver extends ASTVisitor {
   public static List<IVariableBinding> getPath(ASTNode node) {
     assert instance != null;
     return instance.outerPaths.get(node);
+  }
+
+  public static List<IVariableBinding> getPath(TreeNode node) {
+    return getPath(node.getJdtNode());
   }
 
   public static void copyNode(ASTNode oldNode, ASTNode newNode) {

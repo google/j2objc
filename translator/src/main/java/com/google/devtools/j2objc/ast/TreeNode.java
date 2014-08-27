@@ -23,6 +23,8 @@ public abstract class TreeNode {
 
   private ChildLink<? extends TreeNode> owner = null;
   private Key key;
+  // TODO(kstanger): Remove this after all translation passes are converted.
+  private ASTNode jdtNode = null;
   private int startPosition = -1;
   private int length = 0;
   private int lineNumber = -1;
@@ -33,6 +35,7 @@ public abstract class TreeNode {
 
   protected TreeNode(ASTNode jdtNode) {
     this();
+    this.jdtNode = jdtNode;
     startPosition = jdtNode.getStartPosition();
     length = jdtNode.getLength();
     ASTNode root = jdtNode.getRoot();
@@ -43,6 +46,7 @@ public abstract class TreeNode {
 
   protected TreeNode(TreeNode other) {
     key = other.getKey();
+    jdtNode = other.getJdtNode();
     startPosition = other.getStartPosition();
     length = other.getLength();
     lineNumber = other.getLineNumber();
@@ -56,6 +60,10 @@ public abstract class TreeNode {
 
   public void setKey(Key newKey) {
     key = newKey;
+  }
+
+  public ASTNode getJdtNode() {
+    return jdtNode;
   }
 
   public TreeNode getParent() {
@@ -133,10 +141,17 @@ public abstract class TreeNode {
     }
   }
 
+  /**
+   * Key type for associating nodes with additional data. Keys are normally
+   * unique to a node, except that copies keep the same key as the original.
+   */
   public static class Key {
     private Key() {}
   }
 
+  /**
+   * Enumeration of all the node types. Useful for switch statements.
+   */
   public enum Kind {
     ANNOTATION_TYPE_DECLARATION,
     ANNOTATION_TYPE_MEMBER_DECLARATION,
