@@ -20,33 +20,32 @@ import com.google.common.collect.ListMultimap;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
+import com.google.devtools.j2objc.ast.AnnotationTypeDeclaration;
+import com.google.devtools.j2objc.ast.AnonymousClassDeclaration;
+import com.google.devtools.j2objc.ast.ClassInstanceCreation;
+import com.google.devtools.j2objc.ast.EnumDeclaration;
+import com.google.devtools.j2objc.ast.FieldAccess;
+import com.google.devtools.j2objc.ast.MethodDeclaration;
+import com.google.devtools.j2objc.ast.MethodInvocation;
+import com.google.devtools.j2objc.ast.Name;
+import com.google.devtools.j2objc.ast.QualifiedName;
+import com.google.devtools.j2objc.ast.SimpleName;
+import com.google.devtools.j2objc.ast.SingleVariableDeclaration;
+import com.google.devtools.j2objc.ast.SuperMethodInvocation;
+import com.google.devtools.j2objc.ast.ThisExpression;
 import com.google.devtools.j2objc.ast.TreeNode;
+import com.google.devtools.j2objc.ast.TreeUtil;
+import com.google.devtools.j2objc.ast.TreeVisitor;
+import com.google.devtools.j2objc.ast.TypeDeclaration;
+import com.google.devtools.j2objc.ast.VariableDeclaration;
+import com.google.devtools.j2objc.ast.VariableDeclarationFragment;
 import com.google.devtools.j2objc.types.GeneratedVariableBinding;
 import com.google.devtools.j2objc.util.BindingUtil;
 
-import org.eclipse.jdt.core.dom.ASTNode;
-import org.eclipse.jdt.core.dom.ASTVisitor;
-import org.eclipse.jdt.core.dom.AnnotationTypeDeclaration;
-import org.eclipse.jdt.core.dom.AnonymousClassDeclaration;
-import org.eclipse.jdt.core.dom.ClassInstanceCreation;
-import org.eclipse.jdt.core.dom.EnumDeclaration;
-import org.eclipse.jdt.core.dom.FieldAccess;
-import org.eclipse.jdt.core.dom.IBinding;
 import org.eclipse.jdt.core.dom.IMethodBinding;
 import org.eclipse.jdt.core.dom.ITypeBinding;
 import org.eclipse.jdt.core.dom.IVariableBinding;
-import org.eclipse.jdt.core.dom.MethodDeclaration;
-import org.eclipse.jdt.core.dom.MethodInvocation;
 import org.eclipse.jdt.core.dom.Modifier;
-import org.eclipse.jdt.core.dom.Name;
-import org.eclipse.jdt.core.dom.QualifiedName;
-import org.eclipse.jdt.core.dom.SimpleName;
-import org.eclipse.jdt.core.dom.SingleVariableDeclaration;
-import org.eclipse.jdt.core.dom.SuperMethodInvocation;
-import org.eclipse.jdt.core.dom.ThisExpression;
-import org.eclipse.jdt.core.dom.TypeDeclaration;
-import org.eclipse.jdt.core.dom.VariableDeclaration;
-import org.eclipse.jdt.core.dom.VariableDeclarationFragment;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -64,7 +63,7 @@ import java.util.Set;
  *
  * @author Keith Stanger
  */
-public class OuterReferenceResolver extends ASTVisitor {
+public class OuterReferenceResolver extends TreeVisitor {
 
   // A placeholder variable binding that should be replaced with the outer
   // parameter in a constructor.
@@ -75,7 +74,7 @@ public class OuterReferenceResolver extends ASTVisitor {
   private Map<ITypeBinding, IVariableBinding> outerVars = Maps.newHashMap();
   private Set<ITypeBinding> usesOuterParam = Sets.newHashSet();
   private ListMultimap<ITypeBinding, Capture> captures = ArrayListMultimap.create();
-  private Map<ASTNode, List<IVariableBinding>> outerPaths = Maps.newHashMap();
+  private Map<TreeNode.Key, List<IVariableBinding>> outerPaths = Maps.newHashMap();
   private ArrayList<Scope> scopeStack = Lists.newArrayList();
 
   public static void cleanup() {
@@ -88,7 +87,7 @@ public class OuterReferenceResolver extends ASTVisitor {
     }
   }
 
-  public static void resolve(ASTNode node) {
+  public static void resolve(TreeNode node) {
     initialize();
     assert instance.scopeStack.size() == 0;
     node.accept(instance);
@@ -130,22 +129,9 @@ public class OuterReferenceResolver extends ASTVisitor {
     return innerFields;
   }
 
-  public static List<IVariableBinding> getPath(ASTNode node) {
-    assert instance != null;
-    return instance.outerPaths.get(node);
-  }
-
   public static List<IVariableBinding> getPath(TreeNode node) {
-    return getPath(node.getJdtNode());
-  }
-
-  public static void copyNode(ASTNode oldNode, ASTNode newNode) {
     assert instance != null;
-    List<IVariableBinding> path = instance.outerPaths.get(oldNode);
-    if (path != null) {
-      List<IVariableBinding> previous = instance.outerPaths.put(newNode, path);
-      assert previous == null;
-    }
+    return instance.outerPaths.get(node.getKey());
   }
 
   private static class Capture {
@@ -289,13 +275,13 @@ public class OuterReferenceResolver extends ASTVisitor {
     return path;
   }
 
-  private void addPath(ASTNode node, List<IVariableBinding> path) {
+  private void addPath(TreeNode node, List<IVariableBinding> path) {
     if (!path.isEmpty()) {
-      outerPaths.put(node, path);
+      outerPaths.put(node.getKey(), path);
     }
   }
 
-  private void pushType(ASTNode node, ITypeBinding type) {
+  private void pushType(TreeNode node, ITypeBinding type) {
     scopeStack.add(new Scope(type));
 
     ITypeBinding superclass = type.getSuperclass();
@@ -310,60 +296,59 @@ public class OuterReferenceResolver extends ASTVisitor {
 
   @Override
   public boolean visit(TypeDeclaration node) {
-    pushType(node, node.resolveBinding());
+    pushType(node, node.getTypeBinding());
     return true;
   }
 
   @Override
   public void endVisit(TypeDeclaration node) {
-    popType(node.resolveBinding());
+    popType(node.getTypeBinding());
   }
 
   @Override
   public boolean visit(AnonymousClassDeclaration node) {
-    pushType(node, node.resolveBinding());
+    pushType(node, node.getTypeBinding());
     return true;
   }
 
   @Override
   public void endVisit(AnonymousClassDeclaration node) {
-    popType(node.resolveBinding());
+    popType(node.getTypeBinding());
   }
 
   @Override
   public boolean visit(EnumDeclaration node) {
-    pushType(node, node.resolveBinding());
+    pushType(node, node.getTypeBinding());
     return true;
   }
 
   @Override
   public void endVisit(EnumDeclaration node) {
-    popType(node.resolveBinding());
+    popType(node.getTypeBinding());
   }
 
   @Override
   public boolean visit(AnnotationTypeDeclaration node) {
-    pushType(node, node.resolveBinding());
+    pushType(node, node.getTypeBinding());
     return true;
   }
 
   @Override
   public void endVisit(AnnotationTypeDeclaration node) {
-    popType(node.resolveBinding());
+    popType(node.getTypeBinding());
   }
 
   @Override
   public boolean visit(SimpleName node) {
-    ASTNode parent = node.getParent();
+    TreeNode parent = node.getParent();
     if (parent instanceof FieldAccess
         || (parent instanceof QualifiedName && node == ((QualifiedName) parent).getName())) {
       // Already a qualified node.
       return false;
     }
 
-    IBinding binding = node.resolveBinding();
-    if (binding instanceof IVariableBinding) {
-      IVariableBinding var = (IVariableBinding) binding;
+    IVariableBinding var = TreeUtil.getVariableBinding(node);
+    if (var != null) {
       if (var.isField() && !Modifier.isStatic(var.getModifiers())) {
         addPath(node, getPathForField(var));
       } else if (!var.isField()) {
@@ -377,14 +362,14 @@ public class OuterReferenceResolver extends ASTVisitor {
   public boolean visit(ThisExpression node) {
     Name qualifier = node.getQualifier();
     if (qualifier != null) {
-      addPath(node, getOuterPath(qualifier.resolveTypeBinding()));
+      addPath(node, getOuterPath(qualifier.getTypeBinding()));
     }
     return true;
   }
 
   @Override
   public void endVisit(MethodInvocation node) {
-    IMethodBinding method = node.resolveMethodBinding();
+    IMethodBinding method = node.getMethodBinding();
     if (node.getExpression() == null && !Modifier.isStatic(method.getModifiers())) {
       addPath(node, getOuterPathInherited(method.getDeclaringClass()));
     }
@@ -394,13 +379,13 @@ public class OuterReferenceResolver extends ASTVisitor {
   public void endVisit(SuperMethodInvocation node) {
     Name qualifier = node.getQualifier();
     if (qualifier != null) {
-      addPath(node, getOuterPath(qualifier.resolveTypeBinding()));
+      addPath(node, getOuterPath(qualifier.getTypeBinding()));
     }
   }
 
   @Override
   public void endVisit(ClassInstanceCreation node) {
-    ITypeBinding type = node.resolveTypeBinding();
+    ITypeBinding type = node.getTypeBinding();
     if (node.getExpression() == null && BindingUtil.hasOuterContext(type)) {
       addPath(node, getOuterPathInherited(type.getDeclaringClass()));
     }
@@ -409,7 +394,7 @@ public class OuterReferenceResolver extends ASTVisitor {
   private boolean visitVariableDeclaration(VariableDeclaration node) {
     assert scopeStack.size() > 0;
     Scope currentScope = scopeStack.get(scopeStack.size() - 1);
-    currentScope.declaredVars.add(node.resolveBinding());
+    currentScope.declaredVars.add(node.getVariableBinding());
     return true;
   }
 
@@ -425,7 +410,7 @@ public class OuterReferenceResolver extends ASTVisitor {
 
   @Override
   public boolean visit(MethodDeclaration node) {
-    IMethodBinding binding = node.resolveBinding();
+    IMethodBinding binding = node.getMethodBinding();
     // Assume all code except for non-constructor methods is initializer code.
     if (!binding.isConstructor()) {
       peekScope().initializingContext = false;
@@ -435,7 +420,7 @@ public class OuterReferenceResolver extends ASTVisitor {
 
   @Override
   public void endVisit(MethodDeclaration node) {
-    IMethodBinding binding = node.resolveBinding();
+    IMethodBinding binding = node.getMethodBinding();
     if (!binding.isConstructor()) {
       peekScope().initializingContext = true;
     }

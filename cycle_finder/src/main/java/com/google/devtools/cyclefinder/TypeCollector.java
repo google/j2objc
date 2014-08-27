@@ -16,15 +16,15 @@ package com.google.devtools.cyclefinder;
 
 import com.google.common.base.Strings;
 import com.google.common.collect.Maps;
+import com.google.devtools.j2objc.ast.AnonymousClassDeclaration;
+import com.google.devtools.j2objc.ast.ClassInstanceCreation;
+import com.google.devtools.j2objc.ast.CompilationUnit;
+import com.google.devtools.j2objc.ast.MethodInvocation;
+import com.google.devtools.j2objc.ast.TreeVisitor;
+import com.google.devtools.j2objc.ast.TypeDeclaration;
 
-import org.eclipse.jdt.core.dom.ASTVisitor;
-import org.eclipse.jdt.core.dom.AnonymousClassDeclaration;
-import org.eclipse.jdt.core.dom.ClassInstanceCreation;
-import org.eclipse.jdt.core.dom.CompilationUnit;
 import org.eclipse.jdt.core.dom.ITypeBinding;
 import org.eclipse.jdt.core.dom.IVariableBinding;
-import org.eclipse.jdt.core.dom.MethodInvocation;
-import org.eclipse.jdt.core.dom.TypeDeclaration;
 
 import java.util.Map;
 
@@ -107,27 +107,27 @@ class TypeCollector {
   }
 
   public void visitAST(final CompilationUnit unit) {
-    unit.accept(new ASTVisitor() {
+    unit.accept(new TreeVisitor() {
       @Override
       public boolean visit(TypeDeclaration node) {
-        visitType(node.resolveBinding());
+        visitType(node.getTypeBinding());
         return true;
       }
       @Override
       public boolean visit(AnonymousClassDeclaration node) {
-        ITypeBinding binding = node.resolveBinding();
+        ITypeBinding binding = node.getTypeBinding();
         visitType(binding);
         renamings.put(binding, "anonymous:" + unit.getLineNumber(node.getStartPosition()));
         return true;
       }
       @Override
       public boolean visit(ClassInstanceCreation node) {
-        visitType(node.resolveTypeBinding());
+        visitType(node.getTypeBinding());
         return true;
       }
       @Override
       public boolean visit(MethodInvocation node) {
-        visitType(node.resolveTypeBinding());
+        visitType(node.getTypeBinding());
         return true;
       }
     });

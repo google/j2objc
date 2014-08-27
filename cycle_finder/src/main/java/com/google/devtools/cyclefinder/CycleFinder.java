@@ -15,11 +15,12 @@
 package com.google.devtools.cyclefinder;
 
 import com.google.common.base.Strings;
+import com.google.devtools.j2objc.ast.CompilationUnit;
+import com.google.devtools.j2objc.ast.TreeConverter;
 import com.google.devtools.j2objc.translate.OuterReferenceResolver;
+import com.google.devtools.j2objc.types.Types;
 import com.google.devtools.j2objc.util.ErrorUtil;
 import com.google.devtools.j2objc.util.JdtParser;
-
-import org.eclipse.jdt.core.dom.CompilationUnit;
 
 import java.io.File;
 import java.io.IOException;
@@ -91,7 +92,10 @@ public class CycleFinder {
     JdtParser parser = createParser(options);
     JdtParser.Handler handler = new JdtParser.Handler() {
       @Override
-      public void handleParsedUnit(String filePath, CompilationUnit unit) {
+      public void handleParsedUnit(
+          String filePath, org.eclipse.jdt.core.dom.CompilationUnit jdtUnit) {
+        Types.initialize(jdtUnit);
+        CompilationUnit unit = TreeConverter.convertCompilationUnit(jdtUnit, filePath, "");
         typeCollector.visitAST(unit);
         OuterReferenceResolver.resolve(unit);
       }

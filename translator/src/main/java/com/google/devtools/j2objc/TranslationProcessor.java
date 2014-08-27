@@ -151,13 +151,13 @@ class TranslationProcessor extends FileProcessor {
       TimeTracker ticker) {
     ticker.push();
 
-    OuterReferenceResolver.resolve(unit);
-    ticker.tick("OuterReferenceResolver");
-
     // Verify all modified nodes have type bindings
     Types.verifyNode(unit);
 
     CompilationUnit newUnit = TreeConverter.convertCompilationUnit(unit, path, source);
+
+    OuterReferenceResolver.resolve(newUnit);
+    ticker.tick("OuterReferenceResolver");
 
     // Update code that has GWT references.
     new GwtConverter().run(newUnit);

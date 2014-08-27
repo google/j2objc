@@ -17,18 +17,21 @@ package com.google.devtools.j2objc.translate;
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.ListMultimap;
 import com.google.devtools.j2objc.GenerationTest;
+import com.google.devtools.j2objc.ast.AnonymousClassDeclaration;
+import com.google.devtools.j2objc.ast.CompilationUnit;
+import com.google.devtools.j2objc.ast.InfixExpression;
+import com.google.devtools.j2objc.ast.MethodInvocation;
+import com.google.devtools.j2objc.ast.PostfixExpression;
+import com.google.devtools.j2objc.ast.TreeConverter;
+import com.google.devtools.j2objc.ast.TreeNode;
+import com.google.devtools.j2objc.ast.TreeNode.Kind;
+import com.google.devtools.j2objc.ast.TreeVisitor;
+import com.google.devtools.j2objc.ast.TypeDeclaration;
+import com.google.devtools.j2objc.types.Types;
 import com.google.devtools.j2objc.util.BindingUtil;
 
-import org.eclipse.jdt.core.dom.ASTNode;
-import org.eclipse.jdt.core.dom.ASTVisitor;
-import org.eclipse.jdt.core.dom.AnonymousClassDeclaration;
-import org.eclipse.jdt.core.dom.CompilationUnit;
 import org.eclipse.jdt.core.dom.ITypeBinding;
 import org.eclipse.jdt.core.dom.IVariableBinding;
-import org.eclipse.jdt.core.dom.InfixExpression;
-import org.eclipse.jdt.core.dom.MethodInvocation;
-import org.eclipse.jdt.core.dom.PostfixExpression;
-import org.eclipse.jdt.core.dom.TypeDeclaration;
 
 import java.util.List;
 
@@ -39,7 +42,7 @@ import java.util.List;
  */
 public class OuterReferenceResolverTest extends GenerationTest {
 
-  private ListMultimap<Integer, ASTNode> nodesByType = ArrayListMultimap.create();
+  private ListMultimap<Kind, TreeNode> nodesByType = ArrayListMultimap.create();
 
   @Override
   protected void tearDown() throws Exception {
@@ -50,11 +53,11 @@ public class OuterReferenceResolverTest extends GenerationTest {
   public void testOuterVarAccess() {
     resolveSource("Test", "class Test { int i; class Inner { void test() { i++; } } }");
 
-    TypeDeclaration innerNode = (TypeDeclaration) nodesByType.get(ASTNode.TYPE_DECLARATION).get(1);
-    assertTrue(OuterReferenceResolver.needsOuterReference(innerNode.resolveBinding()));
+    TypeDeclaration innerNode = (TypeDeclaration) nodesByType.get(Kind.TYPE_DECLARATION).get(1);
+    assertTrue(OuterReferenceResolver.needsOuterReference(innerNode.getTypeBinding()));
 
     PostfixExpression increment =
-        (PostfixExpression) nodesByType.get(ASTNode.POSTFIX_EXPRESSION).get(0);
+        (PostfixExpression) nodesByType.get(Kind.POSTFIX_EXPRESSION).get(0);
     List<IVariableBinding> path = OuterReferenceResolver.getPath(increment.getOperand());
     assertNotNull(path);
     assertEquals(2, path.size());
@@ -66,12 +69,12 @@ public class OuterReferenceResolverTest extends GenerationTest {
         "class Test { class A { void foo() {} } class B extends A { "
         + "class Inner { void test() { foo(); } } } }");
 
-    TypeDeclaration aNode = (TypeDeclaration) nodesByType.get(ASTNode.TYPE_DECLARATION).get(1);
-    TypeDeclaration bNode = (TypeDeclaration) nodesByType.get(ASTNode.TYPE_DECLARATION).get(2);
-    TypeDeclaration innerNode = (TypeDeclaration) nodesByType.get(ASTNode.TYPE_DECLARATION).get(3);
-    assertFalse(OuterReferenceResolver.needsOuterReference(aNode.resolveBinding()));
-    assertFalse(OuterReferenceResolver.needsOuterReference(bNode.resolveBinding()));
-    assertTrue(OuterReferenceResolver.needsOuterReference(innerNode.resolveBinding()));
+    TypeDeclaration aNode = (TypeDeclaration) nodesByType.get(Kind.TYPE_DECLARATION).get(1);
+    TypeDeclaration bNode = (TypeDeclaration) nodesByType.get(Kind.TYPE_DECLARATION).get(2);
+    TypeDeclaration innerNode = (TypeDeclaration) nodesByType.get(Kind.TYPE_DECLARATION).get(3);
+    assertFalse(OuterReferenceResolver.needsOuterReference(aNode.getTypeBinding()));
+    assertFalse(OuterReferenceResolver.needsOuterReference(bNode.getTypeBinding()));
+    assertTrue(OuterReferenceResolver.needsOuterReference(innerNode.getTypeBinding()));
 
     // B will need an outer reference to Test so it can initialize its
     // superclass A.
@@ -81,7 +84,7 @@ public class OuterReferenceResolverTest extends GenerationTest {
     assertEquals(OuterReferenceResolver.OUTER_PARAMETER, bPath.get(0));
 
     // foo() call will need to get to B's scope to call the inherited method.
-    MethodInvocation fooCall = (MethodInvocation) nodesByType.get(ASTNode.METHOD_INVOCATION).get(0);
+    MethodInvocation fooCall = (MethodInvocation) nodesByType.get(Kind.METHOD_INVOCATION).get(0);
     List<IVariableBinding> fooPath = OuterReferenceResolver.getPath(fooCall);
     assertNotNull(fooPath);
     assertEquals(1, fooPath.size());
@@ -94,8 +97,8 @@ public class OuterReferenceResolverTest extends GenerationTest {
         + "public void run() { int i2 = i + 1; } }; } }");
 
     AnonymousClassDeclaration runnableNode =
-        (AnonymousClassDeclaration) nodesByType.get(ASTNode.ANONYMOUS_CLASS_DECLARATION).get(0);
-    ITypeBinding runnableBinding = runnableNode.resolveBinding();
+        (AnonymousClassDeclaration) nodesByType.get(Kind.ANONYMOUS_CLASS_DECLARATION).get(0);
+    ITypeBinding runnableBinding = runnableNode.getTypeBinding();
     assertFalse(OuterReferenceResolver.needsOuterReference(runnableBinding));
     List<IVariableBinding> capturedVars = OuterReferenceResolver.getCapturedVars(runnableBinding);
     List<IVariableBinding> innerFields = OuterReferenceResolver.getInnerFields(runnableBinding);
@@ -104,7 +107,7 @@ public class OuterReferenceResolverTest extends GenerationTest {
     assertEquals("i", capturedVars.get(0).getName());
     assertEquals("val$i", innerFields.get(0).getName());
 
-    InfixExpression addition = (InfixExpression) nodesByType.get(ASTNode.INFIX_EXPRESSION).get(0);
+    InfixExpression addition = (InfixExpression) nodesByType.get(Kind.INFIX_EXPRESSION).get(0);
     List<IVariableBinding> iPath = OuterReferenceResolver.getPath(addition.getLeftOperand());
     assertNotNull(iPath);
     assertEquals(1, iPath.size());
@@ -118,8 +121,8 @@ public class OuterReferenceResolverTest extends GenerationTest {
         + "public void run() { int i2 = i + 1; } }; } }");
 
     AnonymousClassDeclaration runnableNode =
-        (AnonymousClassDeclaration) nodesByType.get(ASTNode.ANONYMOUS_CLASS_DECLARATION).get(0);
-    ITypeBinding runnableBinding = runnableNode.resolveBinding();
+        (AnonymousClassDeclaration) nodesByType.get(Kind.ANONYMOUS_CLASS_DECLARATION).get(0);
+    ITypeBinding runnableBinding = runnableNode.getTypeBinding();
     List<IVariableBinding> innerFields = OuterReferenceResolver.getInnerFields(runnableBinding);
     assertEquals(1, innerFields.size());
     assertTrue(BindingUtil.isWeakReference(innerFields.get(0)));
@@ -130,22 +133,25 @@ public class OuterReferenceResolverTest extends GenerationTest {
         "class Test { static void test() { class LocalClass {}; new LocalClass() {}; } }");
 
     AnonymousClassDeclaration decl =
-        (AnonymousClassDeclaration) nodesByType.get(ASTNode.ANONYMOUS_CLASS_DECLARATION).get(0);
-    ITypeBinding type = decl.resolveBinding();
+        (AnonymousClassDeclaration) nodesByType.get(Kind.ANONYMOUS_CLASS_DECLARATION).get(0);
+    ITypeBinding type = decl.getTypeBinding();
     assertFalse(OuterReferenceResolver.needsOuterParam(type));
   }
 
   private void resolveSource(String name, String source) {
-    CompilationUnit unit = compileType(name, source);
+    org.eclipse.jdt.core.dom.CompilationUnit jdtUnit = compileType(name, source);
+    Types.initialize(jdtUnit);
+    CompilationUnit unit = TreeConverter.convertCompilationUnit(jdtUnit, name + ".java", source);
     OuterReferenceResolver.resolve(unit);
     findTypeDeclarations(unit);
   }
 
   private void findTypeDeclarations(CompilationUnit unit) {
-    unit.accept(new ASTVisitor() {
+    unit.accept(new TreeVisitor() {
       @Override
-      public void preVisit(ASTNode node) {
-        nodesByType.put(node.getNodeType(), node);
+      public boolean preVisit(TreeNode node) {
+        nodesByType.put(node.getKind(), node);
+        return true;
       }
     });
   }

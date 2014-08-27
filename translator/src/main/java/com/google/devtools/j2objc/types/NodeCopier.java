@@ -16,8 +16,6 @@
 
 package com.google.devtools.j2objc.types;
 
-import com.google.devtools.j2objc.translate.OuterReferenceResolver;
-
 import org.eclipse.jdt.core.dom.AST;
 import org.eclipse.jdt.core.dom.ASTMatcher;
 import org.eclipse.jdt.core.dom.ASTNode;
@@ -134,9 +132,6 @@ public class NodeCopier extends ASTMatcher {
     assert sharedBinding != null;
     Types.addBinding(to, sharedBinding);
 
-    if (from instanceof ASTNode) {
-      OuterReferenceResolver.copyNode((ASTNode) from, (ASTNode) to);
-    }
     if (from instanceof Expression) {
       if (Types.hasNilCheck((Expression) from)) {
         Types.addNilCheck((Expression) to);
