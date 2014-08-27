@@ -223,6 +223,10 @@ public class String implements CharSequence, Comparable<String>, Serializable {
   public boolean matches(String s) {
     return false;
   }
+  
+  public int offsetByCodePoints(int index, int codePointOffset) {
+    return 0;
+  }
 
   public boolean regionMatches(boolean b, int i, String s, int j, int k) {
     return false;

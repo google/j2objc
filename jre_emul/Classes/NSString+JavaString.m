@@ -873,6 +873,12 @@ NSStringEncoding parseCharsetName(NSString *charset) {
                                                            withInt:endIndex];
 }
 
+- (int)offsetByCodePoints:(int)index codePointOffset:(int)offset {
+  return [JavaLangCharacter offsetByCodePointsWithJavaLangCharSequence:self
+                                                               withInt:index
+                                                               withInt:offset];
+}
+
 - (BOOL)matches:(NSString *)regex {
   if (!regex) {
     @throw makeException([JavaLangNullPointerException class]);
