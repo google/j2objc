@@ -70,12 +70,6 @@ public class AnonymousClassConverter extends TreeVisitor {
     node.accept(new AnonymousClassRenamer());
   }
 
-  // Uncomment to verify this translator's changes.
-  //  @Override
-  //  public void endVisit(CompilationUnit node) {
-  //    Types.verifyNode(node);
-  //  }
-
   /**
    * Convert the anonymous class into an inner class.  Fields are added for
    * final variables that are referenced, and a constructor is added.
@@ -108,14 +102,6 @@ public class AnonymousClassConverter extends TreeVisitor {
     // Create a type declaration for this anonymous class.
     TypeDeclaration typeDecl = new TypeDeclaration(typeBinding);
     typeDecl.setSourceRange(node.getStartPosition(), node.getLength());
-
-    // TODO(kstanger): Do this in the TypeDeclaration constructor. Can we get away with not mapping
-    // the type?
-    Type superType = Type.newType(Types.mapType(typeBinding.getSuperclass()));
-    typeDecl.setSuperclassType(superType);
-    for (ITypeBinding interfaceType : typeBinding.getInterfaces()) {
-      typeDecl.getSuperInterfaceTypes().add(Type.newType(Types.mapType(interfaceType)));
-    }
 
     for (BodyDeclaration decl : node.getBodyDeclarations()) {
       typeDecl.getBodyDeclarations().add(decl.copy());
@@ -251,15 +237,15 @@ public class AnonymousClassConverter extends TreeVisitor {
 
     @Override
     public boolean visit(TypeDeclaration node) {
-      return processType(node);
+      return processType();
     }
 
     @Override
     public boolean visit(EnumDeclaration node) {
-      return processType(node);
+      return processType();
     }
 
-    private boolean processType(AbstractTypeDeclaration node) {
+    private boolean processType() {
       classIndex.push(new Frame());
       return true;
     }
