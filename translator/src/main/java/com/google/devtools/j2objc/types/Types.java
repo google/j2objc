@@ -17,13 +17,9 @@
 package com.google.devtools.j2objc.types;
 
 import com.google.common.collect.Maps;
-import com.google.common.collect.Sets;
-import com.google.devtools.j2objc.Options;
 import com.google.devtools.j2objc.util.BindingUtil;
-import com.google.devtools.j2objc.util.ErrorUtil;
 
 import org.eclipse.jdt.core.dom.AST;
-import org.eclipse.jdt.core.dom.Block;
 import org.eclipse.jdt.core.dom.CompilationUnit;
 import org.eclipse.jdt.core.dom.ITypeBinding;
 import org.eclipse.jdt.core.dom.Modifier;
@@ -32,7 +28,6 @@ import org.eclipse.jdt.core.dom.Type;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Set;
 
 /**
  * Types is a singleton service class for type-related operations.
@@ -77,8 +72,6 @@ public class Types {
 
   // Map a primitive type to its emulation array type.
   private final Map<ITypeBinding, IOSTypeBinding> arrayBindingMap = Maps.newHashMap();
-
-  private final Set<Block> autoreleasePoolBlocks = Sets.newHashSet();
 
   // The first argument of a iOS method isn't named, but Java requires some sort of valid parameter
   // name.  The method mapper therefore uses this string, which the generators ignore.
@@ -329,17 +322,6 @@ public class Types {
 
   public static ITypeBinding getIOSClass() {
     return instance.IOSClass;
-  }
-
-  public static void addAutoreleasePool(Block block) {
-    if (Options.useGC()) {
-      ErrorUtil.warning(block, "@AutoreleasePool ignored in GC mode");
-    }
-    instance.autoreleasePoolBlocks.add(block);
-  }
-
-  public static boolean hasAutoreleasePool(Block block) {
-    return instance.autoreleasePoolBlocks.contains(block);
   }
 
   public static ITypeBinding getLocalRefType() {
