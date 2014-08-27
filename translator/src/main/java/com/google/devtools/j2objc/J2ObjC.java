@@ -26,9 +26,7 @@ import java.lang.reflect.Constructor;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLClassLoader;
-import java.text.DateFormat;
 import java.util.Arrays;
-import java.util.Date;
 import java.util.jar.JarEntry;
 import java.util.jar.JarInputStream;
 import java.util.logging.Level;
@@ -61,11 +59,7 @@ public class J2ObjC {
   }
 
   public static String getFileHeader(String sourceFileName) {
-    // Template parameters are: source file, user name, date.
-    String username = System.getProperty("user.name");
-    Date now = new Date();
-    String generationDate = DateFormat.getDateInstance(DateFormat.SHORT).format(now);
-    return String.format(Options.getFileHeader(), sourceFileName, username, generationDate);
+    return String.format(Options.getFileHeader(), sourceFileName);
   }
 
   private static class JarFileLoader extends URLClassLoader {
