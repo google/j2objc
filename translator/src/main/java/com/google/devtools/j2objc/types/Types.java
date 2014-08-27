@@ -23,26 +23,19 @@ import com.google.devtools.j2objc.util.BindingUtil;
 import com.google.devtools.j2objc.util.ErrorUtil;
 
 import org.eclipse.jdt.core.dom.AST;
-import org.eclipse.jdt.core.dom.ASTNode;
 import org.eclipse.jdt.core.dom.Block;
 import org.eclipse.jdt.core.dom.CompilationUnit;
-import org.eclipse.jdt.core.dom.EnumConstantDeclaration;
 import org.eclipse.jdt.core.dom.Expression;
-import org.eclipse.jdt.core.dom.IAnnotationBinding;
-import org.eclipse.jdt.core.dom.IBinding;
-import org.eclipse.jdt.core.dom.IMethodBinding;
 import org.eclipse.jdt.core.dom.ITypeBinding;
-import org.eclipse.jdt.core.dom.IVariableBinding;
 import org.eclipse.jdt.core.dom.Modifier;
 import org.eclipse.jdt.core.dom.SimpleType;
 import org.eclipse.jdt.core.dom.Type;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-/*
+/**
  * Types is a singleton service class for type-related operations.
  *
  * @author Tom Ball
@@ -253,30 +246,30 @@ public class Types {
   }
 
   public static boolean isFloatingPointType(ITypeBinding type) {
-    return type.isEqualTo(instance.ast.resolveWellKnownType("double")) ||
-        type.isEqualTo(instance.ast.resolveWellKnownType("float")) ||
-        type == instance.ast.resolveWellKnownType("java.lang.Double") ||
-        type == instance.ast.resolveWellKnownType("java.lang.Float");
+    return type.isEqualTo(instance.ast.resolveWellKnownType("double"))
+        || type.isEqualTo(instance.ast.resolveWellKnownType("float"))
+        || type == instance.ast.resolveWellKnownType("java.lang.Double")
+        || type == instance.ast.resolveWellKnownType("java.lang.Float");
   }
 
   public static boolean isBooleanType(ITypeBinding type) {
-    return type.isEqualTo(instance.booleanType) ||
-        type == instance.ast.resolveWellKnownType("java.lang.Boolean");
+    return type.isEqualTo(instance.booleanType)
+        || type == instance.ast.resolveWellKnownType("java.lang.Boolean");
   }
 
   public static boolean isIntegralType(ITypeBinding type) {
-    return type.isEqualTo(instance.ast.resolveWellKnownType("byte")) ||
-        type.isEqualTo(instance.ast.resolveWellKnownType("short")) ||
-        type.isEqualTo(instance.ast.resolveWellKnownType("int")) ||
-        type == instance.ast.resolveWellKnownType("java.lang.Byte") ||
-        type == instance.ast.resolveWellKnownType("java.lang.Short") ||
-        type == instance.ast.resolveWellKnownType("java.lang.Integer") ||
-        isLongType(type);
+    return type.isEqualTo(instance.ast.resolveWellKnownType("byte"))
+        || type.isEqualTo(instance.ast.resolveWellKnownType("short"))
+        || type.isEqualTo(instance.ast.resolveWellKnownType("int"))
+        || type == instance.ast.resolveWellKnownType("java.lang.Byte")
+        || type == instance.ast.resolveWellKnownType("java.lang.Short")
+        || type == instance.ast.resolveWellKnownType("java.lang.Integer")
+        || isLongType(type);
   }
 
   public static boolean isLongType(ITypeBinding type) {
-    return type.isEqualTo(instance.ast.resolveWellKnownType("long")) ||
-        type == instance.ast.resolveWellKnownType("java.lang.Long");
+    return type.isEqualTo(instance.ast.resolveWellKnownType("long"))
+        || type == instance.ast.resolveWellKnownType("java.lang.Long");
   }
 
   public static ITypeBinding resolveIOSType(Type type) {
