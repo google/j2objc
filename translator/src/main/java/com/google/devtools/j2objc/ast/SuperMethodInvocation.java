@@ -58,6 +58,10 @@ public class SuperMethodInvocation extends Expression {
     return methodBinding;
   }
 
+  public void setMethodBinding(IMethodBinding newMethodBinding) {
+    methodBinding = newMethodBinding;
+  }
+
   public Name getQualifier() {
     return qualifier.get();
   }

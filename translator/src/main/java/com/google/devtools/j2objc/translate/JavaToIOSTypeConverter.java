@@ -16,18 +16,17 @@
 
 package com.google.devtools.j2objc.translate;
 
+import com.google.devtools.j2objc.ast.CastExpression;
+import com.google.devtools.j2objc.ast.FieldDeclaration;
+import com.google.devtools.j2objc.ast.MethodDeclaration;
+import com.google.devtools.j2objc.ast.SingleVariableDeclaration;
+import com.google.devtools.j2objc.ast.TreeVisitor;
+import com.google.devtools.j2objc.ast.Type;
+import com.google.devtools.j2objc.ast.TypeDeclaration;
+import com.google.devtools.j2objc.ast.VariableDeclarationStatement;
 import com.google.devtools.j2objc.types.Types;
-import com.google.devtools.j2objc.util.ASTUtil;
-import com.google.devtools.j2objc.util.ErrorReportingASTVisitor;
 
-import org.eclipse.jdt.core.dom.CastExpression;
-import org.eclipse.jdt.core.dom.FieldDeclaration;
 import org.eclipse.jdt.core.dom.ITypeBinding;
-import org.eclipse.jdt.core.dom.MethodDeclaration;
-import org.eclipse.jdt.core.dom.SingleVariableDeclaration;
-import org.eclipse.jdt.core.dom.Type;
-import org.eclipse.jdt.core.dom.TypeDeclaration;
-import org.eclipse.jdt.core.dom.VariableDeclarationStatement;
 
 import java.util.List;
 
@@ -39,23 +38,23 @@ import java.util.List;
  *
  * @author Tom Ball
  */
-public class JavaToIOSTypeConverter extends ErrorReportingASTVisitor {
+public class JavaToIOSTypeConverter extends TreeVisitor {
 
   // TODO(kstanger): Replace visitors below with visitors on the subclasses of Type.
   private void convertType(Type original) {
     if (original == null) {
       return;
     }
-    ITypeBinding binding = Types.getTypeBinding(original);
+    ITypeBinding binding = original.getTypeBinding();
     ITypeBinding newBinding = Types.mapType(binding);
     if (binding != newBinding) {
-      ASTUtil.setProperty(original, ASTFactory.newType(original.getAST(), newBinding));
+      original.replaceWith(Type.newType(newBinding));
     }
   }
 
   @Override
   public void endVisit(TypeDeclaration node) {
-    ITypeBinding binding = Types.getTypeBinding(node);
+    ITypeBinding binding = node.getTypeBinding();
     if (binding != Types.mapType(binding)) {
       // don't try to translate the types being mapped
       return;
@@ -64,12 +63,12 @@ public class JavaToIOSTypeConverter extends ErrorReportingASTVisitor {
     if (!node.isInterface()) {
       Type superClass = node.getSuperclassType();
       if (superClass == null) {
-        node.setSuperclassType(ASTFactory.newType(node.getAST(), Types.getNSObject()));
+        node.setSuperclassType(Type.newType(Types.getNSObject()));
       } else {
         convertType(superClass);
       }
     }
-    List<Type> interfaces = ASTUtil.getSuperInterfaceTypes(node);
+    List<Type> interfaces = node.getSuperInterfaceTypes();
     for (int i = 0; i < interfaces.size(); i++) {
       convertType(interfaces.get(i));
     }
@@ -77,8 +76,8 @@ public class JavaToIOSTypeConverter extends ErrorReportingASTVisitor {
 
   @Override
   public void endVisit(MethodDeclaration node) {
-    convertType(node.getReturnType2());
-    for (SingleVariableDeclaration parameter : ASTUtil.getParameters(node)) {
+    convertType(node.getReturnType());
+    for (SingleVariableDeclaration parameter : node.getParameters()) {
       convertType(parameter.getType());
     }
   }

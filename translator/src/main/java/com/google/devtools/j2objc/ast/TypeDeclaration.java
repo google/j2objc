@@ -49,6 +49,10 @@ public class TypeDeclaration extends AbstractTypeDeclaration {
     return superclassType.get();
   }
 
+  public void setSuperclassType(Type newSuperclassType) {
+    superclassType.set(newSuperclassType);
+  }
+
   public List<Type> getSuperInterfaceTypes() {
     return superInterfaceTypes;
   }
