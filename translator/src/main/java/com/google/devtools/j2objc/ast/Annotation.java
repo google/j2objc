@@ -14,8 +14,6 @@
 
 package com.google.devtools.j2objc.ast;
 
-import com.google.devtools.j2objc.types.Types;
-
 import org.eclipse.jdt.core.dom.IAnnotationBinding;
 
 /**
@@ -28,7 +26,7 @@ public abstract class Annotation extends TreeNode {
 
   protected Annotation(org.eclipse.jdt.core.dom.Annotation jdtNode) {
     super(jdtNode);
-    annotationBinding = Types.getAnnotationBinding(jdtNode);
+    annotationBinding = jdtNode.resolveAnnotationBinding();
     typeName.set((Name) TreeConverter.convert(jdtNode.getTypeName()));
   }
 

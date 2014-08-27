@@ -14,8 +14,6 @@
 
 package com.google.devtools.j2objc.ast;
 
-import com.google.devtools.j2objc.types.Types;
-
 import org.eclipse.jdt.core.dom.IMethodBinding;
 
 import java.util.List;
@@ -31,7 +29,7 @@ public class SuperConstructorInvocation extends Statement {
 
   public SuperConstructorInvocation(org.eclipse.jdt.core.dom.SuperConstructorInvocation jdtNode) {
     super(jdtNode);
-    methodBinding = Types.getMethodBinding(jdtNode);
+    methodBinding = jdtNode.resolveConstructorBinding();
     expression.set((Expression) TreeConverter.convert(jdtNode.getExpression()));
     for (Object argument : jdtNode.arguments()) {
       arguments.add((Expression) TreeConverter.convert(argument));

@@ -240,7 +240,9 @@ public class TreeVisitor {
   public void endVisit(InstanceofExpression node) {}
 
   public boolean visit(Javadoc node) {
-    return true;
+    // By default don't visit javadoc nodes because they aren't code.
+    // This is consistent with JDT's base visitor class.
+    return false;
   }
 
   public void endVisit(Javadoc node) {}

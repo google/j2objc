@@ -15,7 +15,6 @@
 package com.google.devtools.j2objc.ast;
 
 import com.google.common.base.Preconditions;
-import com.google.devtools.j2objc.types.Types;
 
 import org.eclipse.jdt.core.dom.ITypeBinding;
 
@@ -33,7 +32,7 @@ public abstract class AbstractTypeDeclaration extends BodyDeclaration {
 
   public AbstractTypeDeclaration(org.eclipse.jdt.core.dom.AbstractTypeDeclaration jdtNode) {
     super(jdtNode);
-    typeBinding = Types.getTypeBinding(jdtNode);
+    typeBinding = jdtNode.resolveBinding();
     name.set((SimpleName) TreeConverter.convert(jdtNode.getName()));
     for (Object bodyDecl : jdtNode.bodyDeclarations()) {
       bodyDeclarations.add((BodyDeclaration) TreeConverter.convert(bodyDecl));

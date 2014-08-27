@@ -14,8 +14,6 @@
 
 package com.google.devtools.j2objc.ast;
 
-import com.google.devtools.j2objc.types.Types;
-
 import org.eclipse.jdt.core.dom.ITypeBinding;
 import org.eclipse.jdt.core.dom.IVariableBinding;
 
@@ -30,7 +28,7 @@ public class FieldAccess extends Expression {
 
   public FieldAccess(org.eclipse.jdt.core.dom.FieldAccess jdtNode) {
     super(jdtNode);
-    variableBinding = Types.getVariableBinding(jdtNode);
+    variableBinding = jdtNode.resolveFieldBinding();
     expression.set((Expression) TreeConverter.convert(jdtNode.getExpression()));
     name.set((SimpleName) TreeConverter.convert(jdtNode.getName()));
   }

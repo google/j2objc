@@ -15,7 +15,6 @@
 package com.google.devtools.j2objc.ast;
 
 import com.google.common.base.Preconditions;
-import com.google.devtools.j2objc.types.Types;
 
 import org.eclipse.jdt.core.dom.ITypeBinding;
 
@@ -28,7 +27,7 @@ public abstract class Type extends TreeNode {
 
   public Type(org.eclipse.jdt.core.dom.Type jdtNode) {
     super(jdtNode);
-    typeBinding = Types.getTypeBinding(jdtNode);
+    typeBinding = jdtNode.resolveBinding();
   }
 
   public Type(Type other) {

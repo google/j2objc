@@ -14,8 +14,6 @@
 
 package com.google.devtools.j2objc.ast;
 
-import com.google.devtools.j2objc.types.Types;
-
 import org.eclipse.jdt.core.dom.IMethodBinding;
 
 /**
@@ -31,7 +29,7 @@ public class AnnotationTypeMemberDeclaration extends BodyDeclaration {
   public AnnotationTypeMemberDeclaration(
       org.eclipse.jdt.core.dom.AnnotationTypeMemberDeclaration jdtNode) {
     super(jdtNode);
-    methodBinding = Types.getMethodBinding(jdtNode);
+    methodBinding = jdtNode.resolveBinding();
     type.set((Type) TreeConverter.convert(jdtNode.getType()));
     name.set((SimpleName) TreeConverter.convert(jdtNode.getName()));
     defaultValue.set((Expression) TreeConverter.convert(jdtNode.getDefault()));

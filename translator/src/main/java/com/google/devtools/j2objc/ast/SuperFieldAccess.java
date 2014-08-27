@@ -14,8 +14,6 @@
 
 package com.google.devtools.j2objc.ast;
 
-import com.google.devtools.j2objc.types.Types;
-
 import org.eclipse.jdt.core.dom.ITypeBinding;
 import org.eclipse.jdt.core.dom.IVariableBinding;
 
@@ -30,7 +28,7 @@ public class SuperFieldAccess extends Expression {
 
   public SuperFieldAccess(org.eclipse.jdt.core.dom.SuperFieldAccess jdtNode) {
     super(jdtNode);
-    variableBinding = Types.getVariableBinding(jdtNode);
+    variableBinding = jdtNode.resolveFieldBinding();
     qualifier.set((Name) TreeConverter.convert(jdtNode.getQualifier()));
     name.set((SimpleName) TreeConverter.convert(jdtNode.getName()));
   }

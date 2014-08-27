@@ -14,8 +14,6 @@
 
 package com.google.devtools.j2objc.ast;
 
-import com.google.devtools.j2objc.types.Types;
-
 import org.eclipse.jdt.core.dom.ITypeBinding;
 
 /**
@@ -30,7 +28,7 @@ public class ConditionalExpression extends Expression {
 
   public ConditionalExpression(org.eclipse.jdt.core.dom.ConditionalExpression jdtNode) {
     super(jdtNode);
-    typeBinding = Types.getTypeBinding(jdtNode);
+    typeBinding = jdtNode.resolveTypeBinding();
     expression.set((Expression) TreeConverter.convert(jdtNode.getExpression()));
     thenExpression.set((Expression) TreeConverter.convert(jdtNode.getThenExpression()));
     elseExpression.set((Expression) TreeConverter.convert(jdtNode.getElseExpression()));

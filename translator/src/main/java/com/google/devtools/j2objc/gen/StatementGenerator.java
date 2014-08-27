@@ -87,7 +87,6 @@ import com.google.devtools.j2objc.ast.VariableDeclarationExpression;
 import com.google.devtools.j2objc.ast.VariableDeclarationFragment;
 import com.google.devtools.j2objc.ast.VariableDeclarationStatement;
 import com.google.devtools.j2objc.ast.WhileStatement;
-import com.google.devtools.j2objc.types.GeneratedMethodBinding;
 import com.google.devtools.j2objc.types.IOSMethod;
 import com.google.devtools.j2objc.types.IOSMethodBinding;
 import com.google.devtools.j2objc.types.IOSTypeBinding;
@@ -543,21 +542,10 @@ public class StatementGenerator extends TreeVisitor {
     ITypeBinding type = node.getType().getTypeBinding();
     boolean castPrinted = maybePrintCastFromId(node);
     buffer.append(useReferenceCounting ? "[[[" : "[[");
-    ITypeBinding outerType = type.getDeclaringClass();
     buffer.append(NameTable.getFullName(type));
     buffer.append(" alloc] init");
     IMethodBinding method = node.getMethodBinding();
     List<Expression> arguments = node.getArguments();
-    if (node.getExpression() != null && type.isMember() && arguments.size() > 0
-        && !Types.getTypeBinding(arguments.get(0)).isEqualTo(outerType)) {
-      // This is calling an untranslated "Outer.new Inner()" method,
-      // so update its binding and arguments as if it had been translated.
-      GeneratedMethodBinding newBinding = new GeneratedMethodBinding(method);
-      newBinding.addParameter(0, outerType);
-      method = newBinding;
-      arguments = Lists.newArrayList(arguments);
-      arguments.add(0, node.getExpression());
-    }
     printArguments(method, arguments);
     buffer.append(']');
     if (useReferenceCounting) {
@@ -1249,7 +1237,7 @@ public class StatementGenerator extends TreeVisitor {
 
   @Override
   public boolean visit(QualifiedType node) {
-    ITypeBinding binding = Types.getTypeBinding(node);
+    ITypeBinding binding = node.getTypeBinding();
     if (binding != null) {
       buffer.append(NameTable.getFullName(binding));
       return false;
