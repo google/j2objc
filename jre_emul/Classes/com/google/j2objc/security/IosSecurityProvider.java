@@ -37,6 +37,9 @@ public class IosSecurityProvider extends Provider {
     // Secure random implementation.
     put("SecureRandom.SHA1PRNG", PREFIX + "IosSecureRandomImpl");
 
+    // X509 certificate provider.
+    put("CertificateFactory.X.509", "com.google.j2objc.security.cert.IosCertificateFactory");
+
     /* === Message Digests === */
     put("MessageDigest.SHA-1", PREFIX + "IosSHAMessageDigest$SHA1");
     put("Alg.Alias.MessageDigest.SHA1", "SHA-1");
