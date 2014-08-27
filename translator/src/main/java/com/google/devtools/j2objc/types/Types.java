@@ -23,8 +23,6 @@ import org.eclipse.jdt.core.dom.AST;
 import org.eclipse.jdt.core.dom.CompilationUnit;
 import org.eclipse.jdt.core.dom.ITypeBinding;
 import org.eclipse.jdt.core.dom.Modifier;
-import org.eclipse.jdt.core.dom.SimpleType;
-import org.eclipse.jdt.core.dom.Type;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -260,14 +258,6 @@ public class Types {
   public static boolean isLongType(ITypeBinding type) {
     return type.isEqualTo(instance.ast.resolveWellKnownType("long"))
         || type == instance.ast.resolveWellKnownType("java.lang.Long");
-  }
-
-  public static ITypeBinding resolveIOSType(Type type) {
-    if (type instanceof SimpleType) {
-      String name = ((SimpleType) type).getName().getFullyQualifiedName();
-      return resolveIOSType(name);
-    }
-    return null;
   }
 
   public static IOSTypeBinding resolveArrayType(ITypeBinding binding) {
