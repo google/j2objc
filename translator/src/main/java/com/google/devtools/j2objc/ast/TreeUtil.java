@@ -22,6 +22,7 @@ import com.google.devtools.j2objc.util.BindingUtil;
 
 import org.eclipse.jdt.core.dom.IBinding;
 import org.eclipse.jdt.core.dom.IMethodBinding;
+import org.eclipse.jdt.core.dom.ITypeBinding;
 import org.eclipse.jdt.core.dom.IVariableBinding;
 
 import java.io.File;
@@ -75,6 +76,16 @@ public class TreeUtil {
 
   public static List<Annotation> getRuntimeAnnotationsList(Iterable<Annotation> annotations) {
     return Lists.newArrayList(getRuntimeAnnotations(annotations));
+  }
+
+  public static boolean hasAnnotation(Class<?> annotationClass, List<Annotation> annotations) {
+    for (Annotation annotation : annotations) {
+      ITypeBinding annotationType = annotation.getAnnotationBinding().getAnnotationType();
+      if (annotationType.getQualifiedName().equals(annotationClass.getName())) {
+        return true;
+      }
+    }
+    return false;
   }
 
   public static <T extends TreeNode> T getNearestAncestorWithType(Class<T> type, TreeNode node) {
@@ -148,6 +159,17 @@ public class TreeUtil {
 
   public static List<MethodDeclaration> getMethodDeclarationsList(AbstractTypeDeclaration node) {
     return Lists.newArrayList(getMethodDeclarations(node));
+  }
+
+  public static List<BodyDeclaration> getBodyDeclarations(TreeNode node) {
+    if (node instanceof AbstractTypeDeclaration) {
+      return ((AbstractTypeDeclaration) node).getBodyDeclarations();
+    } else if (node instanceof AnonymousClassDeclaration) {
+      return ((AnonymousClassDeclaration) node).getBodyDeclarations();
+    } else {
+      throw new AssertionError(
+          "node type does not contains body declarations: " + node.getClass().getSimpleName());
+    }
   }
 
   /**
@@ -252,5 +274,18 @@ public class TreeUtil {
     FieldAccess newNode = new FieldAccess(variableBinding, remove(node.getQualifier()));
     node.replaceWith(newNode);
     return newNode;
+  }
+
+  public static Expression newLiteral(Object value, ITypeBinding type) {
+    if (value instanceof Boolean) {
+      return new BooleanLiteral((Boolean) value);
+    } else if (value instanceof Character) {
+      return new CharacterLiteral((Character) value);
+    } else if (value instanceof Number) {
+      return new NumberLiteral(type, value.toString());
+    } else if (value instanceof String) {
+      return new StringLiteral((String) value);
+    }
+    throw new AssertionError("unknown constant type");
   }
 }

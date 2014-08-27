@@ -38,8 +38,24 @@ public class ParenthesizedExpression extends Expression {
     this.expression.set(expression);
   }
 
+  public ParenthesizedExpression(ITypeBinding type) {
+    super(type);
+  }
+
+  // Static factory avoids conflict with the copy constructor
   public static ParenthesizedExpression parenthesize(Expression expression) {
     return new ParenthesizedExpression(expression.getTypeBinding(), expression);
+  }
+
+  /**
+   * Wraps the given expression with a ParenthesizedExpression and replaces it
+   * in the tree.
+   */
+  public static ParenthesizedExpression parenthesizeAndReplace(Expression expression) {
+    ParenthesizedExpression newExpr = new ParenthesizedExpression(expression.getTypeBinding());
+    expression.replaceWith(newExpr);
+    newExpr.setExpression(expression);
+    return newExpr;
   }
 
   @Override
@@ -49,6 +65,10 @@ public class ParenthesizedExpression extends Expression {
 
   public Expression getExpression() {
     return expression.get();
+  }
+
+  public void setExpression(Expression newExpression) {
+    expression.set(newExpression);
   }
 
   @Override

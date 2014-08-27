@@ -41,6 +41,11 @@ public class SingleMemberAnnotation extends Annotation {
   }
 
   @Override
+  public boolean isSingleMemberAnnotation() {
+    return true;
+  }
+
+  @Override
   protected void acceptInner(TreeVisitor visitor) {
     if (visitor.visit(this)) {
       typeName.accept(visitor);

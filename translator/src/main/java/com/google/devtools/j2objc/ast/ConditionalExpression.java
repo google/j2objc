@@ -46,12 +46,24 @@ public class ConditionalExpression extends Expression {
     return expression.get();
   }
 
+  public void setExpression(Expression newExpression) {
+    expression.set(newExpression);
+  }
+
   public Expression getThenExpression() {
     return thenExpression.get();
   }
 
+  public void setThenExpression(Expression newThenExpression) {
+    thenExpression.set(newThenExpression);
+  }
+
   public Expression getElseExpression() {
     return elseExpression.get();
+  }
+
+  public void setElseExpression(Expression newElseExpression) {
+    elseExpression.set(newElseExpression);
   }
 
   @Override

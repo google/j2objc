@@ -21,7 +21,7 @@ import com.google.common.base.Preconditions;
  */
 public class Initializer extends BodyDeclaration {
 
-  private ChildLink<Block> body = ChildLink.create(Block.class, this);
+  private final ChildLink<Block> body = ChildLink.create(Block.class, this);
 
   public Initializer(org.eclipse.jdt.core.dom.Initializer jdtNode) {
     super(jdtNode);
@@ -33,13 +33,13 @@ public class Initializer extends BodyDeclaration {
     body.copyFrom(other.getBody());
   }
 
-  public Block getBody() {
-    return body.get();
-  }
-
   @Override
   public Kind getKind() {
     return Kind.INITIALIZER;
+  }
+
+  public Block getBody() {
+    return body.get();
   }
 
   @Override
@@ -61,5 +61,6 @@ public class Initializer extends BodyDeclaration {
   public void validateInner() {
     super.validateInner();
     Preconditions.checkState(annotations.isEmpty());
+    Preconditions.checkNotNull(body.get());
   }
 }

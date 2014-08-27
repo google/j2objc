@@ -14,6 +14,8 @@
 
 package com.google.devtools.j2objc.ast;
 
+import org.eclipse.jdt.core.dom.IVariableBinding;
+
 import java.util.List;
 
 /**
@@ -37,6 +39,18 @@ public class FieldDeclaration extends BodyDeclaration {
     super(other);
     type.copyFrom(other.getType());
     fragments.copyFrom(other.getFragments());
+  }
+
+  public FieldDeclaration(VariableDeclarationFragment fragment) {
+    super(fragment.getVariableBinding());
+    type.set(Type.newType(fragment.getVariableBinding().getType()));
+    fragments.add(fragment);
+  }
+
+  public FieldDeclaration(IVariableBinding variableBinding, Expression initializer) {
+    super(variableBinding);
+    type.set(Type.newType(variableBinding.getType()));
+    fragments.add(new VariableDeclarationFragment(variableBinding, initializer));
   }
 
   @Override

@@ -26,8 +26,8 @@ import java.util.List;
 public class SuperConstructorInvocation extends Statement {
 
   private IMethodBinding methodBinding = null;
-  private ChildLink<Expression> expression = ChildLink.create(Expression.class,  this);
-  private ChildList<Expression> arguments = ChildList.create(Expression.class, this);
+  private final ChildLink<Expression> expression = ChildLink.create(Expression.class, this);
+  private final ChildList<Expression> arguments = ChildList.create(Expression.class, this);
 
   public SuperConstructorInvocation(org.eclipse.jdt.core.dom.SuperConstructorInvocation jdtNode) {
     super(jdtNode);
@@ -45,6 +45,10 @@ public class SuperConstructorInvocation extends Statement {
     arguments.copyFrom(other.getArguments());
   }
 
+  public SuperConstructorInvocation(IMethodBinding methodBinding) {
+    this.methodBinding = methodBinding;
+  }
+
   @Override
   public Kind getKind() {
     return Kind.SUPER_CONSTRUCTOR_INVOCATION;
@@ -54,8 +58,16 @@ public class SuperConstructorInvocation extends Statement {
     return methodBinding;
   }
 
+  public void setMethodBinding(IMethodBinding newMethodBinding) {
+    methodBinding = newMethodBinding;
+  }
+
   public Expression getExpression() {
     return expression.get();
+  }
+
+  public void setExpression(Expression newExpression) {
+    expression.set(newExpression);
   }
 
   public List<Expression> getArguments() {

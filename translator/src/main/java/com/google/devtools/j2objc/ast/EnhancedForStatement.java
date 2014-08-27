@@ -47,6 +47,10 @@ public class EnhancedForStatement extends Statement {
     return parameter.get();
   }
 
+  public void setParameter(SingleVariableDeclaration newParameter) {
+    parameter.set(newParameter);
+  }
+
   public Expression getExpression() {
     return expression.get();
   }

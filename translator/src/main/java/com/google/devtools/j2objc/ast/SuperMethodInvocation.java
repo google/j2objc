@@ -71,6 +71,10 @@ public class SuperMethodInvocation extends Expression {
     return qualifier.get();
   }
 
+  public void setQualifier(Name newQualifier) {
+    qualifier.set(newQualifier);
+  }
+
   public SimpleName getName() {
     return name.get();
   }

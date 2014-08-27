@@ -19,6 +19,8 @@ import com.google.devtools.j2objc.util.BindingUtil;
 
 import org.eclipse.jdt.core.dom.IBinding;
 
+import java.util.List;
+
 /**
  * Base node class for a name.
  */
@@ -41,10 +43,26 @@ public abstract class Name extends Expression {
     this.binding = binding;
   }
 
+  public static Name newName(Name qualifier, IBinding binding) {
+    return qualifier == null ? new SimpleName(binding) : new QualifiedName(binding, qualifier);
+  }
+
+  public static Name newName(List<? extends IBinding> path) {
+    Name name = null;
+    for (IBinding binding : path) {
+      name = newName(name, binding);
+    }
+    return name;
+  }
+
   public abstract String getFullyQualifiedName();
 
   public IBinding getBinding() {
     return binding;
+  }
+
+  public void setBinding(IBinding newBinding) {
+    binding = newBinding;
   }
 
   public boolean isQualifiedName() {

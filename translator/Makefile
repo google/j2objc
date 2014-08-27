@@ -137,6 +137,7 @@ JAVA_SOURCES = \
 	ast/TryStatement.java \
 	ast/Type.java \
 	ast/TypeDeclaration.java \
+	ast/TypeDeclarationStatement.java \
 	ast/TypeLiteral.java \
 	ast/UnionType.java \
 	ast/VariableDeclaration.java \

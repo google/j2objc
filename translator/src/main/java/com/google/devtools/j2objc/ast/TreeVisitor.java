@@ -455,6 +455,12 @@ public class TreeVisitor {
 
   public void endVisit(TypeDeclaration node) {}
 
+  public boolean visit(TypeDeclarationStatement node) {
+    return true;
+  }
+
+  public void endVisit(TypeDeclarationStatement node) {}
+
   public boolean visit(TypeLiteral node) {
     return true;
   }

@@ -55,8 +55,16 @@ public abstract class VariableDeclaration extends TreeNode {
     return variableBinding;
   }
 
+  public void setVariableBinding(IVariableBinding newVariableBinding) {
+    variableBinding = newVariableBinding;
+  }
+
   public int getExtraDimensions() {
     return extraDimensions;
+  }
+
+  public void setExtraDimensions(int newExtraDimensions) {
+    extraDimensions = newExtraDimensions;
   }
 
   public SimpleName getName() {
@@ -65,5 +73,9 @@ public abstract class VariableDeclaration extends TreeNode {
 
   public Expression getInitializer() {
     return initializer.get();
+  }
+
+  public void setInitializer(Expression newInitializer) {
+    initializer.set(newInitializer);
   }
 }

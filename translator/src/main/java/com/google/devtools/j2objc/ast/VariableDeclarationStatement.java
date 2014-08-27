@@ -24,6 +24,7 @@ import java.util.List;
 public class VariableDeclarationStatement extends Statement {
 
   private int modifiers = 0;
+  protected ChildList<Annotation> annotations = ChildList.create(Annotation.class, this);
   private ChildLink<Type> type = ChildLink.create(Type.class, this);
   private ChildList<VariableDeclarationFragment> fragments =
       ChildList.create(VariableDeclarationFragment.class, this);
@@ -31,6 +32,11 @@ public class VariableDeclarationStatement extends Statement {
   public VariableDeclarationStatement(
       org.eclipse.jdt.core.dom.VariableDeclarationStatement jdtNode) {
     super(jdtNode);
+    for (Object modifier : jdtNode.modifiers()) {
+      if (modifier instanceof org.eclipse.jdt.core.dom.Annotation) {
+        annotations.add((Annotation) TreeConverter.convert(modifier));
+      }
+    }
     type.set((Type) TreeConverter.convert(jdtNode.getType()));
     for (Object fragment : jdtNode.fragments()) {
       fragments.add((VariableDeclarationFragment) TreeConverter.convert(fragment));
@@ -39,6 +45,7 @@ public class VariableDeclarationStatement extends Statement {
 
   public VariableDeclarationStatement(VariableDeclarationStatement other) {
     super(other);
+    annotations.copyFrom(other.getAnnotations());
     type.copyFrom(other.getType());
     fragments.copyFrom(other.getFragments());
   }
@@ -63,8 +70,16 @@ public class VariableDeclarationStatement extends Statement {
     return modifiers;
   }
 
+  public List<Annotation> getAnnotations() {
+    return annotations;
+  }
+
   public Type getType() {
     return type.get();
+  }
+
+  public void setType(Type newType) {
+    type.set(newType);
   }
 
   public List<VariableDeclarationFragment> getFragments() {
@@ -74,6 +89,7 @@ public class VariableDeclarationStatement extends Statement {
   @Override
   protected void acceptInner(TreeVisitor visitor) {
     if (visitor.visit(this)) {
+      annotations.accept(visitor);
       type.accept(visitor);
       fragments.accept(visitor);
     }

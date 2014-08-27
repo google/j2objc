@@ -15,45 +15,37 @@
 package com.google.devtools.j2objc.ast;
 
 /**
- * Continue statement node type.
+ * Node type for a local type declaration.
  */
-public class ContinueStatement extends Statement {
+public class TypeDeclarationStatement extends Statement {
 
-  private ChildLink<SimpleName> label = ChildLink.create(SimpleName.class, this);
+  private final ChildLink<AbstractTypeDeclaration> declaration =
+      ChildLink.create(AbstractTypeDeclaration.class, this);
 
-  public ContinueStatement(org.eclipse.jdt.core.dom.ContinueStatement jdtNode) {
-    super(jdtNode);
-    label.set((SimpleName) TreeConverter.convert(jdtNode.getLabel()));
-  }
-
-  public ContinueStatement(ContinueStatement other) {
+  public TypeDeclarationStatement(TypeDeclarationStatement other) {
     super(other);
-    label.copyFrom(other.getLabel());
+    declaration.copyFrom(other.getDeclaration());
   }
 
   @Override
   public Kind getKind() {
-    return Kind.CONTINUE_STATEMENT;
+    return Kind.TYPE_DECLARATION_STATEMENT;
   }
 
-  public SimpleName getLabel() {
-    return label.get();
-  }
-
-  public void setLabel(SimpleName newLabel) {
-    label.set(newLabel);
+  public AbstractTypeDeclaration getDeclaration() {
+    return declaration.get();
   }
 
   @Override
   protected void acceptInner(TreeVisitor visitor) {
     if (visitor.visit(this)) {
-      label.accept(visitor);
+      declaration.accept(visitor);
     }
     visitor.endVisit(this);
   }
 
   @Override
-  public ContinueStatement copy() {
-    return new ContinueStatement(this);
+  public TypeDeclarationStatement copy() {
+    return new TypeDeclarationStatement(this);
   }
 }

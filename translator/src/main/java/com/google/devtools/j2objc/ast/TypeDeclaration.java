@@ -14,6 +14,8 @@
 
 package com.google.devtools.j2objc.ast;
 
+import org.eclipse.jdt.core.dom.ITypeBinding;
+
 import java.util.List;
 
 /**
@@ -39,6 +41,11 @@ public class TypeDeclaration extends AbstractTypeDeclaration {
     isInterface = other.isInterface();
     superclassType.copyFrom(other.getSuperclassType());
     superInterfaceTypes.copyFrom(other.getSuperInterfaceTypes());
+  }
+
+  public TypeDeclaration(ITypeBinding typeBinding) {
+    super(typeBinding);
+    isInterface = typeBinding.isInterface();
   }
 
   @Override

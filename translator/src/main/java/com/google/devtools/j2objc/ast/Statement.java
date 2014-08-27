@@ -28,4 +28,7 @@ public abstract class Statement extends TreeNode {
   protected Statement(Statement other) {
     super(other);
   }
+
+  @Override
+  public abstract Statement copy();
 }
