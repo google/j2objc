@@ -95,7 +95,7 @@ public class Package implements AnnotatedElement {
      */
     public Annotation[] getAnnotations() {
         try {
-            Class<?> c = Class.forName(getName() + ".package-info");
+            Class<?> c = Class.forName(getName() + ".package_info");
             return c.getAnnotations();
         } catch (Exception ex) {
             return NO_ANNOTATIONS;

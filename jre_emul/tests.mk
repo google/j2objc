@@ -26,6 +26,8 @@ SUPPORT_SOURCES = \
     JSR166TestCase.java \
     android/test/MoreAsserts.java \
     android/text/SpannableTest.java \
+    com/google/j2objc/package-info.java \
+    com/google/j2objc/TestAnnotation.java \
     libcore/java/net/customstreamhandler/http/Handler.java \
     libcore/java/nio/charset/Charset_TestGenerator.java \
     libcore/java/nio/charset/OldCharset_AbstractTest.java \
@@ -115,6 +117,7 @@ TEST_SOURCES = \
     android/text/SpannableStringTest.java \
     android/text/TextUtilsTest.java \
     com/google/j2objc/ClassTest.java \
+    com/google/j2objc/PackageTest.java \
     com/google/j2objc/ThrowableTest.java \
     com/google/j2objc/security/IosSecureRandomImplTest.java \
     java/lang/ref/PhantomReferenceTest.java \

@@ -330,8 +330,12 @@ public class ObjectiveCImplementationGenerator extends ObjectiveCSourceFileGener
   private void generate(PackageDeclaration node) {
     List<Annotation> runtimeAnnotations = TreeUtil.getRuntimeAnnotationsList(node.getAnnotations());
     if (runtimeAnnotations.size() > 0 && !Options.stripReflection()) {
+      printImports(getUnit());
+      newline();
       String typeName = NameTable.getPrefix(node.getName().getFullyQualifiedName())
           + NameTable.PACKAGE_INFO_MAIN_TYPE;
+      printf("@interface %s : NSObject\n", typeName);
+      printf("@end\n\n");
       printf("@implementation %s\n", typeName);
       println("+ (IOSObjectArray *)__annotations {");
       printAnnotationCreate(runtimeAnnotations);
