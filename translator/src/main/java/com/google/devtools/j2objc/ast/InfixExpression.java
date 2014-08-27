@@ -15,7 +15,6 @@
 package com.google.devtools.j2objc.ast;
 
 import com.google.common.collect.Maps;
-import com.google.devtools.j2objc.types.Types;
 
 import org.eclipse.jdt.core.dom.ITypeBinding;
 
@@ -87,7 +86,7 @@ public class InfixExpression extends Expression {
 
   public InfixExpression(org.eclipse.jdt.core.dom.InfixExpression jdtNode) {
     super(jdtNode);
-    typeBinding = Types.getTypeBinding(jdtNode);
+    typeBinding = jdtNode.resolveTypeBinding();
     operator = Operator.fromJdtOperator(jdtNode.getOperator());
     leftOperand.set((Expression) TreeConverter.convert(jdtNode.getLeftOperand()));
     rightOperand.set((Expression) TreeConverter.convert(jdtNode.getRightOperand()));

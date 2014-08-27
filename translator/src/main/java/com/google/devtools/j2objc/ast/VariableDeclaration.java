@@ -14,8 +14,6 @@
 
 package com.google.devtools.j2objc.ast;
 
-import com.google.devtools.j2objc.types.Types;
-
 import org.eclipse.jdt.core.dom.IVariableBinding;
 
 /**
@@ -30,7 +28,7 @@ public abstract class VariableDeclaration extends TreeNode {
 
   public VariableDeclaration(org.eclipse.jdt.core.dom.VariableDeclaration jdtNode) {
     super(jdtNode);
-    variableBinding = Types.getVariableBinding(jdtNode);
+    variableBinding = jdtNode.resolveBinding();
     extraDimensions = jdtNode.getExtraDimensions();
     name.set((SimpleName) TreeConverter.convert(jdtNode.getName()));
     initializer.set((Expression) TreeConverter.convert(jdtNode.getInitializer()));

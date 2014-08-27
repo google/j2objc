@@ -14,8 +14,6 @@
 
 package com.google.devtools.j2objc.ast;
 
-import com.google.devtools.j2objc.types.Types;
-
 import org.eclipse.jdt.core.dom.IMethodBinding;
 
 import java.util.List;
@@ -35,7 +33,7 @@ public class MethodDeclaration extends BodyDeclaration {
 
   public MethodDeclaration(org.eclipse.jdt.core.dom.MethodDeclaration jdtNode) {
     super(jdtNode);
-    methodBinding = Types.getMethodBinding(jdtNode);
+    methodBinding = jdtNode.resolveBinding();
     isConstructor = jdtNode.isConstructor();
     returnType.set((Type) TreeConverter.convert(jdtNode.getReturnType2()));
     name.set((SimpleName) TreeConverter.convert(jdtNode.getName()));

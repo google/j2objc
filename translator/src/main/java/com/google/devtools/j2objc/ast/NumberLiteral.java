@@ -29,7 +29,7 @@ public class NumberLiteral extends Expression {
 
   public NumberLiteral(org.eclipse.jdt.core.dom.NumberLiteral jdtNode) {
     super(jdtNode);
-    typeBinding = Types.getTypeBinding(jdtNode);
+    typeBinding = jdtNode.resolveTypeBinding();
     token = jdtNode.getToken();
     Object constantValue = jdtNode.resolveConstantExpressionValue();
     // TODO(kstanger): We should be able to remove the null test once all the
