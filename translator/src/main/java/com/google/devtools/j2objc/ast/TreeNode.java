@@ -66,6 +66,10 @@ public abstract class TreeNode {
     return jdtNode;
   }
 
+  public void setJdtNode(ASTNode newJdtNode) {
+    jdtNode = newJdtNode;
+  }
+
   public TreeNode getParent() {
     return owner == null ? null : owner.getParent();
   }

@@ -169,20 +169,20 @@ class TranslationProcessor extends FileProcessor {
     new Autoboxer(unit.getAST()).run(unit);
     ticker.tick("Autoboxer");
 
-    // Extract inner and anonymous classes
-    new AnonymousClassConverter(unit).run(unit);
-    ticker.tick("AnonymousClassConverter");
-    new InnerClassExtractor(unit).run(unit);
-    ticker.tick("InnerClassExtractor");
-
-    // Normalize init statements
-    new InitializationNormalizer().run(unit);
-    ticker.tick("InitializationNormalizer");
-
     // Verify all modified nodes have type bindings
     Types.verifyNode(unit);
 
     CompilationUnit newUnit = TreeConverter.convertCompilationUnit(unit, path, source);
+
+    // Extract inner and anonymous classes
+    new AnonymousClassConverter().run(newUnit);
+    ticker.tick("AnonymousClassConverter");
+    new InnerClassExtractor(newUnit).run(newUnit);
+    ticker.tick("InnerClassExtractor");
+
+    // Normalize init statements
+    new InitializationNormalizer().run(newUnit);
+    ticker.tick("InitializationNormalizer");
 
     // Fix references to outer scope and captured variables.
     new OuterReferenceFixer().run(newUnit);
