@@ -14,6 +14,7 @@
 
 #import <Foundation/Foundation.h>
 
+@class IOSByteArray;
 @class JavaLangAbstractStringBuilder;
 @class JavaLangStringBuilder;
 
