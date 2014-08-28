@@ -147,6 +147,16 @@ abstract class AbstractStringBuilder {
         value[count++] = ch;
     }
 
+    // Used internally by java_lang_RealToString.m.
+    /*-[
+    void AbstractStringBuilder_appendCharNative(JavaLangAbstractStringBuilder *self, unichar ch) {
+      if (self->count_ == (int) self->value_->size_) {
+        JavaLangAbstractStringBuilder_enlargeBuffer_(self, self->count_ + 1);
+      }
+      self->value_->buffer_[self->count_++] = ch;
+    }
+    ]-*/
+
     final void append0(String string) {
         if (string == null) {
             appendNull();

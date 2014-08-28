@@ -45,15 +45,17 @@
 
 #define DIGITS_SIZE 64
 
+extern void AbstractStringBuilder_appendCharNative(JavaLangAbstractStringBuilder *self, unichar ch);
+
 static void freeFormatExponential(
-    JavaLangAbstractStringBuilder *sb, BOOL positive, int k, const int digits[], int digitCount);
+    JavaLangAbstractStringBuilder *sb, BOOL positive, int k, const char digits[], int digitCount);
 static void freeFormat(
-    JavaLangAbstractStringBuilder *sb, BOOL positive, int k, const int digits[], int digitCount);
+    JavaLangAbstractStringBuilder *sb, BOOL positive, int k, const char digits[], int digitCount);
 static void bigIntDigitGenerator(
-    long long int f, int e, BOOL isDenormalized, int p, int *firstK, int digits[],
+    long long int f, int e, BOOL isDenormalized, int p, int *firstK, char digits[],
     int *digitCount);
 static void longDigitGenerator(
-    long long f, int e, BOOL isDenormalized, BOOL mantissaIsZero, int p, int *firstK, int digits[],
+    long long f, int e, BOOL isDenormalized, BOOL mantissaIsZero, int p, int *firstK, char digits[],
     int *digitCount);
 
 static NSString *resultOrSideEffect(JavaLangAbstractStringBuilder *sb, NSString *s) {
@@ -109,7 +111,7 @@ NSString *RealToString_convertDouble(JavaLangAbstractStringBuilder *sb, double i
   }
 
   int firstK = 0, digitCount = 0;
-  int digits[DIGITS_SIZE];
+  char digits[DIGITS_SIZE];
   if ((-59 < pow && pow < 6) || (pow == -59 && !mantissaIsZero)) {
     longDigitGenerator(f, pow, e == 0, mantissaIsZero, numBits, &firstK, digits, &digitCount);
   } else {
@@ -169,7 +171,7 @@ NSString *RealToString_convertFloat(JavaLangAbstractStringBuilder *sb, float inp
   }
 
   int firstK = 0, digitCount = 0;
-  int digits[DIGITS_SIZE];
+  char digits[DIGITS_SIZE];
   if ((-59 < pow && pow < 35) || (pow == -59 && !mantissaIsZero)) {
     longDigitGenerator(f, pow, e == 0, mantissaIsZero, numBits, &firstK, digits, &digitCount);
   } else {
@@ -187,13 +189,13 @@ NSString *RealToString_convertFloat(JavaLangAbstractStringBuilder *sb, float inp
 }
 
 void freeFormatExponential(
-    JavaLangAbstractStringBuilder *sb, BOOL positive, int k, const int digits[], int digitCount) {
+    JavaLangAbstractStringBuilder *sb, BOOL positive, int k, const char digits[], int digitCount) {
   int digitIndex = 0;
   if (!positive) {
-    [sb append0WithChar:'-'];
+    AbstractStringBuilder_appendCharNative(sb, '-');
   }
-  [sb append0WithChar:'0' + digits[digitIndex++]];
-  [sb append0WithChar:'.'];
+  AbstractStringBuilder_appendCharNative(sb, '0' + digits[digitIndex++]);
+  AbstractStringBuilder_appendCharNative(sb, '.');
 
   int exponent = k;
   while (YES) {
@@ -201,38 +203,38 @@ void freeFormatExponential(
     if (digitIndex >= digitCount) {
       break;
     }
-    [sb append0WithChar:'0' + digits[digitIndex++]];
+    AbstractStringBuilder_appendCharNative(sb, '0' + digits[digitIndex++]);
   }
 
   if (k == exponent - 1) {
-    [sb append0WithChar:'0'];
+    AbstractStringBuilder_appendCharNative(sb, '0');
   }
-  [sb append0WithChar:'E'];
+  AbstractStringBuilder_appendCharNative(sb, 'E');
   IntegralToString_convertInt(sb, exponent);
 }
 
 void freeFormat(
-    JavaLangAbstractStringBuilder *sb, BOOL positive, int k, const int digits[], int digitCount) {
+    JavaLangAbstractStringBuilder *sb, BOOL positive, int k, const char digits[], int digitCount) {
   int digitIndex = 0;
   if (!positive) {
-    [sb append0WithChar:'-'];
+    AbstractStringBuilder_appendCharNative(sb, '-');
   }
   if (k < 0) {
-    [sb append0WithChar:'0'];
-    [sb append0WithChar:'.'];
+    AbstractStringBuilder_appendCharNative(sb, '0');
+    AbstractStringBuilder_appendCharNative(sb, '.');
     for (int i = k + 1; i < 0; ++i) {
-      [sb append0WithChar:'0'];
+      AbstractStringBuilder_appendCharNative(sb, '0');
     }
   }
   int U = digits[digitIndex++];
   do {
     if (U != -1) {
-      [sb append0WithChar:'0' + U];
+      AbstractStringBuilder_appendCharNative(sb, '0' + U);
     } else if (k >= -1) {
-      [sb append0WithChar:'0'];
+      AbstractStringBuilder_appendCharNative(sb, '0');
     }
     if (k == 0) {
-      [sb append0WithChar:'.'];
+      AbstractStringBuilder_appendCharNative(sb, '.');
     }
     k--;
     U = digitIndex < digitCount ? digits[digitIndex++] : -1;
@@ -267,7 +269,7 @@ void freeFormat(
  *
  */
 void bigIntDigitGenerator(
-    long long int f, int e, BOOL isDenormalized, int p, int *firstK, int digits[],
+    long long int f, int e, BOOL isDenormalized, int p, int *firstK, char digits[],
     int *digitCount) {
   int RLength, SLength, TempLength, mplus_Length, mminus_Length;
   int high, low, i;
@@ -434,7 +436,7 @@ void bigIntDigitGenerator(
 }
 
 void longDigitGenerator(
-    long long f, int e, BOOL isDenormalized, BOOL mantissaIsZero, int p, int *firstK, int digits[],
+    long long f, int e, BOOL isDenormalized, BOOL mantissaIsZero, int p, int *firstK, char digits[],
     int *digitCount) {
   long long R, S, M;
   if (e >= 0) {
