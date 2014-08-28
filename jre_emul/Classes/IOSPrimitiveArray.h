@@ -94,9 +94,6 @@ PRIMITIVE_ARRAY_INTERFACE(char, Char, unichar)
 // Create an array from an NSString.
 + (instancetype)arrayWithNSString:(NSString *)string;
 
-// Returns a copy of the array contents.
-- (unichar *)getChars;
-
 @end
 
 

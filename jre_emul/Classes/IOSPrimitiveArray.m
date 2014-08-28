@@ -162,12 +162,6 @@ PRIMITIVE_ARRAY_IMPLEMENTATION(char, Char, unichar)
   return [array autorelease];
 }
 
-- (unichar *)getChars {
-  unichar *result = calloc(size_, sizeof(unichar));
-  [self getChars:result length:size_];
-  return result;
-}
-
 - (NSString *)descriptionOfElementAtIndex:(NSUInteger)index {
   return [NSString stringWithFormat:@"%C", buffer_[index]];
 }
