@@ -48,6 +48,7 @@ IOS_OBJS = \
 	NSNumber+JavaNumber.o \
 	NSObject+JavaObject.o \
 	NSString+JavaString.o \
+	java_lang_IntegralToString.o \
 	java_lang_RealToString.o \
 	java_lang_StringToReal.o \
 	java/lang/reflect/ExecutableMember.o \
