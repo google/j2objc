@@ -95,10 +95,8 @@ id makeException(Class exceptionClass) {
   if (exception) {
     @throw exception;
   }
-  unichar *chars = [data getChars];
-  NSString *result = [NSString stringWithCharacters:chars + offset
+  NSString *result = [NSString stringWithCharacters:data->buffer_ + offset
                                              length:(NSUInteger)count];
-  free(chars);
   return result;
 }
 
@@ -218,10 +216,8 @@ destinationBegin:(int)destinationBegin {
   if (count == 0) {
     return [NSString string];
   }
-  unichar *buffer = [value getChars];
-  NSString *result = [NSString stringWithCharacters:buffer + offset
+  NSString *result = [NSString stringWithCharacters:value->buffer_ + offset
                                              length:count];
-  free(buffer);
   return result;
 }
 
