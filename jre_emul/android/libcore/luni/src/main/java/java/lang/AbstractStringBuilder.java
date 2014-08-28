@@ -127,6 +127,19 @@ abstract class AbstractStringBuilder {
         count = newCount;
     }
 
+    // Used internally by java_lang_IntegralToString.m.
+    /*-[
+    void AbstractStringBuilder_appendNativeBuffer(
+        JavaLangAbstractStringBuilder *self, unichar *buffer, int length) {
+      int newCount = self->count_ + length;
+      if (newCount > (int) self->value_->size_) {
+        JavaLangAbstractStringBuilder_enlargeBuffer_(self, newCount);
+      }
+      memcpy(self->value_->buffer_ + self->count_, buffer, length * sizeof(unichar));
+      self->count_ = newCount;
+    }
+    ]-*/
+
     final void append0(char ch) {
         if (count == value.length) {
             enlargeBuffer(count + 1);
