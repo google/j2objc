@@ -18,6 +18,8 @@
 // Modified version of Android's java_lang_RealToString.cpp, converted
 // to not use JNI calling convention.
 
+#include "java_lang_RealToString.h"
+
 #define LOG_TAG "RealToString"
 
 #include <string.h>
@@ -25,9 +27,14 @@
 #include <stdlib.h>
 
 #include "cbigint.h"
+#include "java_lang_IntegralToString.h"
+#include "java/lang/AbstractStringBuilder.h"
 #include "java/lang/AssertionError.h"
-#include "java/lang/RealToString.h"
+#include "java/lang/Double.h"
+#include "java/lang/Float.h"
+#include "java/lang/StringBuilder.h"
 #include "jni.h"
+#include "libcore/math/MathUtils.h"
 
 #define INV_LOG_OF_TEN_BASE_2 (0.30102999566398114) /* Local */
 
@@ -35,6 +42,202 @@
  *have global data for use by bigIntDigitGenerator */
 #define RM_SIZE 21     /* Local. */
 #define STemp_SIZE 22  /* Local. */
+
+#define DIGITS_SIZE 64
+
+static void freeFormatExponential(
+    JavaLangAbstractStringBuilder *sb, BOOL positive, int k, const int digits[], int digitCount);
+static void freeFormat(
+    JavaLangAbstractStringBuilder *sb, BOOL positive, int k, const int digits[], int digitCount);
+static void bigIntDigitGenerator(
+    long long int f, int e, BOOL isDenormalized, int p, int *firstK, int digits[],
+    int *digitCount);
+static void longDigitGenerator(
+    long long f, int e, BOOL isDenormalized, BOOL mantissaIsZero, int p, int *firstK, int digits[],
+    int *digitCount);
+
+static NSString *resultOrSideEffect(JavaLangAbstractStringBuilder *sb, NSString *s) {
+  if (sb) {
+    [sb append0WithNSString:s];
+    return nil;
+  }
+  return s;
+}
+
+NSString *RealToString_convertDouble(JavaLangAbstractStringBuilder *sb, double inputNumber) {
+  long long inputNumberBits = *(long long *)&inputNumber;
+  BOOL positive = (inputNumberBits & JavaLangDouble_SIGN_MASK) == 0;
+  int e = (inputNumberBits & JavaLangDouble_EXPONENT_MASK) >> JavaLangDouble_MANTISSA_BITS;
+  long long f = inputNumberBits & JavaLangDouble_MANTISSA_MASK;
+  BOOL mantissaIsZero = f == 0;
+
+  NSString *quickResult = nil;
+  if (e == 2047) {
+    if (mantissaIsZero) {
+      quickResult = positive ? @"Infinity" : @"-Infinity";
+    } else {
+      quickResult = @"NaN";
+    }
+  } else if (e == 0) {
+    if (mantissaIsZero) {
+      quickResult = positive ? @"0.0" : @"-0.0";
+    } else if (f == 1) {
+      // special case to increase precision even though 2 * Double.MIN_VALUE is 1.0e-323
+      quickResult = positive ? @"4.9E-324" : @"-4.9E-324";
+    }
+  }
+  if (quickResult) {
+    return resultOrSideEffect(sb, quickResult);
+  }
+
+  // the power offset (precision)
+  int p = JavaLangDouble_EXPONENT_BIAS + JavaLangDouble_MANTISSA_BITS;
+  int pow;
+  int numBits = JavaLangDouble_MANTISSA_BITS;
+  if (e == 0) {
+    pow = 1 - p; // a denormalized number
+    long long ff = f;
+    while ((ff & 0x0010000000000000LL) == 0) {
+      ff = (uint64_t)ff << 1;
+      numBits--;
+    }
+  } else {
+    // 0 < e < 2047
+    // a "normalized" number
+    f = f | 0x0010000000000000LL;
+    pow = e - p;
+  }
+
+  int firstK = 0, digitCount = 0;
+  int digits[DIGITS_SIZE];
+  if ((-59 < pow && pow < 6) || (pow == -59 && !mantissaIsZero)) {
+    longDigitGenerator(f, pow, e == 0, mantissaIsZero, numBits, &firstK, digits, &digitCount);
+  } else {
+    bigIntDigitGenerator(f, pow, e == 0, numBits, &firstK, digits, &digitCount);
+  }
+  JavaLangAbstractStringBuilder *dst =
+      sb ? sb : [[[JavaLangStringBuilder alloc] initWithInt:26] autorelease];
+  if (inputNumber >= 1e7 || inputNumber <= -1e7 || (inputNumber > -1e-3 && inputNumber < 1e-3)) {
+    freeFormatExponential(dst, positive, firstK, digits, digitCount);
+  } else {
+    freeFormat(dst, positive, firstK, digits, digitCount);
+  }
+  return sb ? nil : [dst description];
+}
+
+NSString *RealToString_convertFloat(JavaLangAbstractStringBuilder *sb, float inputNumber) {
+  int inputNumberBits = *(int *)&inputNumber;
+  BOOL positive = (inputNumberBits & JavaLangFloat_SIGN_MASK) == 0;
+  int e = (inputNumberBits & JavaLangFloat_EXPONENT_MASK) >> JavaLangFloat_MANTISSA_BITS;
+  int f = inputNumberBits & JavaLangFloat_MANTISSA_MASK;
+  BOOL mantissaIsZero = f == 0;
+
+  NSString *quickResult = nil;
+  if (e == 255) {
+    if (mantissaIsZero) {
+      quickResult = positive ? @"Infinity" : @"-Infinity";
+    } else {
+      quickResult = @"NaN";
+    }
+  } else if (e == 0 && mantissaIsZero) {
+    quickResult = positive ? @"0.0" : @"-0.0";
+  }
+  if (quickResult) {
+    return resultOrSideEffect(sb, quickResult);
+  }
+
+  // the power offset (precision)
+  int p = JavaLangFloat_EXPONENT_BIAS + JavaLangFloat_MANTISSA_BITS;
+  int pow;
+  int numBits = JavaLangFloat_MANTISSA_BITS;
+  if (e == 0) {
+    pow = 1 - p; // a denormalized number
+    if (f < 8) { // want more precision with smallest values
+      f = f << 2;
+      pow -= 2;
+    }
+    int ff = f;
+    while ((ff & 0x00800000) == 0) {
+      ff = ff << 1;
+      numBits--;
+    }
+  } else {
+    // 0 < e < 255
+    // a "normalized" number
+    f = f | 0x00800000;
+    pow = e - p;
+  }
+
+  int firstK = 0, digitCount = 0;
+  int digits[DIGITS_SIZE];
+  if ((-59 < pow && pow < 35) || (pow == -59 && !mantissaIsZero)) {
+    longDigitGenerator(f, pow, e == 0, mantissaIsZero, numBits, &firstK, digits, &digitCount);
+  } else {
+    bigIntDigitGenerator(f, pow, e == 0, numBits, &firstK, digits, &digitCount);
+  }
+  JavaLangAbstractStringBuilder *dst =
+    sb ? sb : [[[JavaLangStringBuilder alloc] initWithInt:26] autorelease];
+  if (inputNumber >= 1e7f || inputNumber <= -1e7f
+      || (inputNumber > -1e-3f && inputNumber < 1e-3f)) {
+    freeFormatExponential(dst, positive, firstK, digits, digitCount);
+  } else {
+    freeFormat(dst, positive, firstK, digits, digitCount);
+  }
+  return sb ? nil : [dst description];
+}
+
+void freeFormatExponential(
+    JavaLangAbstractStringBuilder *sb, BOOL positive, int k, const int digits[], int digitCount) {
+  int digitIndex = 0;
+  if (!positive) {
+    [sb append0WithChar:'-'];
+  }
+  [sb append0WithChar:'0' + digits[digitIndex++]];
+  [sb append0WithChar:'.'];
+
+  int exponent = k;
+  while (YES) {
+    k--;
+    if (digitIndex >= digitCount) {
+      break;
+    }
+    [sb append0WithChar:'0' + digits[digitIndex++]];
+  }
+
+  if (k == exponent - 1) {
+    [sb append0WithChar:'0'];
+  }
+  [sb append0WithChar:'E'];
+  IntegralToString_convertInt(sb, exponent);
+}
+
+void freeFormat(
+    JavaLangAbstractStringBuilder *sb, BOOL positive, int k, const int digits[], int digitCount) {
+  int digitIndex = 0;
+  if (!positive) {
+    [sb append0WithChar:'-'];
+  }
+  if (k < 0) {
+    [sb append0WithChar:'0'];
+    [sb append0WithChar:'.'];
+    for (int i = k + 1; i < 0; ++i) {
+      [sb append0WithChar:'0'];
+    }
+  }
+  int U = digits[digitIndex++];
+  do {
+    if (U != -1) {
+      [sb append0WithChar:'0' + U];
+    } else if (k >= -1) {
+      [sb append0WithChar:'0'];
+    }
+    if (k == 0) {
+      [sb append0WithChar:'.'];
+    }
+    k--;
+    U = digitIndex < digitCount ? digits[digitIndex++] : -1;
+  } while (U != -1 || k >= -1);
+}
 
 /* The algorithm for this particular function can be found in:
  *
@@ -63,11 +266,12 @@
  *           1.2341234124312331E107
  *
  */
-void RealToString_bigIntDigitGenerator(JavaLangRealToString *obj, long long int f, int e,
-        BOOL isDenormalized, int p) {
+void bigIntDigitGenerator(
+    long long int f, int e, BOOL isDenormalized, int p, int *firstK, int digits[],
+    int *digitCount) {
   int RLength, SLength, TempLength, mplus_Length, mminus_Length;
   int high, low, i;
-  jint k, firstK, U;
+  jint k, U;
 
   uint64_t R[RM_SIZE], S[STemp_SIZE], mplus[RM_SIZE], mminus[RM_SIZE], Temp[STemp_SIZE];
 
@@ -154,11 +358,11 @@ void RealToString_bigIntDigitGenerator(JavaLangRealToString *obj, long long int 
 
   if (compareHighPrecision (Temp, TempLength, S, SLength) >= 0)
     {
-      firstK = k;
+      *firstK = k;
     }
   else
     {
-      firstK = k - 1;
+      *firstK = k - 1;
       simpleAppendDecimalDigitHighPrecision (R     , ++RLength      , 0);
       simpleAppendDecimalDigitHighPrecision (mplus , ++mplus_Length , 0);
       simpleAppendDecimalDigitHighPrecision (mminus, ++mminus_Length, 0);
@@ -170,13 +374,6 @@ void RealToString_bigIntDigitGenerator(JavaLangRealToString *obj, long long int 
         --mminus_Length;
     }
 
-  if (obj->digits_ == NULL) {
-    return;
-  }
-  jint *digits = IOSIntArray_GetRef(obj->digits_, 0);
-  NSUInteger max = [obj->digits_ count];
-
-  jint digitCount = 0;
   do
     {
       U = 0;
@@ -214,12 +411,12 @@ void RealToString_bigIntDigitGenerator(JavaLangRealToString *obj, long long int 
         --mplus_Length;
       while (mminus_Length > 1 && mminus[mminus_Length - 1] == 0)
         --mminus_Length;
-      digits[digitCount++] = U;
-      if ((NSUInteger) digitCount >= max) {
+      digits[(*digitCount)++] = U;
+      if (*digitCount >= DIGITS_SIZE) {
         // Should only happen if there is a bug in the above, since digits is
         // set to hold any valid double.
         NSString *msg =
-            [NSString stringWithFormat:@"maximum digits length exceeded: %d", digitCount];
+            [NSString stringWithFormat:@"maximum digits length exceeded: %d", *digitCount];
         @throw AUTORELEASE([[JavaLangAssertionError alloc] initWithNSString:msg]);
       }
     }
@@ -227,14 +424,87 @@ void RealToString_bigIntDigitGenerator(JavaLangRealToString *obj, long long int 
 
   simpleShiftLeftHighPrecision (R, ++RLength, 1);
   if (low && !high)
-    digits[digitCount++] = U;
+    digits[(*digitCount)++] = U;
   else if (high && !low)
-    digits[digitCount++] = U + 1;
+    digits[(*digitCount)++] = U + 1;
   else if (compareHighPrecision (R, RLength, S, SLength) < 0)
-    digits[digitCount++] = U;
+    digits[(*digitCount)++] = U;
   else
-    digits[digitCount++] = U + 1;
+    digits[(*digitCount)++] = U + 1;
+}
 
-  obj->digitCount_ = digitCount;
-  obj->firstK_ = firstK;
+void longDigitGenerator(
+    long long f, int e, BOOL isDenormalized, BOOL mantissaIsZero, int p, int *firstK, int digits[],
+    int *digitCount) {
+  long long R, S, M;
+  if (e >= 0) {
+    M = (uint64_t)1l << e;
+    if (!mantissaIsZero) {
+      R = (uint64_t)f << (e + 1);
+      S = 2;
+    } else {
+      R = (uint64_t)f << (e + 2);
+      S = 4;
+    }
+  } else {
+    M = 1;
+    if (isDenormalized || !mantissaIsZero) {
+      R = (uint64_t)f << 1;
+      S = (uint64_t)1l << (1 - e);
+    } else {
+      R = (uint64_t)f << 2;
+      S = (uint64_t)1l << (2 - e);
+    }
+  }
+
+  int k = (int) ceil((e + p - 1) * INV_LOG_OF_TEN_BASE_2 - 1e-10);
+
+  if (k > 0) {
+    S = S * LibcoreMathMathUtils_get_LONG_POWERS_OF_TEN_()->buffer_[k];
+  } else if (k < 0) {
+    long long scale = LibcoreMathMathUtils_get_LONG_POWERS_OF_TEN_()->buffer_[-k];
+    R = R * scale;
+    M = M == 1 ? scale : M * scale;
+  }
+
+  if (R + M > S) { // was M_plus
+    *firstK = k;
+  } else {
+    *firstK = k - 1;
+    R = R * 10;
+    M = M * 10;
+  }
+
+  BOOL low, high;
+  int U;
+  while (YES) {
+    // Set U to floor(R/S) and R to the remainder, using *unsigned* 64-bit division
+    U = 0;
+    for (int i = 3; i >= 0; i--) {
+      long long remainder = R - ((uint64_t)S << i);
+      if (remainder >= 0) {
+        R = remainder;
+        U += 1 << i;
+      }
+    }
+
+    low = R < M; // was M_minus
+    high = R + M > S; // was M_plus
+
+    if (low || high) {
+      break;
+    }
+    R = R * 10;
+    M = M * 10;
+    digits[(*digitCount)++] = U;
+  }
+  if (low && !high) {
+    digits[(*digitCount)++] = U;
+  } else if (high && !low) {
+    digits[(*digitCount)++] = U + 1;
+  } else if ((R << 1) < S) {
+    digits[(*digitCount)++] = U;
+  } else {
+    digits[(*digitCount)++] = U + 1;
+  }
 }

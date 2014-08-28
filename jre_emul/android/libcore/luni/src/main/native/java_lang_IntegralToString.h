@@ -12,6 +12,9 @@
  * limitations under the License.
  */
 
+#ifndef _java_lang_IntegralToString_H_
+#define _java_lang_IntegralToString_H_
+
 #import <Foundation/Foundation.h>
 
 @class IOSByteArray;
@@ -32,3 +35,5 @@ NSString *IntegralToString_intToHexString(int i, BOOL upperCase, int minWidth);
 NSString *IntegralToString_longToHexString(long long v);
 NSString *IntegralToString_intToOctalString(int i);
 NSString *IntegralToString_longToOctalString(long long v);
+
+#endif // _java_lang_IntegralToString_H_

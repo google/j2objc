@@ -326,7 +326,7 @@ public final class Double extends Number implements Comparable<Double> {
      * @return a printable representation of {@code d}.
      */
     public static String toString(double d) {
-        return RealToString.getInstance().doubleToString(d);
+        return RealToString.doubleToString(d);
     }
 
     /**
