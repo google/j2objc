@@ -139,7 +139,7 @@ public final class StringBuffer extends AbstractStringBuilder implements
      * @see String#valueOf(double)
      */
     public StringBuffer append(double d) {
-        RealToString.getInstance().appendDouble(this, d);
+        RealToString.appendDouble(this, d);
         return this;
     }
 
@@ -153,7 +153,7 @@ public final class StringBuffer extends AbstractStringBuilder implements
      * @see String#valueOf(float)
      */
     public StringBuffer append(float f) {
-        RealToString.getInstance().appendFloat(this, f);
+        RealToString.appendFloat(this, f);
         return this;
     }
 

@@ -329,7 +329,7 @@ public final class Float extends Number implements Comparable<Float> {
      * @return a printable representation of {@code f}.
      */
     public static String toString(float f) {
-        return RealToString.getInstance().floatToString(f);
+        return RealToString.floatToString(f);
     }
 
     /**
