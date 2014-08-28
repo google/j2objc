@@ -908,7 +908,6 @@ JAVA_SOURCES = \
 	libcore/io/StructStatVfs.java \
 	libcore/io/StructTimeval.java \
 	libcore/io/StructUtsname.java \
-	libcore/math/MathUtils.java \
 	libcore/net/UriCodec.java \
 	libcore/net/MimeUtils.java \
 	libcore/net/http/HttpDate.java \

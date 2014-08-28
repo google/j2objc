@@ -34,7 +34,6 @@
 #include "java/lang/Float.h"
 #include "java/lang/StringBuilder.h"
 #include "jni.h"
-#include "libcore/math/MathUtils.h"
 
 #define INV_LOG_OF_TEN_BASE_2 (0.30102999566398114) /* Local */
 
@@ -57,6 +56,32 @@ static void bigIntDigitGenerator(
 static void longDigitGenerator(
     long long f, int e, BOOL isDenormalized, BOOL mantissaIsZero, int p, int *firstK, char digits[],
     int *digitCount);
+
+/**
+ * An array with powers of ten that fit in the type <code>long</code>
+ * (<code>10^0,10^1,...,10^18</code>).
+ */
+static const long long LONG_POWERS_OF_TEN[] = {
+  1LL,
+  10LL,
+  100LL,
+  1000LL,
+  10000LL,
+  100000LL,
+  1000000LL,
+  10000000LL,
+  100000000LL,
+  1000000000LL,
+  10000000000LL,
+  100000000000LL,
+  1000000000000LL,
+  10000000000000LL,
+  100000000000000LL,
+  1000000000000000LL,
+  10000000000000000LL,
+  100000000000000000LL,
+  1000000000000000000LL,
+};
 
 static NSString *resultOrSideEffect(JavaLangAbstractStringBuilder *sb, NSString *s) {
   if (sb) {
@@ -462,9 +487,9 @@ void longDigitGenerator(
   int k = (int) ceil((e + p - 1) * INV_LOG_OF_TEN_BASE_2 - 1e-10);
 
   if (k > 0) {
-    S = S * LibcoreMathMathUtils_get_LONG_POWERS_OF_TEN_()->buffer_[k];
+    S = S * LONG_POWERS_OF_TEN[k];
   } else if (k < 0) {
-    long long scale = LibcoreMathMathUtils_get_LONG_POWERS_OF_TEN_()->buffer_[-k];
+    long long scale = LONG_POWERS_OF_TEN[-k];
     R = R * scale;
     M = M == 1 ? scale : M * scale;
   }
