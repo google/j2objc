@@ -28,6 +28,7 @@
 #import "java/lang/AssertionError.h"
 #import "java/lang/Character.h"
 #import "java/lang/ClassCastException.h"
+#import "java/lang/Integer.h"
 #import "java/lang/NullPointerException.h"
 #import "java/lang/StringBuffer.h"
 #import "java/lang/StringBuilder.h"
@@ -907,6 +908,26 @@ NSStringEncoding parseCharsetName(NSString *charset) {
 
 - (BOOL)contentEqualsStringBuffer:(JavaLangStringBuffer *)sb {
   return [self isEqualToString:[sb description]];
+}
+
+- (NSUInteger)hash {
+  static const char *hashKey = "__JAVA_STRING_HASH_CODE_KEY__";
+  id cachedHash = objc_getAssociatedObject(self, hashKey);
+  if (cachedHash) {
+    return [(JavaLangInteger *) cachedHash intValue];
+  }
+  int len = (int)[self length];
+  int hash = 0;
+  if (len > 0) {
+    unichar *chars = malloc(len * sizeof(unichar));
+    [self getCharacters:chars range:NSMakeRange(0, len)];
+    for (int i = 0; i < len; i++) {
+      hash = 31 * hash + (int)chars[i];
+    }
+  }
+  objc_setAssociatedObject(self, hashKey, [JavaLangInteger valueOfWithInt:hash],
+                           OBJC_ASSOCIATION_RETAIN);
+  return hash;
 }
 
 + (J2ObjcClassInfo *)__metadata {
