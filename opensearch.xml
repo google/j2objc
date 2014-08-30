@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <OpenSearchDescription xmlns="http://a9.com/-/spec/opensearch/1.1/">
-	<ShortName>J2ObjC</ShortName>
+	<ShortName>j2objc</ShortName>
 	<Description>Search J2ObjC</Description>
 	<Image>images/favicon.ico</Image>
 	<Url type="text/html" template="http://www.google.com/search?q=site:https://github.com/google/j2objc {searchTerms}"/>
