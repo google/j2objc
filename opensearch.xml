@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <OpenSearchDescription xmlns:moz="http://www.mozilla.org/2006/browser/search/" 
       xmlns="http://a9.com/-/spec/opensearch/1.1/">
-  	<ShortName>j2objc.org</ShortName>
-	<Description>Search J2ObjC project</Description>
+  <ShortName>J2ObjC</ShortName>
+  <Description>Search J2ObjC project</Description>
   <InputEncoding>UTF-8</InputEncoding>
+  <Image width="16" height="16" type="image/png">http://j2objc.org/images/favicon.png</Image>
   <Url method="get" type="text/html" 
-      template="http://www.google.com/search?q={searchTerms}+site%3Ahttps%3A%2F%2Fgithub.com%2Fgoogle%2Fj2objc&amp;hl=en"/>
+     template="http://www.google.com/search?q={searchTerms}+site%3Ahttps%3A%2F%2Fgithub.com%2Fgoogle%2Fj2objc&amp;hl=en"/>
 </OpenSearchDescription>
