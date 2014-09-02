@@ -33,7 +33,6 @@
 #include "java/lang/Double.h"
 #include "java/lang/Float.h"
 #include "java/lang/StringBuilder.h"
-#include "jni.h"
 
 #define INV_LOG_OF_TEN_BASE_2 (0.30102999566398114) /* Local */
 

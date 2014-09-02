@@ -17,6 +17,16 @@
 
 #import <Foundation/Foundation.h>
 
+// Typedefs for each of Java's primitive types. (as defined in jni.h)
+typedef uint8_t         jboolean;       /* unsigned 8 bits */
+typedef int8_t          jbyte;          /* signed 8 bits */
+typedef uint16_t        jchar;          /* unsigned 16 bits */
+typedef int16_t         jshort;         /* signed 16 bits */
+typedef int32_t         jint;           /* signed 32 bits */
+typedef int64_t         jlong;          /* signed 64 bits */
+typedef float           jfloat;         /* 32-bit IEEE 754 */
+typedef double          jdouble;        /* 64-bit IEEE 754 */
+
 /*!
  * Defines an init function for a class that will ensure that the class is
  * initialized. For class "Foo" the function will have the following signature:

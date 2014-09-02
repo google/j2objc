@@ -23,7 +23,6 @@
 #include <math.h>
 #include "cbigint.h"
 #include "java/lang/OutOfMemoryError.h"
-#include "jni.h"
 
 /* ************************* Defines ************************* */
 #if defined(__linux__) || defined(__APPLE__)
