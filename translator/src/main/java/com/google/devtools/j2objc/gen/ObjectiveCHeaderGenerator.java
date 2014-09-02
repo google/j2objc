@@ -23,20 +23,16 @@ import com.google.common.collect.Sets;
 import com.google.devtools.j2objc.J2ObjC;
 import com.google.devtools.j2objc.Options;
 import com.google.devtools.j2objc.ast.AbstractTypeDeclaration;
-import com.google.devtools.j2objc.ast.Annotation;
 import com.google.devtools.j2objc.ast.AnnotationTypeDeclaration;
 import com.google.devtools.j2objc.ast.AnnotationTypeMemberDeclaration;
 import com.google.devtools.j2objc.ast.CompilationUnit;
 import com.google.devtools.j2objc.ast.EnumConstantDeclaration;
 import com.google.devtools.j2objc.ast.EnumDeclaration;
-import com.google.devtools.j2objc.ast.FieldDeclaration;
 import com.google.devtools.j2objc.ast.MethodDeclaration;
-import com.google.devtools.j2objc.ast.Name;
 import com.google.devtools.j2objc.ast.TreeUtil;
 import com.google.devtools.j2objc.ast.TreeVisitor;
 import com.google.devtools.j2objc.ast.Type;
 import com.google.devtools.j2objc.ast.TypeDeclaration;
-import com.google.devtools.j2objc.ast.VariableDeclarationFragment;
 import com.google.devtools.j2objc.types.HeaderImportCollector;
 import com.google.devtools.j2objc.types.IOSMethod;
 import com.google.devtools.j2objc.types.Import;
@@ -59,8 +55,6 @@ import java.util.Set;
  * @author Tom Ball
  */
 public class ObjectiveCHeaderGenerator extends ObjectiveCSourceFileGenerator {
-
-  private static final String DEPRECATED_ATTRIBUTE = "__attribute__((deprecated))";
 
   protected final String mainTypeName;
 
@@ -145,7 +139,7 @@ public class ObjectiveCHeaderGenerator extends ObjectiveCSourceFileGenerator {
     }
     if (!isInterface) {
       println(" {");
-      printInstanceVariables(node);
+      printInstanceVariables(node, false);
       println("}");
     }
     printMethods(methods);
@@ -155,7 +149,7 @@ public class ObjectiveCHeaderGenerator extends ObjectiveCSourceFileGenerator {
       printStaticInterface(node, methods);
     } else {
       printStaticInitFunction(node, methods);
-      printFieldSetters(node);
+      printFieldSetters(node, false);
       printStaticFields(node);
     }
 
@@ -313,7 +307,7 @@ public class ObjectiveCHeaderGenerator extends ObjectiveCSourceFileGenerator {
       }
     }
     println(" > {");
-    printInstanceVariables(node);
+    printInstanceVariables(node, false);
     println("}");
     println("+ (IOSObjectArray *)values;");
     printf("+ (%s *)valueOfWithNSString:(NSString *)name;\n", typeName);
@@ -330,7 +324,7 @@ public class ObjectiveCHeaderGenerator extends ObjectiveCSourceFileGenerator {
       printf("J2OBJC_STATIC_FIELD_GETTER(%s, %s, %s *)\n", typeName, varName, typeName);
     }
     printStaticFields(node);
-    printFieldSetters(node);
+    printFieldSetters(node, false);
   }
 
   private void printStaticInitFunction(
@@ -376,38 +370,10 @@ public class ObjectiveCHeaderGenerator extends ObjectiveCSourceFileGenerator {
 
   @Override
   protected void printNormalMethod(MethodDeclaration m) {
-    IMethodBinding binding = m.getMethodBinding();
-    if (binding.isSynthetic()) {
-      return;
-    }
     if ((m.getModifiers() & Modifier.NATIVE) > 0 && !hasNativeCode(m)) {
       return;
     }
-    newline();
-    printDocComment(m.getJavadoc());
-    print(super.methodDeclaration(m));
-    String methodName = NameTable.getName(m.getMethodBinding());
-    if (needsObjcMethodFamilyNoneAttribute(methodName)) {
-         // Getting around a clang warning.
-         // clang assumes that methods with names starting with new, alloc or copy
-         // return objects of the same type as the receiving class, regardless of
-         // the actual declared return type. This attribute tells clang to not do
-         // that, please.
-         // See http://clang.llvm.org/docs/AutomaticReferenceCounting.html
-         // Sections 5.1 (Explicit method family control)
-         // and 5.2.2 (Related result types)
-         print(" OBJC_METHOD_FAMILY_NONE");
-       }
-
-    if (needsDeprecatedAttribute(m.getAnnotations())) {
-      print(" " + DEPRECATED_ATTRIBUTE);
-    }
-    println(";");
-  }
-
-  private boolean needsObjcMethodFamilyNoneAttribute(String name) {
-    return name.startsWith("new") || name.startsWith("copy") || name.startsWith("alloc")
-        || name.startsWith("init") || name.startsWith("mutableCopy");
+    printNormalMethodDeclaration(m);
   }
 
   @Override
@@ -435,7 +401,9 @@ public class ObjectiveCHeaderGenerator extends ObjectiveCSourceFileGenerator {
     if (BindingUtil.isFunction(binding)) {
       return;  // All function declarations are private.
     }
-    super.printMethod(m);
+    if (!Options.hidePrivateMembers() || !isPrivateOrSynthetic(m.getModifiers())) {
+      super.printMethod(m);
+    }
   }
 
   protected void printForwardDeclarations(Set<Import> forwardDecls) {
@@ -487,55 +455,6 @@ public class ObjectiveCHeaderGenerator extends ObjectiveCSourceFileGenerator {
     printf("#endif // _%s_H_\n", mainTypeName);
   }
 
-  private void printInstanceVariables(AbstractTypeDeclaration node) {
-    indent();
-    boolean first = true;
-    for (FieldDeclaration field : TreeUtil.getFieldDeclarations(node)) {
-      if (!Modifier.isStatic(field.getModifiers())) {
-        List<VariableDeclarationFragment> vars = field.getFragments();
-        assert !vars.isEmpty();
-        IVariableBinding varBinding = vars.get(0).getVariableBinding();
-        ITypeBinding varType = varBinding.getType();
-        // Need direct access to fields possibly from inner classes that are
-        // promoted to top level classes, so must make all fields public.
-        if (first) {
-          println(" @public");
-          first = false;
-        }
-        printDocComment(field.getJavadoc());
-        printIndent();
-        if (BindingUtil.isWeakReference(varBinding)) {
-          // We must add this even without -use-arc because the header may be
-          // included by a file compiled with ARC.
-          print("__weak ");
-        }
-        String objcType = NameTable.getSpecificObjCType(varType);
-        boolean needsAsterisk = !varType.isPrimitive() && !objcType.matches("id|id<.*>|Class");
-        if (needsAsterisk && objcType.endsWith(" *")) {
-          // Strip pointer from type, as it will be added when appending fragment.
-          // This is necessary to create "Foo *one, *two;" declarations.
-          objcType = objcType.substring(0, objcType.length() - 2);
-        }
-        print(objcType);
-        print(' ');
-        for (Iterator<VariableDeclarationFragment> it = field.getFragments().iterator();
-             it.hasNext(); ) {
-          VariableDeclarationFragment f = it.next();
-          if (needsAsterisk) {
-            print('*');
-          }
-          String name = NameTable.getName(f.getName().getBinding());
-          print(NameTable.javaFieldToObjC(name));
-          if (it.hasNext()) {
-            print(", ");
-          }
-        }
-        println(";");
-      }
-    }
-    unindent();
-  }
-
   private void printAnnotationVariables(List<AnnotationTypeMemberDeclaration> members) {
     indent();
     for (AnnotationTypeMemberDeclaration member : members) {
@@ -556,32 +475,6 @@ public class ObjectiveCHeaderGenerator extends ObjectiveCSourceFileGenerator {
       newline();
       print(annotationConstructorDeclaration(annotation));
       println(";");
-    }
-  }
-
-  private void printFieldSetters(AbstractTypeDeclaration node) {
-    ITypeBinding declaringType = node.getTypeBinding();
-    boolean newlinePrinted = false;
-    for (FieldDeclaration field : TreeUtil.getFieldDeclarations(node)) {
-      ITypeBinding type = field.getType().getTypeBinding();
-      int modifiers = field.getModifiers();
-      if (Modifier.isStatic(modifiers) || type.isPrimitive()) {
-        continue;
-      }
-      String typeStr = NameTable.getObjCType(type);
-      String declaringClassName = NameTable.getFullName(declaringType);
-      for (VariableDeclarationFragment var : field.getFragments()) {
-        if (BindingUtil.isWeakReference(var.getVariableBinding())) {
-          continue;
-        }
-        String fieldName = NameTable.javaFieldToObjC(NameTable.getName(var.getName().getBinding()));
-        if (!newlinePrinted) {
-          newlinePrinted = true;
-          newline();
-        }
-        println(String.format("J2OBJC_FIELD_SETTER(%s, %s, %s)",
-            declaringClassName, fieldName, typeStr));
-      }
     }
   }
 
@@ -635,28 +528,5 @@ public class ObjectiveCHeaderGenerator extends ObjectiveCSourceFileGenerator {
     if (hadConstant) {
       newline();
     }
-  }
-
-  private boolean needsDeprecatedAttribute(List<Annotation> annotations) {
-    return Options.generateDeprecatedDeclarations() && hasDeprecated(annotations);
-  }
-
-  /**
-   * Checks if the list of modifiers contains a Deprecated annotation.
-   *
-   * @param modifiers extended modifiers
-   * @return true if the list has {@link Deprecated @Deprecated}, false otherwise
-   */
-  boolean hasDeprecated(List<Annotation> annotations) {
-    for (Annotation annotation : annotations) {
-      Name annotationTypeName = annotation.getTypeName();
-      String expectedTypeName =
-          annotationTypeName.isQualifiedName() ? "java.lang.Deprecated" : "Deprecated";
-      if (expectedTypeName.equals(annotationTypeName.getFullyQualifiedName())) {
-        return true;
-      }
-    }
-
-    return false;
   }
 }

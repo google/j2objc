@@ -89,7 +89,7 @@ public class IosX509Certificate extends X509Certificate {
     }
 
     // Verify it is valid for the specified date.
-    double requestedTime = date->milliseconds_ / 1000.0;
+    double requestedTime = [date getTime] / 1000.0;
     NSDate *nsDate = [NSDate dateWithTimeIntervalSince1970:requestedTime];
     NSLog(@"trust date: %@", nsDate);
     SecTrustResultType trustResult;

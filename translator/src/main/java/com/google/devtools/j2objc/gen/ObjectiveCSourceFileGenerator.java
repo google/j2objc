@@ -21,11 +21,14 @@ import com.google.common.base.Predicate;
 import com.google.common.collect.Iterables;
 import com.google.devtools.j2objc.Options;
 import com.google.devtools.j2objc.ast.AbstractTypeDeclaration;
+import com.google.devtools.j2objc.ast.Annotation;
 import com.google.devtools.j2objc.ast.AnnotationTypeDeclaration;
 import com.google.devtools.j2objc.ast.CompilationUnit;
 import com.google.devtools.j2objc.ast.EnumDeclaration;
+import com.google.devtools.j2objc.ast.FieldDeclaration;
 import com.google.devtools.j2objc.ast.Javadoc;
 import com.google.devtools.j2objc.ast.MethodDeclaration;
+import com.google.devtools.j2objc.ast.Name;
 import com.google.devtools.j2objc.ast.SingleVariableDeclaration;
 import com.google.devtools.j2objc.ast.TagElement;
 import com.google.devtools.j2objc.ast.TextElement;
@@ -114,6 +117,8 @@ public abstract class ObjectiveCSourceFileGenerator extends SourceFileGenerator 
       return BindingUtil.isStatic(binding) && !BindingUtil.isPrimitiveConstant(binding);
     }
   };
+
+  protected static final String DEPRECATED_ATTRIBUTE = "__attribute__((deprecated))";
 
   protected Iterable<IVariableBinding> getStaticFieldsNeedingAccessors(
       AbstractTypeDeclaration node) {
@@ -490,5 +495,140 @@ public abstract class ObjectiveCSourceFileGenerator extends SourceFileGenerator 
       return result.replace(NameTable.PACKAGE_INFO_MAIN_TYPE, NameTable.PACKAGE_INFO_FILE_NAME);
     }
     return result;
+  }
+
+  /**
+   * Prints the list of instance variables in a type.
+   *
+   * @param node the type to examine
+   * @param privateVars if true, only print private vars, otherwise print all but private vars
+   */
+  protected void printInstanceVariables(AbstractTypeDeclaration node, boolean privateVars) {
+    indent();
+    boolean first = true;
+    boolean printAllVars = !Options.hidePrivateMembers() && !privateVars;
+    for (FieldDeclaration field : TreeUtil.getFieldDeclarations(node)) {
+      int modifiers = field.getModifiers();
+      if (!Modifier.isStatic(field.getModifiers()) &&
+          (printAllVars || (privateVars == isPrivateOrSynthetic(modifiers)))) {
+        List<VariableDeclarationFragment> vars = field.getFragments();
+        assert !vars.isEmpty();
+        IVariableBinding varBinding = vars.get(0).getVariableBinding();
+        ITypeBinding varType = varBinding.getType();
+        // Need direct access to fields possibly from inner classes that are
+        // promoted to top level classes, so must make all visible fields public.
+        if (first) {
+          println(" @public");
+          first = false;
+        }
+        printDocComment(field.getJavadoc());
+        printIndent();
+        if (BindingUtil.isWeakReference(varBinding)) {
+          // We must add this even without -use-arc because the header may be
+          // included by a file compiled with ARC.
+          print("__weak ");
+        }
+        String objcType = NameTable.getSpecificObjCType(varType);
+        boolean needsAsterisk = !varType.isPrimitive() && !objcType.matches("id|id<.*>|Class");
+        if (needsAsterisk && objcType.endsWith(" *")) {
+          // Strip pointer from type, as it will be added when appending fragment.
+          // This is necessary to create "Foo *one, *two;" declarations.
+          objcType = objcType.substring(0, objcType.length() - 2);
+        }
+        print(objcType);
+        print(' ');
+        for (Iterator<VariableDeclarationFragment> it = field.getFragments().iterator();
+             it.hasNext(); ) {
+          VariableDeclarationFragment f = it.next();
+          if (needsAsterisk) {
+            print('*');
+          }
+          String name = NameTable.getName(f.getName().getBinding());
+          print(NameTable.javaFieldToObjC(name));
+          if (it.hasNext()) {
+            print(", ");
+          }
+        }
+        println(";");
+      }
+    }
+    unindent();
+  }
+
+  protected boolean isPrivateOrSynthetic(int modifiers) {
+    return Modifier.isPrivate(modifiers) || (modifiers & BindingUtil.ACC_SYNTHETIC) != 0;
+  }
+
+  protected void printNormalMethodDeclaration(MethodDeclaration m) {
+    newline();
+    printDocComment(m.getJavadoc());
+    print(this.methodDeclaration(m));
+    String methodName = NameTable.getName(m.getMethodBinding());
+    if (needsObjcMethodFamilyNoneAttribute(methodName)) {
+         // Getting around a clang warning.
+         // clang assumes that methods with names starting with new, alloc or copy
+         // return objects of the same type as the receiving class, regardless of
+         // the actual declared return type. This attribute tells clang to not do
+         // that, please.
+         // See http://clang.llvm.org/docs/AutomaticReferenceCounting.html
+         // Sections 5.1 (Explicit method family control)
+         // and 5.2.2 (Related result types)
+         print(" OBJC_METHOD_FAMILY_NONE");
+       }
+
+    if (needsDeprecatedAttribute(m.getAnnotations())) {
+      print(" " + DEPRECATED_ATTRIBUTE);
+    }
+    println(";");
+  }
+
+  protected boolean needsObjcMethodFamilyNoneAttribute(String name) {
+    return name.startsWith("new") || name.startsWith("copy") || name.startsWith("alloc")
+        || name.startsWith("init") || name.startsWith("mutableCopy");
+  }
+
+  protected boolean needsDeprecatedAttribute(List<Annotation> annotations) {
+    return Options.generateDeprecatedDeclarations() && hasDeprecated(annotations);
+  }
+
+  private boolean hasDeprecated(List<Annotation> annotations) {
+    for (Annotation annotation : annotations) {
+      Name annotationTypeName = annotation.getTypeName();
+      String expectedTypeName =
+          annotationTypeName.isQualifiedName() ? "java.lang.Deprecated" : "Deprecated";
+      if (expectedTypeName.equals(annotationTypeName.getFullyQualifiedName())) {
+        return true;
+      }
+    }
+
+    return false;
+  }
+
+  protected void printFieldSetters(AbstractTypeDeclaration node, boolean privateVars) {
+    ITypeBinding declaringType = node.getTypeBinding();
+    boolean newlinePrinted = false;
+    boolean printAllVars = !Options.hidePrivateMembers() && !privateVars;
+    for (FieldDeclaration field : TreeUtil.getFieldDeclarations(node)) {
+      ITypeBinding type = field.getType().getTypeBinding();
+      int modifiers = field.getModifiers();
+      if (Modifier.isStatic(modifiers) || type.isPrimitive() ||
+          (!printAllVars && isPrivateOrSynthetic(modifiers) != privateVars)) {
+        continue;
+      }
+      String typeStr = NameTable.getObjCType(type);
+      String declaringClassName = NameTable.getFullName(declaringType);
+      for (VariableDeclarationFragment var : field.getFragments()) {
+        if (BindingUtil.isWeakReference(var.getVariableBinding())) {
+          continue;
+        }
+        String fieldName = NameTable.javaFieldToObjC(NameTable.getName(var.getName().getBinding()));
+        if (!newlinePrinted) {
+          newlinePrinted = true;
+          newline();
+        }
+        println(String.format("J2OBJC_FIELD_SETTER(%s, %s, %s)",
+            declaringClassName, fieldName, typeStr));
+      }
+    }
   }
 }

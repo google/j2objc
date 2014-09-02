@@ -133,6 +133,10 @@ public class TreeUtil {
     return Iterables.filter(node.getBodyDeclarations(), FieldDeclaration.class);
   }
 
+  public static List<FieldDeclaration> getFieldDeclarationsList(AbstractTypeDeclaration node) {
+    return Lists.newArrayList(getFieldDeclarations(node));
+  }
+
   public static Iterable<VariableDeclarationFragment> getAllFields(AbstractTypeDeclaration node) {
     final Iterable<FieldDeclaration> fieldDecls = getFieldDeclarations(node);
     return new Iterable<VariableDeclarationFragment>() {

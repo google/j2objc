@@ -74,7 +74,7 @@ public class AnonymousClassConverterTest extends GenerationTest {
         + "Runnable r = new Runnable() { public void run() { bar[0] = true; }}; }}";
     String header = translateSourceFile(source, "Test", "Test.h");
     String impl = getTranslatedFile("Test.m");
-    assertTranslation(header, "IOSBooleanArray *val$bar_;");
+    assertTranslation(impl, "IOSBooleanArray *val$bar_;");
     assertTranslation(header,
         "- (instancetype)initWithBooleanArray:(IOSBooleanArray *)capture$0;");
     assertTranslation(impl, "IOSBooleanArray *bar = [IOSBooleanArray arrayWithLength:1];");

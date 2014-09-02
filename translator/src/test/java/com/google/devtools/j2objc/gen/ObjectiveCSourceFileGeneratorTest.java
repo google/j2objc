@@ -133,4 +133,54 @@ public class ObjectiveCSourceFileGeneratorTest extends GenerationTest {
     assertTranslation(translation, "- (instancetype)initWithNSString:(NSString *)s;");
     assertNotInTranslation(translation, "initWithId");
   }
+
+  public void testPrivateMethodHiding() throws IOException {
+    String translation = translateSourceFile(
+        "class Test  { public void test1() {} private void test2() {} }", "Test", "Test.h");
+    assertTranslation(translation, "- (void)test1;");
+    assertNotInTranslation(translation, "test2");
+    translation = getTranslatedFile("Test.m");
+    assertTranslation(translation, "- (void)test2;");  // Private declaration, and
+    assertTranslation(translation, "- (void)test1 {"); // Both implementations.
+    assertTranslation(translation, "- (void)test2 {");
+  }
+
+  public void testNoPrivateMethodHiding() throws IOException {
+    Options.resetHidePrivateMembers();
+    String translation = translateSourceFile(
+        "class Test  { public void test1() {} private void test2() {} }", "Test", "Test.h");
+    assertTranslation(translation, "- (void)test1;");
+    assertTranslation(translation, "- (void)test2;");
+    translation = getTranslatedFile("Test.m");
+    assertNotInTranslation(translation, "- (void)test2;");
+  }
+
+  public void testPrivateFieldHiding() throws IOException {
+    String translation = translateSourceFile(
+        "class Test  { public Object o1; protected Object o2; Object o3; private Object o4; }",
+        "Test", "Test.h");
+    assertTranslatedLines(translation, "@public", "id o1_;", "id o2_;", "id o3_;");
+    assertTranslation(translation, "J2OBJC_FIELD_SETTER(Test, o1_, id)");
+    assertTranslation(translation, "J2OBJC_FIELD_SETTER(Test, o2_, id)");
+    assertTranslation(translation, "J2OBJC_FIELD_SETTER(Test, o3_, id)");
+    assertNotInTranslation(translation, "J2OBJC_FIELD_SETTER(Test, o4_, id)");
+    translation = getTranslatedFile("Test.m");
+    assertTranslation(translation, "id o4_;");
+    assertTranslation(translation, "J2OBJC_FIELD_SETTER(Test, o4_, id)");
+  }
+
+  public void testNoPrivateFieldHiding() throws IOException {
+    Options.resetHidePrivateMembers();
+    String translation = translateSourceFile(
+        "class Test  { public Object o1; protected Object o2; Object o3; private Object o4; }",
+        "Test", "Test.h");
+    assertTranslatedLines(translation, "@public", "id o1_;", "id o2_;", "id o3_;", "id o4_;");
+    assertTranslation(translation, "J2OBJC_FIELD_SETTER(Test, o1_, id)");
+    assertTranslation(translation, "J2OBJC_FIELD_SETTER(Test, o2_, id)");
+    assertTranslation(translation, "J2OBJC_FIELD_SETTER(Test, o3_, id)");
+    assertTranslation(translation, "J2OBJC_FIELD_SETTER(Test, o4_, id)");
+    translation = getTranslatedFile("Test.m");
+    assertNotInTranslation(translation, "id o4_;");
+    assertNotInTranslation(translation, "J2OBJC_FIELD_SETTER(Test, o4_, id)");
+  }
 }

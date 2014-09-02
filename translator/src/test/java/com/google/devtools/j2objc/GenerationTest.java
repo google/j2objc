@@ -71,7 +71,8 @@ public abstract class GenerationTest extends TestCase {
     tempDir = createTempDir();
     Options.load(new String[] {
       "-d", tempDir.getAbsolutePath(),
-      "--mem-debug" // Run tests with memory debugging by default.
+      "--mem-debug", // Run tests with memory debugging by default.
+      "--hide-private-members" // Future default, run tests with it now.
     });
     parser = initializeParser(tempDir);
   }

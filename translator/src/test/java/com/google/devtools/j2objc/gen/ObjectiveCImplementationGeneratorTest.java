@@ -241,7 +241,6 @@ public class ObjectiveCImplementationGeneratorTest extends GenerationTest {
       "initWithInt:(int) 0x0000ff withNSString:@\"BLUE\" withInt:2];");
     assertTranslation(translation, "- (int)getRgb {");
     assertTranslation(translation, "return rgb_;");
-    translation = getTranslatedFile("Color.h");
     assertTranslation(translation, "int newValue_;");
   }
 
@@ -258,13 +257,13 @@ public class ObjectiveCImplementationGeneratorTest extends GenerationTest {
       "FooBar", "FooBar.m");
     assertTranslation(translation, "int FooBar_fieldPhi_;");
     assertTranslation(translation, "FooBar_set_fieldFoo_(self, nil);");
-    translation = getTranslatedFile("FooBar.h");
     assertTranslation(translation, "id fieldFoo_;");
     assertTranslation(translation, "id fieldJar_;");
     assertTranslation(translation, "int newFieldBar_;");
     assertTranslation(translation, "id fieldFoo_;");
     assertTranslation(translation, "__weak id fieldJar_;");
     assertTranslation(translation, "int newFieldBar_;");
+    translation = getTranslatedFile("FooBar.h");
     assertTranslation(translation, "J2OBJC_STATIC_FIELD_GETTER(FooBar, fieldPhi_, int)");
     assertTranslation(translation, "J2OBJC_STATIC_FIELD_REF_GETTER(FooBar, fieldPhi_, int)");
   }

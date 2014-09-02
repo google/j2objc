@@ -115,6 +115,7 @@ public class ObjectiveCImplementationGenerator extends ObjectiveCSourceFileGener
           needsNewLine = printFinalFunctionDecls((TypeDeclaration) type, needsNewLine);
         }
       }
+      printClassExtensions(typesToGenerate);
       for (AbstractTypeDeclaration type : typesToGenerate) {
         generate(type);
       }
@@ -1060,5 +1061,66 @@ public class ObjectiveCImplementationGenerator extends ObjectiveCSourceFileGener
 
   private void printMetadata(AbstractTypeDeclaration node) {
     print(new MetadataGenerator(node).getMetadataSource());
+  }
+
+  private boolean hasPrivateFields(Iterable<FieldDeclaration> fields) {
+    for (FieldDeclaration f : fields) {
+      if (isPrivateOrSynthetic(f.getModifiers())) {
+        return true;
+      }
+    }
+    return false;
+  }
+
+  private boolean hasPrivateMethods(Iterable<MethodDeclaration> methods) {
+    for (MethodDeclaration m : methods) {
+      if (isPrivateOrSynthetic(m.getModifiers())) {
+        return true;
+      }
+    }
+    return false;
+  }
+
+  private void printClassExtensions(List<AbstractTypeDeclaration> types) {
+    for (AbstractTypeDeclaration type : types) {
+      if (type.getTypeBinding().isClass() || type.getTypeBinding().isEnum()) {
+        newline();
+        printClassExtension(type);
+      }
+    }
+  }
+
+  private void printClassExtension(AbstractTypeDeclaration node) {
+    if (Options.hidePrivateMembers()) {
+      List<MethodDeclaration> methods = TreeUtil.getMethodDeclarationsList(node);
+      List<FieldDeclaration> fields = TreeUtil.getFieldDeclarationsList(node);
+      boolean hasPrivateFields = hasPrivateFields(fields);
+      if (hasPrivateMethods(methods) || hasPrivateFields) {
+        String typeName = NameTable.getFullName(node.getTypeBinding());
+        printf("@interface %s ()", typeName);
+        if (hasPrivateFields) {
+          println(" {");
+          printInstanceVariables(node, true);
+          println("}");
+        } else {
+          newline();
+        }
+        for (MethodDeclaration m : methods) {
+          if (isPrivateOrSynthetic(m.getModifiers())) {
+            IMethodBinding binding = m.getMethodBinding();
+            IOSMethod iosMethod = IOSMethodBinding.getIOSMethod(binding);
+            if (iosMethod != null) {
+              println(super.mappedMethodDeclaration(m, iosMethod) + ";");
+            } else if (m.isConstructor()) {
+              println(constructorDeclaration(m) + ";");
+            } else {
+              printNormalMethodDeclaration(m);
+            }
+          }
+        }
+        println("@end");
+        printFieldSetters(node, true);
+      }
+    }
   }
 }
