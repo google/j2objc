@@ -894,9 +894,13 @@ NSStringEncoding parseCharsetName(NSString *charset) {
     for (int i = 0; i < len; i++) {
       hash = 31 * hash + (int)chars[i];
     }
+    free(chars);
   }
-  objc_setAssociatedObject(self, hashKey, [JavaLangInteger valueOfWithInt:hash],
-                           OBJC_ASSOCIATION_RETAIN);
+  if (![self isKindOfClass:[NSMutableString class]]) {
+    // Only cache hash for immutable strings.
+    objc_setAssociatedObject(self, hashKey, [JavaLangInteger valueOfWithInt:hash],
+                             OBJC_ASSOCIATION_RETAIN);
+  }
   return hash;
 }
 
