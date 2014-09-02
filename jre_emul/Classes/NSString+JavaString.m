@@ -164,13 +164,7 @@ destinationBegin:(int)destinationBegin {
     @throw exception;
   }
 
-  unichar * buffer = calloc(destinationLength, sizeof(unichar));
-  [self getCharacters:buffer range:range];
-  for (NSUInteger i = 0; i < range.length; i++) {
-    unichar c = *(buffer + i);
-    [destination replaceCharAtIndex:i + destinationBegin withChar:c];
-  }
-  free(buffer);
+  [self getCharacters:destination->buffer_ + destinationBegin range:range];
 }
 
 + (NSString *)stringWithCharacters:(IOSCharArray *)value {
