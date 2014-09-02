@@ -72,6 +72,8 @@ public class Options {
   private static boolean extractUnsequencedModifications = false;
   private static boolean docCommentsEnabled = false;
   private static boolean finalMethodsAsFunctions = false;
+  // TODO(tball): change default to true once clients had a chance to update their builds.
+  private static boolean hidePrivateMembers = false;
   private static int batchTranslateMaximum = 0;
 
   private static File proGuardUsageFile = null;
@@ -258,6 +260,10 @@ public class Options {
             Integer.parseInt(arg.substring(BATCH_PROCESSING_MAX_FLAG.length()));
       } else if (arg.equals("--final-methods-as-functions")) {
         finalMethodsAsFunctions = true;
+      } else if (arg.equals("--hide-private-members")) {
+        hidePrivateMembers = true;
+      } else if (arg.equals("--no-hide-private-members")) {
+        hidePrivateMembers = false;
       } else if (arg.startsWith("-h") || arg.equals("--help")) {
         help(false);
       } else if (arg.startsWith("-")) {
@@ -658,4 +664,19 @@ public class Options {
   public static void resetFinalMethodsAsFunctions() {
     finalMethodsAsFunctions = false;
   }
+
+  public static boolean hidePrivateMembers() {
+    return hidePrivateMembers;
+  }
+
+  @VisibleForTesting
+  public static void enableHidePrivateMembers() {
+    hidePrivateMembers = true;
+  }
+
+  @VisibleForTesting
+  public static void resetHidePrivateMembers() {
+    hidePrivateMembers = false;
+  }
+
 }

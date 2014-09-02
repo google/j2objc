@@ -256,8 +256,9 @@ public class ObjectiveCHeaderGeneratorTest extends GenerationTest {
       "public class Example { int i; class Inner { void test() { int j = i; } } }",
       "Example", "Example.h");
     assertTranslation(translation, "@interface Example_Inner : NSObject");
-    assertTranslation(translation, "Example *this$0_;");
     assertTranslation(translation, "- (instancetype)initWithExample:(Example *)outer$;");
+    translation = getTranslatedFile("Example.m");
+    assertTranslation(translation, "Example *this$0_;");
   }
 
   public void testAnonymousClassDeclaration() throws IOException {
@@ -302,6 +303,7 @@ public class ObjectiveCHeaderGeneratorTest extends GenerationTest {
         "public int getRgb() { return rgb; }}",
         "Color", "Color.h");
     assertTranslation(translation, "@interface ColorEnum : JavaLangEnum");
+    translation = getTranslatedFile("Color.m");
     assertTranslation(translation, "int rgb_;");
     assertTranslatedLines(translation,
         "- (instancetype)initWithInt:(int)rgb",
@@ -319,6 +321,7 @@ public class ObjectiveCHeaderGeneratorTest extends GenerationTest {
       "public boolean isPrimaryColor() { return primary; }}",
       "Color", "Color.h");
     assertTranslation(translation, "@interface ColorEnum : JavaLangEnum");
+    translation = getTranslatedFile("Color.m");
     assertTranslation(translation, "BOOL primary_;");
     assertTranslatedLines(translation,
         "- (instancetype)initWithInt:(int)rgb",
@@ -329,7 +332,6 @@ public class ObjectiveCHeaderGeneratorTest extends GenerationTest {
         "withBoolean:(BOOL)primary",
         "withNSString:(NSString *)__name",
         "withInt:(int)__ordinal;");
-    translation = getTranslatedFile("Color.m");
     assertTranslation(translation,
         "[self initColorEnumWithInt:rgb withBoolean:YES withNSString:__name withInt:__ordinal]");
     assertTranslatedLines(translation,
@@ -498,7 +500,7 @@ public class ObjectiveCHeaderGeneratorTest extends GenerationTest {
         + "  private class Internal {"
         + "  }"
         + "}";
-    String translation = translateSourceFile(sourceContent, "FooBar", "FooBar.h");
+    String translation = translateSourceFile(sourceContent, "FooBar", "FooBar.m");
     assertTranslatedLines(translation,
         "__weak FooBar_Internal *fieldBar_;",
         "FooBar_Internal *fieldFoo_;");
@@ -553,6 +555,7 @@ public class ObjectiveCHeaderGeneratorTest extends GenerationTest {
       "public String getName() { return name; }}",
       "Test", "Test.h");
     assertTranslation(translation, "@interface TestEnum : JavaLangEnum");
+    translation = getTranslatedFile("Test.m");
     assertTranslation(translation, "NSString *name_Test_;");
     assertTranslation(translation, "int ordinal_Test_;");
     assertTranslatedLines(translation,
