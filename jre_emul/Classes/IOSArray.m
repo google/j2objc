@@ -104,6 +104,12 @@ void IOSArray_throwOutOfBounds() {
   @throw AUTORELEASE([[JavaLangArrayIndexOutOfBoundsException alloc] init]);
 }
 
+void IOSArray_throwOutOfBoundsWithMsg(jint size, jint index) {
+  NSString *msg = [NSString stringWithFormat:
+      @"index out of range: %d for array containing %d elements", index, size];
+  @throw AUTORELEASE([[JavaLangArrayIndexOutOfBoundsException alloc] initWithNSString:msg]);
+}
+
 - (NSString *)descriptionOfElementAtIndex:(NSUInteger)index {
   [self doesNotRecognizeSelector:_cmd];
   return nil;

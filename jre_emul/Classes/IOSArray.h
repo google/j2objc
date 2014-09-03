@@ -68,6 +68,7 @@
 @end
 
 extern void IOSArray_throwOutOfBounds();
+extern void IOSArray_throwOutOfBoundsWithMsg(jint size, jint index);
 
 // Implement IOSArray |checkIndex| and |checkRange| methods as C functions. This
 // allows IOSArray index and range checks to be completely removed via the
@@ -76,7 +77,7 @@ __attribute__ ((unused))
 static inline void IOSArray_checkIndex(jint size, jint index) {
 #if !defined(J2OBJC_DISABLE_ARRAY_CHECKS)
   if (index < 0 || index >= size) {
-    IOSArray_throwOutOfBounds();
+    IOSArray_throwOutOfBoundsWithMsg(size, index);
   }
 #endif
 }
