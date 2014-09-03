@@ -47,7 +47,7 @@
 // Returns the size of this array.
 - (jint)length;
 // DEPRECATED: Use length instead.
-- (NSUInteger)count;
+- (NSUInteger)count __attribute__((deprecated));
 
 - (NSString *)descriptionOfElementAtIndex:(NSUInteger)index;
 

@@ -29,7 +29,7 @@ public class NilCheckResolverTest extends GenerationTest {
     String translation = translateSourceFile(
       "public class A { int length(char[] s) { return s.length; } void test() { length(null);} }",
       "A", "A.m");
-    assertTranslation(translation, "return (int) [((IOSCharArray *) nil_chk(s)) count];");
+    assertTranslation(translation, "return ((IOSCharArray *) nil_chk(s))->size_;");
   }
 
   public void testNilCheckOnCastExpression() throws IOException {

@@ -52,8 +52,8 @@
 - (id)getAnnotationWithIOSClass:(IOSClass *)annotationType {
   nil_chk(annotationType);
   IOSObjectArray *annotations = [self getAnnotations];
-  NSUInteger n = [annotations count];
-  for (NSUInteger i = 0; i < n; i++) {
+  jint n = annotations->size_;
+  for (jint i = 0; i < n; i++) {
     id annotation = annotations->buffer_[i];
     if ([annotationType isInstance:annotation]) {
       return annotation;

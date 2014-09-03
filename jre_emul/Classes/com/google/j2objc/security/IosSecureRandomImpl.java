@@ -38,7 +38,7 @@ public class IosSecureRandomImpl extends SecureRandomSpi {
 
   @Override
   protected native void engineNextBytes(byte[] bytes) /*-[
-    int error = SecRandomCopyBytes(kSecRandomDefault, [bytes count], (uint8_t *) bytes->buffer_);
+    int error = SecRandomCopyBytes(kSecRandomDefault, bytes->size_, (uint8_t *) bytes->buffer_);
     if (error != 0) {
       NSString *errorMsg =
           [NSString stringWithFormat:@"SecRandomCopyBytes error: %s", strerror(error)];

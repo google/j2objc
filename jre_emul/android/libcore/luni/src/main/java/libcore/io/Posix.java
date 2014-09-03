@@ -291,10 +291,10 @@ public final class Posix implements Os {
     if (ss->ss_family == AF_UNIX) {
       struct sockaddr_un *sun = (struct sockaddr_un *)ss;
 
-      size_t path_length = [inetAddress->ipaddress_ count];
-      if (path_length >= sizeof(sun->sun_path)) {
+      jint path_length = inetAddress->ipaddress_->size_;
+      if ((size_t)path_length >= sizeof(sun->sun_path)) {
         NSString *errMsg =
-            [NSString stringWithFormat:@"inetAddressToSockaddr path too long for AF_UNIX: %zi",
+            [NSString stringWithFormat:@"inetAddressToSockaddr path too long for AF_UNIX: %d",
                 path_length];
         @throw AUTORELEASE([[JavaLangIllegalArgumentException alloc] initWithNSString:errMsg]);
       }
@@ -877,9 +877,9 @@ public final class Posix implements Os {
   ]-*/;
 
   public native int poll(StructPollfd[] fds, int timeoutMs) throws ErrnoException /*-[
-    unsigned count = (unsigned) [fds count];
+    jint count = fds->size_;
     struct pollfd *pollFds = calloc(count, sizeof(struct pollfd));
-    for (unsigned i = 0; i < count; i++) {
+    for (jint i = 0; i < count; i++) {
       LibcoreIoStructPollfd *javaPollFd = [fds objectAtIndex:i];
       pollFds[i].fd = [javaPollFd->fd_ getInt$];
       pollFds[i].events = javaPollFd->events_;
@@ -889,7 +889,7 @@ public final class Posix implements Os {
       free(pollFds);
       [LibcoreIoPosix throwErrnoExceptionWithNSString:@"poll" withInt:rc];
     }
-    for (unsigned i = 0; i < count; i++) {
+    for (jint i = 0; i < count; i++) {
       LibcoreIoStructPollfd *javaPollFd = [fds objectAtIndex:i];
       javaPollFd->revents_ = pollFds[i].revents;
     }
@@ -980,7 +980,7 @@ public final class Posix implements Os {
 
   public native int readv(FileDescriptor fd, Object[] buffers, int[] offsets, int[] byteCounts)
       throws ErrnoException /*-[
-    int nIoVecs = (int) [buffers count];
+    int nIoVecs = buffers->size_;
     struct iovec *ioVecs = malloc(nIoVecs * sizeof (struct iovec));
     for (int i = 0; i < nIoVecs; i++) {
       char *bytes = BytesRW([buffers objectAtIndex:i]);
@@ -1354,7 +1354,7 @@ public final class Posix implements Os {
 
   public native int writev(FileDescriptor fd, Object[] buffers, int[] offsets, int[] byteCounts)
       throws ErrnoException /*-[
-    int nIoVecs = (int) [buffers count];
+    int nIoVecs = buffers->size_;
     struct iovec *ioVecs = malloc(nIoVecs * sizeof (struct iovec));
     for (int i = 0; i < nIoVecs; i++) {
       const char *bytes = BytesRO([buffers objectAtIndex:i]);

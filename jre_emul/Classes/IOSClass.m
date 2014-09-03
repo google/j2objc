@@ -304,14 +304,14 @@ static NSString *GetParameterKeyword(IOSClass *paramType) {
 // and "nameWithType:withType:..." for multiple parameters.
 NSString *IOSClass_GetTranslatedMethodName(NSString *name, IOSObjectArray *parameterTypes) {
   nil_chk(name);
-  NSUInteger nParameters = [parameterTypes count];
+  jint nParameters = parameterTypes ? parameterTypes->size_ : 0;
   if (nParameters == 0) {
     return name;
   }
   IOSClass *firstParameterType = parameterTypes->buffer_[0];
   NSMutableString *translatedName = [NSMutableString stringWithCapacity:128];
   [translatedName appendFormat:@"%@With%@:", name, GetParameterKeyword(firstParameterType)];
-  for (NSUInteger i = 1; i < nParameters; i++) {
+  for (jint i = 1; i < nParameters; i++) {
     IOSClass *parameterType = parameterTypes->buffer_[i];
     [translatedName appendFormat:@"with%@:", GetParameterKeyword(parameterType)];
   }
@@ -588,8 +588,8 @@ static BOOL hasModifier(IOSClass *cls, int flag) {
 - (id)getAnnotationWithIOSClass:(IOSClass *)annotationClass {
   nil_chk(annotationClass);
   IOSObjectArray *annotations = [self getAnnotations];
-  NSUInteger n = [annotations count];
-  for (NSUInteger i = 0; i < n; i++) {
+  jint n = annotations->size_;
+  for (jint i = 0; i < n; i++) {
     id annotation = annotations->buffer_[i];
     if ([annotationClass isInstance:annotation]) {
       return annotation;

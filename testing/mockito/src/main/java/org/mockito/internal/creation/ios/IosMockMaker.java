@@ -132,8 +132,8 @@ public final class IosMockMaker implements MockMaker {
     Class proxyClass =
         objc_allocateClassPair([OrgMockitoInternalCreationIosIosMockMaker_ClassProxy class],
             [name UTF8String], 0);
-    unsigned interfaceCount = [interfaces count];
-    for (unsigned i = 0; i < interfaceCount; i++) {
+    jint interfaceCount = interfaces->size_;
+    for (jint i = 0; i < interfaceCount; i++) {
       IOSClass *intrface = (IOSClass *) [interfaces objectAtIndex:i];
       if (![intrface isInterface]) {
         @throw AUTORELEASE([[JavaLangIllegalArgumentException alloc]

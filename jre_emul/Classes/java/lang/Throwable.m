@@ -205,8 +205,8 @@ void FillInStackTraceInternal(JavaLangThrowable *this) {
   nil_chk(stackTraceArg);
   @synchronized (self) {
     [self maybeFreeRawCallStack];
-    size_t count = [stackTraceArg count];
-    for (size_t i = 0; i < count; i++) {
+    jint count = stackTraceArg->size_;
+    for (jint i = 0; i < count; i++) {
       nil_chk(stackTraceArg->buffer_[i]);
     }
 #if __has_feature(objc_arc)
@@ -224,11 +224,10 @@ void FillInStackTraceInternal(JavaLangThrowable *this) {
     @throw AUTORELEASE([[JavaLangIllegalArgumentException alloc] init]);
   }
   @synchronized (self) {
-    NSUInteger existingCount =
-        suppressedExceptions ? [suppressedExceptions count] : 0;
+    jint existingCount = suppressedExceptions ? suppressedExceptions->size_ : 0;
     IOSObjectArray *newArray = [IOSObjectArray newArrayWithLength:existingCount + 1
         type:[IOSClass classWithClass:[JavaLangThrowable class]]];
-    for (NSUInteger i = 0; i < existingCount; i++) {
+    for (jint i = 0; i < existingCount; i++) {
       [newArray replaceObjectAtIndex:i withObject:suppressedExceptions->buffer_[i]];
     }
     [newArray replaceObjectAtIndex:existingCount

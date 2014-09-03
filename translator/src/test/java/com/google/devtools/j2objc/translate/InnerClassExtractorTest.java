@@ -620,7 +620,7 @@ public class InnerClassExtractorTest extends GenerationTest {
     assertTranslation(translation, "- (instancetype)initWithA:(A *)outer$;");
     translation = getTranslatedFile("A.m");
     assertTranslation(translation, "A *this$0_;");
-    assertTranslation(translation, "[((IOSObjectArray *) nil_chk(this$0_->elements_)) count]");
+    assertTranslation(translation, "((IOSObjectArray *) nil_chk(this$0_->elements_))->size_");
   }
 
   public void testCreateInnerClassOfSuperclass() throws IOException {

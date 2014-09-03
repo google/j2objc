@@ -21,7 +21,6 @@ import com.google.devtools.j2objc.ast.ArrayAccess;
 import com.google.devtools.j2objc.ast.ArrayCreation;
 import com.google.devtools.j2objc.ast.ArrayInitializer;
 import com.google.devtools.j2objc.ast.Assignment;
-import com.google.devtools.j2objc.ast.CastExpression;
 import com.google.devtools.j2objc.ast.ClassInstanceCreation;
 import com.google.devtools.j2objc.ast.ConstructorInvocation;
 import com.google.devtools.j2objc.ast.EnumConstantDeclaration;
@@ -41,6 +40,7 @@ import com.google.devtools.j2objc.ast.TreeUtil;
 import com.google.devtools.j2objc.ast.TreeVisitor;
 import com.google.devtools.j2objc.ast.TypeLiteral;
 import com.google.devtools.j2objc.types.GeneratedTypeBinding;
+import com.google.devtools.j2objc.types.GeneratedVariableBinding;
 import com.google.devtools.j2objc.types.IOSMethod;
 import com.google.devtools.j2objc.types.IOSMethodBinding;
 import com.google.devtools.j2objc.types.IOSTypeBinding;
@@ -93,10 +93,6 @@ public class ArrayRewriter extends TreeVisitor {
   private Map<IOSTypeBinding, IOSMethodBinding> initMethods = Maps.newHashMap();
   private Map<IOSTypeBinding, IOSMethodBinding> singleDimMethods = Maps.newHashMap();
   private Map<IOSTypeBinding, IOSMethodBinding> multiDimMethods = Maps.newHashMap();
-
-  private final IOSMethodBinding arrayCountMethod = IOSMethodBinding.newMethod(
-      IOSMethod.create("IOSArray count"), Modifier.PUBLIC, Types.resolveJavaType("int"),
-      ARRAY_BASE_TYPE);
 
   @Override
   public void endVisit(ArrayCreation node) {
@@ -425,10 +421,12 @@ public class ArrayRewriter extends TreeVisitor {
   }
 
   private void maybeRewriteArrayLength(Expression node, SimpleName name, Expression expr) {
-    if (name.getIdentifier().equals("length") && expr.getTypeBinding().isArray()) {
-      // needs cast: count returns an unsigned value
-      node.replaceWith(new CastExpression(
-          Types.resolveJavaType("int"), new MethodInvocation(arrayCountMethod, expr.copy())));
+    ITypeBinding exprType = expr.getTypeBinding();
+    if (name.getIdentifier().equals("length") && exprType.isArray()) {
+      GeneratedVariableBinding sizeField = new GeneratedVariableBinding(
+          "size", Modifier.PUBLIC, Types.resolveJavaType("int"), true, false,
+          Types.mapType(exprType), null);
+      node.replaceWith(new FieldAccess(sizeField, TreeUtil.remove(expr)));
     }
   }
 
