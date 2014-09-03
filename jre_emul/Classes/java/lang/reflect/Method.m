@@ -134,7 +134,7 @@
   }
 
   IOSObjectArray *paramTypes = [self getParameterTypes];
-  NSUInteger nArgs = arguments ? arguments->size_ : 0;
+  jint nArgs = arguments ? arguments->size_ : 0;
   if (nArgs != paramTypes->size_) {
     @throw AUTORELEASE([[JavaLangIllegalArgumentException alloc] initWithNSString:
         @"wrong number of arguments"]);
@@ -143,7 +143,7 @@
   NSInvocation *invocation =
       [NSInvocation invocationWithMethodSignature:methodSignature_];
   [invocation setSelector:selector_];
-  for (NSUInteger i = 0; i < nArgs; i++) {
+  for (jint i = 0; i < nArgs; i++) {
     J2ObjcRawValue arg;
     if (![paramTypes->buffer_[i] __unboxValue:arguments->buffer_[i] toRawValue:&arg]) {
       @throw AUTORELEASE([[JavaLangIllegalArgumentException alloc] initWithNSString:

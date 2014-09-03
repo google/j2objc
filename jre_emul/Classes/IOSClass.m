@@ -605,7 +605,7 @@ static BOOL hasModifier(IOSClass *cls, int flag) {
 - (IOSObjectArray *)getAnnotations {
   NSMutableArray *array = [[NSMutableArray alloc] init];
   IOSObjectArray *declared = [self getDeclaredAnnotations];
-  for (NSUInteger i = 0; i < [declared count]; i++) {
+  for (jint i = 0; i < declared->size_; i++) {
     [array addObject:declared->buffer_[i]];
   }
 
@@ -614,10 +614,10 @@ static BOOL hasModifier(IOSClass *cls, int flag) {
   IOSClass *inheritedAnnotation = [JavaLangAnnotationInherited getClass];
   while (cls) {
     IOSObjectArray *declared = [cls getDeclaredAnnotations];
-    for (NSUInteger i = 0; i < [declared count]; i++) {
+    for (jint i = 0; i < declared->size_; i++) {
       id<JavaLangAnnotationAnnotation> annotation = declared->buffer_[i];
       IOSObjectArray *attributes = [[annotation getClass] getDeclaredAnnotations];
-      for (NSUInteger j = 0; j < [attributes count]; j++) {
+      for (jint j = 0; j < attributes->size_; j++) {
         id<JavaLangAnnotationAnnotation> attribute = attributes->buffer_[j];
         if (inheritedAnnotation == [attribute getClass]) {
           [array addObject:annotation];
@@ -702,7 +702,7 @@ static void GetFieldsFromClass(IOSClass *iosClass, NSMutableDictionary *fields) 
   JavaClassMetadata *metadata = [iosClass getMetadata];
   if (metadata) {
     IOSObjectArray *infos = [metadata allFields];
-    for (unsigned i = 0; i < infos->size_; i++) {
+    for (jint i = 0; i < infos->size_; i++) {
       JavaFieldMetadata *fieldMeta = [infos objectAtIndex:i];
       Ivar ivar = class_getInstanceVariable(iosClass.objcClass, [[fieldMeta iosName] UTF8String]);
       JavaLangReflectField *field = [JavaLangReflectField fieldWithIvar:ivar
