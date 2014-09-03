@@ -203,10 +203,11 @@ public abstract class ObjectiveCSourceFileGenerator extends SourceFileGenerator 
     if (mappedMethod.getName().equals("hash")) {
       baseDeclaration = "- (NSUInteger)hash";
     } else {
+      String returnType = method.isConstructor() ? "instancetype"
+          : NameTable.getObjCType(method.getReturnType().getTypeBinding());
       baseDeclaration = String.format("%c (%s)%s",
           Modifier.isStatic(method.getModifiers()) ? '+' : '-',
-          NameTable.getObjCType(method.getReturnType().getTypeBinding()),
-          mappedMethod.getName());
+          returnType, mappedMethod.getName());
     }
 
     sb.append(baseDeclaration);

@@ -113,7 +113,9 @@ public class IOSMethod {
       // If a type has spaces in it (ie, foo *), combine the parts.
       if (part.contains("(")) {
         while (!part.contains(")")) {
-          assert i + 1 < parts.length;
+          if (i + 1 >= parts.length) {
+            throw new IllegalArgumentException("invalid Objective-C parameter string: " + s);
+          }
           part += ' ' + parts[++i];
         }
       }
