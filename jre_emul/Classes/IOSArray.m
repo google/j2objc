@@ -100,10 +100,8 @@
   return size_;
 }
 
-void IOSArray_throwOutOfBounds(jint size, jint index) {
-  NSString *msg = [NSString stringWithFormat:
-      @"index out of range: %d for array containing %d elements", index, size];
-  @throw AUTORELEASE([[JavaLangArrayIndexOutOfBoundsException alloc] initWithNSString:msg]);
+void IOSArray_throwOutOfBounds() {
+  @throw AUTORELEASE([[JavaLangArrayIndexOutOfBoundsException alloc] init]);
 }
 
 - (NSString *)descriptionOfElementAtIndex:(NSUInteger)index {
@@ -153,16 +151,12 @@ void IOSArray_throwOutOfBounds(jint size, jint index) {
   return result;
 }
 
-- (void) arraycopy:(NSRange)sourceRange
-       destination:(IOSArray *)destination
-            offset:(NSInteger)offset {
-#if __has_feature(objc_arc)
-  @throw [[JavaLangAssertionError alloc]
-          initWithNSString:@"abstract method not overridden"];
-#else
+- (void)arraycopy:(jint)offset
+      destination:(IOSArray *)destination
+        dstOffset:(jint)dstOffset
+           length:(jint)length {
   @throw [[[JavaLangAssertionError alloc]
-           initWithNSString:@"abstract method not overridden"] autorelease];
-#endif
+      initWithNSString:@"abstract method not overridden"] autorelease];
 }
 
 @end

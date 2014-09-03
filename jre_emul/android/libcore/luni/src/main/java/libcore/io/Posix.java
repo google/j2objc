@@ -969,7 +969,7 @@ public final class Posix implements Os {
 
   private native int readBytes(FileDescriptor fd, Object buffer, int offset, int byteCount)
       throws ErrnoException /*-[
-    IOSArray_checkRange([(IOSArray *)buffer length], NSMakeRange(offset, byteCount));
+    IOSArray_checkRange([(IOSArray *)buffer length], offset, byteCount);
     char *bytes = BytesRW(buffer);
     if (!bytes) {
       return -1;
@@ -1336,7 +1336,7 @@ public final class Posix implements Os {
     if (!bytes) {
       return -1;
     }
-    IOSArray_checkRange(bytes->size_, NSMakeRange(byteOffset, byteCount));
+    IOSArray_checkRange(bytes->size_, byteOffset, byteCount);
     int rc =
         TEMP_FAILURE_RETRY(write([fd getInt$], bytes->buffer_ + byteOffset, byteCount));
     return [LibcoreIoPosix throwIfMinusOneWithNSString:@"write" withInt:rc];

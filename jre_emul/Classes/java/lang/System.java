@@ -123,15 +123,11 @@ public class System {
       @throw AUTORELEASE([[JavaLangArrayStoreException alloc] initWithNSString:msg]);
     }
 
-    // Check for negative positions and length, since the array classes use unsigned ints.
-    if (srcPos < 0 || destPos < 0 || length < 0) {
-      @throw AUTORELEASE([[JavaLangArrayIndexOutOfBoundsException alloc] init]);
-    }
-
     // Range tests are done by array class.
-    [(IOSArray *) src arraycopy:NSMakeRange(srcPos, length)
+    [(IOSArray *) src arraycopy:srcPos
                     destination:(IOSArray *) dest
-                         offset:destPos];
+                      dstOffset:destPos
+                         length:length];
   ]-*/;
 
   public native static long nanoTime() /*-[

@@ -96,14 +96,14 @@
  * @define PRIMITIVE_ARRAY_COPY_IMPL
  */
 #define PRIMITIVE_ARRAY_RANGE_COPY_IMPL(U_NAME, C_TYPE) \
-  - (void)arraycopy:(NSRange)sourceRange \
+  - (void)arraycopy:(jint)offset \
         destination:(IOSArray *)destination \
-             offset:(NSInteger)offset { \
-    IOSArray_checkRange(size_, sourceRange); \
-    IOSArray_checkRange(destination->size_, NSMakeRange(offset, sourceRange.length)); \
-    memmove(((IOS##U_NAME##Array *) destination)->buffer_ + offset, \
-            self->buffer_ + sourceRange.location, \
-            sourceRange.length * sizeof(C_TYPE)); \
+          dstOffset:(jint)dstOffset \
+             length:(jint)length { \
+    IOSArray_checkRange(size_, offset, length); \
+    IOSArray_checkRange(destination->size_, dstOffset, length); \
+    memmove(((IOS##U_NAME##Array *) destination)->buffer_ + dstOffset, \
+            self->buffer_ + offset, length * sizeof(C_TYPE)); \
   }
 
 #define PRIMITIVE_ARRAY_COPY_IMPL(U_NAME) \
@@ -186,14 +186,14 @@ PRIMITIVE_ARRAY_IMPLEMENTATION(byte, Byte, char)
 - (void)getBytes:(char *)buffer
           offset:(NSUInteger)offset
           length:(NSUInteger)length {
-  IOSArray_checkRange(size_, NSMakeRange(offset, length));
+  IOSArray_checkRange(size_, (jint)offset, (jint)length);
   memcpy(buffer, &buffer_[offset], length);
 }
 
 - (void)replaceBytes:(const char *)source
               length:(NSUInteger)length
               offset:(NSUInteger)destOffset {
-  IOSArray_checkRange(size_, NSMakeRange(destOffset, length));
+  IOSArray_checkRange(size_, (jint)destOffset, (jint)length);
   memcpy(&buffer_[destOffset], source, length);
 }
 
