@@ -111,7 +111,7 @@ static IOSClass *ResolveParameterType(const char *objcType, NSString *paramKeywo
 
 - (IOSObjectArray *)getParameterTypes {
   // First two slots are class and SEL.
-  NSUInteger nArgs = [methodSignature_ numberOfArguments] - SKIPPED_ARGUMENTS;
+  jint nArgs = (jint)[methodSignature_ numberOfArguments] - SKIPPED_ARGUMENTS;
   IOSClass *classClass = [IOSClass classWithClass:[IOSClass class]];
   IOSObjectArray *parameters = [IOSObjectArray arrayWithLength:nArgs type:classClass];
 
@@ -132,7 +132,7 @@ static IOSClass *ResolveParameterType(const char *objcType, NSString *paramKeywo
   }
   NSArray *paramTypes = [selectorStr componentsSeparatedByString:@":"];
 
-  for (NSUInteger i = 0; i < nArgs; i++) {
+  for (jint i = 0; i < nArgs; i++) {
     const char *argType = [methodSignature_ getArgumentTypeAtIndex:i + SKIPPED_ARGUMENTS];
     IOSClass *paramType = ResolveParameterType(argType, [paramTypes objectAtIndex:i]);
     [parameters replaceObjectAtIndex:i withObject:paramType];

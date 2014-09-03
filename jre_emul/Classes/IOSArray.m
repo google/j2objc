@@ -110,7 +110,7 @@ void IOSArray_throwOutOfBoundsWithMsg(jint size, jint index) {
   @throw AUTORELEASE([[JavaLangArrayIndexOutOfBoundsException alloc] initWithNSString:msg]);
 }
 
-- (NSString *)descriptionOfElementAtIndex:(NSUInteger)index {
+- (NSString *)descriptionOfElementAtIndex:(jint)index {
   [self doesNotRecognizeSelector:_cmd];
   return nil;
 }

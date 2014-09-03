@@ -128,7 +128,8 @@ public class IOSCollator extends Collator {
     @Override
     public native byte[] toByteArray() /*-[
       const char *utf = [[self getSourceString] UTF8String];
-      return [IOSByteArray arrayWithBytes:utf count:strlen(utf) + 1];  // Include null terminator.
+      // Include null terminator.
+      return [IOSByteArray arrayWithBytes:utf count:(jint)strlen(utf) + 1];
     ]-*/;
   }
 }

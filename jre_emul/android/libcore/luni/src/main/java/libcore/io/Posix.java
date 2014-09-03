@@ -254,7 +254,7 @@ public final class Posix implements Os {
     }
 
     IOSByteArray *byteArray =
-        [IOSByteArray arrayWithBytes:(const char *) rawAddress count:addressLength];
+        [IOSByteArray arrayWithBytes:(const char *) rawAddress count:(jint)addressLength];
 
     if (ss->ss_family == AF_UNIX) {
         // Note that we get here for AF_UNIX sockets on accept(2). The unix(7) man page claims

@@ -146,7 +146,7 @@ public final class ICU {
       [languages getObjects:(__unsafe_unretained id *) data.mutableBytes range:range];
       IOSObjectArray * result =
           [IOSObjectArray arrayWithObjects:(__unsafe_unretained id *) data.mutableBytes
-                                     count:count
+                                     count:(jint)count
                                       type:[NSString getClass]];
       return result;
     ]-*/;
@@ -159,7 +159,7 @@ public final class ICU {
       [countries getObjects:(__unsafe_unretained id *) data.mutableBytes range:range];
       IOSObjectArray * result =
           [IOSObjectArray arrayWithObjects:(__unsafe_unretained id *) data.mutableBytes
-                                     count:count
+                                     count:(jint)count
                                       type:[NSString getClass]];
       return result;
     ]-*/;

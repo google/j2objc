@@ -672,14 +672,14 @@ public final class Matcher implements MatchResult {
           self->progressFlags_ = flags;
 
           // Update offsets.
-          NSUInteger nGroups = [match numberOfRanges];
-          for (NSUInteger i = 0; i < nGroups; i++) {
+          jint nGroups = (jint)[match numberOfRanges];
+          for (jint i = 0; i < nGroups; i++) {
             NSRange matchRange = [match rangeAtIndex:i];
             [self->matchOffsets_ replaceIntAtIndex:i * 2
-                                           withInt:(int) matchRange.location];
+                                           withInt:(jint) matchRange.location];
             [self->matchOffsets_
                 replaceIntAtIndex:(i * 2) + 1
-                          withInt:(int) (matchRange.location + matchRange.length)];
+                          withInt:(jint) (matchRange.location + matchRange.length)];
           }
 
           matched = [match range].length > 0;  // No match if length is zero.
@@ -721,14 +721,14 @@ public final class Matcher implements MatchResult {
       }
 
       // Update offsets.
-      NSUInteger nGroups = [match numberOfRanges];
-      for (NSUInteger i = 0; i < nGroups; i++) {
+      jint nGroups = (jint)[match numberOfRanges];
+      for (jint i = 0; i < nGroups; i++) {
         NSRange matchRange = [match rangeAtIndex:i];
         [self->matchOffsets_ replaceIntAtIndex:i * 2
-                                       withInt:(int) matchRange.location];
+                                       withInt:(jint) matchRange.location];
         [self->matchOffsets_
             replaceIntAtIndex:(i * 2) + 1
-                      withInt:(int) (matchRange.location + matchRange.length)];
+                      withInt:(jint) (matchRange.location + matchRange.length)];
       }
       NSRange range = [match range];
       return range.location == (NSUInteger) self->regionStart__ && range.length == length;
