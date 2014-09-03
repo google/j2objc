@@ -17,7 +17,6 @@
 package com.google.devtools.j2objc.translate;
 
 import com.google.common.base.Function;
-import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.devtools.j2objc.ast.Block;
@@ -42,9 +41,12 @@ import com.google.devtools.j2objc.types.IOSMethodBinding;
 import com.google.devtools.j2objc.types.IOSParameter;
 import com.google.devtools.j2objc.types.JavaMethod;
 import com.google.devtools.j2objc.types.Types;
+import com.google.devtools.j2objc.util.BindingUtil;
 import com.google.devtools.j2objc.util.ErrorUtil;
 import com.google.devtools.j2objc.util.NameTable;
+import com.google.j2objc.annotations.ObjectiveCName;
 
+import org.eclipse.jdt.core.dom.IAnnotationBinding;
 import org.eclipse.jdt.core.dom.IMethodBinding;
 import org.eclipse.jdt.core.dom.ITypeBinding;
 import org.eclipse.jdt.core.dom.IVariableBinding;
@@ -81,7 +83,7 @@ public class JavaToIOSMethodTranslator extends TreeVisitor {
 
   public JavaToIOSMethodTranslator(Map<String, String> methodMappings) {
     this.methodMappings =
-        ImmutableMap.copyOf(Maps.transformValues(methodMappings, IOS_METHOD_FROM_STRING));
+        Maps.newHashMap(Maps.transformValues(methodMappings, IOS_METHOD_FROM_STRING));
     loadTargetMethods(Types.resolveJavaType("java.lang.Object"));
     loadTargetMethods(Types.resolveJavaType("java.lang.Class"));
     loadTargetMethods(Types.resolveJavaType("java.lang.String"));
@@ -348,11 +350,66 @@ public class JavaToIOSMethodTranslator extends TreeVisitor {
 
   private JavaMethod addDescription(IMethodBinding binding) {
     JavaMethod desc = JavaMethod.getJavaMethod(binding);
-    if (desc != null && methodMappings.containsKey(desc.getKey())) {
-      descriptions.put(binding, desc);
-      return desc;
+    if (desc != null) {
+      if (methodMappings.containsKey(desc.getKey())) {
+        descriptions.put(binding, desc);
+        return desc;
+      }
+      String objcName = getObjectiveCNameValue(binding);
+      if (objcName != null) {
+        try {
+          String signature =
+              String.format("%s %s", binding.getDeclaringClass().getName(), objcName);
+          IOSMethod method = IOSMethod.create(signature);
+          methodMappings.put(desc.getKey(),  method);
+        } catch (IllegalArgumentException e) {
+          ErrorUtil.error("invalid Objective-C method name: " + objcName);
+        }
+        descriptions.put(binding, desc);
+        return desc;
+      }
     }
     return null;  // binding isn't mapped.
+  }
+
+  /**
+   * Returns ObjectiveCName value, or null if method is not annotated.
+   * <p>
+   * This method warns if source attempts to specify an overridden method
+   * that doesn't have the same ObjectiveCName value. This prevents
+   * developers from accidentally breaking polymorphic methods.
+   *
+   * @return the ObjectiveCName value, or null if not annotated or when
+   *     a warning is reported.
+   */
+  private static String getObjectiveCNameValue(IMethodBinding method) {
+    IAnnotationBinding annotation = BindingUtil.getAnnotation(method, ObjectiveCName.class);
+    if (annotation != null) {
+      String selector = (String) BindingUtil.getAnnotationValue(annotation, "value");
+      if (BindingUtil.getAnnotation(method, Override.class) != null) {
+        // Check that overridden method has same Objective-C name.
+        IMethodBinding superMethod = BindingUtil.getOriginalMethodBinding(method);
+        if (superMethod != method.getMethodDeclaration()) {
+          IAnnotationBinding superAnnotation  =
+              BindingUtil.getAnnotation(superMethod, ObjectiveCName.class);
+          if (superAnnotation == null) {
+            ErrorUtil.warning("ObjectiveCName(" + selector
+                + ") set on overridden method that is not also renamed.");
+            return null;
+          } else {
+            String superSelector =
+                (String) BindingUtil.getAnnotationValue(superAnnotation, "value");
+            if (!selector.equals(superSelector)) {
+              ErrorUtil.warning("Conflicting Objective-C names set for " + method
+                  + ", which overrides " + superMethod);
+              return null;
+            }
+          }
+        }
+      }
+      return selector;
+    }
+    return null;
   }
 
   /**

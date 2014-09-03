@@ -38,6 +38,7 @@ public class NameTableTest extends GenerationTest {
   @Override
   protected void tearDown() throws Exception {
     Options.clearPackagePrefixes();
+    ErrorUtil.reset();
   }
 
   // Verify class name with prefix.
@@ -121,7 +122,7 @@ public class NameTableTest extends GenerationTest {
     assertTranslation(translation, "- (void)fooWithIntArray3:(IOSObjectArray *)values");
   }
 
-  public void testRenameAnnotation() throws IOException {
+  public void testRenameClassAnnotation() throws IOException {
     addSourceFile("@com.google.j2objc.annotations.ObjectiveCName(\"TestName\") "
         + "public class A { static void test() {}}", "A.java");
     addSourceFile(
@@ -145,5 +146,47 @@ public class NameTableTest extends GenerationTest {
     } finally {
       Options.getClassMappings().remove("foo.bar.A");
     }
+  }
+
+  public void testRenameMethodAnnotation() throws IOException {
+    String objcName = "test:(NSString *)s offset:(int)n";
+    String translation = translateSourceFile("public class A { "
+        + "@com.google.j2objc.annotations.ObjectiveCName(\"" + objcName + "\") "
+        + "void test(String s, int n) {}}", "A", "A.h");
+    assertTranslation(translation, String.format("- (void)%s;", objcName));
+    assertNotInTranslation(translation, "testWithNSString");
+    translation = getTranslatedFile("A.m");
+    assertTranslation(translation, String.format("- (void)%s {", objcName));
+    assertNotInTranslation(translation, "testWithNSString");
+  }
+
+  public void testRenameConstructorAnnotation() throws IOException {
+    String objcName = "init:(NSString *)s offset:(int)n";
+    String translation = translateSourceFile("public class A { "
+        + "@com.google.j2objc.annotations.ObjectiveCName(\"" + objcName + "\") "
+        + "A(String s, int n) {}}", "A", "A.h");
+    assertTranslation(translation, String.format("- (instancetype)%s;", objcName));
+    assertNotInTranslation(translation, "testWithNSString");
+    translation = getTranslatedFile("A.m");
+    assertTranslation(translation, String.format("- (instancetype)%s {", objcName));
+    assertNotInTranslation(translation, "testWithNSString");
+  }
+
+  public void testSuperMethodNotNamedWarning() throws IOException {
+    translateSourceFile("class A { void test(String s, int n) {}"
+        + "static class B extends A { "
+        + "@com.google.j2objc.annotations.ObjectiveCName(\"test:(NSString *)s offset:(int)n\")"
+        + "@Override void test(String s, int n) {}}}", "A", "A.m");
+    assertWarningCount(1);
+  }
+
+  public void testMethodConflictingName() throws IOException {
+    translateSourceFile("class A { "
+        + "@com.google.j2objc.annotations.ObjectiveCName(\"foo:(NSString *)s bar:(int)n\")"
+        + "void test(String s, int n) {}"
+        + "static class B extends A { "
+        + "@com.google.j2objc.annotations.ObjectiveCName(\"test:(NSString *)s offset:(int)n\")"
+        + "@Override void test(String s, int n) {}}}", "A", "A.m");
+    assertWarningCount(1);
   }
 }
