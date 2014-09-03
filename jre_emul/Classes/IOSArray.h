@@ -60,13 +60,14 @@
 // Copies a range of elements from this array into another.  This method is
 // only called from java.lang.System.arraycopy(), which verifies that the
 // destination array is the same type as this array.
-- (void)arraycopy:(NSRange)sourceRange
+- (void)arraycopy:(jint)offset
       destination:(IOSArray *)destination
-           offset:(NSInteger)offset;
+        dstOffset:(jint)dstOffset
+           length:(jint)length;
 
 @end
 
-extern void IOSArray_throwOutOfBounds(jint size, jint index);
+extern void IOSArray_throwOutOfBounds();
 
 // Implement IOSArray |checkIndex| and |checkRange| methods as C functions. This
 // allows IOSArray index and range checks to be completely removed via the
@@ -75,16 +76,15 @@ __attribute__ ((unused))
 static inline void IOSArray_checkIndex(jint size, jint index) {
 #if !defined(J2OBJC_DISABLE_ARRAY_CHECKS)
   if (index < 0 || index >= size) {
-    IOSArray_throwOutOfBounds(size, index);
+    IOSArray_throwOutOfBounds();
   }
 #endif
 }
 __attribute__ ((unused))
-static inline void IOSArray_checkRange(jint size, NSRange range) {
+static inline void IOSArray_checkRange(jint size, jint offset, jint length) {
 #if !defined(J2OBJC_DISABLE_ARRAY_CHECKS)
-  if (range.length > 0) {
-    IOSArray_checkIndex(size, (jint)range.location);
-    IOSArray_checkIndex(size, (jint)range.location + (jint)range.length - 1);
+  if (length < 0 || offset < 0 || offset + length > size) {
+    IOSArray_throwOutOfBounds();
   }
 #endif
 }

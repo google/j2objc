@@ -204,12 +204,12 @@ void CopyWithMemmove(id __strong *buffer, NSUInteger src, NSUInteger dest, NSUIn
 // experimentally on a OSX desktop device.
 #define ARC_MEMMOVE_OVERLAP_RATIO 15
 
-- (void) arraycopy:(NSRange)sourceRange
-       destination:(IOSArray *)destination
-            offset:(NSInteger)offset {
-  IOSArray_checkRange(size_, sourceRange);
-  IOSArray_checkRange(destination->size_,
-                      NSMakeRange(offset, sourceRange.length));
+- (void)arraycopy:(jint)offset
+      destination:(IOSArray *)destination
+        dstOffset:(jint)dstOffset
+           length:(jint)length {
+  IOSArray_checkRange(size_, offset, length);
+  IOSArray_checkRange(destination->size_, dstOffset, length);
   IOSObjectArray *dest = (IOSObjectArray *) destination;
 
 #ifdef J2OBJC_DISABLE_ARRAY_TYPE_CHECKS
@@ -223,43 +223,42 @@ void CopyWithMemmove(id __strong *buffer, NSUInteger src, NSUInteger dest, NSUIn
 
 #if __has_feature(objc_arc)
   if (self == dest) {
-    int shift = abs(offset - sourceRange.location);
-    if (sourceRange.length > ARC_MEMMOVE_OVERLAP_RATIO * shift) {
-      CopyWithMemmove(buffer_, sourceRange.location, offset, sourceRange.length);
-    } else if (sourceRange.location < offset) {
-      for (int i = sourceRange.length - 1; i >= 0; i--) {
-        buffer_[i + offset] = buffer_[i + sourceRange.location];
+    int shift = abs(dstOffset - offset);
+    if (length > ARC_MEMMOVE_OVERLAP_RATIO * shift) {
+      CopyWithMemmove(buffer_, offset, dstOffset, length);
+    } else if (offset < dstOffset) {
+      for (int i = length - 1; i >= 0; i--) {
+        buffer_[i + dstOffset] = buffer_[i + offset];
       }
     } else {
-      for (int i = 0; i < sourceRange.length; i++) {
-        buffer_[i + offset] = buffer_[i + sourceRange.location];
+      for (int i = 0; i < length; i++) {
+        buffer_[i + dstOffset] = buffer_[i + offset];
       }
     }
   } else if (skipElementCheck) {
-    for (int i = 0; i < sourceRange.length; i++) {
-      dest->buffer_[i + offset] = buffer_[i + sourceRange.location];
+    for (int i = 0; i < length; i++) {
+      dest->buffer_[i + dstOffset] = buffer_[i + offset];
     }
   } else {
-    for (int i = 0; i < sourceRange.length; i++) {
-      dest->buffer_[i + offset] =
-          IOSObjectArray_checkValue(dest, buffer_[i + sourceRange.location]);
+    for (int i = 0; i < length; i++) {
+      dest->buffer_[i + dstOffset] = IOSObjectArray_checkValue(dest, buffer_[i + offset]);
     }
   }
 #else
   if (self == dest) {
-    CopyWithMemmove(buffer_, sourceRange.location, offset, sourceRange.length);
+    CopyWithMemmove(buffer_, offset, dstOffset, length);
   } else if (skipElementCheck) {
-    for (NSUInteger i = 0; i < sourceRange.length; i++) {
-      id newElement = buffer_[i + sourceRange.location];
-      [dest->buffer_[i + offset] autorelease];
-      dest->buffer_[i + offset] = [newElement retain];
+    for (jint i = 0; i < length; i++) {
+      id newElement = buffer_[i + offset];
+      [dest->buffer_[i + dstOffset] autorelease];
+      dest->buffer_[i + dstOffset] = [newElement retain];
     }
   } else {
-    for (NSUInteger i = 0; i < sourceRange.length; i++) {
-      id newElement = skipElementCheck ? buffer_[i + sourceRange.location] :
-          IOSObjectArray_checkValue(dest, buffer_[i + sourceRange.location]);
-      [dest->buffer_[i + offset] autorelease];
-      dest->buffer_[i + offset] = [newElement retain];
+    for (jint i = 0; i < length; i++) {
+      id newElement = skipElementCheck ? buffer_[i + offset] :
+          IOSObjectArray_checkValue(dest, buffer_[i + offset]);
+      [dest->buffer_[i + dstOffset] autorelease];
+      dest->buffer_[i + dstOffset] = [newElement retain];
     }
   }
 #endif
