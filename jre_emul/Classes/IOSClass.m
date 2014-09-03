@@ -777,11 +777,11 @@ static void GetFieldsFromClass(IOSClass *iosClass, NSMutableDictionary *fields) 
 }
 
 IOSObjectArray *copyFieldsToObjectArray(NSArray *fields) {
-  NSUInteger count = [fields count];
+  jint count = (jint)[fields count];
   IOSClass *fieldType = [IOSClass classWithClass:[JavaLangReflectField class]];
   IOSObjectArray *results = [IOSObjectArray arrayWithLength:count
                                                        type:fieldType];
-  for (NSUInteger i = 0; i < count; i++) {
+  for (jint i = 0; i < count; i++) {
     [results replaceObjectAtIndex:i withObject:[fields objectAtIndex:i]];
   }
   return results;

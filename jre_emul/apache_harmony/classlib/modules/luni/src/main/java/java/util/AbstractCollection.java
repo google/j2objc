@@ -362,7 +362,7 @@ public abstract class AbstractCollection<E> implements Collection<E> {
             [IOSObjectArray arrayWithLength:[self size]
                                        type:[[contents getClass] getComponentType]];
       }
-      NSUInteger i = 0;
+      jint i = 0;
       id<JavaUtilIterator> it = [self iterator];
       while ([it hasNext]) {
         IOSObjectArray_Set(contents, i++, [it next]);

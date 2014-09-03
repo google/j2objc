@@ -117,7 +117,7 @@ public class IosX509Certificate extends X509Certificate {
   public native byte[] getEncoded() throws CertificateEncodingException /*-[
     CFDataRef dataRef = SecCertificateCopyData((SecCertificateRef) secCertificateRef_);
     CFIndex length = CFDataGetLength(dataRef);
-    IOSByteArray *result = [IOSByteArray arrayWithLength:length];
+    IOSByteArray *result = [IOSByteArray arrayWithLength:(jint)length];
     CFDataGetBytes(dataRef, CFRangeMake(0, length), (UInt8 *) result->buffer_);
     return result;
   ]-*/;

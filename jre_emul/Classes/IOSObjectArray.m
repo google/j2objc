@@ -24,17 +24,17 @@
 #import "java/lang/ArrayStoreException.h"
 #import "java/lang/AssertionError.h"
 
-static IOSObjectArray *IOSObjectArray_NewArray(NSUInteger length, IOSClass *type) {
+static IOSObjectArray *IOSObjectArray_NewArray(jint length, IOSClass *type) {
   IOSObjectArray *array = NSAllocateObject([IOSObjectArray class], length * sizeof(id), nil);
-  array->size_ = (jint)length;
+  array->size_ = length;
   array->elementType_ = type; // All IOSClass types are singleton so don't need to retain.
   return array;
 }
 
 static IOSObjectArray *IOSObjectArray_NewArrayWithObjects(
-    NSUInteger length, IOSClass *type, const id *objects) {
+    jint length, IOSClass *type, const id *objects) {
   IOSObjectArray *array = IOSObjectArray_NewArray(length, type);
-  for (NSUInteger i = 0; i < length; i++) {
+  for (jint i = 0; i < length; i++) {
     array->buffer_[i] = [objects[i] retain];
   }
   return array;
@@ -45,23 +45,23 @@ static IOSObjectArray *IOSObjectArray_NewArrayWithObjects(
 @synthesize elementType = elementType_;
 
 + (instancetype)newArrayWithLength:(NSUInteger)length type:(IOSClass *)type {
-  return IOSObjectArray_NewArray(length, type);
+  return IOSObjectArray_NewArray((jint)length, type);
 }
 
 + (instancetype)arrayWithLength:(NSUInteger)length type:(IOSClass *)type {
-  return [IOSObjectArray_NewArray(length, type) autorelease];
+  return [IOSObjectArray_NewArray((jint)length, type) autorelease];
 }
 
 + (instancetype)newArrayWithObjects:(const id *)objects
                               count:(NSUInteger)count
                                type:(IOSClass *)type {
-  return IOSObjectArray_NewArrayWithObjects(count, type, objects);
+  return IOSObjectArray_NewArrayWithObjects((jint)count, type, objects);
 }
 
 + (instancetype)arrayWithObjects:(const id *)objects
                            count:(NSUInteger)count
                             type:(IOSClass *)type {
-  return [IOSObjectArray_NewArrayWithObjects(count, type, objects) autorelease];
+  return [IOSObjectArray_NewArrayWithObjects((jint)count, type, objects) autorelease];
 }
 
 + (instancetype)arrayWithArray:(IOSObjectArray *)array {
@@ -72,7 +72,7 @@ static IOSObjectArray *IOSObjectArray_NewArrayWithObjects(
 
 + (instancetype)arrayWithNSArray:(NSArray *)array type:(IOSClass *)type {
   NSUInteger count = [array count];
-  IOSObjectArray *result = IOSObjectArray_NewArray(count, type);
+  IOSObjectArray *result = IOSObjectArray_NewArray((jint)count, type);
   [array getObjects:result->buffer_ range:NSMakeRange(0, count)];
   for (NSUInteger i = 0; i < count; i++) {
     [result->buffer_[i] retain];
@@ -81,7 +81,7 @@ static IOSObjectArray *IOSObjectArray_NewArrayWithObjects(
 }
 
 + (instancetype)arrayWithDimensions:(NSUInteger)dimensionCount
-                            lengths:(const int *)dimensionLengths
+                            lengths:(const jint *)dimensionLengths
                                type:(IOSClass *)type {
   if (dimensionCount == 0) {
     @throw AUTORELEASE([[JavaLangAssertionError alloc] initWithId:@"invalid dimension count"]);
@@ -272,7 +272,7 @@ void CopyWithMemmove(id __strong *buffer, NSUInteger src, NSUInteger dest, NSUIn
   return result;
 }
 
-- (NSString *)descriptionOfElementAtIndex:(NSUInteger)index {
+- (NSString *)descriptionOfElementAtIndex:(jint)index {
   return (NSString *) [buffer_[index] description];
 }
 

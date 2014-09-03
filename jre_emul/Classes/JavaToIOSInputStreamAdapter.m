@@ -43,7 +43,7 @@
 }
 
 - (NSInteger)read:(uint8_t *)buffer maxLength:(NSUInteger)len {
-  IOSByteArray *javaBytes = [IOSByteArray arrayWithLength:len];
+  IOSByteArray *javaBytes = [IOSByteArray arrayWithLength:(jint)len];
   int result = [delegate_ readWithByteArray:javaBytes withInt:0 withInt:(int) len];
   if (result == -1) {
     return 0;

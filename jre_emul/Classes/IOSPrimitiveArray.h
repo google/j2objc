@@ -110,13 +110,13 @@ PRIMITIVE_ARRAY_INTERFACE(byte, Byte, char)
 // length.  An IndexOutOfBoundsException is thrown if the specified length
 // is greater than the array size.
 - (void)getBytes:(char *)buffer
-          offset:(NSUInteger)offset
-          length:(NSUInteger)length;
+          offset:(jint)offset
+          length:(jint)length;
 
 // Copies the specified native buffer into this array at the specified offset.
 - (void)replaceBytes:(const char *)source
-              length:(NSUInteger)length
-              offset:(NSUInteger)destOffset;
+              length:(jint)length
+              offset:(jint)destOffset;
 
 // Returns the bytes of the array encapsulated in an NSData *. Copies the
 // underlying data.

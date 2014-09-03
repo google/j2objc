@@ -50,7 +50,7 @@
 
 // Create an empty multidimensional array.
 + (instancetype)arrayWithDimensions:(NSUInteger)dimensionCount
-                            lengths:(const int *)dimensionLengths
+                            lengths:(const jint *)dimensionLengths
                                type:(IOSClass *)type;
 
 + (instancetype)arrayWithArray:(IOSObjectArray *)array;

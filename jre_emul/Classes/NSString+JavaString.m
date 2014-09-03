@@ -618,7 +618,7 @@ NSStringEncoding parseCharsetName(NSString *charset) {
            range:range
   remainingRange:NULL];
   IOSByteArray *result = [IOSByteArray arrayWithBytes:buffer
-                                                count:used_length];
+                                                count:(jint)used_length];
   free(buffer);
   return result;
 }
@@ -666,7 +666,7 @@ NSStringEncoding parseCharsetName(NSString *charset) {
         [[JavaLangStringIndexOutOfBoundsException alloc]
          initWithNSString:@"dstBegin+(srcEnd-srcBegin) > dst.length"]);
   }
-  [dst replaceBytes:bytes length:bytesUsed offset:dstBegin];
+  [dst replaceBytes:bytes length:(jint)bytesUsed offset:dstBegin];
   free(bytes);
 }
 

@@ -236,8 +236,8 @@
   NSArray *exceptionsArray = [exceptionsStr componentsSeparatedByString:@";"];
   // The last string is empty, due to the trailing semi-colon of the last exception.
   NSUInteger n = [exceptionsArray count] - 1;
-  IOSObjectArray *result = [IOSObjectArray arrayWithLength:n type:[IOSClass getClass]];
-  NSUInteger count = 0;
+  IOSObjectArray *result = [IOSObjectArray arrayWithLength:(jint)n type:[IOSClass getClass]];
+  jint count = 0;
   for (NSUInteger i = 0; i < n; i++) {
     // Strip off leading 'L'.
     NSString *thrownException = [[exceptionsArray objectAtIndex:i] substringFromIndex:1];

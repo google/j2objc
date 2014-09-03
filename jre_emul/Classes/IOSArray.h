@@ -49,7 +49,7 @@
 // DEPRECATED: Use length instead.
 - (NSUInteger)count __attribute__((deprecated));
 
-- (NSString *)descriptionOfElementAtIndex:(NSUInteger)index;
+- (NSString *)descriptionOfElementAtIndex:(jint)index;
 
 // Returns the element type of this array.
 - (IOSClass *)elementType;
