@@ -30,21 +30,23 @@
 // an IOSArray is fixed-size but its elements are mutable.
 @interface IOSArray : NSObject < NSCopying > {
  @public
-  NSUInteger size_;
+  jint size_;
 }
 
 // Create an empty multi-dimensional array.
 + (id)arrayWithDimensions:(NSUInteger)dimensionCount
-                  lengths:(const int *)dimensionLengths;
+                  lengths:(const jint *)dimensionLengths;
 
 + (id)arrayWithDimensions:(NSUInteger)dimensionCount
-                  lengths:(const int *)dimensionLengths
+                  lengths:(const jint *)dimensionLengths
                     types:(__unsafe_unretained IOSClass * const *)componentTypes;
 
 + (id)iosClass;
 + (id)iosClassWithDimensions:(NSUInteger)dimensions;
 
 // Returns the size of this array.
+- (jint)length;
+// DEPRECATED: Use length instead.
 - (NSUInteger)count;
 
 - (NSString *)descriptionOfElementAtIndex:(NSUInteger)index;
@@ -64,25 +66,25 @@
 
 @end
 
-extern void IOSArray_throwOutOfBounds(NSUInteger size, NSUInteger index);
+extern void IOSArray_throwOutOfBounds(jint size, jint index);
 
 // Implement IOSArray |checkIndex| and |checkRange| methods as C functions. This
 // allows IOSArray index and range checks to be completely removed via the
 // J2OBJC_DISABLE_ARRAY_CHECKS macro to improve performance.
 __attribute__ ((unused))
-static inline void IOSArray_checkIndex(NSUInteger size, NSUInteger index) {
+static inline void IOSArray_checkIndex(jint size, jint index) {
 #if !defined(J2OBJC_DISABLE_ARRAY_CHECKS)
-  if (index >= size) {
+  if (index < 0 || index >= size) {
     IOSArray_throwOutOfBounds(size, index);
   }
 #endif
 }
 __attribute__ ((unused))
-static inline void IOSArray_checkRange(NSUInteger size, NSRange range) {
+static inline void IOSArray_checkRange(jint size, NSRange range) {
 #if !defined(J2OBJC_DISABLE_ARRAY_CHECKS)
   if (range.length > 0) {
-    IOSArray_checkIndex(size, range.location);
-    IOSArray_checkIndex(size, range.location + range.length - 1);
+    IOSArray_checkIndex(size, (jint)range.location);
+    IOSArray_checkIndex(size, (jint)range.location + (jint)range.length - 1);
   }
 #endif
 }

@@ -27,7 +27,7 @@
   static IOS##U_NAME##Array *IOS##U_NAME##Array_NewArray(NSUInteger length) { \
     IOS##U_NAME##Array *array = NSAllocateObject( \
         [IOS##U_NAME##Array class], length * sizeof(C_TYPE), nil); \
-    array->size_ = length; \
+    array->size_ = (jint)length; \
     return array; \
   } \
   \
@@ -60,34 +60,34 @@
  */
 #define PRIMITIVE_ARRAY_ACCESSORS_IMPL(L_NAME, U_NAME, C_TYPE) \
   C_TYPE IOS##U_NAME##Array_Get(__unsafe_unretained IOS##U_NAME##Array *array, NSUInteger index) { \
-    IOSArray_checkIndex(array->size_, index); \
+    IOSArray_checkIndex(array->size_, (jint)index); \
     return array->buffer_[index]; \
   } \
   \
   C_TYPE *IOS##U_NAME##Array_GetRef( \
       __unsafe_unretained IOS##U_NAME##Array *array, NSUInteger index) { \
-    IOSArray_checkIndex(array->size_, index); \
+    IOSArray_checkIndex(array->size_, (jint)index); \
     return &array->buffer_[index]; \
   } \
   \
   - (C_TYPE)L_NAME##AtIndex:(NSUInteger)index { \
-    IOSArray_checkIndex(size_, index); \
+    IOSArray_checkIndex(size_, (jint)index); \
     return buffer_[index]; \
   } \
   \
   - (C_TYPE *)L_NAME##RefAtIndex:(NSUInteger)index { \
-    IOSArray_checkIndex(size_, index); \
+    IOSArray_checkIndex(size_, (jint)index); \
     return &buffer_[index]; \
   } \
   \
   - (C_TYPE)replace##U_NAME##AtIndex:(NSUInteger)index with##U_NAME:(C_TYPE)value { \
-    IOSArray_checkIndex(size_, index); \
+    IOSArray_checkIndex(size_, (jint)index); \
     buffer_[index] = value; \
     return value; \
   } \
   \
   - (void)get##U_NAME##s:(C_TYPE *)buffer length:(NSUInteger)length { \
-    IOSArray_checkIndex(size_, length - 1); \
+    IOSArray_checkIndex(size_, (jint)length - 1); \
     memcpy(buffer, buffer_, length * sizeof(C_TYPE)); \
   }
 

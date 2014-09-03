@@ -175,7 +175,7 @@ void FillInStackTraceInternal(JavaLangThrowable *this) {
 - (void)printStackTraceWithJavaIoPrintWriter:(JavaIoPrintWriter *)pw {
   [pw printlnWithNSString:[self description]];
   IOSObjectArray *trace = [self filterStackTrace];
-  for (NSUInteger i = 0; i < trace->size_; i++) {
+  for (jint i = 0; i < trace->size_; i++) {
     [pw printWithNSString:@"\tat "];
     id frame = trace->buffer_[i];
     [pw printlnWithId:frame];
@@ -189,7 +189,7 @@ void FillInStackTraceInternal(JavaLangThrowable *this) {
 - (void)printStackTraceWithJavaIoPrintStream:(JavaIoPrintStream *)ps {
   [ps printlnWithNSString:[self description]];
   IOSObjectArray *trace = [self filterStackTrace];
-  for (NSUInteger i = 0; i < trace->size_; i++) {
+  for (jint i = 0; i < trace->size_; i++) {
     [ps printWithNSString:@"\tat "];
     id frame = trace->buffer_[i];
     [ps printlnWithId:frame];

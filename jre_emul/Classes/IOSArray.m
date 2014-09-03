@@ -35,7 +35,7 @@
 }
 
 + (id)arrayWithDimensions:(NSUInteger)dimensionCount
-                  lengths:(const int *)dimensionLengths {
+                  lengths:(const jint *)dimensionLengths {
   if (dimensionCount == 0) {
     @throw AUTORELEASE([[JavaLangAssertionError alloc] initWithId:@"invalid dimension count"]);
   }
@@ -54,9 +54,9 @@
 }
 
 + (id)arrayWithDimensions:(NSUInteger)dimensionCount
-                  lengths:(const int *)dimensionLengths
+                  lengths:(const jint *)dimensionLengths
                     types:(__unsafe_unretained IOSClass * const *)componentTypes {
-  NSUInteger size = *dimensionLengths;
+  jint size = *dimensionLengths;
   __unsafe_unretained IOSClass *componentType = *componentTypes;
 
   // If dimension of 1, just return a regular array.
@@ -71,7 +71,7 @@
   // Create an array of arrays, which is recursive to handle additional
   // dimensions.
   __unsafe_unretained id subarrays[size];
-  for (NSUInteger i = 0; i < size; i++) {
+  for (jint i = 0; i < size; i++) {
     subarrays[i] = [[self class] arrayWithDimensions:dimensionCount - 1
                                              lengths:dimensionLengths + 1
                                                types:componentTypes + 1];
@@ -92,14 +92,17 @@
   return result;
 }
 
+- (jint)length {
+  return size_;
+}
+
 - (NSUInteger)count {
   return size_;
 }
 
-void IOSArray_throwOutOfBounds(NSUInteger size, NSUInteger index) {
+void IOSArray_throwOutOfBounds(jint size, jint index) {
   NSString *msg = [NSString stringWithFormat:
-      @"index out of range: %ld for array containing %ld elements",
-      (long)index, (long)size];
+      @"index out of range: %d for array containing %d elements", index, size];
   @throw AUTORELEASE([[JavaLangArrayIndexOutOfBoundsException alloc] initWithNSString:msg]);
 }
 
@@ -113,7 +116,7 @@ void IOSArray_throwOutOfBounds(NSUInteger size, NSUInteger index) {
     return @"[]";
   }
   NSString *result = @"[";
-  for (NSUInteger i = 0; i < size_; i++) {
+  for (jint i = 0; i < size_; i++) {
     NSString *separator = i < size_ - 1 ? @", " : @"]";
     result = [result stringByAppendingFormat:@"%@%@",
                      [self descriptionOfElementAtIndex:i], separator];

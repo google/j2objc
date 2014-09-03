@@ -26,7 +26,7 @@
 
 static IOSObjectArray *IOSObjectArray_NewArray(NSUInteger length, IOSClass *type) {
   IOSObjectArray *array = NSAllocateObject([IOSObjectArray class], length * sizeof(id), nil);
-  array->size_ = length;
+  array->size_ = (jint)length;
   array->elementType_ = type; // All IOSClass types are singleton so don't need to retain.
   return array;
 }
@@ -108,12 +108,12 @@ static IOSObjectArray *IOSObjectArray_NewArrayWithObjects(
 }
 
 id IOSObjectArray_Get(__unsafe_unretained IOSObjectArray *array, NSUInteger index) {
-  IOSArray_checkIndex(array->size_, index);
+  IOSArray_checkIndex(array->size_, (jint)index);
   return array->buffer_[index];
 }
 
 - (id)objectAtIndex:(NSUInteger)index {
-  IOSArray_checkIndex(size_, index);
+  IOSArray_checkIndex(size_, (jint)index);
   return buffer_[index];
 }
 
@@ -133,7 +133,7 @@ static inline id IOSObjectArray_checkValue(
 
 id IOSObjectArray_Set(
     __unsafe_unretained IOSObjectArray *array, NSUInteger index, __unsafe_unretained id value) {
-  IOSArray_checkIndex(array->size_, index);
+  IOSArray_checkIndex(array->size_, (jint)index);
   IOSObjectArray_checkValue(array, value);
 #if ! __has_feature(objc_arc)
   [array->buffer_[index] autorelease];
@@ -142,7 +142,7 @@ id IOSObjectArray_Set(
 }
 
 - (id)replaceObjectAtIndex:(NSUInteger)index withObject:(id)value {
-  IOSArray_checkIndex(size_, index);
+  IOSArray_checkIndex(size_, (jint)index);
   IOSObjectArray_checkValue(self, value);
 #if ! __has_feature(objc_arc)
   [buffer_[index] autorelease];
@@ -151,7 +151,7 @@ id IOSObjectArray_Set(
 }
 
 - (void)getObjects:(NSObject **)buffer length:(NSUInteger)length {
-  IOSArray_checkIndex(size_, length - 1);
+  IOSArray_checkIndex(size_, (jint)length - 1);
   for (NSUInteger i = 0; i < length; i++) {
     id element = buffer_[i];
     buffer[i] = element;
@@ -267,7 +267,7 @@ void CopyWithMemmove(id __strong *buffer, NSUInteger src, NSUInteger dest, NSUIn
 
 - (id)copyWithZone:(NSZone *)zone {
   IOSObjectArray *result = IOSObjectArray_NewArray(size_, elementType_);
-  for (NSUInteger i = 0; i < size_; i++) {
+  for (jint i = 0; i < size_; i++) {
     result->buffer_[i] = [buffer_[i] retain];
   }
   return result;
@@ -278,7 +278,7 @@ void CopyWithMemmove(id __strong *buffer, NSUInteger src, NSUInteger dest, NSUIn
 }
 
 - (void)dealloc {
-  for (NSUInteger i = 0; i < size_; i++) {
+  for (jint i = 0; i < size_; i++) {
     [buffer_[i] release];
   }
   [super dealloc];
@@ -299,7 +299,7 @@ void CopyWithMemmove(id __strong *buffer, NSUInteger src, NSUInteger dest, NSUIn
 
 - (NSArray *)memDebugStrongReferences {
   NSMutableArray *result = [NSMutableArray array];
-  for (NSUInteger i = 0; i < size_; i++) {
+  for (jint i = 0; i < size_; i++) {
     [result addObject:[JreMemDebugStrongReference strongReferenceWithObject:buffer_[i] name:@"element"]];
   }
   return result;

@@ -660,7 +660,7 @@ NSStringEncoding parseCharsetName(NSString *charset) {
 
   // Double-check there won't be a buffer overflow, since the encoded length
   // of the copied substring is now known.
-  if (bytesUsed > ([dst count] - dstBegin)) {
+  if ((jint)bytesUsed > (dst->size_ - dstBegin)) {
     free(bytes);
     @throw AUTORELEASE(
         [[JavaLangStringIndexOutOfBoundsException alloc]
