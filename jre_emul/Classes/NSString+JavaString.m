@@ -65,7 +65,7 @@ id makeException(Class exceptionClass) {
 }
 
 + (NSString *)valueOfChars:(IOSCharArray *)data {
-  return [NSString valueOfChars:data offset:0 count:(int) [data count]];
+  return [NSString valueOfChars:data offset:0 count:data->size_];
 }
 
 + (NSString *)valueOfChars:(IOSCharArray *)data
@@ -86,7 +86,7 @@ id makeException(Class exceptionClass) {
     [exception autorelease];
 #endif
   }
-  if (offset + count > (int) [data count]) {
+  if (offset + count > data->size_) {
     exception = [[JavaLangStringIndexOutOfBoundsException alloc]
                  initWithInt:offset];
 #if ! __has_feature(objc_arc)
@@ -152,8 +152,8 @@ destinationBegin:(int)destinationBegin {
   }
 
   NSRange range = NSMakeRange(sourceBegin, sourceEnd - sourceBegin);
-  NSUInteger destinationLength = [destination count];
-  if (destinationBegin + range.length > destinationLength) {
+  jint destinationLength = destination->size_;
+  if (destinationBegin + (jint)range.length > destinationLength) {
     exception = [[JavaLangStringIndexOutOfBoundsException alloc]
                  initWithInt:(int) (destinationBegin + range.length)];
 #if ! __has_feature(objc_arc)
@@ -168,7 +168,7 @@ destinationBegin:(int)destinationBegin {
 }
 
 + (NSString *)stringWithCharacters:(IOSCharArray *)value {
-  return [NSString stringWithCharacters:value offset:0 length:(int) [value count]];
+  return [NSString stringWithCharacters:value offset:0 length:value->size_];
 }
 
 + (NSString *)stringWithCharacters:(IOSCharArray *)value
@@ -189,7 +189,7 @@ destinationBegin:(int)destinationBegin {
     [exception autorelease];
 #endif
   }
-  if (offset > (int) [value count] - count) {
+  if (offset > value->size_ - count) {
     exception = [[JavaLangStringIndexOutOfBoundsException alloc]
                  initWithInt:offset + count];
 #if ! __has_feature(objc_arc)
@@ -433,7 +433,7 @@ destinationBegin:(int)destinationBegin {
   NSStringEncoding encoding = [NSString defaultCStringEncoding];
   return [self stringWithBytes:value
                         offset:0
-                        length:(int) [value count]
+                        length:value->size_
                encoding:encoding];
 }
 
@@ -441,7 +441,7 @@ destinationBegin:(int)destinationBegin {
                   charsetName:(NSString *)charsetName {
   return [self stringWithBytes:value
                         offset:0
-                        length:(int) [value count]
+                        length:value->size_
                    charsetName:charsetName];
 }
 
@@ -449,7 +449,7 @@ destinationBegin:(int)destinationBegin {
                       charset:(JavaNioCharsetCharset *)charset {
   return [self stringWithBytes:value
                         offset:0
-                        length:(int) [value count]
+                        length:value->size_
                        charset:charset];
 }
 
@@ -477,7 +477,7 @@ NSStringEncoding parseCharsetName(NSString *charset) {
   return [NSString stringWithBytes:value
                             hibyte:hibyte
                             offset:0
-                            length:[value count]];
+                            length:value->size_];
 }
 
 
@@ -562,7 +562,7 @@ NSStringEncoding parseCharsetName(NSString *charset) {
 + (NSString *)stringWithInts:(IOSIntArray *)codePoints
                       offset:(int)offset
                       length:(int)length {
-  NSUInteger ncps = [codePoints count];
+  jint ncps = codePoints->size_;
   int *ints = malloc(ncps);
   [codePoints getInts:ints length:ncps];
   unichar *chars = malloc(length);

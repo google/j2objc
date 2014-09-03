@@ -285,7 +285,7 @@ public class Inflater {
       if (!buf) {
         return -1;
       }
-      if ([buf count] > 0) {
+      if (buf->size_ > 0) {
         zStream->next_out = (Bytef *) [buf byteRefAtIndex:offset];
       }
       zStream->avail_out = byteCount;

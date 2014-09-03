@@ -52,7 +52,7 @@ public class IosMD5MessageDigest extends MessageDigest {
   protected native byte[] engineDigest() /*-[
     IOSByteArray *bytes = [buffer_ toByteArray];
     unsigned char digest[CC_MD5_DIGEST_LENGTH];
-    CC_MD5(bytes->buffer_, (unsigned) [bytes count], digest);
+    CC_MD5(bytes->buffer_, (unsigned) bytes->size_, digest);
     return [IOSByteArray arrayWithBytes:(const char *) digest count:CC_MD5_DIGEST_LENGTH];
   ]-*/;
 

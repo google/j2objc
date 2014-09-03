@@ -491,8 +491,8 @@ public class StatementGeneratorTest extends GenerationTest {
         + "sync(foo.length, bar.length); } void sync(int a, int b) {} }",
         "Test", "Test.m");
     assertTranslation(translation,
-        "[self syncWithInt:(int) [((IOSCharArray *) nil_chk(foo)) count] withInt:(int) "
-        + "[((IOSCharArray *) nil_chk(bar)) count]];");
+        "[self syncWithInt:((IOSCharArray *) nil_chk(foo))->size_ withInt:"
+        + "((IOSCharArray *) nil_chk(bar))->size_];");
   }
 
   public void testLongLiteral() throws IOException {
@@ -925,7 +925,7 @@ public class StatementGeneratorTest extends GenerationTest {
     assertTranslation(translation,
         "IOSObjectArray_Set(nil_chk(IOSObjectArray_Get(nil_chk(Test_a_), 0)), 0, @\"42\");");
     assertTranslation(translation,
-        "[((IOSObjectArray *) nil_chk(IOSObjectArray_Get(Test_a_, 0))) count]");
+        "((IOSObjectArray *) nil_chk(IOSObjectArray_Get(Test_a_, 0)))->size_");
   }
 
   public void testMultiDimArray() throws IOException {

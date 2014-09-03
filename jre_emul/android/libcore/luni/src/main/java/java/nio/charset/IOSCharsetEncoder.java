@@ -94,8 +94,8 @@ public class IOSCharsetEncoder extends CharsetEncoder {
   }
 
   private static native byte[] encode(char[] in, long encoding) /*-[
-    NSString *s = [NSString stringWithCharacters:[inArg charRefAtIndex:0]
-                                          length:[inArg count]];
+    NSString *s = [NSString stringWithCharacters:inArg->buffer_
+                                          length:inArg->size_];
     NSData *data = [s dataUsingEncoding:(NSStringEncoding) encoding allowLossyConversion:NO];
     return [IOSByteArray arrayWithBytes:[data bytes] count:[data length]];
   ]-*/;
