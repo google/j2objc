@@ -32,6 +32,9 @@ GUAVA_JAR = guava-14.0.1.jar
 JSR305_JAR = jsr305-2.0.2.jar
 JSR305_SOURCE_JAR = jsr305-2.0.2.jar
 
+JAVAX_INJECT_JAR = javax.inject-1.jar
+JAVAX_INJECT_SOURCE_JAR = javax.inject-1-sources.jar
+
 JUNIT_JAR = junit-4.10.jar
 JUNIT_SOURCE_JAR = junit-4.10-sources.jar
 HAMCREST_JAR = hamcrest-core-1.1.jar
