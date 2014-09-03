@@ -19,6 +19,11 @@ package libcore.io;
 import java.nio.ByteOrder;
 import libcore.io.Memory;
 
+/*-[
+// Provided by libcore.io.Memory.
+extern void unsafeBulkCopy(char *dst, const char *src, int byteCount, int sizeofElement, BOOL swap);
+]-*/
+
 /**
  * Iterates over big- or little-endian bytes in a Java byte[].
  *
@@ -64,11 +69,14 @@ public final class HeapBufferIterator extends BufferIterator {
         return result;
     }
 
-    public void readIntArray(int[] dst, int dstOffset, int intCount) {
-        final int byteCount = intCount * SizeOf.INT;
-        Memory.unsafeBulkGet(dst, dstOffset, byteCount, buffer, offset + position, SizeOf.INT, order.needsSwap);
-        position += byteCount;
-    }
+    public native void readIntArray(int[] dst, int dstOffset, int intCount) /*-[
+      jint byteCount = intCount * sizeof(jint);
+      if (dst != nil && buffer_ != nil) {
+        unsafeBulkCopy((char *)(dst->buffer_ + dstOffset), buffer_->buffer_ + offset_ + position_,
+            byteCount, sizeof(jint), order_->needsSwap_);
+      }
+      position_ += byteCount;
+    ]-*/;
 
     public short readShort() {
         short result = Memory.peekShort(buffer, offset + position, order);

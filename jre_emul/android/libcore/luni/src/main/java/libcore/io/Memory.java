@@ -169,7 +169,7 @@ public final class Memory {
         }
 
 
-      static void unsafeBulkCopy(char *dst, const char *src, int byteCount, int sizeofElement,
+      extern void unsafeBulkCopy(char *dst, const char *src, int byteCount, int sizeofElement,
           BOOL swap) {
         if (!swap) {
           memcpy(dst, src, byteCount);
@@ -184,42 +184,6 @@ public final class Memory {
         }
       }
     ]-*/
-
-    /**
-     * Used to optimize nio heap buffer bulk get operations. 'dst' must be a primitive array.
-     * 'dstOffset' is measured in units of 'sizeofElements' bytes, srcOffset in bytes.
-     */
-    public static native void unsafeBulkGet(Object dstArray, int dstOffset, int byteCount,
-        byte[] srcArray, int srcOffset, int sizeofElements, boolean swap) /*-[
-      if (!srcArray || !dstArray) {
-        return;
-      }
-
-      // dstArray may be any primitive array type; type-testing to get
-      // the buffer is avoided because all IOS*Array classes define the
-      // buffer at the same offset.
-      char *dst = ((IOSByteArray *) dstArray)->buffer_ + dstOffset * sizeofElements;
-      const char *src = ((IOSByteArray *) srcArray)->buffer_ + srcOffset;
-      unsafeBulkCopy(dst, src, byteCount, sizeofElements, swap);
-    ]-*/;
-
-    /**
-     * Used to optimize nio heap buffer bulk put operations. 'src' must be a primitive array.
-     * 'srcOffset' is measured in units of 'sizeofElements' bytes, dstOffset in bytes.
-     */
-    public static native void unsafeBulkPut(byte[] dstArray, int dstOffset, int byteCount,
-            Object srcArray, int srcOffset, int sizeofElements, boolean swap) /*-[
-      if (!srcArray || !dstArray) {
-        return;
-      }
-
-      // dstArray may be any primitive array type; type-testing to get
-      // the buffer is avoided because all IOS*Array classes define the
-      // buffer at the same offset.
-      char *dst = ((IOSByteArray *) dstArray)->buffer_ + dstOffset;
-      const char *src = ((IOSByteArray *) srcArray)->buffer_ + srcOffset * sizeofElements;
-      unsafeBulkCopy(dst, src, byteCount, sizeofElements, swap);
-    ]-*/;
 
     public static int peekInt(byte[] src, int offset, ByteOrder order) {
         if (order == ByteOrder.BIG_ENDIAN) {

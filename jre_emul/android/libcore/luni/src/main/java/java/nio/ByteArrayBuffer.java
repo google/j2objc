@@ -20,6 +20,13 @@ package java.nio;
 import libcore.io.SizeOf;
 import libcore.io.Memory;
 
+/*-[
+#import "java/nio/ByteOrder.h"
+
+// Provided by libcore.io.Memory.
+extern void unsafeBulkCopy(char *dst, const char *src, int byteCount, int sizeofElement, BOOL swap);
+]-*/
+
 /**
  * ByteArrayBuffer implements byte[]-backed ByteBuffers.
  */
@@ -111,41 +118,40 @@ final class ByteArrayBuffer extends ByteBuffer {
     return this;
   }
 
-  final void get(char[] dst, int dstOffset, int charCount) {
-    int byteCount = checkGetBounds(SizeOf.CHAR, dst.length, dstOffset, charCount);
-    Memory.unsafeBulkGet(dst, dstOffset, byteCount, backingArray, arrayOffset + position, SizeOf.CHAR, order.needsSwap);
-    position += byteCount;
-  }
+  /*-[
+  #define GET_IMPL(TYPE) \
+    nil_chk(dst); \
+    jint byteCount = [self checkGetBoundsWithInt:sizeof(TYPE) withInt:(jint)dst->size_ \
+        withInt:dstOffset withInt:count]; \
+    char *src = backingArray_->buffer_ + arrayOffset_ + position__; \
+    unsafeBulkCopy((char *)(dst->buffer_ + dstOffset), src, byteCount, sizeof(TYPE), \
+        order__->needsSwap_); \
+    position__ += byteCount;
+  ]-*/
 
-  final void get(double[] dst, int dstOffset, int doubleCount) {
-    int byteCount = checkGetBounds(SizeOf.DOUBLE, dst.length, dstOffset, doubleCount);
-    Memory.unsafeBulkGet(dst, dstOffset, byteCount, backingArray, arrayOffset + position, SizeOf.DOUBLE, order.needsSwap);
-    position += byteCount;
-  }
+  final native void get(char[] dst, int dstOffset, int count) /*-[
+    GET_IMPL(jchar)
+  ]-*/;
 
-  final void get(float[] dst, int dstOffset, int floatCount) {
-    int byteCount = checkGetBounds(SizeOf.FLOAT, dst.length, dstOffset, floatCount);
-    Memory.unsafeBulkGet(dst, dstOffset, byteCount, backingArray, arrayOffset + position, SizeOf.FLOAT, order.needsSwap);
-    position += byteCount;
-  }
+  final native void get(double[] dst, int dstOffset, int count) /*-[
+    GET_IMPL(jdouble)
+  ]-*/;
 
-  final void get(int[] dst, int dstOffset, int intCount) {
-    int byteCount = checkGetBounds(SizeOf.INT, dst.length, dstOffset, intCount);
-    Memory.unsafeBulkGet(dst, dstOffset, byteCount, backingArray, arrayOffset + position, SizeOf.INT, order.needsSwap);
-    position += byteCount;
-  }
+  final native void get(float[] dst, int dstOffset, int count) /*-[
+    GET_IMPL(jfloat)
+  ]-*/;
 
-  final void get(long[] dst, int dstOffset, int longCount) {
-    int byteCount = checkGetBounds(SizeOf.LONG, dst.length, dstOffset, longCount);
-    Memory.unsafeBulkGet(dst, dstOffset, byteCount, backingArray, arrayOffset + position, SizeOf.LONG, order.needsSwap);
-    position += byteCount;
-  }
+  final native void get(int[] dst, int dstOffset, int count) /*-[
+    GET_IMPL(jint)
+  ]-*/;
 
-  final void get(short[] dst, int dstOffset, int shortCount) {
-    int byteCount = checkGetBounds(SizeOf.SHORT, dst.length, dstOffset, shortCount);
-    Memory.unsafeBulkGet(dst, dstOffset, byteCount, backingArray, arrayOffset + position, SizeOf.SHORT, order.needsSwap);
-    position += byteCount;
-  }
+  final native void get(long[] dst, int dstOffset, int count) /*-[
+    GET_IMPL(jlong)
+  ]-*/;
+
+  final native void get(short[] dst, int dstOffset, int count) /*-[
+    GET_IMPL(jshort)
+  ]-*/;
 
   @Override public final byte get() {
     if (position == limit) {
@@ -269,41 +275,40 @@ final class ByteArrayBuffer extends ByteBuffer {
     return this;
   }
 
-  final void put(char[] src, int srcOffset, int charCount) {
-    int byteCount = checkPutBounds(SizeOf.CHAR, src.length, srcOffset, charCount);
-    Memory.unsafeBulkPut(backingArray, arrayOffset + position, byteCount, src, srcOffset, SizeOf.CHAR, order.needsSwap);
-    position += byteCount;
-  }
+  /*-[
+  #define PUT_IMPL(TYPE) \
+    nil_chk(src); \
+    jint byteCount = [self checkPutBoundsWithInt:sizeof(TYPE) withInt:(jint)src->size_ \
+        withInt:srcOffset withInt:count]; \
+    char *dst = backingArray_->buffer_ + arrayOffset_ + position__; \
+    unsafeBulkCopy(dst, (char *)(src->buffer_ + srcOffset), byteCount, sizeof(TYPE), \
+        order__->needsSwap_); \
+    position__ += byteCount; \
+  ]-*/
 
-  final void put(double[] src, int srcOffset, int doubleCount) {
-    int byteCount = checkPutBounds(SizeOf.DOUBLE, src.length, srcOffset, doubleCount);
-    Memory.unsafeBulkPut(backingArray, arrayOffset + position, byteCount, src, srcOffset, SizeOf.DOUBLE, order.needsSwap);
-    position += byteCount;
-  }
+  final native void put(char[] src, int srcOffset, int count) /*-[
+    PUT_IMPL(jchar)
+  ]-*/;
 
-  final void put(float[] src, int srcOffset, int floatCount) {
-    int byteCount = checkPutBounds(SizeOf.FLOAT, src.length, srcOffset, floatCount);
-    Memory.unsafeBulkPut(backingArray, arrayOffset + position, byteCount, src, srcOffset, SizeOf.FLOAT, order.needsSwap);
-    position += byteCount;
-  }
+  final native void put(double[] src, int srcOffset, int count) /*-[
+    PUT_IMPL(jdouble)
+  ]-*/;
 
-  final void put(int[] src, int srcOffset, int intCount) {
-    int byteCount = checkPutBounds(SizeOf.INT, src.length, srcOffset, intCount);
-    Memory.unsafeBulkPut(backingArray, arrayOffset + position, byteCount, src, srcOffset, SizeOf.INT, order.needsSwap);
-    position += byteCount;
-  }
+  final native void put(float[] src, int srcOffset, int count) /*-[
+    PUT_IMPL(jfloat)
+  ]-*/;
 
-  final void put(long[] src, int srcOffset, int longCount) {
-    int byteCount = checkPutBounds(SizeOf.LONG, src.length, srcOffset, longCount);
-    Memory.unsafeBulkPut(backingArray, arrayOffset + position, byteCount, src, srcOffset, SizeOf.LONG, order.needsSwap);
-    position += byteCount;
-  }
+  final native void put(int[] src, int srcOffset, int count) /*-[
+    PUT_IMPL(jint)
+  ]-*/;
 
-  final void put(short[] src, int srcOffset, int shortCount) {
-    int byteCount = checkPutBounds(SizeOf.SHORT, src.length, srcOffset, shortCount);
-    Memory.unsafeBulkPut(backingArray, arrayOffset + position, byteCount, src, srcOffset, SizeOf.SHORT, order.needsSwap);
-    position += byteCount;
-  }
+  final native void put(long[] src, int srcOffset, int count) /*-[
+    PUT_IMPL(jlong)
+  ]-*/;
+
+  final native void put(short[] src, int srcOffset, int count) /*-[
+    PUT_IMPL(jshort)
+  ]-*/;
 
   @Override public ByteBuffer putChar(int index, char value) {
     if (isReadOnly) {
