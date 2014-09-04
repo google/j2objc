@@ -106,17 +106,14 @@ public class System {
     if (!src || !dest) {
       @throw AUTORELEASE([[JavaLangNullPointerException alloc] init]);
     }
-    if (![src isKindOfClass:[IOSArray class]]) {
+    Class srcCls = object_getClass(src);
+    Class destCls = object_getClass(dest);
+    if (class_getSuperclass(srcCls) != [IOSArray class]) {
       NSString *msg = [NSString stringWithFormat:@"source of type %@ is not an array",
                        [src class]];
       @throw AUTORELEASE([[JavaLangArrayStoreException alloc] initWithNSString:msg]);
     }
-    if (![dest isKindOfClass:[IOSArray class]]) {
-      NSString *msg = [NSString stringWithFormat:@"destination of type %@ is not an array",
-                       [dest class]];
-      @throw AUTORELEASE([[JavaLangArrayStoreException alloc] initWithNSString:msg]);
-    }
-    if (![dest isMemberOfClass:[src class]]) {
+    if (destCls != srcCls) {
       NSString *msg =
          [NSString stringWithFormat:@"source type %@ cannot be copied to array of type %@",
           [src class], [dest class]];
