@@ -26,6 +26,7 @@ import com.google.devtools.j2objc.ast.InfixExpression;
 import com.google.devtools.j2objc.ast.MethodDeclaration;
 import com.google.devtools.j2objc.ast.MethodInvocation;
 import com.google.devtools.j2objc.ast.ParenthesizedExpression;
+import com.google.devtools.j2objc.ast.PrefixExpression;
 import com.google.devtools.j2objc.ast.SimpleName;
 import com.google.devtools.j2objc.ast.Statement;
 import com.google.devtools.j2objc.ast.TreeNode;
@@ -131,6 +132,33 @@ public class ComplexExpressionExtractor extends TreeVisitor {
   }
 
   @Override
+  public void endVisit(PrefixExpression node) {
+    TreeNode parent = node.getParent();
+    if (parent == null) {
+      return;
+    }
+    // Check for balancing dereference and address-of operators.
+    if (parent instanceof PrefixExpression) {
+      PrefixExpression.Operator thisOp = node.getOperator();
+      PrefixExpression.Operator parentOp = ((PrefixExpression) parent).getOperator();
+      if ((thisOp == PrefixExpression.Operator.DEREFERENCE
+          && parentOp == PrefixExpression.Operator.ADDRESS_OF)
+          || (thisOp == PrefixExpression.Operator.ADDRESS_OF
+          && parentOp == PrefixExpression.Operator.DEREFERENCE)) {
+        parent.replaceWith(TreeUtil.remove(node.getOperand()));
+        return;
+      }
+    }
+    // Some other translation passes may have inserted prefix expressions
+    // without checking if parentheses were necessary.
+    switch (parent.getKind()) {
+      case POSTFIX_EXPRESSION:
+      case PREFIX_EXPRESSION: // Parentheses not needed, but better for readability.
+        ParenthesizedExpression.parenthesizeAndReplace(node);
+    }
+  }
+
+  @Override
   public void endVisit(Assignment node) {
     if (Types.isBooleanType(node.getTypeBinding())) {
       if (node.getRightHandSide() instanceof InfixExpression) {
@@ -142,9 +170,10 @@ public class ComplexExpressionExtractor extends TreeVisitor {
       // in statements. ConditionalExpressions don't need to change, though, since it's a
       // Java syntax error if an assignment-as-conditional use isn't parenthesized already.
       TreeNode parent = node.getParent();
-      if ((parent instanceof DoStatement && node == ((DoStatement) parent).getExpression()) ||
-          (parent instanceof IfStatement && node == ((IfStatement) parent).getExpression()) ||
-          (parent instanceof WhileStatement && node == ((WhileStatement) parent).getExpression())) {
+      if ((parent instanceof DoStatement && node == ((DoStatement) parent).getExpression())
+          || (parent instanceof IfStatement && node == ((IfStatement) parent).getExpression())
+          || (parent instanceof WhileStatement
+              && node == ((WhileStatement) parent).getExpression())) {
         ParenthesizedExpression.parenthesizeAndReplace(node);
       }
     }

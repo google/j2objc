@@ -968,16 +968,6 @@ public class StatementGenerator extends TreeVisitor {
   }
 
   private void printFunctionInvocation(IOSMethod iosMethod, List<Expression> args) {
-    if (iosMethod == IOSMethod.DEREFERENCE) {
-      buffer.append("(*");
-      args.get(0).accept(this);
-      buffer.append(')');
-      return;
-    } else if (iosMethod == IOSMethod.ADDRESS_OF) {
-      buffer.append('&');
-      args.get(0).accept(this);
-      return;
-    }
     buffer.append(iosMethod.getName());
     buffer.append('(');
     boolean isFirst = true;

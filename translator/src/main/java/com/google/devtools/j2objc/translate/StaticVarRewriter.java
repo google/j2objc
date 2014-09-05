@@ -28,7 +28,7 @@ import com.google.devtools.j2objc.ast.TreeNode;
 import com.google.devtools.j2objc.ast.TreeUtil;
 import com.google.devtools.j2objc.ast.TreeVisitor;
 import com.google.devtools.j2objc.types.IOSMethodBinding;
-import com.google.devtools.j2objc.types.PointerTypeBinding;
+import com.google.devtools.j2objc.types.Types;
 import com.google.devtools.j2objc.util.BindingUtil;
 import com.google.devtools.j2objc.util.NameTable;
 
@@ -124,21 +124,21 @@ public class StaticVarRewriter extends TreeVisitor {
     return true;
   }
 
-  private MethodInvocation newGetterInvocation(IVariableBinding var, boolean assignable) {
+  private Expression newGetterInvocation(IVariableBinding var, boolean assignable) {
     ITypeBinding declaringType = var.getDeclaringClass().getTypeDeclaration();
     String varName = NameTable.getStaticVarName(var);
     String getterName = "get";
     ITypeBinding returnType = var.getType();
     if (assignable) {
       getterName += "Ref";
-      returnType = new PointerTypeBinding(returnType);
+      returnType = Types.getPointerType(returnType);
     }
     IOSMethodBinding binding = IOSMethodBinding.newFunction(
         NameTable.getFullName(declaringType) + "_" + getterName + "_" + varName, returnType,
         declaringType);
-    MethodInvocation invocation = new MethodInvocation(binding, null);
+    Expression invocation = new MethodInvocation(binding, null);
     if (assignable) {
-      invocation = MethodInvocation.newDereference(invocation);
+      invocation = new PrefixExpression(PrefixExpression.Operator.DEREFERENCE, invocation);
     }
     return invocation;
   }

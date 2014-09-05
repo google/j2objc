@@ -145,15 +145,14 @@ public class NilCheckResolver extends TreeVisitor {
           && !(Types.isBoxedPrimitive(method.getDeclaringClass())
                && method.getName().equals("valueOf"));
     }
-    if (e instanceof ParenthesizedExpression) {
-      return needsNilCheck(((ParenthesizedExpression) e).getExpression());
-    }
-    if (e instanceof CastExpression) {
-      return needsNilCheck(((CastExpression) e).getExpression());
-    }
     switch (e.getKind()) {
+      case CAST_EXPRESSION:
+        return needsNilCheck(((CastExpression) e).getExpression());
+      case PARENTHESIZED_EXPRESSION:
+        return needsNilCheck(((ParenthesizedExpression) e).getExpression());
       case ARRAY_ACCESS:
       case NULL_LITERAL:
+      case PREFIX_EXPRESSION:
         return true;
     }
     return false;

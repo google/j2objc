@@ -158,7 +158,7 @@ public class ObjectiveCImplementationGeneratorTest extends GenerationTest {
         + "void test() { Bar.FOO=2; } } class Bar { public static int FOO=1; }",
        "Example", "Example.m");
     assertTranslation(translation, "int Bar_FOO_ = 1;");
-    assertTranslation(translation, "(*Bar_getRef_FOO_()) = 2;");
+    assertTranslation(translation, "*Bar_getRef_FOO_() = 2;");
   }
 
   public void testNSObjectMessageRename() throws IOException {

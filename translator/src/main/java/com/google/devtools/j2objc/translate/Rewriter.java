@@ -307,8 +307,7 @@ public class Rewriter extends TreeVisitor {
         Types.resolveJavaType("boolean"), InfixExpression.Operator.NOT_EQUALS,
         new SimpleName(param), new NullLiteral());
     Expression instanceofExpr = new InstanceofExpression(new SimpleName(param), typeArguments[0]);
-    instanceofExpr = new PrefixExpression(
-        Types.resolveJavaType("boolean"), PrefixExpression.Operator.NOT, instanceofExpr);
+    instanceofExpr = new PrefixExpression(PrefixExpression.Operator.NOT, instanceofExpr);
 
     ITypeBinding cceType = GeneratedTypeBinding.newTypeBinding(
         "java.lang.ClassCastException", Types.resolveJavaType("java.lang.RuntimeException"), false);

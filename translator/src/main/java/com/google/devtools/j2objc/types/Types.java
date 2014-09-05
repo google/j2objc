@@ -71,6 +71,9 @@ public class Types {
   // Map a primitive type to its emulation array type.
   private final Map<ITypeBinding, IOSTypeBinding> arrayBindingMap = Maps.newHashMap();
 
+  // Cache of pointer types.
+  private final Map<ITypeBinding, PointerTypeBinding> pointerTypeMap = Maps.newHashMap();
+
   // The first argument of a iOS method isn't named, but Java requires some sort of valid parameter
   // name.  The method mapper therefore uses this string, which the generators ignore.
   public static final String EMPTY_PARAMETER_NAME = "__empty_parameter__";
@@ -312,6 +315,15 @@ public class Types {
 
   public static ITypeBinding getIOSClass() {
     return instance.IOSClass;
+  }
+
+  public static PointerTypeBinding getPointerType(ITypeBinding type) {
+    PointerTypeBinding result = instance.pointerTypeMap.get(type);
+    if (result == null) {
+      result = new PointerTypeBinding(type);
+      instance.pointerTypeMap.put(type, result);
+    }
+    return result;
   }
 
   public static ITypeBinding getLocalRefType() {

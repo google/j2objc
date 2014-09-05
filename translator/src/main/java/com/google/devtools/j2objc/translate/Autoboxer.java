@@ -45,7 +45,6 @@ import com.google.devtools.j2objc.ast.TreeVisitor;
 import com.google.devtools.j2objc.ast.VariableDeclarationFragment;
 import com.google.devtools.j2objc.ast.WhileStatement;
 import com.google.devtools.j2objc.types.IOSMethodBinding;
-import com.google.devtools.j2objc.types.PointerTypeBinding;
 import com.google.devtools.j2objc.types.Types;
 import com.google.devtools.j2objc.util.BindingUtil;
 import com.google.devtools.j2objc.util.NameTable;
@@ -356,9 +355,10 @@ public class Autoboxer extends TreeVisitor {
     }
     String methodName = methodPrefix + NameTable.capitalize(Types.getPrimitiveType(type).getName());
     IOSMethodBinding methodBinding = IOSMethodBinding.newFunction(
-        methodName, type, type, new PointerTypeBinding(type));
+        methodName, type, type, Types.getPointerType(type));
     MethodInvocation invocation = new MethodInvocation(methodBinding, null);
-    invocation.getArguments().add(MethodInvocation.newAddressOf(operand.copy()));
+    invocation.getArguments().add(new PrefixExpression(
+        PrefixExpression.Operator.ADDRESS_OF, TreeUtil.remove(operand)));
     node.replaceWith(invocation);
   }
 
