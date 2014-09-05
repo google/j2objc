@@ -310,8 +310,7 @@ public class UnsequencedExpressionRewriter extends TreeVisitor {
             new SimpleName(conditionalVar), conditionalFromSubBranches(subBranches, op));
         if (op == InfixExpression.Operator.CONDITIONAL_OR) {
           ifExpr = new PrefixExpression(
-              Types.resolveJavaType("boolean"), PrefixExpression.Operator.NOT,
-              ParenthesizedExpression.parenthesize(ifExpr));
+              PrefixExpression.Operator.NOT, ParenthesizedExpression.parenthesize(ifExpr));
         }
         newIf.setExpression(ifExpr);
         stmtList.add(newIf);
@@ -564,8 +563,7 @@ public class UnsequencedExpressionRewriter extends TreeVisitor {
   private IfStatement createLoopTermination(Expression loopCondition) {
     IfStatement newIf = new IfStatement();
     newIf.setExpression(new PrefixExpression(
-        Types.resolveJavaType("boolean"), PrefixExpression.Operator.NOT,
-        ParenthesizedExpression.parenthesize(loopCondition.copy())));
+        PrefixExpression.Operator.NOT, ParenthesizedExpression.parenthesize(loopCondition.copy())));
     newIf.setThenStatement(new BreakStatement());
     return newIf;
   }

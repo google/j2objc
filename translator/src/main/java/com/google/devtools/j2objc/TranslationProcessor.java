@@ -189,10 +189,6 @@ class TranslationProcessor extends FileProcessor {
       ticker.tick("UnsequencedExpressionRewriter");
     }
 
-    // Breaks up deeply nested expressions such as chained method calls.
-    new ComplexExpressionExtractor().run(unit);
-    ticker.tick("ComplexExpressionExtractor");
-
     // Adds nil_chk calls wherever an expression is dereferenced.
     new NilCheckResolver().run(unit);
     ticker.tick("NilCheckResolver");
@@ -230,6 +226,10 @@ class TranslationProcessor extends FileProcessor {
 
     new OperatorRewriter().run(unit);
     ticker.tick("OperatorRewriter");
+
+    // Breaks up deeply nested expressions such as chained method calls.
+    new ComplexExpressionExtractor().run(unit);
+    ticker.tick("ComplexExpressionExtractor");
 
     if (Options.finalMethodsAsFunctions()) {
       new Functionizer().run(unit);

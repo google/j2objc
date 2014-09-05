@@ -21,6 +21,7 @@ import com.google.devtools.j2objc.ast.FieldAccess;
 import com.google.devtools.j2objc.ast.InfixExpression;
 import com.google.devtools.j2objc.ast.MethodInvocation;
 import com.google.devtools.j2objc.ast.PostfixExpression;
+import com.google.devtools.j2objc.ast.PrefixExpression;
 import com.google.devtools.j2objc.ast.SimpleName;
 import com.google.devtools.j2objc.ast.SingleVariableDeclaration;
 import com.google.devtools.j2objc.ast.Statement;
@@ -79,7 +80,7 @@ public class EnhancedForRewriter extends TreeVisitor {
       Statement loopBody) {
     ITypeBinding componentType = expressionType.getComponentType();
     ITypeBinding iosArrayType = Types.resolveArrayType(componentType);
-    PointerTypeBinding bufferType = new PointerTypeBinding(componentType);
+    PointerTypeBinding bufferType = Types.getPointerType(componentType);
     IVariableBinding arrayVariable = new GeneratedVariableBinding(
         "a__", 0, expressionType, false, false, null, null);
     GeneratedVariableBinding bufferVariable = new GeneratedVariableBinding(
@@ -110,8 +111,9 @@ public class EnhancedForRewriter extends TreeVisitor {
     Block newLoopBody = makeBlock(loopBody.copy());
     loop.setBody(newLoopBody);
     newLoopBody.getStatements().add(0, new VariableDeclarationStatement(
-        loopVariable, MethodInvocation.newDereference(new PostfixExpression(
-            bufferVariable, PostfixExpression.Operator.INCREMENT))));
+        loopVariable, new PrefixExpression(
+            PrefixExpression.Operator.DEREFERENCE, new PostfixExpression(
+                bufferVariable, PostfixExpression.Operator.INCREMENT))));
 
     Block block = new Block();
     List<Statement> stmts = block.getStatements();

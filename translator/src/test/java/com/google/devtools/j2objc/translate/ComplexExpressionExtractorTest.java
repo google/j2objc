@@ -39,19 +39,21 @@ public class ComplexExpressionExtractorTest extends GenerationTest {
 
   public void testChainedMethod() throws IOException {
     String translation = translateSourceFile(
-        "class Test { void test() { StringBuilder sb = new StringBuilder(); " +
-        "sb.append(\"a\").append(\"b\").append(\"c\").append(\"d\").append(\"e\").append(\"f\")" +
-        ".append(\"f\"); } }", "Test", "Test.m");
-    assertTranslation(translation, "JavaLangStringBuilder *complex$1 = " +
-        "[((JavaLangStringBuilder *) nil_chk([((JavaLangStringBuilder *) " +
-        "nil_chk([sb appendWithNSString:@\"a\"])) " +
-        "appendWithNSString:@\"b\"])) appendWithNSString:@\"c\"];");
-    assertTranslation(translation, "JavaLangStringBuilder *complex$2 = " +
-        "[((JavaLangStringBuilder *) nil_chk([((JavaLangStringBuilder *) " +
-        "nil_chk([((JavaLangStringBuilder *) nil_chk(complex$1)) appendWithNSString:@\"d\"])) " +
-        "appendWithNSString:@\"e\"])) appendWithNSString:@\"f\"];");
-    assertTranslation(translation,
-        "[((JavaLangStringBuilder *) nil_chk(complex$2)) appendWithNSString:@\"f\"];");
+        "class Test { void test() { StringBuilder sb = new StringBuilder(); "
+        + "sb.append(\"a\").append(\"b\").append(\"c\").append(\"d\").append(\"e\").append(\"f\")"
+        + ".append(\"g\"); } }", "Test", "Test.m");
+    assertTranslatedLines(translation,
+        "JavaLangStringBuilder *complex$1 = [((JavaLangStringBuilder *) "
+            + "nil_chk([sb appendWithNSString:@\"a\"])) appendWithNSString:@\"b\"];",
+        "JavaLangStringBuilder *complex$2 = ((JavaLangStringBuilder *) "
+            + "nil_chk([((JavaLangStringBuilder *) nil_chk(complex$1)) "
+            + "appendWithNSString:@\"c\"]));",
+        "JavaLangStringBuilder *complex$3 = [((JavaLangStringBuilder *) "
+            + "nil_chk([complex$2 appendWithNSString:@\"d\"])) appendWithNSString:@\"e\"];",
+        "JavaLangStringBuilder *complex$4 = ((JavaLangStringBuilder *) "
+            + "nil_chk([((JavaLangStringBuilder *) nil_chk(complex$3)) "
+            + "appendWithNSString:@\"f\"]));",
+        "[complex$4 appendWithNSString:@\"g\"];");
   }
 
   public void testLongExpression() throws IOException {

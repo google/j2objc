@@ -44,7 +44,6 @@ import com.google.devtools.j2objc.types.GeneratedVariableBinding;
 import com.google.devtools.j2objc.types.IOSMethod;
 import com.google.devtools.j2objc.types.IOSMethodBinding;
 import com.google.devtools.j2objc.types.IOSTypeBinding;
-import com.google.devtools.j2objc.types.PointerTypeBinding;
 import com.google.devtools.j2objc.types.Types;
 
 import org.eclipse.jdt.core.dom.IMethodBinding;
@@ -62,8 +61,6 @@ import java.util.Map;
  * @author Keith Stanger
  */
 public class ArrayRewriter extends TreeVisitor {
-
-  private static final IOSTypeBinding ARRAY_BASE_TYPE = IOSTypeBinding.newUnmappedClass("IOSArray");
 
   private static final ImmutableMap<String, String> INIT_METHODS =
       ImmutableMap.<String, String>builder()
@@ -358,7 +355,7 @@ public class ArrayRewriter extends TreeVisitor {
       ITypeBinding declaredReturnType =
           componentType.isPrimitive() ? componentType : Types.resolveIOSType("id");
       if (assignable) {
-        declaredReturnType = new PointerTypeBinding(declaredReturnType);
+        declaredReturnType = Types.getPointerType(declaredReturnType);
       }
       binding = IOSMethodBinding.newFunction(
           name, declaredReturnType, iosArrayBinding, iosArrayBinding, Types.resolveJavaType("int"));
@@ -367,7 +364,7 @@ public class ArrayRewriter extends TreeVisitor {
     return binding;
   }
 
-  private MethodInvocation newArrayAccess(
+  private Expression newArrayAccess(
       ArrayAccess arrayAccessNode, ITypeBinding componentType, IOSTypeBinding iosArrayBinding,
       boolean assignable) {
     IOSMethodBinding binding = getArrayAccessBinding(componentType, iosArrayBinding, assignable);
@@ -378,7 +375,7 @@ public class ArrayRewriter extends TreeVisitor {
     invocation.getArguments().add(arrayAccessNode.getArray().copy());
     invocation.getArguments().add(arrayAccessNode.getIndex().copy());
     if (assignable) {
-      invocation = MethodInvocation.newDereference(invocation);
+      return new PrefixExpression(PrefixExpression.Operator.DEREFERENCE, invocation);
     }
     return invocation;
   }

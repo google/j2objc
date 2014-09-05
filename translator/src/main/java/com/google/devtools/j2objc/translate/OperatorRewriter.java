@@ -21,13 +21,13 @@ import com.google.devtools.j2objc.ast.FieldAccess;
 import com.google.devtools.j2objc.ast.InfixExpression;
 import com.google.devtools.j2objc.ast.MethodInvocation;
 import com.google.devtools.j2objc.ast.NullLiteral;
+import com.google.devtools.j2objc.ast.PrefixExpression;
 import com.google.devtools.j2objc.ast.QualifiedName;
 import com.google.devtools.j2objc.ast.SimpleName;
 import com.google.devtools.j2objc.ast.ThisExpression;
 import com.google.devtools.j2objc.ast.TreeUtil;
 import com.google.devtools.j2objc.ast.TreeVisitor;
 import com.google.devtools.j2objc.types.IOSMethodBinding;
-import com.google.devtools.j2objc.types.PointerTypeBinding;
 import com.google.devtools.j2objc.types.Types;
 import com.google.devtools.j2objc.util.BindingUtil;
 import com.google.devtools.j2objc.util.NameTable;
@@ -50,7 +50,7 @@ public class OperatorRewriter extends TreeVisitor {
   public OperatorRewriter() {
     ITypeBinding idType = Types.resolveIOSType("id");
     retainedAssignBinding = IOSMethodBinding.newFunction(
-        "JreOperatorRetainedAssign", idType, null, new PointerTypeBinding(idType), idType, idType);
+        "JreOperatorRetainedAssign", idType, null, Types.getPointerType(idType), idType, idType);
   }
 
   private static Expression getTarget(Expression node, IVariableBinding var) {
@@ -113,7 +113,7 @@ public class OperatorRewriter extends TreeVisitor {
   private MethodInvocation newStaticAssignInvocation(IVariableBinding var, Expression value) {
     MethodInvocation invocation = new MethodInvocation(retainedAssignBinding, null);
     List<Expression> args = invocation.getArguments();
-    args.add(MethodInvocation.newAddressOf(new SimpleName(var)));
+    args.add(new PrefixExpression(PrefixExpression.Operator.ADDRESS_OF, new SimpleName(var)));
     args.add(new NullLiteral());
     args.add(value.copy());
     return invocation;
@@ -137,11 +137,11 @@ public class OperatorRewriter extends TreeVisitor {
       ITypeBinding assignType, Expression lhs, Expression rhs) {
     String funcName = "URShiftAssign" + NameTable.capitalize(assignType.getName());
     IOSMethodBinding binding = IOSMethodBinding.newFunction(
-        funcName, assignType, null, new PointerTypeBinding(assignType),
+        funcName, assignType, null, Types.getPointerType(assignType),
         Types.resolveJavaType("int"));
     MethodInvocation invocation = new MethodInvocation(binding, null);
     List<Expression> args = invocation.getArguments();
-    args.add(MethodInvocation.newAddressOf(lhs.copy()));
+    args.add(new PrefixExpression(PrefixExpression.Operator.ADDRESS_OF, lhs.copy()));
     args.add(rhs.copy());
     return invocation;
   }
@@ -150,10 +150,10 @@ public class OperatorRewriter extends TreeVisitor {
       ITypeBinding lhsType, ITypeBinding rhsType, Expression lhs, Expression rhs) {
     String funcName = "ModAssign" + NameTable.capitalize(lhsType.getName());
     IOSMethodBinding binding = IOSMethodBinding.newFunction(
-        funcName, lhsType, null, new PointerTypeBinding(lhsType), rhsType);
+        funcName, lhsType, null, Types.getPointerType(lhsType), rhsType);
     MethodInvocation invocation = new MethodInvocation(binding, null);
     List<Expression> args = invocation.getArguments();
-    args.add(MethodInvocation.newAddressOf(lhs.copy()));
+    args.add(new PrefixExpression(PrefixExpression.Operator.ADDRESS_OF, lhs.copy()));
     args.add(rhs.copy());
     return invocation;
   }
