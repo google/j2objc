@@ -480,14 +480,14 @@ public class StatementGenerator extends TreeVisitor {
       buffer.append(", @protocol(");
       buffer.append(NameTable.getFullName(type));
       buffer.append("))");
-    } else if (type.isClass() || type.isAnnotation()) {
+    } else if (type.isClass() || type.isArray() || type.isAnnotation()) {
       buffer.append("check_class_cast(");
       node.getExpression().accept(this);
       buffer.append(", [");
       buffer.append(NameTable.getFullName(type));
       buffer.append(" class])");
     } else {
-      // Cast type check not needed for primitive, enum and array types.
+      // Cast type check not needed for primitive and enum types.
       node.getExpression().accept(this);
     }
     return false;

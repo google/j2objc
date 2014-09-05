@@ -37,7 +37,6 @@ import com.google.devtools.j2objc.types.Types;
 import com.google.devtools.j2objc.util.NameTable;
 
 import org.eclipse.jdt.core.dom.ITypeBinding;
-import org.eclipse.jdt.core.dom.IVariableBinding;
 import org.eclipse.jdt.core.dom.Modifier;
 
 import java.io.IOException;
@@ -53,12 +52,12 @@ public class RewriterTest extends GenerationTest {
 
   public void testContinueAndBreakUsingSameLabel() throws IOException {
     String translation = translateSourceFile(
-        "class Test { void test() { " +
-        "int i = 0; outer: for (; i < 10; i++) { " +
-        "for (int j = 0; j < 10; j++) { " +
-        "int n = i + j; " +
-        "if (n == 5) continue outer; " +
-        "else break outer; } } } }", "Test", "Test.m");
+        "class Test { void test() { "
+        + "int i = 0; outer: for (; i < 10; i++) { "
+        + "for (int j = 0; j < 10; j++) { "
+        + "int n = i + j; "
+        + "if (n == 5) continue outer; "
+        + "else break outer; } } } }", "Test", "Test.m");
     assertTranslatedLines(translation,
         "int i = 0;",
         "for (; i < 10; i++) {",
@@ -76,8 +75,8 @@ public class RewriterTest extends GenerationTest {
 
   public void testLabeledContinue() throws IOException {
     List<Statement> stmts = translateStatements(
-        "int i = 0; outer: for (; i < 10; i++) { " +
-        "for (int j = 0; j < 10; j++) { continue outer; }}");
+        "int i = 0; outer: for (; i < 10; i++) { "
+        + "for (int j = 0; j < 10; j++) { continue outer; }}");
     assertEquals(2, stmts.size());
     Statement s = stmts.get(1);
     assertTrue(s instanceof ForStatement);  // not LabeledStatement
@@ -93,8 +92,8 @@ public class RewriterTest extends GenerationTest {
 
   public void testLabeledBreak() throws IOException {
     List<Statement> stmts = translateStatements(
-        "int i = 0; outer: for (; i < 10; i++) { " +
-        "for (int j = 0; j < 10; j++) { break outer; }}");
+        "int i = 0; outer: for (; i < 10; i++) { "
+        + "for (int j = 0; j < 10; j++) { break outer; }}");
     assertEquals(3, stmts.size());
     Statement s = stmts.get(1);
     assertTrue(s instanceof ForStatement);  // not LabeledStatement
@@ -109,8 +108,8 @@ public class RewriterTest extends GenerationTest {
 
   public void testLabeledBreakWithNonBlockParent() throws IOException {
     List<Statement> stmts = translateStatements(
-        "int i = 0; if (i == 0) outer: for (; i < 10; i++) { " +
-        "for (int j = 0; j < 10; j++) { break outer; }}");
+        "int i = 0; if (i == 0) outer: for (; i < 10; i++) { "
+        + "for (int j = 0; j < 10; j++) { break outer; }}");
     assertEquals(2, stmts.size());
     Statement s = stmts.get(1);
     assertTrue(s instanceof IfStatement);
@@ -186,43 +185,23 @@ public class RewriterTest extends GenerationTest {
   /**
    * List has a toArray() method that uses array types.
    */
-  public void testAbstractMethodsAddedWithArrayType() {
+  public void testAbstractMethodsAddedWithArrayType() throws IOException {
     String source =
         "import java.util.List; public abstract class Test implements List<Object> { "
             + "public boolean isEmpty() { return true; } }";
-    CompilationUnit unit = translateType("Test", source);
-    List<AbstractTypeDeclaration> types = unit.getTypes();
-    assertEquals(1, types.size());
-    assertTrue(types.get(0) instanceof TypeDeclaration);
-    TypeDeclaration testType = (TypeDeclaration) types.get(0);
-    List<MethodDeclaration> methods = TreeUtil.getMethodDeclarationsList(testType);
-    assertEquals(26, methods.size());
-
-    // verify added methods are abstract, and that existing method wasn't changed
-    for (MethodDeclaration m : methods) {
-      int modifiers = m.getModifiers();
-      String name = m.getName().getIdentifier();
-      if (name.equals("isEmpty")) {
-        assertFalse(Modifier.isAbstract(modifiers));
-      } else if (name.equals(NameTable.FINALIZE_METHOD)
-          || name.equals(NameTable.DEALLOC_METHOD)
-          || name.equals(NameTable.INIT_NAME)) {
-        // it's ok.
-      } else {
-        // it's an added method
-        assertTrue(Modifier.isAbstract(modifiers));
-        ITypeBinding returnType = m.getReturnType().getTypeBinding();
-        if (name.equals("toArray")) {
-          assertEquals("IOSObjectArray", returnType.getName());
-          if (!m.getParameters().isEmpty()) {
-            assertEquals(1, m.getParameters().size());
-            SingleVariableDeclaration param = m.getParameters().get(0);
-            IVariableBinding paramBinding = param.getVariableBinding();
-            assertTrue(paramBinding.getType().isArray());
-          }
-        }
-      }
-    }
+    String translation = translateSourceFile(source, "Test", "Test.m");
+    // Check that isEmpty is not abstract.
+    assertTranslatedLines(translation,
+        "- (BOOL)isEmpty {",
+        "  return YES;",
+        "}");
+    // Check that toArray is abstract and returns the correct type.
+    assertTranslatedLines(translation,
+        "- (IOSObjectArray *)toArray {",
+        "  // can't call an abstract method",
+        "  [self doesNotRecognizeSelector:_cmd];",
+        "  return 0;",
+        "}");
   }
 
   /**
@@ -230,10 +209,10 @@ public class RewriterTest extends GenerationTest {
    */
   public void testAbstractClassGrandfatherInterface() {
     String source =
-        "public class Test {" +
-        "  public interface I1 { void foo(); } " +
-        "  public interface I2 extends I1 { void bar(); } " +
-        "  public abstract class Inner implements I2 { } }";
+        "public class Test {"
+        + "  public interface I1 { void foo(); } "
+        + "  public interface I2 extends I1 { void bar(); } "
+        + "  public abstract class Inner implements I2 { } }";
     CompilationUnit unit = translateType("Test", source);
     List<AbstractTypeDeclaration> types = unit.getTypes();
     assertEquals(4, types.size());
@@ -256,8 +235,8 @@ public class RewriterTest extends GenerationTest {
    */
   public void testInterfaceOfSuperclassMethod() {
     String source =
-        "public class Test implements Equateable {} " +
-        "interface Equateable { boolean equals(Object o); }";
+        "public class Test implements Equateable {} "
+        + "interface Equateable { boolean equals(Object o); }";
     CompilationUnit unit = translateType("Test", source);
     assertEquals(2, unit.getTypes().size());
     TypeDeclaration innerType = (TypeDeclaration) unit.getTypes().get(1);
@@ -283,8 +262,8 @@ public class RewriterTest extends GenerationTest {
    */
   public void testInterfaceOfSuperclassMethodInAnonymousInner() {
     String source =
-        "interface Equateable { boolean equals(Object o); }" +
-        "public class Test { public void foo() { Equateable e = new Equateable() { }; } } ";
+        "interface Equateable { boolean equals(Object o); }"
+        + "public class Test { public void foo() { Equateable e = new Equateable() { }; } } ";
     CompilationUnit unit = translateType("Test", source);
     assertEquals(3, unit.getTypes().size());
     TypeDeclaration innerType = (TypeDeclaration) unit.getTypes().get(2);
@@ -325,19 +304,19 @@ public class RewriterTest extends GenerationTest {
     assertTranslatedLines(translation,
         "+ (void)initialize {",
         "if (self == [Test class]) {",
-        "JreOperatorRetainedAssign(&Test_a_, nil, " +
-            "[IOSIntArray arrayWithInts:(int[]){ 1, 2, 3 } count:3]);",
-        "JreOperatorRetainedAssign(&Test_b_, nil, " +
-            "[IOSCharArray arrayWithChars:(unichar[]){ '4', '5' } count:2]);");
+        "JreOperatorRetainedAssign(&Test_a_, nil, "
+            + "[IOSIntArray arrayWithInts:(int[]){ 1, 2, 3 } count:3]);",
+        "JreOperatorRetainedAssign(&Test_b_, nil, "
+            + "[IOSCharArray arrayWithChars:(unichar[]){ '4', '5' } count:2]);");
   }
 
   public void testNonStaticMultiDimArrayInitializer() throws IOException {
     String translation = translateSourceFile(
         "class Test { int[][] a = { { 1, 2, 3 } }; }", "Test", "Test.m");
     assertTranslation(translation,
-        "[IOSObjectArray arrayWithObjects:(id[]){" +
-        " [IOSIntArray arrayWithInts:(int[]){ 1, 2, 3 } count:3] } count:1" +
-        " type:[IOSIntArray iosClass]]");
+        "[IOSObjectArray arrayWithObjects:(id[]){"
+        + " [IOSIntArray arrayWithInts:(int[]){ 1, 2, 3 } count:3] } count:1"
+        + " type:[IOSIntArray iosClass]]");
   }
 
   public void testArrayCreationInConstructorInvocation() throws IOException {
@@ -350,9 +329,9 @@ public class RewriterTest extends GenerationTest {
   public void testAddsAbstractMethodsToEnum() throws IOException {
     String interfaceSource = "interface I { public int foo(); }";
     String enumSource =
-        "enum E implements I { " +
-        "  A { public int foo() { return 42; } }," +
-        "  B { public int foo() { return -1; } } }";
+        "enum E implements I { "
+        + "  A { public int foo() { return 42; } },"
+        + "  B { public int foo() { return -1; } } }";
     addSourceFile(interfaceSource, "I.java");
     addSourceFile(enumSource, "E.java");
     String translation = translateSourceFile("E", "E.m");
@@ -369,30 +348,30 @@ public class RewriterTest extends GenerationTest {
 
   // Regression test: the wrong method name used for "f.group()" translation.
   public void testPrintlnWithMethodInvocation() throws IOException {
-    String source = "public class A { " +
-        "String group() { return \"foo\"; } " +
-        "void test() { A a = new A(); System.out.println(a.group()); }}";
+    String source = "public class A { "
+        + "String group() { return \"foo\"; } "
+        + "void test() { A a = new A(); System.out.println(a.group()); }}";
     String translation = translateSourceFile(source, "A", "A.m");
     assertTranslation(translation, "printlnWithNSString:[a group]];");
   }
 
   public void testStaticArrayInitializerMove() throws IOException {
-    String source = "class Test { static final double[] EVERY_SIXTEENTH_FACTORIAL = " +
-        "{ 0x1.0p0, 0x1.30777758p44, 0x1.956ad0aae33a4p117, 0x1.ee69a78d72cb6p202, " +
-        "0x1.fe478ee34844ap295, 0x1.c619094edabffp394, 0x1.3638dd7bd6347p498, " +
-        "0x1.7cac197cfe503p605, 0x1.1e5dfc140e1e5p716, 0x1.8ce85fadb707ep829, " +
-        "0x1.95d5f3d928edep945 }; }";
+    String source = "class Test { static final double[] EVERY_SIXTEENTH_FACTORIAL = "
+        + "{ 0x1.0p0, 0x1.30777758p44, 0x1.956ad0aae33a4p117, 0x1.ee69a78d72cb6p202, "
+        + "0x1.fe478ee34844ap295, 0x1.c619094edabffp394, 0x1.3638dd7bd6347p498, "
+        + "0x1.7cac197cfe503p605, 0x1.1e5dfc140e1e5p716, 0x1.8ce85fadb707ep829, "
+        + "0x1.95d5f3d928edep945 }; }";
     String translation = translateSourceFile(source, "Test", "Test.m");
-    assertTranslation(translation, "{ 1.0, 2.0922789888E13, 2.631308369336935E35, " +
-        "1.2413915592536073E61, 1.2688693218588417E89, 7.156945704626381E118, " +
-        "9.916779348709496E149, 1.974506857221074E182, 3.856204823625804E215, " +
-        "5.5502938327393044E249, 4.7147236359920616E284 }");
+    assertTranslation(translation, "{ 1.0, 2.0922789888E13, 2.631308369336935E35, "
+        + "1.2413915592536073E61, 1.2688693218588417E89, 7.156945704626381E118, "
+        + "9.916779348709496E149, 1.974506857221074E182, 3.856204823625804E215, "
+        + "5.5502938327393044E249, 4.7147236359920616E284 }");
   }
 
   public void testTypeCheckInCompareToMethod() throws IOException {
     String translation = translateSourceFile(
-        "class Test implements Comparable<Test> { int i; " +
-        "  public int compareTo(Test t) { return i - t.i; } }", "Test", "Test.m");
+        "class Test implements Comparable<Test> { int i; "
+        + "  public int compareTo(Test t) { return i - t.i; } }", "Test", "Test.m");
     assertTranslation(translation, "#include \"java/lang/ClassCastException.h\"");
     assertTranslation(translation, "if (t != nil && ![t isKindOfClass:[Test class]])");
     assertTranslation(translation,
@@ -408,11 +387,11 @@ public class RewriterTest extends GenerationTest {
 
   public void testVariableDeclarationsInSwitchStatement() throws IOException {
     String translation = translateSourceFile(
-      "public class A { public void doSomething(int i) { switch (i) { " +
-      "case 1: int j = i * 2; log(j); break; " +
-      "case 2: log(i); break; " +
-      "case 3: log(i); int k = i, l = 42; break; }}" +
-      "private void log(int i) {}}",
+      "public class A { public void doSomething(int i) { switch (i) { "
+      + "case 1: int j = i * 2; log(j); break; "
+      + "case 2: log(i); break; "
+      + "case 3: log(i); int k = i, l = 42; break; }}"
+      + "private void log(int i) {}}",
       "A", "A.m");
     assertTranslation(translation, "int j;");
     assertTranslation(translation, "int k, l;");
@@ -428,11 +407,11 @@ public class RewriterTest extends GenerationTest {
 
   public void testVariableDeclarationsInSwitchStatement2() throws IOException {
     CompilationUnit unit = translateType("A",
-        "public class A { public void doSomething(int i) { switch (i) { " +
-        "case 1: int j = i * 2; log(j); break; " +
-        "case 2: log(i); break; " +
-        "case 3: log(i); int k = i, l = 42; break; }}" +
-        "private void log(int i) {}}");
+        "public class A { public void doSomething(int i) { switch (i) { "
+        + "case 1: int j = i * 2; log(j); break; "
+        + "case 2: log(i); break; "
+        + "case 3: log(i); int k = i, l = 42; break; }}"
+        + "private void log(int i) {}}");
     TypeDeclaration testType = (TypeDeclaration) unit.getTypes().get(0);
     MethodDeclaration method = TreeUtil.getMethodDeclarationsList(testType).get(0);
     List<Statement> stmts = method.getBody().getStatements();
@@ -447,9 +426,9 @@ public class RewriterTest extends GenerationTest {
 
   public void testMultipleSwitchVariables() throws IOException {
     String translation = translateSourceFile(
-      "public class A { public void doSomething(int n) { switch (n) { " +
-      "case 1: int i; int j = 2; }}" +
-      "private void log(int i) {}}",
+      "public class A { public void doSomething(int n) { switch (n) { "
+      + "case 1: int i; int j = 2; }}"
+      + "private void log(int i) {}}",
       "A", "A.m");
     int index = translation.indexOf("int i;");
     assertTrue(index >= 0 && index < translation.indexOf("switch"));
@@ -468,17 +447,17 @@ public class RewriterTest extends GenerationTest {
 
   public void testMultipleLabelsWithSameName() throws IOException {
     String translation = translateSourceFile(
-        "public class Test { void test() { " +
-        "  outer: for (int r = 0; r < 10; r++) {" +
-        "    for (int s = 0; s < 10; s++) {" +
-        "      break outer; }}" +
-        "  outer: for (int t = 0; t < 10; t++) {" +
-        "    for (int u = 0; u < 10; u++) {" +
-        "      break outer; }}" +
-        "  outer: for (int v = 0; v < 10; v++) {" +
-        "    for (int w = 0; w < 10; w++) {" +
-        "      break outer;" +
-        "}}}}", "Test", "Test.m");
+        "public class Test { void test() { "
+        + "  outer: for (int r = 0; r < 10; r++) {"
+        + "    for (int s = 0; s < 10; s++) {"
+        + "      break outer; }}"
+        + "  outer: for (int t = 0; t < 10; t++) {"
+        + "    for (int u = 0; u < 10; u++) {"
+        + "      break outer; }}"
+        + "  outer: for (int v = 0; v < 10; v++) {"
+        + "    for (int w = 0; w < 10; w++) {"
+        + "      break outer;"
+        + "}}}}", "Test", "Test.m");
     assertTranslation(translation, "break_outer:");
     assertTranslation(translation, "goto break_outer;");
     assertTranslation(translation, "break_outer_2:");
@@ -509,15 +488,15 @@ public class RewriterTest extends GenerationTest {
   // Objective-C requires that && tests be surrounded by parens when mixed with || tests.
   public void testLogicalPrecedence() throws IOException {
     String translation = translateSourceFile(
-        "class Test { " +
-        "boolean test1(boolean a, boolean b) {" +
-        "  return a && b; }" +
-        "boolean test2(boolean c, boolean d) {" +
-        "  return c || d; }" +
-        "boolean test3(boolean e, boolean f, boolean g, boolean h, boolean i) { " +
-        "  return e && f || g && h || i; }" +
-        "boolean test4(boolean j, boolean k, boolean l, boolean m, boolean n) {" +
-        "  return j || k || l && m && n; }}",
+        "class Test { "
+        + "boolean test1(boolean a, boolean b) {"
+        + "  return a && b; }"
+        + "boolean test2(boolean c, boolean d) {"
+        + "  return c || d; }"
+        + "boolean test3(boolean e, boolean f, boolean g, boolean h, boolean i) { "
+        + "  return e && f || g && h || i; }"
+        + "boolean test4(boolean j, boolean k, boolean l, boolean m, boolean n) {"
+        + "  return j || k || l && m && n; }}",
         "Test", "Test.m");
     assertTranslation(translation, "return a && b;");
     assertTranslation(translation, "return c || d;");
@@ -525,26 +504,26 @@ public class RewriterTest extends GenerationTest {
     assertTranslatedLines(translation, "return j || k || (l && m && n);");
 
     translation = translateSourceFile(
-        "class Test { int i; @Override public boolean equals(Object object) { " +
-        "return (object == this) || (object instanceof Test) && (i == ((Test) object).i); } }",
+        "class Test { int i; @Override public boolean equals(Object object) { "
+        + "return (object == this) || (object instanceof Test) && (i == ((Test) object).i); } }",
         "Test", "Test.m");
-    assertTranslatedLines(translation, "(object == self) || " +
-        "(([object isKindOfClass:[Test class]]) && (i_ == ((Test *) nil_chk(((Test *) " +
-        "check_class_cast(object, [Test class]))))->i_));");
+    assertTranslatedLines(translation, "(object == self) || "
+        + "(([object isKindOfClass:[Test class]]) && (i_ == ((Test *) nil_chk(((Test *) "
+        + "check_class_cast(object, [Test class]))))->i_));");
   }
 
   // Objective-C requires that bit-wise and tests be surrounded by parens when mixed with or tests.
   public void testBitPrecedence() throws IOException {
     String translation = translateSourceFile(
-        "class Test { " +
-        "int test1(int a, int b) {" +
-        "  return a & b; }" +
-        "int test2(int c, int d) {" +
-        "  return c | d; }" +
-        "int test3(int e, int f, int g, int h, int i) { " +
-        "  return e & f | g & h | i; }" +
-        "int test4(int j, int k, int l, int m, int n) {" +
-        "  return j | k | l & m & n; }}",
+        "class Test { "
+        + "int test1(int a, int b) {"
+        + "  return a & b; }"
+        + "int test2(int c, int d) {"
+        + "  return c | d; }"
+        + "int test3(int e, int f, int g, int h, int i) { "
+        + "  return e & f | g & h | i; }"
+        + "int test4(int j, int k, int l, int m, int n) {"
+        + "  return j | k | l & m & n; }}",
         "Test", "Test.m");
     assertTranslation(translation, "return a & b;");
     assertTranslation(translation, "return c | d;");
@@ -611,8 +590,8 @@ public class RewriterTest extends GenerationTest {
     assertTranslation(translation, "ComGoogleJ2objcUtilScopedLocalRef *thing = "
         + "[[[ComGoogleJ2objcUtilScopedLocalRef alloc] initWithId:t] autorelease];");
     assertTranslation(translation,
-        "return [((id<JavaUtilComparator>) nil_chk(((Test_Thing *) nil_chk(t))->comp_)) " +
-        "compareWithId:s1 withId:s2] == 0;");
+        "return [((id<JavaUtilComparator>) nil_chk(((Test_Thing *) nil_chk(t))->comp_)) "
+        + "compareWithId:s1 withId:s2] == 0;");
   }
 
   public void testInitializeRenamed() throws IOException {

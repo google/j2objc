@@ -170,7 +170,6 @@ JAVA_SOURCES = \
 	translate/InitializationNormalizer.java \
 	translate/InnerClassExtractor.java \
 	translate/JavaToIOSMethodTranslator.java \
-	translate/JavaToIOSTypeConverter.java \
 	translate/NilCheckResolver.java \
 	translate/OperatorRewriter.java \
 	translate/OuterReferenceFixer.java \
