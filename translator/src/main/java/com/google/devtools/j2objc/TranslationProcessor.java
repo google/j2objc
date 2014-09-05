@@ -33,7 +33,6 @@ import com.google.devtools.j2objc.translate.GwtConverter;
 import com.google.devtools.j2objc.translate.InitializationNormalizer;
 import com.google.devtools.j2objc.translate.InnerClassExtractor;
 import com.google.devtools.j2objc.translate.JavaToIOSMethodTranslator;
-import com.google.devtools.j2objc.translate.JavaToIOSTypeConverter;
 import com.google.devtools.j2objc.translate.NilCheckResolver;
 import com.google.devtools.j2objc.translate.OperatorRewriter;
 import com.google.devtools.j2objc.translate.OuterReferenceFixer;
@@ -196,9 +195,6 @@ class TranslationProcessor extends FileProcessor {
     new ArrayRewriter().run(unit);
     ticker.tick("ArrayRewriter");
 
-    // Translate core Java type use to similar iOS types
-    new JavaToIOSTypeConverter().run(unit);
-    ticker.tick("JavaToIOSTypeConverter");
     Map<String, String> methodMappings = Options.getMethodMappings();
     if (methodMappings.isEmpty()) {
       // Method maps are loaded here so tests can call translate() directly.

@@ -119,12 +119,15 @@ public class StatementGeneratorTest extends GenerationTest {
   }
 
   public void testCastTranslation() throws IOException {
-    String source = "Exception e = new Exception(); Throwable t = (Throwable) e;";
+    String source = "Object o = new Object(); Throwable t = (Throwable) o; int[] i = (int[]) o;";
     List<Statement> stmts = translateStatements(source);
-    assertEquals(2, stmts.size());
+    assertEquals(3, stmts.size());
     String result = generateStatement(stmts.get(1));
     assertEquals("JavaLangThrowable *t = "
-        + "(JavaLangThrowable *) check_class_cast(e, [JavaLangThrowable class]);", result);
+        + "(JavaLangThrowable *) check_class_cast(o, [JavaLangThrowable class]);", result);
+    result = generateStatement(stmts.get(2));
+    assertEquals("IOSIntArray *i = "
+        + "(IOSIntArray *) check_class_cast(o, [IOSIntArray class]);", result);
   }
 
   public void testInterfaceCastTranslation() throws IOException {
