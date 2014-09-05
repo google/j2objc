@@ -68,7 +68,7 @@ import java.util.Set;
  */
 public class NilCheckResolver extends TreeVisitor {
 
-  private static final IOSMethodBinding NIL_CHK_DECL = IOSMethodBinding.newFunction(
+  private final IOSMethodBinding nilChkDecl = IOSMethodBinding.newFunction(
       "nil_chk", Types.resolveIOSType("id"), null, Types.resolveIOSType("id"));
 
   // Contains the set of "safe" variables that don't need nil checks. A new
@@ -169,7 +169,7 @@ public class NilCheckResolver extends TreeVisitor {
       safeVarsFalse.add(var);
     }
     IOSMethodBinding nilChkBinding = IOSMethodBinding.newTypedInvocation(
-        NIL_CHK_DECL, node.getTypeBinding());
+        nilChkDecl, node.getTypeBinding());
     MethodInvocation nilChkInvocation = new MethodInvocation(nilChkBinding, null);
     node.replaceWith(nilChkInvocation);
     nilChkInvocation.getArguments().add(node);
