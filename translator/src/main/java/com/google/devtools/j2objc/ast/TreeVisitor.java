@@ -215,6 +215,12 @@ public class TreeVisitor {
 
   public void endVisit(ForStatement node) {}
 
+  public boolean visit(FunctionInvocation node) {
+    return true;
+  }
+
+  public void endVisit(FunctionInvocation node) {}
+
   public boolean visit(IfStatement node) {
     return true;
   }

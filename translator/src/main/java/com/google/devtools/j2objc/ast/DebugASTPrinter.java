@@ -424,6 +424,20 @@ public class DebugASTPrinter extends TreeVisitor {
   }
 
   @Override
+  public boolean visit(FunctionInvocation node) {
+    sb.append(node.getName());
+    sb.append('(');
+    for (Iterator<Expression> iter = node.getArguments().iterator(); iter.hasNext(); ) {
+      iter.next().accept(this);
+      if (iter.hasNext()) {
+        sb.append(", ");
+      }
+    }
+    sb.append(')');
+    return false;
+  }
+
+  @Override
   public boolean visit(IfStatement node) {
     if (!inIfStatement) {
       sb.printIndent();
@@ -857,7 +871,7 @@ public class DebugASTPrinter extends TreeVisitor {
       sb.print(' ');
     }
     if (!node.getSuperInterfaceTypes().isEmpty()) {
-      sb.print(node.isInterface() ? "extends " : "implements ");//$NON-NLS-2$
+      sb.print(node.isInterface() ? "extends " : "implements "); //$NON-NLS-2$
       for (Iterator<Type> it = node.getSuperInterfaceTypes().iterator(); it.hasNext(); ) {
         it.next().accept(this);
         if (it.hasNext()) {
@@ -900,7 +914,8 @@ public class DebugASTPrinter extends TreeVisitor {
     printModifiers(node.getTypeBinding().getModifiers());
     node.getType().accept(this);
     sb.print(' ');
-    for (Iterator<VariableDeclarationFragment> it = node.getFragments().iterator(); it.hasNext(); ) {
+    for (Iterator<VariableDeclarationFragment> it = node.getFragments().iterator();
+         it.hasNext(); ) {
       it.next().accept(this);
       if (it.hasNext()) {
         sb.print(", ");
@@ -928,7 +943,8 @@ public class DebugASTPrinter extends TreeVisitor {
     printModifiers(node.getType().getTypeBinding().getModifiers());
     node.getType().accept(this);
     sb.print(' ');
-    for (Iterator<VariableDeclarationFragment> it = node.getFragments().iterator(); it.hasNext(); ) {
+    for (Iterator<VariableDeclarationFragment> it = node.getFragments().iterator();
+         it.hasNext(); ) {
       it.next().accept(this);
       if (it.hasNext()) {
         sb.print(", ");

@@ -17,7 +17,7 @@ package com.google.devtools.j2objc.translate;
 import com.google.devtools.j2objc.ast.Assignment;
 import com.google.devtools.j2objc.ast.Expression;
 import com.google.devtools.j2objc.ast.FieldAccess;
-import com.google.devtools.j2objc.ast.MethodInvocation;
+import com.google.devtools.j2objc.ast.FunctionInvocation;
 import com.google.devtools.j2objc.ast.Name;
 import com.google.devtools.j2objc.ast.PostfixExpression;
 import com.google.devtools.j2objc.ast.PrefixExpression;
@@ -27,7 +27,6 @@ import com.google.devtools.j2objc.ast.SwitchCase;
 import com.google.devtools.j2objc.ast.TreeNode;
 import com.google.devtools.j2objc.ast.TreeUtil;
 import com.google.devtools.j2objc.ast.TreeVisitor;
-import com.google.devtools.j2objc.types.IOSMethodBinding;
 import com.google.devtools.j2objc.types.Types;
 import com.google.devtools.j2objc.util.BindingUtil;
 import com.google.devtools.j2objc.util.NameTable;
@@ -133,23 +132,22 @@ public class StaticVarRewriter extends TreeVisitor {
       getterName += "Ref";
       returnType = Types.getPointerType(returnType);
     }
-    IOSMethodBinding binding = IOSMethodBinding.newFunction(
-        NameTable.getFullName(declaringType) + "_" + getterName + "_" + varName, returnType,
-        declaringType);
-    Expression invocation = new MethodInvocation(binding, null);
+    getterName = NameTable.getFullName(declaringType) + "_" + getterName + "_" + varName;
+    Expression invocation = new FunctionInvocation(
+        getterName, returnType, returnType, declaringType);
     if (assignable) {
       invocation = new PrefixExpression(PrefixExpression.Operator.DEREFERENCE, invocation);
     }
     return invocation;
   }
 
-  private MethodInvocation newSetterInvocation(IVariableBinding var, Expression value) {
+  private FunctionInvocation newSetterInvocation(IVariableBinding var, Expression value) {
     ITypeBinding varType = var.getType();
     ITypeBinding declaringType = var.getDeclaringClass();
-    IOSMethodBinding binding = IOSMethodBinding.newFunction(
-        NameTable.getFullName(declaringType) + "_set_" + NameTable.getStaticVarName(var), varType,
-        declaringType, varType);
-    MethodInvocation invocation = new MethodInvocation(binding, null);
+    String funcName =
+        NameTable.getFullName(declaringType) + "_set_" + NameTable.getStaticVarName(var);
+    FunctionInvocation invocation = new FunctionInvocation(
+        funcName, varType, varType, declaringType);
     invocation.getArguments().add(value);
     return invocation;
   }

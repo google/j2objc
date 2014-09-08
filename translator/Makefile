@@ -82,6 +82,7 @@ JAVA_SOURCES = \
 	ast/ConditionalExpression.java \
 	ast/ConstructorInvocation.java \
 	ast/ContinueStatement.java \
+	ast/DebugASTPrinter.java \
 	ast/DoStatement.java \
 	ast/EmptyStatement.java \
 	ast/EnhancedForStatement.java \
@@ -92,6 +93,7 @@ JAVA_SOURCES = \
 	ast/FieldAccess.java \
 	ast/FieldDeclaration.java \
 	ast/ForStatement.java \
+	ast/FunctionInvocation.java \
 	ast/IfStatement.java \
 	ast/InfixExpression.java \
 	ast/Initializer.java \

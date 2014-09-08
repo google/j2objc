@@ -46,6 +46,7 @@ import com.google.devtools.j2objc.ast.Expression;
 import com.google.devtools.j2objc.ast.ExpressionStatement;
 import com.google.devtools.j2objc.ast.FieldAccess;
 import com.google.devtools.j2objc.ast.ForStatement;
+import com.google.devtools.j2objc.ast.FunctionInvocation;
 import com.google.devtools.j2objc.ast.IfStatement;
 import com.google.devtools.j2objc.ast.InfixExpression;
 import com.google.devtools.j2objc.ast.Initializer;
@@ -678,6 +679,24 @@ public class StatementGenerator extends TreeVisitor {
     }
     buffer.append(") ");
     node.getBody().accept(this);
+    return false;
+  }
+
+  @Override
+  public boolean visit(FunctionInvocation node) {
+    boolean castPrinted = maybePrintCast(node, node.getDeclaredReturnType());
+    buffer.append(node.getName());
+    buffer.append('(');
+    for (Iterator<Expression> iter = node.getArguments().iterator(); iter.hasNext(); ) {
+      iter.next().accept(this);
+      if (iter.hasNext()) {
+        buffer.append(", ");
+      }
+    }
+    buffer.append(')');
+    if (castPrinted) {
+      buffer.append(')');
+    }
     return false;
   }
 

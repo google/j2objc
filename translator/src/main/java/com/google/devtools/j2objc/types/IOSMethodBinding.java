@@ -62,14 +62,6 @@ public class IOSMethodBinding extends GeneratedMethodBinding {
         iosMethod, null, modifiers, returnType, null, declaringClass, null, false, true);
   }
 
-  public static IOSMethodBinding newTypedInvocation(IOSMethodBinding m, ITypeBinding returnType) {
-    IOSMethodBinding binding = new IOSMethodBinding(
-        m.getIOSMethod(), null, m.getModifiers(), returnType, m, m.getDeclaringClass(),
-        null, m.isVarargs(), true);
-    binding.addParameters(m);
-    return binding;
-  }
-
   public static IOSMethodBinding newFunction(
       String name, ITypeBinding returnType, ITypeBinding declaringClass,
       ITypeBinding... paramTypes) {

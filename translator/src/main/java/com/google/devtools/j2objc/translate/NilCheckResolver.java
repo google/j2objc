@@ -27,6 +27,7 @@ import com.google.devtools.j2objc.ast.EnhancedForStatement;
 import com.google.devtools.j2objc.ast.Expression;
 import com.google.devtools.j2objc.ast.FieldAccess;
 import com.google.devtools.j2objc.ast.ForStatement;
+import com.google.devtools.j2objc.ast.FunctionInvocation;
 import com.google.devtools.j2objc.ast.IfStatement;
 import com.google.devtools.j2objc.ast.InfixExpression;
 import com.google.devtools.j2objc.ast.MethodDeclaration;
@@ -44,11 +45,11 @@ import com.google.devtools.j2objc.ast.TryStatement;
 import com.google.devtools.j2objc.ast.VariableDeclarationExpression;
 import com.google.devtools.j2objc.ast.VariableDeclarationFragment;
 import com.google.devtools.j2objc.ast.WhileStatement;
-import com.google.devtools.j2objc.types.IOSMethodBinding;
 import com.google.devtools.j2objc.types.Types;
 import com.google.devtools.j2objc.util.BindingUtil;
 
 import org.eclipse.jdt.core.dom.IMethodBinding;
+import org.eclipse.jdt.core.dom.ITypeBinding;
 import org.eclipse.jdt.core.dom.IVariableBinding;
 
 import java.util.ArrayList;
@@ -67,9 +68,6 @@ import java.util.Set;
  * @author Keith Stanger
  */
 public class NilCheckResolver extends TreeVisitor {
-
-  private final IOSMethodBinding nilChkDecl = IOSMethodBinding.newFunction(
-      "nil_chk", Types.resolveIOSType("id"), null, Types.resolveIOSType("id"));
 
   // Contains the set of "safe" variables that don't need nil checks. A new
   // "scope" is added to the stack when entering conditionally executed code
@@ -168,9 +166,9 @@ public class NilCheckResolver extends TreeVisitor {
       safeVarsTrue.add(var);
       safeVarsFalse.add(var);
     }
-    IOSMethodBinding nilChkBinding = IOSMethodBinding.newTypedInvocation(
-        nilChkDecl, node.getTypeBinding());
-    MethodInvocation nilChkInvocation = new MethodInvocation(nilChkBinding, null);
+    ITypeBinding idType = Types.resolveIOSType("id");
+    FunctionInvocation nilChkInvocation = new FunctionInvocation(
+        "nil_chk", node.getTypeBinding(), idType, idType);
     node.replaceWith(nilChkInvocation);
     nilChkInvocation.getArguments().add(node);
   }
