@@ -18,8 +18,8 @@ import com.google.devtools.j2objc.Options;
 import com.google.devtools.j2objc.ast.Assignment;
 import com.google.devtools.j2objc.ast.Expression;
 import com.google.devtools.j2objc.ast.FieldAccess;
+import com.google.devtools.j2objc.ast.FunctionInvocation;
 import com.google.devtools.j2objc.ast.InfixExpression;
-import com.google.devtools.j2objc.ast.MethodInvocation;
 import com.google.devtools.j2objc.ast.NullLiteral;
 import com.google.devtools.j2objc.ast.PrefixExpression;
 import com.google.devtools.j2objc.ast.QualifiedName;
@@ -27,7 +27,6 @@ import com.google.devtools.j2objc.ast.SimpleName;
 import com.google.devtools.j2objc.ast.ThisExpression;
 import com.google.devtools.j2objc.ast.TreeUtil;
 import com.google.devtools.j2objc.ast.TreeVisitor;
-import com.google.devtools.j2objc.types.IOSMethodBinding;
 import com.google.devtools.j2objc.types.Types;
 import com.google.devtools.j2objc.util.BindingUtil;
 import com.google.devtools.j2objc.util.NameTable;
@@ -44,14 +43,6 @@ import java.util.List;
  * @author Keith Stanger
  */
 public class OperatorRewriter extends TreeVisitor {
-
-  private final IOSMethodBinding retainedAssignBinding;
-
-  public OperatorRewriter() {
-    ITypeBinding idType = Types.resolveIOSType("id");
-    retainedAssignBinding = IOSMethodBinding.newFunction(
-        "JreOperatorRetainedAssign", idType, null, Types.getPointerType(idType), idType, idType);
-  }
 
   private static Expression getTarget(Expression node, IVariableBinding var) {
     if (node instanceof QualifiedName) {
@@ -86,7 +77,7 @@ public class OperatorRewriter extends TreeVisitor {
       }
     } else if (op == Assignment.Operator.REMAINDER_ASSIGN) {
       if (isFloatingPoint(lhsType) || isFloatingPoint(rhsType)) {
-        node.replaceWith(newModAssign(lhsType, rhsType, lhs, rhs));
+        node.replaceWith(newModAssign(lhsType, lhs, rhs));
       }
     }
   }
@@ -96,9 +87,7 @@ public class OperatorRewriter extends TreeVisitor {
     ITypeBinding nodeType = node.getTypeBinding();
     if (op == InfixExpression.Operator.REMAINDER && isFloatingPoint(nodeType)) {
       String funcName = nodeType.getName().equals("float") ? "fmodf" : "fmod";
-      IOSMethodBinding binding = IOSMethodBinding.newFunction(
-          funcName, nodeType, null, nodeType, nodeType);
-      MethodInvocation invocation = new MethodInvocation(binding, null);
+      FunctionInvocation invocation = new FunctionInvocation(funcName, nodeType, nodeType, null);
       List<Expression> args = invocation.getArguments();
       args.add(TreeUtil.remove(node.getLeftOperand()));
       args.add(TreeUtil.remove(node.getRightOperand()));
@@ -110,8 +99,9 @@ public class OperatorRewriter extends TreeVisitor {
     return type.getName().equals("double") || type.getName().equals("float");
   }
 
-  private MethodInvocation newStaticAssignInvocation(IVariableBinding var, Expression value) {
-    MethodInvocation invocation = new MethodInvocation(retainedAssignBinding, null);
+  private FunctionInvocation newStaticAssignInvocation(IVariableBinding var, Expression value) {
+    FunctionInvocation invocation = new FunctionInvocation(
+        "JreOperatorRetainedAssign", value.getTypeBinding(), Types.resolveIOSType("id"), null);
     List<Expression> args = invocation.getArguments();
     args.add(new PrefixExpression(PrefixExpression.Operator.ADDRESS_OF, new SimpleName(var)));
     args.add(new NullLiteral());
@@ -119,39 +109,33 @@ public class OperatorRewriter extends TreeVisitor {
     return invocation;
   }
 
-  private static MethodInvocation newFieldSetterInvocation(
+  private static FunctionInvocation newFieldSetterInvocation(
       IVariableBinding var, Expression instance, Expression value) {
     ITypeBinding varType = var.getType();
     ITypeBinding declaringType = var.getDeclaringClass().getTypeDeclaration();
     String setterName = String.format("%s_set_%s", NameTable.getFullName(declaringType),
         NameTable.javaFieldToObjC(NameTable.getName(var)));
-    IOSMethodBinding binding = IOSMethodBinding.newFunction(
-        setterName, varType, declaringType, declaringType, varType);
-    MethodInvocation invocation = new MethodInvocation(binding, null);
+    FunctionInvocation invocation = new FunctionInvocation(
+        setterName, varType, varType, declaringType);
     invocation.getArguments().add(instance.copy());
     invocation.getArguments().add(value.copy());
     return invocation;
   }
 
-  private static MethodInvocation newUnsignedRightShift(
+  private static FunctionInvocation newUnsignedRightShift(
       ITypeBinding assignType, Expression lhs, Expression rhs) {
     String funcName = "URShiftAssign" + NameTable.capitalize(assignType.getName());
-    IOSMethodBinding binding = IOSMethodBinding.newFunction(
-        funcName, assignType, null, Types.getPointerType(assignType),
-        Types.resolveJavaType("int"));
-    MethodInvocation invocation = new MethodInvocation(binding, null);
+    FunctionInvocation invocation = new FunctionInvocation(funcName, assignType, assignType, null);
     List<Expression> args = invocation.getArguments();
     args.add(new PrefixExpression(PrefixExpression.Operator.ADDRESS_OF, lhs.copy()));
     args.add(rhs.copy());
     return invocation;
   }
 
-  private static MethodInvocation newModAssign(
-      ITypeBinding lhsType, ITypeBinding rhsType, Expression lhs, Expression rhs) {
+  private static FunctionInvocation newModAssign(
+      ITypeBinding lhsType, Expression lhs, Expression rhs) {
     String funcName = "ModAssign" + NameTable.capitalize(lhsType.getName());
-    IOSMethodBinding binding = IOSMethodBinding.newFunction(
-        funcName, lhsType, null, Types.getPointerType(lhsType), rhsType);
-    MethodInvocation invocation = new MethodInvocation(binding, null);
+    FunctionInvocation invocation = new FunctionInvocation(funcName, lhsType, lhsType, null);
     List<Expression> args = invocation.getArguments();
     args.add(new PrefixExpression(PrefixExpression.Operator.ADDRESS_OF, lhs.copy()));
     args.add(rhs.copy());

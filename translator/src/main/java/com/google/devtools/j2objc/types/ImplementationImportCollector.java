@@ -30,6 +30,7 @@ import com.google.devtools.j2objc.ast.EnumDeclaration;
 import com.google.devtools.j2objc.ast.Expression;
 import com.google.devtools.j2objc.ast.FieldAccess;
 import com.google.devtools.j2objc.ast.FieldDeclaration;
+import com.google.devtools.j2objc.ast.FunctionInvocation;
 import com.google.devtools.j2objc.ast.InfixExpression;
 import com.google.devtools.j2objc.ast.InstanceofExpression;
 import com.google.devtools.j2objc.ast.MarkerAnnotation;
@@ -179,26 +180,6 @@ public class ImplementationImportCollector extends TreeVisitor {
   }
 
   @Override
-  public boolean visit(TryStatement node) {
-    if (node.getResources().size() > 0) {
-      addImports(Types.mapTypeName("java.lang.Throwable"));
-    }
-    return true;
-  }
-
-  @Override
-  public boolean visit(TypeLiteral node) {
-    ITypeBinding type = node.getType().getTypeBinding();
-    if (type.isPrimitive()) {
-      addImports(Types.getWrapperType(type));
-    } else {
-      addImports(type);
-      addImports(Types.resolveIOSType("IOSClass"));
-    }
-    return false;
-  }
-
-  @Override
   public boolean visit(EnumDeclaration node) {
     ITypeBinding type = node.getTypeBinding();
     addImports(type);
@@ -219,6 +200,13 @@ public class ImplementationImportCollector extends TreeVisitor {
   public boolean visit(FieldDeclaration node) {
     addImports(node.getType());
     return true;
+  }
+
+  @Override
+  public void endVisit(FunctionInvocation node) {
+    // The return type is needed because the expression might need a cast.
+    addImports(node.getTypeBinding());
+    addImports(node.getDeclaringType());
   }
 
   @Override
@@ -361,11 +349,31 @@ public class ImplementationImportCollector extends TreeVisitor {
   }
 
   @Override
+  public boolean visit(TryStatement node) {
+    if (node.getResources().size() > 0) {
+      addImports(Types.mapTypeName("java.lang.Throwable"));
+    }
+    return true;
+  }
+
+  @Override
   public boolean visit(TypeDeclaration node) {
     ITypeBinding type = node.getTypeBinding();
     addImports(type);
     addDeclaredType(type, false);
     return true;
+  }
+
+  @Override
+  public boolean visit(TypeLiteral node) {
+    ITypeBinding type = node.getType().getTypeBinding();
+    if (type.isPrimitive()) {
+      addImports(Types.getWrapperType(type));
+    } else {
+      addImports(type);
+      addImports(Types.resolveIOSType("IOSClass"));
+    }
+    return false;
   }
 
   @Override

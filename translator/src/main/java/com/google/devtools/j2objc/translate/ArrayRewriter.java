@@ -26,6 +26,7 @@ import com.google.devtools.j2objc.ast.ConstructorInvocation;
 import com.google.devtools.j2objc.ast.EnumConstantDeclaration;
 import com.google.devtools.j2objc.ast.Expression;
 import com.google.devtools.j2objc.ast.FieldAccess;
+import com.google.devtools.j2objc.ast.FunctionInvocation;
 import com.google.devtools.j2objc.ast.InstanceofExpression;
 import com.google.devtools.j2objc.ast.MethodInvocation;
 import com.google.devtools.j2objc.ast.NumberLiteral;
@@ -342,36 +343,19 @@ public class ArrayRewriter extends TreeVisitor {
     return false;
   }
 
-  private Map<String, IOSMethodBinding> accessFunctions = Maps.newHashMap();
-
-  private IOSMethodBinding getArrayAccessBinding(
-      ITypeBinding componentType, IOSTypeBinding iosArrayBinding, boolean assignable) {
-    String name = iosArrayBinding.getName() + "_Get";
-    if (assignable) {
-      name += "Ref";
-    }
-    IOSMethodBinding binding = accessFunctions.get(name);
-    if (binding == null) {
-      ITypeBinding declaredReturnType =
-          componentType.isPrimitive() ? componentType : Types.resolveIOSType("id");
-      if (assignable) {
-        declaredReturnType = Types.getPointerType(declaredReturnType);
-      }
-      binding = IOSMethodBinding.newFunction(
-          name, declaredReturnType, iosArrayBinding, iosArrayBinding, Types.resolveJavaType("int"));
-      accessFunctions.put(name, binding);
-    }
-    return binding;
-  }
-
   private Expression newArrayAccess(
       ArrayAccess arrayAccessNode, ITypeBinding componentType, IOSTypeBinding iosArrayBinding,
       boolean assignable) {
-    IOSMethodBinding binding = getArrayAccessBinding(componentType, iosArrayBinding, assignable);
-    if (!componentType.isPrimitive()) {
-      binding = IOSMethodBinding.newTypedInvocation(binding, componentType);
+    String funcName = iosArrayBinding.getName() + "_Get";
+    ITypeBinding returnType = componentType;
+    ITypeBinding declaredReturnType =
+        componentType.isPrimitive() ? componentType : Types.resolveIOSType("id");
+    if (assignable) {
+      funcName += "Ref";
+      returnType = declaredReturnType = Types.getPointerType(declaredReturnType);
     }
-    MethodInvocation invocation = new MethodInvocation(binding, null);
+    FunctionInvocation invocation = new FunctionInvocation(
+        funcName, returnType, declaredReturnType, iosArrayBinding);
     invocation.getArguments().add(arrayAccessNode.getArray().copy());
     invocation.getArguments().add(arrayAccessNode.getIndex().copy());
     if (assignable) {
@@ -380,26 +364,15 @@ public class ArrayRewriter extends TreeVisitor {
     return invocation;
   }
 
-  private static IOSMethodBinding createObjectArrayAssignmentFunction() {
-    ITypeBinding idType = Types.resolveIOSType("id");
-    ITypeBinding objArrayType = Types.resolveIOSType("IOSObjectArray");
-    return IOSMethodBinding.newFunction(
-        "IOSObjectArray_Set", idType, objArrayType, objArrayType, Types.resolveJavaType("int"),
-        idType);
-  }
-
-  private IOSMethodBinding objectArrayAssignmentFunction = createObjectArrayAssignmentFunction();
-
-  private MethodInvocation newArrayAssignment(
+  private FunctionInvocation newArrayAssignment(
       Assignment assignmentNode, ArrayAccess arrayAccessNode, ITypeBinding componentType) {
     Assignment.Operator op = assignmentNode.getOperator();
     assert !componentType.isPrimitive();
     assert op == Assignment.Operator.ASSIGN;
 
-    IOSMethodBinding binding =
-        IOSMethodBinding.newTypedInvocation(objectArrayAssignmentFunction, componentType);
-
-    MethodInvocation invocation = new MethodInvocation(binding, null);
+    FunctionInvocation invocation = new FunctionInvocation(
+        "IOSObjectArray_Set", componentType, Types.resolveIOSType("id"),
+        Types.resolveIOSType("IOSObjectArray"));
     List<Expression> args = invocation.getArguments();
     args.add(arrayAccessNode.getArray().copy());
     args.add(arrayAccessNode.getIndex().copy());

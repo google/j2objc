@@ -27,6 +27,7 @@ import com.google.devtools.j2objc.ast.ConstructorInvocation;
 import com.google.devtools.j2objc.ast.DoStatement;
 import com.google.devtools.j2objc.ast.EnumConstantDeclaration;
 import com.google.devtools.j2objc.ast.Expression;
+import com.google.devtools.j2objc.ast.FunctionInvocation;
 import com.google.devtools.j2objc.ast.IfStatement;
 import com.google.devtools.j2objc.ast.InfixExpression;
 import com.google.devtools.j2objc.ast.MethodDeclaration;
@@ -353,10 +354,8 @@ public class Autoboxer extends TreeVisitor {
     if (!Types.isBoxedPrimitive(type)) {
       return;
     }
-    String methodName = methodPrefix + NameTable.capitalize(Types.getPrimitiveType(type).getName());
-    IOSMethodBinding methodBinding = IOSMethodBinding.newFunction(
-        methodName, type, type, Types.getPointerType(type));
-    MethodInvocation invocation = new MethodInvocation(methodBinding, null);
+    String funcName = methodPrefix + NameTable.capitalize(Types.getPrimitiveType(type).getName());
+    FunctionInvocation invocation = new FunctionInvocation(funcName, type, type, type);
     invocation.getArguments().add(new PrefixExpression(
         PrefixExpression.Operator.ADDRESS_OF, TreeUtil.remove(operand)));
     node.replaceWith(invocation);

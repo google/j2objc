@@ -21,6 +21,7 @@ import com.google.common.collect.Maps;
 import com.google.devtools.j2objc.ast.Assignment;
 import com.google.devtools.j2objc.ast.DoStatement;
 import com.google.devtools.j2objc.ast.Expression;
+import com.google.devtools.j2objc.ast.FunctionInvocation;
 import com.google.devtools.j2objc.ast.IfStatement;
 import com.google.devtools.j2objc.ast.InfixExpression;
 import com.google.devtools.j2objc.ast.MethodDeclaration;
@@ -129,6 +130,11 @@ public class ComplexExpressionExtractor extends TreeVisitor {
     }
     children.addAll(args);
     handleNode(node, children);
+  }
+
+  @Override
+  public void endVisit(FunctionInvocation node) {
+    handleNode(node, node.getArguments());
   }
 
   @Override
