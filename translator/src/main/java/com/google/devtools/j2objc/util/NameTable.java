@@ -594,7 +594,8 @@ public class NameTable {
    * Returns a "Type_method" function name for static methods, such as from
    * enum types.
    */
-  public static String makeFunctionName(ITypeBinding classBinding, IMethodBinding methodBinding) {
+  public static String makeFunctionName(IMethodBinding methodBinding) {
+    ITypeBinding classBinding = methodBinding.getDeclaringClass();
     String className = getFullName(classBinding);
     String methodName = methodBinding.getName();
 
