@@ -195,14 +195,6 @@ class TranslationProcessor extends FileProcessor {
     new ArrayRewriter().run(unit);
     ticker.tick("ArrayRewriter");
 
-    Map<String, String> methodMappings = Options.getMethodMappings();
-    if (methodMappings.isEmpty()) {
-      // Method maps are loaded here so tests can call translate() directly.
-      loadMappingFiles();
-    }
-    new JavaToIOSMethodTranslator(methodMappings).run(unit);
-    ticker.tick("JavaToIOSMethodTranslator");
-
     new StaticVarRewriter().run(unit);
     ticker.tick("StaticVarRewriter");
 
@@ -234,6 +226,14 @@ class TranslationProcessor extends FileProcessor {
 
     new ConstantBranchPruner().run(unit);
     ticker.tick("ConstantBranchPruner");
+
+    Map<String, String> methodMappings = Options.getMethodMappings();
+    if (methodMappings.isEmpty()) {
+      // Method maps are loaded here so tests can call translate() directly.
+      loadMappingFiles();
+    }
+    new JavaToIOSMethodTranslator(methodMappings).run(unit);
+    ticker.tick("JavaToIOSMethodTranslator");
 
     for (Plugin plugin : Options.getPlugins()) {
       plugin.processUnit(unit);

@@ -15,11 +15,10 @@
 package com.google.devtools.j2objc.translate;
 
 import com.google.common.collect.Lists;
-import com.google.common.collect.Maps;
+import com.google.common.collect.Sets;
 import com.google.devtools.j2objc.ast.AbstractTypeDeclaration;
 import com.google.devtools.j2objc.ast.AnnotationTypeDeclaration;
 import com.google.devtools.j2objc.ast.Block;
-import com.google.devtools.j2objc.ast.BodyDeclaration;
 import com.google.devtools.j2objc.ast.CompilationUnit;
 import com.google.devtools.j2objc.ast.EnumDeclaration;
 import com.google.devtools.j2objc.ast.Expression;
@@ -41,7 +40,6 @@ import com.google.devtools.j2objc.ast.SynchronizedStatement;
 import com.google.devtools.j2objc.ast.ThisExpression;
 import com.google.devtools.j2objc.ast.TreeUtil;
 import com.google.devtools.j2objc.ast.TreeVisitor;
-import com.google.devtools.j2objc.ast.TypeDeclaration;
 import com.google.devtools.j2objc.ast.TypeLiteral;
 import com.google.devtools.j2objc.types.GeneratedMethodBinding;
 import com.google.devtools.j2objc.types.GeneratedVariableBinding;
@@ -58,8 +56,7 @@ import org.eclipse.jdt.core.dom.IVariableBinding;
 import org.eclipse.jdt.core.dom.Modifier;
 
 import java.util.List;
-import java.util.Map;
-import java.util.Stack;
+import java.util.Set;
 
 /**
  * Converts methods that don't need dynamic dispatch to C functions. This optimization
@@ -69,86 +66,36 @@ import java.util.Stack;
  * @author Tom Ball
  */
 public class Functionizer extends TreeVisitor {
-  private Stack<MethodDeclaration> methodStack = new Stack<MethodDeclaration>();
-  private Map<IMethodBinding, Integer> referenceCounts = Maps.newHashMap();
 
-  // Map each functionalized method to its function.
-  private Map<IMethodBinding, IMethodBinding> functionMap = Maps.newHashMap();
+  private Set<IMethodBinding> functionizableMethods;
 
   @Override
   public boolean visit(CompilationUnit node) {
-    determineReferenceCounts(node);
-    functionize(node);
+    functionizableMethods = determineFunctionizableMethods(node);
     return true;
   }
 
   /**
-   * Determine how often each method in this node is invoked within this node.
-   * This is used to determine whether or not to functionize the method, since
-   * a private class can have public methods that aren't invoked if it implements
-   * an interface (a private implementation of List, for example).
+   * Determines the set of methods to functionize. In addition to a method being
+   * final we must also find an invocation for that method.
    */
-  private void determineReferenceCounts(CompilationUnit node) {
-    final List<IMethodBinding> invalidMethods = Lists.newArrayList();
-    node.accept(new TreeVisitor() {
+  private Set<IMethodBinding> determineFunctionizableMethods(CompilationUnit unit) {
+    final Set<IMethodBinding> functionizableDeclarations = Sets.newHashSet();
+    final Set<IMethodBinding> invocations = Sets.newHashSet();
+    unit.accept(new TreeVisitor() {
       @Override
       public void endVisit(MethodDeclaration node) {
-        IMethodBinding m = node.getMethodBinding();
-        if (!BindingUtil.isFunction(m) && !referenceCounts.containsKey(m)) {
-          referenceCounts.put(m, 0);
+        if (canFunctionize(node)) {
+          functionizableDeclarations.add(node.getMethodBinding());
         }
       }
 
       @Override
       public void endVisit(MethodInvocation node) {
-        IMethodBinding m = getDeclaration(node.getMethodBinding());
-        if (!BindingUtil.isFunction(m)) {
-          Integer n = referenceCounts.get(m);
-          if (n == null) {
-            n = 0;
-          }
-          referenceCounts.put(m, n + 1);
-        }
-      }
-
-      @Override
-      public void endVisit(SuperMethodInvocation node) {
-        MethodDeclaration method = TreeUtil.getOwningMethod(node);
-        invalidMethods.add(getDeclaration(method.getMethodBinding()));
+        invocations.add(node.getMethodBinding().getMethodDeclaration());
       }
     });
-    for (IMethodBinding m : invalidMethods) {
-      referenceCounts.remove(m);
-    }
-  }
-
-  private void functionize(CompilationUnit unit) {
-    for (AbstractTypeDeclaration decl : unit.getTypes()) {
-      if (decl instanceof TypeDeclaration) {
-        functionizeType((TypeDeclaration) decl);
-      }
-    }
-  }
-
-  private void functionizeType(TypeDeclaration node) {
-    List<MethodDeclaration> functions = Lists.newArrayList();
-    for (MethodDeclaration method : TreeUtil.getMethodDeclarations(node)) {
-      IMethodBinding m = method.getMethodBinding();
-      if (canFunctionize(m)) {
-        MethodDeclaration function = makeFunction(method);
-        setFunctionCaller(method, function);
-        functions.add(function);
-        functionMap.put(m, function.getMethodBinding());
-        ErrorUtil.functionizedMethod();
-      }
-    }
-    node.getBodyDeclarations().addAll(functions);
-
-    for (BodyDeclaration decl : node.getBodyDeclarations()) {
-      if (decl instanceof TypeDeclaration) {
-        functionizeType((TypeDeclaration) decl);
-      }
-    }
+    return Sets.intersection(functionizableDeclarations, invocations);
   }
 
   @Override
@@ -171,8 +118,8 @@ public class Functionizer extends TreeVisitor {
     return false;
   }
 
-  private boolean canFunctionize(IMethodBinding m) {
-    m = getDeclaration(m);
+  private boolean canFunctionize(MethodDeclaration node) {
+    IMethodBinding m = node.getMethodBinding();
 
     // Never functionize these types of methods.
     if (BindingUtil.isFunction(m) || BindingUtil.isAbstract(m) || BindingUtil.isSynthetic(m)
@@ -187,88 +134,59 @@ public class Functionizer extends TreeVisitor {
       return false;
     }
 
-    if (BindingUtil.isPrivate(m) || BindingUtil.isPrivate(m.getDeclaringClass())) {
-      // Only functionize if the method is invoked from within the outer class or any
-      // of its member classes.
-      Integer n = referenceCounts.get(m);
-      return n == null ? false : n.intValue() > 0;
+    if (!BindingUtil.isPrivate(m) && !BindingUtil.isFinal(m)) {
+      return false;
     }
-    return false;
+
+    return !hasSuperMethodInvocation(node);
+  }
+
+  private static boolean hasSuperMethodInvocation(MethodDeclaration node) {
+    final boolean[] result = new boolean[1];
+    result[0] = false;
+    node.accept(new TreeVisitor() {
+      @Override
+      public void endVisit(SuperMethodInvocation node) {
+        result[0] = true;
+      }
+    });
+    return result[0];
   }
 
   @Override
   public void endVisit(MethodInvocation node) {
-    IMethodBinding binding = node.getMethodBinding();
-    ITypeBinding declaringClass = binding.getDeclaringClass();
-    if (declaringClass == null) {
-      // Unrelated function, such as address_of: skip.
+    IMethodBinding binding = node.getMethodBinding().getMethodDeclaration();
+    if (!functionizableMethods.contains(binding)) {
       return;
     }
-    List<Expression> args = null;
-    IMethodBinding functionBinding = functionMap.get(binding);
-    if (functionBinding == null && BindingUtil.isFunction(binding)) {
-      functionBinding = binding;
-    }
-    boolean isFunction = functionBinding != null;
-    if (isFunction) {
-      MethodInvocation functionInvocation = new MethodInvocation(functionBinding, null);
-      args = functionInvocation.getArguments();
-      TreeUtil.moveList(node.getArguments(), args);
-      node.replaceWith(functionInvocation);
-    } else {
-      args = node.getArguments();
+
+    IOSMethodBinding functionBinding = IOSMethodBinding.newFunction(
+        binding, NameTable.makeFunctionName(binding), binding.getParameterTypes());
+    MethodInvocation functionInvocation = new MethodInvocation(functionBinding, null);
+    List<Expression> args = functionInvocation.getArguments();
+    TreeUtil.moveList(node.getArguments(), args);
+
+    if (!BindingUtil.isStatic(binding)) {
+      Expression expr = node.getExpression();
+      if (expr == null) {
+        ITypeBinding thisClass = TreeUtil.getOwningType(node).getTypeBinding();
+        expr = new ThisExpression(thisClass);
+      }
+      args.add(0, TreeUtil.remove(expr));
     }
 
-    MethodDeclaration enclosingMethod = methodStack.peek();
-    IMethodBinding enclosingBinding = enclosingMethod.getMethodBinding();
-    Expression expr = node.getExpression();
-    boolean isInstance = !BindingUtil.isStatic(binding);
-    if (isFunction && isInstance) {
-      boolean needsReceiver = expr == null || expr instanceof ThisExpression;
-      if (BindingUtil.isFunction(enclosingBinding)
-          && !BindingUtil.isStatic(enclosingBinding) && needsReceiver) {
-        // Add self parameter.
-        GeneratedVariableBinding selfParam = new GeneratedVariableBinding(NameTable.SELF_NAME,
-            binding.getModifiers() | BindingUtil.ACC_SYNTHETIC, declaringClass, false, true,
-            declaringClass, null);
-        args.add(0, new SimpleName(selfParam));
-      } else {
-        boolean needsInstanceParam = isInstance && needsReceiver;
-        if (sameClassMember(declaringClass, getEnclosingType(enclosingMethod))
-            && needsInstanceParam) {
-          // Add this parameter.
-          args.add(0, new ThisExpression(declaringClass));
-        } else if (expr != null) {
-          // Move expression to first parameter. The expression has to be to an outer
-          // class instance (i.e., this$0), since the method is private.
-          Expression thisParam = expr;
-          node.setExpression(null);
-          args.add(0, thisParam);
-        }
-      }
-    } else {
-      if (!BindingUtil.isStatic(binding) && !BindingUtil.isStatic(enclosingBinding)
-          && BindingUtil.isFunction(enclosingBinding)) {
-        // Dynamic method invocation inside function.
-        Expression receiver = expr;
-        if ((receiver == null || receiver instanceof ThisExpression)) {
-          // Change message receiver to self.
-          IVariableBinding selfParam = enclosingMethod.getParameters().get(0).getVariableBinding();
-          node.setExpression(new SimpleName(selfParam));
-        }
-      }
-    }
-  }
-
-  @Override
-  public boolean visit(MethodDeclaration node) {
-    methodStack.push(node);
-    return true;
+    node.replaceWith(functionInvocation);
   }
 
   @Override
   public void endVisit(MethodDeclaration node) {
-    methodStack.pop();
+    if (functionizableMethods.contains(node.getMethodBinding())) {
+      AbstractTypeDeclaration owningType = TreeUtil.getOwningType(node);
+      MethodDeclaration function = makeFunction(node);
+      setFunctionCaller(node, function);
+      owningType.getBodyDeclarations().add(function);
+      ErrorUtil.functionizedMethod();
+    }
   }
 
   /**
@@ -289,9 +207,8 @@ public class Functionizer extends TreeVisitor {
           declaringClass, false, true, declaringClass, null);
       params.add(0, new SingleVariableDeclaration(var));
     }
-    String functionName = NameTable.makeFunctionName(declaringClass, m);
     IOSMethodBinding newBinding =
-        IOSMethodBinding.newFunction(m, functionName, paramTypes);
+        IOSMethodBinding.newFunction(m, NameTable.makeFunctionName(m), paramTypes);
     MethodDeclaration function = new MethodDeclaration(newBinding);
     function.getParameters().addAll(params);
 
@@ -345,11 +262,15 @@ public class Functionizer extends TreeVisitor {
    *  Replace method block statements with single statement that invokes function.
    */
   private void setFunctionCaller(MethodDeclaration method, MethodDeclaration function) {
+    IMethodBinding methodBinding = method.getMethodBinding();
     IMethodBinding functionBinding = function.getMethodBinding();
     List<Statement> stmts = method.getBody().getStatements();
     stmts.clear();
     MethodInvocation invocation = new MethodInvocation(functionBinding, null);
     List<Expression> args = invocation.getArguments();
+    if (!BindingUtil.isStatic(methodBinding)) {
+      args.add(new ThisExpression(methodBinding.getDeclaringClass()));
+    }
     for (SingleVariableDeclaration param : method.getParameters()) {
       args.add(new SimpleName(param.getVariableBinding()));
     }
@@ -371,22 +292,6 @@ public class Functionizer extends TreeVisitor {
       return true;
     }
     return enclosingType.getTypeDeclaration().isEqualTo(declaringClass.getTypeDeclaration());
-  }
-
-  private static ITypeBinding getEnclosingType(MethodDeclaration md) {
-    return TreeUtil.getOwningType(md).getTypeBinding().getErasure();
-  }
-
-  /**
-   * Returns method declaration if declared in binding class, no superclass or
-   * interface declarations returned.
-   */
-  private IMethodBinding getDeclaration(IMethodBinding m) {
-    if (BindingUtil.isFunction(m)) {
-      return m;
-    }
-    IMethodBinding decl = m.getMethodDeclaration();
-    return m.getDeclaringClass().isEqualTo(decl.getDeclaringClass()) ? decl : m;
   }
 
   /**
