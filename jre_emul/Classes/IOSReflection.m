@@ -81,9 +81,16 @@ Method JreFindClassMethod(Class cls, const char *name) {
 }
 
 NSMethodSignature *JreSignatureOrNull(struct objc_method_description *methodDesc) {
+  const char *types = methodDesc->types;
+  // Some IOS devices crash instead of throwing an exception on struct type
+  // encodings.
+  const char *badChar = strchr(types, '{');
+  if (badChar) {
+    return nil;
+  }
   @try {
     // Fails when non-ObjC types are included in the type encoding.
-    return [NSMethodSignature signatureWithObjCTypes:methodDesc->types];
+    return [NSMethodSignature signatureWithObjCTypes:types];
   }
   @catch (NSException *e) {
     return nil;
