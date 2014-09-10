@@ -120,8 +120,8 @@ public class ObjectiveCImplementationGenerator extends ObjectiveCSourceFileGener
         generate(type);
       }
       popIgnoreDeprecatedDeclarationsPragma();
-    } else if (unit.getMainTypeName().endsWith(NameTable.PACKAGE_INFO_MAIN_TYPE) &&
-        unit.getPackage().getAnnotations().size() > 0) {
+    } else if (unit.getMainTypeName().endsWith(NameTable.PACKAGE_INFO_MAIN_TYPE)
+        && unit.getPackage().getAnnotations().size() > 0) {
       generate(unit.getPackage());
     } else {
       // Print a dummy C function so compiled object file is valid.
@@ -1072,19 +1072,21 @@ public class ObjectiveCImplementationGenerator extends ObjectiveCSourceFileGener
     return false;
   }
 
-  private boolean hasPrivateMethods(Iterable<MethodDeclaration> methods) {
-    for (MethodDeclaration m : methods) {
-      if (isPrivateOrSynthetic(m.getModifiers())) {
-        return true;
+  private List<MethodDeclaration> getPrivateMethodsToDeclare(AbstractTypeDeclaration typeNode) {
+    List<MethodDeclaration> methods = Lists.newArrayList();
+    for (MethodDeclaration method : TreeUtil.getMethodDeclarations(typeNode)) {
+      int modifiers = method.getModifiers();
+      // Synthetic methods don't need to be declared.
+      if (Modifier.isPrivate(modifiers) && !BindingUtil.isSynthetic(modifiers)) {
+        methods.add(method);
       }
     }
-    return false;
+    return methods;
   }
 
   private void printClassExtensions(List<AbstractTypeDeclaration> types) {
     for (AbstractTypeDeclaration type : types) {
       if (type.getTypeBinding().isClass() || type.getTypeBinding().isEnum()) {
-        newline();
         printClassExtension(type);
       }
     }
@@ -1092,11 +1094,12 @@ public class ObjectiveCImplementationGenerator extends ObjectiveCSourceFileGener
 
   private void printClassExtension(AbstractTypeDeclaration node) {
     if (Options.hidePrivateMembers()) {
-      List<MethodDeclaration> methods = TreeUtil.getMethodDeclarationsList(node);
       List<FieldDeclaration> fields = TreeUtil.getFieldDeclarationsList(node);
       boolean hasPrivateFields = hasPrivateFields(fields);
-      if (hasPrivateMethods(methods) || hasPrivateFields) {
+      List<MethodDeclaration> privateMethods = getPrivateMethodsToDeclare(node);
+      if (!privateMethods.isEmpty() || hasPrivateFields) {
         String typeName = NameTable.getFullName(node.getTypeBinding());
+        newline();
         printf("@interface %s ()", typeName);
         if (hasPrivateFields) {
           println(" {");
@@ -1105,7 +1108,7 @@ public class ObjectiveCImplementationGenerator extends ObjectiveCSourceFileGener
         } else {
           newline();
         }
-        for (MethodDeclaration m : methods) {
+        for (MethodDeclaration m : privateMethods) {
           if (isPrivateOrSynthetic(m.getModifiers())) {
             IMethodBinding binding = m.getMethodBinding();
             IOSMethod iosMethod = IOSMethodBinding.getIOSMethod(binding);

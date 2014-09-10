@@ -510,8 +510,8 @@ public abstract class ObjectiveCSourceFileGenerator extends SourceFileGenerator 
     boolean printAllVars = !Options.hidePrivateMembers() && !privateVars;
     for (FieldDeclaration field : TreeUtil.getFieldDeclarations(node)) {
       int modifiers = field.getModifiers();
-      if (!Modifier.isStatic(field.getModifiers()) &&
-          (printAllVars || (privateVars == isPrivateOrSynthetic(modifiers)))) {
+      if (!Modifier.isStatic(field.getModifiers())
+          && (printAllVars || (privateVars == isPrivateOrSynthetic(modifiers)))) {
         List<VariableDeclarationFragment> vars = field.getFragments();
         assert !vars.isEmpty();
         IVariableBinding varBinding = vars.get(0).getVariableBinding();
@@ -557,7 +557,7 @@ public abstract class ObjectiveCSourceFileGenerator extends SourceFileGenerator 
   }
 
   protected boolean isPrivateOrSynthetic(int modifiers) {
-    return Modifier.isPrivate(modifiers) || (modifiers & BindingUtil.ACC_SYNTHETIC) != 0;
+    return Modifier.isPrivate(modifiers) || BindingUtil.isSynthetic(modifiers);
   }
 
   protected void printNormalMethodDeclaration(MethodDeclaration m) {
@@ -612,8 +612,8 @@ public abstract class ObjectiveCSourceFileGenerator extends SourceFileGenerator 
     for (FieldDeclaration field : TreeUtil.getFieldDeclarations(node)) {
       ITypeBinding type = field.getType().getTypeBinding();
       int modifiers = field.getModifiers();
-      if (Modifier.isStatic(modifiers) || type.isPrimitive() ||
-          (!printAllVars && isPrivateOrSynthetic(modifiers) != privateVars)) {
+      if (Modifier.isStatic(modifiers) || type.isPrimitive()
+          || (!printAllVars && isPrivateOrSynthetic(modifiers) != privateVars)) {
         continue;
       }
       String typeStr = NameTable.getObjCType(type);

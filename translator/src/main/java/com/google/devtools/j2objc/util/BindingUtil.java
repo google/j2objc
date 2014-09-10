@@ -83,8 +83,12 @@ public final class BindingUtil {
     return Modifier.isSynchronized(binding.getModifiers());
   }
 
+  public static boolean isSynthetic(int modifiers) {
+    return (modifiers & ACC_SYNTHETIC) > 0;
+  }
+
   public static boolean isSynthetic(IMethodBinding m) {
-    return (m.getModifiers() & ACC_SYNTHETIC) > 0;
+    return isSynthetic(m.getModifiers());
   }
 
   /**
