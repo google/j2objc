@@ -356,8 +356,9 @@ public class AnonymousClassConverterTest extends GenerationTest {
 
     assertTranslation(header, "@interface TestEnum_$1 : TestEnum");
     assertTranslation(header, "@interface TestEnum_$2 : TestEnum");
-    assertTranslation(header,
-        "- (instancetype)initWithNSString:(NSString *)__name withInt:(int)__ordinal");
+    assertTranslatedLines(header,
+        "- (instancetype)initWithNSString:(NSString *)__name",
+        "withInt:(int)__ordinal;");
 
     assertTranslation(impl, "[super initWithNSString:__name withInt:__ordinal]");
     assertTranslation(impl,

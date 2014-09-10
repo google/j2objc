@@ -230,6 +230,11 @@ public class ClassTest extends TestCase {
     assertNotNull(innerEnum);
   }
 
+  public void testLookupClassWith$() throws Exception {
+    Class<?> dollarClass = Class.forName("com.google.j2objc.Test$$With$$Dollar$$Signs");
+    assertNotNull(dollarClass);
+  }
+
   static class InnerClass {
   }
 
@@ -245,4 +250,7 @@ public class ClassTest extends TestCase {
   static enum InnerEnum {
     A, B, C;
   }
+}
+
+class Test$$With$$Dollar$$Signs {
 }

@@ -371,10 +371,6 @@ static NSString *IOSClass_JavaToIOSName(NSString *javaName) {
       [iosName appendString:part];
     }
   }
-  [iosName replaceOccurrencesOfString:@"$"
-                           withString:@"_"
-                              options:0
-                                range:NSMakeRange(0, [iosName length])];
   return iosName;
 }
 
@@ -430,6 +426,10 @@ static IOSClass *FindMappedClass(NSString *name) {
 
 static IOSClass *ClassForJavaName(NSString *name) {
   IOSClass *cls = ClassForIosName(IOSClass_JavaToIOSName(name));
+  if (!cls && [name indexOf:'$'] >= 0) {
+    name = [name stringByReplacingOccurrencesOfString:@"$" withString:@"_"];
+    cls = ClassForIosName(IOSClass_JavaToIOSName(name));
+  }
   if (!cls) {
     cls = FindMappedClass(name);
   }

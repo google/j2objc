@@ -28,6 +28,7 @@ import com.google.devtools.j2objc.translate.ConstantBranchPruner;
 import com.google.devtools.j2objc.translate.CopyAllFieldsWriter;
 import com.google.devtools.j2objc.translate.DestructorGenerator;
 import com.google.devtools.j2objc.translate.EnhancedForRewriter;
+import com.google.devtools.j2objc.translate.EnumRewriter;
 import com.google.devtools.j2objc.translate.Functionizer;
 import com.google.devtools.j2objc.translate.GwtConverter;
 import com.google.devtools.j2objc.translate.InitializationNormalizer;
@@ -226,6 +227,9 @@ class TranslationProcessor extends FileProcessor {
 
     new ConstantBranchPruner().run(unit);
     ticker.tick("ConstantBranchPruner");
+
+    new EnumRewriter().run(unit);
+    ticker.tick("EnumRewriter");
 
     Map<String, String> methodMappings = Options.getMethodMappings();
     if (methodMappings.isEmpty()) {
