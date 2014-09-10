@@ -25,6 +25,9 @@ import java.util.List;
 public class ClassInstanceCreation extends Expression {
 
   private IMethodBinding methodBinding = null;
+  // Indicates that this expression leaves the created object with a retain
+  // count of 1. (i.e. does not call autorelease)
+  private boolean hasRetainedResult = false;
   private ChildLink<Expression> expression = ChildLink.create(Expression.class, this);
   private ChildLink<Type> type = ChildLink.create(Type.class, this);
   private ChildList<Expression> arguments = ChildList.create(Expression.class, this);
@@ -73,6 +76,14 @@ public class ClassInstanceCreation extends Expression {
   @Override
   public ITypeBinding getTypeBinding() {
     return methodBinding != null ? methodBinding.getDeclaringClass() : null;
+  }
+
+  public boolean hasRetainedResult() {
+    return hasRetainedResult;
+  }
+
+  public void setHasRetainedResult(boolean hasRetainedResult) {
+    this.hasRetainedResult = hasRetainedResult;
   }
 
   public Expression getExpression() {

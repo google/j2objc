@@ -532,15 +532,7 @@ public class ObjectiveCImplementationGenerator extends ObjectiveCSourceFileGener
   @Override
   protected void generate(EnumDeclaration node) {
     List<EnumConstantDeclaration> constants = node.getEnumConstants();
-    List<MethodDeclaration> methods = Lists.newArrayList();
-    MethodDeclaration initializeMethod = null;
-    for (MethodDeclaration md : TreeUtil.getMethodDeclarations(node)) {
-      if (isInitializeMethod(md)) {
-        initializeMethod = md;
-      } else {
-        methods.add(md);
-      }
-    }
+    List<MethodDeclaration> methods = TreeUtil.getMethodDeclarationsList(node);
     syncLineNumbers(node.getName()); // avoid doc-comment
 
     String typeName = NameTable.getFullName(node.getTypeBinding());
@@ -559,33 +551,6 @@ public class ObjectiveCImplementationGenerator extends ObjectiveCSourceFileGener
     printf("\n- (id)copyWithZone:(NSZone *)zone {\n  return %s;\n}\n", selfString);
 
     printMethodsAndOcni(node, methods, blockComments.get(node));
-
-    printf("\n+ (void)initialize {\n  if (self == [%s class]) {\n", typeName);
-    for (int i = 0; i < constants.size(); i++) {
-      EnumConstantDeclaration constant = constants.get(i);
-      List<Expression> args = constant.getArguments();
-      String name = NameTable.getName(constant.getName().getBinding());
-      String constantTypeName =
-          NameTable.getFullName(constant.getMethodBinding().getDeclaringClass());
-      printf("    %s_%s = [[%s alloc] init", typeName, name, constantTypeName);
-
-      if (args.isEmpty()) {
-        print("With");
-      } else {
-        print(StatementGenerator.generateArguments(constant.getMethodBinding(),
-            args, fieldHiders, getBuilder().getCurrentLine()));
-        print(" with");
-      }
-      printf("NSString:@\"%s\" withInt:%d];\n", name, i);
-    }
-    if (initializeMethod != null) {
-      for (Statement s : initializeMethod.getBody().getStatements()) {
-        printf("    %s", StatementGenerator.generate(
-            s, fieldHiders, false, getBuilder().getCurrentLine()));
-      }
-    }
-    printf("    %s_initialized = YES;\n", typeName);
-    println("  }\n}\n");
 
     // Print generated values and valueOf methods.
     println("+ (IOSObjectArray *)values {");

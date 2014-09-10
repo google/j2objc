@@ -518,14 +518,15 @@ public class StatementGenerator extends TreeVisitor {
   public boolean visit(ClassInstanceCreation node) {
     ITypeBinding type = node.getType().getTypeBinding();
     boolean castPrinted = maybePrintCastFromId(node);
-    buffer.append(useReferenceCounting ? "[[[" : "[[");
+    boolean addAutorelease = useReferenceCounting && !node.hasRetainedResult();
+    buffer.append(addAutorelease ? "[[[" : "[[");
     buffer.append(NameTable.getFullName(type));
     buffer.append(" alloc] init");
     IMethodBinding method = node.getMethodBinding();
     List<Expression> arguments = node.getArguments();
     printArguments(method, arguments);
     buffer.append(']');
-    if (useReferenceCounting) {
+    if (addAutorelease) {
       buffer.append(" autorelease]");
     }
     if (castPrinted) {
@@ -580,9 +581,6 @@ public class StatementGenerator extends TreeVisitor {
     List<Expression> args = node.getArguments();
     buffer.append("[self init" + NameTable.getFullName(declaringClass));
     printArguments(binding, args);
-    if (declaringClass.isEnum()) {
-      buffer.append((args.isEmpty() ? "W" : " w") + "ithNSString:__name withInt:__ordinal");
-    }
     buffer.append("]");
     return false;
   }
@@ -1357,10 +1355,6 @@ public class StatementGenerator extends TreeVisitor {
     buffer.append("[super init");
     List<Expression> args = node.getArguments();
     printArguments(binding, args);
-    if (binding.getDeclaringClass().isEnum()
-        || TreeUtil.getOwningType(node).getTypeBinding().isEnum()) {
-      buffer.append((args.isEmpty() ? "W" : " w") + "ithNSString:__name withInt:__ordinal");
-    }
     buffer.append(']');
     return false;
   }

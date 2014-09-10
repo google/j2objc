@@ -136,9 +136,7 @@ public abstract class ObjectiveCSourceFileGenerator extends SourceFileGenerator 
   }
 
   protected boolean isInitializeMethod(MethodDeclaration method) {
-    IMethodBinding m = method.getMethodBinding();
-    return BindingUtil.isStatic(m) && NameTable.CLINIT_NAME.equals(m.getName())
-        && m.getParameterTypes().length == 0 && BindingUtil.isSynthetic(m);
+    return BindingUtil.isInitializeMethod(method.getMethodBinding());
   }
 
   protected boolean hasInitializeMethod(
@@ -348,22 +346,6 @@ public abstract class ObjectiveCSourceFileGenerator extends SourceFileGenerator 
         if (i + 1 < nParams) {
           sb.append('\n');
         }
-      }
-    }
-    if (method.isConstructor() && method.getDeclaringClass().isEnum()) {
-      // If enum constant type, append name and ordinal.
-      if (params.isEmpty()) {
-        sb.append("WithNSString:(NSString *)__name withInt:(int)__ordinal");
-      } else {
-        sb.append('\n');
-        String keyword = "withNSString";
-        sb.append(pad(baseDeclaration.length() - keyword.length()));
-        sb.append(keyword);
-        sb.append(":(NSString *)__name\n");
-        keyword = "withInt";
-        sb.append(pad(baseDeclaration.length() - keyword.length()));
-        sb.append(keyword);
-        sb.append(":(int)__ordinal");
       }
     }
   }

@@ -91,6 +91,11 @@ public final class BindingUtil {
     return isSynthetic(m.getModifiers());
   }
 
+  public static boolean isInitializeMethod(IMethodBinding m) {
+    return isStatic(m) && NameTable.CLINIT_NAME.equals(m.getName())
+        && m.getParameterTypes().length == 0 && isSynthetic(m);
+  }
+
   /**
    * Determines if a type can access fields and methods from an outer class.
    */

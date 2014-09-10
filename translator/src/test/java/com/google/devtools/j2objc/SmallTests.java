@@ -35,6 +35,7 @@ import com.google.devtools.j2objc.translate.CopyAllFieldsWriterTest;
 import com.google.devtools.j2objc.translate.DeadCodeEliminatorTest;
 import com.google.devtools.j2objc.translate.DestructorGeneratorTest;
 import com.google.devtools.j2objc.translate.EnhancedForRewriterTest;
+import com.google.devtools.j2objc.translate.EnumRewriterTest;
 import com.google.devtools.j2objc.translate.FunctionizerTest;
 import com.google.devtools.j2objc.translate.GwtConverterTest;
 import com.google.devtools.j2objc.translate.InitializationNormalizerTest;
@@ -84,6 +85,7 @@ public class SmallTests {
     DeadCodeMapTest.class,
     DestructorGeneratorTest.class,
     EnhancedForRewriterTest.class,
+    EnumRewriterTest.class,
     ErrorReportingASTVisitorTest.class,
     FunctionizerTest.class,
     GwtConverterTest.class,

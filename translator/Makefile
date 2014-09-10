@@ -167,6 +167,7 @@ JAVA_SOURCES = \
 	translate/DeadCodeEliminator.java \
 	translate/DestructorGenerator.java \
 	translate/EnhancedForRewriter.java \
+	translate/EnumRewriter.java \
 	translate/Functionizer.java \
 	translate/GwtConverter.java \
 	translate/InitializationNormalizer.java \
