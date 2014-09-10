@@ -40,7 +40,6 @@ public class JavaToIOSMethodTranslatorTest extends GenerationTest {
         "Example", "Example.h");
     assertTranslation(translation, "- (Example *)copy__ OBJC_METHOD_FAMILY_NONE;");
     translation = getTranslatedFile("Example.m");
-    assertTranslation(translation, "- (id)copyWithZone:(NSZone *)zone;");
     assertTranslation(translation,
         "return (Example *) check_class_cast([self clone], [Example class]);");
     assertTranslation(translation, "- (id)copyWithZone:(NSZone *)zone {");
@@ -200,7 +199,6 @@ public class JavaToIOSMethodTranslatorTest extends GenerationTest {
     String translation = translateSourceFile(
         "public class Example implements Cloneable { int i; }",
         "Example", "Example.m");
-    assertTranslation(translation, "- (id)copyWithZone:(NSZone *)zone;");
     assertTranslation(translation, "- (id)copyWithZone:(NSZone *)zone {");
     assertTranslation(translation, "return [[self clone] retain];");
   }
@@ -217,7 +215,6 @@ public class JavaToIOSMethodTranslatorTest extends GenerationTest {
         "Example", "Example.h");
     assertTranslation(translation, "- (Example *)copy__ OBJC_METHOD_FAMILY_NONE;");
     translation = getTranslatedFile("Example.m");
-    assertTranslation(translation, "- (id)copyWithZone:(NSZone *)zone;");
     assertTranslation(translation,
         "return (Example *) check_class_cast([self clone], [Example class]);");
     assertTranslation(translation, "- (id)copyWithZone:(NSZone *)zone {");
