@@ -37,6 +37,7 @@ import com.google.devtools.j2objc.ast.EnumDeclaration;
 import com.google.devtools.j2objc.ast.Expression;
 import com.google.devtools.j2objc.ast.FieldDeclaration;
 import com.google.devtools.j2objc.ast.MethodDeclaration;
+import com.google.devtools.j2objc.ast.NativeDeclaration;
 import com.google.devtools.j2objc.ast.PackageDeclaration;
 import com.google.devtools.j2objc.ast.SingleVariableDeclaration;
 import com.google.devtools.j2objc.ast.Statement;
@@ -262,12 +263,8 @@ public class ObjectiveCImplementationGenerator extends ObjectiveCSourceFileGener
     printInitFlagDefinition(node, methods);
     printf("\n@implementation %s\n", typeName);
     if (BindingUtil.isRuntimeAnnotation(node.getTypeBinding())) {
-      List<AnnotationTypeMemberDeclaration> members = Lists.newArrayList();
-      for (BodyDeclaration decl : node.getBodyDeclarations()) {
-        if (decl instanceof AnnotationTypeMemberDeclaration) {
-          members.add((AnnotationTypeMemberDeclaration) decl);
-        }
-      }
+      List<AnnotationTypeMemberDeclaration> members = Lists.newArrayList(
+          Iterables.filter(node.getBodyDeclarations(), AnnotationTypeMemberDeclaration.class));
       printAnnotationProperties(members);
       if (!members.isEmpty()) {
         printAnnotationConstructor(node.getTypeBinding());
@@ -371,27 +368,33 @@ public class ObjectiveCImplementationGenerator extends ObjectiveCSourceFileGener
     }
   }
 
-  private void printMethodsAndOcni(
-      AbstractTypeDeclaration typeNode, Iterable<MethodDeclaration> methods,
+  @Override
+  protected void printNativeDeclaration(NativeDeclaration declaration) {
+    newline();
+    print(declaration.getImplementationCode());
+  }
+
+  private void printDeclarationsAndOcni(
+      AbstractTypeDeclaration typeNode, Iterable<BodyDeclaration> declarations,
       Iterable<Comment> comments) {
     Set<String> methodsPrinted = Sets.newHashSet();
-    Iterator<MethodDeclaration> methodsIter = methods.iterator();
+    Iterator<BodyDeclaration> declsIter = declarations.iterator();
     Iterator<Comment> commentsIter = comments.iterator();
-    MethodDeclaration nextMethod = methodsIter.hasNext() ? methodsIter.next() : null;
+    BodyDeclaration nextDecl = declsIter.hasNext() ? declsIter.next() : null;
     Comment nextComment = commentsIter.hasNext() ? commentsIter.next() : null;
     int minPos = 0;
-    while (nextMethod != null || nextComment != null) {
-      int methodStartPos = nextMethod != null ? nextMethod.getStartPosition() : Integer.MAX_VALUE;
+    while (nextDecl != null || nextComment != null) {
+      int methodStartPos = nextDecl != null ? nextDecl.getStartPosition() : Integer.MAX_VALUE;
       if (methodStartPos < 0) {
         methodStartPos = minPos;
       }
       int commentStartPos =
           nextComment != null ? nextComment.getStartPosition() : Integer.MAX_VALUE;
       if (methodStartPos < commentStartPos) {
-        assert nextMethod != null;
-        printMethod(nextMethod);
-        minPos = Math.max(minPos, methodStartPos + nextMethod.getLength());
-        nextMethod = methodsIter.hasNext() ? methodsIter.next() : null;
+        assert nextDecl != null;
+        printDeclaration(nextDecl);
+        minPos = Math.max(minPos, methodStartPos + nextDecl.getLength());
+        nextDecl = declsIter.hasNext() ? declsIter.next() : null;
       } else {
         assert nextComment != null;
         if (commentStartPos > minPos) {
@@ -418,7 +421,7 @@ public class ObjectiveCImplementationGenerator extends ObjectiveCSourceFileGener
   }
 
   private void printMethods(TypeDeclaration node) {
-    printMethodsAndOcni(node, TreeUtil.getMethodDeclarationsList(node), blockComments.get(node));
+    printDeclarationsAndOcni(node, node.getBodyDeclarations(), blockComments.get(node));
     List<VariableDeclarationFragment> properties =
         getProperties(TreeUtil.getFieldDeclarations(node));
     if (properties.size() > 0) {
@@ -545,33 +548,7 @@ public class ObjectiveCImplementationGenerator extends ObjectiveCSourceFileGener
     printStaticVars(node);
     printStaticReferencesMethod(node);
 
-    // Enum constants needs to implement NSCopying.  Being singletons, they
-    // can just return self, as long the retain count is incremented.
-    String selfString = Options.useReferenceCounting() ? "[self retain]" : "self";
-    printf("\n- (id)copyWithZone:(NSZone *)zone {\n  return %s;\n}\n", selfString);
-
-    printMethodsAndOcni(node, methods, blockComments.get(node));
-
-    // Print generated values and valueOf methods.
-    println("+ (IOSObjectArray *)values {");
-    printf("  return [IOSObjectArray arrayWithObjects:%s_values count:%s type:"
-           + "[IOSClass classWithClass:[%s class]]];\n", typeName, constants.size(), typeName);
-    println("}\n");
-    printf("+ (%s *)valueOfWithNSString:(NSString *)name {\n", typeName);
-    printf("  for (int i = 0; i < %s; i++) {\n", constants.size());
-    printf("    %s *e = %s_values[i];\n", typeName, typeName);
-    printf("    if ([name isEqual:[e name]]) {\n");
-    printf("      return e;\n");
-    printf("    }\n");
-    printf("  }\n");
-    if (Options.useReferenceCounting()) {
-      printf("  @throw [[[JavaLangIllegalArgumentException alloc] initWithNSString:name]"
-           + " autorelease];\n");
-    } else {
-      printf("  @throw [[JavaLangIllegalArgumentException alloc] initWithNSString:name];\n");
-    }
-    printf("  return nil;\n");
-    println("}");
+    printDeclarationsAndOcni(node, node.getBodyDeclarations(), blockComments.get(node));
 
     if (!Options.stripReflection()) {
       printTypeAnnotationsMethod(node);

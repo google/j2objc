@@ -23,12 +23,14 @@ import com.google.devtools.j2objc.Options;
 import com.google.devtools.j2objc.ast.AbstractTypeDeclaration;
 import com.google.devtools.j2objc.ast.Annotation;
 import com.google.devtools.j2objc.ast.AnnotationTypeDeclaration;
+import com.google.devtools.j2objc.ast.BodyDeclaration;
 import com.google.devtools.j2objc.ast.CompilationUnit;
 import com.google.devtools.j2objc.ast.EnumDeclaration;
 import com.google.devtools.j2objc.ast.FieldDeclaration;
 import com.google.devtools.j2objc.ast.Javadoc;
 import com.google.devtools.j2objc.ast.MethodDeclaration;
 import com.google.devtools.j2objc.ast.Name;
+import com.google.devtools.j2objc.ast.NativeDeclaration;
 import com.google.devtools.j2objc.ast.SingleVariableDeclaration;
 import com.google.devtools.j2objc.ast.TagElement;
 import com.google.devtools.j2objc.ast.TextElement;
@@ -172,6 +174,25 @@ public abstract class ObjectiveCSourceFileGenerator extends SourceFileGenerator 
       printStaticConstructorDeclaration(m);
     } else {
       printNormalMethod(m);
+    }
+  }
+
+  protected abstract void printNativeDeclaration(NativeDeclaration declaration);
+
+  protected void printDeclaration(BodyDeclaration declaration) {
+    switch (declaration.getKind()) {
+      case METHOD_DECLARATION:
+        printMethod((MethodDeclaration) declaration);
+        return;
+      case NATIVE_DECLARATION:
+        printNativeDeclaration((NativeDeclaration) declaration);
+        return;
+    }
+  }
+
+  protected void printDeclarations(Iterable<BodyDeclaration> declarations) {
+    for (BodyDeclaration declaration : declarations) {
+      printDeclaration(declaration);
     }
   }
 

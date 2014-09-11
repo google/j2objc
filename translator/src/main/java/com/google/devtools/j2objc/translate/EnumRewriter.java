@@ -14,6 +14,7 @@
 
 package com.google.devtools.j2objc.translate;
 
+import com.google.devtools.j2objc.Options;
 import com.google.devtools.j2objc.ast.Assignment;
 import com.google.devtools.j2objc.ast.Block;
 import com.google.devtools.j2objc.ast.ClassInstanceCreation;
@@ -22,6 +23,7 @@ import com.google.devtools.j2objc.ast.EnumConstantDeclaration;
 import com.google.devtools.j2objc.ast.EnumDeclaration;
 import com.google.devtools.j2objc.ast.ExpressionStatement;
 import com.google.devtools.j2objc.ast.MethodDeclaration;
+import com.google.devtools.j2objc.ast.NativeDeclaration;
 import com.google.devtools.j2objc.ast.NumberLiteral;
 import com.google.devtools.j2objc.ast.SimpleName;
 import com.google.devtools.j2objc.ast.SingleVariableDeclaration;
@@ -79,6 +81,8 @@ public class EnumRewriter extends TreeVisitor {
       stmts.add(new ExpressionStatement(new Assignment(
           new SimpleName(constant.getVariableBinding()), creation)));
     }
+
+    addExtraNativeDecls(node);
   }
 
   @Override
@@ -134,5 +138,46 @@ public class EnumRewriter extends TreeVisitor {
     newMethod.setBody(new Block());
     enumType.getBodyDeclarations().add(newMethod);
     return newMethod;
+  }
+
+  private static void addExtraNativeDecls(EnumDeclaration node) {
+    String typeName = NameTable.getFullName(node.getTypeBinding());
+    int numConstants = node.getEnumConstants().size();
+
+    String header = String.format(
+        "+ (IOSObjectArray *)values;\n\n"
+        + "+ (%s *)valueOfWithNSString:(NSString *)name;\n\n"
+        + "- (id)copyWithZone:(NSZone *)zone;", typeName);
+
+    StringBuilder sb = new StringBuilder();
+    sb.append(String.format(
+        "+ (IOSObjectArray *)values {\n"
+        + "  return [IOSObjectArray arrayWithObjects:%s_values count:%s type:"
+        + "[IOSClass classWithClass:[%s class]]];\n"
+        + "}\n\n", typeName, numConstants, typeName));
+
+    sb.append(String.format(
+        "+ (%s *)valueOfWithNSString:(NSString *)name {\n"
+        + "  for (int i = 0; i < %s; i++) {\n"
+        + "    %s *e = %s_values[i];\n"
+        + "    if ([name isEqual:[e name]]) {\n"
+        + "      return e;\n"
+        + "    }\n"
+        + "  }\n", typeName, numConstants, typeName, typeName));
+    if (Options.useReferenceCounting()) {
+      sb.append(
+          "  @throw [[[JavaLangIllegalArgumentException alloc] initWithNSString:name]"
+          + " autorelease];\n");
+    } else {
+      sb.append("  @throw [[JavaLangIllegalArgumentException alloc] initWithNSString:name];\n");
+    }
+    sb.append("  return nil;\n}\n\n");
+
+    // Enum constants needs to implement NSCopying.  Being singletons, they
+    // can just return self, as long the retain count is incremented.
+    String selfString = Options.useReferenceCounting() ? "[self retain]" : "self";
+    sb.append(String.format("- (id)copyWithZone:(NSZone *)zone {\n  return %s;\n}\n", selfString));
+
+    node.getBodyDeclarations().add(new NativeDeclaration(header, sb.toString()));
   }
 }

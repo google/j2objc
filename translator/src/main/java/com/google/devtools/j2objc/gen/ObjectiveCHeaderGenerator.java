@@ -29,6 +29,7 @@ import com.google.devtools.j2objc.ast.CompilationUnit;
 import com.google.devtools.j2objc.ast.EnumConstantDeclaration;
 import com.google.devtools.j2objc.ast.EnumDeclaration;
 import com.google.devtools.j2objc.ast.MethodDeclaration;
+import com.google.devtools.j2objc.ast.NativeDeclaration;
 import com.google.devtools.j2objc.ast.TreeUtil;
 import com.google.devtools.j2objc.ast.TreeVisitor;
 import com.google.devtools.j2objc.ast.Type;
@@ -142,7 +143,7 @@ public class ObjectiveCHeaderGenerator extends ObjectiveCSourceFileGenerator {
       printInstanceVariables(node, false);
       println("}");
     }
-    printMethods(methods);
+    printDeclarations(node.getBodyDeclarations());
     println("\n@end");
 
     if (isInterface) {
@@ -309,10 +310,7 @@ public class ObjectiveCHeaderGenerator extends ObjectiveCSourceFileGenerator {
     println(" > {");
     printInstanceVariables(node, false);
     println("}");
-    println("+ (IOSObjectArray *)values;");
-    printf("+ (%s *)valueOfWithNSString:(NSString *)name;\n", typeName);
-    println("- (id)copyWithZone:(NSZone *)zone;");
-    printMethods(methods);
+    printDeclarations(node.getBodyDeclarations());
     println("@end");
     printStaticInitFunction(node, methods);
     printf("\nFOUNDATION_EXPORT %s *%s_values[];\n", typeName, typeName);
@@ -366,6 +364,12 @@ public class ObjectiveCHeaderGenerator extends ObjectiveCSourceFileGenerator {
         printf("J2OBJC_STATIC_FIELD_SETTER(%s, %s, %s)\n", className, name, objcType);
       }
     }
+  }
+
+  @Override
+  protected void printNativeDeclaration(NativeDeclaration declaration) {
+    newline();
+    print(declaration.getHeaderCode());
   }
 
   @Override

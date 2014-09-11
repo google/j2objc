@@ -26,8 +26,8 @@ import java.util.List;
 public abstract class AbstractTypeDeclaration extends BodyDeclaration {
 
   private ITypeBinding typeBinding = null;
-  protected ChildLink<SimpleName> name = ChildLink.create(SimpleName.class, this);
-  protected ChildList<BodyDeclaration> bodyDeclarations =
+  protected final ChildLink<SimpleName> name = ChildLink.create(SimpleName.class, this);
+  protected final ChildList<BodyDeclaration> bodyDeclarations =
       ChildList.create(BodyDeclaration.class, this);
 
   public AbstractTypeDeclaration(org.eclipse.jdt.core.dom.AbstractTypeDeclaration jdtNode) {

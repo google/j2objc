@@ -106,6 +106,7 @@ JAVA_SOURCES = \
 	ast/MethodDeclaration.java \
 	ast/MethodInvocation.java \
 	ast/Name.java \
+	ast/NativeDeclaration.java \
 	ast/NormalAnnotation.java \
 	ast/NullLiteral.java \
 	ast/NumberLiteral.java \
