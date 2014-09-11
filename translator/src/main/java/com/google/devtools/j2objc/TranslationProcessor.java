@@ -234,7 +234,6 @@ class TranslationProcessor extends FileProcessor {
 
     new OcniExtractor(unit).run(unit);
     ticker.tick("OcniExtractor");
-    System.out.println(unit.toString());
 
     Map<String, String> methodMappings = Options.getMethodMappings();
     if (methodMappings.isEmpty()) {
