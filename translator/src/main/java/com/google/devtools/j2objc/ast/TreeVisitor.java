@@ -289,6 +289,12 @@ public class TreeVisitor {
 
   public void endVisit(MethodInvocation node) {}
 
+  public boolean visit(NativeDeclaration node) {
+    return true;
+  }
+
+  public void endVisit(NativeDeclaration node) {}
+
   public boolean visit(NormalAnnotation node) {
     return true;
   }
