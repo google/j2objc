@@ -487,4 +487,24 @@ public class DateFormatSymbols implements Serializable, Cloneable {
         this.zoneStrings = clone2dStringArray(zoneStrings);
         this.customZoneStrings = true;
     }
+
+    /**
+     * Returns the display name of the timezone specified. Returns null if no name was found in the
+     * zone strings.
+     *
+     * @param daylight whether to return the daylight savings or the standard name
+     * @param style one of the {@link TimeZone} styles such as {@link TimeZone#SHORT}
+     *
+     * @hide used internally
+     */
+    String getTimeZoneDisplayName(TimeZone tz, boolean daylight, int style) {
+        if (style != TimeZone.SHORT && style != TimeZone.LONG) {
+            throw new IllegalArgumentException("Bad style: " + style);
+        }
+
+        // If custom zone strings have been set with setZoneStrings() we use those. Otherwise we
+        // use the ones from LocaleData.
+        String[][] zoneStrings = internalZoneStrings();
+        return TimeZoneNames.getDisplayName(zoneStrings, tz.getID(), daylight, style);
+    }
 }

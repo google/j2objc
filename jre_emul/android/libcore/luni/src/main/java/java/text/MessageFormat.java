@@ -1206,6 +1206,67 @@ public class MessageFormat extends Format {
         }
     }
 
+    private static final ObjectStreamField[] serialPersistentFields = {
+        new ObjectStreamField("argumentNumbers", int[].class),
+        new ObjectStreamField("formats", Format[].class),
+        new ObjectStreamField("locale", Locale.class),
+        new ObjectStreamField("maxOffset", int.class),
+        new ObjectStreamField("offsets", int[].class),
+        new ObjectStreamField("pattern", String.class),
+    };
+
+    private void writeObject(ObjectOutputStream stream) throws IOException {
+        ObjectOutputStream.PutField fields = stream.putFields();
+        fields.put("argumentNumbers", argumentNumbers);
+        Format[] compatibleFormats = formats;
+        fields.put("formats", compatibleFormats);
+        fields.put("locale", locale);
+        fields.put("maxOffset", maxOffset);
+        int offset = 0;
+        int offsetsLength = maxOffset + 1;
+        int[] offsets = new int[offsetsLength];
+        StringBuilder pattern = new StringBuilder();
+        for (int i = 0; i <= maxOffset; i++) {
+            offset += strings[i].length();
+            offsets[i] = offset;
+            pattern.append(strings[i]);
+        }
+        if (maxOffset + 1 < strings.length) {
+            pattern.append(strings[maxOffset + 1]);
+        }
+        fields.put("offsets", offsets);
+        fields.put("pattern", pattern.toString());
+        stream.writeFields();
+    }
+
+    private void readObject(ObjectInputStream stream) throws IOException,
+            ClassNotFoundException {
+        ObjectInputStream.GetField fields = stream.readFields();
+        argumentNumbers = (int[]) fields.get("argumentNumbers", null);
+        formats = (Format[]) fields.get("formats", null);
+        locale = (Locale) fields.get("locale", null);
+        maxOffset = fields.get("maxOffset", 0);
+        int[] offsets = (int[]) fields.get("offsets", null);
+        String pattern = (String) fields.get("pattern", null);
+        int length;
+        if (maxOffset < 0) {
+            length = pattern.length() > 0 ? 1 : 0;
+        } else {
+            length = maxOffset
+                    + (offsets[maxOffset] == pattern.length() ? 1 : 2);
+        }
+        strings = new String[length];
+        int last = 0;
+        for (int i = 0; i <= maxOffset; i++) {
+            strings[i] = pattern.substring(last, offsets[i]);
+            last = offsets[i];
+        }
+        if (maxOffset + 1 < strings.length) {
+            strings[strings.length - 1] = pattern.substring(last, pattern
+                    .length());
+        }
+    }
+
     /**
      * The instances of this inner class are used as attribute keys in
      * {@code AttributedCharacterIterator} that the
