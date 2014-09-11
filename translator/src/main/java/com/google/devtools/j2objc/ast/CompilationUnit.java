@@ -31,10 +31,12 @@ public class CompilationUnit extends TreeNode {
   private final String mainTypeName;
   private final String source;
   private final int[] newlines;
-  private ChildLink<PackageDeclaration> packageDeclaration =
+  private final ChildLink<PackageDeclaration> packageDeclaration =
       ChildLink.create(PackageDeclaration.class, this);
-  private ChildList<Comment> comments = ChildList.create(Comment.class, this);
-  private ChildList<AbstractTypeDeclaration> types =
+  private final ChildList<Comment> comments = ChildList.create(Comment.class, this);
+  private final ChildList<NativeDeclaration> nativeBlocks =
+      ChildList.create(NativeDeclaration.class, this);
+  private final ChildList<AbstractTypeDeclaration> types =
       ChildList.create(AbstractTypeDeclaration.class, this);
 
   public CompilationUnit(
@@ -78,6 +80,7 @@ public class CompilationUnit extends TreeNode {
     System.arraycopy(other.newlines, 0, newlines, 0, newlines.length);
     packageDeclaration.copyFrom(other.getPackage());
     comments.copyFrom(other.getCommentList());
+    nativeBlocks.copyFrom(other.getNativeBlocks());
     types.copyFrom(other.getTypes());
   }
 
@@ -108,6 +111,10 @@ public class CompilationUnit extends TreeNode {
 
   public List<Comment> getCommentList() {
     return comments;
+  }
+
+  public List<NativeDeclaration> getNativeBlocks() {
+    return nativeBlocks;
   }
 
   public List<AbstractTypeDeclaration> getTypes() {
@@ -155,6 +162,7 @@ public class CompilationUnit extends TreeNode {
     if (visitor.visit(this)) {
       packageDeclaration.accept(visitor);
       comments.accept(visitor);
+      nativeBlocks.accept(visitor);
       types.accept(visitor);
     }
     visitor.endVisit(this);

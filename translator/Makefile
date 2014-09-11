@@ -107,6 +107,7 @@ JAVA_SOURCES = \
 	ast/MethodInvocation.java \
 	ast/Name.java \
 	ast/NativeDeclaration.java \
+	ast/NativeStatement.java \
 	ast/NormalAnnotation.java \
 	ast/NullLiteral.java \
 	ast/NumberLiteral.java \
@@ -175,6 +176,7 @@ JAVA_SOURCES = \
 	translate/InnerClassExtractor.java \
 	translate/JavaToIOSMethodTranslator.java \
 	translate/NilCheckResolver.java \
+	translate/OcniExtractor.java \
 	translate/OperatorRewriter.java \
 	translate/OuterReferenceFixer.java \
 	translate/OuterReferenceResolver.java \

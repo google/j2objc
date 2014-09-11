@@ -35,6 +35,7 @@ import com.google.devtools.j2objc.translate.InitializationNormalizer;
 import com.google.devtools.j2objc.translate.InnerClassExtractor;
 import com.google.devtools.j2objc.translate.JavaToIOSMethodTranslator;
 import com.google.devtools.j2objc.translate.NilCheckResolver;
+import com.google.devtools.j2objc.translate.OcniExtractor;
 import com.google.devtools.j2objc.translate.OperatorRewriter;
 import com.google.devtools.j2objc.translate.OuterReferenceFixer;
 import com.google.devtools.j2objc.translate.OuterReferenceResolver;
@@ -230,6 +231,10 @@ class TranslationProcessor extends FileProcessor {
 
     new EnumRewriter().run(unit);
     ticker.tick("EnumRewriter");
+
+    new OcniExtractor(unit).run(unit);
+    ticker.tick("OcniExtractor");
+    System.out.println(unit.toString());
 
     Map<String, String> methodMappings = Options.getMethodMappings();
     if (methodMappings.isEmpty()) {

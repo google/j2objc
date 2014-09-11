@@ -324,7 +324,8 @@ public class FunctionizerTest extends GenerationTest {
         "class A { Object o; void use() { setO(null); } "
         + "  private native void setO(Object o) /*-[ self->o_ = o; ]-*/; }",
         "A", "A.m");
-    assertTranslation(translation, "static void A_setO_(A * self, id o) { self->o_ = o; }");
+    assertTranslatedLines(translation,
+        "static void A_setO_(A * self, id o) {", "self->o_ = o;", "}");
     assertTranslatedLines(translation, "- (void)setOWithId:(id)o {", "A_setO_(self, o);", "}");
   }
 
