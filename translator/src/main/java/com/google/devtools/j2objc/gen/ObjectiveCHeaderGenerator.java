@@ -16,6 +16,7 @@
 
 package com.google.devtools.j2objc.gen;
 
+import com.google.common.base.Predicate;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
@@ -25,13 +26,13 @@ import com.google.devtools.j2objc.Options;
 import com.google.devtools.j2objc.ast.AbstractTypeDeclaration;
 import com.google.devtools.j2objc.ast.AnnotationTypeDeclaration;
 import com.google.devtools.j2objc.ast.AnnotationTypeMemberDeclaration;
+import com.google.devtools.j2objc.ast.BodyDeclaration;
 import com.google.devtools.j2objc.ast.CompilationUnit;
 import com.google.devtools.j2objc.ast.EnumConstantDeclaration;
 import com.google.devtools.j2objc.ast.EnumDeclaration;
 import com.google.devtools.j2objc.ast.MethodDeclaration;
 import com.google.devtools.j2objc.ast.NativeDeclaration;
 import com.google.devtools.j2objc.ast.TreeUtil;
-import com.google.devtools.j2objc.ast.TreeVisitor;
 import com.google.devtools.j2objc.ast.Type;
 import com.google.devtools.j2objc.ast.TypeDeclaration;
 import com.google.devtools.j2objc.types.HeaderImportCollector;
@@ -233,16 +234,17 @@ public class ObjectiveCHeaderGenerator extends ObjectiveCSourceFileGenerator {
     }
   }
 
+  private static final Predicate<BodyDeclaration> IS_NATIVE_PRED =
+      new Predicate<BodyDeclaration>() {
+    @Override
+    public boolean apply(BodyDeclaration node) {
+      return Modifier.isNative(node.getModifiers());
+    }
+  };
+
   private void printExternalNativeMethodCategory(TypeDeclaration node, String typeName) {
-    final List<MethodDeclaration> externalMethods = Lists.newArrayList();
-    node.accept(new TreeVisitor() {
-      @Override
-      public void endVisit(MethodDeclaration node) {
-        if ((node.getModifiers() & Modifier.NATIVE) > 0 && !hasNativeCode(node)) {
-          externalMethods.add(node);
-        }
-      }
-    });
+    List<MethodDeclaration> externalMethods = Lists.newArrayList(
+        Iterables.filter(TreeUtil.getMethodDeclarations(node), IS_NATIVE_PRED));
     if (!externalMethods.isEmpty()) {
       printf("\n@interface %s (NativeMethods)\n", typeName);
       for (MethodDeclaration m : externalMethods) {
@@ -369,15 +371,17 @@ public class ObjectiveCHeaderGenerator extends ObjectiveCSourceFileGenerator {
   @Override
   protected void printNativeDeclaration(NativeDeclaration declaration) {
     newline();
-    print(declaration.getHeaderCode());
+    String code = declaration.getHeaderCode();
+    if (code != null) {
+      print(declaration.getHeaderCode());
+    }
   }
 
   @Override
   protected void printNormalMethod(MethodDeclaration m) {
-    if ((m.getModifiers() & Modifier.NATIVE) > 0 && !hasNativeCode(m)) {
-      return;
+    if (!Modifier.isNative(m.getModifiers())) {
+      printNormalMethodDeclaration(m);
     }
-    printNormalMethodDeclaration(m);
   }
 
   @Override

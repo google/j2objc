@@ -16,9 +16,7 @@
 
 package com.google.devtools.j2objc.gen;
 
-import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Iterables;
-import com.google.common.collect.ListMultimap;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 import com.google.devtools.j2objc.J2ObjC;
@@ -27,9 +25,6 @@ import com.google.devtools.j2objc.ast.AbstractTypeDeclaration;
 import com.google.devtools.j2objc.ast.Annotation;
 import com.google.devtools.j2objc.ast.AnnotationTypeDeclaration;
 import com.google.devtools.j2objc.ast.AnnotationTypeMemberDeclaration;
-import com.google.devtools.j2objc.ast.BlockComment;
-import com.google.devtools.j2objc.ast.BodyDeclaration;
-import com.google.devtools.j2objc.ast.Comment;
 import com.google.devtools.j2objc.ast.CompilationUnit;
 import com.google.devtools.j2objc.ast.ConstructorInvocation;
 import com.google.devtools.j2objc.ast.EnumConstantDeclaration;
@@ -53,7 +48,6 @@ import com.google.devtools.j2objc.types.ImplementationImportCollector;
 import com.google.devtools.j2objc.types.Import;
 import com.google.devtools.j2objc.types.Types;
 import com.google.devtools.j2objc.util.BindingUtil;
-import com.google.devtools.j2objc.util.ErrorUtil;
 import com.google.devtools.j2objc.util.NameTable;
 
 import org.eclipse.jdt.core.dom.IAnnotationBinding;
@@ -63,11 +57,8 @@ import org.eclipse.jdt.core.dom.ITypeBinding;
 import org.eclipse.jdt.core.dom.IVariableBinding;
 import org.eclipse.jdt.core.dom.Modifier;
 
-import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 /**
  * Generates Objective-C implementation (.m) files from compilation units.
@@ -78,8 +69,6 @@ public class ObjectiveCImplementationGenerator extends ObjectiveCSourceFileGener
   private Set<IVariableBinding> fieldHiders;
   private final String suffix;
   private final Set<String> invokedConstructors = Sets.newHashSet();
-  private final ListMultimap<AbstractTypeDeclaration, Comment> blockComments =
-      ArrayListMultimap.create();
 
   /**
    * Generate an Objective-C implementation file for each type declared in a
@@ -105,7 +94,6 @@ public class ObjectiveCImplementationGenerator extends ObjectiveCSourceFileGener
     println(J2ObjC.getFileHeader(unit.getSourceFileFullPath()));
     List<AbstractTypeDeclaration> typesToGenerate = collectTypes(unit);
     if (!typesToGenerate.isEmpty()) {
-      findBlockComments(unit, typesToGenerate);
       findInvokedConstructors(unit);
       printStart(unit.getSourceFileFullPath());
       printImports(unit);
@@ -198,35 +186,6 @@ public class ObjectiveCImplementationGenerator extends ObjectiveCSourceFileGener
         return false;
       }
     });
-  }
-
-  /**
-   * Finds all block comments and associates them with their containing type.
-   */
-  private void findBlockComments(CompilationUnit unit, List<AbstractTypeDeclaration> types) {
-    List<Comment> comments = unit.getCommentList();
-    for (Comment comment : comments) {
-      if (!comment.isBlockComment()) {
-        continue;
-      }
-      int commentPos = comment.getStartPosition();
-      AbstractTypeDeclaration containingType = null;
-      int containingTypePos = -1;
-      for (AbstractTypeDeclaration type : types) {
-        int typePos = type.getStartPosition();
-        if (typePos < 0) {
-          continue;
-        }
-        int typeEnd = typePos + type.getLength();
-        if (commentPos > typePos && commentPos < typeEnd && typePos > containingTypePos) {
-          containingType = type;
-          containingTypePos = typePos;
-        }
-      }
-      if (containingType != null) {
-        blockComments.put(containingType, comment);
-      }
-    }
   }
 
   @Override
@@ -341,87 +300,17 @@ public class ObjectiveCImplementationGenerator extends ObjectiveCSourceFileGener
     }
   }
 
-  private static final String TYPE_REGEX = "\\([\\w\\s\\*<>\\[\\]]+\\)";
-  private static final String PARAM_REGEX = "\\s*:\\s*" + TYPE_REGEX + "\\s*\\w+";
-  private static final String ADDITIONAL_PARAM_REGEX = "\\s+(\\w+)" + PARAM_REGEX;
-  private static final Pattern OBJC_METHOD_DECL_PATTERN = Pattern.compile(
-      "^\\+|-\\s*" + TYPE_REGEX + "\\s*(\\w+)(" + PARAM_REGEX + "((?:" + ADDITIONAL_PARAM_REGEX
-      + ")*))?\\s*\\{");
-  private static final Pattern ADDITIONAL_PARAM_PATTERN = Pattern.compile(ADDITIONAL_PARAM_REGEX);
-
-  private void findMethodSignatures(String code, Set<String> signatures) {
-    Matcher matcher = OBJC_METHOD_DECL_PATTERN.matcher(code);
-    while (matcher.find()) {
-      StringBuilder signature = new StringBuilder();
-      signature.append(matcher.group(1));
-      if (matcher.group(2) != null) {
-        signature.append(':');
-        String additionalParams = matcher.group(3);
-        if (additionalParams != null) {
-          Matcher paramsMatcher = ADDITIONAL_PARAM_PATTERN.matcher(additionalParams);
-          while (paramsMatcher.find()) {
-            signature.append(paramsMatcher.group(1)).append(':');
-          }
-        }
-      }
-      signatures.add(signature.toString());
-    }
-  }
-
   @Override
   protected void printNativeDeclaration(NativeDeclaration declaration) {
     newline();
-    print(declaration.getImplementationCode());
-  }
-
-  private void printDeclarationsAndOcni(
-      AbstractTypeDeclaration typeNode, Iterable<BodyDeclaration> declarations,
-      Iterable<Comment> comments) {
-    Set<String> methodsPrinted = Sets.newHashSet();
-    Iterator<BodyDeclaration> declsIter = declarations.iterator();
-    Iterator<Comment> commentsIter = comments.iterator();
-    BodyDeclaration nextDecl = declsIter.hasNext() ? declsIter.next() : null;
-    Comment nextComment = commentsIter.hasNext() ? commentsIter.next() : null;
-    int minPos = 0;
-    while (nextDecl != null || nextComment != null) {
-      int methodStartPos = nextDecl != null ? nextDecl.getStartPosition() : Integer.MAX_VALUE;
-      if (methodStartPos < 0) {
-        methodStartPos = minPos;
-      }
-      int commentStartPos =
-          nextComment != null ? nextComment.getStartPosition() : Integer.MAX_VALUE;
-      if (methodStartPos < commentStartPos) {
-        assert nextDecl != null;
-        printDeclaration(nextDecl);
-        minPos = Math.max(minPos, methodStartPos + nextDecl.getLength());
-        nextDecl = declsIter.hasNext() ? declsIter.next() : null;
-      } else {
-        assert nextComment != null;
-        if (commentStartPos > minPos) {
-          String nativeCode = extractNativeCode(commentStartPos, nextComment.getLength());
-          if (nativeCode != null) {
-            nativeCode = reindent(nativeCode.trim());
-            findMethodSignatures(nativeCode, methodsPrinted);
-            print("\n" + nativeCode + "\n");
-          }
-        }
-        nextComment = commentsIter.hasNext() ? commentsIter.next() : null;
-      }
-    }
-
-    // If the type implements Iterable and there's no existing implementation
-    // for NSFastEnumeration's protocol method, then add the default
-    // implementation.
-    if (BindingUtil.findInterface(typeNode.getTypeBinding(), "java.lang.Iterable") != null
-        && !methodsPrinted.contains("countByEnumeratingWithState:objects:count:")) {
-      print("- (NSUInteger)countByEnumeratingWithState:(NSFastEnumerationState *)state "
-            + "objects:(__unsafe_unretained id *)stackbuf count:(NSUInteger)len {\n"
-            + "  return JreDefaultFastEnumeration(self, state, stackbuf, len);\n}\n\n");
+    String code = declaration.getImplementationCode();
+    if (code != null) {
+      print(code);
     }
   }
 
   private void printMethods(TypeDeclaration node) {
-    printDeclarationsAndOcni(node, node.getBodyDeclarations(), blockComments.get(node));
+    printDeclarations(node.getBodyDeclarations());
     List<VariableDeclarationFragment> properties =
         getProperties(TreeUtil.getFieldDeclarations(node));
     if (properties.size() > 0) {
@@ -548,7 +437,7 @@ public class ObjectiveCImplementationGenerator extends ObjectiveCSourceFileGener
     printStaticVars(node);
     printStaticReferencesMethod(node);
 
-    printDeclarationsAndOcni(node, node.getBodyDeclarations(), blockComments.get(node));
+    printDeclarations(node.getBodyDeclarations());
 
     if (!Options.stripReflection()) {
       printTypeAnnotationsMethod(node);
@@ -596,9 +485,7 @@ public class ObjectiveCImplementationGenerator extends ObjectiveCSourceFileGener
     boolean isFunction = BindingUtil.isFunction(binding);
     String methodBody;
     if (Modifier.isNative(m.getModifiers())) {
-      if (hasNativeCode(m, true)) {
-        methodBody = extractNativeMethodBody(m);
-      } else if (Options.generateNativeStubs()) {
+      if (Options.generateNativeStubs()) {
         return generateNativeStub(m);
       } else {
         return null;
@@ -767,16 +654,6 @@ public class ObjectiveCImplementationGenerator extends ObjectiveCSourceFileGener
         expr, fieldHiders, false, getBuilder().getCurrentLine());
   }
 
-  private String extractNativeMethodBody(MethodDeclaration m) {
-    assert (m.getModifiers() & Modifier.NATIVE) > 0;
-    String nativeCode = extractNativeCode(m.getStartPosition(), m.getLength());
-    if (nativeCode == null) {
-      ErrorUtil.warning(m, "no native code found");
-      return "";
-    }
-    return '{' + nativeCode + '}';
-  }
-
   private void printImports(CompilationUnit node) {
     ImplementationImportCollector collector = new ImplementationImportCollector();
     collector.collect(node);
@@ -790,22 +667,10 @@ public class ObjectiveCImplementationGenerator extends ObjectiveCSourceFileGener
       for (String stmt : includeStmts) {
         println(stmt);
       }
+    }
 
-      // Print native includes.
-      List<AbstractTypeDeclaration> types = node.getTypes();
-      int endOfImportText = types.isEmpty() ? node.getLength() : types.get(0).getStartPosition();
-      for (Comment c : node.getCommentList()) {
-        int start = c.getStartPosition();
-        if (start >= endOfImportText) {
-          break;
-        }
-        if (c instanceof BlockComment) {
-          String nativeImport = extractNativeCode(start, c.getLength(), true);
-          if (nativeImport != null) {  // if it has a JSNI section
-            println(nativeImport.trim());
-          }
-        }
-      }
+    for (NativeDeclaration decl : node.getNativeBlocks()) {
+      printNativeDeclaration(decl);
     }
   }
 

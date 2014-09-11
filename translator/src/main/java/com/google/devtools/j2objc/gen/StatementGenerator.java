@@ -55,6 +55,7 @@ import com.google.devtools.j2objc.ast.LabeledStatement;
 import com.google.devtools.j2objc.ast.MethodDeclaration;
 import com.google.devtools.j2objc.ast.MethodInvocation;
 import com.google.devtools.j2objc.ast.Name;
+import com.google.devtools.j2objc.ast.NativeStatement;
 import com.google.devtools.j2objc.ast.NullLiteral;
 import com.google.devtools.j2objc.ast.NumberLiteral;
 import com.google.devtools.j2objc.ast.ParenthesizedExpression;
@@ -1117,6 +1118,13 @@ public class StatementGenerator extends TreeVisitor {
     }
     buffer.append("((" + typeName + ") ");
     return true;
+  }
+
+  @Override
+  public boolean visit(NativeStatement node) {
+    buffer.append(node.getCode());
+    buffer.append('\n');
+    return false;
   }
 
   @Override
