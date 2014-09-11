@@ -31,6 +31,7 @@ import java.util.NoSuchElementException;
 
 /*-[
 #import "java/lang/Double.h"
+#import "java/lang/Integer.h"
 #import "java/lang/Long.h"
 ]-*/
 
@@ -665,19 +666,32 @@ public final class NativeDecimalFormat implements Cloneable {
     private static native Number parse(Object nativeFormatter, String string,
         ParsePosition position, boolean parseBigDecimal) /*-[
       NSNumberFormatter *formatter = (NSNumberFormatter *) nativeFormatter;
-      // iOS bug: numbers that are zero digits only (like "0000") fail to parse
-      // when allowsFloats is false.
-      BOOL allowsFloats = [formatter allowsFloats];
-      [formatter setAllowsFloats:YES];
       NSNumber *result;
       int start = [position getIndex];
       NSRange range = NSMakeRange(start, [string length] - start);
+
+      // iOS bug: numbers that are zero digits only (like "0000") fail to parse
+      // when allowsFloats is false, so parse that case separately.
+      if (range.length > 0 && [formatter allowsFloats] == NO &&
+          [string characterAtIndex:start] == '0') {
+        BOOL onlyZeroes = YES;
+        for (NSUInteger i = start + 1; i < range.length + start; i++) {
+          if ([string characterAtIndex:i] != '0') {
+            onlyZeroes = NO;
+            break;
+          }
+        }
+        if (onlyZeroes) {
+          [position setIndexWithInt:start + (int) range.length];
+          return [JavaLangInteger valueOfWithInt:0];
+        }
+      }
+
       NSError *error;
       BOOL success = [formatter getObjectValue:&result
                                      forString:string
                                          range:&range
                                          error:&error];
-      [formatter setAllowsFloats:allowsFloats];
       if (success) {
         [position setIndexWithInt:start + (int) range.length];
         NSString *decimalSeparator = [formatter decimalSeparator];
