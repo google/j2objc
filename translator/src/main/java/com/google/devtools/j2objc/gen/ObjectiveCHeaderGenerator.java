@@ -311,7 +311,7 @@ public class ObjectiveCHeaderGenerator extends ObjectiveCSourceFileGenerator {
     printInstanceVariables(node, false);
     println("}");
     printDeclarations(node.getBodyDeclarations());
-    println("@end");
+    println("\n@end");
     printStaticInitFunction(node, methods);
     printf("\nFOUNDATION_EXPORT %s *%s_values[];\n", typeName, typeName);
     for (EnumConstantDeclaration constant : constants) {

@@ -28,6 +28,13 @@ public class NativeDeclaration extends BodyDeclaration {
     implementationCode = other.getImplementationCode();
   }
 
+  /**
+   * Creates a new NativeDeclaration. For proper spacing, the convention is
+   * that the code snippets end with a newline.
+   *
+   * @param headerCode Code to be printed in the type interface.
+   * @param implementationCode Code to be printed in the type implementation.
+   */
   public NativeDeclaration(String headerCode, String implementationCode) {
     this.headerCode = headerCode;
     this.implementationCode = implementationCode;

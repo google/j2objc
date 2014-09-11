@@ -147,7 +147,7 @@ public class EnumRewriter extends TreeVisitor {
     String header = String.format(
         "+ (IOSObjectArray *)values;\n\n"
         + "+ (%s *)valueOfWithNSString:(NSString *)name;\n\n"
-        + "- (id)copyWithZone:(NSZone *)zone;", typeName);
+        + "- (id)copyWithZone:(NSZone *)zone;\n", typeName);
 
     StringBuilder sb = new StringBuilder();
     sb.append(String.format(
