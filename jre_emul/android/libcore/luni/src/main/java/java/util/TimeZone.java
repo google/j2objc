@@ -253,7 +253,40 @@ public abstract class TimeZone implements Serializable, Cloneable {
       return [(NSTimeZone *) self->nativeTimeZone_ localizedName:zoneStyle locale:nativeLocale];
     ]-*/;
 
-    private void appendNumber(StringBuilder builder, int count, int value) {
+    /**
+     * Returns a string representation of an offset from UTC.
+     *
+     * <p>The format is "[GMT](+|-)HH[:]MM". The output is not localized.
+     *
+     * @param includeGmt true to include "GMT", false to exclude
+     * @param includeMinuteSeparator true to include the separator between hours and minutes, false
+     *     to exclude.
+     * @param offsetMillis the offset from UTC
+     *
+     * @hide used internally by SimpleDateFormat
+     */
+    public static String createGmtOffsetString(boolean includeGmt,
+            boolean includeMinuteSeparator, int offsetMillis) {
+        int offsetMinutes = offsetMillis / 60000;
+        char sign = '+';
+        if (offsetMinutes < 0) {
+            sign = '-';
+            offsetMinutes = -offsetMinutes;
+        }
+        StringBuilder builder = new StringBuilder(9);
+        if (includeGmt) {
+            builder.append("GMT");
+        }
+        builder.append(sign);
+        appendNumber(builder, 2, offsetMinutes / 60);
+        if (includeMinuteSeparator) {
+            builder.append(':');
+        }
+        appendNumber(builder, 2, offsetMinutes % 60);
+        return builder.toString();
+    }
+
+    private static void appendNumber(StringBuilder builder, int count, int value) {
         String string = Integer.toString(value);
         for (int i = 0; i < count - string.length(); i++) {
             builder.append('0');

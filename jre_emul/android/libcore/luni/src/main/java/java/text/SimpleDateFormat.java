@@ -17,6 +17,10 @@
 
 package java.text;
 
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.ObjectStreamField;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -25,7 +29,6 @@ import java.util.List;
 import java.util.Locale;
 import java.util.SimpleTimeZone;
 import java.util.TimeZone;
-
 import libcore.icu.LocaleData;
 import libcore.icu.TimeZoneNames;
 
@@ -38,7 +41,9 @@ import libcore.icu.TimeZoneNames;
  * pattern describing what strings are produced/accepted, but almost all
  * callers should use {@link DateFormat#getDateInstance}, {@link DateFormat#getDateTimeInstance},
  * or {@link DateFormat#getTimeInstance} to get a ready-made instance suitable for the user's
- * locale.
+ * locale. In cases where the system does not provide a suitable pattern, see
+ * {@link android.text.format.DateFormat#getBestDateTimePattern} which lets you specify
+ * the elements you'd like in a pattern and get back a pattern suitable for any given locale.
  *
  * <p>The main reason you'd create an instance this class directly is because you need to
  * format/parse a specific machine-readable format, in which case you almost certainly want
@@ -89,12 +94,15 @@ import libcore.icu.TimeZoneNames;
  * <p>Fractional seconds are handled specially: they're zero-padded on the <i>right</i>.
  *
  * <p>The two pattern characters {@code L} and {@code c} are ICU-compatible extensions, not
- * available in the RI or in Android before Android 2.3 "Gingerbread" (API level 9). These
+ * available in the RI or in Android before Android 2.3 (Gingerbread, API level 9). These
  * extensions are necessary for correct localization in languages such as Russian
  * that make a grammatical distinction between, say, the word "June" in the sentence "June" and
  * in the sentence "June 10th"; the former is the stand-alone form, the latter the regular
  * form (because the usual case is to format a complete date). The relationship between {@code E}
  * and {@code c} is equivalent, but for weekday names.
+ *
+ * <p>Five-count patterns (such as "MMMMM") used for the shortest non-numeric
+ * representation of a field were introduced in Android 4.3 (Jelly Bean MR2, API level 18).
  *
  * <p>When two numeric fields are directly adjacent with no intervening delimiter
  * characters, they constitute a run of adjacent numeric fields. Such runs are
@@ -507,7 +515,8 @@ public class SimpleDateFormat extends DateFormat {
         int next, last = -1, count = 0;
         calendar.setTime(date);
         if (field != null) {
-            field.clear();
+            field.setBeginIndex(0);
+            field.setEndIndex(0);
         }
 
         final int patternLength = pattern.length();
@@ -613,8 +622,7 @@ public class SimpleDateFormat extends DateFormat {
                 break;
             case MILLISECOND_FIELD:
                 dateFormatField = Field.MILLISECOND;
-                int value = calendar.get(Calendar.MILLISECOND);
-                appendNumber(buffer, count, value);
+                appendMilliseconds(buffer, count, calendar.get(Calendar.MILLISECOND));
                 break;
             case STAND_ALONE_DAY_OF_WEEK_FIELD:
                 dateFormatField = Field.DAY_OF_WEEK;
@@ -730,15 +738,9 @@ public class SimpleDateFormat extends DateFormat {
             TimeZone tz = calendar.getTimeZone();
             boolean daylight = (calendar.get(Calendar.DST_OFFSET) != 0);
             int style = count < 4 ? TimeZone.SHORT : TimeZone.LONG;
-            if (!formatData.customZoneStrings) {
-                buffer.append(tz.getDisplayName(daylight, style, formatData.locale));
-                return;
-            }
-            // We can't call TimeZone.getDisplayName() because it would not use
-            // the custom DateFormatSymbols of this SimpleDateFormat.
-            String custom = TimeZoneNames.getDisplayName(formatData.zoneStrings, tz.getID(), daylight, style);
-            if (custom != null) {
-                buffer.append(custom);
+            String zoneString = formatData.getTimeZoneDisplayName(tz, daylight, style);
+            if (zoneString != null) {
+                buffer.append(zoneString);
                 return;
             }
         }
@@ -749,21 +751,29 @@ public class SimpleDateFormat extends DateFormat {
     // See http://www.unicode.org/reports/tr35/#Date_Format_Patterns for the different counts.
     // @param generalTimeZone "GMT-08:00" rather than "-0800".
     private void appendNumericTimeZone(StringBuffer buffer, int count, boolean generalTimeZone) {
-        int offset = calendar.get(Calendar.ZONE_OFFSET) + calendar.get(Calendar.DST_OFFSET);
-        char sign = '+';
-        if (offset < 0) {
-            sign = '-';
-            offset = -offset;
+        int offsetMillis = calendar.get(Calendar.ZONE_OFFSET) + calendar.get(Calendar.DST_OFFSET);
+        boolean includeGmt = generalTimeZone || count == 4;
+        boolean includeMinuteSeparator = generalTimeZone || count >= 4;
+        buffer.append(TimeZone.createGmtOffsetString(includeGmt,  includeMinuteSeparator,
+                offsetMillis));
+    }
+
+    private void appendMilliseconds(StringBuffer buffer, int count, int value) {
+        // Unlike other fields, milliseconds are truncated by count. So 361 formatted SS is "36".
+        numberFormat.setMinimumIntegerDigits((count > 3) ? 3 : count);
+        numberFormat.setMaximumIntegerDigits(10);
+        // We need to left-justify.
+        if (count == 1) {
+            value /= 100;
+        } else if (count == 2) {
+            value /= 10;
         }
-        if (generalTimeZone || count == 4) {
-            buffer.append("GMT");
+        FieldPosition p = new FieldPosition(0);
+        numberFormat.format(Integer.valueOf(value), buffer, p);
+        if (count > 3) {
+            numberFormat.setMinimumIntegerDigits(count - 3);
+            numberFormat.format(Integer.valueOf(0), buffer, p);
         }
-        buffer.append(sign);
-        appendNumber(buffer, 2, offset / 3600000);
-        if (generalTimeZone || count >= 4) {
-            buffer.append(':');
-        }
-        appendNumber(buffer, 2, (offset % 3600000) / 60000);
     }
 
     private void appendNumber(StringBuffer buffer, int count, int value) {
@@ -895,8 +905,7 @@ public class SimpleDateFormat extends DateFormat {
                 field = Calendar.SECOND;
                 break;
             case MILLISECOND_FIELD:
-                field = Calendar.MILLISECOND;
-                break;
+                return parseFractionalSeconds(string, offset, absolute);
             case STAND_ALONE_DAY_OF_WEEK_FIELD:
                 return parseDayOfWeek(string, offset, true);
             case DAY_OF_WEEK_FIELD:
@@ -939,6 +948,31 @@ public class SimpleDateFormat extends DateFormat {
             return parseNumber(absolute, string, offset, field, 0);
         }
         return offset;
+    }
+
+    /**
+     * Parses the fractional seconds section of a formatted date and assigns
+     * it to the {@code Calendar.MILLISECOND} field. Note that fractional seconds
+     * are somewhat unique, because they are zero suffixed.
+     */
+    private int parseFractionalSeconds(String string, int offset, int count) {
+        final ParsePosition parsePosition = new ParsePosition(offset);
+        final Number fractionalSeconds = parseNumber(count, string, parsePosition);
+        if (fractionalSeconds == null) {
+            return -parsePosition.getErrorIndex() - 1;
+        }
+
+        // NOTE: We could've done this using two parses instead. The first parse
+        // looking at |count| digits (to verify the date matched the format), and
+        // then a second parse that consumed just the first three digits. That
+        // would've avoided the floating point arithmetic, but would've demanded
+        // that we round values ourselves.
+        final double result = fractionalSeconds.doubleValue();
+        final int numDigitsParsed = parsePosition.getIndex() - offset;
+        final double divisor = Math.pow(10, numDigitsParsed);
+
+        calendar.set(Calendar.MILLISECOND, (int) ((result / divisor) * 1000));
+        return parsePosition.getIndex();
     }
 
     private int parseDayOfWeek(String string, int offset, boolean standAlone) {
@@ -1075,25 +1109,7 @@ public class SimpleDateFormat extends DateFormat {
         }
         if (max == 0) {
             position.setIndex(index);
-            Number n = numberFormat.parse(string, position);
-            // In RTL locales, NumberFormat might have parsed "2012-" in an ISO date as the
-            // negative number -2012.
-            // Ideally, we wouldn't have this broken API that exposes a NumberFormat and expects
-            // us to use it. The next best thing would be a way to ask the NumberFormat to parse
-            // positive numbers only, but icu4c supports negative (BCE) years. The best we can do
-            // is try to recognize when icu4c has done this, and undo it.
-            if (n != null && n.longValue() < 0) {
-                if (numberFormat instanceof DecimalFormat) {
-                    DecimalFormat df = (DecimalFormat) numberFormat;
-                    char lastChar = string.charAt(position.getIndex() - 1);
-                    char minusSign = df.getDecimalFormatSymbols().getMinusSign();
-                    if (lastChar == minusSign) {
-                        n = Long.valueOf(-n.longValue()); // Make the value positive.
-                        position.setIndex(position.getIndex() - 1); // Spit out the negative sign.
-                    }
-                }
-            }
-            return n;
+            return numberFormat.parse(string, position);
         }
 
         int result = 0;
@@ -1120,22 +1136,35 @@ public class SimpleDateFormat extends DateFormat {
         return position.getIndex();
     }
 
-    private int parseText(String string, int offset, String[] text, int field) {
-        int found = -1;
-        for (int i = 0; i < text.length; i++) {
-            if (text[i].isEmpty()) {
+    private int parseText(String string, int offset, String[] options, int field) {
+        // We search for the longest match, in case some entries are substrings of others.
+        int bestIndex = -1;
+        int bestLength = -1;
+        for (int i = 0; i < options.length; ++i) {
+            String option = options[i];
+            int optionLength = option.length();
+            if (optionLength == 0) {
                 continue;
             }
-            if (string.regionMatches(true, offset, text[i], 0, text[i].length())) {
-                // Search for the longest match, in case some fields are subsets
-                if (found == -1 || text[i].length() > text[found].length()) {
-                    found = i;
+            if (string.regionMatches(true, offset, option, 0, optionLength)) {
+                if (bestIndex == -1 || optionLength > bestLength) {
+                    bestIndex = i;
+                    bestLength = optionLength;
+                }
+            } else if (option.charAt(optionLength - 1) == '.') {
+                // If CLDR has abbreviated forms like "Aug.", we should accept "Aug" too.
+                // https://code.google.com/p/android/issues/detail?id=59383
+                if (string.regionMatches(true, offset, option, 0, optionLength - 1)) {
+                    if (bestIndex == -1 || optionLength - 1 > bestLength) {
+                        bestIndex = i;
+                        bestLength = optionLength - 1;
+                    }
                 }
             }
         }
-        if (found != -1) {
-            calendar.set(field, found);
-            return offset + text[found].length();
+        if (bestIndex != -1) {
+            calendar.set(field, bestIndex);
+            return offset + bestLength;
         }
         return -offset - 1;
     }
@@ -1145,6 +1174,8 @@ public class SimpleDateFormat extends DateFormat {
         if (foundGMT) {
             offset += 3;
         }
+
+        // Check for an offset, which may have been preceded by "GMT"
         char sign;
         if (offset < string.length() && ((sign = string.charAt(offset)) == '+' || sign == '-')) {
             ParsePosition position = new ParsePosition(offset + 1);
@@ -1172,10 +1203,14 @@ public class SimpleDateFormat extends DateFormat {
             calendar.setTimeZone(new SimpleTimeZone(raw, ""));
             return position.getIndex();
         }
+
+        // If there was "GMT" but no offset.
         if (foundGMT) {
             calendar.setTimeZone(TimeZone.getTimeZone("GMT"));
             return offset;
         }
+
+        // Exhaustively look for the string in this DateFormat's localized time zone strings.
         for (String[] row : formatData.internalZoneStrings()) {
             for (int i = TimeZoneNames.LONG_NAME; i < TimeZoneNames.NAME_COUNT; ++i) {
                 if (row[i] == null) {
@@ -1297,7 +1332,6 @@ public class SimpleDateFormat extends DateFormat {
         return pattern;
     }
 
-    /*
     private static final ObjectStreamField[] serialPersistentFields = {
         new ObjectStreamField("defaultCenturyStart", Date.class),
         new ObjectStreamField("formatData", DateFormatSymbols.class),
@@ -1327,5 +1361,4 @@ public class SimpleDateFormat extends DateFormat {
         formatData = (DateFormatSymbols) fields.get("formatData", null);
         pattern = (String) fields.get("pattern", "");
     }
-    */
 }
