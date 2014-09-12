@@ -66,7 +66,7 @@ import java.util.Set;
  * @author Tom Ball
  */
 public class ObjectiveCImplementationGenerator extends ObjectiveCSourceFileGenerator {
-  private Set<IVariableBinding> fieldHiders;
+
   private final String suffix;
   private final Set<String> invokedConstructors = Sets.newHashSet();
 
@@ -80,7 +80,6 @@ public class ObjectiveCImplementationGenerator extends ObjectiveCSourceFileGener
 
   private ObjectiveCImplementationGenerator(CompilationUnit unit) {
     super(unit, Options.emitLineDirectives());
-    fieldHiders = HiddenFieldDetector.getFieldNameConflicts(unit);
     suffix = Options.getImplementationFileSuffix();
   }
 
@@ -516,13 +515,6 @@ public class ObjectiveCImplementationGenerator extends ObjectiveCSourceFileGener
     return methodBody;
   }
 
-  @Override
-  protected String getParameterName(SingleVariableDeclaration param) {
-    String name = super.getParameterName(param);
-    IVariableBinding binding = param.getVariableBinding();
-    return binding != null && fieldHiders.contains(binding) ? name + "Arg" : name;
-  }
-
   private static int findConstructorInvocation(List<Statement> statements) {
     for (int i = 0; i < statements.size(); i++) {
       Statement stmt = statements.get(i);
@@ -645,13 +637,11 @@ public class ObjectiveCImplementationGenerator extends ObjectiveCSourceFileGener
   }
 
   private String generateStatement(Statement stmt, boolean asFunction) {
-    return StatementGenerator.generate(
-        stmt, fieldHiders, asFunction, getBuilder().getCurrentLine());
+    return StatementGenerator.generate(stmt, asFunction, getBuilder().getCurrentLine());
   }
 
   private String generateExpression(Expression expr) {
-    return StatementGenerator.generate(
-        expr, fieldHiders, false, getBuilder().getCurrentLine());
+    return StatementGenerator.generate(expr, false, getBuilder().getCurrentLine());
   }
 
   private void printImports(CompilationUnit node) {

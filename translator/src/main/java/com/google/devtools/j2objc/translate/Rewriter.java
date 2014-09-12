@@ -75,7 +75,6 @@ import com.google.j2objc.annotations.RetainedLocalRef;
 
 import org.eclipse.jdt.core.dom.IBinding;
 import org.eclipse.jdt.core.dom.IMethodBinding;
-import org.eclipse.jdt.core.dom.IPackageBinding;
 import org.eclipse.jdt.core.dom.ITypeBinding;
 import org.eclipse.jdt.core.dom.IVariableBinding;
 import org.eclipse.jdt.core.dom.Modifier;
@@ -162,7 +161,6 @@ public class Rewriter extends TreeVisitor {
       }
     }
 
-    renameDuplicateMembers(typeBinding);
     return true;
   }
 
@@ -614,56 +612,6 @@ public class Rewriter extends TreeVisitor {
     return method;
   }
 
-  /**
-   * If a field and method have the same name, or if a field hides a visible
-   * superclass field, rename the field.  This is necessary to avoid a name
-   * clash when the fields are declared as properties.
-   */
-  private void renameDuplicateMembers(ITypeBinding typeBinding) {
-    Map<String, IVariableBinding> fields = Maps.newHashMap();
-
-    // Check all superclass(es) fields with declared fields.
-    ITypeBinding superclass = typeBinding.getSuperclass();
-    if (superclass != null) {
-      addFields(superclass, true, true, fields);
-      for (IVariableBinding var : typeBinding.getDeclaredFields()) {
-        String name = var.getName();
-        IVariableBinding field = fields.get(name);
-        if (field != null) {
-          name += '_' + typeBinding.getName();
-          NameTable.rename(var, name);
-          fields.put(name, var);
-        }
-      }
-    }
-  }
-
-  private void addFields(ITypeBinding type, boolean includePrivate, boolean includeSuperclasses,
-      Map<String, IVariableBinding> fields) {
-    for (IVariableBinding field : type.getDeclaredFields()) {
-      if (!fields.containsValue(field)) { // if not already renamed
-        int mods = field.getModifiers();
-        if (!Modifier.isStatic(mods)) {
-          if (includePrivate) {
-            fields.put(field.getName(), field);
-          } else if (Modifier.isPublic(mods) || Modifier.isProtected(mods)) {
-            fields.put(field.getName(), field);
-          } else {
-            IPackageBinding typePackage = type.getPackage();
-            IPackageBinding fieldPackage = field.getDeclaringClass().getPackage();
-            if (typePackage.isEqualTo(fieldPackage)) {
-              fields.put(field.getName(), field);
-            }
-          }
-        }
-      }
-    }
-    ITypeBinding superclass = type.getSuperclass();
-    if (includeSuperclasses && superclass != null) {
-      addFields(superclass, false, true, fields);
-    }
-  }
-
   @Override
   public void endVisit(SingleVariableDeclaration node) {
     if (node.getExtraDimensions() > 0) {
@@ -768,25 +716,6 @@ public class Rewriter extends TreeVisitor {
 
   @Override
   public void endVisit(SimpleName node) {
-    // Check for enum fields with reserved names.
-    IVariableBinding var = TreeUtil.getVariableBinding(node);
-    if (var != null) {
-      var = var.getVariableDeclaration();
-      ITypeBinding type = var.getDeclaringClass();
-      if (type != null && !type.isArray()) {
-        String fieldName = NameTable.getName(var);
-        while ((type = type.getSuperclass()) != null) {
-          for (IVariableBinding superField : type.getDeclaredFields()) {
-            if (superField.getName().equals(fieldName)) {
-              fieldName += '_' + NameTable.getName(var.getDeclaringClass());
-              NameTable.rename(var, fieldName);
-              return;
-            }
-          }
-        }
-      }
-    }
-
     // Check for ScopedLocalRefs.
     IVariableBinding localRef = localRefs.get(node.getBinding());
     if (localRef != null) {

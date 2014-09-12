@@ -275,19 +275,8 @@ public class NameTable {
     }
     String name = binding.getName();
     if (binding instanceof IVariableBinding) {
-      IVariableBinding var = (IVariableBinding) binding;
       if (isReservedName(name)) {
         name += "_";
-      }
-      if (var.isField()) {
-        // Check if field has the same name as a method.
-        ITypeBinding superclass = ((IVariableBinding) binding).getDeclaringClass();
-        for (IMethodBinding method : superclass.getDeclaredMethods()) {
-          if (method.getName().equals(name)) {
-            name = name + '_';
-            break;
-          }
-        }
       }
     }
     return name.equals(SELF_NAME) ? "self" : name;

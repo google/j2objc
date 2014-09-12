@@ -74,10 +74,6 @@ public class Types {
   // Cache of pointer types.
   private final Map<ITypeBinding, PointerTypeBinding> pointerTypeMap = Maps.newHashMap();
 
-  // The first argument of a iOS method isn't named, but Java requires some sort of valid parameter
-  // name.  The method mapper therefore uses this string, which the generators ignore.
-  public static final String EMPTY_PARAMETER_NAME = "__empty_parameter__";
-
   private Types(CompilationUnit unit) {
     ast = unit.getAST();
 
