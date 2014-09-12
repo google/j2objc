@@ -43,7 +43,6 @@ import com.google.devtools.j2objc.ast.VariableDeclarationFragment;
 import com.google.devtools.j2objc.types.IOSMethod;
 import com.google.devtools.j2objc.types.IOSMethodBinding;
 import com.google.devtools.j2objc.types.IOSParameter;
-import com.google.devtools.j2objc.types.Types;
 import com.google.devtools.j2objc.util.BindingUtil;
 import com.google.devtools.j2objc.util.NameTable;
 
@@ -348,10 +347,6 @@ public abstract class ObjectiveCSourceFileGenerator extends SourceFileGenerator 
       int nParams = params.size();
       for (int i = 0; i < nParams; i++) {
         SingleVariableDeclaration param = params.get(i);
-        String fieldName = getParameterName(param);
-        if (fieldName.equals(Types.EMPTY_PARAMETER_NAME)) {
-          fieldName = "";
-        }
         ITypeBinding typeBinding = parameterTypes[i];
         String keyword = NameTable.parameterKeyword(typeBinding);
         if (first) {
@@ -362,21 +357,14 @@ public abstract class ObjectiveCSourceFileGenerator extends SourceFileGenerator 
           sb.append(pad(baseDeclaration.length() - keyword.length()));
           sb.append(keyword);
         }
+        IVariableBinding var = param.getVariableBinding();
         sb.append(String.format(":(%s)%s",
-            NameTable.getSpecificObjCType(param.getVariableBinding().getType()), fieldName));
+            NameTable.getSpecificObjCType(var.getType()), NameTable.getName(var)));
         if (i + 1 < nParams) {
           sb.append('\n');
         }
       }
     }
-  }
-
-  protected String getParameterName(SingleVariableDeclaration param) {
-    String name = NameTable.getName(param.getName().getBinding());
-    if (NameTable.isReservedName(name)) {
-      name += "Arg";
-    }
-    return name;
   }
 
   /** Ignores deprecation warnings. Deprecation warnings should be visible for human authored code,

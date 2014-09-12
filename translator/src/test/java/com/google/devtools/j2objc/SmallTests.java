@@ -18,7 +18,6 @@ package com.google.devtools.j2objc;
 
 import com.google.devtools.j2objc.gen.ArrayAccessTest;
 import com.google.devtools.j2objc.gen.ArrayCreationTest;
-import com.google.devtools.j2objc.gen.HiddenFieldDetectorTest;
 import com.google.devtools.j2objc.gen.LineDirectivesTest;
 import com.google.devtools.j2objc.gen.ObjectiveCHeaderGeneratorTest;
 import com.google.devtools.j2objc.gen.ObjectiveCImplementationGeneratorTest;
@@ -49,6 +48,7 @@ import com.google.devtools.j2objc.translate.RewriterTest;
 import com.google.devtools.j2objc.translate.StaticVarRewriterTest;
 import com.google.devtools.j2objc.translate.TypeSorterTest;
 import com.google.devtools.j2objc.translate.UnsequencedExpressionRewriterTest;
+import com.google.devtools.j2objc.translate.VariableRenamerTest;
 import com.google.devtools.j2objc.types.BindingMapBuilderTest;
 import com.google.devtools.j2objc.types.HeaderImportCollectorTest;
 import com.google.devtools.j2objc.types.ImplementationImportCollectorTest;
@@ -90,7 +90,6 @@ public class SmallTests {
     FunctionizerTest.class,
     GwtConverterTest.class,
     HeaderImportCollectorTest.class,
-    HiddenFieldDetectorTest.class,
     ImplementationImportCollectorTest.class,
     InitializationNormalizerTest.class,
     InnerClassExtractorTest.class,
@@ -114,7 +113,8 @@ public class SmallTests {
     StaticVarRewriterTest.class,
     TypeSorterTest.class,
     UnicodeUtilsTest.class,
-    UnsequencedExpressionRewriterTest.class
+    UnsequencedExpressionRewriterTest.class,
+    VariableRenamerTest.class
   };
 
   public static Test suite() {

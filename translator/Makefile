@@ -151,7 +151,6 @@ JAVA_SOURCES = \
 	ast/VariableDeclarationFragment.java \
 	ast/VariableDeclarationStatement.java \
 	ast/WhileStatement.java \
-	gen/HiddenFieldDetector.java \
 	gen/LiteralGenerator.java \
 	gen/MetadataGenerator.java \
 	gen/ObjectiveCHeaderGenerator.java \
@@ -184,6 +183,7 @@ JAVA_SOURCES = \
 	translate/StaticVarRewriter.java \
 	translate/TypeSorter.java \
 	translate/UnsequencedExpressionRewriter.java \
+	translate/VariableRenamer.java \
 	types/AbstractBinding.java \
 	types/AbstractTypeBinding.java \
 	types/GeneratedMethodBinding.java \

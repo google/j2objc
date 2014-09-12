@@ -108,7 +108,6 @@ import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.regex.Pattern;
 
 /**
@@ -120,7 +119,6 @@ public class StatementGenerator extends TreeVisitor {
 
   private final CompilationUnit unit;
   private final SourceBuilder buffer;
-  private final Set<IVariableBinding> fieldHiders;
   private final boolean asFunction;
   private final boolean useReferenceCounting;
   // The boolean value indicates whether the expression should be cast when the
@@ -130,10 +128,8 @@ public class StatementGenerator extends TreeVisitor {
   private static final Pattern TRIGRAPH_REGEX = Pattern.compile("@\".*\\?\\?[=/'()!<>-].*\"");
 
   public static String generate(
-      TreeNode node, Set<IVariableBinding> fieldHiders, boolean asFunction,
-      int currentLine) throws ASTNodeException {
-    StatementGenerator generator = new StatementGenerator(
-        node, fieldHiders, asFunction, currentLine);
+      TreeNode node, boolean asFunction, int currentLine) throws ASTNodeException {
+    StatementGenerator generator = new StatementGenerator(node, asFunction, currentLine);
     if (node == null) {
       throw new NullPointerException("cannot generate a null statement");
     }
@@ -141,31 +137,9 @@ public class StatementGenerator extends TreeVisitor {
     return generator.getResult();
   }
 
-  public static String generateArguments(IMethodBinding method, List<Expression> args,
-      Set<IVariableBinding> fieldHiders, int currentLine) {
-    StatementGenerator generator = new StatementGenerator(
-        null, fieldHiders, false, currentLine);
-    if (IOSMethodBinding.hasVarArgsTarget(method)) {
-      generator.printVarArgs(method, args);
-    } else {
-      int nArgs = args.size();
-      for (int i = 0; i < nArgs; i++) {
-        Expression arg = args.get(i);
-        generator.printArgument(method, arg, i);
-        if (i + 1 < nArgs) {
-          generator.buffer.append(' ');
-        }
-      }
-    }
-    return generator.getResult();
-  }
-
-  private StatementGenerator(
-      TreeNode node, Set<IVariableBinding> fieldHiders, boolean asFunction,
-      int currentLine) {
+  private StatementGenerator(TreeNode node, boolean asFunction, int currentLine) {
     this.unit = TreeUtil.getCompilationUnit(node);
     buffer = new SourceBuilder(Options.emitLineDirectives(), currentLine);
-    this.fieldHiders = fieldHiders;
     this.asFunction = asFunction;
     useReferenceCounting = !Options.useARC();
   }
@@ -1257,11 +1231,7 @@ public class StatementGenerator extends TreeVisitor {
           buffer.append(')');
         }
       } else {
-        String name = NameTable.getName(var);
-        buffer.append(name);
-        if (!var.isField() && (fieldHiders.contains(var))) {
-          buffer.append("Arg");
-        }
+        buffer.append(NameTable.getName(var));
       }
       return false;
     }

@@ -43,6 +43,7 @@ import com.google.devtools.j2objc.translate.Rewriter;
 import com.google.devtools.j2objc.translate.StaticVarRewriter;
 import com.google.devtools.j2objc.translate.TypeSorter;
 import com.google.devtools.j2objc.translate.UnsequencedExpressionRewriter;
+import com.google.devtools.j2objc.translate.VariableRenamer;
 import com.google.devtools.j2objc.types.HeaderImportCollector;
 import com.google.devtools.j2objc.types.IOSTypeBinding;
 import com.google.devtools.j2objc.types.ImplementationImportCollector;
@@ -161,6 +162,9 @@ class TranslationProcessor extends FileProcessor {
     // Modify AST to be more compatible with Objective C
     new Rewriter().run(unit);
     ticker.tick("Rewriter");
+
+    new VariableRenamer().run(unit);
+    ticker.tick("VariableRenamer");
 
     // Rewrite enhanced for loops into correct C code.
     new EnhancedForRewriter().run(unit);

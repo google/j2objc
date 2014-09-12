@@ -34,8 +34,6 @@ import com.google.devtools.j2objc.util.TimeTracker;
 
 import junit.framework.TestCase;
 
-import org.eclipse.jdt.core.dom.IVariableBinding;
-
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
@@ -45,7 +43,6 @@ import java.net.URL;
 import java.net.URLClassLoader;
 import java.net.URLDecoder;
 import java.nio.charset.Charset;
-import java.util.Collections;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -163,9 +160,7 @@ public abstract class GenerationTest extends TestCase {
   }
 
   protected String generateStatement(Statement statement) {
-    return StatementGenerator.generate(
-        statement, Collections.<IVariableBinding>emptySet(), false,
-        SourceBuilder.BEGINNING_OF_FILE).trim();
+    return StatementGenerator.generate(statement, false, SourceBuilder.BEGINNING_OF_FILE).trim();
   }
 
   /**
