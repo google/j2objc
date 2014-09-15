@@ -27,6 +27,7 @@ import com.google.devtools.j2objc.ast.BodyDeclaration;
 import com.google.devtools.j2objc.ast.CompilationUnit;
 import com.google.devtools.j2objc.ast.EnumDeclaration;
 import com.google.devtools.j2objc.ast.FieldDeclaration;
+import com.google.devtools.j2objc.ast.FunctionDeclaration;
 import com.google.devtools.j2objc.ast.Javadoc;
 import com.google.devtools.j2objc.ast.MethodDeclaration;
 import com.google.devtools.j2objc.ast.Name;
@@ -36,7 +37,6 @@ import com.google.devtools.j2objc.ast.TagElement;
 import com.google.devtools.j2objc.ast.TextElement;
 import com.google.devtools.j2objc.ast.TreeNode;
 import com.google.devtools.j2objc.ast.TreeUtil;
-import com.google.devtools.j2objc.ast.Type;
 import com.google.devtools.j2objc.ast.TypeDeclaration;
 import com.google.devtools.j2objc.ast.VariableDeclaration;
 import com.google.devtools.j2objc.ast.VariableDeclarationFragment;
@@ -176,10 +176,15 @@ public abstract class ObjectiveCSourceFileGenerator extends SourceFileGenerator 
     }
   }
 
+  protected abstract void printFunction(FunctionDeclaration declaration);
+
   protected abstract void printNativeDeclaration(NativeDeclaration declaration);
 
   protected void printDeclaration(BodyDeclaration declaration) {
     switch (declaration.getKind()) {
+      case FUNCTION_DECLARATION:
+        printFunction((FunctionDeclaration) declaration);
+        return;
       case METHOD_DECLARATION:
         printMethod((MethodDeclaration) declaration);
         return;
@@ -211,9 +216,6 @@ public abstract class ObjectiveCSourceFileGenerator extends SourceFileGenerator 
    * inlined method.
    */
   protected String mappedMethodDeclaration(MethodDeclaration method, IOSMethod mappedMethod) {
-    if (mappedMethod.isFunction()) {
-      return functionDeclaration(method, mappedMethod);
-    }
     StringBuffer sb = new StringBuffer();
 
     // Explicitly test hashCode() because of NSObject's hash return value.
@@ -252,29 +254,6 @@ public abstract class ObjectiveCSourceFileGenerator extends SourceFileGenerator 
     sb.append(iosParameter.getType());
     sb.append(')');
     sb.append(var.getName().getIdentifier());
-  }
-
-  protected String functionDeclaration(MethodDeclaration method, IOSMethod mappedMethod) {
-    StringBuffer sb = new StringBuffer();
-    IMethodBinding m = method.getMethodBinding();
-    sb.append("__attribute__ ((unused)) static ");
-    Type returnType = method.getReturnType();
-    sb.append(String.format("%s %s(",
-        NameTable.getObjCType(returnType.getTypeBinding()),
-        m.getName()));
-
-    Iterator<SingleVariableDeclaration> parameters = method.getParameters().iterator();
-    while (parameters.hasNext()) {
-      IVariableBinding varType = parameters.next().getVariableBinding();
-      sb.append(String.format("%s %s",
-          NameTable.getObjCType(varType.getType()),
-          NameTable.getName(varType)));
-      if (parameters.hasNext()) {
-        sb.append(", ");
-      }
-    }
-    sb.append(')');
-    return sb.toString();
   }
 
   /**

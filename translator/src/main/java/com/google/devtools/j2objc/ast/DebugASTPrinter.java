@@ -424,6 +424,25 @@ public class DebugASTPrinter extends TreeVisitor {
   }
 
   @Override
+  public boolean visit(FunctionDeclaration node) {
+    sb.printIndent();
+    printModifiers(node.getModifiers());
+    node.getReturnType().accept(this);
+    sb.print(' ');
+    sb.print(node.getName());
+    sb.print('(');
+    for (Iterator<SingleVariableDeclaration> it = node.getParameters().iterator(); it.hasNext(); ) {
+      it.next().accept(this);
+      if (it.hasNext()) {
+        sb.print(',');
+      }
+    }
+    sb.print(')');
+    node.getBody().accept(this);
+    return false;
+  }
+
+  @Override
   public boolean visit(FunctionInvocation node) {
     sb.append(node.getName());
     sb.append('(');

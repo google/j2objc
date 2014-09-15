@@ -657,7 +657,7 @@ public class StatementGenerator extends TreeVisitor {
 
   @Override
   public boolean visit(FunctionInvocation node) {
-    boolean castPrinted = maybePrintCast(node, node.getDeclaredReturnType());
+    boolean castPrinted = maybePrintCast(node, Types.mapType(node.getDeclaredReturnType()));
     buffer.append(node.getName());
     buffer.append('(');
     for (Iterator<Expression> iter = node.getArguments().iterator(); iter.hasNext(); ) {

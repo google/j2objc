@@ -31,6 +31,7 @@ import com.google.devtools.j2objc.ast.EnumConstantDeclaration;
 import com.google.devtools.j2objc.ast.EnumDeclaration;
 import com.google.devtools.j2objc.ast.Expression;
 import com.google.devtools.j2objc.ast.FieldDeclaration;
+import com.google.devtools.j2objc.ast.FunctionDeclaration;
 import com.google.devtools.j2objc.ast.MethodDeclaration;
 import com.google.devtools.j2objc.ast.NativeDeclaration;
 import com.google.devtools.j2objc.ast.PackageDeclaration;
@@ -57,6 +58,7 @@ import org.eclipse.jdt.core.dom.ITypeBinding;
 import org.eclipse.jdt.core.dom.IVariableBinding;
 import org.eclipse.jdt.core.dom.Modifier;
 
+import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
@@ -97,12 +99,7 @@ public class ObjectiveCImplementationGenerator extends ObjectiveCSourceFileGener
       printStart(unit.getSourceFileFullPath());
       printImports(unit);
       pushIgnoreDeprecatedDeclarationsPragma();
-      boolean needsNewLine = true;
-      for (AbstractTypeDeclaration type : typesToGenerate) {
-        if (type instanceof TypeDeclaration) {
-          needsNewLine = printFinalFunctionDecls((TypeDeclaration) type, needsNewLine);
-        }
-      }
+      printFinalFunctionDecls(typesToGenerate);
       printClassExtensions(typesToGenerate);
       for (AbstractTypeDeclaration type : typesToGenerate) {
         generate(type);
@@ -669,18 +666,43 @@ public class ObjectiveCImplementationGenerator extends ObjectiveCSourceFileGener
     }
   }
 
-  private boolean printFinalFunctionDecls(TypeDeclaration node, boolean needsNewLine) {
-    for (MethodDeclaration method : TreeUtil.getMethodDeclarations(node)) {
-      IMethodBinding m = method.getMethodBinding();
-      if (BindingUtil.isFunction(m)) {
+  private void printFinalFunctionDecls(List<AbstractTypeDeclaration> types) {
+    boolean needsNewLine = true;
+    for (AbstractTypeDeclaration type : types) {
+      for (FunctionDeclaration function : TreeUtil.getFunctionDeclarations(type)) {
         if (needsNewLine) {
-          newline();  // Start a new section.
+          newline();
           needsNewLine = false;
         }
-        printf("%s;\n", functionDeclaration(method, IOSMethodBinding.getIOSMethod(m)));
+        println("static " + getFunctionSignature(function) + ";");
       }
     }
-    return needsNewLine;
+  }
+
+  private String getFunctionSignature(FunctionDeclaration function) {
+    StringBuilder sb = new StringBuilder();
+    String returnType = NameTable.getObjCType(function.getReturnType().getTypeBinding());
+    returnType += returnType.endsWith("*") ? "" : " ";
+    sb.append(returnType).append(function.getName()).append('(');
+    for (Iterator<SingleVariableDeclaration> iter = function.getParameters().iterator();
+         iter.hasNext(); ) {
+      IVariableBinding var = iter.next().getVariableBinding();
+      String paramType = NameTable.getObjCType(var.getType());
+      paramType += (paramType.endsWith("*") ? "" : " ");
+      sb.append(paramType + NameTable.getName(var));
+      if (iter.hasNext()) {
+        sb.append(", ");
+      }
+    }
+    sb.append(')');
+    return sb.toString();
+  }
+
+  @Override
+  protected void printFunction(FunctionDeclaration function) {
+    String functionBody = generateStatement(function.getBody(), /* isFunction */ true);
+    newline();
+    println(getFunctionSignature(function) + " " + reindent(functionBody));
   }
 
   private void printAnnotationProperties(List<AnnotationTypeMemberDeclaration> members) {
