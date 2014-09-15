@@ -257,7 +257,7 @@ public abstract class ObjectiveCSourceFileGenerator extends SourceFileGenerator 
   protected String functionDeclaration(MethodDeclaration method, IOSMethod mappedMethod) {
     StringBuffer sb = new StringBuffer();
     IMethodBinding m = method.getMethodBinding();
-    sb.append(BindingUtil.isStatic(m) ? "" : "__attribute__ ((unused)) static ");
+    sb.append("__attribute__ ((unused)) static ");
     Type returnType = method.getReturnType();
     sb.append(String.format("%s %s(",
         NameTable.getObjCType(returnType.getTypeBinding()),

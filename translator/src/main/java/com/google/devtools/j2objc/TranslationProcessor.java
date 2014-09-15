@@ -225,11 +225,6 @@ class TranslationProcessor extends FileProcessor {
     new ComplexExpressionExtractor().run(unit);
     ticker.tick("ComplexExpressionExtractor");
 
-    if (Options.finalMethodsAsFunctions()) {
-      new Functionizer().run(unit);
-      ticker.tick("Functionizer");
-    }
-
     new ConstantBranchPruner().run(unit);
     ticker.tick("ConstantBranchPruner");
 
@@ -238,6 +233,11 @@ class TranslationProcessor extends FileProcessor {
 
     new OcniExtractor(unit).run(unit);
     ticker.tick("OcniExtractor");
+
+    if (Options.finalMethodsAsFunctions()) {
+      new Functionizer().run(unit);
+      ticker.tick("Functionizer");
+    }
 
     Map<String, String> methodMappings = Options.getMethodMappings();
     if (methodMappings.isEmpty()) {

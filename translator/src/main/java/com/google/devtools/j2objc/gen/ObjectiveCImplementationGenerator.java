@@ -482,7 +482,6 @@ public class ObjectiveCImplementationGenerator extends ObjectiveCSourceFileGener
   private String generateMethodBody(MethodDeclaration m) {
     IMethodBinding binding = m.getMethodBinding();
     boolean isFunction = BindingUtil.isFunction(binding);
-    String methodBody;
     if (Modifier.isNative(m.getModifiers())) {
       if (Options.generateNativeStubs()) {
         return generateNativeStub(m);
@@ -499,20 +498,8 @@ public class ObjectiveCImplementationGenerator extends ObjectiveCSourceFileGener
       return body + "}";
     } else {
       // generate a normal method body
-      methodBody = generateStatement(m.getBody(), isFunction);
+      return generateStatement(m.getBody(), isFunction);
     }
-
-    boolean isStatic = (m.getModifiers() & Modifier.STATIC) != 0;
-    boolean isSynchronized = (m.getModifiers() & Modifier.SYNCHRONIZED) != 0;
-    if (isStatic && isSynchronized) {
-      methodBody = String.format("{\n@synchronized([%s getClass]) {\n%s}\n}\n",
-          NameTable.getFullName(binding.getDeclaringClass()), methodBody);
-    } else if (isSynchronized) {
-      methodBody = String.format("{\n@synchronized(%s) {\n%s}\n}\n",
-          isFunction ? "this$" : "self", methodBody);
-    }
-
-    return methodBody;
   }
 
   private static int findConstructorInvocation(List<Statement> statements) {
