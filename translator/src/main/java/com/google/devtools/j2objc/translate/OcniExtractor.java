@@ -27,12 +27,17 @@ import com.google.devtools.j2objc.ast.EnumDeclaration;
 import com.google.devtools.j2objc.ast.MethodDeclaration;
 import com.google.devtools.j2objc.ast.NativeDeclaration;
 import com.google.devtools.j2objc.ast.NativeStatement;
+import com.google.devtools.j2objc.ast.SynchronizedStatement;
+import com.google.devtools.j2objc.ast.ThisExpression;
 import com.google.devtools.j2objc.ast.TreeNode;
+import com.google.devtools.j2objc.ast.TreeUtil;
 import com.google.devtools.j2objc.ast.TreeVisitor;
 import com.google.devtools.j2objc.ast.TypeDeclaration;
+import com.google.devtools.j2objc.ast.TypeLiteral;
 import com.google.devtools.j2objc.util.BindingUtil;
 import com.google.devtools.j2objc.util.ErrorUtil;
 
+import org.eclipse.jdt.core.dom.ITypeBinding;
 import org.eclipse.jdt.core.dom.Modifier;
 
 import java.util.List;
@@ -44,6 +49,7 @@ import java.util.regex.Pattern;
  * Extracts OCNI code blocks into NativeDeclaration and NativeStatement nodes.
  * Adds native fast enumeration support for Iterable types, when not already
  * defined.
+ * Adds synchronized blocks to methods with with the synchonized modifier.
  *
  * @author Keith Stanger
  */
@@ -98,15 +104,26 @@ public class OcniExtractor extends TreeVisitor {
 
   @Override
   public void endVisit(MethodDeclaration node) {
-    if (!Modifier.isNative(node.getModifiers())) {
-      return;
+    int modifiers = node.getModifiers();
+    if (Modifier.isNative(modifiers)) {
+      String nativeCode = extractNativeCode(node);
+      if (nativeCode != null) {
+        Block body = new Block();
+        body.getStatements().add(new NativeStatement(nativeCode));
+        node.setBody(body);
+        node.removeModifiers(Modifier.NATIVE);
+      }
     }
-    String nativeCode = extractNativeCode(node);
-    if (nativeCode != null) {
-      Block body = new Block();
-      body.getStatements().add(new NativeStatement(nativeCode));
-      node.setBody(body);
-      node.removeModifiers(Modifier.NATIVE);
+    if (Modifier.isSynchronized(modifiers)) {
+      ITypeBinding declaringClass = node.getMethodBinding().getDeclaringClass();
+      SynchronizedStatement syncStmt = new SynchronizedStatement(
+          Modifier.isStatic(modifiers) ? new TypeLiteral(declaringClass)
+          : new ThisExpression(declaringClass));
+      syncStmt.setBody(TreeUtil.remove(node.getBody()));
+      Block newBody = new Block();
+      newBody.getStatements().add(syncStmt);
+      node.setBody(newBody);
+      node.removeModifiers(Modifier.SYNCHRONIZED);
     }
   }
 

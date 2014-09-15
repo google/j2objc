@@ -18,7 +18,6 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 import com.google.devtools.j2objc.ast.AbstractTypeDeclaration;
 import com.google.devtools.j2objc.ast.AnnotationTypeDeclaration;
-import com.google.devtools.j2objc.ast.Block;
 import com.google.devtools.j2objc.ast.CompilationUnit;
 import com.google.devtools.j2objc.ast.EnumDeclaration;
 import com.google.devtools.j2objc.ast.Expression;
@@ -36,12 +35,9 @@ import com.google.devtools.j2objc.ast.SingleVariableDeclaration;
 import com.google.devtools.j2objc.ast.Statement;
 import com.google.devtools.j2objc.ast.SuperFieldAccess;
 import com.google.devtools.j2objc.ast.SuperMethodInvocation;
-import com.google.devtools.j2objc.ast.SynchronizedStatement;
 import com.google.devtools.j2objc.ast.ThisExpression;
 import com.google.devtools.j2objc.ast.TreeUtil;
 import com.google.devtools.j2objc.ast.TreeVisitor;
-import com.google.devtools.j2objc.ast.TypeLiteral;
-import com.google.devtools.j2objc.types.GeneratedMethodBinding;
 import com.google.devtools.j2objc.types.GeneratedVariableBinding;
 import com.google.devtools.j2objc.types.IOSMethodBinding;
 import com.google.devtools.j2objc.types.Types;
@@ -211,40 +207,9 @@ public class Functionizer extends TreeVisitor {
         IOSMethodBinding.newFunction(m, NameTable.makeFunctionName(m), paramTypes);
     MethodDeclaration function = new MethodDeclaration(newBinding);
     function.getParameters().addAll(params);
+    function.setModifiers(Modifier.PRIVATE | Modifier.STATIC);
 
-    if (BindingUtil.isNative(m)) {
-      // Add body to method, for forwarding function invocation.
-      method.setBody(new Block());
-      method.removeModifiers(Modifier.NATIVE);
-
-      // Make method binding non-native, now that functionBinding copied its modifiers.
-      GeneratedMethodBinding gennedBinding = new GeneratedMethodBinding(m);
-      newBinding.setModifiers(m.getModifiers() & ~Modifier.NATIVE);
-      method.setMethodBinding(gennedBinding);
-      m = gennedBinding;
-
-      // Set source positions, so function's native code can be extracted.
-      function.setSourceRange(method.getStartPosition(), method.getLength());
-    }
-
-    if (BindingUtil.isSynchronized(m)) {
-      SynchronizedStatement syncStmt = new SynchronizedStatement();
-      if (BindingUtil.isStatic(m)) {
-        syncStmt.setExpression(new TypeLiteral(declaringClass));
-      } else {
-        GeneratedVariableBinding selfParam = new GeneratedVariableBinding(NameTable.SELF_NAME, 0,
-            declaringClass, false, true, declaringClass, null);
-        SimpleName self = new SimpleName(selfParam);
-        syncStmt.setExpression(self);
-      }
-      TreeUtil.copyList(method.getBody().getStatements(), syncStmt.getBody().getStatements());
-      Block block = new Block();
-      block.getStatements().add(syncStmt);
-      function.setBody(block);
-      function.removeModifiers(Modifier.SYNCHRONIZED);
-    } else {
-      function.setBody(method.getBody().copy());
-    }
+    function.setBody(method.getBody().copy());
 
     if (BindingUtil.isStatic(m)) {
       // Add class initialization invocation, since this may be the first use of this class.

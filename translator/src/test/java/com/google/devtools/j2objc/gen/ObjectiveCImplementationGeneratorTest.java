@@ -513,7 +513,7 @@ public class ObjectiveCImplementationGeneratorTest extends GenerationTest {
         + "  public synchronized void foo() {} }",
         "Test", "Test.m");
     assertTranslation(translation, "- (void)foo {\n"
-        + "  @synchronized(self) {");
+        + "  @synchronized (self) {");
   }
 
   public void testStaticSynchronizedMethod() throws IOException {
@@ -522,7 +522,7 @@ public class ObjectiveCImplementationGeneratorTest extends GenerationTest {
         + "  public static synchronized void foo() {} }",
         "Test", "Test.m");
     assertTranslation(translation, "+ (void)foo {\n"
-        + "  @synchronized([Test getClass]) {");
+        + "  @synchronized ([IOSClass classWithClass:[Test class]]) {");
   }
 
   public void testNoGenMethodStubs() throws IOException {
@@ -711,7 +711,7 @@ public class ObjectiveCImplementationGeneratorTest extends GenerationTest {
     String translation = translateSourceFile(
         "class Test { public synchronized native void exit() /*-[ exit(0); ]-*/; }",
         "Test", "Test.m");
-    assertTranslation(translation, "@synchronized(self)");
+    assertTranslation(translation, "@synchronized (self)");
   }
 
   public void testMethodMetadata() throws IOException {

@@ -273,6 +273,7 @@ public class FunctionizerTest extends GenerationTest {
         + "private synchronized String str() { return toString(); }}",
         "A", "A.m");
     assertTranslation(translation, "@synchronized (self)");
+    assertOccurrences(translation, "@synchronized", 1);
     translation = translateSourceFile(
         "class A { void test() { str(); } "
         + "  private String str() { synchronized(this) { return toString(); }}}",
@@ -283,6 +284,7 @@ public class FunctionizerTest extends GenerationTest {
         + "  private static synchronized String str() { return \"abc\"; }}",
         "A", "A.m");
     assertTranslation(translation, "@synchronized ([IOSClass classWithClass:[A class]])");
+    assertOccurrences(translation, "@synchronized", 1);
     translation = translateSourceFile(
         "class A { void test() { str(); } "
         + "  private String str() { synchronized(this.getClass()) { return \"abc\"; }}}",

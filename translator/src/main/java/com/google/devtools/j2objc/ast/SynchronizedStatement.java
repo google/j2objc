@@ -39,8 +39,8 @@ public class SynchronizedStatement extends Statement {
     return Kind.SYNCHRONIZED_STATEMENT;
   }
 
-  public SynchronizedStatement() {
-    body.set(new Block());
+  public SynchronizedStatement(Expression expression) {
+    this.expression.set(expression);
   }
 
   public Expression getExpression() {
@@ -53,6 +53,10 @@ public class SynchronizedStatement extends Statement {
 
   public Block getBody() {
     return body.get();
+  }
+
+  public void setBody(Block newBody) {
+    body.set(newBody);
   }
 
   @Override
