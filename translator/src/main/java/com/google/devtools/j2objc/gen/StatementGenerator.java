@@ -1494,7 +1494,7 @@ public class StatementGenerator extends TreeVisitor {
 
   @Override
   public boolean visit(SynchronizedStatement node) {
-    buffer.append("@synchronized (");
+    buffer.append("@synchronized(");
     node.getExpression().accept(this);
     buffer.append(") ");
     node.getBody().accept(this);

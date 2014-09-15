@@ -272,29 +272,29 @@ public class FunctionizerTest extends GenerationTest {
         "class A { void test() { str(); } "
         + "private synchronized String str() { return toString(); }}",
         "A", "A.m");
-    assertTranslation(translation, "@synchronized (self)");
+    assertTranslation(translation, "@synchronized(self)");
     assertOccurrences(translation, "@synchronized", 1);
     translation = translateSourceFile(
         "class A { void test() { str(); } "
         + "  private String str() { synchronized(this) { return toString(); }}}",
         "A", "A.m");
-    assertTranslation(translation, "@synchronized (self)");
+    assertTranslation(translation, "@synchronized(self)");
     translation = translateSourceFile(
         "class A { void test() { str(); } "
         + "  private static synchronized String str() { return \"abc\"; }}",
         "A", "A.m");
-    assertTranslation(translation, "@synchronized ([IOSClass classWithClass:[A class]])");
+    assertTranslation(translation, "@synchronized([IOSClass classWithClass:[A class]])");
     assertOccurrences(translation, "@synchronized", 1);
     translation = translateSourceFile(
         "class A { void test() { str(); } "
         + "  private String str() { synchronized(this.getClass()) { return \"abc\"; }}}",
         "A", "A.m");
-    assertTranslation(translation, "@synchronized ([self getClass])");
+    assertTranslation(translation, "@synchronized([self getClass])");
     translation = translateSourceFile(
         "class A { void test() { str(); } "
         + "  private static String str() { synchronized(A.class) { return \"abc\"; }}}",
         "A", "A.m");
-    assertTranslation(translation, "@synchronized ([IOSClass classWithClass:[A class]])");
+    assertTranslation(translation, "@synchronized([IOSClass classWithClass:[A class]])");
   }
 
   public void testSetter() throws IOException {
