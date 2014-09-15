@@ -23,9 +23,10 @@ import com.google.devtools.j2objc.ast.EnumDeclaration;
 import com.google.devtools.j2objc.ast.Expression;
 import com.google.devtools.j2objc.ast.ExpressionStatement;
 import com.google.devtools.j2objc.ast.FieldAccess;
+import com.google.devtools.j2objc.ast.FunctionDeclaration;
+import com.google.devtools.j2objc.ast.FunctionInvocation;
 import com.google.devtools.j2objc.ast.MethodDeclaration;
 import com.google.devtools.j2objc.ast.MethodInvocation;
-import com.google.devtools.j2objc.ast.Name;
 import com.google.devtools.j2objc.ast.NormalAnnotation;
 import com.google.devtools.j2objc.ast.QualifiedName;
 import com.google.devtools.j2objc.ast.ReturnStatement;
@@ -39,13 +40,11 @@ import com.google.devtools.j2objc.ast.ThisExpression;
 import com.google.devtools.j2objc.ast.TreeUtil;
 import com.google.devtools.j2objc.ast.TreeVisitor;
 import com.google.devtools.j2objc.types.GeneratedVariableBinding;
-import com.google.devtools.j2objc.types.IOSMethodBinding;
 import com.google.devtools.j2objc.types.Types;
 import com.google.devtools.j2objc.util.BindingUtil;
 import com.google.devtools.j2objc.util.ErrorUtil;
 import com.google.devtools.j2objc.util.NameTable;
 
-import org.eclipse.jdt.core.dom.IBinding;
 import org.eclipse.jdt.core.dom.IMethodBinding;
 import org.eclipse.jdt.core.dom.ITypeBinding;
 import org.eclipse.jdt.core.dom.IVariableBinding;
@@ -156,9 +155,9 @@ public class Functionizer extends TreeVisitor {
       return;
     }
 
-    IOSMethodBinding functionBinding = IOSMethodBinding.newFunction(
-        binding, NameTable.makeFunctionName(binding), binding.getParameterTypes());
-    MethodInvocation functionInvocation = new MethodInvocation(functionBinding, null);
+    FunctionInvocation functionInvocation = new FunctionInvocation(
+        NameTable.makeFunctionName(binding), node.getTypeBinding(), binding.getReturnType(),
+        binding.getDeclaringClass());
     List<Expression> args = functionInvocation.getArguments();
     TreeUtil.moveList(node.getArguments(), args);
 
@@ -178,7 +177,7 @@ public class Functionizer extends TreeVisitor {
   public void endVisit(MethodDeclaration node) {
     if (functionizableMethods.contains(node.getMethodBinding())) {
       AbstractTypeDeclaration owningType = TreeUtil.getOwningType(node);
-      MethodDeclaration function = makeFunction(node);
+      FunctionDeclaration function = makeFunction(node);
       setFunctionCaller(node, function);
       owningType.getBodyDeclarations().add(function);
       ErrorUtil.functionizedMethod();
@@ -190,7 +189,7 @@ public class Functionizer extends TreeVisitor {
    * method, a "self" parameter is added to the beginning of the parameter list (that
    * way, variable functions can be supported).
    */
-  private MethodDeclaration makeFunction(MethodDeclaration method) {
+  private FunctionDeclaration makeFunction(MethodDeclaration method) {
     IMethodBinding m = method.getMethodBinding();
     ITypeBinding declaringClass = m.getDeclaringClass();
     ITypeBinding[] paramTypes = m.getParameterTypes();
@@ -203,9 +202,8 @@ public class Functionizer extends TreeVisitor {
           declaringClass, false, true, declaringClass, null);
       params.add(0, new SingleVariableDeclaration(var));
     }
-    IOSMethodBinding newBinding =
-        IOSMethodBinding.newFunction(m, NameTable.makeFunctionName(m), paramTypes);
-    MethodDeclaration function = new MethodDeclaration(newBinding);
+    FunctionDeclaration function = new FunctionDeclaration(
+        NameTable.makeFunctionName(m), m.getReturnType());
     function.getParameters().addAll(params);
     function.setModifiers(Modifier.PRIVATE | Modifier.STATIC);
 
@@ -214,24 +212,26 @@ public class Functionizer extends TreeVisitor {
     if (BindingUtil.isStatic(m)) {
       // Add class initialization invocation, since this may be the first use of this class.
       String initName = String.format("%s_init", NameTable.getFullName(declaringClass));
-      IOSMethodBinding initBinding =
-          IOSMethodBinding.newFunction(initName, Types.resolveJavaType("void"), declaringClass);
-      MethodInvocation initCall = new MethodInvocation(initBinding, null);
+      ITypeBinding voidType = Types.resolveJavaType("void");
+      FunctionInvocation initCall =
+          new FunctionInvocation(initName, voidType, voidType, declaringClass);
       function.getBody().getStatements().add(0, new ExpressionStatement(initCall));
+    } else {
+      FunctionConverter.convert(function);
     }
-    FunctionConverter.convert(function, newBinding);
     return function;
   }
 
   /**
    *  Replace method block statements with single statement that invokes function.
    */
-  private void setFunctionCaller(MethodDeclaration method, MethodDeclaration function) {
+  private void setFunctionCaller(MethodDeclaration method, FunctionDeclaration function) {
     IMethodBinding methodBinding = method.getMethodBinding();
-    IMethodBinding functionBinding = function.getMethodBinding();
+    ITypeBinding returnType = function.getReturnType().getTypeBinding();
     List<Statement> stmts = method.getBody().getStatements();
     stmts.clear();
-    MethodInvocation invocation = new MethodInvocation(functionBinding, null);
+    FunctionInvocation invocation = new FunctionInvocation(
+        function.getName(), returnType, returnType, methodBinding.getDeclaringClass());
     List<Expression> args = invocation.getArguments();
     if (!BindingUtil.isStatic(methodBinding)) {
       args.add(new ThisExpression(methodBinding.getDeclaringClass()));
@@ -239,7 +239,7 @@ public class Functionizer extends TreeVisitor {
     for (SingleVariableDeclaration param : method.getParameters()) {
       args.add(new SimpleName(param.getVariableBinding()));
     }
-    if (Types.isVoidType(functionBinding.getReturnType())) {
+    if (Types.isVoidType(returnType)) {
       stmts.add(new ExpressionStatement(invocation));
     } else {
       stmts.add(new ReturnStatement(invocation));
@@ -247,110 +247,55 @@ public class Functionizer extends TreeVisitor {
   }
 
   /**
-   *  Check if binding is to an instance method or field in the same class as the current method.
-   */
-  private static boolean sameClassMember(ITypeBinding declaringClass, ITypeBinding enclosingType) {
-    if (declaringClass == null) {
-      return false;
-    }
-    if (enclosingType.isEqualTo(declaringClass)) {
-      return true;
-    }
-    return enclosingType.getTypeDeclaration().isEqualTo(declaringClass.getTypeDeclaration());
-  }
-
-  /**
    * Convert references to "this" in the function to a "self" parameter.
    */
   private static class FunctionConverter extends TreeVisitor {
-    private final IMethodBinding binding;
+
     private final IVariableBinding selfParam;
 
-    static void convert(MethodDeclaration function, IMethodBinding binding) {
-      if (!BindingUtil.isStatic(binding)) {
-        IVariableBinding selfParam = function.getParameters().get(0).getVariableBinding();
-        function.accept(new FunctionConverter(binding, selfParam));
-      }
+    static void convert(FunctionDeclaration function) {
+      IVariableBinding selfParam = function.getParameters().get(0).getVariableBinding();
+      function.accept(new FunctionConverter(selfParam));
     }
 
-    private FunctionConverter(IMethodBinding binding, IVariableBinding selfParam) {
-      this.binding = binding;
+    private FunctionConverter(IVariableBinding selfParam) {
       this.selfParam = selfParam;
     }
 
     @Override
-    public void endVisit(FieldAccess node) {
-      Expression receiver = node.getExpression();
-      SimpleName selfNode = new SimpleName(selfParam);
-      if (receiver == null || receiver instanceof ThisExpression) {
-        // Change field expression to this$.
-        node.setExpression(selfNode);
-      } else {
-        IVariableBinding var = node.getVariableBinding();
-        if (isField(receiver) && receiver instanceof SimpleName
-            && !sameClassMember(var.getDeclaringClass(), binding.getDeclaringClass())) {
-          // Change outer field expression to this$->expression.
-          node.setExpression(new QualifiedName(((SimpleName) receiver).getBinding(), selfNode));
-        }
-      }
+    public boolean visit(FieldAccess node) {
+      node.getExpression().accept(this);
+      return false;
     }
 
     @Override
     public boolean visit(QualifiedName node) {
-      Name qual = node.getQualifier();
-      IBinding qualBinding = qual.getBinding();
-      if (qualBinding instanceof IVariableBinding && !BindingUtil.isStatic(qualBinding)) {
-        IVariableBinding var = (IVariableBinding) qualBinding;
-        if (var.isField()) {
-          if (!BindingUtil.isStatic(binding)) {
-            FieldAccess qualFieldAccess = new FieldAccess(var, new SimpleName(selfParam));
-            FieldAccess fieldAccess =
-                new FieldAccess((IVariableBinding) node.getBinding(), qualFieldAccess);
-            node.replaceWith(fieldAccess);
-          }
-        }
-      }
-      return true;
+      node.getQualifier().accept(this);
+      return false;
     }
 
     @Override
     public void endVisit(SimpleName node) {
-      IBinding binding = node.getBinding();
-      if (binding instanceof IVariableBinding && !BindingUtil.isStatic(binding)
-          && !(node.getParent() instanceof FieldAccess)
-          && !(node.getParent() instanceof SuperFieldAccess)
-          && !(node.getParent() instanceof QualifiedName)) {
-        IVariableBinding var = (IVariableBinding) binding;
-        if (!var.isField() || BindingUtil.isConstant(var)) {
-          return;
-        }
+      IVariableBinding var = TreeUtil.getVariableBinding(node);
+      if (var != null && var.isField()) {
         // Convert name to self->name.
-        SimpleName qualifier = new SimpleName(selfParam);
-        QualifiedName fqn = new QualifiedName(binding, qualifier);
-        node.replaceWith(fqn);
+        node.replaceWith(new QualifiedName(var, new SimpleName(selfParam)));
       }
     }
 
     @Override
-    public void endVisit(SuperFieldAccess node) {
+    public boolean visit(SuperFieldAccess node) {
       // Change super.field expression to self.field.
       SimpleName qualifier = new SimpleName(selfParam);
       FieldAccess newAccess = new FieldAccess(node.getVariableBinding(), qualifier);
       node.replaceWith(newAccess);
+      return false;
     }
 
     @Override
     public void endVisit(ThisExpression node) {
-      ITypeBinding declaringClass = binding.getDeclaringClass();
-      GeneratedVariableBinding selfParam = new GeneratedVariableBinding(NameTable.SELF_NAME, 0,
-          declaringClass, false, true, declaringClass, null);
       SimpleName self = new SimpleName(selfParam);
       node.replaceWith(self);
-    }
-
-    private boolean isField(Expression receiver) {
-      IVariableBinding variableBinding = TreeUtil.getVariableBinding(receiver);
-      return variableBinding != null && variableBinding.isField();
     }
   }
 }

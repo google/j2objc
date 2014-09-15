@@ -30,6 +30,7 @@ import com.google.devtools.j2objc.ast.BodyDeclaration;
 import com.google.devtools.j2objc.ast.CompilationUnit;
 import com.google.devtools.j2objc.ast.EnumConstantDeclaration;
 import com.google.devtools.j2objc.ast.EnumDeclaration;
+import com.google.devtools.j2objc.ast.FunctionDeclaration;
 import com.google.devtools.j2objc.ast.MethodDeclaration;
 import com.google.devtools.j2objc.ast.NativeDeclaration;
 import com.google.devtools.j2objc.ast.TreeUtil;
@@ -366,6 +367,11 @@ public class ObjectiveCHeaderGenerator extends ObjectiveCSourceFileGenerator {
         printf("J2OBJC_STATIC_FIELD_SETTER(%s, %s, %s)\n", className, name, objcType);
       }
     }
+  }
+
+  @Override
+  protected void printFunction(FunctionDeclaration function) {
+    // Currently all function declarations are private.
   }
 
   @Override

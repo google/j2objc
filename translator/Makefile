@@ -93,6 +93,7 @@ JAVA_SOURCES = \
 	ast/FieldAccess.java \
 	ast/FieldDeclaration.java \
 	ast/ForStatement.java \
+	ast/FunctionDeclaration.java \
 	ast/FunctionInvocation.java \
 	ast/IfStatement.java \
 	ast/InfixExpression.java \

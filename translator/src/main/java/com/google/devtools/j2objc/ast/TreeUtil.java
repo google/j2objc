@@ -168,6 +168,11 @@ public class TreeUtil {
     return Lists.newArrayList(getMethodDeclarations(node));
   }
 
+  public static Iterable<FunctionDeclaration> getFunctionDeclarations(
+      AbstractTypeDeclaration node) {
+    return Iterables.filter(node.getBodyDeclarations(), FunctionDeclaration.class);
+  }
+
   public static List<BodyDeclaration> getBodyDeclarations(TreeNode node) {
     if (node instanceof AbstractTypeDeclaration) {
       return ((AbstractTypeDeclaration) node).getBodyDeclarations();
