@@ -16,8 +16,8 @@ package com.google.devtools.j2objc.translate;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
-import com.google.devtools.j2objc.ast.AbstractTypeDeclaration;
 import com.google.devtools.j2objc.ast.AnnotationTypeDeclaration;
+import com.google.devtools.j2objc.ast.BodyDeclaration;
 import com.google.devtools.j2objc.ast.CompilationUnit;
 import com.google.devtools.j2objc.ast.EnumDeclaration;
 import com.google.devtools.j2objc.ast.Expression;
@@ -176,10 +176,12 @@ public class Functionizer extends TreeVisitor {
   @Override
   public void endVisit(MethodDeclaration node) {
     if (functionizableMethods.contains(node.getMethodBinding())) {
-      AbstractTypeDeclaration owningType = TreeUtil.getOwningType(node);
       FunctionDeclaration function = makeFunction(node);
       setFunctionCaller(node, function);
-      owningType.getBodyDeclarations().add(function);
+      List<BodyDeclaration> declarationList = TreeUtil.getBodyDeclarations(node.getParent());
+      int index = declarationList.indexOf(node);
+      assert index != -1;
+      declarationList.add(index + 1, function);
       ErrorUtil.functionizedMethod();
     }
   }
