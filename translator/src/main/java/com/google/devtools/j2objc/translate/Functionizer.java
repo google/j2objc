@@ -117,8 +117,8 @@ public class Functionizer extends TreeVisitor {
     IMethodBinding m = node.getMethodBinding();
 
     // Never functionize these types of methods.
-    if (BindingUtil.isFunction(m) || BindingUtil.isAbstract(m) || BindingUtil.isSynthetic(m)
-        || m.isAnnotationMember() || m.isConstructor() || BindingUtil.isDestructor(m)) {
+    if (BindingUtil.isAbstract(m) || BindingUtil.isSynthetic(m) || m.isAnnotationMember()
+        || m.isConstructor() || BindingUtil.isDestructor(m)) {
       return false;
     }
 

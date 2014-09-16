@@ -16,7 +16,6 @@ package com.google.devtools.j2objc.util;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
-import com.google.devtools.j2objc.types.IOSMethodBinding;
 import com.google.j2objc.annotations.Weak;
 import com.google.j2objc.annotations.WeakOuter;
 
@@ -358,13 +357,6 @@ public final class BindingUtil {
       }
     });
     return valuePairs;
-  }
-
-  /**
-   * Returns true if method is a C function.
-   */
-  public static boolean isFunction(IMethodBinding m) {
-    return m instanceof IOSMethodBinding && IOSMethodBinding.getIOSMethod(m).isFunction();
   }
 
   /**

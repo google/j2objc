@@ -941,37 +941,17 @@ public class StatementGenerator extends TreeVisitor {
         && binding.getDeclaringClass().equals(Types.getIOSClass())) {
       printIsAssignableFromExpression(node);
     } else {
-      IOSMethod iosMethod = IOSMethodBinding.getIOSMethod(binding);
       boolean castPrinted = maybePrintCast(node, getActualReturnType(binding, receiverType));
-      if (iosMethod != null && iosMethod.isFunction()) {
-        printFunctionInvocation(iosMethod, node.getArguments());
-      } else {
-        if (returnValueNeedsIntCast(node)) {
-          buffer.append("((int) ");
-          castPrinted = true;
-        }
-        printMethodInvocation(binding, methodName, receiver, node.getArguments());
+      if (returnValueNeedsIntCast(node)) {
+        buffer.append("((int) ");
+        castPrinted = true;
       }
+      printMethodInvocation(binding, methodName, receiver, node.getArguments());
       if (castPrinted) {
         buffer.append(')');
       }
     }
     return false;
-  }
-
-  private void printFunctionInvocation(IOSMethod iosMethod, List<Expression> args) {
-    buffer.append(iosMethod.getName());
-    buffer.append('(');
-    boolean isFirst = true;
-    for (Expression arg : args) {
-      if (isFirst) {
-        isFirst = false;
-      } else {
-        buffer.append(", ");
-      }
-      arg.accept(this);
-    }
-    buffer.append(')');
   }
 
   private void printMethodInvocation(

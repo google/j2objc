@@ -18,7 +18,6 @@ package com.google.devtools.j2objc.types;
 
 import org.eclipse.jdt.core.dom.IMethodBinding;
 import org.eclipse.jdt.core.dom.ITypeBinding;
-import org.eclipse.jdt.core.dom.Modifier;
 
 /**
  * IOSMethodBinding: synthetic binding for an iOS method.
@@ -60,34 +59,6 @@ public class IOSMethodBinding extends GeneratedMethodBinding {
       IOSMethod iosMethod, int modifiers, ITypeBinding returnType, ITypeBinding declaringClass) {
     return new IOSMethodBinding(
         iosMethod, null, modifiers, returnType, null, declaringClass, null, false, true);
-  }
-
-  public static IOSMethodBinding newFunction(
-      String name, ITypeBinding returnType, ITypeBinding declaringClass,
-      ITypeBinding... paramTypes) {
-    return newFunction(name, Modifier.STATIC, returnType, declaringClass, false, paramTypes);
-  }
-
-  public static IOSMethodBinding newFunction(
-      String name, int modifiers, ITypeBinding returnType, ITypeBinding declaringClass,
-      boolean varargs, ITypeBinding... paramTypes) {
-    IOSMethodBinding binding = new IOSMethodBinding(IOSMethod.newFunction(name, varargs),
-        null, modifiers, returnType, null, declaringClass, null, varargs, true);
-    for (ITypeBinding paramType : paramTypes) {
-      binding.addParameter(paramType);
-    }
-    return binding;
-  }
-
-  public static IOSMethodBinding newFunction(IMethodBinding m, String functionName,
-      ITypeBinding[] paramTypes) {
-    IOSMethodBinding binding = new IOSMethodBinding(
-        IOSMethod.newFunction(functionName, m.isVarargs()), null, m.getModifiers(),
-        m.getReturnType(), null, m.getDeclaringClass(), m.getExceptionTypes(), m.isVarargs(), true);
-    for (ITypeBinding paramType : paramTypes) {
-      binding.addParameter(paramType);
-    }
-    return binding;
   }
 
   public static IOSMethod getIOSMethod(IMethodBinding binding) {
