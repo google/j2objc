@@ -43,7 +43,6 @@ import com.google.devtools.j2objc.types.Types;
 import com.google.devtools.j2objc.util.BindingUtil;
 import com.google.devtools.j2objc.util.NameTable;
 
-import org.eclipse.jdt.core.dom.IMethodBinding;
 import org.eclipse.jdt.core.dom.ITypeBinding;
 import org.eclipse.jdt.core.dom.IVariableBinding;
 import org.eclipse.jdt.core.dom.Modifier;
@@ -411,10 +410,6 @@ public class ObjectiveCHeaderGenerator extends ObjectiveCSourceFileGenerator {
 
   @Override
   protected void printMethod(MethodDeclaration m) {
-    IMethodBinding binding = m.getMethodBinding();
-    if (BindingUtil.isFunction(binding)) {
-      return;  // All function declarations are private.
-    }
     if (!Options.hidePrivateMembers() || !isPrivateOrSynthetic(m.getModifiers())) {
       super.printMethod(m);
     }

@@ -477,8 +477,6 @@ public class ObjectiveCImplementationGenerator extends ObjectiveCSourceFileGener
   }
 
   private String generateMethodBody(MethodDeclaration m) {
-    IMethodBinding binding = m.getMethodBinding();
-    boolean isFunction = BindingUtil.isFunction(binding);
     if (Modifier.isNative(m.getModifiers())) {
       if (Options.generateNativeStubs()) {
         return generateNativeStub(m);
@@ -495,7 +493,7 @@ public class ObjectiveCImplementationGenerator extends ObjectiveCSourceFileGener
       return body + "}";
     } else {
       // generate a normal method body
-      return generateStatement(m.getBody(), isFunction);
+      return generateStatement(m.getBody(), /* isFunction */ false);
     }
   }
 
