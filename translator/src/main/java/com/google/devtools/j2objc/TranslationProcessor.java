@@ -23,6 +23,7 @@ import com.google.devtools.j2objc.gen.ObjectiveCSegmentedHeaderGenerator;
 import com.google.devtools.j2objc.translate.AnonymousClassConverter;
 import com.google.devtools.j2objc.translate.ArrayRewriter;
 import com.google.devtools.j2objc.translate.Autoboxer;
+import com.google.devtools.j2objc.translate.CastResolver;
 import com.google.devtools.j2objc.translate.ComplexExpressionExtractor;
 import com.google.devtools.j2objc.translate.ConstantBranchPruner;
 import com.google.devtools.j2objc.translate.CopyAllFieldsWriter;
@@ -238,6 +239,9 @@ class TranslationProcessor extends FileProcessor {
       new Functionizer().run(unit);
       ticker.tick("Functionizer");
     }
+
+    new CastResolver().run(unit);
+    ticker.tick("CastResolver");
 
     Map<String, String> methodMappings = Options.getMethodMappings();
     if (methodMappings.isEmpty()) {
