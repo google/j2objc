@@ -19,7 +19,6 @@ package com.google.devtools.j2objc.gen;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.CharMatcher;
 import com.google.common.collect.Lists;
-import com.google.common.collect.Maps;
 import com.google.devtools.j2objc.Options;
 import com.google.devtools.j2objc.ast.AnonymousClassDeclaration;
 import com.google.devtools.j2objc.ast.ArrayAccess;
@@ -104,10 +103,8 @@ import org.eclipse.jdt.core.dom.IMethodBinding;
 import org.eclipse.jdt.core.dom.ITypeBinding;
 import org.eclipse.jdt.core.dom.IVariableBinding;
 
-import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 import java.util.regex.Pattern;
 
 /**
@@ -121,9 +118,6 @@ public class StatementGenerator extends TreeVisitor {
   private final SourceBuilder buffer;
   private final boolean asFunction;
   private final boolean useReferenceCounting;
-  // The boolean value indicates whether the expression should be cast when the
-  // resolved type of the expression is known to be "id".
-  private final Map<Expression, Boolean> needsCastNodes = Maps.newHashMap();
 
   private static final Pattern TRIGRAPH_REGEX = Pattern.compile("@\".*\\?\\?[=/'()!<>-].*\"");
 
@@ -422,50 +416,10 @@ public class StatementGenerator extends TreeVisitor {
   @Override
   public boolean visit(CastExpression node) {
     ITypeBinding type = node.getType().getTypeBinding();
-    ITypeBinding exprType = node.getExpression().getTypeBinding();
-    if (Types.isFloatingPointType(exprType)) {
-      if (Types.isLongType(type)) {
-        buffer.append("J2ObjCFpToLong(");
-        node.getExpression().accept(this);
-        buffer.append(')');
-        return false;
-      } else if (type.isEqualTo(Types.resolveJavaType("char"))) {
-        buffer.append("J2ObjCFpToUnichar(");
-        node.getExpression().accept(this);
-        buffer.append(')');
-        return false;
-      } else if (Types.isIntegralType(type)) {
-        if (!type.isEqualTo(Types.resolveJavaType("int"))) {
-          buffer.append('(');
-          buffer.append(NameTable.getSpecificObjCType(type));
-          buffer.append(") ");
-        }
-        buffer.append("J2ObjCFpToInt(");
-        node.getExpression().accept(this);
-        buffer.append(')');
-        return false;
-      }
-      // else fall-through.
-    }
     buffer.append("(");
     buffer.append(NameTable.getSpecificObjCType(type));
     buffer.append(") ");
-    if (type.isInterface() && !type.isAnnotation()) {
-      buffer.append("check_protocol_cast(");
-      node.getExpression().accept(this);
-      buffer.append(", @protocol(");
-      buffer.append(NameTable.getFullName(type));
-      buffer.append("))");
-    } else if (type.isClass() || type.isArray() || type.isAnnotation()) {
-      buffer.append("check_class_cast(");
-      node.getExpression().accept(this);
-      buffer.append(", [");
-      buffer.append(NameTable.getFullName(type));
-      buffer.append(" class])");
-    } else {
-      // Cast type check not needed for primitive and enum types.
-      node.getExpression().accept(this);
-    }
+    node.getExpression().accept(this);
     return false;
   }
 
@@ -492,7 +446,6 @@ public class StatementGenerator extends TreeVisitor {
   @Override
   public boolean visit(ClassInstanceCreation node) {
     ITypeBinding type = node.getType().getTypeBinding();
-    boolean castPrinted = maybePrintCastFromId(node);
     boolean addAutorelease = useReferenceCounting && !node.hasRetainedResult();
     buffer.append(addAutorelease ? "[[[" : "[[");
     buffer.append(NameTable.getFullName(type));
@@ -503,9 +456,6 @@ public class StatementGenerator extends TreeVisitor {
     buffer.append(']');
     if (addAutorelease) {
       buffer.append(" autorelease]");
-    }
-    if (castPrinted) {
-      buffer.append(")");
     }
     return false;
   }
@@ -619,7 +569,6 @@ public class StatementGenerator extends TreeVisitor {
   @Override
   public boolean visit(FieldAccess node) {
     Expression expr = node.getExpression();
-    needsCastNodes.put(expr, true);
     // self->static_var is invalid Objective-C.
     if (!(expr instanceof ThisExpression && BindingUtil.isStatic(node.getVariableBinding()))) {
       expr.accept(this);
@@ -657,7 +606,6 @@ public class StatementGenerator extends TreeVisitor {
 
   @Override
   public boolean visit(FunctionInvocation node) {
-    boolean castPrinted = maybePrintCast(node, Types.mapType(node.getDeclaredReturnType()));
     buffer.append(node.getName());
     buffer.append('(');
     for (Iterator<Expression> iter = node.getArguments().iterator(); iter.hasNext(); ) {
@@ -667,9 +615,6 @@ public class StatementGenerator extends TreeVisitor {
       }
     }
     buffer.append(')');
-    if (castPrinted) {
-      buffer.append(')');
-    }
     return false;
   }
 
@@ -934,14 +879,12 @@ public class StatementGenerator extends TreeVisitor {
 
     // Object receiving the message, or null if it's a method in this class.
     Expression receiver = node.getExpression();
-    ITypeBinding receiverType = receiver != null ? receiver.getTypeBinding()
-        : binding.getDeclaringClass();
 
     if (methodName.equals("isAssignableFrom")
         && binding.getDeclaringClass().equals(Types.getIOSClass())) {
       printIsAssignableFromExpression(node);
     } else {
-      boolean castPrinted = maybePrintCast(node, getActualReturnType(binding, receiverType));
+      boolean castPrinted = false;
       if (returnValueNeedsIntCast(node)) {
         buffer.append("((int) ");
         castPrinted = true;
@@ -961,7 +904,6 @@ public class StatementGenerator extends TreeVisitor {
     if (BindingUtil.isStatic(binding)) {
       buffer.append(NameTable.getFullName(binding.getDeclaringClass()));
     } else if (receiver != null) {
-      needsCastNodes.put(receiver, true);
       receiver.accept(this);
     } else {
       buffer.append("self");
@@ -977,60 +919,6 @@ public class StatementGenerator extends TreeVisitor {
     buffer.append(']');
   }
 
-  private static ITypeBinding getActualReturnType(
-      IMethodBinding method, ITypeBinding receiverType) {
-    IMethodBinding actualDeclaration =
-        getFirstDeclaration(getObjCMethodSignature(method), receiverType);
-    if (actualDeclaration == null) {
-      actualDeclaration = method.getMethodDeclaration();
-    }
-    ITypeBinding returnType = actualDeclaration.getReturnType();
-    if (returnType.isTypeVariable()) {
-      return Types.resolveIOSType("id");
-    }
-    return Types.mapType(returnType.getErasure());
-  }
-
-  /**
-   * Finds the declaration for a given method and receiver in the same way that
-   * the ObjC compiler will search for a declaration.
-   */
-  private static IMethodBinding getFirstDeclaration(String methodSig, ITypeBinding type) {
-    if (type == null) {
-      return null;
-    }
-    type = type.getTypeDeclaration();
-    for (IMethodBinding declaredMethod : type.getDeclaredMethods()) {
-      if (methodSig.equals(getObjCMethodSignature(declaredMethod))) {
-        return declaredMethod;
-      }
-    }
-    List<ITypeBinding> supertypes = Lists.newArrayList();
-    supertypes.addAll(Arrays.asList(type.getInterfaces()));
-    supertypes.add(type.isTypeVariable() ? 0 : supertypes.size(), type.getSuperclass());
-    for (ITypeBinding supertype : supertypes) {
-      IMethodBinding result = getFirstDeclaration(methodSig, supertype);
-      if (result != null) {
-        return result;
-      }
-    }
-    return null;
-  }
-
-  private static String getObjCMethodSignature(IMethodBinding method) {
-    StringBuilder sb = new StringBuilder(method.getName());
-    boolean first = true;
-    for (ITypeBinding paramType : method.getParameterTypes()) {
-      String keyword = NameTable.parameterKeyword(paramType);
-      if (first) {
-        first = false;
-        keyword = NameTable.capitalize(keyword);
-      }
-      sb.append(keyword + ":");
-    }
-    return sb.toString();
-  }
-
   /**
    * Class.isAssignableFrom() can test protocols as well as classes, so which
    * case needs to be detected and generated separately.
@@ -1044,34 +932,6 @@ public class StatementGenerator extends TreeVisitor {
     buffer.append(" isAssignableFrom:");
     secondExpression.accept(this);
     buffer.append(']');
-  }
-
-  private boolean maybePrintCastFromId(Expression e) {
-    return maybePrintCast(e, Types.resolveIOSType("id"));
-  }
-
-  private boolean maybePrintCast(Expression e, ITypeBinding actualType) {
-    Boolean forceCastOfId = needsCastNodes.get(e);
-    if (forceCastOfId == null) {
-      return false;
-    }
-    ITypeBinding expectedType = Types.mapType(e.getTypeBinding().getTypeDeclaration());
-    if (actualType.isAssignmentCompatible(expectedType)) {
-      return false;
-    }
-    if (actualType == Types.resolveIOSType("id") && !forceCastOfId) {
-      return false;
-    }
-    ITypeBinding type = e.getTypeBinding();
-    if (type == null || type.isPrimitive() || Types.isVoidType(type)) {
-      return false;
-    }
-    String typeName = NameTable.getSpecificObjCType(type);
-    if (typeName.equals(NameTable.ID_TYPE)) {
-      return false;
-    }
-    buffer.append("((" + typeName + ") ");
-    return true;
   }
 
   @Override
@@ -1144,7 +1004,6 @@ public class StatementGenerator extends TreeVisitor {
       return false;
     }
     Name qualifier = node.getQualifier();
-    needsCastNodes.put(qualifier, true);
     qualifier.accept(this);
     buffer.append("->");
     node.getName().accept(this);
@@ -1179,7 +1038,6 @@ public class StatementGenerator extends TreeVisitor {
       if (shouldRetainResult) {
         buffer.append("[");
       }
-      needsCastNodes.put(expr, false);
       expr.accept(this);
       if (shouldRetainResult) {
         buffer.append(" retain]");
@@ -1202,14 +1060,7 @@ public class StatementGenerator extends TreeVisitor {
       } else if (BindingUtil.isStatic(var)) {
         buffer.append(NameTable.getStaticVarQualifiedName(var));
       } else if (var.isField()) {
-        boolean castPrinted = false;
-        if (var.getVariableDeclaration().getType().isTypeVariable()) {
-          castPrinted = maybePrintCastFromId(node);
-        }
         buffer.append(NameTable.javaFieldToObjC(NameTable.getName(var)));
-        if (castPrinted) {
-          buffer.append(')');
-        }
       } else {
         buffer.append(NameTable.getName(var));
       }
@@ -1332,15 +1183,12 @@ public class StatementGenerator extends TreeVisitor {
           BindingUtil.toTypeBinding(qualifier.getBinding()).getSuperclass());
       String selectorName = NameTable.getMethodSelector(binding);
       ITypeBinding returnType = binding.getReturnType();
-      boolean castPrinted = false;
       String closeImpCast = "";
       if (returnType.isPrimitive()) {
         // We must cast the IMP to have the correct return type.
         buffer.append(String.format("((%s (*)(id, SEL, ...))",
             NameTable.primitiveTypeToObjC(returnType.getName())));
         closeImpCast = ")";
-      } else {
-        castPrinted = maybePrintCastFromId(node);
       }
       buffer.append(String.format(
           "[%s instanceMethodForSelector:@selector(%s)]%s(", typeName, selectorName, closeImpCast));
@@ -1351,12 +1199,7 @@ public class StatementGenerator extends TreeVisitor {
         arg.accept(this);
       }
       buffer.append(")");
-      if (castPrinted) {
-        buffer.append(")");
-      }
     } else {
-      boolean castPrinted = maybePrintCast(node, getActualReturnType(binding,
-          TreeUtil.getOwningType(node).getTypeBinding().getSuperclass()));
       if (BindingUtil.isStatic(binding)) {
         buffer.append("[[super class] ");
       } else {
@@ -1365,9 +1208,6 @@ public class StatementGenerator extends TreeVisitor {
       buffer.append(NameTable.getName(binding));
       printArguments(binding, node.getArguments());
       buffer.append(']');
-      if (castPrinted) {
-        buffer.append(')');
-      }
     }
     return false;
   }
@@ -1602,7 +1442,6 @@ public class StatementGenerator extends TreeVisitor {
     Expression initializer = node.getInitializer();
     if (initializer != null) {
       buffer.append(" = ");
-      needsCastNodes.put(initializer, false);
       initializer.accept(this);
     }
     return false;
