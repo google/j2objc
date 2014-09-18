@@ -19,7 +19,6 @@ import com.google.common.collect.Sets;
 import com.google.devtools.j2objc.ast.AnnotationTypeDeclaration;
 import com.google.devtools.j2objc.ast.BodyDeclaration;
 import com.google.devtools.j2objc.ast.CompilationUnit;
-import com.google.devtools.j2objc.ast.EnumDeclaration;
 import com.google.devtools.j2objc.ast.Expression;
 import com.google.devtools.j2objc.ast.ExpressionStatement;
 import com.google.devtools.j2objc.ast.FieldAccess;
@@ -95,11 +94,6 @@ public class Functionizer extends TreeVisitor {
 
   @Override
   public boolean visit(AnnotationTypeDeclaration node) {
-    return false;
-  }
-
-  @Override
-  public boolean visit(EnumDeclaration node) {
     return false;
   }
 
