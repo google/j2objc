@@ -342,4 +342,13 @@ public class FunctionizerTest extends GenerationTest {
         "Test", "Test.m");
     assertNotInTranslation(translation, "Test_A_foo");
   }
+
+  public void testPrivateMethodCalledFromAnonymousEnum() throws IOException {
+    String translation = translateSourceFile(
+        "enum Test { A { void bar() { foo(); } }; private static void foo() {} }",
+        "Test", "Test.m");
+    assertTranslatedLines(translation, "- (void)bar {", "TestEnum_foo_();");
+    assertTranslation(translation, "static void TestEnum_foo_();");
+    assertTranslation(translation, "void TestEnum_foo_() {");
+  }
 }
