@@ -36,18 +36,6 @@
 
 @implementation JavaLangReflectField
 
-typedef union {
-  void *asId;
-  char asChar;
-  unichar asUnichar;
-  short asShort;
-  int asInt;
-  long long asLong;
-  float asFloat;
-  double asDouble;
-  BOOL asBOOL;
-} JavaResult;
-
 - (instancetype)initWithIvar:(Ivar)ivar
                    withClass:(IOSClass *)aClass
                 withMetadata:(JavaFieldMetadata *)metadata {
@@ -152,49 +140,49 @@ static void SetWithRawValue(
   return [fieldType __boxValue:&rawValue];
 }
 
-- (BOOL)getBooleanWithId:(id)object {
+- (jboolean)getBooleanWithId:(id)object {
   J2ObjcRawValue rawValue;
   ReadRawValue(&rawValue, self, object, [IOSClass booleanClass]);
   return rawValue.asBOOL;
 }
 
-- (char)getByteWithId:(id)object {
+- (jbyte)getByteWithId:(id)object {
   J2ObjcRawValue rawValue;
   ReadRawValue(&rawValue, self, object, [IOSClass byteClass]);
   return rawValue.asChar;
 }
 
-- (unichar)getCharWithId:(id)object {
+- (jchar)getCharWithId:(id)object {
   J2ObjcRawValue rawValue;
   ReadRawValue(&rawValue, self, object, [IOSClass charClass]);
   return rawValue.asUnichar;
 }
 
-- (double)getDoubleWithId:(id)object {
+- (jdouble)getDoubleWithId:(id)object {
   J2ObjcRawValue rawValue;
   ReadRawValue(&rawValue, self, object, [IOSClass doubleClass]);
   return rawValue.asDouble;
 }
 
-- (float)getFloatWithId:(id)object {
+- (jfloat)getFloatWithId:(id)object {
   J2ObjcRawValue rawValue;
   ReadRawValue(&rawValue, self, object, [IOSClass floatClass]);
   return rawValue.asFloat;
 }
 
-- (int)getIntWithId:(id)object {
+- (jint)getIntWithId:(id)object {
   J2ObjcRawValue rawValue;
   ReadRawValue(&rawValue, self, object, [IOSClass intClass]);
   return rawValue.asInt;
 }
 
-- (long long)getLongWithId:(id)object {
+- (jlong)getLongWithId:(id)object {
   J2ObjcRawValue rawValue;
   ReadRawValue(&rawValue, self, object, [IOSClass longClass]);
   return rawValue.asLong;
 }
 
-- (short)getShortWithId:(id)object {
+- (jshort)getShortWithId:(id)object {
   J2ObjcRawValue rawValue;
   ReadRawValue(&rawValue, self, object, [IOSClass shortClass]);
   return rawValue.asShort;
@@ -215,42 +203,42 @@ static void SetWithRawValue(
   }
 }
 
-- (void)setBooleanWithId:(id)object withBoolean:(BOOL)value {
+- (void)setBooleanWithId:(id)object withBoolean:(jboolean)value {
   J2ObjcRawValue rawValue = { .asBOOL = value };
   SetWithRawValue(&rawValue, self, object, [IOSClass booleanClass]);
 }
 
-- (void)setByteWithId:(id)object withByte:(char)value {
+- (void)setByteWithId:(id)object withByte:(jbyte)value {
   J2ObjcRawValue rawValue = { .asChar = value };
   SetWithRawValue(&rawValue, self, object, [IOSClass byteClass]);
 }
 
-- (void)setCharWithId:(id)object withChar:(unichar)value {
+- (void)setCharWithId:(id)object withChar:(jchar)value {
   J2ObjcRawValue rawValue = { .asUnichar = value };
   SetWithRawValue(&rawValue, self, object, [IOSClass charClass]);
 }
 
-- (void)setDoubleWithId:(id)object withDouble:(double)value {
+- (void)setDoubleWithId:(id)object withDouble:(jdouble)value {
   J2ObjcRawValue rawValue = { .asDouble = value };
   SetWithRawValue(&rawValue, self, object, [IOSClass doubleClass]);
 }
 
-- (void)setFloatWithId:(id)object withFloat:(float)value {
+- (void)setFloatWithId:(id)object withFloat:(jfloat)value {
   J2ObjcRawValue rawValue = { .asFloat = value };
   SetWithRawValue(&rawValue, self, object, [IOSClass floatClass]);
 }
 
-- (void)setIntWithId:(id)object withInt:(int)value {
+- (void)setIntWithId:(id)object withInt:(jint)value {
   J2ObjcRawValue rawValue = { .asInt = value };
   SetWithRawValue(&rawValue, self, object, [IOSClass intClass]);
 }
 
-- (void)setLongWithId:(id)object withLong:(long long)value {
+- (void)setLongWithId:(id)object withLong:(jlong)value {
   J2ObjcRawValue rawValue = { .asLong = value };
   SetWithRawValue(&rawValue, self, object, [IOSClass longClass]);
 }
 
-- (void)setShortWithId:(id)object withShort:(short)value {
+- (void)setShortWithId:(id)object withShort:(jshort)value {
   J2ObjcRawValue rawValue = { .asShort = value };
   SetWithRawValue(&rawValue, self, object, [IOSClass shortClass]);
 }
@@ -309,14 +297,14 @@ static void SetWithRawValue(
   return name;
 }
 
-- (BOOL)isSynthetic {
+- (jboolean)isSynthetic {
   if (metadata_) {
     return ([metadata_ modifiers] & JavaLangReflectModifier_SYNTHETIC) > 0;
   }
   return NO;
 }
 
-- (BOOL)isEnumConstant {
+- (jboolean)isEnumConstant {
   if (metadata_) {
     return ([metadata_ modifiers] & JavaLangReflectModifier_ENUM) > 0;
   }

@@ -123,7 +123,7 @@ final class ByteArrayBuffer extends ByteBuffer {
     nil_chk(dst); \
     jint byteCount = [self checkGetBoundsWithInt:sizeof(TYPE) withInt:(jint)dst->size_ \
         withInt:dstOffset withInt:count]; \
-    char *src = backingArray_->buffer_ + arrayOffset_ + position__; \
+    char *src = (char *)(backingArray_->buffer_ + arrayOffset_ + position__); \
     unsafeBulkCopy((char *)(dst->buffer_ + dstOffset), src, byteCount, sizeof(TYPE), \
         order__->needsSwap_); \
     position__ += byteCount;
@@ -280,7 +280,7 @@ final class ByteArrayBuffer extends ByteBuffer {
     nil_chk(src); \
     jint byteCount = [self checkPutBoundsWithInt:sizeof(TYPE) withInt:(jint)src->size_ \
         withInt:srcOffset withInt:count]; \
-    char *dst = backingArray_->buffer_ + arrayOffset_ + position__; \
+    char *dst = (char *)(backingArray_->buffer_ + arrayOffset_ + position__); \
     unsafeBulkCopy(dst, (char *)(src->buffer_ + srcOffset), byteCount, sizeof(TYPE), \
         order__->needsSwap_); \
     position__ += byteCount; \

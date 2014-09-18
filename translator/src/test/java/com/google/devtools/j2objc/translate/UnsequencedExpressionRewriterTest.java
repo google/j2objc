@@ -42,8 +42,8 @@ public class UnsequencedExpressionRewriterTest extends GenerationTest {
     String translation = translateSourceFile(
         "class Test { void test(int i) { int j = ++i - ++i; } }", "Test", "Test.m");
     assertTranslatedLines(translation,
-        "int unseq$1 = ++i;",
-        "int j = unseq$1 - ++i;");
+        "jint unseq$1 = ++i;",
+        "jint j = unseq$1 - ++i;");
   }
 
   public void testUnsequencedAssignmentExpression() throws IOException {
@@ -57,18 +57,18 @@ public class UnsequencedExpressionRewriterTest extends GenerationTest {
 
   public void testUnsequencedConditionalInfixExpression() throws IOException {
     String translation = translateSourceFile(
-        "class Test { boolean test(int i) { " +
-        "return i == 0 || i == 1 || ++i + i == 2 || i++ + i == 3 || i == 4; } }",
+        "class Test { boolean test(int i) { "
+        + "return i == 0 || i == 1 || ++i + i == 2 || i++ + i == 3 || i == 4; } }",
         "Test", "Test.m");
     assertTranslatedLines(translation,
-        "BOOL unseq$1;",
+        "jboolean unseq$1;",
         "if (!(unseq$1 = (i == 0 || i == 1))) {",
-        "  int unseq$2 = ++i;",
+        "  jint unseq$2 = ++i;",
         "  unseq$1 = (unseq$1 || unseq$2 + i == 2);",
         "}",
-        "BOOL unseq$3;",
+        "jboolean unseq$3;",
         "if (!(unseq$3 = unseq$1)) {",
-        "  int unseq$4 = i++;",
+        "  jint unseq$4 = i++;",
         "  unseq$3 = (unseq$3 || unseq$4 + i == 3);",
         "}",
         "return unseq$3 || i == 4;");
@@ -76,16 +76,16 @@ public class UnsequencedExpressionRewriterTest extends GenerationTest {
 
   public void testUnsequencedConditionalExpression() throws IOException {
     String translation = translateSourceFile(
-        "class Test { boolean test(int i) { " +
-        "return i == 0 ? i++ + i == 0 || i++ + i == 0 : ++i == 1; } }",
+        "class Test { boolean test(int i) { "
+        + "return i == 0 ? i++ + i == 0 || i++ + i == 0 : ++i == 1; } }",
         "Test", "Test.m");
     assertTranslatedLines(translation,
-        "BOOL unseq$1;",
+        "jboolean unseq$1;",
         "if (i == 0) {",
-        "  int unseq$2 = i++;",
-        "  BOOL unseq$3;",
+        "  jint unseq$2 = i++;",
+        "  jboolean unseq$3;",
         "  if (!(unseq$3 = (unseq$2 + i == 0))) {",
-        "    int unseq$4 = i++;",
+        "    jint unseq$4 = i++;",
         "    unseq$3 = (unseq$3 || unseq$4 + i == 0);",
         "  }",
         "  unseq$1 = unseq$3;",
@@ -101,7 +101,7 @@ public class UnsequencedExpressionRewriterTest extends GenerationTest {
         "class Test { void test(int i) { while (i + i++ < 10) {} } }", "Test", "Test.m");
     assertTranslatedLines(translation,
         "while (YES) {",
-        "  int unseq$1 = i;",
+        "  jint unseq$1 = i;",
         "  if (!(unseq$1 + i++ < 10)) break;");
   }
 
@@ -110,11 +110,11 @@ public class UnsequencedExpressionRewriterTest extends GenerationTest {
         "class Test { void test() { int i = 0, j = i++ + i, k = j, l = --k - k, m = 1; } }",
         "Test", "Test.m");
     assertTranslatedLines(translation,
-        "int i = 0;",
-        "int unseq$1 = i++;",
-        "int j = unseq$1 + i, k = j;",
-        "int unseq$2 = --k;",
-        "int l = unseq$2 - k, m = 1;");
+        "jint i = 0;",
+        "jint unseq$1 = i++;",
+        "jint j = unseq$1 + i, k = j;",
+        "jint unseq$2 = --k;",
+        "jint l = unseq$2 - k, m = 1;");
   }
 
   public void testAssertStatement() throws IOException {
@@ -122,74 +122,74 @@ public class UnsequencedExpressionRewriterTest extends GenerationTest {
         "class Test { void test(int i) { assert i++ + i++ == 0 : \"foo\" + i++ + i++; } }",
         "Test", "Test.m");
     assertTranslatedLines(translation,
-        "int unseq$1 = i++;",
-        "BOOL unseq$2 = unseq$1 + i++ == 0;",
-        "int unseq$3 = i++;",
-        "NSAssert(unseq$2, [[NSString stringWithFormat:@\"foo%d%d\" J2OBJC_COMMA() unseq$3" +
-          " J2OBJC_COMMA() i++] description]);");
+        "jint unseq$1 = i++;",
+        "jboolean unseq$2 = unseq$1 + i++ == 0;",
+        "jint unseq$3 = i++;",
+        "NSAssert(unseq$2, [[NSString stringWithFormat:@\"foo%d%d\" J2OBJC_COMMA() unseq$3"
+          + " J2OBJC_COMMA() i++] description]);");
   }
 
   public void testForInitStatements() throws IOException {
     String translation = translateSourceFile(
-        "class Test { void test() { int i = 0, j = 0, k = 0; " +
-        "for (i = i++ + i++, j = i++ + i++, k = i++ + i++;;) { } } }",
+        "class Test { void test() { int i = 0, j = 0, k = 0; "
+        + "for (i = i++ + i++, j = i++ + i++, k = i++ + i++;;) { } } }",
         "Test", "Test.m");
     assertTranslatedLines(translation,
-        "int i = 0, j = 0, k = 0;",
-        "int unseq$1 = i++;",
-        "int unseq$2 = i++;",
+        "jint i = 0, j = 0, k = 0;",
+        "jint unseq$1 = i++;",
+        "jint unseq$2 = i++;",
         "i = unseq$1 + unseq$2;",
-        "int unseq$3 = i++;",
+        "jint unseq$3 = i++;",
         "j = unseq$3 + i++;",
-        "int unseq$4 = i++;",
+        "jint unseq$4 = i++;",
         "for (k = unseq$4 + i++; ; ) {",
         "}");
   }
 
   public void testForInitWithDeclaration() throws IOException {
     String translation = translateSourceFile(
-        "class Test { void test() { int k = 0; " +
-        "for (int i = k++ + k++, j = i++ + i++;;) { } } }",
+        "class Test { void test() { int k = 0; "
+        + "for (int i = k++ + k++, j = i++ + i++;;) { } } }",
         "Test", "Test.m");
     assertTranslatedLines(translation,
-        "int k = 0;",
-        "int unseq$1 = k++;",
-        "int i = unseq$1 + k++;",
-        "int unseq$2 = i++;",
-        "for (int j = unseq$2 + i++; ; ) {",
+        "jint k = 0;",
+        "jint unseq$1 = k++;",
+        "jint i = unseq$1 + k++;",
+        "jint unseq$2 = i++;",
+        "for (jint j = unseq$2 + i++; ; ) {",
         "}");
   }
 
   public void testIfConditionAndUpdaters() throws IOException {
     String translation = translateSourceFile(
-        "class Test { void test() { int k = 0; " +
-        "for (int i = k++ + k++; i++ + i++ < 10; i++, k = i++ + i++) { " +
-        "  String s = \"foo\" + i; } } }",
+        "class Test { void test() { int k = 0; "
+        + "for (int i = k++ + k++; i++ + i++ < 10; i++, k = i++ + i++) { "
+        + "  String s = \"foo\" + i; } } }",
         "Test", "Test.m");
     assertTranslatedLines(translation,
-        "int k = 0;",
-        "int unseq$1 = k++;",
-        "for (int i = unseq$1 + k++; ; ) {",
-        "  int unseq$2 = i++;",
+        "jint k = 0;",
+        "jint unseq$1 = k++;",
+        "for (jint i = unseq$1 + k++; ; ) {",
+        "  jint unseq$2 = i++;",
         "  if (!(unseq$2 + i++ < 10)) break;",
         "  NSString *s = [NSString stringWithFormat:@\"foo%d\", i];",
         "  i++;",
-        "  int unseq$3 = i++;",
+        "  jint unseq$3 = i++;",
         "  k = unseq$3 + i++;",
         "}");
   }
 
   public void testIfStatement() throws IOException {
     String translation = translateSourceFile(
-        "class Test { void test(int i) { " +
-        "if (i++ + i++ == 0) {} else if (i++ + i++ == 1) {} else {} } }",
+        "class Test { void test(int i) { "
+        + "if (i++ + i++ == 0) {} else if (i++ + i++ == 1) {} else {} } }",
         "Test", "Test.m");
     assertTranslatedLines(translation,
-        "int unseq$1 = i++;",
+        "jint unseq$1 = i++;",
         "if (unseq$1 + i++ == 0) {",
         "}",
         "else {",
-        "  int unseq$2 = i++;",
+        "  jint unseq$2 = i++;",
         "  if (unseq$2 + i++ == 1) {",
         "  }",
         "  else {",

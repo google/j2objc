@@ -33,11 +33,12 @@ public class ArrayAccessTest extends GenerationTest {
         "int[] arr = { 1, 2 }; int one = arr[0]; int two = arr[1];");
     assertEquals(3, stmts.size());
     String result = generateStatement(stmts.get(0));
-    assertEquals("IOSIntArray *arr = [IOSIntArray arrayWithInts:(int[]){ 1, 2 } count:2];", result);
+    assertEquals(
+        "IOSIntArray *arr = [IOSIntArray arrayWithInts:(jint[]){ 1, 2 } count:2];", result);
     result = generateStatement(stmts.get(1));
-    assertEquals("int one = IOSIntArray_Get(arr, 0);", result);
+    assertEquals("jint one = IOSIntArray_Get(arr, 0);", result);
     result = generateStatement(stmts.get(2));
-    assertEquals("int two = IOSIntArray_Get(arr, 1);", result);
+    assertEquals("jint two = IOSIntArray_Get(arr, 1);", result);
   }
 
   public void testSetElementWithLiteral() {

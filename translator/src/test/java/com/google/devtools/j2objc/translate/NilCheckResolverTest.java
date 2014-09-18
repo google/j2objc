@@ -119,21 +119,21 @@ public class NilCheckResolverTest extends GenerationTest {
         + "boolean b1 = b && t1.foo(); t1.foo(); boolean b2 = b || t2.foo(); t2.foo(); } }",
         "Test", "Test.m");
     assertTranslatedLines(translation,
-        "BOOL b1 = b && [((Test *) nil_chk(t1)) foo];",
+        "jboolean b1 = b && [((Test *) nil_chk(t1)) foo];",
         "[((Test *) nil_chk(t1)) foo];",
-        "BOOL b2 = b || [((Test *) nil_chk(t2)) foo];",
+        "jboolean b2 = b || [((Test *) nil_chk(t2)) foo];",
         "[((Test *) nil_chk(t2)) foo];");
   }
 
   public void testNilCheckEnhancedForExpression() throws IOException {
     String translation = translateSourceFile(
-        "public class Test {" +
-        "  boolean test(String target, java.util.List<String> strings) {" +
-        "    for (String s : strings) {" +
-        "      if (s.equals(target)) return true;" +
-        "    }" +
-        "    return false;" +
-        "  }}",
+        "public class Test {"
+        + "  boolean test(String target, java.util.List<String> strings) {"
+        + "    for (String s : strings) {"
+        + "      if (s.equals(target)) return true;"
+        + "    }"
+        + "    return false;"
+        + "  }}",
         "Test", "Test.m");
     assertTranslation(translation, "nil_chk(strings)");
   }

@@ -151,7 +151,7 @@ public class FunctionizerTest extends GenerationTest {
         "- (NSString *)test {",
         "return A_str_(self, 0);");
     assertTranslatedLines(translation,
-        "NSString *A_str_(A *self, int i) {",
+        "NSString *A_str_(A *self, jint i) {",
         "return A_str_2(self);");
     assertTranslatedLines(translation,
         "NSString *A_str_2(A *self) {",
@@ -179,13 +179,13 @@ public class FunctionizerTest extends GenerationTest {
         "int A_str_(A *self) {",
         "return 0;");
     assertTranslatedLines(translation,
-        "- (int)test1 {",
+        "- (jint)test1 {",
         "return A_str_(this$0_);");
     assertTranslatedLines(translation,
-        "- (int)test2 {",
+        "- (jint)test2 {",
         "return A_str_(this$0_);");
     assertTranslatedLines(translation,
-        "- (int)test3 {",
+        "- (jint)test3 {",
         "return this$0_->outerN_;");
   }
 
@@ -253,7 +253,7 @@ public class FunctionizerTest extends GenerationTest {
     translation = getTranslatedFile("A.m");
     assertTranslation(translation, functionHeader + " {");
     assertTranslation(translation, "return A_strchars_(["
-        + "IOSCharArray arrayWithChars:(unichar[]){ 'a', 'b', 'c' } count:3]);");
+        + "IOSCharArray arrayWithChars:(jchar[]){ 'a', 'b', 'c' } count:3]);");
   }
 
   public void testAssertInFunction() throws IOException {

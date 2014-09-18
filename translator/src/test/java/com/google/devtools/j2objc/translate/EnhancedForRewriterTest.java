@@ -27,25 +27,25 @@ public class EnhancedForRewriterTest extends GenerationTest {
 
   // Regression test: Must call "charValue" on boxed type returned from iterator.
   public void testEnhancedForWithBoxedType() throws IOException {
-    String source = "import java.util.List;" +
-        "public class A { " +
-        "Character[] charArray; " +
-        "List<Character> charList; " +
-        "void test() { for (char c : charArray) {} for (char c : charList) {} } }";
+    String source = "import java.util.List;"
+        + "public class A { "
+        + "Character[] charArray; "
+        + "List<Character> charList; "
+        + "void test() { for (char c : charArray) {} for (char c : charList) {} } }";
     String translation = translateSourceFile(source, "A", "A.m");
     assertTranslation(translation,
-        "unichar c = [((JavaLangCharacter *) nil_chk(*b__++)) charValue];");
+        "jchar c = [((JavaLangCharacter *) nil_chk(*b__++)) charValue];");
     assertTranslation(translation,
-        "unichar c = [((JavaLangCharacter *) nil_chk(boxed__)) charValue];");
+        "jchar c = [((JavaLangCharacter *) nil_chk(boxed__)) charValue];");
   }
 
   public void testEnhancedForLoopAnnotation() throws IOException {
     String translation = translateSourceFile(
-        "import com.google.j2objc.annotations.LoopTranslation;" +
-        "import com.google.j2objc.annotations.LoopTranslation.LoopStyle;" +
-        "class Test { void test(Iterable<String> strings) { " +
-        "for (@LoopTranslation(LoopStyle.JAVA_ITERATOR) String s : strings) {}" +
-        "for (@LoopTranslation(LoopStyle.FAST_ENUMERATION) String s : strings) {} } }",
+        "import com.google.j2objc.annotations.LoopTranslation;"
+        + "import com.google.j2objc.annotations.LoopTranslation.LoopStyle;"
+        + "class Test { void test(Iterable<String> strings) { "
+        + "for (@LoopTranslation(LoopStyle.JAVA_ITERATOR) String s : strings) {}"
+        + "for (@LoopTranslation(LoopStyle.FAST_ENUMERATION) String s : strings) {} } }",
         "Test", "Test.m");
     assertTranslatedLines(translation,
         "- (void)testWithJavaLangIterable:(id<JavaLangIterable>)strings {",

@@ -246,7 +246,7 @@ public class StatementGenerator extends TreeVisitor {
     assert type.isArray();
     ITypeBinding componentType = type.getComponentType();
     String componentTypeName = componentType.isPrimitive()
-        ? NameTable.primitiveTypeToObjC(componentType.getName()) : "id";
+        ? NameTable.primitiveTypeToObjC(componentType) : "id";
     buffer.append(String.format("(%s[]){ ", componentTypeName));
     for (Iterator<Expression> it = node.getExpressions().iterator(); it.hasNext(); ) {
       it.next().accept(this);
@@ -322,38 +322,6 @@ public class StatementGenerator extends TreeVisitor {
       return ">>=";
     }
     return op.toString();
-  }
-
-  private void printUnsignedRightShift(Expression lhs, Expression rhs) {
-    // (type) (((unsigned type) lhs) >> rhs);
-    String type = getRightShiftType(lhs);
-    buffer.append("(");
-    buffer.append(type);
-    buffer.append(") (((unsigned ");
-    buffer.append(type);
-    buffer.append(") ");
-    lhs.accept(this);
-    buffer.append(") >> ");
-    rhs.accept(this);
-    buffer.append(")");
-  }
-
-  private String getRightShiftType(Expression node) {
-    ITypeBinding binding = node.getTypeBinding();
-    assert binding != null;
-    if (Types.resolveJavaType("int").equals(binding)) {
-      return "int";
-    } else if (Types.resolveJavaType("long").equals(binding)) {
-      return "long long";
-    } else if (Types.resolveJavaType("byte").equals(binding)) {
-      return "char";
-    } else if (Types.resolveJavaType("short").equals(binding)) {
-      return "short";
-    } else if (Types.resolveJavaType("char").equals(binding)) {
-      return "unichar";
-    } else {
-      throw new AssertionError("invalid right shift expression type: " + binding.getName());
-    }
   }
 
   @Override
@@ -659,12 +627,21 @@ public class StatementGenerator extends TreeVisitor {
       buffer.append("]");
     } else if (op.equals(InfixExpression.Operator.RIGHT_SHIFT_UNSIGNED)
         && !lhsType.getName().equals("char")) {
-      printUnsignedRightShift(lhs, rhs);
+      buffer.append("(");
+      buffer.append(NameTable.primitiveTypeToObjC(type));
+      buffer.append(") (((");
+      buffer.append(getUnsignedType(lhsType));
+      buffer.append(") ");
+      lhs.accept(this);
+      buffer.append(") >> ");
+      // TODO(tball): mask shift count per JLS.
+      rhs.accept(this);
+      buffer.append(")");
     } else if (op.equals(InfixExpression.Operator.LEFT_SHIFT) && lhsType.getName().equals("long")) {
       // The C compiler incorrectly shifts left when the shift is greater
       // than 32 with signed longs, so cast the lhs to unsigned, then
       // cast the result back to signed.
-      buffer.append("(long long) (((uint64_t) ");
+      buffer.append("(jlong) (((uint64_t) ");
       lhs.accept(this);
       buffer.append(") << ");
       rhs.accept(this);
@@ -681,6 +658,21 @@ public class StatementGenerator extends TreeVisitor {
       }
     }
     return false;
+  }
+
+  private String getUnsignedType(ITypeBinding type) {
+    switch (type.getBinaryName().charAt(0)) {
+      case 'B':  // byte
+        return "uint8_t";
+      case 'S':  // short
+        return "uint16_t";
+      case 'I':  // int
+        return "uint32_t";
+      case 'J':  // long
+        return "uint64_t";
+      default:
+        throw new AssertionError("Not a signed type: " + type.getName());
+    }
   }
 
   private static String getOperatorStr(InfixExpression.Operator op) {
@@ -886,7 +878,7 @@ public class StatementGenerator extends TreeVisitor {
     } else {
       boolean castPrinted = false;
       if (returnValueNeedsIntCast(node)) {
-        buffer.append("((int) ");
+        buffer.append("((jint) ");
         castPrinted = true;
       }
       printMethodInvocation(binding, methodName, receiver, node.getArguments());
@@ -982,7 +974,7 @@ public class StatementGenerator extends TreeVisitor {
 
   @Override
   public boolean visit(PrimitiveType node) {
-    buffer.append(NameTable.primitiveTypeToObjC(node.getTypeBinding().getName()));
+    buffer.append(NameTable.primitiveTypeToObjC(node.getTypeBinding()));
     return false;
   }
 
@@ -1140,7 +1132,7 @@ public class StatementGenerator extends TreeVisitor {
     int length = s.length();
     StringBuilder buffer = new StringBuilder();
     buffer.append(
-        "[NSString stringWithCharacters:(unichar[]) { ");
+        "[NSString stringWithCharacters:(jchar[]) { ");
     int i = 0;
     while (i < length) {
       char c = s.charAt(i);
@@ -1187,7 +1179,7 @@ public class StatementGenerator extends TreeVisitor {
       if (returnType.isPrimitive()) {
         // We must cast the IMP to have the correct return type.
         buffer.append(String.format("((%s (*)(id, SEL, ...))",
-            NameTable.primitiveTypeToObjC(returnType.getName())));
+            NameTable.primitiveTypeToObjC(returnType)));
         closeImpCast = ")";
       }
       buffer.append(String.format(

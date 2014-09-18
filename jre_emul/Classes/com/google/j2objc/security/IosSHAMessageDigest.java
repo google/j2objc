@@ -65,7 +65,7 @@ public abstract class IosSHAMessageDigest extends MessageDigest {
       IOSByteArray *bytes = [buffer_ toByteArray];
       unsigned char digest[CC_SHA1_DIGEST_LENGTH];
       CC_SHA1(bytes->buffer_, bytes->size_, digest);
-      return [IOSByteArray arrayWithBytes:(const char *) digest count:CC_SHA1_DIGEST_LENGTH];
+      return [IOSByteArray arrayWithBytes:(jbyte *)digest count:CC_SHA1_DIGEST_LENGTH];
     ]-*/;
 
     @Override
@@ -85,7 +85,7 @@ public abstract class IosSHAMessageDigest extends MessageDigest {
       IOSByteArray *bytes = [buffer_ toByteArray];
       unsigned char digest[CC_SHA256_DIGEST_LENGTH];
       CC_SHA256(bytes->buffer_, bytes->size_, digest);
-      return [IOSByteArray arrayWithBytes:(const char *) digest count:CC_SHA256_DIGEST_LENGTH];
+      return [IOSByteArray arrayWithBytes:(jbyte *)digest count:CC_SHA256_DIGEST_LENGTH];
     ]-*/;
 
     @Override
@@ -105,7 +105,7 @@ public abstract class IosSHAMessageDigest extends MessageDigest {
       IOSByteArray *bytes = [buffer_ toByteArray];
       unsigned char digest[CC_SHA384_DIGEST_LENGTH];
       CC_SHA384(bytes->buffer_, bytes->size_, digest);
-      return [IOSByteArray arrayWithBytes:(const char *) digest count:CC_SHA384_DIGEST_LENGTH];
+      return [IOSByteArray arrayWithBytes:(jbyte *)digest count:CC_SHA384_DIGEST_LENGTH];
     ]-*/;
 
     @Override
@@ -125,7 +125,7 @@ public abstract class IosSHAMessageDigest extends MessageDigest {
       IOSByteArray *bytes = [buffer_ toByteArray];
       unsigned char digest[CC_SHA512_DIGEST_LENGTH];
       CC_SHA512(bytes->buffer_, bytes->size_, digest);
-      return [IOSByteArray arrayWithBytes:(const char *) digest count:CC_SHA512_DIGEST_LENGTH];
+      return [IOSByteArray arrayWithBytes:(jbyte *)digest count:CC_SHA512_DIGEST_LENGTH];
     ]-*/;
 
     @Override

@@ -72,7 +72,8 @@ public final class HeapBufferIterator extends BufferIterator {
     public native void readIntArray(int[] dst, int dstOffset, int intCount) /*-[
       jint byteCount = intCount * sizeof(jint);
       if (dst != nil && buffer_ != nil) {
-        unsafeBulkCopy((char *)(dst->buffer_ + dstOffset), buffer_->buffer_ + offset_ + position_,
+        unsafeBulkCopy(
+            (char *)(dst->buffer_ + dstOffset), (char *)(buffer_->buffer_ + offset_ + position_),
             byteCount, sizeof(jint), order_->needsSwap_);
       }
       position_ += byteCount;

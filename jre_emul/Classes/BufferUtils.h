@@ -27,12 +27,12 @@
 static inline char *BytesRW(id object) {
   nil_chk(object);
   if ([object isKindOfClass:[IOSByteArray class]]) {
-      return IOSByteArray_GetRef(object, 0);
+      return (char *)IOSByteArray_GetRef(object, 0);
   } else if ([object isKindOfClass:[JavaNioBuffer class]]) {
     // All buffer concrete classes have byteBuffer at the same
     // offset by explicit design.
     JavaNioBuffer *buffer = (JavaNioBuffer *) object;
-    return (char *) buffer->effectiveDirectAddress_;
+    return (char *)buffer->effectiveDirectAddress_;
   }
   return NULL;  // Unknown type.
 }

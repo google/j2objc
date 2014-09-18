@@ -52,30 +52,30 @@
 
 // Field.get(Object), etc.
 - (id)getWithId:(id)object;
-- (BOOL)getBooleanWithId:(id)object;
-- (char)getByteWithId:(id)object;
-- (unichar)getCharWithId:(id)object;
-- (double)getDoubleWithId:(id)object;
-- (float)getFloatWithId:(id)object;
-- (int)getIntWithId:(id)object;
-- (long long)getLongWithId:(id)object;
-- (short)getShortWithId:(id)object;
+- (jboolean)getBooleanWithId:(id)object;
+- (jbyte)getByteWithId:(id)object;
+- (jchar)getCharWithId:(id)object;
+- (jdouble)getDoubleWithId:(id)object;
+- (jfloat)getFloatWithId:(id)object;
+- (jint)getIntWithId:(id)object;
+- (jlong)getLongWithId:(id)object;
+- (jshort)getShortWithId:(id)object;
 
 // Field.set(Object, Object), etc.
 - (void)setWithId:(id)object withId:(id)value;
-- (void)setBooleanWithId:(id)object withBoolean:(BOOL)value;
-- (void)setByteWithId:(id)object withByte:(char)value;
-- (void)setCharWithId:(id)object withChar:(unichar)value;
-- (void)setDoubleWithId:(id)object withDouble:(double)value;
-- (void)setFloatWithId:(id)object withFloat:(float)value;
-- (void)setIntWithId:(id)object withInt:(int)value;
-- (void)setLongWithId:(id)object withLong:(long long)value;
-- (void)setShortWithId:(id)object withShort:(short)value;
+- (void)setBooleanWithId:(id)object withBoolean:(jboolean)value;
+- (void)setByteWithId:(id)object withByte:(jbyte)value;
+- (void)setCharWithId:(id)object withChar:(jchar)value;
+- (void)setDoubleWithId:(id)object withDouble:(jdouble)value;
+- (void)setFloatWithId:(id)object withFloat:(jfloat)value;
+- (void)setIntWithId:(id)object withInt:(jint)value;
+- (void)setLongWithId:(id)object withLong:(jlong)value;
+- (void)setShortWithId:(id)object withShort:(jshort)value;
 
 - (IOSClass *)getDeclaringClass;
-- (int)getModifiers;
+- (jint)getModifiers;
 - (IOSClass *)getType;
-- (BOOL)isEnumConstant;
+- (jboolean)isEnumConstant;
 
 // Returns type.
 - (id<JavaLangReflectType>)getGenericType;

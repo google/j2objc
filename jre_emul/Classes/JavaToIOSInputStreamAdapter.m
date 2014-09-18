@@ -48,7 +48,7 @@
   if (result == -1) {
     return 0;
   }
-  [javaBytes getBytes:(char *)buffer offset:0 length:result];
+  [javaBytes getBytes:(jbyte *)buffer offset:0 length:result];
   return result;
 }
 

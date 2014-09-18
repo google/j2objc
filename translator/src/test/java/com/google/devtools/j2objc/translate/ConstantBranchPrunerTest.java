@@ -49,12 +49,12 @@ public class ConstantBranchPrunerTest extends GenerationTest {
     String translation = translateSourceFile(
         "class Test { int test() { if (true) { return 1; } else { return 0; } }}",
         "Test", "Test.m");
-    assertTranslatedLines(translation, "- (int)test {", "{", "return 1;", "}", "}");
+    assertTranslatedLines(translation, "- (jint)test {", "{", "return 1;", "}", "}");
     translation = translateSourceFile(
         "class Test { static final boolean debug = true;"
         + "  int test() { if (debug) { return 1; } else { return 0; } }}",
         "Test", "Test.m");
-    assertTranslatedLines(translation, "- (int)test {", "{", "return 1;", "}", "}");
+    assertTranslatedLines(translation, "- (jint)test {", "{", "return 1;", "}", "}");
   }
 
   // Verify else block replaces if statement when false.
@@ -62,12 +62,12 @@ public class ConstantBranchPrunerTest extends GenerationTest {
     String translation = translateSourceFile(
         "class Test { int test() { if (false) { return 1; } else { return 0; } }}",
         "Test", "Test.m");
-    assertTranslatedLines(translation, "- (int)test {", "{", "return 0;", "}", "}");
+    assertTranslatedLines(translation, "- (jint)test {", "{", "return 0;", "}", "}");
     translation = translateSourceFile(
         "class Test { static final boolean debug = false;"
         + "  int test() { if (debug) { return 1; } else { return 0; } }}",
         "Test", "Test.m");
-    assertTranslatedLines(translation, "- (int)test {", "{", "return 0;", "}", "}");
+    assertTranslatedLines(translation, "- (jint)test {", "{", "return 0;", "}", "}");
   }
 
   // Verify parentheses surround boolean constants are removed.
@@ -75,7 +75,7 @@ public class ConstantBranchPrunerTest extends GenerationTest {
     String translation = translateSourceFile(
         "class Test { int test() { if (((false))) { return 1; } else { return 0; } }}",
         "Test", "Test.m");
-    assertTranslatedLines(translation, "- (int)test {", "{", "return 0;", "}", "}");
+    assertTranslatedLines(translation, "- (jint)test {", "{", "return 0;", "}", "}");
   }
 
   // Verify ! boolean constant is inverted.
@@ -84,7 +84,7 @@ public class ConstantBranchPrunerTest extends GenerationTest {
         "class Test { static final boolean debug = true;"
         + "  int test() { if (!(debug)) { return 1; } else { return 0; } }}",
         "Test", "Test.m");
-    assertTranslatedLines(translation, "- (int)test {", "{", "return 0;", "}", "}");
+    assertTranslatedLines(translation, "- (jint)test {", "{", "return 0;", "}", "}");
   }
 
   // Verify && expressions are pruned correctly.

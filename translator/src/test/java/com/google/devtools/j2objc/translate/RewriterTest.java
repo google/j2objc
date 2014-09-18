@@ -59,11 +59,11 @@ public class RewriterTest extends GenerationTest {
         + "if (n == 5) continue outer; "
         + "else break outer; } } } }", "Test", "Test.m");
     assertTranslatedLines(translation,
-        "int i = 0;",
+        "jint i = 0;",
         "for (; i < 10; i++) {",
         "{",
-        "for (int j = 0; j < 10; j++) {",
-        "int n = i + j;",
+        "for (jint j = 0; j < 10; j++) {",
+        "jint n = i + j;",
         "if (n == 5) goto continue_outer;",
         "else goto break_outer;",
         "}",
@@ -192,7 +192,7 @@ public class RewriterTest extends GenerationTest {
     String translation = translateSourceFile(source, "Test", "Test.m");
     // Check that isEmpty is not abstract.
     assertTranslatedLines(translation,
-        "- (BOOL)isEmpty {",
+        "- (jboolean)isEmpty {",
         "  return YES;",
         "}");
     // Check that toArray is abstract and returns the correct type.
@@ -290,8 +290,8 @@ public class RewriterTest extends GenerationTest {
         "public class Test { void test() { int[] a = { 1, 2, 3 }; char b[] = { '4', '5' }; } }",
         "Test", "Test.m");
     assertTranslatedLines(translation,
-        "IOSIntArray *a = [IOSIntArray arrayWithInts:(int[]){ 1, 2, 3 } count:3];",
-        "IOSCharArray *b = [IOSCharArray arrayWithChars:(unichar[]){ '4', '5' } count:2];");
+        "IOSIntArray *a = [IOSIntArray arrayWithInts:(jint[]){ 1, 2, 3 } count:3];",
+        "IOSCharArray *b = [IOSCharArray arrayWithChars:(jchar[]){ '4', '5' } count:2];");
   }
 
   /**
@@ -305,9 +305,9 @@ public class RewriterTest extends GenerationTest {
         "+ (void)initialize {",
         "if (self == [Test class]) {",
         "JreOperatorRetainedAssign(&Test_a_, nil, "
-            + "[IOSIntArray arrayWithInts:(int[]){ 1, 2, 3 } count:3]);",
+            + "[IOSIntArray arrayWithInts:(jint[]){ 1, 2, 3 } count:3]);",
         "JreOperatorRetainedAssign(&Test_b_, nil, "
-            + "[IOSCharArray arrayWithChars:(unichar[]){ '4', '5' } count:2]);");
+            + "[IOSCharArray arrayWithChars:(jchar[]){ '4', '5' } count:2]);");
   }
 
   public void testNonStaticMultiDimArrayInitializer() throws IOException {
@@ -315,7 +315,7 @@ public class RewriterTest extends GenerationTest {
         "class Test { int[][] a = { { 1, 2, 3 } }; }", "Test", "Test.m");
     assertTranslation(translation,
         "[IOSObjectArray arrayWithObjects:(id[]){"
-        + " [IOSIntArray arrayWithInts:(int[]){ 1, 2, 3 } count:3] } count:1"
+        + " [IOSIntArray arrayWithInts:(jint[]){ 1, 2, 3 } count:3] } count:1"
         + " type:[IOSIntArray iosClass]]");
   }
 
@@ -323,7 +323,7 @@ public class RewriterTest extends GenerationTest {
     String translation = translateSourceFile(
         "class Test { Test(int[] i) {} Test() { this(new int[] {}); } }", "Test", "Test.m");
     assertTranslation(translation,
-        "[self initTestWithIntArray:[IOSIntArray arrayWithInts:(int[]){  } count:0]]");
+        "[self initTestWithIntArray:[IOSIntArray arrayWithInts:(jint[]){  } count:0]]");
   }
 
   public void testAddsAbstractMethodsToEnum() throws IOException {
@@ -335,7 +335,7 @@ public class RewriterTest extends GenerationTest {
     addSourceFile(interfaceSource, "I.java");
     addSourceFile(enumSource, "E.java");
     String translation = translateSourceFile("E", "E.m");
-    assertTranslation(translation, "- (int)foo {");
+    assertTranslation(translation, "- (jint)foo {");
     assertTranslation(translation, "[self doesNotRecognizeSelector:_cmd];");
   }
 
@@ -482,7 +482,7 @@ public class RewriterTest extends GenerationTest {
     assertTranslatedLines(translation,
         "IOSObjectArray *c1, *c5;",
         "IOSCharArray *c2;",
-        "unichar c3, c4;");
+        "jchar c3, c4;");
   }
 
   // Objective-C requires that && tests be surrounded by parens when mixed with || tests.
