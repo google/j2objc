@@ -49,6 +49,7 @@ public class ClassInstanceCreation extends Expression {
   public ClassInstanceCreation(ClassInstanceCreation other) {
     super(other);
     methodBinding = other.getMethodBinding();
+    hasRetainedResult = other.hasRetainedResult();
     expression.copyFrom(other.getExpression());
     type.copyFrom(other.getType());
     arguments.copyFrom(other.getArguments());
