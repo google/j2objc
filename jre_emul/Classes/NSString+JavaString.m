@@ -521,10 +521,10 @@ NSStringEncoding parseCharsetName(NSString *charset) {
                        hibyte:(NSUInteger)hibyte
                        offset:(NSUInteger)offset
                        length:(NSUInteger)length {
-  char *bytes = value->buffer_;
+  jbyte *bytes = value->buffer_;
   unichar *chars = calloc(length, sizeof(unichar));
   for (NSUInteger i = 0; i < length; i++) {
-    char b = bytes[i + offset];
+    jbyte b = bytes[i + offset];
     // Expression from String(byte[],int) javadoc.
     chars[i] = (unichar)(((hibyte & 0xff) << 8) | (b & 0xff));
   }
@@ -617,7 +617,7 @@ NSStringEncoding parseCharsetName(NSString *charset) {
          options:includeBOM ? NSStringEncodingConversionExternalRepresentation : 0
            range:range
   remainingRange:NULL];
-  IOSByteArray *result = [IOSByteArray arrayWithBytes:buffer
+  IOSByteArray *result = [IOSByteArray arrayWithBytes:(jbyte *)buffer
                                                 count:(jint)used_length];
   free(buffer);
   return result;
@@ -666,7 +666,7 @@ NSStringEncoding parseCharsetName(NSString *charset) {
         [[JavaLangStringIndexOutOfBoundsException alloc]
          initWithNSString:@"dstBegin+(srcEnd-srcBegin) > dst.length"]);
   }
-  [dst replaceBytes:bytes length:(jint)bytesUsed offset:dstBegin];
+  [dst replaceBytes:(jbyte *)bytes length:(jint)bytesUsed offset:dstBegin];
   free(bytes);
 }
 

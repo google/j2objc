@@ -254,7 +254,7 @@ public final class Posix implements Os {
     }
 
     IOSByteArray *byteArray =
-        [IOSByteArray arrayWithBytes:(const char *) rawAddress count:(jint)addressLength];
+        [IOSByteArray arrayWithBytes:(jbyte *)rawAddress count:(jint)addressLength];
 
     if (ss->ss_family == AF_UNIX) {
         // Note that we get here for AF_UNIX sockets on accept(2). The unix(7) man page claims
@@ -300,7 +300,7 @@ public final class Posix implements Os {
       }
 
       // Copy the bytes...
-      char* dst = (char *) sun->sun_path;
+      jbyte* dst = (jbyte *)sun->sun_path;
       memset(dst, 0, sizeof(sun->sun_path));
       [inetAddress->ipaddress_ getBytes:dst length:path_length];
       *sa_len = sizeof(sun->sun_path);
@@ -312,7 +312,7 @@ public final class Posix implements Os {
     sin6->sin6_port = htons(port);
     if (ss->ss_family == AF_INET6) {
       // IPv6 address. Copy the bytes...
-      char *dst = (char *) sin6->sin6_addr.s6_addr;
+      jbyte *dst = (jbyte *)sin6->sin6_addr.s6_addr;
       [inetAddress->ipaddress_ getBytes:dst length:16];
       // ...and set the scope id...
       sin6->sin6_scope_id = [(JavaNetInet6Address *) inetAddress getScopeId];
@@ -326,7 +326,7 @@ public final class Posix implements Os {
       // Change the family...
       sin6->sin6_family = AF_INET6;
       // Copy the bytes...
-      char *dst = (char *) &sin6->sin6_addr.s6_addr[12];
+      jbyte *dst = (jbyte *)&sin6->sin6_addr.s6_addr[12];
       [inetAddress->ipaddress_ getBytes:dst length:4];
       // INADDR_ANY and in6addr_any are both all-zeros...
       if (!IN6_IS_ADDR_UNSPECIFIED(&sin6->sin6_addr)) {
@@ -338,7 +338,7 @@ public final class Posix implements Os {
       // We should represent this Inet4Address as an IPv4 sockaddr_in.
       struct sockaddr_in *sin = (struct sockaddr_in *) ss;
       sin->sin_port = htons(port);
-      char *dst = (char *) &sin->sin_addr.s_addr;
+      jbyte *dst = (jbyte *)&sin->sin_addr.s_addr;
       [inetAddress->ipaddress_ getBytes:dst length:4];
       *sa_len = sizeof(struct sockaddr_in);
     }
@@ -772,7 +772,7 @@ public final class Posix implements Os {
     if (!sinAddress) {
       [LibcoreIoPosix throwErrnoExceptionWithNSString:msg withInt:originalError];
     }
-    IOSByteArray *byteArray = [IOSByteArray arrayWithBytes:(const char *) sinAddress count:4];
+    IOSByteArray *byteArray = [IOSByteArray arrayWithBytes:(jbyte *)sinAddress count:4];
     return [JavaNetInetAddress getByAddressWithNSString:nil
                                           withByteArray:byteArray
                                                 withInt:0];
@@ -811,7 +811,8 @@ public final class Posix implements Os {
   ]-*/;
 
   public native void mincore(long address, long byteCount, byte[] vector) throws ErrnoException /*-[
-    int rc = TEMP_FAILURE_RETRY(mincore((caddr_t) address, (size_t) byteCount, vector->buffer_));
+    int rc = TEMP_FAILURE_RETRY(mincore(
+        (caddr_t) address, (size_t) byteCount, (char *)vector->buffer_));
     [LibcoreIoPosix throwIfMinusOneWithNSString:@"mincore" withInt:rc];
   ]-*/;
 

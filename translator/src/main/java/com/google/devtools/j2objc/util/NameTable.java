@@ -17,7 +17,6 @@
 package com.google.devtools.j2objc.util;
 
 import com.google.common.base.Joiner;
-import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.devtools.j2objc.Options;
@@ -37,7 +36,6 @@ import org.eclipse.jdt.core.dom.IMethodBinding;
 import org.eclipse.jdt.core.dom.IPackageBinding;
 import org.eclipse.jdt.core.dom.ITypeBinding;
 import org.eclipse.jdt.core.dom.IVariableBinding;
-import org.eclipse.jdt.core.dom.PrimitiveType;
 import org.eclipse.jdt.core.dom.VariableDeclarationFragment;
 
 import java.util.Iterator;
@@ -331,26 +329,12 @@ public class NameTable {
     return sb.toString();
   }
 
-  /**
-   * Return the Objective-C equivalent name for a Java primitive type.
-   */
-  public static String primitiveTypeToObjC(PrimitiveType type) {
-    PrimitiveType.Code code = type.getPrimitiveTypeCode();
-    return primitiveTypeToObjC(code.toString());
-  }
-
-  private static final ImmutableMap<String, String> PRIMITIVE_TYPE_MAP =
-      ImmutableMap.<String, String>builder()
-      .put("boolean", "BOOL")
-      .put("byte", "char")
-      .put("char", "unichar")
-      .put("short", "short int")
-      .put("long", "long long int")
-      .build();
-
-  public static String primitiveTypeToObjC(String javaName) {
-    String result = PRIMITIVE_TYPE_MAP.get(javaName);
-    return result != null ? result : javaName;
+  public static String primitiveTypeToObjC(ITypeBinding type) {
+    assert type.isPrimitive();
+    if (Types.isVoidType(type)) {
+      return "void";
+    }
+    return "j" + type.getName();
   }
 
   // TODO(kstanger): See whether the logic in this method can be simplified.
@@ -482,7 +466,7 @@ public class NameTable {
         objCType = ID_TYPE;
       }
     } else if (type.isPrimitive()) {
-      objCType = primitiveTypeToObjC(type.getName());
+      objCType = primitiveTypeToObjC(type);
     } else {
       objCType = constructObjCType(type.getErasure());
     }

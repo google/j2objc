@@ -64,10 +64,10 @@ public class InitializationNormalizerTest extends GenerationTest {
    * initialize self, rather than a super constructor call.
    */
   public void testThisConstructorCallInlined() throws IOException {
-    String source = "class Test {" +
-        "boolean b1; boolean b2;" +
-        "Test() { this(true); b2 = true; }" +
-        "Test(boolean b) { b1 = b; }}";
+    String source = "class Test {"
+        + "boolean b1; boolean b2;"
+        + "Test() { this(true); b2 = true; }"
+        + "Test(boolean b) { b1 = b; }}";
     String translation = translateSourceFile(source, "Test", "Test.m");
     assertTranslation(translation, "if (self = [self initTestWithBoolean:YES]) {");
   }
@@ -79,17 +79,17 @@ public class InitializationNormalizerTest extends GenerationTest {
    * @throws IOException
    */
   public void testFieldArrayInitializer() throws IOException {
-    String source = "public class Distance {" +
-        "private class SimplexVertex {}" +
-        "private class Simplex {" +
-        "  public final SimplexVertex vertices[] = {" +
-        "    new SimplexVertex() " +
-        "  }; }}";
+    String source = "public class Distance {"
+        + "private class SimplexVertex {}"
+        + "private class Simplex {"
+        + "  public final SimplexVertex vertices[] = {"
+        + "    new SimplexVertex() "
+        + "  }; }}";
     String translation = translateSourceFile(source, "Distance", "Distance.m");
     assertTranslation(translation,
-        "[IOSObjectArray arrayWithObjects:(id[]){ [[[Distance_SimplexVertex alloc] " +
-        "initWithDistance:outer$] autorelease] } " +
-        "count:1 type:[IOSClass classWithClass:[Distance_SimplexVertex class]]]");
+        "[IOSObjectArray arrayWithObjects:(id[]){ [[[Distance_SimplexVertex alloc] "
+        + "initWithDistance:outer$] autorelease] } "
+        + "count:1 type:[IOSClass classWithClass:[Distance_SimplexVertex class]]]");
   }
 
   public void testStaticVarInitialization() throws IOException {
@@ -145,8 +145,8 @@ public class InitializationNormalizerTest extends GenerationTest {
         "+ (void)initialize {",
         "if (self == [Test class]) {",
         "{",
-        "[((JavaIoPrintStream *) nil_chk(JavaLangSystem_get_out_())) " +
-            "printlnWithNSString:@\"foo\"];");
+        "[((JavaIoPrintStream *) nil_chk(JavaLangSystem_get_out_())) "
+            + "printlnWithNSString:@\"foo\"];");
   }
 
   public void testInitializerMovedToDesignatedConstructor() throws IOException {
@@ -159,7 +159,7 @@ public class InitializationNormalizerTest extends GenerationTest {
         "- (instancetype)init {", "return JreMemDebugAdd([self initTestWithInt:2]);", "}");
     // test that initializer statement was added to second constructor
     assertTranslatedLines(translation,
-        "- (instancetype)initTestWithInt:(int)i {",
+        "- (instancetype)initTestWithInt:(jint)i {",
         "if (self = [super init]) {",
         "{",
         "Test_set_date_(self, [[[JavaUtilDate alloc] init] autorelease]);",
@@ -208,7 +208,7 @@ public class InitializationNormalizerTest extends GenerationTest {
     String translation = translateSourceFile(source, "Test", "Test.m");
     assertTranslation(translation, "NSString * Test_foo_;");
     assertTranslation(translation,
-        "JreOperatorRetainedAssign(&Test_foo_, nil, [NSString stringWithCharacters:(unichar[]) { "
+        "JreOperatorRetainedAssign(&Test_foo_, nil, [NSString stringWithCharacters:(jchar[]) { "
         + "(int) 0xffff } length:1]);");
   }
 
@@ -218,7 +218,7 @@ public class InitializationNormalizerTest extends GenerationTest {
     assertTranslation(translation, "NSString * Test_foo_;");
     assertTranslation(translation,
         "JreOperatorRetainedAssign(&Test_foo_, nil, [NSString stringWithFormat:@\"hello%@\", "
-        + "[NSString stringWithCharacters:(unichar[]) { (int) 0xffff } length:1]]);");
+        + "[NSString stringWithCharacters:(jchar[]) { (int) 0xffff } length:1]]);");
   }
 
   public void testInitializersPlacedAfterOuterAssignments() throws IOException {
@@ -234,15 +234,15 @@ public class InitializationNormalizerTest extends GenerationTest {
 
   public void testStaticInitializersKeptInOrder() throws IOException {
     String source =
-        "public class Test { " +
-        "  public static final int I = 1; " +
-        "  public static final java.util.Set<Integer> iSet = new java.util.HashSet<Integer>(); " +
-        "  static { iSet.add(I); } " +
-        "  public static final int iSetSize = iSet.size(); }";
+        "public class Test { "
+        + "  public static final int I = 1; "
+        + "  public static final java.util.Set<Integer> iSet = new java.util.HashSet<Integer>(); "
+        + "  static { iSet.add(I); } "
+        + "  public static final int iSetSize = iSet.size(); }";
     String translation = translateSourceFile(source, "Test", "Test.m");
     String setInit =
-        "JreOperatorRetainedAssign(&Test_iSet_, nil, " +
-        "[[[JavaUtilHashSet alloc] init] autorelease])";
+        "JreOperatorRetainedAssign(&Test_iSet_, nil, "
+        + "[[[JavaUtilHashSet alloc] init] autorelease])";
     String setAdd = "[Test_iSet_ addWithId:[JavaLangInteger valueOfWithInt:Test_I]]";
     String setSize = "Test_iSetSize_ = [Test_iSet_ size]";
     assertTranslation(translation, setInit);
@@ -254,8 +254,8 @@ public class InitializationNormalizerTest extends GenerationTest {
 
   public void testStaticFinalStringAssignedToStaticFinalString() throws IOException {
     String translation = translateSourceFile(
-        "class Test { static final String FOO = Inner.BAR; " +
-        "class Inner { static final String BAR = \"bar\"; } }", "Test", "Test.m");
+        "class Test { static final String FOO = Inner.BAR; "
+        + "class Inner { static final String BAR = \"bar\"; } }", "Test", "Test.m");
     assertTranslation(translation, "NSString * Test_FOO_ = @\"bar\";");
   }
 }

@@ -67,7 +67,7 @@ public class JavaToIOSMethodTranslatorTest extends GenerationTest {
         "class Test { public String toString(boolean value) { return String.valueOf(value); } }",
         "Test", "Test.m");
     assertTranslatedLines(translation,
-        "- (NSString *)toStringWithBoolean:(BOOL)value {",
+        "- (NSString *)toStringWithBoolean:(jboolean)value {",
         "return [NSString valueOfBool:value];");
   }
 
@@ -92,7 +92,7 @@ public class JavaToIOSMethodTranslatorTest extends GenerationTest {
     List<Statement> stmts = translateStatements(source);
     assertEquals(1, stmts.size());
     String result = generateStatement(stmts.get(0));
-    assertEquals("int test = ((int) [@\"foo\" hash]);", result);
+    assertEquals("jint test = ((jint) [@\"foo\" hash]);", result);
   }
 
   public void testClassGetSuperclass() throws IOException {
@@ -143,7 +143,7 @@ public class JavaToIOSMethodTranslatorTest extends GenerationTest {
     List<Statement> stmts = translateStatements(source);
     assertEquals(9, stmts.size());
     String result = generateStatement(stmts.get(1));
-    assertEquals("int idx = [s indexOf:'g'];", result);
+    assertEquals("jint idx = [s indexOf:'g'];", result);
     result = generateStatement(stmts.get(2));
     assertEquals("idx = [s indexOfString:@\"brillig\"];", result);
     result = generateStatement(stmts.get(3));

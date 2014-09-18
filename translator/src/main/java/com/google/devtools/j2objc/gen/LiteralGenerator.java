@@ -72,9 +72,9 @@ public class LiteralGenerator {
       // Convert min long literal to an expression
       token = "-0x7fffffffffffffffLL - 1";
     } else {
-      // Convert Java long literals to long long for Obj-C
+      // Convert Java long literals to jlong for Obj-C
       if (token.startsWith("0x")) {
-        token = "(long long) " + token;  // Ensure constant is treated as signed.
+        token = "(jlong) " + token;  // Ensure constant is treated as signed.
       }
       int pos = token.length() - 1;
       int numLs = 0;
@@ -95,7 +95,7 @@ public class LiteralGenerator {
       // Convert min int literal to an expression
       token = "-0x7fffffff - 1";
     } else if (token.startsWith("0x")) {
-      token = "(int) " + token;  // Ensure constant is treated as signed.
+      token = "(jint) " + token;  // Ensure constant is treated as signed.
     }
     return token;
   }
@@ -128,7 +128,7 @@ public class LiteralGenerator {
 
   public static String generate(Long value) {
     if (value.longValue() == Long.MIN_VALUE) {
-      return "((long long) 0x8000000000000000LL)";
+      return "((jlong) 0x8000000000000000LL)";
     } else {
       return value.toString() + "LL";
     }
@@ -136,7 +136,7 @@ public class LiteralGenerator {
 
   public static String generate(Integer value) {
     if (value.intValue() == Integer.MIN_VALUE) {
-      return "((int) 0x80000000)";
+      return "((jint) 0x80000000)";
     } else {
       return value.toString();
     }

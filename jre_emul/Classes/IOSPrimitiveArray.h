@@ -74,10 +74,10 @@ FOUNDATION_EXPORT C_TYPE *IOS##U_NAME##Array_GetRef(IOS##U_NAME##Array *array, N
 
 @interface IOSBooleanArray : IOSArray {
  @public
-  BOOL buffer_[0];
+  jboolean buffer_[0];
 }
 
-PRIMITIVE_ARRAY_INTERFACE(boolean, Boolean, BOOL)
+PRIMITIVE_ARRAY_INTERFACE(boolean, Boolean, jboolean)
 
 @end
 
@@ -86,10 +86,10 @@ PRIMITIVE_ARRAY_INTERFACE(boolean, Boolean, BOOL)
 
 @interface IOSCharArray : IOSArray {
  @public
-  unichar buffer_[0];
+  jchar buffer_[0];
 }
 
-PRIMITIVE_ARRAY_INTERFACE(char, Char, unichar)
+PRIMITIVE_ARRAY_INTERFACE(char, Char, jchar)
 
 // Create an array from an NSString.
 + (instancetype)arrayWithNSString:(NSString *)string;
@@ -101,20 +101,20 @@ PRIMITIVE_ARRAY_INTERFACE(char, Char, unichar)
 
 @interface IOSByteArray : IOSArray {
  @public
-  char buffer_[0];
+  jbyte buffer_[0];
 }
 
-PRIMITIVE_ARRAY_INTERFACE(byte, Byte, char)
+PRIMITIVE_ARRAY_INTERFACE(byte, Byte, jbyte)
 
 // Copies the array contents into a specified buffer, up to the specified
 // length.  An IndexOutOfBoundsException is thrown if the specified length
 // is greater than the array size.
-- (void)getBytes:(char *)buffer
+- (void)getBytes:(jbyte *)buffer
           offset:(jint)offset
           length:(jint)length;
 
 // Copies the specified native buffer into this array at the specified offset.
-- (void)replaceBytes:(const char *)source
+- (void)replaceBytes:(const jbyte *)source
               length:(jint)length
               offset:(jint)destOffset;
 
@@ -129,10 +129,10 @@ PRIMITIVE_ARRAY_INTERFACE(byte, Byte, char)
 
 @interface IOSShortArray : IOSArray {
  @public
-  short buffer_[0];
+  jshort buffer_[0];
 }
 
-PRIMITIVE_ARRAY_INTERFACE(short, Short, short)
+PRIMITIVE_ARRAY_INTERFACE(short, Short, jshort)
 
 @end
 
@@ -141,10 +141,10 @@ PRIMITIVE_ARRAY_INTERFACE(short, Short, short)
 
 @interface IOSIntArray : IOSArray {
  @public
-  int buffer_[0];
+  jint buffer_[0];
 }
 
-PRIMITIVE_ARRAY_INTERFACE(int, Int, int)
+PRIMITIVE_ARRAY_INTERFACE(int, Int, jint)
 
 @end
 
@@ -153,10 +153,10 @@ PRIMITIVE_ARRAY_INTERFACE(int, Int, int)
 
 @interface IOSLongArray : IOSArray {
  @public
-  long long buffer_[0];
+  jlong buffer_[0];
 }
 
-PRIMITIVE_ARRAY_INTERFACE(long, Long, long long)
+PRIMITIVE_ARRAY_INTERFACE(long, Long, jlong)
 
 @end
 
@@ -165,10 +165,10 @@ PRIMITIVE_ARRAY_INTERFACE(long, Long, long long)
 
 @interface IOSFloatArray : IOSArray {
  @public
-  float buffer_[0];
+  jfloat buffer_[0];
 }
 
-PRIMITIVE_ARRAY_INTERFACE(float, Float, float)
+PRIMITIVE_ARRAY_INTERFACE(float, Float, jfloat)
 
 @end
 
@@ -177,10 +177,10 @@ PRIMITIVE_ARRAY_INTERFACE(float, Float, float)
 
 @interface IOSDoubleArray : IOSArray {
  @public
-  double buffer_[0];
+  jdouble buffer_[0];
 }
 
-PRIMITIVE_ARRAY_INTERFACE(double, Double, double)
+PRIMITIVE_ARRAY_INTERFACE(double, Double, jdouble)
 
 @end
 

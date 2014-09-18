@@ -160,7 +160,7 @@ public class AnonymousClassConverterTest extends GenerationTest {
         + "Object test() { return new Object() { "
         + "int getCount() { return Test.this.getCount(); } }; } }", "Test", "Test.m");
     assertTranslatedLines(translation,
-        "- (int)getCount {",
+        "- (jint)getCount {",
         "return [this$0_ getCount];");
   }
 
@@ -358,7 +358,7 @@ public class AnonymousClassConverterTest extends GenerationTest {
     assertTranslation(header, "@interface TestEnum_$2 : TestEnum");
     assertTranslatedLines(header,
         "- (instancetype)initWithNSString:(NSString *)__name",
-        "withInt:(int)__ordinal;");
+        "withInt:(jint)__ordinal;");
 
     assertTranslation(impl, "[super initWithNSString:__name withInt:__ordinal]");
     assertTranslation(impl,
@@ -414,17 +414,17 @@ public class AnonymousClassConverterTest extends GenerationTest {
 
     // Verify ColorEnum constructor.
     assertTranslatedLines(impl,
-        "- (instancetype)initWithInt:(int)n",
+        "- (instancetype)initWithInt:(jint)n",
         "withNSString:(NSString *)__name",
-        "withInt:(int)__ordinal {",
+        "withInt:(jint)__ordinal {",
         "return JreMemDebugAdd([super initWithNSString:__name withInt:__ordinal]);",
         "}");
 
     // Verify ColorEnum_$1 constructor.
     assertTranslatedLines(impl,
-        "- (instancetype)initWithInt:(int)arg$0",
+        "- (instancetype)initWithInt:(jint)arg$0",
         "withNSString:(NSString *)__name",
-        "withInt:(int)__ordinal {",
+        "withInt:(jint)__ordinal {",
         "return JreMemDebugAdd([super initWithInt:arg$0 withNSString:__name withInt:__ordinal]);");
 
     // Verify constant initialization.

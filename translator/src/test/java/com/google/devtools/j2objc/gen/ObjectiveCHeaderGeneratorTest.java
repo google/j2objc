@@ -306,9 +306,9 @@ public class ObjectiveCHeaderGeneratorTest extends GenerationTest {
     translation = getTranslatedFile("Color.m");
     assertTranslation(translation, "int rgb_;");
     assertTranslatedLines(translation,
-        "- (instancetype)initWithInt:(int)rgb",
+        "- (instancetype)initWithInt:(jint)rgb",
         "withNSString:(NSString *)__name",
-        "withInt:(int)__ordinal;");
+        "withInt:(jint)__ordinal;");
   }
 
   public void testEnumWithMultipleConstructors() throws IOException {
@@ -322,16 +322,16 @@ public class ObjectiveCHeaderGeneratorTest extends GenerationTest {
       "Color", "Color.h");
     assertTranslation(translation, "@interface ColorEnum : JavaLangEnum");
     translation = getTranslatedFile("Color.m");
-    assertTranslation(translation, "BOOL primary_;");
+    assertTranslation(translation, "jboolean primary_;");
     assertTranslatedLines(translation,
-        "- (instancetype)initWithInt:(int)rgb",
+        "- (instancetype)initWithInt:(jint)rgb",
         "withNSString:(NSString *)__name",
-        "withInt:(int)__ordinal;");
+        "withInt:(jint)__ordinal;");
     assertTranslatedLines(translation,
-        "- (instancetype)initWithInt:(int)rgb",
-        "withBoolean:(BOOL)primary",
+        "- (instancetype)initWithInt:(jint)rgb",
+        "withBoolean:(jboolean)primary",
         "withNSString:(NSString *)__name",
-        "withInt:(int)__ordinal;");
+        "withInt:(jint)__ordinal;");
     assertTranslation(translation,
         "[self initColorEnumWithInt:rgb withBoolean:YES withNSString:__name withInt:__ordinal]");
     assertTranslatedLines(translation,
@@ -367,14 +367,14 @@ public class ObjectiveCHeaderGeneratorTest extends GenerationTest {
     assertTranslation(translation, "@interface FooCompatible : NSObject < FooCompatible >");
 
     // Verify that the value is defined as a property instead of a method.
-    assertTranslation(translation, "@private\n  BOOL fooable;");
-    assertTranslation(translation, "@property (readonly) BOOL fooable;");
+    assertTranslation(translation, "@private\n  jboolean fooable;");
+    assertTranslation(translation, "@property (readonly) jboolean fooable;");
 
     // Verify default value accessor is generated for property.
-    assertTranslation(translation, "+ (BOOL)fooableDefault;");
+    assertTranslation(translation, "+ (jboolean)fooableDefault;");
 
     // Check that constructor was created with the property as parameter.
-    assertTranslation(translation, "- (instancetype)initWithFooable:(BOOL)fooable_;");
+    assertTranslation(translation, "- (instancetype)initWithFooable:(jboolean)fooable_;");
   }
 
   public void testCharacterEdgeValues() throws IOException {
@@ -540,9 +540,9 @@ public class ObjectiveCHeaderGeneratorTest extends GenerationTest {
     assertTranslation(translation, "int ordinal_Test_;");
     assertTranslatedLines(translation,
         "- (instancetype)initWithNSString:(NSString *)name",
-        "withInt:(int)ordinal",
+        "withInt:(jint)ordinal",
         "withNSString:(NSString *)__name",
-        "withInt:(int)__ordinal;");
+        "withInt:(jint)__ordinal;");
   }
 
   public void testDeprecatedEnumType() throws IOException {

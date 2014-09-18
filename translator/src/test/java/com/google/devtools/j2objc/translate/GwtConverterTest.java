@@ -30,18 +30,18 @@ public class GwtConverterTest extends GenerationTest {
   protected void setUp() throws IOException {
     super.setUp();
     addSourceFile(
-        "package com.google.gwt.core.client;" +
-        "public class GWT { public static <T> T create(Class<T> classLiteral) { return null; } " +
-        "  public static boolean isClient() { return false; }" +
-        "  public static boolean isScript() { return false; } }",
+        "package com.google.gwt.core.client;"
+        + "public class GWT { public static <T> T create(Class<T> classLiteral) { return null; } "
+        + "  public static boolean isClient() { return false; }"
+        + "  public static boolean isScript() { return false; } }",
         "com/google/gwt/core/client/GWT.java");
     addSourceFile(
-        "package com.google.common.annotations; " +
-        "import java.lang.annotation.*; " +
-        "@Retention(RetentionPolicy.CLASS) " +
-        "@Target({ ElementType.METHOD }) " +
-        "public @interface GwtIncompatible { " +
-        "  String value(); }",
+        "package com.google.common.annotations; "
+        + "import java.lang.annotation.*; "
+        + "@Retention(RetentionPolicy.CLASS) "
+        + "@Target({ ElementType.METHOD }) "
+        + "public @interface GwtIncompatible { "
+        + "  String value(); }",
         "com/google/common/annotations/GwtIncompatible.java");
   }
 
@@ -53,31 +53,31 @@ public class GwtConverterTest extends GenerationTest {
 
   public void testGwtCreate() throws IOException {
     String translation = translateSourceFile(
-        "import com.google.gwt.core.client.GWT;" +
-        "class Test { " +
-        "  Test INSTANCE = GWT.create(Test.class);" +
-        "  String FOO = foo();" +  // Regression requires subsequent non-mapped method invocation.
-        "  static String foo() { return \"foo\"; } }", "Test", "Test.m");
-    assertTranslation(translation, "Test_set_INSTANCE_(self, " +
-        "[[IOSClass classWithClass:[Test class]] newInstance]);");
+        "import com.google.gwt.core.client.GWT;"
+        + "class Test { "
+        + "  Test INSTANCE = GWT.create(Test.class);"
+        + "  String FOO = foo();"  // Regression requires subsequent non-mapped method invocation.
+        + "  static String foo() { return \"foo\"; } }", "Test", "Test.m");
+    assertTranslation(translation, "Test_set_INSTANCE_(self, "
+        + "[[IOSClass classWithClass:[Test class]] newInstance]);");
   }
 
   public void testGwtIsScript() throws IOException {
     String translation = translateSourceFile(
-        "import com.google.gwt.core.client.GWT;" +
-        "class Test { boolean test() { " +
-        "  if (GWT.isClient() || GWT.isScript()) { return true; } return false; }}",
+        "import com.google.gwt.core.client.GWT;"
+        + "class Test { boolean test() { "
+        + "  if (GWT.isClient() || GWT.isScript()) { return true; } return false; }}",
         "Test", "Test.m");
-    assertTranslatedLines(translation, "- (BOOL)test {", "return NO;", "}");
+    assertTranslatedLines(translation, "- (jboolean)test {", "return NO;", "}");
   }
 
   // Verify GwtIncompatible method is not stripped by default.
   public void testGwtIncompatibleStrip() throws IOException {
     Options.setStripGwtIncompatibleMethods(true);
     String translation = translateSourceFile(
-        "import com.google.common.annotations.GwtIncompatible;" +
-        "class Test { " +
-        "  @GwtIncompatible(\"don't use\") boolean test() { return false; }}",
+        "import com.google.common.annotations.GwtIncompatible;"
+        + "class Test { "
+        + "  @GwtIncompatible(\"don't use\") boolean test() { return false; }}",
         "Test", "Test.h");
     assertNotInTranslation(translation, "- (BOOL)test;");
   }
@@ -85,11 +85,11 @@ public class GwtConverterTest extends GenerationTest {
   // Verify GwtIncompatible method is stripped with flag.
   public void testGwtIncompatibleNoStrip() throws IOException {
     String translation = translateSourceFile(
-        "import com.google.common.annotations.GwtIncompatible;" +
-        "class Test { " +
-        "  @GwtIncompatible(\"don't use\") boolean test() { return false; }}",
+        "import com.google.common.annotations.GwtIncompatible;"
+        + "class Test { "
+        + "  @GwtIncompatible(\"don't use\") boolean test() { return false; }}",
         "Test", "Test.h");
-    assertTranslation(translation, "- (BOOL)test;");
+    assertTranslation(translation, "- (jboolean)test;");
   }
 
   // Verify GwtIncompatible method is not stripped with flag, if
@@ -97,10 +97,10 @@ public class GwtConverterTest extends GenerationTest {
   public void testGwtIncompatibleNoStripKnownValue() throws IOException {
     Options.setStripGwtIncompatibleMethods(true);
     String translation = translateSourceFile(
-        "import com.google.common.annotations.GwtIncompatible;" +
-        "class Test { " +
-        "  @GwtIncompatible(\"reflection\") boolean test() { return false; }}",
+        "import com.google.common.annotations.GwtIncompatible;"
+        + "class Test { "
+        + "  @GwtIncompatible(\"reflection\") boolean test() { return false; }}",
         "Test", "Test.h");
-    assertTranslation(translation, "- (BOOL)test;");
+    assertTranslation(translation, "- (jboolean)test;");
   }
 }

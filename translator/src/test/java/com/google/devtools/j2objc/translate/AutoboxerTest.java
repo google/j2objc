@@ -30,18 +30,18 @@ import java.util.List;
 public class AutoboxerTest extends GenerationTest {
 
   public void testDoNotBoxIntInVarargMethod() throws IOException {
-    String source = "public class Test { Test(String s) {} " +
-        "int one(String s, int i) { return two(new Test(s), i, 1, 2); }" +
-        "int two(Test t, int i, Integer ... args) { return 0; } }";
+    String source = "public class Test { Test(String s) {} "
+        + "int one(String s, int i) { return two(new Test(s), i, 1, 2); }"
+        + "int two(Test t, int i, Integer ... args) { return 0; } }";
     String translation = translateSourceFile(source, "Test", "Test.m");
 
     // i should not be boxed since its argument is explicitly declared,
     // but 1 and 2 should be because they are passed as varargs.
-    assertTranslation(translation, "twoWithTest:[[[Test alloc] initWithNSString:s] autorelease] " +
-        "withInt:i withJavaLangIntegerArray:" +
-        "[IOSObjectArray arrayWithObjects:(id[]){ [JavaLangInteger valueOfWithInt:1], " +
-        "[JavaLangInteger valueOfWithInt:2] } count:2 type:" +
-        "[IOSClass classWithClass:[JavaLangInteger class]]]];");
+    assertTranslation(translation, "twoWithTest:[[[Test alloc] initWithNSString:s] autorelease] "
+        + "withInt:i withJavaLangIntegerArray:"
+        + "[IOSObjectArray arrayWithObjects:(id[]){ [JavaLangInteger valueOfWithInt:1], "
+        + "[JavaLangInteger valueOfWithInt:2] } count:2 type:"
+        + "[IOSClass classWithClass:[JavaLangInteger class]]]];");
   }
 
   public void testUnboxReturn() throws IOException {
@@ -150,22 +150,22 @@ public class AutoboxerTest extends GenerationTest {
     String source = "Integer test = new Integer(5); int result = test + 3;";
     List<Statement> stmts = translateStatements(source);
     String result = generateStatement(stmts.get(1));
-    assertEquals("int result = [test intValue] + 3;", result);
+    assertEquals("jint result = [test intValue] + 3;", result);
   }
 
   public void testInfixRightOperand() throws IOException {
     String source = "Integer test = new Integer(5); int result = 3 + test;";
     List<Statement> stmts = translateStatements(source);
     String result = generateStatement(stmts.get(1));
-    assertEquals("int result = 3 + [test intValue];", result);
+    assertEquals("jint result = 3 + [test intValue];", result);
   }
 
   public void testInfixBothOperands() throws IOException {
-    String source = "Integer foo = new Integer(5); Integer bar = new Integer(3);" +
-        "int result = foo + bar;";
+    String source = "Integer foo = new Integer(5); Integer bar = new Integer(3);"
+        + "int result = foo + bar;";
     List<Statement> stmts = translateStatements(source);
     String result = generateStatement(stmts.get(2));
-    assertEquals("int result = [foo intValue] + [bar intValue];", result);
+    assertEquals("jint result = [foo intValue] + [bar intValue];", result);
   }
 
   public void testInfixNeitherOperand() throws IOException {
@@ -173,7 +173,7 @@ public class AutoboxerTest extends GenerationTest {
     String source = "int result = 3 + 5;";
     List<Statement> stmts = translateStatements(source);
     String result = generateStatement(stmts.get(0));
-    assertEquals("int result = 3 + 5;", result);
+    assertEquals("jint result = 3 + 5;", result);
   }
 
   public void testVariableDeclaration() throws IOException {
@@ -184,8 +184,8 @@ public class AutoboxerTest extends GenerationTest {
   }
 
   public void testMethodArgs() throws IOException {
-    String source = "public class Test { void foo(Integer i) {} " +
-        "void test() { int i = 3; foo(i); }}";
+    String source = "public class Test { void foo(Integer i) {} "
+        + "void test() { int i = 3; foo(i); }}";
     String translation = translateSourceFile(source, "Test", "Test.m");
     assertTranslation(translation,
         "[self fooWithJavaLangInteger:[JavaLangInteger valueOfWithInt:i]];");
@@ -193,16 +193,16 @@ public class AutoboxerTest extends GenerationTest {
 
   public void testConditionalExpression() throws IOException {
     String translation = translateSourceFile(
-        "public class Test { " +
-        "void test() { Boolean b = true ? false : null; } }",
+        "public class Test { "
+        + "void test() { Boolean b = true ? false : null; } }",
         "Test", "Test.m");
     assertTranslation(translation, "[JavaLangBoolean valueOfWithBoolean:NO]");
   }
 
   public void testReturnWithConditional() throws IOException {
     String translation = translateSourceFile(
-        "public class Test { " +
-        "boolean test() { Boolean b = null; return b != null ? b : false; } }",
+        "public class Test { "
+        + "boolean test() { Boolean b = null; return b != null ? b : false; } }",
         "Test", "Test.m");
     assertTranslation(translation, "b != nil ? [b booleanValue] : NO");
   }
@@ -218,65 +218,65 @@ public class AutoboxerTest extends GenerationTest {
     // Verify that an array with an initializer that has elements of the same
     // type isn't boxed.
     String translation = translateSourceFile(
-      "public class Test { public int values[] = new int[] { 1, 2, 3 }; }",
-      "Test", "Test.m");
-    assertTranslation(translation, "[IOSIntArray arrayWithInts:(int[]){ 1, 2, 3 } count:3]");
+        "public class Test { public int values[] = new int[] { 1, 2, 3 }; }",
+        "Test", "Test.m");
+    assertTranslation(translation, "[IOSIntArray arrayWithInts:(jint[]){ 1, 2, 3 } count:3]");
     translation = translateSourceFile(
-      "public class Test { private Integer i = 1; private Integer j = 2; private Integer k = 3;" +
-      "  public Integer values[] = new Integer[] { i, j, k }; }",
-      "Test", "Test.m");
+        "public class Test { private Integer i = 1; private Integer j = 2; private Integer k = 3;"
+        + "  public Integer values[] = new Integer[] { i, j, k }; }",
+        "Test", "Test.m");
     assertTranslation(translation,
-        "[IOSObjectArray arrayWithObjects:(id[]){ i_, j_, k_ } count:3 " +
-        "type:[IOSClass classWithClass:[JavaLangInteger class]]]");
+        "[IOSObjectArray arrayWithObjects:(id[]){ i_, j_, k_ } count:3 "
+        + "type:[IOSClass classWithClass:[JavaLangInteger class]]]");
   }
 
   public void testArrayInitializerBoxed() throws IOException {
     // Verify that an Integer array with an initializer that has int elements
     // is boxed.
     String translation = translateSourceFile(
-      "public class Test { private Integer i = 1; " +
-      "  public void test() { Integer values[] = new Integer[] { 1, 2, i }; }}",
-      "Test", "Test.m");
+        "public class Test { private Integer i = 1; "
+        + "  public void test() { Integer values[] = new Integer[] { 1, 2, i }; }}",
+        "Test", "Test.m");
     assertTranslation(translation,
-        "[IOSObjectArray arrayWithObjects:(id[]){ [JavaLangInteger valueOfWithInt:1], " +
-        "[JavaLangInteger valueOfWithInt:2], i_ } count:3 " +
-        "type:[IOSClass classWithClass:[JavaLangInteger class]]]");
+        "[IOSObjectArray arrayWithObjects:(id[]){ [JavaLangInteger valueOfWithInt:1], "
+        + "[JavaLangInteger valueOfWithInt:2], i_ } count:3 "
+        + "type:[IOSClass classWithClass:[JavaLangInteger class]]]");
   }
 
   public void testArrayInitializerUnboxed() throws IOException {
     // Verify that an int array with an initializer that has Integer elements
     // is unboxed.
     String translation = translateSourceFile(
-      "public class Test { private Integer i = 1; private Integer j = 2;" +
-      "  public void test() { int values[] = new int[] { i, j, 3 }; }}",
-      "Test", "Test.m");
+        "public class Test { private Integer i = 1; private Integer j = 2;"
+        + "  public void test() { int values[] = new int[] { i, j, 3 }; }}",
+        "Test", "Test.m");
     assertTranslation(translation,
-        "[IOSIntArray arrayWithInts:(int[]){ [((JavaLangInteger *) nil_chk(i_)) intValue], " +
-        "[((JavaLangInteger *) nil_chk(j_)) intValue], 3 } count:3]");
+        "[IOSIntArray arrayWithInts:(jint[]){ [((JavaLangInteger *) nil_chk(i_)) intValue], "
+        + "[((JavaLangInteger *) nil_chk(j_)) intValue], 3 } count:3]");
   }
 
   public void testFieldArrayInitializerBoxed() throws IOException {
     // Verify that an Integer array with an initializer that has int elements
     // is boxed.
     String translation = translateSourceFile(
-      "public class Test { private Integer i = 1; " +
-      "  public Integer values[] = new Integer[] { 1, 2, i }; }",
-      "Test", "Test.m");
+        "public class Test { private Integer i = 1; "
+        + "  public Integer values[] = new Integer[] { 1, 2, i }; }",
+        "Test", "Test.m");
     assertTranslation(translation,
-        "[IOSObjectArray arrayWithObjects:(id[]){ [JavaLangInteger valueOfWithInt:1], " +
-        "[JavaLangInteger valueOfWithInt:2], i_ } count:3 " +
-        "type:[IOSClass classWithClass:[JavaLangInteger class]]]");
+        "[IOSObjectArray arrayWithObjects:(id[]){ [JavaLangInteger valueOfWithInt:1], "
+        + "[JavaLangInteger valueOfWithInt:2], i_ } count:3 "
+        + "type:[IOSClass classWithClass:[JavaLangInteger class]]]");
   }
 
   public void testFieldArrayInitializerUnboxed() throws IOException {
     // Verify that an int array with an initializer that has Integer elements
     // is unboxed.
     String translation = translateSourceFile(
-      "public class Test { private Integer i = 1; private Integer j = 2;" +
-      "  public int values[] = new int[] { i, j, 3 }; }",
-      "Test", "Test.m");
+        "public class Test { private Integer i = 1; private Integer j = 2;"
+        + "  public int values[] = new int[] { i, j, 3 }; }",
+        "Test", "Test.m");
     assertTranslation(translation,
-        "[IOSIntArray arrayWithInts:(int[]){ [i_ intValue], [j_ intValue], 3 } count:3]");
+        "[IOSIntArray arrayWithInts:(jint[]){ [i_ intValue], [j_ intValue], 3 } count:3]");
   }
 
   public void testBoxedTypeLiteral() throws IOException {
@@ -289,8 +289,8 @@ public class AutoboxerTest extends GenerationTest {
     String source = "public class Test { Integer i = 1; void foo() { i *= 2; } }";
     String translation = translateSourceFile(source, "Test", "Test.m");
     assertTranslation(translation,
-        "Test_set_i_(self, " +
-        "[JavaLangInteger valueOfWithInt:[((JavaLangInteger *) nil_chk(i_)) intValue] * 2]);");
+        "Test_set_i_(self, "
+        + "[JavaLangInteger valueOfWithInt:[((JavaLangInteger *) nil_chk(i_)) intValue] * 2]);");
   }
 
   public void testBoxedEnumConstructorArgs() throws IOException {
@@ -300,11 +300,11 @@ public class AutoboxerTest extends GenerationTest {
     // i should not be boxed since its argument is explicitly declared,
     // but 1 and 2 should be because they are passed as varargs.
     assertTranslation(translation,
-        "[[TestEnum alloc] initWithId:[JavaLangInteger valueOfWithInt:0] " +
-        "withNSString:@\"INT\" withInt:0]");
+        "[[TestEnum alloc] initWithId:[JavaLangInteger valueOfWithInt:0] "
+        + "withNSString:@\"INT\" withInt:0]");
     assertTranslation(translation,
-        "[[TestEnum alloc] initWithId:[JavaLangBoolean valueOfWithBoolean:NO] " +
-        "withNSString:@\"BOOLEAN\" withInt:1]");
+        "[[TestEnum alloc] initWithId:[JavaLangBoolean valueOfWithBoolean:NO] "
+        + "withNSString:@\"BOOLEAN\" withInt:1]");
   }
 
   public void testBoxedBoolInIf() throws IOException {
@@ -322,8 +322,8 @@ public class AutoboxerTest extends GenerationTest {
   }
 
   public void testBoxedBoolInDoWhile() throws IOException {
-    String source = "public class Test { " +
-        "  Boolean b = false; void foo() { do { foo(); } while (b); } }";
+    String source = "public class Test { "
+        + "  Boolean b = false; void foo() { do { foo(); } while (b); } }";
     String translation = translateSourceFile(source, "Test", "Test.m");
 
     assertTranslation(translation, "while ([((JavaLangBoolean *) nil_chk(b_)) booleanValue])");
@@ -337,8 +337,8 @@ public class AutoboxerTest extends GenerationTest {
   }
 
   public void testAutoboxCast() throws IOException {
-    String source = "public class Test { double doubleValue; " +
-        "public int hashCode() { return ((Double) doubleValue).hashCode(); } }";
+    String source = "public class Test { double doubleValue; "
+        + "public int hashCode() { return ((Double) doubleValue).hashCode(); } }";
     String translation = translateSourceFile(source, "Test", "Test.m");
 
     assertTranslation(translation, "[[JavaLangDouble valueOfWithDouble:doubleValue_] hash]");
@@ -346,11 +346,11 @@ public class AutoboxerTest extends GenerationTest {
 
   public void testAutoboxArrayIndex() throws IOException {
     String source =
-        "public class Test { " +
-        "  Integer index() { return 1; }" +
-        "  void test() {" +
-        "    int[] array = new int[3];" +
-        "    array[index()] = 2; }}";
+        "public class Test { "
+        + "  Integer index() { return 1; }"
+        + "  void test() {"
+        + "    int[] array = new int[3];"
+        + "    array[index()] = 2; }}";
     String translation = translateSourceFile(source, "Test", "Test.m");
     assertTranslation(translation,
         "*IOSIntArray_GetRef(array, [((JavaLangInteger *) nil_chk([self index])) intValue]) = 2;");
@@ -358,10 +358,10 @@ public class AutoboxerTest extends GenerationTest {
 
   public void testPrefixExpression() throws IOException {
     String source =
-        "public class Test { void test() { " +
-        "  Integer iMinutes = new Integer(1); " +
-        "  Double iSeconds = new Double(0);" +
-        "  iMinutes = -iMinutes; iSeconds = -iSeconds; }}";
+        "public class Test { void test() { "
+        + "  Integer iMinutes = new Integer(1); "
+        + "  Double iSeconds = new Double(0);"
+        + "  iMinutes = -iMinutes; iSeconds = -iSeconds; }}";
     String translation = translateSourceFile(source, "Test", "Test.m");
     assertTranslation(translation,
         "iMinutes = [JavaLangInteger valueOfWithInt:-[iMinutes intValue]];");
@@ -371,31 +371,31 @@ public class AutoboxerTest extends GenerationTest {
 
   public void testStringConcatenation() throws IOException {
     String translation = translateSourceFile(
-        "class Test { void test() { Boolean b = Boolean.TRUE; Integer i = new Integer(3); " +
-        "String s = b + \"foo\" + i; } }", "Test", "Test.m");
+        "class Test { void test() { Boolean b = Boolean.TRUE; Integer i = new Integer(3); "
+        + "String s = b + \"foo\" + i; } }", "Test", "Test.m");
     assertTranslation(translation, "NSString *s = [NSString stringWithFormat:@\"%@foo%@\", b, i]");
   }
 
   public void testExtendedOperandsAreUnboxed() throws IOException {
     String translation = translateSourceFile(
-        "class Test { void test() { Integer i1 = new Integer(2); Integer i2 = new Integer(3); " +
-        "int i3 = 1 + 2 + i1 + i2; } }", "Test", "Test.m");
+        "class Test { void test() { Integer i1 = new Integer(2); Integer i2 = new Integer(3); "
+        + "int i3 = 1 + 2 + i1 + i2; } }", "Test", "Test.m");
     assertTranslation(translation, "int i3 = 1 + 2 + [i1 intValue] + [i2 intValue]");
   }
 
   public void testUnboxOfSwitchStatementExpression() throws IOException {
     String translation = translateSourceFile(
-        "class Test { void test() {" +
-        " Integer i = 3;" +
-        " switch (i) { case 1: case 2: case 3: } } }", "Test", "Test.m");
+        "class Test { void test() {"
+        + " Integer i = 3;"
+        + " switch (i) { case 1: case 2: case 3: } } }", "Test", "Test.m");
     assertTranslation(translation, "switch ([i intValue]) {");
   }
 
   public void testInvokeSuperMethodAutoboxing() throws IOException {
-    String translation = translateSourceFile("class Base { " +
-        "public void print(Object o) { System.out.println(o); }}" +
-        "public class Test extends Base {" +
-        "@Override public void print(Object o) { super.print(123.456f); }}", "Test", "Test.m");
+    String translation = translateSourceFile("class Base { "
+        + "public void print(Object o) { System.out.println(o); }}"
+        + "public class Test extends Base {"
+        + "@Override public void print(Object o) { super.print(123.456f); }}", "Test", "Test.m");
     assertTranslation(translation,
         "[super printWithId:[JavaLangFloat valueOfWithFloat:123.456f]];");
   }
@@ -409,8 +409,8 @@ public class AutoboxerTest extends GenerationTest {
 
   public void testBoxedIncrementAndDecrement() throws Exception {
     String translation = translateSourceFile(
-        "class Test { void test() { Integer i = 1; i++; Byte b = 2; b--; Character c = 'a'; ++c; " +
-        "Double d = 3.0; --d; } }", "Test", "Test.m");
+        "class Test { void test() { Integer i = 1; i++; Byte b = 2; b--; Character c = 'a'; ++c; "
+        + "Double d = 3.0; --d; } }", "Test", "Test.m");
     assertTranslation(translation, "PostIncrInt(&i);");
     assertTranslation(translation, "PostDecrByte(&b);");
     assertTranslation(translation, "PreIncrChar(&c);");
@@ -423,18 +423,18 @@ public class AutoboxerTest extends GenerationTest {
         "class Test { void takesDouble(double d) {} void test() { takesDouble(new Double(1.2)); }}",
         "Test", "Test.m");
     assertTranslation(translation,
-        "[self takesDoubleWithDouble:[((JavaLangDouble *) [[[JavaLangDouble alloc] " +
-        "initWithDouble:1.2] autorelease]) doubleValue]];");
+        "[self takesDoubleWithDouble:[((JavaLangDouble *) [[[JavaLangDouble alloc] "
+        + "initWithDouble:1.2] autorelease]) doubleValue]];");
   }
 
   public void testWildcardBoxType() throws IOException {
     String translation = translateSourceFile(
-        "class Test { interface Entry<T> { T getValue(); } " +
-        "void test(Entry<? extends Long> entry) { long l = entry.getValue(); } }",
+        "class Test { interface Entry<T> { T getValue(); } "
+        + "void test(Entry<? extends Long> entry) { long l = entry.getValue(); } }",
         "Test", "Test.m");
     assertTranslation(translation,
-        "long long int l = [((JavaLangLong *) nil_chk([((id<Test_Entry>) nil_chk(entry_)) " +
-        "getValue])) longLongValue];");
+        "jlong l = [((JavaLangLong *) nil_chk([((id<Test_Entry>) nil_chk(entry_)) "
+        + "getValue])) longLongValue];");
   }
 
   public void testAssignmentWithCase() throws IOException {

@@ -65,16 +65,16 @@ public class ArrayRewriter extends TreeVisitor {
 
   private static final ImmutableMap<String, String> INIT_METHODS =
       ImmutableMap.<String, String>builder()
-      .put("IOSBooleanArray", " arrayWithBooleans:(BOOL *)booleans count:(int)count")
-      .put("IOSByteArray", " arrayWithBytes:(char *)bytes count:(int)count")
-      .put("IOSCharArray", " arrayWithChars:(unichar *)chars count:(int)count")
-      .put("IOSDoubleArray", " arrayWithDoubles:(double *)doubles count:(int)count")
-      .put("IOSFloatArray", " arrayWithFloats:(float *)floats count:(int)count")
-      .put("IOSIntArray", " arrayWithInts:(int *)ints count:(int)count")
-      .put("IOSLongArray", " arrayWithLongs:(long long *)longs count:(int)count")
-      .put("IOSShortArray", " arrayWithShorts:(shorts *)shorts count:(int)count")
+      .put("IOSBooleanArray", " arrayWithBooleans:(jboolean *)booleans count:(jint)count")
+      .put("IOSByteArray", " arrayWithBytes:(jbyte *)bytes count:(jint)count")
+      .put("IOSCharArray", " arrayWithChars:(jchar *)chars count:(jint)count")
+      .put("IOSDoubleArray", " arrayWithDoubles:(jdouble *)doubles count:(jint)count")
+      .put("IOSFloatArray", " arrayWithFloats:(jfloat *)floats count:(jint)count")
+      .put("IOSIntArray", " arrayWithInts:(jint *)ints count:(jint)count")
+      .put("IOSLongArray", " arrayWithLongs:(jlong *)longs count:(jint)count")
+      .put("IOSShortArray", " arrayWithShorts:(jshort *)shorts count:(jint)count")
       .put("IOSObjectArray",
-           " arrayWithObjects:(id *)objects count:(int)count type:(IOSClass *)type")
+           " arrayWithObjects:(id *)objects count:(jint)count type:(IOSClass *)type")
       .build();
 
   private static final IOSMethod IOSCLASS_METHOD = IOSMethod.create("IOSArray iosClass");
