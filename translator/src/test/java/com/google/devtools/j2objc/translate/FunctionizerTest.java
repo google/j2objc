@@ -43,12 +43,12 @@ public class FunctionizerTest extends GenerationTest {
         "class A { String test(String msg) { return str(); } "
         + "  private String str() { return toString(); }}",
         "A", "A.h");
-    String functionHeader = "NSString *A_str_(A *self)";
+    String functionHeader = "NSString *A_str(A *self)";
     assertNotInTranslation(translation, functionHeader);
     translation = getTranslatedFile("A.m");
     assertTranslation(translation, "static " + functionHeader + ";");
     assertTranslation(translation, functionHeader + " {");
-    assertTranslation(translation, "return A_str_(self);");
+    assertTranslation(translation, "return A_str(self);");
     assertTranslation(translation, "return [self description];");
   }
 
@@ -58,7 +58,7 @@ public class FunctionizerTest extends GenerationTest {
         "class A { private String test(String msg) { return str(); } "
         + "  private String str() { return toString(); }}",
         "A", "A.m");
-    assertTranslation(translation, "return A_str_(self);");
+    assertTranslation(translation, "return A_str(self);");
     assertTranslation(translation, "return [self description];");
   }
 
@@ -67,13 +67,15 @@ public class FunctionizerTest extends GenerationTest {
         "class A { String test(String msg) { return str(msg, getClass()); } "
         + "  private String str(String msg, Class<?> cls) { return msg + cls; }}",
         "A", "A.h");
-    String functionHeader = "NSString *A_str_(A *self, NSString *msg, IOSClass *cls)";
+    String functionHeader =
+        "NSString *A_strWithNSString_withIOSClass_(A *self, NSString *msg, IOSClass *cls)";
     assertNotInTranslation(translation, functionHeader);
     translation = getTranslatedFile("A.m");
     assertTranslation(translation, "static " + functionHeader + ";");
     assertTranslatedLines(translation, functionHeader + " {",
         "return [NSString stringWithFormat:@\"%@%@\", msg, cls];");
-    assertTranslation(translation, "return A_str_(self, msg, [self getClass]);");
+    assertTranslation(translation,
+        "return A_strWithNSString_withIOSClass_(self, msg, [self getClass]);");
   }
 
   // Verify non-private instance method is generated normally.
@@ -98,9 +100,9 @@ public class FunctionizerTest extends GenerationTest {
         "A", "A.m");
     assertTranslatedLines(translation,
         "- (NSString *)test {",
-        "return A_str_(self);");
+        "return A_str(self);");
     assertTranslatedLines(translation,
-        "NSString *A_str_(A *self) {",
+        "NSString *A_str(A *self) {",
         "return self->hello_;");
   }
 
@@ -112,7 +114,7 @@ public class FunctionizerTest extends GenerationTest {
         + "  private String str() { super.hello = \"hi\"; return super.hello; }}}",
         "A", "A.m");
     assertTranslatedLines(translation,
-        "NSString *A_B_str_(A_B *self) {",
+        "NSString *A_B_str(A_B *self) {",
         "A_set_hello_(self, @\"hi\");",
         "return self->hello_;");
   }
@@ -149,12 +151,12 @@ public class FunctionizerTest extends GenerationTest {
     translation = getTranslatedFile("A.m");
     assertTranslatedLines(translation,
         "- (NSString *)test {",
-        "return A_str_(self, 0);");
+        "return A_strWithInt_(self, 0);");
     assertTranslatedLines(translation,
-        "NSString *A_str_(A *self, jint i) {",
-        "return A_str_2(self);");
+        "NSString *A_strWithInt_(A *self, jint i) {",
+        "return A_str(self);");
     assertTranslatedLines(translation,
-        "NSString *A_str_2(A *self) {",
+        "NSString *A_str(A *self) {",
         "return self->hello_;");
   }
 
@@ -176,14 +178,14 @@ public class FunctionizerTest extends GenerationTest {
         + "    private int test3() { return A.this.outerN; }}}",
         "A", "A.m");
     assertTranslatedLines(translation,
-        "int A_str_(A *self) {",
+        "int A_str(A *self) {",
         "return 0;");
     assertTranslatedLines(translation,
         "- (jint)test1 {",
-        "return A_str_(this$0_);");
+        "return A_str(this$0_);");
     assertTranslatedLines(translation,
         "- (jint)test2 {",
-        "return A_str_(this$0_);");
+        "return A_str(this$0_);");
     assertTranslatedLines(translation,
         "- (jint)test3 {",
         "return this$0_->outerN_;");
@@ -200,7 +202,7 @@ public class FunctionizerTest extends GenerationTest {
         "A", "A.m");
     assertTranslatedLines(translation,
         "- (void)testWithA_B:(A_B *)b {",
-        "A_B_test_(nil_chk(b));");
+        "A_B_test(nil_chk(b));");
   }
 
   // Verify annotation parameters are ignored.
@@ -216,7 +218,8 @@ public class FunctionizerTest extends GenerationTest {
         "class A { String test(String msg) { return str(msg, getClass()); } "
         + "  private static String str(String msg, Class<?> cls) { return msg + cls; }}",
         "A", "A.h");
-    String functionHeader = "NSString *A_str_(NSString *msg, IOSClass *cls)";
+    String functionHeader =
+        "NSString *A_strWithNSString_withIOSClass_(NSString *msg, IOSClass *cls)";
     assertNotInTranslation(translation, functionHeader + ';');
     translation = getTranslatedFile("A.m");
     // Check new function.
@@ -227,11 +230,11 @@ public class FunctionizerTest extends GenerationTest {
     assertTranslatedLines(translation,
         "+ (NSString *)strWithNSString:(NSString *)msg",
         "withIOSClass:(IOSClass *)cls {",
-        "return A_str_(msg, cls);");
+        "return A_strWithNSString_withIOSClass_(msg, cls);");
     // Check invocation.
     assertTranslatedLines(translation,
         "- (NSString *)testWithNSString:(NSString *)msg {",
-        "return A_str_(msg, [self getClass]);");
+        "return A_strWithNSString_withIOSClass_(msg, [self getClass]);");
   }
 
   public void testFunctionParameter() throws IOException {
@@ -240,7 +243,7 @@ public class FunctionizerTest extends GenerationTest {
         + "  private String echo(String msg) { return msg; } "
         + "  private String str(String msg) { return msg; }}",
         "A", "A.m");
-    assertTranslatedLines(translation, "A_echo_(self, A_str_(self, msg))");
+    assertTranslatedLines(translation, "A_echoWithNSString_(self, A_strWithNSString_(self, msg))");
   }
 
   public void testStaticVarargsMethod() throws IOException {
@@ -248,11 +251,11 @@ public class FunctionizerTest extends GenerationTest {
         "class A { String test(String msg) { return strchars('a', 'b', 'c'); } "
         + "  private static String strchars(char... args) { return String.valueOf(args); }}",
         "A", "A.h");
-    String functionHeader = "NSString *A_strchars_(IOSCharArray *args)";
+    String functionHeader = "NSString *A_strcharsWithCharArray_(IOSCharArray *args)";
     assertNotInTranslation(translation, functionHeader + ';');
     translation = getTranslatedFile("A.m");
     assertTranslation(translation, functionHeader + " {");
-    assertTranslation(translation, "return A_strchars_(["
+    assertTranslation(translation, "return A_strcharsWithCharArray_(["
         + "IOSCharArray arrayWithChars:(jchar[]){ 'a', 'b', 'c' } count:3]);");
   }
 
@@ -311,11 +314,11 @@ public class FunctionizerTest extends GenerationTest {
         + "  void use() { test2(); }}",
         "A", "A.m");
     // Verify static class function calls class init.
-    assertTranslatedLines(translation, "id A_foo_() {", "A_init();", "return A_o_;", "}");
+    assertTranslatedLines(translation, "id A_foo() {", "A_init();", "return A_o_;", "}");
     // Verify class method doesn't call class init.
-    assertTranslatedLines(translation, "- (void)test {", "A_foo_();", "}");
+    assertTranslatedLines(translation, "- (void)test {", "A_foo();", "}");
     // Verify non-static class function doesn't call class init.
-    assertTranslatedLines(translation, "void A_test2_(A *self) {", "}");
+    assertTranslatedLines(translation, "void A_test2(A *self) {", "}");
   }
 
   public void testPrivateNativeMethod() throws IOException {
@@ -323,16 +326,17 @@ public class FunctionizerTest extends GenerationTest {
         "class A { Object o; void use() { setO(null); } "
         + "  private native void setO(Object o) /*-[ self->o_ = o; ]-*/; }",
         "A", "A.m");
-    assertTranslation(translation, "static void A_setO_(A *self, id o);");
-    assertTranslatedLines(translation, "void A_setO_(A *self, id o) {", "self->o_ = o;", "}");
-    assertTranslatedLines(translation, "- (void)setOWithId:(id)o {", "A_setO_(self, o);", "}");
+    assertTranslation(translation, "static void A_setOWithId_(A *self, id o);");
+    assertTranslatedLines(translation, "void A_setOWithId_(A *self, id o) {", "self->o_ = o;", "}");
+    assertTranslatedLines(translation,
+        "- (void)setOWithId:(id)o {", "A_setOWithId_(self, o);", "}");
   }
 
   public void testGenericMethod() throws IOException {
     String translation = translateSourceFile(
         "class Test { private static <T> void foo(T t) {} static void bar() { foo(\"test\"); } }",
         "Test", "Test.m");
-    assertTranslation(translation, "Test_foo_(@\"test\");");
+    assertTranslation(translation, "Test_fooWithId_(@\"test\");");
   }
 
   public void testProtectedMethodInPrivateClass() throws IOException {
@@ -347,8 +351,8 @@ public class FunctionizerTest extends GenerationTest {
     String translation = translateSourceFile(
         "enum Test { A { void bar() { foo(); } }; private static void foo() {} }",
         "Test", "Test.m");
-    assertTranslatedLines(translation, "- (void)bar {", "TestEnum_foo_();");
-    assertTranslation(translation, "static void TestEnum_foo_();");
-    assertTranslation(translation, "void TestEnum_foo_() {");
+    assertTranslatedLines(translation, "- (void)bar {", "TestEnum_foo();");
+    assertTranslation(translation, "static void TestEnum_foo();");
+    assertTranslation(translation, "void TestEnum_foo() {");
   }
 }

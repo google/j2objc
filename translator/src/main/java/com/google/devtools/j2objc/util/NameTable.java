@@ -565,27 +565,14 @@ public class NameTable {
 
   /**
    * Returns a "Type_method" function name for static methods, such as from
-   * enum types.
+   * enum types. A combination of classname plus modified selector is
+   * guaranteed to be unique within the app.
    */
   public static String makeFunctionName(IMethodBinding methodBinding) {
     ITypeBinding classBinding = methodBinding.getDeclaringClass();
     String className = getFullName(classBinding);
-    String methodName = methodBinding.getName();
-
-    // If method name is overloaded, get its declaration index. For example if a class has
-    // private foo(int) and foo(long) methods, the function names would be foo1(int) and foo2(long).
-    int index = 0;
-    for (IMethodBinding m : classBinding.getDeclaredMethods()) {
-      if (m.getName().equals(methodName)) {
-        index++;
-        if (m.isEqualTo(methodBinding)) {
-          break;
-        }
-      }
-    }
-
-    return String.format("%s_%s_%s", className, methodName,
-        index > 1 ? Integer.toString(index) : "");
+    String methodName = getMethodSelector(methodBinding).replace(':', '_');
+    return String.format("%s_%s", className, methodName);
   }
 
   public static boolean isReservedName(String name) {

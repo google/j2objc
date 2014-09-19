@@ -133,7 +133,7 @@ abstract class AbstractStringBuilder {
         JavaLangAbstractStringBuilder *self, unichar *buffer, int length) {
       int newCount = self->count_ + length;
       if (newCount > (int) self->value_->size_) {
-        JavaLangAbstractStringBuilder_enlargeBuffer_(self, newCount);
+        JavaLangAbstractStringBuilder_enlargeBufferWithInt_(self, newCount);
       }
       memcpy(self->value_->buffer_ + self->count_, buffer, length * sizeof(unichar));
       self->count_ = newCount;
@@ -151,7 +151,7 @@ abstract class AbstractStringBuilder {
     /*-[
     void AbstractStringBuilder_appendCharNative(JavaLangAbstractStringBuilder *self, unichar ch) {
       if (self->count_ == (int) self->value_->size_) {
-        JavaLangAbstractStringBuilder_enlargeBuffer_(self, self->count_ + 1);
+        JavaLangAbstractStringBuilder_enlargeBufferWithInt_(self, self->count_ + 1);
       }
       self->value_->buffer_[self->count_++] = ch;
     }
