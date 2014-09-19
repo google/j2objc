@@ -34,7 +34,7 @@
 + (void)initReferent:(JavaLangRefReference *)reference;
 + (void)strengthenReferent:(JavaLangRefReference *)reference;
 + (void)weakenReferent:(JavaLangRefReference *)reference;
-+ (void)deallocReferent:(JavaLangRefReference *)reference;
++ (void)removeAssociation:(JavaLangRefReference *)reference;
 
 // Test-only method to fake a low-memory condition.
 + (void)handleMemoryWarning:(NSNotification *)notification;

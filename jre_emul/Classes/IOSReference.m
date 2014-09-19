@@ -105,7 +105,7 @@ static BOOL in_low_memory_cleanup;
   [reference->referent_ autorelease];
 }
 
-+ (void)deallocReferent:(JavaLangRefReference *)reference {
++ (void)removeAssociation:(JavaLangRefReference *)reference {
   if (reference->referent_) {
     RemoveReferenceAssociation(reference->referent_, reference);
   }
@@ -251,7 +251,7 @@ static BOOL RemoveAllReferenceAssociations(id referent) {
     NSSet *setCopy = (ARCBRIDGE NSSet *) set;
     for (JavaLangRefReference *reference in setCopy) {
       enqueued |= [reference enqueueInternal];
-      [reference clear];
+      reference->referent_ = nil;
     }
     CFDictionaryRemoveValue(weak_refs_map, referent);
   }

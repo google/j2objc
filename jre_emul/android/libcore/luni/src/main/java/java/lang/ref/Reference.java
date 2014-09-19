@@ -155,6 +155,7 @@ public abstract class Reference<T> {
      * object to be enqueued.
      */
     public void clear() {
+        removeAssociation();
         referent = null;
     }
 
@@ -208,7 +209,7 @@ public abstract class Reference<T> {
 
     @Override
     protected void finalize() {
-      deallocReferent();
+      removeAssociation();
     }
 
     private native void initReferent() /*-[
@@ -223,7 +224,7 @@ public abstract class Reference<T> {
       [IOSReference weakenReferent:self];
     ]-*/;
 
-    private native void deallocReferent() /*-[
-      [IOSReference deallocReferent:self];
+    private native void removeAssociation() /*-[
+      [IOSReference removeAssociation:self];
     ]-*/;
 }
