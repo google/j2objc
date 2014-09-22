@@ -44,6 +44,7 @@ import com.google.devtools.j2objc.translate.Rewriter;
 import com.google.devtools.j2objc.translate.StaticVarRewriter;
 import com.google.devtools.j2objc.translate.TypeSorter;
 import com.google.devtools.j2objc.translate.UnsequencedExpressionRewriter;
+import com.google.devtools.j2objc.translate.VarargsRewriter;
 import com.google.devtools.j2objc.translate.VariableRenamer;
 import com.google.devtools.j2objc.types.HeaderImportCollector;
 import com.google.devtools.j2objc.types.IOSTypeBinding;
@@ -198,6 +199,11 @@ class TranslationProcessor extends FileProcessor {
     // Adds nil_chk calls wherever an expression is dereferenced.
     new NilCheckResolver().run(unit);
     ticker.tick("NilCheckResolver");
+
+    // Before: ArrayRewriter - Adds ArrayCreation nodes.
+    // Before: Functionizer - Can't rewrite function arguments.
+    new VarargsRewriter().run(unit);
+    ticker.tick("VarargsRewriter");
 
     new ArrayRewriter().run(unit);
     ticker.tick("ArrayRewriter");

@@ -185,6 +185,7 @@ JAVA_SOURCES = \
 	translate/StaticVarRewriter.java \
 	translate/TypeSorter.java \
 	translate/UnsequencedExpressionRewriter.java \
+	translate/VarargsRewriter.java \
 	translate/VariableRenamer.java \
 	types/AbstractBinding.java \
 	types/AbstractTypeBinding.java \

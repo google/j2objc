@@ -36,6 +36,7 @@ public class ArrayType extends Type {
 
   public ArrayType(ITypeBinding typeBinding) {
     super(typeBinding);
+    assert typeBinding.isArray();
     componentType.set(Type.newType(typeBinding.getComponentType()));
   }
 
