@@ -15,15 +15,11 @@
 package com.google.devtools.j2objc.translate;
 
 import com.google.common.collect.ImmutableMap;
-import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.devtools.j2objc.ast.ArrayAccess;
 import com.google.devtools.j2objc.ast.ArrayCreation;
 import com.google.devtools.j2objc.ast.ArrayInitializer;
 import com.google.devtools.j2objc.ast.Assignment;
-import com.google.devtools.j2objc.ast.ClassInstanceCreation;
-import com.google.devtools.j2objc.ast.ConstructorInvocation;
-import com.google.devtools.j2objc.ast.EnumConstantDeclaration;
 import com.google.devtools.j2objc.ast.Expression;
 import com.google.devtools.j2objc.ast.FieldAccess;
 import com.google.devtools.j2objc.ast.FunctionInvocation;
@@ -34,8 +30,6 @@ import com.google.devtools.j2objc.ast.PostfixExpression;
 import com.google.devtools.j2objc.ast.PrefixExpression;
 import com.google.devtools.j2objc.ast.QualifiedName;
 import com.google.devtools.j2objc.ast.SimpleName;
-import com.google.devtools.j2objc.ast.SuperConstructorInvocation;
-import com.google.devtools.j2objc.ast.SuperMethodInvocation;
 import com.google.devtools.j2objc.ast.TreeNode;
 import com.google.devtools.j2objc.ast.TreeUtil;
 import com.google.devtools.j2objc.ast.TreeVisitor;
@@ -47,7 +41,6 @@ import com.google.devtools.j2objc.types.IOSMethodBinding;
 import com.google.devtools.j2objc.types.IOSTypeBinding;
 import com.google.devtools.j2objc.types.Types;
 
-import org.eclipse.jdt.core.dom.IMethodBinding;
 import org.eclipse.jdt.core.dom.ITypeBinding;
 import org.eclipse.jdt.core.dom.Modifier;
 
@@ -110,52 +103,6 @@ public class ArrayRewriter extends TreeVisitor {
       } else {
         return newMultiDimensionArrayInvocation(arrayType, dimensions);
       }
-    }
-  }
-
-  @Override
-  public void endVisit(ArrayInitializer node) {
-    TreeNode parent = node.getParent();
-    if (!(parent instanceof ArrayCreation)) {
-      node.replaceWith(newInitializedArrayInvocation(node.getTypeBinding(), node.getExpressions()));
-    }
-  }
-
-  /**
-   * Varargs rewriting must be done in a visit (not a endVisit) because it needs
-   * the dimensions of the args before they are rewritten.
-   */
-  private void rewriteVarargs(IMethodBinding method, List<Expression> args) {
-    method = method.getMethodDeclaration();
-    if (!method.isVarargs() || IOSMethodBinding.hasVarArgsTarget(method)) {
-      return;
-    }
-    ITypeBinding[] paramTypes = method.getParameterTypes();
-    ITypeBinding lastParam = paramTypes[paramTypes.length - 1];
-    assert lastParam.isArray();
-    int varargsSize = args.size() - paramTypes.length + 1;
-    if (varargsSize == 1) {
-      ITypeBinding lastArgType = args.get(args.size() - 1).getTypeBinding();
-      if (lastArgType.isNullType()) {
-        return;
-      }
-      if (lastParam.getDimensions() == lastArgType.getDimensions()
-          && lastParam.getElementType().isPrimitive()
-              == lastArgType.getElementType().isPrimitive()) {
-        // Last argument is already an array.
-        return;
-      }
-    }
-
-    List<Expression> varargs = args.subList(paramTypes.length - 1, args.size());
-    List<Expression> varargsCopy = Lists.newArrayList(varargs);
-    varargs.clear();
-    if (varargsCopy.isEmpty()) {
-      args.add(newSingleDimensionArrayInvocation(lastParam, NumberLiteral.newIntLiteral(0)));
-    } else {
-      ArrayInitializer newArray = new ArrayInitializer(lastParam);
-      newArray.getExpressions().addAll(varargsCopy);
-      args.add(newArray);
     }
   }
 
@@ -463,41 +410,5 @@ public class ArrayRewriter extends TreeVisitor {
         return IOSCLASS_METHOD_OBJ;
       }
     }
-  }
-
-  @Override
-  public boolean visit(ClassInstanceCreation node) {
-    rewriteVarargs(node.getMethodBinding(), node.getArguments());
-    return true;
-  }
-
-  @Override
-  public boolean visit(ConstructorInvocation node) {
-    rewriteVarargs(node.getMethodBinding(), node.getArguments());
-    return true;
-  }
-
-  @Override
-  public boolean visit(EnumConstantDeclaration node) {
-    rewriteVarargs(node.getMethodBinding(), node.getArguments());
-    return true;
-  }
-
-  @Override
-  public boolean visit(MethodInvocation node) {
-    rewriteVarargs(node.getMethodBinding(), node.getArguments());
-    return true;
-  }
-
-  @Override
-  public boolean visit(SuperConstructorInvocation node) {
-    rewriteVarargs(node.getMethodBinding(), node.getArguments());
-    return true;
-  }
-
-  @Override
-  public boolean visit(SuperMethodInvocation node) {
-    rewriteVarargs(node.getMethodBinding(), node.getArguments());
-    return true;
   }
 }

@@ -45,6 +45,18 @@ public class ArrayCreation extends Expression {
     initializer.copyFrom(other.getInitializer());
   }
 
+  public ArrayCreation(ITypeBinding type, int... dimensions) {
+    arrayType.set(new ArrayType(type));
+    for (int i : dimensions) {
+      this.dimensions.add(NumberLiteral.newIntLiteral(i));
+    }
+  }
+
+  public ArrayCreation(ArrayInitializer initializer) {
+    arrayType.set(new ArrayType(initializer.getTypeBinding()));
+    this.initializer.set(initializer);
+  }
+
   @Override
   public Kind getKind() {
     return Kind.ARRAY_CREATION;
@@ -66,6 +78,10 @@ public class ArrayCreation extends Expression {
 
   public ArrayInitializer getInitializer() {
     return initializer.get();
+  }
+
+  public void setInitializer(ArrayInitializer newInitializer) {
+    initializer.set(newInitializer);
   }
 
   @Override
