@@ -24,6 +24,10 @@
 #import "java/lang/ArrayStoreException.h"
 #import "java/lang/AssertionError.h"
 
+// Defined in IOSArray.m
+extern id IOSArray_NewArrayWithDimensions(
+    Class self, NSUInteger dimensionCount, const jint *dimensionLengths, IOSClass *type);
+
 static IOSObjectArray *IOSObjectArray_NewArray(jint length, IOSClass *type) {
   IOSObjectArray *array = NSAllocateObject([IOSObjectArray class], length * sizeof(id), nil);
   array->size_ = length;
@@ -83,16 +87,14 @@ static IOSObjectArray *IOSObjectArray_NewArrayWithObjects(
 + (instancetype)arrayWithDimensions:(NSUInteger)dimensionCount
                             lengths:(const jint *)dimensionLengths
                                type:(IOSClass *)type {
-  if (dimensionCount == 0) {
-    @throw AUTORELEASE([[JavaLangAssertionError alloc] initWithId:@"invalid dimension count"]);
-  }
+  return [IOSArray_NewArrayWithDimensions(
+      self, dimensionCount, dimensionLengths, type) autorelease];
+}
 
-  __unsafe_unretained IOSClass *componentTypes[dimensionCount];
-  componentTypes[dimensionCount - 1] = type;
-  for (NSInteger i = (NSInteger) dimensionCount - 2; i >= 0; i--) {
-    componentTypes[i] = [IOSClass arrayClassWithComponentType:componentTypes[i + 1]];
-  }
-  return [self arrayWithDimensions:dimensionCount lengths:dimensionLengths types:componentTypes];
++ (instancetype)newArrayWithDimensions:(NSUInteger)dimensionCount
+                               lengths:(const jint *)dimensionLengths
+                                  type:(IOSClass *)type {
+  return IOSArray_NewArrayWithDimensions(self, dimensionCount, dimensionLengths, type);
 }
 
 + (id)iosClassWithType:(IOSClass *)type {

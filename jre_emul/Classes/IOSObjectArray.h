@@ -52,6 +52,9 @@
 + (instancetype)arrayWithDimensions:(NSUInteger)dimensionCount
                             lengths:(const jint *)dimensionLengths
                                type:(IOSClass *)type;
++ (instancetype)newArrayWithDimensions:(NSUInteger)dimensionCount
+                               lengths:(const jint *)dimensionLengths
+                                  type:(IOSClass *)type;
 
 + (instancetype)arrayWithArray:(IOSObjectArray *)array;
 + (instancetype)arrayWithNSArray:(NSArray *)array type:(IOSClass *)type;

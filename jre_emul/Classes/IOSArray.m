@@ -25,6 +25,51 @@
 #import "java/lang/AssertionError.h"
 #import "java/lang/ArrayIndexOutOfBoundsException.h"
 
+static id NewArrayWithDimensionsAndComponentTypes(
+    Class self, NSUInteger dimensionCount, const jint *dimensionLengths,
+    IOSClass * const *componentTypes) {
+  jint size = *dimensionLengths;
+  __unsafe_unretained IOSClass *componentType = *componentTypes;
+
+  // If dimension of 1, just return a regular array.
+  if (dimensionCount == 1) {
+    if (componentType) {
+      return [IOSObjectArray newArrayWithLength:size type:componentType];
+    } else {
+      return [self newArrayWithLength:size];
+    }
+  }
+
+  // Create an array of arrays, which is recursive to handle additional
+  // dimensions.
+  __unsafe_unretained id subarrays[size];
+  for (jint i = 0; i < size; i++) {
+    subarrays[i] = [NewArrayWithDimensionsAndComponentTypes(
+        self, dimensionCount - 1, dimensionLengths + 1, componentTypes + 1) autorelease];
+  }
+  return [IOSObjectArray newArrayWithObjects:subarrays count:size type:componentType];
+}
+
+id IOSArray_NewArrayWithDimensions(
+    Class self, NSUInteger dimensionCount, const jint *dimensionLengths, IOSClass *type) {
+  if (dimensionCount == 0) {
+    @throw AUTORELEASE([[JavaLangAssertionError alloc] initWithId:@"invalid dimension count"]);
+  }
+
+  __unsafe_unretained IOSClass *componentTypes[dimensionCount];
+  componentTypes[dimensionCount - 1] = type;
+  for (NSInteger i = (NSInteger) dimensionCount - 2; i >= 0; i--) {
+    __unsafe_unretained IOSClass *last = componentTypes[i + 1];
+    if (last) {
+      componentTypes[i] = [IOSClass arrayClassWithComponentType:last];
+    } else {
+      componentTypes[i] = [self iosClass];
+    }
+  }
+  return NewArrayWithDimensionsAndComponentTypes(
+      self, dimensionCount, dimensionLengths, componentTypes);
+}
+
 @implementation IOSArray
 
 - (void)dealloc {
@@ -36,47 +81,12 @@
 
 + (id)arrayWithDimensions:(NSUInteger)dimensionCount
                   lengths:(const jint *)dimensionLengths {
-  if (dimensionCount == 0) {
-    @throw AUTORELEASE([[JavaLangAssertionError alloc] initWithId:@"invalid dimension count"]);
-  }
-
-  __unsafe_unretained IOSClass *componentTypes[dimensionCount];
-  componentTypes[dimensionCount - 1] = nil;
-  for (NSInteger i = (NSInteger) dimensionCount - 2; i >= 0; i--) {
-    __unsafe_unretained IOSClass *last = componentTypes[i + 1];
-    if (last) {
-      componentTypes[i] = [IOSClass arrayClassWithComponentType:last];
-    } else {
-      componentTypes[i] = [self iosClass];
-    }
-  }
-  return [self arrayWithDimensions:dimensionCount lengths:dimensionLengths types:componentTypes];
+  return [IOSArray_NewArrayWithDimensions(self, dimensionCount, dimensionLengths, nil) autorelease];
 }
 
-+ (id)arrayWithDimensions:(NSUInteger)dimensionCount
-                  lengths:(const jint *)dimensionLengths
-                    types:(__unsafe_unretained IOSClass * const *)componentTypes {
-  jint size = *dimensionLengths;
-  __unsafe_unretained IOSClass *componentType = *componentTypes;
-
-  // If dimension of 1, just return a regular array.
-  if (dimensionCount == 1) {
-    if (componentType) {
-      return [IOSObjectArray arrayWithLength:size type:componentType];
-    } else {
-      return [[self class] arrayWithLength:size];
-    }
-  }
-
-  // Create an array of arrays, which is recursive to handle additional
-  // dimensions.
-  __unsafe_unretained id subarrays[size];
-  for (jint i = 0; i < size; i++) {
-    subarrays[i] = [[self class] arrayWithDimensions:dimensionCount - 1
-                                             lengths:dimensionLengths + 1
-                                               types:componentTypes + 1];
-  }
-  return [IOSObjectArray arrayWithObjects:subarrays count:size type:componentType];
++ (id)newArrayWithDimensions:(NSUInteger)dimensionCount
+                     lengths:(const jint *)dimensionLengths {
+  return IOSArray_NewArrayWithDimensions(self, dimensionCount, dimensionLengths, nil);
 }
 
 + (id)iosClass {

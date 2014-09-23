@@ -36,10 +36,12 @@
 // Create an empty multi-dimensional array.
 + (id)arrayWithDimensions:(NSUInteger)dimensionCount
                   lengths:(const jint *)dimensionLengths;
-
-+ (id)arrayWithDimensions:(NSUInteger)dimensionCount
-                  lengths:(const jint *)dimensionLengths
-                    types:(__unsafe_unretained IOSClass * const *)componentTypes;
+// We must set the method family to "none" because as a "new" method family
+// clang will assume the return type to be the same type as the class being
+// called.
++ (id)newArrayWithDimensions:(NSUInteger)dimensionCount
+                     lengths:(const jint *)dimensionLengths
+    __attribute__((objc_method_family(none), ns_returns_retained));
 
 + (id)iosClass;
 + (id)iosClassWithDimensions:(NSUInteger)dimensions;
