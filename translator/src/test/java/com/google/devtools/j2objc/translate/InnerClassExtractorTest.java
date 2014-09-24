@@ -212,8 +212,8 @@ public class InnerClassExtractorTest extends GenerationTest {
         "class Test { Inner inner = new Inner(true); public int size() { return 0; }"
         + "class Inner { Inner(boolean b) {} int size() { return Test.this.size(); } } }",
         "Test", "Test.m");
-    assertTranslation(translation, "Test_set_inner_(self, "
-        + "[[[Test_Inner alloc] initWithTest:self withBoolean:YES] autorelease]);");
+    assertTranslation(translation, "Test_setAndConsume_inner_(self, "
+        + "[[Test_Inner alloc] initWithTest:self withBoolean:YES]);");
     assertTranslation(translation, "Test_Inner_set_this$0_(self, outer$);");
   }
 
@@ -584,7 +584,7 @@ public class InnerClassExtractorTest extends GenerationTest {
     translation = getTranslatedFile("A.m");
     assertFalse(translation.contains("this$0_"));
     assertTranslation(translation,
-        "JreOperatorRetainedAssign(&A_test_, nil, [[[A_$1 alloc] init] autorelease]);");
+        "JreStrongAssignAndConsume(&A_test_, nil, [[A_$1 alloc] init]);");
   }
 
   // Verify that an anonymous class in a static method does not reference

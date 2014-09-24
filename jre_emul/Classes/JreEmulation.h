@@ -117,7 +117,7 @@ __attribute__ ((unused)) static inline id check_protocol_cast(id __unsafe_unreta
 
 // Should only be used with manual reference counting.
 #if !__has_feature(objc_arc)
-static inline id JreOperatorRetainedAssign(id *pIvar, id self, id value) {
+static inline id JreStrongAssignInner(id *pIvar, id self, id value) {
   // We need a lock here because during
   // JreMemDebugGenerateAllocationsReport(), we want the list of links
   // of the graph to be consistent.
@@ -126,10 +126,10 @@ static inline id JreOperatorRetainedAssign(id *pIvar, id self, id value) {
     JreMemDebugLock();
   }
 #endif // JREMEMDEBUG_ENABLED
-  if (* pIvar != self) {
-    [* pIvar autorelease];
+  if (*pIvar != self) {
+    [*pIvar autorelease];
   }
-  * pIvar = value != self ? [value retain] : self;
+  *pIvar = value;
 #if JREMEMDEBUG_ENABLED
   if (JreMemDebugEnabled) {
     JreMemDebugUnlock();
@@ -137,6 +137,25 @@ static inline id JreOperatorRetainedAssign(id *pIvar, id self, id value) {
 #endif // JREMEMDEBUG_ENABLED
 
   return value;
+}
+
+static inline id JreStrongAssign(id *pIvar, id self, id value) {
+  if (value != self) {
+    [value retain];
+  }
+  return JreStrongAssignInner(pIvar, self, value);
+}
+
+static inline id JreStrongAssignAndConsume(id *pIvar, id self, id value) {
+  if (value == self) {
+    [value autorelease];
+  }
+  return JreStrongAssignInner(pIvar, self, value);
+}
+
+// TODO(kstanger): Replace all uses with "JreStrongAssign".
+static inline id JreOperatorRetainedAssign(id *pIvar, id self, id value) {
+  return JreStrongAssign(pIvar, self, value);
 }
 #endif
 
@@ -146,13 +165,17 @@ FOUNDATION_EXPORT
 
 #if __has_feature(objc_arc)
 #define J2OBJC_FIELD_SETTER(CLASS, FIELD, TYPE) \
-  static inline TYPE CLASS##_set_##FIELD(CLASS *instance, TYPE value) { \
+  __attribute__((unused)) static inline TYPE CLASS##_set_##FIELD(CLASS *instance, TYPE value) { \
     return instance->FIELD = value; \
   }
 #else
 #define J2OBJC_FIELD_SETTER(CLASS, FIELD, TYPE) \
-  static inline TYPE CLASS##_set_##FIELD(CLASS *instance, TYPE value) { \
-    return JreOperatorRetainedAssign(&instance->FIELD, instance, value); \
+  __attribute__((unused)) static inline TYPE CLASS##_set_##FIELD(CLASS *instance, TYPE value) { \
+    return JreStrongAssign(&instance->FIELD, instance, value); \
+  }\
+  __attribute__((unused)) static inline TYPE CLASS##_setAndConsume_##FIELD( \
+        CLASS *instance, TYPE value) { \
+    return JreStrongAssignAndConsume(&instance->FIELD, instance, value); \
   }
 #endif
 

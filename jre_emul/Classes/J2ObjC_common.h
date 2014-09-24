@@ -97,7 +97,11 @@ typedef double          jdouble;        /* 64-bit IEEE 754 */
 #define J2OBJC_STATIC_FIELD_SETTER(CLASS, FIELD, TYPE) \
   __attribute__((always_inline)) inline TYPE CLASS##_set_##FIELD(TYPE value) { \
     CLASS##_init(); \
-    return JreOperatorRetainedAssign(&CLASS##_##FIELD, nil, value); \
+    return JreStrongAssign(&CLASS##_##FIELD, nil, value); \
+  } \
+  __attribute__((always_inline)) inline TYPE CLASS##_setAndConsume_##FIELD(TYPE value) { \
+    CLASS##_init(); \
+    return JreStrongAssignAndConsume(&CLASS##_##FIELD, nil, value); \
   }
 #endif
 

@@ -14,6 +14,7 @@
 
 package com.google.devtools.j2objc.translate;
 
+import com.google.devtools.j2objc.Options;
 import com.google.devtools.j2objc.ast.Assignment;
 import com.google.devtools.j2objc.ast.Expression;
 import com.google.devtools.j2objc.ast.FieldAccess;
@@ -144,8 +145,12 @@ public class StaticVarRewriter extends TreeVisitor {
   private FunctionInvocation newSetterInvocation(IVariableBinding var, Expression value) {
     ITypeBinding varType = var.getType();
     ITypeBinding declaringType = var.getDeclaringClass();
-    String funcName =
-        NameTable.getFullName(declaringType) + "_set_" + NameTable.getStaticVarName(var);
+    String funcFormat = "%s_set_%s";
+    if (Options.useReferenceCounting() && TreeUtil.retainResult(value)) {
+      funcFormat = "%s_setAndConsume_%s";
+    }
+    String funcName = String.format(
+        funcFormat, NameTable.getFullName(declaringType), NameTable.getStaticVarName(var));
     FunctionInvocation invocation = new FunctionInvocation(
         funcName, varType, varType, declaringType);
     invocation.getArguments().add(value);

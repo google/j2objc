@@ -34,4 +34,11 @@ public class StaticVarRewriterTest extends GenerationTest {
         "[nil_chk(((Test *) nil_chk(Test_get_test_()))->obj_) description];",
         "[Test_get_test_()->obj_ description];");
   }
+
+  public void testAssinmentToNewObject() throws IOException {
+    addSourceFile("class A { static Object o; }", "A.java");
+    String translation = translateSourceFile(
+        "class Test { void test() { A.o = new Object(); } }", "Test", "Test.m");
+    assertTranslation(translation, "A_setAndConsume_o_([[NSObject alloc] init]);");
+  }
 }

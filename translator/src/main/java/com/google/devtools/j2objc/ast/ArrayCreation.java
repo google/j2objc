@@ -23,6 +23,9 @@ import java.util.List;
  */
 public class ArrayCreation extends Expression {
 
+  // Indicates that this expression leaves the created object with a retain
+  // count of 1. (i.e. does not call autorelease)
+  private boolean hasRetainedResult = false;
   private final ChildLink<ArrayType> arrayType =
       ChildLink.create(ArrayType.class, this);
   private final ChildList<Expression> dimensions = ChildList.create(Expression.class, this);
@@ -66,6 +69,14 @@ public class ArrayCreation extends Expression {
   public ITypeBinding getTypeBinding() {
     ArrayType arrayTypeNode = arrayType.get();
     return arrayTypeNode != null ? arrayTypeNode.getTypeBinding() : null;
+  }
+
+  public boolean hasRetainedResult() {
+    return hasRetainedResult;
+  }
+
+  public void setHasRetainedResult(boolean hasRetainedResult) {
+    this.hasRetainedResult = hasRetainedResult;
   }
 
   public ArrayType getType() {

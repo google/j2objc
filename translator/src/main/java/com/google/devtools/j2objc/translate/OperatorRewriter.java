@@ -100,12 +100,14 @@ public class OperatorRewriter extends TreeVisitor {
   }
 
   private FunctionInvocation newStaticAssignInvocation(IVariableBinding var, Expression value) {
+    String assignFunc =
+        TreeUtil.retainResult(value) ? "JreStrongAssignAndConsume" : "JreStrongAssign";
     FunctionInvocation invocation = new FunctionInvocation(
-        "JreOperatorRetainedAssign", value.getTypeBinding(), Types.resolveIOSType("id"), null);
+        assignFunc, value.getTypeBinding(), Types.resolveIOSType("id"), null);
     List<Expression> args = invocation.getArguments();
     args.add(new PrefixExpression(PrefixExpression.Operator.ADDRESS_OF, new SimpleName(var)));
     args.add(new NullLiteral());
-    args.add(value.copy());
+    args.add(TreeUtil.remove(value));
     return invocation;
   }
 
@@ -113,12 +115,16 @@ public class OperatorRewriter extends TreeVisitor {
       IVariableBinding var, Expression instance, Expression value) {
     ITypeBinding varType = var.getType();
     ITypeBinding declaringType = var.getDeclaringClass().getTypeDeclaration();
-    String setterName = String.format("%s_set_%s", NameTable.getFullName(declaringType),
+    String setterFormat = "%s_set_%s";
+    if (TreeUtil.retainResult(value)) {
+      setterFormat = "%s_setAndConsume_%s";
+    }
+    String setterName = String.format(setterFormat, NameTable.getFullName(declaringType),
         NameTable.javaFieldToObjC(NameTable.getName(var)));
     FunctionInvocation invocation = new FunctionInvocation(
         setterName, varType, varType, declaringType);
-    invocation.getArguments().add(instance.copy());
-    invocation.getArguments().add(value.copy());
+    invocation.getArguments().add(TreeUtil.remove(instance));
+    invocation.getArguments().add(TreeUtil.remove(value));
     return invocation;
   }
 

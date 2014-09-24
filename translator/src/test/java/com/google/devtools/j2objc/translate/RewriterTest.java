@@ -304,17 +304,17 @@ public class RewriterTest extends GenerationTest {
     assertTranslatedLines(translation,
         "+ (void)initialize {",
         "if (self == [Test class]) {",
-        "JreOperatorRetainedAssign(&Test_a_, nil, "
-            + "[IOSIntArray arrayWithInts:(jint[]){ 1, 2, 3 } count:3]);",
-        "JreOperatorRetainedAssign(&Test_b_, nil, "
-            + "[IOSCharArray arrayWithChars:(jchar[]){ '4', '5' } count:2]);");
+        "JreStrongAssignAndConsume(&Test_a_, nil, "
+            + "[IOSIntArray newArrayWithInts:(jint[]){ 1, 2, 3 } count:3]);",
+        "JreStrongAssignAndConsume(&Test_b_, nil, "
+            + "[IOSCharArray newArrayWithChars:(jchar[]){ '4', '5' } count:2]);");
   }
 
   public void testNonStaticMultiDimArrayInitializer() throws IOException {
     String translation = translateSourceFile(
         "class Test { int[][] a = { { 1, 2, 3 } }; }", "Test", "Test.m");
     assertTranslation(translation,
-        "[IOSObjectArray arrayWithObjects:(id[]){"
+        "[IOSObjectArray newArrayWithObjects:(id[]){"
         + " [IOSIntArray arrayWithInts:(jint[]){ 1, 2, 3 } count:3] } count:1"
         + " type:[IOSIntArray iosClass]]");
   }

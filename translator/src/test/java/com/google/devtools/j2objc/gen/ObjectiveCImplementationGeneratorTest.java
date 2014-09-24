@@ -117,8 +117,7 @@ public class ObjectiveCImplementationGeneratorTest extends GenerationTest {
     assertTranslation(translation, "JavaUtilDate * Example_today_;");
     assertTranslation(translation, "+ (void)initialize {");
     assertTranslation(translation,
-        "JreOperatorRetainedAssign(&Example_today_, nil, "
-        + "[[[JavaUtilDate alloc] init] autorelease]);");
+        "JreStrongAssignAndConsume(&Example_today_, nil, [[JavaUtilDate alloc] init]);");
   }
 
   public void testStaticVariableWithNonInitInitialization() throws IOException {
@@ -128,7 +127,7 @@ public class ObjectiveCImplementationGeneratorTest extends GenerationTest {
         + "      java.util.logging.Logger.getLogger(\"Test\");}",
         "Example", "Example.m");
     assertTranslation(translation,
-        "JreOperatorRetainedAssign(&Example_logger_, nil, "
+        "JreStrongAssign(&Example_logger_, nil, "
         + "[JavaUtilLoggingLogger getLoggerWithNSString:@\"Test\"]);");
   }
 
@@ -290,8 +289,7 @@ public class ObjectiveCImplementationGeneratorTest extends GenerationTest {
         "Compatible", "foo/Compatible.m");
     assertTranslation(translation, "id FooCompatible_FOO_;");
     assertTranslation(translation,
-        "JreOperatorRetainedAssign(&FooCompatible_FOO_, nil, "
-        + "[[[NSObject alloc] init] autorelease]);");
+        "JreStrongAssignAndConsume(&FooCompatible_FOO_, nil, [[NSObject alloc] init]);");
   }
 
   public void testAnnotationGeneration() throws IOException {

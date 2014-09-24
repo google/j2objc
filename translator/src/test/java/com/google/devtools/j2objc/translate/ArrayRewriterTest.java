@@ -34,9 +34,9 @@ public class ArrayRewriterTest extends GenerationTest {
   // as an array.
   public void testNilVarargs() throws IOException {
     String source =
-        "public class Test { " +
-        "  void foo(char... chars) {}" +
-        "  void test() { foo(null); }}";
+        "public class Test { "
+        + "  void foo(char... chars) {}"
+        + "  void test() { foo(null); }}";
     String translation = translateSourceFile(source, "Test", "Test.m");
     assertTranslation(translation, "[self fooWithCharArray:nil];");
     assertNotInTranslation(translation,
@@ -55,8 +55,8 @@ public class ArrayRewriterTest extends GenerationTest {
   // passed unchanged.
   public void testPrimitiveArrayVarargs() throws IOException {
     String translation = translateSourceFile(
-        "class Test { void doVarargs(int... ints) {}" +
-        "void test(int[] array) { doVarargs(array); }}",
+        "class Test { void doVarargs(int... ints) {}"
+        + "void test(int[] array) { doVarargs(array); }}",
         "Test", "Test.m");
     assertTranslation(translation, "[self doVarargsWithIntArray:array];");
   }
@@ -67,8 +67,19 @@ public class ArrayRewriterTest extends GenerationTest {
     String translation = translateSourceFile(
         "class Test { void test(float[] array) { java.util.Arrays.asList(array); }}",
         "Test", "Test.m");
-    assertTranslation(translation, "[JavaUtilArrays asListWithNSObjectArray:" +
-        "[IOSObjectArray arrayWithObjects:(id[]){ array } count:1 " +
-        "type:[IOSClass classWithClass:[NSObject class]]]];");
+    assertTranslation(translation, "[JavaUtilArrays asListWithNSObjectArray:"
+        + "[IOSObjectArray arrayWithObjects:(id[]){ array } count:1 "
+        + "type:[IOSClass classWithClass:[NSObject class]]]];");
+  }
+
+  // Verify that the "SetAndConsume" setter is used.
+  public void testAssignmentToNewObject() throws IOException {
+    String translation = translateSourceFile(
+        "class Test { void test(Object[] o) { o[0] = new Object(); o[0] = new int[1]; } }",
+        "Test", "Test.m");
+    assertTranslation(translation,
+        "IOSObjectArray_SetAndConsume(nil_chk(o), 0, [[NSObject alloc] init]);");
+    assertTranslation(translation,
+        "IOSObjectArray_SetAndConsume(o, 0, [IOSIntArray newArrayWithLength:1]);");
   }
 }
