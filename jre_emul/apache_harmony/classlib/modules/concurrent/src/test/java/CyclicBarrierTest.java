@@ -372,6 +372,9 @@ public class CyclicBarrierTest extends JSR166TestCase{
             t1.join(); 
             t2.join();
         } catch(Exception e){
+          e.printStackTrace();
+          fail("Unexpected exception of type: " + e.getClass().getName()
+               + " and message: " + e.getMessage());
             unexpectedException();
         }
     }
