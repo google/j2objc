@@ -553,11 +553,11 @@ public class StatementGeneratorTest extends GenerationTest {
         "public class Test { static int[] a = { 1, 2, 3 }; static char b[] = { '4', '5' }; }",
         "Test", "Test.m");
     assertTranslation(translation,
-        "JreOperatorRetainedAssign(&Test_a_, nil, "
-        + "[IOSIntArray arrayWithInts:(jint[]){ 1, 2, 3 } count:3]);");
+        "JreStrongAssignAndConsume(&Test_a_, nil, "
+        + "[IOSIntArray newArrayWithInts:(jint[]){ 1, 2, 3 } count:3]);");
     assertTranslation(translation,
-        "JreOperatorRetainedAssign(&Test_b_, nil, "
-        + "[IOSCharArray arrayWithChars:(jchar[]){ '4', '5' } count:2]);");
+        "JreStrongAssignAndConsume(&Test_b_, nil, "
+        + "[IOSCharArray newArrayWithChars:(jchar[]){ '4', '5' } count:2]);");
   }
 
   public void testLocalArrayCreation() throws IOException {
@@ -666,7 +666,7 @@ public class StatementGeneratorTest extends GenerationTest {
         "import java.util.*; public class A { Map map; A() { map = new HashMap(); }}",
         "A", "A.m");
     assertTranslation(translation,
-        "A_set_map_(self, [[[JavaUtilHashMap alloc] init] autorelease])");
+        "A_setAndConsume_map_(self, [[JavaUtilHashMap alloc] init])");
   }
 
   public void testStringAddOperator() throws IOException {

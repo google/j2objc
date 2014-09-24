@@ -205,12 +205,6 @@ class TranslationProcessor extends FileProcessor {
     new VarargsRewriter().run(unit);
     ticker.tick("VarargsRewriter");
 
-    new ArrayRewriter().run(unit);
-    ticker.tick("ArrayRewriter");
-
-    new StaticVarRewriter().run(unit);
-    ticker.tick("StaticVarRewriter");
-
     // Reorders the types so that superclasses are declared before classes that
     // extend them.
     TypeSorter.sortTypes(unit);
@@ -225,30 +219,22 @@ class TranslationProcessor extends FileProcessor {
     new CopyAllFieldsWriter().run(unit);
     ticker.tick("CopyAllFieldsWriter");
 
-    new OperatorRewriter().run(unit);
-    ticker.tick("OperatorRewriter");
-
-    // Breaks up deeply nested expressions such as chained method calls.
-    new ComplexExpressionExtractor().run(unit);
-    ticker.tick("ComplexExpressionExtractor");
-
     new ConstantBranchPruner().run(unit);
     ticker.tick("ConstantBranchPruner");
-
-    new EnumRewriter().run(unit);
-    ticker.tick("EnumRewriter");
 
     new OcniExtractor(unit).run(unit);
     ticker.tick("OcniExtractor");
 
+    // After: OcniExtractor - So that native methods can be correctly
+    //   functionized.
     if (Options.finalMethodsAsFunctions()) {
       new Functionizer().run(unit);
       ticker.tick("Functionizer");
     }
 
-    new CastResolver().run(unit);
-    ticker.tick("CastResolver");
-
+    // After: Functionizer - Changes bindings on MethodDeclaration nodes.
+    // Before: StaticVarRewriter, OperatorRewriter - Doesn't know how to handle
+    //   the hasRetainedResult flag on ClassInstanceCreation nodes.
     Map<String, String> methodMappings = Options.getMethodMappings();
     if (methodMappings.isEmpty()) {
       // Method maps are loaded here so tests can call translate() directly.
@@ -256,6 +242,33 @@ class TranslationProcessor extends FileProcessor {
     }
     new JavaToIOSMethodTranslator(methodMappings).run(unit);
     ticker.tick("JavaToIOSMethodTranslator");
+
+    new StaticVarRewriter().run(unit);
+    ticker.tick("StaticVarRewriter");
+
+    new OperatorRewriter().run(unit);
+    ticker.tick("OperatorRewriter");
+
+    // After: StaticVarRewriter, OperatorRewriter - They set the
+    //   hasRetainedResult on ArrayCreation nodes.
+    new ArrayRewriter().run(unit);
+    ticker.tick("ArrayRewriter");
+
+    // After: OperatorRewriter - Otherwise assignments of enum values will be
+    //   rewritten.
+    new EnumRewriter().run(unit);
+    ticker.tick("EnumRewriter");
+
+    // Breaks up deeply nested expressions such as chained method calls.
+    // Should be one of the last translations because other mutations will
+    // affect how deep the expressions are.
+    new ComplexExpressionExtractor().run(unit);
+    ticker.tick("ComplexExpressionExtractor");
+
+    // Should be one of the last translations because methods and functions
+    // added in other phases may need added casts.
+    new CastResolver().run(unit);
+    ticker.tick("CastResolver");
 
     for (Plugin plugin : Options.getPlugins()) {
       plugin.processUnit(unit);

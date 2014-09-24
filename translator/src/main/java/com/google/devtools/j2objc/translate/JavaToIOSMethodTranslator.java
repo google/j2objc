@@ -195,6 +195,7 @@ public class JavaToIOSMethodTranslator extends TreeVisitor {
     IMethodBinding binding = node.getMethodBinding();
     JavaMethod md = descriptions.get(binding);
     if (md != null) {
+      assert !node.hasRetainedResult();
       String key = md.getKey();
       if (key.equals("java.lang.String.String(Ljava/lang/String;)V")) {
         // Special case: replace new String(constant) to constant (avoid clang warning).
