@@ -1000,11 +1000,10 @@ IOSObjectArray *NSString_serialPersistentFields_;
 
 + (void)initialize {
   if (self == [JreStringCategoryDummy class]) {
-    JreOperatorRetainedAssign(
-        &NSString_CASE_INSENSITIVE_ORDER_, nil,
-        [[[CaseInsensitiveComparator alloc] init] autorelease]);
-    JreOperatorRetainedAssign(&NSString_serialPersistentFields_, nil,
-        [IOSObjectArray arrayWithLength:0 type:
+    JreStrongAssignAndConsume(
+        &NSString_CASE_INSENSITIVE_ORDER_, nil, [[CaseInsensitiveComparator alloc] init]);
+    JreStrongAssignAndConsume(&NSString_serialPersistentFields_, nil,
+        [IOSObjectArray newArrayWithLength:0 type:
             [IOSClass classWithClass:[JavaIoObjectStreamField class]]]);
     NSString_initialized = YES;
   }
