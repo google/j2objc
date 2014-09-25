@@ -73,7 +73,7 @@ public class System {
 #if __has_feature(objc_arc)
     JavaLangSystem_in_ = newIn;
 #else
-    JreOperatorRetainedAssign(&JavaLangSystem_in_, self, newIn);
+    JreStrongAssign(&JavaLangSystem_in_, self, newIn);
 #endif
   ]-*/;
 
@@ -81,7 +81,7 @@ public class System {
 #if __has_feature(objc_arc)
     JavaLangSystem_out_ = newOut;
 #else
-    JreOperatorRetainedAssign(&JavaLangSystem_out_, self, newOut);
+    JreStrongAssign(&JavaLangSystem_out_, self, newOut);
 #endif
   ]-*/;
 
@@ -89,7 +89,7 @@ public class System {
 #if __has_feature(objc_arc)
     JavaLangSystem_err_ = newErr;
 #else
-    JreOperatorRetainedAssign(&JavaLangSystem_err_, self, newErr);
+    JreStrongAssign(&JavaLangSystem_err_, self, newErr);
 #endif
   ]-*/;
 
