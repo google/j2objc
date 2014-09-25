@@ -39,8 +39,8 @@ BOOL JreMemDebugEnabled = NO;
 #if __has_feature(objc_arc)
 
 // We don't implement memory usage debug when ARC is enabled because we rely
-// on JreOperatorRetainedAssign() to lock properly to avoid some memory
-// inconsistency while running JreMemDebugGenerateAllocationsReport().
+// on JreStrongAssign() to lock properly to avoid some memory inconsistency
+// while running JreMemDebugGenerateAllocationsReport().
 
 FOUNDATION_EXPORT id JreMemDebugAddInternal(id obj) {
   return obj;
