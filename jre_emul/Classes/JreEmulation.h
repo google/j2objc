@@ -152,11 +152,6 @@ static inline id JreStrongAssignAndConsume(id *pIvar, id self, id value) {
   }
   return JreStrongAssignInner(pIvar, self, value);
 }
-
-// TODO(kstanger): Replace all uses with "JreStrongAssign".
-static inline id JreOperatorRetainedAssign(id *pIvar, id self, id value) {
-  return JreStrongAssign(pIvar, self, value);
-}
 #endif
 
 // Converts main() arguments into an IOSObjectArray of NSStrings.
