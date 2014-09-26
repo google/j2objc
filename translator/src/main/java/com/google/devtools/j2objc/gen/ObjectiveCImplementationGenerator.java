@@ -301,7 +301,7 @@ public class ObjectiveCImplementationGenerator extends ObjectiveCSourceFileGener
     newline();
     String code = declaration.getImplementationCode();
     if (code != null) {
-      print(code);
+      println(reindent(code));
     }
   }
 
