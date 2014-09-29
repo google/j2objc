@@ -72,9 +72,6 @@
 // String.valueOf(long)
 + (NSString *)valueOfLong:(long long int)value;
 
-// String.valueOf(short)
-+ (NSString *)valueOfShort:(short)value;
-
 // String.getChars(int, int, char[], int)
 - (void)getChars:(int)sourceBegin
        sourceEnd:(int)sourceEnd
@@ -292,6 +289,24 @@ destinationBegin:(int)dstBegin;
 - (int)offsetByCodePoints:(int)index codePointOffset:(int)offset;
 
 @end
+
+FOUNDATION_EXPORT NSString *NSString_copyValueOfWithCharArray_(IOSCharArray *chars);
+FOUNDATION_EXPORT NSString *NSString_copyValueOfWithCharArray_withInt_withInt_(
+    IOSCharArray *chars, jint i, jint j);
+FOUNDATION_EXPORT NSString *NSString_formatWithJavaUtilLocale_withNSString_withNSObjectArray_(
+    JavaUtilLocale *l, NSString *s, IOSObjectArray *objs);
+FOUNDATION_EXPORT NSString *NSString_formatWithNSString_withNSObjectArray_(
+    NSString *s, IOSObjectArray *objs);
+FOUNDATION_EXPORT NSString *NSString_valueOfWithBoolean_(jboolean b);
+FOUNDATION_EXPORT NSString *NSString_valueOfWithChar_(jchar c);
+FOUNDATION_EXPORT NSString *NSString_valueOfWithCharArray_(IOSCharArray *chars);
+FOUNDATION_EXPORT NSString *NSString_valueOfWithCharArray_withInt_withInt_(
+    IOSCharArray *chars, jint i, jint j);
+FOUNDATION_EXPORT NSString *NSString_valueOfWithDouble_(jdouble d);
+FOUNDATION_EXPORT NSString *NSString_valueOfWithFloat_(jfloat f);
+FOUNDATION_EXPORT NSString *NSString_valueOfWithInt_(jint i);
+FOUNDATION_EXPORT NSString *NSString_valueOfWithLong_(jlong l);
+FOUNDATION_EXPORT NSString *NSString_valueOfWithId_(id o);
 
 // Empty class to force category to be loaded.
 @interface JreStringCategoryDummy : NSObject

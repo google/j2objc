@@ -52,25 +52,45 @@ id makeException(Class exceptionClass) {
   return exception;
 }
 
+// TODO(tball): remove static method wrappers when reflection invocation calls functions directly.
 + (NSString *)valueOf:(id<NSObject>)obj {
+  return NSString_valueOfWithId_(obj);
+}
+
+NSString *NSString_valueOfWithId_(id<NSObject> obj) {
   return obj ? [obj description] : @"null";
 }
 
 + (NSString *)valueOfBool:(BOOL)value {
+  return NSString_valueOfWithBoolean_(value);
+}
+
+NSString *NSString_valueOfWithBoolean_(BOOL value) {
   return value ? @"true" : @"false";
 }
 
 + (NSString *)valueOfChar:(unichar)value {
+  return NSString_valueOfWithChar_(value);
+}
+
+NSString *NSString_valueOfWithChar_(unichar value) {
   return [NSString stringWithFormat:@"%C", value];
 }
 
-+ (NSString *)valueOfChars:(IOSCharArray *)data {
-  return [NSString valueOfChars:data offset:0 count:data->size_];
+NSString *NSString_valueOfWithCharArray_(IOSCharArray *data) {
+  return NSString_copyValueOfWithCharArray_withInt_withInt_(data, 0, data->size_);
 }
 
-+ (NSString *)valueOfChars:(IOSCharArray *)data
-                    offset:(int)offset
-                     count:(int)count {
+NSString *NSString_copyValueOfWithCharArray_(IOSCharArray *data) {
+  return NSString_valueOfWithCharArray_(data);
+}
+
++ (NSString *)valueOfChars:(IOSCharArray *)data {
+  return NSString_valueOfWithCharArray_(data);
+}
+
+NSString *NSString_valueOfWithCharArray_withInt_withInt_(
+    IOSCharArray *data, jint offset, jint count) {
   id exception = nil;
   if (offset < 0) {
     exception = [[JavaLangStringIndexOutOfBoundsException alloc]
@@ -101,24 +121,47 @@ id makeException(Class exceptionClass) {
   return result;
 }
 
+NSString *NSString_copyValueOfWithCharArray_withInt_withInt_(
+    IOSCharArray *data, jint offset, jint count) {
+  return NSString_valueOfWithCharArray_withInt_withInt_(data, offset, count);
+}
+
++ (NSString *)valueOfChars:(IOSCharArray *)data
+                    offset:(int)offset
+                     count:(int)count {
+  return NSString_valueOfWithCharArray_withInt_withInt_(data, offset, count);
+}
+
 + (NSString *)valueOfDouble:(double)value {
+  return NSString_valueOfWithDouble_(value);
+}
+
+NSString *NSString_valueOfWithDouble_(jdouble value) {
   return [[NSNumber numberWithDouble:value] stringValue];
 }
 
 + (NSString *)valueOfFloat:(float)value {
+  return NSString_valueOfWithFloat_(value);
+}
+
+NSString *NSString_valueOfWithFloat_(jfloat value) {
   return [[NSNumber numberWithFloat:value] stringValue];
 }
 
 + (NSString *)valueOfInt:(int)value {
+  return NSString_valueOfWithInt_(value);
+}
+
+NSString *NSString_valueOfWithInt_(jint value) {
   return [NSString stringWithFormat:@"%i", value];
 }
 
 + (NSString *)valueOfLong:(long long int)value {
-  return [NSString stringWithFormat:@"%qi", value];
+  return NSString_valueOfWithLong_(value);
 }
 
-+ (NSString *)valueOfShort:(short)value {
-  return [NSString stringWithFormat:@"%i", value];
+NSString *NSString_valueOfWithLong_(jlong value) {
+  return [NSString stringWithFormat:@"%qi", value];
 }
 
 - (void)getChars:(int)sourceBegin
@@ -670,19 +713,28 @@ NSStringEncoding parseCharsetName(NSString *charset) {
   free(bytes);
 }
 
-+ (NSString *)formatWithNSString:(NSString *)format withNSObjectArray:(IOSObjectArray *)args {
+NSString *NSString_formatWithNSString_withNSObjectArray_(NSString *format, IOSObjectArray *args) {
   JavaUtilFormatter *formatter = [[JavaUtilFormatter alloc] init];
   NSString *result = [[formatter formatWithNSString:format withNSObjectArray:args] description];
   RELEASE_(formatter);
   return result;
 }
 
-+ (NSString *)formatWithJavaUtilLocale:(JavaUtilLocale *)locale
-                          withNSString:(NSString *)format
-                     withNSObjectArray:(IOSObjectArray *)args {
++ (NSString *)formatWithNSString:(NSString *)format withNSObjectArray:(IOSObjectArray *)args {
+  return NSString_formatWithNSString_withNSObjectArray_(format, args);
+}
+
+NSString *NSString_formatWithJavaUtilLocale_withNSString_withNSObjectArray_(
+    JavaUtilLocale *locale, NSString *format, IOSObjectArray *args) {
   JavaUtilFormatter *formatter =
       AUTORELEASE([[JavaUtilFormatter alloc] initWithJavaUtilLocale:locale]);
   return [[formatter formatWithNSString:format withNSObjectArray:args] description];
+}
+
++ (NSString *)formatWithJavaUtilLocale:(JavaUtilLocale *)locale
+                          withNSString:(NSString *)format
+                     withNSObjectArray:(IOSObjectArray *)args {
+  return NSString_formatWithJavaUtilLocale_withNSString_withNSObjectArray_(locale, format, args);
 }
 
 - (BOOL)hasPrefix:(NSString *)aString offset:(int)offset {

@@ -147,7 +147,8 @@ public class EnumRewriter extends TreeVisitor {
     String header = String.format(
         "+ (IOSObjectArray *)values;\n\n"
         + "+ (%s *)valueOfWithNSString:(NSString *)name;\n\n"
-        + "- (id)copyWithZone:(NSZone *)zone;\n", typeName);
+        + "FOUNDATION_EXPORT %s *%s_valueOfWithNSString_(NSString *name);"
+        + "- (id)copyWithZone:(NSZone *)zone;\n", typeName, typeName, typeName);
 
     StringBuilder sb = new StringBuilder();
     sb.append(String.format(
@@ -158,12 +159,17 @@ public class EnumRewriter extends TreeVisitor {
 
     sb.append(String.format(
         "+ (%s *)valueOfWithNSString:(NSString *)name {\n"
-        + "  for (int i = 0; i < %s; i++) {\n"
-        + "    %s *e = %s_values[i];\n"
-        + "    if ([name isEqual:[e name]]) {\n"
-        + "      return e;\n"
-        + "    }\n"
-        + "  }\n", typeName, numConstants, typeName, typeName));
+        + "  return %s_valueOfWithNSString_(name);\n"
+        + "}\n\n", typeName, typeName));
+
+    sb.append(String.format(
+        "%s *%s_valueOfWithNSString_(NSString *name) {\n"
+            + "  for (int i = 0; i < %s; i++) {\n"
+            + "    %s *e = %s_values[i];\n"
+            + "    if ([name isEqual:[e name]]) {\n"
+            + "      return e;\n"
+            + "    }\n"
+            + "  }\n", typeName, typeName, numConstants, typeName, typeName));
     if (Options.useReferenceCounting()) {
       sb.append(
           "  @throw [[[JavaLangIllegalArgumentException alloc] initWithNSString:name]"

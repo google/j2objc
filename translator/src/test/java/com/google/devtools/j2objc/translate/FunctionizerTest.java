@@ -213,7 +213,8 @@ public class FunctionizerTest extends GenerationTest {
     assertNotInTranslation(translation, "self");
   }
 
-  public void testStaticMethod() throws IOException {
+  // Verify function declaration is in .m file, not the header.
+  public void testPrivateStaticMethod() throws IOException {
     String translation = translateSourceFile(
         "class A { String test(String msg) { return str(msg, getClass()); } "
         + "  private static String str(String msg, Class<?> cls) { return msg + cls; }}",
@@ -221,6 +222,31 @@ public class FunctionizerTest extends GenerationTest {
     String functionHeader =
         "NSString *A_strWithNSString_withIOSClass_(NSString *msg, IOSClass *cls)";
     assertNotInTranslation(translation, functionHeader + ';');
+    translation = getTranslatedFile("A.m");
+    // Check new function.
+    assertTranslatedLines(translation, functionHeader + " {",
+        "A_init();",
+        "return [NSString stringWithFormat:@\"%@%@\", msg, cls];");
+    // Check wrapper.
+    assertTranslatedLines(translation,
+        "+ (NSString *)strWithNSString:(NSString *)msg",
+        "withIOSClass:(IOSClass *)cls {",
+        "return A_strWithNSString_withIOSClass_(msg, cls);");
+    // Check invocation.
+    assertTranslatedLines(translation,
+        "- (NSString *)testWithNSString:(NSString *)msg {",
+        "return A_strWithNSString_withIOSClass_(msg, [self getClass]);");
+  }
+
+  // Verify function declaration is in the header.
+  public void testStaticMethod() throws IOException {
+    String translation = translateSourceFile(
+        "class A { String test(String msg) { return str(msg, getClass()); } "
+        + "  static String str(String msg, Class<?> cls) { return msg + cls; }}",
+        "A", "A.h");
+    String functionHeader =
+        "NSString *A_strWithNSString_withIOSClass_(NSString *msg, IOSClass *cls)";
+    assertTranslation(translation, functionHeader + ';');
     translation = getTranslatedFile("A.m");
     // Check new function.
     assertTranslatedLines(translation, functionHeader + " {",
@@ -255,8 +281,8 @@ public class FunctionizerTest extends GenerationTest {
     assertNotInTranslation(translation, functionHeader + ';');
     translation = getTranslatedFile("A.m");
     assertTranslation(translation, functionHeader + " {");
-    assertTranslation(translation, "return A_strcharsWithCharArray_(["
-        + "IOSCharArray arrayWithChars:(jchar[]){ 'a', 'b', 'c' } count:3]);");
+    assertTranslation(translation, "return A_strcharsWithCharArray_("
+        + "[IOSCharArray arrayWithChars:(jchar[]){ 'a', 'b', 'c' } count:3]);");
   }
 
   public void testAssertInFunction() throws IOException {
