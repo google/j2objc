@@ -36,6 +36,7 @@ import com.google.devtools.j2objc.ast.SingleVariableDeclaration;
 import com.google.devtools.j2objc.ast.TagElement;
 import com.google.devtools.j2objc.ast.TextElement;
 import com.google.devtools.j2objc.ast.TreeNode;
+import com.google.devtools.j2objc.ast.TreeNode.Kind;
 import com.google.devtools.j2objc.ast.TreeUtil;
 import com.google.devtools.j2objc.ast.TypeDeclaration;
 import com.google.devtools.j2objc.ast.VariableDeclaration;
@@ -180,23 +181,30 @@ public abstract class ObjectiveCSourceFileGenerator extends SourceFileGenerator 
 
   protected abstract void printNativeDeclaration(NativeDeclaration declaration);
 
-  protected void printDeclaration(BodyDeclaration declaration) {
+  private void printDeclaration(BodyDeclaration declaration) {
     switch (declaration.getKind()) {
-      case FUNCTION_DECLARATION:
-        printFunction((FunctionDeclaration) declaration);
-        return;
       case METHOD_DECLARATION:
         printMethod((MethodDeclaration) declaration);
         return;
       case NATIVE_DECLARATION:
         printNativeDeclaration((NativeDeclaration) declaration);
         return;
+      default:
+        break;
     }
   }
 
   protected void printDeclarations(Iterable<BodyDeclaration> declarations) {
     for (BodyDeclaration declaration : declarations) {
       printDeclaration(declaration);
+    }
+  }
+
+  protected void printFunctions(Iterable<BodyDeclaration> declarations) {
+    for (BodyDeclaration declaration : declarations) {
+      if (declaration.getKind() == Kind.FUNCTION_DECLARATION) {
+        printFunction((FunctionDeclaration) declaration);
+      }
     }
   }
 
@@ -601,5 +609,24 @@ public abstract class ObjectiveCSourceFileGenerator extends SourceFileGenerator 
             declaringClassName, fieldName, typeStr));
       }
     }
+  }
+
+  protected String getFunctionSignature(FunctionDeclaration function) {
+    StringBuilder sb = new StringBuilder();
+    String returnType = NameTable.getObjCType(function.getReturnType().getTypeBinding());
+    returnType += returnType.endsWith("*") ? "" : " ";
+    sb.append(returnType).append(function.getName()).append('(');
+    for (Iterator<SingleVariableDeclaration> iter = function.getParameters().iterator();
+         iter.hasNext(); ) {
+      IVariableBinding var = iter.next().getVariableBinding();
+      String paramType = NameTable.getObjCType(var.getType());
+      paramType += (paramType.endsWith("*") ? "" : " ");
+      sb.append(paramType + NameTable.getName(var));
+      if (iter.hasNext()) {
+        sb.append(", ");
+      }
+    }
+    sb.append(')');
+    return sb.toString();
   }
 }

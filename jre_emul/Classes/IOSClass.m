@@ -483,7 +483,7 @@ static IOSClass *IOSClass_ArrayClassForName(NSString *name, NSUInteger index) {
   return nil;
 }
 
-+ (IOSClass *)forName:(NSString *)className {
+IOSClass *IOSClass_forNameWithNSString_(NSString *className) {
   nil_chk(className);
   IOSClass *iosClass = nil;
   if ([className length] > 0) {
@@ -503,10 +503,19 @@ static IOSClass *IOSClass_ArrayClassForName(NSString *name, NSUInteger index) {
   @throw AUTORELEASE([[JavaLangClassNotFoundException alloc] initWithNSString:className]);
 }
 
++ (IOSClass *)forName:(NSString *)className {
+  return IOSClass_forNameWithNSString_(className);
+}
+
+IOSClass *IOSClass_forNameWithNSString_withBoolean_withJavaLangClassLoader_(
+    NSString *className, BOOL load, JavaLangClassLoader *loader) {
+  return IOSClass_forNameWithNSString_(className);
+}
+
 + (IOSClass *)forName:(NSString *)className
            initialize:(BOOL)load
-          classLoader:(id)loader {
-  return [IOSClass forName:className];
+          classLoader:(JavaLangClassLoader *)loader {
+  return IOSClass_forNameWithNSString_withBoolean_withJavaLangClassLoader_(className, load, loader);
 }
 
 - (id)cast:(id)throwable {

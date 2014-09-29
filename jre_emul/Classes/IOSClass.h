@@ -29,6 +29,7 @@
 #import "java/lang/reflect/Type.h"
 
 @class IOSObjectArray;
+@class JavaLangClassLoader;
 @class JavaLangReflectConstructor;
 @class JavaLangReflectField;
 @class JavaLangReflectMethod;
@@ -128,7 +129,7 @@
 + (IOSClass *)forName:(NSString *)className;
 + (IOSClass *)forName:(NSString *)className
            initialize:(BOOL)load
-          classLoader:(id)loader;
+          classLoader:(JavaLangClassLoader *)loader;
 
 // Class.cast(Object)
 - (id)cast:(id)throwable;
@@ -197,6 +198,10 @@ extern "C" {
 
 extern NSString *IOSClass_GetTranslatedMethodName(
     NSString *name, IOSObjectArray *paramTypes);
+
+FOUNDATION_EXPORT IOSClass *IOSClass_forNameWithNSString_(NSString *className);
+FOUNDATION_EXPORT IOSClass *IOSClass_forNameWithNSString_withBoolean_withJavaLangClassLoader_(
+    NSString *className, BOOL load, JavaLangClassLoader *loader);
 
 #ifdef __cplusplus
 }

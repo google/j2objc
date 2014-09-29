@@ -58,7 +58,6 @@ import org.eclipse.jdt.core.dom.ITypeBinding;
 import org.eclipse.jdt.core.dom.IVariableBinding;
 import org.eclipse.jdt.core.dom.Modifier;
 
-import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
@@ -206,6 +205,7 @@ public class ObjectiveCImplementationGenerator extends ObjectiveCSourceFileGener
       }
 
       println("\n@end");
+      printFunctions(node.getBodyDeclarations());
     }
   }
 
@@ -414,7 +414,8 @@ public class ObjectiveCImplementationGenerator extends ObjectiveCSourceFileGener
     if (!Options.stripReflection()) {
       printMetadata(node);
     }
-    println("\n@end");
+    println("\n@end\n");
+    printFunctions(node.getBodyDeclarations());
   }
 
   @Override
@@ -440,6 +441,7 @@ public class ObjectiveCImplementationGenerator extends ObjectiveCSourceFileGener
       printMetadata(node);
     }
     println("\n@end");
+    printFunctions(node.getBodyDeclarations());
   }
 
   private void printInitFlagDefinition(
@@ -668,6 +670,10 @@ public class ObjectiveCImplementationGenerator extends ObjectiveCSourceFileGener
     boolean needsNewLine = true;
     for (AbstractTypeDeclaration type : types) {
       for (FunctionDeclaration function : TreeUtil.getFunctionDeclarations(type)) {
+        if (!Modifier.isPrivate(function.getModifiers())) {
+          // Declaration is defined in header file.
+          continue;
+        }
         if (needsNewLine) {
           newline();
           needsNewLine = false;
@@ -675,25 +681,6 @@ public class ObjectiveCImplementationGenerator extends ObjectiveCSourceFileGener
         println("static " + getFunctionSignature(function) + ";");
       }
     }
-  }
-
-  private String getFunctionSignature(FunctionDeclaration function) {
-    StringBuilder sb = new StringBuilder();
-    String returnType = NameTable.getObjCType(function.getReturnType().getTypeBinding());
-    returnType += returnType.endsWith("*") ? "" : " ";
-    sb.append(returnType).append(function.getName()).append('(');
-    for (Iterator<SingleVariableDeclaration> iter = function.getParameters().iterator();
-         iter.hasNext(); ) {
-      IVariableBinding var = iter.next().getVariableBinding();
-      String paramType = NameTable.getObjCType(var.getType());
-      paramType += (paramType.endsWith("*") ? "" : " ");
-      sb.append(paramType + NameTable.getName(var));
-      if (iter.hasNext()) {
-        sb.append(", ");
-      }
-    }
-    sb.append(')');
-    return sb.toString();
   }
 
   @Override

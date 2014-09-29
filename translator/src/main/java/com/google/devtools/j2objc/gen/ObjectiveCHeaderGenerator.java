@@ -152,6 +152,7 @@ public class ObjectiveCHeaderGenerator extends ObjectiveCSourceFileGenerator {
     } else {
       printStaticInitFunction(node, methods);
       printFieldSetters(node, false);
+      printFunctions(node.getBodyDeclarations());
       printStaticFields(node);
     }
 
@@ -315,6 +316,7 @@ public class ObjectiveCHeaderGenerator extends ObjectiveCSourceFileGenerator {
     printDeclarations(node.getBodyDeclarations());
     println("\n@end");
     printStaticInitFunction(node, methods);
+    printFunctions(node.getBodyDeclarations());
     printf("\nFOUNDATION_EXPORT %s *%s_values[];\n", typeName, typeName);
     for (EnumConstantDeclaration constant : constants) {
       String varName = NameTable.getStaticVarName(constant.getVariableBinding());
@@ -370,7 +372,9 @@ public class ObjectiveCHeaderGenerator extends ObjectiveCSourceFileGenerator {
 
   @Override
   protected void printFunction(FunctionDeclaration function) {
-    // Currently all function declarations are private.
+    if (!Modifier.isPrivate(function.getModifiers())) {
+      println("extern " + getFunctionSignature(function) + ';');
+    }
   }
 
   @Override

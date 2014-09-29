@@ -71,16 +71,30 @@ public class Functionizer extends TreeVisitor {
 
   /**
    * Determines the set of methods to functionize. In addition to a method being
-   * final we must also find an invocation for that method.
+   * final we must also find an invocation for that method. Static methods, though,
+   * are always functionized since there are no dynamic dispatch issues.
    */
-  private Set<IMethodBinding> determineFunctionizableMethods(CompilationUnit unit) {
+  private Set<IMethodBinding> determineFunctionizableMethods(final CompilationUnit unit) {
     final Set<IMethodBinding> functionizableDeclarations = Sets.newHashSet();
+    final Set<IMethodBinding> staticDeclarations = Sets.newHashSet();
     final Set<IMethodBinding> invocations = Sets.newHashSet();
     unit.accept(new TreeVisitor() {
       @Override
       public void endVisit(MethodDeclaration node) {
-        if (canFunctionize(node)) {
-          functionizableDeclarations.add(node.getMethodBinding());
+        IMethodBinding m = node.getMethodBinding();
+        int mods = node.getModifiers();
+        if (Modifier.isStatic(mods)) {
+          if (Modifier.isNative(mods)) {
+            // Native method without OCNI needs to be resolved in a separate native source file.
+            return;
+          }
+          if (m.getName().equals(NameTable.CLINIT_NAME) && m.getParameterTypes().length == 0) {
+            // Don't functionize class initializers, since they are only called as methods.
+            return;
+          }
+          staticDeclarations.add(m);
+        } else if (canFunctionize(node)) {
+          functionizableDeclarations.add(m);
         }
       }
 
@@ -89,7 +103,8 @@ public class Functionizer extends TreeVisitor {
         invocations.add(node.getMethodBinding().getMethodDeclaration());
       }
     });
-    return Sets.intersection(functionizableDeclarations, invocations);
+    return Sets.union(staticDeclarations,
+        Sets.intersection(functionizableDeclarations, invocations));
   }
 
   @Override
@@ -145,7 +160,7 @@ public class Functionizer extends TreeVisitor {
   @Override
   public void endVisit(MethodInvocation node) {
     IMethodBinding binding = node.getMethodBinding().getMethodDeclaration();
-    if (!functionizableMethods.contains(binding)) {
+    if (!BindingUtil.isStatic(binding) && !functionizableMethods.contains(binding)) {
       return;
     }
 
@@ -201,7 +216,9 @@ public class Functionizer extends TreeVisitor {
     FunctionDeclaration function = new FunctionDeclaration(
         NameTable.makeFunctionName(m), m.getReturnType());
     function.getParameters().addAll(params);
-    function.setModifiers(Modifier.PRIVATE | Modifier.STATIC);
+    int access =
+        BindingUtil.isStatic(m) && !BindingUtil.isPrivate(m) ? Modifier.PUBLIC : Modifier.PRIVATE;
+    function.setModifiers(access);
 
     function.setBody(method.getBody().copy());
 
