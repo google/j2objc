@@ -311,17 +311,10 @@ public class StatementGenerator extends TreeVisitor {
   public boolean visit(Assignment node) {
     node.getLeftHandSide().accept(this);
     buffer.append(' ');
-    buffer.append(getOperatorStr(node.getOperator()));
+    buffer.append(node.getOperator().toString());
     buffer.append(' ');
     node.getRightHandSide().accept(this);
     return false;
-  }
-
-  private static String getOperatorStr(Assignment.Operator op) {
-    if (op.equals(Assignment.Operator.RIGHT_SHIFT_UNSIGNED_ASSIGN)) {
-      return ">>=";
-    }
-    return op.toString();
   }
 
   @Override
@@ -606,7 +599,6 @@ public class StatementGenerator extends TreeVisitor {
     Expression rhs = node.getRightOperand();
     List<Expression> extendedOperands = node.getExtendedOperands();
     ITypeBinding type = node.getTypeBinding();
-    ITypeBinding lhsType = lhs.getTypeBinding();
     if (Types.isJavaStringType(type)
         && op.equals(InfixExpression.Operator.PLUS)) {
       printStringConcatenation(lhs, rhs, extendedOperands);
@@ -625,31 +617,10 @@ public class StatementGenerator extends TreeVisitor {
       buffer.append(" isEqual:");
       second.accept(this);
       buffer.append("]");
-    } else if (op.equals(InfixExpression.Operator.RIGHT_SHIFT_UNSIGNED)
-        && !lhsType.getName().equals("char")) {
-      buffer.append("(");
-      buffer.append(NameTable.primitiveTypeToObjC(type));
-      buffer.append(") (((");
-      buffer.append(getUnsignedType(lhsType));
-      buffer.append(") ");
-      lhs.accept(this);
-      buffer.append(") >> ");
-      // TODO(tball): mask shift count per JLS.
-      rhs.accept(this);
-      buffer.append(")");
-    } else if (op.equals(InfixExpression.Operator.LEFT_SHIFT) && lhsType.getName().equals("long")) {
-      // The C compiler incorrectly shifts left when the shift is greater
-      // than 32 with signed longs, so cast the lhs to unsigned, then
-      // cast the result back to signed.
-      buffer.append("(jlong) (((uint64_t) ");
-      lhs.accept(this);
-      buffer.append(") << ");
-      rhs.accept(this);
-      buffer.append(')');
     } else {
       lhs.accept(this);
       buffer.append(' ');
-      buffer.append(getOperatorStr(op));
+      buffer.append(op.toString());
       buffer.append(' ');
       rhs.accept(this);
       for (Iterator<Expression> it = extendedOperands.iterator(); it.hasNext(); ) {
@@ -658,28 +629,6 @@ public class StatementGenerator extends TreeVisitor {
       }
     }
     return false;
-  }
-
-  private String getUnsignedType(ITypeBinding type) {
-    switch (type.getBinaryName().charAt(0)) {
-      case 'B':  // byte
-        return "uint8_t";
-      case 'S':  // short
-        return "uint16_t";
-      case 'I':  // int
-        return "uint32_t";
-      case 'J':  // long
-        return "uint64_t";
-      default:
-        throw new AssertionError("Not a signed type: " + type.getName());
-    }
-  }
-
-  private static String getOperatorStr(InfixExpression.Operator op) {
-    if (op.equals(InfixExpression.Operator.RIGHT_SHIFT_UNSIGNED)) {
-      return ">>";
-    }
-    return op.toString();
   }
 
   /**

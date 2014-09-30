@@ -1259,8 +1259,8 @@ public class StatementGeneratorTest extends GenerationTest {
         "Test", "Test.m");
     assertTranslation(translation, "URShiftAssignInt(IOSIntArray_GetRef(nil_chk(array), 0), 2)");
     assertTranslation(translation, "URShiftAssignInt(IOSIntArray_GetRef(array, i - 1), 3)");
-    assertTranslation(translation, "*IOSIntArray_GetRef(array, 1) >>= 4");
-    assertTranslation(translation, "*IOSIntArray_GetRef(array, 2) <<= 5");
+    assertTranslation(translation, "RShiftAssignInt(IOSIntArray_GetRef(array, 1), 4)");
+    assertTranslation(translation, "LShiftAssignInt(IOSIntArray_GetRef(array, 2), 5)");
   }
 
   public void testAssertWithoutDescription() throws IOException {
@@ -1324,11 +1324,11 @@ public class StatementGeneratorTest extends GenerationTest {
         "public class Test { void test(int a, long b, char c, byte d, short e) { "
         + "long r; r = a >>> 1; r = b >>> 2; r = c >>> 3; r = d >>> 4; r = e >>> 5; }}",
         "Test", "Test.m");
-    assertTranslation(translation, "r = (jint) (((uint32_t) a) >> 1);");
-    assertTranslation(translation, "r = (jlong) (((uint64_t) b) >> 2);");
-    assertTranslation(translation, "r = c >> 3;");
-    assertTranslation(translation, "r = (jint) (((uint8_t) d) >> 4);");
-    assertTranslation(translation, "r = (jint) (((uint16_t) e) >> 5);");
+    assertTranslation(translation, "r = URShift32(a, 1);");
+    assertTranslation(translation, "r = URShift64(b, 2);");
+    assertTranslation(translation, "r = URShift32(c, 3);");
+    assertTranslation(translation, "r = URShift32(d, 4);");
+    assertTranslation(translation, "r = URShift32(e, 5);");
   }
 
   public void testUnsignedRightShiftAssign() throws IOException {
@@ -1338,7 +1338,7 @@ public class StatementGeneratorTest extends GenerationTest {
         "Test", "Test.m");
     assertTranslation(translation, "URShiftAssignInt(&a, 1);");
     assertTranslation(translation, "URShiftAssignLong(&b, 2);");
-    assertTranslation(translation, "c >>= 3;");
+    assertTranslation(translation, "URShiftAssignChar(&c, 3);");
     assertTranslation(translation, "URShiftAssignByte(&d, 4);");
     assertTranslation(translation, "URShiftAssignShort(&e, 5);");
   }
@@ -1348,7 +1348,7 @@ public class StatementGeneratorTest extends GenerationTest {
         "public class Test { void test(char[] array) { "
         + "array[0] >>>= 2; }}",
         "Test", "Test.m");
-    assertTranslation(translation, "*IOSCharArray_GetRef(nil_chk(array), 0) >>= 2");
+    assertTranslation(translation, "URShiftAssignChar(IOSCharArray_GetRef(nil_chk(array), 0), 2)");
   }
 
   public void testDoubleQuoteConcatenation() throws IOException {
