@@ -187,15 +187,39 @@ MOD_ASSIGN_DEFN(Int, int)
 MOD_ASSIGN_DEFN(Long, long long)
 MOD_ASSIGN_DEFN(Short, short int)
 
-#define UR_SHIFT_ASSIGN_DEFN(NAME, TYPE) \
-  static inline TYPE URShiftAssign##NAME(TYPE *pLhs, int rhs) { \
-    return *pLhs = (TYPE) (((unsigned TYPE) *pLhs) >> rhs); \
+#define SHIFT_OPERATORS_DEFN(NAME, TYPE, UTYPE, MASK) \
+  static inline TYPE LShift##NAME(TYPE lhs, jlong rhs) { \
+    return lhs << (rhs & MASK); \
+  } \
+  static inline TYPE RShift##NAME(TYPE lhs, jlong rhs) { \
+    return lhs >> (rhs & MASK); \
+  } \
+  static inline TYPE URShift##NAME(TYPE lhs, jlong rhs) { \
+    return (TYPE) (((UTYPE) lhs) >> (rhs & MASK)); \
   }
 
-UR_SHIFT_ASSIGN_DEFN(Byte, char)
-UR_SHIFT_ASSIGN_DEFN(Int, int)
-UR_SHIFT_ASSIGN_DEFN(Long, long long)
-UR_SHIFT_ASSIGN_DEFN(Short, short int)
+#define SHIFT_ASSIGN_OPERATORS_DEFN(NAME, TYPE, UTYPE, MASK) \
+  static inline TYPE LShiftAssign##NAME(TYPE *pLhs, jlong rhs) { \
+    return *pLhs = *pLhs << (rhs & MASK); \
+  } \
+  static inline TYPE RShiftAssign##NAME(TYPE *pLhs, jlong rhs) { \
+    return *pLhs = *pLhs >> (rhs & MASK); \
+  } \
+  static inline TYPE URShiftAssign##NAME(TYPE *pLhs, jlong rhs) { \
+    return *pLhs = (TYPE) (((UTYPE) *pLhs) >> (rhs & MASK)); \
+  }
+
+// Shift masks are determined by the JLS spec, section 15.19.
+SHIFT_OPERATORS_DEFN(32, jint, uint32_t, 0x1f)
+SHIFT_OPERATORS_DEFN(64, jlong, uint64_t, 0x3f)
+SHIFT_ASSIGN_OPERATORS_DEFN(Byte, jbyte, uint32_t, 0x1f)
+SHIFT_ASSIGN_OPERATORS_DEFN(Char, jchar, uint32_t, 0x1f)
+SHIFT_ASSIGN_OPERATORS_DEFN(Int, jint, uint32_t, 0x1f)
+SHIFT_ASSIGN_OPERATORS_DEFN(Long, jlong, uint64_t, 0x3f)
+SHIFT_ASSIGN_OPERATORS_DEFN(Short, jshort, uint32_t, 0x1f)
+
+#undef SHIFT_OPERATORS_DEFN
+#undef SHIFT_ASSIGN_OPERATORS_DEFN
 
 // This macro is used by the translator to add increment and decrement
 // operations to the header files of the boxed types.

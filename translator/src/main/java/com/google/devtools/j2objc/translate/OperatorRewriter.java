@@ -71,13 +71,14 @@ public class OperatorRewriter extends TreeVisitor {
         Expression target = getTarget(lhs, var);
         node.replaceWith(newFieldSetterInvocation(var, target, rhs));
       }
-    } else if (op == Assignment.Operator.RIGHT_SHIFT_UNSIGNED_ASSIGN) {
-      if (!lhsType.getName().equals("char")) {
-        node.replaceWith(newUnsignedRightShift(lhsType, lhs, rhs));
-      }
-    } else if (op == Assignment.Operator.REMAINDER_ASSIGN) {
-      if (isFloatingPoint(lhsType) || isFloatingPoint(rhsType)) {
-        node.replaceWith(newModAssign(lhsType, lhs, rhs));
+    } else {
+      String funcName = getOperatorAssignFunction(op, lhsType, rhsType);
+      if (funcName != null) {
+        FunctionInvocation invocation = new FunctionInvocation(funcName, lhsType, lhsType, null);
+        List<Expression> args = invocation.getArguments();
+        args.add(new PrefixExpression(PrefixExpression.Operator.ADDRESS_OF, TreeUtil.remove(lhs)));
+        args.add(TreeUtil.remove(rhs));
+        node.replaceWith(invocation);
       }
     }
   }
@@ -85,8 +86,8 @@ public class OperatorRewriter extends TreeVisitor {
   public void endVisit(InfixExpression node) {
     InfixExpression.Operator op = node.getOperator();
     ITypeBinding nodeType = node.getTypeBinding();
-    if (op == InfixExpression.Operator.REMAINDER && isFloatingPoint(nodeType)) {
-      String funcName = nodeType.getName().equals("float") ? "fmodf" : "fmod";
+    String funcName = getInfixFunction(op, nodeType);
+    if (funcName != null) {
       FunctionInvocation invocation = new FunctionInvocation(funcName, nodeType, nodeType, null);
       List<Expression> args = invocation.getArguments();
       args.add(TreeUtil.remove(node.getLeftOperand()));
@@ -95,7 +96,7 @@ public class OperatorRewriter extends TreeVisitor {
     }
   }
 
-  private boolean isFloatingPoint(ITypeBinding type) {
+  private static boolean isFloatingPoint(ITypeBinding type) {
     return type.getName().equals("double") || type.getName().equals("float");
   }
 
@@ -128,23 +129,52 @@ public class OperatorRewriter extends TreeVisitor {
     return invocation;
   }
 
-  private static FunctionInvocation newUnsignedRightShift(
-      ITypeBinding assignType, Expression lhs, Expression rhs) {
-    String funcName = "URShiftAssign" + NameTable.capitalize(assignType.getName());
-    FunctionInvocation invocation = new FunctionInvocation(funcName, assignType, assignType, null);
-    List<Expression> args = invocation.getArguments();
-    args.add(new PrefixExpression(PrefixExpression.Operator.ADDRESS_OF, lhs.copy()));
-    args.add(rhs.copy());
-    return invocation;
+  private static String intOrLong(ITypeBinding type) {
+    switch (type.getBinaryName().charAt(0)) {
+      case 'I':
+        return "32";
+      case 'J':
+        return "64";
+      default:
+        throw new AssertionError("Type expected to be int or long but was: " + type.getName());
+    }
   }
 
-  private static FunctionInvocation newModAssign(
-      ITypeBinding lhsType, Expression lhs, Expression rhs) {
-    String funcName = "ModAssign" + NameTable.capitalize(lhsType.getName());
-    FunctionInvocation invocation = new FunctionInvocation(funcName, lhsType, lhsType, null);
-    List<Expression> args = invocation.getArguments();
-    args.add(new PrefixExpression(PrefixExpression.Operator.ADDRESS_OF, lhs.copy()));
-    args.add(rhs.copy());
-    return invocation;
+  private static String getInfixFunction(InfixExpression.Operator op, ITypeBinding nodeType) {
+    switch (op) {
+      case REMAINDER:
+        if (isFloatingPoint(nodeType)) {
+          return nodeType.getName().equals("float") ? "fmodf" : "fmod";
+        }
+        return null;
+      case LEFT_SHIFT:
+        return "LShift" + intOrLong(nodeType);
+      case RIGHT_SHIFT_SIGNED:
+        return "RShift" + intOrLong(nodeType);
+      case RIGHT_SHIFT_UNSIGNED:
+        return "URShift" + intOrLong(nodeType);
+      default:
+        return null;
+    }
+  }
+
+  private static String getOperatorAssignFunction(
+      Assignment.Operator op, ITypeBinding lhsType, ITypeBinding rhsType) {
+    String lhsName = NameTable.capitalize(lhsType.getName());
+    switch (op) {
+      case LEFT_SHIFT_ASSIGN:
+        return "LShiftAssign" + lhsName;
+      case RIGHT_SHIFT_SIGNED_ASSIGN:
+        return "RShiftAssign" + lhsName;
+      case RIGHT_SHIFT_UNSIGNED_ASSIGN:
+        return "URShiftAssign" + lhsName;
+      case REMAINDER_ASSIGN:
+        if (isFloatingPoint(lhsType) || isFloatingPoint(rhsType)) {
+          return "ModAssign" + lhsName;
+        }
+        return null;
+      default:
+        return null;
+    }
   }
 }
