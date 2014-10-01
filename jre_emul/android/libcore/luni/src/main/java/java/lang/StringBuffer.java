@@ -124,10 +124,10 @@ public final class StringBuffer extends AbstractStringBuilder implements
      * @return this StringBuffer.
      * @see String#valueOf(char)
      */
-    public synchronized StringBuffer append(char ch) {
-        append0(ch);
-        return this;
-    }
+    public synchronized native StringBuffer append(char ch) /*-[
+      AbstractStringBuilder_appendChar(self, ch);
+      return self;
+    ]-*/;
 
     /**
      * Adds the string representation of the specified double to the end of this
@@ -198,14 +198,14 @@ public final class StringBuffer extends AbstractStringBuilder implements
      * @return this StringBuffer.
      * @see String#valueOf(Object)
      */
-    public synchronized StringBuffer append(Object obj) {
-        if (obj == null) {
-            appendNull();
-        } else {
-            append0(obj.toString());
-        }
-        return this;
-    }
+    public synchronized native StringBuffer append(Object obj) /*-[
+      if (obj == nil) {
+        AbstractStringBuilder_appendNull(self);
+      } else {
+        AbstractStringBuilder_appendString(self, [obj description]);
+      }
+      return self;
+    ]-*/;
 
     /**
      * Adds the specified string to the end of this buffer.
@@ -217,10 +217,10 @@ public final class StringBuffer extends AbstractStringBuilder implements
      *            the string to append (may be null).
      * @return this StringBuffer.
      */
-    public synchronized StringBuffer append(String string) {
-        append0(string);
-        return this;
-    }
+    public synchronized native StringBuffer append(String string) /*-[
+      AbstractStringBuilder_appendString(self, string);
+      return self;
+    ]-*/;
 
     /**
      * Adds the specified StringBuffer to the end of this buffer.
@@ -235,16 +235,16 @@ public final class StringBuffer extends AbstractStringBuilder implements
      *
      * @since 1.4
      */
-    public synchronized StringBuffer append(StringBuffer sb) {
-        if (sb == null) {
-            appendNull();
-        } else {
-            synchronized (sb) {
-                append0(sb.getValue(), 0, sb.length());
-            }
+    public synchronized native StringBuffer append(StringBuffer sb) /*-[
+      if (sb == nil) {
+        AbstractStringBuilder_appendNull(self);
+      } else {
+        @synchronized(sb) {
+          AbstractStringBuilder_appendBuffer(self, sb->buffer_, sb->count_);
         }
-        return this;
-    }
+      }
+      return self;
+    ]-*/;
 
     /**
      * Adds the character array to the end of this buffer.
@@ -255,10 +255,10 @@ public final class StringBuffer extends AbstractStringBuilder implements
      * @throws NullPointerException
      *            if {@code chars} is {@code null}.
      */
-    public synchronized StringBuffer append(char[] chars) {
-        append0(chars);
-        return this;
-    }
+    public synchronized native StringBuffer append(char[] chars) /*-[
+      AbstractStringBuilder_appendCharArray(self, chars);
+      return self;
+    ]-*/;
 
     /**
      * Adds the specified sequence of characters to the end of this buffer.
@@ -276,10 +276,10 @@ public final class StringBuffer extends AbstractStringBuilder implements
      * @throws NullPointerException
      *            if {@code chars} is {@code null}.
      */
-    public synchronized StringBuffer append(char[] chars, int start, int length) {
-        append0(chars, start, length);
-        return this;
-    }
+    public synchronized native StringBuffer append(char[] chars, int start, int length) /*-[
+      AbstractStringBuilder_appendCharArraySubset(self, chars, start, length);
+      return self;
+    ]-*/;
 
     /**
      * Appends the specified CharSequence to this buffer.
@@ -293,14 +293,14 @@ public final class StringBuffer extends AbstractStringBuilder implements
      * @return this StringBuffer.
      * @since 1.5
      */
-    public synchronized StringBuffer append(CharSequence s) {
-        if (s == null) {
-            appendNull();
-        } else {
-            append0(s, 0, s.length());
-        }
-        return this;
-    }
+    public synchronized native StringBuffer append(CharSequence s) /*-[
+      if (s == nil) {
+        AbstractStringBuilder_appendNull(self);
+      } else {
+        AbstractStringBuilder_appendCharSequence(self, s, 0, [s sequenceLength]);
+      }
+      return self;
+    ]-*/;
 
     /**
      * Appends the specified subsequence of the CharSequence to this buffer.
@@ -321,10 +321,10 @@ public final class StringBuffer extends AbstractStringBuilder implements
      *             the length of {@code s}.
      * @since 1.5
      */
-    public synchronized StringBuffer append(CharSequence s, int start, int end) {
-        append0(s, start, end);
-        return this;
-    }
+    public synchronized native StringBuffer append(CharSequence s, int start, int end) /*-[
+      AbstractStringBuilder_appendCharSequence(self, s, start, end);
+      return self;
+    ]-*/;
 
     /**
      * Appends the string representation of the specified Unicode code point to
@@ -375,10 +375,10 @@ public final class StringBuffer extends AbstractStringBuilder implements
      *             if {@code start < 0}, {@code start > end} or {@code end >
      *             length()}.
      */
-    public synchronized StringBuffer delete(int start, int end) {
-        delete0(start, end);
-        return this;
-    }
+    public synchronized native StringBuffer delete(int start, int end) /*-[
+      AbstractStringBuilder_delete(self, start, end);
+      return self;
+    ]-*/;
 
     /**
      * Deletes the character at the specified offset.
@@ -389,10 +389,10 @@ public final class StringBuffer extends AbstractStringBuilder implements
      * @throws StringIndexOutOfBoundsException
      *             if {@code location < 0} or {@code location >= length()}
      */
-    public synchronized StringBuffer deleteCharAt(int location) {
-        deleteCharAt0(location);
-        return this;
-    }
+    public synchronized native StringBuffer deleteCharAt(int location) /*-[
+      AbstractStringBuilder_deleteCharAt(self, location);
+      return self;
+    ]-*/;
 
     @Override
     public synchronized void ensureCapacity(int min) {
@@ -437,10 +437,10 @@ public final class StringBuffer extends AbstractStringBuilder implements
      * @throws ArrayIndexOutOfBoundsException
      *             if {@code index < 0} or {@code index > length()}.
      */
-    public synchronized StringBuffer insert(int index, char ch) {
-        insert0(index, ch);
-        return this;
-    }
+    public synchronized native StringBuffer insert(int index, char ch) /*-[
+      AbstractStringBuilder_insertChar(self, index, ch);
+      return self;
+    ]-*/;
 
     /**
      * Inserts the string representation of the specified boolean into this
@@ -556,10 +556,10 @@ public final class StringBuffer extends AbstractStringBuilder implements
      * @throws StringIndexOutOfBoundsException
      *             if {@code index < 0} or {@code index > length()}.
      */
-    public synchronized StringBuffer insert(int index, String string) {
-        insert0(index, string);
-        return this;
-    }
+    public synchronized native StringBuffer insert(int index, String string) /*-[
+      AbstractStringBuilder_insertString(self, index, string);
+      return self;
+    ]-*/;
 
     /**
      * Inserts the character array into this buffer at the specified offset.
@@ -574,10 +574,10 @@ public final class StringBuffer extends AbstractStringBuilder implements
      * @throws NullPointerException
      *            if {@code chars} is {@code null}.
      */
-    public synchronized StringBuffer insert(int index, char[] chars) {
-        insert0(index, chars);
-        return this;
-    }
+    public synchronized native StringBuffer insert(int index, char[] chars) /*-[
+      AbstractStringBuilder_insertCharArray(self, index, chars);
+      return self;
+    ]-*/;
 
     /**
      * Inserts the specified subsequence of characters into this buffer at the
@@ -599,10 +599,11 @@ public final class StringBuffer extends AbstractStringBuilder implements
      *             length > chars.length}, {@code index < 0} or {@code index >
      *             length()}
      */
-    public synchronized StringBuffer insert(int index, char[] chars, int start, int length) {
-        insert0(index, chars, start, length);
-        return this;
-    }
+    public synchronized native StringBuffer insert(
+        int index, char[] chars, int start, int length) /*-[
+      AbstractStringBuilder_insertCharArraySubset(self, index, chars, start, length);
+      return self;
+    ]-*/;
 
     /**
      * Inserts the specified CharSequence into this buffer at the specified
@@ -620,10 +621,10 @@ public final class StringBuffer extends AbstractStringBuilder implements
      *             if {@code index < 0} or {@code index > length()}.
      * @since 1.5
      */
-    public synchronized StringBuffer insert(int index, CharSequence s) {
-        insert0(index, s == null ? "null" : s.toString());
-        return this;
-    }
+    public synchronized native StringBuffer insert(int index, CharSequence s) /*-[
+      AbstractStringBuilder_insertString(self, index, s == nil ? @"null" : [s description]);
+      return self;
+    ]-*/;
 
     /**
      * Inserts the specified subsequence into this buffer at the specified
@@ -648,11 +649,11 @@ public final class StringBuffer extends AbstractStringBuilder implements
      *             than the length of {@code s}.
      * @since 1.5
      */
-    public synchronized StringBuffer insert(int index, CharSequence s,
-            int start, int end) {
-        insert0(index, s, start, end);
-        return this;
-    }
+    public synchronized native StringBuffer insert(int index, CharSequence s,
+            int start, int end) /*-[
+      AbstractStringBuilder_insertCharSequence(self, index, s, start, end);
+      return self;
+    ]-*/;
 
     @Override
     public synchronized int lastIndexOf(String subString, int start) {
@@ -685,20 +686,20 @@ public final class StringBuffer extends AbstractStringBuilder implements
      *             is greater than {@code end} or {@code end} is greater than
      *             the length of {@code s}.
      */
-    public synchronized StringBuffer replace(int start, int end, String string) {
-        replace0(start, end, string);
-        return this;
-    }
+    public synchronized native StringBuffer replace(int start, int end, String string) /*-[
+      AbstractStringBuilder_replace(self, start, end, string);
+      return self;
+    ]-*/;
 
     /**
      * Reverses the order of characters in this buffer.
      *
      * @return this buffer.
      */
-    public synchronized StringBuffer reverse() {
-        reverse0();
-        return this;
-    }
+    public synchronized native StringBuffer reverse() /*-[
+      AbstractStringBuilder_reverse(self);
+      return self;
+    ]-*/;
 
     @Override
     public synchronized void setCharAt(int index, char ch) {
@@ -726,9 +727,9 @@ public final class StringBuffer extends AbstractStringBuilder implements
     }
 
     @Override
-    public synchronized String toString() {
-        return super.toString0();
-    }
+    public synchronized native String toString() /*-[
+      return AbstractStringBuilder_toString(self);
+    ]-*/;
 
     @Override
     public synchronized void trimToSize() {

@@ -22,6 +22,14 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
 
+/*-[
+#import "java/lang/Character.h"
+#import "java/lang/Double.h"
+#import "java/lang/Float.h"
+#import "java/lang/Integer.h"
+#import "java/lang/Long.h"
+]-*/
+
 /**
  * A modifiable {@link CharSequence sequence of characters} for use in creating
  * strings. This class is intended as a direct replacement of
@@ -105,10 +113,10 @@ public final class StringBuilder extends AbstractStringBuilder implements
      * @return this builder.
      * @see String#valueOf(boolean)
      */
-    public StringBuilder append(boolean b) {
-        append0(b ? "true" : "false");
-        return this;
-    }
+    public native StringBuilder append(boolean b) /*-[
+      AbstractStringBuilder_appendString(self, b ? @"true" : @"false");
+      return self;
+    ]-*/;
 
     /**
      * Appends the string representation of the specified {@code char} value.
@@ -120,10 +128,10 @@ public final class StringBuilder extends AbstractStringBuilder implements
      * @return this builder.
      * @see String#valueOf(char)
      */
-    public StringBuilder append(char c) {
-        append0(c);
-        return this;
-    }
+    public native StringBuilder append(char c) /*-[
+      AbstractStringBuilder_appendChar(self, c);
+      return self;
+    ]-*/;
 
     /**
      * Appends the string representation of the specified {@code int} value. The
@@ -195,14 +203,14 @@ public final class StringBuilder extends AbstractStringBuilder implements
      * @return this builder.
      * @see String#valueOf(Object)
      */
-    public StringBuilder append(Object obj) {
-        if (obj == null) {
-            appendNull();
-        } else {
-            append0(obj.toString());
-        }
-        return this;
-    }
+    public native StringBuilder append(Object obj) /*-[
+      if (obj == nil) {
+        AbstractStringBuilder_appendNull(self);
+      } else {
+        AbstractStringBuilder_appendString(self, [obj description]);
+      }
+      return self;
+    ]-*/;
 
     /**
      * Appends the contents of the specified string. If the string is {@code
@@ -212,10 +220,10 @@ public final class StringBuilder extends AbstractStringBuilder implements
      *            the string to append.
      * @return this builder.
      */
-    public StringBuilder append(String str) {
-        append0(str);
-        return this;
-    }
+    public native StringBuilder append(String str) /*-[
+      AbstractStringBuilder_appendString(self, str);
+      return self;
+    ]-*/;
 
     /**
      * Appends the contents of the specified {@code StringBuffer}. If the
@@ -226,14 +234,14 @@ public final class StringBuilder extends AbstractStringBuilder implements
      *            the {@code StringBuffer} to append.
      * @return this builder.
      */
-    public StringBuilder append(StringBuffer sb) {
-        if (sb == null) {
-            appendNull();
-        } else {
-            append0(sb.getValue(), 0, sb.length());
-        }
-        return this;
-    }
+    public native StringBuilder append(StringBuffer sb) /*-[
+      if (sb == nil) {
+        AbstractStringBuilder_appendNull(self);
+      } else {
+        AbstractStringBuilder_appendBuffer(self, sb->buffer_, sb->count_);
+      }
+      return self;
+    ]-*/;
 
     /**
      * Appends the string representation of the specified {@code char[]}.
@@ -245,10 +253,10 @@ public final class StringBuilder extends AbstractStringBuilder implements
      * @return this builder.
      * @see String#valueOf(char[])
      */
-    public StringBuilder append(char[] chars) {
-        append0(chars);
-        return this;
-    }
+    public native StringBuilder append(char[] chars) /*-[
+      AbstractStringBuilder_appendCharArray(self, chars);
+      return self;
+    ]-*/;
 
     /**
      * Appends the string representation of the specified subset of the {@code
@@ -267,10 +275,10 @@ public final class StringBuilder extends AbstractStringBuilder implements
      *             subsequence.
      * @see String#valueOf(char[],int,int)
      */
-    public StringBuilder append(char[] str, int offset, int len) {
-        append0(str, offset, len);
-        return this;
-    }
+    public native StringBuilder append(char[] str, int offset, int len) /*-[
+      AbstractStringBuilder_appendCharArraySubset(self, str, offset, len);
+      return self;
+    ]-*/;
 
     /**
      * Appends the string representation of the specified {@code CharSequence}.
@@ -281,14 +289,14 @@ public final class StringBuilder extends AbstractStringBuilder implements
      *            the {@code CharSequence} to append.
      * @return this builder.
      */
-    public StringBuilder append(CharSequence csq) {
-        if (csq == null) {
-            appendNull();
-        } else {
-            append0(csq, 0, csq.length());
-        }
-        return this;
-    }
+    public native StringBuilder append(CharSequence csq) /*-[
+      if (csq == nil) {
+        AbstractStringBuilder_appendNull(self);
+      } else {
+        AbstractStringBuilder_appendCharSequence(self, csq, 0, [csq sequenceLength]);
+      }
+      return self;
+    ]-*/;
 
     /**
      * Appends the string representation of the specified subsequence of the
@@ -307,10 +315,10 @@ public final class StringBuilder extends AbstractStringBuilder implements
      *             is greater than {@code end} or {@code end} is greater than
      *             the length of {@code csq}.
      */
-    public StringBuilder append(CharSequence csq, int start, int end) {
-        append0(csq, start, end);
-        return this;
-    }
+    public native StringBuilder append(CharSequence csq, int start, int end) /*-[
+      AbstractStringBuilder_appendCharSequence(self, csq, start, end);
+      return self;
+    ]-*/;
 
     /**
      * Appends the encoded Unicode code point. The code point is converted to a
@@ -321,10 +329,10 @@ public final class StringBuilder extends AbstractStringBuilder implements
      * @return this builder.
      * @see Character#toChars(int)
      */
-    public StringBuilder appendCodePoint(int codePoint) {
-        append0(Character.toChars(codePoint));
-        return this;
-    }
+    public native StringBuilder appendCodePoint(int codePoint) /*-[
+      AbstractStringBuilder_appendCharArray(self, [JavaLangCharacter toCharsWithInt:codePoint]);
+      return self;
+    ]-*/;
 
     /**
      * Deletes a sequence of characters specified by {@code start} and {@code
@@ -339,10 +347,10 @@ public final class StringBuilder extends AbstractStringBuilder implements
      *             if {@code start} is less than zero, greater than the current
      *             length or greater than {@code end}.
      */
-    public StringBuilder delete(int start, int end) {
-        delete0(start, end);
-        return this;
-    }
+    public native StringBuilder delete(int start, int end) /*-[
+      AbstractStringBuilder_delete(self, start, end);
+      return self;
+    ]-*/;
 
     /**
      * Deletes the character at the specified index. shifts any remaining
@@ -355,10 +363,10 @@ public final class StringBuilder extends AbstractStringBuilder implements
      *             if {@code index} is less than zero or is greater than or
      *             equal to the current length.
      */
-    public StringBuilder deleteCharAt(int index) {
-        deleteCharAt0(index);
-        return this;
-    }
+    public native StringBuilder deleteCharAt(int index) /*-[
+      AbstractStringBuilder_deleteCharAt(self, index);
+      return self;
+    ]-*/;
 
     /**
      * Inserts the string representation of the specified {@code boolean} value
@@ -376,10 +384,10 @@ public final class StringBuilder extends AbstractStringBuilder implements
      *             {@code length}.
      * @see String#valueOf(boolean)
      */
-    public StringBuilder insert(int offset, boolean b) {
-        insert0(offset, b ? "true" : "false");
-        return this;
-    }
+    public native StringBuilder insert(int offset, boolean b) /*-[
+      AbstractStringBuilder_insertString(self, offset, b ? @"true" : @"false");
+      return self;
+    ]-*/;
 
     /**
      * Inserts the string representation of the specified {@code char} value at
@@ -396,10 +404,10 @@ public final class StringBuilder extends AbstractStringBuilder implements
      *             {@code length()}.
      * @see String#valueOf(char)
      */
-    public StringBuilder insert(int offset, char c) {
-        insert0(offset, c);
-        return this;
-    }
+    public native StringBuilder insert(int offset, char c) /*-[
+      AbstractStringBuilder_insertChar(self, offset, c);
+      return self;
+    ]-*/;
 
     /**
      * Inserts the string representation of the specified {@code int} value at
@@ -416,10 +424,10 @@ public final class StringBuilder extends AbstractStringBuilder implements
      *             {@code length()}.
      * @see String#valueOf(int)
      */
-    public StringBuilder insert(int offset, int i) {
-        insert0(offset, Integer.toString(i));
-        return this;
-    }
+    public native StringBuilder insert(int offset, int i) /*-[
+      AbstractStringBuilder_insertString(self, offset, [JavaLangInteger toStringWithInt:i]);
+      return self;
+    ]-*/;
 
     /**
      * Inserts the string representation of the specified {@code long} value at
@@ -436,10 +444,10 @@ public final class StringBuilder extends AbstractStringBuilder implements
      *             {code length()}.
      * @see String#valueOf(long)
      */
-    public StringBuilder insert(int offset, long l) {
-        insert0(offset, Long.toString(l));
-        return this;
-    }
+    public native StringBuilder insert(int offset, long l) /*-[
+      AbstractStringBuilder_insertString(self, offset, [JavaLangLong toStringWithLong:l]);
+      return self;
+    ]-*/;
 
     /**
      * Inserts the string representation of the specified {@code float} value at
@@ -456,10 +464,10 @@ public final class StringBuilder extends AbstractStringBuilder implements
      *             {@code length()}.
      * @see String#valueOf(float)
      */
-    public StringBuilder insert(int offset, float f) {
-        insert0(offset, Float.toString(f));
-        return this;
-    }
+    public native StringBuilder insert(int offset, float f) /*-[
+      AbstractStringBuilder_insertString(self, offset, [JavaLangFloat toStringWithFloat:f]);
+      return self;
+    ]-*/;
 
     /**
      * Inserts the string representation of the specified {@code double} value
@@ -477,10 +485,10 @@ public final class StringBuilder extends AbstractStringBuilder implements
      *             {@code length()}.
      * @see String#valueOf(double)
      */
-    public StringBuilder insert(int offset, double d) {
-        insert0(offset, Double.toString(d));
-        return this;
-    }
+    public native StringBuilder insert(int offset, double d) /*-[
+      AbstractStringBuilder_insertString(self, offset, [JavaLangDouble toStringWithDouble:d]);
+      return self;
+    ]-*/;
 
     /**
      * Inserts the string representation of the specified {@code Object} at the
@@ -497,10 +505,10 @@ public final class StringBuilder extends AbstractStringBuilder implements
      *             {@code length()}.
      * @see String#valueOf(Object)
      */
-    public StringBuilder insert(int offset, Object obj) {
-        insert0(offset, obj == null ? "null" : obj.toString());
-        return this;
-    }
+    public native StringBuilder insert(int offset, Object obj) /*-[
+      AbstractStringBuilder_insertString(self, offset, obj == nil ? @"null" : [obj description]);
+      return self;
+    ]-*/;
 
     /**
      * Inserts the specified string at the specified {@code offset}. If the
@@ -515,10 +523,10 @@ public final class StringBuilder extends AbstractStringBuilder implements
      *             if {@code offset} is negative or greater than the current
      *             {@code length()}.
      */
-    public StringBuilder insert(int offset, String str) {
-        insert0(offset, str);
-        return this;
-    }
+    public native StringBuilder insert(int offset, String str) /*-[
+      AbstractStringBuilder_insertString(self, offset, str);
+      return self;
+    ]-*/;
 
     /**
      * Inserts the string representation of the specified {@code char[]} at the
@@ -535,10 +543,10 @@ public final class StringBuilder extends AbstractStringBuilder implements
      *             {@code length()}.
      * @see String#valueOf(char[])
      */
-    public StringBuilder insert(int offset, char[] ch) {
-        insert0(offset, ch);
-        return this;
-    }
+    public native StringBuilder insert(int offset, char[] ch) /*-[
+      AbstractStringBuilder_insertCharArray(self, offset, ch);
+      return self;
+    ]-*/;
 
     /**
      * Inserts the string representation of the specified subsequence of the
@@ -561,11 +569,11 @@ public final class StringBuilder extends AbstractStringBuilder implements
      *             not specify a valid subsequence.
      * @see String#valueOf(char[],int,int)
      */
-    public StringBuilder insert(int offset, char[] str, int strOffset,
-            int strLen) {
-        insert0(offset, str, strOffset, strLen);
-        return this;
-    }
+    public native StringBuilder insert(int offset, char[] str, int strOffset,
+            int strLen) /*-[
+      AbstractStringBuilder_insertCharArraySubset(self, offset, str, strOffset, strLen);
+      return self;
+    ]-*/;
 
     /**
      * Inserts the string representation of the specified {@code CharSequence}
@@ -583,10 +591,10 @@ public final class StringBuilder extends AbstractStringBuilder implements
      *             {@code length()}.
      * @see CharSequence#toString()
      */
-    public StringBuilder insert(int offset, CharSequence s) {
-        insert0(offset, s == null ? "null" : s.toString());
-        return this;
-    }
+    public native StringBuilder insert(int offset, CharSequence s) /*-[
+      AbstractStringBuilder_insertString(self, offset, s == nil ? @"null" : [s description]);
+      return self;
+    ]-*/;
 
     /**
      * Inserts the string representation of the specified subsequence of the
@@ -611,10 +619,10 @@ public final class StringBuilder extends AbstractStringBuilder implements
      *             specify a valid subsequence.
      * @see CharSequence#subSequence(int, int)
      */
-    public StringBuilder insert(int offset, CharSequence s, int start, int end) {
-        insert0(offset, s, start, end);
-        return this;
-    }
+    public native StringBuilder insert(int offset, CharSequence s, int start, int end) /*-[
+      AbstractStringBuilder_insertCharSequence(self, offset, s, start, end);
+      return self;
+    ]-*/;
 
     /**
      * Replaces the specified subsequence in this builder with the specified
@@ -633,20 +641,20 @@ public final class StringBuilder extends AbstractStringBuilder implements
      * @throws NullPointerException
      *            if {@code str} is {@code null}.
      */
-    public StringBuilder replace(int start, int end, String string) {
-        replace0(start, end, string);
-        return this;
-    }
+    public native StringBuilder replace(int start, int end, String string) /*-[
+      AbstractStringBuilder_replace(self, start, end, string);
+      return self;
+    ]-*/;
 
     /**
      * Reverses the order of characters in this builder.
      *
      * @return this buffer.
      */
-    public StringBuilder reverse() {
-        reverse0();
-        return this;
-    }
+    public native StringBuilder reverse() /*-[
+      AbstractStringBuilder_reverse(self);
+      return self;
+    ]-*/;
 
     /**
      * Returns the contents of this builder.
@@ -654,9 +662,9 @@ public final class StringBuilder extends AbstractStringBuilder implements
      * @return the string representation of the data in this builder.
      */
     @Override
-    public String toString() {
-        return super.toString0();
-    }
+    public native String toString() /*-[
+      return AbstractStringBuilder_toString(self);
+    ]-*/;
 
     @Override
     public int length() {

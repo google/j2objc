@@ -43,8 +43,6 @@
 
 #define DIGITS_SIZE 64
 
-extern void AbstractStringBuilder_appendCharNative(JavaLangAbstractStringBuilder *self, unichar ch);
-
 static void freeFormatExponential(
     JavaLangAbstractStringBuilder *sb, BOOL positive, int k, const char digits[], int digitCount);
 static void freeFormat(
@@ -84,7 +82,7 @@ static const long long LONG_POWERS_OF_TEN[] = {
 
 static NSString *resultOrSideEffect(JavaLangAbstractStringBuilder *sb, NSString *s) {
   if (sb) {
-    [sb append0WithNSString:s];
+    AbstractStringBuilder_appendString(sb, s);
     return nil;
   }
   return s;
@@ -216,10 +214,10 @@ void freeFormatExponential(
     JavaLangAbstractStringBuilder *sb, BOOL positive, int k, const char digits[], int digitCount) {
   int digitIndex = 0;
   if (!positive) {
-    AbstractStringBuilder_appendCharNative(sb, '-');
+    AbstractStringBuilder_appendChar(sb, '-');
   }
-  AbstractStringBuilder_appendCharNative(sb, '0' + digits[digitIndex++]);
-  AbstractStringBuilder_appendCharNative(sb, '.');
+  AbstractStringBuilder_appendChar(sb, '0' + digits[digitIndex++]);
+  AbstractStringBuilder_appendChar(sb, '.');
 
   int exponent = k;
   while (YES) {
@@ -227,13 +225,13 @@ void freeFormatExponential(
     if (digitIndex >= digitCount) {
       break;
     }
-    AbstractStringBuilder_appendCharNative(sb, '0' + digits[digitIndex++]);
+    AbstractStringBuilder_appendChar(sb, '0' + digits[digitIndex++]);
   }
 
   if (k == exponent - 1) {
-    AbstractStringBuilder_appendCharNative(sb, '0');
+    AbstractStringBuilder_appendChar(sb, '0');
   }
-  AbstractStringBuilder_appendCharNative(sb, 'E');
+  AbstractStringBuilder_appendChar(sb, 'E');
   IntegralToString_convertInt(sb, exponent);
 }
 
@@ -241,24 +239,24 @@ void freeFormat(
     JavaLangAbstractStringBuilder *sb, BOOL positive, int k, const char digits[], int digitCount) {
   int digitIndex = 0;
   if (!positive) {
-    AbstractStringBuilder_appendCharNative(sb, '-');
+    AbstractStringBuilder_appendChar(sb, '-');
   }
   if (k < 0) {
-    AbstractStringBuilder_appendCharNative(sb, '0');
-    AbstractStringBuilder_appendCharNative(sb, '.');
+    AbstractStringBuilder_appendChar(sb, '0');
+    AbstractStringBuilder_appendChar(sb, '.');
     for (int i = k + 1; i < 0; ++i) {
-      AbstractStringBuilder_appendCharNative(sb, '0');
+      AbstractStringBuilder_appendChar(sb, '0');
     }
   }
   int U = digits[digitIndex++];
   do {
     if (U != -1) {
-      AbstractStringBuilder_appendCharNative(sb, '0' + U);
+      AbstractStringBuilder_appendChar(sb, '0' + U);
     } else if (k >= -1) {
-      AbstractStringBuilder_appendCharNative(sb, '0');
+      AbstractStringBuilder_appendChar(sb, '0');
     }
     if (k == 0) {
-      AbstractStringBuilder_appendCharNative(sb, '.');
+      AbstractStringBuilder_appendChar(sb, '.');
     }
     k--;
     U = digitIndex < digitCount ? digits[digitIndex++] : -1;

@@ -63,6 +63,7 @@ APPLE_SRCS = \
 # libjre_emul.a.
 IOS_JAVA_OBJS = \
 	java/io/Serializable.o \
+	java/lang/AbstractStringBuilder.o \
 	java/lang/Iterable.o \
 	java/lang/Throwable.o \
 	java/lang/reflect/AccessibleObject.o \
@@ -291,7 +292,6 @@ JAVA_SOURCES = \
 	java/io/WriteAbortedException.java \
 	java/io/Writer.java \
 	java/lang/AbstractMethodError.java \
-	java/lang/AbstractStringBuilder.java \
 	java/lang/annotation/AnnotationFormatError.java \
 	java/lang/annotation/AnnotationTypeMismatchException.java \
 	java/lang/annotation/ElementType.java \
