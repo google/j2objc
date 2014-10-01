@@ -22,6 +22,10 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
+/*-[
+#include "java/util/Arrays.h"
+]-*/
+
 /**
  * The wrapper for the primitive type {@code char}. This class also provides a
  * number of utility methods for working with characters.
@@ -2895,6 +2899,20 @@ public final class Character implements Serializable, Comparable<Character> {
         return high;
     }
 
+    /*-[
+    jint JavaLangCharacter_codePointAtRaw(const jchar *seq, jint index, jint limit) {
+      jchar high = seq[index++];
+      if (index >= limit) {
+        return high;
+      }
+      jchar low = seq[index];
+      if (JavaLangCharacter_isSurrogatePairWithChar_withChar_(high, low)) {
+        return JavaLangCharacter_toCodePointWithChar_withChar_(high, low);
+      }
+      return high;
+    }
+    ]-*/
+
     /**
      * Returns the code point at {@code index} in the specified array of
      * character units. If the unit at {@code index} is a high-surrogate unit,
@@ -2917,25 +2935,16 @@ public final class Character implements Serializable, Comparable<Character> {
      *             the length of {@code seq}.
      * @since 1.5
      */
-    public static int codePointAt(char[] seq, int index) {
-        if (seq == null) {
-            throw new NullPointerException("seq == null");
-        }
-        int len = seq.length;
-        if (index < 0 || index >= len) {
-            throw new IndexOutOfBoundsException();
-        }
-
-        char high = seq[index++];
-        if (index >= len) {
-            return high;
-        }
-        char low = seq[index];
-        if (isSurrogatePair(high, low)) {
-            return toCodePoint(high, low);
-        }
-        return high;
-    }
+    public static native int codePointAt(char[] seq, int index) /*-[
+      if (seq == nil) {
+        @throw [[[JavaLangNullPointerException alloc] initWithNSString:@"seq == null"] autorelease];
+      }
+      jint len = seq->size_;
+      if (index < 0 || index >= len) {
+        @throw [[[JavaLangIndexOutOfBoundsException alloc] init] autorelease];
+      }
+      return JavaLangCharacter_codePointAtRaw(seq->buffer_, index, len);
+    ]-*/;
 
     /**
      * Returns the code point at {@code index} in the specified array of
@@ -2962,21 +2971,14 @@ public final class Character implements Serializable, Comparable<Character> {
      *             length of {@code seq}.
      * @since 1.5
      */
-    public static int codePointAt(char[] seq, int index, int limit) {
-        if (index < 0 || index >= limit || limit < 0 || limit > seq.length) {
-            throw new IndexOutOfBoundsException();
-        }
-
-        char high = seq[index++];
-        if (index >= limit) {
-            return high;
-        }
-        char low = seq[index];
-        if (isSurrogatePair(high, low)) {
-            return toCodePoint(high, low);
-        }
-        return high;
-    }
+    public static native int codePointAt(char[] seq, int index, int limit) /*-[
+      if (index < 0 || index >= limit || limit < 0
+          || limit > ((IOSCharArray *)nil_chk(seq))->size_) {
+        @throw [[[JavaLangIndexOutOfBoundsException alloc] init] autorelease];
+      }
+      nil_chk(seq);
+      return JavaLangCharacter_codePointAtRaw(seq->buffer_, index, limit);
+    ]-*/;
 
     /**
      * Returns the code point that precedes {@code index} in the specified
@@ -3020,6 +3022,20 @@ public final class Character implements Serializable, Comparable<Character> {
         return low;
     }
 
+    /*-[
+    jint JavaLangCharacter_codePointBeforeRaw(const jchar *seq, jint index, jint start) {
+      jchar low = seq[--index];
+      if (--index < start) {
+        return low;
+      }
+      jchar high = seq[index];
+      if (JavaLangCharacter_isSurrogatePairWithChar_withChar_(high, low)) {
+        return JavaLangCharacter_toCodePointWithChar_withChar_(high, low);
+      }
+      return low;
+    }
+    ]-*/
+
     /**
      * Returns the code point that precedes {@code index} in the specified
      * array of character units. If the unit at {@code index - 1} is a
@@ -3042,25 +3058,16 @@ public final class Character implements Serializable, Comparable<Character> {
      *             length of {@code seq}.
      * @since 1.5
      */
-    public static int codePointBefore(char[] seq, int index) {
-        if (seq == null) {
-            throw new NullPointerException("seq == null");
-        }
-        int len = seq.length;
-        if (index < 1 || index > len) {
-            throw new IndexOutOfBoundsException();
-        }
-
-        char low = seq[--index];
-        if (--index < 0) {
-            return low;
-        }
-        char high = seq[index];
-        if (isSurrogatePair(high, low)) {
-            return toCodePoint(high, low);
-        }
-        return low;
-    }
+    public static native int codePointBefore(char[] seq, int index) /*-[
+      if (seq == nil) {
+        @throw [[[JavaLangNullPointerException alloc] initWithNSString:@"seq == null"] autorelease];
+      }
+      jint len = seq->size_;
+      if (index < 1 || index > len) {
+        @throw [[[JavaLangIndexOutOfBoundsException alloc] init] autorelease];
+      }
+      return JavaLangCharacter_codePointBeforeRaw(seq->buffer_, index, 0);
+    ]-*/;
 
     /**
      * Returns the code point that precedes the {@code index} in the specified
@@ -3089,25 +3096,16 @@ public final class Character implements Serializable, Comparable<Character> {
      *             {@code seq}.
      * @since 1.5
      */
-    public static int codePointBefore(char[] seq, int index, int start) {
-        if (seq == null) {
-            throw new NullPointerException("seq == null");
-        }
-        int len = seq.length;
-        if (index <= start || index > len || start < 0 || start >= len) {
-            throw new IndexOutOfBoundsException();
-        }
-
-        char low = seq[--index];
-        if (--index < start) {
-            return low;
-        }
-        char high = seq[index];
-        if (isSurrogatePair(high, low)) {
-            return toCodePoint(high, low);
-        }
-        return low;
-    }
+    public static native int codePointBefore(char[] seq, int index, int start) /*-[
+      if (seq == nil) {
+        @throw [[[JavaLangNullPointerException alloc] initWithNSString:@"seq == null"] autorelease];
+      }
+      jint len = seq->size_;
+      if (index <= start || index > len || start < 0 || start >= len) {
+        @throw [[[JavaLangIndexOutOfBoundsException alloc] init] autorelease];
+      }
+      return JavaLangCharacter_codePointBeforeRaw(seq->buffer_, index, start);
+    ]-*/;
 
     /**
      * Converts the specified Unicode code point into a UTF-16 encoded sequence
@@ -3228,6 +3226,26 @@ public final class Character implements Serializable, Comparable<Character> {
         return result;
     }
 
+    /*-[
+    jint JavaLangCharacter_codePointCountRaw(const jchar *seq, jint offset, jint count) {
+      jint endIndex = offset + count;
+      jint result = 0;
+      for (jint i = offset; i < endIndex; i++) {
+        jchar c = seq[i];
+        if (JavaLangCharacter_isHighSurrogateWithChar_(c)) {
+          if (++i < endIndex) {
+            c = seq[i];
+            if (!JavaLangCharacter_isLowSurrogateWithChar_(c)) {
+              result++;
+            }
+          }
+        }
+        result++;
+      }
+      return result;
+    }
+    ]-*/
+
     /**
      * Counts the number of Unicode code points in the subsequence of the
      * specified char array, as delineated by {@code offset} and {@code count}.
@@ -3250,24 +3268,11 @@ public final class Character implements Serializable, Comparable<Character> {
      *             {@code seq}.
      * @since 1.5
      */
-    public static int codePointCount(char[] seq, int offset, int count) {
-        Arrays.checkOffsetAndCount(seq.length, offset, count);
-        int endIndex = offset + count;
-        int result = 0;
-        for (int i = offset; i < endIndex; i++) {
-            char c = seq[i];
-            if (isHighSurrogate(c)) {
-                if (++i < endIndex) {
-                    c = seq[i];
-                    if (!isLowSurrogate(c)) {
-                        result++;
-                    }
-                }
-            }
-            result++;
-        }
-        return result;
-    }
+    public static native int codePointCount(char[] seq, int offset, int count) /*-[
+      nil_chk(seq);
+      JavaUtilArrays_checkOffsetAndCountWithInt_withInt_withInt_(seq->size_, offset, count);
+      return JavaLangCharacter_codePointCountRaw(seq->buffer_, offset, count);
+    ]-*/;
 
     /**
      * Determines the index in the specified character sequence that is offset
@@ -3342,6 +3347,53 @@ public final class Character implements Serializable, Comparable<Character> {
         return i;
     }
 
+    /*-[
+    jint JavaLangCharacter_offsetByCodePointsRaw(
+        const jchar *seq, jint start, jint count, jint index, jint codePointOffset) {
+      jint end = start + count;
+      if (index < start || index > end) {
+        @throw [[[JavaLangIndexOutOfBoundsException alloc] init] autorelease];
+      }
+      if (codePointOffset == 0) {
+        return index;
+      }
+      if (codePointOffset > 0) {
+        jint codePoints = codePointOffset;
+        jint i = index;
+        while (codePoints > 0) {
+          codePoints--;
+          if (i >= end) {
+            @throw [[[JavaLangIndexOutOfBoundsException alloc] init] autorelease];
+          }
+          if (JavaLangCharacter_isHighSurrogateWithChar_(seq[i])) {
+            jint next = i + 1;
+            if (next < end && JavaLangCharacter_isLowSurrogateWithChar_(seq[next])) {
+              i++;
+            }
+          }
+          i++;
+        }
+        return i;
+      }
+      jint codePoints = -codePointOffset;
+      jint i = index;
+      while (codePoints > 0) {
+        codePoints--;
+        i--;
+        if (i < start) {
+          @throw [[[JavaLangIndexOutOfBoundsException alloc] init] autorelease];
+        }
+        if (JavaLangCharacter_isLowSurrogateWithChar_(seq[i])) {
+          jint prev = i - 1;
+          if (prev >= start && JavaLangCharacter_isHighSurrogateWithChar_(seq[prev])) {
+            i--;
+          }
+        }
+      }
+      return i;
+    }
+    ]-*/
+
     /**
      * Determines the index in a subsequence of the specified character array
      * that is offset {@code codePointOffset} code points from {@code index}.
@@ -3374,54 +3426,13 @@ public final class Character implements Serializable, Comparable<Character> {
      *             negative) from {@code index}.
      * @since 1.5
      */
-    public static int offsetByCodePoints(char[] seq, int start, int count,
-            int index, int codePointOffset) {
-        Arrays.checkOffsetAndCount(seq.length, start, count);
-        int end = start + count;
-        if (index < start || index > end) {
-            throw new IndexOutOfBoundsException();
-        }
-
-        if (codePointOffset == 0) {
-            return index;
-        }
-
-        if (codePointOffset > 0) {
-            int codePoints = codePointOffset;
-            int i = index;
-            while (codePoints > 0) {
-                codePoints--;
-                if (i >= end) {
-                    throw new IndexOutOfBoundsException();
-                }
-                if (isHighSurrogate(seq[i])) {
-                    int next = i + 1;
-                    if (next < end && isLowSurrogate(seq[next])) {
-                        i++;
-                    }
-                }
-                i++;
-            }
-            return i;
-        }
-
-        int codePoints = -codePointOffset;
-        int i = index;
-        while (codePoints > 0) {
-            codePoints--;
-            i--;
-            if (i < start) {
-                throw new IndexOutOfBoundsException();
-            }
-            if (isLowSurrogate(seq[i])) {
-                int prev = i - 1;
-                if (prev >= start && isHighSurrogate(seq[prev])) {
-                    i--;
-                }
-            }
-        }
-        return i;
-    }
+    public static native int offsetByCodePoints(char[] seq, int start, int count,
+            int index, int codePointOffset) /*-[
+      nil_chk(seq);
+      JavaUtilArrays_checkOffsetAndCountWithInt_withInt_withInt_(seq->size_, start, count);
+      return JavaLangCharacter_offsetByCodePointsRaw(
+          seq->buffer_, start, count, index, codePointOffset);
+    ]-*/;
 
     /**
      * Convenience method to determine the value of the specified character

@@ -20,8 +20,6 @@
 #include "java/lang/Character.h"
 #include "java/lang/StringBuilder.h"
 
-extern void AbstractStringBuilder_appendNativeBuffer(
-    JavaLangAbstractStringBuilder *self, unichar *buffer, int length);
 static int IntegralToString_intIntoCharArray(unichar *buf, int cursor, uint32_t n);
 
 /**
@@ -190,7 +188,7 @@ NSString *IntegralToString_convertInt(JavaLangAbstractStringBuilder *sb, int i) 
   }
   if (quickResult) {
     if (sb) {
-      [sb append0WithNSString:quickResult];
+      AbstractStringBuilder_appendString(sb, quickResult);
       return nil;
     }
     return quickResult;
@@ -224,7 +222,7 @@ NSString *IntegralToString_convertInt(JavaLangAbstractStringBuilder *sb, int i) 
   }
 
   if (sb) {
-    AbstractStringBuilder_appendNativeBuffer(sb, buf + cursor, bufLen - cursor);
+    AbstractStringBuilder_appendBuffer(sb, buf + cursor, bufLen - cursor);
     return nil;
   } else {
     return [NSString stringWithCharacters:buf + cursor length:bufLen - cursor];
@@ -294,7 +292,7 @@ NSString *IntegralToString_convertLong(JavaLangAbstractStringBuilder *sb, long l
       // If -n is still negative, n is Long.MIN_VALUE
       NSString *quickResult = @"-9223372036854775808";
       if (sb) {
-        [sb append0WithNSString:quickResult];
+        AbstractStringBuilder_appendString(sb, quickResult);
         return nil;
       }
       return quickResult;
@@ -354,7 +352,7 @@ NSString *IntegralToString_convertLong(JavaLangAbstractStringBuilder *sb, long l
     buf[--cursor] = '-';
   }
   if (sb) {
-    AbstractStringBuilder_appendNativeBuffer(sb, buf + cursor, bufLen - cursor);
+    AbstractStringBuilder_appendBuffer(sb, buf + cursor, bufLen - cursor);
     return nil;
   } else {
     return [NSString stringWithCharacters:buf + cursor length:bufLen - cursor];
