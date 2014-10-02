@@ -309,6 +309,15 @@ public class ImplementationImportCollector extends TreeVisitor {
   }
 
   @Override
+  public boolean visit(FunctionInvocation node) {
+    for (Expression arg : node.getArguments()) {
+      addImports(arg.getTypeBinding());
+    }
+    addImports(node.getDeclaredReturnType());
+    return true;
+  }
+
+  @Override
   public boolean visit(NormalAnnotation node) {
     return visitAnnotation(node);
   }

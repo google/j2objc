@@ -284,15 +284,15 @@ public class ObjectiveCHeaderGeneratorTest extends GenerationTest {
     assertTranslation(translation, "@interface ColorEnum : JavaLangEnum < NSCopying > {");
     assertTranslation(translation, "+ (IOSObjectArray *)values;");
     assertTranslation(translation, "+ (ColorEnum *)valueOfWithNSString:(NSString *)name;");
-    assertTranslation(translation, "FOUNDATION_EXPORT ColorEnum *ColorEnum_values[];");
+    assertTranslation(translation, "FOUNDATION_EXPORT ColorEnum *ColorEnum_values_[];");
     assertTranslatedLines(translation,
-        "#define ColorEnum_RED ColorEnum_values[Color_RED]",
+        "#define ColorEnum_RED ColorEnum_values_[Color_RED]",
         "J2OBJC_STATIC_FIELD_GETTER(ColorEnum, RED, ColorEnum *)");
     assertTranslatedLines(translation,
-        "#define ColorEnum_WHITE ColorEnum_values[Color_WHITE]",
+        "#define ColorEnum_WHITE ColorEnum_values_[Color_WHITE]",
         "J2OBJC_STATIC_FIELD_GETTER(ColorEnum, WHITE, ColorEnum *)");
     assertTranslatedLines(translation,
-        "#define ColorEnum_BLUE ColorEnum_values[Color_BLUE]",
+        "#define ColorEnum_BLUE ColorEnum_values_[Color_BLUE]",
         "J2OBJC_STATIC_FIELD_GETTER(ColorEnum, BLUE, ColorEnum *)");
   }
 
@@ -393,8 +393,8 @@ public class ObjectiveCHeaderGeneratorTest extends GenerationTest {
         "MyEnum", "MyEnum.h");
     assertTranslation(translation, "} MyEnum;");
     assertTranslation(translation, "@interface MyEnumEnum : JavaLangEnum");
-    assertTranslation(translation, "FOUNDATION_EXPORT MyEnumEnum *MyEnumEnum_values[];");
-    assertTranslation(translation, "#define MyEnumEnum_ONE MyEnumEnum_values[MyEnum_ONE]");
+    assertTranslation(translation, "FOUNDATION_EXPORT MyEnumEnum *MyEnumEnum_values_[];");
+    assertTranslation(translation, "#define MyEnumEnum_ONE MyEnumEnum_values_[MyEnum_ONE]");
   }
 
   public void testNoImportForMappedTypes() throws IOException {

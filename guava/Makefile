@@ -39,7 +39,7 @@ TRANSLATE_JAVA_FULL = $(JAVA_SOURCES)
 TRANSLATE_JAVA_RELATIVE = $(JAVA_SOURCES:$(SRC_DIR)/%=%)
 TRANSLATE_ARGS = --segmented-headers --extract-unsequenced --batch-translate-max=300 \
     -cp $(CLASSPATH) -sourcepath $(SOURCEPATH) -encoding UTF-8 -J-Xmx2G \
-    --hide-private-members
+    --hide-private-members --final-methods-as-functions
 include ../make/translate.mk
 
 FAT_LIB_NAME = guava
