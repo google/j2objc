@@ -71,6 +71,7 @@ JAVA_SOURCES = \
 	ast/BodyDeclaration.java \
 	ast/BooleanLiteral.java \
 	ast/BreakStatement.java \
+	ast/CStringLiteral.java \
 	ast/CastExpression.java \
 	ast/CatchClause.java \
 	ast/CharacterLiteral.java \

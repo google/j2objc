@@ -279,8 +279,8 @@ public class StatementGeneratorTest extends GenerationTest {
         + " + \" i=\" + i + \" l=\" + l + \" s=\" + s; }}",
         "Example", "Example.m");
     assertTranslation(translation,
-        "return [NSString stringWithFormat:@\"obj=%@ b=%@ c=%C d=%f f=%f i=%d l=%lld s=%d\", "
-        + "obj_, [JavaLangBoolean toStringWithBoolean:b_], c_, d_, f_, i_, l_, s_];");
+        "return JreStrcat(\"$@$Z$C$D$F$I$J$S\", @\"obj=\", obj_, @\" b=\", b_, @\" c=\", c_,"
+          + " @\" d=\", d_, @\" f=\", f_, @\" i=\", i_, @\" l=\", l_, @\" s=\", s_);");
   }
 
   public void testStringConcatenationWithLiterals() throws IOException {
@@ -296,9 +296,8 @@ public class StatementGeneratorTest extends GenerationTest {
     String translation = translateSourceFile(
         "public class Example<K,V> { String s = \"hello, \" + 50 + \"% of the world\\n\"; }",
         "Example", "Example.m");
-    //TODO(pankaj): should copy the string below, not retain it.
     assertTranslation(translation,
-        "Example_set_s_(self, @\"hello, 50% of the world\\n\")");
+        "Example_set_s_(self, @\"hello, 50% of the world\\n\");");
   }
 
   public void testStringConcatenationMethodInvocation() throws IOException {
@@ -310,7 +309,7 @@ public class StatementGeneratorTest extends GenerationTest {
         + "    String a = \"foo\" + getStr() + \"bar\" + getInt() + \"baz\"; } }",
         "Test", "Test.m");
     assertTranslation(translation,
-        "[NSString stringWithFormat:@\"foo%@bar%dbaz\", [self getStr], [self getInt]]");
+        "JreStrcat(\"$$$I$\", @\"foo\", [self getStr], @\"bar\", [self getInt], @\"baz\")");
   }
 
   public void testIntCastInStringConcatenation() throws IOException {
@@ -320,7 +319,8 @@ public class StatementGeneratorTest extends GenerationTest {
         + "  String b = \"foo\" + a.hashCode() + \"bar\" + a.length() + \"baz\"; } }",
         "Test", "Test.m");
     assertTranslation(translation,
-        "[NSString stringWithFormat:@\"foo%dbar%dbaz\", ((jint) [a hash]), ((jint) [a length])]");
+        "JreStrcat(\"$I$I$\", @\"foo\", ((jint) [a hash]), @\"bar\", ((jint) [a length]),"
+          + " @\"baz\")");
   }
 
   public void testVarargsMethodInvocation() throws IOException {
@@ -675,7 +675,7 @@ public class StatementGeneratorTest extends GenerationTest {
         + "  A() { myString = \"Foo\"; myString += \"Bar\"; }}",
         "A", "A.m");
     assertTranslation(translation,
-        "A_set_myString_(self, [NSString stringWithFormat:@\"%@Bar\", myString_]);");
+        "A_set_myString_(self, JreStrcat(\"$$\", myString_, @\"Bar\"));");
   }
 
   public void testPrimitiveConstantInSwitchCase() throws IOException {
@@ -1088,24 +1088,21 @@ public class StatementGeneratorTest extends GenerationTest {
         + "public class A { String prefix(Object o) { return new String(o + B.separator); }}",
         "A", "A.m");
     assertTranslation(translation,
-        "[NSString stringWithString:"
-        + "[NSString stringWithFormat:@\"%@%@\", o, B_get_separator_()]];");
+        "[NSString stringWithString:JreStrcat(\"@$\", o, B_get_separator_())]");
   }
 
   public void testStringConcatWithBoolean() throws IOException {
     String translation = translateSourceFile(
         "public class A { String test(boolean b) { return \"foo: \" + b; }}",
         "A", "A.m");
-    assertTranslation(translation,
-        "return [NSString stringWithFormat:@\"foo: %@\", "
-        + "[JavaLangBoolean toStringWithBoolean:b]];");
+    assertTranslation(translation, "return JreStrcat(\"$Z\", @\"foo: \", b);");
   }
 
   public void testStringConcatWithChar() throws IOException {
     String translation = translateSourceFile(
         "public class A { String test(char c) { return \"foo: \" + c; }}",
         "A", "A.m");
-    assertTranslation(translation, "return [NSString stringWithFormat:@\"foo: %C\", c];");
+    assertTranslation(translation, "return JreStrcat(\"$C\", @\"foo: \", c);");
   }
 
   // Verify that double quote character constants are concatenated correctly.
@@ -1287,8 +1284,8 @@ public class StatementGeneratorTest extends GenerationTest {
         + "int a = 5; int b = 6; assert a < b : a + \" should be lower than \" + b;}}",
         "Test", "Test.m");
     assertTranslation(translation,
-      "NSAssert(a < b, [[NSString stringWithFormat:@\"%d should be lower than %d\" "
-      + "J2OBJC_COMMA() a J2OBJC_COMMA() b] description])");
+      "NSAssert(a < b, [JreStrcat(\"I$I\" J2OBJC_COMMA() a J2OBJC_COMMA()"
+        + " @\" should be lower than \" J2OBJC_COMMA() b) description]);");
   }
 
   // Verify that a Unicode escape sequence is preserved with string
@@ -1355,7 +1352,7 @@ public class StatementGeneratorTest extends GenerationTest {
     String translation = translateSourceFile(
         "public class Test { String test(String s) { return '\"' + s + '\"'; }}",
         "Test", "Test.m");
-    assertTranslation(translation, "return [NSString stringWithFormat:@\"\\\"%@\\\"\", s];");
+    assertTranslation(translation, "return JreStrcat(\"C$C\", '\"', s, '\"');");
   }
 
   public void testIntConcatenation() throws IOException {
@@ -1433,7 +1430,7 @@ public class StatementGeneratorTest extends GenerationTest {
         "public class Test { String test(String s) { return \"the nil value is \" + null; }}",
         "Test", "Test.m");
     assertTranslation(translation,
-        "return [NSString stringWithFormat:@\"the nil value is %@\", @\"null\"];");
+        "return JreStrcat(\"$@\", @\"the nil value is \", nil);");
   }
 
   public void testTypeVariableWithBoundsIsCast() throws IOException {

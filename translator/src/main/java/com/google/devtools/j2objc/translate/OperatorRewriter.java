@@ -14,22 +14,29 @@
 
 package com.google.devtools.j2objc.translate;
 
+import com.google.common.collect.Lists;
 import com.google.devtools.j2objc.Options;
 import com.google.devtools.j2objc.ast.Assignment;
+import com.google.devtools.j2objc.ast.BooleanLiteral;
+import com.google.devtools.j2objc.ast.CStringLiteral;
+import com.google.devtools.j2objc.ast.CharacterLiteral;
 import com.google.devtools.j2objc.ast.Expression;
 import com.google.devtools.j2objc.ast.FieldAccess;
 import com.google.devtools.j2objc.ast.FunctionInvocation;
 import com.google.devtools.j2objc.ast.InfixExpression;
 import com.google.devtools.j2objc.ast.NullLiteral;
+import com.google.devtools.j2objc.ast.NumberLiteral;
 import com.google.devtools.j2objc.ast.PrefixExpression;
 import com.google.devtools.j2objc.ast.QualifiedName;
 import com.google.devtools.j2objc.ast.SimpleName;
+import com.google.devtools.j2objc.ast.StringLiteral;
 import com.google.devtools.j2objc.ast.ThisExpression;
 import com.google.devtools.j2objc.ast.TreeUtil;
 import com.google.devtools.j2objc.ast.TreeVisitor;
 import com.google.devtools.j2objc.types.Types;
 import com.google.devtools.j2objc.util.BindingUtil;
 import com.google.devtools.j2objc.util.NameTable;
+import com.google.devtools.j2objc.util.UnicodeUtils;
 
 import org.eclipse.jdt.core.dom.ITypeBinding;
 import org.eclipse.jdt.core.dom.IVariableBinding;
@@ -93,6 +100,8 @@ public class OperatorRewriter extends TreeVisitor {
       args.add(TreeUtil.remove(node.getLeftOperand()));
       args.add(TreeUtil.remove(node.getRightOperand()));
       node.replaceWith(invocation);
+    } else if (op == InfixExpression.Operator.PLUS && Types.isStringType(nodeType)) {
+      rewriteStringConcatenation(node);
     }
   }
 
@@ -175,6 +184,101 @@ public class OperatorRewriter extends TreeVisitor {
         return null;
       default:
         return null;
+    }
+  }
+
+  private static void rewriteStringConcatenation(InfixExpression node) {
+    List<Expression> extendedOperands = node.getExtendedOperands();
+    List<Expression> operands = Lists.newArrayListWithCapacity(extendedOperands.size() + 2);
+    operands.add(TreeUtil.remove(node.getLeftOperand()));
+    operands.add(TreeUtil.remove(node.getRightOperand()));
+    TreeUtil.moveList(extendedOperands, operands);
+
+    operands = coalesceStringLiterals(operands);
+    if (operands.size() == 1 && Types.isStringType(operands.get(0).getTypeBinding())) {
+      node.replaceWith(operands.get(0));
+      return;
+    }
+
+    ITypeBinding stringType = Types.resolveIOSType("NSString");
+    FunctionInvocation invocation =
+        new FunctionInvocation("JreStrcat", stringType, stringType, null);
+    List<Expression> args = invocation.getArguments();
+    StringBuilder typeArg = new StringBuilder();
+    for (Expression expr : operands) {
+      typeArg.append(getStringConcatenationTypeCharacter(expr));
+    }
+    args.add(new CStringLiteral(typeArg.toString()));
+    for (Expression expr : operands) {
+      args.add(expr);
+    }
+    node.replaceWith(invocation);
+  }
+
+  private static List<Expression> coalesceStringLiterals(List<Expression> rawOperands) {
+    List<Expression> operands = Lists.newArrayListWithCapacity(rawOperands.size());
+    String currentLiteral = null;
+    for (Expression expr : rawOperands) {
+      String literalValue = getLiteralStringValue(expr);
+      if (literalValue != null) {
+        currentLiteral = currentLiteral == null ? literalValue : currentLiteral + literalValue;
+      } else {
+        if (currentLiteral != null) {
+          addStringLiteralArgument(operands, currentLiteral);
+          currentLiteral = null;
+        }
+        operands.add(expr);
+      }
+    }
+    if (currentLiteral != null) {
+      addStringLiteralArgument(operands, currentLiteral);
+    }
+    return operands;
+  }
+
+  private static void addStringLiteralArgument(List<Expression> args, String literal) {
+    if (literal.length() == 0) {
+      return;  // Skip it.
+    } else if (literal.length() == 1) {
+      args.add(new CharacterLiteral(literal.charAt(0)));
+    } else {
+      args.add(new StringLiteral(literal));
+    }
+  }
+
+  private static String getLiteralStringValue(Expression expr) {
+    switch (expr.getKind()) {
+      case STRING_LITERAL:
+        String literalValue = ((StringLiteral) expr).getLiteralValue();
+        if (UnicodeUtils.hasValidCppCharacters(literalValue)) {
+          return literalValue;
+        } else {
+          return null;
+        }
+      case BOOLEAN_LITERAL:
+        return String.valueOf(((BooleanLiteral) expr).booleanValue());
+      case CHARACTER_LITERAL:
+        return String.valueOf(((CharacterLiteral) expr).charValue());
+      case NUMBER_LITERAL:
+        return ((NumberLiteral) expr).getValue().toString();
+      default:
+        return null;
+    }
+  }
+
+  /**
+   * Returns a character to indicate the type of an argument.
+   * '$' for String, '@' for other objects, and the binary name character for
+   * the primitives.
+   */
+  private static char getStringConcatenationTypeCharacter(Expression operand) {
+    ITypeBinding operandType = operand.getTypeBinding();
+    if (operandType.isPrimitive()) {
+      return operandType.getBinaryName().charAt(0);
+    } else if (Types.isStringType(operandType)) {
+      return '$';
+    } else {
+      return '@';
     }
   }
 }

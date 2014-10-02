@@ -381,8 +381,7 @@ public class RewriterTest extends GenerationTest {
   public void testAdditionWithinStringConcatenation() throws IOException {
     String translation = translateSourceFile(
         "class Test { void test() { String s = 1 + 2.3f + \"foo\"; } }", "Test", "Test.m");
-    assertTranslation(translation,
-        "NSString *s = [NSString stringWithFormat:@\"%ffoo\", 1 + 2.3f]");
+    assertTranslation(translation, "NSString *s = JreStrcat(\"F$\", 1 + 2.3f, @\"foo\");");
   }
 
   public void testVariableDeclarationsInSwitchStatement() throws IOException {

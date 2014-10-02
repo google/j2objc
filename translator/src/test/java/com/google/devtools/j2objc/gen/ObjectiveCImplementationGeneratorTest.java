@@ -384,38 +384,6 @@ public class ObjectiveCImplementationGeneratorTest extends GenerationTest {
     assertTranslation(translation, "#include \"Foo.h\"");
   }
 
-  public void testImportJavaLangBooleanPlusAssign() throws IOException {
-    String translation = translateSourceFile(
-        "class Test { "
-        + "  void foo() { boolean b = true; String s = \"\"; s += b; } }",
-        "Test", "Test.m");
-    assertTranslation(translation, "#include \"java/lang/Boolean.h\"");
-  }
-
-  public void testImportJavaLangBooleanInfixLeft() throws IOException {
-    String translation = translateSourceFile(
-        "class Test { "
-        + "  void foo() { boolean b = true; String s = b + \"\"; } }",
-        "Test", "Test.m");
-    assertTranslation(translation, "#include \"java/lang/Boolean.h\"");
-  }
-
-  public void testImportJavaLangBooleanInfixRight() throws IOException {
-    String translation = translateSourceFile(
-        "class Test { "
-        + "  void foo() { boolean b = true; String s = \"\" + b; } }",
-        "Test", "Test.m");
-    assertTranslation(translation, "#include \"java/lang/Boolean.h\"");
-  }
-
-  public void testImportJavaLangBooleanInfixExtendedOperands() throws IOException {
-    String translation = translateSourceFile(
-        "class Test { "
-        + "  void foo() { boolean b = true; String s = \"\" + \"\" + b; } }",
-        "Test", "Test.m");
-    assertTranslation(translation, "#include \"java/lang/Boolean.h\"");
-  }
-
   public void testEnumWithEnumField() throws IOException {
     String header = translateSourceFile(
         "public class Test { "

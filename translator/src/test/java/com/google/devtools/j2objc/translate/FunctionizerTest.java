@@ -73,7 +73,7 @@ public class FunctionizerTest extends GenerationTest {
     translation = getTranslatedFile("A.m");
     assertTranslation(translation, "static " + functionHeader + ";");
     assertTranslatedLines(translation, functionHeader + " {",
-        "return [NSString stringWithFormat:@\"%@%@\", msg, cls];");
+        "return JreStrcat(\"$@\", msg, cls);");
     assertTranslation(translation,
         "return A_strWithNSString_withIOSClass_(self, msg, [self getClass]);");
   }
@@ -226,7 +226,7 @@ public class FunctionizerTest extends GenerationTest {
     // Check new function.
     assertTranslatedLines(translation, functionHeader + " {",
         "A_init();",
-        "return [NSString stringWithFormat:@\"%@%@\", msg, cls];");
+        "return JreStrcat(\"$@\", msg, cls);");
     // Check wrapper.
     assertTranslatedLines(translation,
         "+ (NSString *)strWithNSString:(NSString *)msg",
@@ -251,7 +251,7 @@ public class FunctionizerTest extends GenerationTest {
     // Check new function.
     assertTranslatedLines(translation, functionHeader + " {",
         "A_init();",
-        "return [NSString stringWithFormat:@\"%@%@\", msg, cls];");
+        "return JreStrcat(\"$@\", msg, cls);");
     // Check wrapper.
     assertTranslatedLines(translation,
         "+ (NSString *)strWithNSString:(NSString *)msg",

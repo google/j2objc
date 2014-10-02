@@ -30,6 +30,7 @@ import com.google.devtools.j2objc.ast.Assignment;
 import com.google.devtools.j2objc.ast.Block;
 import com.google.devtools.j2objc.ast.BooleanLiteral;
 import com.google.devtools.j2objc.ast.BreakStatement;
+import com.google.devtools.j2objc.ast.CStringLiteral;
 import com.google.devtools.j2objc.ast.CastExpression;
 import com.google.devtools.j2objc.ast.CatchClause;
 import com.google.devtools.j2objc.ast.CharacterLiteral;
@@ -94,7 +95,6 @@ import com.google.devtools.j2objc.types.IOSTypeBinding;
 import com.google.devtools.j2objc.types.Types;
 import com.google.devtools.j2objc.util.ASTNodeException;
 import com.google.devtools.j2objc.util.BindingUtil;
-import com.google.devtools.j2objc.util.ErrorUtil;
 import com.google.devtools.j2objc.util.NameTable;
 import com.google.devtools.j2objc.util.UnicodeUtils;
 
@@ -375,6 +375,14 @@ public class StatementGenerator extends TreeVisitor {
   }
 
   @Override
+  public boolean visit(CStringLiteral node) {
+    buffer.append("\"");
+    buffer.append(node.getLiteralValue());
+    buffer.append("\"");
+    return false;
+  }
+
+  @Override
   public boolean visit(CastExpression node) {
     ITypeBinding type = node.getType().getTypeBinding();
     buffer.append("(");
@@ -598,11 +606,7 @@ public class StatementGenerator extends TreeVisitor {
     Expression lhs = node.getLeftOperand();
     Expression rhs = node.getRightOperand();
     List<Expression> extendedOperands = node.getExtendedOperands();
-    ITypeBinding type = node.getTypeBinding();
-    if (Types.isJavaStringType(type)
-        && op.equals(InfixExpression.Operator.PLUS)) {
-      printStringConcatenation(lhs, rhs, extendedOperands);
-    } else if ((op.equals(InfixExpression.Operator.EQUALS)
+    if ((op.equals(InfixExpression.Operator.EQUALS)
         || op.equals(InfixExpression.Operator.NOT_EQUALS))
         && (lhs instanceof StringLiteral || rhs instanceof StringLiteral)) {
       Expression first = lhs;
@@ -629,130 +633,6 @@ public class StatementGenerator extends TreeVisitor {
       }
     }
     return false;
-  }
-
-  /**
-   * Converts a string concatenation expression into a NSString format string and a
-   * list of arguments for it, containing all the non-literal expressions.  If the
-   * expression is all literals, then a string concatenation is printed.  If not,
-   * then a NSString stringWithFormat: message is output.
-   */
-  @SuppressWarnings("fallthrough")
-  private void printStringConcatenation(Expression leftOperand, Expression rightOperand,
-      List<Expression> extendedOperands) {
-    // Copy all operands into a single list.
-    List<Expression> operands = Lists.newArrayList(leftOperand, rightOperand);
-    operands.addAll(extendedOperands);
-    StringBuilder format = new StringBuilder();
-
-    List<Expression> args = Lists.newArrayList();
-    for (Expression operand : operands) {
-      IVariableBinding var = TreeUtil.getVariableBinding(operand);
-      if (var != null) {
-        var = var.getVariableDeclaration();
-        Object value = var.getConstantValue();
-        if (value instanceof String) {
-          String s = (String) value;
-          if (UnicodeUtils.hasValidCppCharacters(s)) {
-            format.append(s.replace("%", "%%"));
-          } else {
-            ErrorUtil.error(operand,
-                "String constant has Unicode or octal escape sequences that are not valid in "
-                + "Objective-C.\nEither make string non-final, or remove characters.");
-          }
-          continue;
-        } else if (value != null) {
-          format.append(value.toString());
-          continue;
-        } // else fall through to next section.
-      }
-      if (operand instanceof StringLiteral) {
-        String s = ((StringLiteral) operand).getLiteralValue();
-        if (UnicodeUtils.hasValidCppCharacters(s)) {
-          format.append(s.replace("%", "%%"));
-        } else {
-          // Convert to NSString invocation when printing args.
-          format.append("%@");
-          args.add(operand);
-        }
-      } else if (operand instanceof BooleanLiteral) {
-        format.append(String.valueOf(((BooleanLiteral) operand).booleanValue()));
-      } else if (operand instanceof CharacterLiteral) {
-        format.append(((CharacterLiteral) operand).charValue());
-      } else if (operand instanceof NumberLiteral) {
-        format.append(((NumberLiteral) operand).getValue().toString());
-      } else {
-        args.add(operand);
-
-        // Append format specifier.
-        ITypeBinding operandType = operand.getTypeBinding();
-        if (operandType.isPrimitive()) {
-          String type = operandType.getBinaryName();
-          assert type.length() == 1;
-          switch (type.charAt(0)) {
-            case 'B':  // byte
-            case 'I':  // int
-            case 'S':  // short
-              format.append("%d");
-              break;
-            case 'J':  // long
-              format.append("%lld");
-              break;
-            case 'D':  // double
-            case 'F':  // float
-              format.append("%f");
-              break;
-            case 'C':  // char
-              format.append("%C");
-              break;
-            case 'Z':  // boolean
-              format.append("%@");
-              break;
-            default:
-              throw new AssertionError("unknown primitive type: " + type);
-          }
-        } else {
-          format.append("%@");
-        }
-      }
-    }
-
-    String formatStr = UnicodeUtils.escapeStringLiteral(format.toString());
-    if (args.isEmpty()) {
-      buffer.append("@\"" + formatStr.replace("%%", "%") + "\""); // unescape % character
-      return;
-    }
-
-    buffer.append("[NSString stringWithFormat:@\"");
-    buffer.append(formatStr);
-    buffer.append("\", ");
-    for (Iterator<Expression> iter = args.iterator(); iter.hasNext(); ) {
-      printStringConcatenationArg(iter.next());
-      if (iter.hasNext()) {
-        buffer.append(", ");
-      }
-    }
-    buffer.append(']');
-  }
-
-  private void printStringConcatenationArg(Expression arg) {
-    if (arg.getTypeBinding().isEqualTo(Types.resolveJavaType("boolean"))) {
-      buffer.append("[JavaLangBoolean toStringWithBoolean:");
-      arg.accept(this);
-      buffer.append(']');
-      return;
-    }
-    if (arg instanceof StringLiteral) {
-      // Strings with all valid C99 characters were previously converted,
-      // so this literal needs to be defined with a char array.
-      buffer.append(buildStringFromChars(((StringLiteral) arg).getLiteralValue()));
-      return;
-    }
-    if (arg instanceof NullLiteral) {
-      buffer.append("@\"null\"");
-      return;
-    }
-    arg.accept(this);
   }
 
   // Some native objective-c methods are declared to return NSUInteger.

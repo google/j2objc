@@ -113,6 +113,12 @@ public class TreeVisitor {
 
   public void endVisit(BreakStatement node) {}
 
+  public boolean visit(CStringLiteral node) {
+    return true;
+  }
+
+  public void endVisit(CStringLiteral node) {}
+
   public boolean visit(CastExpression node) {
     return true;
   }

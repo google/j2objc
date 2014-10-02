@@ -31,7 +31,6 @@ import com.google.devtools.j2objc.ast.Expression;
 import com.google.devtools.j2objc.ast.FieldAccess;
 import com.google.devtools.j2objc.ast.FieldDeclaration;
 import com.google.devtools.j2objc.ast.FunctionInvocation;
-import com.google.devtools.j2objc.ast.InfixExpression;
 import com.google.devtools.j2objc.ast.InstanceofExpression;
 import com.google.devtools.j2objc.ast.MarkerAnnotation;
 import com.google.devtools.j2objc.ast.MethodDeclaration;
@@ -212,31 +211,6 @@ public class ImplementationImportCollector extends TreeVisitor {
   @Override
   public boolean visit(InstanceofExpression node) {
     addImports(node.getRightOperand().getTypeBinding());
-    return true;
-  }
-
-  @Override
-  public boolean visit(InfixExpression node) {
-    if (Types.isJavaStringType(node.getTypeBinding())) {
-      boolean needsImport = false;
-      if (Types.isBooleanType(node.getLeftOperand().getTypeBinding())
-          || Types.isBooleanType(node.getRightOperand().getTypeBinding())) {
-        needsImport = true;
-      } else {
-        for (Expression extendedExpression : node.getExtendedOperands()) {
-          if (Types.isBooleanType(extendedExpression.getTypeBinding())) {
-            needsImport = true;
-            break;
-          }
-        }
-      }
-
-      if (needsImport) {
-        // Implicit conversion from boolean -> String translates into a
-        // Boolean.toString(...) call, so add a reference to java.lang.Boolean.
-        addImports(Types.resolveJavaType("java.lang.Boolean"));
-      }
-    }
     return true;
   }
 
