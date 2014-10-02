@@ -232,6 +232,11 @@ public class Types {
     return instance.javaStringType.equals(type);
   }
 
+  public static boolean isStringType(ITypeBinding type) {
+    return instance.javaStringType.isEqualTo(type)
+        || instance.NSString.isEqualTo(type);
+  }
+
   public static boolean isFloatingPointType(ITypeBinding type) {
     return type.isEqualTo(instance.ast.resolveWellKnownType("double"))
         || type.isEqualTo(instance.ast.resolveWellKnownType("float"))

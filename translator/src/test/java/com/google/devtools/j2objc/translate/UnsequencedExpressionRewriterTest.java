@@ -125,8 +125,8 @@ public class UnsequencedExpressionRewriterTest extends GenerationTest {
         "jint unseq$1 = i++;",
         "jboolean unseq$2 = unseq$1 + i++ == 0;",
         "jint unseq$3 = i++;",
-        "NSAssert(unseq$2, [[NSString stringWithFormat:@\"foo%d%d\" J2OBJC_COMMA() unseq$3"
-          + " J2OBJC_COMMA() i++] description]);");
+        " NSAssert(unseq$2, [JreStrcat(\"$II\" J2OBJC_COMMA() @\"foo\" J2OBJC_COMMA() unseq$3"
+          + " J2OBJC_COMMA() i++) description]);");
   }
 
   public void testForInitStatements() throws IOException {
@@ -172,7 +172,7 @@ public class UnsequencedExpressionRewriterTest extends GenerationTest {
         "for (jint i = unseq$1 + k++; ; ) {",
         "  jint unseq$2 = i++;",
         "  if (!(unseq$2 + i++ < 10)) break;",
-        "  NSString *s = [NSString stringWithFormat:@\"foo%d\", i];",
+        "  NSString *s = JreStrcat(\"$I\", @\"foo\", i);",
         "  i++;",
         "  jint unseq$3 = i++;",
         "  k = unseq$3 + i++;",

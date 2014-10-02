@@ -217,8 +217,8 @@ public class InitializationNormalizerTest extends GenerationTest {
     String translation = translateSourceFile(source, "Test", "Test.m");
     assertTranslation(translation, "NSString * Test_foo_;");
     assertTranslation(translation,
-        "JreStrongAssign(&Test_foo_, nil, [NSString stringWithFormat:@\"hello%@\", "
-        + "[NSString stringWithCharacters:(jchar[]) { (int) 0xffff } length:1]]);");
+        "JreStrongAssign(&Test_foo_, nil, JreStrcat(\"$$\", @\"hello\", "
+        + "[NSString stringWithCharacters:(jchar[]) { (int) 0xffff } length:1]));");
   }
 
   public void testInitializersPlacedAfterOuterAssignments() throws IOException {

@@ -373,7 +373,7 @@ public class AutoboxerTest extends GenerationTest {
     String translation = translateSourceFile(
         "class Test { void test() { Boolean b = Boolean.TRUE; Integer i = new Integer(3); "
         + "String s = b + \"foo\" + i; } }", "Test", "Test.m");
-    assertTranslation(translation, "NSString *s = [NSString stringWithFormat:@\"%@foo%@\", b, i]");
+    assertTranslation(translation, "NSString *s = JreStrcat(\"@$@\", b, @\"foo\", i)");
   }
 
   public void testExtendedOperandsAreUnboxed() throws IOException {
