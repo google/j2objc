@@ -427,7 +427,7 @@ public class ObjectiveCImplementationGenerator extends ObjectiveCSourceFileGener
     String typeName = NameTable.getFullName(node.getTypeBinding());
     printInitFlagDefinition(node, methods);
     newline();
-    printf("%s *%s_values[%s];\n", typeName, typeName, constants.size());
+    printf("%s *%s_values_[%s];\n", typeName, typeName, constants.size());
 
     newline();
     printf("@implementation %s\n", typeName);

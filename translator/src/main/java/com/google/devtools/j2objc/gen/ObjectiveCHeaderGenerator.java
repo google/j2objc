@@ -317,11 +317,11 @@ public class ObjectiveCHeaderGenerator extends ObjectiveCSourceFileGenerator {
     println("\n@end");
     printStaticInitFunction(node, methods);
     printFunctions(node.getBodyDeclarations());
-    printf("\nFOUNDATION_EXPORT %s *%s_values[];\n", typeName, typeName);
+    printf("\nFOUNDATION_EXPORT %s *%s_values_[];\n", typeName, typeName);
     for (EnumConstantDeclaration constant : constants) {
       String varName = NameTable.getStaticVarName(constant.getVariableBinding());
       String valueName = constant.getName().getIdentifier();
-      printf("\n#define %s_%s %s_values[%s_%s]\n",
+      printf("\n#define %s_%s %s_values_[%s_%s]\n",
              typeName, varName, typeName, bareTypeName, valueName);
       printf("J2OBJC_STATIC_FIELD_GETTER(%s, %s, %s *)\n", typeName, varName, typeName);
     }

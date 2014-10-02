@@ -212,12 +212,12 @@ public class ObjectiveCImplementationGeneratorTest extends GenerationTest {
     String translation = translateSourceFile(
       "public enum Color { RED, WHITE, BLUE }",
       "Color", "Color.m");
-    assertTranslation(translation, "ColorEnum *ColorEnum_values[3];");
+    assertTranslation(translation, "ColorEnum *ColorEnum_values_[3];");
     assertTranslation(translation, "@implementation ColorEnum");
     assertTranslation(translation,
         "ColorEnum_RED = [[ColorEnum alloc] initWithNSString:@\"RED\" withInt:0];");
     assertTranslation(translation, "for (int i = 0; i < 3; i++) {");
-    assertTranslation(translation, "ColorEnum *e = ColorEnum_values[i];");
+    assertTranslation(translation, "ColorEnum *e = ColorEnum_values_[i];");
   }
 
   public void testEnumWithParameters() throws IOException {
