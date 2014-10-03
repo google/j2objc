@@ -87,6 +87,8 @@ classes: $(JAVA_SOURCES_MANIFEST)
 lib: $(FAT_LIB_LIBRARY)
 	@:
 
+$(JSR305_SRC_JAR): | java_deps_dist
+
 $(BUILD_DIR)/.extracted: $(JSR305_SRC_JAR) | $(BUILD_DIR)
 	@mkdir -p $(JAVA_SRC_DIR)
 	@unzip -q -o -d $(JAVA_SRC_DIR) $(JSR305_SRC_JAR) $(JAVA_SOURCES)
