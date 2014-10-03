@@ -106,28 +106,35 @@ public class CastResolver extends TreeVisitor {
   }
 
   private void maybeAddCast(Expression expr, boolean shouldCastFromId) {
+    if (needsCast(expr, shouldCastFromId)) {
+      ITypeBinding exprType = Types.mapType(expr.getTypeBinding().getTypeDeclaration());
+      CastExpression castExpr = new CastExpression(exprType, null);
+      expr.replaceWith(ParenthesizedExpression.parenthesize(castExpr));
+      castExpr.setExpression(expr);
+    }
+  }
+
+  private boolean needsCast(Expression expr, boolean shouldCastFromId) {
     ITypeBinding declaredType = getDeclaredType(expr);
     if (declaredType == null) {
-      return;
+      return false;
     }
     ITypeBinding exprType = Types.mapType(expr.getTypeBinding().getTypeDeclaration());
     declaredType = Types.mapType(declaredType.getTypeDeclaration());
     if (declaredType.isAssignmentCompatible(exprType)) {
-      return;
+      return false;
     }
     if (declaredType == Types.resolveIOSType("id") && !shouldCastFromId) {
-      return;
+      return false;
     }
     if (exprType.isPrimitive() || Types.isVoidType(exprType)) {
-      return;
+      return false;
     }
     String typeName = NameTable.getSpecificObjCType(exprType);
     if (typeName.equals(NameTable.ID_TYPE)) {
-      return;
+      return false;
     }
-    CastExpression castExpr = new CastExpression(exprType, null);
-    expr.replaceWith(ParenthesizedExpression.parenthesize(castExpr));
-    castExpr.setExpression(expr);
+    return true;
   }
 
   private ITypeBinding getDeclaredType(Expression expr) {
@@ -240,7 +247,9 @@ public class CastResolver extends TreeVisitor {
 
   @Override
   public void endVisit(QualifiedName node) {
-    maybeAddCast(node.getQualifier(), true);
+    if (needsCast(node.getQualifier(), true)) {
+      maybeAddCast(TreeUtil.convertToFieldAccess(node).getExpression(), true);
+    }
   }
 
   @Override
