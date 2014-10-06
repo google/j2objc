@@ -28,6 +28,7 @@ import com.google.devtools.j2objc.gen.StatementGeneratorTest;
 import com.google.devtools.j2objc.translate.AnonymousClassConverterTest;
 import com.google.devtools.j2objc.translate.ArrayRewriterTest;
 import com.google.devtools.j2objc.translate.AutoboxerTest;
+import com.google.devtools.j2objc.translate.CastResolverTest;
 import com.google.devtools.j2objc.translate.ComplexExpressionExtractorTest;
 import com.google.devtools.j2objc.translate.ConstantBranchPrunerTest;
 import com.google.devtools.j2objc.translate.CopyAllFieldsWriterTest;
@@ -78,6 +79,7 @@ public class SmallTests {
     AutoboxerTest.class,
     BindingMapBuilderTest.class,
     BindingUtilTest.class,
+    CastResolverTest.class,
     ComplexExpressionExtractorTest.class,
     ConstantBranchPrunerTest.class,
     CopyAllFieldsWriterTest.class,
