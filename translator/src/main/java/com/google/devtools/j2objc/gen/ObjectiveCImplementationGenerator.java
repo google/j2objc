@@ -515,10 +515,6 @@ public class ObjectiveCImplementationGenerator extends ObjectiveCSourceFileGener
     IMethodBinding binding = m.getMethodBinding();
     boolean memDebug = Options.memoryDebug();
     List<Statement> statements = m.getBody().getStatements();
-    if (binding.getDeclaringClass().isEnum()) {
-      printEnumConstructor(m, statements, binding);
-      return;
-    }
     StringBuffer sb = new StringBuffer("{\n");
     int constructorIdx = findConstructorInvocation(statements);
     int idx = 0;
@@ -561,50 +557,6 @@ public class ObjectiveCImplementationGenerator extends ObjectiveCSourceFileGener
       invocation.getArguments().add(param.getName().copy());
     }
     return invocation;
-  }
-
-  private void printEnumConstructor(
-      MethodDeclaration m, List<Statement> statements, IMethodBinding binding) {
-    assert !statements.isEmpty();
-
-    // The InitializationNormalizer should have fixed this constructor so the
-    // first statement is a constructor or super invocation.
-    Statement s = statements.get(0);
-    assert s instanceof ConstructorInvocation || s instanceof SuperConstructorInvocation;
-    String invocation = generateStatement(statements.get(0), false);
-
-    StringBuffer sb = new StringBuffer();
-    boolean memDebug = Options.memoryDebug();
-    if (statements.size() == 1) {
-      sb.append("{\nreturn ");
-      if  (memDebug) {
-        sb.append("JreMemDebugAdd(" + invocation + ")");
-      } else {
-        sb.append(invocation);
-      }
-      sb.append(";\n}");
-    } else {
-      sb.append("{\nif ((self = ");
-      sb.append(invocation);
-      sb.append(")) {\n");
-      for (int i = 1; i < statements.size(); i++) {
-        sb.append(generateStatement(statements.get(i), false));
-      }
-      if (memDebug) {
-        sb.append("JreMemDebugAdd(self);\n");
-      }
-      sb.append("}\nreturn self;\n}");
-    }
-
-    newline();
-    syncLineNumbers(m.getName());  // avoid doc-comment
-    if (invokedConstructors.contains(methodKey(binding))) {
-      print(super.constructorDeclaration(m, true) + " " + reindent(sb.toString()) + "\n\n");
-      print(super.constructorDeclaration(m, false) + " {\n"
-          + "  return " + generateStatement(createInnerConstructorInvocation(m), false) + ";\n}\n");
-    } else {
-      print(super.constructorDeclaration(m, false) + " " + reindent(sb.toString()) + "\n");
-    }
   }
 
   @Override

@@ -335,7 +335,7 @@ public class ObjectiveCHeaderGeneratorTest extends GenerationTest {
     assertTranslation(translation,
         "[self initColorEnumWithInt:rgb withBoolean:YES withNSString:__name withInt:__ordinal]");
     assertTranslatedLines(translation,
-        "if ((self = [super initWithNSString:__name withInt:__ordinal])) {",
+        "if (self = [super initWithNSString:__name withInt:__ordinal]) {",
         "self->rgb_ = rgb;",
         "self->primary_ = primary;");
   }
