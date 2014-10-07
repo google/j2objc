@@ -254,8 +254,6 @@ class TranslationProcessor extends FileProcessor {
     new ArrayRewriter().run(unit);
     ticker.tick("ArrayRewriter");
 
-    // After: OperatorRewriter - Otherwise assignments of enum values will be
-    //   rewritten.
     new EnumRewriter().run(unit);
     ticker.tick("EnumRewriter");
 
