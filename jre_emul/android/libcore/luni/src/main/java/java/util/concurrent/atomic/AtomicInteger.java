@@ -1,0 +1,263 @@
+/*
+ * Written by Doug Lea with assistance from members of JCP JSR-166
+ * Expert Group and released to the public domain, as explained at
+ * http://creativecommons.org/publicdomain/zero/1.0/
+ */
+
+package java.util.concurrent.atomic;
+
+/*-[
+#include <libkern/OSAtomic.h>
+]-*/
+
+/**
+ * An {@code int} value that may be updated atomically.  See the
+ * {@link java.util.concurrent.atomic} package specification for
+ * description of the properties of atomic variables. An
+ * {@code AtomicInteger} is used in applications such as atomically
+ * incremented counters, and cannot be used as a replacement for an
+ * {@link java.lang.Integer}. However, this class does extend
+ * {@code Number} to allow uniform access by tools and utilities that
+ * deal with numerically-based classes.
+ *
+ * @since 1.5
+ * @author Doug Lea
+*/
+public class AtomicInteger extends Number implements java.io.Serializable {
+    private static final long serialVersionUID = 6214790243416807050L;
+
+    private volatile int value;
+
+/*-[
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wobjc-designated-initializers"
+]-*/
+
+    /**
+     * Creates a new AtomicInteger with the given initial value.
+     *
+     * @param initialValue the initial value
+     */
+    public AtomicInteger(int initialValue) {
+        value = initialValue;
+    }
+
+/*-[
+#pragma clang diagnostic pop
+]-*/
+
+    /**
+     * Creates a new AtomicInteger with initial value {@code 0}.
+     */
+    public AtomicInteger() {
+    }
+
+    /**
+     * Gets the current value.
+     *
+     * @return the current value
+     */
+    public final int get() {
+        memoryBarrier();
+        return value;
+    }
+
+    /**
+     * Sets to the given value.
+     *
+     * @param newValue the new value
+     */
+    public final void set(int newValue) {
+        memoryBarrier();
+        value = newValue;
+    }
+
+    /**
+     * Eventually sets to the given value.
+     *
+     * @param newValue the new value
+     * @since 1.6
+     */
+    public final void lazySet(int newValue) {
+        memoryBarrier();
+        value = newValue;
+    }
+
+    /**
+     * Atomically sets to the given value and returns the old value.
+     *
+     * @param newValue the new value
+     * @return the previous value
+     */
+    public final int getAndSet(int newValue) {
+        for (;;) {
+            int current = get();
+            if (compareAndSet(current, newValue))
+                return current;
+        }
+    }
+
+    /**
+     * Atomically sets the value to the given updated value
+     * if the current value {@code ==} the expected value.
+     *
+     * @param expect the expected value
+     * @param update the new value
+     * @return true if successful. False return indicates that
+     * the actual value was not equal to the expected value.
+     */
+    public final boolean compareAndSet(int expect, int update) {
+        return compareAndSwapValue(expect, update);
+    }
+
+    /**
+     * Atomically sets the value to the given updated value
+     * if the current value {@code ==} the expected value.
+     *
+     * <p>May <a href="package-summary.html#Spurious">fail spuriously</a>
+     * and does not provide ordering guarantees, so is only rarely an
+     * appropriate alternative to {@code compareAndSet}.
+     *
+     * @param expect the expected value
+     * @param update the new value
+     * @return true if successful.
+     */
+    public final boolean weakCompareAndSet(int expect, int update) {
+        return compareAndSwapValue(expect, update);
+    }
+
+    /**
+     * Atomically increments by one the current value.
+     *
+     * @return the previous value
+     */
+    public final int getAndIncrement() {
+        for (;;) {
+            int current = get();
+            int next = current + 1;
+            if (compareAndSet(current, next))
+                return current;
+        }
+    }
+
+    /**
+     * Atomically decrements by one the current value.
+     *
+     * @return the previous value
+     */
+    public final int getAndDecrement() {
+        for (;;) {
+            int current = get();
+            int next = current - 1;
+            if (compareAndSet(current, next))
+                return current;
+        }
+    }
+
+    /**
+     * Atomically adds the given value to the current value.
+     *
+     * @param delta the value to add
+     * @return the previous value
+     */
+    public final int getAndAdd(int delta) {
+        for (;;) {
+            int current = get();
+            int next = current + delta;
+            if (compareAndSet(current, next))
+                return current;
+        }
+    }
+
+    /**
+     * Atomically increments by one the current value.
+     *
+     * @return the updated value
+     */
+    public final int incrementAndGet() {
+        for (;;) {
+            int current = get();
+            int next = current + 1;
+            if (compareAndSet(current, next))
+                return next;
+        }
+    }
+
+    /**
+     * Atomically decrements by one the current value.
+     *
+     * @return the updated value
+     */
+    public final int decrementAndGet() {
+        for (;;) {
+            int current = get();
+            int next = current - 1;
+            if (compareAndSet(current, next))
+                return next;
+        }
+    }
+
+    /**
+     * Atomically adds the given value to the current value.
+     *
+     * @param delta the value to add
+     * @return the updated value
+     */
+    public final int addAndGet(int delta) {
+        for (;;) {
+            int current = get();
+            int next = current + delta;
+            if (compareAndSet(current, next))
+                return next;
+        }
+    }
+
+    /**
+     * Returns the String representation of the current value.
+     * @return the String representation of the current value.
+     */
+    public String toString() {
+        return Integer.toString(get());
+    }
+
+
+    /**
+     * Returns the value of this {@code AtomicInteger} as an {@code int}.
+     */
+    public int intValue() {
+        return get();
+    }
+
+    /**
+     * Returns the value of this {@code AtomicInteger} as a {@code long}
+     * after a widening primitive conversion.
+     */
+    public long longValue() {
+        return (long)get();
+    }
+
+    /**
+     * Returns the value of this {@code AtomicInteger} as a {@code float}
+     * after a widening primitive conversion.
+     */
+    public float floatValue() {
+        return (float)get();
+    }
+
+    /**
+     * Returns the value of this {@code AtomicInteger} as a {@code double}
+     * after a widening primitive conversion.
+     */
+    public double doubleValue() {
+        return (double)get();
+    }
+
+    private static native void memoryBarrier() /*-[
+      OSMemoryBarrier();
+    ]-*/;
+
+    private native boolean compareAndSwapValue(int oldValue, int newValue) /*-[
+      return OSAtomicCompareAndSwapIntBarrier(oldValue, newValue, &self->value_);
+    ]-*/;
+
+}
