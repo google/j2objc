@@ -69,7 +69,8 @@ public class OperatorRewriter extends TreeVisitor {
     ITypeBinding rhsType = rhs.getTypeBinding();
     if (op == Assignment.Operator.ASSIGN) {
       IVariableBinding var = TreeUtil.getVariableBinding(lhs);
-      if (var == null || var.getType().isPrimitive() || !Options.useReferenceCounting()) {
+      if (var == null || var.getType().isPrimitive() || !Options.useReferenceCounting()
+          || var.isEnumConstant()) {
         return;
       }
       if (BindingUtil.isStatic(var)) {
