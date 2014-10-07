@@ -1,0 +1,31 @@
+TYPE java.util.logging.LogManager  # Long lived.
+TYPE java.security.Provider        # Long lived.
+
+# Breaks several false cycles.
+FIELD java.io.ObjectOutputStream.currentPutField
+
+TYPE java.net.InetAddress.isReachable.$
+FIELD java.net.NetworkInterface.children
+
+FIELD java.util.HashSet.backingMap
+FIELD java.util.TreeSet.backingMap
+
+FIELD java.util.concurrent.ConcurrentSkipListSet.m
+FIELD java.util.concurrent.ForkJoinWorkerThread.pool
+FIELD java.util.concurrent.Phaser.QNode.phaser
+FIELD java.util.concurrent.ThreadPoolExecutor.workers
+FIELD java.util.concurrent.ThreadPoolExecutor.workQueue
+
+FIELD java.util.logging.Logger.children
+
+# This thread field is cleared when the thread finishes, regardless of any exceptions.
+FIELD java.lang.Thread.interruptActions
+
+# These types are adapters of each other. If the cycle was created then a stack
+# overflow would be a larger problem then the memory leak.
+FIELD org.xml.sax.helpers.ParserAdapter.contentHandler org.xml.sax.helpers.XMLReaderAdapter
+FIELD org.xml.sax.helpers.ParserAdapter.parser org.xml.sax.helpers.XMLReaderAdapter
+FIELD org.xml.sax.helpers.XMLReaderAdapter.AttributesAdapter.attributes org.xml.sax.helpers.ParserAdapter.AttributeListAdapter
+
+# TODO(kstanger,tball): Resolve these cycles.
+NAMESPACE org.xml
