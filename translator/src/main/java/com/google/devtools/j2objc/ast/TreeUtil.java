@@ -184,6 +184,13 @@ public class TreeUtil {
     }
   }
 
+  public static List<BodyDeclaration> asDeclarationSublist(BodyDeclaration node) {
+    List<BodyDeclaration> declarations = getBodyDeclarations(node.getParent());
+    int index = declarations.indexOf(node);
+    assert index != -1;
+    return declarations.subList(index, index + 1);
+  }
+
   /**
    * Gets a variable binding for the given expression if the expression
    * represents a variable. Returns null otherwise.

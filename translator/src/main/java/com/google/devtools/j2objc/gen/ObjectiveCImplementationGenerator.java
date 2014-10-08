@@ -619,7 +619,8 @@ public class ObjectiveCImplementationGenerator extends ObjectiveCSourceFileGener
     boolean needsNewLine = true;
     for (AbstractTypeDeclaration type : types) {
       for (FunctionDeclaration function : TreeUtil.getFunctionDeclarations(type)) {
-        if (!Modifier.isPrivate(function.getModifiers())) {
+        int modifiers = function.getModifiers();
+        if (!Modifier.isPrivate(modifiers)) {
           // Declaration is defined in header file.
           continue;
         }
@@ -627,13 +628,20 @@ public class ObjectiveCImplementationGenerator extends ObjectiveCSourceFileGener
           newline();
           needsNewLine = false;
         }
-        println("static " + getFunctionSignature(function) + ";");
+        // We expect native functions to be defined externally.
+        if (!Modifier.isNative(modifiers)) {
+          print("static ");
+        }
+        println(getFunctionSignature(function) + ";");
       }
     }
   }
 
   @Override
   protected void printFunction(FunctionDeclaration function) {
+    if (Modifier.isNative(function.getModifiers())) {
+      return;
+    }
     String functionBody = generateStatement(function.getBody(), /* isFunction */ true);
     newline();
     println(getFunctionSignature(function) + " " + reindent(functionBody));
