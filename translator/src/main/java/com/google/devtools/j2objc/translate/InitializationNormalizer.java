@@ -38,9 +38,7 @@ import com.google.devtools.j2objc.ast.TreeVisitor;
 import com.google.devtools.j2objc.ast.TypeDeclaration;
 import com.google.devtools.j2objc.ast.VariableDeclarationFragment;
 import com.google.devtools.j2objc.types.GeneratedMethodBinding;
-import com.google.devtools.j2objc.types.Types;
 import com.google.devtools.j2objc.util.BindingUtil;
-import com.google.devtools.j2objc.util.NameTable;
 import com.google.devtools.j2objc.util.UnicodeUtils;
 
 import org.eclipse.jdt.core.dom.IMethodBinding;
@@ -82,7 +80,7 @@ public class InitializationNormalizer extends TreeVisitor {
 
   void normalizeMembers(AbstractTypeDeclaration node) {
     List<Statement> initStatements = Lists.newArrayList();
-    List<Statement> classInitStatements = Lists.newArrayList();
+    List<Statement> classInitStatements = node.getClassInitStatements();
     List<MethodDeclaration> methods = Lists.newArrayList();
     ITypeBinding binding = node.getTypeBinding();
 
@@ -122,11 +120,6 @@ public class InitializationNormalizer extends TreeVisitor {
         addDefaultConstructor(binding, members, initStatements);
       }
     }
-
-    // Create an initialize method, if necessary.
-    if (!classInitStatements.isEmpty()) {
-      addClassInitializer(binding, members, classInitStatements);
-    }
   }
 
   /**
@@ -138,7 +131,7 @@ public class InitializationNormalizer extends TreeVisitor {
     Initializer initializer = (Initializer) member;
     List<Statement> l =
         Modifier.isStatic(initializer.getModifiers()) ? classInitStatements : initStatements;
-    l.add(initializer.getBody());
+    l.add(TreeUtil.remove(initializer.getBody()));
   }
 
   /**
@@ -269,14 +262,6 @@ public class InitializationNormalizer extends TreeVisitor {
     initStatements.add(0, new SuperConstructorInvocation(binding));
     members.add(createMethod(GeneratedMethodBinding.newConstructor(type, constructorModifier),
                              initStatements));
-  }
-
-  void addClassInitializer(
-      ITypeBinding type, List<BodyDeclaration> members, List<Statement> classInitStatements) {
-    int modifiers = Modifier.PUBLIC | Modifier.STATIC;
-    GeneratedMethodBinding binding = GeneratedMethodBinding.newMethod(
-        NameTable.CLINIT_NAME, modifiers, Types.resolveJavaType("void"), type);
-    members.add(createMethod(binding, classInitStatements));
   }
 
   private MethodDeclaration createMethod(IMethodBinding binding, List<Statement> statements) {

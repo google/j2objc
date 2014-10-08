@@ -16,14 +16,18 @@ package com.google.devtools.j2objc.translate;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
+import com.google.devtools.j2objc.ast.AbstractTypeDeclaration;
+import com.google.devtools.j2objc.ast.AnnotationTypeDeclaration;
 import com.google.devtools.j2objc.ast.ArrayAccess;
 import com.google.devtools.j2objc.ast.Assignment;
 import com.google.devtools.j2objc.ast.Block;
+import com.google.devtools.j2objc.ast.BodyDeclaration;
 import com.google.devtools.j2objc.ast.CastExpression;
 import com.google.devtools.j2objc.ast.CatchClause;
 import com.google.devtools.j2objc.ast.ConditionalExpression;
 import com.google.devtools.j2objc.ast.DoStatement;
 import com.google.devtools.j2objc.ast.EnhancedForStatement;
+import com.google.devtools.j2objc.ast.EnumDeclaration;
 import com.google.devtools.j2objc.ast.Expression;
 import com.google.devtools.j2objc.ast.FieldAccess;
 import com.google.devtools.j2objc.ast.ForStatement;
@@ -42,6 +46,7 @@ import com.google.devtools.j2objc.ast.TreeNode;
 import com.google.devtools.j2objc.ast.TreeUtil;
 import com.google.devtools.j2objc.ast.TreeVisitor;
 import com.google.devtools.j2objc.ast.TryStatement;
+import com.google.devtools.j2objc.ast.TypeDeclaration;
 import com.google.devtools.j2objc.ast.VariableDeclarationExpression;
 import com.google.devtools.j2objc.ast.VariableDeclarationFragment;
 import com.google.devtools.j2objc.ast.WhileStatement;
@@ -228,6 +233,34 @@ public class NilCheckResolver extends TreeVisitor {
       popScope();
     }
     return false;
+  }
+
+  private boolean visitType(AbstractTypeDeclaration node) {
+    assert safeVarsStack.isEmpty();
+    for (BodyDeclaration decl : node.getBodyDeclarations()) {
+      decl.accept(this);
+    }
+    pushScope();
+    for (Statement stmt : node.getClassInitStatements()) {
+      stmt.accept(this);
+    }
+    popScope();
+    return false;
+  }
+
+  @Override
+  public boolean visit(AnnotationTypeDeclaration node) {
+    return visitType(node);
+  }
+
+  @Override
+  public boolean visit(EnumDeclaration node) {
+    return visitType(node);
+  }
+
+  @Override
+  public boolean visit(TypeDeclaration node) {
+    return visitType(node);
   }
 
   @Override

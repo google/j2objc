@@ -137,21 +137,8 @@ public abstract class ObjectiveCSourceFileGenerator extends SourceFileGenerator 
     return Iterables.filter(TreeUtil.getAllFields(node), NEEDS_INITIALIZATION_PRED);
   }
 
-  protected boolean isInitializeMethod(MethodDeclaration method) {
-    return BindingUtil.isInitializeMethod(method.getMethodBinding());
-  }
-
-  protected boolean hasInitializeMethod(
-      AbstractTypeDeclaration node, List<MethodDeclaration> methods) {
-    if (node instanceof EnumDeclaration) {
-      return true;
-    }
-    for (MethodDeclaration m : methods) {
-      if (isInitializeMethod(m)) {
-        return true;
-      }
-    }
-    return false;
+  protected boolean hasInitializeMethod(AbstractTypeDeclaration node) {
+    return !node.getClassInitStatements().isEmpty();
   }
 
   /**
@@ -170,8 +157,6 @@ public abstract class ObjectiveCSourceFileGenerator extends SourceFileGenerator 
       printMappedMethodDeclaration(m, iosMethod);
     } else if (m.isConstructor()) {
       printConstructor(m);
-    } else if (isInitializeMethod(m)) {
-      printStaticConstructorDeclaration(m);
     } else {
       printNormalMethod(m);
     }
@@ -211,11 +196,6 @@ public abstract class ObjectiveCSourceFileGenerator extends SourceFileGenerator 
   protected abstract void printNormalMethod(MethodDeclaration m);
 
   protected abstract void printConstructor(MethodDeclaration m);
-
-  /**
-   * Print an Objective-C constructor declaration string.
-   */
-  protected abstract void printStaticConstructorDeclaration(MethodDeclaration m);
 
   protected abstract void printMappedMethodDeclaration(MethodDeclaration m, IOSMethod mappedMethod);
 

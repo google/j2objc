@@ -83,7 +83,6 @@ public class ComplexExpressionExtractor extends TreeVisitor {
     }
     if (depth >= maxDepth) {
       ITypeBinding type = node.getTypeBinding();
-      assert currentMethod != null; // Should be OK if run after InitializationNormalizer.
       IVariableBinding newVar = new GeneratedVariableBinding(
           "complex$" + count++, 0, type, false, false, null, currentMethod);
       Statement newStmt = new VariableDeclarationStatement(newVar, node.copy());

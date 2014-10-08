@@ -186,11 +186,10 @@ public class ObjectiveCImplementationGenerator extends ObjectiveCSourceFileGener
   @Override
   public void generate(TypeDeclaration node) {
     String typeName = NameTable.getFullName(node.getTypeBinding());
-    List<MethodDeclaration> methods = TreeUtil.getMethodDeclarationsList(node);
     if (node.isInterface()) {
-      printStaticInterface(node, typeName, methods);
+      printStaticInterface(node, typeName);
     } else {
-      printInitFlagDefinition(node, methods);
+      printInitFlagDefinition(node);
       newline();
       syncLineNumbers(node.getName()); // avoid doc-comment
       printf("@implementation %s\n", typeName);
@@ -199,7 +198,7 @@ public class ObjectiveCImplementationGenerator extends ObjectiveCSourceFileGener
       printMethods(node);
       if (!Options.stripReflection()) {
         printTypeAnnotationsMethod(node);
-        printMethodAnnotationMethods(methods);
+        printMethodAnnotationMethods(TreeUtil.getMethodDeclarations(node));
         printFieldAnnotationMethods(node);
         printMetadata(node);
       }
@@ -215,7 +214,7 @@ public class ObjectiveCImplementationGenerator extends ObjectiveCSourceFileGener
 
     String typeName = NameTable.getFullName(node.getTypeBinding());
     List<MethodDeclaration> methods = TreeUtil.getMethodDeclarationsList(node);
-    printInitFlagDefinition(node, methods);
+    printInitFlagDefinition(node);
     printf("\n@implementation %s\n", typeName);
     if (BindingUtil.isRuntimeAnnotation(node.getTypeBinding())) {
       List<AnnotationTypeMemberDeclaration> members = Lists.newArrayList(
@@ -307,6 +306,7 @@ public class ObjectiveCImplementationGenerator extends ObjectiveCSourceFileGener
 
   private void printMethods(TypeDeclaration node) {
     printDeclarations(node.getBodyDeclarations());
+    printInitializeMethod(node);
     List<VariableDeclarationFragment> properties =
         getProperties(TreeUtil.getFieldDeclarations(node));
     if (properties.size() > 0) {
@@ -394,23 +394,18 @@ public class ObjectiveCImplementationGenerator extends ObjectiveCSourceFileGener
     }
   }
 
-  private void printStaticInterface(AbstractTypeDeclaration node,
-      String typeName, List<MethodDeclaration> methods) {
-    boolean needsImplementation = !methods.isEmpty() || !Options.stripReflection();
-    if (needsImplementation && !hasInitializeMethod(node, methods)) {
+  private void printStaticInterface(AbstractTypeDeclaration node, String typeName) {
+    boolean needsImplementation = hasInitializeMethod(node) || !Options.stripReflection();
+    if (needsImplementation && !hasInitializeMethod(node)) {
       printf("\n@interface %s : NSObject\n@end\n", typeName);
     }
-    printInitFlagDefinition(node, methods);
+    printInitFlagDefinition(node);
     printStaticVars(node);
     if (!needsImplementation) {
       return;
     }
     printf("\n@implementation %s\n", typeName);
-    for (MethodDeclaration method : methods) {
-      if (method.getBody() != null) {
-        printMethod(method);
-      }
-    }
+    printInitializeMethod(node);
     if (!Options.stripReflection()) {
       printMetadata(node);
     }
@@ -421,11 +416,10 @@ public class ObjectiveCImplementationGenerator extends ObjectiveCSourceFileGener
   @Override
   protected void generate(EnumDeclaration node) {
     List<EnumConstantDeclaration> constants = node.getEnumConstants();
-    List<MethodDeclaration> methods = TreeUtil.getMethodDeclarationsList(node);
     syncLineNumbers(node.getName()); // avoid doc-comment
 
     String typeName = NameTable.getFullName(node.getTypeBinding());
-    printInitFlagDefinition(node, methods);
+    printInitFlagDefinition(node);
     newline();
     printf("%s *%s_values_[%s];\n", typeName, typeName, constants.size());
 
@@ -435,6 +429,7 @@ public class ObjectiveCImplementationGenerator extends ObjectiveCSourceFileGener
     printStaticReferencesMethod(node);
 
     printDeclarations(node.getBodyDeclarations());
+    printInitializeMethod(node);
 
     if (!Options.stripReflection()) {
       printTypeAnnotationsMethod(node);
@@ -444,11 +439,10 @@ public class ObjectiveCImplementationGenerator extends ObjectiveCSourceFileGener
     printFunctions(node.getBodyDeclarations());
   }
 
-  private void printInitFlagDefinition(
-      AbstractTypeDeclaration node, List<MethodDeclaration> methods) {
+  private void printInitFlagDefinition(AbstractTypeDeclaration node) {
     ITypeBinding binding = node.getTypeBinding();
     String typeName = NameTable.getFullName(binding);
-    if (hasInitializeMethod(node, methods)) {
+    if (hasInitializeMethod(node)) {
       printf("\nBOOL %s_initialized = NO;\n", typeName);
     }
   }
@@ -559,12 +553,15 @@ public class ObjectiveCImplementationGenerator extends ObjectiveCSourceFileGener
     return invocation;
   }
 
-  @Override
-  protected void printStaticConstructorDeclaration(MethodDeclaration m) {
-    String className = NameTable.getFullName(m.getMethodBinding().getDeclaringClass());
+  private void printInitializeMethod(AbstractTypeDeclaration typeNode) {
+    List<Statement> initStatements = typeNode.getClassInitStatements();
+    if (initStatements.isEmpty()) {
+      return;
+    }
+    String className = NameTable.getFullName(typeNode.getTypeBinding());
     StringBuffer sb = new StringBuffer();
     sb.append("{\nif (self == [" + className + " class]) {\n");
-    for (Statement statement : m.getBody().getStatements()) {
+    for (Statement statement : initStatements) {
       sb.append(generateStatement(statement, false));
     }
     sb.append(className + "_initialized = YES;\n");
@@ -661,7 +658,7 @@ public class ObjectiveCImplementationGenerator extends ObjectiveCSourceFileGener
     }
   }
 
-  private void printMethodAnnotationMethods(List<MethodDeclaration> methods) {
+  private void printMethodAnnotationMethods(Iterable<MethodDeclaration> methods) {
     for (MethodDeclaration method : methods) {
       List<Annotation> runtimeAnnotations =
           TreeUtil.getRuntimeAnnotationsList(method.getAnnotations());
