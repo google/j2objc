@@ -17,6 +17,8 @@
 
 package java.nio.channels;
 
+import com.google.j2objc.annotations.Weak;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -285,6 +287,7 @@ public final class Channels {
      */
     private static class InputStreamChannel extends AbstractInterruptibleChannel
             implements ReadableByteChannel {
+        @Weak
         private final InputStream inputStream;
 
         InputStreamChannel(InputStream inputStream) {
@@ -324,6 +327,7 @@ public final class Channels {
      */
     private static class OutputStreamChannel extends AbstractInterruptibleChannel
             implements WritableByteChannel {
+        @Weak
         private final OutputStream outputStream;
 
         OutputStreamChannel(OutputStream outputStream) {
