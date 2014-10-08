@@ -85,6 +85,7 @@ public class TypeDeclaration extends AbstractTypeDeclaration {
       superclassType.accept(visitor);
       superInterfaceTypes.accept(visitor);
       bodyDeclarations.accept(visitor);
+      classInitStatements.accept(visitor);
     }
     visitor.endVisit(this);
   }

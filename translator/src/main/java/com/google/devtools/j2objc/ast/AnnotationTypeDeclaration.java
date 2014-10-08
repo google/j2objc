@@ -39,6 +39,7 @@ public class AnnotationTypeDeclaration extends AbstractTypeDeclaration {
       annotations.accept(visitor);
       name.accept(visitor);
       bodyDeclarations.accept(visitor);
+      classInitStatements.accept(visitor);
     }
     visitor.endVisit(this);
   }

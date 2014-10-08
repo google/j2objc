@@ -16,7 +16,6 @@ package com.google.devtools.j2objc.translate;
 
 import com.google.devtools.j2objc.Options;
 import com.google.devtools.j2objc.ast.Assignment;
-import com.google.devtools.j2objc.ast.Block;
 import com.google.devtools.j2objc.ast.ClassInstanceCreation;
 import com.google.devtools.j2objc.ast.ConstructorInvocation;
 import com.google.devtools.j2objc.ast.EnumConstantDeclaration;
@@ -35,12 +34,10 @@ import com.google.devtools.j2objc.ast.TreeVisitor;
 import com.google.devtools.j2objc.types.GeneratedMethodBinding;
 import com.google.devtools.j2objc.types.GeneratedVariableBinding;
 import com.google.devtools.j2objc.types.Types;
-import com.google.devtools.j2objc.util.BindingUtil;
 import com.google.devtools.j2objc.util.NameTable;
 
 import org.eclipse.jdt.core.dom.IMethodBinding;
 import org.eclipse.jdt.core.dom.ITypeBinding;
-import org.eclipse.jdt.core.dom.Modifier;
 
 import java.util.List;
 
@@ -66,8 +63,7 @@ public class EnumRewriter extends TreeVisitor {
 
   @Override
   public void endVisit(EnumDeclaration node) {
-    MethodDeclaration initMethod = getOrCreateStaticInit(node);
-    List<Statement> stmts = initMethod.getBody().getStatements().subList(0, 0);
+    List<Statement> stmts = node.getClassInitStatements().subList(0, 0);
     int i = 0;
     for (EnumConstantDeclaration constant : node.getEnumConstants()) {
       IMethodBinding binding =
@@ -123,21 +119,6 @@ public class EnumRewriter extends TreeVisitor {
     node.setMethodBinding(addEnumConstructorParams(node.getMethodBinding()));
     node.getArguments().add(new SimpleName(nameVar));
     node.getArguments().add(new SimpleName(ordinalVar));
-  }
-
-  private static MethodDeclaration getOrCreateStaticInit(EnumDeclaration enumType) {
-    for (MethodDeclaration method : TreeUtil.getMethodDeclarations(enumType)) {
-      if (BindingUtil.isInitializeMethod(method.getMethodBinding())) {
-        return method;
-      }
-    }
-    GeneratedMethodBinding binding = GeneratedMethodBinding.newMethod(
-        NameTable.CLINIT_NAME, Modifier.PUBLIC | Modifier.STATIC, Types.resolveJavaType("void"),
-        enumType.getTypeBinding());
-    MethodDeclaration newMethod = new MethodDeclaration(binding);
-    newMethod.setBody(new Block());
-    enumType.getBodyDeclarations().add(newMethod);
-    return newMethod;
   }
 
   private static void addExtraNativeDecls(EnumDeclaration node) {

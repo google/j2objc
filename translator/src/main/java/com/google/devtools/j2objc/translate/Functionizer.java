@@ -88,10 +88,6 @@ public class Functionizer extends TreeVisitor {
             // Native method without OCNI needs to be resolved in a separate native source file.
             return;
           }
-          if (m.getName().equals(NameTable.CLINIT_NAME) && m.getParameterTypes().length == 0) {
-            // Don't functionize class initializers, since they are only called as methods.
-            return;
-          }
           staticDeclarations.add(m);
         } else if (canFunctionize(node)) {
           functionizableDeclarations.add(m);
