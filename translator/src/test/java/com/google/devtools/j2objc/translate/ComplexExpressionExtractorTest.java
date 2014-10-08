@@ -54,6 +54,18 @@ public class ComplexExpressionExtractorTest extends GenerationTest {
         "[complex$4 appendWithNSString:@\"g\"];");
   }
 
+  public void testComplexExpressionWithinStaticInit() throws IOException {
+    String translation = translateSourceFile(
+        "class Test { static String s = new StringBuilder().append('a').append('b').toString(); }",
+        "Test", "Test.m");
+    assertTranslatedLines(translation,
+        "JavaLangStringBuilder *complex$1 = [((JavaLangStringBuilder *) "
+          + "nil_chk([((JavaLangStringBuilder *) [[[JavaLangStringBuilder alloc] init] "
+          + "autorelease]) appendWithChar:'a'])) appendWithChar:'b'];",
+        "JreStrongAssign(&Test_s_, nil, [((JavaLangStringBuilder *) nil_chk(complex$1)) "
+          + "description]);");
+  }
+
   public void testLongExpression() throws IOException {
     String translation = translateSourceFile(
         "class Test { int test() { return 1 + 2 - 3 + 4 - 5 + 6 - 7 + 8 - 9; } }",
