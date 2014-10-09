@@ -117,7 +117,7 @@ __attribute__ ((unused)) static inline id check_protocol_cast(id __unsafe_unreta
 
 // Should only be used with manual reference counting.
 #if !__has_feature(objc_arc)
-static inline id JreStrongAssignInner(id *pIvar, id self, id value) {
+static inline id JreStrongAssignInner(id *pIvar, id self, NS_RELEASES_ARGUMENT id value) {
   // We need a lock here because during
   // JreMemDebugGenerateAllocationsReport(), we want the list of links
   // of the graph to be consistent.
@@ -146,7 +146,7 @@ static inline id JreStrongAssign(id *pIvar, id self, id value) {
   return JreStrongAssignInner(pIvar, self, value);
 }
 
-static inline id JreStrongAssignAndConsume(id *pIvar, id self, id value) {
+static inline id JreStrongAssignAndConsume(id *pIvar, id self, NS_RELEASES_ARGUMENT id value) {
   if (value == self) {
     [value autorelease];
   }
@@ -171,7 +171,7 @@ FOUNDATION_EXPORT NSString *JreStrcat(const char *types, ...);
     return JreStrongAssign(&instance->FIELD, instance, value); \
   }\
   __attribute__((unused)) static inline TYPE CLASS##_setAndConsume_##FIELD( \
-        CLASS *instance, TYPE value) { \
+        CLASS *instance, NS_RELEASES_ARGUMENT TYPE value) { \
     return JreStrongAssignAndConsume(&instance->FIELD, instance, value); \
   }
 #endif
