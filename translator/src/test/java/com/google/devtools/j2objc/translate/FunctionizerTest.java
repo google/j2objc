@@ -391,7 +391,7 @@ public class FunctionizerTest extends GenerationTest {
     assertTranslation(translation, "- (void)foo;");
     // Public declaration for "bar". both the class method and c-function.
     assertTranslation(translation, "+ (void)bar;");
-    assertTranslation(translation, "extern void Test_bar();");
+    assertTranslation(translation, "FOUNDATION_EXPORT void Test_bar();");
 
     translation = getTranslatedFile("Test.m");
     // No implementation for "foo".
