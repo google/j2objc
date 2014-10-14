@@ -160,6 +160,8 @@ public class ComplexExpressionExtractor extends TreeVisitor {
       case POSTFIX_EXPRESSION:
       case PREFIX_EXPRESSION: // Parentheses not needed, but better for readability.
         ParenthesizedExpression.parenthesizeAndReplace(node);
+      default:
+        // Ignore.
     }
   }
 
@@ -182,5 +184,27 @@ public class ComplexExpressionExtractor extends TreeVisitor {
         ParenthesizedExpression.parenthesizeAndReplace(node);
       }
     }
+  }
+
+  /**
+   * If an equality (==) expression has double-parentheses, remove one set.
+   * This avoids clang's -Wparentheses-equality warning.
+   */
+  @Override
+  public void endVisit(ParenthesizedExpression node) {
+    Expression expr = node.getExpression();
+    if (expr instanceof ParenthesizedExpression) {
+      Expression inner = ((ParenthesizedExpression) expr).getExpression();
+      if (isEqualityExpression(inner)) {
+        node.replaceWith(TreeUtil.remove(expr));
+      }
+    } else if (!(node.getParent() instanceof Expression) && isEqualityExpression(expr)) {
+      node.replaceWith(TreeUtil.remove(expr));
+    }
+  }
+
+  private boolean isEqualityExpression(Expression expr) {
+    return expr instanceof InfixExpression &&
+        ((InfixExpression) expr).getOperator() == InfixExpression.Operator.EQUALS;
   }
 }
