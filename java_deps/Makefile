@@ -35,7 +35,7 @@ ifndef M2_HOME
 M2_HOME := $(shell echo $$HOME)/.m2
 endif
 JUNIT_DIR = $(M2_HOME)/repository/junit/junit/4.10
-JSR305_DIR = $(M2_HOME)/repository/com/google/code/findbugs/jsr305/2.0.2
+JSR305_DIR = $(M2_HOME)/repository/com/google/code/findbugs/jsr305/3.0.0
 JAVAX_INJECT_DIR = $(M2_HOME)/repository/javax/inject/javax.inject/1
 HAMCREST_DIR = $(M2_HOME)/repository/org/hamcrest/hamcrest-core/1.1
 MOCKITO_DIR = $(M2_HOME)/repository/org/mockito/mockito-core/1.9.5
