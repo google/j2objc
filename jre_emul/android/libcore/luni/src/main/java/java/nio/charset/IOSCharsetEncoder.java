@@ -80,8 +80,15 @@ public class IOSCharsetEncoder extends CharsetEncoder {
       System.arraycopy(inBuffer, 0, chars, 0, inBuffer.length);
       inBuffer = null;
     } else {
-      i = 0;
-      chars = new char[in.remaining()];
+      if (((IOSCharset) cs).nsEncoding() == /* NSUnicodeStringEncoding */ 10L) {
+        // Prepend required BOM for Java's big-endian encoding default.
+        chars = new char[in.remaining() + 1];
+        chars[0] = (char) 0xFEFF;
+        i = 1;
+      } else {
+        i = 0;
+        chars = new char[in.remaining()];
+      }
     }
     in.get(chars, i, chars.length - i);
     byte[] bytes = encode(chars, ((IOSCharset) cs).nsEncoding());
@@ -94,6 +101,10 @@ public class IOSCharsetEncoder extends CharsetEncoder {
   }
 
   private static native byte[] encode(char[] in, long encoding) /*-[
+    if (encoding == NSUnicodeStringEncoding) {
+      // Force encoding to be big-endian to match Java encoding.
+      encoding = NSUTF16BigEndianStringEncoding;
+    }
     NSString *s = [NSString stringWithCharacters:inArg->buffer_
                                           length:inArg->size_];
     NSData *data = [s dataUsingEncoding:(NSStringEncoding) encoding allowLossyConversion:NO];

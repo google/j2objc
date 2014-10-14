@@ -113,6 +113,7 @@ TEST_SOURCES = \
     SynchronousQueueTest.java \
     ThreadPoolExecutorTest.java \
     TimeUnitTest.java \
+    UTF16EncodingTest.java \
     android/text/SpannableStringBuilderTest.java \
     android/text/SpannableStringTest.java \
     android/text/TextUtilsTest.java \
