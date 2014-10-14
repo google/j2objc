@@ -102,4 +102,16 @@ public class ComplexExpressionExtractorTest extends GenerationTest {
         "Test", "Test.m");
     assertTranslation(translation, "while ((foo_ = b));");
   }
+
+  // Verify that multiple parentheses are removed from equality (==) expressions.
+  // This avoids clang's -Wparentheses-equality warning.
+  public void testDoubleParentheses() throws IOException {
+    String translation = translateSourceFile(
+        "class Test { int foo; int bar;"
+        + "  boolean test(int b) { return (((((foo == b))))); } "
+        + "  int test2(int b) { if ((bar == b)) { return 42; } else { return 666; }}}",
+        "Test", "Test.m");
+    assertTranslation(translation, "return (foo_ == b);");
+    assertTranslation(translation, "if (bar_ == b) {");
+  }
 }
