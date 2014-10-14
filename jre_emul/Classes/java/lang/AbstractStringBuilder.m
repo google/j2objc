@@ -492,17 +492,18 @@ NSString *JreStringBuilder_toStringAndDealloc(JreStringBuilder *sb) {
     free(sb->buffer_);
     return @"";
   }
+  NSString *result;
   jint wasted = sb->bufferSize_ - sb->count_;
   // Same test as used by the original AbstractString.java to determine whether
   // to use a shared buffer.
   if (wasted >= 256 || (wasted >= INITIAL_CAPACITY && wasted >= (sb->count_ >> 1))) {
-    NSString *result = (NSString *)CFStringCreateWithCharacters(NULL, sb->buffer_, sb->count_);
+    result = (NSString *)CFStringCreateWithCharacters(NULL, sb->buffer_, sb->count_);
     free(sb->buffer_);
-    return result;
   } else {
     // Don't free the buffer because we're passing it off to the CFString constructor.
-    return (NSString *)CFStringCreateWithCharactersNoCopy(NULL, sb->buffer_, sb->count_, NULL);
+    result = (NSString *)CFStringCreateWithCharactersNoCopy(NULL, sb->buffer_, sb->count_, NULL);
   }
+  return [result autorelease];
 }
 
 - (id<JavaLangCharSequence>)subSequenceWithInt:(jint)start
