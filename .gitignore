@@ -1,0 +1,11 @@
+# Temp Files
+*~
+
+# Build Output
+**/build_result/
+dist/
+
+# Xcode Generated Files
+**/project.xcworkspace/
+**/xcuserdata/
+**/Translated/
