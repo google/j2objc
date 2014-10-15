@@ -68,11 +68,11 @@ public class MetadataGenerator {
 
   private void generateMetadata() {
     String fullName = NameTable.getFullName(type);
-    println("\n+ (J2ObjcClassInfo *)__metadata {");
+    println("\n+ (const J2ObjcClassInfo *)__metadata {");
     generateMethodsMetadata();
     generateFieldsMetadata();
     int superclassTypeArgsSize = printSuperclassTypeArguments();
-    printf("  static J2ObjcClassInfo _%s = { ", fullName);
+    printf("  static const J2ObjcClassInfo _%s = { ", fullName);
     printf("\"%s\", ", type.getName());
     String pkgName = type.getPackage().getName();
     if (Strings.isNullOrEmpty(pkgName)) {
@@ -122,7 +122,7 @@ public class MetadataGenerator {
       }
     }
     if (methodMetadata.size() > 0) {
-      builder.append("  static J2ObjcMethodInfo methods[] = {\n");
+      builder.append("  static const J2ObjcMethodInfo methods[] = {\n");
       for (String metadata : methodMetadata) {
         builder.append(metadata);
       }
@@ -144,7 +144,7 @@ public class MetadataGenerator {
       fieldMetadata.add(generateFieldMetadata(f.getVariableBinding(), f.getName(), typeName));
     }
     if (fieldMetadata.size() > 0) {
-      builder.append("  static J2ObjcFieldInfo fields[] = {\n");
+      builder.append("  static const J2ObjcFieldInfo fields[] = {\n");
       for (String metadata : fieldMetadata) {
         builder.append(metadata);
       }

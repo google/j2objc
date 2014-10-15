@@ -279,7 +279,7 @@ public class ObjectiveCImplementationGeneratorTest extends GenerationTest {
         "Compatible", "foo/Compatible.m");
     assertTranslation(translation, "@interface FooCompatible : NSObject");
     assertTranslation(translation, "@implementation FooCompatible");
-    assertTranslation(translation, "+ (J2ObjcClassInfo *)__metadata");
+    assertTranslation(translation, "+ (const J2ObjcClassInfo *)__metadata");
   }
 
   public void testInterfaceConstantGeneration() throws IOException {
