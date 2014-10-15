@@ -235,6 +235,18 @@ public class ClassTest extends TestCase {
     assertNotNull(dollarClass);
   }
 
+  // Verify that lookup of a method in an interface throws NoSuchMethod.
+  public void testNoSuchInterfaceMethod() {
+    try {
+      Method m = java.io.Serializable.class.getMethod("foo");
+      fail("method shouldn't have been returned");
+    } catch (NoSuchMethodException e) {
+      // Successful.
+    } catch (Throwable t) {
+      fail("wrong exception thrown");
+    }
+  }
+
   static class InnerClass {
   }
 
