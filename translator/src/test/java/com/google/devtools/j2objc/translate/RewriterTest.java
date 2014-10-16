@@ -25,10 +25,7 @@ import com.google.devtools.j2objc.ast.ForStatement;
 import com.google.devtools.j2objc.ast.IfStatement;
 import com.google.devtools.j2objc.ast.LabeledStatement;
 import com.google.devtools.j2objc.ast.MethodDeclaration;
-import com.google.devtools.j2objc.ast.ReturnStatement;
-import com.google.devtools.j2objc.ast.SingleVariableDeclaration;
 import com.google.devtools.j2objc.ast.Statement;
-import com.google.devtools.j2objc.ast.SuperMethodInvocation;
 import com.google.devtools.j2objc.ast.SwitchStatement;
 import com.google.devtools.j2objc.ast.TreeUtil;
 import com.google.devtools.j2objc.ast.TypeDeclaration;
@@ -227,59 +224,6 @@ public class RewriterTest extends GenerationTest {
     String name1 = methods.get(1).getName().getIdentifier();
     assertTrue(name1.matches("foo|bar"));
     assertNotSame(name0, name1);
-  }
-
-  /**
-   * Verify that interface methods declaring methods implemented by
-   * super-class have a forwarding method.
-   */
-  public void testInterfaceOfSuperclassMethod() {
-    String source =
-        "public class Test implements Equateable {} "
-        + "interface Equateable { boolean equals(Object o); }";
-    CompilationUnit unit = translateType("Test", source);
-    assertEquals(2, unit.getTypes().size());
-    TypeDeclaration innerType = (TypeDeclaration) unit.getTypes().get(1);
-    assertEquals("Test", innerType.getName().toString());
-
-    List<MethodDeclaration> methods = TreeUtil.getMethodDeclarationsList(innerType);
-    assertEquals(2, methods.size());
-    MethodDeclaration equalsMethod = methods.get(0);
-    assertEquals("isEqual", equalsMethod.getName().getIdentifier());
-    assertEquals(Modifier.PUBLIC, equalsMethod.getModifiers());
-    assertEquals(1, equalsMethod.getParameters().size());
-    assertTrue(equalsMethod.getParameters().get(0) instanceof SingleVariableDeclaration);
-    List<Statement> stmts = equalsMethod.getBody().getStatements();
-    assertEquals(1, stmts.size());
-    Statement stmt = stmts.get(0);
-    assertTrue(stmt instanceof ReturnStatement);
-    assertTrue(((ReturnStatement) stmt).getExpression() instanceof SuperMethodInvocation);
-  }
-
-  /**
-   * Verify that interface methods declaring methods implemented by
-   * super-class have a forwarding method.
-   */
-  public void testInterfaceOfSuperclassMethodInAnonymousInner() {
-    String source =
-        "interface Equateable { boolean equals(Object o); }"
-        + "public class Test { public void foo() { Equateable e = new Equateable() { }; } } ";
-    CompilationUnit unit = translateType("Test", source);
-    assertEquals(3, unit.getTypes().size());
-    TypeDeclaration innerType = (TypeDeclaration) unit.getTypes().get(2);
-    assertEquals("$1", innerType.getName().toString());
-
-    List<MethodDeclaration> methods = TreeUtil.getMethodDeclarationsList(innerType);
-    assertEquals(2, methods.size()); // isEqual, init
-    MethodDeclaration equalsMethod = methods.get(0);
-    assertEquals("isEqual", equalsMethod.getName().getIdentifier());
-    assertEquals(1, equalsMethod.getParameters().size());
-    assertTrue(equalsMethod.getParameters().get(0) instanceof SingleVariableDeclaration);
-    List<Statement> stmts = equalsMethod.getBody().getStatements();
-    assertEquals(1, stmts.size());
-    Statement stmt = stmts.get(0);
-    assertTrue(stmt instanceof ReturnStatement);
-    assertTrue(((ReturnStatement) stmt).getExpression() instanceof SuperMethodInvocation);
   }
 
   /**
@@ -543,24 +487,6 @@ public class RewriterTest extends GenerationTest {
         "Test", "Test.m");
     assertTranslatedLines(translation, "return (o < 0) | ((o == 0) & (p > q));");
     assertTranslatedLines(translation, "return (r < 0) & ![self isPowerOfTwoWithInt:r];");
-  }
-
-  // Verify anonymous class for an interface that implements equals() has
-  // an isEquals: method defined in its implementation that calls its
-  // superclass implementation.
-  public void testSuperMethodsAddedToAnonymousClass() throws IOException {
-    String translation = translateSourceFile(
-        "class Test { "
-        + "  Foo test() {"
-        + "    return new Foo() {"
-        + "      @Override public int foo() { return 42; }};"
-        + "  }"
-        + "  interface Foo {"
-        + "    int foo();"
-        + "    @Override boolean equals(Object object);}}",
-        "Test", "Test.m");
-    assertNotInTranslation(translation, "doesNotRecognizeSelector:_cmd");
-    assertTranslation(translation, "return [super isEqual:param0];");
   }
 
   public void testRetainedLocalRef() throws IOException {
