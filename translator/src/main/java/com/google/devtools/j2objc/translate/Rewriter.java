@@ -48,7 +48,6 @@ import com.google.devtools.j2objc.ast.NullLiteral;
 import com.google.devtools.j2objc.ast.ParenthesizedExpression;
 import com.google.devtools.j2objc.ast.PrefixExpression;
 import com.google.devtools.j2objc.ast.QualifiedName;
-import com.google.devtools.j2objc.ast.ReturnStatement;
 import com.google.devtools.j2objc.ast.SimpleName;
 import com.google.devtools.j2objc.ast.SingleVariableDeclaration;
 import com.google.devtools.j2objc.ast.Statement;
@@ -87,7 +86,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Queue;
 import java.util.Set;
-import java.util.logging.Logger;
 
 /**
  * Rewrites the Java AST to replace difficult to translate code with methods
@@ -147,17 +145,6 @@ public class Rewriter extends TreeVisitor {
           }
           addMissingMethods(typeBinding, interfaceMethods, members);
         }
-      } else if (!typeBinding.isInterface()) {
-        // Check for methods that the type *explicitly implements* for cases
-        // where a superclass provides the implementation.  For example, many
-        // Java interfaces define equals(Object) to provide documentation, which
-        // a class doesn't need to implement in Java, but does in Obj-C.  These
-        // classes need a forwarding method to pass the Obj-C compiler.
-        Set<IMethodBinding> interfaceMethods = new LinkedHashSet<IMethodBinding>();
-        for (ITypeBinding intrface : interfaces) {
-          interfaceMethods.addAll(Arrays.asList(intrface.getDeclaredMethods()));
-        }
-        addForwardingMethods(typeBinding, interfaceMethods, members);
       }
     }
 
@@ -169,20 +156,6 @@ public class Rewriter extends TreeVisitor {
     for (IMethodBinding interfaceMethod : interfaceMethods) {
       if (!isMethodImplemented(typeBinding, interfaceMethod, decls)) {
         addAbstractMethod(typeBinding, interfaceMethod, decls);
-      }
-    }
-  }
-
-  private void addForwardingMethods(
-      ITypeBinding typeBinding, Set<IMethodBinding> interfaceMethods, List<BodyDeclaration> decls) {
-    for (IMethodBinding interfaceMethod : interfaceMethods) {
-      String methodName = interfaceMethod.getName();
-      // These are the only java.lang.Object methods that are both overridable
-      // and translated to Obj-C.
-      if (methodName.matches("equals|hashCode|toString")) {
-        if (!isMethodImplemented(typeBinding, interfaceMethod, decls)) {
-          addForwardingMethod(typeBinding, interfaceMethod, decls);
-        }
       }
     }
   }
@@ -562,35 +535,6 @@ public class Rewriter extends TreeVisitor {
         typeBinding, interfaceMethod, interfaceMethod.getModifiers());
 
     method.addModifiers(Modifier.ABSTRACT);
-
-    decls.add(method);
-  }
-
-  /**
-   * Java interfaces that redeclare java.lang.Object's equals, hashCode, or
-   * toString methods need a forwarding method if the implementing class
-   * relies on java.lang.Object's implementation.  This is because NSObject
-   * is declared as adhering to the NSObject protocol, but doesn't explicitly
-   * declare these method in its interface.  This prevents gcc from finding
-   * an implementation, so it issues a warning.
-   */
-  private void addForwardingMethod(
-      ITypeBinding typeBinding, IMethodBinding interfaceMethod, List<BodyDeclaration> decls) {
-    Logger.getAnonymousLogger().fine(String.format("adding %s to %s",
-        interfaceMethod.getName(), typeBinding.getQualifiedName()));
-    MethodDeclaration method =
-        createInterfaceMethodBody(typeBinding, interfaceMethod, Modifier.PUBLIC);
-
-    // Add method body with single "super.method(parameters);" statement.
-    Block body = new Block();
-    method.setBody(body);
-    SuperMethodInvocation superInvocation = new SuperMethodInvocation(method.getMethodBinding());
-
-    for (SingleVariableDeclaration param : method.getParameters()) {
-      Expression arg = param.getName().copy();
-      superInvocation.getArguments().add(arg);
-    }
-    body.getStatements().add(new ReturnStatement(superInvocation));
 
     decls.add(method);
   }
