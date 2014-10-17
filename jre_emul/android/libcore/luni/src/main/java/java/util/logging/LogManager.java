@@ -158,12 +158,14 @@ public class LogManager {
             manager = new LogManager();
         }
 
-        // read configuration
-        try {
-            manager.readConfiguration();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        // Disabled on iOS to improve startup performance. To enable full
+        // LogManager configureability, run readConfiguration() in the
+        // app's main().
+        // try {
+        //     manager.readConfiguration();
+        // } catch (Exception e) {
+        //     e.printStackTrace();
+        // }
 
         // if global logger has been initialized, set root as its parent
         Logger root = new Logger("", null);
