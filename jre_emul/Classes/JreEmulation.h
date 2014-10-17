@@ -202,10 +202,10 @@ MOD_ASSIGN_DEFN(Short, short int)
 
 #define SHIFT_ASSIGN_OPERATORS_DEFN(NAME, TYPE, UTYPE, MASK) \
   static inline TYPE LShiftAssign##NAME(TYPE *pLhs, jlong rhs) { \
-    return *pLhs = *pLhs << (rhs & MASK); \
+    return *pLhs = (TYPE) (*pLhs << (rhs & MASK)); \
   } \
   static inline TYPE RShiftAssign##NAME(TYPE *pLhs, jlong rhs) { \
-    return *pLhs = *pLhs >> (rhs & MASK); \
+    return *pLhs = (TYPE) (*pLhs >> (rhs & MASK)); \
   } \
   static inline TYPE URShiftAssign##NAME(TYPE *pLhs, jlong rhs) { \
     return *pLhs = (TYPE) (((UTYPE) *pLhs) >> (rhs & MASK)); \
