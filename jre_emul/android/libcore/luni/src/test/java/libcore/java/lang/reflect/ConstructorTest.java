@@ -48,6 +48,7 @@ public final class ConstructorTest extends TestCase {
     public void testGetConstructorWithNullArgumentsArray() throws Exception {
         Constructor<?> constructor = ConstructorTestHelper.class.getConstructor((Class[]) null);
         assertEquals(0, constructor.getParameterTypes().length);
+        assertNotNull(constructor.newInstance((Object[]) null));
     }
 
     public void testGetConstructorWithNullArgument() throws Exception {
