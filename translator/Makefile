@@ -216,6 +216,7 @@ JAVA_SOURCES = \
 	util/NameTable.java \
 	util/ProGuardUsageParser.java \
 	util/TimeTracker.java \
+	util/TranslationUtil.java \
 	util/UnicodeUtils.java \
 
 RESOURCES = J2ObjC.properties JRE.mappings

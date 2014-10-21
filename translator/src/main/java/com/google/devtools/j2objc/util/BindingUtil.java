@@ -271,12 +271,15 @@ public final class BindingUtil {
 
   public static IAnnotationBinding getAnnotation(IBinding binding, Class<?> annotationClass) {
     for (IAnnotationBinding annotation : binding.getAnnotations()) {
-      String name = annotation.getAnnotationType().getQualifiedName();
-      if (name.equals(annotationClass.getName())) {
+      if (typeEqualsClass(annotation.getAnnotationType(), annotationClass)) {
         return annotation;
       }
     }
     return null;
+  }
+
+  public static boolean typeEqualsClass(ITypeBinding type, Class<?> cls) {
+    return type.getQualifiedName().equals(cls.getName());
   }
 
   public static Object getAnnotationValue(IAnnotationBinding annotation, String name) {
