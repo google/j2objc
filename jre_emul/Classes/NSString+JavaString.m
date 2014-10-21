@@ -499,22 +499,7 @@ destinationBegin:(int)destinationBegin {
 }
 
 NSStringEncoding parseCharsetName(NSString *charset) {
-  NSStringEncoding nsEncoding = NSUTF8StringEncoding; // defaults to UTF-8
-  if (charset) {
-    CFStringEncoding cfEncoding =
-        CFStringConvertIANACharSetNameToEncoding((ARCBRIDGE CFStringRef)charset);
-    if (cfEncoding == kCFStringEncodingInvalidId) {
-      id exception = [[JavaIoUnsupportedEncodingException alloc]
-                      initWithNSString:charset];
-#if ! __has_feature(objc_arc)
-      [exception autorelease];
-#endif
-      @throw exception;
-    } else {
-      nsEncoding = CFStringConvertEncodingToNSStringEncoding(cfEncoding);
-    }
-  }
-  return nsEncoding;
+  return (NSStringEncoding) JavaNioCharsetIOSCharset_encodingForNameWithNSString_(charset);
 }
 
 + (NSString *)stringWithBytes:(IOSByteArray *)value
