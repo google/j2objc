@@ -59,21 +59,39 @@ int main( int argc, const char *argv[] ) {
     return 1;
   }
   JrePrintNilChkCountAtExit();
-  int exitCode = 0;
   installSignalHandler();
   @autoreleasepool {
-  const char *className = argv[1];
+    const char *className = argv[1];
+    IOSClass *clazz = nil;
+    JavaLangReflectMethod *mainMethod = nil;
+
+    // Find the main class.
     @try {
-      IOSClass *clazz =
-          [IOSClass forName:[NSString stringWithUTF8String:className]];
+      clazz = [IOSClass forName:[NSString stringWithUTF8String:className]];
+    }
+    @catch (JavaLangClassNotFoundException *e) {
+      fprintf(stderr, "Error: could not find or load main class %s\n",
+              className);
+      return 1;
+    }
+
+    // Find the main method.
+    @try {
       IOSClass *stringArrayClass =
           [IOSObjectArray iosClassWithType:[NSString getClass]];
       IOSObjectArray *paramTypes =
           [IOSObjectArray arrayWithObjects:(id[]) { stringArrayClass }
                                      count:1
                                       type:[IOSClass getClass]];
-      JavaLangReflectMethod *mainMethod =
-          [clazz getDeclaredMethod:@"main" parameterTypes:paramTypes];
+      mainMethod = [clazz getDeclaredMethod:@"main" parameterTypes:paramTypes];
+    }
+    @catch (JavaLangNoSuchMethodException *e) {
+      fprintf(stderr, "Error: main method not found in class %s\n", className);
+      return 1;
+    }
+
+    // Execute the main method.
+    @try {
       IOSObjectArray *mainArgs = JreEmulationMainArguments(argc - 1, &argv[1]);
       IOSObjectArray *params =
           [IOSObjectArray arrayWithObjects:(id[]) { mainArgs }
@@ -81,22 +99,13 @@ int main( int argc, const char *argv[] ) {
                                       type:[NSObject getClass]];
       (void) [mainMethod invokeWithId:nil withNSObjectArray:params];
     }
-    @catch (JavaLangClassNotFoundException *e) {
-      fprintf(stderr, "Error: could not find or load main class %s\n",
-              className);
-      exitCode = 1;
-    }
-    @catch (JavaLangNoSuchMethodException *e) {
-      fprintf(stderr, "Error: main method not found in class %s\n", className);
-      exitCode = 1;
-    }
     @catch (JavaLangReflectInvocationTargetException *e) {
       [JavaLangSystem_get_err_() printlnWithId:e];
-      exitCode = 1;
+      return 1;
     }
     @catch (JavaLangIllegalAccessException *e) {
       [JavaLangSystem_get_err_() printlnWithId:e];
-      exitCode = 1;
+      return 1;
     }
     @catch (JavaLangThrowable *e) {
       JavaLangThread *current = [JavaLangThread currentThread];
@@ -108,5 +117,5 @@ int main( int argc, const char *argv[] ) {
       [uncaughtHandler uncaughtExceptionWithJavaLangThread:current withJavaLangThrowable:cause];
     }
   }
-  return exitCode;
+  return 0;
 }
