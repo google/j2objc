@@ -15,6 +15,7 @@
 package com.google.devtools.j2objc.translate;
 
 import com.google.devtools.j2objc.Options;
+import com.google.devtools.j2objc.ast.AbstractTypeDeclaration;
 import com.google.devtools.j2objc.ast.Assignment;
 import com.google.devtools.j2objc.ast.Expression;
 import com.google.devtools.j2objc.ast.FieldAccess;
@@ -43,9 +44,12 @@ import org.eclipse.jdt.core.dom.IVariableBinding;
 public class StaticVarRewriter extends TreeVisitor {
 
   private boolean useAccessor(TreeNode currentNode, IVariableBinding var) {
-    return BindingUtil.isStatic(var) && !BindingUtil.isPrimitiveConstant(var)
-        && !TreeUtil.getOwningType(currentNode).getTypeBinding().getTypeDeclaration().isEqualTo(
-            var.getDeclaringClass().getTypeDeclaration());
+    if (!BindingUtil.isStatic(var) || BindingUtil.isPrimitiveConstant(var)) {
+      return false;
+    }
+    AbstractTypeDeclaration owningType = TreeUtil.getOwningType(currentNode);
+    return owningType == null || !owningType.getTypeBinding().getTypeDeclaration().isEqualTo(
+        var.getDeclaringClass().getTypeDeclaration());
   }
 
   @Override

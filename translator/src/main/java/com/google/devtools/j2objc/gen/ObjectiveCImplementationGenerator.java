@@ -50,6 +50,7 @@ import com.google.devtools.j2objc.types.Import;
 import com.google.devtools.j2objc.types.Types;
 import com.google.devtools.j2objc.util.BindingUtil;
 import com.google.devtools.j2objc.util.NameTable;
+import com.google.devtools.j2objc.util.TranslationUtil;
 
 import org.eclipse.jdt.core.dom.IAnnotationBinding;
 import org.eclipse.jdt.core.dom.IMemberValuePairBinding;
@@ -124,7 +125,7 @@ public class ObjectiveCImplementationGenerator extends ObjectiveCSourceFileGener
       public boolean visit(TypeDeclaration node) {
         if (!node.isInterface()
             || !Iterables.isEmpty(getStaticFieldsNeedingInitialization(node))
-            || !Options.stripReflection()) {
+            || TranslationUtil.needsReflection(node)) {
           types.add(node);
         }
         return false;
@@ -196,7 +197,7 @@ public class ObjectiveCImplementationGenerator extends ObjectiveCSourceFileGener
       printStaticReferencesMethod(node);
       printStaticVars(node);
       printMethods(node);
-      if (!Options.stripReflection()) {
+      if (TranslationUtil.needsReflection(node)) {
         printTypeAnnotationsMethod(node);
         printMethodAnnotationMethods(TreeUtil.getMethodDeclarations(node));
         printFieldAnnotationMethods(node);
@@ -230,7 +231,7 @@ public class ObjectiveCImplementationGenerator extends ObjectiveCSourceFileGener
     printf("  return [IOSClass classWithProtocol:@protocol(%s)];\n", typeName);
     println("}");
     printMethods(methods);
-    if (!Options.stripReflection()) {
+    if (TranslationUtil.needsReflection(node)) {
       printTypeAnnotationsMethod(node);
       printMetadata(node);
     }
@@ -281,7 +282,7 @@ public class ObjectiveCImplementationGenerator extends ObjectiveCSourceFileGener
 
   private void generate(PackageDeclaration node) {
     List<Annotation> runtimeAnnotations = TreeUtil.getRuntimeAnnotationsList(node.getAnnotations());
-    if (runtimeAnnotations.size() > 0 && !Options.stripReflection()) {
+    if (runtimeAnnotations.size() > 0 && TranslationUtil.needsReflection(node)) {
       printImports(getUnit());
       newline();
       String typeName = NameTable.getPrefix(node.getName().getFullyQualifiedName())
@@ -395,7 +396,8 @@ public class ObjectiveCImplementationGenerator extends ObjectiveCSourceFileGener
   }
 
   private void printStaticInterface(AbstractTypeDeclaration node, String typeName) {
-    boolean needsImplementation = hasInitializeMethod(node) || !Options.stripReflection();
+    boolean needsReflection = TranslationUtil.needsReflection(node);
+    boolean needsImplementation = hasInitializeMethod(node) || needsReflection;
     if (needsImplementation && !hasInitializeMethod(node)) {
       printf("\n@interface %s : NSObject\n@end\n", typeName);
     }
@@ -406,7 +408,7 @@ public class ObjectiveCImplementationGenerator extends ObjectiveCSourceFileGener
     }
     printf("\n@implementation %s\n", typeName);
     printInitializeMethod(node);
-    if (!Options.stripReflection()) {
+    if (needsReflection) {
       printMetadata(node);
     }
     println("\n@end\n");
@@ -431,7 +433,7 @@ public class ObjectiveCImplementationGenerator extends ObjectiveCSourceFileGener
     printDeclarations(node.getBodyDeclarations());
     printInitializeMethod(node);
 
-    if (!Options.stripReflection()) {
+    if (TranslationUtil.needsReflection(node)) {
       printTypeAnnotationsMethod(node);
       printMetadata(node);
     }
