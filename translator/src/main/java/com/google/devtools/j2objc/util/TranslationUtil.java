@@ -21,7 +21,7 @@ import com.google.devtools.j2objc.ast.PackageDeclaration;
 import com.google.j2objc.annotations.ReflectionSupport;
 
 import org.eclipse.jdt.core.dom.IAnnotationBinding;
-import org.eclipse.jdt.core.dom.IBinding;
+import org.eclipse.jdt.core.dom.ITypeBinding;
 import org.eclipse.jdt.core.dom.IVariableBinding;
 
 /**
@@ -39,9 +39,16 @@ public final class TranslationUtil {
     return needsReflection(getReflectionSupportLevel(getAnnotation(node, ReflectionSupport.class)));
   }
 
-  public static boolean needsReflection(IBinding binding) {
-    return needsReflection(getReflectionSupportLevel(
-        BindingUtil.getAnnotation(binding, ReflectionSupport.class)));
+  public static boolean needsReflection(ITypeBinding type) {
+    while (type != null) {
+      ReflectionSupport.Level level = getReflectionSupportLevel(
+          BindingUtil.getAnnotation(type, ReflectionSupport.class));
+      if (level != null) {
+        return level == ReflectionSupport.Level.FULL;
+      }
+      type = type.getDeclaringClass();
+    }
+    return !Options.stripReflection();
   }
 
   private static boolean needsReflection(ReflectionSupport.Level level) {
