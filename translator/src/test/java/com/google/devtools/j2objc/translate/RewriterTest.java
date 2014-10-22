@@ -17,7 +17,6 @@
 package com.google.devtools.j2objc.translate;
 
 import com.google.devtools.j2objc.GenerationTest;
-import com.google.devtools.j2objc.ast.AbstractTypeDeclaration;
 import com.google.devtools.j2objc.ast.Block;
 import com.google.devtools.j2objc.ast.CompilationUnit;
 import com.google.devtools.j2objc.ast.EmptyStatement;
@@ -30,11 +29,6 @@ import com.google.devtools.j2objc.ast.SwitchStatement;
 import com.google.devtools.j2objc.ast.TreeUtil;
 import com.google.devtools.j2objc.ast.TypeDeclaration;
 import com.google.devtools.j2objc.ast.VariableDeclarationStatement;
-import com.google.devtools.j2objc.types.Types;
-import com.google.devtools.j2objc.util.NameTable;
-
-import org.eclipse.jdt.core.dom.ITypeBinding;
-import org.eclipse.jdt.core.dom.Modifier;
 
 import java.io.IOException;
 import java.util.List;
@@ -138,95 +132,6 @@ public class RewriterTest extends GenerationTest {
   }
 
   /**
-   * Verifies that abstract methods to implement an interface are added to an
-   * abstract class.
-   */
-  public void testAbstractMethodsAdded() {
-    String source =
-        "import java.util.Iterator; public abstract class Test implements Iterator<Test> { "
-            + "public boolean hasNext() { return true; } }";
-    CompilationUnit unit = translateType("Test", source);
-    List<AbstractTypeDeclaration> types = unit.getTypes();
-    assertEquals(1, types.size());
-    assertTrue(types.get(0) instanceof TypeDeclaration);
-    TypeDeclaration testType = (TypeDeclaration) types.get(0);
-    List<MethodDeclaration> methods = TreeUtil.getMethodDeclarationsList(testType);
-    assertEquals(4, methods.size());
-
-    // verify added methods are abstract, and that existing method wasn't changed
-    for (MethodDeclaration m : methods) {
-      int modifiers = m.getModifiers();
-      String name = m.getName().getIdentifier();
-      if (name.equals("hasNext")) {
-        assertFalse(Modifier.isAbstract(modifiers));
-      } else if (name.equals(NameTable.FINALIZE_METHOD)
-          || name.equals(NameTable.DEALLOC_METHOD)
-          || name.equals(NameTable.INIT_NAME)) {
-        // it's ok.
-      } else {
-        // it's an added method
-        assertTrue(Modifier.isAbstract(modifiers));
-        assertEquals(0, m.getParameters().size());
-        if (name.equals("next")) {
-          assertEquals(testType.getTypeBinding(), m.getReturnType().getTypeBinding());
-        } else if (name.equals("remove")) {
-          ITypeBinding voidType = Types.resolveJavaType("void");
-          assertEquals(voidType, m.getReturnType().getTypeBinding());
-        } else {
-          fail("unknown method added: " + name);
-        }
-      }
-    }
-  }
-
-  /**
-   * List has a toArray() method that uses array types.
-   */
-  public void testAbstractMethodsAddedWithArrayType() throws IOException {
-    String source =
-        "import java.util.List; public abstract class Test implements List<Object> { "
-            + "public boolean isEmpty() { return true; } }";
-    String translation = translateSourceFile(source, "Test", "Test.m");
-    // Check that isEmpty is not abstract.
-    assertTranslatedLines(translation,
-        "- (jboolean)isEmpty {",
-        "  return YES;",
-        "}");
-    // Check that toArray is abstract and returns the correct type.
-    assertTranslatedLines(translation,
-        "- (IOSObjectArray *)toArray {",
-        "  // can't call an abstract method",
-        "  [self doesNotRecognizeSelector:_cmd];",
-        "  return 0;",
-        "}");
-  }
-
-  /**
-   * Verify that super-interface methods are also added.
-   */
-  public void testAbstractClassGrandfatherInterface() {
-    String source =
-        "public class Test {"
-        + "  public interface I1 { void foo(); } "
-        + "  public interface I2 extends I1 { void bar(); } "
-        + "  public abstract class Inner implements I2 { } }";
-    CompilationUnit unit = translateType("Test", source);
-    List<AbstractTypeDeclaration> types = unit.getTypes();
-    assertEquals(4, types.size());
-    assertTrue(types.get(3) instanceof TypeDeclaration);
-    TypeDeclaration innerType = (TypeDeclaration) types.get(3);
-    assertEquals("Inner", innerType.getName().toString());
-
-    List<MethodDeclaration> methods = TreeUtil.getMethodDeclarationsList(innerType);
-    assertEquals(3, methods.size());
-    String name0 = methods.get(0).getName().getIdentifier();
-    assertTrue(name0.matches("foo|bar"));
-    String name1 = methods.get(1).getName().getIdentifier();
-    assertTrue(name1.matches("foo|bar"));
-    assertNotSame(name0, name1);
-  }
-
-  /**
    * Verify that array initializers are rewritten as method calls.
    */
   public void testArrayInitializerRewrite() throws IOException {
@@ -268,19 +173,6 @@ public class RewriterTest extends GenerationTest {
         "class Test { Test(int[] i) {} Test() { this(new int[] {}); } }", "Test", "Test.m");
     assertTranslation(translation,
         "[self initTestWithIntArray:[IOSIntArray arrayWithInts:(jint[]){  } count:0]]");
-  }
-
-  public void testAddsAbstractMethodsToEnum() throws IOException {
-    String interfaceSource = "interface I { public int foo(); }";
-    String enumSource =
-        "enum E implements I { "
-        + "  A { public int foo() { return 42; } },"
-        + "  B { public int foo() { return -1; } } }";
-    addSourceFile(interfaceSource, "I.java");
-    addSourceFile(enumSource, "E.java");
-    String translation = translateSourceFile("E", "E.m");
-    assertTranslation(translation, "- (jint)foo {");
-    assertTranslation(translation, "[self doesNotRecognizeSelector:_cmd];");
   }
 
   public void testInterfaceFieldsAreStaticFinal() throws IOException {

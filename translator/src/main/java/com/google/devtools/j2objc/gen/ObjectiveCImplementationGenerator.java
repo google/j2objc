@@ -47,7 +47,6 @@ import com.google.devtools.j2objc.types.IOSMethod;
 import com.google.devtools.j2objc.types.IOSMethodBinding;
 import com.google.devtools.j2objc.types.ImplementationImportCollector;
 import com.google.devtools.j2objc.types.Import;
-import com.google.devtools.j2objc.types.Types;
 import com.google.devtools.j2objc.util.BindingUtil;
 import com.google.devtools.j2objc.util.NameTable;
 import com.google.devtools.j2objc.util.TranslationUtil;
@@ -98,6 +97,7 @@ public class ObjectiveCImplementationGenerator extends ObjectiveCSourceFileGener
       findInvokedConstructors(unit);
       printStart(unit.getSourceFileFullPath());
       printImports(unit);
+      printIgnoreIncompletePragmas(unit);
       pushIgnoreDeprecatedDeclarationsPragma();
       printFinalFunctionDecls(typesToGenerate);
       printClassExtensions(typesToGenerate);
@@ -116,6 +116,18 @@ public class ObjectiveCImplementationGenerator extends ObjectiveCSourceFileGener
       }
     }
     save(unit);
+  }
+
+  private void printIgnoreIncompletePragmas(CompilationUnit unit) {
+    if (unit.hasIncompleteProtocol() || unit.hasIncompleteImplementation()) {
+      newline();
+    }
+    if (unit.hasIncompleteProtocol()) {
+      println("#pragma clang diagnostic ignored \"-Wprotocol\"");
+    }
+    if (unit.hasIncompleteImplementation()) {
+      println("#pragma clang diagnostic ignored \"-Wincomplete-implementation\"");
+    }
   }
 
   private List<AbstractTypeDeclaration> collectTypes(CompilationUnit unit) {
@@ -482,13 +494,7 @@ public class ObjectiveCImplementationGenerator extends ObjectiveCSourceFileGener
         return null;
       }
     } else if (Modifier.isAbstract(m.getModifiers())) {
-      // Generate a body which throws a NSInvalidArgumentException.
-      String body =
-          "{\n // can't call an abstract method\n [self doesNotRecognizeSelector:_cmd];\n ";
-      if (!Types.isVoidType(m.getReturnType().getTypeBinding())) {
-        body += "return 0;\n"; // Never executes, but avoids a gcc warning.
-      }
-      return body + "}";
+      return null;
     } else {
       // generate a normal method body
       return generateStatement(m.getBody(), /* isFunction */ false);

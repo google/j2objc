@@ -31,6 +31,8 @@ public class CompilationUnit extends TreeNode {
   private final String mainTypeName;
   private final String source;
   private final int[] newlines;
+  private boolean hasIncompleteProtocol = false;
+  private boolean hasIncompleteImplementation = false;
   private final ChildLink<PackageDeclaration> packageDeclaration =
       ChildLink.create(PackageDeclaration.class, this);
   private final ChildList<Comment> comments = ChildList.create(Comment.class, this);
@@ -99,6 +101,22 @@ public class CompilationUnit extends TreeNode {
 
   public String getSource() {
     return source;
+  }
+
+  public boolean hasIncompleteProtocol() {
+    return hasIncompleteProtocol;
+  }
+
+  public void setHasIncompleteProtocol() {
+    hasIncompleteProtocol = true;
+  }
+
+  public boolean hasIncompleteImplementation() {
+    return hasIncompleteImplementation;
+  }
+
+  public void setHasIncompleteImplementation() {
+    hasIncompleteImplementation = true;
   }
 
   public PackageDeclaration getPackage() {
