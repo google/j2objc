@@ -25,6 +25,7 @@
 		06422D6B191ACB8E00C37443 /* libjre_emul.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 06619385155848D70004DAFE /* libjre_emul.a */; };
 		06422D6C191ACB9E00C37443 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 06619388155848D70004DAFE /* Foundation.framework */; };
 		06619389155848D70004DAFE /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 06619388155848D70004DAFE /* Foundation.framework */; };
+		0661AA4A19F7063200EFD1F5 /* UTF16EncodingTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 0661AA4919F705E200EFD1F5 /* UTF16EncodingTest.m */; };
 		06C73D301917FDE5001D3CC8 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 06C73D2E1917FDE5001D3CC8 /* InfoPlist.strings */; };
 		06C73D391917FFBE001D3CC8 /* IOSArrayTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 067217CD15587FC600645E1B /* IOSArrayTest.m */; };
 		06C73D3A1917FFBE001D3CC8 /* IOSClassTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 0604932C1772407B0047D336 /* IOSClassTest.m */; };
@@ -709,6 +710,8 @@
 		066193E5155849F80004DAFE /* NSObject+JavaObject.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSObject+JavaObject.m"; sourceTree = "<group>"; };
 		066193E6155849F80004DAFE /* NSString+JavaString.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSString+JavaString.h"; sourceTree = "<group>"; };
 		066193E7155849F80004DAFE /* NSString+JavaString.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSString+JavaString.m"; sourceTree = "<group>"; };
+		0661AA4819F705E200EFD1F5 /* UTF16EncodingTest.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = UTF16EncodingTest.h; sourceTree = "<group>"; };
+		0661AA4919F705E200EFD1F5 /* UTF16EncodingTest.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = UTF16EncodingTest.m; sourceTree = "<group>"; };
 		0666CCC41978457C00A22C57 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = text; path = README.md; sourceTree = "<group>"; };
 		066B71F617B94DC100A4CBBD /* objc-sync.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "objc-sync.h"; path = "apple_apsl/objc-sync.h"; sourceTree = SOURCE_ROOT; };
 		066B71F717B94DC100A4CBBD /* objc-sync.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "objc-sync.m"; path = "apple_apsl/objc-sync.m"; sourceTree = SOURCE_ROOT; };
@@ -5008,6 +5011,8 @@
 		06E4E362197F1D46005DDE69 /* Translated Tests */ = {
 			isa = PBXGroup;
 			children = (
+				0661AA4819F705E200EFD1F5 /* UTF16EncodingTest.h */,
+				0661AA4919F705E200EFD1F5 /* UTF16EncodingTest.m */,
 				5110C62419AFCC2E00FA26E1 /* ProxyTest.m */,
 				5110C62219AFCBE500FA26E1 /* ThrowableTest.m */,
 				5110C62019AFCBC000FA26E1 /* PackageTest.m */,
@@ -6676,6 +6681,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				0661AA4A19F7063200EFD1F5 /* UTF16EncodingTest.m in Sources */,
 				06E4E832197F1E4E005DDE69 /* JREAppDelegate.m in Sources */,
 				06E4E833197F1E4E005DDE69 /* JRELogPane.m in Sources */,
 				06E4E834197F1E4E005DDE69 /* JRELogOutputStream.m in Sources */,
