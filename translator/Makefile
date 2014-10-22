@@ -162,6 +162,7 @@ JAVA_SOURCES = \
 	gen/SourceBuilder.java \
 	gen/SourceFileGenerator.java \
 	gen/StatementGenerator.java \
+	translate/AbstractMethodRewriter.java \
 	translate/AnonymousClassConverter.java \
 	translate/ArrayRewriter.java \
 	translate/Autoboxer.java \

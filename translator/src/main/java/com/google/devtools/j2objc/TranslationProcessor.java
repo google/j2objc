@@ -20,6 +20,7 @@ import com.google.devtools.j2objc.ast.TreeConverter;
 import com.google.devtools.j2objc.gen.ObjectiveCHeaderGenerator;
 import com.google.devtools.j2objc.gen.ObjectiveCImplementationGenerator;
 import com.google.devtools.j2objc.gen.ObjectiveCSegmentedHeaderGenerator;
+import com.google.devtools.j2objc.translate.AbstractMethodRewriter;
 import com.google.devtools.j2objc.translate.AnonymousClassConverter;
 import com.google.devtools.j2objc.translate.ArrayRewriter;
 import com.google.devtools.j2objc.translate.Autoboxer;
@@ -164,6 +165,10 @@ class TranslationProcessor extends FileProcessor {
     // Modify AST to be more compatible with Objective C
     new Rewriter().run(unit);
     ticker.tick("Rewriter");
+
+    // Add abstract method stubs.
+    new AbstractMethodRewriter(unit).run(unit);
+    ticker.tick("AbstractMethodRewriter");
 
     new VariableRenamer().run(unit);
     ticker.tick("VariableRenamer");
