@@ -31,9 +31,8 @@ import java.util.NoSuchElementException;
 
 /*-[
 #import "java/lang/Double.h"
+#import "java/lang/Integer.h"
 #import "java/lang/Long.h"
-
-#include <math.h>
 ]-*/
 
 public final class NativeDecimalFormat implements Cloneable {
@@ -684,7 +683,7 @@ public final class NativeDecimalFormat implements Cloneable {
         }
         if (onlyZeroes) {
           [position setIndexWithInt:start + (int) range.length];
-          return [JavaLangLong valueOfWithLong:0L];
+          return [JavaLangInteger valueOfWithInt:0];
         }
       }
 
@@ -695,7 +694,8 @@ public final class NativeDecimalFormat implements Cloneable {
                                          error:&error];
       if (success) {
         [position setIndexWithInt:start + (int) range.length];
-        if (fmod([result doubleValue], 1.0) == 0) {
+        NSString *decimalSeparator = [formatter decimalSeparator];
+        if ([string rangeOfString:decimalSeparator].location == NSNotFound) {
           return [JavaLangLong valueOfWithLong:[result longLongValue]];
         } else {
           return [JavaLangDouble valueOfWithDouble:[result doubleValue]];
