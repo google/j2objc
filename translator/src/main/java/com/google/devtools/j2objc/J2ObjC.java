@@ -16,8 +16,11 @@
 
 package com.google.devtools.j2objc;
 
+import com.google.common.io.Files;
+import com.google.devtools.j2objc.util.DeadCodeMap;
 import com.google.devtools.j2objc.util.ErrorUtil;
 import com.google.devtools.j2objc.util.JdtParser;
+import com.google.devtools.j2objc.util.ProGuardUsageParser;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -26,6 +29,7 @@ import java.lang.reflect.Constructor;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLClassLoader;
+import java.nio.charset.Charset;
 import java.util.Arrays;
 import java.util.jar.JarEntry;
 import java.util.jar.JarInputStream;
@@ -144,6 +148,18 @@ public class J2ObjC {
     return parser;
   }
 
+  private static DeadCodeMap loadDeadCodeMap() {
+    File file = Options.getProGuardUsageFile();
+    if (file != null) {
+      try {
+        return ProGuardUsageParser.parse(Files.asCharSource(file, Charset.defaultCharset()));
+      } catch (IOException e) {
+        throw new AssertionError(e);
+      }
+    }
+    return null;
+  }
+
   /**
    * Entry point for tool.
    *
@@ -171,9 +187,8 @@ public class J2ObjC {
       error(e);
     }
 
-    JdtParser parser = createParser();
-
-    TranslationProcessor translationProcessor = new TranslationProcessor(parser);
+    TranslationProcessor translationProcessor =
+        new TranslationProcessor(createParser(), loadDeadCodeMap());
     translationProcessor.processFiles(Arrays.asList(files));
     translationProcessor.postProcess();
     checkErrors();
