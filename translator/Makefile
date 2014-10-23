@@ -49,7 +49,6 @@ J2OBJC_SH = $(J2OBJC_ROOT)/scripts/j2objc.sh
 J2OBJC_SH_DIST = $(DIST_DIR)/j2objc
 
 JAVA_SOURCES = \
-	DeadCodeProcessor.java \
 	FileProcessor.java \
 	J2ObjC.java \
 	Options.java \

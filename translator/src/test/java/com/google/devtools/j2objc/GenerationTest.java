@@ -27,6 +27,7 @@ import com.google.devtools.j2objc.ast.TreeVisitor;
 import com.google.devtools.j2objc.gen.SourceBuilder;
 import com.google.devtools.j2objc.gen.StatementGenerator;
 import com.google.devtools.j2objc.types.Types;
+import com.google.devtools.j2objc.util.DeadCodeMap;
 import com.google.devtools.j2objc.util.ErrorUtil;
 import com.google.devtools.j2objc.util.JdtParser;
 import com.google.devtools.j2objc.util.NameTable;
@@ -55,8 +56,10 @@ import java.util.regex.Pattern;
  * @author Tom Ball
  */
 public abstract class GenerationTest extends TestCase {
+
   protected File tempDir;
   private JdtParser parser;
+  private DeadCodeMap deadCodeMap = null;
 
   static {
     // Prevents errors and warnings from being printed to the console.
@@ -85,6 +88,10 @@ public abstract class GenerationTest extends TestCase {
     parser.addClasspathEntries(getComGoogleDevtoolsJ2objcPath());
     parser.addSourcepathEntry(tempDir.getAbsolutePath());
     return parser;
+  }
+
+  protected void setDeadCodeMap(DeadCodeMap deadCodeMap) {
+    this.deadCodeMap = deadCodeMap;
   }
 
   /**
@@ -122,7 +129,7 @@ public abstract class GenerationTest extends TestCase {
     NameTable.initialize();
     Types.initialize(unit);
     CompilationUnit newUnit = TreeConverter.convertCompilationUnit(unit, name + ".java", source);
-    TranslationProcessor.applyMutations(newUnit, TimeTracker.noop());
+    TranslationProcessor.applyMutations(newUnit, deadCodeMap, TimeTracker.noop());
     return newUnit;
   }
 

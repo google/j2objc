@@ -15,6 +15,7 @@
 package com.google.devtools.j2objc;
 
 import com.google.common.collect.Sets;
+import com.google.common.io.Files;
 import com.google.devtools.j2objc.ast.CompilationUnit;
 import com.google.devtools.j2objc.ast.TreeConverter;
 import com.google.devtools.j2objc.gen.ObjectiveCHeaderGenerator;
@@ -28,6 +29,7 @@ import com.google.devtools.j2objc.translate.CastResolver;
 import com.google.devtools.j2objc.translate.ComplexExpressionExtractor;
 import com.google.devtools.j2objc.translate.ConstantBranchPruner;
 import com.google.devtools.j2objc.translate.CopyAllFieldsWriter;
+import com.google.devtools.j2objc.translate.DeadCodeEliminator;
 import com.google.devtools.j2objc.translate.DestructorGenerator;
 import com.google.devtools.j2objc.translate.EnhancedForRewriter;
 import com.google.devtools.j2objc.translate.EnumRewriter;
@@ -51,8 +53,10 @@ import com.google.devtools.j2objc.types.HeaderImportCollector;
 import com.google.devtools.j2objc.types.IOSTypeBinding;
 import com.google.devtools.j2objc.types.ImplementationImportCollector;
 import com.google.devtools.j2objc.types.Import;
+import com.google.devtools.j2objc.util.DeadCodeMap;
 import com.google.devtools.j2objc.util.ErrorUtil;
 import com.google.devtools.j2objc.util.JdtParser;
+import com.google.devtools.j2objc.util.ProGuardUsageParser;
 import com.google.devtools.j2objc.util.TimeTracker;
 
 import org.eclipse.jdt.core.dom.ITypeBinding;
@@ -61,6 +65,7 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.charset.Charset;
 import java.util.ArrayDeque;
 import java.util.Enumeration;
 import java.util.Map;
@@ -123,7 +128,7 @@ class TranslationProcessor extends FileProcessor {
 
     CompilationUnit newUnit = TreeConverter.convertCompilationUnit(unit, path, source);
 
-    applyMutations(newUnit, ticker);
+    applyMutations(newUnit, loadDeadCodeMap(), ticker);
     ticker.tick("Tree mutations");
 
     if (unit.types().isEmpty() && !newUnit.getMainTypeName().endsWith("package_info")) {
@@ -152,8 +157,14 @@ class TranslationProcessor extends FileProcessor {
    * also modified to add support for iOS memory management, extract inner
    * classes, etc.
    */
-  public static void applyMutations(CompilationUnit unit, TimeTracker ticker) {
+  public static void applyMutations(
+      CompilationUnit unit, DeadCodeMap deadCodeMap, TimeTracker ticker) {
     ticker.push();
+
+    if (deadCodeMap != null) {
+      new DeadCodeEliminator(unit, deadCodeMap).run(unit);
+      ticker.tick("DeadCodeEliminator");
+    }
 
     OuterReferenceResolver.resolve(unit);
     ticker.tick("OuterReferenceResolver");
@@ -281,6 +292,19 @@ class TranslationProcessor extends FileProcessor {
     unit.validate();
 
     ticker.pop();
+  }
+
+  // TODO(kstanger): Move this code to DeadCodeMap and don't call it for each file.
+  private static DeadCodeMap loadDeadCodeMap() {
+    File file = Options.getProGuardUsageFile();
+    if (file != null) {
+      try {
+        return ProGuardUsageParser.parse(Files.asCharSource(file, Charset.defaultCharset()));
+      } catch (IOException e) {
+        throw new AssertionError(e);
+      }
+    }
+    return null;
   }
 
   public static void generateObjectiveCSource(CompilationUnit unit, TimeTracker ticker) {
