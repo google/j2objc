@@ -213,14 +213,10 @@ public class ObjectiveCHeaderGenerator extends ObjectiveCSourceFileGenerator {
     if (isRuntime || !Iterables.isEmpty(staticFields)) {
       // Print annotation implementation interface.
       printf("\n@interface %s : NSObject < %s >", typeName, typeName);
-      if (isRuntime) {
-        if (members.isEmpty()) {
-          newline();
-        } else {
-          println(" {\n @private");
-          printAnnotationVariables(members);
-          println("}");
-        }
+      if (isRuntime && !members.isEmpty()) {
+        println(" {\n @private");
+        printAnnotationVariables(members);
+        println("}");
         printAnnotationConstructor(node.getTypeBinding());
         printAnnotationAccessors(members);
       } else {
@@ -475,11 +471,9 @@ public class ObjectiveCHeaderGenerator extends ObjectiveCSourceFileGenerator {
   }
 
   private void printAnnotationConstructor(ITypeBinding annotation) {
-    if (annotation.getDeclaredMethods().length > 0) {
-      newline();
-      print(annotationConstructorDeclaration(annotation));
-      println(";");
-    }
+    newline();
+    print(annotationConstructorDeclaration(annotation));
+    println(";");
   }
 
   private void printAnnotationProperties(List<AnnotationTypeMemberDeclaration> members) {

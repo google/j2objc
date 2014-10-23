@@ -173,15 +173,6 @@ public class J2ObjC {
 
     JdtParser parser = createParser();
 
-    // Remove dead-code first, so modified file paths are replaced in the
-    // translation list.
-    DeadCodeProcessor deadCodeProcessor = DeadCodeProcessor.create(parser);
-    if (deadCodeProcessor != null) {
-      deadCodeProcessor.processFiles(Arrays.asList(files));
-      checkErrors();
-      files = deadCodeProcessor.postProcess().toArray(new String[0]);
-    }
-
     TranslationProcessor translationProcessor = new TranslationProcessor(parser);
     translationProcessor.processFiles(Arrays.asList(files));
     translationProcessor.postProcess();

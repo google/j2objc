@@ -14,6 +14,9 @@
 
 package com.google.devtools.j2objc.translate;
 
+import com.google.common.base.Function;
+import com.google.common.base.Predicate;
+import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 import com.google.devtools.j2objc.ast.Assignment;
 import com.google.devtools.j2objc.ast.Block;
@@ -24,8 +27,10 @@ import com.google.devtools.j2objc.ast.SimpleName;
 import com.google.devtools.j2objc.ast.SingleVariableDeclaration;
 import com.google.devtools.j2objc.ast.Statement;
 import com.google.devtools.j2objc.ast.SuperMethodInvocation;
+import com.google.devtools.j2objc.ast.TreeUtil;
 import com.google.devtools.j2objc.ast.TreeVisitor;
 import com.google.devtools.j2objc.ast.TypeDeclaration;
+import com.google.devtools.j2objc.ast.VariableDeclaration;
 import com.google.devtools.j2objc.types.GeneratedVariableBinding;
 import com.google.devtools.j2objc.types.IOSMethod;
 import com.google.devtools.j2objc.types.IOSMethodBinding;
@@ -33,6 +38,7 @@ import com.google.devtools.j2objc.types.Types;
 import com.google.devtools.j2objc.util.BindingUtil;
 import com.google.devtools.j2objc.util.NameTable;
 
+import org.eclipse.jdt.core.dom.IBinding;
 import org.eclipse.jdt.core.dom.ITypeBinding;
 import org.eclipse.jdt.core.dom.IVariableBinding;
 import org.eclipse.jdt.core.dom.Modifier;
@@ -50,6 +56,19 @@ public class CopyAllFieldsWriter extends TreeVisitor {
   private static final IOSMethod COPY_ALL_PROPERTIES =
       IOSMethod.create("NSObject copyAllFieldsTo:(id)other");
 
+  private static final Function<VariableDeclaration, IVariableBinding> GET_VARIABLE_BINDING_FUNC =
+      new Function<VariableDeclaration, IVariableBinding>() {
+    public IVariableBinding apply(VariableDeclaration node) {
+      return node.getVariableBinding();
+    }
+  };
+
+  private static final Predicate<IBinding> IS_NON_STATIC_PRED = new Predicate<IBinding>() {
+    public boolean apply(IBinding binding) {
+      return !BindingUtil.isStatic(binding);
+    }
+  };
+
   // Binding for the declaration of copyAllFieldsTo in NSObject.
   private final IOSMethodBinding nsObjectCopyAll;
 
@@ -63,8 +82,8 @@ public class CopyAllFieldsWriter extends TreeVisitor {
   @Override
   public void endVisit(TypeDeclaration node) {
     ITypeBinding type = node.getTypeBinding();
-    List<IVariableBinding> fields = getNonStaticFields(type);
-    if (fields.size() == 0) {
+    List<IVariableBinding> fields = getNonStaticFields(node);
+    if (fields.isEmpty()) {
       return;
     }
 
@@ -99,13 +118,9 @@ public class CopyAllFieldsWriter extends TreeVisitor {
     }
   }
 
-  private static List<IVariableBinding> getNonStaticFields(ITypeBinding type) {
-    List<IVariableBinding> fields = Lists.newArrayList();
-    for (IVariableBinding field : type.getDeclaredFields()) {
-      if (!BindingUtil.isStatic(field)) {
-        fields.add(field);
-      }
-    }
-    return fields;
+  private static List<IVariableBinding> getNonStaticFields(TypeDeclaration node) {
+    return Lists.newArrayList(Iterables.filter(
+        Iterables.transform(TreeUtil.getAllFields(node), GET_VARIABLE_BINDING_FUNC),
+        IS_NON_STATIC_PRED));
   }
 }
