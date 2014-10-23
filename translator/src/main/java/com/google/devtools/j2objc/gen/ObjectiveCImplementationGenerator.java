@@ -669,7 +669,7 @@ public class ObjectiveCImplementationGenerator extends ObjectiveCSourceFileGener
   private void printTypeAnnotationsMethod(AbstractTypeDeclaration decl) {
     List<Annotation> runtimeAnnotations = TreeUtil.getRuntimeAnnotationsList(decl.getAnnotations());
     if (runtimeAnnotations.size() > 0) {
-      println("+ (IOSObjectArray *)__annotations {");
+      println("\n+ (IOSObjectArray *)__annotations {");
       printAnnotationCreate(runtimeAnnotations);
     }
   }
@@ -679,7 +679,7 @@ public class ObjectiveCImplementationGenerator extends ObjectiveCSourceFileGener
       List<Annotation> runtimeAnnotations =
           TreeUtil.getRuntimeAnnotationsList(method.getAnnotations());
       if (runtimeAnnotations.size() > 0) {
-        printf("+ (IOSObjectArray *)__annotations_%s {\n", methodKey(method.getMethodBinding()));
+        printf("\n+ (IOSObjectArray *)__annotations_%s {\n", methodKey(method.getMethodBinding()));
         printAnnotationCreate(runtimeAnnotations);
       }
       printParameterAnnotationMethods(method);
@@ -731,7 +731,7 @@ public class ObjectiveCImplementationGenerator extends ObjectiveCSourceFileGener
           TreeUtil.getRuntimeAnnotationsList(field.getAnnotations());
       if (!runtimeAnnotations.isEmpty()) {
         for (VariableDeclarationFragment var : field.getFragments()) {
-          printf("+ (IOSObjectArray *)__annotations_%s_ {\n", var.getName().getIdentifier());
+          printf("\n+ (IOSObjectArray *)__annotations_%s_ {\n", var.getName().getIdentifier());
           printAnnotationCreate(runtimeAnnotations);
         }
       }
@@ -742,7 +742,7 @@ public class ObjectiveCImplementationGenerator extends ObjectiveCSourceFileGener
     print("  return [IOSObjectArray arrayWithObjects:(id[]) { ");
     printAnnotations(runtimeAnnotations);
     printf(" } count:%d type:[IOSClass "
-        + "classWithProtocol:@protocol(JavaLangAnnotationAnnotation)]];\n}\n\n",
+        + "classWithProtocol:@protocol(JavaLangAnnotationAnnotation)]];\n}\n",
         runtimeAnnotations.size());
   }
 
@@ -794,7 +794,11 @@ public class ObjectiveCImplementationGenerator extends ObjectiveCSourceFileGener
       printf("%s_get_%s()", NameTable.getFullName(declaringClass), var.getName());
     } else if (value instanceof ITypeBinding) {
       ITypeBinding type = (ITypeBinding) value;
-      printf("[[%s class] getClass]", NameTable.getFullName(type));
+      if (type.isInterface()) {
+        printf("[IOSClass classWithProtocol:@protocol(%s)]", NameTable.getFullName(type));
+      } else {
+        printf("[[%s class] getClass]", NameTable.getFullName(type));
+      }
     } else if (value instanceof String) {
       StringLiteral node = new StringLiteral((String) value);
       print(StatementGenerator.generateStringLiteral(node));

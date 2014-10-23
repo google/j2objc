@@ -778,4 +778,13 @@ public class ObjectiveCImplementationGeneratorTest extends GenerationTest {
     assertNotInTranslation(translation, "+ (void)initialize OBJC_METHOD_FAMILY_NONE;");
     assertOccurrences(translation, "+ (void)initialize", 1);
   }
+
+  public void testInterfaceTypeLiteralAsAnnotationValue() throws IOException {
+    addSourceFile(
+        "import java.lang.annotation.*; @Retention(RetentionPolicy.RUNTIME)"
+        + " @interface Foo { Class<?> value(); }", "Foo.java");
+    String translation = translateSourceFile(
+        "@Foo(CharSequence.class) class Test {}", "Test", "Test.m");
+    assertTranslation(translation, "[IOSClass classWithProtocol:@protocol(JavaLangCharSequence)]");
+  }
 }
