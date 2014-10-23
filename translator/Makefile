@@ -206,11 +206,9 @@ JAVA_SOURCES = \
 	types/PointerTypeBinding.java \
 	types/RenamedTypeBinding.java \
 	types/Types.java \
-	util/ASTNodeException.java \
 	util/ASTUtil.java \
 	util/BindingUtil.java \
 	util/DeadCodeMap.java \
-	util/ErrorReportingASTVisitor.java \
 	util/ErrorUtil.java \
 	util/JdtParser.java \
 	util/NameTable.java \
