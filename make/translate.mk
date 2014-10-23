@@ -18,6 +18,7 @@
 # And optional variables:
 #   TRANSLATE_ARGS
 #   TRANSLATE_OBJCPP
+#   TRANSLATE_DEPENDENCIES
 #
 # This variable is intended for use only by the jre_emul library.
 #   TRANSLATE_USE_SYSTEM_BOOT_PATH
@@ -55,18 +56,19 @@ translate: $(TRANSLATE_TARGET)
 translate_dependencies:
 	@:
 
+TRANSLATE_NON_JAVA_PREREQ = $(TRANSLATE_EXE) $(TRANSLATE_DEPENDENCIES) translate_force
+
 # Resolved sources within the translate target.
-TRANSLATE_JAVA_PREREQ = $(filter-out $(TRANSLATE_EXE) translate_force,$^)
+TRANSLATE_JAVA_PREREQ = $(filter-out $(TRANSLATE_NON_JAVA_PREREQ) translate_force,$^)
 
 # Find any files that may have been added to the list since the last translation
 TRANSLATE_LAST_FILES := $(shell if [ -e $(TRANSLATE_TARGET) ]; then cat $(TRANSLATE_TARGET); fi)
 TRANSLATE_NEW_FILES = $(filter-out $(TRANSLATE_LAST_FILES),$(TRANSLATE_JAVA_PREREQ))
 
-TRANSLATE_MAKE_LIST = $(if $(filter $(TRANSLATE_EXE),$?),\
+TRANSLATE_MAKE_LIST = $(if $(filter $(TRANSLATE_NON_JAVA_PREREQ),$?),\
     $(TRANSLATE_JAVA_PREREQ),$(filter $? $(TRANSLATE_NEW_FILES),$(TRANSLATE_JAVA_PREREQ)))
 
-$(TRANSLATE_TARGET): $(TRANSLATE_JAVA_FULL) $(TRANSLATE_EXE) translate_force \
-    | translate_dependencies
+$(TRANSLATE_TARGET): $(TRANSLATE_JAVA_FULL) $(TRANSLATE_NON_JAVA_PREREQ) | translate_dependencies
 	@mkdir -p $(GEN_OBJC_DIR)
 	$(call long_list_to_file,$(TRANSLATE_LIST),$(TRANSLATE_MAKE_LIST))
 	@if [ -s $(TRANSLATE_LIST) ]; then \
