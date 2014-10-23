@@ -15,7 +15,6 @@
 package com.google.devtools.j2objc;
 
 import com.google.common.collect.Sets;
-import com.google.common.io.Files;
 import com.google.devtools.j2objc.ast.CompilationUnit;
 import com.google.devtools.j2objc.ast.TreeConverter;
 import com.google.devtools.j2objc.gen.ObjectiveCHeaderGenerator;
@@ -56,7 +55,6 @@ import com.google.devtools.j2objc.types.Import;
 import com.google.devtools.j2objc.util.DeadCodeMap;
 import com.google.devtools.j2objc.util.ErrorUtil;
 import com.google.devtools.j2objc.util.JdtParser;
-import com.google.devtools.j2objc.util.ProGuardUsageParser;
 import com.google.devtools.j2objc.util.TimeTracker;
 
 import org.eclipse.jdt.core.dom.ITypeBinding;
@@ -65,7 +63,6 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
-import java.nio.charset.Charset;
 import java.util.ArrayDeque;
 import java.util.Enumeration;
 import java.util.Map;
@@ -87,14 +84,17 @@ class TranslationProcessor extends FileProcessor {
 
   private static final Logger logger = Logger.getLogger(TranslationProcessor.class.getName());
 
+  private final DeadCodeMap deadCodeMap;
+
   Queue<String> pendingFiles = new ArrayDeque<String>();
   // Relative paths of files that have been processed.
   Set<String> processedFiles = Sets.newHashSet();
   // Relative paths of files that have either been processed or added to pendingfiles.
   Set<String> seenFiles = Sets.newHashSet();
 
-  public TranslationProcessor(JdtParser parser) {
+  public TranslationProcessor(JdtParser parser, DeadCodeMap deadCodeMap) {
     super(parser);
+    this.deadCodeMap = deadCodeMap;
   }
 
   @Override
@@ -128,7 +128,7 @@ class TranslationProcessor extends FileProcessor {
 
     CompilationUnit newUnit = TreeConverter.convertCompilationUnit(unit, path, source);
 
-    applyMutations(newUnit, loadDeadCodeMap(), ticker);
+    applyMutations(newUnit, deadCodeMap, ticker);
     ticker.tick("Tree mutations");
 
     if (unit.types().isEmpty() && !newUnit.getMainTypeName().endsWith("package_info")) {
@@ -292,19 +292,6 @@ class TranslationProcessor extends FileProcessor {
     unit.validate();
 
     ticker.pop();
-  }
-
-  // TODO(kstanger): Move this code to DeadCodeMap and don't call it for each file.
-  private static DeadCodeMap loadDeadCodeMap() {
-    File file = Options.getProGuardUsageFile();
-    if (file != null) {
-      try {
-        return ProGuardUsageParser.parse(Files.asCharSource(file, Charset.defaultCharset()));
-      } catch (IOException e) {
-        throw new AssertionError(e);
-      }
-    }
-    return null;
   }
 
   public static void generateObjectiveCSource(CompilationUnit unit, TimeTracker ticker) {
