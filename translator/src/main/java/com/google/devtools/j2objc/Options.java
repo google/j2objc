@@ -52,7 +52,7 @@ public class Options {
   private static String pluginOptionString = "";
   private static List<Plugin> plugins = new ArrayList<Plugin>();
   private static File outputDirectory = new File(".");
-  private static boolean usePackageDirectories = true;
+  private static OutputStyleOption outputStyle = OutputStyleOption.PACKAGE;
   private static String implementationSuffix = ".m";
   private static boolean ignoreMissingImports = false;
   private static MemoryManagementOption memoryManagementOption = null;
@@ -114,6 +114,23 @@ public class Options {
   public static enum MemoryManagementOption { REFERENCE_COUNTING, GC, ARC }
   private static final MemoryManagementOption DEFAULT_MEMORY_MANAGEMENT_OPTION =
       MemoryManagementOption.REFERENCE_COUNTING;
+
+  /**
+   * Types of output file generation. Output files are generated in
+   * the specified output directory in an optional sub-directory.
+   */
+  public static enum OutputStyleOption {
+    /** Use the class's package, like javac.*/
+    PACKAGE,
+
+    /** Use the relative directory of the input file. */
+    SOURCE,
+
+    /** Don't use a relative directory. */
+    NONE
+  }
+  public static final OutputStyleOption DEFAULT_OUTPUT_STYLE_OPTION =
+      OutputStyleOption.PACKAGE;
 
   /**
    * Set all log handlers in this package with a common level.
@@ -205,7 +222,9 @@ public class Options {
       } else if (arg.equals("-use-reference-counting")) {
         checkMemoryManagementOption(MemoryManagementOption.REFERENCE_COUNTING);
       } else if (arg.equals("--no-package-directories")) {
-        usePackageDirectories = false;
+        outputStyle = OutputStyleOption.NONE;
+      } else if (arg.equals("--preserve-full-paths")) {
+        outputStyle = OutputStyleOption.SOURCE;
       } else if (arg.equals("-use-gc")) {
         checkMemoryManagementOption(MemoryManagementOption.GC);
       } else if (arg.equals("-use-arc")) {
@@ -432,11 +451,19 @@ public class Options {
    * package declaration (like javac does).
    */
   public static boolean usePackageDirectories() {
-    return usePackageDirectories;
+    return outputStyle == OutputStyleOption.PACKAGE;
   }
 
-  public static void setPackageDirectories(boolean b) {
-    usePackageDirectories = b;
+  /**
+   * If true, put output files in the same directories from
+   * which the input files were read.
+   */
+  public static boolean useSourceDirectories() {
+    return outputStyle == OutputStyleOption.SOURCE;
+  }
+
+  public static void setPackageDirectories(OutputStyleOption style) {
+    outputStyle = style;
   }
 
   public static String getImplementationFileSuffix() {

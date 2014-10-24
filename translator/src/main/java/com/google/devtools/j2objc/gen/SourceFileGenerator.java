@@ -53,12 +53,18 @@ public abstract class SourceFileGenerator {
    */
   protected String getOutputFileName(CompilationUnit node) {
     PackageDeclaration pkg = node.getPackage();
-    if (!pkg.isDefaultPackage() && Options.usePackageDirectories()) {
+    if (Options.usePackageDirectories() && !pkg.isDefaultPackage()) {
       return pkg.getName().getFullyQualifiedName().replace('.', File.separatorChar)
           + File.separatorChar + node.getMainTypeName() + getSuffix();
-    } else {
-      return node.getMainTypeName() + getSuffix();
     }
+    if (Options.useSourceDirectories()) {
+      File src = new File(node.getSourceFileFullPath());
+      String dir = src.getParent();
+      if (dir != null) {
+        return dir + File.separatorChar + node.getMainTypeName() + getSuffix();
+      }
+    }
+    return node.getMainTypeName() + getSuffix();
   }
 
   /**
