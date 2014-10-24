@@ -192,7 +192,7 @@ class IOSCharset extends Charset {
       // Return UTF-8 default, like JRE does.
       JavaNioCharsetIOSCharset_DEFAULT_CHARSET_ = addEncoding(iosCharsets[0]);
     }
-    return JavaNioCharsetIOSCharset_DEFAULT_CHARSET_;
+    return RETAIN_(JavaNioCharsetIOSCharset_DEFAULT_CHARSET_);
   ]-*/;
 
   static final IOSCharset DEFAULT_CHARSET = getDefaultCharset();
