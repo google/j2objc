@@ -30,7 +30,7 @@ public class ImplementationImportCollectorTest extends GenerationTest {
 
   @Override
   protected void tearDown() throws Exception {
-    Options.setPackageDirectories(true);
+    Options.setPackageDirectories(Options.DEFAULT_OUTPUT_STYLE_OPTION);
     super.tearDown();
   }
 
@@ -147,7 +147,7 @@ public class ImplementationImportCollectorTest extends GenerationTest {
 
   // Verify that platform class packages aren't truncated with --no-package-directories.
   public void testPlatformImports() throws IOException {
-    Options.setPackageDirectories(false);
+    Options.setPackageDirectories(Options.OutputStyleOption.NONE);
     String translation = translateSourceFile(
         "package foo.bar; import org.xml.sax.*; import org.xml.sax.helpers.*; " +
         "class Test { XMLReader test() { " +
@@ -163,4 +163,24 @@ public class ImplementationImportCollectorTest extends GenerationTest {
     assertTranslation(translation, "#include \"org/xml/sax/XMLReader.h\"");
     assertTranslation(translation, "#include \"org/xml/sax/helpers/XMLReaderFactory.h\"");
   }
+
+  // Verify that platform class packages aren't changed with --preserve-full-paths.
+  public void testPlatformImportsSourceDirs() throws IOException {
+    Options.setPackageDirectories(Options.OutputStyleOption.SOURCE);
+    String translation = translateSourceFile(
+        "package foo.bar; import org.xml.sax.*; import org.xml.sax.helpers.*; " +
+        "class Test { XMLReader test() { " +
+        "  try { return XMLReaderFactory.createXMLReader(); } catch (SAXException e) {} " +
+        "  return null; }}",
+        "Test", "Test.m");
+
+    // Test file's import should not have package.
+    assertTranslation(translation, "#include \"Test.h\"");
+
+    // Platform file's imports should.
+    assertTranslation(translation, "#include \"org/xml/sax/SAXException.h\"");
+    assertTranslation(translation, "#include \"org/xml/sax/XMLReader.h\"");
+    assertTranslation(translation, "#include \"org/xml/sax/helpers/XMLReaderFactory.h\"");
+  }
+
 }
