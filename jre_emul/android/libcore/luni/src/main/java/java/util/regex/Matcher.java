@@ -394,6 +394,20 @@ public final class Matcher implements MatchResult {
     }
 
     /**
+     * Intelligently advances the index of the next find operation, which will
+     * be one character after the last successful match. Properly adjusts for
+     * zero-length matches.
+     */
+    private void advanceFindPos() {
+        if (matchOffsets[1] == matchOffsets[0]) {
+            // The last match was zero-length. Still skip one character.
+            findPos = matchOffsets[1] + 1;
+        } else {
+            findPos = matchOffsets[1];
+        }
+    }
+
+    /**
      * Returns the next occurrence of the {@link Pattern} in the input. If a
      * previous match was successful, the method continues the search from the
      * first character following that match in the input. Otherwise it searches
@@ -404,7 +418,7 @@ public final class Matcher implements MatchResult {
     public boolean find() {
         matchFound = findImpl(findPos, true);
         if (matchFound) {
-            findPos = matchOffsets[1];
+            advanceFindPos();
         }
         return matchFound;
     }
@@ -419,7 +433,7 @@ public final class Matcher implements MatchResult {
     public boolean lookingAt() {
         matchFound = findImpl(0, false);
         if (matchFound) {
-            findPos = matchOffsets[1];
+            advanceFindPos();
         }
         return matchFound;
     }
@@ -434,7 +448,7 @@ public final class Matcher implements MatchResult {
     public boolean matches() {
         matchFound = matchesImpl();
         if (matchFound) {
-            findPos = matchOffsets[1];
+            advanceFindPos();
         }
         return matchFound;
     }
@@ -682,7 +696,7 @@ public final class Matcher implements MatchResult {
                           withInt:(jint) (matchRange.location + matchRange.length)];
           }
 
-          matched = [match range].length > 0;  // No match if length is zero.
+          matched = [match range].location != NSNotFound;
           *stop = YES;
         }
       }];
