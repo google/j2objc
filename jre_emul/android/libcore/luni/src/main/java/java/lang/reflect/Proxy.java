@@ -355,7 +355,7 @@ public class Proxy implements Serializable {
               // Return value is currently wrapped, so check wrapper type instead.
               returnType = [(IOSPrimitiveClass *) returnType wrapperClass];
             }
-            if (![returnType isAssignableFrom:resultType]) {
+            if (javaResult && ![returnType isAssignableFrom:resultType]) {
               @throw AUTORELEASE([[JavaLangIllegalArgumentException alloc] init]);
             }
             J2ObjcRawValue result;
