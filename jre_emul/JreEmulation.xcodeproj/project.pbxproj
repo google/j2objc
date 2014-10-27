@@ -22,6 +22,10 @@
 /* End PBXAggregateTarget section */
 
 /* Begin PBXBuildFile section */
+		061AA0CF19FEF01800457D2B /* package-info.m in Sources */ = {isa = PBXBuildFile; fileRef = 061AA0CD19FEF01800457D2B /* package-info.m */; };
+		061AA0D019FEF01800457D2B /* PackageTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 061AA0CE19FEF01800457D2B /* PackageTest.m */; };
+		061AA0D519FEF2E700457D2B /* TestAnnotation.m in Sources */ = {isa = PBXBuildFile; fileRef = 061AA0D219FEF2E700457D2B /* TestAnnotation.m */; };
+		061AA0D619FEF2E700457D2B /* ThrowableTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 061AA0D319FEF2E700457D2B /* ThrowableTest.m */; };
 		06422D6B191ACB8E00C37443 /* libjre_emul.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 06619385155848D70004DAFE /* libjre_emul.a */; };
 		06422D6C191ACB9E00C37443 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 06619388155848D70004DAFE /* Foundation.framework */; };
 		06619389155848D70004DAFE /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 06619388155848D70004DAFE /* Foundation.framework */; };
@@ -452,8 +456,6 @@
 		06ED87EE1977298400633227 /* libjre_emul.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 06619385155848D70004DAFE /* libjre_emul.a */; };
 		06ED87F119772B3600633227 /* libz.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 06C73F5919180E6D001D3CC8 /* libz.dylib */; };
 		5110C61F19AFCBAA00FA26E1 /* ClassTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 5110C61E19AFCBAA00FA26E1 /* ClassTest.m */; };
-		5110C62119AFCBC000FA26E1 /* PackageTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 5110C62019AFCBC000FA26E1 /* PackageTest.m */; };
-		5110C62319AFCBE500FA26E1 /* ThrowableTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 5110C62219AFCBE500FA26E1 /* ThrowableTest.m */; };
 		5110C62519AFCC2E00FA26E1 /* ProxyTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 5110C62419AFCC2E00FA26E1 /* ProxyTest.m */; };
 /* End PBXBuildFile section */
 
@@ -585,6 +587,11 @@
 
 /* Begin PBXFileReference section */
 		0604932C1772407B0047D336 /* IOSClassTest.m */ = {isa = PBXFileReference; fileEncoding = 4; indentWidth = 2; lastKnownFileType = sourcecode.c.objc; name = IOSClassTest.m; path = Classes/IOSClassTest.m; sourceTree = SOURCE_ROOT; tabWidth = 2; wrapsLines = 0; };
+		061AA0CC19FEF01800457D2B /* package-info.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "package-info.h"; path = "com/google/j2objc/package-info.h"; sourceTree = "<group>"; };
+		061AA0CD19FEF01800457D2B /* package-info.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "package-info.m"; path = "com/google/j2objc/package-info.m"; sourceTree = "<group>"; };
+		061AA0CE19FEF01800457D2B /* PackageTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = PackageTest.m; path = com/google/j2objc/PackageTest.m; sourceTree = "<group>"; };
+		061AA0D219FEF2E700457D2B /* TestAnnotation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = TestAnnotation.m; path = com/google/j2objc/TestAnnotation.m; sourceTree = "<group>"; };
+		061AA0D319FEF2E700457D2B /* ThrowableTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ThrowableTest.m; path = com/google/j2objc/ThrowableTest.m; sourceTree = "<group>"; };
 		062095AF1917FA3400B19671 /* XCTest.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = XCTest.framework; path = Library/Frameworks/XCTest.framework; sourceTree = DEVELOPER_DIR; };
 		062272AA1816DB0B009BB2A2 /* jni.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = jni.h; sourceTree = "<group>"; };
 		06389ACF176BADA20018B4EA /* JavaToIOSInputStreamAdapter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JavaToIOSInputStreamAdapter.h; sourceTree = "<group>"; };
@@ -712,6 +719,11 @@
 		066193E7155849F80004DAFE /* NSString+JavaString.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSString+JavaString.m"; sourceTree = "<group>"; };
 		0661AA4819F705E200EFD1F5 /* UTF16EncodingTest.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = UTF16EncodingTest.h; sourceTree = "<group>"; };
 		0661AA4919F705E200EFD1F5 /* UTF16EncodingTest.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = UTF16EncodingTest.m; sourceTree = "<group>"; };
+		0661AA7F19F848C800EFD1F5 /* AbstractStringBuilder.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = AbstractStringBuilder.m; path = java/lang/AbstractStringBuilder.m; sourceTree = "<group>"; };
+		0661AA8019F848FF00EFD1F5 /* java_lang_IntegralToString.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = java_lang_IntegralToString.h; path = android/libcore/luni/src/main/native/java_lang_IntegralToString.h; sourceTree = SOURCE_ROOT; };
+		0661AA8119F848FF00EFD1F5 /* java_lang_IntegralToString.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = java_lang_IntegralToString.m; path = android/libcore/luni/src/main/native/java_lang_IntegralToString.m; sourceTree = SOURCE_ROOT; };
+		0661AA8219F848FF00EFD1F5 /* java_lang_RealToString.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = java_lang_RealToString.h; path = android/libcore/luni/src/main/native/java_lang_RealToString.h; sourceTree = SOURCE_ROOT; };
+		0661AA8319F848FF00EFD1F5 /* java_lang_StringToReal.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = java_lang_StringToReal.m; path = android/libcore/luni/src/main/native/java_lang_StringToReal.m; sourceTree = SOURCE_ROOT; };
 		0666CCC41978457C00A22C57 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = text; path = README.md; sourceTree = "<group>"; };
 		066B71F617B94DC100A4CBBD /* objc-sync.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "objc-sync.h"; path = "apple_apsl/objc-sync.h"; sourceTree = SOURCE_ROOT; };
 		066B71F717B94DC100A4CBBD /* objc-sync.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "objc-sync.m"; path = "apple_apsl/objc-sync.m"; sourceTree = SOURCE_ROOT; };
@@ -3152,8 +3164,6 @@
 		2CBD9CBE174ABCF8008A0086 /* NSDataOutputStream.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = NSDataOutputStream.h; sourceTree = "<group>"; };
 		2CBD9CBF174ABCF8008A0086 /* NSDataOutputStream.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = NSDataOutputStream.m; sourceTree = "<group>"; };
 		5110C61E19AFCBAA00FA26E1 /* ClassTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ClassTest.m; path = com/google/j2objc/ClassTest.m; sourceTree = "<group>"; };
-		5110C62019AFCBC000FA26E1 /* PackageTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = PackageTest.m; path = com/google/j2objc/PackageTest.m; sourceTree = "<group>"; };
-		5110C62219AFCBE500FA26E1 /* ThrowableTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ThrowableTest.m; path = com/google/j2objc/ThrowableTest.m; sourceTree = "<group>"; };
 		5110C62419AFCC2E00FA26E1 /* ProxyTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ProxyTest.m; path = java/lang/reflect/ProxyTest.m; sourceTree = "<group>"; };
 		51719E5318EEDDCE006DEEB7 /* IOSPrimitiveArray.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = IOSPrimitiveArray.h; sourceTree = "<group>"; };
 		51719E5418EEDDCE006DEEB7 /* IOSPrimitiveArray.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = IOSPrimitiveArray.m; sourceTree = "<group>"; };
@@ -3233,6 +3243,7 @@
 		0661938A155848D70004DAFE /* Classes */ = {
 			isa = PBXGroup;
 			children = (
+				0661AA7F19F848C800EFD1F5 /* AbstractStringBuilder.m */,
 				067228F9158FB0B3005318BD /* AccessibleObject.h */,
 				067228FA158FB0B3005318BD /* AccessibleObject.m */,
 				06FACA1118AD34B8008501DD /* BufferUtils.h */,
@@ -3248,9 +3259,9 @@
 				06721BA11559DE3800645E1B /* ExecutableMember.m */,
 				067228E4158FAEBC005318BD /* Field.h */,
 				067228E5158FAEBC005318BD /* Field.m */,
+				067855AD169F364D0042431C /* HashMap_PackagePrivate.h */,
 				067855AE169F364D0042431C /* HashMap.h */,
 				067855AF169F364D0042431C /* HashMap.m */,
-				067855AD169F364D0042431C /* HashMap_PackagePrivate.h */,
 				06619396155849BB0004DAFE /* IOSArray.h */,
 				06619397155849BB0004DAFE /* IOSArray.m */,
 				06619398155849BB0004DAFE /* IOSArrayClass.h */,
@@ -3279,7 +3290,11 @@
 				06B1E05017F6403100F8940B /* Iterable.m */,
 				06BED66A18EDE33F004EA17D /* J2ObjC_common.h */,
 				06986A181767D781006EE92F /* J2ObjCMain.m */,
+				0661AA8019F848FF00EFD1F5 /* java_lang_IntegralToString.h */,
+				0661AA8119F848FF00EFD1F5 /* java_lang_IntegralToString.m */,
+				0661AA8219F848FF00EFD1F5 /* java_lang_RealToString.h */,
 				068BA723180F5C270087BAF4 /* java_lang_RealToString.m */,
+				0661AA8319F848FF00EFD1F5 /* java_lang_StringToReal.m */,
 				0675061317F0C7A30015B7E8 /* JavaMetadata.h */,
 				0675061417F0C7A30015B7E8 /* JavaMetadata.m */,
 				066193B8155849BC0004DAFE /* JavaObject.h */,
@@ -3292,9 +3307,9 @@
 				067855A6169F35AB0042431C /* JreMemDebug.m */,
 				067855A7169F35AB0042431C /* JreMemDebugStrongReference.h */,
 				067855A8169F35AB0042431C /* JreMemDebugStrongReference.m */,
+				067855B0169F364D0042431C /* LinkedHashMap_PackagePrivate.h */,
 				067855B1169F364D0042431C /* LinkedHashMap.h */,
 				067855B2169F364D0042431C /* LinkedHashMap.m */,
-				067855B0169F364D0042431C /* LinkedHashMap_PackagePrivate.h */,
 				067228F1158FB002005318BD /* Method.h */,
 				06721BA21559DE3800645E1B /* Method.m */,
 				2CBD9CBC174ABC0D008A0086 /* NSDataInputStream.h */,
@@ -5011,12 +5026,6 @@
 		06E4E362197F1D46005DDE69 /* Translated Tests */ = {
 			isa = PBXGroup;
 			children = (
-				0661AA4819F705E200EFD1F5 /* UTF16EncodingTest.h */,
-				0661AA4919F705E200EFD1F5 /* UTF16EncodingTest.m */,
-				5110C62419AFCC2E00FA26E1 /* ProxyTest.m */,
-				5110C62219AFCBE500FA26E1 /* ThrowableTest.m */,
-				5110C62019AFCBC000FA26E1 /* PackageTest.m */,
-				5110C61E19AFCBAA00FA26E1 /* ClassTest.m */,
 				06E4E365197F1D46005DDE69 /* AbstractExecutorServiceTest.h */,
 				06E4E366197F1D46005DDE69 /* AbstractExecutorServiceTest.m */,
 				06E4E367197F1D46005DDE69 /* AbstractQueuedSynchronizerTest.h */,
@@ -5053,6 +5062,7 @@
 				06E4E392197F1D46005DDE69 /* AtomicReferenceTest.m */,
 				06E4E393197F1D46005DDE69 /* AtomicStampedReferenceTest.h */,
 				06E4E394197F1D46005DDE69 /* AtomicStampedReferenceTest.m */,
+				5110C61E19AFCBAA00FA26E1 /* ClassTest.m */,
 				06E4E395197F1D46005DDE69 /* ConcurrencyTests.h */,
 				06E4E396197F1D46005DDE69 /* ConcurrencyTests.m */,
 				06E4E397197F1D46005DDE69 /* ConcurrentHashMapTest.h */,
@@ -5092,10 +5102,14 @@
 				06E4E4F7197F1D46005DDE69 /* MaxFloatingPointTest.h */,
 				06E4E4F8197F1D46005DDE69 /* MaxFloatingPointTest.m */,
 				06E4E4F9197F1D46005DDE69 /* org */,
+				061AA0CC19FEF01800457D2B /* package-info.h */,
+				061AA0CD19FEF01800457D2B /* package-info.m */,
+				061AA0CE19FEF01800457D2B /* PackageTest.m */,
 				06E4E631197F1D47005DDE69 /* PriorityBlockingQueueTest.h */,
 				06E4E632197F1D47005DDE69 /* PriorityBlockingQueueTest.m */,
 				06E4E633197F1D47005DDE69 /* PriorityQueueTest.h */,
 				06E4E634197F1D47005DDE69 /* PriorityQueueTest.m */,
+				5110C62419AFCC2E00FA26E1 /* ProxyTest.m */,
 				06E4E635197F1D47005DDE69 /* ReentrantLockTest.h */,
 				06E4E636197F1D47005DDE69 /* ReentrantLockTest.m */,
 				06E4E637197F1D47005DDE69 /* ReentrantReadWriteLockTest.h */,
@@ -5106,11 +5120,15 @@
 				06E4E63C197F1D47005DDE69 /* SerializationTest.m */,
 				06E4E63D197F1D47005DDE69 /* SynchronousQueueTest.h */,
 				06E4E63E197F1D47005DDE69 /* SynchronousQueueTest.m */,
+				061AA0D219FEF2E700457D2B /* TestAnnotation.m */,
 				06E4E63F197F1D47005DDE69 /* tests */,
 				06E4E6AC197F1D47005DDE69 /* ThreadPoolExecutorTest.h */,
 				06E4E6AD197F1D47005DDE69 /* ThreadPoolExecutorTest.m */,
+				061AA0D319FEF2E700457D2B /* ThrowableTest.m */,
 				06E4E6AE197F1D47005DDE69 /* TimeUnitTest.h */,
 				06E4E6AF197F1D47005DDE69 /* TimeUnitTest.m */,
+				0661AA4819F705E200EFD1F5 /* UTF16EncodingTest.h */,
+				0661AA4919F705E200EFD1F5 /* UTF16EncodingTest.m */,
 			);
 			name = "Translated Tests";
 			path = build_result/tests;
@@ -6742,7 +6760,6 @@
 				06E4E6C8197F1D47005DDE69 /* AtomicStampedReferenceTest.m in Sources */,
 				06E4E7C1197F1D48005DDE69 /* LinkedHashMapTest.m in Sources */,
 				06E4E7A5197F1D48005DDE69 /* ShortTest.m in Sources */,
-				5110C62119AFCBC000FA26E1 /* PackageTest.m in Sources */,
 				06E4E6F7197F1D47005DDE69 /* OldAndroidPushbackInputStreamTest.m in Sources */,
 				06E4E813197F1D48005DDE69 /* Support_GetPutFieldsDeprecated.m in Sources */,
 				06E4E80C197F1D48005DDE69 /* Support_ASimpleOutputStream.m in Sources */,
@@ -6773,6 +6790,7 @@
 				06E4E7EE197F1D48005DDE69 /* MessageFormatTest.m in Sources */,
 				06E4E70F197F1D47005DDE69 /* OldFilterWriterTest.m in Sources */,
 				06E4E7C5197F1D48005DDE69 /* NoSuchElementExceptionTest.m in Sources */,
+				061AA0D519FEF2E700457D2B /* TestAnnotation.m in Sources */,
 				06E4E6FA197F1D47005DDE69 /* OldAndroidStreamTokenizerTest.m in Sources */,
 				06E4E7A8197F1D48005DDE69 /* StringBufferTest.m in Sources */,
 				06E4E795197F1D48005DDE69 /* InterruptedExceptionTest.m in Sources */,
@@ -6911,6 +6929,7 @@
 				06E4E777197F1D47005DDE69 /* LevelTestResource.m in Sources */,
 				06E4E754197F1D47005DDE69 /* OldTimeZoneTest.m in Sources */,
 				06E4E804197F1D48005DDE69 /* ListResourceBundleTest.m in Sources */,
+				061AA0CF19FEF01800457D2B /* package-info.m in Sources */,
 				06E4E6FB197F1D47005DDE69 /* OldAndroidStringReaderTest.m in Sources */,
 				06E4E818197F1D48005DDE69 /* Support_PlatformFile.m in Sources */,
 				06E4E7D5197F1D48005DDE69 /* PatternSyntaxExceptionTest.m in Sources */,
@@ -6984,7 +7003,6 @@
 				06E4E803197F1D48005DDE69 /* FormattableFlagsTest.m in Sources */,
 				06E4E716197F1D47005DDE69 /* OldObjectOutputStreamTest.m in Sources */,
 				06E4E7C7197F1D48005DDE69 /* RandomTest.m in Sources */,
-				5110C62319AFCBE500FA26E1 /* ThrowableTest.m in Sources */,
 				06E4E7CB197F1D48005DDE69 /* TimeZoneTest.m in Sources */,
 				06E4E7FE197F1D48005DDE69 /* SynchronousQueueTest.m in Sources */,
 				06E4E81E197F1D48005DDE69 /* Support_StringReader.m in Sources */,
@@ -7048,6 +7066,7 @@
 				06E4E800197F1D48005DDE69 /* AbstractMapTest.m in Sources */,
 				06E4E6DE197F1D47005DDE69 /* ICUTest.m in Sources */,
 				06E4E786197F1D47005DDE69 /* ClassCastExceptionTest.m in Sources */,
+				061AA0D619FEF2E700457D2B /* ThrowableTest.m in Sources */,
 				06E4E82D197F1D48005DDE69 /* MessageDigestTestSHA384.m in Sources */,
 				06E4E741197F1D47005DDE69 /* FileChannelTest.m in Sources */,
 				06E4E6F5197F1D47005DDE69 /* OldAndroidOutputStreamWriterTest.m in Sources */,
@@ -7058,6 +7077,7 @@
 				06E4E779197F1D47005DDE69 /* LogManagerTest.m in Sources */,
 				06E4E7B4197F1D48005DDE69 /* AbstractSequentialListTest.m in Sources */,
 				06E4E708197F1D47005DDE69 /* OldFileInputStreamTest.m in Sources */,
+				061AA0D019FEF01800457D2B /* PackageTest.m in Sources */,
 				06E4E70C197F1D47005DDE69 /* OldFilterInputStreamTest.m in Sources */,
 				06E4E7DF197F1D48005DDE69 /* DoubleTest.m in Sources */,
 				06E4E6CA197F1D47005DDE69 /* ConcurrentHashMapTest.m in Sources */,
@@ -7216,6 +7236,7 @@
 			buildSettings = {
 				"ARCHS[sdk=iphoneos*]" = "$(ARCHS_STANDARD_INCLUDING_64_BIT)";
 				"ARCHS[sdk=iphonesimulator*]" = "$(ARCHS_STANDARD)";
+				CLANG_USE_OPTIMIZATION_PROFILE = YES;
 				DSTROOT = /tmp/JreEmulation.dst;
 				GCC_PRECOMPILE_PREFIX_HEADER = NO;
 				GCC_PREFIX_HEADER = "";
@@ -7284,6 +7305,7 @@
 					armv6,
 					armv7,
 				);
+				CLANG_USE_OPTIMIZATION_PROFILE = YES;
 				COPY_PHASE_STRIP = "";
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				GCC_ENABLE_OBJC_EXCEPTIONS = YES;
@@ -7431,6 +7453,7 @@
 					armv6,
 					armv7,
 				);
+				CLANG_USE_OPTIMIZATION_PROFILE = YES;
 				COPY_PHASE_STRIP = "";
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				GCC_ENABLE_OBJC_EXCEPTIONS = YES;
@@ -7453,6 +7476,7 @@
 				CLANG_CXX_LIBRARY = "libc++";
 				CLANG_ENABLE_MODULES = YES;
 				CLANG_ENABLE_OBJC_ARC = NO;
+				CLANG_USE_OPTIMIZATION_PROFILE = NO;
 				CLANG_WARN_BOOL_CONVERSION = YES;
 				CLANG_WARN_CONSTANT_CONVERSION = YES;
 				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
@@ -7514,6 +7538,7 @@
 				CLANG_CXX_LIBRARY = "libc++";
 				CLANG_ENABLE_MODULES = YES;
 				CLANG_ENABLE_OBJC_ARC = NO;
+				CLANG_USE_OPTIMIZATION_PROFILE = NO;
 				CLANG_WARN_BOOL_CONVERSION = YES;
 				CLANG_WARN_CONSTANT_CONVERSION = YES;
 				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
