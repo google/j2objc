@@ -499,7 +499,8 @@ destinationBegin:(int)destinationBegin {
 }
 
 NSStringEncoding parseCharsetName(NSString *charset) {
-  return (NSStringEncoding) JavaNioCharsetIOSCharset_encodingForNameWithNSString_(charset);
+  JavaNioCharsetCharset *cs = JavaNioCharsetCharset_forNameUEEWithNSString_(charset);
+  return (NSStringEncoding)[(JavaNioCharsetIOSCharset *)cs nsEncoding];
 }
 
 + (NSString *)stringWithBytes:(IOSByteArray *)value
@@ -606,7 +607,9 @@ NSStringEncoding parseCharsetName(NSString *charset) {
 }
 
 - (IOSByteArray *)getBytes  {
-  return [self getBytesWithCharsetName:[[JavaNioCharsetCharset defaultCharset] name]];
+  JavaNioCharsetCharset *charset = [JavaNioCharsetCharset defaultCharset];
+  NSStringEncoding encoding = (NSStringEncoding)[(JavaNioCharsetIOSCharset *)charset nsEncoding];
+  return [self getBytesWithEncoding:encoding];
 }
 
 - (IOSByteArray *)getBytesWithCharsetName:(NSString *)charsetName {

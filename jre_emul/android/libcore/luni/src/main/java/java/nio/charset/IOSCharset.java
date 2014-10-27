@@ -24,6 +24,7 @@ import java.util.Set;
 import java.util.logging.Logger;
 
 /*-[
+#import "java/io/UnsupportedEncodingException.h"
 #import "java/lang/System.h"
 #import "java/util/logging/Logger.h"
 ]-*/
@@ -182,17 +183,15 @@ class IOSCharset extends Charset {
     NSString *fileEncoding = [JavaLangSystem getPropertyWithNSString:@"file.encoding"];
     if (fileEncoding) {
       @try {
-        JavaNioCharsetIOSCharset_DEFAULT_CHARSET_ = (JavaNioCharsetIOSCharset *)
+        return (JavaNioCharsetIOSCharset *)
             [JavaNioCharsetCharset forNameUEEWithNSString:fileEncoding];
       }
       @catch (JavaIoUnsupportedEncodingException *e) {
         // Fall-through to use system default.
       }
-    } else {
-      // Return UTF-8 default, like JRE does.
-      JavaNioCharsetIOSCharset_DEFAULT_CHARSET_ = addEncoding(iosCharsets[0]);
     }
-    return RETAIN_(JavaNioCharsetIOSCharset_DEFAULT_CHARSET_);
+    // Return UTF-8 default, like JRE does.
+    return addEncoding(iosCharsets[0]);
   ]-*/;
 
   static final IOSCharset DEFAULT_CHARSET = getDefaultCharset();
@@ -206,9 +205,4 @@ class IOSCharset extends Charset {
     });
     return JavaNioCharsetIOSCharset_encodings_;
   ]-*/;
-
-  static long encodingForName(String name) throws UnsupportedEncodingException {
-    IOSCharset cs = (IOSCharset) Charset.forNameUEE(name);
-    return cs != null ? cs.nsEncoding : DEFAULT_CHARSET.nsEncoding;
-  }
 }
