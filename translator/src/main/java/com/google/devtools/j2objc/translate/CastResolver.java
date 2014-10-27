@@ -17,8 +17,10 @@ package com.google.devtools.j2objc.translate;
 import com.google.common.collect.Lists;
 import com.google.devtools.j2objc.ast.CastExpression;
 import com.google.devtools.j2objc.ast.Expression;
+import com.google.devtools.j2objc.ast.ExpressionStatement;
 import com.google.devtools.j2objc.ast.FieldAccess;
 import com.google.devtools.j2objc.ast.FunctionInvocation;
+import com.google.devtools.j2objc.ast.MethodDeclaration;
 import com.google.devtools.j2objc.ast.MethodInvocation;
 import com.google.devtools.j2objc.ast.ParenthesizedExpression;
 import com.google.devtools.j2objc.ast.QualifiedName;
@@ -83,26 +85,40 @@ public class CastResolver extends TreeVisitor {
       }
       // else fall-through.
     }
+
+    FunctionInvocation castCheck = createCastCheck(type, expr);
+    if (castCheck != null) {
+      node.setExpression(castCheck);
+    }
+  }
+
+  private static FunctionInvocation createCastCheck(ITypeBinding type, Expression expr) {
+    // Find the first bound for a type variable.
+    while (type.isTypeVariable()) {
+      ITypeBinding[] bounds = type.getTypeBounds();
+      if (bounds.length == 0) {
+        break;
+      }
+      type = bounds[0];
+    }
     ITypeBinding idType = Types.resolveIOSType("id");
+    FunctionInvocation invocation = null;
     if (type.isInterface() && !type.isAnnotation()) {
-      FunctionInvocation invocation =
-          new FunctionInvocation("check_protocol_cast", idType, idType, null);
-      expr.replaceWith(invocation);
-      invocation.getArguments().add(expr);
+      invocation = new FunctionInvocation("check_protocol_cast", idType, idType, null);
+      invocation.getArguments().add(TreeUtil.remove(expr));
       FunctionInvocation protocolLiteral =
           new FunctionInvocation("@protocol", idType, idType, null);
       protocolLiteral.getArguments().add(new SimpleName(type));
       invocation.getArguments().add(protocolLiteral);
-    } else if (type.isClass() || type.isArray() || type.isAnnotation()) {
-      FunctionInvocation invocation =
-          new FunctionInvocation("check_class_cast", idType, idType, null);
-      expr.replaceWith(invocation);
-      invocation.getArguments().add(expr);
+    } else if (type.isClass() || type.isArray() || type.isAnnotation() || type.isEnum()) {
+      invocation = new FunctionInvocation("check_class_cast", idType, idType, null);
+      invocation.getArguments().add(TreeUtil.remove(expr));
       IOSMethodBinding binding = IOSMethodBinding.newMethod(
           CLASS_METHOD, Modifier.STATIC, idType, type);
       MethodInvocation classInvocation = new MethodInvocation(binding, new SimpleName(type));
       invocation.getArguments().add(classInvocation);
     }
+    return invocation;
   }
 
   private void maybeAddCast(Expression expr, boolean shouldCastFromId) {
@@ -265,6 +281,36 @@ public class CastResolver extends TreeVisitor {
     Expression initializer = node.getInitializer();
     if (initializer != null) {
       maybeAddCast(initializer, false);
+    }
+  }
+
+  /**
+   * Adds a cast check to compareTo methods. This helps Comparable types behave
+   * well in sorted collections which rely on Java's runtime type checking.
+   */
+  @Override
+  public void endVisit(MethodDeclaration node) {
+    IMethodBinding binding = node.getMethodBinding();
+    if (!binding.getName().equals("compareTo") || node.getBody() == null) {
+      return;
+    }
+    ITypeBinding comparableType =
+        BindingUtil.findInterface(binding.getDeclaringClass(), "java.lang.Comparable");
+    if (comparableType == null) {
+      return;
+    }
+    ITypeBinding[] typeArguments = comparableType.getTypeArguments();
+    ITypeBinding[] parameterTypes = binding.getParameterTypes();
+    if (typeArguments.length != 1 || parameterTypes.length != 1
+        || !typeArguments[0].isEqualTo(parameterTypes[0])) {
+      return;
+    }
+
+    IVariableBinding param = node.getParameters().get(0).getVariableBinding();
+
+    FunctionInvocation castCheck = createCastCheck(typeArguments[0], new SimpleName(param));
+    if (castCheck != null) {
+      node.getBody().getStatements().add(0, new ExpressionStatement(castCheck));
     }
   }
 }

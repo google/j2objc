@@ -34,23 +34,18 @@ import com.google.devtools.j2objc.ast.ExpressionStatement;
 import com.google.devtools.j2objc.ast.FieldAccess;
 import com.google.devtools.j2objc.ast.FieldDeclaration;
 import com.google.devtools.j2objc.ast.ForStatement;
-import com.google.devtools.j2objc.ast.IfStatement;
 import com.google.devtools.j2objc.ast.InfixExpression;
-import com.google.devtools.j2objc.ast.InstanceofExpression;
 import com.google.devtools.j2objc.ast.LabeledStatement;
 import com.google.devtools.j2objc.ast.MethodDeclaration;
 import com.google.devtools.j2objc.ast.MethodInvocation;
 import com.google.devtools.j2objc.ast.Name;
-import com.google.devtools.j2objc.ast.NullLiteral;
 import com.google.devtools.j2objc.ast.ParenthesizedExpression;
-import com.google.devtools.j2objc.ast.PrefixExpression;
 import com.google.devtools.j2objc.ast.QualifiedName;
 import com.google.devtools.j2objc.ast.SimpleName;
 import com.google.devtools.j2objc.ast.SingleVariableDeclaration;
 import com.google.devtools.j2objc.ast.Statement;
 import com.google.devtools.j2objc.ast.SuperMethodInvocation;
 import com.google.devtools.j2objc.ast.SwitchStatement;
-import com.google.devtools.j2objc.ast.ThrowStatement;
 import com.google.devtools.j2objc.ast.TreeUtil;
 import com.google.devtools.j2objc.ast.TreeVisitor;
 import com.google.devtools.j2objc.ast.Type;
@@ -58,8 +53,6 @@ import com.google.devtools.j2objc.ast.VariableDeclarationExpression;
 import com.google.devtools.j2objc.ast.VariableDeclarationFragment;
 import com.google.devtools.j2objc.ast.VariableDeclarationStatement;
 import com.google.devtools.j2objc.ast.WhileStatement;
-import com.google.devtools.j2objc.types.GeneratedMethodBinding;
-import com.google.devtools.j2objc.types.GeneratedTypeBinding;
 import com.google.devtools.j2objc.types.GeneratedVariableBinding;
 import com.google.devtools.j2objc.types.Types;
 import com.google.devtools.j2objc.util.BindingUtil;
@@ -112,8 +105,6 @@ public class Rewriter extends TreeVisitor {
     String name = binding.getName();
     renameReservedNames(name, binding);
 
-    handleCompareToMethod(node, binding);
-
     List<SingleVariableDeclaration> params = node.getParameters();
     for (int i = 0; i < params.size(); i++) {
       // Change the names of any parameters that are type qualifier keywords.
@@ -156,54 +147,6 @@ public class Rewriter extends TreeVisitor {
       }
     });
     return true;
-  }
-
-  /**
-   * Adds an instanceof check to compareTo methods. This helps Comparable types
-   * behave well in sorted collections which rely on Java's runtime type
-   * checking.
-   */
-  private void handleCompareToMethod(MethodDeclaration node, IMethodBinding binding) {
-    if (!binding.getName().equals("compareTo") || node.getBody() == null) {
-      return;
-    }
-    ITypeBinding comparableType =
-        BindingUtil.findInterface(binding.getDeclaringClass(), "java.lang.Comparable");
-    if (comparableType == null) {
-      return;
-    }
-    ITypeBinding[] typeArguments = comparableType.getTypeArguments();
-    ITypeBinding[] parameterTypes = binding.getParameterTypes();
-    if (typeArguments.length != 1 || parameterTypes.length != 1
-        || !typeArguments[0].isEqualTo(parameterTypes[0])) {
-      return;
-    }
-
-    IVariableBinding param = node.getParameters().get(0).getVariableBinding();
-
-    Expression nullCheck = new InfixExpression(
-        Types.resolveJavaType("boolean"), InfixExpression.Operator.NOT_EQUALS,
-        new SimpleName(param), new NullLiteral());
-    Expression instanceofExpr = new InstanceofExpression(new SimpleName(param), typeArguments[0]);
-    instanceofExpr = new PrefixExpression(PrefixExpression.Operator.NOT, instanceofExpr);
-
-    ITypeBinding cceType = GeneratedTypeBinding.newTypeBinding(
-        "java.lang.ClassCastException", Types.resolveJavaType("java.lang.RuntimeException"), false);
-    ClassInstanceCreation newCce = new ClassInstanceCreation(
-        GeneratedMethodBinding.newConstructor(cceType, 0));
-
-    ThrowStatement throwStmt = new ThrowStatement(newCce);
-
-    Block ifBlock = new Block();
-    ifBlock.getStatements().add(throwStmt);
-
-    IfStatement ifStmt = new IfStatement();
-    ifStmt.setExpression(new InfixExpression(
-        Types.resolveJavaType("boolean"), InfixExpression.Operator.CONDITIONAL_AND, nullCheck,
-        instanceofExpr));
-    ifStmt.setThenStatement(ifBlock);
-
-    node.getBody().getStatements().add(0, ifStmt);
   }
 
   @Override
