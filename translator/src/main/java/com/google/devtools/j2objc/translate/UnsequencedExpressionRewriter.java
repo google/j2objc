@@ -420,7 +420,7 @@ public class UnsequencedExpressionRewriter extends TreeVisitor {
     if (isWithinConditionalBranch(modification.expression, commonAncestor)
         || isWithinConditionalBranch(access.expression, commonAncestor)) {
       return false;
-    } else if (commonAncestor instanceof Assignment) {
+    } else if (commonAncestor instanceof Assignment && modification.expression == commonAncestor) {
       // "i = 1 + (i = 2);" is not unsequenced.
       // "i = 1 + i++;" is unsequenced (according to clang).
       return access.expression instanceof PrefixExpression
@@ -683,10 +683,15 @@ public class UnsequencedExpressionRewriter extends TreeVisitor {
 
   @Override
   public boolean visit(Assignment node) {
-    // We can't visit the left hand side otherwise the SimpleName visitor will
-    // add an additional access for the assigned variable.
+    Expression lhs = node.getLeftHandSide();
+    IVariableBinding lhsVar = TreeUtil.getVariableBinding(lhs);
+    // Access order is important. If the lhs is a variable, then we must record
+    // its access after visiting the rhs. Otherwise, visit both sides.
+    if (lhsVar == null) {
+      lhs.accept(this);
+    }
     node.getRightHandSide().accept(this);
-    addVariableAccess(TreeUtil.getVariableBinding(node.getLeftHandSide()), node, true);
+    addVariableAccess(lhsVar, node, true);
     return false;
   }
 

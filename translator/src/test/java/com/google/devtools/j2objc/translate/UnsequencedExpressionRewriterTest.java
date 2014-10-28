@@ -196,4 +196,12 @@ public class UnsequencedExpressionRewriterTest extends GenerationTest {
         "  }",
         "}");
   }
+
+  public void testAssignToArray() throws IOException {
+    String translation = translateSourceFile(
+        "class Test { void test(int[] arr, int i) { arr[i] = i++; } }", "Test", "Test.m");
+    assertTranslatedLines(translation,
+        "jint unseq$1 = i;",
+        "*IOSIntArray_GetRef(nil_chk(arr), unseq$1) = i++;");
+  }
 }
