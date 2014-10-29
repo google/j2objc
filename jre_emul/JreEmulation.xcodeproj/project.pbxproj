@@ -26,6 +26,8 @@
 		061AA0D019FEF01800457D2B /* PackageTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 061AA0CE19FEF01800457D2B /* PackageTest.m */; };
 		061AA0D519FEF2E700457D2B /* TestAnnotation.m in Sources */ = {isa = PBXBuildFile; fileRef = 061AA0D219FEF2E700457D2B /* TestAnnotation.m */; };
 		061AA0D619FEF2E700457D2B /* ThrowableTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 061AA0D319FEF2E700457D2B /* ThrowableTest.m */; };
+		062463D41A000CE3006D52C9 /* JRETestsTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 062463D31A000CE3006D52C9 /* JRETestsTableViewController.m */; };
+		062463DA1A005995006D52C9 /* JRELogPaneViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 062463D91A005995006D52C9 /* JRELogPaneViewController.m */; };
 		06422D6B191ACB8E00C37443 /* libjre_emul.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 06619385155848D70004DAFE /* libjre_emul.a */; };
 		06422D6C191ACB9E00C37443 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 06619388155848D70004DAFE /* Foundation.framework */; };
 		06619389155848D70004DAFE /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 06619388155848D70004DAFE /* Foundation.framework */; };
@@ -422,7 +424,7 @@
 		06E4E830197F1D48005DDE69 /* ThreadPoolExecutorTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 06E4E6AD197F1D47005DDE69 /* ThreadPoolExecutorTest.m */; };
 		06E4E831197F1D48005DDE69 /* TimeUnitTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 06E4E6AF197F1D47005DDE69 /* TimeUnitTest.m */; };
 		06E4E832197F1E4E005DDE69 /* JREAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 06ED87C619759EFF00633227 /* JREAppDelegate.m */; };
-		06E4E833197F1E4E005DDE69 /* JRELogPane.m in Sources */ = {isa = PBXBuildFile; fileRef = 06ED87E31975CE5E00633227 /* JRELogPane.m */; };
+		06E4E833197F1E4E005DDE69 /* JRELogPaneView.m in Sources */ = {isa = PBXBuildFile; fileRef = 06ED87E31975CE5E00633227 /* JRELogPaneView.m */; };
 		06E4E834197F1E4E005DDE69 /* JRELogOutputStream.m in Sources */ = {isa = PBXBuildFile; fileRef = 06ED87EC1975F8AD00633227 /* JRELogOutputStream.m */; };
 		06E4E835197F1E4E005DDE69 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 06ED87C219759EFF00633227 /* main.m */; };
 		06E4E843197F25FF005DDE69 /* libcore.java.util.ServiceLoaderTestInterface in CopyFiles */ = {isa = PBXBuildFile; fileRef = 06E4E842197F25FF005DDE69 /* libcore.java.util.ServiceLoaderTestInterface */; };
@@ -594,6 +596,10 @@
 		061AA0D319FEF2E700457D2B /* ThrowableTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ThrowableTest.m; path = com/google/j2objc/ThrowableTest.m; sourceTree = "<group>"; };
 		062095AF1917FA3400B19671 /* XCTest.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = XCTest.framework; path = Library/Frameworks/XCTest.framework; sourceTree = DEVELOPER_DIR; };
 		062272AA1816DB0B009BB2A2 /* jni.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = jni.h; sourceTree = "<group>"; };
+		062463D21A000CE3006D52C9 /* JRETestsTableViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JRETestsTableViewController.h; sourceTree = "<group>"; };
+		062463D31A000CE3006D52C9 /* JRETestsTableViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JRETestsTableViewController.m; sourceTree = "<group>"; };
+		062463D81A005995006D52C9 /* JRELogPaneViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JRELogPaneViewController.h; sourceTree = "<group>"; };
+		062463D91A005995006D52C9 /* JRELogPaneViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JRELogPaneViewController.m; sourceTree = "<group>"; };
 		06389ACF176BADA20018B4EA /* JavaToIOSInputStreamAdapter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JavaToIOSInputStreamAdapter.h; sourceTree = "<group>"; };
 		06389AD0176BADA20018B4EA /* JavaToIOSInputStreamAdapter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JavaToIOSInputStreamAdapter.m; sourceTree = "<group>"; };
 		06422DDA191AD72400C37443 /* jre_emul_tests-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "jre_emul_tests-Prefix.pch"; sourceTree = "<group>"; };
@@ -2741,8 +2747,8 @@
 		06ED87C519759EFF00633227 /* JREAppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = JREAppDelegate.h; sourceTree = "<group>"; };
 		06ED87C619759EFF00633227 /* JREAppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = JREAppDelegate.m; sourceTree = "<group>"; };
 		06ED87C819759EFF00633227 /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
-		06ED87E21975CE5E00633227 /* JRELogPane.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JRELogPane.h; sourceTree = "<group>"; };
-		06ED87E31975CE5E00633227 /* JRELogPane.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JRELogPane.m; sourceTree = "<group>"; };
+		06ED87E21975CE5E00633227 /* JRELogPaneView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JRELogPaneView.h; sourceTree = "<group>"; };
+		06ED87E31975CE5E00633227 /* JRELogPaneView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JRELogPaneView.m; sourceTree = "<group>"; };
 		06ED87EB1975F8AD00633227 /* JRELogOutputStream.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JRELogOutputStream.h; sourceTree = "<group>"; };
 		06ED87EC1975F8AD00633227 /* JRELogOutputStream.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JRELogOutputStream.m; sourceTree = "<group>"; };
 		06F28FE118972C2300676F1D /* IosMD5MessageDigest.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = IosMD5MessageDigest.h; path = build_result/Classes/com/google/j2objc/security/IosMD5MessageDigest.h; sourceTree = "<group>"; };
@@ -6454,16 +6460,20 @@
 		06ED87BC19759EFF00633227 /* junit_tests */ = {
 			isa = PBXGroup;
 			children = (
+				06ED87C819759EFF00633227 /* Images.xcassets */,
 				06ED87C519759EFF00633227 /* JREAppDelegate.h */,
 				06ED87C619759EFF00633227 /* JREAppDelegate.m */,
-				06ED87E21975CE5E00633227 /* JRELogPane.h */,
-				06ED87E31975CE5E00633227 /* JRELogPane.m */,
 				06ED87EB1975F8AD00633227 /* JRELogOutputStream.h */,
 				06ED87EC1975F8AD00633227 /* JRELogOutputStream.m */,
-				06ED87C819759EFF00633227 /* Images.xcassets */,
-				06E4E362197F1D46005DDE69 /* Translated Tests */,
-				06E4E874197F277A005DDE69 /* Test Resources */,
+				06ED87E21975CE5E00633227 /* JRELogPaneView.h */,
+				06ED87E31975CE5E00633227 /* JRELogPaneView.m */,
+				062463D81A005995006D52C9 /* JRELogPaneViewController.h */,
+				062463D91A005995006D52C9 /* JRELogPaneViewController.m */,
+				062463D21A000CE3006D52C9 /* JRETestsTableViewController.h */,
+				062463D31A000CE3006D52C9 /* JRETestsTableViewController.m */,
 				06ED87BD19759EFF00633227 /* Supporting Files */,
+				06E4E874197F277A005DDE69 /* Test Resources */,
+				06E4E362197F1D46005DDE69 /* Translated Tests */,
 			);
 			path = junit_tests;
 			sourceTree = "<group>";
@@ -6701,7 +6711,7 @@
 			files = (
 				0661AA4A19F7063200EFD1F5 /* UTF16EncodingTest.m in Sources */,
 				06E4E832197F1E4E005DDE69 /* JREAppDelegate.m in Sources */,
-				06E4E833197F1E4E005DDE69 /* JRELogPane.m in Sources */,
+				06E4E833197F1E4E005DDE69 /* JRELogPaneView.m in Sources */,
 				06E4E834197F1E4E005DDE69 /* JRELogOutputStream.m in Sources */,
 				06E4E835197F1E4E005DDE69 /* main.m in Sources */,
 				06E4E6F2197F1D47005DDE69 /* OldAndroidFileTest.m in Sources */,
@@ -6896,6 +6906,7 @@
 				06E4E6C6197F1D47005DDE69 /* AtomicReferenceFieldUpdaterTest.m in Sources */,
 				06E4E6F9197F1D47005DDE69 /* OldAndroidSerializationTest.m in Sources */,
 				06E4E80A197F1D48005DDE69 /* MessageDigestTest.m in Sources */,
+				062463D41A000CE3006D52C9 /* JRETestsTableViewController.m in Sources */,
 				06E4E7C3197F1D48005DDE69 /* LinkedListTest.m in Sources */,
 				06E4E7A9197F1D48005DDE69 /* StringIndexOutOfBoundsExceptionTest.m in Sources */,
 				06E4E7C2197F1D48005DDE69 /* LinkedHashSetTest.m in Sources */,
@@ -7078,6 +7089,7 @@
 				06E4E7B4197F1D48005DDE69 /* AbstractSequentialListTest.m in Sources */,
 				06E4E708197F1D47005DDE69 /* OldFileInputStreamTest.m in Sources */,
 				061AA0D019FEF01800457D2B /* PackageTest.m in Sources */,
+				062463DA1A005995006D52C9 /* JRELogPaneViewController.m in Sources */,
 				06E4E70C197F1D47005DDE69 /* OldFilterInputStreamTest.m in Sources */,
 				06E4E7DF197F1D48005DDE69 /* DoubleTest.m in Sources */,
 				06E4E6CA197F1D47005DDE69 /* ConcurrentHashMapTest.m in Sources */,
