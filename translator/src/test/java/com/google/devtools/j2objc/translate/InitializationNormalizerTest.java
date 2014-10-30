@@ -241,7 +241,7 @@ public class InitializationNormalizerTest extends GenerationTest {
         + "  public static final int iSetSize = iSet.size(); }";
     String translation = translateSourceFile(source, "Test", "Test.m");
     String setInit = "JreStrongAssignAndConsume(&Test_iSet_, nil, [[JavaUtilHashSet alloc] init])";
-    String setAdd = "[Test_iSet_ addWithId:[JavaLangInteger valueOfWithInt:Test_I]]";
+    String setAdd = "[Test_iSet_ addWithId:JavaLangInteger_valueOfWithInt_(Test_I)]";
     String setSize = "Test_iSetSize_ = [Test_iSet_ size]";
     assertTranslation(translation, setInit);
     assertTranslation(translation, setAdd);

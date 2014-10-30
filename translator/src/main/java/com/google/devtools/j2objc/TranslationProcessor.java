@@ -243,10 +243,8 @@ class TranslationProcessor extends FileProcessor {
 
     // After: OcniExtractor - So that native methods can be correctly
     //   functionized.
-    if (Options.finalMethodsAsFunctions()) {
-      new Functionizer().run(unit);
-      ticker.tick("Functionizer");
-    }
+    new Functionizer().run(unit);
+    ticker.tick("Functionizer");
 
     // After: Functionizer - Changes bindings on MethodDeclaration nodes.
     // Before: StaticVarRewriter, OperatorRewriter - Doesn't know how to handle

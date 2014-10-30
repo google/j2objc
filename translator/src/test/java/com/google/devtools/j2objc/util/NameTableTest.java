@@ -130,7 +130,7 @@ public class NameTableTest extends GenerationTest {
     String translation = translateSourceFile("A", "A.h");
     assertTranslation(translation, "@interface TestName : NSObject");
     translation = translateSourceFile("B", "B.m");
-    assertTranslation(translation, "[TestName test];");
+    assertTranslation(translation, "TestName_test();");
   }
 
   public void testRenameMapping() throws IOException {
@@ -142,7 +142,7 @@ public class NameTableTest extends GenerationTest {
       String translation = translateSourceFile("foo/bar/A", "foo/bar/A.h");
       assertTranslation(translation, "@interface Test2Name : NSObject");
       translation = translateSourceFile("foo/bar/B", "foo/bar/B.m");
-      assertTranslation(translation, "[Test2Name test];");
+      assertTranslation(translation, "Test2Name_test();");
     } finally {
       Options.getClassMappings().remove("foo.bar.A");
     }
