@@ -44,9 +44,8 @@
 
 + (void)setAccessibleWithJavaLangReflectAccessibleObjectArray:(IOSObjectArray *)objects
                                                   withBoolean:(BOOL)b {
-  for (NSObject *o in objects) {
-    [(JavaLangReflectAccessibleObject *)o setAccessibleWithBoolean:b];
-  }
+  JavaLangReflectAccessibleObject_setAccessibleWithJavaLangReflectAccessibleObjectArray_withBoolean_(
+    objects, b);
 }
 
 - (id)getAnnotationWithIOSClass:(IOSClass *)annotationType {
@@ -94,6 +93,13 @@
 }
 
 @end
+
+void JavaLangReflectAccessibleObject_setAccessibleWithJavaLangReflectAccessibleObjectArray_withBoolean_(
+    IOSObjectArray *objects, BOOL b) {
+  for (JavaLangReflectAccessibleObject *o in objects) {
+    [o setAccessibleWithBoolean:b];
+  }
+}
 
 BOOL validTypeEncoding(const char *type) {
   return strlen(type) == 1 && strchr("@#cSsilLqQZfdBv", *type);
