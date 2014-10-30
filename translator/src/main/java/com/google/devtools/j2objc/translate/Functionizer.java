@@ -14,8 +14,8 @@
 
 package com.google.devtools.j2objc.translate;
 
-import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
+import com.google.devtools.j2objc.Options;
 import com.google.devtools.j2objc.ast.AnnotationTypeDeclaration;
 import com.google.devtools.j2objc.ast.Block;
 import com.google.devtools.j2objc.ast.BodyDeclaration;
@@ -50,6 +50,7 @@ import org.eclipse.jdt.core.dom.ITypeBinding;
 import org.eclipse.jdt.core.dom.IVariableBinding;
 import org.eclipse.jdt.core.dom.Modifier;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 
@@ -76,18 +77,16 @@ public class Functionizer extends TreeVisitor {
    * are always functionized since there are no dynamic dispatch issues.
    */
   private Set<IMethodBinding> determineFunctionizableMethods(final CompilationUnit unit) {
+    if (!Options.finalMethodsAsFunctions()) {
+      return Collections.emptySet();
+    }
     final Set<IMethodBinding> functionizableDeclarations = Sets.newHashSet();
-    final Set<IMethodBinding> staticDeclarations = Sets.newHashSet();
     final Set<IMethodBinding> invocations = Sets.newHashSet();
     unit.accept(new TreeVisitor() {
       @Override
       public void endVisit(MethodDeclaration node) {
-        IMethodBinding m = node.getMethodBinding();
-        int mods = node.getModifiers();
-        if (Modifier.isStatic(mods)) {
-          staticDeclarations.add(m);
-        } else if (canFunctionize(node)) {
-          functionizableDeclarations.add(m);
+        if (canFunctionize(node)) {
+          functionizableDeclarations.add(node.getMethodBinding());
         }
       }
 
@@ -96,8 +95,7 @@ public class Functionizer extends TreeVisitor {
         invocations.add(node.getMethodBinding().getMethodDeclaration());
       }
     });
-    return Sets.union(staticDeclarations,
-        Sets.intersection(functionizableDeclarations, invocations));
+    return Sets.intersection(functionizableDeclarations, invocations);
   }
 
   @Override
@@ -115,14 +113,17 @@ public class Functionizer extends TreeVisitor {
     return false;
   }
 
+  /**
+   * Determines whether an instance method can be functionized.
+   */
   private boolean canFunctionize(MethodDeclaration node) {
     IMethodBinding m = node.getMethodBinding();
     int modifiers = node.getModifiers();
 
     // Never functionize these types of methods.
-    if (Modifier.isAbstract(modifiers) || BindingUtil.isSynthetic(modifiers)
-        || m.isAnnotationMember() || m.isConstructor() || BindingUtil.isDestructor(m)
-        || Modifier.isNative(modifiers)) {
+    if (Modifier.isStatic(modifiers) || Modifier.isAbstract(modifiers)
+        || BindingUtil.isSynthetic(modifiers) || m.isAnnotationMember() || m.isConstructor()
+        || BindingUtil.isDestructor(m) || Modifier.isNative(modifiers)) {
       return false;
     }
 
@@ -180,9 +181,13 @@ public class Functionizer extends TreeVisitor {
   @Override
   public void endVisit(MethodDeclaration node) {
     IMethodBinding binding = node.getMethodBinding();
-    if (functionizableMethods.contains(binding)) {
-      FunctionDeclaration function = BindingUtil.isStatic(binding)
-          ? makeStaticFunction(node) : makeInstanceFunction(node);
+    FunctionDeclaration function = null;
+    if (BindingUtil.isStatic(binding)) {
+      function = makeStaticFunction(node);
+    } else if (functionizableMethods.contains(binding)) {
+      function = makeInstanceFunction(node);
+    }
+    if (function != null) {
       setFunctionCaller(node, function);
       List<BodyDeclaration> declarationList = TreeUtil.asDeclarationSublist(node);
       declarationList.add(function);
@@ -198,19 +203,14 @@ public class Functionizer extends TreeVisitor {
   private FunctionDeclaration makeInstanceFunction(MethodDeclaration method) {
     IMethodBinding m = method.getMethodBinding();
     ITypeBinding declaringClass = m.getDeclaringClass();
-    ITypeBinding[] paramTypes = m.getParameterTypes();
-    List<SingleVariableDeclaration> params = TreeUtil.copyList(method.getParameters());
 
-    List<ITypeBinding> list = Lists.newArrayList(paramTypes);
-    list.add(0, m.getDeclaringClass());
-    paramTypes = list.toArray(new ITypeBinding[list.size()]);
     GeneratedVariableBinding var = new GeneratedVariableBinding(NameTable.SELF_NAME, 0,
         declaringClass, false, true, declaringClass, null);
-    params.add(0, new SingleVariableDeclaration(var));
 
     FunctionDeclaration function = new FunctionDeclaration(
         NameTable.makeFunctionName(m), m.getReturnType());
-    function.getParameters().addAll(params);
+    function.getParameters().add(new SingleVariableDeclaration(var));
+    TreeUtil.copyList(method.getParameters(), function.getParameters());
     function.setModifiers(Modifier.PRIVATE);
 
     function.setBody(TreeUtil.remove(method.getBody()));
@@ -222,12 +222,10 @@ public class Functionizer extends TreeVisitor {
   private FunctionDeclaration makeStaticFunction(MethodDeclaration method) {
     IMethodBinding m = method.getMethodBinding();
     ITypeBinding declaringClass = m.getDeclaringClass();
-    ITypeBinding[] paramTypes = m.getParameterTypes();
-    List<SingleVariableDeclaration> params = TreeUtil.copyList(method.getParameters());
 
     FunctionDeclaration function = new FunctionDeclaration(
         NameTable.makeFunctionName(m), m.getReturnType());
-    function.getParameters().addAll(params);
+    TreeUtil.copyList(method.getParameters(), function.getParameters());
     int access = BindingUtil.isPrivate(m) ? Modifier.PRIVATE : Modifier.PUBLIC;
     function.setModifiers(access);
 

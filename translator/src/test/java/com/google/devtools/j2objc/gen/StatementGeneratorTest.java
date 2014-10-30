@@ -90,7 +90,7 @@ public class StatementGeneratorTest extends GenerationTest {
         + "public class Foo { static class Inner { public static void doSomething() {} }}"
         + "class Bar { public static void mumber() { Foo.Inner.doSomething(); }}",
         "Foo", "com/example/foo/Foo.m");
-    assertTranslation(translation, "[ComExampleFooFoo_Inner doSomething];");
+    assertTranslation(translation, "ComExampleFooFoo_Inner_doSomething();");
   }
 
   public void testLocalVariableTranslation() throws IOException {
@@ -344,7 +344,7 @@ public class StatementGeneratorTest extends GenerationTest {
         "Example", "Example.m");
     assertTranslation(translation,
         "[self fooWithNSObjectArray:"
-        + "[IOSObjectArray arrayWithObjects:(id[]){ [JavaLangInteger valueOfWithInt:1] } count:1 "
+        + "[IOSObjectArray arrayWithObjects:(id[]){ JavaLangInteger_valueOfWithInt_(1) } count:1 "
         + "type:[IOSClass classWithClass:[NSObject class]]]];");
   }
 
@@ -740,7 +740,7 @@ public class StatementGeneratorTest extends GenerationTest {
         + "  public void foo() { Double d = Double.NEGATIVE_INFINITY; } }",
         "Test", "Test.m");
     assertTranslation(translation,
-        "[JavaLangDouble valueOfWithDouble:JavaLangDouble_NEGATIVE_INFINITY]");
+        "JavaLangDouble_valueOfWithDouble_(JavaLangDouble_NEGATIVE_INFINITY)");
   }
 
   public void testInvokeMethodInConcreteImplOfGenericInterface() throws IOException {
@@ -1363,7 +1363,7 @@ public class StatementGeneratorTest extends GenerationTest {
     assertTranslation(translation,
         "[self checkWithBoolean:YES withNSString:@\"%d-%d\" "
         + "withNSObjectArray:[IOSObjectArray arrayWithObjects:(id[]){ "
-        + "[JavaLangInteger valueOfWithInt:i], [JavaLangInteger valueOfWithInt:j] } count:2 "
+        + "JavaLangInteger_valueOfWithInt_(i), JavaLangInteger_valueOfWithInt_(j) } count:2 "
         + "type:[IOSClass classWithClass:[NSObject class]]]];");
   }
 
@@ -1559,7 +1559,7 @@ public class StatementGeneratorTest extends GenerationTest {
   public void testStaticMethodCalledOnObject() throws IOException {
     String translation = translateSourceFile(
         "class Test { static void foo() {} void test(Test t) { t.foo(); } }", "Test", "Test.m");
-    assertTranslation(translation, "[Test foo];");
+    assertTranslation(translation, "Test_foo();");
   }
 
   public void testAnnotationVariableDeclaration() throws IOException {

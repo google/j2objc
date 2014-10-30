@@ -21,8 +21,6 @@ import com.google.devtools.j2objc.Options;
 import com.google.devtools.j2objc.Options.MemoryManagementOption;
 import com.google.devtools.j2objc.ast.AbstractTypeDeclaration;
 import com.google.devtools.j2objc.ast.CompilationUnit;
-import com.google.devtools.j2objc.ast.MethodInvocation;
-import com.google.devtools.j2objc.ast.TreeVisitor;
 
 import java.io.IOException;
 import java.util.List;
@@ -164,24 +162,13 @@ public class InnerClassExtractorTest extends GenerationTest {
    * Regression test: verify that references to class members of a type with
    * an inner class aren't disturbed.
    */
-  public void testStaticMethodInvokingStaticMethodWithInnerClass() {
-    List<AbstractTypeDeclaration> types = translateClassBody(
-        "public static int test(Object object) { return 0; }"
+  public void testStaticMethodInvokingStaticMethodWithInnerClass() throws IOException {
+    String translation = translateSourceFile(
+        "class Test { public static int test(Object object) { return 0; }"
         + "public static int test(Object object, Object foo) {"
         + "  if (foo == null) { return Test.test(object); } return 1; } "
-        + "private class Inner {}");
-    assertEquals(2, types.size());
-
-    final int[] testsFound = { 0 };
-    types.get(0).accept(new TreeVisitor() {
-      @Override
-      public void endVisit(MethodInvocation node) {
-        // Verify that Test.test() wasn't translated to this$0.test().
-        assertEquals("Test", node.getExpression().toString());
-        ++testsFound[0];
-      }
-    });
-    assertEquals(1, testsFound[0]);
+        + "private class Inner {} }", "Test", "Test.m");
+    assertTranslation(translation, "return Test_testWithId_(object);");
   }
 
   public void testInnerClassInvokingExplicitOuterMethod() throws IOException {
@@ -429,7 +416,8 @@ public class InnerClassExtractorTest extends GenerationTest {
     // Verify that main method creates a new instanceof B associated with
     // a new instance of Test.
     assertTranslatedLines(translation,
-        "+ (void)mainWithNSStringArray:(IOSObjectArray *)args {",
+        "void Test_mainWithNSStringArray_(IOSObjectArray *args) {",
+        "Test_init();",
         "Test_B *b = [[[Test_B alloc] initWithTest:[[[Test alloc] init] autorelease]] "
             + "autorelease];");
 
@@ -467,7 +455,8 @@ public class InnerClassExtractorTest extends GenerationTest {
     // Verify that main method creates a new instanceof B associated with
     // a new instance of Test.
     assertTranslatedLines(translation,
-        "+ (void)mainWithNSStringArray:(IOSObjectArray *)args {",
+        "void Test_mainWithNSStringArray_(IOSObjectArray *args) {",
+        "Test_init();",
         "Test_B *b = [[[Test_B alloc] initWithTest:[[[Test alloc] init] autorelease]] "
             + "autorelease];");
 
@@ -498,7 +487,7 @@ public class InnerClassExtractorTest extends GenerationTest {
         "import static java.lang.Character.isDigit; public class Test { class Inner { "
         + "  public void foo() { boolean b = isDigit('c'); } } }",
         "Test", "Test.m");
-    assertTranslation(translation, "[JavaLangCharacter isDigit");
+    assertTranslation(translation, "JavaLangCharacter_isDigitWithChar_('c')");
   }
 
   public void testStaticReferenceInInnerClass() throws IOException {
@@ -506,7 +495,7 @@ public class InnerClassExtractorTest extends GenerationTest {
         "public class Test { public static void foo() { } class Inner { "
         + "  public void bar() { foo(); } } }",
         "Test", "Test.m");
-    assertTranslation(translation, "[Test foo]");
+    assertTranslation(translation, "Test_foo()");
   }
 
   public void testMethodInnerClass() throws IOException {
@@ -554,7 +543,7 @@ public class InnerClassExtractorTest extends GenerationTest {
         + "  static void foo(Inner i) { } "
         + "  class Inner { Inner() { foo(Inner.this); } } }",
         "Test", "Test.m");
-    assertTranslation(translation, "[Test fooWithTest_Inner:self]");
+    assertTranslation(translation, "Test_fooWithTest_Inner_(self)");
   }
 
   // Verify that an anonymous class in a static initializer does not reference
@@ -566,10 +555,10 @@ public class InnerClassExtractorTest extends GenerationTest {
         + "    public Object nextElement() { return null; }}); }"
         + "  public static void foo(Object o) { } }";
     String translation = translateSourceFile(source, "A", "A.h");
-    assertFalse(translation.contains("this$0_"));
+    assertNotInTranslation(translation, "this$0_");
     translation = getTranslatedFile("A.m");
-    assertFalse(translation.contains("this$0_"));
-    assertTranslation(translation, "fooWithId:[[[A_$1 alloc] init]");
+    assertNotInTranslation(translation, "this$0_");
+    assertTranslation(translation, "A_fooWithId_([[[A_$1 alloc] init] autorelease])");
   }
 
   // Verify that an anonymous class assigned to a static field does not

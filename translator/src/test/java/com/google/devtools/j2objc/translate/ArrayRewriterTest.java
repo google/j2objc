@@ -48,7 +48,7 @@ public class ArrayRewriterTest extends GenerationTest {
     String translation = translateSourceFile(
         "class Test { void test(Object[] array) { java.util.Arrays.asList(array); }}",
         "Test", "Test.m");
-    assertTranslation(translation, "[JavaUtilArrays asListWithNSObjectArray:array];");
+    assertTranslation(translation, "JavaUtilArrays_asListWithNSObjectArray_(array);");
   }
 
   // Verify that a single primitive array argument to a primitive varargs method is
@@ -67,9 +67,9 @@ public class ArrayRewriterTest extends GenerationTest {
     String translation = translateSourceFile(
         "class Test { void test(float[] array) { java.util.Arrays.asList(array); }}",
         "Test", "Test.m");
-    assertTranslation(translation, "[JavaUtilArrays asListWithNSObjectArray:"
+    assertTranslation(translation, "JavaUtilArrays_asListWithNSObjectArray_("
         + "[IOSObjectArray arrayWithObjects:(id[]){ array } count:1 "
-        + "type:[IOSClass classWithClass:[NSObject class]]]];");
+        + "type:[IOSClass classWithClass:[NSObject class]]]);");
   }
 
   // Verify that the "SetAndConsume" setter is used.

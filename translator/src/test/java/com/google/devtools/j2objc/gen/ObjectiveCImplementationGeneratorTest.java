@@ -76,14 +76,14 @@ public class ObjectiveCImplementationGeneratorTest extends GenerationTest {
     String translation = translateSourceFile(
         "public class Example { static void foo() {} void test() { foo(); }}",
         "Example", "Example.m");
-    assertTranslation(translation, "[Example foo];");
+    assertTranslation(translation, "Example_foo();");
   }
 
   public void testSameClassStaticMethodPackageInvocation() throws IOException {
     String translation = translateSourceFile(
         "package unit.test; public class Example { static void foo() {} void test() { foo(); }}",
         "Example", "unit/test/Example.m");
-    assertTranslation(translation, "[UnitTestExample foo];");
+    assertTranslation(translation, "UnitTestExample_foo();");
   }
 
   public void testConstStaticIntTranslation() throws IOException {
@@ -128,7 +128,7 @@ public class ObjectiveCImplementationGeneratorTest extends GenerationTest {
         "Example", "Example.m");
     assertTranslation(translation,
         "JreStrongAssign(&Example_logger_, nil, "
-        + "[JavaUtilLoggingLogger getLoggerWithNSString:@\"Test\"]);");
+        + "JavaUtilLoggingLogger_getLoggerWithNSString_(@\"Test\"));");
   }
 
   public void testStaticVariableInGenericInnerClass() throws IOException {
@@ -188,7 +188,7 @@ public class ObjectiveCImplementationGeneratorTest extends GenerationTest {
         "public class Example { static int load() { return 1; }} "
         + "class Other { int test() { return Example.load(); }}",
         "Example", "Example.m");
-    assertTranslation(translation, "return [Example load__];");
+    assertTranslation(translation, "return Example_load__();");
   }
 
   public void testToStringRenaming() throws IOException {
@@ -487,7 +487,8 @@ public class ObjectiveCImplementationGeneratorTest extends GenerationTest {
         "public class Test {"
         + "  public static synchronized void foo() {} }",
         "Test", "Test.m");
-    assertTranslation(translation, "+ (void)foo {\n"
+    assertTranslation(translation, "void Test_foo() {\n"
+        + "  Test_init();\n"
         + "  @synchronized([IOSClass classWithClass:[Test class]]) {");
   }
 
