@@ -1053,7 +1053,7 @@ IOSObjectArray *NSString_serialPersistentFields_;
     JreStrongAssignAndConsume(&NSString_serialPersistentFields_, nil,
         [IOSObjectArray newArrayWithLength:0 type:
             [IOSClass classWithClass:[JavaIoObjectStreamField class]]]);
-    NSString_initialized = YES;
+    J2OBJC_SET_INITIALIZED(NSString)
   }
 }
 

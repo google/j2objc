@@ -560,7 +560,7 @@ public class ObjectiveCImplementationGenerator extends ObjectiveCSourceFileGener
     for (Statement statement : initStatements) {
       sb.append(generateStatement(statement, false));
     }
-    sb.append(className + "_initialized = YES;\n");
+    sb.append("J2OBJC_SET_INITIALIZED(" + className + ")\n");
     sb.append("}\n}");
     print("\n+ (void)initialize " + reindent(sb.toString()) + "\n");
   }
