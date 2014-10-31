@@ -33,6 +33,7 @@
 #import "IOSReflection.h"
 #import "NSObject+JavaObject.h"
 #import "NSString+JavaString.h"
+#import <libkern/OSAtomic.h>
 
 # ifndef __has_attribute
 #  define __has_attribute(x) 0 // Compatibility with non-clang compilers.
@@ -159,6 +160,17 @@ FOUNDATION_EXPORT
     IOSObjectArray *JreEmulationMainArguments(int argc, const char *argv[]);
 
 FOUNDATION_EXPORT NSString *JreStrcat(const char *types, ...);
+
+/*!
+ * Defines the code to set a class's initialized flag. This should be used at
+ * the end of each class's initialize class method.
+ *
+ * @define J2OBJC_SET_INITIALIZED
+ * @param CLASS The class who's flag is to be set.
+ */
+#define J2OBJC_SET_INITIALIZED(CLASS) \
+  OSMemoryBarrier(); \
+  CLASS##_initialized = YES;
 
 #if __has_feature(objc_arc)
 #define J2OBJC_FIELD_SETTER(CLASS, FIELD, TYPE) \
