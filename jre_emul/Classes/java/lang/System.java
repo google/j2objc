@@ -138,54 +138,73 @@ public class System {
     exit(status);
   ]-*/;
 
-  public static Properties getProperties() {
-    if (props == null) {
-      props = new Properties();
-      props.setProperty("file.separator", "/");
-      props.setProperty("line.separator", "\n");
-      props.setProperty("path.separator", ":");
-      props.setProperty("org.xml.sax.driver", "org.xmlpull.v1.sax2.Driver");
-      setSystemProperties(props);
-    }
-    return props;
-  }
+  public native static Properties getProperties() /*-[
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+      JreStrongAssignAndConsume(&JavaLangSystem_props_, nil, [[JavaUtilProperties alloc] init]);
 
-  private static native void setSystemProperties(Properties props) /*-[
-    NSString *homeDirectory = NSHomeDirectory();
-    [props setPropertyWithNSString:@"user.home" withNSString:homeDirectory];
-    [props setPropertyWithNSString:@"user.name" withNSString:NSUserName()];
+      [JavaLangSystem_props_ setPropertyWithNSString:@"file.separator" withNSString:@"/"];
+      [JavaLangSystem_props_ setPropertyWithNSString:@"line.separator" withNSString:@"\n"];
+      [JavaLangSystem_props_ setPropertyWithNSString:@"path.separator" withNSString:@":"];
+      [JavaLangSystem_props_ setPropertyWithNSString:@"org.xml.sax.driver"
+                                        withNSString:@"org.xmlpull.v1.sax2.Driver"];
+
+      NSString *homeDirectory = NSHomeDirectory();
+      [JavaLangSystem_props_ setPropertyWithNSString:@"user.home" withNSString:homeDirectory];
+      [JavaLangSystem_props_ setPropertyWithNSString:@"user.name" withNSString:NSUserName()];
 
 #if TARGET_OS_IPHONE
-    [props setPropertyWithNSString:@"os.name" withNSString:@"iPhone"];
-    [props setPropertyWithNSString:@"user.dir"
-                      withNSString:[homeDirectory stringByAppendingString:@"/Documents"]];
+      [JavaLangSystem_props_ setPropertyWithNSString:@"os.name" withNSString:@"iPhone"];
+      [JavaLangSystem_props_
+          setPropertyWithNSString:@"user.dir"
+                     withNSString:[homeDirectory stringByAppendingString:@"/Documents"]];
 #elif TARGET_IPHONE_SIMULATOR
-    [props setPropertyWithNSString:@"os.name" withNSString:@"iPhone Simulator"];
-    [props setPropertyWithNSString:@"user.dir"
-                      withNSString:[homeDirectory stringByAppendingString:@"/Documents"]];
+      [JavaLangSystem_props_ setPropertyWithNSString:@"os.name" withNSString:@"iPhone Simulator"];
+      [JavaLangSystem_props_
+          setPropertyWithNSString:@"user.dir"
+                     withNSString:[homeDirectory stringByAppendingString:@"/Documents"]];
 #else
-    [props setPropertyWithNSString:@"os.name" withNSString:@"Mac OS X"];
-    NSString *curDir = [[NSFileManager defaultManager] currentDirectoryPath];
-    [props setPropertyWithNSString:@"user.dir" withNSString:curDir];
+      [JavaLangSystem_props_ setPropertyWithNSString:@"os.name" withNSString:@"Mac OS X"];
+      NSString *curDir = [[NSFileManager defaultManager] currentDirectoryPath];
+      [JavaLangSystem_props_ setPropertyWithNSString:@"user.dir" withNSString:curDir];
 #endif
 
-    NSString *tmpDir = NSTemporaryDirectory();
-    int iLast = (int) [tmpDir length] - 1;
-    if (iLast >= 0 && [tmpDir characterAtIndex:iLast] == '/') {
-      tmpDir = [tmpDir substringToIndex:iLast];
-    }
-    [props setPropertyWithNSString:@"java.io.tmpdir" withNSString:tmpDir];
-    [props setPropertyWithNSString:@"java.home" withNSString:[[NSBundle mainBundle] bundlePath]];
+      NSString *tmpDir = NSTemporaryDirectory();
+      int iLast = (int) [tmpDir length] - 1;
+      if (iLast >= 0 && [tmpDir characterAtIndex:iLast] == '/') {
+        tmpDir = [tmpDir substringToIndex:iLast];
+      }
+      [JavaLangSystem_props_ setPropertyWithNSString:@"java.io.tmpdir" withNSString:tmpDir];
+      [JavaLangSystem_props_ setPropertyWithNSString:@"java.home"
+                                        withNSString:[[NSBundle mainBundle] bundlePath]];
 
-    char *fileEncoding = getenv("file_encoding");  // Shell variables cannot have periods.
-    if (!fileEncoding) {
-      fileEncoding = getenv("file.encoding");
-    }
-    if (fileEncoding) {
-      NSString *enc = [NSString stringWithCString:fileEncoding
-                                         encoding:[NSString defaultCStringEncoding]];
-      [props setPropertyWithNSString:@"file.encoding" withNSString:enc];
-    }
+      char *fileEncoding = getenv("file_encoding");  // Shell variables cannot have periods.
+      if (!fileEncoding) {
+        fileEncoding = getenv("file.encoding");
+      }
+      if (fileEncoding) {
+        NSString *enc = [NSString stringWithCString:fileEncoding
+                                           encoding:[NSString defaultCStringEncoding]];
+        [JavaLangSystem_props_ setPropertyWithNSString:@"file.encoding" withNSString:enc];
+      }
+
+      // These properties are used to define the default Locale.
+      NSString *localeId = [[NSLocale currentLocale] localeIdentifier];
+      NSDictionary *components = [NSLocale componentsFromLocaleIdentifier:localeId];
+      NSString *language = [components objectForKey:NSLocaleLanguageCode];
+      if (language) {
+        [JavaLangSystem_props_ setPropertyWithNSString:@"user.language" withNSString:language];
+      }
+      NSString *country = [components objectForKey:NSLocaleCountryCode];
+      if (country) {
+        [JavaLangSystem_props_ setPropertyWithNSString:@"user.region" withNSString:country];
+      }
+      NSString *variant = [components objectForKey:NSLocaleVariantCode];
+      if (variant) {
+        [JavaLangSystem_props_ setPropertyWithNSString:@"user.variant" withNSString:variant];
+      }
+    });
+    return JavaLangSystem_props_;
   ]-*/;
 
   public static String getProperty(String key) {
