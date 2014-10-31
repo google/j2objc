@@ -143,8 +143,8 @@ public class OldFileTest extends TestCase {
 
     public void test_createTempFileLjava_lang_StringLjava_lang_String() {
         try {
-            // Providing an illegal file prefix.
-            File f3 = File.createTempFile("/../../../../../", null);
+            // Providing an illegal file prefix (iOS simulator paths can be very deep).
+            File f3 = File.createTempFile("/../../../../../../../../../../../../../../", null);
             f3.delete();
             fail("IOException not thrown");
         } catch (IOException e) {

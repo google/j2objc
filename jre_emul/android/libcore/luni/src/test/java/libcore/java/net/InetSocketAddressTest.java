@@ -18,6 +18,7 @@ package libcore.java.net;
 
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
+
 import junit.framework.TestCase;
 
 public class InetSocketAddressTest extends TestCase {
@@ -140,8 +141,12 @@ public class InetSocketAddressTest extends TestCase {
         InetSocketAddress isa1 = new InetSocketAddress("localhost", 80);
         assertFalse(isa1.isUnresolved());
 
-        InetSocketAddress sockAddr = new InetSocketAddress("unknown.host", 1000);
-        assertTrue(sockAddr.isUnresolved());
+        if (!System.getProperty("os.name").equals("iPhone")) {
+          // Don't test on iPhone, because sockets are always resolved to avoid
+          // blocking on slow connections.
+          InetSocketAddress sockAddr = new InetSocketAddress("unknown.host", 1000);
+          assertTrue(sockAddr.isUnresolved());
+        }
     }
 
     public void test_getHostString() throws Exception {

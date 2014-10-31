@@ -151,6 +151,9 @@ public final class IoBridge {
             IoUtils.setBlocking(fd, true); // 4. set the socket back to blocking.
             return; // We connected immediately.
         } catch (ErrnoException errnoException) {
+            if (errnoException.errno == ETIMEDOUT) {
+                throw new SocketTimeoutException(connectDetail(inetAddress, port, timeoutMs, null));
+            }
             if (errnoException.errno != EINPROGRESS) {
                 throw errnoException;
             }
