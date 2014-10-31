@@ -180,11 +180,11 @@ class IOSCharset extends Charset {
   ]-*/
 
   private static native IOSCharset getDefaultCharset() /*-[
-    NSString *fileEncoding = [JavaLangSystem getPropertyWithNSString:@"file.encoding"];
+    NSString *fileEncoding = JavaLangSystem_getPropertyWithNSString_(@"file.encoding");
     if (fileEncoding) {
       @try {
         return (JavaNioCharsetIOSCharset *)
-            [JavaNioCharsetCharset forNameUEEWithNSString:fileEncoding];
+            JavaNioCharsetCharset_forNameUEEWithNSString_(fileEncoding);
       }
       @catch (JavaIoUnsupportedEncodingException *e) {
         // Fall-through to use system default.

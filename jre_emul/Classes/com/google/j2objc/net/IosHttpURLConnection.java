@@ -359,7 +359,7 @@ public class IosHttpURLConnection extends HttpURLConnection {
                                                              error:&error];
     self->responseCode_ = (int) (response ? [response statusCode] : [error code]);
     self->responseMessage_ =
-        [ComGoogleJ2objcNetIosHttpURLConnection getResponseStatusTextWithInt:self->responseCode_];
+        ComGoogleJ2objcNetIosHttpURLConnection_getResponseStatusTextWithInt_(self->responseCode_);
     self->contentLength_ = (int) ([responseData length]);
 
     if (error || [response statusCode] >= JavaNetHttpURLConnection_HTTP_BAD_REQUEST) {

@@ -360,7 +360,7 @@ public class Thread implements Runnable {
       [thread setStackSize:(NSUInteger) stack];
     }
     [thread setThreadPriority:[NSThread threadPriority]];
-    NSNumber *threadId = [NSNumber numberWithLongLong:[JavaLangThread getNextThreadId]];
+    NSNumber *threadId = [NSNumber numberWithLongLong:JavaLangThread_getNextThreadId()];
     [newThreadData setObject:threadId forKey:JavaLangThread_THREAD_ID_];
 
     if (!name) {
@@ -648,7 +648,7 @@ public class Thread implements Runnable {
    * @see Thread#isInterrupted
    */
   public static native boolean interrupted() /*-[
-    JavaLangThread *currentThread = [JavaLangThread currentThread];
+    JavaLangThread *currentThread = JavaLangThread_currentThread();
     BOOL result = currentThread->interrupted__;
     currentThread->interrupted__ = NO;
     return result;
@@ -1028,7 +1028,7 @@ public class Thread implements Runnable {
     if (thread) {
       return thread->threadGroup_; // ThreadGroup is instance of UEH
     }
-    return [JavaLangThread getDefaultUncaughtExceptionHandler];
+    return JavaLangThread_getDefaultUncaughtExceptionHandler();
   ]-*/;
 
   public native void setUncaughtExceptionHandler(UncaughtExceptionHandler handler) /*-[

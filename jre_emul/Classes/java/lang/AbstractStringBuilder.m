@@ -88,7 +88,7 @@ void JreStringBuilder_initWithCapacity(JreStringBuilder *sb, jint capacity) {
   if (self = [super init]) {
     if (capacity < 0) {
       @throw [[[JavaLangNegativeArraySizeException alloc] initWithNSString:
-          [JavaLangInteger toStringWithInt:capacity]] autorelease];
+          JavaLangInteger_toStringWithInt_(capacity)] autorelease];
     }
     NewBuffer(&delegate_, capacity);
   }

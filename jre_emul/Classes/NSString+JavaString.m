@@ -607,7 +607,7 @@ NSStringEncoding parseCharsetName(NSString *charset) {
 }
 
 - (IOSByteArray *)getBytes  {
-  JavaNioCharsetCharset *charset = [JavaNioCharsetCharset defaultCharset];
+  JavaNioCharsetCharset *charset = JavaNioCharsetCharset_defaultCharset();
   NSStringEncoding encoding = (NSStringEncoding)[(JavaNioCharsetIOSCharset *)charset nsEncoding];
   return [self getBytesWithEncoding:encoding];
 }
@@ -764,7 +764,7 @@ NSString *NSString_formatWithJavaUtilLocale_withNSString_withNSObjectArray_(
   if (!str) {
     @throw makeException([JavaLangNullPointerException class]);
   }
-  JavaUtilRegexPattern *p = [JavaUtilRegexPattern compileWithNSString:str];
+  JavaUtilRegexPattern *p = JavaUtilRegexPattern_compileWithNSString_(str);
   return [p splitWithJavaLangCharSequence:self withInt:n];
 }
 
@@ -877,25 +877,21 @@ NSString *NSString_formatWithJavaUtilLocale_withNSString_withNSObjectArray_(
 }
 
 - (int)codePointAt:(int)index {
-  return [JavaLangCharacter codePointAtWithJavaLangCharSequence:self
-                                                        withInt:index];
+  return JavaLangCharacter_codePointAtWithJavaLangCharSequence_withInt_(self, index);
 }
 
 - (int)codePointBefore:(int)index {
-  return [JavaLangCharacter codePointBeforeWithJavaLangCharSequence:self
-                                                            withInt:index];
+  return JavaLangCharacter_codePointBeforeWithJavaLangCharSequence_withInt_(self, index);
 }
 
 - (int)codePointCount:(int)beginIndex endIndex:(int)endIndex {
-  return [JavaLangCharacter codePointCountWithJavaLangCharSequence:self
-                                                           withInt:beginIndex
-                                                           withInt:endIndex];
+  return JavaLangCharacter_codePointCountWithJavaLangCharSequence_withInt_withInt_(
+      self, beginIndex, endIndex);
 }
 
 - (int)offsetByCodePoints:(int)index codePointOffset:(int)offset {
-  return [JavaLangCharacter offsetByCodePointsWithJavaLangCharSequence:self
-                                                               withInt:index
-                                                               withInt:offset];
+  return JavaLangCharacter_offsetByCodePointsWithJavaLangCharSequence_withInt_withInt_(
+      self, index, offset);
 }
 
 - (BOOL)matches:(NSString *)regex {
@@ -950,7 +946,7 @@ NSString *NSString_formatWithJavaUtilLocale_withNSString_withNSObjectArray_(
   }
   if (![self isKindOfClass:[NSMutableString class]]) {
     // Only cache hash for immutable strings.
-    objc_setAssociatedObject(self, hashKey, [JavaLangInteger valueOfWithInt:hash],
+    objc_setAssociatedObject(self, hashKey, JavaLangInteger_valueOfWithInt_(hash),
                              OBJC_ASSOCIATION_RETAIN);
   }
   return hash;
