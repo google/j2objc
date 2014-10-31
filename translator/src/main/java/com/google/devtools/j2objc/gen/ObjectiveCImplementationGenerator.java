@@ -471,12 +471,6 @@ public class ObjectiveCImplementationGenerator extends ObjectiveCSourceFileGener
     }
   }
 
-  private String generateNativeStub(MethodDeclaration m) {
-    IMethodBinding binding = m.getMethodBinding();
-    String methodName = NameTable.getName(binding);
-    return String.format("{\n  @throw \"%s method not implemented\";\n}", methodName);
-  }
-
   @Override
   protected void printMappedMethodDeclaration(MethodDeclaration m, IOSMethod mappedMethod) {
     String methodBody = generateMethodBody(m);
@@ -487,13 +481,7 @@ public class ObjectiveCImplementationGenerator extends ObjectiveCSourceFileGener
   }
 
   private String generateMethodBody(MethodDeclaration m) {
-    if (Modifier.isNative(m.getModifiers())) {
-      if (Options.generateNativeStubs()) {
-        return generateNativeStub(m);
-      } else {
-        return null;
-      }
-    } else if (Modifier.isAbstract(m.getModifiers())) {
+    if (Modifier.isAbstract(m.getModifiers())) {
       return null;
     } else {
       // generate a normal method body

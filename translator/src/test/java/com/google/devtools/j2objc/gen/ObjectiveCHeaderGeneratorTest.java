@@ -454,18 +454,19 @@ public class ObjectiveCHeaderGeneratorTest extends GenerationTest {
         "package foo; class Example { native void external(String s); "
         + "  void test(String str) { external(str); }}", "Example", "foo/Example.h");
 
-    // Verify test() is in main interface.
-    assertTranslation(translation,
-        "@interface FooExample : NSObject {\n}\n\n- (void)testWithNSString:(NSString *)str;");
+    // Verify external() and test() are in main interface.
+    assertTranslation(translation, "- (void)externalWithNSString:(NSString *)s;");
+    assertTranslation(translation, "- (void)testWithNSString:(NSString *)str;");
 
-    // Verify external() is in native methods interface.
-    assertTranslation(translation,
-        "@interface FooExample (NativeMethods)\n- (void)externalWithNSString:(NSString *)s;");
-
-    // Verify category method isn't implemented, but is invoked.
+    // Verify category method is invoked.
     translation = getTranslatedFile("foo/Example.m");
     assertTranslation(translation, "@implementation FooExample\n");
-    assertFalse(translation.contains("- (void)externalWithNSString:(NSString *)s"));
+    assertTranslation(translation,
+        "void FooExample_externalWithNSString_(FooExample *self, NSString *s);");
+    assertTranslatedLines(translation,
+        "- (void)externalWithNSString:(NSString *)s {",
+        "  FooExample_externalWithNSString_(self, s);",
+        "}");
     assertTranslation(translation, "[self externalWithNSString:str];");
   }
 

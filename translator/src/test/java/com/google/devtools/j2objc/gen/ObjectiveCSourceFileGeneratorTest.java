@@ -62,11 +62,21 @@ public class ObjectiveCSourceFileGeneratorTest extends GenerationTest {
     String translation = translateSourceFile(source, "Example", "Example.h");
     assertWarningCount(2);
 
-    // Verify JSNI method is declared in a native methods category,
-    // the ocni method is implemented and the jsni method is not implemented.
-    assertTranslation(translation, "@interface Example (NativeMethods)\n- (void)test2");
+    // Verify both methods are declared in the header. The OCNI method is
+    // implemented in the source. The JSNI implementation wraps an unimplemented
+    // function.
+    assertTranslation(translation, "- (void)test1;");
+    assertTranslation(translation, "- (void)test2;");
     translation = getTranslatedFile("Example.m");
-    assertTranslation(translation, "ocni();");
+    assertTranslatedLines(translation,
+        "- (void)test1 {",
+        "  ocni();",
+        "}");
+    assertTranslation(translation, "void Example_test2(Example *self);");
+    assertTranslatedLines(translation,
+        "- (void)test2 {",
+        "  Example_test2(self);",
+        "}");
     assertNotInTranslation(translation, "jsni();");
     assertNotInTranslation(translation, "jsni-comment;");
 
@@ -76,12 +86,13 @@ public class ObjectiveCSourceFileGeneratorTest extends GenerationTest {
     translation = translateSourceFile(source, "Example", "Example.h");
     assertWarningCount(0);
 
-    // Verify JSNI method is still declared in a native methods category,
-    // and implementation wasn't affected.
-    assertTranslation(translation, "@interface Example (NativeMethods)\n- (void)test2");
+    // Verify header and source file are not affected.
+    assertTranslation(translation, "- (void)test1;");
+    assertTranslation(translation, "- (void)test2;");
     translation = getTranslatedFile("Example.m");
     assertTranslation(translation, "ocni();");
-    assertFalse(translation.contains("jsni();"));
+    assertTranslation(translation, "Example_test2(self);");
+    assertNotInTranslation(translation, "jsni();");
     assertNotInTranslation(translation, "jsni-comment;");
   }
 

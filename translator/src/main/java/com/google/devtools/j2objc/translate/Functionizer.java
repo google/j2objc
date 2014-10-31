@@ -123,7 +123,7 @@ public class Functionizer extends TreeVisitor {
     // Never functionize these types of methods.
     if (Modifier.isStatic(modifiers) || Modifier.isAbstract(modifiers)
         || BindingUtil.isSynthetic(modifiers) || m.isAnnotationMember() || m.isConstructor()
-        || BindingUtil.isDestructor(m) || Modifier.isNative(modifiers)) {
+        || BindingUtil.isDestructor(m)) {
       return false;
     }
 
@@ -184,7 +184,7 @@ public class Functionizer extends TreeVisitor {
     FunctionDeclaration function = null;
     if (BindingUtil.isStatic(binding)) {
       function = makeStaticFunction(node);
-    } else if (functionizableMethods.contains(binding)) {
+    } else if (functionizableMethods.contains(binding) || Modifier.isNative(node.getModifiers())) {
       function = makeInstanceFunction(node);
     }
     if (function != null) {
@@ -211,7 +211,7 @@ public class Functionizer extends TreeVisitor {
         NameTable.makeFunctionName(m), m.getReturnType());
     function.getParameters().add(new SingleVariableDeclaration(var));
     TreeUtil.copyList(method.getParameters(), function.getParameters());
-    function.setModifiers(Modifier.PRIVATE);
+    function.setModifiers(Modifier.PRIVATE | (method.getModifiers() & Modifier.NATIVE));
 
     function.setBody(TreeUtil.remove(method.getBody()));
 
