@@ -62,7 +62,6 @@ public class Options {
   private static Map<String, String> classMappings = Maps.newLinkedHashMap();
   private static Map<String, String> methodMappings = Maps.newLinkedHashMap();
   private static boolean memoryDebug = false;
-  private static boolean generateNativeStubs = false;
   private static boolean stripGwtIncompatible = false;
   private static boolean segmentedHeaders = false;
   private static String fileEncoding = System.getProperty("file.encoding", "UTF-8");
@@ -111,6 +110,9 @@ public class Options {
     Preconditions.checkNotNull(helpMessage);
   }
 
+  /**
+   * Types of memory management to be used by translated code.
+   */
   public static enum MemoryManagementOption { REFERENCE_COUNTING, GC, ARC }
   private static final MemoryManagementOption DEFAULT_MEMORY_MANAGEMENT_OPTION =
       MemoryManagementOption.REFERENCE_COUNTING;
@@ -247,8 +249,6 @@ public class Options {
         // TODO(tball): remove flag when all client builds stop using it.
       } else if (arg.equals("--mem-debug")) {
         memoryDebug = true;
-      } else if (arg.equals("--generate-native-stubs")) {
-        generateNativeStubs = true;
       } else if (arg.equals("-Xno-jsni-warnings")) {
         jsniWarnings = false;
       } else if (arg.equals("-encoding")) {
@@ -348,8 +348,7 @@ public class Options {
    * different value.  If okay, then set the option.
    */
   private static void checkMemoryManagementOption(MemoryManagementOption option) {
-    if (memoryManagementOption != null &&
-        memoryManagementOption != option) {
+    if (memoryManagementOption != null && memoryManagementOption != option) {
       usage("Multiple memory management options cannot be set.");
     }
     setMemoryManagementOption(option);
@@ -436,14 +435,6 @@ public class Options {
 
   public static void setMemoryDebug(boolean value) {
     memoryDebug = value;
-  }
-
-  public static boolean generateNativeStubs() {
-    return generateNativeStubs;
-  }
-
-  public static void setGenerateNativeStubs(boolean value) {
-    generateNativeStubs = value;
   }
 
   /**

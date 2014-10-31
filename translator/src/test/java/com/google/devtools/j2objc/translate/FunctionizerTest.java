@@ -394,8 +394,9 @@ public class FunctionizerTest extends GenerationTest {
     assertTranslation(translation, "FOUNDATION_EXPORT void Test_bar();");
 
     translation = getTranslatedFile("Test.m");
-    // No implementation for "foo".
-    assertNotInTranslation(translation, "- (void)foo");
+    // Implementation for "foo" is functionized.
+    assertTranslation(translation, "void Test_foo(Test *self);");
+    assertTranslatedLines(translation, "- (void)foo {", "Test_foo(self);", "}");
     // class method wrapper for "bar".
     assertTranslatedLines(translation, "+ (void)bar {", "Test_bar();", "}");
     // No implementation of the c-function for "bar".

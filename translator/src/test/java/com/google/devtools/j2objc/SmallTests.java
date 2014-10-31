@@ -43,6 +43,7 @@ import com.google.devtools.j2objc.translate.InitializationNormalizerTest;
 import com.google.devtools.j2objc.translate.InnerClassExtractorTest;
 import com.google.devtools.j2objc.translate.JavaToIOSMethodTranslatorTest;
 import com.google.devtools.j2objc.translate.NilCheckResolverTest;
+import com.google.devtools.j2objc.translate.OcniExtractorTest;
 import com.google.devtools.j2objc.translate.OperatorRewriterTest;
 import com.google.devtools.j2objc.translate.OuterReferenceFixerTest;
 import com.google.devtools.j2objc.translate.OuterReferenceResolverTest;
@@ -103,6 +104,7 @@ public class SmallTests {
     ObjectiveCImplementationGeneratorTest.class,
     ObjectiveCSegmentedHeaderGeneratorTest.class,
     ObjectiveCSourceFileGeneratorTest.class,
+    OcniExtractorTest.class,
     OperatorRewriterTest.class,
     OptionsTest.class,
     OuterReferenceFixerTest.class,
