@@ -163,9 +163,7 @@ id IOSObjectArray_Set(
     __unsafe_unretained IOSObjectArray *array, NSUInteger index, __unsafe_unretained id value) {
   IOSArray_checkIndex(array->size_, (jint)index);
   IOSObjectArray_checkValue(array, value);
-#if ! __has_feature(objc_arc)
   [array->buffer_[index] autorelease];
-#endif
   return array->buffer_[index] = RETAIN_(value);
 }
 
@@ -179,9 +177,7 @@ id IOSObjectArray_SetAndConsume(IOSObjectArray *array, NSUInteger index, id valu
 - (id)replaceObjectAtIndex:(NSUInteger)index withObject:(id)value {
   IOSArray_checkIndex(size_, (jint)index);
   IOSObjectArray_checkValue(self, value);
-#if ! __has_feature(objc_arc)
   [buffer_[index] autorelease];
-#endif
   return buffer_[index] = RETAIN_(value);
 }
 
@@ -207,21 +203,6 @@ void CopyWithMemmove(id __strong *buffer, NSUInteger src, NSUInteger dest, NSUIn
     retainStart = releaseEnd;
     releaseEnd = tmp;
   }
-#if __has_feature(objc_arc)
-  for (NSUInteger i = releaseStart; i < releaseEnd; i++) {
-    buffer[i] = nil;
-  }
-  // memmove is unsafe for general use in ARC so we must cast the buffer to the
-  // unretained data type void**. Then we must manually correct the retain
-  // counts using bridged casts.
-  void **buffer_unretained = (void *)buffer;
-  memmove(buffer_unretained + dest, buffer_unretained + src, length * sizeof(id));
-  for (NSUInteger i = retainStart; i < retainEnd; i++) {
-    // Use a __bridge_retained cast to trick ARC into retaining the element.
-    void *tmp = (__bridge_retained void *) buffer[i];
-    tmp = nil;  // Avoid unused variable warning.
-  }
-#else
   for (NSUInteger i = releaseStart; i < releaseEnd; i++) {
     [buffer[i] autorelease];
   }
@@ -229,15 +210,7 @@ void CopyWithMemmove(id __strong *buffer, NSUInteger src, NSUInteger dest, NSUIn
   for (NSUInteger i = retainStart; i < retainEnd; i++) {
     [buffer[i] retain];
   }
-#endif
 }
-
-// We can get a significant performance gain for an overlapping arraycopy in ARC
-// by using memmove when the amount of overlap is a large fraction of the moved
-// elements. However, the memmove method is more costly than directly copying
-// each element with a small overlap. This value has been determined
-// experimentally on a OSX desktop device.
-#define ARC_MEMMOVE_OVERLAP_RATIO 15
 
 - (void)arraycopy:(jint)offset
       destination:(IOSArray *)destination
@@ -256,30 +229,6 @@ void CopyWithMemmove(id __strong *buffer, NSUInteger src, NSUInteger dest, NSUIn
   BOOL skipElementCheck = [dest->elementType_ isAssignableFrom:elementType_];
 #endif
 
-#if __has_feature(objc_arc)
-  if (self == dest) {
-    int shift = abs(dstOffset - offset);
-    if (length > ARC_MEMMOVE_OVERLAP_RATIO * shift) {
-      CopyWithMemmove(buffer_, offset, dstOffset, length);
-    } else if (offset < dstOffset) {
-      for (int i = length - 1; i >= 0; i--) {
-        buffer_[i + dstOffset] = buffer_[i + offset];
-      }
-    } else {
-      for (int i = 0; i < length; i++) {
-        buffer_[i + dstOffset] = buffer_[i + offset];
-      }
-    }
-  } else if (skipElementCheck) {
-    for (int i = 0; i < length; i++) {
-      dest->buffer_[i + dstOffset] = buffer_[i + offset];
-    }
-  } else {
-    for (int i = 0; i < length; i++) {
-      dest->buffer_[i + dstOffset] = IOSObjectArray_checkValue(dest, buffer_[i + offset]);
-    }
-  }
-#else
   if (self == dest) {
     CopyWithMemmove(buffer_, offset, dstOffset, length);
   } else if (skipElementCheck) {
@@ -290,13 +239,11 @@ void CopyWithMemmove(id __strong *buffer, NSUInteger src, NSUInteger dest, NSUIn
     }
   } else {
     for (jint i = 0; i < length; i++) {
-      id newElement = skipElementCheck ? buffer_[i + offset] :
-          IOSObjectArray_checkValue(dest, buffer_[i + offset]);
+      id newElement = IOSObjectArray_checkValue(dest, buffer_[i + offset]);
       [dest->buffer_[i + dstOffset] autorelease];
       dest->buffer_[i + dstOffset] = [newElement retain];
     }
   }
-#endif
 }
 
 - (id)copyWithZone:(NSZone *)zone {
