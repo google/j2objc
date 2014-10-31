@@ -191,7 +191,7 @@ static JavaUtilProperties *prefixMapping;
 - (int)getModifiers {
   JavaClassMetadata *metadata = [self getMetadata];
   if (metadata) {
-    return metadata.modifiers & [JavaLangReflectModifier classModifiers];
+    return metadata.modifiers & JavaLangReflectModifier_classModifiers();
   } else {
     // All Objective-C classes and protocols are public by default.
     return JavaLangReflectModifier_PUBLIC;
@@ -685,7 +685,7 @@ static BOOL hasModifier(IOSClass *cls, int flag) {
 }
 
 - (id)getClassLoader {
-  return [JavaLangClassLoader getSystemClassLoader];
+  return JavaLangClassLoader_getSystemClassLoader();
 }
 
 static const char* GetFieldName(NSString *name, IOSClass *clazz) {
@@ -831,7 +831,7 @@ IOSObjectArray *copyFieldsToObjectArray(NSArray *fields) {
 
 - (IOSObjectArray *)getEnumConstants {
   if ([self isEnum]) {
-    return [JavaLangEnum getValuesWithIOSClass:self];
+    return JavaLangEnum_getValuesWithIOSClass_(self);
   }
   return nil;
 }

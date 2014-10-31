@@ -108,7 +108,7 @@ int main( int argc, const char *argv[] ) {
       return 1;
     }
     @catch (JavaLangThrowable *e) {
-      JavaLangThread *current = [JavaLangThread currentThread];
+      JavaLangThread *current = JavaLangThread_currentThread();
       id uncaughtHandler = [current getUncaughtExceptionHandler];
       JavaLangThrowable *cause = [e getCause];
       if (!cause) {

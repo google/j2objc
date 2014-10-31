@@ -365,7 +365,7 @@ public final class NativeDecimalFormat implements Cloneable {
     public native void setMultiplier(int value) /*-[
       [(NSNumberFormatter *) nsFormatter_ setMultiplier:[NSNumber numberWithInt:value]];
       LibcoreIcuNativeDecimalFormat_set_multiplierBigDecimal_(self,
-          [JavaMathBigDecimal valueOfWithLong:value]);
+          JavaMathBigDecimal_valueOfWithLong_(value));
     ]-*/;
 
     public native void setNegativePrefix(String value) /*-[
@@ -554,24 +554,12 @@ public final class NativeDecimalFormat implements Cloneable {
         char monetaryDecimalSeparator, String nan, char patternSeparator, char percent,
         char perMill, char zeroDigit) /*-[
       NSNumberFormatter *formatter = [[NSNumberFormatter alloc] init];
-      [LibcoreIcuNativeDecimalFormat applyPatternImplWithId:formatter
-                                                  withBoolean:YES
-                                                 withNSString:pattern];
-      [LibcoreIcuNativeDecimalFormat setDecimalFormatSymbolsWithId:formatter
-                                                        withNSString:currencySymbol
-                                                            withChar:decimalSeparator
-                                                            withChar:digit
-                                                        withNSString:exponentSeparator
-                                                            withChar:groupingSeparator
-                                                        withNSString:infinity
-                                                        withNSString:internationalCurrencySymbol
-                                                            withChar:minusSign
-                                                            withChar:monetaryDecimalSeparator
-                                                        withNSString:nan
-                                                            withChar:patternSeparator
-                                                            withChar:percent
-                                                            withChar:perMill
-                                                            withChar:zeroDigit];
+      LibcoreIcuNativeDecimalFormat_applyPatternImplWithId_withBoolean_withNSString_(
+          formatter, YES, pattern);
+      LibcoreIcuNativeDecimalFormat_setDecimalFormatSymbolsWithId_withNSString_withChar_withChar_withNSString_withChar_withNSString_withNSString_withChar_withChar_withNSString_withChar_withChar_withChar_withChar_(
+          formatter, currencySymbol, decimalSeparator, digit, exponentSeparator, groupingSeparator,
+          infinity, internationalCurrencySymbol, minusSign, monetaryDecimalSeparator, nan,
+          patternSeparator, percent, perMill, zeroDigit);
 
       return AUTORELEASE(formatter);
     ]-*/;
@@ -684,7 +672,7 @@ public final class NativeDecimalFormat implements Cloneable {
         }
         if (onlyZeroes) {
           [position setIndexWithInt:start + (int) range.length];
-          return [JavaLangLong valueOfWithLong:0L];
+          return JavaLangLong_valueOfWithLong_(0L);
         }
       }
 
@@ -696,9 +684,9 @@ public final class NativeDecimalFormat implements Cloneable {
       if (success) {
         [position setIndexWithInt:start + (int) range.length];
         if (fmod([result doubleValue], 1.0) == 0) {
-          return [JavaLangLong valueOfWithLong:[result longLongValue]];
+          return JavaLangLong_valueOfWithLong_([result longLongValue]);
         } else {
-          return [JavaLangDouble valueOfWithDouble:[result doubleValue]];
+          return JavaLangDouble_valueOfWithDouble_([result doubleValue]);
         }
       } else {
         [position setErrorIndexWithInt:start];

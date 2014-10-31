@@ -712,7 +712,7 @@ class SystemClassLoader extends ClassLoader {
         [urls addWithId:url];
       }
     }
-    return [JavaUtilCollections enumerationWithJavaUtilCollection:urls];
+    return JavaUtilCollections_enumerationWithJavaUtilCollection_(urls);
   ]-*/;
 
   @Override

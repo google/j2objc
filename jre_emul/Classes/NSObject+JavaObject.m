@@ -95,7 +95,7 @@ static void doWait(id obj, long long timeout) {
   if (timeout < 0) {
     @throw AUTORELEASE([[JavaLangIllegalArgumentException alloc] init]);
   }
-  JavaLangThread *javaThread = [JavaLangThread currentThread];
+  JavaLangThread *javaThread = JavaLangThread_currentThread();
   int result = OBJC_SYNC_SUCCESS;
   if (!javaThread->interrupted__) {
     assert(javaThread->blocker_ == nil);

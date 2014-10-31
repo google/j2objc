@@ -139,14 +139,14 @@ getConstructorWithClasses:(IOSClass *)firstClass, ... {
 
 - (id)__boxValue:(J2ObjcRawValue *)rawValue {
   switch ([type_ characterAtIndex:0]) {
-    case 'B': return [JavaLangByte valueOfWithByte:rawValue->asChar];
-    case 'C': return [JavaLangCharacter valueOfWithChar:rawValue->asUnichar];
-    case 'D': return [JavaLangDouble valueOfWithDouble:rawValue->asDouble];
-    case 'F': return [JavaLangFloat valueOfWithFloat:rawValue->asFloat];
-    case 'I': return [JavaLangInteger valueOfWithInt:rawValue->asInt];
-    case 'J': return [JavaLangLong valueOfWithLong:rawValue->asLong];
-    case 'S': return [JavaLangShort valueOfWithShort:rawValue->asShort];
-    case 'Z': return [JavaLangBoolean valueOfWithBoolean:rawValue->asBOOL];
+    case 'B': return JavaLangByte_valueOfWithByte_(rawValue->asChar);
+    case 'C': return JavaLangCharacter_valueOfWithChar_(rawValue->asUnichar);
+    case 'D': return JavaLangDouble_valueOfWithDouble_(rawValue->asDouble);
+    case 'F': return JavaLangFloat_valueOfWithFloat_(rawValue->asFloat);
+    case 'I': return JavaLangInteger_valueOfWithInt_(rawValue->asInt);
+    case 'J': return JavaLangLong_valueOfWithLong_(rawValue->asLong);
+    case 'S': return JavaLangShort_valueOfWithShort_(rawValue->asShort);
+    case 'Z': return JavaLangBoolean_valueOfWithBoolean_(rawValue->asBOOL);
   }
   return nil;
 }

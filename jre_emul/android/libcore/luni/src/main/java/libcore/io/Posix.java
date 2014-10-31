@@ -72,15 +72,14 @@ static inline BOOL throwIfClosed(JavaIoFileDescriptor *fd) {
   do { \
     int _fd = [java_fd getInt$]; \
     id _monitor = \
-        [LibcoreIoAsynchronousCloseMonitor newAsynchronousSocketCloseMonitorWithInt:_fd]; \
+        LibcoreIoAsynchronousCloseMonitor_newAsynchronousSocketCloseMonitorWithInt_(_fd); \
     _rc = syscall_name(_fd, __VA_ARGS__); \
     _monitor = nil; \
     if (_rc == -1) { \
       throwIfClosed(fd); \
       if (errno != EINTR) { \
-        [LibcoreIoPosix \
-            throwErrnoExceptionWithNSString:[NSString stringWithFormat:@"%s", # syscall_name] \
-                                    withInt:errno]; \
+        LibcoreIoPosix_throwErrnoExceptionWithNSString_withInt_( \
+            [NSString stringWithFormat:@"%s", # syscall_name], errno); \
       } \
     } \
   } while (_rc == -1); \
@@ -170,9 +169,8 @@ public final class Posix implements Os {
     if (!sender) {
       return NO;
     }
-    [LibcoreIoPosix updateInetSocketAddressWithJavaNetInetSocketAddress:srcAddress
-                                                 withJavaNetInetAddress:RETAIN_(sender)
-                                                                withInt:port];
+    LibcoreIoPosix_updateInetSocketAddressWithJavaNetInetSocketAddress_withJavaNetInetAddress_withInt_(
+        srcAddress, RETAIN_(sender), port);
     return YES;
  }
 
@@ -185,7 +183,8 @@ public final class Posix implements Os {
     int rc = isLstat ? TEMP_FAILURE_RETRY(lstat(cpath, &sb))
                      : TEMP_FAILURE_RETRY(stat(cpath, &sb));
     if (rc == -1) {
-      [LibcoreIoPosix throwErrnoExceptionWithNSString:(isLstat ? @"lstat" : @"stat") withInt:errno];
+      LibcoreIoPosix_throwErrnoExceptionWithNSString_withInt_(
+          (isLstat ? @"lstat" : @"stat"), errno);
     }
     return makeStructStat(&sb);
   }
@@ -198,8 +197,8 @@ public final class Posix implements Os {
     int rc = is_sockname ? TEMP_FAILURE_RETRY(getsockname(fd, sa, &byteCount))
         : TEMP_FAILURE_RETRY(getpeername(fd, sa, &byteCount));
     if (rc == -1) {
-      [LibcoreIoPosix
-       throwErrnoExceptionWithNSString:(is_sockname ? @"getsockname" : @"getpeername") withInt:rc];
+      LibcoreIoPosix_throwErrnoExceptionWithNSString_withInt_(
+          (is_sockname ? @"getsockname" : @"getpeername"), rc);
     }
     return makeSocketAddress(&ss);
   }
@@ -262,9 +261,8 @@ public final class Posix implements Os {
         // peer length is returned as 2 (meaning only the sun_family field was set).
         return AUTORELEASE([[JavaNetInetUnixAddress alloc] initWithByteArray:byteArray]);
     }
-    return [JavaNetInetAddress getByAddressWithNSString:nil
-                                          withByteArray:byteArray
-                                                withInt:scope_id];
+    return JavaNetInetAddress_getByAddressWithNSString_withByteArray_withInt_(
+        nil, byteArray, scope_id);
   }
 
   static BOOL inetAddressToSockaddrImpl(JavaNetInetAddress *inetAddress, int port,
@@ -390,7 +388,7 @@ public final class Posix implements Os {
 
   private static native int throwIfMinusOne(String name, int resultCode) throws ErrnoException /*-[
     if (resultCode == -1) {
-      [LibcoreIoPosix throwErrnoExceptionWithNSString:name withInt:errno];
+      LibcoreIoPosix_throwErrnoExceptionWithNSString_withInt_(name, errno);
     }
     return resultCode;
   ]-*/;
@@ -422,7 +420,7 @@ public final class Posix implements Os {
     const char* cpath = absolutePath(path);
     int rc = TEMP_FAILURE_RETRY(access(cpath, mode));
     if (rc == -1) {
-      [LibcoreIoPosix throwErrnoExceptionWithNSString:@"access" withInt:errno];
+      LibcoreIoPosix_throwErrnoExceptionWithNSString_withInt_(@"access", errno);
     }
     return (rc == 0);
   ]-*/;
@@ -453,7 +451,7 @@ public final class Posix implements Os {
     if (path) {
       const char* cpath = absolutePath(path);
       int rc = TEMP_FAILURE_RETRY(chmod(cpath, mode));
-      [LibcoreIoPosix throwIfMinusOneWithNSString:@"chmod" withInt:rc];
+      LibcoreIoPosix_throwIfMinusOneWithNSString_withInt_(@"chmod", rc);
     }
   ]-*/;
 
@@ -461,7 +459,7 @@ public final class Posix implements Os {
     if (path) {
       const char* cpath = absolutePath(path);
       int rc = TEMP_FAILURE_RETRY(chown(cpath, uid, gid));
-      [LibcoreIoPosix throwIfMinusOneWithNSString:@"chown" withInt:rc];
+      LibcoreIoPosix_throwIfMinusOneWithNSString_withInt_(@"chown", rc);
     }
   ]-*/;
 
@@ -470,7 +468,7 @@ public final class Posix implements Os {
     // We need to do this before we can throw an IOException.
     int fd = [javaFd getInt$];
     [javaFd setInt$WithInt:-1];
-    [LibcoreIoPosix throwIfMinusOneWithNSString:@"close" withInt:close(fd)];
+    LibcoreIoPosix_throwIfMinusOneWithNSString_withInt_(@"close", close(fd));
   ]-*/;
 
   public native void connect(FileDescriptor fd, InetAddress address, int port)
@@ -486,7 +484,7 @@ public final class Posix implements Os {
 
   public native FileDescriptor dup(FileDescriptor oldFd) throws ErrnoException /*-[
     int nativeFd = TEMP_FAILURE_RETRY(dup([oldFd getInt$]));
-    [LibcoreIoPosix throwIfMinusOneWithNSString:@"dup" withInt:nativeFd];
+    LibcoreIoPosix_throwIfMinusOneWithNSString_withInt_(@"dup", nativeFd);
     JavaIoFileDescriptor *newFd = AUTORELEASE([[JavaIoFileDescriptor alloc] init]);
     [newFd setInt$WithInt:nativeFd];
     return newFd;
@@ -495,7 +493,7 @@ public final class Posix implements Os {
   public native FileDescriptor dup2(FileDescriptor oldFd, int newNativeFd)
       throws ErrnoException /*-[
     int nativeFd = TEMP_FAILURE_RETRY(dup2([oldFd getInt$], newNativeFd));
-    [LibcoreIoPosix throwIfMinusOneWithNSString:@"dup2" withInt:nativeFd];
+    LibcoreIoPosix_throwIfMinusOneWithNSString_withInt_(@"dup2", nativeFd);
     JavaIoFileDescriptor *newFd = AUTORELEASE([[JavaIoFileDescriptor alloc] init]);
     [newFd setInt$WithInt:nativeFd];
     return newFd;
@@ -503,12 +501,12 @@ public final class Posix implements Os {
 
   public native void fchmod(FileDescriptor fd, int mode) throws ErrnoException /*-[
     int rc = TEMP_FAILURE_RETRY(fchmod([fd getInt$], mode));
-    [LibcoreIoPosix throwIfMinusOneWithNSString:@"fchmod" withInt:rc];
+    LibcoreIoPosix_throwIfMinusOneWithNSString_withInt_(@"fchmod", rc);
   ]-*/;
 
   public native void fchown(FileDescriptor fd, int uid, int gid) throws ErrnoException /*-[
     int rc = TEMP_FAILURE_RETRY(fchown([fd getInt$], uid, gid));
-    [LibcoreIoPosix throwIfMinusOneWithNSString:@"fchown" withInt:rc];
+    LibcoreIoPosix_throwIfMinusOneWithNSString_withInt_(@"fchown", rc);
   ]-*/;
 
   public native int fcntlFlock(FileDescriptor fd, int cmd, StructFlock arg)
@@ -523,7 +521,7 @@ public final class Posix implements Os {
 
     int rc = TEMP_FAILURE_RETRY(fcntl((int) [fd getInt$], cmd, &lock));
     if (rc == -1) {
-      [LibcoreIoPosix throwErrnoExceptionWithNSString:@"fcntl" withInt:errno];
+      LibcoreIoPosix_throwErrnoExceptionWithNSString_withInt_(@"fcntl", errno);
     }
     arg->l_type_ = lock.l_type;
     arg->l_whence_ = lock.l_whence;
@@ -535,36 +533,36 @@ public final class Posix implements Os {
 
   public native int fcntlLong(FileDescriptor fd, int cmd, long arg) throws ErrnoException /*-[
     int rc = TEMP_FAILURE_RETRY(fcntl([fd getInt$], cmd, arg));
-    return [LibcoreIoPosix throwIfMinusOneWithNSString:@"fcntl" withInt:rc];
+    return LibcoreIoPosix_throwIfMinusOneWithNSString_withInt_(@"fcntl", rc);
   ]-*/;
 
   public native int fcntlVoid(FileDescriptor fd, int cmd) throws ErrnoException /*-[
     int rc = TEMP_FAILURE_RETRY(fcntl([fd getInt$], cmd));
-    return [LibcoreIoPosix throwIfMinusOneWithNSString:@"fcntl" withInt:rc];
+    return LibcoreIoPosix_throwIfMinusOneWithNSString_withInt_(@"fcntl", rc);
   ]-*/;
 
   public native void fdatasync(FileDescriptor fd) throws ErrnoException /*-[
     int rc = TEMP_FAILURE_RETRY(fdatasync([fd getInt$]));
-    [LibcoreIoPosix throwIfMinusOneWithNSString:@"fdatasync" withInt:rc];
+    LibcoreIoPosix_throwIfMinusOneWithNSString_withInt_(@"fdatasync", rc);
   ]-*/;
 
   public native StructStat fstat(FileDescriptor fd) throws ErrnoException /*-[
     struct stat sb;
     int rc = TEMP_FAILURE_RETRY(fstat([fd getInt$], &sb));
     if (rc == -1) {
-        [LibcoreIoPosix throwErrnoExceptionWithNSString:@"fstat" withInt:rc];
+        LibcoreIoPosix_throwErrnoExceptionWithNSString_withInt_(@"fstat", rc);
     }
     return makeStructStat(&sb);
   ]-*/;
 
   public native void fsync(FileDescriptor fd) throws ErrnoException /*-[
     int rc = TEMP_FAILURE_RETRY(fsync([fd getInt$]));
-    [LibcoreIoPosix throwIfMinusOneWithNSString:@"fsync" withInt:rc];
+    LibcoreIoPosix_throwIfMinusOneWithNSString_withInt_(@"fsync", rc);
   ]-*/;
 
   public native void ftruncate(FileDescriptor fd, long length) throws ErrnoException /*-[
     int rc = TEMP_FAILURE_RETRY(ftruncate([fd getInt$], (off_t) length));
-    [LibcoreIoPosix throwIfMinusOneWithNSString:@"ftruncate" withInt:rc];
+    LibcoreIoPosix_throwIfMinusOneWithNSString_withInt_(@"ftruncate", rc);
   ]-*/;
 
   public native String gai_strerror(int error) /*-[
@@ -600,7 +598,7 @@ public final class Posix implements Os {
       } else {
         NSString *errMsg =
             [NSString stringWithFormat:@"getaddrinfo unexpected ai_family %i", ai->ai_family];
-        [JavaLangSystem logEWithNSString:errMsg];
+        JavaLangSystem_logEWithNSString_(errMsg);
       }
     }
     if (addressCount == 0) {
@@ -619,7 +617,7 @@ public final class Posix implements Os {
         // Unknown address family. Skip this address.
         NSString *errMsg =
             [NSString stringWithFormat:@"getaddrinfo unexpected ai_family %i", ai->ai_family];
-        [JavaLangSystem logEWithNSString:errMsg];
+        JavaLangSystem_logEWithNSString_(errMsg);
         continue;
       }
 
@@ -663,7 +661,7 @@ public final class Posix implements Os {
     socklen_t size = sizeof(result);
     int rc = TEMP_FAILURE_RETRY(getsockopt([fd getInt$], level, option, &result, &size));
     if (rc == -1) {
-      [LibcoreIoPosix throwErrnoExceptionWithNSString:@"getsockopt" withInt:rc];
+      LibcoreIoPosix_throwErrnoExceptionWithNSString_withInt_(@"getsockopt", rc);
     }
     return result;
   ]-*/;
@@ -677,7 +675,7 @@ public final class Posix implements Os {
     socklen_t size = sizeof(sa->sin_addr);
     int rc = TEMP_FAILURE_RETRY(getsockopt([fd getInt$], level, option, &sa->sin_addr, &size));
     if (rc == -1) {
-      [LibcoreIoPosix throwErrnoExceptionWithNSString:@"getsockopt" withInt:rc];
+      LibcoreIoPosix_throwErrnoExceptionWithNSString_withInt_(@"getsockopt", rc);
     }
     return sockaddrToInetAddress(&ss, NULL);
   ]-*/;
@@ -688,7 +686,7 @@ public final class Posix implements Os {
     socklen_t size = sizeof(result);
     int rc = TEMP_FAILURE_RETRY(getsockopt([fd getInt$], level, option, &result, &size));
     if (rc == -1) {
-      [LibcoreIoPosix throwErrnoExceptionWithNSString:@"getsockopt" withInt:rc];
+      LibcoreIoPosix_throwErrnoExceptionWithNSString_withInt_(@"getsockopt", rc);
     }
     return result;
   ]-*/;
@@ -700,7 +698,7 @@ public final class Posix implements Os {
     memset(&l, 0, size);
     int rc = TEMP_FAILURE_RETRY(getsockopt([fd getInt$], level, option, &l, &size));
     if (rc == -1) {
-      [LibcoreIoPosix throwErrnoExceptionWithNSString:@"getsockopt" withInt:rc];
+      LibcoreIoPosix_throwErrnoExceptionWithNSString_withInt_(@"getsockopt", rc);
     }
     return AUTORELEASE([[LibcoreIoStructLinger alloc] initWithInt:l.l_onoff withInt:l.l_linger]);
   ]-*/;
@@ -712,7 +710,7 @@ public final class Posix implements Os {
     memset(&tv, 0, size);
     int rc = TEMP_FAILURE_RETRY(getsockopt([fd getInt$], level, option, &tv, &size));
     if (rc == -1) {
-      [LibcoreIoPosix throwErrnoExceptionWithNSString:@"getsockopt" withInt:rc];
+      LibcoreIoPosix_throwErrnoExceptionWithNSString_withInt_(@"getsockopt", rc);
     }
     return AUTORELEASE([[LibcoreIoStructTimeval alloc] initWithLong:tv.tv_sec withLong:tv.tv_usec]);
   ]-*/;
@@ -753,7 +751,7 @@ public final class Posix implements Os {
     int originalError = errno;
     NSString *msg = [NSString stringWithFormat:@"ioctl (%d, %@)", cmd, interfaceName];
     if (originalError != ENOTSUP && originalError != EOPNOTSUPP) {
-      [LibcoreIoPosix throwErrnoExceptionWithNSString:msg withInt:originalError];
+      LibcoreIoPosix_throwErrnoExceptionWithNSString_withInt_(msg, originalError);
     }
 
     // Interface doesn't support SIOCGIFADDR, try looking up using ifaddrs
@@ -771,12 +769,10 @@ public final class Posix implements Os {
     }
     freeifaddrs(interfaces);
     if (!sinAddress) {
-      [LibcoreIoPosix throwErrnoExceptionWithNSString:msg withInt:originalError];
+      LibcoreIoPosix_throwErrnoExceptionWithNSString_withInt_(msg, originalError);
     }
     IOSByteArray *byteArray = [IOSByteArray arrayWithBytes:(jbyte *)sinAddress count:4];
-    return [JavaNetInetAddress getByAddressWithNSString:nil
-                                          withByteArray:byteArray
-                                                withInt:0];
+    return JavaNetInetAddress_getByAddressWithNSString_withByteArray_withInt_(nil, byteArray, 0);
   ]-*/;
 
   public native int ioctlInt(FileDescriptor fd, int cmd, MutableInt javaArg)
@@ -784,7 +780,7 @@ public final class Posix implements Os {
     int arg = javaArg->value_;
     int rc = TEMP_FAILURE_RETRY(ioctl([fd getInt$], cmd, &arg));
     if (rc == -1) {
-      [LibcoreIoPosix throwErrnoExceptionWithNSString:@"ioctl" withInt:rc];
+      LibcoreIoPosix_throwErrnoExceptionWithNSString_withInt_(@"ioctl", rc);
     }
     javaArg->value_ = arg;
     return rc;
@@ -797,7 +793,7 @@ public final class Posix implements Os {
   public native long lseek(FileDescriptor fd, long offset, int whence) throws ErrnoException /*-[
     off_t rc = TEMP_FAILURE_RETRY(lseek([fd getInt$], offset, whence));
     if (rc == -1) {
-      [LibcoreIoPosix throwErrnoExceptionWithNSString:@"lseek" withInt:errno];
+      LibcoreIoPosix_throwErrnoExceptionWithNSString_withInt_(@"lseek", errno);
     }
     return rc;
   ]-*/;
@@ -808,50 +804,50 @@ public final class Posix implements Os {
 
   public native void listen(FileDescriptor fd, int backlog) throws ErrnoException /*-[
     int rc = TEMP_FAILURE_RETRY(listen([fd getInt$], backlog));
-    [LibcoreIoPosix throwIfMinusOneWithNSString:@"listen" withInt:rc];
+    LibcoreIoPosix_throwIfMinusOneWithNSString_withInt_(@"listen", rc);
   ]-*/;
 
   public native void mincore(long address, long byteCount, byte[] vector) throws ErrnoException /*-[
     int rc = TEMP_FAILURE_RETRY(mincore(
         (caddr_t) address, (size_t) byteCount, (char *)vector->buffer_));
-    [LibcoreIoPosix throwIfMinusOneWithNSString:@"mincore" withInt:rc];
+    LibcoreIoPosix_throwIfMinusOneWithNSString_withInt_(@"mincore", rc);
   ]-*/;
 
   public native void mkdir(String path, int mode) throws ErrnoException /*-[
     if (path) {
       const char* cpath = absolutePath(path);
       int rc = TEMP_FAILURE_RETRY(mkdir(cpath, mode));
-      [LibcoreIoPosix throwIfMinusOneWithNSString:@"mkdir" withInt:rc];
+      LibcoreIoPosix_throwIfMinusOneWithNSString_withInt_(@"mkdir", rc);
     }
   ]-*/;
 
   public native void mlock(long address, long byteCount) throws ErrnoException /*-[
     int rc = TEMP_FAILURE_RETRY(mlock((void *) address, (size_t) byteCount));
-    [LibcoreIoPosix throwIfMinusOneWithNSString:@"mlock" withInt:rc];
+    LibcoreIoPosix_throwIfMinusOneWithNSString_withInt_(@"mlock", rc);
   ]-*/;
 
   public native long mmap(long address, long byteCount, int prot, int flags,
       FileDescriptor fd, long offset) throws ErrnoException /*-[
     void* ptr = mmap((void *) address, (size_t) byteCount, prot, flags, [fd getInt$], offset);
     if (ptr == MAP_FAILED) {
-      [LibcoreIoPosix throwErrnoExceptionWithNSString:@"mmap" withInt:errno];
+      LibcoreIoPosix_throwErrnoExceptionWithNSString_withInt_(@"mmap", errno);
     }
     return (long long) ptr;
   ]-*/;
 
   public native void msync(long address, long byteCount, int flags) throws ErrnoException /*-[
     int rc = TEMP_FAILURE_RETRY(msync((void *) address, (size_t) byteCount, flags));
-    [LibcoreIoPosix throwIfMinusOneWithNSString:@"msync" withInt:rc];
+    LibcoreIoPosix_throwIfMinusOneWithNSString_withInt_(@"msync", rc);
   ]-*/;
 
   public native void munlock(long address, long byteCount) throws ErrnoException /*-[
     int rc = TEMP_FAILURE_RETRY(munlock((void *) address, (size_t) byteCount));
-    [LibcoreIoPosix throwIfMinusOneWithNSString:@"munlock" withInt:rc];
+    LibcoreIoPosix_throwIfMinusOneWithNSString_withInt_(@"munlock", rc);
   ]-*/;
 
   public native void munmap(long address, long byteCount) throws ErrnoException /*-[
     int rc = TEMP_FAILURE_RETRY(munmap((void *) address, (size_t) byteCount));
-    [LibcoreIoPosix throwIfMinusOneWithNSString:@"munmap" withInt:rc];
+    LibcoreIoPosix_throwIfMinusOneWithNSString_withInt_(@"munmap", rc);
   ]-*/;
 
   public native FileDescriptor open(String path, int flags, int mode) throws ErrnoException /*-[
@@ -860,7 +856,7 @@ public final class Posix implements Os {
     }
     const char* cpath = absolutePath(path);
     int nativeFd = TEMP_FAILURE_RETRY(open(cpath, flags, mode));
-    [LibcoreIoPosix throwIfMinusOneWithNSString:@"open" withInt:nativeFd];
+    LibcoreIoPosix_throwIfMinusOneWithNSString_withInt_(@"open", nativeFd);
     JavaIoFileDescriptor *newFd = AUTORELEASE([[JavaIoFileDescriptor alloc] init]);
     [newFd setInt$WithInt:nativeFd];
     return newFd;
@@ -868,7 +864,7 @@ public final class Posix implements Os {
 
   public native FileDescriptor[] pipe() throws ErrnoException /*-[
     int fds[2];
-    [LibcoreIoPosix throwIfMinusOneWithNSString:@"pipe" withInt:TEMP_FAILURE_RETRY(pipe(&fds[0]))];
+    LibcoreIoPosix_throwIfMinusOneWithNSString_withInt_(@"pipe", TEMP_FAILURE_RETRY(pipe(&fds[0])));
     IOSObjectArray *result = [IOSObjectArray arrayWithLength:2 type:[JavaIoFileDescriptor getClass]];
     for (int i = 0; i < 2; ++i) {
       JavaIoFileDescriptor *fd = AUTORELEASE([[JavaIoFileDescriptor alloc] init]);
@@ -889,7 +885,7 @@ public final class Posix implements Os {
     int rc = poll(pollFds, count, timeoutMs);
     if (rc == -1) {
       free(pollFds);
-      [LibcoreIoPosix throwErrnoExceptionWithNSString:@"poll" withInt:rc];
+      LibcoreIoPosix_throwErrnoExceptionWithNSString_withInt_(@"poll", rc);
     }
     for (jint i = 0; i < count; i++) {
       LibcoreIoStructPollfd *javaPollFd = [fds objectAtIndex:i];
@@ -921,7 +917,7 @@ public final class Posix implements Os {
     }
     int rc =
       TEMP_FAILURE_RETRY(pwrite64([fd getInt$], bytes + bufferOffset, byteCount, offset));
-    return [LibcoreIoPosix throwIfMinusOneWithNSString:@"pread" withInt:rc];
+    return LibcoreIoPosix_throwIfMinusOneWithNSString_withInt_(@"pread", rc);
   ]-*/;
 
   public int pwrite(FileDescriptor fd, ByteBuffer buffer, long offset)
@@ -948,11 +944,11 @@ public final class Posix implements Os {
         return -1;
     }
     if (byteCount + offset < 0) {  // If buffer overflow.
-      [LibcoreIoPosix throwErrnoExceptionWithNSString:@"pwrite" withInt:ERANGE];
+      LibcoreIoPosix_throwErrnoExceptionWithNSString_withInt_(@"pwrite", ERANGE);
     }
     int rc =
       TEMP_FAILURE_RETRY(pwrite64([fd getInt$], bytes + bufferOffset, byteCount, offset));
-    return [LibcoreIoPosix throwIfMinusOneWithNSString:@"pwrite" withInt:rc];
+    return LibcoreIoPosix_throwIfMinusOneWithNSString_withInt_(@"pwrite", rc);
   ]-*/;
 
   public int read(FileDescriptor fd, ByteBuffer buffer) throws ErrnoException {
@@ -977,7 +973,7 @@ public final class Posix implements Os {
       return -1;
     }
     int rc = TEMP_FAILURE_RETRY(read([fd getInt$], bytes + offset, byteCount));
-    return [LibcoreIoPosix throwIfMinusOneWithNSString:@"read" withInt:rc];
+    return LibcoreIoPosix_throwIfMinusOneWithNSString_withInt_(@"read", rc);
   ]-*/;
 
   public native int readv(FileDescriptor fd, Object[] buffers, int[] offsets, int[] byteCounts)
@@ -995,7 +991,7 @@ public final class Posix implements Os {
     }
     int rc = TEMP_FAILURE_RETRY(readv([fd getInt$], ioVecs, nIoVecs));
     free(ioVecs);
-    return [LibcoreIoPosix throwIfMinusOneWithNSString:@"readv" withInt:rc];
+    return LibcoreIoPosix_throwIfMinusOneWithNSString_withInt_(@"readv", rc);
   ]-*/;
 
   public native String realpath(String path) /*-[
@@ -1010,7 +1006,7 @@ public final class Posix implements Os {
     const char* cpath = [path UTF8String];
     char *realPath = realpath(cpath, NULL);
     if (!realPath) {
-      [LibcoreIoPosix throwErrnoExceptionWithNSString:@"realpath" withInt:errno];
+      LibcoreIoPosix_throwErrnoExceptionWithNSString_withInt_(@"realpath", errno);
     }
     NSString *result =
         [[NSFileManager defaultManager] stringWithFileSystemRepresentation:realPath
@@ -1060,7 +1056,7 @@ public final class Posix implements Os {
     if (path) {
       const char* cpath = absolutePath(path);
       int rc = TEMP_FAILURE_RETRY(remove(cpath));
-      [LibcoreIoPosix throwIfMinusOneWithNSString:@"remove" withInt:rc];
+      LibcoreIoPosix_throwIfMinusOneWithNSString_withInt_(@"remove", rc);
     }
   ]-*/;
 
@@ -1069,7 +1065,7 @@ public final class Posix implements Os {
       const char* cOldPath = absolutePath(oldPath);
       const char* cNewPath = absolutePath(newPath);
       int rc = TEMP_FAILURE_RETRY(rename(cOldPath, cNewPath));
-      [LibcoreIoPosix throwIfMinusOneWithNSString:@"rename" withInt:rc];
+      LibcoreIoPosix_throwIfMinusOneWithNSString_withInt_(@"rename", rc);
     }
   ]-*/;
 
@@ -1086,7 +1082,7 @@ public final class Posix implements Os {
     if (inOffset != NULL) {
       inOffset->value_ = offset;
     }
-    return [LibcoreIoPosix throwIfMinusOneWithNSString:@"sendfile" withInt:rc];
+    return LibcoreIoPosix_throwIfMinusOneWithNSString_withInt_(@"sendfile", rc);
   ]-*/;
 
   public int sendto(FileDescriptor fd, ByteBuffer buffer, int flags, InetAddress inetAddress,
@@ -1128,7 +1124,7 @@ public final class Posix implements Os {
       throws ErrnoException /*-[
     u_char byte = value;
     int rc = TEMP_FAILURE_RETRY(setsockopt([fd getInt$], level, option, &byte, sizeof(byte)));
-    [LibcoreIoPosix throwIfMinusOneWithNSString:@"setsockopt" withInt:rc];
+    LibcoreIoPosix_throwIfMinusOneWithNSString_withInt_(@"setsockopt", rc);
   ]-*/;
 
   public native void setsockoptGroupReq(FileDescriptor fd, int level, int option,
@@ -1157,7 +1153,7 @@ public final class Posix implements Os {
         memcpy(&req64.gr_group, &req.gr_group, sizeof(req.gr_group));
         rc = TEMP_FAILURE_RETRY(setsockopt([fd getInt$], level, option, &req64, sizeof(req64)));
     }
-    [LibcoreIoPosix throwIfMinusOneWithNSString:@"setsockopt" withInt:rc];
+    LibcoreIoPosix_throwIfMinusOneWithNSString_withInt_(@"setsockopt", rc);
   ]-*/;
 
   public native void setsockoptGroupSourceReq(FileDescriptor fd, int level, int option,
@@ -1196,7 +1192,7 @@ public final class Posix implements Os {
         memcpy(&req64.gsr_source, &req.gsr_source, sizeof(req.gsr_source));
         rc = TEMP_FAILURE_RETRY(setsockopt([fd getInt$], level, option, &req64, sizeof(req64)));
     }
-    [LibcoreIoPosix throwIfMinusOneWithNSString:@"setsockopt" withInt:rc];
+    LibcoreIoPosix_throwIfMinusOneWithNSString_withInt_(@"setsockopt", rc);
   ]-*/;
 
   public native void setsockoptIfreq(FileDescriptor fd, int level, int option,
@@ -1206,13 +1202,13 @@ public final class Posix implements Os {
       return;
     }
     int rc = TEMP_FAILURE_RETRY(setsockopt([fd getInt$], level, option, &req, sizeof(req)));
-    [LibcoreIoPosix throwIfMinusOneWithNSString:@"setsockopt" withInt:rc];
+    LibcoreIoPosix_throwIfMinusOneWithNSString_withInt_(@"setsockopt", rc);
   ]-*/;
 
   public native void setsockoptInt(FileDescriptor fd, int level, int option, int value)
       throws ErrnoException /*-[
     int rc = TEMP_FAILURE_RETRY(setsockopt([fd getInt$], level, option, &value, sizeof(value)));
-    [LibcoreIoPosix throwIfMinusOneWithNSString:@"setsockopt" withInt:rc];
+    LibcoreIoPosix_throwIfMinusOneWithNSString_withInt_(@"setsockopt", rc);
   ]-*/;
 
   public native void setsockoptIpMreqn(FileDescriptor fd, int level, int option,
@@ -1221,7 +1217,7 @@ public final class Posix implements Os {
     memset(&req, 0, sizeof(req));
     req.imr_ifindex = value;
     int rc = TEMP_FAILURE_RETRY(setsockopt([fd getInt$], level, option, &req, sizeof(req)));
-    [LibcoreIoPosix throwIfMinusOneWithNSString:@"setsockopt" withInt:rc];
+    LibcoreIoPosix_throwIfMinusOneWithNSString_withInt_(@"setsockopt", rc);
   ]-*/;
 
   public native void setsockoptLinger(FileDescriptor fd, int level, int option,
@@ -1230,7 +1226,7 @@ public final class Posix implements Os {
     value.l_onoff = structLinger->l_onoff_;
     value.l_linger = structLinger->l_linger_;
     int rc = TEMP_FAILURE_RETRY(setsockopt([fd getInt$], level, option, &value, sizeof(value)));
-    [LibcoreIoPosix throwIfMinusOneWithNSString:@"setsockopt" withInt:rc];
+    LibcoreIoPosix_throwIfMinusOneWithNSString_withInt_(@"setsockopt", rc);
   ]-*/;
 
   public native void setsockoptTimeval(FileDescriptor fd, int level, int option,
@@ -1239,17 +1235,17 @@ public final class Posix implements Os {
     value.tv_sec = (long) structTimeval->tv_sec_;
     value.tv_usec = (int) structTimeval->tv_usec_;
     int rc = TEMP_FAILURE_RETRY(setsockopt([fd getInt$], level, option, &value, sizeof(value)));
-    [LibcoreIoPosix throwIfMinusOneWithNSString:@"setsockopt" withInt:rc];
+    LibcoreIoPosix_throwIfMinusOneWithNSString_withInt_(@"setsockopt", rc);
   ]-*/;
 
   public native void shutdown(FileDescriptor fd, int how) throws ErrnoException /*-[
     int rc = TEMP_FAILURE_RETRY(shutdown([fd getInt$], how));
-    [LibcoreIoPosix throwIfMinusOneWithNSString:@"shutdown" withInt:rc];
+    LibcoreIoPosix_throwIfMinusOneWithNSString_withInt_(@"shutdown", rc);
   ]-*/;
 
   public native FileDescriptor socket(int domain, int type, int protocol) throws ErrnoException /*-[
     int nativeFd = TEMP_FAILURE_RETRY(socket(domain, type, protocol));
-    [LibcoreIoPosix throwIfMinusOneWithNSString:@"socket" withInt:nativeFd];
+    LibcoreIoPosix_throwIfMinusOneWithNSString_withInt_(@"socket", nativeFd);
     JavaIoFileDescriptor *newFd = AUTORELEASE([[JavaIoFileDescriptor alloc] init]);
     [newFd setInt$WithInt:nativeFd];
     return newFd;
@@ -1263,7 +1259,7 @@ public final class Posix implements Os {
       [fd1 setInt$WithInt:fds[0]];
       [fd2 setInt$WithInt:fds[1]];
     }
-    [LibcoreIoPosix throwIfMinusOneWithNSString:@"socketpair" withInt:rc];
+    LibcoreIoPosix_throwIfMinusOneWithNSString_withInt_(@"socketpair", rc);
   ]-*/;
 
   public native StructStat stat(String path) throws ErrnoException /*-[
@@ -1278,7 +1274,7 @@ public final class Posix implements Os {
     struct statvfs sb;
     int rc = TEMP_FAILURE_RETRY(statvfs(cpath, &sb));
     if (rc == -1) {
-      [LibcoreIoPosix throwErrnoExceptionWithNSString:@"statvfs" withInt:errno];
+      LibcoreIoPosix_throwErrnoExceptionWithNSString_withInt_(@"statvfs", errno);
     }
     return makeStructStatVfs(&sb);
   ]-*/;
@@ -1297,7 +1293,7 @@ public final class Posix implements Os {
     errno = 0;
     long result = sysconf(name);
     if (result == -1L && errno == EINVAL) {
-      [LibcoreIoPosix throwErrnoExceptionWithNSString:@"sysconf" withInt:errno];
+      LibcoreIoPosix_throwErrnoExceptionWithNSString_withInt_(@"sysconf", errno);
     }
     return result;
   ]-*/;
@@ -1307,13 +1303,13 @@ public final class Posix implements Os {
       const char* cOldPath = [oldPath UTF8String];
       const char* cNewPath = [newPath UTF8String];
       int rc = TEMP_FAILURE_RETRY(symlink(cOldPath, cNewPath));
-      [LibcoreIoPosix throwIfMinusOneWithNSString:@"symlink" withInt:rc];
+      LibcoreIoPosix_throwIfMinusOneWithNSString_withInt_(@"symlink", rc);
     }
   ]-*/;
 
   public native void tcdrain(FileDescriptor fd) throws ErrnoException /*-[
     int rc = TEMP_FAILURE_RETRY(tcdrain([fd getInt$]));
-    [LibcoreIoPosix throwIfMinusOneWithNSString:@"fcntl" withInt:rc];
+    LibcoreIoPosix_throwIfMinusOneWithNSString_withInt_(@"fcntl", rc);
   ]-*/;
 
   public native StructUtsname uname() /*-[
@@ -1341,7 +1337,7 @@ public final class Posix implements Os {
     IOSArray_checkRange(bytes->size_, byteOffset, byteCount);
     int rc =
         TEMP_FAILURE_RETRY(write([fd getInt$], bytes->buffer_ + byteOffset, byteCount));
-    return [LibcoreIoPosix throwIfMinusOneWithNSString:@"write" withInt:rc];
+    return LibcoreIoPosix_throwIfMinusOneWithNSString_withInt_(@"write", rc);
   ]-*/;
 
   private native int writeBytes(FileDescriptor fd, Object buffer, int offset, int byteCount)
@@ -1351,7 +1347,7 @@ public final class Posix implements Os {
       return -1;
     }
     int rc = TEMP_FAILURE_RETRY(write([fd getInt$], bytes + offset, byteCount));
-    return [LibcoreIoPosix throwIfMinusOneWithNSString:@"write" withInt:rc];
+    return LibcoreIoPosix_throwIfMinusOneWithNSString_withInt_(@"write", rc);
   ]-*/;
 
   public native int writev(FileDescriptor fd, Object[] buffers, int[] offsets, int[] byteCounts)
@@ -1369,7 +1365,7 @@ public final class Posix implements Os {
     }
     int rc = TEMP_FAILURE_RETRY(writev([fd getInt$], ioVecs, nIoVecs));
     free(ioVecs);
-    return [LibcoreIoPosix throwIfMinusOneWithNSString:@"writev" withInt:rc];
+    return LibcoreIoPosix_throwIfMinusOneWithNSString_withInt_(@"writev", rc);
   ]-*/;
 
   private static void updateInetSocketAddress(InetSocketAddress socketAddr,

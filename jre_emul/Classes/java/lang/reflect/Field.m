@@ -64,7 +64,7 @@
 
 - (NSString *)description {
   NSString *mods =
-      metadata_ ? [JavaLangReflectModifier toStringWithInt:[metadata_ modifiers]] : @"";
+      metadata_ ? JavaLangReflectModifier_toStringWithInt_([metadata_ modifiers]) : @"";
   if ([mods length] > 0) {
     return [NSString stringWithFormat:@"%@ %@ %@.%@", mods, [self getType],
             [[self getDeclaringClass] getName], [self propertyName]];
@@ -313,7 +313,7 @@ static void SetWithRawValue(
 
 - (NSString *)toGenericString {
   NSString *mods =
-      metadata_ ? [JavaLangReflectModifier toStringWithInt:[metadata_ modifiers]] : @"";
+      metadata_ ? JavaLangReflectModifier_toStringWithInt_([metadata_ modifiers]) : @"";
   id<JavaLangReflectType> type = [self getGenericType];
   NSString *typeString = [type conformsToProtocol:@protocol(JavaLangReflectTypeVariable)] ?
       [(id<JavaLangReflectTypeVariable>) type getName] : [type description];

@@ -111,7 +111,7 @@ static void blockedThreadSignalHandler(int unused) {
       NSString *errMsg =
           [NSString stringWithFormat:@"setting blocked thread signal handler failed: %s",
               strerror(errno)];
-      [JavaLangSystem logEWithNSString:errMsg];
+      JavaLangSystem_logEWithNSString_(errMsg);
     }
   }
 }

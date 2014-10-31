@@ -332,7 +332,7 @@ public final class StringBuilder extends AbstractStringBuilder implements
      */
     public native StringBuilder appendCodePoint(int codePoint) /*-[
       JreStringBuilder_appendCharArray(
-          &self->delegate_, [JavaLangCharacter toCharsWithInt:codePoint]);
+          &self->delegate_, JavaLangCharacter_toCharsWithInt_(codePoint));
       return self;
     ]-*/;
 
@@ -427,7 +427,7 @@ public final class StringBuilder extends AbstractStringBuilder implements
      * @see String#valueOf(int)
      */
     public native StringBuilder insert(int offset, int i) /*-[
-      JreStringBuilder_insertString(&self->delegate_, offset, [JavaLangInteger toStringWithInt:i]);
+      JreStringBuilder_insertString(&self->delegate_, offset, JavaLangInteger_toStringWithInt_(i));
       return self;
     ]-*/;
 
@@ -447,7 +447,7 @@ public final class StringBuilder extends AbstractStringBuilder implements
      * @see String#valueOf(long)
      */
     public native StringBuilder insert(int offset, long l) /*-[
-      JreStringBuilder_insertString(&self->delegate_, offset, [JavaLangLong toStringWithLong:l]);
+      JreStringBuilder_insertString(&self->delegate_, offset, JavaLangLong_toStringWithLong_(l));
       return self;
     ]-*/;
 
@@ -467,7 +467,7 @@ public final class StringBuilder extends AbstractStringBuilder implements
      * @see String#valueOf(float)
      */
     public native StringBuilder insert(int offset, float f) /*-[
-      JreStringBuilder_insertString(&self->delegate_, offset, [JavaLangFloat toStringWithFloat:f]);
+      JreStringBuilder_insertString(&self->delegate_, offset, JavaLangFloat_toStringWithFloat_(f));
       return self;
     ]-*/;
 
@@ -489,7 +489,7 @@ public final class StringBuilder extends AbstractStringBuilder implements
      */
     public native StringBuilder insert(int offset, double d) /*-[
       JreStringBuilder_insertString(
-          &self->delegate_, offset, [JavaLangDouble toStringWithDouble:d]);
+          &self->delegate_, offset, JavaLangDouble_toStringWithDouble_(d));
       return self;
     ]-*/;
 
