@@ -53,12 +53,16 @@ public final class RandomAccessFileTest extends TestCase {
     }
 
     public void testSetLength64() throws Exception {
+      // Don't test on iOS devices, because they often have less than 4G available,
+      // especially with a big JRE tests app installed.
+      if (!System.getProperty("os.name").equals("iPhone")) {
         RandomAccessFile raf = new RandomAccessFile(file, "rw");
         raf.setLength(0);
         assertEquals(0, file.length());
         long moreThanFourGig = ((long) Integer.MAX_VALUE) + 1L;
         raf.setLength(moreThanFourGig);
         assertEquals(moreThanFourGig, file.length());
+      }
     }
 
     /* No finalization in iOS.

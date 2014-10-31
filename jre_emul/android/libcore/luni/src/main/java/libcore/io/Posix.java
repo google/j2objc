@@ -604,7 +604,7 @@ public final class Posix implements Os {
       }
     }
     if (addressCount == 0) {
-      free(addressList);
+      freeaddrinfo(addressList);
       return nil;
     }
 
@@ -627,12 +627,13 @@ public final class Posix implements Os {
       struct sockaddr_storage address = *(struct sockaddr_storage *) ai->ai_addr;
       JavaNetInetAddress *inetAddress = sockaddrToInetAddress(&address, NULL);
       if (!inetAddress) {
-        free(addressList);
+        freeaddrinfo(addressList);
         return nil;
       }
       [result replaceObjectAtIndex:index withObject:inetAddress];
       ++index;
     }
+    freeaddrinfo(addressList);
     return result;
   ]-*/;
 
