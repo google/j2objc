@@ -19,8 +19,6 @@ package com.google.devtools.j2objc.translate;
 import com.google.common.collect.LinkedListMultimap;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
-import com.google.devtools.j2objc.ast.AnnotationTypeDeclaration;
-import com.google.devtools.j2objc.ast.AnonymousClassDeclaration;
 import com.google.devtools.j2objc.ast.Assignment;
 import com.google.devtools.j2objc.ast.Block;
 import com.google.devtools.j2objc.ast.BodyDeclaration;
@@ -31,7 +29,6 @@ import com.google.devtools.j2objc.ast.ContinueStatement;
 import com.google.devtools.j2objc.ast.DoStatement;
 import com.google.devtools.j2objc.ast.EmptyStatement;
 import com.google.devtools.j2objc.ast.EnhancedForStatement;
-import com.google.devtools.j2objc.ast.EnumDeclaration;
 import com.google.devtools.j2objc.ast.Expression;
 import com.google.devtools.j2objc.ast.ExpressionStatement;
 import com.google.devtools.j2objc.ast.FieldAccess;
@@ -48,7 +45,6 @@ import com.google.devtools.j2objc.ast.NullLiteral;
 import com.google.devtools.j2objc.ast.ParenthesizedExpression;
 import com.google.devtools.j2objc.ast.PrefixExpression;
 import com.google.devtools.j2objc.ast.QualifiedName;
-import com.google.devtools.j2objc.ast.ReturnStatement;
 import com.google.devtools.j2objc.ast.SimpleName;
 import com.google.devtools.j2objc.ast.SingleVariableDeclaration;
 import com.google.devtools.j2objc.ast.Statement;
@@ -58,7 +54,6 @@ import com.google.devtools.j2objc.ast.ThrowStatement;
 import com.google.devtools.j2objc.ast.TreeUtil;
 import com.google.devtools.j2objc.ast.TreeVisitor;
 import com.google.devtools.j2objc.ast.Type;
-import com.google.devtools.j2objc.ast.TypeDeclaration;
 import com.google.devtools.j2objc.ast.VariableDeclarationExpression;
 import com.google.devtools.j2objc.ast.VariableDeclarationFragment;
 import com.google.devtools.j2objc.ast.VariableDeclarationStatement;
@@ -77,17 +72,10 @@ import org.eclipse.jdt.core.dom.IBinding;
 import org.eclipse.jdt.core.dom.IMethodBinding;
 import org.eclipse.jdt.core.dom.ITypeBinding;
 import org.eclipse.jdt.core.dom.IVariableBinding;
-import org.eclipse.jdt.core.dom.Modifier;
 
-import java.util.Arrays;
 import java.util.Iterator;
-import java.util.LinkedHashSet;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.Queue;
-import java.util.Set;
-import java.util.logging.Logger;
 
 /**
  * Rewrites the Java AST to replace difficult to translate code with methods
@@ -106,114 +94,6 @@ public class Rewriter extends TreeVisitor {
    */
   private static final List<String> typeQualifierKeywords = Lists.newArrayList("in", "out",
       "inout", "oneway", "bycopy", "byref");
-
-  @Override
-  public boolean visit(TypeDeclaration node) {
-    return visitType(node.getTypeBinding(), node.getBodyDeclarations(), node.getModifiers());
-  }
-
-  @Override
-  public boolean visit(EnumDeclaration node) {
-    return visitType(node.getTypeBinding(), node.getBodyDeclarations(), node.getModifiers());
-  }
-
-  @Override
-  public boolean visit(AnonymousClassDeclaration node) {
-    return visitType(node.getTypeBinding(), node.getBodyDeclarations(), Modifier.NONE);
-  }
-
-  @Override
-  public boolean visit(AnnotationTypeDeclaration node) {
-    return visitType(node.getTypeBinding(), node.getBodyDeclarations(), node.getModifiers());
-  }
-
-  private boolean visitType(
-      ITypeBinding typeBinding, List<BodyDeclaration> members, int modifiers) {
-    ITypeBinding[] interfaces = typeBinding.getInterfaces();
-    if (interfaces.length > 0) {
-      if (Modifier.isAbstract(modifiers) || typeBinding.isEnum()) {
-
-        // Add any interface methods that aren't defined by this abstract type.
-        // Obj-C needs these to verify that the generated class implements the
-        // interface/protocol.
-        for (ITypeBinding intrface : interfaces) {
-          // Collect needed methods from this interface and all super-interfaces.
-          Queue<ITypeBinding> interfaceQueue = new LinkedList<ITypeBinding>();
-          Set<IMethodBinding> interfaceMethods = new LinkedHashSet<IMethodBinding>();
-          interfaceQueue.add(intrface);
-          while ((intrface = interfaceQueue.poll()) != null) {
-            interfaceMethods.addAll(Arrays.asList(intrface.getDeclaredMethods()));
-            interfaceQueue.addAll(Arrays.asList(intrface.getInterfaces()));
-          }
-          addMissingMethods(typeBinding, interfaceMethods, members);
-        }
-      } else if (!typeBinding.isInterface()) {
-        // Check for methods that the type *explicitly implements* for cases
-        // where a superclass provides the implementation.  For example, many
-        // Java interfaces define equals(Object) to provide documentation, which
-        // a class doesn't need to implement in Java, but does in Obj-C.  These
-        // classes need a forwarding method to pass the Obj-C compiler.
-        Set<IMethodBinding> interfaceMethods = new LinkedHashSet<IMethodBinding>();
-        for (ITypeBinding intrface : interfaces) {
-          interfaceMethods.addAll(Arrays.asList(intrface.getDeclaredMethods()));
-        }
-        addForwardingMethods(typeBinding, interfaceMethods, members);
-      }
-    }
-
-    return true;
-  }
-
-  private void addMissingMethods(
-      ITypeBinding typeBinding, Set<IMethodBinding> interfaceMethods, List<BodyDeclaration> decls) {
-    for (IMethodBinding interfaceMethod : interfaceMethods) {
-      if (!isMethodImplemented(typeBinding, interfaceMethod, decls)) {
-        addAbstractMethod(typeBinding, interfaceMethod, decls);
-      }
-    }
-  }
-
-  private void addForwardingMethods(
-      ITypeBinding typeBinding, Set<IMethodBinding> interfaceMethods, List<BodyDeclaration> decls) {
-    for (IMethodBinding interfaceMethod : interfaceMethods) {
-      String methodName = interfaceMethod.getName();
-      // These are the only java.lang.Object methods that are both overridable
-      // and translated to Obj-C.
-      if (methodName.matches("equals|hashCode|toString")) {
-        if (!isMethodImplemented(typeBinding, interfaceMethod, decls)) {
-          addForwardingMethod(typeBinding, interfaceMethod, decls);
-        }
-      }
-    }
-  }
-
-  private boolean isMethodImplemented(
-      ITypeBinding type, IMethodBinding interfaceMethod, List<BodyDeclaration> decls) {
-    for (BodyDeclaration decl : decls) {
-      if (decl instanceof MethodDeclaration
-          && ((MethodDeclaration) decl).getMethodBinding().isSubsignature(interfaceMethod)) {
-        return true;
-      }
-    }
-    return isMethodImplemented(type.getSuperclass(), interfaceMethod);
-  }
-
-  private boolean isMethodImplemented(ITypeBinding type, IMethodBinding method) {
-    if (type == null || type.getQualifiedName().equals("java.lang.Object")) {
-      return false;
-    }
-
-    for (IMethodBinding m : type.getDeclaredMethods()) {
-      if (method.isSubsignature(m)
-          || (method.getName().equals(m.getName())
-          && method.getReturnType().getErasure().isEqualTo(m.getReturnType().getErasure())
-          && Arrays.equals(method.getParameterTypes(), m.getParameterTypes()))) {
-        return true;
-      }
-    }
-
-    return isMethodImplemented(type.getSuperclass(), method);
-  }
 
   @Override
   public boolean visit(MethodDeclaration node) {
@@ -552,66 +432,6 @@ public class Rewriter extends TreeVisitor {
     }
   }
 
-  /**
-   * Add an abstract method to the given type that implements the given
-   * interface method binding.
-   */
-  private void addAbstractMethod(
-      ITypeBinding typeBinding, IMethodBinding interfaceMethod, List<BodyDeclaration> decls) {
-    MethodDeclaration method = createInterfaceMethodBody(
-        typeBinding, interfaceMethod, interfaceMethod.getModifiers());
-
-    method.addModifiers(Modifier.ABSTRACT);
-
-    decls.add(method);
-  }
-
-  /**
-   * Java interfaces that redeclare java.lang.Object's equals, hashCode, or
-   * toString methods need a forwarding method if the implementing class
-   * relies on java.lang.Object's implementation.  This is because NSObject
-   * is declared as adhering to the NSObject protocol, but doesn't explicitly
-   * declare these method in its interface.  This prevents gcc from finding
-   * an implementation, so it issues a warning.
-   */
-  private void addForwardingMethod(
-      ITypeBinding typeBinding, IMethodBinding interfaceMethod, List<BodyDeclaration> decls) {
-    Logger.getAnonymousLogger().fine(String.format("adding %s to %s",
-        interfaceMethod.getName(), typeBinding.getQualifiedName()));
-    MethodDeclaration method =
-        createInterfaceMethodBody(typeBinding, interfaceMethod, Modifier.PUBLIC);
-
-    // Add method body with single "super.method(parameters);" statement.
-    Block body = new Block();
-    method.setBody(body);
-    SuperMethodInvocation superInvocation = new SuperMethodInvocation(method.getMethodBinding());
-
-    for (SingleVariableDeclaration param : method.getParameters()) {
-      Expression arg = param.getName().copy();
-      superInvocation.getArguments().add(arg);
-    }
-    body.getStatements().add(new ReturnStatement(superInvocation));
-
-    decls.add(method);
-  }
-
-  private MethodDeclaration createInterfaceMethodBody(
-      ITypeBinding typeBinding, IMethodBinding interfaceMethod, int modifiers) {
-    GeneratedMethodBinding methodBinding =
-        GeneratedMethodBinding.newOverridingMethod(interfaceMethod, typeBinding, modifiers);
-    MethodDeclaration method = new MethodDeclaration(methodBinding);
-
-    ITypeBinding[] parameterTypes = interfaceMethod.getParameterTypes();
-    for (int i = 0; i < parameterTypes.length; i++) {
-      ITypeBinding paramType = parameterTypes[i];
-      IVariableBinding paramBinding = new GeneratedVariableBinding(
-          "param" + i, 0, paramType, false, true, typeBinding, methodBinding);
-      method.getParameters().add(new SingleVariableDeclaration(paramBinding));
-      methodBinding.addParameter(paramType);
-    }
-    return method;
-  }
-
   @Override
   public void endVisit(SingleVariableDeclaration node) {
     if (node.getExtraDimensions() > 0) {
@@ -699,7 +519,6 @@ public class Rewriter extends TreeVisitor {
       IVariableBinding localRef = localRefs.get(node.getQualifier().getBinding());
       if (localRef != null) {
         IVariableBinding localRefFieldBinding = Types.getLocalRefType().getDeclaredFields()[0];
-        SimpleName localRefField = new SimpleName(localRefFieldBinding);
         Name newQualifier = node.getQualifier().copy();
         newQualifier.setBinding(localRef);
         FieldAccess localRefAccess = new FieldAccess(localRefFieldBinding, newQualifier);

@@ -45,19 +45,19 @@ public final class Charsets {
      * Returns a new byte array containing the bytes corresponding to the given characters,
      * encoded in US-ASCII. Unrepresentable characters are replaced by (byte) '?'.
      */
-    public static native byte[] toAsciiBytes(char[] chars, int offset, int length);
+    //public static native byte[] toAsciiBytes(char[] chars, int offset, int length);
 
     /**
      * Returns a new byte array containing the bytes corresponding to the given characters,
      * encoded in ISO-8859-1. Unrepresentable characters are replaced by (byte) '?'.
      */
-    public static native byte[] toIsoLatin1Bytes(char[] chars, int offset, int length);
+    //public static native byte[] toIsoLatin1Bytes(char[] chars, int offset, int length);
 
     /**
      * Returns a new byte array containing the bytes corresponding to the given characters,
      * encoded in UTF-8. All characters are representable in UTF-8.
      */
-    public static native byte[] toUtf8Bytes(char[] chars, int offset, int length);
+    //public static native byte[] toUtf8Bytes(char[] chars, int offset, int length);
 
     /**
      * Returns a new byte array containing the bytes corresponding to the given characters,
@@ -83,7 +83,7 @@ public final class Charsets {
      *     value[i] = (ch <= 0x7f) ? ch : REPLACEMENT_CHAR;
      * }
      */
-    public static native void asciiBytesToChars(byte[] bytes, int offset, int length, char[] chars);
+    //public static native void asciiBytesToChars(byte[] bytes, int offset, int length, char[] chars);
 
     /**
      * Decodes the given ISO-8859-1 bytes into the given char[]. Equivalent to but faster than:
@@ -92,7 +92,7 @@ public final class Charsets {
      *     value[i] = (char) (data[start++] & 0xff);
      * }
      */
-    public static native void isoLatin1BytesToChars(byte[] bytes, int offset, int length, char[] chars);
+    //public static native void isoLatin1BytesToChars(byte[] bytes, int offset, int length, char[] chars);
 
     private Charsets() {
     }

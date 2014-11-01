@@ -111,7 +111,6 @@ public class ObjectiveCHeaderGenerator extends ObjectiveCSourceFileGenerator {
     ITypeBinding binding = node.getTypeBinding();
     String typeName = NameTable.getFullName(binding);
     String superName = getSuperTypeName(node);
-    List<MethodDeclaration> methods = TreeUtil.getMethodDeclarationsList(node);
     boolean isInterface = node.isInterface();
 
     printConstantDefines(node);
@@ -148,9 +147,9 @@ public class ObjectiveCHeaderGenerator extends ObjectiveCSourceFileGenerator {
     println("\n@end");
 
     if (isInterface) {
-      printStaticInterface(node, methods);
+      printStaticInterface(node);
     } else {
-      printStaticInitFunction(node, methods);
+      printStaticInitFunction(node);
       printFieldSetters(node, false);
       printFunctions(node.getBodyDeclarations());
       printStaticFields(node);
@@ -228,7 +227,7 @@ public class ObjectiveCHeaderGenerator extends ObjectiveCSourceFileGenerator {
         newline();
       }
       println("\n@end");
-      printStaticInitFunction(node, TreeUtil.getMethodDeclarationsList(node));
+      printStaticInitFunction(node);
       for (IVariableBinding field : staticFields) {
         printStaticField(field);
       }
@@ -256,15 +255,15 @@ public class ObjectiveCHeaderGenerator extends ObjectiveCSourceFileGenerator {
     }
   }
 
-  private void printStaticInterface(TypeDeclaration node, List<MethodDeclaration> methods) {
+  private void printStaticInterface(TypeDeclaration node) {
     // Print @interface for static constants, if any.
-    if (hasInitializeMethod(node, methods)) {
+    if (hasInitializeMethod(node)) {
       ITypeBinding binding = node.getTypeBinding();
       String typeName = NameTable.getFullName(binding);
       printf("\n@interface %s : NSObject\n", typeName);
       println("\n@end");
     }
-    printStaticInitFunction(node, methods);
+    printStaticInitFunction(node);
     for (IVariableBinding field : getStaticFieldsNeedingAccessors(node)) {
       printStaticField(field);
     }
@@ -296,8 +295,6 @@ public class ObjectiveCHeaderGenerator extends ObjectiveCSourceFileGenerator {
       printf("} %s;\n\n", bareTypeName);
     }
 
-    List<MethodDeclaration> methods = TreeUtil.getMethodDeclarationsList(node);
-
     if (needsDeprecatedAttribute(node.getAnnotations())) {
       println(DEPRECATED_ATTRIBUTE);
     }
@@ -315,7 +312,7 @@ public class ObjectiveCHeaderGenerator extends ObjectiveCSourceFileGenerator {
     println("}");
     printDeclarations(node.getBodyDeclarations());
     println("\n@end");
-    printStaticInitFunction(node, methods);
+    printStaticInitFunction(node);
     printFunctions(node.getBodyDeclarations());
     printf("\nFOUNDATION_EXPORT %s *%s_values_[];\n", typeName, typeName);
     for (EnumConstantDeclaration constant : constants) {
@@ -329,11 +326,10 @@ public class ObjectiveCHeaderGenerator extends ObjectiveCSourceFileGenerator {
     printFieldSetters(node, false);
   }
 
-  private void printStaticInitFunction(
-      AbstractTypeDeclaration node, List<MethodDeclaration> methods) {
+  private void printStaticInitFunction(AbstractTypeDeclaration node) {
     ITypeBinding binding = node.getTypeBinding();
     String typeName = NameTable.getFullName(binding);
-    if (hasInitializeMethod(node, methods)) {
+    if (hasInitializeMethod(node)) {
       printf("\nFOUNDATION_EXPORT BOOL %s_initialized;\n", typeName);
       printf("J2OBJC_STATIC_INIT(%s)\n", typeName);
     } else {
@@ -373,7 +369,7 @@ public class ObjectiveCHeaderGenerator extends ObjectiveCSourceFileGenerator {
   @Override
   protected void printFunction(FunctionDeclaration function) {
     if (!Modifier.isPrivate(function.getModifiers())) {
-      println("extern " + getFunctionSignature(function) + ';');
+      println("FOUNDATION_EXPORT " + getFunctionSignature(function) + ';');
     }
   }
 
@@ -405,11 +401,6 @@ public class ObjectiveCHeaderGenerator extends ObjectiveCSourceFileGenerator {
     newline();
     printDocComment(m.getJavadoc());
     println(super.constructorDeclaration(m) + ";");
-  }
-
-  @Override
-  protected void printStaticConstructorDeclaration(MethodDeclaration m) {
-    // Don't do anything.
   }
 
   @Override

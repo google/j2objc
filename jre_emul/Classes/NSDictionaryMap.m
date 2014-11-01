@@ -74,7 +74,9 @@
 
 - (instancetype)initWithDictionary:(NSDictionary *)dictionary {
   if ((self = [super init])) {
-    dictionary_ = [nil_chk(dictionary) mutableCopy];
+    dictionary_ = dictionary ?
+        [dictionary mutableCopy] :
+        [NSMutableDictionary dictionary];
   }
   return self;
 }

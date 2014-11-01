@@ -53,6 +53,7 @@ public class EnumDeclaration extends AbstractTypeDeclaration {
       name.accept(visitor);
       enumConstants.accept(visitor);
       bodyDeclarations.accept(visitor);
+      classInitStatements.accept(visitor);
     }
     visitor.endVisit(this);
   }

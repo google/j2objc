@@ -29,6 +29,8 @@ public abstract class AbstractTypeDeclaration extends BodyDeclaration {
   protected final ChildLink<SimpleName> name = ChildLink.create(SimpleName.class, this);
   protected final ChildList<BodyDeclaration> bodyDeclarations =
       ChildList.create(BodyDeclaration.class, this);
+  protected final ChildList<Statement> classInitStatements =
+      ChildList.create(Statement.class, this);
 
   public AbstractTypeDeclaration(org.eclipse.jdt.core.dom.AbstractTypeDeclaration jdtNode) {
     super(jdtNode);
@@ -70,6 +72,10 @@ public abstract class AbstractTypeDeclaration extends BodyDeclaration {
 
   public List<BodyDeclaration> getBodyDeclarations() {
     return bodyDeclarations;
+  }
+
+  public List<Statement> getClassInitStatements() {
+    return classInitStatements;
   }
 
   @Override

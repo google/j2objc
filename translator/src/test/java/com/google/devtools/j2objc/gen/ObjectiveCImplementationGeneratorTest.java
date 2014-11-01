@@ -279,7 +279,7 @@ public class ObjectiveCImplementationGeneratorTest extends GenerationTest {
         "Compatible", "foo/Compatible.m");
     assertTranslation(translation, "@interface FooCompatible : NSObject");
     assertTranslation(translation, "@implementation FooCompatible");
-    assertTranslation(translation, "+ (J2ObjcClassInfo *)__metadata");
+    assertTranslation(translation, "+ (const J2ObjcClassInfo *)__metadata");
   }
 
   public void testInterfaceConstantGeneration() throws IOException {
@@ -777,5 +777,14 @@ public class ObjectiveCImplementationGeneratorTest extends GenerationTest {
         "class Test { static Integer i = new Integer(5); }", "Test", "Test.m");
     assertNotInTranslation(translation, "+ (void)initialize OBJC_METHOD_FAMILY_NONE;");
     assertOccurrences(translation, "+ (void)initialize", 1);
+  }
+
+  public void testInterfaceTypeLiteralAsAnnotationValue() throws IOException {
+    addSourceFile(
+        "import java.lang.annotation.*; @Retention(RetentionPolicy.RUNTIME)"
+        + " @interface Foo { Class<?> value(); }", "Foo.java");
+    String translation = translateSourceFile(
+        "@Foo(CharSequence.class) class Test {}", "Test", "Test.m");
+    assertTranslation(translation, "[IOSClass classWithProtocol:@protocol(JavaLangCharSequence)]");
   }
 }

@@ -10,7 +10,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-# Defines the names of all dependent .jar files used by j2objc.
+# Copies all dependent .jar files used by j2objc into the build.
 #
 # Author: Keith Stanger
 
@@ -31,37 +31,11 @@ DIST_JARS = $(DISTRIBUTION_JARS:%=$(DIST_JAR_DIR)/%)
 BUILD_DIR_JARS = $(DISTRIBUTION_JARS:%=$(BUILD_DIR)/%) $(INTERNAL_JARS:%=$(BUILD_DIR)/%)
 
 
-ifndef M2_HOME
-M2_HOME := $(shell echo $$HOME)/.m2
-endif
-JUNIT_DIR = $(M2_HOME)/repository/junit/junit/4.10
-JSR305_DIR = $(M2_HOME)/repository/com/google/code/findbugs/jsr305/3.0.0
-JAVAX_INJECT_DIR = $(M2_HOME)/repository/javax/inject/javax.inject/1
-HAMCREST_DIR = $(M2_HOME)/repository/org/hamcrest/hamcrest-core/1.1
-MOCKITO_DIR = $(M2_HOME)/repository/org/mockito/mockito-core/1.9.5
-
-MAVEN_RESULTS = $(DISTRIBUTION_JARS:%=$(BUILD_DIR)/%) $(JUNIT_DIR)/$(JUNIT_SOURCE_JAR)
-$(MAVEN_RESULTS): $(BUILD_DIR)/.maven_generate
+$(BUILD_DIR_JARS): $(BUILD_DIR)/.maven_generate
 
 $(BUILD_DIR)/.maven_generate: | $(BUILD_DIR)
 	mvn generate-resources dependency:sources
 	@touch $@
-
-$(BUILD_DIR)/$(JUNIT_SOURCE_JAR): $(JUNIT_DIR)/$(JUNIT_SOURCE_JAR) | $(BUILD_DIR)
-	@cp -f $< $@
-
-$(BUILD_DIR)/$(HAMCREST_JAR): $(HAMCREST_DIR)/$(HAMCREST_JAR) | $(BUILD_DIR)
-	@cp -f $< $@
-
-$(BUILD_DIR)/$(JSR305_SOURCE_JAR): $(JSR305_DIR)/$(JSR305_SOURCE_JAR) | $(BUILD_DIR)
-	@cp -f $< $@
-
-$(BUILD_DIR)/$(JAVAX_INJECT_SOURCE_JAR): \
-   $(JAVAX_INJECT_DIR)/$(JAVAX_INJECT_SOURCE_JAR) | $(BUILD_DIR)
-	@cp -f $< $@
-
-$(BUILD_DIR)/$(MOCKITO_SOURCE_JAR): $(MOCKITO_DIR)/$(MOCKITO_SOURCE_JAR) | $(BUILD_DIR)
-	@cp -f $< $@
 
 $(BUILD_DIR) $(DIST_JAR_DIR):
 	@mkdir -p $@

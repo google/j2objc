@@ -525,6 +525,7 @@ JAVA_SOURCES = \
 	java/nio/channels/ByteChannel.java \
 	java/nio/channels/CancelledKeyException.java \
 	java/nio/channels/Channel.java \
+	java/nio/channels/Channels.java \
 	java/nio/channels/ClosedByInterruptException.java \
 	java/nio/channels/ClosedChannelException.java \
 	java/nio/channels/ClosedSelectorException.java \
@@ -738,6 +739,7 @@ JAVA_SOURCES = \
 	java/util/PropertyResourceBundle.java \
 	java/util/Random.java \
 	java/util/ResourceBundle.java \
+	java/util/Scanner.java \
 	java/util/ServiceConfigurationError.java \
 	java/util/ServiceLoader.java \
 	java/util/SimpleTimeZone.java \

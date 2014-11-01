@@ -30,7 +30,7 @@ ECLIPSE_JARS = \
 GUAVA_JAR = guava-14.0.1.jar
 
 JSR305_JAR = jsr305-3.0.0.jar
-JSR305_SOURCE_JAR = jsr305-3.0.0-sources.jar
+JSR305_SOURCE_JAR = jsr305-3.0.0.jar
 
 JAVAX_INJECT_JAR = javax.inject-1.jar
 JAVAX_INJECT_SOURCE_JAR = javax.inject-1-sources.jar

@@ -90,11 +90,6 @@ public final class BindingUtil {
     return isSynthetic(m.getModifiers());
   }
 
-  public static boolean isInitializeMethod(IMethodBinding m) {
-    return isStatic(m) && NameTable.CLINIT_NAME.equals(m.getName())
-        && m.getParameterTypes().length == 0 && isSynthetic(m);
-  }
-
   /**
    * Determines if a type can access fields and methods from an outer class.
    */
@@ -276,12 +271,15 @@ public final class BindingUtil {
 
   public static IAnnotationBinding getAnnotation(IBinding binding, Class<?> annotationClass) {
     for (IAnnotationBinding annotation : binding.getAnnotations()) {
-      String name = annotation.getAnnotationType().getQualifiedName();
-      if (name.equals(annotationClass.getName())) {
+      if (typeEqualsClass(annotation.getAnnotationType(), annotationClass)) {
         return annotation;
       }
     }
     return null;
+  }
+
+  public static boolean typeEqualsClass(ITypeBinding type, Class<?> cls) {
+    return type.getQualifiedName().equals(cls.getName());
   }
 
   public static Object getAnnotationValue(IAnnotationBinding annotation, String name) {

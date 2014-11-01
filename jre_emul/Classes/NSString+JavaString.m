@@ -499,22 +499,7 @@ destinationBegin:(int)destinationBegin {
 }
 
 NSStringEncoding parseCharsetName(NSString *charset) {
-  NSStringEncoding nsEncoding = NSUTF8StringEncoding; // defaults to UTF-8
-  if (charset) {
-    CFStringEncoding cfEncoding =
-        CFStringConvertIANACharSetNameToEncoding((ARCBRIDGE CFStringRef)charset);
-    if (cfEncoding == kCFStringEncodingInvalidId) {
-      id exception = [[JavaIoUnsupportedEncodingException alloc]
-                      initWithNSString:charset];
-#if ! __has_feature(objc_arc)
-      [exception autorelease];
-#endif
-      @throw exception;
-    } else {
-      nsEncoding = CFStringConvertEncodingToNSStringEncoding(cfEncoding);
-    }
-  }
-  return nsEncoding;
+  return (NSStringEncoding) JavaNioCharsetIOSCharset_encodingForNameWithNSString_(charset);
 }
 
 + (NSString *)stringWithBytes:(IOSByteArray *)value
@@ -651,17 +636,27 @@ NSStringEncoding parseCharsetName(NSString *charset) {
   BOOL includeBOM = (encoding == NSUTF16StringEncoding);
   if (includeBOM) {
     max_length += 2;
+    encoding = NSUTF16BigEndianStringEncoding;  // Java uses big-endian.
   }
   char *buffer = malloc(max_length * sizeof(char));
+  char *p = buffer;
+  if (includeBOM) {
+    *p++ = (char) 0xFE;
+    *p++ = (char) 0xFF;
+    max_length -= 2;
+  }
   NSRange range = NSMakeRange(0, [self length]);
   NSUInteger used_length;
-  [self getBytes:buffer
+  [self getBytes:p
        maxLength:max_length
       usedLength:&used_length
         encoding:encoding
-         options:includeBOM ? NSStringEncodingConversionExternalRepresentation : 0
+         options:0
            range:range
   remainingRange:NULL];
+  if (includeBOM) {
+    used_length += 2;
+  }
   IOSByteArray *result = [IOSByteArray arrayWithBytes:(jbyte *)buffer
                                                 count:(jint)used_length];
   free(buffer);

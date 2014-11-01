@@ -56,14 +56,14 @@
   [invocation setTarget:newInstance];
   [invocation setSelector:selector_];
 
+  jint argCount = initArgs ? initArgs->size_ : 0;
   IOSObjectArray *parameterTypes = [self getParameterTypes];
-  if (initArgs->size_ != parameterTypes->size_) {
+  if (argCount != parameterTypes->size_) {
     @throw AUTORELEASE([[JavaLangIllegalArgumentException alloc] initWithNSString:
         @"wrong number of arguments"]);
   }
 
-  jint count = initArgs->size_;
-  for (jint i = 0; i < count; i++) {
+  for (jint i = 0; i < argCount; i++) {
     J2ObjcRawValue arg;
     if (![parameterTypes->buffer_[i] __unboxValue:initArgs->buffer_[i] toRawValue:&arg]) {
       @throw AUTORELEASE([[JavaLangIllegalArgumentException alloc] initWithNSString:

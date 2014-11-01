@@ -176,6 +176,16 @@ public class System {
     }
     [props setPropertyWithNSString:@"java.io.tmpdir" withNSString:tmpDir];
     [props setPropertyWithNSString:@"java.home" withNSString:[[NSBundle mainBundle] bundlePath]];
+
+    char *fileEncoding = getenv("file_encoding");  // Shell variables cannot have periods.
+    if (!fileEncoding) {
+      fileEncoding = getenv("file.encoding");
+    }
+    if (fileEncoding) {
+      NSString *enc = [NSString stringWithCString:fileEncoding
+                                         encoding:[NSString defaultCStringEncoding]];
+      [props setPropertyWithNSString:@"file.encoding" withNSString:enc];
+    }
   ]-*/;
 
   public static String getProperty(String key) {

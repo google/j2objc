@@ -162,6 +162,7 @@ JAVA_SOURCES = \
 	gen/SourceBuilder.java \
 	gen/SourceFileGenerator.java \
 	gen/StatementGenerator.java \
+	translate/AbstractMethodRewriter.java \
 	translate/AnonymousClassConverter.java \
 	translate/ArrayRewriter.java \
 	translate/Autoboxer.java \
@@ -216,6 +217,7 @@ JAVA_SOURCES = \
 	util/NameTable.java \
 	util/ProGuardUsageParser.java \
 	util/TimeTracker.java \
+	util/TranslationUtil.java \
 	util/UnicodeUtils.java \
 
 RESOURCES = J2ObjC.properties JRE.mappings

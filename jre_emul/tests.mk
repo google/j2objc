@@ -113,6 +113,7 @@ TEST_SOURCES = \
     SynchronousQueueTest.java \
     ThreadPoolExecutorTest.java \
     TimeUnitTest.java \
+    UTF16EncodingTest.java \
     android/text/SpannableStringBuilderTest.java \
     android/text/SpannableStringTest.java \
     android/text/TextUtilsTest.java \
@@ -582,7 +583,7 @@ $(TEST_BIN): $(TEST_OBJS) $(SUPPORT_LIB) $(ALL_TESTS_SOURCE:%.java=%.o) \
 	@$(TEST_JOCC) -o $@ $(TEST_OBJS) $(ALL_TESTS_SOURCE:%.java=%.o)
 
 $(ALL_TESTS_SOURCE): | $(TESTS_DIR)
-	@./gen_all_tests.sh $(TESTS_TO_RUN) > $@
+	@xcrun awk -f gen_all_tests.sh $(TESTS_TO_RUN) > $@
 
 $(ALL_TESTS_SOURCE:%.java=%.m): $(ALL_TESTS_SOURCE)
 	@$(TRANSLATE_CMD) $?

@@ -381,4 +381,24 @@ public class FunctionizerTest extends GenerationTest {
     assertTranslation(translation, "static void TestEnum_foo();");
     assertTranslation(translation, "void TestEnum_foo() {");
   }
+
+  public void testNativeMethodsWithoutOcni() throws IOException {
+    String translation = translateSourceFile(
+        "class Test { public native void foo(); public native static void bar(); }",
+        "Test", "Test.h");
+
+    // Public declaration for "foo" instance method, within "NativeMethods" category.
+    assertTranslation(translation, "- (void)foo;");
+    // Public declaration for "bar". both the class method and c-function.
+    assertTranslation(translation, "+ (void)bar;");
+    assertTranslation(translation, "FOUNDATION_EXPORT void Test_bar();");
+
+    translation = getTranslatedFile("Test.m");
+    // No implementation for "foo".
+    assertNotInTranslation(translation, "- (void)foo");
+    // class method wrapper for "bar".
+    assertTranslatedLines(translation, "+ (void)bar {", "Test_bar();", "}");
+    // No implementation of the c-function for "bar".
+    assertNotInTranslation(translation, "void Test_bar()");
+  }
 }

@@ -54,6 +54,18 @@ public class ComplexExpressionExtractorTest extends GenerationTest {
         "[complex$4 appendWithNSString:@\"g\"];");
   }
 
+  public void testComplexExpressionWithinStaticInit() throws IOException {
+    String translation = translateSourceFile(
+        "class Test { static String s = new StringBuilder().append('a').append('b').toString(); }",
+        "Test", "Test.m");
+    assertTranslatedLines(translation,
+        "JavaLangStringBuilder *complex$1 = [((JavaLangStringBuilder *) "
+          + "nil_chk([((JavaLangStringBuilder *) [[[JavaLangStringBuilder alloc] init] "
+          + "autorelease]) appendWithChar:'a'])) appendWithChar:'b'];",
+        "JreStrongAssign(&Test_s_, nil, [((JavaLangStringBuilder *) nil_chk(complex$1)) "
+          + "description]);");
+  }
+
   public void testLongExpression() throws IOException {
     String translation = translateSourceFile(
         "class Test { int test() { return 1 + 2 - 3 + 4 - 5 + 6 - 7 + 8 - 9; } }",
@@ -89,5 +101,17 @@ public class ComplexExpressionExtractorTest extends GenerationTest {
         "class Test { boolean foo; void test(boolean b) { do {} while (foo = b); } }",
         "Test", "Test.m");
     assertTranslation(translation, "while ((foo_ = b));");
+  }
+
+  // Verify that multiple parentheses are removed from equality (==) expressions.
+  // This avoids clang's -Wparentheses-equality warning.
+  public void testDoubleParentheses() throws IOException {
+    String translation = translateSourceFile(
+        "class Test { int foo; int bar;"
+        + "  boolean test(int b) { return (((((foo == b))))); } "
+        + "  int test2(int b) { if ((bar == b)) { return 42; } else { return 666; }}}",
+        "Test", "Test.m");
+    assertTranslation(translation, "return (foo_ == b);");
+    assertTranslation(translation, "if (bar_ == b) {");
   }
 }

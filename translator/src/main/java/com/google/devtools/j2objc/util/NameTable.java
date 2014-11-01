@@ -54,7 +54,6 @@ public class NameTable {
   private final Map<IBinding, String> renamings = Maps.newHashMap();
 
   public static final String INIT_NAME = "init";
-  public static final String CLINIT_NAME = "initialize";
   public static final String DEALLOC_METHOD = "dealloc";
   public static final String FINALIZE_METHOD = "finalize";
 

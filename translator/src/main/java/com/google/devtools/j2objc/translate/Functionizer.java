@@ -17,6 +17,7 @@ package com.google.devtools.j2objc.translate;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 import com.google.devtools.j2objc.ast.AnnotationTypeDeclaration;
+import com.google.devtools.j2objc.ast.Block;
 import com.google.devtools.j2objc.ast.BodyDeclaration;
 import com.google.devtools.j2objc.ast.CompilationUnit;
 import com.google.devtools.j2objc.ast.Expression;
@@ -84,14 +85,6 @@ public class Functionizer extends TreeVisitor {
         IMethodBinding m = node.getMethodBinding();
         int mods = node.getModifiers();
         if (Modifier.isStatic(mods)) {
-          if (Modifier.isNative(mods)) {
-            // Native method without OCNI needs to be resolved in a separate native source file.
-            return;
-          }
-          if (m.getName().equals(NameTable.CLINIT_NAME) && m.getParameterTypes().length == 0) {
-            // Don't functionize class initializers, since they are only called as methods.
-            return;
-          }
           staticDeclarations.add(m);
         } else if (canFunctionize(node)) {
           functionizableDeclarations.add(m);
@@ -124,10 +117,12 @@ public class Functionizer extends TreeVisitor {
 
   private boolean canFunctionize(MethodDeclaration node) {
     IMethodBinding m = node.getMethodBinding();
+    int modifiers = node.getModifiers();
 
     // Never functionize these types of methods.
-    if (BindingUtil.isAbstract(m) || BindingUtil.isSynthetic(m) || m.isAnnotationMember()
-        || m.isConstructor() || BindingUtil.isDestructor(m)) {
+    if (Modifier.isAbstract(modifiers) || BindingUtil.isSynthetic(modifiers)
+        || m.isAnnotationMember() || m.isConstructor() || BindingUtil.isDestructor(m)
+        || Modifier.isNative(modifiers)) {
       return false;
     }
 
@@ -184,54 +179,70 @@ public class Functionizer extends TreeVisitor {
 
   @Override
   public void endVisit(MethodDeclaration node) {
-    if (functionizableMethods.contains(node.getMethodBinding())) {
-      FunctionDeclaration function = makeFunction(node);
+    IMethodBinding binding = node.getMethodBinding();
+    if (functionizableMethods.contains(binding)) {
+      FunctionDeclaration function = BindingUtil.isStatic(binding)
+          ? makeStaticFunction(node) : makeInstanceFunction(node);
       setFunctionCaller(node, function);
-      List<BodyDeclaration> declarationList = TreeUtil.getBodyDeclarations(node.getParent());
-      int index = declarationList.indexOf(node);
-      assert index != -1;
-      declarationList.add(index + 1, function);
+      List<BodyDeclaration> declarationList = TreeUtil.asDeclarationSublist(node);
+      declarationList.add(function);
       ErrorUtil.functionizedMethod();
     }
   }
 
   /**
-   * Create an equivalent function declaration for a given method. If it's an instance
-   * method, a "self" parameter is added to the beginning of the parameter list (that
-   * way, variable functions can be supported).
+   * Create an equivalent function declaration for a given instance method. A
+   * "self" parameter is added to the beginning of the parameter list (that way,
+   * variable argument functions can be supported).
    */
-  private FunctionDeclaration makeFunction(MethodDeclaration method) {
+  private FunctionDeclaration makeInstanceFunction(MethodDeclaration method) {
     IMethodBinding m = method.getMethodBinding();
     ITypeBinding declaringClass = m.getDeclaringClass();
     ITypeBinding[] paramTypes = m.getParameterTypes();
     List<SingleVariableDeclaration> params = TreeUtil.copyList(method.getParameters());
-    if (!BindingUtil.isStatic(m)) {
-      List<ITypeBinding> list = Lists.newArrayList(paramTypes);
-      list.add(0, m.getDeclaringClass());
-      paramTypes = list.toArray(new ITypeBinding[list.size()]);
-      GeneratedVariableBinding var = new GeneratedVariableBinding(NameTable.SELF_NAME, 0,
-          declaringClass, false, true, declaringClass, null);
-      params.add(0, new SingleVariableDeclaration(var));
-    }
+
+    List<ITypeBinding> list = Lists.newArrayList(paramTypes);
+    list.add(0, m.getDeclaringClass());
+    paramTypes = list.toArray(new ITypeBinding[list.size()]);
+    GeneratedVariableBinding var = new GeneratedVariableBinding(NameTable.SELF_NAME, 0,
+        declaringClass, false, true, declaringClass, null);
+    params.add(0, new SingleVariableDeclaration(var));
+
     FunctionDeclaration function = new FunctionDeclaration(
         NameTable.makeFunctionName(m), m.getReturnType());
     function.getParameters().addAll(params);
-    int access =
-        BindingUtil.isStatic(m) && !BindingUtil.isPrivate(m) ? Modifier.PUBLIC : Modifier.PRIVATE;
+    function.setModifiers(Modifier.PRIVATE);
+
+    function.setBody(TreeUtil.remove(method.getBody()));
+
+    FunctionConverter.convert(function);
+    return function;
+  }
+
+  private FunctionDeclaration makeStaticFunction(MethodDeclaration method) {
+    IMethodBinding m = method.getMethodBinding();
+    ITypeBinding declaringClass = m.getDeclaringClass();
+    ITypeBinding[] paramTypes = m.getParameterTypes();
+    List<SingleVariableDeclaration> params = TreeUtil.copyList(method.getParameters());
+
+    FunctionDeclaration function = new FunctionDeclaration(
+        NameTable.makeFunctionName(m), m.getReturnType());
+    function.getParameters().addAll(params);
+    int access = BindingUtil.isPrivate(m) ? Modifier.PRIVATE : Modifier.PUBLIC;
     function.setModifiers(access);
 
-    function.setBody(method.getBody().copy());
-
-    if (BindingUtil.isStatic(m)) {
-      // Add class initialization invocation, since this may be the first use of this class.
-      String initName = String.format("%s_init", NameTable.getFullName(declaringClass));
-      ITypeBinding voidType = Types.resolveJavaType("void");
-      FunctionInvocation initCall =
-          new FunctionInvocation(initName, voidType, voidType, declaringClass);
-      function.getBody().getStatements().add(0, new ExpressionStatement(initCall));
-    } else {
-      FunctionConverter.convert(function);
+    if (Modifier.isNative(method.getModifiers())) {
+      function.addModifiers(Modifier.NATIVE);
+      return function;
     }
+    function.setBody(TreeUtil.remove(method.getBody()));
+
+    // Add class initialization invocation, since this may be the first use of this class.
+    String initName = String.format("%s_init", NameTable.getFullName(declaringClass));
+    ITypeBinding voidType = Types.resolveJavaType("void");
+    FunctionInvocation initCall =
+        new FunctionInvocation(initName, voidType, voidType, declaringClass);
+    function.getBody().getStatements().add(0, new ExpressionStatement(initCall));
     return function;
   }
 
@@ -241,7 +252,10 @@ public class Functionizer extends TreeVisitor {
   private void setFunctionCaller(MethodDeclaration method, FunctionDeclaration function) {
     IMethodBinding methodBinding = method.getMethodBinding();
     ITypeBinding returnType = function.getReturnType().getTypeBinding();
-    List<Statement> stmts = method.getBody().getStatements();
+    Block body = new Block();
+    method.setBody(body);
+    method.removeModifiers(Modifier.NATIVE);
+    List<Statement> stmts = body.getStatements();
     stmts.clear();
     FunctionInvocation invocation = new FunctionInvocation(
         function.getName(), returnType, returnType, methodBinding.getDeclaringClass());
