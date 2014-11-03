@@ -14,10 +14,12 @@
 
 package com.google.devtools.j2objc.util;
 
-import com.google.common.collect.Lists;
-import com.google.common.collect.Sets;
-import com.google.j2objc.annotations.Weak;
-import com.google.j2objc.annotations.WeakOuter;
+import java.lang.annotation.RetentionPolicy;
+import java.util.Arrays;
+import java.util.Comparator;
+import java.util.Deque;
+import java.util.List;
+import java.util.Set;
 
 import org.eclipse.jdt.core.dom.IAnnotationBinding;
 import org.eclipse.jdt.core.dom.IBinding;
@@ -27,12 +29,10 @@ import org.eclipse.jdt.core.dom.ITypeBinding;
 import org.eclipse.jdt.core.dom.IVariableBinding;
 import org.eclipse.jdt.core.dom.Modifier;
 
-import java.lang.annotation.RetentionPolicy;
-import java.util.Arrays;
-import java.util.Comparator;
-import java.util.Deque;
-import java.util.List;
-import java.util.Set;
+import com.google.common.collect.Queues;
+import com.google.common.collect.Sets;
+import com.google.j2objc.annotations.Weak;
+import com.google.j2objc.annotations.WeakOuter;
 
 /**
  * Utility methods for working with binding types.
@@ -163,7 +163,7 @@ public final class BindingUtil {
    */
   public static Set<ITypeBinding> getAllInterfaces(ITypeBinding type) {
     Set<ITypeBinding> allInterfaces = Sets.newHashSet();
-    Deque<ITypeBinding> typeQueue = Lists.newLinkedList();
+    Deque<ITypeBinding> typeQueue = Queues.newArrayDeque();
 
     while (type != null) {
       typeQueue.add(type);
