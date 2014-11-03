@@ -31,6 +31,7 @@
 		06422D6B191ACB8E00C37443 /* libjre_emul.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 06619385155848D70004DAFE /* libjre_emul.a */; };
 		06422D6C191ACB9E00C37443 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 06619388155848D70004DAFE /* Foundation.framework */; };
 		0660B4A71A018C3800B643F5 /* JRELogPaneViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 0660B4A51A018C3800B643F5 /* JRELogPaneViewController.xib */; };
+		0660B4AA1A02EA1C00B643F5 /* JRETestRunListener.m in Sources */ = {isa = PBXBuildFile; fileRef = 0660B4A91A02EA1C00B643F5 /* JRETestRunListener.m */; };
 		06619389155848D70004DAFE /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 06619388155848D70004DAFE /* Foundation.framework */; };
 		0661AA4A19F7063200EFD1F5 /* UTF16EncodingTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 0661AA4919F705E200EFD1F5 /* UTF16EncodingTest.m */; };
 		06C73D301917FDE5001D3CC8 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 06C73D2E1917FDE5001D3CC8 /* InfoPlist.strings */; };
@@ -698,6 +699,8 @@
 		064FB8001727085500DC0D51 /* TypeInfo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = TypeInfo.h; path = build_result/Classes/org/w3c/dom/TypeInfo.h; sourceTree = "<group>"; };
 		064FB8021727086700DC0D51 /* LSResourceResolver.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = LSResourceResolver.h; path = build_result/Classes/org/w3c/dom/ls/LSResourceResolver.h; sourceTree = "<group>"; };
 		0660B4A51A018C3800B643F5 /* JRELogPaneViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = JRELogPaneViewController.xib; sourceTree = "<group>"; };
+		0660B4A81A02EA1C00B643F5 /* JRETestRunListener.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JRETestRunListener.h; sourceTree = "<group>"; };
+		0660B4A91A02EA1C00B643F5 /* JRETestRunListener.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JRETestRunListener.m; sourceTree = "<group>"; };
 		0661620B180F2A1900887D7D /* AbstractStringBuilder.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = AbstractStringBuilder.h; path = build_result/Classes/java/lang/AbstractStringBuilder.h; sourceTree = "<group>"; };
 		0661620C180F2A1900887D7D /* AbstractStringBuilder.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = AbstractStringBuilder.m; path = build_result/Classes/java/lang/AbstractStringBuilder.m; sourceTree = "<group>"; };
 		0661620D180F2A1900887D7D /* IntegralToString.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = IntegralToString.h; path = build_result/Classes/java/lang/IntegralToString.h; sourceTree = "<group>"; };
@@ -6472,6 +6475,8 @@
 				062463D81A005995006D52C9 /* JRELogPaneViewController.h */,
 				062463D91A005995006D52C9 /* JRELogPaneViewController.m */,
 				0660B4A51A018C3800B643F5 /* JRELogPaneViewController.xib */,
+				0660B4A81A02EA1C00B643F5 /* JRETestRunListener.h */,
+				0660B4A91A02EA1C00B643F5 /* JRETestRunListener.m */,
 				062463D21A000CE3006D52C9 /* JRETestsTableViewController.h */,
 				062463D31A000CE3006D52C9 /* JRETestsTableViewController.m */,
 				06ED87BD19759EFF00633227 /* Supporting Files */,
@@ -6996,6 +7001,7 @@
 				06E4E7CF197F1D48005DDE69 /* UUIDTest.m in Sources */,
 				06E4E701197F1D47005DDE69 /* OldByteArrayInputStreamTest.m in Sources */,
 				06E4E816197F1D48005DDE69 /* Support_MapTest2.m in Sources */,
+				0660B4AA1A02EA1C00B643F5 /* JRETestRunListener.m in Sources */,
 				06E4E6C7197F1D47005DDE69 /* AtomicReferenceTest.m in Sources */,
 				06E4E7AF197F1D48005DDE69 /* VirtualMachineErrorTest.m in Sources */,
 				06E4E78B197F1D47005DDE69 /* ErrorTest.m in Sources */,
