@@ -28,18 +28,23 @@
 extern id IOSArray_NewArrayWithDimensions(
     Class self, NSUInteger dimensionCount, const jint *dimensionLengths, IOSClass *type);
 
-static IOSObjectArray *IOSObjectArray_NewArray(jint length, IOSClass *type) {
+static IOSObjectArray *IOSObjectArray_NewArray(jint length, IOSClass *type, BOOL retained) {
   IOSObjectArray *array = NSAllocateObject([IOSObjectArray class], length * sizeof(id), nil);
   array->size_ = length;
   array->elementType_ = type; // All IOSClass types are singleton so don't need to retain.
+  array->isRetained_ = retained;
   return array;
 }
 
 static IOSObjectArray *IOSObjectArray_NewArrayWithObjects(
-    jint length, IOSClass *type, const id *objects) {
-  IOSObjectArray *array = IOSObjectArray_NewArray(length, type);
-  for (jint i = 0; i < length; i++) {
-    array->buffer_[i] = [objects[i] retain];
+    jint length, IOSClass *type, BOOL retained, const id *objects) {
+  IOSObjectArray *array = IOSObjectArray_NewArray(length, type, retained);
+  if (retained) {
+    for (jint i = 0; i < length; i++) {
+      array->buffer_[i] = [objects[i] retain];
+    }
+  } else {
+    memcpy(array->buffer_, objects, length * sizeof(id));
   }
   return array;
 }
@@ -49,23 +54,23 @@ static IOSObjectArray *IOSObjectArray_NewArrayWithObjects(
 @synthesize elementType = elementType_;
 
 + (instancetype)newArrayWithLength:(NSUInteger)length type:(IOSClass *)type {
-  return IOSObjectArray_NewArray((jint)length, type);
+  return IOSObjectArray_NewArray((jint)length, type, YES);
 }
 
 + (instancetype)arrayWithLength:(NSUInteger)length type:(IOSClass *)type {
-  return [IOSObjectArray_NewArray((jint)length, type) autorelease];
+  return [IOSObjectArray_NewArray((jint)length, type, NO) autorelease];
 }
 
 + (instancetype)newArrayWithObjects:(const id *)objects
                               count:(NSUInteger)count
                                type:(IOSClass *)type {
-  return IOSObjectArray_NewArrayWithObjects((jint)count, type, objects);
+  return IOSObjectArray_NewArrayWithObjects((jint)count, type, YES, objects);
 }
 
 + (instancetype)arrayWithObjects:(const id *)objects
                            count:(NSUInteger)count
                             type:(IOSClass *)type {
-  return [IOSObjectArray_NewArrayWithObjects((jint)count, type, objects) autorelease];
+  return [IOSObjectArray_NewArrayWithObjects((jint)count, type, NO, objects) autorelease];
 }
 
 + (instancetype)arrayWithArray:(IOSObjectArray *)array {
@@ -76,11 +81,8 @@ static IOSObjectArray *IOSObjectArray_NewArrayWithObjects(
 
 + (instancetype)arrayWithNSArray:(NSArray *)array type:(IOSClass *)type {
   NSUInteger count = [array count];
-  IOSObjectArray *result = IOSObjectArray_NewArray((jint)count, type);
+  IOSObjectArray *result = IOSObjectArray_NewArray((jint)count, type, NO);
   [array getObjects:result->buffer_ range:NSMakeRange(0, count)];
-  for (NSUInteger i = 0; i < count; i++) {
-    [result->buffer_[i] retain];
-  }
   return [result autorelease];
 }
 
@@ -163,22 +165,26 @@ id IOSObjectArray_Set(
     __unsafe_unretained IOSObjectArray *array, NSUInteger index, __unsafe_unretained id value) {
   IOSArray_checkIndex(array->size_, (jint)index);
   IOSObjectArray_checkValue(array, value);
-  [array->buffer_[index] autorelease];
-  return array->buffer_[index] = RETAIN_(value);
+  if (array->isRetained_) {
+    [array->buffer_[index] autorelease];
+    [value retain];
+  }
+  return array->buffer_[index] = value;
 }
 
 id IOSObjectArray_SetAndConsume(IOSObjectArray *array, NSUInteger index, id value) {
   IOSObjectArray_checkIndexRetainedValue(array->size_, (jint)index, value);
   IOSObjectArray_checkRetainedValue(array, value);
-  [array->buffer_[index] autorelease];
+  if (array->isRetained_) {
+    [array->buffer_[index] autorelease];
+  } else {
+    [value autorelease];
+  }
   return array->buffer_[index] = value;
 }
 
 - (id)replaceObjectAtIndex:(NSUInteger)index withObject:(id)value {
-  IOSArray_checkIndex(size_, (jint)index);
-  IOSObjectArray_checkValue(self, value);
-  [buffer_[index] autorelease];
-  return buffer_[index] = RETAIN_(value);
+  return IOSObjectArray_Set(self, index, value);
 }
 
 - (void)getObjects:(NSObject **)buffer length:(NSUInteger)length {
@@ -230,24 +236,40 @@ void CopyWithMemmove(id __strong *buffer, NSUInteger src, NSUInteger dest, NSUIn
 #endif
 
   if (self == dest) {
-    CopyWithMemmove(buffer_, offset, dstOffset, length);
-  } else if (skipElementCheck) {
-    for (jint i = 0; i < length; i++) {
-      id newElement = buffer_[i + offset];
-      [dest->buffer_[i + dstOffset] autorelease];
-      dest->buffer_[i + dstOffset] = [newElement retain];
+    if (dest->isRetained_) {
+      CopyWithMemmove(buffer_, offset, dstOffset, length);
+    } else {
+      memmove(buffer_ + dstOffset, buffer_ + offset, length * sizeof(id));
     }
   } else {
-    for (jint i = 0; i < length; i++) {
-      id newElement = IOSObjectArray_checkValue(dest, buffer_[i + offset]);
-      [dest->buffer_[i + dstOffset] autorelease];
-      dest->buffer_[i + dstOffset] = [newElement retain];
+    if (dest->isRetained_) {
+      if (skipElementCheck) {
+        for (jint i = 0; i < length; i++) {
+          [dest->buffer_[i + dstOffset] autorelease];
+          dest->buffer_[i + dstOffset] = [buffer_[i + offset] retain];
+        }
+      } else {
+        for (jint i = 0; i < length; i++) {
+          id newElement = IOSObjectArray_checkValue(dest, buffer_[i + offset]);
+          [dest->buffer_[i + dstOffset] autorelease];
+          [newElement retain];
+          dest->buffer_[i + dstOffset] = newElement;
+        }
+      }
+    } else {
+      if (skipElementCheck) {
+        memcpy(dest->buffer_ + dstOffset, buffer_ + offset, length * sizeof(id));
+      } else {
+        for (jint i = 0; i < length; i++) {
+          dest->buffer_[i + dstOffset] = IOSObjectArray_checkValue(dest, buffer_[i + offset]);
+        }
+      }
     }
   }
 }
 
 - (id)copyWithZone:(NSZone *)zone {
-  IOSObjectArray *result = IOSObjectArray_NewArray(size_, elementType_);
+  IOSObjectArray *result = IOSObjectArray_NewArray(size_, elementType_, YES);
   for (jint i = 0; i < size_; i++) {
     result->buffer_[i] = [buffer_[i] retain];
   }
@@ -258,9 +280,21 @@ void CopyWithMemmove(id __strong *buffer, NSUInteger src, NSUInteger dest, NSUIn
   return (NSString *) [buffer_[index] description];
 }
 
+- (id)retain {
+  if (!isRetained_) {
+    for (jint i = 0; i < size_; i++) {
+      [buffer_[i] retain];
+    }
+    isRetained_ = YES;
+  }
+  return [super retain];
+}
+
 - (void)dealloc {
-  for (jint i = 0; i < size_; i++) {
-    [buffer_[i] release];
+  if (isRetained_) {
+    for (jint i = 0; i < size_; i++) {
+      [buffer_[i] release];
+    }
   }
   [super dealloc];
 }
