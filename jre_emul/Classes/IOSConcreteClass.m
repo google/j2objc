@@ -269,7 +269,7 @@ IOSObjectArray *getConstructorsImpl(IOSConcreteClass *clazz, BOOL publicOnly) {
 
 static JavaLangReflectConstructor *GetConstructorImpl(
     IOSConcreteClass *iosClass, IOSObjectArray *paramTypes) {
-  NSString *name = IOSClass_GetTranslatedMethodName(@"init", paramTypes);
+  NSString *name = IOSClass_GetTranslatedMethodName(nil, @"init", paramTypes);
   Method method = JreFindInstanceMethod(iosClass->class_, [name UTF8String]);
   if (method) {
     NSMethodSignature *signature = JreSignatureOrNull(method_getDescription(method));

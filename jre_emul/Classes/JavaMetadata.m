@@ -81,6 +81,37 @@
   return info ? AUTORELEASE([[JavaMethodMetadata alloc] initWithMetadata:info]) : nil;
 }
 
+static jint countArgs(char *s) {
+  jint count = 0;
+  while (*s) {
+    if (*s++ == ':') {
+      ++count;
+    }
+  }
+  return count;
+}
+
+- (JavaMethodMetadata *)findMethodMetadataWithJavaName:(NSString *)javaName
+                                        argCount:(jint)argCount {
+  const char *name = [javaName cStringUsingEncoding:[NSString defaultCStringEncoding]];
+  for (int i = 0; i < data_->methodCount; i++) {
+    const char *cname = data_->methods[i].javaName;
+    if (cname && strcmp(name, cname) == 0
+        && argCount == countArgs((char *)data_->methods[i].selector)) {
+      // Skip leading matches followed by "With", which follow the standard selector
+      // pattern using typed parameters. This method is for resolving mapped methods
+      // which don't follow that pattern, and thus need help from metadata.
+      char buffer[256];
+      strcpy(buffer, cname);
+      strcat(buffer, "With");
+      if (strncmp(buffer, data_->methods[i].selector, strlen(buffer)) != 0) {
+        return [[JavaMethodMetadata alloc] initWithMetadata:&data_->methods[i]];
+      }
+    }
+  }
+  return nil;
+}
+
 - (const J2ObjcFieldInfo *)findFieldInfo:(const char *)fieldName {
   for (int i = 0; i < data_->fieldCount; i++) {
     const J2ObjcFieldInfo *fieldInfo = &data_->fields[i];
@@ -221,6 +252,10 @@
 
 - (NSString *)javaName {
   return data_->javaName ? [NSString stringWithUTF8String:data_->javaName] : nil;
+}
+
+- (NSString *)objcName {
+  return [NSString stringWithUTF8String:data_->selector];
 }
 
 - (int)modifiers {
