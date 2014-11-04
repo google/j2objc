@@ -1098,8 +1098,7 @@ public class StatementGenerator extends TreeVisitor {
       if (stmt instanceof SwitchCase) {
         SwitchCase caseStmt = (SwitchCase) stmt;
         if (!caseStmt.isDefault()) {
-          assert (caseStmt.getExpression() instanceof StringLiteral);
-          caseValues.add(((StringLiteral) caseStmt.getExpression()).getLiteralValue());
+          caseValues.add(getStringConstant(caseStmt.getExpression()));
         }
       }
     }
@@ -1118,7 +1117,7 @@ public class StatementGenerator extends TreeVisitor {
         if (caseStmt.isDefault()) {
           stmt.accept(this);
         } else {
-          int i = caseValues.indexOf(((StringLiteral) caseStmt.getExpression()).getLiteralValue());
+          int i = caseValues.indexOf(getStringConstant(caseStmt.getExpression()));
           assert i >= 0;
           buffer.append("case ");
           buffer.append(i);
@@ -1129,6 +1128,12 @@ public class StatementGenerator extends TreeVisitor {
       }
     }
     buffer.append("}\n}\n");
+  }
+
+  private static String getStringConstant(Expression expr) {
+    Object constantValue = expr.getConstantValue();
+    assert constantValue != null && constantValue instanceof String;
+    return (String) constantValue;
   }
 
   @Override
