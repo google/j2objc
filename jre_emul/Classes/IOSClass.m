@@ -244,7 +244,7 @@ static JavaUtilProperties *prefixMapping;
 // class, return a superclass method if available.
 - (JavaLangReflectMethod *)getMethod:(NSString *)name
                       parameterTypes:(IOSObjectArray *)types {
-  NSString *translatedName = IOSClass_GetTranslatedMethodName(name, types);
+  NSString *translatedName = IOSClass_GetTranslatedMethodName(self, name, types);
   JavaLangReflectMethod *method = [self findMethodWithTranslatedName:translatedName];
   if (method != nil) {
     return method;
@@ -270,7 +270,7 @@ static JavaUtilProperties *prefixMapping;
 - (JavaLangReflectMethod *)getDeclaredMethod:(NSString *)name
                               parameterTypes:(IOSObjectArray *)types {
   JavaLangReflectMethod *result =
-      [self findMethodWithTranslatedName:IOSClass_GetTranslatedMethodName(name, types)];
+      [self findMethodWithTranslatedName:IOSClass_GetTranslatedMethodName(self, name, types)];
   if (!result) {
     @throw AUTORELEASE([[JavaLangNoSuchMethodException alloc] initWithNSString:name]);
   }
@@ -302,8 +302,22 @@ static NSString *GetParameterKeyword(IOSClass *paramType) {
 // Return a method name as it would be modified during j2objc translation.
 // The format is "name" with no parameters, "nameWithType:" for one parameter,
 // and "nameWithType:withType:..." for multiple parameters.
-NSString *IOSClass_GetTranslatedMethodName(NSString *name, IOSObjectArray *parameterTypes) {
+NSString *IOSClass_GetTranslatedMethodName(IOSClass *cls, NSString *name,
+                                           IOSObjectArray *parameterTypes) {
   nil_chk(name);
+  IOSClass *metaCls = cls;
+  while (metaCls) {
+    JavaClassMetadata *metadata = [metaCls getMetadata];
+    if (metadata) {
+      JavaMethodMetadata *methodData =
+          [metadata findMethodMetadataWithJavaName:name
+                                          argCount:parameterTypes ? parameterTypes->size_ : 0];
+      if (methodData) {
+        return [methodData objcName];
+      }
+    }
+    metaCls = [metaCls getSuperclass];
+  }
   jint nParameters = parameterTypes ? parameterTypes->size_ : 0;
   if (nParameters == 0) {
     return name;

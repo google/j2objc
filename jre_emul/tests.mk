@@ -125,6 +125,7 @@ TEST_SOURCES = \
     java/lang/ref/SoftReferenceTest.java \
     java/lang/ref/WeakReferenceTest.java \
     java/lang/reflect/ProxyTest.java \
+    java/lang/reflect/ReflectionTest.java \
     java/util/TreeMapTest.java \
     java/util/WeakHashMapTest.java \
     java/util/regex/MatcherTest.java \

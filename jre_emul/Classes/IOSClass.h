@@ -197,7 +197,7 @@ extern "C" {
 #endif
 
 extern NSString *IOSClass_GetTranslatedMethodName(
-    NSString *name, IOSObjectArray *paramTypes);
+    IOSClass *cls, NSString *name, IOSObjectArray *paramTypes);
 
 FOUNDATION_EXPORT IOSClass *IOSClass_forNameWithNSString_(NSString *className);
 FOUNDATION_EXPORT IOSClass *IOSClass_forNameWithNSString_withBoolean_withJavaLangClassLoader_(

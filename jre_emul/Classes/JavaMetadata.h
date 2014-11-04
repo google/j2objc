@@ -45,6 +45,7 @@
 - (SEL)selector;
 - (NSString *)name;
 - (NSString *)javaName;
+- (NSString *)objcName;
 - (int)modifiers;
 - (id<JavaLangReflectType>)returnType;
 - (IOSObjectArray *)exceptionTypes;
@@ -68,6 +69,8 @@
 
 - (NSString *)qualifiedName;
 - (JavaMethodMetadata *)findMethodMetadata:(NSString *)methodName;
+- (JavaMethodMetadata *)findMethodMetadataWithJavaName:(NSString *)javaName
+                                              argCount:(jint)argCount;
 - (IOSObjectArray *)allMethods;
 - (JavaFieldMetadata *)findFieldMetadata:(const char *)fieldName;
 - (IOSObjectArray *)allFields;
