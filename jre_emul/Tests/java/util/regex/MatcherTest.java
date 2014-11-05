@@ -57,4 +57,31 @@ public class MatcherTest extends TestCase {
     m.useAnchoringBounds(false);
     assertFalse(m.matches());
   }
+
+  /**
+   * Verify that .matches() will attempt to match the entire input. In some
+   * cases this means that .matches() will match a different portion of the
+   * input than .find().
+   */
+  public void testMatchesEntireInput() {
+    Pattern p = Pattern.compile("(\\w{2,9})(foo\\$)?");
+    Matcher m = p.matcher("abcdfoo$");
+
+    // Since .match() must match the entire input, it must use both groups to do
+    // so. The resulting groups are different from what they will be from
+    // calling .find().
+    assertTrue(m.matches());
+    assertEquals("abcdfoo$", m.group(0));
+    assertEquals("abcd", m.group(1));
+    assertEquals("foo$", m.group(2));
+
+    m.reset();
+    // Since the second group is optional (?), .find() will match all the
+    // alpha-numeric characters to the first group and leave the second group
+    // unmatched.
+    assertTrue(m.find());
+    assertEquals("abcdfoo", m.group(0));
+    assertEquals("abcdfoo", m.group(1));
+    assertNull(m.group(2));
+  }
 }
