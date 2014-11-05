@@ -988,7 +988,7 @@ OutOfMemory:
   return z;
 }
 
-float StringToReal_parseFltImpl(NSString *s, int e) {
+jfloat JavaLangStringToReal_parseFltImplWithNSString_withInt_(NSString *s, jint e) {
     const char *str = [s UTF8String];
     if (!str) {
         return 0.0;
@@ -996,7 +996,7 @@ float StringToReal_parseFltImpl(NSString *s, int e) {
     return createFloat(str, e);
 }
 
-double StringToReal_parseDblImpl(NSString *s, int e) {
+jdouble JavaLangStringToReal_parseDblImplWithNSString_withInt_(NSString *s, jint e) {
     const char *str = [s UTF8String];
     if (!str) {
         return 0.0;

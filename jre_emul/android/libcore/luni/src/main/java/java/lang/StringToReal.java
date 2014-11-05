@@ -17,11 +17,6 @@
 
 package java.lang;
 
-/*-[
-float StringToReal_parseFltImpl(NSString *s, int e);
-double StringToReal_parseDblImpl(NSString *s, int e);
-]-*/
-
 /**
  * Used to parse a string and return either a single or double precision
  * floating point number.
@@ -53,9 +48,7 @@ final class StringToReal {
      * represents and multiplying by 10 raised to the power of the of the
      * exponent. Returns the closest double value to the real number, or Double.longBitsToDouble(-1).
      */
-    private static native double parseDblImpl(String s, int e) /*-[
-      return StringToReal_parseDblImpl(s, e);
-    ]-*/;
+    private static native double parseDblImpl(String s, int e);
 
     /**
      * Takes a String and an integer exponent. The String should hold a positive
@@ -64,9 +57,7 @@ final class StringToReal {
      * represents and multiplying by 10 raised to the power of the of the
      * exponent. Returns the closest float value to the real number, or Float.intBitsToFloat(-1).
      */
-    private static native float parseFltImpl(String s, int e) /*-[
-      return StringToReal_parseFltImpl(s, e);
-    ]-*/;
+    private static native float parseFltImpl(String s, int e);
 
     private static NumberFormatException invalidReal(String s, boolean isDouble) {
         throw new NumberFormatException("Invalid " + (isDouble ? "double" : "float") + ": \"" + s + "\"");

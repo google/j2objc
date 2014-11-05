@@ -46,9 +46,7 @@ public final class IntegralToString {
     /**
      * Equivalent to Integer.toString(i, radix).
      */
-    public static native String intToString(int i, int radix) /*-[
-      return IntegralToString_intToString(i, radix);
-    ]-*/;
+    public static native String intToString(int i, int radix);
 
     /**
      * Equivalent to Integer.toString(i).
@@ -67,9 +65,7 @@ public final class IntegralToString {
     /**
      * Equivalent to Long.toString(v, radix).
      */
-    public static native String longToString(long v, int radix) /*-[
-      return IntegralToString_longToString(v, radix);
-    ]-*/;
+    public static native String longToString(long v, int radix);
 
     /**
      * Equivalent to Long.toString(l).
@@ -85,40 +81,21 @@ public final class IntegralToString {
       IntegralToString_convertLong(&sb->delegate_, l);
     ]-*/;
 
-    public static native String intToBinaryString(int i) /*-[
-      return IntegralToString_intToBinaryString(i);
-    ]-*/;
+    public static native String intToBinaryString(int i);
 
-    public static native String longToBinaryString(long v) /*-[
-      return IntegralToString_longToBinaryString(v);
-    ]-*/;
+    public static native String longToBinaryString(long v);
 
-    public static native StringBuilder appendByteAsHex(
-        StringBuilder sb, byte b, boolean upperCase) /*-[
-      return IntegralToString_appendByteAsHex(sb, b, upperCase);
-    ]-*/;
+    public static native StringBuilder appendByteAsHex(StringBuilder sb, byte b, boolean upperCase);
 
-    public static native String byteToHexString(byte b, boolean upperCase) /*-[
-      return IntegralToString_byteToHexString(b, upperCase);
-    ]-*/;
+    public static native String byteToHexString(byte b, boolean upperCase);
 
-    public static native String bytesToHexString(byte[] bytes, boolean upperCase) /*-[
-      return IntegralToString_bytesToHexString(bytes, upperCase);
-    ]-*/;
+    public static native String bytesToHexString(byte[] bytes, boolean upperCase);
 
-    public static native String intToHexString(int i, boolean upperCase, int minWidth) /*-[
-      return IntegralToString_intToHexString(i, upperCase, minWidth);
-    ]-*/;
+    public static native String intToHexString(int i, boolean upperCase, int minWidth);
 
-    public static native String longToHexString(long v) /*-[
-      return IntegralToString_longToHexString(v);
-    ]-*/;
+    public static native String longToHexString(long v);
 
-    public static native String intToOctalString(int i) /*-[
-      return IntegralToString_intToOctalString(i);
-    ]-*/;
+    public static native String intToOctalString(int i);
 
-    public static native String longToOctalString(long v) /*-[
-      return IntegralToString_longToOctalString(v);
-    ]-*/;
+    public static native String longToOctalString(long v);
 }
