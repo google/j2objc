@@ -47,6 +47,8 @@ REGEX_TEST_ROOT = $(APACHE_HARMONY_BASE)/regex/src/test/java
 CONCURRENT_TEST_ROOT = $(APACHE_HARMONY_BASE)/concurrent/src/test/java
 ARCHIVE_TEST_ROOT = $(APACHE_HARMONY_BASE)/archive/src/test/java
 LOGGING_TEST_ROOT = $(APACHE_HARMONY_BASE)/logging/src/test/java
+ICU4C_I18N_ROOT = icu4c/i18n
+ICU4C_COMMON_ROOT = icu4c/common
 
 ANDROID_BASE = android
 ANDROID_CORE_ROOT = $(ANDROID_BASE)/frameworks/base/core/java
@@ -121,8 +123,11 @@ OBJCFLAGS += $(WARNINGS) -DU_DISABLE_RENAMING=1 -fno-strict-overflow \
   -fobjc-abi-version=2 -fobjc-legacy-dispatch $(DEBUGFLAGS) \
   -I/System/Library/Frameworks/ExceptionHandling.framework/Headers \
   -I/System/Library/Frameworks/Security.framework/Headers \
-  -I$(ANDROID_INCLUDE) -I$(ICU4C_I18N_INCLUDE) -I$(ICU4C_COMMON_INCLUDE) \
-  -I$(APPLE_ROOT)
+  -I$(ANDROID_INCLUDE) -I$(APPLE_ROOT)
+
+# Only use the icu headers when building for OSX. For IOS these headers should
+# be available in the SDK.
+FAT_LIB_OSX_FLAGS = -I$(ICU4C_I18N_ROOT) -I$(ICU4C_COMMON_ROOT)
 
 ifdef MAX_STACK_FRAMES
 OBJCFLAGS += -DMAX_STACK_FRAMES=$(MAX_STACK_FRAMES)

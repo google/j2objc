@@ -28,9 +28,17 @@ public final class Matcher implements MatchResult {
     private Pattern pattern;
 
     /**
+     * The address of the native peer.
+     * Uses of this must be manually synchronized to avoid native crashes.
+     */
+    private long address;
+
+    /**
      * Holds the input text.
      */
     private String input;
+    // Need to hold a strong reference to the char buffer passed to uregex.
+    private char[] inputChars;
 
     /**
      * Holds the start of the region, or 0 if the matching should start at the
@@ -43,11 +51,6 @@ public final class Matcher implements MatchResult {
      * go until the end of the input.
      */
     private int regionEnd;
-
-    /**
-     * Holds the position where the next find operation will take place.
-     */
-    private int findPos;
 
     /**
      * Holds the position where the next append operation will take place.
@@ -74,11 +77,6 @@ public final class Matcher implements MatchResult {
      * Reflects whether the bounds of the region are transparent.
      */
     private boolean transparentBounds;
-
-    /**
-     * Progress state from last match.
-     */
-    private int progressFlags;
 
     /**
      * Creates a matcher for a given combination of pattern and input. Both
@@ -199,7 +197,7 @@ public final class Matcher implements MatchResult {
      */
     private Matcher reset(CharSequence input, int start, int end) {
         if (input == null) {
-            throw new IllegalArgumentException();
+            throw new IllegalArgumentException("input == null");
         }
 
         if (start < 0 || end < 0 || start > input.length() || end > input.length() || start > end) {
@@ -207,11 +205,12 @@ public final class Matcher implements MatchResult {
         }
 
         this.input = input.toString();
+        this.inputChars = this.input.toCharArray();
         this.regionStart = start;
         this.regionEnd = end;
+        resetForInput();
 
         matchFound = false;
-        findPos = regionStart;
         appendPos = 0;
 
         return this;
@@ -229,17 +228,34 @@ public final class Matcher implements MatchResult {
      */
     public Matcher usePattern(Pattern pattern) {
         if (pattern == null) {
-            throw new IllegalArgumentException();
+            throw new IllegalArgumentException("pattern == null");
         }
 
         this.pattern = pattern;
 
+        synchronized (this) {
+            if (address != 0) {
+                closeImpl(address);
+                address = 0; // In case openImpl throws.
+            }
+            address = openImpl(pattern.address);
+        }
+
+        if (input != null) {
+            resetForInput();
+        }
+
         matchOffsets = new int[(groupCount() + 1) * 2];
         matchFound = false;
-
-        // If the pattern matches multiple lines, turn off anchoring bounds.
-        anchoringBounds = (pattern.flags() & Pattern.MULTILINE) == 0;
         return this;
+    }
+
+    private void resetForInput() {
+        synchronized (this) {
+            setInputImpl(address, inputChars, regionStart, regionEnd);
+            useAnchoringBoundsImpl(address, anchoringBounds);
+            useTransparentBoundsImpl(address, transparentBounds);
+        }
     }
 
     /**
@@ -263,8 +279,6 @@ public final class Matcher implements MatchResult {
      * walk through the input and replace all matches of the {@code Pattern}
      * with something else.
      *
-     * @param buffer
-     *            the {@code StringBuffer} to append to.
      * @return the {@code StringBuffer}.
      * @throws IllegalStateException
      *             if no successful match has been made.
@@ -312,103 +326,30 @@ public final class Matcher implements MatchResult {
 
     /**
      * Returns the {@link Pattern} instance used inside this matcher.
-     *
-     * @return the {@code Pattern} instance.
      */
     public Pattern pattern() {
         return pattern;
     }
 
     /**
-     * Returns the text that matched a given group of the regular expression.
-     * Explicit capturing groups in the pattern are numbered left to right in order
-     * of their <i>opening</i> parenthesis, starting at 1.
-     * The special group 0 represents the entire match (as if the entire pattern is surrounded
-     * by an implicit capturing group).
-     * For example, "a((b)c)" matching "abc" would give the following groups:
-     * <pre>
-     * 0 "abc"
-     * 1 "bc"
-     * 2 "b"
-     * </pre>
+     * Returns true if there is another match in the input, starting
+     * from the given position. The region is ignored.
      *
-     * <p>An optional capturing group that failed to match as part of an overall
-     * successful match (for example, "a(b)?c" matching "ac") returns null.
-     * A capturing group that matched the empty string (for example, "a(b?)c" matching "ac")
-     * returns the empty string.
-     *
-     * @throws IllegalStateException
-     *             if no successful match has been made.
-     */
-    public native String group(int group) /*-[
-      [self ensureMatch];
-      nil_chk(matchOffsets_);
-      int from = IOSIntArray_Get(matchOffsets_, group * 2);
-      int to = IOSIntArray_Get(matchOffsets_, (group * 2) + 1);
-      // On 64-bit systems NSNotFound gets truncated to -1 when stored in IOSIntArray.
-      static const NSInteger notFound = (sizeof(int) < sizeof(NSInteger)) ? -1 : NSNotFound;
-      if (from == notFound || to == notFound) {
-        return nil;
-      } else {
-        return [nil_chk(input_) substring:from endIndex:to];
-      }
-    ]-*/;
-
-    /**
-     * Returns the text that matched the whole regular expression.
-     *
-     * @return the text.
-     * @throws IllegalStateException
-     *             if no successful match has been made.
-     */
-    public String group() {
-        return group(0);
-    }
-
-    /**
-     * Returns the next occurrence of the {@link Pattern} in the input. The
-     * method starts the search from the given character in the input.
-     *
-     * @param start
-     *            The index in the input at which the find operation is to
-     *            begin. If this is less than the start of the region, it is
-     *            automatically adjusted to that value. If it is beyond the end
-     *            of the region, the method will fail.
-     * @return true if (and only if) a match has been found.
+     * @throws IndexOutOfBoundsException if {@code start < 0 || start > input.length()}
      */
     public boolean find(int start) {
-        findPos = start;
-
-        if (findPos < regionStart) {
-            findPos = regionStart;
-        } else if (findPos >= regionEnd) {
-            matchFound = false;
-            return false;
+        if (start < 0 || start > input.length()) {
+            throw new IndexOutOfBoundsException("start=" + start + "; length=" + input.length());
         }
 
-        matchFound = findImpl(findPos, false);
-        if (matchFound) {
-            findPos = matchOffsets[1];
+        synchronized (this) {
+            matchFound = findImpl(address, start, matchOffsets);
         }
         return matchFound;
     }
 
     /**
-     * Intelligently advances the index of the next find operation, which will
-     * be one character after the last successful match. Properly adjusts for
-     * zero-length matches.
-     */
-    private void advanceFindPos() {
-        if (matchOffsets[1] == matchOffsets[0]) {
-            // The last match was zero-length. Still skip one character.
-            findPos = matchOffsets[1] + 1;
-        } else {
-            findPos = matchOffsets[1];
-        }
-    }
-
-    /**
-     * Returns the next occurrence of the {@link Pattern} in the input. If a
+     * Moves to the next occurrence of the pattern in the input. If a
      * previous match was successful, the method continues the search from the
      * first character following that match in the input. Otherwise it searches
      * either from the region start (if one has been set), or from position 0.
@@ -416,9 +357,8 @@ public final class Matcher implements MatchResult {
      * @return true if (and only if) a match has been found.
      */
     public boolean find() {
-        matchFound = findImpl(findPos, true);
-        if (matchFound) {
-            advanceFindPos();
+        synchronized (this) {
+            matchFound = findNextImpl(address, matchOffsets);
         }
         return matchFound;
     }
@@ -431,9 +371,8 @@ public final class Matcher implements MatchResult {
      * @return true if (and only if) the {@code Pattern} matches.
      */
     public boolean lookingAt() {
-        matchFound = findImpl(0, false);
-        if (matchFound) {
-            advanceFindPos();
+        synchronized (this) {
+            matchFound = lookingAtImpl(address, matchOffsets);
         }
         return matchFound;
     }
@@ -446,53 +385,15 @@ public final class Matcher implements MatchResult {
      *         region.
      */
     public boolean matches() {
-        matchFound = matchesImpl();
-        if (matchFound) {
-            advanceFindPos();
+        synchronized (this) {
+            matchFound = matchesImpl(address, matchOffsets);
         }
         return matchFound;
     }
 
     /**
-     * Returns the index of the first character of the text that matched a given
-     * group.
-     *
-     * @param group
-     *            the group, ranging from 0 to groupCount() - 1, with 0
-     *            representing the whole pattern.
-     * @return the character index.
-     * @throws IllegalStateException
-     *             if no successful match has been made.
-     */
-    public int start(int group) throws IllegalStateException {
-        ensureMatch();
-        return matchOffsets[group * 2];
-    }
-
-    /**
-     * Returns the index of the first character following the text that matched
-     * a given group.
-     *
-     * @param group
-     *            the group, ranging from 0 to groupCount() - 1, with 0
-     *            representing the whole pattern.
-     * @return the character index.
-     * @throws IllegalStateException
-     *             if no successful match has been made.
-     */
-    public int end(int group) {
-        ensureMatch();
-        return matchOffsets[(group * 2) + 1];
-    }
-
-    /**
      * Returns a replacement string for the given one that has all backslashes
      * and dollar signs escaped.
-     *
-     * @param s
-     *            the input string.
-     * @return the input string, with all backslashes and dollar signs having
-     *         been escaped.
      */
     public static String quoteReplacement(String s) {
         StringBuilder result = new StringBuilder(s.length());
@@ -507,45 +408,10 @@ public final class Matcher implements MatchResult {
     }
 
     /**
-     * Returns the index of the first character of the text that matched the
-     * whole regular expression.
-     *
-     * @return the character index.
-     * @throws IllegalStateException
-     *             if no successful match has been made.
-     */
-    public int start() {
-        return start(0);
-    }
-
-    /**
-     * Returns the number of groups in the results, which is always equal to
-     * the number of groups in the original regular expression.
-     *
-     * @return the number of groups.
-     */
-    public int groupCount() {
-        return groupCountImpl();
-    }
-
-    /**
-     * Returns the index of the first character following the text that matched
-     * the whole regular expression.
-     *
-     * @return the character index.
-     * @throws IllegalStateException
-     *             if no successful match has been made.
-     */
-    public int end() {
-        return end(0);
-    }
-
-    /**
      * Converts the current match into a separate {@link MatchResult} instance
      * that is independent from this matcher. The new object is unaffected when
      * the state of this matcher changes.
      *
-     * @return the new {@code MatchResult}.
      * @throws IllegalStateException
      *             if no successful match has been made.
      */
@@ -560,22 +426,21 @@ public final class Matcher implements MatchResult {
      * '^' and '$' meta-characters, otherwise not. Anchoring bounds are enabled
      * by default.
      *
-     * @param value
-     *            the new value for anchoring bounds.
      * @return the {@code Matcher} itself.
      */
     public Matcher useAnchoringBounds(boolean value) {
-        anchoringBounds = value;
+        synchronized (this) {
+            anchoringBounds = value;
+            useAnchoringBoundsImpl(address, value);
+        }
         return this;
     }
 
     /**
-     * Indicates whether this matcher has anchoring bounds enabled. When
+     * Returns true if this matcher has anchoring bounds enabled. When
      * anchoring bounds are enabled, the start and end of the input match the
      * '^' and '$' meta-characters, otherwise not. Anchoring bounds are enabled
      * by default.
-     *
-     * @return true if (and only if) the {@code Matcher} uses anchoring bounds.
      */
     public boolean hasAnchoringBounds() {
         return anchoringBounds;
@@ -587,12 +452,13 @@ public final class Matcher implements MatchResult {
      * region are subject to lookahead and lookbehind, otherwise they are not.
      * Transparent bounds are disabled by default.
      *
-     * @param value
-     *            the new value for transparent bounds.
      * @return the {@code Matcher} itself.
      */
     public Matcher useTransparentBounds(boolean value) {
-        transparentBounds = value;
+        synchronized (this) {
+            transparentBounds = value;
+            useTransparentBoundsImpl(address, value);
+        }
         return this;
     }
 
@@ -610,145 +476,156 @@ public final class Matcher implements MatchResult {
     }
 
     /**
-     * Indicates whether this matcher has transparent bounds enabled. When
+     * Returns true if this matcher has transparent bounds enabled. When
      * transparent bounds are enabled, the parts of the input outside the region
      * are subject to lookahead and lookbehind, otherwise they are not.
      * Transparent bounds are disabled by default.
-     *
-     * @return true if (and only if) the {@code Matcher} uses anchoring bounds.
      */
     public boolean hasTransparentBounds() {
         return transparentBounds;
     }
 
     /**
-     * Returns this matcher's region start, that is, the first character that is
+     * Returns this matcher's region start, that is, the index of the first character that is
      * considered for a match.
-     *
-     * @return the start of the region.
      */
     public int regionStart() {
         return regionStart;
     }
 
     /**
-     * Returns this matcher's region end, that is, the first character that is
+     * Returns this matcher's region end, that is, the index of the first character that is
      * not considered for a match.
-     *
-     * @return the end of the region.
      */
     public int regionEnd() {
         return regionEnd;
     }
 
     /**
-     * Indicates whether more input might change a successful match into an
-     * unsuccessful one.
-     *
-     * @return true if (and only if) more input might change a successful match
-     *         into an unsuccessful one.
+     * Returns true if the most recent match succeeded and additional input could cause
+     * it to fail. If this method returns false and a match was found, then more input
+     * might change the match but the match won't be lost. If a match was not found,
+     * then requireEnd has no meaning.
      */
     public boolean requireEnd() {
-        return requireEndImpl();
+        synchronized (this) {
+            return requireEndImpl(address);
+        }
     }
 
     /**
-     * Indicates whether the last match hit the end of the input.
-     *
-     * @return true if (and only if) the last match hit the end of the input.
+     * Returns true if the most recent matching operation attempted to access
+     * additional text beyond the available input, meaning that additional input
+     * could change the results of the match.
      */
     public boolean hitEnd() {
-        return hitEndImpl();
+        synchronized (this) {
+            return hitEndImpl(address);
+        }
     }
 
-    private native boolean findImpl(int start, boolean continuing) /*-[
-      NSRegularExpression *regex = (NSRegularExpression *) self->pattern__->nativePattern_;
-      NSMatchingOptions options = 0;
-      if (!self->anchoringBounds_) {
-        options |= NSMatchingWithoutAnchoringBounds;
-      }
-      if (!continuing && self->transparentBounds_) {
-        options |= NSMatchingWithTransparentBounds;
-      }
-      NSRange range = NSMakeRange(self->regionStart__, self->regionEnd__ - self->regionStart__);
-
-      // Use enumerateMatchesInString to get progress state.
-      __block BOOL matched = NO;
-      [regex enumerateMatchesInString:self->input_
-                              options:options
-                                range:range
-                           usingBlock:^(NSTextCheckingResult *match,
-                                        NSMatchingFlags flags,
-                                        BOOL *stop) {
-        if (match.range.location < (NSUInteger) start) {
-          *stop = NO;
-        } else {
-          self->progressFlags_ = flags;
-
-          // Update offsets.
-          jint nGroups = (jint)[match numberOfRanges];
-          for (jint i = 0; i < nGroups; i++) {
-            NSRange matchRange = [match rangeAtIndex:i];
-            [self->matchOffsets_ replaceIntAtIndex:i * 2
-                                           withInt:(jint) matchRange.location];
-            [self->matchOffsets_
-                replaceIntAtIndex:(i * 2) + 1
-                          withInt:(jint) (matchRange.location + matchRange.length)];
-          }
-
-          matched = [match range].location != NSNotFound;
-          *stop = YES;
+    @Override protected void finalize() throws Throwable {
+        try {
+            synchronized (this) {
+                closeImpl(address);
+            }
+        } finally {
+            super.finalize();
         }
-      }];
+    }
 
-      return matched;
-    ]-*/;
+    /**
+     * Returns a string representing this {@code Matcher}.
+     * The format of this string is unspecified.
+     */
+    @Override public String toString() {
+        return getClass().getName() + "[pattern=" + pattern() +
+            " region=" + regionStart() + "," + regionEnd() +
+            " lastmatch=" + (matchFound ? group() : "") + "]";
+    }
 
-    private native int groupCountImpl() /*-[
-      NSRegularExpression *regex = (NSRegularExpression *) self->pattern__->nativePattern_;
-      return (int) regex.numberOfCaptureGroups;
-    ]-*/;
+    /**
+     * {@inheritDoc}
+     *
+     * @throws IllegalStateException if no successful match has been made.
+     */
+    public int end() {
+        return end(0);
+    }
 
-    private native boolean hitEndImpl() /*-[
-      return (self->progressFlags_ | NSMatchingHitEnd) > 0;
-    ]-*/;
+    /**
+     * {@inheritDoc}
+     *
+     * @throws IllegalStateException if no successful match has been made.
+     */
+    public int end(int group) {
+        ensureMatch();
+        return matchOffsets[(group * 2) + 1];
+    }
 
-    private native boolean matchesImpl() /*-[
-      NSRegularExpression *regex = (NSRegularExpression *) self->pattern__->nativePattern_;
-      NSUInteger patternFlags = [regex options];
-      NSMatchingOptions options = 0;
-      if (!self->anchoringBounds_) {
-        options |= NSMatchingWithoutAnchoringBounds;
-      }
-      if (self->transparentBounds_ ||
-          (patternFlags & NSRegularExpressionAnchorsMatchLines) > 0) {
-        options |= NSMatchingWithTransparentBounds;
-      }
-      NSUInteger length = self->regionEnd__ - self->regionStart__;
-      NSRange searchRange = NSMakeRange(self->regionStart__, length);
-      NSTextCheckingResult *match =
-          [regex firstMatchInString:self->input_
-                            options:options
-                              range:searchRange];
-      if (match == nil) {
-        return NO;
-      }
+    /**
+     * {@inheritDoc}
+     *
+     * @throws IllegalStateException if no successful match has been made.
+     */
+    public String group() {
+        return group(0);
+    }
 
-      // Update offsets.
-      jint nGroups = (jint)[match numberOfRanges];
-      for (jint i = 0; i < nGroups; i++) {
-        NSRange matchRange = [match rangeAtIndex:i];
-        [self->matchOffsets_ replaceIntAtIndex:i * 2
-                                       withInt:(jint) matchRange.location];
-        [self->matchOffsets_
-            replaceIntAtIndex:(i * 2) + 1
-                      withInt:(jint) (matchRange.location + matchRange.length)];
-      }
-      NSRange range = [match range];
-      return range.location == (NSUInteger) self->regionStart__ && range.length == length;
-    ]-*/;
+    /**
+     * {@inheritDoc}
+     *
+     * @throws IllegalStateException if no successful match has been made.
+     */
+    public String group(int group) {
+        ensureMatch();
+        int from = matchOffsets[group * 2];
+        int to = matchOffsets[(group * 2) + 1];
+        if (from == -1 || to == -1) {
+            return null;
+        } else {
+            return input.substring(from, to);
+        }
+    }
 
-    private native boolean requireEndImpl() /*-[
-      return (self->progressFlags_ | NSMatchingRequiredEnd) > 0;
-    ]-*/;
+    /**
+     * {@inheritDoc}
+     */
+    public int groupCount() {
+        synchronized (this) {
+            return groupCountImpl(address);
+        }
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * @throws IllegalStateException if no successful match has been made.
+     */
+    public int start() {
+        return start(0);
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * @throws IllegalStateException if no successful match has been made.
+     */
+    public int start(int group) throws IllegalStateException {
+        ensureMatch();
+        return matchOffsets[group * 2];
+    }
+
+    private static native void closeImpl(long addr);
+    private static native boolean findImpl(long addr, int startIndex, int[] offsets);
+    private static native boolean findNextImpl(long addr, int[] offsets);
+    private static native int groupCountImpl(long addr);
+    private static native boolean hitEndImpl(long addr);
+    private static native boolean lookingAtImpl(long addr, int[] offsets);
+    private static native boolean matchesImpl(long addr, int[] offsets);
+    private static native long openImpl(long patternAddr);
+    private static native boolean requireEndImpl(long addr);
+    private static native void setInputImpl(long addr, char[] s, int start, int end);
+    private static native void useAnchoringBoundsImpl(long addr, boolean value);
+    private static native void useTransparentBoundsImpl(long addr, boolean value);
 }

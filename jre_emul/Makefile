@@ -51,6 +51,8 @@ IOS_OBJS = \
 	java_lang_IntegralToString.o \
 	java_lang_RealToString.o \
 	java_lang_StringToReal.o \
+	java_util_regex_Matcher.o \
+	java_util_regex_Pattern.o \
 	java/lang/reflect/ExecutableMember.o \
 	java/lang/reflect/ParameterizedTypeImpl.o \
 	java/lang/reflect/TypeVariableImpl.o
