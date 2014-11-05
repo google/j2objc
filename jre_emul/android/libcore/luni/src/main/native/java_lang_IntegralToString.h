@@ -19,22 +19,7 @@
 
 #include "java/lang/AbstractStringBuilder.h"
 
-@class IOSByteArray;
-@class JavaLangStringBuilder;
-
-NSString *IntegralToString_intToString(int i, int radix);
 NSString *IntegralToString_convertInt(JreStringBuilder *sb, int i);
-NSString *IntegralToString_longToString(long long v, int radix);
 NSString *IntegralToString_convertLong(JreStringBuilder *sb, long long n);
-NSString *IntegralToString_intToBinaryString(int i);
-NSString *IntegralToString_longToBinaryString(long long v);
-JavaLangStringBuilder *IntegralToString_appendByteAsHex(
-    JavaLangStringBuilder *sb, char b, BOOL upperCase);
-NSString *IntegralToString_byteToHexString(char b, BOOL upperCase);
-NSString *IntegralToString_bytesToHexString(IOSByteArray *bytes, BOOL upperCase);
-NSString *IntegralToString_intToHexString(int i, BOOL upperCase, int minWidth);
-NSString *IntegralToString_longToHexString(long long v);
-NSString *IntegralToString_intToOctalString(int i);
-NSString *IntegralToString_longToOctalString(long long v);
 
 #endif // _java_lang_IntegralToString_H_
