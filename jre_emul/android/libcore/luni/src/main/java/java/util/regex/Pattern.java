@@ -16,11 +16,9 @@
 
 package java.util.regex;
 
+import java.io.IOException;
+import java.io.ObjectInputStream;
 import java.io.Serializable;
-
-/*-[
-#import "java/util/regex/PatternSyntaxException.h"
-]-*/
 
 /**
  * Patterns are compiled regular expressions. In many cases, convenience methods such as
@@ -84,23 +82,30 @@ import java.io.Serializable;
  * </table>
  * <p>Most of the time, the built-in character classes are more useful:
  * <table>
- * <tr> <td> \d </td> <td>Any digit character.</td> </tr>
- * <tr> <td> \D </td> <td>Any non-digit character.</td> </tr>
- * <tr> <td> \s </td> <td>Any whitespace character.</td> </tr>
- * <tr> <td> \S </td> <td>Any non-whitespace character.</td> </tr>
- * <tr> <td> \w </td> <td>Any word character.</td> </tr>
- * <tr> <td> \W </td> <td>Any non-word character.</td> </tr>
+ * <tr> <td> \d </td> <td>Any digit character (see note below).</td> </tr>
+ * <tr> <td> \D </td> <td>Any non-digit character (see note below).</td> </tr>
+ * <tr> <td> \s </td> <td>Any whitespace character (see note below).</td> </tr>
+ * <tr> <td> \S </td> <td>Any non-whitespace character (see note below).</td> </tr>
+ * <tr> <td> \w </td> <td>Any word character (see note below).</td> </tr>
+ * <tr> <td> \W </td> <td>Any non-word character (see note below).</td> </tr>
  * <tr> <td> \p{<i>NAME</i>} </td> <td> Any character in the class with the given <i>NAME</i>. </td> </tr>
  * <tr> <td> \P{<i>NAME</i>} </td> <td> Any character <i>not</i> in the named class. </td> </tr>
  * </table>
- * <p>There are a variety of named classes:
+ * <p>Note that these built-in classes don't just cover the traditional ASCII range. For example,
+ * <code>\w</code> is equivalent to the character class <code>[\p{Ll}\p{Lu}\p{Lt}\p{Lo}\p{Nd}]</code>.
+ * For more details see <a href="http://www.unicode.org/reports/tr18/#Compatibility_Properties">Unicode TR-18</a>,
+ * and bear in mind that the set of characters in each class can vary between Unicode releases.
+ * If you actually want to match only ASCII characters, specify the explicit characters you want;
+ * if you mean 0-9 use <code>[0-9]</code> rather than <code>\d</code>, which would also include
+ * Gurmukhi digits and so forth.
+ * <p>There are also a variety of named classes:
  * <ul>
  * <li><a href="../../lang/Character.html#unicode_categories">Unicode category names</a>,
  * prefixed by {@code Is}. For example {@code \p{IsLu}} for all uppercase letters.
  * <li>POSIX class names. These are 'Alnum', 'Alpha', 'ASCII', 'Blank', 'Cntrl', 'Digit',
  * 'Graph', 'Lower', 'Print', 'Punct', 'Upper', 'XDigit'.
- * <li>Unicode block names, as used by {@link java.lang.Character.UnicodeBlock#forName} prefixed
- * by {@code In}. For example {@code \p{InHebrew}} for all characters in the Hebrew block.
+ * <li>Unicode block names, as accepted as input to {@link java.lang.Character.UnicodeBlock#forName},
+ * prefixed by {@code In}. For example {@code \p{InHebrew}} for all characters in the Hebrew block.
  * <li>Character method names. These are all non-deprecated methods from {@link java.lang.Character}
  * whose name starts with {@code is}, but with the {@code is} replaced by {@code java}.
  * For example, {@code \p{javaLowerCase}}.
@@ -196,22 +201,24 @@ import java.io.Serializable;
  * <p>Either set of flags may be empty. For example, {@code (?i-m)} would turn on case-insensitivity
  * and turn off multiline mode, {@code (?i)} would just turn on case-insensitivity,
  * and {@code (?-m)} would just turn off multiline mode.
- * <p>Note that on j2objc and Android, {@code UNICODE_CASE} is always on:
- * case-insensitive matching will always be Unicode-aware.
+ * <p>Note that on Android, {@code UNICODE_CASE} is always on: case-insensitive matching will
+ * always be Unicode-aware.
  * <p>There are two other flags not settable via this mechanism: {@link #CANON_EQ} and
  * {@link #LITERAL}. Attempts to use {@link #CANON_EQ} on Android will throw an exception.
  * </span>
  *
  * <h3>Implementation notes</h3>
  *
- * <p>The regular expression implementation used in j2objc is provided by
- * NSRegularExpression. The notation for regular expressions is defined by
- * ICU <a href="http://www.icu-project.org">ICU</a>. This definition is
- * mostly a superset of those used in other Java language implementations.
- * This means that existing applications will normally work as expected, but
- * in rare cases j2objc may accept a regular expression that is not accepted
- * by Java implementations.  Android also uses ICU, so j2objc and Android
- * should accept the same regular expressions.
+ * <p>The regular expression implementation used in Android is provided by
+ * <a href="http://www.icu-project.org">ICU</a>. The notation for the regular
+ * expressions is mostly a superset of those used in other Java language
+ * implementations. This means that existing applications will normally work as
+ * expected, but in rare cases Android may accept a regular expression that is
+ * not accepted by other implementations.
+ *
+ * <p>In some cases, Android will recognize that a regular expression is a simple
+ * special case that can be handled more efficiently. This is true of both the convenience methods
+ * in {@code String} and the methods in {@code Pattern}.
  *
  * @see Matcher
  */
@@ -221,16 +228,14 @@ public final class Pattern implements Serializable {
 
     /**
      * This constant specifies that a pattern matches Unix line endings ('\n')
-     * only against the '.', '^', and '$' meta characters. Corresponds to
-     * {@code (?d)}.
+     * only against the '.', '^', and '$' meta characters. Corresponds to {@code (?d)}.
      */
     public static final int UNIX_LINES = 0x01;
 
     /**
      * This constant specifies that a {@code Pattern} is matched
      * case-insensitively. That is, the patterns "a+" and "A+" would both match
-     * the string "aAaAaA". See {@link #UNICODE_CASE}. Corresponds to
-     * {@code (?i)}.
+     * the string "aAaAaA". See {@link #UNICODE_CASE}. Corresponds to {@code (?i)}.
      */
     public static final int CASE_INSENSITIVE = 0x02;
 
@@ -244,8 +249,7 @@ public final class Pattern implements Serializable {
     /**
      * This constant specifies that the meta characters '^' and '$' match only
      * the beginning and end of an input line, respectively. Normally, they
-     * match the beginning and the end of the complete input. Corresponds to
-     * {@code (?m)}.
+     * match the beginning and the end of the complete input. Corresponds to {@code (?m)}.
      */
     public static final int MULTILINE = 0x08;
 
@@ -263,11 +267,10 @@ public final class Pattern implements Serializable {
     public static final int DOTALL = 0x20;
 
     /**
-     * This constant specifies that a {@code Pattern} that uses case-
-     * insensitive matching will use Unicode case folding. On j2objc and
-     * Android, {@code UNICODE_CASE} is always on: case-insensitive matching
-     * will always be Unicode-aware. If your code is intended to be portable
-     * and uses case-insensitive matching on non-ASCII characters, you should
+     * This constant specifies that a {@code Pattern} that uses case-insensitive matching
+     * will use Unicode case folding. On Android, {@code UNICODE_CASE} is always on:
+     * case-insensitive matching will always be Unicode-aware. If your code is intended to
+     * be portable and uses case-insensitive matching on non-ASCII characters, you should
      * use this flag. Corresponds to {@code (?u)}.
      */
     public static final int UNICODE_CASE = 0x40;
@@ -275,17 +278,14 @@ public final class Pattern implements Serializable {
     /**
      * This constant specifies that a character in a {@code Pattern} and a
      * character in the input string only match if they are canonically
-     * equivalent. It is (currently) not supported in Android or j2objc.
+     * equivalent. It is (currently) not supported in Android.
      */
     public static final int CANON_EQ = 0x80;
-
-    private static final int ALL_FLAGS = 0xFF;
 
     private final String pattern;
     private final int flags;
 
-    // NSRegularExpression instance.
-    Object nativePattern;
+    transient long address;
 
     /**
      * Returns a {@link Matcher} for this pattern applied to the given {@code input}.
@@ -382,11 +382,12 @@ public final class Pattern implements Serializable {
     }
 
     private Pattern(String pattern, int flags) throws PatternSyntaxException {
-        if ((flags & ~ALL_FLAGS) != 0) {
-            throw new IllegalArgumentException("unknown flag");
-        }
         if ((flags & CANON_EQ) != 0) {
             throw new UnsupportedOperationException("CANON_EQ flag not supported");
+        }
+        int supportedFlags = CASE_INSENSITIVE | COMMENTS | DOTALL | LITERAL | MULTILINE | UNICODE_CASE | UNIX_LINES;
+        if ((flags & ~supportedFlags) != 0) {
+            throw new IllegalArgumentException("Unsupported flags: " + (flags & ~supportedFlags));
         }
         this.pattern = pattern;
         this.flags = flags;
@@ -403,39 +404,11 @@ public final class Pattern implements Serializable {
             icuPattern = quote(pattern);
         }
 
-        int iosFlags = javaToIosFlags();
-        compileImpl(icuPattern, iosFlags);
-    }
+        // These are the flags natively supported by ICU.
+        // They even have the same value in native code.
+        int icuFlags = flags & (CASE_INSENSITIVE | COMMENTS | MULTILINE | DOTALL | UNIX_LINES);
 
-    /**
-     * Convert Java flags into NSRegularExpression equivalents.  The
-     * constant expressions are documented in the NSRegularExpression
-     * class reference.
-     */
-    private int javaToIosFlags() {
-        int iosFlags = 0;
-        if ((flags & CASE_INSENSITIVE) > 0) {
-            iosFlags |= 1 << 0; // NSRegularExpressionCaseInsensitive
-        }
-        if ((flags & COMMENTS) > 0) {
-            iosFlags |= 1 << 1; // NSRegularExpressionAllowCommentsAndWhitespace
-        }
-        if ((flags & LITERAL) > 0) {
-            iosFlags |= 1 << 2; // NSRegularExpressionIgnoreMetacharacters
-        }
-        if ((flags & DOTALL) > 0) {
-            iosFlags |= 1 << 3; // NSRegularExpressionDotMatchesLineSeparators
-        }
-        if ((flags & MULTILINE) > 0) {
-            iosFlags |= 1 << 4; // NSRegularExpressionAnchorsMatchLines
-        }
-        if ((flags & UNIX_LINES) > 0) {
-            iosFlags |= 1 << 5; // NSRegularExpressionUseUnixLineSeparators
-        }
-        if ((flags & UNICODE_CASE) > 0) {
-            iosFlags |= 1 << 6; // NSRegularExpressionUseUnicodeWordBoundaries
-        }
-        return iosFlags;
+        address = compileImpl(icuPattern, icuFlags);
     }
 
     /**
@@ -472,36 +445,17 @@ public final class Pattern implements Serializable {
 
     @Override protected void finalize() throws Throwable {
         try {
-            releaseNativePattern();
+            closeImpl(address);
         } finally {
             super.finalize();
         }
     }
 
-    private native void compileImpl(String icuPattern, int iosFlags)
-	throws PatternSyntaxException /*-[
-      NSError *error = NULL;
-      NSRegularExpression *regex =
-          [NSRegularExpression regularExpressionWithPattern:icuPattern
-                                                    options:iosFlags
-                                                      error:&error];
-      if (error != NULL) {
-        id exception = AUTORELEASE([[JavaUtilRegexPatternSyntaxException alloc]
-                                   initWithNSString:[error localizedDescription]
-                                       withNSString:icuPattern
-                                            withInt:-1]);
-        @throw exception;
-      }
-#if ! __has_feature(objc_arc)
-      [regex retain];
-#endif
-      self->nativePattern_ = regex;
-    ]-*/;
+    private void readObject(ObjectInputStream s) throws IOException, ClassNotFoundException {
+        s.defaultReadObject();
+        compile();
+    }
 
-    native void releaseNativePattern() /*-[
-#if ! __has_feature(objc_arc)
-      [self->nativePattern_ release];
-#endif
-      nativePattern_ = 0;
-    ]-*/;
+    private static native void closeImpl(long addr);
+    private static native long compileImpl(String regex, int flags);
 }

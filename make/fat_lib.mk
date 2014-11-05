@@ -19,6 +19,7 @@
 #   FAT_LIB_COMPILE
 # The including makefile may define the following optional variables:
 #   FAT_LIB_PRECOMPILED_HEADER
+#   FAT_LIB_OSX_FLAGS
 #
 # This file defines the following to be used by the including file:
 #   FAT_LIB_LIBRARY
@@ -39,7 +40,7 @@ FAT_LIB_MACOSX_SDK_DIR := $(shell bash $(J2OBJC_ROOT)/scripts/sysroot_path.sh)
 FAT_LIB_IPHONE_SDK_DIR := $(shell bash $(J2OBJC_ROOT)/scripts/sysroot_path.sh --iphoneos)
 FAT_LIB_SIMULATOR_SDK_DIR := $(shell bash $(J2OBJC_ROOT)/scripts/sysroot_path.sh --iphonesimulator)
 
-FAT_LIB_MACOSX_FLAGS = -isysroot $(FAT_LIB_MACOSX_SDK_DIR)
+FAT_LIB_MACOSX_FLAGS = $(FAT_LIB_OSX_FLAGS) -isysroot $(FAT_LIB_MACOSX_SDK_DIR)
 FAT_LIB_IPHONE_FLAGS = -arch armv7 -miphoneos-version-min=5.0 -isysroot $(FAT_LIB_IPHONE_SDK_DIR)
 FAT_LIB_IPHONE64_FLAGS = -arch arm64 -miphoneos-version-min=5.0 -isysroot $(FAT_LIB_IPHONE_SDK_DIR)
 FAT_LIB_IPHONEV7S_FLAGS = -arch armv7s -miphoneos-version-min=5.0 -isysroot $(FAT_LIB_IPHONE_SDK_DIR)
