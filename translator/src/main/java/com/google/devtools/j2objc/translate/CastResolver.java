@@ -155,8 +155,8 @@ public class CastResolver extends TreeVisitor {
 
   private ITypeBinding getDeclaredType(Expression expr) {
     IVariableBinding var = TreeUtil.getVariableBinding(expr);
-    if (var != null && var.getVariableDeclaration().getType().isTypeVariable()) {
-      return Types.resolveIOSType("id");
+    if (var != null) {
+      return var.getVariableDeclaration().getType();
     }
     switch (expr.getKind()) {
       case CLASS_INSTANCE_CREATION:

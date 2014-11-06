@@ -29,6 +29,39 @@ public class CastResolverTest extends GenerationTest {
     String translation = translateSourceFile(
         "class Test { int foo; static class Other<T extends Test> {"
         + " int test(T t) { return t.foo + t.foo; } } }", "Test", "Test.m");
-    assertTranslation(translation, "return ((Test *) nil_chk(t))->foo_ + ((Test *) t)->foo_;");
+    assertTranslation(translation, "return ((Test *) nil_chk(t))->foo_ + t->foo_;");
+  }
+
+  public void testDerivedTypeVariableInvocation() throws IOException {
+    String translation = translateSourceFile(
+        "public class Test {"
+        + "  static class Base <T extends BaseFoo> {"
+        + "    protected T foo;"
+        + "    public Base(T foo) {"
+        + "      this.foo = foo;"
+        + "    }"
+        + "  }"
+        + "  static class BaseFoo {"
+        + "    void baseMethod() {}"
+        + "  }"
+        + "  static class Derived extends Base<DerivedFoo> {"
+        + "    public Derived(DerivedFoo foo) {"
+        + "      super(foo);"
+        + "    }"
+        + "    int test() {"
+        + "      foo.baseMethod();"
+        + "      foo.derivedMethod();"
+        + "      return foo.myInt;"
+        + "    }"
+        + "  }"
+        + "  static class DerivedFoo extends BaseFoo {"
+        + "    int myInt;"
+        + "    void derivedMethod() {}"
+        + "  }"
+        + "}", "Test", "Test.m");
+    // Verify foo.derivedMethod() has cast of appropriate type variable.
+    assertTranslation(translation, "[((Test_DerivedFoo *) foo_) derivedMethod];");
+    // Verify that a cast can be added to a QualifiedName node.
+    assertTranslation(translation, "return ((Test_DerivedFoo *) foo_)->myInt_;");
   }
 }

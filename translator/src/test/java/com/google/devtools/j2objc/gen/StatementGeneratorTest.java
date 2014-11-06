@@ -1666,35 +1666,6 @@ public class StatementGeneratorTest extends GenerationTest {
     assertTranslation(translation, "[nil_chk(o) hash];");
   }
 
-  public void testDerivedTypeVariableInvocation() throws IOException {
-    String translation = translateSourceFile(
-        "public class Test {"
-        + "  static class Base <T extends BaseFoo> {"
-        + "    protected T foo;"
-        + "    public Base(T foo) {"
-        + "      this.foo = foo;"
-        + "    }"
-        + "  }"
-        + "  static class BaseFoo {"
-        + "    void baseMethod() {}"
-        + "  }"
-        + "  static class Derived extends Base<DerivedFoo> {"
-        + "    public Derived(DerivedFoo foo) {"
-        + "      super(foo);"
-        + "    }"
-        + "    void test() {"
-        + "      foo.baseMethod();"
-        + "      foo.derivedMethod();"
-        + "    }"
-        + "  }"
-        + "  static class DerivedFoo extends BaseFoo {"
-        + "    void derivedMethod() {}"
-        + "  }"
-        + "}", "Test", "Test.m");
-    // Verify foo.derivedMethod() has cast of appropriate type variable.
-    assertTranslation(translation, "[((Test_DerivedFoo *) foo_) derivedMethod];");
-  }
-
   // Verify that casting from a floating point primitive to an integral primitive
   // uses the right cast macro.
   public void testFloatingPointCasts() throws IOException {
