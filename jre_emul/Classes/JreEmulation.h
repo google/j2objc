@@ -240,22 +240,22 @@ SHIFT_ASSIGN_OPERATORS_DEFN(Short, jshort, uint32_t, 0x1f)
 #define BOXED_INC_AND_DEC(CNAME, VALUE_METHOD, TYPE) \
   static inline TYPE *PreIncr##CNAME(TYPE **value) { \
     nil_chk(*value); \
-    return *value = [TYPE valueOfWith##CNAME:[*value VALUE_METHOD] + 1]; \
+    return *value = TYPE##_valueOfWith##CNAME##_([*value VALUE_METHOD] + 1); \
   } \
   static inline TYPE *PostIncr##CNAME(TYPE **value) { \
     nil_chk(*value); \
     TYPE *original = *value; \
-    *value = [TYPE valueOfWith##CNAME:[*value VALUE_METHOD] + 1]; \
+    *value = TYPE##_valueOfWith##CNAME##_([*value VALUE_METHOD] + 1); \
     return original; \
   } \
   static inline TYPE *PreDecr##CNAME(TYPE **value) { \
     nil_chk(*value); \
-    return *value = [TYPE valueOfWith##CNAME:[*value VALUE_METHOD] - 1]; \
+    return *value = TYPE##_valueOfWith##CNAME##_([*value VALUE_METHOD] - 1); \
   } \
   static inline TYPE *PostDecr##CNAME(TYPE **value) { \
     nil_chk(*value); \
     TYPE *original = *value; \
-    *value = [TYPE valueOfWith##CNAME:[*value VALUE_METHOD] - 1]; \
+    *value = TYPE##_valueOfWith##CNAME##_([*value VALUE_METHOD] - 1); \
     return original; \
   }
 
