@@ -626,7 +626,7 @@ public class ObjectiveCImplementationGenerator extends ObjectiveCSourceFileGener
         }
         // We expect native functions to be defined externally.
         if (!Modifier.isNative(modifiers)) {
-          print("static ");
+          print("__attribute__((unused)) static ");
         }
         println(getFunctionSignature(function) + ";");
       }

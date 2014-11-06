@@ -188,9 +188,13 @@ public class Functionizer extends TreeVisitor {
       function = makeInstanceFunction(node);
     }
     if (function != null) {
-      setFunctionCaller(node, function);
       List<BodyDeclaration> declarationList = TreeUtil.asDeclarationSublist(node);
       declarationList.add(function);
+      if (BindingUtil.isStatic(binding) && Options.removeClassMethods()) {
+        node.remove();
+      } else {
+        setFunctionCaller(node, function);
+      }
       ErrorUtil.functionizedMethod();
     }
   }
