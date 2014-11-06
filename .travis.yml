@@ -1,9 +1,5 @@
-# j2objc is a mixed-language project, but since it builds with make,
-# the c language support works best.
-language: c
+# j2objc is a mixed-language project, but setting objective-c forces the OS to OSX.
+language: objective-c
 compiler: clang
 os: osx
-jdk:
-  - openjdk7
-  - openjdk6
 script: make dist && make test
