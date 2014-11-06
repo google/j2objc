@@ -44,6 +44,8 @@
 #import "java_lang_IntegralToString.h"
 #import "java_lang_RealToString.h"
 
+#define JavaLangString_serialVersionUID -6849794470754667710LL
+
 @implementation NSString (JavaString)
 
 id makeException(Class exceptionClass) {
@@ -1004,7 +1006,7 @@ NSString *NSString_formatWithJavaUtilLocale_withNSString_withNSObjectArray_(
   static J2ObjcFieldInfo fields[] = {
     { "CASE_INSENSITIVE_ORDER_", NULL, 0x19, "Ljava/util/Comparator;", &NSString_CASE_INSENSITIVE_ORDER_ },
     { "serialPersistentFields_", NULL, 0x1a, "[Ljava/io/ObjectStreamField;", &NSString_serialPersistentFields_ },
-    { "serialVersionUID_", NULL, 0x1a, "J", NULL, .constantValue.asLong = NSString_serialVersionUID },
+    { "serialVersionUID_", NULL, 0x1a, "J", NULL, .constantValue.asLong = JavaLangString_serialVersionUID },
   };
   static J2ObjcClassInfo _JavaLangString = { "String", "java.lang", NULL, 0x1, 46, methods, 3, fields, 0, NULL};
   return &_JavaLangString;
