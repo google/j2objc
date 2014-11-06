@@ -2,4 +2,5 @@
 language: objective-c
 compiler: clang
 os: osx
+jdk: openjdk7
 script: make dist && make test
