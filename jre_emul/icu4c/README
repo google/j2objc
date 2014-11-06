@@ -1,0 +1,13 @@
+URL:     http://icu-project.org/
+Version: 54.1
+License: X License (old version). For license pedigree see the
+         ICU FAQ at http://icu-project.org/userguide/icufaq.html
+License File: LICENSE
+
+Description:
+
+These are the minimal set of include files needed to resolve references
+to the ICU4C (International Components for Unicode, for C/C++) library
+in OSX when building the J2ObjC JRE emulation library.
+
+Modifications: none
