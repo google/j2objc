@@ -75,6 +75,10 @@ Rewrite expressions that would produce unsequenced modification errors.
 .BI \-\-final\-methods\-as\-functions
 Call final methods as C functions, when possible.
 .TP
+.BI \-\-no\-class\-methods
+Don't emit class methods for static Java methods.
+(static methods are converted to functions)
+.TP
 .BI \-\-generate\-deprecated
 Generate deprecated attributes for deprecated methods, classes, and interfaces.
 .TP
