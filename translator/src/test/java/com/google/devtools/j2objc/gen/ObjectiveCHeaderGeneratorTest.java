@@ -42,7 +42,8 @@ public class ObjectiveCHeaderGeneratorTest extends GenerationTest {
         + "enum Abcd { A, B, C; }"
         + "class MyClass {}", "Example", "mypackage/Example.h");
     assertTranslation(translation, "@interface MypackageExample");
-    assertTranslation(translation, "} MypackageAbcd;"); // enum declaration
+    // enum declaration
+    assertTranslation(translation, "typedef NS_ENUM(NSUInteger, MypackageAbcd) {");
     assertTranslation(translation, "@interface MypackageAbcdEnum");
     assertTranslation(translation, "@interface MypackageMyClass");
     assertTranslation(translation, "MypackageMyClass *myclass_;");
@@ -276,11 +277,12 @@ public class ObjectiveCHeaderGeneratorTest extends GenerationTest {
     String translation = translateSourceFile(
       "public enum Color { RED, WHITE, BLUE }",
       "Color", "Color.h");
-    assertTranslation(translation, "typedef enum {");
-    assertTranslation(translation, "Color_RED = 0,");
-    assertTranslation(translation, "Color_WHITE = 1,");
-    assertTranslation(translation, "Color_BLUE = 2,");
-    assertTranslation(translation, "} Color;");
+    assertTranslatedLines(translation,
+        "typedef NS_ENUM(NSUInteger, Color) {",
+        "  Color_RED = 0,",
+        "  Color_WHITE = 1,",
+        "  Color_BLUE = 2,",
+        "};");
     assertTranslation(translation, "@interface ColorEnum : JavaLangEnum < NSCopying > {");
     assertTranslation(translation, "+ (IOSObjectArray *)values;");
     assertTranslation(translation, "+ (ColorEnum *)valueOfWithNSString:(NSString *)name;");
@@ -391,7 +393,7 @@ public class ObjectiveCHeaderGeneratorTest extends GenerationTest {
     String translation = translateSourceFile(
         "public enum MyEnum { ONE, TWO, THREE }",
         "MyEnum", "MyEnum.h");
-    assertTranslation(translation, "} MyEnum;");
+    assertTranslation(translation, "typedef NS_ENUM(NSUInteger, MyEnum) {");
     assertTranslation(translation, "@interface MyEnumEnum : JavaLangEnum");
     assertTranslation(translation, "FOUNDATION_EXPORT MyEnumEnum *MyEnumEnum_values_[];");
     assertTranslation(translation, "#define MyEnumEnum_ONE MyEnumEnum_values_[MyEnum_ONE]");

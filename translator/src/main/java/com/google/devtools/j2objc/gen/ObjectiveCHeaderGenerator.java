@@ -90,7 +90,6 @@ public class ObjectiveCHeaderGenerator extends ObjectiveCSourceFileGenerator {
     }
 
     for (AbstractTypeDeclaration type : unit.getTypes()) {
-      newline();
       generate(type);
     }
 
@@ -115,6 +114,7 @@ public class ObjectiveCHeaderGenerator extends ObjectiveCSourceFileGenerator {
 
     printConstantDefines(node);
 
+    newline();
     printDocComment(node.getJavadoc());
     if (needsDeprecatedAttribute(node.getAnnotations())) {
       println(DEPRECATED_ATTRIBUTE);
@@ -200,6 +200,7 @@ public class ObjectiveCHeaderGenerator extends ObjectiveCSourceFileGenerator {
 
     boolean isRuntime = BindingUtil.isRuntimeAnnotation(node.getTypeBinding());
 
+    newline();
     // Print annotation as protocol.
     printf("@protocol %s < JavaLangAnnotationAnnotation >\n", typeName);
     if (!members.isEmpty() && isRuntime) {
@@ -278,7 +279,8 @@ public class ObjectiveCHeaderGenerator extends ObjectiveCSourceFileGenerator {
     // C doesn't allow empty enum declarations.  Java does, so we skip the
     // C enum declaration and generate the type declaration.
     if (!constants.isEmpty()) {
-      println("typedef enum {");
+      newline();
+      printf("typedef NS_ENUM(NSUInteger, %s) {\n", bareTypeName);
 
       // Print C enum typedef.
       indent();
@@ -288,9 +290,10 @@ public class ObjectiveCHeaderGenerator extends ObjectiveCSourceFileGenerator {
         printf("%s_%s = %d,\n", bareTypeName, constant.getName().getIdentifier(), ordinal++);
       }
       unindent();
-      printf("} %s;\n\n", bareTypeName);
+      print("};\n");
     }
 
+    newline();
     if (needsDeprecatedAttribute(node.getAnnotations())) {
       println(DEPRECATED_ATTRIBUTE);
     }
@@ -513,18 +516,18 @@ public class ObjectiveCHeaderGenerator extends ObjectiveCSourceFileGenerator {
 
   private void printConstantDefines(AbstractTypeDeclaration node) {
     ITypeBinding type = node.getTypeBinding();
-    boolean hadConstant = false;
+    boolean needsNewline = true;
     for (IVariableBinding field : type.getDeclaredFields()) {
       if (BindingUtil.isPrimitiveConstant(field)) {
+        if (needsNewline) {
+          needsNewline = false;
+          newline();
+        }
         printf("#define %s ", NameTable.getPrimitiveConstantName(field));
         Object value = field.getConstantValue();
         assert value != null;
         println(LiteralGenerator.generate(value));
-        hadConstant = true;
       }
-    }
-    if (hadConstant) {
-      newline();
     }
   }
 }
