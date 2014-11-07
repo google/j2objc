@@ -19,7 +19,6 @@ package java.util;
 
 /*-[
 #import "IOSClass.h"
-#import "java/lang/NullPointerException.h"
 ]-*/
 
 /**
@@ -37,7 +36,6 @@ public abstract class AbstractCollection<E> implements Collection<E> {
      * Constructs a new instance of this AbstractCollection.
      */
     protected AbstractCollection() {
-        super();
     }
 
     public boolean add(E object) {
@@ -339,33 +337,20 @@ public abstract class AbstractCollection<E> implements Collection<E> {
      */
     public abstract int size();
 
-    @Override
     public native Object[] toArray() /*-[
-      IOSObjectArray *result =
-          [IOSObjectArray arrayWithLength:[self size]
-                                     type:[IOSClass classWithClass:[NSObject class]]];
-      return [self toArrayWithNSObjectArray:result];
+      return [self toArrayWithNSObjectArray:
+          [IOSObjectArray arrayWithLength:[self size] type:[IOSClass objectClass]]];
     ]-*/;
 
-    @Override
     public native <T> T[] toArray(T[] contents) /*-[
-      if (!contents) {
-        id exception = [[JavaLangNullPointerException alloc] init];
-#if ! __has_feature(objc_arc)
-        [exception autorelease];
-#endif
-        @throw exception;
-        return nil;
-      }
-      if (contents->size_ < [self size]) {
-        contents =
-            [IOSObjectArray arrayWithLength:[self size]
-                                       type:[[contents getClass] getComponentType]];
+      nil_chk(contents);
+      jint size = [self size];
+      if (contents->size_ < size) {
+        contents = [IOSObjectArray arrayWithLength:size type:contents->elementType_];
       }
       jint i = 0;
-      id<JavaUtilIterator> it = [self iterator];
-      while ([it hasNext]) {
-        IOSObjectArray_Set(contents, i++, [it next]);
+      for (id elem in self) {
+        IOSObjectArray_Set(contents, i++, elem);
       }
       return contents;
     ]-*/;
@@ -380,7 +365,7 @@ public abstract class AbstractCollection<E> implements Collection<E> {
     @Override
     public String toString() {
         if (isEmpty()) {
-            return "[]"; //$NON-NLS-1$
+            return "[]";
         }
 
         StringBuilder buffer = new StringBuilder(size() * 16);
@@ -391,10 +376,10 @@ public abstract class AbstractCollection<E> implements Collection<E> {
             if (next != this) {
                 buffer.append(next);
             } else {
-                buffer.append("(this Collection)"); //$NON-NLS-1$
+                buffer.append("(this Collection)");
             }
             if (it.hasNext()) {
-                buffer.append(", "); //$NON-NLS-1$
+                buffer.append(", ");
             }
         }
         buffer.append(']');
