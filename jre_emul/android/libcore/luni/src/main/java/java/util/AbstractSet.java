@@ -21,7 +21,7 @@ package java.util;
  * An AbstractSet is an abstract implementation of the Set interface. This
  * implementation does not support adding. A subclass must implement the
  * abstract methods iterator() and size().
- * 
+ *
  * @since 1.2
  */
 public abstract class AbstractSet<E> extends AbstractCollection<E> implements
@@ -31,14 +31,13 @@ public abstract class AbstractSet<E> extends AbstractCollection<E> implements
      * Constructs a new instance of this AbstractSet.
      */
     protected AbstractSet() {
-        super();
     }
 
     /**
      * Compares the specified object to this Set and returns true if they are
      * equal. The object must be an instance of Set and contain the same
      * objects.
-     * 
+     *
      * @param object
      *            the object to compare with this set.
      * @return {@code true} if the specified object is equal to this set,
@@ -68,7 +67,7 @@ public abstract class AbstractSet<E> extends AbstractCollection<E> implements
      * Returns the hash code for this set. Two set which are equal must return
      * the same value. This implementation calculates the hash code by adding
      * each element's hash code.
-     * 
+     *
      * @return the hash code of this set.
      * @see #equals
      */
@@ -86,7 +85,7 @@ public abstract class AbstractSet<E> extends AbstractCollection<E> implements
     /**
      * Removes all occurrences in this collection which are contained in the
      * specified collection.
-     * 
+     *
      * @param collection
      *            the collection of objects to remove.
      * @return {@code true} if this collection was modified, {@code false}

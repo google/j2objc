@@ -27,8 +27,7 @@ package java.util;
  *
  * @since 1.2
  */
-public abstract class AbstractList<E> extends AbstractCollection<E> implements
-        List<E> {
+public abstract class AbstractList<E> extends AbstractCollection<E> implements List<E> {
 
     /**
      * A counter for changes to the list.
@@ -36,112 +35,117 @@ public abstract class AbstractList<E> extends AbstractCollection<E> implements
     protected transient int modCount;
 
     private class SimpleListIterator implements Iterator<E> {
-        int numLeft = size();
-        int expectedModCount = modCount;
+        int pos = -1;
+
+        int expectedModCount;
+
         int lastPosition = -1;
 
+        SimpleListIterator() {
+            expectedModCount = modCount;
+        }
+
         public boolean hasNext() {
-            return numLeft > 0;
+            return pos + 1 < size();
         }
 
         public E next() {
-            if (expectedModCount != modCount) {
-                throw new ConcurrentModificationException();
+            if (expectedModCount == modCount) {
+                try {
+                    E result = get(pos + 1);
+                    lastPosition = ++pos;
+                    return result;
+                } catch (IndexOutOfBoundsException e) {
+                    throw new NoSuchElementException();
+                }
             }
-
-            try {
-                int index = size() - numLeft;
-                E result = get(index);
-                lastPosition = index;
-                numLeft--;
-                return result;
-            } catch (IndexOutOfBoundsException e) {
-                throw new NoSuchElementException();
-            }
+            throw new ConcurrentModificationException();
         }
 
         public void remove() {
-            if (lastPosition == -1) {
+            if (this.lastPosition == -1) {
                 throw new IllegalStateException();
             }
+
             if (expectedModCount != modCount) {
                 throw new ConcurrentModificationException();
             }
 
             try {
-                if (lastPosition == size() - numLeft) {
-                    numLeft--; // we're removing after a call to previous()
-                }
                 AbstractList.this.remove(lastPosition);
             } catch (IndexOutOfBoundsException e) {
                 throw new ConcurrentModificationException();
             }
-            
+
             expectedModCount = modCount;
+            if (pos == lastPosition) {
+                pos--;
+            }
             lastPosition = -1;
         }
     }
 
-    private final class FullListIterator extends SimpleListIterator implements
-            ListIterator<E> {
+    private final class FullListIterator extends SimpleListIterator implements ListIterator<E> {
         FullListIterator(int start) {
-            if (start < 0 || start > numLeft) {
+            if (start >= 0 && start <= size()) {
+                pos = start - 1;
+            } else {
                 throw new IndexOutOfBoundsException();
             }
-            numLeft -= start;
         }
 
         public void add(E object) {
-            if (expectedModCount != modCount) {
-                throw new ConcurrentModificationException();
-            }
-
-            try {
-                AbstractList.this.add(size() - numLeft, object);
-                expectedModCount = modCount;
+            if (expectedModCount == modCount) {
+                try {
+                    AbstractList.this.add(pos + 1, object);
+                } catch (IndexOutOfBoundsException e) {
+                    throw new NoSuchElementException();
+                }
+                pos++;
                 lastPosition = -1;
-            } catch (IndexOutOfBoundsException e) {
-                throw new NoSuchElementException();
+                if (modCount != expectedModCount) {
+                    expectedModCount = modCount;
+                }
+            } else {
+                throw new ConcurrentModificationException();
             }
         }
 
         public boolean hasPrevious() {
-            return numLeft < size();
+            return pos >= 0;
         }
 
         public int nextIndex() {
-            return size() - numLeft;
+            return pos + 1;
         }
 
         public E previous() {
-            if (expectedModCount != modCount) {
-                throw new ConcurrentModificationException();
+            if (expectedModCount == modCount) {
+                try {
+                    E result = get(pos);
+                    lastPosition = pos;
+                    pos--;
+                    return result;
+                } catch (IndexOutOfBoundsException e) {
+                    throw new NoSuchElementException();
+                }
             }
-
-            try {
-                int index = size() - numLeft - 1;
-                E result = get(index);
-                numLeft++;
-                lastPosition = index;
-                return result;
-            } catch (IndexOutOfBoundsException e) {
-                throw new NoSuchElementException();
-            }
+            throw new ConcurrentModificationException();
         }
 
         public int previousIndex() {
-            return size() - numLeft - 1;
+            return pos;
         }
 
         public void set(E object) {
-            if (expectedModCount != modCount) {
+            if (expectedModCount == modCount) {
+                try {
+                    AbstractList.this.set(lastPosition, object);
+                } catch (IndexOutOfBoundsException e) {
+                    throw new IllegalStateException();
+                }
+            } else {
                 throw new ConcurrentModificationException();
-            }
-
-            try {
-                AbstractList.this.set(lastPosition, object);
-            } catch (IndexOutOfBoundsException e) {
-                throw new IllegalStateException();
             }
         }
     }
@@ -172,7 +176,6 @@ public abstract class AbstractList<E> extends AbstractCollection<E> implements
 
             SubAbstractListIterator(ListIterator<E> it,
                     SubAbstractList<E> list, int offset, int length) {
-                super();
                 iterator = it;
                 subList = list;
                 start = offset;
@@ -231,7 +234,6 @@ public abstract class AbstractList<E> extends AbstractCollection<E> implements
         }
 
         SubAbstractList(AbstractList<E> list, int start, int end) {
-            super();
             fullList = list;
             modCount = fullList.modCount;
             offset = start;
@@ -241,7 +243,7 @@ public abstract class AbstractList<E> extends AbstractCollection<E> implements
         @Override
         public void add(int location, E object) {
             if (modCount == fullList.modCount) {
-                if (0 <= location && location <= size) {
+                if (location >= 0 && location <= size) {
                     fullList.add(location + offset, object);
                     size++;
                     modCount = fullList.modCount;
@@ -256,7 +258,7 @@ public abstract class AbstractList<E> extends AbstractCollection<E> implements
         @Override
         public boolean addAll(int location, Collection<? extends E> collection) {
             if (modCount == fullList.modCount) {
-                if (0 <= location && location <= size) {
+                if (location >= 0 && location <= size) {
                     boolean result = fullList.addAll(location + offset,
                             collection);
                     if (result) {
@@ -286,7 +288,7 @@ public abstract class AbstractList<E> extends AbstractCollection<E> implements
         @Override
         public E get(int location) {
             if (modCount == fullList.modCount) {
-                if (0 <= location && location < size) {
+                if (location >= 0 && location < size) {
                     return fullList.get(location + offset);
                 }
                 throw new IndexOutOfBoundsException();
@@ -302,7 +304,7 @@ public abstract class AbstractList<E> extends AbstractCollection<E> implements
         @Override
         public ListIterator<E> listIterator(int location) {
             if (modCount == fullList.modCount) {
-                if (0 <= location && location <= size) {
+                if (location >= 0 && location <= size) {
                     return new SubAbstractListIterator<E>(fullList
                             .listIterator(location + offset), this, offset,
                             size);
@@ -315,7 +317,7 @@ public abstract class AbstractList<E> extends AbstractCollection<E> implements
         @Override
         public E remove(int location) {
             if (modCount == fullList.modCount) {
-                if (0 <= location && location < size) {
+                if (location >= 0 && location < size) {
                     E result = fullList.remove(location + offset);
                     size--;
                     modCount = fullList.modCount;
@@ -342,7 +344,7 @@ public abstract class AbstractList<E> extends AbstractCollection<E> implements
         @Override
         public E set(int location, E object) {
             if (modCount == fullList.modCount) {
-                if (0 <= location && location < size) {
+                if (location >= 0 && location < size) {
                     return fullList.set(location + offset, object);
                 }
                 throw new IndexOutOfBoundsException();
@@ -372,7 +374,6 @@ public abstract class AbstractList<E> extends AbstractCollection<E> implements
      * Constructs a new instance of this AbstractList.
      */
     protected AbstractList() {
-        super();
     }
 
     /**
@@ -388,7 +389,7 @@ public abstract class AbstractList<E> extends AbstractCollection<E> implements
      *            the index at which to insert.
      * @param object
      *            the object to add.
-     * 
+     *
      * @throws UnsupportedOperationException
      *                if adding to this List is not supported.
      * @throws ClassCastException
@@ -397,7 +398,7 @@ public abstract class AbstractList<E> extends AbstractCollection<E> implements
      * @throws IllegalArgumentException
      *                if the object cannot be added to this List
      * @throws IndexOutOfBoundsException
-     *                if {@code location < 0 || >= size()}
+     *                if {@code location < 0 || location > size()}
      */
     public void add(int location, E object) {
         throw new UnsupportedOperationException();
@@ -405,12 +406,12 @@ public abstract class AbstractList<E> extends AbstractCollection<E> implements
 
     /**
      * Adds the specified object at the end of this List.
-     * 
-     * 
+     *
+     *
      * @param object
      *            the object to add
      * @return true
-     * 
+     *
      * @throws UnsupportedOperationException
      *                if adding to this List is not supported
      * @throws ClassCastException
@@ -429,7 +430,7 @@ public abstract class AbstractList<E> extends AbstractCollection<E> implements
      * Inserts the objects in the specified Collection at the specified location
      * in this List. The objects are added in the order they are returned from
      * the collection's iterator.
-     * 
+     *
      * @param location
      *            the index at which to insert.
      * @param collection
@@ -442,7 +443,7 @@ public abstract class AbstractList<E> extends AbstractCollection<E> implements
      * @throws IllegalArgumentException
      *             if an object cannot be added to this list.
      * @throws IndexOutOfBoundsException
-     *             if {@code location < 0 || > size()}
+     *             if {@code location < 0 || location > size()}
      */
     public boolean addAll(int location, Collection<? extends E> collection) {
         Iterator<? extends E> it = collection.iterator();
@@ -454,7 +455,7 @@ public abstract class AbstractList<E> extends AbstractCollection<E> implements
 
     /**
      * Removes all elements from this list, leaving it empty.
-     * 
+     *
      * @throws UnsupportedOperationException
      *             if removing from this list is not supported.
      * @see List#isEmpty
@@ -469,7 +470,7 @@ public abstract class AbstractList<E> extends AbstractCollection<E> implements
      * Compares the specified object to this list and return true if they are
      * equal. Two lists are equal when they both contain the same objects in the
      * same order.
-     * 
+     *
      * @param object
      *            the object to compare to this object.
      * @return {@code true} if the specified object is equal to this list,
@@ -501,19 +502,19 @@ public abstract class AbstractList<E> extends AbstractCollection<E> implements
 
     /**
      * Returns the element at the specified location in this list.
-     * 
+     *
      * @param location
      *            the index of the element to return.
      * @return the element at the specified index.
      * @throws IndexOutOfBoundsException
-     *             if {@code location < 0 || >= size()}
+     *             if {@code location < 0 || location >= size()}
      */
     public abstract E get(int location);
 
     /**
      * Returns the hash code of this list. The hash code is calculated by taking
      * each element's hashcode into account.
-     * 
+     *
      * @return the hash code.
      * @see #equals
      * @see List#hashCode()
@@ -532,7 +533,7 @@ public abstract class AbstractList<E> extends AbstractCollection<E> implements
     /**
      * Searches this list for the specified object and returns the index of the
      * first occurrence.
-     * 
+     *
      * @param object
      *            the object to search for.
      * @return the index of the first occurrence of the object, or -1 if it was
@@ -559,7 +560,7 @@ public abstract class AbstractList<E> extends AbstractCollection<E> implements
     /**
      * Returns an iterator on the elements of this list. The elements are
      * iterated in the same order as they occur in the list.
-     * 
+     *
      * @return an iterator on the elements of this list.
      * @see Iterator
      */
@@ -571,7 +572,7 @@ public abstract class AbstractList<E> extends AbstractCollection<E> implements
     /**
      * Searches this list for the specified object and returns the index of the
      * last occurrence.
-     * 
+     *
      * @param object
      *            the object to search for.
      * @return the index of the last occurrence of the object, or -1 if the
@@ -598,7 +599,7 @@ public abstract class AbstractList<E> extends AbstractCollection<E> implements
     /**
      * Returns a ListIterator on the elements of this list. The elements are
      * iterated in the same order that they occur in the list.
-     * 
+     *
      * @return a ListIterator on the elements of this list
      * @see ListIterator
      */
@@ -610,7 +611,7 @@ public abstract class AbstractList<E> extends AbstractCollection<E> implements
      * Returns a list iterator on the elements of this list. The elements are
      * iterated in the same order as they occur in the list. The iteration
      * starts at the specified location.
-     * 
+     *
      * @param location
      *            the index at which to start the iteration.
      * @return a ListIterator on the elements of this list.
@@ -624,14 +625,14 @@ public abstract class AbstractList<E> extends AbstractCollection<E> implements
 
     /**
      * Removes the object at the specified location from this list.
-     * 
+     *
      * @param location
      *            the index of the object to remove.
      * @return the removed object.
      * @throws UnsupportedOperationException
      *             if removing from this list is not supported.
      * @throws IndexOutOfBoundsException
-     *             if {@code location < 0 || >= size()}
+     *             if {@code location < 0 || location >= size()}
      */
     public E remove(int location) {
         throw new UnsupportedOperationException();
@@ -640,7 +641,7 @@ public abstract class AbstractList<E> extends AbstractCollection<E> implements
     /**
      * Removes the objects in the specified range from the start to the end
      * index minus one.
-     * 
+     *
      * @param start
      *            the index at which to start removing.
      * @param end
@@ -661,7 +662,7 @@ public abstract class AbstractList<E> extends AbstractCollection<E> implements
     /**
      * Replaces the element at the specified location in this list with the
      * specified object.
-     * 
+     *
      * @param location
      *            the index at which to put the specified object.
      * @param object
@@ -674,7 +675,7 @@ public abstract class AbstractList<E> extends AbstractCollection<E> implements
      * @throws IllegalArgumentException
      *             if an object cannot be added to this list.
      * @throws IndexOutOfBoundsException
-     *             if {@code location < 0 || >= size()}
+     *             if {@code location < 0 || location >= size()}
      */
     public E set(int location, E object) {
         throw new UnsupportedOperationException();
@@ -712,7 +713,7 @@ public abstract class AbstractList<E> extends AbstractCollection<E> implements
      * <p>
      * All methods will throw a ConcurrentModificationException if the modCount
      * of the original list is not equal to the expected value.
-     * 
+     *
      * @param start
      *            start index of the subList (inclusive).
      * @param end
@@ -725,7 +726,7 @@ public abstract class AbstractList<E> extends AbstractCollection<E> implements
      *             if (start > end)
      */
     public List<E> subList(int start, int end) {
-        if (0 <= start && end <= size()) {
+        if (start >= 0 && end <= size()) {
             if (start <= end) {
                 if (this instanceof RandomAccess) {
                     return new SubAbstractListRandomAccess<E>(this, start, end);

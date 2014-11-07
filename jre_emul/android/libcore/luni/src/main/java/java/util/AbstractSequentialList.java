@@ -21,7 +21,7 @@ package java.util;
  * AbstractSequentialList is an abstract implementation of the List interface.
  * This implementation does not support adding. A subclass must implement the
  * abstract method listIterator().
- * 
+ *
  * @since 1.2
  */
 public abstract class AbstractSequentialList<E> extends AbstractList<E> {
@@ -30,7 +30,6 @@ public abstract class AbstractSequentialList<E> extends AbstractList<E> {
      * Constructs a new instance of this AbstractSequentialList.
      */
     protected AbstractSequentialList() {
-        super();
     }
 
     @Override
