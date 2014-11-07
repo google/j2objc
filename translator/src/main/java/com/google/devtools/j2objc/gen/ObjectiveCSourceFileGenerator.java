@@ -599,7 +599,7 @@ public abstract class ObjectiveCSourceFileGenerator extends SourceFileGenerator 
     for (Iterator<SingleVariableDeclaration> iter = function.getParameters().iterator();
          iter.hasNext(); ) {
       IVariableBinding var = iter.next().getVariableBinding();
-      String paramType = NameTable.getObjCType(var.getType());
+      String paramType = NameTable.getSpecificObjCType(var.getType());
       paramType += (paramType.endsWith("*") ? "" : " ");
       sb.append(paramType + NameTable.getName(var));
       if (iter.hasNext()) {
