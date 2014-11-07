@@ -991,4 +991,31 @@ public class LinkedList<E> extends AbstractSequentialList<E> implements
         link.next = voidLink;
         voidLink.previous = link;
     }
+
+    // This avoids the circular link element references, leaking memory on iOS.
+    protected void finalize() {
+        clear();
+        voidLink.previous = voidLink.next = null;
+    }
+
+    /*-[
+    - (NSUInteger)countByEnumeratingWithState:(NSFastEnumerationState *)state
+                                      objects:(__unsafe_unretained id *)stackbuf
+                                        count:(NSUInteger)len {
+      __unsafe_unretained JavaUtilLinkedList_Link *link = (ARCBRIDGE id) (void *) state->extra[0];
+      if (!link) {
+        state->mutationsPtr = (unsigned long *) &modCount_;
+        link = voidLink_->next_;
+      }
+      state->itemsPtr = stackbuf;
+      NSUInteger objCount = 0;
+      while (link != voidLink_ && objCount < len) {
+        *stackbuf++ = link->data_;
+        objCount++;
+        link = link->next_;
+      }
+      state->extra[0] = (unsigned long) link;
+      return objCount;
+    }
+    ]-*/
 }
