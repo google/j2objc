@@ -30,12 +30,11 @@ public class Stack<E> extends Vector<E> {
      * Constructs a stack with the default size of {@code Vector}.
      */
     public Stack() {
-        super();
     }
 
     /**
      * Returns whether the stack is empty or not.
-     * 
+     *
      * @return {@code true} if the stack is empty, {@code false} otherwise.
      */
     public boolean empty() {
@@ -44,7 +43,7 @@ public class Stack<E> extends Vector<E> {
 
     /**
      * Returns the element at the top of the stack without removing it.
-     * 
+     *
      * @return the element at the top of the stack.
      * @throws EmptyStackException
      *             if the stack is empty.
@@ -61,7 +60,7 @@ public class Stack<E> extends Vector<E> {
 
     /**
      * Returns the element at the top of the stack and removes it.
-     * 
+     *
      * @return the element at the top of the stack.
      * @throws EmptyStackException
      *             if the stack is empty.
@@ -82,7 +81,7 @@ public class Stack<E> extends Vector<E> {
 
     /**
      * Pushes the specified object onto the top of the stack.
-     * 
+     *
      * @param object
      *            The object to be added on top of the stack.
      * @return the object argument.
@@ -97,7 +96,7 @@ public class Stack<E> extends Vector<E> {
     /**
      * Returns the index of the first occurrence of the object, starting from
      * the top of the stack.
-     * 
+     *
      * @return the index of the first occurrence of the object, assuming that
      *         the topmost object on the stack has a distance of one.
      * @param o

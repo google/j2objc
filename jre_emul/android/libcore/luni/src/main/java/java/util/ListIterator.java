@@ -23,11 +23,11 @@ package java.util;
  * move backwards or forwards through the list.
  */
 public interface ListIterator<E> extends Iterator<E> {
-    
+
     /**
      * Inserts the specified object into the list between {@code next} and
      * {@code previous}. The object inserted will be the previous object.
-     * 
+     *
      * @param object
      *            the object to insert.
      * @throws UnsupportedOperationException
@@ -41,7 +41,7 @@ public interface ListIterator<E> extends Iterator<E> {
 
     /**
      * Returns whether there are more elements to iterate.
-     * 
+     *
      * @return {@code true} if there are more elements, {@code false} otherwise.
      * @see #next
      */
@@ -49,7 +49,7 @@ public interface ListIterator<E> extends Iterator<E> {
 
     /**
      * Returns whether there are previous elements to iterate.
-     * 
+     *
      * @return {@code true} if there are previous elements, {@code false}
      *         otherwise.
      * @see #previous
@@ -58,7 +58,7 @@ public interface ListIterator<E> extends Iterator<E> {
 
     /**
      * Returns the next object in the iteration.
-     * 
+     *
      * @return the next object.
      * @throws NoSuchElementException
      *             if there are no more elements.
@@ -68,7 +68,7 @@ public interface ListIterator<E> extends Iterator<E> {
 
     /**
      * Returns the index of the next object in the iteration.
-     * 
+     *
      * @return the index of the next object, or the size of the list if the
      *         iterator is at the end.
      * @throws NoSuchElementException
@@ -79,7 +79,7 @@ public interface ListIterator<E> extends Iterator<E> {
 
     /**
      * Returns the previous object in the iteration.
-     * 
+     *
      * @return the previous object.
      * @throws NoSuchElementException
      *             if there are no previous elements.
@@ -89,7 +89,7 @@ public interface ListIterator<E> extends Iterator<E> {
 
     /**
      * Returns the index of the previous object in the iteration.
-     * 
+     *
      * @return the index of the previous object, or -1 if the iterator is at the
      *         beginning.
      * @throws NoSuchElementException
@@ -101,7 +101,7 @@ public interface ListIterator<E> extends Iterator<E> {
     /**
      * Removes the last object returned by {@code next} or {@code previous} from
      * the list.
-     * 
+     *
      * @throws UnsupportedOperationException
      *             if removing is not supported by the list being iterated.
      * @throws IllegalStateException
@@ -114,7 +114,7 @@ public interface ListIterator<E> extends Iterator<E> {
     /**
      * Replaces the last object returned by {@code next} or {@code previous}
      * with the specified object.
-     * 
+     *
      * @param object
      *            the object to set.
      * @throws UnsupportedOperationException

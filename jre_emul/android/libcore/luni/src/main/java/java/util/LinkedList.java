@@ -17,18 +17,29 @@
 
 package java.util;
 
-import java.io.Serializable;
 import com.google.j2objc.annotations.Weak;
 
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.Serializable;
+import java.lang.reflect.Array;
+
 /**
- * LinkedList is an implementation of List, backed by a linked list. All
- * optional operations (adding, removing and replacing) are supported. The
- * elements can be any objects.
- * 
+ * LinkedList is an implementation of {@link List}, backed by a doubly-linked list.
+ * All optional operations including adding, removing, and replacing elements are supported.
+ *
+ * <p>All elements are permitted, including null.
+ *
+ * <p>This class is primarily useful if you need queue-like behavior. It may also be useful
+ * as a list if you expect your lists to contain zero or one element, but still require the
+ * ability to scale to slightly larger numbers of elements. In general, though, you should
+ * probably use {@link ArrayList} if you don't need the queue-like behavior.
+ *
  * @since 1.2
  */
 public class LinkedList<E> extends AbstractSequentialList<E> implements
-        List<E>, Queue<E>, Cloneable, Serializable {
+        List<E>, Deque<E>, Queue<E>, Cloneable, Serializable {
 
     private static final long serialVersionUID = 876323262645176354L;
 
@@ -59,7 +70,7 @@ public class LinkedList<E> extends AbstractSequentialList<E> implements
         LinkIterator(LinkedList<ET> object, int location) {
             list = object;
             expectedModCount = list.modCount;
-            if (0 <= location && location <= list.size) {
+            if (location >= 0 && location <= list.size) {
                 // pos ends up as -1 if list is empty, it ranges from -1 to
                 // list.size - 1
                 // if link == voidLink then pos must == -1
@@ -173,6 +184,63 @@ public class LinkedList<E> extends AbstractSequentialList<E> implements
         }
     }
 
+    /*
+     * NOTES:descendingIterator is not fail-fast, according to the documentation
+     * and test case.
+     */
+    private class ReverseLinkIterator<ET> implements Iterator<ET> {
+        private int expectedModCount;
+
+        private final LinkedList<ET> list;
+
+        private Link<ET> link;
+
+        private boolean canRemove;
+
+        ReverseLinkIterator(LinkedList<ET> linkedList) {
+            list = linkedList;
+            expectedModCount = list.modCount;
+            link = list.voidLink;
+            canRemove = false;
+        }
+
+        public boolean hasNext() {
+            return link.previous != list.voidLink;
+        }
+
+        public ET next() {
+            if (expectedModCount == list.modCount) {
+                if (hasNext()) {
+                    link = link.previous;
+                    canRemove = true;
+                    return link.data;
+                }
+                throw new NoSuchElementException();
+            }
+            throw new ConcurrentModificationException();
+
+        }
+
+        public void remove() {
+            if (expectedModCount == list.modCount) {
+                if (canRemove) {
+                    Link<ET> next = link.previous;
+                    Link<ET> previous = link.next;
+                    next.next = previous;
+                    previous.previous = next;
+                    link = previous;
+                    list.size--;
+                    list.modCount++;
+                    expectedModCount++;
+                    canRemove = false;
+                    return;
+                }
+                throw new IllegalStateException();
+            }
+            throw new ConcurrentModificationException();
+        }
+    }
+
     /**
      * Constructs a new empty instance of {@code LinkedList}.
      */
@@ -187,7 +255,7 @@ public class LinkedList<E> extends AbstractSequentialList<E> implements
      * elements contained in the specified {@code collection}. The order of the
      * elements in this new {@code LinkedList} will be determined by the
      * iteration order of {@code collection}.
-     * 
+     *
      * @param collection
      *            the collection of elements to add.
      */
@@ -201,17 +269,17 @@ public class LinkedList<E> extends AbstractSequentialList<E> implements
      * specified location. The object is inserted before any previous element at
      * the specified location. If the location is equal to the size of this
      * {@code LinkedList}, the object is added at the end.
-     * 
+     *
      * @param location
      *            the index at which to insert.
      * @param object
      *            the object to add.
      * @throws IndexOutOfBoundsException
-     *             if {@code location < 0 || >= size()}
+     *             if {@code location < 0 || location > size()}
      */
     @Override
     public void add(int location, E object) {
-        if (0 <= location && location <= size) {
+        if (location >= 0 && location <= size) {
             Link<E> link = voidLink;
             if (location < (size / 2)) {
                 for (int i = 0; i <= location; i++) {
@@ -235,14 +303,17 @@ public class LinkedList<E> extends AbstractSequentialList<E> implements
 
     /**
      * Adds the specified object at the end of this {@code LinkedList}.
-     * 
+     *
      * @param object
      *            the object to add.
      * @return always true
      */
     @Override
     public boolean add(E object) {
-        // Cannot call addLast() as subclasses can override
+        return addLastImpl(object);
+    }
+
+    private boolean addLastImpl(E object) {
         Link<E> oldLast = voidLink.previous;
         Link<E> newLink = new Link<E>(object, oldLast, voidLink);
         voidLink.previous = newLink;
@@ -256,7 +327,7 @@ public class LinkedList<E> extends AbstractSequentialList<E> implements
      * Inserts the objects in the specified collection at the specified location
      * in this {@code LinkedList}. The objects are added in the order they are
      * returned from the collection's iterator.
-     * 
+     *
      * @param location
      *            the index at which to insert.
      * @param collection
@@ -268,15 +339,12 @@ public class LinkedList<E> extends AbstractSequentialList<E> implements
      * @throws IllegalArgumentException
      *             if an object cannot be added to this list.
      * @throws IndexOutOfBoundsException
-     *             if {@code location < 0 || > size()}
+     *             if {@code location < 0 || location > size()}
      */
     @Override
     public boolean addAll(int location, Collection<? extends E> collection) {
         if (location < 0 || location > size) {
             throw new IndexOutOfBoundsException();
-        }
-        if (collection == null) {
-            throw new NullPointerException();
         }
         int adding = collection.size();
         if (adding == 0) {
@@ -310,7 +378,7 @@ public class LinkedList<E> extends AbstractSequentialList<E> implements
 
     /**
      * Adds the objects in the specified Collection to this {@code LinkedList}.
-     * 
+     *
      * @param collection
      *            the collection of objects.
      * @return {@code true} if this {@code LinkedList} is modified,
@@ -318,9 +386,6 @@ public class LinkedList<E> extends AbstractSequentialList<E> implements
      */
     @Override
     public boolean addAll(Collection<? extends E> collection) {
-        if (collection == null) {
-            throw new NullPointerException();
-        }
         int adding = collection.size();
         if (adding == 0) {
             return false;
@@ -343,37 +408,37 @@ public class LinkedList<E> extends AbstractSequentialList<E> implements
 
     /**
      * Adds the specified object at the beginning of this {@code LinkedList}.
-     * 
+     *
      * @param object
      *            the object to add.
      */
     public void addFirst(E object) {
+        addFirstImpl(object);
+    }
+
+    private boolean addFirstImpl(E object) {
         Link<E> oldFirst = voidLink.next;
         Link<E> newLink = new Link<E>(object, voidLink, oldFirst);
         voidLink.next = newLink;
         oldFirst.previous = newLink;
         size++;
         modCount++;
+        return true;
     }
 
     /**
      * Adds the specified object at the end of this {@code LinkedList}.
-     * 
+     *
      * @param object
      *            the object to add.
      */
     public void addLast(E object) {
-        Link<E> oldLast = voidLink.previous;
-        Link<E> newLink = new Link<E>(object, oldLast, voidLink);
-        voidLink.previous = newLink;
-        oldLast.next = newLink;
-        size++;
-        modCount++;
+        addLastImpl(object);
     }
 
     /**
      * Removes all elements from this {@code LinkedList}, leaving it empty.
-     * 
+     *
      * @see List#isEmpty
      * @see #size
      */
@@ -390,7 +455,7 @@ public class LinkedList<E> extends AbstractSequentialList<E> implements
     /**
      * Returns a new {@code LinkedList} with the same elements and size as this
      * {@code LinkedList}.
-     * 
+     *
      * @return a shallow copy of this {@code LinkedList}.
      * @see java.lang.Cloneable
      */
@@ -406,13 +471,13 @@ public class LinkedList<E> extends AbstractSequentialList<E> implements
             l.addAll(this);
             return l;
         } catch (CloneNotSupportedException e) {
-            return null;
+            throw new AssertionError(e);
         }
     }
 
     /**
      * Searches this {@code LinkedList} for the specified object.
-     * 
+     *
      * @param object
      *            the object to search for.
      * @return {@code true} if {@code object} is an element of this
@@ -441,7 +506,7 @@ public class LinkedList<E> extends AbstractSequentialList<E> implements
 
     @Override
     public E get(int location) {
-        if (0 <= location && location < size) {
+        if (location >= 0 && location < size) {
             Link<E> link = voidLink;
             if (location < (size / 2)) {
                 for (int i = 0; i <= location; i++) {
@@ -459,12 +524,16 @@ public class LinkedList<E> extends AbstractSequentialList<E> implements
 
     /**
      * Returns the first element in this {@code LinkedList}.
-     * 
+     *
      * @return the first element.
      * @throws NoSuchElementException
      *             if this {@code LinkedList} is empty.
      */
     public E getFirst() {
+        return getFirstImpl();
+    }
+
+    private E getFirstImpl() {
         Link<E> first = voidLink.next;
         if (first != voidLink) {
             return first.data;
@@ -474,7 +543,7 @@ public class LinkedList<E> extends AbstractSequentialList<E> implements
 
     /**
      * Returns the last element in this {@code LinkedList}.
-     * 
+     *
      * @return the last element
      * @throws NoSuchElementException
      *             if this {@code LinkedList} is empty
@@ -514,7 +583,7 @@ public class LinkedList<E> extends AbstractSequentialList<E> implements
     /**
      * Searches this {@code LinkedList} for the specified object and returns the
      * index of the last occurrence.
-     * 
+     *
      * @param object
      *            the object to search for
      * @return the index of the last occurrence of the object, or -1 if it was
@@ -548,12 +617,12 @@ public class LinkedList<E> extends AbstractSequentialList<E> implements
      * Returns a ListIterator on the elements of this {@code LinkedList}. The
      * elements are iterated in the same order that they occur in the
      * {@code LinkedList}. The iteration starts at the specified location.
-     * 
+     *
      * @param location
      *            the index at which to start the iteration
      * @return a ListIterator on the elements of this {@code LinkedList}
      * @throws IndexOutOfBoundsException
-     *             if {@code location < 0 || >= size()}
+     *             if {@code location < 0 || location > size()}
      * @see ListIterator
      */
     @Override
@@ -563,16 +632,16 @@ public class LinkedList<E> extends AbstractSequentialList<E> implements
 
     /**
      * Removes the object at the specified location from this {@code LinkedList}.
-     * 
+     *
      * @param location
      *            the index of the object to remove
      * @return the removed object
      * @throws IndexOutOfBoundsException
-     *             if {@code location < 0 || >= size()}
+     *             if {@code location < 0 || location >= size()}
      */
     @Override
     public E remove(int location) {
-        if (0 <= location && location < size) {
+        if (location >= 0 && location < size) {
             Link<E> link = voidLink;
             if (location < (size / 2)) {
                 for (int i = 0; i <= location; i++) {
@@ -596,36 +665,21 @@ public class LinkedList<E> extends AbstractSequentialList<E> implements
 
     @Override
     public boolean remove(Object object) {
-        Link<E> link = voidLink.next;
-        if (object != null) {
-            while (link != voidLink && !object.equals(link.data)) {
-                link = link.next;
-            }
-        } else {
-            while (link != voidLink && link.data != null) {
-                link = link.next;
-            }
-        }
-        if (link == voidLink) {
-            return false;
-        }
-        Link<E> next = link.next;
-        Link<E> previous = link.previous;
-        previous.next = next;
-        next.previous = previous;
-        size--;
-        modCount++;
-        return true;
+        return removeFirstOccurrenceImpl(object);
     }
 
     /**
      * Removes the first object from this {@code LinkedList}.
-     * 
+     *
      * @return the removed object.
      * @throws NoSuchElementException
      *             if this {@code LinkedList} is empty.
      */
     public E removeFirst() {
+        return removeFirstImpl();
+    }
+
+    private E removeFirstImpl() {
         Link<E> first = voidLink.next;
         if (first != voidLink) {
             Link<E> next = first.next;
@@ -640,12 +694,16 @@ public class LinkedList<E> extends AbstractSequentialList<E> implements
 
     /**
      * Removes the last object from this {@code LinkedList}.
-     * 
+     *
      * @return the removed object.
      * @throws NoSuchElementException
      *             if this {@code LinkedList} is empty.
      */
     public E removeLast() {
+        return removeLastImpl();
+    }
+
+    private E removeLastImpl() {
         Link<E> last = voidLink.previous;
         if (last != voidLink) {
             Link<E> previous = last.previous;
@@ -659,9 +717,137 @@ public class LinkedList<E> extends AbstractSequentialList<E> implements
     }
 
     /**
+     * {@inheritDoc}
+     *
+     * @see java.util.Deque#descendingIterator()
+     * @since 1.6
+     */
+    public Iterator<E> descendingIterator() {
+        return new ReverseLinkIterator<E>(this);
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * @see java.util.Deque#offerFirst(java.lang.Object)
+     * @since 1.6
+     */
+    public boolean offerFirst(E e) {
+        return addFirstImpl(e);
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * @see java.util.Deque#offerLast(java.lang.Object)
+     * @since 1.6
+     */
+    public boolean offerLast(E e) {
+        return addLastImpl(e);
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * @see java.util.Deque#peekFirst()
+     * @since 1.6
+     */
+    public E peekFirst() {
+        return peekFirstImpl();
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * @see java.util.Deque#peekLast()
+     * @since 1.6
+     */
+    public E peekLast() {
+        Link<E> last = voidLink.previous;
+        return (last == voidLink) ? null : last.data;
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * @see java.util.Deque#pollFirst()
+     * @since 1.6
+     */
+    public E pollFirst() {
+        return (size == 0) ? null : removeFirstImpl();
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * @see java.util.Deque#pollLast()
+     * @since 1.6
+     */
+    public E pollLast() {
+        return (size == 0) ? null : removeLastImpl();
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * @see java.util.Deque#pop()
+     * @since 1.6
+     */
+    public E pop() {
+        return removeFirstImpl();
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * @see java.util.Deque#push(java.lang.Object)
+     * @since 1.6
+     */
+    public void push(E e) {
+        addFirstImpl(e);
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * @see java.util.Deque#removeFirstOccurrence(java.lang.Object)
+     * @since 1.6
+     */
+    public boolean removeFirstOccurrence(Object o) {
+        return removeFirstOccurrenceImpl(o);
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * @see java.util.Deque#removeLastOccurrence(java.lang.Object)
+     * @since 1.6
+     */
+    public boolean removeLastOccurrence(Object o) {
+        Iterator<E> iter = new ReverseLinkIterator<E>(this);
+        return removeOneOccurrence(o, iter);
+    }
+
+    private boolean removeFirstOccurrenceImpl(Object o) {
+        Iterator<E> iter = new LinkIterator<E>(this, 0);
+        return removeOneOccurrence(o, iter);
+    }
+
+    private boolean removeOneOccurrence(Object o, Iterator<E> iter) {
+        while (iter.hasNext()) {
+            E element = iter.next();
+            if (o == null ? element == null : o.equals(element)) {
+                iter.remove();
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
      * Replaces the element at the specified location in this {@code LinkedList}
      * with the specified object.
-     * 
+     *
      * @param location
      *            the index at which to put the specified object.
      * @param object
@@ -672,11 +858,11 @@ public class LinkedList<E> extends AbstractSequentialList<E> implements
      * @throws IllegalArgumentException
      *             if an object cannot be added to this list.
      * @throws IndexOutOfBoundsException
-     *             if {@code location < 0 || >= size()}
+     *             if {@code location < 0 || location >= size()}
      */
     @Override
     public E set(int location, E object) {
-        if (0 <= location && location < size) {
+        if (location >= 0 && location < size) {
             Link<E> link = voidLink;
             if (location < (size / 2)) {
                 for (int i = 0; i <= location; i++) {
@@ -696,7 +882,7 @@ public class LinkedList<E> extends AbstractSequentialList<E> implements
 
     /**
      * Returns the number of elements in this {@code LinkedList}.
-     * 
+     *
      * @return the number of elements in this {@code LinkedList}.
      */
     @Override
@@ -705,8 +891,7 @@ public class LinkedList<E> extends AbstractSequentialList<E> implements
     }
 
     public boolean offer(E o) {
-        add(o);
-        return true;
+        return addLastImpl(o);
     }
 
     public E poll() {
@@ -714,42 +899,96 @@ public class LinkedList<E> extends AbstractSequentialList<E> implements
     }
 
     public E remove() {
-        return removeFirst();
+        return removeFirstImpl();
     }
 
     public E peek() {
+        return peekFirstImpl();
+    }
+
+    private E peekFirstImpl() {
         Link<E> first = voidLink.next;
         return first == voidLink ? null : first.data;
     }
 
     public E element() {
-        return getFirst();
+        return getFirstImpl();
     }
 
-    // This avoids the circular link element references, leaking memory on iOS.
-    protected void finalize() {
-        clear();
-        voidLink.previous = voidLink.next = null;
+    /**
+     * Returns a new array containing all elements contained in this
+     * {@code LinkedList}.
+     *
+     * @return an array of the elements from this {@code LinkedList}.
+     */
+    @Override
+    public Object[] toArray() {
+        int index = 0;
+        Object[] contents = new Object[size];
+        Link<E> link = voidLink.next;
+        while (link != voidLink) {
+            contents[index++] = link.data;
+            link = link.next;
+        }
+        return contents;
     }
 
-    /*-[
-    - (NSUInteger)countByEnumeratingWithState:(NSFastEnumerationState *)state
-                                      objects:(__unsafe_unretained id *)stackbuf
-                                        count:(NSUInteger)len {
-      __unsafe_unretained JavaUtilLinkedList_Link *link = (ARCBRIDGE id) (void *) state->extra[0];
-      if (!link) {
-        state->mutationsPtr = (unsigned long *) &modCount_;
-        link = voidLink_->next_;
-      }
-      state->itemsPtr = stackbuf;
-      NSUInteger objCount = 0;
-      while (link != voidLink_ && objCount < len) {
-        *stackbuf++ = link->data_;
-        objCount++;
-        link = link->next_;
-      }
-      state->extra[0] = (unsigned long) link;
-      return objCount;
+    /**
+     * Returns an array containing all elements contained in this
+     * {@code LinkedList}. If the specified array is large enough to hold the
+     * elements, the specified array is used, otherwise an array of the same
+     * type is created. If the specified array is used and is larger than this
+     * {@code LinkedList}, the array element following the collection elements
+     * is set to null.
+     *
+     * @param contents
+     *            the array.
+     * @return an array of the elements from this {@code LinkedList}.
+     * @throws ArrayStoreException
+     *             if the type of an element in this {@code LinkedList} cannot
+     *             be stored in the type of the specified array.
+     */
+    @Override
+    @SuppressWarnings("unchecked")
+    public <T> T[] toArray(T[] contents) {
+        int index = 0;
+        if (size > contents.length) {
+            Class<?> ct = contents.getClass().getComponentType();
+            contents = (T[]) Array.newInstance(ct, size);
+        }
+        Link<E> link = voidLink.next;
+        while (link != voidLink) {
+            contents[index++] = (T) link.data;
+            link = link.next;
+        }
+        if (index < contents.length) {
+            contents[index] = null;
+        }
+        return contents;
     }
-    ]-*/
+
+    private void writeObject(ObjectOutputStream stream) throws IOException {
+        stream.defaultWriteObject();
+        stream.writeInt(size);
+        Iterator<E> it = iterator();
+        while (it.hasNext()) {
+            stream.writeObject(it.next());
+        }
+    }
+
+    @SuppressWarnings("unchecked")
+    private void readObject(ObjectInputStream stream) throws IOException,
+            ClassNotFoundException {
+        stream.defaultReadObject();
+        size = stream.readInt();
+        voidLink = new Link<E>(null, null, null);
+        Link<E> link = voidLink;
+        for (int i = size; --i >= 0;) {
+            Link<E> nextLink = new Link<E>((E) stream.readObject(), link, null);
+            link.next = nextLink;
+            link = nextLink;
+        }
+        link.next = voidLink;
+        voidLink.previous = link;
+    }
 }

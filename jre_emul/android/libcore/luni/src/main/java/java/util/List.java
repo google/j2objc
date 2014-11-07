@@ -32,7 +32,7 @@ public interface List<E> extends Collection<E> {
      * is added at the end. If the location is smaller than the size of this
      * {@code List}, then all elements beyond the specified location are moved by one
      * position towards the end of the {@code List}.
-     * 
+     *
      * @param location
      *            the index at which to insert.
      * @param object
@@ -51,7 +51,7 @@ public interface List<E> extends Collection<E> {
 
     /**
      * Adds the specified object at the end of this {@code List}.
-     * 
+     *
      * @param object
      *            the object to add.
      * @return always true.
@@ -69,7 +69,7 @@ public interface List<E> extends Collection<E> {
      * Inserts the objects in the specified collection at the specified location
      * in this {@code List}. The objects are added in the order they are returned from
      * the collection's iterator.
-     * 
+     *
      * @param location
      *            the index at which to insert.
      * @param collection
@@ -84,7 +84,7 @@ public interface List<E> extends Collection<E> {
      * @throws IllegalArgumentException
      *                if an object cannot be added to this {@code List}.
      * @throws IndexOutOfBoundsException
-     *                if {@code location < 0 || > size()}
+     *                if {@code location < 0 || location > size()}
      */
     public boolean addAll(int location, Collection<? extends E> collection);
 
@@ -92,7 +92,7 @@ public interface List<E> extends Collection<E> {
      * Adds the objects in the specified collection to the end of this {@code List}. The
      * objects are added in the order in which they are returned from the
      * collection's iterator.
-     * 
+     *
      * @param collection
      *            the collection of objects.
      * @return {@code true} if this {@code List} is modified, {@code false} otherwise
@@ -109,7 +109,7 @@ public interface List<E> extends Collection<E> {
 
     /**
      * Removes all elements from this {@code List}, leaving it empty.
-     * 
+     *
      * @throws UnsupportedOperationException
      *                if removing from this {@code List} is not supported.
      * @see #isEmpty
@@ -119,7 +119,7 @@ public interface List<E> extends Collection<E> {
 
     /**
      * Tests whether this {@code List} contains the specified object.
-     * 
+     *
      * @param object
      *            the object to search for.
      * @return {@code true} if object is an element of this {@code List}, {@code false}
@@ -130,7 +130,7 @@ public interface List<E> extends Collection<E> {
     /**
      * Tests whether this {@code List} contains all objects contained in the
      * specified collection.
-     * 
+     *
      * @param collection
      *            the collection of objects
      * @return {@code true} if all objects in the specified collection are
@@ -143,7 +143,7 @@ public interface List<E> extends Collection<E> {
      * represent the <em>same</em> object using a class specific comparison. For
      * {@code List}s, this means that they contain the same elements in exactly the same
      * order.
-     * 
+     *
      * @param object
      *            the object to compare with this object.
      * @return boolean {@code true} if the object is the same as this object,
@@ -154,19 +154,19 @@ public interface List<E> extends Collection<E> {
 
     /**
      * Returns the element at the specified location in this {@code List}.
-     * 
+     *
      * @param location
      *            the index of the element to return.
      * @return the element at the specified location.
      * @throws IndexOutOfBoundsException
-     *                if {@code location < 0 || >= size()}
+     *                if {@code location < 0 || location >= size()}
      */
     public E get(int location);
 
     /**
      * Returns the hash code for this {@code List}. It is calculated by taking each
      * element' hashcode and its position in the {@code List} into account.
-     * 
+     *
      * @return the hash code of the {@code List}.
      */
     public int hashCode();
@@ -174,7 +174,7 @@ public interface List<E> extends Collection<E> {
     /**
      * Searches this {@code List} for the specified object and returns the index of the
      * first occurrence.
-     * 
+     *
      * @param object
      *            the object to search for.
      * @return the index of the first occurrence of the object or -1 if the
@@ -184,7 +184,7 @@ public interface List<E> extends Collection<E> {
 
     /**
      * Returns whether this {@code List} contains no elements.
-     * 
+     *
      * @return {@code true} if this {@code List} has no elements, {@code false}
      *         otherwise.
      * @see #size
@@ -194,7 +194,7 @@ public interface List<E> extends Collection<E> {
     /**
      * Returns an iterator on the elements of this {@code List}. The elements are
      * iterated in the same order as they occur in the {@code List}.
-     * 
+     *
      * @return an iterator on the elements of this {@code List}.
      * @see Iterator
      */
@@ -203,7 +203,7 @@ public interface List<E> extends Collection<E> {
     /**
      * Searches this {@code List} for the specified object and returns the index of the
      * last occurrence.
-     * 
+     *
      * @param object
      *            the object to search for.
      * @return the index of the last occurrence of the object, or -1 if the
@@ -214,9 +214,9 @@ public interface List<E> extends Collection<E> {
     /**
      * Returns a {@code List} iterator on the elements of this {@code List}. The elements are
      * iterated in the same order that they occur in the {@code List}.
-     * 
+     *
      * @return a {@code List} iterator on the elements of this {@code List}
-     * 
+     *
      * @see ListIterator
      */
     public ListIterator<E> listIterator();
@@ -225,7 +225,7 @@ public interface List<E> extends Collection<E> {
      * Returns a list iterator on the elements of this {@code List}. The elements are
      * iterated in the same order as they occur in the {@code List}. The iteration
      * starts at the specified location.
-     * 
+     *
      * @param location
      *            the index at which to start the iteration.
      * @return a list iterator on the elements of this {@code List}.
@@ -237,20 +237,20 @@ public interface List<E> extends Collection<E> {
 
     /**
      * Removes the object at the specified location from this {@code List}.
-     * 
+     *
      * @param location
      *            the index of the object to remove.
      * @return the removed object.
      * @throws UnsupportedOperationException
      *                if removing from this {@code List} is not supported.
      * @throws IndexOutOfBoundsException
-     *                if {@code location < 0 || >= size()}
+     *                if {@code location < 0 || location >= size()}
      */
     public E remove(int location);
 
     /**
      * Removes the first occurrence of the specified object from this {@code List}.
-     * 
+     *
      * @param object
      *            the object to remove.
      * @return true if this {@code List} was modified by this operation, false
@@ -263,7 +263,7 @@ public interface List<E> extends Collection<E> {
     /**
      * Removes all occurrences in this {@code List} of each object in the specified
      * collection.
-     * 
+     *
      * @param collection
      *            the collection of objects to remove.
      * @return {@code true} if this {@code List} is modified, {@code false} otherwise.
@@ -275,7 +275,7 @@ public interface List<E> extends Collection<E> {
     /**
      * Removes all objects from this {@code List} that are not contained in the
      * specified collection.
-     * 
+     *
      * @param collection
      *            the collection of objects to retain.
      * @return {@code true} if this {@code List} is modified, {@code false} otherwise.
@@ -287,7 +287,7 @@ public interface List<E> extends Collection<E> {
     /**
      * Replaces the element at the specified location in this {@code List} with the
      * specified object. This operation does not change the size of the {@code List}.
-     * 
+     *
      * @param location
      *            the index at which to put the specified object.
      * @param object
@@ -301,13 +301,13 @@ public interface List<E> extends Collection<E> {
      * @throws IllegalArgumentException
      *                if an object cannot be added to this {@code List}.
      * @throws IndexOutOfBoundsException
-     *                if {@code location < 0 || >= size()}
+     *                if {@code location < 0 || location >= size()}
      */
     public E set(int location, E object);
 
     /**
      * Returns the number of elements in this {@code List}.
-     * 
+     *
      * @return the number of elements in this {@code List}.
      */
     public int size();
@@ -316,7 +316,7 @@ public interface List<E> extends Collection<E> {
      * Returns a {@code List} of the specified portion of this {@code List} from the given start
      * index to the end index minus one. The returned {@code List} is backed by this
      * {@code List} so changes to it are reflected by the other.
-     * 
+     *
      * @param start
      *            the index at which to start the sublist.
      * @param end
@@ -330,7 +330,7 @@ public interface List<E> extends Collection<E> {
 
     /**
      * Returns an array containing all elements contained in this {@code List}.
-     * 
+     *
      * @return an array of the elements from this {@code List}.
      */
     public Object[] toArray();
@@ -341,7 +341,7 @@ public interface List<E> extends Collection<E> {
      * is used, otherwise an array of the same type is created. If the specified
      * array is used and is larger than this {@code List}, the array element following
      * the collection elements is set to null.
-     * 
+     *
      * @param array
      *            the array.
      * @return an array of the elements from this {@code List}.

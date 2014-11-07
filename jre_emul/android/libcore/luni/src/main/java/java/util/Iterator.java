@@ -18,32 +18,30 @@
 package java.util;
 
 /**
- * An {@code Iterator} is used to sequence over a collection of objects.
- * Conceptually, an iterator is always positioned between two elements of a
- * collection. A fresh iterator is always positioned in front of the first
- * element.
- * 
- * If a collection has been changed since its creation, methods {@code next} and
- * {@code hasNext()} may throw a {@code ConcurrentModificationException}.
- * Iterators with this behavior are called fail-fast iterators.
- * 
+ * An iterator over a sequence of objects, such as a collection.
+ *
+ * <p>If a collection has been changed since the iterator was created,
+ * methods {@code next} and {@code hasNext()} may throw a {@code ConcurrentModificationException}.
+ * It is not possible to guarantee that this mechanism works in all cases of unsynchronized
+ * concurrent modification. It should only be used for debugging purposes. Iterators with this
+ * behavior are called fail-fast iterators.
+ *
+ * <p>Implementing {@link Iterable} and returning an {@code Iterator} allows your
+ * class to be used as a collection with the enhanced for loop.
+ *
  * @param <E>
  *            the type of object returned by the iterator.
  */
 public interface Iterator<E> {
     /**
-     * Returns whether there are more elements to iterate, i.e. whether the
-     * iterator is positioned in front of an element.
-     * 
-     * @return {@code true} if there are more elements, {@code false} otherwise.
+     * Returns true if there is at least one more element, false otherwise.
      * @see #next
      */
     public boolean hasNext();
 
     /**
-     * Returns the next object in the iteration, i.e. returns the element in
-     * front of the iterator and advances the iterator by one position.
-     * 
+     * Returns the next object and advances the iterator.
+     *
      * @return the next object.
      * @throws NoSuchElementException
      *             if there are no more elements.
@@ -53,8 +51,8 @@ public interface Iterator<E> {
 
     /**
      * Removes the last object returned by {@code next} from the collection.
-     * This method can only be called once after {@code next} was called.
-     * 
+     * This method can only be called once between each call to {@code next}.
+     *
      * @throws UnsupportedOperationException
      *             if removing is not supported by the collection being
      *             iterated.

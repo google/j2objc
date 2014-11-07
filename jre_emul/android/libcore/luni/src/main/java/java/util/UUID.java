@@ -20,9 +20,11 @@ package java.util;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.Serializable;
+import java.nio.ByteOrder;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
+import libcore.io.Memory;
 
 /**
  * UUID is an immutable representation of a 128-bit universally unique
@@ -62,7 +64,6 @@ public final class UUID implements Serializable, Comparable<UUID> {
      *            The 64 least significant bits of the UUID.
      */
     public UUID(long mostSigBits, long leastSigBits) {
-        super();
         this.mostSigBits = mostSigBits;
         this.leastSigBits = leastSigBits;
         init();
@@ -119,34 +120,15 @@ public final class UUID implements Serializable, Comparable<UUID> {
      * @return an UUID instance.
      */
     public static UUID randomUUID() {
-        byte[] data;
+        byte[] data = new byte[16];
         // lock on the class to protect lazy init
         synchronized (UUID.class) {
             if (rng == null) {
                 rng = new SecureRandom();
             }
         }
-        rng.nextBytes(data = new byte[16]);
-        long msb = (data[0] & 0xFFL) << 56;
-        msb |= (data[1] & 0xFFL) << 48;
-        msb |= (data[2] & 0xFFL) << 40;
-        msb |= (data[3] & 0xFFL) << 32;
-        msb |= (data[4] & 0xFFL) << 24;
-        msb |= (data[5] & 0xFFL) << 16;
-        msb |= (data[6] & 0x0FL) << 8;
-        msb |= (0x4L << 12); // set the version to 4
-        msb |= (data[7] & 0xFFL);
-
-        long lsb = (data[8] & 0x3FL) << 56;
-        lsb |= (0x2L << 62); // set the variant to bits 01
-        lsb |= (data[9] & 0xFFL) << 48;
-        lsb |= (data[10] & 0xFFL) << 40;
-        lsb |= (data[11] & 0xFFL) << 32;
-        lsb |= (data[12] & 0xFFL) << 24;
-        lsb |= (data[13] & 0xFFL) << 16;
-        lsb |= (data[14] & 0xFFL) << 8;
-        lsb |= (data[15] & 0xFFL);
-        return new UUID(msb, lsb);
+        rng.nextBytes(data);
+        return makeUuid(data, 4);
     }
 
     /**
@@ -160,36 +142,26 @@ public final class UUID implements Serializable, Comparable<UUID> {
      */
     public static UUID nameUUIDFromBytes(byte[] name) {
         if (name == null) {
-            throw new NullPointerException();
+            throw new NullPointerException("name == null");
         }
-
-        byte[] hash;
         try {
-            MessageDigest md = MessageDigest.getInstance("MD5"); //$NON-NLS-1$
-            hash = md.digest(name);
+            MessageDigest md = MessageDigest.getInstance("MD5");
+            return makeUuid(md.digest(name), 3);
         } catch (NoSuchAlgorithmException e) {
             throw new AssertionError(e);
         }
+    }
 
-        long msb = (hash[0] & 0xFFL) << 56;
-        msb |= (hash[1] & 0xFFL) << 48;
-        msb |= (hash[2] & 0xFFL) << 40;
-        msb |= (hash[3] & 0xFFL) << 32;
-        msb |= (hash[4] & 0xFFL) << 24;
-        msb |= (hash[5] & 0xFFL) << 16;
-        msb |= (hash[6] & 0x0FL) << 8;
-        msb |= (0x3L << 12); // set the version to 3
-        msb |= (hash[7] & 0xFFL);
-
-        long lsb = (hash[8] & 0x3FL) << 56;
-        lsb |= (0x2L << 62); // set the variant to bits 01
-        lsb |= (hash[9] & 0xFFL) << 48;
-        lsb |= (hash[10] & 0xFFL) << 40;
-        lsb |= (hash[11] & 0xFFL) << 32;
-        lsb |= (hash[12] & 0xFFL) << 24;
-        lsb |= (hash[13] & 0xFFL) << 16;
-        lsb |= (hash[14] & 0xFFL) << 8;
-        lsb |= (hash[15] & 0xFFL);
+    private static UUID makeUuid(byte[] hash, int version) {
+        long msb = Memory.peekLong(hash, 0, ByteOrder.BIG_ENDIAN);
+        long lsb = Memory.peekLong(hash, 8, ByteOrder.BIG_ENDIAN);
+        // Set the version field.
+        msb &= ~(0xfL << 12);
+        msb |= ((long) version) << 12;
+        // Set the variant field to 2. Note that the variant field is variable-width,
+        // so supporting other variants is not just a matter of changing the constant 2 below!
+        lsb &= ~(0x3L << 62);
+        lsb |= 2L << 62;
         return new UUID(msb, lsb);
     }
 
@@ -207,34 +179,20 @@ public final class UUID implements Serializable, Comparable<UUID> {
      */
     public static UUID fromString(String uuid) {
         if (uuid == null) {
-            throw new NullPointerException();
+            throw new NullPointerException("uuid == null");
         }
 
-        int[] position = new int[5];
-        int lastPosition = 1;
-        int startPosition = 0;
-
-        int i = 0;
-        for (; i < position.length && lastPosition > 0; i++) {
-            position[i] = uuid.indexOf("-", startPosition); //$NON-NLS-1$
-            lastPosition = position[i];
-            startPosition = position[i] + 1;
+        String[] parts = uuid.split("-");
+        if (parts.length != 5) {
+            throw new IllegalArgumentException("Invalid UUID: " + uuid);
         }
 
-        // should have and only can have four "-" in UUID
-        if (i != position.length || lastPosition != -1) {
-            throw new IllegalArgumentException("Invalid UUID string " + uuid);
-        }
+        long m1 = Long.parsePositiveLong(parts[0], 16);
+        long m2 = Long.parsePositiveLong(parts[1], 16);
+        long m3 = Long.parsePositiveLong(parts[2], 16);
 
-        long m1 = Long.parseLong(uuid.substring(0, position[0]), 16);
-        long m2 = Long.parseLong(uuid.substring(position[0] + 1, position[1]),
-                16);
-        long m3 = Long.parseLong(uuid.substring(position[1] + 1, position[2]),
-                16);
-
-        long lsb1 = Long.parseLong(
-                uuid.substring(position[2] + 1, position[3]), 16);
-        long lsb2 = Long.parseLong(uuid.substring(position[3] + 1), 16);
+        long lsb1 = Long.parsePositiveLong(parts[3], 16);
+        long lsb2 = Long.parsePositiveLong(parts[4], 16);
 
         long msb = (m1 << 32) | (m2 << 16) | m3;
         long lsb = (lsb1 << 48) | lsb2;
@@ -366,13 +324,13 @@ public final class UUID implements Serializable, Comparable<UUID> {
             return this.mostSigBits < uuid.mostSigBits ? -1 : 1;
         }
 
-        assert this.mostSigBits == uuid.mostSigBits;
+        // assert this.mostSigBits == uuid.mostSigBits;
 
         if (this.leastSigBits != uuid.leastSigBits) {
             return this.leastSigBits < uuid.leastSigBits ? -1 : 1;
         }
 
-        assert this.leastSigBits == uuid.leastSigBits;
+        // assert this.leastSigBits == uuid.leastSigBits;
 
         return 0;
     }

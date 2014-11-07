@@ -4,9 +4,9 @@
  * The ASF licenses this file to You under the Apache License, Version 2.0
  * (the "License"); you may not use this file except in compliance with
  * the License.  You may obtain a copy of the License at
- * 
+ *
  *     http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -23,18 +23,25 @@ package java.util;
 @SuppressWarnings("serial")
 final class MiniEnumSet<E extends Enum<E>> extends EnumSet<E> {
     private static final int MAX_ELEMENTS = 64;
-    
+
     private int size;
-    
-    private final E[] enums;    
-    
+
+    private final E[] enums;
+
     private long bits;
-    
-    MiniEnumSet(Class<E> elementType) {
+
+    /**
+     * Constructs an instance.
+     *
+     * @param elementType non-null; type of the elements
+     * @param enums non-null; pre-populated array of constants in ordinal
+     * order
+     */
+    MiniEnumSet(Class<E> elementType, E[] enums) {
         super(elementType);
-        enums = elementType.getEnumConstants();
+        this.enums = enums;
     }
-    
+
     private class MiniEnumSetIterator implements Iterator<E> {
 
         /**
@@ -90,13 +97,13 @@ final class MiniEnumSet<E extends Enum<E>> extends EnumSet<E> {
     public int size() {
         return size;
     }
-    
+
     @Override
     public void clear() {
         bits = 0;
         size = 0;
     }
-    
+
     @Override
     public boolean add(E element) {
 	if (element == null) {
@@ -115,7 +122,7 @@ final class MiniEnumSet<E extends Enum<E>> extends EnumSet<E> {
         }
         return false;
     }
-    
+
     @Override
     public boolean addAll(Collection<? extends E> collection) {
 	if (collection == null) {
@@ -139,7 +146,7 @@ final class MiniEnumSet<E extends Enum<E>> extends EnumSet<E> {
         }
         return super.addAll(collection);
     }
-    
+
     @Override
     public boolean contains(Object object) {
         if (object == null || !isValidType(object.getClass())) {
@@ -151,7 +158,7 @@ final class MiniEnumSet<E extends Enum<E>> extends EnumSet<E> {
         int ordinal = element.ordinal();
         return (bits & (1L << ordinal)) != 0;
     }
-    
+
     @Override
     public boolean containsAll(Collection<?> collection) {
 	if (collection == null) {
@@ -165,9 +172,9 @@ final class MiniEnumSet<E extends Enum<E>> extends EnumSet<E> {
             long setBits = set.bits;
             return isValidType(set.elementClass) && ((bits & setBits) == setBits);
         }
-        return !(collection instanceof EnumSet) && super.containsAll(collection);  
+        return !(collection instanceof EnumSet) && super.containsAll(collection);
     }
-    
+
     @Override
     public boolean removeAll(Collection<?> collection) {
 	if (collection == null) {
@@ -220,14 +227,14 @@ final class MiniEnumSet<E extends Enum<E>> extends EnumSet<E> {
         }
         return super.retainAll(collection);
     }
-    
+
     @Override
     public boolean remove(Object object) {
         if (object == null || !isValidType(object.getClass())) {
             return false;
         }
 
-        @SuppressWarnings("unchecked") // guarded by isValidType() 
+        @SuppressWarnings("unchecked") // guarded by isValidType()
         Enum<E> element = (Enum<E>) object;
         int ordinal = element.ordinal();
         long oldBits = bits;
@@ -239,7 +246,7 @@ final class MiniEnumSet<E extends Enum<E>> extends EnumSet<E> {
         }
         return false;
     }
-    
+
     @Override
     public boolean equals(Object object) {
         if (!(object instanceof EnumSet)) {
@@ -251,7 +258,7 @@ final class MiniEnumSet<E extends Enum<E>> extends EnumSet<E> {
         }
         return bits == ((MiniEnumSet<?>) set).bits;
     }
-    
+
     @Override
     void complement() {
         if (enums.length != 0) {
@@ -260,7 +267,7 @@ final class MiniEnumSet<E extends Enum<E>> extends EnumSet<E> {
             size = enums.length - size;
         }
     }
-    
+
     @Override
     void setRange(E start, E end) {
 	if (start == null || end == null) {

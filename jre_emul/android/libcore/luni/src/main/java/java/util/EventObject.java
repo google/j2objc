@@ -23,36 +23,31 @@ import java.io.Serializable;
 /**
  * {@code EventObject}s represent events. Typically applications subclass this class to
  * add event specific information.
- * 
+ *
  * @see EventListener
  */
 public class EventObject implements Serializable {
-    
+
     private static final long serialVersionUID = 5516075349620653480L;
 
-    /**
-     * The event source.
-     */
+    //@FindBugsSuppressWarnings("SE_TRANSIENT_FIELD_NOT_RESTORED")
     protected transient Object source;
 
     /**
      * Constructs a new instance of this class.
-     * 
+     *
      * @param source
      *            the object which fired the event.
      */
     public EventObject(Object source) {
-        if (source != null) {
-            this.source = source;
-        } else {
-            throw new IllegalArgumentException();
+        if (source == null) {
+            throw new IllegalArgumentException("source == null");
         }
+        this.source = source;
     }
 
     /**
-     * Returns the event source.
-     * 
-     * @return the object which fired the event.
+     * Returns the object which fired the event.
      */
     public Object getSource() {
         return source;
@@ -60,11 +55,8 @@ public class EventObject implements Serializable {
 
     /**
      * Returns the string representation of this {@code EventObject}.
-     * 
-     * @return the string representation of this {@code EventObject}.
      */
-    @Override
-    public String toString() {
-        return getClass().getName() + "[source=" + source + ']'; //$NON-NLS-1$
+    @Override public String toString() {
+        return getClass().getName() + "[source=" + source + ']';
     }
 }
