@@ -17,6 +17,9 @@
 
 package java.util;
 
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.io.Serializable;
 
 /**
@@ -27,9 +30,10 @@ public class HashSet<E> extends AbstractSet<E> implements Set<E>, Cloneable,
         Serializable {
 
     private static final long serialVersionUID = -5024744406713321676L;
-    private static final Object dummyKey = new Object();
 
     transient HashMap<E, Object> backingMap;
+
+    private static final Object dummyKey = new Object();
 
     /**
      * Constructs a new empty instance of {@code HashSet}.
@@ -119,7 +123,7 @@ public class HashSet<E> extends AbstractSet<E> implements Set<E>, Cloneable,
             clone.backingMap = (HashMap<E, Object>) backingMap.clone();
             return clone;
         } catch (CloneNotSupportedException e) {
-            return null;
+            throw new AssertionError(e);
         }
     }
 
@@ -180,6 +184,31 @@ public class HashSet<E> extends AbstractSet<E> implements Set<E>, Cloneable,
     public int size() {
         return backingMap.size();
     }
+
+    /* Commented out because of the reference to HashMap's "table" field.
+    private void writeObject(ObjectOutputStream stream) throws IOException {
+        stream.defaultWriteObject();
+        stream.writeInt(backingMap.table.length);
+        stream.writeFloat(HashMap.DEFAULT_LOAD_FACTOR);
+        stream.writeInt(size());
+        for (E e : this) {
+            stream.writeObject(e);
+        }
+    }
+
+    @SuppressWarnings("unchecked")
+    private void readObject(ObjectInputStream stream) throws IOException,
+            ClassNotFoundException {
+        stream.defaultReadObject();
+        int length = stream.readInt();
+        float loadFactor = stream.readFloat();
+        backingMap = createBackingMap(length, loadFactor);
+        int elementCount = stream.readInt();
+        for (int i = elementCount; --i >= 0;) {
+            E key = (E) stream.readObject();
+            backingMap.put(key, this);
+        }
+    }*/
 
     HashMap<E, Object> createBackingMap(int capacity, float loadFactor) {
         return new HashMap<E, Object>(capacity, loadFactor);
