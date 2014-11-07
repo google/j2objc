@@ -110,10 +110,13 @@ public class ImplementationImportCollectorTest extends GenerationTest {
 
   // Verify that a primitive type literal has a wrapper class import.
   public void testPrimitiveTypeLiteral() throws IOException {
+    // Use assignment to a @Weak object to ensure the IOSClass import isn't
+    // picked up by visiting a method or function invocation.
     String translation = translateSourceFile(
-        "class Test { Class doubleType() { return double.class; }}",
+        "import com.google.j2objc.annotations.Weak; "
+        + "class Test { @Weak Object o; void test() { o = double.class; } }",
         "Test", "Test.m");
-    assertTranslation(translation, "#include \"java/lang/Double.h\"");
+    assertTranslation(translation, "#include \"IOSClass.h\"");
   }
 
   // Verify that an object array type literal imports IOSObjectArray.
