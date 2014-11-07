@@ -41,7 +41,6 @@ import java.util.List;
 public class VarargsRewriter extends TreeVisitor {
 
   private void rewriteVarargs(IMethodBinding method, List<Expression> args) {
-    method = method.getMethodDeclaration();
     if (!method.isVarargs() || IOSMethodBinding.hasVarArgsTarget(method)) {
       return;
     }
@@ -51,12 +50,7 @@ public class VarargsRewriter extends TreeVisitor {
     int varargsSize = args.size() - paramTypes.length + 1;
     if (varargsSize == 1) {
       ITypeBinding lastArgType = args.get(args.size() - 1).getTypeBinding();
-      if (lastArgType.isNullType()) {
-        return;
-      }
-      if (lastParam.getDimensions() == lastArgType.getDimensions()
-          && lastParam.getElementType().isPrimitive()
-              == lastArgType.getElementType().isPrimitive()) {
+      if (lastArgType.isAssignmentCompatible(lastParam)) {
         // Last argument is already an array.
         return;
       }
@@ -66,9 +60,9 @@ public class VarargsRewriter extends TreeVisitor {
     List<Expression> varargsCopy = Lists.newArrayList(varargs);
     varargs.clear();
     if (varargsCopy.isEmpty()) {
-      args.add(new ArrayCreation(lastParam, 0));
+      args.add(new ArrayCreation(lastParam.getErasure(), 0));
     } else {
-      ArrayInitializer newInit = new ArrayInitializer(lastParam);
+      ArrayInitializer newInit = new ArrayInitializer(lastParam.getErasure());
       newInit.getExpressions().addAll(varargsCopy);
       args.add(new ArrayCreation(newInit));
     }
