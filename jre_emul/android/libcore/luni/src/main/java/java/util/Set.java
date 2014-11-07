@@ -24,11 +24,11 @@ package java.util;
  * @since 1.2
  */
 public interface Set<E> extends Collection<E> {
-    
+
     /**
      * Adds the specified object to this set. The set is not modified if it
      * already contains the object.
-     * 
+     *
      * @param object
      *            the object to add.
      * @return {@code true} if this set is modified, {@code false} otherwise.
@@ -44,7 +44,7 @@ public interface Set<E> extends Collection<E> {
     /**
      * Adds the objects in the specified collection which do not exist yet in
      * this set.
-     * 
+     *
      * @param collection
      *            the collection of objects.
      * @return {@code true} if this set is modified, {@code false} otherwise.
@@ -59,7 +59,7 @@ public interface Set<E> extends Collection<E> {
 
     /**
      * Removes all elements from this set, leaving it empty.
-     * 
+     *
      * @throws UnsupportedOperationException
      *             when removing from this set is not supported.
      * @see #isEmpty
@@ -69,7 +69,7 @@ public interface Set<E> extends Collection<E> {
 
     /**
      * Searches this set for the specified object.
-     * 
+     *
      * @param object
      *            the object to search for.
      * @return {@code true} if object is an element of this set, {@code false}
@@ -79,7 +79,7 @@ public interface Set<E> extends Collection<E> {
 
     /**
      * Searches this set for all objects in the specified collection.
-     * 
+     *
      * @param collection
      *            the collection of objects.
      * @return {@code true} if all objects in the specified collection are
@@ -88,8 +88,32 @@ public interface Set<E> extends Collection<E> {
     public boolean containsAll(Collection<?> collection);
 
     /**
+     * Compares the specified object to this set, and returns true if they
+     * represent the <em>same</em> object using a class specific comparison.
+     * Equality for a set means that both sets have the same size and the same
+     * elements.
+     *
+     * @param object
+     *            the object to compare with this object.
+     * @return boolean {@code true} if the object is the same as this object,
+     *         and {@code false} if it is different from this object.
+     * @see #hashCode
+     */
+    public boolean equals(Object object);
+
+    /**
+     * Returns the hash code for this set. Two set which are equal must return
+     * the same value.
+     *
+     * @return the hash code of this set.
+     *
+     * @see #equals
+     */
+    public int hashCode();
+
+    /**
      * Returns true if this set has no elements.
-     * 
+     *
      * @return {@code true} if this set has no elements, {@code false}
      *         otherwise.
      * @see #size
@@ -99,7 +123,7 @@ public interface Set<E> extends Collection<E> {
     /**
      * Returns an iterator on the elements of this set. The elements are
      * unordered.
-     * 
+     *
      * @return an iterator on the elements of this set.
      * @see Iterator
      */
@@ -107,7 +131,7 @@ public interface Set<E> extends Collection<E> {
 
     /**
      * Removes the specified object from this set.
-     * 
+     *
      * @param object
      *            the object to remove.
      * @return {@code true} if this set was modified, {@code false} otherwise.
@@ -118,7 +142,7 @@ public interface Set<E> extends Collection<E> {
 
     /**
      * Removes all objects in the specified collection from this set.
-     * 
+     *
      * @param collection
      *            the collection of objects to remove.
      * @return {@code true} if this set was modified, {@code false} otherwise.
@@ -130,7 +154,7 @@ public interface Set<E> extends Collection<E> {
     /**
      * Removes all objects from this set that are not contained in the specified
      * collection.
-     * 
+     *
      * @param collection
      *            the collection of objects to retain.
      * @return {@code true} if this set was modified, {@code false} otherwise.
@@ -141,8 +165,32 @@ public interface Set<E> extends Collection<E> {
 
     /**
      * Returns the number of elements in this set.
-     * 
+     *
      * @return the number of elements in this set.
      */
     public int size();
+
+    /**
+     * Returns an array containing all elements contained in this set.
+     *
+     * @return an array of the elements from this set.
+     */
+    public Object[] toArray();
+
+    /**
+     * Returns an array containing all elements contained in this set. If the
+     * specified array is large enough to hold the elements, the specified array
+     * is used, otherwise an array of the same type is created. If the specified
+     * array is used and is larger than this set, the array element following
+     * the collection elements is set to null.
+     *
+     * @param array
+     *            the array.
+     * @return an array of the elements from this set.
+     * @throws ArrayStoreException
+     *             when the type of an element in this set cannot be stored in
+     *             the type of the specified array.
+     * @see Collection#toArray(Object[])
+     */
+    public <T> T[] toArray(T[] array);
 }

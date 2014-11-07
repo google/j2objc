@@ -19,34 +19,19 @@ package java.util;
 
 
 /**
- * A {@code NoSuchElementException} is thrown when trying to retrieve an element
- * past the end of an Enumeration, or the first or last element from an empty
- * Vector.
- * 
- * @see Enumeration
+ * An {@code EmptyStackException} is thrown if the pop/peek method of a stack is
+ * executed on an empty stack.
+ *
  * @see java.lang.RuntimeException
  */
-public class NoSuchElementException extends RuntimeException {
+public class EmptyStackException extends RuntimeException {
 
-    private static final long serialVersionUID = 6769829250639411880L;
-
-    /**
-     * Constructs a new {@code NoSuchElementException} with the current stack
-     * trace filled in.
-     */
-    public NoSuchElementException() {
-        super();
-    }
+    private static final long serialVersionUID = 5084686378493302095L;
 
     /**
-     * Constructs a new {@code NoSuchElementException} with the current stack
-     * trace and message filled in.
-     * 
-     * @param detailMessage
-     *           the detail message for the exception.
+     * Constructs a new {@code EmptyStackException} with the stack trace filled
+     * in.
      */
-    public NoSuchElementException(String detailMessage) {
-        super(detailMessage);
+    public EmptyStackException() {
     }
-
 }

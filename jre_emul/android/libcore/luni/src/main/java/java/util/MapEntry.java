@@ -43,7 +43,7 @@ class MapEntry<K, V> implements Map.Entry<K, V>, Cloneable {
         try {
             return super.clone();
         } catch (CloneNotSupportedException e) {
-            return null;
+            throw new AssertionError(e);
         }
     }
 

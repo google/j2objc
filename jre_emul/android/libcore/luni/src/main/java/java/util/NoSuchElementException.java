@@ -17,34 +17,31 @@
 
 package java.util;
 
+
 /**
- * An Enumeration is used to sequence over a collection of objects.
- * <p>
- * Preferably an {@link Iterator} should be used. {@code Iterator} replaces the
- * enumeration interface and adds a way to remove elements from a collection.
- *
- * @see Hashtable
- * @see Properties
- * @see Vector
- * @version 1.0
+ * Thrown when trying to retrieve an element
+ * past the end of an Enumeration or Iterator.
  */
-public interface Enumeration<E> {
+public class NoSuchElementException extends RuntimeException {
+
+    private static final long serialVersionUID = 6769829250639411880L;
 
     /**
-     * Returns whether this {@code Enumeration} has more elements.
-     * 
-     * @return {@code true} if there are more elements, {@code false} otherwise.
-     * @see #nextElement
+     * Constructs a new {@code NoSuchElementException} with the current stack
+     * trace filled in.
      */
-    public boolean hasMoreElements();
+    public NoSuchElementException() {
+    }
 
     /**
-     * Returns the next element in this {@code Enumeration}.
-     * 
-     * @return the next element..
-     * @throws NoSuchElementException
-     *             if there are no more elements.
-     * @see #hasMoreElements
+     * Constructs a new {@code NoSuchElementException} with the current stack
+     * trace and message filled in.
+     *
+     * @param detailMessage
+     *           the detail message for the exception.
      */
-    public E nextElement();
+    public NoSuchElementException(String detailMessage) {
+        super(detailMessage);
+    }
+
 }

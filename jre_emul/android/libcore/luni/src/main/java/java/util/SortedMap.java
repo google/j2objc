@@ -23,18 +23,16 @@ package java.util;
  * natural ordering of its keys or the ordering given by a specified comparator.
  */
 public interface SortedMap<K,V> extends Map<K,V> {
-    
+
     /**
-     * Returns the comparator used to compare keys in this sorted map.
-     * 
-     * @return the comparator or {@code null} if the natural order is used.
+     * Returns the comparator used to compare keys in this sorted map, or null if the natural
+     * ordering is in use.
      */
     public Comparator<? super K> comparator();
 
     /**
-     * Returns the first key in this sorted map.
-     * 
-     * @return the first key in this sorted map.
+     * Returns the least key in this sorted map.
+     *
      * @throws NoSuchElementException
      *                if this sorted map is empty.
      */
@@ -64,9 +62,8 @@ public interface SortedMap<K,V> extends Map<K,V> {
     public SortedMap<K,V> headMap(K endKey);
 
     /**
-     * Returns the last key in this sorted map.
-     * 
-     * @return the last key in this sorted map.
+     * Returns the greatest key in this sorted map.
+     *
      * @throws NoSuchElementException
      *                if this sorted map is empty.
      */
@@ -106,7 +103,7 @@ public interface SortedMap<K,V> extends Map<K,V> {
      * <p>
      * Note: The returned map will not allow an insertion of a key outside the
      * specified range.
-     * 
+     *
      * @param startKey
      *            the low boundary of the range specified.
      * @return a sorted map where the keys are greater or equal to

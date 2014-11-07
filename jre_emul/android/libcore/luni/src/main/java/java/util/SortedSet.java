@@ -24,15 +24,15 @@ package java.util;
  * {@link Comparator} which is passed into a concrete implementation at
  * construction time. All elements in this set must be mutually comparable. The
  * ordering in this set must be consistent with {@code equals} of its elements.
- * 
+ *
  * @see Comparator
  * @see Comparable
  */
 public interface SortedSet<E> extends Set<E> {
-    
+
     /**
      * Returns the comparator used to compare elements in this {@code SortedSet}.
-     * 
+     *
      * @return a comparator or null if the natural ordering is used.
      */
     public Comparator<? super E> comparator();
@@ -40,7 +40,7 @@ public interface SortedSet<E> extends Set<E> {
     /**
      * Returns the first element in this {@code SortedSet}. The first element
      * is the lowest element.
-     * 
+     *
      * @return the first element.
      * @throws NoSuchElementException
      *             when this {@code SortedSet} is empty.
@@ -52,7 +52,7 @@ public interface SortedSet<E> extends Set<E> {
      * {@code SortedSet} which contains elements less than the end element. The
      * returned {@code SortedSet} is backed by this {@code SortedSet} so changes
      * to one set are reflected by the other.
-     * 
+     *
      * @param end
      *            the end element.
      * @return a subset where the elements are less than {@code end}.
@@ -68,7 +68,7 @@ public interface SortedSet<E> extends Set<E> {
     /**
      * Returns the last element in this {@code SortedSet}. The last element is
      * the highest element.
-     * 
+     *
      * @return the last element.
      * @throws NoSuchElementException
      *             when this {@code SortedSet} is empty.
@@ -81,7 +81,7 @@ public interface SortedSet<E> extends Set<E> {
      * element but less than the end element. The returned {@code SortedSet} is
      * backed by this SortedMap so changes to one set are reflected by the
      * other.
-     * 
+     *
      * @param start
      *            the start element.
      * @param end
@@ -104,7 +104,7 @@ public interface SortedSet<E> extends Set<E> {
      * {@code SortedSet} which contains elements greater or equal to the start
      * element. The returned {@code SortedSet} is backed by this
      * {@code SortedSet} so changes to one set are reflected by the other.
-     * 
+     *
      * @param start
      *            the start element.
      * @return a subset where the elements are greater or equal to {@code start} .
