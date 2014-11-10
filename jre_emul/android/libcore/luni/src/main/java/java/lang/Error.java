@@ -19,56 +19,56 @@ package java.lang;
 
 
 /**
- * {@code Exception} is the superclass of all classes that represent recoverable
- * exceptions. When exceptions are thrown, they may be caught by application
+ * {@code Error} is the superclass of all classes that represent unrecoverable
+ * errors. When errors are thrown, they should not be caught by application
  * code.
- * 
+ *
  * @see Throwable
- * @see Error
+ * @see Exception
  * @see RuntimeException
  */
-public class Exception extends Throwable {
-    private static final long serialVersionUID = -3387516993124229948L;
+public class Error extends Throwable {
+
+    private static final long serialVersionUID = 4980196508277280342L;
 
     /**
-     * Constructs a new {@code Exception} that includes the current stack trace.
+     * Constructs a new {@code Error} that includes the current stack trace.
      */
-    public Exception() {
-        super();
+    public Error() {
     }
 
     /**
-     * Constructs a new {@code Exception} with the current stack trace and the
+     * Constructs a new {@code Error} with the current stack trace and the
      * specified detail message.
-     * 
+     *
      * @param detailMessage
-     *            the detail message for this exception.
+     *            the detail message for this error.
      */
-    public Exception(String detailMessage) {
+    public Error(String detailMessage) {
         super(detailMessage);
     }
 
     /**
-     * Constructs a new {@code Exception} with the current stack trace, the
+     * Constructs a new {@code Error} with the current stack trace, the
      * specified detail message and the specified cause.
-     * 
+     *
      * @param detailMessage
-     *            the detail message for this exception.
+     *            the detail message for this error.
      * @param throwable
-     *            the cause of this exception.
+     *            the cause of this error.
      */
-    public Exception(String detailMessage, Throwable throwable) {
+    public Error(String detailMessage, Throwable throwable) {
         super(detailMessage, throwable);
     }
 
     /**
-     * Constructs a new {@code Exception} with the current stack trace and the
+     * Constructs a new {@code Error} with the current stack trace and the
      * specified cause.
-     * 
+     *
      * @param throwable
-     *            the cause of this exception.
+     *            the cause of this error.
      */
-    public Exception(Throwable throwable) {
+    public Error(Throwable throwable) {
         super(throwable);
     }
 }

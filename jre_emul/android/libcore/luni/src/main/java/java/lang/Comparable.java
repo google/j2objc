@@ -34,11 +34,11 @@ package java.lang;
  * {@code true}.
  */
 public interface Comparable<T> {
-    
+
     /**
      * Compares this object to the specified object to determine their relative
      * order.
-     * 
+     *
      * @param another
      *            the object to compare to this instance.
      * @return a negative integer if this instance is less than {@code another};

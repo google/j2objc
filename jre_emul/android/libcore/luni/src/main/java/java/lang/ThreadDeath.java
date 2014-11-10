@@ -18,31 +18,18 @@
 package java.lang;
 
 /**
- * Thrown when a program attempts to clone an object which does not support the
- * {@link Cloneable} interface.
- * 
- * @see Cloneable
+ * ThreadDeath is thrown when a thread stops executing. It is used to aid in the
+ * orderly unrolling of the thread's stack (eg. cleanup of monitors).
  */
-public class CloneNotSupportedException extends Exception {
+public class ThreadDeath extends Error {
 
-    private static final long serialVersionUID = 5195511250079656443L;
-
-    /**
-     * Constructs a new {@code CloneNotSupportedException} that includes the
-     * current stack trace.
-     */
-    public CloneNotSupportedException() {
-        super();
-    }
+    private static final long serialVersionUID = -4417128565033088268L;
 
     /**
-     * Constructs a new {@code CloneNotSupportedException} with the current
-     * stack trace and the specified detail message.
-     * 
-     * @param detailMessage
-     *            the detail message for this exception.
+     * Constructs a new instance of this class. Note that in the case of
+     * ThreadDeath, the stack trace may <em>not</em> be filled in a way which
+     * allows a stack trace to be printed.
      */
-    public CloneNotSupportedException(String detailMessage) {
-        super(detailMessage);
+    public ThreadDeath() {
     }
 }

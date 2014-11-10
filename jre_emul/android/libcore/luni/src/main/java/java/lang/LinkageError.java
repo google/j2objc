@@ -21,7 +21,7 @@ package java.lang;
 /**
  * {@code LinkageError} is the superclass of all error classes that occur when
  * loading and linking class files.
- * 
+ *
  * @see Error
  */
 public class LinkageError extends Error {
@@ -33,7 +33,6 @@ public class LinkageError extends Error {
      * trace.
      */
     public LinkageError() {
-        super();
     }
 
     /**

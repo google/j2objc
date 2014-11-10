@@ -18,28 +18,28 @@
 package java.lang;
 
 /**
- * Thrown when a program attempts to cast a an object to a type with which it is
- * not compatible.
+ * Thrown when an invalid value is passed to a string-to-number conversion
+ * method.
  */
-public class ClassCastException extends RuntimeException {
-    private static final long serialVersionUID = -9223365651070458532L;
+public class NumberFormatException extends IllegalArgumentException {
+
+    private static final long serialVersionUID = -2848938806368998894L;
 
     /**
-     * Constructs a new {@code ClassCastException} that includes the current
+     * Constructs a new {@code NumberFormatException} that includes the current
      * stack trace.
      */
-    public ClassCastException() {
-        super();
+    public NumberFormatException() {
     }
 
     /**
-     * Constructs a new {@code ClassCastException} with the current stack trace
-     * and the specified detail message.
-     * 
+     * Constructs a new {@code NumberFormatException} with the current stack
+     * trace and the specified detail message.
+     *
      * @param detailMessage
      *            the detail message for this exception.
      */
-    public ClassCastException(String detailMessage) {
+    public NumberFormatException(String detailMessage) {
         super(detailMessage);
     }
 }

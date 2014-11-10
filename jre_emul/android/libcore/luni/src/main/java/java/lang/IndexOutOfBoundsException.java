@@ -18,18 +18,28 @@
 package java.lang;
 
 /**
- * ThreadDeath is thrown when a thread stops executing. It is used to aid in the
- * orderly unrolling of the thread's stack (eg. cleanup of monitors).
+ * Thrown when a program attempts to access a value in an indexable collection
+ * using a value which is outside of the range of valid indices.
  */
-public class ThreadDeath extends Error {
+public class IndexOutOfBoundsException extends RuntimeException {
 
-    private static final long serialVersionUID = -4417128565033088268L;
+    private static final long serialVersionUID = 234122996006267687L;
 
     /**
-     * Constructs a new instance of this class. Note that in the case of
-     * ThreadDeath, the stacktrace may <em>not</em> be filled in a way which
-     * allows a stack trace to be printed.
+     * Constructs a new {@code IndexOutOfBoundsException} that includes the
+     * current stack trace.
      */
-    public ThreadDeath() {
+    public IndexOutOfBoundsException() {
+    }
+
+    /**
+     * Constructs a new {@code IndexOutOfBoundsException} with the current stack
+     * trace and the specified detail message.
+     *
+     * @param detailMessage
+     *            the detail message for this exception.
+     */
+    public IndexOutOfBoundsException(String detailMessage) {
+        super(detailMessage);
     }
 }

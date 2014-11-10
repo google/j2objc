@@ -17,30 +17,16 @@
 
 package java.lang;
 
+
 /**
- * Thrown when the virtual machine notices that it has gotten into an undefined
- * state.
+ * This (empty) interface must be implemented by all classes that wish to
+ * support cloning. The implementation of {@code clone()} in {@code Object}
+ * checks if the object being cloned implements this interface and throws
+ * {@code CloneNotSupportedException} if it does not.
+ *
+ * @see Object#clone
+ * @see CloneNotSupportedException
  */
-public class InternalError extends /* VirtualMachineError */ Error {
-
-    private static final long serialVersionUID = -9062593416125562365L;
-
-    /**
-     * Constructs a new {@code InternalError} that includes the current stack
-     * trace.
-     */
-    public InternalError() {
-        super();
-    }
-
-    /**
-     * Constructs a new {@code InternalError} with the current stack trace and
-     * the specified detail message.
-     * 
-     * @param detailMessage
-     *            the detail message for this error.
-     */
-    public InternalError(String detailMessage) {
-        super(detailMessage);
-    }
+public interface Cloneable {
+    // Marker interface
 }

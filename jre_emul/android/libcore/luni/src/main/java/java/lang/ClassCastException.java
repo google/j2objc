@@ -18,29 +18,27 @@
 package java.lang;
 
 /**
- * Thrown when an operation is attempted which is not possible given the state
- * that the executing thread is in.
+ * Thrown when a program attempts to cast a an object to a type with which it is
+ * not compatible.
  */
-public class IllegalThreadStateException extends IllegalArgumentException {
-
-    private static final long serialVersionUID = -7626246362397460174L;
+public class ClassCastException extends RuntimeException {
+    private static final long serialVersionUID = -9223365651070458532L;
 
     /**
-     * Constructs a new {@code IllegalThreadStateException} that includes the
-     * current stack trace.
+     * Constructs a new {@code ClassCastException} that includes the current
+     * stack trace.
      */
-    public IllegalThreadStateException() {
-        super();
+    public ClassCastException() {
     }
 
     /**
-     * Constructs a new {@code IllegalThreadStateException} with the current
-     * stack trace and the specified detail message.
-     * 
+     * Constructs a new {@code ClassCastException} with the current stack trace
+     * and the specified detail message.
+     *
      * @param detailMessage
      *            the detail message for this exception.
      */
-    public IllegalThreadStateException(String detailMessage) {
+    public ClassCastException(String detailMessage) {
         super(detailMessage);
     }
 }
