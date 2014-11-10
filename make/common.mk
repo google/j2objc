@@ -99,6 +99,10 @@ ifdef J2OBJC_JAVAC
 JAVAC = $(J2OBJC_JAVAC)
 endif
 
+ifndef JAVA_HOME
+export JAVA_HOME = $(shell /usr/libexec/java_home)
+endif
+
 comma=,
 space=$(eval) $(eval)
 
