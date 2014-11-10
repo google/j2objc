@@ -924,9 +924,6 @@ JAVA_SOURCES = \
 	libcore/util/MutableLong.java \
 	libcore/util/Objects.java \
 	libcore/util/SneakyThrow.java \
-	org/apache/harmony/luni/platform/Endianness.java \
-	org/apache/harmony/luni/util/HistoricalNamesUtil.java \
-	org/apache/harmony/luni/util/Util.java \
 	org/apache/harmony/security/asn1/ASN1Any.java \
 	org/apache/harmony/security/asn1/ASN1Choice.java \
 	org/apache/harmony/security/asn1/ASN1Constants.java \
