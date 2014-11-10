@@ -18,29 +18,17 @@
 package java.lang;
 
 /**
- * Thrown when a waiting thread is activated before the condition it was waiting
- * for has been satisfied.
+ * Placeholder class for the Java keyword {@code void}.
+ *
+ * @since 1.1
  */
-public class InterruptedException extends Exception {
-
-    private static final long serialVersionUID = 6700697376100628473L;
+public final class Void {
 
     /**
-     * Constructs a new {@code InterruptedException} that includes the current
-     * stack trace.
+     * The {@link Class} object that represents the primitive type {@code void}.
      */
-    public InterruptedException() {
-        super();
-    }
+    public static final Class<Void> TYPE = void.class;
 
-    /**
-     * Constructs a new {@code InterruptedException} with the current stack
-     * trace and the specified detail message.
-     * 
-     * @param detailMessage
-     *            the detail message for this exception.
-     */
-    public InterruptedException(String detailMessage) {
-        super(detailMessage);
+    private Void() {
     }
 }

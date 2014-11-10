@@ -17,16 +17,31 @@
 
 package java.lang;
 
-
 /**
- * This (empty) interface must be implemented by all classes that wish to
- * support cloning. The implementation of {@code clone()} in {@code Object}
- * checks if the object being cloned implements this interface and throws
- * {@code CloneNotSupportedException} if it does not.
- * 
- * @see Object#clone
- * @see CloneNotSupportedException
+ * Thrown when a program attempts to clone an object which does not support the
+ * {@link Cloneable} interface.
+ *
+ * @see Cloneable
  */
-public interface Cloneable {
-    // Marker interface
+public class CloneNotSupportedException extends Exception {
+
+    private static final long serialVersionUID = 5195511250079656443L;
+
+    /**
+     * Constructs a new {@code CloneNotSupportedException} that includes the
+     * current stack trace.
+     */
+    public CloneNotSupportedException() {
+    }
+
+    /**
+     * Constructs a new {@code CloneNotSupportedException} with the current
+     * stack trace and the specified detail message.
+     *
+     * @param detailMessage
+     *            the detail message for this exception.
+     */
+    public CloneNotSupportedException(String detailMessage) {
+        super(detailMessage);
+    }
 }

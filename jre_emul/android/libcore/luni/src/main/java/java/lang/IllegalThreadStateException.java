@@ -18,29 +18,28 @@
 package java.lang;
 
 /**
- * Thrown when an attempt is made to create an array with a size of less than
- * zero.
+ * Thrown when an operation is attempted which is not possible given the state
+ * that the executing thread is in.
  */
-public class NegativeArraySizeException extends RuntimeException {
+public class IllegalThreadStateException extends IllegalArgumentException {
 
-    private static final long serialVersionUID = -8960118058596991861L;
+    private static final long serialVersionUID = -7626246362397460174L;
 
     /**
-     * Constructs a new {@code NegativeArraySizeException} that includes the
+     * Constructs a new {@code IllegalThreadStateException} that includes the
      * current stack trace.
      */
-    public NegativeArraySizeException() {
-        super();
+    public IllegalThreadStateException() {
     }
 
     /**
-     * Constructs a new {@code NegativeArraySizeException} with the current
+     * Constructs a new {@code IllegalThreadStateException} with the current
      * stack trace and the specified detail message.
-     * 
+     *
      * @param detailMessage
      *            the detail message for this exception.
      */
-    public NegativeArraySizeException(String detailMessage) {
+    public IllegalThreadStateException(String detailMessage) {
         super(detailMessage);
     }
 }

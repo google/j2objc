@@ -18,28 +18,28 @@
 package java.lang;
 
 /**
- * Thrown when the an invalid arithmetic operation is attempted.
+ * Thrown when a waiting thread is activated before the condition it was waiting
+ * for has been satisfied.
  */
-public class ArithmeticException extends RuntimeException {
+public class InterruptedException extends Exception {
 
-    private static final long serialVersionUID = 2256477558314496007L;
+    private static final long serialVersionUID = 6700697376100628473L;
 
     /**
-     * Constructs a new {@code ArithmeticException} that includes the current
+     * Constructs a new {@code InterruptedException} that includes the current
      * stack trace.
      */
-    public ArithmeticException() {
-        super();
+    public InterruptedException() {
     }
 
     /**
-     * Constructs a new {@code ArithmeticException} with the current stack trace
-     * and the specified detail message.
+     * Constructs a new {@code InterruptedException} with the current stack
+     * trace and the specified detail message.
      *
      * @param detailMessage
      *            the detail message for this exception.
      */
-    public ArithmeticException(String detailMessage) {
+    public InterruptedException(String detailMessage) {
         super(detailMessage);
     }
 }

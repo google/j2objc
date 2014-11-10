@@ -18,29 +18,17 @@
 package java.lang;
 
 /**
- * Thrown when a program attempts to store an element of an incompatible type in
- * an array.
+ * Stub implementation of java.lang.CharSequence.
+ *
+ * @see java.lang.Object
  */
-public class ArrayStoreException extends RuntimeException {
+public interface CharSequence {
 
-    private static final long serialVersionUID = -4522193890499838241L;
+    public int length();
 
-    /**
-     * Constructs a new {@code ArrayStoreException} that includes the current
-     * stack trace.
-     */
-    public ArrayStoreException() {
-        super();
-    }
+    public char charAt(int index);
 
-    /**
-     * Constructs a new {@code ArrayStoreException} with the current stack trace
-     * and the specified detail message.
-     *
-     * @param detailMessage
-     *            the detail message for this exception.
-     */
-    public ArrayStoreException(String detailMessage) {
-        super(detailMessage);
-    }
+    public CharSequence subSequence(int start, int end);
+
+    public String toString();
 }

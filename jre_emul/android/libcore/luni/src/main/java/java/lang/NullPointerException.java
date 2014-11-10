@@ -18,29 +18,32 @@
 package java.lang;
 
 /**
- * Thrown when a program attempts to access a value in an indexable collection
- * using a value which is outside of the range of valid indices.
+ * Thrown when a program tries to access a field or method of an object or an
+ * element of an array when there is no instance or array to use, that is if the
+ * object or array points to {@code null}. It also occurs in some other, less
+ * obvious circumstances, like a {@code throw e} statement where the {@link
+ * Throwable} reference is {@code null}.
  */
-public class IndexOutOfBoundsException extends RuntimeException {
+public class NullPointerException extends RuntimeException {
 
-    private static final long serialVersionUID = 234122996006267687L;
+    private static final long serialVersionUID = 5162710183389028792L;
 
     /**
-     * Constructs a new {@code IndexOutOfBoundsException} that includes the
-     * current stack trace.
+     * Constructs a new {@code NullPointerException} that includes the current
+     * stack trace.
      */
-    public IndexOutOfBoundsException() {
-        super();
+    public NullPointerException() {
     }
 
     /**
-     * Constructs a new {@code IndexOutOfBoundsException} with the current stack
+     * Constructs a new {@code NullPointerException} with the current stack
      * trace and the specified detail message.
-     * 
+     *
      * @param detailMessage
      *            the detail message for this exception.
      */
-    public IndexOutOfBoundsException(String detailMessage) {
+    public NullPointerException(String detailMessage) {
         super(detailMessage);
     }
+
 }

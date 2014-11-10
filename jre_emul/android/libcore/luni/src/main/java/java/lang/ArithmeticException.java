@@ -18,14 +18,27 @@
 package java.lang;
 
 /**
- * Placeholder class for the Java keyword {@code void}.
- *
- * @since 1.1
+ * Thrown when the an invalid arithmetic operation is attempted.
  */
-public final class Void extends Object {
+public class ArithmeticException extends RuntimeException {
+
+    private static final long serialVersionUID = 2256477558314496007L;
 
     /**
-     * The {@link Class} object that represents the primitive type {@code void}.
+     * Constructs a new {@code ArithmeticException} that includes the current
+     * stack trace.
      */
-    public static final Class<Void> TYPE = void.class;
+    public ArithmeticException() {
+    }
+
+    /**
+     * Constructs a new {@code ArithmeticException} with the current stack trace
+     * and the specified detail message.
+     *
+     * @param detailMessage
+     *            the detail message for this exception.
+     */
+    public ArithmeticException(String detailMessage) {
+        super(detailMessage);
+    }
 }

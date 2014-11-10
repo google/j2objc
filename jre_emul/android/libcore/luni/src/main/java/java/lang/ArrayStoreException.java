@@ -18,29 +18,28 @@
 package java.lang;
 
 /**
- * Thrown when an invalid value is passed to a string-to-number conversion
- * method.
+ * Thrown when a program attempts to store an element of an incompatible type in
+ * an array.
  */
-public class NumberFormatException extends java.lang.IllegalArgumentException {
+public class ArrayStoreException extends RuntimeException {
 
-    private static final long serialVersionUID = -2848938806368998894L;
+    private static final long serialVersionUID = -4522193890499838241L;
 
     /**
-     * Constructs a new {@code NumberFormatException} that includes the current
+     * Constructs a new {@code ArrayStoreException} that includes the current
      * stack trace.
      */
-    public NumberFormatException() {
-        super();
+    public ArrayStoreException() {
     }
 
     /**
-     * Constructs a new {@code NumberFormatException} with the current stack
-     * trace and the specified detail message.
-     * 
+     * Constructs a new {@code ArrayStoreException} with the current stack trace
+     * and the specified detail message.
+     *
      * @param detailMessage
      *            the detail message for this exception.
      */
-    public NumberFormatException(String detailMessage) {
+    public ArrayStoreException(String detailMessage) {
         super(detailMessage);
     }
 }
