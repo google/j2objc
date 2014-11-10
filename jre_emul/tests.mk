@@ -324,7 +324,6 @@ TEST_SOURCES = \
     org/apache/harmony/luni/tests/java/lang/TypeNotPresentExceptionTest.java \
     org/apache/harmony/luni/tests/java/lang/UnsupportedOperationExceptionTest.java \
     org/apache/harmony/luni/tests/java/lang/VirtualMachineErrorTest.java \
-    org/apache/harmony/luni/tests/util/UtilTest.java \
     org/apache/harmony/luni/tests/java/util/AbstractCollectionTest.java \
     org/apache/harmony/luni/tests/java/util/AbstractListTest.java \
     org/apache/harmony/luni/tests/java/util/AbstractMapTest.java \
