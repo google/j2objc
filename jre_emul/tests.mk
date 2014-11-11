@@ -245,6 +245,7 @@ TEST_SOURCES = \
     libcore/java/util/OldTimeZoneTest.java \
     libcore/java/util/ServiceLoaderTest.java \
     libcore/java/util/TreeMapTest.java \
+    libcore/java/util/TreeSetTest.java \
     libcore/java/util/zip/DeflaterInputStreamTest.java \
     libcore/java/util/zip/DeflaterOutputStreamTest.java \
     libcore/java/util/zip/DeflaterTest.java \
@@ -315,6 +316,7 @@ TEST_SOURCES = \
     org/apache/harmony/luni/tests/java/lang/RuntimeExceptionTest.java \
     org/apache/harmony/luni/tests/java/lang/ShortTest.java \
     org/apache/harmony/luni/tests/java/lang/StringBufferTest.java \
+    org/apache/harmony/luni/tests/java/lang/StringBuilderTest.java \
     org/apache/harmony/luni/tests/java/lang/StringIndexOutOfBoundsExceptionTest.java \
     org/apache/harmony/luni/tests/java/lang/StringTest.java \
     org/apache/harmony/luni/tests/java/lang/String2Test.java \
@@ -419,10 +421,6 @@ SUITE_SOURCES = \
 
 TESTS_TO_SKIP = \
     ExchangerTest.java
-
-FAILING_TESTS = \
-    libcore/java/util/TreeSetTest.java \
-    org/apache/harmony/luni/tests/java/lang/StringBuilderTest.java \
 
 # Most of these tests are failing for a common index-out-of-range error.
 FAILING_MATH_TESTS = \
