@@ -314,7 +314,6 @@ TEST_SOURCES = \
     org/apache/harmony/luni/tests/java/lang/reflect/ModifierTest.java \
     org/apache/harmony/luni/tests/java/lang/RuntimeExceptionTest.java \
     org/apache/harmony/luni/tests/java/lang/ShortTest.java \
-    org/apache/harmony/luni/tests/java/lang/StrictMathTest.java \
     org/apache/harmony/luni/tests/java/lang/StringBufferTest.java \
     org/apache/harmony/luni/tests/java/lang/StringIndexOutOfBoundsExceptionTest.java \
     org/apache/harmony/luni/tests/java/lang/StringTest.java \
@@ -363,6 +362,8 @@ TEST_SOURCES = \
     org/apache/harmony/tests/java/lang/CharacterTest.java \
     org/apache/harmony/tests/java/lang/DoubleTest.java \
     org/apache/harmony/tests/java/lang/FloatTest.java \
+    org/apache/harmony/tests/java/lang/MathTest.java \
+    org/apache/harmony/tests/java/lang/StrictMathTest.java \
     org/apache/harmony/tests/java/math/BigIntegerAddTest.java \
     org/apache/harmony/tests/java/math/BigIntegerAndTest.java \
     org/apache/harmony/tests/java/math/BigIntegerCompareTest.java \
@@ -421,7 +422,6 @@ TESTS_TO_SKIP = \
 
 FAILING_TESTS = \
     libcore/java/util/TreeSetTest.java \
-    org/apache/harmony/luni/tests/java/lang/StrictMathTest.java \
     org/apache/harmony/luni/tests/java/lang/StringBuilderTest.java \
 
 # Most of these tests are failing for a common index-out-of-range error.
