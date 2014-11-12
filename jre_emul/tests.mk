@@ -338,10 +338,8 @@ TEST_SOURCES = \
     org/apache/harmony/luni/tests/java/util/EnumSetTest.java \
     org/apache/harmony/luni/tests/java/util/EventObjectTest.java \
     org/apache/harmony/luni/tests/java/util/GregorianCalendarTest.java \
-    org/apache/harmony/luni/tests/java/util/HashMapTest.java \
     org/apache/harmony/luni/tests/java/util/HashSetTest.java \
     org/apache/harmony/luni/tests/java/util/IdentityHashMapTest.java \
-    org/apache/harmony/luni/tests/java/util/LinkedHashMapTest.java \
     org/apache/harmony/luni/tests/java/util/LinkedHashSetTest.java \
     org/apache/harmony/luni/tests/java/util/LinkedListTest.java \
     org/apache/harmony/luni/tests/java/util/LocaleTest.java \
@@ -377,7 +375,9 @@ TEST_SOURCES = \
     org/apache/harmony/tests/java/math/BigIntegerNotTest.java \
     org/apache/harmony/tests/java/math/BigIntegerOrTest.java \
     org/apache/harmony/tests/java/math/BigIntegerSubtractTest.java \
+    org/apache/harmony/tests/java/util/HashMapTest.java \
     org/apache/harmony/tests/java/util/HashtableTest.java \
+    org/apache/harmony/tests/java/util/LinkedHashMapTest.java \
     org/apache/harmony/regex/tests/java/util/regex/Matcher2Test.java \
     org/apache/harmony/regex/tests/java/util/regex/ModeTest.java \
     org/apache/harmony/regex/tests/java/util/regex/Pattern2Test.java \

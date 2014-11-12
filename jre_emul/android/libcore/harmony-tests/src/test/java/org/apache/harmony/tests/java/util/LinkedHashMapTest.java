@@ -15,26 +15,23 @@
  *  limitations under the License.
  */
 
-package org.apache.harmony.luni.tests.java.util;
+package org.apache.harmony.tests.java.util;
 
-import tests.support.Support_MapTest2;
-import tests.support.Support_UnmodifiableCollectionTest;
-
-import java.io.Serializable;
 import java.util.AbstractMap;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
 
+import tests.support.Support_MapTest2;
+import tests.support.Support_UnmodifiableCollectionTest;
+
 /**
- * @tests java.util.LinkedHashMap
+ * java.util.LinkedHashMap
  */
 public class LinkedHashMapTest extends junit.framework.TestCase {
 
@@ -42,15 +39,13 @@ public class LinkedHashMapTest extends junit.framework.TestCase {
 
     final static int hmSize = 1000;
 
-    static Object[] objArray;
+    Object[] objArray;
 
-    static Object[] objArray2;
-    {
-        objArray = new Object[hmSize];
-        objArray2 = new Object[hmSize];
-        for (int i = 0; i < objArray.length; i++) {
-            objArray[i] = new Integer(i);
-            objArray2[i] = objArray[i].toString();
+    Object[] objArray2;
+
+    static final class CacheMap extends LinkedHashMap {
+        protected boolean removeEldestEntry(Map.Entry e) {
+            return size() > 5;
         }
     }
 
@@ -67,7 +62,7 @@ public class LinkedHashMapTest extends junit.framework.TestCase {
     }
 
     /**
-     * @tests java.util.LinkedHashMap#LinkedHashMap()
+     * java.util.LinkedHashMap#LinkedHashMap()
      */
     public void test_Constructor() {
         // Test for method java.util.LinkedHashMap()
@@ -78,7 +73,7 @@ public class LinkedHashMapTest extends junit.framework.TestCase {
     }
 
     /**
-     * @tests java.util.LinkedHashMap#LinkedHashMap(int)
+     * java.util.LinkedHashMap#LinkedHashMap(int)
      */
     public void test_ConstructorI() {
         // Test for method java.util.LinkedHashMap(int)
@@ -86,11 +81,11 @@ public class LinkedHashMapTest extends junit.framework.TestCase {
         assertEquals("Created incorrect LinkedHashMap", 0, hm2.size());
         try {
             new LinkedHashMap(-1);
+            fail("Failed to throw IllegalArgumentException for initial " +
+                    "capacity < 0");
         } catch (IllegalArgumentException e) {
-            return;
+            //expected
         }
-        fail(
-                "Failed to throw IllegalArgumentException for initial capacity < 0");
 
         LinkedHashMap empty = new LinkedHashMap(0);
         assertNull("Empty LinkedHashMap access", empty.get("nothing"));
@@ -99,7 +94,7 @@ public class LinkedHashMapTest extends junit.framework.TestCase {
     }
 
     /**
-     * @tests java.util.LinkedHashMap#LinkedHashMap(int, float)
+     * java.util.LinkedHashMap#LinkedHashMap(int, float)
      */
     public void test_ConstructorIF() {
         // Test for method java.util.LinkedHashMap(int, float)
@@ -107,11 +102,12 @@ public class LinkedHashMapTest extends junit.framework.TestCase {
         assertEquals("Created incorrect LinkedHashMap", 0, hm2.size());
         try {
             new LinkedHashMap(0, 0);
+            fail("Failed to throw IllegalArgumentException for initial " +
+                    "load factor <= 0");
         } catch (IllegalArgumentException e) {
-            return;
+            //expected
         }
-        fail(
-                "Failed to throw IllegalArgumentException for initial load factor <= 0");
+
         LinkedHashMap empty = new LinkedHashMap(0, 0.75f);
         assertNull("Empty hashtable access", empty.get("nothing"));
         empty.put("something", "here");
@@ -119,7 +115,7 @@ public class LinkedHashMapTest extends junit.framework.TestCase {
     }
 
     /**
-     * @tests java.util.LinkedHashMap#LinkedHashMap(java.util.Map)
+     * java.util.LinkedHashMap#LinkedHashMap(java.util.Map)
      */
     public void test_ConstructorLjava_util_Map() {
         // Test for method java.util.LinkedHashMap(java.util.Map)
@@ -133,7 +129,7 @@ public class LinkedHashMapTest extends junit.framework.TestCase {
     }
 
     /**
-     * @tests java.util.LinkedHashMap#get(java.lang.Object)
+     * java.util.LinkedHashMap#get(java.lang.Object)
      */
     public void test_getLjava_lang_Object() {
         // Test for method java.lang.Object
@@ -152,7 +148,7 @@ public class LinkedHashMapTest extends junit.framework.TestCase {
     }
 
     /**
-     * @tests java.util.LinkedHashMap#put(java.lang.Object, java.lang.Object)
+     * java.util.LinkedHashMap#put(java.lang.Object, java.lang.Object)
      */
     public void test_putLjava_lang_ObjectLjava_lang_Object() {
         // Test for method java.lang.Object
@@ -171,8 +167,22 @@ public class LinkedHashMapTest extends junit.framework.TestCase {
                 new Integer(0)));
     }
 
+
+    public void test_putPresent() {
+        Map<String, String> m = new LinkedHashMap<String, String>(8, .75f, true);
+        m.put("KEY", "VALUE");
+        m.put("WOMBAT", "COMBAT");
+        m.put("KEY", "VALUE");
+        Map.Entry newest = null;
+        for (Map.Entry<String, String> e : m.entrySet()) {
+            newest = e;
+        }
+        assertEquals("KEY", newest.getKey());
+        assertEquals("VALUE", newest.getValue());
+    }
+
     /**
-     * @tests java.util.LinkedHashMap#putAll(java.util.Map)
+     * java.util.LinkedHashMap#putAll(java.util.Map)
      */
     public void test_putAllLjava_util_Map() {
         // Test for method void java.util.LinkedHashMap.putAll(java.util.Map)
@@ -184,7 +194,7 @@ public class LinkedHashMapTest extends junit.framework.TestCase {
     }
 
     /**
-     * @tests java.util.LinkedHashMap#putAll(java.util.Map)
+     * java.util.LinkedHashMap#putAll(java.util.Map)
      */
     public void test_putAll_Ljava_util_Map_Null() {
         LinkedHashMap linkedHashMap = new LinkedHashMap();
@@ -204,7 +214,7 @@ public class LinkedHashMapTest extends junit.framework.TestCase {
     }
 
     /**
-     * @tests java.util.LinkedHashMap#entrySet()
+     * java.util.LinkedHashMap#entrySet()
      */
     public void test_entrySet() {
         // Test for method java.util.Set java.util.LinkedHashMap.entrySet()
@@ -219,8 +229,22 @@ public class LinkedHashMapTest extends junit.framework.TestCase {
         }
     }
 
+    public void test_entrySetRemove() {
+        entrySetRemoveHelper("military", "intelligence");
+        entrySetRemoveHelper(null, "hypothesis");
+    }
+    private void entrySetRemoveHelper(String key, String value) {
+        Map<String, String> m1 = new LinkedHashMap<String, String>();
+        m1.put(key, value);
+        m1.put("jumbo", "shrimp");
+        LinkedHashMap<String, String> m2 = new LinkedHashMap<String, String>(m1);
+        Set<Map.Entry<String, String>> s1 = m1.entrySet();
+        s1.remove(m2.entrySet().iterator().next());
+        assertEquals("jumbo", s1.iterator().next().getKey());
+    }
+
     /**
-     * @tests java.util.LinkedHashMap#keySet()
+     * java.util.LinkedHashMap#keySet()
      */
     public void test_keySet() {
         // Test for method java.util.Set java.util.LinkedHashMap.keySet()
@@ -273,7 +297,7 @@ public class LinkedHashMapTest extends junit.framework.TestCase {
     }
 
     /**
-     * @tests java.util.LinkedHashMap#values()
+     * java.util.LinkedHashMap#values()
      */
     public void test_values() {
         // Test for method java.util.Collection java.util.LinkedHashMap.values()
@@ -299,7 +323,7 @@ public class LinkedHashMapTest extends junit.framework.TestCase {
     }
 
     /**
-     * @tests java.util.LinkedHashMap#remove(java.lang.Object)
+     * java.util.LinkedHashMap#remove(java.lang.Object)
      */
     public void test_removeLjava_lang_Object() {
         // Test for method java.lang.Object
@@ -321,7 +345,7 @@ public class LinkedHashMapTest extends junit.framework.TestCase {
     }
 
     /**
-     * @tests java.util.LinkedHashMap#clear()
+     * java.util.LinkedHashMap#clear()
      */
     public void test_clear() {
         // Test for method void java.util.LinkedHashMap.clear()
@@ -334,7 +358,7 @@ public class LinkedHashMapTest extends junit.framework.TestCase {
     }
 
     /**
-     * @tests java.util.LinkedHashMap#clone()
+     * java.util.LinkedHashMap#clone()
      */
     public void test_clone() {
         // Test for method java.lang.Object java.util.LinkedHashMap.clone()
@@ -369,6 +393,31 @@ public class LinkedHashMapTest extends junit.framework.TestCase {
                 "key2", key2.iterator().next());
     }
 
+    /**
+     * java.util.LinkedHashMap#clone()
+     */
+    public void test_clone_ordered() {
+        // Test for method java.lang.Object java.util.LinkedHashMap.clone()
+        LinkedHashMap<String, String> hm1 = new LinkedHashMap<String, String>(10, 0.75f, true);
+        hm1.put("a", "a");
+        hm1.put("b", "b");
+        hm1.put("c", "c");
+        LinkedHashMap<String, String> hm2 = (LinkedHashMap<String, String>) hm1.clone();
+        hm1.get("a");
+
+        Map.Entry<String, String>[] set = new Map.Entry[3];
+        Iterator<Map.Entry<String,String>> iterator = hm1.entrySet().iterator();
+
+        assertEquals("b", iterator.next().getKey());
+        assertEquals("c", iterator.next().getKey());
+        assertEquals("a", iterator.next().getKey());
+
+        iterator = hm2.entrySet().iterator();
+        assertEquals("a", iterator.next().getKey());
+        assertEquals("b", iterator.next().getKey());
+        assertEquals("c", iterator.next().getKey());
+    }
+
     // regresion test for HARMONY-4603
     public void test_clone_Mock() {
         LinkedHashMap hashMap = new MockMap();
@@ -377,24 +426,44 @@ public class LinkedHashMapTest extends junit.framework.TestCase {
         MockMap cloneMap = (MockMap) hashMap.clone();
         assertEquals(value, cloneMap.get("key"));
         assertEquals(hashMap, cloneMap);
-        assertEquals(1, cloneMap.size());
+        assertEquals(1, cloneMap.num);
 
         hashMap.put("key", "value b");
         assertFalse(hashMap.equals(cloneMap));
     }
 
     class MockMap extends LinkedHashMap {
+        int num;
+
         public Object put(Object k, Object v) {
+            num++;
             return super.put(k, v);
         }
 
         protected boolean removeEldestEntry(Map.Entry e) {
-            return size() > 1;
+            return num > 1;
         }
     }
 
     /**
-     * @tests java.util.LinkedHashMap#containsKey(java.lang.Object)
+     * put/get interaction in access-order map where removeEldest
+     * returns true.
+     */
+    public void test_removeEldestFromSameBucketAsNewEntry() {
+        LinkedHashMap<String, String> map
+                = new LinkedHashMap<String, String>(6, 0.75F, true) {
+            @Override
+            protected boolean removeEldestEntry(Entry<String, String> e) {
+                return true;
+            }
+        };
+        map.put("N", "E");
+        map.put("F", "I");
+        assertEquals(null, map.get("N"));
+    }
+
+    /**
+     * java.util.LinkedHashMap#containsKey(java.lang.Object)
      */
     public void test_containsKeyLjava_lang_Object() {
         // Test for method boolean
@@ -411,7 +480,7 @@ public class LinkedHashMapTest extends junit.framework.TestCase {
     }
 
     /**
-     * @tests java.util.LinkedHashMap#containsValue(java.lang.Object)
+     * java.util.LinkedHashMap#containsValue(java.lang.Object)
      */
     public void test_containsValueLjava_lang_Object() {
         // Test for method boolean
@@ -423,7 +492,7 @@ public class LinkedHashMapTest extends junit.framework.TestCase {
     }
 
     /**
-     * @tests java.util.LinkedHashMap#isEmpty()
+     * java.util.LinkedHashMap#isEmpty()
      */
     public void test_isEmpty() {
         // Test for method boolean java.util.LinkedHashMap.isEmpty()
@@ -432,7 +501,7 @@ public class LinkedHashMapTest extends junit.framework.TestCase {
     }
 
     /**
-     * @tests java.util.LinkedHashMap#size()
+     * java.util.LinkedHashMap#size()
      */
     public void test_size() {
         // Test for method int java.util.LinkedHashMap.size()
@@ -441,7 +510,7 @@ public class LinkedHashMapTest extends junit.framework.TestCase {
     }
 
     /**
-     * @tests java.util.LinkedHashMap#entrySet()
+     * java.util.LinkedHashMap#entrySet()
      */
     public void test_ordered_entrySet() {
         int i;
@@ -503,7 +572,7 @@ public class LinkedHashMapTest extends junit.framework.TestCase {
     }
 
     /**
-     * @tests java.util.LinkedHashMap#keySet()
+     * java.util.LinkedHashMap#keySet()
      */
     public void test_ordered_keySet() {
         int i;
@@ -559,7 +628,7 @@ public class LinkedHashMapTest extends junit.framework.TestCase {
     }
 
     /**
-     * @tests java.util.LinkedHashMap#values()
+     * java.util.LinkedHashMap#values()
      */
     public void test_ordered_values() {
         int i;
@@ -614,20 +683,26 @@ public class LinkedHashMapTest extends junit.framework.TestCase {
         assertTrue("Entries left to iterate on", !it2.hasNext());
     }
 
-    public void test_getInterfaces() {
-        Class<?>[] interfaces = HashMap.class.getInterfaces();
-        assertEquals(3, interfaces.length);
+    /**
+     * java.util.LinkedHashMap#removeEldestEntry(java.util.Map$Entry)
+     */
+    public void test_remove_eldest() {
+        int i;
+        int sz = 10;
+        CacheMap lhm = new CacheMap();
+        for (i = 0; i < sz; i++) {
+            Integer ii = new Integer(i);
+            lhm.put(ii, new Integer(i * 2));
+        }
 
-        List<Class<?>> interfaceList = Arrays.asList(interfaces);
-        assertTrue(interfaceList.contains(Map.class));
-        assertTrue(interfaceList.contains(Cloneable.class));
-        assertTrue(interfaceList.contains(Serializable.class));
-
-        interfaces = LinkedHashMap.class.getInterfaces();
-        assertEquals(1, interfaces.length);
-
-        interfaceList = Arrays.asList(interfaces);
-        assertTrue(interfaceList.contains(Map.class));
+        Collection s1 = lhm.values();
+        Iterator it1 = s1.iterator();
+        assertTrue("Returned set of incorrect size 1", lhm.size() == s1.size());
+        for (i = 5; it1.hasNext(); i++) {
+            Integer jj = (Integer) it1.next();
+            assertTrue("Returned incorrect entry set 1", jj.intValue() == i * 2);
+        }
+        assertTrue("Entries left in map", !it1.hasNext());
     }
 
     /**
@@ -635,6 +710,13 @@ public class LinkedHashMapTest extends junit.framework.TestCase {
      * is called before a test is executed.
      */
     protected void setUp() {
+        objArray = new Object[hmSize];
+        objArray2 = new Object[hmSize];
+        for (int i = 0; i < objArray.length; i++) {
+            objArray[i] = new Integer(i);
+            objArray2[i] = objArray[i].toString();
+        }
+
         hm = new LinkedHashMap();
         for (int i = 0; i < objArray.length; i++)
             hm.put(objArray2[i], objArray[i]);
@@ -647,5 +729,8 @@ public class LinkedHashMapTest extends junit.framework.TestCase {
      * method is called after a test is executed.
      */
     protected void tearDown() {
+        objArray = null;
+        objArray2 = null;
+        hm = null;
     }
 }
