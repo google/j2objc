@@ -71,9 +71,7 @@ IOS_JAVA_OBJS = \
 	java/lang/reflect/AccessibleObject.o \
 	java/lang/reflect/Constructor.o \
 	java/lang/reflect/Field.o \
-	java/lang/reflect/Method.o \
-	java/util/HashMap.o \
-	java/util/LinkedHashMap.o
+	java/lang/reflect/Method.o
 
 # Java interfaces with hand written obj-c headers. Don't need to be translated,
 # but need to be included in the jre_emul.jar.
@@ -711,6 +709,7 @@ JAVA_SOURCES = \
 	java/util/FormatterClosedException.java \
 	java/util/Grego.java \
 	java/util/GregorianCalendar.java \
+	java/util/HashMap.java \
 	java/util/HashSet.java \
 	java/util/Hashtable.java \
 	java/util/HugeEnumSet.java \
@@ -723,6 +722,7 @@ JAVA_SOURCES = \
 	java/util/IllegalFormatWidthException.java \
 	java/util/InputMismatchException.java \
 	java/util/InvalidPropertiesFormatException.java \
+	java/util/LinkedHashMap.java \
 	java/util/LinkedList.java \
 	java/util/LinkedHashSet.java \
 	java/util/ListResourceBundle.java \
