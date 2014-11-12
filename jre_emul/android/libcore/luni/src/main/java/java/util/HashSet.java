@@ -185,7 +185,6 @@ public class HashSet<E> extends AbstractSet<E> implements Set<E>, Cloneable,
         return backingMap.size();
     }
 
-    /* Commented out because of the reference to HashMap's "table" field.
     private void writeObject(ObjectOutputStream stream) throws IOException {
         stream.defaultWriteObject();
         stream.writeInt(backingMap.table.length);
@@ -208,7 +207,7 @@ public class HashSet<E> extends AbstractSet<E> implements Set<E>, Cloneable,
             E key = (E) stream.readObject();
             backingMap.put(key, this);
         }
-    }*/
+    }
 
     HashMap<E, Object> createBackingMap(int capacity, float loadFactor) {
         return new HashMap<E, Object>(capacity, loadFactor);
