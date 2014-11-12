@@ -17,6 +17,8 @@
 package java.util.concurrent;
 
 import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.util.AbstractList;
 import java.util.Arrays;
@@ -745,5 +747,24 @@ public class CopyOnWriteArrayList<E> implements List<E>, RandomAccess, Cloneable
         public void set(E object) {
             throw new UnsupportedOperationException();
         }
+    }
+
+    private void writeObject(ObjectOutputStream out) throws IOException {
+        Object[] snapshot = elements;
+        out.defaultWriteObject();
+        out.writeInt(snapshot.length);
+        for (Object o : snapshot) {
+            out.writeObject(o);
+        }
+    }
+
+    private synchronized void readObject(ObjectInputStream in)
+            throws IOException, ClassNotFoundException {
+        in.defaultReadObject();
+        Object[] snapshot = new Object[in.readInt()];
+        for (int i = 0; i < snapshot.length; i++) {
+            snapshot[i] = in.readObject();
+        }
+        elements = snapshot;
     }
 }
