@@ -556,13 +556,13 @@ public class ObjectInputStream extends InputStream implements ObjectInput, Objec
      *             if {@code buffer} is {@code null}.
      */
     @Override
-    public int read(byte[] buffer, int offset, int length) throws IOException {
-        Arrays.checkOffsetAndCount(buffer.length, offset, length);
-        if (length == 0) {
+    public int read(byte[] buffer, int byteOffset, int byteCount) throws IOException {
+        Arrays.checkOffsetAndCount(buffer.length, byteOffset, byteCount);
+        if (byteCount == 0) {
             return 0;
         }
         checkReadPrimitiveTypes();
-        return primitiveData.read(buffer, offset, length);
+        return primitiveData.read(buffer, byteOffset, byteCount);
     }
 
     /**
@@ -1404,7 +1404,7 @@ public class ObjectInputStream extends InputStream implements ObjectInput, Objec
      * @return the string read from the source stream.
      * @throws IOException
      *             if an error occurs while reading from the source stream.
-     * @deprecated Use {@link BufferedReader}
+     * @deprecated Use {@link BufferedReader} instead.
      */
     @Deprecated
     public String readLine() throws IOException {
@@ -1761,9 +1761,7 @@ public class ObjectInputStream extends InputStream implements ObjectInput, Objec
      */
     protected Class<?> resolveProxyClass(String[] interfaceNames)
             throws IOException, ClassNotFoundException {
-        // TODO: This method is opportunity for performance enhancement
-        //       We can cache the classloader and recently used interfaces.
-        ClassLoader loader = ClassLoader.getSystemClassLoader();
+        ClassLoader loader = callerClassLoader;
         Class<?>[] interfaces = new Class<?>[interfaceNames.length];
         for (int i = 0; i < interfaceNames.length; i++) {
             interfaces[i] = Class.forName(interfaceNames[i], false, loader);

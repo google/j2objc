@@ -39,15 +39,13 @@ import libcore.io.SizeOf;
  */
 public class ObjectOutputStream extends OutputStream implements ObjectOutput, ObjectStreamConstants {
 
-    private static final Class<?>[] WRITE_UNSHARED_PARAM_TYPES = new Class[] { Object.class };
-
     /*
      * Mask to zero SC_BLOC_DATA bit.
      */
     private static final byte NOT_SC_BLOCK_DATA = (byte) (SC_BLOCK_DATA ^ 0xFF);
 
     /*
-     * How many nested levels to writeObject. We may not need this.
+     * How many nested levels to writeObject.
      */
     private int nestedLevels;
 
@@ -96,11 +94,6 @@ public class ObjectOutputStream extends OutputStream implements ObjectOutput, Ob
      * ObjectStreamConstants.PROTOCOL_VERSION_2
      */
     private int protocolVersion;
-
-    /*
-     * Used to detect nested exception when saving an exception due to an error
-     */
-    private StreamCorruptedException nestedException;
 
     /*
      * Used to keep track of the PutField object for the class/object being
@@ -271,7 +264,6 @@ public class ObjectOutputStream extends OutputStream implements ObjectOutput, Ob
         this.subclassOverridingImplementation = false;
 
         resetState();
-        this.nestedException = new StreamCorruptedException();
         // So write...() methods can be used by
         // subclasses during writeStreamHeader()
         primitiveTypes = this.output;
@@ -1220,7 +1212,7 @@ public class ObjectOutputStream extends OutputStream implements ObjectOutput, Ob
         // The handle for the classDesc is NOT the handle for the class object
         // being dumped. We must allocate a new handle and return it.
         if (clDesc.isEnum()) {
-            writeEnumDesc(object, clDesc, unshared);
+            writeEnumDesc(clDesc, unshared);
         } else {
             writeClassDesc(clDesc, unshared);
         }
@@ -1505,14 +1497,15 @@ public class ObjectOutputStream extends OutputStream implements ObjectOutput, Ob
                 primitiveTypes = output;
             }
         } catch (IOException ioEx1) {
-            // This will make it pass through until the top caller. It also
-            // lets it pass through the nested exception.
-            if (nestedLevels == 0 && ioEx1 != nestedException) {
+            // This will make it pass through until the top caller. Only the top caller writes the
+            // exception (where it can).
+            if (nestedLevels == 0) {
                 try {
                     writeNewException(ioEx1);
                 } catch (IOException ioEx2) {
-                    nestedException.fillInStackTrace();
-                    throw nestedException;
+                    // If writing the exception to the output stream causes another exception there
+                    // is no need to propagate the second exception or generate a third exception,
+                    // both of which might obscure details of the root cause.
                 }
             }
             throw ioEx1; // and then we propagate the original exception
@@ -1547,9 +1540,8 @@ public class ObjectOutputStream extends OutputStream implements ObjectOutput, Ob
             writeNull();
             return -1;
         }
-        int handle = -1;
         if (!unshared) {
-            handle = dumpCycle(object);
+            int handle = dumpCycle(object);
             if (handle != -1) {
                 return handle; // cyclic reference
             }
@@ -1576,7 +1568,7 @@ public class ObjectOutputStream extends OutputStream implements ObjectOutput, Ob
             if (clDesc.isSerializable() && computeClassBasedReplacement) {
                 if (clDesc.hasMethodWriteReplace()){
                     Method methodWriteReplace = clDesc.getMethodWriteReplace();
-                    Object replObj = null;
+                    Object replObj;
                     try {
                         replObj = methodWriteReplace.invoke(object, (Object[]) null);
                     } catch (IllegalAccessException iae) {
@@ -1661,7 +1653,7 @@ public class ObjectOutputStream extends OutputStream implements ObjectOutput, Ob
     }
 
     // write for Enum Class Desc only, which is different from other classes
-    private ObjectStreamClass writeEnumDesc(Class<?> theClass, ObjectStreamClass classDesc, boolean unshared)
+    private ObjectStreamClass writeEnumDesc(ObjectStreamClass classDesc, boolean unshared)
             throws IOException {
         // write classDesc, classDesc for enum is different
 
@@ -1700,7 +1692,7 @@ public class ObjectOutputStream extends OutputStream implements ObjectOutput, Ob
             if (superClassDesc != null) {
                 // super class is also enum
                 superClassDesc.setFlags((byte) (SC_SERIALIZABLE | SC_ENUM));
-                writeEnumDesc(superClassDesc.forClass(), superClassDesc, unshared);
+                writeEnumDesc(superClassDesc, unshared);
             } else {
                 output.writeByte(TC_NULL);
             }
@@ -1724,7 +1716,7 @@ public class ObjectOutputStream extends OutputStream implements ObjectOutput, Ob
             theClass = theClass.getSuperclass();
         }
         ObjectStreamClass classDesc = ObjectStreamClass.lookup(theClass);
-        writeEnumDesc(theClass, classDesc, unshared);
+        writeEnumDesc(classDesc, unshared);
 
         int previousHandle = -1;
         if (unshared) {
