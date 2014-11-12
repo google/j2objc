@@ -205,6 +205,7 @@ TEST_SOURCES = \
     libcore/java/io/OldWriterTest.java \
     libcore/java/io/OutputStreamWriterTest.java \
     libcore/java/io/RandomAccessFileTest.java \
+    libcore/java/io/SerializationTest.java \
     libcore/java/io/StreamTokenizerTest.java \
     libcore/java/lang/DoubleTest.java \
     libcore/java/lang/CharacterTest.java \
@@ -216,6 +217,7 @@ TEST_SOURCES = \
     libcore/java/lang/reflect/ArrayTest.java \
     libcore/java/lang/reflect/ConstructorTest.java \
     libcore/java/lang/reflect/FieldTest.java \
+    libcore/java/lang/annotation/AnnotationTypeMismatchExceptionTest.java \
     libcore/java/net/DatagramSocketTest.java \
     libcore/java/net/InetAddressTest.java \
     libcore/java/net/InetSocketAddressTest.java \
@@ -237,12 +239,14 @@ TEST_SOURCES = \
     libcore/java/nio/channels/OldFileChannelTest.java \
     libcore/java/nio/charset/CharsetDecoderTest.java \
     libcore/java/nio/charset/CharsetEncoderTest.java \
+    libcore/java/text/AttributedCharacterIteratorAttributeTest.java \
     libcore/java/text/CollatorTest.java \
     libcore/java/text/DecimalFormatTest.java \
     libcore/java/text/DecimalFormatSymbolsTest.java \
     libcore/java/text/NumberFormatTest.java \
     libcore/java/util/BitSetTest.java \
     libcore/java/util/CalendarTest.java \
+    libcore/java/util/EventObjectTest.java \
     libcore/java/util/FormatterTest.java \
     libcore/java/util/ObjectsTest.java \
     libcore/java/util/OldAndroidArrayListTest.java \
@@ -425,6 +429,10 @@ SUITE_SOURCES = \
 
 TESTS_TO_SKIP = \
     ExchangerTest.java
+
+FAILING_TESTS = \
+    libcore/java/text/DateFormatSymbolsTest.java \
+    libcore/java/util/beans/PropertyChangeSupportTest.java
 
 # Most of these tests are failing for a common index-out-of-range error.
 FAILING_MATH_TESTS = \

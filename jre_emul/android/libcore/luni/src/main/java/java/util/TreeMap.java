@@ -21,7 +21,7 @@ import com.google.j2objc.annotations.WeakOuter;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
-//import java.io.ObjectInputStream.GetField;
+import java.io.ObjectInputStream.GetField;
 import java.io.ObjectOutputStream;
 import java.io.ObjectStreamException;
 import java.io.Serializable;
@@ -1784,7 +1784,7 @@ public class TreeMap<K, V> extends AbstractMap<K, V>
 
     private static final long serialVersionUID = 919286545866124006L;
 
-    /*private void writeObject(ObjectOutputStream stream) throws IOException {
+    private void writeObject(ObjectOutputStream stream) throws IOException {
         stream.putFields().put("comparator", comparator());
         stream.writeFields();
         stream.writeInt(size);
@@ -1805,7 +1805,7 @@ public class TreeMap<K, V> extends AbstractMap<K, V>
         for (int i = 0; i < size; i++) {
             putInternal((K) stream.readObject(), (V) stream.readObject());
         }
-    }*/
+    }
 
     static abstract class NavigableSubMap<K, V> extends AbstractMap<K, V> implements Serializable {
         private static final long serialVersionUID = -2102997345730753016L;
