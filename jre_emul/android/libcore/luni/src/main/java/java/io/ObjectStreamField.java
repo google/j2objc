@@ -58,13 +58,7 @@ public class ObjectStreamField implements Comparable<Object> {
      *             if {@code name} or {@code cl} is {@code null}.
      */
     public ObjectStreamField(String name, Class<?> cl) {
-        if (name == null) {
-            throw new NullPointerException("name == null");
-        } else if (cl == null) {
-            throw new NullPointerException("cl == null");
-        }
-        this.name = name;
-        this.type = new WeakReference<Class<?>>(cl);
+        this(name, cl, false);
     }
 
     /**
