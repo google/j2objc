@@ -4,9 +4,9 @@
  * The ASF licenses this file to You under the Apache License, Version 2.0
  * (the "License"); you may not use this file except in compliance with
  * the License.  You may obtain a copy of the License at
- * 
+ *
  *     http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -17,6 +17,11 @@
 package org.apache.harmony.luni.tests.java.lang;
 
 import junit.framework.TestCase;
+
+import org.apache.harmony.testframework.serialization.SerializationTest;
+import tests.util.SerializationTester;
+
+import java.util.HashMap;
 
 public class EnumTest extends TestCase {
 
@@ -30,25 +35,25 @@ public class EnumTest extends TestCase {
 
     enum Empty {
     }
-    
+
     enum Bogus {
         UNUSED
-    }   
-    
+    }
+
     enum Color {
         Red, Green, Blue {};
     }
-    
+
     enum MockCloneEnum {
         ONE;
-        
+
         public void callClone() throws CloneNotSupportedException{
             super.clone();
         }
     }
-    
+
     /**
-     * @tests java.lang.Enum#compareTo(java.lang.Enum) 
+     * @tests java.lang.Enum#compareTo(java.lang.Enum)
      */
     public void test_compareToLjava_lang_Enum() {
         assertTrue(0 < Sample.MOE.compareTo(Sample.LARRY));
@@ -132,7 +137,7 @@ public class EnumTest extends TestCase {
             // other compilers will throw this
         }
 
-        
+
         Sample s = Enum.valueOf(Sample.class, "CURLY");
         assertSame(s, Sample.CURLY);
         s = Enum.valueOf(Sample.class, "LARRY");
@@ -181,7 +186,7 @@ public class EnumTest extends TestCase {
         assertEquals(Sample.LARRY, myValues[0]);
         assertEquals(Sample.MOE, myValues[1]);
         assertEquals(Sample.CURLY, myValues[2]);
-        
+
         assertEquals(0, Empty.values().length);
     }
 
@@ -196,5 +201,63 @@ public class EnumTest extends TestCase {
             // expected
         }
 
+    }
+
+    /**
+     * @test Serialization/deserilazation compatibility with Harmony.
+     */
+    public void test_compatibilitySerialization_inClass_Complex_Harmony() throws Exception{
+        // TODO migrate to the new testing framework
+        assertTrue(SerializationTester.assertCompabilityEquals(new MockEnum2(),
+            "serialization/org/apache/harmony/luni/tests/java/lang/EnumTest.harmony.ser"));
+    }
+
+    /**
+     * @tests serialization/deserialization compatibility.
+     */
+    public void testSerializationSelf() throws Exception {
+
+        // test a map class that has enums.
+        // regression test for Harmony-1163
+        HashMap<Color, Integer> enumColorMap = new HashMap<Color, Integer>();
+        enumColorMap.put(Color.Red, 1);
+        enumColorMap.put(Color.Blue, 3);
+
+        Object[] testCases = { enumColorMap, Sample.CURLY };
+
+        SerializationTest.verifySelf(testCases);
+
+        // test a class that has enums as its fields.
+        MockEnum mock = new MockEnum();
+        MockEnum test = (MockEnum) SerializationTest.copySerializable(mock);
+        assertEquals(mock.i, test.i);
+        assertEquals(mock.str, test.str);
+        assertEquals(mock.samEnum, test.samEnum);
+
+        // test a class that has enums and a string of same name as its fields.
+        MockEnum2 mock2 = new MockEnum2();
+        MockEnum2 test2 = (MockEnum2) SerializationTest.copySerializable(mock2);
+        assertEquals(mock2.i, test2.i);
+        assertEquals(mock2.str, test2.str);
+        assertEquals(mock2.samEnum, test2.samEnum);
+    }
+
+    /**
+     * @tests serialization/deserialization compatibility with RI.
+     */
+    public void testSerializationCompatibility() throws Exception {
+
+        // regression test for Harmony-1163
+        HashMap<Color, Integer> enumColorMap = new HashMap<Color, Integer>();
+        enumColorMap.put(Color.Red, 1);
+        enumColorMap.put(Color.Blue, 3);
+
+        Object[] testCases = { Sample.CURLY, new MockEnum(),
+        // test a class that has enums and a string of same name as its fields.
+                new MockEnum2(),
+                // test a map class that has enums.
+                enumColorMap, };
+
+        SerializationTest.verifyGolden(this, testCases);
     }
 }

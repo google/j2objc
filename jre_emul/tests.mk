@@ -16,7 +16,7 @@
 #
 # Author: Tom Ball
 
-.SUFFIXES: .java .m
+.SUFFIXES:
 
 default: test
 
@@ -35,6 +35,8 @@ SUPPORT_SOURCES = \
     libcore/util/SerializationTester.java \
     org/apache/harmony/logging/tests/java/util/logging/LevelTestResource.java \
     org/apache/harmony/logging/tests/java/util/logging/util/EnvironmentHelper.java \
+    org/apache/harmony/luni/tests/java/lang/MockEnum.java \
+    org/apache/harmony/luni/tests/java/lang/MockEnum2.java \
     org/apache/harmony/testframework/serialization/SerializationTest.java \
     org/apache/harmony/text/tests/java/text/Support_Format.java \
     org/apache/harmony/text/tests/java/text/Support_MessageFormat.java \
@@ -70,7 +72,8 @@ SUPPORT_SOURCES = \
     tests/support/Support_UnmodifiableCollectionTest.java \
     tests/support/Support_UnmodifiableMapTest.java \
     tests/support/ThrowingReader.java \
-    tests/util/CallVerificationStack.java
+    tests/util/CallVerificationStack.java \
+    tests/util/SerializationTester.java
 
 TEST_SOURCES = \
     AbstractExecutorServiceTest.java \
@@ -205,6 +208,7 @@ TEST_SOURCES = \
     libcore/java/io/StreamTokenizerTest.java \
     libcore/java/lang/DoubleTest.java \
     libcore/java/lang/CharacterTest.java \
+    libcore/java/lang/EnumTest.java \
     libcore/java/lang/FloatTest.java \
     libcore/java/lang/IntegralToStringTest.java \
     libcore/java/lang/ThrowableTest.java \
@@ -446,7 +450,12 @@ TEST_OBJS = \
 
 TEST_RESOURCES_SRCS = \
     org/apache/harmony/luni/tests/test_resource.txt \
-    org/apache/harmony/luni/tests/java/io/testfile-utf8.txt
+    org/apache/harmony/luni/tests/java/io/testfile-utf8.txt \
+    serialization/org/apache/harmony/luni/tests/java/lang/EnumTest.harmony.ser \
+    serialization/org/apache/harmony/luni/tests/java/lang/EnumTest.golden.0.ser \
+    serialization/org/apache/harmony/luni/tests/java/lang/EnumTest.golden.1.ser \
+    serialization/org/apache/harmony/luni/tests/java/lang/EnumTest.golden.2.ser \
+    serialization/org/apache/harmony/luni/tests/java/lang/EnumTest.golden.3.ser
 ANDROID_TEST_RESOURCES_SRCS = \
     META-INF/services/libcore.java.util.ServiceLoaderTestInterface \
     MD5.check \
@@ -518,7 +527,7 @@ link: build $(TEST_BIN)
 resources: $(TEST_RESOURCES)
 	@:
 
-$(TESTS_DIR)/%.txt: $(TEST_RESOURCES_ROOT)/%.txt
+$(TESTS_DIR)/%: $(TEST_RESOURCES_ROOT)/%
 	@mkdir -p `dirname $@`
 	@cp $< $@
 
