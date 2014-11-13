@@ -2370,9 +2370,14 @@ public class ObjectInputStream extends InputStream implements ObjectInput, Objec
 
         if (loadedStreamClass.getSerialVersionUID() != localStreamClass
                 .getSerialVersionUID()) {
+          // java.io.Serializable javadoc states "..., the requirement for
+          // matching serialVersionUID values is waived for array classes."
+          boolean isArray = loadedStreamClass.getName().startsWith("[");
+          if (!isArray) {
             throw new InvalidClassException(loadedStreamClass.getName(),
                     "Incompatible class (SUID): " + loadedStreamClass +
                             " but expected " + localStreamClass);
+          }
         }
 
         String loadedClassBaseName = getBaseName(loadedStreamClass.getName());

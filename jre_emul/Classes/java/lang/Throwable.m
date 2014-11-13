@@ -38,6 +38,8 @@
 #define MAX_STACK_FRAMES 128
 #endif
 
+#define JavaLangThrowable_serialVersionUID -3042686055658047285LL
+
 @implementation JavaLangThrowable
 
 void FillInStackTraceInternal(JavaLangThrowable *this) {
@@ -285,7 +287,11 @@ void FillInStackTraceInternal(JavaLangThrowable *this) {
     { "addSuppressedWithJavaLangThrowable:", NULL, "V", 0x11, NULL },
     { "getSuppressed", NULL, "[Ljava/lang/Throwable;", 0x11, NULL },
   };
-  static J2ObjcClassInfo _JavaLangThrowable = { "Throwable", "java.lang", NULL, 0x1, 9, methods, 0, NULL};
+  static J2ObjcFieldInfo fields[] = {
+    { "serialVersionUID_", NULL, 0x1a, "J", NULL,
+      .constantValue.asLong = JavaLangThrowable_serialVersionUID },
+  };
+  static J2ObjcClassInfo _JavaLangThrowable = { "Throwable", "java.lang", NULL, 0x1, 9, methods, 1, fields, 0, NULL};
   return &_JavaLangThrowable;
 }
 

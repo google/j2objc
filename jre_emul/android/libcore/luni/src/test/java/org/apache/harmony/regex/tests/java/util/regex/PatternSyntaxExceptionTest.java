@@ -116,11 +116,10 @@ public class PatternSyntaxExceptionTest extends TestCase {
     assertNotNull(objectStreamClass.getField("desc"));
   }
 
-  // b/12032235
-//  public void testSerializationCompatibility() throws Exception {
-//    PatternSyntaxException object = new PatternSyntaxException("TESTDESC", "TESTREGEX", 3);
-//    SerializationTest.verifyGolden(this, object, PATTERNSYNTAXEXCEPTION_COMPARATOR);
-//  }
+  public void testSerializationCompatibility() throws Exception {
+    PatternSyntaxException object = new PatternSyntaxException("TESTDESC", "TESTREGEX", 3);
+    SerializationTest.verifyGolden(this, object, PATTERNSYNTAXEXCEPTION_COMPARATOR);
+  }
 
   public void testSerializationSelf() throws Exception {
     PatternSyntaxException object = new PatternSyntaxException("TESTDESC", "TESTREGEX", 3);
