@@ -71,6 +71,7 @@ public class Options {
   private static boolean extractUnsequencedModifications = false;
   private static boolean docCommentsEnabled = false;
   private static boolean finalMethodsAsFunctions = false;
+  private static boolean removeClassMethods = false;
   // TODO(tball): change default to true once clients had a chance to update their builds.
   private static boolean hidePrivateMembers = false;
   private static int batchTranslateMaximum = 0;
@@ -279,6 +280,8 @@ public class Options {
             Integer.parseInt(arg.substring(BATCH_PROCESSING_MAX_FLAG.length()));
       } else if (arg.equals("--final-methods-as-functions")) {
         finalMethodsAsFunctions = true;
+      } else if (arg.equals("--no-class-methods")) {
+        removeClassMethods = true;
       } else if (arg.equals("--hide-private-members")) {
         hidePrivateMembers = true;
       } else if (arg.equals("--no-hide-private-members")) {
@@ -681,6 +684,10 @@ public class Options {
   @VisibleForTesting
   public static void resetFinalMethodsAsFunctions() {
     finalMethodsAsFunctions = false;
+  }
+
+  public static boolean removeClassMethods() {
+    return removeClassMethods;
   }
 
   public static boolean hidePrivateMembers() {

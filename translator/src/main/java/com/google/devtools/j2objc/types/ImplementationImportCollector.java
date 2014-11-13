@@ -349,13 +349,8 @@ public class ImplementationImportCollector extends TreeVisitor {
 
   @Override
   public boolean visit(TypeLiteral node) {
-    ITypeBinding type = node.getType().getTypeBinding();
-    if (type.isPrimitive()) {
-      addImports(Types.getWrapperType(type));
-    } else {
-      addImports(type);
-      addImports(Types.resolveIOSType("IOSClass"));
-    }
+    addImports(node.getType());
+    addImports(Types.resolveIOSType("IOSClass"));
     return false;
   }
 

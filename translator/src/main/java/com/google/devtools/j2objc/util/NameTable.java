@@ -189,6 +189,9 @@ public class NameTable {
       // Definitions from sys/poll.h
       "POLLERR", "POLLHUP", "POLLIN", "POLLOUT",
 
+      // Definitions from sys/syslimits.h
+      "ARG_MAX", "LINE_MAX", "MAX_INPUT", "NAME_MAX", "NZERO", "PATH_MAX",
+
       // Definitions from types.h
       "S_IRGRP", "S_IROTH", "S_IRUSR", "S_IRWXG", "S_IRWXO", "S_IRWXU", "S_IWGRP", "S_IWOTH",
       "S_IWUSR", "S_IXGRP", "S_IXOTH", "S_IXUSR",

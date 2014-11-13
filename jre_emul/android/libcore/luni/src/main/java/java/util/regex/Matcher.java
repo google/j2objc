@@ -29,7 +29,6 @@ public final class Matcher implements MatchResult {
 
     /**
      * The address of the native peer.
-     * Uses of this must be manually synchronized to avoid native crashes.
      */
     private long address;
 
@@ -233,13 +232,11 @@ public final class Matcher implements MatchResult {
 
         this.pattern = pattern;
 
-        synchronized (this) {
-            if (address != 0) {
-                closeImpl(address);
-                address = 0; // In case openImpl throws.
-            }
-            address = openImpl(pattern.address);
+        if (address != 0) {
+            closeImpl(address);
+            address = 0; // In case openImpl throws.
         }
+        address = openImpl(pattern.address);
 
         if (input != null) {
             resetForInput();
@@ -251,11 +248,9 @@ public final class Matcher implements MatchResult {
     }
 
     private void resetForInput() {
-        synchronized (this) {
-            setInputImpl(address, inputChars, regionStart, regionEnd);
-            useAnchoringBoundsImpl(address, anchoringBounds);
-            useTransparentBoundsImpl(address, transparentBounds);
-        }
+        setInputImpl(address, inputChars, regionStart, regionEnd);
+        useAnchoringBoundsImpl(address, anchoringBounds);
+        useTransparentBoundsImpl(address, transparentBounds);
     }
 
     /**
@@ -342,9 +337,7 @@ public final class Matcher implements MatchResult {
             throw new IndexOutOfBoundsException("start=" + start + "; length=" + input.length());
         }
 
-        synchronized (this) {
-            matchFound = findImpl(address, start, matchOffsets);
-        }
+        matchFound = findImpl(address, start, matchOffsets);
         return matchFound;
     }
 
@@ -357,9 +350,7 @@ public final class Matcher implements MatchResult {
      * @return true if (and only if) a match has been found.
      */
     public boolean find() {
-        synchronized (this) {
-            matchFound = findNextImpl(address, matchOffsets);
-        }
+        matchFound = findNextImpl(address, matchOffsets);
         return matchFound;
     }
 
@@ -371,9 +362,7 @@ public final class Matcher implements MatchResult {
      * @return true if (and only if) the {@code Pattern} matches.
      */
     public boolean lookingAt() {
-        synchronized (this) {
-            matchFound = lookingAtImpl(address, matchOffsets);
-        }
+        matchFound = lookingAtImpl(address, matchOffsets);
         return matchFound;
     }
 
@@ -385,9 +374,7 @@ public final class Matcher implements MatchResult {
      *         region.
      */
     public boolean matches() {
-        synchronized (this) {
-            matchFound = matchesImpl(address, matchOffsets);
-        }
+        matchFound = matchesImpl(address, matchOffsets);
         return matchFound;
     }
 
@@ -429,10 +416,8 @@ public final class Matcher implements MatchResult {
      * @return the {@code Matcher} itself.
      */
     public Matcher useAnchoringBounds(boolean value) {
-        synchronized (this) {
-            anchoringBounds = value;
-            useAnchoringBoundsImpl(address, value);
-        }
+        anchoringBounds = value;
+        useAnchoringBoundsImpl(address, value);
         return this;
     }
 
@@ -455,10 +440,8 @@ public final class Matcher implements MatchResult {
      * @return the {@code Matcher} itself.
      */
     public Matcher useTransparentBounds(boolean value) {
-        synchronized (this) {
-            transparentBounds = value;
-            useTransparentBoundsImpl(address, value);
-        }
+        transparentBounds = value;
+        useTransparentBoundsImpl(address, value);
         return this;
     }
 
@@ -508,9 +491,7 @@ public final class Matcher implements MatchResult {
      * then requireEnd has no meaning.
      */
     public boolean requireEnd() {
-        synchronized (this) {
-            return requireEndImpl(address);
-        }
+        return requireEndImpl(address);
     }
 
     /**
@@ -519,16 +500,12 @@ public final class Matcher implements MatchResult {
      * could change the results of the match.
      */
     public boolean hitEnd() {
-        synchronized (this) {
-            return hitEndImpl(address);
-        }
+        return hitEndImpl(address);
     }
 
     @Override protected void finalize() throws Throwable {
         try {
-            synchronized (this) {
-                closeImpl(address);
-            }
+            closeImpl(address);
         } finally {
             super.finalize();
         }
@@ -592,9 +569,7 @@ public final class Matcher implements MatchResult {
      * {@inheritDoc}
      */
     public int groupCount() {
-        synchronized (this) {
-            return groupCountImpl(address);
-        }
+        return groupCountImpl(address);
     }
 
     /**

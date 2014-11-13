@@ -26,7 +26,7 @@ import java.util.NavigableMap;
 import java.util.SortedMap;
 import java.util.TreeMap;
 import junit.framework.TestCase;
-//import libcore.util.SerializationTester;
+import libcore.util.SerializationTester;
 
 public class TreeMapTest extends TestCase {
 
@@ -266,8 +266,7 @@ public class TreeMapTest extends TestCase {
         assertEquals("x:{A=a, B=b}", map.toString());
     }
 
-    // Serialization is not supported.
-    /*public void testEmptyMapSerialization() {
+    public void testEmptyMapSerialization() {
         String s = "aced0005737200116a6176612e7574696c2e547265654d61700cc1f63e2d256a"
                 + "e60300014c000a636f6d70617261746f727400164c6a6176612f7574696c2f436"
                 + "f6d70617261746f723b78707077040000000078";
@@ -399,12 +398,12 @@ public class TreeMapTest extends TestCase {
                 assertEquals(0, deserialized.comparator().compare("X", "x"));
             }
         }.test();
-    }*/
+    }
 
     /**
      * On JDK5, this fails with a NullPointerException after deserialization!
      */
-    /*public void testJava5SubMapSerialization() {
+    public void testJava5SubMapSerialization() {
         String s = "aced0005737200186a6176612e7574696c2e547265654d6170245375624d6170"
                 + "a5818343a213c27f0200055a000966726f6d53746172745a0005746f456e644c0"
                 + "00766726f6d4b65797400124c6a6176612f6c616e672f4f626a6563743b4c0006"
@@ -431,5 +430,5 @@ public class TreeMapTest extends TestCase {
                 }
             }
         }.test();
-    }*/
+    }
 }

@@ -35,8 +35,6 @@
 @class JavaUtilLocale;
 @protocol JavaUtilComparator;
 
-#define NSString_serialVersionUID -6849794470754667710LL
-
 // A category that adds java.lang.String-like methods to NSString.  The method
 // list is not exhaustive, since methods that can be directly substituted are
 // inlined.  For example, "foo".length() is directly translated to
