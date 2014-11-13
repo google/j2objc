@@ -70,6 +70,12 @@
   return [[[self getComponentType] objcName] stringByAppendingString:@"Array"];
 }
 
+- (IOSObjectArray *)getInterfacesWithArrayType:(IOSClass *)arrayType {
+  return [IOSObjectArray arrayWithObjects:(id[]){
+        [IOSClass classWithProtocol:@protocol(JavaIoSerializable)]
+      } count:1 type:[IOSClass getClass]];
+}
+
 - (id)newInstance {
   if (!componentType_) {
     @throw AUTORELEASE([[JavaLangInstantiationException alloc] init]);
