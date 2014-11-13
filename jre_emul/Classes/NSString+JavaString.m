@@ -44,6 +44,8 @@
 #import "java_lang_IntegralToString.h"
 #import "java_lang_RealToString.h"
 
+#define JavaLangString_serialVersionUID -6849794470754667710LL
+
 @implementation NSString (JavaString)
 
 id makeException(Class exceptionClass) {
@@ -1004,7 +1006,7 @@ NSString *NSString_formatWithJavaUtilLocale_withNSString_withNSObjectArray_(
   static J2ObjcFieldInfo fields[] = {
     { "CASE_INSENSITIVE_ORDER_", NULL, 0x19, "Ljava/util/Comparator;", &NSString_CASE_INSENSITIVE_ORDER_ },
     { "serialPersistentFields_", NULL, 0x1a, "[Ljava/io/ObjectStreamField;", &NSString_serialPersistentFields_ },
-    { "serialVersionUID_", NULL, 0x1a, "J", NULL, .constantValue.asLong = NSString_serialVersionUID },
+    { "serialVersionUID_", NULL, 0x1a, "J", NULL, .constantValue.asLong = JavaLangString_serialVersionUID },
   };
   static J2ObjcClassInfo _JavaLangString = { "String", "java.lang", NULL, 0x1, 46, methods, 3, fields, 0, NULL};
   return &_JavaLangString;
@@ -1014,10 +1016,11 @@ NSString *NSString_formatWithJavaUtilLocale_withNSString_withNSObjectArray_(
 
 #define CaseInsensitiveComparator_serialVersionUID 8575799808933029326LL
 
-@interface CaseInsensitiveComparator : NSObject < JavaUtilComparator, JavaIoSerializable >
+@interface JavaLangString_CaseInsensitiveComparator : NSObject
+    < JavaUtilComparator, JavaIoSerializable >
 @end
 
-@implementation CaseInsensitiveComparator
+@implementation JavaLangString_CaseInsensitiveComparator
 
 - (int)compareWithId:(NSString *)o1
               withId:(NSString *)o2 {
@@ -1029,7 +1032,8 @@ NSString *NSString_formatWithJavaUtilLocale_withNSString_withNSObjectArray_(
 
 + (J2ObjcClassInfo *)__metadata {
   static J2ObjcFieldInfo fields[] = {
-    { "serialVersionUID_", NULL, 0x1a, "J", NULL, .constantValue.asLong = CaseInsensitiveComparator_serialVersionUID },
+    { "serialVersionUID_", NULL, 0x1a, "J", NULL,
+      .constantValue.asLong = CaseInsensitiveComparator_serialVersionUID },
   };
   static J2ObjcClassInfo _JavaLangString_CaseInsensitiveComparator = {
     "CaseInsensitiveComparator", "java.lang", "String", 0xa, 0, NULL, 1, fields, 0, NULL
@@ -1048,8 +1052,8 @@ IOSObjectArray *NSString_serialPersistentFields_;
 
 + (void)initialize {
   if (self == [JreStringCategoryDummy class]) {
-    JreStrongAssignAndConsume(
-        &NSString_CASE_INSENSITIVE_ORDER_, nil, [[CaseInsensitiveComparator alloc] init]);
+    JreStrongAssignAndConsume(&NSString_CASE_INSENSITIVE_ORDER_, nil,
+                              [[JavaLangString_CaseInsensitiveComparator alloc] init]);
     JreStrongAssignAndConsume(&NSString_serialPersistentFields_, nil,
         [IOSObjectArray newArrayWithLength:0 type:
             [IOSClass classWithClass:[JavaIoObjectStreamField class]]]);

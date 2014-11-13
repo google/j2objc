@@ -127,8 +127,8 @@ public final class Long extends Number implements Comparable<Long> {
     /**
      * Parses the specified string and returns a {@code Long} instance if the
      * string can be decoded into a long value. The string may be an optional
-     * minus sign "-" followed by a hexadecimal ("0x..." or "#..."), octal
-     * ("0..."), or decimal ("...") representation of a long.
+     * optional sign character ("-" or "+") followed by a hexadecimal ("0x..."
+     * or "#..."), octal ("0..."), or decimal ("...") representation of a long.
      *
      * @param string
      *            a string representation of a long value.
@@ -137,13 +137,15 @@ public final class Long extends Number implements Comparable<Long> {
      *             if {@code string} cannot be parsed as a long value.
      */
     public static Long decode(String string) throws NumberFormatException {
-        int length = string.length(), i = 0;
+        int length = string.length();
         if (length == 0) {
             throw invalidLong(string);
         }
+
+        int i = 0;
         char firstDigit = string.charAt(i);
         boolean negative = firstDigit == '-';
-        if (negative) {
+        if (negative || firstDigit == '+') {
             if (length == 1) {
                 throw invalidLong(string);
             }
@@ -306,7 +308,8 @@ public final class Long extends Number implements Comparable<Long> {
 
     /**
      * Parses the specified string as a signed decimal long value. The ASCII
-     * character \u002d ('-') is recognized as the minus sign.
+     * characters \u002d ('-') and \u002b ('+') are recognized as the minus and
+     * plus signs.
      *
      * @param string
      *            the string representation of a long value.
@@ -320,7 +323,8 @@ public final class Long extends Number implements Comparable<Long> {
 
     /**
      * Parses the specified string as a signed long value using the specified
-     * radix. The ASCII character \u002d ('-') is recognized as the minus sign.
+     * radix. The ASCII characters \u002d ('-') and \u002b ('+') are recognized
+     * as the minus and plus signs.
      *
      * @param string
      *            the string representation of a long value.
@@ -337,24 +341,22 @@ public final class Long extends Number implements Comparable<Long> {
         if (radix < Character.MIN_RADIX || radix > Character.MAX_RADIX) {
             throw new NumberFormatException("Invalid radix: " + radix);
         }
-        if (string == null) {
+        if (string == null || string.isEmpty()) {
             throw invalidLong(string);
         }
-        int length = string.length(), i = 0;
-        if (length == 0) {
-            throw invalidLong(string);
-        }
-        boolean negative = string.charAt(i) == '-';
-        if (negative && ++i == length) {
+        char firstChar = string.charAt(0);
+        int firstDigitIndex = (firstChar == '-' || firstChar == '+') ? 1 : 0;
+        if (firstDigitIndex == string.length()) {
             throw invalidLong(string);
         }
 
-        return parse(string, i, radix, negative);
+        return parse(string, firstDigitIndex, radix, firstChar == '-');
     }
 
     private static long parse(String string, int offset, int radix, boolean negative) {
         long max = Long.MIN_VALUE / radix;
-        long result = 0, length = string.length();
+        long result = 0;
+        int length = string.length();
         while (offset < length) {
             int digit = Character.digit(string.charAt(offset++), radix);
             if (digit == -1) {
@@ -376,6 +378,39 @@ public final class Long extends Number implements Comparable<Long> {
             }
         }
         return result;
+    }
+
+    /**
+     * Equivalent to {@code parsePositiveLong(string, 10)}.
+     *
+     * @see #parsePositiveLong(String, int)
+     *
+     * @hide
+     */
+    public static long parsePositiveLong(String string) throws NumberFormatException {
+        return parsePositiveLong(string, 10);
+    }
+
+    /**
+     * Parses the specified string as a positive long value using the
+     * specified radix. 0 is considered a positive long.
+     * <p>
+     * This method behaves the same as {@link #parseLong(String, int)} except
+     * that it disallows leading '+' and '-' characters. See that method for
+     * error conditions.
+     *
+     * @see #parseLong(String, int)
+     *
+     * @hide
+     */
+    public static long parsePositiveLong(String string, int radix) throws NumberFormatException {
+        if (radix < Character.MIN_RADIX || radix > Character.MAX_RADIX) {
+            throw new NumberFormatException("Invalid radix: " + radix);
+        }
+        if (string == null || string.length() == 0) {
+            throw invalidLong(string);
+        }
+        return parse(string, 0, radix, false);
     }
 
     @Override

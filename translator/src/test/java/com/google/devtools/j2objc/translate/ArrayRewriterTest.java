@@ -30,48 +30,6 @@ public class ArrayRewriterTest extends GenerationTest {
   // Since ArrayRewriter was created from code scattered throughout the package,
   // so are its tests. These should be moved here as they are updated.
 
-  // Issue 360: a null argument for a varargs parameter should not be rewritten
-  // as an array.
-  public void testNilVarargs() throws IOException {
-    String source =
-        "public class Test { "
-        + "  void foo(char... chars) {}"
-        + "  void test() { foo(null); }}";
-    String translation = translateSourceFile(source, "Test", "Test.m");
-    assertTranslation(translation, "[self fooWithCharArray:nil];");
-    assertNotInTranslation(translation,
-        "[self fooWithCharArray:[IOSCharArray arrayWithChars:(unichar[]){ nil } count:1]];");
-  }
-
-  // Verify that a single object array argument to an object varargs method is passed unchanged.
-  public void testObjectArrayVarargs() throws IOException {
-    String translation = translateSourceFile(
-        "class Test { void test(Object[] array) { java.util.Arrays.asList(array); }}",
-        "Test", "Test.m");
-    assertTranslation(translation, "JavaUtilArrays_asListWithNSObjectArray_(array);");
-  }
-
-  // Verify that a single primitive array argument to a primitive varargs method is
-  // passed unchanged.
-  public void testPrimitiveArrayVarargs() throws IOException {
-    String translation = translateSourceFile(
-        "class Test { void doVarargs(int... ints) {}"
-        + "void test(int[] array) { doVarargs(array); }}",
-        "Test", "Test.m");
-    assertTranslation(translation, "[self doVarargsWithIntArray:array];");
-  }
-
-  // Verify that a single primitive array argument to an object varargs method is just treated
-  // like any other object.
-  public void testPrimitiveArrayToObjectVarargs() throws IOException {
-    String translation = translateSourceFile(
-        "class Test { void test(float[] array) { java.util.Arrays.asList(array); }}",
-        "Test", "Test.m");
-    assertTranslation(translation, "JavaUtilArrays_asListWithNSObjectArray_("
-        + "[IOSObjectArray arrayWithObjects:(id[]){ array } count:1 "
-        + "type:[IOSClass classWithClass:[NSObject class]]]);");
-  }
-
   // Verify that the "SetAndConsume" setter is used.
   public void testAssignmentToNewObject() throws IOException {
     String translation = translateSourceFile(

@@ -21,7 +21,9 @@ import com.google.devtools.j2objc.ast.AnnotationTypeDeclaration;
 import com.google.devtools.j2objc.ast.AnnotationTypeMemberDeclaration;
 import com.google.devtools.j2objc.ast.EnumDeclaration;
 import com.google.devtools.j2objc.ast.FieldDeclaration;
+import com.google.devtools.j2objc.ast.FunctionDeclaration;
 import com.google.devtools.j2objc.ast.MethodDeclaration;
+import com.google.devtools.j2objc.ast.SingleVariableDeclaration;
 import com.google.devtools.j2objc.ast.TreeNode;
 import com.google.devtools.j2objc.ast.TreeVisitor;
 import com.google.devtools.j2objc.ast.Type;
@@ -94,6 +96,15 @@ public class HeaderImportCollector extends TreeVisitor {
   public boolean visit(FieldDeclaration node) {
     addForwardDecl(node.getType());
     return true;
+  }
+
+  @Override
+  public boolean visit(FunctionDeclaration node) {
+    addForwardDecl(node.getReturnType());
+    for (SingleVariableDeclaration param : node.getParameters()) {
+      addForwardDecl(param.getType());
+    }
+    return false;
   }
 
   @Override

@@ -254,6 +254,7 @@ void JreStringBuilder_deleteCharAt(JreStringBuilder *sb, jint index) {
   }
   jint length = end - start;
   IOSArray_checkRange(delegate_.bufferSize_, start, length);
+  nil_chk(dst);
   IOSArray_checkRange(dst->size_, dstStart, length);
   memcpy(dst->buffer_ + dstStart, delegate_.buffer_ + start, length * sizeof(jchar));
 }

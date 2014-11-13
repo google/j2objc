@@ -17,6 +17,7 @@
 
 package java.util;
 
+import com.google.j2objc.annotations.Weak;
 import com.google.j2objc.annotations.WeakOuter;
 
 /**
@@ -143,8 +144,8 @@ public class LinkedHashMap<K, V> extends HashMap<K, V> {
      * LinkedEntry adds nxt/prv double-links to plain HashMapEntry.
      */
     static class LinkedEntry<K, V> extends HashMapEntry<K, V> {
-        LinkedEntry<K, V> nxt;
-        LinkedEntry<K, V> prv;
+        @Weak LinkedEntry<K, V> nxt;
+        @Weak LinkedEntry<K, V> prv;
 
         /** Create the header entry */
         LinkedEntry() {
@@ -182,50 +183,57 @@ public class LinkedHashMap<K, V> extends HashMap<K, V> {
      * (eldest) entry that happens to be the first entry in the same bucket
      * as the newly created entry, the "next" link would become invalid, and
      * the resulting hash table corrupt.
+     *
+     * Modified to avoid extra retain/autorelease calls.
      */
-    @Override void addNewEntry(K key, V value, int hash, int index) {
-        LinkedEntry<K, V> header = this.header;
+    @Override native void addNewEntry(K key, V value, int hash, int index) /*-[
+      JavaUtilLinkedHashMap_LinkedEntry *header = self->header_;
+      JavaUtilLinkedHashMap_LinkedEntry *eldest = header->nxt_;
+      if (eldest != header && [self removeEldestEntryWithJavaUtilMap_Entry:eldest]) {
+        [self removeWithId:eldest->key_];
+      }
+      JavaUtilLinkedHashMap_LinkedEntry *oldTail = header->prv_;
+      JavaUtilLinkedHashMap_LinkedEntry *newTail = [[JavaUtilLinkedHashMap_LinkedEntry alloc]
+          initWithId:key withId:value withInt:hash_
+          withJavaUtilHashMap_HashMapEntry:nil
+          withJavaUtilLinkedHashMap_LinkedEntry:header
+          withJavaUtilLinkedHashMap_LinkedEntry:oldTail];
+      newTail->next_ = self->table_->buffer_[index];
+      self->table_->buffer_[index] = oldTail->nxt_ = header->prv_ = newTail;
+    ]-*/;
 
-        // Remove eldest entry if instructed to do so.
-        LinkedEntry<K, V> eldest = header.nxt;
-        if (eldest != header && removeEldestEntry(eldest)) {
-            remove(eldest.key);
-        }
-
-        // Create new entry, link it on to list, and put it into table
-        LinkedEntry<K, V> oldTail = header.prv;
-        LinkedEntry<K, V> newTail = new LinkedEntry<K,V>(
-                key, value, hash, table[index], header, oldTail);
-        table[index] = oldTail.nxt = header.prv = newTail;
-    }
-
-    @Override void addNewEntryForNullKey(V value) {
-        LinkedEntry<K, V> header = this.header;
-
-        // Remove eldest entry if instructed to do so.
-        LinkedEntry<K, V> eldest = header.nxt;
-        if (eldest != header && removeEldestEntry(eldest)) {
-            remove(eldest.key);
-        }
-
-        // Create new entry, link it on to list, and put it into table
-        LinkedEntry<K, V> oldTail = header.prv;
-        LinkedEntry<K, V> newTail = new LinkedEntry<K,V>(
-                null, value, 0, null, header, oldTail);
-        entryForNullKey = oldTail.nxt = header.prv = newTail;
-    }
+    @Override native void addNewEntryForNullKey(V value) /*-[
+      JavaUtilLinkedHashMap_LinkedEntry *header = self->header_;
+      JavaUtilLinkedHashMap_LinkedEntry *eldest = header->nxt_;
+      if (eldest != header && [self removeEldestEntryWithJavaUtilMap_Entry:eldest]) {
+        [self removeWithId:eldest->key_];
+      }
+      JavaUtilLinkedHashMap_LinkedEntry *oldTail = header->prv_;
+      JavaUtilLinkedHashMap_LinkedEntry *newTail = [[JavaUtilLinkedHashMap_LinkedEntry alloc]
+          initWithId:nil withId:value withInt:0 withJavaUtilHashMap_HashMapEntry:nil
+          withJavaUtilLinkedHashMap_LinkedEntry:header
+          withJavaUtilLinkedHashMap_LinkedEntry:oldTail];
+      JavaUtilHashMap_setAndConsume_entryForNullKey_(self, oldTail->nxt_ = header->prv_ = newTail);
+    ]-*/;
 
     /**
      * As above, but without eviction.
+     *
+     * This native method has a modified contract from the original version.
+     * It must return a retained entry object. And it must avoid retaining the
+     * "first" parameter when setting it to the "next" field of the new entry.
      */
-    @Override HashMapEntry<K, V> constructorNewEntry(
-            K key, V value, int hash, HashMapEntry<K, V> next) {
-        LinkedEntry<K, V> header = this.header;
-        LinkedEntry<K, V> oldTail = header.prv;
-        LinkedEntry<K, V> newTail
-                = new LinkedEntry<K,V>(key, value, hash, next, header, oldTail);
-        return oldTail.nxt = header.prv = newTail;
-    }
+    @Override native HashMapEntry<K, V> constructorNewRetainedEntry(
+            K key, V value, int hash, HashMapEntry<K, V> next) /*-[
+      JavaUtilLinkedHashMap_LinkedEntry *header = self->header_;
+      JavaUtilLinkedHashMap_LinkedEntry *oldTail = header->prv_;
+      JavaUtilLinkedHashMap_LinkedEntry *newTail = [[JavaUtilLinkedHashMap_LinkedEntry alloc]
+          initWithId:key withId:value withInt:hash_ withJavaUtilHashMap_HashMapEntry:nil
+          withJavaUtilLinkedHashMap_LinkedEntry:header
+          withJavaUtilLinkedHashMap_LinkedEntry:oldTail];
+      newTail->next_ = next;
+      return oldTail->nxt_ = header->prv_ = newTail;
+    ]-*/;
 
     /**
      * Returns the value of the mapping with the specified key.
@@ -394,4 +402,28 @@ public class LinkedHashMap<K, V> extends HashMap<K, V> {
     }
 
     private static final long serialVersionUID = 3801124242820219131L;
+
+    /*-[
+    - (NSUInteger)enumerateEntriesWithState:(NSFastEnumerationState *)state
+                                    objects:(__unsafe_unretained id *)stackbuf
+                                      count:(NSUInteger)len {
+      __unsafe_unretained JavaUtilLinkedHashMap_LinkedEntry *entry;
+      if (state->state == 0) {
+        state->state = 1;
+        state->mutationsPtr = (unsigned long *) &modCount_;
+        entry = header_->nxt_;
+      } else {
+        entry = (void *) state->extra[0];
+      }
+      state->itemsPtr = stackbuf;
+      NSUInteger objCount = 0;
+      while (entry != header_ && objCount < len) {
+        *stackbuf++ = entry;
+        objCount++;
+        entry = entry->nxt_;
+      }
+      state->extra[0] = (unsigned long) entry;
+      return objCount;
+    }
+    ]-*/
 }

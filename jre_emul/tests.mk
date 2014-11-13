@@ -16,7 +16,7 @@
 #
 # Author: Tom Ball
 
-.SUFFIXES: .java .m
+.SUFFIXES:
 
 default: test
 
@@ -35,6 +35,8 @@ SUPPORT_SOURCES = \
     libcore/util/SerializationTester.java \
     org/apache/harmony/logging/tests/java/util/logging/LevelTestResource.java \
     org/apache/harmony/logging/tests/java/util/logging/util/EnvironmentHelper.java \
+    org/apache/harmony/luni/tests/java/lang/MockEnum.java \
+    org/apache/harmony/luni/tests/java/lang/MockEnum2.java \
     org/apache/harmony/testframework/serialization/SerializationTest.java \
     org/apache/harmony/text/tests/java/text/Support_Format.java \
     org/apache/harmony/text/tests/java/text/Support_MessageFormat.java \
@@ -70,7 +72,8 @@ SUPPORT_SOURCES = \
     tests/support/Support_UnmodifiableCollectionTest.java \
     tests/support/Support_UnmodifiableMapTest.java \
     tests/support/ThrowingReader.java \
-    tests/util/CallVerificationStack.java
+    tests/util/CallVerificationStack.java \
+    tests/util/SerializationTester.java
 
 TEST_SOURCES = \
     AbstractExecutorServiceTest.java \
@@ -202,9 +205,11 @@ TEST_SOURCES = \
     libcore/java/io/OldWriterTest.java \
     libcore/java/io/OutputStreamWriterTest.java \
     libcore/java/io/RandomAccessFileTest.java \
+    libcore/java/io/SerializationTest.java \
     libcore/java/io/StreamTokenizerTest.java \
     libcore/java/lang/DoubleTest.java \
     libcore/java/lang/CharacterTest.java \
+    libcore/java/lang/EnumTest.java \
     libcore/java/lang/FloatTest.java \
     libcore/java/lang/IntegralToStringTest.java \
     libcore/java/lang/ThrowableTest.java \
@@ -212,6 +217,7 @@ TEST_SOURCES = \
     libcore/java/lang/reflect/ArrayTest.java \
     libcore/java/lang/reflect/ConstructorTest.java \
     libcore/java/lang/reflect/FieldTest.java \
+    libcore/java/lang/annotation/AnnotationTypeMismatchExceptionTest.java \
     libcore/java/net/DatagramSocketTest.java \
     libcore/java/net/InetAddressTest.java \
     libcore/java/net/InetSocketAddressTest.java \
@@ -233,18 +239,21 @@ TEST_SOURCES = \
     libcore/java/nio/channels/OldFileChannelTest.java \
     libcore/java/nio/charset/CharsetDecoderTest.java \
     libcore/java/nio/charset/CharsetEncoderTest.java \
+    libcore/java/text/AttributedCharacterIteratorAttributeTest.java \
     libcore/java/text/CollatorTest.java \
     libcore/java/text/DecimalFormatTest.java \
     libcore/java/text/DecimalFormatSymbolsTest.java \
     libcore/java/text/NumberFormatTest.java \
     libcore/java/util/BitSetTest.java \
     libcore/java/util/CalendarTest.java \
+    libcore/java/util/EventObjectTest.java \
     libcore/java/util/FormatterTest.java \
     libcore/java/util/ObjectsTest.java \
     libcore/java/util/OldAndroidArrayListTest.java \
     libcore/java/util/OldTimeZoneTest.java \
     libcore/java/util/ServiceLoaderTest.java \
     libcore/java/util/TreeMapTest.java \
+    libcore/java/util/TreeSetTest.java \
     libcore/java/util/zip/DeflaterInputStreamTest.java \
     libcore/java/util/zip/DeflaterOutputStreamTest.java \
     libcore/java/util/zip/DeflaterTest.java \
@@ -314,8 +323,8 @@ TEST_SOURCES = \
     org/apache/harmony/luni/tests/java/lang/reflect/ModifierTest.java \
     org/apache/harmony/luni/tests/java/lang/RuntimeExceptionTest.java \
     org/apache/harmony/luni/tests/java/lang/ShortTest.java \
-    org/apache/harmony/luni/tests/java/lang/StrictMathTest.java \
     org/apache/harmony/luni/tests/java/lang/StringBufferTest.java \
+    org/apache/harmony/luni/tests/java/lang/StringBuilderTest.java \
     org/apache/harmony/luni/tests/java/lang/StringIndexOutOfBoundsExceptionTest.java \
     org/apache/harmony/luni/tests/java/lang/StringTest.java \
     org/apache/harmony/luni/tests/java/lang/String2Test.java \
@@ -324,7 +333,6 @@ TEST_SOURCES = \
     org/apache/harmony/luni/tests/java/lang/TypeNotPresentExceptionTest.java \
     org/apache/harmony/luni/tests/java/lang/UnsupportedOperationExceptionTest.java \
     org/apache/harmony/luni/tests/java/lang/VirtualMachineErrorTest.java \
-    org/apache/harmony/luni/tests/util/UtilTest.java \
     org/apache/harmony/luni/tests/java/util/AbstractCollectionTest.java \
     org/apache/harmony/luni/tests/java/util/AbstractListTest.java \
     org/apache/harmony/luni/tests/java/util/AbstractMapTest.java \
@@ -338,11 +346,8 @@ TEST_SOURCES = \
     org/apache/harmony/luni/tests/java/util/EnumSetTest.java \
     org/apache/harmony/luni/tests/java/util/EventObjectTest.java \
     org/apache/harmony/luni/tests/java/util/GregorianCalendarTest.java \
-    org/apache/harmony/luni/tests/java/util/HashMapTest.java \
     org/apache/harmony/luni/tests/java/util/HashSetTest.java \
-    org/apache/harmony/luni/tests/java/util/HashtableTest.java \
     org/apache/harmony/luni/tests/java/util/IdentityHashMapTest.java \
-    org/apache/harmony/luni/tests/java/util/LinkedHashMapTest.java \
     org/apache/harmony/luni/tests/java/util/LinkedHashSetTest.java \
     org/apache/harmony/luni/tests/java/util/LinkedListTest.java \
     org/apache/harmony/luni/tests/java/util/LocaleTest.java \
@@ -365,6 +370,8 @@ TEST_SOURCES = \
     org/apache/harmony/tests/java/lang/CharacterTest.java \
     org/apache/harmony/tests/java/lang/DoubleTest.java \
     org/apache/harmony/tests/java/lang/FloatTest.java \
+    org/apache/harmony/tests/java/lang/MathTest.java \
+    org/apache/harmony/tests/java/lang/StrictMathTest.java \
     org/apache/harmony/tests/java/math/BigIntegerAddTest.java \
     org/apache/harmony/tests/java/math/BigIntegerAndTest.java \
     org/apache/harmony/tests/java/math/BigIntegerCompareTest.java \
@@ -376,6 +383,9 @@ TEST_SOURCES = \
     org/apache/harmony/tests/java/math/BigIntegerNotTest.java \
     org/apache/harmony/tests/java/math/BigIntegerOrTest.java \
     org/apache/harmony/tests/java/math/BigIntegerSubtractTest.java \
+    org/apache/harmony/tests/java/util/HashMapTest.java \
+    org/apache/harmony/tests/java/util/HashtableTest.java \
+    org/apache/harmony/tests/java/util/LinkedHashMapTest.java \
     org/apache/harmony/regex/tests/java/util/regex/Matcher2Test.java \
     org/apache/harmony/regex/tests/java/util/regex/ModeTest.java \
     org/apache/harmony/regex/tests/java/util/regex/Pattern2Test.java \
@@ -421,9 +431,8 @@ TESTS_TO_SKIP = \
     ExchangerTest.java
 
 FAILING_TESTS = \
-    libcore/java/util/TreeSetTest.java \
-    org/apache/harmony/luni/tests/java/lang/StrictMathTest.java \
-    org/apache/harmony/luni/tests/java/lang/StringBuilderTest.java \
+    libcore/java/text/DateFormatSymbolsTest.java \
+    libcore/java/util/beans/PropertyChangeSupportTest.java
 
 # Most of these tests are failing for a common index-out-of-range error.
 FAILING_MATH_TESTS = \
@@ -449,7 +458,12 @@ TEST_OBJS = \
 
 TEST_RESOURCES_SRCS = \
     org/apache/harmony/luni/tests/test_resource.txt \
-    org/apache/harmony/luni/tests/java/io/testfile-utf8.txt
+    org/apache/harmony/luni/tests/java/io/testfile-utf8.txt \
+    serialization/org/apache/harmony/luni/tests/java/lang/EnumTest.harmony.ser \
+    serialization/org/apache/harmony/luni/tests/java/lang/EnumTest.golden.0.ser \
+    serialization/org/apache/harmony/luni/tests/java/lang/EnumTest.golden.1.ser \
+    serialization/org/apache/harmony/luni/tests/java/lang/EnumTest.golden.2.ser \
+    serialization/org/apache/harmony/luni/tests/java/lang/EnumTest.golden.3.ser
 ANDROID_TEST_RESOURCES_SRCS = \
     META-INF/services/libcore.java.util.ServiceLoaderTestInterface \
     MD5.check \
@@ -521,7 +535,7 @@ link: build $(TEST_BIN)
 resources: $(TEST_RESOURCES)
 	@:
 
-$(TESTS_DIR)/%.txt: $(TEST_RESOURCES_ROOT)/%.txt
+$(TESTS_DIR)/%: $(TEST_RESOURCES_ROOT)/%
 	@mkdir -p `dirname $@`
 	@cp $< $@
 

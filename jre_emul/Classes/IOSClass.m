@@ -845,7 +845,7 @@ IOSObjectArray *copyFieldsToObjectArray(NSArray *fields) {
 
 - (IOSObjectArray *)getEnumConstants {
   if ([self isEnum]) {
-    return JavaLangEnum_getValuesWithIOSClass_(self);
+    return JavaLangEnum_getSharedConstantsWithIOSClass_(self);
   }
   return nil;
 }

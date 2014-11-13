@@ -19,11 +19,9 @@
 
 #import "NSNumber+JavaNumber.h"
 
-@implementation NSNumber (JavaNumber)
+#define JavaLangNumber_serialVersionUID -8742448824652078965LL
 
-+ (long long int)serialVersionUID {
-  return -8742448824652078965L;
-}
+@implementation NSNumber (JavaNumber)
 
 + (J2ObjcClassInfo *)__metadata {
   static J2ObjcMethodInfo methods[] = {
@@ -34,8 +32,12 @@
     { "longLongValue", "longValue", "J", 0x401, NULL },
     { "shortValue", NULL, "S", 0x401, NULL },
   };
+  static J2ObjcFieldInfo fields[] = {
+    { "serialVersionUID_", NULL, 0x1a, "J", NULL,
+      .constantValue.asLong = JavaLangNumber_serialVersionUID },
+  };
   static J2ObjcClassInfo _JavaLangNumber = {
-    "Number", "java.lang", NULL, 0x401, 6, methods, 0, NULL, 0, NULL
+    "Number", "java.lang", NULL, 0x401, 6, methods, 1, fields, 0, NULL
   };
   return &_JavaLangNumber;
 }
