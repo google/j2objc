@@ -67,6 +67,9 @@
   if (otherProtocol) {
     return protocol_conformsToProtocol(otherProtocol, protocol_);
   }
+  if ([cls isArray] && protocol_ == @protocol(JavaIoSerializable)) {
+    return YES;
+  }
   return [cls.objcClass conformsToProtocol:protocol_];
 }
 
