@@ -339,7 +339,7 @@ public class AutoboxerTest extends GenerationTest {
         + "public int hashCode() { return ((Double) doubleValue).hashCode(); } }";
     String translation = translateSourceFile(source, "Test", "Test.m");
 
-    assertTranslation(translation, "[JavaLangDouble_valueOfWithDouble_(doubleValue_) hash]");
+    assertTranslation(translation, "[JavaLangDouble_valueOfWithDouble_(doubleValue_) hashCode]");
   }
 
   public void testAutoboxArrayIndex() throws IOException {

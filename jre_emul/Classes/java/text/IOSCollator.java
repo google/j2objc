@@ -85,7 +85,7 @@ public class IOSCollator extends Collator {
 
   @Override
   public native int hashCode() /*-[
-    return [(NSLocale *) self->nsLocale_ hash];
+    return (jint) [(NSLocale *) self->nsLocale_ hash];
   ]-*/;
 
   @Override
