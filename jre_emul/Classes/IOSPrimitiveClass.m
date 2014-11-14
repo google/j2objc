@@ -130,7 +130,7 @@ getConstructorWithClasses:(IOSClass *)firstClass, ... {
 }
 
 - (NSUInteger)hash {
-  return [name_ hash];
+  return [name_ hashCode];
 }
 
 - (NSString *)binaryName {

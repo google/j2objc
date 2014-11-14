@@ -35,6 +35,9 @@
 // Returns the IOSClass of the receiver.
 - (IOSClass *)getClass;
 
+// Returns a hash code value for the object.
+- (jint)hashCode;
+
 // Wakes up a waiting thread (if any).
 - (void)notify;
 
@@ -43,8 +46,8 @@
 
 // Waits until another thread wakes it, or times out.
 - (void)wait;
-- (void)waitWithLong:(long long)timeout;
-- (void)waitWithLong:(long long)timeout withInt:(int)nanos;
+- (void)waitWithLong:(jlong)timeout;
+- (void)waitWithLong:(jlong)timeout withInt:(int)nanos;
 
 @end
 

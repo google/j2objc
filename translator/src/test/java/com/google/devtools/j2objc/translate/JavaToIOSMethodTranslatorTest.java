@@ -92,7 +92,7 @@ public class JavaToIOSMethodTranslatorTest extends GenerationTest {
     List<Statement> stmts = translateStatements(source);
     assertEquals(1, stmts.size());
     String result = generateStatement(stmts.get(0));
-    assertEquals("jint test = ((jint) [@\"foo\" hash]);", result);
+    assertEquals("jint test = [@\"foo\" hashCode];", result);
   }
 
   public void testClassGetSuperclass() throws IOException {
