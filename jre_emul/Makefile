@@ -1020,7 +1020,7 @@ default: libs
 GEN_OBJC_DIR = $(TRANSLATED_SOURCE_DIR)
 TRANSLATE_JAVA_FULL = $(JAVA_TO_TRANSLATE)
 TRANSLATE_JAVA_RELATIVE = $(JAVA_TO_TRANSLATE)
-TRANSLATE_ARGS = --mem-debug -sourcepath $(JRE_SRC) -classpath $(EMULATION_JAR) \
+TRANSLATE_ARGS = -q --mem-debug -sourcepath $(JRE_SRC) -classpath $(EMULATION_JAR) \
   $(J2OBJC_DEBUGFLAGS) -encoding UTF-8 --extract-unsequenced --batch-translate-max=300 \
   -J-Xmx2G --final-methods-as-functions --hide-private-members
 TRANSLATE_USE_SYSTEM_BOOT_PATH = TRUE
@@ -1037,6 +1037,11 @@ include ../make/fat_lib.mk
 
 fat_lib_dependencies: translate
 
+translate_dependencies: log_translation_start
+
+log_translation_start:
+	@echo translating jre_emul sources
+
 libs: $(FAT_LIB_LIBRARY) $(MAIN_LIB)
 	@:
 
@@ -1048,27 +1053,29 @@ xcode_clean:
 xcode_analyze: analyze
 
 $(MAIN_LIB): $(MAIN_LIB_OBJS)
-	$(LIBTOOL) -static -o $@ $^
+	@echo $(LIBTOOL) -o $@
+	@$(LIBTOOL) -static -o $@ $^
 
 dist_includes: $(BUILD_DIR)/.jre_dist_includes
 
 $(BUILD_DIR)/.jre_dist_includes: $(TRANSLATE_HEADERS) $(SOURCE_HEADERS) | \
     $(DIST_INCLUDE_DIR)
-	(cd $(EMULATION_CLASS_DIR) && tar cf - $(SOURCE_HEADERS:$(EMULATION_CLASS_DIR)/%=%)) \
+	@echo copying header files
+	@(cd $(EMULATION_CLASS_DIR) && tar cf - $(SOURCE_HEADERS:$(EMULATION_CLASS_DIR)/%=%)) \
 	    | (cd $(DIST_INCLUDE_DIR); tar xfp -)
-	(cd $(GEN_OBJC_DIR) && tar cf - \
+	@(cd $(GEN_OBJC_DIR) && tar cf - \
 	    $(TRANSLATE_HEADERS:$(GEN_OBJC_DIR)/%=%)) \
 	    | (cd $(DIST_INCLUDE_DIR); tar xfp -)
-	touch $@
+	@touch $@
 
 $(ARCH_BUILD_DIR)/.includes: $(TRANSLATE_HEADERS) $(SOURCE_HEADERS) | \
     $(ARCH_BUILD_DIR) $(ARCH_INCLUDE_DIR)
-	(cd $(EMULATION_CLASS_DIR) && tar cf - $(SOURCE_HEADERS:$(EMULATION_CLASS_DIR)/%=%)) \
+	@(cd $(EMULATION_CLASS_DIR) && tar cf - $(SOURCE_HEADERS:$(EMULATION_CLASS_DIR)/%=%)) \
 	    | (cd $(ARCH_INCLUDE_DIR); tar xfp -)
-	(cd $(GEN_OBJC_DIR) && tar cf - \
+	@(cd $(GEN_OBJC_DIR) && tar cf - \
 	    $(TRANSLATE_HEADERS:$(GEN_OBJC_DIR)/%=%)) \
 	    | (cd $(ARCH_INCLUDE_DIR); tar xfp -)
-	touch $@
+	@touch $@
 
 %/j2objcc: $(J2OBJC_ROOT)/scripts/j2objcc.sh
 	@mkdir -p $(@D)
@@ -1081,7 +1088,8 @@ $(sort $(DIRS_TO_MAKE)):
 
 $(CLASS_DIR)/%.o: $(EMULATION_CLASS_DIR)/%.m | translate
 	@mkdir -p $(@D)
-	$(CLANG) $(OBJCFLAGS) -I$(EMULATION_CLASS_DIR) -I$(GEN_OBJC_DIR) $(SDK_FLAGS) -c $< -o $@
+	@echo clang -c $<
+	@$(CLANG) $(OBJCFLAGS) -I$(EMULATION_CLASS_DIR) -I$(GEN_OBJC_DIR) $(SDK_FLAGS) -c $< -o $@
 
 test: libs_dist $(DIST_DIR)/j2objcc
 	$(MAKE) -f tests.mk test
@@ -1113,12 +1121,13 @@ $(EMULATION_JAR): $(ALL_JAVA_SOURCES) $(STUB_JAVA_SOURCES) | $(BUILD_DIR)
 	@echo "building jre_emul.jar"
 	@rm -rf $(EMULATION_STAGE)
 	@mkdir $(EMULATION_STAGE)
-	@$(JAVAC) -bootclasspath $(STUBS_DIR) -classpath $(ANNOTATIONS_JAR) \
+	@bash ../scripts/javac_no_deprecated_warnings.sh $(JAVAC) -bootclasspath $(STUBS_DIR) \
+	    -classpath $(ANNOTATIONS_JAR) \
 	    -d $(EMULATION_STAGE) -encoding UTF-8 -source 1.6 -target 1.6 -nowarn $^
 	@jar cf $(EMULATION_JAR) -C $(EMULATION_STAGE) .
 
 $(JAVA_SOURCES_MANIFEST): $(ALL_JAVA_SOURCES) $(STUB_JAVA_SOURCES) | $(BUILD_DIR)
-	@echo "Building $$(basename $@)"
+	@echo "building $$(basename $@)"
 	@if [ -e $@ ]; then rm $@; fi
 	@for i in $^; do echo $(CURDIR)/$$i >> $@; done
 
@@ -1126,7 +1135,7 @@ java_sources_manifest: $(JAVA_SOURCES_MANIFEST)
 	@:
 
 $(OBJC_SOURCES_MANIFEST): $(ALL_JAVA_SOURCES) | $(BUILD_DIR)
-	@echo "Building $$(basename $@)"
+	@echo "building $$(basename $@)"
 	@if [ -e $@ ]; then rm $@; fi
 	@for i in $(JAVA_SOURCES); do \
 	  echo $(GEN_OBJC_DIR)/$${i%.java}.h >> $@; \

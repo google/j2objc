@@ -32,7 +32,7 @@ J2OBJCC = $(ARCH_BIN_DIR)/j2objcc
 
 TRANSLATE_JAVA_FULL = $(EXTRACTED_TESTS)
 TRANSLATE_JAVA_RELATIVE = $(TEST_SOURCES)
-TRANSLATE_ARGS = -cp $(DIST_LIB_DIR)/j2objc_guava.jar:$(DIST_LIB_DIR)/$(JUNIT_JAR)
+TRANSLATE_ARGS = -cp $(DIST_LIB_DIR)/j2objc_guava.jar:$(DIST_LIB_DIR)/$(JUNIT_JAR) -q
 include ../make/translate.mk
 
 test: $(TEST_BIN)

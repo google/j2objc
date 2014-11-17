@@ -34,7 +34,7 @@ BUILD_DIR_JARS = $(DISTRIBUTION_JARS:%=$(BUILD_DIR)/%) $(INTERNAL_JARS:%=$(BUILD
 $(BUILD_DIR_JARS): $(BUILD_DIR)/.maven_generate
 
 $(BUILD_DIR)/.maven_generate: | $(BUILD_DIR)
-	mvn generate-resources dependency:sources
+	mvn -q generate-resources dependency:sources
 	@touch $@
 
 $(BUILD_DIR) $(DIST_JAR_DIR):

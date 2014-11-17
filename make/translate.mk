@@ -16,6 +16,7 @@
 #   TRANSLATE_JAVA_FULL
 #   TRANSLATE_JAVA_RELATIVE
 # And optional variables:
+#   TRANSLATE_NAME
 #   TRANSLATE_ARGS
 #   TRANSLATE_OBJCPP
 #   TRANSLATE_DEPENDENCIES
@@ -72,7 +73,7 @@ $(TRANSLATE_TARGET): $(TRANSLATE_JAVA_FULL) $(TRANSLATE_NON_JAVA_PREREQ) | trans
 	@mkdir -p $(GEN_OBJC_DIR)
 	$(call long_list_to_file,$(TRANSLATE_LIST),$(TRANSLATE_MAKE_LIST))
 	@if [ -s $(TRANSLATE_LIST) ]; then \
-	  echo Translating sources.; \
+	  echo translating $(TRANSLATE_NAME) sources; \
 	  $(TRANSLATE_CMD) @$(TRANSLATE_LIST); \
 	fi
 	$(call long_list_to_file,$@,$(TRANSLATE_JAVA_PREREQ))

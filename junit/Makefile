@@ -178,7 +178,7 @@ OBJC_SOURCES_MANIFEST = $(BUILD_DIR)/objc_sources.mf
 TRANSLATE_JAVA_FULL = $(JAVA_SOURCES)
 TRANSLATE_JAVA_RELATIVE = $(EXTRACTED_JAVA:$(JAVA_SRC_DIR)/%=%) $(MODIFIED_SOURCES)
 TRANSLATE_ARGS = -sourcepath $(MODIFIED_JAVA_SRC_DIR):$(JAVA_SRC_DIR) \
-  --batch-translate-max=300 -J-Xmx2G
+  --batch-translate-max=300 -J-Xmx2G -q
 include ../make/translate.mk
 
 FAT_LIB_NAME = junit
