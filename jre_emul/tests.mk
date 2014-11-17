@@ -464,7 +464,8 @@ TEST_RESOURCES_SRCS = \
     serialization/org/apache/harmony/luni/tests/java/lang/EnumTest.golden.0.ser \
     serialization/org/apache/harmony/luni/tests/java/lang/EnumTest.golden.1.ser \
     serialization/org/apache/harmony/luni/tests/java/lang/EnumTest.golden.2.ser \
-    serialization/org/apache/harmony/luni/tests/java/lang/EnumTest.golden.3.ser
+    serialization/org/apache/harmony/luni/tests/java/lang/EnumTest.golden.3.ser \
+    serialization/org/apache/harmony/regex/tests/java/util/regex/PatternSyntaxExceptionTest.golden.ser
 ANDROID_TEST_RESOURCES_SRCS = \
     META-INF/services/libcore.java.util.ServiceLoaderTestInterface \
     MD5.check \
