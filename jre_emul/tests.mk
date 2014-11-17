@@ -464,8 +464,7 @@ TEST_RESOURCES_SRCS = \
     serialization/org/apache/harmony/luni/tests/java/lang/EnumTest.golden.0.ser \
     serialization/org/apache/harmony/luni/tests/java/lang/EnumTest.golden.1.ser \
     serialization/org/apache/harmony/luni/tests/java/lang/EnumTest.golden.2.ser \
-    serialization/org/apache/harmony/luni/tests/java/lang/EnumTest.golden.3.ser \
-    serialization/org/apache/harmony/regex/tests/java/util/regex/PatternSyntaxExceptionTest.golden.ser
+    serialization/org/apache/harmony/luni/tests/java/lang/EnumTest.golden.3.ser
 ANDROID_TEST_RESOURCES_SRCS = \
     META-INF/services/libcore.java.util.ServiceLoaderTestInterface \
     MD5.check \
@@ -580,7 +579,8 @@ run-each-test: link resources $(TEST_BIN)
 	done
 
 $(SUPPORT_LIB): $(SUPPORT_OBJS)
-	libtool -static -o $(SUPPORT_LIB) $(SUPPORT_OBJS)
+	@echo libtool -o $(SUPPORT_LIB)
+	@libtool -static -o $(SUPPORT_LIB) $(SUPPORT_OBJS)
 
 clean:
 	@rm -rf $(TESTS_DIR)
@@ -590,7 +590,8 @@ $(TESTS_DIR):
 
 $(TESTS_DIR)/%.o: $(TESTS_DIR)/%.m
 	@mkdir -p `dirname $@`
-	../dist/j2objcc -g -I$(TESTS_DIR) -c $? -o $@ \
+	@echo j2objcc -c $?
+	@../dist/j2objcc -g -I$(TESTS_DIR) -c $? -o $@ \
 	  -Wno-objc-redundant-literal-use -Wno-format \
 	  -Werror -Wno-parentheses $(GCOV_FLAGS)
 
@@ -606,5 +607,6 @@ $(ALL_TESTS_SOURCE:%.java=%.m): $(ALL_TESTS_SOURCE)
 	@$(TRANSLATE_CMD) $?
 
 $(ALL_TESTS_SOURCE:%.java=%.o): $(ALL_TESTS_SOURCE:%.java=%.m) $(TEST_OBJS:%.o=%.h)
-	../dist/j2objcc -g -I$(TESTS_DIR) \
+	@echo j2objcc -c $(ALL_TESTS_SOURCE:%.java=%.m)
+	@../dist/j2objcc -g -I$(TESTS_DIR) \
 	    -c $(ALL_TESTS_SOURCE:%.java=%.m) -o $(ALL_TESTS_SOURCE:%.java=%.o)
