@@ -1018,6 +1018,7 @@ default: libs
 	@: # suppress make's "nothing to be done" message
 
 GEN_OBJC_DIR = $(TRANSLATED_SOURCE_DIR)
+TRANSLATE_NAME = jre_emul
 TRANSLATE_JAVA_FULL = $(JAVA_TO_TRANSLATE)
 TRANSLATE_JAVA_RELATIVE = $(JAVA_TO_TRANSLATE)
 TRANSLATE_ARGS = -q --mem-debug -sourcepath $(JRE_SRC) -classpath $(EMULATION_JAR) \
@@ -1037,11 +1038,6 @@ include ../make/fat_lib.mk
 
 fat_lib_dependencies: translate
 
-translate_dependencies: log_translation_start
-
-log_translation_start:
-	@echo translating jre_emul sources
-
 libs: $(FAT_LIB_LIBRARY) $(MAIN_LIB)
 	@:
 
@@ -1060,7 +1056,7 @@ dist_includes: $(BUILD_DIR)/.jre_dist_includes
 
 $(BUILD_DIR)/.jre_dist_includes: $(TRANSLATE_HEADERS) $(SOURCE_HEADERS) | \
     $(DIST_INCLUDE_DIR)
-	@echo copying header files
+	@echo copying jre_emul header files
 	@(cd $(EMULATION_CLASS_DIR) && tar cf - $(SOURCE_HEADERS:$(EMULATION_CLASS_DIR)/%=%)) \
 	    | (cd $(DIST_INCLUDE_DIR); tar xfp -)
 	@(cd $(GEN_OBJC_DIR) && tar cf - \
