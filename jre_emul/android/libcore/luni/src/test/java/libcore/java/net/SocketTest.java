@@ -79,10 +79,12 @@ public class SocketTest extends junit.framework.TestCase {
 
     // http://code.google.com/p/android/issues/detail?id=3123
     // http://code.google.com/p/android/issues/detail?id=1933
+    /* Fails on machines with IPv6 connections, both on JRE and j2objc.
     public void test_socketLocalAndRemoteAddresses() throws Exception {
         checkSocketLocalAndRemoteAddresses(false);
         checkSocketLocalAndRemoteAddresses(true);
     }
+    */
 
     public void checkSocketLocalAndRemoteAddresses(boolean setOptions) throws Exception {
         InetAddress host = InetAddress.getLocalHost();
@@ -320,6 +322,7 @@ public class SocketTest extends junit.framework.TestCase {
         }
     }
 
+    /* Fails on machines with IPv6 connections, both on JRE and j2objc.
     public void testStateAfterClose() throws Exception {
         Socket s = new Socket();
         s.bind(new InetSocketAddress(Inet4Address.getLocalHost(), 0));
@@ -336,6 +339,7 @@ public class SocketTest extends junit.framework.TestCase {
         assertTrue(localAddressAfterClose.getAddress().isAnyLocalAddress());
         assertEquals(boundAddress.getPort(), localAddressAfterClose.getPort());
     }
+    */
 
     static class MockServer {
         private ExecutorService executor;
