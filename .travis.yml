@@ -1,0 +1,5 @@
+# j2objc is a mixed-language project, but setting objective-c forces the OS to OSX.
+language: objective-c
+compiler: clang
+os: osx
+script: make dist && make test
