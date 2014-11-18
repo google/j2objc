@@ -51,7 +51,7 @@ public class InnerClassExtractorTest extends GenerationTest {
     assertTranslation(translation, "- (instancetype)initWithA:(A *)outer$;");
     translation = getTranslatedFile("A.m");
     assertTranslation(translation, "A *this$0_;");
-    assertTranslation(translation, "[nil_chk(this$0_->o_) hashCode]");
+    assertTranslation(translation, "[nil_chk(this$0_->o_) hash]");
     assertTranslation(translation, "A_B_set_this$0_(self, outer$);");
   }
 
@@ -84,7 +84,7 @@ public class InnerClassExtractorTest extends GenerationTest {
     translation = getTranslatedFile("A.m");
     assertTranslation(translation, "A *this$0_;");
     assertTranslation(translation, "A_B *this$0_;");
-    assertTranslation(translation, "[nil_chk(this$0_->this$0_->o_) hashCode]");
+    assertTranslation(translation, "[nil_chk(this$0_->this$0_->o_) hash]");
   }
 
   public void testWeakInnerInnerClass() throws IOException {
@@ -94,7 +94,7 @@ public class InnerClassExtractorTest extends GenerationTest {
     String translation = translateSourceFile(source, "A", "A.m");
     assertTranslation(translation, "A *this$0_;");
     assertTranslation(translation, "__weak A_B *this$0_;");
-    assertTranslation(translation, "[nil_chk(this$0_->this$0_->o_) hashCode]");
+    assertTranslation(translation, "[nil_chk(this$0_->this$0_->o_) hash]");
   }
 
   public void testInnerMethodAnonymousClass() throws IOException {
@@ -119,7 +119,7 @@ public class InnerClassExtractorTest extends GenerationTest {
     assertTranslation(translation, "A_B *this$1_;");
     assertTranslation(translation, "jint val$j_;");
     assertTranslation(translation, "[super initWithA:outer$->this$0_]");
-    assertTranslation(translation, "[nil_chk(this$1_->this$0_->o_) hashCode]");
+    assertTranslation(translation, "[nil_chk(this$1_->this$0_->o_) hash]");
   }
 
   /**

@@ -223,7 +223,7 @@ public class String implements CharSequence, Comparable<String>, Serializable {
   public boolean matches(String s) {
     return false;
   }
-
+  
   public int offsetByCodePoints(int index, int codePointOffset) {
     return 0;
   }
@@ -321,7 +321,10 @@ public class String implements CharSequence, Comparable<String>, Serializable {
     }
   }
 
-  public int hashCode() {
-    return 0;
-  }
+  /* Unimplemented/mapped methods.
+  String(byte[] bytes, int i, int j, java.nio.charset.Charset charset)
+  String(byte[] bytes, java.nio.charset.Charset charset)
+  byte[] getBytes(java.nio.charset.Charset charset)
+  int offsetByCodePoints(int i, int j)
+  */
 }
