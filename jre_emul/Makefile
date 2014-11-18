@@ -1142,3 +1142,4 @@ objc_sources_manifest: $(OBJC_SOURCES_MANIFEST)
 
 find_cycles: cycle_finder_dist $(JAVA_SOURCES_MANIFEST)
 	$(DIST_DIR)/cycle_finder -w cycle_whitelist.txt `cat $(JAVA_SOURCES_MANIFEST)`
+
