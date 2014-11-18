@@ -113,7 +113,6 @@ TEST_SOURCES = \
     ReentrantReadWriteLockTest.java \
     SerializationTest.java \
     ScheduledExecutorTest.java \
-    StringHashTest.java \
     SynchronousQueueTest.java \
     ThreadPoolExecutorTest.java \
     TimeUnitTest.java \

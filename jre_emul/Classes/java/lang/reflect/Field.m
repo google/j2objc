@@ -350,7 +350,7 @@ static void SetWithRawValue(
 }
 
 - (NSUInteger)hash {
-  return [[declaringClass_ getName] hashCode] ^ [[self propertyName] hashCode];
+  return [[declaringClass_ getName] hash] ^ [[self propertyName] hash];
 }
 
 #if ! __has_feature(objc_arc)

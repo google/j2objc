@@ -41,6 +41,7 @@
 # java.lang.Object
 java.lang.Object.equals(Ljava/lang/Object;)Z = NSObject isEqual:(id)anObject
 java.lang.Object.getClass()Ljava/lang/Class; = NSObject getClass
+java.lang.Object.hashCode()I = NSObject hash
 java.lang.Object.toString()Ljava/lang/String; = NSObject description
 
 # java.lang.Class
@@ -190,6 +191,7 @@ java.lang.String.getChars(II[CI)V = \
             sourceEnd:(int)sourceEnd \
           destination:(IOSCharArray *)dest \
      destinationBegin:(int)dstBegin
+java.lang.String.hashCode()I = NSObject hash
 java.lang.String.indexOf(I)I = NSString indexOf:(int)ch
 java.lang.String.indexOf(II)I = NSString indexOf:(int)ch fromIndex:(int)index
 java.lang.String.indexOf(Ljava/lang/String;)I = NSString indexOfString:(int)s

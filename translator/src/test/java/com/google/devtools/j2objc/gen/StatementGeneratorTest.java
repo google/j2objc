@@ -319,7 +319,7 @@ public class StatementGeneratorTest extends GenerationTest {
         + "  String b = \"foo\" + a.hashCode() + \"bar\" + a.length() + \"baz\"; } }",
         "Test", "Test.m");
     assertTranslation(translation,
-        "JreStrcat(\"$I$I$\", @\"foo\", [a hashCode], @\"bar\", ((jint) [a length]),"
+        "JreStrcat(\"$I$I$\", @\"foo\", ((jint) [a hash]), @\"bar\", ((jint) [a length]),"
           + " @\"baz\")");
   }
 
@@ -648,8 +648,8 @@ public class StatementGeneratorTest extends GenerationTest {
     List<Statement> stmts = translateStatements(source);
     assertEquals(1, stmts.size());
     String result = generateStatement(stmts.get(0));
-    assertEquals("jint i = [((JavaLangThrowable *) "
-        + "[[[JavaLangThrowable alloc] init] autorelease]) hashCode];", result);
+    assertEquals("jint i = ((jint) [((JavaLangThrowable *) "
+        + "[[[JavaLangThrowable alloc] init] autorelease]) hash]);", result);
   }
 
   public void testInnerClassCreation() throws IOException {
@@ -1663,7 +1663,7 @@ public class StatementGeneratorTest extends GenerationTest {
     // Verify referenced return value is cast.
     assertTranslation(translation, "return -2 < ((jint) [@\"1\" length]);");
     // Verify unused return value isn't.
-    assertTranslation(translation, "[nil_chk(o) hashCode];");
+    assertTranslation(translation, "[nil_chk(o) hash];");
   }
 
   // Verify that casting from a floating point primitive to an integral primitive

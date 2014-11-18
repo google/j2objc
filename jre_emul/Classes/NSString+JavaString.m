@@ -930,16 +930,16 @@ NSString *NSString_formatWithJavaUtilLocale_withNSString_withNSObjectArray_(
   return [self isEqualToString:[sb description]];
 }
 
-- (jint)hashCode {
+- (NSUInteger)hash {
   static const char *hashKey = "__JAVA_STRING_HASH_CODE_KEY__";
   id cachedHash = objc_getAssociatedObject(self, hashKey);
   if (cachedHash) {
     return [(JavaLangInteger *) cachedHash intValue];
   }
-  jint len = (jint)[self length];
-  jint hash = 0;
+  int len = (int)[self length];
+  int hash = 0;
   if (len > 0) {
-    jchar *chars = malloc(len * sizeof(jchar));
+    unichar *chars = malloc(len * sizeof(unichar));
     [self getCharacters:chars range:NSMakeRange(0, len)];
     for (int i = 0; i < len; i++) {
       hash = 31 * hash + (int)chars[i];
@@ -980,7 +980,6 @@ NSString *NSString_formatWithJavaUtilLocale_withNSString_withNSObjectArray_(
     { "getBytes", NULL, "[B", 0x1, NULL },
     { "getBytesWithCharset:", NULL, "[B", 0x1, NULL },
     { "getBytesWithCharsetName:", NULL, "[B", 0x1, "Ljava/io/UnsupportedEncodingException;" },
-    { "hashCode", NULL, "I", 0x1, NULL },
     { "intern", NULL, "Ljava/lang/String;", 0x1, NULL },
     { "isEmpty", NULL, "Z", 0x1, NULL },
     { "matches:", NULL, "Z", 0x1, NULL },
@@ -1009,7 +1008,7 @@ NSString *NSString_formatWithJavaUtilLocale_withNSString_withNSObjectArray_(
     { "serialPersistentFields_", NULL, 0x1a, "[Ljava/io/ObjectStreamField;", &NSString_serialPersistentFields_ },
     { "serialVersionUID_", NULL, 0x1a, "J", NULL, .constantValue.asLong = JavaLangString_serialVersionUID },
   };
-  static J2ObjcClassInfo _JavaLangString = { "String", "java.lang", NULL, 0x1, 47, methods, 3, fields, 0, NULL};
+  static J2ObjcClassInfo _JavaLangString = { "String", "java.lang", NULL, 0x1, 46, methods, 3, fields, 0, NULL};
   return &_JavaLangString;
 }
 

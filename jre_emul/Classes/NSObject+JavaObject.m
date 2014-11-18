@@ -56,10 +56,6 @@
   return [IOSClass classWithClass:[self class]];
 }
 
-- (jint)hashCode {
-  return (jint)[self hash];
-}
-
 - (int)compareToWithId:(id)other {
 #if __has_feature(objc_arc)
   @throw [[JavaLangClassCastException alloc] init];
@@ -163,7 +159,6 @@ static void doWait(id obj, long long timeout) {
     { "isEqual:", "equals", "Z", 0x1, NULL },
     { "clone", NULL, "LJavaLangObject", 0x4, "JavaLangCloneNotSupportedException" },
     { "dealloc", "finalize", "V", 0x4, "JavaLangThrowable" },
-    { "hashCode", NULL, "I", 0x1, NULL },
     { "notify", NULL, "V", 0x11, NULL },
     { "notifyAll", NULL, "V", 0x11, NULL },
     { "waitWithLong:", "wait", "V", 0x11, "JavaLangInterruptedException" },
@@ -173,7 +168,7 @@ static void doWait(id obj, long long timeout) {
     { "hash", "hashCode", "I", 0x1, NULL },
   };
   static J2ObjcClassInfo _JavaLangObject = {
-    "Object", "java.lang", NULL, 0x1, 10, methods, 0, NULL, 0, NULL
+    "Object", "java.lang", NULL, 0x1, 9, methods, 0, NULL, 0, NULL
   };
   return &_JavaLangObject;
 }
