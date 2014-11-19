@@ -31,6 +31,7 @@ public class ObjectiveCImplementationGeneratorTest extends GenerationTest {
 
   @Override
   protected void tearDown() throws Exception {
+    Options.clearPackagePrefixes();
     Options.resetDeprecatedDeclarations();
     Options.resetDocComments();
     Options.resetMemoryManagementOption();
@@ -732,6 +733,22 @@ public class ObjectiveCImplementationGeneratorTest extends GenerationTest {
     translation = getTranslatedFile("foo/bar/mumble/package-info.m");
     assertNotInTranslation(translation, "@implementation FooBarMumblepackage_info");
     assertNotInTranslation(translation, "+ (IOSObjectArray *)__annotations");
+  }
+
+  public void testPackageInfoPrefixAnnotation() throws IOException {
+    addSourceFile(
+        "@ObjectiveCName(\"FBM\")\n"
+        + "package foo.bar.mumble;\n"
+        + "import com.google.j2objc.annotations.ObjectiveCName;",
+        "foo/bar/mumble/package-info.java");
+    String translation = translateSourceFile("package foo.bar.mumble;\n"
+        + "public class Test {}",
+        "foo.bar.mumble.Test", "foo/bar/mumble/Test.h");
+    assertTranslation(translation, "@interface FBMTest");
+    assertTranslation(translation, "typedef FBMTest FooBarMumbleTest;");
+    translation = getTranslatedFile("foo/bar/mumble/Test.m");
+    assertTranslation(translation, "@implementation FBMTest");
+    assertNotInTranslation(translation, "FooBarMumbleTest");
   }
 
   public void testInitializeNotInClassExtension() throws IOException {
