@@ -20,12 +20,12 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * Annotation that specifies what the Objective-C class, protocol, method or
- * constructor declaration should be when translated.
+ * Annotation that specifies what the Objective-C class, protocol, method,
+ * constructor or package declaration should be when translated.
  *
  * @author Tom Ball
  */
-@Target({ ElementType.TYPE, ElementType.METHOD, ElementType.CONSTRUCTOR })
+@Target({ ElementType.TYPE, ElementType.METHOD, ElementType.CONSTRUCTOR, ElementType.PACKAGE })
 @Retention(RetentionPolicy.CLASS)
 public @interface ObjectiveCName {
 

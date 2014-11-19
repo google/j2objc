@@ -120,15 +120,18 @@ public abstract class GenerationTest extends TestCase {
   /**
    * Translates Java source, as contained in a source file.
    *
-   * @param name the name of the public type being declared
+   * @param typeName the name of the public type being declared
    * @param source the source code
    * @return the translated compilation unit
    */
-  protected CompilationUnit translateType(String name, String source) {
-    org.eclipse.jdt.core.dom.CompilationUnit unit = compileType(name, source);
+  protected CompilationUnit translateType(String typeName, String source) {
+    String typePath = typeName.replace('.', '/');
+    org.eclipse.jdt.core.dom.CompilationUnit unit = compileType(typePath, source);
     NameTable.initialize();
     Types.initialize(unit);
-    CompilationUnit newUnit = TreeConverter.convertCompilationUnit(unit, name + ".java", source);
+    String fullSourcePath = Options.useSourceDirectories() ? "" : tempDir.getPath() + '/';
+    fullSourcePath += typePath + ".java";
+    CompilationUnit newUnit = TreeConverter.convertCompilationUnit(unit, fullSourcePath, source);
     TranslationProcessor.applyMutations(newUnit, deadCodeMap, TimeTracker.noop());
     return newUnit;
   }

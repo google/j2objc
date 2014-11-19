@@ -19,6 +19,7 @@ package com.google.devtools.j2objc.util;
 import com.google.common.base.Joiner;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
+import com.google.common.io.Files;
 import com.google.devtools.j2objc.Options;
 import com.google.devtools.j2objc.ast.CompilationUnit;
 import com.google.devtools.j2objc.ast.PackageDeclaration;
@@ -38,6 +39,9 @@ import org.eclipse.jdt.core.dom.ITypeBinding;
 import org.eclipse.jdt.core.dom.IVariableBinding;
 import org.eclipse.jdt.core.dom.VariableDeclarationFragment;
 
+import java.io.File;
+import java.io.IOException;
+import java.nio.charset.Charset;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -561,7 +565,7 @@ public class NameTable {
 
     // Use camel-cased package+class name.
     IPackageBinding pkg = binding.getPackage();
-    String pkgName = pkg != null ? getPrefix(pkg.getName()) : "";
+    String pkgName = pkg != null ? getPrefix(pkg, null) : "";
     return pkgName + binding.getName() + suffix;
   }
 
@@ -586,7 +590,7 @@ public class NameTable {
     if (pkg.isDefaultPackage()) {
       return unit.getMainTypeName();
     } else {
-      return getPrefix(pkg.getName().getFullyQualifiedName()) + unit.getMainTypeName();
+      return getPrefix(pkg.getPackageBinding(), unit) + unit.getMainTypeName();
     }
   }
 
@@ -621,15 +625,57 @@ public class NameTable {
    * for the package on the command-line, then that prefix is returned.
    * Otherwise, a camel-cased prefix is created from the package name.
    */
-  public static String getPrefix(String packageName) {
+  public static String getPrefix(IPackageBinding packageBinding, CompilationUnit unit) {
+    String packageName = packageBinding.getName();
     if (hasPrefix(packageName)) {
       return instance.prefixMap.get(packageName);
     }
+
+    for (IAnnotationBinding annotation : packageBinding.getAnnotations()) {
+      if (annotation.getName().endsWith("ObjectiveCName")) {
+        String prefix = (String) BindingUtil.getAnnotationValue(annotation, "value");
+        instance.prefixMap.put(packageName, prefix);
+        // Don't return, as there may be a prefix annotation that overrides this value.
+      }
+    }
+
+    // Check if there is a package-info.java source file with a prefix annotation.
+    // TODO(tball): also check sourcepath directories.
+    try {
+      if (unit != null) {
+        File f = new File(unit.getSourceFileFullPath());
+        File pkgInfoFile = new File(f.getParent(), "package-info.java");
+        if (pkgInfoFile.exists()) {
+          String pkgInfo = Files.toString(pkgInfoFile, Charset.forName("UTF-8"));
+          int i = pkgInfo.indexOf("@ObjectiveCName");
+          if (i > -1) {
+            // Extract annotation's value string.
+            i = pkgInfo.indexOf('"', i + 1);
+            if (i > -1) {
+              int j = pkgInfo.indexOf('"', i + 1);
+              if (j > -1) {
+                String prefix = pkgInfo.substring(i + 1, j);
+                instance.prefixMap.put(packageName, prefix);
+                return prefix;
+              }
+            }
+          }
+        }
+      }
+    } catch (IOException e) {
+      // Continue, as there's no package-info to check.
+    }
+
     StringBuilder sb = new StringBuilder();
     for (String part : packageName.split("\\.")) {
       sb.append(capitalize(part));
     }
-    return sb.toString();
+    String prefix = sb.toString();
+    if (unit != null) {
+      // Check for package-info completed, so cache new prefix.
+      instance.prefixMap.put(packageName, prefix);
+    }
+    return prefix;
   }
 
   public static boolean hasPrefix(String packageName) {
