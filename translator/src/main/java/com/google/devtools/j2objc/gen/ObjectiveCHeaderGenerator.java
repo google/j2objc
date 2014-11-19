@@ -160,11 +160,13 @@ public class ObjectiveCHeaderGenerator extends ObjectiveCSourceFileGenerator {
     String pkg = binding.getPackage().getName();
     if (NameTable.hasPrefix(pkg) && binding.isTopLevel()) {
       String unprefixedName = NameTable.camelCaseQualifiedName(binding.getQualifiedName());
-      if (binding.isInterface()) {
-        // Protocols can't be used in typedefs.
-        printf("\n#define %s %s\n", unprefixedName, typeName);
-      } else {
-        printf("\ntypedef %s %s;\n", typeName, unprefixedName);
+      if (!unprefixedName.equals(typeName)) {
+        if (binding.isInterface()) {
+          // Protocols can't be used in typedefs.
+          printf("\n#define %s %s\n", unprefixedName, typeName);
+        } else {
+          printf("\ntypedef %s %s;\n", typeName, unprefixedName);
+        }
       }
     }
     printExternalNativeMethodCategory(node, typeName);
