@@ -156,16 +156,13 @@ define arch_lib_rule
 -include $(FAT_LIB_OBJS:%.o=$(BUILD_DIR)/objs-$(1)/%.d)
 -include $(BUILD_DIR)/objs-$(1)/$(J2OBJC_PRECOMPILED_HEADER).d
 
-$(BUILD_DIR)/$(1)-lib$(FAT_LIB_NAME).a: log_fat_lib_start_$(1) \
+$(BUILD_DIR)/$(1)-lib$(FAT_LIB_NAME).a: \
     $(J2OBJC_PRECOMPILED_HEADER:%=$(BUILD_DIR)/objs-$(1)/%.pch) \
     $$(FAT_LIB_OBJS:%=$(BUILD_DIR)/objs-$(1)/%)
 	@echo "Building $$(notdir $$@)"
 	$$(call long_list_to_file,$(BUILD_DIR)/objs-$(1)/fat_lib_objs_list,\
 	  $$(FAT_LIB_OBJS:%=$(BUILD_DIR)/objs-$(1)/%))
 	@$$(call fat_lib_filtered_libtool,$$@,$(BUILD_DIR)/objs-$(1)/fat_lib_objs_list)
-
-log_fat_lib_start_$(1):
-	@echo compiling files for $(1) arch, compiler settings: $(FAT_LIB_COMPILE)
 endef
 
 $(foreach arch,$(J2OBJC_ARCHS),$(eval $(call arch_lib_rule,$(arch))))
