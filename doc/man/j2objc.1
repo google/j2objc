@@ -72,18 +72,8 @@ Translate Javadoc comments into Xcode-compatible comments.
 .BI \-\-extract\-unsequenced
 Rewrite expressions that would produce unsequenced modification errors.
 .TP
-.BI \-\-final\-methods\-as\-functions
-Call final methods as C functions, when possible.
-.TP
-.BI \-\-no\-class\-methods
-Don't emit class methods for static Java methods.
-(static methods are converted to functions)
-.TP
 .BI \-\-generate\-deprecated
 Generate deprecated attributes for deprecated methods, classes, and interfaces.
-.TP
-.BI \-\-generate\-native\-stubs
-Generate method bodies for native methods that do not have OCNI native code comments.
 .TP
 .BI \-\-ignore\-missing\-imports
 Continue translation if an imported class is not found on the class or source paths.
@@ -93,6 +83,16 @@ Add a method mapping file.
 .TP
 .BI \-\-mem\-debug
 Generate code to display memory allocation graphs.
+.TP
+.BI \-\-no\-class\-methods
+Don't emit class methods for static Java methods.
+(static methods are converted to functions)
+.TP
+.BI \-\-no\-final\-methods\-as\-functions
+Disable generating functions for final methods.
+.TP
+.BI \-\-no\-hide\-private\-members
+Includes private fields and methods in header file.
 .TP
 .BI \-\-no\-package\-directories
 Generate output files to specified directory, without creating package sub-directories
