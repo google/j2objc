@@ -55,11 +55,7 @@ import java.util.List;
  * @author Tom Ball
  */
 public class DestructorGenerator extends TreeVisitor {
-  private final String destructorName;
-
-  public DestructorGenerator() {
-    destructorName = Options.useGC() ? NameTable.FINALIZE_METHOD : NameTable.DEALLOC_METHOD;
-  }
+  private final String destructorName = NameTable.DEALLOC_METHOD;
 
   @Override
   public boolean visit(TypeDeclaration node) {

@@ -188,11 +188,11 @@ public class AnonymousClassConverterTest extends GenerationTest {
     // Test.foo(): since the bar_ parameter shadows a field, the parameter
     // gets renamed to bar_Arg.
     assertTranslation(translation, "- (void)fooWithId:(id)bar_Arg {");
-    assertTranslation(translation, "[self logWithInt:2 withId:bar_Arg];");
+    assertTranslation(translation, "Test_logWithInt_withId_(self, 2, bar_Arg);");
 
     // Test_$: since bar_ is an unshadowed field, the parameter name is
     // unchanged.
-    assertTranslation(translation, "[this$0_ logWithInt:1 withId:val$bar__];");
+    assertTranslation(translation, "Test_logWithInt_withId_(this$0_, 1, val$bar__);");
     assertTranslation(translation, "Test_$1_set_val$bar__(self, capture$0);");
   }
 

@@ -70,10 +70,9 @@ public class Options {
   private static boolean stripReflection = false;
   private static boolean extractUnsequencedModifications = false;
   private static boolean docCommentsEnabled = false;
-  private static boolean finalMethodsAsFunctions = false;
+  private static boolean finalMethodsAsFunctions = true;
   private static boolean removeClassMethods = false;
-  // TODO(tball): change default to true once clients had a chance to update their builds.
-  private static boolean hidePrivateMembers = false;
+  private static boolean hidePrivateMembers = true;
   private static int batchTranslateMaximum = 0;
 
   private static File proGuardUsageFile = null;
@@ -114,7 +113,7 @@ public class Options {
   /**
    * Types of memory management to be used by translated code.
    */
-  public static enum MemoryManagementOption { REFERENCE_COUNTING, GC, ARC }
+  public static enum MemoryManagementOption { REFERENCE_COUNTING, ARC }
   private static final MemoryManagementOption DEFAULT_MEMORY_MANAGEMENT_OPTION =
       MemoryManagementOption.REFERENCE_COUNTING;
 
@@ -228,8 +227,6 @@ public class Options {
         outputStyle = OutputStyleOption.NONE;
       } else if (arg.equals("--preserve-full-paths")) {
         outputStyle = OutputStyleOption.SOURCE;
-      } else if (arg.equals("-use-gc")) {
-        checkMemoryManagementOption(MemoryManagementOption.GC);
       } else if (arg.equals("-use-arc")) {
         checkMemoryManagementOption(MemoryManagementOption.ARC);
       } else if (arg.equals("-g")) {
@@ -278,10 +275,14 @@ public class Options {
       } else if (arg.startsWith(BATCH_PROCESSING_MAX_FLAG)) {
         batchTranslateMaximum =
             Integer.parseInt(arg.substring(BATCH_PROCESSING_MAX_FLAG.length()));
+      // TODO(tball): remove obsolete flag once projects stop using it.
       } else if (arg.equals("--final-methods-as-functions")) {
         finalMethodsAsFunctions = true;
+      } else if (arg.equals("--no-final-methods-functions")) {
+        finalMethodsAsFunctions = false;
       } else if (arg.equals("--no-class-methods")) {
         removeClassMethods = true;
+      // TODO(tball): remove obsolete flag once projects stop using it.
       } else if (arg.equals("--hide-private-members")) {
         hidePrivateMembers = true;
       } else if (arg.equals("--no-hide-private-members")) {
@@ -470,10 +471,6 @@ public class Options {
 
   public static boolean useReferenceCounting() {
     return memoryManagementOption == MemoryManagementOption.REFERENCE_COUNTING;
-  }
-
-  public static boolean useGC() {
-    return memoryManagementOption == MemoryManagementOption.GC;
   }
 
   public static boolean useARC() {

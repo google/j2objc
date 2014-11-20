@@ -18,7 +18,6 @@ package com.google.devtools.j2objc.translate;
 
 import com.google.devtools.j2objc.GenerationTest;
 import com.google.devtools.j2objc.Options;
-import com.google.devtools.j2objc.Options.MemoryManagementOption;
 
 import java.io.IOException;
 
@@ -45,19 +44,6 @@ public class DestructorGeneratorTest extends GenerationTest {
     assertTranslation(translation, "- (void)dealloc ");
     assertTranslation(translation, "[super dealloc];");
     assertFalse(translation.contains("- (void)finalize "));
-  }
-
-  public void testFinalizeMethodRenamedWithGC() throws IOException {
-    Options.setMemoryManagementOption(MemoryManagementOption.GC);
-    String translation = translateSourceFile(
-        "public class Test { public void finalize() { " +
-        "  try { super.finalize(); } catch (Throwable t) {} }}", "Test", "Test.h");
-    assertTranslation(translation, "- (void)finalize;");
-    assertFalse(translation.contains("dealloc"));
-    translation = getTranslatedFile("Test.m");
-    assertTranslation(translation, "- (void)finalize ");
-    assertTranslation(translation, "[super finalize];");
-    assertFalse(translation.contains("dealloc"));
   }
 
   public void testFinalizeMethodRenamedWithReleasableFields() throws IOException {
