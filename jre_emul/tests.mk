@@ -75,7 +75,7 @@ SUPPORT_SOURCES = \
     tests/util/CallVerificationStack.java \
     tests/util/SerializationTester.java
 
-TEST_SOURCES = \
+TEST_SOURCES := \
     AbstractExecutorServiceTest.java \
     AbstractQueuedSynchronizerTest.java \
     AbstractQueueTest.java \
@@ -219,8 +219,6 @@ TEST_SOURCES = \
     libcore/java/lang/reflect/FieldTest.java \
     libcore/java/lang/annotation/AnnotationTypeMismatchExceptionTest.java \
     libcore/java/net/DatagramSocketTest.java \
-    libcore/java/net/InetAddressTest.java \
-    libcore/java/net/InetSocketAddressTest.java \
     libcore/java/net/NetworkInterfaceTest.java \
     libcore/java/net/OldAuthenticatorTest.java \
     libcore/java/net/OldPasswordAuthenticationTest.java \
@@ -418,6 +416,13 @@ TEST_SOURCES = \
     tests/targets/security/MessageDigestTestSHA256.java \
     tests/targets/security/MessageDigestTestSHA384.java \
     tests/targets/security/MessageDigestTestSHA512.java \
+
+# These tests fail when run on Travis-CI continuous build, probably due to VM sandbox restrictions.
+ifndef TRAVIS
+TEST_SOURCES := $(TEST_SOURCES) \
+    libcore/java/net/InetAddressTest.java \
+    libcore/java/net/InetSocketAddressTest.java
+endif
 
 SUITE_SOURCES = \
     ConcurrencyTests.java \
