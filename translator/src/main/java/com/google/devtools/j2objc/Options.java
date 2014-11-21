@@ -72,7 +72,8 @@ public class Options {
   private static boolean docCommentsEnabled = false;
   private static boolean finalMethodsAsFunctions = true;
   private static boolean removeClassMethods = false;
-  private static boolean hidePrivateMembers = true;
+  // TODO(tball): set true again when native code accessing private Java methods is fixed.
+  private static boolean hidePrivateMembers = false;
   private static int batchTranslateMaximum = 0;
 
   private static File proGuardUsageFile = null;
