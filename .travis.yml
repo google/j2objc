@@ -2,4 +2,14 @@
 language: objective-c
 compiler: clang
 os: osx
-script: make dist && make test
+
+# Travis-CI kills the build after 50 minutes, so break it up into
+# smaller commands.
+script: make -j4 dist
+after_script:
+  - make test_translator
+  - make test_cycle_finder
+  - make test_jre_cycles
+  - make test_guava_cycles
+  - cd jre_emul && make -j4 -f tests.mk link resources
+  - make test_jre_emul
