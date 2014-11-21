@@ -417,22 +417,23 @@ TEST_SOURCES := \
     tests/targets/security/MessageDigestTestSHA384.java \
     tests/targets/security/MessageDigestTestSHA512.java \
 
-# These tests fail when run on Travis-CI continuous build, probably due to VM sandbox restrictions.
-# The java.net SmallTests is also skipped, since it refers to these classes; SmallTests isn't
-# run in a continuous build, just from the command-line.
-ifndef TRAVIS
-TEST_SOURCES := $(TEST_SOURCES) \
-    libcore/java/net/InetAddressTest.java \
-    libcore/java/net/InetSocketAddressTest.java \
-    libcore/java/net/SmallTests.java
-endif
-
 SUITE_SOURCES = \
     ConcurrencyTests.java \
     libcore/java/io/SmallTests.java \
     libcore/java/util/zip/SmallTests.java \
     org/apache/harmony/logging/tests/java/util/logging/AllTests.java \
     org/json/SmallTests.java \
+
+# These tests fail when run on Travis-CI continuous build, probably due to VM sandbox restrictions.
+# The java.net SmallTests is also skipped, since it refers to these classes; SmallTests isn't
+# run in a continuous build, just from the command-line.
+ifndef TRAVIS
+TEST_SOURCES := $(TEST_SOURCES) \
+    libcore/java/net/InetAddressTest.java \
+    libcore/java/net/InetSocketAddressTest.java
+SUITE_SOURCES := $(SUITE_SOURCES) \
+    libcore/java/net/SmallTests.java
+endif
 
 TESTS_TO_SKIP = \
     ExchangerTest.java
