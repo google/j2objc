@@ -192,7 +192,7 @@ public final class Math {
      * @return the arc tangent of {@code y/x}.
      */
     public static native double atan2(double y, double x) /*-[
-      return atan2(x, y);
+      return atan2(y, x);
     ]-*/;
 
     /**
