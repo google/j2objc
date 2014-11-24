@@ -110,9 +110,9 @@ public class MathTest extends junit.framework.TestCase {
      */
     public void test_atan2DD() {
         // Test for method double java.lang.Math.atan2(double, double)
-        double answer = Math.atan(Math.tan(1.0));
-        assertTrue("Returned incorrect arc tangent: " + answer, answer <= 1.0
-                && answer >= 9.9999999999999983E-1);
+        double correct = Math.atan(0.5);
+        double answer = Math.atan2(1,  2);
+        assertEquals("Should equal atan(0.5)", correct, answer, 1.0E-16);
     }
 
     /**
