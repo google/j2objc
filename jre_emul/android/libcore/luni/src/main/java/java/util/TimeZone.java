@@ -443,8 +443,8 @@ public abstract class TimeZone implements Serializable, Cloneable {
 
         // Fetch each date's components.
         NSCalendar *calendar = [NSCalendar currentCalendar];
-        NSUInteger units = NSMonthCalendarUnit | NSDayCalendarUnit |
-            NSHourCalendarUnit | NSMinuteCalendarUnit | NSSecondCalendarUnit;
+        NSUInteger units = NSCalendarUnitMonth | NSCalendarUnitDay |
+            NSCalendarUnitHour | NSCalendarUnitMinute | NSCalendarUnitSecond;
         NSDateComponents *daylight = [calendar components:units
                                                  fromDate:toDaylightSaving];
         NSDateComponents *standard = [calendar components:units
