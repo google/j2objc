@@ -89,6 +89,9 @@
   - (void)get##U_NAME##s:(C_TYPE *)buffer length:(NSUInteger)length { \
     IOSArray_checkIndex(size_, (jint)length - 1); \
     memcpy(buffer, buffer_, length * sizeof(C_TYPE)); \
+  } \
+  - (void *)buffer { \
+    return buffer_; \
   }
 
 /*!

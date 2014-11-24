@@ -320,4 +320,8 @@ void CopyWithMemmove(id __strong *buffer, NSUInteger src, NSUInteger dest, NSUIn
   return result;
 }
 
+- (void *)buffer {
+  return buffer_;
+}
+
 @end

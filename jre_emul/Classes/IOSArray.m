@@ -175,4 +175,8 @@ void IOSArray_throwOutOfBoundsWithMsg(jint size, jint index) {
       initWithNSString:@"abstract method not overridden"] autorelease];
 }
 
+- (void *)buffer {
+  return nil;
+}
+
 @end
