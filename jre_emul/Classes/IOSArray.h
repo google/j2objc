@@ -68,6 +68,8 @@
         dstOffset:(jint)dstOffset
            length:(jint)length;
 
+- (void *)buffer;
+
 @end
 
 extern void IOSArray_throwOutOfBounds();
