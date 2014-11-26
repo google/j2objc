@@ -21,6 +21,7 @@ SUFFIXES:
 CWD = .
 SOURCE_DIR = src/main
 JAVA_SOURCE_DIR = $(SOURCE_DIR)/java
+TEST_SOURCE_DIR = src/test
 J2OBJC_ROOT = ..
 
 include ../make/common.mk
@@ -210,6 +211,7 @@ JAVA_SOURCES = \
 	util/BindingUtil.java \
 	util/DeadCodeMap.java \
 	util/ErrorUtil.java \
+	util/FileUtil.java \
 	util/JdtParser.java \
 	util/NameTable.java \
 	util/ProGuardUsageParser.java \
@@ -219,9 +221,14 @@ JAVA_SOURCES = \
 
 RESOURCES = J2ObjC.properties JRE.mappings
 RESOURCE_DIR = $(SOURCE_DIR)/resources
+TEST_RESOURCES_DIR = $(TEST_SOURCE_DIR)/resources
 
 JAVA_SOURCES_FULL = $(JAVA_SOURCES:%=$(JAVA_SOURCE_DIR)/$(BASE_PACKAGE)/%)
 RESOURCE_FILES = $(RESOURCES:%=$(CLASS_DIR)/$(BASE_PACKAGE)/%)
+
+TEST_RESOURCES = \
+  com/google/devtools/j2objc/util/example.jar
+TEST_RESOURCE_FILES = $(TEST_RESOURCES:%=$(TEST_DIR)/%)
 
 default: $(J2OBJC_JAR)
 	@: # suppress make's "nothing to be done" message
@@ -265,7 +272,7 @@ dist: $(J2OBJC_JAR_DIST) $(J2OBJC_SH_DIST)
 clean:
 	@rm -rf $(BUILD_DIR) $(J2OBJC_JAR_DIST) $(J2OBJC_SH_DIST)
 
-test: compile-tests
+test: compile-tests copy-test-resources
 	java -classpath $(TEST_CLASSPATH) -ea junit.textui.TestRunner com.google.devtools.j2objc.SmallTests
 
 compile-tests: $(J2OBJC_JAR)
@@ -273,3 +280,9 @@ compile-tests: $(J2OBJC_JAR)
 	@mkdir -p $(TEST_DIR)
 	@javac -Xlint:unchecked -sourcepath src/test/java -classpath $(TEST_CLASSPATH) \
 	    -d $(TEST_DIR) `find src/test/java -name '*.java'`
+
+copy-test-resources: $(TEST_RESOURCE_FILES)
+
+$(TEST_DIR)/%: $(TEST_RESOURCES_DIR)/%
+	@mkdir -p $(@D)
+	@cp $< $@
