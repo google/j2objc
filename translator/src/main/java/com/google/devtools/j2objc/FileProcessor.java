@@ -20,6 +20,7 @@ import com.google.common.io.CharStreams;
 import com.google.common.io.Files;
 import com.google.devtools.j2objc.types.Types;
 import com.google.devtools.j2objc.util.ErrorUtil;
+import com.google.devtools.j2objc.util.FileUtil;
 import com.google.devtools.j2objc.util.JdtParser;
 import com.google.devtools.j2objc.util.NameTable;
 import com.google.devtools.j2objc.util.TimeTracker;
@@ -179,7 +180,8 @@ abstract class FileProcessor {
           String path = entry.getName();
           if (path.endsWith(".java")) {
             Reader in = new InputStreamReader(zfile.getInputStream(entry));
-            processSource(jarDir + path, CharStreams.toString(in));
+            String jarURL = String.format("jar:file:%s!%s", f.getPath(), jarDir + path);
+            processSource(jarURL, CharStreams.toString(in));
           }
         }
       } finally {
@@ -192,7 +194,7 @@ abstract class FileProcessor {
 
   protected void processSource(String path) {
     try {
-      processSource(path, Files.toString(new File(path), Options.getCharset()));
+      processSource(path, FileUtil.readSource(path));
     } catch (IOException e) {
       ErrorUtil.warning(e.getMessage());
     }
@@ -254,7 +256,7 @@ abstract class FileProcessor {
       ErrorUtil.setCurrentFileName(path);
       NameTable.initialize();
       Types.initialize(unit);
-      processUnit(path, Files.toString(new File(path), Options.getCharset()), unit, ticker);
+      processUnit(path, FileUtil.readSource(path), unit, ticker);
       NameTable.cleanup();
       Types.cleanup();
 

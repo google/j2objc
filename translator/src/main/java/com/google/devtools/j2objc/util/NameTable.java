@@ -19,7 +19,6 @@ package com.google.devtools.j2objc.util;
 import com.google.common.base.Joiner;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
-import com.google.common.io.Files;
 import com.google.devtools.j2objc.Options;
 import com.google.devtools.j2objc.ast.CompilationUnit;
 import com.google.devtools.j2objc.ast.PackageDeclaration;
@@ -39,9 +38,7 @@ import org.eclipse.jdt.core.dom.ITypeBinding;
 import org.eclipse.jdt.core.dom.IVariableBinding;
 import org.eclipse.jdt.core.dom.VariableDeclarationFragment;
 
-import java.io.File;
 import java.io.IOException;
-import java.nio.charset.Charset;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -643,10 +640,11 @@ public class NameTable {
     // TODO(tball): also check sourcepath directories.
     try {
       if (unit != null) {
-        File f = new File(unit.getSourceFileFullPath());
-        File pkgInfoFile = new File(f.getParent(), "package-info.java");
-        if (pkgInfoFile.exists()) {
-          String pkgInfo = Files.toString(pkgInfoFile, Charset.forName("UTF-8"));
+        String url = unit.getSourceFileFullPath();
+        int lastSlash = url.lastIndexOf('/');
+        String packageInfoURL = url.substring(0, lastSlash) + "/package-info.java";
+        if (FileUtil.exists(packageInfoURL)) {
+          String pkgInfo = FileUtil.readSource(packageInfoURL);
           int i = pkgInfo.indexOf("@ObjectiveCName");
           if (i > -1) {
             // Extract annotation's value string.
