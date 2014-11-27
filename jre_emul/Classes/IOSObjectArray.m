@@ -28,17 +28,26 @@
 extern id IOSArray_NewArrayWithDimensions(
     Class self, NSUInteger dimensionCount, const jint *dimensionLengths, IOSClass *type);
 
-static IOSObjectArray *IOSObjectArray_NewArray(jint length, IOSClass *type, BOOL retained) {
+static IOSObjectArray *IOSObjectArray_CreateArray(jint length, IOSClass *type, BOOL retained) {
   IOSObjectArray *array = NSAllocateObject([IOSObjectArray class], length * sizeof(id), nil);
+  if (!retained) {
+    // It is important that this autorelease occurs here and NOT as part of the
+    // return statement of one of the public methods. When such a public method
+    // is called from ARC code, it can omit the autorelease call (and the
+    // subsequent retain in the caller) even though this code is compiled as
+    // non-ARC. Such behavior would allow our isRetained_ field to remain false
+    // even when this array has a strong reference.
+    [array autorelease];
+  }
   array->size_ = length;
   array->elementType_ = type; // All IOSClass types are singleton so don't need to retain.
   array->isRetained_ = retained;
   return array;
 }
 
-static IOSObjectArray *IOSObjectArray_NewArrayWithObjects(
+static IOSObjectArray *IOSObjectArray_CreateArrayWithObjects(
     jint length, IOSClass *type, BOOL retained, const id *objects) {
-  IOSObjectArray *array = IOSObjectArray_NewArray(length, type, retained);
+  IOSObjectArray *array = IOSObjectArray_CreateArray(length, type, retained);
   if (retained) {
     for (jint i = 0; i < length; i++) {
       array->buffer_[i] = [objects[i] retain];
@@ -54,23 +63,23 @@ static IOSObjectArray *IOSObjectArray_NewArrayWithObjects(
 @synthesize elementType = elementType_;
 
 + (instancetype)newArrayWithLength:(NSUInteger)length type:(IOSClass *)type {
-  return IOSObjectArray_NewArray((jint)length, type, YES);
+  return IOSObjectArray_CreateArray((jint)length, type, YES);
 }
 
 + (instancetype)arrayWithLength:(NSUInteger)length type:(IOSClass *)type {
-  return [IOSObjectArray_NewArray((jint)length, type, NO) autorelease];
+  return IOSObjectArray_CreateArray((jint)length, type, NO);
 }
 
 + (instancetype)newArrayWithObjects:(const id *)objects
                               count:(NSUInteger)count
                                type:(IOSClass *)type {
-  return IOSObjectArray_NewArrayWithObjects((jint)count, type, YES, objects);
+  return IOSObjectArray_CreateArrayWithObjects((jint)count, type, YES, objects);
 }
 
 + (instancetype)arrayWithObjects:(const id *)objects
                            count:(NSUInteger)count
                             type:(IOSClass *)type {
-  return [IOSObjectArray_NewArrayWithObjects((jint)count, type, NO, objects) autorelease];
+  return IOSObjectArray_CreateArrayWithObjects((jint)count, type, NO, objects);
 }
 
 + (instancetype)arrayWithArray:(IOSObjectArray *)array {
@@ -81,9 +90,9 @@ static IOSObjectArray *IOSObjectArray_NewArrayWithObjects(
 
 + (instancetype)arrayWithNSArray:(NSArray *)array type:(IOSClass *)type {
   NSUInteger count = [array count];
-  IOSObjectArray *result = IOSObjectArray_NewArray((jint)count, type, NO);
+  IOSObjectArray *result = IOSObjectArray_CreateArray((jint)count, type, NO);
   [array getObjects:result->buffer_ range:NSMakeRange(0, count)];
-  return [result autorelease];
+  return result;
 }
 
 + (instancetype)arrayWithDimensions:(NSUInteger)dimensionCount
@@ -269,7 +278,7 @@ void CopyWithMemmove(id __strong *buffer, NSUInteger src, NSUInteger dest, NSUIn
 }
 
 - (id)copyWithZone:(NSZone *)zone {
-  IOSObjectArray *result = IOSObjectArray_NewArray(size_, elementType_, YES);
+  IOSObjectArray *result = IOSObjectArray_CreateArray(size_, elementType_, YES);
   for (jint i = 0; i < size_; i++) {
     result->buffer_[i] = [buffer_[i] retain];
   }
