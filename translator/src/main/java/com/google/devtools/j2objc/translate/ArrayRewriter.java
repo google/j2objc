@@ -15,6 +15,7 @@
 package com.google.devtools.j2objc.translate;
 
 import com.google.common.collect.ImmutableMap;
+import com.google.devtools.j2objc.Options;
 import com.google.devtools.j2objc.ast.ArrayAccess;
 import com.google.devtools.j2objc.ast.ArrayCreation;
 import com.google.devtools.j2objc.ast.ArrayInitializer;
@@ -101,7 +102,7 @@ public class ArrayRewriter extends TreeVisitor {
   private MethodInvocation createInvocation(ArrayCreation node) {
     ITypeBinding arrayType = node.getTypeBinding();
     assert arrayType.isArray();
-    boolean retainedResult = node.hasRetainedResult();
+    boolean retainedResult = node.hasRetainedResult() || Options.useARC();
     ArrayInitializer initializer = node.getInitializer();
     if (initializer != null) {
       return newInitializedArrayInvocation(arrayType, initializer.getExpressions(), retainedResult);
