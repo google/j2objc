@@ -44,7 +44,6 @@ import java.util.Random;
 import java.util.Set;
 
 /*-[
-#include <vector>
 #include <objc/runtime.h>
 ]-*/
 
@@ -209,12 +208,11 @@ public class JUnitTestRunner {
    */
   private native Set<Class> getAllTestClasses() /*-[
     int classCount = objc_getClassList(NULL, 0);
-    std::vector<Class> classVector;
-    classVector.resize(classCount);
-    objc_getClassList(&classVector.front(), classCount);
+    Class *classes = (Class *)malloc(classCount * sizeof(Class));
+    objc_getClassList(classes, classCount);
     id<JavaUtilSet> result = [ComGoogleCommonCollectSets newHashSet];
-    for (std::vector<Class>::iterator i = classVector.begin(); i != classVector.end(); i++) {
-      Class const& cls = *i;
+    for (int i = 0; i < classCount; i++) {
+      Class cls = classes[i];
       if (IsNSObjectClass(cls)) {
         IOSClass *javaClass = [IOSClass classWithClass:cls];
         if ([self isJUnitTestClassWithIOSClass:javaClass]) {
@@ -222,6 +220,7 @@ public class JUnitTestRunner {
         }
       }
     }
+    free(classes);
     return result;
   ]-*/;
 
