@@ -346,7 +346,6 @@ public class IosHttpURLConnection extends HttpURLConnection {
         self->responseException_ = [[JavaNetProtocolException alloc] initWithNSString:errMsg];
         @throw self->responseException_;
       }
-      [request setValue:[self getContentType] forHTTPHeaderField:@"Content-Type"];
       if (self->nativeRequestData_) {
         request.HTTPBody = [(NSDataOutputStream *) self->nativeRequestData_ data];
       }
