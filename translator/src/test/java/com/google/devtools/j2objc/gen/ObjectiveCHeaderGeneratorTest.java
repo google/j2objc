@@ -289,13 +289,13 @@ public class ObjectiveCHeaderGeneratorTest extends GenerationTest {
     assertTranslation(translation, "FOUNDATION_EXPORT ColorEnum *ColorEnum_values_[];");
     assertTranslatedLines(translation,
         "#define ColorEnum_RED ColorEnum_values_[Color_RED]",
-        "J2OBJC_STATIC_FIELD_GETTER(ColorEnum, RED, ColorEnum *)");
+        "J2OBJC_ENUM_CONSTANT_GETTER(ColorEnum, RED)");
     assertTranslatedLines(translation,
         "#define ColorEnum_WHITE ColorEnum_values_[Color_WHITE]",
-        "J2OBJC_STATIC_FIELD_GETTER(ColorEnum, WHITE, ColorEnum *)");
+        "J2OBJC_ENUM_CONSTANT_GETTER(ColorEnum, WHITE)");
     assertTranslatedLines(translation,
         "#define ColorEnum_BLUE ColorEnum_values_[Color_BLUE]",
-        "J2OBJC_STATIC_FIELD_GETTER(ColorEnum, BLUE, ColorEnum *)");
+        "J2OBJC_ENUM_CONSTANT_GETTER(ColorEnum, BLUE)");
   }
 
   public void testEnumWithParameters() throws IOException {

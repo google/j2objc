@@ -321,7 +321,7 @@ public class ObjectiveCHeaderGenerator extends ObjectiveCSourceFileGenerator {
       String valueName = constant.getName().getIdentifier();
       printf("\n#define %s_%s %s_values_[%s_%s]\n",
              typeName, varName, typeName, bareTypeName, valueName);
-      printf("J2OBJC_STATIC_FIELD_GETTER(%s, %s, %s *)\n", typeName, varName, typeName);
+      printf("J2OBJC_ENUM_CONSTANT_GETTER(%s, %s)\n", typeName, varName);
     }
     printStaticFields(node);
     printFieldSetters(node, false);
