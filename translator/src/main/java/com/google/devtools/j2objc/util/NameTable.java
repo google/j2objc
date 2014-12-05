@@ -276,7 +276,7 @@ public class NameTable {
     }
     String name = binding.getName();
     if (binding instanceof IVariableBinding) {
-      if (isReservedName(name)) {
+      if (isReservedName(name) && !((IVariableBinding) binding).isEnumConstant()) {
         name += "_";
       }
     }
