@@ -25,6 +25,8 @@ import com.google.devtools.j2objc.util.ErrorUtil;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * This class handles common actions shared by the header, implementation, and
@@ -33,6 +35,7 @@ import java.io.IOException;
  * @author Tom Ball
  */
 public abstract class SourceFileGenerator {
+  private static final Pattern JAR_URL_PATTERN = Pattern.compile("jar:file:.*!(.*)");
   private final SourceBuilder builder;
   private final CompilationUnit unit;
   private final File outputDirectory;
@@ -58,7 +61,12 @@ public abstract class SourceFileGenerator {
           + File.separatorChar + node.getMainTypeName() + getSuffix();
     }
     if (Options.useSourceDirectories()) {
-      File src = new File(node.getSourceFileFullPath());
+      String sourceFilePath = node.getSourceFileFullPath();
+      Matcher m = JAR_URL_PATTERN.matcher(sourceFilePath);
+      if (m.find()) {
+        sourceFilePath = m.group(1);
+      }
+      File src = new File(sourceFilePath);
       String dir = src.getParent();
       if (dir != null) {
         return dir + File.separatorChar + node.getMainTypeName() + getSuffix();
