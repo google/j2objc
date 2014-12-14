@@ -190,6 +190,10 @@ JAVA_SOURCES = \
 	android/text/util/Rfc822Tokenizer.java \
 	android/util/ArrayMap.java \
 	android/util/ArraySet.java \
+	android/util/Base64.java \
+	android/util/Base64DataException.java \
+	android/util/Base64InputStream.java \
+	android/util/Base64OutputStream.java \
 	android/util/ContainerHelpers.java \
 	android/util/Log.java \
 	android/util/LruCache.java \
