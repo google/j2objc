@@ -393,7 +393,7 @@ public class StatementGeneratorTest extends GenerationTest {
         "Test", "Test.m");
     assertTranslation(translation, "Test_set_i_(self, otherI);");
     assertTranslation(translation, "j_ = otherJ;");
-    assertTranslation(translation, "Test_set_i_(self, nil);");
+    assertTranslation(translation, "RELEASE_(i_);");
   }
 
   public void testInnerInnerClassFieldAccess() throws IOException {

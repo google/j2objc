@@ -18,14 +18,13 @@ package com.google.devtools.j2objc.translate;
 
 import com.google.common.collect.Lists;
 import com.google.devtools.j2objc.Options;
-import com.google.devtools.j2objc.ast.Assignment;
 import com.google.devtools.j2objc.ast.Block;
 import com.google.devtools.j2objc.ast.Expression;
 import com.google.devtools.j2objc.ast.ExpressionStatement;
 import com.google.devtools.j2objc.ast.FieldDeclaration;
+import com.google.devtools.j2objc.ast.FunctionInvocation;
 import com.google.devtools.j2objc.ast.MethodDeclaration;
 import com.google.devtools.j2objc.ast.MethodInvocation;
-import com.google.devtools.j2objc.ast.NullLiteral;
 import com.google.devtools.j2objc.ast.SimpleName;
 import com.google.devtools.j2objc.ast.Statement;
 import com.google.devtools.j2objc.ast.SuperMethodInvocation;
@@ -180,21 +179,26 @@ public class DestructorGenerator extends TreeVisitor {
         statements = tryStatement.getBody().getStatements();
       }
     }
-    for (IVariableBinding field : fields) {
-      if (!field.getType().isPrimitive() && !BindingUtil.isWeakReference(field)) {
-        Assignment assign = new Assignment(new SimpleName(field), new NullLiteral());
-        ExpressionStatement stmt = new ExpressionStatement(assign);
+    if (Options.useReferenceCounting()) {
+      for (IVariableBinding field : fields) {
+        if (!field.getType().isPrimitive() && !BindingUtil.isWeakReference(field)) {
+          ITypeBinding idType = Types.resolveIOSType("id");
+          FunctionInvocation releaseInvocation = new FunctionInvocation(
+              "RELEASE_", idType, idType, idType);
+          releaseInvocation.getArguments().add(new SimpleName(field));
+          ExpressionStatement stmt = new ExpressionStatement(releaseInvocation);
+          statements.add(stmt);
+        }
+      }
+      if (superFinalize == null) {
+        IMethodBinding methodBinding = method.getMethodBinding();
+        GeneratedMethodBinding binding = GeneratedMethodBinding.newMethod(
+            destructorName, Modifier.PUBLIC, Types.mapTypeName("void"),
+            methodBinding.getDeclaringClass());
+        SuperMethodInvocation call = new SuperMethodInvocation(binding);
+        ExpressionStatement stmt = new ExpressionStatement(call);
         statements.add(stmt);
       }
-    }
-    if (Options.useReferenceCounting() && superFinalize == null) {
-      IMethodBinding methodBinding = method.getMethodBinding();
-      GeneratedMethodBinding binding = GeneratedMethodBinding.newMethod(
-          destructorName, Modifier.PUBLIC, Types.mapTypeName("void"),
-          methodBinding.getDeclaringClass());
-      SuperMethodInvocation call = new SuperMethodInvocation(binding);
-      ExpressionStatement stmt = new ExpressionStatement(call);
-      statements.add(stmt);
     }
   }
 
