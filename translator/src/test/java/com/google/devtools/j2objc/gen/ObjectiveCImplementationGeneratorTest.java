@@ -254,7 +254,7 @@ public class ObjectiveCImplementationGeneratorTest extends GenerationTest {
         + "}";
     String translation = translateSourceFile(sourceContent, "FooBar", "FooBar.m");
     assertTranslation(translation, "int FooBar_fieldPhi_;");
-    assertTranslation(translation, "FooBar_set_fieldFoo_(self, nil);");
+    assertTranslation(translation, "RELEASE_(fieldFoo_);");
     assertTranslation(translation, "id fieldFoo_;");
     assertTranslation(translation, "id fieldJar_;");
     assertTranslation(translation, "int newFieldBar_;");
