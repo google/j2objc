@@ -44,7 +44,6 @@ public class JdtParser {
   private List<String> classpathEntries = Lists.newArrayList();
   private List<String> sourcepathEntries = Lists.newArrayList();
   private String encoding = null;
-  private boolean ignoreMissingImports = false;
   private boolean includeRunningVMBootclasspath = true;
 
   private static Map<String, String> initCompilerOptions() {
@@ -92,10 +91,6 @@ public class JdtParser {
 
   public void setEncoding(String encoding) {
     this.encoding = encoding;
-  }
-
-  public void setIgnoreMissingImports(boolean ignoreMissingImports) {
-    this.ignoreMissingImports = ignoreMissingImports;
   }
 
   public void setIncludeRunningVMBootclasspath(boolean includeVMBootclasspath) {
@@ -180,12 +175,8 @@ public class JdtParser {
   private void checkCompilationErrors(String filename, CompilationUnit unit) {
     for (IProblem problem : unit.getProblems()) {
       if (problem.isError()) {
-        if (((problem.getID() & IProblem.ImportRelated) != 0) && ignoreMissingImports) {
-          continue;
-        } else {
-          ErrorUtil.error(String.format(
-              "%s:%s: %s", filename, problem.getSourceLineNumber(), problem.getMessage()));
-        }
+        ErrorUtil.error(String.format(
+            "%s:%s: %s", filename, problem.getSourceLineNumber(), problem.getMessage()));
       }
     }
   }

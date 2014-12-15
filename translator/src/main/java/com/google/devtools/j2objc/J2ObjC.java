@@ -143,7 +143,6 @@ public class J2ObjC {
     parser.addSourcepathEntries(Options.getSourcePathEntries());
     parser.setIncludeRunningVMBootclasspath(false);
     parser.setEncoding(Options.fileEncoding());
-    parser.setIgnoreMissingImports(Options.ignoreMissingImports());
     parser.setEnableDocComments(Options.docCommentsEnabled());
     return parser;
   }

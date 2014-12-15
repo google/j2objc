@@ -54,7 +54,6 @@ public class Options {
   private static File outputDirectory = new File(".");
   private static OutputStyleOption outputStyle = OutputStyleOption.PACKAGE;
   private static String implementationSuffix = ".m";
-  private static boolean ignoreMissingImports = false;
   private static MemoryManagementOption memoryManagementOption = null;
   private static boolean emitLineDirectives = false;
   private static boolean warningsAsErrors = false;
@@ -221,7 +220,7 @@ public class Options {
           usage("unsupported language: " + s);
         }
       } else if (arg.equals("--ignore-missing-imports")) {
-        ignoreMissingImports = true;
+        ErrorUtil.error("--ignore-missing-imports is no longer supported");
       } else if (arg.equals("-use-reference-counting")) {
         checkMemoryManagementOption(MemoryManagementOption.REFERENCE_COUNTING);
       } else if (arg.equals("--no-package-directories")) {
@@ -464,10 +463,6 @@ public class Options {
 
   public static String getImplementationFileSuffix() {
     return implementationSuffix;
-  }
-
-  public static boolean ignoreMissingImports() {
-    return ignoreMissingImports;
   }
 
   public static boolean useReferenceCounting() {
