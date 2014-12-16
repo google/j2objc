@@ -19,6 +19,7 @@ package com.google.devtools.j2objc.types;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Sets;
 import com.google.devtools.j2objc.Options;
+import com.google.devtools.j2objc.util.ErrorUtil;
 import com.google.devtools.j2objc.util.NameTable;
 
 import org.eclipse.jdt.core.dom.ITypeBinding;
@@ -113,10 +114,25 @@ public class Import implements Comparable<Import> {
     }
     // Always use platform directories, since the j2objc distribution is
     // (currently) built with them.
-    if (Options.usePackageDirectories() || isPlatformClass(javaName)) {
+    if (isPlatformClass(javaName)) {
       return javaName.replace('.', '/');
     }
-    return javaName.substring(javaName.lastIndexOf('.') + 1);
+
+    String mappedHeader = Options.getHeaderMappings().inverse().get(javaName);
+    if (mappedHeader == null) {
+      if (Options.usePackageDirectories()) {
+        return javaName.replace('.', '/');
+      } else {
+        return javaName.substring(javaName.lastIndexOf('.') + 1);
+      }
+    } else {
+      if (mappedHeader.substring(mappedHeader.length() - 2).equals(".h")) {
+        mappedHeader = mappedHeader.substring(0, mappedHeader.length() - 2);
+      } else {
+        ErrorUtil.error("filename \"" + mappedHeader + "\" is not a valid header file name");
+      }
+      return mappedHeader.replace('.', '/');
+    }
   }
 
   private static boolean isPlatformClass(String className) {

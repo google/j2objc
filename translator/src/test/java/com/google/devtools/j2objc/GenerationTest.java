@@ -79,6 +79,8 @@ public abstract class GenerationTest extends TestCase {
 
   @Override
   protected void tearDown() throws Exception {
+    Options.setHeaderMappingFiles(null);
+    Options.getHeaderMappings().clear();
     deleteTempDir(tempDir);
     ErrorUtil.reset();
   }
@@ -321,6 +323,10 @@ public abstract class GenerationTest extends TestCase {
     CompilationUnit unit = translateType(typeName, source);
     TranslationProcessor.generateObjectiveCSource(unit, TimeTracker.noop());
     return getTranslatedFile(fileName);
+  }
+
+  protected void loadHeaderMappings() {
+    TranslationProcessor.loadHeaderMappings();
   }
 
   protected void addSourceFile(String source, String fileName) throws IOException {

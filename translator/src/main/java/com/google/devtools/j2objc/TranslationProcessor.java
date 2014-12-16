@@ -14,6 +14,7 @@
 
 package com.google.devtools.j2objc;
 
+import com.google.common.collect.BiMap;
 import com.google.common.collect.Sets;
 import com.google.devtools.j2objc.ast.CompilationUnit;
 import com.google.devtools.j2objc.ast.TreeConverter;
@@ -64,7 +65,9 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayDeque;
+import java.util.ArrayList;
 import java.util.Enumeration;
+import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 import java.util.Queue;
@@ -254,6 +257,9 @@ class TranslationProcessor extends FileProcessor {
       // Method maps are loaded here so tests can call translate() directly.
       loadMappingFiles();
     }
+    if (Options.getHeaderMappings().isEmpty()) {
+      loadHeaderMappings();
+    }
     new JavaToIOSMethodTranslator(methodMappings).run(unit);
     ticker.tick("JavaToIOSMethodTranslator");
 
@@ -435,33 +441,76 @@ class TranslationProcessor extends FileProcessor {
     return null;
   }
 
-  private static void loadMappingFiles() {
-    for (String resourceName : Options.getMappingFiles()) {
-      Properties mappings = new Properties();
+  private static Properties loadProperties(String resourceName, boolean required) {
+    Properties p = new Properties();
+    File f = new File(resourceName);
+    if (f.exists()) {
+      FileReader reader = null;
       try {
-        File f = new File(resourceName);
-        if (f.exists()) {
-          FileReader reader = new FileReader(f);
-          try {
-            mappings.load(reader);
-          } finally {
+        try {
+          reader = new FileReader(f);
+          p.load(reader);
+        } finally {
+          if (reader != null) {
             reader.close();
-          }
-        } else {
-          InputStream stream = J2ObjC.class.getResourceAsStream(resourceName);
-          if (stream == null) {
-            ErrorUtil.error(resourceName + " not found");
-          } else {
-            try {
-              mappings.load(stream);
-            } finally {
-              stream.close();
-            }
           }
         }
       } catch (IOException e) {
-        throw new AssertionError(e);
+        ErrorUtil.error("Exception reading file \"" + resourceName + "\": " + e.getMessage());
       }
+    } else {
+      InputStream stream = J2ObjC.class.getResourceAsStream(resourceName);
+      if (stream == null) {
+        if (required) {
+          ErrorUtil.error(resourceName + " not found");
+        } else {
+          return new Properties();
+        }
+      } else {
+        try {
+          try {
+            p.load(stream);
+          } finally {
+            stream.close();
+          }
+        } catch (IOException e) {
+          ErrorUtil.error("Exception reading resource \"" + resourceName +
+              "\": " + e.getMessage());
+          return new Properties();
+        }
+      }
+    }
+
+    return p;
+  }
+
+  static void loadHeaderMappings() {
+    BiMap<String, String> headerMappings = Options.getHeaderMappings();
+
+    List<String> headerMappingFiles = Options.getHeaderMappingFiles();
+    List<Properties> headerMappingProps = new ArrayList<Properties>();
+    if (headerMappingFiles == null) {
+      // Don't fail if mappings aren't configured and the default mapping is absent.
+      headerMappingProps.add(loadProperties(Options.DEFAULT_HEADER_MAPPING_FILE, false));
+    } else {
+      for (String resourceName : headerMappingFiles) {
+        headerMappingProps.add(loadProperties(resourceName, true));
+      }
+    }
+
+    for (Properties mappings: headerMappingProps) {
+      Enumeration<?> keyIterator = mappings.propertyNames();
+      while (keyIterator.hasMoreElements()) {
+        String key = (String) keyIterator.nextElement();
+        headerMappings.put(key, mappings.getProperty(key));
+      }
+    }
+  }
+
+  private static void loadMappingFiles() {
+    for (String resourceName : Options.getMappingFiles()) {
+      Properties mappings;
+      mappings = loadProperties(resourceName, true);
 
       Enumeration<?> keyIterator = mappings.propertyNames();
       while (keyIterator.hasMoreElements()) {
