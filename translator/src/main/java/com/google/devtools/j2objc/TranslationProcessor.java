@@ -14,7 +14,10 @@
 
 package com.google.devtools.j2objc;
 
+import com.google.common.base.Joiner;
 import com.google.common.collect.BiMap;
+import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 import com.google.devtools.j2objc.ast.CompilationUnit;
 import com.google.devtools.j2objc.ast.TreeConverter;
@@ -59,23 +62,32 @@ import com.google.devtools.j2objc.util.JdtParser;
 import com.google.devtools.j2objc.util.TimeTracker;
 
 import org.eclipse.jdt.core.dom.ITypeBinding;
+import org.eclipse.jdt.internal.compiler.impl.CompilerOptions;
 
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.PrintWriter;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.net.URLClassLoader;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Enumeration;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 import java.util.Queue;
+import java.util.ServiceLoader;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
+
+import javax.annotation.processing.Processor;
 
 /**
  * Processes source files by translating each source into an Objective-C header
@@ -102,12 +114,86 @@ class TranslationProcessor extends FileProcessor {
 
   @Override
   public void processFiles(Iterable<String> files) {
+    if (hasAnnotationProcessors()) {
+      processAnnotations(files);
+    }
+    if (ErrorUtil.errorCount() > 0) {
+      // True if any classpath entry is malformed, or batch compilation failed.
+      System.exit(ErrorUtil.errorCount());
+    }
     super.processFiles(files);
-    if (Options.buildClosure()) {
-      while (!pendingFiles.isEmpty()) {
-        String file = pendingFiles.remove();
-        if (!processedFiles.contains(file)) {
-          processFile(file);
+    while (!pendingFiles.isEmpty()) {
+      String file = pendingFiles.remove();
+      if (!processedFiles.contains(file)) {
+        processFile(file);
+      }
+    }
+  }
+
+  private void processAnnotations(Iterable<String> files) {
+    File tmpDirectory;
+    try {
+      tmpDirectory = createTmpDir();
+    } catch (IOException e) {
+      ErrorUtil.error("failed creating temporary directory: " + e);
+      return;
+    }
+    String tmpDirPath = tmpDirectory.getAbsolutePath();
+    List<String> compileArgs = Lists.newArrayList();
+    Joiner pathJoiner = Joiner.on(":");
+    List<String> sourcePath = Options.getSourcePathEntries();
+    sourcePath.add(tmpDirPath);
+    compileArgs.add("-sourcepath");
+    compileArgs.add(pathJoiner.join(sourcePath));
+    compileArgs.add("-classpath");
+    List<String> classPath = Options.getClassPathEntries();
+    compileArgs.add(pathJoiner.join(classPath));
+    compileArgs.add("-encoding");
+    compileArgs.add(Options.getCharset().name());
+    compileArgs.add("-source");
+    compileArgs.add("1.7");
+    compileArgs.add("-s");
+    compileArgs.add(tmpDirPath);
+    if (Options.isVerbose()) {
+      compileArgs.add("-XprintProcessorInfo");
+    }
+    for (String file : files) {
+      compileArgs.add(file);
+    }
+    Map<String, String> batchOptions = Maps.newHashMap();
+    batchOptions.put(CompilerOptions.OPTION_Process_Annotations, CompilerOptions.ENABLED);
+    batchOptions.put(CompilerOptions.OPTION_GenerateClassFiles, CompilerOptions.DISABLED);
+    // Fully qualified name used since "Main" isn't descriptive.
+    org.eclipse.jdt.internal.compiler.batch.Main batchCompiler =
+        new org.eclipse.jdt.internal.compiler.batch.Main(
+            new PrintWriter(System.out), new PrintWriter(System.err), false, batchOptions, null);
+    if (!batchCompiler.compile(compileArgs.toArray(new String[0]))) {
+      // Any compilation errors will already by displayed.
+      ErrorUtil.error("failed batch processing sources");
+    } else {
+      getParser().addSourcepathEntry(tmpDirPath);
+      addGeneratedSources(tmpDirectory);
+    }
+  }
+
+  private static File createTmpDir() throws IOException {
+    File tmpDirectory = new File("/tmp/annotation_processing");
+    if (!tmpDirectory.mkdir() && !tmpDirectory.exists()) {
+      File tmpRoot = File.createTempFile("foo", "bar").getParentFile();
+      tmpDirectory = new File(tmpRoot, "annotation_processing");
+      tmpDirectory.mkdir();
+    }
+    return tmpDirectory;
+  }
+
+  private void addGeneratedSources(File dir) {
+    assert dir.exists() && dir.isDirectory();
+    for (File f : dir.listFiles()) {
+      if (f.isDirectory()) {
+        addGeneratedSources(f);
+      } else {
+        if (f.getName().endsWith(".java")) {
+          pendingFiles.add(f.getAbsolutePath());
         }
       }
     }
@@ -525,5 +611,26 @@ class TranslationProcessor extends FileProcessor {
         }
       }
     }
+  }
+
+  /**
+   * Check whether any javax.annotation.processing.Processor services are defined on
+   * the declared classpath. This is checked here to avoid batch compiling sources
+   * in case any might have annotations that should be processed.
+   */
+  private boolean hasAnnotationProcessors() {
+    List<URL> urls = Lists.newArrayList();
+    for (String path: Options.getClassPathEntries()) {
+      try {
+        File f = new File(path);
+        urls.add(new URL("file://" + f.getAbsolutePath()));
+      } catch (MalformedURLException e) {
+        ErrorUtil.error(e.toString());
+      }
+    }
+    URLClassLoader classLoader = new URLClassLoader(urls.toArray(new URL[urls.size()]));
+    ServiceLoader<Processor> serviceLoader = ServiceLoader.load(Processor.class, classLoader);
+    Iterator<Processor> iterator = serviceLoader.iterator();
+    return iterator.hasNext();
   }
 }
