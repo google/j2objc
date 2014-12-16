@@ -16,10 +16,12 @@
 
 package com.google.devtools.j2objc.gen;
 
+import com.google.common.collect.Lists;
 import com.google.devtools.j2objc.GenerationTest;
 import com.google.devtools.j2objc.Options;
 
 import java.io.IOException;
+import java.util.Collections;
 
 /**
  * Tests for {@link ObjectiveCHeaderGenerator}.
@@ -109,6 +111,40 @@ public class ObjectiveCHeaderGeneratorTest extends GenerationTest {
         "MyException", "MyException.h");
     assertTranslation(translation, "@class JavaLangThrowable;");
     assertTranslation(translation, "#include \"java/lang/Exception.h\"");
+  }
+
+  public void testHeaderFileMapping() throws IOException {
+    Options.setHeaderMappingFiles(Lists.newArrayList("testMappings.j2objc"));
+    loadHeaderMappings();
+    addSourceFile("package unit.mapping.custom; public class Test { }",
+        "unit/mapping/custom/Test.java");
+    String translation = translateSourceFile(
+        "import unit.mapping.custom.Test; " +
+            "public class MyTest extends Test { MyTest() {}}",
+        "MyTest", "MyTest.h");
+    assertTranslation(translation, "#include \"my/mapping/custom/Test.h\"");
+  }
+
+  public void testHeaderDefaultFileMapping() throws IOException {
+    loadHeaderMappings();
+    addSourceFile("package unit.mapping; public class Test { }", "unit/mapping/Test.java");
+    String translation = translateSourceFile(
+        "import unit.mapping.Test; " +
+            "public class MyTest extends Test { MyTest() {}}",
+        "MyTest", "MyTest.h");
+    assertTranslation(translation, "#include \"my/mapping/Test.h\"");
+  }
+
+  public void testNoHeaderMapping() throws IOException {
+    // Should be able to turn off header mappings by passing empty collection
+    Options.setHeaderMappingFiles(Collections.<String>emptyList());
+    loadHeaderMappings();
+    addSourceFile("package unit.mapping; public class Test { }", "unit/mapping/Test.java");
+    String translation = translateSourceFile(
+        "import unit.mapping.Test; " +
+            "public class MyTest extends Test { MyTest() {}}",
+        "MyTest", "MyTest.h");
+    assertTranslation(translation, "#include \"unit/mapping/Test.h\"");
   }
 
   public void testForwardDeclarationTranslation() throws IOException {
