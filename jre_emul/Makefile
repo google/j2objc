@@ -71,7 +71,8 @@ IOS_JAVA_OBJS = \
 	java/lang/reflect/AccessibleObject.o \
 	java/lang/reflect/Constructor.o \
 	java/lang/reflect/Field.o \
-	java/lang/reflect/Method.o
+	java/lang/reflect/Method.o \
+	javax/annotation/Resource.o
 
 # Java interfaces with hand written obj-c headers. Don't need to be translated,
 # but need to be included in the jre_emul.jar.
@@ -865,6 +866,10 @@ JAVA_SOURCES = \
 	java/util/zip/ZipFile.java \
 	java/util/zip/ZipInputStream.java \
 	java/util/zip/ZipOutputStream.java \
+	javax/annotation/Generated.java \
+	javax/annotation/PostConstruct.java \
+	javax/annotation/PreDestroy.java \
+	javax/annotation/Resources.java \
 	javax/lang/model/element/Modifier.java \
 	javax/security/auth/x500/X500Principal.java \
 	javax/security/cert/Certificate.java \
