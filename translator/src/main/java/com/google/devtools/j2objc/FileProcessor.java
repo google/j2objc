@@ -295,4 +295,8 @@ abstract class FileProcessor {
     File f = new File(fileName);
     return f.exists() ? f : null;
   }
+
+  public JdtParser getParser() {
+    return parser;
+  }
 }

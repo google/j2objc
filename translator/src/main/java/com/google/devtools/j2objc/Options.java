@@ -152,6 +152,10 @@ public class Options {
     Logger.getLogger("com.google.devtools.j2objc").setLevel(level);
   }
 
+  public static boolean isVerbose() {
+    return Logger.getLogger("com.google.devtools.j2objc").getLevel() == Level.FINEST;
+  }
+
   /**
    * Load the options from a command-line, returning the arguments that were
    * not option-related (usually files).  If help is requested or an error is
