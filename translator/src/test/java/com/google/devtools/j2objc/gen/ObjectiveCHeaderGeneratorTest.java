@@ -20,8 +20,10 @@ import com.google.common.collect.Lists;
 import com.google.devtools.j2objc.GenerationTest;
 import com.google.devtools.j2objc.Options;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.Collections;
+import java.util.Map;
 
 /**
  * Tests for {@link ObjectiveCHeaderGenerator}.
@@ -115,9 +117,9 @@ public class ObjectiveCHeaderGeneratorTest extends GenerationTest {
 
   public void testHeaderFileMapping() throws IOException {
     Options.setHeaderMappingFiles(Lists.newArrayList("testMappings.j2objc"));
-    loadHeaderMappings();
     addSourceFile("package unit.mapping.custom; public class Test { }",
         "unit/mapping/custom/Test.java");
+    loadHeaderMappings();
     String translation = translateSourceFile(
         "import unit.mapping.custom.Test; " +
             "public class MyTest extends Test { MyTest() {}}",
@@ -126,8 +128,8 @@ public class ObjectiveCHeaderGeneratorTest extends GenerationTest {
   }
 
   public void testHeaderDefaultFileMapping() throws IOException {
-    loadHeaderMappings();
     addSourceFile("package unit.mapping; public class Test { }", "unit/mapping/Test.java");
+    loadHeaderMappings();
     String translation = translateSourceFile(
         "import unit.mapping.Test; " +
             "public class MyTest extends Test { MyTest() {}}",
@@ -138,13 +140,42 @@ public class ObjectiveCHeaderGeneratorTest extends GenerationTest {
   public void testNoHeaderMapping() throws IOException {
     // Should be able to turn off header mappings by passing empty collection
     Options.setHeaderMappingFiles(Collections.<String>emptyList());
-    loadHeaderMappings();
     addSourceFile("package unit.mapping; public class Test { }", "unit/mapping/Test.java");
+    loadHeaderMappings();
     String translation = translateSourceFile(
         "import unit.mapping.Test; " +
             "public class MyTest extends Test { MyTest() {}}",
         "MyTest", "MyTest.h");
     assertTranslation(translation, "#include \"unit/mapping/Test.h\"");
+  }
+
+  public void testOutputHeaderFileMapping() throws IOException {
+    Options.setHeaderMappingFiles(Lists.newArrayList("testMappings.j2objc"));
+    Options.setOutputHeaderMappingFile(new File("path/to/Dummy"));
+    Options.setPackageDirectories(Options.OutputStyleOption.SOURCE);
+    addSourceFile("package unit.test; public class Dummy {}", "unit/test/Dummy.java");
+    addSourceFile(
+        "package unit.test;" +
+        "public class AnotherDummy extends Dummy { " +
+        "    public AnotherDummy() {}" +
+        "}", "unit/test/AnotherDummy.java");
+
+    loadSourceFileHeaderMappings("unit/test/Dummy.java", "unit/test/AnotherDummy.java");
+    loadHeaderMappings();
+
+    String translation = translateSourceFile(getTranslatedFile("unit/test/AnotherDummy.java"),
+        "AnotherDummy", "AnotherDummy.h");
+
+    // The temp directory path we get includes "." in it, which will be converted to "/" by j2objc
+    // when generating the import path. We probably will only hit this case in tests.
+    assertTranslation(translation,
+        "#include \"" + getTempDir().replace(".", "/") + "/unit/test/Dummy.h\"");
+
+    Map<String, String> outputMapping = Options.getHeaderMappings();
+    assertEquals("unit.test.AnotherDummy",
+        outputMapping.get(getTempDir() + "/unit/test/AnotherDummy.h"));
+    assertEquals("unit.test.Dummy", outputMapping.get(getTempDir() + "/unit/test/Dummy.h"));
+    assertEquals("unit.mapping.custom.Test", outputMapping.get("my/mapping/custom/Test.h"));
   }
 
   public void testForwardDeclarationTranslation() throws IOException {

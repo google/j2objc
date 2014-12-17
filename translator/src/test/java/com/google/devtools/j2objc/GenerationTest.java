@@ -81,6 +81,7 @@ public abstract class GenerationTest extends TestCase {
   protected void tearDown() throws Exception {
     Options.setHeaderMappingFiles(null);
     Options.getHeaderMappings().clear();
+    Options.setPackageDirectories(Options.OutputStyleOption.PACKAGE);
     deleteTempDir(tempDir);
     ErrorUtil.reset();
   }
@@ -329,6 +330,16 @@ public abstract class GenerationTest extends TestCase {
     TranslationProcessor.loadHeaderMappings();
   }
 
+  protected void loadSourceFileHeaderMappings(String... fileNames) {
+    if (Options.shouldPreProcess()) {
+      List<String> files = Lists.newArrayList();
+      for (String fileName : fileNames) {
+        files.add(tempDir.getPath() + "/" + fileName);
+      }
+      new HeaderMappingPreProcessor(parser).processFiles(files);
+    }
+  }
+
   protected void addSourceFile(String source, String fileName) throws IOException {
     File file = new File(tempDir, fileName);
     file.getParentFile().mkdirs();
@@ -359,5 +370,9 @@ public abstract class GenerationTest extends TestCase {
    */
   protected void assertErrorCount(int expectedCount) {
     assertEquals(expectedCount, ErrorUtil.errorCount());
+  }
+
+  protected String getTempDir() {
+   return tempDir.getPath();
   }
 }
