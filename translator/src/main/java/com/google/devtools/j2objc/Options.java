@@ -65,6 +65,7 @@ public class Options {
   private static boolean deprecatedDeclarations = false;
   // Keys are header paths (with a .h), values are class names
   private static BiMap<String, String> headerMappings = HashBiMap.create();
+  private static File outputHeaderMappingFile = null;
   private static Map<String, String> classMappings = Maps.newLinkedHashMap();
   private static Map<String, String> methodMappings = Maps.newLinkedHashMap();
   private static boolean memoryDebug = false;
@@ -217,6 +218,11 @@ public class Options {
         } else {
           headerMappingFiles = Lists.newArrayList(args[nArg].split(","));
         }
+      } else if (arg.equals("--output-header-mapping")) {
+        if (++nArg == args.length) {
+          usage("--output-header-mapping requires an argument");
+        }
+        outputHeaderMappingFile = new File(args[nArg]);
       } else if (arg.equals("--dead-code-report")) {
         if (++nArg == args.length) {
           usage("--dead-code-report requires an argument");
@@ -578,6 +584,15 @@ public class Options {
     return proGuardUsageFile;
   }
 
+  public static File getOutputHeaderMappingFile() {
+    return outputHeaderMappingFile;
+  }
+
+  @VisibleForTesting
+  public static void setOutputHeaderMappingFile(File outputHeaderMappingFile) {
+    Options.outputHeaderMappingFile = outputHeaderMappingFile;
+  }
+
   public static List<String> getBootClasspath() {
     return getPathArgument(bootclasspath);
   }
@@ -735,4 +750,8 @@ public class Options {
     hidePrivateMembers = false;
   }
 
+  public static boolean shouldPreProcess() {
+    return Options.getHeaderMappingFiles() != null &&
+        Options.useSourceDirectories();
+  }
 }

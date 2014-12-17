@@ -61,12 +61,7 @@ public abstract class SourceFileGenerator {
           + File.separatorChar + node.getMainTypeName() + getSuffix();
     }
     if (Options.useSourceDirectories()) {
-      String sourceFilePath = node.getSourceFileFullPath();
-      Matcher m = JAR_URL_PATTERN.matcher(sourceFilePath);
-      if (m.find()) {
-        sourceFilePath = m.group(1);
-      }
-      File src = new File(sourceFilePath);
+      File src = new File(sourceFilePath(node.getSourceFileFullPath()));
       String dir = src.getParent();
       if (dir != null) {
         return dir + File.separatorChar + node.getMainTypeName() + getSuffix();
@@ -162,5 +157,20 @@ public abstract class SourceFileGenerator {
 
   protected SourceBuilder getBuilder() {
     return builder;
+  }
+
+  /**
+   * Returns the path of the source file inside the containing jar. For example,
+   * given "jar:file:output.jar!foo/bar.java", "foo/bar.java" will be returned. If
+   * {@code sourcePath} is not a jar entry path, the same path will be returned without
+   * modification.
+   */
+  public static String sourceFilePath(String sourcePath) {
+    Matcher m = JAR_URL_PATTERN.matcher(sourcePath);
+      if (m.find()) {
+        return m.group(1);
+      } else {
+        return sourcePath;
+      }
   }
 }
