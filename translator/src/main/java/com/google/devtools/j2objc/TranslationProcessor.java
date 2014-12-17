@@ -121,6 +121,11 @@ class TranslationProcessor extends FileProcessor {
       // True if any classpath entry is malformed, or batch compilation failed.
       System.exit(ErrorUtil.errorCount());
     }
+
+    if (Options.getHeaderMappingFiles() != null) {
+      loadHeaderMappings();
+    }
+
     super.processFiles(files);
     while (!pendingFiles.isEmpty()) {
       String file = pendingFiles.remove();
@@ -343,9 +348,6 @@ class TranslationProcessor extends FileProcessor {
       // Method maps are loaded here so tests can call translate() directly.
       loadMappingFiles();
     }
-    if (Options.getHeaderMappings().isEmpty()) {
-      loadHeaderMappings();
-    }
     new JavaToIOSMethodTranslator(methodMappings).run(unit);
     ticker.tick("JavaToIOSMethodTranslator");
 
@@ -406,6 +408,9 @@ class TranslationProcessor extends FileProcessor {
     for (Plugin plugin : Options.getPlugins()) {
       plugin.endProcessing(Options.getOutputDirectory());
     }
+
+    printHeaderMappings();
+
     if (logger.isLoggable(Level.INFO)) {
       int nFiles = processedFiles.size();
       System.out.println(String.format(
@@ -568,6 +573,29 @@ class TranslationProcessor extends FileProcessor {
     }
 
     return p;
+  }
+
+  static void printHeaderMappings() {
+    if (Options.getOutputHeaderMappingFile() != null) {
+      BiMap<String, String> headerMappings = Options.getHeaderMappings();
+      File outputMappingFile = Options.getOutputHeaderMappingFile();
+
+      try {
+        if (!outputMappingFile.exists()) {
+          outputMappingFile.getParentFile().mkdirs();
+          outputMappingFile.createNewFile();
+        }
+        PrintWriter writer = new PrintWriter(outputMappingFile);
+
+        for (String headerFilePath : headerMappings.keySet()) {
+          writer.println(headerFilePath + "=" + headerMappings.get(headerFilePath));
+        }
+
+        writer.close();
+      } catch (IOException e) {
+        ErrorUtil.error(e.getMessage());
+      }
+    }
   }
 
   static void loadHeaderMappings() {
