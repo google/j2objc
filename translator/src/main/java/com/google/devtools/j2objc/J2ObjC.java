@@ -186,8 +186,14 @@ public class J2ObjC {
       error(e);
     }
 
-    TranslationProcessor translationProcessor =
-        new TranslationProcessor(createParser(), loadDeadCodeMap());
+    JdtParser parser = createParser();
+
+    if (Options.shouldPreProcess()) {
+      HeaderMappingPreProcessor headerMappingPreProcessor = new HeaderMappingPreProcessor(parser);
+      headerMappingPreProcessor.processFiles(Arrays.asList(files));
+    }
+
+    TranslationProcessor translationProcessor = new TranslationProcessor(parser, loadDeadCodeMap());
     translationProcessor.processFiles(Arrays.asList(files));
     translationProcessor.postProcess();
     checkErrors();

@@ -166,11 +166,6 @@ abstract class FileProcessor {
       ErrorUtil.error("No such file: " + filename);
       return;
     }
-    String jarDir = "";
-    if (Options.useSourceDirectories()) {
-      // Prepend the relative directory of the jar file to each entry.
-      jarDir = f.getParent() + File.separator;
-    }
     try {
       ZipFile zfile = new ZipFile(f);
       try {
@@ -180,7 +175,7 @@ abstract class FileProcessor {
           String path = entry.getName();
           if (path.endsWith(".java")) {
             Reader in = new InputStreamReader(zfile.getInputStream(entry));
-            String jarURL = String.format("jar:file:%s!%s", f.getPath(), jarDir + path);
+            String jarURL = String.format("jar:file:%s!%s", f.getPath(), path);
             processSource(jarURL, CharStreams.toString(in));
           }
         }
