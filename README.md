@@ -1,4 +1,4 @@
-# J2ObjC: Java to Objective-C Translator and Runtime #
+# J2ObjC: Java to Objective-C Translator and Runtime #  [![Build Status](https://travis-ci.org/google/j2objc.svg?branch=master)](https://travis-ci.org/google/j2objc)
 
 **Project site:** <http://j2objc.org><br>
 **J2ObjC blog:** <http://j2objc.blogspot.com><br>
