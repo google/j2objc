@@ -16,8 +16,10 @@ package com.google.devtools.j2objc.translate;
 
 import com.google.devtools.j2objc.GenerationTest;
 import com.google.devtools.j2objc.Options;
+import com.google.devtools.j2objc.ast.Statement;
 
 import java.io.IOException;
+import java.util.List;
 
 /**
  * Tests for {@link Functionizer}.
@@ -263,6 +265,15 @@ public class FunctionizerTest extends GenerationTest {
         "return A_strWithNSString_withIOSClass_(msg, [self getClass]);");
   }
 
+  public void testEnumMethodInvocation() throws IOException {
+    addSourceFile("enum EnumA { X, Y, Z; }", "EnumA.java");
+    String statement = "EnumA.valueOf(\"X\");";
+    List<Statement> stmts = translateStatements(statement);
+    assertEquals(1, stmts.size());
+    String result = generateStatement(stmts.get(0));
+    assertEquals("[EnumAEnum valueOfWithNSString:@\"X\"];", result);
+  }
+
   public void testFunctionParameter() throws IOException {
     String translation = translateSourceFile(
         "class A { private String test(String msg) { return echo(str(msg)); } "
@@ -377,7 +388,7 @@ public class FunctionizerTest extends GenerationTest {
     String translation = translateSourceFile(
         "enum Test { A { void bar() { foo(); } }; private static void foo() {} }",
         "Test", "Test.m");
-    assertTranslatedLines(translation, "- (void)bar {", "TestEnum_foo();");
+    assertTranslatedLines(translation, "- (void)bar {", "[TestEnum foo];");
     assertTranslation(translation, "static void TestEnum_foo();");
     assertTranslation(translation, "void TestEnum_foo() {");
   }
