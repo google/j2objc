@@ -156,7 +156,8 @@ public class Functionizer extends TreeVisitor {
   @Override
   public void endVisit(MethodInvocation node) {
     IMethodBinding binding = node.getMethodBinding().getMethodDeclaration();
-    if (!BindingUtil.isStatic(binding) && !functionizableMethods.contains(binding)) {
+    if ((!BindingUtil.isStatic(binding) && !functionizableMethods.contains(binding)) ||
+        BindingUtil.isEnumMethod(binding)) {
       return;
     }
 
