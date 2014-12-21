@@ -219,6 +219,9 @@ JAVA_SOURCES = \
 	util/TranslationUtil.java \
 	util/UnicodeUtils.java \
 
+TEST_SOURCES = $(shell find "$(TEST_SOURCE_DIR)/java" -name '*.java' -type f)
+TESTS = $(subst /,.,$(patsubst $(TEST_SOURCE_DIR)/java/$(BASE_PACKAGE)/%.java,%,$(TEST_SOURCES)))
+
 RESOURCES = J2ObjC.properties JRE.mappings
 RESOURCE_DIR = $(SOURCE_DIR)/resources
 TEST_RESOURCES_DIR = $(TEST_SOURCE_DIR)/resources
@@ -275,11 +278,14 @@ clean:
 test: compile-tests copy-test-resources
 	java -classpath $(TEST_CLASSPATH) -ea junit.textui.TestRunner com.google.devtools.j2objc.SmallTests
 
+$(TESTS): compile-tests copy-test-resources
+	java -classpath $(TEST_CLASSPATH) -ea junit.textui.TestRunner com.google.devtools.j2objc.$@
+
 compile-tests: $(J2OBJC_JAR)
 	@rm -rf $(TEST_DIR)
 	@mkdir -p $(TEST_DIR)
 	@javac -Xlint:unchecked -sourcepath src/test/java -classpath $(TEST_CLASSPATH) \
-	    -d $(TEST_DIR) `find src/test/java -name '*.java'`
+	    -d $(TEST_DIR) $(TEST_SOURCES)
 
 copy-test-resources: $(TEST_RESOURCE_FILES)
 
