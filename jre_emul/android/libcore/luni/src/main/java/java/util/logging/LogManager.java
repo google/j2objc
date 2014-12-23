@@ -157,15 +157,7 @@ public class LogManager {
         if (manager == null) {
             manager = new LogManager();
         }
-
-        // Disabled on iOS to improve startup performance. To enable full
-        // LogManager configureability, run readConfiguration() in the
-        // app's main().
-        // try {
-        //     manager.readConfiguration();
-        // } catch (Exception e) {
-        //     e.printStackTrace();
-        // }
+        checkConfiguration();
 
         // if global logger has been initialized, set root as its parent
         Logger root = new Logger("", null);
@@ -175,6 +167,19 @@ public class LogManager {
         manager.addLogger(root);
         manager.addLogger(Logger.global);
     }
+
+    private static native void checkConfiguration() /*-[
+      // To disable on iOS to improve startup performance, define
+      // DISABLE_JAVA_LOG_CONFIGURATION to non-zero in project.
+      #if !defined(DISABLE_JAVA_LOG_CONFIGURATION) || DISABLE_JAVA_LOG_CONFIGURATION == 0
+        @try {
+          [JavaUtilLoggingLogManager_manager_ readConfiguration];
+        }
+        @catch (JavaIoIOException *e) {
+          [e printStackTrace];
+        }
+      #endif
+    ]-*/;
 
     /**
      * Default constructor. This is not public because there should be only one
@@ -340,7 +345,7 @@ public class LogManager {
                     input = LogManager.class.getResourceAsStream("logging.properties");
                     if (input == null) {
                         input = new ByteArrayInputStream(
-                            IOSLogHandler.getDefaultProperties().getBytes());
+                            IOSLogHandler.IOS_LOG_MANAGER_DEFAULTS.getBytes());
                     }
                 }
                 readConfiguration(new BufferedInputStream(input));
