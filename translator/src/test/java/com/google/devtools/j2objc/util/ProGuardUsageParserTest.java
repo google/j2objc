@@ -99,7 +99,7 @@ public class ProGuardUsageParserTest extends TestCase {
     }
   }
 
-  // TODO(user): Use CharSource.wrap once guava_jdk5 is updated to a newer version
+  // TODO(cgdecker): Use CharSource.wrap once guava_jdk5 is updated to a newer version
   private static CharSource asCharSource(final String string) {
     return new CharSource() {
       @Override
