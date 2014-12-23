@@ -64,10 +64,8 @@ class IOSLogHandler extends Handler {
     }
   }
 
-  private static final String IOS_LOG_MANAGER_DEFAULTS_DEBUG =
+  static final String IOS_LOG_MANAGER_DEFAULTS =
       ".level=INFO\nhandlers=java.util.logging.IOSLogHandler\n";
-  private static final String IOS_LOG_MANAGER_DEFAULTS_PRODUCTION =
-      ".level=SEVERE\nhandlers=java.util.logging.IOSLogHandler\n";
 
   private static final String ASLCLIENT = "IOSLogHandler-aslclient";
 
@@ -134,13 +132,5 @@ class IOSLogHandler extends Handler {
       [threadData setObject:logClient forKey:JavaUtilLoggingIOSLogHandler_ASLCLIENT_];
     }
     asl_log(logClient->_client, NULL, aslLevel, "%s", [logMessage UTF8String]);
-  ]-*/;
-
-  public static native String getDefaultProperties() /*-[
-#ifdef DEBUG
-    return JavaUtilLoggingIOSLogHandler_IOS_LOG_MANAGER_DEFAULTS_DEBUG_;
-#else
-    return JavaUtilLoggingIOSLogHandler_IOS_LOG_MANAGER_DEFAULTS_PRODUCTION_;
-#endif
   ]-*/;
 }
