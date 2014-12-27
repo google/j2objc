@@ -556,6 +556,19 @@ public class ObjectiveCHeaderGeneratorTest extends GenerationTest {
         "FooBar_Internal *fieldFoo_;");
   }
 
+  public void testProperties() throws IOException {
+    String sourceContent =
+        "  import com.google.j2objc.annotations.Property;"
+            + "public class FooBar {"
+            + "  @Property(\"readonly, nonatomic\") private int fieldBar;"
+            + "  @Property(\"readwrite, copy, atomic\") public String fieldFoo;"
+            + "}";
+    String translation = translateSourceFile(sourceContent, "FooBar", "FooBar.h");
+    assertTranslatedLines(translation,
+        "@property (readonly, nonatomic) jint fieldBar;",
+        "@property (readwrite, copy, atomic) NSString *fieldFoo;");
+  }
+
   public void testAddIgnoreDeprecationWarningsPragmaIfDeprecatedDeclarationsIsEnabled()
       throws IOException {
     Options.enableDeprecatedDeclarations();

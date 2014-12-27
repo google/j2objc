@@ -46,7 +46,10 @@ import com.google.devtools.j2objc.types.IOSMethodBinding;
 import com.google.devtools.j2objc.types.IOSParameter;
 import com.google.devtools.j2objc.util.BindingUtil;
 import com.google.devtools.j2objc.util.NameTable;
+import com.google.j2objc.annotations.Property;
 
+import org.eclipse.jdt.core.IType;
+import org.eclipse.jdt.core.dom.IAnnotationBinding;
 import org.eclipse.jdt.core.dom.IMethodBinding;
 import org.eclipse.jdt.core.dom.ITypeBinding;
 import org.eclipse.jdt.core.dom.IVariableBinding;
@@ -473,6 +476,7 @@ public abstract class ObjectiveCSourceFileGenerator extends SourceFileGenerator 
         List<VariableDeclarationFragment> vars = field.getFragments();
         assert !vars.isEmpty();
         IVariableBinding varBinding = vars.get(0).getVariableBinding();
+        if (BindingUtil.hasAnnotation(varBinding, Property.class)) { continue; }
         ITypeBinding varType = varBinding.getType();
         // Need direct access to fields possibly from inner classes that are
         // promoted to top level classes, so must make all visible fields public.
@@ -487,31 +491,53 @@ public abstract class ObjectiveCSourceFileGenerator extends SourceFileGenerator 
           // included by a file compiled with ARC.
           print("__weak ");
         }
-        String objcType = NameTable.getSpecificObjCType(varType);
-        boolean needsAsterisk = !varType.isPrimitive() && !objcType.matches("id|id<.*>|Class");
-        if (needsAsterisk && objcType.endsWith(" *")) {
-          // Strip pointer from type, as it will be added when appending fragment.
-          // This is necessary to create "Foo *one, *two;" declarations.
-          objcType = objcType.substring(0, objcType.length() - 2);
-        }
-        print(objcType);
-        print(' ');
-        for (Iterator<VariableDeclarationFragment> it = field.getFragments().iterator();
-             it.hasNext(); ) {
-          VariableDeclarationFragment f = it.next();
-          if (needsAsterisk) {
-            print('*');
-          }
-          String name = NameTable.getName(f.getName().getBinding());
-          print(NameTable.javaFieldToObjC(name));
-          if (it.hasNext()) {
-            print(", ");
-          }
-        }
-        println(";");
+        printMember(varType, field, false);
       }
     }
     unindent();
+  }
+
+  protected void printProperties(AbstractTypeDeclaration node) {
+    for (FieldDeclaration field : TreeUtil.getFieldDeclarations(node)) {
+      int modifiers = field.getModifiers();
+      if (!Modifier.isStatic(field.getModifiers())) {
+        List<VariableDeclarationFragment> vars = field.getFragments();
+        assert !vars.isEmpty();
+        IVariableBinding varBinding = vars.get(0).getVariableBinding();
+        ITypeBinding varType = varBinding.getType();
+        IAnnotationBinding annotation = BindingUtil.getAnnotation(varBinding, Property.class);
+        if (annotation != null) {
+          print("@property ");
+          print("(" + annotation.getAllMemberValuePairs()[0].getValue() + ") ");
+          printMember(varType, field, true);
+        }
+      }
+    }
+  }
+
+  protected void printMember(ITypeBinding varType, FieldDeclaration field, boolean property) {
+    String objcType = NameTable.getSpecificObjCType(varType);
+    boolean needsAsterisk = !varType.isPrimitive() && !objcType.matches("id|id<.*>|Class");
+    if (needsAsterisk && objcType.endsWith(" *")) {
+      // Strip pointer from type, as it will be added when appending fragment.
+      // This is necessary to create "Foo *one, *two;" declarations.
+      objcType = objcType.substring(0, objcType.length() - 2);
+    }
+    print(objcType);
+    print(' ');
+    for (Iterator<VariableDeclarationFragment> it = field.getFragments().iterator();
+         it.hasNext(); ) {
+      VariableDeclarationFragment f = it.next();
+      if (needsAsterisk) {
+        print('*');
+      }
+      String name = NameTable.getName(f.getName().getBinding());
+      print(property ? name : NameTable.javaFieldToObjC(name));
+      if (it.hasNext()) {
+        print(", ");
+      }
+    }
+    println(";");
   }
 
   protected boolean isPrivateOrSynthetic(int modifiers) {

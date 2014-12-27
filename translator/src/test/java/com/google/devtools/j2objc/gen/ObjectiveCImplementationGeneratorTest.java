@@ -779,4 +779,17 @@ public class ObjectiveCImplementationGeneratorTest extends GenerationTest {
         "@Foo(CharSequence.class) class Test {}", "Test", "Test.m");
     assertTranslation(translation, "[IOSClass classWithProtocol:@protocol(JavaLangCharSequence)]");
   }
+
+  public void testProperties() throws IOException {
+    String sourceContent =
+        "  import com.google.j2objc.annotations.Property;"
+            + "public class FooBar {"
+            + "  @Property(\"readonly, nonatomic\") private int fieldBar;"
+            + "  @Property(\"readwrite, copy, atomic\") public String fieldFoo;"
+            + "}";
+    String translation = translateSourceFile(sourceContent, "FooBar", "FooBar.m");
+    assertTranslatedLines(translation,
+        "@synthesize fieldBar = fieldBar_;",
+        "@synthesize fieldFoo = fieldFoo_;");
+  }
 }

@@ -50,6 +50,7 @@ import com.google.devtools.j2objc.types.Import;
 import com.google.devtools.j2objc.util.BindingUtil;
 import com.google.devtools.j2objc.util.NameTable;
 import com.google.devtools.j2objc.util.TranslationUtil;
+import com.google.j2objc.annotations.Property;
 
 import org.eclipse.jdt.core.dom.IAnnotationBinding;
 import org.eclipse.jdt.core.dom.IMemberValuePairBinding;
@@ -58,6 +59,7 @@ import org.eclipse.jdt.core.dom.ITypeBinding;
 import org.eclipse.jdt.core.dom.IVariableBinding;
 import org.eclipse.jdt.core.dom.Modifier;
 
+import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
@@ -206,6 +208,7 @@ public class ObjectiveCImplementationGenerator extends ObjectiveCSourceFileGener
       newline();
       syncLineNumbers(node.getName()); // avoid doc-comment
       printf("@implementation %s\n", typeName);
+      printProperties(node);
       printStaticReferencesMethod(node);
       printStaticVars(node);
       printMethods(node);
@@ -248,6 +251,29 @@ public class ObjectiveCImplementationGenerator extends ObjectiveCSourceFileGener
       printMetadata(node);
     }
     println("\n@end");
+  }
+
+  @Override
+  protected void printProperties(AbstractTypeDeclaration node) {
+    newline();
+    for (FieldDeclaration field : TreeUtil.getFieldDeclarations(node)) {
+      int modifiers = field.getModifiers();
+      if (!Modifier.isStatic(field.getModifiers())) {
+        List<VariableDeclarationFragment> vars = field.getFragments();
+        assert !vars.isEmpty();
+        IVariableBinding varBinding = vars.get(0).getVariableBinding();
+        ITypeBinding varType = varBinding.getType();
+        IAnnotationBinding annotation = BindingUtil.getAnnotation(varBinding, Property.class);
+        if (annotation != null) {
+          for (Iterator<VariableDeclarationFragment> it = field.getFragments().iterator();
+               it.hasNext(); ) {
+            VariableDeclarationFragment f = it.next();
+            String name = NameTable.getName(f.getName().getBinding());
+            println("@synthesize " + name + " = " + NameTable.javaFieldToObjC(name) + ";");
+          }
+        }
+      }
+    }
   }
 
   private void printAnnotationConstructor(ITypeBinding annotation) {

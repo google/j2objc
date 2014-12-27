@@ -141,7 +141,8 @@ public class ObjectiveCHeaderGenerator extends ObjectiveCSourceFileGenerator {
     if (!isInterface) {
       println(" {");
       printInstanceVariables(node, false);
-      println("}");
+      println("}\n");
+      printProperties(node);
     }
     printDeclarations(node.getBodyDeclarations());
     println("\n@end");
@@ -310,7 +311,8 @@ public class ObjectiveCHeaderGenerator extends ObjectiveCSourceFileGenerator {
     }
     println(" > {");
     printInstanceVariables(node, false);
-    println("}");
+    println("}\n");
+    printProperties(node);
     printDeclarations(node.getBodyDeclarations());
     println("\n@end");
     printStaticInitFunction(node);
