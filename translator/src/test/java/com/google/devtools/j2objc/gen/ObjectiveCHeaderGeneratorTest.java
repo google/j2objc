@@ -558,15 +558,26 @@ public class ObjectiveCHeaderGeneratorTest extends GenerationTest {
 
   public void testProperties() throws IOException {
     String sourceContent =
-        "  import com.google.j2objc.annotations.Property;"
-            + "public class FooBar {"
-            + "  @Property(\"readonly, nonatomic\") private int fieldBar;"
-            + "  @Property(\"readwrite, copy, atomic\") public String fieldFoo;"
-            + "}";
+        "import com.google.j2objc.annotations.Property; "
+        + "public class FooBar {"
+        + "  @Property(\"readonly, nonatomic\") private int fieldBar, fieldBaz;"
+        + "  @Property private int fieldNonAtomic;"
+        + "  @Property(\"readwrite, dummy_be_gone\") private String fieldCopy;"
+        + "  @Property private boolean fieldBool;"
+        + "  @Property(\"nonatomic, readonly, weak, setter=passthrough\") private int fieldReorder;"
+        + "  public int getFieldBaz() { return 1; }"
+        + "  public void setFieldNonAtomic(int value) { }"
+        + "  public void setFieldBaz(int value, int option) { }"
+        + "  public boolean isFieldBool() { return fieldBool; }"
+        + "}";
     String translation = translateSourceFile(sourceContent, "FooBar", "FooBar.h");
     assertTranslatedLines(translation,
         "@property (readonly, nonatomic) jint fieldBar;",
-        "@property (readwrite, copy, atomic) NSString *fieldFoo;");
+        "@property (readonly, nonatomic, getter=getFieldBaz) jint fieldBaz;",
+        "@property (nonatomic) jint fieldNonAtomic;",
+        "@property (copy) NSString *fieldCopy;",
+        "@property (nonatomic, getter=isFieldBool) jboolean fieldBool;",
+        "@property (weak, readonly, nonatomic, setter=passthrough) jint fieldReorder;");
   }
 
   public void testAddIgnoreDeprecationWarningsPragmaIfDeprecatedDeclarationsIsEnabled()

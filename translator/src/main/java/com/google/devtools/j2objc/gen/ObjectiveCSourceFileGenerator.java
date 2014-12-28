@@ -48,7 +48,6 @@ import com.google.devtools.j2objc.util.BindingUtil;
 import com.google.devtools.j2objc.util.NameTable;
 import com.google.j2objc.annotations.Property;
 
-import org.eclipse.jdt.core.IType;
 import org.eclipse.jdt.core.dom.IAnnotationBinding;
 import org.eclipse.jdt.core.dom.IMethodBinding;
 import org.eclipse.jdt.core.dom.ITypeBinding;
@@ -56,9 +55,13 @@ import org.eclipse.jdt.core.dom.IVariableBinding;
 import org.eclipse.jdt.core.dom.Modifier;
 
 import java.text.BreakIterator;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
+import java.util.Set;
 
 /**
  * Generates source files from AST types.  This class handles common actions
@@ -491,7 +494,28 @@ public abstract class ObjectiveCSourceFileGenerator extends SourceFileGenerator 
           // included by a file compiled with ARC.
           print("__weak ");
         }
-        printMember(varType, field, false);
+        String objcType = NameTable.getSpecificObjCType(varType);
+        boolean needsAsterisk = !varType.isPrimitive() && !objcType.matches("id|id<.*>|Class");
+        if (needsAsterisk && objcType.endsWith(" *")) {
+          // Strip pointer from type, as it will be added when appending fragment.
+          // This is necessary to create "Foo *one, *two;" declarations.
+          objcType = objcType.substring(0, objcType.length() - 2);
+        }
+        print(objcType);
+        print(' ');
+        for (Iterator<VariableDeclarationFragment> it = field.getFragments().iterator();
+             it.hasNext(); ) {
+          VariableDeclarationFragment f = it.next();
+          if (needsAsterisk) {
+            print('*');
+          }
+          String name = NameTable.getName(f.getName().getBinding());
+          print(NameTable.javaFieldToObjC(NameTable.getName(f.getName().getBinding())));
+          if (it.hasNext()) {
+            print(", ");
+          }
+        }
+        println(";");
       }
     }
     unindent();
@@ -507,37 +531,47 @@ public abstract class ObjectiveCSourceFileGenerator extends SourceFileGenerator 
         ITypeBinding varType = varBinding.getType();
         IAnnotationBinding annotation = BindingUtil.getAnnotation(varBinding, Property.class);
         if (annotation != null) {
-          print("@property ");
-          print("(" + annotation.getAllMemberValuePairs()[0].getValue() + ") ");
-          printMember(varType, field, true);
+          String attributesStr = (String)annotation.getAllMemberValuePairs()[0].getValue();
+          Set<String> attributes = new HashSet<String>(Arrays.asList(attributesStr.split(",\\s*")));
+          // readwrite, strong, and atomic are implied and thus, unnecessary.
+          attributes.remove("readwrite");
+          attributes.remove("strong");
+          attributes.remove("atomic");
+          String objcType = NameTable.getSpecificObjCType(varType);
+          boolean needsAsterisk = !varType.isPrimitive() && !objcType.matches("id|id<.*>|Class");
+          if (needsAsterisk && objcType.endsWith(" *")) {
+            objcType = objcType.substring(0, objcType.length() - 2);
+          }
+          // Unlike instance variables, give properties their own line.
+          for (Iterator<VariableDeclarationFragment> it = field.getFragments().iterator();
+               it.hasNext(); ) {
+            // Duplicate attributes for each property
+            Set<String> varAttributes = new HashSet<String>(attributes);
+            String name = NameTable.getName(it.next().getName().getBinding());
+            boolean nonatomic = false;
+            String getter = "";
+            // Custom setters/getters are nonatomic
+            nonatomic = BindingUtil.findSetter(node, varType, name) != null;
+            IMethodBinding method = BindingUtil.findGetter(node, varType, name);
+            if (method != null) {
+              getter = "getter=" + method.getName();
+              nonatomic = true;
+            }
+            if (nonatomic) { varAttributes.add("nonatomic"); }
+            if (!getter.isEmpty()) { varAttributes.add(getter); }
+            if (varType.getName().equals("String")) { varAttributes.add("copy"); };
+            print("@property ");
+            print(BindingUtil.buildPropertyAttributes(new ArrayList<String>(varAttributes)));
+            print(objcType);
+            print(' ');
+            if (needsAsterisk) {
+              print('*');
+            }
+            println(name + ";");
+          }
         }
       }
     }
-  }
-
-  protected void printMember(ITypeBinding varType, FieldDeclaration field, boolean property) {
-    String objcType = NameTable.getSpecificObjCType(varType);
-    boolean needsAsterisk = !varType.isPrimitive() && !objcType.matches("id|id<.*>|Class");
-    if (needsAsterisk && objcType.endsWith(" *")) {
-      // Strip pointer from type, as it will be added when appending fragment.
-      // This is necessary to create "Foo *one, *two;" declarations.
-      objcType = objcType.substring(0, objcType.length() - 2);
-    }
-    print(objcType);
-    print(' ');
-    for (Iterator<VariableDeclarationFragment> it = field.getFragments().iterator();
-         it.hasNext(); ) {
-      VariableDeclarationFragment f = it.next();
-      if (needsAsterisk) {
-        print('*');
-      }
-      String name = NameTable.getName(f.getName().getBinding());
-      print(property ? name : NameTable.javaFieldToObjC(name));
-      if (it.hasNext()) {
-        print(", ");
-      }
-    }
-    println(";");
   }
 
   protected boolean isPrivateOrSynthetic(int modifiers) {

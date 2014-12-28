@@ -14,8 +14,12 @@
 
 package com.google.devtools.j2objc.util;
 
+import com.google.common.base.Joiner;
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
+import com.google.common.collect.Ordering;
 import com.google.common.collect.Sets;
+import com.google.devtools.j2objc.ast.AbstractTypeDeclaration;
 import com.google.j2objc.annotations.Weak;
 import com.google.j2objc.annotations.WeakOuter;
 
@@ -28,7 +32,9 @@ import org.eclipse.jdt.core.dom.IVariableBinding;
 import org.eclipse.jdt.core.dom.Modifier;
 
 import java.lang.annotation.RetentionPolicy;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.Deque;
 import java.util.List;
@@ -364,5 +370,74 @@ public final class BindingUtil {
     String methodName = NameTable.getName(m);
     return methodName.equals(NameTable.FINALIZE_METHOD)
         || methodName.equals(NameTable.DEALLOC_METHOD);
+  }
+
+  public static boolean isVoid(ITypeBinding type) {
+    return type.isPrimitive() && type.getName().equals("void");
+  }
+
+  /**
+   * Return valid setter for the given type and name if it exists.
+   */
+  public static IMethodBinding findSetter(AbstractTypeDeclaration node, ITypeBinding type, String name) {
+    name = "set" + NameTable.capitalize(name);
+    for (IMethodBinding method : node.getTypeBinding().getDeclaredMethods()) {
+      if (method.getName().equals(name) && isVoid(method.getReturnType()) &&
+          method.getParameterTypes().length == 1 &&
+          method.getParameterTypes()[0] == type) {
+        return method;
+      }
+    }
+    return null;
+  }
+
+  /**
+   * Return valid getter for the given type and name if it exists
+   */
+  public static IMethodBinding findGetter(AbstractTypeDeclaration node, ITypeBinding type, String name) {
+    String prefix = "get";
+    if (type.getName().equals("boolean")) { prefix = "is"; }
+    name = prefix + NameTable.capitalize(name);
+    for (IMethodBinding method : node.getTypeBinding().getDeclaredMethods()) {
+      if (method.getName().equals(name) && method.getReturnType() == type &&
+          method.getParameterTypes().length == 0) {
+        return method;
+      }
+    }
+    return null;
+  }
+
+  private static List<String> ATTRIBUTES = ImmutableList.of(
+      "weak", "readonly", "copy", "assign", "nonatomic",
+      "getter", "setter", "retain", "unsafe_unretained");
+  private static Ordering<String> ATTRIBUTE_ORDERING = Ordering.explicit(ATTRIBUTES);
+  private static Comparator<String> ATTRIBUTES_COMPARATOR = new Comparator<String>() {
+    public int compare(String a, String b) {
+      if (a.startsWith("getter")) { a = "getter"; }
+      if (a.startsWith("setter")) { a = "setter"; }
+      if (b.startsWith("getter")) { b = "getter"; }
+      if (b.startsWith("setter")) { b = "setter"; }
+      return ATTRIBUTE_ORDERING.compare(a, b);
+    }
+  };
+
+  /**
+   * Constructs attributes for Objective-C properties.
+   */
+  public static String buildPropertyAttributes(List<String> attributes) {
+    List<String> filteredAttributes = new ArrayList<String>();
+    for (String attribute : attributes) {
+      if (ATTRIBUTES.contains(attribute) ||
+          attribute.startsWith("getter") ||
+          attribute.startsWith("setter")) {
+        filteredAttributes.add(attribute);
+      }
+    }
+    Collections.sort(filteredAttributes, ATTRIBUTES_COMPARATOR);
+    if (filteredAttributes.size() == 0) {
+      return "";
+    } else {
+      return "(" + Joiner.on(", ").join(filteredAttributes) + ") ";
+    }
   }
 }
