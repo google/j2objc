@@ -571,12 +571,25 @@ public class ObjectiveCHeaderGeneratorTest extends GenerationTest {
         + "  public boolean isFieldBool() { return fieldBool; }"
         + "}";
     String translation = translateSourceFile(sourceContent, "FooBar", "FooBar.h");
-    assertTranslatedLines(translation,
-        "@property (readonly, nonatomic) jint fieldBar;",
-        "@property (readonly, nonatomic, getter=getFieldBaz) jint fieldBaz;",
-        "@property (nonatomic) jint fieldNonAtomic;",
-        "@property (copy) NSString *fieldCopy;",
-        "@property (nonatomic, getter=isFieldBool) jboolean fieldBool;",
+
+    // Property on its own line.
+    assertTranslation(translation, "@property (readonly, nonatomic) jint fieldBar;");
+
+    // Should split out fieldBaz and include the declared getter.
+    assertTranslation(translation,
+        "@property (readonly, nonatomic, getter=getFieldBaz) jint fieldBaz;");
+
+    // Set nonatomic since a setter is declared.
+    assertTranslation(translation, "@property (nonatomic) jint fieldNonAtomic;");
+
+    // Set copy for strings.
+    assertTranslation(translation, "@property (copy) NSString *fieldCopy;");
+
+    // Test boolean getter.
+    assertTranslation(translation, "@property (nonatomic, getter=isFieldBool) jboolean fieldBool;");
+
+    // Reorder property attributes and pass setter through.
+    assertTranslation(translation,
         "@property (weak, readonly, nonatomic, setter=passthrough) jint fieldReorder;");
   }
 
