@@ -75,6 +75,8 @@ public class ErrorUtil {
 
   public static void error(String message) {
     // Adding a new line so as to preserve the original message format.
+    // If the original message happens to start with "<file>:<line>: ",
+    // Xcode will be able to pick it up.
     String fullMessage = "error:" + LINE_FEED + message;
     errorMessages.add(fullMessage);
     errorStream.println(fullMessage);
@@ -83,6 +85,8 @@ public class ErrorUtil {
 
   public static void warning(String message) {
     // Adding a new line so as to preserve the original message format.
+    // If the original message happens to start with "<file>:<line>: ",
+    // Xcode will be able to pick it up.
     String fullMessage = "warning:" + LINE_FEED + message;
     errorStream.println(fullMessage);
     warningCount++;
