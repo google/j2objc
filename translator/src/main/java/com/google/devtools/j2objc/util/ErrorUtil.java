@@ -38,6 +38,7 @@ public class ErrorUtil {
   private static String currentFileName = null;
   private static PrintStream errorStream = System.err;
   private static List<String> errorMessages = Lists.newArrayList();
+  private static final String LINE_FEED = System.getProperty("line.separator");
 
   public static void reset() {
     errorCount = 0;
@@ -73,13 +74,17 @@ public class ErrorUtil {
   }
 
   public static void error(String message) {
-    errorMessages.add(message);
-    errorStream.println("error: " + message);
+    // Adding a new line so as to preserve the original message format.
+    String fullMessage = "error:" + LINE_FEED + message;
+    errorMessages.add(fullMessage);
+    errorStream.println(fullMessage);
     errorCount++;
   }
 
   public static void warning(String message) {
-    errorStream.println("warning: " + message);
+    // Adding a new line so as to preserve the original message format.
+    String fullMessage = "warning:" + LINE_FEED + message;
+    errorStream.println(fullMessage);
     warningCount++;
   }
 
