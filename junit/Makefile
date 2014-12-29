@@ -54,6 +54,7 @@ JUNIT_PUBLIC_SOURCES = \
     org/junit/Test.java \
     org/junit/internal/JUnitSystem.java \
     org/junit/internal/RealSystem.java \
+    org/junit/internal/TextListener.java \
     org/junit/internal/runners/model/ReflectiveCallable.java \
     org/junit/rules/MethodRule.java \
     org/junit/rules/RunRules.java \
@@ -121,8 +122,7 @@ JUNIT_INTERNAL_SOURCES = \
     org/junit/internal/runners/statements/InvokeMethod.java \
     org/junit/internal/runners/statements/RunAfters.java \
     org/junit/internal/runners/statements/RunBefores.java \
-    org/junit/internal/runners/SuiteMethod.java \
-    org/junit/internal/TextListener.java
+    org/junit/internal/runners/SuiteMethod.java
 
 MODIFIED_SOURCES = \
     junit/framework/TestCase.java \

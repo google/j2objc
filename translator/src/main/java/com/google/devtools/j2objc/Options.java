@@ -19,6 +19,8 @@ package com.google.devtools.j2objc;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Splitter;
+import com.google.common.collect.BiMap;
+import com.google.common.collect.HashBiMap;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.io.Resources;
@@ -31,11 +33,14 @@ import java.net.URL;
 import java.nio.charset.Charset;
 import java.nio.charset.UnsupportedCharsetException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
+import javax.annotation.Nullable;
 
 /**
  * The set of tool properties, initialized by the command-line arguments.
@@ -54,11 +59,13 @@ public class Options {
   private static File outputDirectory = new File(".");
   private static OutputStyleOption outputStyle = OutputStyleOption.PACKAGE;
   private static String implementationSuffix = ".m";
-  private static boolean ignoreMissingImports = false;
   private static MemoryManagementOption memoryManagementOption = null;
   private static boolean emitLineDirectives = false;
   private static boolean warningsAsErrors = false;
   private static boolean deprecatedDeclarations = false;
+  // Keys are header paths (with a .h), values are class names
+  private static BiMap<String, String> headerMappings = HashBiMap.create();
+  private static File outputHeaderMappingFile = null;
   private static Map<String, String> classMappings = Maps.newLinkedHashMap();
   private static Map<String, String> methodMappings = Maps.newLinkedHashMap();
   private static boolean memoryDebug = false;
@@ -77,6 +84,10 @@ public class Options {
   private static int batchTranslateMaximum = 0;
 
   private static File proGuardUsageFile = null;
+
+  static final String DEFAULT_HEADER_MAPPING_FILE = "mappings.j2objc";
+  // Null if not set (means we use the default). Can be empty also (means we use no mapping files).
+  private static List<String> headerMappingFiles = null;
 
   private static final String JRE_MAPPINGS_FILE = "JRE.mappings";
   private static final List<String> mappingFiles = Lists.newArrayList(JRE_MAPPINGS_FILE);
@@ -142,6 +153,10 @@ public class Options {
     Logger.getLogger("com.google.devtools.j2objc").setLevel(level);
   }
 
+  public static boolean isVerbose() {
+    return Logger.getLogger("com.google.devtools.j2objc").getLevel() == Level.FINEST;
+  }
+
   /**
    * Load the options from a command-line, returning the arguments that were
    * not option-related (usually files).  If help is requested or an error is
@@ -193,6 +208,21 @@ public class Options {
           usage("--mapping requires an argument");
         }
         mappingFiles.add(args[nArg]);
+      } else if (arg.equals("--header-mapping")) {
+        if (++nArg == args.length) {
+          usage("--header-mapping requires an argument");
+        }
+        if (args[nArg].isEmpty()) {
+          // For when user supplies an empty mapping files list. Otherwise the default will be used.
+          headerMappingFiles = Collections.<String>emptyList();
+        } else {
+          headerMappingFiles = Lists.newArrayList(args[nArg].split(","));
+        }
+      } else if (arg.equals("--output-header-mapping")) {
+        if (++nArg == args.length) {
+          usage("--output-header-mapping requires an argument");
+        }
+        outputHeaderMappingFile = new File(args[nArg]);
       } else if (arg.equals("--dead-code-report")) {
         if (++nArg == args.length) {
           usage("--dead-code-report requires an argument");
@@ -221,7 +251,7 @@ public class Options {
           usage("unsupported language: " + s);
         }
       } else if (arg.equals("--ignore-missing-imports")) {
-        ignoreMissingImports = true;
+        ErrorUtil.error("--ignore-missing-imports is no longer supported");
       } else if (arg.equals("-use-reference-counting")) {
         checkMemoryManagementOption(MemoryManagementOption.REFERENCE_COUNTING);
       } else if (arg.equals("--no-package-directories")) {
@@ -466,10 +496,6 @@ public class Options {
     return implementationSuffix;
   }
 
-  public static boolean ignoreMissingImports() {
-    return ignoreMissingImports;
-  }
-
   public static boolean useReferenceCounting() {
     return memoryManagementOption == MemoryManagementOption.REFERENCE_COUNTING;
   }
@@ -525,8 +551,21 @@ public class Options {
     return methodMappings;
   }
 
+  public static BiMap<String, String> getHeaderMappings() {
+    return headerMappings;
+  }
+
   public static List<String> getMappingFiles() {
     return mappingFiles;
+  }
+
+  @Nullable
+  public static List<String> getHeaderMappingFiles() {
+    return headerMappingFiles;
+  }
+
+  public static void setHeaderMappingFiles(List<String> headerMappingFiles) {
+    Options.headerMappingFiles = headerMappingFiles;
   }
 
   public static String getUsageMessage() {
@@ -543,6 +582,15 @@ public class Options {
 
   public static File getProGuardUsageFile() {
     return proGuardUsageFile;
+  }
+
+  public static File getOutputHeaderMappingFile() {
+    return outputHeaderMappingFile;
+  }
+
+  @VisibleForTesting
+  public static void setOutputHeaderMappingFile(File outputHeaderMappingFile) {
+    Options.outputHeaderMappingFile = outputHeaderMappingFile;
   }
 
   public static List<String> getBootClasspath() {
@@ -702,4 +750,8 @@ public class Options {
     hidePrivateMembers = false;
   }
 
+  public static boolean shouldPreProcess() {
+    return Options.getHeaderMappingFiles() != null &&
+        Options.useSourceDirectories();
+  }
 }

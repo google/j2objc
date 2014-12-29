@@ -324,4 +324,7 @@ J2OBJC_STATIC_FIELD_GETTER(NSString, CASE_INSENSITIVE_ORDER_, id<JavaUtilCompara
 FOUNDATION_EXPORT IOSObjectArray *NSString_serialPersistentFields_;
 J2OBJC_STATIC_FIELD_GETTER(NSString, serialPersistentFields_, IOSObjectArray *)
 
+/** Function that returns String hash values as specified by java.lang.String. */
+FOUNDATION_EXPORT jint javaStringHashCode(NSString *string);
+
 #endif // _NSString_JavaString_H_

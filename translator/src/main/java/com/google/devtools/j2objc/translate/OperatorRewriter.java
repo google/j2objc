@@ -24,6 +24,7 @@ import com.google.devtools.j2objc.ast.Expression;
 import com.google.devtools.j2objc.ast.FieldAccess;
 import com.google.devtools.j2objc.ast.FunctionInvocation;
 import com.google.devtools.j2objc.ast.InfixExpression;
+import com.google.devtools.j2objc.ast.MethodDeclaration;
 import com.google.devtools.j2objc.ast.NullLiteral;
 import com.google.devtools.j2objc.ast.NumberLiteral;
 import com.google.devtools.j2objc.ast.PrefixExpression;
@@ -31,6 +32,7 @@ import com.google.devtools.j2objc.ast.QualifiedName;
 import com.google.devtools.j2objc.ast.SimpleName;
 import com.google.devtools.j2objc.ast.StringLiteral;
 import com.google.devtools.j2objc.ast.ThisExpression;
+import com.google.devtools.j2objc.ast.TreeNode;
 import com.google.devtools.j2objc.ast.TreeUtil;
 import com.google.devtools.j2objc.ast.TreeVisitor;
 import com.google.devtools.j2objc.types.Types;
@@ -75,7 +77,7 @@ public class OperatorRewriter extends TreeVisitor {
       }
       if (BindingUtil.isStatic(var)) {
         node.replaceWith(newStaticAssignInvocation(var, rhs));
-      } else if (var.isField() && !BindingUtil.isWeakReference(var)) {
+      } else if (var.isField() && !BindingUtil.isWeakReference(var) && !inDeallocMethod(lhs)) {
         Expression target = getTarget(lhs, var);
         node.replaceWith(newFieldSetterInvocation(var, target, rhs));
       }
@@ -89,6 +91,17 @@ public class OperatorRewriter extends TreeVisitor {
         node.replaceWith(invocation);
       }
     }
+  }
+
+  private boolean inDeallocMethod(TreeNode node) {
+    MethodDeclaration method = TreeUtil.getOwningMethod(node);
+    if (method == null) {
+      return false;
+    }
+    String methodName = method.getName().getIdentifier();
+    return (methodName.equals(NameTable.DEALLOC_METHOD)
+        || methodName.equals(NameTable.FINALIZE_METHOD))
+        && method.getParameters().isEmpty();
   }
 
   public void endVisit(InfixExpression node) {

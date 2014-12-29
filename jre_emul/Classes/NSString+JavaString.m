@@ -930,25 +930,25 @@ NSString *NSString_formatWithJavaUtilLocale_withNSString_withNSObjectArray_(
   return [self isEqualToString:[sb description]];
 }
 
-- (NSUInteger)hash {
+jint javaStringHashCode(NSString *string) {
   static const char *hashKey = "__JAVA_STRING_HASH_CODE_KEY__";
-  id cachedHash = objc_getAssociatedObject(self, hashKey);
+  id cachedHash = objc_getAssociatedObject(string, hashKey);
   if (cachedHash) {
-    return [(JavaLangInteger *) cachedHash intValue];
+    return (jint) [(JavaLangInteger *) cachedHash intValue];
   }
-  int len = (int)[self length];
-  int hash = 0;
+  jint len = (jint)[string length];
+  jint hash = 0;
   if (len > 0) {
     unichar *chars = malloc(len * sizeof(unichar));
-    [self getCharacters:chars range:NSMakeRange(0, len)];
+    [string getCharacters:chars range:NSMakeRange(0, len)];
     for (int i = 0; i < len; i++) {
       hash = 31 * hash + (int)chars[i];
     }
     free(chars);
   }
-  if (![self isKindOfClass:[NSMutableString class]]) {
+  if (![string isKindOfClass:[NSMutableString class]]) {
     // Only cache hash for immutable strings.
-    objc_setAssociatedObject(self, hashKey, JavaLangInteger_valueOfWithInt_(hash),
+    objc_setAssociatedObject(string, hashKey, JavaLangInteger_valueOfWithInt_(hash),
                              OBJC_ASSOCIATION_RETAIN);
   }
   return hash;

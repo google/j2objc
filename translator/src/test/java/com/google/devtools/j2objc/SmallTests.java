@@ -59,18 +59,17 @@ import com.google.devtools.j2objc.types.ImplementationImportCollectorTest;
 import com.google.devtools.j2objc.types.RenamedTypeBindingTest;
 import com.google.devtools.j2objc.util.BindingUtilTest;
 import com.google.devtools.j2objc.util.DeadCodeMapTest;
-import com.google.devtools.j2objc.util.FileUtilTest;
 import com.google.devtools.j2objc.util.NameTableTest;
 import com.google.devtools.j2objc.util.ProGuardUsageParserTest;
 import com.google.devtools.j2objc.util.UnicodeUtilsTest;
+
+import com.google.devtools.j2objc.util.FileUtilTest;
 
 import junit.framework.Test;
 import junit.framework.TestSuite;
 
 /**
  * Returns a suite of all small tests in this package.
- *
- * @author Tom Ball
  */
 public class SmallTests {
 

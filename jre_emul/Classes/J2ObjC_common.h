@@ -106,6 +106,21 @@ typedef double          jdouble;        /* 64-bit IEEE 754 */
 #endif
 
 /*!
+ * Defines the getter for an enum constant. For enum class "FooEnum" and constant "BAR"
+ * the getter will have the following signature:
+ *   inline Foo *FooEnum_BAR();
+ *
+ * @define J2OBJC_ENUM_CONSTANT_GETTER
+ * @param CLASS The enum class (must end in "Enum").
+ * @param CONSTANT The name of the enum constant.
+ */
+#define J2OBJC_ENUM_CONSTANT_GETTER(CLASS, CONSTANT) \
+  __attribute__((always_inline)) inline CLASS *CLASS##_get_##CONSTANT() { \
+    CLASS##_init(); \
+    return CLASS##_##CONSTANT; \
+  }
+
+/*!
  * Adds noop implementations for the memory management methods. This helps to
  * avoid the cost of incrementing and decrementing the retain count for objects
  * that should never be dealloc'ed.

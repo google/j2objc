@@ -40,9 +40,9 @@ public class StatementGeneratorTest extends GenerationTest {
   // Verify that return statements output correctly for reserved words.
   public void testReturnReservedWord() throws IOException {
     String translation = translateSourceFile(
-        "public class Test { enum Type { TYPE_BOOL; } Type test() { return Type.TYPE_BOOL; }}",
+        "public class Test { static final String BOOL = \"bool\"; String test() { return BOOL; }}",
         "Test", "Test.m");
-    assertTranslation(translation, "return Test_TypeEnum_get_TYPE_BOOL_();");
+    assertTranslation(translation, "return Test_BOOL__;");
   }
 
   // Verify that super.method(), where method is static, sends the
@@ -393,7 +393,7 @@ public class StatementGeneratorTest extends GenerationTest {
         "Test", "Test.m");
     assertTranslation(translation, "Test_set_i_(self, otherI);");
     assertTranslation(translation, "j_ = otherJ;");
-    assertTranslation(translation, "Test_set_i_(self, nil);");
+    assertTranslation(translation, "RELEASE_(i_);");
   }
 
   public void testInnerInnerClassFieldAccess() throws IOException {
@@ -1614,7 +1614,7 @@ public class StatementGeneratorTest extends GenerationTest {
     String translation = translateSourceFile(
         "public class Test { enum Type { TYPE_BOOL; } Type test() { return Type.TYPE_BOOL; }}",
         "Test", "Test.m");
-    assertTranslation(translation, "return Test_TypeEnum_get_TYPE_BOOL_();");
+    assertTranslation(translation, "return Test_TypeEnum_get_TYPE_BOOL();");
   }
 
   public void testMakeQuotedStringHang() throws IOException {

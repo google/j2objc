@@ -189,4 +189,12 @@ public class NameTableTest extends GenerationTest {
         + "@Override void test(String s, int n) {}}}", "A", "A.m");
     assertWarningCount(1);
   }
+
+  // Verify enum constant names are not modified, even if they use a reserved word.
+  // This is necessary for compatibility with proto compiler output.
+  public void testGetReservedEnumConstantName() throws IOException {
+    String translation = translateSourceFile("enum E { HUGE }", "E", "E.h");
+    assertTranslation(translation, "HUGE");
+    assertNotInTranslation(translation, "HUGE_");
+  }
 }
