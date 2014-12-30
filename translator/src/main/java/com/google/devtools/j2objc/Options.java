@@ -19,8 +19,6 @@ package com.google.devtools.j2objc;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Splitter;
-import com.google.common.collect.BiMap;
-import com.google.common.collect.HashBiMap;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.io.Resources;
@@ -63,8 +61,8 @@ public class Options {
   private static boolean emitLineDirectives = false;
   private static boolean warningsAsErrors = false;
   private static boolean deprecatedDeclarations = false;
-  // Keys are header paths (with a .h), values are class names
-  private static BiMap<String, String> headerMappings = HashBiMap.create();
+  // Keys are class names, values are header paths (with a .h).
+  private static Map<String, String> headerMappings = Maps.newLinkedHashMap();
   private static File outputHeaderMappingFile = null;
   private static Map<String, String> classMappings = Maps.newLinkedHashMap();
   private static Map<String, String> methodMappings = Maps.newLinkedHashMap();
@@ -551,7 +549,7 @@ public class Options {
     return methodMappings;
   }
 
-  public static BiMap<String, String> getHeaderMappings() {
+  public static Map<String, String> getHeaderMappings() {
     return headerMappings;
   }
 

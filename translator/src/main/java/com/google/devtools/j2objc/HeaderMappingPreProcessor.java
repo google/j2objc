@@ -43,7 +43,7 @@ public class HeaderMappingPreProcessor extends FileProcessor {
 
     for (Object type : unit.types()) {
       Options.getHeaderMappings().put(
-          headerRelativePath, getTypeQualifiedName(type, unit));
+          getTypeQualifiedName(type, unit), headerRelativePath);
     }
   }
 

@@ -1,1 +1,2 @@
-my/mapping/custom/Test.h=unit.mapping.custom.Test
+unit.mapping.custom.Test=my/mapping/custom/Test.h
+unit.mapping.custom.AnotherTest=my/mapping/custom/Test.h
