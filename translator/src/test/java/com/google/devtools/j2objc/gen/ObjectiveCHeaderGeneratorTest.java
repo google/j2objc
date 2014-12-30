@@ -165,17 +165,52 @@ public class ObjectiveCHeaderGeneratorTest extends GenerationTest {
 
     String translation = translateSourceFile(getTranslatedFile("unit/test/AnotherDummy.java"),
         "AnotherDummy", "AnotherDummy.h");
-
-    // The temp directory path we get includes "." in it, which will be converted to "/" by j2objc
-    // when generating the import path. We probably will only hit this case in tests.
-    assertTranslation(translation,
-        "#include \"" + getTempDir().replace(".", "/") + "/unit/test/Dummy.h\"");
+    assertTranslation(translation, "#include \"" + getTempDir() + "/unit/test/Dummy.h\"");
 
     Map<String, String> outputMapping = Options.getHeaderMappings();
-    assertEquals("unit.test.AnotherDummy",
-        outputMapping.get(getTempDir() + "/unit/test/AnotherDummy.h"));
-    assertEquals("unit.test.Dummy", outputMapping.get(getTempDir() + "/unit/test/Dummy.h"));
-    assertEquals("unit.mapping.custom.Test", outputMapping.get("my/mapping/custom/Test.h"));
+    assertEquals(getTempDir() + "/unit/test/AnotherDummy.h",
+        outputMapping.get("unit.test.AnotherDummy"));
+    assertEquals(getTempDir() + "/unit/test/Dummy.h", outputMapping.get("unit.test.Dummy"));
+    assertEquals("my/mapping/custom/Test.h", outputMapping.get("unit.mapping.custom.Test"));
+  }
+
+  public void testOutputHeaderFileMappingWithMultipleClassesInOneHeader() throws IOException {
+    Options.setHeaderMappingFiles(Lists.newArrayList("testMappings.j2objc"));
+    Options.setOutputHeaderMappingFile(new File("path/to/Dummy"));
+    Options.setPackageDirectories(Options.OutputStyleOption.SOURCE);
+    addSourceFile("package unit.mapping.custom; public class Test { }",
+        "unit/mapping/custom/Test.java");
+    addSourceFile("package unit.mapping.custom; public class AnotherTest { }",
+        "unit/mapping/custom/AnotherTest.java");
+    addSourceFile(
+        "package unit.test;" +
+        "import unit.mapping.custom.Test;" +
+        "public class Dummy extends Test { " +
+        "    public Dummy() {}" +
+        "}", "unit/test/Dummy.java");
+    addSourceFile(
+        "package unit.test;" +
+        "import unit.mapping.custom.AnotherTest;" +
+        "public class AnotherDummy extends AnotherTest { " +
+        "    public AnotherDummy() {}" +
+        "}", "unit/test/AnotherDummy.java");
+
+    loadSourceFileHeaderMappings("unit/test/Dummy.java", "unit/test/AnotherDummy.java");
+    loadHeaderMappings();
+
+    String translationForDummy = translateSourceFile(getTranslatedFile("unit/test/Dummy.java"),
+        "Dummy", "Dummy.h");
+    String translationForAnotherDummy = translateSourceFile(
+        getTranslatedFile("unit/test/AnotherDummy.java"), "AnotherDummy", "AnotherDummy.h");
+    assertTranslation(translationForDummy, "#include \"my/mapping/custom/Test.h\"");
+    assertTranslation(translationForAnotherDummy, "#include \"my/mapping/custom/Test.h\"");
+
+    Map<String, String> outputMapping = Options.getHeaderMappings();
+    assertEquals(getTempDir() + "/unit/test/AnotherDummy.h",
+        outputMapping.get("unit.test.AnotherDummy"));
+    assertEquals(getTempDir() + "/unit/test/Dummy.h", outputMapping.get("unit.test.Dummy"));
+    assertEquals("my/mapping/custom/Test.h", outputMapping.get("unit.mapping.custom.Test"));
+    assertEquals("my/mapping/custom/Test.h", outputMapping.get("unit.mapping.custom.AnotherTest"));
   }
 
   public void testForwardDeclarationTranslation() throws IOException {
