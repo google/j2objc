@@ -20,6 +20,8 @@ import com.google.common.collect.Lists;
 import com.google.devtools.j2objc.GenerationTest;
 import com.google.devtools.j2objc.Options;
 
+import org.junit.Test;
+
 import java.io.File;
 import java.io.IOException;
 import java.util.Collections;
@@ -562,7 +564,7 @@ public class ObjectiveCHeaderGeneratorTest extends GenerationTest {
         + "public class FooBar {"
         + "  @Property(\"readonly, nonatomic\") private int fieldBar, fieldBaz;"
         + "  @Property private int fieldNonAtomic;"
-        + "  @Property(\"readwrite, dummy_be_gone\") private String fieldCopy;"
+        + "  @Property(\"readwrite\") private String fieldCopy;"
         + "  @Property private boolean fieldBool;"
         + "  @Property(\"nonatomic, readonly, weak, setter=passthrough\") private int fieldReorder;"
         + "  public int getFieldBaz() { return 1; }"
@@ -582,7 +584,7 @@ public class ObjectiveCHeaderGeneratorTest extends GenerationTest {
     // Set nonatomic since a setter is declared.
     assertTranslation(translation, "@property (nonatomic) jint fieldNonAtomic;");
 
-    // Set copy for strings.
+    // Set copy for strings and drop readwrite.
     assertTranslation(translation, "@property (copy) NSString *fieldCopy;");
 
     // Test boolean getter.
@@ -591,6 +593,20 @@ public class ObjectiveCHeaderGeneratorTest extends GenerationTest {
     // Reorder property attributes and pass setter through.
     assertTranslation(translation,
         "@property (weak, readonly, nonatomic, setter=passthrough) jint fieldReorder;");
+  }
+
+  @Test(expected = AssertionError.class)
+  public void testPropertyException() throws IOException {
+    try {
+      String source = "import com.google.j2objc.annotations.Property; "
+          + "public class FooBar {"
+          + "  @Property(\"cause_exception\") private int fieldBar;"
+          + "}";
+      String translation = translateSourceFile(source, "FooBar", "FooBar.h");
+      fail("Parsing bad @Property should throw IllegalArgumentException");
+    } catch (IllegalArgumentException e) {
+      // ok
+    }
   }
 
   public void testAddIgnoreDeprecationWarningsPragmaIfDeprecatedDeclarationsIsEnabled()

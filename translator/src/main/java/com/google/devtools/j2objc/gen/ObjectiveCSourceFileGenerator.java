@@ -532,6 +532,8 @@ public abstract class ObjectiveCSourceFileGenerator extends SourceFileGenerator 
         if (annotation != null) {
           String attributesStr = (String)annotation.getAllMemberValuePairs()[0].getValue();
           Set<String> attributes = new HashSet<String>(Arrays.asList(attributesStr.split(",\\s*")));
+          // Clear any empty strings
+          attributes.remove("");
           // readwrite, strong, and atomic are implied and thus, unnecessary.
           attributes.remove("readwrite");
           attributes.remove("strong");

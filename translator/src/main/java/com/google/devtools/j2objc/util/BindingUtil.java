@@ -407,11 +407,11 @@ public final class BindingUtil {
     return null;
   }
 
-  private static List<String> ATTRIBUTES = ImmutableList.of(
+  private static final List<String> ATTRIBUTES = ImmutableList.of(
       "weak", "readonly", "copy", "assign", "nonatomic",
       "getter", "setter", "retain", "unsafe_unretained");
-  private static Ordering<String> ATTRIBUTE_ORDERING = Ordering.explicit(ATTRIBUTES);
-  private static Comparator<String> ATTRIBUTES_COMPARATOR = new Comparator<String>() {
+  private static final Ordering<String> ATTRIBUTE_ORDERING = Ordering.explicit(ATTRIBUTES);
+  private static final Comparator<String> ATTRIBUTES_COMPARATOR = new Comparator<String>() {
     public int compare(String a, String b) {
       if (a.startsWith("getter")) { a = "getter"; }
       if (a.startsWith("setter")) { a = "setter"; }
@@ -431,6 +431,8 @@ public final class BindingUtil {
           attribute.startsWith("getter") ||
           attribute.startsWith("setter")) {
         filteredAttributes.add(attribute);
+      } else {
+        throw new IllegalArgumentException("Unknown Objective-C @property attribute was declared: " + attribute);
       }
     }
     Collections.sort(filteredAttributes, ATTRIBUTES_COMPARATOR);
