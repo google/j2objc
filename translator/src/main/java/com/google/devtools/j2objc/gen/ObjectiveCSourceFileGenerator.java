@@ -479,7 +479,6 @@ public abstract class ObjectiveCSourceFileGenerator extends SourceFileGenerator 
         List<VariableDeclarationFragment> vars = field.getFragments();
         assert !vars.isEmpty();
         IVariableBinding varBinding = vars.get(0).getVariableBinding();
-        if (BindingUtil.hasAnnotation(varBinding, Property.class)) { continue; }
         ITypeBinding varType = varBinding.getType();
         // Need direct access to fields possibly from inner classes that are
         // promoted to top level classes, so must make all visible fields public.
