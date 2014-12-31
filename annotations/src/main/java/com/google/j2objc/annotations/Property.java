@@ -20,13 +20,26 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * Annotation changes Java member variables into Objective-C properties.
+ * For Java member variables, annotation adds property declarations to generated Objective-C.
+ * Be careful as this could change the functionality of the translated code. It's up to you to
+ * maintain similar access controls on members.
+ *
+ * See <a href="https://developer.apple.com/library/mac/documentation/Cocoa/Conceptual/ProgrammingWithObjectiveC/EncapsulatingData/EncapsulatingData.html">Apple's @property documention</a>.
+ *
+ * Note:
+ *  - Invalid attributes will cause an AssertionError.
+ *  - <b>readwrite</b>, <b>strong</b>, and <b>atomic</b> attributes will be removed as they are defaults.
+ *  - Strings will add the <b>copy</b> attribute.
  *
  * Example:
  *
  * class Foo {
  *   @Property("copy, nonatomic") protected String bar;
  * }
+ *
+ * generates:
+ *
+ * @property (copy, nonatomic) NSString *bar;
  *
  * @author Harry Cheung
  */
