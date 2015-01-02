@@ -559,7 +559,7 @@ public class ObjectiveCHeaderGeneratorTest extends GenerationTest {
   }
 
   public void testProperties() throws IOException {
-    String sourceContent =
+    String source =
         "import com.google.j2objc.annotations.Property; "
         + "public class FooBar {"
         + "  @Property(\"readonly, nonatomic\") private int fieldBar, fieldBaz;"
@@ -572,7 +572,7 @@ public class ObjectiveCHeaderGeneratorTest extends GenerationTest {
         + "  public void setFieldBaz(int value, int option) { }"
         + "  public boolean isFieldBool() { return fieldBool; }"
         + "}";
-    String translation = translateSourceFile(sourceContent, "FooBar", "FooBar.h");
+    String translation = translateSourceFile(source, "FooBar", "FooBar.h");
 
     // Property on its own line.
     assertTranslation(translation, "@property (readonly, nonatomic) jint fieldBar;");
@@ -593,17 +593,45 @@ public class ObjectiveCHeaderGeneratorTest extends GenerationTest {
     // Reorder property attributes and pass setter through.
     assertTranslation(translation,
         "@property (weak, readonly, nonatomic, setter=passthrough) jint fieldReorder;");
-  }
 
-  @Test(expected = AssertionError.class)
-  public void testPropertyException() throws IOException {
+    source = "import com.google.j2objc.annotations.Property; "
+        + "public class FooBar {"
+        + "  @Property(\"cause_exception\") private int fieldBar;"
+        + "}";
     try {
-      String source = "import com.google.j2objc.annotations.Property; "
-          + "public class FooBar {"
-          + "  @Property(\"cause_exception\") private int fieldBar;"
-          + "}";
-      String translation = translateSourceFile(source, "FooBar", "FooBar.h");
+      translation = translateSourceFile(source, "FooBar", "FooBar.h");
       fail("Parsing bad @Property should throw IllegalArgumentException");
+    } catch (IllegalArgumentException e) {
+      // ok
+    }
+
+    source = "import com.google.j2objc.annotations.Property; "
+        + "import com.google.j2objc.annotations.Weak; "
+        + "public class Foo {"
+        + "  @Property(\"weak\") Foo barA;"
+        + "  @Property(\"readonly\") @Weak Foo barB;"
+        + "  @Property(\"weak, readonly\") @Weak Foo barC;"
+        + "}";
+    translation = translateSourceFile(source, "Foo", "Foo.h");
+    // Add __weak instance variable
+    assertTranslation(translation, "__weak Foo *barA_;");
+    assertNotInTranslation(translation, "J2OBJC_FIELD_SETTER(Foo, barA_, Foo *)");
+    // Add weak property attribute
+    assertTranslation(translation, "@property (weak, readonly) Foo *barB;");
+    assertNotInTranslation(translation, "J2OBJC_FIELD_SETTER(Foo, barB_, Foo *)");
+    // Works with both
+    assertTranslation(translation, "__weak Foo *barC_;");
+    assertTranslation(translation, "@property (weak, readonly) Foo *barC;");
+    assertNotInTranslation(translation, "J2OBJC_FIELD_SETTER(Foo, barC_, Foo *)");
+
+    source = "import com.google.j2objc.annotations.Property; "
+        + "import com.google.j2objc.annotations.Weak; "
+        + "public class Foo {"
+        + "  @Property(\"strong\") @Weak Foo barA;"
+        + "}";
+    try {
+      translation = translateSourceFile(source, "Foo", "Foo.h");
+      fail("Weak annotation with strong Property annotation should throw IllegalArgumentException");
     } catch (IllegalArgumentException e) {
       // ok
     }

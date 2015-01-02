@@ -47,6 +47,7 @@ import com.google.devtools.j2objc.types.IOSParameter;
 import com.google.devtools.j2objc.util.BindingUtil;
 import com.google.devtools.j2objc.util.NameTable;
 import com.google.j2objc.annotations.Property;
+import com.google.j2objc.annotations.Weak;
 
 import org.eclipse.jdt.core.dom.IAnnotationBinding;
 import org.eclipse.jdt.core.dom.IMethodBinding;
@@ -530,10 +531,17 @@ public abstract class ObjectiveCSourceFileGenerator extends SourceFileGenerator 
         ITypeBinding varType = varBinding.getType();
         IAnnotationBinding annotation = BindingUtil.getAnnotation(varBinding, Property.class);
         if (annotation != null) {
-          String attributesStr = (String)annotation.getAllMemberValuePairs()[0].getValue();
+          String attributesStr = (String)BindingUtil.getAnnotationValue(annotation, "value");
           Set<String> attributes = new HashSet<String>(Arrays.asList(attributesStr.split(",\\s*")));
           // Clear any empty strings
           attributes.remove("");
+          if (BindingUtil.hasAnnotation(varBinding, Weak.class)) {
+            if (attributes.contains("strong")) {
+              throw new IllegalArgumentException(
+                  "Weak annotation conflicts with strong Property annotation");
+            }
+            attributes.add("weak");
+          }
           // readwrite, strong, and atomic are implied and thus, unnecessary.
           attributes.remove("readwrite");
           attributes.remove("strong");
