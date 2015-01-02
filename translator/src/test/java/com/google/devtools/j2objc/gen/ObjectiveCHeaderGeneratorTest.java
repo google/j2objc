@@ -16,10 +16,14 @@
 
 package com.google.devtools.j2objc.gen;
 
+import com.google.common.collect.Lists;
 import com.google.devtools.j2objc.GenerationTest;
 import com.google.devtools.j2objc.Options;
 
+import java.io.File;
 import java.io.IOException;
+import java.util.Collections;
+import java.util.Map;
 
 /**
  * Tests for {@link ObjectiveCHeaderGenerator}.
@@ -109,6 +113,69 @@ public class ObjectiveCHeaderGeneratorTest extends GenerationTest {
         "MyException", "MyException.h");
     assertTranslation(translation, "@class JavaLangThrowable;");
     assertTranslation(translation, "#include \"java/lang/Exception.h\"");
+  }
+
+  public void testHeaderFileMapping() throws IOException {
+    Options.setHeaderMappingFiles(Lists.newArrayList("testMappings.j2objc"));
+    addSourceFile("package unit.mapping.custom; public class Test { }",
+        "unit/mapping/custom/Test.java");
+    loadHeaderMappings();
+    String translation = translateSourceFile(
+        "import unit.mapping.custom.Test; " +
+            "public class MyTest extends Test { MyTest() {}}",
+        "MyTest", "MyTest.h");
+    assertTranslation(translation, "#include \"my/mapping/custom/Test.h\"");
+  }
+
+  public void testHeaderDefaultFileMapping() throws IOException {
+    addSourceFile("package unit.mapping; public class Test { }", "unit/mapping/Test.java");
+    loadHeaderMappings();
+    String translation = translateSourceFile(
+        "import unit.mapping.Test; " +
+            "public class MyTest extends Test { MyTest() {}}",
+        "MyTest", "MyTest.h");
+    assertTranslation(translation, "#include \"my/mapping/Test.h\"");
+  }
+
+  public void testNoHeaderMapping() throws IOException {
+    // Should be able to turn off header mappings by passing empty collection
+    Options.setHeaderMappingFiles(Collections.<String>emptyList());
+    addSourceFile("package unit.mapping; public class Test { }", "unit/mapping/Test.java");
+    loadHeaderMappings();
+    String translation = translateSourceFile(
+        "import unit.mapping.Test; " +
+            "public class MyTest extends Test { MyTest() {}}",
+        "MyTest", "MyTest.h");
+    assertTranslation(translation, "#include \"unit/mapping/Test.h\"");
+  }
+
+  public void testOutputHeaderFileMapping() throws IOException {
+    Options.setHeaderMappingFiles(Lists.newArrayList("testMappings.j2objc"));
+    Options.setOutputHeaderMappingFile(new File("path/to/Dummy"));
+    Options.setPackageDirectories(Options.OutputStyleOption.SOURCE);
+    addSourceFile("package unit.test; public class Dummy {}", "unit/test/Dummy.java");
+    addSourceFile(
+        "package unit.test;" +
+        "public class AnotherDummy extends Dummy { " +
+        "    public AnotherDummy() {}" +
+        "}", "unit/test/AnotherDummy.java");
+
+    loadSourceFileHeaderMappings("unit/test/Dummy.java", "unit/test/AnotherDummy.java");
+    loadHeaderMappings();
+
+    String translation = translateSourceFile(getTranslatedFile("unit/test/AnotherDummy.java"),
+        "AnotherDummy", "AnotherDummy.h");
+
+    // The temp directory path we get includes "." in it, which will be converted to "/" by j2objc
+    // when generating the import path. We probably will only hit this case in tests.
+    assertTranslation(translation,
+        "#include \"" + getTempDir().replace(".", "/") + "/unit/test/Dummy.h\"");
+
+    Map<String, String> outputMapping = Options.getHeaderMappings();
+    assertEquals("unit.test.AnotherDummy",
+        outputMapping.get(getTempDir() + "/unit/test/AnotherDummy.h"));
+    assertEquals("unit.test.Dummy", outputMapping.get(getTempDir() + "/unit/test/Dummy.h"));
+    assertEquals("unit.mapping.custom.Test", outputMapping.get("my/mapping/custom/Test.h"));
   }
 
   public void testForwardDeclarationTranslation() throws IOException {
@@ -289,13 +356,13 @@ public class ObjectiveCHeaderGeneratorTest extends GenerationTest {
     assertTranslation(translation, "FOUNDATION_EXPORT ColorEnum *ColorEnum_values_[];");
     assertTranslatedLines(translation,
         "#define ColorEnum_RED ColorEnum_values_[Color_RED]",
-        "J2OBJC_STATIC_FIELD_GETTER(ColorEnum, RED, ColorEnum *)");
+        "J2OBJC_ENUM_CONSTANT_GETTER(ColorEnum, RED)");
     assertTranslatedLines(translation,
         "#define ColorEnum_WHITE ColorEnum_values_[Color_WHITE]",
-        "J2OBJC_STATIC_FIELD_GETTER(ColorEnum, WHITE, ColorEnum *)");
+        "J2OBJC_ENUM_CONSTANT_GETTER(ColorEnum, WHITE)");
     assertTranslatedLines(translation,
         "#define ColorEnum_BLUE ColorEnum_values_[Color_BLUE]",
-        "J2OBJC_STATIC_FIELD_GETTER(ColorEnum, BLUE, ColorEnum *)");
+        "J2OBJC_ENUM_CONSTANT_GETTER(ColorEnum, BLUE)");
   }
 
   public void testEnumWithParameters() throws IOException {

@@ -16,6 +16,7 @@
 
 package com.google.devtools.j2objc.gen;
 
+import com.google.common.collect.Lists;
 import com.google.devtools.j2objc.GenerationTest;
 import com.google.devtools.j2objc.Options;
 import com.google.devtools.j2objc.Options.MemoryManagementOption;
@@ -56,6 +57,18 @@ public class ObjectiveCImplementationGeneratorTest extends GenerationTest {
     String translation = translateSourceFile(
         "package unit.test; public class Example {}", "Example", "unit/test/Example.m");
     assertTranslation(translation, "#include \"unit/test/Example.h\"");
+  }
+
+  public void testHeaderFileMapping() throws IOException {
+    Options.setHeaderMappingFiles(Lists.newArrayList("testMappings.j2objc"));
+    loadHeaderMappings();
+    addSourceFile("package unit.mapping.custom; public class Test { }",
+        "unit/mapping/custom/Test.java");
+    String translation = translateSourceFile(
+        "import unit.mapping.custom.Test; " +
+            "public class MyTest { MyTest(Test u) {}}",
+        "MyTest", "MyTest.m");
+    assertTranslation(translation, "#include \"my/mapping/custom/Test.h\"");
   }
 
   public void testPackageTypeNameTranslationWithInnerClass() throws IOException {
@@ -254,7 +267,7 @@ public class ObjectiveCImplementationGeneratorTest extends GenerationTest {
         + "}";
     String translation = translateSourceFile(sourceContent, "FooBar", "FooBar.m");
     assertTranslation(translation, "int FooBar_fieldPhi_;");
-    assertTranslation(translation, "FooBar_set_fieldFoo_(self, nil);");
+    assertTranslation(translation, "RELEASE_(fieldFoo_);");
     assertTranslation(translation, "id fieldFoo_;");
     assertTranslation(translation, "id fieldJar_;");
     assertTranslation(translation, "int newFieldBar_;");

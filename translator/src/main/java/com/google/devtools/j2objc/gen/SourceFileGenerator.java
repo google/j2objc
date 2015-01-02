@@ -25,6 +25,8 @@ import com.google.devtools.j2objc.util.ErrorUtil;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * This class handles common actions shared by the header, implementation, and
@@ -33,6 +35,7 @@ import java.io.IOException;
  * @author Tom Ball
  */
 public abstract class SourceFileGenerator {
+  private static final Pattern JAR_URL_PATTERN = Pattern.compile("jar:file:.*!(.*)");
   private final SourceBuilder builder;
   private final CompilationUnit unit;
   private final File outputDirectory;
@@ -58,7 +61,7 @@ public abstract class SourceFileGenerator {
           + File.separatorChar + node.getMainTypeName() + getSuffix();
     }
     if (Options.useSourceDirectories()) {
-      File src = new File(node.getSourceFileFullPath());
+      File src = new File(sourceFilePath(node.getSourceFileFullPath()));
       String dir = src.getParent();
       if (dir != null) {
         return dir + File.separatorChar + node.getMainTypeName() + getSuffix();
@@ -154,5 +157,20 @@ public abstract class SourceFileGenerator {
 
   protected SourceBuilder getBuilder() {
     return builder;
+  }
+
+  /**
+   * Returns the path of the source file inside the containing jar. For example,
+   * given "jar:file:output.jar!foo/bar.java", "foo/bar.java" will be returned. If
+   * {@code sourcePath} is not a jar entry path, the same path will be returned without
+   * modification.
+   */
+  public static String sourceFilePath(String sourcePath) {
+    Matcher m = JAR_URL_PATTERN.matcher(sourcePath);
+      if (m.find()) {
+        return m.group(1);
+      } else {
+        return sourcePath;
+      }
   }
 }

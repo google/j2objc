@@ -19,6 +19,7 @@ package com.google.devtools.j2objc.types;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Sets;
 import com.google.devtools.j2objc.Options;
+import com.google.devtools.j2objc.util.ErrorUtil;
 import com.google.devtools.j2objc.util.NameTable;
 
 import org.eclipse.jdt.core.dom.ITypeBinding;
@@ -64,11 +65,13 @@ public class Import implements Comparable<Import> {
       "com.google.common.primitives",
       "com.google.common.util",
       "com.google.j2objc",
+      "com.google.protobuf",
       "dalvik",
       "java",
       "javax",
       "junit",
       "libcore",
+      "org.apache.harmony",
       "org.hamcrest",
       "org.json",
       "org.junit",
@@ -76,7 +79,8 @@ public class Import implements Comparable<Import> {
       "org.mockito",
       "org.w3c",
       "org.xml.sax",
-      "org.xmlpull"
+      "org.xmlpull",
+      "sun.misc",
   });
 
   private Import(ITypeBinding type) {
@@ -111,12 +115,24 @@ public class Import implements Comparable<Import> {
         javaName = header;
       }
     }
-    // Always use platform directories, since the j2objc distribution is
-    // (currently) built with them.
-    if (Options.usePackageDirectories() || isPlatformClass(javaName)) {
-      return javaName.replace('.', '/');
+
+    String mappedHeader = Options.getHeaderMappings().inverse().get(javaName);
+    if (mappedHeader == null) {
+      // Use package directories for platform classes if they do not have an entry in the header
+      // mapping.
+      if (Options.usePackageDirectories() || isPlatformClass(javaName)) {
+        return javaName.replace('.', '/');
+      } else {
+        return javaName.substring(javaName.lastIndexOf('.') + 1);
+      }
+    } else {
+      if (mappedHeader.substring(mappedHeader.length() - 2).equals(".h")) {
+        mappedHeader = mappedHeader.substring(0, mappedHeader.length() - 2);
+      } else {
+        ErrorUtil.error("filename \"" + mappedHeader + "\" is not a valid header file name");
+      }
+      return mappedHeader.replace('.', '/');
     }
-    return javaName.substring(javaName.lastIndexOf('.') + 1);
   }
 
   private static boolean isPlatformClass(String className) {

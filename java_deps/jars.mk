@@ -23,6 +23,7 @@ ECLIPSE_JARS = \
     org.eclipse.core.runtime-3.9.0.v20130326-1255.jar \
     org.eclipse.equinox.common-3.6.200.v20130402-1505.jar \
     org.eclipse.equinox.preferences-3.5.100.v20130422-1538.jar \
+    org.eclipse.jdt.compiler.apt-1.0.600.v20130530-1010.jar \
     org.eclipse.jdt.core-3.9.1.v20130905-0837.jar \
     org.eclipse.osgi-3.9.1.v20130814-1242.jar \
     org.eclipse.text-3.5.101.jar

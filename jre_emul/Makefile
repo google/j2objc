@@ -71,7 +71,8 @@ IOS_JAVA_OBJS = \
 	java/lang/reflect/AccessibleObject.o \
 	java/lang/reflect/Constructor.o \
 	java/lang/reflect/Field.o \
-	java/lang/reflect/Method.o
+	java/lang/reflect/Method.o \
+	javax/annotation/Resource.o
 
 # Java interfaces with hand written obj-c headers. Don't need to be translated,
 # but need to be included in the jre_emul.jar.
@@ -190,6 +191,10 @@ JAVA_SOURCES = \
 	android/text/util/Rfc822Tokenizer.java \
 	android/util/ArrayMap.java \
 	android/util/ArraySet.java \
+	android/util/Base64.java \
+	android/util/Base64DataException.java \
+	android/util/Base64InputStream.java \
+	android/util/Base64OutputStream.java \
 	android/util/ContainerHelpers.java \
 	android/util/Log.java \
 	android/util/LruCache.java \
@@ -861,6 +866,10 @@ JAVA_SOURCES = \
 	java/util/zip/ZipFile.java \
 	java/util/zip/ZipInputStream.java \
 	java/util/zip/ZipOutputStream.java \
+	javax/annotation/Generated.java \
+	javax/annotation/PostConstruct.java \
+	javax/annotation/PreDestroy.java \
+	javax/annotation/Resources.java \
 	javax/lang/model/element/Modifier.java \
 	javax/security/auth/x500/X500Principal.java \
 	javax/security/cert/Certificate.java \
