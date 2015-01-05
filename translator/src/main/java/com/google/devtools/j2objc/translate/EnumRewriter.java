@@ -135,12 +135,13 @@ public class EnumRewriter extends TreeVisitor {
     StringBuilder sb = new StringBuilder();
     sb.append(String.format(
         "FOUNDATION_EXPORT IOSObjectArray *%s_values() {\n"
+        + "  %s_init();\n"
         + "  return [IOSObjectArray arrayWithObjects:%s_values_ count:%s type:"
         + "[IOSClass classWithClass:[%s class]]];\n"
         + "}\n"
         + "+ (IOSObjectArray *)values {\n"
         + "  return %s_values();\n"
-        + "}\n\n", typeName, typeName, numConstants, typeName, typeName));
+        + "}\n\n", typeName, typeName, typeName, numConstants, typeName, typeName));
 
     sb.append(String.format(
         "+ (%s *)valueOfWithNSString:(NSString *)name {\n"
@@ -149,12 +150,13 @@ public class EnumRewriter extends TreeVisitor {
 
     sb.append(String.format(
         "%s *%s_valueOfWithNSString_(NSString *name) {\n"
+            + "  %s_init();\n"
             + "  for (int i = 0; i < %s; i++) {\n"
             + "    %s *e = %s_values_[i];\n"
             + "    if ([name isEqual:[e name]]) {\n"
             + "      return e;\n"
             + "    }\n"
-            + "  }\n", typeName, typeName, numConstants, typeName, typeName));
+            + "  }\n", typeName, typeName, typeName, numConstants, typeName, typeName));
     if (Options.useReferenceCounting()) {
       sb.append(
           "  @throw [[[JavaLangIllegalArgumentException alloc] initWithNSString:name]"
