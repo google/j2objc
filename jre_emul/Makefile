@@ -1091,9 +1091,18 @@ FAT_LIB_NAME = jre_emul
 FAT_LIB_SOURCES_RELATIVE = $(JAVA_SOURCES:.java=.m) $(IOS_OBJS:.o=.m) $(IOS_JAVA_OBJS:.o=.m) \
   $(APPLE_SRCS)
 FAT_LIB_SOURCE_DIRS = $(EMULATION_CLASS_DIR) $(GEN_OBJC_DIR) $(APPLE_ROOT) $(ANDROID_NATIVE_DIR)
+
+# OBJCPP_BUILD is an optional environment variable for Objective-C++ build experiments.
+# J2ObjC and app releases should not be built with this flag, nor is its use supported.
+ifeq ($(OBJCPP_BUILD), YES)
+FAT_LIB_COMPILE = $(CLANG) $(OBJCPPFLAGS) -I$(EMULATION_CLASS_DIR) -I$(GEN_OBJC_DIR) \
+  -I$(ANDROID_NATIVE_DIR)
+# TODO(tball): add support for Obj-C++ precompiled header.
+else
 FAT_LIB_COMPILE = $(CLANG) $(OBJCFLAGS) -I$(EMULATION_CLASS_DIR) -I$(GEN_OBJC_DIR) \
   -I$(ANDROID_NATIVE_DIR)
 FAT_LIB_PRECOMPILED_HEADER = JreEmulation.h
+endif
 include ../make/fat_lib.mk
 
 fat_lib_dependencies: translate

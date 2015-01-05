@@ -542,8 +542,13 @@ TEST_RESOURCES = \
 
 JUNIT_DIST_JAR = $(DIST_JAR_DIR)/$(JUNIT_JAR)
 
+ifeq ($(OBJCPP_BUILD), YES)
+TEST_JOCC = ../dist/j2objcc -g -I$(TESTS_DIR) -l junit -Werror \
+    -L$(TESTS_DIR) -l test-support -lc++ -ObjC++
+else
 TEST_JOCC = ../dist/j2objcc -g -I$(TESTS_DIR) -l junit -Werror \
     -L$(TESTS_DIR) -l test-support -ObjC
+endif
 SUPPORT_LIB = $(TESTS_DIR)/libtest-support.a
 TEST_BIN = $(TESTS_DIR)/jre_unit_tests
 

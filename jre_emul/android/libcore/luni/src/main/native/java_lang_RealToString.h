@@ -22,6 +22,8 @@
 
 #include "java/lang/AbstractStringBuilder.h"
 
+CF_EXTERN_C_BEGIN
+
 NSString *RealToString_convertDouble(JreStringBuilder *sb, double inputNumber);
 NSString *RealToString_convertFloat(JreStringBuilder *sb, float inputNumber);
 
@@ -41,5 +43,7 @@ __attribute__((always_inline)) inline NSString *RealToString_floatToString(float
 __attribute__((always_inline)) inline void RealToString_appendFloat(JreStringBuilder *sb, float f) {
   RealToString_convertFloat(sb, f);
 }
+
+CF_EXTERN_C_END
 
 #endif // _java_lang_RealToString_H_
