@@ -859,7 +859,7 @@ IOSObjectArray *copyFieldsToObjectArray(NSArray *fields) {
 }
 
 - (id)__boxValue:(J2ObjcRawValue *)rawValue {
-  return rawValue->asId;
+  return (id)rawValue->asId;
 }
 
 - (BOOL)__unboxValue:(id)value toRawValue:(J2ObjcRawValue *)rawValue {
@@ -872,7 +872,7 @@ IOSObjectArray *copyFieldsToObjectArray(NSArray *fields) {
 }
 
 - (void)__writeRawValue:(J2ObjcRawValue *)rawValue toAddress:(const void *)addr {
-  *(id *)addr = rawValue->asId;
+  *(id *)addr = (id)rawValue->asId;
 }
 
 - (BOOL)__convertRawValue:(J2ObjcRawValue *)rawValue toType:(IOSClass *)type {

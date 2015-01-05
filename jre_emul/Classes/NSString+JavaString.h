@@ -180,7 +180,7 @@ destinationBegin:(int)dstBegin;
 - (IOSCharArray *)toCharArray;
 
 // java.lang.Comparable implementation methods
-- (int)compareToWithId:(id)another;
+- (jint)compareToWithId:(id)another;
 
 // CharSequence.charAt(int)
 - (unichar)charAtWithInt:(int)index;
@@ -193,7 +193,7 @@ destinationBegin:(int)dstBegin;
                                          to:(int)end;
 
 // String.compareToIgnoreCase(String)
-- (int)compareToIgnoreCase:(NSString *)another;
+- (jint)compareToIgnoreCase:(NSString *)another;
 
 // String.replace(char, char)
 - (NSString *)replace:(unichar)oldchar withChar:(unichar)newchar;

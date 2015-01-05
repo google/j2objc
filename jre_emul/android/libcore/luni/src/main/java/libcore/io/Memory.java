@@ -301,7 +301,7 @@ public final class Memory {
       if (!srcBytes) {
         return;
       }
-      memmove(dstBytes + dstOffset, srcBytes + srcOffset, byteCount);
+      memmove(dstBytes + dstOffset, srcBytes + srcOffset, (size_t)byteCount);
     ]-*/;
 
     public static native byte peekByte(long address) /*-[

@@ -158,10 +158,10 @@ static void WhileLocked(void (^block)(void)) {
 // Returns the referent subclass for a referent, or nil if one hasn't
 // been created for that type.
 static Class GetReferentSubclass(id obj) {
-  Class class = object_getClass(obj);
-  while (class && ![referent_subclasses containsObject:class])
-    class = class_getSuperclass(class);
-  return class;
+  Class cls = object_getClass(obj);
+  while (cls && ![referent_subclasses containsObject:cls])
+    cls = class_getSuperclass(cls);
+  return cls;
 }
 
 
@@ -179,13 +179,13 @@ static BOOL IsConstantObject(id obj) {
 
 
 // Create a custom subclass for specified referent class.
-static Class CreateReferentSubclass(Class class) {
-  NSString *newName = [NSString stringWithFormat: @"%s_ReferentSubclass", class_getName(class)];
-  Class subclass = objc_allocateClassPair(class, [newName UTF8String], 0);
-  Method dealloc = class_getInstanceMethod(class, @selector(dealloc));
+static Class CreateReferentSubclass(Class cls) {
+  NSString *newName = [NSString stringWithFormat: @"%s_ReferentSubclass", class_getName(cls)];
+  Class subclass = objc_allocateClassPair(cls, [newName UTF8String], 0);
+  Method dealloc = class_getInstanceMethod(cls, @selector(dealloc));
   class_addMethod(subclass, @selector(dealloc), (IMP) ReferentSubclassDealloc,
                   method_getTypeEncoding(dealloc));
-  Method release = class_getInstanceMethod(class, @selector(release));
+  Method release = class_getInstanceMethod(cls, @selector(release));
   class_addMethod(subclass, @selector(release), (IMP) ReferentSubclassRelease,
                   method_getTypeEncoding(release));
   objc_registerClassPair(subclass);
@@ -198,14 +198,14 @@ static Class CreateReferentSubclass(Class class) {
 // dealloced.
 static void EnsureReferentSubclass(id referent) {
   if (!GetReferentSubclass(referent) && !IsConstantObject(referent)) {
-    Class class = object_getClass(referent);
-    Class subclass = [referent_subclass_map objectForKey:class];
+    Class cls = object_getClass(referent);
+    Class subclass = [referent_subclass_map objectForKey:cls];
     if (!subclass) {
-      subclass = CreateReferentSubclass(class);
-      [referent_subclass_map setObject:subclass forKey:(id<NSCopying>) class];
+      subclass = CreateReferentSubclass(cls);
+      [referent_subclass_map setObject:subclass forKey:(id<NSCopying>) cls];
       [referent_subclasses addObject:subclass];
     }
-    if (class_getSuperclass(subclass) == class) {
+    if (class_getSuperclass(subclass) == cls) {
       object_setClass(referent, subclass);
     }
   }
@@ -222,7 +222,7 @@ static Class GetRealSuperclass(id obj) {
 // multiple references can share a referent, a reference set is used.
 static void AssociateReferenceWithReferent(id referent, JavaLangRefReference *reference) {
   WhileLocked(^{
-    CFMutableSetRef set = (void *)CFDictionaryGetValue(weak_refs_map, referent);
+    CFMutableSetRef set = (CFMutableSetRef)CFDictionaryGetValue(weak_refs_map, referent);
     if (!set) {
       set = CFSetCreateMutable(NULL, 0, NULL);
       CFDictionarySetValue(weak_refs_map, referent, set);
@@ -236,7 +236,7 @@ static void AssociateReferenceWithReferent(id referent, JavaLangRefReference *re
 // Remove the association between a referent and all of its references.
 static void RemoveReferenceAssociation(id referent, JavaLangRefReference *reference) {
   WhileLocked(^{
-    CFMutableSetRef set = (void *)CFDictionaryGetValue(weak_refs_map, referent);
+    CFMutableSetRef set = (CFMutableSetRef)CFDictionaryGetValue(weak_refs_map, referent);
     CFSetRemoveValue(set, reference);
   });
 }
@@ -246,7 +246,7 @@ static void RemoveReferenceAssociation(id referent, JavaLangRefReference *refere
 // the weak refs map.
 static BOOL RemoveAllReferenceAssociations(id referent) {
   BOOL enqueued = NO;
-  CFMutableSetRef set = (void *) CFDictionaryGetValue(weak_refs_map, referent);
+  CFMutableSetRef set = (CFMutableSetRef)CFDictionaryGetValue(weak_refs_map, referent);
   if (set) {
     NSSet *setCopy = (ARCBRIDGE NSSet *) set;
     for (JavaLangRefReference *reference in setCopy) {
@@ -278,7 +278,7 @@ static void ReferentSubclassDealloc(id self, SEL _cmd) {
 static void MaybeQueueReferences(id referent) {
   if ([referent retainCount] == 1) {
     // Add any associated references to their respective reference queues.
-    CFMutableSetRef set = (void *) CFDictionaryGetValue(weak_refs_map, referent);
+    CFMutableSetRef set = (CFMutableSetRef)CFDictionaryGetValue(weak_refs_map, referent);
     if (set) {
       NSSet *setCopy = (ARCBRIDGE NSSet *) set;
       for (JavaLangRefReference *reference in setCopy) {
@@ -307,7 +307,7 @@ static void MaybeQueueReferences(id referent) {
 // just like in Java they are queued after being finalized.
 static void MaybeQueuePhantomReferences(id referent) {
   // Add any associated phantom references to their respective queues.
-  CFMutableSetRef set = (void *) CFDictionaryGetValue(weak_refs_map, referent);
+  CFMutableSetRef set = (CFMutableSetRef)CFDictionaryGetValue(weak_refs_map, referent);
   if (set) {
     NSSet *setCopy = (ARCBRIDGE NSSet *) set;
     for (JavaLangRefReference *reference in setCopy) {

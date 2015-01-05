@@ -42,12 +42,12 @@
 
 @implementation JavaLangThrowable
 
-void FillInStackTraceInternal(JavaLangThrowable *this) {
+void FillInStackTraceInternal(JavaLangThrowable *self) {
   void *callStack[MAX_STACK_FRAMES];
-  this->rawFrameCount = backtrace(callStack, MAX_STACK_FRAMES);
-  unsigned nBytes = this->rawFrameCount * sizeof(void *);
-  this->rawCallStack = malloc(nBytes);
-  memcpy(this->rawCallStack, callStack, nBytes);
+  self->rawFrameCount = backtrace(callStack, MAX_STACK_FRAMES);
+  unsigned nBytes = self->rawFrameCount * sizeof(void *);
+  self->rawCallStack = (void **)malloc(nBytes);
+  memcpy(self->rawCallStack, callStack, nBytes);
 }
 
 // This init message implementation is hand-modified to
