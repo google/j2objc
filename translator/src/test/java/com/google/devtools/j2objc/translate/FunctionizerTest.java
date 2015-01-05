@@ -347,6 +347,26 @@ public class FunctionizerTest extends GenerationTest {
     assertTranslatedLines(translation, "void A_test2(A *self) {", "}");
   }
 
+  public void testClassInitializerCalledFromEnumFunctions() throws IOException {
+    String translation = translateSourceFile(
+        "enum A { A, B; static Object o = new Object(); "
+        + "  private static Object foo() { return o; }"
+        + "  void test() { A.foo(); }"
+        + "  private void test2() {}"
+        + "  void use() { test2(); }}",
+        "A", "A.m");
+    // Verify valueOf function calls class init.
+    assertTranslatedLines(translation, "AEnum *AEnum_valueOfWithNSString_(NSString *name) {",
+        "AEnum_init();", "for (int i = 0; i < 2; i++) {");
+    // Verify static class function calls class init.
+    assertTranslatedLines(translation,
+        "id AEnum_foo() {", "AEnum_init();", "return AEnum_o_;", "}");
+    // Verify class method doesn't call class init.
+    assertTranslatedLines(translation, "- (void)test {", "AEnum_foo();", "}");
+    // Verify non-static class function doesn't call class init.
+    assertTranslatedLines(translation, "void AEnum_test2(AEnum *self) {", "}");
+  }
+
   public void testPrivateNativeMethod() throws IOException {
     String translation = translateSourceFile(
         "class A { Object o; void use() { setO(null); } "
