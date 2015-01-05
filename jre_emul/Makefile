@@ -570,6 +570,10 @@ JAVA_SOURCES = \
 	java/security/AccessControlContext.java \
 	java/security/AccessControlException.java \
 	java/security/AccessController.java \
+	java/security/AlgorithmParameterGenerator.java \
+	java/security/AlgorithmParameterGeneratorSpi.java \
+	java/security/AlgorithmParameters.java \
+	java/security/AlgorithmParametersSpi.java \
 	java/security/AllPermission.java \
 	java/security/AllPermissionCollection.java \
 	java/security/BasicPermission.java \
@@ -578,6 +582,7 @@ JAVA_SOURCES = \
 	java/security/DomainCombiner.java \
 	java/security/GeneralSecurityException.java \
 	java/security/GuardedObject.java \
+	java/security/InvalidAlgorithmParameterException.java \
 	java/security/InvalidKeyException.java \
 	java/security/InvalidParameterException.java \
 	java/security/Key.java \
@@ -597,13 +602,17 @@ JAVA_SOURCES = \
 	java/security/PrivilegedExceptionAction.java \
 	java/security/ProtectionDomain.java \
 	java/security/Provider.java \
+	java/security/ProviderException.java \
+	java/security/PrivateKey.java \
 	java/security/PublicKey.java \
 	java/security/SecureClassLoader.java \
 	java/security/SecureRandom.java \
 	java/security/SecureRandomSpi.java \
 	java/security/Security.java \
 	java/security/SecurityPermission.java \
+	java/security/Signature.java \
 	java/security/SignatureException.java \
+	java/security/SignatureSpi.java \
 	java/security/cert/CRL.java \
 	java/security/cert/CRLException.java \
 	java/security/cert/CertPath.java \
@@ -617,6 +626,46 @@ JAVA_SOURCES = \
 	java/security/cert/CertificateParsingException.java \
 	java/security/cert/X509Certificate.java \
 	java/security/cert/X509Extension.java \
+	java/security/interfaces/DSAKey.java \
+	java/security/interfaces/DSAKeyPairGenerator.java \
+	java/security/interfaces/DSAParams.java \
+	java/security/interfaces/DSAPrivateKey.java \
+	java/security/interfaces/DSAPublicKey.java \
+	java/security/interfaces/ECKey.java \
+	java/security/interfaces/ECPrivateKey.java \
+	java/security/interfaces/ECPublicKey.java \
+	java/security/interfaces/RSAKey.java \
+	java/security/interfaces/RSAMultiPrimePrivateCrtKey.java \
+	java/security/interfaces/RSAPrivateCrtKey.java \
+	java/security/interfaces/RSAPrivateKey.java \
+	java/security/interfaces/RSAPublicKey.java \
+	java/security/spec/AlgorithmParameterSpec.java \
+	java/security/spec/DSAParameterSpec.java \
+	java/security/spec/DSAPrivateKeySpec.java \
+	java/security/spec/DSAPublicKeySpec.java \
+	java/security/spec/ECField.java \
+	java/security/spec/ECFieldF2m.java \
+	java/security/spec/ECFieldFp.java \
+	java/security/spec/ECGenParameterSpec.java \
+	java/security/spec/ECParameterSpec.java \
+	java/security/spec/ECPoint.java \
+	java/security/spec/ECPrivateKeySpec.java \
+	java/security/spec/ECPublicKeySpec.java \
+	java/security/spec/EllipticCurve.java \
+	java/security/spec/EncodedKeySpec.java \
+	java/security/spec/InvalidKeySpecException.java \
+	java/security/spec/InvalidParameterSpecException.java \
+	java/security/spec/KeySpec.java \
+	java/security/spec/MGF1ParameterSpec.java \
+	java/security/spec/PKCS8EncodedKeySpec.java \
+	java/security/spec/PSSParameterSpec.java \
+	java/security/spec/RSAKeyGenParameterSpec.java \
+	java/security/spec/RSAMultiPrimePrivateCrtKeySpec.java \
+	java/security/spec/RSAOtherPrimeInfo.java \
+	java/security/spec/RSAPrivateCrtKeySpec.java \
+	java/security/spec/RSAPrivateKeySpec.java \
+	java/security/spec/RSAPublicKeySpec.java \
+	java/security/spec/X509EncodedKeySpec.java \
 	java/sql/Array.java \
 	java/sql/BatchUpdateException.java \
 	java/sql/Blob.java \
@@ -933,6 +982,8 @@ JAVA_SOURCES = \
 	libcore/util/MutableLong.java \
 	libcore/util/Objects.java \
 	libcore/util/SneakyThrow.java \
+	org/apache/harmony/security/PrivateKeyImpl.java \
+	org/apache/harmony/security/PublicKeyImpl.java \
 	org/apache/harmony/security/asn1/ASN1Any.java \
 	org/apache/harmony/security/asn1/ASN1Choice.java \
 	org/apache/harmony/security/asn1/ASN1Constants.java \

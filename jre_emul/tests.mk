@@ -37,6 +37,8 @@ SUPPORT_SOURCES = \
     org/apache/harmony/logging/tests/java/util/logging/util/EnvironmentHelper.java \
     org/apache/harmony/luni/tests/java/lang/MockEnum.java \
     org/apache/harmony/luni/tests/java/lang/MockEnum2.java \
+    org/apache/harmony/security/tests/support/MyAlgorithmParameterGeneratorSpi.java \
+    org/apache/harmony/security/tests/support/SpiEngUtils.java \
     org/apache/harmony/testframework/serialization/SerializationTest.java \
     org/apache/harmony/text/tests/java/text/Support_Format.java \
     org/apache/harmony/text/tests/java/text/Support_MessageFormat.java \
@@ -362,6 +364,19 @@ TEST_SOURCES := \
     org/apache/harmony/luni/tests/java/util/TreeSetTest.java \
     org/apache/harmony/luni/tests/java/util/UUIDTest.java \
     org/apache/harmony/luni/tests/java/util/VectorTest.java \
+    org/apache/harmony/regex/tests/java/util/regex/Matcher2Test.java \
+    org/apache/harmony/regex/tests/java/util/regex/ModeTest.java \
+    org/apache/harmony/regex/tests/java/util/regex/Pattern2Test.java \
+    org/apache/harmony/regex/tests/java/util/regex/PatternSyntaxExceptionTest.java \
+    org/apache/harmony/regex/tests/java/util/regex/PatternTest.java \
+    org/apache/harmony/regex/tests/java/util/regex/ReplaceTest.java \
+    org/apache/harmony/regex/tests/java/util/regex/SplitTest.java \
+    org/apache/harmony/security/tests/java/security/AlgorithmParametersSpiTest.java \
+    org/apache/harmony/security/tests/java/security/KeyTest.java \
+    org/apache/harmony/security/tests/java/security/ProviderExceptionTest.java \
+    org/apache/harmony/security/tests/java/security/PrivateKeyTest.java \
+    org/apache/harmony/security/tests/java/security/PublicKeyTest.java \
+    org/apache/harmony/security/tests/java/security/SignatureSpiTest.java \
     org/apache/harmony/tests/java/io/ObjectStreamClassTest.java \
     org/apache/harmony/tests/java/io/ObjectStreamConstantsTest.java \
     org/apache/harmony/tests/java/io/ObjectStreamFieldTest.java \
@@ -385,13 +400,6 @@ TEST_SOURCES := \
     org/apache/harmony/tests/java/util/HashMapTest.java \
     org/apache/harmony/tests/java/util/HashtableTest.java \
     org/apache/harmony/tests/java/util/LinkedHashMapTest.java \
-    org/apache/harmony/regex/tests/java/util/regex/Matcher2Test.java \
-    org/apache/harmony/regex/tests/java/util/regex/ModeTest.java \
-    org/apache/harmony/regex/tests/java/util/regex/Pattern2Test.java \
-    org/apache/harmony/regex/tests/java/util/regex/PatternSyntaxExceptionTest.java \
-    org/apache/harmony/regex/tests/java/util/regex/PatternTest.java \
-    org/apache/harmony/regex/tests/java/util/regex/ReplaceTest.java \
-    org/apache/harmony/regex/tests/java/util/regex/SplitTest.java \
     org/apache/harmony/text/tests/java/text/ChoiceFormatTest.java \
     org/apache/harmony/text/tests/java/text/CollatorTest.java \
     org/apache/harmony/text/tests/java/text/MessageFormatTest.java \
@@ -412,6 +420,30 @@ TEST_SOURCES := \
     tests/api/java/util/ResourceBundleTest.java \
     tests/api/java/util/TimerTaskTest.java \
     tests/api/java/util/TimerTest.java \
+    tests/java/security/AlgorithmParameterGeneratorSpiTest.java \
+    tests/security/spec/DSAParameterSpecTest.java \
+    tests/security/spec/DSAPrivateKeySpecTest.java \
+    tests/security/spec/DSAPublicKeySpecTest.java \
+    tests/security/spec/ECFieldF2mTest.java \
+    tests/security/spec/ECFieldFpTest.java \
+    tests/security/spec/ECGenParameterSpecTest.java \
+    tests/security/spec/ECParameterSpecTest.java \
+    tests/security/spec/ECPointTest.java \
+    tests/security/spec/ECPrivateKeySpecTest.java \
+    tests/security/spec/ECPublicKeySpecTest.java \
+    tests/security/spec/EllipticCurveTest.java \
+    tests/security/spec/InvalidKeySpecExceptionTest.java \
+    tests/security/spec/InvalidParameterSpecExceptionTest.java \
+    tests/security/spec/MGF1ParameterSpecTest.java \
+    tests/security/spec/PKCS8EncodedKeySpecTest.java \
+    tests/security/spec/PSSParameterSpecTest.java \
+    tests/security/spec/RSAKeyGenParameterSpecTest.java \
+    tests/security/spec/RSAMultiPrimePrivateCrtKeySpecTest.java \
+    tests/security/spec/RSAOtherPrimeInfoTest.java \
+    tests/security/spec/RSAPrivateCrtKeySpecTest.java \
+    tests/security/spec/RSAPrivateKeySpecTest.java \
+    tests/security/spec/RSAPublicKeySpecTest.java \
+    tests/security/spec/X509EncodedKeySpecTest.java \
     tests/targets/security/MessageDigestTestMD5.java \
     tests/targets/security/MessageDigestTestSHA1.java \
     tests/targets/security/MessageDigestTestSHA256.java \
