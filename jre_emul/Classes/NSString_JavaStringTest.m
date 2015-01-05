@@ -37,8 +37,8 @@
 
 - (void)testCharSequenceLength {
   id<JavaLangCharSequence> cs = @"12345";
-  NSUInteger len = [cs sequenceLength];
-  XCTAssertEqual(len, (NSUInteger) 5,
+  jint len = [cs sequenceLength];
+  XCTAssertEqual(len, 5,
                  @"char sequence length should be 5, but was %d",
                  len);
 }
@@ -46,14 +46,14 @@
 - (void)testSplit {
   // Interspersed occurrences.
   IOSObjectArray *parts = [@"ababa" split:@"b"];
-  XCTAssertEqual((NSUInteger) 3, [parts count], @"Wrong number of parts.");
+  XCTAssertEqual(3, [parts length], @"Wrong number of parts.");
   XCTAssertEqualObjects(@"a", [parts objectAtIndex:0], @"Wrong part.");
   XCTAssertEqualObjects(@"a", [parts objectAtIndex:1], @"Wrong part.");
   XCTAssertEqualObjects(@"a", [parts objectAtIndex:2], @"Wrong part.");
 
   // String begins and ends with token.
   parts = [@"bbbabacbb" split:@"b"];
-  XCTAssertEqual((NSUInteger) 5, [parts count], @"Wrong number of parts.");
+  XCTAssertEqual(5, [parts length], @"Wrong number of parts.");
   XCTAssertEqualObjects(@"", [parts objectAtIndex:0], @"Wrong part.");
   XCTAssertEqualObjects(@"", [parts objectAtIndex:1], @"Wrong part.");
   XCTAssertEqualObjects(@"", [parts objectAtIndex:2], @"Wrong part.");
@@ -62,13 +62,13 @@
 
   // Regular expression.
   parts = [@"abba" split:@"[b]+"];
-  XCTAssertEqual((NSUInteger) 2, [parts count], @"Wrong number of parts.");
+  XCTAssertEqual(2, [parts length], @"Wrong number of parts.");
   XCTAssertEqualObjects(@"a", [parts objectAtIndex:0], @"Wrong part.");
   XCTAssertEqualObjects(@"a", [parts objectAtIndex:1], @"Wrong part.");
 
   // Space regular expression.
   parts = [@"what up" split:@"\\s+"];
-  XCTAssertEqual((NSUInteger) 2, [parts count], @"Wrong number of parts.");
+  XCTAssertEqual(2, [parts length], @"Wrong number of parts.");
   XCTAssertEqualObjects(@"what", [parts objectAtIndex:0],
                        @"First part is wrong.");
   XCTAssertEqualObjects(@"up", [parts objectAtIndex:1],
@@ -76,25 +76,25 @@
 
   // Regular expression occurs at beginning and end.
   parts = [@"   what  up " split:@"\\s+"];
-  XCTAssertEqual((NSUInteger) 3, [parts count], @"Wrong number of parts.");
+  XCTAssertEqual(3, [parts length], @"Wrong number of parts.");
   XCTAssertEqualObjects(@"", [parts objectAtIndex:0], @"Wrong part.");
   XCTAssertEqualObjects(@"what", [parts objectAtIndex:1], @"Wrong part.");
   XCTAssertEqualObjects(@"up", [parts objectAtIndex:2], @"Wrong part.");
 
   // Empty string.
   parts = [@"" split:@"\\s+"];
-  XCTAssertEqual((NSUInteger) 1, [parts count], @"Wrong number of parts.");
+  XCTAssertEqual(1, [parts length], @"Wrong number of parts.");
   XCTAssertEqualObjects(@"", [parts objectAtIndex:0], @"Wrong part.");
 
   // No matches, not regex.
   parts = [@"a" split:@"b"];
-  XCTAssertEqual((NSUInteger) 1, [parts count], @"Wrong number of parts.");
+  XCTAssertEqual(1, [parts length], @"Wrong number of parts.");
   XCTAssertEqualObjects(@"a", [parts objectAtIndex:0],
                        @"First part is wrong.");
 
   // No matches with regex.
   parts = [@"a" split:@"\\s+"];
-  XCTAssertEqual((NSUInteger) 1, [parts count], @"Wrong number of parts.");
+  XCTAssertEqual(1, [parts length], @"Wrong number of parts.");
   XCTAssertEqualObjects(@"a", [parts objectAtIndex:0],
                        @"First part is wrong.");
 }
