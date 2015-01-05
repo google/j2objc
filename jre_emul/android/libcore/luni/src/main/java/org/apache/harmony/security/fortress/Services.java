@@ -21,9 +21,7 @@ import java.security.Provider;
 import java.security.Security;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Locale;
-import java.util.Map;
 
 
 /**
@@ -38,8 +36,8 @@ public class Services {
      * Set the initial size to 600 so we don't grow to 1024 by default because
      * initialization adds a few entries more than the growth threshold.
      */
-    private static final Map<String, Provider.Service> services
-            = new HashMap<String, Provider.Service>(600);
+    private static final HashMap<String, ArrayList<Provider.Service>> services
+            = new HashMap<String, ArrayList<Provider.Service>>(600);
 
     /**
      * Save default SecureRandom service as well.
@@ -62,12 +60,13 @@ public class Services {
     /**
      * Registered providers.
      */
-    private static final List<Provider> providers = new ArrayList<Provider>(20);
+    private static final ArrayList<Provider> providers = new ArrayList<Provider>(20);
 
     /**
      * Hash for quick provider access by name.
      */
-    private static final Map<String, Provider> providersNames = new HashMap<String, Provider>(20);
+    private static final HashMap<String, Provider> providersNames
+            = new HashMap<String, Provider>(20);
     static {
         String providerClassName = null;
         int i = 1;
@@ -75,7 +74,7 @@ public class Services {
 
         while ((providerClassName = Security.getProperty("security.provider." + i++)) != null) {
             try {
-                Class providerClass = Class.forName(providerClassName.trim(), true, cl);
+                Class<?> providerClass = Class.forName(providerClassName.trim(), true, cl);
                 Provider p = (Provider) providerClass.newInstance();
                 providers.add(p);
                 providersNames.put(p.getName(), p);
@@ -91,15 +90,8 @@ public class Services {
     /**
      * Returns a copy of the registered providers as an array.
      */
-    public static synchronized Provider[] getProviders() {
-        return providers.toArray(new Provider[providers.size()]);
-    }
-
-    /**
-     * Returns a copy of the registered providers as a list.
-     */
-    public static synchronized List<Provider> getProvidersList() {
-        return new ArrayList<Provider>(providers);
+    public static synchronized ArrayList<Provider> getProviders() {
+        return providers;
     }
 
     /**
@@ -145,20 +137,28 @@ public class Services {
                 cachedSecureRandomService = service;
             }
             String key = type + "." + service.getAlgorithm().toUpperCase(Locale.US);
-            if (!services.containsKey(key)) {
-                services.put(key, service);
-            }
+            appendServiceLocked(key, service);
             for (String alias : Engine.door.getAliases(service)) {
                 key = type + "." + alias.toUpperCase(Locale.US);
-                if (!services.containsKey(key)) {
-                    services.put(key, service);
-                }
+                appendServiceLocked(key, service);
             }
         }
     }
 
     /**
-     * Returns true if services contain any provider information.
+     * Add or append the service to the key.
+     */
+    private static void appendServiceLocked(String key, Provider.Service service) {
+        ArrayList<Provider.Service> serviceList = services.get(key);
+        if (serviceList == null) {
+            serviceList = new ArrayList<Provider.Service>(1);
+            services.put(key, serviceList);
+        }
+        serviceList.add(service);
+    }
+
+    /**
+     * Returns true if services does not contain any provider information.
      */
     public static synchronized boolean isEmpty() {
         return services.isEmpty();
@@ -174,7 +174,7 @@ public class Services {
      * caches should be validated against the result of
      * Service.getCacheVersion() before use.
      */
-    public static synchronized Provider.Service getService(String key) {
+    public static synchronized ArrayList<Provider.Service> getServices(String key) {
         return services.get(key);
     }
 
