@@ -876,7 +876,7 @@ public final class Posix implements Os {
 
   public native int poll(StructPollfd[] fds, int timeoutMs) throws ErrnoException /*-[
     jint count = fds->size_;
-    struct pollfd *pollFds = calloc(count, sizeof(struct pollfd));
+    struct pollfd *pollFds = (struct pollfd *)calloc(count, sizeof(struct pollfd));
     for (jint i = 0; i < count; i++) {
       LibcoreIoStructPollfd *javaPollFd = [fds objectAtIndex:i];
       pollFds[i].fd = [javaPollFd->fd_ getInt$];
@@ -979,14 +979,14 @@ public final class Posix implements Os {
   public native int readv(FileDescriptor fd, Object[] buffers, int[] offsets, int[] byteCounts)
       throws ErrnoException /*-[
     int nIoVecs = buffers->size_;
-    struct iovec *ioVecs = malloc(nIoVecs * sizeof (struct iovec));
+    struct iovec *ioVecs = (struct iovec *)malloc(nIoVecs * sizeof (struct iovec));
     for (int i = 0; i < nIoVecs; i++) {
       char *bytes = BytesRW([buffers objectAtIndex:i]);
       if (!bytes) {
         free(ioVecs);
         return -1;
       }
-      ioVecs[i].iov_base = ((void *) bytes) + IOSIntArray_Get(offsets, i);
+      ioVecs[i].iov_base = ((char *) bytes) + IOSIntArray_Get(offsets, i);
       ioVecs[i].iov_len = IOSIntArray_Get(byteCounts, i);
     }
     int rc = TEMP_FAILURE_RETRY(readv([fd getInt$], ioVecs, nIoVecs));
@@ -1353,14 +1353,14 @@ public final class Posix implements Os {
   public native int writev(FileDescriptor fd, Object[] buffers, int[] offsets, int[] byteCounts)
       throws ErrnoException /*-[
     int nIoVecs = buffers->size_;
-    struct iovec *ioVecs = malloc(nIoVecs * sizeof (struct iovec));
+    struct iovec *ioVecs = (struct iovec *)malloc(nIoVecs * sizeof (struct iovec));
     for (int i = 0; i < nIoVecs; i++) {
       const char *bytes = BytesRO([buffers objectAtIndex:i]);
       if (!bytes) {
         free(ioVecs);
         return -1;
       }
-      ioVecs[i].iov_base = ((void *) bytes) + IOSIntArray_Get(offsets, i);
+      ioVecs[i].iov_base = ((char *) bytes) + IOSIntArray_Get(offsets, i);
       ioVecs[i].iov_len = IOSIntArray_Get(byteCounts, i);
     }
     int rc = TEMP_FAILURE_RETRY(writev([fd getInt$], ioVecs, nIoVecs));

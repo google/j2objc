@@ -17,7 +17,9 @@
 #ifndef _VOLATILE_H_
 #define _VOLATILE_H_
 
-#if ! __has_feature(c_atomic)
+#if defined(_LIBCPP_VERSION) && __has_include( <atomic> )
+#warning "Has C++ atomic support"
+#elseif ! __has_feature(c_atomic)
 #error "Must use -std=c11 or -std=c++11 flag to translate Java volatile fields"
 #else
 
@@ -32,7 +34,7 @@ enum memory_order {
 
 #define _Volatile(T)          _Atomic(T)
 
-typedef _Volatile(_Bool)      volatile_bool;
+typedef _Volatile(bool)       volatile_bool;
 typedef _Volatile(char)       volatile_char;
 typedef _Volatile(short)      volatile_short;
 typedef _Volatile(int)        volatile_int;

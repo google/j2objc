@@ -229,8 +229,8 @@ FOUNDATION_EXPORT void JreMemDebugGenerateAllocationsReport(void) {
     [resultClasses addObject:className];
 
     NSNumber *nb = [classesCount objectForKey:className];
-    int value = [nb intValue] + 1;
-    [classesCount setObject:[NSNumber numberWithInt:value] forKey:className];
+    int n = [nb intValue] + 1;
+    [classesCount setObject:[NSNumber numberWithInt:n] forKey:className];
   }
 
   // Show result.

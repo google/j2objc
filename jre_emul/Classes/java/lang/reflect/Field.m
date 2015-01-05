@@ -97,7 +97,7 @@ static void ReadRawValue(
     }
   } else {
     nil_chk(object);
-    [type __readRawValue:rawValue fromAddress:((void *)object) + ivar_getOffset(field->ivar_)];
+    [type __readRawValue:rawValue fromAddress:((char *)object) + ivar_getOffset(field->ivar_)];
   }
   if (![type __convertRawValue:rawValue toType:toType]) {
     @throw AUTORELEASE([[JavaLangIllegalArgumentException alloc] initWithNSString:
@@ -129,7 +129,7 @@ static void SetWithRawValue(
       @throw AUTORELEASE([[JavaLangIllegalAccessException alloc] initWithNSString:
                           @"Cannot set final field"]);
     }
-    [type __writeRawValue:rawValue toAddress:((void *)object) + ivar_getOffset(field->ivar_)];
+    [type __writeRawValue:rawValue toAddress:((char *)object) + ivar_getOffset(field->ivar_)];
   }
 }
 

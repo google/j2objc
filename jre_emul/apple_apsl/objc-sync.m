@@ -119,12 +119,12 @@ void init_j2objc_thread_data(void) {
 static SyncCache *fetch_cache(BOOL create)
 {
     pthread_once(&oneTimeInit, init_j2objc_thread_data);
-    j2objc_pthread_data *data = pthread_getspecific(j2objc_pthread_key);
+    j2objc_pthread_data *data = (j2objc_pthread_data *)pthread_getspecific(j2objc_pthread_key);
     if (!data && !create) {
       return NULL;
     }
     if (!data) {
-      data = calloc(1, sizeof(j2objc_pthread_data));
+      data = (j2objc_pthread_data *)calloc(1, sizeof(j2objc_pthread_data));
       pthread_setspecific(j2objc_pthread_key, data);
     }
     if (!data->syncCache) {
@@ -132,8 +132,8 @@ static SyncCache *fetch_cache(BOOL create)
             return NULL;
         } else {
             int count = 4;
-            data->syncCache = calloc(1, sizeof(SyncCache) +
-                                     count*sizeof(SyncCacheItem));
+            data->syncCache = (struct SyncCache *)calloc(1, sizeof(SyncCache) +
+                                                            count*sizeof(SyncCacheItem));
             data->syncCache->allocated = count;
         }
     }
@@ -141,7 +141,7 @@ static SyncCache *fetch_cache(BOOL create)
     // Make sure there's at least one open slot in the list.
     if (data->syncCache->allocated == data->syncCache->used) {
         data->syncCache->allocated *= 2;
-        data->syncCache =
+        data->syncCache = (struct SyncCache *)
             realloc(data->syncCache, sizeof(SyncCache)
                     + data->syncCache->allocated * sizeof(SyncCacheItem));
     }

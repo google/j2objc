@@ -77,7 +77,7 @@ public class IosX509Certificate extends X509Certificate {
     // Create an X509 trust policy for this certificate.
     SecPolicyRef policy = SecPolicyCreateBasicX509();
     SecCertificateRef certArray[1] = { (SecCertificateRef) secCertificateRef_ };
-    CFArrayRef certs = CFArrayCreate(NULL, (void *) certArray, 1, NULL);
+    CFArrayRef certs = CFArrayCreate(NULL, (const void **) certArray, 1, NULL);
     SecTrustRef trust;
     OSStatus status = SecTrustCreateWithCertificates(certs, policy, &trust);
     CFRelease(certs);

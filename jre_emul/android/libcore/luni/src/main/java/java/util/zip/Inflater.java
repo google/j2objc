@@ -95,7 +95,7 @@ public class Inflater {
     }
 
     private native long createStream(boolean noHeader) /*-[
-        z_stream *zStream = malloc(sizeof(z_stream));
+        z_stream *zStream = (z_stream *) malloc(sizeof(z_stream));
         zStream->opaque = Z_NULL;
         zStream->zalloc = Z_NULL;
         zStream->zfree = Z_NULL;
@@ -406,7 +406,7 @@ public class Inflater {
 
     private native void setInputImpl(byte[] buf, int offset, int byteCount, long handle) /*-[
       z_stream *zStream = (z_stream *) handle;
-      char *baseAddr = malloc(byteCount);
+      char *baseAddr = (char *) malloc(byteCount);
       if (baseAddr == NULL) {
         @throw AUTORELEASE([[JavaLangOutOfMemoryError alloc] init]);
       }

@@ -188,7 +188,7 @@ public class StackTraceElement implements Serializable {
       }
       char *selector = strsep(&signature, "[ ]");
       if (selector) {
-        char *methodName = NULL;
+        const char *methodName = NULL;
 
         // Strip all parameter type mangling.
         char *colon = strchr(selector, ':');

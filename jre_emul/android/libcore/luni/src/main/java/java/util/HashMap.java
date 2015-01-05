@@ -1081,7 +1081,7 @@ public class HashMap<K, V> extends AbstractMap<K, V> implements Cloneable, Seria
         state->extra[1] = 0;
       }
       NSUInteger position = state->extra[0];
-      JavaUtilHashMap_HashMapEntry *entry = (void *) state->extra[1];
+      JavaUtilHashMap_HashMapEntry *entry = (JavaUtilHashMap_HashMapEntry *) state->extra[1];
       state->itemsPtr = stackbuf;
       NSUInteger objCount = 0;
       if (state->state == 1 && objCount < len) {

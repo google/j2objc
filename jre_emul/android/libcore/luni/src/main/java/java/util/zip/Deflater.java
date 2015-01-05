@@ -493,7 +493,7 @@ public class Deflater {
 
     private native void setInputImpl(byte[] buf, int offset, int byteCount, long handle) /*-[
       z_stream *zStream = (z_stream *) handle;
-      char *baseAddr = malloc(byteCount);
+      char *baseAddr = (char *) malloc(byteCount);
       if (baseAddr == NULL) {
         @throw AUTORELEASE([[JavaLangOutOfMemoryError alloc] init]);
       }
@@ -565,7 +565,7 @@ public class Deflater {
     }
 
     private native long createStream(int level, int strategy, boolean noHeader) /*-[
-        z_stream *zStream = malloc(sizeof(z_stream));
+        z_stream *zStream = (z_stream *) malloc(sizeof(z_stream));
         int err = 0;
 
         zStream->opaque = Z_NULL;
