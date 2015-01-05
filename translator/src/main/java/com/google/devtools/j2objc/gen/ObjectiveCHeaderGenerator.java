@@ -151,8 +151,10 @@ public class ObjectiveCHeaderGenerator extends ObjectiveCSourceFileGenerator {
     } else {
       printStaticInitFunction(node);
       printFieldSetters(node, false);
+      printf("\nCF_EXTERN_C_BEGIN\n");
       printFunctions(node.getBodyDeclarations());
       printStaticFields(node);
+      printf("CF_EXTERN_C_END\n");
     }
 
     printIncrementAndDecrementFunctions(binding);

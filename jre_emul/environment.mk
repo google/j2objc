@@ -110,9 +110,6 @@ vpath %.java $(JRE_SRC):$(TEST_SRC):$(STUBS_DIR)
 # Clang warnings
 WARNINGS := $(WARNINGS) -Wall -Werror -Wshorten-64-to-32 -Wsign-compare
 
-# Require C11 compilation to support Java volatile translation.
-OBJCFLAGS := -std=c11
-
 ifeq ("$(strip $(XCODE_VERSION_MAJOR))", "0500")
 OBJCFLAGS += -DSET_MIN_IOS_VERSION
 endif
@@ -143,6 +140,11 @@ endif
 
 # Settings for classes that need to always compile without ARC.
 OBJCFLAGS_NO_ARC := $(OBJCFLAGS)
+
+OBJCPPFLAGS := $(OBJCFLAGS) -x objective-c++ -DU_SHOW_CPLUSPLUS_API=0
+
+# Require C11 compilation to support Java volatile translation.
+OBJCFLAGS += -std=c11
 
 ifeq ("$(strip $(CLANG_ENABLE_OBJC_ARC))", "YES")
 $(error The jre_emul build no longer supports an ARC build)

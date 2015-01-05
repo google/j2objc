@@ -74,14 +74,23 @@
  #define J2OBJC_DISABLE_ARRAY_TYPE_CHECKS 1
 #endif
 
-FOUNDATION_EXPORT void JreThrowNullPointerException() __attribute__((noreturn));
+CF_EXTERN_C_BEGIN
+
+void JreThrowNullPointerException() __attribute__((noreturn));
 
 #ifdef J2OBJC_COUNT_NIL_CHK
-extern int j2objc_nil_chk_count;
+int j2objc_nil_chk_count;
 #endif
 
-extern void JrePrintNilChkCount();
-extern void JrePrintNilChkCountAtExit();
+void JrePrintNilChkCount();
+void JrePrintNilChkCountAtExit();
+
+// Converts main() arguments into an IOSObjectArray of NSStrings.
+IOSObjectArray *JreEmulationMainArguments(int argc, const char *argv[]);
+
+NSString *JreStrcat(const char *types, ...);
+
+CF_EXTERN_C_END
 
 // Marked as unused to avoid a clang warning when this file is included
 // but NIL_CHK isn't used.
@@ -154,12 +163,6 @@ static inline id JreStrongAssignAndConsume(id *pIvar, id self, NS_RELEASES_ARGUM
   return JreStrongAssignInner(pIvar, self, value);
 }
 #endif
-
-// Converts main() arguments into an IOSObjectArray of NSStrings.
-FOUNDATION_EXPORT
-    IOSObjectArray *JreEmulationMainArguments(int argc, const char *argv[]);
-
-FOUNDATION_EXPORT NSString *JreStrcat(const char *types, ...);
 
 /*!
  * Defines the code to set a class's initialized flag. This should be used at
