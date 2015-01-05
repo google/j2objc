@@ -33,9 +33,9 @@
 - (void)testInitialization {
   IOSClass * elementType = [IOSClass classWithClass:[NSObject class]];
   IOSObjectArray *array = [IOSObjectArray arrayWithLength:10 type:elementType];
-  int length = (int) [array count];
+  jint length = [array length];
   XCTAssertEqual(length, 10, @"incorrect array size: %d", length);
-  for (NSUInteger i = 0; i < 10; i++) {
+  for (jint i = 0; i < 10; i++) {
     id element = [array objectAtIndex:i];
     XCTAssertNil(element, @"non-nil array element at index %d", i);
   }
@@ -85,9 +85,10 @@
       [NSNumber numberWithInt:11], [NSNumber numberWithInt:12],
       [NSNumber numberWithInt:13] }
       count:3 type:type];
-  [numbers2 arraycopy:NSMakeRange(1, 1)
+  [numbers2 arraycopy:1
           destination:numbers
-               offset:2];
+            dstOffset:2
+               length:1];
   XCTAssertEqual([[numbers objectAtIndex:0] intValue], 0, @"incorrect element", nil);
   XCTAssertEqual([[numbers objectAtIndex:1] intValue], 1, @"incorrect element", nil);
   XCTAssertEqual([[numbers objectAtIndex:2] intValue], 12, @"incorrect element", nil);
@@ -102,9 +103,10 @@
     [numbers replaceObjectAtIndex:i
                        withObject:[NSNumber numberWithInt:i]];
   }
-  [numbers arraycopy:NSMakeRange(1, 3)
+  [numbers arraycopy:1
          destination:numbers
-              offset:2];
+           dstOffset:2
+              length:3];
   XCTAssertEqual([[numbers objectAtIndex:0] intValue], 0, @"incorrect element", nil);
   XCTAssertEqual([[numbers objectAtIndex:1] intValue], 1, @"incorrect element", nil);
   XCTAssertEqual([[numbers objectAtIndex:2] intValue], 1, @"incorrect element", nil);
@@ -119,8 +121,8 @@
     [array replaceObjectAtIndex:i
                      withObject:[NSNumber numberWithInt:i]];
   }
-  IOSObjectArray *clone = [array copy];
-  XCTAssertEqual([array count], [clone count], @"counts don't match", nil);
+  IOSObjectArray *clone = [array clone];
+  XCTAssertEqual([array length], [clone length], @"counts don't match", nil);
   for (int i = 0; i < 10; i++) {
     XCTAssertEqual([array objectAtIndex:i], [clone objectAtIndex:i],
                    @"elements don't match at index: %d", i);
