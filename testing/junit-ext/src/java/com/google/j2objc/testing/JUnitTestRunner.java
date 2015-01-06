@@ -126,7 +126,7 @@ public class JUnitTestRunner {
       Result result = junitCore.run(c);
       hasError = hasError || !result.wasSuccessful();
     }
-    return hasError ? 0 : 1;
+    return hasError ? 1 : 0;
   }
 
   /**
