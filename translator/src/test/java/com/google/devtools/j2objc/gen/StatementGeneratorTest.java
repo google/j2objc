@@ -1460,8 +1460,8 @@ public class StatementGeneratorTest extends GenerationTest {
         + "      else { throw new SecondException(); }"
         + "    } catch (FirstException|SecondException e) { throw e; }}}",
         "Test", "Test.m");
-    assertTranslation(translation, "@catch (Test_FirstException e) {\n    @throw e;\n  }");
-    assertTranslation(translation, "@catch (Test_SecondException e) {\n    @throw e;\n  }");
+    assertTranslation(translation, "@catch (Test_FirstException *e) {\n    @throw e;\n  }");
+    assertTranslation(translation, "@catch (Test_SecondException *e) {\n    @throw e;\n  }");
   }
 
   public void testDifferentTypesInConditionalExpression() throws IOException {
