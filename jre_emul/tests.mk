@@ -116,6 +116,7 @@ TEST_SOURCES := \
     SerializationTest.java \
     ScheduledExecutorTest.java \
     SynchronousQueueTest.java \
+    SystemTest.java \
     ThreadPoolExecutorTest.java \
     TimeUnitTest.java \
     UTF16EncodingTest.java \
