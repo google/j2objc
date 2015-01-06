@@ -626,11 +626,6 @@ JAVA_SOURCES = \
 	java/security/cert/CertificateParsingException.java \
 	java/security/cert/X509Certificate.java \
 	java/security/cert/X509Extension.java \
-	java/security/interfaces/DSAKey.java \
-	java/security/interfaces/DSAKeyPairGenerator.java \
-	java/security/interfaces/DSAParams.java \
-	java/security/interfaces/DSAPrivateKey.java \
-	java/security/interfaces/DSAPublicKey.java \
 	java/security/interfaces/ECKey.java \
 	java/security/interfaces/ECPrivateKey.java \
 	java/security/interfaces/ECPublicKey.java \
@@ -640,9 +635,6 @@ JAVA_SOURCES = \
 	java/security/interfaces/RSAPrivateKey.java \
 	java/security/interfaces/RSAPublicKey.java \
 	java/security/spec/AlgorithmParameterSpec.java \
-	java/security/spec/DSAParameterSpec.java \
-	java/security/spec/DSAPrivateKeySpec.java \
-	java/security/spec/DSAPublicKeySpec.java \
 	java/security/spec/ECField.java \
 	java/security/spec/ECFieldF2m.java \
 	java/security/spec/ECFieldFp.java \

@@ -422,9 +422,6 @@ TEST_SOURCES := \
     tests/api/java/util/TimerTaskTest.java \
     tests/api/java/util/TimerTest.java \
     tests/java/security/AlgorithmParameterGeneratorSpiTest.java \
-    tests/security/spec/DSAParameterSpecTest.java \
-    tests/security/spec/DSAPrivateKeySpecTest.java \
-    tests/security/spec/DSAPublicKeySpecTest.java \
     tests/security/spec/ECFieldF2mTest.java \
     tests/security/spec/ECFieldFpTest.java \
     tests/security/spec/ECGenParameterSpecTest.java \
