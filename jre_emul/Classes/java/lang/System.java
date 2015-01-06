@@ -19,12 +19,16 @@ package java.lang;
 /*-[
 #import "IOSObjectArray.h"
 #import "IOSPrimitiveArray.h"
+#import "NSDictionaryMap.h"
 #import "java/lang/ArrayIndexOutOfBoundsException.h"
 #import "java/lang/ArrayStoreException.h"
 #import "java/lang/IllegalArgumentException.h"
 #import "java/lang/NullPointerException.h"
+#import "java/util/Collections.h"
 #include "mach/mach_time.h"
 #include "TargetConditionals.h"
+
+extern char **environ;
 ]-*/
 
 import java.io.BufferedInputStream;
@@ -33,6 +37,7 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.io.PrintStream;
+import java.util.Map;
 import java.util.Properties;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -230,6 +235,26 @@ public class System {
     properties.remove(key);
     return result;
   }
+  
+  public static native String getenv(String name) /*-[
+    const char *value = getenv([name UTF8String]);
+    return value ? [NSString stringWithUTF8String:value] : nil;
+  ]-*/;
+  
+  public static native Map<String,String> getenv() /*-[
+    NSMutableDictionary *dict = [NSMutableDictionary dictionary];
+    for (int i = 0; environ[i]; i++) {
+      NSString *var = [NSString stringWithUTF8String:environ[i]];
+      NSRange range = [var rangeOfString:@"="];
+      if (range.location != NSNotFound) {
+        NSString *key = [var substringToIndex:range.location];
+        NSString *value = [var substringFromIndex:(range.location + 1)];
+        [dict setObject:value forKey:key];
+      }
+    }
+    return [JavaUtilCollections unmodifiableMapWithJavaUtilMap:
+            [NSDictionaryMap mapWithDictionary:dict]];
+  ]-*/;
 
   /**
    * Returns null. Android does not use {@code SecurityManager}. This method
