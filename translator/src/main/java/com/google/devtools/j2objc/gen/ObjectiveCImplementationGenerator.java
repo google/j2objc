@@ -579,14 +579,13 @@ public class ObjectiveCImplementationGenerator extends ObjectiveCSourceFileGener
     collector.collect(node);
     Set<Import> imports = collector.getImports();
 
-    if (!imports.isEmpty()) {
-      Set<String> includeStmts = Sets.newTreeSet();
-      for (Import imp : imports) {
-        includeStmts.add(String.format("#include \"%s.h\"", imp.getImportFileName()));
-      }
-      for (String stmt : includeStmts) {
-        println(stmt);
-      }
+    Set<String> includeStmts = Sets.newTreeSet();
+    includeStmts.add("#include \"J2ObjC_source.h\"");
+    for (Import imp : imports) {
+      includeStmts.add(String.format("#include \"%s.h\"", imp.getImportFileName()));
+    }
+    for (String stmt : includeStmts) {
+      println(stmt);
     }
 
     for (NativeDeclaration decl : node.getNativeBlocks()) {
