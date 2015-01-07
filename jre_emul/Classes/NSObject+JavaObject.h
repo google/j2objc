@@ -22,7 +22,6 @@
 #ifndef _NSObject_JavaObject_H_
 #define _NSObject_JavaObject_H_
 
-#import <Foundation/Foundation.h>
 #import "JavaObject.h"
 
 @class IOSClass;
@@ -36,6 +35,8 @@
 // throws a ClassCastException, unless overridden by a class implementing the
 // Comparable protocol.
 - (int)compareToWithId:(id)other;
+
++ (id)throwClassCastException;
 
 // Should be implemented by any class that needs to support Java's clone
 // behavior for itself or its subclasses.
