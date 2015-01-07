@@ -64,7 +64,6 @@ APPLE_SRCS = \
 # but need to include the .java file in jre_emul.jar and the .m file in
 # libjre_emul.a.
 IOS_JAVA_OBJS = \
-	java/io/Serializable.o \
 	java/lang/AbstractStringBuilder.o \
 	java/lang/Iterable.o \
 	java/lang/Throwable.o \
@@ -284,6 +283,7 @@ JAVA_SOURCES = \
 	java/io/RandomAccessFile.java \
 	java/io/Reader.java \
 	java/io/SequenceInputStream.java \
+	java/io/Serializable.java \
 	java/io/SerializablePermission.java \
 	java/io/SerializationHandleMap.java \
 	java/io/StreamCorruptedException.java \

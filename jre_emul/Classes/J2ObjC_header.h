@@ -10,19 +10,12 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-//
-//  Serializable.h
-//  JreEmulation
-//
-//  Created by Tom Ball on 12/6/13.
-//
+// Common defines and includes needed by all J2ObjC header files.
+
+#ifndef _J2OBJC_HEADER_H_
+#define _J2OBJC_HEADER_H_
 
 #import "JavaObject.h"
+#import "J2ObjC_common.h"
 
-#ifndef _JavaIoSerializable_H_
-#define _JavaIoSerializable_H_
-
-@protocol JavaIoSerializable < NSObject, JavaObject >
-@end
-
-#endif // _JavaIoSerializable_H_
+#endif  // _J2OBJC_HEADER_H_
