@@ -383,7 +383,11 @@ public class NameTable {
   }
 
   public static String parameterKeyword(ITypeBinding type) {
-    return "with" + capitalize(getParameterTypeKeyword(type));
+    return parameterKeyword(type, true);
+  }
+
+  public static String parameterKeyword(ITypeBinding type, boolean includeWith) {
+    return (includeWith ? "with" : "") + capitalize(getParameterTypeKeyword(type));
   }
 
   public static String getMethodSelector(IMethodBinding method) {

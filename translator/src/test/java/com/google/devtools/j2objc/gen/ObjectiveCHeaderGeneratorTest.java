@@ -566,7 +566,7 @@ public class ObjectiveCHeaderGeneratorTest extends GenerationTest {
         + "  @Property private int fieldNonAtomic;"
         + "  @Property(\"readwrite\") private String fieldCopy;"
         + "  @Property private boolean fieldBool;"
-        + "  @Property(\"nonatomic, readonly, weak, setter=passthrough\") private int fieldReorder;"
+        + "  @Property(\"nonatomic, readonly, weak\") private int fieldReorder;"
         + "  public int getFieldBaz() { return 1; }"
         + "  public void setFieldNonAtomic(int value) { }"
         + "  public void setFieldBaz(int value, int option) { }"
@@ -581,22 +581,47 @@ public class ObjectiveCHeaderGeneratorTest extends GenerationTest {
     assertTranslation(translation,
         "@property (readonly, nonatomic, getter=getFieldBaz) jint fieldBaz;");
 
-    // Set nonatomic since a setter is declared.
-    assertTranslation(translation, "@property (nonatomic) jint fieldNonAtomic;");
+    // Set nonatomic since setter is declared and use j2objc naming
+    assertTranslation(translation,
+        "@property (nonatomic, setter=setFieldNonAtomicWithInt:) jint fieldNonAtomic;");
 
     // Set copy for strings and drop readwrite.
-    assertTranslation(translation, "@property (copy) NSString *fieldCopy;");
+    assertTranslation(translation,
+        "@property (copy) NSString *fieldCopy;");
 
     // Test boolean getter.
-    assertTranslation(translation, "@property (nonatomic, getter=isFieldBool) jboolean fieldBool;");
+    assertTranslation(translation,
+        "@property (nonatomic, getter=isFieldBool) jboolean fieldBool;");
 
     // Reorder property attributes and pass setter through.
     assertTranslation(translation,
-        "@property (weak, readonly, nonatomic, setter=passthrough) jint fieldReorder;");
+        "@property (weak, readonly, nonatomic) jint fieldReorder;");
 
     source = "import com.google.j2objc.annotations.Property; "
         + "public class FooBar {"
         + "  @Property(\"cause_exception\") private int fieldBar;"
+        + "}";
+    try {
+      translation = translateSourceFile(source, "FooBar", "FooBar.h");
+      fail("Parsing bad @Property should throw IllegalArgumentException");
+    } catch (IllegalArgumentException e) {
+      // ok
+    }
+
+    source = "import com.google.j2objc.annotations.Property; "
+        + "public class FooBar {"
+        + "  @Property(\"setter=needs_colon\") private int fieldBar;"
+        + "}";
+    try {
+      translation = translateSourceFile(source, "FooBar", "FooBar.h");
+      fail("Parsing bad @Property should throw IllegalArgumentException");
+    } catch (IllegalArgumentException e) {
+      // ok
+    }
+
+    source = "import com.google.j2objc.annotations.Property; "
+        + "public class FooBar {"
+        + "  @Property(\"setter=nonexistent:\") private int fieldBar;"
         + "}";
     try {
       translation = translateSourceFile(source, "FooBar", "FooBar.h");

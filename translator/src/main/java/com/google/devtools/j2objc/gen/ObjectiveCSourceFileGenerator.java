@@ -558,16 +558,39 @@ public abstract class ObjectiveCSourceFileGenerator extends SourceFileGenerator 
             Set<String> varAttributes = new HashSet<String>(attributes);
             String name = NameTable.getName(it.next().getName().getBinding());
             boolean nonatomic = false;
-            String getter = "";
             // Custom setters/getters are nonatomic
-            nonatomic = BindingUtil.findSetter(node, varType, name) != null;
-            IMethodBinding method = BindingUtil.findGetter(node, varType, name);
-            if (method != null) {
-              getter = "getter=" + method.getName();
+            IMethodBinding getter = BindingUtil.findGetter(node.getTypeBinding(), varType, name);
+            if (getter != null) {
+              varAttributes.add("getter=" + getter.getName());
+              nonatomic = true;
+            }
+            IMethodBinding setter = null;
+            Iterator<String> iter = varAttributes.iterator();
+            while (iter.hasNext()) {
+              String attribute = iter.next();
+              if (attribute.startsWith("setter=")) {
+                if (!attribute.endsWith(":")) {
+                  throw new IllegalArgumentException(
+                      "@Property \"" + attribute + "\" must end with a colon.");
+                }
+                String setterName = attribute.substring("setter=".length(), attribute.length() - 2);
+                setter = BindingUtil.findCustomSetter(node.getTypeBinding(), varType, setterName);
+                if (setter == null) {
+                  throw new IllegalArgumentException(
+                      "@Property \"" + name + "\" declared non-existent setter: " + setterName);
+                }
+                break;
+              }
+            }
+            if (setter == null) {
+              setter = BindingUtil.findSetter(node.getTypeBinding(), varType, name);
+            }
+            if (setter != null) {
+              varAttributes.add("setter=" + NameTable.getName(setter) + "With" +
+                  NameTable.parameterKeyword(varType, false) + ":");
               nonatomic = true;
             }
             if (nonatomic) { varAttributes.add("nonatomic"); }
-            if (!getter.isEmpty()) { varAttributes.add(getter); }
             if (varType.getName().equals("String")) { varAttributes.add("copy"); };
             print("@property ");
             print(BindingUtil.buildPropertyAttributes(new ArrayList<String>(varAttributes)));

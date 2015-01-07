@@ -382,9 +382,8 @@ public final class BindingUtil {
   /**
    * Return valid setter for the given type and name if it exists.
    */
-  public static IMethodBinding findSetter(AbstractTypeDeclaration node, ITypeBinding type, String name) {
-    name = "set" + NameTable.capitalize(name);
-    for (IMethodBinding method : node.getTypeBinding().getDeclaredMethods()) {
+  public static IMethodBinding findCustomSetter(ITypeBinding object, ITypeBinding type, String name) {
+    for (IMethodBinding method : object.getDeclaredMethods()) {
       if (method.getName().equals(name) && isVoid(method.getReturnType()) &&
           method.getParameterTypes().length == 1 &&
           method.getParameterTypes()[0] == type) {
@@ -395,13 +394,20 @@ public final class BindingUtil {
   }
 
   /**
+   * Return valid setter for the given type and name if it exists.
+   */
+  public static IMethodBinding findSetter(ITypeBinding object, ITypeBinding type, String name) {
+    return findCustomSetter(object, type, "set" + NameTable.capitalize(name));
+  }
+
+  /**
    * Return valid getter for the given type and name if it exists
    */
-  public static IMethodBinding findGetter(AbstractTypeDeclaration node, ITypeBinding type, String name) {
+  public static IMethodBinding findGetter(ITypeBinding object, ITypeBinding type, String name) {
     String prefix = "get";
     if (type.getName().equals("boolean")) { prefix = "is"; }
     name = prefix + NameTable.capitalize(name);
-    for (IMethodBinding method : node.getTypeBinding().getDeclaredMethods()) {
+    for (IMethodBinding method : object.getDeclaredMethods()) {
       if (method.getName().equals(name) && method.getReturnType() == type &&
           method.getParameterTypes().length == 0) {
         return method;
