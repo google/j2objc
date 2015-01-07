@@ -20,7 +20,6 @@
 //
 
 #import "IOSClass.h"
-#import "J2ObjC_source.h"
 #import "java/lang/AssertionError.h"
 #import "java/lang/reflect/AccessibleObject.h"
 #import "java/lang/reflect/Method.h"

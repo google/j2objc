@@ -10,11 +10,25 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-// Common defines and includes needed by all J2ObjC source files.
+//
+//  Serializable.h
+//  JreEmulation
+//
+//  Created by Tom Ball on 12/6/13.
+//
 
-#ifndef _J2OBJC_SOURCE_H_
-#define _J2OBJC_SOURCE_H_
+#include "JreEmulation.h"
+#include "java/io/Serializable.h"
 
-#import "JreEmulation.h"
+@interface JavaIoSerializable : NSObject <JavaIoSerializable>
+@end
 
-#endif  // _J2OBJC_SOURCE_H_
+@implementation JavaIoSerializable
+
++ (J2ObjcClassInfo *)__metadata {
+  static J2ObjcClassInfo _JavaIoSerializable = {
+    "Serializable", "java.io", NULL, 0x201, 0, NULL, 0, NULL, 0, NULL };
+  return &_JavaIoSerializable;
+}
+
+@end

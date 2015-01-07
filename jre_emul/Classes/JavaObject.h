@@ -22,6 +22,8 @@
 #ifndef _JavaObject_H_
 #define _JavaObject_H_
 
+#import "J2ObjC_common.h"
+
 @class IOSClass;
 
 // A protocol that defines Java Object-compatible methods.

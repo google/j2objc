@@ -8,8 +8,6 @@
 
 #import "NSDataOutputStream.h"
 
-#import "IOSPrimitiveArray.h"
-
 @interface NSDataOutputStream() {
 @private
   NSMutableData *data_;

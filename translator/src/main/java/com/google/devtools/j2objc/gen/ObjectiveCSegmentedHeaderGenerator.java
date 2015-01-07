@@ -47,7 +47,7 @@ public class ObjectiveCSegmentedHeaderGenerator extends ObjectiveCHeaderGenerato
 
   @Override
   protected void generateFileHeader() {
-    println("#include \"J2ObjC_header.h\"");
+    println("#import \"JreEmulation.h\"");
     newline();
     printf("#if !%s_RESTRICT\n", mainTypeName);
     printf("#define %s_INCLUDE_ALL 1\n", mainTypeName);

@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-#include "IOSPrimitiveArray.h"
 #include "java/lang/ArithmeticException.h"
 #include "java/lang/ArrayIndexOutOfBoundsException.h"
 #include "java/lang/IllegalArgumentException.h"
