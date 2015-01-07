@@ -76,9 +76,7 @@ IOS_JAVA_OBJS = \
 # Java interfaces with hand written obj-c headers. Don't need to be translated,
 # but need to be included in the jre_emul.jar.
 IOS_INTERFACES = \
-	java/lang/CharSequence.h \
-	java/lang/Cloneable.h \
-	java/lang/Comparable.h
+	java/lang/Cloneable.h
 
 # Java interfaces that will generate empty .m files.
 JRE_INTERFACES = \
@@ -309,12 +307,14 @@ JAVA_SOURCES = \
 	java/lang/AutoCloseable.java \
 	java/lang/Boolean.java \
 	java/lang/Byte.java \
+	java/lang/CharSequence.java \
 	java/lang/Character.java \
 	java/lang/ClassCastException.java \
 	java/lang/ClassFormatError.java \
 	java/lang/ClassLoader.java \
 	java/lang/ClassNotFoundException.java \
 	java/lang/CloneNotSupportedException.java \
+	java/lang/Comparable.java \
 	java/lang/Deprecated.java \
 	java/lang/Double.java \
 	java/lang/Enum.java \

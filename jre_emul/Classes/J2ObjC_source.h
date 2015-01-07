@@ -15,6 +15,11 @@
 #ifndef _J2OBJC_SOURCE_H_
 #define _J2OBJC_SOURCE_H_
 
-#import "JreEmulation.h"
+#import "J2ObjC_common.h"
+#import "IOSObjectArray.h"
+#import "IOSPrimitiveArray.h"
+#import "IOSReflection.h"
+#import "NSObject+JavaObject.h"
+#import "NSString+JavaString.h"
 
 #endif  // _J2OBJC_SOURCE_H_
