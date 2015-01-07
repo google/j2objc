@@ -1,3 +1,5 @@
+// Copyright 2011 Google Inc. All Rights Reserved.
+//
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
@@ -10,11 +12,22 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-// Common defines and includes needed by all J2ObjC source files.
+//
+//  CharSequence.h
+//  JreEmulation
+//
+//  Created by tball on 10/18/11.
+//
 
-#ifndef _J2OBJC_SOURCE_H_
-#define _J2OBJC_SOURCE_H_
+#import "JavaObject.h"
 
-#import "JreEmulation.h"
+#ifndef JAVALANGCHARSEQUENCE_H
+#define JAVALANGCHARSEQUENCE_H
 
-#endif  // _J2OBJC_SOURCE_H_
+@protocol JavaLangCharSequence < NSObject, JavaObject >
+- (int)sequenceLength;
+- (unichar)charAtWithInt:(int)index;
+- (id<JavaLangCharSequence>)subSequenceFrom:(int)start to:(int)end;
+@end
+
+#endif /* JAVALANGCHARSEQUENCE_H */
