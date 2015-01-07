@@ -59,6 +59,7 @@ import com.google.devtools.j2objc.types.ImplementationImportCollectorTest;
 import com.google.devtools.j2objc.types.RenamedTypeBindingTest;
 import com.google.devtools.j2objc.util.BindingUtilTest;
 import com.google.devtools.j2objc.util.DeadCodeMapTest;
+import com.google.devtools.j2objc.util.ErrorUtilTest;
 import com.google.devtools.j2objc.util.NameTableTest;
 import com.google.devtools.j2objc.util.ProGuardUsageParserTest;
 import com.google.devtools.j2objc.util.UnicodeUtilsTest;
@@ -91,6 +92,7 @@ public class SmallTests {
     DestructorGeneratorTest.class,
     EnhancedForRewriterTest.class,
     EnumRewriterTest.class,
+    ErrorUtilTest.class,
     FileUtilTest.class,
     FunctionizerTest.class,
     GwtConverterTest.class,

@@ -24,6 +24,8 @@ import org.eclipse.jdt.core.dom.CompilationUnit;
 import java.io.OutputStream;
 import java.io.PrintStream;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * Provides convenient static error and warning methods.
@@ -38,6 +40,14 @@ public class ErrorUtil {
   private static String currentFileName = null;
   private static PrintStream errorStream = System.err;
   private static List<String> errorMessages = Lists.newArrayList();
+  // Captures whether the translator should emit clang style message. Clang style messages
+  // are particularly useful when the translator is being invoked by Xcode build rules.
+  // Xcode will be able to pick the file path and line number, hence make it easy to address
+  // compilation errors from within Xcode.
+  // Ideally this should be set by a command line switch, but for now we tell that by checking
+  // the DEVELOPER_DIR environment variable set by Xcode.
+  private static final boolean CLANG_STYLE_ERROR_MSG = (null != System.getenv("DEVELOPER_DIR"));
+  private static Pattern pathAndLinePattern = null;
 
   public static void reset() {
     errorCount = 0;
@@ -72,14 +82,35 @@ public class ErrorUtil {
     });
   }
 
+  public static String getFullMessage(String tag, String message, boolean clangStyle) {
+    String fullMessage = null;
+    if (clangStyle) {
+      // Try to find the file path and line number, and then insert the tag after that,
+      // in order to get a message in the following format.
+      // <file_path>:<line_number>: error: <detailed_message>
+      if (pathAndLinePattern == null) {
+        pathAndLinePattern = Pattern.compile(".+?\\.java:\\d+: ");
+      }
+      Matcher matcher = pathAndLinePattern.matcher(message);
+      if (matcher.find()) {
+        fullMessage = matcher.group(0) + matcher.replaceFirst(tag);
+      }
+      // Fall back to default message style if pattern was not matched.
+    }
+    if (fullMessage == null) {
+      fullMessage = tag + message;
+    }
+    return fullMessage;
+  }
+
   public static void error(String message) {
     errorMessages.add(message);
-    errorStream.println("error: " + message);
+    errorStream.println(getFullMessage("error: ", message, CLANG_STYLE_ERROR_MSG));
     errorCount++;
   }
 
   public static void warning(String message) {
-    errorStream.println("warning: " + message);
+    errorStream.println(getFullMessage("warning: ", message, CLANG_STYLE_ERROR_MSG));
     warningCount++;
   }
 
