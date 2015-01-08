@@ -18,16 +18,22 @@
 //
 //  Created by Tom Ball on 4/23/12.
 //
+//  Implements definitions from both J2ObjC_common.h and JreEmulation.h.
 
 #import "JreEmulation.h"
 #import "IOSClass.h"
 #import "java/lang/AbstractStringBuilder.h"
+#import "java/lang/ClassCastException.h"
 #import "java/lang/NullPointerException.h"
 #import "java_lang_IntegralToString.h"
 #import "java_lang_RealToString.h"
 
 void JreThrowNullPointerException() {
   @throw AUTORELEASE([[JavaLangNullPointerException alloc] init]);
+}
+
+void JreThrowClassCastException() {
+  @throw AUTORELEASE([[JavaLangClassCastException alloc] init]);
 }
 
 #ifdef J2OBJC_COUNT_NIL_CHK
