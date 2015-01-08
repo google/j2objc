@@ -213,6 +213,9 @@ JAVA_SOURCES = \
 	com/google/j2objc/net/IosHttpsHandler.java \
 	com/google/j2objc/net/IosHttpURLConnection.java \
 	com/google/j2objc/security/IosMD5MessageDigest.java \
+	com/google/j2objc/security/IosRSAKey.java \
+	com/google/j2objc/security/IosRSAKeyFactory.java \
+	com/google/j2objc/security/IosRSAKeyPairGenerator.java \
 	com/google/j2objc/security/IosSecureRandomImpl.java \
 	com/google/j2objc/security/IosSecurityProvider.java \
 	com/google/j2objc/security/IosSHAMessageDigest.java \
@@ -587,7 +590,12 @@ JAVA_SOURCES = \
 	java/security/InvalidParameterException.java \
 	java/security/Key.java \
 	java/security/KeyException.java \
+	java/security/KeyFactory.java \
+	java/security/KeyFactorySpi.java \
 	java/security/KeyManagementException.java \
+	java/security/KeyPair.java \
+	java/security/KeyPairGenerator.java \
+	java/security/KeyPairGeneratorSpi.java \
 	java/security/MessageDigest.java \
 	java/security/MessageDigestSpi.java \
 	java/security/NoSuchAlgorithmException.java \
