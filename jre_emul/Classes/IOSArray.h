@@ -23,6 +23,7 @@
 #define _IOSARRAY_H
 
 #import "J2ObjC_common.h"
+#import "NSObject+JavaObject.h"
 #import "java/io/Serializable.h"
 
 @class IOSClass;

@@ -8,6 +8,8 @@
 
 #import "NSDataInputStream.h"
 
+#import "IOSPrimitiveArray.h"
+
 @interface NSDataInputStream() {
 @private
   NSData *data_;

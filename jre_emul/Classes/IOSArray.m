@@ -20,8 +20,11 @@
 //
 
 #import "IOSArray.h"
+
 #import "IOSArrayClass.h"
 #import "IOSClass.h"
+#import "IOSObjectArray.h"
+#import "IOSPrimitiveArray.h"
 #import "java/lang/AssertionError.h"
 #import "java/lang/ArrayIndexOutOfBoundsException.h"
 
