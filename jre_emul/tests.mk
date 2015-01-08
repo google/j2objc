@@ -39,10 +39,12 @@ SUPPORT_SOURCES = \
     org/apache/harmony/luni/tests/java/lang/MockEnum2.java \
     org/apache/harmony/security/tests/support/MyAlgorithmParameterGeneratorSpi.java \
     org/apache/harmony/security/tests/support/SpiEngUtils.java \
+    org/apache/harmony/security/tests/support/spec/MyEncodedKeySpec.java \
     org/apache/harmony/testframework/serialization/SerializationTest.java \
     org/apache/harmony/text/tests/java/text/Support_Format.java \
     org/apache/harmony/text/tests/java/text/Support_MessageFormat.java \
     tests/security/MessageDigestTest.java \
+    tests/security/interfaces/Util.java \
     tests/support/Support_ASimpleInputStream.java \
     tests/support/Support_ASimpleOutputStream.java \
     tests/support/Support_ASimpleReader.java \
@@ -422,6 +424,9 @@ TEST_SOURCES := \
     tests/api/java/util/TimerTaskTest.java \
     tests/api/java/util/TimerTest.java \
     tests/java/security/AlgorithmParameterGeneratorSpiTest.java \
+    tests/security/interfaces/RSAKeyTest.java \
+    tests/security/interfaces/RSAPrivateKeyTest.java \
+    tests/security/interfaces/RSAPublicKeyTest.java \
     tests/security/spec/ECFieldF2mTest.java \
     tests/security/spec/ECFieldFpTest.java \
     tests/security/spec/ECGenParameterSpecTest.java \
