@@ -113,7 +113,6 @@ public class InitializationNormalizerTest extends GenerationTest {
         "- (instancetype)init {",
         "if (self = [super init]) {",
         "Test_setAndConsume_date_(self, [[JavaUtilDate alloc] init]);",
-        "JreMemDebugAdd(self);",
         "}",
         "return self;",
         "}");
@@ -130,7 +129,6 @@ public class InitializationNormalizerTest extends GenerationTest {
         "{",
         "Test_setAndConsume_date_(self, [[JavaUtilDate alloc] init]);",
         "}",
-        "JreMemDebugAdd(self);",
         "}",
         "return self;",
         "}");
@@ -156,7 +154,7 @@ public class InitializationNormalizerTest extends GenerationTest {
         "Test", "Test.m");
     // test that default constructor was untouched, since it calls self()
     assertTranslatedLines(translation,
-        "- (instancetype)init {", "return JreMemDebugAdd([self initTestWithInt:2]);", "}");
+        "- (instancetype)init {", "return [self initTestWithInt:2];", "}");
     // test that initializer statement was added to second constructor
     assertTranslatedLines(translation,
         "- (instancetype)initTestWithInt:(jint)i {",
@@ -165,7 +163,6 @@ public class InitializationNormalizerTest extends GenerationTest {
         "Test_setAndConsume_date_(self, [[JavaUtilDate alloc] init]);",
         "}",
         "[((JavaIoPrintStream *) nil_chk(JavaLangSystem_get_out_())) printlnWithInt:i];",
-        "JreMemDebugAdd(self);",
         "}",
         "return self;",
         "}");

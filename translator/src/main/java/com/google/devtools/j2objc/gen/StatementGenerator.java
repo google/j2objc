@@ -321,24 +321,7 @@ public class StatementGenerator extends TreeVisitor {
       buffer.append("{\n@autoreleasepool ");
     }
     buffer.append("{\n");
-    List<Statement> stmts = node.getStatements();
-    // In case it's the body of a dealloc method, we generate the debug statement.
-    // If we detect a -[super dealloc] method call, we are in a dealloc method.
-    int size = stmts.size();
-    if (size > 0) {
-      Statement lastStatement = stmts.get(size - 1);
-      if (lastStatement instanceof ExpressionStatement) {
-        Expression subnode = ((ExpressionStatement) lastStatement).getExpression();
-        if (subnode instanceof SuperMethodInvocation) {
-          SuperMethodInvocation invocation = (SuperMethodInvocation) subnode;
-          IMethodBinding binding = invocation.getMethodBinding();
-          if (Options.memoryDebug() && BindingUtil.isDestructor(binding)) {
-            buffer.append("JreMemDebugRemove(self);\n");
-          }
-        }
-      }
-    }
-    printStatements(stmts);
+    printStatements(node.getStatements());
     buffer.append("}\n");
     if (node.hasAutoreleasePool()) {
       buffer.append("}\n");
