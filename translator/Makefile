@@ -278,7 +278,6 @@ test: compile-tests copy-test-resources
 	java -classpath $(TEST_CLASSPATH) -ea junit.textui.TestRunner com.google.devtools.j2objc.SmallTests
 
 compile-tests: $(J2OBJC_JAR)
-	@rm -rf $(TEST_DIR)
 	@mkdir -p $(TEST_DIR)
 	@javac -Xlint:unchecked -sourcepath src/test/java -classpath $(TEST_CLASSPATH) \
 	    -d $(TEST_DIR) `find src/test/java -name '*.java'`
