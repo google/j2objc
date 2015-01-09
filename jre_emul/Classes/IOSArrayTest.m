@@ -195,7 +195,7 @@
 // Objects are separately tested, because unlike primitive types, object arrays
 // need a specified element type.
 - (void)testObjectMultiDimensionalCreate {
-  IOSClass *type = [IOSClass classWithClass:[JavaUtilDate class]];
+  IOSClass *type = [IOSClass classFromClass:[JavaUtilDate class]];
 
   // Verify single dimension array is correct type.
   id array = [IOSObjectArray arrayWithDimensions:1

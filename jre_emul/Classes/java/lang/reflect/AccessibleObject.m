@@ -81,7 +81,7 @@
     IOSObjectArray *noArgs = [IOSObjectArray arrayWithLength:0 type:[NSObject getClass]];
     return (IOSObjectArray *) [method invokeWithId:nil withNSObjectArray:noArgs];
   } else {
-    IOSClass *annotationType = [IOSClass classWithProtocol:@protocol(JavaLangAnnotationAnnotation)];
+    IOSClass *annotationType = [IOSClass classFromProtocol:@protocol(JavaLangAnnotationAnnotation)];
     return [IOSObjectArray arrayWithLength:0 type:annotationType];
   }
 }
@@ -121,7 +121,7 @@ IOSClass *decodeTypeEncoding(const char *type) {
     case '@':
       return [IOSClass objectClass];
     case '#':
-      return [IOSClass classWithClass:[IOSClass class]];
+      return [IOSClass classFromClass:[IOSClass class]];
     case 'c':
       return [IOSClass byteClass];
     case 'S':
