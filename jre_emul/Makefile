@@ -1188,7 +1188,7 @@ $(EMULATION_JAR): $(ALL_JAVA_SOURCES) $(STUB_JAVA_SOURCES) | $(BUILD_DIR)
 	@mkdir $(EMULATION_STAGE)
 	@bash ../scripts/javac_no_deprecated_warnings.sh $(JAVAC) -bootclasspath $(STUBS_DIR) \
 	    -classpath $(ANNOTATIONS_JAR) \
-	    -d $(EMULATION_STAGE) -encoding UTF-8 -source 1.6 -target 1.6 -nowarn $^
+	    -d $(EMULATION_STAGE) -encoding UTF-8 -source 1.7 -target 1.7 -nowarn $^
 	@jar cf $(EMULATION_JAR) -C $(EMULATION_STAGE) .
 
 $(JAVA_SOURCES_MANIFEST): $(ALL_JAVA_SOURCES) $(STUB_JAVA_SOURCES) | $(BUILD_DIR)
