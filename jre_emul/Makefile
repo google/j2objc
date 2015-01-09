@@ -64,7 +64,6 @@ APPLE_SRCS = \
 # but need to include the .java file in jre_emul.jar and the .m file in
 # libjre_emul.a.
 IOS_JAVA_OBJS = \
-	java/io/Serializable.o \
 	java/lang/AbstractStringBuilder.o \
 	java/lang/Iterable.o \
 	java/lang/Throwable.o \
@@ -77,9 +76,7 @@ IOS_JAVA_OBJS = \
 # Java interfaces with hand written obj-c headers. Don't need to be translated,
 # but need to be included in the jre_emul.jar.
 IOS_INTERFACES = \
-	java/lang/CharSequence.h \
-	java/lang/Cloneable.h \
-	java/lang/Comparable.h
+	java/lang/Cloneable.h
 
 # Java interfaces that will generate empty .m files.
 JRE_INTERFACES = \
@@ -287,6 +284,7 @@ JAVA_SOURCES = \
 	java/io/RandomAccessFile.java \
 	java/io/Reader.java \
 	java/io/SequenceInputStream.java \
+	java/io/Serializable.java \
 	java/io/SerializablePermission.java \
 	java/io/SerializationHandleMap.java \
 	java/io/StreamCorruptedException.java \
@@ -312,12 +310,14 @@ JAVA_SOURCES = \
 	java/lang/AutoCloseable.java \
 	java/lang/Boolean.java \
 	java/lang/Byte.java \
+	java/lang/CharSequence.java \
 	java/lang/Character.java \
 	java/lang/ClassCastException.java \
 	java/lang/ClassFormatError.java \
 	java/lang/ClassLoader.java \
 	java/lang/ClassNotFoundException.java \
 	java/lang/CloneNotSupportedException.java \
+	java/lang/Comparable.java \
 	java/lang/Deprecated.java \
 	java/lang/Double.java \
 	java/lang/Enum.java \
