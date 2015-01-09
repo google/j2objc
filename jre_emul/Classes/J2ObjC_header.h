@@ -17,6 +17,6 @@
 
 #import "J2ObjC_common.h"
 #import "JavaObject.h"
-#import "JreEmulation.h"  // TODO(kstanger): Remove this after fixing users.
+#import "NSObject+JavaObject.h"
 
 #endif  // _J2OBJC_HEADER_H_
