@@ -131,7 +131,7 @@ public class AnonymousClassConverterTest extends GenerationTest {
     assertTranslatedLines(translation,
         "- (instancetype)initWithId:(id)capture$0 {",
         "Test_$1_set_val$test_(self, capture$0);",
-        "return JreMemDebugAdd([super init]);",
+        "return [super init];",
         "}");
     assertTranslation(translation, "[nil_chk(val$test_) description]");
   }
@@ -149,7 +149,7 @@ public class AnonymousClassConverterTest extends GenerationTest {
     assertTranslatedLines(translation,
         "- (instancetype)initWithId:(id)capture$0 {",
         "Test_$1_set_val$foo_(self, capture$0);",
-        "return JreMemDebugAdd([super init]);",
+        "return [super init];",
         "}");
     assertTranslation(translation, "[nil_chk(val$foo_) description]");
   }
@@ -416,7 +416,7 @@ public class AnonymousClassConverterTest extends GenerationTest {
         "- (instancetype)initWithInt:(jint)n",
         "withNSString:(NSString *)__name",
         "withInt:(jint)__ordinal {",
-        "return JreMemDebugAdd([super initWithNSString:__name withInt:__ordinal]);",
+        "return [super initWithNSString:__name withInt:__ordinal];",
         "}");
 
     // Verify ColorEnum_$1 constructor.
@@ -424,7 +424,7 @@ public class AnonymousClassConverterTest extends GenerationTest {
         "- (instancetype)initWithInt:(jint)arg$0",
         "withNSString:(NSString *)__name",
         "withInt:(jint)__ordinal {",
-        "return JreMemDebugAdd([super initWithInt:arg$0 withNSString:__name withInt:__ordinal]);");
+        "return [super initWithInt:arg$0 withNSString:__name withInt:__ordinal];");
 
     // Verify constant initialization.
     assertTranslation(impl,

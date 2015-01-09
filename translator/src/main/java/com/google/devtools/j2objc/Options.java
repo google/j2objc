@@ -66,7 +66,6 @@ public class Options {
   private static File outputHeaderMappingFile = null;
   private static Map<String, String> classMappings = Maps.newLinkedHashMap();
   private static Map<String, String> methodMappings = Maps.newLinkedHashMap();
-  private static boolean memoryDebug = false;
   private static boolean stripGwtIncompatible = false;
   private static boolean segmentedHeaders = false;
   private static String fileEncoding = System.getProperty("file.encoding", "UTF-8");
@@ -274,8 +273,6 @@ public class Options {
         bootclasspath = arg.substring(XBOOTCLASSPATH.length());
       } else if (arg.equals("-Xno-jsni-delimiters")) {
         // TODO(tball): remove flag when all client builds stop using it.
-      } else if (arg.equals("--mem-debug")) {
-        memoryDebug = true;
       } else if (arg.equals("-Xno-jsni-warnings")) {
         jsniWarnings = false;
       } else if (arg.equals("-encoding")) {
@@ -460,14 +457,6 @@ public class Options {
 
   public static File getOutputDirectory() {
     return outputDirectory;
-  }
-
-  public static boolean memoryDebug() {
-    return memoryDebug;
-  }
-
-  public static void setMemoryDebug(boolean value) {
-    memoryDebug = value;
   }
 
   /**
@@ -749,7 +738,6 @@ public class Options {
   }
 
   public static boolean shouldPreProcess() {
-    return Options.getHeaderMappingFiles() != null &&
-        Options.useSourceDirectories();
+    return Options.getHeaderMappingFiles() != null && Options.useSourceDirectories();
   }
 }

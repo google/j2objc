@@ -206,7 +206,6 @@ public class ObjectiveCImplementationGenerator extends ObjectiveCSourceFileGener
       newline();
       syncLineNumbers(node.getName()); // avoid doc-comment
       printf("@implementation %s\n", typeName);
-      printStaticReferencesMethod(node);
       printStaticVars(node);
       printMethods(node);
       if (TranslationUtil.needsReflection(node)) {
@@ -321,91 +320,6 @@ public class ObjectiveCImplementationGenerator extends ObjectiveCSourceFileGener
   private void printMethods(TypeDeclaration node) {
     printDeclarations(node.getBodyDeclarations());
     printInitializeMethod(node);
-    List<VariableDeclarationFragment> properties =
-        getProperties(TreeUtil.getFieldDeclarations(node));
-    if (properties.size() > 0) {
-      printStrongReferencesMethod(properties);
-    }
-  }
-
-  private List<VariableDeclarationFragment> getProperties(Iterable<FieldDeclaration> fields) {
-    List<VariableDeclarationFragment> properties = Lists.newArrayList();
-    for (FieldDeclaration field : fields) {
-      if (!Modifier.isStatic(field.getModifiers())) {
-        properties.addAll(field.getFragments());
-      }
-    }
-    return properties;
-  }
-
-  // Returns whether the property is a strong reference.
-  private boolean isStrongReferenceProperty(VariableDeclarationFragment property) {
-    IVariableBinding varBinding = property.getVariableBinding();
-    return !varBinding.getType().isPrimitive() && !BindingUtil.isWeakReference(varBinding);
-  }
-
-  // We generate the runtime debug method -memDebugStrongReferences.
-  // This method will return an array of information about a strong reference,
-  // including pointer to object and name.
-  private void printStrongReferencesMethod(List<VariableDeclarationFragment> properties) {
-    if (Options.memoryDebug()) {
-      newline();
-      if (!Options.useReferenceCounting()) {
-        println("- (NSArray *)memDebugStrongReferences {");
-        println("  return nil;");
-        println("}");
-        return;
-      }
-      println("- (NSArray *)memDebugStrongReferences {");
-      println("  NSMutableArray *result =");
-      println("      [[[super memDebugStrongReferences] mutableCopy] autorelease];");
-      for (VariableDeclarationFragment property : properties) {
-        String propName = NameTable.getName(property.getName().getBinding());
-        String objCFieldName = NameTable.javaFieldToObjC(propName);
-        if (isStrongReferenceProperty(property)) {
-          println(String.format("  [result addObject:[JreMemDebugStrongReference "
-              + "strongReferenceWithObject:%s name:@\"%s\"]];", objCFieldName, propName));
-        }
-      }
-      println("  return result;");
-      println("}\n");
-    }
-  }
-
-  // We generate the runtime debug method +memDebugStaticReferences.
-  // This method will return an array of NSNumber containing pointers (casted into unsigned long)
-  // to the objects referenced by a class variable with a strong reference.
-  // It will be useful for debug purpose.
-  //
-  // Arrays returned by -memDebugStaticReferences and -memDebugStaticReferencesNames (see below)
-  // must be the same size.
-  //
-  // In case of a Java enum, valuesVarNameis the name of the array of enum values.
-  private void printStaticReferencesMethod(AbstractTypeDeclaration node) {
-    if (Options.memoryDebug()) {
-      newline();
-      if (!Options.useReferenceCounting()) {
-        println("+ (NSArray *)memDebugStaticReferences {");
-        println("  return nil;");
-        println("}");
-        return;
-      }
-      println("+ (NSArray *)memDebugStaticReferences {");
-      println("  NSMutableArray *result = [NSMutableArray array];");
-      for (VariableDeclarationFragment var : TreeUtil.getAllFields(node)) {
-        IVariableBinding binding = var.getVariableBinding();
-        if (BindingUtil.isStatic(binding)) {
-          // All non-primitive static variables are strong references.
-          if (!binding.getType().isPrimitive()) {
-            String name = NameTable.getStaticVarQualifiedName(binding);
-            println(String.format("  [result addObject:[JreMemDebugStrongReference "
-                + "strongReferenceWithObject:%s name:@\"%s\"]];", name, name));
-          }
-        }
-      }
-      println("  return result;");
-      println("}");
-    }
   }
 
   private void printStaticInterface(AbstractTypeDeclaration node, String typeName) {
@@ -441,7 +355,6 @@ public class ObjectiveCImplementationGenerator extends ObjectiveCSourceFileGener
     newline();
     printf("@implementation %s\n", typeName);
     printStaticVars(node);
-    printStaticReferencesMethod(node);
 
     printDeclarations(node.getBodyDeclarations());
     printInitializeMethod(node);
@@ -504,7 +417,6 @@ public class ObjectiveCImplementationGenerator extends ObjectiveCSourceFileGener
   protected void printConstructor(MethodDeclaration m) {
     String methodBody;
     IMethodBinding binding = m.getMethodBinding();
-    boolean memDebug = Options.memoryDebug();
     List<Statement> statements = m.getBody().getStatements();
     StringBuffer sb = new StringBuffer("{\n");
     int constructorIdx = findConstructorInvocation(statements);
@@ -516,17 +428,11 @@ public class ObjectiveCImplementationGenerator extends ObjectiveCSourceFileGener
         idx == constructorIdx ? generateStatement(statements.get(idx++), false) : "[super init]";
     if (idx >= statements.size()) {
       sb.append("return ");
-      if (memDebug) {
-        sb.append("JreMemDebugAdd(");
-      }
-      sb.append(superCall).append(memDebug ? ");\n}" : ";\n}");
+      sb.append(superCall).append(";\n}");
     } else {
       sb.append("if (self = ").append(superCall).append(") {\n");
       while (idx < statements.size()) {
         sb.append(generateStatement(statements.get(idx++), false));
-      }
-      if (memDebug) {
-        sb.append("JreMemDebugAdd(self);\n");
       }
       sb.append("}\nreturn self;\n}");
     }

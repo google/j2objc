@@ -36,8 +36,8 @@ public class DestructorGeneratorTest extends GenerationTest {
 
   public void testFinalizeMethodRenamed() throws IOException {
     String translation = translateSourceFile(
-        "public class Test { public void finalize() { " +
-        "  try { super.finalize(); } catch (Throwable t) {} }}", "Test", "Test.h");
+        "public class Test { public void finalize() { "
+        + "  try { super.finalize(); } catch (Throwable t) {} }}", "Test", "Test.h");
     assertTranslation(translation, "- (void)dealloc;");
     assertFalse(translation.contains("finalize"));
     translation = getTranslatedFile("Test.m");
@@ -48,10 +48,10 @@ public class DestructorGeneratorTest extends GenerationTest {
 
   public void testFinalizeMethodRenamedWithReleasableFields() throws IOException {
     String translation = translateSourceFile(
-        "public class Test {" +
-        "  private Object o = new Object();" +
-        "  public void finalize() { " +
-        "    try { super.finalize(); } catch (Throwable t) {} }}", "Test", "Test.h");
+        "public class Test {"
+        + "  private Object o = new Object();"
+        + "  public void finalize() { "
+        + "    try { super.finalize(); } catch (Throwable t) {} }}", "Test", "Test.h");
     assertTranslation(translation, "- (void)dealloc;");
     assertFalse(translation.contains("finalize"));
     translation = getTranslatedFile("Test.m");
@@ -62,8 +62,8 @@ public class DestructorGeneratorTest extends GenerationTest {
 
   public void testReleaseStatementsBeforeSuperDealloc() throws IOException {
     String translation = translateSourceFile(
-        "public class Test { Object o; public void finalize() throws Throwable { " +
-        "super.finalize(); } }", "Test", "Test.m");
+        "public class Test { Object o; public void finalize() throws Throwable { "
+        + "super.finalize(); } }", "Test", "Test.m");
     assertTranslatedLines(translation,
         "RELEASE_(o_);",
         "[super dealloc];");
@@ -73,7 +73,6 @@ public class DestructorGeneratorTest extends GenerationTest {
    * Verify fields are released in a dealloc for reference counted code.
    */
   public void testFieldReleaseReferenceCounting() throws IOException {
-    Options.setMemoryDebug(false);
     Options.setMemoryManagementOption(Options.MemoryManagementOption.REFERENCE_COUNTING);
     String translation = translateSourceFile("class Test { Object o; Runnable r; }",
         "Test", "Test.m");
@@ -89,7 +88,6 @@ public class DestructorGeneratorTest extends GenerationTest {
    * Verify fields are not released for ARC code, and a dealloc method is not created.
    */
   public void testFieldReleaseARC() throws IOException {
-    Options.setMemoryDebug(false);
     Options.setMemoryManagementOption(Options.MemoryManagementOption.ARC);
     String translation = translateSourceFile("class Test { Object o; Runnable r; }",
         "Test", "Test.m");
@@ -100,10 +98,9 @@ public class DestructorGeneratorTest extends GenerationTest {
    * Verify fields are released for reference counted code when a finalize() method is defined.
    */
   public void testFieldReleaseFinalizeReferenceCounting() throws IOException {
-    Options.setMemoryDebug(false);
     Options.setMemoryManagementOption(Options.MemoryManagementOption.REFERENCE_COUNTING);
-    String translation = translateSourceFile("class Test { Object o; Runnable r; " +
-        "public void finalize() throws Throwable { System.out.println(this); }}",
+    String translation = translateSourceFile("class Test { Object o; Runnable r; "
+        + "public void finalize() throws Throwable { System.out.println(this); }}",
         "Test", "Test.m");
     assertTranslatedLines(translation,
         "- (void)dealloc {",
@@ -118,10 +115,9 @@ public class DestructorGeneratorTest extends GenerationTest {
    * Verify fields are not released for ARC code when a finalize() method is defined.
    */
   public void testFieldReleaseFinalizeARC() throws IOException {
-    Options.setMemoryDebug(false);
     Options.setMemoryManagementOption(Options.MemoryManagementOption.ARC);
-    String translation = translateSourceFile("class Test { Object o; Runnable r;"  +
-        "public void finalize() throws Throwable { System.out.println(this); }}",
+    String translation = translateSourceFile("class Test { Object o; Runnable r;"
+        + "public void finalize() throws Throwable { System.out.println(this); }}",
         "Test", "Test.m");
     assertTranslatedLines(translation,
         "- (void)dealloc {",
