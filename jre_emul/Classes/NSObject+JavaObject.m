@@ -53,7 +53,7 @@
 }
 
 - (IOSClass *)getClass {
-  return [IOSClass classWithClass:[self class]];
+  return [IOSClass classFromClass:[self class]];
 }
 
 - (int)compareToWithId:(id)other {

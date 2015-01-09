@@ -228,7 +228,7 @@ void FillInStackTraceInternal(JavaLangThrowable *self) {
   @synchronized (self) {
     jint existingCount = suppressedExceptions ? suppressedExceptions->size_ : 0;
     IOSObjectArray *newArray = [IOSObjectArray newArrayWithLength:existingCount + 1
-        type:[IOSClass classWithClass:[JavaLangThrowable class]]];
+        type:[IOSClass classFromClass:[JavaLangThrowable class]]];
     for (jint i = 0; i < existingCount; i++) {
       [newArray replaceObjectAtIndex:i withObject:suppressedExceptions->buffer_[i]];
     }
@@ -243,7 +243,7 @@ void FillInStackTraceInternal(JavaLangThrowable *self) {
   return suppressedExceptions
       ? [IOSObjectArray arrayWithArray:suppressedExceptions]
       : [IOSObjectArray arrayWithLength:0
-          type:[IOSClass classWithClass:[JavaLangThrowable class]]];
+          type:[IOSClass classFromClass:[JavaLangThrowable class]]];
 }
 
 - (NSString *)description {

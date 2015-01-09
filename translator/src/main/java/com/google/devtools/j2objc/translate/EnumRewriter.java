@@ -137,7 +137,7 @@ public class EnumRewriter extends TreeVisitor {
         "FOUNDATION_EXPORT IOSObjectArray *%s_values() {\n"
         + "  %s_init();\n"
         + "  return [IOSObjectArray arrayWithObjects:%s_values_ count:%s type:"
-        + "[IOSClass classWithClass:[%s class]]];\n"
+        + "[IOSClass classFromClass:[%s class]]];\n"
         + "}\n"
         + "+ (IOSObjectArray *)values {\n"
         + "  return %s_values();\n"

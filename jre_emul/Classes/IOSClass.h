@@ -52,11 +52,15 @@
 @property (readonly) Protocol *objcProtocol;
 
 // IOSClass Getters.
-+ (IOSClass *)classWithClass:(Class)cls;
-+ (IOSClass *)classWithProtocol:(Protocol *)protocol;
++ (IOSClass *)classFromClass:(Class)cls;
++ (IOSClass *)classFromProtocol:(Protocol *)protocol;
 + (IOSClass *)arrayClassWithComponentType:(IOSClass *)componentType;
 + (IOSClass *)classForIosName:(NSString *)iosName;
 + (IOSClass *)primitiveClassForChar:(unichar)c;
+
+// Obsolete IOSClass Getters (deprecate after updating dependent projects).
++ (IOSClass *)classWithClass:(Class)cls;
++ (IOSClass *)classWithProtocol:(Protocol *)protocol;
 
 // Primitive class instance getters.
 + (IOSClass *)byteClass;

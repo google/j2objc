@@ -331,7 +331,7 @@ static void SetWithRawValue(
       return method_invoke(cls, annotationsMethod);
     }
   }
-  IOSClass *annotationType = [IOSClass classWithProtocol:@protocol(JavaLangAnnotationAnnotation)];
+  IOSClass *annotationType = [IOSClass classFromProtocol:@protocol(JavaLangAnnotationAnnotation)];
   return [IOSObjectArray arrayWithLength:0 type:annotationType];
 }
 

@@ -89,7 +89,7 @@ public class InitializationNormalizerTest extends GenerationTest {
     assertTranslation(translation,
         "[IOSObjectArray newArrayWithObjects:(id[]){ [[[Distance_SimplexVertex alloc] "
         + "initWithDistance:outer$] autorelease] } "
-        + "count:1 type:[IOSClass classWithClass:[Distance_SimplexVertex class]]]");
+        + "count:1 type:[IOSClass classFromClass:[Distance_SimplexVertex class]]]");
   }
 
   public void testStaticVarInitialization() throws IOException {

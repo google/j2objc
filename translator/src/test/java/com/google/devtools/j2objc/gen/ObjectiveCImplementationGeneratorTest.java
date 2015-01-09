@@ -325,7 +325,7 @@ public class ObjectiveCImplementationGeneratorTest extends GenerationTest {
 
     assertTranslatedLines(translation,
         "- (IOSClass *)annotationType {",
-        "return [IOSClass classWithProtocol:@protocol(FooCompatible)];");
+        "return [IOSClass classFromProtocol:@protocol(FooCompatible)];");
   }
 
   public void testMethodsWithTypeParameters() throws IOException {
@@ -493,7 +493,7 @@ public class ObjectiveCImplementationGeneratorTest extends GenerationTest {
         "Test", "Test.m");
     assertTranslation(translation, "void Test_foo() {\n"
         + "  Test_init();\n"
-        + "  @synchronized([IOSClass classWithClass:[Test class]]) {");
+        + "  @synchronized([IOSClass classFromClass:[Test class]]) {");
   }
 
   // Verify that an interface that has a generated implementation file and an Object method
@@ -537,7 +537,7 @@ public class ObjectiveCImplementationGeneratorTest extends GenerationTest {
         "+ (IOSObjectArray *)__annotations_foo {",
         "return [IOSObjectArray arrayWithObjects:(id[]) "
         + "{ [[[OrgJunitAfter alloc] init] autorelease] } "
-        + "count:1 type:[IOSClass classWithProtocol:@protocol(JavaLangAnnotationAnnotation)]];");
+        + "count:1 type:[IOSClass classFromProtocol:@protocol(JavaLangAnnotationAnnotation)]];");
   }
 
   public void testMethodAnnotationWithParameter() throws IOException {
@@ -549,7 +549,7 @@ public class ObjectiveCImplementationGeneratorTest extends GenerationTest {
         "+ (IOSObjectArray *)__annotations_fooWithInt_ {",
         "return [IOSObjectArray arrayWithObjects:(id[]) "
         + "{ [[[OrgJunitAfter alloc] init] autorelease] } "
-        + "count:1 type:[IOSClass classWithProtocol:@protocol(JavaLangAnnotationAnnotation)]];");
+        + "count:1 type:[IOSClass classFromProtocol:@protocol(JavaLangAnnotationAnnotation)]];");
   }
 
   public void testConstructorAnnotationNoParameters() throws IOException {
@@ -560,7 +560,7 @@ public class ObjectiveCImplementationGeneratorTest extends GenerationTest {
         "+ (IOSObjectArray *)__annotations_Test {",
         "return [IOSObjectArray arrayWithObjects:(id[]) "
         + "{ [[[JavaLangDeprecated alloc] init] autorelease] } "
-        + "count:1 type:[IOSClass classWithProtocol:@protocol(JavaLangAnnotationAnnotation)]];");
+        + "count:1 type:[IOSClass classFromProtocol:@protocol(JavaLangAnnotationAnnotation)]];");
   }
 
   public void testConstructorAnnotationWithParameter() throws IOException {
@@ -571,7 +571,7 @@ public class ObjectiveCImplementationGeneratorTest extends GenerationTest {
         "+ (IOSObjectArray *)__annotations_TestWithInt_ {",
         "return [IOSObjectArray arrayWithObjects:(id[]) "
         + "{ [[[JavaLangDeprecated alloc] init] autorelease] } "
-        + "count:1 type:[IOSClass classWithProtocol:@protocol(JavaLangAnnotationAnnotation)]];");
+        + "count:1 type:[IOSClass classFromProtocol:@protocol(JavaLangAnnotationAnnotation)]];");
   }
 
   public void testTypeAnnotationDefaultParameter() throws IOException {
@@ -583,7 +583,7 @@ public class ObjectiveCImplementationGeneratorTest extends GenerationTest {
         "+ (IOSObjectArray *)__annotations {",
         "return [IOSObjectArray arrayWithObjects:(id[]) "
         + "{ [[[OrgJunitIgnore alloc] initWithValue:@\"\"] autorelease] } "
-        + "count:1 type:[IOSClass classWithProtocol:@protocol(JavaLangAnnotationAnnotation)]];");
+        + "count:1 type:[IOSClass classFromProtocol:@protocol(JavaLangAnnotationAnnotation)]];");
   }
 
   public void testTypeAnnotationWithParameter() throws IOException {
@@ -596,7 +596,7 @@ public class ObjectiveCImplementationGeneratorTest extends GenerationTest {
         "return [IOSObjectArray arrayWithObjects:(id[]) "
         + "{ [[[OrgJunitIgnore alloc] initWithValue:"
         + "@\"some \\\"escaped\\n comment\"] autorelease] } "
-        + "count:1 type:[IOSClass classWithProtocol:@protocol(JavaLangAnnotationAnnotation)]];");
+        + "count:1 type:[IOSClass classFromProtocol:@protocol(JavaLangAnnotationAnnotation)]];");
   }
 
   public void testFreeFormNativeCode() throws IOException {
@@ -777,6 +777,6 @@ public class ObjectiveCImplementationGeneratorTest extends GenerationTest {
         + " @interface Foo { Class<?> value(); }", "Foo.java");
     String translation = translateSourceFile(
         "@Foo(CharSequence.class) class Test {}", "Test", "Test.m");
-    assertTranslation(translation, "[IOSClass classWithProtocol:@protocol(JavaLangCharSequence)]");
+    assertTranslation(translation, "[IOSClass classFromProtocol:@protocol(JavaLangCharSequence)]");
   }
 }

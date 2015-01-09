@@ -68,13 +68,13 @@
 }
 
 + (IOSClass *)typeDefault {
-  return [IOSClass classWithClass:[NSObject class]];
+  return [IOSClass classFromClass:[NSObject class]];
 }
 
 
 
 - (IOSClass *)annotationType {
-  return [IOSClass classWithProtocol:@protocol(JavaxAnnotationResource)];
+  return [IOSClass classFromProtocol:@protocol(JavaxAnnotationResource)];
 }
 
 + (IOSObjectArray *)__annotations {
@@ -86,7 +86,7 @@
       JavaLangAnnotationElementTypeEnum_get_METHOD(),
       JavaLangAnnotationElementTypeEnum_get_FIELD()
     } count:3 type:[[NSObject class] getClass]]] autorelease]
-  } count:2 type:[IOSClass classWithProtocol:@protocol(JavaLangAnnotationAnnotation)]];
+  } count:2 type:[IOSClass classFromProtocol:@protocol(JavaLangAnnotationAnnotation)]];
 }
 
 + (const J2ObjcClassInfo *)__metadata {
@@ -117,7 +117,7 @@ JavaxAnnotationResource_AuthenticationTypeEnum *
 
 FOUNDATION_EXPORT IOSObjectArray *JavaxAnnotationResource_AuthenticationTypeEnum_values() {
   IOSClass *enumType =
-      [IOSClass classWithClass:[JavaxAnnotationResource_AuthenticationTypeEnum class]];
+      [IOSClass classFromClass:[JavaxAnnotationResource_AuthenticationTypeEnum class]];
   return [IOSObjectArray arrayWithObjects:JavaxAnnotationResource_AuthenticationTypeEnum_values_
                                     count:2
                                      type:enumType];
