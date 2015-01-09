@@ -112,7 +112,7 @@ static IOSClass *ResolveParameterType(const char *objcType, NSString *paramKeywo
 - (IOSObjectArray *)getParameterTypes {
   // First two slots are class and SEL.
   jint nArgs = (jint)[methodSignature_ numberOfArguments] - SKIPPED_ARGUMENTS;
-  IOSClass *classClass = [IOSClass classWithClass:[IOSClass class]];
+  IOSClass *classClass = [IOSClass classFromClass:[IOSClass class]];
   IOSObjectArray *parameters = [IOSObjectArray arrayWithLength:nArgs type:classClass];
 
   NSString *selectorStr = NSStringFromSelector(selector_);
@@ -146,7 +146,7 @@ static IOSClass *ResolveParameterType(const char *objcType, NSString *paramKeywo
 }
 
 - (IOSObjectArray *)getTypeParameters {
-  IOSClass *typeVariableType = [IOSClass classWithProtocol:@protocol(JavaLangReflectTypeVariable)];
+  IOSClass *typeVariableType = [IOSClass classFromProtocol:@protocol(JavaLangReflectTypeVariable)];
   return[IOSObjectArray arrayWithLength:0 type:typeVariableType];
 }
 
@@ -192,7 +192,7 @@ static IOSClass *ResolveParameterType(const char *objcType, NSString *paramKeywo
       return method_invoke(cls, annotationsMethod);
     }
   }
-  IOSClass *annotationType = [IOSClass classWithProtocol:@protocol(JavaLangAnnotationAnnotation)];
+  IOSClass *annotationType = [IOSClass classFromProtocol:@protocol(JavaLangAnnotationAnnotation)];
   return [IOSObjectArray arrayWithLength:0 type:annotationType];
 }
 
@@ -206,7 +206,7 @@ static IOSClass *ResolveParameterType(const char *objcType, NSString *paramKeywo
       return method_invoke(cls, annotationsMethod);
     }
   }
-  IOSClass *annotationType = [IOSClass classWithProtocol:@protocol(JavaLangAnnotationAnnotation)];
+  IOSClass *annotationType = [IOSClass classFromProtocol:@protocol(JavaLangAnnotationAnnotation)];
   return [IOSObjectArray arrayWithDimensions:2 lengths:(int[]){0, 0} type:annotationType];
 }
 

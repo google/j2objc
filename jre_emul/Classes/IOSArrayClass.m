@@ -72,7 +72,7 @@
 
 - (IOSObjectArray *)getInterfacesWithArrayType:(IOSClass *)arrayType {
   return [IOSObjectArray arrayWithObjects:(id[]){
-        [IOSClass classWithProtocol:@protocol(JavaIoSerializable)]
+        [IOSClass classFromProtocol:@protocol(JavaIoSerializable)]
       } count:1 type:[IOSClass getClass]];
 }
 

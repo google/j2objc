@@ -52,8 +52,10 @@
 @property (readonly) Protocol *objcProtocol;
 
 // IOSClass Getters.
-+ (IOSClass *)classWithClass:(Class)cls;
-+ (IOSClass *)classWithProtocol:(Protocol *)protocol;
++ (IOSClass *)classWithClass:(Class)cls __deprecated_msg("use classFromClass instead");
++ (IOSClass *)classFromClass:(Class)cls;
++ (IOSClass *)classWithProtocol:(Protocol *)protocol __deprecated_msg("use classFromProtocol instead");
++ (IOSClass *)classFromProtocol:(Protocol *)protocol;
 + (IOSClass *)arrayClassWithComponentType:(IOSClass *)componentType;
 + (IOSClass *)classForIosName:(NSString *)iosName;
 + (IOSClass *)primitiveClassForChar:(unichar)c;
