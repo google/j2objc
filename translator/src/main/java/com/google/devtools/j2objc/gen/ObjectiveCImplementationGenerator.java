@@ -240,7 +240,7 @@ public class ObjectiveCImplementationGenerator extends ObjectiveCSourceFileGener
     }
     printStaticVars(node);
     println("\n- (IOSClass *)annotationType {");
-    printf("  return [IOSClass classWithProtocol:@protocol(%s)];\n", typeName);
+    printf("  return [IOSClass classFromProtocol:@protocol(%s)];\n", typeName);
     println("}");
     printMethods(methods);
     if (TranslationUtil.needsReflection(node)) {
@@ -701,14 +701,14 @@ public class ObjectiveCImplementationGenerator extends ObjectiveCSourceFileGener
         if (runtimeAnnotations.size() > 0) {
           print("[IOSObjectArray arrayWithObjects:(id[]) { ");
           printAnnotations(runtimeAnnotations);
-          printf(" } count:%d type:[IOSClass classWithProtocol:"
+          printf(" } count:%d type:[IOSClass classFromProtocol:"
               + "@protocol(JavaLangAnnotationAnnotation)]]", runtimeAnnotations.size());
         } else {
           print("[IOSObjectArray arrayWithLength:0 "
-              + "type:[IOSClass classWithProtocol:@protocol(JavaLangAnnotationAnnotation)]]");
+              + "type:[IOSClass classFromProtocol:@protocol(JavaLangAnnotationAnnotation)]]");
         }
       }
-      printf(" } count:%d type:[IOSClass classWithProtocol:"
+      printf(" } count:%d type:[IOSClass classFromProtocol:"
           + "@protocol(JavaLangAnnotationAnnotation)]];\n}\n", params.size());
     }
   }
@@ -730,7 +730,7 @@ public class ObjectiveCImplementationGenerator extends ObjectiveCSourceFileGener
     print("  return [IOSObjectArray arrayWithObjects:(id[]) { ");
     printAnnotations(runtimeAnnotations);
     printf(" } count:%d type:[IOSClass "
-        + "classWithProtocol:@protocol(JavaLangAnnotationAnnotation)]];\n}\n",
+        + "classFromProtocol:@protocol(JavaLangAnnotationAnnotation)]];\n}\n",
         runtimeAnnotations.size());
   }
 
@@ -783,7 +783,7 @@ public class ObjectiveCImplementationGenerator extends ObjectiveCSourceFileGener
     } else if (value instanceof ITypeBinding) {
       ITypeBinding type = (ITypeBinding) value;
       if (type.isInterface()) {
-        printf("[IOSClass classWithProtocol:@protocol(%s)]", NameTable.getFullName(type));
+        printf("[IOSClass classFromProtocol:@protocol(%s)]", NameTable.getFullName(type));
       } else {
         printf("[[%s class] getClass]", NameTable.getFullName(type));
       }

@@ -54,7 +54,7 @@
 - (IOSClass *)getSuperclass {
   Class superclass = [class_ superclass];
   if (superclass != nil) {
-    return [IOSClass classWithClass:superclass];
+    return [IOSClass classFromClass:superclass];
   }
   return nil;
 }
@@ -64,7 +64,7 @@
   if (!superclass) {
     return nil;
   }
-  IOSClass *rawType = [IOSClass classWithClass:superclass];
+  IOSClass *rawType = [IOSClass classFromClass:superclass];
   IOSObjectArray *typeArgs = nil;
   JavaClassMetadata *metadata = [self getMetadata];
   if (metadata) {
@@ -233,7 +233,7 @@ IOSObjectArray *getConstructorsImpl(IOSConcreteClass *clazz, BOOL publicOnly) {
     return nil;
   });
   return [IOSObjectArray arrayWithNSArray:[methodMap allValues] type:
-          [IOSClass classWithClass:[JavaLangReflectConstructor class]]];
+          [IOSClass classFromClass:[JavaLangReflectConstructor class]]];
 }
 
 - (IOSObjectArray *)getDeclaredConstructors {
@@ -304,7 +304,7 @@ static JavaLangReflectConstructor *GetConstructorImpl(
     unsigned int outCount;
     Protocol * __unsafe_unretained *interfaces = class_copyProtocolList(class_, &outCount);
     for (unsigned i = 0; i < outCount; i++) {
-      IOSClass *interface = [IOSClass classWithProtocol:interfaces[i]];
+      IOSClass *interface = [IOSClass classFromProtocol:interfaces[i]];
       NSString *name = [interface getName];
       // Don't include NSObject and JavaObject interfaces, since java.lang.Object is a class.
       if (![allInterfaces containsObject:interface] && ![name isEqualToString:@"JavaObject"] &&

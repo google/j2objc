@@ -95,13 +95,22 @@ static JavaUtilProperties *prefixMapping;
   return nil;
 }
 
-+ (IOSClass *)classWithClass:(Class)cls {
++ (IOSClass *)classFromClass:(Class)cls {
   return FetchClass(cls);
 }
 
++ (IOSClass *)classFromProtocol:(Protocol *)protocol {
+  return FetchProtocol(protocol);
+}
+
+// TODO(tball): remove after clients updated.
++ (IOSClass *)classWithClass:(Class)cls {
+  return FetchClass(cls);
+}
 + (IOSClass *)classWithProtocol:(Protocol *)protocol {
   return FetchProtocol(protocol);
 }
+// end to-be-removed methods.
 
 + (IOSClass *)arrayClassWithComponentType:(IOSClass *)componentType {
   return FetchArray(componentType);
@@ -604,7 +613,7 @@ static BOOL hasModifier(IOSClass *cls, int flag) {
 
 - (IOSObjectArray *)getTypeParameters {
   IOSClass *typeVariableClass = [IOSClass
-      classWithProtocol:objc_getProtocol("JavaLangReflectTypeVariable")];
+      classFromProtocol:objc_getProtocol("JavaLangReflectTypeVariable")];
   return [IOSObjectArray arrayWithLength:0 type:typeVariableClass];
 }
 
@@ -649,7 +658,7 @@ static BOOL hasModifier(IOSClass *cls, int flag) {
     }
     cls = [cls getSuperclass];
   }
-  IOSClass *annotationType = [IOSClass classWithProtocol:@protocol(JavaLangAnnotationAnnotation)];
+  IOSClass *annotationType = [IOSClass classFromProtocol:@protocol(JavaLangAnnotationAnnotation)];
   IOSObjectArray *result = [IOSObjectArray arrayWithNSArray:array type:annotationType];
 #if ! __has_feature(objc_arc)
   [array release];
@@ -665,7 +674,7 @@ static BOOL hasModifier(IOSClass *cls, int flag) {
       return method_invoke(cls, annotationsMethod);
     }
   }
-  IOSClass *annotationType = [IOSClass classWithProtocol:@protocol(JavaLangAnnotationAnnotation)];
+  IOSClass *annotationType = [IOSClass classFromProtocol:@protocol(JavaLangAnnotationAnnotation)];
   return [IOSObjectArray arrayWithLength:0 type:annotationType];
 }
 
@@ -801,7 +810,7 @@ static void GetFieldsFromClass(IOSClass *iosClass, NSMutableDictionary *fields) 
 
 IOSObjectArray *copyFieldsToObjectArray(NSArray *fields) {
   jint count = (jint)[fields count];
-  IOSClass *fieldType = [IOSClass classWithClass:[JavaLangReflectField class]];
+  IOSClass *fieldType = [IOSClass classFromClass:[JavaLangReflectField class]];
   IOSObjectArray *results = [IOSObjectArray arrayWithLength:count
                                                        type:fieldType];
   for (jint i = 0; i < count; i++) {
