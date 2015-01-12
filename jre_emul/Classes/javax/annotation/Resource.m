@@ -71,8 +71,6 @@
   return [IOSClass classFromClass:[NSObject class]];
 }
 
-
-
 - (IOSClass *)annotationType {
   return [IOSClass classFromProtocol:@protocol(JavaxAnnotationResource)];
 }
@@ -105,14 +103,9 @@ JavaxAnnotationResource_AuthenticationTypeEnum *
 
 @implementation JavaxAnnotationResource_AuthenticationTypeEnum
 
-+ (NSArray *)memDebugStaticReferences {
-  NSMutableArray *result = [NSMutableArray array];
-  return result;
-}
-
 - (instancetype)initWithNSString:(NSString *)__name
                          withInt:(jint)__ordinal {
-  return JreMemDebugAdd([super initWithNSString:__name withInt:__ordinal]);
+  return [super initWithNSString:__name withInt:__ordinal];
 }
 
 FOUNDATION_EXPORT IOSObjectArray *JavaxAnnotationResource_AuthenticationTypeEnum_values() {
@@ -122,6 +115,7 @@ FOUNDATION_EXPORT IOSObjectArray *JavaxAnnotationResource_AuthenticationTypeEnum
                                     count:2
                                      type:enumType];
 }
+
 + (IOSObjectArray *)values {
   return JavaxAnnotationResource_AuthenticationTypeEnum_values();
 }

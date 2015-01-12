@@ -321,14 +321,6 @@ void CopyWithMemmove(id __strong *buffer, NSUInteger src, NSUInteger dest, NSUIn
   }
 }
 
-- (NSArray *)memDebugStrongReferences {
-  NSMutableArray *result = [NSMutableArray array];
-  for (jint i = 0; i < size_; i++) {
-    [result addObject:[JreMemDebugStrongReference strongReferenceWithObject:buffer_[i] name:@"element"]];
-  }
-  return result;
-}
-
 - (void *)buffer {
   return buffer_;
 }
