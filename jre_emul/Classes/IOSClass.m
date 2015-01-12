@@ -44,6 +44,7 @@
 #import "IOSPrimitiveArray.h"
 #import "IOSPrimitiveClass.h"
 #import "IOSProtocolClass.h"
+#import "IOSReflection.h"
 #import "JavaMetadata.h"
 #import "NSNumber+JavaNumber.h"
 #import "NSObject+JavaObject.h"
@@ -1010,7 +1011,9 @@ IOSClass *FetchArray(IOSClass *componentType) {
   static J2ObjcFieldInfo fields[] = {
     { "serialVersionUID_", NULL, 0x1a, "J" },
   };
-static J2ObjcClassInfo _IOSClass = { "Class", "java.lang", NULL, 0x11, 10, methods, 1, fields, 0, NULL};
+  static J2ObjcClassInfo _IOSClass = {
+    1, "Class", "java.lang", NULL, 0x11, 10, methods, 1, fields, 0, NULL
+  };
   return &_IOSClass;
 }
 

@@ -25,6 +25,7 @@
 
 @implementation JavaClassMetadata
 
+@synthesize version;
 @synthesize typeName;
 @synthesize packageName;
 @synthesize enclosingName;
@@ -35,6 +36,10 @@
 - (instancetype)initWithMetadata:(J2ObjcClassInfo *)metadata {
   if (self = [super init]) {
     data_ = metadata;
+    switch (data_->version) {
+      // Add future versions here as case statements.
+      default: version = 1; break;
+    }
     NSStringEncoding defaultEncoding = [NSString defaultCStringEncoding];
     typeName = [[NSString alloc] initWithCString:metadata->typeName encoding:defaultEncoding];
     if (metadata->packageName) {

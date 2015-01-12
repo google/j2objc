@@ -287,7 +287,9 @@ void FillInStackTraceInternal(JavaLangThrowable *self) {
     { "serialVersionUID_", NULL, 0x1a, "J", NULL,
       .constantValue.asLong = JavaLangThrowable_serialVersionUID },
   };
-  static J2ObjcClassInfo _JavaLangThrowable = { "Throwable", "java.lang", NULL, 0x1, 9, methods, 1, fields, 0, NULL};
+  static J2ObjcClassInfo _JavaLangThrowable = {
+    1, "Throwable", "java.lang", NULL, 0x1, 9, methods, 1, fields, 0, NULL
+  };
   return &_JavaLangThrowable;
 }
 

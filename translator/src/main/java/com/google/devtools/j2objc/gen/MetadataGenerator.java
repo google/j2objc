@@ -48,6 +48,9 @@ public class MetadataGenerator {
   private int methodMetadataCount = 0;
   private int fieldMetadataCount = 0;
 
+  // Metadata structure version. Increment it when any structure changes are made.
+  public static final int METADATA_VERSION = 1;
+
   public MetadataGenerator(AbstractTypeDeclaration typeNode) {
     this.builder = new StringBuilder();
     this.typeNode = Preconditions.checkNotNull(typeNode);
@@ -72,7 +75,7 @@ public class MetadataGenerator {
     generateMethodsMetadata();
     generateFieldsMetadata();
     int superclassTypeArgsSize = printSuperclassTypeArguments();
-    printf("  static const J2ObjcClassInfo _%s = { ", fullName);
+    printf("  static const J2ObjcClassInfo _%s = { %d, ", fullName, METADATA_VERSION);
     printf("\"%s\", ", type.getName());
     String pkgName = type.getPackage().getName();
     if (Strings.isNullOrEmpty(pkgName)) {

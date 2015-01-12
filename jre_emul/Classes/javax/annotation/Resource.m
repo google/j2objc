@@ -89,7 +89,7 @@
 
 + (const J2ObjcClassInfo *)__metadata {
   static const J2ObjcClassInfo _JavaxAnnotationResource = {
-    "Resource", "javax.annotation", NULL, 0x2201, 0, NULL, 0, NULL, 0, NULL
+    1, "Resource", "javax.annotation", NULL, 0x2201, 0, NULL, 0, NULL, 0, NULL
   };
   return &_JavaxAnnotationResource;
 }
@@ -165,8 +165,8 @@ JavaxAnnotationResource_AuthenticationTypeEnum *
   };
   static const char *superclass_type_args[] = {"Ljavax.annotation.Resource$AuthenticationType;"};
   static const J2ObjcClassInfo _JavaxAnnotationResource_AuthenticationTypeEnum = {
-    "AuthenticationType", "javax.annotation", "Resource", 0x4019, 1, methods, 2,
-    fields, 1, superclass_type_args};
+    1, "AuthenticationType", "javax.annotation", "Resource", 0x4019, 1,
+    methods, 2, fields, 1, superclass_type_args};
   return &_JavaxAnnotationResource_AuthenticationTypeEnum;
 }
 

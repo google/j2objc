@@ -58,6 +58,7 @@
   J2ObjCAttribute *attributes;
 }
 
+@property (readonly, assign) uint16_t version;
 @property (readonly, retain) NSString *typeName;
 @property (readonly, retain) NSString *packageName;
 @property (readonly, retain) NSString *enclosingName;

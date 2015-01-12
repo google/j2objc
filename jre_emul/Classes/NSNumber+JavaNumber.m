@@ -37,7 +37,7 @@
       .constantValue.asLong = JavaLangNumber_serialVersionUID },
   };
   static J2ObjcClassInfo _JavaLangNumber = {
-    "Number", "java.lang", NULL, 0x401, 6, methods, 1, fields, 0, NULL
+    1, "Number", "java.lang", NULL, 0x401, 6, methods, 1, fields, 0, NULL
   };
   return &_JavaLangNumber;
 }

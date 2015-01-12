@@ -673,7 +673,9 @@ jint JavaLangCharacter_offsetByCodePointsRaw(
     { "INITIAL_CAPACITY_", NULL, 0x18, "I", NULL, .constantValue.asInt = INITIAL_CAPACITY },
     { "count_", NULL, 0x2, "I", NULL,  },
   };
-  static J2ObjcClassInfo _JavaLangAbstractStringBuilder = { "AbstractStringBuilder", "java.lang", NULL, 0x400, 46, methods, 4, fields, 0, NULL};
+  static J2ObjcClassInfo _JavaLangAbstractStringBuilder = {
+    1, "AbstractStringBuilder", "java.lang", NULL, 0x400, 46, methods, 4, fields, 0, NULL
+  };
   return &_JavaLangAbstractStringBuilder;
 }
 

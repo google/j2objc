@@ -163,7 +163,7 @@ static void doWait(id obj, long long timeout) {
     { "hash", "hashCode", "I", 0x1, NULL },
   };
   static J2ObjcClassInfo _JavaLangObject = {
-    "Object", "java.lang", NULL, 0x1, 9, methods, 0, NULL, 0, NULL
+    1, "Object", "java.lang", NULL, 0x1, 9, methods, 0, NULL, 0, NULL
   };
   return &_JavaLangObject;
 }
