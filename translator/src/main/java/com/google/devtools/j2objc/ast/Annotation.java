@@ -15,11 +15,12 @@
 package com.google.devtools.j2objc.ast;
 
 import org.eclipse.jdt.core.dom.IAnnotationBinding;
+import org.eclipse.jdt.core.dom.ITypeBinding;
 
 /**
  * Base class for annotation nodes.
  */
-public abstract class Annotation extends TreeNode {
+public abstract class Annotation extends Expression {
 
   private IAnnotationBinding annotationBinding = null;
   protected ChildLink<Name> typeName = ChildLink.create(Name.class, this);
@@ -46,5 +47,10 @@ public abstract class Annotation extends TreeNode {
 
   public boolean isSingleMemberAnnotation() {
     return false;
+  }
+
+  @Override
+  public ITypeBinding getTypeBinding() {
+    return annotationBinding.getAnnotationType();
   }
 }

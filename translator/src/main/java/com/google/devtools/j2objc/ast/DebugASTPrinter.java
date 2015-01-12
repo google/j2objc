@@ -48,7 +48,7 @@ public class DebugASTPrinter extends TreeVisitor {
     printModifiers(node.getModifiers());
     sb.print("@interface ");
     node.getName().accept(this);
-    sb.print(" {");
+    sb.println(" {");
     sb.indent();
     for (BodyDeclaration decl : node.getBodyDeclarations()) {
       decl.accept(this);
@@ -125,6 +125,7 @@ public class DebugASTPrinter extends TreeVisitor {
         sb.print(',');
       }
     }
+    sb.print('}');
     return false;
   }
 

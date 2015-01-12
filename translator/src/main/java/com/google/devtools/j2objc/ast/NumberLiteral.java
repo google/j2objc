@@ -46,7 +46,9 @@ public class NumberLiteral extends Expression {
   }
 
   public static NumberLiteral newIntLiteral(Integer i) {
-    return new NumberLiteral(i);
+    NumberLiteral numLit = new NumberLiteral(i);
+    numLit.token = Integer.toString(i);
+    return numLit;
   }
 
   @Override
