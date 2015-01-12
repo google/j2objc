@@ -78,88 +78,6 @@ IOS_JAVA_OBJS = \
 IOS_INTERFACES = \
 	java/lang/Cloneable.h
 
-# Java interfaces that will generate empty .m files.
-JRE_INTERFACES = \
-	java/io/Closeable.h \
-	java/io/DataInput.h \
-	java/io/DataOutput.h \
-	java/io/Externalizable.h \
-	java/io/FileFilter.h \
-	java/io/FilenameFilter.h \
-	java/io/Flushable.h \
-	java/io/ObjectInput.h \
-	java/io/ObjectInputValidation.h \
-	java/io/ObjectOutput.h \
-	java/lang/Appendable.h \
-	java/lang/Runnable.h \
-	java/lang/annotation/Annotation.h \
-	java/lang/reflect/AnnotatedElement.h \
-	java/lang/reflect/GenericArrayType.h \
-	java/lang/reflect/GenericDeclaration.h \
-	java/lang/reflect/Member.h \
-	java/lang/reflect/ParameterizedType.h \
-	java/lang/reflect/Type.h \
-	java/lang/reflect/TypeVariable.h \
-	java/lang/reflect/WildcardType.h \
-	java/security/Guard.h \
-	java/security/PrivilegedAction.h \
-	java/util/Collection.h \
-	java/util/Comparator.h \
-	java/util/Deque.h \
-	java/util/Enumeration.h \
-	java/util/EventListener.h \
-	java/util/Formattable.h \
-	java/util/Iterator.h \
-	java/util/List.h \
-	java/util/ListIterator.h \
-	java/util/Map.h \
-	java/util/NavigableMap.h \
-	java/util/NavigableSet.h \
-	java/util/Observer.h \
-	java/util/Queue.h \
-	java/util/RandomAccess.h \
-	java/util/Set.h \
-	java/util/SortedMap.h \
-	java/util/SortedSet.h \
-	java/util/concurrent/BlockingDeque.h \
-	java/util/concurrent/BlockingQueue.h \
-	java/util/concurrent/Callable.h \
-	java/util/concurrent/CompletionService.h \
-	java/util/concurrent/ConcurrentMap.h \
-	java/util/concurrent/ConcurrentNavigableMap.h \
-	java/util/concurrent/Delayed.h \
-	java/util/concurrent/Executor.h \
-	java/util/concurrent/ExecutorService.h \
-	java/util/concurrent/Future.h \
-	java/util/concurrent/RunnableFuture.h \
-	java/util/concurrent/RunnableScheduledFuture.h \
-	java/util/concurrent/ScheduledExecutorService.h \
-	java/util/concurrent/ScheduledFuture.h \
-	java/util/concurrent/ThreadFactory.h \
-	java/util/concurrent/TransferQueue.h \
-	java/util/logging/Filter.h \
-	java/util/logging/LoggingMXBean.h \
-	org/apache/harmony/security/fortress/SecurityAccess.h \
-	org/w3c/dom/TypeInfo.h \
-	org/w3c/dom/ls/LSInput.h \
-	org/w3c/dom/ls/LSResourceResolver.h \
-	org/xml/sax/AttributeList.h \
-	org/xml/sax/Attributes.h \
-	org/xml/sax/ContentHandler.h \
-	org/xml/sax/DocumentHandler.h \
-	org/xml/sax/DTDHandler.h \
-	org/xml/sax/EntityResolver.h \
-	org/xml/sax/ErrorHandler.h \
-	org/xml/sax/ext/Attributes2.h \
-	org/xml/sax/ext/DeclHandler.h \
-	org/xml/sax/ext/EntityResolver2.h \
-	org/xml/sax/ext/LexicalHandler.h \
-	org/xml/sax/ext/Locator2.h \
-	org/xml/sax/Parser.h \
-	org/xml/sax/XMLFilter.h \
-	org/xml/sax/XMLReader.h \
-	org/xmlpull/v1/XmlSerializer.h
-
 # Java sources to be translated normally.
 JAVA_SOURCES = \
 	android/os/SystemClock.java \
@@ -235,24 +153,31 @@ JAVA_SOURCES = \
 	java/io/CharArrayReader.java \
 	java/io/CharArrayWriter.java \
 	java/io/CharConversionException.java \
+	java/io/Closeable.java \
+	java/io/DataInput.java \
 	java/io/DataInputStream.java \
+	java/io/DataOutput.java \
 	java/io/DataOutputStream.java \
+	java/io/EOFException.java \
 	java/io/EmulatedFields.java \
 	java/io/EmulatedFieldsForDumping.java \
 	java/io/EmulatedFieldsForLoading.java \
-	java/io/EOFException.java \
+	java/io/Externalizable.java \
 	java/io/File.java \
 	java/io/FileDescriptor.java \
+	java/io/FileFilter.java \
 	java/io/FileInputStream.java \
 	java/io/FileNotFoundException.java \
 	java/io/FileOutputStream.java \
 	java/io/FilePermission.java \
 	java/io/FileReader.java \
 	java/io/FileWriter.java \
+	java/io/FilenameFilter.java \
 	java/io/FilterInputStream.java \
 	java/io/FilterOutputStream.java \
 	java/io/FilterReader.java \
 	java/io/FilterWriter.java \
+	java/io/Flushable.java \
 	java/io/InputStream.java \
 	java/io/InputStreamReader.java \
 	java/io/InterruptedIOException.java \
@@ -264,7 +189,10 @@ JAVA_SOURCES = \
 	java/io/LineNumberReader.java \
 	java/io/NotActiveException.java \
 	java/io/NotSerializableException.java \
+	java/io/ObjectInput.java \
 	java/io/ObjectInputStream.java \
+	java/io/ObjectInputValidation.java \
+	java/io/ObjectOutput.java \
 	java/io/ObjectOutputStream.java \
 	java/io/ObjectStreamClass.java \
 	java/io/ObjectStreamConstants.java \
@@ -298,11 +226,7 @@ JAVA_SOURCES = \
 	java/io/WriteAbortedException.java \
 	java/io/Writer.java \
 	java/lang/AbstractMethodError.java \
-	java/lang/annotation/AnnotationFormatError.java \
-	java/lang/annotation/AnnotationTypeMismatchException.java \
-	java/lang/annotation/ElementType.java \
-	java/lang/annotation/IncompleteAnnotationException.java \
-	java/lang/annotation/RetentionPolicy.java \
+	java/lang/Appendable.java \
 	java/lang/ArithmeticException.java \
 	java/lang/ArrayIndexOutOfBoundsException.java \
 	java/lang/ArrayStoreException.java \
@@ -354,20 +278,35 @@ JAVA_SOURCES = \
 	java/lang/Package.java \
 	java/lang/Readable.java \
 	java/lang/RealToString.java \
+	java/lang/Runnable.java \
 	java/lang/StringToReal.java \
+	java/lang/annotation/Annotation.java \
+	java/lang/annotation/AnnotationFormatError.java \
+	java/lang/annotation/AnnotationTypeMismatchException.java \
 	java/lang/annotation/Documented.java \
+	java/lang/annotation/ElementType.java \
+	java/lang/annotation/IncompleteAnnotationException.java \
 	java/lang/annotation/Inherited.java \
 	java/lang/annotation/Retention.java \
+	java/lang/annotation/RetentionPolicy.java \
 	java/lang/annotation/Target.java \
+	java/lang/reflect/AnnotatedElement.java \
 	java/lang/reflect/Array.java \
+	java/lang/reflect/GenericArrayType.java \
+	java/lang/reflect/GenericDeclaration.java \
 	java/lang/reflect/GenericSignatureFormatError.java \
 	java/lang/reflect/InvocationHandler.java \
 	java/lang/reflect/InvocationTargetException.java \
 	java/lang/reflect/MalformedParameterizedTypeException.java \
+	java/lang/reflect/Member.java \
 	java/lang/reflect/Modifier.java \
+	java/lang/reflect/ParameterizedType.java \
 	java/lang/reflect/Proxy.java \
 	java/lang/reflect/ReflectPermission.java \
+	java/lang/reflect/Type.java \
+	java/lang/reflect/TypeVariable.java \
 	java/lang/reflect/UndeclaredThrowableException.java \
+	java/lang/reflect/WildcardType.java \
 	java/lang/ReflectiveOperationException.java \
 	java/lang/Runtime.java \
 	java/lang/RuntimeException.java \
@@ -584,6 +523,7 @@ JAVA_SOURCES = \
 	java/security/DigestException.java \
 	java/security/DomainCombiner.java \
 	java/security/GeneralSecurityException.java \
+	java/security/Guard.java \
 	java/security/GuardedObject.java \
 	java/security/InvalidAlgorithmParameterException.java \
 	java/security/InvalidKeyException.java \
@@ -606,6 +546,7 @@ JAVA_SOURCES = \
 	java/security/PermissionsHash.java \
 	java/security/Policy.java \
 	java/security/Principal.java \
+	java/security/PrivilegedAction.java \
 	java/security/PrivilegedActionException.java \
 	java/security/PrivilegedExceptionAction.java \
 	java/security/ProtectionDomain.java \
@@ -744,20 +685,26 @@ JAVA_SOURCES = \
 	java/util/Arrays.java \
 	java/util/BitSet.java \
 	java/util/Calendar.java \
+	java/util/Collection.java \
 	java/util/Collections.java \
 	java/util/ComparableTimSort.java \
+	java/util/Comparator.java \
 	java/util/ConcurrentModificationException.java \
 	java/util/Currency.java \
 	java/util/Date.java \
+	java/util/Deque.java \
 	java/util/Dictionary.java \
 	java/util/DualPivotQuicksort.java \
 	java/util/DuplicateFormatFlagsException.java \
 	java/util/EnumMap.java \
 	java/util/EnumSet.java \
+	java/util/Enumeration.java \
 	java/util/EventObject.java \
+	java/util/EventListener.java \
 	java/util/EventListenerProxy.java \
 	java/util/EmptyStackException.java \
 	java/util/FormatFlagsConversionMismatchException.java \
+	java/util/Formattable.java \
 	java/util/FormattableFlags.java \
 	java/util/Formatter.java \
 	java/util/FormatterClosedException.java \
@@ -776,29 +723,41 @@ JAVA_SOURCES = \
 	java/util/IllegalFormatWidthException.java \
 	java/util/InputMismatchException.java \
 	java/util/InvalidPropertiesFormatException.java \
+	java/util/Iterator.java \
 	java/util/LinkedHashMap.java \
 	java/util/LinkedList.java \
 	java/util/LinkedHashSet.java \
+	java/util/List.java \
+	java/util/ListIterator.java \
 	java/util/ListResourceBundle.java \
 	java/util/Locale.java \
+	java/util/Map.java \
 	java/util/MapEntry.java \
 	java/util/MiniEnumSet.java \
 	java/util/MissingFormatArgumentException.java \
 	java/util/MissingFormatWidthException.java \
 	java/util/MissingResourceException.java \
+	java/util/NavigableMap.java \
+	java/util/NavigableSet.java \
 	java/util/NoSuchElementException.java \
 	java/util/Objects.java \
+	java/util/Observer.java \
 	java/util/Observable.java \
 	java/util/PriorityQueue.java \
 	java/util/Properties.java \
 	java/util/PropertyPermission.java \
 	java/util/PropertyResourceBundle.java \
+	java/util/Queue.java \
 	java/util/Random.java \
+	java/util/RandomAccess.java \
 	java/util/ResourceBundle.java \
 	java/util/Scanner.java \
 	java/util/ServiceConfigurationError.java \
 	java/util/ServiceLoader.java \
+	java/util/Set.java \
 	java/util/SimpleTimeZone.java \
+	java/util/SortedMap.java \
+	java/util/SortedSet.java \
 	java/util/Stack.java \
 	java/util/StringTokenizer.java \
 	java/util/Timer.java \
@@ -816,11 +775,17 @@ JAVA_SOURCES = \
 	java/util/WeakHashMap.java \
 	java/util/concurrent/AbstractExecutorService.java \
 	java/util/concurrent/ArrayBlockingQueue.java \
+	java/util/concurrent/BlockingDeque.java \
+	java/util/concurrent/BlockingQueue.java \
 	java/util/concurrent/BrokenBarrierException.java \
+	java/util/concurrent/Callable.java \
 	java/util/concurrent/CancellationException.java \
+	java/util/concurrent/CompletionService.java \
 	java/util/concurrent/ConcurrentHashMap.java \
 	java/util/concurrent/ConcurrentLinkedDeque.java \
 	java/util/concurrent/ConcurrentLinkedQueue.java \
+	java/util/concurrent/ConcurrentMap.java \
+	java/util/concurrent/ConcurrentNavigableMap.java \
 	java/util/concurrent/ConcurrentSkipListMap.java \
 	java/util/concurrent/ConcurrentSkipListSet.java \
 	java/util/concurrent/CountDownLatch.java \
@@ -828,13 +793,17 @@ JAVA_SOURCES = \
 	java/util/concurrent/CopyOnWriteArraySet.java \
 	java/util/concurrent/CyclicBarrier.java \
 	java/util/concurrent/DelayQueue.java \
+	java/util/concurrent/Delayed.java \
 	java/util/concurrent/Exchanger.java \
+	java/util/concurrent/Executor.java \
 	java/util/concurrent/ExecutorCompletionService.java \
+	java/util/concurrent/ExecutorService.java \
 	java/util/concurrent/Executors.java \
 	java/util/concurrent/ExecutionException.java \
 	java/util/concurrent/ForkJoinPool.java \
 	java/util/concurrent/ForkJoinTask.java \
 	java/util/concurrent/ForkJoinWorkerThread.java \
+	java/util/concurrent/Future.java \
 	java/util/concurrent/FutureTask.java \
 	java/util/concurrent/LinkedBlockingDeque.java \
 	java/util/concurrent/LinkedBlockingQueue.java \
@@ -845,13 +814,19 @@ JAVA_SOURCES = \
 	java/util/concurrent/RecursiveTask.java \
 	java/util/concurrent/RejectedExecutionException.java \
 	java/util/concurrent/RejectedExecutionHandler.java \
+	java/util/concurrent/RunnableFuture.java \
+	java/util/concurrent/RunnableScheduledFuture.java \
+	java/util/concurrent/ScheduledExecutorService.java \
+	java/util/concurrent/ScheduledFuture.java \
 	java/util/concurrent/ScheduledThreadPoolExecutor.java \
 	java/util/concurrent/Semaphore.java \
 	java/util/concurrent/SynchronousQueue.java \
+	java/util/concurrent/ThreadFactory.java \
 	java/util/concurrent/ThreadLocalRandom.java \
 	java/util/concurrent/ThreadPoolExecutor.java \
 	java/util/concurrent/TimeoutException.java \
 	java/util/concurrent/TimeUnit.java \
+	java/util/concurrent/TransferQueue.java \
 	java/util/concurrent/atomic/AtomicBoolean.java \
 	java/util/concurrent/atomic/AtomicInteger.java \
 	java/util/concurrent/atomic/AtomicIntegerArray.java \
@@ -876,6 +851,7 @@ JAVA_SOURCES = \
 	java/util/concurrent/locks/ReentrantReadWriteLock.java \
 	java/util/logging/ConsoleHandler.java \
 	java/util/logging/ErrorManager.java \
+	java/util/logging/Filter.java \
 	java/util/logging/Formatter.java \
 	java/util/logging/Handler.java \
 	java/util/logging/IOSLogHandler.java \
@@ -883,6 +859,7 @@ JAVA_SOURCES = \
 	java/util/logging/LogManager.java \
 	java/util/logging/LogRecord.java \
 	java/util/logging/Logger.java \
+	java/util/logging/LoggingMXBean.java \
 	java/util/logging/LoggingPermission.java \
 	java/util/logging/MemoryHandler.java \
 	java/util/logging/SimpleFormatter.java \
@@ -1010,6 +987,7 @@ JAVA_SOURCES = \
 	org/apache/harmony/security/asn1/DerOutputStream.java \
 	org/apache/harmony/security/asn1/ObjectIdentifier.java \
 	org/apache/harmony/security/fortress/Engine.java \
+	org/apache/harmony/security/fortress/SecurityAccess.java \
 	org/apache/harmony/security/fortress/Services.java \
 	org/apache/harmony/security/utils/ObjectIdentifier.java \
 	org/apache/harmony/security/x501/AttributeTypeAndValue.java \
@@ -1028,15 +1006,33 @@ JAVA_SOURCES = \
 	org/json/JSONTokener.java \
 	org/kxml2/io/KXmlParser.java \
 	org/kxml2/io/KXmlSerializer.java \
+	org/w3c/dom/TypeInfo.java \
+	org/w3c/dom/ls/LSInput.java \
+	org/w3c/dom/ls/LSResourceResolver.java \
+	org/xml/sax/AttributeList.java \
+	org/xml/sax/Attributes.java \
+	org/xml/sax/ContentHandler.java \
+	org/xml/sax/DocumentHandler.java \
+	org/xml/sax/DTDHandler.java \
+	org/xml/sax/EntityResolver.java \
+	org/xml/sax/ErrorHandler.java \
 	org/xml/sax/HandlerBase.java \
 	org/xml/sax/InputSource.java \
 	org/xml/sax/Locator.java \
+	org/xml/sax/Parser.java \
 	org/xml/sax/SAXException.java \
 	org/xml/sax/SAXNotRecognizedException.java \
 	org/xml/sax/SAXNotSupportedException.java \
 	org/xml/sax/SAXParseException.java \
+	org/xml/sax/XMLFilter.java \
+	org/xml/sax/XMLReader.java \
+	org/xml/sax/ext/Attributes2.java \
 	org/xml/sax/ext/Attributes2Impl.java \
+	org/xml/sax/ext/DeclHandler.java \
 	org/xml/sax/ext/DefaultHandler2.java \
+	org/xml/sax/ext/EntityResolver2.java \
+	org/xml/sax/ext/LexicalHandler.java \
+	org/xml/sax/ext/Locator2.java \
 	org/xml/sax/ext/Locator2Impl.java \
 	org/xml/sax/helpers/AttributeListImpl.java \
 	org/xml/sax/helpers/AttributesImpl.java \
@@ -1052,6 +1048,7 @@ JAVA_SOURCES = \
 	org/xmlpull/v1/XmlPullParser.java \
 	org/xmlpull/v1/XmlPullParserException.java \
 	org/xmlpull/v1/XmlPullParserFactory.java \
+	org/xmlpull/v1/XmlSerializer.java \
 	org/xmlpull/v1/sax2/Driver.java \
 	sun/misc/Unsafe.java
 
@@ -1061,9 +1058,8 @@ JAVA_SOURCES_MANIFEST = $(BUILD_DIR)/java_sources.mf
 OBJC_SOURCES_MANIFEST = $(BUILD_DIR)/objc_sources.mf
 
 STUB_JAVA_SOURCES := $(shell find $(STUBS_DIR) -name *.java)
-ALL_JAVA_SOURCES = $(JAVA_SOURCES) $(IOS_JAVA_OBJS:.o=.java) $(IOS_INTERFACES:.h=.java) \
-    $(JRE_INTERFACES:.h=.java)
-JAVA_TO_TRANSLATE = $(JRE_INTERFACES:%.h=%.java) $(JAVA_SOURCES)
+ALL_JAVA_SOURCES = $(JAVA_SOURCES) $(IOS_JAVA_OBJS:.o=.java) $(IOS_INTERFACES:.h=.java)
+JAVA_TO_TRANSLATE = $(JAVA_SOURCES)
 SOURCE_HEADERS := $(shell find $(EMULATION_CLASS_DIR) -name *.h)
 INCLUDES = $(JAVA_TO_TRANSLATE:.java=.h) $(SOURCE_HEADERS:$(EMULATION_CLASS_DIR)/%=%)
 DIST_INCLUDES = $(INCLUDES:%=$(DIST_INCLUDE_DIR)/%)
