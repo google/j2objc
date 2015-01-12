@@ -1008,7 +1008,8 @@ jint javaStringHashCode(NSString *string) {
     { "serialPersistentFields_", NULL, 0x1a, "[Ljava/io/ObjectStreamField;", &NSString_serialPersistentFields_ },
     { "serialVersionUID_", NULL, 0x1a, "J", NULL, .constantValue.asLong = JavaLangString_serialVersionUID },
   };
-  static J2ObjcClassInfo _JavaLangString = { "String", "java.lang", NULL, 0x1, 46, methods, 3, fields, 0, NULL};
+  static J2ObjcClassInfo _JavaLangString = {
+      1, "String", "java.lang", NULL, 0x1, 46, methods, 3, fields, 0, NULL };
   return &_JavaLangString;
 }
 
@@ -1036,7 +1037,7 @@ jint javaStringHashCode(NSString *string) {
       .constantValue.asLong = CaseInsensitiveComparator_serialVersionUID },
   };
   static J2ObjcClassInfo _JavaLangString_CaseInsensitiveComparator = {
-    "CaseInsensitiveComparator", "java.lang", "String", 0xa, 0, NULL, 1, fields, 0, NULL
+    1, "CaseInsensitiveComparator", "java.lang", "String", 0xa, 0, NULL, 1, fields, 0, NULL
   };
   return &_JavaLangString_CaseInsensitiveComparator;
 }

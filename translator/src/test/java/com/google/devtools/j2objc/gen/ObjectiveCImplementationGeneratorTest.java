@@ -779,4 +779,12 @@ public class ObjectiveCImplementationGeneratorTest extends GenerationTest {
         "@Foo(CharSequence.class) class Test {}", "Test", "Test.m");
     assertTranslation(translation, "[IOSClass classFromProtocol:@protocol(JavaLangCharSequence)]");
   }
+
+  public void testMetadataHeaderGeneration() throws IOException {
+    String translation = translateSourceFile("package foo; class Test {}", "Test", "foo/Test.m");
+    assertTranslation(translation, "+ (const J2ObjcClassInfo *)__metadata");
+    assertTranslation(translation, "static const J2ObjcClassInfo _FooTest = { "
+        + Integer.toString(MetadataGenerator.METADATA_VERSION)
+        + ", \"Test\", \"foo\"");
+  }
 }
