@@ -75,13 +75,6 @@ id IOSArray_NewArrayWithDimensions(
 
 @implementation IOSArray
 
-- (void)dealloc {
-  JreMemDebugRemove(self);
-#if ! __has_feature(objc_arc)
-  [super dealloc];
-#endif
-}
-
 + (id)arrayWithDimensions:(NSUInteger)dimensionCount
                   lengths:(const jint *)dimensionLengths {
   return [IOSArray_NewArrayWithDimensions(self, dimensionCount, dimensionLengths, nil) autorelease];

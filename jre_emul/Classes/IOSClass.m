@@ -80,13 +80,6 @@ static IOSClass *FetchArray(IOSClass *componentType);
 // Package to prefix mappings, initialized in FindMappedClass().
 static JavaUtilProperties *prefixMapping;
 
-- (instancetype)init {
-  if ((self = [super init])) {
-    JreMemDebugAdd(self);
-  }
-  return self;
-}
-
 - (Class)objcClass {
   return nil;
 }
@@ -893,13 +886,6 @@ IOSObjectArray *copyFieldsToObjectArray(NSArray *fields) {
 // class cache.
 - (instancetype)copyWithZone:(NSZone *)zone {
   return self;
-}
-
-- (void)dealloc {
-#if ! __has_feature(objc_arc)
-  JreMemDebugRemove(self);
-  [super dealloc];
-#endif
 }
 
 IOSClass *FetchClass(Class cls) {
