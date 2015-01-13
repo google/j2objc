@@ -19,6 +19,8 @@
 
 #include "NSCopying+JavaCloneable.h"
 
+#include "J2ObjC_source.h"
+
 @implementation NSCopying
 
 + (const J2ObjcClassInfo *)__metadata {
