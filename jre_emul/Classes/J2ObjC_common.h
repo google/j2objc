@@ -17,9 +17,6 @@
 
 #import <Foundation/Foundation.h>
 
-// TODO(kstanger): Get rid of MemDebug.
-#import "JreMemDebug.h"
-
 #ifndef __has_feature
 #define __has_feature(x) 0  // Compatibility with non-clang compilers.
 #endif
@@ -125,24 +122,10 @@ __attribute__ ((unused)) static inline id check_protocol_cast(id __unsafe_unreta
 // Should only be used with manual reference counting.
 #if !__has_feature(objc_arc)
 static inline id JreStrongAssignInner(id *pIvar, id self, NS_RELEASES_ARGUMENT id value) {
-  // We need a lock here because during
-  // JreMemDebugGenerateAllocationsReport(), we want the list of links
-  // of the graph to be consistent.
-#if JREMEMDEBUG_ENABLED
-  if (JreMemDebugEnabled) {
-    JreMemDebugLock();
-  }
-#endif // JREMEMDEBUG_ENABLED
   if (*pIvar != self) {
     [*pIvar autorelease];
   }
   *pIvar = value;
-#if JREMEMDEBUG_ENABLED
-  if (JreMemDebugEnabled) {
-    JreMemDebugUnlock();
-  }
-#endif // JREMEMDEBUG_ENABLED
-
   return value;
 }
 

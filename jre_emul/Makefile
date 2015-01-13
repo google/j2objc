@@ -40,8 +40,6 @@ IOS_OBJS = \
 	JavaMetadata.o \
 	JavaToIOSInputStreamAdapter.o \
 	JreEmulation.o \
-	JreMemDebug.o \
-	JreMemDebugStrongReference.o \
 	NSCopying+JavaCloneable.o \
 	NSDataInputStream.o \
 	NSDataOutputStream.o \
