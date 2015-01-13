@@ -27,6 +27,7 @@
 #import "IOSObjectArray.h"
 #import "IOSPrimitiveArray.h"
 #import "IOSReflection.h"
+#import "NSCopying+JavaCloneable.h"
 #import "NSObject+JavaObject.h"
 #import "NSString+JavaString.h"
 #import <libkern/OSAtomic.h>
