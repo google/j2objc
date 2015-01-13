@@ -19,6 +19,23 @@
 
 #import "java/lang/Iterable.h"
 
+@interface JavaLangIterable : NSObject
+@end
+
+@implementation JavaLangIterable
+
++ (const J2ObjcClassInfo *)__metadata {
+  static const J2ObjcMethodInfo methods[] = {
+    { "iterator", NULL, "Ljava.util.Iterator;", 0x401, NULL },
+  };
+  static const J2ObjcClassInfo _JavaLangIterable = {
+    1, "Iterable", "java.lang", NULL, 0x201, 1, methods, 0, NULL, 0, NULL
+  };
+  return &_JavaLangIterable;
+}
+
+@end
+
 NSUInteger JreDefaultFastEnumeration(
     __unsafe_unretained id<JavaLangIterable> obj, NSFastEnumerationState *state,
     __unsafe_unretained id *stackbuf, NSUInteger len) {
