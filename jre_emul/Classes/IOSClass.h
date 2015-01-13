@@ -196,20 +196,16 @@
 - (NSString *)objcName;
 - (NSString *)binaryName;
 
-#ifdef __cplusplus
-extern "C" {
-#endif
+CF_EXTERN_C_BEGIN
 
-extern NSString *IOSClass_GetTranslatedMethodName(
+NSString *IOSClass_GetTranslatedMethodName(
     IOSClass *cls, NSString *name, IOSObjectArray *paramTypes);
 
-FOUNDATION_EXPORT IOSClass *IOSClass_forNameWithNSString_(NSString *className);
-FOUNDATION_EXPORT IOSClass *IOSClass_forNameWithNSString_withBoolean_withJavaLangClassLoader_(
+IOSClass *IOSClass_forNameWithNSString_(NSString *className);
+IOSClass *IOSClass_forNameWithNSString_withBoolean_withJavaLangClassLoader_(
     NSString *className, BOOL load, JavaLangClassLoader *loader);
 
-#ifdef __cplusplus
-}
-#endif
+CF_EXTERN_C_END
 
 @end
 
