@@ -42,6 +42,7 @@ IOS_OBJS = \
 	JreEmulation.o \
 	JreMemDebug.o \
 	JreMemDebugStrongReference.o \
+	NSCopying+JavaCloneable.o \
 	NSDataInputStream.o \
 	NSDataOutputStream.o \
 	NSDictionaryMap.o \
@@ -73,10 +74,9 @@ IOS_JAVA_OBJS = \
 	java/lang/reflect/Method.o \
 	javax/annotation/Resource.o
 
-# Java interfaces with hand written obj-c headers. Don't need to be translated,
-# but need to be included in the jre_emul.jar.
-IOS_INTERFACES = \
-	java/lang/Cloneable.h
+# Java sources that should not be translated but should be included in the jar.
+JAR_ONLY_SOURCES = \
+	java/lang/Cloneable.java
 
 # Java sources to be translated normally.
 JAVA_SOURCES = \
@@ -1058,7 +1058,7 @@ JAVA_SOURCES_MANIFEST = $(BUILD_DIR)/java_sources.mf
 OBJC_SOURCES_MANIFEST = $(BUILD_DIR)/objc_sources.mf
 
 STUB_JAVA_SOURCES := $(shell find $(STUBS_DIR) -name *.java)
-ALL_JAVA_SOURCES = $(JAVA_SOURCES) $(IOS_JAVA_OBJS:.o=.java) $(IOS_INTERFACES:.h=.java)
+ALL_JAVA_SOURCES = $(JAVA_SOURCES) $(IOS_JAVA_OBJS:.o=.java) $(JAR_ONLY_SOURCES)
 JAVA_TO_TRANSLATE = $(JAVA_SOURCES)
 SOURCE_HEADERS := $(shell find $(EMULATION_CLASS_DIR) -name *.h)
 INCLUDES = $(JAVA_TO_TRANSLATE:.java=.h) $(SOURCE_HEADERS:$(EMULATION_CLASS_DIR)/%=%)

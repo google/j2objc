@@ -46,6 +46,7 @@
 #import "IOSProtocolClass.h"
 #import "IOSReflection.h"
 #import "JavaMetadata.h"
+#import "NSCopying+JavaCloneable.h"
 #import "NSNumber+JavaNumber.h"
 #import "NSObject+JavaObject.h"
 #import "NSString+JavaString.h"
@@ -975,9 +976,10 @@ IOSClass *FetchArray(IOSClass *componentType) {
     IOSClass_stringClass = FetchClass([NSString class]);
 
     // Load and initialize JRE categories, using their dummy classes.
-    AUTORELEASE([[JreObjectCategoryDummy alloc] init]);
-    AUTORELEASE([[JreStringCategoryDummy alloc] init]);
-    AUTORELEASE([[JreNumberCategoryDummy alloc] init]);
+    [JreObjectCategoryDummy class];
+    [JreStringCategoryDummy class];
+    [JreNumberCategoryDummy class];
+    [NSCopying class];
 
     // Verify that these categories successfully loaded.
     if ([[NSObject class] instanceMethodSignatureForSelector:@selector(compareToWithId:)] == NULL ||
