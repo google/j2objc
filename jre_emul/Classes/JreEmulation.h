@@ -23,7 +23,6 @@
 #ifdef __OBJC__
 #import "J2ObjC_common.h"
 #import "JavaObject.h"
-#import "JreMemDebug.h"
 #import "IOSObjectArray.h"
 #import "IOSPrimitiveArray.h"
 #import "IOSReflection.h"

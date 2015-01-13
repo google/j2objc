@@ -140,14 +140,6 @@ static void doWait(id obj, long long timeout) {
 - (void)copyAllFieldsTo:(id)other {
 }
 
-- (NSArray *)memDebugStrongReferences {
-  return [NSArray array];
-}
-
-+ (NSArray *)memDebugStaticReferences {
-  return nil;
-}
-
 + (J2ObjcClassInfo *)__metadata {
   static J2ObjcMethodInfo methods[] = {
     { "getClass", NULL, "LIOSClass", 0x11, NULL },

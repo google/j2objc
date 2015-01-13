@@ -41,10 +41,6 @@
 // behavior for itself or its subclasses.
 - (void)copyAllFieldsTo:(id)other;
 
-- (NSArray *)memDebugStrongReferences;
-
-+ (NSArray *)memDebugStaticReferences;
-
 // Unimplemented private methods for java.lang.ref.Reference. The methods'
 // implementations are set when swizzling the Reference's referent class.
 - (void)_java_lang_ref_original_dealloc;
