@@ -306,26 +306,212 @@ public class ObjectiveCImplementationGeneratorTest extends GenerationTest {
         "JreStrongAssignAndConsume(&FooCompatible_FOO_, nil, [[NSObject alloc] init]);");
   }
 
-  public void testAnnotationGeneration() throws IOException {
+  public void testAnnotations() throws IOException {
+    addSourceFile(
+        "import java.lang.annotation.*;"
+        + "@Target({ElementType.TYPE, ElementType.METHOD, ElementType.FIELD, ElementType.PARAMETER}) "
+        + "@Retention(RetentionPolicy.RUNTIME) "
+        + "public @interface Simple { "
+        + "  boolean foo() default false; "
+        + "  String[] bar() default {}; "
+        + "  int[] baz();"
+        + "}",
+        "Simple.java");
     String translation = translateSourceFile(
-        "package foo; import java.lang.annotation.*; @Retention(RetentionPolicy.RUNTIME) "
-        + "public @interface Compatible { boolean fooable() default false; }",
-        "Compatible", "foo/Compatible.m");
-    assertTranslation(translation, "@implementation FooCompatible");
-    assertTranslation(translation, "@synthesize fooable;");
+        "@Simple(baz={}) " +
+        "public class AnnotateMe { "
+        + " @Simple(baz={1}, foo=true) "
+        + " public long annotateField;"
+        + " @Simple(baz={1, 2}) "
+        + " public void annotateMethod(@Simple(baz={1, 2, 3}) int annotateParam) { } "
+        + "}",
+        "AnnotateMe", "AnnotateMe.m");
+    assertTranslatedLines(translation,
+        "+ (IOSObjectArray *)__annotations {",
+        "return [IOSObjectArray "
+        + "arrayWithObjects:(id[]) { "
+        +   "[[[Simple alloc] "
+        +     "initWithBar:[IOSObjectArray arrayWithObjects:(id[]) { } count:0 type:[IOSClass classFromClass:[NSString class]]] "
+        +     "withBaz:[IOSIntArray arrayWithInts:(jint[]) { } count:0] "
+        +     "withFoo:false] autorelease] } "
+        + "count:1 "
+        + "type:[IOSClass classFromProtocol:@protocol(JavaLangAnnotationAnnotation)]];");
+    assertTranslatedLines(translation,
+        "+ (IOSObjectArray *)__annotations_annotateField_ {",
+        "return [IOSObjectArray "
+        + "arrayWithObjects:(id[]) { "
+        +   "[[[Simple alloc] "
+        +     "initWithBar:[IOSObjectArray arrayWithObjects:(id[]) { } count:0 type:[IOSClass classFromClass:[NSString class]]] "
+        +     "withBaz:[IOSIntArray arrayWithInts:(jint[]) { 1 } count:1] "
+        +     "withFoo:true] autorelease] } "
+        + "count:1 "
+        + "type:[IOSClass classFromProtocol:@protocol(JavaLangAnnotationAnnotation)]];");
+    assertTranslatedLines(translation,
+        "+ (IOSObjectArray *)__annotations_annotateMethodWithInt_ {",
+        "return [IOSObjectArray "
+        + "arrayWithObjects:(id[]) { "
+        +   "[[[Simple alloc] "
+        +     "initWithBar:[IOSObjectArray arrayWithObjects:(id[]) { } count:0 type:[IOSClass classFromClass:[NSString class]]] "
+        +     "withBaz:[IOSIntArray arrayWithInts:(jint[]) { 1, 2 } count:2] "
+        +     "withFoo:false] autorelease] } "
+        + "count:1 "
+        + "type:[IOSClass classFromProtocol:@protocol(JavaLangAnnotationAnnotation)]];");
+    assertTranslatedLines(translation,
+        "+ (IOSObjectArray *)__annotations_annotateMethodWithInt__params {",
+        "return [IOSObjectArray "
+        + "arrayWithObjects:(id[]) { "
+        +   "[IOSObjectArray "
+        +     "arrayWithObjects:(id[]) { "
+        +       "[[[Simple alloc] "
+        +         "initWithBar:[IOSObjectArray arrayWithObjects:(id[]) { } count:0 type:[IOSClass classFromClass:[NSString class]]] "
+        +         "withBaz:[IOSIntArray arrayWithInts:(jint[]) { 1, 2, 3 } count:3] "
+        +         "withFoo:false] autorelease] } "
+        +     "count:1 "
+        +     "type:[IOSClass classFromProtocol:@protocol(JavaLangAnnotationAnnotation)]] } "
+        + "count:1 "
+        + "type:[IOSClass classFromProtocol:@protocol(JavaLangAnnotationAnnotation)]];");
+  }
+
+  public void testSimpleAnnotationGen() throws IOException {
+    String translation = translateSourceFile(
+        "import java.lang.annotation.*;"
+        + "@Target({ElementType.TYPE, ElementType.METHOD, ElementType.FIELD}) "
+        + "@Retention(RetentionPolicy.RUNTIME) "
+        + "public @interface Simple { "
+        + "  boolean foo() default false; "
+        + "  String[] bar() default {}; "
+        + "}",
+        "Simple", "Simple.m");
+    assertTranslation(translation, "@implementation Simple");
+    assertTranslation(translation, "@synthesize foo;");
+    assertTranslation(translation, "@synthesize bar;");
 
     // Verify constructor generated.
-    assertTranslation(translation, "- (instancetype)initWithFooable:(jboolean)fooable_");
-    assertTranslation(translation, "fooable = fooable_;");
+    assertTranslation(translation,
+        "- (instancetype)initWithBar:(IOSObjectArray *)bar_ withFoo:(jboolean)foo_");
+    assertTranslation(translation, "bar = RETAIN_(bar_);");
+    assertTranslation(translation, "foo = foo_;");
 
     // Verify default value accessor.
     assertTranslatedLines(translation,
-        "+ (jboolean)fooableDefault {",
+        "+ (jboolean)fooDefault {",
         "return NO;");
+    assertTranslatedLines(translation,
+        "+ (IOSObjectArray *)barDefault {",
+        "return [IOSObjectArray arrayWithObjects:(id[]){  } count:0 type:[IOSClass classFromClass:[NSString class]]];");
 
     assertTranslatedLines(translation,
         "- (IOSClass *)annotationType {",
-        "return [IOSClass classFromProtocol:@protocol(FooCompatible)];");
+        "return [IOSClass classFromProtocol:@protocol(Simple)];");
+    assertTranslatedLines(translation,
+        "+ (IOSObjectArray *)__annotations {",
+        "return [IOSObjectArray "
+        + "arrayWithObjects:(id[]) { "
+        +   "[[[JavaLangAnnotationTarget alloc] initWithValue:[IOSObjectArray "
+        +     "arrayWithObjects:(id[]) { "
+        +       "JavaLangAnnotationElementTypeEnum_get_TYPE(), "
+        +       "JavaLangAnnotationElementTypeEnum_get_METHOD(), "
+        +       "JavaLangAnnotationElementTypeEnum_get_FIELD() "
+        +     "} "
+        +     "count:3 "
+        +     "type:[IOSClass classFromClass:[JavaLangAnnotationElementTypeEnum class]]]] autorelease], "
+        +   "[[[JavaLangAnnotationRetention alloc] initWithValue:JavaLangAnnotationRetentionPolicyEnum_get_RUNTIME()] autorelease] "
+        + "} "
+        + "count:2 "
+        + "type:[IOSClass classFromProtocol:@protocol(JavaLangAnnotationAnnotation)]];");
+  }
+
+  public void testNestedAnnotationGen() throws IOException {
+    addSourceFile("import java.lang.annotation.*; "
+        + "@Retention(RetentionPolicy.RUNTIME) "
+        + "public @interface Simple { "
+        + "  boolean foo() default false; "
+        + "  String[] bar() default {}; "
+        + "}", "Simple.java");
+    String translation = translateSourceFile(
+        "import java.lang.annotation.*; "
+        + "@Retention(RetentionPolicy.RUNTIME) "
+        + "public @interface Complex { "
+        + "  Simple baz() default @Simple(bar={ \"hi\" }); "
+        + "  Simple[] bunchBaz() default {}; "
+        + "}",
+        "Complex", "Complex.m");
+    assertTranslation(translation, "@implementation Complex");
+    assertTranslation(translation, "@synthesize baz;");
+    assertTranslation(translation, "@synthesize bunchBaz;");
+
+    // Verify constructor generated.
+    assertTranslation(translation,
+        "- (instancetype)initWithBaz:(id<Simple>)baz_ withBunchBaz:(IOSObjectArray *)bunchBaz_");
+    assertTranslation(translation, "baz = RETAIN_(baz_);");
+    assertTranslation(translation, "bunchBaz = RETAIN_(bunchBaz_);");
+
+    // Verify default value accessor.
+    assertTranslatedLines(translation,
+        "+ (id<Simple>)bazDefault {",
+        "return [[[Simple alloc] initWithBar:[IOSObjectArray arrayWithObjects:(id[]) { @\"hi\" } count:1 type:[IOSClass classFromClass:[NSString class]]] withFoo:false] autorelease];");
+    assertTranslatedLines(translation,
+        "+ (IOSObjectArray *)bunchBazDefault {",
+        "return [IOSObjectArray arrayWithObjects:(id[]){  } count:0 type:[IOSClass classFromProtocol:@protocol(Simple)]];");
+
+    assertTranslatedLines(translation,
+        "- (IOSClass *)annotationType {",
+        "return [IOSClass classFromProtocol:@protocol(Complex)];");
+    assertTranslatedLines(translation,
+        "+ (IOSObjectArray *)__annotations {",
+        "return [IOSObjectArray "
+        + "arrayWithObjects:(id[]) { "
+        +   "[[[JavaLangAnnotationRetention alloc] initWithValue:JavaLangAnnotationRetentionPolicyEnum_get_RUNTIME()] autorelease] "
+        + "} "
+        + "count:1 "
+        + "type:[IOSClass classFromProtocol:@protocol(JavaLangAnnotationAnnotation)]];");
+  }
+
+  public void testNestedAnnotationUsage() throws IOException {
+    addSourceFile("import java.lang.annotation.*; "
+        + "@Retention(RetentionPolicy.RUNTIME) "
+        + "public @interface Simple { "
+        + "  boolean foo() default false; "
+        + "  String[] bar() default {}; "
+        + "}", "Simple.java");
+    addSourceFile("import java.lang.annotation.*; "
+        + "@Retention(RetentionPolicy.RUNTIME) "
+        + "public @interface Complex { "
+        + "  Simple baz() default @Simple(foo=true,bar={ \"hi\" }); "
+        + "  Simple[] bunchBaz() default {}; "
+        + "}", "Complex.java");
+    String translation = translateSourceFile(
+        "public class AnnotateUsage { "
+        + " @Complex(bunchBaz={@Simple(bar={ \"booya\" })}) "
+        + " public void dummyMethod() { } "
+        + "}",
+        "AnnotateUsage", "AnnotateUsage.m");
+    assertTranslatedLines(translation,
+        "+ (IOSObjectArray *)__annotations_dummyMethod {",
+        "return [IOSObjectArray "
+        + "arrayWithObjects:(id[]) { "
+        +   "[[[Complex alloc] "
+        +     "initWithBaz:[[[Simple alloc] "
+        +       "initWithBar:[IOSObjectArray "
+        +         "arrayWithObjects:(id[]) { @\"hi\" } "
+        +         "count:1 "
+        +         "type:[IOSClass classFromClass:[NSString class]]] "
+        +       "withFoo:true] autorelease] "
+        +     "withBunchBaz:[IOSObjectArray "
+        +       "arrayWithObjects:(id[]) { "
+        +         "[[[Simple alloc] "
+        +           "initWithBar:[IOSObjectArray "
+        +             "arrayWithObjects:(id[]) { @\"booya\" } "
+        +             "count:1 "
+        +             "type:[IOSClass classFromClass:[NSString class]]] "
+        +           "withFoo:false] autorelease] "
+        +       "} "
+        +       "count:1 "
+        +       "type:[IOSClass classFromProtocol:@protocol(Simple)]]"
+        +   "] autorelease] "
+        + "} "
+        + "count:1 "
+        + "type:[IOSClass classFromProtocol:@protocol(JavaLangAnnotationAnnotation)]];");
   }
 
   public void testMethodsWithTypeParameters() throws IOException {
