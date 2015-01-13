@@ -1,0 +1,10 @@
+URL: http://mvnrepository.com/artifact/org.hamcrest/hamcrest-core/1.1
+Version: 1.1
+License: BSD License
+License File: LICENSE
+
+Description:
+A matcher framework useful for unit tests. Required by JUnit.
+
+Local Modifications:
+No modifications.
