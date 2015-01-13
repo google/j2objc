@@ -14,12 +14,14 @@
 
 package com.google.devtools.j2objc.ast;
 
+import com.google.common.base.Function;
 import com.google.common.base.Predicate;
 import com.google.common.collect.AbstractIterator;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 import com.google.devtools.j2objc.util.BindingUtil;
 
+import org.eclipse.jdt.core.dom.IAnnotationBinding;
 import org.eclipse.jdt.core.dom.IBinding;
 import org.eclipse.jdt.core.dom.IMethodBinding;
 import org.eclipse.jdt.core.dom.ITypeBinding;
@@ -79,6 +81,15 @@ public class TreeUtil {
 
   public static List<Annotation> getRuntimeAnnotationsList(Iterable<Annotation> annotations) {
     return Lists.newArrayList(getRuntimeAnnotations(annotations));
+  }
+
+  public static List<IAnnotationBinding> getRuntimeAnnotationBindings(Iterable<Annotation> annotations) {
+    return Lists.transform(getRuntimeAnnotationsList(annotations),
+        new Function<Annotation, IAnnotationBinding>() {
+          public IAnnotationBinding apply(Annotation input) {
+            return input.getAnnotationBinding();
+          }
+        });
   }
 
   public static boolean hasAnnotation(Class<?> annotationClass, List<Annotation> annotations) {

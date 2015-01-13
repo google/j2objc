@@ -150,7 +150,7 @@
   Protocol * __unsafe_unretained *interfaces = protocol_copyProtocolList(protocol_, &outCount);
   NSMutableArray *result = [NSMutableArray arrayWithCapacity:outCount];
   for (unsigned i = 0; i < outCount; i++) {
-    IOSClass *interface = [IOSClass classWithProtocol:interfaces[i]];
+    IOSClass *interface = [IOSClass classFromProtocol:interfaces[i]];
     NSString *name = [interface getName];
     // Don't include NSObject and JavaObject interfaces, since java.lang.Object is a class.
     if (![name isEqualToString:@"JavaObject"] && ![name isEqualToString:@"java.lang.Object"]) {
