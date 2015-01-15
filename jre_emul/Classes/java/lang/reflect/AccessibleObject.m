@@ -184,3 +184,5 @@ NSString *describeTypeEncoding(NSString *type) {
   }
   return [NSString stringWithFormat:@"unknown type encoding: %@", type];
 }
+
+J2OBJC_CLASS_TYPE_LITERAL_SOURCE(JavaLangReflectAccessibleObject)

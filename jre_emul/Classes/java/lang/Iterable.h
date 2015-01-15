@@ -28,6 +28,10 @@
 - (id<JavaUtilIterator>)iterator;
 @end
 
+J2OBJC_EMPTY_STATIC_INIT(JavaLangIterable)
+
+J2OBJC_TYPE_LITERAL_HEADER(JavaLangIterable)
+
 FOUNDATION_EXPORT NSUInteger JreDefaultFastEnumeration(
     id<JavaLangIterable> obj, NSFastEnumerationState *state, id __unsafe_unretained *stackbuf,
     NSUInteger len);
