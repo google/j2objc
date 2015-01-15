@@ -19,9 +19,7 @@
 //  Created by Tom Ball on 06/18/2012.
 //
 
-#import "IOSClass.h"
-#import "IOSObjectArray.h"
-#import "IOSPrimitiveClass.h"
+#import "J2ObjC_source.h"
 #import "JavaMetadata.h"
 #import "java/lang/AssertionError.h"
 #import "java/lang/IllegalAccessException.h"
@@ -361,3 +359,5 @@ static void SetWithRawValue(
 #endif
 
 @end
+
+J2OBJC_CLASS_TYPE_LITERAL_SOURCE(JavaLangReflectField)
