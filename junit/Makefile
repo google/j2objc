@@ -251,3 +251,9 @@ clean:
 	@rm -rf $(ARCH_INCLUDE_DIR)/junit $(ARCH_INCLUDE_DIR)/org/junit
 
 dist: lib $(JUNIT_LIB_DIST) $(ARCH_HEADERS) $(JUNIT_DIST_JAR)
+
+find_cycles: $(JAVA_SOURCES_MANIFEST) | cycle_finder_dist jre_emul_java_manifest
+	$(DIST_DIR)/cycle_finder \
+	  -sourcepath $(MODIFIED_JAVA_SRC_DIR):$(JAVA_SRC_DIR) \
+          -cp $(CLASSPATH) -w ../jre_emul/cycle_whitelist.txt \
+          -s ../jre_emul/$(BUILD_DIR_NAME)/java_sources.mf -s $(JAVA_SOURCES_MANIFEST)
