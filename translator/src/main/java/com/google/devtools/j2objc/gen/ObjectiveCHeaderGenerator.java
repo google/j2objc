@@ -70,7 +70,7 @@ public class ObjectiveCHeaderGenerator extends ObjectiveCSourceFileGenerator {
 
   protected ObjectiveCHeaderGenerator(CompilationUnit unit) {
     super(unit, false);
-    mainTypeName = NameTable.getMainTypeFullName(unit);
+    mainTypeName = NameTable.getMainTypeFullName();
   }
 
   @Override
@@ -327,6 +327,15 @@ public class ObjectiveCHeaderGenerator extends ObjectiveCSourceFileGenerator {
     }
     printStaticFields(node);
     printFieldSetters(node, false);
+
+    String pkg = enumType.getPackage().getName();
+    if (NameTable.hasPrefix(pkg) && enumType.isTopLevel()) {
+      String unprefixedName =
+          NameTable.camelCaseQualifiedName(enumType.getQualifiedName()) + "Enum";
+      if (!unprefixedName.equals(typeName)) {
+        printf("\ntypedef %s %s;\n", typeName, unprefixedName);
+      }
+    }
   }
 
   private void printStaticInitFunction(AbstractTypeDeclaration node) {

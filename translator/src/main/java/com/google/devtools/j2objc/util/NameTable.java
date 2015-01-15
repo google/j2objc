@@ -53,6 +53,7 @@ public class NameTable {
 
   private static NameTable instance;
   private final Map<IBinding, String> renamings = Maps.newHashMap();
+  private CompilationUnit unit;
 
   public static final String INIT_NAME = "init";
   public static final String DEALLOC_METHOD = "dealloc";
@@ -256,6 +257,14 @@ public class NameTable {
    */
   public static void initialize() {
     instance = new NameTable(Options.getPackagePrefixes());
+  }
+
+  public static CompilationUnit getUnit() {
+    return instance.unit;
+  }
+
+  public static void setUnit(CompilationUnit unit) {
+    instance.unit = unit;
   }
 
   public static void cleanup() {
@@ -562,7 +571,7 @@ public class NameTable {
 
     // Use camel-cased package+class name.
     IPackageBinding pkg = binding.getPackage();
-    String pkgName = pkg != null ? getPrefix(pkg, null) : "";
+    String pkgName = pkg != null ? getPrefix(pkg) : "";
     return pkgName + binding.getName() + suffix;
   }
 
@@ -582,12 +591,12 @@ public class NameTable {
     return reservedNames.contains(name) || nsObjectMessages.contains(name);
   }
 
-  public static String getMainTypeFullName(CompilationUnit unit) {
-    PackageDeclaration pkg = unit.getPackage();
+  public static String getMainTypeFullName() {
+    PackageDeclaration pkg = getUnit().getPackage();
     if (pkg.isDefaultPackage()) {
-      return unit.getMainTypeName();
+      return getUnit().getMainTypeName();
     } else {
-      return getPrefix(pkg.getPackageBinding(), unit) + unit.getMainTypeName();
+      return getPrefix(pkg.getPackageBinding()) + getUnit().getMainTypeName();
     }
   }
 
@@ -618,11 +627,11 @@ public class NameTable {
   }
 
   /**
-   * Return the prefix for a specified package.  If a prefix was specified
-   * for the package on the command-line, then that prefix is returned.
-   * Otherwise, a camel-cased prefix is created from the package name.
+   * Return the prefix for a specified package. If a prefix was specified
+   * for the package, then that prefix is returned. Otherwise, a camel-cased
+   * prefix is created from the package name.
    */
-  public static String getPrefix(IPackageBinding packageBinding, CompilationUnit unit) {
+  public static String getPrefix(IPackageBinding packageBinding) {
     String packageName = packageBinding.getName();
     if (hasPrefix(packageName)) {
       return instance.prefixMap.get(packageName);
@@ -639,13 +648,18 @@ public class NameTable {
     // Check if there is a package-info.java source file with a prefix annotation.
     // TODO(tball): also check sourcepath directories.
     try {
-      if (unit != null) {
-        String url = unit.getSourceFileFullPath();
+      if (getUnit() != null) {
+        String url = getUnit().getSourceFileFullPath();
         int lastSlash = url.lastIndexOf('/');
-        String packageInfoURL = url.substring(0, lastSlash) + "/package-info.java";
+        String packageInfoURL = lastSlash > 0
+            ? url.substring(0, lastSlash) + "/package-info.java"
+            : "package-info.java";
         if (FileUtil.exists(packageInfoURL)) {
           String pkgInfo = FileUtil.readSource(packageInfoURL);
           int i = pkgInfo.indexOf("@ObjectiveCName");
+          if (i == -1) {
+            i = pkgInfo.indexOf("@com.google.j2objc.annotations.ObjectiveCName");
+          }
           if (i > -1) {
             // Extract annotation's value string.
             i = pkgInfo.indexOf('"', i + 1);
@@ -669,10 +683,7 @@ public class NameTable {
       sb.append(capitalize(part));
     }
     String prefix = sb.toString();
-    if (unit != null) {
-      // Check for package-info completed, so cache new prefix.
-      instance.prefixMap.put(packageName, prefix);
-    }
+    instance.prefixMap.put(packageName, prefix);
     return prefix;
   }
 
