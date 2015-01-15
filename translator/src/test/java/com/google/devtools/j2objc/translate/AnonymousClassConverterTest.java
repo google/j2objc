@@ -116,7 +116,7 @@ public class AnonymousClassConverterTest extends GenerationTest {
         "+ (void)initialize {",
         "if (self == [Test class]) {",
         "JreStrongAssignAndConsume(&Test_t_, nil, [[Test_$1 alloc] "
-            + "initWithIOSClass:Test_class_()]);");
+            + "initWithIOSClass:[IOSClass classFromClass:[Test class]]]);");
   }
 
   public void testFinalParameter() throws IOException {
@@ -502,6 +502,6 @@ public class AnonymousClassConverterTest extends GenerationTest {
     assertTranslation(translation,
         "[super initWithNSString:arg$0 withNSObjectArray:"
         + "[IOSObjectArray arrayWithObjects:(id[]){ arg$1, arg$2 } count:2 "
-        + "type:NSObject_class_()]]");
+        + "type:[IOSClass classFromClass:[NSObject class]]]]");
   }
 }

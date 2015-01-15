@@ -40,7 +40,8 @@ public class AutoboxerTest extends GenerationTest {
     assertTranslation(translation, "twoWithTest:[[[Test alloc] initWithNSString:s] autorelease] "
         + "withInt:i withJavaLangIntegerArray:"
         + "[IOSObjectArray arrayWithObjects:(id[]){ JavaLangInteger_valueOfWithInt_(1), "
-        + "JavaLangInteger_valueOfWithInt_(2) } count:2 type:JavaLangInteger_class_()]];");
+        + "JavaLangInteger_valueOfWithInt_(2) } count:2 type:"
+        + "[IOSClass classFromClass:[JavaLangInteger class]]]];");
   }
 
   public void testUnboxReturn() throws IOException {
@@ -226,7 +227,7 @@ public class AutoboxerTest extends GenerationTest {
         "Test", "Test.m");
     assertTranslation(translation,
         "[IOSObjectArray newArrayWithObjects:(id[]){ i_, j_, k_ } count:3 "
-        + "type:JavaLangInteger_class_()]");
+        + "type:[IOSClass classFromClass:[JavaLangInteger class]]]");
   }
 
   public void testArrayInitializerBoxed() throws IOException {
@@ -238,7 +239,8 @@ public class AutoboxerTest extends GenerationTest {
         "Test", "Test.m");
     assertTranslation(translation,
         "[IOSObjectArray arrayWithObjects:(id[]){ JavaLangInteger_valueOfWithInt_(1), "
-        + "JavaLangInteger_valueOfWithInt_(2), i_ } count:3 type:JavaLangInteger_class_()]");
+        + "JavaLangInteger_valueOfWithInt_(2), i_ } count:3 "
+        + "type:[IOSClass classFromClass:[JavaLangInteger class]]]");
   }
 
   public void testArrayInitializerUnboxed() throws IOException {
@@ -262,7 +264,8 @@ public class AutoboxerTest extends GenerationTest {
         "Test", "Test.m");
     assertTranslation(translation,
         "[IOSObjectArray newArrayWithObjects:(id[]){ JavaLangInteger_valueOfWithInt_(1), "
-        + "JavaLangInteger_valueOfWithInt_(2), i_ } count:3 type:JavaLangInteger_class_()]");
+        + "JavaLangInteger_valueOfWithInt_(2), i_ } count:3 "
+        + "type:[IOSClass classFromClass:[JavaLangInteger class]]]");
   }
 
   public void testFieldArrayInitializerUnboxed() throws IOException {
