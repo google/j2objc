@@ -20,6 +20,20 @@
 //
 
 #import "IOSClass.h"
+
+#import "IOSArrayClass.h"
+#import "IOSConcreteClass.h"
+#import "IOSMappedClass.h"
+#import "IOSObjectArray.h"
+#import "IOSPrimitiveArray.h"
+#import "IOSPrimitiveClass.h"
+#import "IOSProtocolClass.h"
+#import "IOSReflection.h"
+#import "JavaMetadata.h"
+#import "NSCopying+JavaCloneable.h"
+#import "NSNumber+JavaNumber.h"
+#import "NSObject+JavaObject.h"
+#import "NSString+JavaString.h"
 #import "java/lang/AssertionError.h"
 #import "java/lang/ClassCastException.h"
 #import "java/lang/ClassLoader.h"
@@ -37,21 +51,10 @@
 #import "java/lang/reflect/Method.h"
 #import "java/lang/reflect/Modifier.h"
 #import "java/util/Properties.h"
-#import "IOSArrayClass.h"
-#import "IOSConcreteClass.h"
-#import "IOSMappedClass.h"
-#import "IOSObjectArray.h"
-#import "IOSPrimitiveArray.h"
-#import "IOSPrimitiveClass.h"
-#import "IOSProtocolClass.h"
-#import "IOSReflection.h"
-#import "JavaMetadata.h"
-#import "NSCopying+JavaCloneable.h"
-#import "NSNumber+JavaNumber.h"
-#import "NSObject+JavaObject.h"
-#import "NSString+JavaString.h"
 #import "objc/message.h"
 #import "objc/runtime.h"
+
+BOOL IOSClass_initialized = NO;
 
 @implementation IOSClass
 
@@ -989,6 +992,8 @@ IOSClass *FetchArray(IOSClass *componentType) {
                   format:@"Your project is not configured to load categories from the JRE "
                           "emulation library. Try adding the -force_load linker flag."];
     }
+
+    J2OBJC_SET_INITIALIZED(IOSClass)
   }
 }
 
@@ -1020,3 +1025,5 @@ IOSClass *FetchArray(IOSClass *componentType) {
 }
 
 @end
+
+J2OBJC_CLASS_TYPE_LITERAL_SOURCE(IOSClass)

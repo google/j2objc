@@ -20,9 +20,8 @@
 #ifndef _JavaLangNumber_H_
 #define _JavaLangNumber_H_
 
-#import "JreEmulation.h"
+#include "J2ObjC_common.h"
 #include "java/io/Serializable.h"
-#include "java/lang/AssertionError.h"
 
 //
 // Adds the java.io.Serializable marker interface to NSNumber.
@@ -30,6 +29,10 @@
 @interface NSNumber (JavaNumber) <JavaIoSerializable>
 
 @end
+
+J2OBJC_EMPTY_STATIC_INIT(NSNumber)
+
+J2OBJC_TYPE_LITERAL_HEADER(NSNumber)
 
 // Empty class to force category to be loaded.
 @interface JreNumberCategoryDummy : NSObject

@@ -12,14 +12,14 @@
  * limitations under the License.
  */
 
-#include "IOSClass.h"
-#include "IOSObjectArray.h"
+#include "javax/annotation/Resource.h"
+
+#include "J2ObjC_source.h"
 #include "java/lang/IllegalArgumentException.h"
 #include "java/lang/annotation/ElementType.h"
 #include "java/lang/annotation/Retention.h"
 #include "java/lang/annotation/RetentionPolicy.h"
 #include "java/lang/annotation/Target.h"
-#include "javax/annotation/Resource.h"
 
 @implementation JavaxAnnotationResource
 @synthesize authenticationType;
@@ -97,6 +97,8 @@
 @end
 
 BOOL JavaxAnnotationResource_AuthenticationTypeEnum_initialized = NO;
+
+J2OBJC_INTERFACE_TYPE_LITERAL_SOURCE(JavaxAnnotationResource)
 
 JavaxAnnotationResource_AuthenticationTypeEnum *
     JavaxAnnotationResource_AuthenticationTypeEnum_values_[2];

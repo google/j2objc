@@ -204,7 +204,7 @@ public class NameTableTest extends GenerationTest {
     addSourceFile("package foo.bar; public class Test {}", "foo/bar/Test.java");
     String translation = translateSourceFile("foo/bar/Test", "foo/bar/Test.h");
     assertTranslation(translation, "@interface FBTest : NSObject");
-    assertTranslation(translation, "FBTest_init()");
+    assertTranslation(translation, "J2OBJC_EMPTY_STATIC_INIT(FBTest)");
     assertTranslation(translation, "typedef FBTest FooBarTest;");
 
     translation = getTranslatedFile("foo/bar/Test.m");
