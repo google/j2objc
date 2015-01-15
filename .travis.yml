@@ -1,6 +1,5 @@
 # j2objc is a mixed-language project, but setting objective-c forces the OS to OSX.
 language: objective-c
-compiler: clang
 os: osx
 
 # Travis-CI kills the build after 50 minutes, so break it up into
