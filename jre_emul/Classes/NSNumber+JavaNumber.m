@@ -19,8 +19,6 @@
 
 #import "NSNumber+JavaNumber.h"
 
-#import "J2ObjC_source.h"
-
 #define JavaLangNumber_serialVersionUID -8742448824652078965LL
 
 @implementation NSNumber (JavaNumber)
@@ -45,8 +43,6 @@
 }
 
 @end
-
-J2OBJC_CLASS_TYPE_LITERAL_SOURCE(NSNumber)
 
 // Empty class to force category to be loaded.
 @implementation JreNumberCategoryDummy

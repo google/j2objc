@@ -21,7 +21,6 @@
 
 #import "NSObject+JavaObject.h"
 #import "IOSClass.h"
-#import "J2ObjC_source.h"
 #import "java/lang/ClassCastException.h"
 #import "java/lang/CloneNotSupportedException.h"
 #import "java/lang/IllegalArgumentException.h"
@@ -170,5 +169,3 @@ static void doWait(id obj, long long timeout) {
 
 @implementation JreObjectCategoryDummy
 @end
-
-J2OBJC_CLASS_TYPE_LITERAL_SOURCE(NSObject)

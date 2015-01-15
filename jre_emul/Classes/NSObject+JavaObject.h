@@ -23,7 +23,6 @@
 #define _NSObject_JavaObject_H_
 
 #import <Foundation/Foundation.h>
-#import "J2ObjC_common.h"
 #import "JavaObject.h"
 
 @class IOSClass;
@@ -52,9 +51,5 @@
 // Empty class to force category to be loaded.
 @interface JreObjectCategoryDummy : NSObject
 @end
-
-J2OBJC_EMPTY_STATIC_INIT(NSObject)
-
-J2OBJC_TYPE_LITERAL_HEADER(NSObject)
 
 #endif // _NSObject_JavaObject_H_

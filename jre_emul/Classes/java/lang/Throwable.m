@@ -21,7 +21,6 @@
 
 #import "IOSClass.h"
 #import "IOSObjectArray.h"
-#import "J2ObjC_source.h"
 #import "java/io/PrintStream.h"
 #import "java/io/PrintWriter.h"
 #import "java/lang/Throwable.h"
@@ -295,5 +294,3 @@ void FillInStackTraceInternal(JavaLangThrowable *self) {
 }
 
 @end
-
-J2OBJC_CLASS_TYPE_LITERAL_SOURCE(JavaLangThrowable)
