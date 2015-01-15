@@ -129,7 +129,7 @@ public class EnumRewriter extends TreeVisitor {
         "+ (IOSObjectArray *)values;\n"
         + "FOUNDATION_EXPORT IOSObjectArray *%s_values();\n\n"
         + "+ (%s *)valueOfWithNSString:(NSString *)name;\n\n"
-        + "FOUNDATION_EXPORT %s *%s_valueOfWithNSString_(NSString *name);"
+        + "FOUNDATION_EXPORT %s *%s_valueOfWithNSString_(NSString *name);\n"
         + "- (id)copyWithZone:(NSZone *)zone;\n", typeName, typeName, typeName, typeName);
 
     StringBuilder sb = new StringBuilder();

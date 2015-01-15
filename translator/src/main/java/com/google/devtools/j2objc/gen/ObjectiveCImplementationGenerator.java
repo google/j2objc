@@ -296,8 +296,7 @@ public class ObjectiveCImplementationGenerator extends ObjectiveCSourceFileGener
     if (runtimeAnnotations.size() > 0 && TranslationUtil.needsReflection(node)) {
       printImports(getUnit());
       newline();
-      String typeName =
-          NameTable.getPrefix(node.getPackageBinding(), TreeUtil.getCompilationUnit(node))
+      String typeName = NameTable.getPrefix(node.getPackageBinding())
           + NameTable.PACKAGE_INFO_MAIN_TYPE;
       printf("@interface %s : NSObject\n", typeName);
       printf("@end\n\n");

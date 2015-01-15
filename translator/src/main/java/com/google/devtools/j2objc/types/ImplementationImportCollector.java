@@ -77,7 +77,7 @@ public class ImplementationImportCollector extends TreeVisitor {
   private Set<Import> declaredTypes = Sets.newHashSet();
 
   public void collect(CompilationUnit unit) {
-    mainTypeName = NameTable.getMainTypeFullName(unit);
+    mainTypeName = NameTable.getMainTypeFullName();
     run(unit);
     for (Import imp : declaredTypes) {
       imports.remove(imp);
