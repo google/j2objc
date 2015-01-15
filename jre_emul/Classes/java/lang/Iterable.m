@@ -19,8 +19,6 @@
 
 #import "java/lang/Iterable.h"
 
-#import "J2ObjC_source.h"
-
 @interface JavaLangIterable : NSObject
 @end
 
@@ -37,8 +35,6 @@
 }
 
 @end
-
-J2OBJC_INTERFACE_TYPE_LITERAL_SOURCE(JavaLangIterable)
 
 NSUInteger JreDefaultFastEnumeration(
     __unsafe_unretained id<JavaLangIterable> obj, NSFastEnumerationState *state,

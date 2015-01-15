@@ -19,8 +19,11 @@
 //  Created by Tom Ball on 11/07/11.
 //
 
-#import "J2ObjC_source.h"
+#import "IOSClass.h"
+#import "IOSObjectArray.h"
+#import "IOSReflection.h"
 #import "JavaMetadata.h"
+#import "JreEmulation.h"
 #import "java/lang/AssertionError.h"
 #import "java/lang/IllegalArgumentException.h"
 #import "java/lang/NullPointerException.h"
@@ -202,5 +205,3 @@
 }
 
 @end
-
-J2OBJC_CLASS_TYPE_LITERAL_SOURCE(JavaLangReflectMethod)

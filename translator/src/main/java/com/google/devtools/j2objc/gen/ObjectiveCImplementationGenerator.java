@@ -103,10 +103,6 @@ public class ObjectiveCImplementationGenerator extends ObjectiveCSourceFileGener
       printClassExtensions(typesToGenerate);
       for (AbstractTypeDeclaration type : typesToGenerate) {
         generate(type);
-        newline();
-        ITypeBinding binding = type.getTypeBinding();
-        printf("J2OBJC_%s_TYPE_LITERAL_SOURCE(%s)\n",
-               binding.isInterface() ? "INTERFACE": "CLASS", NameTable.getFullName(binding));
       }
       popIgnoreDeprecatedDeclarationsPragma();
     } else if (unit.getMainTypeName().endsWith(NameTable.PACKAGE_INFO_MAIN_TYPE)
@@ -342,7 +338,7 @@ public class ObjectiveCImplementationGenerator extends ObjectiveCSourceFileGener
     if (needsReflection) {
       printMetadata(node);
     }
-    println("\n@end");
+    println("\n@end\n");
     printFunctions(node.getBodyDeclarations());
   }
 

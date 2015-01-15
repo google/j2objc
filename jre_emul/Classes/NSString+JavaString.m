@@ -20,9 +20,8 @@
 //
 
 #import "NSString+JavaString.h"
-
+#import "JreEmulation.h"
 #import "IOSClass.h"
-#import "J2ObjC_source.h"
 #import "java/io/ObjectStreamField.h"
 #import "java/io/Serializable.h"
 #import "java/io/UnsupportedEncodingException.h"
@@ -1064,5 +1063,3 @@ IOSObjectArray *NSString_serialPersistentFields_;
 }
 
 @end
-
-J2OBJC_CLASS_TYPE_LITERAL_SOURCE(NSString)

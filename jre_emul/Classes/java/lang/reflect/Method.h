@@ -22,7 +22,6 @@
 #ifndef _JavaLangReflectMethod_H_
 #define _JavaLangReflectMethod_H_
 
-#import "J2ObjC_common.h"
 #import "java/lang/reflect/ExecutableMember.h"
 #import "java/lang/reflect/GenericDeclaration.h"
 #import "java/lang/reflect/Member.h"
@@ -64,9 +63,5 @@
 - (id)getDefaultValue;
 
 @end
-
-J2OBJC_EMPTY_STATIC_INIT(JavaLangReflectMethod)
-
-J2OBJC_TYPE_LITERAL_HEADER(JavaLangReflectMethod)
 
 #endif // _JavaLangReflectMethod_H_

@@ -17,12 +17,9 @@
 
 #import "J2ObjC_common.h"
 #import "JavaObject.h"
-#import "IOSClass.h"  // Type literal accessors.
 #import "IOSObjectArray.h"
 #import "IOSPrimitiveArray.h"
 #import "IOSReflection.h"  // Metadata methods.
-#import "NSCopying+JavaCloneable.h"
-#import "NSNumber+JavaNumber.h"
 #import "NSObject+JavaObject.h"
 #import "NSString+JavaString.h"
 #import <libkern/OSAtomic.h>  // OSMemoryBarrier used in initialize methods.

@@ -23,7 +23,6 @@
 #define _IOSClass_H_
 
 #import "IOSReflection.h"
-#import "J2ObjC_common.h"
 #import "java/io/Serializable.h"
 #import "java/lang/reflect/AnnotatedElement.h"
 #import "java/lang/reflect/GenericDeclaration.h"
@@ -209,10 +208,5 @@ IOSClass *IOSClass_forNameWithNSString_withBoolean_withJavaLangClassLoader_(
 CF_EXTERN_C_END
 
 @end
-
-FOUNDATION_EXPORT BOOL IOSClass_initialized;
-J2OBJC_STATIC_INIT(IOSClass)
-
-J2OBJC_TYPE_LITERAL_HEADER(IOSClass)
 
 #endif // _IOSClass_H_

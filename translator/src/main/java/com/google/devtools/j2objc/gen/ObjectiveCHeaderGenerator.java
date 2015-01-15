@@ -91,8 +91,6 @@ public class ObjectiveCHeaderGenerator extends ObjectiveCSourceFileGenerator {
 
     for (AbstractTypeDeclaration type : unit.getTypes()) {
       generate(type);
-      newline();
-      printf("J2OBJC_TYPE_LITERAL_HEADER(%s)\n", NameTable.getFullName(type.getTypeBinding()));
     }
 
     generateFileFooter();
@@ -338,7 +336,7 @@ public class ObjectiveCHeaderGenerator extends ObjectiveCSourceFileGenerator {
       printf("\nFOUNDATION_EXPORT BOOL %s_initialized;\n", typeName);
       printf("J2OBJC_STATIC_INIT(%s)\n", typeName);
     } else {
-      printf("J2OBJC_EMPTY_STATIC_INIT(%s)\n", typeName);
+      printf("\n__attribute__((always_inline)) inline void %s_init() {}\n", typeName);
     }
   }
 
