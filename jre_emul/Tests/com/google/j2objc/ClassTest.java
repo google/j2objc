@@ -18,9 +18,13 @@ package com.google.j2objc;
 
 import junit.framework.TestCase;
 
+import javax.annotation.Resource;
+
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
+import java.lang.reflect.AccessibleObject;
 import java.lang.reflect.Constructor;
+import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
@@ -245,6 +249,23 @@ public class ClassTest extends TestCase {
     } catch (Throwable t) {
       fail("wrong exception thrown");
     }
+  }
+
+  // Verify that we can access the class literals for classes that are
+  // hand-coded.
+  public void testCertainClassLiterals() {
+    assertEquals("java.lang.Object", Object.class.getName());
+    assertEquals("java.lang.String", String.class.getName());
+    assertEquals("java.lang.Cloneable", Cloneable.class.getName());
+    assertEquals("java.lang.Number", Number.class.getName());
+    assertEquals("java.lang.Iterable", Iterable.class.getName());
+    assertEquals("java.lang.Throwable", Throwable.class.getName());
+    // TODO(kstanger): Add metadata to the below classes.
+    assertEquals("JavaLangReflectAccessibleObject", AccessibleObject.class.getName());
+    assertEquals("JavaLangReflectConstructor", Constructor.class.getName());
+    assertEquals("JavaLangReflectField", Field.class.getName());
+    assertEquals("JavaLangReflectMethod", Method.class.getName());
+    assertEquals("javax.annotation.Resource", Resource.class.getName());
   }
 
   static class InnerClass {

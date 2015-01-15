@@ -22,9 +22,10 @@
 #ifndef _JAVA_LANG_REFLECT_CONSTRUCTOR_H
 #define _JAVA_LANG_REFLECT_CONSTRUCTOR_H
 
+#import "ExecutableMember.h"
+#import "J2ObjC_common.h"
 #import "java/lang/reflect/GenericDeclaration.h"
 #import "java/lang/reflect/Member.h"
-#import "ExecutableMember.h"
 
 @class JavaMethodMetadata;
 
@@ -43,5 +44,9 @@
 - (id)newInstanceWithNSObjectArray:(IOSObjectArray *)initArgs OBJC_METHOD_FAMILY_NONE;
 
 @end
+
+J2OBJC_EMPTY_STATIC_INIT(JavaLangReflectConstructor)
+
+J2OBJC_TYPE_LITERAL_HEADER(JavaLangReflectConstructor)
 
 #endif // _JAVA_LANG_REFLECT_CONSTRUCTOR_H

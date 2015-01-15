@@ -17,6 +17,8 @@
 
 #import <Foundation/Foundation.h>
 
+@class IOSClass;
+
 #ifndef __has_feature
 #define __has_feature(x) 0  // Compatibility with non-clang compilers.
 #endif
@@ -168,6 +170,57 @@ static inline id JreStrongAssignAndConsume(id *pIvar, id self, NS_RELEASES_ARGUM
     if (!__builtin_expect(CLASS##_initialized, YES)) { \
       [CLASS class]; \
     } \
+  }
+
+/*!
+ * Defines an empty init function for a class that has no initialization code.
+ *
+ * @define J2OBJC_EMPTY_STATIC_INIT
+ * @param CLASS The class to declare the init function for.
+ */
+#define J2OBJC_EMPTY_STATIC_INIT(CLASS) \
+  __attribute__((always_inline)) inline void CLASS##_init() {}
+
+/*!
+ * Declares the type literal accessor for a type. This macro should be added to
+ * the header of each generated Java type.
+ *
+ * @define J2OBJC_TYPE_LITERAL_HEADER
+ * @param TYPE The name of the type to declare the accessor for.
+ */
+#define J2OBJC_TYPE_LITERAL_HEADER(TYPE) \
+  FOUNDATION_EXPORT IOSClass *TYPE##_class_();
+
+/*!
+ * Defines the type literal accessor for a class or enum type. This macro should
+ * be added to the implementation of each generated Java type.
+ *
+ * @define J2OBJC_CLASS_TYPE_LITERAL_SOURCE
+ * @param TYPE The name of the type to define the accessor for.
+ */
+#define J2OBJC_CLASS_TYPE_LITERAL_SOURCE(TYPE) \
+  IOSClass *TYPE##_class_() { \
+    static IOSClass *cls; \
+    static dispatch_once_t token; \
+    TYPE##_init(); \
+    dispatch_once(&token, ^{ cls = [IOSClass classWithClass:[TYPE class]]; }); \
+    return cls; \
+  }
+
+/*!
+ * Defines the type literal accessor for a interface or annotation type. This
+ * macro should be added to the implementation of each generated Java type.
+ *
+ * @define J2OBJC_INTERFACE_TYPE_LITERAL_SOURCE
+ * @param TYPE The name of the type to define the accessor for.
+ */
+#define J2OBJC_INTERFACE_TYPE_LITERAL_SOURCE(TYPE) \
+  IOSClass *TYPE##_class_() { \
+    static IOSClass *cls; \
+    static dispatch_once_t token; \
+    TYPE##_init(); \
+    dispatch_once(&token, ^{ cls = [IOSClass classWithProtocol:@protocol(TYPE)]; }); \
+    return cls; \
   }
 
 #if __has_feature(objc_arc)

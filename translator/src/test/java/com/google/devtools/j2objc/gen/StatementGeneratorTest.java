@@ -331,8 +331,7 @@ public class StatementGeneratorTest extends GenerationTest {
         "Example", "Example.m");
     assertTranslation(translation, "[self fooWithNSObjectArray:");
     assertTranslation(translation,
-        "[IOSObjectArray arrayWithObjects:(id[]){ nil, nil } count:2 "
-        + "type:[IOSClass classFromClass:[NSObject class]]]");
+        "[IOSObjectArray arrayWithObjects:(id[]){ nil, nil } count:2 type:NSObject_class_()]");
     assertTranslation(translation, "[self barWithNSString:");
     assertTranslation(translation, "withNSObjectArray:");
   }
@@ -345,7 +344,7 @@ public class StatementGeneratorTest extends GenerationTest {
     assertTranslation(translation,
         "[self fooWithNSObjectArray:"
         + "[IOSObjectArray arrayWithObjects:(id[]){ JavaLangInteger_valueOfWithInt_(1) } count:1 "
-        + "type:[IOSClass classFromClass:[NSObject class]]]];");
+        + "type:NSObject_class_()]];");
   }
 
   public void testVarargsMethodInvocationPrimitiveArgs() throws IOException {
@@ -640,7 +639,7 @@ public class StatementGeneratorTest extends GenerationTest {
     result = generateStatement(stmts.get(1));
     assertEquals("IOSClass *mySuperClass = [myClass getSuperclass];", result);
     result = generateStatement(stmts.get(2));
-    assertEquals("IOSClass *enumClass = [IOSClass classFromClass:[JavaLangEnum class]];", result);
+    assertEquals("IOSClass *enumClass = JavaLangEnum_class_();", result);
   }
 
   public void testCastInConstructorChain() throws IOException {
@@ -828,8 +827,7 @@ public class StatementGeneratorTest extends GenerationTest {
     assertEquals(2, stmts.size());
     String result = generateStatement(stmts.get(1));
     assertEquals(
-        "if ([[IOSObjectArray iosClassWithType:[IOSClass classFromClass:[NSString class]]] "
-        + "isInstance:args]) {\n}", result);
+        "if ([[IOSObjectArray iosClassWithType:NSString_class_()] isInstance:args]) {\n}", result);
   }
 
   public void testInterfaceArrayInstanceOfTranslation() throws IOException {
@@ -838,8 +836,8 @@ public class StatementGeneratorTest extends GenerationTest {
     assertEquals(2, stmts.size());
     String result = generateStatement(stmts.get(1));
     assertEquals(
-        "if ([[IOSObjectArray iosClassWithType:[IOSClass classFromProtocol:"
-        + "@protocol(JavaLangReadable)]] isInstance:args]) {\n}", result);
+        "if ([[IOSObjectArray iosClassWithType:JavaLangReadable_class_()] isInstance:args]) {\n}",
+        result);
   }
 
   public void testPrimitiveArrayInstanceOfTranslation() throws IOException {
@@ -857,7 +855,7 @@ public class StatementGeneratorTest extends GenerationTest {
     String result = generateStatement(stmts.get(0));
     assertEquals("IOSObjectArray *a = [IOSObjectArray "
         + "arrayWithObjects:(id[]){ @\"one\", @\"two\", @\"three\" } "
-        + "count:3 type:[IOSClass classFromClass:[NSString class]]];", result);
+        + "count:3 type:NSString_class_()];", result);
 
     source = "Comparable[] a = { \"one\", \"two\", \"three\" };";
     stmts = translateStatements(source);
@@ -865,7 +863,7 @@ public class StatementGeneratorTest extends GenerationTest {
     result = generateStatement(stmts.get(0));
     assertEquals("IOSObjectArray *a = [IOSObjectArray "
         + "arrayWithObjects:(id[]){ @\"one\", @\"two\", @\"three\" } "
-        + "count:3 type:[IOSClass classFromProtocol:@protocol(JavaLangComparable)]];", result);
+        + "count:3 type:JavaLangComparable_class_()];", result);
   }
 
   public void testArrayPlusAssign() throws IOException {
@@ -950,11 +948,11 @@ public class StatementGeneratorTest extends GenerationTest {
     assertTranslation(translation,
         "IOSObjectArray *a = [IOSObjectArray arrayWithObjects:(id[]){ nil, "
         + "[IOSObjectArray arrayWithObjects:(id[]){ i_, j_ } count:2 "
-        + "type:[IOSClass classFromClass:[JavaLangInteger class]]], "
+        + "type:JavaLangInteger_class_()], "
         + "[IOSObjectArray arrayWithObjects:(id[]){ j_, i_ } count:2 "
-        + "type:[IOSClass classFromClass:[JavaLangInteger class]]] } count:3 "
+        + "type:JavaLangInteger_class_()] } count:3 "
         + "type:[IOSObjectArray iosClassWithType:"
-        + "[IOSClass classFromClass:[JavaLangInteger class]]]];");
+        + "JavaLangInteger_class_()]];");
   }
 
   public void testVarargsMethodInvocationZeroLengthArray() throws IOException {
@@ -970,16 +968,13 @@ public class StatementGeneratorTest extends GenerationTest {
 
     // Should be equivalent to foo(new Object[0]).
     assertTranslation(translation,
-        "[self fooWithNSObjectArray:[IOSObjectArray "
-        + "arrayWithLength:0 type:[IOSClass classFromClass:[NSObject class]]]]");
+        "[self fooWithNSObjectArray:[IOSObjectArray arrayWithLength:0 type:NSObject_class_()]]");
 
     // Should be equivalent to bar(new Object[] { new Object[0] }).
     assertTranslation(translation,
         "[self barWithNSObjectArray2:[IOSObjectArray arrayWithObjects:"
-        + "(id[]){ [IOSObjectArray arrayWithLength:0 type:"
-        + "[IOSClass classFromClass:[NSObject class]]] } count:1 "
-        + "type:[IOSObjectArray iosClassWithType:"
-        + "[IOSClass classFromClass:[NSObject class]]]]];");
+        + "(id[]){ [IOSObjectArray arrayWithLength:0 type:NSObject_class_()] } count:1 "
+        + "type:[IOSObjectArray iosClassWithType:NSObject_class_()]]];");
   }
 
   public void testVarargsIOSMethodInvocation() throws IOException {
@@ -993,21 +988,18 @@ public class StatementGeneratorTest extends GenerationTest {
         + "  Constructor c4 = Test.class.getConstructor(types); }}",
         "Test", "Test.m");
     assertTranslation(translation,
-        "c1 = [[IOSClass classFromClass:[Test class]] getConstructor:"
-        + "[IOSObjectArray arrayWithLength:0 type:"
-        + "[IOSClass classFromClass:[IOSClass class]]]];");
+        "c1 = [Test_class_() getConstructor:"
+        + "[IOSObjectArray arrayWithLength:0 type:IOSClass_class_()]];");
     assertTranslation(translation,
-        "c2 = [[IOSClass classFromClass:[Test class]] getConstructor:"
-        + "[IOSObjectArray arrayWithObjects:(id[]){ [IOSClass classFromClass:[NSString class]] } "
-        + "count:1 type:[IOSClass classFromClass:[IOSClass class]]]];");
+        "c2 = [Test_class_() getConstructor:[IOSObjectArray "
+        + "arrayWithObjects:(id[]){ NSString_class_() } count:1 type:IOSClass_class_()]];");
     assertTranslation(translation,
-        "c3 = [[IOSClass classFromClass:[Test class]] getConstructor:"
-        + "[IOSObjectArray arrayWithObjects:(id[]){ [IOSClass classFromClass:[NSString class]], "
-        + "JavaLangByte_get_TYPE_() } count:2 type:[IOSClass classFromClass:[IOSClass class]]]];");
+        "c3 = [Test_class_() getConstructor:[IOSObjectArray arrayWithObjects:"
+        + "(id[]){ NSString_class_(), JavaLangByte_get_TYPE_() } count:2 "
+        + "type:IOSClass_class_()]];");
 
     // Array contents should be expanded.
-    assertTranslation(translation,
-        "c4 = [[IOSClass classFromClass:[Test class]] getConstructor:types];");
+    assertTranslation(translation, "c4 = [Test_class_() getConstructor:types];");
   }
 
   public void testGetVarargsWithLeadingParameter() throws IOException {
@@ -1018,8 +1010,7 @@ public class StatementGeneratorTest extends GenerationTest {
         "Test", "Test.m");
     assertTranslation(translation,
         "[[self getClass] getMethod:@\"equals\" parameterTypes:[IOSObjectArray "
-        + "arrayWithObjects:(id[]){ [IOSClass classFromClass:[NSObject class]] } count:1 "
-        + "type:[IOSClass classFromClass:[IOSClass class]]]];");
+        + "arrayWithObjects:(id[]){ NSObject_class_() } count:1 type:IOSClass_class_()]];");
   }
 
   public void testGetVarargsWithLeadingParameterNoArgs() throws IOException {
@@ -1030,7 +1021,7 @@ public class StatementGeneratorTest extends GenerationTest {
         "Test", "Test.m");
     assertTranslation(translation,
         "[[self getClass] getMethod:@\"hashCode\" parameterTypes:[IOSObjectArray "
-        + "arrayWithLength:0 type:[IOSClass classFromClass:[IOSClass class]]]];");
+        + "arrayWithLength:0 type:IOSClass_class_()]];");
   }
 
   public void testTypeVariableWithBoundCast() throws IOException {
@@ -1364,7 +1355,7 @@ public class StatementGeneratorTest extends GenerationTest {
         "[self checkWithBoolean:YES withNSString:@\"%d-%d\" "
         + "withNSObjectArray:[IOSObjectArray arrayWithObjects:(id[]){ "
         + "JavaLangInteger_valueOfWithInt_(i), JavaLangInteger_valueOfWithInt_(j) } count:2 "
-        + "type:[IOSClass classFromClass:[NSObject class]]]];");
+        + "type:NSObject_class_()]];");
   }
 
   // Verify that a string == comparison is converted to compare invocation.
@@ -1581,7 +1572,7 @@ public class StatementGeneratorTest extends GenerationTest {
         + "  Deprecated deprecated() { "
         + "    return Test.class.getAnnotation(Deprecated.class); }}",
         "Test", "Test.m");
-    assertTranslation(translation, "[IOSClass classFromProtocol:@protocol(JavaLangDeprecated)]]");
+    assertTranslation(translation, "JavaLangDeprecated_class_()");
   }
 
   public void testEnumThisCallWithNoArguments() throws IOException {

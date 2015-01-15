@@ -20,6 +20,7 @@
 //
 
 #import "Constructor.h"
+#import "J2ObjC_source.h"
 #import "JavaMetadata.h"
 #import "java/lang/AssertionError.h"
 #import "java/lang/ExceptionInInitializerError.h"
@@ -93,3 +94,5 @@
 }
 
 @end
+
+J2OBJC_CLASS_TYPE_LITERAL_SOURCE(JavaLangReflectConstructor)
