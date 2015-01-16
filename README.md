@@ -1,5 +1,7 @@
 # J2ObjC: Java to Objective-C Translator and Runtime #
 
+[![Build Status](https://travis-ci.org/google/j2objc.svg)](https://travis-ci.org/google/j2objc)
+
 **Project site:** <http://j2objc.org><br>
 **J2ObjC blog:** <http://j2objc.blogspot.com><br>
 **Questions and discussion:** <http://groups.google.com/group/j2objc-discuss>
