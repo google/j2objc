@@ -260,11 +260,10 @@ public class ClassTest extends TestCase {
     assertEquals("java.lang.Number", Number.class.getName());
     assertEquals("java.lang.Iterable", Iterable.class.getName());
     assertEquals("java.lang.Throwable", Throwable.class.getName());
-    // TODO(kstanger): Add metadata to the below classes.
-    assertEquals("JavaLangReflectAccessibleObject", AccessibleObject.class.getName());
-    assertEquals("JavaLangReflectConstructor", Constructor.class.getName());
-    assertEquals("JavaLangReflectField", Field.class.getName());
-    assertEquals("JavaLangReflectMethod", Method.class.getName());
+    assertEquals("java.lang.reflect.AccessibleObject", AccessibleObject.class.getName());
+    assertEquals("java.lang.reflect.Constructor", Constructor.class.getName());
+    assertEquals("java.lang.reflect.Field", Field.class.getName());
+    assertEquals("java.lang.reflect.Method", Method.class.getName());
     assertEquals("javax.annotation.Resource", Resource.class.getName());
   }
 

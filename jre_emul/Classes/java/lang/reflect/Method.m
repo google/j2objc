@@ -201,6 +201,35 @@
   return nil;
 }
 
++ (const J2ObjcClassInfo *)__metadata {
+  static const J2ObjcMethodInfo methods[] = {
+    { "getName", NULL, "Ljava.lang.String;", 0x1, NULL },
+    { "getModifiers", NULL, "I", 0x1, NULL },
+    { "getReturnType", NULL, "Ljava.lang.Class;", 0x1, NULL },
+    { "getGenericReturnType", NULL, "Ljava.lang.reflect.Type;", 0x1, NULL },
+    { "getDeclaringClass", NULL, "Ljava.lang.Class;", 0x1, NULL },
+    { "getParameterTypes", NULL, "[Ljava.lang.Class;", 0x1, NULL },
+    { "getGenericParameterTypes", NULL, "[Ljava.lang.reflect.Type;", 0x1, NULL },
+    { "invokeWithId:withNSObjectArray:", "invoke", "Ljava.lang.Object;", 0x81, "Ljava.lang.IllegalAccessException;Ljava.lang.IllegalArgumentException;Ljava.lang.reflect.InvocationTargetException;" },
+    { "getAnnotationWithIOSClass:", "getAnnotation", "TT;", 0x1, NULL },
+    { "getDeclaredAnnotations", NULL, "[Ljava.lang.annotation.Annotation;", 0x1, NULL },
+    { "getParameterAnnotations", NULL, "[[Ljava.lang.annotation.Annotation;", 0x1, NULL },
+    { "getTypeParameters", NULL, "[Ljava.lang.reflect.TypeVariable;", 0x1, NULL },
+    { "isSynthetic", NULL, "Z", 0x1, NULL },
+    { "getExceptionTypes", NULL, "[Ljava.lang.Class;", 0x1, NULL },
+    { "getGenericExceptionTypes", NULL, "[Ljava.lang.reflect.Type;", 0x1, NULL },
+    { "toGenericString", NULL, "Ljava.lang.String;", 0x1, NULL },
+    { "isBridge", NULL, "Z", 0x1, NULL },
+    { "isVarArgs", NULL, "Z", 0x1, NULL },
+    { "getDefaultValue", NULL, "Ljava.lang.Object;", 0x1, NULL },
+    { "init", NULL, NULL, 0x1, NULL },
+  };
+  static const J2ObjcClassInfo _JavaLangReflectMethod = {
+    1, "Method", "java.lang.reflect", NULL, 0x1, 20, methods, 0, NULL, 0, NULL
+  };
+  return &_JavaLangReflectMethod;
+}
+
 @end
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(JavaLangReflectMethod)
