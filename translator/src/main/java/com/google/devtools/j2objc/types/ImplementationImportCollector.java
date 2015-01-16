@@ -17,6 +17,7 @@
 package com.google.devtools.j2objc.types;
 
 import com.google.common.collect.Sets;
+import com.google.devtools.j2objc.ast.AbstractTypeDeclaration;
 import com.google.devtools.j2objc.ast.Annotation;
 import com.google.devtools.j2objc.ast.AnnotationTypeDeclaration;
 import com.google.devtools.j2objc.ast.AnnotationTypeMemberDeclaration;
@@ -37,6 +38,7 @@ import com.google.devtools.j2objc.ast.MethodDeclaration;
 import com.google.devtools.j2objc.ast.MethodInvocation;
 import com.google.devtools.j2objc.ast.Name;
 import com.google.devtools.j2objc.ast.NormalAnnotation;
+import com.google.devtools.j2objc.ast.PackageDeclaration;
 import com.google.devtools.j2objc.ast.QualifiedName;
 import com.google.devtools.j2objc.ast.SimpleName;
 import com.google.devtools.j2objc.ast.SingleMemberAnnotation;
@@ -52,6 +54,7 @@ import com.google.devtools.j2objc.ast.VariableDeclarationExpression;
 import com.google.devtools.j2objc.ast.VariableDeclarationStatement;
 import com.google.devtools.j2objc.util.BindingUtil;
 import com.google.devtools.j2objc.util.NameTable;
+import com.google.devtools.j2objc.util.TranslationUtil;
 
 import org.eclipse.jdt.core.dom.IAnnotationBinding;
 import org.eclipse.jdt.core.dom.IBinding;
@@ -369,7 +372,15 @@ public class ImplementationImportCollector extends TreeVisitor {
 
   private boolean visitAnnotation(Annotation node) {
     IAnnotationBinding binding = node.getAnnotationBinding();
-    if (!BindingUtil.isRuntimeAnnotation(binding)) {
+    boolean needsReflection = false;
+    AbstractTypeDeclaration owningType = TreeUtil.getOwningType(node);
+    if (owningType != null) {
+      needsReflection = TranslationUtil.needsReflection(owningType);
+    } else {
+      needsReflection = TranslationUtil.needsReflection(
+          TreeUtil.getNearestAncestorWithType(PackageDeclaration.class, node));
+    }
+    if (!BindingUtil.isRuntimeAnnotation(binding) || !needsReflection) {
       return false;
     }
     for (IMemberValuePairBinding memberValuePair : binding.getAllMemberValuePairs()) {

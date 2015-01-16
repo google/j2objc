@@ -65,8 +65,8 @@ public class ObjectiveCImplementationGeneratorTest extends GenerationTest {
     addSourceFile("package unit.mapping.custom; public class Test { }",
         "unit/mapping/custom/Test.java");
     String translation = translateSourceFile(
-        "import unit.mapping.custom.Test; " +
-            "public class MyTest { MyTest(Test u) {}}",
+        "import unit.mapping.custom.Test; "
+            + "public class MyTest { MyTest(Test u) {}}",
         "MyTest", "MyTest.m");
     assertTranslation(translation, "#include \"my/mapping/custom/Test.h\"");
   }
@@ -284,7 +284,7 @@ public class ObjectiveCImplementationGeneratorTest extends GenerationTest {
     String translation = translateSourceFile(
         "package foo; public interface Compatible {}",
         "Compatible", "foo/Compatible.m");
-    assertTranslation(translation, "void FooCompatible_unused() {}");
+    assertNotInTranslation(translation, "@interface");
   }
 
   public void testEmptyInterfaceGeneration() throws IOException {
@@ -686,11 +686,11 @@ public class ObjectiveCImplementationGeneratorTest extends GenerationTest {
     String translation = translateSourceFile(
         "@interface Test { String FOO = \"foo\"; int I = 5; }", "Test", "Test.h");
     assertTranslation(translation, "#define Test_I 5");
-    assertTranslation(translation, "@interface Test : NSObject < Test >");
     assertTranslation(translation, "FOUNDATION_EXPORT NSString *Test_FOO_;");
     assertTranslation(translation, "J2OBJC_STATIC_FIELD_GETTER(Test, FOO_, NSString *)");
     translation = getTranslatedFile("Test.m");
     assertTranslation(translation, "NSString * Test_FOO_ = @\"foo\";");
+    assertTranslation(translation, "@interface Test : NSObject");
   }
 
   public void testPackageInfoAnnotationAndDoc() throws IOException {

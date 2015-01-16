@@ -215,11 +215,12 @@ public class ObjectiveCHeaderGenerator extends ObjectiveCSourceFileGenerator {
     }
     println("\n@end");
 
-    Iterable<IVariableBinding> staticFields = getStaticFieldsNeedingAccessors(node);
-
-    if (isRuntime || !Iterables.isEmpty(staticFields)) {
+    if (isRuntime || hasInitializeMethod(node)) {
       // Print annotation implementation interface.
-      printf("\n@interface %s : NSObject < %s >", typeName, typeName);
+      printf("\n@interface %s : NSObject", typeName);
+      if (isRuntime) {
+        printf(" < %s >", typeName);
+      }
       if (isRuntime && !members.isEmpty()) {
         println(" {\n @private");
         printAnnotationVariables(members);
@@ -230,10 +231,10 @@ public class ObjectiveCHeaderGenerator extends ObjectiveCSourceFileGenerator {
         newline();
       }
       println("\n@end");
-      printStaticInitFunction(node);
-      for (IVariableBinding field : staticFields) {
-        printStaticField(field);
-      }
+    }
+    printStaticInitFunction(node);
+    for (IVariableBinding field : getStaticFieldsNeedingAccessors(node)) {
+      printStaticField(field);
     }
   }
 
