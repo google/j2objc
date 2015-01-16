@@ -191,7 +191,8 @@ fat_lib_dependencies: jre_emul_dist
 
 CREATE_JAR_NAME = j2objc_junit
 CREATE_JAR_SOURCES = $(JAVA_SOURCES)
-CREATE_JAR_JAVAC_ARGS = -cp $(CLASSPATH) -source 1.7 -target 1.7
+CREATE_JAR_JAVAC_ARGS = -cp $(CLASSPATH) -source 1.7 -target 1.7 \
+  -bootclasspath $(DIST_JAR_DIR)/jre_emul.jar
 CREATE_JAR_DEPENDENCIES = annotations_dist
 include ../make/create_jar.mk
 

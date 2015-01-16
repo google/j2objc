@@ -49,7 +49,7 @@ jre_emul_java_manifest:
 junit_dist: translator_dist jre_emul_dist
 	@$(MAKE) -C $(J2OBJC_ROOT)/junit dist
 
-junit_java: java_deps_dist annotations_dist
+junit_java: java_deps_dist jre_emul_jar_dist
 	@$(MAKE) -C $(J2OBJC_ROOT)/junit java
 
 junit_manifest:
@@ -64,7 +64,7 @@ javax_inject_dist: translator_dist jre_emul_dist java_deps_dist
 guava_dist: translator_dist jre_emul_dist jsr305_dist
 	@$(MAKE) -C $(J2OBJC_ROOT)/guava dist
 
-guava_java: java_deps_dist annotations_dist
+guava_java: java_deps_dist jre_emul_jar_dist
 	@$(MAKE) -C $(J2OBJC_ROOT)/guava java
 
 guava_manifest:

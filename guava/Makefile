@@ -73,7 +73,9 @@ $(JAR): $(JAVA_SOURCES) | $(BUILD_DIR) java_deps_dist annotations_dist
 	@echo "building j2objc_guava.jar"
 	@rm -rf $(JAR_STAGE_DIR)
 	@mkdir $(JAR_STAGE_DIR)
-	@$(JAVAC) -sourcepath $(SOURCEPATH) -cp $(CLASSPATH) -encoding UTF-8 -d $(JAR_STAGE_DIR) $^
+	@$(JAVAC) -sourcepath $(SOURCEPATH) -cp $(CLASSPATH) -encoding UTF-8 \
+	    -d $(JAR_STAGE_DIR) -source 1.7 -target 1.7 \
+	    -bootclasspath $(DIST_JAR_DIR)/jre_emul.jar $^
 	@jar cf $@ -C $(JAR_STAGE_DIR) .
 
 $(DIST_JAR): $(JAR) | $(DIST_JAR_DIR)
