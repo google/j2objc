@@ -652,9 +652,9 @@ public class InnerClassExtractorTest extends GenerationTest {
         + "}";
     String translation = translateSourceFile(source, "Outer", "Outer.m");
     assertTranslation(translation, "[IOSObjectArray arrayWithObjects:(id[]){ "
-        + "@\"1\", @\"2\", @\"3\" } count:3 type:[IOSClass classFromClass:[NSString class]]]");
+        + "@\"1\", @\"2\", @\"3\" } count:3 type:NSString_class_()]");
     assertTranslation(translation, "[IOSObjectArray arrayWithObjects:(id[]){ "
-        + "@\"4\", @\"5\", @\"6\" } count:3 type:[IOSClass classFromClass:[NSString class]]]");
+        + "@\"4\", @\"5\", @\"6\" } count:3 type:NSString_class_()]");
   }
 
   public void testInnerClassVarargsConstructor() throws IOException {

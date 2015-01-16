@@ -493,7 +493,7 @@ public class ObjectiveCImplementationGeneratorTest extends GenerationTest {
         "Test", "Test.m");
     assertTranslation(translation, "void Test_foo() {\n"
         + "  Test_init();\n"
-        + "  @synchronized([IOSClass classFromClass:[Test class]]) {");
+        + "  @synchronized(Test_class_()) {");
   }
 
   // Verify that an interface that has a generated implementation file and an Object method
