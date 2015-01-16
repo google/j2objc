@@ -19,7 +19,6 @@
 //  Created by Tom Ball on 6/18/12.
 //
 
-#import "IOSClass.h"
 #import "J2ObjC_source.h"
 #import "java/lang/AssertionError.h"
 #import "java/lang/reflect/AccessibleObject.h"
@@ -91,6 +90,23 @@
   // can't call an abstract method
   [self doesNotRecognizeSelector:_cmd];
   return nil;
+}
+
++ (const J2ObjcClassInfo *)__metadata {
+  static const J2ObjcMethodInfo methods[] = {
+    { "isAccessible", NULL, "Z", 0x1, NULL },
+    { "setAccessibleWithBoolean:", "setAccessible", "V", 0x1, NULL },
+    { "setAccessibleWithJavaLangReflectAccessibleObjectArray:withBoolean:", "setAccessible", "V", 0x9, NULL },
+    { "getAnnotationWithIOSClass:", "getAnnotation", "TT;", 0x1, NULL },
+    { "isAnnotationPresentWithIOSClass:", "isAnnotationPresent", "Z", 0x1, NULL },
+    { "getAnnotations", NULL, "[Ljava.lang.annotation.Annotation;", 0x1, NULL },
+    { "getDeclaredAnnotations", NULL, "[Ljava.lang.annotation.Annotation;", 0x1, NULL },
+    { "init", NULL, NULL, 0x1, NULL },
+  };
+  static const J2ObjcClassInfo _JavaLangReflectAccessibleObject = {
+    1, "AccessibleObject", "java.lang.reflect", NULL, 0x1, 8, methods, 0, NULL, 0, NULL
+  };
+  return &_JavaLangReflectAccessibleObject;
 }
 
 @end

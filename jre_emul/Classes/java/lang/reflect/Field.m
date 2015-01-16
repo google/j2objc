@@ -358,6 +358,44 @@ static void SetWithRawValue(
 }
 #endif
 
++ (const J2ObjcClassInfo *)__metadata {
+  static const J2ObjcMethodInfo methods[] = {
+    { "getName", NULL, "Ljava.lang.String;", 0x1, NULL },
+    { "getModifiers", NULL, "I", 0x1, NULL },
+    { "getType", NULL, "Ljava.lang.Class;", 0x1, NULL },
+    { "getGenericType", NULL, "Ljava.lang.Class;", 0x1, NULL },
+    { "getDeclaringClass", NULL, "Ljava.lang.Class;", 0x1, NULL },
+    { "getWithId:", "get", "Ljava.lang.Object;", 0x1, "Ljava.lang.IllegalArgumentException;Ljava.lang.IllegalAccessException;" },
+    { "getBooleanWithId:", "getBoolean", "Z", 0x1, "Ljava.lang.IllegalArgumentException;Ljava.lang.IllegalAccessException;" },
+    { "getByteWithId:", "getByte", "B", 0x1, "Ljava.lang.IllegalArgumentException;Ljava.lang.IllegalAccessException;" },
+    { "getCharWithId:", "getChar", "C", 0x1, "Ljava.lang.IllegalArgumentException;Ljava.lang.IllegalAccessException;" },
+    { "getDoubleWithId:", "getDouble", "D", 0x1, "Ljava.lang.IllegalArgumentException;Ljava.lang.IllegalAccessException;" },
+    { "getFloatWithId:", "getFloat", "F", 0x1, "Ljava.lang.IllegalArgumentException;Ljava.lang.IllegalAccessException;" },
+    { "getIntWithId:", "getInt", "I", 0x1, "Ljava.lang.IllegalArgumentException;Ljava.lang.IllegalAccessException;" },
+    { "getLongWithId:", "getLong", "J", 0x1, "Ljava.lang.IllegalArgumentException;Ljava.lang.IllegalAccessException;" },
+    { "getShortWithId:", "getShort", "S", 0x1, "Ljava.lang.IllegalArgumentException;Ljava.lang.IllegalAccessException;" },
+    { "setWithId:withId:", "set", "V", 0x1, "Ljava.lang.IllegalArgumentException;Ljava.lang.IllegalAccessException;" },
+    { "setBooleanWithId:withBoolean:", "setBoolean", "V", 0x1, "Ljava.lang.IllegalArgumentException;Ljava.lang.IllegalAccessException;" },
+    { "setByteWithId:withByte:", "setByte", "V", 0x1, "Ljava.lang.IllegalArgumentException;Ljava.lang.IllegalAccessException;" },
+    { "setCharWithId:withChar:", "setChar", "V", 0x1, "Ljava.lang.IllegalArgumentException;Ljava.lang.IllegalAccessException;" },
+    { "setDoubleWithId:withDouble:", "setDouble", "V", 0x1, "Ljava.lang.IllegalArgumentException;Ljava.lang.IllegalAccessException;" },
+    { "setFloatWithId:withFloat:", "setFloat", "V", 0x1, "Ljava.lang.IllegalArgumentException;Ljava.lang.IllegalAccessException;" },
+    { "setIntWithId:withInt:", "setInt", "V", 0x1, "Ljava.lang.IllegalArgumentException;Ljava.lang.IllegalAccessException;" },
+    { "setLongWithId:withLong:", "setLong", "V", 0x1, "Ljava.lang.IllegalArgumentException;Ljava.lang.IllegalAccessException;" },
+    { "setShortWithId:withShort:", "setShort", "V", 0x1, "Ljava.lang.IllegalArgumentException;Ljava.lang.IllegalAccessException;" },
+    { "getAnnotationWithIOSClass:", "getAnnotation", "TT;", 0x1, NULL },
+    { "getDeclaredAnnotations", NULL, "[Ljava.lang.annotation.Annotation;", 0x1, NULL },
+    { "isSynthetic", NULL, "Z", 0x1, NULL },
+    { "isEnumConstant", NULL, "Z", 0x1, NULL },
+    { "toGenericString", NULL, "Ljava.lang.String;", 0x1, NULL },
+    { "init", NULL, NULL, 0x1, NULL },
+  };
+  static const J2ObjcClassInfo _JavaLangReflectField = {
+    1, "Field", "java.lang.reflect", NULL, 0x1, 29, methods, 0, NULL, 0, NULL
+  };
+  return &_JavaLangReflectField;
+}
+
 @end
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(JavaLangReflectField)
