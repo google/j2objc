@@ -134,7 +134,7 @@ public class EnumRewriter extends TreeVisitor {
 
     StringBuilder sb = new StringBuilder();
     sb.append(String.format(
-        "FOUNDATION_EXPORT IOSObjectArray *%s_values() {\n"
+        "IOSObjectArray *%s_values() {\n"
         + "  %s_init();\n"
         + "  return [IOSObjectArray arrayWithObjects:%s_values_ count:%s type:%s_class_()];\n"
         + "}\n"

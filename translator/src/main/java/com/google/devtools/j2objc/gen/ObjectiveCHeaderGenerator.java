@@ -383,7 +383,7 @@ public class ObjectiveCHeaderGenerator extends ObjectiveCSourceFileGenerator {
   @Override
   protected void printFunction(FunctionDeclaration function) {
     if (!Modifier.isPrivate(function.getModifiers())) {
-      println("FOUNDATION_EXPORT " + getFunctionSignature(function) + ';');
+      println("\nFOUNDATION_EXPORT " + getFunctionSignature(function) + ';');
     }
   }
 
