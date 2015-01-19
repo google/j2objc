@@ -219,7 +219,7 @@ public class ObjectiveCImplementationGenerator extends ObjectiveCSourceFileGener
         }
         printAnnotationAccessors(members);
         println("\n- (IOSClass *)annotationType {");
-        printf("  return [IOSClass classFromProtocol:@protocol(%s)];\n", typeName);
+        printf("  return %s_class_();\n", typeName);
         println("}");
       }
       printInitializeMethod(node);
@@ -232,6 +232,7 @@ public class ObjectiveCImplementationGenerator extends ObjectiveCSourceFileGener
   }
 
   private void printAnnotationConstructor(ITypeBinding annotation) {
+    newline();
     print(annotationConstructorDeclaration(annotation));
     println(" {");
     println("  if ((self = [super init])) {");
@@ -251,25 +252,20 @@ public class ObjectiveCImplementationGenerator extends ObjectiveCSourceFileGener
     }
     println("  }");
     println("  return self;");
-    println("}\n");
+    println("}");
   }
 
   private void printAnnotationAccessors(List<AnnotationTypeMemberDeclaration> members) {
-    int nPrinted = 0;
     for (AnnotationTypeMemberDeclaration member : members) {
       Expression deflt = member.getDefault();
       if (deflt != null) {
         ITypeBinding type = member.getType().getTypeBinding();
         String typeString = NameTable.getSpecificObjCType(type);
         String propertyName = NameTable.getName(member.getName().getBinding());
-        printf("+ (%s)%sDefault {\n", typeString, propertyName);
+        printf("\n+ (%s)%sDefault {\n", typeString, propertyName);
         printf("  return %s;\n", generateExpression(deflt));
-        println("}\n");
-        nPrinted++;
+        println("}");
       }
-    }
-    if (nPrinted > 0) {
-      newline();
     }
   }
 
@@ -531,13 +527,11 @@ public class ObjectiveCImplementationGenerator extends ObjectiveCSourceFileGener
   }
 
   private void printAnnotationProperties(List<AnnotationTypeMemberDeclaration> members) {
-    int nPrinted = 0;
+    if (!members.isEmpty()) {
+      newline();
+    }
     for (AnnotationTypeMemberDeclaration member : members) {
       println(String.format("@synthesize %s;", NameTable.getName(member.getName().getBinding())));
-      nPrinted++;
-    }
-    if (nPrinted > 0) {
-      newline();
     }
   }
 
@@ -575,7 +569,7 @@ public class ObjectiveCImplementationGenerator extends ObjectiveCSourceFileGener
 
     if (hasAnnotations) {
       // Print array of arrays, with an element in the outer array for each parameter.
-      printf("+ (IOSObjectArray *)__annotations_%s_params {\n",
+      printf("\n+ (IOSObjectArray *)__annotations_%s_params {\n",
           methodKey(method.getMethodBinding()));
       print("  return [IOSObjectArray arrayWithObjects:(id[]) { ");
       for (int i = 0; i < params.size(); i++) {
@@ -588,15 +582,14 @@ public class ObjectiveCImplementationGenerator extends ObjectiveCSourceFileGener
         if (runtimeAnnotations.size() > 0) {
           print("[IOSObjectArray arrayWithObjects:(id[]) { ");
           printAnnotations(runtimeAnnotations);
-          printf(" } count:%d type:[IOSClass classFromProtocol:"
-              + "@protocol(JavaLangAnnotationAnnotation)]]", runtimeAnnotations.size());
+          printf(" } count:%d type:JavaLangAnnotationAnnotation_class_()]",
+                 runtimeAnnotations.size());
         } else {
-          print("[IOSObjectArray arrayWithLength:0 "
-              + "type:[IOSClass classFromProtocol:@protocol(JavaLangAnnotationAnnotation)]]");
+          print("[IOSObjectArray arrayWithLength:0 type:JavaLangAnnotationAnnotation_class_()]");
         }
       }
-      printf(" } count:%d type:[IOSClass classFromProtocol:"
-          + "@protocol(JavaLangAnnotationAnnotation)]];\n}\n", params.size());
+      printf(" } count:%d type:[IOSClass arrayClassWithComponentType:"
+          + "JavaLangAnnotationAnnotation_class_()]];\n}\n", params.size());
     }
   }
 
@@ -616,9 +609,8 @@ public class ObjectiveCImplementationGenerator extends ObjectiveCSourceFileGener
   private void printAnnotationCreate(List<Annotation> runtimeAnnotations) {
     print("  return [IOSObjectArray arrayWithObjects:(id[]) { ");
     printAnnotations(runtimeAnnotations);
-    printf(" } count:%d type:[IOSClass "
-        + "classFromProtocol:@protocol(JavaLangAnnotationAnnotation)]];\n}\n",
-        runtimeAnnotations.size());
+    printf(" } count:%d type:JavaLangAnnotationAnnotation_class_()];\n}\n",
+           runtimeAnnotations.size());
   }
 
   private void printAnnotations(Iterable<Annotation> runtimeAnnotations) {
@@ -668,12 +660,7 @@ public class ObjectiveCImplementationGenerator extends ObjectiveCSourceFileGener
       ITypeBinding declaringClass = var.getDeclaringClass();
       printf("%s_get_%s()", NameTable.getFullName(declaringClass), var.getName());
     } else if (value instanceof ITypeBinding) {
-      ITypeBinding type = (ITypeBinding) value;
-      if (type.isInterface()) {
-        printf("[IOSClass classFromProtocol:@protocol(%s)]", NameTable.getFullName(type));
-      } else {
-        printf("[[%s class] getClass]", NameTable.getFullName(type));
-      }
+      printf("%s_class_()", NameTable.getFullName((ITypeBinding) value));
     } else if (value instanceof String) {
       StringLiteral node = new StringLiteral((String) value);
       print(StatementGenerator.generateStringLiteral(node));
