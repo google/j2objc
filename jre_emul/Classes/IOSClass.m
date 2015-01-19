@@ -50,6 +50,7 @@
 #import "java/lang/reflect/Field.h"
 #import "java/lang/reflect/Method.h"
 #import "java/lang/reflect/Modifier.h"
+#import "java/lang/reflect/TypeVariable.h"
 #import "java/util/Properties.h"
 #import "objc/message.h"
 #import "objc/runtime.h"
@@ -217,15 +218,14 @@ static JavaUtilProperties *prefixMapping;
 - (IOSObjectArray *)getDeclaredMethods {
   NSMutableDictionary *methodMap = [NSMutableDictionary dictionary];
   [self collectMethods:methodMap publicOnly:NO];
-  return [IOSObjectArray arrayWithNSArray:[methodMap allValues] type:
-      FetchClass([JavaLangReflectMethod class])];
+  return [IOSObjectArray arrayWithNSArray:[methodMap allValues]
+      type:JavaLangReflectMethod_class_()];
 }
 
 // Return the constructors declared by this class.  Superclass constructors
 // are not included.
 - (IOSObjectArray *)getDeclaredConstructors {
-  return [IOSObjectArray arrayWithLength:0 type:
-      FetchClass([JavaLangReflectConstructor class])];
+  return [IOSObjectArray arrayWithLength:0 type:JavaLangReflectConstructor_class_()];
 }
 
 // Return the methods for this class, including inherited methods.
@@ -236,14 +236,13 @@ static JavaUtilProperties *prefixMapping;
     [cls collectMethods:methodMap publicOnly:YES];
     cls = [cls getSuperclass];
   }
-  return [IOSObjectArray arrayWithNSArray:[methodMap allValues] type:
-      FetchClass([JavaLangReflectMethod class])];
+  return [IOSObjectArray arrayWithNSArray:[methodMap allValues]
+      type:JavaLangReflectMethod_class_()];
 }
 
 // Return the constructors for this class, including inherited ones.
 - (IOSObjectArray *)getConstructors {
-  return [IOSObjectArray arrayWithLength:0 type:
-      FetchClass([JavaLangReflectConstructor class])];
+  return [IOSObjectArray arrayWithLength:0 type:JavaLangReflectConstructor_class_()];
 }
 
 // Return a method instance described by a name and an array of
@@ -263,7 +262,7 @@ static JavaUtilProperties *prefixMapping;
       return method;
     }
   }
-  for (IOSProtocolClass *p in [self getInterfacesWithArrayType:FetchClass([IOSClass class])]) {
+  for (IOSProtocolClass *p in [self getInterfacesWithArrayType:IOSClass_class_()]) {
     method = [p findMethodWithTranslatedName:translatedName];
     if (method != nil) {
       return method;
@@ -602,17 +601,15 @@ static BOOL hasModifier(IOSClass *cls, int flag) {
 }
 
 - (IOSObjectArray *)getInterfaces {
-  return [self getInterfacesWithArrayType:FetchClass([IOSClass class])];
+  return [self getInterfacesWithArrayType:IOSClass_class_()];
 }
 
 - (IOSObjectArray *)getGenericInterfaces {
-  return [self getInterfacesWithArrayType:FetchProtocol(@protocol(JavaLangReflectType))];
+  return [self getInterfacesWithArrayType:JavaLangReflectType_class_()];
 }
 
 - (IOSObjectArray *)getTypeParameters {
-  IOSClass *typeVariableClass = [IOSClass
-      classFromProtocol:objc_getProtocol("JavaLangReflectTypeVariable")];
-  return [IOSObjectArray arrayWithLength:0 type:typeVariableClass];
+  return [IOSObjectArray arrayWithLength:0 type:JavaLangReflectTypeVariable_class_()];
 }
 
 - (id)getAnnotationWithIOSClass:(IOSClass *)annotationClass {
@@ -656,11 +653,9 @@ static BOOL hasModifier(IOSClass *cls, int flag) {
     }
     cls = [cls getSuperclass];
   }
-  IOSClass *annotationType = [IOSClass classFromProtocol:@protocol(JavaLangAnnotationAnnotation)];
-  IOSObjectArray *result = [IOSObjectArray arrayWithNSArray:array type:annotationType];
-#if ! __has_feature(objc_arc)
+  IOSObjectArray *result =
+      [IOSObjectArray arrayWithNSArray:array type:JavaLangAnnotationAnnotation_class_()];
   [array release];
-#endif
   return result;
 }
 
@@ -672,8 +667,7 @@ static BOOL hasModifier(IOSClass *cls, int flag) {
       return method_invoke(cls, annotationsMethod);
     }
   }
-  IOSClass *annotationType = [IOSClass classFromProtocol:@protocol(JavaLangAnnotationAnnotation)];
-  return [IOSObjectArray arrayWithLength:0 type:annotationType];
+  return [IOSObjectArray arrayWithLength:0 type:JavaLangAnnotationAnnotation_class_()];
 }
 
 // Returns the metadata structure defined by this class, if it exists.
@@ -808,9 +802,8 @@ static void GetFieldsFromClass(IOSClass *iosClass, NSMutableDictionary *fields) 
 
 IOSObjectArray *copyFieldsToObjectArray(NSArray *fields) {
   jint count = (jint)[fields count];
-  IOSClass *fieldType = [IOSClass classFromClass:[JavaLangReflectField class]];
-  IOSObjectArray *results = [IOSObjectArray arrayWithLength:count
-                                                       type:fieldType];
+  IOSObjectArray *results =
+      [IOSObjectArray arrayWithLength:count type:JavaLangReflectField_class_()];
   for (jint i = 0; i < count; i++) {
     [results replaceObjectAtIndex:i withObject:[fields objectAtIndex:i]];
   }

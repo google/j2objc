@@ -232,8 +232,8 @@ IOSObjectArray *getConstructorsImpl(IOSConcreteClass *clazz, BOOL publicOnly) {
     }
     return nil;
   });
-  return [IOSObjectArray arrayWithNSArray:[methodMap allValues] type:
-          [IOSClass classFromClass:[JavaLangReflectConstructor class]]];
+  return [IOSObjectArray arrayWithNSArray:[methodMap allValues]
+      type:JavaLangReflectConstructor_class_()];
 }
 
 - (IOSObjectArray *)getDeclaredConstructors {

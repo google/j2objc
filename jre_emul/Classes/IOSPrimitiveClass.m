@@ -84,8 +84,7 @@
 }
 
 - (IOSObjectArray *)getDeclaredMethods {
-  return [IOSObjectArray arrayWithLength:0
-      type:[IOSClass classFromClass:[JavaLangReflectMethod class]]];
+  return [IOSObjectArray arrayWithLength:0 type:JavaLangReflectMethod_class_()];
 }
 
 - (JavaLangReflectMethod *)getMethod:(NSString *)name, ... {
@@ -153,14 +152,14 @@ getConstructorWithClasses:(IOSClass *)firstClass, ... {
 
 - (id)wrapperClass {
   switch ([type_ characterAtIndex:0]) {
-    case 'B': return [IOSClass classFromClass:[JavaLangByte class]];
-    case 'C': return [IOSClass classFromClass:[JavaLangCharacter class]];
-    case 'D': return [IOSClass classFromClass:[JavaLangDouble class]];
-    case 'F': return [IOSClass classFromClass:[JavaLangFloat class]];
-    case 'I': return [IOSClass classFromClass:[JavaLangInteger class]];
-    case 'J': return [IOSClass classFromClass:[JavaLangLong class]];
-    case 'S': return [IOSClass classFromClass:[JavaLangShort class]];
-    case 'Z': return [IOSClass classFromClass:[JavaLangBoolean class]];
+    case 'B': return JavaLangByte_class_();
+    case 'C': return JavaLangCharacter_class_();
+    case 'D': return JavaLangDouble_class_();
+    case 'F': return JavaLangFloat_class_();
+    case 'I': return JavaLangInteger_class_();
+    case 'J': return JavaLangLong_class_();
+    case 'S': return JavaLangShort_class_();
+    case 'Z': return JavaLangBoolean_class_();
   }
   return nil;
 }

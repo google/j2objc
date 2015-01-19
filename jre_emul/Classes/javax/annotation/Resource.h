@@ -110,4 +110,6 @@ J2OBJC_ENUM_CONSTANT_GETTER(JavaxAnnotationResource_AuthenticationTypeEnum, APPL
     [JavaxAnnotationResource_AuthenticationType_CONTAINER]
 J2OBJC_ENUM_CONSTANT_GETTER(JavaxAnnotationResource_AuthenticationTypeEnum, CONTAINER)
 
+J2OBJC_TYPE_LITERAL_HEADER(JavaxAnnotationResource_AuthenticationTypeEnum)
+
 #endif // _JavaxAnnotationResource_H_

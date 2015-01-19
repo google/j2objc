@@ -71,9 +71,8 @@
 }
 
 - (IOSObjectArray *)getInterfacesWithArrayType:(IOSClass *)arrayType {
-  return [IOSObjectArray arrayWithObjects:(id[]){
-        [IOSClass classFromProtocol:@protocol(JavaIoSerializable)]
-      } count:1 type:[IOSClass getClass]];
+  return [IOSObjectArray arrayWithObjects:(id[]){ JavaIoSerializable_class_() } count:1
+      type:[IOSClass getClass]];
 }
 
 - (id)newInstance {

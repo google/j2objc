@@ -16,6 +16,7 @@
 
 #include "J2ObjC_source.h"
 #include "java/lang/IllegalArgumentException.h"
+#include "java/lang/annotation/Annotation.h"
 #include "java/lang/annotation/ElementType.h"
 #include "java/lang/annotation/Retention.h"
 #include "java/lang/annotation/RetentionPolicy.h"
@@ -68,11 +69,11 @@
 }
 
 + (IOSClass *)typeDefault {
-  return [IOSClass classFromClass:[NSObject class]];
+  return NSObject_class_();
 }
 
 - (IOSClass *)annotationType {
-  return [IOSClass classFromProtocol:@protocol(JavaxAnnotationResource)];
+  return JavaxAnnotationResource_class_();
 }
 
 + (IOSObjectArray *)__annotations {
@@ -84,7 +85,7 @@
       JavaLangAnnotationElementTypeEnum_get_METHOD(),
       JavaLangAnnotationElementTypeEnum_get_FIELD()
     } count:3 type:[[NSObject class] getClass]]] autorelease]
-  } count:2 type:[IOSClass classFromProtocol:@protocol(JavaLangAnnotationAnnotation)]];
+  } count:2 type:JavaLangAnnotationAnnotation_class_()];
 }
 
 + (const J2ObjcClassInfo *)__metadata {
@@ -111,8 +112,7 @@ JavaxAnnotationResource_AuthenticationTypeEnum *
 }
 
 FOUNDATION_EXPORT IOSObjectArray *JavaxAnnotationResource_AuthenticationTypeEnum_values() {
-  IOSClass *enumType =
-      [IOSClass classFromClass:[JavaxAnnotationResource_AuthenticationTypeEnum class]];
+  IOSClass *enumType = JavaxAnnotationResource_AuthenticationTypeEnum_class_();
   return [IOSObjectArray arrayWithObjects:JavaxAnnotationResource_AuthenticationTypeEnum_values_
                                     count:2
                                      type:enumType];
@@ -173,3 +173,5 @@ JavaxAnnotationResource_AuthenticationTypeEnum *
 }
 
 @end
+
+J2OBJC_CLASS_TYPE_LITERAL_SOURCE(JavaxAnnotationResource_AuthenticationTypeEnum)

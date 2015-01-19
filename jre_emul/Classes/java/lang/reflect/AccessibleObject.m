@@ -21,6 +21,7 @@
 
 #import "J2ObjC_source.h"
 #import "java/lang/AssertionError.h"
+#import "java/lang/annotation/Annotation.h"
 #import "java/lang/reflect/AccessibleObject.h"
 #import "java/lang/reflect/Method.h"
 #import "java/lang/reflect/Modifier.h"
@@ -81,8 +82,7 @@
     IOSObjectArray *noArgs = [IOSObjectArray arrayWithLength:0 type:[NSObject getClass]];
     return (IOSObjectArray *) [method invokeWithId:nil withNSObjectArray:noArgs];
   } else {
-    IOSClass *annotationType = [IOSClass classFromProtocol:@protocol(JavaLangAnnotationAnnotation)];
-    return [IOSObjectArray arrayWithLength:0 type:annotationType];
+    return [IOSObjectArray arrayWithLength:0 type:JavaLangAnnotationAnnotation_class_()];
   }
 }
 
@@ -136,9 +136,9 @@ IOSClass *decodeTypeEncoding(const char *type) {
   }
   switch (type[0]) {
     case '@':
-      return [IOSClass objectClass];
+      return NSObject_class_();
     case '#':
-      return [IOSClass classFromClass:[IOSClass class]];
+      return IOSClass_class_();
     case 'c':
       return [IOSClass byteClass];
     case 'S':
