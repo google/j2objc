@@ -59,7 +59,7 @@ IOSClass *TypeToClass(id<JavaLangReflectType> type) {
   if ([type isKindOfClass:[IOSClass class]]) {
     return (IOSClass *)type;
   }
-  return [IOSClass objectClass];
+  return NSObject_class_();
 }
 
 Method JreFindInstanceMethod(Class cls, const char *name) {

@@ -95,7 +95,7 @@
   id<JavaLangReflectType> returnType = [metadata_ returnType];
   if (returnType) {
     if (![returnType isKindOfClass:[IOSClass class]]) {
-      return [IOSClass objectClass];
+      return NSObject_class_();
     } else {
       return (IOSClass *) returnType;
     }

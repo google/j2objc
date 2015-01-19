@@ -827,7 +827,7 @@ public class File implements Serializable, Comparable<File> {
       if (!files) {
         return nil;
       }
-      return [IOSObjectArray arrayWithNSArray:files type:[IOSClass stringClass]];
+      return [IOSObjectArray arrayWithNSArray:files type:NSString_class_()];
     ]-*/;
 
     /**

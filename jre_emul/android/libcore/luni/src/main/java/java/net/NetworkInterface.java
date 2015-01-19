@@ -476,7 +476,7 @@ public final class NetworkInterface extends Object {
         }
       }
       freeifaddrs(interfaces);
-      return [IOSObjectArray arrayWithNSArray:names type:[IOSClass stringClass]];
+      return [IOSObjectArray arrayWithNSArray:names type:NSString_class_()];
     ]-*/;
 
     private static native int getInterfaceIndex(String interfaceName) /*-[

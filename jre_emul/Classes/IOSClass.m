@@ -403,7 +403,7 @@ static IOSClass *ClassForIosName(NSString *iosName) {
   // special-cased because it also has a protocol but we want to return an
   // IOSConcreteClass instance for it.
   if ([iosName isEqualToString:@"NSObject"]) {
-    return [IOSClass objectClass];
+    return IOSClass_objectClass;
   }
   Protocol *protocol = NSProtocolFromString(iosName);
   if (protocol) {
