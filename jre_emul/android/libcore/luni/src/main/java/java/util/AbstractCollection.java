@@ -339,7 +339,7 @@ public abstract class AbstractCollection<E> implements Collection<E> {
 
     public native Object[] toArray() /*-[
       return [self toArrayWithNSObjectArray:
-          [IOSObjectArray arrayWithLength:[self size] type:[IOSClass objectClass]]];
+          [IOSObjectArray arrayWithLength:[self size] type:NSObject_class_()]];
     ]-*/;
 
     public native <T> T[] toArray(T[] contents) /*-[

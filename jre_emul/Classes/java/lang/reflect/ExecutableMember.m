@@ -106,7 +106,7 @@ static IOSClass *ResolveParameterType(const char *objcType, NSString *paramKeywo
   if (type) {
     return type;
   }
-  return [IOSClass objectClass];
+  return NSObject_class_();
 }
 
 - (IOSObjectArray *)getParameterTypes {

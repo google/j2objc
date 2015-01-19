@@ -42,7 +42,7 @@
 }
 
 - (IOSClass *)getSuperclass {
-  return [IOSClass objectClass];
+  return NSObject_class_();
 }
 
 - (BOOL)isInstance:(id)object {
