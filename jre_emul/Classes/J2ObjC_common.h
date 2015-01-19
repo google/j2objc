@@ -203,7 +203,7 @@ static inline id JreStrongAssignAndConsume(id *pIvar, id self, NS_RELEASES_ARGUM
     static IOSClass *cls; \
     static dispatch_once_t token; \
     TYPE##_init(); \
-    dispatch_once(&token, ^{ cls = [IOSClass classWithClass:[TYPE class]]; }); \
+    dispatch_once(&token, ^{ cls = [IOSClass classFromClass:[TYPE class]]; }); \
     return cls; \
   }
 
@@ -219,7 +219,7 @@ static inline id JreStrongAssignAndConsume(id *pIvar, id self, NS_RELEASES_ARGUM
     static IOSClass *cls; \
     static dispatch_once_t token; \
     TYPE##_init(); \
-    dispatch_once(&token, ^{ cls = [IOSClass classWithProtocol:@protocol(TYPE)]; }); \
+    dispatch_once(&token, ^{ cls = [IOSClass classFromProtocol:@protocol(TYPE)]; }); \
     return cls; \
   }
 

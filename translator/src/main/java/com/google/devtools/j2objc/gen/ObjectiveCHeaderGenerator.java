@@ -209,8 +209,7 @@ public class ObjectiveCHeaderGenerator extends ObjectiveCSourceFileGenerator {
     newline();
     // Print annotation as protocol.
     printf("@protocol %s < JavaLangAnnotationAnnotation >\n", typeName);
-    if (!members.isEmpty() && isRuntime) {
-      newline();
+    if (isRuntime) {
       printAnnotationProperties(members);
     }
     println("\n@end");
@@ -493,7 +492,9 @@ public class ObjectiveCHeaderGenerator extends ObjectiveCSourceFileGenerator {
   }
 
   private void printAnnotationProperties(List<AnnotationTypeMemberDeclaration> members) {
-    int nPrinted = 0;
+    if (!members.isEmpty()) {
+      newline();
+    }
     for (AnnotationTypeMemberDeclaration member : members) {
       ITypeBinding type = member.getType().getTypeBinding();
       print("@property (readonly) ");
@@ -504,10 +505,6 @@ public class ObjectiveCHeaderGenerator extends ObjectiveCSourceFileGenerator {
       if (needsObjcMethodFamilyNoneAttribute(propertyName)) {
         println(String.format("- (%s)%s OBJC_METHOD_FAMILY_NONE;", typeString, propertyName));
       }
-      nPrinted++;
-    }
-    if (nPrinted > 0) {
-      newline();
     }
   }
 
