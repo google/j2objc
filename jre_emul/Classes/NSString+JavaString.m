@@ -1057,8 +1057,7 @@ IOSObjectArray *NSString_serialPersistentFields_;
     JreStrongAssignAndConsume(&NSString_CASE_INSENSITIVE_ORDER_, nil,
                               [[JavaLangString_CaseInsensitiveComparator alloc] init]);
     JreStrongAssignAndConsume(&NSString_serialPersistentFields_, nil,
-        [IOSObjectArray newArrayWithLength:0 type:
-            [IOSClass classFromClass:[JavaIoObjectStreamField class]]]);
+        [IOSObjectArray newArrayWithLength:0 type:JavaIoObjectStreamField_class_()]);
     J2OBJC_SET_INITIALIZED(NSString)
   }
 }

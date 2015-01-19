@@ -55,7 +55,7 @@ void JrePrintNilChkCountAtExit() {
 // is passed to a Java main method.
 FOUNDATION_EXPORT
     IOSObjectArray *JreEmulationMainArguments(int argc, const char *argv[]) {
-  IOSClass *stringType = [IOSClass classFromClass:[NSString class]];
+  IOSClass *stringType = NSString_class_();
   if (argc <= 1) {
     return [IOSObjectArray arrayWithLength:0 type:stringType];
   }

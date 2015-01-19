@@ -146,8 +146,7 @@ static jint countArgs(char *s) {
   if (size == 0) {
     return nil;
   }
-  IOSObjectArray *result = [IOSObjectArray arrayWithLength:size type:
-      [IOSClass classFromProtocol:@protocol(JavaLangReflectType)]];
+  IOSObjectArray *result = [IOSObjectArray arrayWithLength:size type:JavaLangReflectType_class_()];
   for (int i = 0; i < size; i++) {
     IOSObjectArray_Set(result, i, JreTypeForString(data_->superclassTypeArgs[i]));
   }

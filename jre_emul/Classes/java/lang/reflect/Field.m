@@ -19,13 +19,15 @@
 //  Created by Tom Ball on 06/18/2012.
 //
 
+#import "java/lang/reflect/Field.h"
+
 #import "J2ObjC_source.h"
 #import "JavaMetadata.h"
 #import "java/lang/AssertionError.h"
 #import "java/lang/IllegalAccessException.h"
 #import "java/lang/IllegalArgumentException.h"
 #import "java/lang/NullPointerException.h"
-#import "java/lang/reflect/Field.h"
+#import "java/lang/annotation/Annotation.h"
 #import "java/lang/reflect/Method.h"
 #import "java/lang/reflect/Modifier.h"
 #import "java/lang/reflect/TypeVariable.h"
@@ -329,8 +331,7 @@ static void SetWithRawValue(
       return method_invoke(cls, annotationsMethod);
     }
   }
-  IOSClass *annotationType = [IOSClass classFromProtocol:@protocol(JavaLangAnnotationAnnotation)];
-  return [IOSObjectArray arrayWithLength:0 type:annotationType];
+  return [IOSObjectArray arrayWithLength:0 type:JavaLangAnnotationAnnotation_class_()];
 }
 
 - (int)unsafeOffset {
