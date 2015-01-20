@@ -74,9 +74,6 @@
 + (IOSClass *)booleanClass;
 + (IOSClass *)voidClass;
 
-+ (IOSClass *)objectClass;
-+ (IOSClass *)stringClass;
-
 // Class.newInstance()
 - (id)newInstance NS_RETURNS_NOT_RETAINED;
 

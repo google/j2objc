@@ -74,7 +74,6 @@ static IOSPrimitiveClass *IOSClass_voidClass;
 
 // Other commonly used instances.
 static IOSClass *IOSClass_objectClass;
-static IOSClass *IOSClass_stringClass;
 
 // Function forwards.
 static IOSClass *FetchClass(Class cls);
@@ -149,14 +148,6 @@ static JavaUtilProperties *prefixMapping;
 
 + (IOSClass *)voidClass {
   return IOSClass_voidClass;
-}
-
-+ (IOSClass *)objectClass {
-  return IOSClass_objectClass;
-}
-
-+ (IOSClass *)stringClass {
-  return IOSClass_stringClass;
 }
 
 - (id)newInstance {
@@ -897,15 +888,13 @@ IOSClass *FetchClass(Class cls) {
           iosClass = AUTORELEASE([[IOSMappedClass alloc] initWithClass:[NSObject class]
                                                                package:@"java.lang"
                                                                   name:@"Object"]);
+        } else if (cls == [NSString class]) {
+          iosClass = AUTORELEASE([[IOSMappedClass alloc] initWithClass:[NSString class]
+                                                               package:@"java.lang"
+                                                                  name:@"String"]);
         } else if ([cls isSubclassOfClass:[NSString class]]) {
           // NSString is implemented by several subclasses.
-          if (!IOSClass_stringClass) {
-            IOSClass_stringClass =
-                AUTORELEASE([[IOSMappedClass alloc] initWithClass:[NSString class]
-                                                          package:@"java.lang"
-                                                             name:@"String"]);
-          }
-          iosClass = IOSClass_stringClass;
+          iosClass = FetchClass([NSString class]);
         } else {
           iosClass = AUTORELEASE([[IOSConcreteClass alloc] initWithClass:cls]);
         }
@@ -969,7 +958,6 @@ IOSClass *FetchArray(IOSClass *componentType) {
     IOSClass_voidClass = [[IOSPrimitiveClass alloc] initWithName:@"void" type:@"V"];
 
     IOSClass_objectClass = FetchClass([NSObject class]);
-    IOSClass_stringClass = FetchClass([NSString class]);
 
     // Load and initialize JRE categories, using their dummy classes.
     [JreObjectCategoryDummy class];
