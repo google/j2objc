@@ -79,10 +79,6 @@
   return [name substringToIndex:range.location];
 }
 
-- (NSString *)internalName {
-  return NSStringFromSelector(selector_);
-}
-
 - (int)getModifiers {
   int mods = [super getModifiers];
   if (isStatic_) {

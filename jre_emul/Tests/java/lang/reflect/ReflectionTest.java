@@ -32,6 +32,11 @@
 
 package java.lang.reflect;
 
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
+
 import junit.framework.TestCase;
 
 /**
@@ -39,7 +44,16 @@ import junit.framework.TestCase;
  */
 public class ReflectionTest extends TestCase {
 
-  static class NoEquals {};
+  @Target({ElementType.CONSTRUCTOR})
+  @Retention(RetentionPolicy.RUNTIME)
+  @interface Mumble {}
+
+  static class NoEquals {
+    public NoEquals() {}
+
+    @Mumble
+    public NoEquals(String s) {}
+  }
 
   // Assert equals method can be found using reflection. Because it's a mapped
   // method with a parameter, reflection was trying to find "equalsWithId:"
@@ -60,6 +74,21 @@ public class ReflectionTest extends TestCase {
     assertNotNull(m);
     assertFalse ((Boolean) m.invoke(obj1, obj2));
     assertTrue ((Boolean) m.invoke(obj1, obj1));
+  }
+
+  // Verify non-default constructor annotations are returned. Issue 473
+  // reported that the annotations for the default constructor are always
+  // returned, regardless of whether the constructor had parameters.
+  public void testNonDefaultConstructorAnnotations() {
+    Constructor<?>[] constructors = NoEquals.class.getDeclaredConstructors();
+    for (Constructor<?> c : constructors) {
+      if (c.getParameterTypes().length == 0) {
+        // Default constructor should not have a Mumble annotation.
+        assertNull(c.getAnnotation(Mumble.class));
+      } else {
+        assertNotNull(c.getAnnotation(Mumble.class));
+      }
+    }
   }
 
 }
