@@ -73,8 +73,10 @@
 
 @end
 
-extern void IOSArray_throwOutOfBounds();
-extern void IOSArray_throwOutOfBoundsWithMsg(jint size, jint index);
+CF_EXTERN_C_BEGIN
+void IOSArray_throwOutOfBounds();
+void IOSArray_throwOutOfBoundsWithMsg(jint size, jint index);
+CF_EXTERN_C_END
 
 // Implement IOSArray |checkIndex| and |checkRange| methods as C functions. This
 // allows IOSArray index and range checks to be completely removed via the
