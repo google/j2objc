@@ -173,9 +173,7 @@ static IOSClass *ResolveParameterType(const char *objcType, NSString *paramKeywo
 }
 
 - (NSString *)internalName {
-  // can't call an abstract method
-  [self doesNotRecognizeSelector:_cmd];
-  return nil;
+  return NSStringFromSelector(selector_);
 }
 
 #define SANITIZED_METHOD_NAME \

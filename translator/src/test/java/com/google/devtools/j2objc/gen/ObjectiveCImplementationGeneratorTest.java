@@ -557,7 +557,7 @@ public class ObjectiveCImplementationGeneratorTest extends GenerationTest {
         "public class Test { @Deprecated Test() {} }",
         "Test", "Test.m");
     assertTranslatedLines(translation,
-        "+ (IOSObjectArray *)__annotations_Test {",
+        "+ (IOSObjectArray *)__annotations_init {",
         "return [IOSObjectArray arrayWithObjects:(id[]) "
         + "{ [[[JavaLangDeprecated alloc] init] autorelease] } "
         + "count:1 type:JavaLangAnnotationAnnotation_class_()];");
@@ -568,7 +568,7 @@ public class ObjectiveCImplementationGeneratorTest extends GenerationTest {
         "public class Test { @Deprecated Test(int i) {} }",
         "Test", "Test.m");
     assertTranslatedLines(translation,
-        "+ (IOSObjectArray *)__annotations_TestWithInt_ {",
+        "+ (IOSObjectArray *)__annotations_initWithInt_ {",
         "return [IOSObjectArray arrayWithObjects:(id[]) "
         + "{ [[[JavaLangDeprecated alloc] init] autorelease] } "
         + "count:1 type:JavaLangAnnotationAnnotation_class_()];");

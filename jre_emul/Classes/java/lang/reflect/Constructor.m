@@ -89,10 +89,6 @@
   return [class_ getName];
 }
 
-- (NSString *)internalName {
-  return [class_ objcName];
-}
-
 + (const J2ObjcClassInfo *)__metadata {
   static const J2ObjcMethodInfo methods[] = {
     { "getName", NULL, "Ljava.lang.String;", 0x1, NULL },
