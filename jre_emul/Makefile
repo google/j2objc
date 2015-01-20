@@ -903,6 +903,8 @@ JAVA_SOURCES = \
 	javax/security/cert/CertificateNotYetValidException.java \
 	javax/security/cert/X509Certificate.java \
 	javax/xml/XMLConstants.java \
+	javax/xml/parsers/DocumentBuilder.java \
+	javax/xml/parsers/DocumentBuilderFactory.java \
 	javax/xml/parsers/FactoryConfigurationError.java \
 	javax/xml/parsers/FilePathToURI.java \
 	javax/xml/parsers/ParserConfigurationException.java \
@@ -994,6 +996,28 @@ JAVA_SOURCES = \
 	org/apache/harmony/security/x501/DirectoryString.java \
 	org/apache/harmony/security/x501/Name.java \
 	org/apache/harmony/security/x509/DNParser.java \
+	org/apache/harmony/xml/dom/AttrImpl.java \
+	org/apache/harmony/xml/dom/CDATASectionImpl.java \
+	org/apache/harmony/xml/dom/CharacterDataImpl.java \
+	org/apache/harmony/xml/dom/CommentImpl.java \
+	org/apache/harmony/xml/dom/DocumentFragmentImpl.java \
+	org/apache/harmony/xml/dom/DocumentImpl.java \
+	org/apache/harmony/xml/dom/DocumentTypeImpl.java \
+	org/apache/harmony/xml/dom/DOMConfigurationImpl.java \
+	org/apache/harmony/xml/dom/DOMErrorImpl.java \
+	org/apache/harmony/xml/dom/DOMImplementationImpl.java \
+	org/apache/harmony/xml/dom/ElementImpl.java \
+	org/apache/harmony/xml/dom/EntityImpl.java \
+	org/apache/harmony/xml/dom/EntityReferenceImpl.java \
+	org/apache/harmony/xml/dom/InnerNodeImpl.java \
+	org/apache/harmony/xml/dom/LeafNodeImpl.java \
+	org/apache/harmony/xml/dom/NodeImpl.java \
+	org/apache/harmony/xml/dom/NodeListImpl.java \
+	org/apache/harmony/xml/dom/NotationImpl.java \
+	org/apache/harmony/xml/dom/ProcessingInstructionImpl.java \
+	org/apache/harmony/xml/dom/TextImpl.java \
+	org/apache/harmony/xml/parsers/DocumentBuilderFactoryImpl.java \
+	org/apache/harmony/xml/parsers/DocumentBuilderImpl.java \
 	org/apache/harmony/xml/parsers/SAXParserFactoryImpl.java \
 	org/apache/harmony/xml/parsers/SAXParserImpl.java \
 	org/json/JSON.java \
@@ -1004,9 +1028,45 @@ JAVA_SOURCES = \
 	org/json/JSONTokener.java \
 	org/kxml2/io/KXmlParser.java \
 	org/kxml2/io/KXmlSerializer.java \
+	org/w3c/dom/Attr.java \
+	org/w3c/dom/CDATASection.java \
+	org/w3c/dom/CharacterData.java \
+	org/w3c/dom/Comment.java \
+	org/w3c/dom/Document.java \
+	org/w3c/dom/DocumentFragment.java \
+	org/w3c/dom/DocumentType.java \
+	org/w3c/dom/DOMConfiguration.java \
+	org/w3c/dom/DOMError.java \
+	org/w3c/dom/DOMErrorHandler.java \
+	org/w3c/dom/DOMException.java \
+	org/w3c/dom/DOMImplementation.java \
+	org/w3c/dom/DOMImplementationList.java \
+	org/w3c/dom/DOMImplementationSource.java \
+	org/w3c/dom/DOMLocator.java \
+	org/w3c/dom/DOMStringList.java \
+	org/w3c/dom/Element.java \
+	org/w3c/dom/Entity.java \
+	org/w3c/dom/EntityReference.java \
+	org/w3c/dom/NamedNodeMap.java \
+	org/w3c/dom/NameList.java \
+	org/w3c/dom/Node.java \
+	org/w3c/dom/NodeList.java \
+	org/w3c/dom/Notation.java \
+	org/w3c/dom/ProcessingInstruction.java \
+	org/w3c/dom/Text.java \
 	org/w3c/dom/TypeInfo.java \
+	org/w3c/dom/UserDataHandler.java \
+	org/w3c/dom/ls/DOMImplementationLS.java \
+	org/w3c/dom/ls/LSException.java \
 	org/w3c/dom/ls/LSInput.java \
+	org/w3c/dom/ls/LSOutput.java \
+	org/w3c/dom/ls/LSParser.java \
+	org/w3c/dom/ls/LSParserFilter.java \
 	org/w3c/dom/ls/LSResourceResolver.java \
+	org/w3c/dom/ls/LSSerializer.java \
+	org/w3c/dom/ls/LSSerializerFilter.java \
+	org/w3c/dom/traversal/NodeFilter.java \
+	org/w3c/dom/traversal/NodeIterator.java \
 	org/xml/sax/AttributeList.java \
 	org/xml/sax/Attributes.java \
 	org/xml/sax/ContentHandler.java \

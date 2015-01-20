@@ -41,6 +41,10 @@ SUPPORT_SOURCES = \
     org/apache/harmony/security/tests/support/SpiEngUtils.java \
     org/apache/harmony/security/tests/support/spec/MyEncodedKeySpec.java \
     org/apache/harmony/testframework/serialization/SerializationTest.java \
+    org/apache/harmony/tests/javax/xml/parsers/SAXParserTestSupport.java \
+    org/apache/harmony/tests/org/xml/sax/support/MethodLogger.java \
+    org/apache/harmony/tests/org/xml/sax/support/MockHandler.java \
+    org/apache/harmony/tests/org/xml/sax/support/MockResolver.java \
     org/apache/harmony/text/tests/java/text/Support_Format.java \
     org/apache/harmony/text/tests/java/text/Support_MessageFormat.java \
     tests/security/MessageDigestTest.java \
@@ -50,6 +54,7 @@ SUPPORT_SOURCES = \
     tests/support/Support_ASimpleReader.java \
     tests/support/Support_ASimpleWriter.java \
     tests/support/Support_CollectionTest.java \
+    tests/support/Support_Configuration.java \
     tests/support/Support_Field.java \
     tests/support/Support_GetPutFields.java \
     tests/support/Support_GetPutFieldsDefaulted.java \
@@ -76,6 +81,7 @@ SUPPORT_SOURCES = \
     tests/support/Support_UnmodifiableCollectionTest.java \
     tests/support/Support_UnmodifiableMapTest.java \
     tests/support/ThrowingReader.java \
+    tests/support/resource/Support_Resources.java \
     tests/util/CallVerificationStack.java \
     tests/util/SerializationTester.java
 
@@ -274,6 +280,7 @@ TEST_SOURCES := \
     libcore/java/util/zip/ZipFileTest.java \
     libcore/java/util/zip/ZipInputStreamTest.java \
     libcore/java/util/zip/ZipOutputStreamTest.java \
+    libcore/javax/xml/parsers/DocumentBuilderTest.java \
     libcore/net/url/UrlUtilsTest.java \
     org/apache/harmony/archive/tests/java/util/zip/CRC32Test.java \
     org/apache/harmony/logging/tests/java/util/logging/ConsoleHandlerTest.java \
@@ -403,6 +410,9 @@ TEST_SOURCES := \
     org/apache/harmony/tests/java/util/HashMapTest.java \
     org/apache/harmony/tests/java/util/HashtableTest.java \
     org/apache/harmony/tests/java/util/LinkedHashMapTest.java \
+    org/apache/harmony/tests/javax/xml/parsers/DocumentBuilderFactoryTest.java \
+    org/apache/harmony/tests/javax/xml/parsers/FactoryConfigurationErrorTest.java \
+    org/apache/harmony/tests/javax/xml/parsers/ParserConfigurationExceptionTest.java \
     org/apache/harmony/text/tests/java/text/ChoiceFormatTest.java \
     org/apache/harmony/text/tests/java/text/CollatorTest.java \
     org/apache/harmony/text/tests/java/text/MessageFormatTest.java \
@@ -521,6 +531,10 @@ ANDROID_TEST_RESOURCES_SRCS = \
     SHA-384.data \
     SHA-512.check \
     SHA-512.data \
+    recipt.xml \
+    simple.xml \
+    systemid.xml \
+    wrong.xml \
     tests/api/java/io/testFields.ser \
     tests/api/java/io/testFieldsDefaulted.ser \
     tests/api/java/io/testFieldsDeprecated.ser
