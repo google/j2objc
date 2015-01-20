@@ -120,17 +120,12 @@ static IOSObjectArray *IOSObjectArray_CreateArrayWithObjects(
   return result;
 }
 
-id IOSObjectArray_Get(__unsafe_unretained IOSObjectArray *array, NSUInteger index) {
-  IOSArray_checkIndex(array->size_, (jint)index);
-  return array->buffer_[index];
-}
-
 - (id)objectAtIndex:(NSUInteger)index {
   IOSArray_checkIndex(size_, (jint)index);
   return buffer_[index];
 }
 
-#if !defined(J2OBJC_DISABLE_ARRAY_CHECKS)
+#if !defined(J2OBJC_DISABLE_ARRAY_TYPE_CHECKS)
 static void ThrowArrayStoreException(IOSObjectArray *array, id value) {
   NSString *msg = [NSString stringWithFormat:
       @"attempt to add object of type %@ to array with type %@",
@@ -141,7 +136,7 @@ static void ThrowArrayStoreException(IOSObjectArray *array, id value) {
 
 static inline id IOSObjectArray_checkValue(
     __unsafe_unretained IOSObjectArray *array, __unsafe_unretained id value) {
-#if !defined(J2OBJC_DISABLE_ARRAY_CHECKS)
+#if !defined(J2OBJC_DISABLE_ARRAY_TYPE_CHECKS)
   if (value && ![array->elementType_ isInstance:value]) {
     ThrowArrayStoreException(array, value);
   }
@@ -151,7 +146,7 @@ static inline id IOSObjectArray_checkValue(
 
 // Same as above, but releases the value before throwing an exception.
 static inline void IOSObjectArray_checkRetainedValue(IOSObjectArray *array, id value) {
-#if !defined(J2OBJC_DISABLE_ARRAY_CHECKS)
+#if !defined(J2OBJC_DISABLE_ARRAY_TYPE_CHECKS)
   if (value && ![array->elementType_ isInstance:value]) {
     [value autorelease];
     ThrowArrayStoreException(array, value);
@@ -162,7 +157,7 @@ static inline void IOSObjectArray_checkRetainedValue(IOSObjectArray *array, id v
 // Same as IOSArray_checkIndex, but releases the value before throwing an
 // exception.
 static inline void IOSObjectArray_checkIndexRetainedValue(jint size, jint index, id value) {
-#if !defined(J2OBJC_DISABLE_ARRAY_CHECKS)
+#if !defined(J2OBJC_DISABLE_ARRAY_BOUND_CHECKS)
   if (index < 0 || index >= size) {
     [value autorelease];
     IOSArray_throwOutOfBoundsWithMsg(size, index);

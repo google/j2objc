@@ -66,7 +66,6 @@
 
 // Return  at a specified index, throws IndexOutOfBoundsException
 // if out out range;
-FOUNDATION_EXPORT id IOSObjectArray_Get(IOSObjectArray *array, NSUInteger index);
 - (id)objectAtIndex:(NSUInteger)index;
 
 // Sets  at a specified index, throws IndexOutOfBoundsException
@@ -82,5 +81,11 @@ FOUNDATION_EXPORT id IOSObjectArray_SetAndConsume(
 - (void)getObjects:(NSObject **)buffer length:(NSUInteger)length;
 
 @end
+
+__attribute__((always_inline)) inline id IOSObjectArray_Get(
+    __unsafe_unretained IOSObjectArray *array, NSUInteger index) {
+  IOSArray_checkIndex(array->size_, (jint)index);
+  return array->buffer_[index];
+}
 
 #endif // _IOSObjectArray_H_
