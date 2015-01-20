@@ -59,17 +59,6 @@
  * @define PRIMITIVE_ARRAY_ACCESSORS_IMPL
  */
 #define PRIMITIVE_ARRAY_ACCESSORS_IMPL(L_NAME, U_NAME, C_TYPE) \
-  C_TYPE IOS##U_NAME##Array_Get(__unsafe_unretained IOS##U_NAME##Array *array, NSUInteger index) { \
-    IOSArray_checkIndex(array->size_, (jint)index); \
-    return array->buffer_[index]; \
-  } \
-  \
-  C_TYPE *IOS##U_NAME##Array_GetRef( \
-      __unsafe_unretained IOS##U_NAME##Array *array, NSUInteger index) { \
-    IOSArray_checkIndex(array->size_, (jint)index); \
-    return &array->buffer_[index]; \
-  } \
-  \
   - (C_TYPE)L_NAME##AtIndex:(NSUInteger)index { \
     IOSArray_checkIndex(size_, (jint)index); \
     return buffer_[index]; \

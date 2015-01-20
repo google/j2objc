@@ -34,9 +34,6 @@
 #import "IOSArray.h"
 
 /*!
- * Defines an init function for a class that will ensure that the class is
- * initialized. For class "Foo" the function will have the following signature:
- *   inline void Foo_init();
  * Declares all of the common methods for the primitive array types. For example
  * this would declare the following for IOSIntArray:
  *
@@ -62,12 +59,33 @@
 + (instancetype)arrayWithLength:(NSUInteger)length; \
 + (instancetype)newArrayWith##U_NAME##s:(const C_TYPE *)buf count:(NSUInteger)count; \
 + (instancetype)arrayWith##U_NAME##s:(const C_TYPE *)buf count:(NSUInteger)count; \
-FOUNDATION_EXPORT C_TYPE IOS##U_NAME##Array_Get(IOS##U_NAME##Array *array, NSUInteger index); \
-FOUNDATION_EXPORT C_TYPE *IOS##U_NAME##Array_GetRef(IOS##U_NAME##Array *array, NSUInteger index); \
 - (C_TYPE)L_NAME##AtIndex:(NSUInteger)index; \
 - (C_TYPE *)L_NAME##RefAtIndex:(NSUInteger)index; \
 - (C_TYPE)replace##U_NAME##AtIndex:(NSUInteger)index with##U_NAME:(C_TYPE)value; \
 - (void)get##U_NAME##s:(C_TYPE *)buffer length:(NSUInteger)length; \
+
+/*!
+ * Defines the C interface for the primitive array types. This macro is used
+ * after the @end declaration for the @interface.
+ *
+ * @define PRIMITIVE_ARRAY_C_INTERFACE
+ * @param L_NAME Lowercase name of the primitive type. (e.g. "char")
+ * @param U_NAME Uppercase name of the primitive type. (e.g. "Char")
+ * @param C_TYPE Objective-C type for the primitive type, (e.g. "unichar")
+ */
+#define PRIMITIVE_ARRAY_C_INTERFACE(L_NAME, U_NAME, C_TYPE) \
+\
+__attribute__((always_inline)) inline C_TYPE IOS##U_NAME##Array_Get( \
+    __unsafe_unretained IOS##U_NAME##Array *array, NSUInteger index) { \
+  IOSArray_checkIndex(array->size_, (jint)index); \
+  return array->buffer_[index]; \
+} \
+\
+__attribute__((always_inline)) inline C_TYPE *IOS##U_NAME##Array_GetRef( \
+    __unsafe_unretained IOS##U_NAME##Array *array, NSUInteger index) { \
+  IOSArray_checkIndex(array->size_, (jint)index); \
+  return &array->buffer_[index]; \
+} \
 
 
 // ********** IOSBooleanArray **********
@@ -80,6 +98,8 @@ FOUNDATION_EXPORT C_TYPE *IOS##U_NAME##Array_GetRef(IOS##U_NAME##Array *array, N
 PRIMITIVE_ARRAY_INTERFACE(boolean, Boolean, jboolean)
 
 @end
+
+PRIMITIVE_ARRAY_C_INTERFACE(boolean, Boolean, jboolean)
 
 
 // ********** IOSCharArray **********
@@ -95,6 +115,8 @@ PRIMITIVE_ARRAY_INTERFACE(char, Char, jchar)
 + (instancetype)arrayWithNSString:(NSString *)string;
 
 @end
+
+PRIMITIVE_ARRAY_C_INTERFACE(char, Char, jchar)
 
 
 // ********** IOSByteArray **********
@@ -124,6 +146,8 @@ PRIMITIVE_ARRAY_INTERFACE(byte, Byte, jbyte)
 
 @end
 
+PRIMITIVE_ARRAY_C_INTERFACE(byte, Byte, jbyte)
+
 
 // ********** IOSShortArray **********
 
@@ -135,6 +159,8 @@ PRIMITIVE_ARRAY_INTERFACE(byte, Byte, jbyte)
 PRIMITIVE_ARRAY_INTERFACE(short, Short, jshort)
 
 @end
+
+PRIMITIVE_ARRAY_C_INTERFACE(short, Short, jshort)
 
 
 // ********** IOSIntArray **********
@@ -148,6 +174,8 @@ PRIMITIVE_ARRAY_INTERFACE(int, Int, jint)
 
 @end
 
+PRIMITIVE_ARRAY_C_INTERFACE(int, Int, jint)
+
 
 // ********** IOSLongArray **********
 
@@ -159,6 +187,8 @@ PRIMITIVE_ARRAY_INTERFACE(int, Int, jint)
 PRIMITIVE_ARRAY_INTERFACE(long, Long, jlong)
 
 @end
+
+PRIMITIVE_ARRAY_C_INTERFACE(long, Long, jlong)
 
 
 // ********** IOSFloatArray **********
@@ -172,6 +202,8 @@ PRIMITIVE_ARRAY_INTERFACE(float, Float, jfloat)
 
 @end
 
+PRIMITIVE_ARRAY_C_INTERFACE(float, Float, jfloat)
+
 
 // ********** IOSDoubleArray **********
 
@@ -183,5 +215,11 @@ PRIMITIVE_ARRAY_INTERFACE(float, Float, jfloat)
 PRIMITIVE_ARRAY_INTERFACE(double, Double, jdouble)
 
 @end
+
+PRIMITIVE_ARRAY_C_INTERFACE(double, Double, jdouble)
+
+
+#undef PRIMITIVE_ARRAY_INTERFACE
+#undef PRIMITIVE_ARRAY_C_INTERFACE
 
 #endif // _IOSPrimitiveArray_H_
