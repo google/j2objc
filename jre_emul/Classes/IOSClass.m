@@ -75,6 +75,8 @@ static IOSPrimitiveClass *IOSClass_voidClass;
 // Other commonly used instances.
 static IOSClass *IOSClass_objectClass;
 
+static IOSObjectArray *IOSClass_emptyClassArray;
+
 // Function forwards.
 static IOSClass *FetchClass(Class cls);
 static IOSClass *FetchProtocol(Protocol *protocol);
@@ -253,7 +255,7 @@ static JavaUtilProperties *prefixMapping;
       return method;
     }
   }
-  for (IOSProtocolClass *p in [self getInterfaces]) {
+  for (IOSClass *p in [self getInterfacesInternal]) {
     method = [p findMethodWithTranslatedName:translatedName];
     if (method != nil) {
       return method;
@@ -587,18 +589,22 @@ static BOOL hasModifier(IOSClass *cls, int flag) {
   return hasModifier(self, JavaLangReflectModifier_SYNTHETIC);
 }
 
+- (IOSObjectArray *)getInterfacesInternal {
+  return IOSClass_emptyClassArray;
+}
+
 - (IOSObjectArray *)getInterfaces {
-  return [IOSObjectArray arrayWithLength:0 type:IOSClass_class_()];
+  return [IOSObjectArray arrayWithArray:[self getInterfacesInternal]];
 }
 
 - (IOSObjectArray *)getGenericInterfaces {
-  IOSObjectArray *interfaces = [self getInterfaces];
+  IOSObjectArray *interfaces = [self getInterfacesInternal];
   return [IOSObjectArray arrayWithObjects:interfaces->buffer_
                                     count:interfaces->size_
                                      type:JavaLangReflectType_class_()];
 }
 
-IOSObjectArray *IOSClass_InterfacesFromProtocolList(Protocol **list, unsigned int count) {
+IOSObjectArray *IOSClass_NewInterfacesFromProtocolList(Protocol **list, unsigned int count) {
   IOSClass *buffer[count];
   unsigned int actualCount = 0;
   for (unsigned int i = 0; i < count; i++) {
@@ -607,9 +613,9 @@ IOSObjectArray *IOSClass_InterfacesFromProtocolList(Protocol **list, unsigned in
       buffer[actualCount++] = FetchProtocol(list[i]);
     }
   }
-  return [IOSObjectArray arrayWithObjects:buffer
-                                    count:actualCount
-                                     type:IOSClass_class_()];
+  return [IOSObjectArray newArrayWithObjects:buffer
+                                       count:actualCount
+                                        type:IOSClass_class_()];
 }
 
 - (IOSObjectArray *)getTypeParameters {
@@ -971,6 +977,8 @@ IOSClass *FetchArray(IOSClass *componentType) {
     IOSClass_voidClass = [[IOSPrimitiveClass alloc] initWithName:@"void" type:@"V"];
 
     IOSClass_objectClass = FetchClass([NSObject class]);
+
+    IOSClass_emptyClassArray = [IOSObjectArray arrayWithLength:0 type:IOSClass_class_()];
 
     // Load and initialize JRE categories, using their dummy classes.
     [JreObjectCategoryDummy class];

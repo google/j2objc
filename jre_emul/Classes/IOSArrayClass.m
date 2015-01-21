@@ -72,10 +72,15 @@
   return [[[self getComponentType] objcName] stringByAppendingString:@"Array"];
 }
 
-- (IOSObjectArray *)getInterfaces {
-  return [IOSObjectArray arrayWithObjects:(id[]){
-      NSCopying_class_(), JavaIoSerializable_class_() }
-      count:2 type:IOSClass_class_()];
+- (IOSObjectArray *)getInterfacesInternal {
+  static dispatch_once_t onceToken;
+  static IOSObjectArray *arrayInterfaces;
+  dispatch_once(&onceToken, ^{
+    arrayInterfaces = [IOSObjectArray newArrayWithObjects:(id[]){
+        NSCopying_class_(), JavaIoSerializable_class_() }
+        count:2 type:IOSClass_class_()];
+  });
+  return arrayInterfaces;
 }
 
 - (id)newInstance {
