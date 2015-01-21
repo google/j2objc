@@ -297,11 +297,22 @@ static JavaLangReflectConstructor *GetConstructorImpl(
   return GetConstructorImpl(self, parameterTypes);
 }
 
-- (IOSObjectArray *)getInterfaces {
-  unsigned int count;
-  Protocol **protocolList = class_copyProtocolList(class_, &count);
-  IOSObjectArray *result = IOSClass_InterfacesFromProtocolList(protocolList, count);
-  free(protocolList);
+- (IOSObjectArray *)getInterfacesInternal {
+  IOSObjectArray *result = interfaces_;
+  OSMemoryBarrier();
+  if (!result) {
+    @synchronized(self) {
+      result = interfaces_;
+      if (!result) {
+        unsigned int count;
+        Protocol **protocolList = class_copyProtocolList(class_, &count);
+        result = IOSClass_NewInterfacesFromProtocolList(protocolList, count);
+        free(protocolList);
+        OSMemoryBarrier();
+        interfaces_ = result;
+      }
+    }
+  }
   return result;
 }
 

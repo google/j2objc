@@ -133,7 +133,7 @@
   free(descriptions);
   if (!result) {
     // Search super-interfaces.
-    for (IOSClass *cls in [self getInterfaces]) {
+    for (IOSClass *cls in [self getInterfacesInternal]) {
       if (cls != self) {
         result = [cls findMethodWithTranslatedName:objcName];
         if (result) {
@@ -145,11 +145,22 @@
   return result;
 }
 
-- (IOSObjectArray *)getInterfaces {
-  unsigned int count;
-  Protocol **protocolList = protocol_copyProtocolList(protocol_, &count);
-  IOSObjectArray *result = IOSClass_InterfacesFromProtocolList(protocolList, count);
-  free(protocolList);
+- (IOSObjectArray *)getInterfacesInternal {
+  IOSObjectArray *result = interfaces_;
+  OSMemoryBarrier();
+  if (!result) {
+    @synchronized(self) {
+      result = interfaces_;
+      if (!result) {
+        unsigned int count;
+        Protocol **protocolList = protocol_copyProtocolList(protocol_, &count);
+        result = IOSClass_NewInterfacesFromProtocolList(protocolList, count);
+        free(protocolList);
+        OSMemoryBarrier();
+        interfaces_ = result;
+      }
+    }
+  }
   return result;
 }
 
