@@ -22,6 +22,8 @@
 #import "IOSArrayClass.h"
 #import "IOSObjectArray.h"
 #import "IOSPrimitiveClass.h"
+#import "NSCopying+JavaCloneable.h"
+#import "java/io/Serializable.h"
 #import "java/lang/InstantiationException.h"
 
 @implementation IOSArrayClass
