@@ -297,26 +297,12 @@ static JavaLangReflectConstructor *GetConstructorImpl(
   return GetConstructorImpl(self, parameterTypes);
 }
 
-- (IOSObjectArray *)getInterfacesWithArrayType:(IOSClass *)arrayType {
-  NSMutableArray *allInterfaces = [NSMutableArray array];
-  Class cls = class_;
-  while (cls) {
-    unsigned int outCount;
-    Protocol * __unsafe_unretained *interfaces = class_copyProtocolList(class_, &outCount);
-    for (unsigned i = 0; i < outCount; i++) {
-      IOSClass *interface = [IOSClass classFromProtocol:interfaces[i]];
-      NSString *name = [interface getName];
-      // Don't include NSObject and JavaObject interfaces, since java.lang.Object is a class.
-      if (![allInterfaces containsObject:interface] && ![name isEqualToString:@"JavaObject"] &&
-          ![name isEqualToString:@"java.lang.Object"]) {
-        [allInterfaces addObject:interface];
-      }
-    }
-    free(interfaces);
-    cls = [cls superclass];
-  }
-  return [IOSObjectArray arrayWithNSArray:allInterfaces
-                                     type:[IOSClass getClass]];
+- (IOSObjectArray *)getInterfaces {
+  unsigned int count;
+  Protocol **protocolList = class_copyProtocolList(class_, &count);
+  IOSObjectArray *result = IOSClass_InterfacesFromProtocolList(protocolList, count);
+  free(protocolList);
+  return result;
 }
 
 #if ! __has_feature(objc_arc)

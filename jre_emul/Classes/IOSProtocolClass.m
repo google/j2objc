@@ -133,7 +133,7 @@
   free(descriptions);
   if (!result) {
     // Search super-interfaces.
-    for (IOSClass *cls in [self getInterfacesWithArrayType:nil]) {
+    for (IOSClass *cls in [self getInterfaces]) {
       if (cls != self) {
         result = [cls findMethodWithTranslatedName:objcName];
         if (result) {
@@ -145,20 +145,12 @@
   return result;
 }
 
-- (IOSObjectArray *)getInterfacesWithArrayType:(IOSClass *)arrayType {
-  unsigned int outCount;
-  Protocol * __unsafe_unretained *interfaces = protocol_copyProtocolList(protocol_, &outCount);
-  NSMutableArray *result = [NSMutableArray arrayWithCapacity:outCount];
-  for (unsigned i = 0; i < outCount; i++) {
-    IOSClass *interface = [IOSClass classFromProtocol:interfaces[i]];
-    NSString *name = [interface getName];
-    // Don't include NSObject and JavaObject interfaces, since java.lang.Object is a class.
-    if (![name isEqualToString:@"JavaObject"] && ![name isEqualToString:@"java.lang.Object"]) {
-      [result addObject:interface];
-    }
-  }
-  free(interfaces);
-  return [IOSObjectArray arrayWithNSArray:result type:[IOSClass getClass]];
+- (IOSObjectArray *)getInterfaces {
+  unsigned int count;
+  Protocol **protocolList = protocol_copyProtocolList(protocol_, &count);
+  IOSObjectArray *result = IOSClass_InterfacesFromProtocolList(protocolList, count);
+  free(protocolList);
+  return result;
 }
 
 #if ! __has_feature(objc_arc)

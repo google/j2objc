@@ -189,7 +189,6 @@
 - (void)collectMethods:(NSMutableDictionary *)methodMap
             publicOnly:(BOOL)publicOnly;
 - (JavaLangReflectMethod *)findMethodWithTranslatedName:(NSString *)objcName;
-- (IOSObjectArray *)getInterfacesWithArrayType:(IOSClass *)arrayType;
 - (JavaClassMetadata *)getMetadata;
 - (NSString *)objcName;
 - (NSString *)binaryName;
@@ -202,6 +201,8 @@ NSString *IOSClass_GetTranslatedMethodName(
 IOSClass *IOSClass_forNameWithNSString_(NSString *className);
 IOSClass *IOSClass_forNameWithNSString_withBoolean_withJavaLangClassLoader_(
     NSString *className, BOOL load, JavaLangClassLoader *loader);
+
+IOSObjectArray *IOSClass_InterfacesFromProtocolList(Protocol **list, unsigned int count);
 
 CF_EXTERN_C_END
 

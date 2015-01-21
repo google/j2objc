@@ -70,9 +70,10 @@
   return [[[self getComponentType] objcName] stringByAppendingString:@"Array"];
 }
 
-- (IOSObjectArray *)getInterfacesWithArrayType:(IOSClass *)arrayType {
-  return [IOSObjectArray arrayWithObjects:(id[]){ JavaIoSerializable_class_() } count:1
-      type:[IOSClass getClass]];
+- (IOSObjectArray *)getInterfaces {
+  return [IOSObjectArray arrayWithObjects:(id[]){
+      NSCopying_class_(), JavaIoSerializable_class_() }
+      count:2 type:IOSClass_class_()];
 }
 
 - (id)newInstance {
