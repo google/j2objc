@@ -978,7 +978,7 @@ IOSClass *FetchArray(IOSClass *componentType) {
 
     IOSClass_objectClass = FetchClass([NSObject class]);
 
-    IOSClass_emptyClassArray = [IOSObjectArray arrayWithLength:0 type:IOSClass_class_()];
+    IOSClass_emptyClassArray = [IOSObjectArray newArrayWithLength:0 type:IOSClass_class_()];
 
     // Load and initialize JRE categories, using their dummy classes.
     [JreObjectCategoryDummy class];
