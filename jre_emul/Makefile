@@ -265,6 +265,7 @@ JAVA_SOURCES = \
 	java/lang/Long.java \
 	java/lang/Math.java \
 	java/lang/NegativeArraySizeException.java \
+	java/lang/NoClassDefFoundError.java \
 	java/lang/NoSuchFieldError.java \
 	java/lang/NoSuchFieldException.java \
 	java/lang/NoSuchMethodError.java \
@@ -903,6 +904,14 @@ JAVA_SOURCES = \
 	javax/security/cert/CertificateNotYetValidException.java \
 	javax/security/cert/X509Certificate.java \
 	javax/xml/XMLConstants.java \
+	javax/xml/datatype/DatatypeConfigurationException.java \
+	javax/xml/datatype/DatatypeConstants.java \
+	javax/xml/datatype/DatatypeFactory.java \
+	javax/xml/datatype/Duration.java \
+	javax/xml/datatype/FactoryFinder.java \
+	javax/xml/datatype/XMLGregorianCalendar.java \
+	javax/xml/namespace/NamespaceContext.java \
+	javax/xml/namespace/QName.java \
 	javax/xml/parsers/DocumentBuilder.java \
 	javax/xml/parsers/DocumentBuilderFactory.java \
 	javax/xml/parsers/FactoryConfigurationError.java \
@@ -910,12 +919,48 @@ JAVA_SOURCES = \
 	javax/xml/parsers/ParserConfigurationException.java \
 	javax/xml/parsers/SAXParser.java \
 	javax/xml/parsers/SAXParserFactory.java \
+	javax/xml/transform/dom/DOMLocator.java \
+	javax/xml/transform/dom/DOMResult.java \
+	javax/xml/transform/dom/DOMSource.java \
+	javax/xml/transform/ErrorListener.java \
+	javax/xml/transform/OutputKeys.java \
 	javax/xml/transform/Result.java \
+	javax/xml/transform/sax/SAXResult.java \
+	javax/xml/transform/sax/SAXSource.java \
+	javax/xml/transform/sax/SAXTransformerFactory.java \
+	javax/xml/transform/sax/TemplatesHandler.java \
+	javax/xml/transform/sax/TransformerHandler.java \
 	javax/xml/transform/Source.java \
+	javax/xml/transform/SourceLocator.java \
+	javax/xml/transform/stream/FilePathToURI.java \
+	javax/xml/transform/stream/StreamResult.java \
+	javax/xml/transform/stream/StreamSource.java \
+	javax/xml/transform/Templates.java \
+	javax/xml/transform/Transformer.java \
+	javax/xml/transform/TransformerConfigurationException.java \
+	javax/xml/transform/TransformerException.java \
+	javax/xml/transform/TransformerFactory.java \
+	javax/xml/transform/TransformerFactoryConfigurationError.java \
+	javax/xml/transform/URIResolver.java \
 	javax/xml/validation/Schema.java \
+	javax/xml/validation/SchemaFactory.java \
+	javax/xml/validation/SchemaFactoryFinder.java \
+	javax/xml/validation/SchemaFactoryLoader.java \
 	javax/xml/validation/TypeInfoProvider.java \
 	javax/xml/validation/Validator.java \
 	javax/xml/validation/ValidatorHandler.java \
+	javax/xml/xpath/XPath.java \
+	javax/xml/xpath/XPathConstants.java \
+	javax/xml/xpath/XPathException.java \
+	javax/xml/xpath/XPathExpression.java \
+	javax/xml/xpath/XPathExpressionException.java \
+	javax/xml/xpath/XPathFactory.java \
+	javax/xml/xpath/XPathFactoryConfigurationException.java \
+	javax/xml/xpath/XPathFactoryFinder.java \
+	javax/xml/xpath/XPathFunction.java \
+	javax/xml/xpath/XPathFunctionException.java \
+	javax/xml/xpath/XPathFunctionResolver.java \
+	javax/xml/xpath/XPathVariableResolver.java \
 	libcore/icu/ICU.java \
 	libcore/icu/LocaleData.java \
 	libcore/icu/NativeDecimalFormat.java \
