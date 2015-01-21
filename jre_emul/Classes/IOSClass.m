@@ -253,7 +253,7 @@ static JavaUtilProperties *prefixMapping;
       return method;
     }
   }
-  for (IOSProtocolClass *p in [self getInterfacesWithArrayType:IOSClass_class_()]) {
+  for (IOSProtocolClass *p in [self getInterfaces]) {
     method = [p findMethodWithTranslatedName:translatedName];
     if (method != nil) {
       return method;
@@ -587,16 +587,29 @@ static BOOL hasModifier(IOSClass *cls, int flag) {
   return hasModifier(self, JavaLangReflectModifier_SYNTHETIC);
 }
 
-- (IOSObjectArray *)getInterfacesWithArrayType:(IOSClass *)arrayType {
-  return [IOSObjectArray arrayWithLength:0 type:arrayType];
-}
-
 - (IOSObjectArray *)getInterfaces {
-  return [self getInterfacesWithArrayType:IOSClass_class_()];
+  return [IOSObjectArray arrayWithLength:0 type:IOSClass_class_()];
 }
 
 - (IOSObjectArray *)getGenericInterfaces {
-  return [self getInterfacesWithArrayType:JavaLangReflectType_class_()];
+  IOSObjectArray *interfaces = [self getInterfaces];
+  return [IOSObjectArray arrayWithObjects:interfaces->buffer_
+                                    count:interfaces->size_
+                                     type:JavaLangReflectType_class_()];
+}
+
+IOSObjectArray *IOSClass_InterfacesFromProtocolList(Protocol **list, unsigned int count) {
+  IOSClass *buffer[count];
+  unsigned int actualCount = 0;
+  for (unsigned int i = 0; i < count; i++) {
+    Protocol *protocol = list[i];
+    if (protocol != @protocol(NSObject) && protocol != @protocol(JavaObject)) {
+      buffer[actualCount++] = FetchProtocol(list[i]);
+    }
+  }
+  return [IOSObjectArray arrayWithObjects:buffer
+                                    count:actualCount
+                                     type:IOSClass_class_()];
 }
 
 - (IOSObjectArray *)getTypeParameters {
