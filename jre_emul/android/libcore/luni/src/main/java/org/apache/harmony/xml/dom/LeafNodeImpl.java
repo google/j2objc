@@ -16,6 +16,8 @@
 
 package org.apache.harmony.xml.dom;
 
+import com.google.j2objc.annotations.Weak;
+
 import org.w3c.dom.Node;
 
 /**
@@ -33,6 +35,7 @@ import org.w3c.dom.Node;
 public abstract class LeafNodeImpl extends NodeImpl {
 
     // Maintained by InnerNodeImpl.
+    @Weak
     InnerNodeImpl parent;
 
     // Maintained by InnerNodeImpl.
