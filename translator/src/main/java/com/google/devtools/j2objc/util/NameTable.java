@@ -38,6 +38,7 @@ import org.eclipse.jdt.core.dom.ITypeBinding;
 import org.eclipse.jdt.core.dom.IVariableBinding;
 import org.eclipse.jdt.core.dom.VariableDeclarationFragment;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.Iterator;
 import java.util.List;
@@ -53,7 +54,6 @@ public class NameTable {
 
   private static NameTable instance;
   private final Map<IBinding, String> renamings = Maps.newHashMap();
-  private CompilationUnit unit;
 
   public static final String INIT_NAME = "init";
   public static final String DEALLOC_METHOD = "dealloc";
@@ -257,14 +257,6 @@ public class NameTable {
    */
   public static void initialize() {
     instance = new NameTable(Options.getPackagePrefixes());
-  }
-
-  public static CompilationUnit getUnit() {
-    return instance.unit;
-  }
-
-  public static void setUnit(CompilationUnit unit) {
-    instance.unit = unit;
   }
 
   public static void cleanup() {
@@ -591,12 +583,12 @@ public class NameTable {
     return reservedNames.contains(name) || nsObjectMessages.contains(name);
   }
 
-  public static String getMainTypeFullName() {
-    PackageDeclaration pkg = getUnit().getPackage();
+  public static String getMainTypeFullName(CompilationUnit unit) {
+    PackageDeclaration pkg = unit.getPackage();
     if (pkg.isDefaultPackage()) {
-      return getUnit().getMainTypeName();
+      return unit.getMainTypeName();
     } else {
-      return getPrefix(pkg.getPackageBinding()) + getUnit().getMainTypeName();
+      return getPrefix(pkg.getPackageBinding()) + unit.getMainTypeName();
     }
   }
 
@@ -646,14 +638,20 @@ public class NameTable {
     }
 
     // Check if there is a package-info.java source file with a prefix annotation.
-    // TODO(tball): also check sourcepath directories.
     try {
-      if (getUnit() != null) {
-        String url = getUnit().getSourceFileFullPath();
-        int lastSlash = url.lastIndexOf('/');
-        String packageInfoURL = lastSlash > 0
-            ? url.substring(0, lastSlash) + "/package-info.java"
-            : "package-info.java";
+      String expectedPackageInfoPath = packageBinding.getName();
+      // Path will be null if this is the empty package.
+      if (expectedPackageInfoPath == null) {
+        expectedPackageInfoPath = "package-info.java";
+      } else {
+        expectedPackageInfoPath = expectedPackageInfoPath.replace('.', File.separatorChar)
+            + File.separatorChar + "package-info.java";
+      }
+      for (String sourcePath: Options.getSourcePathEntries()) {
+        if (sourcePath.charAt(sourcePath.length() - 1) != File.separatorChar) {
+          sourcePath += File.separator;
+        }
+        String packageInfoURL = sourcePath + expectedPackageInfoPath;
         if (FileUtil.exists(packageInfoURL)) {
           String pkgInfo = FileUtil.readSource(packageInfoURL);
           int i = pkgInfo.indexOf("@ObjectiveCName");

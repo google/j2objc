@@ -254,7 +254,6 @@ class TranslationProcessor extends FileProcessor {
   public static void applyMutations(
       CompilationUnit unit, DeadCodeMap deadCodeMap, TimeTracker ticker) {
     ticker.push();
-    NameTable.setUnit(unit);
 
     if (deadCodeMap != null) {
       new DeadCodeEliminator(unit, deadCodeMap).run(unit);
