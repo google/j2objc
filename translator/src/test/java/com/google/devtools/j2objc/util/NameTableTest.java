@@ -37,8 +37,8 @@ public class NameTableTest extends GenerationTest {
 
   @Override
   protected void tearDown() throws Exception {
+    super.tearDown();
     Options.clearPackagePrefixes();
-    ErrorUtil.reset();
   }
 
   // Verify class name with prefix.

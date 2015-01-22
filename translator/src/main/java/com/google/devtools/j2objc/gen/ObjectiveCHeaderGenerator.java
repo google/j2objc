@@ -70,7 +70,7 @@ public class ObjectiveCHeaderGenerator extends ObjectiveCSourceFileGenerator {
 
   protected ObjectiveCHeaderGenerator(CompilationUnit unit) {
     super(unit, false);
-    mainTypeName = NameTable.getMainTypeFullName();
+    mainTypeName = NameTable.getMainTypeFullName(unit);
   }
 
   @Override

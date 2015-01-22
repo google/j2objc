@@ -73,6 +73,7 @@ public abstract class GenerationTest extends TestCase {
       "-d", tempDir.getAbsolutePath(),
       "--hide-private-members" // Future default, run tests with it now.
     });
+    Options.getSourcePathEntries().add(tempDir.getCanonicalPath());
     parser = initializeParser(tempDir);
   }
 
@@ -81,6 +82,7 @@ public abstract class GenerationTest extends TestCase {
     Options.setHeaderMappingFiles(null);
     Options.getHeaderMappings().clear();
     Options.setPackageDirectories(Options.OutputStyleOption.PACKAGE);
+    Options.getSourcePathEntries().clear();
     deleteTempDir(tempDir);
     ErrorUtil.reset();
   }
