@@ -57,4 +57,4 @@ for arg; do
   esac
 done
 
-xcrun clang $* -I ${INCLUDE_PATH} ${CC_FLAGS} ${OBJC} ${LINK_FLAGS}
+xcrun clang "$@" -I ${INCLUDE_PATH} ${CC_FLAGS} ${OBJC} ${LINK_FLAGS}
