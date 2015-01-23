@@ -97,7 +97,7 @@ __attribute__ ((unused)) static inline id nil_chk(id __unsafe_unretained p) {
   j2objc_nil_chk_count++;
 #endif
 #if !defined(J2OBJC_DISABLE_NIL_CHECKS)
-  if (!p) {
+  if (__builtin_expect(!p, 0)) {
     JreThrowNullPointerException();
   }
 #endif
@@ -108,7 +108,7 @@ __attribute__ ((unused)) static inline id nil_chk(id __unsafe_unretained p) {
 // overhead, since the difference is statically known.
 __attribute__ ((unused)) static inline id check_class_cast(id __unsafe_unretained p, Class clazz) {
 #if !defined(J2OBJC_DISABLE_CAST_CHECKS)
-  if (p && ![p isKindOfClass:clazz]) {
+  if (__builtin_expect(p && ![p isKindOfClass:clazz], 0)) {
     JreThrowClassCastException();
   }
 #endif
@@ -118,7 +118,7 @@ __attribute__ ((unused)) static inline id check_class_cast(id __unsafe_unretaine
 __attribute__ ((unused)) static inline id check_protocol_cast(id __unsafe_unretained p,
                                                               Protocol *protocol) {
 #if !defined(J2OBJC_DISABLE_CAST_CHECKS)
-  if (p && ![p conformsToProtocol:protocol]) {
+  if (__builtin_expect(p && ![p conformsToProtocol:protocol], 0)) {
     JreThrowClassCastException();
   }
 #endif
@@ -171,7 +171,7 @@ static inline id JreStrongAssignAndConsume(id *pIvar, id self, NS_RELEASES_ARGUM
  */
 #define J2OBJC_STATIC_INIT(CLASS) \
   __attribute__((always_inline)) inline void CLASS##_init() { \
-    if (!__builtin_expect(CLASS##_initialized, YES)) { \
+    if (__builtin_expect(!CLASS##_initialized, 0)) { \
       [CLASS class]; \
     } \
   }
