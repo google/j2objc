@@ -675,7 +675,7 @@ public class ObjectiveCImplementationGenerator extends ObjectiveCSourceFileGener
         }
         printAnnotationValue(array[i]);
       }
-      printf(" } count:%d type:[[NSObject class] getClass]]", array.length);
+      printf(" } count:%d type:NSObject_class_()]", array.length);
     } else {
       assert false : "unknown annotation value type";
     }

@@ -227,8 +227,7 @@ public final class IosMockMaker implements MockMaker {
             [clazz findMethodWithTranslatedName:NSStringFromSelector(selector)];
         IOSObjectArray *paramTypes = [method getParameterTypes];
         NSUInteger numArgs = paramTypes->size_;
-        IOSObjectArray *args = [IOSObjectArray arrayWithLength:numArgs
-                                                          type:[NSObject getClass]];
+        IOSObjectArray *args = [IOSObjectArray arrayWithLength:numArgs type:NSObject_class_()];
 
         for (unsigned i = 0; i < numArgs; i++) {
           J2ObjcRawValue arg;

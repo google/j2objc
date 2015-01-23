@@ -84,7 +84,7 @@
       JavaLangAnnotationElementTypeEnum_get_TYPE(),
       JavaLangAnnotationElementTypeEnum_get_METHOD(),
       JavaLangAnnotationElementTypeEnum_get_FIELD()
-    } count:3 type:[[NSObject class] getClass]]] autorelease]
+    } count:3 type:NSObject_class_()]] autorelease]
   } count:2 type:JavaLangAnnotationAnnotation_class_()];
 }
 

@@ -648,7 +648,7 @@ IOSObjectArray *IOSClass_NewInterfacesFromProtocolList(Protocol **list, unsigned
 
   // Check for any inherited annotations.
   IOSClass *cls = [self getSuperclass];
-  IOSClass *inheritedAnnotation = [JavaLangAnnotationInherited getClass];
+  IOSClass *inheritedAnnotation = JavaLangAnnotationInherited_class_();
   while (cls) {
     IOSObjectArray *declared = [cls getDeclaredAnnotations];
     for (jint i = 0; i < declared->size_; i++) {
@@ -656,7 +656,7 @@ IOSObjectArray *IOSClass_NewInterfacesFromProtocolList(Protocol **list, unsigned
       IOSObjectArray *attributes = [[annotation getClass] getDeclaredAnnotations];
       for (jint j = 0; j < attributes->size_; j++) {
         id<JavaLangAnnotationAnnotation> attribute = attributes->buffer_[j];
-        if (inheritedAnnotation == [attribute getClass]) {
+        if (inheritedAnnotation == [attribute annotationType]) {
           [array addObject:annotation];
         }
       }

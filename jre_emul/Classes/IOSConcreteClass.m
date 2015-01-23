@@ -113,7 +113,7 @@
   JavaClassMetadata *metadata = [self getMetadata];
   if (metadata) {
     return (metadata.modifiers & JavaLangReflectModifier_ENUM) > 0 &&
-        [self getSuperclass] == [JavaLangEnum getClass];
+        [self getSuperclass] == JavaLangEnum_class_();
   } else {
     return class_ != nil && [NSStringFromClass(class_) hasSuffix:@"Enum"];
   }

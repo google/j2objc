@@ -133,7 +133,7 @@ public final class ICU {
 
     public static native String[] getAvailableCurrencyCodes() /*-[
       NSArray *currencyCodes = [NSLocale ISOCurrencyCodes];
-      return [IOSObjectArray arrayWithNSArray:currencyCodes type:[NSString getClass]];
+      return [IOSObjectArray arrayWithNSArray:currencyCodes type:NSString_class_()];
     ]-*/;
 
     // --- Native methods accessing iOS data.
@@ -147,7 +147,7 @@ public final class ICU {
       IOSObjectArray * result =
           [IOSObjectArray arrayWithObjects:(__unsafe_unretained id *) data.mutableBytes
                                      count:(jint)count
-                                      type:[NSString getClass]];
+                                      type:NSString_class_()];
       return result;
     ]-*/;
 
@@ -160,23 +160,23 @@ public final class ICU {
       IOSObjectArray * result =
           [IOSObjectArray arrayWithObjects:(__unsafe_unretained id *) data.mutableBytes
                                      count:(jint)count
-                                      type:[NSString getClass]];
+                                      type:NSString_class_()];
       return result;
     ]-*/;
 
     private static native String[] getAvailableBreakIteratorLocalesNative() /*-[
       // Foundation framework doesn't support break iterators.
-      return [IOSObjectArray arrayWithLength:0 type:[NSString getClass]];
+      return [IOSObjectArray arrayWithLength:0 type:NSString_class_()];
     ]-*/;
 
     private static native String[] getAvailableCollatorLocalesNative() /*-[
       // Foundation framework doesn't support collators.
-      return [IOSObjectArray arrayWithLength:0 type:[NSString getClass]];
+      return [IOSObjectArray arrayWithLength:0 type:NSString_class_()];
     ]-*/;
 
     private static native String[] getAvailableLocalesNative() /*-[
       NSArray *localeIds = [NSLocale availableLocaleIdentifiers];
-      return [IOSObjectArray arrayWithNSArray:localeIds type:[NSString getClass]];
+      return [IOSObjectArray arrayWithNSArray:localeIds type:NSString_class_()];
     ]-*/;
 
     private static native String[] getAvailableDateFormatLocalesNative() /*-[
@@ -193,7 +193,7 @@ public final class ICU {
         [locale release];
 #endif
       }
-      return [IOSObjectArray arrayWithNSArray:localesWithDateFormats type:[NSString getClass]];
+      return [IOSObjectArray arrayWithNSArray:localesWithDateFormats type:NSString_class_()];
     ]-*/;
 
     private static native String[] getAvailableCalendarLocalesNative() /*-[
@@ -207,7 +207,7 @@ public final class ICU {
         [locale release];
 #endif
       }
-      return [IOSObjectArray arrayWithNSArray:localesWithCalendarFormats type:[NSString getClass]];
+      return [IOSObjectArray arrayWithNSArray:localesWithCalendarFormats type:NSString_class_()];
     ]-*/;
 
     private static native String[] getAvailableNumberFormatLocalesNative() /*-[
@@ -224,7 +224,7 @@ public final class ICU {
         [locale release];
 #endif
       }
-      return [IOSObjectArray arrayWithNSArray:localesWithNumberFormats type:[NSString getClass]];
+      return [IOSObjectArray arrayWithNSArray:localesWithNumberFormats type:NSString_class_()];
     ]-*/;
 
     public static native String getDisplayCountryNative(String countryCode, String localeId) /*-[

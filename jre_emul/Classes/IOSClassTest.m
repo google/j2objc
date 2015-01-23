@@ -36,12 +36,12 @@
 @implementation IOSClassTest
 
 - (void)testCheckDoubleParameterNaming {
-  IOSClass *arraysClass = [JavaUtilArrays getClass];
+  IOSClass *arraysClass = JavaUtilArrays_class_();
   IOSObjectArray *argTypes =
       [IOSObjectArray arrayWithObjects:
           (id[]){ [IOSDoubleArray iosClass], JavaLangDouble_get_TYPE_() }
                                  count:2
-                                  type:[IOSClass getClass]];
+                                  type:IOSClass_class_()];
   id method = [arraysClass getMethod:@"binarySearch" parameterTypes:argTypes];
   XCTAssertNotNil(method, @"Arrays.binarySearch(double[], double) not found");
 }

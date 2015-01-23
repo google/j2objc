@@ -608,7 +608,7 @@ public final class Posix implements Os {
 
     // Prepare output array.
     IOSObjectArray *result =
-        [IOSObjectArray arrayWithLength:addressCount type:[JavaNetInetAddress getClass]];
+        [IOSObjectArray arrayWithLength:addressCount type:JavaNetInetAddress_class_()];
 
     // Examine returned addresses one by one, save them in the output array.
     int index = 0;
@@ -865,7 +865,7 @@ public final class Posix implements Os {
   public native FileDescriptor[] pipe() throws ErrnoException /*-[
     int fds[2];
     LibcoreIoPosix_throwIfMinusOneWithNSString_withInt_(@"pipe", TEMP_FAILURE_RETRY(pipe(&fds[0])));
-    IOSObjectArray *result = [IOSObjectArray arrayWithLength:2 type:[JavaIoFileDescriptor getClass]];
+    IOSObjectArray *result = [IOSObjectArray arrayWithLength:2 type:JavaIoFileDescriptor_class_()];
     for (int i = 0; i < 2; ++i) {
       JavaIoFileDescriptor *fd = AUTORELEASE([[JavaIoFileDescriptor alloc] init]);
       [fd setInt$WithInt:fds[i]];

@@ -155,7 +155,7 @@ static jint countArgs(char *s) {
 
 - (IOSObjectArray *)allFields {
   IOSObjectArray *result =
-      [IOSObjectArray arrayWithLength:data_->fieldCount type:[JavaFieldMetadata getClass]];
+      [IOSObjectArray arrayWithLength:data_->fieldCount type:NSObject_class_()];
   J2ObjcFieldInfo *fields = (J2ObjcFieldInfo *) data_->fields;
   for (int i = 0; i < data_->fieldCount; i++) {
     [result replaceObjectAtIndex:i
@@ -166,7 +166,7 @@ static jint countArgs(char *s) {
 
 - (IOSObjectArray *)allMethods {
   IOSObjectArray *result =
-      [IOSObjectArray arrayWithLength:data_->methodCount type:[JavaMethodMetadata getClass]];
+      [IOSObjectArray arrayWithLength:data_->methodCount type:NSObject_class_()];
   J2ObjcMethodInfo *methods = (J2ObjcMethodInfo *) data_->methods;
   for (int i = 0; i < data_->methodCount; i++) {
     [result replaceObjectAtIndex:i
@@ -275,7 +275,7 @@ static jint countArgs(char *s) {
   NSArray *exceptionsArray = [exceptionsStr componentsSeparatedByString:@";"];
   // The last string is empty, due to the trailing semi-colon of the last exception.
   NSUInteger n = [exceptionsArray count] - 1;
-  IOSObjectArray *result = [IOSObjectArray arrayWithLength:(jint)n type:[IOSClass getClass]];
+  IOSObjectArray *result = [IOSObjectArray arrayWithLength:(jint)n type:IOSClass_class_()];
   jint count = 0;
   for (NSUInteger i = 0; i < n; i++) {
     // Strip off leading 'L'.

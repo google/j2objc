@@ -116,7 +116,7 @@ void FillInStackTraceInternal(JavaLangThrowable *self) {
           [frames removeLastObject];
         }
         stackTrace =  RETAIN_([IOSObjectArray arrayWithNSArray:frames
-                                                          type:[JavaLangStackTraceElement getClass]]);
+                                                          type:JavaLangStackTraceElement_class_()]);
         free(rawCallStack);
         rawCallStack = NULL;
       }

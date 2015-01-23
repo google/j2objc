@@ -102,14 +102,14 @@ static void CollectMethodsOrConstructors(IOSMappedClass *self,
   NSMutableDictionary *methodMap = [NSMutableDictionary dictionary];
   CollectMethodsOrConstructors(self, methodMap, NO, YES);
   return [IOSObjectArray arrayWithNSArray:[methodMap allValues]
-                                     type:[JavaLangReflectMethod getClass]];
+                                     type:JavaLangReflectMethod_class_()];
 }
 
 - (IOSObjectArray *)getConstructors {
   NSMutableDictionary *methodMap = [NSMutableDictionary dictionary];
   CollectMethodsOrConstructors(self, methodMap, YES, YES);
   return [IOSObjectArray arrayWithNSArray:[methodMap allValues]
-                                     type:[JavaLangReflectMethod getClass]];
+                                     type:JavaLangReflectMethod_class_()];
 }
 
 - (BOOL)isEnum {

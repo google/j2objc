@@ -168,7 +168,7 @@ class IOSCharset extends Charset {
   static JavaNioCharsetIOSCharset *addEncoding(CharsetInfo info) {
     IOSObjectArray *aliases = [IOSObjectArray arrayWithObjects:info.aliases
                                                          count:info.aliasCount
-                                                          type:[NSString getClass]];
+                                                          type:NSString_class_()];
     JavaNioCharsetIOSCharset *cs = [[[JavaNioCharsetIOSCharset alloc]
                                      initWithLong:info.encoding
                                      withNSString:info.name

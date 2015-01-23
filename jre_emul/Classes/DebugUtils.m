@@ -42,14 +42,14 @@ static void LogStack(NSUInteger nFrames) {
   }
 }
 
-+(void)logStack:(NSUInteger)nFrames {
-  @synchronized ([DebugUtils getClass]) {
++ (void)logStack:(NSUInteger)nFrames {
+  @synchronized (self) {
     LogStack(nFrames);
   }
 }
 
-+(void)logStack:(NSUInteger)nFrames withMessage:(NSString *)msg {
-  @synchronized ([DebugUtils getClass]) {
++ (void)logStack:(NSUInteger)nFrames withMessage:(NSString *)msg {
+  @synchronized (self) {
     NSLog(@"%@", msg);
     LogStack(nFrames);
   }
