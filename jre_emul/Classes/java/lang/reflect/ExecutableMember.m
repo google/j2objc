@@ -167,7 +167,7 @@ static IOSClass *ResolveParameterType(const char *objcType, NSString *paramKeywo
 - (IOSObjectArray *)getExceptionTypes {
   IOSObjectArray *result = [metadata_ exceptionTypes];
   if (!result) {
-    result = [IOSObjectArray arrayWithLength:0 type:[IOSClass getClass]];
+    result = [IOSObjectArray arrayWithLength:0 type:IOSClass_class_()];
   }
   return result;
 }

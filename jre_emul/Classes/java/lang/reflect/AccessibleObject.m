@@ -79,7 +79,7 @@
 
 - (IOSObjectArray *)getAnnotationsFromAccessor:(JavaLangReflectMethod *)method {
   if (method) {
-    IOSObjectArray *noArgs = [IOSObjectArray arrayWithLength:0 type:[NSObject getClass]];
+    IOSObjectArray *noArgs = [IOSObjectArray arrayWithLength:0 type:NSObject_class_()];
     return (IOSObjectArray *) [method invokeWithId:nil withNSObjectArray:noArgs];
   } else {
     return [IOSObjectArray arrayWithLength:0 type:JavaLangAnnotationAnnotation_class_()];

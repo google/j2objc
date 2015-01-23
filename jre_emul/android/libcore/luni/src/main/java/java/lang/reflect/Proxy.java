@@ -336,8 +336,7 @@ public class Proxy implements Serializable {
               [iosProtocol findMethodWithTranslatedName:NSStringFromSelector(selector)];
           IOSObjectArray *paramTypes = [method getParameterTypes];
           jint numArgs = paramTypes->size_;
-          IOSObjectArray *args = [IOSObjectArray arrayWithLength:numArgs
-                                                            type:[NSObject getClass]];
+          IOSObjectArray *args = [IOSObjectArray arrayWithLength:numArgs type:NSObject_class_()];
 
           for (jint i = 0; i < numArgs; i++) {
             J2ObjcRawValue arg;

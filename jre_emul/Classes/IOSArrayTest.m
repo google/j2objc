@@ -246,9 +246,9 @@
                 @"different primitive array types equal");
 
   // Verify object array types are equal only if their element type is equal.
-  IOSObjectArray *dateArray1 = [IOSObjectArray arrayWithLength:0 type:[JavaUtilDate getClass]];
-  IOSObjectArray *dateArray2 = [IOSObjectArray arrayWithLength:10 type:[JavaUtilDate getClass]];
-  IOSObjectArray *calArray = [IOSObjectArray arrayWithLength:0 type:[JavaUtilCalendar getClass]];
+  IOSObjectArray *dateArray1 = [IOSObjectArray arrayWithLength:0 type:JavaUtilDate_class_()];
+  IOSObjectArray *dateArray2 = [IOSObjectArray arrayWithLength:10 type:JavaUtilDate_class_()];
+  IOSObjectArray *calArray = [IOSObjectArray arrayWithLength:0 type:JavaUtilCalendar_class_()];
   XCTAssertTrue([[dateArray1 getClass] isEqual:[dateArray2 getClass]],
                @"Date array types not equal");
   XCTAssertFalse([[dateArray1 getClass] isEqual:[calArray getClass]],
