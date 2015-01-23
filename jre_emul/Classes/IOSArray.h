@@ -83,7 +83,7 @@ CF_EXTERN_C_END
 // J2OBJC_DISABLE_ARRAY_CHECKS macro to improve performance.
 __attribute__((always_inline)) inline void IOSArray_checkIndex(jint size, jint index) {
 #if !defined(J2OBJC_DISABLE_ARRAY_BOUND_CHECKS)
-  if (index < 0 || index >= size) {
+  if (__builtin_expect(index < 0 || index >= size, 0)) {
     IOSArray_throwOutOfBoundsWithMsg(size, index);
   }
 #endif
@@ -92,7 +92,7 @@ __attribute__((always_inline)) inline void IOSArray_checkIndex(jint size, jint i
 __attribute__((always_inline)) inline void IOSArray_checkRange(
     jint size, jint offset, jint length) {
 #if !defined(J2OBJC_DISABLE_ARRAY_BOUND_CHECKS)
-  if (length < 0 || offset < 0 || offset + length > size) {
+  if (__builtin_expect(length < 0 || offset < 0 || offset + length > size, 0)) {
     IOSArray_throwOutOfBounds();
   }
 #endif
