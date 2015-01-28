@@ -320,6 +320,8 @@ public class IosHttpURLConnection extends HttpURLConnection {
     }
     [self connect];
 
+    @autoreleasepool {
+
     NSMutableURLRequest *request =
         [NSMutableURLRequest requestWithURL:[NSURL URLWithString:[self->url_ toExternalForm]]];
     request.HTTPShouldHandleCookies = NO;
@@ -360,16 +362,21 @@ public class IosHttpURLConnection extends HttpURLConnection {
     NSURLSession *session = [NSURLSession sessionWithConfiguration:sessionConfiguration delegate:(id<NSURLSessionDelegate>)self delegateQueue:nil];
     NSURLSessionTask *task = [session dataTaskWithRequest:request
                               completionHandler:^(NSData *dataCH, NSURLResponse *responseCH, NSError *errorCH) {
-      error = errorCH;
-      urlResponse = responseCH;
-      if(dataCH)
-        responseData = [dataCH copy];
+      error = RETAIN_(errorCH);
+      urlResponse = RETAIN_(responseCH);
+      responseData = RETAIN_(dataCH);
       dispatch_semaphore_signal(semaphore);
     }];
     [task resume];
 
     // Wait for the request to finish
     dispatch_semaphore_wait(semaphore, DISPATCH_TIME_FOREVER);
+    dispatch_release(semaphore);
+    [session finishTasksAndInvalidate];
+
+    AUTORELEASE(error);
+    AUTORELEASE(urlResponse);
+    AUTORELEASE(responseData);
 
     if (urlResponse && ![urlResponse isKindOfClass:[NSHTTPURLResponse class]]) {
         @throw AUTORELEASE(([[JavaLangAssertionError alloc] initWithNSString:[NSString stringWithFormat:@"Unknown class %@", NSStringFromClass([urlResponse class])]]));
@@ -377,16 +384,15 @@ public class IosHttpURLConnection extends HttpURLConnection {
     NSHTTPURLResponse *response = (NSHTTPURLResponse*) urlResponse;
 
     self->responseCode_ = (int) (response ? [response statusCode] : [error code]);
-    self->responseMessage_ = ComGoogleJ2objcNetIosHttpURLConnection_getResponseStatusTextWithInt_(self->responseCode_);
+    JavaNetHttpURLConnection_set_responseMessage_(self, ComGoogleJ2objcNetIosHttpURLConnection_getResponseStatusTextWithInt_(self->responseCode_));
     self->contentLength_ = responseData ? (int) ([responseData length]) : 0;
 
     if (responseData) {
+      NSDataInputStream *inputStream = AUTORELEASE([[NSDataInputStream alloc] initWithData:responseData]);
       if (error || [response statusCode] >= JavaNetHttpURLConnection_HTTP_BAD_REQUEST) {
-        ComGoogleJ2objcNetIosHttpURLConnection_set_errorDataStream_(self,
-            [[NSDataInputStream alloc] initWithData:responseData]);
+        ComGoogleJ2objcNetIosHttpURLConnection_set_errorDataStream_(self, inputStream);
       } else {
-        ComGoogleJ2objcNetIosHttpURLConnection_set_responseDataStream_(self,
-            [[NSDataInputStream alloc] initWithData:responseData]);
+        ComGoogleJ2objcNetIosHttpURLConnection_set_responseDataStream_(self, inputStream);
       }
     }
 
@@ -420,7 +426,7 @@ public class IosHttpURLConnection extends HttpURLConnection {
     [self->headers_ clear];
 
     // Since the original request might have been redirected, we might need to update the url to the redirected url
-    self->url_ = [[JavaNetURL alloc] initWithNSString:response.URL.absoluteString];
+    JavaNetURLConnection_set_url_(self, AUTORELEASE([[JavaNetURL alloc] initWithNSString:response.URL.absoluteString]));
 
     // The HttpURLConnection headerFields map uses a null key for Status-Line.
     NSString *statusLine =
@@ -431,6 +437,7 @@ public class IosHttpURLConnection extends HttpURLConnection {
     [response.allHeaderFields enumerateKeysAndObjectsUsingBlock:^(id key, id value, BOOL *stop) {
       [self addHeaderWithNSString:key withNSString:value];
     }];
+  }
   ]-*/;
 
   /*-[- (void)URLSession:(NSURLSession *)session
@@ -438,7 +445,7 @@ public class IosHttpURLConnection extends HttpURLConnection {
               willPerformHTTPRedirection:(NSHTTPURLResponse *)response
               newRequest:(NSURLRequest *)request
               completionHandler:(void (^)(NSURLRequest *))completionHandler {
-    if (self->instanceFollowRedirects_) {
+    if (self->instanceFollowRedirects_ && [response.URL.scheme isEqualToString:request.URL.scheme]) {
       completionHandler(request);
     } else {
       completionHandler(nil);
