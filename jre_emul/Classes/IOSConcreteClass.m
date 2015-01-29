@@ -37,7 +37,7 @@
 
 - (instancetype)initWithClass:(Class)cls {
   if ((self = [super init])) {
-    class_ = RETAIN_(cls);
+    class_ = cls;
   }
   return self;
 }
