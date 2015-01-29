@@ -1383,6 +1383,16 @@ public final class Posix implements Os {
     }
   }
 
+  @Override
+  public native int getpid() /*-[
+    return getpid();
+  ]-*/;
+
+  @Override
+  public native int getppid() /*-[
+    return getppid();
+  ]-*/;
+
 // Uncomment and implement as Os interface grows.
 //  public native String[] environ();
 
@@ -1391,8 +1401,6 @@ public final class Posix implements Os {
 //  public native int geteuid();
 //  public native int getgid();
 //  public native String getenv(String name);
-//  public native int getpid();
-//  public native int getppid();
 //  public native StructPasswd getpwnam(String name) throws ErrnoException;
 //  public native StructPasswd getpwuid(int uid) throws ErrnoException;
 //  public native int getuid();
