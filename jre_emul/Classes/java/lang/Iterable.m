@@ -47,7 +47,8 @@ NSUInteger JreDefaultFastEnumeration(
   SEL nextSel = @selector(next);
   __unsafe_unretained id iter = (ARCBRIDGE id) (void *) state->extra[0];
   if (!iter) {
-    state->mutationsPtr = (unsigned long *) (ARCBRIDGE void *) obj;
+    static unsigned long no_mutation = 1;
+    state->mutationsPtr = &no_mutation;
     // The for/in loop could break early so we have no guarantee of being able
     // to release the iterator. As long as the current autorelease pool is not
     // cleared within the loop, this should be fine.
