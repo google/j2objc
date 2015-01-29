@@ -80,7 +80,7 @@ public class ImplementationImportCollector extends TreeVisitor {
   private Set<Import> declaredTypes = Sets.newHashSet();
 
   public void collect(CompilationUnit unit) {
-    mainTypeName = NameTable.getMainTypeFullName(unit);
+    mainTypeName = unit.getMainTypeName();
     run(unit);
     for (Import imp : declaredTypes) {
       imports.remove(imp);
@@ -108,9 +108,8 @@ public class ImplementationImportCollector extends TreeVisitor {
   // Keep track of any declared types to avoid invalid imports.  The
   // exception is the main type, as it's needed to import the matching
   // header file.
-  private void addDeclaredType(ITypeBinding type, boolean isEnum) {
-    if (type != null
-        && !NameTable.getFullName(type).equals(mainTypeName + (isEnum ? "Enum" : ""))) {
+  private void addDeclaredType(ITypeBinding type) {
+    if (type != null && !type.getName().equals(mainTypeName)) {
       Import.addImports(type, declaredTypes);
     }
   }
@@ -119,7 +118,7 @@ public class ImplementationImportCollector extends TreeVisitor {
   public boolean visit(AnnotationTypeDeclaration node) {
     ITypeBinding type = node.getTypeBinding();
     addImports(type);
-    addDeclaredType(type, false);
+    addDeclaredType(type);
     addImports(Types.resolveIOSType("IOSClass"));
     return true;
   }
@@ -185,7 +184,7 @@ public class ImplementationImportCollector extends TreeVisitor {
   public boolean visit(EnumDeclaration node) {
     ITypeBinding type = node.getTypeBinding();
     addImports(type);
-    addDeclaredType(type, true);
+    addDeclaredType(type);
     addImports(Types.resolveIOSType("IOSClass"));
     addImports(GeneratedTypeBinding.newTypeBinding("java.lang.IllegalArgumentException",
         Types.resolveJavaType("java.lang.RuntimeException"), false));
@@ -346,7 +345,7 @@ public class ImplementationImportCollector extends TreeVisitor {
   public boolean visit(TypeDeclaration node) {
     ITypeBinding type = node.getTypeBinding();
     addImports(type);
-    addDeclaredType(type, false);
+    addDeclaredType(type);
     return true;
   }
 

@@ -186,4 +186,10 @@ public class ImplementationImportCollectorTest extends GenerationTest {
     assertTranslation(translation, "#include \"org/xml/sax/helpers/XMLReaderFactory.h\"");
   }
 
+  public void testAddsHeaderForRenamedMainType() throws IOException {
+    String translation = translateSourceFile(
+        "package foo; import com.google.j2objc.annotations.ObjectiveCName;"
+        + " @ObjectiveCName(\"Bar\") class Test {}", "foo/Test", "foo/Test.m");
+    assertTranslation(translation, "#include \"foo/Test.h\"");
+  }
 }
