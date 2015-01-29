@@ -1596,7 +1596,7 @@ public class StatementGeneratorTest extends GenerationTest {
         + "static class Inner extends Test { Runnable test() { return new Runnable() { "
         + "public void run() { Inner.super.foo(1); } }; } } }", "Test", "Test.m");
     assertTranslation(translation,
-        "((jdouble (*)(id, SEL, ...))[Test instanceMethodForSelector:@selector(fooWithInt:)])"
+        "((jdouble (*)(id, SEL, jint))[Test instanceMethodForSelector:@selector(fooWithInt:)])"
         + "(this$0_, @selector(fooWithInt:), 1);");
   }
 
