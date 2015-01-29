@@ -21,6 +21,7 @@
 
 #import "IOSClass.h"
 
+#import "FastPointerLookup.h"
 #import "IOSArrayClass.h"
 #import "IOSConcreteClass.h"
 #import "IOSMappedClass.h"
@@ -896,62 +897,67 @@ IOSObjectArray *copyFieldsToObjectArray(NSArray *fields) {
   return self;
 }
 
-IOSClass *FetchClass(Class cls) {
-  static int key;
-  IOSClass *iosClass = objc_getAssociatedObject(cls, &key);
-  if (!iosClass) {
-    @synchronized (cls) {
-      iosClass = objc_getAssociatedObject(cls, &key);
-      if (!iosClass) {
-        if (cls == [NSObject class]) {
-          iosClass = AUTORELEASE([[IOSMappedClass alloc] initWithClass:[NSObject class]
-                                                               package:@"java.lang"
-                                                                  name:@"Object"]);
-        } else if (cls == [NSString class]) {
-          iosClass = AUTORELEASE([[IOSMappedClass alloc] initWithClass:[NSString class]
-                                                               package:@"java.lang"
-                                                                  name:@"String"]);
-        } else if ([cls isSubclassOfClass:[NSString class]]) {
-          // NSString is implemented by several subclasses.
-          iosClass = FetchClass([NSString class]);
-        } else {
-          iosClass = AUTORELEASE([[IOSConcreteClass alloc] initWithClass:cls]);
-        }
-        objc_setAssociatedObject(cls, &key, iosClass, OBJC_ASSOCIATION_RETAIN);
-      }
+static BOOL IsStringType(Class cls) {
+  // We can't trigger class initialization because that might recursively enter
+  // FetchClass and result in deadlock within the FastPointerLookup. Therefore,
+  // we can't use [cls isSubclassOfClass:[NSString class]].
+  Class stringCls = [NSString class];
+  while (cls) {
+    if (cls == stringCls) {
+      return YES;
     }
+    cls = class_getSuperclass(cls);
   }
-  return iosClass;
+  return NO;
 }
+
+static void *ClassLookup(void *clsPtr) {
+  Class cls = (Class)clsPtr;
+  if (cls == [NSObject class]) {
+    return [[IOSMappedClass alloc] initWithClass:[NSObject class]
+                                         package:@"java.lang"
+                                            name:@"Object"];
+  } else if (IsStringType(cls)) {
+    // NSString is implemented by several subclasses.
+    // Thread safety is guaranteed by the FastPointerLookup that calls this.
+    static IOSClass *stringClass;
+    if (!stringClass) {
+      stringClass = [[IOSMappedClass alloc] initWithClass:[NSString class]
+                                                  package:@"java.lang"
+                                                     name:@"String"];
+    }
+    return stringClass;
+  } else {
+    IOSClass *result = [[IOSConcreteClass alloc] initWithClass:cls];
+    return result;
+  }
+  return NULL;
+}
+
+static FastPointerLookup_t classLookup = FAST_POINTER_LOOKUP_INIT(&ClassLookup);
+
+IOSClass *FetchClass(Class cls) {
+  return FastPointerLookup(&classLookup, cls);
+}
+
+static void *ProtocolLookup(void *protocol) {
+  return [[IOSProtocolClass alloc] initWithProtocol:protocol];
+}
+
+static FastPointerLookup_t protocolLookup = FAST_POINTER_LOOKUP_INIT(&ProtocolLookup);
 
 IOSClass *FetchProtocol(Protocol *protocol) {
-  static int key;
-  IOSClass *iosClass = objc_getAssociatedObject(protocol, &key);
-  if (!iosClass) {
-    @synchronized (protocol) {
-      iosClass = objc_getAssociatedObject(protocol, &key);
-      if (!iosClass) {
-        iosClass = AUTORELEASE([[IOSProtocolClass alloc] initWithProtocol:protocol]);
-        objc_setAssociatedObject(protocol, &key, iosClass, OBJC_ASSOCIATION_RETAIN);
-      }
-    }
-  }
-  return iosClass;
+  return FastPointerLookup(&protocolLookup, protocol);
 }
 
+static void *ArrayLookup(void *componentType) {
+  return [[IOSArrayClass alloc] initWithComponentType:componentType];
+}
+
+static FastPointerLookup_t arrayLookup = FAST_POINTER_LOOKUP_INIT(&ArrayLookup);
+
 IOSClass *FetchArray(IOSClass *componentType) {
-  static int key;
-  IOSClass *iosClass = objc_getAssociatedObject(componentType, &key);
-  if (!iosClass) {
-    @synchronized (componentType) {
-      iosClass = objc_getAssociatedObject(componentType, &key);
-      if (!iosClass) {
-        iosClass = AUTORELEASE([[IOSArrayClass alloc] initWithComponentType:componentType]);
-        objc_setAssociatedObject(componentType, &key, iosClass, OBJC_ASSOCIATION_RETAIN);
-      }
-    }
-  }
-  return iosClass;
+  return FastPointerLookup(&arrayLookup, componentType);
 }
 
 + (void)initialize {

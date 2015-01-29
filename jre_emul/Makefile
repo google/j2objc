@@ -25,6 +25,7 @@ include environment.mk
 IOS_OBJS = \
 	cbigint.o \
 	DebugUtils.o \
+	FastPointerLookup.o \
 	IOSArray.o \
 	IOSArrayClass.o \
 	IOSClass.o \
