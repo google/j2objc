@@ -976,6 +976,13 @@ public class StatementGenerator extends TreeVisitor {
     return false;
   }
 
+  private static String signatureType(ITypeBinding type) {
+    if (type.isPrimitive()) {
+      return NameTable.primitiveTypeToObjC(type);
+    }
+    return "id";
+  }
+
   @Override
   public boolean visit(SuperMethodInvocation node) {
     IMethodBinding binding = node.getMethodBinding();
@@ -984,16 +991,13 @@ public class StatementGenerator extends TreeVisitor {
       String typeName = NameTable.getFullName(
           BindingUtil.toTypeBinding(qualifier.getBinding()).getSuperclass());
       String selectorName = NameTable.getMethodSelector(binding);
-      ITypeBinding returnType = binding.getReturnType();
-      String closeImpCast = "";
-      if (returnType.isPrimitive()) {
-        // We must cast the IMP to have the correct return type.
-        buffer.append(String.format("((%s (*)(id, SEL, ...))",
-            NameTable.primitiveTypeToObjC(returnType)));
-        closeImpCast = ")";
+      // We must cast the IMP to have the correct return type and parameters.
+      buffer.append(String.format("((%s (*)(id, SEL", signatureType(binding.getReturnType())));
+      for (ITypeBinding paramType : binding.getParameterTypes()) {
+        buffer.append(", ").append(signatureType(paramType));
       }
       buffer.append(String.format(
-          "[%s instanceMethodForSelector:@selector(%s)]%s(", typeName, selectorName, closeImpCast));
+          "))[%s instanceMethodForSelector:@selector(%s)])(", typeName, selectorName));
       qualifier.accept(this);
       buffer.append(String.format(", @selector(%s)", selectorName));
       for (Expression arg : node.getArguments()) {
