@@ -133,7 +133,7 @@ PRIMITIVE_ARRAY_IMPLEMENTATION(boolean, Boolean, jboolean)
 }
 
 + (IOSClass *)iosClass {
-  return IOSClass_arrayOf([IOSClass booleanClass]);
+  return [IOSClass arrayClassWithComponentType:[IOSClass booleanClass]];
 }
 
 @end
@@ -163,7 +163,7 @@ PRIMITIVE_ARRAY_IMPLEMENTATION(char, Char, jchar)
 }
 
 + (IOSClass *)iosClass {
-  return IOSClass_arrayOf([IOSClass charClass]);
+  return [IOSClass arrayClassWithComponentType:[IOSClass charClass]];
 }
 
 @end
@@ -198,7 +198,7 @@ PRIMITIVE_ARRAY_IMPLEMENTATION(byte, Byte, jbyte)
 }
 
 + (IOSClass *)iosClass {
-  return IOSClass_arrayOf([IOSClass byteClass]);
+  return [IOSClass arrayClassWithComponentType:[IOSClass byteClass]];
 }
 
 - (NSData *)toNSData {
@@ -223,7 +223,7 @@ PRIMITIVE_ARRAY_IMPLEMENTATION(short, Short, jshort)
 }
 
 + (IOSClass *)iosClass {
-  return IOSClass_arrayOf([IOSClass shortClass]);
+  return [IOSClass arrayClassWithComponentType:[IOSClass shortClass]];
 }
 
 @end
@@ -244,7 +244,7 @@ PRIMITIVE_ARRAY_IMPLEMENTATION(int, Int, jint)
 }
 
 + (IOSClass *)iosClass {
-  return IOSClass_arrayOf([IOSClass intClass]);
+  return [IOSClass arrayClassWithComponentType:[IOSClass intClass]];
 }
 
 @end
@@ -265,7 +265,7 @@ PRIMITIVE_ARRAY_IMPLEMENTATION(long, Long, jlong)
 }
 
 + (IOSClass *)iosClass {
-  return IOSClass_arrayOf([IOSClass longClass]);
+  return [IOSClass arrayClassWithComponentType:[IOSClass longClass]];
 }
 
 @end
@@ -286,7 +286,7 @@ PRIMITIVE_ARRAY_IMPLEMENTATION(float, Float, jfloat)
 }
 
 + (IOSClass *)iosClass {
-  return IOSClass_arrayOf([IOSClass floatClass]);
+  return [IOSClass arrayClassWithComponentType:[IOSClass floatClass]];
 }
 
 @end
@@ -307,7 +307,7 @@ PRIMITIVE_ARRAY_IMPLEMENTATION(double, Double, jdouble)
 }
 
 + (IOSClass *)iosClass {
-  return IOSClass_arrayOf([IOSClass doubleClass]);
+  return [IOSClass arrayClassWithComponentType:[IOSClass doubleClass]];
 }
 
 @end

@@ -78,6 +78,11 @@ static IOSClass *IOSClass_objectClass;
 
 static IOSObjectArray *IOSClass_emptyClassArray;
 
+// Function forwards.
+static IOSClass *FetchClass(Class cls);
+static IOSClass *FetchProtocol(Protocol *protocol);
+static IOSClass *FetchArray(IOSClass *componentType);
+
 #define PREFIX_MAPPING_RESOURCE @"prefixes.properties"
 
 // Package to prefix mappings, initialized in FindMappedClass().
@@ -91,23 +96,26 @@ static JavaUtilProperties *prefixMapping;
   return nil;
 }
 
-// TODO(kstanger): remove after clients updated.
 + (IOSClass *)classFromClass:(Class)cls {
-  return IOSClass_fromClass(cls);
+  return FetchClass(cls);
 }
+
 + (IOSClass *)classFromProtocol:(Protocol *)protocol {
-  return IOSClass_fromProtocol(protocol);
+  return FetchProtocol(protocol);
 }
+
+// TODO(tball): remove after clients updated.
 + (IOSClass *)classWithClass:(Class)cls {
-  return IOSClass_fromClass(cls);
+  return FetchClass(cls);
 }
 + (IOSClass *)classWithProtocol:(Protocol *)protocol {
-  return IOSClass_fromProtocol(protocol);
-}
-+ (IOSClass *)arrayClassWithComponentType:(IOSClass *)componentType {
-  return IOSClass_arrayOf(componentType);
+  return FetchProtocol(protocol);
 }
 // end to-be-removed methods.
+
++ (IOSClass *)arrayClassWithComponentType:(IOSClass *)componentType {
+  return FetchArray(componentType);
+}
 
 + (IOSClass *)byteClass {
   return IOSClass_byteClass;
@@ -392,11 +400,11 @@ static IOSClass *ClassForIosName(NSString *iosName) {
   }
   Protocol *protocol = NSProtocolFromString(iosName);
   if (protocol) {
-    return IOSClass_fromProtocol(protocol);
+    return FetchProtocol(protocol);
   }
   Class clazz = NSClassFromString(iosName);
   if (clazz) {
-    return IOSClass_fromClass(clazz);
+    return FetchClass(clazz);
   }
   return nil;
 }
@@ -484,7 +492,7 @@ static IOSClass *IOSClass_ArrayClassForName(NSString *name, NSUInteger index) {
       break;
   }
   if (componentType) {
-    return IOSClass_arrayOf(componentType);
+    return FetchArray(componentType);
   }
   return nil;
 }
@@ -603,7 +611,7 @@ IOSObjectArray *IOSClass_NewInterfacesFromProtocolList(Protocol **list, unsigned
   for (unsigned int i = 0; i < count; i++) {
     Protocol *protocol = list[i];
     if (protocol != @protocol(NSObject) && protocol != @protocol(JavaObject)) {
-      buffer[actualCount++] = IOSClass_fromProtocol(list[i]);
+      buffer[actualCount++] = FetchProtocol(list[i]);
     }
   }
   return [IOSObjectArray newArrayWithObjects:buffer
@@ -928,7 +936,7 @@ static void *ClassLookup(void *clsPtr) {
 
 static FastPointerLookup_t classLookup = FAST_POINTER_LOOKUP_INIT(&ClassLookup);
 
-IOSClass *IOSClass_fromClass(Class cls) {
+IOSClass *FetchClass(Class cls) {
   return FastPointerLookup(&classLookup, cls);
 }
 
@@ -938,7 +946,7 @@ static void *ProtocolLookup(void *protocol) {
 
 static FastPointerLookup_t protocolLookup = FAST_POINTER_LOOKUP_INIT(&ProtocolLookup);
 
-IOSClass *IOSClass_fromProtocol(Protocol *protocol) {
+IOSClass *FetchProtocol(Protocol *protocol) {
   return FastPointerLookup(&protocolLookup, protocol);
 }
 
@@ -948,7 +956,7 @@ static void *ArrayLookup(void *componentType) {
 
 static FastPointerLookup_t arrayLookup = FAST_POINTER_LOOKUP_INIT(&ArrayLookup);
 
-IOSClass *IOSClass_arrayOf(IOSClass *componentType) {
+IOSClass *FetchArray(IOSClass *componentType) {
   return FastPointerLookup(&arrayLookup, componentType);
 }
 
@@ -974,7 +982,7 @@ IOSClass *IOSClass_arrayOf(IOSClass *componentType) {
     IOSClass_booleanClass = [[IOSPrimitiveClass alloc] initWithName:@"boolean" type:@"Z"];
     IOSClass_voidClass = [[IOSPrimitiveClass alloc] initWithName:@"void" type:@"V"];
 
-    IOSClass_objectClass = IOSClass_fromClass([NSObject class]);
+    IOSClass_objectClass = FetchClass([NSObject class]);
 
     IOSClass_emptyClassArray = [IOSObjectArray newArrayWithLength:0 type:IOSClass_class_()];
 
