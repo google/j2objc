@@ -109,13 +109,13 @@ static IOSObjectArray *IOSObjectArray_CreateArrayWithObjects(
 }
 
 + (id)iosClassWithType:(IOSClass *)type {
-  return IOSClass_arrayOf(type);
+  return [IOSClass arrayClassWithComponentType:type];
 }
 
 + (id)iosClassWithDimensions:(NSUInteger)dimensions type:(IOSClass *)type {
-  IOSClass *result = IOSClass_arrayOf(type);
+  IOSClass *result = [IOSClass arrayClassWithComponentType:type];
   while (--dimensions > 0) {
-    result = IOSClass_arrayOf(result);
+    result = [IOSClass arrayClassWithComponentType:result];
   }
   return result;
 }

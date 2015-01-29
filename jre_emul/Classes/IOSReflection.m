@@ -34,7 +34,7 @@ id<JavaLangReflectType> JreTypeForString(const char *typeStr) {
   if (typeLen >= 2) {
     if (*typeStr == '[') {
       IOSClass *componentType = (IOSClass *) JreTypeForString(typeStr + 1);
-      return IOSClass_arrayOf(componentType);
+      return [IOSClass arrayClassWithComponentType:componentType];
     }
 
     // Extract type from string starting with a 'L' or 'T' and ending with ';'.
