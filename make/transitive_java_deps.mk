@@ -83,6 +83,11 @@ $(TRANSITIVE_JAVA_DEPS_JAR): \
 	@rm -rf $(TRANSITIVE_JAVA_DEPS_STAGE_DIR)
 	@mkdir $(TRANSITIVE_JAVA_DEPS_STAGE_DIR)
 	@$(TRANSITIVE_JAVA_DEPS_JAVAC_CMD)
+	@for file in `find $(TRANSITIVE_JAVA_DEPS_STAGE_DIR) -name *.java`; do \
+	  copy=`echo $$file | sed "s,$(TRANSITIVE_JAVA_DEPS_STAGE_DIR),$(GEN_JAVA_DIR),"`; \
+	  mkdir -p `dirname $$copy`; \
+	  diff $$file $$copy &> /dev/null || mv $$file $$copy; \
+	done
 	@jar cf $@ -C $(TRANSITIVE_JAVA_DEPS_STAGE_DIR) .
 
 $(TRANSITIVE_JAVA_DEPS_INCLUDE): $(TRANSITIVE_JAVA_DEPS_JAR)
