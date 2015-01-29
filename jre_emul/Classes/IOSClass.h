@@ -53,13 +53,13 @@
 @property (readonly) Protocol *objcProtocol;
 
 // IOSClass Getters.
-+ (IOSClass *)classFromClass:(Class)cls;
-+ (IOSClass *)classFromProtocol:(Protocol *)protocol;
-+ (IOSClass *)arrayClassWithComponentType:(IOSClass *)componentType;
 + (IOSClass *)classForIosName:(NSString *)iosName;
 + (IOSClass *)primitiveClassForChar:(unichar)c;
 
 // Obsolete IOSClass Getters (deprecate after updating dependent projects).
++ (IOSClass *)classFromClass:(Class)cls;
++ (IOSClass *)classFromProtocol:(Protocol *)protocol;
++ (IOSClass *)arrayClassWithComponentType:(IOSClass *)componentType;
 + (IOSClass *)classWithClass:(Class)cls;
 + (IOSClass *)classWithProtocol:(Protocol *)protocol;
 
@@ -195,8 +195,16 @@
 - (NSString *)objcName;
 - (NSString *)binaryName;
 
+@end
+
 CF_EXTERN_C_BEGIN
 
+// Lookup a IOSClass from its associated ObjC class, protocol or component type.
+IOSClass *IOSClass_fromClass(Class cls);
+IOSClass *IOSClass_fromProtocol(Protocol *protocol);
+IOSClass *IOSClass_arrayOf(IOSClass *componentType);
+
+// Internal functions
 NSString *IOSClass_GetTranslatedMethodName(
     IOSClass *cls, NSString *name, IOSObjectArray *paramTypes);
 
@@ -208,8 +216,6 @@ IOSClass *IOSClass_forNameWithNSString_withBoolean_withJavaLangClassLoader_(
 IOSObjectArray *IOSClass_NewInterfacesFromProtocolList(Protocol **list, unsigned int count);
 
 CF_EXTERN_C_END
-
-@end
 
 FOUNDATION_EXPORT BOOL IOSClass_initialized;
 J2OBJC_STATIC_INIT(IOSClass)
