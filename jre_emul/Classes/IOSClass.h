@@ -203,6 +203,18 @@ CF_EXTERN_C_BEGIN
 IOSClass *IOSClass_fromClass(Class cls);
 IOSClass *IOSClass_fromProtocol(Protocol *protocol);
 IOSClass *IOSClass_arrayOf(IOSClass *componentType);
+// Same as "arrayOf" but allows dimensions to be specified.
+IOSClass *IOSClass_arrayType(IOSClass *componentType, jint dimensions);
+
+// Primitive array type literals.
+#define IOSClass_byteArray(DIM) IOSClass_arrayType([IOSClass byteClass], DIM)
+#define IOSClass_charArray(DIM) IOSClass_arrayType([IOSClass charClass], DIM)
+#define IOSClass_doubleArray(DIM) IOSClass_arrayType([IOSClass doubleClass], DIM)
+#define IOSClass_floatArray(DIM) IOSClass_arrayType([IOSClass floatClass], DIM)
+#define IOSClass_intArray(DIM) IOSClass_arrayType([IOSClass intClass], DIM)
+#define IOSClass_longArray(DIM) IOSClass_arrayType([IOSClass longClass], DIM)
+#define IOSClass_shortArray(DIM) IOSClass_arrayType([IOSClass shortClass], DIM)
+#define IOSClass_booleanArray(DIM) IOSClass_arrayType([IOSClass booleanClass], DIM)
 
 // Internal functions
 NSString *IOSClass_GetTranslatedMethodName(

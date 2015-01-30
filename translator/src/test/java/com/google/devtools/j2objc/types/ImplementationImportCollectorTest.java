@@ -119,12 +119,12 @@ public class ImplementationImportCollectorTest extends GenerationTest {
     assertTranslation(translation, "#include \"IOSClass.h\"");
   }
 
-  // Verify that an object array type literal imports IOSObjectArray.
+  // Verify that an object array type literal imports IOSClass.
   public void testArrayTypeLiteralImport() throws IOException {
     String translation = translateSourceFile(
         "class Test { Class arrayType() { return Object[].class; }}",
         "Test", "Test.m");
-    assertTranslation(translation, "#include \"IOSObjectArray.h\"");
+    assertTranslation(translation, "#include \"IOSClass.h\"");
   }
 
   // Verify that a multi-dimensional array declaration imports IOSObjectArray.

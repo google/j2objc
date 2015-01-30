@@ -955,6 +955,14 @@ IOSClass *IOSClass_arrayOf(IOSClass *componentType) {
   return FastPointerLookup(&arrayLookup, componentType);
 }
 
+IOSClass *IOSClass_arrayType(IOSClass *componentType, jint dimensions) {
+  IOSClass *result = FastPointerLookup(&arrayLookup, componentType);
+  while (--dimensions > 0) {
+    result = FastPointerLookup(&arrayLookup, result);
+  }
+  return result;
+}
+
 + (void)initialize {
   if (self == [IOSClass class]) {
     // Explicitly mapped classes are defined in Types.initializeTypeMap().
