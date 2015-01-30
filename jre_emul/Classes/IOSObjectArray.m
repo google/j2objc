@@ -108,18 +108,6 @@ static IOSObjectArray *IOSObjectArray_CreateArrayWithObjects(
   return IOSArray_NewArrayWithDimensions(self, dimensionCount, dimensionLengths, type);
 }
 
-+ (id)iosClassWithType:(IOSClass *)type {
-  return IOSClass_arrayOf(type);
-}
-
-+ (id)iosClassWithDimensions:(NSUInteger)dimensions type:(IOSClass *)type {
-  IOSClass *result = IOSClass_arrayOf(type);
-  while (--dimensions > 0) {
-    result = IOSClass_arrayOf(result);
-  }
-  return result;
-}
-
 - (id)objectAtIndex:(NSUInteger)index {
   IOSArray_checkIndex(size_, (jint)index);
   return buffer_[index];
