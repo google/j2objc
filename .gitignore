@@ -1,6 +1,9 @@
 # Temp Files
 *~
 
+# Bundler
+Gemfile.lock
+
 # Build Output
 **/build_result/
 dist/
