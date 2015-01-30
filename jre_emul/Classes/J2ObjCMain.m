@@ -77,7 +77,7 @@ int main( int argc, const char *argv[] ) {
 
     // Find the main method.
     @try {
-      IOSClass *stringArrayClass = [IOSObjectArray iosClassWithType:NSString_class_()];
+      IOSClass *stringArrayClass = IOSClass_arrayOf(NSString_class_());
       IOSObjectArray *paramTypes =
           [IOSObjectArray arrayWithObjects:(id[]) { stringArrayClass }
                                      count:1

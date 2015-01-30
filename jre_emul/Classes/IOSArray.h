@@ -46,7 +46,6 @@
     __attribute__((objc_method_family(none), ns_returns_retained));
 
 + (id)iosClass;
-+ (id)iosClassWithDimensions:(NSUInteger)dimensions;
 
 // Returns the size of this array.
 - (jint)length;

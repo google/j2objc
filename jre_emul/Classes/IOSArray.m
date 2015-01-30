@@ -90,14 +90,6 @@ id IOSArray_NewArrayWithDimensions(
       @"abstract method not overridden"]);
 }
 
-+ (id)iosClassWithDimensions:(NSUInteger)dimensions {
-  IOSClass *result = [self iosClass];
-  while (--dimensions > 0) {
-    result = IOSClass_arrayOf(result);
-  }
-  return result;
-}
-
 - (jint)length {
   return size_;
 }

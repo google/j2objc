@@ -79,8 +79,17 @@
     IOSArray_checkIndex(size_, (jint)length - 1); \
     memcpy(buffer, buffer_, length * sizeof(C_TYPE)); \
   } \
+  \
   - (void *)buffer { \
     return buffer_; \
+  } \
+  \
+  - (IOSClass *)elementType { \
+    return [IOSClass L_NAME##Class]; \
+  } \
+  \
+  + (IOSClass *)iosClass { \
+    return IOSClass_arrayOf([IOSClass L_NAME##Class]); \
   }
 
 /*!
@@ -128,14 +137,6 @@ PRIMITIVE_ARRAY_IMPLEMENTATION(boolean, Boolean, jboolean)
   return [NSString stringWithFormat:@"%@", (buffer_[index] ? @"YES" : @"NO")];
 }
 
-- (IOSClass *)elementType {
-  return [IOSClass booleanClass];
-}
-
-+ (IOSClass *)iosClass {
-  return IOSClass_arrayOf([IOSClass booleanClass]);
-}
-
 @end
 
 
@@ -156,14 +157,6 @@ PRIMITIVE_ARRAY_IMPLEMENTATION(char, Char, jchar)
 
 - (NSString *)descriptionOfElementAtIndex:(jint)index {
   return [NSString stringWithFormat:@"%C", buffer_[index]];
-}
-
-- (IOSClass *)elementType {
-  return [IOSClass charClass];
-}
-
-+ (IOSClass *)iosClass {
-  return IOSClass_arrayOf([IOSClass charClass]);
 }
 
 @end
@@ -193,14 +186,6 @@ PRIMITIVE_ARRAY_IMPLEMENTATION(byte, Byte, jbyte)
   return [NSString stringWithFormat:@"0x%x", buffer_[index]];
 }
 
-- (IOSClass *)elementType {
-  return [IOSClass byteClass];
-}
-
-+ (IOSClass *)iosClass {
-  return IOSClass_arrayOf([IOSClass byteClass]);
-}
-
 - (NSData *)toNSData {
   return [NSData dataWithBytes:buffer_ length:size_];
 }
@@ -218,14 +203,6 @@ PRIMITIVE_ARRAY_IMPLEMENTATION(short, Short, jshort)
   return [NSString stringWithFormat:@"%hi", buffer_[index]];
 }
 
-- (IOSClass *)elementType {
-  return [IOSClass shortClass];
-}
-
-+ (IOSClass *)iosClass {
-  return IOSClass_arrayOf([IOSClass shortClass]);
-}
-
 @end
 
 
@@ -237,14 +214,6 @@ PRIMITIVE_ARRAY_IMPLEMENTATION(int, Int, jint)
 
 - (NSString *)descriptionOfElementAtIndex:(jint)index {
   return [NSString stringWithFormat:@"%d", buffer_[index]];
-}
-
-- (IOSClass *)elementType {
-  return [IOSClass intClass];
-}
-
-+ (IOSClass *)iosClass {
-  return IOSClass_arrayOf([IOSClass intClass]);
 }
 
 @end
@@ -260,14 +229,6 @@ PRIMITIVE_ARRAY_IMPLEMENTATION(long, Long, jlong)
   return [NSString stringWithFormat:@"%lld", buffer_[index]];
 }
 
-- (IOSClass *)elementType {
-  return [IOSClass longClass];
-}
-
-+ (IOSClass *)iosClass {
-  return IOSClass_arrayOf([IOSClass longClass]);
-}
-
 @end
 
 
@@ -281,14 +242,6 @@ PRIMITIVE_ARRAY_IMPLEMENTATION(float, Float, jfloat)
   return [NSString stringWithFormat:@"%g", buffer_[index]];
 }
 
-- (IOSClass *)elementType {
-  return [IOSClass floatClass];
-}
-
-+ (IOSClass *)iosClass {
-  return IOSClass_arrayOf([IOSClass floatClass]);
-}
-
 @end
 
 
@@ -300,14 +253,6 @@ PRIMITIVE_ARRAY_IMPLEMENTATION(double, Double, jdouble)
 
 - (NSString *)descriptionOfElementAtIndex:(jint)index {
   return [NSString stringWithFormat:@"%g", buffer_[index]];
-}
-
-- (IOSClass *)elementType {
-  return [IOSClass doubleClass];
-}
-
-+ (IOSClass *)iosClass {
-  return IOSClass_arrayOf([IOSClass doubleClass]);
 }
 
 @end
