@@ -34,8 +34,22 @@
   return self;
 }
 
-- (BOOL)isInstance:(id)object {
-  return [object conformsToProtocol:protocol_];
+static jboolean ConformsToProtocol(IOSClass *cls, IOSProtocolClass *protocol) {
+  if (!cls) {
+    return NO;
+  }
+  IOSObjectArray *interfaces = [cls getInterfacesInternal];
+  for (int i = 0; i < interfaces->size_; i++) {
+    IOSClass *interface = interfaces->buffer_[i];
+    if (interface == protocol || ConformsToProtocol(interface, protocol)) {
+      return YES;
+    }
+  }
+  return ConformsToProtocol([cls getSuperclass], protocol);
+}
+
+- (jboolean)isInstance:(id)object {
+  return ConformsToProtocol([object getClass], self);
 }
 
 - (NSString *)getName {
