@@ -165,7 +165,7 @@ public class RewriterTest extends GenerationTest {
     assertTranslation(translation,
         "[IOSObjectArray newArrayWithObjects:(id[]){"
         + " [IOSIntArray arrayWithInts:(jint[]){ 1, 2, 3 } count:3] } count:1"
-        + " type:[IOSIntArray iosClass]]");
+        + " type:IOSClass_intArray(1)]");
   }
 
   public void testArrayCreationInConstructorInvocation() throws IOException {

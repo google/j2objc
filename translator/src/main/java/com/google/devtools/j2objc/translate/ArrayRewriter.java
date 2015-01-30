@@ -83,14 +83,6 @@ public class ArrayRewriter extends TreeVisitor {
            " newArrayWithObjects:(id *)objects count:(jint)count type:(IOSClass *)type")
       .build();
 
-  private static final IOSMethod IOSCLASS_METHOD = IOSMethod.create("IOSArray iosClass");
-  private static final IOSMethod IOSCLASS_METHOD_DIM = IOSMethod.create(
-      "IOSArray iosClassWithDimensions:(NSUInteger)dimensions");
-  private static final IOSMethod IOSCLASS_METHOD_OBJ = IOSMethod.create(
-      "IOSObjectArray iosClassWithType:(IOSClass *)type");
-  private static final IOSMethod IOSCLASS_METHOD_OBJ_DIM = IOSMethod.create(
-      "IOSObjectArray iosClassWithDimensions:(NSUInteger)dimensions type:(IOSClass *)type");
-
   private static final IOSMethod ISINSTANCE_METHOD = IOSMethod.create(
       "IOSClass isInstance:(id)object");
 
@@ -377,39 +369,18 @@ public class ArrayRewriter extends TreeVisitor {
     return new TypeLiteral(type);
   }
 
-  private static MethodInvocation newTypeLiteralInvocation(ITypeBinding type) {
+  private static FunctionInvocation newTypeLiteralInvocation(ITypeBinding type) {
     assert type.isArray();
     ITypeBinding elementType = type.getElementType();
-    IOSTypeBinding iosArrayType = Types.resolveArrayType(elementType);
-    int dimensions = type.getDimensions();
-    IOSMethodBinding binding = IOSMethodBinding.newMethod(
-        getTypeLiteralMethod(elementType, dimensions), Modifier.PUBLIC | Modifier.STATIC,
-        Types.getIOSClass(), iosArrayType);
-    MethodInvocation invocation = new MethodInvocation(binding, new SimpleName(iosArrayType));
-    if (dimensions > 1) {
-      binding.addParameter(Types.resolveJavaType("int"));
-      invocation.getArguments().add(NumberLiteral.newIntLiteral(dimensions));
-    }
+    ITypeBinding iosClassType = Types.getIOSClass();
+    String funcName = elementType.isPrimitive()
+        ? String.format("IOSClass_%sArray", elementType.getName()) : "IOSClass_arrayType";
+    FunctionInvocation invocation = new FunctionInvocation(
+        funcName, iosClassType, iosClassType, iosClassType);
     if (!elementType.isPrimitive()) {
-      binding.addParameter(Types.getIOSClass());
-      invocation.getArguments().add(newTypeLiteral(elementType));
+      invocation.getArguments().add(new TypeLiteral(elementType));
     }
+    invocation.getArguments().add(NumberLiteral.newIntLiteral(type.getDimensions()));
     return invocation;
-  }
-
-  private static IOSMethod getTypeLiteralMethod(ITypeBinding elementType, int dimensions) {
-    if (elementType.isPrimitive()) {
-      if (dimensions > 1) {
-        return IOSCLASS_METHOD_DIM;
-      } else {
-        return IOSCLASS_METHOD;
-      }
-    } else {
-      if (dimensions > 1) {
-        return IOSCLASS_METHOD_OBJ_DIM;
-      } else {
-        return IOSCLASS_METHOD_OBJ;
-      }
-    }
   }
 }

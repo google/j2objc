@@ -64,7 +64,7 @@ public class VarargsRewriterTest extends GenerationTest {
         "Test", "Test.m");
     assertTranslation(translation, "JavaUtilArrays_asListWithNSObjectArray_("
         + "[IOSObjectArray arrayWithObjects:(id[]){ array } count:1 "
-        + "type:[IOSFloatArray iosClass]]);");
+        + "type:IOSClass_floatArray(1)]);");
   }
 
   public void testMultiDimPrimitiveArrayPassedToTypeVariableVarargs() throws IOException {
