@@ -96,7 +96,7 @@ static IOSClass *ResolveParameterType(const char *objcType, NSString *paramKeywo
         componentType = [IOSClass classForIosName:paramKeyword];
       }
       if (componentType) {
-        type = [IOSClass arrayClassWithComponentType:componentType];
+        type = IOSClass_arrayOf(componentType);
       }
     } else {
       type = [IOSClass classForIosName:paramKeyword];
