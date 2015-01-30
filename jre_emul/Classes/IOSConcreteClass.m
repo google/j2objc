@@ -54,7 +54,7 @@
 - (IOSClass *)getSuperclass {
   Class superclass = [class_ superclass];
   if (superclass != nil) {
-    return [IOSClass classFromClass:superclass];
+    return IOSClass_fromClass(superclass);
   }
   return nil;
 }
@@ -64,7 +64,7 @@
   if (!superclass) {
     return nil;
   }
-  IOSClass *rawType = [IOSClass classFromClass:superclass];
+  IOSClass *rawType = IOSClass_fromClass(superclass);
   IOSObjectArray *typeArgs = nil;
   JavaClassMetadata *metadata = [self getMetadata];
   if (metadata) {
