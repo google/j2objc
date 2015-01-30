@@ -77,14 +77,7 @@ static jboolean ConformsToProtocol(IOSClass *cls, IOSProtocolClass *protocol) {
 }
 
 - (BOOL)isAssignableFrom:(IOSClass *)cls {
-  Protocol *otherProtocol = cls.objcProtocol;
-  if (otherProtocol) {
-    return protocol_conformsToProtocol(otherProtocol, protocol_);
-  }
-  if ([cls isArray] && protocol_ == @protocol(JavaIoSerializable)) {
-    return YES;
-  }
-  return [cls.objcClass conformsToProtocol:protocol_];
+  return ConformsToProtocol(cls, self);
 }
 
 - (BOOL)isInterface {
