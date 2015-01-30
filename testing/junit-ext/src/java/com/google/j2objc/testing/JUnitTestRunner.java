@@ -219,7 +219,7 @@ public class JUnitTestRunner {
     for (int i = 0; i < classCount; i++) {
       Class cls = classes[i];
       if (IsNSObjectClass(cls)) {
-        IOSClass *javaClass = [IOSClass classFromClass:cls];
+        IOSClass *javaClass = IOSClass_fromClass(cls);
         if ([self isJUnitTestClassWithIOSClass:javaClass]) {
           [result addWithId:javaClass];
         }

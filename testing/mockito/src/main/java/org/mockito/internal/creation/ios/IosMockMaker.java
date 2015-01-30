@@ -142,7 +142,7 @@ public final class IosMockMaker implements MockMaker {
       class_addProtocol(proxyClass, intrface.objcProtocol);
     }
     objc_registerClassPair(proxyClass);
-    return [IOSClass classFromClass:proxyClass];
+    return IOSClass_fromClass(proxyClass);
   ]-*/;
 
   static class ClassProxy {
@@ -159,7 +159,7 @@ public final class IosMockMaker implements MockMaker {
     /*-[
     static IOSClass* getMethodDescription(Class cls, SEL aSelector,
         struct objc_method_description *md) {
-      IOSClass *mockClass = [IOSClass classFromClass:cls];
+      IOSClass *mockClass = IOSClass_fromClass(cls);
       IOSClass *mockedClass =
           [OrgMockitoInternalCreationIosIosMockMaker_proxyCache_ getWithId:mockClass];
 
@@ -202,7 +202,7 @@ public final class IosMockMaker implements MockMaker {
         if (methodDescription.name && sel_isEqual(aSelector, methodDescription.name)) {
           memcpy(md, &methodDescription, sizeof(struct objc_method_description));
           free(interfaces);
-          return [IOSClass classFromProtocol:interfaces[i]];
+          return IOSClass_fromProtocol(interfaces[i]);
         }
       }
       free(interfaces);
