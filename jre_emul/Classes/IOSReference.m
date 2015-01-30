@@ -18,6 +18,8 @@
 //
 
 #import "IOSReference.h"
+
+#import "IOSClass.h"
 #import "java/lang/ref/PhantomReference.h"
 #import "java/lang/ref/Reference.h"
 #import "java/lang/ref/SoftReference.h"
@@ -70,6 +72,7 @@ static void RemoveReferenceAssociation(id referent, JavaLangRefReference *refere
 static void RealReferentRelease(id referent);
 static void ReferentSubclassDealloc(id self, SEL _cmd);
 static void ReferentSubclassRelease(id self, SEL _cmd);
+static IOSClass *ReferentSubclassGetClass(id self, SEL _cmd);
 static void WhileLocked(void (^block)(void));
 
 // Global recursive mutux.
@@ -188,6 +191,9 @@ static Class CreateReferentSubclass(Class cls) {
   Method release = class_getInstanceMethod(cls, @selector(release));
   class_addMethod(subclass, @selector(release), (IMP) ReferentSubclassRelease,
                   method_getTypeEncoding(release));
+  Method getClass = class_getInstanceMethod(cls, @selector(getClass));
+  class_addMethod(subclass, @selector(getClass), (IMP) ReferentSubclassGetClass,
+                  method_getTypeEncoding(getClass));
   objc_registerClassPair(subclass);
   return subclass;
 }
@@ -341,6 +347,12 @@ static void ReferentSubclassRelease(id self, SEL _cmd) {
   if (retainCount == 1) {
     MaybeQueuePhantomReferences(self);
   }
+}
+
+// Override getClass in the subclass so that it returns the IOSClass for the
+// original class of the referent.
+static IOSClass *ReferentSubclassGetClass(id self, SEL _cmd) {
+  return IOSClass_fromClass(class_getSuperclass(object_getClass(self)));
 }
 
 @end
