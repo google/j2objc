@@ -642,26 +642,19 @@ public class StatementGenerator extends TreeVisitor {
 
   @Override
   public boolean visit(InstanceofExpression node) {
-    ITypeBinding leftBinding = node.getLeftOperand().getTypeBinding();
     ITypeBinding rightBinding = node.getRightOperand().getTypeBinding();
-
-    buffer.append('[');
-    if (leftBinding.isInterface()) {
-      // Obj-C complains when a id<Protocol> is tested for a different
-      // protocol, so cast it to a generic id.
-      buffer.append("(id) ");
-    }
-    node.getLeftOperand().accept(this);
     if (rightBinding.isInterface()) {
-      buffer.append(" conformsToProtocol: @protocol(");
-      node.getRightOperand().accept(this);
-      buffer.append(")");
+      // Our version of "isInstance" is faster than "conformsToProtocol".
+      buffer.append(String.format("[%s_class_() isInstance:", NameTable.getFullName(rightBinding)));
+      node.getLeftOperand().accept(this);
+      buffer.append(']');
     } else {
+      buffer.append('[');
+      node.getLeftOperand().accept(this);
       buffer.append(" isKindOfClass:[");
       node.getRightOperand().accept(this);
-      buffer.append(" class]");
+      buffer.append(" class]]");
     }
-    buffer.append(']');
     return false;
   }
 
