@@ -616,30 +616,6 @@ public class StatementGenerator extends TreeVisitor {
     return false;
   }
 
-  // Some native objective-c methods are declared to return NSUInteger.
-  private boolean returnValueNeedsIntCast(Expression arg) {
-    if (arg instanceof MethodInvocation) {
-      if (arg.getParent() instanceof ExpressionStatement) {
-        // Avoid "unused return value" warning.
-        return false;
-      }
-      MethodInvocation invocation = (MethodInvocation) arg;
-      IMethodBinding methodBinding = invocation.getMethodBinding();
-      String methodName = methodBinding.getName();
-      if (methodName.equals("hash")
-          && methodBinding.getReturnType().isEqualTo(Types.resolveJavaType("int"))) {
-        return true;
-      }
-      if (invocation.getExpression() != null) {
-        ITypeBinding callee = Types.mapType(invocation.getExpression().getTypeBinding());
-        if (callee.getName().equals("NSString") && methodName.equals("length")) {
-          return true;
-        }
-      }
-    }
-    return false;
-  }
-
   @Override
   public boolean visit(InstanceofExpression node) {
     ITypeBinding rightBinding = node.getRightOperand().getTypeBinding();
@@ -679,15 +655,7 @@ public class StatementGenerator extends TreeVisitor {
         && binding.getDeclaringClass().equals(Types.getIOSClass())) {
       printIsAssignableFromExpression(node);
     } else {
-      boolean castPrinted = false;
-      if (returnValueNeedsIntCast(node)) {
-        buffer.append("((jint) ");
-        castPrinted = true;
-      }
       printMethodInvocation(binding, methodName, receiver, node.getArguments());
-      if (castPrinted) {
-        buffer.append(')');
-      }
     }
     return false;
   }

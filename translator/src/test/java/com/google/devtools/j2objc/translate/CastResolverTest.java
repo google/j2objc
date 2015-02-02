@@ -15,8 +15,10 @@
 package com.google.devtools.j2objc.translate;
 
 import com.google.devtools.j2objc.GenerationTest;
+import com.google.devtools.j2objc.ast.Statement;
 
 import java.io.IOException;
+import java.util.List;
 
 /**
  * Unit tests for {@link CastResolver}.
@@ -30,6 +32,52 @@ public class CastResolverTest extends GenerationTest {
         "class Test { int foo; static class Other<T extends Test> {"
         + " int test(T t) { return t.foo + t.foo; } } }", "Test", "Test.m");
     assertTranslation(translation, "return ((Test *) nil_chk(t))->foo_ + t->foo_;");
+  }
+
+  public void testIntCastInStringConcatenation() throws IOException {
+    String translation = translateSourceFile(
+        "public class Test { void test() { "
+        + "  String a = \"abc\"; "
+        + "  String b = \"foo\" + a.hashCode() + \"bar\" + a.length() + \"baz\"; } }",
+        "Test", "Test.m");
+    assertTranslation(translation,
+        "JreStrcat(\"$I$I$\", @\"foo\", ((jint) [a hash]), @\"bar\", ((jint) [a length]),"
+          + " @\"baz\")");
+  }
+
+  public void testCastInConstructorChain() throws IOException {
+    String source = "int i = new Throwable().hashCode();";
+    List<Statement> stmts = translateStatements(source);
+    assertEquals(1, stmts.size());
+    String result = generateStatement(stmts.get(0));
+    assertEquals("jint i = ((jint) [((JavaLangThrowable *) "
+        + "[[[JavaLangThrowable alloc] init] autorelease]) hash]);", result);
+  }
+
+  // b/5872710: generic return type needs to be cast if chaining invocations.
+  public void testTypeVariableCast() throws IOException {
+    String translation = translateSourceFile(
+      "import java.util.ArrayList; public class Test {"
+      + "  int length; static ArrayList<String> strings = new ArrayList<String>();"
+      + "  public static void main(String[] args) { int n = strings.get(1).length(); }}",
+      "Test", "Test.m");
+    assertTranslation(translation, "((jint) [((NSString *) "
+      + "nil_chk([((JavaUtilArrayList *) nil_chk(Test_strings_)) getWithInt:1])) length]);");
+  }
+
+  // Verify that String.length() and Object.hashCode() return values are cast when used.
+  public void testStringLengthCompare() throws IOException {
+    String translation = translateSourceFile(
+        "public class Test { boolean test(String s) { return -2 < \"1\".length(); }"
+        + "  void test2(Object o) { o.hashCode(); }"
+        + "  int test3() { return super.hashCode(); } }",
+        "Test", "Test.m");
+    // Verify referenced return value is cast.
+    assertTranslation(translation, "return -2 < ((jint) [@\"1\" length]);");
+    // Verify unused return value isn't.
+    assertTranslation(translation, "[nil_chk(o) hash];");
+    // Verify that super call to hashCode() is cast.
+    assertTranslation(translation, "return ((jint) [super hash]);");
   }
 
   public void testDerivedTypeVariableInvocation() throws IOException {
