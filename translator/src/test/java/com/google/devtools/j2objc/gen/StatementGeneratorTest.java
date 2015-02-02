@@ -312,17 +312,6 @@ public class StatementGeneratorTest extends GenerationTest {
         "JreStrcat(\"$$$I$\", @\"foo\", [self getStr], @\"bar\", [self getInt], @\"baz\")");
   }
 
-  public void testIntCastInStringConcatenation() throws IOException {
-    String translation = translateSourceFile(
-        "public class Test { void test() { "
-        + "  String a = \"abc\"; "
-        + "  String b = \"foo\" + a.hashCode() + \"bar\" + a.length() + \"baz\"; } }",
-        "Test", "Test.m");
-    assertTranslation(translation,
-        "JreStrcat(\"$I$I$\", @\"foo\", ((jint) [a hash]), @\"bar\", ((jint) [a length]),"
-          + " @\"baz\")");
-  }
-
   public void testVarargsMethodInvocation() throws IOException {
     String translation = translateSourceFile("public class Example { "
         + "public void call() { foo(null); bar(\"\", null, null); }"
@@ -642,15 +631,6 @@ public class StatementGeneratorTest extends GenerationTest {
     assertEquals("IOSClass *enumClass = JavaLangEnum_class_();", result);
   }
 
-  public void testCastInConstructorChain() throws IOException {
-    String source = "int i = new Throwable().hashCode();";
-    List<Statement> stmts = translateStatements(source);
-    assertEquals(1, stmts.size());
-    String result = generateStatement(stmts.get(0));
-    assertEquals("jint i = ((jint) [((JavaLangThrowable *) "
-        + "[[[JavaLangThrowable alloc] init] autorelease]) hash]);", result);
-  }
-
   public void testInnerClassCreation() throws IOException {
     String translation = translateSourceFile(
         "public class A { int x; class Inner { int y; Inner(int i) { y = i + x; }}"
@@ -901,17 +881,6 @@ public class StatementGeneratorTest extends GenerationTest {
     translation = translateSourceFile("B", "B.m");
     assertTranslation(translation, "return [super init];");
     assertTranslation(translation, "[super init__WithInt:b];");
-  }
-
-  // b/5872710: generic return type needs to be cast if chaining invocations.
-  public void testTypeVariableCast() throws IOException {
-    String translation = translateSourceFile(
-      "import java.util.ArrayList; public class Test {"
-      + "  int length; static ArrayList<String> strings = new ArrayList<String>();"
-      + "  public static void main(String[] args) { int n = strings.get(1).length(); }}",
-      "Test", "Test.m");
-    assertTranslation(translation, "((jint) [((NSString *) "
-      + "nil_chk([((JavaUtilArrayList *) nil_chk(Test_strings_)) getWithInt:1])) length]);");
   }
 
   // b/5872757: verify multi-dimensional array has cast before each
@@ -1641,18 +1610,6 @@ public class StatementGeneratorTest extends GenerationTest {
     assertTranslation(translation,
         "S1_ = @\"?\" \"?=?\" \"?/?\" \"?'?\" \"?(?\" \"?)?\" \"?!?\" \"?<?\" \"?>?\" \"?-\";");
     assertTranslation(translation, "S2_ = @\"??@??$??%??&??*??A??z??1??.\";");
-  }
-
-  // Verify that String.length() and Object.hashCode() return values are cast when used.
-  public void testStringLengthCompare() throws IOException {
-    String translation = translateSourceFile(
-        "public class Test { boolean test(String s) { return -2 < \"1\".length(); }"
-        + "  void test2(Object o) { o.hashCode(); }}",
-        "Test", "Test.m");
-    // Verify referenced return value is cast.
-    assertTranslation(translation, "return -2 < ((jint) [@\"1\" length]);");
-    // Verify unused return value isn't.
-    assertTranslation(translation, "[nil_chk(o) hash];");
   }
 
   // Verify that casting from a floating point primitive to an integral primitive
