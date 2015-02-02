@@ -651,12 +651,7 @@ public class StatementGenerator extends TreeVisitor {
     // Object receiving the message, or null if it's a method in this class.
     Expression receiver = node.getExpression();
 
-    if (methodName.equals("isAssignableFrom")
-        && binding.getDeclaringClass().equals(Types.getIOSClass())) {
-      printIsAssignableFromExpression(node);
-    } else {
-      printMethodInvocation(binding, methodName, receiver, node.getArguments());
-    }
+    printMethodInvocation(binding, methodName, receiver, node.getArguments());
     return false;
   }
 
@@ -679,21 +674,6 @@ public class StatementGenerator extends TreeVisitor {
       buffer.append(methodName);
     }
     printArguments(binding, args);
-    buffer.append(']');
-  }
-
-  /**
-   * Class.isAssignableFrom() can test protocols as well as classes, so which
-   * case needs to be detected and generated separately.
-   */
-  private void printIsAssignableFromExpression(MethodInvocation node) {
-    assert !node.getArguments().isEmpty();
-    Expression firstExpression = node.getExpression();
-    Expression secondExpression = node.getArguments().get(0);
-    buffer.append('[');
-    firstExpression.accept(this);
-    buffer.append(" isAssignableFrom:");
-    secondExpression.accept(this);
     buffer.append(']');
   }
 
