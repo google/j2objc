@@ -784,11 +784,15 @@ public abstract class HttpURLConnection extends URLConnection {
      * only servers may not support this mode.
      *
      * <p>When HTTP chunked encoding is used, the stream is divided into
-     * chunks, each prefixed with a header containing the chunk's size. Setting
-     * a large chunk length requires a large internal buffer, potentially
-     * wasting memory. Setting a small chunk length increases the number of
+     * chunks, each prefixed with a header containing the chunk's size.
+     * A large chunk length requires a large internal buffer, potentially
+     * wasting memory. A small chunk length increases the number of
      * bytes that must be transmitted because of the header on every chunk.
-     * Most caller should use {@code 0} to get the system default.
+     *
+     * <p>Implementation details: In some releases the {@code chunkLength} is
+     * treated as a hint: chunks sent to the server may actually be larger or
+     * smaller. To force a chunk to be sent to the server call
+     * {@link java.io.OutputStream#flush()}.
      *
      * @see #setFixedLengthStreamingMode
      * @param chunkLength the length to use, or {@code 0} for the default chunk
