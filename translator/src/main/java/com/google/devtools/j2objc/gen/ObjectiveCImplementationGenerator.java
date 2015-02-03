@@ -588,8 +588,8 @@ public class ObjectiveCImplementationGenerator extends ObjectiveCSourceFileGener
           print("[IOSObjectArray arrayWithLength:0 type:JavaLangAnnotationAnnotation_class_()]");
         }
       }
-      printf(" } count:%d type:[IOSClass arrayClassWithComponentType:"
-          + "JavaLangAnnotationAnnotation_class_()]];\n}\n", params.size());
+      printf(" } count:%d type:IOSClass_arrayOf("
+          + "JavaLangAnnotationAnnotation_class_())];\n}\n", params.size());
     }
   }
 
