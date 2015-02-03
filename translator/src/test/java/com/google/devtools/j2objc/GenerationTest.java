@@ -44,6 +44,7 @@ import java.net.URL;
 import java.net.URLClassLoader;
 import java.net.URLDecoder;
 import java.nio.charset.Charset;
+import java.util.Collections;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -73,7 +74,6 @@ public abstract class GenerationTest extends TestCase {
       "-d", tempDir.getAbsolutePath(),
       "--hide-private-members" // Future default, run tests with it now.
     });
-    Options.getSourcePathEntries().add(tempDir.getCanonicalPath());
     parser = initializeParser(tempDir);
   }
 
@@ -96,6 +96,10 @@ public abstract class GenerationTest extends TestCase {
 
   protected void setDeadCodeMap(DeadCodeMap deadCodeMap) {
     this.deadCodeMap = deadCodeMap;
+  }
+
+  protected void addSourcesToSourcepaths() throws IOException {
+    Options.getSourcePathEntries().add(tempDir.getCanonicalPath());
   }
 
   /**
@@ -296,6 +300,12 @@ public abstract class GenerationTest extends TestCase {
       }
     });
     return result[0];
+  }
+
+  protected void loadPackageInfo(String relativePath) throws IOException {
+    PackageInfoPreProcessor packageInfoPreProcessor = new PackageInfoPreProcessor(parser);
+    packageInfoPreProcessor.processFiles(Collections.singletonList(
+        tempDir.getCanonicalPath() + File.separatorChar + relativePath));
   }
 
   /**

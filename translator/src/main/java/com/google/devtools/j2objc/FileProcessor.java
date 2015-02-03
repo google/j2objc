@@ -50,8 +50,8 @@ abstract class FileProcessor {
   private static final Logger logger = Logger.getLogger(FileProcessor.class.getName());
 
   private final JdtParser parser;
-  private final List<String> batchSources = Lists.newArrayList();
-  private final boolean doBatching = Options.batchTranslateMaximum() > 0;
+  protected final List<String> batchSources = Lists.newArrayList();
+  protected final boolean doBatching = Options.batchTranslateMaximum() > 0;
 
   public FileProcessor(JdtParser parser) {
     this.parser = Preconditions.checkNotNull(parser);
