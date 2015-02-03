@@ -587,8 +587,8 @@ public class Options {
     return packagePrefixes;
   }
 
-  public static void addPackagePrefix(String pkg, String prefix) {
-    packagePrefixes.put(pkg, prefix);
+  public static String addPackagePrefix(String pkg, String prefix) {
+    return packagePrefixes.put(pkg, prefix);
   }
 
   @VisibleForTesting

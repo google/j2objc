@@ -199,6 +199,7 @@ public class NameTableTest extends GenerationTest {
   }
 
   public void testRenamePackageAnnotation() throws IOException {
+    addSourcesToSourcepaths();
     addSourceFile("@com.google.j2objc.annotations.ObjectiveCName(\"FB\") "
         + "package foo.bar;", "foo/bar/package-info.java");
     addSourceFile("package foo.bar; public class Test {}", "foo/bar/Test.java");
@@ -214,6 +215,7 @@ public class NameTableTest extends GenerationTest {
   }
 
   public void testRenamePackageAnnotationEnum() throws IOException {
+    addSourcesToSourcepaths();
     addSourceFile("@com.google.j2objc.annotations.ObjectiveCName(\"FB\") "
         + "package foo.bar;", "foo/bar/package-info.java");
     addSourceFile("package foo.bar; public enum Test { FOO, BAR }", "foo/bar/Test.java");

@@ -694,6 +694,7 @@ public class ObjectiveCImplementationGeneratorTest extends GenerationTest {
   }
 
   public void testPackageInfoAnnotationAndDoc() throws IOException {
+    addSourcesToSourcepaths();
     Options.setDocCommentsEnabled(true);
     addSourceFile("package foo.annotations;\n"
         + "import java.lang.annotation.*;\n"
@@ -716,6 +717,7 @@ public class ObjectiveCImplementationGeneratorTest extends GenerationTest {
   }
 
   public void testPackageInfoAnnotationNoDoc() throws IOException {
+    addSourcesToSourcepaths();
     addSourceFile("package foo.annotations;\n"
         + "import java.lang.annotation.*;\n"
         + "@Retention(RetentionPolicy.RUNTIME)\n"
@@ -736,6 +738,7 @@ public class ObjectiveCImplementationGeneratorTest extends GenerationTest {
   }
 
   public void testPackageInfoDocNoAnnotation() throws IOException {
+    addSourcesToSourcepaths();
     Options.setDocCommentsEnabled(true);
     String translation = translateSourceFile(
         "/** A package doc-comment. */\n"
@@ -749,11 +752,29 @@ public class ObjectiveCImplementationGeneratorTest extends GenerationTest {
   }
 
   public void testPackageInfoPrefixAnnotation() throws IOException {
+    addSourcesToSourcepaths();
     addSourceFile(
         "@ObjectiveCName(\"FBM\")\n"
         + "package foo.bar.mumble;\n"
         + "import com.google.j2objc.annotations.ObjectiveCName;",
         "foo/bar/mumble/package-info.java");
+    String translation = translateSourceFile("package foo.bar.mumble;\n"
+            + "public class Test {}",
+        "foo.bar.mumble.Test", "foo/bar/mumble/Test.h");
+    assertTranslation(translation, "@interface FBMTest");
+    assertTranslation(translation, "typedef FBMTest FooBarMumbleTest;");
+    translation = getTranslatedFile("foo/bar/mumble/Test.m");
+    assertTranslation(translation, "@implementation FBMTest");
+    assertNotInTranslation(translation, "FooBarMumbleTest");
+  }
+
+  public void testPackageInfoPreprocessing() throws IOException {
+    addSourceFile(
+        "@ObjectiveCName(\"FBM\")\n"
+            + "package foo.bar.mumble;\n"
+            + "import com.google.j2objc.annotations.ObjectiveCName;",
+        "foo/bar/mumble/package-info.java");
+    loadPackageInfo("foo/bar/mumble/package-info.java");
     String translation = translateSourceFile("package foo.bar.mumble;\n"
         + "public class Test {}",
         "foo.bar.mumble.Test", "foo/bar/mumble/Test.h");

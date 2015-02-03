@@ -188,6 +188,9 @@ public class J2ObjC {
 
     JdtParser parser = createParser();
 
+    PackageInfoPreProcessor packageInfoPreProcessor = new PackageInfoPreProcessor(parser);
+    packageInfoPreProcessor.processFiles(Arrays.asList(files));
+
     if (Options.shouldPreProcess()) {
       HeaderMappingPreProcessor headerMappingPreProcessor = new HeaderMappingPreProcessor(parser);
       headerMappingPreProcessor.processFiles(Arrays.asList(files));
