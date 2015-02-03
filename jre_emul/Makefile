@@ -356,6 +356,10 @@ JAVA_SOURCES = \
 	java/net/ContentHandler.java \
 	java/net/ContentHandlerFactory.java \
 	java/net/CookieHandler.java \
+	java/net/CookieManager.java \
+	java/net/CookiePolicy.java \
+	java/net/CookieStore.java \
+	java/net/CookieStoreImpl.java \
 	java/net/DatagramPacket.java \
 	java/net/DatagramSocket.java \
 	java/net/DatagramSocketImpl.java \
@@ -374,6 +378,7 @@ JAVA_SOURCES = \
 	java/net/MalformedURLException.java \
 	java/net/MulticastSocket.java \
 	java/net/NetworkInterface.java \
+	java/net/NoRouteToHostException.java \
 	java/net/PasswordAuthentication.java \
 	java/net/PlainDatagramSocketImpl.java \
 	java/net/PlainServerSocketImpl.java \
