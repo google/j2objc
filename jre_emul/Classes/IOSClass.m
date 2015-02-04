@@ -91,24 +91,6 @@ static JavaUtilProperties *prefixMapping;
   return nil;
 }
 
-// TODO(kstanger): remove after clients updated.
-+ (IOSClass *)classFromClass:(Class)cls {
-  return IOSClass_fromClass(cls);
-}
-+ (IOSClass *)classFromProtocol:(Protocol *)protocol {
-  return IOSClass_fromProtocol(protocol);
-}
-+ (IOSClass *)classWithClass:(Class)cls {
-  return IOSClass_fromClass(cls);
-}
-+ (IOSClass *)classWithProtocol:(Protocol *)protocol {
-  return IOSClass_fromProtocol(protocol);
-}
-+ (IOSClass *)arrayClassWithComponentType:(IOSClass *)componentType {
-  return IOSClass_arrayOf(componentType);
-}
-// end to-be-removed methods.
-
 + (IOSClass *)byteClass {
   return IOSClass_byteClass;
 }
