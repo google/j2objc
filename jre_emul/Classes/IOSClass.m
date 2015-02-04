@@ -853,6 +853,10 @@ IOSObjectArray *copyFieldsToObjectArray(NSArray *fields) {
   return nil;
 }
 
+- (Class)objcArrayClass {
+  return [IOSObjectArray class];
+}
+
 - (JavaNetURL *)getResource:(NSString *)name {
   return [[self getClassLoader] getResourceWithNSString:name];
 }
