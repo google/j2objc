@@ -19,6 +19,7 @@
 //  Created by Tom Ball on 1/22/12.
 //
 
+#import "IOSPrimitiveArray.h"
 #import "IOSPrimitiveClass.h"
 #import "IOSObjectArray.h"
 #import "java/lang/AssertionError.h"
@@ -134,6 +135,20 @@ getConstructorWithClasses:(IOSClass *)firstClass, ... {
 
 - (NSString *)binaryName {
   return type_;
+}
+
+- (Class)objcArrayClass {
+  switch ([type_ characterAtIndex:0]) {
+    case 'B': return [IOSByteArray class];
+    case 'C': return [IOSCharArray class];
+    case 'D': return [IOSDoubleArray class];
+    case 'F': return [IOSFloatArray class];
+    case 'I': return [IOSIntArray class];
+    case 'J': return [IOSLongArray class];
+    case 'S': return [IOSShortArray class];
+    case 'Z': return [IOSBooleanArray class];
+  }
+  return nil;
 }
 
 - (id)__boxValue:(J2ObjcRawValue *)rawValue {

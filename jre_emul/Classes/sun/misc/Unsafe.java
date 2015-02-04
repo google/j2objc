@@ -20,6 +20,7 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 
 /*-[
+#include "java/lang/AssertionError.h"
 #include "java/lang/reflect/Array.h"
 #include "volatile.h"
 #include <libkern/OSAtomic.h>
@@ -76,6 +77,31 @@ public final class Unsafe {
      */
     private static native long objectFieldOffset0(Field field) /*-[
       return (long long) [field unsafeOffset];
+    ]-*/;
+
+    /**
+     * Gets the offset from the start of an array object's memory to
+     * the memory used to store its initial (zeroeth) element.
+     *
+     * @param clazz non-null; class in question; must be an array class
+     * @return the offset to the initial element
+     */
+    public int arrayBaseOffset(Class clazz) {
+        Class<?> component = clazz.getComponentType();
+        if (component == null) {
+            throw new IllegalArgumentException("Valid for array classes only: " + clazz);
+        }
+        return getArrayBaseOffsetForComponentType(component);
+    }
+
+    private static native int getArrayBaseOffsetForComponentType(Class component_class) /*-[
+      Class arrayCls = [component_class objcArrayClass];
+      Ivar ivar = class_getInstanceVariable(arrayCls, "buffer_");
+      if (!ivar) {
+        @throw AUTORELEASE([[JavaLangAssertionError alloc] initWithNSString:
+            @"buffer_ ivar not found."]);
+      }
+      return (jint)ivar_getOffset(ivar);
     ]-*/;
 
     /**
