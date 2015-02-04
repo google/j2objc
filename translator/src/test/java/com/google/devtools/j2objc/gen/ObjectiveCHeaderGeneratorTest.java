@@ -681,4 +681,15 @@ public class ObjectiveCHeaderGeneratorTest extends GenerationTest {
         "@param foo Unused.",
         "@return always false.");
   }
+
+  public void testCustomWeakAnnotations() throws IOException {
+    String translation = translateSourceFile(
+        "class Test { @interface Weak {} @interface WeakOuter {}"
+        + " void foo() {}"
+        + " @WeakOuter public class Inner { void bar() { foo(); } }"
+        + " @Weak public Object obj; }", "Test", "Test.h");
+    assertTranslation(translation, "__weak id obj_;");
+    translation = getTranslatedFile("Test.m");
+    assertTranslation(translation, "__weak Test *this$0_;");
+  }
 }

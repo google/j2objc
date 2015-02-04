@@ -16,8 +16,6 @@ package com.google.devtools.j2objc.util;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
-import com.google.j2objc.annotations.Weak;
-import com.google.j2objc.annotations.WeakOuter;
 
 import org.eclipse.jdt.core.dom.IAnnotationBinding;
 import org.eclipse.jdt.core.dom.IBinding;
@@ -269,6 +267,18 @@ public final class BindingUtil {
     return getAnnotation(binding, annotationClass) != null;
   }
 
+  /**
+   * Less strict version of the above where we don't care about the annotation's package.
+   */
+  public static boolean hasNamedAnnotation(IBinding binding, String annotationName) {
+    for (IAnnotationBinding annotation : binding.getAnnotations()) {
+      if (annotation.getName().equals(annotationName)) {
+        return true;
+      }
+    }
+    return false;
+  }
+
   public static IAnnotationBinding getAnnotation(IBinding binding, Class<?> annotationClass) {
     for (IAnnotationBinding annotation : binding.getAnnotations()) {
       if (typeEqualsClass(annotation.getAnnotationType(), annotationClass)) {
@@ -292,9 +302,9 @@ public final class BindingUtil {
   }
 
   public static boolean isWeakReference(IVariableBinding var) {
-    return hasAnnotation(var, Weak.class)
+    return hasNamedAnnotation(var, "Weak")
         || var.getName().startsWith("this$")
-        && hasAnnotation(var.getDeclaringClass(), WeakOuter.class);
+        && hasNamedAnnotation(var.getDeclaringClass(), "WeakOuter");
   }
 
   /**
