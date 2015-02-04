@@ -251,7 +251,7 @@ public class ReferenceGraph {
     }
     List<Edge> cycle = Lists.newArrayList();
     String curNode = root;
-    while (curNode != root || cycle.size() == 0) {
+    while (!curNode.equals(root) || cycle.size() == 0) {
       Edge nextEdge = backlinks.get(curNode);
       cycle.add(nextEdge);
       curNode = nextEdge.getOrigin().getKey();
