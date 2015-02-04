@@ -839,6 +839,10 @@ IOSObjectArray *copyFieldsToObjectArray(NSArray *fields) {
   return [IOSObjectArray class];
 }
 
+- (size_t)getSizeof {
+  return sizeof(id);
+}
+
 - (JavaNetURL *)getResource:(NSString *)name {
   return [[self getClassLoader] getResourceWithNSString:name];
 }

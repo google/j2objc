@@ -105,6 +105,24 @@ public final class Unsafe {
     ]-*/;
 
     /**
+     * Gets the size of each element of the given array class.
+     *
+     * @param clazz non-null; class in question; must be an array class
+     * @return &gt; 0; the size of each element of the array
+     */
+    public int arrayIndexScale(Class clazz) {
+      Class<?> component = clazz.getComponentType();
+      if (component == null) {
+          throw new IllegalArgumentException("Valid for array classes only: " + clazz);
+      }
+      return getArrayIndexScaleForComponentType(component);
+    }
+
+    private static native int getArrayIndexScaleForComponentType(Class component_class) /*-[
+      return (jint)[component_class getSizeof];
+    ]-*/;
+
+    /**
      * Performs a compare-and-set operation on an <code>int</code>
      * field within the given object.
      *
