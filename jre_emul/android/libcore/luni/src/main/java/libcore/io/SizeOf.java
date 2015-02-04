@@ -16,31 +16,13 @@
 
 package libcore.io;
 
-/*-[
-#import "java/lang/AssertionError.h"
-]-*/
-
 public final class SizeOf {
-    public static final int CHAR = sizeOf('C');
-    public static final int DOUBLE = sizeOf('D');
-    public static final int FLOAT = sizeOf('F');
-    public static final int INT = sizeOf('I');
-    public static final int LONG = sizeOf('J');
-    public static final int SHORT = sizeOf('S');
-
-    private static native int sizeOf(char type) /*-[
-      switch (type) {
-        case 'C': return sizeof(unichar);
-        case 'D': return sizeof(double);
-        case 'F': return sizeof(float);
-        case 'I': return sizeof(int);
-        case 'J': return sizeof(long long);
-        case 'S': return sizeof(short);
-        default:
-          @throw AUTORELEASE([[JavaLangAssertionError alloc] init]);
-          return -1;  // never returned
-      }
-    ]-*/;
+    public static final int CHAR = 2;
+    public static final int DOUBLE = 8;
+    public static final int FLOAT = 4;
+    public static final int INT = 4;
+    public static final int LONG = 8;
+    public static final int SHORT = 2;
 
     private SizeOf() {
     }
