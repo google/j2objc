@@ -151,6 +151,20 @@ getConstructorWithClasses:(IOSClass *)firstClass, ... {
   return nil;
 }
 
+- (size_t)getSizeof {
+  switch ([type_ characterAtIndex:0]) {
+    case 'B': return sizeof(jbyte);
+    case 'C': return sizeof(jchar);
+    case 'D': return sizeof(jdouble);
+    case 'F': return sizeof(jfloat);
+    case 'I': return sizeof(jint);
+    case 'J': return sizeof(jlong);
+    case 'S': return sizeof(jshort);
+    case 'Z': return sizeof(jboolean);
+  }
+  return sizeof(void);
+}
+
 - (id)__boxValue:(J2ObjcRawValue *)rawValue {
   switch ([type_ characterAtIndex:0]) {
     case 'B': return JavaLangByte_valueOfWithByte_(rawValue->asChar);

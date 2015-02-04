@@ -189,6 +189,7 @@
 - (NSString *)binaryName;
 // Get the IOSArray subclass that would be used to hold this type.
 - (Class)objcArrayClass;
+- (size_t)getSizeof;
 
 @end
 
