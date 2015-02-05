@@ -26,7 +26,7 @@ find new bugs to be fixed.
 ### What J2ObjC isn't ###
 J2ObjC does not provide any sort of platform-independent UI toolkit, nor are
 there any plans to do so in the future. We believe that iOS UI code needs to
-be written in Objective-C or Objective-C++ using Apple's iOS SDK (Android UIs
+be written in Objective-C, Objective-C++ or Swift using Apple's iOS SDK (Android UIs
 using Android's API, web app UIs using GWT, etc.).
 
 ## Requirements ##
