@@ -20,6 +20,7 @@ import com.google.common.io.Files;
 import com.google.devtools.j2objc.util.DeadCodeMap;
 import com.google.devtools.j2objc.util.ErrorUtil;
 import com.google.devtools.j2objc.util.JdtParser;
+import com.google.devtools.j2objc.util.PathClassLoader;
 import com.google.devtools.j2objc.util.ProGuardUsageParser;
 
 import java.io.File;
@@ -66,27 +67,16 @@ public class J2ObjC {
     return String.format(Options.getFileHeader(), sourceFileName);
   }
 
-  private static class JarFileLoader extends URLClassLoader {
-    public JarFileLoader() {
-      super(new URL[]{});
-    }
-
-    public void addJarFile(String path) throws MalformedURLException {
-      String urlPath = "jar:file://" + path + "!/";
-      addURL(new URL(urlPath));
-    }
-  }
-
   private static void initPlugins(String[] pluginPaths, String pluginOptionString)
       throws IOException {
     @SuppressWarnings("resource")
-    JarFileLoader classLoader = new JarFileLoader();
+    PathClassLoader classLoader = new PathClassLoader();
     for (String path : pluginPaths) {
       if (path.endsWith(".jar")) {
         JarInputStream jarStream = null;
         try {
           jarStream = new JarInputStream(new FileInputStream(path));
-          classLoader.addJarFile(new File(path).getAbsolutePath());
+          classLoader.addPath(path);
 
           JarEntry entry;
           while ((entry = jarStream.getNextJarEntry()) != null) {

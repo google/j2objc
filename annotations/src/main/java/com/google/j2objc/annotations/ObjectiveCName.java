@@ -23,10 +23,14 @@ import java.lang.annotation.Target;
  * Annotation that specifies what the Objective-C class, protocol, method,
  * constructor or package declaration should be when translated.
  *
+ * Though this interface is marked with {@link RetentionPolicy#RUNTIME},
+ * it will not be emitted in transpiled output from the J2ObjC transpiler.
+ * This is the only annotation ignored in this way.
+ *
  * @author Tom Ball
  */
 @Target({ ElementType.TYPE, ElementType.METHOD, ElementType.CONSTRUCTOR, ElementType.PACKAGE })
-@Retention(RetentionPolicy.CLASS)
+@Retention(RetentionPolicy.RUNTIME)
 public @interface ObjectiveCName {
 
   /**

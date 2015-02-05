@@ -40,6 +40,8 @@ import org.eclipse.jdt.core.dom.VariableDeclarationFragment;
 
 import java.io.File;
 import java.io.IOException;
+import java.lang.annotation.Annotation;
+import java.net.URL;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -54,6 +56,7 @@ public class NameTable {
 
   private static NameTable instance;
   private final Map<IBinding, String> renamings = Maps.newHashMap();
+  private final ClassLoader classLoader;
 
   public static final String INIT_NAME = "init";
   public static final String DEALLOC_METHOD = "dealloc";
@@ -248,15 +251,17 @@ public class NameTable {
    */
   private final Map<String, String> prefixMap;
 
-  private NameTable(Map<String, String> prefixMap) {
+  private NameTable(Map<String, String> prefixMap, ClassLoader classLoader) {
     this.prefixMap = prefixMap;
+    this.classLoader = classLoader;
   }
 
   /**
    * Initialize this service using the AST returned by the parser.
    */
   public static void initialize() {
-    instance = new NameTable(Options.getPackagePrefixes());
+    instance = new NameTable(
+        Options.getPackagePrefixes(), new PathClassLoader(Options.getClassPathEntries()));
   }
 
   public static void cleanup() {
@@ -674,6 +679,18 @@ public class NameTable {
       }
     } catch (IOException e) {
       // Continue, as there's no package-info to check.
+    }
+
+    try {
+      Class<?> clazz = instance.classLoader.loadClass(packageName + ".package-info");
+      ObjectiveCName objectiveCName = clazz.getAnnotation(ObjectiveCName.class);
+      if (objectiveCName != null) {
+        String prefix = objectiveCName.value();
+        instance.prefixMap.put(packageName, prefix);
+        return prefix;
+      }
+    } catch (ClassNotFoundException e) {
+      // Class does not exist -- ignore exception
     }
 
     StringBuilder sb = new StringBuilder();
