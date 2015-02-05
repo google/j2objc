@@ -20,8 +20,14 @@ import com.google.common.collect.Lists;
 import com.google.devtools.j2objc.GenerationTest;
 import com.google.devtools.j2objc.Options;
 import com.google.devtools.j2objc.Options.MemoryManagementOption;
+import com.google.devtools.j2objc.util.NameTable;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.tools.JavaCompiler;
+import javax.tools.ToolProvider;
 
 /**
  * Tests for {@link ObjectiveCImplementationGenerator}.
@@ -771,8 +777,8 @@ public class ObjectiveCImplementationGeneratorTest extends GenerationTest {
   public void testPackageInfoPreprocessing() throws IOException {
     addSourceFile(
         "@ObjectiveCName(\"FBM\")\n"
-            + "package foo.bar.mumble;\n"
-            + "import com.google.j2objc.annotations.ObjectiveCName;",
+        + "package foo.bar.mumble;\n"
+        + "import com.google.j2objc.annotations.ObjectiveCName;",
         "foo/bar/mumble/package-info.java");
     loadPackageInfo("foo/bar/mumble/package-info.java");
     String translation = translateSourceFile("package foo.bar.mumble;\n"
@@ -783,6 +789,33 @@ public class ObjectiveCImplementationGeneratorTest extends GenerationTest {
     translation = getTranslatedFile("foo/bar/mumble/Test.m");
     assertTranslation(translation, "@implementation FBMTest");
     assertNotInTranslation(translation, "FooBarMumbleTest");
+  }
+
+  public void testPackageInfoOnClasspath() throws IOException {
+    JavaCompiler compiler = ToolProvider.getSystemJavaCompiler();
+    addSourceFile(
+        "@ObjectiveCName(\"FBM\")\n"
+        + "package foo.bar.mumble;\n"
+        + "import com.google.j2objc.annotations.ObjectiveCName;",
+        "src/foo/bar/mumble/package-info.java");
+    compiler.run(null, null, System.err,
+        tempDir.getAbsolutePath() + "/src/foo/bar/mumble/package-info.java");
+    List<String> oldClassPathEntries = new ArrayList<String>(Options.getClassPathEntries());
+    Options.getClassPathEntries().add(tempDir.getAbsolutePath() + "/src/");
+    NameTable.initialize();
+    try {
+      String translation = translateSourceFile("package foo.bar.mumble;\n"
+          + "public class Test {}",
+          "foo.bar.mumble.Test", "foo/bar/mumble/Test.h");
+      assertTranslation(translation, "@interface FBMTest");
+      assertTranslation(translation, "typedef FBMTest FooBarMumbleTest;");
+      translation = getTranslatedFile("foo/bar/mumble/Test.m");
+      assertTranslation(translation, "@implementation FBMTest");
+      assertNotInTranslation(translation, "FooBarMumbleTest");
+    } finally {
+      Options.getClassPathEntries().clear();
+      Options.getClassPathEntries().addAll(oldClassPathEntries);
+    }
   }
 
   public void testInitializeNotInClassExtension() throws IOException {

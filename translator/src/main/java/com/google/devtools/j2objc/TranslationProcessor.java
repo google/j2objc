@@ -57,8 +57,8 @@ import com.google.devtools.j2objc.types.ImplementationImportCollector;
 import com.google.devtools.j2objc.types.Import;
 import com.google.devtools.j2objc.util.DeadCodeMap;
 import com.google.devtools.j2objc.util.ErrorUtil;
+import com.google.devtools.j2objc.util.PathClassLoader;
 import com.google.devtools.j2objc.util.JdtParser;
-import com.google.devtools.j2objc.util.NameTable;
 import com.google.devtools.j2objc.util.TimeTracker;
 
 import org.eclipse.jdt.core.dom.ITypeBinding;
@@ -69,9 +69,6 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintWriter;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.net.URLClassLoader;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Enumeration;
@@ -647,17 +644,8 @@ class TranslationProcessor extends FileProcessor {
    * in case any might have annotations that should be processed.
    */
   private boolean hasAnnotationProcessors() {
-    List<URL> urls = Lists.newArrayList();
-    for (String path: Options.getClassPathEntries()) {
-      try {
-        File f = new File(path);
-        urls.add(new URL("file://" + f.getAbsolutePath()));
-      } catch (MalformedURLException e) {
-        ErrorUtil.error(e.toString());
-      }
-    }
-    URLClassLoader classLoader = new URLClassLoader(urls.toArray(new URL[urls.size()]));
-    ServiceLoader<Processor> serviceLoader = ServiceLoader.load(Processor.class, classLoader);
+    ServiceLoader<Processor> serviceLoader = ServiceLoader.load(
+        Processor.class, new PathClassLoader(Options.getClassPathEntries()));
     Iterator<Processor> iterator = serviceLoader.iterator();
     return iterator.hasNext();
   }

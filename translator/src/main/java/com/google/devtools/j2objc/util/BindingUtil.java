@@ -16,6 +16,7 @@ package com.google.devtools.j2objc.util;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
+import com.google.j2objc.annotations.ObjectiveCName;
 
 import org.eclipse.jdt.core.dom.IAnnotationBinding;
 import org.eclipse.jdt.core.dom.IBinding;
@@ -25,6 +26,7 @@ import org.eclipse.jdt.core.dom.ITypeBinding;
 import org.eclipse.jdt.core.dom.IVariableBinding;
 import org.eclipse.jdt.core.dom.Modifier;
 
+import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.util.Arrays;
 import java.util.Comparator;
@@ -316,18 +318,21 @@ public final class BindingUtil {
   }
 
   /**
-   * Returns true if the specified binding is of an annotation that has
-   * a runtime retention policy.
+   * Returns true if the specified binding is of an annotation is runtime, and not
+   * ignorable by J2ObjC. Currently the only annotation we ignore is @ObjectiveCName.
    */
   public static boolean isRuntimeAnnotation(ITypeBinding binding) {
-    if (binding != null) {
-      for (IAnnotationBinding ann : binding.getAnnotations()) {
-        if (ann.getName().equals("Retention")) {
-          IVariableBinding retentionBinding =
-              (IVariableBinding) ann.getDeclaredMemberValuePairs()[0].getValue();
-          return retentionBinding.getName().equals(RetentionPolicy.RUNTIME.name());
-        }
-      }
+    if (binding == null) {
+      return false;
+    }
+    if (binding.getQualifiedName().equals(ObjectiveCName.class.getCanonicalName())) {
+      return false;
+    }
+    IAnnotationBinding retentionBinding = getAnnotation(binding, Retention.class);
+    if (retentionBinding != null) {
+      IVariableBinding runtimeBinding =
+          (IVariableBinding) getAnnotationValue(retentionBinding, "value");
+      return runtimeBinding.getName().equals(RetentionPolicy.RUNTIME.toString());
     }
     return false;
   }
