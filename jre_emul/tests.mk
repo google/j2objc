@@ -136,6 +136,7 @@ TEST_SOURCES := \
     com/google/j2objc/PackageTest.java \
     com/google/j2objc/ThrowableTest.java \
     com/google/j2objc/security/IosSecureRandomImplTest.java \
+    java/lang/SystemTest.java \
     java/lang/ref/PhantomReferenceTest.java \
     java/lang/ref/SoftReferenceTest.java \
     java/lang/ref/WeakReferenceTest.java \
