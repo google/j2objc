@@ -675,6 +675,7 @@ JAVA_SOURCES = \
 	java/text/Format.java \
 	java/text/IOSCollator.java \
 	java/text/MessageFormat.java \
+	java/text/Normalizer.java \
 	java/text/NumberFormat.java \
 	java/text/ParseException.java \
 	java/text/ParsePosition.java \

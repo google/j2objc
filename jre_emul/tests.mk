@@ -254,6 +254,7 @@ TEST_SOURCES := \
     libcore/java/text/CollatorTest.java \
     libcore/java/text/DecimalFormatTest.java \
     libcore/java/text/DecimalFormatSymbolsTest.java \
+    libcore/java/text/NormalizerTest.java \
     libcore/java/text/NumberFormatTest.java \
     libcore/java/util/BitSetTest.java \
     libcore/java/util/CalendarTest.java \
