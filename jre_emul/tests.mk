@@ -38,7 +38,11 @@ SUPPORT_SOURCES = \
     org/apache/harmony/luni/tests/java/lang/MockEnum.java \
     org/apache/harmony/luni/tests/java/lang/MockEnum2.java \
     org/apache/harmony/security/tests/support/MyAlgorithmParameterGeneratorSpi.java \
+    org/apache/harmony/security/tests/support/MyKeyPairGeneratorSpi.java \
+    org/apache/harmony/security/tests/support/MyMessageDigest1.java \
+    org/apache/harmony/security/tests/support/MySignature1.java \
     org/apache/harmony/security/tests/support/SpiEngUtils.java \
+    org/apache/harmony/security/tests/support/TestKeyPair.java \
     org/apache/harmony/security/tests/support/spec/MyEncodedKeySpec.java \
     org/apache/harmony/testframework/serialization/SerializationTest.java \
     org/apache/harmony/tests/javax/xml/parsers/SAXParserTestSupport.java \
@@ -384,11 +388,22 @@ TEST_SOURCES := \
     org/apache/harmony/regex/tests/java/util/regex/ReplaceTest.java \
     org/apache/harmony/regex/tests/java/util/regex/SplitTest.java \
     org/apache/harmony/security/tests/java/security/AlgorithmParametersSpiTest.java \
+    org/apache/harmony/security/tests/java/security/AlgorithmParametersTest.java \
+    org/apache/harmony/security/tests/java/security/KeyFactorySpiTest.java \
+    org/apache/harmony/security/tests/java/security/KeyFactoryTest.java \
+    org/apache/harmony/security/tests/java/security/KeyPairGeneratorSpiTest.java \
+    org/apache/harmony/security/tests/java/security/KeyPairTest.java \
     org/apache/harmony/security/tests/java/security/KeyTest.java \
-    org/apache/harmony/security/tests/java/security/ProviderExceptionTest.java \
+    org/apache/harmony/security/tests/java/security/MessageDigest1Test.java \
+    org/apache/harmony/security/tests/java/security/MessageDigest2Test.java \
+    org/apache/harmony/security/tests/java/security/MessageDigestSpiTest.java \
     org/apache/harmony/security/tests/java/security/PrivateKeyTest.java \
+    org/apache/harmony/security/tests/java/security/ProviderExceptionTest.java \
     org/apache/harmony/security/tests/java/security/PublicKeyTest.java \
+    org/apache/harmony/security/tests/java/security/SecureRandom2Test.java \
+    org/apache/harmony/security/tests/java/security/SecureRandomSpiTest.java \
     org/apache/harmony/security/tests/java/security/SignatureSpiTest.java \
+    org/apache/harmony/security/tests/java/security/SignatureTest.java \
     org/apache/harmony/tests/java/io/ObjectStreamClassTest.java \
     org/apache/harmony/tests/java/io/ObjectStreamConstantsTest.java \
     org/apache/harmony/tests/java/io/ObjectStreamFieldTest.java \
