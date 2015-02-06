@@ -27,5 +27,8 @@ FIELD org.xml.sax.helpers.ParserAdapter.contentHandler org.xml.sax.helpers.XMLRe
 FIELD org.xml.sax.helpers.ParserAdapter.parser org.xml.sax.helpers.XMLReaderAdapter
 FIELD org.xml.sax.helpers.XMLReaderAdapter.AttributesAdapter.attributes org.xml.sax.helpers.ParserAdapter.AttributeListAdapter
 
+# Types that aren't actually in jre_emul.
+TYPE sun.misc.URLClassPath
+
 # TODO(kstanger,tball): Resolve these cycles.
 NAMESPACE org.xml
