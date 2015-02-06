@@ -29,7 +29,6 @@ import java.security.AlgorithmParametersSpi;
 import java.security.Provider;
 import java.security.Security;
 import java.security.spec.AlgorithmParameterSpec;
-import java.security.spec.DSAParameterSpec;
 import java.security.spec.InvalidParameterSpecException;
 import java.util.Arrays;
 import java.security.NoSuchAlgorithmException;
@@ -583,53 +582,6 @@ public class AlgorithmParametersTest extends TestCase {
         params.init(new byte[0]);
 
         assertSame(str, params.toString());
-    }
-
-    /**
-     * Tests DSA AlgorithmParameters provider
-     */
-    public void testDSAProvider() throws Exception {
-        AlgorithmParameters params = AlgorithmParameters.getInstance("DSA");
-
-        assertEquals("Algorithm", "DSA", params.getAlgorithm());
-
-        // init(AlgorithmParameterSpec)
-        BigInteger p = BigInteger.ONE;
-        BigInteger q = BigInteger.TEN;
-        BigInteger g = BigInteger.ZERO;
-        params.init(new DSAParameterSpec(p, q, g));
-
-        // getEncoded() and getEncoded(String) (TODO verify returned encoding)
-        byte[] enc = params.getEncoded();
-        assertNotNull(enc);
-        assertNotNull(params.getEncoded("ASN.1"));
-        // TODO assertNotNull(params.getEncoded(null)); // HARMONY-2680
-
-        // getParameterSpec(Class)
-        DSAParameterSpec spec = params.getParameterSpec(DSAParameterSpec.class);
-        assertEquals("p is wrong ", p, spec.getP());
-        assertEquals("q is wrong ", q, spec.getQ());
-        assertEquals("g is wrong ", g, spec.getG());
-
-        // init(byte[])
-        params = AlgorithmParameters.getInstance("DSA");
-        params.init(enc);
-        assertTrue("param encoded is different", Arrays.equals(enc, params
-                .getEncoded()));
-
-        // init(byte[], String)
-        params = AlgorithmParameters.getInstance("DSA");
-        params.init(enc, "ASN.1");
-        assertTrue("param encoded is different", Arrays.equals(enc, params
-                .getEncoded()));
-
-        params = AlgorithmParameters.getInstance("DSA");
-        try {
-            params.init(enc, "DOUGLASMAWSON");
-            fail("unsupported format should have raised IOException");
-        } catch (IOException e) {
-            // expected
-        }
     }
 
     /**
