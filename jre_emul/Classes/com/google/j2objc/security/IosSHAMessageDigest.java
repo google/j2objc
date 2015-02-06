@@ -30,7 +30,7 @@ import java.security.MessageDigest;
  *
  * @author Tom Ball
  */
-public abstract class IosSHAMessageDigest extends MessageDigest {
+public abstract class IosSHAMessageDigest extends MessageDigest implements Cloneable {
 
   protected ByteArrayOutputStream buffer;
 

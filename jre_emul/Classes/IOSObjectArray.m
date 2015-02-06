@@ -23,12 +23,16 @@
 #import "IOSClass.h"
 #import "java/lang/ArrayStoreException.h"
 #import "java/lang/AssertionError.h"
+#import "java/lang/NegativeArraySizeException.h"
 
 // Defined in IOSArray.m
 extern id IOSArray_NewArrayWithDimensions(
     Class self, NSUInteger dimensionCount, const jint *dimensionLengths, IOSClass *type);
 
 static IOSObjectArray *IOSObjectArray_CreateArray(jint length, IOSClass *type, BOOL retained) {
+  if (length < 0) {
+    @throw AUTORELEASE([[JavaLangNegativeArraySizeException alloc] init]);
+  }
   IOSObjectArray *array = NSAllocateObject([IOSObjectArray class], length * sizeof(id), nil);
   if (!retained) {
     // It is important that this autorelease occurs here and NOT as part of the

@@ -293,49 +293,6 @@ public class SecureRandom2Test extends TestCase {
     }
 
     /**
-     * Two {@link SecureRandom} objects, created with
-     * {@link SecureRandom#getInstance(String)} and initialized before use
-     * with the same seed, should return the same results.<p>
-     *
-     * In the future, it may sense to disallow seeding {@code SecureRandom},
-     * as it tends to be error prone and open up security holes.
-     * See {@link SecureRandom} for more details about insecure seeding.
-     *
-     * Note that this only works with the Harmony "Crypto" provider.
-     */
-    public void testSameSeedGeneratesSameResults() throws Exception {
-        byte[] seed1 = { 'a', 'b', 'c' };
-        SecureRandom sr1 = SecureRandom.getInstance("SHA1PRNG", "Crypto");
-        sr1.setSeed(seed1);
-
-        byte[] seed2 = { 'a', 'b', 'c' };
-        SecureRandom sr2 = SecureRandom.getInstance("SHA1PRNG", "Crypto");
-        sr2.setSeed(seed2);
-
-        assertTrue(sr1.nextLong() == sr2.nextLong());
-    }
-
-    /**
-     * Assert that a {@link SecureRandom} object seeded from a constant
-     * seed always returns the same value, even across VM restarts.
-     *
-     * Future versions of Android may change the implementation of
-     * SHA1PRNG, so users of {@code SecureRandom} should not assume
-     * the same seed will always produce the same value.  This test
-     * is not a guarantee of future compatibility.
-     *
-     * In fact, this test only works with the Harmony "Crypto" provider.
-     */
-    public void testAlwaysSameValueWithSameSeed() throws Exception {
-        byte[] seed1 = { 'a', 'b', 'c' };
-        SecureRandom sr1 = SecureRandom.getInstance("SHA1PRNG", "Crypto");
-        sr1.setSeed(seed1);
-
-        // This long value has no special meaning and may change in the future.
-        assertEquals(6180693691264871500l, sr1.nextLong());
-    }
-
-    /**
      * Validate that calling {@link SecureRandom#setSeed} <b>after</b> generating
      * a random number compliments, but doesn't replace, the existing seed.
      *
