@@ -40,8 +40,6 @@ import org.eclipse.jdt.core.dom.VariableDeclarationFragment;
 
 import java.io.File;
 import java.io.IOException;
-import java.lang.annotation.Annotation;
-import java.net.URL;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -693,11 +691,7 @@ public class NameTable {
       // Class does not exist -- ignore exception
     }
 
-    StringBuilder sb = new StringBuilder();
-    for (String part : packageName.split("\\.")) {
-      sb.append(capitalize(part));
-    }
-    String prefix = sb.toString();
+    String prefix = camelCaseQualifiedName(packageName);
     instance.prefixMap.put(packageName, prefix);
     return prefix;
   }
