@@ -29,7 +29,7 @@ import java.security.MessageDigest;
  *
  * @author Tom Ball
  */
-public class IosMD5MessageDigest extends MessageDigest {
+public class IosMD5MessageDigest extends MessageDigest implements Cloneable {
 
   private ByteArrayOutputStream buffer;
 

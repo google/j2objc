@@ -34,10 +34,14 @@ public class IosSecureRandomImpl extends SecureRandomSpi {
   @Override
   protected void engineSetSeed(byte[] seed) {
     /* not used */
+    if (seed == null) {  // Unit test.
+      throw new NullPointerException();
+    }
   }
 
   @Override
   protected native void engineNextBytes(byte[] bytes) /*-[
+    nil_chk(bytes);
     int error = SecRandomCopyBytes(kSecRandomDefault, bytes->size_, (uint8_t *) bytes->buffer_);
     if (error != 0) {
       NSString *errorMsg =

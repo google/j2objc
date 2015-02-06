@@ -586,12 +586,14 @@ public class AlgorithmParametersTest extends TestCase {
 
     /**
      * Tests OAEP AlgorithmParameters provider
-     */
+     *
+    TODO(tball): enable when OAEP provider is implemented.
     public void testOAEPProvider() throws Exception {
         AlgorithmParameters params = AlgorithmParameters.getInstance("OAEP");
 
         assertEquals("Algorithm", "OAEP", params.getAlgorithm());
     }
+    */
 
     /**
      * Test for <code>AlgorithmParameters</code> constructor

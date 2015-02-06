@@ -171,11 +171,14 @@ static Class GetReferentSubclass(id obj) {
 // Returns YES if an object is constant. The retain and release methods
 // don't modify retain counts when they are INT_MAX (or UINT_MAX on some
 // architectures), so the retainCount test in ReferentSubclassRelease
-// won't work. The only constants in translated code are string constants;
-// since constant strings as reference referents does nothing in Java
+// won't work. The only constants in translated code are string constants
+// and classes; since constants as reference referents do nothing in Java
 // (since they are never GC'd), with this test they will do nothing in
 // iOS as well.
 static BOOL IsConstantObject(id obj) {
+  if ([obj isKindOfClass:[IOSClass class]]) {
+    return YES;
+  }
   NSUInteger retainCount = [obj retainCount];
   return retainCount == UINT_MAX || retainCount == INT_MAX;
 }
@@ -352,9 +355,7 @@ static void ReferentSubclassRelease(id self, SEL _cmd) {
 // Override getClass in the subclass so that it returns the IOSClass for the
 // original class of the referent.
 static IOSClass *ReferentSubclassGetClass(id self, SEL _cmd) {
-  Class superclass = GetRealSuperclass(self);
-  IMP superGetClass = class_getMethodImplementation(superclass, @selector(getClass));
-  return ((IOSClass *(*)(id, SEL))superGetClass)(self, @selector(getClass));
+  return IOSClass_fromClass(GetRealSuperclass(self));
 }
 
 @end

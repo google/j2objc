@@ -18,6 +18,7 @@
 #import "IOSPrimitiveArray.h"
 
 #import "IOSClass.h"
+#import "java/lang/NegativeArraySizeException.h"
 
 /*!
  * Implements the common constructors for the primitive array types.
@@ -25,6 +26,9 @@
  */
 #define PRIMITIVE_ARRAY_CTOR_IMPL(U_NAME, C_TYPE) \
   static IOS##U_NAME##Array *IOS##U_NAME##Array_NewArray(jint length) { \
+    if (length < 0) { \
+      @throw AUTORELEASE([[JavaLangNegativeArraySizeException alloc] init]); \
+    } \
     IOS##U_NAME##Array *array = NSAllocateObject( \
         [IOS##U_NAME##Array class], length * sizeof(C_TYPE), nil); \
     array->size_ = length; \

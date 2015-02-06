@@ -459,6 +459,8 @@ public class SignatureTest extends TestCase {
             fail("NullPointerException wasn't thrown");
         } catch (NullPointerException npe) {
             // ok
+        } catch (IllegalArgumentException se) {
+            // ok
         }
     }
 
