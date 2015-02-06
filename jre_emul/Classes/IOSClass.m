@@ -897,6 +897,10 @@ IOSObjectArray *copyFieldsToObjectArray(NSArray *fields) {
   return self;
 }
 
+- (IOSClass *)getClass {
+  return IOSClass_class_();
+}
+
 static BOOL IsStringType(Class cls) {
   // We can't trigger class initialization because that might recursively enter
   // FetchClass and result in deadlock within the FastPointerLookup. Therefore,

@@ -931,6 +931,10 @@ NSString *NSString_formatWithJavaUtilLocale_withNSString_withNSObjectArray_(
   return [self isEqualToString:[sb description]];
 }
 
+- (IOSClass *)getClass {
+  return NSString_class_();
+}
+
 jint javaStringHashCode(NSString *string) {
   static const char *hashKey = "__JAVA_STRING_HASH_CODE_KEY__";
   id cachedHash = objc_getAssociatedObject(string, hashKey);

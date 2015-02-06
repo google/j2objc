@@ -51,6 +51,9 @@ public class SerializationTest extends TestCase {
     }
   }
 
+  static class SerializableClass implements Serializable {}
+  static class NotSerializableClass {}
+
   @Override
   protected void tearDown() throws Exception {
     //new File(TEST_FILE_NAME).delete();
@@ -93,5 +96,32 @@ public class SerializationTest extends TestCase {
     String[] result = (String[]) ois.readObject();
     ois.close();
     assertTrue("arrays not equal", Arrays.equals(names, result));
+  }
+
+  // Regression test for https://github.com/google/j2objc/issues/496.
+  public void testSerializingObjectClass() throws Exception {
+    String path = "/tmp/a.object";
+    FileOutputStream fileOut = new FileOutputStream(path);
+    new ObjectOutputStream(fileOut).writeObject(Object.class);
+    FileInputStream fileIn = new FileInputStream(path);
+    assertEquals(Object.class, new ObjectInputStream(fileIn).readObject());
+  }
+
+  // Regression test for https://github.com/google/j2objc/issues/496.
+  public void testSerializingSerializableClass() throws Exception {
+    String path = "/tmp/b.object";
+    FileOutputStream fileOut = new FileOutputStream(path);
+    new ObjectOutputStream(fileOut).writeObject(SerializableClass.class);
+    FileInputStream fileIn = new FileInputStream(path);
+    assertEquals(SerializableClass.class, new ObjectInputStream(fileIn).readObject());
+  }
+
+  // Regression test for https://github.com/google/j2objc/issues/496.
+  public void testSerializingNotSerializableClass() throws Exception {
+    String path = "/tmp/c.object";
+    FileOutputStream fileOut = new FileOutputStream(path);
+    new ObjectOutputStream(fileOut).writeObject(NotSerializableClass.class);
+    FileInputStream fileIn = new FileInputStream(path);
+    assertEquals(NotSerializableClass.class, new ObjectInputStream(fileIn).readObject());
   }
 }

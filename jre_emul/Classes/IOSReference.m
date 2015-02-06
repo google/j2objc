@@ -352,7 +352,9 @@ static void ReferentSubclassRelease(id self, SEL _cmd) {
 // Override getClass in the subclass so that it returns the IOSClass for the
 // original class of the referent.
 static IOSClass *ReferentSubclassGetClass(id self, SEL _cmd) {
-  return IOSClass_fromClass(class_getSuperclass(object_getClass(self)));
+  Class superclass = GetRealSuperclass(self);
+  IMP superGetClass = class_getMethodImplementation(superclass, @selector(getClass));
+  return ((IOSClass *(*)(id, SEL))superGetClass)(self, @selector(getClass));
 }
 
 @end
