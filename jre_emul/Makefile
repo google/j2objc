@@ -123,6 +123,7 @@ JAVA_SOURCES = \
 	com/google/android/collect/Lists.java \
 	com/google/android/collect/Maps.java \
 	com/google/android/collect/Sets.java \
+	com/google/j2objc/annotations/ObjectiveCName.java \
 	com/google/j2objc/net/IosHttpHandler.java \
 	com/google/j2objc/net/IosHttpsHandler.java \
 	com/google/j2objc/net/IosHttpURLConnection.java \

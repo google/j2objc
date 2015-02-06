@@ -28,6 +28,8 @@ SUPPORT_SOURCES = \
     android/text/SpannableTest.java \
     com/google/j2objc/package-info.java \
     com/google/j2objc/TestAnnotation.java \
+    java/lang/test/Example.java \
+    java/lang/test/package-info.java \
     libcore/java/net/customstreamhandler/http/Handler.java \
     libcore/java/nio/charset/Charset_TestGenerator.java \
     libcore/java/nio/charset/OldCharset_AbstractTest.java \

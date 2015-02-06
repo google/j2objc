@@ -35,6 +35,7 @@
 #import "NSNumber+JavaNumber.h"
 #import "NSObject+JavaObject.h"
 #import "NSString+JavaString.h"
+#import "com/google/j2objc/annotations/ObjectiveCName.h"
 #import "java/lang/AssertionError.h"
 #import "java/lang/ClassCastException.h"
 #import "java/lang/ClassLoader.h"
@@ -384,21 +385,38 @@ static IOSClass *ClassForIosName(NSString *iosName) {
 }
 
 static IOSClass *FindMappedClass(NSString *name) {
-  static dispatch_once_t once;
-  dispatch_once(&once, ^{
-    prefixMapping = [[JavaUtilProperties alloc] init];
-    JavaIoInputStream *prefixesResource =
-        [IOSClass_objectClass getResourceAsStream:PREFIX_MAPPING_RESOURCE];
-    if (prefixesResource) {
-      [prefixMapping load__WithJavaIoInputStream:prefixesResource];
-    }
-  });
   NSRange lastDot = [name rangeOfString:@"." options:NSBackwardsSearch];
   if (lastDot.location == NSNotFound) {
     return nil;   // No package in class name.
   }
   NSString *package = [name substringToIndex:lastDot.location];
-  NSString *prefix = [prefixMapping getPropertyWithNSString:package];
+  NSString *prefix = nil;
+
+  // Check for a package-info class that has an ObjectiveCName annotation.
+  NSString *pkgInfoName =
+      IOSClass_JavaToIOSName([package stringByAppendingString:@".package_info"]);
+  IOSClass *pkgInfo = ClassForIosName(pkgInfoName);
+  if (pkgInfo) {
+    IOSClass *objcNameClass = IOSClass_fromClass([ComGoogleJ2objcAnnotationsObjectiveCName class]);
+    ComGoogleJ2objcAnnotationsObjectiveCName *ann =
+        [pkgInfo getAnnotationWithIOSClass:objcNameClass];
+    if (ann) {
+      prefix = ann.value;
+    }
+  }
+  if (!prefix) {
+    // Check whether package has a mapped prefix property.
+    static dispatch_once_t once;
+    dispatch_once(&once, ^{
+      prefixMapping = [[JavaUtilProperties alloc] init];
+      JavaIoInputStream *prefixesResource =
+          [IOSClass_objectClass getResourceAsStream:PREFIX_MAPPING_RESOURCE];
+      if (prefixesResource) {
+        [prefixMapping load__WithJavaIoInputStream:prefixesResource];
+      }
+    });
+    prefix = [prefixMapping getPropertyWithNSString:package];
+  }
   if (!prefix) {
     return nil;   // No prefix for package.
   }

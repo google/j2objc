@@ -266,6 +266,21 @@ public class ClassTest extends TestCase {
     assertEquals("java.lang.reflect.Method", Method.class.getName());
     assertEquals("javax.annotation.Resource", Resource.class.getName());
   }
+  
+  /**
+   * Verify that a class with a package that has been renamed using an
+   * ObjectiveCName annotation can be reflexively loaded.
+   */
+  public void testPackagePrefixAnnotation() throws Exception {
+    // Lookup class by its Java name.
+    Class<?> cls = Class.forName("java.lang.test.Example");
+    Object instance = cls.newInstance();
+    Method m = cls.getMethod("nativeClassName");
+    String nativeName = (String) m.invoke(instance);
+    
+    // Native name should have an OK prefix, instead of a camel-cased package name.
+    assertEquals("OKExample", nativeName);
+  }
 
   static class InnerClass {
   }

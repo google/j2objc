@@ -154,10 +154,10 @@ public class NameTableTest extends GenerationTest {
         + "@com.google.j2objc.annotations.ObjectiveCName(\"" + objcName + "\") "
         + "void test(String s, int n) {}}", "A", "A.h");
     assertTranslation(translation, String.format("- (void)%s;", objcName));
-    assertNotInTranslation(translation, "testWithNSString");
+    assertNotInTranslation(translation, "testWithNSString:");
     translation = getTranslatedFile("A.m");
     assertTranslation(translation, String.format("- (void)%s {", objcName));
-    assertNotInTranslation(translation, "testWithNSString");
+    assertNotInTranslation(translation, "testWithNSString:");
   }
 
   public void testRenameConstructorAnnotation() throws IOException {
@@ -234,6 +234,11 @@ public class NameTableTest extends GenerationTest {
     assertTranslation(translation, "#include \"foo/bar/Test.h\""); // should be full path.
     assertTranslation(translation, "@implementation FBTestEnum");
     assertTranslation(translation, "J2ObjcClassInfo _FBTestEnum = { 1, \"Test\", \"foo.bar\", ");
-  }
 
+    // Make sure package-info class doesn't use prefix for its own type name.
+    translation = translateSourceFile("foo/bar/package-info", "foo/bar/package-info.m");
+    assertTranslation(translation, "@interface FooBarpackage_info");
+    assertTranslation(translation, "@implementation FooBarpackage_info");
+    assertNotInTranslation(translation, "FBpackage_info");
+  }
 }
