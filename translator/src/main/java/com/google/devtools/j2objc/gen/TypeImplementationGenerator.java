@@ -15,6 +15,7 @@
 package com.google.devtools.j2objc.gen;
 
 import com.google.common.base.Predicate;
+import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Iterables;
 import com.google.devtools.j2objc.ast.AbstractTypeDeclaration;
 import com.google.devtools.j2objc.ast.AnnotationTypeMemberDeclaration;
@@ -39,6 +40,7 @@ import org.eclipse.jdt.core.dom.Modifier;
 
 import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 
 /**
  * Generates implementation code for an AbstractTypeDeclaration node.
@@ -46,6 +48,23 @@ import java.util.List;
  * @author Tom Ball, Keith Stanger
  */
 public class TypeImplementationGenerator extends TypeGenerator {
+
+  private static final Set<String> NSNUMBER_DESIGNATED_INITIALIZERS = ImmutableSet.of(
+      "initWithBool:",
+      "initWithChar:",
+      "initWithDouble:",
+      "initWithFloat:",
+      "initWithInt:",
+      "initWithInteger:",
+      "initWithLong:",
+      "initWithLongLong:",
+      "initWithShort:",
+      "initWithUnsignedChar:",
+      "initWithUnsignedInt:",
+      "initWithUnsignedInteger:",
+      "initWithUnsignedLong:",
+      "initWithUnsignedLongLong:",
+      "initWithUnsignedShort:");
 
   private TypeImplementationGenerator(SourceBuilder builder, AbstractTypeDeclaration node) {
     super(builder, node);
@@ -127,15 +146,39 @@ public class TypeImplementationGenerator extends TypeGenerator {
         isInterfaceType() ? "INTERFACE" : "CLASS", typeName);
   }
 
+  private boolean extendsNumber(ITypeBinding type) {
+    ITypeBinding numberType = typeEnv.resolveJavaType("java.lang.Number");
+    while (type != null) {
+      if (type == numberType) {
+        return true;
+      }
+      type = type.getSuperclass();
+    }
+    return false;
+  }
+
+  private boolean isDesignatedInitializer(IMethodBinding method) {
+    return method.isConstructor() && extendsNumber(method.getDeclaringClass())
+        && NSNUMBER_DESIGNATED_INITIALIZERS.contains(nameTable.getMethodSelector(method));
+  }
+
   @Override
   protected void printMethodDeclaration(MethodDeclaration m) {
     if (typeBinding.isInterface() || Modifier.isAbstract(m.getModifiers())) {
       return;
     }
     newline();
+    boolean isDesignatedInitializer = isDesignatedInitializer(m.getMethodBinding());
+    if (isDesignatedInitializer) {
+      println("#pragma clang diagnostic push");
+      println("#pragma clang diagnostic ignored \"-Wobjc-designated-initializers\"");
+    }
     syncLineNumbers(m.getName());  // avoid doc-comment
     String methodBody = generateStatement(m.getBody(), /* isFunction */ false);
     print(getMethodSignature(m) + " " + reindent(methodBody) + "\n");
+    if (isDesignatedInitializer) {
+      println("#pragma clang diagnostic pop");
+    }
   }
 
   @Override

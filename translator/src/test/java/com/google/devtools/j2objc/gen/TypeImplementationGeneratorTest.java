@@ -70,4 +70,19 @@ public class TypeImplementationGeneratorTest extends GenerationTest {
     translation = getTranslatedFile("Test.m");
     assertTranslation(translation, "case Test_I:");
   }
+
+  public void testDesignatedInitializer() throws IOException {
+    String translation = translateSourceFile(
+        "class Test extends Number { Test(int i) {} public double doubleValue() { return 0; } "
+        + " public float floatValue() { return 0; } public int intValue() { return 0; } "
+        + " public long longValue() { return 0; }}", "Test", "Test.m");
+    assertTranslatedLines(translation,
+        "#pragma clang diagnostic push",
+        "#pragma clang diagnostic ignored \"-Wobjc-designated-initializers\"",
+        "- (instancetype)initWithInt:(jint)i {",
+        "  Test_initWithInt_(self, i);",
+        "  return self;",
+        "}",
+        "#pragma clang diagnostic pop");
+  }
 }
