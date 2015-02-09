@@ -24,15 +24,15 @@ package org.apache.harmony.security.fortress;
 
 import java.security.NoSuchAlgorithmException;
 import java.security.Provider;
+import java.util.ArrayList;
 import java.util.Locale;
-
 
 /**
  * This class implements common functionality for Provider supplied
  * classes. The usage pattern is to allocate static Engine instance
  * per service type and synchronize on that instance during calls to
- * {@code getInstance} and retreival of the selected {@code Provider}
- * and Service Provider Interface (SPI) results. Retreiving the
+ * {@code getInstance} and retrieval of the selected {@code Provider}
+ * and Service Provider Interface (SPI) results. Retrieving the
  * results with {@code getProvider} and {@code getSpi} sets the
  * internal {@code Engine} values to null to prevent memory leaks.
  *
@@ -69,7 +69,7 @@ import java.util.Locale;
  *
  * }</pre>
  */
-public class Engine {
+public final class Engine {
 
     /**
      * Access to package visible api in java.security
@@ -95,14 +95,14 @@ public class Engine {
         /** used to test for cache validity */
         private final int cacheVersion;
         /** cached result */
-        private final Provider.Service service;
+        private final ArrayList<Provider.Service> services;
 
         private ServiceCacheEntry(String algorithm,
                                   int cacheVersion,
-                                  Provider.Service service) {
+                                  ArrayList<Provider.Service> services) {
             this.algorithm = algorithm;
             this.cacheVersion = cacheVersion;
-            this.service = service;
+            this.services = services;
         }
     }
 
@@ -118,10 +118,27 @@ public class Engine {
     /**
      * Creates a Engine object
      *
-     * @param service
+     * @param serviceName
      */
-    public Engine(String service) {
-        this.serviceName = service;
+    public Engine(String serviceName) {
+        this.serviceName = serviceName;
+    }
+
+    /**
+     * Finds the appropriate service implementation and returns an
+     * {@code SpiAndProvider} instance containing a reference to the first
+     * matching SPI and its {@code Provider}
+     */
+    public SpiAndProvider getInstance(String algorithm, Object param)
+            throws NoSuchAlgorithmException {
+        if (algorithm == null) {
+            throw new NoSuchAlgorithmException("Null algorithm name");
+        }
+        ArrayList<Provider.Service> services = getServices(algorithm);
+        if (services == null) {
+            throw notFound(this.serviceName, algorithm);
+        }
+        return new SpiAndProvider(services.get(0).newInstance(param), services.get(0).getProvider());
     }
 
     /**
@@ -129,36 +146,32 @@ public class Engine {
      * {@code SpiAndProvider} instance containing a reference to SPI
      * and its {@code Provider}
      */
-    public SpiAndProvider getInstance(String algorithm, Object param)
+    public SpiAndProvider getInstance(Provider.Service service, String param)
             throws NoSuchAlgorithmException {
-        if (algorithm == null) {
-            throw new NoSuchAlgorithmException("Null algorithm name");
-        }
-        int newCacheVersion = Services.getCacheVersion();
-        Provider.Service service;
-        ServiceCacheEntry cacheEntry = this.serviceCache;
-        if (cacheEntry != null
-                && cacheEntry.algorithm.equalsIgnoreCase(algorithm)
-                && newCacheVersion == cacheEntry.cacheVersion) {
-            service = cacheEntry.service;
-        } else {
-            if (Services.isEmpty()) {
-                throw notFound(serviceName, algorithm);
-            }
-            String name = this.serviceName + "." + algorithm.toUpperCase(Locale.US);
-            service = Services.getService(name);
-            if (service == null) {
-                throw notFound(serviceName, algorithm);
-            }
-            this.serviceCache = new ServiceCacheEntry(algorithm, newCacheVersion, service);
-        }
         return new SpiAndProvider(service.newInstance(param), service.getProvider());
     }
 
     /**
-     * Finds the appropriate service implementation and returns and
-     * instance of the class that implements corresponding Service
-     * Provider Interface.
+     * Returns a list of all possible matches for a given algorithm.
+     */
+    public ArrayList<Provider.Service> getServices(String algorithm) {
+        int newCacheVersion = Services.getCacheVersion();
+        ServiceCacheEntry cacheEntry = this.serviceCache;
+        final String algoUC = algorithm.toUpperCase(Locale.US);
+        if (cacheEntry != null
+                && cacheEntry.algorithm.equalsIgnoreCase(algoUC)
+                && newCacheVersion == cacheEntry.cacheVersion) {
+            return cacheEntry.services;
+        }
+        String name = this.serviceName + "." + algoUC;
+        ArrayList<Provider.Service> services = Services.getServices(name);
+        this.serviceCache = new ServiceCacheEntry(algoUC, newCacheVersion, services);
+        return services;
+    }
+
+    /**
+     * Finds the appropriate service implementation and returns and instance of
+     * the class that implements corresponding Service Provider Interface.
      */
     public Object getInstance(String algorithm, Provider provider, Object param)
             throws NoSuchAlgorithmException {

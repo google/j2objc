@@ -22,6 +22,8 @@
 #ifndef _NSObject_JavaObject_H_
 #define _NSObject_JavaObject_H_
 
+#import <Foundation/Foundation.h>
+#import "J2ObjC_common.h"
 #import "JavaObject.h"
 
 @class IOSClass;
@@ -36,15 +38,9 @@
 // Comparable protocol.
 - (int)compareToWithId:(id)other;
 
-+ (id)throwClassCastException;
-
 // Should be implemented by any class that needs to support Java's clone
 // behavior for itself or its subclasses.
 - (void)copyAllFieldsTo:(id)other;
-
-- (NSArray *)memDebugStrongReferences;
-
-+ (NSArray *)memDebugStaticReferences;
 
 // Unimplemented private methods for java.lang.ref.Reference. The methods'
 // implementations are set when swizzling the Reference's referent class.
@@ -56,5 +52,9 @@
 // Empty class to force category to be loaded.
 @interface JreObjectCategoryDummy : NSObject
 @end
+
+J2OBJC_EMPTY_STATIC_INIT(NSObject)
+
+J2OBJC_TYPE_LITERAL_HEADER(NSObject)
 
 #endif // _NSObject_JavaObject_H_

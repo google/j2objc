@@ -19,11 +19,8 @@
 //  Created by Tom Ball on 11/07/11.
 //
 
-#import "IOSClass.h"
-#import "IOSObjectArray.h"
-#import "IOSReflection.h"
+#import "J2ObjC_source.h"
 #import "JavaMetadata.h"
-#import "JreEmulation.h"
 #import "java/lang/AssertionError.h"
 #import "java/lang/IllegalArgumentException.h"
 #import "java/lang/NullPointerException.h"
@@ -82,10 +79,6 @@
   return [name substringToIndex:range.location];
 }
 
-- (NSString *)internalName {
-  return NSStringFromSelector(selector_);
-}
-
 - (int)getModifiers {
   int mods = [super getModifiers];
   if (isStatic_) {
@@ -98,7 +91,7 @@
   id<JavaLangReflectType> returnType = [metadata_ returnType];
   if (returnType) {
     if (![returnType isKindOfClass:[IOSClass class]]) {
-      return [IOSClass objectClass];
+      return NSObject_class_();
     } else {
       return (IOSClass *) returnType;
     }
@@ -204,4 +197,35 @@
   return nil;
 }
 
++ (const J2ObjcClassInfo *)__metadata {
+  static const J2ObjcMethodInfo methods[] = {
+    { "getName", NULL, "Ljava.lang.String;", 0x1, NULL },
+    { "getModifiers", NULL, "I", 0x1, NULL },
+    { "getReturnType", NULL, "Ljava.lang.Class;", 0x1, NULL },
+    { "getGenericReturnType", NULL, "Ljava.lang.reflect.Type;", 0x1, NULL },
+    { "getDeclaringClass", NULL, "Ljava.lang.Class;", 0x1, NULL },
+    { "getParameterTypes", NULL, "[Ljava.lang.Class;", 0x1, NULL },
+    { "getGenericParameterTypes", NULL, "[Ljava.lang.reflect.Type;", 0x1, NULL },
+    { "invokeWithId:withNSObjectArray:", "invoke", "Ljava.lang.Object;", 0x81, "Ljava.lang.IllegalAccessException;Ljava.lang.IllegalArgumentException;Ljava.lang.reflect.InvocationTargetException;" },
+    { "getAnnotationWithIOSClass:", "getAnnotation", "TT;", 0x1, NULL },
+    { "getDeclaredAnnotations", NULL, "[Ljava.lang.annotation.Annotation;", 0x1, NULL },
+    { "getParameterAnnotations", NULL, "[[Ljava.lang.annotation.Annotation;", 0x1, NULL },
+    { "getTypeParameters", NULL, "[Ljava.lang.reflect.TypeVariable;", 0x1, NULL },
+    { "isSynthetic", NULL, "Z", 0x1, NULL },
+    { "getExceptionTypes", NULL, "[Ljava.lang.Class;", 0x1, NULL },
+    { "getGenericExceptionTypes", NULL, "[Ljava.lang.reflect.Type;", 0x1, NULL },
+    { "toGenericString", NULL, "Ljava.lang.String;", 0x1, NULL },
+    { "isBridge", NULL, "Z", 0x1, NULL },
+    { "isVarArgs", NULL, "Z", 0x1, NULL },
+    { "getDefaultValue", NULL, "Ljava.lang.Object;", 0x1, NULL },
+    { "init", NULL, NULL, 0x1, NULL },
+  };
+  static const J2ObjcClassInfo _JavaLangReflectMethod = {
+    1, "Method", "java.lang.reflect", NULL, 0x1, 20, methods, 0, NULL, 0, NULL
+  };
+  return &_JavaLangReflectMethod;
+}
+
 @end
+
+J2OBJC_CLASS_TYPE_LITERAL_SOURCE(JavaLangReflectMethod)

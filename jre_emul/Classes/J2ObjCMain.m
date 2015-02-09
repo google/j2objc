@@ -77,12 +77,11 @@ int main( int argc, const char *argv[] ) {
 
     // Find the main method.
     @try {
-      IOSClass *stringArrayClass =
-          [IOSObjectArray iosClassWithType:[NSString getClass]];
+      IOSClass *stringArrayClass = IOSClass_arrayOf(NSString_class_());
       IOSObjectArray *paramTypes =
           [IOSObjectArray arrayWithObjects:(id[]) { stringArrayClass }
                                      count:1
-                                      type:[IOSClass getClass]];
+                                      type:IOSClass_class_()];
       mainMethod = [clazz getDeclaredMethod:@"main" parameterTypes:paramTypes];
     }
     @catch (JavaLangNoSuchMethodException *e) {
@@ -96,7 +95,7 @@ int main( int argc, const char *argv[] ) {
       IOSObjectArray *params =
           [IOSObjectArray arrayWithObjects:(id[]) { mainArgs }
                                      count:1
-                                      type:[NSObject getClass]];
+                                      type:NSObject_class_()];
       (void) [mainMethod invokeWithId:nil withNSObjectArray:params];
     }
     @catch (JavaLangReflectInvocationTargetException *e) {

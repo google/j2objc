@@ -19,8 +19,9 @@
 //  Created by Tom Ball on 6/18/12.
 //
 
-#import "IOSClass.h"
+#import "J2ObjC_source.h"
 #import "java/lang/AssertionError.h"
+#import "java/lang/annotation/Annotation.h"
 #import "java/lang/reflect/AccessibleObject.h"
 #import "java/lang/reflect/Method.h"
 #import "java/lang/reflect/Modifier.h"
@@ -78,11 +79,10 @@
 
 - (IOSObjectArray *)getAnnotationsFromAccessor:(JavaLangReflectMethod *)method {
   if (method) {
-    IOSObjectArray *noArgs = [IOSObjectArray arrayWithLength:0 type:[NSObject getClass]];
+    IOSObjectArray *noArgs = [IOSObjectArray arrayWithLength:0 type:NSObject_class_()];
     return (IOSObjectArray *) [method invokeWithId:nil withNSObjectArray:noArgs];
   } else {
-    IOSClass *annotationType = [IOSClass classWithProtocol:@protocol(JavaLangAnnotationAnnotation)];
-    return [IOSObjectArray arrayWithLength:0 type:annotationType];
+    return [IOSObjectArray arrayWithLength:0 type:JavaLangAnnotationAnnotation_class_()];
   }
 }
 
@@ -90,6 +90,23 @@
   // can't call an abstract method
   [self doesNotRecognizeSelector:_cmd];
   return nil;
+}
+
++ (const J2ObjcClassInfo *)__metadata {
+  static const J2ObjcMethodInfo methods[] = {
+    { "isAccessible", NULL, "Z", 0x1, NULL },
+    { "setAccessibleWithBoolean:", "setAccessible", "V", 0x1, NULL },
+    { "setAccessibleWithJavaLangReflectAccessibleObjectArray:withBoolean:", "setAccessible", "V", 0x9, NULL },
+    { "getAnnotationWithIOSClass:", "getAnnotation", "TT;", 0x1, NULL },
+    { "isAnnotationPresentWithIOSClass:", "isAnnotationPresent", "Z", 0x1, NULL },
+    { "getAnnotations", NULL, "[Ljava.lang.annotation.Annotation;", 0x1, NULL },
+    { "getDeclaredAnnotations", NULL, "[Ljava.lang.annotation.Annotation;", 0x1, NULL },
+    { "init", NULL, NULL, 0x1, NULL },
+  };
+  static const J2ObjcClassInfo _JavaLangReflectAccessibleObject = {
+    1, "AccessibleObject", "java.lang.reflect", NULL, 0x1, 8, methods, 0, NULL, 0, NULL
+  };
+  return &_JavaLangReflectAccessibleObject;
 }
 
 @end
@@ -119,9 +136,9 @@ IOSClass *decodeTypeEncoding(const char *type) {
   }
   switch (type[0]) {
     case '@':
-      return [IOSClass objectClass];
+      return NSObject_class_();
     case '#':
-      return [IOSClass classWithClass:[IOSClass class]];
+      return IOSClass_class_();
     case 'c':
       return [IOSClass byteClass];
     case 'S':
@@ -183,3 +200,5 @@ NSString *describeTypeEncoding(NSString *type) {
   }
   return [NSString stringWithFormat:@"unknown type encoding: %@", type];
 }
+
+J2OBJC_CLASS_TYPE_LITERAL_SOURCE(JavaLangReflectAccessibleObject)

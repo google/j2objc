@@ -91,6 +91,8 @@ public class ObjectiveCHeaderGenerator extends ObjectiveCSourceFileGenerator {
 
     for (AbstractTypeDeclaration type : unit.getTypes()) {
       generate(type);
+      newline();
+      printf("J2OBJC_TYPE_LITERAL_HEADER(%s)\n", NameTable.getFullName(type.getTypeBinding()));
     }
 
     generateFileFooter();
@@ -151,8 +153,10 @@ public class ObjectiveCHeaderGenerator extends ObjectiveCSourceFileGenerator {
     } else {
       printStaticInitFunction(node);
       printFieldSetters(node, false);
+      printf("\nCF_EXTERN_C_BEGIN\n");
       printFunctions(node.getBodyDeclarations());
       printStaticFields(node);
+      printf("CF_EXTERN_C_END\n");
     }
 
     printIncrementAndDecrementFunctions(binding);
@@ -205,17 +209,17 @@ public class ObjectiveCHeaderGenerator extends ObjectiveCSourceFileGenerator {
     newline();
     // Print annotation as protocol.
     printf("@protocol %s < JavaLangAnnotationAnnotation >\n", typeName);
-    if (!members.isEmpty() && isRuntime) {
-      newline();
+    if (isRuntime) {
       printAnnotationProperties(members);
     }
     println("\n@end");
 
-    Iterable<IVariableBinding> staticFields = getStaticFieldsNeedingAccessors(node);
-
-    if (isRuntime || !Iterables.isEmpty(staticFields)) {
+    if (isRuntime || hasInitializeMethod(node)) {
       // Print annotation implementation interface.
-      printf("\n@interface %s : NSObject < %s >", typeName, typeName);
+      printf("\n@interface %s : NSObject", typeName);
+      if (isRuntime) {
+        printf(" < %s >", typeName);
+      }
       if (isRuntime && !members.isEmpty()) {
         println(" {\n @private");
         printAnnotationVariables(members);
@@ -226,10 +230,10 @@ public class ObjectiveCHeaderGenerator extends ObjectiveCSourceFileGenerator {
         newline();
       }
       println("\n@end");
-      printStaticInitFunction(node);
-      for (IVariableBinding field : staticFields) {
-        printStaticField(field);
-      }
+    }
+    printStaticInitFunction(node);
+    for (IVariableBinding field : getStaticFieldsNeedingAccessors(node)) {
+      printStaticField(field);
     }
   }
 
@@ -325,6 +329,15 @@ public class ObjectiveCHeaderGenerator extends ObjectiveCSourceFileGenerator {
     }
     printStaticFields(node);
     printFieldSetters(node, false);
+
+    String pkg = enumType.getPackage().getName();
+    if (NameTable.hasPrefix(pkg) && enumType.isTopLevel()) {
+      String unprefixedName =
+          NameTable.camelCaseQualifiedName(enumType.getQualifiedName()) + "Enum";
+      if (!unprefixedName.equals(typeName)) {
+        printf("\ntypedef %s %s;\n", typeName, unprefixedName);
+      }
+    }
   }
 
   private void printStaticInitFunction(AbstractTypeDeclaration node) {
@@ -334,7 +347,7 @@ public class ObjectiveCHeaderGenerator extends ObjectiveCSourceFileGenerator {
       printf("\nFOUNDATION_EXPORT BOOL %s_initialized;\n", typeName);
       printf("J2OBJC_STATIC_INIT(%s)\n", typeName);
     } else {
-      printf("\n__attribute__((always_inline)) inline void %s_init() {}\n", typeName);
+      printf("\nJ2OBJC_EMPTY_STATIC_INIT(%s)\n", typeName);
     }
   }
 
@@ -370,7 +383,7 @@ public class ObjectiveCHeaderGenerator extends ObjectiveCSourceFileGenerator {
   @Override
   protected void printFunction(FunctionDeclaration function) {
     if (!Modifier.isPrivate(function.getModifiers())) {
-      println("FOUNDATION_EXPORT " + getFunctionSignature(function) + ';');
+      println("\nFOUNDATION_EXPORT " + getFunctionSignature(function) + ';');
     }
   }
 
@@ -435,18 +448,15 @@ public class ObjectiveCHeaderGenerator extends ObjectiveCSourceFileGenerator {
 
     printForwardDeclarations(collector.getForwardDeclarations());
 
-    println("#import \"JreEmulation.h\"");
-
     // Print collected includes.
     Set<Import> superTypes = collector.getSuperTypes();
-    if (!superTypes.isEmpty()) {
-      Set<String> includeStmts = Sets.newTreeSet();
-      for (Import imp : superTypes) {
-        includeStmts.add(String.format("#include \"%s.h\"", imp.getImportFileName()));
-      }
-      for (String stmt : includeStmts) {
-        println(stmt);
-      }
+    Set<String> includeStmts = Sets.newTreeSet();
+    includeStmts.add("#include \"J2ObjC_header.h\"");
+    for (Import imp : superTypes) {
+      includeStmts.add(String.format("#include \"%s.h\"", imp.getImportFileName()));
+    }
+    for (String stmt : includeStmts) {
+      println(stmt);
     }
   }
 
@@ -482,7 +492,9 @@ public class ObjectiveCHeaderGenerator extends ObjectiveCSourceFileGenerator {
   }
 
   private void printAnnotationProperties(List<AnnotationTypeMemberDeclaration> members) {
-    int nPrinted = 0;
+    if (!members.isEmpty()) {
+      newline();
+    }
     for (AnnotationTypeMemberDeclaration member : members) {
       ITypeBinding type = member.getType().getTypeBinding();
       print("@property (readonly) ");
@@ -493,10 +505,6 @@ public class ObjectiveCHeaderGenerator extends ObjectiveCSourceFileGenerator {
       if (needsObjcMethodFamilyNoneAttribute(propertyName)) {
         println(String.format("- (%s)%s OBJC_METHOD_FAMILY_NONE;", typeString, propertyName));
       }
-      nPrinted++;
-    }
-    if (nPrinted > 0) {
-      newline();
     }
   }
 

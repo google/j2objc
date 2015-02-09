@@ -18,6 +18,7 @@
 
 #include "java/lang/AbstractStringBuilder.h"
 #include "java/lang/Character.h"
+#include "java/lang/IntegralToString.h"
 #include "java/lang/StringBuilder.h"
 
 static int IntegralToString_intIntoCharArray(unichar *buf, int cursor, uint32_t n);

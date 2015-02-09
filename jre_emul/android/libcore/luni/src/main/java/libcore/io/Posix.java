@@ -608,7 +608,7 @@ public final class Posix implements Os {
 
     // Prepare output array.
     IOSObjectArray *result =
-        [IOSObjectArray arrayWithLength:addressCount type:[JavaNetInetAddress getClass]];
+        [IOSObjectArray arrayWithLength:addressCount type:JavaNetInetAddress_class_()];
 
     // Examine returned addresses one by one, save them in the output array.
     int index = 0;
@@ -865,7 +865,7 @@ public final class Posix implements Os {
   public native FileDescriptor[] pipe() throws ErrnoException /*-[
     int fds[2];
     LibcoreIoPosix_throwIfMinusOneWithNSString_withInt_(@"pipe", TEMP_FAILURE_RETRY(pipe(&fds[0])));
-    IOSObjectArray *result = [IOSObjectArray arrayWithLength:2 type:[JavaIoFileDescriptor getClass]];
+    IOSObjectArray *result = [IOSObjectArray arrayWithLength:2 type:JavaIoFileDescriptor_class_()];
     for (int i = 0; i < 2; ++i) {
       JavaIoFileDescriptor *fd = AUTORELEASE([[JavaIoFileDescriptor alloc] init]);
       [fd setInt$WithInt:fds[i]];
@@ -876,7 +876,7 @@ public final class Posix implements Os {
 
   public native int poll(StructPollfd[] fds, int timeoutMs) throws ErrnoException /*-[
     jint count = fds->size_;
-    struct pollfd *pollFds = calloc(count, sizeof(struct pollfd));
+    struct pollfd *pollFds = (struct pollfd *)calloc(count, sizeof(struct pollfd));
     for (jint i = 0; i < count; i++) {
       LibcoreIoStructPollfd *javaPollFd = [fds objectAtIndex:i];
       pollFds[i].fd = [javaPollFd->fd_ getInt$];
@@ -979,14 +979,14 @@ public final class Posix implements Os {
   public native int readv(FileDescriptor fd, Object[] buffers, int[] offsets, int[] byteCounts)
       throws ErrnoException /*-[
     int nIoVecs = buffers->size_;
-    struct iovec *ioVecs = malloc(nIoVecs * sizeof (struct iovec));
+    struct iovec *ioVecs = (struct iovec *)malloc(nIoVecs * sizeof (struct iovec));
     for (int i = 0; i < nIoVecs; i++) {
       char *bytes = BytesRW([buffers objectAtIndex:i]);
       if (!bytes) {
         free(ioVecs);
         return -1;
       }
-      ioVecs[i].iov_base = ((void *) bytes) + IOSIntArray_Get(offsets, i);
+      ioVecs[i].iov_base = ((char *) bytes) + IOSIntArray_Get(offsets, i);
       ioVecs[i].iov_len = IOSIntArray_Get(byteCounts, i);
     }
     int rc = TEMP_FAILURE_RETRY(readv([fd getInt$], ioVecs, nIoVecs));
@@ -1353,14 +1353,14 @@ public final class Posix implements Os {
   public native int writev(FileDescriptor fd, Object[] buffers, int[] offsets, int[] byteCounts)
       throws ErrnoException /*-[
     int nIoVecs = buffers->size_;
-    struct iovec *ioVecs = malloc(nIoVecs * sizeof (struct iovec));
+    struct iovec *ioVecs = (struct iovec *)malloc(nIoVecs * sizeof (struct iovec));
     for (int i = 0; i < nIoVecs; i++) {
       const char *bytes = BytesRO([buffers objectAtIndex:i]);
       if (!bytes) {
         free(ioVecs);
         return -1;
       }
-      ioVecs[i].iov_base = ((void *) bytes) + IOSIntArray_Get(offsets, i);
+      ioVecs[i].iov_base = ((char *) bytes) + IOSIntArray_Get(offsets, i);
       ioVecs[i].iov_len = IOSIntArray_Get(byteCounts, i);
     }
     int rc = TEMP_FAILURE_RETRY(writev([fd getInt$], ioVecs, nIoVecs));
@@ -1383,6 +1383,16 @@ public final class Posix implements Os {
     }
   }
 
+  @Override
+  public native int getpid() /*-[
+    return getpid();
+  ]-*/;
+
+  @Override
+  public native int getppid() /*-[
+    return getppid();
+  ]-*/;
+
 // Uncomment and implement as Os interface grows.
 //  public native String[] environ();
 
@@ -1391,8 +1401,6 @@ public final class Posix implements Os {
 //  public native int geteuid();
 //  public native int getgid();
 //  public native String getenv(String name);
-//  public native int getpid();
-//  public native int getppid();
 //  public native StructPasswd getpwnam(String name) throws ErrnoException;
 //  public native StructPasswd getpwuid(int uid) throws ErrnoException;
 //  public native int getuid();

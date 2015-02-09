@@ -294,7 +294,7 @@ public class Proxy implements Serializable {
       Method constructor = class_getInstanceMethod([JavaLangReflectProxy class], sel);
       class_addMethod(proxyClass, sel, method_getImplementation(constructor),
           method_getTypeEncoding(constructor));
-      return [IOSClass classWithClass:proxyClass];
+      return IOSClass_fromClass(proxyClass);
     ]-*/;
 
     /*-[
@@ -331,13 +331,12 @@ public class Proxy implements Serializable {
         struct objc_method_description methodDescription =
             protocol_getMethodDescription(protocol, selector, YES, YES);
         if (methodDescription.name && sel_isEqual(selector, methodDescription.name)) {
-          IOSClass *iosProtocol = [IOSClass classWithProtocol:protocol];
+          IOSClass *iosProtocol = IOSClass_fromProtocol(protocol);
           JavaLangReflectMethod *method =
               [iosProtocol findMethodWithTranslatedName:NSStringFromSelector(selector)];
           IOSObjectArray *paramTypes = [method getParameterTypes];
           jint numArgs = paramTypes->size_;
-          IOSObjectArray *args = [IOSObjectArray arrayWithLength:numArgs
-                                                            type:[NSObject getClass]];
+          IOSObjectArray *args = [IOSObjectArray arrayWithLength:numArgs type:NSObject_class_()];
 
           for (jint i = 0; i < numArgs; i++) {
             J2ObjcRawValue arg;

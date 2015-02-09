@@ -27,7 +27,6 @@ JUNIT_PUBLIC_SOURCES = \
     junit/framework/AssertionFailedError.java \
     junit/framework/ComparisonCompactor.java \
     junit/framework/ComparisonFailure.java \
-    junit/framework/JUnit4TestAdapter.java \
     junit/framework/JUnit4TestAdapterCache.java \
     junit/framework/JUnit4TestCaseFacade.java \
     junit/framework/Protectable.java \
@@ -125,6 +124,7 @@ JUNIT_INTERNAL_SOURCES = \
     org/junit/internal/runners/SuiteMethod.java
 
 MODIFIED_SOURCES = \
+    junit/framework/JUnit4TestAdapter.java \
     junit/framework/TestCase.java \
     org/junit/runners/ParentRunner.java
 
@@ -191,7 +191,8 @@ fat_lib_dependencies: jre_emul_dist
 
 CREATE_JAR_NAME = j2objc_junit
 CREATE_JAR_SOURCES = $(JAVA_SOURCES)
-CREATE_JAR_JAVAC_ARGS = -cp $(CLASSPATH)
+CREATE_JAR_JAVAC_ARGS = -cp $(CLASSPATH) -source 1.7 -target 1.7 \
+  -bootclasspath $(DIST_JAR_DIR)/jre_emul.jar
 CREATE_JAR_DEPENDENCIES = annotations_dist
 include ../make/create_jar.mk
 
@@ -251,3 +252,9 @@ clean:
 	@rm -rf $(ARCH_INCLUDE_DIR)/junit $(ARCH_INCLUDE_DIR)/org/junit
 
 dist: lib $(JUNIT_LIB_DIST) $(ARCH_HEADERS) $(JUNIT_DIST_JAR)
+
+find_cycles: $(JAVA_SOURCES_MANIFEST) | cycle_finder_dist jre_emul_java_manifest
+	$(DIST_DIR)/cycle_finder \
+	  -sourcepath $(MODIFIED_JAVA_SRC_DIR):$(JAVA_SRC_DIR) \
+          -cp $(CLASSPATH) -w ../jre_emul/cycle_whitelist.txt \
+          -s ../jre_emul/$(BUILD_DIR_NAME)/java_sources.mf -s $(JAVA_SOURCES_MANIFEST)

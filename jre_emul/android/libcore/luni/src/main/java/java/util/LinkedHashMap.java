@@ -413,7 +413,7 @@ public class LinkedHashMap<K, V> extends HashMap<K, V> {
         state->mutationsPtr = (unsigned long *) &modCount_;
         entry = header_->nxt_;
       } else {
-        entry = (void *) state->extra[0];
+        entry = (JavaUtilLinkedHashMap_LinkedEntry *) state->extra[0];
       }
       state->itemsPtr = stackbuf;
       NSUInteger objCount = 0;

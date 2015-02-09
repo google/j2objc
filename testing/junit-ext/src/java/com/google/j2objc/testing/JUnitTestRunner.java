@@ -16,6 +16,7 @@ package com.google.j2objc.testing;
 
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
+import com.google.j2objc.annotations.AutoreleasePool;
 import com.google.j2objc.annotations.WeakOuter;
 
 import junit.framework.Test;
@@ -120,8 +121,12 @@ public class JUnitTestRunner {
   public static int run(Class[] classes, RunListener listener) {
     JUnitCore junitCore = new JUnitCore();
     junitCore.addListener(listener);
-    Result result = junitCore.run(classes);
-    return result.wasSuccessful() ? 0 : 1;
+    boolean hasError = false;
+    for (@AutoreleasePool Class c : classes) {
+      Result result = junitCore.run(c);
+      hasError = hasError || !result.wasSuccessful();
+    }
+    return hasError ? 1 : 0;
   }
 
   /**
@@ -214,7 +219,7 @@ public class JUnitTestRunner {
     for (int i = 0; i < classCount; i++) {
       Class cls = classes[i];
       if (IsNSObjectClass(cls)) {
-        IOSClass *javaClass = [IOSClass classWithClass:cls];
+        IOSClass *javaClass = IOSClass_fromClass(cls);
         if ([self isJUnitTestClassWithIOSClass:javaClass]) {
           [result addWithId:javaClass];
         }

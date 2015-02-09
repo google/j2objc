@@ -21,6 +21,7 @@
 
 #import "NSObject+JavaObject.h"
 #import "IOSClass.h"
+#import "J2ObjC_source.h"
 #import "java/lang/ClassCastException.h"
 #import "java/lang/CloneNotSupportedException.h"
 #import "java/lang/IllegalArgumentException.h"
@@ -53,7 +54,7 @@
 }
 
 - (IOSClass *)getClass {
-  return [IOSClass classWithClass:[self class]];
+  return IOSClass_fromClass([self class]);
 }
 
 - (int)compareToWithId:(id)other {
@@ -137,20 +138,7 @@ static void doWait(id obj, long long timeout) {
   doWait(self, timeout + (nanos == 0 ? 0 : 1));
 }
 
-+ (id)throwClassCastException {
-  @throw AUTORELEASE([[JavaLangClassCastException alloc] init]);
-  return nil;
-}
-
 - (void)copyAllFieldsTo:(id)other {
-}
-
-- (NSArray *)memDebugStrongReferences {
-  return [NSArray array];
-}
-
-+ (NSArray *)memDebugStaticReferences {
-  return nil;
 }
 
 + (J2ObjcClassInfo *)__metadata {
@@ -168,7 +156,7 @@ static void doWait(id obj, long long timeout) {
     { "hash", "hashCode", "I", 0x1, NULL },
   };
   static J2ObjcClassInfo _JavaLangObject = {
-    "Object", "java.lang", NULL, 0x1, 9, methods, 0, NULL, 0, NULL
+    1, "Object", "java.lang", NULL, 0x1, 9, methods, 0, NULL, 0, NULL
   };
   return &_JavaLangObject;
 }
@@ -182,3 +170,5 @@ static void doWait(id obj, long long timeout) {
 
 @implementation JreObjectCategoryDummy
 @end
+
+J2OBJC_CLASS_TYPE_LITERAL_SOURCE(NSObject)

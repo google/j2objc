@@ -20,6 +20,21 @@
 //
 
 #import "IOSClass.h"
+
+#import "FastPointerLookup.h"
+#import "IOSArrayClass.h"
+#import "IOSConcreteClass.h"
+#import "IOSMappedClass.h"
+#import "IOSObjectArray.h"
+#import "IOSPrimitiveArray.h"
+#import "IOSPrimitiveClass.h"
+#import "IOSProtocolClass.h"
+#import "IOSReflection.h"
+#import "JavaMetadata.h"
+#import "NSCopying+JavaCloneable.h"
+#import "NSNumber+JavaNumber.h"
+#import "NSObject+JavaObject.h"
+#import "NSString+JavaString.h"
 #import "java/lang/AssertionError.h"
 #import "java/lang/ClassCastException.h"
 #import "java/lang/ClassLoader.h"
@@ -36,20 +51,12 @@
 #import "java/lang/reflect/Field.h"
 #import "java/lang/reflect/Method.h"
 #import "java/lang/reflect/Modifier.h"
+#import "java/lang/reflect/TypeVariable.h"
 #import "java/util/Properties.h"
-#import "IOSArrayClass.h"
-#import "IOSConcreteClass.h"
-#import "IOSMappedClass.h"
-#import "IOSObjectArray.h"
-#import "IOSPrimitiveArray.h"
-#import "IOSPrimitiveClass.h"
-#import "IOSProtocolClass.h"
-#import "JavaMetadata.h"
-#import "NSNumber+JavaNumber.h"
-#import "NSObject+JavaObject.h"
-#import "NSString+JavaString.h"
 #import "objc/message.h"
 #import "objc/runtime.h"
+
+BOOL IOSClass_initialized = NO;
 
 @implementation IOSClass
 
@@ -68,24 +75,13 @@ static IOSPrimitiveClass *IOSClass_voidClass;
 
 // Other commonly used instances.
 static IOSClass *IOSClass_objectClass;
-static IOSClass *IOSClass_stringClass;
 
-// Function forwards.
-static IOSClass *FetchClass(Class cls);
-static IOSClass *FetchProtocol(Protocol *protocol);
-static IOSClass *FetchArray(IOSClass *componentType);
+static IOSObjectArray *IOSClass_emptyClassArray;
 
 #define PREFIX_MAPPING_RESOURCE @"prefixes.properties"
 
 // Package to prefix mappings, initialized in FindMappedClass().
 static JavaUtilProperties *prefixMapping;
-
-- (instancetype)init {
-  if ((self = [super init])) {
-    JreMemDebugAdd(self);
-  }
-  return self;
-}
 
 - (Class)objcClass {
   return nil;
@@ -95,17 +91,23 @@ static JavaUtilProperties *prefixMapping;
   return nil;
 }
 
+// TODO(kstanger): remove after clients updated.
++ (IOSClass *)classFromClass:(Class)cls {
+  return IOSClass_fromClass(cls);
+}
++ (IOSClass *)classFromProtocol:(Protocol *)protocol {
+  return IOSClass_fromProtocol(protocol);
+}
 + (IOSClass *)classWithClass:(Class)cls {
-  return FetchClass(cls);
+  return IOSClass_fromClass(cls);
 }
-
 + (IOSClass *)classWithProtocol:(Protocol *)protocol {
-  return FetchProtocol(protocol);
+  return IOSClass_fromProtocol(protocol);
 }
-
 + (IOSClass *)arrayClassWithComponentType:(IOSClass *)componentType {
-  return FetchArray(componentType);
+  return IOSClass_arrayOf(componentType);
 }
+// end to-be-removed methods.
 
 + (IOSClass *)byteClass {
   return IOSClass_byteClass;
@@ -141,14 +143,6 @@ static JavaUtilProperties *prefixMapping;
 
 + (IOSClass *)voidClass {
   return IOSClass_voidClass;
-}
-
-+ (IOSClass *)objectClass {
-  return IOSClass_objectClass;
-}
-
-+ (IOSClass *)stringClass {
-  return IOSClass_stringClass;
 }
 
 - (id)newInstance {
@@ -210,15 +204,14 @@ static JavaUtilProperties *prefixMapping;
 - (IOSObjectArray *)getDeclaredMethods {
   NSMutableDictionary *methodMap = [NSMutableDictionary dictionary];
   [self collectMethods:methodMap publicOnly:NO];
-  return [IOSObjectArray arrayWithNSArray:[methodMap allValues] type:
-      FetchClass([JavaLangReflectMethod class])];
+  return [IOSObjectArray arrayWithNSArray:[methodMap allValues]
+      type:JavaLangReflectMethod_class_()];
 }
 
 // Return the constructors declared by this class.  Superclass constructors
 // are not included.
 - (IOSObjectArray *)getDeclaredConstructors {
-  return [IOSObjectArray arrayWithLength:0 type:
-      FetchClass([JavaLangReflectConstructor class])];
+  return [IOSObjectArray arrayWithLength:0 type:JavaLangReflectConstructor_class_()];
 }
 
 // Return the methods for this class, including inherited methods.
@@ -229,14 +222,13 @@ static JavaUtilProperties *prefixMapping;
     [cls collectMethods:methodMap publicOnly:YES];
     cls = [cls getSuperclass];
   }
-  return [IOSObjectArray arrayWithNSArray:[methodMap allValues] type:
-      FetchClass([JavaLangReflectMethod class])];
+  return [IOSObjectArray arrayWithNSArray:[methodMap allValues]
+      type:JavaLangReflectMethod_class_()];
 }
 
 // Return the constructors for this class, including inherited ones.
 - (IOSObjectArray *)getConstructors {
-  return [IOSObjectArray arrayWithLength:0 type:
-      FetchClass([JavaLangReflectConstructor class])];
+  return [IOSObjectArray arrayWithLength:0 type:JavaLangReflectConstructor_class_()];
 }
 
 // Return a method instance described by a name and an array of
@@ -256,7 +248,7 @@ static JavaUtilProperties *prefixMapping;
       return method;
     }
   }
-  for (IOSProtocolClass *p in [self getInterfacesWithArrayType:FetchClass([IOSClass class])]) {
+  for (IOSClass *p in [self getInterfacesInternal]) {
     method = [p findMethodWithTranslatedName:translatedName];
     if (method != nil) {
       return method;
@@ -396,15 +388,15 @@ static IOSClass *ClassForIosName(NSString *iosName) {
   // special-cased because it also has a protocol but we want to return an
   // IOSConcreteClass instance for it.
   if ([iosName isEqualToString:@"NSObject"]) {
-    return [IOSClass objectClass];
+    return IOSClass_objectClass;
   }
   Protocol *protocol = NSProtocolFromString(iosName);
   if (protocol) {
-    return FetchProtocol(protocol);
+    return IOSClass_fromProtocol(protocol);
   }
   Class clazz = NSClassFromString(iosName);
   if (clazz) {
-    return FetchClass(clazz);
+    return IOSClass_fromClass(clazz);
   }
   return nil;
 }
@@ -492,7 +484,7 @@ static IOSClass *IOSClass_ArrayClassForName(NSString *name, NSUInteger index) {
       break;
   }
   if (componentType) {
-    return FetchArray(componentType);
+    return IOSClass_arrayOf(componentType);
   }
   return nil;
 }
@@ -590,22 +582,37 @@ static BOOL hasModifier(IOSClass *cls, int flag) {
   return hasModifier(self, JavaLangReflectModifier_SYNTHETIC);
 }
 
-- (IOSObjectArray *)getInterfacesWithArrayType:(IOSClass *)arrayType {
-  return [IOSObjectArray arrayWithLength:0 type:arrayType];
+- (IOSObjectArray *)getInterfacesInternal {
+  return IOSClass_emptyClassArray;
 }
 
 - (IOSObjectArray *)getInterfaces {
-  return [self getInterfacesWithArrayType:FetchClass([IOSClass class])];
+  return [IOSObjectArray arrayWithArray:[self getInterfacesInternal]];
 }
 
 - (IOSObjectArray *)getGenericInterfaces {
-  return [self getInterfacesWithArrayType:FetchProtocol(@protocol(JavaLangReflectType))];
+  IOSObjectArray *interfaces = [self getInterfacesInternal];
+  return [IOSObjectArray arrayWithObjects:interfaces->buffer_
+                                    count:interfaces->size_
+                                     type:JavaLangReflectType_class_()];
+}
+
+IOSObjectArray *IOSClass_NewInterfacesFromProtocolList(Protocol **list, unsigned int count) {
+  IOSClass *buffer[count];
+  unsigned int actualCount = 0;
+  for (unsigned int i = 0; i < count; i++) {
+    Protocol *protocol = list[i];
+    if (protocol != @protocol(NSObject) && protocol != @protocol(JavaObject)) {
+      buffer[actualCount++] = IOSClass_fromProtocol(list[i]);
+    }
+  }
+  return [IOSObjectArray newArrayWithObjects:buffer
+                                       count:actualCount
+                                        type:IOSClass_class_()];
 }
 
 - (IOSObjectArray *)getTypeParameters {
-  IOSClass *typeVariableClass = [IOSClass
-      classWithProtocol:objc_getProtocol("JavaLangReflectTypeVariable")];
-  return [IOSObjectArray arrayWithLength:0 type:typeVariableClass];
+  return [IOSObjectArray arrayWithLength:0 type:JavaLangReflectTypeVariable_class_()];
 }
 
 - (id)getAnnotationWithIOSClass:(IOSClass *)annotationClass {
@@ -634,7 +641,7 @@ static BOOL hasModifier(IOSClass *cls, int flag) {
 
   // Check for any inherited annotations.
   IOSClass *cls = [self getSuperclass];
-  IOSClass *inheritedAnnotation = [JavaLangAnnotationInherited getClass];
+  IOSClass *inheritedAnnotation = JavaLangAnnotationInherited_class_();
   while (cls) {
     IOSObjectArray *declared = [cls getDeclaredAnnotations];
     for (jint i = 0; i < declared->size_; i++) {
@@ -642,18 +649,16 @@ static BOOL hasModifier(IOSClass *cls, int flag) {
       IOSObjectArray *attributes = [[annotation getClass] getDeclaredAnnotations];
       for (jint j = 0; j < attributes->size_; j++) {
         id<JavaLangAnnotationAnnotation> attribute = attributes->buffer_[j];
-        if (inheritedAnnotation == [attribute getClass]) {
+        if (inheritedAnnotation == [attribute annotationType]) {
           [array addObject:annotation];
         }
       }
     }
     cls = [cls getSuperclass];
   }
-  IOSClass *annotationType = [IOSClass classWithProtocol:@protocol(JavaLangAnnotationAnnotation)];
-  IOSObjectArray *result = [IOSObjectArray arrayWithNSArray:array type:annotationType];
-#if ! __has_feature(objc_arc)
+  IOSObjectArray *result =
+      [IOSObjectArray arrayWithNSArray:array type:JavaLangAnnotationAnnotation_class_()];
   [array release];
-#endif
   return result;
 }
 
@@ -665,8 +670,7 @@ static BOOL hasModifier(IOSClass *cls, int flag) {
       return method_invoke(cls, annotationsMethod);
     }
   }
-  IOSClass *annotationType = [IOSClass classWithProtocol:@protocol(JavaLangAnnotationAnnotation)];
-  return [IOSObjectArray arrayWithLength:0 type:annotationType];
+  return [IOSObjectArray arrayWithLength:0 type:JavaLangAnnotationAnnotation_class_()];
 }
 
 // Returns the metadata structure defined by this class, if it exists.
@@ -801,9 +805,8 @@ static void GetFieldsFromClass(IOSClass *iosClass, NSMutableDictionary *fields) 
 
 IOSObjectArray *copyFieldsToObjectArray(NSArray *fields) {
   jint count = (jint)[fields count];
-  IOSClass *fieldType = [IOSClass classWithClass:[JavaLangReflectField class]];
-  IOSObjectArray *results = [IOSObjectArray arrayWithLength:count
-                                                       type:fieldType];
+  IOSObjectArray *results =
+      [IOSObjectArray arrayWithLength:count type:JavaLangReflectField_class_()];
   for (jint i = 0; i < count; i++) {
     [results replaceObjectAtIndex:i withObject:[fields objectAtIndex:i]];
   }
@@ -859,7 +862,7 @@ IOSObjectArray *copyFieldsToObjectArray(NSArray *fields) {
 }
 
 - (id)__boxValue:(J2ObjcRawValue *)rawValue {
-  return rawValue->asId;
+  return (id)rawValue->asId;
 }
 
 - (BOOL)__unboxValue:(id)value toRawValue:(J2ObjcRawValue *)rawValue {
@@ -872,7 +875,7 @@ IOSObjectArray *copyFieldsToObjectArray(NSArray *fields) {
 }
 
 - (void)__writeRawValue:(J2ObjcRawValue *)rawValue toAddress:(const void *)addr {
-  *(id *)addr = rawValue->asId;
+  *(id *)addr = (id)rawValue->asId;
 }
 
 - (BOOL)__convertRawValue:(J2ObjcRawValue *)rawValue toType:(IOSClass *)type {
@@ -886,71 +889,78 @@ IOSObjectArray *copyFieldsToObjectArray(NSArray *fields) {
   return self;
 }
 
-- (void)dealloc {
-#if ! __has_feature(objc_arc)
-  JreMemDebugRemove(self);
-  [super dealloc];
-#endif
+static BOOL IsStringType(Class cls) {
+  // We can't trigger class initialization because that might recursively enter
+  // FetchClass and result in deadlock within the FastPointerLookup. Therefore,
+  // we can't use [cls isSubclassOfClass:[NSString class]].
+  Class stringCls = [NSString class];
+  while (cls) {
+    if (cls == stringCls) {
+      return YES;
+    }
+    cls = class_getSuperclass(cls);
+  }
+  return NO;
 }
 
-IOSClass *FetchClass(Class cls) {
-  static int key;
-  IOSClass *iosClass = objc_getAssociatedObject(cls, &key);
-  if (!iosClass) {
-    @synchronized (cls) {
-      iosClass = objc_getAssociatedObject(cls, &key);
-      if (!iosClass) {
-        if (cls == [NSObject class]) {
-          iosClass = AUTORELEASE([[IOSMappedClass alloc] initWithClass:[NSObject class]
-                                                               package:@"java.lang"
-                                                                  name:@"Object"]);
-        } else if ([cls isSubclassOfClass:[NSString class]]) {
-          // NSString is implemented by several subclasses.
-          if (!IOSClass_stringClass) {
-            IOSClass_stringClass =
-                AUTORELEASE([[IOSMappedClass alloc] initWithClass:[NSString class]
-                                                          package:@"java.lang"
-                                                             name:@"String"]);
-          }
-          iosClass = IOSClass_stringClass;
-        } else {
-          iosClass = AUTORELEASE([[IOSConcreteClass alloc] initWithClass:cls]);
-        }
-        objc_setAssociatedObject(cls, &key, iosClass, OBJC_ASSOCIATION_RETAIN);
-      }
+static void *ClassLookup(void *clsPtr) {
+  Class cls = (Class)clsPtr;
+  if (cls == [NSObject class]) {
+    return [[IOSMappedClass alloc] initWithClass:[NSObject class]
+                                         package:@"java.lang"
+                                            name:@"Object"];
+  } else if (IsStringType(cls)) {
+    // NSString is implemented by several subclasses.
+    // Thread safety is guaranteed by the FastPointerLookup that calls this.
+    static IOSClass *stringClass;
+    if (!stringClass) {
+      stringClass = [[IOSMappedClass alloc] initWithClass:[NSString class]
+                                                  package:@"java.lang"
+                                                     name:@"String"];
     }
+    return stringClass;
+  } else {
+    IOSClass *result = [[IOSConcreteClass alloc] initWithClass:cls];
+    return result;
   }
-  return iosClass;
+  return NULL;
 }
 
-IOSClass *FetchProtocol(Protocol *protocol) {
-  static int key;
-  IOSClass *iosClass = objc_getAssociatedObject(protocol, &key);
-  if (!iosClass) {
-    @synchronized (protocol) {
-      iosClass = objc_getAssociatedObject(protocol, &key);
-      if (!iosClass) {
-        iosClass = AUTORELEASE([[IOSProtocolClass alloc] initWithProtocol:protocol]);
-        objc_setAssociatedObject(protocol, &key, iosClass, OBJC_ASSOCIATION_RETAIN);
-      }
-    }
-  }
-  return iosClass;
+static FastPointerLookup_t classLookup = FAST_POINTER_LOOKUP_INIT(&ClassLookup);
+
+IOSClass *IOSClass_fromClass(Class cls) {
+  // We get deadlock if IOSClass is not initialized before entering the fast
+  // lookup because +initialize makes calls into IOSClass_fromClass().
+  IOSClass_init();
+  return FastPointerLookup(&classLookup, cls);
 }
 
-IOSClass *FetchArray(IOSClass *componentType) {
-  static int key;
-  IOSClass *iosClass = objc_getAssociatedObject(componentType, &key);
-  if (!iosClass) {
-    @synchronized (componentType) {
-      iosClass = objc_getAssociatedObject(componentType, &key);
-      if (!iosClass) {
-        iosClass = AUTORELEASE([[IOSArrayClass alloc] initWithComponentType:componentType]);
-        objc_setAssociatedObject(componentType, &key, iosClass, OBJC_ASSOCIATION_RETAIN);
-      }
-    }
+static void *ProtocolLookup(void *protocol) {
+  return [[IOSProtocolClass alloc] initWithProtocol:protocol];
+}
+
+static FastPointerLookup_t protocolLookup = FAST_POINTER_LOOKUP_INIT(&ProtocolLookup);
+
+IOSClass *IOSClass_fromProtocol(Protocol *protocol) {
+  return FastPointerLookup(&protocolLookup, protocol);
+}
+
+static void *ArrayLookup(void *componentType) {
+  return [[IOSArrayClass alloc] initWithComponentType:componentType];
+}
+
+static FastPointerLookup_t arrayLookup = FAST_POINTER_LOOKUP_INIT(&ArrayLookup);
+
+IOSClass *IOSClass_arrayOf(IOSClass *componentType) {
+  return FastPointerLookup(&arrayLookup, componentType);
+}
+
+IOSClass *IOSClass_arrayType(IOSClass *componentType, jint dimensions) {
+  IOSClass *result = FastPointerLookup(&arrayLookup, componentType);
+  while (--dimensions > 0) {
+    result = FastPointerLookup(&arrayLookup, result);
   }
-  return iosClass;
+  return result;
 }
 
 + (void)initialize {
@@ -975,13 +985,15 @@ IOSClass *FetchArray(IOSClass *componentType) {
     IOSClass_booleanClass = [[IOSPrimitiveClass alloc] initWithName:@"boolean" type:@"Z"];
     IOSClass_voidClass = [[IOSPrimitiveClass alloc] initWithName:@"void" type:@"V"];
 
-    IOSClass_objectClass = FetchClass([NSObject class]);
-    IOSClass_stringClass = FetchClass([NSString class]);
+    IOSClass_objectClass = IOSClass_fromClass([NSObject class]);
+
+    IOSClass_emptyClassArray = [IOSObjectArray newArrayWithLength:0 type:IOSClass_class_()];
 
     // Load and initialize JRE categories, using their dummy classes.
-    AUTORELEASE([[JreObjectCategoryDummy alloc] init]);
-    AUTORELEASE([[JreStringCategoryDummy alloc] init]);
-    AUTORELEASE([[JreNumberCategoryDummy alloc] init]);
+    [JreObjectCategoryDummy class];
+    [JreStringCategoryDummy class];
+    [JreNumberCategoryDummy class];
+    [NSCopying class];
 
     // Verify that these categories successfully loaded.
     if ([[NSObject class] instanceMethodSignatureForSelector:@selector(compareToWithId:)] == NULL ||
@@ -991,6 +1003,8 @@ IOSClass *FetchArray(IOSClass *componentType) {
                   format:@"Your project is not configured to load categories from the JRE "
                           "emulation library. Try adding the -force_load linker flag."];
     }
+
+    J2OBJC_SET_INITIALIZED(IOSClass)
   }
 }
 
@@ -1015,8 +1029,12 @@ IOSClass *FetchArray(IOSClass *componentType) {
   static J2ObjcFieldInfo fields[] = {
     { "serialVersionUID_", NULL, 0x1a, "J" },
   };
-static J2ObjcClassInfo _IOSClass = { "Class", "java.lang", NULL, 0x11, 10, methods, 1, fields, 0, NULL};
+  static J2ObjcClassInfo _IOSClass = {
+    1, "Class", "java.lang", NULL, 0x11, 10, methods, 1, fields, 0, NULL
+  };
   return &_IOSClass;
 }
 
 @end
+
+J2OBJC_CLASS_TYPE_LITERAL_SOURCE(IOSClass)

@@ -18,7 +18,6 @@
 package com.google.j2objc.security;
 
 import com.google.j2objc.security.cert.IosCertificateFactory;
-import com.google.j2objc.security.cert.IosX509Certificate;
 
 import java.security.Provider;
 
@@ -64,6 +63,15 @@ public class IosSecurityProvider extends Provider {
     // iso(1) member-body(2) US(840) rsadsi(113549) digestAlgorithm(2) md5(5)
     put("MessageDigest.MD5", "com.google.j2objc.security.IosMD5MessageDigest");
     put("Alg.Alias.MessageDigest.1.2.840.113549.2.5", "MD5");
+
+    /* == KeyPairGenerators == */
+    put("KeyPairGenerator.RSA", PREFIX + "IosRSAKeyPairGenerator");
+    put("Alg.Alias.KeyPairGenerator.1.2.840.113549.1.1.1", "RSA");
+
+    /* == KeyFactory == */
+    put("KeyFactory.RSA", PREFIX + "IosRSAKeyFactory");
+    put("Alg.Alias.KeyFactory.1.2.840.113549.1.1.1", "RSA");
+
   }
 
   // Reference all dynamically loaded classes, so they are linked into apps.

@@ -23,6 +23,7 @@
 #define _IOSClass_H_
 
 #import "IOSReflection.h"
+#import "J2ObjC_common.h"
 #import "java/io/Serializable.h"
 #import "java/lang/reflect/AnnotatedElement.h"
 #import "java/lang/reflect/GenericDeclaration.h"
@@ -52,11 +53,15 @@
 @property (readonly) Protocol *objcProtocol;
 
 // IOSClass Getters.
-+ (IOSClass *)classWithClass:(Class)cls;
-+ (IOSClass *)classWithProtocol:(Protocol *)protocol;
-+ (IOSClass *)arrayClassWithComponentType:(IOSClass *)componentType;
 + (IOSClass *)classForIosName:(NSString *)iosName;
 + (IOSClass *)primitiveClassForChar:(unichar)c;
+
+// Obsolete IOSClass Getters (deprecate after updating dependent projects).
++ (IOSClass *)classFromClass:(Class)cls;
++ (IOSClass *)classFromProtocol:(Protocol *)protocol;
++ (IOSClass *)arrayClassWithComponentType:(IOSClass *)componentType;
++ (IOSClass *)classWithClass:(Class)cls;
++ (IOSClass *)classWithProtocol:(Protocol *)protocol;
 
 // Primitive class instance getters.
 + (IOSClass *)byteClass;
@@ -68,9 +73,6 @@
 + (IOSClass *)shortClass;
 + (IOSClass *)booleanClass;
 + (IOSClass *)voidClass;
-
-+ (IOSClass *)objectClass;
-+ (IOSClass *)stringClass;
 
 // Class.newInstance()
 - (id)newInstance NS_RETURNS_NOT_RETAINED;
@@ -187,26 +189,49 @@
 - (void)collectMethods:(NSMutableDictionary *)methodMap
             publicOnly:(BOOL)publicOnly;
 - (JavaLangReflectMethod *)findMethodWithTranslatedName:(NSString *)objcName;
-- (IOSObjectArray *)getInterfacesWithArrayType:(IOSClass *)arrayType;
+// Same as getInterfaces, but not a defensive copy.
+- (IOSObjectArray *)getInterfacesInternal;
 - (JavaClassMetadata *)getMetadata;
 - (NSString *)objcName;
 - (NSString *)binaryName;
 
-#ifdef __cplusplus
-extern "C" {
-#endif
+@end
 
-extern NSString *IOSClass_GetTranslatedMethodName(
+CF_EXTERN_C_BEGIN
+
+// Lookup a IOSClass from its associated ObjC class, protocol or component type.
+IOSClass *IOSClass_fromClass(Class cls);
+IOSClass *IOSClass_fromProtocol(Protocol *protocol);
+IOSClass *IOSClass_arrayOf(IOSClass *componentType);
+// Same as "arrayOf" but allows dimensions to be specified.
+IOSClass *IOSClass_arrayType(IOSClass *componentType, jint dimensions);
+
+// Primitive array type literals.
+#define IOSClass_byteArray(DIM) IOSClass_arrayType([IOSClass byteClass], DIM)
+#define IOSClass_charArray(DIM) IOSClass_arrayType([IOSClass charClass], DIM)
+#define IOSClass_doubleArray(DIM) IOSClass_arrayType([IOSClass doubleClass], DIM)
+#define IOSClass_floatArray(DIM) IOSClass_arrayType([IOSClass floatClass], DIM)
+#define IOSClass_intArray(DIM) IOSClass_arrayType([IOSClass intClass], DIM)
+#define IOSClass_longArray(DIM) IOSClass_arrayType([IOSClass longClass], DIM)
+#define IOSClass_shortArray(DIM) IOSClass_arrayType([IOSClass shortClass], DIM)
+#define IOSClass_booleanArray(DIM) IOSClass_arrayType([IOSClass booleanClass], DIM)
+
+// Internal functions
+NSString *IOSClass_GetTranslatedMethodName(
     IOSClass *cls, NSString *name, IOSObjectArray *paramTypes);
 
-FOUNDATION_EXPORT IOSClass *IOSClass_forNameWithNSString_(NSString *className);
-FOUNDATION_EXPORT IOSClass *IOSClass_forNameWithNSString_withBoolean_withJavaLangClassLoader_(
+IOSClass *IOSClass_forNameWithNSString_(NSString *className);
+IOSClass *IOSClass_forNameWithNSString_withBoolean_withJavaLangClassLoader_(
     NSString *className, BOOL load, JavaLangClassLoader *loader);
 
-#ifdef __cplusplus
-}
-#endif
+// Return value is retained
+IOSObjectArray *IOSClass_NewInterfacesFromProtocolList(Protocol **list, unsigned int count);
 
-@end
+CF_EXTERN_C_END
+
+FOUNDATION_EXPORT BOOL IOSClass_initialized;
+J2OBJC_STATIC_INIT(IOSClass)
+
+J2OBJC_TYPE_LITERAL_HEADER(IOSClass)
 
 #endif // _IOSClass_H_

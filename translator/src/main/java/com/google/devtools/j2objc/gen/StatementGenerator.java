@@ -321,24 +321,7 @@ public class StatementGenerator extends TreeVisitor {
       buffer.append("{\n@autoreleasepool ");
     }
     buffer.append("{\n");
-    List<Statement> stmts = node.getStatements();
-    // In case it's the body of a dealloc method, we generate the debug statement.
-    // If we detect a -[super dealloc] method call, we are in a dealloc method.
-    int size = stmts.size();
-    if (size > 0) {
-      Statement lastStatement = stmts.get(size - 1);
-      if (lastStatement instanceof ExpressionStatement) {
-        Expression subnode = ((ExpressionStatement) lastStatement).getExpression();
-        if (subnode instanceof SuperMethodInvocation) {
-          SuperMethodInvocation invocation = (SuperMethodInvocation) subnode;
-          IMethodBinding binding = invocation.getMethodBinding();
-          if (Options.memoryDebug() && BindingUtil.isDestructor(binding)) {
-            buffer.append("JreMemDebugRemove(self);\n");
-          }
-        }
-      }
-    }
-    printStatements(stmts);
+    printStatements(node.getStatements());
     buffer.append("}\n");
     if (node.hasAutoreleasePool()) {
       buffer.append("}\n");
@@ -395,7 +378,7 @@ public class StatementGenerator extends TreeVisitor {
     for (Type exceptionType : ((UnionType) exception.getType()).getTypes()) {
       buffer.append("@catch (");
       exceptionType.accept(this);
-      buffer.append(' ');
+      buffer.append(" *");
       exception.getName().accept(this);
       buffer.append(") {\n");
       printMainExceptionStore(hasResources, node);
@@ -659,26 +642,19 @@ public class StatementGenerator extends TreeVisitor {
 
   @Override
   public boolean visit(InstanceofExpression node) {
-    ITypeBinding leftBinding = node.getLeftOperand().getTypeBinding();
     ITypeBinding rightBinding = node.getRightOperand().getTypeBinding();
-
-    buffer.append('[');
-    if (leftBinding.isInterface()) {
-      // Obj-C complains when a id<Protocol> is tested for a different
-      // protocol, so cast it to a generic id.
-      buffer.append("(id) ");
-    }
-    node.getLeftOperand().accept(this);
     if (rightBinding.isInterface()) {
-      buffer.append(" conformsToProtocol: @protocol(");
-      node.getRightOperand().accept(this);
-      buffer.append(")");
+      // Our version of "isInstance" is faster than "conformsToProtocol".
+      buffer.append(String.format("[%s_class_() isInstance:", NameTable.getFullName(rightBinding)));
+      node.getLeftOperand().accept(this);
+      buffer.append(']');
     } else {
+      buffer.append('[');
+      node.getLeftOperand().accept(this);
       buffer.append(" isKindOfClass:[");
       node.getRightOperand().accept(this);
-      buffer.append(" class]");
+      buffer.append(" class]]");
     }
-    buffer.append(']');
     return false;
   }
 
@@ -993,6 +969,13 @@ public class StatementGenerator extends TreeVisitor {
     return false;
   }
 
+  private static String signatureType(ITypeBinding type) {
+    if (type.isPrimitive()) {
+      return NameTable.primitiveTypeToObjC(type);
+    }
+    return "id";
+  }
+
   @Override
   public boolean visit(SuperMethodInvocation node) {
     IMethodBinding binding = node.getMethodBinding();
@@ -1001,16 +984,13 @@ public class StatementGenerator extends TreeVisitor {
       String typeName = NameTable.getFullName(
           BindingUtil.toTypeBinding(qualifier.getBinding()).getSuperclass());
       String selectorName = NameTable.getMethodSelector(binding);
-      ITypeBinding returnType = binding.getReturnType();
-      String closeImpCast = "";
-      if (returnType.isPrimitive()) {
-        // We must cast the IMP to have the correct return type.
-        buffer.append(String.format("((%s (*)(id, SEL, ...))",
-            NameTable.primitiveTypeToObjC(returnType)));
-        closeImpCast = ")";
+      // We must cast the IMP to have the correct return type and parameters.
+      buffer.append(String.format("((%s (*)(id, SEL", signatureType(binding.getReturnType())));
+      for (ITypeBinding paramType : binding.getParameterTypes()) {
+        buffer.append(", ").append(signatureType(paramType));
       }
       buffer.append(String.format(
-          "[%s instanceMethodForSelector:@selector(%s)]%s(", typeName, selectorName, closeImpCast));
+          "))[%s instanceMethodForSelector:@selector(%s)])(", typeName, selectorName));
       qualifier.accept(this);
       buffer.append(String.format(", @selector(%s)", selectorName));
       for (Expression arg : node.getArguments()) {
@@ -1226,14 +1206,9 @@ public class StatementGenerator extends TreeVisitor {
     ITypeBinding type = node.getType().getTypeBinding();
     if (type.isPrimitive()) {
       buffer.append(String.format("[IOSClass %sClass]", type.getName()));
-    } else if (type.isInterface()) {
-      buffer.append("[IOSClass classWithProtocol:@protocol(");
-      buffer.append(NameTable.getFullName(type));
-      buffer.append(")]");
     } else {
-      buffer.append("[IOSClass classWithClass:[");
       buffer.append(NameTable.getFullName(type));
-      buffer.append(" class]]");
+      buffer.append("_class_()");
     }
     return false;
   }

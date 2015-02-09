@@ -8,6 +8,8 @@
 
 #import "NSDataOutputStream.h"
 
+#import "IOSPrimitiveArray.h"
+
 @interface NSDataOutputStream() {
 @private
   NSMutableData *data_;
@@ -48,7 +50,7 @@
   NSUInteger originalLength = [data_ length];
   [data_ increaseLengthBy:count];
 
-  void *firstNewByte = [data_ mutableBytes] + originalLength;
+  jbyte *firstNewByte = ((jbyte *)[data_ mutableBytes]) + originalLength;
   [buffer getBytes:firstNewByte offset:offset length:count];
 }
 

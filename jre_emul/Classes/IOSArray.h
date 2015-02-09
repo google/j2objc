@@ -23,6 +23,7 @@
 #define _IOSARRAY_H
 
 #import "J2ObjC_common.h"
+#import "NSObject+JavaObject.h"
 #import "java/io/Serializable.h"
 
 @class IOSClass;
@@ -45,7 +46,6 @@
     __attribute__((objc_method_family(none), ns_returns_retained));
 
 + (id)iosClass;
-+ (id)iosClassWithDimensions:(NSUInteger)dimensions;
 
 // Returns the size of this array.
 - (jint)length;
@@ -72,24 +72,26 @@
 
 @end
 
-extern void IOSArray_throwOutOfBounds();
-extern void IOSArray_throwOutOfBoundsWithMsg(jint size, jint index);
+CF_EXTERN_C_BEGIN
+void IOSArray_throwOutOfBounds();
+void IOSArray_throwOutOfBoundsWithMsg(jint size, jint index);
+CF_EXTERN_C_END
 
 // Implement IOSArray |checkIndex| and |checkRange| methods as C functions. This
 // allows IOSArray index and range checks to be completely removed via the
 // J2OBJC_DISABLE_ARRAY_CHECKS macro to improve performance.
-__attribute__ ((unused))
-static inline void IOSArray_checkIndex(jint size, jint index) {
-#if !defined(J2OBJC_DISABLE_ARRAY_CHECKS)
-  if (index < 0 || index >= size) {
+__attribute__((always_inline)) inline void IOSArray_checkIndex(jint size, jint index) {
+#if !defined(J2OBJC_DISABLE_ARRAY_BOUND_CHECKS)
+  if (__builtin_expect(index < 0 || index >= size, 0)) {
     IOSArray_throwOutOfBoundsWithMsg(size, index);
   }
 #endif
 }
-__attribute__ ((unused))
-static inline void IOSArray_checkRange(jint size, jint offset, jint length) {
-#if !defined(J2OBJC_DISABLE_ARRAY_CHECKS)
-  if (length < 0 || offset < 0 || offset + length > size) {
+
+__attribute__((always_inline)) inline void IOSArray_checkRange(
+    jint size, jint offset, jint length) {
+#if !defined(J2OBJC_DISABLE_ARRAY_BOUND_CHECKS)
+  if (__builtin_expect(length < 0 || offset < 0 || offset + length > size, 0)) {
     IOSArray_throwOutOfBounds();
   }
 #endif

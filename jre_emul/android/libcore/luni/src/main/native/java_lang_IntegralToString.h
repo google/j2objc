@@ -19,7 +19,11 @@
 
 #include "java/lang/AbstractStringBuilder.h"
 
+CF_EXTERN_C_BEGIN
+
 NSString *IntegralToString_convertInt(JreStringBuilder *sb, int i);
 NSString *IntegralToString_convertLong(JreStringBuilder *sb, long long n);
+
+CF_EXTERN_C_END
 
 #endif // _java_lang_IntegralToString_H_

@@ -138,7 +138,7 @@ public class InnerClassExtractorTest extends GenerationTest {
     translation = getTranslatedFile("Test.m");
     assertTranslatedLines(translation,
         "- (instancetype)init {",
-        "return JreMemDebugAdd([self initTest_FooWithInt:0]);");
+        "return [self initTest_FooWithInt:0];");
     assertTranslatedLines(translation,
         "- (instancetype)initTest_FooWithInt:(jint)i {",
         "if (self = [super init]) {",
@@ -638,7 +638,7 @@ public class InnerClassExtractorTest extends GenerationTest {
     String source = "class Outer { class Inner { Inner(int i) {} Inner() { this(42); } } }";
     String translation = translateSourceFile(source, "Outer", "Outer.m");
     assertTranslation(translation, "- (instancetype)initWithOuter:(Outer *)outer$ {\n"
-        + "  return JreMemDebugAdd([self initOuter_InnerWithOuter:outer$ withInt:42]);\n}");
+        + "  return [self initOuter_InnerWithOuter:outer$ withInt:42];\n}");
   }
 
   public void testListArgsInEnumConstantDeclaration() throws IOException {
@@ -652,9 +652,9 @@ public class InnerClassExtractorTest extends GenerationTest {
         + "}";
     String translation = translateSourceFile(source, "Outer", "Outer.m");
     assertTranslation(translation, "[IOSObjectArray arrayWithObjects:(id[]){ "
-        + "@\"1\", @\"2\", @\"3\" } count:3 type:[IOSClass classWithClass:[NSString class]]]");
+        + "@\"1\", @\"2\", @\"3\" } count:3 type:NSString_class_()]");
     assertTranslation(translation, "[IOSObjectArray arrayWithObjects:(id[]){ "
-        + "@\"4\", @\"5\", @\"6\" } count:3 type:[IOSClass classWithClass:[NSString class]]]");
+        + "@\"4\", @\"5\", @\"6\" } count:3 type:NSString_class_()]");
   }
 
   public void testInnerClassVarargsConstructor() throws IOException {
@@ -729,7 +729,7 @@ public class InnerClassExtractorTest extends GenerationTest {
     assertTranslatedLines(translation,
         "- (instancetype)initWithTest:(Test *)outer$ {",
         "Test_Inner_set_this$0_(self, outer$);",
-        "return JreMemDebugAdd([super init]);",
+        "return [super init];",
         "}");
   }
 
@@ -759,13 +759,13 @@ public class InnerClassExtractorTest extends GenerationTest {
     assertTranslation(translation, "[[Test_test_Inner alloc] initWithNSString:s]");
     assertTranslatedLines(translation,
         "- (instancetype)initWithNSString:(NSString *)capture$0 {",
-        "return JreMemDebugAdd([self initTest_test_InnerWithInt:0 withNSString:capture$0]);",
+        "return [self initTest_test_InnerWithInt:0 withNSString:capture$0];",
         "}");
     assertTranslatedLines(translation,
         "- (instancetype)initTest_test_InnerWithInt:(jint)i",
         "withNSString:(NSString *)capture$0 {",
         "Test_test_Inner_set_val$s_(self, capture$0);",
-        "return JreMemDebugAdd([super init]);",
+        "return [super init];",
         "}");
   }
 

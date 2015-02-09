@@ -37,8 +37,8 @@ public class NameTableTest extends GenerationTest {
 
   @Override
   protected void tearDown() throws Exception {
+    super.tearDown();
     Options.clearPackagePrefixes();
-    ErrorUtil.reset();
   }
 
   // Verify class name with prefix.
@@ -197,4 +197,41 @@ public class NameTableTest extends GenerationTest {
     assertTranslation(translation, "HUGE");
     assertNotInTranslation(translation, "HUGE_");
   }
+
+  public void testRenamePackageAnnotation() throws IOException {
+    addSourceFile("@com.google.j2objc.annotations.ObjectiveCName(\"FB\") "
+        + "package foo.bar;", "foo/bar/package-info.java");
+    addSourceFile("package foo.bar; public class Test {}", "foo/bar/Test.java");
+    String translation = translateSourceFile("foo/bar/Test", "foo/bar/Test.h");
+    assertTranslation(translation, "@interface FBTest : NSObject");
+    assertTranslation(translation, "J2OBJC_EMPTY_STATIC_INIT(FBTest)");
+    assertTranslation(translation, "typedef FBTest FooBarTest;");
+
+    translation = getTranslatedFile("foo/bar/Test.m");
+    assertTranslation(translation, "#include \"foo/bar/Test.h\""); // should be full path.
+    assertTranslation(translation, "@implementation FBTest");
+    assertTranslation(translation, "J2ObjcClassInfo _FBTest = { 1, \"Test\", \"foo.bar\", ");
+  }
+
+  public void testRenamePackageAnnotationEnum() throws IOException {
+    addSourceFile("@com.google.j2objc.annotations.ObjectiveCName(\"FB\") "
+        + "package foo.bar;", "foo/bar/package-info.java");
+    addSourceFile("package foo.bar; public enum Test { FOO, BAR }", "foo/bar/Test.java");
+    String translation = translateSourceFile("foo/bar/Test", "foo/bar/Test.h");
+    assertTranslatedLines(translation,
+        "typedef NS_ENUM(NSUInteger, FBTest) {", "FBTest_FOO = 0,", "FBTest_BAR = 1,", "};");
+    assertTranslation(translation, "@interface FBTestEnum : JavaLangEnum");
+    assertTranslation(translation, "FBTestEnum_values()");
+    assertTranslation(translation, "+ (FBTestEnum *)valueOfWithNSString:(NSString *)name;");
+    assertTranslation(translation, "FBTestEnum *FBTestEnum_valueOfWithNSString_");
+    assertTranslation(translation, "FBTestEnum_initialized");
+    assertTranslation(translation, "J2OBJC_STATIC_INIT(FBTestEnum");
+    assertTranslation(translation, "typedef FBTestEnum FooBarTestEnum;");
+
+    translation = getTranslatedFile("foo/bar/Test.m");
+    assertTranslation(translation, "#include \"foo/bar/Test.h\""); // should be full path.
+    assertTranslation(translation, "@implementation FBTestEnum");
+    assertTranslation(translation, "J2ObjcClassInfo _FBTestEnum = { 1, \"Test\", \"foo.bar\", ");
+  }
+
 }

@@ -6,6 +6,10 @@ package(
 
 package_group(
     name = "j2objc_guava_users",
+    includes = [
+        "//apps/bigtop/data:internal",
+        "//apps/xplat:internal",
+    ],
     packages = [],
 )
 

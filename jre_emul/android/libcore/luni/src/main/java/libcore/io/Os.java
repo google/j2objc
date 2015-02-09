@@ -80,7 +80,9 @@ public interface Os {
     public void munmap(long address, long byteCount) throws ErrnoException;
     public FileDescriptor open(String path, int flags, int mode) throws ErrnoException;
     public FileDescriptor[] pipe() throws ErrnoException;
+    public int getpid();
     public int poll(StructPollfd[] fds, int timeoutMs) throws ErrnoException;
+    public int getppid();
     public int pread(FileDescriptor fd, ByteBuffer buffer, long offset) throws ErrnoException;
     public int pwrite(FileDescriptor fd, ByteBuffer buffer, long offset) throws ErrnoException;
     public int read(FileDescriptor fd, ByteBuffer buffer) throws ErrnoException;
@@ -141,8 +143,6 @@ public interface Os {
 //    public int geteuid();
 //    public int getgid();
 //    public String getenv(String name);
-//    public int getpid();
-//    public int getppid();
 //    public StructPasswd getpwnam(String name) throws ErrnoException;
 //    public StructPasswd getpwuid(int uid) throws ErrnoException;
 //    public int getuid();

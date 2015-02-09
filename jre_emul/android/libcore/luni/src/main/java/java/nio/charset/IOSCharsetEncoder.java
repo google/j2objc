@@ -108,6 +108,6 @@ public class IOSCharsetEncoder extends CharsetEncoder {
     NSString *s = [NSString stringWithCharacters:inArg->buffer_
                                           length:inArg->size_];
     NSData *data = [s dataUsingEncoding:(NSStringEncoding) encoding allowLossyConversion:NO];
-    return [IOSByteArray arrayWithBytes:[data bytes] count:(jint)[data length]];
+    return [IOSByteArray arrayWithBytes:(const jbyte *)[data bytes] count:(jint)[data length]];
   ]-*/;
 }

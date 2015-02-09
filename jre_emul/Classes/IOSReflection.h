@@ -26,6 +26,9 @@
 @protocol JavaLangReflectType;
 @class IOSClass;
 
+// Current metadata structure version
+#define J2OBJC_METADATA_VERSION 1
+
 // A raw value is the union of all possible native types.
 typedef union {
   void *asId;
@@ -122,6 +125,7 @@ typedef struct J2ObjcFieldInfo {
 } J2ObjcFieldInfo;
 
 typedef struct J2ObjcClassInfo {
+  const unsigned version;
   const char *typeName;
   const char *packageName;
   const char *enclosingName;

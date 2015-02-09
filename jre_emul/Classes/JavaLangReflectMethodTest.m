@@ -44,7 +44,7 @@ static double defaultValue = 3.1416;
 
 - (void)setUp {
   object_ = [[[JavaUtilLinkedList alloc] init] autorelease];
-  class_ = [IOSClass classWithClass:[object_ class]];
+  class_ = JavaUtilLinkedList_class_();
 }
 
 - (void)testGetName {
@@ -68,8 +68,7 @@ static double defaultValue = 3.1416;
 - (void)testInvocation {
   JavaLangReflectMethod *sizeMethod = [class_ getMethod:@"size"
                                          parameterTypes:nil];
-  IOSClass *objectType = [IOSClass classWithClass:[NSObject class]];
-  IOSObjectArray *parameters = [IOSObjectArray arrayWithLength:0 type:objectType];
+  IOSObjectArray *parameters = [IOSObjectArray arrayWithLength:0 type:NSObject_class_()];
   id result = [sizeMethod invokeWithId:object_
                            withNSObjectArray:parameters];
   XCTAssertTrue([result isKindOfClass:[JavaLangInteger class]],
@@ -81,11 +80,8 @@ static double defaultValue = 3.1416;
 static id invokeValueMethod(NSString *methodName) {
   JavaLangDouble *value =
       [[[JavaLangDouble alloc] initWithDouble:defaultValue] autorelease];
-  IOSClass *doubleClass = [IOSClass classWithClass:[value class]];
-  JavaLangReflectMethod *method = [doubleClass getMethod:methodName
-                                          parameterTypes:nil];
-  IOSClass *objectType = [IOSClass classWithClass:[NSObject class]];
-  IOSObjectArray *parameters = [IOSObjectArray arrayWithLength:0 type:objectType];
+  JavaLangReflectMethod *method = [JavaLangDouble_class_() getMethod:methodName parameterTypes:nil];
+  IOSObjectArray *parameters = [IOSObjectArray arrayWithLength:0 type:NSObject_class_()];
   return [method invokeWithId:value
                   withNSObjectArray:parameters];
 }

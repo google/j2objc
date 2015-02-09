@@ -38,6 +38,7 @@ import org.eclipse.jdt.core.dom.ITypeBinding;
 import org.eclipse.jdt.core.dom.IVariableBinding;
 import org.eclipse.jdt.core.dom.VariableDeclarationFragment;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.Iterator;
 import java.util.List;
@@ -562,7 +563,7 @@ public class NameTable {
 
     // Use camel-cased package+class name.
     IPackageBinding pkg = binding.getPackage();
-    String pkgName = pkg != null ? getPrefix(pkg, null) : "";
+    String pkgName = pkg != null ? getPrefix(pkg) : "";
     return pkgName + binding.getName() + suffix;
   }
 
@@ -587,7 +588,7 @@ public class NameTable {
     if (pkg.isDefaultPackage()) {
       return unit.getMainTypeName();
     } else {
-      return getPrefix(pkg.getPackageBinding(), unit) + unit.getMainTypeName();
+      return getPrefix(pkg.getPackageBinding()) + unit.getMainTypeName();
     }
   }
 
@@ -618,11 +619,11 @@ public class NameTable {
   }
 
   /**
-   * Return the prefix for a specified package.  If a prefix was specified
-   * for the package on the command-line, then that prefix is returned.
-   * Otherwise, a camel-cased prefix is created from the package name.
+   * Return the prefix for a specified package. If a prefix was specified
+   * for the package, then that prefix is returned. Otherwise, a camel-cased
+   * prefix is created from the package name.
    */
-  public static String getPrefix(IPackageBinding packageBinding, CompilationUnit unit) {
+  public static String getPrefix(IPackageBinding packageBinding) {
     String packageName = packageBinding.getName();
     if (hasPrefix(packageName)) {
       return instance.prefixMap.get(packageName);
@@ -637,15 +638,26 @@ public class NameTable {
     }
 
     // Check if there is a package-info.java source file with a prefix annotation.
-    // TODO(tball): also check sourcepath directories.
     try {
-      if (unit != null) {
-        String url = unit.getSourceFileFullPath();
-        int lastSlash = url.lastIndexOf('/');
-        String packageInfoURL = url.substring(0, lastSlash) + "/package-info.java";
+      String expectedPackageInfoPath = packageBinding.getName();
+      // Path will be null if this is the empty package.
+      if (expectedPackageInfoPath == null) {
+        expectedPackageInfoPath = "package-info.java";
+      } else {
+        expectedPackageInfoPath = expectedPackageInfoPath.replace('.', File.separatorChar)
+            + File.separatorChar + "package-info.java";
+      }
+      for (String sourcePath: Options.getSourcePathEntries()) {
+        if (sourcePath.charAt(sourcePath.length() - 1) != File.separatorChar) {
+          sourcePath += File.separator;
+        }
+        String packageInfoURL = sourcePath + expectedPackageInfoPath;
         if (FileUtil.exists(packageInfoURL)) {
           String pkgInfo = FileUtil.readSource(packageInfoURL);
           int i = pkgInfo.indexOf("@ObjectiveCName");
+          if (i == -1) {
+            i = pkgInfo.indexOf("@com.google.j2objc.annotations.ObjectiveCName");
+          }
           if (i > -1) {
             // Extract annotation's value string.
             i = pkgInfo.indexOf('"', i + 1);
@@ -669,10 +681,7 @@ public class NameTable {
       sb.append(capitalize(part));
     }
     String prefix = sb.toString();
-    if (unit != null) {
-      // Check for package-info completed, so cache new prefix.
-      instance.prefixMap.put(packageName, prefix);
-    }
+    instance.prefixMap.put(packageName, prefix);
     return prefix;
   }
 

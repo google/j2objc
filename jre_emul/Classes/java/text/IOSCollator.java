@@ -45,10 +45,10 @@ public class IOSCollator extends Collator {
 
   @Override
   public native int compare(String string1, String string2) /*-[
-    return [string1 compare:string2
-                    options:NSLiteralSearch
-                      range:NSMakeRange(0, [string1 length])
-                     locale:self->nsLocale_];
+    return (jint) [string1 compare:string2
+                           options:NSLiteralSearch
+                             range:NSMakeRange(0, [string1 length])
+                            locale:self->nsLocale_];
   ]-*/;
 
   @Override

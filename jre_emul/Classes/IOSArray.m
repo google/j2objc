@@ -20,8 +20,11 @@
 //
 
 #import "IOSArray.h"
+
 #import "IOSArrayClass.h"
 #import "IOSClass.h"
+#import "IOSObjectArray.h"
+#import "IOSPrimitiveArray.h"
 #import "java/lang/AssertionError.h"
 #import "java/lang/ArrayIndexOutOfBoundsException.h"
 
@@ -61,7 +64,7 @@ id IOSArray_NewArrayWithDimensions(
   for (NSInteger i = (NSInteger) dimensionCount - 2; i >= 0; i--) {
     __unsafe_unretained IOSClass *last = componentTypes[i + 1];
     if (last) {
-      componentTypes[i] = [IOSClass arrayClassWithComponentType:last];
+      componentTypes[i] = IOSClass_arrayOf(last);
     } else {
       componentTypes[i] = [self iosClass];
     }
@@ -71,13 +74,6 @@ id IOSArray_NewArrayWithDimensions(
 }
 
 @implementation IOSArray
-
-- (void)dealloc {
-  JreMemDebugRemove(self);
-#if ! __has_feature(objc_arc)
-  [super dealloc];
-#endif
-}
 
 + (id)arrayWithDimensions:(NSUInteger)dimensionCount
                   lengths:(const jint *)dimensionLengths {
@@ -92,14 +88,6 @@ id IOSArray_NewArrayWithDimensions(
 + (id)iosClass {
   @throw AUTORELEASE([[JavaLangAssertionError alloc] initWithNSString:
       @"abstract method not overridden"]);
-}
-
-+ (id)iosClassWithDimensions:(NSUInteger)dimensions {
-  IOSClass *result = [self iosClass];
-  while (--dimensions > 0) {
-    result = [IOSClass arrayClassWithComponentType:result];
-  }
-  return result;
 }
 
 - (jint)length {
@@ -139,7 +127,7 @@ void IOSArray_throwOutOfBoundsWithMsg(jint size, jint index) {
 }
 
 - (IOSClass *)getClass {
-  return [IOSClass arrayClassWithComponentType:[self elementType]];
+  return IOSClass_arrayOf([self elementType]);
 }
 
 - (IOSClass *)elementType {

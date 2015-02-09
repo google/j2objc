@@ -142,33 +142,33 @@ class IOSCharset extends Charset {
   //
   // All encoding names must be uppercase, so map lookups are case-insensitive.
   static const CharsetInfo iosCharsets[] = {
-    { NSUTF8StringEncoding, @"UTF-8", utf8_aliases, 2, 1 },
-    { NSASCIIStringEncoding, @"US-ASCII", ascii_aliases, 16, 1 },
-    { NSJapaneseEUCStringEncoding, @"EUC-JP", eucjp_aliases, 7, 2 },
-    { NSISOLatin1StringEncoding, @"ISO-8859-1", iso8859_aliases, 15, 1 },
-    { NSSymbolStringEncoding, @"X-MACSYMBOL", symbol_aliases, 1, 1 },
-    { NSShiftJISStringEncoding, @"SHIFT_JIS", shiftjis_aliases, 6, 1 },
-    { NSISOLatin2StringEncoding, @"ISO-8859-2", latin2_aliases, 13, 1 },
-    { NSUnicodeStringEncoding, @"UTF-16", utf16_aliases, 5, 2 },
-    { NSWindowsCP1251StringEncoding, @"WINDOWS-1251", win1251_aliases, 3, 1 },
-    { NSWindowsCP1252StringEncoding, @"WINDOWS-1252", win1252_aliases, 2, 1 },
-    { NSWindowsCP1253StringEncoding, @"WINDOWS-1253", win1253_aliases, 2, 1 },
-    { NSWindowsCP1254StringEncoding, @"WINDOWS-1254", win1254_aliases, 2, 1 },
-    { NSWindowsCP1250StringEncoding, @"WINDOWS-1250", win1250_aliases, 2, 1 },
-    { NSISO2022JPStringEncoding, @"ISO-2022-JP", iso2022_aliases, 5, 2 },
-    { NSMacOSRomanStringEncoding, @"X-MACROMAN", macroman_aliases, 1, 1 },
-    { NSUTF16BigEndianStringEncoding, @"UTF-16BE", utf16be_aliases, 4, 2 },
-    { NSUTF16LittleEndianStringEncoding, @"UTF-16LE", utf16le_aliases, 3, 2 },
-    { NSUTF32StringEncoding, @"UTF-32", utf32_aliases, 2, 4 },
-    { NSUTF32BigEndianStringEncoding, @"UTF-32BE", utf32be_aliases, 2, 4 },
-    { NSUTF32LittleEndianStringEncoding, @"UTF-32LE", utf32le_aliases, 2, 4 }
+    { NSUTF8StringEncoding, @"UTF-8", (NSString **) utf8_aliases, 2, 1 },
+    { NSASCIIStringEncoding, @"US-ASCII", (NSString **) ascii_aliases, 16, 1 },
+    { NSJapaneseEUCStringEncoding, @"EUC-JP", (NSString **) eucjp_aliases, 7, 2 },
+    { NSISOLatin1StringEncoding, @"ISO-8859-1", (NSString **) iso8859_aliases, 15, 1 },
+    { NSSymbolStringEncoding, @"X-MACSYMBOL", (NSString **) symbol_aliases, 1, 1 },
+    { NSShiftJISStringEncoding, @"SHIFT_JIS", (NSString **) shiftjis_aliases, 6, 1 },
+    { NSISOLatin2StringEncoding, @"ISO-8859-2", (NSString **) latin2_aliases, 13, 1 },
+    { NSUnicodeStringEncoding, @"UTF-16", (NSString **) utf16_aliases, 5, 2 },
+    { NSWindowsCP1251StringEncoding, @"WINDOWS-1251", (NSString **) win1251_aliases, 3, 1 },
+    { NSWindowsCP1252StringEncoding, @"WINDOWS-1252", (NSString **) win1252_aliases, 2, 1 },
+    { NSWindowsCP1253StringEncoding, @"WINDOWS-1253", (NSString **) win1253_aliases, 2, 1 },
+    { NSWindowsCP1254StringEncoding, @"WINDOWS-1254", (NSString **) win1254_aliases, 2, 1 },
+    { NSWindowsCP1250StringEncoding, @"WINDOWS-1250", (NSString **) win1250_aliases, 2, 1 },
+    { NSISO2022JPStringEncoding, @"ISO-2022-JP", (NSString **) iso2022_aliases, 5, 2 },
+    { NSMacOSRomanStringEncoding, @"X-MACROMAN", (NSString **) macroman_aliases, 1, 1 },
+    { NSUTF16BigEndianStringEncoding, @"UTF-16BE", (NSString **) utf16be_aliases, 4, 2 },
+    { NSUTF16LittleEndianStringEncoding, @"UTF-16LE", (NSString **) utf16le_aliases, 3, 2 },
+    { NSUTF32StringEncoding, @"UTF-32", (NSString **) utf32_aliases, 2, 4 },
+    { NSUTF32BigEndianStringEncoding, @"UTF-32BE", (NSString **) utf32be_aliases, 2, 4 },
+    { NSUTF32LittleEndianStringEncoding, @"UTF-32LE", (NSString **) utf32le_aliases, 2, 4 }
   };
   static const int numIosCharsets = sizeof(iosCharsets) / sizeof(CharsetInfo);
 
   static JavaNioCharsetIOSCharset *addEncoding(CharsetInfo info) {
     IOSObjectArray *aliases = [IOSObjectArray arrayWithObjects:info.aliases
                                                          count:info.aliasCount
-                                                          type:[NSString getClass]];
+                                                          type:NSString_class_()];
     JavaNioCharsetIOSCharset *cs = [[[JavaNioCharsetIOSCharset alloc]
                                      initWithLong:info.encoding
                                      withNSString:info.name

@@ -32,7 +32,7 @@ static void OutOfMemory() {
 }
 
 static inline void NewBuffer(JreStringBuilder *sb, jint size) {
-  sb->buffer_ = malloc(size * sizeof(jchar));
+  sb->buffer_ = (jchar *)malloc(size * sizeof(jchar));
   if (__builtin_expect(sb->buffer_ == NULL, 0)) {
     OutOfMemory();
   }
@@ -107,7 +107,7 @@ void JreStringBuilder_initWithCapacity(JreStringBuilder *sb, jint capacity) {
 
 static void EnlargeBuffer(JreStringBuilder *sb, jint min) {
   jint newSize = MAX(((sb->bufferSize_ >> 1) + sb->bufferSize_) + 2, min);
-  sb->buffer_ = realloc(sb->buffer_, newSize * sizeof(jchar));
+  sb->buffer_ = (jchar *)realloc(sb->buffer_, newSize * sizeof(jchar));
   if (__builtin_expect(sb->buffer_ == NULL, 0)) {
     OutOfMemory();
   }
@@ -673,7 +673,9 @@ jint JavaLangCharacter_offsetByCodePointsRaw(
     { "INITIAL_CAPACITY_", NULL, 0x18, "I", NULL, .constantValue.asInt = INITIAL_CAPACITY },
     { "count_", NULL, 0x2, "I", NULL,  },
   };
-  static J2ObjcClassInfo _JavaLangAbstractStringBuilder = { "AbstractStringBuilder", "java.lang", NULL, 0x400, 46, methods, 4, fields, 0, NULL};
+  static J2ObjcClassInfo _JavaLangAbstractStringBuilder = {
+    1, "AbstractStringBuilder", "java.lang", NULL, 0x400, 46, methods, 4, fields, 0, NULL
+  };
   return &_JavaLangAbstractStringBuilder;
 }
 

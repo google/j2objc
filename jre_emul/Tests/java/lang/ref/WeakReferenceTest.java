@@ -97,4 +97,11 @@ public class WeakReferenceTest extends TestCase {
     // Verify weak reference was cleared.
      assertNull("weakRef wasn't cleared", weakRef.get());
   }
+
+  @Test
+  public void testGetClassMethod() {
+    Object obj = new Object();
+    new WeakReference(obj);
+    assertSame(Object.class, obj.getClass());
+  }
 }

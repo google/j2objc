@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE collection SYSTEM "./recipt.dtd">
+<!--comment1 -->
+<collection>
+  <description>
+     Some recipes used for the XML tutorial.
+  </description>
+  <recipe>
+    <title>Beef Parmesan<![CDATA[<title> with Garlic Angel Hair Pasta</title>]]></title>
+    <ingredient name="beef cube steak" amount="1.5" unit="pound"/>
+    <preparation>
+      <step>
+        Preheat oven to 350 degrees F (175 degrees C).
+      </step>
+    </preparation>
+    <comment>
+      Make the meat ahead of time, and refrigerate over night, the acid in the
+      tomato sauce will tenderize the meat even more. If you do this, save the
+      mozzarella till the last minute.
+    </comment>
+    <nutrition calories="1167" fat="23" carbohydrates="45" protein="32"/>
+  </recipe>
+</collection>
+<!--comment2 -->

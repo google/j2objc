@@ -65,8 +65,8 @@ public class ObjectiveCImplementationGeneratorTest extends GenerationTest {
     addSourceFile("package unit.mapping.custom; public class Test { }",
         "unit/mapping/custom/Test.java");
     String translation = translateSourceFile(
-        "import unit.mapping.custom.Test; " +
-            "public class MyTest { MyTest(Test u) {}}",
+        "import unit.mapping.custom.Test; "
+            + "public class MyTest { MyTest(Test u) {}}",
         "MyTest", "MyTest.m");
     assertTranslation(translation, "#include \"my/mapping/custom/Test.h\"");
   }
@@ -284,7 +284,7 @@ public class ObjectiveCImplementationGeneratorTest extends GenerationTest {
     String translation = translateSourceFile(
         "package foo; public interface Compatible {}",
         "Compatible", "foo/Compatible.m");
-    assertTranslation(translation, "void FooCompatible_unused() {}");
+    assertNotInTranslation(translation, "@interface");
   }
 
   public void testEmptyInterfaceGeneration() throws IOException {
@@ -325,7 +325,7 @@ public class ObjectiveCImplementationGeneratorTest extends GenerationTest {
 
     assertTranslatedLines(translation,
         "- (IOSClass *)annotationType {",
-        "return [IOSClass classWithProtocol:@protocol(FooCompatible)];");
+        "return FooCompatible_class_();");
   }
 
   public void testMethodsWithTypeParameters() throws IOException {
@@ -493,7 +493,7 @@ public class ObjectiveCImplementationGeneratorTest extends GenerationTest {
         "Test", "Test.m");
     assertTranslation(translation, "void Test_foo() {\n"
         + "  Test_init();\n"
-        + "  @synchronized([IOSClass classWithClass:[Test class]]) {");
+        + "  @synchronized(Test_class_()) {");
   }
 
   // Verify that an interface that has a generated implementation file and an Object method
@@ -537,7 +537,7 @@ public class ObjectiveCImplementationGeneratorTest extends GenerationTest {
         "+ (IOSObjectArray *)__annotations_foo {",
         "return [IOSObjectArray arrayWithObjects:(id[]) "
         + "{ [[[OrgJunitAfter alloc] init] autorelease] } "
-        + "count:1 type:[IOSClass classWithProtocol:@protocol(JavaLangAnnotationAnnotation)]];");
+        + "count:1 type:JavaLangAnnotationAnnotation_class_()];");
   }
 
   public void testMethodAnnotationWithParameter() throws IOException {
@@ -549,7 +549,7 @@ public class ObjectiveCImplementationGeneratorTest extends GenerationTest {
         "+ (IOSObjectArray *)__annotations_fooWithInt_ {",
         "return [IOSObjectArray arrayWithObjects:(id[]) "
         + "{ [[[OrgJunitAfter alloc] init] autorelease] } "
-        + "count:1 type:[IOSClass classWithProtocol:@protocol(JavaLangAnnotationAnnotation)]];");
+        + "count:1 type:JavaLangAnnotationAnnotation_class_()];");
   }
 
   public void testConstructorAnnotationNoParameters() throws IOException {
@@ -557,10 +557,10 @@ public class ObjectiveCImplementationGeneratorTest extends GenerationTest {
         "public class Test { @Deprecated Test() {} }",
         "Test", "Test.m");
     assertTranslatedLines(translation,
-        "+ (IOSObjectArray *)__annotations_Test {",
+        "+ (IOSObjectArray *)__annotations_init {",
         "return [IOSObjectArray arrayWithObjects:(id[]) "
         + "{ [[[JavaLangDeprecated alloc] init] autorelease] } "
-        + "count:1 type:[IOSClass classWithProtocol:@protocol(JavaLangAnnotationAnnotation)]];");
+        + "count:1 type:JavaLangAnnotationAnnotation_class_()];");
   }
 
   public void testConstructorAnnotationWithParameter() throws IOException {
@@ -568,10 +568,10 @@ public class ObjectiveCImplementationGeneratorTest extends GenerationTest {
         "public class Test { @Deprecated Test(int i) {} }",
         "Test", "Test.m");
     assertTranslatedLines(translation,
-        "+ (IOSObjectArray *)__annotations_TestWithInt_ {",
+        "+ (IOSObjectArray *)__annotations_initWithInt_ {",
         "return [IOSObjectArray arrayWithObjects:(id[]) "
         + "{ [[[JavaLangDeprecated alloc] init] autorelease] } "
-        + "count:1 type:[IOSClass classWithProtocol:@protocol(JavaLangAnnotationAnnotation)]];");
+        + "count:1 type:JavaLangAnnotationAnnotation_class_()];");
   }
 
   public void testTypeAnnotationDefaultParameter() throws IOException {
@@ -583,7 +583,7 @@ public class ObjectiveCImplementationGeneratorTest extends GenerationTest {
         "+ (IOSObjectArray *)__annotations {",
         "return [IOSObjectArray arrayWithObjects:(id[]) "
         + "{ [[[OrgJunitIgnore alloc] initWithValue:@\"\"] autorelease] } "
-        + "count:1 type:[IOSClass classWithProtocol:@protocol(JavaLangAnnotationAnnotation)]];");
+        + "count:1 type:JavaLangAnnotationAnnotation_class_()];");
   }
 
   public void testTypeAnnotationWithParameter() throws IOException {
@@ -596,7 +596,7 @@ public class ObjectiveCImplementationGeneratorTest extends GenerationTest {
         "return [IOSObjectArray arrayWithObjects:(id[]) "
         + "{ [[[OrgJunitIgnore alloc] initWithValue:"
         + "@\"some \\\"escaped\\n comment\"] autorelease] } "
-        + "count:1 type:[IOSClass classWithProtocol:@protocol(JavaLangAnnotationAnnotation)]];");
+        + "count:1 type:JavaLangAnnotationAnnotation_class_()];");
   }
 
   public void testFreeFormNativeCode() throws IOException {
@@ -686,11 +686,11 @@ public class ObjectiveCImplementationGeneratorTest extends GenerationTest {
     String translation = translateSourceFile(
         "@interface Test { String FOO = \"foo\"; int I = 5; }", "Test", "Test.h");
     assertTranslation(translation, "#define Test_I 5");
-    assertTranslation(translation, "@interface Test : NSObject < Test >");
     assertTranslation(translation, "FOUNDATION_EXPORT NSString *Test_FOO_;");
     assertTranslation(translation, "J2OBJC_STATIC_FIELD_GETTER(Test, FOO_, NSString *)");
     translation = getTranslatedFile("Test.m");
     assertTranslation(translation, "NSString * Test_FOO_ = @\"foo\";");
+    assertTranslation(translation, "@interface Test : NSObject");
   }
 
   public void testPackageInfoAnnotationAndDoc() throws IOException {
@@ -777,6 +777,14 @@ public class ObjectiveCImplementationGeneratorTest extends GenerationTest {
         + " @interface Foo { Class<?> value(); }", "Foo.java");
     String translation = translateSourceFile(
         "@Foo(CharSequence.class) class Test {}", "Test", "Test.m");
-    assertTranslation(translation, "[IOSClass classWithProtocol:@protocol(JavaLangCharSequence)]");
+    assertTranslation(translation, "JavaLangCharSequence_class_()");
+  }
+
+  public void testMetadataHeaderGeneration() throws IOException {
+    String translation = translateSourceFile("package foo; class Test {}", "Test", "foo/Test.m");
+    assertTranslation(translation, "+ (const J2ObjcClassInfo *)__metadata");
+    assertTranslation(translation, "static const J2ObjcClassInfo _FooTest = { "
+        + Integer.toString(MetadataGenerator.METADATA_VERSION)
+        + ", \"Test\", \"foo\"");
   }
 }

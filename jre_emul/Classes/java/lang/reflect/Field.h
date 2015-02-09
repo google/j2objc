@@ -23,6 +23,7 @@
 #define _JavaLangReflectField_H_
 
 #import "AccessibleObject.h"
+#import "J2ObjC_common.h"
 #import "java/lang/reflect/Member.h"
 #import <objc/runtime.h>
 
@@ -89,5 +90,9 @@
 - (int)unsafeOffset;
 
 @end
+
+J2OBJC_EMPTY_STATIC_INIT(JavaLangReflectField)
+
+J2OBJC_TYPE_LITERAL_HEADER(JavaLangReflectField)
 
 #endif // _JavaLangReflectField_H_

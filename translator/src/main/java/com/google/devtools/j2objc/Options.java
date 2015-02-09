@@ -19,8 +19,6 @@ package com.google.devtools.j2objc;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Splitter;
-import com.google.common.collect.BiMap;
-import com.google.common.collect.HashBiMap;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.io.Resources;
@@ -63,12 +61,11 @@ public class Options {
   private static boolean emitLineDirectives = false;
   private static boolean warningsAsErrors = false;
   private static boolean deprecatedDeclarations = false;
-  // Keys are header paths (with a .h), values are class names
-  private static BiMap<String, String> headerMappings = HashBiMap.create();
+  // Keys are class names, values are header paths (with a .h).
+  private static Map<String, String> headerMappings = Maps.newLinkedHashMap();
   private static File outputHeaderMappingFile = null;
   private static Map<String, String> classMappings = Maps.newLinkedHashMap();
   private static Map<String, String> methodMappings = Maps.newLinkedHashMap();
-  private static boolean memoryDebug = false;
   private static boolean stripGwtIncompatible = false;
   private static boolean segmentedHeaders = false;
   private static String fileEncoding = System.getProperty("file.encoding", "UTF-8");
@@ -79,8 +76,7 @@ public class Options {
   private static boolean docCommentsEnabled = false;
   private static boolean finalMethodsAsFunctions = true;
   private static boolean removeClassMethods = false;
-  // TODO(tball): set true again when native code accessing private Java methods is fixed.
-  private static boolean hidePrivateMembers = false;
+  private static boolean hidePrivateMembers = true;
   private static int batchTranslateMaximum = 0;
 
   private static File proGuardUsageFile = null;
@@ -276,8 +272,6 @@ public class Options {
         bootclasspath = arg.substring(XBOOTCLASSPATH.length());
       } else if (arg.equals("-Xno-jsni-delimiters")) {
         // TODO(tball): remove flag when all client builds stop using it.
-      } else if (arg.equals("--mem-debug")) {
-        memoryDebug = true;
       } else if (arg.equals("-Xno-jsni-warnings")) {
         jsniWarnings = false;
       } else if (arg.equals("-encoding")) {
@@ -464,14 +458,6 @@ public class Options {
     return outputDirectory;
   }
 
-  public static boolean memoryDebug() {
-    return memoryDebug;
-  }
-
-  public static void setMemoryDebug(boolean value) {
-    memoryDebug = value;
-  }
-
   /**
    * If true, put output files in sub-directories defined by
    * package declaration (like javac does).
@@ -551,7 +537,7 @@ public class Options {
     return methodMappings;
   }
 
-  public static BiMap<String, String> getHeaderMappings() {
+  public static Map<String, String> getHeaderMappings() {
     return headerMappings;
   }
 
@@ -751,7 +737,6 @@ public class Options {
   }
 
   public static boolean shouldPreProcess() {
-    return Options.getHeaderMappingFiles() != null &&
-        Options.useSourceDirectories();
+    return Options.getHeaderMappingFiles() != null && Options.useSourceDirectories();
   }
 }

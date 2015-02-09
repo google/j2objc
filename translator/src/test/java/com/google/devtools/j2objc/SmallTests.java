@@ -16,6 +16,7 @@
 
 package com.google.devtools.j2objc;
 
+import com.google.devtools.ast.TreeConvertTest;
 import com.google.devtools.j2objc.gen.ArrayAccessTest;
 import com.google.devtools.j2objc.gen.ArrayCreationTest;
 import com.google.devtools.j2objc.gen.LineDirectivesTest;
@@ -59,6 +60,7 @@ import com.google.devtools.j2objc.types.ImplementationImportCollectorTest;
 import com.google.devtools.j2objc.types.RenamedTypeBindingTest;
 import com.google.devtools.j2objc.util.BindingUtilTest;
 import com.google.devtools.j2objc.util.DeadCodeMapTest;
+import com.google.devtools.j2objc.util.ErrorUtilTest;
 import com.google.devtools.j2objc.util.NameTableTest;
 import com.google.devtools.j2objc.util.ProGuardUsageParserTest;
 import com.google.devtools.j2objc.util.UnicodeUtilsTest;
@@ -91,6 +93,7 @@ public class SmallTests {
     DestructorGeneratorTest.class,
     EnhancedForRewriterTest.class,
     EnumRewriterTest.class,
+    ErrorUtilTest.class,
     FileUtilTest.class,
     FunctionizerTest.class,
     GwtConverterTest.class,
@@ -117,6 +120,7 @@ public class SmallTests {
     RewriterTest.class,
     StatementGeneratorTest.class,
     StaticVarRewriterTest.class,
+    TreeConvertTest.class,
     TypeSorterTest.class,
     UnicodeUtilsTest.class,
     UnsequencedExpressionRewriterTest.class,

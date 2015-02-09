@@ -71,9 +71,9 @@ public abstract class GenerationTest extends TestCase {
     tempDir = createTempDir();
     Options.load(new String[] {
       "-d", tempDir.getAbsolutePath(),
-      "--mem-debug", // Run tests with memory debugging by default.
       "--hide-private-members" // Future default, run tests with it now.
     });
+    Options.getSourcePathEntries().add(tempDir.getCanonicalPath());
     parser = initializeParser(tempDir);
   }
 
@@ -82,6 +82,7 @@ public abstract class GenerationTest extends TestCase {
     Options.setHeaderMappingFiles(null);
     Options.getHeaderMappings().clear();
     Options.setPackageDirectories(Options.OutputStyleOption.PACKAGE);
+    Options.getSourcePathEntries().clear();
     deleteTempDir(tempDir);
     ErrorUtil.reset();
   }

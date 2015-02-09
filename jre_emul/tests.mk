@@ -37,15 +37,24 @@ SUPPORT_SOURCES = \
     org/apache/harmony/logging/tests/java/util/logging/util/EnvironmentHelper.java \
     org/apache/harmony/luni/tests/java/lang/MockEnum.java \
     org/apache/harmony/luni/tests/java/lang/MockEnum2.java \
+    org/apache/harmony/security/tests/support/MyAlgorithmParameterGeneratorSpi.java \
+    org/apache/harmony/security/tests/support/SpiEngUtils.java \
+    org/apache/harmony/security/tests/support/spec/MyEncodedKeySpec.java \
     org/apache/harmony/testframework/serialization/SerializationTest.java \
+    org/apache/harmony/tests/javax/xml/parsers/SAXParserTestSupport.java \
+    org/apache/harmony/tests/org/xml/sax/support/MethodLogger.java \
+    org/apache/harmony/tests/org/xml/sax/support/MockHandler.java \
+    org/apache/harmony/tests/org/xml/sax/support/MockResolver.java \
     org/apache/harmony/text/tests/java/text/Support_Format.java \
     org/apache/harmony/text/tests/java/text/Support_MessageFormat.java \
     tests/security/MessageDigestTest.java \
+    tests/security/interfaces/Util.java \
     tests/support/Support_ASimpleInputStream.java \
     tests/support/Support_ASimpleOutputStream.java \
     tests/support/Support_ASimpleReader.java \
     tests/support/Support_ASimpleWriter.java \
     tests/support/Support_CollectionTest.java \
+    tests/support/Support_Configuration.java \
     tests/support/Support_Field.java \
     tests/support/Support_GetPutFields.java \
     tests/support/Support_GetPutFieldsDefaulted.java \
@@ -72,6 +81,7 @@ SUPPORT_SOURCES = \
     tests/support/Support_UnmodifiableCollectionTest.java \
     tests/support/Support_UnmodifiableMapTest.java \
     tests/support/ThrowingReader.java \
+    tests/support/resource/Support_Resources.java \
     tests/util/CallVerificationStack.java \
     tests/util/SerializationTester.java
 
@@ -114,6 +124,7 @@ TEST_SOURCES := \
     SerializationTest.java \
     ScheduledExecutorTest.java \
     SynchronousQueueTest.java \
+    SystemTest.java \
     ThreadPoolExecutorTest.java \
     TimeUnitTest.java \
     UTF16EncodingTest.java \
@@ -269,6 +280,7 @@ TEST_SOURCES := \
     libcore/java/util/zip/ZipFileTest.java \
     libcore/java/util/zip/ZipInputStreamTest.java \
     libcore/java/util/zip/ZipOutputStreamTest.java \
+    libcore/javax/xml/parsers/DocumentBuilderTest.java \
     libcore/net/url/UrlUtilsTest.java \
     org/apache/harmony/archive/tests/java/util/zip/CRC32Test.java \
     org/apache/harmony/logging/tests/java/util/logging/ConsoleHandlerTest.java \
@@ -362,6 +374,19 @@ TEST_SOURCES := \
     org/apache/harmony/luni/tests/java/util/TreeSetTest.java \
     org/apache/harmony/luni/tests/java/util/UUIDTest.java \
     org/apache/harmony/luni/tests/java/util/VectorTest.java \
+    org/apache/harmony/regex/tests/java/util/regex/Matcher2Test.java \
+    org/apache/harmony/regex/tests/java/util/regex/ModeTest.java \
+    org/apache/harmony/regex/tests/java/util/regex/Pattern2Test.java \
+    org/apache/harmony/regex/tests/java/util/regex/PatternSyntaxExceptionTest.java \
+    org/apache/harmony/regex/tests/java/util/regex/PatternTest.java \
+    org/apache/harmony/regex/tests/java/util/regex/ReplaceTest.java \
+    org/apache/harmony/regex/tests/java/util/regex/SplitTest.java \
+    org/apache/harmony/security/tests/java/security/AlgorithmParametersSpiTest.java \
+    org/apache/harmony/security/tests/java/security/KeyTest.java \
+    org/apache/harmony/security/tests/java/security/ProviderExceptionTest.java \
+    org/apache/harmony/security/tests/java/security/PrivateKeyTest.java \
+    org/apache/harmony/security/tests/java/security/PublicKeyTest.java \
+    org/apache/harmony/security/tests/java/security/SignatureSpiTest.java \
     org/apache/harmony/tests/java/io/ObjectStreamClassTest.java \
     org/apache/harmony/tests/java/io/ObjectStreamConstantsTest.java \
     org/apache/harmony/tests/java/io/ObjectStreamFieldTest.java \
@@ -385,13 +410,9 @@ TEST_SOURCES := \
     org/apache/harmony/tests/java/util/HashMapTest.java \
     org/apache/harmony/tests/java/util/HashtableTest.java \
     org/apache/harmony/tests/java/util/LinkedHashMapTest.java \
-    org/apache/harmony/regex/tests/java/util/regex/Matcher2Test.java \
-    org/apache/harmony/regex/tests/java/util/regex/ModeTest.java \
-    org/apache/harmony/regex/tests/java/util/regex/Pattern2Test.java \
-    org/apache/harmony/regex/tests/java/util/regex/PatternSyntaxExceptionTest.java \
-    org/apache/harmony/regex/tests/java/util/regex/PatternTest.java \
-    org/apache/harmony/regex/tests/java/util/regex/ReplaceTest.java \
-    org/apache/harmony/regex/tests/java/util/regex/SplitTest.java \
+    org/apache/harmony/tests/javax/xml/parsers/DocumentBuilderFactoryTest.java \
+    org/apache/harmony/tests/javax/xml/parsers/FactoryConfigurationErrorTest.java \
+    org/apache/harmony/tests/javax/xml/parsers/ParserConfigurationExceptionTest.java \
     org/apache/harmony/text/tests/java/text/ChoiceFormatTest.java \
     org/apache/harmony/text/tests/java/text/CollatorTest.java \
     org/apache/harmony/text/tests/java/text/MessageFormatTest.java \
@@ -412,6 +433,30 @@ TEST_SOURCES := \
     tests/api/java/util/ResourceBundleTest.java \
     tests/api/java/util/TimerTaskTest.java \
     tests/api/java/util/TimerTest.java \
+    tests/java/security/AlgorithmParameterGeneratorSpiTest.java \
+    tests/security/interfaces/RSAKeyTest.java \
+    tests/security/interfaces/RSAPrivateKeyTest.java \
+    tests/security/interfaces/RSAPublicKeyTest.java \
+    tests/security/spec/ECFieldF2mTest.java \
+    tests/security/spec/ECFieldFpTest.java \
+    tests/security/spec/ECGenParameterSpecTest.java \
+    tests/security/spec/ECParameterSpecTest.java \
+    tests/security/spec/ECPointTest.java \
+    tests/security/spec/ECPrivateKeySpecTest.java \
+    tests/security/spec/ECPublicKeySpecTest.java \
+    tests/security/spec/EllipticCurveTest.java \
+    tests/security/spec/InvalidKeySpecExceptionTest.java \
+    tests/security/spec/InvalidParameterSpecExceptionTest.java \
+    tests/security/spec/MGF1ParameterSpecTest.java \
+    tests/security/spec/PKCS8EncodedKeySpecTest.java \
+    tests/security/spec/PSSParameterSpecTest.java \
+    tests/security/spec/RSAKeyGenParameterSpecTest.java \
+    tests/security/spec/RSAMultiPrimePrivateCrtKeySpecTest.java \
+    tests/security/spec/RSAOtherPrimeInfoTest.java \
+    tests/security/spec/RSAPrivateCrtKeySpecTest.java \
+    tests/security/spec/RSAPrivateKeySpecTest.java \
+    tests/security/spec/RSAPublicKeySpecTest.java \
+    tests/security/spec/X509EncodedKeySpecTest.java \
     tests/targets/security/MessageDigestTestMD5.java \
     tests/targets/security/MessageDigestTestSHA1.java \
     tests/targets/security/MessageDigestTestSHA256.java \
@@ -486,6 +531,10 @@ ANDROID_TEST_RESOURCES_SRCS = \
     SHA-384.data \
     SHA-512.check \
     SHA-512.data \
+    recipt.xml \
+    simple.xml \
+    systemid.xml \
+    wrong.xml \
     tests/api/java/io/testFields.ser \
     tests/api/java/io/testFieldsDefaulted.ser \
     tests/api/java/io/testFieldsDeprecated.ser
@@ -510,8 +559,13 @@ TEST_RESOURCES = \
 
 JUNIT_DIST_JAR = $(DIST_JAR_DIR)/$(JUNIT_JAR)
 
+ifeq ($(OBJCPP_BUILD), YES)
+TEST_JOCC = ../dist/j2objcc -g -I$(TESTS_DIR) -l junit -Werror \
+    -L$(TESTS_DIR) -l test-support -lc++ -ObjC++
+else
 TEST_JOCC = ../dist/j2objcc -g -I$(TESTS_DIR) -l junit -Werror \
     -L$(TESTS_DIR) -l test-support -ObjC
+endif
 SUPPORT_LIB = $(TESTS_DIR)/libtest-support.a
 TEST_BIN = $(TESTS_DIR)/jre_unit_tests
 

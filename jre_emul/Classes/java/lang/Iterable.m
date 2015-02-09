@@ -19,6 +19,27 @@
 
 #import "java/lang/Iterable.h"
 
+#import "J2ObjC_source.h"
+
+@interface JavaLangIterable : NSObject
+@end
+
+@implementation JavaLangIterable
+
++ (const J2ObjcClassInfo *)__metadata {
+  static const J2ObjcMethodInfo methods[] = {
+    { "iterator", NULL, "Ljava.util.Iterator;", 0x401, NULL },
+  };
+  static const J2ObjcClassInfo _JavaLangIterable = {
+    1, "Iterable", "java.lang", NULL, 0x201, 1, methods, 0, NULL, 0, NULL
+  };
+  return &_JavaLangIterable;
+}
+
+@end
+
+J2OBJC_INTERFACE_TYPE_LITERAL_SOURCE(JavaLangIterable)
+
 NSUInteger JreDefaultFastEnumeration(
     __unsafe_unretained id<JavaLangIterable> obj, NSFastEnumerationState *state,
     __unsafe_unretained id *stackbuf, NSUInteger len) {
@@ -26,7 +47,8 @@ NSUInteger JreDefaultFastEnumeration(
   SEL nextSel = @selector(next);
   __unsafe_unretained id iter = (ARCBRIDGE id) (void *) state->extra[0];
   if (!iter) {
-    state->mutationsPtr = (unsigned long *) (ARCBRIDGE void *) obj;
+    static unsigned long no_mutation = 1;
+    state->mutationsPtr = &no_mutation;
     // The for/in loop could break early so we have no guarantee of being able
     // to release the iterator. As long as the current autorelease pool is not
     // cleared within the loop, this should be fine.

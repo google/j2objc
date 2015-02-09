@@ -170,7 +170,7 @@ public class ProGuardUsageParser {
       }
     };
 
-    // TODO(user): Just use listing.readLines(processor) once guava_jdk5 is upgraded to a newer
+    // TODO(cgdecker): Just use listing.readLines(processor) once guava_jdk5 is upgraded to a newer
     // version.
     Closer closer = Closer.create();
     try {

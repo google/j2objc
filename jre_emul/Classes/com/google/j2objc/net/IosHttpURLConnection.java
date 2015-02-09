@@ -43,6 +43,7 @@ import java.util.Map;
 #include "java/net/ConnectException.h"
 #include "java/net/MalformedURLException.h"
 #include "java/net/UnknownHostException.h"
+#include "java/net/SocketTimeoutException.h"
 ]-*/
 
 /**
@@ -286,7 +287,8 @@ public class IosHttpURLConnection extends HttpURLConnection {
   @Override
   public native OutputStream getOutputStream() throws IOException /*-[
     if(self->connected_) {
-      @throw [[JavaLangIllegalStateException alloc] initWithNSString:@"Cannot get output stream after connection is made"];
+      @throw [[JavaLangIllegalStateException alloc]
+              initWithNSString:@"Cannot get output stream after connection is made"];
     }
     if (!nativeRequestData_) {  // Don't reallocate if requested twice.
       ComGoogleJ2objcNetIosHttpURLConnection_set_nativeRequestData_(
@@ -309,6 +311,7 @@ public class IosHttpURLConnection extends HttpURLConnection {
     return responseCode;
   }
 
+  // TODO(tball): break into smaller methods.
   private native void makeSynchronousRequest() throws IOException /*-[
     if (self->responseCode_ != -1) {
       // Request already made.
@@ -319,94 +322,153 @@ public class IosHttpURLConnection extends HttpURLConnection {
     }
     [self connect];
 
-    NSMutableURLRequest *request =
-        [NSMutableURLRequest requestWithURL:[NSURL URLWithString:[self->url_ toExternalForm]]];
-    request.HTTPShouldHandleCookies = NO;
-    request.HTTPMethod = self->method_;
-    request.cachePolicy = self->useCaches_ ?
-        NSURLRequestUseProtocolCachePolicy : NSURLRequestReloadIgnoringLocalCacheData;
-    int readTimeout = [self getReadTimeout];
-    request.timeoutInterval = readTimeout > 0 ? (readTimeout / 1000.0) : JavaLangDouble_MAX_VALUE;
-    int n = [self->headers_ size];
-    for (int i = 0; i < n; i++) {
-      ComGoogleJ2objcNetIosHttpURLConnection_HeaderEntry *entry = [self->headers_ getWithInt:i];
-      if (entry->key_) {
-        [request setValue:[entry getValue] forHTTPHeaderField:entry->key_];
-      }
-    }
+    @autoreleasepool {
 
-    if (self->doOutput_) {
-      if ([self->method_ isEqualToString:@"GET"]) {
-        self->method_ = @"POST";  // GET doesn't support output, so assume POST.
-      } else if (![self->method_ isEqualToString:@"POST"] &&
-                 ![self->method_ isEqualToString:@"PUT"] &&
-                 ![self->method_ isEqualToString:@"PATCH"]) {
-        NSString *errMsg =
-            [NSString stringWithFormat:@"%@ does not support writing", self->method_];
-        self->responseException_ = [[JavaNetProtocolException alloc] initWithNSString:errMsg];
-        @throw self->responseException_;
-      }
-      if (self->nativeRequestData_) {
-        request.HTTPBody = [(NSDataOutputStream *) self->nativeRequestData_ data];
-      }
-    }
-
-    NSHTTPURLResponse *response = nil;
-    NSError *error = nil;
-    NSData *responseData = [NSURLConnection sendSynchronousRequest:request
-                                                 returningResponse:&response
-                                                             error:&error];
-    self->responseCode_ = (int) (response ? [response statusCode] : [error code]);
-    self->responseMessage_ =
-        ComGoogleJ2objcNetIosHttpURLConnection_getResponseStatusTextWithInt_(self->responseCode_);
-    self->contentLength_ = (int) ([responseData length]);
-
-    if (error || [response statusCode] >= JavaNetHttpURLConnection_HTTP_BAD_REQUEST) {
-      if (responseData) {
-        ComGoogleJ2objcNetIosHttpURLConnection_set_errorDataStream_(self,
-            [[NSDataInputStream alloc] initWithData:responseData]);
-      }
-    } else {
-      ComGoogleJ2objcNetIosHttpURLConnection_set_responseDataStream_(self,
-          [[NSDataInputStream alloc] initWithData:responseData]);
-    }
-
-    NSString *url = [self->url_ description];  // Use original URL in any error text.
-    if (error) {
-      if ([[error domain] isEqualToString:@"NSURLErrorDomain"]) {
-        switch ([error code]) {
-          case NSURLErrorBadURL:
-            self->responseException_ =
-                [[JavaNetMalformedURLException alloc] initWithNSString:url]; break;
-          case NSURLErrorCannotConnectToHost:
-          case NSURLErrorNotConnectedToInternet:
-          case NSURLErrorSecureConnectionFailed:
-            self->responseException_ =
-                [[JavaNetConnectException alloc] initWithNSString:[error description]]; break;
-          case NSURLErrorCannotFindHost:
-            self->responseException_ =
-                [[JavaNetUnknownHostException alloc] initWithNSString:url]; break;
+      NSMutableURLRequest *request =
+          [NSMutableURLRequest requestWithURL:[NSURL URLWithString:[self->url_ toExternalForm]]];
+      request.HTTPShouldHandleCookies = NO;
+      request.HTTPMethod = self->method_;
+      request.cachePolicy = self->useCaches_ ?
+          NSURLRequestUseProtocolCachePolicy : NSURLRequestReloadIgnoringLocalCacheData;
+      int readTimeout = [self getReadTimeout];
+      request.timeoutInterval = readTimeout > 0 ? (readTimeout / 1000.0) : JavaLangDouble_MAX_VALUE;
+      int n = [self->headers_ size];
+      for (int i = 0; i < n; i++) {
+        ComGoogleJ2objcNetIosHttpURLConnection_HeaderEntry *entry = [self->headers_ getWithInt:i];
+        if (entry->key_) {
+          [request setValue:[entry getValue] forHTTPHeaderField:entry->key_];
         }
       }
-      if (!self->responseException_) {
-        self->responseException_ = [[JavaIoIOException alloc] initWithNSString:[error description]];
+
+      if (self->doOutput_) {
+        if ([self->method_ isEqualToString:@"GET"]) {
+          self->method_ = @"POST";  // GET doesn't support output, so assume POST.
+        } else if (![self->method_ isEqualToString:@"POST"] &&
+                   ![self->method_ isEqualToString:@"PUT"] &&
+                   ![self->method_ isEqualToString:@"PATCH"]) {
+          NSString *errMsg =
+              [NSString stringWithFormat:@"%@ does not support writing", self->method_];
+          self->responseException_ = [[JavaNetProtocolException alloc] initWithNSString:errMsg];
+          @throw self->responseException_;
+        }
+        if (self->nativeRequestData_) {
+          request.HTTPBody = [(NSDataOutputStream *) self->nativeRequestData_ data];
+        }
       }
-      @throw self->responseException_;
+
+      __block NSError *error;
+      __block NSURLResponse *urlResponse;
+      __block NSData *responseData = nil;
+      dispatch_semaphore_t semaphore = dispatch_semaphore_create(0);
+      NSURLSessionConfiguration *sessionConfiguration =
+          [NSURLSessionConfiguration defaultSessionConfiguration];
+      NSURLSession *session =
+          [NSURLSession sessionWithConfiguration:sessionConfiguration
+                                        delegate:(id<NSURLSessionDelegate>)self delegateQueue:nil];
+      NSURLSessionTask *task = [session dataTaskWithRequest:request
+                                completionHandler:
+        ^(NSData *dataCH, NSURLResponse *responseCH, NSError *errorCH) {
+          error = RETAIN_(errorCH);
+          urlResponse = RETAIN_(responseCH);
+          responseData = RETAIN_(dataCH);
+          dispatch_semaphore_signal(semaphore);
+        }];
+      [task resume];
+
+      // Wait for the request to finish
+      dispatch_semaphore_wait(semaphore, DISPATCH_TIME_FOREVER);
+      dispatch_release(semaphore);
+      [session finishTasksAndInvalidate];
+
+      AUTORELEASE(error);
+      AUTORELEASE(urlResponse);
+      AUTORELEASE(responseData);
+
+      if (urlResponse && ![urlResponse isKindOfClass:[NSHTTPURLResponse class]]) {
+          @throw AUTORELEASE(([[JavaLangAssertionError alloc]
+                               initWithNSString:[NSString stringWithFormat:@"Unknown class %@",
+                                   NSStringFromClass([urlResponse class])]]));
+      }
+      NSHTTPURLResponse *response = (NSHTTPURLResponse*) urlResponse;
+
+      self->responseCode_ = (int) (response ? [response statusCode] : [error code]);
+      JavaNetHttpURLConnection_set_responseMessage_(self,
+          ComGoogleJ2objcNetIosHttpURLConnection_getResponseStatusTextWithInt_(
+              self->responseCode_));
+      self->contentLength_ = responseData ? (int) ([responseData length]) : 0;
+
+      if (responseData) {
+        NSDataInputStream *inputStream =
+            AUTORELEASE([[NSDataInputStream alloc] initWithData:responseData]);
+        if (error || [response statusCode] >= JavaNetHttpURLConnection_HTTP_BAD_REQUEST) {
+          ComGoogleJ2objcNetIosHttpURLConnection_set_errorDataStream_(self, inputStream);
+        } else {
+          ComGoogleJ2objcNetIosHttpURLConnection_set_responseDataStream_(self, inputStream);
+        }
+      }
+
+      NSString *url = [self->url_ description];  // Use original URL in any error text.
+      if (error) {
+        if ([[error domain] isEqualToString:@"NSURLErrorDomain"]) {
+          switch ([error code]) {
+            case NSURLErrorBadURL:
+              self->responseException_ =
+                  [[JavaNetMalformedURLException alloc] initWithNSString:url];
+              break;
+            case NSURLErrorCannotConnectToHost:
+            case NSURLErrorNotConnectedToInternet:
+            case NSURLErrorSecureConnectionFailed:
+              self->responseException_ =
+                  [[JavaNetConnectException alloc] initWithNSString:[error description]];
+              break;
+            case NSURLErrorCannotFindHost:
+              self->responseException_ = [[JavaNetUnknownHostException alloc] initWithNSString:url];
+              break;
+            case NSURLErrorTimedOut:
+              self->responseException_ =
+                  [[JavaNetSocketTimeoutException alloc] initWithNSString:url];
+              break;
+          }
+        }
+        if (!self->responseException_) {
+          self->responseException_ =
+              [[JavaIoIOException alloc] initWithNSString:[error description]];
+        }
+        @throw self->responseException_;
+      }
+
+      // Clear request headers to make room for the response headers.
+      [self->headers_ clear];
+
+      // Since the original request might have been redirected, we might need to
+      // update the URL to the redirected URL.
+      JavaNetURLConnection_set_url_(
+          self, AUTORELEASE([[JavaNetURL alloc] initWithNSString:response.URL.absoluteString]));
+
+      // The HttpURLConnection headerFields map uses a null key for Status-Line.
+      NSString *statusLine = [NSString stringWithFormat:@"HTTP/1.1 %d %@", self->responseCode_,
+          self->responseMessage_];
+      [self addHeaderWithNSString:nil withNSString:statusLine];
+
+      // Copy remaining response headers.
+      [response.allHeaderFields enumerateKeysAndObjectsUsingBlock:^(id key, id value, BOOL *stop) {
+        [self addHeaderWithNSString:key withNSString:value];
+      }];
     }
-
-    // Clear request headers, and add response headers.
-    [self->headers_ clear];
-
-    // The HttpURLConnection headerFields map uses a null key for Status-Line.
-    NSString *statusLine =
-        [NSString stringWithFormat:@"HTTP/1.1 %d %@", self->responseCode_, self->responseMessage_];
-    [self addHeaderWithNSString:nil withNSString:statusLine];
-
-    // Copy remaining response headers.
-    [response.allHeaderFields enumerateKeysAndObjectsUsingBlock:^(id key, id value, BOOL *stop) {
-      [self addHeaderWithNSString:key withNSString:value];
-    }];
   ]-*/;
+
+  /*-[- (void)URLSession:(NSURLSession *)session
+              task:(NSURLSessionTask *)task
+              willPerformHTTPRedirection:(NSHTTPURLResponse *)response
+              newRequest:(NSURLRequest *)request
+              completionHandler:(void (^)(NSURLRequest *))completionHandler {
+    if (self->instanceFollowRedirects_
+        && [response.URL.scheme isEqualToString:request.URL.scheme]) {
+      completionHandler(request);
+    } else {
+      completionHandler(nil);
+    }
+  }]-*/
 
   private void addHeader(String k, String v) {
     headers.add(new HeaderEntry(k, v));

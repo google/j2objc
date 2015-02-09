@@ -59,17 +59,6 @@
  * @define PRIMITIVE_ARRAY_ACCESSORS_IMPL
  */
 #define PRIMITIVE_ARRAY_ACCESSORS_IMPL(L_NAME, U_NAME, C_TYPE) \
-  C_TYPE IOS##U_NAME##Array_Get(__unsafe_unretained IOS##U_NAME##Array *array, NSUInteger index) { \
-    IOSArray_checkIndex(array->size_, (jint)index); \
-    return array->buffer_[index]; \
-  } \
-  \
-  C_TYPE *IOS##U_NAME##Array_GetRef( \
-      __unsafe_unretained IOS##U_NAME##Array *array, NSUInteger index) { \
-    IOSArray_checkIndex(array->size_, (jint)index); \
-    return &array->buffer_[index]; \
-  } \
-  \
   - (C_TYPE)L_NAME##AtIndex:(NSUInteger)index { \
     IOSArray_checkIndex(size_, (jint)index); \
     return buffer_[index]; \
@@ -90,8 +79,17 @@
     IOSArray_checkIndex(size_, (jint)length - 1); \
     memcpy(buffer, buffer_, length * sizeof(C_TYPE)); \
   } \
+  \
   - (void *)buffer { \
     return buffer_; \
+  } \
+  \
+  - (IOSClass *)elementType { \
+    return [IOSClass L_NAME##Class]; \
+  } \
+  \
+  + (IOSClass *)iosClass { \
+    return IOSClass_arrayOf([IOSClass L_NAME##Class]); \
   }
 
 /*!
@@ -139,14 +137,6 @@ PRIMITIVE_ARRAY_IMPLEMENTATION(boolean, Boolean, jboolean)
   return [NSString stringWithFormat:@"%@", (buffer_[index] ? @"YES" : @"NO")];
 }
 
-- (IOSClass *)elementType {
-  return [IOSClass booleanClass];
-}
-
-+ (IOSClass *)iosClass {
-  return [IOSClass arrayClassWithComponentType:[IOSClass booleanClass]];
-}
-
 @end
 
 
@@ -167,14 +157,6 @@ PRIMITIVE_ARRAY_IMPLEMENTATION(char, Char, jchar)
 
 - (NSString *)descriptionOfElementAtIndex:(jint)index {
   return [NSString stringWithFormat:@"%C", buffer_[index]];
-}
-
-- (IOSClass *)elementType {
-  return [IOSClass charClass];
-}
-
-+ (IOSClass *)iosClass {
-  return [IOSClass arrayClassWithComponentType:[IOSClass charClass]];
 }
 
 @end
@@ -204,14 +186,6 @@ PRIMITIVE_ARRAY_IMPLEMENTATION(byte, Byte, jbyte)
   return [NSString stringWithFormat:@"0x%x", buffer_[index]];
 }
 
-- (IOSClass *)elementType {
-  return [IOSClass byteClass];
-}
-
-+ (IOSClass *)iosClass {
-  return [IOSClass arrayClassWithComponentType:[IOSClass byteClass]];
-}
-
 - (NSData *)toNSData {
   return [NSData dataWithBytes:buffer_ length:size_];
 }
@@ -229,14 +203,6 @@ PRIMITIVE_ARRAY_IMPLEMENTATION(short, Short, jshort)
   return [NSString stringWithFormat:@"%hi", buffer_[index]];
 }
 
-- (IOSClass *)elementType {
-  return [IOSClass shortClass];
-}
-
-+ (IOSClass *)iosClass {
-  return [IOSClass arrayClassWithComponentType:[IOSClass shortClass]];
-}
-
 @end
 
 
@@ -248,14 +214,6 @@ PRIMITIVE_ARRAY_IMPLEMENTATION(int, Int, jint)
 
 - (NSString *)descriptionOfElementAtIndex:(jint)index {
   return [NSString stringWithFormat:@"%d", buffer_[index]];
-}
-
-- (IOSClass *)elementType {
-  return [IOSClass intClass];
-}
-
-+ (IOSClass *)iosClass {
-  return [IOSClass arrayClassWithComponentType:[IOSClass intClass]];
 }
 
 @end
@@ -271,14 +229,6 @@ PRIMITIVE_ARRAY_IMPLEMENTATION(long, Long, jlong)
   return [NSString stringWithFormat:@"%lld", buffer_[index]];
 }
 
-- (IOSClass *)elementType {
-  return [IOSClass longClass];
-}
-
-+ (IOSClass *)iosClass {
-  return [IOSClass arrayClassWithComponentType:[IOSClass longClass]];
-}
-
 @end
 
 
@@ -292,14 +242,6 @@ PRIMITIVE_ARRAY_IMPLEMENTATION(float, Float, jfloat)
   return [NSString stringWithFormat:@"%g", buffer_[index]];
 }
 
-- (IOSClass *)elementType {
-  return [IOSClass floatClass];
-}
-
-+ (IOSClass *)iosClass {
-  return [IOSClass arrayClassWithComponentType:[IOSClass floatClass]];
-}
-
 @end
 
 
@@ -311,14 +253,6 @@ PRIMITIVE_ARRAY_IMPLEMENTATION(double, Double, jdouble)
 
 - (NSString *)descriptionOfElementAtIndex:(jint)index {
   return [NSString stringWithFormat:@"%g", buffer_[index]];
-}
-
-- (IOSClass *)elementType {
-  return [IOSClass doubleClass];
-}
-
-+ (IOSClass *)iosClass {
-  return [IOSClass arrayClassWithComponentType:[IOSClass doubleClass]];
 }
 
 @end

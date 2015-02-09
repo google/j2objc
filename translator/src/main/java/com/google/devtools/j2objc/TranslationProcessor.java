@@ -15,7 +15,6 @@
 package com.google.devtools.j2objc;
 
 import com.google.common.base.Joiner;
-import com.google.common.collect.BiMap;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
@@ -59,6 +58,7 @@ import com.google.devtools.j2objc.types.Import;
 import com.google.devtools.j2objc.util.DeadCodeMap;
 import com.google.devtools.j2objc.util.ErrorUtil;
 import com.google.devtools.j2objc.util.JdtParser;
+import com.google.devtools.j2objc.util.NameTable;
 import com.google.devtools.j2objc.util.TimeTracker;
 
 import org.eclipse.jdt.core.dom.ITypeBinding;
@@ -577,7 +577,7 @@ class TranslationProcessor extends FileProcessor {
 
   static void printHeaderMappings() {
     if (Options.getOutputHeaderMappingFile() != null) {
-      BiMap<String, String> headerMappings = Options.getHeaderMappings();
+      Map<String, String> headerMappings = Options.getHeaderMappings();
       File outputMappingFile = Options.getOutputHeaderMappingFile();
 
       try {
@@ -587,8 +587,8 @@ class TranslationProcessor extends FileProcessor {
         }
         PrintWriter writer = new PrintWriter(outputMappingFile);
 
-        for (String headerFilePath : headerMappings.keySet()) {
-          writer.println(headerFilePath + "=" + headerMappings.get(headerFilePath));
+        for (String className : headerMappings.keySet()) {
+          writer.println(String.format("%s=%s", className, headerMappings.get(className)));
         }
 
         writer.close();
@@ -599,7 +599,7 @@ class TranslationProcessor extends FileProcessor {
   }
 
   static void loadHeaderMappings() {
-    BiMap<String, String> headerMappings = Options.getHeaderMappings();
+    Map<String, String> headerMappings = Options.getHeaderMappings();
 
     List<String> headerMappingFiles = Options.getHeaderMappingFiles();
     List<Properties> headerMappingProps = new ArrayList<Properties>();

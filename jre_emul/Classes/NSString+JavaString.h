@@ -180,7 +180,7 @@ destinationBegin:(int)dstBegin;
 - (IOSCharArray *)toCharArray;
 
 // java.lang.Comparable implementation methods
-- (int)compareToWithId:(id)another;
+- (jint)compareToWithId:(id)another;
 
 // CharSequence.charAt(int)
 - (unichar)charAtWithInt:(int)index;
@@ -193,7 +193,7 @@ destinationBegin:(int)dstBegin;
                                          to:(int)end;
 
 // String.compareToIgnoreCase(String)
-- (int)compareToIgnoreCase:(NSString *)another;
+- (jint)compareToIgnoreCase:(NSString *)another;
 
 // String.replace(char, char)
 - (NSString *)replace:(unichar)oldchar withChar:(unichar)newchar;
@@ -323,6 +323,8 @@ J2OBJC_STATIC_FIELD_GETTER(NSString, CASE_INSENSITIVE_ORDER_, id<JavaUtilCompara
 
 FOUNDATION_EXPORT IOSObjectArray *NSString_serialPersistentFields_;
 J2OBJC_STATIC_FIELD_GETTER(NSString, serialPersistentFields_, IOSObjectArray *)
+
+J2OBJC_TYPE_LITERAL_HEADER(NSString)
 
 /** Function that returns String hash values as specified by java.lang.String. */
 FOUNDATION_EXPORT jint javaStringHashCode(NSString *string);

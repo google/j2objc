@@ -65,13 +65,17 @@ test_jre_emul: jre_emul_dist junit_dist
 test_jre_cycles: cycle_finder_dist
 	@cd jre_emul && $(MAKE) find_cycles
 
+test_junit_cycles: cycle_finder_dist
+	@cd junit && $(MAKE) find_cycles
+
 test_guava_cycles: cycle_finder_dist jre_emul_java_manifest
 	@cd guava && $(MAKE) find_cycles
 
 test_cycle_finder: cycle_finder_dist
 	@cd cycle_finder && $(MAKE) test
 
-test: test_translator test_jre_emul test_jre_cycles test_guava_cycles test_cycle_finder
+test: test_translator test_jre_emul \
+   test_cycle_finder test_jre_cycles test_guava_cycles test_junit_cycles
 
 
 print_environment:

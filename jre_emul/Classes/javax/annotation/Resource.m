@@ -12,14 +12,15 @@
  * limitations under the License.
  */
 
-#include "IOSClass.h"
-#include "IOSObjectArray.h"
+#include "javax/annotation/Resource.h"
+
+#include "J2ObjC_source.h"
 #include "java/lang/IllegalArgumentException.h"
+#include "java/lang/annotation/Annotation.h"
 #include "java/lang/annotation/ElementType.h"
 #include "java/lang/annotation/Retention.h"
 #include "java/lang/annotation/RetentionPolicy.h"
 #include "java/lang/annotation/Target.h"
-#include "javax/annotation/Resource.h"
 
 @implementation JavaxAnnotationResource
 @synthesize authenticationType;
@@ -68,13 +69,11 @@
 }
 
 + (IOSClass *)typeDefault {
-  return [IOSClass classWithClass:[NSObject class]];
+  return NSObject_class_();
 }
 
-
-
 - (IOSClass *)annotationType {
-  return [IOSClass classWithProtocol:@protocol(JavaxAnnotationResource)];
+  return JavaxAnnotationResource_class_();
 }
 
 + (IOSObjectArray *)__annotations {
@@ -85,13 +84,13 @@
       JavaLangAnnotationElementTypeEnum_get_TYPE(),
       JavaLangAnnotationElementTypeEnum_get_METHOD(),
       JavaLangAnnotationElementTypeEnum_get_FIELD()
-    } count:3 type:[[NSObject class] getClass]]] autorelease]
-  } count:2 type:[IOSClass classWithProtocol:@protocol(JavaLangAnnotationAnnotation)]];
+    } count:3 type:NSObject_class_()]] autorelease]
+  } count:2 type:JavaLangAnnotationAnnotation_class_()];
 }
 
 + (const J2ObjcClassInfo *)__metadata {
   static const J2ObjcClassInfo _JavaxAnnotationResource = {
-    "Resource", "javax.annotation", NULL, 0x2201, 0, NULL, 0, NULL, 0, NULL
+    1, "Resource", "javax.annotation", NULL, 0x2201, 0, NULL, 0, NULL, 0, NULL
   };
   return &_JavaxAnnotationResource;
 }
@@ -100,28 +99,25 @@
 
 BOOL JavaxAnnotationResource_AuthenticationTypeEnum_initialized = NO;
 
+J2OBJC_INTERFACE_TYPE_LITERAL_SOURCE(JavaxAnnotationResource)
+
 JavaxAnnotationResource_AuthenticationTypeEnum *
     JavaxAnnotationResource_AuthenticationTypeEnum_values_[2];
 
 @implementation JavaxAnnotationResource_AuthenticationTypeEnum
 
-+ (NSArray *)memDebugStaticReferences {
-  NSMutableArray *result = [NSMutableArray array];
-  return result;
-}
-
 - (instancetype)initWithNSString:(NSString *)__name
                          withInt:(jint)__ordinal {
-  return JreMemDebugAdd([super initWithNSString:__name withInt:__ordinal]);
+  return [super initWithNSString:__name withInt:__ordinal];
 }
 
 FOUNDATION_EXPORT IOSObjectArray *JavaxAnnotationResource_AuthenticationTypeEnum_values() {
-  IOSClass *enumType =
-      [IOSClass classWithClass:[JavaxAnnotationResource_AuthenticationTypeEnum class]];
+  IOSClass *enumType = JavaxAnnotationResource_AuthenticationTypeEnum_class_();
   return [IOSObjectArray arrayWithObjects:JavaxAnnotationResource_AuthenticationTypeEnum_values_
                                     count:2
                                      type:enumType];
 }
+
 + (IOSObjectArray *)values {
   return JavaxAnnotationResource_AuthenticationTypeEnum_values();
 }
@@ -171,9 +167,11 @@ JavaxAnnotationResource_AuthenticationTypeEnum *
   };
   static const char *superclass_type_args[] = {"Ljavax.annotation.Resource$AuthenticationType;"};
   static const J2ObjcClassInfo _JavaxAnnotationResource_AuthenticationTypeEnum = {
-    "AuthenticationType", "javax.annotation", "Resource", 0x4019, 1, methods, 2,
-    fields, 1, superclass_type_args};
+    1, "AuthenticationType", "javax.annotation", "Resource", 0x4019, 1,
+    methods, 2, fields, 1, superclass_type_args};
   return &_JavaxAnnotationResource_AuthenticationTypeEnum;
 }
 
 @end
+
+J2OBJC_CLASS_TYPE_LITERAL_SOURCE(JavaxAnnotationResource_AuthenticationTypeEnum)

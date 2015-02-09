@@ -24,6 +24,7 @@
 #import "IOSObjectArray.h"
 #import "JavaMetadata.h"
 #import "java/lang/NoSuchMethodException.h"
+#import "java/lang/annotation/Annotation.h"
 #import "java/lang/reflect/Method.h"
 #import "java/lang/reflect/Modifier.h"
 #import "java/lang/reflect/TypeVariable.h"
@@ -95,7 +96,7 @@ static IOSClass *ResolveParameterType(const char *objcType, NSString *paramKeywo
         componentType = [IOSClass classForIosName:paramKeyword];
       }
       if (componentType) {
-        type = [IOSClass arrayClassWithComponentType:componentType];
+        type = IOSClass_arrayOf(componentType);
       }
     } else {
       type = [IOSClass classForIosName:paramKeyword];
@@ -106,14 +107,13 @@ static IOSClass *ResolveParameterType(const char *objcType, NSString *paramKeywo
   if (type) {
     return type;
   }
-  return [IOSClass objectClass];
+  return NSObject_class_();
 }
 
 - (IOSObjectArray *)getParameterTypes {
   // First two slots are class and SEL.
   jint nArgs = (jint)[methodSignature_ numberOfArguments] - SKIPPED_ARGUMENTS;
-  IOSClass *classClass = [IOSClass classWithClass:[IOSClass class]];
-  IOSObjectArray *parameters = [IOSObjectArray arrayWithLength:nArgs type:classClass];
+  IOSObjectArray *parameters = [IOSObjectArray arrayWithLength:nArgs type:IOSClass_class_()];
 
   NSString *selectorStr = NSStringFromSelector(selector_);
   // Remove method name prefix.
@@ -146,8 +146,7 @@ static IOSClass *ResolveParameterType(const char *objcType, NSString *paramKeywo
 }
 
 - (IOSObjectArray *)getTypeParameters {
-  IOSClass *typeVariableType = [IOSClass classWithProtocol:@protocol(JavaLangReflectTypeVariable)];
-  return[IOSObjectArray arrayWithLength:0 type:typeVariableType];
+  return[IOSObjectArray arrayWithLength:0 type:JavaLangReflectTypeVariable_class_()];
 }
 
 - (IOSObjectArray *)getGenericParameterTypes {
@@ -168,15 +167,13 @@ static IOSClass *ResolveParameterType(const char *objcType, NSString *paramKeywo
 - (IOSObjectArray *)getExceptionTypes {
   IOSObjectArray *result = [metadata_ exceptionTypes];
   if (!result) {
-    result = [IOSObjectArray arrayWithLength:0 type:[IOSClass getClass]];
+    result = [IOSObjectArray arrayWithLength:0 type:IOSClass_class_()];
   }
   return result;
 }
 
 - (NSString *)internalName {
-  // can't call an abstract method
-  [self doesNotRecognizeSelector:_cmd];
-  return nil;
+  return NSStringFromSelector(selector_);
 }
 
 #define SANITIZED_METHOD_NAME \
@@ -192,8 +189,7 @@ static IOSClass *ResolveParameterType(const char *objcType, NSString *paramKeywo
       return method_invoke(cls, annotationsMethod);
     }
   }
-  IOSClass *annotationType = [IOSClass classWithProtocol:@protocol(JavaLangAnnotationAnnotation)];
-  return [IOSObjectArray arrayWithLength:0 type:annotationType];
+  return [IOSObjectArray arrayWithLength:0 type:JavaLangAnnotationAnnotation_class_()];
 }
 
 - (IOSObjectArray *)getParameterAnnotations {
@@ -206,8 +202,8 @@ static IOSClass *ResolveParameterType(const char *objcType, NSString *paramKeywo
       return method_invoke(cls, annotationsMethod);
     }
   }
-  IOSClass *annotationType = [IOSClass classWithProtocol:@protocol(JavaLangAnnotationAnnotation)];
-  return [IOSObjectArray arrayWithDimensions:2 lengths:(int[]){0, 0} type:annotationType];
+  return [IOSObjectArray arrayWithDimensions:2 lengths:(int[]){0, 0}
+      type:JavaLangAnnotationAnnotation_class_()];
 }
 
 - (NSString *)toGenericString {

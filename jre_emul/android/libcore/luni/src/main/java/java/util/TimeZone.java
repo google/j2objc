@@ -114,8 +114,7 @@ public abstract class TimeZone implements Serializable, Cloneable {
      */
     public static synchronized native String[] getAvailableIDs() /*-[
       NSArray *timeZones = [NSTimeZone knownTimeZoneNames];
-      return [IOSObjectArray arrayWithNSArray:timeZones
-                                         type:[IOSClass classWithClass:[NSString class]]];
+      return [IOSObjectArray arrayWithNSArray:timeZones type:NSString_class_()];
     ]-*/;
 
     /**
@@ -135,8 +134,7 @@ public abstract class TimeZone implements Serializable, Cloneable {
           [results addObject:id];
         }
       }
-      return [IOSObjectArray arrayWithNSArray:results
-                                         type:[IOSClass classWithClass:[NSString class]]];
+      return [IOSObjectArray arrayWithNSArray:results type:NSString_class_()];
     ]-*/;
 
     /**
