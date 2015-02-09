@@ -722,6 +722,16 @@ public class Options {
     return removeClassMethods;
   }
 
+  @VisibleForTesting
+  public static void setRemoveClassMethods(boolean b) {
+    removeClassMethods = b;
+  }
+
+  @VisibleForTesting
+  public static void resetRemoveClassMethods() {
+    removeClassMethods = false;
+  }
+
   public static boolean hidePrivateMembers() {
     return hidePrivateMembers;
   }

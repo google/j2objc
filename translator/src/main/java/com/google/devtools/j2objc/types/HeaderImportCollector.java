@@ -102,7 +102,7 @@ public class HeaderImportCollector extends TreeVisitor {
   public boolean visit(FunctionDeclaration node) {
     addForwardDecl(node.getReturnType());
     for (SingleVariableDeclaration param : node.getParameters()) {
-      addForwardDecl(param.getType());
+      addForwardDecl(param.getVariableBinding().getType());
     }
     return false;
   }
