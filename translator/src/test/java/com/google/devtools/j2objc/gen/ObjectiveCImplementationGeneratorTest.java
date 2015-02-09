@@ -23,11 +23,11 @@ import com.google.devtools.j2objc.Options.MemoryManagementOption;
 import com.google.devtools.j2objc.util.NameTable;
 
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
-
-import javax.tools.JavaCompiler;
-import javax.tools.ToolProvider;
+import java.util.Map;
 
 /**
  * Tests for {@link ObjectiveCImplementationGenerator}.
@@ -792,14 +792,25 @@ public class ObjectiveCImplementationGeneratorTest extends GenerationTest {
   }
 
   public void testPackageInfoOnClasspath() throws IOException {
-    JavaCompiler compiler = ToolProvider.getSystemJavaCompiler();
     addSourceFile(
         "@ObjectiveCName(\"FBM\")\n"
         + "package foo.bar.mumble;\n"
         + "import com.google.j2objc.annotations.ObjectiveCName;",
         "src/foo/bar/mumble/package-info.java");
-    compiler.run(null, null, System.err,
-        tempDir.getAbsolutePath() + "/src/foo/bar/mumble/package-info.java");
+
+    List<String> compileArgs = Lists.newArrayList();
+    compileArgs.add("-classpath");
+    compileArgs.add(System.getProperty("java.class.path"));
+    compileArgs.add("-encoding");
+    compileArgs.add(Options.getCharset().name());
+    compileArgs.add("-source");
+    compileArgs.add("1.6");
+    compileArgs.add(tempDir.getAbsolutePath() + "/src/foo/bar/mumble/package-info.java");
+    org.eclipse.jdt.internal.compiler.batch.Main batchCompiler =
+        new org.eclipse.jdt.internal.compiler.batch.Main(
+            new PrintWriter(System.out), new PrintWriter(System.err),
+            false, Collections.emptyMap(), null);
+    batchCompiler.compile(compileArgs.toArray(new String[0]));
     List<String> oldClassPathEntries = new ArrayList<String>(Options.getClassPathEntries());
     Options.getClassPathEntries().add(tempDir.getAbsolutePath() + "/src/");
     NameTable.initialize();
