@@ -33,7 +33,6 @@ import com.google.devtools.j2objc.translate.AutoboxerTest;
 import com.google.devtools.j2objc.translate.CastResolverTest;
 import com.google.devtools.j2objc.translate.ComplexExpressionExtractorTest;
 import com.google.devtools.j2objc.translate.ConstantBranchPrunerTest;
-import com.google.devtools.j2objc.translate.CopyAllFieldsWriterTest;
 import com.google.devtools.j2objc.translate.DeadCodeEliminatorTest;
 import com.google.devtools.j2objc.translate.DestructorGeneratorTest;
 import com.google.devtools.j2objc.translate.EnhancedForRewriterTest;
@@ -42,6 +41,7 @@ import com.google.devtools.j2objc.translate.FunctionizerTest;
 import com.google.devtools.j2objc.translate.GwtConverterTest;
 import com.google.devtools.j2objc.translate.InitializationNormalizerTest;
 import com.google.devtools.j2objc.translate.InnerClassExtractorTest;
+import com.google.devtools.j2objc.translate.JavaCloneWriterTest;
 import com.google.devtools.j2objc.translate.JavaToIOSMethodTranslatorTest;
 import com.google.devtools.j2objc.translate.NilCheckResolverTest;
 import com.google.devtools.j2objc.translate.OcniExtractorTest;
@@ -87,7 +87,6 @@ public class SmallTests {
     CastResolverTest.class,
     ComplexExpressionExtractorTest.class,
     ConstantBranchPrunerTest.class,
-    CopyAllFieldsWriterTest.class,
     DeadCodeEliminatorTest.class,
     DeadCodeMapTest.class,
     DestructorGeneratorTest.class,
@@ -101,6 +100,7 @@ public class SmallTests {
     ImplementationImportCollectorTest.class,
     InitializationNormalizerTest.class,
     InnerClassExtractorTest.class,
+    JavaCloneWriterTest.class,
     JavaToIOSMethodTranslatorTest.class,
     LineDirectivesTest.class,
     NameTableTest.class,

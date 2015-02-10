@@ -30,7 +30,6 @@ import com.google.devtools.j2objc.translate.Autoboxer;
 import com.google.devtools.j2objc.translate.CastResolver;
 import com.google.devtools.j2objc.translate.ComplexExpressionExtractor;
 import com.google.devtools.j2objc.translate.ConstantBranchPruner;
-import com.google.devtools.j2objc.translate.CopyAllFieldsWriter;
 import com.google.devtools.j2objc.translate.DeadCodeEliminator;
 import com.google.devtools.j2objc.translate.DestructorGenerator;
 import com.google.devtools.j2objc.translate.EnhancedForRewriter;
@@ -39,6 +38,7 @@ import com.google.devtools.j2objc.translate.Functionizer;
 import com.google.devtools.j2objc.translate.GwtConverter;
 import com.google.devtools.j2objc.translate.InitializationNormalizer;
 import com.google.devtools.j2objc.translate.InnerClassExtractor;
+import com.google.devtools.j2objc.translate.JavaCloneWriter;
 import com.google.devtools.j2objc.translate.JavaToIOSMethodTranslator;
 import com.google.devtools.j2objc.translate.NilCheckResolver;
 import com.google.devtools.j2objc.translate.OcniExtractor;
@@ -57,8 +57,8 @@ import com.google.devtools.j2objc.types.ImplementationImportCollector;
 import com.google.devtools.j2objc.types.Import;
 import com.google.devtools.j2objc.util.DeadCodeMap;
 import com.google.devtools.j2objc.util.ErrorUtil;
-import com.google.devtools.j2objc.util.PathClassLoader;
 import com.google.devtools.j2objc.util.JdtParser;
+import com.google.devtools.j2objc.util.PathClassLoader;
 import com.google.devtools.j2objc.util.TimeTracker;
 
 import org.eclipse.jdt.core.dom.ITypeBinding;
@@ -323,8 +323,8 @@ class TranslationProcessor extends FileProcessor {
     new DestructorGenerator().run(unit);
     ticker.tick("DestructorGenerator");
 
-    new CopyAllFieldsWriter().run(unit);
-    ticker.tick("CopyAllFieldsWriter");
+    new JavaCloneWriter().run(unit);
+    ticker.tick("JavaCloneWriter");
 
     new ConstantBranchPruner().run(unit);
     ticker.tick("ConstantBranchPruner");
@@ -562,8 +562,7 @@ class TranslationProcessor extends FileProcessor {
             stream.close();
           }
         } catch (IOException e) {
-          ErrorUtil.error("Exception reading resource \"" + resourceName +
-              "\": " + e.getMessage());
+          ErrorUtil.error("Exception reading resource \"" + resourceName + "\": " + e.getMessage());
           return new Properties();
         }
       }
@@ -609,7 +608,7 @@ class TranslationProcessor extends FileProcessor {
       }
     }
 
-    for (Properties mappings: headerMappingProps) {
+    for (Properties mappings : headerMappingProps) {
       Enumeration<?> keyIterator = mappings.propertyNames();
       while (keyIterator.hasMoreElements()) {
         String key = (String) keyIterator.nextElement();

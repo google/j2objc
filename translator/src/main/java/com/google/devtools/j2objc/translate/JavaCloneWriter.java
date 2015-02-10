@@ -18,27 +18,23 @@ import com.google.common.base.Function;
 import com.google.common.base.Predicate;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
-import com.google.devtools.j2objc.ast.Assignment;
 import com.google.devtools.j2objc.ast.Block;
 import com.google.devtools.j2objc.ast.ExpressionStatement;
-import com.google.devtools.j2objc.ast.FieldAccess;
 import com.google.devtools.j2objc.ast.MethodDeclaration;
+import com.google.devtools.j2objc.ast.MethodInvocation;
 import com.google.devtools.j2objc.ast.SimpleName;
-import com.google.devtools.j2objc.ast.SingleVariableDeclaration;
 import com.google.devtools.j2objc.ast.Statement;
 import com.google.devtools.j2objc.ast.SuperMethodInvocation;
 import com.google.devtools.j2objc.ast.TreeUtil;
 import com.google.devtools.j2objc.ast.TreeVisitor;
 import com.google.devtools.j2objc.ast.TypeDeclaration;
 import com.google.devtools.j2objc.ast.VariableDeclaration;
-import com.google.devtools.j2objc.types.GeneratedVariableBinding;
 import com.google.devtools.j2objc.types.IOSMethod;
 import com.google.devtools.j2objc.types.IOSMethodBinding;
 import com.google.devtools.j2objc.types.Types;
 import com.google.devtools.j2objc.util.BindingUtil;
 import com.google.devtools.j2objc.util.NameTable;
 
-import org.eclipse.jdt.core.dom.IBinding;
 import org.eclipse.jdt.core.dom.ITypeBinding;
 import org.eclipse.jdt.core.dom.IVariableBinding;
 import org.eclipse.jdt.core.dom.Modifier;
@@ -46,15 +42,15 @@ import org.eclipse.jdt.core.dom.Modifier;
 import java.util.List;
 
 /**
- * Writes the copyAllFieldsTo method in order to support correct Java clone()
+ * Writes the __javaClone method in order to support correct Java clone()
  * behavior.
  *
  * @author Keith Stanger
  */
-public class CopyAllFieldsWriter extends TreeVisitor {
+public class JavaCloneWriter extends TreeVisitor {
 
-  private static final IOSMethod COPY_ALL_PROPERTIES =
-      IOSMethod.create("NSObject copyAllFieldsTo:(id)other");
+  private static final IOSMethod NSOBJECT_JAVA_CLONE = IOSMethod.create("NSObject __javaClone");
+  private static final IOSMethod NSOBJECT_RELEASE = IOSMethod.create("NSObject release");
 
   private static final Function<VariableDeclaration, IVariableBinding> GET_VARIABLE_BINDING_FUNC =
       new Function<VariableDeclaration, IVariableBinding>() {
@@ -63,64 +59,59 @@ public class CopyAllFieldsWriter extends TreeVisitor {
     }
   };
 
-  private static final Predicate<IBinding> IS_NON_STATIC_PRED = new Predicate<IBinding>() {
-    public boolean apply(IBinding binding) {
-      return !BindingUtil.isStatic(binding);
+  private static final Predicate<IVariableBinding> IS_WEAK_PRED =
+      new Predicate<IVariableBinding>() {
+    public boolean apply(IVariableBinding binding) {
+      return !BindingUtil.isStatic(binding) && BindingUtil.isWeakReference(binding);
     }
   };
 
-  // Binding for the declaration of copyAllFieldsTo in NSObject.
-  private final IOSMethodBinding nsObjectCopyAll;
+  // Binding for the declaration of __javaClone in NSObject.
+  private final IOSMethodBinding nsObjectJavaClone;
 
-  public CopyAllFieldsWriter() {
-    nsObjectCopyAll = IOSMethodBinding.newMethod(
-        COPY_ALL_PROPERTIES, Modifier.PUBLIC, Types.resolveJavaType("void"),
-        Types.resolveIOSType("NSObject"));
-    nsObjectCopyAll.addParameter(Types.resolveIOSType("id"));
+  private final IOSMethodBinding releaseBinding;
+
+  public JavaCloneWriter() {
+    ITypeBinding voidType = Types.resolveJavaType("void");
+    ITypeBinding nsObjectType = Types.resolveIOSType("NSObject");
+    nsObjectJavaClone = IOSMethodBinding.newMethod(
+        NSOBJECT_JAVA_CLONE, Modifier.PUBLIC, voidType, nsObjectType);
+    releaseBinding = IOSMethodBinding.newMethod(
+        NSOBJECT_RELEASE, Modifier.PUBLIC, voidType, nsObjectType);
   }
 
   @Override
   public void endVisit(TypeDeclaration node) {
     ITypeBinding type = node.getTypeBinding();
-    List<IVariableBinding> fields = getNonStaticFields(node);
+    List<IVariableBinding> fields = getWeakFields(node);
     if (fields.isEmpty()) {
       return;
     }
 
     String typeName = NameTable.getFullName(type);
-    IOSMethod iosMethod = IOSMethod.create(
-        String.format("%s copyAllFieldsTo:(%s *)other", typeName, typeName));
+    IOSMethod iosMethod = IOSMethod.create(String.format("%s __javaClone", typeName));
     int modifiers = Modifier.PUBLIC | BindingUtil.ACC_SYNTHETIC;
     IOSMethodBinding methodBinding = IOSMethodBinding.newMethod(
         iosMethod, modifiers, Types.resolveJavaType("void"), type);
-    methodBinding.addParameter(type);
-    GeneratedVariableBinding copyParamBinding = new GeneratedVariableBinding(
-        "other", 0, type, false, true, null, methodBinding);
 
     MethodDeclaration declaration = new MethodDeclaration(methodBinding);
     node.getBodyDeclarations().add(declaration);
-
-    SingleVariableDeclaration copyParam = new SingleVariableDeclaration(copyParamBinding);
-    declaration.getParameters().add(copyParam);
 
     Block body = new Block();
     declaration.setBody(body);
     List<Statement> statements = body.getStatements();
 
-    SuperMethodInvocation superCall = new SuperMethodInvocation(nsObjectCopyAll);
-    superCall.getArguments().add(new SimpleName(copyParamBinding));
+    SuperMethodInvocation superCall = new SuperMethodInvocation(nsObjectJavaClone);
     statements.add(new ExpressionStatement(superCall));
 
     for (IVariableBinding field : fields) {
-      statements.add(new ExpressionStatement(new Assignment(
-          new FieldAccess(field, new SimpleName(copyParamBinding)),
-          new SimpleName(field))));
+      statements.add(new ExpressionStatement(
+          new MethodInvocation(releaseBinding, new SimpleName(field))));
     }
   }
 
-  private static List<IVariableBinding> getNonStaticFields(TypeDeclaration node) {
+  private static List<IVariableBinding> getWeakFields(TypeDeclaration node) {
     return Lists.newArrayList(Iterables.filter(
-        Iterables.transform(TreeUtil.getAllFields(node), GET_VARIABLE_BINDING_FUNC),
-        IS_NON_STATIC_PRED));
+        Iterables.transform(TreeUtil.getAllFields(node), GET_VARIABLE_BINDING_FUNC), IS_WEAK_PRED));
   }
 }
