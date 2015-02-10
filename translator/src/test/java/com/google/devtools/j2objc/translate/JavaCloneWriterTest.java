@@ -19,24 +19,27 @@ import com.google.devtools.j2objc.GenerationTest;
 import java.io.IOException;
 
 /**
- * Tests for {@link CopyAllFieldsWriter}.
+ * Tests for {@link JavaCloneWriter}.
  *
  * @author Keith Stanger
  */
-public class CopyAllFieldsWriterTest extends GenerationTest {
+public class JavaCloneWriterTest extends GenerationTest {
 
-  public void testCopyAllFieldsMethod() throws IOException {
+  // Make sure __javaClone is not emitted unless there is a weak field.
+  public void testNoJavaCloneMethod() throws IOException {
     String translation = translateSourceFile(
-        "public class Test {" +
-        "  int var1, var2;" +
-        "  static int var3;" +
-        "}",
-        "Test", "Test.m");
+        "public class Test {  int var1, var2;  static int var3;}", "Test", "Test.m");
+    assertNotInTranslation(translation, "__javaClone");
+  }
+
+  public void testJavaCloneMethodAddedForWeakField() throws IOException {
+    String translation = translateSourceFile(
+        "import com.google.j2objc.annotations.Weak;"
+        + " class Test { @Weak Object foo; }", "Test", "Test.m");
     assertTranslatedLines(translation,
-        "- (void)copyAllFieldsTo:(Test *)other {",
-        "[super copyAllFieldsTo:other];",
-        "other->var1_ = var1_;",
-        "other->var2_ = var2_;",
+        "- (void)__javaClone {",
+        "  [super __javaClone];",
+        "  [foo_ release];",
         "}");
   }
 }

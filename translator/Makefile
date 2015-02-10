@@ -168,7 +168,6 @@ JAVA_SOURCES = \
 	translate/Autoboxer.java \
 	translate/CastResolver.java \
 	translate/ComplexExpressionExtractor.java \
-	translate/CopyAllFieldsWriter.java \
 	translate/DeadCodeEliminator.java \
 	translate/DestructorGenerator.java \
 	translate/EnhancedForRewriter.java \
@@ -177,6 +176,7 @@ JAVA_SOURCES = \
 	translate/GwtConverter.java \
 	translate/InitializationNormalizer.java \
 	translate/InnerClassExtractor.java \
+	translate/JavaCloneWriter.java \
 	translate/JavaToIOSMethodTranslator.java \
 	translate/NilCheckResolver.java \
 	translate/OcniExtractor.java \

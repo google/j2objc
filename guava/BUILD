@@ -10,7 +10,10 @@ package_group(
         "//apps/bigtop/data:internal",
         "//apps/xplat:internal",
     ],
-    packages = [],
+    packages = [
+        "//java/com/google/api/client/util/...",
+        "//java/com/google/apps/docs/docos/client/mobile/...",
+    ],
 )
 
 filegroup(
