@@ -74,6 +74,9 @@
 - (IOSClass *)getSuperclass;
 - (id<JavaLangReflectType>)getGenericSuperclass;
 
+// Class.getDeclaringClass()
+- (IOSClass *)getDeclaringClass;
+
 // Class.isInstance(Object)
 - (BOOL)isInstance:(id)object;
 
