@@ -317,7 +317,7 @@ public class ObjectiveCImplementationGeneratorTest extends GenerationTest {
         + "public @interface Compatible { boolean fooable() default false; }",
         "Compatible", "foo/Compatible.m");
     assertTranslation(translation, "@implementation FooCompatible");
-    assertTranslation(translation, "@synthesize fooable;");
+    assertTranslation(translation, "@synthesize fooable = fooable_;");
 
     // Verify constructor generated.
     assertTranslation(translation, "- (instancetype)initWithFooable:(jboolean)fooable__ {");
@@ -858,7 +858,7 @@ public class ObjectiveCImplementationGeneratorTest extends GenerationTest {
         + "public @interface Bar { String namespace() default \"\"; } "
         + "class Test { Bar ann; String namespace() { return ann.namespace(); }}",
         "Bar", "foo/Bar.m");
-    assertTranslation(translation, "@synthesize namespace__;");
+    assertTranslation(translation, "@synthesize namespace__ = namespace___;");
     assertTranslation(translation, "- (instancetype)initWithNamespace__:(NSString *)namespace____ {");
     assertTranslation(translation, "self->namespace___ = RETAIN_(namespace____);");
     assertTranslation(translation, "+ (NSString *)namespace__Default {");
