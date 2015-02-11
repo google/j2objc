@@ -328,6 +328,9 @@ public final class BindingUtil {
           return retentionBinding.getName().equals(RetentionPolicy.RUNTIME.name());
         }
       }
+      if (binding.isNested()) {
+        return BindingUtil.isRuntimeAnnotation(binding.getDeclaringClass());
+      }
     }
     return false;
   }

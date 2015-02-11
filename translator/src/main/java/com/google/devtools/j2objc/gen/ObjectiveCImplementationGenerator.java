@@ -237,14 +237,14 @@ public class ObjectiveCImplementationGenerator extends ObjectiveCSourceFileGener
     println(" {");
     println("  if ((self = [super init])) {");
     for (IMethodBinding member : annotation.getDeclaredMethods()) {
-      String name = member.getName();
-      printf("    %s = ", name);
+      String name = NameTable.getAnnotationPropertyVariableName(member);
+      printf("    self->%s = ", name);
       ITypeBinding type = member.getReturnType();
       boolean needsRetain = !type.isPrimitive();
       if (needsRetain) {
         print("RETAIN_(");
       }
-      printf("%s_", name);
+      printf("%s__", NameTable.getAnnotationPropertyName(member));
       if (needsRetain) {
         print(')');
       }
@@ -261,7 +261,7 @@ public class ObjectiveCImplementationGenerator extends ObjectiveCSourceFileGener
       if (deflt != null) {
         ITypeBinding type = member.getType().getTypeBinding();
         String typeString = NameTable.getSpecificObjCType(type);
-        String propertyName = NameTable.getName(member.getName().getBinding());
+        String propertyName = NameTable.getAnnotationPropertyName(member.getMethodBinding());
         printf("\n+ (%s)%sDefault {\n", typeString, propertyName);
         printf("  return %s;\n", generateExpression(deflt));
         println("}");
@@ -531,7 +531,8 @@ public class ObjectiveCImplementationGenerator extends ObjectiveCSourceFileGener
       newline();
     }
     for (AnnotationTypeMemberDeclaration member : members) {
-      println(String.format("@synthesize %s;", NameTable.getName(member.getName().getBinding())));
+      println(String.format("@synthesize %s;",
+          NameTable.getAnnotationPropertyName(member.getMethodBinding())));
     }
   }
 

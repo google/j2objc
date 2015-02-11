@@ -287,6 +287,24 @@ public class NameTable {
     return name.equals(SELF_NAME) ? "self" : name;
   }
 
+  /**
+   * Returns the name of an annotation property variable, extracted from its accessor binding.
+   */
+  public static String getAnnotationPropertyVariableName(IBinding binding) {
+    return getAnnotationPropertyName(binding) + '_';
+  }
+
+  /**
+   * Returns the name of an annotation property variable, extracted from its accessor binding.
+   */
+  public static String getAnnotationPropertyName(IBinding binding) {
+    String name = binding.getName();
+    if (isReservedName(name)) {
+      name += "__";  // Matches Rewriter.renameReservedNames().
+    }
+    return name;
+  }
+
   private static IBinding getBindingDeclaration(IBinding binding) {
     if (binding instanceof IVariableBinding) {
       return ((IVariableBinding) binding).getVariableDeclaration();

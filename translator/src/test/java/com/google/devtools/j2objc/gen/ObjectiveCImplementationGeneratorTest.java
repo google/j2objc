@@ -27,7 +27,6 @@ import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Map;
 
 /**
  * Tests for {@link ObjectiveCImplementationGenerator}.
@@ -321,8 +320,8 @@ public class ObjectiveCImplementationGeneratorTest extends GenerationTest {
     assertTranslation(translation, "@synthesize fooable;");
 
     // Verify constructor generated.
-    assertTranslation(translation, "- (instancetype)initWithFooable:(jboolean)fooable_");
-    assertTranslation(translation, "fooable = fooable_;");
+    assertTranslation(translation, "- (instancetype)initWithFooable:(jboolean)fooable__ {");
+    assertTranslation(translation, "fooable_ = fooable__;");
 
     // Verify default value accessor.
     assertTranslatedLines(translation,
@@ -851,5 +850,17 @@ public class ObjectiveCImplementationGeneratorTest extends GenerationTest {
     assertTranslation(translation, "static const J2ObjcClassInfo _FooTest = { "
         + Integer.toString(MetadataGenerator.METADATA_VERSION)
         + ", \"Test\", \"foo\"");
+  }
+
+  public void testReservedWordAsAnnotationPropertyName() throws IOException {
+    String translation = translateSourceFile(
+        "package foo; import java.lang.annotation.*; @Retention(RetentionPolicy.RUNTIME) "
+        + "public @interface Bar { String namespace() default \"\"; } "
+        + "class Test { Bar ann; String namespace() { return ann.namespace(); }}",
+        "Bar", "foo/Bar.m");
+    assertTranslation(translation, "@synthesize namespace__;");
+    assertTranslation(translation, "- (instancetype)initWithNamespace__:(NSString *)namespace____ {");
+    assertTranslation(translation, "self->namespace___ = RETAIN_(namespace____);");
+    assertTranslation(translation, "+ (NSString *)namespace__Default {");
   }
 }
