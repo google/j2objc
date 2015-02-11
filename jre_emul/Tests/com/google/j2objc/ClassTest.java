@@ -266,7 +266,7 @@ public class ClassTest extends TestCase {
     assertEquals("java.lang.reflect.Method", Method.class.getName());
     assertEquals("javax.annotation.Resource", Resource.class.getName());
   }
-  
+
   /**
    * Verify that a class with a package that has been renamed using an
    * ObjectiveCName annotation can be reflexively loaded.
@@ -277,9 +277,23 @@ public class ClassTest extends TestCase {
     Object instance = cls.newInstance();
     Method m = cls.getMethod("nativeClassName");
     String nativeName = (String) m.invoke(instance);
-    
+
     // Native name should have an OK prefix, instead of a camel-cased package name.
     assertEquals("OKExample", nativeName);
+  }
+
+  public void testDeclaringClass() throws Exception {
+    Class<?> thisClass = Class.forName("com.google.j2objc.ClassTest");
+    assertNotNull(thisClass);
+    Class<?> innerClass = Class.forName("com.google.j2objc.ClassTest$InnerClass");
+    assertNotNull(innerClass);
+    assertEquals(thisClass, innerClass.getDeclaringClass());
+    Class<?> innerInterface = Class.forName("com.google.j2objc.ClassTest$InnerInterface");
+    assertNotNull(innerInterface);
+    assertEquals(thisClass, innerInterface.getDeclaringClass());
+    Class<?> innerEnum = Class.forName("com.google.j2objc.ClassTest$InnerEnum");
+    assertNotNull(innerEnum);
+    assertEquals(thisClass, innerEnum.getDeclaringClass());
   }
 
   static class InnerClass {

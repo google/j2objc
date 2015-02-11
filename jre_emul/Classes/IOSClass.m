@@ -142,6 +142,14 @@ static JavaUtilProperties *prefixMapping;
   return nil;
 }
 
+- (IOSClass *)getDeclaringClass {
+  IOSClass *enclosingClass = [self getEnclosingClass];
+  while ([enclosingClass isAnonymousClass]) {
+    enclosingClass = [enclosingClass getEnclosingClass];
+  }
+  return enclosingClass;
+}
+
 // Returns true if an object is an instance of this class.
 - (BOOL)isInstance:(id)object {
   return NO;
