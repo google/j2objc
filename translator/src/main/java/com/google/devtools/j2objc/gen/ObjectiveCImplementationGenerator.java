@@ -531,8 +531,10 @@ public class ObjectiveCImplementationGenerator extends ObjectiveCSourceFileGener
       newline();
     }
     for (AnnotationTypeMemberDeclaration member : members) {
-      println(String.format("@synthesize %s;",
-          NameTable.getAnnotationPropertyName(member.getMethodBinding())));
+      IMethodBinding memberBinding = member.getMethodBinding();
+      println(String.format("@synthesize %s = %s;",
+          NameTable.getAnnotationPropertyName(memberBinding),
+          NameTable.getAnnotationPropertyVariableName(memberBinding)));
     }
   }
 
