@@ -471,14 +471,14 @@ public class ObjectiveCHeaderGeneratorTest extends GenerationTest {
     assertTranslation(translation, "@interface FooCompatible : NSObject < FooCompatible >");
 
     // Verify that the value is defined as a property instead of a method.
-    assertTranslation(translation, "@private\n  jboolean fooable;");
+    assertTranslation(translation, "@private\n  jboolean fooable_;");
     assertTranslation(translation, "@property (readonly) jboolean fooable;");
 
     // Verify default value accessor is generated for property.
     assertTranslation(translation, "+ (jboolean)fooableDefault;");
 
     // Check that constructor was created with the property as parameter.
-    assertTranslation(translation, "- (instancetype)initWithFooable:(jboolean)fooable_;");
+    assertTranslation(translation, "- (instancetype)initWithFooable:(jboolean)fooable__;");
   }
 
   public void testCharacterEdgeValues() throws IOException {
@@ -691,5 +691,18 @@ public class ObjectiveCHeaderGeneratorTest extends GenerationTest {
     assertTranslation(translation, "__weak id obj_;");
     translation = getTranslatedFile("Test.m");
     assertTranslation(translation, "__weak Test *this$0_;");
+  }
+
+  public void testReservedWordAsAnnotationPropertyName() throws IOException {
+    String translation = translateSourceFile(
+        "package foo; import java.lang.annotation.*; @Retention(RetentionPolicy.RUNTIME) "
+        + "public @interface Bar { String namespace() default \"\"; }",
+        "Bar", "foo/Bar.h");
+    assertTranslation(translation, "@property (readonly) NSString *namespace__;");
+    assertTranslatedLines(translation,
+        "@interface FooBar : NSObject < FooBar > {", "@private", "NSString *namespace___;", "}");
+    assertTranslation(translation,
+        "- (instancetype)initWithNamespace__:(NSString *)namespace____;");
+    assertTranslation(translation, "+ (NSString *)namespace__Default;");
   }
 }

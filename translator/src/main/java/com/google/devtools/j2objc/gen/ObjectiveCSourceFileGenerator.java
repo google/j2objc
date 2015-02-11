@@ -295,12 +295,13 @@ public abstract class ObjectiveCSourceFileGenerator extends SourceFileGenerator 
         sb.append(" with");
       }
       IMethodBinding member = members[i];
-      sb.append(NameTable.capitalize(member.getName()));
+      String name = NameTable.getAnnotationPropertyName(member);
+      sb.append(NameTable.capitalize(name));
       sb.append(":(");
       sb.append(NameTable.getSpecificObjCType(member.getReturnType()));
       sb.append(')');
-      sb.append(member.getName());
-      sb.append('_');
+      sb.append(name);
+      sb.append("__");
     }
     return sb.toString();
   }

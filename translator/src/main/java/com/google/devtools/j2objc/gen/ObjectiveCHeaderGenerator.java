@@ -198,13 +198,14 @@ public class ObjectiveCHeaderGenerator extends ObjectiveCSourceFileGenerator {
 
   @Override
   protected void generate(AnnotationTypeDeclaration node) {
-    String typeName = NameTable.getFullName(node.getTypeBinding());
+    ITypeBinding type = node.getTypeBinding();
+    String typeName = NameTable.getFullName(type);
     List<AnnotationTypeMemberDeclaration> members = Lists.newArrayList(
         Iterables.filter(node.getBodyDeclarations(), AnnotationTypeMemberDeclaration.class));
 
     printConstantDefines(node);
 
-    boolean isRuntime = BindingUtil.isRuntimeAnnotation(node.getTypeBinding());
+    boolean isRuntime = BindingUtil.isRuntimeAnnotation(type);
 
     newline();
     // Print annotation as protocol.
@@ -224,7 +225,7 @@ public class ObjectiveCHeaderGenerator extends ObjectiveCSourceFileGenerator {
         println(" {\n @private");
         printAnnotationVariables(members);
         println("}");
-        printAnnotationConstructor(node.getTypeBinding());
+        printAnnotationConstructor(type);
         printAnnotationAccessors(members);
       } else {
         newline();
@@ -479,7 +480,7 @@ public class ObjectiveCHeaderGenerator extends ObjectiveCSourceFileGenerator {
       if (type.isPrimitive() || type.isInterface()) {
         print(' ');
       }
-      print(member.getName().getIdentifier());
+      print(NameTable.getAnnotationPropertyVariableName(member.getMethodBinding()));
       println(";");
     }
     unindent();
@@ -499,7 +500,7 @@ public class ObjectiveCHeaderGenerator extends ObjectiveCSourceFileGenerator {
       ITypeBinding type = member.getType().getTypeBinding();
       print("@property (readonly) ");
       String typeString = NameTable.getSpecificObjCType(type);
-      String propertyName = NameTable.getName(member.getName().getBinding());
+      String propertyName = NameTable.getAnnotationPropertyName(member.getMethodBinding());
       println(String.format("%s%s%s;", typeString, typeString.endsWith("*") ? "" : " ",
           propertyName));
       if (needsObjcMethodFamilyNoneAttribute(propertyName)) {
@@ -518,7 +519,8 @@ public class ObjectiveCHeaderGenerator extends ObjectiveCSourceFileGenerator {
         }
         ITypeBinding type = member.getType().getTypeBinding();
         String typeString = NameTable.getSpecificObjCType(type);
-        String propertyName = NameTable.getName(member.getName().getBinding());
+        String propertyName =
+            NameTable.getAnnotationPropertyName(member.getMethodBinding());
         printf("+ (%s)%sDefault;\n", typeString, propertyName);
       }
     }
