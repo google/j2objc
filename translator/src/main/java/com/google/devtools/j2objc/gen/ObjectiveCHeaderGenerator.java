@@ -37,7 +37,6 @@ import com.google.devtools.j2objc.ast.TreeUtil;
 import com.google.devtools.j2objc.ast.Type;
 import com.google.devtools.j2objc.ast.TypeDeclaration;
 import com.google.devtools.j2objc.types.HeaderImportCollector;
-import com.google.devtools.j2objc.types.IOSMethod;
 import com.google.devtools.j2objc.types.Import;
 import com.google.devtools.j2objc.types.Types;
 import com.google.devtools.j2objc.util.BindingUtil;
@@ -402,13 +401,6 @@ public class ObjectiveCHeaderGenerator extends ObjectiveCSourceFileGenerator {
     if (!Modifier.isNative(m.getModifiers())) {
       printNormalMethodDeclaration(m);
     }
-  }
-
-  @Override
-  protected void printMappedMethodDeclaration(MethodDeclaration m, IOSMethod mappedMethod) {
-    newline();
-    printDocComment(m.getJavadoc());
-    println(super.mappedMethodDeclaration(m, mappedMethod) + ";");
   }
 
   @Override
