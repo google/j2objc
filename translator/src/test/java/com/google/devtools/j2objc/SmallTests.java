@@ -16,7 +16,8 @@
 
 package com.google.devtools.j2objc;
 
-import com.google.devtools.ast.TreeConvertTest;
+import com.google.devtools.j2objc.ast.TreeConvertTest;
+import com.google.devtools.j2objc.ast.TreeUtilTest;
 import com.google.devtools.j2objc.gen.ArrayAccessTest;
 import com.google.devtools.j2objc.gen.ArrayCreationTest;
 import com.google.devtools.j2objc.gen.LineDirectivesTest;
@@ -122,6 +123,7 @@ public class SmallTests {
     StaticVarRewriterTest.class,
     TreeConvertTest.class,
     TypeSorterTest.class,
+    TreeUtilTest.class,
     UnicodeUtilsTest.class,
     UnsequencedExpressionRewriterTest.class,
     VarargsRewriterTest.class,
