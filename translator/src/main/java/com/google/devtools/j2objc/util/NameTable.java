@@ -428,6 +428,7 @@ public class NameTable {
         sb.append(":");
       }
     } else {
+      method = BindingUtil.getOriginalMethodBinding(method);
       ITypeBinding[] paramTypes = method.getParameterTypes();
       for (int i = 0; i < paramTypes.length; i++) {
         String keyword = NameTable.parameterKeyword(paramTypes[i]);
@@ -668,7 +669,7 @@ public class NameTable {
         expectedPackageInfoPath = expectedPackageInfoPath.replace('.', File.separatorChar)
             + File.separatorChar + "package-info.java";
       }
-      for (String sourcePath: Options.getSourcePathEntries()) {
+      for (String sourcePath : Options.getSourcePathEntries()) {
         if (sourcePath.charAt(sourcePath.length() - 1) != File.separatorChar) {
           sourcePath += File.separator;
         }
