@@ -12,7 +12,7 @@
  * limitations under the License.
  */
 
-package com.google.devtools.ast;
+package com.google.devtools.j2objc.ast;
 
 import com.google.devtools.j2objc.GenerationTest;
 
