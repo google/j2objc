@@ -41,8 +41,6 @@ import com.google.devtools.j2objc.ast.TreeUtil;
 import com.google.devtools.j2objc.ast.TypeDeclaration;
 import com.google.devtools.j2objc.ast.VariableDeclaration;
 import com.google.devtools.j2objc.ast.VariableDeclarationFragment;
-import com.google.devtools.j2objc.types.IOSMethod;
-import com.google.devtools.j2objc.types.IOSMethodBinding;
 import com.google.devtools.j2objc.util.BindingUtil;
 import com.google.devtools.j2objc.util.NameTable;
 
@@ -150,11 +148,7 @@ public abstract class ObjectiveCSourceFileGenerator extends SourceFileGenerator 
   }
 
   protected void printMethod(MethodDeclaration m) {
-    IMethodBinding binding = m.getMethodBinding();
-    IOSMethod iosMethod = IOSMethodBinding.getIOSMethod(binding);
-    if (iosMethod != null) {
-      printMappedMethodDeclaration(m, iosMethod);
-    } else if (m.isConstructor()) {
+    if (m.isConstructor()) {
       printConstructor(m);
     } else {
       printNormalMethod(m);
@@ -195,17 +189,6 @@ public abstract class ObjectiveCSourceFileGenerator extends SourceFileGenerator 
   protected abstract void printNormalMethod(MethodDeclaration m);
 
   protected abstract void printConstructor(MethodDeclaration m);
-
-  protected abstract void printMappedMethodDeclaration(MethodDeclaration m, IOSMethod mappedMethod);
-
-  /**
-   * Create an Objective-C method or constructor declaration string for an
-   * inlined method.
-   */
-  protected String mappedMethodDeclaration(MethodDeclaration method, IOSMethod mappedMethod) {
-    String selector = NameTable.getMethodSelector(method.getMethodBinding());
-    return constructMethodDeclaration(method, selector);
-  }
 
   /**
    * Create an Objective-C method declaration string.
@@ -482,8 +465,9 @@ public abstract class ObjectiveCSourceFileGenerator extends SourceFileGenerator 
     newline();
     printDocComment(m.getJavadoc());
     print(this.methodDeclaration(m));
-    String methodName = NameTable.getName(m.getMethodBinding());
-    if (needsObjcMethodFamilyNoneAttribute(methodName)) {
+    String methodName = NameTable.getMethodSelector(m.getMethodBinding());
+    if (!BindingUtil.isSynthetic(m.getModifiers())
+        && needsObjcMethodFamilyNoneAttribute(methodName)) {
          // Getting around a clang warning.
          // clang assumes that methods with names starting with new, alloc or copy
          // return objects of the same type as the receiving class, regardless of

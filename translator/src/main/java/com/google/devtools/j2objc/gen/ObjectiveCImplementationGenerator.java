@@ -43,8 +43,6 @@ import com.google.devtools.j2objc.ast.TreeUtil;
 import com.google.devtools.j2objc.ast.TreeVisitor;
 import com.google.devtools.j2objc.ast.TypeDeclaration;
 import com.google.devtools.j2objc.ast.VariableDeclarationFragment;
-import com.google.devtools.j2objc.types.IOSMethod;
-import com.google.devtools.j2objc.types.IOSMethodBinding;
 import com.google.devtools.j2objc.types.ImplementationImportCollector;
 import com.google.devtools.j2objc.types.Import;
 import com.google.devtools.j2objc.util.BindingUtil;
@@ -359,15 +357,6 @@ public class ObjectiveCImplementationGenerator extends ObjectiveCSourceFileGener
       newline();
       syncLineNumbers(m.getName());  // avoid doc-comment
       print(super.methodDeclaration(m) + " " + reindent(methodBody) + "\n");
-    }
-  }
-
-  @Override
-  protected void printMappedMethodDeclaration(MethodDeclaration m, IOSMethod mappedMethod) {
-    String methodBody = generateMethodBody(m);
-    if (methodBody != null) {
-      newline();
-      println(super.mappedMethodDeclaration(m, mappedMethod) + " " + reindent(methodBody));
     }
   }
 
@@ -735,11 +724,7 @@ public class ObjectiveCImplementationGenerator extends ObjectiveCSourceFileGener
         }
         for (MethodDeclaration m : privateMethods) {
           if (isPrivateOrSynthetic(m.getModifiers())) {
-            IMethodBinding binding = m.getMethodBinding();
-            IOSMethod iosMethod = IOSMethodBinding.getIOSMethod(binding);
-            if (iosMethod != null) {
-              println(super.mappedMethodDeclaration(m, iosMethod) + ";");
-            } else if (m.isConstructor()) {
+            if (m.isConstructor()) {
               println(constructorDeclaration(m) + ";");
             } else {
               printNormalMethodDeclaration(m);
