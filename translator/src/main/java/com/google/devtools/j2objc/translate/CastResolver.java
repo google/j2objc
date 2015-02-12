@@ -30,7 +30,6 @@ import com.google.devtools.j2objc.ast.SuperMethodInvocation;
 import com.google.devtools.j2objc.ast.TreeUtil;
 import com.google.devtools.j2objc.ast.TreeVisitor;
 import com.google.devtools.j2objc.ast.VariableDeclarationFragment;
-import com.google.devtools.j2objc.types.IOSMethod;
 import com.google.devtools.j2objc.types.IOSMethodBinding;
 import com.google.devtools.j2objc.types.Types;
 import com.google.devtools.j2objc.util.BindingUtil;
@@ -51,8 +50,6 @@ import java.util.List;
  * of the expression.
  */
 public class CastResolver extends TreeVisitor {
-
-  private static final IOSMethod CLASS_METHOD = IOSMethod.create("NSObject class");
 
   @Override
   public void endVisit(CastExpression node) {
@@ -113,8 +110,7 @@ public class CastResolver extends TreeVisitor {
     } else if (type.isClass() || type.isArray() || type.isAnnotation() || type.isEnum()) {
       invocation = new FunctionInvocation("check_class_cast", idType, idType, null);
       invocation.getArguments().add(TreeUtil.remove(expr));
-      IOSMethodBinding binding = IOSMethodBinding.newMethod(
-          CLASS_METHOD, Modifier.STATIC, idType, type);
+      IOSMethodBinding binding = IOSMethodBinding.newMethod("class", Modifier.STATIC, idType, type);
       MethodInvocation classInvocation = new MethodInvocation(binding, new SimpleName(type));
       invocation.getArguments().add(classInvocation);
     }

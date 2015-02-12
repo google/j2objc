@@ -19,6 +19,8 @@ package com.google.devtools.j2objc.types;
 import org.eclipse.jdt.core.dom.IMethodBinding;
 import org.eclipse.jdt.core.dom.ITypeBinding;
 
+import java.util.List;
+
 /**
  * IOSMethodBinding: synthetic binding for an iOS method.
  *
@@ -27,18 +29,28 @@ import org.eclipse.jdt.core.dom.ITypeBinding;
 public class IOSMethodBinding extends GeneratedMethodBinding {
 
   private final IOSMethod iosMethod;
+  private final String selector;
   private final ITypeBinding[] exceptionTypes;
 
   private static final ITypeBinding[] EMPTY_TYPES = new ITypeBinding[0];
 
   private IOSMethodBinding(
-      IOSMethod iosMethod, IMethodBinding original, int modifiers, ITypeBinding returnType,
-      IMethodBinding methodDeclaration, ITypeBinding declaringClass, ITypeBinding[] exceptionTypes,
-      boolean varargs, boolean synthetic) {
-    super(original, iosMethod.getName(), modifiers, returnType, methodDeclaration, declaringClass,
-          false, varargs, synthetic);
+      IOSMethod iosMethod, String selector, IMethodBinding original, int modifiers,
+      ITypeBinding returnType, IMethodBinding methodDeclaration, ITypeBinding declaringClass,
+      ITypeBinding[] exceptionTypes, boolean varargs, boolean synthetic) {
+    super(original, getName(iosMethod, selector), modifiers, returnType, methodDeclaration,
+          declaringClass, false, varargs, synthetic);
     this.exceptionTypes = exceptionTypes != null ? exceptionTypes : EMPTY_TYPES;
     this.iosMethod = iosMethod;
+    this.selector = selector;
+  }
+
+  private static String getName(IOSMethod iosMethod, String selector) {
+    if (iosMethod != null) {
+      return iosMethod.getName();
+    } else {
+      return selector;
+    }
   }
 
   public static IOSMethodBinding newMappedMethod(IOSMethod iosMethod, IMethodBinding original) {
@@ -49,7 +61,7 @@ public class IOSMethodBinding extends GeneratedMethodBinding {
       declaringClass = IOSTypeBinding.newUnmappedClass(iosMethod.getDeclaringClass());
     }
     IOSMethodBinding binding = new IOSMethodBinding(
-        iosMethod, original, original.getModifiers(), returnType, null, declaringClass,
+        iosMethod, null, original, original.getModifiers(), returnType, null, declaringClass,
         null, original.isVarargs(), false);
     binding.addParameters(original);
     return binding;
@@ -58,7 +70,13 @@ public class IOSMethodBinding extends GeneratedMethodBinding {
   public static IOSMethodBinding newMethod(
       IOSMethod iosMethod, int modifiers, ITypeBinding returnType, ITypeBinding declaringClass) {
     return new IOSMethodBinding(
-        iosMethod, null, modifiers, returnType, null, declaringClass, null, false, true);
+        iosMethod, null, null, modifiers, returnType, null, declaringClass, null, false, true);
+  }
+
+  public static IOSMethodBinding newMethod(
+      String selector, int modifiers, ITypeBinding returnType, ITypeBinding declaringClass) {
+    return new IOSMethodBinding(
+        null, selector, null, modifiers, returnType, null, declaringClass, null, false, true);
   }
 
   public static IOSMethod getIOSMethod(IMethodBinding binding) {
@@ -70,6 +88,25 @@ public class IOSMethodBinding extends GeneratedMethodBinding {
 
   public IOSMethod getIOSMethod() {
     return iosMethod;
+  }
+
+  public String getSelector() {
+    if (selector != null) {
+      return selector;
+    } else {
+      StringBuilder sb = new StringBuilder(iosMethod.getName());
+      List<IOSParameter> params = iosMethod.getParameters();
+      for (int i = 0; i < params.size(); i++) {
+        if (params.get(i).isVarArgs()) {
+          break;
+        }
+        if (i != 0) {
+          sb.append(params.get(i).getParameterName());
+        }
+        sb.append(":");
+      }
+      return sb.toString();
+    }
   }
 
   public static boolean hasVarArgsTarget(IMethodBinding method) {
