@@ -209,43 +209,11 @@ public class CharacterTest extends junit.framework.TestCase {
     }
   }
 
-  public void test_isLetter_against_icu4c() throws Exception {
-    Method m = Character.class.getDeclaredMethod("isLetter" + "Impl", int.class);
-    m.setAccessible(true);
-    for (int i = 0; i <= 0xffff; ++i) {
-      assertEquals(m.invoke(null, i), Character.isLetter(i));
-    }
-  }
-
-  public void test_isLetterOrDigit_against_icu4c() throws Exception {
-    Method m = Character.class.getDeclaredMethod("isLetterOrDigit" + "Impl", int.class);
-    m.setAccessible(true);
-    for (int i = 0; i <= 0xffff; ++i) {
-      assertEquals(m.invoke(null, i), Character.isLetterOrDigit(i));
-    }
-  }
-
-  public void test_isLowerCase_against_icu4c() throws Exception {
-    Method m = Character.class.getDeclaredMethod("isLowerCase" + "Impl", int.class);
-    m.setAccessible(true);
-    for (int i = 0; i <= 0xffff; ++i) {
-      assertEquals(m.invoke(null, i), Character.isLowerCase(i));
-    }
-  }
-
   public void test_isSpaceChar_against_icu4c() throws Exception {
     Method m = Character.class.getDeclaredMethod("isSpaceChar", int.class);
     m.setAccessible(true);
     for (int i = 0; i <= 0xffff; ++i) {
       if((Boolean) m.invoke(null, i) != Character.isSpaceChar(i)) System.out.println(i);
-    }
-  }
-
-  public void test_isUpperCase_against_icu4c() throws Exception {
-    Method m = Character.class.getDeclaredMethod("isUpperCase" + "Impl", int.class);
-    m.setAccessible(true);
-    for (int i = 0; i <= 0xffff; ++i) {
-      assertEquals(m.invoke(null, i), Character.isUpperCase(i));
     }
   }
 
