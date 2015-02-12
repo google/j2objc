@@ -43,7 +43,6 @@ import com.google.devtools.j2objc.ast.VariableDeclaration;
 import com.google.devtools.j2objc.ast.VariableDeclarationFragment;
 import com.google.devtools.j2objc.types.IOSMethod;
 import com.google.devtools.j2objc.types.IOSMethodBinding;
-import com.google.devtools.j2objc.types.IOSParameter;
 import com.google.devtools.j2objc.util.BindingUtil;
 import com.google.devtools.j2objc.util.NameTable;
 
@@ -204,44 +203,8 @@ public abstract class ObjectiveCSourceFileGenerator extends SourceFileGenerator 
    * inlined method.
    */
   protected String mappedMethodDeclaration(MethodDeclaration method, IOSMethod mappedMethod) {
-    StringBuffer sb = new StringBuffer();
-
-    // Explicitly test hashCode() because of NSObject's hash return value.
-    String baseDeclaration;
-    if (mappedMethod.getName().equals("hash")) {
-      baseDeclaration = "- (NSUInteger)hash";
-    } else {
-      String returnType = method.isConstructor() ? "instancetype"
-          : NameTable.getObjCType(method.getReturnType().getTypeBinding());
-      baseDeclaration = String.format("%c (%s)%s",
-          Modifier.isStatic(method.getModifiers()) ? '+' : '-',
-          returnType, mappedMethod.getName());
-    }
-
-    sb.append(baseDeclaration);
-    Iterator<IOSParameter> iosParameters = mappedMethod.getParameters().iterator();
-    if (iosParameters.hasNext()) {
-      List<SingleVariableDeclaration> parameters = method.getParameters();
-      IOSParameter first = iosParameters.next();
-      SingleVariableDeclaration var = parameters.get(first.getIndex());
-      addTypeAndName(first, var, sb);
-      while (iosParameters.hasNext()) {
-        sb.append(mappedMethod.isVarArgs() ? ", " : " ");
-        IOSParameter next = iosParameters.next();
-        sb.append(next.getParameterName());
-        var = parameters.get(next.getIndex());
-        addTypeAndName(next, var, sb);
-      }
-    }
-    return sb.toString();
-  }
-
-  private void addTypeAndName(IOSParameter iosParameter, SingleVariableDeclaration var,
-      StringBuffer sb) {
-    sb.append(":(");
-    sb.append(iosParameter.getType());
-    sb.append(')');
-    sb.append(var.getName().getIdentifier());
+    String selector = NameTable.getMethodSelector(method.getMethodBinding());
+    return constructMethodDeclaration(method, selector);
   }
 
   /**
@@ -249,14 +212,42 @@ public abstract class ObjectiveCSourceFileGenerator extends SourceFileGenerator 
    */
   protected String methodDeclaration(MethodDeclaration m) {
     assert !m.isConstructor();
-    StringBuffer sb = new StringBuffer();
-    boolean isStatic = Modifier.isStatic(m.getModifiers());
+    return constructMethodDeclaration(m, NameTable.getMethodSelector(m.getMethodBinding()));
+  }
+
+  private String constructMethodDeclaration(MethodDeclaration m, String selector) {
+    StringBuilder sb = new StringBuilder();
     IMethodBinding binding = m.getMethodBinding();
-    String methodName = NameTable.getName(binding);
-    String baseDeclaration = String.format("%c (%s)%s", isStatic ? '+' : '-',
-        NameTable.getObjCType(binding.getReturnType()), methodName);
-    sb.append(baseDeclaration);
-    parametersDeclaration(binding, m.getParameters(), baseDeclaration, sb);
+    char prefix = Modifier.isStatic(m.getModifiers()) ? '+' : '-';
+    String returnType = NameTable.getObjCType(binding.getReturnType());
+    if (m.isConstructor()) {
+      returnType = "instancetype";
+    } else if (selector.equals("hash")) {
+      // Explicitly test hashCode() because of NSObject's hash return value.
+      returnType = "NSUInteger";
+    }
+    sb.append(String.format("%c (%s)", prefix, returnType));
+
+    List<SingleVariableDeclaration> params = m.getParameters();
+    String[] selParts = selector.split(":");
+
+    if (params.isEmpty()) {
+      assert selParts.length == 1 && !selector.endsWith(":");
+      sb.append(selParts[0]);
+    } else {
+      assert params.size() == selParts.length;
+      int baseLength = sb.length() + selParts[0].length();
+      for (int i = 0; i < params.size(); i++) {
+        if (i != 0) {
+          sb.append('\n');
+          sb.append(pad(baseLength - selParts[i].length()));
+        }
+        IVariableBinding var = params.get(i).getVariableBinding();
+        String typeName = NameTable.getSpecificObjCType(var.getType());
+        sb.append(String.format("%s:(%s)%s", selParts[i], typeName, NameTable.getName(var)));
+      }
+    }
+
     return sb.toString();
   }
 
@@ -269,15 +260,12 @@ public abstract class ObjectiveCSourceFileGenerator extends SourceFileGenerator 
 
   protected String constructorDeclaration(MethodDeclaration m, boolean isInner) {
     assert m.isConstructor();
-    StringBuffer sb = new StringBuffer();
-    IMethodBinding binding = m.getMethodBinding();
-    String baseDeclaration = "- (instancetype)init";
+    String selector = NameTable.getMethodSelector(m.getMethodBinding());
     if (isInner) {
-      baseDeclaration += NameTable.getFullName(binding.getDeclaringClass());
+      selector = "init" + NameTable.getFullName(m.getMethodBinding().getDeclaringClass())
+          + selector.substring(4);
     }
-    sb.append(baseDeclaration);
-    parametersDeclaration(binding, m.getParameters(), baseDeclaration, sb);
-    return sb.toString();
+    return constructMethodDeclaration(m, selector);
   }
 
   /**
@@ -304,35 +292,6 @@ public abstract class ObjectiveCSourceFileGenerator extends SourceFileGenerator 
       sb.append("__");
     }
     return sb.toString();
-  }
-
-  private void parametersDeclaration(IMethodBinding method, List<SingleVariableDeclaration> params,
-      String baseDeclaration, StringBuffer sb) throws AssertionError {
-    method = BindingUtil.getOriginalMethodBinding(method);
-    if (!params.isEmpty()) {
-      ITypeBinding[] parameterTypes = method.getParameterTypes();
-      boolean first = true;
-      int nParams = params.size();
-      for (int i = 0; i < nParams; i++) {
-        SingleVariableDeclaration param = params.get(i);
-        ITypeBinding typeBinding = parameterTypes[i];
-        String keyword = NameTable.parameterKeyword(typeBinding);
-        if (first) {
-          sb.append(NameTable.capitalize(keyword));
-          baseDeclaration += keyword;
-          first = false;
-        } else {
-          sb.append(pad(baseDeclaration.length() - keyword.length()));
-          sb.append(keyword);
-        }
-        IVariableBinding var = param.getVariableBinding();
-        sb.append(String.format(":(%s)%s",
-            NameTable.getSpecificObjCType(var.getType()), NameTable.getName(var)));
-        if (i + 1 < nParams) {
-          sb.append('\n');
-        }
-      }
-    }
   }
 
   /** Ignores deprecation warnings. Deprecation warnings should be visible for human authored code,

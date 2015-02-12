@@ -153,10 +153,14 @@ public class NameTableTest extends GenerationTest {
     String translation = translateSourceFile("public class A { "
         + "@com.google.j2objc.annotations.ObjectiveCName(\"" + objcName + "\") "
         + "void test(String s, int n) {}}", "A", "A.h");
-    assertTranslation(translation, String.format("- (void)%s;", objcName));
+    assertTranslatedLines(translation,
+        "- (void)test:(NSString *)s",
+        "offset:(jint)n;");
     assertNotInTranslation(translation, "testWithNSString:");
     translation = getTranslatedFile("A.m");
-    assertTranslation(translation, String.format("- (void)%s {", objcName));
+    assertTranslatedLines(translation,
+        "- (void)test:(NSString *)s",
+        "offset:(jint)n {");
     assertNotInTranslation(translation, "testWithNSString:");
   }
 
@@ -165,10 +169,14 @@ public class NameTableTest extends GenerationTest {
     String translation = translateSourceFile("public class A { "
         + "@com.google.j2objc.annotations.ObjectiveCName(\"" + objcName + "\") "
         + "A(String s, int n) {}}", "A", "A.h");
-    assertTranslation(translation, String.format("- (instancetype)%s;", objcName));
+    assertTranslatedLines(translation,
+        "- (instancetype)init:(NSString *)s",
+        "offset:(jint)n;");
     assertNotInTranslation(translation, "testWithNSString");
     translation = getTranslatedFile("A.m");
-    assertTranslation(translation, String.format("- (instancetype)%s {", objcName));
+    assertTranslatedLines(translation,
+        "- (instancetype)init:(NSString *)s",
+        "offset:(jint)n {");
     assertNotInTranslation(translation, "testWithNSString");
   }
 
