@@ -37,7 +37,7 @@
 
 - (void)testCharSequenceLength {
   id<JavaLangCharSequence> cs = @"12345";
-  jint len = [cs sequenceLength];
+  jint len = [cs length];
   XCTAssertEqual(len, 5,
                  @"char sequence length should be 5, but was %d",
                  len);

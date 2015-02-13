@@ -174,7 +174,7 @@ void JreStringBuilder_appendCharSequence(
   if (s == nil) {
     s = @"null";
   }
-  if ((start | end) < 0 || start > end || end > [s sequenceLength]) {
+  if ((start | end) < 0 || start > end || end > [s length]) {
     @throw [[[JavaLangIndexOutOfBoundsException alloc] init] autorelease];
   }
   jint length = end - start;
@@ -322,7 +322,7 @@ void JreStringBuilder_insertCharSequence(
     s = @"null";
   }
   if ((index | start | end) < 0 || index > sb->count_ || start > end
-      || end > [s sequenceLength]) {
+      || end > [s length]) {
     @throw [[[JavaLangIndexOutOfBoundsException alloc] init] autorelease];
   }
   JreStringBuilder_insertString(sb, index, [[s subSequenceFrom:start to:end] description]);

@@ -298,7 +298,7 @@ public final class StringBuffer extends AbstractStringBuilder implements
       if (s == nil) {
         JreStringBuilder_appendNull(&self->delegate_);
       } else {
-        JreStringBuilder_appendCharSequence(&self->delegate_, s, 0, [s sequenceLength]);
+        JreStringBuilder_appendCharSequence(&self->delegate_, s, 0, [s length]);
       }
       return self;
     ]-*/;
