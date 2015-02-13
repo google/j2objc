@@ -595,6 +595,16 @@ public class DebugASTPrinter extends TreeVisitor {
   }
 
   @Override
+  public boolean visit(NativeDeclaration node) {
+    if (node.getImplementationCode() != null) {
+      sb.println(node.getImplementationCode());
+    } else if (node.getHeaderCode() != null) {
+      sb.println(node.getHeaderCode());
+    }
+    return false;
+  }
+
+  @Override
   public boolean visit(NativeStatement node) {
     sb.println(node.getCode());
     return false;

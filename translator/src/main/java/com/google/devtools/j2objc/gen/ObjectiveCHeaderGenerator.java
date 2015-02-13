@@ -410,11 +410,87 @@ public class ObjectiveCHeaderGenerator extends ObjectiveCSourceFileGenerator {
     println(super.constructorDeclaration(m) + ";");
   }
 
+  static enum SortState { BEFORE_DECLS, METHODS, AFTER_DECLS };
+
+  /**
+   * Print method declarations with #pragma mark lines documenting their scope.
+   * Since native declarations can be intermixed with methods and can be order-
+   * dependent (such as #ifdefs surrounding a method), intermixed declarations
+   * aren't sorted. It's okay if all the native declarations are before and/or
+   * after the method list, however.
+   */
+  @Override
+  protected void printDeclarations(Iterable<BodyDeclaration> iter) {
+    List<BodyDeclaration> allDeclarations = Lists.newArrayList(iter);
+    List<BodyDeclaration> beforeDeclarations = Lists.newArrayList();
+    List<MethodDeclaration> allMethods = Lists.newArrayList();
+    List<BodyDeclaration> afterDeclarations = Lists.newArrayList();
+
+    SortState state = SortState.BEFORE_DECLS;
+    for (BodyDeclaration decl : allDeclarations) {
+      if (decl instanceof NativeDeclaration) {
+        switch (state) {
+          case BEFORE_DECLS:
+            beforeDeclarations.add(decl);
+            break;
+          case METHODS:
+            state = SortState.AFTER_DECLS;
+            // fall-through
+          case AFTER_DECLS:
+            afterDeclarations.add(decl);
+        }
+      } else if (decl instanceof MethodDeclaration || decl instanceof FunctionDeclaration) {
+        if (state == SortState.BEFORE_DECLS) {
+          state = SortState.METHODS;
+        } else if (state == SortState.AFTER_DECLS && !isPrivateOrSynthetic(decl.getModifiers())) {
+          // Mixed native and method declarations, punt.
+          super.printDeclarations(allDeclarations);
+          return;
+        }
+        if (decl instanceof MethodDeclaration) {
+          MethodDeclaration m = (MethodDeclaration) decl;
+          if (shouldPrint(m)) {
+            allMethods.add(m);
+          }
+        }
+      }
+    }
+    super.printDeclarations(beforeDeclarations);
+    printSortedMethods(allMethods, "Public", java.lang.reflect.Modifier.PUBLIC);
+    printSortedMethods(allMethods, "Protected", java.lang.reflect.Modifier.PROTECTED);
+    printSortedMethods(allMethods, "Package-Private", 0);
+    printSortedMethods(allMethods, "Private", java.lang.reflect.Modifier.PRIVATE);
+    super.printDeclarations(afterDeclarations);
+  }
+
+  private void printSortedMethods(List<MethodDeclaration> allMethods, String title, int modifier) {
+    List<MethodDeclaration> methods = Lists.newArrayList();
+    for (MethodDeclaration m : allMethods) {
+      int accessMask = Modifier.PUBLIC | Modifier.PROTECTED | Modifier.PRIVATE;
+      // The following test works with package-private access, which doesn't have its own flag.
+      if ((m.getModifiers() & accessMask) == modifier) {
+        methods.add(m);
+      }
+    }
+    if (methods.isEmpty()) {
+      return;
+    }
+    printf("\n#pragma mark %s\n", title);
+    TreeUtil.sortMethods(methods);
+    for (MethodDeclaration m : methods) {
+      printMethod(m);
+    }
+  }
+
   @Override
   protected void printMethod(MethodDeclaration m) {
-    if (!Options.hidePrivateMembers() || !isPrivateOrSynthetic(m.getModifiers())) {
+    if (shouldPrint(m)) {
       super.printMethod(m);
     }
+  }
+
+  private boolean shouldPrint(MethodDeclaration m) {
+    return !Options.hidePrivateMembers() || !isPrivateOrSynthetic(m.getModifiers());
   }
 
   protected void printForwardDeclarations(Set<Import> forwardDecls) {

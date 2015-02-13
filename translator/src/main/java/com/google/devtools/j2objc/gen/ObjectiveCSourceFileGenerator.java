@@ -138,15 +138,6 @@ public abstract class ObjectiveCSourceFileGenerator extends SourceFileGenerator 
     return !node.getClassInitStatements().isEmpty();
   }
 
-  /**
-   * Print a list of methods.
-   */
-  protected void printMethods(List<MethodDeclaration> methods) {
-    for (MethodDeclaration m : methods) {
-      printMethod(m);
-    }
-  }
-
   protected void printMethod(MethodDeclaration m) {
     if (m.isConstructor()) {
       printConstructor(m);

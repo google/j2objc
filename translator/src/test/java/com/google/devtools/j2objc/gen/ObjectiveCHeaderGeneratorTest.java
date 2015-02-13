@@ -705,4 +705,30 @@ public class ObjectiveCHeaderGeneratorTest extends GenerationTest {
         "- (instancetype)initWithNamespace__:(NSString *)namespace____;");
     assertTranslation(translation, "+ (NSString *)namespace__Default;");
   }
+
+  public void testMethodSorting() throws IOException {
+    String translation = translateSourceFile("class A {"
+        + "protected void gnu(String s, int i, Runnable r) {}"
+        + "public A(int i) {}"
+        + "private void zebra() {}"
+        + "void yak() {}"
+        + "A() {} }", "A", "A.h");
+    assertTranslatedLines(translation,
+        "#pragma mark Public",
+        "",
+        "- (instancetype)initWithInt:(jint)i;",
+        "",
+        "#pragma mark Protected",
+        "",
+        "- (void)gnuWithNSString:(NSString *)s",
+                        "withInt:(jint)i",
+           "withJavaLangRunnable:(id<JavaLangRunnable>)r;",
+        "",
+        "#pragma mark Package-Private",
+        "",
+        "- (instancetype)init;",
+        "",
+        "- (void)yak;");
+    assertNotInTranslation(translation, "zebra");  // No zebra() since it's private.
+  }
 }
