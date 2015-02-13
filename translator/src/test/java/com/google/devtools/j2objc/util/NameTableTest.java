@@ -150,9 +150,10 @@ public class NameTableTest extends GenerationTest {
 
   public void testRenameMethodAnnotation() throws IOException {
     String objcName = "test:(NSString *)s offset:(int)n";
-    String translation = translateSourceFile("public class A { "
+    addSourceFile("public class A { "
         + "@com.google.j2objc.annotations.ObjectiveCName(\"" + objcName + "\") "
-        + "void test(String s, int n) {}}", "A", "A.h");
+        + "void test(String s, int n) {}}", "A.java");
+    String translation = translateSourceFile("A", "A.h");
     assertTranslatedLines(translation,
         "- (void)test:(NSString *)s",
         "offset:(jint)n;");
@@ -162,13 +163,19 @@ public class NameTableTest extends GenerationTest {
         "- (void)test:(NSString *)s",
         "offset:(jint)n {");
     assertNotInTranslation(translation, "testWithNSString:");
+
+    // Test invocation of renamed method.
+    translation = translateSourceFile(
+        "class Test { void test(A a) { a.test(\"foo\", 4); } }", "Test", "Test.m");
+    assertTranslation(translation, "[((A *) nil_chk(a)) test:@\"foo\" offset:4];");
   }
 
   public void testRenameConstructorAnnotation() throws IOException {
     String objcName = "init:(NSString *)s offset:(int)n";
-    String translation = translateSourceFile("public class A { "
+    addSourceFile("public class A { "
         + "@com.google.j2objc.annotations.ObjectiveCName(\"" + objcName + "\") "
-        + "A(String s, int n) {}}", "A", "A.h");
+        + "A(String s, int n) {}}", "A.java");
+    String translation = translateSourceFile("A", "A.h");
     assertTranslatedLines(translation,
         "- (instancetype)init:(NSString *)s",
         "offset:(jint)n;");
@@ -178,6 +185,12 @@ public class NameTableTest extends GenerationTest {
         "- (instancetype)init:(NSString *)s",
         "offset:(jint)n {");
     assertNotInTranslation(translation, "testWithNSString");
+
+    // Test invocation of renamed constructor.
+    translation = translateSourceFile(
+        "class Test { A test() { return new A(\"foo\", 5); } }", "Test", "Test.m");
+    // TODO(kstanger): This should pass.
+    //assertTranslation(translation, "return [[[A alloc] init:@"foo" offset:5] autorelease];");
   }
 
   public void testSuperMethodNotNamedWarning() throws IOException {
