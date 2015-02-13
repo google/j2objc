@@ -421,10 +421,6 @@ destinationBegin:(int)destinationBegin {
   return [self characterAtIndex:(NSUInteger)index];
 }
 
-- (int)sequenceLength {
-  return (int) [self length];
-}
-
 - (id<JavaLangCharSequence>)subSequenceFrom:(int)start
                                          to:(int)end {
   NSUInteger maxLength = [self length];
@@ -872,7 +868,7 @@ NSString *NSString_formatWithJavaUtilLocale_withNSString_withNSObjectArray_(
   if (!sequence) {
     @throw makeException([JavaLangNullPointerException class]);
   }
-  if ([sequence sequenceLength] == 0) {
+  if ([sequence length] == 0) {
     return YES;
   }
   NSRange range = [self rangeOfString:[sequence description]];

@@ -185,9 +185,6 @@ destinationBegin:(int)dstBegin;
 // CharSequence.charAt(int)
 - (unichar)charAtWithInt:(int)index;
 
-// CharSequence.length()
-- (int)sequenceLength;
-
 // CharSequence.subSequence(int, int)
 - (id<JavaLangCharSequence>)subSequenceFrom:(int)start
                                          to:(int)end;

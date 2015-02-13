@@ -115,12 +115,7 @@ public class JavaToIOSMethodTranslator extends TreeVisitor {
   private void loadCharSequenceMethods() {
     ITypeBinding charSequence = Types.resolveJavaType("java.lang.CharSequence");
     for (IMethodBinding method : charSequence.getDeclaredMethods()) {
-      if (method.getName().equals("length")) {
-        overridableMethods.add(0, method);
-        NameTable.rename(method, "sequenceLength");
-        mappedMethods.add(method);
-        addDescription(method);
-      } else if (method.getName().equals("subSequence")) {
+      if (method.getName().equals("subSequence")) {
         overridableMethods.add(0, method);
         NameTable.rename(method, "subSequenceFrom");
         mappedMethods.add(method);

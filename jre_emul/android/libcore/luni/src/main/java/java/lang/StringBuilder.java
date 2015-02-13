@@ -294,7 +294,7 @@ public final class StringBuilder extends AbstractStringBuilder implements
       if (csq == nil) {
         JreStringBuilder_appendNull(&self->delegate_);
       } else {
-        JreStringBuilder_appendCharSequence(&self->delegate_, csq, 0, [csq sequenceLength]);
+        JreStringBuilder_appendCharSequence(&self->delegate_, csq, 0, [csq length]);
       }
       return self;
     ]-*/;
