@@ -731,4 +731,13 @@ public class ObjectiveCHeaderGeneratorTest extends GenerationTest {
         "- (void)yak;");
     assertNotInTranslation(translation, "zebra");  // No zebra() since it's private.
   }
+
+  // Verify that when a class is referenced in the same source file, a header
+  // isn't included for it.
+  public void testPackagePrivateBaseClass() throws IOException {
+    String translation = translateSourceFile(
+        "package bar; public class Test extends Foo {} " +
+        "abstract class Foo {}", "Test", "bar/Test.h");
+    assertNotInTranslation(translation, "#include \"Foo.h\"");
+  }
 }
