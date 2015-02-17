@@ -68,8 +68,8 @@ typedef struct JreStringBuilder {
 
 - (NSString *)description;
 
-- (id<JavaLangCharSequence>)subSequenceWithInt:(jint)start
-                                       withInt:(jint)end;
+- (id<JavaLangCharSequence>)subSequenceFrom:(jint)start
+                                         to:(jint)end;
 
 - (jint)indexOfWithNSString:(NSString *)string;
 

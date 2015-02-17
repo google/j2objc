@@ -19,9 +19,6 @@ import com.google.devtools.j2objc.ast.AbstractTypeDeclaration;
 import com.google.devtools.j2objc.ast.Annotation;
 import com.google.devtools.j2objc.ast.CompilationUnit;
 
-import org.eclipse.jdt.core.dom.IMethodBinding;
-import org.eclipse.jdt.core.dom.ITypeBinding;
-
 import java.io.IOException;
 
 /**
@@ -30,22 +27,6 @@ import java.io.IOException;
  * @author Keith Stanger
  */
 public class BindingUtilTest extends GenerationTest {
-
-  public void testGenericParamInDeepTypeHierarchy() throws IOException {
-    CompilationUnit unit = translateType("Test", "class Test { "
-        + "static class A<T> { void foo(T x) {} } "
-        + "static class B extends A<Double> { void foo(Double x) {} } "
-        + "static class C extends B { void foo(Double x) {} } }");
-    ITypeBinding cType = BindingUtil.findDeclaredType(unit.getTypes().get(0).getTypeBinding(), "C");
-    assertNotNull(cType);
-    IMethodBinding fooMethod = BindingUtil.findDeclaredMethod(cType, "foo", "java.lang.Double");
-    assertNotNull(fooMethod);
-    IMethodBinding original = BindingUtil.getOriginalMethodBinding(fooMethod);
-    assertEquals("A", original.getDeclaringClass().getName());
-    ITypeBinding[] params = original.getParameterTypes();
-    assertEquals(1, params.length);
-    assertEquals("T", params[0].getName());
-  }
 
   public void testIsRuntimeAnnotation() throws IOException {
     // SuppressWarnings is a source-level annotation.

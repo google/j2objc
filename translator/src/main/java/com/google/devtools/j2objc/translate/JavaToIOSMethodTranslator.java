@@ -29,16 +29,12 @@ import com.google.devtools.j2objc.ast.SimpleName;
 import com.google.devtools.j2objc.ast.SingleVariableDeclaration;
 import com.google.devtools.j2objc.ast.Statement;
 import com.google.devtools.j2objc.ast.StringLiteral;
-import com.google.devtools.j2objc.ast.SuperMethodInvocation;
-import com.google.devtools.j2objc.ast.TreeUtil;
 import com.google.devtools.j2objc.ast.TreeVisitor;
-import com.google.devtools.j2objc.ast.Type;
 import com.google.devtools.j2objc.ast.TypeDeclaration;
 import com.google.devtools.j2objc.types.GeneratedMethodBinding;
 import com.google.devtools.j2objc.types.GeneratedVariableBinding;
 import com.google.devtools.j2objc.types.IOSMethod;
 import com.google.devtools.j2objc.types.IOSMethodBinding;
-import com.google.devtools.j2objc.types.IOSParameter;
 import com.google.devtools.j2objc.types.JavaMethod;
 import com.google.devtools.j2objc.types.Types;
 import com.google.devtools.j2objc.util.BindingUtil;
@@ -49,7 +45,6 @@ import com.google.j2objc.annotations.ObjectiveCName;
 import org.eclipse.jdt.core.dom.IAnnotationBinding;
 import org.eclipse.jdt.core.dom.IMethodBinding;
 import org.eclipse.jdt.core.dom.ITypeBinding;
-import org.eclipse.jdt.core.dom.IVariableBinding;
 import org.eclipse.jdt.core.dom.Modifier;
 
 import java.util.List;
@@ -107,7 +102,11 @@ public class JavaToIOSMethodTranslator extends TreeVisitor {
           overridableMethods.add(method);
         }
         mappedMethods.add(method);
-        addDescription(method);
+        JavaMethod desc = addDescription(method);
+        if (desc != null) {
+          IOSMethod iosMethod = methodMappings.get(desc.getKey());
+          NameTable.setMethodSelector(method, iosMethod.getSelector());
+        }
       }
     }
   }
@@ -120,58 +119,30 @@ public class JavaToIOSMethodTranslator extends TreeVisitor {
         NameTable.rename(method, "subSequenceFrom");
         mappedMethods.add(method);
         addDescription(method);
+        JavaMethod desc = addDescription(method);
+        IOSMethod iosMethod = methodMappings.get(desc.getKey());
+        NameTable.setMethodSelector(method, iosMethod.getSelector());
       }
     }
   }
 
   @Override
   public boolean visit(MethodDeclaration node) {
-    // See if method has been directly mapped.
-    IMethodBinding binding = node.getMethodBinding();
-    JavaMethod desc = getDescription(binding);
-    if (desc != null) {
-      mapMethod(node, binding, methodMappings.get(desc.getKey()));
-      return true;
-    }
+    IMethodBinding method = node.getMethodBinding();
 
-    // See if an overrideable superclass method has been mapped.
-    for (IMethodBinding overridable : overridableMethods) {
-      if (!binding.isConstructor()
-          && (binding.isEqualTo(overridable) || binding.overrides(overridable))) {
-        JavaMethod md = getDescription(overridable);
-        if (md == null) {
-          continue;
-        }
-        String key = md.getKey();
-        IOSMethod iosMethod = methodMappings.get(key);
-        if (iosMethod != null) {
-          mapMethod(node, binding, iosMethod);
-        }
-        return true;
+    // Check if @ObjectiveCName is used but is mismatched with an overriden method.
+    IAnnotationBinding annotation = BindingUtil.getAnnotation(method, ObjectiveCName.class);
+    if (annotation != null) {
+      String value = (String) BindingUtil.getAnnotationValue(annotation, "value");
+      String selector =
+          IOSMethod.create(method.getDeclaringClass().getName() + " " + value).getSelector();
+      String actualSelector = NameTable.getMethodSelector(method);
+      if (!selector.equals(actualSelector)) {
+        ErrorUtil.warning("ObjectiveCName(" + selector
+            + "): Renamed method overrides a method with a different name.");
       }
     }
     return true;
-  }
-
-  private void mapMethod(MethodDeclaration node, IMethodBinding binding, IOSMethod iosMethod) {
-    IOSMethodBinding iosBinding = IOSMethodBinding.newMappedMethod(iosMethod, binding);
-    node.setName(new SimpleName(iosBinding));
-    node.setMethodBinding(iosBinding);
-
-    // Map parameters, if any.
-    List<SingleVariableDeclaration> parameters = node.getParameters();
-    int n = parameters.size();
-    if (n > 0) {
-      List<IOSParameter> iosArgs = iosMethod.getParameters();
-      assert n == iosArgs.size() || iosMethod.isVarArgs();
-
-      for (int i = 0; i < n; i++) {
-        ITypeBinding newParamType = Types.resolveIOSType(iosArgs.get(i).getType());
-        if (newParamType != null) {
-          parameters.get(i).setType(Type.newType(newParamType));
-        }
-      }
-    }
   }
 
   @Override
@@ -230,61 +201,6 @@ public class JavaToIOSMethodTranslator extends TreeVisitor {
     }
   }
 
-  @Override
-  public void endVisit(MethodInvocation node) {
-    IMethodBinding binding = node.getMethodBinding();
-    JavaMethod md = getDescription(binding);
-    if (md == null && !binding.getName().equals("clone")) { // never map clone()
-      IVariableBinding receiver =
-          node.getExpression() != null ? TreeUtil.getVariableBinding(node.getExpression()) : null;
-      ITypeBinding clazz =
-          receiver != null ? receiver.getType() : binding.getDeclaringClass();
-      if (clazz != null && !clazz.isArray()) {
-        for (IMethodBinding method : descriptions.keySet()) {
-          if (binding.isSubsignature(method)
-              && clazz.isAssignmentCompatible(method.getDeclaringClass())) {
-            md = descriptions.get(method);
-            break;
-          }
-        }
-      }
-    }
-    if (md != null) {
-      String key = md.getKey();
-      IOSMethod iosMethod = methodMappings.get(key);
-      if (iosMethod == null) {
-        ErrorUtil.error(node, createMissingMethodMessage(binding));
-        return;
-      }
-      IOSMethodBinding newBinding = IOSMethodBinding.newMappedMethod(iosMethod, binding);
-      node.setMethodBinding(newBinding);
-      NameTable.rename(binding, iosMethod.getName());
-      if (node.getExpression() instanceof SimpleName) {
-        SimpleName expr = (SimpleName) node.getExpression();
-        if (expr.getIdentifier().equals(binding.getDeclaringClass().getName())
-            || expr.getIdentifier().equals(binding.getDeclaringClass().getQualifiedName())) {
-          NameTable.rename(binding.getDeclaringClass(), iosMethod.getDeclaringClass());
-        }
-      }
-    } else {
-      // Not mapped, check if it overrides a mapped method.
-      for (IMethodBinding methodBinding : mappedMethods) {
-        if (binding.overrides(methodBinding)) {
-          JavaMethod desc = getDescription(methodBinding);
-          if (desc != null) {
-            IOSMethod iosMethod = methodMappings.get(desc.getKey());
-            if (iosMethod != null) {
-              IOSMethodBinding newBinding = IOSMethodBinding.newMappedMethod(iosMethod, binding);
-              node.setMethodBinding(newBinding);
-              break;
-            }
-          }
-        }
-      }
-    }
-    return;
-  }
-
   private void copyInvocationArguments(Expression receiver, List<Expression> oldArgs,
       List<Expression> newArgs) {
     // set the receiver as the first argument
@@ -300,50 +216,6 @@ public class JavaToIOSMethodTranslator extends TreeVisitor {
     }
   }
 
-  @Override
-  public boolean visit(SuperMethodInvocation node) {
-    // translate any embedded method invocations
-    for (Expression e : node.getArguments()) {
-      e.accept(this);
-    }
-
-    IMethodBinding binding = node.getMethodBinding();
-    JavaMethod md = getDescription(binding);
-    if (md != null) {
-      String key = md.getKey();
-      IOSMethod iosMethod = methodMappings.get(key);
-      if (iosMethod == null) {
-        // Method has same name as a mapped method's, but it's ignored since
-        // it doesn't override it.
-        return super.visit(node);
-      }
-      IOSMethodBinding newBinding = IOSMethodBinding.newMappedMethod(iosMethod, binding);
-      node.setMethodBinding(newBinding);
-    } else {
-      // Not mapped, check if it overrides a mapped method.
-      for (IMethodBinding methodBinding : mappedMethods) {
-        if (binding.overrides(methodBinding)) {
-          JavaMethod desc = getDescription(methodBinding);
-          if (desc != null) {
-            IOSMethod iosMethod = methodMappings.get(desc.getKey());
-            if (iosMethod != null) {
-              IOSMethodBinding newBinding = IOSMethodBinding.newMappedMethod(iosMethod, binding);
-              node.setMethodBinding(newBinding);
-            }
-          }
-        }
-      }
-    }
-    return true;
-  }
-
-  private JavaMethod getDescription(IMethodBinding binding) {
-    if (descriptions.containsKey(binding)) {
-      return descriptions.get(binding);
-    }
-    return addDescription(binding);
-  }
-
   private JavaMethod addDescription(IMethodBinding binding) {
     JavaMethod desc = JavaMethod.getJavaMethod(binding);
     if (desc != null) {
@@ -351,61 +223,8 @@ public class JavaToIOSMethodTranslator extends TreeVisitor {
         descriptions.put(binding, desc);
         return desc;
       }
-      String objcName = getObjectiveCNameValue(binding);
-      if (objcName != null) {
-        try {
-          String signature =
-              String.format("%s %s", binding.getDeclaringClass().getName(), objcName);
-          IOSMethod method = IOSMethod.create(signature);
-          methodMappings.put(desc.getKey(),  method);
-        } catch (IllegalArgumentException e) {
-          ErrorUtil.error("invalid Objective-C method name: " + objcName);
-        }
-        descriptions.put(binding, desc);
-        return desc;
-      }
     }
     return null;  // binding isn't mapped.
-  }
-
-  /**
-   * Returns ObjectiveCName value, or null if method is not annotated.
-   * <p>
-   * This method warns if source attempts to specify an overridden method
-   * that doesn't have the same ObjectiveCName value. This prevents
-   * developers from accidentally breaking polymorphic methods.
-   *
-   * @return the ObjectiveCName value, or null if not annotated or when
-   *     a warning is reported.
-   */
-  private static String getObjectiveCNameValue(IMethodBinding method) {
-    IAnnotationBinding annotation = BindingUtil.getAnnotation(method, ObjectiveCName.class);
-    if (annotation != null) {
-      String selector = (String) BindingUtil.getAnnotationValue(annotation, "value");
-      if (BindingUtil.getAnnotation(method, Override.class) != null) {
-        // Check that overridden method has same Objective-C name.
-        IMethodBinding superMethod = BindingUtil.getOriginalMethodBinding(method);
-        if (superMethod != method.getMethodDeclaration()) {
-          IAnnotationBinding superAnnotation  =
-              BindingUtil.getAnnotation(superMethod, ObjectiveCName.class);
-          if (superAnnotation == null) {
-            ErrorUtil.warning("ObjectiveCName(" + selector
-                + ") set on overridden method that is not also renamed.");
-            return null;
-          } else {
-            String superSelector =
-                (String) BindingUtil.getAnnotationValue(superAnnotation, "value");
-            if (!selector.equals(superSelector)) {
-              ErrorUtil.warning("Conflicting Objective-C names set for " + method
-                  + ", which overrides " + superMethod);
-              return null;
-            }
-          }
-        }
-      }
-      return selector;
-    }
-    return null;
   }
 
   /**

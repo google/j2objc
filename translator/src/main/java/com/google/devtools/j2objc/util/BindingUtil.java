@@ -123,23 +123,6 @@ public final class BindingUtil {
   }
 
   /**
-   * If this method overrides another method, return the binding for the
-   * original declaration.
-   */
-  public static IMethodBinding getOriginalMethodBinding(IMethodBinding method) {
-    if (!method.isConstructor()) {
-      for (ITypeBinding inheritedType : getAllInheritedTypes(method.getDeclaringClass())) {
-        for (IMethodBinding interfaceMethod : inheritedType.getDeclaredMethods()) {
-          if (method.overrides(interfaceMethod)) {
-            method = interfaceMethod;
-          }
-        }
-      }
-    }
-    return method.getMethodDeclaration();
-  }
-
-  /**
    * Returns a set containing the bindings of all classes and interfaces that
    * are inherited by the given type.
    */
