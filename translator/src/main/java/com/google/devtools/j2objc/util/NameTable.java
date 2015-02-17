@@ -434,6 +434,9 @@ public class NameTable {
     if (method instanceof IOSMethodBinding) {
       return ((IOSMethodBinding) method).getSelector();
     }
+    if (BindingUtil.isDestructor(method)) {
+      return DEALLOC_METHOD;
+    }
     StringBuilder sb = new StringBuilder();
     if (method.isConstructor()) {
       sb.append("init");
