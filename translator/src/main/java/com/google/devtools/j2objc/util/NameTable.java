@@ -57,7 +57,6 @@ public class NameTable {
 
   private static NameTable instance;
   private final Map<IBinding, String> renamings = Maps.newHashMap();
-  private final Map<IMethodBinding, String> methodSelectors = Maps.newHashMap();
   private final ClassLoader classLoader;
 
   public static final String INIT_NAME = "init";
@@ -291,6 +290,7 @@ public class NameTable {
    */
   public static String getName(IBinding binding) {
     assert binding != null;
+    assert !(binding instanceof IMethodBinding);
     binding = getBindingDeclaration(binding);
     String newName = instance.renamings.get(binding);
     if (newName != null) {
@@ -308,19 +308,15 @@ public class NameTable {
   /**
    * Returns the name of an annotation property variable, extracted from its accessor binding.
    */
-  public static String getAnnotationPropertyVariableName(IBinding binding) {
+  public static String getAnnotationPropertyVariableName(IMethodBinding binding) {
     return getAnnotationPropertyName(binding) + '_';
   }
 
   /**
    * Returns the name of an annotation property variable, extracted from its accessor binding.
    */
-  public static String getAnnotationPropertyName(IBinding binding) {
-    String name = binding.getName();
-    if (isReservedName(name)) {
-      name += "__";  // Matches Rewriter.renameReservedNames().
-    }
-    return name;
+  public static String getAnnotationPropertyName(IMethodBinding binding) {
+    return getMethodName(binding);
   }
 
   private static IBinding getBindingDeclaration(IBinding binding) {
@@ -344,6 +340,7 @@ public class NameTable {
    * Adds a name to the renamings map, used by getName().
    */
   public static void rename(IBinding oldName, String newName) {
+    assert !(oldName instanceof IMethodBinding);
     oldName = getBindingDeclaration(oldName);
     String previousName = instance.renamings.get(oldName);
     if (previousName != null && !previousName.equals(newName)) {
@@ -426,8 +423,15 @@ public class NameTable {
     return "with" + capitalize(getParameterTypeKeyword(type));
   }
 
-  public static void setMethodSelector(IMethodBinding binding, String selector) {
-    instance.methodSelectors.put(binding.getMethodDeclaration(), selector);
+  public static String getMethodName(IMethodBinding method) {
+    if (method.isConstructor()) {
+      return "init";
+    }
+    String name = method.getName();
+    if (isReservedName(name)) {
+      name += "__";
+    }
+    return name;
   }
 
   public static String getMethodSelector(IMethodBinding method) {
@@ -437,26 +441,17 @@ public class NameTable {
     if (BindingUtil.isDestructor(method)) {
       return DEALLOC_METHOD;
     }
-    StringBuilder sb = new StringBuilder();
-    if (method.isConstructor()) {
-      sb.append("init");
-    } else {
-      sb.append(getName(method));
-    }
     method = getOriginalMethodBinding(method);
-    String selector = instance.methodSelectors.get(method.getMethodDeclaration());
-    if (selector != null) {
-      return selector;
-    }
     JavaMethod jm = JavaMethod.getJavaMethod(method);
     IOSMethod iosMethod = instance.methodMappings.get(jm.getKey());
     if (iosMethod != null) {
       return iosMethod.getSelector();
     }
-    selector = getMethodSelectorFromAnnotation(method);
+    String selector = getMethodSelectorFromAnnotation(method);
     if (selector != null) {
       return selector;
     }
+    StringBuilder sb = new StringBuilder(getMethodName(method));
     ITypeBinding[] paramTypes = method.getParameterTypes();
     for (int i = 0; i < paramTypes.length; i++) {
       String keyword = parameterKeyword(paramTypes[i]);
@@ -477,7 +472,7 @@ public class NameTable {
     method = method.getMethodDeclaration();
     StringBuilder sb = new StringBuilder(getFullName(method.getDeclaringClass()));
     sb.append('_');
-    sb.append(getName(method));
+    sb.append(getMethodName(method));
     ITypeBinding[] paramTypes = method.getParameterTypes();
     for (int i = 0; i < paramTypes.length; i++) {
       String keyword = parameterKeyword(paramTypes[i]);
@@ -669,7 +664,7 @@ public class NameTable {
     return pkgName + binding.getName() + suffix;
   }
 
-  public static boolean isReservedName(String name) {
+  private static boolean isReservedName(String name) {
     return reservedNames.contains(name) || nsObjectMessages.contains(name);
   }
 

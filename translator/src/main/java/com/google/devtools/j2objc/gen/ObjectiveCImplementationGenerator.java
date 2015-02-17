@@ -146,12 +146,7 @@ public class ObjectiveCImplementationGenerator extends ObjectiveCSourceFileGener
   }
 
   private String methodKey(IMethodBinding method) {
-    StringBuilder sb = new StringBuilder();
-    if (method.isConstructor()) {
-      sb.append("init");
-    } else {
-      sb.append(NameTable.getName(method));
-    }
+    StringBuilder sb = new StringBuilder(NameTable.getMethodName(method));
     sb.append(parameterKey(method));
     return sb.toString();
   }
