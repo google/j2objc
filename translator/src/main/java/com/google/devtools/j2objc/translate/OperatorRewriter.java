@@ -95,13 +95,7 @@ public class OperatorRewriter extends TreeVisitor {
 
   private boolean inDeallocMethod(TreeNode node) {
     MethodDeclaration method = TreeUtil.getOwningMethod(node);
-    if (method == null) {
-      return false;
-    }
-    String methodName = method.getName().getIdentifier();
-    return (methodName.equals(NameTable.DEALLOC_METHOD)
-        || methodName.equals(NameTable.FINALIZE_METHOD))
-        && method.getParameters().isEmpty();
+    return method != null && BindingUtil.isDestructor(method.getMethodBinding());
   }
 
   public void endVisit(InfixExpression node) {
