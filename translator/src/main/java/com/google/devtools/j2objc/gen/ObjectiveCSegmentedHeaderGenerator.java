@@ -97,9 +97,16 @@ public class ObjectiveCSegmentedHeaderGenerator extends ObjectiveCHeaderGenerato
     newline();
     printForwardDeclarations(collector.getForwardDeclarations());
 
+    outer:
     for (Import imp : collector.getSuperTypes()) {
       if (mainTypeName.equals(imp.getMainTypeName())) {
         continue;
+      }
+      // Verify this import isn't declared in this source file.
+      for (AbstractTypeDeclaration type : importCollectors.keySet()) {
+        if (imp.getType().equals(type.getTypeBinding())) {
+          continue outer;
+        }
       }
       printf("#define %s_RESTRICT 1\n", imp.getMainTypeName());
       printf("#define %s_INCLUDE 1\n", imp.getTypeName());
