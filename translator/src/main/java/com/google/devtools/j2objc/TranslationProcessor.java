@@ -57,6 +57,7 @@ import com.google.devtools.j2objc.types.ImplementationImportCollector;
 import com.google.devtools.j2objc.types.Import;
 import com.google.devtools.j2objc.util.DeadCodeMap;
 import com.google.devtools.j2objc.util.ErrorUtil;
+import com.google.devtools.j2objc.util.FileUtil;
 import com.google.devtools.j2objc.util.JdtParser;
 import com.google.devtools.j2objc.util.PathClassLoader;
 import com.google.devtools.j2objc.util.TimeTracker;
@@ -65,9 +66,8 @@ import org.eclipse.jdt.core.dom.ITypeBinding;
 import org.eclipse.jdt.internal.compiler.impl.CompilerOptions;
 
 import java.io.File;
-import java.io.FileReader;
+import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.PrintWriter;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
@@ -114,13 +114,12 @@ class TranslationProcessor extends FileProcessor {
     if (hasAnnotationProcessors()) {
       processAnnotations(files);
     }
+
+    loadHeaderMappings();
+
     if (ErrorUtil.errorCount() > 0) {
       // True if any classpath entry is malformed, or batch compilation failed.
       System.exit(ErrorUtil.errorCount());
-    }
-
-    if (Options.getHeaderMappingFiles() != null) {
-      loadHeaderMappings();
     }
 
     super.processFiles(files);
@@ -340,12 +339,7 @@ class TranslationProcessor extends FileProcessor {
     // After: Functionizer - Changes bindings on MethodDeclaration nodes.
     // Before: StaticVarRewriter, OperatorRewriter - Doesn't know how to handle
     //   the hasRetainedResult flag on ClassInstanceCreation nodes.
-    Map<String, String> methodMappings = Options.getMethodMappings();
-    if (methodMappings.isEmpty()) {
-      // Method maps are loaded here so tests can call translate() directly.
-      loadMappingFiles();
-    }
-    new JavaToIOSMethodTranslator(methodMappings).run(unit);
+    new JavaToIOSMethodTranslator(Options.getMethodMappings()).run(unit);
     ticker.tick("JavaToIOSMethodTranslator");
 
     new StaticVarRewriter().run(unit);
@@ -529,48 +523,6 @@ class TranslationProcessor extends FileProcessor {
     return null;
   }
 
-  private static Properties loadProperties(String resourceName, boolean required) {
-    Properties p = new Properties();
-    File f = new File(resourceName);
-    if (f.exists()) {
-      FileReader reader = null;
-      try {
-        try {
-          reader = new FileReader(f);
-          p.load(reader);
-        } finally {
-          if (reader != null) {
-            reader.close();
-          }
-        }
-      } catch (IOException e) {
-        ErrorUtil.error("Exception reading file \"" + resourceName + "\": " + e.getMessage());
-      }
-    } else {
-      InputStream stream = J2ObjC.class.getResourceAsStream(resourceName);
-      if (stream == null) {
-        if (required) {
-          ErrorUtil.error(resourceName + " not found");
-        } else {
-          return new Properties();
-        }
-      } else {
-        try {
-          try {
-            p.load(stream);
-          } finally {
-            stream.close();
-          }
-        } catch (IOException e) {
-          ErrorUtil.error("Exception reading resource \"" + resourceName + "\": " + e.getMessage());
-          return new Properties();
-        }
-      }
-    }
-
-    return p;
-  }
-
   static void printHeaderMappings() {
     if (Options.getOutputHeaderMappingFile() != null) {
       Map<String, String> headerMappings = Options.getHeaderMappings();
@@ -599,13 +551,21 @@ class TranslationProcessor extends FileProcessor {
 
     List<String> headerMappingFiles = Options.getHeaderMappingFiles();
     List<Properties> headerMappingProps = new ArrayList<Properties>();
-    if (headerMappingFiles == null) {
-      // Don't fail if mappings aren't configured and the default mapping is absent.
-      headerMappingProps.add(loadProperties(Options.DEFAULT_HEADER_MAPPING_FILE, false));
-    } else {
-      for (String resourceName : headerMappingFiles) {
-        headerMappingProps.add(loadProperties(resourceName, true));
+
+    try {
+      if (headerMappingFiles == null) {
+        try {
+          headerMappingProps.add(FileUtil.loadProperties(Options.DEFAULT_HEADER_MAPPING_FILE));
+        } catch (FileNotFoundException e) {
+          // Don't fail if mappings aren't configured and the default mapping is absent.
+        }
+      } else {
+        for (String resourceName : headerMappingFiles) {
+          headerMappingProps.add(FileUtil.loadProperties(resourceName));
+        }
       }
+    } catch (IOException e) {
+      ErrorUtil.error(e.getMessage());
     }
 
     for (Properties mappings : headerMappingProps) {
@@ -613,26 +573,6 @@ class TranslationProcessor extends FileProcessor {
       while (keyIterator.hasMoreElements()) {
         String key = (String) keyIterator.nextElement();
         headerMappings.put(key, mappings.getProperty(key));
-      }
-    }
-  }
-
-  private static void loadMappingFiles() {
-    for (String resourceName : Options.getMappingFiles()) {
-      Properties mappings;
-      mappings = loadProperties(resourceName, true);
-
-      Enumeration<?> keyIterator = mappings.propertyNames();
-      while (keyIterator.hasMoreElements()) {
-        String key = (String) keyIterator.nextElement();
-        if (key.indexOf('(') > 0) {
-          // All method mappings have parentheses characters, classes don't.
-          String iosMethod = mappings.getProperty(key);
-          Options.getMethodMappings().put(key, iosMethod);
-        } else {
-          String iosClass = mappings.getProperty(key);
-          Options.getClassMappings().put(key, iosClass);
-        }
       }
     }
   }

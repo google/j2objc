@@ -15,16 +15,26 @@ package com.google.devtools.j2objc.util;
 
 import com.google.common.io.CharStreams;
 import com.google.common.io.Files;
+import com.google.devtools.j2objc.J2ObjC;
 import com.google.devtools.j2objc.Options;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.net.URLDecoder;
+import java.util.Properties;
 import java.util.jar.JarFile;
 import java.util.zip.ZipEntry;
 
+/**
+ * Utility methods for reading from various file types.
+ *
+ * @author Tom Ball, Keith Stanger
+ */
 public class FileUtil {
 
   /**
@@ -82,6 +92,36 @@ public class FileUtil {
       }
     } else {
       return new File(url).exists();
+    }
+  }
+
+  private static InputStream streamForFile(String filename) throws IOException {
+    File f = new File(filename);
+    if (f.exists()) {
+      return new FileInputStream(f);
+    } else {
+      InputStream stream = J2ObjC.class.getResourceAsStream(filename);
+      if (stream == null) {
+        throw new FileNotFoundException(filename);
+      }
+      return stream;
+    }
+  }
+
+  /**
+   * Reads the given properties file.
+   */
+  public static Properties loadProperties(String resourceName) throws IOException {
+    return loadProperties(streamForFile(resourceName));
+  }
+
+  public static Properties loadProperties(InputStream in) throws IOException {
+    try {
+      Properties p = new Properties();
+      p.load(in);
+      return p;
+    } finally {
+      in.close();
     }
   }
 
