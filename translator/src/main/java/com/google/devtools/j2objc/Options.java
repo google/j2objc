@@ -23,15 +23,18 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.io.Resources;
 import com.google.devtools.j2objc.util.ErrorUtil;
+import com.google.devtools.j2objc.util.FileUtil;
 
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.URL;
 import java.nio.charset.Charset;
 import java.nio.charset.UnsupportedCharsetException;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Enumeration;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
@@ -86,7 +89,6 @@ public class Options {
   private static List<String> headerMappingFiles = null;
 
   private static final String JRE_MAPPINGS_FILE = "JRE.mappings";
-  private static final List<String> mappingFiles = Lists.newArrayList(JRE_MAPPINGS_FILE);
 
   private static String fileHeader;
   private static final String FILE_HEADER_KEY = "file-header";
@@ -162,6 +164,8 @@ public class Options {
   public static String[] load(String[] args) throws IOException {
     setLogLevel(Level.INFO);
 
+    addJreMappings();
+
     // Create a temporary directory as the sourcepath's first entry, so that
     // modified sources will take precedence over regular files.
     sourcePathEntries = Lists.newArrayList();
@@ -203,7 +207,7 @@ public class Options {
         if (++nArg == args.length) {
           usage("--mapping requires an argument");
         }
-        mappingFiles.add(args[nArg]);
+        addMappingsFile(args[nArg]);
       } else if (arg.equals("--header-mapping")) {
         if (++nArg == args.length) {
           usage("--header-mapping requires an argument");
@@ -369,6 +373,30 @@ public class Options {
   static void addPrefixProperties(Properties props) {
     for (String pkg : props.stringPropertyNames()) {
       addPackagePrefix(pkg, props.getProperty(pkg).trim());
+    }
+  }
+
+  private static void addMappingsFile(String filename) throws IOException {
+    addMappingsProperties(FileUtil.loadProperties(filename));
+  }
+
+  private static void addJreMappings() throws IOException {
+    InputStream stream = J2ObjC.class.getResourceAsStream(JRE_MAPPINGS_FILE);
+    addMappingsProperties(FileUtil.loadProperties(stream));
+  }
+
+  private static void addMappingsProperties(Properties mappings) {
+    Enumeration<?> keyIterator = mappings.propertyNames();
+    while (keyIterator.hasMoreElements()) {
+      String key = (String) keyIterator.nextElement();
+      if (key.indexOf('(') > 0) {
+        // All method mappings have parentheses characters, classes don't.
+        String iosMethod = mappings.getProperty(key);
+        methodMappings.put(key, iosMethod);
+      } else {
+        String iosClass = mappings.getProperty(key);
+        classMappings.put(key, iosClass);
+      }
     }
   }
 
@@ -539,10 +567,6 @@ public class Options {
 
   public static Map<String, String> getHeaderMappings() {
     return headerMappings;
-  }
-
-  public static List<String> getMappingFiles() {
-    return mappingFiles;
   }
 
   @Nullable
