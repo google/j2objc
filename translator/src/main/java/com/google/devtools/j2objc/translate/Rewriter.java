@@ -37,14 +37,12 @@ import com.google.devtools.j2objc.ast.ForStatement;
 import com.google.devtools.j2objc.ast.InfixExpression;
 import com.google.devtools.j2objc.ast.LabeledStatement;
 import com.google.devtools.j2objc.ast.MethodDeclaration;
-import com.google.devtools.j2objc.ast.MethodInvocation;
 import com.google.devtools.j2objc.ast.Name;
 import com.google.devtools.j2objc.ast.ParenthesizedExpression;
 import com.google.devtools.j2objc.ast.QualifiedName;
 import com.google.devtools.j2objc.ast.SimpleName;
 import com.google.devtools.j2objc.ast.SingleVariableDeclaration;
 import com.google.devtools.j2objc.ast.Statement;
-import com.google.devtools.j2objc.ast.SuperMethodInvocation;
 import com.google.devtools.j2objc.ast.SwitchStatement;
 import com.google.devtools.j2objc.ast.TreeUtil;
 import com.google.devtools.j2objc.ast.TreeVisitor;
@@ -101,15 +99,11 @@ public class Rewriter extends TreeVisitor {
       }
     }
 
-    // change the names of any methods that conflict with NSObject messages
-    String name = binding.getName();
-    renameReservedNames(name, binding);
-
     List<SingleVariableDeclaration> params = node.getParameters();
     for (int i = 0; i < params.size(); i++) {
       // Change the names of any parameters that are type qualifier keywords.
       SingleVariableDeclaration param = params.get(i);
-      name = param.getName().getIdentifier();
+      String name = param.getName().getIdentifier();
       if (typeQualifierKeywords.contains(name)) {
         IVariableBinding varBinding = param.getVariableBinding();
         NameTable.rename(varBinding, name + "Arg");
@@ -147,26 +141,6 @@ public class Rewriter extends TreeVisitor {
       }
     });
     return true;
-  }
-
-  @Override
-  public boolean visit(MethodInvocation node) {
-    IMethodBinding binding = node.getMethodBinding();
-    String name = binding.getName();
-    renameReservedNames(name, binding);
-    return true;
-  }
-
-  @Override
-  public boolean visit(SuperMethodInvocation node) {
-    renameReservedNames(node.getName().getIdentifier(), node.getMethodBinding());
-    return true;
-  }
-
-  private void renameReservedNames(String name, IMethodBinding binding) {
-    if (NameTable.isReservedName(name)) {
-      NameTable.rename(binding, name + "__");
-    }
   }
 
   private static Statement getLoopBody(Statement s) {
