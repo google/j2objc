@@ -27,7 +27,6 @@ import com.google.devtools.j2objc.ast.PackageDeclaration;
 import com.google.devtools.j2objc.types.GeneratedVariableBinding;
 import com.google.devtools.j2objc.types.IOSMethod;
 import com.google.devtools.j2objc.types.IOSMethodBinding;
-import com.google.devtools.j2objc.types.JavaMethod;
 import com.google.devtools.j2objc.types.PointerTypeBinding;
 import com.google.devtools.j2objc.types.Types;
 import com.google.j2objc.annotations.ObjectiveCName;
@@ -448,8 +447,7 @@ public class NameTable {
       return DEALLOC_METHOD;
     }
     method = getOriginalMethodBinding(method);
-    JavaMethod jm = JavaMethod.getJavaMethod(method);
-    IOSMethod iosMethod = instance.methodMappings.get(jm.getKey());
+    IOSMethod iosMethod = instance.methodMappings.get(BindingUtil.getMethodKey(method));
     if (iosMethod != null) {
       return iosMethod.getSelector();
     }

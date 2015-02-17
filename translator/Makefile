@@ -202,7 +202,6 @@ JAVA_SOURCES = \
 	types/IOSMethodBinding.java \
 	types/IOSParameter.java \
 	types/IOSTypeBinding.java \
-	types/JavaMethod.java \
 	types/NullTypeBinding.java \
 	types/PointerTypeBinding.java \
 	types/RenamedTypeBinding.java \
