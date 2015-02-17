@@ -57,7 +57,7 @@ public class NameTable {
 
   private static NameTable instance;
   private final Map<IBinding, String> renamings = Maps.newHashMap();
-  private final ClassLoader classLoader;
+  private final PathClassLoader classLoader;
 
   public static final String INIT_NAME = "init";
   public static final String DEALLOC_METHOD = "dealloc";
@@ -263,7 +263,7 @@ public class NameTable {
 
   private NameTable(
       Map<String, String> prefixMap, Map<String, String> rawMethodMappings,
-      ClassLoader classLoader) {
+      PathClassLoader classLoader) {
     this.prefixMap = prefixMap;
     this.methodMappings =
         Maps.newHashMap(Maps.transformValues(rawMethodMappings, IOS_METHOD_FROM_STRING));
@@ -274,12 +274,18 @@ public class NameTable {
    * Initialize this service using the AST returned by the parser.
    */
   public static void initialize() {
+    List<String> paths = Options.getBootClasspath();
+    paths.addAll(Options.getClassPathEntries());
     instance = new NameTable(
-        Options.getPackagePrefixes(), Options.getMethodMappings(),
-        new PathClassLoader(Options.getClassPathEntries()));
+        Options.getPackagePrefixes(), Options.getMethodMappings(), new PathClassLoader(paths));
   }
 
   public static void cleanup() {
+    try {
+      instance.classLoader.close();
+    } catch (IOException e) {
+      // Ignore, any open files will be closed on exit.
+    }
     instance = null;
   }
 
@@ -722,7 +728,21 @@ public class NameTable {
       }
     }
 
-    // Check if there is a package-info.java source file with a prefix annotation.
+    String prefix = getPrefixFromPackageInfoSource(packageBinding);
+    if (prefix == null) {
+      prefix = getPrefixFromPackageInfoClass(packageName);
+    }
+    if (prefix == null) {
+      prefix = camelCaseQualifiedName(packageName);
+    }
+    instance.prefixMap.put(packageName, prefix);
+    return prefix;
+  }
+
+  /**
+   * Check if there is a package-info.java source file with a prefix annotation.
+   */
+  private static String getPrefixFromPackageInfoSource(IPackageBinding packageBinding) {
     try {
       String expectedPackageInfoPath = packageBinding.getName();
       // Path will be null if this is the empty package.
@@ -749,9 +769,7 @@ public class NameTable {
             if (i > -1) {
               int j = pkgInfo.indexOf('"', i + 1);
               if (j > -1) {
-                String prefix = pkgInfo.substring(i + 1, j);
-                instance.prefixMap.put(packageName, prefix);
-                return prefix;
+                return pkgInfo.substring(i + 1, j);
               }
             }
           }
@@ -760,22 +778,25 @@ public class NameTable {
     } catch (IOException e) {
       // Continue, as there's no package-info to check.
     }
+    return null;
+  }
 
+  /**
+   * Check if there is a package-info class with a prefix annotation.
+   */
+  private static String getPrefixFromPackageInfoClass(String packageName) {
     try {
       Class<?> clazz = instance.classLoader.loadClass(packageName + ".package-info");
       ObjectiveCName objectiveCName = clazz.getAnnotation(ObjectiveCName.class);
       if (objectiveCName != null) {
-        String prefix = objectiveCName.value();
-        instance.prefixMap.put(packageName, prefix);
-        return prefix;
+        return objectiveCName.value();
       }
     } catch (ClassNotFoundException e) {
-      // Class does not exist -- ignore exception
+      // Class does not exist -- ignore exception.
+    } catch (SecurityException e) {
+      // Failed fetching a package-info class from a secure package -- ignore exception.
     }
-
-    String prefix = camelCaseQualifiedName(packageName);
-    instance.prefixMap.put(packageName, prefix);
-    return prefix;
+    return null;
   }
 
   public static boolean hasPrefix(String packageName) {
