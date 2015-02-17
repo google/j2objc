@@ -17,7 +17,6 @@
 package com.google.devtools.j2objc.translate;
 
 import com.google.common.base.Function;
-import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.devtools.j2objc.ast.Block;
 import com.google.devtools.j2objc.ast.ClassInstanceCreation;
@@ -34,7 +33,6 @@ import com.google.devtools.j2objc.types.GeneratedMethodBinding;
 import com.google.devtools.j2objc.types.GeneratedVariableBinding;
 import com.google.devtools.j2objc.types.IOSMethod;
 import com.google.devtools.j2objc.types.IOSMethodBinding;
-import com.google.devtools.j2objc.types.JavaMethod;
 import com.google.devtools.j2objc.types.Types;
 import com.google.devtools.j2objc.util.BindingUtil;
 import com.google.devtools.j2objc.util.ErrorUtil;
@@ -107,8 +105,7 @@ public class JavaToIOSMethodTranslator extends TreeVisitor {
     }
 
     IMethodBinding binding = node.getMethodBinding();
-    JavaMethod md = JavaMethod.getJavaMethod(binding);
-    String key = md.getKey();
+    String key = BindingUtil.getMethodKey(binding);
     IOSMethod iosMethod = methodMappings.get(key);
     if (iosMethod != null) {
       assert !node.hasRetainedResult();

@@ -64,7 +64,7 @@ public class DeadCodeEliminator extends TreeVisitor {
   public void endVisit(EnumDeclaration node) {
     ITypeBinding binding = node.getTypeBinding();
     eliminateDeadCode(binding, node.getBodyDeclarations());
-    if (deadCodeMap.isDeadClass(BindingUtil.getSignature(binding))) {
+    if (deadCodeMap.isDeadClass(binding.getBinaryName())) {
       // Dead enum means none of the constants are ever used, so they can all be deleted.
       node.getEnumConstants().clear();
     }
@@ -84,16 +84,16 @@ public class DeadCodeEliminator extends TreeVisitor {
    * Remove dead members from a type.
    */
   private void eliminateDeadCode(ITypeBinding type, List<BodyDeclaration> decls) {
-    String clazz = BindingUtil.getSignature(type);
+    String clazz = type.getBinaryName();
     if (deadCodeMap.isDeadClass(clazz)) {
-      stripClass(type, decls);
+      stripClass(decls);
     } else {
       removeDeadMethods(clazz, decls);
       removeDeadFields(clazz, decls);
     }
   }
 
-  private void stripClass(ITypeBinding type, List<BodyDeclaration> decls) {
+  private void stripClass(List<BodyDeclaration> decls) {
     for (Iterator<BodyDeclaration> iter = decls.iterator(); iter.hasNext(); ) {
       BodyDeclaration decl = iter.next();
       if (!isInlinableConstant(decl)) {

@@ -27,7 +27,6 @@ import java.util.List;
  * parameters.  These descriptions are used when mapping Java method
  * use to equivalent iOS methods.
  *
- * @see JavaMethod
  * @author Tom Ball
  */
 public class IOSMethod {

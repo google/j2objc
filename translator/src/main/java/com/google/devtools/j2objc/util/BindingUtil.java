@@ -210,21 +210,12 @@ public final class BindingUtil {
     return null;
   }
 
-  /**
-   * Returns the signature of an element, defined in the Java Language
-   * Specification 3rd edition, section 13.1.
-   */
-  public static String getSignature(IBinding binding) {
-    if (binding instanceof ITypeBinding) {
-      return ((ITypeBinding) binding).getBinaryName();
-    }
-    if (binding instanceof IMethodBinding) {
-      return getSignature((IMethodBinding) binding);
-    }
-    return binding.getName();
+  public static String getMethodKey(IMethodBinding binding) {
+    return binding.getDeclaringClass().getBinaryName() + '.' + binding.getName()
+        + getSignature(binding);
   }
 
-  private static String getSignature(IMethodBinding binding) {
+  public static String getSignature(IMethodBinding binding) {
     StringBuilder sb = new StringBuilder("(");
     for (ITypeBinding parameter : binding.getParameterTypes()) {
       appendParameterSignature(parameter.getErasure(), sb);
