@@ -507,8 +507,8 @@ NSString *JreStringBuilder_toStringAndDealloc(JreStringBuilder *sb) {
   return [result autorelease];
 }
 
-- (id<JavaLangCharSequence>)subSequenceWithInt:(jint)start
-                                       withInt:(jint)end {
+- (id<JavaLangCharSequence>)subSequenceFrom:(jint)start
+                                         to:(jint)end {
   return [self substringWithInt:start withInt:end];
 }
 
@@ -658,7 +658,7 @@ jint JavaLangCharacter_offsetByCodePointsRaw(
     { "substringWithInt:", "substring", "Ljava.lang.String;", 0x1, NULL },
     { "substringWithInt:withInt:", "substring", "Ljava.lang.String;", 0x1, NULL },
     { "description", "toString", "Ljava.lang.String;", 0x1, NULL },
-    { "subSequenceWithInt:withInt:", "subSequence", "Ljava.lang.CharSequence;", 0x1, NULL },
+    { "subSequenceFrom:to:", "subSequence", "Ljava.lang.CharSequence;", 0x1, NULL },
     { "indexOfWithNSString:", "indexOf", "I", 0x1, NULL },
     { "indexOfWithNSString:withInt:", "indexOf", "I", 0x1, NULL },
     { "lastIndexOfWithNSString:", "lastIndexOf", "I", 0x1, NULL },

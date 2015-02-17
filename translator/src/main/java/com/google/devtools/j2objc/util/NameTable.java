@@ -16,6 +16,7 @@
 
 package com.google.devtools.j2objc.util;
 
+import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Joiner;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
@@ -23,6 +24,7 @@ import com.google.devtools.j2objc.Options;
 import com.google.devtools.j2objc.ast.CompilationUnit;
 import com.google.devtools.j2objc.ast.PackageDeclaration;
 import com.google.devtools.j2objc.types.GeneratedVariableBinding;
+import com.google.devtools.j2objc.types.IOSMethod;
 import com.google.devtools.j2objc.types.IOSMethodBinding;
 import com.google.devtools.j2objc.types.PointerTypeBinding;
 import com.google.devtools.j2objc.types.Types;
@@ -41,6 +43,7 @@ import java.io.IOException;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.logging.Logger;
 
 /**
@@ -52,6 +55,7 @@ public class NameTable {
 
   private static NameTable instance;
   private final Map<IBinding, String> renamings = Maps.newHashMap();
+  private final Map<IMethodBinding, String> methodSelectors = Maps.newHashMap();
   private final ClassLoader classLoader;
 
   public static final String INIT_NAME = "init";
@@ -406,6 +410,10 @@ public class NameTable {
     return "with" + capitalize(getParameterTypeKeyword(type));
   }
 
+  public static void setMethodSelector(IMethodBinding binding, String selector) {
+    instance.methodSelectors.put(binding.getMethodDeclaration(), selector);
+  }
+
   public static String getMethodSelector(IMethodBinding method) {
     if (method instanceof IOSMethodBinding) {
       return ((IOSMethodBinding) method).getSelector();
@@ -416,7 +424,15 @@ public class NameTable {
     } else {
       sb.append(getName(method));
     }
-    method = BindingUtil.getOriginalMethodBinding(method);
+    method = getOriginalMethodBinding(method);
+    String selector = instance.methodSelectors.get(method.getMethodDeclaration());
+    if (selector != null) {
+      return selector;
+    }
+    selector = getMethodSelectorFromAnnotation(method);
+    if (selector != null) {
+      return selector;
+    }
     ITypeBinding[] paramTypes = method.getParameterTypes();
     for (int i = 0; i < paramTypes.length; i++) {
       String keyword = NameTable.parameterKeyword(paramTypes[i]);
@@ -426,6 +442,38 @@ public class NameTable {
       sb.append(keyword).append(":");
     }
     return sb.toString();
+  }
+
+  private static String getMethodSelectorFromAnnotation(IMethodBinding method) {
+    IAnnotationBinding annotation = BindingUtil.getAnnotation(method, ObjectiveCName.class);
+    if (annotation != null) {
+      String value = (String) BindingUtil.getAnnotationValue(annotation, "value");
+      return IOSMethod.create(method.getDeclaringClass().getName() + " " + value).getSelector();
+    }
+    return null;
+  }
+
+  /**
+   * If this method overrides another method, return the binding for the
+   * original declaration.
+   */
+  @VisibleForTesting
+  static IMethodBinding getOriginalMethodBinding(IMethodBinding method) {
+    if (!method.isConstructor()) {
+      ITypeBinding declaringClass = method.getDeclaringClass();
+      Set<ITypeBinding> inheritedTypes = BindingUtil.getAllInheritedTypes(declaringClass);
+      if (declaringClass.isInterface()) {
+        inheritedTypes.add(Types.resolveJavaType("java.lang.Object"));
+      }
+      for (ITypeBinding inheritedType : inheritedTypes) {
+        for (IMethodBinding interfaceMethod : inheritedType.getDeclaredMethods()) {
+          if (method.overrides(interfaceMethod)) {
+            method = interfaceMethod;
+          }
+        }
+      }
+    }
+    return method.getMethodDeclaration();
   }
 
   /**

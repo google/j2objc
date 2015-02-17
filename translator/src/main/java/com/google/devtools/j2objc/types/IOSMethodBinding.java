@@ -19,8 +19,6 @@ package com.google.devtools.j2objc.types;
 import org.eclipse.jdt.core.dom.IMethodBinding;
 import org.eclipse.jdt.core.dom.ITypeBinding;
 
-import java.util.List;
-
 /**
  * IOSMethodBinding: synthetic binding for an iOS method.
  *
@@ -94,18 +92,7 @@ public class IOSMethodBinding extends GeneratedMethodBinding {
     if (selector != null) {
       return selector;
     } else {
-      StringBuilder sb = new StringBuilder(iosMethod.getName());
-      List<IOSParameter> params = iosMethod.getParameters();
-      for (int i = 0; i < params.size(); i++) {
-        if (params.get(i).isVarArgs()) {
-          break;
-        }
-        if (i != 0) {
-          sb.append(params.get(i).getParameterName());
-        }
-        sb.append(":");
-      }
-      return sb.toString();
+      return iosMethod.getSelector();
     }
   }
 

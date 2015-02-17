@@ -258,7 +258,7 @@ public class CastResolver extends TreeVisitor {
       return false;
     }
 
-    String methodName = methodBinding.getName();
+    String methodName = NameTable.getMethodSelector(methodBinding);
     if (methodName.equals("hash")
         && methodBinding.getReturnType().isEqualTo(Types.resolveJavaType("int"))) {
       return true;

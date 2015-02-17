@@ -30,7 +30,7 @@ import libcore.util.EmptyArray;
  * @see StringBuilder
  * @since 1.5
  */
-abstract class AbstractStringBuilder {
+abstract class AbstractStringBuilder implements CharSequence {
 
     static final int INITIAL_CAPACITY = 16;
 
