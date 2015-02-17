@@ -17,6 +17,7 @@
 package com.google.devtools.j2objc.util;
 
 import com.google.common.annotations.VisibleForTesting;
+import com.google.common.base.Function;
 import com.google.common.base.Joiner;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
@@ -26,6 +27,7 @@ import com.google.devtools.j2objc.ast.PackageDeclaration;
 import com.google.devtools.j2objc.types.GeneratedVariableBinding;
 import com.google.devtools.j2objc.types.IOSMethod;
 import com.google.devtools.j2objc.types.IOSMethodBinding;
+import com.google.devtools.j2objc.types.JavaMethod;
 import com.google.devtools.j2objc.types.PointerTypeBinding;
 import com.google.devtools.j2objc.types.Types;
 import com.google.j2objc.annotations.ObjectiveCName;
@@ -251,8 +253,21 @@ public class NameTable {
    */
   private final Map<String, String> prefixMap;
 
-  private NameTable(Map<String, String> prefixMap, ClassLoader classLoader) {
+  private final Map<String, IOSMethod> methodMappings;
+
+  private static final Function<String, IOSMethod> IOS_METHOD_FROM_STRING =
+      new Function<String, IOSMethod>() {
+    public IOSMethod apply(String value) {
+      return IOSMethod.create(value);
+    }
+  };
+
+  private NameTable(
+      Map<String, String> prefixMap, Map<String, String> rawMethodMappings,
+      ClassLoader classLoader) {
     this.prefixMap = prefixMap;
+    this.methodMappings =
+        Maps.newHashMap(Maps.transformValues(rawMethodMappings, IOS_METHOD_FROM_STRING));
     this.classLoader = classLoader;
   }
 
@@ -261,7 +276,8 @@ public class NameTable {
    */
   public static void initialize() {
     instance = new NameTable(
-        Options.getPackagePrefixes(), new PathClassLoader(Options.getClassPathEntries()));
+        Options.getPackagePrefixes(), Options.getMethodMappings(),
+        new PathClassLoader(Options.getClassPathEntries()));
   }
 
   public static void cleanup() {
@@ -429,17 +445,43 @@ public class NameTable {
     if (selector != null) {
       return selector;
     }
+    JavaMethod jm = JavaMethod.getJavaMethod(method);
+    IOSMethod iosMethod = instance.methodMappings.get(jm.getKey());
+    if (iosMethod != null) {
+      return iosMethod.getSelector();
+    }
     selector = getMethodSelectorFromAnnotation(method);
     if (selector != null) {
       return selector;
     }
     ITypeBinding[] paramTypes = method.getParameterTypes();
     for (int i = 0; i < paramTypes.length; i++) {
-      String keyword = NameTable.parameterKeyword(paramTypes[i]);
+      String keyword = parameterKeyword(paramTypes[i]);
       if (i == 0) {
-        keyword = NameTable.capitalize(keyword);
+        keyword = capitalize(keyword);
       }
       sb.append(keyword).append(":");
+    }
+    return sb.toString();
+  }
+
+  /**
+   * Returns a "Type_method" function name for static methods, such as from
+   * enum types. A combination of classname plus modified selector is
+   * guaranteed to be unique within the app.
+   */
+  public static String makeFunctionName(IMethodBinding method) {
+    method = method.getMethodDeclaration();
+    StringBuilder sb = new StringBuilder(getFullName(method.getDeclaringClass()));
+    sb.append('_');
+    sb.append(getName(method));
+    ITypeBinding[] paramTypes = method.getParameterTypes();
+    for (int i = 0; i < paramTypes.length; i++) {
+      String keyword = parameterKeyword(paramTypes[i]);
+      if (i == 0) {
+        keyword = capitalize(keyword);
+      }
+      sb.append(keyword).append("_");
     }
     return sb.toString();
   }
@@ -622,18 +664,6 @@ public class NameTable {
     IPackageBinding pkg = binding.getPackage();
     String pkgName = pkg != null ? getPrefix(pkg) : "";
     return pkgName + binding.getName() + suffix;
-  }
-
-  /**
-   * Returns a "Type_method" function name for static methods, such as from
-   * enum types. A combination of classname plus modified selector is
-   * guaranteed to be unique within the app.
-   */
-  public static String makeFunctionName(IMethodBinding methodBinding) {
-    ITypeBinding classBinding = methodBinding.getDeclaringClass();
-    String className = getFullName(classBinding);
-    String methodName = getMethodSelector(methodBinding).replace(':', '_');
-    return String.format("%s_%s", className, methodName);
   }
 
   public static boolean isReservedName(String name) {

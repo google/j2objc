@@ -27,7 +27,6 @@ import com.google.devtools.j2objc.ast.MethodInvocation;
 import com.google.devtools.j2objc.ast.ReturnStatement;
 import com.google.devtools.j2objc.ast.SimpleName;
 import com.google.devtools.j2objc.ast.SingleVariableDeclaration;
-import com.google.devtools.j2objc.ast.Statement;
 import com.google.devtools.j2objc.ast.StringLiteral;
 import com.google.devtools.j2objc.ast.TreeVisitor;
 import com.google.devtools.j2objc.ast.TypeDeclaration;
@@ -51,20 +50,13 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Translates method invocations and overridden methods from Java core types to
- * iOS equivalents. For example, <code>object.toString()</code> becomes
- * <code>[object description]</code>. Since many methods don't have direct
- * equivalents, other code replaces the method invocation. If the replacement
- * code is too lengthy, though, a call to an emulation library is substituted to
- * prevent code bloat.
+ * Translates invocations of mapped constructors to method invocation nodes.
+ * Adds copyWithZone methods to Cloneable types.
  *
  * @author Tom Ball
  */
 public class JavaToIOSMethodTranslator extends TreeVisitor {
 
-  private Map<IMethodBinding, JavaMethod> descriptions = Maps.newLinkedHashMap();
-  private List<IMethodBinding> overridableMethods = Lists.newArrayList();
-  private List<IMethodBinding> mappedMethods = Lists.newArrayList();
   private final ITypeBinding javaLangCloneable;
 
   private final Map<String, IOSMethod> methodMappings;
@@ -79,51 +71,7 @@ public class JavaToIOSMethodTranslator extends TreeVisitor {
   public JavaToIOSMethodTranslator(Map<String, String> methodMappings) {
     this.methodMappings =
         Maps.newHashMap(Maps.transformValues(methodMappings, IOS_METHOD_FROM_STRING));
-    loadTargetMethods(Types.resolveJavaType("java.lang.Object"));
-    loadTargetMethods(Types.resolveJavaType("java.lang.Class"));
-    loadTargetMethods(Types.resolveJavaType("java.lang.String"));
-    loadTargetMethods(Types.resolveJavaType("java.lang.Number"));
-    loadCharSequenceMethods();
     javaLangCloneable = Types.resolveJavaType("java.lang.Cloneable");
-  }
-
-  private void loadTargetMethods(ITypeBinding clazz) {
-    for (IMethodBinding method : clazz.getDeclaredMethods()) {
-      if (method.isConstructor() && Types.isJavaObjectType(method.getDeclaringClass())) {
-        continue;  // No mapping needed for new Object();
-      }
-      if (method.getName().equals("clone")) {
-        continue;
-      }
-      // track all non-final public, protected and package-private methods
-      int mods = method.getModifiers();
-      if (!Modifier.isPrivate(mods)) {
-        if (!Modifier.isFinal(mods)) {
-          overridableMethods.add(method);
-        }
-        mappedMethods.add(method);
-        JavaMethod desc = addDescription(method);
-        if (desc != null) {
-          IOSMethod iosMethod = methodMappings.get(desc.getKey());
-          NameTable.setMethodSelector(method, iosMethod.getSelector());
-        }
-      }
-    }
-  }
-
-  private void loadCharSequenceMethods() {
-    ITypeBinding charSequence = Types.resolveJavaType("java.lang.CharSequence");
-    for (IMethodBinding method : charSequence.getDeclaredMethods()) {
-      if (method.getName().equals("subSequence")) {
-        overridableMethods.add(0, method);
-        NameTable.rename(method, "subSequenceFrom");
-        mappedMethods.add(method);
-        addDescription(method);
-        JavaMethod desc = addDescription(method);
-        IOSMethod iosMethod = methodMappings.get(desc.getKey());
-        NameTable.setMethodSelector(method, iosMethod.getSelector());
-      }
-    }
   }
 
   @Override
@@ -159,10 +107,11 @@ public class JavaToIOSMethodTranslator extends TreeVisitor {
     }
 
     IMethodBinding binding = node.getMethodBinding();
-    JavaMethod md = descriptions.get(binding);
-    if (md != null) {
+    JavaMethod md = JavaMethod.getJavaMethod(binding);
+    String key = md.getKey();
+    IOSMethod iosMethod = methodMappings.get(key);
+    if (iosMethod != null) {
       assert !node.hasRetainedResult();
-      String key = md.getKey();
       if (key.equals("java.lang.String.String(Ljava/lang/String;)V")) {
         // Special case: replace new String(constant) to constant (avoid clang warning).
         Expression arg = node.getArguments().get(0);
@@ -171,19 +120,14 @@ public class JavaToIOSMethodTranslator extends TreeVisitor {
           return false;
         }
       }
-      IOSMethod iosMethod = methodMappings.get(key);
-      if (iosMethod != null) {
-        IOSMethodBinding methodBinding = IOSMethodBinding.newMappedMethod(iosMethod, binding);
-        MethodInvocation newInvocation = new MethodInvocation(methodBinding,
-            new SimpleName(Types.resolveIOSType(iosMethod.getDeclaringClass())));
+      IOSMethodBinding methodBinding = IOSMethodBinding.newMappedMethod(iosMethod, binding);
+      MethodInvocation newInvocation = new MethodInvocation(methodBinding,
+          new SimpleName(Types.resolveIOSType(iosMethod.getDeclaringClass())));
 
-        // Set parameters.
-        copyInvocationArguments(null, node.getArguments(), newInvocation.getArguments());
+      // Set parameters.
+      copyInvocationArguments(null, node.getArguments(), newInvocation.getArguments());
 
-        node.replaceWith(newInvocation);
-      } else {
-        ErrorUtil.error(node, createMissingMethodMessage(binding));
-      }
+      node.replaceWith(newInvocation);
     }
     return true;
   }
@@ -214,49 +158,6 @@ public class JavaToIOSMethodTranslator extends TreeVisitor {
     for (Expression oldArg : oldArgs) {
       newArgs.add(oldArg.copy());
     }
-  }
-
-  private JavaMethod addDescription(IMethodBinding binding) {
-    JavaMethod desc = JavaMethod.getJavaMethod(binding);
-    if (desc != null) {
-      if (methodMappings.containsKey(desc.getKey())) {
-        descriptions.put(binding, desc);
-        return desc;
-      }
-    }
-    return null;  // binding isn't mapped.
-  }
-
-  /**
-   * Explicitly walk block statement lists, to work around a bug in
-   * ASTNode.visitChildren that skips list members.
-   */
-  @Override
-  public boolean visit(Block node) {
-    for (Statement s : node.getStatements()) {
-      s.accept(this);
-    }
-    return false;
-  }
-
-  private String createMissingMethodMessage(IMethodBinding binding) {
-    StringBuilder sb = new StringBuilder("Internal error: ");
-    sb.append(binding.getDeclaringClass().getName());
-    if (!binding.isConstructor()) {
-      sb.append('.');
-      sb.append(binding.getName());
-    }
-    sb.append('(');
-    ITypeBinding[] args = binding.getParameterTypes();
-    int nargs = args.length;
-    for (int i = 0; i < nargs; i++) {
-      sb.append(args[i].getName());
-      if (i + 1 < nargs) {
-        sb.append(',');
-      }
-    }
-    sb.append(") not mapped");
-    return sb.toString();
   }
 
   private MethodInvocation makeCloneInvocation(ITypeBinding declaringClass) {
