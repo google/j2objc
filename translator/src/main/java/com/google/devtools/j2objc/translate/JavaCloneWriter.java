@@ -18,8 +18,10 @@ import com.google.common.base.Function;
 import com.google.common.base.Predicate;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
+import com.google.devtools.j2objc.Options;
 import com.google.devtools.j2objc.ast.Block;
 import com.google.devtools.j2objc.ast.ExpressionStatement;
+import com.google.devtools.j2objc.ast.FunctionInvocation;
 import com.google.devtools.j2objc.ast.MethodDeclaration;
 import com.google.devtools.j2objc.ast.MethodInvocation;
 import com.google.devtools.j2objc.ast.SimpleName;
@@ -86,9 +88,10 @@ public class JavaCloneWriter extends TreeVisitor {
       return;
     }
 
+    ITypeBinding voidType = Types.resolveJavaType("void");
     int modifiers = Modifier.PUBLIC | BindingUtil.ACC_SYNTHETIC;
     IOSMethodBinding methodBinding = IOSMethodBinding.newMethod(
-        JAVA_CLONE_METHOD, modifiers, Types.resolveJavaType("void"), type);
+        JAVA_CLONE_METHOD, modifiers, voidType, type);
 
     MethodDeclaration declaration = new MethodDeclaration(methodBinding);
     node.getBodyDeclarations().add(declaration);
@@ -101,8 +104,15 @@ public class JavaCloneWriter extends TreeVisitor {
     statements.add(new ExpressionStatement(superCall));
 
     for (IVariableBinding field : fields) {
-      statements.add(new ExpressionStatement(
-          new MethodInvocation(releaseBinding, new SimpleName(field))));
+      if (Options.useARC()) {
+        FunctionInvocation invocation = new FunctionInvocation(
+            "JreRelease", voidType, voidType, voidType);
+        invocation.getArguments().add(new SimpleName(field));
+        statements.add(new ExpressionStatement(invocation));
+      } else {
+        statements.add(new ExpressionStatement(
+            new MethodInvocation(releaseBinding, new SimpleName(field))));
+      }
     }
   }
 

@@ -15,6 +15,8 @@
 package com.google.devtools.j2objc.translate;
 
 import com.google.devtools.j2objc.GenerationTest;
+import com.google.devtools.j2objc.Options;
+import com.google.devtools.j2objc.Options.MemoryManagementOption;
 
 import java.io.IOException;
 
@@ -24,6 +26,12 @@ import java.io.IOException;
  * @author Keith Stanger
  */
 public class JavaCloneWriterTest extends GenerationTest {
+
+  @Override
+  protected void tearDown() throws Exception {
+    Options.resetMemoryManagementOption();
+    super.tearDown();
+  }
 
   // Make sure __javaClone is not emitted unless there is a weak field.
   public void testNoJavaCloneMethod() throws IOException {
@@ -40,6 +48,18 @@ public class JavaCloneWriterTest extends GenerationTest {
         "- (void)__javaClone {",
         "  [super __javaClone];",
         "  [foo_ release];",
+        "}");
+  }
+
+  public void testJavaCloneMethodWithARC() throws IOException {
+    Options.setMemoryManagementOption(MemoryManagementOption.ARC);
+    String translation = translateSourceFile(
+        "import com.google.j2objc.annotations.Weak;"
+        + " class Test { @Weak Object foo; }", "Test", "Test.m");
+    assertTranslatedLines(translation,
+        "- (void)__javaClone {",
+        "  [super __javaClone];",
+        "  JreRelease(foo_);",
         "}");
   }
 }

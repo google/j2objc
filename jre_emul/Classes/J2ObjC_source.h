@@ -27,4 +27,9 @@
 #import "NSString+JavaString.h"
 #import <libkern/OSAtomic.h>  // OSMemoryBarrier used in initialize methods.
 
+// Only expose this function to ARC generated code.
+#if __has_feature(objc_arc)
+FOUNDATION_EXPORT void JreRelease(id obj);
+#endif
+
 #endif  // _J2OBJC_SOURCE_H_
