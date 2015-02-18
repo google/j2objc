@@ -542,6 +542,9 @@ JAVA_SOURCES = \
 	java/security/KeyPair.java \
 	java/security/KeyPairGenerator.java \
 	java/security/KeyPairGeneratorSpi.java \
+	java/security/KeyStore.java \
+	java/security/KeyStoreException.java \
+	java/security/KeyStoreSpi.java \
 	java/security/MessageDigest.java \
 	java/security/MessageDigestSpi.java \
 	java/security/NoSuchAlgorithmException.java \
@@ -568,6 +571,8 @@ JAVA_SOURCES = \
 	java/security/Signature.java \
 	java/security/SignatureException.java \
 	java/security/SignatureSpi.java \
+	java/security/UnrecoverableEntryException.java \
+	java/security/UnrecoverableKeyException.java \
 	java/security/cert/CRL.java \
 	java/security/cert/CRLException.java \
 	java/security/cert/CertPath.java \
@@ -904,7 +909,14 @@ JAVA_SOURCES = \
 	javax/annotation/PreDestroy.java \
 	javax/annotation/Resources.java \
 	javax/lang/model/element/Modifier.java \
+	javax/crypto/SecretKey.java \
+	javax/security/auth/Destroyable.java \
+	javax/security/auth/DestroyFailedException.java \
 	javax/security/auth/x500/X500Principal.java \
+	javax/security/auth/callback/Callback.java \
+	javax/security/auth/callback/CallbackHandler.java \
+	javax/security/auth/callback/PasswordCallback.java \
+	javax/security/auth/callback/UnsupportedCallbackException.java \
 	javax/security/cert/Certificate.java \
 	javax/security/cert/CertificateEncodingException.java \
 	javax/security/cert/CertificateException.java \
