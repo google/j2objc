@@ -12,6 +12,7 @@ package_group(
     ],
     packages = [
         "//java/com/google/api/client/util/...",
+        "//java/com/google/apps/bigtop/sync/client/dataglue/...",
         "//java/com/google/apps/docs/docos/client/mobile/...",
     ],
 )
