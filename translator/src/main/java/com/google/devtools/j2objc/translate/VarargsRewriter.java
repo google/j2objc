@@ -25,7 +25,6 @@ import com.google.devtools.j2objc.ast.MethodInvocation;
 import com.google.devtools.j2objc.ast.SuperConstructorInvocation;
 import com.google.devtools.j2objc.ast.SuperMethodInvocation;
 import com.google.devtools.j2objc.ast.TreeVisitor;
-import com.google.devtools.j2objc.types.IOSMethodBinding;
 
 import org.eclipse.jdt.core.dom.IMethodBinding;
 import org.eclipse.jdt.core.dom.ITypeBinding;
@@ -41,7 +40,7 @@ import java.util.List;
 public class VarargsRewriter extends TreeVisitor {
 
   private void rewriteVarargs(IMethodBinding method, List<Expression> args) {
-    if (!method.isVarargs() || IOSMethodBinding.hasVarArgsTarget(method)) {
+    if (!method.isVarargs()) {
       return;
     }
     ITypeBinding[] paramTypes = method.getParameterTypes();

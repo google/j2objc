@@ -198,9 +198,7 @@ JAVA_SOURCES = \
 	types/HeaderImportCollector.java \
 	types/ImplementationImportCollector.java \
 	types/Import.java \
-	types/IOSMethod.java \
 	types/IOSMethodBinding.java \
-	types/IOSParameter.java \
 	types/IOSTypeBinding.java \
 	types/NullTypeBinding.java \
 	types/PointerTypeBinding.java \

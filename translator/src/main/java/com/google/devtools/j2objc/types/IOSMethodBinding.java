@@ -26,96 +26,34 @@ import org.eclipse.jdt.core.dom.ITypeBinding;
  */
 public class IOSMethodBinding extends GeneratedMethodBinding {
 
-  private final IOSMethod iosMethod;
   private final String selector;
-  private final ITypeBinding[] exceptionTypes;
-
-  private static final ITypeBinding[] EMPTY_TYPES = new ITypeBinding[0];
 
   private IOSMethodBinding(
-      IOSMethod iosMethod, String selector, IMethodBinding original, int modifiers,
-      ITypeBinding returnType, IMethodBinding methodDeclaration, ITypeBinding declaringClass,
-      ITypeBinding[] exceptionTypes, boolean varargs, boolean synthetic) {
-    super(original, getName(iosMethod, selector), modifiers, returnType, methodDeclaration,
-          declaringClass, false, varargs, synthetic);
-    this.exceptionTypes = exceptionTypes != null ? exceptionTypes : EMPTY_TYPES;
-    this.iosMethod = iosMethod;
+      String selector, IMethodBinding original, int modifiers, ITypeBinding returnType,
+      IMethodBinding methodDeclaration, ITypeBinding declaringClass, boolean varargs,
+      boolean synthetic) {
+    super(original, selector, modifiers, returnType, methodDeclaration, declaringClass, false,
+          varargs, synthetic);
     this.selector = selector;
-  }
-
-  private static String getName(IOSMethod iosMethod, String selector) {
-    if (iosMethod != null) {
-      return iosMethod.getName();
-    } else {
-      return selector;
-    }
-  }
-
-  public static IOSMethodBinding newMappedMethod(IOSMethod iosMethod, IMethodBinding original) {
-    ITypeBinding returnType =
-        original.isConstructor() ? original.getDeclaringClass() : original.getReturnType();
-    ITypeBinding declaringClass = Types.resolveIOSType(iosMethod.getDeclaringClass());
-    if (declaringClass == null) {
-      declaringClass = IOSTypeBinding.newUnmappedClass(iosMethod.getDeclaringClass());
-    }
-    IOSMethodBinding binding = new IOSMethodBinding(
-        iosMethod, null, original, original.getModifiers(), returnType, null, declaringClass,
-        null, original.isVarargs(), false);
-    binding.addParameters(original);
-    return binding;
   }
 
   public static IOSMethodBinding newMappedMethod(String selector, IMethodBinding original) {
     ITypeBinding returnType =
         original.isConstructor() ? original.getDeclaringClass() : original.getReturnType();
     IOSMethodBinding binding = new IOSMethodBinding(
-        null, selector, original, original.getModifiers(), returnType, null,
-        original.getDeclaringClass(), null, original.isVarargs(), false);
+        selector, original, original.getModifiers(), returnType, null, original.getDeclaringClass(),
+        original.isVarargs(), false);
     binding.addParameters(original);
     return binding;
   }
 
   public static IOSMethodBinding newMethod(
-      IOSMethod iosMethod, int modifiers, ITypeBinding returnType, ITypeBinding declaringClass) {
-    return new IOSMethodBinding(
-        iosMethod, null, null, modifiers, returnType, null, declaringClass, null, false, true);
-  }
-
-  public static IOSMethodBinding newMethod(
       String selector, int modifiers, ITypeBinding returnType, ITypeBinding declaringClass) {
     return new IOSMethodBinding(
-        null, selector, null, modifiers, returnType, null, declaringClass, null, false, true);
-  }
-
-  public static IOSMethod getIOSMethod(IMethodBinding binding) {
-    if (binding instanceof IOSMethodBinding) {
-      return ((IOSMethodBinding) binding).getIOSMethod();
-    }
-    return null;
-  }
-
-  public IOSMethod getIOSMethod() {
-    return iosMethod;
+        selector, null, modifiers, returnType, null, declaringClass, false, true);
   }
 
   public String getSelector() {
-    if (selector != null) {
-      return selector;
-    } else {
-      return iosMethod.getSelector();
-    }
-  }
-
-  public static boolean hasVarArgsTarget(IMethodBinding method) {
-    IOSMethod iosMethod = getIOSMethod(method);
-    if (iosMethod != null) {
-      return iosMethod.isVarArgs();
-    }
-    return false;
-  }
-
-  @Override
-  public ITypeBinding[] getExceptionTypes() {
-    return exceptionTypes;
+    return selector;
   }
 }
