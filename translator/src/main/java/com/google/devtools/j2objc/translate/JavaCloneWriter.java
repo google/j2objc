@@ -29,7 +29,6 @@ import com.google.devtools.j2objc.ast.TreeUtil;
 import com.google.devtools.j2objc.ast.TreeVisitor;
 import com.google.devtools.j2objc.ast.TypeDeclaration;
 import com.google.devtools.j2objc.ast.VariableDeclaration;
-import com.google.devtools.j2objc.types.IOSMethod;
 import com.google.devtools.j2objc.types.IOSMethodBinding;
 import com.google.devtools.j2objc.types.Types;
 import com.google.devtools.j2objc.util.BindingUtil;
@@ -49,8 +48,7 @@ import java.util.List;
  */
 public class JavaCloneWriter extends TreeVisitor {
 
-  private static final IOSMethod NSOBJECT_JAVA_CLONE = IOSMethod.create("NSObject __javaClone");
-  private static final IOSMethod NSOBJECT_RELEASE = IOSMethod.create("NSObject release");
+  private static final String JAVA_CLONE_METHOD = "__javaClone";
 
   private static final Function<VariableDeclaration, IVariableBinding> GET_VARIABLE_BINDING_FUNC =
       new Function<VariableDeclaration, IVariableBinding>() {
@@ -75,9 +73,9 @@ public class JavaCloneWriter extends TreeVisitor {
     ITypeBinding voidType = Types.resolveJavaType("void");
     ITypeBinding nsObjectType = Types.resolveIOSType("NSObject");
     nsObjectJavaClone = IOSMethodBinding.newMethod(
-        NSOBJECT_JAVA_CLONE, Modifier.PUBLIC, voidType, nsObjectType);
+        JAVA_CLONE_METHOD, Modifier.PUBLIC, voidType, nsObjectType);
     releaseBinding = IOSMethodBinding.newMethod(
-        NSOBJECT_RELEASE, Modifier.PUBLIC, voidType, nsObjectType);
+        NameTable.RELEASE_METHOD, Modifier.PUBLIC, voidType, nsObjectType);
   }
 
   @Override
@@ -88,11 +86,9 @@ public class JavaCloneWriter extends TreeVisitor {
       return;
     }
 
-    String typeName = NameTable.getFullName(type);
-    IOSMethod iosMethod = IOSMethod.create(String.format("%s __javaClone", typeName));
     int modifiers = Modifier.PUBLIC | BindingUtil.ACC_SYNTHETIC;
     IOSMethodBinding methodBinding = IOSMethodBinding.newMethod(
-        iosMethod, modifiers, Types.resolveJavaType("void"), type);
+        JAVA_CLONE_METHOD, modifiers, Types.resolveJavaType("void"), type);
 
     MethodDeclaration declaration = new MethodDeclaration(methodBinding);
     node.getBodyDeclarations().add(declaration);
