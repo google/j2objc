@@ -16,6 +16,8 @@
 
 package com.google.devtools.j2objc.types;
 
+import com.google.devtools.j2objc.util.BindingUtil;
+
 import org.eclipse.jdt.core.dom.IMethodBinding;
 import org.eclipse.jdt.core.dom.ITypeBinding;
 
@@ -30,10 +32,9 @@ public class IOSMethodBinding extends GeneratedMethodBinding {
 
   private IOSMethodBinding(
       String selector, IMethodBinding original, int modifiers, ITypeBinding returnType,
-      IMethodBinding methodDeclaration, ITypeBinding declaringClass, boolean varargs,
-      boolean synthetic) {
+      IMethodBinding methodDeclaration, ITypeBinding declaringClass, boolean varargs) {
     super(original, selector, modifiers, returnType, methodDeclaration, declaringClass, false,
-          varargs, synthetic);
+          varargs);
     this.selector = selector;
   }
 
@@ -42,7 +43,7 @@ public class IOSMethodBinding extends GeneratedMethodBinding {
         original.isConstructor() ? original.getDeclaringClass() : original.getReturnType();
     IOSMethodBinding binding = new IOSMethodBinding(
         selector, original, original.getModifiers(), returnType, null, original.getDeclaringClass(),
-        original.isVarargs(), false);
+        original.isVarargs());
     binding.addParameters(original);
     return binding;
   }
@@ -50,7 +51,8 @@ public class IOSMethodBinding extends GeneratedMethodBinding {
   public static IOSMethodBinding newMethod(
       String selector, int modifiers, ITypeBinding returnType, ITypeBinding declaringClass) {
     return new IOSMethodBinding(
-        selector, null, modifiers, returnType, null, declaringClass, false, true);
+        selector, null, modifiers | BindingUtil.ACC_SYNTHETIC, returnType, null, declaringClass,
+        false);
   }
 
   public String getSelector() {

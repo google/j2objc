@@ -49,10 +49,10 @@ public class GeneratedMethodBinding extends AbstractBinding implements IMethodBi
   public GeneratedMethodBinding(
       IMethodBinding delegate, String name, int modifiers, ITypeBinding returnType,
       IMethodBinding methodDeclaration, ITypeBinding declaringClass, boolean isConstructor,
-      boolean varargs, boolean isSynthetic) {
+      boolean varargs) {
     this.delegate = delegate;
     this.name = Preconditions.checkNotNull(name);
-    this.modifiers = isSynthetic ? modifiers | BindingUtil.ACC_SYNTHETIC : modifiers;
+    this.modifiers = modifiers;
     this.returnType = returnType;
     this.methodDeclaration = methodDeclaration;
     this.declaringClass = declaringClass;
@@ -65,27 +65,19 @@ public class GeneratedMethodBinding extends AbstractBinding implements IMethodBi
    */
   public GeneratedMethodBinding(IMethodBinding m) {
     this(null, m.getName(), m.getModifiers(), m.getReturnType(), null, m.getDeclaringClass(),
-        m.isConstructor(), m.isVarargs(), m.isSynthetic());
+        m.isConstructor(), m.isVarargs());
     addParameters(m);
   }
 
   public static GeneratedMethodBinding newMethod(
       String name, int modifiers, ITypeBinding returnType, ITypeBinding declaringClass) {
     return new GeneratedMethodBinding(
-        null, name, modifiers, returnType, null, declaringClass, false, false, true);
+        null, name, modifiers, returnType, null, declaringClass, false, false);
   }
 
   public static GeneratedMethodBinding newConstructor(ITypeBinding clazz, int modifiers) {
     return new GeneratedMethodBinding(
-        null, NameTable.INIT_NAME, modifiers, Types.mapTypeName("void"), null, clazz, true, false,
-        false);
-  }
-
-  public static GeneratedMethodBinding newOverridingMethod(
-      IMethodBinding m, ITypeBinding declaringClass, int modifiers) {
-    return new GeneratedMethodBinding(
-        m, m.getName(), modifiers, m.getReturnType(), null, declaringClass,
-        m.isConstructor(), m.isVarargs(), m.isSynthetic());
+        null, NameTable.INIT_NAME, modifiers, Types.mapTypeName("void"), null, clazz, true, false);
   }
 
   @Override
