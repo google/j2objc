@@ -148,8 +148,15 @@ public class NameTableTest extends GenerationTest {
     }
   }
 
-  public void testRenameMethodAnnotation() throws IOException {
-    String objcName = "test:(NSString *)s offset:(int)n";
+  public void testRenameMethodAnnotationWithFullSignature() throws IOException {
+    checkRenameMethodAnnotation("test:(NSString *)s offset:(int)n");
+  }
+
+  public void testRenameMethodAnnotationWithSelector() throws IOException {
+    checkRenameMethodAnnotation("test:offset:");
+  }
+
+  public void checkRenameMethodAnnotation(String objcName) throws IOException {
     addSourceFile("public class A { "
         + "@com.google.j2objc.annotations.ObjectiveCName(\"" + objcName + "\") "
         + "void test(String s, int n) {}}", "A.java");
@@ -170,8 +177,15 @@ public class NameTableTest extends GenerationTest {
     assertTranslation(translation, "[((A *) nil_chk(a)) test:@\"foo\" offset:4];");
   }
 
-  public void testRenameConstructorAnnotation() throws IOException {
-    String objcName = "init:(NSString *)s offset:(int)n";
+  public void testRenameConstructorAnnotationWithFullSignature() throws IOException {
+    checkRenameConstructorAnnotation("init:(NSString *)s offset:(int)n");
+  }
+
+  public void testRenameConstructorAnnotationWithSelector() throws IOException {
+    checkRenameConstructorAnnotation("init:offset:");
+  }
+
+  public void checkRenameConstructorAnnotation(String objcName) throws IOException {
     addSourceFile("public class A { "
         + "@com.google.j2objc.annotations.ObjectiveCName(\"" + objcName + "\") "
         + "A(String s, int n) {}}", "A.java");

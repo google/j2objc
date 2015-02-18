@@ -25,7 +25,6 @@ import com.google.devtools.j2objc.Options;
 import com.google.devtools.j2objc.ast.CompilationUnit;
 import com.google.devtools.j2objc.ast.PackageDeclaration;
 import com.google.devtools.j2objc.types.GeneratedVariableBinding;
-import com.google.devtools.j2objc.types.IOSMethod;
 import com.google.devtools.j2objc.types.IOSMethodBinding;
 import com.google.devtools.j2objc.types.PointerTypeBinding;
 import com.google.devtools.j2objc.types.Types;
@@ -46,6 +45,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.logging.Logger;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * Singleton service for type/method/variable name support.
@@ -59,6 +60,8 @@ public class NameTable {
   private final PathClassLoader classLoader;
 
   public static final String INIT_NAME = "init";
+  public static final String RETAIN_METHOD = "retain";
+  public static final String RELEASE_METHOD = "release";
   public static final String DEALLOC_METHOD = "dealloc";
   public static final String FINALIZE_METHOD = "finalize";
 
@@ -251,12 +254,12 @@ public class NameTable {
    */
   private final Map<String, String> prefixMap;
 
-  private final Map<String, IOSMethod> methodMappings;
+  private final Map<String, String> methodMappings;
 
-  private static final Function<String, IOSMethod> IOS_METHOD_FROM_STRING =
-      new Function<String, IOSMethod>() {
-    public IOSMethod apply(String value) {
-      return IOSMethod.create(value);
+  private static final Function<String, String> EXTRACT_SELECTOR_FUNC =
+      new Function<String, String>() {
+    public String apply(String value) {
+      return extractMethodSelector(value);
     }
   };
 
@@ -265,7 +268,7 @@ public class NameTable {
       PathClassLoader classLoader) {
     this.prefixMap = prefixMap;
     this.methodMappings =
-        Maps.newHashMap(Maps.transformValues(rawMethodMappings, IOS_METHOD_FROM_STRING));
+        Maps.newHashMap(Maps.transformValues(rawMethodMappings, EXTRACT_SELECTOR_FUNC));
     this.classLoader = classLoader;
   }
 
@@ -428,6 +431,42 @@ public class NameTable {
     return "with" + capitalize(getParameterTypeKeyword(type));
   }
 
+  // Needed by JavaToIOSMethodTranslator to convert ClassInstanceCreation nodes
+  // to MethodInvocation nodes.
+  public static Map<String, String> getMethodMappings() {
+    return instance.methodMappings;
+  }
+
+  // Matches the class name prefix or a parameter declarations of a method
+  // signature. After removing these parts, the selector remains.
+  private static final Pattern SIGNATURE_STRIPPER =
+      Pattern.compile("^\\w* |\\s*\\([^)]*\\)\\s*\\w+\\s*");
+
+  // TODO(kstanger): Phase out usage of full method signatures when renaming methods.
+  private static String parseSelectorFromSignature(String s) {
+    if (s.endsWith(";")) {
+      s = s.substring(0, s.length() - 1);
+    }
+    Matcher matcher = SIGNATURE_STRIPPER.matcher(s);
+    return matcher.replaceAll("");
+  }
+
+  private static final Pattern SELECTOR_VALIDATOR = Pattern.compile("\\w+|(\\w+\\:)+");
+
+  private static void validateMethodSelector(String selector) {
+    if (!SELECTOR_VALIDATOR.matcher(selector).matches()) {
+      ErrorUtil.error("Invalid method selector: " + selector);
+    }
+  }
+
+  private static String extractMethodSelector(String value) {
+    if (value.contains(" ")) {
+      value = parseSelectorFromSignature(value);
+    }
+    validateMethodSelector(value);
+    return value;
+  }
+
   public static String getMethodName(IMethodBinding method) {
     if (method.isConstructor()) {
       return "init";
@@ -447,11 +486,11 @@ public class NameTable {
       return DEALLOC_METHOD;
     }
     method = getOriginalMethodBinding(method);
-    IOSMethod iosMethod = instance.methodMappings.get(BindingUtil.getMethodKey(method));
-    if (iosMethod != null) {
-      return iosMethod.getSelector();
+    String selector = instance.methodMappings.get(BindingUtil.getMethodKey(method));
+    if (selector != null) {
+      return selector;
     }
-    String selector = getMethodSelectorFromAnnotation(method);
+    selector = getMethodSelectorFromAnnotation(method);
     if (selector != null) {
       return selector;
     }
@@ -488,11 +527,11 @@ public class NameTable {
     return sb.toString();
   }
 
-  private static String getMethodSelectorFromAnnotation(IMethodBinding method) {
+  public static String getMethodSelectorFromAnnotation(IMethodBinding method) {
     IAnnotationBinding annotation = BindingUtil.getAnnotation(method, ObjectiveCName.class);
     if (annotation != null) {
       String value = (String) BindingUtil.getAnnotationValue(annotation, "value");
-      return IOSMethod.create(method.getDeclaringClass().getName() + " " + value).getSelector();
+      return extractMethodSelector(value);
     }
     return null;
   }

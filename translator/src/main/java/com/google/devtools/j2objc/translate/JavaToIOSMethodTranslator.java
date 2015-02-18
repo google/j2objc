@@ -16,8 +16,7 @@
 
 package com.google.devtools.j2objc.translate;
 
-import com.google.common.base.Function;
-import com.google.common.collect.Maps;
+import com.google.devtools.j2objc.Options;
 import com.google.devtools.j2objc.ast.Block;
 import com.google.devtools.j2objc.ast.ClassInstanceCreation;
 import com.google.devtools.j2objc.ast.Expression;
@@ -31,7 +30,6 @@ import com.google.devtools.j2objc.ast.TreeVisitor;
 import com.google.devtools.j2objc.ast.TypeDeclaration;
 import com.google.devtools.j2objc.types.GeneratedMethodBinding;
 import com.google.devtools.j2objc.types.GeneratedVariableBinding;
-import com.google.devtools.j2objc.types.IOSMethod;
 import com.google.devtools.j2objc.types.IOSMethodBinding;
 import com.google.devtools.j2objc.types.Types;
 import com.google.devtools.j2objc.util.BindingUtil;
@@ -57,18 +55,10 @@ public class JavaToIOSMethodTranslator extends TreeVisitor {
 
   private final ITypeBinding javaLangCloneable;
 
-  private final Map<String, IOSMethod> methodMappings;
-
-  private static final Function<String, IOSMethod> IOS_METHOD_FROM_STRING =
-      new Function<String, IOSMethod>() {
-    public IOSMethod apply(String value) {
-      return IOSMethod.create(value);
-    }
-  };
+  private final Map<String, String> methodMappings;
 
   public JavaToIOSMethodTranslator(Map<String, String> methodMappings) {
-    this.methodMappings =
-        Maps.newHashMap(Maps.transformValues(methodMappings, IOS_METHOD_FROM_STRING));
+    this.methodMappings = NameTable.getMethodMappings();
     javaLangCloneable = Types.resolveJavaType("java.lang.Cloneable");
   }
 
@@ -79,9 +69,7 @@ public class JavaToIOSMethodTranslator extends TreeVisitor {
     // Check if @ObjectiveCName is used but is mismatched with an overriden method.
     IAnnotationBinding annotation = BindingUtil.getAnnotation(method, ObjectiveCName.class);
     if (annotation != null) {
-      String value = (String) BindingUtil.getAnnotationValue(annotation, "value");
-      String selector =
-          IOSMethod.create(method.getDeclaringClass().getName() + " " + value).getSelector();
+      String selector = NameTable.getMethodSelectorFromAnnotation(method);
       String actualSelector = NameTable.getMethodSelector(method);
       if (!selector.equals(actualSelector)) {
         ErrorUtil.warning("ObjectiveCName(" + selector
@@ -106,8 +94,8 @@ public class JavaToIOSMethodTranslator extends TreeVisitor {
 
     IMethodBinding binding = node.getMethodBinding();
     String key = BindingUtil.getMethodKey(binding);
-    IOSMethod iosMethod = methodMappings.get(key);
-    if (iosMethod != null) {
+    String selector = methodMappings.get(key);
+    if (selector != null) {
       assert !node.hasRetainedResult();
       if (key.equals("java.lang.String.String(Ljava/lang/String;)V")) {
         // Special case: replace new String(constant) to constant (avoid clang warning).
@@ -117,9 +105,9 @@ public class JavaToIOSMethodTranslator extends TreeVisitor {
           return false;
         }
       }
-      IOSMethodBinding methodBinding = IOSMethodBinding.newMappedMethod(iosMethod, binding);
-      MethodInvocation newInvocation = new MethodInvocation(methodBinding,
-          new SimpleName(Types.resolveIOSType(iosMethod.getDeclaringClass())));
+      IOSMethodBinding methodBinding = IOSMethodBinding.newMappedMethod(selector, binding);
+      MethodInvocation newInvocation = new MethodInvocation(
+          methodBinding, new SimpleName(binding.getDeclaringClass()));
 
       // Set parameters.
       copyInvocationArguments(null, node.getArguments(), newInvocation.getArguments());
@@ -157,18 +145,14 @@ public class JavaToIOSMethodTranslator extends TreeVisitor {
     }
   }
 
-  private MethodInvocation makeCloneInvocation(ITypeBinding declaringClass) {
-    GeneratedMethodBinding cloneBinding = GeneratedMethodBinding.newMethod(
-        "clone", 0, Types.resolveIOSType("NSObject"), declaringClass);
-    return new MethodInvocation(cloneBinding, null);
-  }
-
   private void addCopyWithZoneMethod(TypeDeclaration node) {
     // Create copyWithZone: method.
     ITypeBinding type = node.getTypeBinding().getTypeDeclaration();
-    IOSMethod iosMethod = IOSMethod.create("id copyWithZone:(NSZone *)zone");
+    ITypeBinding idType = Types.resolveIOSType("id");
+    ITypeBinding nsObjectType = Types.resolveIOSType("NSObject");
+
     IOSMethodBinding binding = IOSMethodBinding.newMethod(
-        iosMethod, Modifier.PUBLIC, Types.resolveIOSType("id"), type);
+        "copyWithZone:", Modifier.PUBLIC, idType, type);
     MethodDeclaration cloneMethod = new MethodDeclaration(binding);
 
     // Add NSZone *zone parameter.
@@ -181,8 +165,15 @@ public class JavaToIOSMethodTranslator extends TreeVisitor {
     Block block = new Block();
     cloneMethod.setBody(block);
 
-    MethodInvocation cloneInvocation = makeCloneInvocation(type);
-    block.getStatements().add(new ReturnStatement(cloneInvocation));
+    GeneratedMethodBinding cloneBinding = GeneratedMethodBinding.newMethod(
+        "clone", 0, nsObjectType, type);
+    MethodInvocation invocation = new MethodInvocation(cloneBinding, null);
+    if (Options.useReferenceCounting()) {
+      IOSMethodBinding retainBinding = IOSMethodBinding.newMethod(
+          NameTable.RETAIN_METHOD, Modifier.PUBLIC, idType, nsObjectType);
+      invocation = new MethodInvocation(retainBinding, invocation);
+    }
+    block.getStatements().add(new ReturnStatement(invocation));
 
     node.getBodyDeclarations().add(cloneMethod);
   }

@@ -65,6 +65,16 @@ public class IOSMethodBinding extends GeneratedMethodBinding {
     return binding;
   }
 
+  public static IOSMethodBinding newMappedMethod(String selector, IMethodBinding original) {
+    ITypeBinding returnType =
+        original.isConstructor() ? original.getDeclaringClass() : original.getReturnType();
+    IOSMethodBinding binding = new IOSMethodBinding(
+        null, selector, original, original.getModifiers(), returnType, null,
+        original.getDeclaringClass(), null, original.isVarargs(), false);
+    binding.addParameters(original);
+    return binding;
+  }
+
   public static IOSMethodBinding newMethod(
       IOSMethod iosMethod, int modifiers, ITypeBinding returnType, ITypeBinding declaringClass) {
     return new IOSMethodBinding(
