@@ -88,6 +88,7 @@ SUPPORT_SOURCES = \
     tests/support/Support_UnmodifiableMapTest.java \
     tests/support/ThrowingReader.java \
     tests/support/resource/Support_Resources.java \
+    tests/targets/security/KeyStoreTest.java \
     tests/util/CallVerificationStack.java \
     tests/util/SerializationTester.java
 
