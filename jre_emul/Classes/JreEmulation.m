@@ -185,3 +185,7 @@ FOUNDATION_EXPORT NSString *JreStrcat(const char *pTypes, ...) {
   va_end(va);
   return JreStringBuilder_toStringAndDealloc(&sb);
 }
+
+FOUNDATION_EXPORT void JreRelease(id obj) {
+  [obj release];
+}
