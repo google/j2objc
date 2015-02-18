@@ -39,232 +39,151 @@
 # another class), and the wrapper method used here.
 
 # java.lang.Object
-java.lang.Object.equals(Ljava/lang/Object;)Z = NSObject isEqual:(id)anObject
-java.lang.Object.getClass()Ljava/lang/Class; = NSObject getClass
-java.lang.Object.hashCode()I = NSObject hash
-java.lang.Object.toString()Ljava/lang/String; = NSObject description
+java.lang.Object.equals(Ljava/lang/Object;)Z = isEqual:
+java.lang.Object.getClass()Ljava/lang/Class; = getClass
+java.lang.Object.hashCode()I = hash
+java.lang.Object.toString()Ljava/lang/String; = description
 
 # java.lang.Class
-java.lang.Class.asSubclass(Ljava/lang/Class;)Ljava/lang/Class; = \
-    IOSClass asSubclass:(IOSClass *)cls
-java.lang.Class.cast(Ljava/lang/Object;)Ljava/lang/Object; = IOSClass cast:(id)obj
-java.lang.Class.desiredAssertionStatus()Z = IOSClass desiredAssertionStatus
-java.lang.Class.forName(Ljava/lang/String;)Ljava/lang/Class; = \
-    IOSClass forName:(NSString *)className
+java.lang.Class.asSubclass(Ljava/lang/Class;)Ljava/lang/Class; = asSubclass:
+java.lang.Class.cast(Ljava/lang/Object;)Ljava/lang/Object; = cast:
+java.lang.Class.desiredAssertionStatus()Z = desiredAssertionStatus
+java.lang.Class.forName(Ljava/lang/String;)Ljava/lang/Class; = forName:
 java.lang.Class.forName(Ljava/lang/String;ZLjava/lang/ClassLoader;)Ljava/lang/Class; = \
-    IOSClass forName:(NSString *)className initialize:(BOOL)load classLoader:(id)loader
+    forName:initialize:classLoader:
 java.lang.Class.getAnnotation(Ljava/lang/Class;)Ljava/lang/annotation/Annotation; = \
-    IOSClass getAnnotationWithIOSClass:(IOSClass *)annotationClass
-java.lang.Class.getAnnotations()[Ljava/lang/annotation/Annotation; = \
-    IOSClass getAnnotations
-java.lang.Class.getCanonicalName()Ljava/lang/String; = IOSClass getCanonicalName
-java.lang.Class.getClassLoader()Ljava/lang/ClassLoader; = IOSClass getClassLoader
-java.lang.Class.getComponentType()Ljava/lang/Class; = IOSClass getComponentType
-java.lang.Class.getConstructor([Ljava/lang/Class;)Ljava/lang/reflect/Constructor; = \
-    IOSClass getConstructor:(IOSObjectArray *)types;
-java.lang.Class.getConstructors()[Ljava/lang/reflect/Constructor; = \
-    IOSClass getConstructors
-java.lang.Class.getDeclaredAnnotations()[Ljava/lang/annotation/Annotation; = \
-    IOSClass getDeclaredAnnotations
+    getAnnotationWithIOSClass:
+java.lang.Class.getAnnotations()[Ljava/lang/annotation/Annotation; = getAnnotations
+java.lang.Class.getCanonicalName()Ljava/lang/String; = getCanonicalName
+java.lang.Class.getClassLoader()Ljava/lang/ClassLoader; = getClassLoader
+java.lang.Class.getComponentType()Ljava/lang/Class; = getComponentType
+java.lang.Class.getConstructor([Ljava/lang/Class;)Ljava/lang/reflect/Constructor; = getConstructor:
+java.lang.Class.getConstructors()[Ljava/lang/reflect/Constructor; = getConstructors
+java.lang.Class.getDeclaredAnnotations()[Ljava/lang/annotation/Annotation; = getDeclaredAnnotations
 java.lang.Class.getDeclaredConstructor([Ljava/lang/Class;)Ljava/lang/reflect/Constructor; = \
-    IOSClass getDeclaredConstructor:(IOSObjectArray *)types
-java.lang.Class.getDeclaredConstructors()[Ljava/lang/reflect/Constructor; = \
-    IOSClass getDeclaredConstructors
-java.lang.Class.getDeclaredField(Ljava/lang/String;)Ljava/lang/reflect/Field; = \
-    IOSClass getDeclaredField:(NSString *)name;
-java.lang.Class.getDeclaredFields()[Ljava/lang/reflect/Field; = IOSClass getDeclaredFields;
+    getDeclaredConstructor:
+java.lang.Class.getDeclaredConstructors()[Ljava/lang/reflect/Constructor; = getDeclaredConstructors
+java.lang.Class.getDeclaredField(Ljava/lang/String;)Ljava/lang/reflect/Field; = getDeclaredField:
+java.lang.Class.getDeclaredFields()[Ljava/lang/reflect/Field; = getDeclaredFields
 java.lang.Class.getDeclaredMethod(Ljava/lang/String;[Ljava/lang/Class;)Ljava/lang/reflect/Method; = \
-    IOSClass getDeclaredMethod:(NSString *)name parameterTypes:(IOSObjectArray *)types
-java.lang.Class.getDeclaredMethods()[Ljava/lang/reflect/Method; = IOSClass getDeclaredMethods
-java.lang.Class.getEnclosingClass()Ljava/lang/Class; = IOSClass getEnclosingClass
-java.lang.Class.getEnclosingConstructor()Ljava/lang/reflect/Constructor; = \
-    IOSClass getEnclosingConstructor
-java.lang.Class.getEnclosingMethod()Ljava/lang/reflect/Method; = IOSClass getEnclosingMethod
-java.lang.Class.getEnumConstants()[Ljava/lang/Object; = IOSClass getEnumConstants
-java.lang.Class.getField(Ljava/lang/String;)Ljava/lang/reflect/Field; = \
-    IOSClass getField:(NSString *)name;
-java.lang.Class.getFields()[Ljava/lang/reflect/Field; = IOSClass getFields;
-java.lang.Class.getGenericInterfaces()[Ljava/lang/reflect/Type; = IOSClass getGenericInterfaces
-java.lang.Class.getInterfaces()[Ljava/lang/Class; = IOSClass getInterfaces
+    getDeclaredMethod:parameterTypes:
+java.lang.Class.getDeclaredMethods()[Ljava/lang/reflect/Method; = getDeclaredMethods
+java.lang.Class.getEnclosingClass()Ljava/lang/Class; = getEnclosingClass
+java.lang.Class.getEnclosingConstructor()Ljava/lang/reflect/Constructor; = getEnclosingConstructor
+java.lang.Class.getEnclosingMethod()Ljava/lang/reflect/Method; = getEnclosingMethod
+java.lang.Class.getEnumConstants()[Ljava/lang/Object; = getEnumConstants
+java.lang.Class.getField(Ljava/lang/String;)Ljava/lang/reflect/Field; = getField:
+java.lang.Class.getFields()[Ljava/lang/reflect/Field; = getFields
+java.lang.Class.getGenericInterfaces()[Ljava/lang/reflect/Type; = getGenericInterfaces
+java.lang.Class.getInterfaces()[Ljava/lang/Class; = getInterfaces
 java.lang.Class.getMethod(Ljava/lang/String;[Ljava/lang/Class;)Ljava/lang/reflect/Method; = \
-    IOSClass getMethod:(NSString *)name parameterTypes:(IOSObjectArray *)types
-java.lang.Class.getMethods()[Ljava/lang/reflect/Method; = IOSClass getMethods
-java.lang.Class.getModifiers()I = IOSClass getModifiers
-java.lang.Class.getName()Ljava/lang/String; = IOSClass getName
-java.lang.Class.getPackage()Ljava/lang/Package; = IOSClass getPackage
-java.lang.Class.getResource(Ljava/lang/String;)Ljava/net/URL; = \
-    IOSClass getResource:(NSString *)name
-java.lang.Class.getResourceAsStream(Ljava/lang/String;)Ljava/io/InputStream; = \
-    IOSClass getResourceAsStream:(NSString *)name
-java.lang.Class.getSimpleName()Ljava/lang/String; = IOSClass getSimpleName
-java.lang.Class.getSuperclass()Ljava/lang/Class; = IOSClass getSuperclass
-java.lang.Class.getTypeParameters()[Ljava/lang/reflect/TypeVariable; = \
-    IOSClass getTypeParameters
-java.lang.Class.isAnnotationPresent(Ljava/lang/Class;)Z = \
-    IOSClass isAnnotationPresentWithIOSClass:(IOSClass *)annotationClass
-java.lang.Class.isAnonymousClass()Z = IOSClass isAnonymousClass
-java.lang.Class.isArray()Z = IOSClass isArray
-java.lang.Class.isAssignableFrom(Ljava/lang/Class;)Z = IOSClass isAssignableFrom:(IOSClass *)cls
-java.lang.Class.isEnum()Z = IOSClass isEnum
-java.lang.Class.isInstance(Ljava/lang/Object;)Z = IOSClass isInstance:(id)object
-java.lang.Class.isInterface()Z = IOSClass isInterface
-java.lang.Class.isPrimitive()Z = IOSClass isPrimitive
-java.lang.Class.newInstance()Ljava/lang/Object; = IOSClass newInstance
+    getMethod:parameterTypes:
+java.lang.Class.getMethods()[Ljava/lang/reflect/Method; = getMethods
+java.lang.Class.getModifiers()I = getModifiers
+java.lang.Class.getName()Ljava/lang/String; = getName
+java.lang.Class.getPackage()Ljava/lang/Package; = getPackage
+java.lang.Class.getResource(Ljava/lang/String;)Ljava/net/URL; = getResource:
+java.lang.Class.getResourceAsStream(Ljava/lang/String;)Ljava/io/InputStream; = getResourceAsStream:
+java.lang.Class.getSimpleName()Ljava/lang/String; = getSimpleName
+java.lang.Class.getSuperclass()Ljava/lang/Class; = getSuperclass
+java.lang.Class.getTypeParameters()[Ljava/lang/reflect/TypeVariable; = getTypeParameters
+java.lang.Class.isAnnotationPresent(Ljava/lang/Class;)Z = isAnnotationPresentWithIOSClass:
+java.lang.Class.isAnonymousClass()Z = isAnonymousClass
+java.lang.Class.isArray()Z = isArray
+java.lang.Class.isAssignableFrom(Ljava/lang/Class;)Z = isAssignableFrom:
+java.lang.Class.isEnum()Z = isEnum
+java.lang.Class.isInstance(Ljava/lang/Object;)Z = isInstance:
+java.lang.Class.isInterface()Z = isInterface
+java.lang.Class.isPrimitive()Z = isPrimitive
+java.lang.Class.newInstance()Ljava/lang/Object; = newInstance
 
 # java.lang.String
-java.lang.String.String()V = NSString string
-java.lang.String.String(Ljava/lang/String;)V = NSString stringWithString:(NSString *)aValue
-java.lang.String.String([B)V = NSString stringWithBytes:(IOSByteArray *)value
-java.lang.String.String([BLjava/lang/String;)V = \
-    NSString stringWithBytes:(IOSByteArray *)value \
-                 charsetName:(NSString *)charsetName
-java.lang.String.String([BLjava/nio/charset/Charset;)V = \
-    NSString stringWithBytes:(IOSByteArray *)value \
-                 charset:(JavaNioCharsetCharset *)charset
-java.lang.String.String([BI)V = \
-    NSString stringWithBytes:(IOSByteArray *)value \
-                      hibyte:(NSUInteger)hibyte
-java.lang.String.String([BII)V = \
-    NSString stringWithBytes:(IOSByteArray *)value \
-                      offset:(NSUInteger)offset \
-                      length:(NSUInteger)length
-java.lang.String.String([BIII)V = \
-    NSString stringWithBytes:(IOSByteArray *)value \
-                      hibyte:(NSUInteger)hibyte \
-                      offset:(NSUInteger)offset \
-                      length:(NSUInteger)length
-java.lang.String.String([BIILjava/lang/String;)V = \
-    NSString stringWithBytes:(IOSByteArray *)value \
-                      offset:(NSUInteger)offset \
-                      length:(NSUInteger)length \
-                 charsetName:(NSString *)charsetName
-java.lang.String.String([BIILjava/nio/charset/Charset;)V = \
-    NSString stringWithBytes:(IOSByteArray *)value \
-                      offset:(NSUInteger)offset \
-                      length:(NSUInteger)length \
-                     charset:(JavaNioCharsetCharset *)charset
-java.lang.String.String([C)V = NSString stringWithCharacters:(IOSCharArray *)value
-java.lang.String.String([CII)V = \
-    NSString stringWithCharacters:(IOSCharArray *)value \
-                           offset:(int)offset \
-                           length:(int)length
-java.lang.String.String([III)V = \
-    NSString stringWithInts:(IOSIntArray *)codePoints \
-                           offset:(int)offset \
-                           length:(int)length
-java.lang.String.String(II[C)V = \
-    NSString stringWithOffset:(int)offset \
-                       length:(int)length \
-                   characters:(IOSCharArray *)value
-java.lang.String.String(Ljava/lang/StringBuffer;)V = \
-    NSString stringWithJavaLangStringBuffer:(JavaLangStringBuffer *)sb
-java.lang.String.String(Ljava/lang/StringBuilder;)V = \
-    NSString stringWithJavaLangStringBuilder:(JavaLangStringBuilder *)sb
+java.lang.String.String()V = string
+java.lang.String.String(Ljava/lang/String;)V = stringWithString:
+java.lang.String.String([B)V = stringWithBytes:
+java.lang.String.String([BLjava/lang/String;)V = stringWithBytes:charsetName:
+java.lang.String.String([BLjava/nio/charset/Charset;)V = stringWithBytes:charset:
+java.lang.String.String([BI)V = stringWithBytes:hibyte:
+java.lang.String.String([BII)V = stringWithBytes:offset:length:
+java.lang.String.String([BIII)V = stringWithBytes:hibyte:offset:length:
+java.lang.String.String([BIILjava/lang/String;)V = stringWithBytes:offset:length:charsetName:
+java.lang.String.String([BIILjava/nio/charset/Charset;)V = stringWithBytes:offset:length:charset:
+java.lang.String.String([C)V = stringWithCharacters:
+java.lang.String.String([CII)V = stringWithCharacters:offset:length:
+java.lang.String.String([III)V = stringWithInts:offset:length:
+java.lang.String.String(II[C)V = stringWithOffset:length:characters:
+java.lang.String.String(Ljava/lang/StringBuffer;)V = stringWithJavaLangStringBuffer:
+java.lang.String.String(Ljava/lang/StringBuilder;)V = stringWithJavaLangStringBuilder:
 
-java.lang.String.charAt(I)C = NSString charAtWithInt:(int)index
-java.lang.String.codePointAt(I)I = NSString codePointAt:(int)index
-java.lang.String.codePointBefore(I)I = NSString codePointBefore:(int)index
-java.lang.String.codePointCount(II)I = NSString codePointCount:(int)begin endIndex:(int)end
-java.lang.String.compareTo(Ljava/lang/String;)I = NSString compareToWithId:(id)another
-java.lang.String.compareToIgnoreCase(Ljava/lang/String;)I = \
-    NSString compareToIgnoreCase:(NSString *)another
-java.lang.String.concat(Ljava/lang/String;)Ljava/lang/String; = NSString concat:(NSString *)string
-java.lang.String.contains(Ljava/lang/CharSequence;)Z = NSString contains:(JavaLangCharSequence *)seq
-java.lang.String.contentEquals(Ljava/lang/CharSequence;)Z = \
-    NSString contentEqualsCharSequence:(JavaLangCharSequence *)seq
-java.lang.String.contentEquals(Ljava/lang/StringBuffer;)Z = \
-    NSString contentEqualsStringBuffer:(JavaLangStringBuffer *)sb
-java.lang.String.endsWith(Ljava/lang/String;)Z = NSString hasSuffix:(NSString *)aString
-java.lang.String.equals(Ljava/lang/Object;)Z = NSString isEqual:(id)anObject
-java.lang.String.equalsIgnoreCase(Ljava/lang/String;)Z = \
-    NSString equalsIgnoreCase:(NSString *)aString
-java.lang.String.getBytes()[B = NSString getBytes
-java.lang.String.getBytes(Ljava/lang/String;)[B = NSString getBytesWithCharsetName:(NSString *)name
-java.lang.String.getBytes(Ljava/nio/charset/Charset;)[B = \
-    NSString getBytesWithCharset:(JavaNioCharsetCharset *)charset
-java.lang.String.getBytes(II[BI)V = NSString getBytesWithSrcBegin:(int)srcBegin \
-                                                       withSrcEnd:(int)srcEnd \
-                                                       withDst:(IOSByteArray *)dst \
-                                                       withDstBegin:(int)dstBegin
-java.lang.String.getChars(II[CI)V = \
-    NSString getChars:(int)sourceBegin \
-            sourceEnd:(int)sourceEnd \
-          destination:(IOSCharArray *)dest \
-     destinationBegin:(int)dstBegin
-java.lang.String.hashCode()I = NSObject hash
-java.lang.String.indexOf(I)I = NSString indexOf:(int)ch
-java.lang.String.indexOf(II)I = NSString indexOf:(int)ch fromIndex:(int)index
-java.lang.String.indexOf(Ljava/lang/String;)I = NSString indexOfString:(int)s
-java.lang.String.indexOf(Ljava/lang/String;I)I = \
-    NSString indexOfString:(int)s fromIndex:(int)index
-java.lang.String.intern()Ljava/lang/String; = NSString intern;
-java.lang.String.isEmpty()Z = NSString isEmpty
-java.lang.String.lastIndexOf(I)I = NSString lastIndexOf:(int)ch
-java.lang.String.lastIndexOf(II)I = NSString lastIndexOf:(int)ch fromIndex:(int)index
-java.lang.String.lastIndexOf(Ljava/lang/String;)I = NSString lastIndexOfString:(NSString *)s
-java.lang.String.lastIndexOf(Ljava/lang/String;I)I = \
-    NSString lastIndexOfString:(NSString *)s fromIndex:(int)index
-java.lang.String.length()I = NSString length
-java.lang.String.matches(Ljava/lang/String;)Z = NSString matches:(NSString *)regex
-java.lang.String.offsetByCodePoints(II)I = NSString offsetByCodePoints:(int)index \
-                                                       codePointOffset:(int)offset
-java.lang.String.regionMatches(ILjava/lang/String;II)Z = \
-    NSString regionMatches:(int)thisOffset \
-                   aString:(NSString *)aString \
-               otherOffset:(int)otherOffset \
-                     count:(int)count
+java.lang.String.charAt(I)C = charAtWithInt:
+java.lang.String.codePointAt(I)I = codePointAt:
+java.lang.String.codePointBefore(I)I = codePointBefore:
+java.lang.String.codePointCount(II)I = codePointCount:endIndex:
+java.lang.String.compareTo(Ljava/lang/String;)I = compareToWithId:
+java.lang.String.compareToIgnoreCase(Ljava/lang/String;)I = compareToIgnoreCase:
+java.lang.String.concat(Ljava/lang/String;)Ljava/lang/String; = concat:
+java.lang.String.contains(Ljava/lang/CharSequence;)Z = contains:
+java.lang.String.contentEquals(Ljava/lang/CharSequence;)Z = contentEqualsCharSequence:
+java.lang.String.contentEquals(Ljava/lang/StringBuffer;)Z = contentEqualsStringBuffer:
+java.lang.String.endsWith(Ljava/lang/String;)Z = hasSuffix:
+java.lang.String.equals(Ljava/lang/Object;)Z = isEqual:
+java.lang.String.equalsIgnoreCase(Ljava/lang/String;)Z = equalsIgnoreCase:
+java.lang.String.getBytes()[B = getBytes
+java.lang.String.getBytes(Ljava/lang/String;)[B = getBytesWithCharsetName:
+java.lang.String.getBytes(Ljava/nio/charset/Charset;)[B = getBytesWithCharset:
+java.lang.String.getBytes(II[BI)V = getBytesWithSrcBegin:withSrcEnd:withDst:withDstBegin:
+java.lang.String.getChars(II[CI)V = getChars:sourceEnd:destination:destinationBegin:
+java.lang.String.hashCode()I = hash
+java.lang.String.indexOf(I)I = indexOf:
+java.lang.String.indexOf(II)I = indexOf:fromIndex:
+java.lang.String.indexOf(Ljava/lang/String;)I = indexOfString:
+java.lang.String.indexOf(Ljava/lang/String;I)I = indexOfString:fromIndex:
+java.lang.String.intern()Ljava/lang/String; = intern
+java.lang.String.isEmpty()Z = isEmpty
+java.lang.String.lastIndexOf(I)I = lastIndexOf:
+java.lang.String.lastIndexOf(II)I = lastIndexOf:fromIndex:
+java.lang.String.lastIndexOf(Ljava/lang/String;)I = lastIndexOfString:
+java.lang.String.lastIndexOf(Ljava/lang/String;I)I = lastIndexOfString:fromIndex:
+java.lang.String.length()I = length
+java.lang.String.matches(Ljava/lang/String;)Z = matches:
+java.lang.String.offsetByCodePoints(II)I = offsetByCodePoints:codePointOffset:
+java.lang.String.regionMatches(ILjava/lang/String;II)Z = regionMatches:aString:otherOffset:count:
 java.lang.String.regionMatches(ZILjava/lang/String;II)Z = \
-    NSString regionMatches:(BOOL)caseInsensitive \
-                thisOffset:(int)thisOffset \
-                   aString:(NSString *)aString \
-               otherOffset:(int)otherOffset \
-                     count:(int)count
-java.lang.String.replace(CC)Ljava/lang/String; = \
-    NSString replace:(unichar)oldchar withChar:(unichar)newchar
+    regionMatches:thisOffset:aString:otherOffset:count:
+java.lang.String.replace(CC)Ljava/lang/String; = replace:withChar:
 java.lang.String.replace(Ljava/lang/CharSequence;Ljava/lang/CharSequence;)Ljava/lang/String; = \
-    NSString replace:(JavaLangCharSequence *)oldSequence \
-        withSequence:(JavaLangCharSequence *)newSequence
+    replace:withSequence:
 java.lang.String.replaceAll(Ljava/lang/String;Ljava/lang/String;)Ljava/lang/String; = \
-	NSString replaceAll:(NSString *)regex withReplacement:(NSString *)replacement
+    replaceAll:withReplacement:
 java.lang.String.replaceFirst(Ljava/lang/String;Ljava/lang/String;)Ljava/lang/String; = \
-	NSString replaceFirst:(NSString *)regex withReplacement:(NSString *)replacement
-java.lang.String.split(Ljava/lang/String;)[Ljava/lang/String; = \
-    NSString split:(NSString *)regex
-java.lang.String.split(Ljava/lang/String;I)[Ljava/lang/String; = \
-    NSString split:(NSString *)regex limit:(int)limit
-java.lang.String.startsWith(Ljava/lang/String;)Z = NSString hasPrefix:(NSString *)aString
-java.lang.String.startsWith(Ljava/lang/String;I)Z = \
-    NSString hasPrefix:(NSString *)aString offset:(int)offset
-java.lang.String.subSequence(II)Ljava/lang/CharSequence; = \
-    NSString subSequenceFrom:(int)start to:(int)end
-java.lang.String.substring(I)Ljava/lang/String; = NSString substring:(int)beginIndex
-java.lang.String.substring(II)Ljava/lang/String; = \
-    NSString substring:(int)beginIndex endIndex:(int)endIndex
-java.lang.String.toCharArray()[C = NSString toCharArray
-java.lang.String.toLowerCase()Ljava/lang/String; = NSString lowercaseString
-java.lang.String.toLowerCase(Ljava/util/Locale;)Ljava/lang/String; = \
-    NSString lowercaseStringWithJRELocale:(JavaUtilLocale *)locale
-java.lang.String.toString()Ljava/lang/String; = NSString description
-java.lang.String.toUpperCase()Ljava/lang/String; = NSString uppercaseString
-java.lang.String.toUpperCase(Ljava/util/Locale;)Ljava/lang/String; = \
-    NSString uppercaseStringWithJRELocale:(JavaUtilLocale *)locale
-java.lang.String.trim()Ljava/lang/String; = NSString trim
-java.lang.String.valueOf(Ljava/lang/Object;)Ljava/lang/String; = NSString valueOf:(id)obj
-java.lang.String.valueOf(Z)Ljava/lang/String; = NSString valueOfBool:(BOOL)value
-java.lang.String.valueOf(C)Ljava/lang/String; = NSString valueOfChar:(unichar)value
-java.lang.String.valueOf(D)Ljava/lang/String; = NSString valueOfDouble:(double)value
-java.lang.String.valueOf(F)Ljava/lang/String; = NSString valueOfFloat:(float)value
-java.lang.String.valueOf(I)Ljava/lang/String; = NSString valueOfInt:(int)value
-java.lang.String.valueOf(J)Ljava/lang/String; = NSString valueOfLong:(long long int)value
-java.lang.String.valueOf([C)Ljava/lang/String; = NSString valueOfChars:(IOSCharArray *)data
-java.lang.String.valueOf([CII)Ljava/lang/String; = \
-    NSString valueOfChars:(IOSCharArray *)data offset:(int)offset count:(int)count
-java.lang.String.copyValueOf([C)Ljava/lang/String; = NSString valueOfChars:(IOSCharArray *)data
-java.lang.String.copyValueOf([CII)Ljava/lang/String; = \
-    NSString valueOfChars:(IOSCharArray *)data offset:(int)offset count:(int)count
+    replaceFirst:withReplacement:
+java.lang.String.split(Ljava/lang/String;)[Ljava/lang/String; = split:
+java.lang.String.split(Ljava/lang/String;I)[Ljava/lang/String; = split:limit:
+java.lang.String.startsWith(Ljava/lang/String;)Z = hasPrefix:
+java.lang.String.startsWith(Ljava/lang/String;I)Z = hasPrefix:offset:
+java.lang.String.subSequence(II)Ljava/lang/CharSequence; = subSequenceFrom:to:
+java.lang.String.substring(I)Ljava/lang/String; = substring:
+java.lang.String.substring(II)Ljava/lang/String; = substring:endIndex:
+java.lang.String.toCharArray()[C = toCharArray
+java.lang.String.toLowerCase()Ljava/lang/String; = lowercaseString
+java.lang.String.toLowerCase(Ljava/util/Locale;)Ljava/lang/String; = lowercaseStringWithJRELocale:
+java.lang.String.toString()Ljava/lang/String; = description
+java.lang.String.toUpperCase()Ljava/lang/String; = uppercaseString
+java.lang.String.toUpperCase(Ljava/util/Locale;)Ljava/lang/String; = uppercaseStringWithJRELocale:
+java.lang.String.trim()Ljava/lang/String; = trim
+java.lang.String.valueOf(Ljava/lang/Object;)Ljava/lang/String; = valueOf:
+java.lang.String.valueOf(Z)Ljava/lang/String; = valueOfBool:
+java.lang.String.valueOf(C)Ljava/lang/String; = valueOfChar:
+java.lang.String.valueOf(D)Ljava/lang/String; = valueOfDouble:
+java.lang.String.valueOf(F)Ljava/lang/String; = valueOfFloat:
+java.lang.String.valueOf(I)Ljava/lang/String; = valueOfInt:
+java.lang.String.valueOf(J)Ljava/lang/String; = valueOfLong:
+java.lang.String.valueOf([C)Ljava/lang/String; = valueOfChars:
+java.lang.String.valueOf([CII)Ljava/lang/String; = valueOfChars:offset:count:
+java.lang.String.copyValueOf([C)Ljava/lang/String; = valueOfChars:
+java.lang.String.copyValueOf([CII)Ljava/lang/String; = valueOfChars:offset:count:
 
-java.lang.CharSequence.subSequence(II)Ljava/lang/CharSequence; = \
-    NSString subSequenceFrom:(int)start to:(int)end
+java.lang.CharSequence.subSequence(II)Ljava/lang/CharSequence; = subSequenceFrom:to:
 
-java.lang.Number.longValue()J = NSNumber longLongValue
-java.lang.Number.byteValue()B = NSNumber charValue
+java.lang.Number.longValue()J = longLongValue
+java.lang.Number.byteValue()B = charValue
