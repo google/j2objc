@@ -204,8 +204,7 @@ public class ObjectiveCImplementationGenerator extends ObjectiveCSourceFileGener
       printf("\n@implementation %s\n", typeName);
 
       if (isRuntime) {
-        List<AnnotationTypeMemberDeclaration> members = Lists.newArrayList(
-            Iterables.filter(node.getBodyDeclarations(), AnnotationTypeMemberDeclaration.class));
+        List<AnnotationTypeMemberDeclaration> members = TreeUtil.getAnnotationMembers(node);
         printAnnotationProperties(members);
         if (!members.isEmpty()) {
           printAnnotationConstructor(node.getTypeBinding());
