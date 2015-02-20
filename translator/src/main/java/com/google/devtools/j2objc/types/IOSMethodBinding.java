@@ -16,8 +16,6 @@
 
 package com.google.devtools.j2objc.types;
 
-import com.google.devtools.j2objc.util.BindingUtil;
-
 import org.eclipse.jdt.core.dom.IMethodBinding;
 import org.eclipse.jdt.core.dom.ITypeBinding;
 
@@ -50,9 +48,7 @@ public class IOSMethodBinding extends GeneratedMethodBinding {
 
   public static IOSMethodBinding newMethod(
       String selector, int modifiers, ITypeBinding returnType, ITypeBinding declaringClass) {
-    return new IOSMethodBinding(
-        selector, null, modifiers | BindingUtil.ACC_SYNTHETIC, returnType, null, declaringClass,
-        false);
+    return new IOSMethodBinding(selector, null, modifiers, returnType, null, declaringClass, false);
   }
 
   public String getSelector() {
