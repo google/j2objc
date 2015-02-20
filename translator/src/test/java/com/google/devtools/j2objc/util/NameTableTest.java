@@ -223,8 +223,7 @@ public class NameTableTest extends GenerationTest {
     // Test invocation of renamed constructor.
     translation = translateSourceFile(
         "class Test { A test() { return new A(\"foo\", 5); } }", "Test", "Test.m");
-    // TODO(kstanger): This should pass.
-    //assertTranslation(translation, "return [[[A alloc] init:@"foo" offset:5] autorelease];");
+    assertTranslation(translation, "return [[[A alloc] init:@\"foo\" offset:5] autorelease];");
   }
 
   public void testSuperMethodNotNamedWarning() throws IOException {
