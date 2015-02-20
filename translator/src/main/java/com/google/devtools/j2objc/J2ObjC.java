@@ -16,6 +16,7 @@
 
 package com.google.devtools.j2objc;
 
+import com.google.common.annotations.VisibleForTesting;
 import com.google.common.io.Files;
 import com.google.devtools.j2objc.util.DeadCodeMap;
 import com.google.devtools.j2objc.util.ErrorUtil;
@@ -126,7 +127,8 @@ public class J2ObjC {
     }
   }
 
-  private static JdtParser createParser() {
+  @VisibleForTesting
+  static JdtParser createParser() {
     JdtParser parser = new JdtParser();
     parser.addClasspathEntries(Options.getClassPathEntries());
     parser.addClasspathEntries(Options.getBootClasspath());
