@@ -156,7 +156,18 @@ public abstract class GenerationTest extends TestCase {
     int errors = ErrorUtil.errorCount();
     parser.setEnableDocComments(Options.docCommentsEnabled());
     org.eclipse.jdt.core.dom.CompilationUnit unit = parser.parse(name, source);
-    assertEquals(errors, ErrorUtil.errorCount());
+    if (ErrorUtil.errorCount() > errors) {
+      List<String> msgs = ErrorUtil.getErrorMessages();
+      assert msgs.size() == ErrorUtil.errorCount();
+      StringBuilder sb = new StringBuilder();
+      for (int i = errors; i < ErrorUtil.errorCount(); i++) {
+        sb.append(msgs.get(i));
+        sb.append('\n');
+      }
+      int newErrorCount = ErrorUtil.errorCount() - errors;
+      fail(String.format("%d test compilation error%s\n%s", newErrorCount,
+          (newErrorCount == 1 ? "" : "s"), sb));
+    }
     return unit;
   }
 
