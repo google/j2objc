@@ -479,8 +479,9 @@ public class NameTable {
     return name;
   }
 
-  private static String constructSelector(IMethodBinding method, char delim) {
-    StringBuilder sb = new StringBuilder(getMethodName(method));
+  private static String addParamNames(IMethodBinding method, String name, char delim) {
+    method = method.getMethodDeclaration();
+    StringBuilder sb = new StringBuilder(name);
     ITypeBinding[] paramTypes = method.getParameterTypes();
     for (int i = 0; i < paramTypes.length; i++) {
       String keyword = parameterKeyword(paramTypes[i]);
@@ -505,17 +506,29 @@ public class NameTable {
     return selectorForOriginalBinding(getOriginalMethodBindings(method).get(0));
   }
 
-  private static String selectorForOriginalBinding(IMethodBinding method) {
+  private static String getRenamedMethodName(IMethodBinding method) {
     method = method.getMethodDeclaration();
     String selector = instance.methodMappings.get(BindingUtil.getMethodKey(method));
     if (selector != null) {
       return selector;
     }
-    selector = getMethodSelectorFromAnnotation(method);
+    selector = getMethodNameFromAnnotation(method);
     if (selector != null) {
       return selector;
     }
-    return constructSelector(method, ':');
+    return null;
+  }
+
+  public static String selectorForMethodName(IMethodBinding method, String name) {
+    if (name.contains(":")) {
+      return name;
+    }
+    return addParamNames(method, name, ':');
+  }
+
+  private static String selectorForOriginalBinding(IMethodBinding method) {
+    String selector = getRenamedMethodName(method);
+    return selectorForMethodName(method, selector != null ? selector : getMethodName(method));
   }
 
   /**
@@ -547,10 +560,16 @@ public class NameTable {
    */
   public static String makeFunctionName(IMethodBinding method) {
     method = method.getMethodDeclaration();
-    return getFullName(method.getDeclaringClass()) + '_' + constructSelector(method, '_');
+    String name = getRenamedMethodName(method);
+    if (name != null) {
+      name = name.replaceAll(":", "_");
+    } else {
+      name = addParamNames(method, getMethodName(method), '_');
+    }
+    return getFullName(method.getDeclaringClass()) + '_' + name;
   }
 
-  public static String getMethodSelectorFromAnnotation(IMethodBinding method) {
+  public static String getMethodNameFromAnnotation(IMethodBinding method) {
     IAnnotationBinding annotation = BindingUtil.getAnnotation(method, ObjectiveCName.class);
     if (annotation != null) {
       String value = (String) BindingUtil.getAnnotationValue(annotation, "value");

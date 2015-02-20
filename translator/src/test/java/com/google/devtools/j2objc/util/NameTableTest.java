@@ -177,6 +177,26 @@ public class NameTableTest extends GenerationTest {
     assertTranslation(translation, "[((A *) nil_chk(a)) test:@\"foo\" offset:4];");
   }
 
+  public void testRenameStaticMethod() throws IOException {
+    String translation = translateSourceFile("public class Test { "
+        + "@com.google.j2objc.annotations.ObjectiveCName(\"foo\") "
+        + "static void test(String s, int n) {}}", "Test", "Test.h");
+    assertTranslatedLines(translation,
+        "+ (void)fooWithNSString:(NSString *)s",
+        "                withInt:(jint)n;");
+    assertTranslation(translation, "FOUNDATION_EXPORT void Test_foo(NSString *s, jint n);");
+    translation = getTranslatedFile("Test.m");
+    assertTranslatedLines(translation,
+        "+ (void)fooWithNSString:(NSString *)s",
+        "                withInt:(jint)n {",
+        "  Test_foo(s, n);",
+        "}");
+    assertTranslatedLines(translation,
+        "t_foo(NSString *s, jint n) {",
+        "  Test_init();",
+        "}");
+  }
+
   public void testRenameConstructorAnnotationWithFullSignature() throws IOException {
     checkRenameConstructorAnnotation("init:(NSString *)s offset:(int)n");
   }

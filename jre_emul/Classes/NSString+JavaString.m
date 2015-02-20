@@ -59,43 +59,38 @@ id makeException(Class exceptionClass) {
 
 // TODO(tball): remove static method wrappers when reflection invocation calls functions directly.
 + (NSString *)valueOf:(id<NSObject>)obj {
-  return NSString_valueOfWithId_((id)obj);
+  return NSString_valueOf_((id)obj);
 }
 
-NSString *NSString_valueOfWithId_(id obj) {
+NSString *NSString_valueOf_(id obj) {
   return obj ? [obj description] : @"null";
 }
 
 + (NSString *)valueOfBool:(BOOL)value {
-  return NSString_valueOfWithBoolean_(value);
+  return NSString_valueOfBool_(value);
 }
 
-NSString *NSString_valueOfWithBoolean_(BOOL value) {
+NSString *NSString_valueOfBool_(BOOL value) {
   return value ? @"true" : @"false";
 }
 
 + (NSString *)valueOfChar:(unichar)value {
-  return NSString_valueOfWithChar_(value);
+  return NSString_valueOfChar_(value);
 }
 
-NSString *NSString_valueOfWithChar_(unichar value) {
+NSString *NSString_valueOfChar_(unichar value) {
   return [NSString stringWithCharacters:&value length:1];
 }
 
-NSString *NSString_valueOfWithCharArray_(IOSCharArray *data) {
-  return NSString_copyValueOfWithCharArray_withInt_withInt_(data, 0, data->size_);
-}
-
-NSString *NSString_copyValueOfWithCharArray_(IOSCharArray *data) {
-  return NSString_valueOfWithCharArray_(data);
+NSString *NSString_valueOfChars_(IOSCharArray *data) {
+  return NSString_valueOfChars_offset_count_(data, 0, data->size_);
 }
 
 + (NSString *)valueOfChars:(IOSCharArray *)data {
-  return NSString_valueOfWithCharArray_(data);
+  return NSString_valueOfChars_(data);
 }
 
-NSString *NSString_valueOfWithCharArray_withInt_withInt_(
-    IOSCharArray *data, jint offset, jint count) {
+NSString *NSString_valueOfChars_offset_count_(IOSCharArray *data, jint offset, jint count) {
   id exception = nil;
   if (offset < 0) {
     exception = [[JavaLangStringIndexOutOfBoundsException alloc]
@@ -126,46 +121,41 @@ NSString *NSString_valueOfWithCharArray_withInt_withInt_(
   return result;
 }
 
-NSString *NSString_copyValueOfWithCharArray_withInt_withInt_(
-    IOSCharArray *data, jint offset, jint count) {
-  return NSString_valueOfWithCharArray_withInt_withInt_(data, offset, count);
-}
-
 + (NSString *)valueOfChars:(IOSCharArray *)data
                     offset:(int)offset
                      count:(int)count {
-  return NSString_valueOfWithCharArray_withInt_withInt_(data, offset, count);
+  return NSString_valueOfChars_offset_count_(data, offset, count);
 }
 
 + (NSString *)valueOfDouble:(double)value {
-  return NSString_valueOfWithDouble_(value);
+  return NSString_valueOfDouble_(value);
 }
 
-NSString *NSString_valueOfWithDouble_(jdouble value) {
+NSString *NSString_valueOfDouble_(jdouble value) {
   return RealToString_doubleToString(value);
 }
 
 + (NSString *)valueOfFloat:(float)value {
-  return NSString_valueOfWithFloat_(value);
+  return NSString_valueOfFloat_(value);
 }
 
-NSString *NSString_valueOfWithFloat_(jfloat value) {
+NSString *NSString_valueOfFloat_(jfloat value) {
   return RealToString_floatToString(value);
 }
 
 + (NSString *)valueOfInt:(int)value {
-  return NSString_valueOfWithInt_(value);
+  return NSString_valueOfInt_(value);
 }
 
-NSString *NSString_valueOfWithInt_(jint value) {
+NSString *NSString_valueOfInt_(jint value) {
   return IntegralToString_convertInt(NULL, value);
 }
 
 + (NSString *)valueOfLong:(long long int)value {
-  return NSString_valueOfWithLong_(value);
+  return NSString_valueOfLong_(value);
 }
 
-NSString *NSString_valueOfWithLong_(jlong value) {
+NSString *NSString_valueOfLong_(jlong value) {
   return IntegralToString_convertLong(NULL, value);
 }
 

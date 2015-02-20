@@ -198,6 +198,12 @@
 
 CF_EXTERN_C_BEGIN
 
+// Class.forName(String)
+IOSClass *IOSClass_forName_(NSString *className);
+// Class.forName(String, boolean, ClassLoader)
+IOSClass *IOSClass_forName_initialize_classLoader_(
+    NSString *className, BOOL load, JavaLangClassLoader *loader);
+
 // Lookup a IOSClass from its associated ObjC class, protocol or component type.
 IOSClass *IOSClass_fromClass(Class cls);
 IOSClass *IOSClass_fromProtocol(Protocol *protocol);
@@ -218,10 +224,6 @@ IOSClass *IOSClass_arrayType(IOSClass *componentType, jint dimensions);
 // Internal functions
 NSString *IOSClass_GetTranslatedMethodName(
     IOSClass *cls, NSString *name, IOSObjectArray *paramTypes);
-
-IOSClass *IOSClass_forNameWithNSString_(NSString *className);
-IOSClass *IOSClass_forNameWithNSString_withBoolean_withJavaLangClassLoader_(
-    NSString *className, BOOL load, JavaLangClassLoader *loader);
 
 // Return value is retained
 IOSObjectArray *IOSClass_NewInterfacesFromProtocolList(Protocol **list, unsigned int count);
