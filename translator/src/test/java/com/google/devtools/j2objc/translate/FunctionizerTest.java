@@ -422,4 +422,24 @@ public class FunctionizerTest extends GenerationTest {
     // No implementation of the c-function for "bar".
     assertNotInTranslation(translation, "void Test_bar()");
   }
+
+  public void testExtraSelectorsFromMultipleOverrides() throws IOException {
+    addSourceFile("interface I { int foo(String t); }", "I.java");
+    addSourceFile("class A<T> { int foo(T t) {} }", "A.java");
+    String translation = translateSourceFile(
+        "class B extends A<String> implements I { public int foo(String t) { return 7; } }",
+        "B", "B.h");
+    assertTranslation(translation, "- (jint)fooWithNSString:(NSString *)t;");
+    assertTranslation(translation, "- (jint)fooWithId:(NSString *)t;");
+
+    translation = getTranslatedFile("B.m");
+    assertTranslatedLines(translation,
+        "- (jint)fooWithNSString:(NSString *)t {",
+        "  return B_fooWithNSString_(self, t);",
+        "}");
+    assertTranslatedLines(translation,
+        "- (jint)fooWithId:(NSString *)t {",
+        "  return B_fooWithNSString_(self, t);",
+        "}");
+  }
 }

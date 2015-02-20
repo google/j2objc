@@ -127,7 +127,13 @@ public final class BindingUtil {
    * are inherited by the given type.
    */
   public static Set<ITypeBinding> getAllInheritedTypes(ITypeBinding type) {
-    Set<ITypeBinding> inheritedTypes = getAllInterfaces(type);
+    Set<ITypeBinding> inheritedTypes = Sets.newHashSet();
+    collectAllInheritedTypes(type, inheritedTypes);
+    return inheritedTypes;
+  }
+
+  public static void collectAllInheritedTypes(ITypeBinding type, Set<ITypeBinding> inheritedTypes) {
+    collectAllInterfaces(type, inheritedTypes);
     while (true) {
       type = type.getSuperclass();
       if (type == null) {
@@ -135,7 +141,6 @@ public final class BindingUtil {
       }
       inheritedTypes.add(type);
     }
-    return inheritedTypes;
   }
 
   /**
@@ -143,7 +148,12 @@ public final class BindingUtil {
    * given class, and all super-interfaces of those.
    */
   public static Set<ITypeBinding> getAllInterfaces(ITypeBinding type) {
-    Set<ITypeBinding> allInterfaces = Sets.newHashSet();
+    Set<ITypeBinding> interfaces = Sets.newHashSet();
+    collectAllInterfaces(type, interfaces);
+    return interfaces;
+  }
+
+  public static void collectAllInterfaces(ITypeBinding type, Set<ITypeBinding> interfaces) {
     Deque<ITypeBinding> typeQueue = Lists.newLinkedList();
 
     while (type != null) {
@@ -154,11 +164,9 @@ public final class BindingUtil {
     while (!typeQueue.isEmpty()) {
       ITypeBinding nextType = typeQueue.poll();
       List<ITypeBinding> newInterfaces = Arrays.asList(nextType.getInterfaces());
-      allInterfaces.addAll(newInterfaces);
+      interfaces.addAll(newInterfaces);
       typeQueue.addAll(newInterfaces);
     }
-
-    return allInterfaces;
   }
 
   /**

@@ -16,11 +16,11 @@
 
 package com.google.devtools.j2objc.util;
 
-import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Function;
 import com.google.common.base.Joiner;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
+import com.google.common.collect.Sets;
 import com.google.devtools.j2objc.Options;
 import com.google.devtools.j2objc.ast.CompilationUnit;
 import com.google.devtools.j2objc.ast.PackageDeclaration;
@@ -40,6 +40,7 @@ import org.eclipse.jdt.core.dom.VariableDeclarationFragment;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -478,6 +479,19 @@ public class NameTable {
     return name;
   }
 
+  private static String constructSelector(IMethodBinding method, char delim) {
+    StringBuilder sb = new StringBuilder(getMethodName(method));
+    ITypeBinding[] paramTypes = method.getParameterTypes();
+    for (int i = 0; i < paramTypes.length; i++) {
+      String keyword = parameterKeyword(paramTypes[i]);
+      if (i == 0) {
+        keyword = capitalize(keyword);
+      }
+      sb.append(keyword).append(delim);
+    }
+    return sb.toString();
+  }
+
   public static String getMethodSelector(IMethodBinding method) {
     if (method instanceof IOSMethodBinding) {
       return ((IOSMethodBinding) method).getSelector();
@@ -485,7 +499,14 @@ public class NameTable {
     if (BindingUtil.isDestructor(method)) {
       return DEALLOC_METHOD;
     }
-    method = getOriginalMethodBinding(method);
+    if (method.isConstructor() || BindingUtil.isStatic(method)) {
+      return selectorForOriginalBinding(method);
+    }
+    return selectorForOriginalBinding(getOriginalMethodBindings(method).get(0));
+  }
+
+  private static String selectorForOriginalBinding(IMethodBinding method) {
+    method = method.getMethodDeclaration();
     String selector = instance.methodMappings.get(BindingUtil.getMethodKey(method));
     if (selector != null) {
       return selector;
@@ -494,16 +515,29 @@ public class NameTable {
     if (selector != null) {
       return selector;
     }
-    StringBuilder sb = new StringBuilder(getMethodName(method));
-    ITypeBinding[] paramTypes = method.getParameterTypes();
-    for (int i = 0; i < paramTypes.length; i++) {
-      String keyword = parameterKeyword(paramTypes[i]);
-      if (i == 0) {
-        keyword = capitalize(keyword);
-      }
-      sb.append(keyword).append(":");
+    return constructSelector(method, ':');
+  }
+
+  /**
+   * In rare edge cases a single method will override two or more methods that
+   * have different selectors. This returns the additional selectors that are
+   * not returned by getMethodSelector().
+   */
+  public static List<String> getExtraSelectors(IMethodBinding method) {
+    if (method instanceof IOSMethodBinding || method.isConstructor() || BindingUtil.isStatic(method)
+        || BindingUtil.isDestructor(method)) {
+      return Collections.emptyList();
     }
-    return sb.toString();
+    List<IMethodBinding> originalMethods = getOriginalMethodBindings(method);
+    List<String> extraSelectors = Lists.newArrayList();
+    String actualSelector = selectorForOriginalBinding(originalMethods.get(0));
+    for (int i = 1; i < originalMethods.size(); i++) {
+      String selector = selectorForOriginalBinding(originalMethods.get(i));
+      if (!selector.equals(actualSelector)) {
+        extraSelectors.add(selector);
+      }
+    }
+    return extraSelectors;
   }
 
   /**
@@ -513,18 +547,7 @@ public class NameTable {
    */
   public static String makeFunctionName(IMethodBinding method) {
     method = method.getMethodDeclaration();
-    StringBuilder sb = new StringBuilder(getFullName(method.getDeclaringClass()));
-    sb.append('_');
-    sb.append(getMethodName(method));
-    ITypeBinding[] paramTypes = method.getParameterTypes();
-    for (int i = 0; i < paramTypes.length; i++) {
-      String keyword = parameterKeyword(paramTypes[i]);
-      if (i == 0) {
-        keyword = capitalize(keyword);
-      }
-      sb.append(keyword).append("_");
-    }
-    return sb.toString();
+    return getFullName(method.getDeclaringClass()) + '_' + constructSelector(method, '_');
   }
 
   public static String getMethodSelectorFromAnnotation(IMethodBinding method) {
@@ -537,26 +560,54 @@ public class NameTable {
   }
 
   /**
-   * If this method overrides another method, return the binding for the
-   * original declaration.
+   * Finds all the original overridden method bindings. If the the method is
+   * overridden multiple times in the hierarchy, only the original is included.
+   * Multiple results are still possible if the the given method overrides
+   * methods from multiple interfaces or classes that do not share the same
+   * hierarchy.
    */
-  @VisibleForTesting
-  static IMethodBinding getOriginalMethodBinding(IMethodBinding method) {
-    if (!method.isConstructor()) {
-      ITypeBinding declaringClass = method.getDeclaringClass();
-      Set<ITypeBinding> inheritedTypes = BindingUtil.getAllInheritedTypes(declaringClass);
-      if (declaringClass.isInterface()) {
-        inheritedTypes.add(Types.resolveJavaType("java.lang.Object"));
-      }
-      for (ITypeBinding inheritedType : inheritedTypes) {
-        for (IMethodBinding interfaceMethod : inheritedType.getDeclaredMethods()) {
-          if (method.overrides(interfaceMethod)) {
-            method = interfaceMethod;
-          }
+  private static List<IMethodBinding> getOriginalMethodBindings(IMethodBinding method) {
+    method = method.getMethodDeclaration();
+    if (method.isConstructor() || BindingUtil.isStatic(method)) {
+      return Lists.newArrayList(method);
+    }
+    ITypeBinding declaringClass = method.getDeclaringClass();
+    List<IMethodBinding> originalBindings = Lists.newArrayList();
+    originalBindings.add(method);
+
+    // Collect all the inherited types.
+    // Predictable ordering is important, so we use a LinkedHashSet.
+    Set<ITypeBinding> inheritedTypes = Sets.newLinkedHashSet();
+    BindingUtil.collectAllInheritedTypes(declaringClass, inheritedTypes);
+    if (declaringClass.isInterface()) {
+      inheritedTypes.add(Types.resolveJavaType("java.lang.Object"));
+    }
+
+    // Find all overridden methods.
+    for (ITypeBinding inheritedType : inheritedTypes) {
+      for (IMethodBinding interfaceMethod : inheritedType.getDeclaredMethods()) {
+        if (method.overrides(interfaceMethod)) {
+          originalBindings.add(interfaceMethod);
         }
       }
     }
-    return method.getMethodDeclaration();
+
+    // Remove any overridden method that overrides another overriden method,
+    // leaving only the original overridden methods. Usually there is just one
+    // but not always.
+    Iterator<IMethodBinding> iter = originalBindings.iterator();
+    while (iter.hasNext()) {
+      IMethodBinding inheritedMethod = iter.next();
+      for (IMethodBinding otherInheritedMethod : originalBindings) {
+        if (inheritedMethod != otherInheritedMethod
+            && inheritedMethod.overrides(otherInheritedMethod)) {
+          iter.remove();
+          break;
+        }
+      }
+    }
+
+    return originalBindings;
   }
 
   /**

@@ -276,20 +276,4 @@ public class NameTableTest extends GenerationTest {
     assertTranslation(translation, "@implementation FooBarpackage_info");
     assertNotInTranslation(translation, "FBpackage_info");
   }
-
-  public void testGenericParamInDeepTypeHierarchy() throws IOException {
-    CompilationUnit unit = translateType("Test", "class Test { "
-        + "static class A<T> { void foo(T x) {} } "
-        + "static class B extends A<Double> { void foo(Double x) {} } "
-        + "static class C extends B { void foo(Double x) {} } }");
-    ITypeBinding cType = BindingUtil.findDeclaredType(unit.getTypes().get(0).getTypeBinding(), "C");
-    assertNotNull(cType);
-    IMethodBinding fooMethod = BindingUtil.findDeclaredMethod(cType, "foo", "java.lang.Double");
-    assertNotNull(fooMethod);
-    IMethodBinding original = NameTable.getOriginalMethodBinding(fooMethod);
-    assertEquals("A", original.getDeclaringClass().getName());
-    ITypeBinding[] params = original.getParameterTypes();
-    assertEquals(1, params.length);
-    assertEquals("T", params[0].getName());
-  }
 }
