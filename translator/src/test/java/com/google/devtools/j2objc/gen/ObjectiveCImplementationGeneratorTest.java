@@ -859,8 +859,35 @@ public class ObjectiveCImplementationGeneratorTest extends GenerationTest {
         + "class Test { Bar ann; String namespace() { return ann.namespace(); }}",
         "Bar", "foo/Bar.m");
     assertTranslation(translation, "@synthesize namespace__ = namespace___;");
-    assertTranslation(translation, "- (instancetype)initWithNamespace__:(NSString *)namespace____ {");
+    assertTranslation(translation,
+        "- (instancetype)initWithNamespace__:(NSString *)namespace____ {");
     assertTranslation(translation, "self->namespace___ = RETAIN_(namespace____);");
     assertTranslation(translation, "+ (NSString *)namespace__Default {");
+  }
+
+  public void testAnnotationWithDefaultAnnotation() throws IOException {
+    String translation = translateSourceFile(
+        "import java.lang.annotation.*; public class A { "
+        + "@Retention(RetentionPolicy.RUNTIME) "
+        + "public @interface InnerAnn {} "
+        + "@Retention(RetentionPolicy.RUNTIME) "
+        + "public @interface OuterAnn { InnerAnn test() default @InnerAnn(); }}",
+        "A", "A.m");
+    assertTranslatedLines(translation,
+        "+ (id<A_InnerAnn>)testDefault {", "return [[[A_InnerAnn alloc] init] autorelease];", "}");
+  }
+
+  public void testAnnotationWithDefaultAnnotationWithArguments() throws IOException {
+    String translation = translateSourceFile(
+        "import java.lang.annotation.*; public class A { "
+        + "@Retention(RetentionPolicy.RUNTIME) "
+        + "public @interface InnerAnn { String foo(); int num(); } "
+        + "@Retention(RetentionPolicy.RUNTIME) "
+        + "public @interface OuterAnn { InnerAnn test() default @InnerAnn(foo=\"bar\", num=5); }}",
+        "A", "A.m");
+    assertTranslatedLines(translation,
+        "+ (id<A_InnerAnn>)testDefault {",
+        "return [[[A_InnerAnn alloc] initWithFoo:@\"bar\" withNum:5] autorelease];",
+        "}");
   }
 }

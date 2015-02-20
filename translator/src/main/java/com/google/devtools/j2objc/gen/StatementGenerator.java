@@ -19,7 +19,9 @@ package com.google.devtools.j2objc.gen;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.CharMatcher;
 import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
 import com.google.devtools.j2objc.Options;
+import com.google.devtools.j2objc.ast.Annotation;
 import com.google.devtools.j2objc.ast.AnonymousClassDeclaration;
 import com.google.devtools.j2objc.ast.ArrayAccess;
 import com.google.devtools.j2objc.ast.ArrayCreation;
@@ -52,10 +54,13 @@ import com.google.devtools.j2objc.ast.InfixExpression;
 import com.google.devtools.j2objc.ast.Initializer;
 import com.google.devtools.j2objc.ast.InstanceofExpression;
 import com.google.devtools.j2objc.ast.LabeledStatement;
+import com.google.devtools.j2objc.ast.MarkerAnnotation;
+import com.google.devtools.j2objc.ast.MemberValuePair;
 import com.google.devtools.j2objc.ast.MethodDeclaration;
 import com.google.devtools.j2objc.ast.MethodInvocation;
 import com.google.devtools.j2objc.ast.Name;
 import com.google.devtools.j2objc.ast.NativeStatement;
+import com.google.devtools.j2objc.ast.NormalAnnotation;
 import com.google.devtools.j2objc.ast.NullLiteral;
 import com.google.devtools.j2objc.ast.NumberLiteral;
 import com.google.devtools.j2objc.ast.ParenthesizedExpression;
@@ -67,6 +72,7 @@ import com.google.devtools.j2objc.ast.QualifiedType;
 import com.google.devtools.j2objc.ast.ReturnStatement;
 import com.google.devtools.j2objc.ast.SimpleName;
 import com.google.devtools.j2objc.ast.SimpleType;
+import com.google.devtools.j2objc.ast.SingleMemberAnnotation;
 import com.google.devtools.j2objc.ast.SingleVariableDeclaration;
 import com.google.devtools.j2objc.ast.Statement;
 import com.google.devtools.j2objc.ast.StringLiteral;
@@ -95,13 +101,16 @@ import com.google.devtools.j2objc.util.BindingUtil;
 import com.google.devtools.j2objc.util.NameTable;
 import com.google.devtools.j2objc.util.UnicodeUtils;
 
+import org.eclipse.jdt.core.dom.IAnnotationBinding;
 import org.eclipse.jdt.core.dom.IBinding;
+import org.eclipse.jdt.core.dom.IMemberValuePairBinding;
 import org.eclipse.jdt.core.dom.IMethodBinding;
 import org.eclipse.jdt.core.dom.ITypeBinding;
 import org.eclipse.jdt.core.dom.IVariableBinding;
 
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.regex.Pattern;
 
 /**
@@ -593,6 +602,12 @@ public class StatementGenerator extends TreeVisitor {
   }
 
   @Override
+  public boolean visit(MarkerAnnotation node) {
+    printAnnotationCreation(node);
+    return false;
+  }
+
+  @Override
   public boolean visit(MethodInvocation node) {
     IMethodBinding binding = node.getMethodBinding();
     assert binding != null;
@@ -621,6 +636,55 @@ public class StatementGenerator extends TreeVisitor {
     buffer.append(node.getCode());
     buffer.append('\n');
     return false;
+  }
+
+  @Override
+  public boolean visit(NormalAnnotation node) {
+    printAnnotationCreation(node);
+    return false;
+  }
+
+  private void printAnnotationCreation(Annotation node) {
+    IAnnotationBinding annotation = node.getAnnotationBinding();
+    buffer.append(useReferenceCounting ? "[[[" : "[[");
+    buffer.append(NameTable.getFullName(annotation.getAnnotationType()));
+    buffer.append(" alloc] init");
+
+    if (node instanceof NormalAnnotation) {
+      Map<String, Expression> args = Maps.newHashMap();
+      for (MemberValuePair pair : ((NormalAnnotation) node).getValues()) {
+        args.put(pair.getName().getIdentifier(), pair.getValue());
+      }
+      IMemberValuePairBinding[] members = BindingUtil.getSortedMemberValuePairs(annotation);
+      for (int i = 0; i < members.length; i++) {
+        if (i == 0) {
+          buffer.append("With");
+        } else {
+          buffer.append(" with");
+        }
+        IMemberValuePairBinding member = members[i];
+        String name = NameTable.getAnnotationPropertyName(member.getMethodBinding());
+        buffer.append(NameTable.capitalize(name));
+        buffer.append(':');
+        Expression value = args.get(name);
+        if (value != null) {
+          value.accept(this);
+        }
+      }
+    } else if (node instanceof SingleMemberAnnotation) {
+      SingleMemberAnnotation sma = (SingleMemberAnnotation) node;
+      buffer.append("With");
+      IMethodBinding accessorBinding = annotation.getAllMemberValuePairs()[0].getMethodBinding();
+      String name = NameTable.getAnnotationPropertyName(accessorBinding);
+      buffer.append(NameTable.capitalize(name));
+      buffer.append(':');
+      sma.getValue();
+    }
+
+    buffer.append(']');
+    if (useReferenceCounting) {
+      buffer.append(" autorelease]");
+    }
   }
 
   @Override
@@ -755,6 +819,12 @@ public class StatementGenerator extends TreeVisitor {
       return false;
     }
     return true;
+  }
+
+  @Override
+  public boolean visit(SingleMemberAnnotation node) {
+    printAnnotationCreation(node);
+    return false;
   }
 
   @Override
