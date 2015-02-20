@@ -123,6 +123,7 @@ public class SmallTests {
     StaticVarRewriterTest.class,
     TreeConvertTest.class,
     TypeSorterTest.class,
+    TranslationProcessorTest.class,
     TreeUtilTest.class,
     UnicodeUtilsTest.class,
     UnsequencedExpressionRewriterTest.class,

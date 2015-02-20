@@ -728,6 +728,16 @@ public class Options {
     return batchTranslateMaximum;
   }
 
+  @VisibleForTesting
+  public static void setBatchTranslateMaximum(int max) {
+    batchTranslateMaximum = max;
+  }
+
+  @VisibleForTesting
+  public static void resetBatchTranslateMaximum() {
+    batchTranslateMaximum = 0;
+  }
+
   public static boolean finalMethodsAsFunctions() {
     return finalMethodsAsFunctions;
   }

@@ -72,6 +72,7 @@ public abstract class GenerationTest extends TestCase {
     tempDir = createTempDir();
     Options.load(new String[] {
       "-d", tempDir.getAbsolutePath(),
+      "-q", // Suppress console output.
       "--hide-private-members" // Future default, run tests with it now.
     });
     parser = initializeParser(tempDir);
@@ -384,6 +385,10 @@ public abstract class GenerationTest extends TestCase {
   }
 
   protected String getTempDir() {
-   return tempDir.getPath();
+    return tempDir.getPath();
+  }
+
+  protected File getTempFile(String filename) {
+    return new File(tempDir, filename);
   }
 }
