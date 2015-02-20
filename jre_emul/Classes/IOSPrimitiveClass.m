@@ -22,14 +22,12 @@
 #import "IOSPrimitiveArray.h"
 #import "IOSPrimitiveClass.h"
 #import "IOSObjectArray.h"
-#import "java/lang/AssertionError.h"
 #import "java/lang/Boolean.h"
 #import "java/lang/Byte.h"
 #import "java/lang/Character.h"
 #import "java/lang/Double.h"
 #import "java/lang/Float.h"
 #import "java/lang/Integer.h"
-#import "java/lang/InstantiationException.h"
 #import "java/lang/Long.h"
 #import "java/lang/NoSuchMethodException.h"
 #import "java/lang/Short.h"
@@ -162,7 +160,7 @@ getConstructorWithClasses:(IOSClass *)firstClass, ... {
     case 'S': return sizeof(jshort);
     case 'Z': return sizeof(jboolean);
   }
-  return sizeof(void);
+  return 0;
 }
 
 - (id)__boxValue:(J2ObjcRawValue *)rawValue {
