@@ -40,6 +40,7 @@ import com.google.devtools.j2objc.ast.ThisExpression;
 import com.google.devtools.j2objc.ast.TreeUtil;
 import com.google.devtools.j2objc.ast.TreeVisitor;
 import com.google.devtools.j2objc.types.GeneratedVariableBinding;
+import com.google.devtools.j2objc.types.IOSMethodBinding;
 import com.google.devtools.j2objc.types.Types;
 import com.google.devtools.j2objc.util.BindingUtil;
 import com.google.devtools.j2objc.util.ErrorUtil;
@@ -182,13 +183,20 @@ public class Functionizer extends TreeVisitor {
   public void endVisit(MethodDeclaration node) {
     IMethodBinding binding = node.getMethodBinding();
     FunctionDeclaration function = null;
+    List<BodyDeclaration> declarationList = TreeUtil.asDeclarationSublist(node);
     if (BindingUtil.isStatic(binding)) {
       function = makeStaticFunction(node);
-    } else if (functionizableMethods.contains(binding) || Modifier.isNative(node.getModifiers())) {
-      function = makeInstanceFunction(node);
+    } else {
+      List<String> selectors = NameTable.getExtraSelectors(binding);
+      if (functionizableMethods.contains(binding) || Modifier.isNative(node.getModifiers())
+          || !selectors.isEmpty()) {
+        function = makeInstanceFunction(node);
+        for (String selector : selectors) {
+          declarationList.add(makeExtraMethodDeclaration(node, selector, function));
+        }
+      }
     }
     if (function != null) {
-      List<BodyDeclaration> declarationList = TreeUtil.asDeclarationSublist(node);
       declarationList.add(function);
       if (BindingUtil.isStatic(binding) && Options.removeClassMethods()) {
         node.remove();
@@ -197,6 +205,16 @@ public class Functionizer extends TreeVisitor {
       }
       ErrorUtil.functionizedMethod();
     }
+  }
+
+  private MethodDeclaration makeExtraMethodDeclaration(
+      MethodDeclaration original, String selector, FunctionDeclaration function) {
+    IMethodBinding originalBinding = original.getMethodBinding();
+    IOSMethodBinding binding = IOSMethodBinding.newMappedMethod(selector, originalBinding);
+    MethodDeclaration declaration = new MethodDeclaration(binding);
+    TreeUtil.copyList(original.getParameters(), declaration.getParameters());
+    setFunctionCaller(declaration, function);
+    return declaration;
   }
 
   /**
