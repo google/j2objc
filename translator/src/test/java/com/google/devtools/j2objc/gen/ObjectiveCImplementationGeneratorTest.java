@@ -890,4 +890,16 @@ public class ObjectiveCImplementationGeneratorTest extends GenerationTest {
         "return [[[A_InnerAnn alloc] initWithFoo:@\"bar\" withNum:5] autorelease];",
         "}");
   }
+
+  public void testAnnotationMetadata() throws IOException {
+    String translation = translateSourceFile(
+        "import java.lang.annotation.*; @Retention(RetentionPolicy.RUNTIME) @interface Test { "
+        + " String foo() default \"bar\";"
+        + " int num() default 5;"
+        + "}",
+        "Test", "Test.m");
+    assertTranslation(translation,
+        "{ \"fooDefault\", \"foo\", \"Ljava.lang.String;\", 0x401, NULL },");
+    assertTranslation(translation, "{ \"numDefault\", \"num\", \"I\", 0x401, NULL },");
+  }
 }

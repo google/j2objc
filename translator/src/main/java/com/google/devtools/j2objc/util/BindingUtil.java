@@ -47,6 +47,9 @@ public final class BindingUtil {
   public static final int ACC_ANNOTATION = 0x2000;
   public static final int ACC_ENUM = 0x4000;
 
+  // Not defined in JVM spec, but used by reflection support.
+  public static final int ACC_ANONYMOUS = 0x8000;
+
   public static boolean isStatic(IBinding binding) {
     return Modifier.isStatic(binding.getModifiers());
   }

@@ -18,6 +18,8 @@ import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
 import com.google.devtools.j2objc.ast.AbstractTypeDeclaration;
+import com.google.devtools.j2objc.ast.AnnotationTypeDeclaration;
+import com.google.devtools.j2objc.ast.AnnotationTypeMemberDeclaration;
 import com.google.devtools.j2objc.ast.EnumConstantDeclaration;
 import com.google.devtools.j2objc.ast.EnumDeclaration;
 import com.google.devtools.j2objc.ast.MethodDeclaration;
@@ -76,7 +78,11 @@ public class MetadataGenerator {
     generateFieldsMetadata();
     int superclassTypeArgsSize = printSuperclassTypeArguments();
     printf("  static const J2ObjcClassInfo _%s = { %d, ", fullName, METADATA_VERSION);
-    printf("\"%s\", ", type.getName());
+    String simpleName = type.getName();
+    if (simpleName.matches("^\\$[0-9]*$")) {
+      simpleName = "";  // Anonymous classes have an empty simple name.
+    }
+    printf("\"%s\", ", simpleName);
     String pkgName = type.getPackage().getName();
     if (Strings.isNullOrEmpty(pkgName)) {
       printf("NULL, ");
@@ -121,6 +127,19 @@ public class MetadataGenerator {
     for (MethodDeclaration decl : TreeUtil.getMethodDeclarations(typeNode)) {
       String metadata = getMethodMetadata(decl.getMethodBinding());
       if (metadata != null) {
+        methodMetadata.add(metadata);
+      }
+    }
+    if (typeNode instanceof AnnotationTypeDeclaration) {
+      // Add static default methods.
+      for (AnnotationTypeMemberDeclaration decl :
+           TreeUtil.getAnnotationMembers((AnnotationTypeDeclaration) typeNode)) {
+        String name = decl.getName().getIdentifier();
+        String returnType = getTypeName(decl.getMethodBinding().getReturnType());
+        String metadata = String.format("    { \"%s\", %s, %s, 0x%x, %s },\n",
+            name + "Default", cStr(name), cStr(returnType),
+            java.lang.reflect.Modifier.PUBLIC | java.lang.reflect.Modifier.ABSTRACT,
+            cStr(null));
         methodMetadata.add(metadata);
       }
     }
@@ -276,7 +295,8 @@ public class MetadataGenerator {
       modifiers |= BindingUtil.ACC_ENUM;
     }
     if (type.isAnonymous()) {
-      modifiers |= 0x8000;
+      // Anonymous classes are always static, though their closure may include an instance.
+      modifiers |= BindingUtil.ACC_ANONYMOUS | java.lang.reflect.Modifier.STATIC;
     }
     return modifiers;
   }

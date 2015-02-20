@@ -364,4 +364,10 @@ public class TreeUtil {
       }
     });
   }
+
+  public static List<AnnotationTypeMemberDeclaration> getAnnotationMembers(
+      AnnotationTypeDeclaration node) {
+    return Lists.newArrayList(
+        Iterables.filter(node.getBodyDeclarations(), AnnotationTypeMemberDeclaration.class));
+  }
 }
