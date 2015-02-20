@@ -20,6 +20,7 @@ import com.google.devtools.j2objc.ast.TreeConverter;
 import com.google.devtools.j2objc.translate.OuterReferenceResolver;
 import com.google.devtools.j2objc.types.Types;
 import com.google.devtools.j2objc.util.ErrorUtil;
+import com.google.devtools.j2objc.util.FileUtil;
 import com.google.devtools.j2objc.util.JdtParser;
 
 import java.io.File;
@@ -94,8 +95,14 @@ public class CycleFinder {
       @Override
       public void handleParsedUnit(
           String filePath, org.eclipse.jdt.core.dom.CompilationUnit jdtUnit) {
+        String source = "";
+        try {
+          source = FileUtil.readSource(filePath);
+        } catch (IOException e) {
+          ErrorUtil.error("Error reading file " + filePath + ": " + e.getMessage());
+        }
         Types.initialize(jdtUnit);
-        CompilationUnit unit = TreeConverter.convertCompilationUnit(jdtUnit, filePath, "");
+        CompilationUnit unit = TreeConverter.convertCompilationUnit(jdtUnit, filePath, source);
         typeCollector.visitAST(unit);
         OuterReferenceResolver.resolve(unit);
       }
