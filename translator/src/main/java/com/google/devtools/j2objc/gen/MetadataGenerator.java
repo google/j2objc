@@ -79,7 +79,7 @@ public class MetadataGenerator {
     int superclassTypeArgsSize = printSuperclassTypeArguments();
     printf("  static const J2ObjcClassInfo _%s = { %d, ", fullName, METADATA_VERSION);
     String simpleName = type.getName();
-    if (simpleName.matches("^\\$[0-9]*$")) {
+    if (type.isAnonymous()) {
       simpleName = "";  // Anonymous classes have an empty simple name.
     }
     printf("\"%s\", ", simpleName);
