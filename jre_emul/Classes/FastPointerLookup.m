@@ -37,7 +37,7 @@ typedef struct FastPointerLookupStore {
 
 // Copied from Collections.secondaryHash() which HashMap uses.
 static uint32_t Hash(void *key) {
-  uint32_t h = (uint32_t)key;
+  uint32_t h = (uint32_t)(uintptr_t)key;
   h += (h << 15) ^ 0xffffcd7d;
   h ^= (h >> 10);
   h += (h << 3);
@@ -52,7 +52,7 @@ static Store *NewStore(FastPointerLookup_t *lookup, size_t newSize) {
   // The table array needs to be cleared.
   size_t storeSize = sizeof(Store) + sizeof(Entry *) * newSize;
   size_t allocSize = storeSize + sizeof(Entry) * numEntries;
-  Store *store = calloc(allocSize, 1);
+  Store *store = (Store *)calloc(allocSize, 1);
 
   store->size = newSize;
 

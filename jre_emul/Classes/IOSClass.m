@@ -952,33 +952,33 @@ IOSClass *IOSClass_fromClass(Class cls) {
   // We get deadlock if IOSClass is not initialized before entering the fast
   // lookup because +initialize makes calls into IOSClass_fromClass().
   IOSClass_init();
-  return FastPointerLookup(&classLookup, cls);
+  return (IOSClass *)FastPointerLookup(&classLookup, cls);
 }
 
 static void *ProtocolLookup(void *protocol) {
-  return [[IOSProtocolClass alloc] initWithProtocol:protocol];
+  return [[IOSProtocolClass alloc] initWithProtocol:(Protocol *)protocol];
 }
 
 static FastPointerLookup_t protocolLookup = FAST_POINTER_LOOKUP_INIT(&ProtocolLookup);
 
 IOSClass *IOSClass_fromProtocol(Protocol *protocol) {
-  return FastPointerLookup(&protocolLookup, protocol);
+  return (IOSClass *)FastPointerLookup(&protocolLookup, protocol);
 }
 
 static void *ArrayLookup(void *componentType) {
-  return [[IOSArrayClass alloc] initWithComponentType:componentType];
+  return [[IOSArrayClass alloc] initWithComponentType:(IOSClass *)componentType];
 }
 
 static FastPointerLookup_t arrayLookup = FAST_POINTER_LOOKUP_INIT(&ArrayLookup);
 
 IOSClass *IOSClass_arrayOf(IOSClass *componentType) {
-  return FastPointerLookup(&arrayLookup, componentType);
+  return (IOSClass *)FastPointerLookup(&arrayLookup, componentType);
 }
 
 IOSClass *IOSClass_arrayType(IOSClass *componentType, jint dimensions) {
-  IOSClass *result = FastPointerLookup(&arrayLookup, componentType);
+  IOSClass *result = (IOSClass *)FastPointerLookup(&arrayLookup, componentType);
   while (--dimensions > 0) {
-    result = FastPointerLookup(&arrayLookup, result);
+    result = (IOSClass *)FastPointerLookup(&arrayLookup, result);
   }
   return result;
 }

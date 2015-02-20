@@ -95,7 +95,7 @@ public abstract class IosRSAKey implements RSAKey, Key {
 
       IOSByteArray *bytes = nil;
       if (result == noErr && publicKey.length > 0) {
-        bytes = [IOSByteArray arrayWithBytes:publicKey.bytes count:publicKey.length];
+        bytes = [IOSByteArray arrayWithBytes:(jbyte *)publicKey.bytes count:publicKey.length];
         [publicKey release];
       }
       return bytes;
@@ -161,7 +161,7 @@ public abstract class IosRSAKey implements RSAKey, Key {
 
       IOSByteArray *bytes = nil;
       if (result == noErr && privateKey.length > 0) {
-        bytes = [IOSByteArray arrayWithBytes:privateKey.bytes count:privateKey.length];
+        bytes = [IOSByteArray arrayWithBytes:(jbyte *)privateKey.bytes count:privateKey.length];
         [privateKey release];
       }
       return bytes;
