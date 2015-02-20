@@ -35,9 +35,7 @@ import com.google.devtools.j2objc.types.Types;
 import com.google.devtools.j2objc.util.BindingUtil;
 import com.google.devtools.j2objc.util.ErrorUtil;
 import com.google.devtools.j2objc.util.NameTable;
-import com.google.j2objc.annotations.ObjectiveCName;
 
-import org.eclipse.jdt.core.dom.IAnnotationBinding;
 import org.eclipse.jdt.core.dom.IMethodBinding;
 import org.eclipse.jdt.core.dom.ITypeBinding;
 import org.eclipse.jdt.core.dom.Modifier;
@@ -67,9 +65,9 @@ public class JavaToIOSMethodTranslator extends TreeVisitor {
     IMethodBinding method = node.getMethodBinding();
 
     // Check if @ObjectiveCName is used but is mismatched with an overriden method.
-    IAnnotationBinding annotation = BindingUtil.getAnnotation(method, ObjectiveCName.class);
-    if (annotation != null) {
-      String selector = NameTable.getMethodSelectorFromAnnotation(method);
+    String name = NameTable.getMethodNameFromAnnotation(method);
+    if (name != null) {
+      String selector = NameTable.selectorForMethodName(method, name);
       String actualSelector = NameTable.getMethodSelector(method);
       if (!selector.equals(actualSelector)) {
         ErrorUtil.warning("ObjectiveCName(" + selector

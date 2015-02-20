@@ -497,7 +497,7 @@ static IOSClass *IOSClass_ArrayClassForName(NSString *name, NSUInteger index) {
   return nil;
 }
 
-IOSClass *IOSClass_forNameWithNSString_(NSString *className) {
+IOSClass *IOSClass_forName_(NSString *className) {
   nil_chk(className);
   IOSClass *iosClass = nil;
   if ([className length] > 0) {
@@ -518,18 +518,18 @@ IOSClass *IOSClass_forNameWithNSString_(NSString *className) {
 }
 
 + (IOSClass *)forName:(NSString *)className {
-  return IOSClass_forNameWithNSString_(className);
+  return IOSClass_forName_(className);
 }
 
-IOSClass *IOSClass_forNameWithNSString_withBoolean_withJavaLangClassLoader_(
+IOSClass *IOSClass_forName_initialize_classLoader_(
     NSString *className, BOOL load, JavaLangClassLoader *loader) {
-  return IOSClass_forNameWithNSString_(className);
+  return IOSClass_forName_(className);
 }
 
 + (IOSClass *)forName:(NSString *)className
            initialize:(BOOL)load
           classLoader:(JavaLangClassLoader *)loader {
-  return IOSClass_forNameWithNSString_withBoolean_withJavaLangClassLoader_(className, load, loader);
+  return IOSClass_forName_initialize_classLoader_(className, load, loader);
 }
 
 - (id)cast:(id)throwable {

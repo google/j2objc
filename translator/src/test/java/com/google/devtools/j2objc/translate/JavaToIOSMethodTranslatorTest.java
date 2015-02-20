@@ -54,9 +54,9 @@ public class JavaToIOSMethodTranslatorTest extends GenerationTest {
     List<Statement> stmts = translateStatements(source);
     assertEquals(2, stmts.size());
     String result = generateStatement(stmts.get(0));
-    assertEquals("NSString *trueString = NSString_valueOfWithBoolean_(YES);", result);
+    assertEquals("NSString *trueString = NSString_valueOfBool_(YES);", result);
     result = generateStatement(stmts.get(1));
-    assertEquals("NSString *falseString = NSString_valueOfWithBoolean_(NO);", result);
+    assertEquals("NSString *falseString = NSString_valueOfBool_(NO);", result);
   }
 
   /**
@@ -68,7 +68,7 @@ public class JavaToIOSMethodTranslatorTest extends GenerationTest {
         "Test", "Test.m");
     assertTranslatedLines(translation,
         "- (NSString *)toStringWithBoolean:(jboolean)value {",
-        "return NSString_valueOfWithBoolean_(value);");
+        "return NSString_valueOfBool_(value);");
   }
 
   public void testStringDefaultConstructor() throws IOException {
