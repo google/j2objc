@@ -275,6 +275,23 @@ public class CycleFinderTest extends TestCase {
     assertCycle("LA;", "LC;");
   }
 
+  public void testAnonymousLineNumbers() throws Exception {
+    addSourceFile("Test.java",
+        "class Test {\n"
+        + " void dummy() {}\n"
+        + " Runnable r = new Runnable() { public void run() { dummy(); } }; }");
+    findCycles();
+    assertEquals(1, cycles.size());
+    assertCycle("LTest;");
+    for (Edge e : cycles.get(0)) {
+      assertContains("anonymous:3", e.toString());
+    }
+  }
+
+  private void assertContains(String substr, String str) {
+    assertTrue("Expected \"" + substr + "\" within \"" + str + "\"", str.contains(substr));
+  }
+
   private void assertNoCycles() {
     assertNotNull(cycles);
     assertTrue("Expected no cycles: " + printCyclesToString(), cycles.isEmpty());
