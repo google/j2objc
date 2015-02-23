@@ -288,6 +288,18 @@ public class CycleFinderTest extends TestCase {
     }
   }
 
+  public void testWhitelistedAnonymousTypesInClassScope() throws Exception {
+    addSourceFile("bar/AbstractA.java", "package bar; public class AbstractA {}");
+    addSourceFile("bar/AbstractB.java", "package bar; public class AbstractB {}");
+    addSourceFile("foo/Test.java",
+        "package foo; import bar.AbstractA; import bar.AbstractB;"
+        + " class Test { AbstractA a = new AbstractA() { void dummyA() {}"
+        + " AbstractB b = new AbstractB() { void dummyB() { dummyA(); } }; }; }");
+    whitelistEntries.add("NAMESPACE foo");
+    findCycles();
+    assertNoCycles();
+  }
+
   private void assertContains(String substr, String str) {
     assertTrue("Expected \"" + substr + "\" within \"" + str + "\"", str.contains(substr));
   }
