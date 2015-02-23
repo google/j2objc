@@ -84,10 +84,14 @@ public class NameList {
   }
 
   private static String typeName(ITypeBinding type) {
-    IMethodBinding declaringMethod = type.getDeclaringMethod();
-    if (declaringMethod != null) {
-      return typeName(declaringMethod.getDeclaringClass()) + "." + declaringMethod.getName()
-          + "." + (type.isAnonymous() ? "$" : type.getName());
+    if (type.isLocal()) {
+      String methodName = "";
+      IMethodBinding declaringMethod = type.getDeclaringMethod();
+      if (declaringMethod != null) {
+        methodName = "." + declaringMethod.getName();
+      }
+      return typeName(type.getDeclaringClass()) + methodName + "."
+          + (type.isAnonymous() ? "$" : type.getName());
     }
     return type.getErasure().getQualifiedName();
   }
