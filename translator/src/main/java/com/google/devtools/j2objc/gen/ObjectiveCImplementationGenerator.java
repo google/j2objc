@@ -632,7 +632,8 @@ public class ObjectiveCImplementationGenerator extends ObjectiveCSourceFileGener
       }
       IMemberValuePairBinding valueBinding = valueBindings[i];
       print(i == 0 ? "With" : "with");
-      printf("%s:", NameTable.capitalize(valueBinding.getName()));
+      printf("%s:", NameTable.capitalize(
+          NameTable.getAnnotationPropertyName(valueBinding.getMethodBinding())));
       Object value = valueBinding.getValue();
       printAnnotationValue(value);
     }
