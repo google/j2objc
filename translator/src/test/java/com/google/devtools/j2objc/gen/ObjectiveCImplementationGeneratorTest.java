@@ -902,4 +902,19 @@ public class ObjectiveCImplementationGeneratorTest extends GenerationTest {
         "{ \"fooDefault\", \"foo\", \"Ljava.lang.String;\", 0x401, NULL },");
     assertTranslation(translation, "{ \"numDefault\", \"num\", \"I\", 0x401, NULL },");
   }
+
+  // Verify that a class with an annotation with a reserved name property is
+  // created in the __annotations support method with that reserved name in the
+  // constructor.
+  public void testReservedWordAsAnnotationConstructorParameter() throws IOException {
+    String translation = translateSourceFile(
+        "package foo; import java.lang.annotation.*; @Retention(RetentionPolicy.RUNTIME) "
+        + "public @interface Bar { String namespace() default \"\"; } "
+        + "@Bar(namespace=\"mynames\") class Test {}",
+        "Bar", "foo/Bar.m");
+    assertTranslatedLines(translation, "+ (IOSObjectArray *)__annotations {",
+        "return [IOSObjectArray arrayWithObjects:(id[]) "
+        + "{ [[[FooBar alloc] initWithNamespace__:@\"mynames\"] autorelease] } "
+        + "count:1 type:JavaLangAnnotationAnnotation_class_()];");
+  }
 }
