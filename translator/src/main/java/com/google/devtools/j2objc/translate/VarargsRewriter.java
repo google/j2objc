@@ -48,10 +48,21 @@ public class VarargsRewriter extends TreeVisitor {
     assert lastParam.isArray();
     int varargsSize = args.size() - paramTypes.length + 1;
     if (varargsSize == 1) {
-      ITypeBinding lastArgType = args.get(args.size() - 1).getTypeBinding();
+      Expression lastArg = args.get(args.size() - 1);
+      ITypeBinding lastArgType = lastArg.getTypeBinding();
       if (lastArgType.isAssignmentCompatible(lastParam)) {
         // Last argument is already an array.
         return;
+      }
+      // Special case: check for a clone method invocation, since clone()'s return
+      // type is declared as Object but it always returns the caller's type.
+      if (lastArg instanceof MethodInvocation) {
+        MethodInvocation invocation = (MethodInvocation) lastArg;
+        if (invocation.getMethodBinding().getName().equals("clone")
+            && invocation.getArguments().isEmpty()
+            && invocation.getExpression().getTypeBinding().isAssignmentCompatible(lastParam)) {
+          return;
+        }
       }
     }
 
