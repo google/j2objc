@@ -16,7 +16,6 @@ package com.google.devtools.j2objc.util;
 
 import com.google.common.collect.Lists;
 import com.google.devtools.j2objc.ast.TreeNode;
-import com.google.devtools.j2objc.ast.TreeUtil;
 
 import org.eclipse.jdt.core.dom.ASTNode;
 import org.eclipse.jdt.core.dom.CompilationUnit;
@@ -40,6 +39,7 @@ public class ErrorUtil {
   private static String currentFileName = null;
   private static PrintStream errorStream = System.err;
   private static List<String> errorMessages = Lists.newArrayList();
+  private static List<String> warningMessages = Lists.newArrayList();
   // Captures whether the translator should emit clang style message. Clang style messages
   // are particularly useful when the translator is being invoked by Xcode build rules.
   // Xcode will be able to pick the file path and line number, hence make it easy to address
@@ -54,6 +54,7 @@ public class ErrorUtil {
     warningCount = 0;
     currentFileName = null;
     errorMessages = Lists.newArrayList();
+    warningMessages = Lists.newArrayList();
   }
 
   public static void setCurrentFileName(String name) {
@@ -70,6 +71,10 @@ public class ErrorUtil {
 
   public static List<String> getErrorMessages() {
     return errorMessages;
+  }
+
+  public static List<String> getWarningMessages() {
+    return warningMessages;
   }
 
   /**
@@ -110,6 +115,7 @@ public class ErrorUtil {
   }
 
   public static void warning(String message) {
+    warningMessages.add(message);
     errorStream.println(getFullMessage("warning: ", message, CLANG_STYLE_ERROR_MSG));
     warningCount++;
   }

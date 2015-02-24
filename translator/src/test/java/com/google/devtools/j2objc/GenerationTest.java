@@ -157,16 +157,10 @@ public abstract class GenerationTest extends TestCase {
     parser.setEnableDocComments(Options.docCommentsEnabled());
     org.eclipse.jdt.core.dom.CompilationUnit unit = parser.parse(name, source);
     if (ErrorUtil.errorCount() > errors) {
-      List<String> msgs = ErrorUtil.getErrorMessages();
-      assert msgs.size() == ErrorUtil.errorCount();
-      StringBuilder sb = new StringBuilder();
-      for (int i = errors; i < ErrorUtil.errorCount(); i++) {
-        sb.append(msgs.get(i));
-        sb.append('\n');
-      }
       int newErrorCount = ErrorUtil.errorCount() - errors;
-      fail(String.format("%d test compilation error%s\n%s", newErrorCount,
-          (newErrorCount == 1 ? "" : "s"), sb));
+      String info = String.format(
+          "%d test compilation error%s", newErrorCount, (newErrorCount == 1 ? "" : "s"));
+      failWithMessages(info, ErrorUtil.getErrorMessages().subList(errors, ErrorUtil.errorCount()));
     }
     return unit;
   }
@@ -384,7 +378,12 @@ public abstract class GenerationTest extends TestCase {
    * last translation.
    */
   protected void assertWarningCount(int expectedCount) {
-    assertEquals(expectedCount, ErrorUtil.warningCount());
+    if (expectedCount != ErrorUtil.warningCount()) {
+      failWithMessages(
+          String.format("Wrong number of warnings. Expected:%d but was:%d",
+                        expectedCount, ErrorUtil.warningCount()),
+          ErrorUtil.getWarningMessages());
+    }
   }
 
   /**
@@ -392,7 +391,20 @@ public abstract class GenerationTest extends TestCase {
    * last translation.
    */
   protected void assertErrorCount(int expectedCount) {
-    assertEquals(expectedCount, ErrorUtil.errorCount());
+    if (expectedCount != ErrorUtil.errorCount()) {
+      failWithMessages(
+          String.format("Wrong number of errors. Expected:%d but was:%d",
+                        expectedCount, ErrorUtil.errorCount()),
+          ErrorUtil.getErrorMessages());
+    }
+  }
+
+  private void failWithMessages(String info, List<String> messages) {
+    StringBuilder sb = new StringBuilder(info + "\n");
+    for (String msg : messages) {
+      sb.append(msg).append('\n');
+    }
+    fail(sb.toString());
   }
 
   protected String getTempDir() {

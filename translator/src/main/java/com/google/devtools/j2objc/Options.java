@@ -701,6 +701,16 @@ public class Options {
     return buildClosure;
   }
 
+  @VisibleForTesting
+  public static void setBuildClosure(boolean b) {
+    buildClosure = b;
+  }
+
+  @VisibleForTesting
+  public static void resetBuildClosure() {
+    buildClosure = false;
+  }
+
   public static boolean stripReflection() {
     return stripReflection;
   }

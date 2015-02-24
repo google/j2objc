@@ -33,10 +33,11 @@ public class TranslationProcessorTest extends GenerationTest {
   @Override
   protected void tearDown() throws Exception {
     Options.resetBatchTranslateMaximum();
+    Options.resetBuildClosure();
     super.tearDown();
   }
 
-  public void testFoo() throws IOException {
+  public void testJarBatchTranslation() throws IOException {
     String fooSource = "package mypkg; class Foo {}";
     String barSource = "package mypkg; class Bar {}";
     File jarFile = getTempFile("test.jar");
@@ -61,5 +62,19 @@ public class TranslationProcessorTest extends GenerationTest {
     processor.processFiles(Lists.newArrayList("mypkg/Foo.java", "mypkg/Bar.java"));
 
     assertEquals(0, ErrorUtil.errorCount());
+  }
+
+  public void testSingleSourceFileBuildClosure() throws IOException {
+    Options.setBuildClosure(true);
+
+    addSourceFile("class Test { }", "Test.java");
+
+    TranslationProcessor processor = new TranslationProcessor(J2ObjC.createParser(), null);
+    processor.processFiles(Lists.newArrayList(getTempDir() + "/Test.java"));
+
+    String translation = getTranslatedFile("Test.h");
+    assertTranslation(translation, "@interface Test");
+    assertErrorCount(0);
+    assertWarningCount(0);
   }
 }
