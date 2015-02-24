@@ -23,6 +23,7 @@
 #import "JavaMetadata.h"
 #import "java/lang/AssertionError.h"
 #import "java/lang/IllegalArgumentException.h"
+#import "java/lang/NoSuchMethodException.h"
 #import "java/lang/NullPointerException.h"
 #import "java/lang/reflect/Method.h"
 #import "java/lang/reflect/Modifier.h"
@@ -193,7 +194,24 @@
 }
 
 - (id)getDefaultValue {
-  // TODO(tball): implement as part of method metadata.
+  if ([self->class_ isAnnotation]) {
+    // Invoke the class method for this method name plus "Default". For example, if this
+    // method is named "foo", then return the result from "fooDefault()".
+    NSString *defaultName = [[self getName] stringByAppendingString:@"Default"];
+    @try {
+      JavaLangReflectMethod *defaultMethod =
+          [self->class_ getDeclaredMethod:defaultName
+                   parameterTypes:[IOSObjectArray arrayWithLength:0 type:IOSClass_class_()]];
+      if (defaultMethod) {
+        return [defaultMethod invokeWithId:self->class_
+                         withNSObjectArray:[IOSObjectArray arrayWithLength:0
+                                                                      type:NSObject_class_()]];
+      }
+    }
+    @catch (JavaLangNoSuchMethodException *exception) {
+      // Fall-through.
+    }
+  }
   return nil;
 }
 

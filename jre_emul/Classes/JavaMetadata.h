@@ -22,9 +22,7 @@
 // Internal-use-only value classes that contain the reflection metadata
 // for an IOSClass.
 
-@interface JavaFieldMetadata : NSObject {
-  const J2ObjcFieldInfo *data_;
-}
+@interface JavaFieldMetadata : NSObject
 
 - (instancetype)initWithMetadata:(const J2ObjcFieldInfo *)metadata;
 - (NSString *)name;
@@ -37,9 +35,7 @@
 
 @end
 
-@interface JavaMethodMetadata : NSObject {
-  const J2ObjcMethodInfo *data_;
-}
+@interface JavaMethodMetadata : NSObject
 
 - (instancetype)initWithMetadata:(const J2ObjcMethodInfo *)metadata;
 - (SEL)selector;
@@ -53,10 +49,7 @@
 
 @end
 
-@interface JavaClassMetadata : NSObject {
-  J2ObjcClassInfo *data_;
-  J2ObjCAttribute *attributes;
-}
+@interface JavaClassMetadata : NSObject
 
 @property (readonly, assign) uint16_t version;
 @property (readonly, retain) NSString *typeName;
@@ -76,5 +69,6 @@
 - (JavaFieldMetadata *)findFieldMetadata:(const char *)fieldName;
 - (IOSObjectArray *)allFields;
 - (IOSObjectArray *)getSuperclassTypeArguments;
+- (IOSObjectArray *)getInnerClasses;
 
 @end

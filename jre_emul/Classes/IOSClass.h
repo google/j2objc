@@ -144,6 +144,7 @@
 - (BOOL)isInterface;
 - (BOOL)isPrimitive;
 - (BOOL)isAnnotation;
+- (BOOL)isSynthetic;
 
 - (IOSObjectArray *)getInterfaces;
 - (IOSObjectArray *)getGenericInterfaces;
@@ -173,6 +174,12 @@
 // Class.getResource, getResourceAsStream
 - (JavaNetURL *)getResource:(NSString *)name;
 - (JavaIoInputStream *)getResourceAsStream:(NSString *)name;
+
+- (IOSObjectArray *)getClasses;
+- (IOSObjectArray *)getDeclaredClasses;
+
+- (id)getProtectionDomain;
+- (id)getSigners;
 
 // Boxing and unboxing (internal)
 - (id)__boxValue:(J2ObjcRawValue *)rawValue;

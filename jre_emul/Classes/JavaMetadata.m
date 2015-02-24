@@ -23,7 +23,10 @@
 #import "IOSObjectArray.h"
 #import "IOSReflection.h"
 
-@implementation JavaClassMetadata
+@implementation JavaClassMetadata {
+  J2ObjcClassInfo *data_;
+  J2ObjCAttribute *attributes;
+}
 
 @synthesize version;
 @synthesize typeName;
@@ -175,6 +178,24 @@ static jint countArgs(char *s) {
   return result;
 }
 
+- (IOSObjectArray *)getInnerClasses {
+  // TODO(tball): rewrite with inner class list in J2ObjcClassInfo struct.
+  uint16_t n_attrs = data_->attribute_count;
+  for (uint16_t i = 0; i < n_attrs; i++) {
+    const J2ObjCAttribute *attr = data_->attributes + i;
+    if (attr->attribute_type == INNER_CLASSES) {
+      const J2ObjcInnerClassAttribute *innerClassAttr = (const J2ObjcInnerClassAttribute *)attr;
+      uint16_t size = innerClassAttr->count;
+      IOSObjectArray *result = [IOSObjectArray arrayWithLength:size type:IOSClass_class_()];
+      for (int i = 0; i < size; i++) {
+        IOSObjectArray_Set(result, i, JreTypeForString(innerClassAttr->inner_classnames[i]));
+      }
+      return result;
+    }
+  }
+  return [IOSObjectArray newArrayWithLength:0 type:IOSClass_class_()];
+}
+
 - (NSString *)description {
   return [NSString stringWithFormat:@"{ typeName=%@ packageName=%@ modifiers=0x%x }",
           typeName, packageName, modifiers];
@@ -194,7 +215,9 @@ static jint countArgs(char *s) {
 
 @end
 
-@implementation JavaFieldMetadata
+@implementation JavaFieldMetadata {
+  const J2ObjcFieldInfo *data_;
+}
 
 - (instancetype)initWithMetadata:(const J2ObjcFieldInfo *)metadata {
   if (self = [super init]) {
@@ -235,7 +258,9 @@ static jint countArgs(char *s) {
 
 @end
 
-@implementation JavaMethodMetadata
+@implementation JavaMethodMetadata {
+  const J2ObjcMethodInfo *data_;
+}
 
 - (instancetype)initWithMetadata:(const J2ObjcMethodInfo *)metadata {
   if (self = [super init]) {
@@ -271,6 +296,9 @@ static jint countArgs(char *s) {
 }
 
 - (IOSObjectArray *)exceptionTypes {
+  if (!data_->exceptions) {
+    return nil;
+  }
   NSString *exceptionsStr = [NSString stringWithUTF8String:data_->exceptions];
   NSArray *exceptionsArray = [exceptionsStr componentsSeparatedByString:@";"];
   // The last string is empty, due to the trailing semi-colon of the last exception.
