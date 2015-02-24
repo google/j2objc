@@ -899,8 +899,8 @@ public class ObjectiveCImplementationGeneratorTest extends GenerationTest {
         + "}",
         "Test", "Test.m");
     assertTranslation(translation,
-        "{ \"fooDefault\", \"foo\", \"Ljava.lang.String;\", 0x401, NULL },");
-    assertTranslation(translation, "{ \"numDefault\", \"num\", \"I\", 0x401, NULL },");
+        "{ \"fooDefault\", \"foo\", \"Ljava.lang.String;\", 0x100a, NULL },");
+    assertTranslation(translation, "{ \"numDefault\", \"num\", \"I\", 0x100a, NULL },");
   }
 
   // Verify that a class with an annotation with a reserved name property is

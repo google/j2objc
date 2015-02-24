@@ -143,6 +143,10 @@ static JavaUtilProperties *prefixMapping;
 }
 
 - (IOSClass *)getDeclaringClass {
+  if ([self isPrimitive] || [self isArray] || [self isAnonymousClass]) {
+    // Class.getDeclaringClass() javadoc, JVM spec 4.7.6.
+    return nil;
+  }
   IOSClass *enclosingClass = [self getEnclosingClass];
   while ([enclosingClass isAnonymousClass]) {
     enclosingClass = [enclosingClass getEnclosingClass];
@@ -846,6 +850,46 @@ IOSObjectArray *copyFieldsToObjectArray(NSArray *fields) {
   return nil;  // Classes aren't enclosed in Objective-C.
 }
 
+
+// Adds all the inner classes for a specified class to a specified dictionary.
+static void GetInnerClasses(IOSClass *iosClass, NSMutableArray *classes, BOOL publicOnly) {
+  JavaClassMetadata *metadata = [iosClass getMetadata];
+  if (metadata) {
+    IOSObjectArray *innerClasses = [metadata getInnerClasses];
+    for (jint i = 0; i < innerClasses->size_; i++) {
+      IOSClass *c = IOSObjectArray_Get(innerClasses, i);
+      if (![c isAnonymousClass] && ![c isSynthetic]) {
+        if (publicOnly && ([c getModifiers] & JavaLangReflectModifier_PUBLIC) == 0) {
+          continue;
+        }
+        [classes addObject:c];
+      }
+    }
+  }
+}
+
+- (IOSObjectArray *)getClasses {
+  NSMutableArray *innerClasses = [[NSMutableArray alloc] init];
+  IOSClass *cls = self;
+  while (cls) {
+    GetInnerClasses(cls, innerClasses, YES);
+    cls = [cls getSuperclass];
+  }
+  IOSObjectArray *result = [IOSObjectArray arrayWithNSArray:innerClasses
+                                                       type:IOSClass_class_()];
+  [innerClasses release];
+  return result;
+}
+
+- (IOSObjectArray *)getDeclaredClasses {
+  NSMutableArray *declaredClasses = [[NSMutableArray alloc] init];
+  GetInnerClasses(self, declaredClasses, NO);
+  IOSObjectArray *result = [IOSObjectArray arrayWithNSArray:declaredClasses
+                                                       type:IOSClass_class_()];
+  [declaredClasses release];
+  return result;
+}
+
 - (BOOL)isAnonymousClass {
   return NO;
 }
@@ -876,6 +920,16 @@ IOSObjectArray *copyFieldsToObjectArray(NSArray *fields) {
 - (JavaIoInputStream *)getResourceAsStream:(NSString *)name {
   return [[self getClassLoader] getResourceAsStreamWithNSString:name];
 }
+
+// These java.security methods don't have an iOS equivalent, so always return nil.
+- (id)getProtectionDomain {
+  return nil;
+}
+
+- (id)getSigners {
+  return nil;
+}
+
 
 - (id)__boxValue:(J2ObjcRawValue *)rawValue {
   return (id)rawValue->asId;

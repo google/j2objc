@@ -131,14 +131,20 @@ public class MetadataGenerator {
       }
     }
     if (typeNode instanceof AnnotationTypeDeclaration) {
-      // Add static default methods.
+      // Add property accessor and static default methods.
       for (AnnotationTypeMemberDeclaration decl :
            TreeUtil.getAnnotationMembers((AnnotationTypeDeclaration) typeNode)) {
         String name = decl.getName().getIdentifier();
         String returnType = getTypeName(decl.getMethodBinding().getReturnType());
         String metadata = String.format("    { \"%s\", %s, %s, 0x%x, %s },\n",
-            name + "Default", cStr(name), cStr(returnType),
+            name, cStr(name), cStr(returnType),
             java.lang.reflect.Modifier.PUBLIC | java.lang.reflect.Modifier.ABSTRACT,
+            cStr(null));
+        methodMetadata.add(metadata);
+        metadata = String.format("    { \"%s\", %s, %s, 0x%x, %s },\n",
+            name + "Default", cStr(name), cStr(returnType),
+            java.lang.reflect.Modifier.PRIVATE | java.lang.reflect.Modifier.STATIC
+                | BindingUtil.ACC_SYNTHETIC,
             cStr(null));
         methodMetadata.add(metadata);
       }

@@ -139,6 +139,26 @@ static jboolean ConformsToProtocol(IOSClass *cls, IOSProtocolClass *protocol) {
   }
   free(descriptions);
   if (!result) {
+    // Search backing class, if any.
+    Class backingClass = objc_getClass(protocol_getName(protocol_));
+    if (backingClass) {
+      const char *name = [objcName UTF8String];
+      Method method = JreFindClassMethod(backingClass, name);
+      if (method) {
+        NSMethodSignature *signature = JreSignatureOrNull(method_getDescription(method));
+        if (signature) {
+          JavaClassMetadata *metadata = [self getMetadata];
+          JavaMethodMetadata *methodData = [metadata findMethodMetadata:objcName];
+          result = [JavaLangReflectMethod methodWithMethodSignature:signature
+                                                           selector:method_getName(method)
+                                                              class:self
+                                                           isStatic:YES
+                                                           metadata:methodData];
+        }
+      }
+    }
+  }
+  if (!result) {
     // Search super-interfaces.
     for (IOSClass *cls in [self getInterfacesInternal]) {
       if (cls != self) {

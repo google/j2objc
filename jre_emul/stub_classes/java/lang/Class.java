@@ -28,6 +28,7 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Type;
 import java.lang.reflect.TypeVariable;
 import java.net.URL;
+import java.security.ProtectionDomain;
 
 /**
  * Stub implementation of java.lang.Class.
@@ -184,6 +185,18 @@ public final class Class<T> implements AnnotatedElement, GenericDeclaration, Ser
     return null;
   }
 
+  public ProtectionDomain getProtectionDomain() {
+    return null;
+  }
+
+  public URL getResource(String name) {
+    return null;
+  }
+
+  public InputStream getResourceAsStream(String name) {
+    return null;
+  }
+
   public Object[] getSigners() {
     return null;
   }
@@ -204,7 +217,7 @@ public final class Class<T> implements AnnotatedElement, GenericDeclaration, Ser
   	return false;
   }
 
-  public boolean isAnnotationPresent() {
+  public boolean isAnnotationPresent(Class<? extends Annotation> annotationType) {
     return false;
   }
 
@@ -255,21 +268,4 @@ public final class Class<T> implements AnnotatedElement, GenericDeclaration, Ser
   public String toString() {
     return "";
   }
-  
-  public boolean isAnnotationPresent(Class<? extends Annotation> annotationType) {
-    return false;
-  }
-
-  public InputStream getResourceAsStream(String name) {
-    return null;
-  }
-  
-  public URL getResource(String name) {
-    return null;
-  }
-
-  /* Unimplemented/mapped methods
-  T[] getEnumConstants()
-  ProtectionDomain getProtectionDomain()
-  */
 }

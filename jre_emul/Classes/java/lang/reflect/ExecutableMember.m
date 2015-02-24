@@ -202,7 +202,9 @@ static IOSClass *ResolveParameterType(const char *objcType, NSString *paramKeywo
       return method_invoke(cls, annotationsMethod);
     }
   }
-  return [IOSObjectArray arrayWithDimensions:2 lengths:(int[]){0, 0}
+  // No parameter annotations, so return an array of empty arrays, one for each parameter.
+  jint nParams = (jint)[methodSignature_ numberOfArguments] - SKIPPED_ARGUMENTS;
+  return [IOSObjectArray arrayWithDimensions:2 lengths:(int[]){nParams, 0}
       type:JavaLangAnnotationAnnotation_class_()];
 }
 

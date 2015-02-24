@@ -213,6 +213,9 @@ public class ObjectiveCImplementationGenerator extends ObjectiveCSourceFileGener
         println("\n- (IOSClass *)annotationType {");
         printf("  return %s_class_();\n", typeName);
         println("}");
+        println("\n- (NSString *)description {");
+        printf("  return @\"@%s()\";\n", node.getTypeBinding().getBinaryName());
+        println("}");
       }
       printInitializeMethod(node);
       if (needsReflection) {

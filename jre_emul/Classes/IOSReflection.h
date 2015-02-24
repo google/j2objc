@@ -104,7 +104,7 @@ typedef struct J2ObjcInnerClassAttribute {
   uint16_t attribute_type;  // INNER_CLASSES
   uint16_t length;          // count * sizeof(id) + 6
   uint16_t count;
-  const char **exception_classnames;
+  const char **inner_classnames;
 } J2ObjcInnerClassAttribute;
 
 typedef struct J2ObjcMethodInfo {
