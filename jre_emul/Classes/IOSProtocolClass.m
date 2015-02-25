@@ -72,6 +72,11 @@ static jboolean ConformsToProtocol(IOSClass *cls, IOSProtocolClass *protocol) {
 }
 
 - (int)getModifiers {
+  JavaClassMetadata *metadata = [self getMetadata];
+  if (metadata) {
+    return metadata.modifiers
+        & (JavaLangReflectModifier_INTERFACE | JavaLangReflectModifier_interfaceModifiers());
+  }
   return JavaLangReflectModifier_PUBLIC | JavaLangReflectModifier_INTERFACE |
       JavaLangReflectModifier_ABSTRACT | JavaLangReflectModifier_STATIC;
 }

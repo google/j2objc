@@ -27,7 +27,7 @@
 @class IOSClass;
 
 // Current metadata structure version
-#define J2OBJC_METADATA_VERSION 1
+#define J2OBJC_METADATA_VERSION 2
 
 // A raw value is the union of all possible native types.
 typedef union {
@@ -47,14 +47,6 @@ typedef union {
 // all information provided by the reflection API is discoverable via the
 // Objective-C runtime.
 
-enum J2OBJC_ATTRIBUTE_TYPES {
-  CONSTANT_VALUE,
-  ENCLOSING_METHOD,
-  EXCEPTIONS,
-  GENERIC_SIGNATURE,
-  INNER_CLASSES,
-};
-
 // Use same data types that the translator generates.
 typedef union J2ObjcConstantValue {
   BOOL boolean;
@@ -68,51 +60,13 @@ typedef union J2ObjcConstantValue {
   const char *string;
 } J2ObjcConstantValue;
 
-// This type isn't actually used, but just defines the header shared
-// by all attributes.
-typedef struct J2ObjcAttribute {
-  uint16_t attribute_type;
-  uint16_t length;
-} J2ObjCAttribute;
-
-typedef struct J2ObjcConstantValueAttribute {
-  uint16_t attribute_type;  // CONSTANT_VALUE
-  uint16_t length;          // sizeof(J2ObjcConstantValue) + 4
-  J2ObjcConstantValue constant;
-} J2ObjcConstantValueAttribute;
-
-typedef struct J2ObjcEnclosingMethodAttribute {
-  uint16_t attribute_type;  // ENCLOSING_METHOD
-  uint16_t length;          // sizeof(id) + 4
-  const char *selector;
-} J2ObjcAnnotationDefaultAttribute;
-
-typedef struct J2ObjcExceptionsAttribute {
-  uint16_t attribute_type;  // EXCEPTIONS
-  uint16_t length;          // count * sizeof(id) + 6
-  uint16_t count;
-  const char **exception_classnames;
-} J2ObjcExceptionAttribute;
-
-typedef struct J2ObjcGenericSignatureAttribute {
-  uint16_t attribute_type;  // GENERIC_SIGNATURE
-  uint16_t length;          // sizeof(id) + 4
-  const char *selector;
-} J2ObjcGenericSignatureAttribute;
-
-typedef struct J2ObjcInnerClassAttribute {
-  uint16_t attribute_type;  // INNER_CLASSES
-  uint16_t length;          // count * sizeof(id) + 6
-  uint16_t count;
-  const char **inner_classnames;
-} J2ObjcInnerClassAttribute;
-
 typedef struct J2ObjcMethodInfo {
   const char *selector;
   const char *javaName;
   const char *returnType;
   uint16_t modifiers;
   const char *exceptions;
+  const char *genericSignature;
 } J2ObjcMethodInfo;
 
 typedef struct J2ObjcFieldInfo {
@@ -122,6 +76,7 @@ typedef struct J2ObjcFieldInfo {
   const char *type;
   const void *staticRef;
   J2ObjcRawValue constantValue;
+  const char *genericSignature;
 } J2ObjcFieldInfo;
 
 typedef struct J2ObjcClassInfo {
@@ -136,9 +91,9 @@ typedef struct J2ObjcClassInfo {
   const J2ObjcFieldInfo *fields;
   uint16_t superclassTypeArgsCount;
   const char **superclassTypeArgs;
-  uint16_t attribute_count;
-  // Inner classes, enclosing method, generic signature.
-  const J2ObjCAttribute *attributes;
+  uint16_t innerClassCount;
+  const char **innerClassnames;
+  const char *genericSignature;
 } J2ObjcClassInfo;
 
 // Autoboxing support.

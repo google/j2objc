@@ -917,4 +917,23 @@ public class ObjectiveCImplementationGeneratorTest extends GenerationTest {
         + "{ [[[FooBar alloc] initWithNamespace__:@\"mynames\"] autorelease] } "
         + "count:1 type:JavaLangAnnotationAnnotation_class_()];");
   }
+
+  public void testInnerClassesMetadata() throws IOException {
+    String translation = translateSourceFile(
+        " class A {"
+        + "class B {"
+        + "  class InnerInner{}}"
+        + "static class C {"
+        + "  Runnable test() {"
+        + "    return new Runnable() { public void run() {}};}}"
+        + "interface D {}"
+        + "@interface E {}"
+        + "}"
+        , "A", "A.m");
+    assertTranslation(translation,
+        "static const char *inner_classes[] = {\"LA$B;\", \"LA$C;\", \"LA$D;\", \"LA$E;\"};");
+    assertTranslation(translation,
+        "static const J2ObjcClassInfo _A = { 2, \"A\", NULL, NULL, 0x0, 1, methods, "
+        + "0, NULL, 0, NULL, 4, inner_classes};");
+  }
 }
