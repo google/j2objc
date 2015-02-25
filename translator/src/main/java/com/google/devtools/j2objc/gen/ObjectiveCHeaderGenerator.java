@@ -57,19 +57,16 @@ import java.util.Set;
  */
 public class ObjectiveCHeaderGenerator extends ObjectiveCSourceFileGenerator {
 
-  protected final String mainTypeName;
-
   /**
    * Generate an Objective-C header file for each type declared in a specified
    * compilation unit.
    */
-  public static void generate(CompilationUnit unit) {
+  public static void generate(GenerationUnit unit) {
     new ObjectiveCHeaderGenerator(unit).generate();
   }
 
-  protected ObjectiveCHeaderGenerator(CompilationUnit unit) {
+  protected ObjectiveCHeaderGenerator(GenerationUnit unit) {
     super(unit, false);
-    mainTypeName = NameTable.getMainTypeFullName(unit);
   }
 
   @Override
@@ -79,7 +76,7 @@ public class ObjectiveCHeaderGenerator extends ObjectiveCSourceFileGenerator {
 
   public void generate() {
     CompilationUnit unit = getUnit();
-    println(J2ObjC.getFileHeader(unit.getSourceFileFullPath()));
+    println(J2ObjC.getFileHeader(getGenerationUnit().getSourceName()));
 
     generateFileHeader();
 
@@ -95,7 +92,7 @@ public class ObjectiveCHeaderGenerator extends ObjectiveCSourceFileGenerator {
     }
 
     generateFileFooter();
-    save(unit);
+    save(getOutputPath());
   }
 
   private String getSuperTypeName(TypeDeclaration node) {
@@ -505,8 +502,8 @@ public class ObjectiveCHeaderGenerator extends ObjectiveCSourceFileGenerator {
   }
 
   protected void generateFileHeader() {
-    printf("#ifndef _%s_H_\n", mainTypeName);
-    printf("#define _%s_H_\n", mainTypeName);
+    printf("#ifndef _%s_H_\n", getGenerationUnit().getName());
+    printf("#define _%s_H_\n", getGenerationUnit().getName());
     pushIgnoreDeprecatedDeclarationsPragma();
     newline();
 
@@ -534,7 +531,7 @@ public class ObjectiveCHeaderGenerator extends ObjectiveCSourceFileGenerator {
   protected void generateFileFooter() {
     newline();
     popIgnoreDeprecatedDeclarationsPragma();
-    printf("#endif // _%s_H_\n", mainTypeName);
+    printf("#endif // _%s_H_\n", getGenerationUnit().getName());
   }
 
   private void printAnnotationVariables(List<AnnotationTypeMemberDeclaration> members) {

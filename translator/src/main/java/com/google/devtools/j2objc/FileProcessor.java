@@ -16,11 +16,13 @@ package com.google.devtools.j2objc;
 
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Lists;
-import com.google.common.io.CharStreams;
 import com.google.common.io.Files;
+import com.google.devtools.j2objc.file.JarredInputFile;
+import com.google.devtools.j2objc.file.RegularInputFile;
+import com.google.devtools.j2objc.file.InputFile;
+import com.google.devtools.j2objc.util.FileUtil;
 import com.google.devtools.j2objc.types.Types;
 import com.google.devtools.j2objc.util.ErrorUtil;
-import com.google.devtools.j2objc.util.FileUtil;
 import com.google.devtools.j2objc.util.JdtParser;
 import com.google.devtools.j2objc.util.NameTable;
 import com.google.devtools.j2objc.util.TimeTracker;
@@ -30,8 +32,6 @@ import org.eclipse.jdt.core.dom.PackageDeclaration;
 
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.Reader;
 import java.util.Enumeration;
 import java.util.List;
 import java.util.logging.Level;
@@ -50,8 +50,8 @@ abstract class FileProcessor {
   private static final Logger logger = Logger.getLogger(FileProcessor.class.getName());
 
   private final JdtParser parser;
-  protected final List<String> batchSources = Lists.newArrayList();
-  protected final boolean doBatching = Options.batchTranslateMaximum() > 0;
+  protected final List<InputFile> batchSources = Lists.newArrayList();
+  private final boolean doBatching = Options.batchTranslateMaximum() > 0;
 
   public FileProcessor(JdtParser parser) {
     this.parser = Preconditions.checkNotNull(parser);
@@ -64,11 +64,15 @@ abstract class FileProcessor {
     processBatchSources();
   }
 
-  public void processFile(String file) {
-    if (file.startsWith("@")) {
-      processManifestFile(file.substring(1));
+  protected boolean isBatchable(InputFile file) {
+    return doBatching && file.getContainingPath().endsWith(".java");
+  }
+
+  public void processFile(String filename) {
+    if (filename.startsWith("@")) {
+      processManifestFile(filename.substring(1));
     } else {
-      processSourceFile(file);
+      processSourceFile(filename);
     }
   }
 
@@ -105,59 +109,29 @@ abstract class FileProcessor {
   }
 
   protected void processJavaFile(String filename) {
-    File f = getFileOrNull(filename);
-    if (f != null) {
-      if (doBatching) {
-        batchSources.add(filename);
-      } else {
-        processSource(filename);
-      }
-      return;
-    }
-    if (f == null) {
-      for (String pathEntry : Options.getSourcePathEntries()) {
-        if (pathEntry.endsWith(".jar")) {
-          String source = getJarEntryOrNull(pathEntry, filename);
-          if (source != null) {
-            processSource(filename, source);
-            return;
-          }
-        } else {
-          f = getFileOrNull(pathEntry + File.separatorChar + filename);
-          if (f != null) {
-            if (doBatching) {
-              batchSources.add(f.getPath());
-            } else {
-              processSource(f.getPath());
-            }
-            return;
-          }
-        }
-      }
-    }
-    ErrorUtil.error("No such file: " + filename);
-  }
+    InputFile inputFile;
 
-  private String getJarEntryOrNull(String jarFile, String path) {
-    File f = new File(jarFile);
-    if (!f.exists() || !f.isFile()) {
-      return null;
-    }
     try {
-      ZipFile zfile = new ZipFile(f);
-      try {
-        ZipEntry entry = zfile.getEntry(path);
-        if (entry != null) {
-          Reader in = new InputStreamReader(zfile.getInputStream(entry));
-          return CharStreams.toString(in);
+      inputFile = new RegularInputFile(filename);
+
+      if (!inputFile.exists()) {
+        inputFile = FileUtil.findOnSourcePath(filename);
+
+        if (inputFile == null) {
+          ErrorUtil.error("No such file: " + filename);
+          return;
         }
-      } finally {
-        zfile.close();  // Also closes input stream.
       }
     } catch (IOException e) {
       ErrorUtil.warning(e.getMessage());
+      return;
     }
-    return null;
+
+    if (isBatchable(inputFile)) {
+      batchSources.add(inputFile);
+    } else {
+      processSource(inputFile);
+    }
   }
 
   protected void processJarFile(String filename) {
@@ -172,11 +146,10 @@ abstract class FileProcessor {
         Enumeration<? extends ZipEntry> enumerator = zfile.entries();
         while (enumerator.hasMoreElements()) {
           ZipEntry entry = enumerator.nextElement();
-          String path = entry.getName();
-          if (path.endsWith(".java")) {
-            Reader in = new InputStreamReader(zfile.getInputStream(entry));
-            String jarURL = String.format("jar:file:%s!%s", f.getPath(), path);
-            processSource(jarURL, CharStreams.toString(in));
+          String internalPath = entry.getName();
+          if (internalPath.endsWith(".java")) {
+            InputFile file = new JarredInputFile(filename, internalPath);
+            processSource(file);
           }
         }
       } finally {
@@ -187,31 +160,31 @@ abstract class FileProcessor {
     }
   }
 
-  protected void processSource(String path) {
+  protected void processSource(InputFile file) {
     try {
-      processSource(path, FileUtil.readSource(path));
+      processSource(file, FileUtil.readFile(file));
     } catch (IOException e) {
       ErrorUtil.warning(e.getMessage());
     }
   }
 
-  protected void processSource(String path, String source) {
-    logger.finest("parsing " + path);
-    TimeTracker ticker = getTicker(path);
+  protected void processSource(InputFile file, String source) {
+    logger.finest("parsing " + file);
+    TimeTracker ticker = getTicker(file.getPath());
     ticker.push();
 
     int errorCount = ErrorUtil.errorCount();
-    CompilationUnit unit = parser.parse(path, source);
+    CompilationUnit unit = parser.parse(file.getUnitName(), source);
     if (ErrorUtil.errorCount() > errorCount) {
       return;
     }
 
     ticker.tick("Parsing file");
 
-    ErrorUtil.setCurrentFileName(path);
+    ErrorUtil.setCurrentFileName(file.getPath());
     NameTable.initialize();
     Types.initialize(unit);
-    processUnit(path, source, unit, ticker);
+    processUnit(file, source, unit, ticker);
     NameTable.cleanup();
     Types.cleanup();
 
@@ -227,13 +200,13 @@ abstract class FileProcessor {
 
     JdtParser.Handler handler = new JdtParser.Handler() {
       @Override
-      public void handleParsedUnit(String path, CompilationUnit unit) {
+      public void handleParsedUnit(InputFile file, CompilationUnit unit) {
         if (logger.isLoggable(Level.INFO)) {
-          System.out.println("translating " + path);
+          System.out.println("translating " + file.getPath());
         }
-        TimeTracker ticker = getTicker(path);
+        TimeTracker ticker = getTicker(file.getPath());
         ticker.push();
-        processUnit(path, unit, ticker);
+        processUnit(file, unit, ticker);
       }
     };
     final int maxBatchSize = Options.batchTranslateMaximum();
@@ -246,12 +219,12 @@ abstract class FileProcessor {
     }
   }
 
-  private void processUnit(String path, CompilationUnit unit, TimeTracker ticker) {
+  private void processUnit(InputFile input, CompilationUnit unit, TimeTracker ticker) {
     try {
-      ErrorUtil.setCurrentFileName(path);
+      ErrorUtil.setCurrentFileName(input.getPath());
       NameTable.initialize();
       Types.initialize(unit);
-      processUnit(path, FileUtil.readSource(path), unit, ticker);
+      processUnit(input, FileUtil.readFile(input), unit, ticker);
       NameTable.cleanup();
       Types.cleanup();
 
@@ -271,9 +244,10 @@ abstract class FileProcessor {
     }
   }
 
-  protected abstract void processUnit(
-      String path, String source, CompilationUnit unit, TimeTracker ticker);
-
+  /**
+   * Returns a path equal to the canonical compilation unit name
+   * for the given file, which is something like path/to/package/Filename.java.
+   */
   protected static String getRelativePath(String path, CompilationUnit unit) {
     int index = path.lastIndexOf(File.separatorChar);
     String name = index >= 0 ? path.substring(index + 1) : path;
@@ -286,10 +260,8 @@ abstract class FileProcessor {
     }
   }
 
-  private static File getFileOrNull(String fileName) {
-    File f = new File(fileName);
-    return f.exists() ? f : null;
-  }
+  protected abstract void processUnit(
+      InputFile file, String source, CompilationUnit unit, TimeTracker ticker);
 
   public JdtParser getParser() {
     return parser;
