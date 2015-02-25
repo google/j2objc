@@ -17,7 +17,6 @@ package com.google.devtools.j2objc.gen;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.devtools.j2objc.ast.AbstractTypeDeclaration;
-import com.google.devtools.j2objc.ast.CompilationUnit;
 import com.google.devtools.j2objc.types.HeaderImportCollector;
 import com.google.devtools.j2objc.types.Import;
 import com.google.devtools.j2objc.util.NameTable;
@@ -35,18 +34,23 @@ import java.util.Map;
  */
 public class ObjectiveCSegmentedHeaderGenerator extends ObjectiveCHeaderGenerator {
 
+  private final String mainTypeName;
+
   private Map<AbstractTypeDeclaration, HeaderImportCollector> importCollectors = Maps.newHashMap();
 
-  protected ObjectiveCSegmentedHeaderGenerator(CompilationUnit unit) {
+  protected ObjectiveCSegmentedHeaderGenerator(GenerationUnit unit) {
     super(unit);
+    mainTypeName = NameTable.getMainTypeFullName(getUnit());
   }
 
-  public static void generate(CompilationUnit unit) {
+  public static void generate(GenerationUnit unit) {
     new ObjectiveCSegmentedHeaderGenerator(unit).generate();
   }
 
   @Override
   protected void generateFileHeader() {
+    // TODO(user): Work out if we need segmented headers for GenerationUnits with multiple
+    // CompilationUnits, and if so, how to handle these directives properly.
     println("#include \"J2ObjC_header.h\"");
     newline();
     printf("#if !%s_RESTRICT\n", mainTypeName);
@@ -64,6 +68,12 @@ public class ObjectiveCSegmentedHeaderGenerator extends ObjectiveCHeaderGenerato
     }
   }
 
+  /**
+   * Given a {@link com.google.devtools.j2objc.ast.AbstractTypeDeclaration}
+   * and its collected {@link com.google.devtools.j2objc.types.Import}s,
+   * print its 'local includes'; viz.,
+   * {@code INCLUDE} directives for all supertypes that are defined in the current segmented header.
+   */
   private void printLocalIncludes(AbstractTypeDeclaration type, HeaderImportCollector collector) {
     List<Import> localImports = Lists.newArrayList();
     for (Import imp : collector.getSuperTypes()) {

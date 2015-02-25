@@ -24,6 +24,9 @@ import com.google.devtools.j2objc.ast.MethodDeclaration;
 import com.google.devtools.j2objc.ast.Statement;
 import com.google.devtools.j2objc.ast.TreeConverter;
 import com.google.devtools.j2objc.ast.TreeVisitor;
+import com.google.devtools.j2objc.file.InputFile;
+import com.google.devtools.j2objc.file.RegularInputFile;
+import com.google.devtools.j2objc.gen.GenerationUnit;
 import com.google.devtools.j2objc.gen.SourceBuilder;
 import com.google.devtools.j2objc.gen.StatementGenerator;
 import com.google.devtools.j2objc.types.Types;
@@ -135,12 +138,13 @@ public abstract class GenerationTest extends TestCase {
    */
   protected CompilationUnit translateType(String typeName, String source) {
     String typePath = typeName.replace('.', '/');
-    org.eclipse.jdt.core.dom.CompilationUnit unit = compileType(typePath, source);
+    org.eclipse.jdt.core.dom.CompilationUnit unit = compileType(typePath + ".java", source);
     NameTable.initialize();
     Types.initialize(unit);
     String fullSourcePath = Options.useSourceDirectories() ? "" : tempDir.getPath() + '/';
     fullSourcePath += typePath + ".java";
-    CompilationUnit newUnit = TreeConverter.convertCompilationUnit(unit, fullSourcePath, source);
+    CompilationUnit newUnit = TreeConverter.convertCompilationUnit(
+        unit, new RegularInputFile(fullSourcePath, typePath + ".java"), source);
     TranslationProcessor.applyMutations(newUnit, deadCodeMap, TimeTracker.noop());
     return newUnit;
   }
@@ -339,7 +343,10 @@ public abstract class GenerationTest extends TestCase {
   protected String translateSourceFile(String source, String typeName, String fileName)
       throws IOException {
     CompilationUnit unit = translateType(typeName, source);
-    TranslationProcessor.generateObjectiveCSource(unit, TimeTracker.noop());
+    InputFile file = new RegularInputFile(typeName);  // doesn't need to exist
+    String outputName = TranslationProcessor.getOutputFileName(file, unit);
+    TranslationProcessor.generateObjectiveCSource(
+        GenerationUnit.fromSingleUnit(unit, outputName), TimeTracker.noop());
     return getTranslatedFile(fileName);
   }
 
