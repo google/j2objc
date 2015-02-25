@@ -14,8 +14,9 @@
 
 package com.google.devtools.j2objc;
 
-import com.google.devtools.j2objc.util.ErrorUtil;
 import com.google.devtools.j2objc.util.FileUtil;
+import com.google.devtools.j2objc.file.InputFile;
+import com.google.devtools.j2objc.util.ErrorUtil;
 import com.google.devtools.j2objc.util.JdtParser;
 import com.google.devtools.j2objc.util.TimeTracker;
 import com.google.j2objc.annotations.ObjectiveCName;
@@ -41,17 +42,18 @@ public class PackageInfoPreProcessor extends FileProcessor {
     super(parser);
   }
 
-  protected void processSource(String path) {
+  @Override
+  protected void processSource(InputFile file) {
     // TODO(user): We can get the whole list of .java and .jar files here,
     // instead of doing it multiple times (once each per FileProcessor).
     // Future functionality will require us to do this upfront.
-    if (path.endsWith("package-info.java")) {
-      logger.finest("processing package-info file " + path);
-      if (doBatching) {
-        batchSources.add(path);
+    if (file.getPath().endsWith("package-info.java")) {
+      logger.finest("processing package-info file " + file.getPath());
+      if (isBatchable(file)) {
+        batchSources.add(file);
       } else {
         try {
-          processSource(path, FileUtil.readSource(path));
+          processSource(file, FileUtil.readFile(file));
         } catch (IOException e) {
           ErrorUtil.warning(e.getMessage());
         }
@@ -60,7 +62,8 @@ public class PackageInfoPreProcessor extends FileProcessor {
   }
 
   @Override
-  protected void processUnit(String path, String source, CompilationUnit unit, TimeTracker ticker) {
+  protected void processUnit(
+      InputFile file, String source, CompilationUnit unit, TimeTracker ticker) {
     // We should only reach here if it's a packageinfo.java file.
     @SuppressWarnings("unchecked")
     List<Annotation> annotations = (List<Annotation>)unit.getPackage().annotations();
@@ -77,7 +80,7 @@ public class PackageInfoPreProcessor extends FileProcessor {
           String previousVal = Options.addPackagePrefix(key, val);
           if (previousVal != null && !previousVal.equals(val)) {
             ErrorUtil.error(String.format("Package %s has name %s defined in file %s, but"
-                + "is already named %s", key, val, path, previousVal));
+                + "is already named %s", key, val, file.getPath(), previousVal));
           }
         }
       }

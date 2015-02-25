@@ -17,6 +17,7 @@ package com.google.devtools.j2objc.util;
 import com.google.common.base.Splitter;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
+import com.google.devtools.j2objc.file.InputFile;
 
 import org.eclipse.jdt.core.compiler.IProblem;
 import org.eclipse.jdt.core.dom.AST;
@@ -26,6 +27,7 @@ import org.eclipse.jdt.core.dom.FileASTRequestor;
 
 import java.io.File;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
@@ -105,12 +107,12 @@ public class JdtParser {
         enable ? "enabled" : "disabled");
   }
 
-  public CompilationUnit parse(String filename, String source) {
+  public CompilationUnit parse(String unitName, String source) {
     ASTParser parser = newASTParser();
-    parser.setUnitName(filename);
+    parser.setUnitName(unitName);
     parser.setSource(source.toCharArray());
     CompilationUnit unit = (CompilationUnit) parser.createAST(null);
-    checkCompilationErrors(filename, unit);
+    checkCompilationErrors(unitName, unit);
     return unit;
   }
 
@@ -119,10 +121,16 @@ public class JdtParser {
    * implementation is called with the parsed units.
    */
   public interface Handler {
-    public void handleParsedUnit(String filePath, CompilationUnit unit);
+    public void handleParsedUnit(InputFile filePath, CompilationUnit unit);
   }
 
-  public void parseFiles(List<String> filePaths, final Handler handler) {
+  public void parseFiles(List<InputFile> files, final Handler handler) {
+    // We need the whole SourceFile to correctly handle a parsed ADT, so we keep track of it here.
+    final Map<String, InputFile> reverseMap = new HashMap<String, InputFile>();
+    for (InputFile file: files) {
+      reverseMap.put(file.getPath(), file);
+    }
+
     ASTParser parser = newASTParser();
     FileASTRequestor astRequestor = new FileASTRequestor() {
       @Override
@@ -131,7 +139,7 @@ public class JdtParser {
         int errors = ErrorUtil.errorCount();
         checkCompilationErrors(sourceFilePath, ast);
         if (errors == ErrorUtil.errorCount()) {
-          handler.handleParsedUnit(sourceFilePath, ast);
+          handler.handleParsedUnit(reverseMap.get(sourceFilePath), ast);
         }
       }
     };
@@ -139,7 +147,7 @@ public class JdtParser {
     // number of "binding key" strings as source files. It doesn't appear to
     // matter what the binding key strings should be (as long as they're non-
     // null), so the paths array is reused.
-    String[] paths = filePaths.toArray(new String[0]);
+    String[] paths = reverseMap.keySet().toArray(new String[reverseMap.size()]);
     parser.createASTs(paths, getEncodings(paths.length), paths, astRequestor, null);
   }
 

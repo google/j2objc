@@ -14,10 +14,10 @@
 
 package com.google.devtools.j2objc;
 
+import com.google.devtools.j2objc.file.InputFile;
 import com.google.devtools.j2objc.util.JdtParser;
 
 import com.google.devtools.j2objc.util.TimeTracker;
-import com.google.devtools.j2objc.gen.SourceFileGenerator;
 
 import org.eclipse.jdt.core.dom.AbstractTypeDeclaration;
 import org.eclipse.jdt.core.dom.CompilationUnit;
@@ -37,9 +37,9 @@ public class HeaderMappingPreProcessor extends FileProcessor {
   }
 
   @Override
-  protected void processSource(String path, String source) {
-    CompilationUnit unit = getParser().parse(path, source);
-    String headerRelativePath = getHeaderRelativePath(path);
+  protected void processSource(InputFile file, String source) {
+    CompilationUnit unit = getParser().parse(file.getUnitName(), source);
+    String headerRelativePath = getHeaderRelativePath(file.getUnitName());
 
     for (Object type : unit.types()) {
       Options.getHeaderMappings().put(
@@ -49,15 +49,14 @@ public class HeaderMappingPreProcessor extends FileProcessor {
 
   @Override
   protected void processUnit(
-      String path, String source, CompilationUnit unit, TimeTracker ticker) {
+      InputFile file, String source, CompilationUnit unit, TimeTracker ticker) {
   }
 
   private String getHeaderRelativePath(String path) {
-    String outputRelativePath = SourceFileGenerator.sourceFilePath(path);
-    if (outputRelativePath.endsWith(".java")) {
-      return outputRelativePath.substring(0, outputRelativePath.length() - 5) + ".h";
+    if (path.endsWith(".java")) {
+      return path.substring(0, path.length() - 5) + ".h";
     } else {
-      return outputRelativePath;
+      return path;
     }
   }
 

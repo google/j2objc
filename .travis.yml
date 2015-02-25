@@ -12,4 +12,4 @@ after_script:
   - make test_jre_cycles
   - make test_guava_cycles
   - cd jre_emul && make -j4 -f tests.mk link resources
-  - make test
+  - make test_jre_emul
