@@ -77,4 +77,22 @@ public class TranslationProcessorTest extends GenerationTest {
     assertErrorCount(0);
     assertWarningCount(0);
   }
+
+  public void testDuplicateSourceFileOnSourcepath() throws IOException {
+    Options.setBuildClosure(true);
+    Options.appendSourcePath(getTempDir());
+
+    addSourceFile("class Test { Foo f; }", "Test.java");
+    addSourceFile("class Foo { void foo1() {} }", "Foo.java");
+    addSourceFile("class Foo { void foo2() {} }", "src/main/java/Foo.java");
+
+    TranslationProcessor processor = new TranslationProcessor(J2ObjC.createParser(), null);
+    processor.processFiles(Lists.newArrayList(
+        getTempDir() + "/Test.java",
+        getTempDir() + "/src/main/java/Foo.java"));
+
+    String translation = getTranslatedFile("Foo.h");
+    assertTranslation(translation, "- (void)foo2;");
+    assertNotInTranslation(translation, "foo1");
+  }
 }
