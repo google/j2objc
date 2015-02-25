@@ -852,14 +852,21 @@ IOSObjectArray *copyFieldsToObjectArray(NSArray *fields) {
 
 
 // Adds all the inner classes for a specified class to a specified dictionary.
-static void GetInnerClasses(IOSClass *iosClass, NSMutableArray *classes, BOOL publicOnly) {
+static void GetInnerClasses(IOSClass *iosClass, NSMutableArray *classes,
+    BOOL publicOnly, BOOL includeInterfaces) {
   JavaClassMetadata *metadata = [iosClass getMetadata];
   if (metadata) {
     IOSObjectArray *innerClasses = [metadata getInnerClasses];
+    if (!innerClasses) {
+      return;
+    }
     for (jint i = 0; i < innerClasses->size_; i++) {
       IOSClass *c = IOSObjectArray_Get(innerClasses, i);
       if (![c isAnonymousClass] && ![c isSynthetic]) {
         if (publicOnly && ([c getModifiers] & JavaLangReflectModifier_PUBLIC) == 0) {
+          continue;
+        }
+        if ([c isInterface] && !includeInterfaces) {
           continue;
         }
         [classes addObject:c];
@@ -871,9 +878,10 @@ static void GetInnerClasses(IOSClass *iosClass, NSMutableArray *classes, BOOL pu
 - (IOSObjectArray *)getClasses {
   NSMutableArray *innerClasses = [[NSMutableArray alloc] init];
   IOSClass *cls = self;
-  while (cls) {
-    GetInnerClasses(cls, innerClasses, YES);
-    cls = [cls getSuperclass];
+  GetInnerClasses(cls, innerClasses, YES, YES);
+  while ((cls = [cls getSuperclass])) {
+    // Class.getClasses() shouldn't include interfaces from superclasses.
+    GetInnerClasses(cls, innerClasses, YES, NO);
   }
   IOSObjectArray *result = [IOSObjectArray arrayWithNSArray:innerClasses
                                                        type:IOSClass_class_()];
@@ -883,7 +891,7 @@ static void GetInnerClasses(IOSClass *iosClass, NSMutableArray *classes, BOOL pu
 
 - (IOSObjectArray *)getDeclaredClasses {
   NSMutableArray *declaredClasses = [[NSMutableArray alloc] init];
-  GetInnerClasses(self, declaredClasses, NO);
+  GetInnerClasses(self, declaredClasses, NO, YES);
   IOSObjectArray *result = [IOSObjectArray arrayWithNSArray:declaredClasses
                                                        type:IOSClass_class_()];
   [declaredClasses release];

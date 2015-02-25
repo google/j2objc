@@ -25,7 +25,6 @@
 
 @implementation JavaClassMetadata {
   J2ObjcClassInfo *data_;
-  J2ObjCAttribute *attributes;
 }
 
 @synthesize version;
@@ -39,10 +38,7 @@
 - (instancetype)initWithMetadata:(J2ObjcClassInfo *)metadata {
   if (self = [super init]) {
     data_ = metadata;
-    switch (data_->version) {
-      // Add future versions here as case statements.
-      default: version = 1; break;
-    }
+    version = data_->version;
     NSStringEncoding defaultEncoding = [NSString defaultCStringEncoding];
     typeName = [[NSString alloc] initWithCString:metadata->typeName encoding:defaultEncoding];
     if (metadata->packageName) {
@@ -179,21 +175,18 @@ static jint countArgs(char *s) {
 }
 
 - (IOSObjectArray *)getInnerClasses {
-  // TODO(tball): rewrite with inner class list in J2ObjcClassInfo struct.
-  uint16_t n_attrs = data_->attribute_count;
-  for (uint16_t i = 0; i < n_attrs; i++) {
-    const J2ObjCAttribute *attr = data_->attributes + i;
-    if (attr->attribute_type == INNER_CLASSES) {
-      const J2ObjcInnerClassAttribute *innerClassAttr = (const J2ObjcInnerClassAttribute *)attr;
-      uint16_t size = innerClassAttr->count;
-      IOSObjectArray *result = [IOSObjectArray arrayWithLength:size type:IOSClass_class_()];
-      for (int i = 0; i < size; i++) {
-        IOSObjectArray_Set(result, i, JreTypeForString(innerClassAttr->inner_classnames[i]));
-      }
-      return result;
-    }
+  if (J2OBJC_METADATA_VERSION < 2) {
+    return 0;
   }
-  return [IOSObjectArray newArrayWithLength:0 type:IOSClass_class_()];
+  uint16_t size = data_->innerClassCount;
+  if (size == 0) {
+    return nil;
+  }
+  IOSObjectArray *result = [IOSObjectArray arrayWithLength:size type:JavaLangReflectType_class_()];
+  for (int i = 0; i < size; i++) {
+    IOSObjectArray_Set(result, i, JreTypeForString(data_->innerClassnames[i]));
+  }
+  return result;
 }
 
 - (NSString *)description {
@@ -201,17 +194,14 @@ static jint countArgs(char *s) {
           typeName, packageName, modifiers];
 }
 
-- (void)dealloc {
-  if (attributes) {
-    free(attributes);
-  }
 #if ! __has_feature(objc_arc)
+- (void)dealloc {
   [typeName release];
   [packageName release];
   [enclosingName release];
   [super dealloc];
-#endif
 }
+#endif
 
 @end
 

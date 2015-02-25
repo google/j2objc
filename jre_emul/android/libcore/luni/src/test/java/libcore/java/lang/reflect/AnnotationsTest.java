@@ -175,19 +175,17 @@ public final class AnnotationsTest extends TestCase {
 //        assertNull(foo.c.getDeclaringClass());
 //    }
 
-    // TODO(tball): generate inner classes metadata.
-//    public void testGetClasses() throws Exception {
-//        // getClasses() doesn't include classes inherited from interfaces!
-//        assertSetEquals(HasMemberClasses.class.getClasses(),
-//                HasMemberClassesSuperclass.B.class, HasMemberClasses.H.class);
-//    }
+    public void testGetClasses() throws Exception {
+        // getClasses() doesn't include classes inherited from interfaces!
+        assertSetEquals(HasMemberClasses.class.getClasses(),
+                HasMemberClassesSuperclass.B.class, HasMemberClasses.H.class);
+    }
 
-    // TODO(tball): generate inner classes metadata.
-//    public void testGetDeclaredClasses() throws Exception {
-//        assertSetEquals(HasMemberClasses.class.getDeclaredClasses(),
-//                HasMemberClasses.G.class, HasMemberClasses.H.class, HasMemberClasses.I.class,
-//                HasMemberClasses.J.class, HasMemberClasses.K.class, HasMemberClasses.L.class);
-//    }
+    public void testGetDeclaredClasses() throws Exception {
+        assertSetEquals(HasMemberClasses.class.getDeclaredClasses(),
+                HasMemberClasses.G.class, HasMemberClasses.H.class, HasMemberClasses.I.class,
+                HasMemberClasses.J.class, HasMemberClasses.K.class, HasMemberClasses.L.class);
+    }
 
     public void testConstructorGetExceptions() throws Exception {
         assertSetEquals(HasThrows.class.getConstructor().getExceptionTypes(),

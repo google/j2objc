@@ -51,7 +51,7 @@ public class MetadataGenerator {
   private int fieldMetadataCount = 0;
 
   // Metadata structure version. Increment it when any structure changes are made.
-  public static final int METADATA_VERSION = 1;
+  public static final int METADATA_VERSION = 2;
 
   public MetadataGenerator(AbstractTypeDeclaration typeNode) {
     this.builder = new StringBuilder();
@@ -77,6 +77,7 @@ public class MetadataGenerator {
     generateMethodsMetadata();
     generateFieldsMetadata();
     int superclassTypeArgsSize = printSuperclassTypeArguments();
+    int innerClassesSize = printInnerClasses();
     printf("  static const J2ObjcClassInfo _%s = { %d, ", fullName, METADATA_VERSION);
     String simpleName = type.getName();
     if (type.isAnonymous()) {
@@ -91,12 +92,14 @@ public class MetadataGenerator {
     }
     printf("%s, ", getEnclosingName());
     printf("0x%s, ", Integer.toHexString(getTypeModifiers()));
-    printf("%s, ", Integer.toString(methodMetadataCount));
+    printf("%d, ", methodMetadataCount);
     print(methodMetadataCount > 0 ? "methods, " : "NULL, ");
-    printf("%s, ", Integer.toString(fieldMetadataCount));
+    printf("%d, ", fieldMetadataCount);
     print(fieldMetadataCount > 0 ? "fields, " : "NULL, ");
-    printf("%s, ", Integer.toString(superclassTypeArgsSize));
-    printf(superclassTypeArgsSize > 0 ? "superclass_type_args" : "NULL");
+    printf("%d, ", superclassTypeArgsSize);
+    printf("%s, ", (superclassTypeArgsSize > 0 ? "superclass_type_args" : "NULL"));
+    printf("%d, ", innerClassesSize);
+    printf(innerClassesSize > 0 ? "inner_classes" : "NULL");
     println("};");
     printf("  return &_%s;\n}\n", fullName);
   }
@@ -272,6 +275,22 @@ public class MetadataGenerator {
     return typeArgs.length;
   }
 
+  private int printInnerClasses() {
+    ITypeBinding[] innerTypes = type.getDeclaredTypes();
+    if (innerTypes.length == 0) {
+      return 0;
+    }
+    print("  static const char *inner_classes[] = {");
+    for (int i = 0; i < innerTypes.length; i++) {
+      if (i != 0) {
+        print(", ");
+      }
+      printf("\"%s\"", getTypeName(innerTypes[i]));
+    }
+    println("};");
+    return innerTypes.length;
+  }
+
   private static String getTypeName(ITypeBinding type) {
     if (type.isTypeVariable()) {
       return "T" + type.getName() + ";";
@@ -289,7 +308,8 @@ public class MetadataGenerator {
   private int getTypeModifiers() {
     int modifiers = type.getModifiers();
     if (type.isInterface()) {
-      modifiers |= java.lang.reflect.Modifier.INTERFACE;
+      modifiers |= java.lang.reflect.Modifier.INTERFACE | java.lang.reflect.Modifier.ABSTRACT
+          | java.lang.reflect.Modifier.STATIC;
     }
     if (type.isSynthetic()) {
       modifiers |= BindingUtil.ACC_SYNTHETIC;
