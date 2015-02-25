@@ -27,6 +27,7 @@ import com.google.devtools.j2objc.ast.TreeNode;
 import com.google.devtools.j2objc.ast.TreeNode.Kind;
 import com.google.devtools.j2objc.ast.TreeVisitor;
 import com.google.devtools.j2objc.ast.TypeDeclaration;
+import com.google.devtools.j2objc.file.RegularInputFile;
 import com.google.devtools.j2objc.types.Types;
 import com.google.devtools.j2objc.util.BindingUtil;
 
@@ -139,9 +140,10 @@ public class OuterReferenceResolverTest extends GenerationTest {
   }
 
   private void resolveSource(String name, String source) {
-    org.eclipse.jdt.core.dom.CompilationUnit jdtUnit = compileType(name, source);
+    org.eclipse.jdt.core.dom.CompilationUnit jdtUnit = compileType(name + ".java", source);
     Types.initialize(jdtUnit);
-    CompilationUnit unit = TreeConverter.convertCompilationUnit(jdtUnit, name + ".java", source);
+    CompilationUnit unit = TreeConverter.convertCompilationUnit(
+        jdtUnit, new RegularInputFile(name + ".java"), source);
     OuterReferenceResolver.resolve(unit);
     findTypeDeclarations(unit);
   }

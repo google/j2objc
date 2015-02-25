@@ -73,11 +73,11 @@ public class ObjectiveCImplementationGenerator extends ObjectiveCSourceFileGener
    * Generate an Objective-C implementation file for each type declared in a
    * specified compilation unit.
    */
-  public static void generate(CompilationUnit unit) {
+  public static void generate(GenerationUnit unit) {
     new ObjectiveCImplementationGenerator(unit).generate();
   }
 
-  private ObjectiveCImplementationGenerator(CompilationUnit unit) {
+  private ObjectiveCImplementationGenerator(GenerationUnit unit) {
     super(unit, Options.emitLineDirectives());
     suffix = Options.getImplementationFileSuffix();
   }
@@ -89,11 +89,11 @@ public class ObjectiveCImplementationGenerator extends ObjectiveCSourceFileGener
 
   public void generate() {
     CompilationUnit unit = getUnit();
-    println(J2ObjC.getFileHeader(unit.getSourceFileFullPath()));
+    println(J2ObjC.getFileHeader(getGenerationUnit().getSourceName()));
     List<AbstractTypeDeclaration> types = unit.getTypes();
     if (!types.isEmpty()) {
       findInvokedConstructors(unit);
-      printStart(unit.getSourceFileFullPath());
+      printStart(getOutputPath());
       printImports(unit);
       printIgnoreIncompletePragmas(unit);
       pushIgnoreDeprecatedDeclarationsPragma();
@@ -116,7 +116,7 @@ public class ObjectiveCImplementationGenerator extends ObjectiveCSourceFileGener
         printf("void %s_unused() {}\n", NameTable.getFullName(types.get(0).getTypeBinding()));
       }
     }
-    save(unit);
+    save(getOutputPath());
   }
 
   private void printIgnoreIncompletePragmas(CompilationUnit unit) {

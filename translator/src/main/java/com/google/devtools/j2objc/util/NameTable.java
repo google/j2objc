@@ -24,6 +24,7 @@ import com.google.common.collect.Sets;
 import com.google.devtools.j2objc.Options;
 import com.google.devtools.j2objc.ast.CompilationUnit;
 import com.google.devtools.j2objc.ast.PackageDeclaration;
+import com.google.devtools.j2objc.file.InputFile;
 import com.google.devtools.j2objc.types.GeneratedVariableBinding;
 import com.google.devtools.j2objc.types.IOSMethodBinding;
 import com.google.devtools.j2objc.types.PointerTypeBinding;
@@ -859,25 +860,20 @@ public class NameTable {
         expectedPackageInfoPath = expectedPackageInfoPath.replace('.', File.separatorChar)
             + File.separatorChar + "package-info.java";
       }
-      for (String sourcePath : Options.getSourcePathEntries()) {
-        if (sourcePath.charAt(sourcePath.length() - 1) != File.separatorChar) {
-          sourcePath += File.separator;
+      InputFile file = FileUtil.findOnSourcePath(expectedPackageInfoPath);
+      if (file != null) {
+        String pkgInfo = FileUtil.readFile(file);
+        int i = pkgInfo.indexOf("@ObjectiveCName");
+        if (i == -1) {
+          i = pkgInfo.indexOf("@com.google.j2objc.annotations.ObjectiveCName");
         }
-        String packageInfoURL = sourcePath + expectedPackageInfoPath;
-        if (FileUtil.exists(packageInfoURL)) {
-          String pkgInfo = FileUtil.readSource(packageInfoURL);
-          int i = pkgInfo.indexOf("@ObjectiveCName");
-          if (i == -1) {
-            i = pkgInfo.indexOf("@com.google.j2objc.annotations.ObjectiveCName");
-          }
+        if (i > -1) {
+          // Extract annotation's value string.
+          i = pkgInfo.indexOf('"', i + 1);
           if (i > -1) {
-            // Extract annotation's value string.
-            i = pkgInfo.indexOf('"', i + 1);
-            if (i > -1) {
-              int j = pkgInfo.indexOf('"', i + 1);
-              if (j > -1) {
-                return pkgInfo.substring(i + 1, j);
-              }
+            int j = pkgInfo.indexOf('"', i + 1);
+            if (j > -1) {
+              return pkgInfo.substring(i + 1, j);
             }
           }
         }

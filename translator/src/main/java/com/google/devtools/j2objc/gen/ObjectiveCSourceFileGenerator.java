@@ -24,7 +24,6 @@ import com.google.devtools.j2objc.ast.AbstractTypeDeclaration;
 import com.google.devtools.j2objc.ast.Annotation;
 import com.google.devtools.j2objc.ast.AnnotationTypeDeclaration;
 import com.google.devtools.j2objc.ast.BodyDeclaration;
-import com.google.devtools.j2objc.ast.CompilationUnit;
 import com.google.devtools.j2objc.ast.EnumDeclaration;
 import com.google.devtools.j2objc.ast.FieldDeclaration;
 import com.google.devtools.j2objc.ast.FunctionDeclaration;
@@ -68,7 +67,7 @@ public abstract class ObjectiveCSourceFileGenerator extends SourceFileGenerator 
    * @param unit The AST of the source to generate
    * @param emitLineDirectives if true, generate CPP line directives
    */
-  protected ObjectiveCSourceFileGenerator(CompilationUnit unit, boolean emitLineDirectives) {
+  protected ObjectiveCSourceFileGenerator(GenerationUnit unit, boolean emitLineDirectives) {
     super(unit, emitLineDirectives);
   }
 
@@ -90,10 +89,6 @@ public abstract class ObjectiveCSourceFileGenerator extends SourceFileGenerator 
   protected abstract void generate(EnumDeclaration node);
 
   protected abstract void generate(AnnotationTypeDeclaration node);
-
-  public void save(CompilationUnit node) {
-    save(getOutputFileName(node));
-  }
 
   private static final Function<VariableDeclaration, IVariableBinding> GET_VARIABLE_BINDING_FUNC =
       new Function<VariableDeclaration, IVariableBinding>() {
@@ -379,15 +374,6 @@ public abstract class ObjectiveCSourceFileGenerator extends SourceFileGenerator 
 
   private String escapeDocText(String text) {
     return text.replace("@", "@@").replace("/*", "/\\*");
-  }
-
-  @Override
-  protected String getOutputFileName(CompilationUnit node) {
-    String result = super.getOutputFileName(node);
-    if (node.getMainTypeName().equals(NameTable.PACKAGE_INFO_MAIN_TYPE)) {
-      return result.replace(NameTable.PACKAGE_INFO_MAIN_TYPE, NameTable.PACKAGE_INFO_FILE_NAME);
-    }
-    return result;
   }
 
   /**
