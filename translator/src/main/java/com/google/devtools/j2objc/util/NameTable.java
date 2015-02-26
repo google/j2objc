@@ -286,7 +286,9 @@ public class NameTable {
 
   public static void cleanup() {
     try {
-      instance.classLoader.close();
+      if (instance != null) {
+        instance.classLoader.close();
+      }
     } catch (IOException e) {
       // Ignore, any open files will be closed on exit.
     }

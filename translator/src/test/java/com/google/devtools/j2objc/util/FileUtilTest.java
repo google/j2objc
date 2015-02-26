@@ -19,8 +19,6 @@ import com.google.devtools.j2objc.file.JarredInputFile;
 
 import java.io.File;
 import java.io.IOException;
-import java.net.URISyntaxException;
-import java.net.URL;
 
 /**
  * Unit tests for {@link FileUtil}.
@@ -32,10 +30,8 @@ public class FileUtilTest extends GenerationTest {
   // Verify that source can be read from a jar file. Reading from
   // files doesn't need testing, since j2objc itself can't build
   // without being able to do so.
-  public void testReadJarSource() throws IOException, URISyntaxException {
-    URL jarURL = getClass().getResource("example.jar");
-    assertNotNull("example.jar test resource not found", jarURL);
-    File file = new File(jarURL.toURI());
+  public void testReadJarSource() throws IOException {
+    File file = new File(getResourceAsFile("example.jar"));
     JarredInputFile jarEntry = new JarredInputFile(
         file.getPath(), "com/google/test/package-info.java");
     String source = FileUtil.readFile(jarEntry);
@@ -43,10 +39,8 @@ public class FileUtilTest extends GenerationTest {
   }
 
   // Verify that source exists in a jar file.
-  public void testJarSourceExists() throws IOException, URISyntaxException {
-    URL jarURL = getClass().getResource("example.jar");
-    assertNotNull("example.jar test resource not found", jarURL);
-    File file = new File(jarURL.toURI());
+  public void testJarSourceExists() throws IOException {
+    File file = new File(getResourceAsFile("example.jar"));
     JarredInputFile jarEntry = new JarredInputFile(
         file.getPath(), "com/google/test/package-info.java");
     assertTrue(jarEntry.exists());
