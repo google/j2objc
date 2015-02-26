@@ -419,7 +419,7 @@ class TranslationProcessor extends FileProcessor {
   static String getOutputFileName(InputFile file, CompilationUnit node) {
     String result;
     if (Options.useSourceDirectories()) {
-      result = file.getUnitName();
+      result = file.getUnitName().replace(".java", "");
     } else {
       PackageDeclaration pkg = node.getPackage();
       if (Options.usePackageDirectories() && !pkg.isDefaultPackage()) {
