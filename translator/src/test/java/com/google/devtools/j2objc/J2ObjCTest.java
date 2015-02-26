@@ -138,4 +138,14 @@ public class J2ObjCTest extends GenerationTest {
     J2ObjC.run(Arrays.asList(exampleJavaPath, packageInfoPath));
     makeAssertionsForJavaFiles();
   }
+
+  public void testSourceDirsOption() throws Exception {
+    Options.setPackageDirectories(Options.OutputStyleOption.SOURCE);
+    J2ObjC.run(Arrays.asList(exampleJavaPath, packageInfoPath));
+    String example_h = getTranslatedFile(exampleJavaPath.replace(".java", ".h"));
+    String example_m = getTranslatedFile(exampleJavaPath.replace(".java", ".m"));
+    String package_info_h = getTranslatedFile(packageInfoPath.replace(".java", ".h"));
+    String package_info_m = getTranslatedFile(packageInfoPath.replace(".java", ".m"));
+    makeAssertions(example_h, example_m, package_info_h, package_info_m);
+  }
 }

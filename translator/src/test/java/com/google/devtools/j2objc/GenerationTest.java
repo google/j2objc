@@ -400,7 +400,7 @@ public abstract class GenerationTest extends TestCase {
     }
     File file = new File(tempDir + "/resources/"
         + getClass().getPackage().getName().replace('.', File.separatorChar)
-        + resourceName);
+        + File.separatorChar + resourceName);
     file.getParentFile().mkdirs();
     OutputStream ostream = new FileOutputStream(file);
     Resources.copy(url, ostream);
