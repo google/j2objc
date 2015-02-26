@@ -14,7 +14,6 @@
 package com.google.devtools.j2objc.util;
 
 import com.google.common.io.CharStreams;
-import com.google.common.io.Files;
 import com.google.devtools.j2objc.J2ObjC;
 import com.google.devtools.j2objc.Options;
 import com.google.devtools.j2objc.file.JarredInputFile;

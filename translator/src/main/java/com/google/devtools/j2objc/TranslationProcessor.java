@@ -145,7 +145,7 @@ class TranslationProcessor extends FileProcessor {
 
     if (ErrorUtil.errorCount() > 0) {
       // True if any classpath entry is malformed, or batch compilation failed.
-      System.exit(ErrorUtil.errorCount());
+      return;
     }
 
     super.processFiles(files);

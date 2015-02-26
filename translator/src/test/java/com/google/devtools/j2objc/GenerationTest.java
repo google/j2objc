@@ -19,6 +19,7 @@ package com.google.devtools.j2objc;
 import com.google.common.base.Joiner;
 import com.google.common.collect.Lists;
 import com.google.common.io.Files;
+import com.google.common.io.Resources;
 import com.google.devtools.j2objc.ast.CompilationUnit;
 import com.google.devtools.j2objc.ast.MethodDeclaration;
 import com.google.devtools.j2objc.ast.Statement;
@@ -40,9 +41,12 @@ import junit.framework.TestCase;
 
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.io.StringReader;
 import java.io.UnsupportedEncodingException;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.net.URLDecoder;
@@ -378,6 +382,29 @@ public abstract class GenerationTest extends TestCase {
     File f = new File(tempDir, fileName);
     assertTrue(fileName + " not generated", f.exists());
     return Files.toString(f, Charset.defaultCharset());
+  }
+
+  /**
+   * When running Java tests in a build, there is no formal guarantee that these resources
+   * be available as filesystem files. This copies a resource to a file in the temp dir,
+   * and returns the new path.
+   * The given resource name is relative to the class to which this method belongs
+   * (which might be a subclass of GenerationTest, in a different package).
+   */
+  public String getResourceAsFile(String resourceName) throws IOException {
+    URL url;
+    try {
+      url = getClass().getResource(resourceName).toURI().toURL();
+    } catch (URISyntaxException e) {
+      throw new IOException(e);
+    }
+    File file = new File(tempDir + "/resources/"
+        + getClass().getPackage().getName().replace('.', File.separatorChar)
+        + resourceName);
+    file.getParentFile().mkdirs();
+    OutputStream ostream = new FileOutputStream(file);
+    Resources.copy(url, ostream);
+    return file.getPath();
   }
 
   /**
