@@ -207,7 +207,7 @@ public class Options {
         if (++nArg == args.length) {
           usage("--mapping requires an argument");
         }
-        addMappingsFile(args[nArg]);
+        addMappingsFiles(args[nArg].split(","));
       } else if (arg.equals("--header-mapping")) {
         if (++nArg == args.length) {
           usage("--header-mapping requires an argument");
@@ -376,8 +376,12 @@ public class Options {
     }
   }
 
-  private static void addMappingsFile(String filename) throws IOException {
-    addMappingsProperties(FileUtil.loadProperties(filename));
+  private static void addMappingsFiles(String[] filenames) throws IOException {
+    for (String filename : filenames) {
+      if (!filename.isEmpty()) {
+        addMappingsProperties(FileUtil.loadProperties(filename));
+      }
+    }
   }
 
   private static void addJreMappings() throws IOException {
