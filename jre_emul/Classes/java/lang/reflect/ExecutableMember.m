@@ -229,6 +229,19 @@ static IOSClass *ResolveParameterType(const char *objcType, NSString *paramKeywo
   return methodSignature_;
 }
 
+// isEqual and hash are uniquely identified by their class and selectors.
+- (BOOL)isEqual:(id)anObject {
+  if (![anObject isKindOfClass:[ExecutableMember class]]) {
+    return NO;
+  }
+  ExecutableMember *other = (ExecutableMember *) anObject;
+  return class_ == other->class_ && sel_isEqual(selector_, other->selector_);
+}
+
+- (NSUInteger)hash {
+  return [[class_ getName] hash] ^ [NSStringFromSelector(selector_) hash];
+}
+
 #if ! __has_feature(objc_arc)
 - (void)dealloc {
   [methodSignature_ release];

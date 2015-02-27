@@ -75,25 +75,24 @@ public final class AnnotationsTest extends TestCase {
                 annotationsToTypes(parameterAnnotations[1]));
     }
 
-    // TODO(tball): implement annotation defaults.
-//    public void testAnnotationDefaults() throws Exception {
-//        assertEquals((byte) 5, defaultValue("a"));
-//        assertEquals((short) 6, defaultValue("b"));
-//        assertEquals(7, defaultValue("c"));
-//        assertEquals(8L, defaultValue("d"));
-//        assertEquals(9.0f, defaultValue("e"));
-//        assertEquals(10.0, defaultValue("f"));
-//        assertEquals('k', defaultValue("g"));
-//        assertEquals(true, defaultValue("h"));
-//        assertEquals(Breakfast.WAFFLES, defaultValue("i"));
-//        assertEquals("@" + AnnotationA.class.getName() + "()", defaultValue("j").toString());
-//        assertEquals("maple", defaultValue("k"));
-//        assertEquals(AnnotationB.class, defaultValue("l"));
-//        assertEquals("[1, 2, 3]", Arrays.toString((int[]) defaultValue("m")));
-//        assertEquals("[WAFFLES, PANCAKES]", Arrays.toString((Breakfast[]) defaultValue("n")));
-//        assertEquals(null, defaultValue("o"));
-//        assertEquals(null, defaultValue("p"));
-//    }
+    public void testAnnotationDefaults() throws Exception {
+        assertEquals((byte) 5, defaultValue("a"));
+        assertEquals((short) 6, defaultValue("b"));
+        assertEquals(7, defaultValue("c"));
+        assertEquals(8L, defaultValue("d"));
+        assertEquals(9.0f, defaultValue("e"));
+        assertEquals(10.0, defaultValue("f"));
+        assertEquals('k', defaultValue("g"));
+        assertEquals(true, defaultValue("h"));
+        assertEquals(Breakfast.WAFFLES, defaultValue("i"));
+        assertEquals("@" + AnnotationA.class.getName() + "()", defaultValue("j").toString());
+        assertEquals("maple", defaultValue("k"));
+        assertEquals(AnnotationB.class, defaultValue("l"));
+        assertEquals("[1, 2, 3]", Arrays.toString((int[]) defaultValue("m")));
+        assertEquals("[WAFFLES, PANCAKES]", Arrays.toString((Breakfast[]) defaultValue("n")));
+        assertEquals(null, defaultValue("o"));
+        assertEquals(null, defaultValue("p"));
+    }
 
     private Object defaultValue(String name) throws NoSuchMethodException {
         return HasDefaultsAnnotation.class.getMethod(name).getDefaultValue();
@@ -121,11 +120,10 @@ public final class AnnotationsTest extends TestCase {
         assertEquals(AnnotationsTest.class, C.class.getEnclosingClass());
     }
 
-    // TODO(tball): implement Class.getEnclosingMethod().
-//    public void testGetDeclaringClassIsNotTransitiveForClassesDefinedInAMethod() {
-//        class C {}
-//        assertEquals(null, C.class.getDeclaringClass());
-//    }
+    public void testGetDeclaringClassIsNotTransitiveForClassesDefinedInAMethod() {
+        class C {}
+        assertEquals(null, C.class.getDeclaringClass());
+    }
 
     public void testGetEnclosingMethodIsNotTransitive() {
         class C {
@@ -154,26 +152,24 @@ public final class AnnotationsTest extends TestCase {
         assertNull(AnnotationsTest.class.getEnclosingConstructor());
     }
 
-    // TODO(tball): implement Class.getEnclosingMethod().
-//    public void testClassEnclosedByConstructor() throws Exception {
-//        Foo foo = new Foo("string");
-//        assertEquals(Foo.class, foo.c.getEnclosingClass());
-//        assertEquals(Foo.class.getDeclaredConstructor(String.class),
-//                foo.c.getEnclosingConstructor());
-//        assertNull(foo.c.getEnclosingMethod());
-//        assertNull(foo.c.getDeclaringClass());
-//    }
+    public void testClassEnclosedByConstructor() throws Exception {
+        Foo foo = new Foo("string");
+        assertEquals(Foo.class, foo.c.getEnclosingClass());
+        assertEquals(Foo.class.getDeclaredConstructor(String.class),
+                foo.c.getEnclosingConstructor());
+        assertNull(foo.c.getEnclosingMethod());
+        assertNull(foo.c.getDeclaringClass());
+    }
 
-    // TODO(tball): implement Class.getEnclosingMethod().
-//    public void testClassEnclosedByMethod() throws Exception {
-//        Foo foo = new Foo();
-//        foo.foo("string");
-//        assertEquals(Foo.class, foo.c.getEnclosingClass());
-//        assertNull(foo.c.getEnclosingConstructor());
-//        assertEquals(Foo.class.getDeclaredMethod("foo", String.class),
-//                foo.c.getEnclosingMethod());
-//        assertNull(foo.c.getDeclaringClass());
-//    }
+    public void testClassEnclosedByMethod() throws Exception {
+        Foo foo = new Foo();
+        foo.foo("string");
+        assertEquals(Foo.class, foo.c.getEnclosingClass());
+        assertNull(foo.c.getEnclosingConstructor());
+        assertEquals(Foo.class.getDeclaredMethod("foo", String.class),
+                foo.c.getEnclosingMethod());
+        assertNull(foo.c.getDeclaringClass());
+    }
 
     public void testGetClasses() throws Exception {
         // getClasses() doesn't include classes inherited from interfaces!

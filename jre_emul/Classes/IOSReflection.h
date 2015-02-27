@@ -79,6 +79,11 @@ typedef struct J2ObjcFieldInfo {
   const char *genericSignature;
 } J2ObjcFieldInfo;
 
+typedef struct J2ObjCEnclosingMethodInfo {
+  const char *typeName;
+  const char *selector;
+} J2ObjCEnclosingMethodInfo;
+
 typedef struct J2ObjcClassInfo {
   const unsigned version;
   const char *typeName;
@@ -93,6 +98,7 @@ typedef struct J2ObjcClassInfo {
   const char **superclassTypeArgs;
   uint16_t innerClassCount;
   const char **innerClassnames;
+  const J2ObjCEnclosingMethodInfo *enclosingMethod;
   const char *genericSignature;
 } J2ObjcClassInfo;
 

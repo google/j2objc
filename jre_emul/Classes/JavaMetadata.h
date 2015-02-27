@@ -49,6 +49,15 @@
 
 @end
 
+@interface JavaEnclosingMethodMetadata : NSObject
+
+@property (readonly, retain) NSString *typeName;
+@property (readonly, retain) NSString *selector;
+
+- (instancetype)initWithMetadata:(const J2ObjCEnclosingMethodInfo *)metadata;
+
+@end
+
 @interface JavaClassMetadata : NSObject
 
 @property (readonly, assign) uint16_t version;
@@ -70,5 +79,6 @@
 - (IOSObjectArray *)allFields;
 - (IOSObjectArray *)getSuperclassTypeArguments;
 - (IOSObjectArray *)getInnerClasses;
+- (JavaEnclosingMethodMetadata *)getEnclosingMethod;
 
 @end

@@ -14,6 +14,7 @@ package_group(
         "//java/com/google/api/client/util/...",
         "//java/com/google/apps/bigtop/sync/client/dataglue/...",
         "//java/com/google/apps/docs/docos/client/mobile/...",
+        "//java/com/google/apps/docs/gwt/math/...",
     ],
 )
 

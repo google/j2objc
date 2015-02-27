@@ -78,6 +78,7 @@ public class MetadataGenerator {
     generateFieldsMetadata();
     int superclassTypeArgsSize = printSuperclassTypeArguments();
     int innerClassesSize = printInnerClasses();
+    String enclosingMethodStruct = printEnclosingMethodMetadata();
     printf("  static const J2ObjcClassInfo _%s = { %d, ", fullName, METADATA_VERSION);
     String simpleName = type.getName();
     if (type.isAnonymous()) {
@@ -99,9 +100,36 @@ public class MetadataGenerator {
     printf("%d, ", superclassTypeArgsSize);
     printf("%s, ", (superclassTypeArgsSize > 0 ? "superclass_type_args" : "NULL"));
     printf("%d, ", innerClassesSize);
-    printf(innerClassesSize > 0 ? "inner_classes" : "NULL");
-    println("};");
+    printf("%s, ", (innerClassesSize > 0 ? "inner_classes" : "NULL"));
+    if (enclosingMethodStruct != null) {
+      printf("&%s", enclosingMethodStruct);
+    } else {
+      print("NULL");
+    }
+    println(" };");
     printf("  return &_%s;\n}\n", fullName);
+  }
+
+  /**
+   * Prints enclosing method metadata, returns struct's name.
+   */
+  private String printEnclosingMethodMetadata() {
+    IMethodBinding enclosingMethod = type.getDeclaringMethod();
+    if (enclosingMethod == null) {
+      return null;
+    }
+
+    // Method isn't enclosing if this type is defined in a type also enclosed
+    // by this method.
+    if (enclosingMethod.isEqualTo(type.getDeclaringClass().getDeclaringMethod())) {
+      return null;
+    }
+
+    String structName = "enclosing_method";
+    printf("  static const J2ObjCEnclosingMethodInfo %s = { ", structName);
+    printf("\"%s\", ", NameTable.getFullName(enclosingMethod.getDeclaringClass()));
+    printf("\"%s\" };\n", NameTable.getMethodSelector(enclosingMethod));
+    return structName;
   }
 
   private String getEnclosingName() {

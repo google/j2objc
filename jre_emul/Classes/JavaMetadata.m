@@ -22,6 +22,9 @@
 #import "IOSClass.h"
 #import "IOSObjectArray.h"
 #import "IOSReflection.h"
+#import "java/lang/AssertionError.h"
+#import "java/lang/Exception.h"
+#import "java/lang/reflect/ExecutableMember.h"
 
 @implementation JavaClassMetadata {
   J2ObjcClassInfo *data_;
@@ -189,6 +192,14 @@ static jint countArgs(char *s) {
   return result;
 }
 
+- (JavaEnclosingMethodMetadata *)getEnclosingMethod {
+  if (J2OBJC_METADATA_VERSION < 2 || !data_->enclosingMethod) {
+    return nil;
+  }
+  return [[[JavaEnclosingMethodMetadata alloc]
+           initWithMetadata:data_->enclosingMethod] autorelease];
+}
+
 - (NSString *)description {
   return [NSString stringWithFormat:@"{ typeName=%@ packageName=%@ modifiers=0x%x }",
           typeName, packageName, modifiers];
@@ -307,5 +318,30 @@ static jint countArgs(char *s) {
   const char *name = data_->javaName ? data_->javaName : data_->selector;
   return strcmp(name, "init") == 0 || strstr(name, "initWith") == name;
 }
+
+@end
+
+@implementation JavaEnclosingMethodMetadata
+
+@synthesize typeName;
+@synthesize selector;
+
+- (instancetype)initWithMetadata:(const J2ObjCEnclosingMethodInfo *)metadata {
+  if (self = [super init]) {
+    typeName = [[NSString alloc] initWithCString:metadata->typeName
+                                        encoding:NSUTF8StringEncoding];
+    selector = [[NSString alloc] initWithCString:metadata->selector
+                                        encoding:NSUTF8StringEncoding];
+  }
+  return self;
+}
+
+#if ! __has_feature(objc_arc)
+- (void)dealloc {
+  [typeName release];
+  [selector release];
+  [super dealloc];
+}
+#endif
 
 @end

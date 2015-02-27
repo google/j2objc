@@ -143,7 +143,7 @@ static JavaUtilProperties *prefixMapping;
 }
 
 - (IOSClass *)getDeclaringClass {
-  if ([self isPrimitive] || [self isArray] || [self isAnonymousClass]) {
+  if ([self isPrimitive] || [self isArray] || [self isAnonymousClass] || [self isLocalClass]) {
     // Class.getDeclaringClass() javadoc, JVM spec 4.7.6.
     return nil;
   }
@@ -268,6 +268,10 @@ static JavaUtilProperties *prefixMapping;
   return nil; // Overriden by subclasses.
 }
 
+- (JavaLangReflectConstructor *)findConstructorWithTranslatedName:(NSString *)objcName {
+  return nil; // Overriden by subclasses.
+}
+
 static NSString *Capitalize(NSString *s) {
   if ([s length] == 0) {
     return s;
@@ -286,7 +290,7 @@ static NSString *GetParameterKeyword(IOSClass *paramType) {
   return Capitalize([paramType objcName]);
 }
 
-// Return a method name as it would be modified during j2objc translation.
+// Return a method's selector as it would be created during j2objc translation.
 // The format is "name" with no parameters, "nameWithType:" for one parameter,
 // and "nameWithType:withType:..." for multiple parameters.
 NSString *IOSClass_GetTranslatedMethodName(IOSClass *cls, NSString *name,
@@ -842,12 +846,42 @@ IOSObjectArray *copyFieldsToObjectArray(NSArray *fields) {
   return copyFieldsToObjectArray([fieldDictionary allValues]);
 }
 
-- (JavaLangReflectMethod *)getEnclosingMethod {
-  return nil;  // Classes aren't enclosed in Objective-C.
+static BOOL IsConstructorSelector(NSString *selector) {
+  return [selector isEqualToString:@"init"] || [selector hasPrefix:@"initWith"];
 }
 
-- (JavaLangReflectMethod *)getEnclosingConstructor {
-  return nil;  // Classes aren't enclosed in Objective-C.
+- (JavaLangReflectMethod *)getEnclosingMethod {
+  JavaEnclosingMethodMetadata *metadata = [[self getMetadata] getEnclosingMethod];
+  if (metadata) {
+    if (IsConstructorSelector(metadata.selector)) {
+      return nil;
+    }
+    IOSClass *type = ClassForIosName(metadata.typeName);
+    if (!type) {
+      // Should always succeed, since the method's class should be defined in
+      // the same object file as the enclosed class.
+      @throw AUTORELEASE([[JavaLangAssertionError alloc] init]);
+    }
+    return [type findMethodWithTranslatedName:metadata.selector];
+  }
+  return nil;
+}
+
+- (JavaLangReflectConstructor *)getEnclosingConstructor {
+  JavaEnclosingMethodMetadata *metadata = [[self getMetadata] getEnclosingMethod];
+  if (metadata) {
+    if (!IsConstructorSelector(metadata.selector)) {
+      return nil;
+    }
+    IOSClass *type = ClassForIosName(metadata.typeName);
+    if (!type) {
+      // Should always succeed, since the method's class should be defined in
+      // the same object file as the enclosed class.
+      @throw AUTORELEASE([[JavaLangAssertionError alloc] init]);
+    }
+    return [type findConstructorWithTranslatedName:metadata.selector];
+  }
+  return nil;
 }
 
 
