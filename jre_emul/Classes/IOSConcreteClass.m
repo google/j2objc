@@ -268,8 +268,7 @@ IOSObjectArray *getConstructorsImpl(IOSConcreteClass *clazz, BOOL publicOnly) {
 }
 
 static JavaLangReflectConstructor *GetConstructorImpl(
-    IOSConcreteClass *iosClass, IOSObjectArray *paramTypes) {
-  NSString *name = IOSClass_GetTranslatedMethodName(nil, @"init", paramTypes);
+    IOSConcreteClass *iosClass, NSString *name) {
   Method method = JreFindInstanceMethod(iosClass->class_, [name UTF8String]);
   if (method) {
     NSMethodSignature *signature = JreSignatureOrNull(method_getDescription(method));
@@ -286,7 +285,8 @@ static JavaLangReflectConstructor *GetConstructorImpl(
 }
 
 - (JavaLangReflectConstructor *)getConstructor:(IOSObjectArray *)parameterTypes {
-  JavaLangReflectConstructor *c = GetConstructorImpl(self, parameterTypes);
+  JavaLangReflectConstructor *c =
+      GetConstructorImpl(self, IOSClass_GetTranslatedMethodName(nil, @"init", parameterTypes));
   if (([c getModifiers] & JavaLangReflectModifier_PUBLIC) > 0) {
     return c;
   }
@@ -294,7 +294,12 @@ static JavaLangReflectConstructor *GetConstructorImpl(
 }
 
 - (JavaLangReflectConstructor *)getDeclaredConstructor:(IOSObjectArray *)parameterTypes {
-  return GetConstructorImpl(self, parameterTypes);
+  return
+      GetConstructorImpl(self, IOSClass_GetTranslatedMethodName(nil, @"init", parameterTypes));
+}
+
+- (JavaLangReflectConstructor *)findConstructorWithTranslatedName:(NSString *)selector {
+  return GetConstructorImpl(self, selector);
 }
 
 - (IOSObjectArray *)getInterfacesInternal {

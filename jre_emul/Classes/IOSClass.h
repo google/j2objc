@@ -163,7 +163,7 @@
 - (JavaLangReflectField *)getField:(NSString *)name;
 - (IOSObjectArray *)getFields;
 
-- (JavaLangReflectMethod *)getEnclosingConstructor;
+- (JavaLangReflectConstructor *)getEnclosingConstructor;
 - (JavaLangReflectMethod *)getEnclosingMethod;
 - (BOOL)isAnonymousClass;
 
@@ -192,6 +192,7 @@
 - (void)collectMethods:(NSMutableDictionary *)methodMap
             publicOnly:(BOOL)publicOnly;
 - (JavaLangReflectMethod *)findMethodWithTranslatedName:(NSString *)objcName;
+- (JavaLangReflectConstructor *)findConstructorWithTranslatedName:(NSString *)objcName;
 // Same as getInterfaces, but not a defensive copy.
 - (IOSObjectArray *)getInterfacesInternal;
 - (JavaClassMetadata *)getMetadata;
