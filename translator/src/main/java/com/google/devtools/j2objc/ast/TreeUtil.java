@@ -26,6 +26,7 @@ import org.eclipse.jdt.core.dom.ITypeBinding;
 import org.eclipse.jdt.core.dom.IVariableBinding;
 
 import java.io.File;
+import java.util.AbstractList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Iterator;
@@ -263,10 +264,52 @@ public class TreeUtil {
         }
       }
     }
-    Block block = new Block();
-    node.replaceWith(block);
-    block.getStatements().add(node);
-    return block.getStatements();
+    return new LonelyStatementList(node);
+  }
+
+  /**
+   * This list wraps a single statement, and inserts a block node in its place
+   * upon adding additional nodes.
+   */
+  private static class LonelyStatementList extends AbstractList<Statement> {
+
+    private final Statement lonelyStatement;
+    private List<Statement> delegate = null;
+
+    public LonelyStatementList(Statement stmt) {
+      lonelyStatement = stmt;
+    }
+
+    private List<Statement> getDelegate() {
+      if (delegate == null) {
+        Block block = new Block();
+        lonelyStatement.replaceWith(block);
+        delegate = block.getStatements();
+        delegate.add(lonelyStatement);
+      }
+      return delegate;
+    }
+
+    public Statement get(int idx) {
+      if (delegate != null) {
+        return delegate.get(idx);
+      }
+      if (idx != 0) {
+        throw new IndexOutOfBoundsException();
+      }
+      return lonelyStatement;
+    }
+
+    public int size() {
+      if (delegate != null) {
+        return delegate.size();
+      }
+      return 1;
+    }
+
+    public void add(int idx, Statement stmt) {
+      getDelegate().add(idx, stmt);
+    }
   }
 
   public static void insertAfter(Statement node, Statement toInsert) {
