@@ -17,3 +17,7 @@ Finalizable references are excluded:
 - com.google.common.base.FinalizablePhantomReference
 - com.google.common.base.FinalizableReferenceQueue
 - com.google.common.base.internal.Finalizer
+
+Updates Stopwatch to rev 957450e1f7f476718d7d13e7723baa325267c763, found at:
+
+https://www.google.com/url?sa=D&q=https%3A%2F%2Fraw.githubusercontent.com%2Fgoogle%2Fguava%2F957450e1f7f476718d7d13e7723baa325267c763%2Fguava%2Fsrc%2Fcom%2Fgoogle%2Fcommon%2Fbase%2FStopwatch.java
