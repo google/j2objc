@@ -93,7 +93,7 @@ public class ObjectiveCImplementationGenerator extends ObjectiveCSourceFileGener
     List<AbstractTypeDeclaration> types = unit.getTypes();
     if (!types.isEmpty()) {
       findInvokedConstructors(unit);
-      printStart(getOutputPath());
+      printStart(getGenerationUnit().getSourceName());
       printImports(unit);
       printIgnoreIncompletePragmas(unit);
       pushIgnoreDeprecatedDeclarationsPragma();
