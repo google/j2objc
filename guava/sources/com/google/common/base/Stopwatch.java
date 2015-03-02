@@ -133,7 +133,7 @@ public final class Stopwatch {
    * @deprecated Use {@link Stopwatch#createUnstarted()} instead.
    */
   @Deprecated
-  Stopwatch() {
+  public Stopwatch() {
     this(Ticker.systemTicker());
   }
 
@@ -144,7 +144,7 @@ public final class Stopwatch {
    * @deprecated Use {@link Stopwatch#createUnstarted(Ticker)} instead.
    */
   @Deprecated
-  Stopwatch(Ticker ticker) {
+  public Stopwatch(Ticker ticker) {
     this.ticker = checkNotNull(ticker, "ticker");
   }
 
