@@ -75,7 +75,7 @@ public class Options {
   private static boolean jsniWarnings = true;
   private static boolean buildClosure = false;
   private static boolean stripReflection = false;
-  private static boolean extractUnsequencedModifications = false;
+  private static boolean extractUnsequencedModifications = true;
   private static boolean docCommentsEnabled = false;
   private static boolean finalMethodsAsFunctions = true;
   private static boolean removeClassMethods = false;
@@ -299,6 +299,8 @@ public class Options {
         buildClosure = true;
       } else if (arg.equals("--extract-unsequenced")) {
         extractUnsequencedModifications = true;
+      } else if (arg.equals("--no-extract-unsequenced")) {
+        extractUnsequencedModifications = false;
       } else if (arg.equals("--doc-comments")) {
         docCommentsEnabled = true;
       } else if (arg.startsWith(BATCH_PROCESSING_MAX_FLAG)) {
