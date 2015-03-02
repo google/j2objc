@@ -1018,6 +1018,13 @@ JAVA_SOURCES = \
 	libcore/net/url/FileHandler.java \
 	libcore/net/url/FileURLConnection.java \
 	libcore/net/url/UrlUtils.java \
+	libcore/reflect/GenericArrayTypeImpl.java \
+	libcore/reflect/GenericSignatureParser.java \
+	libcore/reflect/ListOfTypes.java \
+	libcore/reflect/ListOfVariables.java \
+	libcore/reflect/ParameterizedTypeImpl.java \
+	libcore/reflect/TypeVariableImpl.java \
+	libcore/reflect/WildcardTypeImpl.java \
 	libcore/util/BasicLruCache.java \
 	libcore/util/EmptyArray.java \
 	libcore/util/MutableInt.java \
