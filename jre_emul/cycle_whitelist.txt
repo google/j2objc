@@ -21,6 +21,12 @@ FIELD java.util.logging.Logger.children
 # This thread field is cleared when the thread finishes, regardless of any exceptions.
 FIELD java.lang.Thread.interruptActions
 
+# libcore.reflect false positives.
+FIELD libcore.reflect.ParameterizedTypeImpl.args
+FIELD libcore.reflect.TypeVariableImpl.bounds
+FIELD libcore.reflect.WildcardTypeImpl.extendsBound
+FIELD libcore.reflect.WildcardTypeImpl.superBound
+
 # These types are adapters of each other. If the cycle was created then a stack
 # overflow would be a larger problem then the memory leak.
 FIELD org.xml.sax.helpers.ParserAdapter.contentHandler org.xml.sax.helpers.XMLReaderAdapter
