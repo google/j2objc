@@ -16,8 +16,7 @@
 
 package libcore.reflect;
 
-import com.google.j2objc.annotations.Weak;
-
+import java.lang.reflect.AccessibleObject;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.GenericDeclaration;
 import java.lang.reflect.Method;
@@ -30,8 +29,6 @@ public final class TypeVariableImpl<D extends GenericDeclaration> implements Typ
     private final GenericDeclaration declOfVarUser;
     private final String name;
     private D genericDeclaration;
-
-    @Weak
     private ListOfTypes bounds;
 
     @Override
