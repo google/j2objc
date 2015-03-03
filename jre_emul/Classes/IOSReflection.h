@@ -75,8 +75,8 @@ typedef struct J2ObjcFieldInfo {
   uint16_t modifiers;
   const char *type;
   const void *staticRef;
-  J2ObjcRawValue constantValue;
   const char *genericSignature;
+  J2ObjcRawValue constantValue;
 } J2ObjcFieldInfo;
 
 typedef struct J2ObjCEnclosingMethodInfo {

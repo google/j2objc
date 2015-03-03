@@ -102,10 +102,11 @@ public class MetadataGenerator {
     printf("%d, ", innerClassesSize);
     printf("%s, ", (innerClassesSize > 0 ? "inner_classes" : "NULL"));
     if (enclosingMethodStruct != null) {
-      printf("&%s", enclosingMethodStruct);
+      printf("&%s, ", enclosingMethodStruct);
     } else {
-      print("NULL");
+      print("NULL, ");
     }
+    print(cStr(SignatureGenerator.createClassSignature(type)));
     println(" };");
     printf("  return &_%s;\n}\n", fullName);
   }
@@ -167,16 +168,14 @@ public class MetadataGenerator {
            TreeUtil.getAnnotationMembers((AnnotationTypeDeclaration) typeNode)) {
         String name = decl.getName().getIdentifier();
         String returnType = getTypeName(decl.getMethodBinding().getReturnType());
-        String metadata = String.format("    { \"%s\", %s, %s, 0x%x, %s },\n",
+        String metadata = String.format("    { \"%s\", %s, %s, 0x%x, NULL, NULL },\n",
             name, cStr(name), cStr(returnType),
-            java.lang.reflect.Modifier.PUBLIC | java.lang.reflect.Modifier.ABSTRACT,
-            cStr(null));
+            java.lang.reflect.Modifier.PUBLIC | java.lang.reflect.Modifier.ABSTRACT);
         methodMetadata.add(metadata);
-        metadata = String.format("    { \"%s\", %s, %s, 0x%x, %s },\n",
+        metadata = String.format("    { \"%s\", %s, %s, 0x%x, NULL, NULL },\n",
             name + "Default", cStr(name), cStr(returnType),
             java.lang.reflect.Modifier.PRIVATE | java.lang.reflect.Modifier.STATIC
-                | BindingUtil.ACC_SYNTHETIC,
-            cStr(null));
+                | BindingUtil.ACC_SYNTHETIC);
         methodMetadata.add(metadata);
       }
     }
@@ -232,9 +231,9 @@ public class MetadataGenerator {
       }
     }
     return String.format(
-        "    { \"%s\", %s, 0x%x, \"%s\", %s, %s },\n",
+        "    { \"%s\", %s, 0x%x, \"%s\", %s, %s, %s },\n",
         objcName, cStr(javaName), modifiers, getTypeName(var.getType()), staticRef,
-        constantValue);
+        cStr(SignatureGenerator.createFieldTypeSignature(var)), constantValue);
   }
 
   private String getRawValueField(IVariableBinding var) {
@@ -266,9 +265,10 @@ public class MetadataGenerator {
 
     int modifiers = getMethodModifiers(method);
     String returnTypeStr = method.isConstructor() ? null : getTypeName(method.getReturnType());
-    return String.format("    { \"%s\", %s, %s, 0x%x, %s },\n",
+    return String.format("    { \"%s\", %s, %s, 0x%x, %s, %s },\n",
         selector, cStr(methodName), cStr(returnTypeStr), modifiers,
-        cStr(getThrownExceptions(method)));
+        cStr(getThrownExceptions(method)),
+        cStr(SignatureGenerator.createMethodTypeSignature(method)));
   }
 
   private String getThrownExceptions(IMethodBinding method) {

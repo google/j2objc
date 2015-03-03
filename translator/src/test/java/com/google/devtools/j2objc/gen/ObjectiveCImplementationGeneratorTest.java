@@ -664,7 +664,7 @@ public class ObjectiveCImplementationGeneratorTest extends GenerationTest {
   public void testMethodMetadata() throws IOException {
     String translation = translateSourceFile(
         // Separate methods are used so each only has one modifier.
-        "abstract class Test { "
+        "abstract class Test<T> { "
         + " Object test1() { return null; }"  // package-private
         + " private char test2() { return 'a'; }"
         + " protected void test3() { }"
@@ -673,18 +673,27 @@ public class ObjectiveCImplementationGeneratorTest extends GenerationTest {
         + " String test6(String s, Object... args) { return null; }"
         + " native void test7() /*-[ exit(0); ]-*/; "
         + " abstract void test8() throws InterruptedException, Error; "
+        + " abstract T test9();"
+        + " abstract void test10(int i, T t);"
+        + " abstract <V,X> void test11(V one, X two, T three);"
         + "}",
         "Test", "Test.m");
-    assertTranslation(translation, "{ \"test1\", NULL, \"Ljava.lang.Object;\", 0x0, NULL },");
-    assertTranslation(translation, "{ \"test2\", NULL, \"C\", 0x2, NULL },");
-    assertTranslation(translation, "{ \"test3\", NULL, \"V\", 0x4, NULL },");
-    assertTranslation(translation, "{ \"test4\", NULL, \"J\", 0x10, NULL },");
-    assertTranslation(translation, "{ \"test5\", NULL, \"Z\", 0x20, NULL },");
+    assertTranslation(translation, "{ \"test1\", NULL, \"Ljava.lang.Object;\", 0x0, NULL, NULL },");
+    assertTranslation(translation, "{ \"test2\", NULL, \"C\", 0x2, NULL, NULL },");
+    assertTranslation(translation, "{ \"test3\", NULL, \"V\", 0x4, NULL, NULL },");
+    assertTranslation(translation, "{ \"test4\", NULL, \"J\", 0x10, NULL, NULL },");
+    assertTranslation(translation, "{ \"test5\", NULL, \"Z\", 0x20, NULL, NULL },");
     assertTranslation(translation, "{ \"test6WithNSString:withNSObjectArray:\", "
-        + "\"test6\", \"Ljava.lang.String;\", 0x80, NULL }");
-    assertTranslation(translation, "{ \"test7\", NULL, \"V\", 0x100, NULL },");
+        + "\"test6\", \"Ljava.lang.String;\", 0x80, NULL, NULL }");
+    assertTranslation(translation, "{ \"test7\", NULL, \"V\", 0x100, NULL, NULL },");
     assertTranslation(translation, "{ \"test8\", NULL, \"V\", 0x400, "
-        + "\"Ljava.lang.InterruptedException;Ljava.lang.Error;\" },");
+        + "\"Ljava.lang.InterruptedException;Ljava.lang.Error;\", NULL },");
+    assertTranslation(translation, "{ \"test9\", NULL, \"TT;\", 0x400, NULL, \"()TT;\" },");
+    assertTranslation(translation,
+        "{ \"test10WithInt:withId:\", \"test10\", \"V\", 0x400, NULL, \"(ITT;)V\" },");
+    assertTranslation(translation,
+        "{ \"test11WithId:withId:withId:\", \"test11\", \"V\", 0x400, NULL, "
+        + "\"<V:Ljava/lang/Object;X:Ljava/lang/Object;>(TV;TX;TT;)V\" },");
   }
 
   public void testAnnotationWithField() throws IOException {
@@ -899,8 +908,8 @@ public class ObjectiveCImplementationGeneratorTest extends GenerationTest {
         + "}",
         "Test", "Test.m");
     assertTranslation(translation,
-        "{ \"fooDefault\", \"foo\", \"Ljava.lang.String;\", 0x100a, NULL },");
-    assertTranslation(translation, "{ \"numDefault\", \"num\", \"I\", 0x100a, NULL },");
+        "{ \"fooDefault\", \"foo\", \"Ljava.lang.String;\", 0x100a, NULL, NULL },");
+    assertTranslation(translation, "{ \"numDefault\", \"num\", \"I\", 0x100a, NULL, NULL },");
   }
 
   // Verify that a class with an annotation with a reserved name property is
@@ -934,7 +943,7 @@ public class ObjectiveCImplementationGeneratorTest extends GenerationTest {
         "static const char *inner_classes[] = {\"LA$B;\", \"LA$C;\", \"LA$D;\", \"LA$E;\"};");
     assertTranslation(translation,
         "static const J2ObjcClassInfo _A = { 2, \"A\", NULL, NULL, 0x0, 1, methods, "
-        + "0, NULL, 0, NULL, 4, inner_classes, NULL };");
+        + "0, NULL, 0, NULL, 4, inner_classes, NULL, NULL };");
   }
 
   public void testEnclosingMethodAndConstructor() throws IOException {
@@ -945,16 +954,16 @@ public class ObjectiveCImplementationGeneratorTest extends GenerationTest {
         "static const J2ObjCEnclosingMethodInfo "
         + "enclosing_method = { \"A\", \"initWithNSString:\" };",
         "static const J2ObjcClassInfo _A_A_B = { 2, \"B\", NULL, \"A\", 0x0, 1, methods, "
-        + "0, NULL, 0, NULL, 0, NULL, &enclosing_method };");
+        + "0, NULL, 0, NULL, 0, NULL, &enclosing_method, NULL };");
     assertTranslatedLines(translation,
         "static const J2ObjCEnclosingMethodInfo "
         + "enclosing_method = { \"A\", \"testWithInt:withLong:\" };",
         "static const J2ObjcClassInfo _A_test_C = { 2, \"C\", NULL, \"A\", 0x0, 1, methods, "
-        + "0, NULL, 0, NULL, 1, inner_classes, &enclosing_method };");
+        + "0, NULL, 0, NULL, 1, inner_classes, &enclosing_method, NULL };");
 
     // Verify D is not enclosed by test(), as it's enclosed by C.
     assertTranslation(translation,
         "J2ObjcClassInfo _A_test_C_test_D = { 2, \"D\", NULL, \"A$C\", 0x0, 1, methods, "
-        + "0, NULL, 0, NULL, 0, NULL, NULL }");
+        + "0, NULL, 0, NULL, 0, NULL, NULL, NULL }");
   }
 }

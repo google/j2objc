@@ -16,12 +16,15 @@
 
 package libcore.reflect;
 
+import com.google.j2objc.annotations.Weak;
+
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.Arrays;
 import java.util.Objects;
 
 public final class ParameterizedTypeImpl implements ParameterizedType {
+    @Weak
     private final ListOfTypes args;
     private final ParameterizedTypeImpl ownerType0; // Potentially unresolved.
     private Type ownerTypeRes; // Potentially unresolved.
