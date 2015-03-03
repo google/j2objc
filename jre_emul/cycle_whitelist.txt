@@ -24,6 +24,8 @@ FIELD java.lang.Thread.interruptActions
 # libcore.reflect false positives.
 FIELD libcore.reflect.ParameterizedTypeImpl.args
 FIELD libcore.reflect.TypeVariableImpl.bounds
+FIELD libcore.reflect.TypeVariableImpl.declOfVarUser
+FIELD libcore.reflect.TypeVariableImpl.genericDeclaration
 FIELD libcore.reflect.WildcardTypeImpl.extendsBound
 FIELD libcore.reflect.WildcardTypeImpl.superBound
 
