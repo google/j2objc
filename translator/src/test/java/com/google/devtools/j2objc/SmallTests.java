@@ -26,6 +26,7 @@ import com.google.devtools.j2objc.gen.ObjectiveCImplementationGeneratorTest;
 import com.google.devtools.j2objc.gen.ObjectiveCSegmentedHeaderGeneratorTest;
 import com.google.devtools.j2objc.gen.ObjectiveCSourceFileGeneratorTest;
 import com.google.devtools.j2objc.gen.PrimitiveArrayTest;
+import com.google.devtools.j2objc.gen.SignatureGeneratorTest;
 import com.google.devtools.j2objc.gen.StatementGeneratorTest;
 import com.google.devtools.j2objc.translate.AbstractMethodRewriterTest;
 import com.google.devtools.j2objc.translate.AnonymousClassConverterTest;
@@ -119,6 +120,7 @@ public class SmallTests {
     ProGuardUsageParserTest.class,
     RenamedTypeBindingTest.class,
     RewriterTest.class,
+    SignatureGeneratorTest.class,
     StatementGeneratorTest.class,
     StaticVarRewriterTest.class,
     TreeConvertTest.class,

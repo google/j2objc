@@ -16,6 +16,8 @@
 
 package libcore.reflect;
 
+import com.google.j2objc.annotations.Weak;
+
 import java.lang.reflect.MalformedParameterizedTypeException;
 import java.lang.reflect.Type;
 import java.lang.reflect.WildcardType;
@@ -23,6 +25,7 @@ import java.util.Arrays;
 
 public final class WildcardTypeImpl implements WildcardType {
 
+    @Weak
     private final ListOfTypes extendsBound, superBound;
 
     public WildcardTypeImpl(ListOfTypes extendsBound, ListOfTypes superBound) {
