@@ -457,18 +457,30 @@ public class NameTable {
 
   private static final Pattern SELECTOR_VALIDATOR = Pattern.compile("\\w+|(\\w+\\:)+");
 
-  private static void validateMethodSelector(String selector) {
+  private static boolean validateMethodSelector(String selector) {
     if (!SELECTOR_VALIDATOR.matcher(selector).matches()) {
       ErrorUtil.error("Invalid method selector: " + selector);
+      return false;
     }
+    return true;
   }
 
+  // Be nice and only print the warning once per method.
+  private static Set<String> renamingWarned = Sets.newHashSet();
+
   private static String extractMethodSelector(String value) {
-    if (value.contains(" ")) {
-      value = parseSelectorFromSignature(value);
+    String selector = value;
+    if (value.contains(" ") || value.contains("(")) {
+      selector = parseSelectorFromSignature(value);
+      if (validateMethodSelector(selector) && !renamingWarned.contains(value)) {
+        ErrorUtil.warning("Method renaming with full signature is being phased out. "
+            + "Please replace \"" + value + "\" with \"" + selector + "\".");
+        renamingWarned.add(value);
+      }
+    } else {
+      validateMethodSelector(selector);
     }
-    validateMethodSelector(value);
-    return value;
+    return selector;
   }
 
   public static String getMethodName(IMethodBinding method) {
