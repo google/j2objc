@@ -204,7 +204,6 @@ JAVA_SOURCES = \
 	types/PointerTypeBinding.java \
 	types/RenamedTypeBinding.java \
 	types/Types.java \
-	util/ASTUtil.java \
 	util/BindingUtil.java \
 	util/DeadCodeMap.java \
 	util/ErrorUtil.java \
