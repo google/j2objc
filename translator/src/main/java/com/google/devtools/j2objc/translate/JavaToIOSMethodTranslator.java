@@ -16,6 +16,7 @@
 
 package com.google.devtools.j2objc.translate;
 
+import com.google.common.collect.ImmutableMap;
 import com.google.devtools.j2objc.Options;
 import com.google.devtools.j2objc.ast.Block;
 import com.google.devtools.j2objc.ast.ClassInstanceCreation;
@@ -51,12 +52,37 @@ import java.util.Map;
  */
 public class JavaToIOSMethodTranslator extends TreeVisitor {
 
+  /**
+   * We convert all the String constructor invocations to factory method
+   * invocations because we want to avoid calling [NSString alloc].
+   * TODO(kstanger): This may not actually be necessary, investigate.
+   */
+  private static final Map<String, String> STRING_CONSTRUCTOR_TO_METHOD_MAPPINGS =
+      ImmutableMap.<String, String>builder()
+      .put("java.lang.String.String()V", "string")
+      .put("java.lang.String.String(Ljava/lang/String;)V", "stringWithString:")
+      .put("java.lang.String.String([B)V", "stringWithBytes:")
+      .put("java.lang.String.String([BLjava/lang/String;)V", "stringWithBytes:charsetName:")
+      .put("java.lang.String.String([BLjava/nio/charset/Charset;)V", "stringWithBytes:charset:")
+      .put("java.lang.String.String([BI)V", "stringWithBytes:hibyte:")
+      .put("java.lang.String.String([BII)V", "stringWithBytes:offset:length:")
+      .put("java.lang.String.String([BIII)V", "stringWithBytes:hibyte:offset:length:")
+      .put("java.lang.String.String([BIILjava/lang/String;)V",
+           "stringWithBytes:offset:length:charsetName:")
+      .put("java.lang.String.String([BIILjava/nio/charset/Charset;)V",
+           "stringWithBytes:offset:length:charset:")
+      .put("java.lang.String.String([C)V", "stringWithCharacters:")
+      .put("java.lang.String.String([CII)V", "stringWithCharacters:offset:length:")
+      .put("java.lang.String.String([III)V", "stringWithInts:offset:length:")
+      .put("java.lang.String.String(II[C)V", "stringWithOffset:length:characters:")
+      .put("java.lang.String.String(Ljava/lang/StringBuffer;)V", "stringWithJavaLangStringBuffer:")
+      .put("java.lang.String.String(Ljava/lang/StringBuilder;)V",
+           "stringWithJavaLangStringBuilder:")
+      .build();
+
   private final ITypeBinding javaLangCloneable;
 
-  private final Map<String, String> methodMappings;
-
-  public JavaToIOSMethodTranslator(Map<String, String> methodMappings) {
-    this.methodMappings = NameTable.getMethodMappings();
+  public JavaToIOSMethodTranslator() {
     javaLangCloneable = Types.resolveJavaType("java.lang.Cloneable");
   }
 
@@ -92,7 +118,7 @@ public class JavaToIOSMethodTranslator extends TreeVisitor {
 
     IMethodBinding binding = node.getMethodBinding();
     String key = BindingUtil.getMethodKey(binding);
-    String selector = methodMappings.get(key);
+    String selector = STRING_CONSTRUCTOR_TO_METHOD_MAPPINGS.get(key);
     if (selector != null) {
       assert !node.hasRetainedResult();
       if (key.equals("java.lang.String.String(Ljava/lang/String;)V")) {

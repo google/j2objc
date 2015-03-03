@@ -98,23 +98,6 @@ java.lang.Class.isPrimitive()Z = isPrimitive
 java.lang.Class.newInstance()Ljava/lang/Object; = newInstance
 
 # java.lang.String
-java.lang.String.String()V = string
-java.lang.String.String(Ljava/lang/String;)V = stringWithString:
-java.lang.String.String([B)V = stringWithBytes:
-java.lang.String.String([BLjava/lang/String;)V = stringWithBytes:charsetName:
-java.lang.String.String([BLjava/nio/charset/Charset;)V = stringWithBytes:charset:
-java.lang.String.String([BI)V = stringWithBytes:hibyte:
-java.lang.String.String([BII)V = stringWithBytes:offset:length:
-java.lang.String.String([BIII)V = stringWithBytes:hibyte:offset:length:
-java.lang.String.String([BIILjava/lang/String;)V = stringWithBytes:offset:length:charsetName:
-java.lang.String.String([BIILjava/nio/charset/Charset;)V = stringWithBytes:offset:length:charset:
-java.lang.String.String([C)V = stringWithCharacters:
-java.lang.String.String([CII)V = stringWithCharacters:offset:length:
-java.lang.String.String([III)V = stringWithInts:offset:length:
-java.lang.String.String(II[C)V = stringWithOffset:length:characters:
-java.lang.String.String(Ljava/lang/StringBuffer;)V = stringWithJavaLangStringBuffer:
-java.lang.String.String(Ljava/lang/StringBuilder;)V = stringWithJavaLangStringBuilder:
-
 java.lang.String.charAt(I)C = charAtWithInt:
 java.lang.String.codePointAt(I)I = codePointAt:
 java.lang.String.codePointBefore(I)I = codePointBefore:
