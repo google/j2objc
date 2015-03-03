@@ -236,10 +236,10 @@ public class NameTableTest extends GenerationTest {
 
   public void testMethodConflictingName() throws IOException {
     translateSourceFile("class A { "
-        + "@com.google.j2objc.annotations.ObjectiveCName(\"foo:(NSString *)s bar:(int)n\")"
+        + "@com.google.j2objc.annotations.ObjectiveCName(\"foo:bar:\")"
         + "void test(String s, int n) {}"
         + "static class B extends A { "
-        + "@com.google.j2objc.annotations.ObjectiveCName(\"test:(NSString *)s offset:(int)n\")"
+        + "@com.google.j2objc.annotations.ObjectiveCName(\"test:offset:\")"
         + "@Override void test(String s, int n) {}}}", "A", "A.m");
     assertWarningCount(1);
   }
