@@ -21,8 +21,8 @@ import com.google.common.collect.Sets;
 import com.google.devtools.j2objc.ast.CompilationUnit;
 import com.google.devtools.j2objc.ast.PackageDeclaration;
 import com.google.devtools.j2objc.ast.TreeConverter;
-import com.google.devtools.j2objc.file.RegularInputFile;
 import com.google.devtools.j2objc.file.InputFile;
+import com.google.devtools.j2objc.file.RegularInputFile;
 import com.google.devtools.j2objc.gen.GenerationUnit;
 import com.google.devtools.j2objc.gen.ObjectiveCHeaderGenerator;
 import com.google.devtools.j2objc.gen.ObjectiveCImplementationGenerator;
@@ -369,7 +369,7 @@ class TranslationProcessor extends FileProcessor {
     // After: Functionizer - Changes bindings on MethodDeclaration nodes.
     // Before: StaticVarRewriter, OperatorRewriter - Doesn't know how to handle
     //   the hasRetainedResult flag on ClassInstanceCreation nodes.
-    new JavaToIOSMethodTranslator(Options.getMethodMappings()).run(unit);
+    new JavaToIOSMethodTranslator().run(unit);
     ticker.tick("JavaToIOSMethodTranslator");
 
     new StaticVarRewriter().run(unit);

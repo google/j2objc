@@ -435,12 +435,6 @@ public class NameTable {
     return "with" + capitalize(getParameterTypeKeyword(type));
   }
 
-  // Needed by JavaToIOSMethodTranslator to convert ClassInstanceCreation nodes
-  // to MethodInvocation nodes.
-  public static Map<String, String> getMethodMappings() {
-    return instance.methodMappings;
-  }
-
   // Matches the class name prefix or a parameter declarations of a method
   // signature. After removing these parts, the selector remains.
   private static final Pattern SIGNATURE_STRIPPER =
