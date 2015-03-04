@@ -97,5 +97,32 @@ public class FileUtil {
     }
   }
 
+  public static File createTempDir(String dirname) throws IOException {
+    File tmpDirectory = File.createTempFile(dirname, ".tmp");
+    tmpDirectory.delete();
+    if (!tmpDirectory.mkdir()) {
+      throw new IOException("Could not create tmp directory: " + tmpDirectory.getPath());
+    }
+    tmpDirectory.deleteOnExit();
+    return tmpDirectory;
+  }
+
+  /**
+   * Recursively delete specified directory.
+   */
+  public static void deleteTempDir(File dir) {
+    // TODO(cpovirk): try Directories.deleteRecursively if a c.g.c.unix dep is OK
+    if (dir.exists()) {
+      for (File f : dir.listFiles()) {
+        if (f.isDirectory()) {
+          deleteTempDir(f);
+        } else {
+          f.delete();
+        }
+      }
+      dir.delete();
+    }
+  }
+
   private FileUtil() {}
 }

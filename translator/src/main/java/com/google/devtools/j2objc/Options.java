@@ -651,13 +651,15 @@ public class Options {
     }
   }
 
-  private static void deleteDir(File dir) {
+  static void deleteDir(File dir) {
     for (File f : dir.listFiles()) {
       if (f.isDirectory()) {
         deleteDir(f);
       } else if (f.getName().endsWith(".java")) {
         // Only delete Java files, as other temporary files (like hsperfdata)
         // may also be in tmpdir.
+        // TODO(kstanger): It doesn't make sense that hsperfdata would show up in our tempdir.
+        // Consider deleting this method and using FileUtil#deleteTempDir() instead.
         f.delete();
       }
     }

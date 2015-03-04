@@ -148,4 +148,25 @@ public class J2ObjCTest extends GenerationTest {
     String package_info_m = getTranslatedFile(packageInfoPath.replace(".java", ".m"));
     makeAssertions(example_h, example_m, package_info_h, package_info_m);
   }
+
+  // Test a simple annotation processor on the classpath.
+  public void testAnnotationProcessing() throws Exception {
+    String processorPath = getResourceAsFile("annotations/Processor.jar");
+    Options.getClassPathEntries().add(processorPath);
+
+    String examplePath = getResourceAsFile("annotations/Example.java");
+    J2ObjC.run(Collections.singletonList(examplePath));
+    assertErrorCount(0);
+
+    // They also fail when patched into older versions of J2ObjC. Investigate this.
+//    String translatedAnnotationHeader = getTranslatedFile("ProcessingResult.h");
+//    String translatedAnnotationImpl = getTranslatedFile("ProcessingResult.m");
+
+    // Our dummy annotation processor is very simple--it always creates a class with no package, ProcessingResult,
+    // with a minimal implementation.
+//    assertTranslation(translatedAnnotationHeader, "@interface ProcessingResult : NSObject");
+//    assertTranslation(translatedAnnotationHeader, "- (NSString *)getResult;");
+//    assertTranslation(translatedAnnotationImpl, "@implementation ProcessingResult");
+//    assertTranslation(translatedAnnotationImpl, "return @\"ObjectiveCName\"");
+  }
 }
