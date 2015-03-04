@@ -97,7 +97,7 @@
 
 @end
 
-BOOL JavaxAnnotationResource_AuthenticationTypeEnum_initialized = NO;
+J2OBJC_INITIALIZED_DEFN(JavaxAnnotationResource_AuthenticationTypeEnum)
 
 J2OBJC_INTERFACE_TYPE_LITERAL_SOURCE(JavaxAnnotationResource)
 

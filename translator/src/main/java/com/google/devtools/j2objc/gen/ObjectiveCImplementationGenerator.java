@@ -343,7 +343,7 @@ public class ObjectiveCImplementationGenerator extends ObjectiveCSourceFileGener
     ITypeBinding binding = node.getTypeBinding();
     String typeName = NameTable.getFullName(binding);
     if (hasInitializeMethod(node)) {
-      printf("\nBOOL %s_initialized = NO;\n", typeName);
+      printf("\nJ2OBJC_INITIALIZED_DEFN(%s)\n", typeName);
     }
   }
 

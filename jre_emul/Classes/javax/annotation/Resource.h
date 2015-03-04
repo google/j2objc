@@ -94,7 +94,6 @@ FOUNDATION_EXPORT JavaxAnnotationResource_AuthenticationTypeEnum *
 
 @end
 
-FOUNDATION_EXPORT BOOL JavaxAnnotationResource_AuthenticationTypeEnum_initialized;
 J2OBJC_STATIC_INIT(JavaxAnnotationResource_AuthenticationTypeEnum)
 
 FOUNDATION_EXPORT JavaxAnnotationResource_AuthenticationTypeEnum *

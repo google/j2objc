@@ -339,8 +339,7 @@ public class ObjectiveCHeaderGenerator extends ObjectiveCSourceFileGenerator {
     ITypeBinding binding = node.getTypeBinding();
     String typeName = NameTable.getFullName(binding);
     if (hasInitializeMethod(node)) {
-      printf("\nFOUNDATION_EXPORT BOOL %s_initialized;\n", typeName);
-      printf("J2OBJC_STATIC_INIT(%s)\n", typeName);
+      printf("\nJ2OBJC_STATIC_INIT(%s)\n", typeName);
     } else {
       printf("\nJ2OBJC_EMPTY_STATIC_INIT(%s)\n", typeName);
     }

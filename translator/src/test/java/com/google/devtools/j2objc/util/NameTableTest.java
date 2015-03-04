@@ -280,7 +280,6 @@ public class NameTableTest extends GenerationTest {
     assertTranslation(translation, "FBTestEnum_values()");
     assertTranslation(translation, "+ (FBTestEnum *)valueOfWithNSString:(NSString *)name;");
     assertTranslation(translation, "FBTestEnum *FBTestEnum_valueOfWithNSString_");
-    assertTranslation(translation, "FBTestEnum_initialized");
     assertTranslation(translation, "J2OBJC_STATIC_INIT(FBTestEnum");
     assertTranslation(translation, "typedef FBTestEnum FooBarTestEnum;");
 

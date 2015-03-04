@@ -238,7 +238,6 @@ IOSObjectArray *IOSClass_NewInterfacesFromProtocolList(Protocol **list, unsigned
 
 CF_EXTERN_C_END
 
-FOUNDATION_EXPORT BOOL IOSClass_initialized;
 J2OBJC_STATIC_INIT(IOSClass)
 
 J2OBJC_TYPE_LITERAL_HEADER(IOSClass)
