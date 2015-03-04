@@ -176,7 +176,6 @@ static inline id JreStrongAssignAndConsume(id *pIvar, id self, NS_RELEASES_ARGUM
  *
  * @define J2OBJC_STATIC_INIT
  * @param CLASS The class to declare the init function for.
- * TODO(kstanger): Remove _init function.
  */
 #define J2OBJC_STATIC_INIT(CLASS) \
   FOUNDATION_EXPORT _Atomic(BOOL) CLASS##_initialized; \
@@ -184,9 +183,6 @@ static inline id JreStrongAssignAndConsume(id *pIvar, id self, NS_RELEASES_ARGUM
     if (__builtin_expect(!__c11_atomic_load(&CLASS##_initialized, __ATOMIC_ACQUIRE), 0)) { \
       [CLASS class]; \
     } \
-  } \
-  __attribute__((always_inline)) inline void CLASS##_init() { \
-    CLASS##_initialize(); \
   }
 
 /*!
@@ -194,11 +190,9 @@ static inline id JreStrongAssignAndConsume(id *pIvar, id self, NS_RELEASES_ARGUM
  *
  * @define J2OBJC_EMPTY_STATIC_INIT
  * @param CLASS The class to declare the init function for.
- * TODO(kstanger): Remove _init function.
  */
 #define J2OBJC_EMPTY_STATIC_INIT(CLASS) \
-  __attribute__((always_inline)) inline void CLASS##_initialize() {} \
-  __attribute__((always_inline)) inline void CLASS##_init() {}
+  __attribute__((always_inline)) inline void CLASS##_initialize() {}
 
 /*!
  * Declares the type literal accessor for a type. This macro should be added to
