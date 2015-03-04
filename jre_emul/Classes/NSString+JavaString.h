@@ -324,10 +324,6 @@ __attribute__((always_inline)) inline void NSString_initialize() {
     [JreStringCategoryDummy class];
   }
 }
-// TODO(kstanger): Remove.
-__attribute__((always_inline)) inline void NSString_init() {
-  NSString_initialize();
-}
 
 FOUNDATION_EXPORT id<JavaUtilComparator> NSString_CASE_INSENSITIVE_ORDER_;
 J2OBJC_STATIC_FIELD_GETTER(NSString, CASE_INSENSITIVE_ORDER_, id<JavaUtilComparator>)
