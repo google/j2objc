@@ -67,7 +67,7 @@
 
 @end
 
-__attribute__((always_inline)) inline void JavaxAnnotationResource_init() {}
+J2OBJC_EMPTY_STATIC_INIT(JavaxAnnotationResource)
 
 J2OBJC_TYPE_LITERAL_HEADER(JavaxAnnotationResource)
 

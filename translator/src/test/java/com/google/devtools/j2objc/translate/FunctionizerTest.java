@@ -225,7 +225,7 @@ public class FunctionizerTest extends GenerationTest {
     translation = getTranslatedFile("A.m");
     // Check new function.
     assertTranslatedLines(translation, functionHeader + " {",
-        "A_init();",
+        "A_initialize();",
         "return JreStrcat(\"$@\", msg, cls);");
     // Check wrapper.
     assertTranslatedLines(translation,
@@ -250,7 +250,7 @@ public class FunctionizerTest extends GenerationTest {
     translation = getTranslatedFile("A.m");
     // Check new function.
     assertTranslatedLines(translation, functionHeader + " {",
-        "A_init();",
+        "A_initialize();",
         "return JreStrcat(\"$@\", msg, cls);");
     // Check wrapper.
     assertTranslatedLines(translation,
@@ -340,7 +340,7 @@ public class FunctionizerTest extends GenerationTest {
         + "  void use() { test2(); }}",
         "A", "A.m");
     // Verify static class function calls class init.
-    assertTranslatedLines(translation, "id A_foo() {", "A_init();", "return A_o_;", "}");
+    assertTranslatedLines(translation, "id A_foo() {", "A_initialize();", "return A_o_;", "}");
     // Verify class method doesn't call class init.
     assertTranslatedLines(translation, "- (void)test {", "A_foo();", "}");
     // Verify non-static class function doesn't call class init.
@@ -357,10 +357,10 @@ public class FunctionizerTest extends GenerationTest {
         "A", "A.m");
     // Verify valueOf function calls class init.
     assertTranslatedLines(translation, "AEnum *AEnum_valueOfWithNSString_(NSString *name) {",
-        "AEnum_init();", "for (int i = 0; i < 2; i++) {");
+        "AEnum_initialize();", "for (int i = 0; i < 2; i++) {");
     // Verify static class function calls class init.
     assertTranslatedLines(translation,
-        "id AEnum_foo() {", "AEnum_init();", "return AEnum_o_;", "}");
+        "id AEnum_foo() {", "AEnum_initialize();", "return AEnum_o_;", "}");
     // Verify class method doesn't call class init.
     assertTranslatedLines(translation, "- (void)test {", "AEnum_foo();", "}");
     // Verify non-static class function doesn't call class init.

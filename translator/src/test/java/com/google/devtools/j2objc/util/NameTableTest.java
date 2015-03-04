@@ -193,7 +193,7 @@ public class NameTableTest extends GenerationTest {
         "}");
     assertTranslatedLines(translation,
         "t_foo(NSString *s, jint n) {",
-        "  Test_init();",
+        "  Test_initialize();",
         "}");
   }
 

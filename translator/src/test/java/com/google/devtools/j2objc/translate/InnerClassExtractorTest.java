@@ -417,7 +417,7 @@ public class InnerClassExtractorTest extends GenerationTest {
     // a new instance of Test.
     assertTranslatedLines(translation,
         "void Test_mainWithNSStringArray_(IOSObjectArray *args) {",
-        "Test_init();",
+        "Test_initialize();",
         "Test_B *b = [[[Test_B alloc] initWithTest:[[[Test alloc] init] autorelease]] "
             + "autorelease];");
 
@@ -456,7 +456,7 @@ public class InnerClassExtractorTest extends GenerationTest {
     // a new instance of Test.
     assertTranslatedLines(translation,
         "void Test_mainWithNSStringArray_(IOSObjectArray *args) {",
-        "Test_init();",
+        "Test_initialize();",
         "Test_B *b = [[[Test_B alloc] initWithTest:[[[Test alloc] init] autorelease]] "
             + "autorelease];");
 
