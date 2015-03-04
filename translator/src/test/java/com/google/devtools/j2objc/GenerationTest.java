@@ -33,6 +33,7 @@ import com.google.devtools.j2objc.gen.StatementGenerator;
 import com.google.devtools.j2objc.types.Types;
 import com.google.devtools.j2objc.util.DeadCodeMap;
 import com.google.devtools.j2objc.util.ErrorUtil;
+import com.google.devtools.j2objc.util.FileUtil;
 import com.google.devtools.j2objc.util.JdtParser;
 import com.google.devtools.j2objc.util.NameTable;
 import com.google.devtools.j2objc.util.TimeTracker;
@@ -76,11 +77,11 @@ public abstract class GenerationTest extends TestCase {
 
   @Override
   protected void setUp() throws IOException {
-    tempDir = createTempDir();
-    Options.load(new String[] {
-      "-d", tempDir.getAbsolutePath(),
-      "-q", // Suppress console output.
-      "--hide-private-members" // Future default, run tests with it now.
+    tempDir = FileUtil.createTempDir("testout");
+    Options.load(new String[]{
+        "-d", tempDir.getAbsolutePath(),
+        "-q", // Suppress console output.
+        "--hide-private-members" // Future default, run tests with it now.
     });
     parser = initializeParser(tempDir);
   }
@@ -91,7 +92,7 @@ public abstract class GenerationTest extends TestCase {
     Options.getHeaderMappings().clear();
     Options.setPackageDirectories(Options.OutputStyleOption.PACKAGE);
     Options.getSourcePathEntries().clear();
-    deleteTempDir(tempDir);
+    FileUtil.deleteTempDir(tempDir);
     ErrorUtil.reset();
   }
 
@@ -193,33 +194,6 @@ public abstract class GenerationTest extends TestCase {
 
   protected String generateStatement(Statement statement) {
     return StatementGenerator.generate(statement, false, SourceBuilder.BEGINNING_OF_FILE).trim();
-  }
-
-  /**
-   * Returns a newly-created temporary directory.
-   */
-  protected File createTempDir() throws IOException {
-    File tempDir = File.createTempFile("testout", ".tmp");
-    tempDir.delete();
-    tempDir.mkdir();
-    return tempDir;
-  }
-
-  /**
-   * Recursively delete specified directory.
-   */
-  protected void deleteTempDir(File dir) {
-    // TODO(cpovirk): try Directories.deleteRecursively if a c.g.c.unix dep is OK
-    if (dir.exists()) {
-      for (File f : dir.listFiles()) {
-        if (f.isDirectory()) {
-          deleteTempDir(f);
-        } else {
-          f.delete();
-        }
-      }
-      dir.delete();
-    }
   }
 
   /**

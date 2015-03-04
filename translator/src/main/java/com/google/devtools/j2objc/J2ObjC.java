@@ -18,9 +18,11 @@ package com.google.devtools.j2objc;
 
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.io.Files;
+import com.google.devtools.j2objc.file.InputFile;
 import com.google.devtools.j2objc.types.Types;
 import com.google.devtools.j2objc.util.DeadCodeMap;
 import com.google.devtools.j2objc.util.ErrorUtil;
+import com.google.devtools.j2objc.util.FileUtil;
 import com.google.devtools.j2objc.util.JdtParser;
 import com.google.devtools.j2objc.util.NameTable;
 import com.google.devtools.j2objc.util.PathClassLoader;
@@ -35,7 +37,6 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.jar.JarEntry;
 import java.util.jar.JarInputStream;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
@@ -146,8 +147,19 @@ public class J2ObjC {
    * @param fileArgs the files to process, same format as command-line args to {@link #main}.
    */
   public static void run(List<String> fileArgs) {
+    File preProcessorTempDir = null;
     try {
       JdtParser parser = createParser();
+
+      AnnotationPreProcessor preProcessor = new AnnotationPreProcessor();
+      preProcessor.process(fileArgs);
+      preProcessorTempDir = preProcessor.getTemporaryDirectory();
+      if (ErrorUtil.errorCount() > 0) {
+        return;
+      }
+      if (preProcessorTempDir != null) {
+        parser.addSourcepathEntry(preProcessorTempDir.getAbsolutePath());
+      }
 
       PackageInfoPreProcessor packageInfoPreProcessor = new PackageInfoPreProcessor(parser);
       packageInfoPreProcessor.processFiles(fileArgs);
@@ -165,6 +177,7 @@ public class J2ObjC {
 
       TranslationProcessor translationProcessor
           = new TranslationProcessor(parser, loadDeadCodeMap());
+      translationProcessor.pendingFiles.addAll(preProcessor.getAdditionalFiles());
       translationProcessor.processFiles(fileArgs);
       if (ErrorUtil.errorCount() > 0) {
         return;
@@ -173,6 +186,9 @@ public class J2ObjC {
     } finally {
       NameTable.cleanup();
       Types.cleanup();
+      if (preProcessorTempDir != null) {
+        FileUtil.deleteTempDir(preProcessorTempDir);
+      }
       Options.deleteTemporaryDirectory();
     }
   }

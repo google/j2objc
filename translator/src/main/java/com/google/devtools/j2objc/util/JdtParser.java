@@ -27,7 +27,7 @@ import org.eclipse.jdt.core.dom.FileASTRequestor;
 
 import java.io.File;
 import java.util.Arrays;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
@@ -126,7 +126,7 @@ public class JdtParser {
 
   public void parseFiles(List<InputFile> files, final Handler handler) {
     // We need the whole SourceFile to correctly handle a parsed ADT, so we keep track of it here.
-    final Map<String, InputFile> reverseMap = new HashMap<String, InputFile>();
+    final Map<String, InputFile> reverseMap = new LinkedHashMap<String, InputFile>();
     for (InputFile file: files) {
       reverseMap.put(file.getPath(), file);
     }
