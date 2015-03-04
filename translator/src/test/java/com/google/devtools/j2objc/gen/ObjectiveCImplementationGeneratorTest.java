@@ -497,7 +497,7 @@ public class ObjectiveCImplementationGeneratorTest extends GenerationTest {
         + "  public static synchronized void foo() {} }",
         "Test", "Test.m");
     assertTranslation(translation, "void Test_foo() {\n"
-        + "  Test_init();\n"
+        + "  Test_initialize();\n"
         + "  @synchronized(Test_class_()) {");
   }
 

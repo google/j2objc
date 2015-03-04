@@ -135,7 +135,7 @@ public class EnumRewriter extends TreeVisitor {
     StringBuilder sb = new StringBuilder();
     sb.append(String.format(
         "IOSObjectArray *%s_values() {\n"
-        + "  %s_init();\n"
+        + "  %s_initialize();\n"
         + "  return [IOSObjectArray arrayWithObjects:%s_values_ count:%s type:%s_class_()];\n"
         + "}\n"
         + "+ (IOSObjectArray *)values {\n"
@@ -149,7 +149,7 @@ public class EnumRewriter extends TreeVisitor {
 
     sb.append(String.format(
         "%s *%s_valueOfWithNSString_(NSString *name) {\n"
-            + "  %s_init();\n"
+            + "  %s_initialize();\n"
             + "  for (int i = 0; i < %s; i++) {\n"
             + "    %s *e = %s_values_[i];\n"
             + "    if ([name isEqual:[e name]]) {\n"

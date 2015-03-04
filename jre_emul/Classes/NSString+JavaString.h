@@ -319,10 +319,14 @@ FOUNDATION_EXPORT NSString *NSString_valueOf_(id o);
 
 // Use the category dummy to initialize static variables for the String class.
 FOUNDATION_EXPORT BOOL NSString_initialized;
-__attribute__((always_inline)) inline void NSString_init() { \
-  if (!__builtin_expect(NSString_initialized, YES)) { \
+__attribute__((always_inline)) inline void NSString_initialize() {
+  if (!__builtin_expect(NSString_initialized, YES)) {
     [JreStringCategoryDummy class];
   }
+}
+// TODO(kstanger): Remove.
+__attribute__((always_inline)) inline void NSString_init() {
+  NSString_initialize();
 }
 
 FOUNDATION_EXPORT id<JavaUtilComparator> NSString_CASE_INSENSITIVE_ORDER_;

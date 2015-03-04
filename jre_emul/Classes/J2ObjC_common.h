@@ -164,16 +164,20 @@ static inline id JreStrongAssignAndConsume(id *pIvar, id self, NS_RELEASES_ARGUM
 /*!
  * Defines an init function for a class that will ensure that the class is
  * initialized. For class "Foo" the function will have the following signature:
- *   inline void Foo_init();
+ *   inline void Foo_initialize();
  *
  * @define J2OBJC_STATIC_INIT
  * @param CLASS The class to declare the init function for.
+ * TODO(kstanger): Remove _init function.
  */
 #define J2OBJC_STATIC_INIT(CLASS) \
-  __attribute__((always_inline)) inline void CLASS##_init() { \
+  __attribute__((always_inline)) inline void CLASS##_initialize() { \
     if (__builtin_expect(!CLASS##_initialized, 0)) { \
       [CLASS class]; \
     } \
+  } \
+  __attribute__((always_inline)) inline void CLASS##_init() { \
+    CLASS##_initialize(); \
   }
 
 /*!
@@ -181,8 +185,10 @@ static inline id JreStrongAssignAndConsume(id *pIvar, id self, NS_RELEASES_ARGUM
  *
  * @define J2OBJC_EMPTY_STATIC_INIT
  * @param CLASS The class to declare the init function for.
+ * TODO(kstanger): Remove _init function.
  */
 #define J2OBJC_EMPTY_STATIC_INIT(CLASS) \
+  __attribute__((always_inline)) inline void CLASS##_initialize() {} \
   __attribute__((always_inline)) inline void CLASS##_init() {}
 
 /*!
@@ -206,7 +212,7 @@ static inline id JreStrongAssignAndConsume(id *pIvar, id self, NS_RELEASES_ARGUM
   IOSClass *TYPE##_class_() { \
     static IOSClass *cls; \
     static dispatch_once_t token; \
-    TYPE##_init(); \
+    TYPE##_initialize(); \
     dispatch_once(&token, ^{ cls = IOSClass_fromClass([TYPE class]); }); \
     return cls; \
   }
@@ -222,7 +228,7 @@ static inline id JreStrongAssignAndConsume(id *pIvar, id self, NS_RELEASES_ARGUM
   IOSClass *TYPE##_class_() { \
     static IOSClass *cls; \
     static dispatch_once_t token; \
-    TYPE##_init(); \
+    TYPE##_initialize(); \
     dispatch_once(&token, ^{ cls = IOSClass_fromProtocol(@protocol(TYPE)); }); \
     return cls; \
   }
@@ -255,7 +261,7 @@ static inline id JreStrongAssignAndConsume(id *pIvar, id self, NS_RELEASES_ARGUM
  */
 #define J2OBJC_STATIC_FIELD_GETTER(CLASS, FIELD, TYPE) \
   __attribute__((always_inline)) inline TYPE CLASS##_get_##FIELD() { \
-    CLASS##_init(); \
+    CLASS##_initialize(); \
     return CLASS##_##FIELD; \
   }
 
@@ -271,7 +277,7 @@ static inline id JreStrongAssignAndConsume(id *pIvar, id self, NS_RELEASES_ARGUM
  */
 #define J2OBJC_STATIC_FIELD_REF_GETTER(CLASS, FIELD, TYPE) \
   __attribute__((always_inline)) inline TYPE *CLASS##_getRef_##FIELD() { \
-    CLASS##_init(); \
+    CLASS##_initialize(); \
     return &CLASS##_##FIELD; \
   }
 
@@ -289,17 +295,17 @@ static inline id JreStrongAssignAndConsume(id *pIvar, id self, NS_RELEASES_ARGUM
 #if __has_feature(objc_arc)
 #define J2OBJC_STATIC_FIELD_SETTER(CLASS, FIELD, TYPE) \
   __attribute__((always_inline)) inline TYPE CLASS##_set_##FIELD(TYPE value) { \
-    CLASS##_init(); \
+    CLASS##_initialize(); \
     return CLASS##_##FIELD = value; \
   }
 #else
 #define J2OBJC_STATIC_FIELD_SETTER(CLASS, FIELD, TYPE) \
   __attribute__((always_inline)) inline TYPE CLASS##_set_##FIELD(TYPE value) { \
-    CLASS##_init(); \
+    CLASS##_initialize(); \
     return JreStrongAssign(&CLASS##_##FIELD, nil, value); \
   } \
   __attribute__((always_inline)) inline TYPE CLASS##_setAndConsume_##FIELD(TYPE value) { \
-    CLASS##_init(); \
+    CLASS##_initialize(); \
     return JreStrongAssignAndConsume(&CLASS##_##FIELD, nil, value); \
   }
 #endif
@@ -315,7 +321,7 @@ static inline id JreStrongAssignAndConsume(id *pIvar, id self, NS_RELEASES_ARGUM
  */
 #define J2OBJC_ENUM_CONSTANT_GETTER(CLASS, CONSTANT) \
   __attribute__((always_inline)) inline CLASS *CLASS##_get_##CONSTANT() { \
-    CLASS##_init(); \
+    CLASS##_initialize(); \
     return CLASS##_##CONSTANT; \
   }
 

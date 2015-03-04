@@ -258,7 +258,7 @@ public class Functionizer extends TreeVisitor {
     function.setBody(TreeUtil.remove(method.getBody()));
 
     // Add class initialization invocation, since this may be the first use of this class.
-    String initName = String.format("%s_init", NameTable.getFullName(declaringClass));
+    String initName = String.format("%s_initialize", NameTable.getFullName(declaringClass));
     ITypeBinding voidType = Types.resolveJavaType("void");
     FunctionInvocation initCall =
         new FunctionInvocation(initName, voidType, voidType, declaringClass);
