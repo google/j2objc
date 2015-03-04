@@ -1035,7 +1035,7 @@ jint javaStringHashCode(NSString *string) {
 
 @end
 
-BOOL NSString_initialized = NO;
+J2OBJC_INITIALIZED_DEFN(NSString)
 
 id<JavaUtilComparator> NSString_CASE_INSENSITIVE_ORDER_;
 IOSObjectArray *NSString_serialPersistentFields_;

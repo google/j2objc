@@ -57,7 +57,7 @@
 #import "objc/message.h"
 #import "objc/runtime.h"
 
-BOOL IOSClass_initialized = NO;
+J2OBJC_INITIALIZED_DEFN(IOSClass)
 
 @implementation IOSClass
 
