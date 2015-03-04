@@ -36,7 +36,8 @@
 // Common parent of Member and Constructor with their shared functionality.
 // This class isn't directly called from translated Java, since Java's
 // Method and Constructor classes just duplicate their common code.
-@interface ExecutableMember : JavaLangReflectAccessibleObject {
+@interface ExecutableMember : JavaLangReflectAccessibleObject
+    < JavaLangReflectGenericDeclaration, JavaLangReflectMember > {
  @protected
   IOSClass *class_;
   SEL selector_;

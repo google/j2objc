@@ -227,17 +227,18 @@ TEST_SOURCES := \
     libcore/java/io/RandomAccessFileTest.java \
     libcore/java/io/SerializationTest.java \
     libcore/java/io/StreamTokenizerTest.java \
-    libcore/java/lang/DoubleTest.java \
     libcore/java/lang/CharacterTest.java \
+    libcore/java/lang/ClassTest.java \
+    libcore/java/lang/DoubleTest.java \
     libcore/java/lang/EnumTest.java \
     libcore/java/lang/FloatTest.java \
     libcore/java/lang/IntegralToStringTest.java \
     libcore/java/lang/ThrowableTest.java \
+    libcore/java/lang/annotation/AnnotationTypeMismatchExceptionTest.java \
     libcore/java/lang/reflect/AnnotationsTest.java \
     libcore/java/lang/reflect/ArrayTest.java \
     libcore/java/lang/reflect/ConstructorTest.java \
     libcore/java/lang/reflect/FieldTest.java \
-    libcore/java/lang/annotation/AnnotationTypeMismatchExceptionTest.java \
     libcore/java/net/DatagramSocketTest.java \
     libcore/java/net/NetworkInterfaceTest.java \
     libcore/java/net/OldAuthenticatorTest.java \

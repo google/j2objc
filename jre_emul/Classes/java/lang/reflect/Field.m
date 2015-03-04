@@ -24,6 +24,7 @@
 #import "J2ObjC_source.h"
 #import "JavaMetadata.h"
 #import "java/lang/AssertionError.h"
+#import "java/lang/ClassLoader.h"
 #import "java/lang/IllegalAccessException.h"
 #import "java/lang/IllegalArgumentException.h"
 #import "java/lang/NullPointerException.h"
@@ -31,6 +32,7 @@
 #import "java/lang/reflect/Method.h"
 #import "java/lang/reflect/Modifier.h"
 #import "java/lang/reflect/TypeVariable.h"
+#import "libcore/reflect/GenericSignatureParser.h"
 #import "objc/message.h"
 #import "objc/runtime.h"
 
@@ -260,8 +262,23 @@ static void SetWithRawValue(
 }
 
 - (id<JavaLangReflectType>)getGenericType {
-  // TODO(tball): update when field metadata has a generic type attribute.
-  return [self getType];
+  id<JavaLangReflectType> result = [self getType];
+  if (metadata_) {
+    NSString *genericSignature = [metadata_ genericSignature];
+    if (!genericSignature) {
+      return result;
+    }
+    LibcoreReflectGenericSignatureParser *parser =
+        [[LibcoreReflectGenericSignatureParser alloc]
+         initWithJavaLangClassLoader:JavaLangClassLoader_getSystemClassLoader()];
+    [parser parseForFieldWithJavaLangReflectGenericDeclaration:declaringClass_
+                                                  withNSString:genericSignature];
+    if (parser->fieldType_) {
+      result = [[parser->fieldType_ retain] autorelease];
+    }
+    [parser release];
+  }
+  return result;
 }
 
 - (int)getModifiers {

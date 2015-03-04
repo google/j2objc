@@ -23,13 +23,43 @@
 #import "IOSClass.h"
 #import "IOSObjectArray.h"
 #import "JavaMetadata.h"
+#import "java/lang/ClassLoader.h"
 #import "java/lang/NoSuchMethodException.h"
+#import "java/lang/StringBuilder.h"
 #import "java/lang/annotation/Annotation.h"
+#import "java/lang/reflect/Constructor.h"
 #import "java/lang/reflect/Method.h"
 #import "java/lang/reflect/Modifier.h"
+#import "java/lang/reflect/Type.h"
 #import "java/lang/reflect/TypeVariable.h"
+#import "libcore/reflect/GenericSignatureParser.h"
+#import "libcore/reflect/ListOfTypes.h"
+#import "libcore/reflect/Types.h"
 #import "objc/message.h"
 #import "objc/runtime.h"
+
+@interface ExecutableMember ()
+
+- (JavaMethodMetadata *)metadata;
+
+@end
+
+// Value class from Android's java.lang.reflect.AbstractMethod class.
+@interface GenericInfo : NSObject {
+ @public
+  LibcoreReflectListOfTypes *genericExceptionTypes_;
+  LibcoreReflectListOfTypes *genericParameterTypes_;
+  id<JavaLangReflectType> genericReturnType_;
+  IOSObjectArray *formalTypeParameters_;
+}
+
+-(instancetype)init:(LibcoreReflectListOfTypes *)exceptions
+         parameters:(LibcoreReflectListOfTypes *)parameters
+         returnType:(id<JavaLangReflectType>)returnType
+     typeParameters:(IOSObjectArray *)typeParameters;
+@end
+
+static GenericInfo *getMethodOrConstructorGenericInfo(ExecutableMember *self);
 
 @implementation ExecutableMember
 
@@ -150,11 +180,13 @@ static IOSClass *ResolveParameterType(const char *objcType, NSString *paramKeywo
 }
 
 - (IOSObjectArray *)getGenericParameterTypes {
-  return [self getParameterTypes];
+  return LibcoreReflectTypes_getTypeArray_clone_(
+      getMethodOrConstructorGenericInfo(self)->genericParameterTypes_, NO);
 }
 
 - (IOSObjectArray *)getGenericExceptionTypes {
-  return [self getExceptionTypes];
+  return LibcoreReflectTypes_getTypeArray_clone_(
+      getMethodOrConstructorGenericInfo(self)->genericExceptionTypes_, NO);
 }
 
 - (BOOL)isSynthetic {
@@ -209,8 +241,53 @@ static IOSClass *ResolveParameterType(const char *objcType, NSString *paramKeywo
 }
 
 - (NSString *)toGenericString {
-  // TODO(tball): implement as part of method metadata.
-  return nil;
+  // Code generated from Android's java.lang.reflect.AbstractMethod class.
+  JavaLangStringBuilder *sb = [[JavaLangStringBuilder alloc] initWithInt:80];
+  GenericInfo *info = getMethodOrConstructorGenericInfo(self);
+  jint modifiers = [self getModifiers];
+  if (modifiers != 0) {
+    [[sb appendWithNSString:
+        JavaLangReflectModifier_toStringWithInt_(modifiers & ~JavaLangReflectModifier_VARARGS)]
+     appendWithChar:' '];
+  }
+  if (info && info->formalTypeParameters_ && info->formalTypeParameters_->size_ > 0) {
+    [sb appendWithChar:'<'];
+    for (jint i = 0; i < info->formalTypeParameters_->size_; i++) {
+      LibcoreReflectTypes_appendGenericType_type_(
+          sb, IOSObjectArray_Get(info->formalTypeParameters_, i));
+      if (i < info->formalTypeParameters_->size_ - 1) {
+        [sb appendWithNSString:@","];
+      }
+    }
+    [sb appendWithNSString:@"> "];
+  }
+  IOSClass *declaringClass = [self getDeclaringClass];
+  if ([self isKindOfClass:[JavaLangReflectConstructor class]]) {
+    LibcoreReflectTypes_appendTypeName_class_(sb, declaringClass);
+  } else {
+    if (info) {
+      LibcoreReflectTypes_appendGenericType_type_(
+          sb, LibcoreReflectTypes_getType_(info->genericReturnType_));
+    }
+    [sb appendWithChar:' '];
+    LibcoreReflectTypes_appendTypeName_class_(sb, declaringClass);
+    [[sb appendWithNSString:@"."] appendWithNSString:[self getName]];
+  }
+  [sb appendWithChar:'('];
+  if (info) {
+    LibcoreReflectTypes_appendArrayGenericType_types_(
+        sb, [info->genericParameterTypes_ getResolvedTypes]);
+  }
+  [sb appendWithChar:')'];
+  if (info) {
+    IOSObjectArray *genericExceptionTypeArray =
+        LibcoreReflectTypes_getTypeArray_clone_(info->genericExceptionTypes_, NO);
+    if (genericExceptionTypeArray->size_ > 0) {
+      [sb appendWithNSString:@" throws "];
+      LibcoreReflectTypes_appendArrayGenericType_types_(sb, genericExceptionTypeArray);
+    }
+  }
+  return [sb description];
 }
 
 - (BOOL)isVarArgs {
@@ -227,6 +304,10 @@ static IOSClass *ResolveParameterType(const char *objcType, NSString *paramKeywo
 
 - (NSMethodSignature *)signature {
   return methodSignature_;
+}
+
+- (JavaMethodMetadata *)metadata {
+  return metadata_;
 }
 
 // isEqual and hash are uniquely identified by their class and selectors.
@@ -249,5 +330,61 @@ static IOSClass *ResolveParameterType(const char *objcType, NSString *paramKeywo
   [super dealloc];
 }
 #endif
+
+@end
+
+// Function generated from Android's java.lang.reflect.AbstractMethod class.
+GenericInfo *getMethodOrConstructorGenericInfo(ExecutableMember *self) {
+  JavaMethodMetadata *metadata = [self metadata];
+  if (!metadata) {
+    return nil;
+  }
+  NSString *signatureAttribute = [metadata genericSignature];
+  BOOL isMethod = [self isKindOfClass:[JavaLangReflectMethod class]];
+  IOSObjectArray *exceptionTypes = [self getExceptionTypes];
+  LibcoreReflectGenericSignatureParser *parser =
+  [[[LibcoreReflectGenericSignatureParser alloc]
+    initWithJavaLangClassLoader:JavaLangClassLoader_getSystemClassLoader()] autorelease];
+  if (isMethod) {
+    [parser parseForMethodWithJavaLangReflectGenericDeclaration:self
+                                                   withNSString:signatureAttribute
+                                              withIOSClassArray:exceptionTypes];
+  }
+  else {
+    [parser parseForConstructorWithJavaLangReflectGenericDeclaration:self
+                                                        withNSString:signatureAttribute
+                                                   withIOSClassArray:exceptionTypes];
+  }
+  return [[GenericInfo alloc] init:parser->exceptionTypes_
+                        parameters:parser->parameterTypes_
+                        returnType:parser->returnType_
+                    typeParameters:parser->formalTypeParameters_];
+}
+
+@implementation GenericInfo
+
+-(instancetype)init:(LibcoreReflectListOfTypes *)exceptions
+         parameters:(LibcoreReflectListOfTypes *)parameters
+         returnType:(id<JavaLangReflectType>)returnType
+     typeParameters:(IOSObjectArray *)typeParameters {
+  if ((self = [super init])) {
+    genericExceptionTypes_ = exceptions;
+    genericParameterTypes_ = parameters;
+    genericReturnType_ = returnType;
+    formalTypeParameters_ = typeParameters;
+  }
+  return self;
+}
+
+#if ! __has_feature(objc_arc)
+- (void)dealloc {
+  [genericExceptionTypes_ release];
+  [genericParameterTypes_ release];
+  [genericReturnType_ release];
+  [formalTypeParameters_ release];
+  [super dealloc];
+}
+#endif
+
 
 @end

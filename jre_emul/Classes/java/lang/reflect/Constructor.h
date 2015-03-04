@@ -33,7 +33,6 @@
 // limited to those that can be derived from an Objective-C Method instance,
 // so instances can be created and released as needed.
 @interface JavaLangReflectConstructor : ExecutableMember
-    < JavaLangReflectGenericDeclaration, JavaLangReflectMember >
 
 + (instancetype)constructorWithMethodSignature:(NSMethodSignature *)methodSignature
                                       selector:(SEL)selector
