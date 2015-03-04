@@ -1091,7 +1091,7 @@ static FastPointerLookup_t classLookup = FAST_POINTER_LOOKUP_INIT(&ClassLookup);
 IOSClass *IOSClass_fromClass(Class cls) {
   // We get deadlock if IOSClass is not initialized before entering the fast
   // lookup because +initialize makes calls into IOSClass_fromClass().
-  IOSClass_init();
+  IOSClass_initialize();
   return (IOSClass *)FastPointerLookup(&classLookup, cls);
 }
 
