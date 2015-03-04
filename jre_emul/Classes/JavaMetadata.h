@@ -32,6 +32,7 @@
 - (id<JavaLangReflectType>)type;
 - (const void *)staticRef;
 - (const J2ObjcRawValue * const)getConstantValue;
+- (NSString *)genericSignature;
 
 @end
 
@@ -46,6 +47,7 @@
 - (id<JavaLangReflectType>)returnType;
 - (IOSObjectArray *)exceptionTypes;
 - (BOOL)isConstructor;
+- (NSString *)genericSignature;
 
 @end
 
@@ -80,5 +82,6 @@
 - (IOSObjectArray *)getSuperclassTypeArguments;
 - (IOSObjectArray *)getInnerClasses;
 - (JavaEnclosingMethodMetadata *)getEnclosingMethod;
+- (NSString *)genericSignature;
 
 @end

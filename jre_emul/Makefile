@@ -1023,6 +1023,7 @@ JAVA_SOURCES = \
 	libcore/reflect/ListOfTypes.java \
 	libcore/reflect/ListOfVariables.java \
 	libcore/reflect/ParameterizedTypeImpl.java \
+	libcore/reflect/Types.java \
 	libcore/reflect/TypeVariableImpl.java \
 	libcore/reflect/WildcardTypeImpl.java \
 	libcore/util/BasicLruCache.java \

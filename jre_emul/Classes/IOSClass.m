@@ -54,6 +54,8 @@
 #import "java/lang/reflect/Modifier.h"
 #import "java/lang/reflect/TypeVariable.h"
 #import "java/util/Properties.h"
+#import "libcore/reflect/GenericSignatureParser.h"
+#import "libcore/reflect/Types.h"
 #import "objc/message.h"
 #import "objc/runtime.h"
 
@@ -139,7 +141,22 @@ static JavaUtilProperties *prefixMapping;
 }
 
 - (id<JavaLangReflectType>)getGenericSuperclass {
-  return nil;
+  id<JavaLangReflectType> result = [self getSuperclass];
+  if (!result) {
+    return nil;
+  }
+  NSString *genericSignature = [[self getMetadata] genericSignature];
+  if (!genericSignature) {
+    return result;
+  }
+  LibcoreReflectGenericSignatureParser *parser =
+      [[LibcoreReflectGenericSignatureParser alloc]
+       initWithJavaLangClassLoader:JavaLangClassLoader_getSystemClassLoader()];
+  [parser parseForClassWithJavaLangReflectGenericDeclaration:self
+                                                withNSString:genericSignature];
+  result = [LibcoreReflectTypes getType:parser->superclassType_];
+  [parser release];
+  return result;
 }
 
 - (IOSClass *)getDeclaringClass {
@@ -607,10 +624,26 @@ static BOOL hasModifier(IOSClass *cls, int flag) {
 }
 
 - (IOSObjectArray *)getGenericInterfaces {
-  IOSObjectArray *interfaces = [self getInterfacesInternal];
-  return [IOSObjectArray arrayWithObjects:interfaces->buffer_
-                                    count:interfaces->size_
-                                     type:JavaLangReflectType_class_()];
+  if ([self isPrimitive]) {
+    return [IOSObjectArray arrayWithLength:0 type:JavaLangReflectType_class_()];
+  }
+  NSString *genericSignature = [[self getMetadata] genericSignature];
+  if (!genericSignature) {
+    // Just return regular interfaces list.
+    IOSObjectArray *interfaces = [self getInterfacesInternal];
+    return [IOSObjectArray arrayWithObjects:interfaces->buffer_
+                                      count:interfaces->size_
+                                       type:JavaLangReflectType_class_()];
+  }
+  LibcoreReflectGenericSignatureParser *parser =
+      [[LibcoreReflectGenericSignatureParser alloc]
+       initWithJavaLangClassLoader:JavaLangClassLoader_getSystemClassLoader()];
+  [parser parseForClassWithJavaLangReflectGenericDeclaration:self
+                                                withNSString:genericSignature];
+  IOSObjectArray *result =
+      [LibcoreReflectTypes getTypeArray:parser->interfaceTypes_ clone:false];
+  [parser release];
+  return result;
 }
 
 IOSObjectArray *IOSClass_NewInterfacesFromProtocolList(Protocol **list, unsigned int count) {
@@ -628,7 +661,18 @@ IOSObjectArray *IOSClass_NewInterfacesFromProtocolList(Protocol **list, unsigned
 }
 
 - (IOSObjectArray *)getTypeParameters {
-  return [IOSObjectArray arrayWithLength:0 type:JavaLangReflectTypeVariable_class_()];
+  NSString *genericSignature = [[self getMetadata] genericSignature];
+  if (!genericSignature) {
+    return [IOSObjectArray arrayWithLength:0 type:JavaLangReflectTypeVariable_class_()];
+  }
+  LibcoreReflectGenericSignatureParser *parser =
+      [[LibcoreReflectGenericSignatureParser alloc]
+       initWithJavaLangClassLoader:JavaLangClassLoader_getSystemClassLoader()];
+  [parser parseForClassWithJavaLangReflectGenericDeclaration:self
+                                                withNSString:genericSignature];
+  IOSObjectArray *result = [[parser->formalTypeParameters_ retain] autorelease];
+  [parser release];
+  return result;
 }
 
 - (id)getAnnotationWithIOSClass:(IOSClass *)annotationClass {

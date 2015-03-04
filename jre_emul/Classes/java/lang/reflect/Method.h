@@ -34,8 +34,7 @@
 // A native implementation of java.lang.reflect.Method.  Its methods are
 // limited to those that can be derived from an Objective-C Method instance,
 // so instances can be created and released as needed.
-@interface JavaLangReflectMethod : ExecutableMember
-    < JavaLangReflectGenericDeclaration, JavaLangReflectMember > {
+@interface JavaLangReflectMethod : ExecutableMember {
   BOOL isStatic_;
 }
 

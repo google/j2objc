@@ -200,6 +200,13 @@ static jint countArgs(char *s) {
            initWithMetadata:data_->enclosingMethod] autorelease];
 }
 
+- (NSString *)genericSignature {
+  if (J2OBJC_METADATA_VERSION < 2 || !data_->genericSignature) {
+    return nil;
+  }
+  return [NSString stringWithUTF8String:data_->genericSignature];
+}
+
 - (NSString *)description {
   return [NSString stringWithFormat:@"{ typeName=%@ packageName=%@ modifiers=0x%x }",
           typeName, packageName, modifiers];
@@ -255,6 +262,13 @@ static jint countArgs(char *s) {
 
 - (const J2ObjcRawValue * const)getConstantValue {
   return &data_->constantValue;
+}
+
+- (NSString *)genericSignature {
+  if (J2OBJC_METADATA_VERSION < 2 || !data_->genericSignature) {
+    return nil;
+  }
+  return [NSString stringWithUTF8String:data_->genericSignature];
 }
 
 @end
@@ -317,6 +331,13 @@ static jint countArgs(char *s) {
 - (BOOL)isConstructor {
   const char *name = data_->javaName ? data_->javaName : data_->selector;
   return strcmp(name, "init") == 0 || strstr(name, "initWith") == name;
+}
+
+- (NSString *)genericSignature {
+  if (J2OBJC_METADATA_VERSION < 2 || !data_->genericSignature) {
+    return nil;
+  }
+  return [NSString stringWithUTF8String:data_->genericSignature];
 }
 
 @end
