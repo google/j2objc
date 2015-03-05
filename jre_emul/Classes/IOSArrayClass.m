@@ -72,6 +72,10 @@
   return [[[self getComponentType] objcName] stringByAppendingString:@"Array"];
 }
 
+- (NSString *)getCanonicalName {
+  return [NSString stringWithFormat:@"%@[]", [componentType_ getCanonicalName]];
+}
+
 - (IOSObjectArray *)getInterfacesInternal {
   static dispatch_once_t onceToken;
   static IOSObjectArray *arrayInterfaces;

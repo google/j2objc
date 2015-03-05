@@ -186,7 +186,7 @@ static JavaUtilProperties *prefixMapping;
 }
 
 - (NSString *)getCanonicalName {
-  return [self getName];
+  return [[self getName] stringByReplacingOccurrencesOfString:@"$" withString:@"."];
 }
 
 - (NSString *)objcName {
@@ -226,16 +226,27 @@ static JavaUtilProperties *prefixMapping;
   return [IOSObjectArray arrayWithLength:0 type:JavaLangReflectConstructor_class_()];
 }
 
+static void GetAllMethods(IOSClass *cls, NSMutableDictionary *methodMap) {
+  [cls collectMethods:methodMap publicOnly:YES];
+
+  // getMethods() returns unimplemented interface methods if the class is abstract.
+  if (([cls getModifiers] & JavaLangReflectModifier_ABSTRACT) > 0) {
+    for (IOSClass *p in [cls getInterfacesInternal]) {
+      GetAllMethods(p, methodMap);
+    }
+  }
+
+  while ((cls = [cls getSuperclass])) {
+    GetAllMethods(cls, methodMap);
+  }
+}
+
 // Return the methods for this class, including inherited methods.
 - (IOSObjectArray *)getMethods {
   NSMutableDictionary *methodMap = [NSMutableDictionary dictionary];
-  IOSClass *cls = self;
-  while (cls) {
-    [cls collectMethods:methodMap publicOnly:YES];
-    cls = [cls getSuperclass];
-  }
+  GetAllMethods(self, methodMap);
   return [IOSObjectArray arrayWithNSArray:[methodMap allValues]
-      type:JavaLangReflectMethod_class_()];
+                                     type:JavaLangReflectMethod_class_()];
 }
 
 // Return the constructors for this class, including inherited ones.
@@ -249,23 +260,19 @@ static JavaUtilProperties *prefixMapping;
 - (JavaLangReflectMethod *)getMethod:(NSString *)name
                       parameterTypes:(IOSObjectArray *)types {
   NSString *translatedName = IOSClass_GetTranslatedMethodName(self, name, types);
-  JavaLangReflectMethod *method = [self findMethodWithTranslatedName:translatedName];
-  if (method != nil) {
-    return method;
-  }
   IOSClass *cls = self;
-  while ((cls = [cls getSuperclass]) != nil) {
-    method = [cls findMethodWithTranslatedName:translatedName];
+  do {
+    JavaLangReflectMethod *method = [cls findMethodWithTranslatedName:translatedName];
     if (method != nil) {
       return method;
     }
-  }
-  for (IOSClass *p in [self getInterfacesInternal]) {
-    method = [p findMethodWithTranslatedName:translatedName];
-    if (method != nil) {
-      return method;
+    for (IOSClass *p in [cls getInterfacesInternal]) {
+      method = [p findMethodWithTranslatedName:translatedName];
+      if (method != nil) {
+        return method;
+      }
     }
-  }
+  } while ((cls = [cls getSuperclass]) != nil);
   @throw AUTORELEASE([[JavaLangNoSuchMethodException alloc] initWithNSString:name]);
 }
 
@@ -837,28 +844,41 @@ static void GetFieldsFromClass(IOSClass *iosClass, NSMutableDictionary *fields) 
   @throw AUTORELEASE([[JavaLangNoSuchFieldException alloc] initWithNSString:name]);
 }
 
-- (JavaLangReflectField *)getField:(NSString *)name {
-  nil_chk(name);
-  const char *objcName = GetFieldName(name, self);
-  IOSClass *iosClass = self;
-  Class cls = nil;
-  while (iosClass && (cls = iosClass.objcClass)) {
-    Ivar ivar = class_getInstanceVariable(cls, objcName);
-    if (ivar) {
-      return FieldFromIvar(self, ivar);
-    }
-
-    JavaClassMetadata *metadata = [self getMetadata];
+JavaLangReflectField *findField(IOSClass *iosClass, NSString *name) {
+  const char *objcName = GetFieldName(name, iosClass);
+  while (iosClass) {
+    Class cls = iosClass.objcClass;
+    JavaClassMetadata *metadata = [iosClass getMetadata];
     if (metadata) {
       JavaFieldMetadata *fieldMeta = [metadata findFieldMetadata:[name UTF8String]];
-      if (fieldMeta) {
-        ivar = class_getInstanceVariable(cls, [[fieldMeta iosName] UTF8String]);
+      if (([fieldMeta modifiers] & JavaLangReflectModifier_PUBLIC) > 0) {
+        Ivar ivar = class_getInstanceVariable(cls, [[fieldMeta iosName] UTF8String]);
         return [JavaLangReflectField fieldWithIvar:ivar
-                                         withClass:self
+                                         withClass:iosClass
                                       withMetadata:fieldMeta];
+      }
+    } else {
+      Ivar ivar = class_getInstanceVariable(cls, objcName);
+      if (ivar) {
+        return FieldFromIvar(iosClass, ivar);
+      }
+    }
+    for (IOSClass *p in [iosClass getInterfacesInternal]) {
+      JavaLangReflectField *field = findField(p, name);
+      if (field) {
+        return field;
       }
     }
     iosClass = [iosClass getSuperclass];
+  }
+  return nil;
+}
+
+- (JavaLangReflectField *)getField:(NSString *)name {
+  nil_chk(name);
+  JavaLangReflectField *field = findField(self, name);
+  if (field) {
+    return field;
   }
   @throw AUTORELEASE([[JavaLangNoSuchFieldException alloc] initWithNSString:name]);
 }
@@ -879,14 +899,19 @@ IOSObjectArray *copyFieldsToObjectArray(NSArray *fields) {
   return copyFieldsToObjectArray([fieldDictionary allValues]);
 }
 
+static void getAllFields(IOSClass *cls, NSMutableDictionary *fieldMap) {
+  GetFieldsFromClass(cls, fieldMap);
+  for (IOSClass *p in [cls getInterfacesInternal]) {
+    getAllFields(p, fieldMap);
+  }
+  while ((cls = [cls getSuperclass])) {
+    getAllFields(cls, fieldMap);
+  }
+}
+
 - (IOSObjectArray *)getFields {
   NSMutableDictionary *fieldDictionary = [NSMutableDictionary dictionary];
-  IOSClass *iosClass = self;
-  Class cls = nil;
-  while (iosClass && (cls = iosClass.objcClass)) {
-    GetFieldsFromClass(iosClass, fieldDictionary);
-    iosClass = [iosClass getSuperclass];
-  }
+  getAllFields(self, fieldDictionary);
   return copyFieldsToObjectArray([fieldDictionary allValues]);
 }
 
