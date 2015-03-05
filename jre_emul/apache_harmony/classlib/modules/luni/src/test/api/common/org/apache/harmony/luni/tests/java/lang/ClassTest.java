@@ -439,11 +439,9 @@ public class ClassTest extends junit.framework.TestCase {
     /**
      * @tests java.lang.Class#getDeclaringClass()
      */
-    /* TODO(tball): enable if Class.getDeclaringClass is mapped.
     public void test_getDeclaringClass() {
         assertEquals(ClassTest.class, TestClass.class.getDeclaringClass());
     }
-    */
 
     /**
      * @tests java.lang.Class#getField(java.lang.String)
@@ -451,8 +449,12 @@ public class ClassTest extends junit.framework.TestCase {
     public void test_getFieldLjava_lang_String() throws Exception {
         Field f = TestClass.class.getField("pubField");
         assertEquals("Returned incorrect field", 2, f.getInt(new TestClass()));
-        f = TestClass.class.getField("privField");
-        assertEquals("Returned incorrect field", 1, f.getInt(new TestClass()));
+        try {
+            f = TestClass.class.getField("privField");
+            fail("Private field access failed to throw exception");
+        } catch (NoSuchFieldException e) {
+            // Correct
+        }
     }
 
     /**
