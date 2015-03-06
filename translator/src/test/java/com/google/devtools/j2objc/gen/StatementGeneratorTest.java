@@ -1557,16 +1557,6 @@ public class StatementGeneratorTest extends GenerationTest {
     assertTranslation(translation, "for (NSString *s1 = nil, *s2 = nil; ; )");
   }
 
-  public void testQualifiedSuperMethodInvocation() throws IOException {
-    String translation = translateSourceFile(
-        "class Test { double foo(int i) { return 1.2; } "
-        + "static class Inner extends Test { Runnable test() { return new Runnable() { "
-        + "public void run() { Inner.super.foo(1); } }; } } }", "Test", "Test.m");
-    assertTranslation(translation,
-        "((jdouble (*)(id, SEL, jint))[Test instanceMethodForSelector:@selector(fooWithInt:)])"
-        + "(this$0_, @selector(fooWithInt:), 1);");
-  }
-
   // Verify that constant variables are directly referenced when expression is "self".
   public void testSelfStaticVarAccess() throws IOException {
     String translation = translateSourceFile(

@@ -162,7 +162,7 @@ public class Functionizer extends TreeVisitor {
     }
 
     FunctionInvocation functionInvocation = new FunctionInvocation(
-        NameTable.makeFunctionName(binding), node.getTypeBinding(), binding.getReturnType(),
+        NameTable.getFullFunctionName(binding), node.getTypeBinding(), binding.getReturnType(),
         binding.getDeclaringClass());
     List<Expression> args = functionInvocation.getArguments();
     TreeUtil.moveList(node.getArguments(), args);
@@ -230,7 +230,7 @@ public class Functionizer extends TreeVisitor {
         declaringClass, false, true, declaringClass, null);
 
     FunctionDeclaration function = new FunctionDeclaration(
-        NameTable.makeFunctionName(m), m.getReturnType());
+        NameTable.getFullFunctionName(m), m.getReturnType());
     function.getParameters().add(new SingleVariableDeclaration(var));
     TreeUtil.copyList(method.getParameters(), function.getParameters());
     function.setModifiers(Modifier.PRIVATE | (method.getModifiers() & Modifier.NATIVE));
@@ -246,7 +246,7 @@ public class Functionizer extends TreeVisitor {
     ITypeBinding declaringClass = m.getDeclaringClass();
 
     FunctionDeclaration function = new FunctionDeclaration(
-        NameTable.makeFunctionName(m), m.getReturnType());
+        NameTable.getFullFunctionName(m), m.getReturnType());
     TreeUtil.copyList(method.getParameters(), function.getParameters());
     int access = BindingUtil.isPrivate(m) ? Modifier.PRIVATE : Modifier.PUBLIC;
     function.setModifiers(access);

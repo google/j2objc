@@ -307,6 +307,12 @@ public class TreeVisitor {
 
   public void endVisit(NativeDeclaration node) {}
 
+  public boolean visit(NativeExpression node) {
+    return true;
+  }
+
+  public void endVisit(NativeExpression node) {}
+
   public boolean visit(NativeStatement node) {
     return true;
   }

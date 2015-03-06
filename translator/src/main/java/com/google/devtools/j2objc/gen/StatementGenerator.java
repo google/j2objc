@@ -59,6 +59,7 @@ import com.google.devtools.j2objc.ast.MemberValuePair;
 import com.google.devtools.j2objc.ast.MethodDeclaration;
 import com.google.devtools.j2objc.ast.MethodInvocation;
 import com.google.devtools.j2objc.ast.Name;
+import com.google.devtools.j2objc.ast.NativeExpression;
 import com.google.devtools.j2objc.ast.NativeStatement;
 import com.google.devtools.j2objc.ast.NormalAnnotation;
 import com.google.devtools.j2objc.ast.NullLiteral;
@@ -632,6 +633,12 @@ public class StatementGenerator extends TreeVisitor {
   }
 
   @Override
+  public boolean visit(NativeExpression node) {
+    buffer.append(node.getCode());
+    return false;
+  }
+
+  @Override
   public boolean visit(NativeStatement node) {
     buffer.append(node.getCode());
     buffer.append('\n');
@@ -911,44 +918,18 @@ public class StatementGenerator extends TreeVisitor {
     return false;
   }
 
-  private static String signatureType(ITypeBinding type) {
-    if (type.isPrimitive()) {
-      return NameTable.primitiveTypeToObjC(type);
-    }
-    return "id";
-  }
-
   @Override
   public boolean visit(SuperMethodInvocation node) {
     IMethodBinding binding = node.getMethodBinding();
-    Name qualifier = node.getQualifier();
-    if (qualifier != null) {
-      String typeName = NameTable.getFullName(
-          BindingUtil.toTypeBinding(qualifier.getBinding()).getSuperclass());
-      String selectorName = NameTable.getMethodSelector(binding);
-      // We must cast the IMP to have the correct return type and parameters.
-      buffer.append(String.format("((%s (*)(id, SEL", signatureType(binding.getReturnType())));
-      for (ITypeBinding paramType : binding.getParameterTypes()) {
-        buffer.append(", ").append(signatureType(paramType));
-      }
-      buffer.append(String.format(
-          "))[%s instanceMethodForSelector:@selector(%s)])(", typeName, selectorName));
-      qualifier.accept(this);
-      buffer.append(String.format(", @selector(%s)", selectorName));
-      for (Expression arg : node.getArguments()) {
-        buffer.append(", ");
-        arg.accept(this);
-      }
-      buffer.append(")");
+    assert node.getQualifier() == null
+        : "Qualifiers expected to be handled by SuperMethodInvocationRewriter.";
+    if (BindingUtil.isStatic(binding)) {
+      buffer.append("[[super class]");
     } else {
-      if (BindingUtil.isStatic(binding)) {
-        buffer.append("[[super class]");
-      } else {
-        buffer.append("[super");
-      }
-      printMethodInvocationNameAndArgs(NameTable.getMethodSelector(binding), node.getArguments());
-      buffer.append(']');
+      buffer.append("[super");
     }
+    printMethodInvocationNameAndArgs(NameTable.getMethodSelector(binding), node.getArguments());
+    buffer.append(']');
     return false;
   }
 
