@@ -61,7 +61,7 @@
 }
 
 - (NSString *)getSimpleName {
-  return [[[self getComponentType] getName] stringByAppendingString:@"[]"];
+  return [[[self getComponentType] getSimpleName] stringByAppendingString:@"[]"];
 }
 
 - (NSString *)binaryName {
@@ -100,7 +100,7 @@
 }
 
 - (NSString *)description {
-  return [NSString stringWithFormat:@"class %@", [self getSimpleName]];
+  return [NSString stringWithFormat:@"class %@", [self getName]];
 }
 
 #if ! __has_feature(objc_arc)

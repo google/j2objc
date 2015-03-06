@@ -792,12 +792,15 @@ static JavaLangReflectField *FieldFromIvar(IOSClass *iosClass, Ivar ivar) {
 }
 
 // Adds all the fields for a specified class to a specified dictionary.
-static void GetFieldsFromClass(IOSClass *iosClass, NSMutableDictionary *fields) {
+static void GetFieldsFromClass(IOSClass *iosClass, NSMutableDictionary *fields, BOOL publicOnly) {
   JavaClassMetadata *metadata = [iosClass getMetadata];
   if (metadata) {
     IOSObjectArray *infos = [metadata allFields];
     for (jint i = 0; i < infos->size_; i++) {
       JavaFieldMetadata *fieldMeta = [infos objectAtIndex:i];
+      if (publicOnly && ([fieldMeta modifiers] & JavaLangReflectModifier_PUBLIC) == 0) {
+        continue;
+      }
       Ivar ivar = class_getInstanceVariable(iosClass.objcClass, [[fieldMeta iosName] UTF8String]);
       JavaLangReflectField *field = [JavaLangReflectField fieldWithIvar:ivar
                                                               withClass:iosClass
@@ -895,12 +898,12 @@ IOSObjectArray *copyFieldsToObjectArray(NSArray *fields) {
 
 - (IOSObjectArray *)getDeclaredFields {
   NSMutableDictionary *fieldDictionary = [NSMutableDictionary dictionary];
-  GetFieldsFromClass(self, fieldDictionary);
+  GetFieldsFromClass(self, fieldDictionary, NO);
   return copyFieldsToObjectArray([fieldDictionary allValues]);
 }
 
 static void getAllFields(IOSClass *cls, NSMutableDictionary *fieldMap) {
-  GetFieldsFromClass(cls, fieldMap);
+  GetFieldsFromClass(cls, fieldMap, YES);
   for (IOSClass *p in [cls getInterfacesInternal]) {
     getAllFields(p, fieldMap);
   }
