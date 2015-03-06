@@ -466,9 +466,25 @@ public class ObjectiveCImplementationGeneratorTest extends GenerationTest {
         + "  public Test() { this(42); }"
         + "  public Test(int i) {} }",
         "Test", "Test.m");
-    assertTranslation(translation, "- (instancetype)initWithInt:(jint)i {");
-    assertTranslation(translation, "- (instancetype)initTestWithInt:(jint)i {");
-    assertTranslation(translation, "[self initTestWithInt:42]");
+    assertTranslatedLines(translation,
+        "- (instancetype)init {",
+        "  Test_init(self);",
+        "  return self;",
+        "}");
+    assertTranslatedLines(translation,
+        "- (instancetype)initWithInt:(jint)i {",
+        "  Test_initWithInt_(self, i);",
+        "  return self;",
+        "}");
+    assertTranslatedLines(translation,
+        "void Test_init(Test *self) {",
+        "  Test_initWithInt_(self, 42);",
+        "}");
+    assertTranslatedLines(translation,
+        "void Test_initWithInt_(Test *self, jint i) {",
+        "  NSObject_init(self);",
+        "}");
+
   }
 
   public void testInnerConstructorGeneratedForNonStaticInnerClass() throws IOException {
@@ -478,8 +494,25 @@ public class ObjectiveCImplementationGeneratorTest extends GenerationTest {
         + "    public Inner() { this(42); }"
         + "    public Inner(int i) {} } }",
         "Test", "Test.m");
-    assertTranslation(translation, "- (instancetype)initTest_InnerWithTest:(Test *)");
-    assertTranslation(translation, "[self initTest_InnerWithTest:");
+    assertTranslatedLines(translation,
+        "- (instancetype)initWithTest:(Test *)outer$ {",
+        "  Test_Inner_initWithTest_(self, outer$);",
+        "  return self;",
+        "}");
+    assertTranslatedLines(translation,
+        "- (instancetype)initWithTest:(Test *)outer$",
+        "                     withInt:(jint)i {",
+        "  Test_Inner_initWithTest_withInt_(self, outer$, i);",
+        "  return self;",
+        "}");
+    assertTranslatedLines(translation,
+        "void Test_Inner_initWithTest_(Test_Inner *self, Test *outer$) {",
+        "  Test_Inner_initWithTest_withInt_(self, outer$, 42);",
+        "}");
+    assertTranslatedLines(translation,
+        "void Test_Inner_initWithTest_withInt_(Test_Inner *self, Test *outer$, jint i) {",
+        "  NSObject_init(self);",
+        "}");
   }
 
   public void testSynchronizedMethod() throws IOException {

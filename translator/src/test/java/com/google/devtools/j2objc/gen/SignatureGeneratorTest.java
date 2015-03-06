@@ -71,7 +71,7 @@ public class SignatureGeneratorTest extends GenerationTest {
         + "Class<?> e; java.util.List<X> f; Comparable<? super X> g; "
         + "A<? extends Number, ?, String> h; }");
     List<BodyDeclaration> decls = unit.getTypes().get(0).getBodyDeclarations();
-    assertEquals(8, decls.size() - 2);  // Ignore added init, dealloc methods.
+    assertEquals(8, decls.size() - 3);  // Ignore added init, dealloc methods, init function.
 
     // Verify a and b don't return a signature, since they aren't generic types.
     assertNull(SignatureGenerator.createFieldTypeSignature(getVariable(decls, 0)));
@@ -99,7 +99,7 @@ public class SignatureGeneratorTest extends GenerationTest {
         + "<T extends Throwable> void rethrow(Throwable t) {}"
         + "}");
     List<BodyDeclaration> decls = unit.getTypes().get(0).getBodyDeclarations();
-    assertEquals(6, decls.size() - 1);  // Ignore added init method.
+    assertEquals(6, decls.size() - 2);  // Ignore added init method and function.
 
     // Verify a, b and c don't return a signature, since they aren't generic types.
     assertNull(SignatureGenerator.createMethodTypeSignature(getMethod(decls, 0)));

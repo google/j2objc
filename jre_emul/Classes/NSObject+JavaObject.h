@@ -23,6 +23,7 @@
 #define _NSObject_JavaObject_H_
 
 #import <Foundation/Foundation.h>
+
 #import "J2ObjC_common.h"
 #import "JavaObject.h"
 
@@ -49,6 +50,8 @@
 - (void)_java_lang_ref_original_release;
 
 @end
+
+__attribute__((always_inline)) inline void NSObject_init(NSObject *self) {}
 
 // Empty class to force category to be loaded.
 @interface JreObjectCategoryDummy : NSObject

@@ -29,10 +29,13 @@
 @implementation JavaLangReflectAccessibleObject
 
 - (instancetype)init {
-  if ((self = [super init])) {
-    accessible_ = NO;
-  }
+  JavaLangReflectAccessibleObject_init(self);
   return self;
+}
+
+void JavaLangReflectAccessibleObject_init(JavaLangReflectAccessibleObject *self) {
+  NSObject_init(self);
+  self->accessible_ = NO;
 }
 
 - (BOOL)isAccessible {

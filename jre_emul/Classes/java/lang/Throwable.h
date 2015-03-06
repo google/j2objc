@@ -22,8 +22,8 @@
 #ifndef _JavaLangThrowable_H_
 #define _JavaLangThrowable_H_
 
-#import "JavaObject.h"
 #import "java/io/Serializable.h"
+#import "JavaObject.h"
 
 @class JavaIoPrintStream;
 @class JavaIoPrintWriter;
@@ -68,6 +68,20 @@
 - (void)addSuppressedWithJavaLangThrowable:(JavaLangThrowable *)exception;
 - (IOSObjectArray *)getSuppressed;
 @end
+
+CF_EXTERN_C_BEGIN
+
+void JavaLangThrowable_init(JavaLangThrowable *self);
+void JavaLangThrowable_initWithNSString_(JavaLangThrowable *self, NSString *message);
+void JavaLangThrowable_initWithNSString_withJavaLangThrowable_(
+    JavaLangThrowable *self, NSString *message, JavaLangThrowable *causeArg);
+void JavaLangThrowable_initWithJavaLangThrowable_(
+    JavaLangThrowable *self, JavaLangThrowable *causeArg);
+void JavaLangThrowable_initWithNSString_withJavaLangThrowable_withBoolean_withBoolean_(
+    JavaLangThrowable *self, NSString *message, JavaLangThrowable *causeArg, BOOL enableSuppression,
+    BOOL writeableStackTrace);
+
+CF_EXTERN_C_END
 
 J2OBJC_EMPTY_STATIC_INIT(JavaLangThrowable)
 

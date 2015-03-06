@@ -409,15 +409,7 @@ public class StatementGenerator extends TreeVisitor {
 
   @Override
   public boolean visit(ConstructorInvocation node) {
-    IMethodBinding binding = node.getMethodBinding();
-    ITypeBinding declaringClass = binding.getDeclaringClass();
-    List<Expression> args = node.getArguments();
-    buffer.append("[self");
-    String selector = "init" + NameTable.getFullName(declaringClass)
-        + NameTable.getMethodSelector(binding).substring(4);
-    printMethodInvocationNameAndArgs(selector, args);
-    buffer.append("]");
-    return false;
+    throw new AssertionError("ConstructorInvocation nodes are rewritten by Functionizer.");
   }
 
   @Override
@@ -902,14 +894,9 @@ public class StatementGenerator extends TreeVisitor {
     return buffer.toString();
   }
 
-
   @Override
   public boolean visit(SuperConstructorInvocation node) {
-    IMethodBinding binding = node.getMethodBinding();
-    buffer.append("[super");
-    printMethodInvocationNameAndArgs(NameTable.getMethodSelector(binding), node.getArguments());
-    buffer.append(']');
-    return false;
+    throw new AssertionError("SuperConstructorInvocation nodes are rewritten by Functionizer.");
   }
 
   @Override

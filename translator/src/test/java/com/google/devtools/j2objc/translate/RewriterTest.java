@@ -172,7 +172,7 @@ public class RewriterTest extends GenerationTest {
     String translation = translateSourceFile(
         "class Test { Test(int[] i) {} Test() { this(new int[] {}); } }", "Test", "Test.m");
     assertTranslation(translation,
-        "[self initTestWithIntArray:[IOSIntArray arrayWithInts:(jint[]){  } count:0]]");
+        "Test_initWithIntArray_(self, [IOSIntArray arrayWithInts:(jint[]){  } count:0]);");
   }
 
   public void testInterfaceFieldsAreStaticFinal() throws IOException {

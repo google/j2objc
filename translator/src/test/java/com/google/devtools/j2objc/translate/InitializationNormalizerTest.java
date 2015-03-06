@@ -18,16 +18,8 @@ package com.google.devtools.j2objc.translate;
 
 import com.google.devtools.j2objc.GenerationTest;
 import com.google.devtools.j2objc.ast.AbstractTypeDeclaration;
-import com.google.devtools.j2objc.ast.BodyDeclaration;
 import com.google.devtools.j2objc.ast.CompilationUnit;
-import com.google.devtools.j2objc.ast.ExpressionStatement;
-import com.google.devtools.j2objc.ast.MethodDeclaration;
-import com.google.devtools.j2objc.ast.Statement;
-import com.google.devtools.j2objc.ast.SuperConstructorInvocation;
 import com.google.devtools.j2objc.ast.TypeDeclaration;
-
-import org.eclipse.jdt.core.dom.IMethodBinding;
-import org.eclipse.jdt.core.dom.Modifier;
 
 import java.io.IOException;
 import java.util.List;
@@ -49,15 +41,6 @@ public class InitializationNormalizerTest extends GenerationTest {
     instance = new InitializationNormalizer();
   }
 
-  private TypeDeclaration translateClassBody(String testSource) {
-    String source = "public class Test { " + testSource + " }";
-    CompilationUnit unit = translateType("Test", source);
-    List<AbstractTypeDeclaration> types = unit.getTypes();
-    assertEquals(1, types.size());
-    assertTrue(types.get(0) instanceof TypeDeclaration);
-    return (TypeDeclaration) types.get(0);
-  }
-
   /**
    * Verify that for a constructor that calls another constructor and has
    * other statements, the "this-constructor" statement is used to
@@ -69,7 +52,11 @@ public class InitializationNormalizerTest extends GenerationTest {
         + "Test() { this(true); b2 = true; }"
         + "Test(boolean b) { b1 = b; }}";
     String translation = translateSourceFile(source, "Test", "Test.m");
-    assertTranslation(translation, "if (self = [self initTestWithBoolean:YES]) {");
+    assertTranslatedLines(translation,
+        "void Test_init(Test *self) {",
+        "  Test_initWithBoolean_(self, YES);",
+        "  self->b2_ = YES;",
+        "}");
   }
 
   /**
@@ -109,11 +96,9 @@ public class InitializationNormalizerTest extends GenerationTest {
     // Test that a default constructor was created and the initializer statement
     // moved to the constructor.
     assertTranslatedLines(translation,
-        "- (instancetype)init {",
-        "if (self = [super init]) {",
-        "Test_setAndConsume_date_(self, [[JavaUtilDate alloc] init]);",
-        "}",
-        "return self;",
+        "void Test_init(Test *self) {",
+        "  NSObject_init(self);",
+        "  Test_setAndConsume_date_(self, [[JavaUtilDate alloc] init]);",
         "}");
   }
 
@@ -123,13 +108,11 @@ public class InitializationNormalizerTest extends GenerationTest {
     // Test that a default constructor was created and the initializer statement
     // moved to the constructor.
     assertTranslatedLines(translation,
-        "- (instancetype)init {",
-        "if (self = [super init]) {",
-        "{",
-        "Test_setAndConsume_date_(self, [[JavaUtilDate alloc] init]);",
-        "}",
-        "}",
-        "return self;",
+        "void Test_init(Test *self) {",
+        "  NSObject_init(self);",
+        "  {",
+        "    Test_setAndConsume_date_(self, [[JavaUtilDate alloc] init]);",
+        "  }",
         "}");
   }
 
@@ -153,40 +136,29 @@ public class InitializationNormalizerTest extends GenerationTest {
         "Test", "Test.m");
     // test that default constructor was untouched, since it calls self()
     assertTranslatedLines(translation,
-        "- (instancetype)init {", "return [self initTestWithInt:2];", "}");
+        "void Test_init(Test *self) {",
+        "  Test_initWithInt_(self, 2);",
+        "}");
     // test that initializer statement was added to second constructor
     assertTranslatedLines(translation,
-        "- (instancetype)initTestWithInt:(jint)i {",
-        "if (self = [super init]) {",
-        "{",
-        "Test_setAndConsume_date_(self, [[JavaUtilDate alloc] init]);",
-        "}",
-        "[((JavaIoPrintStream *) nil_chk(JavaLangSystem_get_out_())) printlnWithInt:i];",
-        "}",
-        "return self;",
+        "void Test_initWithInt_(Test *self, jint i) {",
+        "  NSObject_init(self);",
+        "  {",
+        "    Test_setAndConsume_date_(self, [[JavaUtilDate alloc] init]);",
+        "  }",
+        "  [((JavaIoPrintStream *) nil_chk(JavaLangSystem_get_out_())) printlnWithInt:i];",
         "}");
   }
 
-  public void testInitializerMovedToEmptyConstructor() {
-    TypeDeclaration clazz = translateClassBody(
-        "java.util.Date date = new java.util.Date(); public Test() {}");
-    List<BodyDeclaration> classMembers = clazz.getBodyDeclarations();
-    assertEquals(3, classMembers.size());  // dealloc() was also added to release date
-
-    // Test that the constructor had super() and initialization statements added.
-    BodyDeclaration decl = classMembers.get(1);
-    MethodDeclaration method = (MethodDeclaration) decl;
-    IMethodBinding binding = method.getMethodBinding();
-    assertTrue(binding.isConstructor());
-    assertEquals(Modifier.PUBLIC, method.getModifiers());
-    assertTrue(method.getParameters().isEmpty());
-    List<Statement> generatedStatements = method.getBody().getStatements();
-    assertEquals(2, generatedStatements.size());
-    assertTrue(generatedStatements.get(0) instanceof SuperConstructorInvocation);
-    SuperConstructorInvocation superInvoke =
-        (SuperConstructorInvocation) generatedStatements.get(0);
-    assertTrue(superInvoke.getArguments().isEmpty());
-    assertTrue(generatedStatements.get(1) instanceof ExpressionStatement);
+  public void testInitializerMovedToEmptyConstructor() throws IOException {
+    String translation = translateSourceFile(
+        "class Test { java.util.Date date = new java.util.Date(); public Test() {} }",
+        "Test", "Test.m");
+    assertTranslatedLines(translation,
+        "void Test_init(Test *self) {",
+        "  NSObject_init(self);",
+        "  Test_setAndConsume_date_(self, [[JavaUtilDate alloc] init]);",
+        "}");
   }
 
   /**

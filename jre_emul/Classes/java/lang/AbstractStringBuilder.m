@@ -62,7 +62,8 @@ static JavaLangStringIndexOutOfBoundsException *StartEndAndLength(
     val = LibcoreUtilEmptyArray_get_CHAR_();
   }
   if (((IOSCharArray *) nil_chk(val))->size_ < len) {
-    @throw [[[JavaIoInvalidObjectException alloc] initWithNSString:@"count out of range"] autorelease];
+    @throw [[[JavaIoInvalidObjectException alloc] initWithNSString:@"count out of range"]
+        autorelease];
   }
   if (len > delegate_.bufferSize_) {
     free(delegate_.buffer_);
@@ -78,31 +79,39 @@ void JreStringBuilder_initWithCapacity(JreStringBuilder *sb, jint capacity) {
 }
 
 - (instancetype)init {
-  if (self = [super init]) {
-    NewBuffer(&delegate_, INITIAL_CAPACITY);
-  }
+  JavaLangAbstractStringBuilder_init(self);
   return self;
 }
 
 - (instancetype)initWithInt:(jint)capacity {
-  if (self = [super init]) {
-    if (capacity < 0) {
-      @throw [[[JavaLangNegativeArraySizeException alloc] initWithNSString:
-          JavaLangInteger_toStringWithInt_(capacity)] autorelease];
-    }
-    NewBuffer(&delegate_, capacity);
-  }
+  JavaLangAbstractStringBuilder_initWithInt_(self, capacity);
   return self;
 }
 
 - (instancetype)initWithNSString:(NSString *)string {
-  if (self = [super init]) {
-    nil_chk(string);
-    delegate_.count_ = (jint)[string length];
-    NewBuffer(&delegate_, delegate_.count_ + INITIAL_CAPACITY);
-    [string getCharacters:delegate_.buffer_ range:NSMakeRange(0, delegate_.count_)];
-  }
+  JavaLangAbstractStringBuilder_initWithNSString_(self, string);
   return self;
+}
+
+void JavaLangAbstractStringBuilder_init(JavaLangAbstractStringBuilder *self) {
+  NewBuffer(&self->delegate_, INITIAL_CAPACITY);
+}
+
+void JavaLangAbstractStringBuilder_initWithInt_(
+    JavaLangAbstractStringBuilder *self, jint capacity) {
+  if (capacity < 0) {
+    @throw [[[JavaLangNegativeArraySizeException alloc] initWithNSString:
+        JavaLangInteger_toStringWithInt_(capacity)] autorelease];
+  }
+  NewBuffer(&self->delegate_, capacity);
+}
+
+void JavaLangAbstractStringBuilder_initWithNSString_(
+    JavaLangAbstractStringBuilder *self, NSString *string) {
+  nil_chk(string);
+  self->delegate_.count_ = (jint)[string length];
+  NewBuffer(&self->delegate_, self->delegate_.count_ + INITIAL_CAPACITY);
+  [string getCharacters:self->delegate_.buffer_ range:NSMakeRange(0, self->delegate_.count_)];
 }
 
 static void EnlargeBuffer(JreStringBuilder *sb, jint min) {

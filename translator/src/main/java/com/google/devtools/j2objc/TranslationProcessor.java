@@ -278,6 +278,11 @@ class TranslationProcessor extends FileProcessor {
     new OcniExtractor(unit).run(unit);
     ticker.tick("OcniExtractor");
 
+    // Before: Functionizer - Edits constructor invocations before they are
+    //   functionized.
+    new EnumRewriter().run(unit);
+    ticker.tick("EnumRewriter");
+
     // After: OcniExtractor - So that native methods can be correctly
     //   functionized.
     new Functionizer().run(unit);
@@ -304,9 +309,6 @@ class TranslationProcessor extends FileProcessor {
     //   hasRetainedResult on ArrayCreation nodes.
     new ArrayRewriter().run(unit);
     ticker.tick("ArrayRewriter");
-
-    new EnumRewriter().run(unit);
-    ticker.tick("EnumRewriter");
 
     // Breaks up deeply nested expressions such as chained method calls.
     // Should be one of the last translations because other mutations will

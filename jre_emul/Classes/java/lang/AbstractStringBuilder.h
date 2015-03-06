@@ -97,6 +97,12 @@ typedef struct JreStringBuilder {
 
 CF_EXTERN_C_BEGIN
 
+void JavaLangAbstractStringBuilder_init(JavaLangAbstractStringBuilder *self);
+void JavaLangAbstractStringBuilder_initWithInt_(
+    JavaLangAbstractStringBuilder *self, jint capacity);
+void JavaLangAbstractStringBuilder_initWithNSString_(
+    JavaLangAbstractStringBuilder *self, NSString *string);
+
 void JreStringBuilder_initWithCapacity(JreStringBuilder *sb, jint capacity);
 
 void JreStringBuilder_appendNull(JreStringBuilder *sb);

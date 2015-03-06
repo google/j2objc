@@ -391,7 +391,10 @@ public class StatementGeneratorTest extends GenerationTest {
         + "static class Two extends One { Two(int i) { super(i); }}}",
         "Test", "Test.m");
     assertTranslation(translation, "- (instancetype)initWithInt:(jint)i");
-    assertTranslation(translation, "[super initWithInt:i]");
+    assertTranslatedLines(translation,
+        "void Test_Two_initWithInt_(Test_Two *self, jint i) {",
+        "  Test_One_initWithInt_(self, i);",
+        "}");
   }
 
   public void testStaticInnerClassSuperFieldAccess() throws IOException {
@@ -400,7 +403,7 @@ public class StatementGeneratorTest extends GenerationTest {
         + "static class One extends Test { int i; One() { i = foo; } int test() { return i; }}}",
         "Test", "Test.m");
     assertTranslation(translation, "- (instancetype)init {");
-    assertTranslation(translation, "i_ = foo_;");
+    assertTranslation(translation, "self->i_ = self->foo_;");
     assertTranslation(translation, "return i_;");
   }
 
@@ -645,7 +648,7 @@ public class StatementGeneratorTest extends GenerationTest {
         + "  A() { myString = \"Foo\"; myString += \"Bar\"; }}",
         "A", "A.m");
     assertTranslation(translation,
-        "A_set_myString_(self, JreStrcat(\"$$\", myString_, @\"Bar\"));");
+        "A_set_myString_(self, JreStrcat(\"$$\", self->myString_, @\"Bar\"));");
   }
 
   public void testPrimitiveConstantInSwitchCase() throws IOException {
@@ -870,7 +873,7 @@ public class StatementGeneratorTest extends GenerationTest {
     assertTranslation(translation, "- (instancetype)init;");
     assertTranslation(translation, "- (void)init__WithInt:(jint)a");
     translation = translateSourceFile("B", "B.m");
-    assertTranslation(translation, "return [super init];");
+    assertTranslation(translation, "A_init(self);");
     assertTranslation(translation, "[super init__WithInt:b];");
   }
 
@@ -1017,7 +1020,7 @@ public class StatementGeneratorTest extends GenerationTest {
         + "  private Test() { this(0); }}",
         "Test", "Test.m");
     assertTranslation(translation,
-        "[self initTestEnumWithInt:0 withNSString:__name withInt:__ordinal]");
+        "TestEnum_initWithInt_withNSString_withInt_(self, 0, __name, __ordinal);");
   }
 
   public void testThisCallInInnerConstructor() throws IOException {
@@ -1027,7 +1030,7 @@ public class StatementGeneratorTest extends GenerationTest {
         + "    public Inner() { }"
         + "    public Inner(int foo) { this(); int i = foo; }}}",
         "Test", "Test.m");
-    assertTranslation(translation, "self = [self initTest_InnerWithTest:outer$]");
+    assertTranslation(translation, "Test_Inner_initWithTest_(self, outer$);");
   }
 
   // Verify that an external string can be used in string concatenation,
@@ -1536,8 +1539,10 @@ public class StatementGeneratorTest extends GenerationTest {
   public void testEnumThisCallWithNoArguments() throws IOException {
     String translation = translateSourceFile(
         "enum Test { A, B; Test() {} Test(int i) { this(); } }", "Test", "Test.m");
-    assertTranslation(translation, "[super initWithNSString:__name withInt:__ordinal]");
-    assertOccurrences(translation, "[self initTestEnumWithNSString:__name withInt:__ordinal]", 2);
+    assertTranslation(translation,
+        "JavaLangEnum_initWithNSString_withInt_(self, __name, __ordinal);");
+    assertOccurrences(translation,
+        "TestEnum_initWithNSString_withInt_(self, __name, __ordinal);", 2);
   }
 
   public void testForStatementWithMultipleInitializers() throws IOException {

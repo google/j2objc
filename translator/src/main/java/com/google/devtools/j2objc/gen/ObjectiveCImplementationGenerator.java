@@ -26,7 +26,6 @@ import com.google.devtools.j2objc.ast.Annotation;
 import com.google.devtools.j2objc.ast.AnnotationTypeDeclaration;
 import com.google.devtools.j2objc.ast.AnnotationTypeMemberDeclaration;
 import com.google.devtools.j2objc.ast.CompilationUnit;
-import com.google.devtools.j2objc.ast.ConstructorInvocation;
 import com.google.devtools.j2objc.ast.EnumConstantDeclaration;
 import com.google.devtools.j2objc.ast.EnumDeclaration;
 import com.google.devtools.j2objc.ast.Expression;
@@ -38,9 +37,7 @@ import com.google.devtools.j2objc.ast.PackageDeclaration;
 import com.google.devtools.j2objc.ast.SingleVariableDeclaration;
 import com.google.devtools.j2objc.ast.Statement;
 import com.google.devtools.j2objc.ast.StringLiteral;
-import com.google.devtools.j2objc.ast.SuperConstructorInvocation;
 import com.google.devtools.j2objc.ast.TreeUtil;
-import com.google.devtools.j2objc.ast.TreeVisitor;
 import com.google.devtools.j2objc.ast.TypeDeclaration;
 import com.google.devtools.j2objc.ast.VariableDeclarationFragment;
 import com.google.devtools.j2objc.types.ImplementationImportCollector;
@@ -67,7 +64,6 @@ import java.util.Set;
 public class ObjectiveCImplementationGenerator extends ObjectiveCSourceFileGenerator {
 
   private final String suffix;
-  private final Set<String> invokedConstructors = Sets.newHashSet();
 
   /**
    * Generate an Objective-C implementation file for each type declared in a
@@ -92,7 +88,6 @@ public class ObjectiveCImplementationGenerator extends ObjectiveCSourceFileGener
     println(J2ObjC.getFileHeader(getGenerationUnit().getSourceName()));
     List<AbstractTypeDeclaration> types = unit.getTypes();
     if (!types.isEmpty()) {
-      findInvokedConstructors(unit);
       printStart(getGenerationUnit().getSourceName());
       printImports(unit);
       printIgnoreIncompletePragmas(unit);
@@ -149,16 +144,6 @@ public class ObjectiveCImplementationGenerator extends ObjectiveCSourceFileGener
     StringBuilder sb = new StringBuilder(NameTable.getMethodName(method));
     sb.append(parameterKey(method));
     return sb.toString();
-  }
-
-  private void findInvokedConstructors(CompilationUnit unit) {
-    unit.accept(new TreeVisitor() {
-      @Override
-      public boolean visit(ConstructorInvocation node) {
-        invokedConstructors.add(methodKey(node.getMethodBinding()));
-        return false;
-      }
-    });
   }
 
   @Override
@@ -366,57 +351,13 @@ public class ObjectiveCImplementationGenerator extends ObjectiveCSourceFileGener
     }
   }
 
-  private static int findConstructorInvocation(List<Statement> statements) {
-    for (int i = 0; i < statements.size(); i++) {
-      Statement stmt = statements.get(i);
-      if (stmt instanceof ConstructorInvocation || stmt instanceof SuperConstructorInvocation) {
-        return i;
-      }
-    }
-    return -1;
-  }
-
   @Override
   protected void printConstructor(MethodDeclaration m) {
-    String methodBody;
-    IMethodBinding binding = m.getMethodBinding();
-    List<Statement> statements = m.getBody().getStatements();
-    StringBuffer sb = new StringBuffer("{\n");
-    int constructorIdx = findConstructorInvocation(statements);
-    int idx = 0;
-    while (idx < constructorIdx) {
-      sb.append(generateStatement(statements.get(idx++), false));
-    }
-    String superCall =
-        idx == constructorIdx ? generateStatement(statements.get(idx++), false) : "[super init]";
-    if (idx >= statements.size()) {
-      sb.append("return ");
-      sb.append(superCall).append(";\n}");
-    } else {
-      sb.append("if (self = ").append(superCall).append(") {\n");
-      while (idx < statements.size()) {
-        sb.append(generateStatement(statements.get(idx++), false));
-      }
-      sb.append("}\nreturn self;\n}");
-    }
-    methodBody = sb.toString();
+    String methodBody = generateStatement(m.getBody(), /* isFunction */ false);
     newline();
     syncLineNumbers(m.getName());  // avoid doc-comment
-    if (invokedConstructors.contains(methodKey(binding))) {
-      print(super.constructorDeclaration(m, true) + " " + reindent(methodBody) + "\n\n");
-      print(super.constructorDeclaration(m, false) + " {\n"
-          + "  return " + generateStatement(createInnerConstructorInvocation(m), false) + ";\n}\n");
-    } else {
-      print(super.constructorDeclaration(m, false) + " " + reindent(methodBody) + "\n");
-    }
-  }
-
-  private Statement createInnerConstructorInvocation(MethodDeclaration m) {
-    ConstructorInvocation invocation = new ConstructorInvocation(m.getMethodBinding());
-    for (SingleVariableDeclaration param : m.getParameters()) {
-      invocation.getArguments().add(param.getName().copy());
-    }
-    return invocation;
+    // TODO(kstanger): super.constructorDeclaration shouldn't need it's second param anymore.
+    print(super.constructorDeclaration(m, false) + " " + reindent(methodBody) + "\n");
   }
 
   private void printInitializeMethod(AbstractTypeDeclaration typeNode) {
