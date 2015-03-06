@@ -115,6 +115,7 @@ public final class Matcher implements MatchResult {
         return this;
     }
 
+
     /**
      * Internal helper method to append a given string to a given string buffer.
      * If the string contains any references to groups, these are replaced by
@@ -150,6 +151,7 @@ public final class Matcher implements MatchResult {
             throw new ArrayIndexOutOfBoundsException(s.length());
         }
     }
+
 
     /**
      * Resets the {@code Matcher}. This results in the region being set to the
@@ -285,6 +287,7 @@ public final class Matcher implements MatchResult {
         return buffer;
     }
 
+
     /**
      * Replaces the first occurrence of this matcher's pattern in the input with
      * a given string.
@@ -295,7 +298,7 @@ public final class Matcher implements MatchResult {
      */
     public String replaceFirst(String replacement) {
         reset();
-        StringBuffer buffer = new StringBuffer(input.length());
+        StringBuffer buffer = new StringBuilder(input.length());
         if (find()) {
             appendReplacement(buffer, replacement);
         }
@@ -312,7 +315,7 @@ public final class Matcher implements MatchResult {
      */
     public String replaceAll(String replacement) {
         reset();
-        StringBuffer buffer = new StringBuffer(input.length());
+        StringBuffer buffer = new StringBuilder(input.length());
         while (find()) {
             appendReplacement(buffer, replacement);
         }
