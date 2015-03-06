@@ -241,9 +241,6 @@ public abstract class GenerationTest extends TestCase {
         }
         index += nextLine.length() + 1;  // Also skip trailing newline.
         if (!nextLine.trim().equals(lines[i].trim())) {
-          if (i == 0) {
-            return false;
-          }
           // Check if there is a subsequent match.
           return hasRegion(s.substring(index), lines);
         }

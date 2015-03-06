@@ -225,7 +225,7 @@ public class AutoboxerTest extends GenerationTest {
         + "  public Integer values[] = new Integer[] { i, j, k }; }",
         "Test", "Test.m");
     assertTranslation(translation,
-        "[IOSObjectArray newArrayWithObjects:(id[]){ i_, j_, k_ } count:3 "
+        "[IOSObjectArray newArrayWithObjects:(id[]){ self->i_, self->j_, self->k_ } count:3 "
         + "type:JavaLangInteger_class_()]");
   }
 
@@ -262,7 +262,7 @@ public class AutoboxerTest extends GenerationTest {
         "Test", "Test.m");
     assertTranslation(translation,
         "[IOSObjectArray newArrayWithObjects:(id[]){ JavaLangInteger_valueOfWithInt_(1), "
-        + "JavaLangInteger_valueOfWithInt_(2), i_ } count:3 type:JavaLangInteger_class_()]");
+        + "JavaLangInteger_valueOfWithInt_(2), self->i_ } count:3 type:JavaLangInteger_class_()]");
   }
 
   public void testFieldArrayInitializerUnboxed() throws IOException {
@@ -273,7 +273,8 @@ public class AutoboxerTest extends GenerationTest {
         + "  public int values[] = new int[] { i, j, 3 }; }",
         "Test", "Test.m");
     assertTranslation(translation,
-        "[IOSIntArray newArrayWithInts:(jint[]){ [i_ intValue], [j_ intValue], 3 } count:3]");
+        "[IOSIntArray newArrayWithInts:(jint[]){ "
+        + "[self->i_ intValue], [self->j_ intValue], 3 } count:3]");
   }
 
   public void testBoxedTypeLiteral() throws IOException {

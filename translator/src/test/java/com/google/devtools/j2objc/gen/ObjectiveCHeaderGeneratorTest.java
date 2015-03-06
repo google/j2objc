@@ -121,8 +121,8 @@ public class ObjectiveCHeaderGeneratorTest extends GenerationTest {
         "unit/mapping/custom/Test.java");
     loadHeaderMappings();
     String translation = translateSourceFile(
-        "import unit.mapping.custom.Test; " +
-            "public class MyTest extends Test { MyTest() {}}",
+        "import unit.mapping.custom.Test; "
+            + "public class MyTest extends Test { MyTest() {}}",
         "MyTest", "MyTest.h");
     assertTranslation(translation, "#include \"my/mapping/custom/Test.h\"");
   }
@@ -131,8 +131,8 @@ public class ObjectiveCHeaderGeneratorTest extends GenerationTest {
     addSourceFile("package unit.mapping; public class Test { }", "unit/mapping/Test.java");
     loadHeaderMappings();
     String translation = translateSourceFile(
-        "import unit.mapping.Test; " +
-            "public class MyTest extends Test { MyTest() {}}",
+        "import unit.mapping.Test; "
+            + "public class MyTest extends Test { MyTest() {}}",
         "MyTest", "MyTest.h");
     assertTranslation(translation, "#include \"my/mapping/Test.h\"");
   }
@@ -143,8 +143,8 @@ public class ObjectiveCHeaderGeneratorTest extends GenerationTest {
     addSourceFile("package unit.mapping; public class Test { }", "unit/mapping/Test.java");
     loadHeaderMappings();
     String translation = translateSourceFile(
-        "import unit.mapping.Test; " +
-            "public class MyTest extends Test { MyTest() {}}",
+        "import unit.mapping.Test; "
+            + "public class MyTest extends Test { MyTest() {}}",
         "MyTest", "MyTest.h");
     assertTranslation(translation, "#include \"unit/mapping/Test.h\"");
   }
@@ -155,10 +155,10 @@ public class ObjectiveCHeaderGeneratorTest extends GenerationTest {
     Options.setPackageDirectories(Options.OutputStyleOption.SOURCE);
     addSourceFile("package unit.test; public class Dummy {}", "unit/test/Dummy.java");
     addSourceFile(
-        "package unit.test;" +
-        "public class AnotherDummy extends Dummy { " +
-        "    public AnotherDummy() {}" +
-        "}", "unit/test/AnotherDummy.java");
+        "package unit.test;"
+        + "public class AnotherDummy extends Dummy { "
+        + "    public AnotherDummy() {}"
+        + "}", "unit/test/AnotherDummy.java");
 
     loadSourceFileHeaderMappings("unit/test/Dummy.java", "unit/test/AnotherDummy.java");
     loadHeaderMappings();
@@ -183,17 +183,17 @@ public class ObjectiveCHeaderGeneratorTest extends GenerationTest {
     addSourceFile("package unit.mapping.custom; public class AnotherTest { }",
         "unit/mapping/custom/AnotherTest.java");
     addSourceFile(
-        "package unit.test;" +
-        "import unit.mapping.custom.Test;" +
-        "public class Dummy extends Test { " +
-        "    public Dummy() {}" +
-        "}", "unit/test/Dummy.java");
+        "package unit.test;"
+        + "import unit.mapping.custom.Test;"
+        + "public class Dummy extends Test { "
+        + "    public Dummy() {}"
+        + "}", "unit/test/Dummy.java");
     addSourceFile(
-        "package unit.test;" +
-        "import unit.mapping.custom.AnotherTest;" +
-        "public class AnotherDummy extends AnotherTest { " +
-        "    public AnotherDummy() {}" +
-        "}", "unit/test/AnotherDummy.java");
+        "package unit.test;"
+        + "import unit.mapping.custom.AnotherTest;"
+        + "public class AnotherDummy extends AnotherTest { "
+        + "    public AnotherDummy() {}"
+        + "}", "unit/test/AnotherDummy.java");
 
     loadSourceFileHeaderMappings("unit/test/Dummy.java", "unit/test/AnotherDummy.java");
     loadHeaderMappings();
@@ -437,11 +437,15 @@ public class ObjectiveCHeaderGeneratorTest extends GenerationTest {
         "withNSString:(NSString *)__name",
         "withInt:(jint)__ordinal;");
     assertTranslation(translation,
-        "[self initColorEnumWithInt:rgb withBoolean:YES withNSString:__name withInt:__ordinal]");
+        "ColorEnum_initWithInt_withBoolean_withNSString_withInt_("
+        + "self, rgb, YES, __name, __ordinal);");
     assertTranslatedLines(translation,
-        "if (self = [super initWithNSString:__name withInt:__ordinal]) {",
-        "self->rgb_ = rgb;",
-        "self->primary_ = primary;");
+        "void ColorEnum_initWithInt_withBoolean_withNSString_withInt_("
+          + "ColorEnum *self, jint rgb, jboolean primary, NSString *__name, jint __ordinal) {",
+        "  JavaLangEnum_initWithNSString_withInt_(self, __name, __ordinal);",
+        "  self->rgb_ = rgb;",
+        "  self->primary_ = primary;",
+        "}");
   }
 
   public void testArrayFieldDeclaration() throws IOException {
@@ -736,8 +740,8 @@ public class ObjectiveCHeaderGeneratorTest extends GenerationTest {
   // isn't included for it.
   public void testPackagePrivateBaseClass() throws IOException {
     String translation = translateSourceFile(
-        "package bar; public class Test extends Foo {} " +
-        "abstract class Foo {}", "Test", "bar/Test.h");
+        "package bar; public class Test extends Foo {} "
+        + "abstract class Foo {}", "Test", "bar/Test.h");
     assertNotInTranslation(translation, "#include \"Foo.h\"");
   }
 }

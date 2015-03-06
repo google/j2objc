@@ -146,6 +146,26 @@ public class StackTraceElement implements Serializable {
 
   private static final long serialVersionUID = 6992337162326171013L;
 
+  /*-[
+  static NSString *ExtractMethodName(
+      char *rawName, char paramSeparator, NSStringEncoding encoding) {
+    char *hasParamSeparator = strchr(rawName, paramSeparator);
+    if (hasParamSeparator) {
+      char *paramsStart = strstr(rawName, "With");
+      if (paramsStart) {
+        *paramsStart = '\0';
+      }
+    }
+    if (strcmp(rawName, "init") == 0) {
+      return @"<init>";
+    }
+    if (strcmp(rawName, "initialize") == 0) {
+      return @"<clinit>";
+    }
+    return [[NSString alloc] initWithCString:rawName encoding:encoding];
+  }
+  ]-*/
+
   /**
    * Implements lazy loading of symbol information from application.
    */
@@ -188,31 +208,7 @@ public class StackTraceElement implements Serializable {
       }
       char *selector = strsep(&signature, "[ ]");
       if (selector) {
-        const char *methodName = NULL;
-
-        // Strip all parameter type mangling.
-        char *colon = strchr(selector, ':');
-        if (colon) {
-          if (strlen(selector) > 8 &&
-              strncmp(selector, "initWith", 8) == 0) {
-            methodName = "<init>";
-          } else {
-            char *paramsStart = strstr(selector, "With");
-            if (paramsStart) {
-              *paramsStart = '\0';
-            }
-            methodName = selector;
-          }
-        } else if (strcmp(selector, "init") == 0) {
-          methodName = "<init>";
-        } else if (strcmp(selector, "initialize") == 0) {
-          methodName = "<clinit>";
-        } else {
-          methodName = selector;
-        }
-        if (methodName) {
-          self->methodName_ = [[NSString alloc] initWithCString:methodName encoding:encoding];
-        }
+        self->methodName_ = ExtractMethodName(selector, ':', encoding);
       }
     } else {
       // Functionized method. Look for the class name portion.
@@ -238,12 +234,7 @@ public class StackTraceElement implements Serializable {
         self->declaringClass_ = RETAIN_([cls getName]);
         start = idx + 1;
       }
-      char *paramsStart = strstr(start, "With");
-      if (paramsStart) {
-        *paramsStart = '\0';
-      }
-      // Copy rest of stack symbol to methodName.
-      self->methodName_ = [[NSString alloc] initWithCString:start encoding:encoding];
+      self->methodName_ = ExtractMethodName(start, '_', encoding);
     }
     free(stackSymbol);
   ]-*/;

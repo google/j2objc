@@ -454,4 +454,10 @@ public class FunctionizerTest extends GenerationTest {
         "  A_Base_test();",
         "}");
   }
+
+  public void testSuperInvocationFromConstructor() throws IOException {
+    String translation = translateSourceFile(
+        "class Test { Test() { super.toString(); } }", "Test", "Test.m");
+    assertTranslation(translation, "Test_super$_description(self, @selector(description));");
+  }
 }
