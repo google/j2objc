@@ -154,7 +154,7 @@ public class ClassTest extends junit.framework.TestCase {
     /**
      * @tests java.lang.Class#getClasses()
      */
-    /* TODO(tball): enable if Class.getClasses is mapped.
+    /* TODO(tball): enable if SecurityManager is implemented.
     public void test_getClasses_subtest0() {
         final Permission privCheckPermission = new BasicPermission("Privilege check") {
             private static final long serialVersionUID = 1L;
@@ -462,10 +462,10 @@ public class ClassTest extends junit.framework.TestCase {
      */
     public void test_getFields() throws Exception {
         Field[] f = TestClass.class.getFields();
-        assertEquals("Incorrect number of fields", 4, f.length);
+        assertEquals("Incorrect number of fields", 2, f.length);
         f = SubTestClass.class.getFields();
         // Check inheritance of pub fields
-        assertEquals("Incorrect number of fields", 4, f.length);
+        assertEquals("Incorrect number of fields", 2, f.length);
     }
 
     /**
@@ -624,7 +624,7 @@ public class ClassTest extends junit.framework.TestCase {
         Class<?> clazz = null;
         clazz = Class.forName("[I");
         assertEquals("Class toString printed wrong value",
-                     "class int[]", clazz.toString());
+                     "class [I", clazz.toString());
 
         clazz = Class.forName("java.lang.Object");
         assertEquals("Class toString printed wrong value",
@@ -632,6 +632,6 @@ public class ClassTest extends junit.framework.TestCase {
 
         clazz = Class.forName("[Ljava.lang.Object;");
         assertEquals("Class toString printed wrong value",
-                     "class java.lang.Object[]", clazz.toString());
+                     "class [Ljava.lang.Object;", clazz.toString());
     }
 }
