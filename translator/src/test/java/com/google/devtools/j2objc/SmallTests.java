@@ -52,6 +52,7 @@ import com.google.devtools.j2objc.translate.OuterReferenceFixerTest;
 import com.google.devtools.j2objc.translate.OuterReferenceResolverTest;
 import com.google.devtools.j2objc.translate.RewriterTest;
 import com.google.devtools.j2objc.translate.StaticVarRewriterTest;
+import com.google.devtools.j2objc.translate.SuperMethodInvocationRewriterTest;
 import com.google.devtools.j2objc.translate.TypeSorterTest;
 import com.google.devtools.j2objc.translate.UnsequencedExpressionRewriterTest;
 import com.google.devtools.j2objc.translate.VarargsRewriterTest;
@@ -123,6 +124,7 @@ public class SmallTests {
     SignatureGeneratorTest.class,
     StatementGeneratorTest.class,
     StaticVarRewriterTest.class,
+    SuperMethodInvocationRewriterTest.class,
     TreeConvertTest.class,
     TypeSorterTest.class,
     TranslationProcessorTest.class,

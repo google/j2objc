@@ -567,15 +567,24 @@ public class NameTable {
    * enum types. A combination of classname plus modified selector is
    * guaranteed to be unique within the app.
    */
-  public static String makeFunctionName(IMethodBinding method) {
+  public static String getFullFunctionName(IMethodBinding method) {
+    return getFullName(method.getDeclaringClass()) + '_' + getFunctionName(method);
+  }
+
+  /**
+   * Returns an appropriate name to use for this method as a function. This name
+   * is guaranteed to be unique within the declaring class, if no methods in the
+   * class have a renaming. The returned name should be given an appropriate
+   * prefix to avoid collisions with methods from other classes.
+   */
+  public static String getFunctionName(IMethodBinding method) {
     method = method.getMethodDeclaration();
     String name = getRenamedMethodName(method);
     if (name != null) {
-      name = name.replaceAll(":", "_");
+      return name.replaceAll(":", "_");
     } else {
-      name = addParamNames(method, getMethodName(method), '_');
+      return addParamNames(method, getMethodName(method), '_');
     }
-    return getFullName(method.getDeclaringClass()) + '_' + name;
   }
 
   public static String getMethodNameFromAnnotation(IMethodBinding method) {

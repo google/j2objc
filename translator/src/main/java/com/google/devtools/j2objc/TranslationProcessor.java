@@ -47,6 +47,7 @@ import com.google.devtools.j2objc.translate.OuterReferenceFixer;
 import com.google.devtools.j2objc.translate.OuterReferenceResolver;
 import com.google.devtools.j2objc.translate.Rewriter;
 import com.google.devtools.j2objc.translate.StaticVarRewriter;
+import com.google.devtools.j2objc.translate.SuperMethodInvocationRewriter;
 import com.google.devtools.j2objc.translate.TypeSorter;
 import com.google.devtools.j2objc.translate.UnsequencedExpressionRewriter;
 import com.google.devtools.j2objc.translate.VarargsRewriter;
@@ -78,7 +79,6 @@ import java.util.Queue;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
 
 /**
  * Processes source files by translating each source into an Objective-C header
@@ -282,6 +282,11 @@ class TranslationProcessor extends FileProcessor {
     //   functionized.
     new Functionizer().run(unit);
     ticker.tick("Functionizer");
+
+    // After: OuterReferenceFixer, Functionizer - Those passes edit the
+    //   qualifier on SuperMethodInvocation nodes.
+    new SuperMethodInvocationRewriter(unit).run();
+    ticker.tick("SuperMethodInvocationRewriter");
 
     // After: Functionizer - Changes bindings on MethodDeclaration nodes.
     // Before: StaticVarRewriter, OperatorRewriter - Doesn't know how to handle

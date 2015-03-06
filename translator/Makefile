@@ -109,6 +109,7 @@ JAVA_SOURCES = \
 	ast/MethodInvocation.java \
 	ast/Name.java \
 	ast/NativeDeclaration.java \
+	ast/NativeExpression.java \
 	ast/NativeStatement.java \
 	ast/NormalAnnotation.java \
 	ast/NullLiteral.java \
@@ -185,6 +186,7 @@ JAVA_SOURCES = \
 	translate/OuterReferenceResolver.java \
 	translate/Rewriter.java \
 	translate/StaticVarRewriter.java \
+	translate/SuperMethodInvocationRewriter.java \
 	translate/TypeSorter.java \
 	translate/UnsequencedExpressionRewriter.java \
 	translate/VarargsRewriter.java \

@@ -605,6 +605,12 @@ public class DebugASTPrinter extends TreeVisitor {
   }
 
   @Override
+  public boolean visit(NativeExpression node) {
+    sb.println(node.getCode());
+    return false;
+  }
+
+  @Override
   public boolean visit(NativeStatement node) {
     sb.println(node.getCode());
     return false;
