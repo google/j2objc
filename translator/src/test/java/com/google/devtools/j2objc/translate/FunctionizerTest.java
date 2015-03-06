@@ -442,4 +442,16 @@ public class FunctionizerTest extends GenerationTest {
         "  return B_fooWithNSString_(self, t);",
         "}");
   }
+
+  // Verify that static methods called via a super invokation are correctly
+  // functionized.
+  public void testStaticSuperInvocation() throws IOException {
+    String translation = translateSourceFile(
+        "public class A { static class Base { static void test() {} } "
+        + "static class Foo extends Base { void test2() { super.test(); } }}", "A", "A.m");
+    assertTranslatedLines(translation,
+        "- (void)test2 {",
+        "  A_Base_test();",
+        "}");
+  }
 }

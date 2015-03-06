@@ -180,6 +180,21 @@ public class Functionizer extends TreeVisitor {
   }
 
   @Override
+  public void endVisit(SuperMethodInvocation node) {
+    IMethodBinding binding = node.getMethodBinding().getMethodDeclaration();
+    // Yes, super method invocations can be static.
+    if (!BindingUtil.isStatic(binding)) {
+      return;
+    }
+
+    FunctionInvocation functionInvocation = new FunctionInvocation(
+        NameTable.getFullFunctionName(binding), node.getTypeBinding(), binding.getReturnType(),
+        binding.getDeclaringClass());
+    TreeUtil.moveList(node.getArguments(), functionInvocation.getArguments());
+    node.replaceWith(functionInvocation);
+  }
+
+  @Override
   public void endVisit(MethodDeclaration node) {
     IMethodBinding binding = node.getMethodBinding();
     FunctionDeclaration function = null;

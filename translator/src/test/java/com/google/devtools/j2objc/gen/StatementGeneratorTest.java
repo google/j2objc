@@ -45,15 +45,6 @@ public class StatementGeneratorTest extends GenerationTest {
     assertTranslation(translation, "return Test_BOOL__;");
   }
 
-  // Verify that super.method(), where method is static, sends the
-  // class the message, not super.  Objective-C
-  public void testStaticSuperInvocation() throws IOException {
-    String translation = translateSourceFile(
-        "public class A { static class Base { static void test() {} } "
-        + "static class Foo extends Base { void test2() { super.test(); } }}", "A", "A.m");
-    assertTranslation(translation, "[[super class] test];");
-  }
-
   // Verify that both a class and interface type invoke getClass() correctly.
   public void testGetClass() throws IOException {
     String translation = translateSourceFile(

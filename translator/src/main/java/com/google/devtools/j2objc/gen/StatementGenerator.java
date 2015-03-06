@@ -923,11 +923,8 @@ public class StatementGenerator extends TreeVisitor {
     IMethodBinding binding = node.getMethodBinding();
     assert node.getQualifier() == null
         : "Qualifiers expected to be handled by SuperMethodInvocationRewriter.";
-    if (BindingUtil.isStatic(binding)) {
-      buffer.append("[[super class]");
-    } else {
-      buffer.append("[super");
-    }
+    assert !BindingUtil.isStatic(binding) : "Static invocations are rewritten by Functionizer.";
+    buffer.append("[super");
     printMethodInvocationNameAndArgs(NameTable.getMethodSelector(binding), node.getArguments());
     buffer.append(']');
     return false;
