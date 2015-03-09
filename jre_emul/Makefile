@@ -390,6 +390,7 @@ JAVA_SOURCES = \
 	java/net/ProxySelector.java \
 	java/net/ProxySelectorImpl.java \
 	java/net/ResponseCache.java \
+	java/net/SecureCacheResponse.java \
 	java/net/ServerSocket.java \
 	java/net/Socket.java \
 	java/net/SocketAddress.java \
@@ -576,6 +577,7 @@ JAVA_SOURCES = \
 	java/security/cert/CRL.java \
 	java/security/cert/CRLException.java \
 	java/security/cert/CertPath.java \
+	java/security/cert/CertPathParameters.java \
 	java/security/cert/Certificate.java \
 	java/security/cert/CertificateEncodingException.java \
 	java/security/cert/CertificateException.java \
@@ -910,6 +912,40 @@ JAVA_SOURCES = \
 	javax/annotation/Resources.java \
 	javax/lang/model/element/Modifier.java \
 	javax/crypto/SecretKey.java \
+	javax/net/DefaultServerSocketFactory.java \
+	javax/net/DefaultSocketFactory.java \
+	javax/net/ServerSocketFactory.java \
+	javax/net/SocketFactory.java \
+	javax/net/ssl/DefaultSSLServerSocketFactory.java \
+	javax/net/ssl/DefaultSSLSocketFactory.java \
+	javax/net/ssl/HandshakeCompletedEvent.java \
+	javax/net/ssl/HandshakeCompletedListener.java \
+	javax/net/ssl/HostnameVerifier.java \
+	javax/net/ssl/HttpsURLConnection.java \
+	javax/net/ssl/KeyManager.java \
+	javax/net/ssl/KeyManagerFactory.java \
+	javax/net/ssl/KeyManagerFactorySpi.java \
+	javax/net/ssl/ManagerFactoryParameters.java \
+	javax/net/ssl/SSLContext.java \
+	javax/net/ssl/SSLContextSpi.java \
+	javax/net/ssl/SSLEngine.java \
+	javax/net/ssl/SSLEngineResult.java \
+	javax/net/ssl/SSLException.java \
+	javax/net/ssl/SSLHandshakeException.java \
+	javax/net/ssl/SSLParameters.java \
+	javax/net/ssl/SSLPeerUnverifiedException.java \
+	javax/net/ssl/SSLProtocolException.java \
+	javax/net/ssl/SSLServerSocket.java \
+	javax/net/ssl/SSLServerSocketFactory.java \
+	javax/net/ssl/SSLSession.java \
+	javax/net/ssl/SSLSessionBindingEvent.java \
+	javax/net/ssl/SSLSessionBindingListener.java \
+	javax/net/ssl/SSLSessionContext.java \
+	javax/net/ssl/SSLSocket.java \
+	javax/net/ssl/SSLSocketFactory.java \
+	javax/net/ssl/TrustManager.java \
+	javax/net/ssl/TrustManagerFactory.java \
+	javax/net/ssl/TrustManagerFactorySpi.java \
 	javax/security/auth/Destroyable.java \
 	javax/security/auth/DestroyFailedException.java \
 	javax/security/auth/x500/X500Principal.java \
