@@ -110,15 +110,16 @@ public abstract class HttpsURLConnection extends HttpURLConnection {
      */
     private static class NoPreloadHolder {
         public static HostnameVerifier defaultHostnameVerifier;
-        static {
-            try {
-                defaultHostnameVerifier = (HostnameVerifier)
-                        Class.forName("com.android.okhttp.internal.tls.OkHostnameVerifier")
-                        .getField("INSTANCE").get(null);
-            } catch (Exception e) {
-                throw new AssertionError("Failed to obtain okhttp HostnameVerifier", e);
-            }
-        }
+        // TODO(tball): enable when okhttp is added.
+//        static {
+//            try {
+//                defaultHostnameVerifier = (HostnameVerifier)
+//                        Class.forName("com.android.okhttp.internal.tls.OkHostnameVerifier")
+//                        .getField("INSTANCE").get(null);
+//            } catch (Exception e) {
+//                throw new AssertionError("Failed to obtain okhttp HostnameVerifier", e);
+//            }
+//        }
 
         public static SSLSocketFactory defaultSSLSocketFactory = (SSLSocketFactory) SSLSocketFactory
                 .getDefault();
