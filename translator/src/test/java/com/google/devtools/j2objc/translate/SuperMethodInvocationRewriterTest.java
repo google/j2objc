@@ -41,4 +41,17 @@ public class SuperMethodInvocationRewriterTest extends GenerationTest {
     assertTranslation(translation,
         "Test_Inner_super$_fooWithInt_(this$0_, @selector(fooWithInt:), 1);");
   }
+
+  public void testSuperFunctionInitializedBeforeStaticInit() throws IOException {
+    String translation = translateSourceFile(
+        "class Test { static Test instance = new Test(); Test() { super.toString(); } }",
+        "Test", "Test.m");
+    // Initialization of the super$ function pointer must occur before other
+    // static initialization in case the super$ function is invoked during
+    // static initialization.
+    assertTranslatedLines(translation,
+        "Test_super$_description = (id (*)(id, SEL))"
+          + "[NSObject instanceMethodForSelector:@selector(description)];",
+        "JreStrongAssignAndConsume(&Test_instance_, nil, [[Test alloc] init]);");
+  }
 }

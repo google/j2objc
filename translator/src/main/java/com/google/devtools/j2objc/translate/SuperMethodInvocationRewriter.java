@@ -75,7 +75,7 @@ public class SuperMethodInvocationRewriter extends TreeVisitor {
       AbstractTypeDeclaration typeNode = typeMap.get(superMethod.type.getTypeDeclaration());
       assert typeNode != null : "Type is expected to be in this compilation unit";
       String superclassName = NameTable.getFullName(superMethod.type.getSuperclass());
-      typeNode.getClassInitStatements().add(new NativeStatement(String.format(
+      typeNode.getClassInitStatements().add(0, new NativeStatement(String.format(
           "%s = (%s)[%s instanceMethodForSelector:@selector(%s)];",
           funcName, String.format(signature, ""), superclassName,
           NameTable.getMethodSelector(superMethod.method))));
