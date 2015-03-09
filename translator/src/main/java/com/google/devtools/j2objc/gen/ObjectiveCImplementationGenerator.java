@@ -356,8 +356,7 @@ public class ObjectiveCImplementationGenerator extends ObjectiveCSourceFileGener
     String methodBody = generateStatement(m.getBody(), /* isFunction */ false);
     newline();
     syncLineNumbers(m.getName());  // avoid doc-comment
-    // TODO(kstanger): super.constructorDeclaration shouldn't need it's second param anymore.
-    print(super.constructorDeclaration(m, false) + " " + reindent(methodBody) + "\n");
+    print(super.methodDeclaration(m) + " " + reindent(methodBody) + "\n");
   }
 
   private void printInitializeMethod(AbstractTypeDeclaration typeNode) {
@@ -664,7 +663,7 @@ public class ObjectiveCImplementationGenerator extends ObjectiveCSourceFileGener
         for (MethodDeclaration m : privateMethods) {
           if (isPrivateOrSynthetic(m.getModifiers())) {
             if (m.isConstructor()) {
-              println(constructorDeclaration(m) + ";");
+              println(methodDeclaration(m) + ";");
             } else {
               printNormalMethodDeclaration(m);
             }

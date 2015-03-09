@@ -180,15 +180,11 @@ public abstract class ObjectiveCSourceFileGenerator extends SourceFileGenerator 
    * Create an Objective-C method declaration string.
    */
   protected String methodDeclaration(MethodDeclaration m) {
-    assert !m.isConstructor();
-    return constructMethodDeclaration(m, NameTable.getMethodSelector(m.getMethodBinding()));
-  }
-
-  private String constructMethodDeclaration(MethodDeclaration m, String selector) {
     StringBuilder sb = new StringBuilder();
     IMethodBinding binding = m.getMethodBinding();
     char prefix = Modifier.isStatic(m.getModifiers()) ? '+' : '-';
     String returnType = NameTable.getObjCType(binding.getReturnType());
+    String selector = NameTable.getMethodSelector(binding);
     if (m.isConstructor()) {
       returnType = "instancetype";
     } else if (selector.equals("hash")) {
@@ -218,23 +214,6 @@ public abstract class ObjectiveCSourceFileGenerator extends SourceFileGenerator 
     }
 
     return sb.toString();
-  }
-
-  /**
-   * Create an Objective-C constructor declaration string.
-   */
-  protected String constructorDeclaration(MethodDeclaration m) {
-    return constructorDeclaration(m, /* isInner */ false);
-  }
-
-  protected String constructorDeclaration(MethodDeclaration m, boolean isInner) {
-    assert m.isConstructor();
-    String selector = NameTable.getMethodSelector(m.getMethodBinding());
-    if (isInner) {
-      selector = "init" + NameTable.getFullName(m.getMethodBinding().getDeclaringClass())
-          + selector.substring(4);
-    }
-    return constructMethodDeclaration(m, selector);
   }
 
   /**
