@@ -401,7 +401,7 @@ public class ObjectiveCHeaderGenerator extends ObjectiveCSourceFileGenerator {
   protected void printConstructor(MethodDeclaration m) {
     newline();
     printDocComment(m.getJavadoc());
-    println(super.constructorDeclaration(m) + ";");
+    println(super.methodDeclaration(m) + ";");
   }
 
   static enum SortState { BEFORE_DECLS, METHODS, AFTER_DECLS };
