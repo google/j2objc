@@ -83,43 +83,49 @@ abstract class FileProcessor {
   }
 
   protected void processBatch() {
-    if (batchUnits.isEmpty()) {
-      return;
-    }
-
-    // We need to track all this for the parser callback.
-    final Map<InputFile, GenerationUnit> unitMap = new HashMap<InputFile, GenerationUnit>();
-    List<InputFile> batchFiles = new ArrayList<InputFile>();
-    for (GenerationUnit unit : batchUnits) {
-      if (unit.hasErrors()) {
-        continue;
+    try {
+      if (batchUnits.isEmpty()) {
+        return;
       }
 
-      for (InputFile file : unit.getInputFiles()) {
-        if (isBatchable(file)) {
-          batchFiles.add(file);
-          unitMap.put(file, unit);
-        } else {
-          processSource(file, unit);
+      // We need to track all this for the parser callback.
+      final Map<InputFile, GenerationUnit> unitMap = new HashMap<InputFile, GenerationUnit>();
+      List<InputFile> batchFiles = new ArrayList<InputFile>();
+      for (GenerationUnit unit : batchUnits) {
+        if (unit.hasErrors()) {
+          continue;
+        }
+
+        for (InputFile file : unit.getInputFiles()) {
+          if (isBatchable(file)) {
+            batchFiles.add(file);
+            unitMap.put(file, unit);
+          } else {
+            processSource(file, unit);
+          }
         }
       }
-    }
 
-    logger.finest("Processing batch of size " + batchFiles.size());
-    JdtParser.Handler handler = new JdtParser.Handler() {
-      @Override
-      public void handleParsedUnit(InputFile inputFile, CompilationUnit unit) {
-        ErrorUtil.setCurrentFileName(inputFile.getPath());
-        processCompilationUnit(unitMap.get(inputFile), unit, inputFile);
+      logger.finest("Processing batch of size " + batchFiles.size());
+      JdtParser.Handler handler = new JdtParser.Handler() {
+        @Override
+        public void handleParsedUnit(InputFile inputFile, CompilationUnit unit) {
+          ErrorUtil.setCurrentFileName(inputFile.getPath());
+          processCompilationUnit(unitMap.get(inputFile), unit, inputFile);
+        }
+      };
+
+      if (batchFiles.size() > 0) {
+        parser.parseFiles(batchFiles, handler);
       }
-    };
-
-    if (batchFiles.size() > 0) {
-      parser.parseFiles(batchFiles, handler);
+    } finally {
+      for (GenerationUnit unit : batchUnits) {
+        // Always clear, and don't leak memory on an exception.
+        unit.clear();
+      }
+      batchUnits.clear();
+      batchSourceCount = 0;
     }
-
-    batchUnits.clear();
-    batchSourceCount = 0;
   }
 
   protected void processSource(InputFile file, GenerationUnit generationUnit) {
@@ -178,7 +184,7 @@ abstract class FileProcessor {
       }
     } catch (IOException e) {
       genUnit.error(e.getMessage());
-      genUnit.getCompilationUnits().clear();
+    } finally {
       Types.cleanup();
       NameTable.cleanup();
     }

@@ -102,4 +102,23 @@ public class TranslationProcessorTest extends GenerationTest {
     assertTranslation(translation, "- (void)foo2;");
     assertNotInTranslation(translation, "foo1");
   }
+
+  public void testBatchReuse() throws IOException {
+    addSourceFile("class Test { }", "Test.java");
+
+    TranslationProcessor processor = new TranslationProcessor(J2ObjC.createParser(), null);
+    GenerationBatch batch = new GenerationBatch();
+    batch.addSource(new RegularInputFile(getTempDir() + "/Test.java", "Test.java"));
+    processor.processBatch(batch);
+    String header1 = getTranslatedFile("Test.h");
+    String impl1 = getTranslatedFile("Test.m");
+
+    // Test that the temp states of GenerationUnit/GenerationBatch are cleared
+    // and reusable.
+    processor.processBatch(batch);
+    String header2 = getTranslatedFile("Test.h");
+    String impl2 = getTranslatedFile("Test.m");
+    assertEquals(header1, header2);
+    assertEquals(impl1, impl2);
+  }
 }
