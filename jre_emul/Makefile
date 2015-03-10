@@ -410,6 +410,7 @@ JAVA_SOURCES = \
 	java/net/URISyntaxException.java \
 	java/net/URL.java \
 	java/net/URLConnection.java \
+	java/net/URLClassLoader.java \
 	java/net/URLDecoder.java \
 	java/net/URLEncoder.java \
 	java/net/URLStreamHandler.java \
