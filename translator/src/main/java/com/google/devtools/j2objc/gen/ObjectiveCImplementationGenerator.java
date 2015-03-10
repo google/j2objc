@@ -25,6 +25,7 @@ import com.google.devtools.j2objc.ast.AbstractTypeDeclaration;
 import com.google.devtools.j2objc.ast.Annotation;
 import com.google.devtools.j2objc.ast.AnnotationTypeDeclaration;
 import com.google.devtools.j2objc.ast.AnnotationTypeMemberDeclaration;
+import com.google.devtools.j2objc.ast.BodyDeclaration;
 import com.google.devtools.j2objc.ast.CompilationUnit;
 import com.google.devtools.j2objc.ast.EnumConstantDeclaration;
 import com.google.devtools.j2objc.ast.EnumDeclaration;
@@ -157,7 +158,8 @@ public class ObjectiveCImplementationGenerator extends ObjectiveCSourceFileGener
       syncLineNumbers(node.getName()); // avoid doc-comment
       printf("@implementation %s\n", typeName);
       printStaticVars(node);
-      printMethods(node);
+      printInnerDefinitions(node);
+      printInitializeMethod(node);
       if (TranslationUtil.needsReflection(node)) {
         printTypeAnnotationsMethod(node);
         printMethodAnnotationMethods(TreeUtil.getMethodDeclarations(node));
@@ -166,7 +168,7 @@ public class ObjectiveCImplementationGenerator extends ObjectiveCSourceFileGener
       }
 
       println("\n@end");
-      printFunctions(node.getBodyDeclarations());
+      printOuterDefinitions(node);
     }
   }
 
@@ -265,18 +267,12 @@ public class ObjectiveCImplementationGenerator extends ObjectiveCSourceFileGener
     }
   }
 
-  @Override
-  protected void printNativeDeclaration(NativeDeclaration declaration) {
+  private void printNativeDefinition(NativeDeclaration declaration) {
     newline();
     String code = declaration.getImplementationCode();
     if (code != null) {
       println(reindent(code));
     }
-  }
-
-  private void printMethods(TypeDeclaration node) {
-    printDeclarations(node.getBodyDeclarations());
-    printInitializeMethod(node);
   }
 
   private void printStaticInterface(AbstractTypeDeclaration node, String typeName) {
@@ -296,7 +292,7 @@ public class ObjectiveCImplementationGenerator extends ObjectiveCSourceFileGener
       printMetadata(node);
     }
     println("\n@end");
-    printFunctions(node.getBodyDeclarations());
+    printOuterDefinitions(node);
   }
 
   @Override
@@ -313,7 +309,7 @@ public class ObjectiveCImplementationGenerator extends ObjectiveCSourceFileGener
     printf("@implementation %s\n", typeName);
     printStaticVars(node);
 
-    printDeclarations(node.getBodyDeclarations());
+    printInnerDefinitions(node);
     printInitializeMethod(node);
 
     if (TranslationUtil.needsReflection(node)) {
@@ -321,7 +317,7 @@ public class ObjectiveCImplementationGenerator extends ObjectiveCSourceFileGener
       printMetadata(node);
     }
     println("\n@end");
-    printFunctions(node.getBodyDeclarations());
+    printOuterDefinitions(node);
   }
 
   private void printInitFlagDefinition(AbstractTypeDeclaration node) {
@@ -332,30 +328,43 @@ public class ObjectiveCImplementationGenerator extends ObjectiveCSourceFileGener
     }
   }
 
-  @Override
-  protected void printNormalMethod(MethodDeclaration m) {
-    String methodBody = generateMethodBody(m);
-    if (methodBody != null) {
-      newline();
-      syncLineNumbers(m.getName());  // avoid doc-comment
-      print(super.methodDeclaration(m) + " " + reindent(methodBody) + "\n");
+  private void printInnerDefinitions(AbstractTypeDeclaration node) {
+    printDefinitions(Iterables.filter(node.getBodyDeclarations(), isInnerFilter()));
+  }
+
+  private void printOuterDefinitions(AbstractTypeDeclaration node) {
+    printDefinitions(Iterables.filter(node.getBodyDeclarations(), isOuterFilter()));
+  }
+
+  private void printDefinitions(Iterable<BodyDeclaration> declarations) {
+    for (BodyDeclaration declaration : declarations) {
+      printDefinition(declaration);
     }
   }
 
-  private String generateMethodBody(MethodDeclaration m) {
+  private void printDefinition(BodyDeclaration declaration) {
+    switch (declaration.getKind()) {
+      case FUNCTION_DECLARATION:
+        printFunctionDefinition((FunctionDeclaration) declaration);
+        return;
+      case METHOD_DECLARATION:
+        printMethodDefinition((MethodDeclaration) declaration);
+        return;
+      case NATIVE_DECLARATION:
+        printNativeDefinition((NativeDeclaration) declaration);
+        return;
+      default:
+        break;
+    }
+  }
+
+  private void printMethodDefinition(MethodDeclaration m) {
     if (Modifier.isAbstract(m.getModifiers())) {
-      return null;
-    } else {
-      // generate a normal method body
-      return generateStatement(m.getBody(), /* isFunction */ false);
+      return;
     }
-  }
-
-  @Override
-  protected void printConstructor(MethodDeclaration m) {
-    String methodBody = generateStatement(m.getBody(), /* isFunction */ false);
     newline();
     syncLineNumbers(m.getName());  // avoid doc-comment
+    String methodBody = generateStatement(m.getBody(), /* isFunction */ false);
     print(super.methodDeclaration(m) + " " + reindent(methodBody) + "\n");
   }
 
@@ -398,7 +407,7 @@ public class ObjectiveCImplementationGenerator extends ObjectiveCSourceFileGener
     }
 
     for (NativeDeclaration decl : node.getNativeBlocks()) {
-      printNativeDeclaration(decl);
+      printNativeDefinition(decl);
     }
   }
 
@@ -421,29 +430,22 @@ public class ObjectiveCImplementationGenerator extends ObjectiveCSourceFileGener
   }
 
   private void printFinalFunctionDecls(List<AbstractTypeDeclaration> types) {
-    boolean needsNewLine = true;
     for (AbstractTypeDeclaration type : types) {
-      for (FunctionDeclaration function : TreeUtil.getFunctionDeclarations(type)) {
-        int modifiers = function.getModifiers();
-        if (!Modifier.isPrivate(modifiers)) {
-          // Declaration is defined in header file.
-          continue;
-        }
-        if (needsNewLine) {
-          newline();
-          needsNewLine = false;
-        }
-        // We expect native functions to be defined externally.
-        if (!Modifier.isNative(modifiers)) {
-          print("__attribute__((unused)) static ");
-        }
-        println(getFunctionSignature(function) + ";");
-      }
+      printOuterDeclarations(type);
     }
   }
 
   @Override
-  protected void printFunction(FunctionDeclaration function) {
+  protected void printFunctionDeclaration(FunctionDeclaration function) {
+    newline();
+    // We expect native functions to be defined externally.
+    if (!Modifier.isNative(function.getModifiers())) {
+      print("__attribute__((unused)) static ");
+    }
+    println(getFunctionSignature(function) + ";");
+  }
+
+  private void printFunctionDefinition(FunctionDeclaration function) {
     if (Modifier.isNative(function.getModifiers())) {
       return;
     }
@@ -644,12 +646,21 @@ public class ObjectiveCImplementationGenerator extends ObjectiveCSourceFileGener
     }
   }
 
+  protected boolean shouldPrintDeclaration(BodyDeclaration decl) {
+    if (decl instanceof FunctionDeclaration) {
+      return Modifier.isPrivate(decl.getModifiers());
+    }
+    // TODO(kstanger): exclude synthetic.
+    return Options.hidePrivateMembers() && isPrivateOrSynthetic(decl.getModifiers());
+  }
+
   private void printClassExtension(AbstractTypeDeclaration node) {
     if (Options.hidePrivateMembers()) {
       List<FieldDeclaration> fields = TreeUtil.getFieldDeclarationsList(node);
       boolean hasPrivateFields = hasPrivateFields(fields);
-      List<MethodDeclaration> privateMethods = getPrivateMethodsToDeclare(node);
-      if (!privateMethods.isEmpty() || hasPrivateFields) {
+      Iterable<BodyDeclaration> privateDecls = Iterables.filter(Iterables.filter(
+          node.getBodyDeclarations(), isInnerFilter()), printDeclFilter());
+      if (!Iterables.isEmpty(privateDecls) || hasPrivateFields) {
         String typeName = NameTable.getFullName(node.getTypeBinding());
         newline();
         printf("@interface %s ()", typeName);
@@ -660,15 +671,7 @@ public class ObjectiveCImplementationGenerator extends ObjectiveCSourceFileGener
         } else {
           newline();
         }
-        for (MethodDeclaration m : privateMethods) {
-          if (isPrivateOrSynthetic(m.getModifiers())) {
-            if (m.isConstructor()) {
-              println(methodDeclaration(m) + ";");
-            } else {
-              printNormalMethodDeclaration(m);
-            }
-          }
-        }
+        printDeclarations(privateDecls);
         println("@end");
         printFieldSetters(node, true);
       }

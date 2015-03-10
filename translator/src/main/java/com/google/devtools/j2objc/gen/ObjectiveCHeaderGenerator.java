@@ -141,7 +141,7 @@ public class ObjectiveCHeaderGenerator extends ObjectiveCSourceFileGenerator {
       printInstanceVariables(node, false);
       println("}");
     }
-    printDeclarations(node.getBodyDeclarations());
+    printInnerDeclarations(node);
     println("\n@end");
 
     if (isInterface) {
@@ -149,7 +149,7 @@ public class ObjectiveCHeaderGenerator extends ObjectiveCSourceFileGenerator {
     } else {
       printStaticInitFunction(node);
       printFieldSetters(node, false);
-      printFunctions(node.getBodyDeclarations());
+      printOuterDeclarations(node);
       printStaticFields(node);
     }
 
@@ -310,10 +310,10 @@ public class ObjectiveCHeaderGenerator extends ObjectiveCSourceFileGenerator {
     println(" > {");
     printInstanceVariables(node, false);
     println("}");
-    printDeclarations(node.getBodyDeclarations());
+    printInnerDeclarations(node);
     println("\n@end");
     printStaticInitFunction(node);
-    printFunctions(node.getBodyDeclarations());
+    printOuterDeclarations(node);
     printf("\nFOUNDATION_EXPORT %s *%s_values_[];\n", typeName, typeName);
     for (EnumConstantDeclaration constant : constants) {
       String varName = NameTable.getStaticVarName(constant.getVariableBinding());
@@ -375,33 +375,8 @@ public class ObjectiveCHeaderGenerator extends ObjectiveCSourceFileGenerator {
   }
 
   @Override
-  protected void printFunction(FunctionDeclaration function) {
-    if (!Modifier.isPrivate(function.getModifiers())) {
-      println("\nFOUNDATION_EXPORT " + getFunctionSignature(function) + ';');
-    }
-  }
-
-  @Override
-  protected void printNativeDeclaration(NativeDeclaration declaration) {
-    newline();
-    String code = declaration.getHeaderCode();
-    if (code != null) {
-      print(declaration.getHeaderCode());
-    }
-  }
-
-  @Override
-  protected void printNormalMethod(MethodDeclaration m) {
-    if (!Modifier.isNative(m.getModifiers())) {
-      printNormalMethodDeclaration(m);
-    }
-  }
-
-  @Override
-  protected void printConstructor(MethodDeclaration m) {
-    newline();
-    printDocComment(m.getJavadoc());
-    println(super.methodDeclaration(m) + ";");
+  protected void printFunctionDeclaration(FunctionDeclaration function) {
+    println("\nFOUNDATION_EXPORT " + getFunctionSignature(function) + ';');
   }
 
   static enum SortState { BEFORE_DECLS, METHODS, AFTER_DECLS };
@@ -414,7 +389,10 @@ public class ObjectiveCHeaderGenerator extends ObjectiveCSourceFileGenerator {
    * after the method list, however.
    */
   @Override
-  protected void printDeclarations(Iterable<BodyDeclaration> iter) {
+  protected void printInnerDeclarations(AbstractTypeDeclaration node) {
+    Iterable<BodyDeclaration> iter = Iterables.filter(Iterables.filter(
+        node.getBodyDeclarations(), isInnerFilter()), printDeclFilter());
+
     List<BodyDeclaration> allDeclarations = Lists.newArrayList(iter);
     List<BodyDeclaration> beforeDeclarations = Lists.newArrayList();
     List<MethodDeclaration> allMethods = Lists.newArrayList();
@@ -442,10 +420,7 @@ public class ObjectiveCHeaderGenerator extends ObjectiveCSourceFileGenerator {
           return;
         }
         if (decl instanceof MethodDeclaration) {
-          MethodDeclaration m = (MethodDeclaration) decl;
-          if (shouldPrint(m)) {
-            allMethods.add(m);
-          }
+          allMethods.add((MethodDeclaration) decl);
         }
       }
     }
@@ -472,19 +447,15 @@ public class ObjectiveCHeaderGenerator extends ObjectiveCSourceFileGenerator {
     printf("\n#pragma mark %s\n", title);
     TreeUtil.sortMethods(methods);
     for (MethodDeclaration m : methods) {
-      printMethod(m);
+      printMethodDeclaration(m);
     }
   }
 
-  @Override
-  protected void printMethod(MethodDeclaration m) {
-    if (shouldPrint(m)) {
-      super.printMethod(m);
+  protected boolean shouldPrintDeclaration(BodyDeclaration decl) {
+    if (decl instanceof FunctionDeclaration) {
+      return !Modifier.isPrivate(decl.getModifiers());
     }
-  }
-
-  private boolean shouldPrint(MethodDeclaration m) {
-    return !Options.hidePrivateMembers() || !isPrivateOrSynthetic(m.getModifiers());
+    return !Options.hidePrivateMembers() || !isPrivateOrSynthetic(decl.getModifiers());
   }
 
   protected void printForwardDeclarations(Set<Import> forwardDecls) {

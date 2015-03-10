@@ -18,6 +18,7 @@ package com.google.devtools.j2objc.gen;
 
 import com.google.common.base.Function;
 import com.google.common.base.Predicate;
+import com.google.common.base.Predicates;
 import com.google.common.collect.Iterables;
 import com.google.devtools.j2objc.Options;
 import com.google.devtools.j2objc.ast.AbstractTypeDeclaration;
@@ -133,22 +134,17 @@ public abstract class ObjectiveCSourceFileGenerator extends SourceFileGenerator 
     return !node.getClassInitStatements().isEmpty();
   }
 
-  protected void printMethod(MethodDeclaration m) {
-    if (m.isConstructor()) {
-      printConstructor(m);
-    } else {
-      printNormalMethod(m);
-    }
-  }
+  protected abstract void printFunctionDeclaration(FunctionDeclaration declaration);
 
-  protected abstract void printFunction(FunctionDeclaration declaration);
-
-  protected abstract void printNativeDeclaration(NativeDeclaration declaration);
+  protected abstract boolean shouldPrintDeclaration(BodyDeclaration declaration);
 
   private void printDeclaration(BodyDeclaration declaration) {
     switch (declaration.getKind()) {
+      case FUNCTION_DECLARATION:
+        printFunctionDeclaration((FunctionDeclaration) declaration);
+        return;
       case METHOD_DECLARATION:
-        printMethod((MethodDeclaration) declaration);
+        printMethodDeclaration((MethodDeclaration) declaration);
         return;
       case NATIVE_DECLARATION:
         printNativeDeclaration((NativeDeclaration) declaration);
@@ -164,17 +160,41 @@ public abstract class ObjectiveCSourceFileGenerator extends SourceFileGenerator 
     }
   }
 
-  protected void printFunctions(Iterable<BodyDeclaration> declarations) {
-    for (BodyDeclaration declaration : declarations) {
-      if (declaration.getKind() == Kind.FUNCTION_DECLARATION) {
-        printFunction((FunctionDeclaration) declaration);
-      }
-    }
+  protected void printInnerDeclarations(AbstractTypeDeclaration node) {
+    printDeclarations(Iterables.filter(Iterables.filter(
+        node.getBodyDeclarations(), isInnerFilter()), printDeclFilter()));
   }
 
-  protected abstract void printNormalMethod(MethodDeclaration m);
+  protected void printOuterDeclarations(AbstractTypeDeclaration node) {
+    printDeclarations(Iterables.filter(Iterables.filter(
+        node.getBodyDeclarations(), isOuterFilter()), printDeclFilter()));
+  }
 
-  protected abstract void printConstructor(MethodDeclaration m);
+  private static final Predicate<BodyDeclaration> IS_OUTER_DECL = new Predicate<BodyDeclaration>() {
+    public boolean apply(BodyDeclaration decl) {
+      return decl instanceof FunctionDeclaration;
+    }
+  };
+
+  private static final Predicate<BodyDeclaration> IS_INNER_DECL = Predicates.not(IS_OUTER_DECL);
+
+  protected Predicate<BodyDeclaration> isInnerFilter() {
+    return IS_INNER_DECL;
+  }
+
+  protected Predicate<BodyDeclaration> isOuterFilter() {
+    return IS_OUTER_DECL;
+  }
+
+  private final Predicate<BodyDeclaration> printDeclFilterImpl = new Predicate<BodyDeclaration>() {
+    public boolean apply(BodyDeclaration decl) {
+      return shouldPrintDeclaration(decl);
+    }
+  };
+
+  protected Predicate<BodyDeclaration> printDeclFilter() {
+    return printDeclFilterImpl;
+  }
 
   /**
    * Create an Objective-C method declaration string.
@@ -417,23 +437,23 @@ public abstract class ObjectiveCSourceFileGenerator extends SourceFileGenerator 
     return Modifier.isPrivate(modifiers) || BindingUtil.isSynthetic(modifiers);
   }
 
-  protected void printNormalMethodDeclaration(MethodDeclaration m) {
+  protected void printMethodDeclaration(MethodDeclaration m) {
     newline();
     printDocComment(m.getJavadoc());
     print(this.methodDeclaration(m));
     String methodName = NameTable.getMethodSelector(m.getMethodBinding());
-    if (!BindingUtil.isSynthetic(m.getModifiers())
+    if (!m.isConstructor() && !BindingUtil.isSynthetic(m.getModifiers())
         && needsObjcMethodFamilyNoneAttribute(methodName)) {
-         // Getting around a clang warning.
-         // clang assumes that methods with names starting with new, alloc or copy
-         // return objects of the same type as the receiving class, regardless of
-         // the actual declared return type. This attribute tells clang to not do
-         // that, please.
-         // See http://clang.llvm.org/docs/AutomaticReferenceCounting.html
-         // Sections 5.1 (Explicit method family control)
-         // and 5.2.2 (Related result types)
-         print(" OBJC_METHOD_FAMILY_NONE");
-       }
+      // Getting around a clang warning.
+      // clang assumes that methods with names starting with new, alloc or copy
+      // return objects of the same type as the receiving class, regardless of
+      // the actual declared return type. This attribute tells clang to not do
+      // that, please.
+      // See http://clang.llvm.org/docs/AutomaticReferenceCounting.html
+      // Sections 5.1 (Explicit method family control)
+      // and 5.2.2 (Related result types)
+      print(" OBJC_METHOD_FAMILY_NONE");
+    }
 
     if (needsDeprecatedAttribute(m.getAnnotations())) {
       print(" " + DEPRECATED_ATTRIBUTE);
@@ -461,6 +481,14 @@ public abstract class ObjectiveCSourceFileGenerator extends SourceFileGenerator 
     }
 
     return false;
+  }
+
+  protected void printNativeDeclaration(NativeDeclaration declaration) {
+    newline();
+    String code = declaration.getHeaderCode();
+    if (code != null) {
+      print(declaration.getHeaderCode());
+    }
   }
 
   protected void printFieldSetters(AbstractTypeDeclaration node, boolean privateVars) {
