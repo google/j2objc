@@ -350,7 +350,7 @@ public class UnsequencedExpressionRewriter extends TreeVisitor {
       InfixExpression result = new InfixExpression(
           Types.resolveJavaType("boolean"), op, branches.get(0).copy(), branches.get(1).copy());
       for (int i = 2; i < branches.size(); i++) {
-        result.getExtendedOperands().add(branches.get(i));
+        result.getExtendedOperands().add(branches.get(i).copy());
       }
       return result;
     }

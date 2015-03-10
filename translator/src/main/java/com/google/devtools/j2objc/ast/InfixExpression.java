@@ -14,6 +14,7 @@
 
 package com.google.devtools.j2objc.ast;
 
+import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 
 import org.eclipse.jdt.core.dom.ITypeBinding;
@@ -88,10 +89,56 @@ public class InfixExpression extends Expression {
     super(jdtNode);
     typeBinding = jdtNode.resolveTypeBinding();
     operator = Operator.fromJdtOperator(jdtNode.getOperator());
-    leftOperand.set((Expression) TreeConverter.convert(jdtNode.getLeftOperand()));
-    rightOperand.set((Expression) TreeConverter.convert(jdtNode.getRightOperand()));
-    for (Object operand : jdtNode.extendedOperands()) {
-      extendedOperands.add((Expression) TreeConverter.convert(operand));
+
+    // The JDT parser apparently does not always take advantage of extended
+    // operands, resulting in potentially very deep trees that can overflow the
+    // stack. This code traverses the subtree non-recursively and merges all
+    // children that have the same operator into this node using extended
+    // operands.
+    List<Expression> operands = Lists.newArrayList();
+    List<StackState> stack = Lists.newArrayList();
+    stack.add(new StackState(jdtNode));
+    while (!stack.isEmpty()) {
+      StackState currentState = stack.get(stack.size() - 1);
+      org.eclipse.jdt.core.dom.Expression child = currentState.nextChild();
+      if (child == null) {
+        stack.remove(stack.size() - 1);
+        continue;
+      }
+      if (child instanceof org.eclipse.jdt.core.dom.InfixExpression) {
+        org.eclipse.jdt.core.dom.InfixExpression infixChild =
+            (org.eclipse.jdt.core.dom.InfixExpression) child;
+        if (infixChild.getOperator().equals(jdtNode.getOperator())) {
+          stack.add(new StackState(infixChild));
+          continue;
+        }
+      }
+      operands.add((Expression) TreeConverter.convert(child));
+    }
+    leftOperand.set(operands.get(0));
+    rightOperand.set(operands.get(1));
+    extendedOperands.addAll(operands.subList(2, operands.size()));
+  }
+
+  private static class StackState {
+    private final org.eclipse.jdt.core.dom.InfixExpression expression;
+    private int nextChild = -2;
+
+    private StackState(org.eclipse.jdt.core.dom.InfixExpression expr) {
+      expression = expr;
+    }
+
+    private org.eclipse.jdt.core.dom.Expression nextChild() {
+      int childIdx = nextChild++;
+      if (childIdx == -2) {
+        return expression.getLeftOperand();
+      } else if (childIdx == -1) {
+        return expression.getRightOperand();
+      } else if (childIdx < expression.extendedOperands().size()) {
+        return (org.eclipse.jdt.core.dom.Expression) expression.extendedOperands().get(childIdx);
+      } else {
+        return null;
+      }
     }
   }
 
