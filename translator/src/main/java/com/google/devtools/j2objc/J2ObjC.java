@@ -18,7 +18,6 @@ package com.google.devtools.j2objc;
 
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.io.Files;
-import com.google.devtools.j2objc.file.InputFile;
 import com.google.devtools.j2objc.types.Types;
 import com.google.devtools.j2objc.util.DeadCodeMap;
 import com.google.devtools.j2objc.util.ErrorUtil;
@@ -151,7 +150,13 @@ public class J2ObjC {
     try {
       JdtParser parser = createParser();
 
-      AnnotationPreProcessor preProcessor = new AnnotationPreProcessor();
+      GenerationBatch batch = new GenerationBatch();
+      batch.processFileArgs(fileArgs);
+      if (ErrorUtil.errorCount() > 0) {
+        return;
+      }
+
+      AnnotationPreProcessor preProcessor = new AnnotationPreProcessor(batch);
       preProcessor.process(fileArgs);
       preProcessorTempDir = preProcessor.getTemporaryDirectory();
       if (ErrorUtil.errorCount() > 0) {
@@ -162,14 +167,14 @@ public class J2ObjC {
       }
 
       PackageInfoPreProcessor packageInfoPreProcessor = new PackageInfoPreProcessor(parser);
-      packageInfoPreProcessor.processFiles(fileArgs);
+      packageInfoPreProcessor.processBatch(batch);
       if (ErrorUtil.errorCount() > 0) {
         return;
       }
 
       if (Options.shouldPreProcess()) {
         HeaderMappingPreProcessor headerMappingPreProcessor = new HeaderMappingPreProcessor(parser);
-        headerMappingPreProcessor.processFiles(fileArgs);
+        headerMappingPreProcessor.processBatch(batch);
         if (ErrorUtil.errorCount() > 0) {
           return;
         }
@@ -177,8 +182,7 @@ public class J2ObjC {
 
       TranslationProcessor translationProcessor
           = new TranslationProcessor(parser, loadDeadCodeMap());
-      translationProcessor.pendingFiles.addAll(preProcessor.getAdditionalFiles());
-      translationProcessor.processFiles(fileArgs);
+      translationProcessor.processBatch(batch);
       if (ErrorUtil.errorCount() > 0) {
         return;
       }

@@ -13,45 +13,33 @@
  */
 package com.google.devtools.j2objc.gen;
 
-import com.google.common.annotations.VisibleForTesting;
 import com.google.devtools.j2objc.ast.CompilationUnit;
 import com.google.devtools.j2objc.file.InputFile;
-import com.google.devtools.j2objc.util.NameTable;
+import com.google.devtools.j2objc.util.ErrorUtil;
 
-import java.util.Collections;
+import java.util.ArrayList;
 import java.util.List;
+
+import javax.annotation.Nullable;
 
 /**
  * A single unit of generated code, to be turned into a single pair of .h and .m files.
+ * <p/>
+ * Some attributes, like the name and output path, might not be known before parsing.
+ * These are set by a {@link com.google.devtools.j2objc.FileProcessor}.
  *
  * @author Mike Thvedt
  */
 public class GenerationUnit {
-  private final List<CompilationUnit> work;
-  private final String outputPath;
+  private String name;
+  private String outputPath;
+  private final List<InputFile> inputFiles = new ArrayList<InputFile>();
+  private List<CompilationUnit> compilationUnits = new ArrayList<CompilationUnit>();
   private final String sourceName;
-  private final String name;
+  private final List<String> errors = new ArrayList<String>();
 
-  private GenerationUnit(
-      List<CompilationUnit> work, String outputPath, String sourceName, String name) {
-    this.work = work;
-    this.outputPath = outputPath;
+  public GenerationUnit(String sourceName) {
     this.sourceName = sourceName;
-    this.name = name;
-  }
-
-  @VisibleForTesting
-  public static GenerationUnit fromSingleUnit(CompilationUnit unit, String unitPath) {
-    List<CompilationUnit> work = Collections.singletonList(unit);
-    String name = NameTable.getMainTypeFullName(unit);
-    return new GenerationUnit(work, unitPath, unitPath, name);
-  }
-
-  public static GenerationUnit fromSingleFile(
-      InputFile inputFile, CompilationUnit unit, String outputPath) {
-    List<CompilationUnit> work = Collections.singletonList(unit);
-    String name = NameTable.getMainTypeFullName(unit);
-    return new GenerationUnit(work, outputPath, inputFile.getPath(), name);
   }
 
   /**
@@ -66,15 +54,72 @@ public class GenerationUnit {
    * Gets the name of this GenerationUnit.
    * This will be a name appropriate for use in Obj-C output code.
    */
+  @Nullable
   public String getName() {
     return name;
   }
 
-  public List<CompilationUnit> getCompilationUnits() {
-    return work;
+  /**
+   * Sets the name of this GenerationUnit.
+   * This should be a name appropriate for use in Obj-C output code.
+   */
+  public void setName(String name) {
+    this.name = name;
   }
 
+  public void addInputFile(InputFile file) {
+    assert compilationUnits.isEmpty();  // Probably shouldn't be adding files when this isn't empty.
+    inputFiles.add(file);
+  }
+
+  public List<InputFile> getInputFiles() {
+    return inputFiles;
+  }
+
+  /**
+   * A list of CompilationUnits generated from the input files in this GenerationUnit.
+   * This list is mildly stateful in that some processors might add to it.
+   * These should be later cleared with {@link #clear()}, to save memory and allow reuse
+   * of GenerationUnits.
+   */
+  public List<CompilationUnit> getCompilationUnits() {
+    return compilationUnits;
+  }
+
+  public void addCompilationUnit(CompilationUnit unit) {
+    assert compilationUnits.size() < inputFiles.size();
+    compilationUnits.add(unit);
+  }
+
+  /**
+   * Clear the temporary state of this GenerationUnit.
+   */
+  public void clear() {
+    compilationUnits.clear();
+  }
+
+  /**
+   * Gets the output path for this GenerationUnit.
+   */
+  @Nullable
   public String getOutputPath() {
     return outputPath;
+  }
+
+  public void setOutputPath(String outputPath) {
+    this.outputPath = outputPath;
+  }
+
+  /**
+   * A unit is broken if we couldn't read all of its input files.
+   * We mark it as broken so some processors may decide to halt for broken GenerationUnits.
+   */
+  public boolean hasErrors() {
+    return !errors.isEmpty();
+  }
+
+  public void error(String message) {
+    ErrorUtil.error(message);
+    errors.add(message);
   }
 }

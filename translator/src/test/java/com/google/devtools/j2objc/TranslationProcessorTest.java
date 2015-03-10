@@ -14,7 +14,8 @@
 
 package com.google.devtools.j2objc;
 
-import com.google.common.collect.Lists;
+import com.google.devtools.j2objc.file.JarredInputFile;
+import com.google.devtools.j2objc.file.RegularInputFile;
 import com.google.devtools.j2objc.util.ErrorUtil;
 
 import java.io.File;
@@ -59,7 +60,10 @@ public class TranslationProcessorTest extends GenerationTest {
     Options.setBatchTranslateMaximum(2);
 
     TranslationProcessor processor = new TranslationProcessor(J2ObjC.createParser(), null);
-    processor.processFiles(Lists.newArrayList("mypkg/Foo.java", "mypkg/Bar.java"));
+    GenerationBatch batch = new GenerationBatch();
+    batch.addSource(new JarredInputFile(getTempDir() + "/test.jar", "mypkg/Foo.java"));
+    batch.addSource(new JarredInputFile(getTempDir() + "/test.jar", "mypkg/Bar.java"));
+    processor.processBatch(batch);
 
     assertEquals(0, ErrorUtil.errorCount());
   }
@@ -70,7 +74,9 @@ public class TranslationProcessorTest extends GenerationTest {
     addSourceFile("class Test { }", "Test.java");
 
     TranslationProcessor processor = new TranslationProcessor(J2ObjC.createParser(), null);
-    processor.processFiles(Lists.newArrayList(getTempDir() + "/Test.java"));
+    GenerationBatch batch = new GenerationBatch();
+    batch.addSource(new RegularInputFile(getTempDir() + "/Test.java", "Test.java"));
+    processor.processBatch(batch);
 
     String translation = getTranslatedFile("Test.h");
     assertTranslation(translation, "@interface Test");
@@ -87,9 +93,10 @@ public class TranslationProcessorTest extends GenerationTest {
     addSourceFile("class Foo { void foo2() {} }", "src/main/java/Foo.java");
 
     TranslationProcessor processor = new TranslationProcessor(J2ObjC.createParser(), null);
-    processor.processFiles(Lists.newArrayList(
-        getTempDir() + "/Test.java",
-        getTempDir() + "/src/main/java/Foo.java"));
+    GenerationBatch batch = new GenerationBatch();
+    batch.addSource(new RegularInputFile(getTempDir() + "/Test.java", "Test.java"));
+    batch.addSource(new RegularInputFile(getTempDir() + "/src/main/java/Foo.java", "Foo.java"));
+    processor.processBatch(batch);
 
     String translation = getTranslatedFile("Foo.h");
     assertTranslation(translation, "- (void)foo2;");

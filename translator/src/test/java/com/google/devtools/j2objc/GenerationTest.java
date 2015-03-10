@@ -27,7 +27,6 @@ import com.google.devtools.j2objc.ast.TreeConverter;
 import com.google.devtools.j2objc.ast.TreeVisitor;
 import com.google.devtools.j2objc.file.InputFile;
 import com.google.devtools.j2objc.file.RegularInputFile;
-import com.google.devtools.j2objc.gen.GenerationUnit;
 import com.google.devtools.j2objc.gen.SourceBuilder;
 import com.google.devtools.j2objc.gen.StatementGenerator;
 import com.google.devtools.j2objc.types.Types;
@@ -52,7 +51,6 @@ import java.net.URL;
 import java.net.URLClassLoader;
 import java.net.URLDecoder;
 import java.nio.charset.Charset;
-import java.util.Collections;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -289,8 +287,9 @@ public abstract class GenerationTest extends TestCase {
 
   protected void loadPackageInfo(String relativePath) throws IOException {
     PackageInfoPreProcessor packageInfoPreProcessor = new PackageInfoPreProcessor(parser);
-    packageInfoPreProcessor.processFiles(Collections.singletonList(
-        tempDir.getCanonicalPath() + File.separatorChar + relativePath));
+    InputFile file = new RegularInputFile(tempDir.getCanonicalPath()
+        + File.separatorChar + relativePath);
+    packageInfoPreProcessor.processBatch(GenerationBatch.fromFile(file));
   }
 
   /**
@@ -318,10 +317,8 @@ public abstract class GenerationTest extends TestCase {
   protected String translateSourceFile(String source, String typeName, String fileName)
       throws IOException {
     CompilationUnit unit = translateType(typeName, source);
-    InputFile file = new RegularInputFile(typeName);  // doesn't need to exist
-    String outputName = TranslationProcessor.getOutputFileName(file, unit);
     TranslationProcessor.generateObjectiveCSource(
-        GenerationUnit.fromSingleUnit(unit, outputName), TimeTracker.noop());
+        GenerationBatch.fromUnit(unit, typeName + ".java"), TimeTracker.noop());
     return getTranslatedFile(fileName);
   }
 
@@ -331,11 +328,11 @@ public abstract class GenerationTest extends TestCase {
 
   protected void loadSourceFileHeaderMappings(String... fileNames) {
     if (Options.shouldPreProcess()) {
-      List<String> files = Lists.newArrayList();
+      GenerationBatch batch = new GenerationBatch();
       for (String fileName : fileNames) {
-        files.add(tempDir.getPath() + "/" + fileName);
+        batch.addSource(new RegularInputFile(tempDir.getPath() + "/" + fileName));
       }
-      new HeaderMappingPreProcessor(parser).processFiles(files);
+      new HeaderMappingPreProcessor(parser).processBatch(batch);
     }
   }
 

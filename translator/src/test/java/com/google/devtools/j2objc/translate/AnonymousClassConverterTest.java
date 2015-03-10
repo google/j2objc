@@ -18,6 +18,7 @@ package com.google.devtools.j2objc.translate;
 
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
+import com.google.devtools.j2objc.GenerationBatch;
 import com.google.devtools.j2objc.GenerationTest;
 import com.google.devtools.j2objc.ast.AbstractTypeDeclaration;
 import com.google.devtools.j2objc.ast.ClassInstanceCreation;
@@ -27,7 +28,6 @@ import com.google.devtools.j2objc.ast.ReturnStatement;
 import com.google.devtools.j2objc.ast.TreeUtil;
 import com.google.devtools.j2objc.ast.TypeDeclaration;
 import com.google.devtools.j2objc.ast.VariableDeclarationFragment;
-import com.google.devtools.j2objc.gen.GenerationUnit;
 import com.google.devtools.j2objc.gen.ObjectiveCImplementationGenerator;
 import com.google.devtools.j2objc.util.NameTable;
 
@@ -267,7 +267,8 @@ public class AnonymousClassConverterTest extends GenerationTest {
     assertTrue("required field not found", found);
 
     // Verify constructor takes both outer field and var.
-    ObjectiveCImplementationGenerator.generate(GenerationUnit.fromSingleUnit(unit, "Test"));
+    GenerationBatch batch = GenerationBatch.fromUnit(unit, "Test");
+    ObjectiveCImplementationGenerator.generate(batch.getGenerationUnits().get(0));
     String translation = getTranslatedFile("Test.m");
     assertTranslation(translation,
         "r2 = [[[Test_$1_$1 alloc] initWithJavaLangInteger:i] autorelease]");
@@ -297,7 +298,8 @@ public class AnonymousClassConverterTest extends GenerationTest {
     assertTrue("required field not found", found);
 
     // Verify method var is passed to constructor.
-    ObjectiveCImplementationGenerator.generate(GenerationUnit.fromSingleUnit(unit, "Test"));
+    GenerationBatch batch = GenerationBatch.fromUnit(unit, "Test");
+    ObjectiveCImplementationGenerator.generate(batch.getGenerationUnits().get(0));
     String translation = getTranslatedFile("Test.m");
     assertTranslation(translation, "r = [[[Test_$1 alloc] initWithJavaLangInteger:i] autorelease]");
   }
@@ -326,7 +328,8 @@ public class AnonymousClassConverterTest extends GenerationTest {
     assertTrue("required field not found", found);
 
     // Verify method var is passed to constructor.
-    ObjectiveCImplementationGenerator.generate(GenerationUnit.fromSingleUnit(unit, "Test"));
+    GenerationBatch batch = GenerationBatch.fromUnit(unit, "Test");
+    ObjectiveCImplementationGenerator.generate(batch.getGenerationUnits().get(0));
     String translation = getTranslatedFile("Test.m");
     assertTranslation(translation,
         "r = [[[Test_$1 alloc] initWithJavaLangInteger:i] autorelease]");

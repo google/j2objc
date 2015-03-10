@@ -328,6 +328,11 @@ public class Options {
       ++nArg;
     }
 
+    if (shouldPreProcess() && buildClosure) {
+      ErrorUtil.error("--build-closure is not supported with "
+          + "--use-header-mappings or --preserve-full-paths");
+    }
+
     if (memoryManagementOption == null) {
       memoryManagementOption = MemoryManagementOption.REFERENCE_COUNTING;
     }

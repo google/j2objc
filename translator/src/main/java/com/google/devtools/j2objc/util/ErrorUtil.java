@@ -108,6 +108,7 @@ public class ErrorUtil {
     return fullMessage;
   }
 
+  // TODO(tball): Consider more ways to associate errors with GenerationUnits to aid debugging.
   public static void error(String message) {
     errorMessages.add(message);
     errorStream.println(getFullMessage("error: ", message, CLANG_STYLE_ERROR_MSG));
