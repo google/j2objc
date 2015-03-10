@@ -165,13 +165,13 @@ public class ObjectiveCHeaderGeneratorTest extends GenerationTest {
 
     String translation = translateSourceFile(getTranslatedFile("unit/test/AnotherDummy.java"),
         "AnotherDummy", "AnotherDummy.h");
-    assertTranslation(translation, "#include \"" + getTempDir() + "/unit/test/Dummy.h\"");
+    assertTranslation(translation, "#include \"unit/test/Dummy.h\"");
 
-    Map<String, String> outputMapping = Options.getHeaderMappings();
-    assertEquals(getTempDir() + "/unit/test/AnotherDummy.h",
-        outputMapping.get("unit.test.AnotherDummy"));
-    assertEquals(getTempDir() + "/unit/test/Dummy.h", outputMapping.get("unit.test.Dummy"));
-    assertEquals("my/mapping/custom/Test.h", outputMapping.get("unit.mapping.custom.Test"));
+    Map<String, String> outputMapping = writeAndReloadHeaderMappings();
+    assertEquals(outputMapping.get("unit.test.Dummy"), "unit/test/Dummy.h");
+    assertEquals(outputMapping.get("unit.test.AnotherDummy"), "unit/test/AnotherDummy.h");
+    assertEquals(outputMapping.get("unit.mapping.custom.Test"), "my/mapping/custom/Test.h");
+    assertEquals(outputMapping.get("unit.mapping.custom.AnotherTest"), "my/mapping/custom/Test.h");
   }
 
   public void testOutputHeaderFileMappingWithMultipleClassesInOneHeader() throws IOException {
@@ -205,12 +205,11 @@ public class ObjectiveCHeaderGeneratorTest extends GenerationTest {
     assertTranslation(translationForDummy, "#include \"my/mapping/custom/Test.h\"");
     assertTranslation(translationForAnotherDummy, "#include \"my/mapping/custom/Test.h\"");
 
-    Map<String, String> outputMapping = Options.getHeaderMappings();
-    assertEquals(getTempDir() + "/unit/test/AnotherDummy.h",
-        outputMapping.get("unit.test.AnotherDummy"));
-    assertEquals(getTempDir() + "/unit/test/Dummy.h", outputMapping.get("unit.test.Dummy"));
-    assertEquals("my/mapping/custom/Test.h", outputMapping.get("unit.mapping.custom.Test"));
-    assertEquals("my/mapping/custom/Test.h", outputMapping.get("unit.mapping.custom.AnotherTest"));
+    Map<String, String> outputMapping = writeAndReloadHeaderMappings();
+    assertEquals(outputMapping.get("unit.test.Dummy"), "unit/test/Dummy.h");
+    assertEquals(outputMapping.get("unit.test.AnotherDummy"), "unit/test/AnotherDummy.h");
+    assertEquals(outputMapping.get("unit.mapping.custom.Test"), "my/mapping/custom/Test.h");
+    assertEquals(outputMapping.get("unit.mapping.custom.AnotherTest"), "my/mapping/custom/Test.h");
   }
 
   public void testForwardDeclarationTranslation() throws IOException {

@@ -14,12 +14,10 @@
 
 package com.google.devtools.j2objc;
 
-import com.google.devtools.j2objc.file.InputFile;
+import com.google.devtools.j2objc.ast.AbstractTypeDeclaration;
+import com.google.devtools.j2objc.ast.CompilationUnit;
 import com.google.devtools.j2objc.gen.GenerationUnit;
 import com.google.devtools.j2objc.util.JdtParser;
-
-import org.eclipse.jdt.core.dom.AbstractTypeDeclaration;
-import org.eclipse.jdt.core.dom.CompilationUnit;
 
 /**
  * Reads source files and extracts header mappings between translated header files and associated
@@ -39,33 +37,12 @@ public class HeaderMappingPreProcessor extends FileProcessor {
   }
 
   @Override
-  protected void processGenerationUnit(GenerationUnit generationUnit) {
-    if (generationUnit.getOutputPath() != null) {
-      // We only care about GenerationUnits with non-default output paths.
-      super.processGenerationUnit(generationUnit);
+  protected void processCompiledGenerationUnit(GenerationUnit generationUnit) {
+    for (CompilationUnit compilationUnit : generationUnit.getCompilationUnits()) {
+      for (AbstractTypeDeclaration decl : compilationUnit.getTypes()) {
+        String name = decl.getTypeBinding().getQualifiedName();
+        Options.getHeaderMappings().put(name, generationUnit.getOutputPath() + ".h");
+      }
     }
-  }
-
-  @Override
-  protected void processCompilationUnit(
-      GenerationUnit genUnit, CompilationUnit unit, InputFile file) {
-    for (Object type : unit.types()) {
-      Options.getHeaderMappings().put(
-          getTypeQualifiedName(type, unit), genUnit.getOutputPath() + ".h");
-    }
-  }
-
-  @Override
-  protected void processCompiledGenerationUnit(GenerationUnit unit) {
-    throw new UnsupportedOperationException();  // Should never reach here
-  }
-
-  private String getTypeQualifiedName(Object type, CompilationUnit unit) {
-    AbstractTypeDeclaration typeDeclaration = (AbstractTypeDeclaration) type;
-    String packageName = unit.getPackage().getName().getFullyQualifiedName();
-    if (!packageName.isEmpty()) {
-      packageName += ".";
-    }
-    return packageName + typeDeclaration.getName().getIdentifier();
   }
 }
