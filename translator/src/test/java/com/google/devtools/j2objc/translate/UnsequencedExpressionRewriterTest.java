@@ -64,14 +64,12 @@ public class UnsequencedExpressionRewriterTest extends GenerationTest {
         "jboolean unseq$1;",
         "if (!(unseq$1 = (i == 0 || i == 1))) {",
         "  jint unseq$2 = ++i;",
-        "  unseq$1 = (unseq$1 || unseq$2 + i == 2);",
+        "  if (!(unseq$1 = (unseq$2 + i == 2))) {",
+        "    jint unseq$3 = i++;",
+        "    unseq$1 = (unseq$1 || unseq$3 + i == 3 || i == 4);",
+        "  }",
         "}",
-        "jboolean unseq$3;",
-        "if (!(unseq$3 = unseq$1)) {",
-        "  jint unseq$4 = i++;",
-        "  unseq$3 = (unseq$3 || unseq$4 + i == 3);",
-        "}",
-        "return unseq$3 || i == 4;");
+        "return unseq$1;");
   }
 
   public void testUnsequencedConditionalExpression() throws IOException {

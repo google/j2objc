@@ -51,4 +51,17 @@ public class TreeConvertTest extends GenerationTest {
         + "Simple[] value(); }", "Elements", "Elements.h");
     assertTranslation(translation, "@property (readonly) IOSObjectArray *value;");
   }
+
+  public void testVeryDeeplyNextedExpression() throws IOException {
+    StringBuilder sb = new StringBuilder("return i == -1");
+    // Create a 2000 node deep infix expression.
+    for (int i = 0; i < 2000; i++) {
+      sb.append(" || i == " + i);
+    }
+    sb.append(";");
+    String exprStr = sb.toString();
+    String translation = translateSourceFile(String.format(
+        "class Test { boolean test(int i) { %s } }", exprStr), "Test", "Test.m");
+    assertTranslation(translation, exprStr);
+  }
 }

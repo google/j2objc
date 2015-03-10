@@ -361,7 +361,7 @@ public class RewriterTest extends GenerationTest {
         "Test", "Test.m");
     assertTranslation(translation, "return a & b;");
     assertTranslation(translation, "return c | d;");
-    assertTranslatedLines(translation, "return ((e & f) | (g & h)) | i;");
+    assertTranslatedLines(translation, "return (e & f) | (g & h) | i;");
     assertTranslatedLines(translation, "return j | k | (l & m & n);");
   }
 
