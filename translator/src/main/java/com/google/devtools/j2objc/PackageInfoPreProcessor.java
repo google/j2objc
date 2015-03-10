@@ -14,11 +14,11 @@
 
 package com.google.devtools.j2objc;
 
+import com.google.devtools.j2objc.gen.GenerationUnit;
 import com.google.devtools.j2objc.util.FileUtil;
 import com.google.devtools.j2objc.file.InputFile;
 import com.google.devtools.j2objc.util.ErrorUtil;
 import com.google.devtools.j2objc.util.JdtParser;
-import com.google.devtools.j2objc.util.TimeTracker;
 import com.google.j2objc.annotations.ObjectiveCName;
 
 import org.eclipse.jdt.core.dom.Annotation;
@@ -34,37 +34,38 @@ import java.util.logging.Logger;
  *
  * @author Mike Thvedt
  */
-public class PackageInfoPreProcessor extends FileProcessor {
+public class PackageInfoPreProcessor {
 
   private static final Logger logger = Logger.getLogger(PackageInfoPreProcessor.class.getName());
 
+  private final JdtParser parser;
+
   public PackageInfoPreProcessor(JdtParser parser) {
-    super(parser);
+    this.parser = parser;
   }
 
-  @Override
-  protected void processSource(InputFile file) {
-    // TODO(user): We can get the whole list of .java and .jar files here,
-    // instead of doing it multiple times (once each per FileProcessor).
-    // Future functionality will require us to do this upfront.
-    if (file.getPath().endsWith("package-info.java")) {
-      logger.finest("processing package-info file " + file.getPath());
-      if (isBatchable(file)) {
-        batchSources.add(file);
-      } else {
-        try {
-          processSource(file, FileUtil.readFile(file));
-        } catch (IOException e) {
-          ErrorUtil.warning(e.getMessage());
-        }
+  public void processBatch(GenerationBatch batch) {
+    for (GenerationUnit unit : batch.getGenerationUnits()) {
+      for (InputFile file : unit.getInputFiles()) {
+        processSource(file);
       }
     }
   }
 
-  @Override
-  protected void processUnit(
-      InputFile file, String source, CompilationUnit unit, TimeTracker ticker) {
-    // We should only reach here if it's a packageinfo.java file.
+  protected void processSource(InputFile file) {
+    if (file.getUnitName().endsWith("package-info.java")) {
+      logger.finest("processing package-info file " + file.getPath());
+      try {
+        processUnit(file, parser.parse(file.getUnitName(), FileUtil.readFile(file)));
+      } catch (IOException e) {
+        ErrorUtil.error(e.getMessage());
+      }
+    }
+  }
+
+  protected void processUnit(InputFile file, CompilationUnit unit) {
+    // We should only reach here if it's a package-info.java file.
+    assert file.getUnitName().endsWith("package-info.java");
     @SuppressWarnings("unchecked")
     List<Annotation> annotations = (List<Annotation>)unit.getPackage().annotations();
     for (Annotation annotation: annotations) {

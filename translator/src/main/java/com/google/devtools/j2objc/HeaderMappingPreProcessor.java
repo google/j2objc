@@ -15,17 +15,19 @@
 package com.google.devtools.j2objc;
 
 import com.google.devtools.j2objc.file.InputFile;
+import com.google.devtools.j2objc.gen.GenerationUnit;
 import com.google.devtools.j2objc.util.JdtParser;
-
-import com.google.devtools.j2objc.util.TimeTracker;
 
 import org.eclipse.jdt.core.dom.AbstractTypeDeclaration;
 import org.eclipse.jdt.core.dom.CompilationUnit;
 
 /**
  * Reads source files and extracts header mappings between translated header files and associated
- * Java type declarations. This processor is invoked iff command line flags, "--header-mapping" and
- * "--preserve-full-paths", are both specified.
+ * Java type declarations.
+ * This processor should be invoked on any GenerationUnits with a set output path,
+ * and ignores GenerationUnits that don't have any. In particular, it should be invoked whenever
+ * any command line flags are set that set output paths dependent on input paths,
+ * such as --use-source-files.
  *
  * Note that the reason we need to process the type information of all the Java source files
  * first, instead of doing it iteratively during the translation phase for each file, is that we may
@@ -37,27 +39,25 @@ public class HeaderMappingPreProcessor extends FileProcessor {
   }
 
   @Override
-  protected void processSource(InputFile file, String source) {
-    CompilationUnit unit = getParser().parse(file.getUnitName(), source);
-    String headerRelativePath = getHeaderRelativePath(file.getUnitName());
-
-    for (Object type : unit.types()) {
-      Options.getHeaderMappings().put(
-          getTypeQualifiedName(type, unit), headerRelativePath);
+  protected void processGenerationUnit(GenerationUnit generationUnit) {
+    if (generationUnit.getOutputPath() != null) {
+      // We only care about GenerationUnits with non-default output paths.
+      super.processGenerationUnit(generationUnit);
     }
   }
 
   @Override
-  protected void processUnit(
-      InputFile file, String source, CompilationUnit unit, TimeTracker ticker) {
+  protected void processCompilationUnit(
+      GenerationUnit genUnit, CompilationUnit unit, InputFile file) {
+    for (Object type : unit.types()) {
+      Options.getHeaderMappings().put(
+          getTypeQualifiedName(type, unit), genUnit.getOutputPath() + ".h");
+    }
   }
 
-  private String getHeaderRelativePath(String path) {
-    if (path.endsWith(".java")) {
-      return path.substring(0, path.length() - 5) + ".h";
-    } else {
-      return path;
-    }
+  @Override
+  protected void processCompiledGenerationUnit(GenerationUnit unit) {
+    throw new UnsupportedOperationException();  // Should never reach here
   }
 
   private String getTypeQualifiedName(Object type, CompilationUnit unit) {
@@ -66,7 +66,6 @@ public class HeaderMappingPreProcessor extends FileProcessor {
     if (!packageName.isEmpty()) {
       packageName += ".";
     }
-    return packageName + typeDeclaration.getName().getFullyQualifiedName();
+    return packageName + typeDeclaration.getName().getIdentifier();
   }
 }
-

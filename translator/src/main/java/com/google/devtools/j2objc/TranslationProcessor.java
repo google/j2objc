@@ -14,10 +14,9 @@
 
 package com.google.devtools.j2objc;
 
+import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.Sets;
 import com.google.devtools.j2objc.ast.CompilationUnit;
-import com.google.devtools.j2objc.ast.PackageDeclaration;
-import com.google.devtools.j2objc.ast.TreeConverter;
 import com.google.devtools.j2objc.file.InputFile;
 import com.google.devtools.j2objc.gen.GenerationUnit;
 import com.google.devtools.j2objc.gen.ObjectiveCHeaderGenerator;
@@ -60,7 +59,6 @@ import com.google.devtools.j2objc.util.DeadCodeMap;
 import com.google.devtools.j2objc.util.ErrorUtil;
 import com.google.devtools.j2objc.util.FileUtil;
 import com.google.devtools.j2objc.util.JdtParser;
-import com.google.devtools.j2objc.util.NameTable;
 import com.google.devtools.j2objc.util.TimeTracker;
 
 import org.eclipse.jdt.core.dom.ITypeBinding;
@@ -84,7 +82,7 @@ import java.util.logging.Logger;
  * Processes source files by translating each source into an Objective-C header
  * and an Objective-C source file.
  *
- * @author Tom Ball, Keith Stanger
+ * @author Tom Ball, Keith Stanger, Mike Thvedt
  */
 class TranslationProcessor extends FileProcessor {
 
@@ -127,63 +125,82 @@ class TranslationProcessor extends FileProcessor {
   }
 
   @Override
-  public void processFiles(Iterable<String> files) {
+  public void processBatch(GenerationBatch units) {
     loadHeaderMappings();
 
-    if (ErrorUtil.errorCount() > 0) {
-      // True if any classpath entry is malformed, or batch compilation failed.
-      return;
+    for (GenerationUnit generationUnit : units.getGenerationUnits()) {
+      processGenerationUnit(generationUnit);
     }
 
-    super.processFiles(files);
     while (!pendingFiles.isEmpty()) {
       InputFile file = pendingFiles.remove();
-      if (!processedFiles.contains(file.getUnitName())) {
-        processSource(file);
+      if (processedFiles.contains(file.getUnitName())) {
+        continue;
+      }
+
+      GenerationUnit genUnit = new GenerationUnit(file.getPath());
+      genUnit.addInputFile(file);
+      processGenerationUnit(genUnit);
+      // Possible for a batch to add to pending files.
+      if (pendingFiles.isEmpty()) {
+        processBatch();
       }
     }
+
+    processBatch();
   }
 
   @Override
-  protected void processSource(InputFile file, String source) {
-    if (logger.isLoggable(Level.INFO)) {
-      System.out.println("translating " + file.getPath());
-    }
-    super.processSource(file, source);
-  }
-
-  @Override
-  protected void processUnit(
-      InputFile file, String source, org.eclipse.jdt.core.dom.CompilationUnit unit,
-      TimeTracker ticker) {
+  protected void processCompilationUnit(
+      GenerationUnit genUnit, org.eclipse.jdt.core.dom.CompilationUnit unit, InputFile file) {
     String relativePath = getRelativePath(file.getUnitName(), unit);
     processedFiles.add(relativePath);
     seenFiles.add(relativePath);
+    super.processCompilationUnit(genUnit, unit, file);
+  }
 
-    CompilationUnit newUnit = TreeConverter.convertCompilationUnit(unit, file, source);
+  @Override
+  protected void processCompiledGenerationUnit(GenerationUnit unit) {
+    assert unit.getOutputPath() != null;
+    assert unit.getCompilationUnits().size() == unit.getInputFiles().size();
+    TimeTracker ticker = getTicker(unit.getOutputPath());
+    ticker.push();
+    try {
+      if (logger.isLoggable(Level.INFO)) {
+        System.out.println("translating " + unit.getOutputPath());
+      }
 
-    applyMutations(newUnit, deadCodeMap, ticker);
-    ticker.tick("Tree mutations");
+      boolean isDead = true;
+      for (CompilationUnit compUnit : unit.getCompilationUnits()) {
+        applyMutations(compUnit, deadCodeMap, ticker);
+        ticker.tick("Tree mutations for " + compUnit.getMainTypeName());
+        isDead &= compUnit.getTypes().isEmpty()
+            && !compUnit.getMainTypeName().endsWith("package_info");
+      }
 
-    if (unit.types().isEmpty() && !newUnit.getMainTypeName().endsWith("package_info")) {
-      logger.finest("skipping dead file " + file.getPath());
-      return;
+      if (isDead) {
+        logger.finest("skipping dead file " + unit.getOutputPath());
+        return;
+      }
+
+      logger.finest("writing output file(s) to " + Options.getOutputDirectory().getAbsolutePath());
+
+      generateObjectiveCSource(unit, ticker);
+      ticker.tick("Source generation");
+
+      if (Options.buildClosure()) {
+        // Add out-of-date dependencies to translation list.
+        for (CompilationUnit compilationUnit : unit.getCompilationUnits()) {
+          checkDependencies(compilationUnit);
+        }
+      }
+
+      OuterReferenceResolver.cleanup();
+    } finally {
+      ticker.pop();
+      ticker.tick("Total processing time");
+      ticker.printResults(System.out);
     }
-
-    logger.finest("writing output file(s) to " + Options.getOutputDirectory().getAbsolutePath());
-
-    GenerationUnit generationUnit = GenerationUnit.fromSingleFile(
-        file, newUnit, getOutputFileName(file, newUnit));
-
-    generateObjectiveCSource(generationUnit, ticker);
-    ticker.tick("Source generation");
-
-    if (Options.buildClosure()) {
-      // Add out-of-date dependencies to translation list.
-      checkDependencies(newUnit);
-    }
-
-    OuterReferenceResolver.cleanup();
   }
 
   /**
@@ -331,34 +348,11 @@ class TranslationProcessor extends FileProcessor {
     ticker.pop();
   }
 
-  /**
-   * Returns an output file name appropriate for this CompilationUnit.
-   * For example,
-   * foo/bar/Mumble.java translates to $(OUTPUT_DIR)/foo/bar/Mumble.m for
-   * Objective-C implementation files.  If --no-package-directories is
-   * specified, though, the output file is $(OUTPUT_DIR)/Mumble.m.
-   * <p>
-   * Note: class names are still camel-cased to avoid name collisions.
-   */
-  static String getOutputFileName(InputFile file, CompilationUnit node) {
-    String result;
-    if (Options.useSourceDirectories()) {
-      result = file.getUnitName().replace(".java", "");
-    } else {
-      PackageDeclaration pkg = node.getPackage();
-      if (Options.usePackageDirectories() && !pkg.isDefaultPackage()) {
-        result = pkg.getName().getFullyQualifiedName().replace('.', File.separatorChar)
-            + File.separatorChar + node.getMainTypeName();
-      } else {
-        result = node.getMainTypeName();
-      }
+  @VisibleForTesting
+  static void generateObjectiveCSource(GenerationBatch batch, TimeTracker ticker) {
+    for (GenerationUnit unit : batch.getGenerationUnits()) {
+      generateObjectiveCSource(unit, ticker);
     }
-
-    // Make sure the name is legal...
-    if (node.getMainTypeName().equals(NameTable.PACKAGE_INFO_MAIN_TYPE)) {
-      return result.replace(NameTable.PACKAGE_INFO_MAIN_TYPE, NameTable.PACKAGE_INFO_FILE_NAME);
-    }
-    return result;
   }
 
   public static void generateObjectiveCSource(GenerationUnit unit, TimeTracker ticker) {
@@ -421,6 +415,8 @@ class TranslationProcessor extends FileProcessor {
     if (seenFiles.contains(sourceName)) {
       return;
     }
+    // Should be an error if the user specifies this with --build-closure
+    assert !Options.shouldPreProcess();
     seenFiles.add(sourceName);
 
     // Check if source file exists.

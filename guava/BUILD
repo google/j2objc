@@ -6,13 +6,8 @@ package(
 
 package_group(
     name = "j2objc_guava_users",
-    includes = [
-        "//apps/bigtop/data:internal",
-        "//apps/xplat:internal",
-    ],
     packages = [
         "//java/com/google/api/client/util/...",
-        "//java/com/google/apps/bigtop/sync/client/dataglue/...",
         "//java/com/google/apps/docs/docos/client/mobile/...",
         "//java/com/google/apps/docs/gwt/math/...",
     ],
