@@ -43,6 +43,7 @@ import com.google.devtools.j2objc.util.BindingUtil;
 import com.google.devtools.j2objc.util.NameTable;
 
 import org.eclipse.jdt.core.dom.ITypeBinding;
+import org.eclipse.jdt.core.dom.IVariableBinding;
 import org.eclipse.jdt.core.dom.Modifier;
 
 import java.util.Iterator;
@@ -356,7 +357,10 @@ public class ObjectiveCHeaderGenerator extends ObjectiveCSourceFileGenerator {
    */
   @Override
   protected void printInnerDeclarations(AbstractTypeDeclaration node) {
-    List<BodyDeclaration> allDeclarations = Lists.newArrayList(getInnerDeclarations(node));
+    Iterable<BodyDeclaration> iter = Iterables.filter(Iterables.filter(
+        node.getBodyDeclarations(), isInnerFilter()), printDeclFilter());
+
+    List<BodyDeclaration> allDeclarations = Lists.newArrayList(iter);
     List<BodyDeclaration> beforeDeclarations = Lists.newArrayList();
     List<MethodDeclaration> allMethods = Lists.newArrayList();
     List<BodyDeclaration> afterDeclarations = Lists.newArrayList();
@@ -412,6 +416,13 @@ public class ObjectiveCHeaderGenerator extends ObjectiveCSourceFileGenerator {
     for (MethodDeclaration m : methods) {
       printMethodDeclaration(m);
     }
+  }
+
+  protected boolean shouldPrintDeclaration(BodyDeclaration decl) {
+    if (decl instanceof FunctionDeclaration) {
+      return !Modifier.isPrivate(decl.getModifiers());
+    }
+    return !Options.hidePrivateMembers() || !isPrivateOrSynthetic(decl.getModifiers());
   }
 
   protected void printForwardDeclarations(Set<Import> forwardDecls) {
@@ -515,7 +526,20 @@ public class ObjectiveCHeaderGenerator extends ObjectiveCSourceFileGenerator {
     }
   }
 
-  protected String staticFieldQualifier() {
-    return "FOUNDATION_EXPORT";
+  private void printConstantDefines(AbstractTypeDeclaration node) {
+    ITypeBinding type = node.getTypeBinding();
+    boolean needsNewline = true;
+    for (IVariableBinding field : type.getDeclaredFields()) {
+      if (BindingUtil.isPrimitiveConstant(field)) {
+        if (needsNewline) {
+          needsNewline = false;
+          newline();
+        }
+        printf("#define %s ", NameTable.getPrimitiveConstantName(field));
+        Object value = field.getConstantValue();
+        assert value != null;
+        println(LiteralGenerator.generate(value));
+      }
+    }
   }
 }

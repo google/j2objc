@@ -125,7 +125,7 @@ public class ObjectiveCImplementationGeneratorTest extends GenerationTest {
     String translation = translateSourceFile(
         "public class Example { public static java.util.Date today; }",
         "Example", "Example.m");
-    assertTranslation(translation, "JavaUtilDate *Example_today_;");
+    assertTranslation(translation, "JavaUtilDate * Example_today_;");
     assertFalse(translation.contains("initialize"));
   }
 
@@ -133,7 +133,7 @@ public class ObjectiveCImplementationGeneratorTest extends GenerationTest {
     String translation = translateSourceFile(
         "public class Example { public static java.util.Date today = new java.util.Date();}",
         "Example", "Example.m");
-    assertTranslation(translation, "JavaUtilDate *Example_today_;");
+    assertTranslation(translation, "JavaUtilDate * Example_today_;");
     assertTranslation(translation, "+ (void)initialize {");
     assertTranslation(translation,
         "JreStrongAssignAndConsume(&Example_today_, nil, [[JavaUtilDate alloc] init]);");
@@ -279,6 +279,7 @@ public class ObjectiveCImplementationGeneratorTest extends GenerationTest {
     assertTranslation(translation, "id fieldFoo_;");
     assertTranslation(translation, "__weak id fieldJar_;");
     assertTranslation(translation, "int newFieldBar_;");
+    translation = getTranslatedFile("FooBar.h");
     assertTranslation(translation, "J2OBJC_STATIC_FIELD_GETTER(FooBar, fieldPhi_, jint)");
     assertTranslation(translation, "J2OBJC_STATIC_FIELD_REF_GETTER(FooBar, fieldPhi_, jint)");
   }
@@ -735,7 +736,7 @@ public class ObjectiveCImplementationGeneratorTest extends GenerationTest {
     assertTranslation(translation, "FOUNDATION_EXPORT NSString *Test_FOO_;");
     assertTranslation(translation, "J2OBJC_STATIC_FIELD_GETTER(Test, FOO_, NSString *)");
     translation = getTranslatedFile("Test.m");
-    assertTranslation(translation, "NSString *Test_FOO_ = @\"foo\";");
+    assertTranslation(translation, "NSString * Test_FOO_ = @\"foo\";");
     assertTranslation(translation, "@interface Test : NSObject");
   }
 

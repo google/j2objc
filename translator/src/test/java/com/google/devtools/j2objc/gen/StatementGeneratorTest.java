@@ -212,7 +212,7 @@ public class StatementGeneratorTest extends GenerationTest {
       + "String foo; { foo = Bar.FOO; } }",
       "Example", "Example.m");
     assertTranslation(translation, "Example_set_foo_(self, Example_Bar_get_FOO_())");
-    assertTranslation(translation, "NSString *Example_Bar_FOO_ = @\"Mumble\";");
+    assertTranslation(translation, "NSString * Example_Bar_FOO_ = @\"Mumble\";");
     translation = getTranslatedFile("Example.h");
     assertTranslation(translation, "FOUNDATION_EXPORT NSString *Example_Bar_FOO_;");
     assertTranslation(translation, "J2OBJC_STATIC_FIELD_GETTER(Example_Bar, FOO_, NSString *)");
