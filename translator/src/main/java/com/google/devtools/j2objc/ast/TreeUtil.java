@@ -141,7 +141,11 @@ public class TreeUtil {
   }
 
   public static Iterable<VariableDeclarationFragment> getAllFields(AbstractTypeDeclaration node) {
-    final Iterable<FieldDeclaration> fieldDecls = getFieldDeclarations(node);
+    return asFragments(getFieldDeclarations(node));
+  }
+
+  public static Iterable<VariableDeclarationFragment> asFragments(
+      final Iterable<FieldDeclaration> fieldDecls) {
     return new Iterable<VariableDeclarationFragment>() {
       public Iterator<VariableDeclarationFragment> iterator() {
         final Iterator<FieldDeclaration> fieldIter = fieldDecls.iterator();

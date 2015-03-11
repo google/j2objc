@@ -16,7 +16,6 @@
 
 package com.google.devtools.j2objc.gen;
 
-import com.google.common.base.Function;
 import com.google.common.base.Predicate;
 import com.google.common.base.Predicates;
 import com.google.common.collect.Iterables;
@@ -36,10 +35,8 @@ import com.google.devtools.j2objc.ast.SingleVariableDeclaration;
 import com.google.devtools.j2objc.ast.TagElement;
 import com.google.devtools.j2objc.ast.TextElement;
 import com.google.devtools.j2objc.ast.TreeNode;
-import com.google.devtools.j2objc.ast.TreeNode.Kind;
 import com.google.devtools.j2objc.ast.TreeUtil;
 import com.google.devtools.j2objc.ast.TypeDeclaration;
-import com.google.devtools.j2objc.ast.VariableDeclaration;
 import com.google.devtools.j2objc.ast.VariableDeclarationFragment;
 import com.google.devtools.j2objc.util.BindingUtil;
 import com.google.devtools.j2objc.util.NameTable;
@@ -91,19 +88,13 @@ public abstract class ObjectiveCSourceFileGenerator extends SourceFileGenerator 
 
   protected abstract void generate(AnnotationTypeDeclaration node);
 
-  private static final Function<VariableDeclaration, IVariableBinding> GET_VARIABLE_BINDING_FUNC =
-      new Function<VariableDeclaration, IVariableBinding>() {
-    public IVariableBinding apply(VariableDeclaration node) {
-      return node.getVariableBinding();
+  private static final Predicate<BodyDeclaration> IS_STATIC = new Predicate<BodyDeclaration>() {
+    public boolean apply(BodyDeclaration decl) {
+      return Modifier.isStatic(decl.getModifiers());
     }
   };
 
-  private static final Predicate<VariableDeclaration> IS_STATIC_VARIABLE_PRED =
-      new Predicate<VariableDeclaration>() {
-    public boolean apply(VariableDeclaration node) {
-      return BindingUtil.isStatic(node.getVariableBinding());
-    }
-  };
+  private static final Predicate<BodyDeclaration> NOT_STATIC = Predicates.not(IS_STATIC);
 
   private static final Predicate<VariableDeclarationFragment> NEEDS_INITIALIZATION_PRED =
       new Predicate<VariableDeclarationFragment>() {
@@ -115,11 +106,21 @@ public abstract class ObjectiveCSourceFileGenerator extends SourceFileGenerator 
 
   protected static final String DEPRECATED_ATTRIBUTE = "__attribute__((deprecated))";
 
-  protected Iterable<IVariableBinding> getStaticFieldsNeedingAccessors(
+  protected boolean isInterfaceType(AbstractTypeDeclaration node) {
+    return node.getKind() == TreeNode.Kind.ANNOTATION_TYPE_DECLARATION
+        || (node.getKind() == TreeNode.Kind.TYPE_DECLARATION
+            && ((TypeDeclaration) node).isInterface());
+  }
+
+  protected Iterable<VariableDeclarationFragment> getStaticFieldsNeedingAccessors(
       AbstractTypeDeclaration node) {
-    return Iterables.transform(
-        Iterables.filter(TreeUtil.getAllFields(node), IS_STATIC_VARIABLE_PRED),
-        GET_VARIABLE_BINDING_FUNC);
+    // TODO(kstanger): Move private static fields to implementation file.
+    Iterable<FieldDeclaration> fieldDecls = TreeUtil.getFieldDeclarations(node);
+    // All variables declared in interface types are static.
+    if (!isInterfaceType(node)) {
+      fieldDecls = Iterables.filter(fieldDecls, IS_STATIC);
+    }
+    return TreeUtil.asFragments(fieldDecls);
   }
 
   /**
@@ -194,6 +195,11 @@ public abstract class ObjectiveCSourceFileGenerator extends SourceFileGenerator 
 
   protected Predicate<BodyDeclaration> printDeclFilter() {
     return printDeclFilterImpl;
+  }
+
+  protected Iterable<FieldDeclaration> getFieldsToDeclare(AbstractTypeDeclaration node) {
+    return Iterables.filter(Iterables.filter(
+        TreeUtil.getFieldDeclarations(node), NOT_STATIC), printDeclFilter());
   }
 
   /**
@@ -381,54 +387,49 @@ public abstract class ObjectiveCSourceFileGenerator extends SourceFileGenerator 
    * @param node the type to examine
    * @param privateVars if true, only print private vars, otherwise print all but private vars
    */
-  protected void printInstanceVariables(AbstractTypeDeclaration node, boolean privateVars) {
+  protected void printInstanceVariables(Iterable<FieldDeclaration> fields) {
     indent();
     boolean first = true;
-    boolean printAllVars = !Options.hidePrivateMembers() && !privateVars;
-    for (FieldDeclaration field : TreeUtil.getFieldDeclarations(node)) {
-      int modifiers = field.getModifiers();
-      if (!Modifier.isStatic(field.getModifiers())
-          && (printAllVars || (privateVars == isPrivateOrSynthetic(modifiers)))) {
-        List<VariableDeclarationFragment> vars = field.getFragments();
-        assert !vars.isEmpty();
-        IVariableBinding varBinding = vars.get(0).getVariableBinding();
-        ITypeBinding varType = varBinding.getType();
-        // Need direct access to fields possibly from inner classes that are
-        // promoted to top level classes, so must make all visible fields public.
-        if (first) {
-          println(" @public");
-          first = false;
-        }
-        printDocComment(field.getJavadoc());
-        printIndent();
-        if (BindingUtil.isWeakReference(varBinding)) {
-          // We must add this even without -use-arc because the header may be
-          // included by a file compiled with ARC.
-          print("__weak ");
-        }
-        String objcType = NameTable.getSpecificObjCType(varType);
-        boolean needsAsterisk = !varType.isPrimitive() && !objcType.matches("id|id<.*>|Class");
-        if (needsAsterisk && objcType.endsWith(" *")) {
-          // Strip pointer from type, as it will be added when appending fragment.
-          // This is necessary to create "Foo *one, *two;" declarations.
-          objcType = objcType.substring(0, objcType.length() - 2);
-        }
-        print(objcType);
-        print(' ');
-        for (Iterator<VariableDeclarationFragment> it = field.getFragments().iterator();
-             it.hasNext(); ) {
-          VariableDeclarationFragment f = it.next();
-          if (needsAsterisk) {
-            print('*');
-          }
-          String name = NameTable.getName(f.getName().getBinding());
-          print(NameTable.javaFieldToObjC(name));
-          if (it.hasNext()) {
-            print(", ");
-          }
-        }
-        println(";");
+    for (FieldDeclaration field : fields) {
+      List<VariableDeclarationFragment> vars = field.getFragments();
+      assert !vars.isEmpty();
+      IVariableBinding varBinding = vars.get(0).getVariableBinding();
+      ITypeBinding varType = varBinding.getType();
+      // Need direct access to fields possibly from inner classes that are
+      // promoted to top level classes, so must make all visible fields public.
+      if (first) {
+        println(" @public");
+        first = false;
       }
+      printDocComment(field.getJavadoc());
+      printIndent();
+      if (BindingUtil.isWeakReference(varBinding)) {
+        // We must add this even without -use-arc because the header may be
+        // included by a file compiled with ARC.
+        print("__weak ");
+      }
+      String objcType = NameTable.getSpecificObjCType(varType);
+      boolean needsAsterisk = !varType.isPrimitive() && !objcType.matches("id|id<.*>|Class");
+      if (needsAsterisk && objcType.endsWith(" *")) {
+        // Strip pointer from type, as it will be added when appending fragment.
+        // This is necessary to create "Foo *one, *two;" declarations.
+        objcType = objcType.substring(0, objcType.length() - 2);
+      }
+      print(objcType);
+      print(' ');
+      for (Iterator<VariableDeclarationFragment> it = field.getFragments().iterator();
+           it.hasNext(); ) {
+        VariableDeclarationFragment f = it.next();
+        if (needsAsterisk) {
+          print('*');
+        }
+        String name = NameTable.getName(f.getName().getBinding());
+        print(NameTable.javaFieldToObjC(name));
+        if (it.hasNext()) {
+          print(", ");
+        }
+      }
+      println(";");
     }
     unindent();
   }
@@ -491,15 +492,12 @@ public abstract class ObjectiveCSourceFileGenerator extends SourceFileGenerator 
     }
   }
 
-  protected void printFieldSetters(AbstractTypeDeclaration node, boolean privateVars) {
+  protected void printFieldSetters(AbstractTypeDeclaration node) {
     ITypeBinding declaringType = node.getTypeBinding();
     boolean newlinePrinted = false;
-    boolean printAllVars = !Options.hidePrivateMembers() && !privateVars;
-    for (FieldDeclaration field : TreeUtil.getFieldDeclarations(node)) {
+    for (FieldDeclaration field : getFieldsToDeclare(node)) {
       ITypeBinding type = field.getType().getTypeBinding();
-      int modifiers = field.getModifiers();
-      if (Modifier.isStatic(modifiers) || type.isPrimitive()
-          || (!printAllVars && isPrivateOrSynthetic(modifiers) != privateVars)) {
+      if (type.isPrimitive()) {
         continue;
       }
       String typeStr = NameTable.getObjCType(type);
@@ -536,5 +534,34 @@ public abstract class ObjectiveCSourceFileGenerator extends SourceFileGenerator 
     }
     sb.append(')');
     return sb.toString();
+  }
+
+  protected void printStaticFieldDeclarations(AbstractTypeDeclaration node) {
+    for (VariableDeclarationFragment fragment : getStaticFieldsNeedingAccessors(node)) {
+      printStaticFieldDeclaration(fragment.getVariableBinding());
+    }
+  }
+
+  private void printStaticFieldDeclaration(IVariableBinding var) {
+    String objcType = NameTable.getObjCType(var.getType());
+    String typeWithSpace = objcType + (objcType.endsWith("*") ? "" : " ");
+    String name = NameTable.getStaticVarName(var);
+    String className = NameTable.getFullName(var.getDeclaringClass());
+    boolean isFinal = Modifier.isFinal(var.getModifiers());
+    boolean isPrimitive = var.getType().isPrimitive();
+    newline();
+    if (BindingUtil.isPrimitiveConstant(var)) {
+      name = var.getName();
+    } else {
+      printf("FOUNDATION_EXPORT %s%s_%s;\n", typeWithSpace, className, name);
+    }
+    printf("J2OBJC_STATIC_FIELD_GETTER(%s, %s, %s)\n", className, name, objcType);
+    if (!isFinal) {
+      if (isPrimitive) {
+        printf("J2OBJC_STATIC_FIELD_REF_GETTER(%s, %s, %s)\n", className, name, objcType);
+      } else {
+        printf("J2OBJC_STATIC_FIELD_SETTER(%s, %s, %s)\n", className, name, objcType);
+      }
+    }
   }
 }
