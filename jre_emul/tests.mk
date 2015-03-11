@@ -700,5 +700,4 @@ $(ALL_TESTS_SOURCE:%.java=%.o): $(ALL_TESTS_SOURCE:%.java=%.m) $(TEST_OBJS:%.o=%
 	    -c $(ALL_TESTS_SOURCE:%.java=%.m) -o $(ALL_TESTS_SOURCE:%.java=%.o)
 
 $(TESTS_DIR)/jreinitialization: Tests/JreInitialization.m
-	@j2objcc -o $@ -ObjC -Os $?
-
+	@../dist/j2objcc -o $@ -ObjC -Os $?
