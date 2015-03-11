@@ -633,8 +633,11 @@ $(TESTS_DIR)/%: $(LOGGING_TEST_RESOURCES_ROOT)/%
 	@mkdir -p `dirname $@`
 	@cp $< $@
 
-run-tests: link resources $(TEST_BIN)
+run-tests: link resources $(TEST_BIN) run-initialization-test
 	@$(TEST_BIN) org.junit.runner.JUnitCore $(ALL_TESTS_CLASS)
+
+run-initialization-test: $(TESTS_DIR)/jreinitialization
+	@$(TESTS_DIR)/jreinitialization 2&>1 > /dev/null
 
 run-concurrency-tests: link resources $(TEST_BIN)
 	@$(TEST_BIN) org.junit.runner.JUnitCore ConcurrencyTests
@@ -695,3 +698,7 @@ $(ALL_TESTS_SOURCE:%.java=%.o): $(ALL_TESTS_SOURCE:%.java=%.m) $(TEST_OBJS:%.o=%
 	@echo j2objcc -c $(ALL_TESTS_SOURCE:%.java=%.m)
 	@../dist/j2objcc -g -I$(TESTS_DIR) \
 	    -c $(ALL_TESTS_SOURCE:%.java=%.m) -o $(ALL_TESTS_SOURCE:%.java=%.o)
+
+$(TESTS_DIR)/jreinitialization: Tests/JreInitialization.m
+	@j2objcc -o $@ -ObjC -Os $?
+
