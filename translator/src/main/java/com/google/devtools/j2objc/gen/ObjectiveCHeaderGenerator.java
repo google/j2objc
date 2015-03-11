@@ -16,7 +16,6 @@
 
 package com.google.devtools.j2objc.gen;
 
-import com.google.common.base.Predicate;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
@@ -167,7 +166,6 @@ public class ObjectiveCHeaderGenerator extends ObjectiveCSourceFileGenerator {
         }
       }
     }
-    printExternalNativeMethodCategory(node, typeName);
   }
 
   private static final Set<String> NEEDS_INC_AND_DEC = ImmutableSet.of(
@@ -228,27 +226,6 @@ public class ObjectiveCHeaderGenerator extends ObjectiveCSourceFileGenerator {
     }
     printStaticInitFunction(node);
     printStaticFieldDeclarations(node);
-  }
-
-  private static final Predicate<BodyDeclaration> IS_NATIVE_PRED =
-      new Predicate<BodyDeclaration>() {
-    @Override
-    public boolean apply(BodyDeclaration node) {
-      return Modifier.isNative(node.getModifiers());
-    }
-  };
-
-  private void printExternalNativeMethodCategory(TypeDeclaration node, String typeName) {
-    List<MethodDeclaration> externalMethods = Lists.newArrayList(
-        Iterables.filter(TreeUtil.getMethodDeclarations(node), IS_NATIVE_PRED));
-    if (!externalMethods.isEmpty()) {
-      printf("\n@interface %s (NativeMethods)\n", typeName);
-      for (MethodDeclaration m : externalMethods) {
-        print(super.methodDeclaration(m));
-        println(";");
-      }
-      println("@end");
-    }
   }
 
   private void printStaticInterface(TypeDeclaration node) {
