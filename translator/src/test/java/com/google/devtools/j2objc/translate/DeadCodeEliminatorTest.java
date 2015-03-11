@@ -92,12 +92,12 @@ public class DeadCodeEliminatorTest extends GenerationTest {
         .build();
     setDeadCodeMap(map);
     String translation = translateSourceFile(source, "A", "A.h");
-    assertTranslation(translation, "#define A_foo 1");
     assertTranslation(translation, "#define A_pi 3.2");
     assertTranslation(translation, "NSString *bah_;");
     assertNotInTranslation(translation, "baz");
     translation = getTranslatedFile("A.m");
-    assertTranslation(translation, "NSString * A_bar_ = @\"bar\";");
+    assertTranslation(translation, "#define A_foo 1");
+    assertTranslation(translation, "NSString *A_bar_ = @\"bar\";");
     assertTranslation(translation, "abc_ = 9;");
     assertTranslation(translation, "A_set_bah_(self, @\"123\");");
     assertNotInTranslation(translation, "baz");
