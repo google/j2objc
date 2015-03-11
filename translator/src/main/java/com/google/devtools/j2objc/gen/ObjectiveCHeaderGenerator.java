@@ -138,7 +138,7 @@ public class ObjectiveCHeaderGenerator extends ObjectiveCSourceFileGenerator {
     }
     if (!isInterface) {
       println(" {");
-      printInstanceVariables(node, false);
+      printInstanceVariables(getFieldsToDeclare(node));
       println("}");
     }
     printInnerDeclarations(node);
@@ -148,9 +148,9 @@ public class ObjectiveCHeaderGenerator extends ObjectiveCSourceFileGenerator {
       printStaticInterface(node);
     } else {
       printStaticInitFunction(node);
-      printFieldSetters(node, false);
+      printFieldSetters(node);
       printOuterDeclarations(node);
-      printStaticFields(node);
+      printStaticFieldDeclarations(node);
     }
 
     printIncrementAndDecrementFunctions(binding);
@@ -227,9 +227,7 @@ public class ObjectiveCHeaderGenerator extends ObjectiveCSourceFileGenerator {
       println("\n@end");
     }
     printStaticInitFunction(node);
-    for (IVariableBinding field : getStaticFieldsNeedingAccessors(node)) {
-      printStaticField(field);
-    }
+    printStaticFieldDeclarations(node);
   }
 
   private static final Predicate<BodyDeclaration> IS_NATIVE_PRED =
@@ -262,9 +260,7 @@ public class ObjectiveCHeaderGenerator extends ObjectiveCSourceFileGenerator {
       println("\n@end");
     }
     printStaticInitFunction(node);
-    for (IVariableBinding field : getStaticFieldsNeedingAccessors(node)) {
-      printStaticField(field);
-    }
+    printStaticFieldDeclarations(node);
   }
 
   @Override
@@ -308,7 +304,7 @@ public class ObjectiveCHeaderGenerator extends ObjectiveCSourceFileGenerator {
       }
     }
     println(" > {");
-    printInstanceVariables(node, false);
+    printInstanceVariables(getFieldsToDeclare(node));
     println("}");
     printInnerDeclarations(node);
     println("\n@end");
@@ -322,8 +318,8 @@ public class ObjectiveCHeaderGenerator extends ObjectiveCSourceFileGenerator {
              typeName, varName, typeName, bareTypeName, valueName);
       printf("J2OBJC_ENUM_CONSTANT_GETTER(%s, %s)\n", typeName, varName);
     }
-    printStaticFields(node);
-    printFieldSetters(node, false);
+    printStaticFieldDeclarations(node);
+    printFieldSetters(node);
 
     String pkg = enumType.getPackage().getName();
     if (NameTable.hasPrefix(pkg) && enumType.isTopLevel()) {
@@ -342,35 +338,6 @@ public class ObjectiveCHeaderGenerator extends ObjectiveCSourceFileGenerator {
       printf("\nJ2OBJC_STATIC_INIT(%s)\n", typeName);
     } else {
       printf("\nJ2OBJC_EMPTY_STATIC_INIT(%s)\n", typeName);
-    }
-  }
-
-  private void printStaticFields(AbstractTypeDeclaration node) {
-    for (IVariableBinding var : getStaticFieldsNeedingAccessors(node)) {
-      printStaticField(var);
-    }
-  }
-
-  protected void printStaticField(IVariableBinding var) {
-    String objcType = NameTable.getObjCType(var.getType());
-    String typeWithSpace = objcType + (objcType.endsWith("*") ? "" : " ");
-    String name = NameTable.getStaticVarName(var);
-    String className = NameTable.getFullName(var.getDeclaringClass());
-    boolean isFinal = Modifier.isFinal(var.getModifiers());
-    boolean isPrimitive = var.getType().isPrimitive();
-    newline();
-    if (BindingUtil.isPrimitiveConstant(var)) {
-      name = var.getName();
-    } else {
-      printf("FOUNDATION_EXPORT %s%s_%s;\n", typeWithSpace, className, name);
-    }
-    printf("J2OBJC_STATIC_FIELD_GETTER(%s, %s, %s)\n", className, name, objcType);
-    if (!isFinal) {
-      if (isPrimitive) {
-        printf("J2OBJC_STATIC_FIELD_REF_GETTER(%s, %s, %s)\n", className, name, objcType);
-      } else {
-        printf("J2OBJC_STATIC_FIELD_SETTER(%s, %s, %s)\n", className, name, objcType);
-      }
     }
   }
 

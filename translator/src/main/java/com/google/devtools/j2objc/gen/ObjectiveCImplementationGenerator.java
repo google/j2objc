@@ -17,7 +17,6 @@
 package com.google.devtools.j2objc.gen;
 
 import com.google.common.collect.Iterables;
-import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 import com.google.devtools.j2objc.J2ObjC;
 import com.google.devtools.j2objc.Options;
@@ -617,27 +616,6 @@ public class ObjectiveCImplementationGenerator extends ObjectiveCSourceFileGener
     print(new MetadataGenerator(node).getMetadataSource());
   }
 
-  private boolean hasPrivateFields(Iterable<FieldDeclaration> fields) {
-    for (FieldDeclaration f : fields) {
-      if (isPrivateOrSynthetic(f.getModifiers())) {
-        return true;
-      }
-    }
-    return false;
-  }
-
-  private List<MethodDeclaration> getPrivateMethodsToDeclare(AbstractTypeDeclaration typeNode) {
-    List<MethodDeclaration> methods = Lists.newArrayList();
-    for (MethodDeclaration method : TreeUtil.getMethodDeclarations(typeNode)) {
-      int modifiers = method.getModifiers();
-      // Synthetic methods don't need to be declared.
-      if (Modifier.isPrivate(modifiers) && !BindingUtil.isSynthetic(modifiers)) {
-        methods.add(method);
-      }
-    }
-    return methods;
-  }
-
   private void printClassExtensions(List<AbstractTypeDeclaration> types) {
     for (AbstractTypeDeclaration type : types) {
       if (type.getTypeBinding().isClass() || type.getTypeBinding().isEnum()) {
@@ -656,8 +634,8 @@ public class ObjectiveCImplementationGenerator extends ObjectiveCSourceFileGener
 
   private void printClassExtension(AbstractTypeDeclaration node) {
     if (Options.hidePrivateMembers()) {
-      List<FieldDeclaration> fields = TreeUtil.getFieldDeclarationsList(node);
-      boolean hasPrivateFields = hasPrivateFields(fields);
+      Iterable<FieldDeclaration> privateFields = getFieldsToDeclare(node);
+      boolean hasPrivateFields = !Iterables.isEmpty(privateFields);
       Iterable<BodyDeclaration> privateDecls = Iterables.filter(Iterables.filter(
           node.getBodyDeclarations(), isInnerFilter()), printDeclFilter());
       if (!Iterables.isEmpty(privateDecls) || hasPrivateFields) {
@@ -666,14 +644,14 @@ public class ObjectiveCImplementationGenerator extends ObjectiveCSourceFileGener
         printf("@interface %s ()", typeName);
         if (hasPrivateFields) {
           println(" {");
-          printInstanceVariables(node, true);
+          printInstanceVariables(privateFields);
           println("}");
         } else {
           newline();
         }
         printDeclarations(privateDecls);
         println("@end");
-        printFieldSetters(node, true);
+        printFieldSetters(node);
       }
     }
   }
