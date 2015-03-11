@@ -96,6 +96,14 @@ public abstract class ObjectiveCSourceFileGenerator extends SourceFileGenerator 
 
   private static final Predicate<BodyDeclaration> NOT_STATIC = Predicates.not(IS_STATIC);
 
+  private static final Predicate<VariableDeclarationFragment> NEEDS_INITIALIZATION_PRED =
+      new Predicate<VariableDeclarationFragment>() {
+    public boolean apply(VariableDeclarationFragment frag) {
+      IVariableBinding binding = frag.getVariableBinding();
+      return BindingUtil.isStatic(binding) && !BindingUtil.isPrimitiveConstant(binding);
+    }
+  };
+
   protected static final String DEPRECATED_ATTRIBUTE = "__attribute__((deprecated))";
 
   protected boolean isInterfaceType(AbstractTypeDeclaration node) {
@@ -106,16 +114,21 @@ public abstract class ObjectiveCSourceFileGenerator extends SourceFileGenerator 
 
   protected Iterable<VariableDeclarationFragment> getStaticFieldsNeedingAccessors(
       AbstractTypeDeclaration node) {
-    return TreeUtil.asFragments(Iterables.filter(getStaticFields(node), printDeclFilter));
-  }
-
-  protected Iterable<FieldDeclaration> getStaticFields(AbstractTypeDeclaration node) {
+    // TODO(kstanger): Move private static fields to implementation file.
     Iterable<FieldDeclaration> fieldDecls = TreeUtil.getFieldDeclarations(node);
     // All variables declared in interface types are static.
     if (!isInterfaceType(node)) {
       fieldDecls = Iterables.filter(fieldDecls, IS_STATIC);
     }
-    return fieldDecls;
+    return TreeUtil.asFragments(fieldDecls);
+  }
+
+  /**
+   * Excludes primitive constants which will not have variables declared for them.
+   */
+  protected Iterable<VariableDeclarationFragment> getStaticFieldsNeedingInitialization(
+      AbstractTypeDeclaration node) {
+    return Iterables.filter(TreeUtil.getAllFields(node), NEEDS_INITIALIZATION_PRED);
   }
 
   protected boolean hasInitializeMethod(AbstractTypeDeclaration node) {
@@ -124,22 +137,7 @@ public abstract class ObjectiveCSourceFileGenerator extends SourceFileGenerator 
 
   protected abstract void printFunctionDeclaration(FunctionDeclaration declaration);
 
-  protected boolean printPrivateDeclarations() {
-    return false;
-  }
-
-  protected boolean shouldPrintDeclaration(BodyDeclaration decl) {
-    int modifiers = decl.getModifiers();
-    // Don't print declarations for any synthetic members.
-    if (BindingUtil.isSynthetic(modifiers)) {
-      return false;
-    }
-    boolean isPrivate = false;
-    if (Options.hidePrivateMembers() || decl instanceof FunctionDeclaration) {
-      isPrivate = Modifier.isPrivate(modifiers);
-    }
-    return isPrivate == printPrivateDeclarations();
-  }
+  protected abstract boolean shouldPrintDeclaration(BodyDeclaration declaration);
 
   private void printDeclaration(BodyDeclaration declaration) {
     switch (declaration.getKind()) {
@@ -164,11 +162,13 @@ public abstract class ObjectiveCSourceFileGenerator extends SourceFileGenerator 
   }
 
   protected void printInnerDeclarations(AbstractTypeDeclaration node) {
-    printDeclarations(getInnerDeclarations(node));
+    printDeclarations(Iterables.filter(Iterables.filter(
+        node.getBodyDeclarations(), isInnerFilter()), printDeclFilter()));
   }
 
   protected void printOuterDeclarations(AbstractTypeDeclaration node) {
-    printDeclarations(getOuterDeclarations(node));
+    printDeclarations(Iterables.filter(Iterables.filter(
+        node.getBodyDeclarations(), isOuterFilter()), printDeclFilter()));
   }
 
   private static final Predicate<BodyDeclaration> IS_OUTER_DECL = new Predicate<BodyDeclaration>() {
@@ -177,44 +177,29 @@ public abstract class ObjectiveCSourceFileGenerator extends SourceFileGenerator 
     }
   };
 
-  private static final Predicate<BodyDeclaration> IS_INNER_DECL = new Predicate<BodyDeclaration>() {
-    public boolean apply(BodyDeclaration decl) {
-      switch (decl.getKind()) {
-        case METHOD_DECLARATION:
-        case NATIVE_DECLARATION:
-          return true;
-      }
-      return false;
-    }
-  };
+  private static final Predicate<BodyDeclaration> IS_INNER_DECL = Predicates.not(IS_OUTER_DECL);
 
-  private final Predicate<BodyDeclaration> printDeclFilter = new Predicate<BodyDeclaration>() {
+  protected Predicate<BodyDeclaration> isInnerFilter() {
+    return IS_INNER_DECL;
+  }
+
+  protected Predicate<BodyDeclaration> isOuterFilter() {
+    return IS_OUTER_DECL;
+  }
+
+  private final Predicate<BodyDeclaration> printDeclFilterImpl = new Predicate<BodyDeclaration>() {
     public boolean apply(BodyDeclaration decl) {
       return shouldPrintDeclaration(decl);
     }
   };
 
-  protected Iterable<BodyDeclaration> getInnerDeclarations(AbstractTypeDeclaration node) {
-    return Iterables.filter(Iterables.filter(
-        node.getBodyDeclarations(), IS_INNER_DECL), printDeclFilter);
-  }
-
-  protected Iterable<BodyDeclaration> getOuterDeclarations(AbstractTypeDeclaration node) {
-    return Iterables.filter(Iterables.filter(
-        node.getBodyDeclarations(), IS_OUTER_DECL), printDeclFilter);
-  }
-
-  protected Iterable<BodyDeclaration> getInnerDefinitions(AbstractTypeDeclaration node) {
-    return Iterables.filter(node.getBodyDeclarations(), IS_INNER_DECL);
-  }
-
-  protected Iterable<BodyDeclaration> getOuterDefinitions(AbstractTypeDeclaration node) {
-    return Iterables.filter(node.getBodyDeclarations(), IS_OUTER_DECL);
+  protected Predicate<BodyDeclaration> printDeclFilter() {
+    return printDeclFilterImpl;
   }
 
   protected Iterable<FieldDeclaration> getFieldsToDeclare(AbstractTypeDeclaration node) {
     return Iterables.filter(Iterables.filter(
-        TreeUtil.getFieldDeclarations(node), NOT_STATIC), printDeclFilter);
+        TreeUtil.getFieldDeclarations(node), NOT_STATIC), printDeclFilter());
   }
 
   /**
@@ -551,8 +536,6 @@ public abstract class ObjectiveCSourceFileGenerator extends SourceFileGenerator 
     return sb.toString();
   }
 
-  protected abstract String staticFieldQualifier();
-
   protected void printStaticFieldDeclarations(AbstractTypeDeclaration node) {
     for (VariableDeclarationFragment fragment : getStaticFieldsNeedingAccessors(node)) {
       printStaticFieldDeclaration(fragment.getVariableBinding());
@@ -570,7 +553,7 @@ public abstract class ObjectiveCSourceFileGenerator extends SourceFileGenerator 
     if (BindingUtil.isPrimitiveConstant(var)) {
       name = var.getName();
     } else {
-      printf("%s %s%s_%s;\n", staticFieldQualifier(), typeWithSpace, className, name);
+      printf("FOUNDATION_EXPORT %s%s_%s;\n", typeWithSpace, className, name);
     }
     printf("J2OBJC_STATIC_FIELD_GETTER(%s, %s, %s)\n", className, name, objcType);
     if (!isFinal) {
@@ -578,28 +561,6 @@ public abstract class ObjectiveCSourceFileGenerator extends SourceFileGenerator 
         printf("J2OBJC_STATIC_FIELD_REF_GETTER(%s, %s, %s)\n", className, name, objcType);
       } else {
         printf("J2OBJC_STATIC_FIELD_SETTER(%s, %s, %s)\n", className, name, objcType);
-      }
-    }
-  }
-
-  protected void printConstantDefines(AbstractTypeDeclaration node) {
-    boolean needsNewline = true;
-    for (FieldDeclaration fieldDecl : getStaticFields(node)) {
-      if (!shouldPrintDeclaration(fieldDecl)) {
-        continue;
-      }
-      for (VariableDeclarationFragment fragment : fieldDecl.getFragments()) {
-        IVariableBinding field = fragment.getVariableBinding();
-        if (BindingUtil.isPrimitiveConstant(field)) {
-          if (needsNewline) {
-            needsNewline = false;
-            newline();
-          }
-          printf("#define %s ", NameTable.getPrimitiveConstantName(field));
-          Object value = field.getConstantValue();
-          assert value != null;
-          println(LiteralGenerator.generate(value));
-        }
       }
     }
   }

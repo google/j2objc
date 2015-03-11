@@ -17,8 +17,12 @@
 package com.google.devtools.j2objc.translate;
 
 import com.google.devtools.j2objc.GenerationTest;
+import com.google.devtools.j2objc.ast.AbstractTypeDeclaration;
+import com.google.devtools.j2objc.ast.CompilationUnit;
+import com.google.devtools.j2objc.ast.TypeDeclaration;
 
 import java.io.IOException;
+import java.util.List;
 
 /**
  * Unit tests for {@link InitializationNormalization} phase.
@@ -78,7 +82,7 @@ public class InitializationNormalizerTest extends GenerationTest {
     String translation = translateSourceFile(
         "class Test { static java.util.Date date = new java.util.Date(); }", "Test", "Test.m");
     // test that initializer was stripped from the declaration
-    assertTranslation(translation, "JavaUtilDate *Test_date_;");
+    assertTranslation(translation, "JavaUtilDate * Test_date_;");
     // test that initializer was moved to new initialize method
     assertTranslatedLines(translation,
         "+ (void)initialize {",
@@ -170,7 +174,7 @@ public class InitializationNormalizerTest extends GenerationTest {
   public void testStringWithInvalidCppCharacters() throws IOException {
     String source = "class Test { static final String foo = \"\\uffff\"; }";
     String translation = translateSourceFile(source, "Test", "Test.m");
-    assertTranslation(translation, "NSString *Test_foo_;");
+    assertTranslation(translation, "NSString * Test_foo_;");
     assertTranslation(translation,
         "JreStrongAssign(&Test_foo_, nil, [NSString stringWithCharacters:(jchar[]) { "
         + "(int) 0xffff } length:1]);");
@@ -179,7 +183,7 @@ public class InitializationNormalizerTest extends GenerationTest {
   public void testStringConcatWithInvalidCppCharacters() throws IOException {
     String source = "class Test { static final String foo = \"hello\" + \"\\uffff\"; }";
     String translation = translateSourceFile(source, "Test", "Test.m");
-    assertTranslation(translation, "NSString *Test_foo_;");
+    assertTranslation(translation, "NSString * Test_foo_;");
     assertTranslation(translation,
         "JreStrongAssign(&Test_foo_, nil, JreStrcat(\"$$\", @\"hello\", "
         + "[NSString stringWithCharacters:(jchar[]) { (int) 0xffff } length:1]));");
@@ -218,6 +222,6 @@ public class InitializationNormalizerTest extends GenerationTest {
     String translation = translateSourceFile(
         "class Test { static final String FOO = Inner.BAR; "
         + "class Inner { static final String BAR = \"bar\"; } }", "Test", "Test.m");
-    assertTranslation(translation, "NSString *Test_FOO_ = @\"bar\";");
+    assertTranslation(translation, "NSString * Test_FOO_ = @\"bar\";");
   }
 }

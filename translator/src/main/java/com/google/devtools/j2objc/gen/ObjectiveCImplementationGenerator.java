@@ -92,7 +92,7 @@ public class ObjectiveCImplementationGenerator extends ObjectiveCSourceFileGener
       printImports(unit);
       printIgnoreIncompletePragmas(unit);
       pushIgnoreDeprecatedDeclarationsPragma();
-      printPrivateDeclarations(types);
+      printFinalFunctionDecls(types);
       printClassExtensions(types);
       for (AbstractTypeDeclaration type : types) {
         generate(type);
@@ -328,11 +328,11 @@ public class ObjectiveCImplementationGenerator extends ObjectiveCSourceFileGener
   }
 
   private void printInnerDefinitions(AbstractTypeDeclaration node) {
-    printDefinitions(getInnerDefinitions(node));
+    printDefinitions(Iterables.filter(node.getBodyDeclarations(), isInnerFilter()));
   }
 
   private void printOuterDefinitions(AbstractTypeDeclaration node) {
-    printDefinitions(getOuterDefinitions(node));
+    printDefinitions(Iterables.filter(node.getBodyDeclarations(), isOuterFilter()));
   }
 
   private void printDefinitions(Iterable<BodyDeclaration> declarations) {
@@ -410,41 +410,26 @@ public class ObjectiveCImplementationGenerator extends ObjectiveCSourceFileGener
     }
   }
 
-  protected String staticFieldQualifier() {
-    return "static";
-  }
-
   private void printStaticVars(AbstractTypeDeclaration node) {
-    boolean needsNewline = true;
-    for (FieldDeclaration field : getStaticFields(node)) {
-      boolean hasPrivateDecl = shouldPrintDeclaration(field);
-      for (VariableDeclarationFragment var : field.getFragments()) {
-        IVariableBinding binding = var.getVariableBinding();
-        Expression initializer = var.getInitializer();
-        if (BindingUtil.isPrimitiveConstant(binding)
-            || (hasPrivateDecl && initializer == null)) {
-          continue;
-        } else if (needsNewline) {
-          needsNewline = false;
-          newline();
-        }
-        String name = NameTable.getStaticVarQualifiedName(binding);
-        String objcType = NameTable.getObjCType(binding.getType());
-        objcType += objcType.endsWith("*") ? "" : " ";
-        if (initializer != null) {
-          String qualifier = hasPrivateDecl ? "static " : "";
-          printf("%s%s%s = %s;\n", qualifier, objcType, name, generateExpression(initializer));
-        } else {
-          printf("%s%s;\n", objcType, name);
-        }
+    Iterable<VariableDeclarationFragment> fragments = getStaticFieldsNeedingInitialization(node);
+    if (!Iterables.isEmpty(fragments)) {
+      newline();
+    }
+    for (VariableDeclarationFragment var : fragments) {
+      IVariableBinding binding = var.getVariableBinding();
+      String name = NameTable.getStaticVarQualifiedName(binding);
+      String objcType = NameTable.getObjCType(binding.getType());
+      Expression initializer = var.getInitializer();
+      if (initializer != null) {
+        printf("%s %s = %s;\n", objcType, name, generateExpression(initializer));
+      } else {
+        printf("%s %s;\n", objcType, name);
       }
     }
   }
 
-  private void printPrivateDeclarations(List<AbstractTypeDeclaration> types) {
+  private void printFinalFunctionDecls(List<AbstractTypeDeclaration> types) {
     for (AbstractTypeDeclaration type : types) {
-      printConstantDefines(type);
-      printStaticFieldDeclarations(type);
       printOuterDeclarations(type);
     }
   }
@@ -639,11 +624,20 @@ public class ObjectiveCImplementationGenerator extends ObjectiveCSourceFileGener
     }
   }
 
+  protected boolean shouldPrintDeclaration(BodyDeclaration decl) {
+    if (decl instanceof FunctionDeclaration) {
+      return Modifier.isPrivate(decl.getModifiers());
+    }
+    // TODO(kstanger): exclude synthetic.
+    return Options.hidePrivateMembers() && isPrivateOrSynthetic(decl.getModifiers());
+  }
+
   private void printClassExtension(AbstractTypeDeclaration node) {
     if (Options.hidePrivateMembers()) {
       Iterable<FieldDeclaration> privateFields = getFieldsToDeclare(node);
       boolean hasPrivateFields = !Iterables.isEmpty(privateFields);
-      Iterable<BodyDeclaration> privateDecls = getInnerDeclarations(node);
+      Iterable<BodyDeclaration> privateDecls = Iterables.filter(Iterables.filter(
+          node.getBodyDeclarations(), isInnerFilter()), printDeclFilter());
       if (!Iterables.isEmpty(privateDecls) || hasPrivateFields) {
         String typeName = NameTable.getFullName(node.getTypeBinding());
         newline();
@@ -660,9 +654,5 @@ public class ObjectiveCImplementationGenerator extends ObjectiveCSourceFileGener
         printFieldSetters(node);
       }
     }
-  }
-
-  protected boolean printPrivateDeclarations() {
-    return true;
   }
 }
