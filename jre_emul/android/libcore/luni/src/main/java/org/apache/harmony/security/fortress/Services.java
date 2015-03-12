@@ -91,7 +91,7 @@ public class Services {
      * Returns a copy of the registered providers as an array.
      */
     public static synchronized ArrayList<Provider> getProviders() {
-        return providers;
+        return new ArrayList<Provider>(providers);
     }
 
     /**
@@ -175,7 +175,8 @@ public class Services {
      * Service.getCacheVersion() before use.
      */
     public static synchronized ArrayList<Provider.Service> getServices(String key) {
-        return services.get(key);
+        ArrayList<Provider.Service> service = services.get(key);
+        return service != null ? new ArrayList<Provider.Service>(service) : null;
     }
 
     /**
