@@ -884,29 +884,7 @@ NSString *NSString_formatWithJavaUtilLocale_withNSString_withNSObjectArray_(
 }
 
 - (BOOL)matches:(NSString *)regex {
-  if (!regex) {
-    @throw makeException([JavaLangNullPointerException class]);
-  }
-  NSError *error = nil;
-  NSRegularExpression *nsRegex =
-      [NSRegularExpression regularExpressionWithPattern:regex
-                                                options:0
-                                                  error:&error];
-  if (error) {
-    JavaUtilRegexPatternSyntaxException *exception =
-        [[JavaUtilRegexPatternSyntaxException alloc]
-         initWithNSString:[error localizedDescription]
-             withNSString:regex
-                  withInt:-1];
-#if ! __has_feature(objc_arc)
-    [exception autorelease];
-#endif
-    @throw exception;
-  }
-  id result = [nsRegex firstMatchInString:self
-                                  options:0
-                                    range:NSMakeRange(0, [self length])];
-  return result != nil;
+  return JavaUtilRegexPattern_matchesWithNSString_withJavaLangCharSequence_(regex, self);
 }
 
 - (BOOL)contentEqualsCharSequence:(id<JavaLangCharSequence>)seq {
