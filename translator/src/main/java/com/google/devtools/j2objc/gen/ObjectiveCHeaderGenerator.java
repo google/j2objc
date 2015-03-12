@@ -86,8 +86,6 @@ public class ObjectiveCHeaderGenerator extends ObjectiveCSourceFileGenerator {
 
     for (AbstractTypeDeclaration type : unit.getTypes()) {
       generateType(type);
-      newline();
-      printf("J2OBJC_TYPE_LITERAL_HEADER(%s)\n", NameTable.getFullName(type.getTypeBinding()));
     }
 
     generateFileFooter();
@@ -104,6 +102,7 @@ public class ObjectiveCHeaderGenerator extends ObjectiveCSourceFileGenerator {
     printFieldSetters(node);
     printStaticFieldDeclarations(node);
     printOuterDeclarations(node);
+    printTypeLiteralDeclaration(node);
     printIncrementAndDecrementFunctions(binding);
 
     printUnprefixedAlias(binding);
@@ -285,6 +284,11 @@ public class ObjectiveCHeaderGenerator extends ObjectiveCSourceFileGenerator {
       println("\n@end");
     }
     printStaticInitFunction(node);
+  }
+
+  private void printTypeLiteralDeclaration(AbstractTypeDeclaration node) {
+    newline();
+    printf("J2OBJC_TYPE_LITERAL_HEADER(%s)\n", NameTable.getFullName(node.getTypeBinding()));
   }
 
   private static final Set<String> NEEDS_INC_AND_DEC = ImmutableSet.of(
