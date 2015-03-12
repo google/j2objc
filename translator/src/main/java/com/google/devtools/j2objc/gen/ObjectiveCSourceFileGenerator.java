@@ -139,7 +139,7 @@ public abstract class ObjectiveCSourceFileGenerator extends SourceFileGenerator 
     }
   }
 
-  protected void printDeclarations(Iterable<BodyDeclaration> declarations) {
+  protected void printDeclarations(Iterable<? extends BodyDeclaration> declarations) {
     for (BodyDeclaration declaration : declarations) {
       printDeclaration(declaration);
     }

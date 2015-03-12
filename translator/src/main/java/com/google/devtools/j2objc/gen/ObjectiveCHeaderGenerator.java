@@ -189,6 +189,7 @@ public class ObjectiveCHeaderGenerator extends ObjectiveCSourceFileGenerator {
     interfaces.add("NSObject");
     interfaces.add("JavaObject");
     printImplementedProtocols(interfaces);
+    newline();
     printInnerDeclarations(node);
     println("\n@end");
 
@@ -345,73 +346,50 @@ public class ObjectiveCHeaderGenerator extends ObjectiveCSourceFileGenerator {
     println("\nFOUNDATION_EXPORT " + getFunctionSignature(function) + ';');
   }
 
-  static enum SortState { BEFORE_DECLS, METHODS, AFTER_DECLS };
-
   /**
    * Print method declarations with #pragma mark lines documenting their scope.
-   * Since native declarations can be intermixed with methods and can be order-
-   * dependent (such as #ifdefs surrounding a method), intermixed declarations
-   * aren't sorted. It's okay if all the native declarations are before and/or
-   * after the method list, however.
    */
   @Override
   protected void printInnerDeclarations(AbstractTypeDeclaration node) {
-    List<BodyDeclaration> allDeclarations = Lists.newArrayList(getInnerDeclarations(node));
-    List<BodyDeclaration> beforeDeclarations = Lists.newArrayList();
-    List<MethodDeclaration> allMethods = Lists.newArrayList();
-    List<BodyDeclaration> afterDeclarations = Lists.newArrayList();
-
-    SortState state = SortState.BEFORE_DECLS;
-    for (BodyDeclaration decl : allDeclarations) {
-      if (decl instanceof NativeDeclaration) {
-        switch (state) {
-          case BEFORE_DECLS:
-            beforeDeclarations.add(decl);
-            break;
-          case METHODS:
-            state = SortState.AFTER_DECLS;
-            // fall-through
-          case AFTER_DECLS:
-            afterDeclarations.add(decl);
-        }
-      } else if (decl instanceof MethodDeclaration || decl instanceof FunctionDeclaration) {
-        if (state == SortState.BEFORE_DECLS) {
-          state = SortState.METHODS;
-        } else if (state == SortState.AFTER_DECLS && !isPrivateOrSynthetic(decl.getModifiers())) {
-          // Mixed native and method declarations, punt.
-          super.printDeclarations(allDeclarations);
-          return;
-        }
-        if (decl instanceof MethodDeclaration) {
-          allMethods.add((MethodDeclaration) decl);
-        }
-      }
+    // Everything is public in interfaces.
+    if (isInterfaceType(node)) {
+      super.printInnerDeclarations(node);
+      return;
     }
-    super.printDeclarations(beforeDeclarations);
-    printSortedMethods(allMethods, "Public", java.lang.reflect.Modifier.PUBLIC);
-    printSortedMethods(allMethods, "Protected", java.lang.reflect.Modifier.PROTECTED);
-    printSortedMethods(allMethods, "Package-Private", 0);
-    printSortedMethods(allMethods, "Private", java.lang.reflect.Modifier.PRIVATE);
-    super.printDeclarations(afterDeclarations);
+
+    List<BodyDeclaration> innerDeclarations = Lists.newArrayList(getInnerDeclarations(node));
+    printSortedDeclarations(innerDeclarations, "Public", java.lang.reflect.Modifier.PUBLIC);
+    printSortedDeclarations(innerDeclarations, "Protected", java.lang.reflect.Modifier.PROTECTED);
+    printSortedDeclarations(innerDeclarations, "Package-Private", 0);
+    printSortedDeclarations(innerDeclarations, "Private", java.lang.reflect.Modifier.PRIVATE);
   }
 
-  private void printSortedMethods(List<MethodDeclaration> allMethods, String title, int modifier) {
-    List<MethodDeclaration> methods = Lists.newArrayList();
-    for (MethodDeclaration m : allMethods) {
+  private void printSortedDeclarations(
+      List<BodyDeclaration> allDeclarations, String title, int modifier) {
+    List<BodyDeclaration> declarations = Lists.newArrayList();
+    for (BodyDeclaration decl : allDeclarations) {
       int accessMask = Modifier.PUBLIC | Modifier.PROTECTED | Modifier.PRIVATE;
       // The following test works with package-private access, which doesn't have its own flag.
-      if ((m.getModifiers() & accessMask) == modifier) {
-        methods.add(m);
+      if ((decl.getModifiers() & accessMask) == modifier) {
+        declarations.add(decl);
       }
     }
-    if (methods.isEmpty()) {
+    if (declarations.isEmpty()) {
       return;
+    }
+    // Extract MethodDeclaration nodes so that they can be sorted.
+    List<MethodDeclaration> methods = Lists.newArrayList();
+    for (Iterator<BodyDeclaration> iter = declarations.iterator(); iter.hasNext(); ) {
+      BodyDeclaration decl = iter.next();
+      if (decl instanceof MethodDeclaration) {
+        methods.add((MethodDeclaration) decl);
+        iter.remove();
+      }
     }
     printf("\n#pragma mark %s\n", title);
     TreeUtil.sortMethods(methods);
-    for (MethodDeclaration m : methods) {
-      printMethodDeclaration(m);
-    }
+    printDeclarations(methods);
+    printDeclarations(declarations);
   }
 
   protected void printForwardDeclarations(Set<Import> forwardDecls) {
