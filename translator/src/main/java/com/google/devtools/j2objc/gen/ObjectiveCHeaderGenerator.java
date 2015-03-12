@@ -85,13 +85,45 @@ public class ObjectiveCHeaderGenerator extends ObjectiveCSourceFileGenerator {
     }
 
     for (AbstractTypeDeclaration type : unit.getTypes()) {
-      generate(type);
+      generateType(type);
       newline();
       printf("J2OBJC_TYPE_LITERAL_HEADER(%s)\n", NameTable.getFullName(type.getTypeBinding()));
     }
 
     generateFileFooter();
     save(getOutputPath());
+  }
+
+  protected void generateType(AbstractTypeDeclaration node) {
+    ITypeBinding binding = node.getTypeBinding();
+
+    printConstantDefines(node);
+
+    generateSpecificType(node);
+
+    printFieldSetters(node);
+    printStaticFieldDeclarations(node);
+    printOuterDeclarations(node);
+    printIncrementAndDecrementFunctions(binding);
+
+    printUnprefixedAlias(binding);
+  }
+
+  private void generateSpecificType(AbstractTypeDeclaration node) {
+    switch (node.getKind()) {
+      case ANNOTATION_TYPE_DECLARATION:
+        generateAnnotationType((AnnotationTypeDeclaration) node);
+        break;
+      case ENUM_DECLARATION:
+        generateEnumType((EnumDeclaration) node);
+        break;
+      case TYPE_DECLARATION:
+        if (((TypeDeclaration) node).isInterface()) {
+          generateInterfaceType((TypeDeclaration) node);
+        } else {
+          generateClassType((TypeDeclaration) node);
+        }
+    }
   }
 
   private String getSuperTypeName(TypeDeclaration node) {
@@ -102,105 +134,133 @@ public class ObjectiveCHeaderGenerator extends ObjectiveCSourceFileGenerator {
     return NameTable.getFullName(superType.getTypeBinding());
   }
 
-  @Override
-  public void generate(TypeDeclaration node) {
-    ITypeBinding binding = node.getTypeBinding();
-    String typeName = NameTable.getFullName(binding);
-    String superName = getSuperTypeName(node);
-    boolean isInterface = node.isInterface();
-
-    printConstantDefines(node);
-
+  private void printTypeDocumentation(AbstractTypeDeclaration node) {
     newline();
     printDocComment(node.getJavadoc());
     if (needsDeprecatedAttribute(node.getAnnotations())) {
       println(DEPRECATED_ATTRIBUTE);
     }
+  }
 
-    if (isInterface) {
-      printf("@protocol %s", typeName);
-    } else {
-      printf("@interface %s : %s", typeName, superName);
-    }
-    List<Type> interfaces = node.getSuperInterfaceTypes();
-    if (!interfaces.isEmpty()) {
+  private void printImplementedProtocols(Iterable<String> interfaces) {
+    if (!Iterables.isEmpty(interfaces)) {
       print(" < ");
-      for (Iterator<Type> iterator = interfaces.iterator(); iterator.hasNext();) {
-        print(NameTable.getFullName(iterator.next().getTypeBinding()));
-        if (iterator.hasNext()) {
+      boolean isFirst = true;
+      for (String name : interfaces) {
+        if (!isFirst) {
           print(", ");
         }
+        isFirst = false;
+        print(name);
       }
-      print(isInterface ? ", NSObject, JavaObject >" : " >");
-    } else if (isInterface) {
-      println(" < NSObject, JavaObject >");
+      print(" >");
     }
-    if (!isInterface) {
-      println(" {");
-      printInstanceVariables(getFieldsToDeclare(node));
-      println("}");
+  }
+
+  private List<String> getInterfaceNames(ITypeBinding type) {
+    List<String> names = Lists.newArrayList();
+    for (ITypeBinding intrface : type.getInterfaces()) {
+      names.add(NameTable.getFullName(intrface));
     }
+    return names;
+  }
+
+  private void generateClassType(TypeDeclaration node) {
+    ITypeBinding binding = node.getTypeBinding();
+
+    printTypeDocumentation(node);
+    printf("@interface %s : %s", NameTable.getFullName(binding), getSuperTypeName(node));
+    printImplementedProtocols(getInterfaceNames(binding));
+    println(" {");
+    printInstanceVariables(getFieldsToDeclare(node));
+    println("}");
     printInnerDeclarations(node);
     println("\n@end");
 
-    if (isInterface) {
-      printStaticInterface(node);
-    } else {
-      printStaticInitFunction(node);
-      printFieldSetters(node);
-      printOuterDeclarations(node);
-      printStaticFieldDeclarations(node);
+    printStaticInitFunction(node);
+  }
+
+  private void generateInterfaceType(TypeDeclaration node) {
+    ITypeBinding binding = node.getTypeBinding();
+    String typeName = NameTable.getFullName(binding);
+
+    printTypeDocumentation(node);
+    printf("@protocol %s", typeName);
+    List<String> interfaces = getInterfaceNames(binding);
+    interfaces.add("NSObject");
+    interfaces.add("JavaObject");
+    printImplementedProtocols(interfaces);
+    printInnerDeclarations(node);
+    println("\n@end");
+
+    // Print @interface for static constants, if any.
+    if (hasInitializeMethod(node)) {
+      printf("\n@interface %s : NSObject\n", typeName);
+      println("\n@end");
     }
+    printStaticInitFunction(node);
+  }
 
-    printIncrementAndDecrementFunctions(binding);
+  private void generateEnumType(EnumDeclaration node) {
+    ITypeBinding enumType = node.getTypeBinding();
+    String typeName = NameTable.getFullName(enumType);
+    List<EnumConstantDeclaration> constants = node.getEnumConstants();
 
-    String pkg = binding.getPackage().getName();
-    if (NameTable.hasPrefix(pkg) && binding.isTopLevel()) {
-      String unprefixedName = NameTable.camelCaseQualifiedName(binding.getQualifiedName());
-      if (!unprefixedName.equals(typeName)) {
-        if (binding.isInterface()) {
-          // Protocols can't be used in typedefs.
-          printf("\n#define %s %s\n", unprefixedName, typeName);
-        } else {
-          printf("\ntypedef %s %s;\n", typeName, unprefixedName);
-        }
+    // Strip enum type suffix.
+    String bareTypeName =
+        typeName.endsWith("Enum") ? typeName.substring(0, typeName.length() - 4) : typeName;
+
+    // C doesn't allow empty enum declarations.  Java does, so we skip the
+    // C enum declaration and generate the type declaration.
+    if (!constants.isEmpty()) {
+      newline();
+      printf("typedef NS_ENUM(NSUInteger, %s) {\n", bareTypeName);
+
+      // Print C enum typedef.
+      indent();
+      int ordinal = 0;
+      for (EnumConstantDeclaration constant : constants) {
+        printIndent();
+        printf("%s_%s = %d,\n", bareTypeName, constant.getName().getIdentifier(), ordinal++);
       }
+      unindent();
+      print("};\n");
+    }
+
+    // Print enum type.
+    printTypeDocumentation(node);
+    printf("@interface %s : JavaLangEnum", typeName);
+    List<String> interfaces = getInterfaceNames(enumType);
+    interfaces.remove("NSCopying");
+    interfaces.add(0, "NSCopying");
+    printImplementedProtocols(interfaces);
+    println(" {");
+    printInstanceVariables(getFieldsToDeclare(node));
+    println("}");
+    printInnerDeclarations(node);
+    println("\n@end");
+    printStaticInitFunction(node);
+
+    printf("\nFOUNDATION_EXPORT %s *%s_values_[];\n", typeName, typeName);
+    for (EnumConstantDeclaration constant : constants) {
+      String varName = NameTable.getStaticVarName(constant.getVariableBinding());
+      String valueName = constant.getName().getIdentifier();
+      printf("\n#define %s_%s %s_values_[%s_%s]\n",
+             typeName, varName, typeName, bareTypeName, valueName);
+      printf("J2OBJC_ENUM_CONSTANT_GETTER(%s, %s)\n", typeName, varName);
     }
   }
 
-  private static final Set<String> NEEDS_INC_AND_DEC = ImmutableSet.of(
-      "int", "long", "double", "float", "short", "byte", "char");
-
-  private void printIncrementAndDecrementFunctions(ITypeBinding type) {
-    ITypeBinding primitiveType = Types.getPrimitiveType(type);
-    if (primitiveType == null || !NEEDS_INC_AND_DEC.contains(primitiveType.getName())) {
-      return;
-    }
-    String primitiveName = primitiveType.getName();
-    String valueMethod = primitiveName + "Value";
-    if (primitiveName.equals("long")) {
-      valueMethod = "longLongValue";
-    } else if (primitiveName.equals("byte")) {
-      valueMethod = "charValue";
-    }
-    newline();
-    printf("BOXED_INC_AND_DEC(%s, %s, %s)\n", NameTable.capitalize(primitiveName), valueMethod,
-           NameTable.getFullName(type));
-  }
-
-  @Override
-  protected void generate(AnnotationTypeDeclaration node) {
+  private void generateAnnotationType(AnnotationTypeDeclaration node) {
     ITypeBinding type = node.getTypeBinding();
     String typeName = NameTable.getFullName(type);
     List<AnnotationTypeMemberDeclaration> members = Lists.newArrayList(
         Iterables.filter(node.getBodyDeclarations(), AnnotationTypeMemberDeclaration.class));
 
-    printConstantDefines(node);
-
     boolean isRuntime = BindingUtil.isRuntimeAnnotation(type);
 
-    newline();
     // Print annotation as protocol.
+    printTypeDocumentation(node);
     printf("@protocol %s < JavaLangAnnotationAnnotation >\n", typeName);
     if (isRuntime) {
       printAnnotationProperties(members);
@@ -225,85 +285,43 @@ public class ObjectiveCHeaderGenerator extends ObjectiveCSourceFileGenerator {
       println("\n@end");
     }
     printStaticInitFunction(node);
-    printStaticFieldDeclarations(node);
   }
 
-  private void printStaticInterface(TypeDeclaration node) {
-    // Print @interface for static constants, if any.
-    if (hasInitializeMethod(node)) {
-      ITypeBinding binding = node.getTypeBinding();
-      String typeName = NameTable.getFullName(binding);
-      printf("\n@interface %s : NSObject\n", typeName);
-      println("\n@end");
+  private static final Set<String> NEEDS_INC_AND_DEC = ImmutableSet.of(
+      "int", "long", "double", "float", "short", "byte", "char");
+
+  private void printIncrementAndDecrementFunctions(ITypeBinding type) {
+    ITypeBinding primitiveType = Types.getPrimitiveType(type);
+    if (primitiveType == null || !NEEDS_INC_AND_DEC.contains(primitiveType.getName())) {
+      return;
     }
-    printStaticInitFunction(node);
-    printStaticFieldDeclarations(node);
-  }
-
-  @Override
-  protected void generate(EnumDeclaration node) {
-    printConstantDefines(node);
-    String typeName = NameTable.getFullName(node.getTypeBinding());
-    List<EnumConstantDeclaration> constants = node.getEnumConstants();
-
-    // Strip enum type suffix.
-    String bareTypeName =
-        typeName.endsWith("Enum") ? typeName.substring(0, typeName.length() - 4) : typeName;
-
-    // C doesn't allow empty enum declarations.  Java does, so we skip the
-    // C enum declaration and generate the type declaration.
-    if (!constants.isEmpty()) {
-      newline();
-      printf("typedef NS_ENUM(NSUInteger, %s) {\n", bareTypeName);
-
-      // Print C enum typedef.
-      indent();
-      int ordinal = 0;
-      for (EnumConstantDeclaration constant : constants) {
-        printIndent();
-        printf("%s_%s = %d,\n", bareTypeName, constant.getName().getIdentifier(), ordinal++);
-      }
-      unindent();
-      print("};\n");
+    String primitiveName = primitiveType.getName();
+    String valueMethod = primitiveName + "Value";
+    if (primitiveName.equals("long")) {
+      valueMethod = "longLongValue";
+    } else if (primitiveName.equals("byte")) {
+      valueMethod = "charValue";
     }
-
     newline();
-    if (needsDeprecatedAttribute(node.getAnnotations())) {
-      println(DEPRECATED_ATTRIBUTE);
-    }
+    printf("BOXED_INC_AND_DEC(%s, %s, %s)\n", NameTable.capitalize(primitiveName), valueMethod,
+           NameTable.getFullName(type));
+  }
 
-    // Print enum type.
-    printf("@interface %s : JavaLangEnum < NSCopying", typeName);
-    ITypeBinding enumType = node.getTypeBinding();
-    for (ITypeBinding intrface : enumType.getInterfaces()) {
-      if (!intrface.getName().equals(("Cloneable"))) { // Cloneable handled below.
-        printf(", %s", NameTable.getFullName(intrface));
+  private void printUnprefixedAlias(ITypeBinding binding) {
+    String typeName = NameTable.getFullName(binding);
+    String pkg = binding.getPackage().getName();
+    if (NameTable.hasPrefix(pkg) && binding.isTopLevel()) {
+      String unprefixedName = NameTable.camelCaseQualifiedName(binding.getQualifiedName());
+      if (binding.isEnum()) {
+        unprefixedName += "Enum";
       }
-    }
-    println(" > {");
-    printInstanceVariables(getFieldsToDeclare(node));
-    println("}");
-    printInnerDeclarations(node);
-    println("\n@end");
-    printStaticInitFunction(node);
-    printOuterDeclarations(node);
-    printf("\nFOUNDATION_EXPORT %s *%s_values_[];\n", typeName, typeName);
-    for (EnumConstantDeclaration constant : constants) {
-      String varName = NameTable.getStaticVarName(constant.getVariableBinding());
-      String valueName = constant.getName().getIdentifier();
-      printf("\n#define %s_%s %s_values_[%s_%s]\n",
-             typeName, varName, typeName, bareTypeName, valueName);
-      printf("J2OBJC_ENUM_CONSTANT_GETTER(%s, %s)\n", typeName, varName);
-    }
-    printStaticFieldDeclarations(node);
-    printFieldSetters(node);
-
-    String pkg = enumType.getPackage().getName();
-    if (NameTable.hasPrefix(pkg) && enumType.isTopLevel()) {
-      String unprefixedName =
-          NameTable.camelCaseQualifiedName(enumType.getQualifiedName()) + "Enum";
       if (!unprefixedName.equals(typeName)) {
-        printf("\ntypedef %s %s;\n", typeName, unprefixedName);
+        if (binding.isInterface()) {
+          // Protocols can't be used in typedefs.
+          printf("\n#define %s %s\n", unprefixedName, typeName);
+        } else {
+          printf("\ntypedef %s %s;\n", typeName, unprefixedName);
+        }
       }
     }
   }

@@ -47,6 +47,7 @@ import org.eclipse.jdt.core.dom.IVariableBinding;
 import org.eclipse.jdt.core.dom.Modifier;
 
 import java.text.BreakIterator;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
@@ -82,11 +83,12 @@ public abstract class ObjectiveCSourceFileGenerator extends SourceFileGenerator 
     }
   }
 
-  protected abstract void generate(TypeDeclaration node);
+  // TODO(kstanger): Remove these 3 methods.
+  protected void generate(TypeDeclaration node) {}
 
-  protected abstract void generate(EnumDeclaration node);
+  protected void generate(EnumDeclaration node) {}
 
-  protected abstract void generate(AnnotationTypeDeclaration node);
+  protected void generate(AnnotationTypeDeclaration node) {}
 
   private static final Predicate<BodyDeclaration> IS_STATIC = new Predicate<BodyDeclaration>() {
     public boolean apply(BodyDeclaration decl) {
@@ -213,6 +215,9 @@ public abstract class ObjectiveCSourceFileGenerator extends SourceFileGenerator 
   }
 
   protected Iterable<FieldDeclaration> getFieldsToDeclare(AbstractTypeDeclaration node) {
+    if (isInterfaceType(node)) {
+      return Collections.emptyList();
+    }
     return Iterables.filter(Iterables.filter(
         TreeUtil.getFieldDeclarations(node), NOT_STATIC), printDeclFilter);
   }
