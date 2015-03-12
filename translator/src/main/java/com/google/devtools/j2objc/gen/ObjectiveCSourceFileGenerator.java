@@ -70,26 +70,6 @@ public abstract class ObjectiveCSourceFileGenerator extends SourceFileGenerator 
     super(unit, emitLineDirectives);
   }
 
-  /**
-   * Generate an output source file from the specified type declaration.
-   */
-  public void generate(AbstractTypeDeclaration node) {
-    if (node instanceof TypeDeclaration) {
-      generate((TypeDeclaration) node);
-    } else if (node instanceof EnumDeclaration) {
-      generate((EnumDeclaration) node);
-    } else if (node instanceof AnnotationTypeDeclaration) {
-      generate((AnnotationTypeDeclaration) node);
-    }
-  }
-
-  // TODO(kstanger): Remove these 3 methods.
-  protected void generate(TypeDeclaration node) {}
-
-  protected void generate(EnumDeclaration node) {}
-
-  protected void generate(AnnotationTypeDeclaration node) {}
-
   private static final Predicate<BodyDeclaration> IS_STATIC = new Predicate<BodyDeclaration>() {
     public boolean apply(BodyDeclaration decl) {
       return Modifier.isStatic(decl.getModifiers());

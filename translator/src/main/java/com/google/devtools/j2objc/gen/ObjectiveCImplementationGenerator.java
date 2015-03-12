@@ -95,11 +95,7 @@ public class ObjectiveCImplementationGenerator extends ObjectiveCSourceFileGener
       printPrivateDeclarations(types);
       printClassExtensions(types);
       for (AbstractTypeDeclaration type : types) {
-        generate(type);
-        newline();
-        ITypeBinding binding = type.getTypeBinding();
-        printf("J2OBJC_%s_TYPE_LITERAL_SOURCE(%s)\n",
-               binding.isInterface() ? "INTERFACE" : "CLASS", NameTable.getFullName(binding));
+        generateTypeImplementation(type);
       }
       popIgnoreDeprecatedDeclarationsPragma();
     } else if (unit.getMainTypeName().endsWith(NameTable.PACKAGE_INFO_MAIN_TYPE)
@@ -112,6 +108,124 @@ public class ObjectiveCImplementationGenerator extends ObjectiveCSourceFileGener
       }
     }
     save(getOutputPath());
+  }
+
+  private void generateTypeImplementation(AbstractTypeDeclaration node) {
+    printInitFlagDefinition(node);
+    printStaticVars(node);
+    generateSpecificTypeImplementation(node);
+    printOuterDefinitions(node);
+    printTypeLiteralImplementation(node);
+  }
+
+  private void generateSpecificTypeImplementation(AbstractTypeDeclaration node) {
+    switch (node.getKind()) {
+      case ANNOTATION_TYPE_DECLARATION:
+        generateAnnotationTypeImplementation((AnnotationTypeDeclaration) node);
+        break;
+      case ENUM_DECLARATION:
+        generateEnumTypeImplementation((EnumDeclaration) node);
+        break;
+      case TYPE_DECLARATION:
+        if (((TypeDeclaration) node).isInterface()) {
+          generateInterfaceTypeImplementation((TypeDeclaration) node);
+        } else {
+          generateClassTypeImplementation((TypeDeclaration) node);
+        }
+    }
+  }
+
+  private void generateClassTypeImplementation(TypeDeclaration node) {
+    String typeName = NameTable.getFullName(node.getTypeBinding());
+    newline();
+    syncLineNumbers(node.getName()); // avoid doc-comment
+    printf("@implementation %s\n", typeName);
+    printInnerDefinitions(node);
+    printInitializeMethod(node);
+    if (TranslationUtil.needsReflection(node)) {
+      printTypeAnnotationsMethod(node);
+      printMethodAnnotationMethods(TreeUtil.getMethodDeclarations(node));
+      printFieldAnnotationMethods(node);
+      printMetadata(node);
+    }
+    println("\n@end");
+  }
+
+  private void generateInterfaceTypeImplementation(TypeDeclaration node) {
+    String typeName = NameTable.getFullName(node.getTypeBinding());
+    boolean needsReflection = TranslationUtil.needsReflection(node);
+    boolean needsImplementation = hasInitializeMethod(node) || needsReflection;
+    if (needsImplementation && !hasInitializeMethod(node)) {
+      printf("\n@interface %s : NSObject\n@end\n", typeName);
+    }
+    if (!needsImplementation) {
+      return;
+    }
+    printf("\n@implementation %s\n", typeName);
+    printInitializeMethod(node);
+    if (needsReflection) {
+      printMetadata(node);
+    }
+    println("\n@end");
+  }
+
+  private void generateEnumTypeImplementation(EnumDeclaration node) {
+    List<EnumConstantDeclaration> constants = node.getEnumConstants();
+
+    String typeName = NameTable.getFullName(node.getTypeBinding());
+    newline();
+    printf("%s *%s_values_[%s];\n", typeName, typeName, constants.size());
+
+    newline();
+    syncLineNumbers(node.getName()); // avoid doc-comment
+    printf("@implementation %s\n", typeName);
+
+    printInnerDefinitions(node);
+    printInitializeMethod(node);
+
+    if (TranslationUtil.needsReflection(node)) {
+      printTypeAnnotationsMethod(node);
+      printMetadata(node);
+    }
+    println("\n@end");
+  }
+
+  private void generateAnnotationTypeImplementation(AnnotationTypeDeclaration node) {
+    boolean isRuntime = BindingUtil.isRuntimeAnnotation(node.getTypeBinding());
+    boolean hasInitMethod = hasInitializeMethod(node);
+    boolean needsReflection = TranslationUtil.needsReflection(node);
+    String typeName = NameTable.getFullName(node.getTypeBinding());
+
+    if (needsReflection && !isRuntime && !hasInitMethod) {
+      printf("\n@interface %s : NSObject\n@end\n", typeName);
+    }
+
+
+    if (isRuntime || hasInitMethod || needsReflection) {
+      syncLineNumbers(node.getName()); // avoid doc-comment
+      printf("\n@implementation %s\n", typeName);
+
+      if (isRuntime) {
+        List<AnnotationTypeMemberDeclaration> members = TreeUtil.getAnnotationMembers(node);
+        printAnnotationProperties(members);
+        if (!members.isEmpty()) {
+          printAnnotationConstructor(node.getTypeBinding());
+        }
+        printAnnotationAccessors(members);
+        println("\n- (IOSClass *)annotationType {");
+        printf("  return %s_class_();\n", typeName);
+        println("}");
+        println("\n- (NSString *)description {");
+        printf("  return @\"@%s()\";\n", node.getTypeBinding().getBinaryName());
+        println("}");
+      }
+      printInitializeMethod(node);
+      if (needsReflection) {
+        printTypeAnnotationsMethod(node);
+        printMetadata(node);
+      }
+      println("\n@end");
+    }
   }
 
   private void printIgnoreIncompletePragmas(CompilationUnit unit) {
@@ -144,72 +258,6 @@ public class ObjectiveCImplementationGenerator extends ObjectiveCSourceFileGener
     StringBuilder sb = new StringBuilder(NameTable.getMethodName(method));
     sb.append(parameterKey(method));
     return sb.toString();
-  }
-
-  @Override
-  public void generate(TypeDeclaration node) {
-    String typeName = NameTable.getFullName(node.getTypeBinding());
-    if (node.isInterface()) {
-      printStaticInterface(node, typeName);
-    } else {
-      printInitFlagDefinition(node);
-      newline();
-      syncLineNumbers(node.getName()); // avoid doc-comment
-      printf("@implementation %s\n", typeName);
-      printStaticVars(node);
-      printInnerDefinitions(node);
-      printInitializeMethod(node);
-      if (TranslationUtil.needsReflection(node)) {
-        printTypeAnnotationsMethod(node);
-        printMethodAnnotationMethods(TreeUtil.getMethodDeclarations(node));
-        printFieldAnnotationMethods(node);
-        printMetadata(node);
-      }
-
-      println("\n@end");
-      printOuterDefinitions(node);
-    }
-  }
-
-  @Override
-  protected void generate(AnnotationTypeDeclaration node) {
-    boolean isRuntime = BindingUtil.isRuntimeAnnotation(node.getTypeBinding());
-    boolean hasInitMethod = hasInitializeMethod(node);
-    boolean needsReflection = TranslationUtil.needsReflection(node);
-    String typeName = NameTable.getFullName(node.getTypeBinding());
-
-    if (needsReflection && !isRuntime && !hasInitMethod) {
-      printf("\n@interface %s : NSObject\n@end\n", typeName);
-    }
-
-    printInitFlagDefinition(node);
-    printStaticVars(node);
-
-    if (isRuntime || hasInitMethod || needsReflection) {
-      syncLineNumbers(node.getName()); // avoid doc-comment
-      printf("\n@implementation %s\n", typeName);
-
-      if (isRuntime) {
-        List<AnnotationTypeMemberDeclaration> members = TreeUtil.getAnnotationMembers(node);
-        printAnnotationProperties(members);
-        if (!members.isEmpty()) {
-          printAnnotationConstructor(node.getTypeBinding());
-        }
-        printAnnotationAccessors(members);
-        println("\n- (IOSClass *)annotationType {");
-        printf("  return %s_class_();\n", typeName);
-        println("}");
-        println("\n- (NSString *)description {");
-        printf("  return @\"@%s()\";\n", node.getTypeBinding().getBinaryName());
-        println("}");
-      }
-      printInitializeMethod(node);
-      if (needsReflection) {
-        printTypeAnnotationsMethod(node);
-        printMetadata(node);
-      }
-      println("\n@end");
-    }
   }
 
   private void printAnnotationConstructor(ITypeBinding annotation) {
@@ -272,51 +320,6 @@ public class ObjectiveCImplementationGenerator extends ObjectiveCSourceFileGener
     if (code != null) {
       println(reindent(code));
     }
-  }
-
-  private void printStaticInterface(AbstractTypeDeclaration node, String typeName) {
-    boolean needsReflection = TranslationUtil.needsReflection(node);
-    boolean needsImplementation = hasInitializeMethod(node) || needsReflection;
-    if (needsImplementation && !hasInitializeMethod(node)) {
-      printf("\n@interface %s : NSObject\n@end\n", typeName);
-    }
-    printInitFlagDefinition(node);
-    printStaticVars(node);
-    if (!needsImplementation) {
-      return;
-    }
-    printf("\n@implementation %s\n", typeName);
-    printInitializeMethod(node);
-    if (needsReflection) {
-      printMetadata(node);
-    }
-    println("\n@end");
-    printOuterDefinitions(node);
-  }
-
-  @Override
-  protected void generate(EnumDeclaration node) {
-    List<EnumConstantDeclaration> constants = node.getEnumConstants();
-    syncLineNumbers(node.getName()); // avoid doc-comment
-
-    String typeName = NameTable.getFullName(node.getTypeBinding());
-    printInitFlagDefinition(node);
-    newline();
-    printf("%s *%s_values_[%s];\n", typeName, typeName, constants.size());
-
-    newline();
-    printf("@implementation %s\n", typeName);
-    printStaticVars(node);
-
-    printInnerDefinitions(node);
-    printInitializeMethod(node);
-
-    if (TranslationUtil.needsReflection(node)) {
-      printTypeAnnotationsMethod(node);
-      printMetadata(node);
-    }
-    println("\n@end");
-    printOuterDefinitions(node);
   }
 
   private void printInitFlagDefinition(AbstractTypeDeclaration node) {
@@ -447,6 +450,13 @@ public class ObjectiveCImplementationGenerator extends ObjectiveCSourceFileGener
         }
       }
     }
+  }
+
+  private void printTypeLiteralImplementation(AbstractTypeDeclaration node) {
+    ITypeBinding binding = node.getTypeBinding();
+    newline();
+    printf("J2OBJC_%s_TYPE_LITERAL_SOURCE(%s)\n",
+        binding.isInterface() ? "INTERFACE" : "CLASS", NameTable.getFullName(binding));
   }
 
   private void printPrivateDeclarations(List<AbstractTypeDeclaration> types) {
