@@ -96,7 +96,7 @@ public class ObjectiveCSegmentedHeaderGenerator extends ObjectiveCHeaderGenerato
   }
 
   @Override
-  public void generate(AbstractTypeDeclaration node) {
+  public void generateType(AbstractTypeDeclaration node) {
     String typeName = NameTable.getFullName(node.getTypeBinding());
     printf("#if !defined (_%s_) && (%s_INCLUDE_ALL || %s_INCLUDE)\n", typeName, mainTypeName,
            typeName);
@@ -124,7 +124,7 @@ public class ObjectiveCSegmentedHeaderGenerator extends ObjectiveCHeaderGenerato
       newline();
     }
 
-    super.generate(node);
+    super.generateType(node);
     println("#endif");
   }
 }
