@@ -70,23 +70,21 @@ public class SignatureGeneratorTest extends GenerationTest {
     CompilationUnit unit = translateType("A", "class A<X,Y,Z> { int a; double[] b; X c; Y[] d; "
         + "Class<?> e; java.util.List<X> f; Comparable<? super X> g; "
         + "A<? extends Number, ?, String> h; }");
-    List<BodyDeclaration> decls = unit.getTypes().get(0).getBodyDeclarations();
-    assertEquals(8, decls.size() - 3);  // Ignore added init, dealloc methods, init function.
+    IVariableBinding[] vars = unit.getTypes().get(0).getTypeBinding().getDeclaredFields();
+    assertEquals(8, vars.length);
 
     // Verify a and b don't return a signature, since they aren't generic types.
-    assertNull(SignatureGenerator.createFieldTypeSignature(getVariable(decls, 0)));
-    assertNull(SignatureGenerator.createFieldTypeSignature(getVariable(decls, 1)));
+    assertNull(SignatureGenerator.createFieldTypeSignature(vars[0]));
+    assertNull(SignatureGenerator.createFieldTypeSignature(vars[1]));
 
-    assertEquals("TX;", SignatureGenerator.createFieldTypeSignature(getVariable(decls, 2)));
-    assertEquals("[TY;", SignatureGenerator.createFieldTypeSignature(getVariable(decls, 3)));
-    assertEquals("Ljava/lang/Class<*>;",
-        SignatureGenerator.createFieldTypeSignature(getVariable(decls, 4)));
-    assertEquals("Ljava/util/List<TX;>;",
-        SignatureGenerator.createFieldTypeSignature(getVariable(decls, 5)));
+    assertEquals("TX;", SignatureGenerator.createFieldTypeSignature(vars[2]));
+    assertEquals("[TY;", SignatureGenerator.createFieldTypeSignature(vars[3]));
+    assertEquals("Ljava/lang/Class<*>;", SignatureGenerator.createFieldTypeSignature(vars[4]));
+    assertEquals("Ljava/util/List<TX;>;", SignatureGenerator.createFieldTypeSignature(vars[5]));
     assertEquals("Ljava/lang/Comparable<-TX;>;",
-        SignatureGenerator.createFieldTypeSignature(getVariable(decls, 6)));
+        SignatureGenerator.createFieldTypeSignature(vars[6]));
     assertEquals("LA<+Ljava/lang/Number;*Ljava/lang/String;>;",
-        SignatureGenerator.createFieldTypeSignature(getVariable(decls, 7)));
+        SignatureGenerator.createFieldTypeSignature(vars[7]));
   }
 
   public void testMethodSignatures() throws IOException {
@@ -98,27 +96,17 @@ public class SignatureGeneratorTest extends GenerationTest {
         + "void e(X x, Y y) {} "
         + "<T extends Throwable> void rethrow(Throwable t) {}"
         + "}");
-    List<BodyDeclaration> decls = unit.getTypes().get(0).getBodyDeclarations();
-    assertEquals(6, decls.size() - 2);  // Ignore added init method and function.
+    IMethodBinding[] methods = unit.getTypes().get(0).getTypeBinding().getDeclaredMethods();
+    assertEquals(7, methods.length); // methods[0] is the default constructor.
 
     // Verify a, b and c don't return a signature, since they aren't generic types.
-    assertNull(SignatureGenerator.createMethodTypeSignature(getMethod(decls, 0)));
-    assertNull(SignatureGenerator.createMethodTypeSignature(getMethod(decls, 1)));
-    assertNull(SignatureGenerator.createMethodTypeSignature(getMethod(decls, 2)));
+    assertNull(SignatureGenerator.createMethodTypeSignature(methods[1]));
+    assertNull(SignatureGenerator.createMethodTypeSignature(methods[2]));
+    assertNull(SignatureGenerator.createMethodTypeSignature(methods[3]));
 
-    assertEquals("()TX;", SignatureGenerator.createMethodTypeSignature(getMethod(decls, 3)));
-    assertEquals("(TX;TY;)V", SignatureGenerator.createMethodTypeSignature(getMethod(decls, 4)));
+    assertEquals("()TX;", SignatureGenerator.createMethodTypeSignature(methods[4]));
+    assertEquals("(TX;TY;)V", SignatureGenerator.createMethodTypeSignature(methods[5]));
     assertEquals("<T:Ljava/lang/Throwable;>(Ljava/lang/Throwable;)V",
-        SignatureGenerator.createMethodTypeSignature(getMethod(decls, 5)));
-  }
-
-  private IVariableBinding getVariable(List<BodyDeclaration> decls, int i) {
-    assertTrue(i < decls.size());
-    return ((FieldDeclaration) decls.get(i)).getFragments().get(0).getVariableBinding();
-  }
-
-  private IMethodBinding getMethod(List<BodyDeclaration> decls, int i) {
-    assertTrue(i < decls.size());
-    return ((MethodDeclaration) decls.get(i)).getMethodBinding();
+        SignatureGenerator.createMethodTypeSignature(methods[6]));
   }
 }
