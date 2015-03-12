@@ -374,11 +374,9 @@ public class ClassTest extends junit.framework.TestCase {
     /**
      * @tests java.lang.Class#getDeclaredClasses()
      */
-    /* TODO(tball): enable if Class.getDeclaredClasses is mapped.
     public void test_getDeclaredClasses() {
         assertEquals("Incorrect class array returned", 2, ClassTest.class.getClasses().length);
     }
-    */
 
     /**
      * @tests java.lang.Class#getDeclaredConstructor(java.lang.Class[])
