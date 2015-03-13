@@ -85,8 +85,20 @@ void JavaLangThrowable_init(JavaLangThrowable *self) {
   JavaLangThrowable_initWithNSString_withJavaLangThrowable_(self, nil, nil);
 }
 
+JavaLangThrowable *new_JavaLangThrowable_init() {
+  JavaLangThrowable *self = [JavaLangThrowable alloc];
+  JavaLangThrowable_init(self);
+  return self;
+}
+
 void JavaLangThrowable_initWithNSString_(JavaLangThrowable *self, NSString *message) {
   JavaLangThrowable_initWithNSString_withJavaLangThrowable_(self, message, nil);
+}
+
+JavaLangThrowable *new_JavaLangThrowable_initWithNSString_(NSString *message) {
+  JavaLangThrowable *self = [JavaLangThrowable alloc];
+  JavaLangThrowable_initWithNSString_(self, message);
+  return self;
 }
 
 // This init message implementation is hand-modified to
@@ -102,16 +114,39 @@ void JavaLangThrowable_initWithNSString_withJavaLangThrowable_(
   self->suppressedExceptions = nil;
 }
 
+JavaLangThrowable *new_JavaLangThrowable_initWithNSString_withJavaLangThrowable_(
+    NSString *message, JavaLangThrowable *causeArg) {
+  JavaLangThrowable *self = [JavaLangThrowable alloc];
+  JavaLangThrowable_initWithNSString_withJavaLangThrowable_(self, message, causeArg);
+  return self;
+}
+
 void JavaLangThrowable_initWithJavaLangThrowable_(
     JavaLangThrowable *self, JavaLangThrowable *causeArg) {
   JavaLangThrowable_initWithNSString_withJavaLangThrowable_(
       self, causeArg ? [causeArg description] : nil, causeArg);
 }
 
+JavaLangThrowable *new_JavaLangThrowable_initWithJavaLangThrowable_(JavaLangThrowable *causeArg) {
+  JavaLangThrowable *self = [JavaLangThrowable alloc];
+  JavaLangThrowable_initWithJavaLangThrowable_(self, causeArg);
+  return self;
+}
+
 void JavaLangThrowable_initWithNSString_withJavaLangThrowable_withBoolean_withBoolean_(
     JavaLangThrowable *self, NSString *message, JavaLangThrowable *causeArg, BOOL enableSuppression,
     BOOL writeableStackTrace) {
   JavaLangThrowable_initWithNSString_withJavaLangThrowable_(self, message, causeArg);
+}
+
+JavaLangThrowable *
+    new_JavaLangThrowable_initWithNSString_withJavaLangThrowable_withBoolean_withBoolean_(
+    NSString *message, JavaLangThrowable *causeArg, BOOL enableSuppression,
+    BOOL writeableStackTrace) {
+  JavaLangThrowable *self = [JavaLangThrowable alloc];
+  JavaLangThrowable_initWithNSString_withJavaLangThrowable_withBoolean_withBoolean_(
+      self, message, causeArg, enableSuppression, writeableStackTrace);
+  return self;
 }
 
 // Filter out native functions (no class), NSInvocation methods, and internal constructor.
