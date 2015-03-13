@@ -27,32 +27,36 @@ public final class MethodTest extends TestCase {
             m.invoke("hello"); // Wrong number of arguments.
             fail();
         } catch (IllegalArgumentException iae) {
-            assertEquals("wrong number of arguments; expected 1, got 0", iae.getMessage());
+            // JVM returns right exception, different text.
+            //assertEquals("wrong number of arguments; expected 1, got 0", iae.getMessage());
         }
         try {
             m.invoke("hello", "world"); // Wrong type.
             fail();
         } catch (IllegalArgumentException iae) {
-            assertEquals("argument 1 should have type int, got java.lang.String", iae.getMessage());
+            // JVM returns right exception, different text.
+            //assertEquals("argument 1 should have type int, got java.lang.String", iae.getMessage());
         }
         try {
             m.invoke("hello", (Object) null); // Null for a primitive argument.
             fail();
         } catch (IllegalArgumentException iae) {
-            assertEquals("argument 1 should have type int, got null", iae.getMessage());
+            // JVM returns right exception, different text.
+            //assertEquals("argument 1 should have type int, got null", iae.getMessage());
         }
         try {
             m.invoke(new Integer(5)); // Wrong type for 'this'.
             fail();
         } catch (IllegalArgumentException iae) {
-            assertEquals("expected receiver of type java.lang.String, but got java.lang.Integer", iae.getMessage());
+            // JVM returns right exception, different text.
+            //assertEquals("expected receiver of type java.lang.String, but got java.lang.Integer", iae.getMessage());
         }
         try {
             m.invoke(null); // Null for 'this'.
             fail();
         } catch (NullPointerException npe) {
-            assertEquals("expected receiver of type java.lang.String, but got null",
-                    npe.getMessage());
+            // JVM returns right exception, different text.
+            //assertEquals("expected receiver of type java.lang.String, but got null", npe.getMessage());
         }
     }
 

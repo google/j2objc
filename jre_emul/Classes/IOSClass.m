@@ -263,12 +263,16 @@ static void GetAllMethods(IOSClass *cls, NSMutableDictionary *methodMap) {
   NSString *translatedName = IOSClass_GetTranslatedMethodName(self, name, types);
   IOSClass *cls = self;
   do {
-    JavaLangReflectMethod *method = [cls findMethodWithTranslatedName:translatedName];
+    JavaLangReflectMethod *method = [cls findMethodWithTranslatedName:translatedName
+                                                      checkSupertypes:YES];
     if (method != nil) {
+      if (([method getModifiers] & JavaLangReflectModifier_PUBLIC) == 0) {
+        break;
+      }
       return method;
     }
     for (IOSClass *p in [cls getInterfacesInternal]) {
-      method = [p findMethodWithTranslatedName:translatedName];
+      method = [p findMethodWithTranslatedName:translatedName checkSupertypes:YES];
       if (method != nil) {
         return method;
       }
@@ -282,14 +286,16 @@ static void GetAllMethods(IOSClass *cls, NSMutableDictionary *methodMap) {
 - (JavaLangReflectMethod *)getDeclaredMethod:(NSString *)name
                               parameterTypes:(IOSObjectArray *)types {
   JavaLangReflectMethod *result =
-      [self findMethodWithTranslatedName:IOSClass_GetTranslatedMethodName(self, name, types)];
+      [self findMethodWithTranslatedName:IOSClass_GetTranslatedMethodName(self, name, types)
+                         checkSupertypes:NO];
   if (!result) {
     @throw AUTORELEASE([[JavaLangNoSuchMethodException alloc] initWithNSString:name]);
   }
   return result;
 }
 
-- (JavaLangReflectMethod *)findMethodWithTranslatedName:(NSString *)objcName {
+- (JavaLangReflectMethod *)findMethodWithTranslatedName:(NSString *)objcName
+                                        checkSupertypes:(BOOL)includePublic {
   return nil; // Overriden by subclasses.
 }
 
@@ -994,7 +1000,7 @@ static BOOL IsConstructorSelector(NSString *selector) {
       // the same object file as the enclosed class.
       @throw AUTORELEASE([[JavaLangAssertionError alloc] init]);
     }
-    return [type findMethodWithTranslatedName:metadata.selector];
+    return [type findMethodWithTranslatedName:metadata.selector checkSupertypes:NO];
   }
   return nil;
 }

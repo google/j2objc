@@ -191,7 +191,8 @@
 // Internal methods
 - (void)collectMethods:(NSMutableDictionary *)methodMap
             publicOnly:(BOOL)publicOnly;
-- (JavaLangReflectMethod *)findMethodWithTranslatedName:(NSString *)objcName;
+- (JavaLangReflectMethod *)findMethodWithTranslatedName:(NSString *)objcName
+                                        checkSupertypes:(BOOL)checkSupertypes;
 - (JavaLangReflectConstructor *)findConstructorWithTranslatedName:(NSString *)objcName;
 // Same as getInterfaces, but not a defensive copy.
 - (IOSObjectArray *)getInterfacesInternal;
