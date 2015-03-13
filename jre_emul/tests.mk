@@ -239,6 +239,7 @@ TEST_SOURCES := \
     libcore/java/lang/reflect/ArrayTest.java \
     libcore/java/lang/reflect/ConstructorTest.java \
     libcore/java/lang/reflect/FieldTest.java \
+    libcore/java/lang/reflect/MethodTest.java \
     libcore/java/lang/reflect/ReflectionTest.java \
     libcore/java/net/DatagramSocketTest.java \
     libcore/java/net/NetworkInterfaceTest.java \

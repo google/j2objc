@@ -244,7 +244,8 @@ IOSObjectArray *getConstructorsImpl(IOSConcreteClass *clazz, BOOL publicOnly) {
   return getConstructorsImpl(self, YES);
 }
 
-- (JavaLangReflectMethod *)findMethodWithTranslatedName:(NSString *)objcName {
+- (JavaLangReflectMethod *)findMethodWithTranslatedName:(NSString *)objcName
+                                        checkSupertypes:(BOOL)checkSupertypes {
   const char *name = [objcName UTF8String];
   BOOL isStatic = NO;
   Method method = JreFindInstanceMethod(class_, name);

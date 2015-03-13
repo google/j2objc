@@ -121,7 +121,8 @@ static jboolean ConformsToProtocol(IOSClass *cls, IOSProtocolClass *protocol) {
   free(descriptions);
 }
 
-- (JavaLangReflectMethod *)findMethodWithTranslatedName:(NSString *)objcName {
+- (JavaLangReflectMethod *)findMethodWithTranslatedName:(NSString *)objcName
+                                        checkSupertypes:(BOOL)checkSupertypes {
   unsigned int count;
   JavaLangReflectMethod *result = nil;
   struct objc_method_description *descriptions =
@@ -163,11 +164,11 @@ static jboolean ConformsToProtocol(IOSClass *cls, IOSProtocolClass *protocol) {
       }
     }
   }
-  if (!result) {
+  if (!result && checkSupertypes) {
     // Search super-interfaces.
     for (IOSClass *cls in [self getInterfacesInternal]) {
       if (cls != self) {
-        result = [cls findMethodWithTranslatedName:objcName];
+        result = [cls findMethodWithTranslatedName:objcName checkSupertypes:checkSupertypes];
         if (result) {
           break;
         }

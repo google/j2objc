@@ -333,7 +333,8 @@ public class Proxy implements Serializable {
         if (methodDescription.name && sel_isEqual(selector, methodDescription.name)) {
           IOSClass *iosProtocol = IOSClass_fromProtocol(protocol);
           JavaLangReflectMethod *method =
-              [iosProtocol findMethodWithTranslatedName:NSStringFromSelector(selector)];
+              [iosProtocol findMethodWithTranslatedName:NSStringFromSelector(selector)
+                                        checkSupertypes:YES];
           IOSObjectArray *paramTypes = [method getParameterTypes];
           jint numArgs = paramTypes->size_;
           IOSObjectArray *args = [IOSObjectArray arrayWithLength:numArgs type:NSObject_class_()];
