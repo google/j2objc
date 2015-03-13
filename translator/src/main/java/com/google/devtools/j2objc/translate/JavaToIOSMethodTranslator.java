@@ -27,6 +27,7 @@ import com.google.devtools.j2objc.ast.ReturnStatement;
 import com.google.devtools.j2objc.ast.SimpleName;
 import com.google.devtools.j2objc.ast.SingleVariableDeclaration;
 import com.google.devtools.j2objc.ast.StringLiteral;
+import com.google.devtools.j2objc.ast.TreeUtil;
 import com.google.devtools.j2objc.ast.TreeVisitor;
 import com.google.devtools.j2objc.ast.TypeDeclaration;
 import com.google.devtools.j2objc.types.GeneratedMethodBinding;
@@ -132,9 +133,7 @@ public class JavaToIOSMethodTranslator extends TreeVisitor {
       IOSMethodBinding methodBinding = IOSMethodBinding.newMappedMethod(selector, binding);
       MethodInvocation newInvocation = new MethodInvocation(
           methodBinding, new SimpleName(binding.getDeclaringClass()));
-
-      // Set parameters.
-      copyInvocationArguments(null, node.getArguments(), newInvocation.getArguments());
+      TreeUtil.copyList(node.getArguments(), newInvocation.getArguments());
 
       node.replaceWith(newInvocation);
     }
@@ -151,21 +150,6 @@ public class JavaToIOSMethodTranslator extends TreeVisitor {
       if (superclass == null || !superclass.isAssignmentCompatible(javaLangCloneable)) {
         addCopyWithZoneMethod(node);
       }
-    }
-  }
-
-  private void copyInvocationArguments(Expression receiver, List<Expression> oldArgs,
-      List<Expression> newArgs) {
-    // set the receiver as the first argument
-    if (receiver != null) {
-      Expression delegate = receiver.copy();
-      delegate.accept(this);
-      newArgs.add(delegate);
-    }
-
-    // copy remaining arguments
-    for (Expression oldArg : oldArgs) {
-      newArgs.add(oldArg.copy());
     }
   }
 
