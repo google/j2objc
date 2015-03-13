@@ -300,6 +300,13 @@ class TranslationProcessor extends FileProcessor {
     new EnumRewriter().run(unit);
     ticker.tick("EnumRewriter");
 
+    // Before: Functionizer - Needs to rewrite some ClassInstanceCreation nodes
+    //   before Functionizer does.
+    // Before: StaticVarRewriter, OperatorRewriter - Doesn't know how to handle
+    //   the hasRetainedResult flag on ClassInstanceCreation nodes.
+    new JavaToIOSMethodTranslator().run(unit);
+    ticker.tick("JavaToIOSMethodTranslator");
+
     // After: OcniExtractor - So that native methods can be correctly
     //   functionized.
     new Functionizer().run(unit);
@@ -309,12 +316,6 @@ class TranslationProcessor extends FileProcessor {
     //   qualifier on SuperMethodInvocation nodes.
     new SuperMethodInvocationRewriter(unit).run();
     ticker.tick("SuperMethodInvocationRewriter");
-
-    // After: Functionizer - Changes bindings on MethodDeclaration nodes.
-    // Before: StaticVarRewriter, OperatorRewriter - Doesn't know how to handle
-    //   the hasRetainedResult flag on ClassInstanceCreation nodes.
-    new JavaToIOSMethodTranslator().run(unit);
-    ticker.tick("JavaToIOSMethodTranslator");
 
     new StaticVarRewriter().run(unit);
     ticker.tick("StaticVarRewriter");
