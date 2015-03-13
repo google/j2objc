@@ -41,6 +41,7 @@ import com.google.devtools.j2objc.ast.SuperMethodInvocation;
 import com.google.devtools.j2objc.ast.ThisExpression;
 import com.google.devtools.j2objc.ast.TreeUtil;
 import com.google.devtools.j2objc.ast.TreeVisitor;
+import com.google.devtools.j2objc.ast.VariableDeclarationStatement;
 import com.google.devtools.j2objc.types.GeneratedVariableBinding;
 import com.google.devtools.j2objc.types.IOSMethodBinding;
 import com.google.devtools.j2objc.types.Types;
@@ -230,6 +231,9 @@ public class Functionizer extends TreeVisitor {
         declarationList.add(makeExtraMethodDeclaration(node, selector, function));
       }
       declarationList.add(function);
+      if (binding.isConstructor()) {
+        declarationList.add(makeAllocatingConstructor(node));
+      }
       if (BindingUtil.isStatic(binding) && Options.removeClassMethods()) {
         node.remove();
       } else {
@@ -289,6 +293,45 @@ public class Functionizer extends TreeVisitor {
       FunctionConverter.convert(function);
     }
 
+    return function;
+  }
+
+  /**
+   * Create a wrapper for a constructor that does the object allocation.
+   */
+  private FunctionDeclaration makeAllocatingConstructor(MethodDeclaration method) {
+    assert method.isConstructor();
+    IMethodBinding binding = method.getMethodBinding();
+    ITypeBinding voidType = binding.getReturnType();
+    ITypeBinding declaringClass = binding.getDeclaringClass();
+
+    FunctionDeclaration function = new FunctionDeclaration(
+        NameTable.getAllocatingConstructorName(binding), declaringClass);
+    function.setModifiers(BindingUtil.isPrivate(binding) ? Modifier.PRIVATE : Modifier.PUBLIC);
+    function.setReturnsRetained(true);
+    TreeUtil.copyList(method.getParameters(), function.getParameters());
+    Block body = new Block();
+    function.setBody(body);
+    List<Statement> stmts = body.getStatements();
+
+    GeneratedVariableBinding selfVar = new GeneratedVariableBinding(
+        NameTable.SELF_NAME, 0, declaringClass, false, false, declaringClass, null);
+    IOSMethodBinding allocBinding = IOSMethodBinding.newMethod(
+        NameTable.ALLOC_METHOD, Modifier.PUBLIC, Types.resolveIOSType("id"),
+        Types.resolveIOSType("NSObject"));
+    stmts.add(new VariableDeclarationStatement(
+        selfVar, new MethodInvocation(allocBinding, new SimpleName(declaringClass))));
+
+    FunctionInvocation invocation = new FunctionInvocation(
+        NameTable.getFullFunctionName(binding), voidType, voidType, declaringClass);
+    List<Expression> args = invocation.getArguments();
+    args.add(new SimpleName(selfVar));
+    for (SingleVariableDeclaration param : function.getParameters()) {
+      args.add(new SimpleName(param.getVariableBinding()));
+    }
+    stmts.add(new ExpressionStatement(invocation));
+
+    stmts.add(new ReturnStatement(new SimpleName(selfVar)));
     return function;
   }
 

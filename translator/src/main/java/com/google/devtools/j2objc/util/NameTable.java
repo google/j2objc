@@ -62,6 +62,7 @@ public class NameTable {
   private final PathClassLoader classLoader;
 
   public static final String INIT_NAME = "init";
+  public static final String ALLOC_METHOD = "alloc";
   public static final String RETAIN_METHOD = "retain";
   public static final String RELEASE_METHOD = "release";
   public static final String DEALLOC_METHOD = "dealloc";
@@ -569,6 +570,14 @@ public class NameTable {
    */
   public static String getFullFunctionName(IMethodBinding method) {
     return getFullName(method.getDeclaringClass()) + '_' + getFunctionName(method);
+  }
+
+  /**
+   * Returns the name of the allocating constructor wrapper. The name will take
+   * the form of "new_TypeName_ConstructorName".
+   */
+  public static String getAllocatingConstructorName(IMethodBinding method) {
+    return "new_" + getFullFunctionName(method);
   }
 
   /**

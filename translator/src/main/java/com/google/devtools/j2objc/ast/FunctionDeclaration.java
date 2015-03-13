@@ -24,6 +24,7 @@ import java.util.List;
 public class FunctionDeclaration extends BodyDeclaration {
 
   private String name = null;
+  private boolean returnsRetained = false;
   private final ChildLink<Type> returnType = ChildLink.create(Type.class, this);
   private final ChildList<SingleVariableDeclaration> parameters =
       ChildList.create(SingleVariableDeclaration.class, this);
@@ -32,6 +33,7 @@ public class FunctionDeclaration extends BodyDeclaration {
   public FunctionDeclaration(FunctionDeclaration other) {
     super(other);
     name = other.getName();
+    returnsRetained = other.returnsRetained();
     returnType.copyFrom(other.getReturnType());
     parameters.copyFrom(other.getParameters());
     body.copyFrom(other.getBody());
@@ -49,6 +51,14 @@ public class FunctionDeclaration extends BodyDeclaration {
 
   public String getName() {
     return name;
+  }
+
+  public boolean returnsRetained() {
+    return returnsRetained;
+  }
+
+  public void setReturnsRetained(boolean value) {
+    returnsRetained = value;
   }
 
   public Type getReturnType() {
