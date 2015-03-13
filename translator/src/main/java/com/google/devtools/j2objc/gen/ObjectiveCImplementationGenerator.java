@@ -474,7 +474,11 @@ public class ObjectiveCImplementationGenerator extends ObjectiveCSourceFileGener
     if (!Modifier.isNative(function.getModifiers())) {
       print("__attribute__((unused)) static ");
     }
-    println(getFunctionSignature(function) + ";");
+    print(getFunctionSignature(function));
+    if (function.returnsRetained()) {
+      print(" NS_RETURNS_RETAINED");
+    }
+    println(";");
   }
 
   private void printFunctionDefinition(FunctionDeclaration function) {
