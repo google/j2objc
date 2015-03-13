@@ -460,4 +460,52 @@ public class FunctionizerTest extends GenerationTest {
         "class Test { Test() { super.toString(); } }", "Test", "Test.m");
     assertTranslation(translation, "Test_super$_description(self, @selector(description));");
   }
+
+  public void testFunctionizedConstructors() throws IOException {
+    String translation = translateSourceFile(
+        "class Test { String s; "
+        + "Test() { this(\"foo\"); } "
+        + "private Test(String s) { this.s = s; } }", "Test", "Test.h");
+    // Functionized constructor.
+    assertTranslation(translation, "FOUNDATION_EXPORT void Test_init(Test *self);");
+    // Allocating constructor.
+    assertTranslation(translation, "FOUNDATION_EXPORT Test *new_Test_init() NS_RETURNS_RETAINED;");
+    translation = getTranslatedFile("Test.m");
+    // Declarations for the private constructor.
+    assertTranslation(translation,
+        "__attribute__((unused)) static void Test_initWithNSString_(Test *self, NSString *s);");
+    assertTranslation(translation,
+        "__attribute__((unused)) static Test *new_Test_initWithNSString_(NSString *s) "
+        + "NS_RETURNS_RETAINED;");
+    // Implementations.
+    assertTranslatedLines(translation,
+        "void Test_init(Test *self) {",
+        "  Test_initWithNSString_(self, @\"foo\");",
+        "}");
+    assertTranslatedLines(translation,
+        "Test *new_Test_init() {",
+        "  Test *self = [Test alloc];",
+        "  Test_init(self);",
+        "  return self;",
+        "}");
+    assertTranslatedLines(translation,
+        "void Test_initWithNSString_(Test *self, NSString *s) {",
+        "  NSObject_init(self);",
+        "  Test_set_s_(self, s);",
+        "}");
+    assertTranslatedLines(translation,
+        "Test *new_Test_initWithNSString_(NSString *s) {",
+        "  Test *self = [Test alloc];",
+        "  Test_initWithNSString_(self, s);",
+        "  return self;",
+        "}");
+  }
+
+  public void testNoAllocatingConstructorsForAbstractClass() throws IOException {
+    String translation = translateSourceFile("abstract class Test {}", "Test", "Test.h");
+    assertTranslation(translation, "FOUNDATION_EXPORT void Test_init(Test *self);");
+    assertNotInTranslation(translation, "new_Test_init");
+    translation = getTranslatedFile("Test.m");
+    assertNotInTranslation(translation, "new_Test_init");
+  }
 }
