@@ -231,7 +231,7 @@ public class Functionizer extends TreeVisitor {
         declarationList.add(makeExtraMethodDeclaration(node, selector, function));
       }
       declarationList.add(function);
-      if (binding.isConstructor()) {
+      if (binding.isConstructor() && !BindingUtil.isAbstract(binding.getDeclaringClass())) {
         declarationList.add(makeAllocatingConstructor(node));
       }
       if (BindingUtil.isStatic(binding) && Options.removeClassMethods()) {
