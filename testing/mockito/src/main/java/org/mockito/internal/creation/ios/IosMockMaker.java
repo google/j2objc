@@ -224,7 +224,8 @@ public final class IosMockMaker implements MockMaker {
       IOSClass *clazz = getMethodDescription([self class], selector, &methodDescription);
       if (clazz) {
         JavaLangReflectMethod *method =
-            [clazz findMethodWithTranslatedName:NSStringFromSelector(selector)];
+            [clazz findMethodWithTranslatedName:NSStringFromSelector(selector)
+                                checkSupertypes:YES];
         IOSObjectArray *paramTypes = [method getParameterTypes];
         NSUInteger numArgs = paramTypes->size_;
         IOSObjectArray *args = [IOSObjectArray arrayWithLength:numArgs type:NSObject_class_()];
