@@ -416,28 +416,6 @@ public final class InternetDomainName {
     return publicSuffixIndex == 1;
   }
 
-  /**
-   * Returns the portion of this domain name that is one level beneath the
-   * public suffix. For example, for {@code x.adwords.google.co.uk} it returns
-   * {@code google.co.uk}, since {@code co.uk} is a public suffix.
-   *
-   * <p>If {@link #isTopPrivateDomain()} is true, the current domain name
-   * instance is returned.
-   *
-   * <p>This method should not be used to determine the topmost parent domain
-   * which is addressable as a host, as many public suffixes are also
-   * addressable hosts. For example, the domain {@code foo.bar.uk.com} has
-   * a public suffix of {@code uk.com}, so it would return {@code bar.uk.com}
-   * from this method. But {@code uk.com} is itself an addressable host.
-   *
-   * <p>This method can be used to determine the probable highest level parent
-   * domain for which cookies may be set, though even that depends on individual
-   * browsers' implementations of cookie controls.
-   *
-   * @throws IllegalStateException if this domain does not end with a
-   *     public suffix
-   * @since 6.0
-   */
   public InternetDomainName topPrivateDomain() {
     if (isTopPrivateDomain()) {
       return this;

@@ -49,7 +49,7 @@ public class ObjectiveCSegmentedHeaderGenerator extends ObjectiveCHeaderGenerato
 
   @Override
   protected void generateFileHeader() {
-    // TODO(user): Work out if we need segmented headers for GenerationUnits with multiple
+    // TODO(mthvedt): Work out if we need segmented headers for GenerationUnits with multiple
     // CompilationUnits, and if so, how to handle these directives properly.
     println("#include \"J2ObjC_header.h\"");
     newline();

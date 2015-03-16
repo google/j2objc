@@ -158,15 +158,15 @@ public class J2ObjCTest extends GenerationTest {
     J2ObjC.run(Collections.singletonList(examplePath));
     assertErrorCount(0);
 
-    // They also fail when patched into older versions of J2ObjC. Investigate this.
-//    String translatedAnnotationHeader = getTranslatedFile("ProcessingResult.h");
-//    String translatedAnnotationImpl = getTranslatedFile("ProcessingResult.m");
 
-    // Our dummy annotation processor is very simple--it always creates a class with no package, ProcessingResult,
-    // with a minimal implementation.
-//    assertTranslation(translatedAnnotationHeader, "@interface ProcessingResult : NSObject");
-//    assertTranslation(translatedAnnotationHeader, "- (NSString *)getResult;");
-//    assertTranslation(translatedAnnotationImpl, "@implementation ProcessingResult");
-//    assertTranslation(translatedAnnotationImpl, "return @\"ObjectiveCName\"");
+    String translatedAnnotationHeader = getTranslatedFile("ProcessingResult.h");
+    String translatedAnnotationImpl = getTranslatedFile("ProcessingResult.m");
+
+    // Our dummy annotation processor is very simple--it always creates a class with no package,
+    // ProcessingResult, with a minimal implementation.
+    assertTranslation(translatedAnnotationHeader, "@interface ProcessingResult : NSObject");
+    assertTranslation(translatedAnnotationHeader, "- (NSString *)getResult;");
+    assertTranslation(translatedAnnotationImpl, "@implementation ProcessingResult");
+    assertTranslation(translatedAnnotationImpl, "return @\"ObjectiveCName\"");
   }
 }

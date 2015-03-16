@@ -137,7 +137,7 @@ public abstract class SourceFileGenerator {
   }
 
   protected CompilationUnit getUnit() {
-    // TODO(user): Eliminate this method
+    // TODO(mthvedt): Eliminate this method
     // when we support multiple compilation units per generation unit.
     return getGenerationUnit().getCompilationUnits().get(0);
   }
