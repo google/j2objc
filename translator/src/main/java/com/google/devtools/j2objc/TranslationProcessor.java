@@ -109,7 +109,7 @@ class TranslationProcessor extends FileProcessor {
   a given compilation unit more than once. For some use cases, this is important, like if
   we supply a source or input file that overrides files later on the source file paths.
 
-  TODO(user): Consider whether this logic is correct; in particular, the potential problem of
+  TODO(mthvedt): Consider whether this logic is correct; in particular, the potential problem of
   depending on InputFiles to have the correct java relative path returned by #getUnitName().
   Right now, this fulfills expected behavior and passes tests. See discussion on cl/86308318 .
    */
