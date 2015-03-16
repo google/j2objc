@@ -998,4 +998,16 @@ public class ObjectiveCImplementationGeneratorTest extends GenerationTest {
         "J2ObjcClassInfo _A_test_C_test_D = { 2, \"D\", NULL, \"A$C\", 0x0, 1, methods, "
         + "0, NULL, 0, NULL, 0, NULL, NULL, NULL }");
   }
+
+  public void testAnnotationsAsAnnotationValues() throws IOException {
+    String translation = translateSourceFile(
+        "import java.lang.annotation.*; "
+        + "public class A {"
+        + "@Retention(RetentionPolicy.RUNTIME) @interface Outer { Inner innerAnnotation(); }"
+        + "@Retention(RetentionPolicy.RUNTIME) @interface Inner { String name(); }"
+        + "@Outer(innerAnnotation=@Inner(name=\"Bar\")) class Foo {}}",
+        "A", "A.m");
+    assertTranslation(translation,
+        "[[[A_Outer alloc] initWithInnerAnnotation:[[[A_Inner alloc] initWithName:@\"Bar\"]");
+  }
 }
