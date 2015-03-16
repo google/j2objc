@@ -118,6 +118,7 @@ public class ObjectiveCImplementationGenerator extends ObjectiveCSourceFileGener
     printTypeLiteralImplementation(node);
   }
 
+  @SuppressWarnings("incomplete-switch")
   private void generateSpecificTypeImplementation(AbstractTypeDeclaration node) {
     switch (node.getKind()) {
       case ANNOTATION_TYPE_DECLARATION:
@@ -588,25 +589,28 @@ public class ObjectiveCImplementationGenerator extends ObjectiveCSourceFileGener
       } else {
         print(", ");
       }
-      if (Options.useReferenceCounting()) {
-        print('[');
-      }
-      printf("[[%s alloc] init", NameTable.getFullName(
-          annotation.getAnnotationBinding().getAnnotationType()));
-      printAnnotationParameters(annotation);
-      print(']');
-      if (Options.useReferenceCounting()) {
-        print(" autorelease]");
-      }
+      printAnnotation(annotation.getAnnotationBinding());
+    }
+  }
+
+  private void printAnnotation(IAnnotationBinding annotation) {
+    if (Options.useReferenceCounting()) {
+      print('[');
+    }
+    printf("[[%s alloc] init", NameTable.getFullName(
+        annotation.getAnnotationType()));
+    printAnnotationParameters(annotation);
+    print(']');
+    if (Options.useReferenceCounting()) {
+      print(" autorelease]");
     }
   }
 
   // Prints an annotation's values as a constructor argument list. If
   // the annotation type declares default values, then for any value that
   // isn't specified in the annotation will use the default.
-  private void printAnnotationParameters(Annotation annotation) {
-    IAnnotationBinding binding = annotation.getAnnotationBinding();
-    IMemberValuePairBinding[] valueBindings = BindingUtil.getSortedMemberValuePairs(binding);
+  private void printAnnotationParameters(IAnnotationBinding annotation) {
+    IMemberValuePairBinding[] valueBindings = BindingUtil.getSortedMemberValuePairs(annotation);
     for (int i = 0; i < valueBindings.length; i++) {
       if (i > 0) {
         print(' ');
@@ -644,6 +648,8 @@ public class ObjectiveCImplementationGenerator extends ObjectiveCSourceFileGener
         printAnnotationValue(array[i]);
       }
       printf(" } count:%d type:NSObject_class_()]", array.length);
+    } else if (value instanceof IAnnotationBinding) {
+      printAnnotation((IAnnotationBinding) value);
     } else {
       assert false : "unknown annotation value type";
     }
