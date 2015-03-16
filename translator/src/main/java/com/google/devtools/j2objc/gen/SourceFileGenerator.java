@@ -28,6 +28,7 @@ import java.io.IOException;
 /**
  * This class handles common actions shared by the header, implementation, and
  * statement generators.
+ * TODO(kstanger): Replace this with AbstractSourceGenerator.
  *
  * @author Tom Ball
  */

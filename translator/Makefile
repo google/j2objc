@@ -154,6 +154,8 @@ JAVA_SOURCES = \
 	ast/VariableDeclarationFragment.java \
 	ast/VariableDeclarationStatement.java \
 	ast/WhileStatement.java \
+	gen/AbstractSourceGenerator.java \
+	gen/JavadocGenerator.java \
 	gen/LiteralGenerator.java \
 	gen/MetadataGenerator.java \
 	gen/ObjectiveCHeaderGenerator.java \
