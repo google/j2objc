@@ -12,9 +12,7 @@
  * limitations under the License.
  */
 
-package com.google.devtools.j2objc;
-
-import com.google.j2objc.annotations.ObjectiveCName;
+package com.google.devtools.j2objc.annotations;
 
 import java.io.IOException;
 import java.io.Writer;
@@ -22,7 +20,6 @@ import java.util.Set;
 
 import javax.annotation.processing.AbstractProcessor;
 import javax.annotation.processing.RoundEnvironment;
-import javax.annotation.processing.ProcessingEnvironment;
 import javax.annotation.processing.SupportedAnnotationTypes;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.SourceVersion;
