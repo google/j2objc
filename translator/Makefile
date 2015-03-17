@@ -163,7 +163,6 @@ JAVA_SOURCES = \
 	gen/ObjectiveCSegmentedHeaderGenerator.java \
 	gen/ObjectiveCSourceFileGenerator.java \
 	gen/SourceBuilder.java \
-	gen/SourceFileGenerator.java \
 	gen/StatementGenerator.java \
 	translate/AbstractMethodRewriter.java \
 	translate/AnonymousClassConverter.java \
