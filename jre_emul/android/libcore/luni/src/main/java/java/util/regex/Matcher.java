@@ -298,7 +298,7 @@ public final class Matcher implements MatchResult {
      */
     public String replaceFirst(String replacement) {
         reset();
-        StringBuffer buffer = new StringBuilder(input.length());
+        StringBuffer buffer = new StringBuffer(input.length());
         if (find()) {
             appendReplacement(buffer, replacement);
         }
@@ -315,7 +315,7 @@ public final class Matcher implements MatchResult {
      */
     public String replaceAll(String replacement) {
         reset();
-        StringBuffer buffer = new StringBuilder(input.length());
+        StringBuffer buffer = new StringBuffer(input.length());
         while (find()) {
             appendReplacement(buffer, replacement);
         }
