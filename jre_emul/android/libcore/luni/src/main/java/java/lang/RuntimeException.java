@@ -69,4 +69,16 @@ public class RuntimeException extends Exception {
     public RuntimeException(Throwable throwable) {
         super(throwable);
     }
+    
+    /**
+     * Constructs a new {@code RuntimeException} with the current stack trace,
+     * the specified detail message, the specified cause, and whether suppression
+     * and/or writable stack trace is enabled.
+     * 
+     * @since 1.7
+     */
+    protected RuntimeException(String message, Throwable cause, boolean enableSuppression,
+            boolean writableStackTrace) {
+        super(message, cause, enableSuppression, writableStackTrace);
+    }
 }
