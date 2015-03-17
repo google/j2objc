@@ -29,7 +29,6 @@ import com.google.devtools.j2objc.file.InputFile;
 import com.google.devtools.j2objc.file.RegularInputFile;
 import com.google.devtools.j2objc.gen.SourceBuilder;
 import com.google.devtools.j2objc.gen.StatementGenerator;
-import com.google.devtools.j2objc.types.Types;
 import com.google.devtools.j2objc.util.DeadCodeMap;
 import com.google.devtools.j2objc.util.ErrorUtil;
 import com.google.devtools.j2objc.util.FileUtil;
@@ -89,7 +88,7 @@ public abstract class GenerationTest extends TestCase {
   protected void tearDown() throws Exception {
     Options.setHeaderMappingFiles(null);
     Options.getHeaderMappings().clear();
-    Options.setPackageDirectories(Options.OutputStyleOption.PACKAGE);
+    Options.setOutputStyle(Options.OutputStyleOption.PACKAGE);
     Options.getSourcePathEntries().clear();
     FileUtil.deleteTempDir(tempDir);
     ErrorUtil.reset();
@@ -143,8 +142,6 @@ public abstract class GenerationTest extends TestCase {
   protected CompilationUnit translateType(String typeName, String source) {
     String typePath = typeName.replace('.', '/');
     org.eclipse.jdt.core.dom.CompilationUnit unit = compileType(typePath + ".java", source);
-    NameTable.initialize();
-    Types.initialize(unit);
     String fullSourcePath = Options.useSourceDirectories() ? "" : tempDir.getPath() + '/';
     fullSourcePath += typePath + ".java";
     CompilationUnit newUnit = TreeConverter.convertCompilationUnit(
@@ -321,6 +318,18 @@ public abstract class GenerationTest extends TestCase {
     TranslationProcessor.generateObjectiveCSource(
         GenerationBatch.fromUnit(unit, typeName + ".java"), TimeTracker.noop());
     return getTranslatedFile(fileName);
+  }
+
+  protected String translateCombinedFiles(String outputPath, String extension, String... sources)
+      throws IOException {
+    GenerationBatch batch = new GenerationBatch();
+    for (String sourceFile: sources) {
+      batch.addSource(new RegularInputFile(tempDir + "/" + sourceFile, sourceFile), outputPath);
+    }
+    parser.setEnableDocComments(Options.docCommentsEnabled());
+    new HeaderMappingPreProcessor(parser).processBatch(batch);
+    new TranslationProcessor(parser, DeadCodeMap.builder().build()).processBatch(batch);
+    return getTranslatedFile(outputPath + extension);
   }
 
   protected void loadHeaderMappings() {

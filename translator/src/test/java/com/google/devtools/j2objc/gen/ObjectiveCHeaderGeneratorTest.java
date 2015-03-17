@@ -151,8 +151,7 @@ public class ObjectiveCHeaderGeneratorTest extends GenerationTest {
 
   public void testOutputHeaderFileMapping() throws IOException {
     Options.setHeaderMappingFiles(Lists.newArrayList("testMappings.j2objc"));
-    Options.setOutputHeaderMappingFile(new File("path/to/Dummy"));
-    Options.setPackageDirectories(Options.OutputStyleOption.SOURCE);
+    Options.setOutputStyle(Options.OutputStyleOption.SOURCE);
     addSourceFile("package unit.test; public class Dummy {}", "unit/test/Dummy.java");
     addSourceFile(
         "package unit.test;"
@@ -176,24 +175,23 @@ public class ObjectiveCHeaderGeneratorTest extends GenerationTest {
 
   public void testOutputHeaderFileMappingWithMultipleClassesInOneHeader() throws IOException {
     Options.setHeaderMappingFiles(Lists.newArrayList("testMappings.j2objc"));
-    Options.setOutputHeaderMappingFile(new File("path/to/Dummy"));
-    Options.setPackageDirectories(Options.OutputStyleOption.SOURCE);
+    Options.setOutputStyle(Options.OutputStyleOption.SOURCE);
     addSourceFile("package unit.mapping.custom; public class Test { }",
         "unit/mapping/custom/Test.java");
     addSourceFile("package unit.mapping.custom; public class AnotherTest { }",
         "unit/mapping/custom/AnotherTest.java");
     addSourceFile(
         "package unit.test;"
-        + "import unit.mapping.custom.Test;"
-        + "public class Dummy extends Test { "
-        + "    public Dummy() {}"
-        + "}", "unit/test/Dummy.java");
+            + "import unit.mapping.custom.Test;"
+            + "public class Dummy extends Test { "
+            + "    public Dummy() {}"
+            + "}", "unit/test/Dummy.java");
     addSourceFile(
         "package unit.test;"
-        + "import unit.mapping.custom.AnotherTest;"
-        + "public class AnotherDummy extends AnotherTest { "
-        + "    public AnotherDummy() {}"
-        + "}", "unit/test/AnotherDummy.java");
+            + "import unit.mapping.custom.AnotherTest;"
+            + "public class AnotherDummy extends AnotherTest { "
+            + "    public AnotherDummy() {}"
+            + "}", "unit/test/AnotherDummy.java");
 
     loadSourceFileHeaderMappings("unit/test/Dummy.java", "unit/test/AnotherDummy.java");
     loadHeaderMappings();
@@ -210,6 +208,75 @@ public class ObjectiveCHeaderGeneratorTest extends GenerationTest {
     assertEquals(outputMapping.get("unit.test.AnotherDummy"), "unit/test/AnotherDummy.h");
     assertEquals(outputMapping.get("unit.mapping.custom.Test"), "my/mapping/custom/Test.h");
     assertEquals(outputMapping.get("unit.mapping.custom.AnotherTest"), "my/mapping/custom/Test.h");
+  }
+
+  public void testCombinedGeneration() throws IOException {
+    addSourceFile("package unit; public class Test {"
+            + "    public void Dummy() {}"
+            + "}",
+        "unit/Test.java");
+    addSourceFile("package unit; public class AnotherTest extends Test {"
+            + "    public void AnotherDummy() {}"
+            + "}",
+        "unit/AnotherTest.java");
+
+    String header = translateCombinedFiles(
+        "unit/Foo", ".h", "unit/Test.java", "unit/AnotherTest.java");
+    assertTranslation(header, "#ifndef _UnitFoo_H_");
+    assertTranslation(header, "#define _UnitFoo_H_");
+    assertTranslation(header, "@interface UnitTest");
+    assertTranslation(header, "- (instancetype)init;");
+    assertTranslation(header, "- (void)Dummy;");
+    assertTranslation(header, "J2OBJC_EMPTY_STATIC_INIT(UnitTest)");
+    assertTranslation(header, "J2OBJC_TYPE_LITERAL_HEADER(UnitTest)");
+    assertTranslation(header, "@interface UnitAnotherTest : UnitTest");
+    assertTranslation(header, "- (void)AnotherDummy;");
+    assertTranslation(header, "J2OBJC_EMPTY_STATIC_INIT(UnitAnotherTest)");
+    assertTranslation(header, "J2OBJC_TYPE_LITERAL_HEADER(UnitAnotherTest)");
+  }
+
+  public void testCombinedGenerationOrdering() throws IOException {
+    addSourceFile("package unit; public class Test {"
+            + "    public void Dummy() {}"
+            + "}",
+        "unit/Test.java");
+    addSourceFile("package unit; public class AnotherTest extends Test {"
+            + "    public void AnotherDummy() {}"
+            + "}",
+        "unit/AnotherTest.java");
+
+    String header = translateCombinedFiles(
+        "unit/Foo", ".h", "unit/AnotherTest.java", "unit/Test.java");
+    assert header.indexOf("@interface UnitTest") < header.indexOf("@interface UnitAnotherTest");
+  }
+
+  public void testCombinedJarHeaderMapping() throws IOException {
+    File outputHeaderMappingFile = new File(tempDir, "mappings.j2objc");
+    Options.setOutputHeaderMappingFile(outputHeaderMappingFile);
+    Options.setOutputStyle(Options.OutputStyleOption.SOURCE);
+    addSourceFile("package unit; public class Test { }",
+        "unit/Test.java");
+    addSourceFile("package unit; public class AnotherTest extends Test { }",
+        "unit/AnotherTest.java");
+    addSourceFile("package unit2;"
+        + "import unit.Test;"
+        + "public class AnotherTest extends Test { }",
+        "unit2/AnotherTest.java");
+    addSourceFile("package unit2;"
+        + "import unit.AnotherTest;"
+        + "public class YetAnotherTest extends AnotherTest { }",
+        "unit2/YetAnotherTest.java");
+
+    translateCombinedFiles("unit/Foo", ".h", "unit/Test.java", "unit/AnotherTest.java");
+    String header2 = translateCombinedFiles(
+        "unit2/Foo", ".h", "unit2/AnotherTest.java", "unit2/YetAnotherTest.java");
+
+    Map<String, String> outputMapping = writeAndReloadHeaderMappings();
+    assertEquals("unit/Foo.h", outputMapping.get("unit.Test"));
+    assertEquals("unit/Foo.h", outputMapping.get("unit.AnotherTest"));
+    assertTranslation(header2, "#include \"unit/Foo.h\"");
+    assertEquals("unit2/Foo.h", outputMapping.get("unit2.AnotherTest"));
+    assertEquals("unit2/Foo.h", outputMapping.get("unit2.YetAnotherTest"));
   }
 
   public void testForwardDeclarationTranslation() throws IOException {

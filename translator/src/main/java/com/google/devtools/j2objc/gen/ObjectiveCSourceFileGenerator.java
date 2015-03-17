@@ -319,15 +319,16 @@ public abstract class ObjectiveCSourceFileGenerator extends AbstractSourceGenera
    */
   protected void pushIgnoreDeprecatedDeclarationsPragma() {
     if (Options.generateDeprecatedDeclarations()) {
-      printf("#pragma clang diagnostic push\n");
-      printf("#pragma GCC diagnostic ignored \"-Wdeprecated-declarations\"\n");
+      newline();
+      println("#pragma clang diagnostic push");
+      println("#pragma GCC diagnostic ignored \"-Wdeprecated-declarations\"");
     }
   }
 
   /** Restores deprecation warnings after a call to pushIgnoreDeprecatedDeclarationsPragma. */
   protected void popIgnoreDeprecatedDeclarationsPragma() {
     if (Options.generateDeprecatedDeclarations()) {
-      printf("#pragma clang diagnostic pop\n");
+      println("\n#pragma clang diagnostic pop");
     }
   }
 
@@ -337,9 +338,6 @@ public abstract class ObjectiveCSourceFileGenerator extends AbstractSourceGenera
 
   /**
    * Prints the list of instance variables in a type.
-   *
-   * @param node the type to examine
-   * @param privateVars if true, only print private vars, otherwise print all but private vars
    */
   protected void printInstanceVariables(Iterable<FieldDeclaration> fields) {
     indent();

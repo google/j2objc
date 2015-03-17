@@ -177,12 +177,34 @@ public class GenerationBatch {
     }
   }
 
+  private GenerationUnit createGenerationUnit(String sourceName, String outputPath) {
+    GenerationUnit unit = new GenerationUnit(sourceName);
+    unit.setOutputPath(outputPath);
+    GenerationUnit prev = unitMap.put(outputPath, unit);
+    assert prev == null;
+    units.add(unit);
+    return unit;
+  }
+
   /**
    * Adds the given InputFile to this GenerationBatch,
    * creating GenerationUnits and inferring unit names/output paths as necessary.
    */
   protected void addSource(InputFile file) {
-    if (Options.useSourceDirectories()) {
+    GenerationUnit unit;
+
+    if (Options.combineSourceJars()) {
+      String outputPath = file.getContainingPath();
+      // If there's no separator, this results in 0
+      int lastPathComponentIndex = outputPath.lastIndexOf(File.separatorChar) + 1;
+      assert outputPath.matches(".*j(ar|ava)");
+      outputPath = outputPath.substring(lastPathComponentIndex, outputPath.lastIndexOf("."));
+      unit = unitMap.get(outputPath);
+      if (unit == null) {
+        unit = createGenerationUnit(file.getContainingPath(), outputPath);
+        unit.setName(NameTable.camelCasePath(outputPath));
+      }
+    } else if (Options.useSourceDirectories()) {
       String outputPath = file.getUnitName();
       outputPath = outputPath.substring(0, outputPath.lastIndexOf(".java"));
       if (unitMap.containsKey(outputPath)) {
@@ -192,17 +214,30 @@ public class GenerationBatch {
             + file.getUnitName() + " duplicated on path " + file.getPath());
         return;
       }
-      GenerationUnit unit = new GenerationUnit(file.getPath());
-      // TranslationProcessor will figure out the name
-      unit.addInputFile(file);
-      unit.setOutputPath(outputPath);
-      unitMap.put(outputPath, unit);
-      units.add(unit);
+      unit = createGenerationUnit(file.getPath(), outputPath);
     } else {
-      // GenerationUnit with singleton file and unknown name/output path.
-      GenerationUnit unit = new GenerationUnit(file.getPath());
-      unit.addInputFile(file);
+      // GenerationUnit with singleton file and not-yet-known name and output path.
+      unit = new GenerationUnit(file.getPath());
       units.add(unit);
     }
+
+    unit.addInputFile(file);
+  }
+
+  /**
+   * Testing method. Add a source forcing some output path.
+   * Sets the 'sourcefile' to the given output path plus ".testfile".
+   * In normal operation, addSource consults {@link Options} and determines the correct
+   * output path.
+   */
+  @VisibleForTesting
+  void addSource(InputFile file, String outputPath) {
+    GenerationUnit unit = unitMap.get(outputPath);
+    if (unit == null) {
+      unit = createGenerationUnit(outputPath + ".testfile", outputPath);
+      // Get a nice looking name for testing purposes
+      unit.setName(NameTable.camelCasePath(outputPath));
+    }
+    unit.addInputFile(file);
   }
 }

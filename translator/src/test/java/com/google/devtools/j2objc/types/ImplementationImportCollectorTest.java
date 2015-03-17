@@ -30,7 +30,7 @@ public class ImplementationImportCollectorTest extends GenerationTest {
 
   @Override
   protected void tearDown() throws Exception {
-    Options.setPackageDirectories(Options.DEFAULT_OUTPUT_STYLE_OPTION);
+    Options.setOutputStyle(Options.DEFAULT_OUTPUT_STYLE_OPTION);
     super.tearDown();
   }
 
@@ -150,7 +150,7 @@ public class ImplementationImportCollectorTest extends GenerationTest {
 
   // Verify that platform class packages aren't truncated with --no-package-directories.
   public void testPlatformImports() throws IOException {
-    Options.setPackageDirectories(Options.OutputStyleOption.NONE);
+    Options.setOutputStyle(Options.OutputStyleOption.NONE);
     String translation = translateSourceFile(
         "package foo.bar; import org.xml.sax.*; import org.xml.sax.helpers.*; " +
         "class Test { XMLReader test() { " +
@@ -169,7 +169,7 @@ public class ImplementationImportCollectorTest extends GenerationTest {
 
   // Verify that platform class packages aren't changed with --preserve-full-paths.
   public void testPlatformImportsSourceDirs() throws IOException {
-    Options.setPackageDirectories(Options.OutputStyleOption.SOURCE);
+    Options.setOutputStyle(Options.OutputStyleOption.SOURCE);
     String translation = translateSourceFile(
         "package foo.bar; import org.xml.sax.*; import org.xml.sax.helpers.*; " +
         "class Test { XMLReader test() { " +

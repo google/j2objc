@@ -172,6 +172,7 @@ class TranslationProcessor extends FileProcessor {
 
       boolean isDead = true;
       for (CompilationUnit compUnit : unit.getCompilationUnits()) {
+        compUnit.setGenerationContext();
         applyMutations(compUnit, deadCodeMap, ticker);
         ticker.tick("Tree mutations for " + compUnit.getMainTypeName());
         isDead &= compUnit.getTypes().isEmpty()

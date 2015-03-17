@@ -63,6 +63,7 @@ import org.eclipse.jdt.core.dom.ITypeBinding;
 import org.eclipse.jdt.core.dom.IVariableBinding;
 import org.eclipse.jdt.core.dom.Modifier;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 
@@ -74,13 +75,30 @@ import java.util.Set;
  */
 public class ImplementationImportCollector extends TreeVisitor {
 
-  private String mainTypeName;
+  private Set<String> mainTypeNames = Sets.newHashSet();
   private Set<Import> imports = Sets.newLinkedHashSet();
   private Set<Import> declaredTypes = Sets.newHashSet();
 
   public void collect(CompilationUnit unit) {
-    mainTypeName = unit.getMainTypeName();
-    run(unit);
+    collect(Collections.singletonList(unit));
+  }
+
+  public void collect(List<CompilationUnit> units) {
+    for (CompilationUnit unit: units) {
+      unit.setGenerationContext();
+      PackageDeclaration pkg = unit.getPackage();
+      if (pkg.isDefaultPackage()) {
+        mainTypeNames.add(unit.getMainTypeName());
+      } else {
+        mainTypeNames.add(pkg.getName() + "." + unit.getMainTypeName());
+      }
+    }
+
+    for (CompilationUnit unit: units) {
+      unit.setGenerationContext();
+      run(unit);
+    }
+
     for (Import imp : declaredTypes) {
       imports.remove(imp);
     }
@@ -108,7 +126,7 @@ public class ImplementationImportCollector extends TreeVisitor {
   // exception is the main type, as it's needed to import the matching
   // header file.
   private void addDeclaredType(ITypeBinding type) {
-    if (type != null && !type.getName().equals(mainTypeName)) {
+    if (type != null && !mainTypeNames.contains(type.getQualifiedName())) {
       Import.addImports(type, declaredTypes);
     }
   }
@@ -236,34 +254,30 @@ public class ImplementationImportCollector extends TreeVisitor {
     IMethodBinding binding = node.getMethodBinding();
     addImports(binding.getReturnType());
     // Check for vararg method
-    if (binding != null) {
-      ITypeBinding[] parameterTypes = binding.getParameterTypes();
-      int nParameters = parameterTypes.length;
-      if (binding.isVarargs()) {
-        // Only check type for varargs parameters, since the actual
-        // number of arguments will vary.
-        addImports(parameterTypes[nParameters - 1]);
-        --nParameters;
-      }
-      List<Expression> arguments = node.getArguments();
-      for (int i = 0; i < nParameters; i++) {
-        ITypeBinding parameterType = parameterTypes[i];
-        ITypeBinding actualType = arguments.get(i).getTypeBinding();
-        if (!parameterType.equals(actualType)
-            && actualType.isAssignmentCompatible(parameterType)) {
-          addImports(actualType);
-        }
+    ITypeBinding[] parameterTypes = binding.getParameterTypes();
+    int nParameters = parameterTypes.length;
+    if (binding.isVarargs()) {
+      // Only check type for varargs parameters, since the actual
+      // number of arguments will vary.
+      addImports(parameterTypes[nParameters - 1]);
+      --nParameters;
+    }
+    List<Expression> arguments = node.getArguments();
+    for (int i = 0; i < nParameters; i++) {
+      ITypeBinding parameterType = parameterTypes[i];
+      ITypeBinding actualType = arguments.get(i).getTypeBinding();
+      if (!parameterType.equals(actualType)
+          && actualType.isAssignmentCompatible(parameterType)) {
+        addImports(actualType);
       }
     }
     // Check for static method references.
     Expression expr = node.getExpression();
     if (expr == null) {
       // check for method that's been statically imported
-      if (binding != null) {
-        ITypeBinding typeBinding = binding.getDeclaringClass();
-        if (typeBinding != null) {
-          addImports(typeBinding);
-        }
+      ITypeBinding typeBinding = binding.getDeclaringClass();
+      if (typeBinding != null) {
+        addImports(typeBinding);
       }
     } else {
       addImports(expr.getTypeBinding());

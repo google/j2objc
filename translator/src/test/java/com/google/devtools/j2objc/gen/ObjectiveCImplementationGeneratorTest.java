@@ -739,6 +739,20 @@ public class ObjectiveCImplementationGeneratorTest extends GenerationTest {
     assertTranslation(translation, "@interface Test : NSObject");
   }
 
+  public void testCombinedGeneration() throws IOException {
+    addSourceFile("package unit; public class Test { }", "unit/Test.java");
+    addSourceFile("package unit; public class AnotherTest extends Test { }",
+        "unit/AnotherTest.java");
+    String translation = translateCombinedFiles(
+        "unit/Foo", ".m", "unit/Test.java", "unit/AnotherTest.java");
+
+    assertTranslation(translation, "source: unit/Foo.testfile");
+    assertTranslation(translation, "#include \"unit/Foo.h\"");
+    assertTranslation(translation, "#include \"J2ObjC_source.h\"");
+    assertTranslation(translation, "@implementation UnitTest");
+    assertTranslation(translation, "@implementation UnitAnotherTest");
+  }
+
   public void testPackageInfoAnnotationAndDoc() throws IOException {
     addSourcesToSourcepaths();
     Options.setDocCommentsEnabled(true);

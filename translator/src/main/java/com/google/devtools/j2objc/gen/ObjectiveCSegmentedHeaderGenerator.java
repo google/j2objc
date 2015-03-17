@@ -19,6 +19,7 @@ import com.google.common.collect.Maps;
 import com.google.devtools.j2objc.ast.AbstractTypeDeclaration;
 import com.google.devtools.j2objc.types.HeaderImportCollector;
 import com.google.devtools.j2objc.types.Import;
+import com.google.devtools.j2objc.util.ErrorUtil;
 import com.google.devtools.j2objc.util.NameTable;
 
 import java.util.Collections;
@@ -40,7 +41,9 @@ public class ObjectiveCSegmentedHeaderGenerator extends ObjectiveCHeaderGenerato
 
   protected ObjectiveCSegmentedHeaderGenerator(GenerationUnit unit) {
     super(unit);
-    mainTypeName = NameTable.getMainTypeFullName(getUnit());
+    // TODO(mthvedt): Remove this assertion when combined jars for segmented headers goes in.
+    assert getGenerationUnit().getCompilationUnits().size() <= 1;
+    mainTypeName = NameTable.getMainTypeFullName(getGenerationUnit().getCompilationUnits().get(0));
   }
 
   public static void generate(GenerationUnit unit) {
@@ -49,8 +52,6 @@ public class ObjectiveCSegmentedHeaderGenerator extends ObjectiveCHeaderGenerato
 
   @Override
   protected void generateFileHeader() {
-    // TODO(mthvedt): Work out if we need segmented headers for GenerationUnits with multiple
-    // CompilationUnits, and if so, how to handle these directives properly.
     println("#include \"J2ObjC_header.h\"");
     newline();
     printf("#if !%s_RESTRICT\n", mainTypeName);
@@ -58,7 +59,8 @@ public class ObjectiveCSegmentedHeaderGenerator extends ObjectiveCHeaderGenerato
     println("#endif");
     printf("#undef %s_RESTRICT\n", mainTypeName);
 
-    List<AbstractTypeDeclaration> types = Lists.newArrayList(getUnit().getTypes());
+    List<AbstractTypeDeclaration> types = Lists.newArrayList(
+        getGenerationUnit().getCompilationUnits().get(0).getTypes());
     Collections.reverse(types);
     for (AbstractTypeDeclaration type : types) {
       HeaderImportCollector collector = new HeaderImportCollector();

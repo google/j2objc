@@ -169,10 +169,21 @@ public class Types {
   }
 
   /**
-   * Initialize this service using the AST returned by the parser.
+   * Creates a Types service using the AST returned by the parser, and return it.
+   */
+  public static Types newTypes(CompilationUnit unit) {
+    return new Types(unit);
+  }
+
+  /**
+   * Creates a new Types service and sets it as the current instance.
    */
   public static void initialize(CompilationUnit unit) {
-    instance = new Types(unit);
+    instance = newTypes(unit);
+  }
+
+  public void setInstance() {
+    instance = this;
   }
 
   public static void cleanup() {

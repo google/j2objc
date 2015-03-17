@@ -138,6 +138,9 @@ public class Options {
     /** Use the relative directory of the input file. */
     SOURCE,
 
+    /** Use the relative directory of the input file, even (especially) if it is a jar. */
+    SOURCE_COMBINED,
+
     /** Don't use a relative directory. */
     NONE
   }
@@ -258,6 +261,8 @@ public class Options {
         outputStyle = OutputStyleOption.NONE;
       } else if (arg.equals("--preserve-full-paths")) {
         outputStyle = OutputStyleOption.SOURCE;
+      } else if (arg.equals("-XcombineJars")) {
+        outputStyle = OutputStyleOption.SOURCE_COMBINED;
       } else if (arg.equals("-use-arc")) {
         checkMemoryManagementOption(MemoryManagementOption.ARC);
       } else if (arg.equals("-g")) {
@@ -330,7 +335,12 @@ public class Options {
 
     if (shouldPreProcess() && buildClosure) {
       ErrorUtil.error("--build-closure is not supported with "
-          + "--use-header-mappings or --preserve-full-paths");
+          + "--use-header-mappings, -XcombineJars or --preserve-full-paths");
+    }
+
+    if (outputStyle == OutputStyleOption.SOURCE_COMBINED && segmentedHeaders) {
+      // TODO(mthvedt): Implement -XcombineJars support for segmented headers.
+      ErrorUtil.error("--segmented-headers not yet supported with -XcombineJars");
     }
 
     if (memoryManagementOption == null) {
@@ -510,10 +520,15 @@ public class Options {
    * which the input files were read.
    */
   public static boolean useSourceDirectories() {
-    return outputStyle == OutputStyleOption.SOURCE;
+    return outputStyle == OutputStyleOption.SOURCE
+        || outputStyle == OutputStyleOption.SOURCE_COMBINED;
   }
 
-  public static void setPackageDirectories(OutputStyleOption style) {
+  public static boolean combineSourceJars() {
+    return outputStyle == OutputStyleOption.SOURCE_COMBINED;
+  }
+
+  public static void setOutputStyle(OutputStyleOption style) {
     outputStyle = style;
   }
 
@@ -804,6 +819,6 @@ public class Options {
   }
 
   public static boolean shouldPreProcess() {
-    return Options.getHeaderMappingFiles() != null && Options.useSourceDirectories();
+    return Options.useSourceDirectories() || Options.combineSourceJars();
   }
 }
