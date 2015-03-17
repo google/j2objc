@@ -57,8 +57,8 @@ NSUInteger JreDefaultFastEnumeration(
     state->extra[1] = (unsigned long) [iter methodForSelector:hasNextSel];
     state->extra[2] = (unsigned long) [iter methodForSelector:nextSel];
   }
-  IMP hasNextImpl = (IMP) state->extra[1];
-  IMP nextImpl = (IMP) state->extra[2];
+  jboolean (*hasNextImpl)(id, SEL) = (jboolean (*)(id, SEL)) state->extra[1];
+  id (*nextImpl)(id, SEL) = (id (*)(id, SEL)) state->extra[2];
   NSUInteger objCount = 0;
   state->itemsPtr = stackbuf;
   while (hasNextImpl(iter, hasNextSel) && objCount < len) {
