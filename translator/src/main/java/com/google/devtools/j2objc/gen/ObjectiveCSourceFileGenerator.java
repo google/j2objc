@@ -19,10 +19,12 @@ package com.google.devtools.j2objc.gen;
 import com.google.common.base.Predicate;
 import com.google.common.base.Predicates;
 import com.google.common.collect.Iterables;
+import com.google.common.io.Files;
 import com.google.devtools.j2objc.Options;
 import com.google.devtools.j2objc.ast.AbstractTypeDeclaration;
 import com.google.devtools.j2objc.ast.Annotation;
 import com.google.devtools.j2objc.ast.BodyDeclaration;
+import com.google.devtools.j2objc.ast.CompilationUnit;
 import com.google.devtools.j2objc.ast.FieldDeclaration;
 import com.google.devtools.j2objc.ast.FunctionDeclaration;
 import com.google.devtools.j2objc.ast.Javadoc;
@@ -35,6 +37,7 @@ import com.google.devtools.j2objc.ast.TreeUtil;
 import com.google.devtools.j2objc.ast.TypeDeclaration;
 import com.google.devtools.j2objc.ast.VariableDeclarationFragment;
 import com.google.devtools.j2objc.util.BindingUtil;
+import com.google.devtools.j2objc.util.ErrorUtil;
 import com.google.devtools.j2objc.util.NameTable;
 
 import org.eclipse.jdt.core.dom.IMethodBinding;
@@ -42,6 +45,8 @@ import org.eclipse.jdt.core.dom.ITypeBinding;
 import org.eclipse.jdt.core.dom.IVariableBinding;
 import org.eclipse.jdt.core.dom.Modifier;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
@@ -52,7 +57,9 @@ import java.util.List;
  *
  * @author Tom Ball
  */
-public abstract class ObjectiveCSourceFileGenerator extends SourceFileGenerator {
+public abstract class ObjectiveCSourceFileGenerator extends AbstractSourceGenerator {
+
+  private final GenerationUnit unit;
 
   /**
    * Create a new generator.
@@ -61,7 +68,52 @@ public abstract class ObjectiveCSourceFileGenerator extends SourceFileGenerator 
    * @param emitLineDirectives if true, generate CPP line directives
    */
   protected ObjectiveCSourceFileGenerator(GenerationUnit unit, boolean emitLineDirectives) {
-    super(unit, emitLineDirectives);
+    super(new SourceBuilder(emitLineDirectives));
+    this.unit = unit;
+  }
+
+  /**
+   * Returns the suffix for files created by this generator.
+   */
+  protected abstract String getSuffix();
+
+  protected String getOutputPath() {
+    return getGenerationUnit().getOutputPath() + getSuffix();
+  }
+
+  protected GenerationUnit getGenerationUnit() {
+    return unit;
+  }
+
+  protected CompilationUnit getUnit() {
+    // TODO(mthvedt): Eliminate this method
+    // when we support multiple compilation units per generation unit.
+    return getGenerationUnit().getCompilationUnits().get(0);
+  }
+
+  protected void save(String path) {
+    try {
+      File outputDirectory = Options.getOutputDirectory();
+      File outputFile = new File(outputDirectory, path);
+      File dir = outputFile.getParentFile();
+      if (dir != null && !dir.exists()) {
+        if (!dir.mkdirs()) {
+          ErrorUtil.warning("cannot create output directory: " + outputDirectory);
+        }
+      }
+      String source = getBuilder().toString();
+
+      // Make sure file ends with a new-line.
+      if (!source.endsWith("\n")) {
+        source += '\n';
+      }
+
+      Files.write(source, outputFile, Options.getCharset());
+    } catch (IOException e) {
+      ErrorUtil.error(e.getMessage());
+    } finally {
+      reset();
+    }
   }
 
   private static final Predicate<BodyDeclaration> IS_STATIC = new Predicate<BodyDeclaration>() {
