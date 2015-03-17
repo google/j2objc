@@ -162,6 +162,7 @@ JAVA_SOURCES = \
 	gen/ObjectiveCImplementationGenerator.java \
 	gen/ObjectiveCSegmentedHeaderGenerator.java \
 	gen/ObjectiveCSourceFileGenerator.java \
+	gen/RuntimeAnnotationGenerator.java \
 	gen/SourceBuilder.java \
 	gen/StatementGenerator.java \
 	translate/AbstractMethodRewriter.java \

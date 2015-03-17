@@ -34,9 +34,7 @@ import com.google.devtools.j2objc.ast.FunctionDeclaration;
 import com.google.devtools.j2objc.ast.MethodDeclaration;
 import com.google.devtools.j2objc.ast.NativeDeclaration;
 import com.google.devtools.j2objc.ast.PackageDeclaration;
-import com.google.devtools.j2objc.ast.SingleVariableDeclaration;
 import com.google.devtools.j2objc.ast.Statement;
-import com.google.devtools.j2objc.ast.StringLiteral;
 import com.google.devtools.j2objc.ast.TreeUtil;
 import com.google.devtools.j2objc.ast.TypeDeclaration;
 import com.google.devtools.j2objc.ast.VariableDeclarationFragment;
@@ -46,8 +44,6 @@ import com.google.devtools.j2objc.util.BindingUtil;
 import com.google.devtools.j2objc.util.NameTable;
 import com.google.devtools.j2objc.util.TranslationUtil;
 
-import org.eclipse.jdt.core.dom.IAnnotationBinding;
-import org.eclipse.jdt.core.dom.IMemberValuePairBinding;
 import org.eclipse.jdt.core.dom.IMethodBinding;
 import org.eclipse.jdt.core.dom.ITypeBinding;
 import org.eclipse.jdt.core.dom.IVariableBinding;
@@ -144,9 +140,10 @@ public class ObjectiveCImplementationGenerator extends ObjectiveCSourceFileGener
     printInnerDefinitions(node);
     printInitializeMethod(node);
     if (TranslationUtil.needsReflection(node)) {
-      printTypeAnnotationsMethod(node);
-      printMethodAnnotationMethods(TreeUtil.getMethodDeclarations(node));
-      printFieldAnnotationMethods(node);
+      RuntimeAnnotationGenerator annotationGen = new RuntimeAnnotationGenerator(getBuilder());
+      annotationGen.printTypeAnnotationsMethod(node);
+      annotationGen.printMethodAnnotationMethods(TreeUtil.getMethodDeclarations(node));
+      annotationGen.printFieldAnnotationMethods(node);
       printMetadata(node);
     }
     println("\n@end");
@@ -185,7 +182,7 @@ public class ObjectiveCImplementationGenerator extends ObjectiveCSourceFileGener
     printInitializeMethod(node);
 
     if (TranslationUtil.needsReflection(node)) {
-      printTypeAnnotationsMethod(node);
+      new RuntimeAnnotationGenerator(getBuilder()).printTypeAnnotationsMethod(node);
       printMetadata(node);
     }
     println("\n@end");
@@ -222,7 +219,7 @@ public class ObjectiveCImplementationGenerator extends ObjectiveCSourceFileGener
       }
       printInitializeMethod(node);
       if (needsReflection) {
-        printTypeAnnotationsMethod(node);
+        new RuntimeAnnotationGenerator(getBuilder()).printTypeAnnotationsMethod(node);
         printMetadata(node);
       }
       println("\n@end");
@@ -239,26 +236,6 @@ public class ObjectiveCImplementationGenerator extends ObjectiveCSourceFileGener
     if (unit.hasIncompleteImplementation()) {
       println("#pragma clang diagnostic ignored \"-Wincomplete-implementation\"");
     }
-  }
-
-  private String parameterKey(IMethodBinding method) {
-    StringBuilder sb = new StringBuilder();
-    ITypeBinding[] parameterTypes = method.getParameterTypes();
-    for (int i = 0; i < parameterTypes.length; i++) {
-      if (i == 0) {
-        sb.append(NameTable.capitalize(NameTable.parameterKeyword(parameterTypes[i])));
-      } else {
-        sb.append(NameTable.parameterKeyword(parameterTypes[i]));
-      }
-      sb.append('_');
-    }
-    return sb.toString();
-  }
-
-  private String methodKey(IMethodBinding method) {
-    StringBuilder sb = new StringBuilder(NameTable.getMethodName(method));
-    sb.append(parameterKey(method));
-    return sb.toString();
   }
 
   private void printAnnotationConstructor(ITypeBinding annotation) {
@@ -309,8 +286,9 @@ public class ObjectiveCImplementationGenerator extends ObjectiveCSourceFileGener
       printf("@interface %s : NSObject\n", typeName);
       printf("@end\n\n");
       printf("@implementation %s\n", typeName);
-      println("+ (IOSObjectArray *)__annotations {");
-      printAnnotationCreate(runtimeAnnotations);
+      //println("+ (IOSObjectArray *)__annotations {");
+      //printAnnotationCreate(runtimeAnnotations);
+      new RuntimeAnnotationGenerator(getBuilder()).printPackageAnnotationMethod(node);
       println("\n@end");
     }
   }
@@ -500,158 +478,6 @@ public class ObjectiveCImplementationGenerator extends ObjectiveCSourceFileGener
       println(String.format("@synthesize %s = %s;",
           NameTable.getAnnotationPropertyName(memberBinding),
           NameTable.getAnnotationPropertyVariableName(memberBinding)));
-    }
-  }
-
-  private void printTypeAnnotationsMethod(AbstractTypeDeclaration decl) {
-    List<Annotation> runtimeAnnotations = TreeUtil.getRuntimeAnnotationsList(decl.getAnnotations());
-    if (runtimeAnnotations.size() > 0) {
-      println("\n+ (IOSObjectArray *)__annotations {");
-      printAnnotationCreate(runtimeAnnotations);
-    }
-  }
-
-  private void printMethodAnnotationMethods(Iterable<MethodDeclaration> methods) {
-    for (MethodDeclaration method : methods) {
-      List<Annotation> runtimeAnnotations =
-          TreeUtil.getRuntimeAnnotationsList(method.getAnnotations());
-      if (runtimeAnnotations.size() > 0) {
-        printf("\n+ (IOSObjectArray *)__annotations_%s {\n", methodKey(method.getMethodBinding()));
-        printAnnotationCreate(runtimeAnnotations);
-      }
-      printParameterAnnotationMethods(method);
-    }
-  }
-
-  private void printParameterAnnotationMethods(MethodDeclaration method) {
-    List<SingleVariableDeclaration> params = method.getParameters();
-
-    // Quick test to see if there are any parameter annotations.
-    boolean hasAnnotations = false;
-    for (SingleVariableDeclaration param : params) {
-      if (!Iterables.isEmpty(TreeUtil.getRuntimeAnnotations(param.getAnnotations()))) {
-        hasAnnotations = true;
-        break;
-      }
-    }
-
-    if (hasAnnotations) {
-      // Print array of arrays, with an element in the outer array for each parameter.
-      printf("\n+ (IOSObjectArray *)__annotations_%s_params {\n",
-          methodKey(method.getMethodBinding()));
-      print("  return [IOSObjectArray arrayWithObjects:(id[]) { ");
-      for (int i = 0; i < params.size(); i++) {
-        if (i > 0) {
-          print(", ");
-        }
-        SingleVariableDeclaration param = params.get(i);
-        List<Annotation> runtimeAnnotations =
-            TreeUtil.getRuntimeAnnotationsList(param.getAnnotations());
-        if (runtimeAnnotations.size() > 0) {
-          print("[IOSObjectArray arrayWithObjects:(id[]) { ");
-          printAnnotations(runtimeAnnotations);
-          printf(" } count:%d type:JavaLangAnnotationAnnotation_class_()]",
-                 runtimeAnnotations.size());
-        } else {
-          print("[IOSObjectArray arrayWithLength:0 type:JavaLangAnnotationAnnotation_class_()]");
-        }
-      }
-      printf(" } count:%d type:IOSClass_arrayOf("
-          + "JavaLangAnnotationAnnotation_class_())];\n}\n", params.size());
-    }
-  }
-
-  private void printFieldAnnotationMethods(AbstractTypeDeclaration node) {
-    for (FieldDeclaration field : TreeUtil.getFieldDeclarations(node)) {
-      List<Annotation> runtimeAnnotations =
-          TreeUtil.getRuntimeAnnotationsList(field.getAnnotations());
-      if (!runtimeAnnotations.isEmpty()) {
-        for (VariableDeclarationFragment var : field.getFragments()) {
-          printf("\n+ (IOSObjectArray *)__annotations_%s_ {\n", var.getName().getIdentifier());
-          printAnnotationCreate(runtimeAnnotations);
-        }
-      }
-    }
-  }
-
-  private void printAnnotationCreate(List<Annotation> runtimeAnnotations) {
-    print("  return [IOSObjectArray arrayWithObjects:(id[]) { ");
-    printAnnotations(runtimeAnnotations);
-    printf(" } count:%d type:JavaLangAnnotationAnnotation_class_()];\n}\n",
-           runtimeAnnotations.size());
-  }
-
-  private void printAnnotations(Iterable<Annotation> runtimeAnnotations) {
-    boolean first = true;
-    for (Annotation annotation : runtimeAnnotations) {
-      if (first) {
-        first = false;
-      } else {
-        print(", ");
-      }
-      printAnnotation(annotation.getAnnotationBinding());
-    }
-  }
-
-  private void printAnnotation(IAnnotationBinding annotation) {
-    if (Options.useReferenceCounting()) {
-      print('[');
-    }
-    printf("[[%s alloc] init", NameTable.getFullName(
-        annotation.getAnnotationType()));
-    printAnnotationParameters(annotation);
-    print(']');
-    if (Options.useReferenceCounting()) {
-      print(" autorelease]");
-    }
-  }
-
-  // Prints an annotation's values as a constructor argument list. If
-  // the annotation type declares default values, then for any value that
-  // isn't specified in the annotation will use the default.
-  private void printAnnotationParameters(IAnnotationBinding annotation) {
-    IMemberValuePairBinding[] valueBindings = BindingUtil.getSortedMemberValuePairs(annotation);
-    for (int i = 0; i < valueBindings.length; i++) {
-      if (i > 0) {
-        print(' ');
-      }
-      IMemberValuePairBinding valueBinding = valueBindings[i];
-      print(i == 0 ? "With" : "with");
-      printf("%s:", NameTable.capitalize(
-          NameTable.getAnnotationPropertyName(valueBinding.getMethodBinding())));
-      Object value = valueBinding.getValue();
-      printAnnotationValue(value);
-    }
-  }
-
-  private void printAnnotationValue(Object value) {
-    if (value == null) {
-      print("nil");
-    } else if (value instanceof IVariableBinding) {
-      IVariableBinding var = (IVariableBinding) value;
-      ITypeBinding declaringClass = var.getDeclaringClass();
-      printf("%s_get_%s()", NameTable.getFullName(declaringClass), var.getName());
-    } else if (value instanceof ITypeBinding) {
-      printf("%s_class_()", NameTable.getFullName((ITypeBinding) value));
-    } else if (value instanceof String) {
-      StringLiteral node = new StringLiteral((String) value);
-      print(StatementGenerator.generateStringLiteral(node));
-    } else if (value instanceof Number || value instanceof Character || value instanceof Boolean) {
-      print(value.toString());
-    } else if (value.getClass().isArray()) {
-      print("[IOSObjectArray arrayWithObjects:(id[]) { ");
-      Object[] array = (Object[]) value;
-      for (int i = 0; i < array.length; i++) {
-        if (i > 0) {
-          print(", ");
-        }
-        printAnnotationValue(array[i]);
-      }
-      printf(" } count:%d type:NSObject_class_()]", array.length);
-    } else if (value instanceof IAnnotationBinding) {
-      printAnnotation((IAnnotationBinding) value);
-    } else {
-      assert false : "unknown annotation value type";
     }
   }
 
