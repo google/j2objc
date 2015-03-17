@@ -276,13 +276,24 @@ public class NameTable {
   }
 
   /**
-   * Initialize this service using the AST returned by the parser.
+   * Create a new NameTable according to the current options, and returns it.
    */
-  public static void initialize() {
+  public static NameTable newNameTable() {
     List<String> paths = Options.getBootClasspath();
     paths.addAll(Options.getClassPathEntries());
-    instance = new NameTable(
+    return new NameTable(
         Options.getPackagePrefixes(), Options.getMethodMappings(), new PathClassLoader(paths));
+  }
+
+  /**
+   * Creates a new NameTable, and sets it as the current instance.
+   */
+  public static void initialize() {
+    instance = newNameTable();
+  }
+
+  public void setInstance() {
+    instance = this;
   }
 
   public static void cleanup() {
@@ -377,6 +388,17 @@ public class NameTable {
   public static String camelCaseQualifiedName(String fqn) {
     StringBuilder sb = new StringBuilder();
     for (String part : fqn.split("\\.")) {
+      sb.append(capitalize(part));
+    }
+    return sb.toString();
+  }
+
+  /**
+   * Given a path, return as a camel-cased name. Used, for example, in header guards.
+   */
+  public static String camelCasePath(String fqn) {
+    StringBuilder sb = new StringBuilder();
+    for (String part : fqn.split(Pattern.quote(File.separator))) {
       sb.append(capitalize(part));
     }
     return sb.toString();

@@ -49,6 +49,7 @@ import org.eclipse.jdt.core.dom.ITypeBinding;
 import org.eclipse.jdt.core.dom.IVariableBinding;
 import org.eclipse.jdt.core.dom.Modifier;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
@@ -79,31 +80,69 @@ public class ObjectiveCImplementationGenerator extends ObjectiveCSourceFileGener
     return suffix;
   }
 
+  private void setGenerationContext(AbstractTypeDeclaration type) {
+    TreeUtil.getCompilationUnit(type).setGenerationContext();
+  }
+
   public void generate() {
-    CompilationUnit unit = getUnit();
+    List<CompilationUnit> units = getGenerationUnit().getCompilationUnits();
+    String outputPath = getGenerationUnit().getOutputPath();
+
+    List<AbstractTypeDeclaration> types = collectTypes(units);
+    List<CompilationUnit> packageInfos = collectPackageInfos(units);
+
     println(J2ObjC.getFileHeader(getGenerationUnit().getSourceName()));
-    List<AbstractTypeDeclaration> types = unit.getTypes();
-    if (!types.isEmpty()) {
-      printStart(getGenerationUnit().getSourceName());
-      printImports(unit);
-      printIgnoreIncompletePragmas(unit);
-      pushIgnoreDeprecatedDeclarationsPragma();
-      printPrivateDeclarations(types);
-      printClassExtensions(types);
-      for (AbstractTypeDeclaration type : types) {
-        generateTypeImplementation(type);
+    if (!types.isEmpty() || !packageInfos.isEmpty()) {
+      printStart(outputPath);
+      printImports();
+      for (CompilationUnit packageInfo: packageInfos) {
+        packageInfo.setGenerationContext();
+        generatePackageInfo(packageInfo);
       }
-      popIgnoreDeprecatedDeclarationsPragma();
-    } else if (unit.getMainTypeName().endsWith(NameTable.PACKAGE_INFO_MAIN_TYPE)
-        && unit.getPackage().getAnnotations().size() > 0) {
-      generate(unit.getPackage());
-    } else {
-      // Print a dummy C function so compiled object file is valid.
+
       if (!types.isEmpty()) {
-        printf("void %s_unused() {}\n", NameTable.getFullName(types.get(0).getTypeBinding()));
+        printIgnoreIncompletePragmas(units);
+        pushIgnoreDeprecatedDeclarationsPragma();
+        printPrivateDeclarations(types);
+        printClassExtensions(types);
+        for (AbstractTypeDeclaration type : types) {
+          setGenerationContext(type);
+          generateTypeImplementation(type);
+        }
+        popIgnoreDeprecatedDeclarationsPragma();
       }
     }
+
     save(getOutputPath());
+  }
+
+  private List<AbstractTypeDeclaration> collectTypes(List<CompilationUnit> units) {
+    final List<AbstractTypeDeclaration> types = new ArrayList<AbstractTypeDeclaration>();
+
+    for (CompilationUnit unit : units) {
+      for (AbstractTypeDeclaration type : unit.getTypes()) {
+        types.add(type);
+      }
+    }
+
+    return types;
+  }
+
+  private List<CompilationUnit> collectPackageInfos(List<CompilationUnit> units) {
+    List<CompilationUnit> packageInfos = new ArrayList<CompilationUnit>();
+
+    for (CompilationUnit unit : units) {
+      unit.setGenerationContext();
+      if (unit.getMainTypeName().endsWith(NameTable.PACKAGE_INFO_MAIN_TYPE)) {
+        PackageDeclaration pkg = unit.getPackage();
+        if (TreeUtil.getRuntimeAnnotationsList(pkg.getAnnotations()).size() > 0 &&
+            TranslationUtil.needsReflection(pkg)) {
+          packageInfos.add(unit);
+        }
+      }
+    }
+
+    return packageInfos;
   }
 
   private void generateTypeImplementation(AbstractTypeDeclaration node) {
@@ -198,7 +237,6 @@ public class ObjectiveCImplementationGenerator extends ObjectiveCSourceFileGener
       printf("\n@interface %s : NSObject\n@end\n", typeName);
     }
 
-
     if (isRuntime || hasInitMethod || needsReflection) {
       syncLineNumbers(node.getName()); // avoid doc-comment
       printf("\n@implementation %s\n", typeName);
@@ -226,15 +264,26 @@ public class ObjectiveCImplementationGenerator extends ObjectiveCSourceFileGener
     }
   }
 
-  private void printIgnoreIncompletePragmas(CompilationUnit unit) {
-    if (unit.hasIncompleteProtocol() || unit.hasIncompleteImplementation()) {
-      newline();
+  private void printIgnoreIncompletePragmas(List<CompilationUnit> units) {
+    boolean needsNewline = true;
+
+    for (CompilationUnit unit : units) {
+      if (unit.hasIncompleteProtocol()) {
+        newline();
+        needsNewline = false;
+        println("#pragma clang diagnostic ignored \"-Wprotocol\"");
+        break;
+      }
     }
-    if (unit.hasIncompleteProtocol()) {
-      println("#pragma clang diagnostic ignored \"-Wprotocol\"");
-    }
-    if (unit.hasIncompleteImplementation()) {
-      println("#pragma clang diagnostic ignored \"-Wincomplete-implementation\"");
+
+    for (CompilationUnit unit : units) {
+      if (unit.hasIncompleteImplementation()) {
+        if (needsNewline) {
+          newline();
+        }
+        println("#pragma clang diagnostic ignored \"-Wincomplete-implementation\"");
+        break;
+      }
     }
   }
 
@@ -276,21 +325,17 @@ public class ObjectiveCImplementationGenerator extends ObjectiveCSourceFileGener
     }
   }
 
-  private void generate(PackageDeclaration node) {
+  private void generatePackageInfo(CompilationUnit unit) {
+    PackageDeclaration node = unit.getPackage();
     List<Annotation> runtimeAnnotations = TreeUtil.getRuntimeAnnotationsList(node.getAnnotations());
-    if (runtimeAnnotations.size() > 0 && TranslationUtil.needsReflection(node)) {
-      printImports(getUnit());
-      newline();
-      String typeName = NameTable.camelCaseQualifiedName(node.getPackageBinding().getName())
-          + NameTable.PACKAGE_INFO_MAIN_TYPE;
-      printf("@interface %s : NSObject\n", typeName);
-      printf("@end\n\n");
-      printf("@implementation %s\n", typeName);
-      //println("+ (IOSObjectArray *)__annotations {");
-      //printAnnotationCreate(runtimeAnnotations);
-      new RuntimeAnnotationGenerator(getBuilder()).printPackageAnnotationMethod(node);
-      println("\n@end");
-    }
+    newline();
+    String typeName = NameTable.camelCaseQualifiedName(node.getPackageBinding().getName())
+        + NameTable.PACKAGE_INFO_MAIN_TYPE;
+    printf("@interface %s : NSObject\n", typeName);
+    printf("@end\n\n");
+    printf("@implementation %s\n", typeName);
+    new RuntimeAnnotationGenerator(getBuilder()).printPackageAnnotationMethod(node);
+    println("\n@end");
   }
 
   private void printNativeDefinition(NativeDeclaration declaration) {
@@ -373,9 +418,9 @@ public class ObjectiveCImplementationGenerator extends ObjectiveCSourceFileGener
     return StatementGenerator.generate(expr, false, getBuilder().getCurrentLine());
   }
 
-  private void printImports(CompilationUnit node) {
+  private void printImports() {
     ImplementationImportCollector collector = new ImplementationImportCollector();
-    collector.collect(node);
+    collector.collect(getGenerationUnit().getCompilationUnits());
     Set<Import> imports = collector.getImports();
 
     Set<String> includeStmts = Sets.newTreeSet();
@@ -383,12 +428,16 @@ public class ObjectiveCImplementationGenerator extends ObjectiveCSourceFileGener
     for (Import imp : imports) {
       includeStmts.add(String.format("#include \"%s.h\"", imp.getImportFileName()));
     }
+
+    newline();
     for (String stmt : includeStmts) {
       println(stmt);
     }
 
-    for (NativeDeclaration decl : node.getNativeBlocks()) {
-      printNativeDefinition(decl);
+    for (CompilationUnit node: getGenerationUnit().getCompilationUnits()) {
+      for (NativeDeclaration decl : node.getNativeBlocks()) {
+        printNativeDefinition(decl);
+      }
     }
   }
 
@@ -440,6 +489,7 @@ public class ObjectiveCImplementationGenerator extends ObjectiveCSourceFileGener
 
   private void printPrivateDeclarations(List<AbstractTypeDeclaration> types) {
     for (AbstractTypeDeclaration type : types) {
+      setGenerationContext(type);
       printConstantDefines(type);
       printStaticFieldDeclarations(type);
       printOuterDeclarations(type);
@@ -487,6 +537,7 @@ public class ObjectiveCImplementationGenerator extends ObjectiveCSourceFileGener
 
   private void printClassExtensions(List<AbstractTypeDeclaration> types) {
     for (AbstractTypeDeclaration type : types) {
+      setGenerationContext(type);
       if (type.getTypeBinding().isClass() || type.getTypeBinding().isEnum()) {
         printClassExtension(type);
       }

@@ -17,6 +17,7 @@ package com.google.devtools.j2objc.ast;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Lists;
 import com.google.devtools.j2objc.file.InputFile;
+import com.google.devtools.j2objc.types.Types;
 import com.google.devtools.j2objc.util.NameTable;
 
 import org.eclipse.jdt.core.dom.ASTNode;
@@ -41,11 +42,16 @@ public class CompilationUnit extends TreeNode {
       ChildList.create(NativeDeclaration.class, this);
   private final ChildList<AbstractTypeDeclaration> types =
       ChildList.create(AbstractTypeDeclaration.class, this);
+  private final NameTable nameTable;
+  private final Types typesService;
 
   public CompilationUnit(
       org.eclipse.jdt.core.dom.CompilationUnit jdtNode, InputFile inputFile,
       String mainTypeName, String source) {
     super(jdtNode);
+    this.nameTable = NameTable.newNameTable();
+    this.typesService = Types.newTypes(jdtNode);
+    setGenerationContext();
     this.inputFile = Preconditions.checkNotNull(inputFile);
     Preconditions.checkNotNull(mainTypeName);
     if (mainTypeName.endsWith(NameTable.PACKAGE_INFO_FILE_NAME)) {
@@ -74,8 +80,23 @@ public class CompilationUnit extends TreeNode {
     }
   }
 
+  /**
+   * Sets the mutable global state that's particular to each CompilationUnit.
+   * Many of the operations in the ast, gen, translate, types, and util
+   * packages require these to be set to a given CompilationUnit before operations are performed
+   * on that unit.
+   * Using this method concurrently with NameTable/Types
+   * is incredibly, unbelievably, astoundingly not thread safe.
+   */
+  public void setGenerationContext() {
+    typesService.setInstance();
+    nameTable.setInstance();
+  }
+
   public CompilationUnit(CompilationUnit other) {
     super(other);
+    nameTable = other.nameTable;
+    typesService = other.typesService;
     inputFile = other.getInputFile();
     mainTypeName = other.getMainTypeName();
     source = other.getSource();

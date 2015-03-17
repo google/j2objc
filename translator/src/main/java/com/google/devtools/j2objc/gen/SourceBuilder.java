@@ -182,7 +182,7 @@ public class SourceBuilder {
 
   public void printStart(String path) {
     if (emitLineDirectives) {
-      buffer.append(String.format("#line 1 \"%s\"\n\n", path));
+      buffer.append(String.format("\n#line 1 \"%s\"\n", path));
     }
   }
 

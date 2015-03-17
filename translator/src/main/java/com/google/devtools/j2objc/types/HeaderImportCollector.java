@@ -19,6 +19,7 @@ package com.google.devtools.j2objc.types;
 import com.google.common.collect.Sets;
 import com.google.devtools.j2objc.ast.AnnotationTypeDeclaration;
 import com.google.devtools.j2objc.ast.AnnotationTypeMemberDeclaration;
+import com.google.devtools.j2objc.ast.CompilationUnit;
 import com.google.devtools.j2objc.ast.EnumDeclaration;
 import com.google.devtools.j2objc.ast.FieldDeclaration;
 import com.google.devtools.j2objc.ast.FunctionDeclaration;
@@ -32,6 +33,7 @@ import com.google.devtools.j2objc.ast.TypeDeclaration;
 import org.eclipse.jdt.core.dom.IMethodBinding;
 import org.eclipse.jdt.core.dom.ITypeBinding;
 
+import java.util.List;
 import java.util.Set;
 
 /**
@@ -47,11 +49,21 @@ public class HeaderImportCollector extends TreeVisitor {
 
   public void collect(TreeNode node) {
     run(node);
-    for (Import imp : superTypes) {
-      if (forwardDecls.contains(imp)) {
-        forwardDecls.remove(imp);
-      }
+    postCollect();
+  }
+
+  public void collect(List<CompilationUnit> nodes) {
+    for (CompilationUnit node: nodes) {
+      node.setGenerationContext();
+      run(node);
     }
+
+    postCollect();
+  }
+
+  private void postCollect() {
+    superTypes.removeAll(declaredTypes);
+    forwardDecls.removeAll(superTypes);
   }
 
   public Set<Import> getForwardDeclarations() {
@@ -79,7 +91,7 @@ public class HeaderImportCollector extends TreeVisitor {
   }
 
   private void addSuperType(ITypeBinding type) {
-    superTypes.addAll(Sets.difference(Import.getImports(type), declaredTypes));
+    Import.addImports(type, superTypes);
   }
 
   private void addDeclaredType(ITypeBinding type) {
