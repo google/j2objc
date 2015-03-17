@@ -638,7 +638,7 @@ run-tests: link resources $(TEST_BIN) run-initialization-test
 	@$(TEST_BIN) org.junit.runner.JUnitCore $(ALL_TESTS_CLASS)
 
 run-initialization-test: $(TESTS_DIR)/jreinitialization
-	@$(TESTS_DIR)/jreinitialization 2&>1 > /dev/null
+	@$(TESTS_DIR)/jreinitialization > /dev/null 2>&1
 
 run-concurrency-tests: link resources $(TEST_BIN)
 	@$(TEST_BIN) org.junit.runner.JUnitCore ConcurrencyTests
