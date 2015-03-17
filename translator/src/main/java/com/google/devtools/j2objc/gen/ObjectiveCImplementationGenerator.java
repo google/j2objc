@@ -66,14 +66,12 @@ public class ObjectiveCImplementationGenerator extends ObjectiveCSourceFileGener
 
   public void generate() {
     List<CompilationUnit> units = getGenerationUnit().getCompilationUnits();
-    String outputPath = getGenerationUnit().getOutputPath();
-
     List<AbstractTypeDeclaration> types = collectTypes(units);
     List<CompilationUnit> packageInfos = collectPackageInfos(units);
 
     println(J2ObjC.getFileHeader(getGenerationUnit().getSourceName()));
     if (!types.isEmpty() || !packageInfos.isEmpty()) {
-      printStart(outputPath);
+      printStart(getGenerationUnit().getSourceName());
       printImports();
       for (CompilationUnit packageInfo : packageInfos) {
         packageInfo.setGenerationContext();

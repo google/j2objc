@@ -60,6 +60,7 @@ public class LineDirectivesTest extends GenerationTest {
         + "  void two() {}\n"
         + "  void three() {}}\n",
         "A", "A.m");
+    assertTranslation(translation, "#line 1 \"A.java\"");
     assertTranslation(translation, "#line 3\n@implementation A");
     assertTranslation(translation, "#line 6\n- (void)one");
     // Lines match up between one() and two() so no need for the directive.
@@ -77,6 +78,7 @@ public class LineDirectivesTest extends GenerationTest {
         + "    return Integer.toString(i);\n"
         + "  }}\n",
         "A", "A.m");
+    assertTranslation(translation, "#line 1 \"A.java\"");
     assertTranslation(translation, "#line 1\n@implementation A");
     assertTranslation(translation, "#line 2\n- (NSString *)test");
     assertTranslation(translation, "#line 4\n  jint i = 0;");
