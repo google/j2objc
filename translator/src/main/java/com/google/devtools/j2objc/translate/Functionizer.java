@@ -48,6 +48,7 @@ import com.google.devtools.j2objc.types.Types;
 import com.google.devtools.j2objc.util.BindingUtil;
 import com.google.devtools.j2objc.util.ErrorUtil;
 import com.google.devtools.j2objc.util.NameTable;
+import com.google.devtools.j2objc.util.TranslationUtil;
 
 import org.eclipse.jdt.core.dom.IMethodBinding;
 import org.eclipse.jdt.core.dom.ITypeBinding;
@@ -226,18 +227,25 @@ public class Functionizer extends TreeVisitor {
     if (BindingUtil.isStatic(binding) || binding.isConstructor()
         || Modifier.isNative(node.getModifiers()) || functionizableMethods.contains(binding)
         || !extraSelectors.isEmpty()) {
+      ITypeBinding declaringClass = binding.getDeclaringClass();
       function = makeFunction(node);
       for (String selector : extraSelectors) {
         declarationList.add(makeExtraMethodDeclaration(node, selector, function));
       }
       declarationList.add(function);
-      if (binding.isConstructor() && !BindingUtil.isAbstract(binding.getDeclaringClass())) {
+      if (binding.isConstructor() && !BindingUtil.isAbstract(declaringClass)) {
         declarationList.add(makeAllocatingConstructor(node));
       }
-      if (BindingUtil.isStatic(binding) && Options.removeClassMethods()) {
-        node.remove();
-      } else {
+      boolean keepMethod = !BindingUtil.isStatic(binding) || !Options.removeClassMethods();
+      if (keepMethod || TranslationUtil.needsReflection(declaringClass)) {
         setFunctionCaller(node, function);
+        if (!keepMethod) {
+          // We're only keeping the method for reflection, so we can keep it out
+          // of the declaration.
+          node.addModifiers(BindingUtil.ACC_SYNTHETIC);
+        }
+      } else {
+        node.remove();
       }
       ErrorUtil.functionizedMethod();
     }
