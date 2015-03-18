@@ -43,6 +43,7 @@ import com.google.devtools.j2objc.ast.SwitchStatement;
 import com.google.devtools.j2objc.ast.TreeNode;
 import com.google.devtools.j2objc.ast.TreeUtil;
 import com.google.devtools.j2objc.ast.TreeVisitor;
+import com.google.devtools.j2objc.ast.Type;
 import com.google.devtools.j2objc.ast.VariableDeclarationFragment;
 import com.google.devtools.j2objc.ast.WhileStatement;
 import com.google.devtools.j2objc.types.IOSMethodBinding;
@@ -214,13 +215,22 @@ public class Autoboxer extends TreeVisitor {
 
   @Override
   public void endVisit(CastExpression node) {
-    Expression expr = boxOrUnboxExpression(node.getExpression(), node.getTypeBinding());
-    if (expr != node.getExpression()) {
+    ITypeBinding type = node.getTypeBinding();
+    Expression expr = node.getExpression();
+    ITypeBinding exprType = expr.getTypeBinding();
+    if (type.isPrimitive() && !exprType.isPrimitive()) {
+      // Casting an object to a primitive. Convert the cast type to the wrapper
+      // so that we do a proper cast check, as Java would.
+      type = Types.getWrapperType(type);
+      node.setType(Type.newType(type));
+    }
+    Expression newExpr = boxOrUnboxExpression(expr, type);
+    if (newExpr != expr) {
       TreeNode parent = node.getParent();
       if (parent instanceof ParenthesizedExpression) {
-        parent.replaceWith(expr);
+        parent.replaceWith(newExpr);
       } else {
-        node.replaceWith(expr);
+        node.replaceWith(newExpr);
       }
     }
   }

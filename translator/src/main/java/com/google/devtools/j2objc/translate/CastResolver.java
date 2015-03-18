@@ -83,6 +83,12 @@ public class CastResolver extends TreeVisitor {
       // else fall-through.
     }
 
+    // Lean on Java's type-checking.
+    if (!type.isPrimitive() && exprType.isAssignmentCompatible(type)) {
+      node.replaceWith(TreeUtil.remove(expr));
+      return;
+    }
+
     FunctionInvocation castCheck = createCastCheck(type, expr);
     if (castCheck != null) {
       node.setExpression(castCheck);

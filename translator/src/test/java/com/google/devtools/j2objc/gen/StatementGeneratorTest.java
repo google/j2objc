@@ -122,7 +122,7 @@ public class StatementGeneratorTest extends GenerationTest {
   }
 
   public void testInterfaceCastTranslation() throws IOException {
-    String source = "java.util.ArrayList al = new java.util.ArrayList(); "
+    String source = "java.util.Collection al = new java.util.ArrayList(); "
         + "java.util.List l = (java.util.List) al;";
     List<Statement> stmts = translateStatements(source);
     assertEquals(2, stmts.size());
