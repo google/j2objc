@@ -56,6 +56,10 @@ public class CastExpression extends Expression {
     return type.get();
   }
 
+  public void setType(Type newType) {
+    type.set(newType);
+  }
+
   public Expression getExpression() {
     return expression.get();
   }
