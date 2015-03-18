@@ -165,6 +165,10 @@ JAVA_SOURCES = \
 	gen/RuntimeAnnotationGenerator.java \
 	gen/SourceBuilder.java \
 	gen/StatementGenerator.java \
+	gen/TypeDeclarationGenerator.java \
+	gen/TypeGenerator.java \
+	gen/TypeImplementationGenerator.java \
+	gen/TypePrivateDeclarationGenerator.java \
 	translate/AbstractMethodRewriter.java \
 	translate/AnonymousClassConverter.java \
 	translate/ArrayRewriter.java \
