@@ -167,7 +167,7 @@ class TranslationProcessor extends FileProcessor {
     ticker.push();
     try {
       if (logger.isLoggable(Level.INFO)) {
-        System.out.println("translating " + unit.getOutputPath());
+        System.out.println("translating " + unit.getSourceName());
       }
 
       boolean isDead = true;
@@ -180,7 +180,7 @@ class TranslationProcessor extends FileProcessor {
       }
 
       if (isDead) {
-        logger.finest("skipping dead file " + unit.getOutputPath());
+        logger.finest("skipping dead file " + unit.getSourceName());
         return;
       }
 
