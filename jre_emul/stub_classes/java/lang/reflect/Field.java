@@ -35,55 +35,55 @@ public class Field extends AccessibleObject implements Member {
   public int getModifiers() {
     return 0;
   }
-  
+
   public Class<?> getType() {
     return null;
   }
-  
-  public Class<?> getGenericType() {
+
+  public Type getGenericType() {
     return null;
   }
 
   public Class<?> getDeclaringClass() {
     return null;
   }
-  
+
   public Object get(Object o) throws IllegalArgumentException, IllegalAccessException {
     return null;
   }
-  
+
   public boolean getBoolean(Object o) throws IllegalArgumentException, IllegalAccessException {
     return false;
   }
-  
+
   public byte getByte(Object o) throws IllegalArgumentException, IllegalAccessException {
     return 0;
   }
-  
+
   public char getChar(Object o) throws IllegalArgumentException, IllegalAccessException {
     return 0;
   }
-  
+
   public double getDouble(Object o) throws IllegalArgumentException, IllegalAccessException {
     return 0.0;
   }
-  
+
   public float getFloat(Object o) throws IllegalArgumentException, IllegalAccessException {
     return 0.0f;
   }
-  
+
   public int getInt(Object o) throws IllegalArgumentException, IllegalAccessException {
     return 0;
   }
-  
+
   public long getLong(Object o) throws IllegalArgumentException, IllegalAccessException {
     return 0L;
   }
-  
+
   public short getShort(Object o) throws IllegalArgumentException, IllegalAccessException {
     return 0;
   }
-  
+
   public void set(Object o, Object value) throws IllegalArgumentException,
       IllegalAccessException {}
   public void setBoolean(Object o, boolean b) throws IllegalArgumentException, IllegalAccessException {}
@@ -94,7 +94,7 @@ public class Field extends AccessibleObject implements Member {
   public void setInt(Object o, int i) throws IllegalArgumentException, IllegalAccessException {}
   public void setLong(Object o, long l) throws IllegalArgumentException, IllegalAccessException {}
   public void setShort(Object o, short s) throws IllegalArgumentException, IllegalAccessException {}
-  
+
   public <T extends Annotation> T getAnnotation(Class<T> annotationClass) {
     return null;
   }
@@ -106,7 +106,7 @@ public class Field extends AccessibleObject implements Member {
   public boolean isSynthetic() {
     return false;
   }
-  
+
   public boolean isEnumConstant() {
     return false;
   }
