@@ -16,6 +16,8 @@
 
 package com.google.devtools.j2objc.gen;
 
+import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 import com.google.devtools.j2objc.J2ObjC;
 import com.google.devtools.j2objc.Options;
@@ -28,11 +30,6 @@ import com.google.devtools.j2objc.util.NameTable;
 
 import org.eclipse.jdt.core.dom.ITypeBinding;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.LinkedHashMap;
-import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -65,12 +62,10 @@ public class ObjectiveCHeaderGenerator extends ObjectiveCSourceFileGenerator {
 
     generateFileHeader();
 
-    Map<ITypeBinding, AbstractTypeDeclaration> declaredTypes =
-        new HashMap<ITypeBinding, AbstractTypeDeclaration>();
-    Map<String, ITypeBinding> declaredTypeNames = new HashMap<String, ITypeBinding>();
-    Map<AbstractTypeDeclaration, CompilationUnit> decls =
-        new LinkedHashMap<AbstractTypeDeclaration, CompilationUnit>();
-    Set<PackageDeclaration> packagesToDoc = new LinkedHashSet<PackageDeclaration>();
+    Map<ITypeBinding, AbstractTypeDeclaration> declaredTypes = Maps.newHashMap();
+    Map<String, ITypeBinding> declaredTypeNames = Maps.newHashMap();
+    Map<AbstractTypeDeclaration, CompilationUnit> decls = Maps.newLinkedHashMap();
+    Set<PackageDeclaration> packagesToDoc = Sets.newLinkedHashSet();
 
     // First, gather everything we need to generate.
     // We do this first because we'll be reordering it later.
@@ -95,14 +90,14 @@ public class ObjectiveCHeaderGenerator extends ObjectiveCSourceFileGenerator {
 
     // We order the type declarations so that the inheritance tree appears in the correct order.
     // The ordering is minimal; a type is reordered only if a subtype is immediately following.
-    ArrayList<ITypeBinding> orderedDeclarationBindings = new ArrayList<ITypeBinding>();
+    List<ITypeBinding> orderedDeclarationBindings = Lists.newArrayList();
     for (Map.Entry<AbstractTypeDeclaration, CompilationUnit> e : decls.entrySet()) {
       e.getValue().setGenerationContext();
       orderSuperinterfaces(
           e.getKey().getTypeBinding(), orderedDeclarationBindings, declaredTypeNames);
     }
 
-    Set<AbstractTypeDeclaration> seenDecls = new HashSet<AbstractTypeDeclaration>();
+    Set<AbstractTypeDeclaration> seenDecls = Sets.newHashSet();
     for (ITypeBinding declBinding : orderedDeclarationBindings) {
       AbstractTypeDeclaration decl = declaredTypes.get(declBinding);
       CompilationUnit unit = decls.get(decl);
