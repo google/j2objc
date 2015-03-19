@@ -68,6 +68,7 @@ public class ObjectiveCSegmentedHeaderGenerator extends ObjectiveCHeaderGenerato
       importCollectors.put(type, collector);
       printLocalIncludes(type, collector);
     }
+    pushIgnoreDeprecatedDeclarationsPragma();
   }
 
   /**
@@ -95,18 +96,19 @@ public class ObjectiveCSegmentedHeaderGenerator extends ObjectiveCHeaderGenerato
   @Override
   protected void generateFileFooter() {
     // Don't need #endif for file-level header guard.
+    popIgnoreDeprecatedDeclarationsPragma();
   }
 
   @Override
   public void generateType(AbstractTypeDeclaration node) {
     String typeName = NameTable.getFullName(node.getTypeBinding());
+    newline();
     printf("#if !defined (_%s_) && (%s_INCLUDE_ALL || %s_INCLUDE)\n", typeName, mainTypeName,
            typeName);
     printf("#define _%s_\n", typeName);
 
     HeaderImportCollector collector = importCollectors.get(node);
     assert collector != null;
-    newline();
     printForwardDeclarations(collector.getForwardDeclarations());
 
     outer:
@@ -120,13 +122,14 @@ public class ObjectiveCSegmentedHeaderGenerator extends ObjectiveCHeaderGenerato
           continue outer;
         }
       }
+      newline();
       printf("#define %s_RESTRICT 1\n", imp.getMainTypeName());
       printf("#define %s_INCLUDE 1\n", imp.getTypeName());
       printf("#include \"%s.h\"\n", imp.getImportFileName());
-      newline();
     }
 
     super.generateType(node);
+    newline();
     println("#endif");
   }
 }
