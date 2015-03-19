@@ -80,4 +80,15 @@ public class ObjectiveCSegmentedHeaderGeneratorTest extends GenerationTest {
         "abstract class Foo {}", "Test", "bar/Test.h");
     assertNotInTranslation(translation, "#include \"Foo.h\"");
   }
+
+  public void testAddIgnoreDeprecationWarningsPragmaIfDeprecatedDeclarationsIsEnabled()
+      throws IOException {
+    Options.enableDeprecatedDeclarations();
+
+    String translation = translateSourceFile("class Test {}", "Test", "Test.h");
+
+    assertTranslation(translation, "#pragma clang diagnostic push");
+    assertTranslation(translation, "#pragma GCC diagnostic ignored \"-Wdeprecated-declarations\"");
+    assertTranslation(translation, "#pragma clang diagnostic pop");
+  }
 }

@@ -164,10 +164,10 @@ public class ObjectiveCHeaderGenerator extends ObjectiveCSourceFileGenerator {
       forwardStmts.add(createForwardDeclaration(imp.getTypeName(), imp.isInterface()));
     }
     if (!forwardStmts.isEmpty()) {
+      newline();
       for (String stmt : forwardStmts) {
         println(stmt);
       }
-      newline();
     }
   }
 
