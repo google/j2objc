@@ -338,10 +338,12 @@ public final class Array {
     /*
      * Create a multi-dimensional array of objects with the specified type.
      */
-    private static Object createMultiArray(Class<?> componentType, int[] dimensions)
-        throws NegativeArraySizeException {
-      throw new AssertionError("multi-dimension support not implemented");
-    }
+    private static native Object createMultiArray(Class<?> componentType, int[] dimensions)
+        throws NegativeArraySizeException /*-[
+      return [IOSObjectArray arrayWithDimensions:dimensions->size_
+                                         lengths:dimensions->buffer_
+                                            type:componentType];
+    ]-*/;
 
     /**
      * Returns a new array of the specified component type and length.

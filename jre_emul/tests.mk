@@ -419,6 +419,7 @@ TEST_SOURCES := \
     org/apache/harmony/tests/java/lang/FloatTest.java \
     org/apache/harmony/tests/java/lang/MathTest.java \
     org/apache/harmony/tests/java/lang/StrictMathTest.java \
+    org/apache/harmony/tests/java/lang/reflect/ArrayTest.java \
     org/apache/harmony/tests/java/lang/reflect/ConstructorTest.java \
     org/apache/harmony/tests/java/math/BigIntegerAddTest.java \
     org/apache/harmony/tests/java/math/BigIntegerAndTest.java \
