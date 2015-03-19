@@ -163,6 +163,7 @@ JAVA_SOURCES = \
 	gen/ObjectiveCSegmentedHeaderGenerator.java \
 	gen/ObjectiveCSourceFileGenerator.java \
 	gen/RuntimeAnnotationGenerator.java \
+	gen/SignatureGenerator.java \
 	gen/SourceBuilder.java \
 	gen/StatementGenerator.java \
 	gen/TypeDeclarationGenerator.java \

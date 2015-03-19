@@ -18,10 +18,7 @@ package com.google.devtools.j2objc.gen;
 
 import com.google.devtools.j2objc.GenerationTest;
 import com.google.devtools.j2objc.ast.AbstractTypeDeclaration;
-import com.google.devtools.j2objc.ast.BodyDeclaration;
 import com.google.devtools.j2objc.ast.CompilationUnit;
-import com.google.devtools.j2objc.ast.FieldDeclaration;
-import com.google.devtools.j2objc.ast.MethodDeclaration;
 
 import org.eclipse.jdt.core.dom.IMethodBinding;
 import org.eclipse.jdt.core.dom.IVariableBinding;
@@ -108,5 +105,14 @@ public class SignatureGeneratorTest extends GenerationTest {
     assertEquals("(TX;TY;)V", SignatureGenerator.createMethodTypeSignature(methods[5]));
     assertEquals("<T:Ljava/lang/Throwable;>(Ljava/lang/Throwable;)V",
         SignatureGenerator.createMethodTypeSignature(methods[6]));
+  }
+
+  public void testMultipleBounds() throws IOException {
+    CompilationUnit unit = translateType("A",
+        "class A <T extends Number & java.io.Serializable >{}");
+    List<AbstractTypeDeclaration> decls = unit.getTypes();
+    assertEquals(1, decls.size());
+    assertEquals("<T:Ljava/lang/Number;:Ljava/io/Serializable;>Ljava/lang/Object;",
+        SignatureGenerator.createClassSignature(decls.get(0).getTypeBinding()));
   }
 }

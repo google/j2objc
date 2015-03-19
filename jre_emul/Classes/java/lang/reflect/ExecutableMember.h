@@ -71,16 +71,10 @@
 - (IOSObjectArray *)getGenericExceptionTypes;
 
 // Returns the parameter types for this executable member.
-//
-// @return an array of strings.
 - (IOSObjectArray *)getParameterTypes;
 - (IOSObjectArray *)getGenericParameterTypes;
 
-// Empty array always returned for iOS.
 - (IOSObjectArray *)getTypeParameters;
-
-// Always false for iOS.
-- (BOOL)isSynthetic;
 
 - (IOSObjectArray *)getParameterAnnotations;
 
@@ -89,6 +83,9 @@
 
 // Returns true if this is a bridge method.
 - (BOOL)isBridge;
+
+// Returns true if this method was added by j2objc.
+- (BOOL)isSynthetic;
 
 // Protected methods.
 - (NSString *)internalName;

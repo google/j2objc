@@ -150,10 +150,7 @@ public class SignatureGenerator {
       ITypeBinding[] bounds = typeParam.getTypeBounds();
       if (bounds.length > 0) {
         for (int i = 0; i < bounds.length; i++) {
-          if (i > 0) {
-            sb.append(':');
-          }
-          if (bounds[i].isInterface()) {
+          if (i > 0 || bounds[i].isInterface()) {
             sb.append(':');
           }
           genFieldTypeSignature(bounds[i]);
@@ -259,7 +256,7 @@ public class SignatureGenerator {
   }
 
   private void genReturnType(ITypeBinding returnType) {
-    if (returnType.getBinaryName() == "V") {
+    if (returnType.getBinaryName().equals("V")) {
       sb.append('V');
     } else {
       genTypeSignature(returnType);
