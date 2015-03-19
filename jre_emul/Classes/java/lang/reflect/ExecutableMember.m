@@ -176,7 +176,11 @@ static IOSClass *ResolveParameterType(const char *objcType, NSString *paramKeywo
 }
 
 - (IOSObjectArray *)getTypeParameters {
-  return[IOSObjectArray arrayWithLength:0 type:JavaLangReflectTypeVariable_class_()];
+  GenericInfo *info = getMethodOrConstructorGenericInfo(self);
+  if (info->formalTypeParameters_->size_ == 0) {
+    return info->formalTypeParameters_;
+  }
+  return [info->formalTypeParameters_ clone];
 }
 
 - (IOSObjectArray *)getGenericParameterTypes {
@@ -343,8 +347,8 @@ GenericInfo *getMethodOrConstructorGenericInfo(ExecutableMember *self) {
   BOOL isMethod = [self isKindOfClass:[JavaLangReflectMethod class]];
   IOSObjectArray *exceptionTypes = [self getExceptionTypes];
   LibcoreReflectGenericSignatureParser *parser =
-  [[[LibcoreReflectGenericSignatureParser alloc]
-    initWithJavaLangClassLoader:JavaLangClassLoader_getSystemClassLoader()] autorelease];
+      [[[LibcoreReflectGenericSignatureParser alloc]
+        initWithJavaLangClassLoader:JavaLangClassLoader_getSystemClassLoader()] autorelease];
   if (isMethod) {
     [parser parseForMethodWithJavaLangReflectGenericDeclaration:self
                                                    withNSString:signatureAttribute

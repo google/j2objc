@@ -47,6 +47,7 @@ SUPPORT_SOURCES = \
     org/apache/harmony/security/tests/support/TestKeyPair.java \
     org/apache/harmony/security/tests/support/spec/MyEncodedKeySpec.java \
     org/apache/harmony/testframework/serialization/SerializationTest.java \
+    org/apache/harmony/tests/java/lang/reflect/GenericReflectionTestsBase.java \
     org/apache/harmony/tests/javax/xml/parsers/SAXParserTestSupport.java \
     org/apache/harmony/tests/org/xml/sax/support/MethodLogger.java \
     org/apache/harmony/tests/org/xml/sax/support/MockHandler.java \
@@ -424,6 +425,7 @@ TEST_SOURCES := \
     org/apache/harmony/tests/java/lang/reflect/ConstructorTest.java \
     org/apache/harmony/tests/java/lang/reflect/MalformedParameterizedTypeExceptionTests.java \
     org/apache/harmony/tests/java/lang/reflect/ModifierTest.java \
+    org/apache/harmony/tests/java/lang/reflect/TypeVariableTest.java \
     org/apache/harmony/tests/java/lang/reflect/UndeclaredThrowableExceptionTest.java \
     org/apache/harmony/tests/java/lang/reflect/UndeclaredThrowableExceptionTests.java \
     org/apache/harmony/tests/java/math/BigIntegerAddTest.java \
