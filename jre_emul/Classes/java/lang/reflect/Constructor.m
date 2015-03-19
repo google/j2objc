@@ -28,6 +28,7 @@
 #import "java/lang/Throwable.h"
 #import "java/lang/reflect/InvocationTargetException.h"
 #import "java/lang/reflect/Method.h"
+#import "java/lang/reflect/Modifier.h"
 
 #import <objc/runtime.h>
 
@@ -87,6 +88,36 @@
 // Returns the class name, like java.lang.reflect.Constructor does.
 - (NSString *)getName {
   return [class_ getName];
+}
+
+// A constructor's hash is the hash of its declaring class's name.
+- (NSUInteger)hash {
+  return [[class_ getName] hash];
+}
+
+- (NSString *)description {
+  NSMutableString *s = [NSMutableString string];
+  NSString *modifiers = JavaLangReflectModifier_toStringWithInt_([self getModifiers]);
+  NSString *type = [[self getDeclaringClass] getName];
+  [s appendFormat:@"%@ %@(", modifiers, type];
+  IOSObjectArray *params = [self getParameterTypes];
+  jint n = params->size_;
+  if (n > 0) {
+    [s appendString:[(IOSClass *) params->buffer_[0] getName]];
+    for (jint i = 1; i < n; i++) {
+      [s appendFormat:@",%@", [(IOSClass *) params->buffer_[0] getName]];
+    }
+  }
+  [s appendString:@")"];
+  IOSObjectArray *throws = [self getExceptionTypes];
+  n = throws->size_;
+  if (n > 0) {
+    [s appendFormat:@" throws %@", [(IOSClass *) throws->buffer_[0] getName]];
+    for (jint i = 1; i < n; i++) {
+      [s appendFormat:@",%@", [(IOSClass *) throws->buffer_[0] getName]];
+    }
+  }
+  return [s description];
 }
 
 + (const J2ObjcClassInfo *)__metadata {
