@@ -54,7 +54,10 @@ public class ObjectiveCSegmentedHeaderGenerator extends ObjectiveCHeaderGenerato
   protected void generateFileHeader() {
     println("#include \"J2ObjC_header.h\"");
     newline();
-    printf("#if !%s_RESTRICT\n", mainTypeName);
+    printf("#pragma push_macro(\"%s_INCLUDE_ALL\")\n", mainTypeName);
+    printf("#if %s_RESTRICT\n", mainTypeName);
+    printf("#define %s_INCLUDE_ALL 0\n", mainTypeName);
+    println("#else");
     printf("#define %s_INCLUDE_ALL 1\n", mainTypeName);
     println("#endif");
     printf("#undef %s_RESTRICT\n", mainTypeName);
@@ -97,6 +100,7 @@ public class ObjectiveCSegmentedHeaderGenerator extends ObjectiveCHeaderGenerato
   protected void generateFileFooter() {
     // Don't need #endif for file-level header guard.
     popIgnoreDeprecatedDeclarationsPragma();
+    printf("#pragma pop_macro(\"%s_INCLUDE_ALL\")\n", mainTypeName);
   }
 
   @Override

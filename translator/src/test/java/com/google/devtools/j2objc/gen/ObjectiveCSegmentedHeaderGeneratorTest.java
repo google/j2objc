@@ -42,10 +42,14 @@ public class ObjectiveCSegmentedHeaderGeneratorTest extends GenerationTest {
     String translation = translateSourceFile(
         "class Test { static class Inner {} }", "Test", "Test.h");
     assertTranslatedLines(translation,
-        "#if !Test_RESTRICT",
+        "#pragma push_macro(\"Test_INCLUDE_ALL\")",
+        "#if Test_RESTRICT",
+        "#define Test_INCLUDE_ALL 0",
+        "#else",
         "#define Test_INCLUDE_ALL 1",
         "#endif",
         "#undef Test_RESTRICT");
+    assertTranslation(translation, "#pragma pop_macro(\"Test_INCLUDE_ALL\")");
     assertTranslatedLines(translation,
         "#if !defined (_Test_) && (Test_INCLUDE_ALL || Test_INCLUDE)",
         "#define _Test_");
