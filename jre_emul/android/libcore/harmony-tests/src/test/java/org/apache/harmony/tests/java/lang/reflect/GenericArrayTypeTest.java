@@ -35,7 +35,6 @@ public class GenericArrayTypeTest extends GenericReflectionTestsBase {
         Class<? extends A> clazz = GenericArrayTypeTest.A.class;
         Field field = clazz.getDeclaredField("array");
         Type genericType = field.getGenericType();
-        System.out.println("genericType class: " + genericType.getClass());
         assertInstanceOf(GenericArrayType.class, genericType);
         Type componentType = ((GenericArrayType) genericType).getGenericComponentType();
         assertEquals(getTypeParameter(clazz), componentType);
@@ -53,9 +52,6 @@ public class GenericArrayTypeTest extends GenericReflectionTestsBase {
         Class<? extends B> clazz = GenericArrayTypeTest.B.class;
         Field field = clazz.getDeclaredField("array");
         Type genericType = field.getGenericType();
-        System.out.println("field genericType: " + genericType);
-        System.out.println("field type: " + field.getType());
-        System.out.println("genericType class: " + genericType.getClass());
 
         assertInstanceOf(GenericArrayType.class, genericType);
         GenericArrayType arrayType = (GenericArrayType) genericType;

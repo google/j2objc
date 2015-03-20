@@ -422,14 +422,18 @@ TEST_SOURCES := \
     org/apache/harmony/tests/java/lang/StrictMathTest.java \
     org/apache/harmony/tests/java/lang/reflect/AccessibleObjectTest.java \
     org/apache/harmony/tests/java/lang/reflect/ArrayTest.java \
+    org/apache/harmony/tests/java/lang/reflect/BoundedGenericMethodsTests.java \
     org/apache/harmony/tests/java/lang/reflect/ConstructorTest.java \
     org/apache/harmony/tests/java/lang/reflect/GenericArrayTypeTest.java \
     org/apache/harmony/tests/java/lang/reflect/GenericMethodsTests.java \
+    org/apache/harmony/tests/java/lang/reflect/MalformedParameterizedTypeExceptionTest.java \
     org/apache/harmony/tests/java/lang/reflect/MalformedParameterizedTypeExceptionTests.java \
     org/apache/harmony/tests/java/lang/reflect/ModifierTest.java \
+    org/apache/harmony/tests/java/lang/reflect/ParameterizedTypeTest.java \
     org/apache/harmony/tests/java/lang/reflect/TypeVariableTest.java \
     org/apache/harmony/tests/java/lang/reflect/UndeclaredThrowableExceptionTest.java \
     org/apache/harmony/tests/java/lang/reflect/UndeclaredThrowableExceptionTests.java \
+    org/apache/harmony/tests/java/lang/reflect/WildcardTypeTest.java \
     org/apache/harmony/tests/java/math/BigIntegerAddTest.java \
     org/apache/harmony/tests/java/math/BigIntegerAndTest.java \
     org/apache/harmony/tests/java/math/BigIntegerCompareTest.java \
