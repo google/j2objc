@@ -316,8 +316,11 @@ public class Options {
         finalMethodsAsFunctions = true;
       } else if (arg.equals("--no-final-methods-functions")) {
         finalMethodsAsFunctions = false;
+      // TODO(kstanger): remove both "class-methods" flags once the behavior is standardized.
       } else if (arg.equals("--no-class-methods")) {
         removeClassMethods = true;
+      } else if (arg.equals("--keep-class-methods")) {
+        removeClassMethods = false;
       // TODO(tball): remove obsolete flag once projects stop using it.
       } else if (arg.equals("--hide-private-members")) {
         hidePrivateMembers = true;
