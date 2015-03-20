@@ -21,7 +21,6 @@ import com.google.devtools.j2objc.ast.Expression;
 import com.google.devtools.j2objc.ast.FieldDeclaration;
 import com.google.devtools.j2objc.ast.FunctionDeclaration;
 import com.google.devtools.j2objc.ast.VariableDeclarationFragment;
-import com.google.devtools.j2objc.util.NameTable;
 
 import org.eclipse.jdt.core.dom.Modifier;
 
@@ -62,7 +61,6 @@ public class TypePrivateDeclarationGenerator extends TypeDeclarationGenerator {
     boolean hasPrivateFields = !Iterables.isEmpty(privateFields);
     Iterable<BodyDeclaration> privateDecls = getInnerDeclarations();
     if (!Iterables.isEmpty(privateDecls) || hasPrivateFields) {
-      String typeName = NameTable.getFullName(node.getTypeBinding());
       newline();
       printf("@interface %s ()", typeName);
       if (hasPrivateFields) {

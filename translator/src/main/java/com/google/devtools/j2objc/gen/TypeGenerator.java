@@ -47,15 +47,19 @@ import java.util.List;
  */
 public abstract class TypeGenerator extends AbstractSourceGenerator {
 
-  // TODO(kstanger): Make this accessible via a getter method
-  protected final AbstractTypeDeclaration node;
+  // Convenient fields for use by subclasses.
+  protected final AbstractTypeDeclaration typeNode;
+  protected final ITypeBinding typeBinding;
+  protected final String typeName;
 
   private final List<BodyDeclaration> declarations;
 
   protected TypeGenerator(SourceBuilder builder, AbstractTypeDeclaration node) {
     super(builder);
-    this.node = node;
-    this.declarations = filterDeclarations(node.getBodyDeclarations());
+    typeNode = node;
+    typeBinding = node.getTypeBinding();
+    typeName = NameTable.getFullName(typeBinding);
+    declarations = filterDeclarations(node.getBodyDeclarations());
   }
 
   protected boolean shouldPrintDeclaration(BodyDeclaration decl) {
@@ -124,7 +128,7 @@ public abstract class TypeGenerator extends AbstractSourceGenerator {
   }
 
   protected boolean isInterfaceType() {
-    return node.getTypeBinding().isInterface();
+    return typeBinding.isInterface();
   }
 
   protected static boolean hasPrivateDeclaration(BodyDeclaration decl) {
@@ -167,7 +171,7 @@ public abstract class TypeGenerator extends AbstractSourceGenerator {
   }
 
   protected boolean hasInitializeMethod() {
-    return !node.getClassInitStatements().isEmpty();
+    return !typeNode.getClassInitStatements().isEmpty();
   }
 
   /**
