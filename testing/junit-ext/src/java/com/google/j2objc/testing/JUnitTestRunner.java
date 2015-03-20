@@ -197,12 +197,17 @@ public class JUnitTestRunner {
   /*-[
   // Returns true if |cls| conforms to the NSObject protocol.
   BOOL IsNSObjectClass(Class cls) {
-    while (cls != nil) {
-      if (class_conformsToProtocol(cls, @protocol(NSObject))) {
-        return YES;
+    @try {
+      while (cls != nil) {
+        if (class_conformsToProtocol(cls, @protocol(NSObject))) {
+          return YES;
+        }
+        // class_conformsToProtocol() does not examine superclasses.
+        cls = class_getSuperclass(cls);
       }
-      // class_conformsToProtocol() does not examine superclasses.
-      cls = class_getSuperclass(cls);
+    }
+    @catch (JavaLangThrowable *t) {
+      // Ignore any exceptions thrown by class initialization.
     }
     return NO;
   }
