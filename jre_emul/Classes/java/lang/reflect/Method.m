@@ -22,12 +22,15 @@
 #import "J2ObjC_source.h"
 #import "JavaMetadata.h"
 #import "java/lang/AssertionError.h"
+#import "java/lang/ClassLoader.h"
 #import "java/lang/IllegalArgumentException.h"
 #import "java/lang/NoSuchMethodException.h"
 #import "java/lang/NullPointerException.h"
 #import "java/lang/reflect/Method.h"
 #import "java/lang/reflect/Modifier.h"
 #import "java/lang/reflect/TypeVariable.h"
+#import "libcore/reflect/GenericSignatureParser.h"
+#import "libcore/reflect/Types.h"
 
 @implementation JavaLangReflectMethod
 
@@ -111,6 +114,20 @@
 }
 
 - (id<JavaLangReflectType>)getGenericReturnType {
+  NSString *genericSignature = [metadata_ genericSignature];
+  if (genericSignature) {
+    LibcoreReflectGenericSignatureParser *parser =
+        [[LibcoreReflectGenericSignatureParser alloc]
+         initWithJavaLangClassLoader:JavaLangClassLoader_getSystemClassLoader()];
+    IOSObjectArray *rawExceptions = [self getExceptionTypes];
+    [parser parseForMethodWithJavaLangReflectGenericDeclaration:self
+                                                   withNSString:genericSignature
+                                              withIOSClassArray:rawExceptions];
+    id<JavaLangReflectType> result = [LibcoreReflectTypes getType:parser->returnType_];
+    [parser release];
+    return result;
+  }
+
   id<JavaLangReflectType> returnType = [metadata_ returnType];
   if (returnType) {
     if (returnType && [returnType conformsToProtocol:@protocol(JavaLangReflectTypeVariable)]) {
