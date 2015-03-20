@@ -59,26 +59,6 @@
   return nil;
 }
 
-- (id<JavaLangReflectType>)getGenericSuperclass {
-  Class superclass = [class_ superclass];
-  if (!superclass) {
-    return nil;
-  }
-  IOSClass *rawType = IOSClass_fromClass(superclass);
-  IOSObjectArray *typeArgs = nil;
-  JavaClassMetadata *metadata = [self getMetadata];
-  if (metadata) {
-    typeArgs = [metadata getSuperclassTypeArguments];
-  }
-  if (typeArgs) {
-    // TODO(kstanger): Fill in the ownerType.
-    return [JavaLangReflectParameterizedTypeImpl parameterizedTypeWithTypeArguments:typeArgs
-        ownerType:nil rawType:rawType];
-  } else {
-    return rawType;
-  }
-}
-
 - (BOOL)isInstance:(id)object {
   return [object isKindOfClass:class_];
 }
