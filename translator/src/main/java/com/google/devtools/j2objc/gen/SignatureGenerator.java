@@ -65,7 +65,7 @@ public class SignatureGenerator {
   public static String createFieldTypeSignature(IVariableBinding variable) {
     ITypeBinding type = variable.getType();
     if (type.isArray()) {
-      if (!type.getElementType().isTypeVariable()) {
+      if (!type.getElementType().isTypeVariable() && !type.getElementType().isParameterizedType()) {
         return null;
       }
     } else if (!type.isTypeVariable() && !type.isParameterizedType()) {
