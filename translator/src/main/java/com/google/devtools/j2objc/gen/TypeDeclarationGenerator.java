@@ -80,23 +80,19 @@ public class TypeDeclarationGenerator extends TypeGenerator {
 
     // TODO(kstanger): Refactor this large if-statement.
     if (!isInterfaceType()) {
-      ITypeBinding binding = node.getTypeBinding();
-
       printTypeDocumentation();
-      printf("@interface %s : %s", NameTable.getFullName(binding), getSuperTypeName());
+      printf("@interface %s : %s", typeName, getSuperTypeName());
       printImplementedProtocols();
       println(" {");
       printInstanceVariables();
       println("}");
       printInnerDeclarations();
       println("\n@end");
-    } else if (node instanceof AnnotationTypeDeclaration) {
-      ITypeBinding type = node.getTypeBinding();
-      String typeName = NameTable.getFullName(type);
+    } else if (typeNode instanceof AnnotationTypeDeclaration) {
       List<AnnotationTypeMemberDeclaration> members = Lists.newArrayList(
-          Iterables.filter(node.getBodyDeclarations(), AnnotationTypeMemberDeclaration.class));
+          Iterables.filter(typeNode.getBodyDeclarations(), AnnotationTypeMemberDeclaration.class));
 
-      boolean isRuntime = BindingUtil.isRuntimeAnnotation(type);
+      boolean isRuntime = BindingUtil.isRuntimeAnnotation(typeBinding);
 
       // Print annotation as protocol.
       printTypeDocumentation();
@@ -116,7 +112,7 @@ public class TypeDeclarationGenerator extends TypeGenerator {
           println(" {\n @private");
           printAnnotationVariables(members);
           println("}");
-          printAnnotationConstructor(type);
+          printAnnotationConstructor(typeBinding);
           printAnnotationAccessors(members);
         } else {
           newline();
@@ -124,9 +120,6 @@ public class TypeDeclarationGenerator extends TypeGenerator {
         println("\n@end");
       }
     } else {
-      ITypeBinding binding = node.getTypeBinding();
-      String typeName = NameTable.getFullName(binding);
-
       printTypeDocumentation();
       printf("@protocol %s", typeName);
       printImplementedProtocols();
@@ -172,13 +165,11 @@ public class TypeDeclarationGenerator extends TypeGenerator {
   }
 
   private void printNativeEnum() {
-    if (!(node instanceof EnumDeclaration)) {
+    if (!(typeNode instanceof EnumDeclaration)) {
       return;
     }
 
-    ITypeBinding enumType = node.getTypeBinding();
-    String typeName = NameTable.getFullName(enumType);
-    List<EnumConstantDeclaration> constants = ((EnumDeclaration) node).getEnumConstants();
+    List<EnumConstantDeclaration> constants = ((EnumDeclaration) typeNode).getEnumConstants();
 
     // Strip enum type suffix.
     String bareTypeName =
@@ -204,14 +195,14 @@ public class TypeDeclarationGenerator extends TypeGenerator {
 
   private void printTypeDocumentation() {
     newline();
-    JavadocGenerator.printDocComment(getBuilder(), node.getJavadoc());
-    if (needsDeprecatedAttribute(node.getAnnotations())) {
+    JavadocGenerator.printDocComment(getBuilder(), typeNode.getJavadoc());
+    if (needsDeprecatedAttribute(typeNode.getAnnotations())) {
       println(DEPRECATED_ATTRIBUTE);
     }
   }
 
   private String getSuperTypeName() {
-    ITypeBinding superclass = node.getTypeBinding().getSuperclass();
+    ITypeBinding superclass = typeBinding.getSuperclass();
     if (superclass == null) {
       return null;
     }
@@ -220,10 +211,10 @@ public class TypeDeclarationGenerator extends TypeGenerator {
 
   private List<String> getInterfaceNames() {
     List<String> names = Lists.newArrayList();
-    for (ITypeBinding intrface : node.getTypeBinding().getInterfaces()) {
+    for (ITypeBinding intrface : typeBinding.getInterfaces()) {
       names.add(NameTable.getFullName(intrface));
     }
-    if (node.getTypeBinding().isEnum()) {
+    if (typeBinding.isEnum()) {
       names.remove("NSCopying");
       names.add(0, "NSCopying");
     } else if (isInterfaceType()) {
@@ -300,8 +291,6 @@ public class TypeDeclarationGenerator extends TypeGenerator {
   }
 
   private void printStaticInitFunction() {
-    ITypeBinding binding = node.getTypeBinding();
-    String typeName = NameTable.getFullName(binding);
     if (hasInitializeMethod()) {
       printf("\nJ2OBJC_STATIC_INIT(%s)\n", typeName);
     } else {
@@ -310,13 +299,12 @@ public class TypeDeclarationGenerator extends TypeGenerator {
   }
 
   private void printEnumConstants() {
-    if (node instanceof EnumDeclaration) {
-      String typeName = NameTable.getFullName(node.getTypeBinding());
+    if (typeNode instanceof EnumDeclaration) {
       // Strip enum type suffix.
       String bareTypeName =
           typeName.endsWith("Enum") ? typeName.substring(0, typeName.length() - 4) : typeName;
       printf("\nFOUNDATION_EXPORT %s *%s_values_[];\n", typeName, typeName);
-      for (EnumConstantDeclaration constant : ((EnumDeclaration) node).getEnumConstants()) {
+      for (EnumConstantDeclaration constant : ((EnumDeclaration) typeNode).getEnumConstants()) {
         String varName = NameTable.getStaticVarName(constant.getVariableBinding());
         String valueName = constant.getName().getIdentifier();
         printf("\n#define %s_%s %s_values_[%s_%s]\n",
@@ -327,7 +315,6 @@ public class TypeDeclarationGenerator extends TypeGenerator {
   }
 
   protected void printFieldSetters() {
-    ITypeBinding declaringType = node.getTypeBinding();
     boolean newlinePrinted = false;
     for (FieldDeclaration field : getInstanceFields()) {
       ITypeBinding type = field.getType().getTypeBinding();
@@ -335,7 +322,6 @@ public class TypeDeclarationGenerator extends TypeGenerator {
         continue;
       }
       String typeStr = NameTable.getObjCType(type);
-      String declaringClassName = NameTable.getFullName(declaringType);
       for (VariableDeclarationFragment var : field.getFragments()) {
         if (BindingUtil.isWeakReference(var.getVariableBinding())) {
           continue;
@@ -345,8 +331,7 @@ public class TypeDeclarationGenerator extends TypeGenerator {
           newlinePrinted = true;
           newline();
         }
-        println(String.format("J2OBJC_FIELD_SETTER(%s, %s, %s)",
-            declaringClassName, fieldName, typeStr));
+        println(String.format("J2OBJC_FIELD_SETTER(%s, %s, %s)", typeName, fieldName, typeStr));
       }
     }
   }
@@ -367,7 +352,6 @@ public class TypeDeclarationGenerator extends TypeGenerator {
     String objcType = NameTable.getObjCType(var.getType());
     String typeWithSpace = objcType + (objcType.endsWith("*") ? "" : " ");
     String name = NameTable.getStaticVarName(var);
-    String className = NameTable.getFullName(var.getDeclaringClass());
     boolean isFinal = Modifier.isFinal(var.getModifiers());
     boolean isPrimitive = var.getType().isPrimitive();
     newline();
@@ -375,29 +359,28 @@ public class TypeDeclarationGenerator extends TypeGenerator {
       name = var.getName();
     } else {
       printStaticFieldDeclaration(
-          fragment, String.format("%s%s_%s", typeWithSpace, className, name));
+          fragment, String.format("%s%s_%s", typeWithSpace, typeName, name));
     }
-    printf("J2OBJC_STATIC_FIELD_GETTER(%s, %s, %s)\n", className, name, objcType);
+    printf("J2OBJC_STATIC_FIELD_GETTER(%s, %s, %s)\n", typeName, name, objcType);
     if (!isFinal) {
       if (isPrimitive) {
-        printf("J2OBJC_STATIC_FIELD_REF_GETTER(%s, %s, %s)\n", className, name, objcType);
+        printf("J2OBJC_STATIC_FIELD_REF_GETTER(%s, %s, %s)\n", typeName, name, objcType);
       } else {
-        printf("J2OBJC_STATIC_FIELD_SETTER(%s, %s, %s)\n", className, name, objcType);
+        printf("J2OBJC_STATIC_FIELD_SETTER(%s, %s, %s)\n", typeName, name, objcType);
       }
     }
   }
 
   private void printTypeLiteralDeclaration() {
     newline();
-    printf("J2OBJC_TYPE_LITERAL_HEADER(%s)\n", NameTable.getFullName(node.getTypeBinding()));
+    printf("J2OBJC_TYPE_LITERAL_HEADER(%s)\n", typeName);
   }
 
   private static final Set<String> NEEDS_INC_AND_DEC = ImmutableSet.of(
       "int", "long", "double", "float", "short", "byte", "char");
 
   private void printIncrementAndDecrementFunctions() {
-    ITypeBinding type = node.getTypeBinding();
-    ITypeBinding primitiveType = Types.getPrimitiveType(type);
+    ITypeBinding primitiveType = Types.getPrimitiveType(typeBinding);
     if (primitiveType == null || !NEEDS_INC_AND_DEC.contains(primitiveType.getName())) {
       return;
     }
@@ -409,21 +392,19 @@ public class TypeDeclarationGenerator extends TypeGenerator {
       valueMethod = "charValue";
     }
     newline();
-    printf("BOXED_INC_AND_DEC(%s, %s, %s)\n", NameTable.capitalize(primitiveName), valueMethod,
-           NameTable.getFullName(type));
+    printf("BOXED_INC_AND_DEC(%s, %s, %s)\n",
+        NameTable.capitalize(primitiveName), valueMethod, typeName);
   }
 
   private void printUnprefixedAlias() {
-    ITypeBinding binding = node.getTypeBinding();
-    String typeName = NameTable.getFullName(binding);
-    String pkg = binding.getPackage().getName();
-    if (NameTable.hasPrefix(pkg) && binding.isTopLevel()) {
-      String unprefixedName = NameTable.camelCaseQualifiedName(binding.getQualifiedName());
-      if (binding.isEnum()) {
+    String pkg = typeBinding.getPackage().getName();
+    if (NameTable.hasPrefix(pkg) && typeBinding.isTopLevel()) {
+      String unprefixedName = NameTable.camelCaseQualifiedName(typeBinding.getQualifiedName());
+      if (typeBinding.isEnum()) {
         unprefixedName += "Enum";
       }
       if (!unprefixedName.equals(typeName)) {
-        if (binding.isInterface()) {
+        if (typeBinding.isInterface()) {
           // Protocols can't be used in typedefs.
           printf("\n#define %s %s\n", unprefixedName, typeName);
         } else {

@@ -60,25 +60,23 @@ public class TypeImplementationGenerator extends TypeGenerator {
 
     // TODO(kstanger): Refactor away this big if-statement.
     if (!isInterfaceType()) {
-      String typeName = NameTable.getFullName(node.getTypeBinding());
       newline();
-      syncLineNumbers(node.getName()); // avoid doc-comment
+      syncLineNumbers(typeNode.getName()); // avoid doc-comment
       printf("@implementation %s\n", typeName);
       printInnerDeclarations();
       printInitializeMethod();
-      if (TranslationUtil.needsReflection(node)) {
+      if (TranslationUtil.needsReflection(typeNode)) {
         RuntimeAnnotationGenerator annotationGen = new RuntimeAnnotationGenerator(getBuilder());
-        annotationGen.printTypeAnnotationsMethod(node);
-        annotationGen.printMethodAnnotationMethods(TreeUtil.getMethodDeclarations(node));
-        annotationGen.printFieldAnnotationMethods(node);
+        annotationGen.printTypeAnnotationsMethod(typeNode);
+        annotationGen.printMethodAnnotationMethods(TreeUtil.getMethodDeclarations(typeNode));
+        annotationGen.printFieldAnnotationMethods(typeNode);
         printMetadata();
       }
       println("\n@end");
-    } else if (node instanceof AnnotationTypeDeclaration) {
-      boolean isRuntime = BindingUtil.isRuntimeAnnotation(node.getTypeBinding());
+    } else if (typeNode instanceof AnnotationTypeDeclaration) {
+      boolean isRuntime = BindingUtil.isRuntimeAnnotation(typeBinding);
       boolean hasInitMethod = hasInitializeMethod();
-      boolean needsReflection = TranslationUtil.needsReflection(node);
-      String typeName = NameTable.getFullName(node.getTypeBinding());
+      boolean needsReflection = TranslationUtil.needsReflection(typeNode);
 
       if (needsReflection && !isRuntime && !hasInitMethod) {
         printf("\n@interface %s : NSObject\n@end\n", typeName);
@@ -86,35 +84,34 @@ public class TypeImplementationGenerator extends TypeGenerator {
 
 
       if (isRuntime || hasInitMethod || needsReflection) {
-        syncLineNumbers(node.getName()); // avoid doc-comment
+        syncLineNumbers(typeNode.getName()); // avoid doc-comment
         printf("\n@implementation %s\n", typeName);
 
         if (isRuntime) {
           List<AnnotationTypeMemberDeclaration> members =
-              TreeUtil.getAnnotationMembers((AnnotationTypeDeclaration) node);
+              TreeUtil.getAnnotationMembers((AnnotationTypeDeclaration) typeNode);
           printAnnotationProperties(members);
           if (!members.isEmpty()) {
-            printAnnotationConstructor(node.getTypeBinding());
+            printAnnotationConstructor(typeBinding);
           }
           printAnnotationAccessors(members);
           println("\n- (IOSClass *)annotationType {");
           printf("  return %s_class_();\n", typeName);
           println("}");
           println("\n- (NSString *)description {");
-          printf("  return @\"@%s()\";\n", node.getTypeBinding().getBinaryName());
+          printf("  return @\"@%s()\";\n", typeBinding.getBinaryName());
           println("}");
         }
         printInitializeMethod();
         if (needsReflection) {
-          new RuntimeAnnotationGenerator(getBuilder()).printTypeAnnotationsMethod(node);
+          new RuntimeAnnotationGenerator(getBuilder()).printTypeAnnotationsMethod(typeNode);
           printMetadata();
         }
         println("\n@end");
       }
     } else {
 
-      String typeName = NameTable.getFullName(node.getTypeBinding());
-      boolean needsReflection = TranslationUtil.needsReflection(node);
+      boolean needsReflection = TranslationUtil.needsReflection(typeNode);
       boolean needsImplementation = hasInitializeMethod() || needsReflection;
       if (needsImplementation && !hasInitializeMethod()) {
         printf("\n@interface %s : NSObject\n@end\n", typeName);
@@ -134,8 +131,6 @@ public class TypeImplementationGenerator extends TypeGenerator {
   }
 
   private void printInitFlagDefinition() {
-    ITypeBinding binding = node.getTypeBinding();
-    String typeName = NameTable.getFullName(binding);
     if (hasInitializeMethod()) {
       printf("\nJ2OBJC_INITIALIZED_DEFN(%s)\n", typeName);
     }
@@ -170,19 +165,17 @@ public class TypeImplementationGenerator extends TypeGenerator {
   }
 
   private void printEnumValuesArray() {
-    if (node instanceof EnumDeclaration) {
-      List<EnumConstantDeclaration> constants = ((EnumDeclaration) node).getEnumConstants();
-      String typeName = NameTable.getFullName(node.getTypeBinding());
+    if (typeNode instanceof EnumDeclaration) {
+      List<EnumConstantDeclaration> constants = ((EnumDeclaration) typeNode).getEnumConstants();
       newline();
       printf("%s *%s_values_[%s];\n", typeName, typeName, constants.size());
     }
   }
 
   private void printTypeLiteralImplementation() {
-    ITypeBinding binding = node.getTypeBinding();
     newline();
     printf("J2OBJC_%s_TYPE_LITERAL_SOURCE(%s)\n",
-        binding.isInterface() ? "INTERFACE" : "CLASS", NameTable.getFullName(binding));
+        isInterfaceType() ? "INTERFACE" : "CLASS", typeName);
   }
 
   @Override
@@ -216,17 +209,16 @@ public class TypeImplementationGenerator extends TypeGenerator {
   }
 
   protected void printInitializeMethod() {
-    List<Statement> initStatements = node.getClassInitStatements();
+    List<Statement> initStatements = typeNode.getClassInitStatements();
     if (initStatements.isEmpty()) {
       return;
     }
-    String className = NameTable.getFullName(node.getTypeBinding());
     StringBuffer sb = new StringBuffer();
-    sb.append("{\nif (self == [" + className + " class]) {\n");
+    sb.append("{\nif (self == [" + typeName + " class]) {\n");
     for (Statement statement : initStatements) {
       sb.append(generateStatement(statement, false));
     }
-    sb.append("J2OBJC_SET_INITIALIZED(" + className + ")\n");
+    sb.append("J2OBJC_SET_INITIALIZED(" + typeName + ")\n");
     sb.append("}\n}");
     print("\n+ (void)initialize " + reindent(sb.toString()) + "\n");
   }
@@ -282,7 +274,7 @@ public class TypeImplementationGenerator extends TypeGenerator {
   }
 
   protected void printMetadata() {
-    print(new MetadataGenerator(node).getMetadataSource());
+    print(new MetadataGenerator(typeNode).getMetadataSource());
   }
 
   protected String generateStatement(Statement stmt, boolean asFunction) {
