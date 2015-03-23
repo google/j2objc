@@ -18,7 +18,8 @@ package com.google.devtools.j2objc.gen;
 
 import com.google.common.io.Files;
 import com.google.devtools.j2objc.Options;
-import com.google.devtools.j2objc.ast.CompilationUnit;
+import com.google.devtools.j2objc.ast.AbstractTypeDeclaration;
+import com.google.devtools.j2objc.ast.TreeUtil;
 import com.google.devtools.j2objc.util.ErrorUtil;
 
 
@@ -59,10 +60,8 @@ public abstract class ObjectiveCSourceFileGenerator extends AbstractSourceGenera
     return unit;
   }
 
-  protected CompilationUnit getUnit() {
-    // TODO(mthvedt): Eliminate this method
-    // when we support multiple compilation units per generation unit.
-    return getGenerationUnit().getCompilationUnits().get(0);
+  protected void setGenerationContext(AbstractTypeDeclaration type) {
+    TreeUtil.getCompilationUnit(type).setGenerationContext();
   }
 
   protected void save(String path) {

@@ -19,13 +19,13 @@ package com.google.devtools.j2objc.types;
 import com.google.common.collect.Sets;
 import com.google.devtools.j2objc.ast.AnnotationTypeDeclaration;
 import com.google.devtools.j2objc.ast.AnnotationTypeMemberDeclaration;
-import com.google.devtools.j2objc.ast.CompilationUnit;
 import com.google.devtools.j2objc.ast.EnumDeclaration;
 import com.google.devtools.j2objc.ast.FieldDeclaration;
 import com.google.devtools.j2objc.ast.FunctionDeclaration;
 import com.google.devtools.j2objc.ast.MethodDeclaration;
 import com.google.devtools.j2objc.ast.SingleVariableDeclaration;
 import com.google.devtools.j2objc.ast.TreeNode;
+import com.google.devtools.j2objc.ast.TreeUtil;
 import com.google.devtools.j2objc.ast.TreeVisitor;
 import com.google.devtools.j2objc.ast.Type;
 import com.google.devtools.j2objc.ast.TypeDeclaration;
@@ -43,8 +43,12 @@ import java.util.Set;
  */
 public class HeaderImportCollector extends TreeVisitor {
 
+  // Forward declarations. The order in which imports are collected affect
+  // which imports become forward declarations.
   private Set<Import> forwardDecls = Sets.newLinkedHashSet();
+  // Supertypes of the below declared types that haven't been seen by this collector.
   private Set<Import> superTypes = Sets.newLinkedHashSet();
+  // Declared types seen by this collector.
   private Set<Import> declaredTypes = Sets.newHashSet();
 
   public void collect(TreeNode node) {
@@ -52,16 +56,19 @@ public class HeaderImportCollector extends TreeVisitor {
     postCollect();
   }
 
-  public void collect(List<CompilationUnit> nodes) {
-    for (CompilationUnit node: nodes) {
-      node.setGenerationContext();
+  public void collect(List<? extends TreeNode> nodes) {
+    for (TreeNode node : nodes) {
+      TreeUtil.getCompilationUnit(node).setGenerationContext();
       run(node);
     }
 
     postCollect();
   }
 
-  private void postCollect() {
+  /**
+   * Removes spurious entries in the collected super types and forward declarations.
+   */
+  public void postCollect() {
     superTypes.removeAll(declaredTypes);
     forwardDecls.removeAll(superTypes);
   }

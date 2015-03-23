@@ -233,6 +233,8 @@ public class ObjectiveCHeaderGeneratorTest extends GenerationTest {
     assertTranslation(header, "- (void)AnotherDummy;");
     assertTranslation(header, "J2OBJC_EMPTY_STATIC_INIT(UnitAnotherTest)");
     assertTranslation(header, "J2OBJC_TYPE_LITERAL_HEADER(UnitAnotherTest)");
+    assertNotInTranslation(header, "@class UnitTest");
+    assertNotInTranslation(header, "@class UnitAnotherTest");
   }
 
   public void testCombinedGenerationOrdering() throws IOException {
@@ -240,13 +242,26 @@ public class ObjectiveCHeaderGeneratorTest extends GenerationTest {
             + "    public void Dummy() {}"
             + "}",
         "unit/Test.java");
+    // Test that necessary forward declarations aren't eliminated.
+    addSourceFile("package unit; public class TestDependent {"
+            + "    public Test Dummy() {"
+            + "        return null;"
+            + "    }"
+            + "    public AnotherTest AnotherDummy() {"
+            + "        return null;"
+            + "    }"
+            + "}",
+        "unit/TestDependent.java");
     addSourceFile("package unit; public class AnotherTest extends Test {"
             + "    public void AnotherDummy() {}"
             + "}",
         "unit/AnotherTest.java");
 
     String header = translateCombinedFiles(
-        "unit/Foo", ".h", "unit/AnotherTest.java", "unit/Test.java");
+        "unit/Foo", ".h",
+        "unit/TestDependent.java", "unit/AnotherTest.java", "unit/Test.java");
+    assertTranslation(header, "@class UnitTest");
+    assertTranslation(header, "@class UnitAnotherTest");
     assert header.indexOf("@interface UnitTest") < header.indexOf("@interface UnitAnotherTest");
   }
 
