@@ -19,10 +19,8 @@ import com.google.common.collect.Maps;
 import com.google.devtools.j2objc.ast.AbstractTypeDeclaration;
 import com.google.devtools.j2objc.types.HeaderImportCollector;
 import com.google.devtools.j2objc.types.Import;
-import com.google.devtools.j2objc.util.ErrorUtil;
 import com.google.devtools.j2objc.util.NameTable;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -51,7 +49,7 @@ public class ObjectiveCSegmentedHeaderGenerator extends ObjectiveCHeaderGenerato
   }
 
   @Override
-  protected void generateFileHeader() {
+  protected void generateFileHeader(List<AbstractTypeDeclaration> types) {
     println("#include \"J2ObjC_header.h\"");
     newline();
     printf("#pragma push_macro(\"%s_INCLUDE_ALL\")\n", mainTypeName);
@@ -62,9 +60,7 @@ public class ObjectiveCSegmentedHeaderGenerator extends ObjectiveCHeaderGenerato
     println("#endif");
     printf("#undef %s_RESTRICT\n", mainTypeName);
 
-    List<AbstractTypeDeclaration> types = Lists.newArrayList(
-        getGenerationUnit().getCompilationUnits().get(0).getTypes());
-    Collections.reverse(types);
+    types = Lists.reverse(types);
     for (AbstractTypeDeclaration type : types) {
       HeaderImportCollector collector = new HeaderImportCollector();
       collector.collect(type);

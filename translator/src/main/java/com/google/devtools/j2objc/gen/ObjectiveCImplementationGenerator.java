@@ -60,10 +60,6 @@ public class ObjectiveCImplementationGenerator extends ObjectiveCSourceFileGener
     return suffix;
   }
 
-  private void setGenerationContext(AbstractTypeDeclaration type) {
-    TreeUtil.getCompilationUnit(type).setGenerationContext();
-  }
-
   public void generate() {
     List<CompilationUnit> units = getGenerationUnit().getCompilationUnits();
     List<AbstractTypeDeclaration> types = collectTypes(units);

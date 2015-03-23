@@ -24,6 +24,7 @@ import com.google.devtools.j2objc.Options;
 import com.google.devtools.j2objc.ast.AbstractTypeDeclaration;
 import com.google.devtools.j2objc.ast.CompilationUnit;
 import com.google.devtools.j2objc.ast.PackageDeclaration;
+import com.google.devtools.j2objc.ast.TreeUtil;
 import com.google.devtools.j2objc.types.HeaderImportCollector;
 import com.google.devtools.j2objc.types.Import;
 import com.google.devtools.j2objc.util.NameTable;
@@ -60,11 +61,9 @@ public class ObjectiveCHeaderGenerator extends ObjectiveCSourceFileGenerator {
   public void generate() {
     println(J2ObjC.getFileHeader(getGenerationUnit().getSourceName()));
 
-    generateFileHeader();
-
     Map<ITypeBinding, AbstractTypeDeclaration> declaredTypes = Maps.newHashMap();
     Map<String, ITypeBinding> declaredTypeNames = Maps.newHashMap();
-    Map<AbstractTypeDeclaration, CompilationUnit> decls = Maps.newLinkedHashMap();
+    Set<AbstractTypeDeclaration> types = Sets.newLinkedHashSet();
     Set<PackageDeclaration> packagesToDoc = Sets.newLinkedHashSet();
 
     // First, gather everything we need to generate.
@@ -76,13 +75,14 @@ public class ObjectiveCHeaderGenerator extends ObjectiveCSourceFileGenerator {
       // in the same list of 'things to generate'.
       // TODO(mthvedt): Puzzle--figure out a way to do that in Java's type system
       // that is worth the effort.
+      // TODO(mthvedt): This logic may be duplicated in TypeSorter.java.
       PackageDeclaration pkg = unit.getPackage();
       if (pkg.getJavadoc() != null && Options.docCommentsEnabled()) {
         packagesToDoc.add(pkg);
       }
 
       for (AbstractTypeDeclaration type : unit.getTypes()) {
-        decls.put(type, unit);
+        types.add(type);
         declaredTypes.put(type.getTypeBinding(), type);
         declaredTypeNames.put(NameTable.getFullName(type.getTypeBinding()), type.getTypeBinding());
       }
@@ -91,20 +91,25 @@ public class ObjectiveCHeaderGenerator extends ObjectiveCSourceFileGenerator {
     // We order the type declarations so that the inheritance tree appears in the correct order.
     // The ordering is minimal; a type is reordered only if a subtype is immediately following.
     List<ITypeBinding> orderedDeclarationBindings = Lists.newArrayList();
-    for (Map.Entry<AbstractTypeDeclaration, CompilationUnit> e : decls.entrySet()) {
-      e.getValue().setGenerationContext();
-      orderSuperinterfaces(
-          e.getKey().getTypeBinding(), orderedDeclarationBindings, declaredTypeNames);
+    for (AbstractTypeDeclaration type : types) {
+      setGenerationContext(type);
+      orderSuperinterfaces(type.getTypeBinding(), orderedDeclarationBindings, declaredTypeNames);
     }
 
     Set<AbstractTypeDeclaration> seenDecls = Sets.newHashSet();
+    List<AbstractTypeDeclaration> orderedTypeDeclarations = Lists.newArrayList();
     for (ITypeBinding declBinding : orderedDeclarationBindings) {
       AbstractTypeDeclaration decl = declaredTypes.get(declBinding);
-      CompilationUnit unit = decls.get(decl);
       if (!seenDecls.add(decl)) {
         continue;
       }
+      orderedTypeDeclarations.add(decl);
+    }
 
+    generateFileHeader(orderedTypeDeclarations);
+
+    for (AbstractTypeDeclaration decl : orderedTypeDeclarations) {
+      CompilationUnit unit = TreeUtil.getCompilationUnit(decl);
       unit.setGenerationContext();
 
       // Print package docs before the first type in the package. (See above comments and TODO.)
@@ -171,14 +176,15 @@ public class ObjectiveCHeaderGenerator extends ObjectiveCSourceFileGenerator {
     }
   }
 
-  protected void generateFileHeader() {
+  protected void generateFileHeader(List<AbstractTypeDeclaration> declarations) {
     printf("#ifndef _%s_H_\n", getGenerationUnit().getName());
     printf("#define _%s_H_\n", getGenerationUnit().getName());
     pushIgnoreDeprecatedDeclarationsPragma();
     newline();
 
     HeaderImportCollector collector = new HeaderImportCollector();
-    collector.collect(getGenerationUnit().getCompilationUnits());
+    // Order matters for finding forward declarations.
+    collector.collect(declarations);
 
     printForwardDeclarations(collector.getForwardDeclarations());
 
