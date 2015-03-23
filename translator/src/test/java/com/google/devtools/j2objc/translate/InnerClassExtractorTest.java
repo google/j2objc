@@ -513,7 +513,7 @@ public class InnerClassExtractorTest extends GenerationTest {
     String source = "public class A { void foo() { class MyRunnable implements Runnable {"
         + "public void run() {} }}}";
     String translation = translateSourceFile(source, "A", "A.h");
-    assertTranslation(translation, "@interface A_foo_MyRunnable : NSObject < JavaLangRunnable >");
+    assertTranslation(translation, "@interface A_1MyRunnable : NSObject < JavaLangRunnable >");
     assertNotInTranslation(translation, "A *this");
   }
 
@@ -527,7 +527,7 @@ public class InnerClassExtractorTest extends GenerationTest {
     String source = "public class A { class MyClass {} void foo() { class MyClass {}}}";
     String translation = translateSourceFile(source, "A", "A.h");
     assertTranslation(translation, "@interface A_MyClass");
-    assertTranslation(translation, "@interface A_foo_MyClass");
+    assertTranslation(translation, "@interface A_1MyClass");
   }
 
   public void testOuterThisReferenceInInner() throws IOException {
@@ -734,7 +734,7 @@ public class InnerClassExtractorTest extends GenerationTest {
         "class Test { Runnable foo() { class MyRunnable implements Runnable { "
         + "public void run() { Runnable r = new Runnable() { public void run() {} }; } } "
         + "return new MyRunnable(); } }", "Test", "Test.h");
-    assertOccurrences(translation, "@interface Test_foo_MyRunnable_$1", 1);
+    assertOccurrences(translation, "@interface Test_1MyRunnable_$1", 1);
   }
 
   public void testOuterInitializedBeforeSuperInit() throws IOException {
@@ -770,15 +770,15 @@ public class InnerClassExtractorTest extends GenerationTest {
         + "  } "
         + "  new Inner(); } }",
         "Test", "Test.m");
-    assertTranslation(translation, "[[Test_test_Inner alloc] initWithNSString:s]");
+    assertTranslation(translation, "[[Test_1Inner alloc] initWithNSString:s]");
     assertTranslatedLines(translation,
-        "void Test_test_Inner_initWithNSString_(Test_test_Inner *self, NSString *capture$0) {",
-        "  Test_test_Inner_initWithInt_withNSString_(self, 0, capture$0);",
+        "void Test_1Inner_initWithNSString_(Test_1Inner *self, NSString *capture$0) {",
+        "  Test_1Inner_initWithInt_withNSString_(self, 0, capture$0);",
         "}");
     assertTranslatedLines(translation,
-        "void Test_test_Inner_initWithInt_withNSString_("
-          + "Test_test_Inner *self, jint i, NSString *capture$0) {",
-        "  Test_test_Inner_set_val$s_(self, capture$0);",
+        "void Test_1Inner_initWithInt_withNSString_("
+          + "Test_1Inner *self, jint i, NSString *capture$0) {",
+        "  Test_1Inner_set_val$s_(self, capture$0);",
         "  NSObject_init(self);",
         "}");
   }
