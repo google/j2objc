@@ -83,6 +83,32 @@ public class NameTableTest extends GenerationTest {
     assertEquals("FooBarSomeClass_Inner", NameTable.getFullName(decl.getTypeBinding()));
   }
 
+  // Verify the name of an inner class of an enum.
+  public void testGetFullNameEnumWithInnerClasses() {
+    String source = "package foo.bar; "
+        + "public enum SomeClass { A; static class Inner {} static enum Inner2 { B; }}";
+    CompilationUnit unit = translateType("SomeClass", source);
+    AbstractTypeDeclaration decl = unit.getTypes().get(1);
+    // Outer type should not have "Enum" added to name.
+    assertEquals("FooBarSomeClass_Inner", NameTable.getFullName(decl.getTypeBinding()));
+    // Inner enum should have "Enum" added to name.
+    decl = unit.getTypes().get(2);
+    assertEquals("FooBarSomeClass_Inner2Enum", NameTable.getFullName(decl.getTypeBinding()));
+  }
+
+  // Verify local class name.
+  public void testGetFullNameWithLocalClass() {
+    String source = "package foo.bar; class SomeClass { void test() { "
+        // Put each Foo in a separate scope, so leading index number changes.
+        // This matches JVM naming, once '$' is substituted for the '_' characters.
+        + "{ class Foo {}} { class Foo {}}}}";
+    CompilationUnit unit = translateType("SomeClass", source);
+    AbstractTypeDeclaration decl = unit.getTypes().get(1);
+    assertEquals("FooBarSomeClass_1Foo", NameTable.getFullName(decl.getTypeBinding()));
+    decl = unit.getTypes().get(2);
+    assertEquals("FooBarSomeClass_2Foo", NameTable.getFullName(decl.getTypeBinding()));
+  }
+
   public void testTypeVariableWithTypeVariableBounds() {
     String source = "class A<T> { <E extends T> void foo(E e) {} }";
     CompilationUnit unit = translateType("A", source);

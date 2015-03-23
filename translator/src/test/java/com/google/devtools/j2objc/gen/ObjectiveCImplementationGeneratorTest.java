@@ -999,17 +999,17 @@ public class ObjectiveCImplementationGeneratorTest extends GenerationTest {
     assertTranslatedLines(translation,
         "static const J2ObjCEnclosingMethodInfo "
         + "enclosing_method = { \"A\", \"initWithNSString:\" };",
-        "static const J2ObjcClassInfo _A_A_B = { 2, \"B\", NULL, \"A\", 0x0, 1, methods, "
+        "static const J2ObjcClassInfo _A_1B = { 2, \"B\", NULL, \"A\", 0x0, 1, methods, "
         + "0, NULL, 0, NULL, 0, NULL, &enclosing_method, NULL };");
     assertTranslatedLines(translation,
         "static const J2ObjCEnclosingMethodInfo "
         + "enclosing_method = { \"A\", \"testWithInt:withLong:\" };",
-        "static const J2ObjcClassInfo _A_test_C = { 2, \"C\", NULL, \"A\", 0x0, 1, methods, "
+        "static const J2ObjcClassInfo _A_1C = { 2, \"C\", NULL, \"A\", 0x0, 1, methods, "
         + "0, NULL, 0, NULL, 1, inner_classes, &enclosing_method, NULL };");
 
     // Verify D is not enclosed by test(), as it's enclosed by C.
     assertTranslation(translation,
-        "J2ObjcClassInfo _A_test_C_test_D = { 2, \"D\", NULL, \"A$C\", 0x0, 1, methods, "
+        "J2ObjcClassInfo _A_1C_D = { 2, \"D\", NULL, \"A$C\", 0x0, 1, methods, "
         + "0, NULL, 0, NULL, 0, NULL, NULL, NULL }");
   }
 

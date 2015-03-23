@@ -793,37 +793,42 @@ public class NameTable {
    * name is "JavaUtilArrayList_ListItr".
    */
   public static String getFullName(ITypeBinding binding) {
+    String name = getFullNameInner(binding);
+    return binding.isEnum() ? (name + "Enum") : name;
+  }
+
+  private static String getFullNameInner(ITypeBinding binding) {
     binding = Types.mapType(binding.getErasure());  // Make sure type variables aren't included.
-    String suffix = binding.isEnum() ? "Enum" : "";
-    String prefix = "";
-    IMethodBinding outerMethod = binding.getDeclaringMethod();
-    if (outerMethod != null && !binding.isAnonymous()) {
-      prefix += "_" + outerMethod.getName();
-    }
     ITypeBinding outerBinding = binding.getDeclaringClass();
+    if (binding.isLocal() && !binding.isAnonymous()) {
+      String binaryName = binding.getBinaryName();
+      int innerClassIndex = binaryName.lastIndexOf(binding.getName());
+      while (innerClassIndex > 0 && binaryName.charAt(innerClassIndex - 1) != '$') {
+        --innerClassIndex;
+      }
+      return getFullNameInner(outerBinding) + '_' + binaryName.substring(innerClassIndex);
+    }
     if (outerBinding != null) {
-      String baseName = getFullName(outerBinding) + prefix + '_' + getName(binding);
-      return (outerBinding.isEnum() && binding.isAnonymous()) ? baseName : baseName + suffix;
+      String baseName = getFullNameInner(outerBinding) + '_' + getName(binding);
+      return (outerBinding.isEnum() && binding.isAnonymous()) ? baseName : baseName;
     }
     String name = binding.getQualifiedName();
 
     // Use ObjectiveCType annotation, if it exists.
     IAnnotationBinding annotation = BindingUtil.getAnnotation(binding, ObjectiveCName.class);
     if (annotation != null) {
-      name = (String) BindingUtil.getAnnotationValue(annotation, "value");
-      return name + suffix;
+      return (String) BindingUtil.getAnnotationValue(annotation, "value");
     }
 
     // Use mapping file entry, if it exists.
     if (Options.getClassMappings().containsKey(name)) {
-      name = Options.getClassMappings().get(name);
-      return name + suffix;
+      return Options.getClassMappings().get(name);
     }
 
     // Use camel-cased package+class name.
     IPackageBinding pkg = binding.getPackage();
     String pkgName = pkg != null ? getPrefix(pkg) : "";
-    return pkgName + binding.getName() + suffix;
+    return pkgName + binding.getName();
   }
 
   private static boolean isReservedName(String name) {

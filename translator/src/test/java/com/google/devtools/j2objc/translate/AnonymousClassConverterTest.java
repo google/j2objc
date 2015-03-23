@@ -357,17 +357,17 @@ public class AnonymousClassConverterTest extends GenerationTest {
     String header = translateSourceFile(source, "Test", "Test.h");
     String impl = getTranslatedFile("Test.m");
 
-    assertTranslation(header, "@interface TestEnum_$1 : TestEnum");
-    assertTranslation(header, "@interface TestEnum_$2 : TestEnum");
+    assertTranslation(header, "@interface Test_$1Enum : TestEnum");
+    assertTranslation(header, "@interface Test_$2Enum : TestEnum");
     assertTranslatedLines(header,
         "- (instancetype)initWithNSString:(NSString *)__name",
         "withInt:(jint)__ordinal;");
 
     assertTranslation(impl, "TestEnum_initWithNSString_withInt_(self, __name, __ordinal);");
     assertTranslation(impl,
-        "TestEnum_UP = [[TestEnum_$1 alloc] initWithNSString:@\"UP\" withInt:0];");
+        "TestEnum_UP = [[Test_$1Enum alloc] initWithNSString:@\"UP\" withInt:0];");
     assertTranslation(impl,
-        "TestEnum_DOWN = [[TestEnum_$2 alloc] initWithNSString:@\"DOWN\" withInt:1];");
+        "TestEnum_DOWN = [[Test_$2Enum alloc] initWithNSString:@\"DOWN\" withInt:1];");
   }
 
   public void testTwoOutersInAnonymousSubClassOfInner() throws IOException {
@@ -430,14 +430,14 @@ public class AnonymousClassConverterTest extends GenerationTest {
 
     // Verify ColorEnum_$1 constructor.
     assertTranslatedLines(impl,
-        "void ColorEnum_$1_initWithInt_withNSString_withInt_("
-          + "ColorEnum_$1 *self, jint arg$0, NSString *__name, jint __ordinal) {",
+        "void Color_$1Enum_initWithInt_withNSString_withInt_("
+          + "Color_$1Enum *self, jint arg$0, NSString *__name, jint __ordinal) {",
         "  ColorEnum_initWithInt_withNSString_withInt_(self, arg$0, __name, __ordinal);",
         "}");
 
     // Verify constant initialization.
     assertTranslation(impl,
-        "[[ColorEnum_$1 alloc] initWithInt:42 withNSString:@\"RED\" withInt:0]");
+        "[[Color_$1Enum alloc] initWithInt:42 withNSString:@\"RED\" withInt:0]");
   }
 
   public void testEnumWithInnerEnum() throws IOException {
@@ -456,7 +456,7 @@ public class AnonymousClassConverterTest extends GenerationTest {
 
     // Verify InnerValue constant initialization.
     assertTranslation(impl,
-        "[[OuterValueEnum_InnerValueEnum alloc] initWithNSString:@\"VALUE1\" withInt:0]");
+        "[[OuterValue_InnerValueEnum alloc] initWithNSString:@\"VALUE1\" withInt:0]");
   }
 
   // Tests a field initialized with an anonymous class and multiple
