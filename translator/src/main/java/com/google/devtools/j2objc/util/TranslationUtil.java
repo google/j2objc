@@ -17,10 +17,17 @@ package com.google.devtools.j2objc.util;
 import com.google.devtools.j2objc.Options;
 import com.google.devtools.j2objc.ast.AbstractTypeDeclaration;
 import com.google.devtools.j2objc.ast.Annotation;
+import com.google.devtools.j2objc.ast.ArrayCreation;
+import com.google.devtools.j2objc.ast.ClassInstanceCreation;
+import com.google.devtools.j2objc.ast.Expression;
+import com.google.devtools.j2objc.ast.MethodInvocation;
 import com.google.devtools.j2objc.ast.PackageDeclaration;
+import com.google.devtools.j2objc.ast.TreeUtil;
+import com.google.devtools.j2objc.types.IOSMethodBinding;
 import com.google.j2objc.annotations.ReflectionSupport;
 
 import org.eclipse.jdt.core.dom.IAnnotationBinding;
+import org.eclipse.jdt.core.dom.IMethodBinding;
 import org.eclipse.jdt.core.dom.ITypeBinding;
 import org.eclipse.jdt.core.dom.IVariableBinding;
 
@@ -82,6 +89,34 @@ public final class TranslationUtil {
       if (BindingUtil.typeEqualsClass(binding.getAnnotationType(), annotationClass)) {
         return binding;
       }
+    }
+    return null;
+  }
+
+  /**
+   * If possible give this expression an unbalanced extra retain. If a non-null
+   * result is returned, then the returned expression has an unbalanced extra
+   * retain and the passed in expression is removed from the tree and must be
+   * discarded. If null is returned then the passed in expression is left
+   * untouched. The caller must ensure the result is eventually consumed.
+   */
+  public static Expression retainResult(Expression node) {
+    switch (node.getKind()) {
+      case ARRAY_CREATION:
+        ((ArrayCreation) node).setHasRetainedResult(true);
+        return TreeUtil.remove(node);
+      case CLASS_INSTANCE_CREATION:
+        ((ClassInstanceCreation) node).setHasRetainedResult(true);
+        return TreeUtil.remove(node);
+      case METHOD_INVOCATION:
+        MethodInvocation invocation = (MethodInvocation) node;
+        Expression expr = invocation.getExpression();
+        IMethodBinding method = invocation.getMethodBinding();
+        if (expr != null && method instanceof IOSMethodBinding
+            && ((IOSMethodBinding) method).getSelector().equals(NameTable.AUTORELEASE_METHOD)) {
+          return TreeUtil.remove(expr);
+        }
+        break;
     }
     return null;
   }

@@ -36,7 +36,7 @@ public class ArrayRewriterTest extends GenerationTest {
         "class Test { void test(Object[] o) { o[0] = new Object(); o[0] = new int[1]; } }",
         "Test", "Test.m");
     assertTranslation(translation,
-        "IOSObjectArray_SetAndConsume(nil_chk(o), 0, [[NSObject alloc] init]);");
+        "IOSObjectArray_SetAndConsume(nil_chk(o), 0, new_NSObject_init());");
     assertTranslation(translation,
         "IOSObjectArray_SetAndConsume(o, 0, [IOSIntArray newArrayWithLength:1]);");
   }

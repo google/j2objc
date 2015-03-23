@@ -19,6 +19,7 @@ import com.google.devtools.j2objc.Options;
 import com.google.devtools.j2objc.ast.AnnotationTypeDeclaration;
 import com.google.devtools.j2objc.ast.Block;
 import com.google.devtools.j2objc.ast.BodyDeclaration;
+import com.google.devtools.j2objc.ast.ClassInstanceCreation;
 import com.google.devtools.j2objc.ast.CompilationUnit;
 import com.google.devtools.j2objc.ast.ConstructorInvocation;
 import com.google.devtools.j2objc.ast.Expression;
@@ -68,7 +69,14 @@ import java.util.Set;
  */
 public class Functionizer extends TreeVisitor {
 
+  private final IOSMethodBinding autoreleaseBinding;
   private Set<IMethodBinding> functionizableMethods;
+
+  public Functionizer() {
+    ITypeBinding idType = Types.resolveIOSType("id");
+    autoreleaseBinding = IOSMethodBinding.newMethod(
+        NameTable.AUTORELEASE_METHOD, Modifier.PUBLIC, idType, idType);
+  }
 
   @Override
   public boolean visit(CompilationUnit node) {
@@ -216,6 +224,21 @@ public class Functionizer extends TreeVisitor {
   @Override
   public void endVisit(ConstructorInvocation node) {
     visitConstructorInvocation(node, node.getMethodBinding(), node.getArguments());
+  }
+
+  @Override
+  public void endVisit(ClassInstanceCreation node) {
+    IMethodBinding binding = node.getMethodBinding();
+    ITypeBinding type = binding.getDeclaringClass();
+    FunctionInvocation invocation = new FunctionInvocation(
+        NameTable.getAllocatingConstructorName(binding), type, type, type);
+    TreeUtil.moveList(node.getArguments(), invocation.getArguments());
+    Expression expression = invocation;
+    if (Options.useReferenceCounting() && !node.hasRetainedResult()) {
+      expression = new MethodInvocation(
+          IOSMethodBinding.newTypedInvocation(autoreleaseBinding, type), expression);
+    }
+    node.replaceWith(expression);
   }
 
   @Override

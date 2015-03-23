@@ -397,14 +397,14 @@ public class RewriterTest extends GenerationTest {
         "Test", "Test.m");
     assertNotInTranslation(translation, "RetainedLocalRef");
     assertTranslation(translation, "ComGoogleJ2objcUtilScopedLocalRef *c = "
-        + "[[[ComGoogleJ2objcUtilScopedLocalRef alloc] "
-        + "initWithId:NSString_get_CASE_INSENSITIVE_ORDER_()] autorelease];");
+        + "[new_ComGoogleJ2objcUtilScopedLocalRef_initWithId_("
+        + "NSString_get_CASE_INSENSITIVE_ORDER_()) autorelease];");
     assertTranslation(translation,
         "return [((id<JavaUtilComparator>) nil_chk(((id<JavaUtilComparator>) "
         + "check_protocol_cast(c->var_, @protocol(JavaUtilComparator))))) "
         + "compareWithId:s1 withId:s2] == 0;");
     assertTranslation(translation, "ComGoogleJ2objcUtilScopedLocalRef *thing = "
-        + "[[[ComGoogleJ2objcUtilScopedLocalRef alloc] initWithId:t] autorelease];");
+        + "[new_ComGoogleJ2objcUtilScopedLocalRef_initWithId_(t) autorelease];");
     assertTranslation(translation,
         "return [((id<JavaUtilComparator>) nil_chk(((Test_Thing *) nil_chk(t))->comp_)) "
         + "compareWithId:s1 withId:s2] == 0;");

@@ -51,6 +51,14 @@ public class IOSMethodBinding extends GeneratedMethodBinding {
     return new IOSMethodBinding(selector, null, modifiers, returnType, null, declaringClass, false);
   }
 
+  public static IOSMethodBinding newTypedInvocation(IOSMethodBinding m, ITypeBinding returnType) {
+    IOSMethodBinding binding = new IOSMethodBinding(
+        m.getSelector(), null, m.getModifiers(), returnType, m, m.getDeclaringClass(),
+        m.isVarargs());
+    binding.addParameters(m);
+    return binding;
+  }
+
   public String getSelector() {
     return selector;
   }

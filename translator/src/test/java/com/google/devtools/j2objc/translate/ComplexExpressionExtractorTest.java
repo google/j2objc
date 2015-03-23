@@ -59,11 +59,11 @@ public class ComplexExpressionExtractorTest extends GenerationTest {
         "class Test { static String s = new StringBuilder().append('a').append('b').toString(); }",
         "Test", "Test.m");
     assertTranslatedLines(translation,
-        "JavaLangStringBuilder *complex$1 = [((JavaLangStringBuilder *) "
-          + "nil_chk([((JavaLangStringBuilder *) [[[JavaLangStringBuilder alloc] init] "
-          + "autorelease]) appendWithChar:'a'])) appendWithChar:'b'];",
-        "JreStrongAssign(&Test_s_, nil, [((JavaLangStringBuilder *) nil_chk(complex$1)) "
-          + "description]);");
+        "JavaLangStringBuilder *complex$1 = nil_chk([((JavaLangStringBuilder *) "
+          + "[new_JavaLangStringBuilder_init() autorelease]) appendWithChar:'a']);",
+        "NSString *complex$2 = [((JavaLangStringBuilder *) nil_chk([complex$1 "
+          + "appendWithChar:'b'])) description];",
+        "JreStrongAssign(&Test_s_, nil, complex$2);");
   }
 
   public void testLongExpression() throws IOException {
