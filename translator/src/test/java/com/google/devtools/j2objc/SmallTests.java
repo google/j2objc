@@ -28,6 +28,7 @@ import com.google.devtools.j2objc.gen.ObjectiveCSourceFileGeneratorTest;
 import com.google.devtools.j2objc.gen.PrimitiveArrayTest;
 import com.google.devtools.j2objc.gen.SignatureGeneratorTest;
 import com.google.devtools.j2objc.gen.StatementGeneratorTest;
+import com.google.devtools.j2objc.gen.TypeImplementationGeneratorTest;
 import com.google.devtools.j2objc.translate.AbstractMethodRewriterTest;
 import com.google.devtools.j2objc.translate.AnonymousClassConverterTest;
 import com.google.devtools.j2objc.translate.ArrayRewriterTest;
@@ -126,6 +127,7 @@ public class SmallTests {
     StaticVarRewriterTest.class,
     SuperMethodInvocationRewriterTest.class,
     TreeConvertTest.class,
+    TypeImplementationGeneratorTest.class,
     TypeSorterTest.class,
     TranslationProcessorTest.class,
     TreeUtilTest.class,

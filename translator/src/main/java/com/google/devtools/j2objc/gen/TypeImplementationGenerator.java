@@ -66,10 +66,7 @@ public class TypeImplementationGenerator extends TypeGenerator {
       printInnerDeclarations();
       printInitializeMethod();
       if (TranslationUtil.needsReflection(typeNode)) {
-        RuntimeAnnotationGenerator annotationGen = new RuntimeAnnotationGenerator(getBuilder());
-        annotationGen.printTypeAnnotationsMethod(typeNode);
-        annotationGen.printMethodAnnotationMethods(TreeUtil.getMethodDeclarations(typeNode));
-        annotationGen.printFieldAnnotationMethods(typeNode);
+        RuntimeAnnotationGenerator.printTypeAnnotationMethods(getBuilder(), typeNode);
         printMetadata();
       }
       println("\n@end");
@@ -104,7 +101,7 @@ public class TypeImplementationGenerator extends TypeGenerator {
         }
         printInitializeMethod();
         if (needsReflection) {
-          new RuntimeAnnotationGenerator(getBuilder()).printTypeAnnotationsMethod(typeNode);
+          RuntimeAnnotationGenerator.printTypeAnnotationMethods(getBuilder(), typeNode);
           printMetadata();
         }
         println("\n@end");
@@ -120,6 +117,7 @@ public class TypeImplementationGenerator extends TypeGenerator {
         printf("\n@implementation %s\n", typeName);
         printInitializeMethod();
         if (needsReflection) {
+          RuntimeAnnotationGenerator.printTypeAnnotationMethods(getBuilder(), typeNode);
           printMetadata();
         }
         println("\n@end");
