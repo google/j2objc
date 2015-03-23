@@ -44,8 +44,20 @@ import java.util.List;
  */
 public class RuntimeAnnotationGenerator extends AbstractSourceGenerator {
 
-  public RuntimeAnnotationGenerator(SourceBuilder builder) {
+  private RuntimeAnnotationGenerator(SourceBuilder builder) {
     super(builder);
+  }
+
+  public static void printPackageAnnotationMethod(SourceBuilder builder, PackageDeclaration node) {
+    new RuntimeAnnotationGenerator(builder).printPackageAnnotationMethod(node);
+  }
+
+  public static void printTypeAnnotationMethods(
+      SourceBuilder builder, AbstractTypeDeclaration node) {
+    RuntimeAnnotationGenerator annotationGen = new RuntimeAnnotationGenerator(builder);
+    annotationGen.printTypeAnnotationsMethod(node);
+    annotationGen.printMethodAnnotationMethods(TreeUtil.getMethodDeclarations(node));
+    annotationGen.printFieldAnnotationMethods(node);
   }
 
   public void printPackageAnnotationMethod(PackageDeclaration node) {

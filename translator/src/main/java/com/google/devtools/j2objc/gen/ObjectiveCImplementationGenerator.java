@@ -152,7 +152,7 @@ public class ObjectiveCImplementationGenerator extends ObjectiveCSourceFileGener
     printf("@interface %s : NSObject\n", typeName);
     printf("@end\n\n");
     printf("@implementation %s\n", typeName);
-    new RuntimeAnnotationGenerator(getBuilder()).printPackageAnnotationMethod(node);
+    RuntimeAnnotationGenerator.printPackageAnnotationMethod(getBuilder(), node);
     println("\n@end");
   }
 
