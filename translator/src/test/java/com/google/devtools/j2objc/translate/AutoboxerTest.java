@@ -37,7 +37,7 @@ public class AutoboxerTest extends GenerationTest {
 
     // i should not be boxed since its argument is explicitly declared,
     // but 1 and 2 should be because they are passed as varargs.
-    assertTranslation(translation, "twoWithTest:[[[Test alloc] initWithNSString:s] autorelease] "
+    assertTranslation(translation, "twoWithTest:[new_Test_initWithNSString_(s) autorelease] "
         + "withInt:i withJavaLangIntegerArray:"
         + "[IOSObjectArray arrayWithObjects:(id[]){ JavaLangInteger_valueOfWithInt_(1), "
         + "JavaLangInteger_valueOfWithInt_(2) } count:2 type:JavaLangInteger_class_()]];");
@@ -296,11 +296,11 @@ public class AutoboxerTest extends GenerationTest {
     String translation = translateSourceFile(source, "Test", "Test.m");
 
     assertTranslation(translation,
-        "[[TestEnum alloc] initWithId:JavaLangInteger_valueOfWithInt_(0) "
-        + "withNSString:@\"INT\" withInt:0]");
+        "new_TestEnum_initWithId_withNSString_withInt_("
+        + "JavaLangInteger_valueOfWithInt_(0), @\"INT\", 0)");
     assertTranslation(translation,
-        "[[TestEnum alloc] initWithId:JavaLangBoolean_valueOfWithBoolean_(NO) "
-        + "withNSString:@\"BOOLEAN\" withInt:1]");
+        "new_TestEnum_initWithId_withNSString_withInt_("
+        + "JavaLangBoolean_valueOfWithBoolean_(NO), @\"BOOLEAN\", 1)");
   }
 
   public void testBoxedBoolInIf() throws IOException {
@@ -419,8 +419,8 @@ public class AutoboxerTest extends GenerationTest {
         "class Test { void takesDouble(double d) {} void test() { takesDouble(new Double(1.2)); }}",
         "Test", "Test.m");
     assertTranslation(translation,
-        "[self takesDoubleWithDouble:[((JavaLangDouble *) [[[JavaLangDouble alloc] "
-        + "initWithDouble:1.2] autorelease]) doubleValue]];");
+        "[self takesDoubleWithDouble:[((JavaLangDouble *) [new_JavaLangDouble_initWithDouble_(1.2) "
+        + "autorelease]) doubleValue]];");
   }
 
   public void testWildcardBoxType() throws IOException {

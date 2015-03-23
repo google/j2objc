@@ -97,7 +97,7 @@ public class StatementGeneratorTest extends GenerationTest {
     List<Statement> stmts = translateStatements(source);
     assertEquals(1, stmts.size());
     String result = generateStatement(stmts.get(0));
-    assertEquals("[[[JavaLangException alloc] initWithNSString:@\"test\"] autorelease];", result);
+    assertEquals("[new_JavaLangException_initWithNSString_(@\"test\") autorelease];", result);
   }
 
   public void testParameterTranslation() throws IOException {
@@ -106,7 +106,7 @@ public class StatementGeneratorTest extends GenerationTest {
     assertEquals(2, stmts.size());
     String result = generateStatement(stmts.get(1));
     assertEquals(
-        "[[[JavaLangException alloc] initWithJavaLangThrowable:cause] autorelease];", result);
+        "[new_JavaLangException_initWithJavaLangThrowable_(cause) autorelease];", result);
   }
 
   public void testCastTranslation() throws IOException {
@@ -442,10 +442,13 @@ public class StatementGeneratorTest extends GenerationTest {
         + "  public T nextElement() { return it.next(); }}; }}",
         "Test", "Test.m");
     assertTranslation(translation,
-        "return [[[Test_$1 alloc] initWithJavaUtilCollection:collection] autorelease];");
+        "return [new_Test_$1_initWithJavaUtilCollection_(collection) autorelease];");
     translation = getTranslatedFile("Test.h");
     assertTranslation(translation,
         "- (instancetype)initWithJavaUtilCollection:(id<JavaUtilCollection>)capture$0;");
+    assertTranslation(translation,
+        "FOUNDATION_EXPORT Test_$1 *new_Test_$1_initWithJavaUtilCollection_("
+        + "id<JavaUtilCollection> capture$0) NS_RETURNS_RETAINED;");
   }
 
   public void testEnumInEqualsTest() throws IOException {
@@ -630,8 +633,7 @@ public class StatementGeneratorTest extends GenerationTest {
         "public class A { int x; class Inner { int y; Inner(int i) { y = i + x; }}"
         + "public Inner test() { return this.new Inner(3); }}",
         "A", "A.m");
-    assertTranslation(translation,
-        "return [[[A_Inner alloc] initWithA:self withInt:3] autorelease];");
+    assertTranslation(translation, "return [new_A_Inner_initWithA_withInt_(self, 3) autorelease];");
   }
 
   public void testNewFieldNotRetained() throws IOException {
@@ -639,7 +641,7 @@ public class StatementGeneratorTest extends GenerationTest {
         "import java.util.*; public class A { Map map; A() { map = new HashMap(); }}",
         "A", "A.m");
     assertTranslation(translation,
-        "A_setAndConsume_map_(self, [[JavaUtilHashMap alloc] init])");
+        "A_setAndConsume_map_(self, new_JavaUtilHashMap_init())");
   }
 
   public void testStringAddOperator() throws IOException {
@@ -752,8 +754,7 @@ public class StatementGeneratorTest extends GenerationTest {
     String translation = translateSourceFile(
         "class A { class B {} static B test() { return new A().new B(); }}",
         "A", "A.m");
-    assertTranslation(translation,
-        "[[[A_B alloc] initWithA:[[[A alloc] init] autorelease]] autorelease]");
+    assertTranslation(translation, "[new_A_B_initWithA_([new_A_init() autorelease]) autorelease]");
   }
 
   public void testSuperFieldAccess() throws IOException {
@@ -1434,7 +1435,7 @@ public class StatementGeneratorTest extends GenerationTest {
         + "  new Throwable(); }}",
         "Test", "Test.m");
     assertTranslation(translation, "(void) [sb appendWithNSString:@\"hello, world\"];");
-    assertTranslation(translation, "(void) [[JavaLangThrowable alloc] init]");
+    assertTranslation(translation, "(void) new_JavaLangThrowable_init();");
   }
 
   // Verify Java 7's switch statements with strings.
@@ -1473,8 +1474,8 @@ public class StatementGeneratorTest extends GenerationTest {
           + "    return br.readLine(); } }}",
           "Test", "Test.m");
       assertTranslation(translation,
-          "JavaIoBufferedReader *br = [[[JavaIoBufferedReader alloc] initWithJavaIoReader:"
-          + "[[[JavaIoFileReader alloc] initWithNSString:path] autorelease]] autorelease];");
+          "JavaIoBufferedReader *br = [new_JavaIoBufferedReader_initWithJavaIoReader_("
+          + "[new_JavaIoFileReader_initWithNSString_(path) autorelease]) autorelease];");
       assertTranslation(translation,
           "@try {\n      return [br readLine];\n    }");
       assertTranslation(translation, "@finally {");

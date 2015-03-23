@@ -55,7 +55,7 @@ public class NilCheckResolverTest extends GenerationTest {
         "nil_chk(o) description];",
         "o = nil;",
         "[nil_chk(o) description];",
-        "o = [[[NSObject alloc] init] autorelease];",
+        "o = [new_NSObject_init() autorelease];",
         "[o description];");
   }
 

@@ -136,7 +136,7 @@ public class ObjectiveCImplementationGeneratorTest extends GenerationTest {
     assertTranslation(translation, "JavaUtilDate *Example_today_;");
     assertTranslation(translation, "+ (void)initialize {");
     assertTranslation(translation,
-        "JreStrongAssignAndConsume(&Example_today_, nil, [[JavaUtilDate alloc] init]);");
+        "JreStrongAssignAndConsume(&Example_today_, nil, new_JavaUtilDate_init());");
   }
 
   public void testStaticVariableWithNonInitInitialization() throws IOException {
@@ -234,7 +234,7 @@ public class ObjectiveCImplementationGeneratorTest extends GenerationTest {
     assertTranslation(translation, "ColorEnum *ColorEnum_values_[3];");
     assertTranslation(translation, "@implementation ColorEnum");
     assertTranslation(translation,
-        "ColorEnum_RED = [[ColorEnum alloc] initWithNSString:@\"RED\" withInt:0];");
+        "ColorEnum_RED = new_ColorEnum_initWithNSString_withInt_(@\"RED\", 0);");
     assertTranslation(translation, "for (int i = 0; i < 3; i++) {");
     assertTranslation(translation, "ColorEnum *e = ColorEnum_values_[i];");
   }
@@ -248,14 +248,14 @@ public class ObjectiveCImplementationGeneratorTest extends GenerationTest {
     String translation = translateSourceFile(sourceContent, "Color", "Color.m");
     assertTranslation(translation, "@implementation ColorEnum");
     assertTranslation(translation,
-        "ColorEnum_RED = [[ColorEnum alloc] "
-        + "initWithInt:(jint) 0xff0000 withNSString:@\"RED\" withInt:0];");
+        "ColorEnum_RED = new_ColorEnum_initWithInt_withNSString_withInt_("
+        + "(jint) 0xff0000, @\"RED\", 0);");
     assertTranslation(translation,
-        "ColorEnum_WHITE = [[ColorEnum alloc] "
-        + "initWithInt:(jint) 0xffffff withNSString:@\"WHITE\" withInt:1];");
+        "ColorEnum_WHITE = new_ColorEnum_initWithInt_withNSString_withInt_("
+        + "(jint) 0xffffff, @\"WHITE\", 1);");
     assertTranslation(translation,
-        "ColorEnum_BLUE = [[ColorEnum alloc] "
-        + "initWithInt:(jint) 0x0000ff withNSString:@\"BLUE\" withInt:2];");
+        "ColorEnum_BLUE = new_ColorEnum_initWithInt_withNSString_withInt_("
+        + "(jint) 0x0000ff, @\"BLUE\", 2);");
     assertTranslation(translation, "- (jint)getRgb {");
     assertTranslation(translation, "return rgb_;");
     assertTranslation(translation, "jint newValue_;");
@@ -307,7 +307,7 @@ public class ObjectiveCImplementationGeneratorTest extends GenerationTest {
         "Compatible", "foo/Compatible.m");
     assertTranslation(translation, "id FooCompatible_FOO_;");
     assertTranslation(translation,
-        "JreStrongAssignAndConsume(&FooCompatible_FOO_, nil, [[NSObject alloc] init]);");
+        "JreStrongAssignAndConsume(&FooCompatible_FOO_, nil, new_NSObject_init());");
   }
 
   public void testAnnotationGeneration() throws IOException {
@@ -406,8 +406,8 @@ public class ObjectiveCImplementationGeneratorTest extends GenerationTest {
     assertFalse(header.contains("isPackableWithTest_TypeEnum"));
     assertFalse(impl.contains("\n  return NO;\n  [super initWithTest_TypeEnum:arg$0]}"));
     assertTranslation(impl,
-        "initWithTest_TypeEnum:Test_TypeEnum_get_STRING() "
-        + "withNSString:@\"STRING\" withInt:2");
+        "Test_FieldEnum_STRING = new_Test_Field_$1Enum_initWithTest_TypeEnum_withNSString_withInt_("
+        + "Test_TypeEnum_get_STRING(), @\"STRING\", 2);");
   }
 
   public void testAutoreleasePoolMethod() throws IOException {

@@ -70,8 +70,9 @@ public class InitializationNormalizerTest extends GenerationTest {
         + "  }; }}";
     String translation = translateSourceFile(source, "Distance", "Distance.m");
     assertTranslation(translation,
-        "[IOSObjectArray newArrayWithObjects:(id[]){ [[[Distance_SimplexVertex alloc] "
-        + "initWithDistance:outer$] autorelease] } count:1 type:Distance_SimplexVertex_class_()]");
+        "[IOSObjectArray newArrayWithObjects:(id[]){ "
+        + "[new_Distance_SimplexVertex_initWithDistance_(outer$) autorelease] } "
+        + "count:1 type:Distance_SimplexVertex_class_()]");
   }
 
   public void testStaticVarInitialization() throws IOException {
@@ -83,7 +84,7 @@ public class InitializationNormalizerTest extends GenerationTest {
     assertTranslatedLines(translation,
         "+ (void)initialize {",
         "if (self == [Test class]) {",
-        "JreStrongAssignAndConsume(&Test_date_, nil, [[JavaUtilDate alloc] init]);");
+        "JreStrongAssignAndConsume(&Test_date_, nil, new_JavaUtilDate_init());");
   }
 
   public void testFieldInitializer() throws IOException {
@@ -94,7 +95,7 @@ public class InitializationNormalizerTest extends GenerationTest {
     assertTranslatedLines(translation,
         "void Test_init(Test *self) {",
         "  NSObject_init(self);",
-        "  Test_setAndConsume_date_(self, [[JavaUtilDate alloc] init]);",
+        "  Test_setAndConsume_date_(self, new_JavaUtilDate_init());",
         "}");
   }
 
@@ -107,7 +108,7 @@ public class InitializationNormalizerTest extends GenerationTest {
         "void Test_init(Test *self) {",
         "  NSObject_init(self);",
         "  {",
-        "    Test_setAndConsume_date_(self, [[JavaUtilDate alloc] init]);",
+        "    Test_setAndConsume_date_(self, new_JavaUtilDate_init());",
         "  }",
         "}");
   }
@@ -140,7 +141,7 @@ public class InitializationNormalizerTest extends GenerationTest {
         "void Test_initWithInt_(Test *self, jint i) {",
         "  NSObject_init(self);",
         "  {",
-        "    Test_setAndConsume_date_(self, [[JavaUtilDate alloc] init]);",
+        "    Test_setAndConsume_date_(self, new_JavaUtilDate_init());",
         "  }",
         "  [((JavaIoPrintStream *) nil_chk(JavaLangSystem_get_out_())) printlnWithInt:i];",
         "}");
@@ -153,7 +154,7 @@ public class InitializationNormalizerTest extends GenerationTest {
     assertTranslatedLines(translation,
         "void Test_init(Test *self) {",
         "  NSObject_init(self);",
-        "  Test_setAndConsume_date_(self, [[JavaUtilDate alloc] init]);",
+        "  Test_setAndConsume_date_(self, new_JavaUtilDate_init());",
         "}");
   }
 
@@ -204,7 +205,7 @@ public class InitializationNormalizerTest extends GenerationTest {
         + "  static { iSet.add(I); } "
         + "  public static final int iSetSize = iSet.size(); }";
     String translation = translateSourceFile(source, "Test", "Test.m");
-    String setInit = "JreStrongAssignAndConsume(&Test_iSet_, nil, [[JavaUtilHashSet alloc] init])";
+    String setInit = "JreStrongAssignAndConsume(&Test_iSet_, nil, new_JavaUtilHashSet_init())";
     String setAdd = "[Test_iSet_ addWithId:JavaLangInteger_valueOfWithInt_(Test_I)]";
     String setSize = "Test_iSetSize_ = [Test_iSet_ size]";
     assertTranslation(translation, setInit);

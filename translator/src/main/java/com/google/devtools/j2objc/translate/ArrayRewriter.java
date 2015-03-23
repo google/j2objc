@@ -38,6 +38,7 @@ import com.google.devtools.j2objc.types.GeneratedVariableBinding;
 import com.google.devtools.j2objc.types.IOSMethodBinding;
 import com.google.devtools.j2objc.types.IOSTypeBinding;
 import com.google.devtools.j2objc.types.Types;
+import com.google.devtools.j2objc.util.TranslationUtil;
 
 import org.eclipse.jdt.core.dom.ITypeBinding;
 import org.eclipse.jdt.core.dom.Modifier;
@@ -282,8 +283,12 @@ public class ArrayRewriter extends TreeVisitor {
     assert op == Assignment.Operator.ASSIGN;
 
     Expression value = TreeUtil.remove(assignmentNode.getRightHandSide());
-    String funcName =
-        TreeUtil.retainResult(value) ? "IOSObjectArray_SetAndConsume" : "IOSObjectArray_Set";
+    Expression retainedValue = TranslationUtil.retainResult(value);
+    String funcName = "IOSObjectArray_Set";
+    if (retainedValue != null) {
+      funcName = "IOSObjectArray_SetAndConsume";
+      value = retainedValue;
+    }
     FunctionInvocation invocation = new FunctionInvocation(
         funcName, componentType, Types.resolveIOSType("id"),
         Types.resolveIOSType("IOSObjectArray"));

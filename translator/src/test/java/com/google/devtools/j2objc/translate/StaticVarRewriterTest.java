@@ -39,6 +39,6 @@ public class StaticVarRewriterTest extends GenerationTest {
     addSourceFile("class A { static Object o; }", "A.java");
     String translation = translateSourceFile(
         "class Test { void test() { A.o = new Object(); } }", "Test", "Test.m");
-    assertTranslation(translation, "A_setAndConsume_o_([[NSObject alloc] init]);");
+    assertTranslation(translation, "A_setAndConsume_o_(new_NSObject_init());");
   }
 }

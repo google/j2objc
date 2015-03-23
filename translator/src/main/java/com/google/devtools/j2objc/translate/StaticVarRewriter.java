@@ -32,6 +32,7 @@ import com.google.devtools.j2objc.ast.TreeVisitor;
 import com.google.devtools.j2objc.types.Types;
 import com.google.devtools.j2objc.util.BindingUtil;
 import com.google.devtools.j2objc.util.NameTable;
+import com.google.devtools.j2objc.util.TranslationUtil;
 
 import org.eclipse.jdt.core.dom.ITypeBinding;
 import org.eclipse.jdt.core.dom.IVariableBinding;
@@ -150,8 +151,12 @@ public class StaticVarRewriter extends TreeVisitor {
     ITypeBinding varType = var.getType();
     ITypeBinding declaringType = var.getDeclaringClass();
     String funcFormat = "%s_set_%s";
-    if (Options.useReferenceCounting() && TreeUtil.retainResult(value)) {
-      funcFormat = "%s_setAndConsume_%s";
+    if (Options.useReferenceCounting()) {
+      Expression retainedValue = TranslationUtil.retainResult(value);
+      if (retainedValue != null) {
+        funcFormat = "%s_setAndConsume_%s";
+        value = retainedValue;
+      }
     }
     String funcName = String.format(
         funcFormat, NameTable.getFullName(declaringType), NameTable.getStaticVarName(var));

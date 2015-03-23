@@ -353,19 +353,7 @@ public class StatementGenerator extends TreeVisitor {
 
   @Override
   public boolean visit(ClassInstanceCreation node) {
-    ITypeBinding type = node.getType().getTypeBinding();
-    boolean addAutorelease = useReferenceCounting && !node.hasRetainedResult();
-    buffer.append(addAutorelease ? "[[[" : "[[");
-    buffer.append(NameTable.getFullName(type));
-    buffer.append(" alloc]");
-    IMethodBinding method = node.getMethodBinding();
-    List<Expression> arguments = node.getArguments();
-    printMethodInvocationNameAndArgs(NameTable.getMethodSelector(method), arguments);
-    buffer.append(']');
-    if (addAutorelease) {
-      buffer.append(" autorelease]");
-    }
-    return false;
+    throw new AssertionError("ClassInstanceCreation nodes are rewritten by Functionizer.");
   }
 
   @Override
@@ -459,7 +447,7 @@ public class StatementGenerator extends TreeVisitor {
     if (!type.isPrimitive() && Options.useARC()
         && (expression instanceof MethodInvocation
             || expression instanceof SuperMethodInvocation
-            || expression instanceof ClassInstanceCreation)) {
+            || expression instanceof FunctionInvocation)) {
       // Avoid clang warning that the return value is unused.
       buffer.append("(void) ");
     }

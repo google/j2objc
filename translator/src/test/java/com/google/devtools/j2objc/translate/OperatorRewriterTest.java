@@ -32,7 +32,7 @@ public class OperatorRewriterTest extends GenerationTest {
         "class Test { String s; static Test getTest() { return null; } "
         + "void test(boolean b) { (b ? new Test() : getTest()).s = \"foo\"; } }", "Test", "Test.m");
     assertTranslation(translation,
-        "Test_set_s_((b ? [[[Test alloc] init] autorelease] : Test_getTest()), @\"foo\");");
+        "Test_set_s_((b ? [new_Test_init() autorelease] : Test_getTest()), @\"foo\");");
   }
 
   public void testModAssignOperator() throws IOException {

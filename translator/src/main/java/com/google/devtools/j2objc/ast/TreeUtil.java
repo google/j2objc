@@ -358,24 +358,6 @@ public class TreeUtil {
   }
 
   /**
-   * If possible give this expression an unbalanced extra retain. The caller
-   * must ensure the result is eventually consumed. Used to avoid an autorelease
-   * when creating a new object.
-   */
-  public static boolean retainResult(Expression node) {
-    switch (node.getKind()) {
-      case ARRAY_CREATION:
-        ((ArrayCreation) node).setHasRetainedResult(true);
-        return true;
-      case CLASS_INSTANCE_CREATION:
-        ((ClassInstanceCreation) node).setHasRetainedResult(true);
-        return true;
-      default:
-        return false;
-    }
-  }
-
-  /**
    * Method sorter, suitable for documentation and
    * code-completion lists.
    *

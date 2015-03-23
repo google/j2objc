@@ -33,6 +33,6 @@ public class EnumRewriterTest extends GenerationTest {
         "withNSString:(NSString *)__name",
         "withInt:(jint)__ordinal {");
     assertTranslation(translation,
-        "TestEnum_A = [[TestEnum alloc] initWithId:@\"foo\" withNSString:@\"A\" withInt:0];");
+        "TestEnum_A = new_TestEnum_initWithId_withNSString_withInt_(@\"foo\", @\"A\", 0);");
   }
 }

@@ -38,6 +38,7 @@ import com.google.devtools.j2objc.ast.TreeVisitor;
 import com.google.devtools.j2objc.types.Types;
 import com.google.devtools.j2objc.util.BindingUtil;
 import com.google.devtools.j2objc.util.NameTable;
+import com.google.devtools.j2objc.util.TranslationUtil;
 import com.google.devtools.j2objc.util.UnicodeUtils;
 
 import org.eclipse.jdt.core.dom.ITypeBinding;
@@ -118,8 +119,12 @@ public class OperatorRewriter extends TreeVisitor {
   }
 
   private FunctionInvocation newStaticAssignInvocation(IVariableBinding var, Expression value) {
-    String assignFunc =
-        TreeUtil.retainResult(value) ? "JreStrongAssignAndConsume" : "JreStrongAssign";
+    String assignFunc = "JreStrongAssign";
+    Expression retainedValue = TranslationUtil.retainResult(value);
+    if (retainedValue != null) {
+      assignFunc = "JreStrongAssignAndConsume";
+      value = retainedValue;
+    }
     FunctionInvocation invocation = new FunctionInvocation(
         assignFunc, value.getTypeBinding(), Types.resolveIOSType("id"), null);
     List<Expression> args = invocation.getArguments();
@@ -134,8 +139,10 @@ public class OperatorRewriter extends TreeVisitor {
     ITypeBinding varType = var.getType();
     ITypeBinding declaringType = var.getDeclaringClass().getTypeDeclaration();
     String setterFormat = "%s_set_%s";
-    if (TreeUtil.retainResult(value)) {
+    Expression retainedValue = TranslationUtil.retainResult(value);
+    if (retainedValue != null) {
       setterFormat = "%s_setAndConsume_%s";
+      value = retainedValue;
     }
     String setterName = String.format(setterFormat, NameTable.getFullName(declaringType),
         NameTable.javaFieldToObjC(NameTable.getName(var)));
