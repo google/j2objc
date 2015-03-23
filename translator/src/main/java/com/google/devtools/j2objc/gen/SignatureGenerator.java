@@ -14,6 +14,8 @@
 
 package com.google.devtools.j2objc.gen;
 
+import com.google.devtools.j2objc.types.Types;
+
 import org.eclipse.jdt.core.dom.IMethodBinding;
 import org.eclipse.jdt.core.dom.ITypeBinding;
 import org.eclipse.jdt.core.dom.IVariableBinding;
@@ -114,7 +116,8 @@ public class SignatureGenerator {
    */
   private void genClassSignature(ITypeBinding type) {
     genOptFormalTypeParameters(type.getTypeParameters());
-    genClassTypeSignature(type.getSuperclass());
+    // JDT returns null for an interface's superclass, but signatures expect Object.
+    genClassTypeSignature(type.isInterface() ? Types.getJavaObject() : type.getSuperclass());
     for (ITypeBinding intrface : type.getInterfaces()) {
       genClassTypeSignature(intrface);
     }

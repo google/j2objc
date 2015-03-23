@@ -115,4 +115,13 @@ public class SignatureGeneratorTest extends GenerationTest {
     assertEquals("<T:Ljava/lang/Number;:Ljava/io/Serializable;>Ljava/lang/Object;",
         SignatureGenerator.createClassSignature(decls.get(0).getTypeBinding()));
   }
+
+  public void testGenericInterface() throws IOException {
+    CompilationUnit unit = translateType("A",
+        "interface A<E> extends java.util.Collection<E> {}");
+    List<AbstractTypeDeclaration> decls = unit.getTypes();
+    assertEquals(1, decls.size());
+    assertEquals("<E:Ljava/lang/Object;>Ljava/lang/Object;Ljava/util/Collection<TE;>;",
+        SignatureGenerator.createClassSignature(decls.get(0).getTypeBinding()));
+  }
 }

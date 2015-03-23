@@ -321,6 +321,11 @@ public class Types {
     return instance.NSObject;
   }
 
+  // Used by SignatureGenerator. Other classes should use getNSObject().
+  public static ITypeBinding getJavaObject() {
+    return instance.javaObjectType;
+  }
+
   public static ITypeBinding getNSString() {
     return instance.NSString;
   }
