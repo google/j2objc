@@ -15,7 +15,6 @@
 package com.google.devtools.j2objc.gen;
 
 import com.google.devtools.j2objc.ast.AbstractTypeDeclaration;
-import com.google.devtools.j2objc.ast.AnnotationTypeDeclaration;
 import com.google.devtools.j2objc.ast.AnnotationTypeMemberDeclaration;
 import com.google.devtools.j2objc.ast.EnumConstantDeclaration;
 import com.google.devtools.j2objc.ast.EnumDeclaration;
@@ -174,8 +173,7 @@ public class TypeImplementationGenerator extends TypeGenerator {
 
   private void printAnnotationImplementation() {
     if (BindingUtil.isRuntimeAnnotation(typeBinding)) {
-      List<AnnotationTypeMemberDeclaration> members =
-          TreeUtil.getAnnotationMembers((AnnotationTypeDeclaration) typeNode);
+      List<AnnotationTypeMemberDeclaration> members = TreeUtil.getAnnotationMembers(typeNode);
       printAnnotationProperties(members);
       if (!members.isEmpty()) {
         printAnnotationConstructor(typeBinding);

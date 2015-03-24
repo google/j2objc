@@ -164,8 +164,7 @@ public class MetadataGenerator {
     }
     if (typeNode instanceof AnnotationTypeDeclaration) {
       // Add property accessor and static default methods.
-      for (AnnotationTypeMemberDeclaration decl :
-           TreeUtil.getAnnotationMembers((AnnotationTypeDeclaration) typeNode)) {
+      for (AnnotationTypeMemberDeclaration decl : TreeUtil.getAnnotationMembers(typeNode)) {
         String name = decl.getName().getIdentifier();
         String returnType = getTypeName(decl.getMethodBinding().getReturnType());
         String metadata = String.format("    { \"%s\", %s, %s, 0x%x, NULL, NULL },\n",
@@ -256,8 +255,8 @@ public class MetadataGenerator {
     if (method.isSynthetic()) {
       return null;
     }
-    String methodName = method instanceof GeneratedMethodBinding ?
-        ((GeneratedMethodBinding) method).getJavaName() : method.getName();
+    String methodName = method instanceof GeneratedMethodBinding
+        ? ((GeneratedMethodBinding) method).getJavaName() : method.getName();
     String selector = NameTable.getMethodSelector(method);
     if (selector.equals(methodName)) {
       methodName = null;  // Reduce redundant data.
