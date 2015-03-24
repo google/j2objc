@@ -165,16 +165,16 @@ static void doWait(id obj, long long timeout) {
 
 + (J2ObjcClassInfo *)__metadata {
   static J2ObjcMethodInfo methods[] = {
-    { "getClass", NULL, "LIOSClass", 0x11, NULL },
+    { "getClass", NULL, "LIOSClass;", 0x11, NULL },
     { "isEqual:", "equals", "Z", 0x1, NULL },
-    { "clone", NULL, "LJavaLangObject", 0x4, "JavaLangCloneNotSupportedException" },
-    { "dealloc", "finalize", "V", 0x4, "JavaLangThrowable" },
+    { "clone", NULL, "Ljava.lang.Object;", 0x4, "Ljava.lang.CloneNotSupportedException;" },
+    { "dealloc", "finalize", "V", 0x4, "Ljava.lang.Throwable;" },
     { "notify", NULL, "V", 0x11, NULL },
     { "notifyAll", NULL, "V", 0x11, NULL },
-    { "waitWithLong:", "wait", "V", 0x11, "JavaLangInterruptedException" },
-    { "waitWithLong:withInt:", "wait", "V", 0x11, "JavaLangInterruptedException" },
-    { "wait", NULL, "V", 0x11, "JavaLangInterruptedException" },
-    { "description", "toString", "LJavaLangString", 0x1, NULL },
+    { "waitWithLong:", "wait", "V", 0x11, "Ljava.lang.InterruptedException;" },
+    { "waitWithLong:withInt:", "wait", "V", 0x11, "Ljava.lang.InterruptedException;" },
+    { "wait", NULL, "V", 0x11, "Ljava.lang.InterruptedException;" },
+    { "description", "toString", "Ljava.lang.String;", 0x1, NULL },
     { "hash", "hashCode", "I", 0x1, NULL },
   };
   static J2ObjcClassInfo _JavaLangObject = {
