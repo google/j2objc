@@ -48,6 +48,7 @@ public class TypePrivateDeclarationGenerator extends TypeDeclarationGenerator {
   private void generate() {
     printConstantDefines();
     printClassExtension();
+    printCompanionClassDeclaration();
     printFieldSetters();
     printStaticFieldDeclarations();
     printOuterDeclarations();

@@ -100,25 +100,8 @@ public class TypeDeclarationGenerator extends TypeGenerator {
       if (isRuntime) {
         printAnnotationProperties(members);
       }
+      printInnerDeclarations();
       println("\n@end");
-
-      if (isRuntime || hasInitializeMethod()) {
-        // Print annotation implementation interface.
-        printf("\n@interface %s : NSObject", typeName);
-        if (isRuntime) {
-          printf(" < %s >", typeName);
-        }
-        if (isRuntime && !members.isEmpty()) {
-          println(" {\n @private");
-          printAnnotationVariables(members);
-          println("}");
-          printAnnotationConstructor(typeBinding);
-          printAnnotationAccessors(members);
-        } else {
-          newline();
-        }
-        println("\n@end");
-      }
     } else {
       printTypeDocumentation();
       printf("@protocol %s", typeName);
@@ -126,14 +109,9 @@ public class TypeDeclarationGenerator extends TypeGenerator {
       newline();
       printInnerDeclarations();
       println("\n@end");
-
-      // Print @interface for static constants, if any.
-      if (hasInitializeMethod()) {
-        printf("\n@interface %s : NSObject\n", typeName);
-        println("\n@end");
-      }
     }
 
+    printCompanionClassDeclaration();
     printStaticInitFunction();
     printEnumConstants();
     printFieldSetters();
@@ -288,6 +266,42 @@ public class TypeDeclarationGenerator extends TypeGenerator {
       println(";");
     }
     unindent();
+  }
+
+  private boolean needsCompanionClassDeclaration() {
+    if (!typeBinding.isInterface()) {
+      return false;
+    }
+    boolean needsPublicDeclaration = hasInitializeMethod()
+        || BindingUtil.isRuntimeAnnotation(typeBinding);
+    if (printPrivateDeclarations()) {
+      return needsImplementation() && !needsPublicDeclaration;
+    } else {
+      return needsPublicDeclaration;
+    }
+  }
+
+  protected void printCompanionClassDeclaration() {
+    if (!needsCompanionClassDeclaration()) {
+      return;
+    }
+    printf("\n@interface %s : NSObject", typeName);
+    if (BindingUtil.isRuntimeAnnotation(typeBinding)) {
+      // Print annotation implementation interface.
+      printf(" < %s >", typeName);
+      List<AnnotationTypeMemberDeclaration> members = Lists.newArrayList(
+          Iterables.filter(typeNode.getBodyDeclarations(), AnnotationTypeMemberDeclaration.class));
+      if (!members.isEmpty()) {
+        println(" {\n @private");
+        printAnnotationVariables(members);
+        println("}");
+        printAnnotationConstructor(typeBinding);
+        printAnnotationAccessors(members);
+      } else {
+        newline();
+      }
+    }
+    println("\n@end");
   }
 
   private void printStaticInitFunction() {

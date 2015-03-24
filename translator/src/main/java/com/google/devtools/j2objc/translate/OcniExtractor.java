@@ -134,7 +134,9 @@ public class OcniExtractor extends TreeVisitor {
 
   @Override
   public void endVisit(TypeDeclaration node) {
-    visitType(node);
+    if (!node.isInterface()) {
+      visitType(node);
+    }
   }
 
   private void visitType(AbstractTypeDeclaration node) {

@@ -29,6 +29,7 @@ import com.google.devtools.j2objc.ast.NativeDeclaration;
 import com.google.devtools.j2objc.ast.SingleVariableDeclaration;
 import com.google.devtools.j2objc.util.BindingUtil;
 import com.google.devtools.j2objc.util.NameTable;
+import com.google.devtools.j2objc.util.TranslationUtil;
 
 import org.eclipse.jdt.core.dom.IMethodBinding;
 import org.eclipse.jdt.core.dom.ITypeBinding;
@@ -51,6 +52,7 @@ public abstract class TypeGenerator extends AbstractSourceGenerator {
   protected final AbstractTypeDeclaration typeNode;
   protected final ITypeBinding typeBinding;
   protected final String typeName;
+  protected final boolean typeNeedsReflection;
 
   private final List<BodyDeclaration> declarations;
 
@@ -59,6 +61,7 @@ public abstract class TypeGenerator extends AbstractSourceGenerator {
     typeNode = node;
     typeBinding = node.getTypeBinding();
     typeName = NameTable.getFullName(typeBinding);
+    typeNeedsReflection = TranslationUtil.needsReflection(typeBinding);
     declarations = filterDeclarations(node.getBodyDeclarations());
   }
 
@@ -168,6 +171,11 @@ public abstract class TypeGenerator extends AbstractSourceGenerator {
 
   protected void printOuterDeclarations() {
     printDeclarations(getOuterDeclarations());
+  }
+
+  protected boolean needsImplementation() {
+    return !typeBinding.isInterface() || hasInitializeMethod() || typeNeedsReflection
+        || BindingUtil.isRuntimeAnnotation(typeBinding);
   }
 
   protected boolean hasInitializeMethod() {
