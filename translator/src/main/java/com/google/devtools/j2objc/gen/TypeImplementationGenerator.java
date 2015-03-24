@@ -29,7 +29,6 @@ import com.google.devtools.j2objc.ast.TreeUtil;
 import com.google.devtools.j2objc.ast.VariableDeclarationFragment;
 import com.google.devtools.j2objc.util.BindingUtil;
 import com.google.devtools.j2objc.util.NameTable;
-import com.google.devtools.j2objc.util.TranslationUtil;
 
 import org.eclipse.jdt.core.dom.IMethodBinding;
 import org.eclipse.jdt.core.dom.ITypeBinding;
@@ -58,70 +57,15 @@ public class TypeImplementationGenerator extends TypeGenerator {
     printStaticVars();
     printEnumValuesArray();
 
-    // TODO(kstanger): Refactor away this big if-statement.
-    if (!isInterfaceType()) {
+    if (needsImplementation()) {
       newline();
       syncLineNumbers(typeNode.getName()); // avoid doc-comment
       printf("@implementation %s\n", typeName);
       printInnerDeclarations();
+      printAnnotationImplementation();
       printInitializeMethod();
-      if (TranslationUtil.needsReflection(typeNode)) {
-        RuntimeAnnotationGenerator.printTypeAnnotationMethods(getBuilder(), typeNode);
-        printMetadata();
-      }
+      printReflectionMethods();
       println("\n@end");
-    } else if (typeNode instanceof AnnotationTypeDeclaration) {
-      boolean isRuntime = BindingUtil.isRuntimeAnnotation(typeBinding);
-      boolean hasInitMethod = hasInitializeMethod();
-      boolean needsReflection = TranslationUtil.needsReflection(typeNode);
-
-      if (needsReflection && !isRuntime && !hasInitMethod) {
-        printf("\n@interface %s : NSObject\n@end\n", typeName);
-      }
-
-
-      if (isRuntime || hasInitMethod || needsReflection) {
-        syncLineNumbers(typeNode.getName()); // avoid doc-comment
-        printf("\n@implementation %s\n", typeName);
-
-        if (isRuntime) {
-          List<AnnotationTypeMemberDeclaration> members =
-              TreeUtil.getAnnotationMembers((AnnotationTypeDeclaration) typeNode);
-          printAnnotationProperties(members);
-          if (!members.isEmpty()) {
-            printAnnotationConstructor(typeBinding);
-          }
-          printAnnotationAccessors(members);
-          println("\n- (IOSClass *)annotationType {");
-          printf("  return %s_class_();\n", typeName);
-          println("}");
-          println("\n- (NSString *)description {");
-          printf("  return @\"@%s()\";\n", typeBinding.getBinaryName());
-          println("}");
-        }
-        printInitializeMethod();
-        if (needsReflection) {
-          RuntimeAnnotationGenerator.printTypeAnnotationMethods(getBuilder(), typeNode);
-          printMetadata();
-        }
-        println("\n@end");
-      }
-    } else {
-
-      boolean needsReflection = TranslationUtil.needsReflection(typeNode);
-      boolean needsImplementation = hasInitializeMethod() || needsReflection;
-      if (needsImplementation && !hasInitializeMethod()) {
-        printf("\n@interface %s : NSObject\n@end\n", typeName);
-      }
-      if (needsImplementation) {
-        printf("\n@implementation %s\n", typeName);
-        printInitializeMethod();
-        if (needsReflection) {
-          RuntimeAnnotationGenerator.printTypeAnnotationMethods(getBuilder(), typeNode);
-          printMetadata();
-        }
-        println("\n@end");
-      }
     }
 
     printOuterDeclarations();
@@ -178,7 +122,7 @@ public class TypeImplementationGenerator extends TypeGenerator {
 
   @Override
   protected void printMethodDeclaration(MethodDeclaration m) {
-    if (Modifier.isAbstract(m.getModifiers())) {
+    if (typeBinding.isInterface() || Modifier.isAbstract(m.getModifiers())) {
       return;
     }
     newline();
@@ -206,7 +150,7 @@ public class TypeImplementationGenerator extends TypeGenerator {
     }
   }
 
-  protected void printInitializeMethod() {
+  private void printInitializeMethod() {
     List<Statement> initStatements = typeNode.getClassInitStatements();
     if (initStatements.isEmpty()) {
       return;
@@ -219,6 +163,31 @@ public class TypeImplementationGenerator extends TypeGenerator {
     sb.append("J2OBJC_SET_INITIALIZED(" + typeName + ")\n");
     sb.append("}\n}");
     print("\n+ (void)initialize " + reindent(sb.toString()) + "\n");
+  }
+
+  private void printReflectionMethods() {
+    if (typeNeedsReflection) {
+      RuntimeAnnotationGenerator.printTypeAnnotationMethods(getBuilder(), typeNode);
+      printMetadata();
+    }
+  }
+
+  private void printAnnotationImplementation() {
+    if (BindingUtil.isRuntimeAnnotation(typeBinding)) {
+      List<AnnotationTypeMemberDeclaration> members =
+          TreeUtil.getAnnotationMembers((AnnotationTypeDeclaration) typeNode);
+      printAnnotationProperties(members);
+      if (!members.isEmpty()) {
+        printAnnotationConstructor(typeBinding);
+      }
+      printAnnotationAccessors(members);
+      println("\n- (IOSClass *)annotationType {");
+      printf("  return %s_class_();\n", typeName);
+      println("}");
+      println("\n- (NSString *)description {");
+      printf("  return @\"@%s()\";\n", typeBinding.getBinaryName());
+      println("}");
+    }
   }
 
   private void printAnnotationConstructor(ITypeBinding annotation) {

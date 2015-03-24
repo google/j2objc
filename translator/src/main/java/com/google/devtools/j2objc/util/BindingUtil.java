@@ -305,7 +305,7 @@ public final class BindingUtil {
    * a runtime retention policy.
    */
   public static boolean isRuntimeAnnotation(ITypeBinding binding) {
-    if (binding != null) {
+    if (binding != null && binding.isAnnotation()) {
       for (IAnnotationBinding ann : binding.getAnnotations()) {
         if (ann.getName().equals("Retention")) {
           IVariableBinding retentionBinding =
