@@ -64,13 +64,7 @@ public class TypePrivateDeclarationGenerator extends TypeDeclarationGenerator {
     if (!Iterables.isEmpty(privateDecls) || hasPrivateFields) {
       newline();
       printf("@interface %s ()", typeName);
-      if (hasPrivateFields) {
-        println(" {");
-        printInstanceVariables();
-        println("}");
-      } else {
-        newline();
-      }
+      printInstanceVariables();
       printDeclarations(privateDecls);
       println("@end");
     }

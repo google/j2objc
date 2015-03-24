@@ -466,7 +466,7 @@ public class ObjectiveCHeaderGeneratorTest extends GenerationTest {
         "  Color_WHITE = 1,",
         "  Color_BLUE = 2,",
         "};");
-    assertTranslation(translation, "@interface ColorEnum : JavaLangEnum < NSCopying > {");
+    assertTranslation(translation, "@interface ColorEnum : JavaLangEnum < NSCopying >");
     assertTranslation(translation, "+ (IOSObjectArray *)values;");
     assertTranslation(translation, "+ (ColorEnum *)valueOfWithNSString:(NSString *)name;");
     assertTranslation(translation, "FOUNDATION_EXPORT ColorEnum *ColorEnum_values_[];");

@@ -20,7 +20,6 @@ import com.google.common.collect.Lists;
 import com.google.devtools.j2objc.Options;
 import com.google.devtools.j2objc.ast.AbstractTypeDeclaration;
 import com.google.devtools.j2objc.ast.Annotation;
-import com.google.devtools.j2objc.ast.AnnotationTypeDeclaration;
 import com.google.devtools.j2objc.ast.AnnotationTypeMemberDeclaration;
 import com.google.devtools.j2objc.ast.BodyDeclaration;
 import com.google.devtools.j2objc.ast.EnumConstantDeclaration;
@@ -78,38 +77,17 @@ public class TypeDeclarationGenerator extends TypeGenerator {
     printConstantDefines();
     printNativeEnum();
 
-    // TODO(kstanger): Refactor this large if-statement.
-    if (!isInterfaceType()) {
-      printTypeDocumentation();
-      printf("@interface %s : %s", typeName, getSuperTypeName());
-      printImplementedProtocols();
-      println(" {");
-      printInstanceVariables();
-      println("}");
-      printInnerDeclarations();
-      println("\n@end");
-    } else if (typeNode instanceof AnnotationTypeDeclaration) {
-      List<AnnotationTypeMemberDeclaration> members = Lists.newArrayList(
-          Iterables.filter(typeNode.getBodyDeclarations(), AnnotationTypeMemberDeclaration.class));
-
-      boolean isRuntime = BindingUtil.isRuntimeAnnotation(typeBinding);
-
-      // Print annotation as protocol.
-      printTypeDocumentation();
-      printf("@protocol %s < JavaLangAnnotationAnnotation >\n", typeName);
-      if (isRuntime) {
-        printAnnotationProperties(members);
-      }
-      printInnerDeclarations();
-      println("\n@end");
-    } else {
-      printTypeDocumentation();
+    printTypeDocumentation();
+    if (isInterfaceType()) {
       printf("@protocol %s", typeName);
-      printImplementedProtocols();
-      newline();
-      printInnerDeclarations();
-      println("\n@end");
+    } else {
+      printf("@interface %s : %s", typeName, getSuperTypeName());
     }
+    printImplementedProtocols();
+    printInstanceVariables();
+    printAnnotationProperties();
+    printInnerDeclarations();
+    println("\n@end");
 
     printCompanionClassDeclaration();
     printStaticInitFunction();
@@ -188,6 +166,9 @@ public class TypeDeclarationGenerator extends TypeGenerator {
   }
 
   private List<String> getInterfaceNames() {
+    if (typeBinding.isAnnotation()) {
+      return Lists.newArrayList("JavaLangAnnotationAnnotation");
+    }
     List<String> names = Lists.newArrayList();
     for (ITypeBinding intrface : typeBinding.getInterfaces()) {
       names.add(NameTable.getFullName(intrface));
@@ -222,19 +203,21 @@ public class TypeDeclarationGenerator extends TypeGenerator {
    * Prints the list of instance variables in a type.
    */
   protected void printInstanceVariables() {
+    Iterable<FieldDeclaration> fields = getInstanceFields();
+    if (Iterables.isEmpty(fields)) {
+      newline();
+      return;
+    }
+    // Need direct access to fields possibly from inner classes that are
+    // promoted to top level classes, so must make all visible fields public.
+    println(" {");
+    println(" @public");
     indent();
-    boolean first = true;
-    for (FieldDeclaration field : getInstanceFields()) {
+    for (FieldDeclaration field : fields) {
       List<VariableDeclarationFragment> vars = field.getFragments();
       assert !vars.isEmpty();
       IVariableBinding varBinding = vars.get(0).getVariableBinding();
       ITypeBinding varType = varBinding.getType();
-      // Need direct access to fields possibly from inner classes that are
-      // promoted to top level classes, so must make all visible fields public.
-      if (first) {
-        println(" @public");
-        first = false;
-      }
       JavadocGenerator.printDocComment(getBuilder(), field.getJavadoc());
       printIndent();
       if (BindingUtil.isWeakReference(varBinding)) {
@@ -266,6 +249,7 @@ public class TypeDeclarationGenerator extends TypeGenerator {
       println(";");
     }
     unindent();
+    println("}");
   }
 
   private boolean needsCompanionClassDeclaration() {
@@ -289,8 +273,7 @@ public class TypeDeclarationGenerator extends TypeGenerator {
     if (BindingUtil.isRuntimeAnnotation(typeBinding)) {
       // Print annotation implementation interface.
       printf(" < %s >", typeName);
-      List<AnnotationTypeMemberDeclaration> members = Lists.newArrayList(
-          Iterables.filter(typeNode.getBodyDeclarations(), AnnotationTypeMemberDeclaration.class));
+      List<AnnotationTypeMemberDeclaration> members = TreeUtil.getAnnotationMembers(typeNode);
       if (!members.isEmpty()) {
         println(" {\n @private");
         printAnnotationVariables(members);
@@ -428,7 +411,11 @@ public class TypeDeclarationGenerator extends TypeGenerator {
     }
   }
 
-  private void printAnnotationProperties(List<AnnotationTypeMemberDeclaration> members) {
+  private void printAnnotationProperties() {
+    if (!BindingUtil.isRuntimeAnnotation(typeBinding)) {
+      return;
+    }
+    List<AnnotationTypeMemberDeclaration> members = TreeUtil.getAnnotationMembers(typeNode);
     if (!members.isEmpty()) {
       newline();
     }
