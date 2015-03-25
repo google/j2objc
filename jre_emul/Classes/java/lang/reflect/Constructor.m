@@ -105,7 +105,7 @@
   if (n > 0) {
     [s appendString:[(IOSClass *) params->buffer_[0] getName]];
     for (jint i = 1; i < n; i++) {
-      [s appendFormat:@",%@", [(IOSClass *) params->buffer_[0] getName]];
+      [s appendFormat:@",%@", [(IOSClass *) params->buffer_[i] getName]];
     }
   }
   [s appendString:@")"];
@@ -114,7 +114,7 @@
   if (n > 0) {
     [s appendFormat:@" throws %@", [(IOSClass *) throws->buffer_[0] getName]];
     for (jint i = 1; i < n; i++) {
-      [s appendFormat:@",%@", [(IOSClass *) throws->buffer_[0] getName]];
+      [s appendFormat:@",%@", [(IOSClass *) throws->buffer_[i] getName]];
     }
   }
   return [s description];
