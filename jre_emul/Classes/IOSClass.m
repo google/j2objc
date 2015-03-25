@@ -890,23 +890,41 @@ static void GetFieldsFromClass(IOSClass *iosClass, NSMutableDictionary *fields, 
   }
 }
 
+// Try to locate a native variable for a given class and name. Since the
+// translator may append underscores to differentiate reserved and method
+// names, try all possible names.
+Ivar FindIvar(IOSClass *cls, NSString *name) {
+  Ivar ivar = class_getInstanceVariable(cls.objcClass, GetFieldName(name, cls));
+  if (ivar) {
+    return ivar;
+  }
+  for (int i = 0; i < 3; i++) {  // Translator never appends more the 3 underscores.
+    name = [name stringByAppendingString:@"_"];
+    ivar = class_getInstanceVariable(cls.objcClass, GetFieldName(name, cls));
+    if (ivar) {
+      return ivar;
+    }
+  }
+  return NULL;
+}
+
 - (JavaLangReflectField *)getDeclaredField:(NSString *)name {
   nil_chk(name);
   Class cls = self.objcClass;
   if (cls) {
-    Ivar ivar = class_getInstanceVariable(cls, GetFieldName(name, self));
-    if (ivar) {
-      return FieldFromIvar(self, ivar);
-    }
-
     JavaClassMetadata *metadata = [self getMetadata];
     if (metadata) {
       JavaFieldMetadata *fieldMeta = [metadata findFieldMetadata:[name UTF8String]];
       if (fieldMeta) {
-        ivar = class_getInstanceVariable(cls, [[fieldMeta iosName] UTF8String]);
+        Ivar ivar = class_getInstanceVariable(cls, [[fieldMeta iosName] UTF8String]);
         return [JavaLangReflectField fieldWithIvar:ivar
                                          withClass:self
                                       withMetadata:fieldMeta];
+      }
+    } else {
+      Ivar ivar = FindIvar(self, name);
+      if (ivar) {
+        return FieldFromIvar(self, ivar);
       }
     }
   }
@@ -914,7 +932,6 @@ static void GetFieldsFromClass(IOSClass *iosClass, NSMutableDictionary *fields, 
 }
 
 JavaLangReflectField *findField(IOSClass *iosClass, NSString *name) {
-  const char *objcName = GetFieldName(name, iosClass);
   while (iosClass) {
     Class cls = iosClass.objcClass;
     JavaClassMetadata *metadata = [iosClass getMetadata];
@@ -927,7 +944,7 @@ JavaLangReflectField *findField(IOSClass *iosClass, NSString *name) {
                                       withMetadata:fieldMeta];
       }
     } else {
-      Ivar ivar = class_getInstanceVariable(cls, objcName);
+      Ivar ivar = FindIvar(iosClass, name);
       if (ivar) {
         return FieldFromIvar(iosClass, ivar);
       }
