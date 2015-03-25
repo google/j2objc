@@ -26,6 +26,7 @@
 #import "java/lang/IllegalArgumentException.h"
 #import "java/lang/NoSuchMethodException.h"
 #import "java/lang/NullPointerException.h"
+#import "java/lang/reflect/InvocationTargetException.h"
 #import "java/lang/reflect/Method.h"
 #import "java/lang/reflect/Modifier.h"
 #import "java/lang/reflect/TypeVariable.h"
@@ -169,16 +170,31 @@
   }
 
   IOSClass *declaringClass = [self getDeclaringClass];
+  JavaLangThrowable *exception = nil;
   if (object &&
       ([self getModifiers] & JavaLangReflectModifier_PRIVATE) > 0 &&
       declaringClass != [object getClass]) {
     // A superclass's private instance method is invoked, so temporarily
     // change the object's type to the superclass.
     Class originalClass = object_setClass(object, declaringClass.objcClass);
-    [invocation invoke];
+    @try {
+      [invocation invoke];
+    }
+    @catch (JavaLangThrowable *t) {
+      exception = t;
+    }
     object_setClass(object, originalClass);
   } else {
-    [invocation invoke];
+    @try {
+      [invocation invoke];
+    }
+    @catch (JavaLangThrowable *t) {
+      exception = t;
+    }
+  }
+  if (exception) {
+    @throw AUTORELEASE([[JavaLangReflectInvocationTargetException alloc]
+                        initWithJavaLangThrowable:exception]);
   }
   IOSClass *returnType = [self getReturnType];
   if (returnType == [IOSClass voidClass]) {
@@ -190,24 +206,29 @@
 }
 
 - (NSString *)description {
-  NSString *kind = isStatic_ ? @"+" : @"-";
-  const char *argType = [methodSignature_ methodReturnType];
-  NSString *returnType = [NSString stringWithUTF8String:argType];
-  NSString *result = [NSString stringWithFormat:@"%@ %@ %@(", kind,
-                      describeTypeEncoding(returnType), [self getName]];
-
-  NSUInteger nArgs = [methodSignature_ numberOfArguments] - SKIPPED_ARGUMENTS;
-  for (NSUInteger i = 0; i < nArgs; i++) {
-    const char *argType =
-        [methodSignature_ getArgumentTypeAtIndex:i + SKIPPED_ARGUMENTS];
-    NSString *paramEncoding = [NSString stringWithUTF8String:argType];
-    result = [result stringByAppendingFormat:@"%@",
-                  describeTypeEncoding(paramEncoding)];
-    if (i + 1 < nArgs) {
-      result = [result stringByAppendingString:@", "];
+  NSMutableString *s = [NSMutableString string];
+  NSString *modifiers = JavaLangReflectModifier_toStringWithInt_([self getModifiers]);
+  NSString *returnType = [[self getReturnType] getName];
+  NSString *declaringClass = [[self getDeclaringClass] getName];
+  [s appendFormat:@"%@ %@ %@.%@(", modifiers, returnType, declaringClass, [self getName]];
+  IOSObjectArray *params = [self getParameterTypes];
+  jint n = params->size_;
+  if (n > 0) {
+    [s appendString:[(IOSClass *) params->buffer_[0] getName]];
+    for (jint i = 1; i < n; i++) {
+      [s appendFormat:@",%@", [(IOSClass *) params->buffer_[i] getName]];
     }
   }
-  return [result stringByAppendingString:@")"];
+  [s appendString:@")"];
+  IOSObjectArray *throws = [self getExceptionTypes];
+  n = throws->size_;
+  if (n > 0) {
+    [s appendFormat:@" throws %@", [(IOSClass *) throws->buffer_[0] getName]];
+    for (jint i = 1; i < n; i++) {
+      [s appendFormat:@",%@", [(IOSClass *) throws->buffer_[i] getName]];
+    }
+  }
+  return [s description];
 }
 
 - (id)getDefaultValue {
@@ -230,6 +251,11 @@
     }
   }
   return nil;
+}
+
+// A method's hash is the hash of its declaring class's name XOR its name.
+- (NSUInteger)hash {
+  return [[class_ getName] hash] ^ [[self getName] hash];
 }
 
 + (const J2ObjcClassInfo *)__metadata {

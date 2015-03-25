@@ -428,6 +428,7 @@ TEST_SOURCES := \
     org/apache/harmony/tests/java/lang/reflect/GenericMethodsTests.java \
     org/apache/harmony/tests/java/lang/reflect/MalformedParameterizedTypeExceptionTest.java \
     org/apache/harmony/tests/java/lang/reflect/MalformedParameterizedTypeExceptionTests.java \
+    org/apache/harmony/tests/java/lang/reflect/MethodTest.java \
     org/apache/harmony/tests/java/lang/reflect/ModifierTest.java \
     org/apache/harmony/tests/java/lang/reflect/ParameterizedTypeTest.java \
     org/apache/harmony/tests/java/lang/reflect/TypeVariableTest.java \
