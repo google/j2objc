@@ -424,6 +424,7 @@ TEST_SOURCES := \
     org/apache/harmony/tests/java/lang/reflect/ArrayTest.java \
     org/apache/harmony/tests/java/lang/reflect/BoundedGenericMethodsTests.java \
     org/apache/harmony/tests/java/lang/reflect/ConstructorTest.java \
+    org/apache/harmony/tests/java/lang/reflect/FieldTest.java \
     org/apache/harmony/tests/java/lang/reflect/GenericArrayTypeTest.java \
     org/apache/harmony/tests/java/lang/reflect/GenericMethodsTests.java \
     org/apache/harmony/tests/java/lang/reflect/MalformedParameterizedTypeExceptionTest.java \

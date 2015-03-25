@@ -99,11 +99,15 @@ static void ReadRawValue(
     }
   } else {
     nil_chk(object);
+    if (![field->declaringClass_ isInstance:object]) {
+      @throw AUTORELEASE([[JavaLangIllegalArgumentException alloc]
+                          initWithNSString:@"field type mismatch"]);
+    }
     [type __readRawValue:rawValue fromAddress:((char *)object) + ivar_getOffset(field->ivar_)];
   }
   if (![type __convertRawValue:rawValue toType:toType]) {
-    @throw AUTORELEASE([[JavaLangIllegalArgumentException alloc] initWithNSString:
-        @"field type mismatch"]);
+    @throw AUTORELEASE([[JavaLangIllegalArgumentException alloc]
+                        initWithNSString:@"field type mismatch"]);
   }
 }
 
@@ -198,7 +202,10 @@ static void SetWithRawValue(
     AUTORELEASE([self getWithId:object]);
   }
   J2ObjcRawValue rawValue;
-  [fieldType __unboxValue:value toRawValue:&rawValue];
+  if (![fieldType __unboxValue:value toRawValue:&rawValue]) {
+    @throw AUTORELEASE([[JavaLangIllegalArgumentException alloc]
+                        initWithNSString:@"field type mismatch"]);
+  }
   SetWithRawValue(&rawValue, self, object, fieldType);
   if (needsRetain) {
     RETAIN_(value);
@@ -331,11 +338,14 @@ static void SetWithRawValue(
 - (NSString *)toGenericString {
   NSString *mods =
       metadata_ ? JavaLangReflectModifier_toStringWithInt_([metadata_ modifiers]) : @"";
+  if ([mods length] > 0) { // Separate test, since Modifer.toString() might return empty string.
+    mods = [mods stringByAppendingString:@" "];
+  }
   id<JavaLangReflectType> type = [self getGenericType];
   NSString *typeString = [type conformsToProtocol:@protocol(JavaLangReflectTypeVariable)] ?
       [(id<JavaLangReflectTypeVariable>) type getName] : [type description];
-  return [NSString stringWithFormat:@"%@ %@ %@.%@", mods, typeString,
-          [self getDeclaringClass], [self propertyName]];
+  return [NSString stringWithFormat:@"%@%@ %@.%@", mods, typeString,
+          [[self getDeclaringClass] getName], [self propertyName]];
 }
 
 - (IOSObjectArray *)getDeclaredAnnotations {
