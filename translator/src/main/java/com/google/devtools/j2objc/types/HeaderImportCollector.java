@@ -36,6 +36,7 @@ import com.google.devtools.j2objc.util.TranslationUtil;
 import org.eclipse.jdt.core.dom.IMethodBinding;
 import org.eclipse.jdt.core.dom.ITypeBinding;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 
@@ -82,8 +83,7 @@ public class HeaderImportCollector extends TreeVisitor {
   }
 
   public void collect(TreeNode node) {
-    run(node);
-    postCollect();
+    collect(Collections.singletonList(node));
   }
 
   public void collect(List<? extends TreeNode> nodes) {
