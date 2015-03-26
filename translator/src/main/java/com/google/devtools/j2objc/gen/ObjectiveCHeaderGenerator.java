@@ -16,8 +16,6 @@
 
 package com.google.devtools.j2objc.gen;
 
-import com.google.common.collect.Lists;
-import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 import com.google.devtools.j2objc.J2ObjC;
 import com.google.devtools.j2objc.Options;
@@ -27,12 +25,7 @@ import com.google.devtools.j2objc.ast.PackageDeclaration;
 import com.google.devtools.j2objc.ast.TreeUtil;
 import com.google.devtools.j2objc.types.HeaderImportCollector;
 import com.google.devtools.j2objc.types.Import;
-import com.google.devtools.j2objc.util.NameTable;
 
-import org.eclipse.jdt.core.dom.ITypeBinding;
-
-import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 /**
@@ -61,9 +54,6 @@ public class ObjectiveCHeaderGenerator extends ObjectiveCSourceFileGenerator {
   public void generate() {
     println(J2ObjC.getFileHeader(getGenerationUnit().getSourceName()));
 
-    Map<ITypeBinding, AbstractTypeDeclaration> declaredTypes = Maps.newHashMap();
-    Map<String, ITypeBinding> declaredTypeNames = Maps.newHashMap();
-    Set<AbstractTypeDeclaration> types = Sets.newLinkedHashSet();
     Set<PackageDeclaration> packagesToDoc = Sets.newLinkedHashSet();
 
     // First, gather everything we need to generate.
@@ -75,40 +65,15 @@ public class ObjectiveCHeaderGenerator extends ObjectiveCSourceFileGenerator {
       // in the same list of 'things to generate'.
       // TODO(mthvedt): Puzzle--figure out a way to do that in Java's type system
       // that is worth the effort.
-      // TODO(mthvedt): This logic may be duplicated in TypeSorter.java.
       PackageDeclaration pkg = unit.getPackage();
       if (pkg.getJavadoc() != null && Options.docCommentsEnabled()) {
         packagesToDoc.add(pkg);
       }
-
-      for (AbstractTypeDeclaration type : unit.getTypes()) {
-        types.add(type);
-        declaredTypes.put(type.getTypeBinding(), type);
-        declaredTypeNames.put(NameTable.getFullName(type.getTypeBinding()), type.getTypeBinding());
-      }
     }
 
-    // We order the type declarations so that the inheritance tree appears in the correct order.
-    // The ordering is minimal; a type is reordered only if a subtype is immediately following.
-    List<ITypeBinding> orderedDeclarationBindings = Lists.newArrayList();
-    for (AbstractTypeDeclaration type : types) {
-      setGenerationContext(type);
-      orderSuperinterfaces(type.getTypeBinding(), orderedDeclarationBindings, declaredTypeNames);
-    }
+    generateFileHeader();
 
-    Set<AbstractTypeDeclaration> seenDecls = Sets.newHashSet();
-    List<AbstractTypeDeclaration> orderedTypeDeclarations = Lists.newArrayList();
-    for (ITypeBinding declBinding : orderedDeclarationBindings) {
-      AbstractTypeDeclaration decl = declaredTypes.get(declBinding);
-      if (!seenDecls.add(decl)) {
-        continue;
-      }
-      orderedTypeDeclarations.add(decl);
-    }
-
-    generateFileHeader(orderedTypeDeclarations);
-
-    for (AbstractTypeDeclaration decl : orderedTypeDeclarations) {
+    for (AbstractTypeDeclaration decl : getOrderedTypes()) {
       CompilationUnit unit = TreeUtil.getCompilationUnit(decl);
       unit.setGenerationContext();
 
@@ -131,39 +96,11 @@ public class ObjectiveCHeaderGenerator extends ObjectiveCSourceFileGenerator {
     save(getOutputPath());
   }
 
-  private void orderSuperinterfaces(ITypeBinding type, List<ITypeBinding> sortedDecls,
-      Map<String, ITypeBinding> declaredTypeNames) {
-    // In Objective-C, you can't declare a protocol or interface
-    // forward of its implementing interfaces.
-    if (!type.isAnnotation()) {
-      // Annotations don't have overridable supertypes in generated Objective-C code
-      ITypeBinding superBinding = type.getSuperclass();
-      if (superBinding != null) {
-        // The map lookup ensures we get the correct ITypeBinding corresponding to a given
-        // CompilationUnit. The Eclipse parser may generate alternate
-        // definitions of this ITypeBinding that aren't equal to the one we want.
-        superBinding = declaredTypeNames.get(NameTable.getFullName(superBinding));
-        if (superBinding != null) {
-          orderSuperinterfaces(superBinding, sortedDecls, declaredTypeNames);
-        }
-      }
-
-      for (ITypeBinding superinterface : type.getInterfaces()) {
-        superinterface = declaredTypeNames.get(NameTable.getFullName(superinterface));
-        if (superinterface != null) {
-          orderSuperinterfaces(superinterface, sortedDecls, declaredTypeNames);
-        }
-      }
-    }
-
-    sortedDecls.add(type);
-  }
-
   protected void generateType(AbstractTypeDeclaration node) {
     TypeDeclarationGenerator.generate(getBuilder(), node);
   }
 
-  protected void generateFileHeader(List<AbstractTypeDeclaration> declarations) {
+  protected void generateFileHeader() {
     printf("#ifndef _%s_H_\n", getGenerationUnit().getName());
     printf("#define _%s_H_\n", getGenerationUnit().getName());
     pushIgnoreDeprecatedDeclarationsPragma();
@@ -172,7 +109,7 @@ public class ObjectiveCHeaderGenerator extends ObjectiveCSourceFileGenerator {
     HeaderImportCollector collector =
         new HeaderImportCollector(HeaderImportCollector.Filter.PUBLIC_ONLY);
     // Order matters for finding forward declarations.
-    collector.collect(declarations);
+    collector.collect(getOrderedTypes());
 
     printForwardDeclarations(collector.getForwardDeclarations());
 

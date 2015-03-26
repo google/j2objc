@@ -210,4 +210,15 @@ public class ObjectiveCSourceFileGeneratorTest extends GenerationTest {
     assertNotInTranslation(translation, "id o4_;");
     assertNotInTranslation(translation, "J2OBJC_FIELD_SETTER(Test, o4_, id)");
   }
+
+  public void testSortingOfGenericTypes() throws IOException {
+    String translation = translateSourceFile(
+        "class Test { static class Inner1 extends Inner2<String> {} static class Inner2<T> {} }",
+        "Test", "Test.h");
+    String inner1 = "@interface Test_Inner1";
+    String inner2 = "@interface Test_Inner2";
+    assertTranslation(translation, inner1);
+    assertTranslation(translation, inner2);
+    assertTrue(translation.indexOf(inner2) < translation.indexOf(inner1));
+  }
 }

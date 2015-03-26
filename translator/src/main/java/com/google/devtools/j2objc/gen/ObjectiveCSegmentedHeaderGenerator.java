@@ -49,7 +49,7 @@ public class ObjectiveCSegmentedHeaderGenerator extends ObjectiveCHeaderGenerato
   }
 
   @Override
-  protected void generateFileHeader(List<AbstractTypeDeclaration> types) {
+  protected void generateFileHeader() {
     println("#include \"J2ObjC_header.h\"");
     newline();
     printf("#pragma push_macro(\"%s_INCLUDE_ALL\")\n", mainTypeName);
@@ -60,8 +60,7 @@ public class ObjectiveCSegmentedHeaderGenerator extends ObjectiveCHeaderGenerato
     println("#endif");
     printf("#undef %s_RESTRICT\n", mainTypeName);
 
-    types = Lists.reverse(types);
-    for (AbstractTypeDeclaration type : types) {
+    for (AbstractTypeDeclaration type : Lists.reverse(getOrderedTypes())) {
       HeaderImportCollector collector =
           new HeaderImportCollector(HeaderImportCollector.Filter.PUBLIC_ONLY);
       collector.collect(type);

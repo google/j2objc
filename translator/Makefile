@@ -194,7 +194,6 @@ JAVA_SOURCES = \
 	translate/Rewriter.java \
 	translate/StaticVarRewriter.java \
 	translate/SuperMethodInvocationRewriter.java \
-	translate/TypeSorter.java \
 	translate/UnsequencedExpressionRewriter.java \
 	translate/VarargsRewriter.java \
 	translate/VariableRenamer.java \

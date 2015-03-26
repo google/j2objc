@@ -47,7 +47,6 @@ import com.google.devtools.j2objc.translate.OuterReferenceResolver;
 import com.google.devtools.j2objc.translate.Rewriter;
 import com.google.devtools.j2objc.translate.StaticVarRewriter;
 import com.google.devtools.j2objc.translate.SuperMethodInvocationRewriter;
-import com.google.devtools.j2objc.translate.TypeSorter;
 import com.google.devtools.j2objc.translate.UnsequencedExpressionRewriter;
 import com.google.devtools.j2objc.translate.VarargsRewriter;
 import com.google.devtools.j2objc.translate.VariableRenamer;
@@ -275,11 +274,6 @@ class TranslationProcessor extends FileProcessor {
     // Before: Functionizer - Can't rewrite function arguments.
     new VarargsRewriter().run(unit);
     ticker.tick("VarargsRewriter");
-
-    // Reorders the types so that superclasses are declared before classes that
-    // extend them.
-    TypeSorter.sortTypes(unit);
-    ticker.tick("TypeSorter");
 
     // Add dealloc/finalize method(s), if necessary.  This is done
     // after inner class extraction, so that each class releases
