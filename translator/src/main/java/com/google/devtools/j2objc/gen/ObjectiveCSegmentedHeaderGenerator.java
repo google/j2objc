@@ -16,6 +16,7 @@ package com.google.devtools.j2objc.gen;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
+import com.google.common.collect.Sets;
 import com.google.devtools.j2objc.ast.AbstractTypeDeclaration;
 import com.google.devtools.j2objc.types.HeaderImportCollector;
 import com.google.devtools.j2objc.types.Import;
@@ -23,6 +24,7 @@ import com.google.devtools.j2objc.util.NameTable;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * Generates segmented Objective-C header files from compilation units. In a
@@ -34,6 +36,7 @@ import java.util.Map;
 public class ObjectiveCSegmentedHeaderGenerator extends ObjectiveCHeaderGenerator {
 
   private final String mainTypeName;
+  private final Set<String> typeKeys;
 
   private Map<AbstractTypeDeclaration, HeaderImportCollector> importCollectors = Maps.newHashMap();
 
@@ -42,6 +45,10 @@ public class ObjectiveCSegmentedHeaderGenerator extends ObjectiveCHeaderGenerato
     // TODO(mthvedt): Remove this and implement -XcombineSrcJars for segmented headers.
     assert getGenerationUnit().getCompilationUnits().size() <= 1;
     mainTypeName = NameTable.getMainTypeFullName(getGenerationUnit().getCompilationUnits().get(0));
+    typeKeys = Sets.newHashSet();
+    for (AbstractTypeDeclaration node : getOrderedTypes()) {
+      typeKeys.add(node.getTypeBinding().getKey());
+    }
   }
 
   public static void generate(GenerationUnit unit) {
@@ -84,7 +91,7 @@ public class ObjectiveCSegmentedHeaderGenerator extends ObjectiveCHeaderGenerato
   private void printLocalIncludes(AbstractTypeDeclaration type, HeaderImportCollector collector) {
     List<Import> localImports = Lists.newArrayList();
     for (Import imp : collector.getSuperTypes()) {
-      if (mainTypeName.equals(imp.getMainTypeName())) {
+      if (typeKeys.contains(imp.getType().getKey())) {
         localImports.add(imp);
       }
     }
@@ -118,14 +125,9 @@ public class ObjectiveCSegmentedHeaderGenerator extends ObjectiveCHeaderGenerato
 
     outer:
     for (Import imp : collector.getSuperTypes()) {
-      if (mainTypeName.equals(imp.getMainTypeName())) {
-        continue;
-      }
       // Verify this import isn't declared in this source file.
-      for (AbstractTypeDeclaration type : importCollectors.keySet()) {
-        if (imp.getType().equals(type.getTypeBinding())) {
-          continue outer;
-        }
+      if (typeKeys.contains(imp.getType().getKey())) {
+        continue;
       }
       newline();
       printf("#define %s_RESTRICT 1\n", imp.getMainTypeName());
