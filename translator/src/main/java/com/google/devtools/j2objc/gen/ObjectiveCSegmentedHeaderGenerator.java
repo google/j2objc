@@ -39,13 +39,18 @@ public class ObjectiveCSegmentedHeaderGenerator extends ObjectiveCHeaderGenerato
 
   protected ObjectiveCSegmentedHeaderGenerator(GenerationUnit unit) {
     super(unit);
-    // TODO(mthvedt): Remove this assertion when combined jars for segmented headers goes in.
+    // TODO(mthvedt): Remove this and implement -XcombineSrcJars for segmented headers.
     assert getGenerationUnit().getCompilationUnits().size() <= 1;
     mainTypeName = NameTable.getMainTypeFullName(getGenerationUnit().getCompilationUnits().get(0));
   }
 
   public static void generate(GenerationUnit unit) {
-    new ObjectiveCSegmentedHeaderGenerator(unit).generate();
+    // TODO(mthvedt): Remove this and implement -XcombineSrcJars for segmented headers.
+    if (unit.getCompilationUnits().size() > 1) {
+      new ObjectiveCHeaderGenerator(unit).generate();
+    } else {
+      new ObjectiveCSegmentedHeaderGenerator(unit).generate();
+    }
   }
 
   @Override

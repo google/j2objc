@@ -26,6 +26,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
+import java.util.zip.ZipException;
 
 import javax.annotation.Nullable;
 
@@ -44,19 +45,18 @@ public class FileUtil {
   @Nullable
   public static InputFile findOnSourcePath(String filename) throws IOException {
     for (String pathEntry : Options.getSourcePathEntries()) {
-      if (pathEntry.endsWith(".jar")) {
-        JarredInputFile jarFile = new JarredInputFile(pathEntry, filename);
-        if (jarFile.exists()) {
-          return jarFile;
+      File f = new File(pathEntry);
+      if (f.isDirectory()) {
+        RegularInputFile regularFile = new RegularInputFile(
+            pathEntry + File.separatorChar + filename, filename);
+        if (regularFile.exists()) {
+          return regularFile;
         }
       } else {
-        File f = new File(pathEntry);
-        if (f.isDirectory()) {
-          RegularInputFile regularFile = new RegularInputFile(
-              pathEntry + File.separatorChar + filename, filename);
-          if (regularFile.exists()) {
-            return regularFile;
-          }
+        // Assume it's a jar file
+        JarredInputFile jarFile = new JarredInputFile(filename, pathEntry, filename);
+        if (jarFile.exists()) {
+          return jarFile;
         }
       }
     }

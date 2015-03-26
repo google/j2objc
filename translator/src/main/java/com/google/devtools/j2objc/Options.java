@@ -343,7 +343,7 @@ public class Options {
 
     if (outputStyle == OutputStyleOption.SOURCE_COMBINED && segmentedHeaders) {
       // TODO(mthvedt): Implement -XcombineJars support for segmented headers.
-      ErrorUtil.error("--segmented-headers not yet supported with -XcombineJars");
+      ErrorUtil.warning("--segmented-headers not yet supported with -XcombineJars");
     }
 
     if (memoryManagementOption == null) {

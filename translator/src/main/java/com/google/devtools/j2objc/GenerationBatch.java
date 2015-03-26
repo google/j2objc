@@ -35,6 +35,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.logging.Logger;
 import java.util.zip.ZipEntry;
+import java.util.zip.ZipException;
 import java.util.zip.ZipFile;
 
 /**
@@ -109,6 +110,9 @@ public class GenerationBatch {
     }
     try {
       String fileList = Files.toString(f, Options.getCharset());
+      if (fileList.isEmpty()) {
+        return;
+      }
       String[] files = fileList.split("\\s+");  // Split on any whitespace.
       for (String file : files) {
         processSourceFile(file);
@@ -122,10 +126,8 @@ public class GenerationBatch {
     logger.finest("processing " + filename);
     if (filename.endsWith(".java")) {
       processJavaFile(filename);
-    } else if (filename.endsWith(".jar")) {
-      processJarFile(filename);
     } else {
-      ErrorUtil.error("Unknown file type: " + filename);
+      processJarFile(filename);
     }
   }
 
@@ -165,13 +167,16 @@ public class GenerationBatch {
           ZipEntry entry = enumerator.nextElement();
           String internalPath = entry.getName();
           if (internalPath.endsWith(".java")) {
-            InputFile inputFile = new JarredInputFile(filename, internalPath);
+            InputFile inputFile = new JarredInputFile(filename, filename, internalPath);
             addSource(inputFile);
           }
         }
       } finally {
         zfile.close();  // Also closes input stream.
       }
+    } catch (ZipException e) { // Also catches JarExceptions
+      logger.fine(e.getMessage());
+      ErrorUtil.error("Error reading file " + filename + " as a zip or jar file.");
     } catch (IOException e) {
       ErrorUtil.error(e.getMessage());
     }
@@ -193,15 +198,14 @@ public class GenerationBatch {
   protected void addSource(InputFile file) {
     GenerationUnit unit;
 
-    if (Options.combineSourceJars()) {
-      String outputPath = file.getContainingPath();
+    if (Options.combineSourceJars() && !file.getSpecifiedPath().endsWith(".java")) {
+      String outputPath = file.getSpecifiedPath();
       // If there's no separator, this results in 0
       int lastPathComponentIndex = outputPath.lastIndexOf(File.separatorChar) + 1;
-      assert outputPath.matches(".*j(ar|ava)");
       outputPath = outputPath.substring(lastPathComponentIndex, outputPath.lastIndexOf("."));
       unit = unitMap.get(outputPath);
       if (unit == null) {
-        unit = createGenerationUnit(file.getContainingPath(), outputPath);
+        unit = createGenerationUnit(file.getSpecifiedPath(), outputPath);
         unit.setName(NameTable.camelCasePath(outputPath));
       }
     } else if (Options.useSourceDirectories()) {
