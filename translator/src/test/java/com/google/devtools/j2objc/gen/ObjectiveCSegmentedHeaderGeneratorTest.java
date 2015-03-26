@@ -76,6 +76,15 @@ public class ObjectiveCSegmentedHeaderGeneratorTest extends GenerationTest {
         "#endif");
   }
 
+  public void testLocalIncludeOfBaseClass() throws IOException {
+    String translation = translateSourceFile(
+        "class Test extends Foo { } class Foo {}", "Test", "Test.h");
+    assertTranslatedLines(translation,
+        "#if Test_INCLUDE",
+        "#define Foo_INCLUDE 1",
+        "#endif");
+  }
+
   // Verify that when a class is referenced in the same source file, a header
   // isn't included for it.
   public void testPackagePrivateBaseClass() throws IOException {
