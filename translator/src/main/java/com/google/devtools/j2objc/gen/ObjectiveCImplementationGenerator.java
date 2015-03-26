@@ -24,6 +24,7 @@ import com.google.devtools.j2objc.ast.CompilationUnit;
 import com.google.devtools.j2objc.ast.NativeDeclaration;
 import com.google.devtools.j2objc.ast.PackageDeclaration;
 import com.google.devtools.j2objc.ast.TreeUtil;
+import com.google.devtools.j2objc.types.HeaderImportCollector;
 import com.google.devtools.j2objc.types.ImplementationImportCollector;
 import com.google.devtools.j2objc.types.Import;
 import com.google.devtools.j2objc.util.NameTable;
@@ -68,7 +69,7 @@ public class ObjectiveCImplementationGenerator extends ObjectiveCSourceFileGener
     println(J2ObjC.getFileHeader(getGenerationUnit().getSourceName()));
     if (!types.isEmpty() || !packageInfos.isEmpty()) {
       printStart(getGenerationUnit().getSourceName());
-      printImports();
+      printImports(units);
       for (CompilationUnit packageInfo : packageInfos) {
         packageInfo.setGenerationContext();
         generatePackageInfo(packageInfo);
@@ -164,10 +165,17 @@ public class ObjectiveCImplementationGenerator extends ObjectiveCSourceFileGener
     }
   }
 
-  private void printImports() {
+  private void printImports(List<CompilationUnit> units) {
+    HeaderImportCollector declarationCollector =
+        new HeaderImportCollector(HeaderImportCollector.Filter.PRIVATE_ONLY);
+    declarationCollector.collect(units);
+
     ImplementationImportCollector collector = new ImplementationImportCollector();
-    collector.collect(getGenerationUnit().getCompilationUnits());
-    Set<Import> imports = collector.getImports();
+    collector.collect(units);
+
+    Set<Import> imports = Sets.newHashSet();
+    imports.addAll(declarationCollector.getSuperTypes());
+    imports.addAll(collector.getImports());
 
     Set<String> includeStmts = Sets.newTreeSet();
     includeStmts.add("#include \"J2ObjC_source.h\"");
@@ -185,5 +193,10 @@ public class ObjectiveCImplementationGenerator extends ObjectiveCSourceFileGener
         printNativeDefinition(decl);
       }
     }
+
+    Set<Import> forwardDecls = Sets.newHashSet(declarationCollector.getForwardDeclarations());
+    // We don't need both a forward declaration and an import.
+    forwardDecls.removeAll(imports);
+    printForwardDeclarations(forwardDecls);
   }
 }

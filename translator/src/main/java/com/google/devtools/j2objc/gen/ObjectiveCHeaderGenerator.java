@@ -163,26 +163,14 @@ public class ObjectiveCHeaderGenerator extends ObjectiveCSourceFileGenerator {
     TypeDeclarationGenerator.generate(getBuilder(), node);
   }
 
-  protected void printForwardDeclarations(Set<Import> forwardDecls) {
-    Set<String> forwardStmts = Sets.newTreeSet();
-    for (Import imp : forwardDecls) {
-      forwardStmts.add(createForwardDeclaration(imp.getTypeName(), imp.isInterface()));
-    }
-    if (!forwardStmts.isEmpty()) {
-      newline();
-      for (String stmt : forwardStmts) {
-        println(stmt);
-      }
-    }
-  }
-
   protected void generateFileHeader(List<AbstractTypeDeclaration> declarations) {
     printf("#ifndef _%s_H_\n", getGenerationUnit().getName());
     printf("#define _%s_H_\n", getGenerationUnit().getName());
     pushIgnoreDeprecatedDeclarationsPragma();
     newline();
 
-    HeaderImportCollector collector = new HeaderImportCollector();
+    HeaderImportCollector collector =
+        new HeaderImportCollector(HeaderImportCollector.Filter.PUBLIC_ONLY);
     // Order matters for finding forward declarations.
     collector.collect(declarations);
 
@@ -198,10 +186,6 @@ public class ObjectiveCHeaderGenerator extends ObjectiveCSourceFileGenerator {
     for (String stmt : includeStmts) {
       println(stmt);
     }
-  }
-
-  protected String createForwardDeclaration(String typeName, boolean isInterface) {
-    return String.format("@%s %s;", isInterface ? "protocol" : "class", typeName);
   }
 
   protected void generateFileFooter() {

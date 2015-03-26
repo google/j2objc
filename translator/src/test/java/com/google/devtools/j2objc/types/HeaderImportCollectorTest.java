@@ -14,7 +14,6 @@
 
 package com.google.devtools.j2objc.types;
 
-import com.google.common.collect.Lists;
 import com.google.devtools.j2objc.GenerationTest;
 import com.google.devtools.j2objc.Options;
 
@@ -68,5 +67,13 @@ public class HeaderImportCollectorTest extends GenerationTest {
     // Tests that there is no self import when the subclass comes first.
     translation = translateCombinedFiles("unit/Test", ".h", "unit/Test2.java", "unit/Test.java");
     assertNotInTranslation(translation, "#include \"unit/Test.h\"");
+  }
+
+  public void testNoForwardDeclarationForPrivateDeclaration() throws IOException {
+    String translation = translateSourceFile(
+        "class Test { private void test(Runnable r) {} }", "Test", "Test.h");
+    // We don't need to forward declare or include Runnable in the header
+    // because the method is private.
+    assertNotInTranslation(translation, "Runnable");
   }
 }
