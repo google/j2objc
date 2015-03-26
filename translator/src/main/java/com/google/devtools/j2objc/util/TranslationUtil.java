@@ -56,6 +56,9 @@ public final class TranslationUtil {
    * implementation file.
    */
   public static boolean hasPrivateDeclaration(BodyDeclaration decl) {
+    if (decl instanceof AbstractTypeDeclaration) {
+      return hasPrivateDeclaration(((AbstractTypeDeclaration) decl).getTypeBinding());
+    }
     TreeNode parent = decl.getParent();
     if (parent instanceof AbstractTypeDeclaration
         && hasPrivateDeclaration(((AbstractTypeDeclaration) parent).getTypeBinding())) {

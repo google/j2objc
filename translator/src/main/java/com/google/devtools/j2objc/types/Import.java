@@ -91,7 +91,7 @@ public class Import implements Comparable<Import> {
       mainType = mainType.getDeclaringClass();
     }
     this.mainTypeName = NameTable.getFullName(mainType);
-    this.importFileName = getImportFileName(mainType);
+    this.importFileName = getImportFileName(mainType) + ".h";
   }
 
   public ITypeBinding getType() {
