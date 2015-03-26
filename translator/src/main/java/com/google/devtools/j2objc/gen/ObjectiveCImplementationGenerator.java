@@ -177,15 +177,15 @@ public class ObjectiveCImplementationGenerator extends ObjectiveCSourceFileGener
     imports.addAll(declarationCollector.getSuperTypes());
     imports.addAll(collector.getImports());
 
-    Set<String> includeStmts = Sets.newTreeSet();
-    includeStmts.add("#include \"J2ObjC_source.h\"");
+    Set<String> importFiles = Sets.newTreeSet();
+    importFiles.add("J2ObjC_source.h");
     for (Import imp : imports) {
-      includeStmts.add(String.format("#include \"%s.h\"", imp.getImportFileName()));
+      importFiles.add(imp.getImportFileName());
     }
 
     newline();
-    for (String stmt : includeStmts) {
-      println(stmt);
+    for (String header : importFiles) {
+      printf("#include \"%s\"\n", header);
     }
 
     for (CompilationUnit node : getGenerationUnit().getCompilationUnits()) {
@@ -196,7 +196,12 @@ public class ObjectiveCImplementationGenerator extends ObjectiveCSourceFileGener
 
     Set<Import> forwardDecls = Sets.newHashSet(declarationCollector.getForwardDeclarations());
     // We don't need both a forward declaration and an import.
-    forwardDecls.removeAll(imports);
+    for (Import imp : declarationCollector.getForwardDeclarations()) {
+      if (TranslationUtil.hasPrivateDeclaration(imp.getType())
+          || !importFiles.contains(imp.getImportFileName())) {
+        forwardDecls.add(imp);
+      }
+    }
     printForwardDeclarations(forwardDecls);
   }
 }

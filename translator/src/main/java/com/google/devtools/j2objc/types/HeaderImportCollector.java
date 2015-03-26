@@ -62,8 +62,8 @@ public class HeaderImportCollector extends TreeVisitor {
       this.includePrivate = includePrivate;
     }
 
-    private boolean include(boolean isPrivate) {
-      return isPrivate ? includePrivate : includePublic;
+    private boolean include(BodyDeclaration node) {
+      return TranslationUtil.hasPrivateDeclaration(node) ? includePrivate : includePublic;
     }
   }
 
@@ -130,48 +130,47 @@ public class HeaderImportCollector extends TreeVisitor {
   }
 
   @Override
-  public boolean preVisit(TreeNode node) {
-    if (node instanceof BodyDeclaration) {
-      return filter.include(TranslationUtil.hasPrivateDeclaration((BodyDeclaration) node));
-    }
-    return true;
-  }
-
-  @Override
   public boolean visit(AnnotationTypeMemberDeclaration node) {
-    addForwardDecl(node.getType());
-    return true;
+    if (filter.include(node)) {
+      addForwardDecl(node.getType());
+    }
+    return false;
   }
 
   @Override
   public boolean visit(FieldDeclaration node) {
-    addForwardDecl(node.getType());
-    return true;
+    if (filter.include(node)) {
+      addForwardDecl(node.getType());
+    }
+    return false;
   }
 
   @Override
   public boolean visit(FunctionDeclaration node) {
-    addForwardDecl(node.getReturnType());
-    for (SingleVariableDeclaration param : node.getParameters()) {
-      addForwardDecl(param.getVariableBinding().getType());
+    if (filter.include(node)) {
+      addForwardDecl(node.getReturnType());
+      for (SingleVariableDeclaration param : node.getParameters()) {
+        addForwardDecl(param.getVariableBinding().getType());
+      }
     }
     return false;
   }
 
   @Override
   public boolean visit(MethodDeclaration node) {
-    addForwardDecl(node.getReturnType());
-    IMethodBinding binding = node.getMethodBinding();
-    for (ITypeBinding paramType : binding.getParameterTypes()) {
-      addForwardDecl(paramType);
+    if (filter.include(node)) {
+      addForwardDecl(node.getReturnType());
+      IMethodBinding binding = node.getMethodBinding();
+      for (ITypeBinding paramType : binding.getParameterTypes()) {
+        addForwardDecl(paramType);
+      }
     }
-    return true;
+    return false;
   }
 
   private boolean visitTypeDeclaration(AbstractTypeDeclaration node) {
-    ITypeBinding binding = node.getTypeBinding();
-    boolean isPrivate = TranslationUtil.hasPrivateDeclaration(binding);
-    if (filter.include(isPrivate)) {
+    if (filter.include(node)) {
+      ITypeBinding binding = node.getTypeBinding();
       addDeclaredType(binding);
       addSuperType(binding.getSuperclass());
       for (ITypeBinding interfaze : binding.getInterfaces()) {

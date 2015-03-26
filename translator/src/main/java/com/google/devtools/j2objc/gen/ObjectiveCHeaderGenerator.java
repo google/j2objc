@@ -118,7 +118,7 @@ public class ObjectiveCHeaderGenerator extends ObjectiveCSourceFileGenerator {
     Set<String> includeStmts = Sets.newTreeSet();
     includeStmts.add("#include \"J2ObjC_header.h\"");
     for (Import imp : superTypes) {
-      includeStmts.add(String.format("#include \"%s.h\"", imp.getImportFileName()));
+      includeStmts.add(String.format("#include \"%s\"", imp.getImportFileName()));
     }
     for (String stmt : includeStmts) {
       println(stmt);
