@@ -28,10 +28,11 @@
 
 + (const J2ObjcClassInfo *)__metadata {
   static const J2ObjcMethodInfo methods[] = {
-    { "iterator", NULL, "Ljava.util.Iterator;", 0x401, NULL },
+    { "iterator", NULL, "Ljava.util.Iterator;", 0x401, NULL, NULL },
   };
   static const J2ObjcClassInfo _JavaLangIterable = {
-    1, "Iterable", "java.lang", NULL, 0x201, 1, methods, 0, NULL, 0, NULL
+    2, "Iterable", "java.lang", NULL, 0x609, 1, methods, 0, NULL, 0, NULL, 0, NULL, NULL,
+    "<T:Ljava/lang/Object;>Ljava/lang/Object;"
   };
   return &_JavaLangIterable;
 }

@@ -704,6 +704,12 @@
 		06389AD0176BADA20018B4EA /* JavaToIOSInputStreamAdapter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JavaToIOSInputStreamAdapter.m; sourceTree = "<group>"; };
 		06459FB11A4220AF00F5ED23 /* jre_emul Tests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "jre_emul Tests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		06459FB41A4220AF00F5ED23 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		064914311AC47ED000E98733 /* FastPointerLookup.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = FastPointerLookup.h; sourceTree = "<group>"; };
+		064914321AC47ED000E98733 /* FastPointerLookup.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = FastPointerLookup.m; sourceTree = "<group>"; };
+		064914331AC47ED000E98733 /* J2ObjC_source.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = J2ObjC_source.h; sourceTree = "<group>"; };
+		064914341AC47ED000E98733 /* NSCopying+JavaCloneable.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "NSCopying+JavaCloneable.h"; sourceTree = "<group>"; };
+		064914351AC47ED000E98733 /* NSCopying+JavaCloneable.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "NSCopying+JavaCloneable.m"; sourceTree = "<group>"; };
+		064914361AC47ED000E98733 /* J2ObjC_header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = J2ObjC_header.h; sourceTree = "<group>"; };
 		064FB746172705F400DC0D51 /* URI.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = URI.h; path = build_result/Classes/java/net/URI.h; sourceTree = "<group>"; };
 		064FB747172705F400DC0D51 /* URI.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = URI.m; path = build_result/Classes/java/net/URI.m; sourceTree = "<group>"; };
 		064FB74A172705F400DC0D51 /* URISyntaxException.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = URISyntaxException.h; path = build_result/Classes/java/net/URISyntaxException.h; sourceTree = "<group>"; };
@@ -3475,6 +3481,8 @@
 				0674EA5818C681E50027D484 /* DebugUtils.m */,
 				067228F0158FB002005318BD /* ExecutableMember.h */,
 				06721BA11559DE3800645E1B /* ExecutableMember.m */,
+				064914311AC47ED000E98733 /* FastPointerLookup.h */,
+				064914321AC47ED000E98733 /* FastPointerLookup.m */,
 				067228E4158FAEBC005318BD /* Field.h */,
 				067228E5158FAEBC005318BD /* Field.m */,
 				06619396155849BB0004DAFE /* IOSArray.h */,
@@ -3504,6 +3512,8 @@
 				06B1E04F17F6403100F8940B /* Iterable.h */,
 				06B1E05017F6403100F8940B /* Iterable.m */,
 				06BED66A18EDE33F004EA17D /* J2ObjC_common.h */,
+				064914361AC47ED000E98733 /* J2ObjC_header.h */,
+				064914331AC47ED000E98733 /* J2ObjC_source.h */,
 				06986A181767D781006EE92F /* J2ObjCMain.m */,
 				0661AA8019F848FF00EFD1F5 /* java_lang_IntegralToString.h */,
 				0661AA8119F848FF00EFD1F5 /* java_lang_IntegralToString.m */,
@@ -3520,6 +3530,8 @@
 				066193B9155849BC0004DAFE /* JreEmulation.m */,
 				067228F1158FB002005318BD /* Method.h */,
 				06721BA21559DE3800645E1B /* Method.m */,
+				064914341AC47ED000E98733 /* NSCopying+JavaCloneable.h */,
+				064914351AC47ED000E98733 /* NSCopying+JavaCloneable.m */,
 				2CBD9CBC174ABC0D008A0086 /* NSDataInputStream.h */,
 				2CBD9CBD174ABC0D008A0086 /* NSDataInputStream.m */,
 				2CBD9CBE174ABCF8008A0086 /* NSDataOutputStream.h */,
