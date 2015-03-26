@@ -62,7 +62,8 @@ public class ObjectiveCSegmentedHeaderGenerator extends ObjectiveCHeaderGenerato
 
     types = Lists.reverse(types);
     for (AbstractTypeDeclaration type : types) {
-      HeaderImportCollector collector = new HeaderImportCollector();
+      HeaderImportCollector collector =
+          new HeaderImportCollector(HeaderImportCollector.Filter.PUBLIC_ONLY);
       collector.collect(type);
       importCollectors.put(type, collector);
       printLocalIncludes(type, collector);

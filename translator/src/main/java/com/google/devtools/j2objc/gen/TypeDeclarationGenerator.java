@@ -34,6 +34,7 @@ import com.google.devtools.j2objc.ast.VariableDeclarationFragment;
 import com.google.devtools.j2objc.types.Types;
 import com.google.devtools.j2objc.util.BindingUtil;
 import com.google.devtools.j2objc.util.NameTable;
+import com.google.devtools.j2objc.util.TranslationUtil;
 
 import org.eclipse.jdt.core.dom.ITypeBinding;
 import org.eclipse.jdt.core.dom.IVariableBinding;
@@ -70,7 +71,7 @@ public class TypeDeclarationGenerator extends TypeGenerator {
     if (BindingUtil.isSynthetic(decl.getModifiers())) {
       return false;
     }
-    return hasPrivateDeclaration(decl) == printPrivateDeclarations();
+    return TranslationUtil.hasPrivateDeclaration(decl) == printPrivateDeclarations();
   }
 
   private void generate() {

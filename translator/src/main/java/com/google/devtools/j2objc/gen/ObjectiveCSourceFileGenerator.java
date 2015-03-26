@@ -16,15 +16,17 @@
 
 package com.google.devtools.j2objc.gen;
 
+import com.google.common.collect.Sets;
 import com.google.common.io.Files;
 import com.google.devtools.j2objc.Options;
 import com.google.devtools.j2objc.ast.AbstractTypeDeclaration;
 import com.google.devtools.j2objc.ast.TreeUtil;
+import com.google.devtools.j2objc.types.Import;
 import com.google.devtools.j2objc.util.ErrorUtil;
-
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Set;
 
 /**
  * Generates source files from AST types.  This class handles common actions
@@ -105,5 +107,22 @@ public abstract class ObjectiveCSourceFileGenerator extends AbstractSourceGenera
     if (Options.generateDeprecatedDeclarations()) {
       println("\n#pragma clang diagnostic pop");
     }
+  }
+
+  protected void printForwardDeclarations(Set<Import> forwardDecls) {
+    Set<String> forwardStmts = Sets.newTreeSet();
+    for (Import imp : forwardDecls) {
+      forwardStmts.add(createForwardDeclaration(imp.getTypeName(), imp.isInterface()));
+    }
+    if (!forwardStmts.isEmpty()) {
+      newline();
+      for (String stmt : forwardStmts) {
+        println(stmt);
+      }
+    }
+  }
+
+  private String createForwardDeclaration(String typeName, boolean isInterface) {
+    return String.format("@%s %s;", isInterface ? "protocol" : "class", typeName);
   }
 }

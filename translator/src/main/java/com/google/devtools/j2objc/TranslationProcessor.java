@@ -396,7 +396,8 @@ class TranslationProcessor extends FileProcessor {
   }
 
   private void checkDependencies(CompilationUnit unit) {
-    HeaderImportCollector hdrCollector = new HeaderImportCollector();
+    HeaderImportCollector hdrCollector =
+        new HeaderImportCollector(HeaderImportCollector.Filter.INCLUDE_ALL);
     hdrCollector.collect(unit);
     ImplementationImportCollector implCollector = new ImplementationImportCollector();
     implCollector.collect(unit);
