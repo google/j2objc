@@ -26,7 +26,6 @@ import com.google.devtools.j2objc.ast.Assignment.Operator;
 import com.google.devtools.j2objc.ast.CastExpression;
 import com.google.devtools.j2objc.ast.CatchClause;
 import com.google.devtools.j2objc.ast.ClassInstanceCreation;
-import com.google.devtools.j2objc.ast.CompilationUnit;
 import com.google.devtools.j2objc.ast.EnumDeclaration;
 import com.google.devtools.j2objc.ast.Expression;
 import com.google.devtools.j2objc.ast.FieldAccess;
@@ -43,6 +42,7 @@ import com.google.devtools.j2objc.ast.QualifiedName;
 import com.google.devtools.j2objc.ast.SimpleName;
 import com.google.devtools.j2objc.ast.SingleMemberAnnotation;
 import com.google.devtools.j2objc.ast.SingleVariableDeclaration;
+import com.google.devtools.j2objc.ast.TreeNode;
 import com.google.devtools.j2objc.ast.TreeUtil;
 import com.google.devtools.j2objc.ast.TreeVisitor;
 import com.google.devtools.j2objc.ast.TryStatement;
@@ -75,32 +75,16 @@ import java.util.Set;
  */
 public class ImplementationImportCollector extends TreeVisitor {
 
-  private Set<String> mainTypeNames = Sets.newHashSet();
   private Set<Import> imports = Sets.newLinkedHashSet();
-  private Set<Import> declaredTypes = Sets.newHashSet();
 
-  public void collect(CompilationUnit unit) {
-    collect(Collections.singletonList(unit));
+  public void collect(TreeNode node) {
+    collect(Collections.singletonList(node));
   }
 
-  public void collect(List<CompilationUnit> units) {
-    for (CompilationUnit unit: units) {
-      unit.setGenerationContext();
-      PackageDeclaration pkg = unit.getPackage();
-      if (pkg.isDefaultPackage()) {
-        mainTypeNames.add(unit.getMainTypeName());
-      } else {
-        mainTypeNames.add(pkg.getName() + "." + unit.getMainTypeName());
-      }
-    }
-
-    for (CompilationUnit unit: units) {
-      unit.setGenerationContext();
-      run(unit);
-    }
-
-    for (Import imp : declaredTypes) {
-      imports.remove(imp);
+  public void collect(Iterable<? extends TreeNode> nodes) {
+    for (TreeNode node : nodes) {
+      TreeUtil.getCompilationUnit(node).setGenerationContext();
+      run(node);
     }
   }
 
@@ -122,20 +106,10 @@ public class ImplementationImportCollector extends TreeVisitor {
     Import.addImports(type, imports);
   }
 
-  // Keep track of any declared types to avoid invalid imports.  The
-  // exception is the main type, as it's needed to import the matching
-  // header file.
-  private void addDeclaredType(ITypeBinding type) {
-    if (type != null && !mainTypeNames.contains(type.getQualifiedName())) {
-      Import.addImports(type, declaredTypes);
-    }
-  }
-
   @Override
   public boolean visit(AnnotationTypeDeclaration node) {
     ITypeBinding type = node.getTypeBinding();
     addImports(type);
-    addDeclaredType(type);
     addImports(Types.resolveIOSType("IOSClass"));
     return true;
   }
@@ -201,7 +175,6 @@ public class ImplementationImportCollector extends TreeVisitor {
   public boolean visit(EnumDeclaration node) {
     ITypeBinding type = node.getTypeBinding();
     addImports(type);
-    addDeclaredType(type);
     addImports(Types.resolveIOSType("IOSClass"));
     addImports(GeneratedTypeBinding.newTypeBinding("java.lang.IllegalArgumentException",
         Types.resolveJavaType("java.lang.RuntimeException"), false));
@@ -358,7 +331,6 @@ public class ImplementationImportCollector extends TreeVisitor {
   public boolean visit(TypeDeclaration node) {
     ITypeBinding type = node.getTypeBinding();
     addImports(type);
-    addDeclaredType(type);
     return true;
   }
 

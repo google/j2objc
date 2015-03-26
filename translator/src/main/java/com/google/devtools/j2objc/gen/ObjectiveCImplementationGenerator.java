@@ -63,13 +63,13 @@ public class ObjectiveCImplementationGenerator extends ObjectiveCSourceFileGener
 
   public void generate() {
     List<CompilationUnit> units = getGenerationUnit().getCompilationUnits();
-    List<AbstractTypeDeclaration> types = collectTypes(units);
+    List<AbstractTypeDeclaration> types = getOrderedTypes();
     List<CompilationUnit> packageInfos = collectPackageInfos(units);
 
     println(J2ObjC.getFileHeader(getGenerationUnit().getSourceName()));
     if (!types.isEmpty() || !packageInfos.isEmpty()) {
       printStart(getGenerationUnit().getSourceName());
-      printImports(units);
+      printImports(packageInfos);
       for (CompilationUnit packageInfo : packageInfos) {
         packageInfo.setGenerationContext();
         generatePackageInfo(packageInfo);
@@ -91,18 +91,6 @@ public class ObjectiveCImplementationGenerator extends ObjectiveCSourceFileGener
     }
 
     save(getOutputPath());
-  }
-
-  private List<AbstractTypeDeclaration> collectTypes(List<CompilationUnit> units) {
-    final List<AbstractTypeDeclaration> types = new ArrayList<AbstractTypeDeclaration>();
-
-    for (CompilationUnit unit : units) {
-      for (AbstractTypeDeclaration type : unit.getTypes()) {
-        types.add(type);
-      }
-    }
-
-    return types;
   }
 
   private List<CompilationUnit> collectPackageInfos(List<CompilationUnit> units) {
@@ -165,13 +153,14 @@ public class ObjectiveCImplementationGenerator extends ObjectiveCSourceFileGener
     }
   }
 
-  private void printImports(List<CompilationUnit> units) {
+  private void printImports(List<CompilationUnit> packageInfos) {
     HeaderImportCollector declarationCollector =
         new HeaderImportCollector(HeaderImportCollector.Filter.PRIVATE_ONLY);
-    declarationCollector.collect(units);
+    declarationCollector.collect(getOrderedTypes());
 
     ImplementationImportCollector collector = new ImplementationImportCollector();
-    collector.collect(units);
+    collector.collect(packageInfos);
+    collector.collect(getOrderedTypes());
 
     Set<Import> imports = Sets.newHashSet();
     imports.addAll(declarationCollector.getSuperTypes());
@@ -179,8 +168,12 @@ public class ObjectiveCImplementationGenerator extends ObjectiveCSourceFileGener
 
     Set<String> importFiles = Sets.newTreeSet();
     importFiles.add("J2ObjC_source.h");
+    importFiles.add(getGenerationUnit().getOutputPath() + ".h");
     for (Import imp : imports) {
-      importFiles.add(imp.getImportFileName());
+      // Local types are handled by including the current file's header.
+      if (!isLocalType(imp.getType())) {
+        importFiles.add(imp.getImportFileName());
+      }
     }
 
     newline();
@@ -195,10 +188,10 @@ public class ObjectiveCImplementationGenerator extends ObjectiveCSourceFileGener
     }
 
     Set<Import> forwardDecls = Sets.newHashSet(declarationCollector.getForwardDeclarations());
-    // We don't need both a forward declaration and an import.
     for (Import imp : declarationCollector.getForwardDeclarations()) {
-      if (TranslationUtil.hasPrivateDeclaration(imp.getType())
-          || !importFiles.contains(imp.getImportFileName())) {
+      // Only need to forward declare private local types. All else is handled
+      // by imports.
+      if (isLocalType(imp.getType()) && TranslationUtil.hasPrivateDeclaration(imp.getType())) {
         forwardDecls.add(imp);
       }
     }
