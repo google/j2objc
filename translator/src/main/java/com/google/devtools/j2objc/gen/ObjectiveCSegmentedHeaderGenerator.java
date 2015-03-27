@@ -16,6 +16,7 @@ package com.google.devtools.j2objc.gen;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
+import com.google.common.collect.Sets;
 import com.google.devtools.j2objc.ast.AbstractTypeDeclaration;
 import com.google.devtools.j2objc.types.HeaderImportCollector;
 import com.google.devtools.j2objc.types.Import;
@@ -23,6 +24,7 @@ import com.google.devtools.j2objc.util.NameTable;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * Generates segmented Objective-C header files from compilation units. In a
@@ -114,9 +116,9 @@ public class ObjectiveCSegmentedHeaderGenerator extends ObjectiveCHeaderGenerato
 
     HeaderImportCollector collector = importCollectors.get(node);
     assert collector != null;
-    printForwardDeclarations(collector.getForwardDeclarations());
 
-    outer:
+    Set<Import> forwardDeclarations = Sets.newHashSet(collector.getForwardDeclarations());
+
     for (Import imp : collector.getSuperTypes()) {
       // Verify this import isn't declared in this source file.
       if (isLocalType(imp.getType())) {
@@ -126,7 +128,10 @@ public class ObjectiveCSegmentedHeaderGenerator extends ObjectiveCHeaderGenerato
       printf("#define %s_RESTRICT 1\n", imp.getMainTypeName());
       printf("#define %s_INCLUDE 1\n", imp.getTypeName());
       printf("#include \"%s\"\n", imp.getImportFileName());
+      forwardDeclarations.remove(imp);
     }
+
+    printForwardDeclarations(forwardDeclarations);
 
     super.generateType(node);
     newline();

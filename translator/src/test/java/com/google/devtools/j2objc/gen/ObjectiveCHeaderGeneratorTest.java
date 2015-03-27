@@ -825,4 +825,13 @@ public class ObjectiveCHeaderGeneratorTest extends GenerationTest {
         + "abstract class Foo {}", "Test", "bar/Test.h");
     assertNotInTranslation(translation, "#include \"Foo.h\"");
   }
+
+  public void testNoForwardDeclarationWhenIncluded() throws IOException {
+    addSourceFile("class Foo { static class Bar { } }", "Foo.java");
+    String translation = translateSourceFile(
+        "class Test extends Foo { Foo.Bar bar; }", "Test", "Test.h");
+    assertTranslation(translation, "#include \"Foo.h\"");
+    // Forward declaration for Foo_Bar is not needed because we've included Foo.h.
+    assertNotInTranslation(translation, "@class Foo_Bar");
+  }
 }
