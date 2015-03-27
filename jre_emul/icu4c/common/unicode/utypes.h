@@ -1,6 +1,6 @@
 /*
 **********************************************************************
-*   Copyright (C) 1996-2014, International Business Machines
+*   Copyright (C) 1996-2012, International Business Machines
 *   Corporation and others.  All Rights Reserved.
 **********************************************************************
 *
@@ -36,7 +36,9 @@
 #include "unicode/umachine.h"
 #include "unicode/uversion.h"
 #include "unicode/uconfig.h"
+#if U_PLATFORM!=U_PF_IPHONE
 #include <float.h>
+#endif
 
 #if !U_NO_DEFAULT_INCLUDE_UTF_HEADERS
 #   include "unicode/utf.h"
@@ -59,7 +61,7 @@
  */
 #ifdef __cplusplus
 #   ifndef U_SHOW_CPLUSPLUS_API
-#       define U_SHOW_CPLUSPLUS_API 1
+#       define U_SHOW_CPLUSPLUS_API 0
 #   endif
 #else
 #   undef U_SHOW_CPLUSPLUS_API
@@ -137,7 +139,7 @@
 #define U_ICUDATA_NAME    "icudt" U_ICU_VERSION_SHORT U_ICUDATA_TYPE_LETTER
 #ifndef U_HIDE_INTERNAL_API
 #define U_USRDATA_NAME    "usrdt" U_ICU_VERSION_SHORT U_ICUDATA_TYPE_LETTER  /**< @internal */
-#define U_USE_USRDATA     1  /**< @internal */
+#define U_USE_USRDATA     0  /**< @internal */
 #endif  /* U_HIDE_INTERNAL_API */
 
 /**
@@ -213,13 +215,17 @@ typedef double UDate;
  * Maximum UDate value 
  * @stable ICU 4.8 
  */ 
+#if U_PLATFORM!=U_PF_IPHONE
 #define U_DATE_MAX DBL_MAX
+#else
+#define U_DATE_MAX (1.7976931348623157e+308)
+#endif
 
 /**
  * Minimum UDate value 
  * @stable ICU 4.8 
  */ 
-#define U_DATE_MIN -U_DATE_MAX
+#define U_DATE_MIN (-U_DATE_MAX)
 
 /*===========================================================================*/
 /* Shared library/DLL import-export API control                              */
@@ -641,7 +647,7 @@ typedef enum UErrorCode {
     U_REGEX_INVALID_FLAG,                 /**< Invalid value for match mode flags.                */
     U_REGEX_LOOK_BEHIND_LIMIT,            /**< Look-Behind pattern matches must have a bounded maximum length.    */
     U_REGEX_SET_CONTAINS_STRING,          /**< Regexps cannot have UnicodeSets containing strings.*/
-    U_REGEX_OCTAL_TOO_BIG,                /**< Octal character constants must be <= 0377. @deprecated ICU 54. This error cannot occur. */
+    U_REGEX_OCTAL_TOO_BIG,                /**< Octal character constants must be <= 0377.         */
     U_REGEX_MISSING_CLOSE_BRACKET,        /**< Missing closing bracket on a bracket expression.   */
     U_REGEX_INVALID_RANGE,                /**< In a character range [x-y], x is greater than y.   */
     U_REGEX_STACK_OVERFLOW,               /**< Regular expression backtrack stack overflow.       */

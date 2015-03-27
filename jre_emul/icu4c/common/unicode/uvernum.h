@@ -57,7 +57,7 @@
  *  This value will change in the subsequent releases of ICU
  *  @stable ICU 2.4
  */
-#define U_ICU_VERSION_MAJOR_NUM 54
+#define U_ICU_VERSION_MAJOR_NUM 53
 
 /** The current ICU minor version as an integer.
  *  This value will change in the subsequent releases of ICU
@@ -83,7 +83,7 @@
  *  This value will change in the subsequent releases of ICU
  *  @stable ICU 2.6
  */
-#define U_ICU_VERSION_SUFFIX _54
+#define U_ICU_VERSION_SUFFIX _53
 
 /**
  * \def U_DEF2_ICU_ENTRY_POINT_RENAME
@@ -118,19 +118,19 @@
  *  This value will change in the subsequent releases of ICU
  *  @stable ICU 2.4
  */
-#define U_ICU_VERSION "54.1"
+#define U_ICU_VERSION "53.1"
 
 /** The current ICU library major/minor version as a string without dots, for library name suffixes.
  *  This value will change in the subsequent releases of ICU
  *  @stable ICU 2.6
  */
-#define U_ICU_VERSION_SHORT "54"
+#define U_ICU_VERSION_SHORT "53"
 
 #ifndef U_HIDE_INTERNAL_API
 /** Data version in ICU4C.
  * @internal ICU 4.4 Internal Use Only
  **/
-#define U_ICU_DATA_VERSION "54.1"
+#define U_ICU_DATA_VERSION "53.1"
 #endif  /* U_HIDE_INTERNAL_API */
 
 /*===========================================================================
@@ -157,14 +157,11 @@
  */
 #define UCOL_BUILDER_VERSION 9
 
-#ifndef U_HIDE_DEPRECATED_API
 /**
- * Constant 1.
- * This was intended to be the version of collation tailorings,
- * but instead the tailoring data carries a version number.
- * @deprecated ICU 54
+ * This is the version of collation tailorings.
+ * This value may change in subsequent releases of ICU.
+ * @stable ICU 2.4
  */
 #define UCOL_TAILORINGS_VERSION 1
-#endif  /* U_HIDE_DEPRECATED_API */
 
 #endif

@@ -87,7 +87,7 @@
  * @internal
  */
 #ifndef U_DISABLE_RENAMING
-#define U_DISABLE_RENAMING 0
+#define U_DISABLE_RENAMING 1
 #endif
 
 /**
@@ -246,10 +246,6 @@
 #   define UCONFIG_NO_FILE_IO 0
 #endif
 
-#if UCONFIG_NO_FILE_IO && defined(U_TIMEZONE_FILES_DIR) 
-#   error Contradictory file io switches in uconfig.h.
-#endif
-
 /**
  * \def UCONFIG_NO_CONVERSION
  * ICU will not completely build with this switch turned on.
@@ -390,7 +386,7 @@
  * @stable ICU 3.2
  */
 #ifndef UCONFIG_NO_SERVICE
-#   define UCONFIG_NO_SERVICE 0
+#   define UCONFIG_NO_SERVICE 1
 #endif
 
 /**
@@ -421,10 +417,7 @@
  * @internal
  */
 #ifndef UCONFIG_NO_FILTERED_BREAK_ITERATION
-#   define UCONFIG_NO_FILTERED_BREAK_ITERATION 0
-
-
-
+#   define UCONFIG_NO_FILTERED_BREAK_ITERATION 1
 #endif
 
 #endif
