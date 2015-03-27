@@ -7,6 +7,7 @@
 //
 
 #import "NSDictionaryMap.h"
+#import "java/util/Iterator.h"
 #import "java/util/LinkedHashSet.h"
 #import "java/util/LinkedList.h"
 
