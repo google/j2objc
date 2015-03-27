@@ -28,7 +28,6 @@ import com.google.devtools.j2objc.ast.TreeUtil;
 import com.google.devtools.j2objc.ast.VariableDeclarationFragment;
 import com.google.devtools.j2objc.util.BindingUtil;
 import com.google.devtools.j2objc.util.NameTable;
-import com.google.devtools.j2objc.util.TranslationUtil;
 
 import org.eclipse.jdt.core.dom.IMethodBinding;
 import org.eclipse.jdt.core.dom.ITypeBinding;
@@ -81,7 +80,7 @@ public class TypeImplementationGenerator extends TypeGenerator {
   private void printStaticVars() {
     boolean needsNewline = true;
     for (FieldDeclaration field : getStaticFields()) {
-      if (TranslationUtil.hasPrivateDeclaration(field)) {
+      if (field.hasPrivateDeclaration()) {
         // Static var is defined in declaration.
         continue;
       }

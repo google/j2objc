@@ -47,7 +47,7 @@ public abstract class ObjectiveCSourceFileGenerator extends AbstractSourceGenera
 
   private final GenerationUnit unit;
   private final List<AbstractTypeDeclaration> orderedTypes;
-  private final Set<String> typeKeys;
+  private final Map<String, AbstractTypeDeclaration> typesByKey;
 
   /**
    * Create a new generator.
@@ -59,9 +59,9 @@ public abstract class ObjectiveCSourceFileGenerator extends AbstractSourceGenera
     super(new SourceBuilder(emitLineDirectives));
     this.unit = unit;
     orderedTypes = getOrderedTypes(unit);
-    typeKeys = Sets.newHashSet();
+    typesByKey = Maps.newHashMap();
     for (AbstractTypeDeclaration typeNode : orderedTypes) {
-      typeKeys.add(typeNode.getTypeBinding().getKey());
+      typesByKey.put(typeNode.getTypeBinding().getKey(), typeNode);
     }
   }
 
@@ -82,8 +82,12 @@ public abstract class ObjectiveCSourceFileGenerator extends AbstractSourceGenera
     return orderedTypes;
   }
 
+  protected AbstractTypeDeclaration getLocalTypeNode(ITypeBinding type) {
+    return typesByKey.get(type.getKey());
+  }
+
   protected boolean isLocalType(ITypeBinding type) {
-    return typeKeys.contains(type.getKey());
+    return typesByKey.containsKey(type.getKey());
   }
 
   protected void setGenerationContext(AbstractTypeDeclaration type) {

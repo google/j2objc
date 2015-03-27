@@ -18,13 +18,10 @@ import com.google.devtools.j2objc.Options;
 import com.google.devtools.j2objc.ast.AbstractTypeDeclaration;
 import com.google.devtools.j2objc.ast.Annotation;
 import com.google.devtools.j2objc.ast.ArrayCreation;
-import com.google.devtools.j2objc.ast.BodyDeclaration;
 import com.google.devtools.j2objc.ast.ClassInstanceCreation;
 import com.google.devtools.j2objc.ast.Expression;
-import com.google.devtools.j2objc.ast.FunctionDeclaration;
 import com.google.devtools.j2objc.ast.MethodInvocation;
 import com.google.devtools.j2objc.ast.PackageDeclaration;
-import com.google.devtools.j2objc.ast.TreeNode;
 import com.google.devtools.j2objc.ast.TreeUtil;
 import com.google.devtools.j2objc.types.IOSMethodBinding;
 import com.google.j2objc.annotations.ReflectionSupport;
@@ -33,7 +30,6 @@ import org.eclipse.jdt.core.dom.IAnnotationBinding;
 import org.eclipse.jdt.core.dom.IMethodBinding;
 import org.eclipse.jdt.core.dom.ITypeBinding;
 import org.eclipse.jdt.core.dom.IVariableBinding;
-import org.eclipse.jdt.core.dom.Modifier;
 
 /**
  * General collection of utility methods.
@@ -41,34 +37,6 @@ import org.eclipse.jdt.core.dom.Modifier;
  * @author Keith Stanger
  */
 public final class TranslationUtil {
-
-  /**
-   * Returns true if this type will be declared privately in the implementation
-   * file.
-   */
-  public static boolean hasPrivateDeclaration(ITypeBinding type) {
-    // TODO(kstanger): move private types out of the header file.
-    return false;
-  }
-
-  /**
-   * Returns true if this declaration will be declared privately in the
-   * implementation file.
-   */
-  public static boolean hasPrivateDeclaration(BodyDeclaration decl) {
-    if (decl instanceof AbstractTypeDeclaration) {
-      return hasPrivateDeclaration(((AbstractTypeDeclaration) decl).getTypeBinding());
-    }
-    TreeNode parent = decl.getParent();
-    if (parent instanceof AbstractTypeDeclaration
-        && hasPrivateDeclaration(((AbstractTypeDeclaration) parent).getTypeBinding())) {
-      return true;
-    }
-    if (Options.hidePrivateMembers() || decl instanceof FunctionDeclaration) {
-      return Modifier.isPrivate(decl.getModifiers());
-    }
-    return false;
-  }
 
   public static boolean needsReflection(AbstractTypeDeclaration node) {
     return needsReflection(node.getTypeBinding());

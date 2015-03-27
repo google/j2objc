@@ -191,7 +191,8 @@ public class ObjectiveCImplementationGenerator extends ObjectiveCSourceFileGener
     for (Import imp : declarationCollector.getForwardDeclarations()) {
       // Only need to forward declare private local types. All else is handled
       // by imports.
-      if (isLocalType(imp.getType()) && TranslationUtil.hasPrivateDeclaration(imp.getType())) {
+      AbstractTypeDeclaration localTypeNode = getLocalTypeNode(imp.getType());
+      if (localTypeNode != null && localTypeNode.hasPrivateDeclaration()) {
         forwardDecls.add(imp);
       }
     }

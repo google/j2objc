@@ -31,7 +31,6 @@ import com.google.devtools.j2objc.ast.TreeUtil;
 import com.google.devtools.j2objc.ast.TreeVisitor;
 import com.google.devtools.j2objc.ast.Type;
 import com.google.devtools.j2objc.ast.TypeDeclaration;
-import com.google.devtools.j2objc.util.TranslationUtil;
 
 import org.eclipse.jdt.core.dom.IMethodBinding;
 import org.eclipse.jdt.core.dom.ITypeBinding;
@@ -64,7 +63,7 @@ public class HeaderImportCollector extends TreeVisitor {
     }
 
     private boolean include(BodyDeclaration node) {
-      return TranslationUtil.hasPrivateDeclaration(node) ? includePrivate : includePublic;
+      return node.hasPrivateDeclaration() ? includePrivate : includePublic;
     }
   }
 
