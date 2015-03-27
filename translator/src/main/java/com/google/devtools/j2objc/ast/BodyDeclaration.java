@@ -24,6 +24,8 @@ import java.util.List;
 public abstract class BodyDeclaration extends TreeNode {
 
   private int modifiers = 0;
+  // True if this node can be declared in the implementation and not the header.
+  private boolean hasPrivateDeclaration = false;
   protected ChildLink<Javadoc> javadoc = ChildLink.create(Javadoc.class, this);
   protected ChildList<Annotation> annotations = ChildList.create(Annotation.class, this);
 
@@ -43,6 +45,7 @@ public abstract class BodyDeclaration extends TreeNode {
   public BodyDeclaration(BodyDeclaration other) {
     super(other);
     modifiers = other.getModifiers();
+    hasPrivateDeclaration = other.hasPrivateDeclaration();
     javadoc.copyFrom(other.getJavadoc());
     annotations.copyFrom(other.getAnnotations());
   }
@@ -65,6 +68,14 @@ public abstract class BodyDeclaration extends TreeNode {
 
   public void removeModifiers(int modifiersToRemove) {
     modifiers &= ~modifiersToRemove;
+  }
+
+  public boolean hasPrivateDeclaration() {
+    return hasPrivateDeclaration;
+  }
+
+  public void setHasPrivateDeclaration(boolean value) {
+    hasPrivateDeclaration = value;
   }
 
   public Javadoc getJavadoc() {

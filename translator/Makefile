@@ -191,6 +191,7 @@ JAVA_SOURCES = \
 	translate/OperatorRewriter.java \
 	translate/OuterReferenceFixer.java \
 	translate/OuterReferenceResolver.java \
+	translate/PrivateDeclarationResolver.java \
 	translate/Rewriter.java \
 	translate/StaticVarRewriter.java \
 	translate/SuperMethodInvocationRewriter.java \
