@@ -104,25 +104,34 @@ public class ObjectiveCHeaderGenerator extends ObjectiveCSourceFileGenerator {
     printf("#ifndef _%s_H_\n", getGenerationUnit().getName());
     printf("#define _%s_H_\n", getGenerationUnit().getName());
     pushIgnoreDeprecatedDeclarationsPragma();
-    newline();
 
     HeaderImportCollector collector =
         new HeaderImportCollector(HeaderImportCollector.Filter.PUBLIC_ONLY);
     // Order matters for finding forward declarations.
     collector.collect(getOrderedTypes());
 
-    printForwardDeclarations(collector.getForwardDeclarations());
+    Set<String> includeFiles = Sets.newTreeSet();
+    includeFiles.add("J2ObjC_header.h");
+    for (Import imp : collector.getSuperTypes()) {
+      if (!isLocalType(imp.getType())) {
+        includeFiles.add(imp.getImportFileName());
+      }
+    }
 
     // Print collected includes.
-    Set<Import> superTypes = collector.getSuperTypes();
-    Set<String> includeStmts = Sets.newTreeSet();
-    includeStmts.add("#include \"J2ObjC_header.h\"");
-    for (Import imp : superTypes) {
-      includeStmts.add(String.format("#include \"%s\"", imp.getImportFileName()));
+    newline();
+    for (String header : includeFiles) {
+      printf("#include \"%s\"\n", header);
     }
-    for (String stmt : includeStmts) {
-      println(stmt);
+
+    // Filter out any declarations that are resolved by an include.
+    Set<Import> forwardDeclarations = Sets.newHashSet();
+    for (Import imp : collector.getForwardDeclarations()) {
+      if (!includeFiles.contains(imp.getImportFileName())) {
+        forwardDeclarations.add(imp);
+      }
     }
+    printForwardDeclarations(forwardDeclarations);
   }
 
   protected void generateFileFooter() {

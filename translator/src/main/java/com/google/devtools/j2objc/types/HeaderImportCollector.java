@@ -91,16 +91,6 @@ public class HeaderImportCollector extends TreeVisitor {
       TreeUtil.getCompilationUnit(node).setGenerationContext();
       run(node);
     }
-
-    postCollect();
-  }
-
-  /**
-   * Removes spurious entries in the collected super types and forward declarations.
-   */
-  public void postCollect() {
-    superTypes.removeAll(declaredTypes);
-    forwardDecls.removeAll(superTypes);
   }
 
   public Set<Import> getForwardDeclarations() {

@@ -104,4 +104,17 @@ public class ObjectiveCSegmentedHeaderGeneratorTest extends GenerationTest {
     assertTranslation(translation, "#pragma GCC diagnostic ignored \"-Wdeprecated-declarations\"");
     assertTranslation(translation, "#pragma clang diagnostic pop");
   }
+
+  public void testForwardDeclarationForTypeInSameIncludeAsSuperclass() throws IOException {
+    addSourceFile("class Foo { static class Bar { } }", "Foo.java");
+    String translation = translateSourceFile(
+        "class Test extends Foo { Foo.Bar bar; }", "Test", "Test.h");
+    assertTranslatedLines(translation,
+        "#define Foo_RESTRICT 1",
+        "#define Foo_INCLUDE 1",
+        "#include \"Foo.h\"");
+    // Forward declaration for Foo_Bar is needed because the include of Foo.h
+    // is restricted to only the Foo type.
+    assertTranslation(translation, "@class Foo_Bar");
+  }
 }
