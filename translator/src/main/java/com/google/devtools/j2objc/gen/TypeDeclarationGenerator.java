@@ -74,6 +74,14 @@ public class TypeDeclarationGenerator extends TypeGenerator {
   }
 
   private void generate() {
+    // If the type is private, then generate nothing in the header. The initial
+    // declaration will go in the implementation file instead.
+    if (!typeNode.hasPrivateDeclaration()) {
+      generateInitialDeclaration();
+    }
+  }
+
+  protected void generateInitialDeclaration() {
     printConstantDefines();
     printNativeEnum();
 
@@ -541,7 +549,7 @@ public class TypeDeclarationGenerator extends TypeGenerator {
   @Override
   protected void printInnerDeclarations() {
     // Everything is public in interfaces.
-    if (isInterfaceType()) {
+    if (isInterfaceType() || typeNode.hasPrivateDeclaration()) {
       super.printInnerDeclarations();
       return;
     }

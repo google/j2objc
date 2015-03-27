@@ -44,8 +44,15 @@ public class TypePrivateDeclarationGenerator extends TypeDeclarationGenerator {
     return true;
   }
 
-  // TODO(kstanger): Merge this with generate() in the superclass.
   private void generate() {
+    if (typeNode.hasPrivateDeclaration()) {
+      generateInitialDeclaration();
+    } else {
+      generateDeclarationExtension();
+    }
+  }
+
+  private void generateDeclarationExtension() {
     printConstantDefines();
     printClassExtension();
     printCompanionClassDeclaration();
@@ -66,7 +73,7 @@ public class TypePrivateDeclarationGenerator extends TypeDeclarationGenerator {
       printf("@interface %s ()", typeName);
       printInstanceVariables();
       printDeclarations(privateDecls);
-      println("@end");
+      println("\n@end");
     }
   }
 
