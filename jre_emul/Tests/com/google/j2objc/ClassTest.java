@@ -296,6 +296,15 @@ public class ClassTest extends TestCase {
     assertEquals(thisClass, innerEnum.getDeclaringClass());
   }
 
+  public void testClassIsAssignableToItself() throws Exception {
+    Class<?> cls = Class.forName("java.util.HashMap");
+    assertNotNull(cls);
+    assertTrue(cls.isAssignableFrom(cls));
+    Class<?> protocol = Class.forName("java.util.Map");
+    assertNotNull(protocol);
+    assertTrue(protocol.isAssignableFrom(protocol));
+  }
+
   static class InnerClass {
   }
 

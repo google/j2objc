@@ -38,6 +38,9 @@ static jboolean ConformsToProtocol(IOSClass *cls, IOSProtocolClass *protocol) {
   if (!cls) {
     return NO;
   }
+  if (cls == protocol) {
+    return YES;
+  }
   IOSObjectArray *interfaces = [cls getInterfacesInternal];
   for (int i = 0; i < interfaces->size_; i++) {
     IOSClass *interface = interfaces->buffer_[i];
