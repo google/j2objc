@@ -99,10 +99,10 @@ class IOSLogHandler extends Handler {
         break;
       case 800:        // Level.INFO
       case 700:        // Level.CONFIG
-        aslLevel = 5;  // ASL_LEVEL_NOTICE
+        aslLevel = 6;  // ASL_LEVEL_INFO
         break;
       default:
-        aslLevel = 6;  // ASL_LEVEL_INFO
+        aslLevel = 7;  // ASL_LEVEL_DEBUG
     }
 
     if (record.getThrown() != null) {
