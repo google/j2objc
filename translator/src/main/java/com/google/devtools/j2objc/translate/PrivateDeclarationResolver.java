@@ -15,6 +15,7 @@
 package com.google.devtools.j2objc.translate;
 
 import com.google.common.collect.Maps;
+import com.google.common.collect.Sets;
 import com.google.devtools.j2objc.Options;
 import com.google.devtools.j2objc.ast.AbstractTypeDeclaration;
 import com.google.devtools.j2objc.ast.AnnotationTypeDeclaration;
@@ -29,12 +30,14 @@ import com.google.devtools.j2objc.ast.Initializer;
 import com.google.devtools.j2objc.ast.MethodDeclaration;
 import com.google.devtools.j2objc.ast.NativeDeclaration;
 import com.google.devtools.j2objc.ast.TreeVisitor;
+import com.google.devtools.j2objc.ast.Type;
 import com.google.devtools.j2objc.ast.TypeDeclaration;
 
 import org.eclipse.jdt.core.dom.ITypeBinding;
 import org.eclipse.jdt.core.dom.Modifier;
 
 import java.util.Map;
+import java.util.Set;
 
 /**
  * Determines which declarations should be moved out of the public header file.
@@ -42,6 +45,10 @@ import java.util.Map;
  * @author Keith Stanger
  */
 public class PrivateDeclarationResolver extends TreeVisitor {
+
+  // Collects types that must be public because they are exposed by another
+  // public declaration. These types and all of their supertypes must be public.
+  private Set<ITypeBinding> publicTypes = Sets.newHashSet();
 
   @Override
   public boolean visit(CompilationUnit node) {
@@ -53,16 +60,18 @@ public class PrivateDeclarationResolver extends TreeVisitor {
 
     // Make sure supertypes of public types remain public, even if declared
     // private.
-    for (AbstractTypeDeclaration typeNode : node.getTypes()) {
-      if (!typeNode.hasPrivateDeclaration()) {
-        ensurePublicSuperTypes(typeNode.getTypeBinding(), typeMap);
-      }
+    for (ITypeBinding type : publicTypes) {
+      ensurePublicSuperTypes(type, typeMap);
     }
     return false;
   }
 
   private void ensurePublicSuperTypes(
       ITypeBinding typeBinding, Map<ITypeBinding, AbstractTypeDeclaration> typeMap) {
+    if (typeBinding == null) {
+      return;
+    }
+    typeBinding = typeBinding.getTypeDeclaration();
     AbstractTypeDeclaration typeNode = typeMap.get(typeBinding);
     if (typeNode == null) {
       return;
@@ -74,13 +83,29 @@ public class PrivateDeclarationResolver extends TreeVisitor {
     }
   }
 
+  private void addPublicType(Type typeNode) {
+    if (typeNode != null) {
+      publicTypes.add(typeNode.getTypeBinding());
+    }
+  }
+
+  private boolean isPrivateType(ITypeBinding type) {
+    // TODO(kstanger): Uncomment the code below to hide private types.
+    return false;
+    /*if (type == null || !Options.hidePrivateMembers()) {
+      return false;
+    }
+    return isPrivateType(type.getDeclaringClass()) || BindingUtil.isPrivate(type) || type.isLocal()
+        || type.isAnonymous();*/
+  }
+
   private boolean visitType(AbstractTypeDeclaration node) {
-    // TODO(kstanger): Uncomment the expression below to hide private types.
-    boolean isPrivate = false;
-    /*ITypeBinding type = node.getTypeBinding();
-    boolean isPrivate =
-        Options.hidePrivateMembers() && (BindingUtil.isPrivate(type) || type.isLocal());*/
+    ITypeBinding typeBinding = node.getTypeBinding();
+    boolean isPrivate = isPrivateType(typeBinding);
     node.setHasPrivateDeclaration(isPrivate);
+    if (!isPrivate) {
+      publicTypes.add(typeBinding);
+    }
     for (BodyDeclaration decl : node.getBodyDeclarations()) {
       if (isPrivate) {
         decl.setHasPrivateDeclaration(true);
@@ -108,21 +133,31 @@ public class PrivateDeclarationResolver extends TreeVisitor {
 
   @Override
   public boolean visit(FieldDeclaration node) {
-    node.setHasPrivateDeclaration(
-        Options.hidePrivateMembers() && Modifier.isPrivate(node.getModifiers()));
+    boolean isPrivate = Options.hidePrivateMembers() && Modifier.isPrivate(node.getModifiers());
+    node.setHasPrivateDeclaration(isPrivate);
+    if (!isPrivate) {
+      addPublicType(node.getType());
+    }
     return false;
   }
 
   @Override
   public boolean visit(FunctionDeclaration node) {
-    node.setHasPrivateDeclaration(Modifier.isPrivate(node.getModifiers()));
+    boolean isPrivate = Modifier.isPrivate(node.getModifiers());
+    node.setHasPrivateDeclaration(isPrivate);
+    if (!isPrivate) {
+      addPublicType(node.getReturnType());
+    }
     return false;
   }
 
   @Override
   public boolean visit(MethodDeclaration node) {
-    node.setHasPrivateDeclaration(
-        Options.hidePrivateMembers() && Modifier.isPrivate(node.getModifiers()));
+    boolean isPrivate = Options.hidePrivateMembers() && Modifier.isPrivate(node.getModifiers());
+    node.setHasPrivateDeclaration(isPrivate);
+    if (!isPrivate) {
+      addPublicType(node.getReturnType());
+    }
     return false;
   }
 
