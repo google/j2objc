@@ -152,8 +152,8 @@ public class J2ObjCTest extends GenerationTest {
   }
 
   private void makeAssertionsForCombinedJar() throws Exception {
-    String combined_h = getTranslatedFile("example.h");
-    String combined_m = getTranslatedFile("example.m");
+    String combined_h = getTranslatedFile(jarPath.replace(".jar", ".h"));
+    String combined_m = getTranslatedFile(jarPath.replace(".jar", ".m"));
     makeAssertions(combined_h, combined_m, combined_m);
   }
 

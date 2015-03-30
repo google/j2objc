@@ -200,9 +200,10 @@ public class GenerationBatch {
 
     if (Options.combineSourceJars() && !file.getSpecifiedPath().endsWith(".java")) {
       String outputPath = file.getSpecifiedPath();
-      // If there's no separator, this results in 0
-      int lastPathComponentIndex = outputPath.lastIndexOf(File.separatorChar) + 1;
-      outputPath = outputPath.substring(lastPathComponentIndex, outputPath.lastIndexOf("."));
+      // Truncate file extension if it exists
+      if (outputPath.lastIndexOf("/") < outputPath.lastIndexOf(".")) {
+        outputPath = outputPath.substring(0, outputPath.lastIndexOf("."));
+      }
       unit = unitMap.get(outputPath);
       if (unit == null) {
         unit = createGenerationUnit(file.getSpecifiedPath(), outputPath);
