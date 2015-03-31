@@ -6776,7 +6776,7 @@
 /* Begin PBXLegacyTarget section */
 		067219231559BF3600645E1B /* j2objc build */ = {
 			isa = PBXLegacyTarget;
-			buildArgumentsString = "-c \"if [ x$ACTION == xclean ]; then make clean; else make -j4 dist; fi\"";
+			buildArgumentsString = "-c export PATH=$PATH:/usr/local/bin; \"if [ x$ACTION == xclean ]; then make clean; else make -j4 dist; fi\"";
 			buildConfigurationList = 067219241559BF3600645E1B /* Build configuration list for PBXLegacyTarget "j2objc build" */;
 			buildPhases = (
 			);
