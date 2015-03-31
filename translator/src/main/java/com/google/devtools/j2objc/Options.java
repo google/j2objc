@@ -341,11 +341,6 @@ public class Options {
           + "--use-header-mappings, -XcombineJars or --preserve-full-paths");
     }
 
-    if (outputStyle == OutputStyleOption.SOURCE_COMBINED && segmentedHeaders) {
-      // TODO(mthvedt): Implement -XcombineJars support for segmented headers.
-      ErrorUtil.warning("--segmented-headers not yet supported with -XcombineJars");
-    }
-
     if (memoryManagementOption == null) {
       memoryManagementOption = MemoryManagementOption.REFERENCE_COUNTING;
     }

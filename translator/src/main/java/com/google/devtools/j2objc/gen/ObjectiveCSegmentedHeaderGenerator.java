@@ -35,37 +35,28 @@ import java.util.Set;
  */
 public class ObjectiveCSegmentedHeaderGenerator extends ObjectiveCHeaderGenerator {
 
-  private final String mainTypeName;
-
   private Map<AbstractTypeDeclaration, HeaderImportCollector> importCollectors = Maps.newHashMap();
 
   protected ObjectiveCSegmentedHeaderGenerator(GenerationUnit unit) {
     super(unit);
-    // TODO(mthvedt): Remove this and implement -XcombineSrcJars for segmented headers.
-    assert getGenerationUnit().getCompilationUnits().size() <= 1;
-    mainTypeName = NameTable.getMainTypeFullName(getGenerationUnit().getCompilationUnits().get(0));
   }
 
   public static void generate(GenerationUnit unit) {
-    // TODO(mthvedt): Remove this and implement -XcombineSrcJars for segmented headers.
-    if (unit.getCompilationUnits().size() > 1) {
-      new ObjectiveCHeaderGenerator(unit).generate();
-    } else {
-      new ObjectiveCSegmentedHeaderGenerator(unit).generate();
-    }
+    new ObjectiveCSegmentedHeaderGenerator(unit).generate();
   }
 
   @Override
   protected void generateFileHeader() {
+    String mainGuardName = getGenerationUnit().getName();
     println("#include \"J2ObjC_header.h\"");
     newline();
-    printf("#pragma push_macro(\"%s_INCLUDE_ALL\")\n", mainTypeName);
-    printf("#if %s_RESTRICT\n", mainTypeName);
-    printf("#define %s_INCLUDE_ALL 0\n", mainTypeName);
+    printf("#pragma push_macro(\"%s_INCLUDE_ALL\")\n", mainGuardName);
+    printf("#if %s_RESTRICT\n", mainGuardName);
+    printf("#define %s_INCLUDE_ALL 0\n", mainGuardName);
     println("#else");
-    printf("#define %s_INCLUDE_ALL 1\n", mainTypeName);
+    printf("#define %s_INCLUDE_ALL 1\n", mainGuardName);
     println("#endif");
-    printf("#undef %s_RESTRICT\n", mainTypeName);
+    printf("#undef %s_RESTRICT\n", mainGuardName);
 
     for (AbstractTypeDeclaration type : Lists.reverse(getOrderedTypes())) {
       HeaderImportCollector collector =
@@ -103,14 +94,15 @@ public class ObjectiveCSegmentedHeaderGenerator extends ObjectiveCHeaderGenerato
   protected void generateFileFooter() {
     // Don't need #endif for file-level header guard.
     popIgnoreDeprecatedDeclarationsPragma();
-    printf("#pragma pop_macro(\"%s_INCLUDE_ALL\")\n", mainTypeName);
+    printf("#pragma pop_macro(\"%s_INCLUDE_ALL\")\n", getGenerationUnit().getName());
   }
 
   @Override
   public void generateType(AbstractTypeDeclaration node) {
+    String mainGuardName = getGenerationUnit().getName();
     String typeName = NameTable.getFullName(node.getTypeBinding());
     newline();
-    printf("#if !defined (_%s_) && (%s_INCLUDE_ALL || %s_INCLUDE)\n", typeName, mainTypeName,
+    printf("#if !defined (_%s_) && (%s_INCLUDE_ALL || %s_INCLUDE)\n", typeName, mainGuardName,
            typeName);
     printf("#define _%s_\n", typeName);
 
