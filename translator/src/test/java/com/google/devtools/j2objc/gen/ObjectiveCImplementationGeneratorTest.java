@@ -1024,4 +1024,13 @@ public class ObjectiveCImplementationGeneratorTest extends GenerationTest {
     assertTranslation(translation,
         "[[[A_Outer alloc] initWithInnerAnnotation:[[[A_Inner alloc] initWithName:@\"Bar\"]");
   }
+
+  public void testVarargConstructorCallFromSubclass() throws IOException {
+    String translation = translateSourceFile(
+        "class A { A(Object ... bars) {} static class B extends A {}}",
+        "A", "A.m");
+    assertNotInTranslation(translation, "A_init(self);");
+    assertTranslation(translation, "A_initWithNSObjectArray_(self, "
+        + "[IOSObjectArray arrayWithLength:0 type:NSObject_class_()]);");
+  }
 }
