@@ -77,11 +77,17 @@ public class OuterReferenceFixer extends TreeVisitor {
     GeneratedMethodBinding binding =
         new GeneratedMethodBinding(node.getMethodBinding().getMethodDeclaration());
     node.setMethodBinding(binding);
-    addOuterArg(node, binding, declaringClass);
+
+    List<Expression> captureArgs = node.getArguments().subList(0, 0);
+    List<ITypeBinding> captureParams = binding.getParameters().subList(0, 0);
+    if (OuterReferenceResolver.needsOuterParam(newType)) {
+      captureArgs.add(getOuterArg(node, declaringClass));
+      captureParams.add(declaringClass);
+    }
 
     for (IVariableBinding capturedVar : getCapturedVariables(node)) {
-      node.getArguments().add(new SimpleName(capturedVar));
-      binding.addParameter(capturedVar.getType());
+      captureArgs.add(new SimpleName(capturedVar));
+      captureParams.add(capturedVar.getType());
     }
 
     assert binding.isVarargs() || node.getArguments().size() == binding.getParameterTypes().length;
@@ -98,28 +104,17 @@ public class OuterReferenceFixer extends TreeVisitor {
     return OuterReferenceResolver.getCapturedVars(newType);
   }
 
-  private void addOuterArg(
-      ClassInstanceCreation node, GeneratedMethodBinding binding, ITypeBinding declaringClass) {
-    ITypeBinding type = node.getTypeBinding().getTypeDeclaration();
-    if (!OuterReferenceResolver.needsOuterParam(type)) {
-      return;
-    }
-
+  private Expression getOuterArg(ClassInstanceCreation node, ITypeBinding declaringClass) {
     Expression outerExpr = node.getExpression();
-    List<IVariableBinding> path = OuterReferenceResolver.getPath(node);
-    Expression outerArg = null;
-
     if (outerExpr != null) {
       node.setExpression(null);
-      outerArg = outerExpr;
-    } else if (path != null) {
-      outerArg = Name.newName(fixPath(path));
-    } else {
-      outerArg = new ThisExpression(declaringClass);
+      return outerExpr;
     }
-
-    node.getArguments().add(0, outerArg);
-    binding.addParameter(0, declaringClass);
+    List<IVariableBinding> path = OuterReferenceResolver.getPath(node);
+    if (path != null) {
+      return Name.newName(fixPath(path));
+    }
+    return new ThisExpression(declaringClass);
   }
 
   @Override

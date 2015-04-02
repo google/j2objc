@@ -366,11 +366,11 @@ public class AnonymousClassConverterTest extends GenerationTest {
         + "}",
         "Test", "Test.m");
     assertTranslation(translation,
-        "new_Test_A_$1_initWithTest_A_withTest_B_withInt_withTest_B_(self, b, 1, b)");
+        "new_Test_A_$1_initWithTest_A_withTest_B_withTest_B_withInt_(self, b, b, 1)");
     assertTranslatedLines(translation,
-        "void Test_A_$1_initWithTest_A_withTest_B_withInt_withTest_B_("
-          + "Test_A_$1 *self, Test_A *outer$, Test_B *superOuter$, jint arg$0, "
-          + "Test_B *capture$0) {",
+        "void Test_A_$1_initWithTest_A_withTest_B_withTest_B_withInt_("
+          + "Test_A_$1 *self, Test_A *outer$, Test_B *capture$0, Test_B *superOuter$, "
+          + "jint arg$0) {",
         "  Test_A_$1_set_this$1_(self, outer$);",
         "  Test_A_$1_set_val$b_(self, capture$0);",
         "  Test_B_Inner_initWithTest_B_withInt_(self, superOuter$, arg$0);",

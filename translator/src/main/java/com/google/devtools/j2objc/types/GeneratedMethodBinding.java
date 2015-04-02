@@ -160,6 +160,10 @@ public class GeneratedMethodBinding extends AbstractBinding implements IMethodBi
     parameters.addAll(Arrays.asList(method.getParameterTypes()));
   }
 
+  public List<ITypeBinding> getParameters() {
+    return parameters;
+  }
+
   @Override
   public ITypeBinding getReturnType() {
     return returnType;

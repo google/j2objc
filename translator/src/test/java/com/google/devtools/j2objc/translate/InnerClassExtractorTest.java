@@ -771,11 +771,11 @@ public class InnerClassExtractorTest extends GenerationTest {
     assertTranslation(translation, "new_Test_1Inner_initWithNSString_(s)");
     assertTranslatedLines(translation,
         "void Test_1Inner_initWithNSString_(Test_1Inner *self, NSString *capture$0) {",
-        "  Test_1Inner_initWithInt_withNSString_(self, 0, capture$0);",
+        "  Test_1Inner_initWithNSString_withInt_(self, capture$0, 0);",
         "}");
     assertTranslatedLines(translation,
-        "void Test_1Inner_initWithInt_withNSString_("
-          + "Test_1Inner *self, jint i, NSString *capture$0) {",
+        "void Test_1Inner_initWithNSString_withInt_("
+          + "Test_1Inner *self, NSString *capture$0, jint i) {",
         "  Test_1Inner_set_val$s_(self, capture$0);",
         "  NSObject_init(self);",
         "}");
@@ -788,5 +788,17 @@ public class InnerClassExtractorTest extends GenerationTest {
     assertWarningCount(1);
     assertErrorCount(0);
     assertNotInTranslation(translation, "__weak");
+  }
+
+  public void testInnerClassWithVarargsAndCaptureVariables() throws IOException {
+    String translation = translateSourceFile(
+        "class Test { int test(final int i, Object o) { class Inner { Inner(Object... o) {} "
+        + "int foo() { return i; } } return new Inner(o).foo(); } }", "Test", "Test.m");
+    assertTranslation(translation,
+        "new_Test_1Inner_initWithInt_withNSObjectArray_(i, "
+        + "[IOSObjectArray arrayWithObjects:(id[]){ o } count:1 type:NSObject_class_()])");
+    assertTranslation(translation,
+        "void Test_1Inner_initWithInt_withNSObjectArray_("
+        + "Test_1Inner *self, jint capture$0, IOSObjectArray *o)");
   }
 }
