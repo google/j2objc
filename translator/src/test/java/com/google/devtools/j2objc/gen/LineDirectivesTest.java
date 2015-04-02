@@ -20,6 +20,8 @@ import com.google.devtools.j2objc.GenerationTest;
 import com.google.devtools.j2objc.Options;
 
 import java.io.IOException;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * Unit tests for CPP line directive generation, used to support debugging.
@@ -119,5 +121,91 @@ public class LineDirectivesTest extends GenerationTest {
         "while (n > 0)",
         "#line 12",
         "n--;");
+  }
+
+  public void testCombinedFileLineDirectives() throws IOException {
+    // An example where some types will be reordered
+    addSourceFile(
+        "package unit;\n"
+        + "public class Test {\n"
+        + "    public String Dummy(int i) {\n"
+        + "        System.out.println(\"Hello world!\");\n"
+        + "        return Integer.toString(i);\n"
+        + "    }\n"
+        + "}\n"
+        + "\n"
+        + "class NotReordered {"
+        + "    public String DummyTwo(int i) {\n"
+        + "        int j = i + 1;\n"
+        + "        return Integer.toString(j);\n"
+        + "    }"
+        + "}\n",
+        "unit/Test.java");
+    addSourceFile(
+        "package unit;\n"
+        + "public class TestDependent {\n"
+        + "    public Test Dummy() {\n"
+        + "        return new Test();\n"
+        + "    }\n"
+        + "    public AnotherTest AnotherDummy() {\n"
+        + "        return new AnotherTest();\n"
+        + "    }\n"
+        + "}\n",
+        "unit/TestDependent.java");
+    addSourceFile(
+        "package unit;\n"
+        + "public class AnotherTest extends Test {\n"
+        + "    public void AnotherDummy() {\n"
+        + "    }\n"
+        + "}\n"
+        + "\n"
+        + "class AlsoNotReordered {"
+        + "    public void DummyTwo() {\n"
+        + "    }"
+        + "}\n",
+        "unit/AnotherTest.java");
+
+    String translation = translateCombinedFiles(
+        "unit/Foo", ".m",
+        "unit/TestDependent.java", "unit/AnotherTest.java", "unit/Test.java");
+    assertTranslation(translation, "#line 1 \"unit/Foo.testfile\"");
+    assertDirectivePreceedsLine(
+        translation, "TestDependent.java", "@implementation UnitTestDependent");
+    assertDirectivePreceedsLine(
+        translation, "Test.java", "@implementation UnitTest");
+    assertDirectivePreceedsLine(
+        translation, "AnotherTest.java", "@implementation UnitAnotherTest");
+    assertDirectivePreceedsLine(
+        translation, "AnotherTest.java", "@implementation UnitAlsoNotReordered");
+    assertDirectivePreceedsLine(
+        translation, "Test.java", "@implementation UnitNotReordered");
+    // make sure lines get re-synced when files are interwoven
+    assertTranslatedLines(translation,
+        "#line 3",
+        "- (NSString *)DummyWithInt:(jint)i {");
+    assertTranslatedLines(translation,
+        "#line 9",
+        "- (NSString *)DummyTwoWithInt:(jint)i {");
+  }
+
+  private static final Pattern LINE_DIRECTIVE_PATTERN = Pattern.compile(
+      "\\n#line \\d+ \"(\\S*)\"\\n");
+
+  /**
+   * Asserts that the directive "#line some_line "some_prefix/$filename""
+   * most immediately preceding the given line matches the given filename;
+   * that is, the line directives should say we are on the given filename
+   * and not some other filename.
+   */
+  private void assertDirectivePreceedsLine(String translation, String filename, String line) {
+    int lineIndex = translation.indexOf(line + "\n");
+    assertTrue(lineIndex > 0);
+    // Find the last instance of a #line directive before lineIndex
+    Matcher m = LINE_DIRECTIVE_PATTERN.matcher(translation.substring(0, lineIndex));
+    String foundLineDirectiveFilename = "";
+    while (m.find()) {
+      foundLineDirectiveFilename = m.group(1);
+    }
+    assertTrue(foundLineDirectiveFilename.endsWith(filename));
   }
 }

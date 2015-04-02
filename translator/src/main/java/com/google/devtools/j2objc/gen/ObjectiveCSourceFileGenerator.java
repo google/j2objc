@@ -91,7 +91,9 @@ public abstract class ObjectiveCSourceFileGenerator extends AbstractSourceGenera
   }
 
   protected void setGenerationContext(AbstractTypeDeclaration type) {
-    TreeUtil.getCompilationUnit(type).setGenerationContext();
+    CompilationUnit unit = TreeUtil.getCompilationUnit(type);
+    syncFilename(unit.getInputFile().getPath());
+    unit.setGenerationContext();
   }
 
   protected void save(String path) {

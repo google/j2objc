@@ -31,6 +31,7 @@ import java.io.StringReader;
  */
 public class SourceBuilder {
   private final StringBuilder buffer = new StringBuilder();
+  private String currentFile;
   private int indention = 0;
   private int currentLine = -1;
 
@@ -59,7 +60,7 @@ public class SourceBuilder {
    * where the generated source is used in another builder.
    *
    * @param emitLineDirectives if true, generate CPP line directives
-   * @param int startLine the initial line number, or -1 if at start of file
+   * @param startLine the initial line number, or -1 if at start of file
    */
   public SourceBuilder(boolean emitLineDirectives, int startLine) {
     this.emitLineDirectives = emitLineDirectives;
@@ -180,7 +181,24 @@ public class SourceBuilder {
     }
   }
 
+  /**
+   * Emits a #line directive setting the given filename.
+   * @param fileName the filename to sync
+   */
+  public void syncFilename(String fileName) {
+    if (emitLineDirectives) {
+      if (!fileName.equals(currentFile)) {
+        // In the dominant usage pattern, the filename is synced right before the line is synced.
+        // Emit 0 so readers don't think the line number is still meaningful.
+        currentLine = 0;
+        buffer.append(String.format("\n#line %d \"%s\"\n", 0, fileName));
+      }
+    }
+    currentFile = fileName;
+  }
+
   public void printStart(String path) {
+    currentFile = path;
     if (emitLineDirectives) {
       buffer.append(String.format("\n#line 1 \"%s\"\n", path));
     }

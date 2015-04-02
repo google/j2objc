@@ -71,6 +71,7 @@ public class ObjectiveCImplementationGenerator extends ObjectiveCSourceFileGener
       printStart(getGenerationUnit().getSourceName());
       printImports(packageInfos);
       for (CompilationUnit packageInfo : packageInfos) {
+        syncFilename(packageInfo.getInputFile().getPath());
         packageInfo.setGenerationContext();
         generatePackageInfo(packageInfo);
       }
@@ -86,6 +87,8 @@ public class ObjectiveCImplementationGenerator extends ObjectiveCSourceFileGener
           setGenerationContext(type);
           TypeImplementationGenerator.generate(getBuilder(), type);
         }
+
+        syncFilename(getGenerationUnit().getSourceName());
         popIgnoreDeprecatedDeclarationsPragma();
       }
     }

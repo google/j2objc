@@ -78,6 +78,10 @@ public abstract class AbstractSourceGenerator {
     builder.syncLineNumbers(node);
   }
 
+  protected void syncFilename(String filename) {
+    builder.syncFilename(filename);
+  }
+
   protected void printStart(String path) {
     builder.printStart(path);
   }
