@@ -25,6 +25,10 @@ import java.util.Map;
 import java.util.Set;
 import java.util.WeakHashMap;
 
+/*-[
+#include "java/lang/reflect/Method.h"
+]-*/
+
 /**
  * MockMaker implementation for iOS. Unlike the JRE and Android versions,
  * this class creates mocks for classes using the Objective-C runtime.
