@@ -45,7 +45,7 @@ fi
 
 declare CC_FLAGS="-Werror -Wno-parentheses -fno-strict-overflow"
 declare OBJC="-std=c11"
-declare LIBS="-ljre_emul -l icucore -l z -l j2objc_main"
+declare LIBS="-ljre_emul -l icucore -l z -l j2objc_main -l c++"
 declare LINK_FLAGS="${LIBS} ${FRAMEWORKS} -L ${LIB_PATH}"
 
 for arg; do
