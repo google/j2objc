@@ -81,7 +81,10 @@ public class LineDirectivesTest extends GenerationTest {
         + "  }}\n",
         "A", "A.m");
     assertTranslation(translation, "#line 1 \"A.java\"");
-    assertTranslation(translation, "#line 1\n@implementation A");
+    assertTranslatedLines(translation,
+        "#line 0 \"" + tempDir + "/A.java\"",
+        "",
+        "@implementation A");
     assertTranslation(translation, "#line 2\n- (NSString *)test");
     assertTranslation(translation, "#line 4\n  jint i = 0;");
     assertTranslation(translation, "#line 7\n  return JavaLangInteger_toStringWithInt_(i);");
