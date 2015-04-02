@@ -443,11 +443,10 @@ public class StatementGeneratorTest extends GenerationTest {
         "Test", "Test.m");
     assertTranslation(translation,
         "return [new_Test_$1_initWithJavaUtilCollection_(collection) autorelease];");
-    translation = getTranslatedFile("Test.h");
     assertTranslation(translation,
         "- (instancetype)initWithJavaUtilCollection:(id<JavaUtilCollection>)capture$0;");
     assertTranslation(translation,
-        "FOUNDATION_EXPORT Test_$1 *new_Test_$1_initWithJavaUtilCollection_("
+        "__attribute__((unused)) static Test_$1 *new_Test_$1_initWithJavaUtilCollection_("
         + "id<JavaUtilCollection> capture$0) NS_RETURNS_RETAINED;");
   }
 

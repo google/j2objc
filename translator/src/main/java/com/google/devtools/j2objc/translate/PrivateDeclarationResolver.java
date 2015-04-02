@@ -30,6 +30,7 @@ import com.google.devtools.j2objc.ast.MethodDeclaration;
 import com.google.devtools.j2objc.ast.NativeDeclaration;
 import com.google.devtools.j2objc.ast.TreeVisitor;
 import com.google.devtools.j2objc.ast.Type;
+import com.google.devtools.j2objc.util.BindingUtil;
 
 import org.eclipse.jdt.core.dom.ITypeBinding;
 import org.eclipse.jdt.core.dom.Modifier;
@@ -118,13 +119,11 @@ public class PrivateDeclarationResolver extends TreeVisitor {
   }
 
   private boolean isPrivateType(ITypeBinding type) {
-    // TODO(kstanger): Uncomment the code below to hide private types.
-    return false;
-    /*if (type == null || !Options.hidePrivateMembers()) {
+    if (type == null || !Options.hidePrivateMembers()) {
       return false;
     }
     return isPrivateType(type.getDeclaringClass()) || BindingUtil.isPrivate(type) || type.isLocal()
-        || type.isAnonymous();*/
+        || type.isAnonymous();
   }
 
   @Override

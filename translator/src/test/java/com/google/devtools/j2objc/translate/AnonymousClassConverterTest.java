@@ -59,21 +59,20 @@ public class AnonymousClassConverterTest extends GenerationTest {
         + "    public Object next() { return null; }"
         + "    public void remove() {}};}};}"
         + "}";
-    String header = translateSourceFile(source, "Test", "Test.h");
-    assertTranslation(header, "@interface Test_$1_$1 : NSObject < JavaUtilIterator >");
-    assertTranslation(header, "@interface Test_$1 : JavaUtilAbstractSet");
-    assertTranslation(header, "@interface Test_$2_$1 : NSObject < JavaUtilIterator >");
-    assertTranslation(header, "@interface Test_$2 : JavaUtilAbstractCollection");
+    String impl = translateSourceFile(source, "Test", "Test.m");
+    assertTranslation(impl, "@interface Test_$1_$1 : NSObject < JavaUtilIterator >");
+    assertTranslation(impl, "@interface Test_$1 : JavaUtilAbstractSet");
+    assertTranslation(impl, "@interface Test_$2_$1 : NSObject < JavaUtilIterator >");
+    assertTranslation(impl, "@interface Test_$2 : JavaUtilAbstractCollection");
   }
 
   public void testFinalArrayInnerAccess() throws IOException {
     String source = "public class Test { void foo() { "
         + "final boolean[] bar = new boolean[1];"
         + "Runnable r = new Runnable() { public void run() { bar[0] = true; }}; }}";
-    String header = translateSourceFile(source, "Test", "Test.h");
-    String impl = getTranslatedFile("Test.m");
+    String impl = translateSourceFile(source, "Test", "Test.m");
     assertTranslation(impl, "IOSBooleanArray *val$bar_;");
-    assertTranslation(header,
+    assertTranslation(impl,
         "- (instancetype)initWithBooleanArray:(IOSBooleanArray *)capture$0;");
     assertTranslation(impl, "IOSBooleanArray *bar = [IOSBooleanArray arrayWithLength:1];");
     assertTranslation(impl, "new_Test_$1_initWithBooleanArray_(bar)");
@@ -341,12 +340,11 @@ public class AnonymousClassConverterTest extends GenerationTest {
         + "UP { public boolean isUp() { return true; }},"
         + "DOWN { public boolean isUp() { return false; }};"
         + "public abstract boolean isUp(); }";
-    String header = translateSourceFile(source, "Test", "Test.h");
-    String impl = getTranslatedFile("Test.m");
+    String impl = translateSourceFile(source, "Test", "Test.m");
 
-    assertTranslation(header, "@interface Test_$1Enum : TestEnum");
-    assertTranslation(header, "@interface Test_$2Enum : TestEnum");
-    assertTranslatedLines(header,
+    assertTranslation(impl, "@interface Test_$1Enum : TestEnum");
+    assertTranslation(impl, "@interface Test_$2Enum : TestEnum");
+    assertTranslatedLines(impl,
         "- (instancetype)initWithNSString:(NSString *)__name",
         "withInt:(jint)__ordinal;");
 

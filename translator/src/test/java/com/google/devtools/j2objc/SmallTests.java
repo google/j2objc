@@ -28,6 +28,7 @@ import com.google.devtools.j2objc.gen.ObjectiveCSourceFileGeneratorTest;
 import com.google.devtools.j2objc.gen.PrimitiveArrayTest;
 import com.google.devtools.j2objc.gen.SignatureGeneratorTest;
 import com.google.devtools.j2objc.gen.StatementGeneratorTest;
+import com.google.devtools.j2objc.gen.TypeDeclarationGeneratorTest;
 import com.google.devtools.j2objc.gen.TypeImplementationGeneratorTest;
 import com.google.devtools.j2objc.translate.AbstractMethodRewriterTest;
 import com.google.devtools.j2objc.translate.AnonymousClassConverterTest;
@@ -51,6 +52,7 @@ import com.google.devtools.j2objc.translate.OcniExtractorTest;
 import com.google.devtools.j2objc.translate.OperatorRewriterTest;
 import com.google.devtools.j2objc.translate.OuterReferenceFixerTest;
 import com.google.devtools.j2objc.translate.OuterReferenceResolverTest;
+import com.google.devtools.j2objc.translate.PrivateDeclarationResolverTest;
 import com.google.devtools.j2objc.translate.RewriterTest;
 import com.google.devtools.j2objc.translate.StaticVarRewriterTest;
 import com.google.devtools.j2objc.translate.SuperMethodInvocationRewriterTest;
@@ -118,6 +120,7 @@ public class SmallTests {
     OuterReferenceFixerTest.class,
     OuterReferenceResolverTest.class,
     PrimitiveArrayTest.class,
+    PrivateDeclarationResolverTest.class,
     ProGuardUsageParserTest.class,
     RenamedTypeBindingTest.class,
     RewriterTest.class,
@@ -126,6 +129,7 @@ public class SmallTests {
     StaticVarRewriterTest.class,
     SuperMethodInvocationRewriterTest.class,
     TreeConvertTest.class,
+    TypeDeclarationGeneratorTest.class,
     TypeImplementationGeneratorTest.class,
     TranslationProcessorTest.class,
     TreeUtilTest.class,

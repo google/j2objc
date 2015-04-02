@@ -445,17 +445,6 @@ public class ObjectiveCHeaderGeneratorTest extends GenerationTest {
     assertTranslation(translation, "Example *this$0_;");
   }
 
-  public void testAnonymousClassDeclaration() throws IOException {
-    String translation = translateSourceFile(
-      "public class Example { Runnable run = new Runnable() { public void run() {} }; }",
-      "Example", "Example.h");
-    assertTranslation(translation, "@interface Example_$1 : NSObject < JavaLangRunnable >");
-    assertTranslation(translation, "- (void)run;");
-    // Outer reference is not required.
-    assertNotInTranslation(translation, "Example *this");
-    assertNotInTranslation(translation, "- (id)initWithExample:");
-  }
-
   public void testEnum() throws IOException {
     String translation = translateSourceFile(
       "public enum Color { RED, WHITE, BLUE }",
@@ -601,17 +590,6 @@ public class ObjectiveCHeaderGeneratorTest extends GenerationTest {
     assertFalse(translation.contains("#include \"NSObject.h\""));
     assertFalse(translation.contains("#include \"NSString.h\""));
     assertTranslation(translation, "NSCopying");
-  }
-
-  public void testAnonymousConcreteSubclassOfGenericAbstractType() throws IOException {
-    String translation = translateSourceFile(
-        "public class Test {"
-        + "  interface FooInterface<T> { public void foo1(T t); public void foo2(); }"
-        + "  abstract static class Foo<T> implements FooInterface<T> { public void foo2() { } }"
-        + "  Foo<Integer> foo = new Foo<Integer>() {"
-        + "    public void foo1(Integer i) { } }; }",
-        "Test", "Test.h");
-    assertTranslation(translation, "foo1WithId:(JavaLangInteger *)i");
   }
 
   // Verify that an empty Java enum doesn't define an empty C enum,

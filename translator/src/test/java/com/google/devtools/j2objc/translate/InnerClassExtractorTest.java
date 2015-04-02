@@ -111,10 +111,10 @@ public class InnerClassExtractorTest extends GenerationTest {
         + "}";
     String translation = translateSourceFile(source, "A", "A.h");
     assertTranslation(translation, "- (instancetype)initWithA:(A *)outer$;");
+    translation = getTranslatedFile("A.m");
     assertTranslatedLines(translation,
         "- (instancetype)initWithA_B:(A_B *)outer$",
         "withInt:(jint)capture$0;");
-    translation = getTranslatedFile("A.m");
     assertTranslation(translation, "A *this$0_;");
     assertTranslation(translation, "A_B *this$1_;");
     assertTranslation(translation, "jint val$j_;");
@@ -510,7 +510,7 @@ public class InnerClassExtractorTest extends GenerationTest {
   public void testMethodInnerClass() throws IOException {
     String source = "public class A { void foo() { class MyRunnable implements Runnable {"
         + "public void run() {} }}}";
-    String translation = translateSourceFile(source, "A", "A.h");
+    String translation = translateSourceFile(source, "A", "A.m");
     assertTranslation(translation, "@interface A_1MyRunnable : NSObject < JavaLangRunnable >");
     assertNotInTranslation(translation, "A *this");
   }
@@ -525,6 +525,7 @@ public class InnerClassExtractorTest extends GenerationTest {
     String source = "public class A { class MyClass {} void foo() { class MyClass {}}}";
     String translation = translateSourceFile(source, "A", "A.h");
     assertTranslation(translation, "@interface A_MyClass");
+    translation = getTranslatedFile("A.m");
     assertTranslation(translation, "@interface A_1MyClass");
   }
 
@@ -595,11 +596,10 @@ public class InnerClassExtractorTest extends GenerationTest {
         + "    Iterator it = c.iterator(); "
         + "    public boolean hasMoreElements() { return it.hasNext(); }"
         + "    public Object nextElement() { return it.next(); }}; }}";
-    String translation = translateSourceFile(source, "A", "A.h");
+    String translation = translateSourceFile(source, "A", "A.m");
     assertFalse(translation.contains("this$0_"));
     assertTranslation(translation,
         "- (instancetype)initWithJavaUtilCollection:(id<JavaUtilCollection>)capture$0;");
-    translation = getTranslatedFile("A.m");
     assertTranslation(translation, "id<JavaUtilCollection> val$c_;");
     assertFalse(translation.contains("this$0_"));
     assertTranslation(translation,
@@ -614,9 +614,8 @@ public class InnerClassExtractorTest extends GenerationTest {
         + "public boolean hasNext() { return elements.length > 0; } "
         + "public E next() { return null; }"
         + "public void remove() {} }}";
-    String translation = translateSourceFile(source, "A", "A.h");
+    String translation = translateSourceFile(source, "A", "A.m");
     assertTranslation(translation, "- (instancetype)initWithA:(A *)outer$;");
-    translation = getTranslatedFile("A.m");
     assertTranslation(translation, "A *this$0_;");
     assertTranslation(translation, "((IOSObjectArray *) nil_chk(this$0_->elements_))->size_");
   }
@@ -731,7 +730,7 @@ public class InnerClassExtractorTest extends GenerationTest {
     String translation = translateSourceFile(
         "class Test { Runnable foo() { class MyRunnable implements Runnable { "
         + "public void run() { Runnable r = new Runnable() { public void run() {} }; } } "
-        + "return new MyRunnable(); } }", "Test", "Test.h");
+        + "return new MyRunnable(); } }", "Test", "Test.m");
     assertOccurrences(translation, "@interface Test_1MyRunnable_$1", 1);
   }
 
