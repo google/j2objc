@@ -27,7 +27,6 @@ import com.google.devtools.j2objc.ast.EnumConstantDeclaration;
 import com.google.devtools.j2objc.ast.EnumDeclaration;
 import com.google.devtools.j2objc.ast.Expression;
 import com.google.devtools.j2objc.ast.MethodDeclaration;
-import com.google.devtools.j2objc.ast.NullLiteral;
 import com.google.devtools.j2objc.ast.SimpleName;
 import com.google.devtools.j2objc.ast.SingleVariableDeclaration;
 import com.google.devtools.j2objc.ast.SuperConstructorInvocation;
@@ -45,7 +44,6 @@ import org.eclipse.jdt.core.dom.IMethodBinding;
 import org.eclipse.jdt.core.dom.ITypeBinding;
 
 import java.lang.reflect.Modifier;
-import java.util.List;
 import java.util.Stack;
 
 /**
@@ -84,16 +82,16 @@ public class AnonymousClassConverter extends TreeVisitor {
     TreeNode parent = node.getParent();
     ClassInstanceCreation newInvocation = null;
     EnumConstantDeclaration enumConstant = null;
-    List<Expression> parentArguments;
     Expression outerExpression = null;
+    IMethodBinding constructorBinding = null;
     if (parent instanceof ClassInstanceCreation) {
       newInvocation = (ClassInstanceCreation) parent;
-      parentArguments = newInvocation.getArguments();
       outerExpression = newInvocation.getExpression();
       newInvocation.setExpression(null);
+      constructorBinding = newInvocation.getMethodBinding();
     } else if (parent instanceof EnumConstantDeclaration) {
       enumConstant = (EnumConstantDeclaration) parent;
-      parentArguments = enumConstant.getArguments();
+      constructorBinding = enumConstant.getMethodBinding();
     } else {
       throw new AssertionError(
           "unknown anonymous class declaration parent: " + parent.getClass().getName());
@@ -108,18 +106,15 @@ public class AnonymousClassConverter extends TreeVisitor {
     }
 
     // Add a default constructor.
-    if (!parentArguments.isEmpty() || outerExpression != null) {
-      GeneratedMethodBinding defaultConstructor =
-          addDefaultConstructor(typeDecl, parentArguments, outerExpression);
-      if (newInvocation != null) {
-        newInvocation.setMethodBinding(defaultConstructor);
-      } else {
-        enumConstant.setMethodBinding(defaultConstructor);
-      }
+    GeneratedMethodBinding defaultConstructor =
+        addDefaultConstructor(typeDecl, constructorBinding, outerExpression);
+    if (newInvocation != null) {
+      newInvocation.setMethodBinding(defaultConstructor);
       if (outerExpression != null) {
-        parentArguments.add(0, outerExpression.copy());
+        newInvocation.getArguments().add(0, outerExpression);
       }
-      assert defaultConstructor.getParameterTypes().length == parentArguments.size();
+    } else {
+      enumConstant.setMethodBinding(defaultConstructor);
     }
 
     // If invocation, replace anonymous class invocation with the new constructor.
@@ -150,14 +145,13 @@ public class AnonymousClassConverter extends TreeVisitor {
   }
 
   private GeneratedMethodBinding addDefaultConstructor(
-      TypeDeclaration node, List<Expression> invocationArguments, Expression outerExpression) {
+      TypeDeclaration node, IMethodBinding constructorBinding, Expression outerExpression) {
     ITypeBinding clazz = node.getTypeBinding();
-    GeneratedMethodBinding binding = GeneratedMethodBinding.newConstructor(clazz, 0);
+    GeneratedMethodBinding binding = new GeneratedMethodBinding(constructorBinding);
     MethodDeclaration constructor = new MethodDeclaration(binding);
     constructor.setBody(new Block());
 
-    IMethodBinding superCallBinding =
-        findSuperConstructorBinding(clazz.getSuperclass(), invocationArguments);
+    IMethodBinding superCallBinding = findSuperConstructorBinding(constructorBinding);
     SuperConstructorInvocation superCall = new SuperConstructorInvocation(superCallBinding);
 
     // If there is an outer expression (eg myFoo.new Foo() {};), then this must
@@ -174,18 +168,15 @@ public class AnonymousClassConverter extends TreeVisitor {
     // The invocation arguments must become parameters of the generated
     // constructor and passed to the super call.
     int argCount = 0;
-    for (Expression arg : invocationArguments) {
-      ITypeBinding argType =
-          arg instanceof NullLiteral ? Types.getNSObject() : arg.getTypeBinding();
+    for (ITypeBinding argType : constructorBinding.getParameterTypes()) {
       GeneratedVariableBinding argBinding = new GeneratedVariableBinding(
           "arg$" + argCount++, 0, argType, false, true, clazz, binding);
       constructor.getParameters().add(new SingleVariableDeclaration(argBinding));
-      binding.addParameter(argType);
       superCall.getArguments().add(new SimpleName(argBinding));
     }
     assert superCall.getArguments().size() == superCallBinding.getParameterTypes().length
         || superCallBinding.isVarargs()
-            && superCall.getArguments().size() >= superCallBinding.getParameterTypes().length;
+            && superCall.getArguments().size() >= superCallBinding.getParameterTypes().length - 1;
 
     constructor.getBody().getStatements().add(superCall);
 
@@ -195,31 +186,14 @@ public class AnonymousClassConverter extends TreeVisitor {
     return binding;
   }
 
-  private IMethodBinding findSuperConstructorBinding(ITypeBinding clazz,
-      List<Expression> superArgs) {
-    if (clazz == null) {
-      throw new AssertionError("could not find constructor");
-    }
-    outer: for (IMethodBinding m : clazz.getDeclaredMethods()) {
-      if (m.isConstructor()) {
-        ITypeBinding[] paramTypes = m.getParameterTypes();
-        if (superArgs.size() == paramTypes.length
-            || m.isVarargs() && superArgs.size() >= paramTypes.length) {
-          for (int i = 0; i < paramTypes.length; i++) {
-            if (m.isVarargs() && i == (paramTypes.length - 1)) {
-              // Matched through vararg parameter.
-              break;
-            }
-            ITypeBinding argType = superArgs.get(i).getTypeBinding().getErasure();
-            if (!argType.isAssignmentCompatible(paramTypes[i].getErasure())) {
-              continue outer;
-            }
-          }
-          return m;
-        }
+  private IMethodBinding findSuperConstructorBinding(IMethodBinding constructorBinding) {
+    ITypeBinding superClass = constructorBinding.getDeclaringClass().getSuperclass();
+    for (IMethodBinding m : superClass.getDeclaredMethods()) {
+      if (m.isConstructor() && constructorBinding.isSubsignature(m)) {
+        return m;
       }
     }
-    return findSuperConstructorBinding(clazz.getSuperclass(), superArgs);
+    throw new AssertionError("could not find constructor");
   }
 
   /**

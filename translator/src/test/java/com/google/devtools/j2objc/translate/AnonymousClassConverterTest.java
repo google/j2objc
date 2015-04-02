@@ -491,11 +491,27 @@ public class AnonymousClassConverterTest extends GenerationTest {
   public void testAnonymousClassWithVarargsConstructor() throws IOException {
     String translation = translateSourceFile(
         "class Test { Test(String fmt, Object... args) {} "
-        + "  void test() { new Test(\"%s %s\", \"1\", \"2\") {}; } }",
+        + "  void test() { new Test(\"%s %s\", \"1\", \"2\") {}; } "
+        + "  void test2() { new Test(\"foo\") {}; } }",
         "Test", "Test.m");
+    // check the invocations.
     assertTranslation(translation,
-        "Test_initWithNSString_withNSObjectArray_(self, arg$0, "
-        + "[IOSObjectArray arrayWithObjects:(id[]){ arg$1, arg$2 } count:2 "
-        + "type:NSObject_class_()]);");
+        "[new_Test_$1_initWithNSString_withNSObjectArray_(@\"%s %s\", "
+        + "[IOSObjectArray arrayWithObjects:(id[]){ @\"1\", @\"2\" } count:2 "
+        + "type:NSObject_class_()]) autorelease];");
+    assertTranslation(translation,
+        "[new_Test_$2_initWithNSString_withNSObjectArray_(@\"foo\", "
+        + "[IOSObjectArray arrayWithLength:0 type:NSObject_class_()]) autorelease];");
+    // check the generated constructors.
+    assertTranslatedLines(translation,
+        "void Test_$1_initWithNSString_withNSObjectArray_("
+          + "Test_$1 *self, NSString *arg$0, IOSObjectArray *arg$1) {",
+        "  Test_initWithNSString_withNSObjectArray_(self, arg$0, arg$1);",
+        "}");
+    assertTranslatedLines(translation,
+        "void Test_$2_initWithNSString_withNSObjectArray_("
+          + "Test_$2 *self, NSString *arg$0, IOSObjectArray *arg$1) {",
+        "  Test_initWithNSString_withNSObjectArray_(self, arg$0, arg$1);",
+        "}");
   }
 }

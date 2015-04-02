@@ -221,4 +221,13 @@ public class InitializationNormalizerTest extends GenerationTest {
         + "class Inner { static final String BAR = \"bar\"; } }", "Test", "Test.m");
     assertTranslation(translation, "NSString *Test_FOO_ = @\"bar\";");
   }
+
+  public void testVarargConstructorCallFromSubclass() throws IOException {
+    String translation = translateSourceFile(
+        "class A { A(Object ... bars) {} static class B extends A {}}",
+        "A", "A.m");
+    assertNotInTranslation(translation, "A_init(self);");
+    assertTranslation(translation, "A_initWithNSObjectArray_(self, "
+        + "[IOSObjectArray arrayWithLength:0 type:NSObject_class_()]);");
+  }
 }

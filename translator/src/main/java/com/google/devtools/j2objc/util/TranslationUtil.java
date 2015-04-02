@@ -23,6 +23,7 @@ import com.google.devtools.j2objc.ast.Expression;
 import com.google.devtools.j2objc.ast.MethodInvocation;
 import com.google.devtools.j2objc.ast.PackageDeclaration;
 import com.google.devtools.j2objc.ast.TreeUtil;
+import com.google.devtools.j2objc.types.GeneratedMethodBinding;
 import com.google.devtools.j2objc.types.IOSMethodBinding;
 import com.google.j2objc.annotations.ReflectionSupport;
 
@@ -119,5 +120,30 @@ public final class TranslationUtil {
         break;
     }
     return null;
+  }
+
+  public static IMethodBinding findDefaultConstructorBinding(ITypeBinding type) {
+    // Search for a non-varargs match.
+    for (IMethodBinding m : type.getDeclaredMethods()) {
+      if (m.isConstructor() && m.getParameterTypes().length == 0) {
+        return m;
+      }
+    }
+    // Search for a varargs match. Choose the most specific. (JLS 15.12.2.5)
+    IMethodBinding result = null;
+    for (IMethodBinding m : type.getDeclaredMethods()) {
+      ITypeBinding[] paramTypes = m.getParameterTypes();
+      if (m.isConstructor() && m.isVarargs() && paramTypes.length == 1) {
+        if (result == null || paramTypes[0].isAssignmentCompatible(result.getParameterTypes()[0])) {
+          result = m;
+        }
+      }
+    }
+    if (result != null) {
+      return result;
+    }
+    // Sometimes there won't be a default constructor (eg. enums), so just
+    // create our own binding.
+    return GeneratedMethodBinding.newConstructor(type, type.getModifiers());
   }
 }

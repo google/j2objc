@@ -43,6 +43,7 @@ import com.google.devtools.j2objc.types.GeneratedMethodBinding;
 import com.google.devtools.j2objc.types.GeneratedVariableBinding;
 import com.google.devtools.j2objc.util.BindingUtil;
 import com.google.devtools.j2objc.util.ErrorUtil;
+import com.google.devtools.j2objc.util.TranslationUtil;
 import com.google.j2objc.annotations.WeakOuter;
 
 import org.eclipse.jdt.core.dom.ITypeBinding;
@@ -71,7 +72,7 @@ public class InnerClassExtractor extends TreeVisitor {
 
   @Override
   public boolean visit(TypeDeclaration node) {
-    return handleType(node);
+    return handleType();
   }
 
   @Override
@@ -81,7 +82,7 @@ public class InnerClassExtractor extends TreeVisitor {
 
   @Override
   public boolean visit(EnumDeclaration node) {
-    return handleType(node);
+    return handleType();
   }
 
   @Override
@@ -91,7 +92,7 @@ public class InnerClassExtractor extends TreeVisitor {
 
   @Override
   public boolean visit(AnnotationTypeDeclaration node) {
-    return handleType(node);
+    return handleType();
   }
 
   @Override
@@ -99,7 +100,7 @@ public class InnerClassExtractor extends TreeVisitor {
     endHandleType(node);
   }
 
-  private boolean handleType(AbstractTypeDeclaration node) {
+  private boolean handleType() {
     typeOrderStack.add(unitTypes.size());
     return true;
   }
@@ -232,7 +233,7 @@ public class InnerClassExtractor extends TreeVisitor {
       ITypeBinding superType = type.getSuperclass().getTypeDeclaration();
       if (superCall == null) {
         superCall = new SuperConstructorInvocation(
-            GeneratedMethodBinding.newConstructor(superType, Modifier.PUBLIC));
+            TranslationUtil.findDefaultConstructorBinding(superType));
         statements.add(0, superCall);
       }
       passOuterParamToSuper(typeNode, superCall, superType, outerParamBinding);

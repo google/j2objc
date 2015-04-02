@@ -19,7 +19,6 @@ package com.google.devtools.j2objc.translate;
 import com.google.common.collect.Lists;
 import com.google.devtools.j2objc.ast.AbstractTypeDeclaration;
 import com.google.devtools.j2objc.ast.AnnotationTypeDeclaration;
-import com.google.devtools.j2objc.ast.ArrayCreation;
 import com.google.devtools.j2objc.ast.Assignment;
 import com.google.devtools.j2objc.ast.Block;
 import com.google.devtools.j2objc.ast.BodyDeclaration;
@@ -40,9 +39,9 @@ import com.google.devtools.j2objc.ast.TypeDeclaration;
 import com.google.devtools.j2objc.ast.VariableDeclarationFragment;
 import com.google.devtools.j2objc.types.GeneratedMethodBinding;
 import com.google.devtools.j2objc.util.BindingUtil;
+import com.google.devtools.j2objc.util.TranslationUtil;
 import com.google.devtools.j2objc.util.UnicodeUtils;
 
-import org.eclipse.jdt.core.dom.IMethodBinding;
 import org.eclipse.jdt.core.dom.ITypeBinding;
 import org.eclipse.jdt.core.dom.Modifier;
 
@@ -218,9 +217,8 @@ public class InitializationNormalizer extends TreeVisitor {
       // isn't a super invocation, add one (like all Java compilers do).
       if (superCallIdx == -1) {
         ITypeBinding superType = node.getMethodBinding().getDeclaringClass().getSuperclass();
-        GeneratedMethodBinding newBinding = GeneratedMethodBinding.newConstructor(
-            superType, Modifier.PUBLIC);
-        stmts.add(0, new SuperConstructorInvocation(newBinding));
+        stmts.add(0, new SuperConstructorInvocation(
+            TranslationUtil.findDefaultConstructorBinding(superType)));
         superCallIdx = 0;
       }
 
@@ -258,58 +256,17 @@ public class InitializationNormalizer extends TreeVisitor {
     return !(firstStmt instanceof ConstructorInvocation);
   }
 
-  void addDefaultConstructor(
+  private void addDefaultConstructor(
       ITypeBinding type, List<BodyDeclaration> members, List<Statement> initStatements) {
     int constructorModifier =
         type.getModifiers() & (Modifier.PUBLIC | Modifier.PROTECTED | Modifier.PRIVATE);
-    ITypeBinding supertype = type.getSuperclass();
-    IMethodBinding defaultConstructor = null;
-    IMethodBinding varargsConstructor = null;
-    for (IMethodBinding m : supertype.getDeclaredMethods()) {
-      if (m.isConstructor()) {
-        if (m.getParameterTypes().length == 0) {
-          defaultConstructor = m;
-          break;
-        }
-        if (m.isVarargs()) {
-          varargsConstructor = m;
-        }
-      }
-    }
-    if (defaultConstructor == null && varargsConstructor != null) {
-      // Supertype has a varargs constructor, instead of a no-args default.
-      addSuperVarargsInvoker(type, constructorModifier, members, initStatements,
-          varargsConstructor);
-      return;
-    }
-    // defaultConstructor may be null, since the superclass may be in this compilation unit
-    // and hasn't been normalized yet.
-    GeneratedMethodBinding binding = GeneratedMethodBinding.newConstructor(
-        supertype, constructorModifier);
-    initStatements.add(0, new SuperConstructorInvocation(binding));
-    members.add(createMethod(GeneratedMethodBinding.newConstructor(type, constructorModifier),
-                             initStatements));
-  }
-
-  private void addSuperVarargsInvoker(ITypeBinding type, int modifiers,
-      List<BodyDeclaration> members, List<Statement> initStatements,
-      IMethodBinding superConstructor) {
-    SuperConstructorInvocation superInvocation = new SuperConstructorInvocation(superConstructor);
-    ITypeBinding varargsType = superConstructor.getParameterTypes()[0];
-    ArrayCreation emptyArray = new ArrayCreation(varargsType, 0);
-    superInvocation.getArguments().add(emptyArray);
-    initStatements.add(0, superInvocation);
-    GeneratedMethodBinding newConstructorBinding =
-        GeneratedMethodBinding.newConstructor(type, modifiers);
-    members.add(createMethod(newConstructorBinding, initStatements));
-    return;
-  }
-
-  private MethodDeclaration createMethod(IMethodBinding binding, List<Statement> statements) {
+    MethodDeclaration method = new MethodDeclaration(
+        GeneratedMethodBinding.newConstructor(type, constructorModifier));
     Block body = new Block();
-    TreeUtil.copyList(statements, body.getStatements());
-    MethodDeclaration method = new MethodDeclaration(binding);
     method.setBody(body);
-    return method;
+    TreeUtil.copyList(initStatements, body.getStatements());
+    body.getStatements().add(0, new SuperConstructorInvocation(
+        TranslationUtil.findDefaultConstructorBinding(type.getSuperclass())));
+    members.add(method);
   }
 }
