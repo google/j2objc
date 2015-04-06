@@ -681,7 +681,7 @@ public final class NativeDecimalFormat implements Cloneable {
                                      forString:string
                                          range:&range
                                          error:&error];
-      if (success) {
+      if (success && (error == nil)) {
         [position setIndexWithInt:start + (int) range.length];
         if (fmod([result doubleValue], 1.0) == 0) {
           return JavaLangLong_valueOfWithLong_([result longLongValue]);
