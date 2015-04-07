@@ -676,7 +676,7 @@ public final class NativeDecimalFormat implements Cloneable {
         }
       }
 
-      NSError *error;
+      NSError *error = nil;
       BOOL success = [formatter getObjectValue:&result
                                      forString:string
                                          range:&range
