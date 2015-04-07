@@ -482,7 +482,7 @@ public class ObjectiveCHeaderGeneratorTest extends GenerationTest {
     assertTranslatedLines(translation,
         "- (instancetype)initWithInt:(jint)rgb",
         "withNSString:(NSString *)__name",
-        "withInt:(jint)__ordinal;");
+        "withInt:(jint)__ordinal {");
   }
 
   public void testEnumWithMultipleConstructors() throws IOException {
@@ -500,12 +500,12 @@ public class ObjectiveCHeaderGeneratorTest extends GenerationTest {
     assertTranslatedLines(translation,
         "- (instancetype)initWithInt:(jint)rgb",
         "withNSString:(NSString *)__name",
-        "withInt:(jint)__ordinal;");
+        "withInt:(jint)__ordinal {");
     assertTranslatedLines(translation,
         "- (instancetype)initWithInt:(jint)rgb",
         "withBoolean:(jboolean)primary",
         "withNSString:(NSString *)__name",
-        "withInt:(jint)__ordinal;");
+        "withInt:(jint)__ordinal {");
     assertTranslation(translation,
         "ColorEnum_initWithInt_withBoolean_withNSString_withInt_("
         + "self, rgb, YES, __name, __ordinal);");
@@ -710,7 +710,7 @@ public class ObjectiveCHeaderGeneratorTest extends GenerationTest {
         "- (instancetype)initWithNSString:(NSString *)name",
         "withInt:(jint)ordinal",
         "withNSString:(NSString *)__name",
-        "withInt:(jint)__ordinal;");
+        "withInt:(jint)__ordinal {");
   }
 
   public void testDeprecatedEnumType() throws IOException {

@@ -34,10 +34,12 @@ import com.google.devtools.j2objc.ast.TreeVisitor;
 import com.google.devtools.j2objc.types.GeneratedMethodBinding;
 import com.google.devtools.j2objc.types.GeneratedVariableBinding;
 import com.google.devtools.j2objc.types.Types;
+import com.google.devtools.j2objc.util.BindingUtil;
 import com.google.devtools.j2objc.util.NameTable;
 
 import org.eclipse.jdt.core.dom.IMethodBinding;
 import org.eclipse.jdt.core.dom.ITypeBinding;
+import org.eclipse.jdt.core.dom.Modifier;
 
 import java.util.List;
 
@@ -54,7 +56,7 @@ public class EnumRewriter extends TreeVisitor {
   private final ITypeBinding stringType = Types.resolveIOSType("NSString");
   private final ITypeBinding intType = Types.resolveJavaType("int");
 
-  private IMethodBinding addEnumConstructorParams(IMethodBinding method) {
+  private GeneratedMethodBinding addEnumConstructorParams(IMethodBinding method) {
     GeneratedMethodBinding newMethod = new GeneratedMethodBinding(method);
     newMethod.addParameter(stringType);
     newMethod.addParameter(intType);
@@ -89,8 +91,15 @@ public class EnumRewriter extends TreeVisitor {
     if (!binding.isConstructor() || !declaringClass.isEnum()) {
       return false;
     }
-    IMethodBinding newBinding = addEnumConstructorParams(node.getMethodBinding());
+    GeneratedMethodBinding newBinding = addEnumConstructorParams(node.getMethodBinding());
     node.setMethodBinding(newBinding);
+    // Enum constructors can't be called other than to create the enum values,
+    // so mark as synthetic to avoid writing the declaration.
+    node.addModifiers(BindingUtil.ACC_SYNTHETIC);
+    node.removeModifiers(Modifier.PUBLIC | Modifier.PROTECTED);
+    node.addModifiers(Modifier.PRIVATE);
+    newBinding.setModifiers((newBinding.getModifiers() & ~(Modifier.PUBLIC | Modifier.PROTECTED))
+        | Modifier.PRIVATE | BindingUtil.ACC_SYNTHETIC);
     nameVar = new GeneratedVariableBinding(
         "__name", 0, stringType, false, true, declaringClass, newBinding);
     ordinalVar = new GeneratedVariableBinding(
@@ -128,8 +137,8 @@ public class EnumRewriter extends TreeVisitor {
     String header = String.format(
         "+ (IOSObjectArray *)values;\n"
         + "FOUNDATION_EXPORT IOSObjectArray *%s_values();\n\n"
-        + "+ (%s *)valueOfWithNSString:(NSString *)name;\n\n"
-        + "FOUNDATION_EXPORT %s *%s_valueOfWithNSString_(NSString *name);\n"
+        + "+ (%s *)valueOfWithNSString:(NSString *)name;\n"
+        + "FOUNDATION_EXPORT %s *%s_valueOfWithNSString_(NSString *name);\n\n"
         + "- (id)copyWithZone:(NSZone *)zone;\n", typeName, typeName, typeName, typeName);
 
     StringBuilder sb = new StringBuilder();
@@ -137,7 +146,7 @@ public class EnumRewriter extends TreeVisitor {
         "IOSObjectArray *%s_values() {\n"
         + "  %s_initialize();\n"
         + "  return [IOSObjectArray arrayWithObjects:%s_values_ count:%s type:%s_class_()];\n"
-        + "}\n"
+        + "}\n\n"
         + "+ (IOSObjectArray *)values {\n"
         + "  return %s_values();\n"
         + "}\n\n", typeName, typeName, typeName, numConstants, typeName, typeName));
