@@ -16,17 +16,17 @@ package com.google.devtools.j2objc.util;
 import com.google.common.io.CharStreams;
 import com.google.devtools.j2objc.J2ObjC;
 import com.google.devtools.j2objc.Options;
+import com.google.devtools.j2objc.file.InputFile;
 import com.google.devtools.j2objc.file.JarredInputFile;
 import com.google.devtools.j2objc.file.RegularInputFile;
-import com.google.devtools.j2objc.file.InputFile;
 
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.List;
 import java.util.Properties;
-import java.util.zip.ZipException;
 
 import javax.annotation.Nullable;
 
@@ -44,7 +44,21 @@ public class FileUtil {
    */
   @Nullable
   public static InputFile findOnSourcePath(String filename) throws IOException {
-    for (String pathEntry : Options.getSourcePathEntries()) {
+    return findOnPaths(filename, Options.getSourcePathEntries());
+  }
+
+  /**
+   * Find a {@link com.google.devtools.j2objc.file.InputFile} on the class path,
+   * either in a directory or a jar.
+   * Returns a file guaranteed to exist, or null.
+   */
+  @Nullable
+  public static InputFile findOnClassPath(String filename) throws IOException {
+    return findOnPaths(filename, Options.getClassPathEntries());
+  }
+
+  private static InputFile findOnPaths(String filename, List<String> paths) throws IOException {
+    for (String pathEntry : paths) {
       File f = new File(pathEntry);
       if (f.isDirectory()) {
         RegularInputFile regularFile = new RegularInputFile(

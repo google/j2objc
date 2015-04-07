@@ -444,7 +444,7 @@ class TranslationProcessor extends FileProcessor {
         return;
       }
       typeName = typeName.substring(0, iDot);
-      sourceName = typeName.replace('.', File.pathSeparatorChar) + ".java";
+      sourceName = typeName.replace('.', File.separatorChar) + ".java";
       if (seenFiles.contains(sourceName)) {
         return;
       }
@@ -469,7 +469,7 @@ class TranslationProcessor extends FileProcessor {
     String path = typeName.replace('.', '/') + ".class";
     InputFile f = null;
     try {
-      f = FileUtil.findOnSourcePath(path);
+      f = FileUtil.findOnClassPath(path);
     } catch (IOException e) {
       ErrorUtil.warning(e.getMessage());
     }
