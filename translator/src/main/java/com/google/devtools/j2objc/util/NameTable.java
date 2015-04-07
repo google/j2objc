@@ -204,6 +204,13 @@ public class NameTable {
       // Definitions from sys/syslimits.h
       "ARG_MAX", "LINE_MAX", "MAX_INPUT", "NAME_MAX", "NZERO", "PATH_MAX",
 
+      // Definitions from limits.h, machine/limits.h
+      "CHAR_BIT", "CHAR_MAX", "CHAR_MIN", "INT_MAX", "INT_MIN", "LLONG_MAX", "LLONG_MIN",
+      "LONG_BIT", "LONG_MAX", "LONG_MIN", "MB_LEN_MAX", "OFF_MIN", "OFF_MAX",
+      "PTHREAD_DESTRUCTOR_ITERATIONS", "PTHREAD_KEYS_MAX", "PTHREAD_STACK_MIN", "QUAD_MAX",
+      "QUAD_MIN", "SCHAR_MAX", "SCHAR_MIN", "SHRT_MAX", "SHRT_MIN", "SIZE_T_MAX", "SSIZE_MAX",
+      "UCHAR_MAX", "UINT_MAX", "ULONG_MAX", "UQUAD_MAX", "USHRT_MAX", "UULONG_MAX", "WORD_BIT",
+
       // Definitions from types.h
       "S_IRGRP", "S_IROTH", "S_IRUSR", "S_IRWXG", "S_IRWXO", "S_IRWXU", "S_IWGRP", "S_IWOTH",
       "S_IWUSR", "S_IXGRP", "S_IXOTH", "S_IXUSR",
