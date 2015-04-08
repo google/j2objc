@@ -15,7 +15,6 @@
 package com.google.common.collect;
 
 import com.google.common.annotations.GwtCompatible;
-import com.google.j2objc.annotations.WeakOuter;
 
 import java.util.AbstractCollection;
 import java.util.AbstractSet;
@@ -118,7 +117,6 @@ abstract class AbstractTable<R, C, V> implements Table<R, C, V> {
 
   abstract Iterator<Table.Cell<R, C, V>> cellIterator();
 
-  @WeakOuter
   class CellSet extends AbstractSet<Cell<R, C, V>> {
     @Override
     public boolean contains(Object o) {
@@ -179,7 +177,6 @@ abstract class AbstractTable<R, C, V> implements Table<R, C, V> {
     };
   }
 
-  @WeakOuter
   class Values extends AbstractCollection<V> {
     @Override
     public Iterator<V> iterator() {

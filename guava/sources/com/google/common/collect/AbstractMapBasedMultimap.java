@@ -1317,7 +1317,6 @@ abstract class AbstractMapBasedMultimap<K, V> extends AbstractMultimap<K, V>
       return Maps.immutableEntry(key, wrapCollection(key, entry.getValue()));
     }
 
-    @WeakOuter
     class AsMapEntries extends Maps.EntrySet<K, Collection<V>> {
       @Override
       Map<K, Collection<V>> map() {
@@ -1428,7 +1427,6 @@ abstract class AbstractMapBasedMultimap<K, V> extends AbstractMultimap<K, V>
   }
 
   @GwtIncompatible("NavigableAsMap")
-  @WeakOuter
   class NavigableAsMap extends SortedAsMap implements NavigableMap<K, Collection<V>> {
 
     NavigableAsMap(NavigableMap<K, Collection<V>> submap) {

@@ -928,7 +928,7 @@ public final class Multimaps {
   /** @see Multimaps#forMap */
   private static class MapMultimap<K, V>
       extends AbstractMultimap<K, V> implements SetMultimap<K, V>, Serializable {
-    @Weak final Map<K, V> map;
+    final Map<K, V> map;
 
     MapMultimap(Map<K, V> map) {
       this.map = checkNotNull(map);
@@ -956,8 +956,7 @@ public final class Multimaps {
 
     @Override
     public Set<V> get(final K key) {
-      @WeakOuter
-      class MapMultimapSet extends Sets.ImprovedAbstractSet<V> {
+      return new Sets.ImprovedAbstractSet<V>() {
         @Override public Iterator<V> iterator() {
           return new Iterator<V>() {
             int i;
@@ -988,8 +987,7 @@ public final class Multimaps {
         @Override public int size() {
           return map.containsKey(key) ? 1 : 0;
         }
-      }
-      return new MapMultimapSet();
+      };
     }
 
     @Override
@@ -1675,8 +1673,8 @@ public final class Multimaps {
    */
   static final class AsMap<K, V> extends
       Maps.ImprovedAbstractMap<K, Collection<V>> {
-    @Weak private final Multimap<K, V> multimap;
-
+    private final Multimap<K, V> multimap;
+    
     AsMap(Multimap<K, V> multimap) {
       this.multimap = checkNotNull(multimap);
     }

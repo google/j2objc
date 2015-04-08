@@ -17,8 +17,6 @@ package com.google.common.collect;
 import static com.google.common.base.Preconditions.checkArgument;
 
 import com.google.common.annotations.GwtCompatible;
-import com.google.j2objc.annotations.Weak;
-import com.google.j2objc.annotations.WeakOuter;
 
 import java.util.Map;
 
@@ -124,36 +122,30 @@ final class DenseImmutableTable<R, C, V>
   
     @Override
     ImmutableSet<Entry<K, V>> createEntrySet() {
-      return new EntrySet<K, V>(this);
-    }
+      return new ImmutableMapEntrySet<K, V>() {
+        @Override ImmutableMap<K, V> map() {
+          return ImmutableArrayMap.this;
+        }
 
-    static class EntrySet<K, V> extends ImmutableMapEntrySet<K, V> {
-      @Weak ImmutableArrayMap<K, V> map;
-      EntrySet(ImmutableArrayMap<K, V> map) {
-        this.map = map;
-      }
-      @Override ImmutableMap<K, V> map() {
-        return map;
-      }
+        @Override
+        public UnmodifiableIterator<Entry<K, V>> iterator() {
+          return new AbstractIterator<Entry<K, V>>() {
+            private int index = -1;
+            private final int maxIndex = keyToIndex().size();
 
-      @Override
-      public UnmodifiableIterator<Entry<K, V>> iterator() {
-        return new AbstractIterator<Entry<K, V>>() {
-          private int index = -1;
-          private final int maxIndex = map.keyToIndex().size();
-
-          @Override
-          protected Entry<K, V> computeNext() {
-            for (index++; index < maxIndex; index++) {
-              V value = map.getValue(index);
-              if (value != null) {
-                return Maps.immutableEntry(map.getKey(index), value);
+            @Override
+            protected Entry<K, V> computeNext() {
+              for (index++; index < maxIndex; index++) {
+                V value = getValue(index);
+                if (value != null) {
+                  return Maps.immutableEntry(getKey(index), value);
+                }
               }
+              return endOfData();
             }
-            return endOfData();
-          }
-        };
-      }
+          };
+        }
+      };
     }
   }
 
@@ -205,7 +197,6 @@ final class DenseImmutableTable<R, C, V>
     }
   }
 
-  @WeakOuter
   private final class RowMap extends ImmutableArrayMap<R, Map<C, V>> {
     private RowMap() {
       super(rowCounts.length);
@@ -227,7 +218,6 @@ final class DenseImmutableTable<R, C, V>
     }
   }
 
-  @WeakOuter
   private final class ColumnMap extends ImmutableArrayMap<C, Map<R, V>> {
     private ColumnMap() {
       super(columnCounts.length);

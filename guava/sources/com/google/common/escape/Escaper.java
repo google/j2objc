@@ -19,7 +19,6 @@ package com.google.common.escape;
 import com.google.common.annotations.Beta;
 import com.google.common.annotations.GwtCompatible;
 import com.google.common.base.Function;
-import com.google.j2objc.annotations.WeakOuter;
 
 /**
  * An object that converts literal text into a format safe for inclusion in a particular context
@@ -87,14 +86,13 @@ public abstract class Escaper {
    */
   public abstract String escape(String string);
 
-  @WeakOuter
-  private class AsFunction implements Function<String, String> {
-    @Override
-    public String apply(String from) {
-      return escape(from);
-    }
-  }
-  private final AsFunction asFunction = new AsFunction();
+  private final Function<String, String> asFunction =
+      new Function<String, String>() {
+        @Override
+        public String apply(String from) {
+          return escape(from);
+        }
+      };
 
   /**
    * Returns a {@link Function} that invokes {@link #escape(String)} on this escaper.
