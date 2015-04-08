@@ -95,6 +95,10 @@ public abstract class TreeNode {
     return lineNumber;
   }
 
+  public void setLineNumber(int lineNumber) {
+    this.lineNumber = lineNumber;
+  }
+
   public final void accept(TreeVisitor visitor) {
     if (visitor.preVisit(this)) {
       acceptInner(visitor);

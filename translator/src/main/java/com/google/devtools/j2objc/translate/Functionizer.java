@@ -294,6 +294,7 @@ public class Functionizer extends TreeVisitor {
 
     FunctionDeclaration function = new FunctionDeclaration(
         NameTable.getFullFunctionName(m), m.getReturnType());
+    function.setLineNumber(method.getName().getLineNumber());
 
     if (!BindingUtil.isStatic(m)) {
       GeneratedVariableBinding var = new GeneratedVariableBinding(NameTable.SELF_NAME, 0,
@@ -338,6 +339,7 @@ public class Functionizer extends TreeVisitor {
 
     FunctionDeclaration function = new FunctionDeclaration(
         NameTable.getAllocatingConstructorName(binding), declaringClass);
+    function.setLineNumber(method.getName().getLineNumber());
     function.setModifiers(BindingUtil.isPrivate(binding) ? Modifier.PRIVATE : Modifier.PUBLIC);
     function.setReturnsRetained(true);
     TreeUtil.copyList(method.getParameters(), function.getParameters());

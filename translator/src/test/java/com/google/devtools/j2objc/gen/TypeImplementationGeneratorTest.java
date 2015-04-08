@@ -15,6 +15,7 @@
 package com.google.devtools.j2objc.gen;
 
 import com.google.devtools.j2objc.GenerationTest;
+import com.google.devtools.j2objc.Options;
 
 import java.io.IOException;
 
@@ -24,6 +25,12 @@ import java.io.IOException;
  * @author Keith Stanger
  */
 public class TypeImplementationGeneratorTest extends GenerationTest {
+
+  @Override
+  protected void tearDown() throws Exception {
+    Options.setEmitLineDirectives(false);
+    super.tearDown();
+  }
 
   public void testFieldAnnotationMethodForAnnotationType() throws IOException {
     String translation = translateSourceFile(
@@ -46,5 +53,16 @@ public class TypeImplementationGeneratorTest extends GenerationTest {
           + "[[[JavaLangDeprecated alloc] init] autorelease] } count:1 "
           + "type:JavaLangAnnotationAnnotation_class_()];",
         "}");
+  }
+
+  public void testFunctionLineNumbers() throws IOException {
+    Options.setEmitLineDirectives(true);
+    String translation = translateSourceFile("class A {\n\n"
+        + "  static void test() {\n"
+        + "    System.out.println(A.class);\n"
+        + "  }}", "A", "A.m");
+    assertTranslatedLines(translation,
+        "#line 3", "void A_test() {", "A_initialize();", "", "#line 4",
+        "[((JavaIoPrintStream *) nil_chk(JavaLangSystem_get_out_())) printlnWithId:A_class_()];");
   }
 }

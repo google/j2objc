@@ -135,8 +135,9 @@ public class TypeImplementationGenerator extends TypeGenerator {
     if (Modifier.isNative(function.getModifiers())) {
       return;
     }
-    String functionBody = generateStatement(function.getBody(), /* isFunction */ true);
     newline();
+    syncLineNumbers(function);  // avoid doc-comment
+    String functionBody = generateStatement(function.getBody(), /* isFunction */ true);
     println(getFunctionSignature(function) + " " + reindent(functionBody));
   }
 
